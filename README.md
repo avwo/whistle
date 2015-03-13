@@ -96,7 +96,8 @@ whistle扩展了传统的hosts功能，增加了端口转换，请求转发，�
 	
 	file://协议
 
-		#请求http://www.example.com/*将返回对应文件D:\test\*的内容，如果文件不存在则终止请求
+		#请求http://www.example.com/*将返回对应文件D:\test\*的内容，
+		#如果文件不存在则终止请求
 		www.example.com/  	file://D:\test   #也可以用/作为路径分隔符，如file://D:/test
 		file://D:\test		www.example.com   #与上面配置方式等价
 		
@@ -106,7 +107,8 @@ whistle扩展了传统的hosts功能，增加了端口转换，请求转发，�
 		
 	xfile://协议
 
-		#请求http://www.example.com/*将返回对应文件D:\test\*的内容，如果文件不存在则会自动请求http://www.example.com/*的内容并返回
+		#请求http://www.example.com/*将返回对应文件D:\test\*的内容，
+		#如果文件不存在则会自动请求http://www.example.com/*的内容并返回
 		www.example.com/  	xfile://D:\test   #也可以用/作为路径分隔符，如file://D:/test
 		xfile://D:\test		www.example.com   #与上面配置方式等价
 		
@@ -116,7 +118,8 @@ whistle扩展了传统的hosts功能，增加了端口转换，请求转发，�
 
 	xfile://协议(与xfile的区别是如果文件不存在则会发一个https请求去线上获取)
 
-		#请求http://www.example.com/*将返回对应文件D:\test\*的内容，如果文件不存在则会自动请求https://www.example.com/*的内容并返回
+		#请求http://www.example.com/*将返回对应文件D:\test\*的内容，
+		#如果文件不存在则会自动请求https://www.example.com/*的内容并返回
 		www.example.com/  	xsfile://D:\test   #也可以用/作为路径分隔符，如file://D:/test
 		xsfile://D:\test		www.example.com   #与上面配置方式等价
 		
@@ -152,14 +155,17 @@ whistle扩展了传统的hosts功能，增加了端口转换，请求转发，�
 
 		#自动拦截请求功能
 		/\brap=([^&]+)/			www.rap.com/?id=$1
-		#$1~9分别对应js正则的子匹配，如果url里面先保留$n(n=1~9)，可采用www.test.com/?id=\$1，则匹配后的结果为www.test.com/?id=$1
+		#$1~9分别对应js正则的子匹配，如果url里面先保留$n(n=1~9)，
+		#可采用www.test.com/?id=\$1，则匹配后的结果为www.test.com/?id=$1
 
 ###插件扩展###
 1. 自定义ui操作界面
 
-		开发者可用自定义操作界面，启动时指定入口文件如： whistle start -u xxx/index.js，whistle会自动调用index.js的exports方法，
+		开发者可用自定义操作界面，启动时指定入口文件如： whistle start -u xxx/index.js，
+		whistle会自动调用index.js的exports方法，
 		并传入proxy对象，通过该对象可以获取ui的端口号及一些工具类，如操作hosts的工具类；
-		还有通过监听传入的proxy对象可以对通过代理的请求进行抓包，修改http head，过滤数据等，具体可以参考whistleui的实现
+		还有通过监听传入的proxy对象可以对通过代理的请求进行抓包，
+		修改http head，过滤数据等，具体可以参考whistleui的实现
 
 	
 3. 扩展hosts功能
