@@ -1,0 +1,41 @@
+{
+  "name": "whistle",
+  "description": "web proxy",
+  "version": "0.0.3",
+  "dataDirname": ".whistle data", 
+  "port": 9527,
+  "uiport": 9528,
+  "uisslport": 9529,
+  "tianmaport": 19528,
+  "tianmasslport": 19529,
+  "timeout": 10000,
+  "tianmaRoot": "x-tianma-root",
+  "webui": "whistleui",
+  "author": "avenwu <avenwu@vip.qq.com>",
+  "contributors": [],
+  "license": "MIT",
+  "homepage": "http://whistlejs.com/",
+  "keywords": [
+    "proxy",
+    "web proxy",
+    "fiddler"
+  ],
+   "bin": {
+    "whistle": "./bin/whistle.js"
+  },
+  "dependencies": {
+   "express": "*",
+   "mime": "*",
+   "commander": "*",
+   "whistleui": "*",
+   "tianma": "0.8.1",
+   "pegasus": "0.7.5",
+   "tianma-unicorn": "1.0.15",
+   "mini-util": "1.1.0",
+   "ucc": "2.0.14",
+   "mime-types": "2.0.9"
+  },
+  "engines": {
+    "node": ">= 0.10.0"
+  }
+}
