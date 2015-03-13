@@ -157,9 +157,12 @@ whistle扩展了传统的hosts功能，增加了端口转换，请求转发，�
 ###插件扩展###
 1. 自定义ui操作界面
 
-		开发者可用自定义操作界面，启动时指定入口文件如： whistle start -u xxx/index.js，whistle会自动调用index.js的exports方法，并传入proxy对象，通过该对象可以获取ui的端口号及一些工具类，如操作hosts的工具类；还有通过监听传入的proxy对象可以对通过代理的请求进行抓包，修改http head，过滤数据等，具体可以参考whistleui的实现
+		开发者可用自定义操作界面，启动时指定入口文件如： whistle start -u xxx/index.js，whistle会自动调用index.js的exports方法，
+		并传入proxy对象，通过该对象可以获取ui的端口号及一些工具类，如操作hosts的工具类；
+		还有通过监听传入的proxy对象可以对通过代理的请求进行抓包，修改http head，过滤数据等，具体可以参考whistleui的实现
 
 	
 3. 扩展hosts功能
 	
-		通过express中间件的方式实现扩展hosts的伪协议，具体实现参考whistle的./http-proxy.js，并通过命令行启动参数**--plugins**时来加载运行多个插件（以逗号分隔）
+		通过express中间件的方式实现扩展hosts的伪协议，具体实现参考whistle的./http-proxy.js，
+		并通过命令行启动参数**--plugins**时来加载运行多个插件（以逗号分隔）
