@@ -32,10 +32,13 @@ function parseHost(host) {
 	
 	var isIP = net.isIP(matcher);
 	var isRegExp = util.isRegExp(pattern);
+	var protocol;
 	if (!isRegExp) {
 		pattern = pattern.toLowerCase();
+		protocol = util.getProtocol(pattern);
+		
 		if (!isIP) {
-			if (pattern.indexOf('/', util.hasProtocol(pattern) ? pattern.indexOf('://') + 3 : 0) == -1) {
+			if (pattern.indexOf('/', protocol == null ? 0 : pattern.indexOf('://') + 3) == -1) {
 				pattern += '/';
 			}
 		} else if (!(pattern = util.getHost(pattern))) {
@@ -47,6 +50,7 @@ function parseHost(host) {
 	
 	(isIP ? hosts : rules).push({
 		isRegExp: isRegExp,
+		protocol: protocol,
 		pattern: pattern,
 		matcher: matcher
 	});
