@@ -30,8 +30,8 @@ exports.getFullUrl = function getFullUrl(req) {
 	return /^http:/.test(req.url) ? req.url : 'http://' + req.headers.host + req.url;
 };
 
-function setProtocol(url) {
-	return /^[\w-]+:\/\//.test(url) ? url : 'http://' + url;
+function setProtocol(url, isHttps) {
+	return /^[\w-]+:\/\//.test(url) ? url : 'http' + (isHttps ? 's' : '') + '://' + url;
 }
 exports.setProtocol = setProtocol;
 
