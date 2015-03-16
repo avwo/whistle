@@ -146,7 +146,7 @@ module.exports = function(req, res, next) {
 			isResponded = true;
 			if (_res.headers && _res.headers.location) {
 				//nodejs的url只支持ascii，对非ascii的字符要encodeURIComponent，否则传到浏览器是乱码
-				_res.headers.location = util.addWhistleSsl(req, util.encodeNonAsciiChar(_res.headers.location));
+				_res.headers.location = util.toWhistleSsl(req, util.encodeNonAsciiChar(_res.headers.location));
 			}
 			
 			setWhistleHeaders(_res.headers, req.options, util.isWebProtocol(req.options.protocol));

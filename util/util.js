@@ -59,16 +59,27 @@ exports.setProtocol = setProtocol;
 exports.getProtocol = getProtocol;
 exports.removeProtocol = removeProtocol;
 
-function addWhistleSsl(req, _url) {
+function toWhistleSsl(req, _url) {
 	if (!req.isHttps || !hasProtocol(_url)) {
 		return _url;
 	}
 	var options = url.parse(_url);
-	options.hostname = config.whistleSsl + '.' + options.hostname;
+	if (options.protocol = 'https:') {
+		options.protocol = 'http:';
+		addWhistleSsl(options, 'hostname');
+		addWhistleSsl(options, 'host')
+	}
+	
 	return url.format(options);
 }
 
-exports.addWhistleSsl = addWhistleSsl;
+function addWhistleSsl(options, name) {
+	if (options[name]) {
+		options[name] = config.whistleSsl + '.' + options[name];
+	}
+}
+
+exports.toWhistleSsl = toWhistleSsl;
 
 exports.isLocalAddress = function(address) {
 	if (!address) {
