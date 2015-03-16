@@ -89,7 +89,7 @@ function setHosts(name, text) {
 } 
 
 function parseHosts() {
-	hosts.parse((publicHostsIsDisabled() ? '' : publicHostsText) + '\n' + curHostsText);
+	hosts.parse(curHostsText + '\n' + (publicHostsIsDisabled() ? '' : publicHostsText));
 }
 
 function updateHostsList(name, text) {
