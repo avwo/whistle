@@ -24,7 +24,7 @@ function parseHost(host) {
 		return;
 	}
 	
-	if (net.isIP(pattern) || util.isRegExp(matcher) || !/http:\/\//.test(util.setProtocol(pattern))) {
+	if (net.isIP(pattern) || util.isRegExp(matcher) || (util.hasProtocol(pattern) && !/^https?:\/\//.test(pattern))) {
 		var tmp = pattern;
 		pattern = matcher;
 		matcher = tmp;

@@ -31,8 +31,14 @@ exports.getFullUrl = function getFullUrl(req) {
 };
 
 function setProtocol(url, isHttps) {
-	return /^[\w-]+:\/\//.test(url) ? url : 'http' + (isHttps ? 's' : '') + '://' + url;
+	return hasProtocol(url) ? url : 'http' + (isHttps ? 's' : '') + '://' + url;
 }
+
+function hasProtocol(url) {
+	return /^[\w-]+:\/\//.test(url);
+}
+
+exports.hasProtocol = hasProtocol;
 exports.setProtocol = setProtocol;
 
 exports.isLocalAddress = function(address) {
