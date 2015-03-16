@@ -100,13 +100,14 @@ exports.resolve = resolve;
 
 function resolveHost(_url, callback) {
 	var options = _url ? url.parse(util.setProtocol(_url.toLowerCase())) : {};
-	if (!util.isWebProtocol(options.protocol)) {
+	var protocol = options.protocol;
+	if (!util.isWebProtocol(protocol)) {
 		callback(null, null);
 		return;
 	}
 	var hostname = options.hostname;
 	for (var i = 0, host; host = hosts[i]; i++) {
-		if (host.isRegExp ? host.pattern.test(_url) : hostname == host.pattern) {
+		if (host.isRegExp ? host.pattern.test(_url) : (hostname == host.pattern && (!host.protocol || host.protocol == protocol))) {
 			callback(null, host.matcher);
 			return;
 		}
