@@ -24,7 +24,8 @@ function parseHost(host) {
 		return;
 	}
 	
-	if (net.isIP(pattern) || util.isRegExp(matcher) || (util.hasProtocol(pattern) && !/^https?:\/\//.test(pattern))) {
+	var hasProtocol = util.hasProtocol(pattern);
+	if (net.isIP(pattern) || util.isRegExp(matcher) || (hasProtocol && !/^https?:\/\//.test(pattern))) {
 		var tmp = pattern;
 		pattern = matcher;
 		matcher = tmp;
@@ -36,7 +37,7 @@ function parseHost(host) {
 		pattern = pattern.toLowerCase();
 		if (!isIP) {
 			pattern = util.setProtocol(pattern);
-			if (pattern.substring(pattern.indexOf('://') + 3).indexOf('/') == -1) {
+			if (pattern.indexOf('/', hasProtocol ? pattern.indexOf('://') + 3 : 0) == -1) {
 				pattern += '/';
 			}
 		} else if (!(pattern = util.getHost(pattern))) {
@@ -48,6 +49,7 @@ function parseHost(host) {
 	
 	(isIP ? hosts : rules).push({
 		isRegExp: isRegExp,
+		hasProtocol: hasProtocol,
 		pattern: pattern,
 		matcher: isIP ? matcher : util.setProtocol(matcher)
 	});
