@@ -24,8 +24,7 @@ function parseHost(host) {
 		return;
 	}
 	
-	var hasProtocol = util.hasProtocol(pattern);
-	if (net.isIP(pattern) || util.isRegExp(matcher) || (hasProtocol && !/^https?:\/\//.test(pattern))) {
+	if (net.isIP(pattern) || util.isRegExp(matcher) || (util.hasProtocol(pattern) && !/^https?:\/\//.test(pattern))) {
 		var tmp = pattern;
 		pattern = matcher;
 		matcher = tmp;
@@ -36,8 +35,7 @@ function parseHost(host) {
 	if (!isRegExp) {
 		pattern = pattern.toLowerCase();
 		if (!isIP) {
-			pattern = util.setProtocol(pattern);
-			if (pattern.indexOf('/', hasProtocol ? pattern.indexOf('://') + 3 : 0) == -1) {
+			if (pattern.indexOf('/', util.hasProtocol(pattern) ? pattern.indexOf('://') + 3 : 0) == -1) {
 				pattern += '/';
 			}
 		} else if (!(pattern = util.getHost(pattern))) {
@@ -49,9 +47,8 @@ function parseHost(host) {
 	
 	(isIP ? hosts : rules).push({
 		isRegExp: isRegExp,
-		hasProtocol: hasProtocol,
 		pattern: pattern,
-		matcher: isIP ? matcher : util.setProtocol(matcher)
+		matcher: matcher
 	});
 }
 
@@ -129,8 +126,9 @@ exports.resolveHost = resolveHost;
 function resolveRule(url, data) {
 	data = data || {};
 	for (var i = 0, rule; rule = rules[i]; i++) {
+		var pattern = rule.pattern;
 		if (rule.isRegExp) {
-			if (rule.pattern.test(url)) {
+			if (pattern.test(url)) {
 				var regExp = {};
 				for (var i = 0; i < 10; i++) {
 					regExp['$' + i] = RegExp['$' + i] || '';
@@ -141,14 +139,30 @@ function resolveRule(url, data) {
 					return $1 == '\\' ? $2 : ($1 || '') + regExp[$2];
 				});
 			}
-		} else if (url.indexOf(rule.pattern) === 0) {
-			var len = rule.pattern.length;
-			if (rule.pattern == url || isPathSeparator(url[len]) || isPathSeparator(rule.pattern[len - 1])) {
-				extend(data, rule);
-				return join(rule.matcher, url.substring(len));
+		} else {
+			pattern = setProtocol(pattern, url);
+			if (url.indexOf(pattern) === 0) {
+				var len = pattern.length;
+				if (pattern == url || isPathSeparator(url[len]) || isPathSeparator(pattern[len - 1])) {
+					extend(data, rule);
+					return join(setProtocol(rule.matcher, url), url.substring(len));
+				}
 			}
 		}
 	}
+}
+
+function setProtocol(target, source) {
+	if (util.hasProtocol(target)) {
+		return target;
+	}
+	
+	var protocol = util.getProtocol(source);
+	if (protocol == null) {
+		return target;
+	}
+	
+	return protocol + '//' + target;
 }
 
 exports.resolveRule = resolveRule;
