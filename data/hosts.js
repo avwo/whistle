@@ -58,10 +58,10 @@ exports.parse = parse;
 function resolve(_url, callback) {
 	var rule = {};
 	var matchedUrl = resolveRule(_url.toLowerCase(), rule);
-	var hosts = [];
 	var error, done;
 	var matcher = matchedUrl || _url;
 	var options = url.parse(matcher);
+	var hosts = options.hosts = [];
 	options.url = matcher;
 	options.rule = rule;
 	options.hasMatcher = !!matchedUrl;
@@ -89,7 +89,6 @@ function resolve(_url, callback) {
 	function execCallback() {
 		if (!done && (error || (typeof hosts[0] != 'undefined' && typeof hosts[1] != 'undefined'))) {
 			done = true;
-			options.hosts = hosts;
 			hosts[1] = hosts[1] || hosts[0];
 			hosts[0] = hosts[0] || hosts[1];
 			callback(error, options);
