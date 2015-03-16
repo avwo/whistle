@@ -35,11 +35,21 @@ function setProtocol(url, isHttps) {
 }
 
 function hasProtocol(url) {
-	return /^[\w-]+:\/\//.test(url);
+	return url ? url.indexOf('://') != -1 : false;
+}
+
+function getProtocol(url) {
+	return hasProtocol(url) ? url.substring(0, url.indexOf('://') + 1) : null;
+}
+
+function removeProtocol(url) {
+	return hasProtocol(url) ? url.substring(url.indexOf('://') + 3) : url;
 }
 
 exports.hasProtocol = hasProtocol;
 exports.setProtocol = setProtocol;
+exports.getProtocol = getProtocol;
+exports.removeProtocol = removeProtocol;
 
 exports.isLocalAddress = function(address) {
 	if (!address) {
