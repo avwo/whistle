@@ -2,6 +2,7 @@ var util = require('../util/util');
 var hosts = require('./hosts');
 var http = require('http');
 var https = require('https');
+var url = require('url');
 var EventEmitter = require('events').EventEmitter;
 var Transform = require('stream').Transform;
 var config = require('../package.json');
@@ -49,6 +50,11 @@ function getPort(options) {
 
 function isSecure(protocol) {
 	return protocol == 'https:' || protocol == 'wss:';
+}
+
+function setWhistleHeaders(headers, options, isHttp) {
+	headers['x-remote-url'] = isHttp ? url.format(options) : options.url;
+	headers['x-remote-ip'] = options.hosts[1] || '127.0.0.1';
 }
 
 module.exports = function(req, res, next) {
@@ -140,8 +146,10 @@ module.exports = function(req, res, next) {
 			isResponded = true;
 			if (_res.headers && _res.headers.location) {
 				//nodejs的url只支持ascii，对非ascii的字符要encodeURIComponent，否则传到浏览器是乱码
-				_res.headers.location = _res.headers.location.replace(/[^\x00-\x7F]/g, encodeURIComponent);
+				_res.headers.location = util.encodeNonAsciiChar(_res.headers.location);
 			}
+			
+			setWhistleHeaders(_res.headers, req.options, util.isWebProtocol(req.options.protocol));
 			response.emit('response', _res);
 			res.writeHead(_res.statusCode, _res.headers);
 			response._setResponseTimeout = setResponseTimeout;

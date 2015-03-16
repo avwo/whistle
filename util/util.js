@@ -75,3 +75,8 @@ exports.drain = function drain(stream, end) {
 	}
 	stream.on('data', noop);
 };
+
+exports.encodeNonAsciiChar = function encodeNonAsciiChar(str) {
+	
+	return  str ? str.replace(/[^\x00-\x7F]/g, encodeURIComponent) : str;
+};

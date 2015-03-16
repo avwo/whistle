@@ -3,6 +3,7 @@
   "description": "web proxy",
   "version": "0.0.3",
   "dataDirname": ".whistle data", 
+  "httpsPrefix": "whistle-ssl",
   "port": 9527,
   "uiport": 9528,
   "uisslport": 9529,
