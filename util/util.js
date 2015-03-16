@@ -2,6 +2,7 @@ var net = require('net');
 var url = require('url');
 var path = require('path');
 var os = require('os');
+var config = require('../package.json');
 
 var REG_EXP_RE = /^\/(.+)\/(i)?$/
 
@@ -27,15 +28,22 @@ exports.toRegExp = function toRegExp(regExp) {
 };
 
 exports.getFullUrl = function getFullUrl(req) {
-	return /^http:/.test(req.url) ? req.url : 'http://' + req.headers.host + req.url;
+	if (hasProtocol(req.url)) {
+		req.url = url.parse(req.url).path;
+	}
+	return _getProtocol(req.isHttps) + req.headers.host + req.url;
 };
 
 function setProtocol(url, isHttps) {
-	return hasProtocol(url) ? url : 'http' + (isHttps ? 's' : '') + '://' + url;
+	return hasProtocol(url) ? url : _getProtocol(isHttps) + url;
+}
+
+function _getProtocol(isHttps) {
+	return isHttps ? 'https://' : 'http://';
 }
 
 function hasProtocol(url) {
-	return url ? url.indexOf('://') != -1 : false;
+	return url ? url.indexOf('://') > 0 : false;
 }
 
 function getProtocol(url) {
@@ -50,6 +58,17 @@ exports.hasProtocol = hasProtocol;
 exports.setProtocol = setProtocol;
 exports.getProtocol = getProtocol;
 exports.removeProtocol = removeProtocol;
+
+function addWhistleSsl(req, _url) {
+	if (!req.isHttps || !hasProtocol(_url)) {
+		return _url;
+	}
+	var options = url.parse(_url);
+	options.hostname = config.whistleSsl + '.' + options.hostname;
+	return url.format(options);
+}
+
+exports.addWhistleSsl = addWhistleSsl;
 
 exports.isLocalAddress = function(address) {
 	if (!address) {
