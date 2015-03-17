@@ -52,9 +52,35 @@ function isSecure(protocol) {
 	return protocol == 'https:' || protocol == 'wss:';
 }
 
-function setWhistleHeaders(headers, options, isHttp) {
+var RESET_COOKIE_RE = /secure;?|domain=([^;]+);?/ig;
+
+function setWhistleHeaders(res, req, isHttp, isHttps) {
+	var headers = res.headers;
+	var options = req.options;
+	
 	headers['x-remote-url'] = isHttp ? url.format(options) : options.url;
 	headers['x-remote-ip'] = options.hosts[1] || '127.0.0.1';
+	
+	if (!isHttps) {
+		return;
+	}
+	
+	var cookies = headers['set-cookie'];
+	
+	if (!Array.isArray(cookies)) {
+		return;
+	}
+	
+	var host = options.host.split('.');
+	var len = host.length;
+	if (host.length > 2) {
+		host = host.slice(len - 2);
+	}
+	host = '.' + host.join('.');
+	
+	headers['set-cookie'] = cookies.map(function(cookie) {
+		return cookie.replace(RESET_COOKIE_RE, '') + '; DOMAIN=' + host + ';';
+	});
 }
 
 module.exports = function(req, res, next) {
@@ -149,7 +175,7 @@ module.exports = function(req, res, next) {
 				_res.headers.location = util.toWhistleSsl(req, util.encodeNonAsciiChar(_res.headers.location));
 			}
 			
-			setWhistleHeaders(_res.headers, req.options, util.isWebProtocol(req.options.protocol));
+			setWhistleHeaders(_res, req, util.isWebProtocol(req.options.protocol), req.isHttps);
 			response.emit('response', _res);
 			res.writeHead(_res.statusCode, _res.headers);
 			response._setResponseTimeout = setResponseTimeout;
