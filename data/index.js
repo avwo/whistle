@@ -5,6 +5,7 @@ var https = require('https');
 var url = require('url');
 var EventEmitter = require('events').EventEmitter;
 var Transform = require('stream').Transform;
+var transformHttps = require('../https/transform.js');
 var config = require('../package.json');
 
 function transform(chunk, encoding, callback) {
@@ -180,7 +181,14 @@ module.exports = function(req, res, next) {
 			res.writeHead(_res.statusCode, _res.headers);
 			response._setResponseTimeout = setResponseTimeout;
 			response._clearResponseTimeout = clearResponseTimeout;
-			_res.pipe(getTransform(response)).pipe(res);
+			
+			var headers = _res.headers;
+			_res = _res.pipe(getTransform(response));
+			if (req.isHttps) {
+				transformHttps(headers, _res).pipe(res);
+			} else {
+				_res.pipe(res);
+			}
 		};
 		
 		function bindErrorEvents(req) {
