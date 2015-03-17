@@ -117,7 +117,7 @@ exports.noop = noop;
 
 exports.drain = function drain(stream, end) {
 	if (end) {
-		stream.endEmitted ? end.call(stream) : stream.on('end', end);
+		stream._readableState.ended ? end.call(stream) : stream.on('end', end);
 	}
 	stream.on('data', noop);
 };

@@ -9,7 +9,7 @@
   "uisslport": 9529,
   "tianmaport": 19528,
   "tianmasslport": 19529,
-  "timeout": 10000,
+  "timeout": 16000,
   "tianmaRoot": "x-tianma-root",
   "webui": "whistleui",
   "author": "avenwu <avenwu@vip.qq.com>",
