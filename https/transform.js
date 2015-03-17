@@ -1,7 +1,7 @@
 var iconv = require('iconv-lite');
 var zlib = require('zlib');
 var WHISTLE_SSL_RE = /https:\/\//ig;
-var httpsFlag = require('../package.json').whistleSsl + '.';
+var HTTPS_FLAG = require('../package.json').whistleSsl + '.';
 
 function transform(headers, res) {
 	var charset = headers['content-type'];
@@ -39,7 +39,7 @@ function transform(headers, res) {
 	res.on('data', function(data) {
 		var len = data.length - 7;
 		if (len > 0) {
-			data = (rest + data).replace(WHISTLE_SSL_RE, 'http://' + httpsFlag);
+			data = (rest + data).replace(WHISTLE_SSL_RE, 'http://' + HTTPS_FLAG);
 			rest = data.substring(len);
 			data = data.substring(0, len);
 			stream.write(data, charset);
