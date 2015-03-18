@@ -6,7 +6,9 @@ module.exports = function(req, res, next) {
 	var protocol = options && options.protocol;
 	if (protocol == 'tianma:' || protocol == 'stianma:') {
 		req.headers[config.tianmaRoot] = encodeURIComponent(options.rule.matcher.substring(protocol.length + 2));
-		options = req.options = url.parse(req.fullUrl);
+		req.options = url.parse(req.fullUrl);
+		req.options.rule = options.rule;
+		options = req.options;
 		if (protocol == 'stianma:') {
 			options.protocol = 'https:';
 			options.port = this.tianmasslport;
