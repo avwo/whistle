@@ -184,7 +184,7 @@ whistle对系统的hosts功能进行了扩展，支持原有hosts功能的基础
 		
 		#linux、mac
 		www.example.com/abc  	xsfile:///home/test
-		xfile:///home/test		www.example.com/abc
+		xsfile:///home/test		www.example.com/abc
 	
 
 6. 独角兽功能(映射规则的左右位置可以调换）
