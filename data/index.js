@@ -58,6 +58,8 @@ var RESET_COOKIE_RE = /secure;?|domain=([^;]+);?/ig;
 function setWhistleHeaders(res, req, isHttp, isHttps) {
 	var headers = res.headers;
 	var options = req.options;
+	var host = options.host.split(':')[0];
+	options.host = host + (options.port ? ':' + options.port : '');
 	
 	headers['x-remote-url'] = isHttp ? url.format(options) : options.url;
 	headers['x-remote-ip'] = options.hosts[1] || '127.0.0.1';
