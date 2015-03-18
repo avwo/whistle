@@ -90,9 +90,9 @@ whistle对系统的hosts功能进行了扩展，支持原有hosts功能的基础
 
 	使用这种方式访问https，whistle不会自动修改页面里面的https协议，且如果请求已经被301到https了，浏览器将自动把http转成https，导致浏览器地址栏显示的是https，这种方式限制比较多，推荐使用下面的方式
 
-	2）直接请求http://whistle-ssl.github.com/，利用这种方式相当于请求https://github.com，且whistle会自动把页面里面的https://xxx自动转成http://whistle-ssl.xxx。
+	2）直接请求http://whistle-ssl.github.com/ ，利用这种方式相当于请求https://github.com ，且whistle会自动把页面里面的 https://xxx 自动转成 http://whistle-ssl.xxx 。
 	
-	这种方式也存在一些问题：由于http不会自动把对应的证书带到服务端，如果对应的https请求需要验证客户端证书，可能导致请求失败；还有一个HSTS的问题，导致浏览器会把对应域名及子域名自动转成https请求（如github）：http://blog.csdn.net/lk188/article/details/7221767，后面这种属性目前只有chrome和firefox支持，因此遇到这种问题可以用IE浏览器访问
+	这种方式也存在一些问题：由于http不会自动把对应的证书带到服务端，如果对应的https请求需要验证客户端证书，可能导致请求失败；还有一个HSTS的问题，导致浏览器会把对应域名及子域名自动转成https请求（如github）： http://blog.csdn.net/lk188/article/details/7221767 ，后面这种属性目前只有chrome和firefox支持，因此遇到这种问题可以用IE浏览器访问
 	
 
 2. hosts（映射规则的左右位置可以调换）
