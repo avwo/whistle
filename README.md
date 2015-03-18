@@ -206,7 +206,7 @@ whistle对系统的hosts功能进行了扩展，支持原有hosts功能的基础
 		#$1~9分别对应js正则的子匹配，如果url里面想保留$n(n=1~9)，
 		#可采用转义字符：www.test.com/?id=\$1匹配后的结果为www.test.com/?id=$1
 
-###插件扩展###
+###扩展功能###
 1. 自定义ui操作界面
 
 		开发者可用自定义操作界面，启动时指定入口文件如： whistle start -u xxx/index.js，
