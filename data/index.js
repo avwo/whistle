@@ -38,19 +38,15 @@ function getTransform(eventEmitter) {
 }
 
 function getPort(options) {
-	if (!options.port) {
-		if (isSecure(options.protocol)) {
-			return 443;
-		} else if (options.protocol == 'http:' || options.protocol == 'ws:') {
-			return 80;
-		}
+	if (options.port) {
+		return options.port;
 	}
 	
-	return options.port;
-}
-
-function isSecure(protocol) {
-	return protocol == 'https:' || protocol == 'wss:';
+	if (options.protocol == 'https:') {
+		return 443;
+	} else if (options.protocol == 'http:') {
+		return 80;
+	}
 }
 
 var RESET_COOKIE_RE = /secure;?|domain=([^;]+);?/ig;
@@ -128,7 +124,7 @@ module.exports = function(req, res, next) {
 		if (util.isLocalAddress(options.hosts[1])) {
 			if (port == self.port) {
 				res.redirect(302, options.protocol + '//' + options.hostname + ':' 
-						+ (isSecure(options.protocol) ? self.uisslport : self.uiport) + options.path);
+						+ (options.protocol == 'https:' ? self.uisslport : self.uiport) + options.path);
 				return;
 			}
 			
