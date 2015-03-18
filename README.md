@@ -76,7 +76,7 @@ PS：每次重启系统后需要手动启动**whistle start**，或者切换代�
 
 ###hosts功能###
 
-whistle对系统的hosts功能进行了扩展，支持原有hosts功能的基础上增加了http转https、请求转发、端口转发、本地文件替换、并集成了天马及独角兽的功能、且支持正则匹配等
+whistle对系统的hosts功能进行了扩展，支持原有hosts功能的基础上增加了http转https、请求转发、端口转发、本地文件替换、并集成了天马及独角兽的功能、且支持正则匹配等（#号为注释）		
 
 1. http转https
 
@@ -185,6 +185,21 @@ whistle对系统的hosts功能进行了扩展，支持原有hosts功能的基础
 		#linux、mac
 		www.example.com/abc  	xsfile:///home/test
 		xsfile:///home/test		www.example.com/abc
+
+	替换https请求
+
+		#请求https://whistle-ssl.www.example.com/*将返回对应文件D:\test\*的内容，
+		#如果文件不存在则终止请求
+		www.example.com file:///home/test
+		https://www.example.com/ file:///home/test
+
+		#请求https://whistle-ssl.www.example.com/*将返回对应文件D:\test\*的内容，
+		#如果文件不存在则会自动请求https://www.example.com/*的内容并返回
+		www.example.com/ xfile:///home/test
+		https://www.example.com xfile:///home/test
+
+		
+		
 	
 
 6. 独角兽功能(映射规则的左右位置可以调换）
