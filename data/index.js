@@ -57,11 +57,15 @@ function setWhistleHeaders(res, req, isHttp, isHttps) {
 	var host = options.host.split(':')[0];
 	options.host = host + (options.port ? ':' + options.port : '');
 	
-	headers['x-remote-url'] = isHttp ? url.format(options) : options.url;
 	headers['x-remote-ip'] = options.hosts[1] || '127.0.0.1';
 	
-	if (options.rule && options.rule.matcher) {
-		headers['x-' + config.name + '-rule'] = options.rule.matcher;
+	var matcher = options.rule && options.rule.matcher;
+	if (matcher) {
+		headers['x-' + config.name + '-rule'] = matcher;
+	}
+	
+	if (matcher || isHttps) {
+		headers['x-remote-url'] = isHttp ? url.format(options) : options.url;
 	}
 	
 	if (!isHttps) {
