@@ -186,6 +186,13 @@ whistle对系统的hosts功能进行了扩展，支持原有hosts功能的基础
 		www.example.com/abc  	xsfile:///home/test
 		xsfile:///home/test		www.example.com/abc
 
+	dust://，xdust://, xsdust://协议
+
+		原理同上，区别是：该协议会获取url的query参数作为context渲染本地文件，
+		dustjs的语法见：
+		https://github.com/linkedin/dustjs/wiki/Dust-Tutorial#Dust_Tutorial
+	
+
 	替换https请求
 
 		#请求https://whistle-ssl.www.example.com/*将返回对应文件D:\test\*的内容，
@@ -197,6 +204,9 @@ whistle对系统的hosts功能进行了扩展，支持原有hosts功能的基础
 		#如果文件不存在则会自动请求https://www.example.com/*的内容并返回
 		www.example.com/ xfile:///home/test
 		https://www.example.com xfile:///home/test
+
+
+	
 
 		
 		
