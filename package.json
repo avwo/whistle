@@ -1,7 +1,7 @@
 {
   "name": "whistle",
   "description": "web proxy",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "dataDirname": ".whistle data", 
   "whistleSsl": "whistle-ssl",
   "port": 9527,
@@ -35,7 +35,8 @@
    "mini-util": "1.1.0",
    "ucc": "2.0.14",
    "mime-types": "2.0.9",
-   "iconv-lite": "*"
+   "iconv-lite": "*",
+   "dustjs-helpers": "*"
   },
   "engines": {
     "node": ">= 0.10.0"

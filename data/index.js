@@ -180,7 +180,7 @@ module.exports = function(req, res, next) {
 			
 			setWhistleHeaders(_res, req, util.isWebProtocol(req.options.protocol), req.isHttps);
 			response.emit('response', _res);
-			res.writeHead(_res.statusCode, _res.headers);
+			res.writeHead(_res.statusCode || 0, _res.headers);
 			response._setResponseTimeout = setResponseTimeout;
 			response._clearResponseTimeout = clearResponseTimeout;
 			
