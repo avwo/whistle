@@ -129,6 +129,7 @@ exports.resolveHost = resolveHost;
 
 function resolveRule(url, data) {
 	data = data || {};
+	var _url = url.replace(/(?:\?|#).*$/, '');
 	for (var i = 0, rule; rule = rules[i]; i++) {
 		var pattern = rule.pattern;
 		if (rule.isRegExp) {
@@ -144,12 +145,12 @@ function resolveRule(url, data) {
 				});
 			}
 		} else {
-			pattern = setProtocol(pattern, url);
-			if (url.indexOf(pattern) === 0) {
+			pattern = setProtocol(pattern, _url);
+			if (_url.indexOf(pattern) === 0) {
 				var len = pattern.length;
-				if (pattern == url || isPathSeparator(url[len]) || isPathSeparator(pattern[len - 1])) {
+				if (pattern == _url || isPathSeparator(_url[len]) || isPathSeparator(pattern[len - 1])) {
 					extend(data, rule);
-					return join(setProtocol(rule.matcher, url), url.substring(len));
+					return join(setProtocol(rule.matcher, _url), _url.substring(len));
 				}
 			}
 		}
