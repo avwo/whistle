@@ -150,7 +150,7 @@ function resolveRule(url, data) {
 				var len = pattern.length;
 				if (pattern == _url || isPathSeparator(_url[len]) || isPathSeparator(pattern[len - 1])) {
 					extend(data, rule);
-					return join(setProtocol(rule.matcher, url), url.substring(len));
+					return join(setProtocol(rule.matcher, _url), url.substring(len));
 				}
 			}
 		}

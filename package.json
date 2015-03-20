@@ -1,7 +1,7 @@
 {
   "name": "whistle",
   "description": "web proxy",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "dataDirname": ".whistle data", 
   "whistleSsl": "whistle-ssl",
   "port": 9527,
