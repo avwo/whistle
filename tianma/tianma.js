@@ -30,9 +30,24 @@ tianma
 				root = decodeURIComponent(root);
 			}
 			next();
-		},unicorn({ source: 'loop://localhost/'})])
+		}, unicorn({ source: 'loop://localhost/'}),
+		(function (proxy) {
+            return function (context, next) {
+                context.response.head('access-control-allow-origin', '*');
+                if (context.request.protocol === 'https:') {
+                    proxy(context, next);
+                } else {
+                    next();
+                }
+            };
+        }(pipe.proxy({
+            'loop://localhost/$1': /\/\/.*?\/([sw]img\/.*)/,
+            'http://img.alibaba.com@115.238.23.250/$1': /\/\/.*?\/(img\/(?:portrait|company)\/.*)/
+        })))])
 		.mount('/', [readFile(function() {
 			return root;
-		}), accessControlHandler])
+		}), pipe.proxy({
+            'http://style.alibaba.com@115.238.23.240/$1': /\/\/.*?\/(.*)/
+        }), accessControlHandler])
 		.start();
 };
