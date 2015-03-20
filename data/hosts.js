@@ -34,7 +34,6 @@ function parseHost(host) {
 	var isRegExp = util.isRegExp(pattern);
 	var protocol;
 	if (!isRegExp) {
-		pattern = pattern.toLowerCase();
 		protocol = util.getProtocol(pattern);
 		
 		if (!isIP) {
@@ -102,7 +101,7 @@ function resolve(_url, callback) {
 exports.resolve = resolve;
 
 function resolveHost(_url, callback) {
-	var options = _url ? url.parse(util.setProtocol(_url.toLowerCase())) : {};
+	var options = _url ? url.parse(util.setProtocol(_url)) : {};
 	var protocol = options.protocol;
 	if (!util.isWebProtocol(protocol)) {
 		callback(null, null);
