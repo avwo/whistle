@@ -60,7 +60,7 @@ exports.parse = parse;
 
 function resolve(_url, callback) {
 	var rule = {};
-	var matchedUrl = resolveRule(_url.toLowerCase(), rule);
+	var matchedUrl = resolveRule(_url, rule);
 	var error, done;
 	var matcher = matchedUrl || _url;
 	var options = url.parse(matcher);
@@ -145,12 +145,12 @@ function resolveRule(url, data) {
 				});
 			}
 		} else {
-			pattern = setProtocol(pattern, _url);
+			pattern = setProtocol(pattern, url);
 			if (_url.indexOf(pattern) === 0) {
 				var len = pattern.length;
 				if (pattern == _url || isPathSeparator(_url[len]) || isPathSeparator(pattern[len - 1])) {
 					extend(data, rule);
-					return join(setProtocol(rule.matcher, _url), url.substring(len));
+					return join(setProtocol(rule.matcher, url), url.substring(len));
 				}
 			}
 		}
