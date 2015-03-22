@@ -97,6 +97,12 @@ function setWhistleHeaders(res, req, isHttp, isHttps) {
 	});
 }
 
+function getOptions(fullUrl) {
+	var options = url.parse(fullUrl);
+	options.hosts = ['127.0.0.1', '127.0.0.1'];
+	options.url = fullUrl;
+}
+
 module.exports = function(req, res, next) {
 	var self = this;
 	var fullUrl = req.fullUrl = util.getFullUrl(req);
@@ -217,19 +223,12 @@ module.exports = function(req, res, next) {
 			});
 		}
 		
-		if (err) {
-			req.emit('error', err);
-			return;
-		}
-		
-		next();
+		err ? req.emit('error', err) : next();
 	}
 	
 	if (req.headers.host == config.localUIHost) {
-		var options = url.parse(fullUrl);
-		options.hosts = ['127.0.0.1', '127.0.0.1'];
+		var options = getOptions(fullUrl);
 		options.port = getUIPort(options); 
-		options.url = fullUrl;
 		handleResolve(null, options);
 	} else {
 		hosts.resolve(fullUrl, handleResolve);
