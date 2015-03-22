@@ -44,7 +44,9 @@ function getPort(options) {
 	
 	if (options.protocol == 'https:') {
 		return 443;
-	} else if (options.protocol == 'http:') {
+	}
+	
+	if (options.protocol == 'http:') {
 		return 80;
 	}
 }
