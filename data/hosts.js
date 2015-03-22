@@ -6,19 +6,23 @@ var extend = require('util')._extend;
 
 var rules = [];
 var hosts = [];
+var filters = [];
 
-function parse(_hosts) {
+function parse(text) {
 	rules = [];
 	hosts = [];
-	if (_hosts) {
-		_hosts.trim().split(/\r\n|\n|\r/g).forEach(parseHost);
+	filters = [];
+	if (!text || !(text = text.trim())) {
+		return;
 	}
+	
+	text.split(/\n|\r\n|\r/g).forEach(parseHost);
 }
 
-function parseHost(host) {
-	host = host.replace(/#.*$/, '').trim().split(/\s+/);
-	var pattern = host[0] && host[0].trim();
-	var matcher = host[1] && host[1].trim();
+function parseHost(line) {
+	line = line.replace(/#.*$/, '').trim().split(/\s+/);
+	var pattern = line[0] && line[0].trim();
+	var matcher = line[1] && line[1].trim();
 	
 	if (!pattern || !matcher) {
 		return;
@@ -47,12 +51,20 @@ function parseHost(host) {
 		return;
 	}
 	
-	(isIP ? hosts : rules).push({
-		isRegExp: isRegExp,
-		protocol: protocol,
-		pattern: pattern,
-		matcher: matcher
-	});
+	line = {
+			isRegExp: isRegExp,
+			protocol: protocol,
+			pattern: pattern,
+			matcher: matcher
+		};
+	
+	if (isIP) {
+		hosts.push(line);
+	} else if (/^filter:\/\//.test(matcher)) {
+		filters.push(line);
+	} else {
+		rules.push(line);
+	}
 }
 
 exports.parse = parse;
