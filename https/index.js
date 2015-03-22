@@ -3,7 +3,7 @@ var HTTPS_FLAG_LEN = HTTPS_FLAG.length;
 
 module.exports = function(req, res, next) {
 	var host = req.headers.host;
-	var isHttps = host.indexOf(HTTPS_FLAG) == 0 && host.indexOf('.', HTTPS_FLAG_LEN) != -1;
+	var isHttps = host && host.indexOf(HTTPS_FLAG) == 0 && host.indexOf('.', HTTPS_FLAG_LEN) != -1;
 	if (isHttps) {
 		req.headers.host = host.substring(HTTPS_FLAG_LEN);
 		req.isHttps = true;

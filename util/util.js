@@ -2,6 +2,7 @@ var net = require('net');
 var url = require('url');
 var path = require('path');
 var os = require('os');
+var Readable = require('stream').Readable;
 var config = require('../package.json');
 
 var REG_EXP_RE = /^\/(.+)\/(i)?$/
@@ -125,4 +126,21 @@ exports.drain = function drain(stream, end) {
 exports.encodeNonAsciiChar = function encodeNonAsciiChar(str) {
 	
 	return  str ? str.replace(/[^\x00-\x7F]/g, encodeURIComponent) : str;
+};
+
+exports.getPath = function getPath(options) {
+	
+	return options.url.substring(options.protocol.length + 2).replace(/\/?(?:\?|#).*$/, '');
+};
+
+exports.wrapResponse = function wrapResponse(res) {
+	var reader = new Readable();
+	reader.statusCode = res.statusCode;
+	reader.headers = res.headers;
+	reader._read = function() {
+		reader.push(res.body);
+		reader.push(null);
+	};
+	
+	return reader;
 };
