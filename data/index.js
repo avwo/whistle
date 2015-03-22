@@ -49,6 +49,11 @@ function getPort(options) {
 	}
 }
 
+function getUIPort(options) {
+	
+	return options.protocol == 'https:' ? config.uisslport : config.uiport;
+}
+
 var RESET_COOKIE_RE = /secure;?|domain=([^;]+);?/ig;
 
 function setWhistleHeaders(res, req, isHttp, isHttps) {
@@ -92,11 +97,12 @@ function setWhistleHeaders(res, req, isHttp, isHttps) {
 
 module.exports = function(req, res, next) {
 	var self = this;
+	var fullUrl = req.fullUrl = util.getFullUrl(req);
 	var timeoutId, clientReq;
 	
 	function setResponseTimeout() {
 		clearResponseTimeout();
-		timeoutId = setTimeout(abort, self.timeout);
+		timeoutId = setTimeout(abort, config.timeout);
 	}
 	
 	function clearResponseTimeout() {
@@ -114,34 +120,34 @@ module.exports = function(req, res, next) {
 	
 	setResponseTimeout();
 	
-	hosts.resolve(req.fullUrl = util.getFullUrl(req), function(err, options) {
+	function handleResolve(err, options) {
 		req.options = options;
 		var request = new EventEmitter();
 		var response = new EventEmitter();
 		
 		req.proxy = {
-				url: req.fullUrl,
+				url: fullUrl,
 				util: util,
 				hosts: hosts,
 				request: request,
 				response: response
 		};
 		
-		var requestUI;
+		var isUIRequest;
 		var port = getPort(options);
 		if (util.isLocalAddress(options.hosts[1])) {
-			if (port == self.port) {
+			if (port == config.port) {
 				res.redirect(302, options.protocol + '//' + options.hostname + ':' 
-						+ (options.protocol == 'https:' ? self.uisslport : self.uiport) + options.path);
+						+ getUIPort(options) + options.path);
 				return;
 			}
 			
-			requestUI = port == self.uiport || port == self.uisslport;
+			isUIRequest = port == config.uiport || port == config.uisslport;
 		}
 		
 		
 		
-		if (!requestUI) {
+		if (!isUIRequest) {
 			self.emit('proxy', req.proxy);
 		}
 		
@@ -216,5 +222,15 @@ module.exports = function(req, res, next) {
 		}
 		
 		next();
-	});
+	}
+	
+	if (req.headers.host == config.localUIHost) {
+		var options = url.parse(fullUrl);
+		options.hosts = ['127.0.0.1', '127.0.0.1'];
+		options.port = getUIPort(options); 
+		options.url = fullUrl;
+		handleResolve(null, options);
+	} else {
+		hosts.resolve(fullUrl, handleResolve);
+	}
 };

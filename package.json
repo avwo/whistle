@@ -1,8 +1,9 @@
 {
   "name": "whistle",
   "description": "web proxy",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "dataDirname": ".whistle data", 
+  "localUIHost": "local.whistlejs.com",
   "whistleSsl": "whistle-ssl",
   "port": 9527,
   "uiport": 9528,
