@@ -139,8 +139,7 @@ module.exports = function(req, res, next) {
 		var port = getPort(options);
 		if (util.isLocalAddress(options.hosts[1])) {
 			if (port == config.port) {
-				res.redirect(302, options.protocol + '//' + options.hostname + ':' 
-						+ getUIPort(options) + options.path);
+				res.redirect(302, options.protocol + '//' + config.localUIHost + options.path);
 				return;
 			}
 			
