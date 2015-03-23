@@ -5,6 +5,10 @@ var os = require('os');
 var Readable = require('stream').Readable;
 var config = require('../package.json');
 
+function noop() {}
+
+exports.noop = noop;
+
 var REG_EXP_RE = /^\/(.+)\/(i)?$/
 
 exports.isRegExp = function isRegExp(regExp) {
@@ -112,10 +116,6 @@ exports.isWebProtocol = function isWebProtocol(protocol) {
 };
 
 
-function noop() {}
-
-exports.noop = noop;
-
 exports.drain = function drain(stream, end) {
 	if (end) {
 		stream._readableState.endEmitted ? end.call(stream) : stream.on('end', end);
@@ -129,9 +129,9 @@ exports.encodeNonAsciiChar = function encodeNonAsciiChar(str) {
 };
 
 exports.getPath = function getPath(url) {
-	url = url.replace(/\/?(?:\?|#).*$/, '');
+	url = url && url.replace(/\/?(?:\?|#).*$/, '') || '';
 	var index = url.indexOf('://');
-	return index > -1? url.substring(index + 3) : url;
+	return index > -1 ? url.substring(index + 3) : url;
 };
 
 exports.wrapResponse = function wrapResponse(res) {
@@ -146,3 +146,12 @@ exports.wrapResponse = function wrapResponse(res) {
 	
 	return reader;
 };
+
+exports.parseJSON = function parseJSON(data) {
+	try {
+		return JSON.parse(data);
+	} catch(e) {}
+	
+	return null;
+}
+

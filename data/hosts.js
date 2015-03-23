@@ -6,12 +6,12 @@ var extend = require('util')._extend;
 
 var rules = [];
 var hosts = [];
-var filters = [];
+var heads = [];
 
 function parse(text) {
 	rules = [];
 	hosts = [];
-	filters = [];
+	heads = [];
 	if (!text || !(text = text.trim())) {
 		return;
 	}
@@ -60,9 +60,9 @@ function parseHost(line) {
 	
 	if (isIP) {
 		hosts.push(line);
-	} else if (/^filter:\/\//.test(matcher)) {
-		filters.push(line);
-	} else {
+	} else if (/^head:\/\//.test(matcher)) {
+		heads.push(line);
+	}else {
 		rules.push(line);
 	}
 }
@@ -184,11 +184,11 @@ function setProtocol(target, source) {
 
 exports.resolveRule = resolveRule;
 
-function resolveFilter(url, data) {
-	return resolveRule(url, data, filters);
+function resolveHead(url, data) {
+	return resolveRule(url, data, heads);
 }
 
-exports.resolveFilter = resolveFilter;
+exports.resolveHead = resolveHead;
 
 function isPathSeparator(ch) {
 	return ch == '/' || ch == '\\';

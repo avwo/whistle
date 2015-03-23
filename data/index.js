@@ -1,16 +1,14 @@
 var util = require('../util/util');
 var hosts = require('./hosts');
+var fs = require('fs');
 var http = require('http');
 var https = require('https');
 var url = require('url');
+var extend = require('util')._extend;
 var EventEmitter = require('events').EventEmitter;
 var Transform = require('stream').Transform;
-var extend = require('util')._extend;
 var transformHttps = require('../https/transform.js');
-var domain = require('domain').create();
 var config = require('../package.json');
-
-domain.on('error', util.noop);
 
 function transform(chunk, encoding, callback) {
 	var data = {
@@ -75,8 +73,8 @@ function setWhistleHeaders(res, req, isHttp, isHttps) {
 		headers['x-' + config.name + '-rule'] = matcher;
 	}
 	
-	if (req.filter && req.filter.path) {
-		headers['x-' + config.name + '-filter'] = req.filter.path;
+	if (req.headPath) {
+		headers['x-' + config.name + '-head'] = req.headPath;
 	}
 	
 	if (matcher || isHttps) {
@@ -110,6 +108,21 @@ function getOptions(fullUrl) {
 	options.hosts = ['127.0.0.1', '127.0.0.1'];
 	options.url = fullUrl;
 	return options;
+}
+
+function parseJSON(url, callback) {
+	if (!url) {
+		callback();
+		return;
+	}
+	fs.readFile(util.getPath(url), {encoding: 'utf8'}, function(err, data) {
+		if (err || !data) {
+			callback(err);
+			return;
+		}
+		
+		callback(null, util.parseJSON(data));
+	});
 }
 
 module.exports = function(req, res, next) {
@@ -196,9 +209,14 @@ module.exports = function(req, res, next) {
 			if (isResponded) {
 				return;
 			}
+			
+			if (res.resHeaders) {
+				extend(_res.headers, res.resHeaders);
+			}
 			setResponseTimeout();
 			bindErrorEvents(_res);
 			isResponded = true;
+			
 			if (_res.headers && _res.headers.location) {
 				//nodejs的url只支持ascii，对非ascii的字符要encodeURIComponent，否则传到浏览器是乱码
 				_res.headers.location = util.toWhistleSsl(req, util.encodeNonAsciiChar(_res.headers.location));
@@ -239,27 +257,29 @@ module.exports = function(req, res, next) {
 		var options = getOptions(fullUrl);
 		options.port = getUIPort(options); 
 		handleResolve(null, options);
-		return;
-	}
-	var filter = hosts.resolveFilter(fullUrl);
-	
-	domain.run(function() {
-		if (filter) {
-			try {
-				filter = require(util.getPath(filter));
-			} catch(e) {
-				filter = null;
+	} else {
+		var headPath = hosts.resolveHead(fullUrl);
+		parseJSON(headPath, function(err, data) {
+			if (data) {
+				req.headPath = headPath;
+				if (data.res) {
+					if (data.res.statusCode != null) {
+						handleResolve(null, getOptions(fullUrl));
+						res.response(util.wrapResponse(data.res));
+						return;
+					}
+					res.resHeaders = data.res;
+				}
+				
+				if (data.req) {
+					extend(req.headers, data.req);
+				}
+			} else {
+				req.headPath = 'error';
 			}
-		}
-		
-		req.filter = filter;
-		if (filter && filter.statusCode != null) {
-			handleResolve(null, getOptions(fullUrl));
 			
-			return;
-		}
-		
-		hosts.resolve(fullUrl, handleResolve);
-	});
+			hosts.resolve(fullUrl, handleResolve);
+		});
+	}
 	
 };
