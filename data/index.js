@@ -5,8 +5,12 @@ var https = require('https');
 var url = require('url');
 var EventEmitter = require('events').EventEmitter;
 var Transform = require('stream').Transform;
+var extend = require('util')._extend;
 var transformHttps = require('../https/transform.js');
+var domain = require('domain').create();
 var config = require('../package.json');
+
+domain.on('error', util.noop);
 
 function transform(chunk, encoding, callback) {
 	var data = {
@@ -69,6 +73,10 @@ function setWhistleHeaders(res, req, isHttp, isHttps) {
 	var matcher = options.rule && options.rule.matcher;
 	if (matcher) {
 		headers['x-' + config.name + '-rule'] = matcher;
+	}
+	
+	if (req.filter && req.filter.path) {
+		headers['x-' + config.name + '-filter'] = req.filter.path;
 	}
 	
 	if (matcher || isHttps) {
@@ -231,7 +239,27 @@ module.exports = function(req, res, next) {
 		var options = getOptions(fullUrl);
 		options.port = getUIPort(options); 
 		handleResolve(null, options);
-	} else {
-		hosts.resolve(fullUrl, handleResolve);
+		return;
 	}
+	var filter = hosts.resolveFilter(fullUrl);
+	
+	domain.run(function() {
+		if (filter) {
+			try {
+				filter = require(util.getPath(filter));
+			} catch(e) {
+				filter = null;
+			}
+		}
+		
+		req.filter = filter;
+		if (filter && filter.statusCode != null) {
+			handleResolve(null, getOptions(fullUrl));
+			
+			return;
+		}
+		
+		hosts.resolve(fullUrl, handleResolve);
+	});
+	
 };

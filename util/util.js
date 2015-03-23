@@ -128,15 +128,17 @@ exports.encodeNonAsciiChar = function encodeNonAsciiChar(str) {
 	return  str ? str.replace(/[^\x00-\x7F]/g, encodeURIComponent) : str;
 };
 
-exports.getPath = function getPath(options) {
-	
-	return options.url.substring(options.protocol.length + 2).replace(/\/?(?:\?|#).*$/, '');
+exports.getPath = function getPath(url) {
+	url = url.replace(/\/?(?:\?|#).*$/, '');
+	var index = url.indexOf('://');
+	return index > -1? url.substring(index + 3) : url;
 };
 
 exports.wrapResponse = function wrapResponse(res) {
 	var reader = new Readable();
 	reader.statusCode = res.statusCode;
-	reader.headers = res.headers;
+	reader.headers = res.headers || {};
+	reader.headers.Server = config.name;
 	reader._read = function() {
 		reader.push(res.body);
 		reader.push(null);
