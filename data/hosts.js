@@ -138,10 +138,11 @@ function resolveHost(_url, callback) {
 
 exports.resolveHost = resolveHost;
 
-function resolveRule(url, data) {
+function resolveRule(url, data, _rules) {
 	data = data || {};
+	_rules = _rules || rules;
 	var _url = url.replace(/(?:\?|#).*$/, '');
-	for (var i = 0, rule; rule = rules[i]; i++) {
+	for (var i = 0, rule; rule = _rules[i]; i++) {
 		var pattern = rule.pattern;
 		if (rule.isRegExp) {
 			if (pattern.test(url)) {
@@ -182,6 +183,12 @@ function setProtocol(target, source) {
 }
 
 exports.resolveRule = resolveRule;
+
+function resolveFilter(url, data) {
+	return resolveRule(url, data, filters);
+}
+
+exports.resolveFilter = resolveFilter;
 
 function isPathSeparator(ch) {
 	return ch == '/' || ch == '\\';
