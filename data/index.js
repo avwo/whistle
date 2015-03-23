@@ -101,6 +101,7 @@ function getOptions(fullUrl) {
 	var options = url.parse(fullUrl);
 	options.hosts = ['127.0.0.1', '127.0.0.1'];
 	options.url = fullUrl;
+	return options;
 }
 
 module.exports = function(req, res, next) {
