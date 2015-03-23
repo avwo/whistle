@@ -262,12 +262,13 @@ module.exports = function(req, res, next) {
 		parseJSON(headPath, function(err, data) {
 			if (data) {
 				req.headPath = headPath;
+				if (data.statusCode != null) {
+					handleResolve(null, getOptions(fullUrl));
+					res.response(util.wrapResponse(data));
+					return;
+				}
+				
 				if (data.res) {
-					if (data.res.statusCode != null) {
-						handleResolve(null, getOptions(fullUrl));
-						res.response(util.wrapResponse(data.res));
-						return;
-					}
 					res.resHeaders = data.res;
 				}
 				
