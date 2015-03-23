@@ -117,7 +117,8 @@ var PATH_BOOTSTRAP = path.join(__dirname, 'bootstrap.js'),
 
 				child.unref();
 
-				console.log('[i] ' + config.name + ' started. port: ' + (options.port || config.port));
+				console.log('[i] ' + config.name + ' started. port: ' + (options.port || config.port)
+						+ '\r\nvisit http://' + config.localUIHost + '/ to get started');
 			}
 
 			callback && callback(options);
