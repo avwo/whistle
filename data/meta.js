@@ -109,7 +109,7 @@ function getName(name) {
 	}
 	
 	name = name.substring(0, MAX_LENGTH);
-	if (hostsList.length > 20 && hostsList.indexOf(name) == -1) {
+	if (hostsList.length > 36 && hostsList.indexOf(name) == -1) {
 		return;
 	}
 	
