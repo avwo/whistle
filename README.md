@@ -72,7 +72,7 @@ PS：每次重启系统后需要手动启动**whistle start**，或者切换代�
 
 配置完代理，打开 [http://local.whistlejs.com/](http://local.whistlejs.com/)（如果不能访问，请安装最新版本的whistle： `npm install -g whistle` ，并重启 `whistle restart` ）或[http://127.0.0.1:9527/](http://127.0.0.1:9527/)（9527为对应的代理端口号）可以开始使用whistle。
 
-###基本功能（以windows为例，对mac、linux等其它系统同理）###
+###基本功能（以windows为例，mac、linux等其它系统同理）###
 
 1. `#` 为注释
 
