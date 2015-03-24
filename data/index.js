@@ -275,7 +275,7 @@ module.exports = function(req, res, next) {
 				if (data.req) {
 					extend(req.headers, data.req);
 				}
-			} else {
+			} else if (headPath) {
 				req.headPath = 'error';
 			}
 			
