@@ -188,7 +188,7 @@ module.exports = function(req, res, next) {
 			request.emit('end');
 		});
 		
-		res.on('end', function() {
+		res.on('finish', function() {
 			clearResponseTimeout();
 			response.emit('end');
 		});
