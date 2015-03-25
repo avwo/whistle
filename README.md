@@ -1,4 +1,4 @@
-whistle是用nodejs实现的跨平台web调试工具，支持windows、mac、linux等安装了nodejs的操作系统，主要有四种功能：
+whistle是用nodejs实现的跨平台web调试工具，支持windows、mac、linux等安装了nodejs的操作系统，主要有四种功能（每个http请求可以同时设置下面四个功能）：
 
 1. http请求自动转成https请求
 2. 配置hosts（没有dns缓存，支持正则匹配）
