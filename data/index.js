@@ -188,6 +188,8 @@ module.exports = function(req, res, next) {
 			request.emit('end');
 		});
 		
+		req.on('close', abort);
+		
 		res.on('finish', function() {
 			clearResponseTimeout();
 			response.emit('end');
