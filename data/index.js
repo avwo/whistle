@@ -129,10 +129,11 @@ module.exports = function(req, res, next) {
 	var self = this;
 	var fullUrl = req.fullUrl = util.getFullUrl(req);
 	var timeoutId, clientReq;
+	var timeout = config.timeout / 5; //用户关闭网页代理无法感知，只能设置超时，默认为3.2s
 	
 	function setResponseTimeout() {
 		clearResponseTimeout();
-		timeoutId = setTimeout(abort, config.timeout);
+		timeoutId = setTimeout(abort, timeout);
 	}
 	
 	function clearResponseTimeout() {
@@ -185,6 +186,8 @@ module.exports = function(req, res, next) {
 		bindErrorEvents(res);
 		
 		req.on('end', function() {
+			timeout = config.timeout;
+			setResponseTimeout();
 			request.emit('end');
 		});
 		
@@ -195,7 +198,7 @@ module.exports = function(req, res, next) {
 		
 		req.request = function (options) {
 			var _req = (options.protocol == 'https:' ? https : http).request(options, res.response);
-			
+			timeout = config.timeout;
 			setResponseTimeout();
 			clientReq = _req;
 			bindErrorEvents(_req);
@@ -276,7 +279,7 @@ module.exports = function(req, res, next) {
 					extend(req.headers, data.req);
 				}
 			} else if (headPath) {
-				req.headPath = 'error';
+				req.headPath = 'error(' + (err ? err.message : 'SyntaxError') + ')';
 			}
 			
 			hosts.resolve(fullUrl, handleResolve);
