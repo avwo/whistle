@@ -128,7 +128,10 @@ function parseJSON(url, callback) {
 module.exports = function(req, res, next) {
 	var self = this;
 	var fullUrl = req.fullUrl = util.getFullUrl(req);
+	var request = new EventEmitter();
+	var response = new EventEmitter();
 	var timeoutId, clientReq;
+	var isResponded, aborted;
 	
 	function setResponseTimeout() {
 		clearResponseTimeout();
@@ -140,21 +143,30 @@ module.exports = function(req, res, next) {
 		timeoutId = null;
 	}
 	
-	function abort() {
+	function abort(err) {
+		if (aborted) {
+			return;
+		}
+		aborted = true;
 		clearResponseTimeout();
 		if (clientReq) {
 			clientReq.abort();
 		}
 		res.destroy();
+		
+		if (isResponded) {
+			if (EventEmitter.listenerCount(response, 'error') > 0) {
+				response.emit('error', err);
+			}
+		} else if (EventEmitter.listenerCount(request, 'error') > 0) {
+			request.emit('error', err);
+		}
 	}
 	
 	setResponseTimeout();
 	
 	function handleResolve(err, options) {
 		req.options = options;
-		var request = new EventEmitter();
-		var response = new EventEmitter();
-		
 		req.proxy = {
 				url: fullUrl,
 				util: util,
@@ -205,7 +217,6 @@ module.exports = function(req, res, next) {
 			req.pipe(getTransform(request)).pipe(_req);
 		};
 		
-		var isResponded;
 		res.response = function(_res) {
 			if (isResponded) {
 				return;
@@ -239,16 +250,7 @@ module.exports = function(req, res, next) {
 		};
 		
 		function bindErrorEvents(req) {
-			req.on('error', function(err) {
-				abort();
-				if (isResponded) {
-					if (EventEmitter.listenerCount(response, 'error') > 0) {
-						response.emit('error', err);
-					}
-				} else if (EventEmitter.listenerCount(request, 'error') > 0) {
-					request.emit('error', err);
-				}
-			});
+			req.on('error', abort);
 		}
 		
 		err ? req.emit('error', err) : next();
