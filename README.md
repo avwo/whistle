@@ -1,4 +1,4 @@
-whistle是用nodejs实现的跨平台web调试工具，支持windows、mac、linux等安装了nodejs的操作系统，主要有四种功能（每个http请求可以同时设置下面四个功能）：
+whistle是用nodejs实现的跨平台web调试工具，支持windows、mac、linux等安装了nodejs的操作系统，主要有四种功能（**每个http请求可以同时设置下面四个功能**）：
 
 1. http请求自动转成https请求
 2. 配置hosts（没有dns缓存，支持正则匹配）
@@ -83,28 +83,34 @@ PS: **设置完代理后，代理会把请求服务器的ip给屏蔽，可以在
 
 	在https请求的host前面加 `whistle-ssl.` 即可用http来访问https的网站，如：直接在浏览器访问 [http://whistle-ssl.www.baidu.com/](http://whistle-ssl.www.baidu.com/)，等价于访问 [https://www.baidu.com/](http://www.baidu.com/)
 
-	PS：如果服务器需要验证客户端的证书，由于http无法把客户端证书自动带上，所以这种情况下无法将http转成https； Firefox和chrome有一个特性也可能导致无法用这种方式访问，如果github，遇到这种情况可以用IE来访问，想了解原因可以参考： [http://blog.csdn.net/lk188/article/details/7221767](http://blog.csdn.net/lk188/article/details/7221767)
+	PS：如果服务器需要验证客户端的证书，由于http无法把客户端证书自动带上，所以这种情况下无法将http转成https； Firefox和chrome有一个特性也可能导致无法用这种方式访问，如github，遇到这种情况可以用IE来访问，想了解原因可以参考： [http://blog.csdn.net/lk188/article/details/7221767](http://blog.csdn.net/lk188/article/details/7221767)
 
 3. Hosts配置
 
 
 	- 传统的hosts配置
 		
-			#http，https请求都生效(下面两种方式等价)
+			#http，https请求都生效(下面配置方式等价)
 			127.0.0.1         www.exammple.com
 			www.exammple.com  127.0.0.1
+			127.0.0.1         www.exammple.com/...
+			www.exammple.com/...  127.0.0.1
 	
 		PS: 不支持：127.0.0.1 localhost www.test.com www.example.com这种合并方式
 
 	- 加协议限制
 
-			#只对http请求生效(下面两种方式等价)
+			#只对http请求生效(下面配置方式等价)
 			127.0.0.1  http://www.exammple.com
 			http://www.exammple.com/  127.0.0.1
+			127.0.0.1  http://www.exammple.com/...
+			http://www.exammple.com/...  127.0.0.1
 
 			#只对https请求生效(下面两种方式等价)
 			127.0.0.1  https://www.exammple.com
 			https://www.exammple.com  127.0.0.1
+			127.0.0.1  https://www.exammple.com/...
+			https://www.exammple.com/...  127.0.0.1
 
 	- 正则匹配
 
@@ -121,6 +127,11 @@ PS: **设置完代理后，代理会把请求服务器的ip给屏蔽，可以在
 			#下面两种方式等价，也可以用完整url匹配单个文件，且目录后面的斜杠可以省略
 			www.example.com head://D:\test
 			head://D:\test\ www.example.com
+
+			#也支持限定某段url
+			www.example.com/abc head://D:\test
+			head://D:\test\ www.example.com/xxx
+
 			#mac、linux: www.example.com head:///xxx
 			
 		e.g. 文件路径：D:\test\index.html（头部字段名称都为小写）
@@ -171,6 +182,9 @@ PS: **设置完代理后，代理会把请求服务器的ip给屏蔽，可以在
 			#以file协议为例，其它类似（目录后面的斜杠可以省略，规则左右位置可以对调）
 			www.example.com  	file://D:\test\
 			file://D:\test\     www.example.com/
+			
+			www.example.com/...  	file://D:\test\
+			file://D:\test\     www.example.com/...
 
 			www.example.com/xxx/yy.html  	file://D:\test\abc.html
 			file://D:\test\abc.html     www.example.com/xxx/yy.html
@@ -187,6 +201,7 @@ PS: **设置完代理后，代理会把请求服务器的ip给屏蔽，可以在
 
 			#可以在whistle配置页面配置后，打开浏览器试试效果
 			www.test.com sports.sina.com.cn/g/laliga/
+			www.test.com/... sports.sina.com.cn/g/laliga/
 
 			#访问http://www.example.com/g/laliga/
 			www.example.com sports.sina.com.cn/
@@ -201,8 +216,9 @@ PS: **设置完代理后，代理会把请求服务器的ip给屏蔽，可以在
 		在平时开发测试过程中，由于每台机器只有一个80端口，所以每个应用都会有一个自定义的端口号，为方便访问调试，需要共享80端口
 
 			www.test1.com  www.test1.com:1080
-			www.test2.com  www.test2.com:1080
-			www.test3.com  www.test2.com:1080
+			www.test2.com/...  www.test2.com:2080/xxx
+			www.test3.com  www.test2.com:3080/xxx
+			www.test4.com/...  www.test2.com:4080
 
 	-正则匹配
 
