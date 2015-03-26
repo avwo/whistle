@@ -4,6 +4,12 @@ var url = require('url');
 module.exports = function(req, res, next) {
 	var options = req.options;
 	var protocol = options && options.protocol;
+	
+	if (protocol == 'tianma-debug:' || protocol == 'stianma-debug:') {
+		req.headers[config.tianmaDebug] = 'debug';
+		protocol = protocol.split('-')[0] + ':';
+	}
+	
 	if (protocol == 'tianma:' || protocol == 'stianma:') {
 		req.headers[config.tianmaRoot] = encodeURIComponent(options.rule.matcher.substring(protocol.length + 2));
 		req.options = url.parse(req.fullUrl);

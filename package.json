@@ -1,7 +1,7 @@
 {
   "name": "whistle",
   "description": "web proxy",
-  "version": "0.0.27",
+  "version": "0.0.28",
   "dataDirname": ".whistle data", 
   "localUIHost": "local.whistlejs.com",
   "whistleSsl": "whistle-ssl",
@@ -12,6 +12,7 @@
   "tianmasslport": 19529,
   "timeout": 16000,
   "tianmaRoot": "x-tianma-root",
+  "tianmaDebug": "x-tianma-debug",
   "webui": "whistleui",
   "author": "avenwu <avenwu@vip.qq.com>",
   "contributors": [],

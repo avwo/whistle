@@ -208,13 +208,12 @@ module.exports = function(req, res, next) {
 		});
 		
 		req.request = function (options) {
-			var _req = (options.protocol == 'https:' ? https : http).request(options, res.response);
+			clientReq = (options.protocol == 'https:' ? https : http).request(options, res.response);
 			setResponseTimeout();
-			clientReq = _req;
-			bindErrorEvents(_req);
+			bindErrorEvents(clientReq);
 			request._setResponseTimeout = setResponseTimeout;
 			request._clearResponseTimeout = clearResponseTimeout;
-			req.pipe(getTransform(request)).pipe(_req);
+			req.pipe(getTransform(request)).pipe(clientReq);
 		};
 		
 		res.response = function(_res) {
