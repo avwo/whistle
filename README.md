@@ -180,11 +180,11 @@ PS: **设置完代理后，代理会把请求服务器的ip给屏蔽，可以在
 		支持三种协议：file://、xfile://、xsfile://，支持目录匹配，也可以用完整url匹配单个文件，或者正则匹配。其中，三者的区别第一种如果找不到文件则会输出错误信息，第二种如果找不到文件则会自动请求网络的数据，第三种与第二种的区别是请求会以https的形式发出
 
 			#以file协议为例，其它类似（目录后面的斜杠可以省略，规则左右位置可以对调）
-			www.example.com  	file://D:\test\
+			www.example.com  	file://D:\test
 			file://D:\test\     www.example.com/
 			
 			www.example.com/...  	file://D:\test\
-			file://D:\test\     www.example.com/...
+			file://D:\test     www.example.com/...
 
 			www.example.com/xxx/yy.html  	file://D:\test\abc.html
 			file://D:\test\abc.html     www.example.com/xxx/yy.html
@@ -238,4 +238,4 @@ PS: **设置完代理后，代理会把请求服务器的ip给屏蔽，可以在
 
 3. 通过监听事件获取请求数据
 
-	启动UI插件的时候，whistle会传个ui一个proxy对象，每次有请求通过都会触发proxy的proxy事件，并传递给{request: request, response: response}对象，通过监听reques对象的request、data，error、end（或response的response、data，error、end），可以获取请求头、请求数据，响应头、响应数据，及请求出错信息等。
+	启动UI插件的时候，whistle会传个ui一个proxy对象，每次有请求通过都会触发proxy的proxy事件，并传递给{request: request, response: response}对象，通过监听reques对象的request、data，error、end（或response的response、data，error、end）事件，可以获取请求头、请求数据，响应头、响应数据，及请求出错信息等。
