@@ -151,10 +151,10 @@ function resolveRule(url, data, _rules) {
 					regExp['$' + i] = RegExp['$' + i] || '';
 				}
 				extend(data, rule);
-				return rule.matcher.replace(/(^|.)?(\$[1-9])/g, 
+				return setProtocol(rule.matcher.replace(/(^|.)?(\$[1-9])/g, 
 						function(matched, $1, $2) {
 					return $1 == '\\' ? $2 : ($1 || '') + regExp[$2];
-				});
+				}), url);
 			}
 		} else {
 			pattern = setProtocol(pattern, url);
