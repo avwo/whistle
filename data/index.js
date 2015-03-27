@@ -61,9 +61,9 @@ function getUIPort(options) {
 var RESET_COOKIE_RE = /secure;?|domain=([^;]+);?/ig;
 
 function setWhistleHeaders(res, req, isHttp, isHttps) {
-	var headers = res.headers;
+	var headers = res.headers = res.headers || {};
 	var options = req.options;
-	var host = options.host.split(':')[0];
+	var host = options.host ? options.host.split(':')[0] : '';
 	options.host = host + (options.port ? ':' + options.port : '');
 	
 	headers['x-remote-ip'] = options.hosts[1] || '127.0.0.1';
@@ -91,7 +91,7 @@ function setWhistleHeaders(res, req, isHttp, isHttps) {
 		return;
 	}
 	
-	var host = options.host.split('.');
+	host = host.split('.');
 	var len = host.length;
 	if (host.length > 2) {
 		host = host.slice(len - 2);

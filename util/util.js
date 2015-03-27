@@ -48,7 +48,7 @@ function _getProtocol(isHttps) {
 }
 
 function hasProtocol(url) {
-	return url ? url.indexOf('://') > 0 : false;
+	return /^[a-z0-9.+-]+:\/\//i.test(url);
 }
 
 function getProtocol(url) {
