@@ -99,8 +99,11 @@ PS: **设置完代理后，代理会把请求服务器的ip给屏蔽，可以在
 			www.exammple.com  127.0.0.1
 			127.0.0.1         www.exammple.com/...
 			www.exammple.com/...  127.0.0.1
+
+			#也支持
+			127.0.0.1 localhost www.test.com www.example.com
 	
-		PS: 不支持：127.0.0.1 localhost www.test.com www.example.com这种合并方式
+		
 
 	- 加协议限制
 

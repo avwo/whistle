@@ -16,14 +16,27 @@ function parse(text) {
 		return;
 	}
 	
-	text.split(/\n|\r\n|\r/g).forEach(parseHost);
+	text.split(/\n|\r\n|\r/g).forEach(pareLine);
 }
 
-function parseHost(line) {
-	line = line.replace(/#.*$/, '').trim().split(/\s+/);
-	var pattern = line[0] && line[0].trim();
-	var matcher = line[1] && line[1].trim();
+function pareLine(line) {
+	line = line.replace(/#.*$/, '').trim();
+	if (!line) {
+		return;
+	}
 	
+	line = line.split(/\s+/);
+	var pattern = line[0];
+	if (net.isIP(pattern)) {
+		line.slice(1).forEach(function(matcher) {
+			parseRule(pattern, matcher);
+		});
+	} else {
+		parseRule(pattern, line[1]);
+	}
+}
+
+function parseRule(pattern, matcher) {
 	if (!pattern || !matcher) {
 		return;
 	}
@@ -51,7 +64,7 @@ function parseHost(line) {
 		return;
 	}
 	
-	line = {
+	var rule = {
 			isRegExp: isRegExp,
 			protocol: protocol,
 			pattern: pattern,
@@ -59,11 +72,11 @@ function parseHost(line) {
 		};
 	
 	if (isIP) {
-		hosts.push(line);
+		hosts.push(rule);
 	} else if (/^head:\/\//.test(matcher)) {
-		heads.push(line);
+		heads.push(rule);
 	}else {
-		rules.push(line);
+		rules.push(rule);
 	}
 }
 
