@@ -99,9 +99,6 @@ PS: **设置完代理后，代理会把请求服务器的ip给屏蔽，可以在
 			www.exammple.com  127.0.0.1
 			127.0.0.1         www.exammple.com/...
 			www.exammple.com/...  127.0.0.1
-
-			#也支持
-			127.0.0.1 localhost www.test.com www.example.com
 	
 		
 
@@ -118,6 +115,10 @@ PS: **设置完代理后，代理会把请求服务器的ip给屏蔽，可以在
 			https://www.exammple.com  127.0.0.1
 			127.0.0.1  https://www.exammple.com/...
 			https://www.exammple.com/...  127.0.0.1
+
+	- 支持合并同类项
+			
+			127.0.0.1 localhost www.test.com www.example.com
 
 	- 正则匹配
 
@@ -169,6 +170,11 @@ PS: **设置完代理后，代理会把请求服务器的ip给屏蔽，可以在
 		http://www.example.com/index.html（或http://whistle-ssl.www.example.com/index.html）将返回500的错误
 
 	- 加协议限制（可以参考hosts配置）
+
+
+	- 支持合并同类项
+			
+			head://D:\test\     www.example.com/ www.example2.com/
 		
 
 	- 正则匹配
@@ -218,6 +224,13 @@ PS: **设置完代理后，代理会把请求服务器的ip给屏蔽，可以在
 			#或
 			http://www.baidu.com    https://www.baidu.com/
 
+	- 支持合并同类项
+			
+			file://D:\test\     www.example.com/ www.example2.com/
+			#xfile://D:\test\     www.example.com/ www.example2.com/
+			#dust://D:\test\     www.example.com/ www.example2.com/
+			#xdust://D:\test\     www.example.com/ www.example2.com/
+
 	- 端口映射
 
 		在平时开发测试过程中，由于每台机器只有一个80端口，所以每个应用都会有一个自定义的端口号，为方便访问调试，需要共享80端口
@@ -227,9 +240,11 @@ PS: **设置完代理后，代理会把请求服务器的ip给屏蔽，可以在
 			www.test3.com  www.test2.com:3080/xxx
 			www.test4.com/...  www.test2.com:4080
 
+
 	- 正则匹配
 
 		上述各种配置都支持正则匹配，且可以通过子匹配替换，具体实现与上面的例子类似，不再举例。
+
 
 	
 ###功能扩展###

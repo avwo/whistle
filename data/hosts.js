@@ -27,10 +27,12 @@ function pareLine(line) {
 	
 	line = line.split(/\s+/);
 	var pattern = line[0];
-	if (net.isIP(pattern)) {
+	if (net.isIP(pattern) || (util.hasProtocol(pattern) && !/^https?:\/\//.test(pattern))) {
 		line.slice(1).forEach(function(matcher) {
-			parseRule(pattern, matcher);
+			parseRule(matcher, pattern);
 		});
+	} else if (!util.isRegExp(pattern) && util.isRegExp(line[1])) {
+		parseRule(line[1], pattern);
 	} else {
 		parseRule(pattern, line[1]);
 	}
@@ -39,12 +41,6 @@ function pareLine(line) {
 function parseRule(pattern, matcher) {
 	if (!pattern || !matcher) {
 		return;
-	}
-	
-	if (net.isIP(pattern) || util.isRegExp(matcher) || (util.hasProtocol(pattern) && !/^https?:\/\//.test(pattern))) {
-		var tmp = pattern;
-		pattern = matcher;
-		matcher = tmp;
 	}
 	
 	var isIP = net.isIP(matcher);
