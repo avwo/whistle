@@ -188,34 +188,38 @@ var CHARSET_RE = /charset=([\w-]+)/i;
 exports.transform = function(res, out, transform, cb) {
 	var headers = res.headers || {};
 	var type = getContentType(headers);
+	var cb = cb || noop;
+	var emitFalse = function() {
+		cb(false);
+		res.pipe(out);
+		return false;
+	};
 	
 	if (!transform || !type || type == 'IMG') {
-		cb && cb(false);
-		return false;
+		return emitFalse();
 	}
 	
-	var cacheData, charset;
+	var charset = getCharset(headers['content-type']);
 	
-	if (CHARSET_RE.test(headers['content-type'])) {
-		charset = RegExp.$1;
-		if (!iconv.encodingExists(charset)) {
-			return res.pipe(out);
-		}
-		
-		
+	if (charset === null) {
+		return emitFalse();
 	}
 	
-	function transformText(charset) {
-		
+	if (charset) {
+		return transformUnzip(res, out, transform, charset);
 	}
+	
+	resolveCharset(res, function (passThrough, charset) {
+		charset ? transformUnzip(passThrough, out, transform, charset) : emitFalse();
+	});
 	
 	return out;
 };
 
-function transformUnzip(res, out, transform) {
+function transformUnzip(res, out, transform, charset) {
 	var unzip, zip;
 	var contentEncoding = res.headers && res.headers['content-encoding'];
-	switch (contentEncoding) {
+	switch (contentEncoding && contentEncoding.toLowerCase()) {
 	    case 'gzip':
 	    	unzip = zlib.createGunzip();
 	    	zip = zlib.createGzip();
@@ -227,12 +231,14 @@ function transformUnzip(res, out, transform) {
 	}
 	
 	if (contentEncoding && !unzip || !transform) {
+		res.pipe(out);
 		return false;
 	}
 	
+	var _emitError = emitError.bind(out);
 	if (unzip) {
-		res = res.pipe(unzip).on('error', emitError.bind(out));
-		zip.on('error', emitError.bind(out)).pipe(out);
+		res = res.pipe(unzip).on('error', _emitError);
+		zip.on('error', _emitError).pipe(out);
 		out = zip;
 	}
 	
@@ -244,15 +250,64 @@ function transformUnzip(res, out, transform) {
 		}
 	};
 	
+	if (iconv.encodingExists(charset)) {
+		res = res.pipe(iconv.decodeStream(charset)).on('error', _emitError);
+		var _out = iconv.encodeStream(charset).on('error', _emitError);
+		_out.pipe(out);
+		out = _out;
+	}
+	
 	res.on('data', function(data) {
-		transform(data, afterTransform);
+		transform(data, charset, afterTransform);
 	}).on('end', function() {
 		ended = true;
-		transform(null, afterTransform);
+		transform(null, charset, afterTransform);
 	});
 	
 	return true;
 }
+
+function resolveCharset(stream, cb) {
+	var cacheData, done;
+	var passThrough = new PassThrough();
+	
+	function execCb() {
+		if (!done) {
+			done = true;
+			cb(passThrough, getCharset(cacheData + ''));
+		}
+		
+	}
+	
+	stream.on('data', function(data) {
+		passThrough.push(data);
+		cacheData = cacheData ? Buffer.concat([cacheData, data]) : data;
+		if (!charset && cacheData.length > 1024) {
+			execCb();
+		}
+		
+	}).on('end', function() {
+		passThrough.push(null);
+		execCb();
+	});
+	
+}
+
+exports.resolveCharset = resolveCharset;
+
+function getCharset(str) {
+	var charset;
+	if (CHARSET_RE.test(str)) {
+		charset = RegExp.$1;
+		if (!iconv.encodingExists(charset)) {
+			charset = null;
+		}
+	}
+	
+	return charset;
+}
+
+exports.getCharset = getCharset;
 
 function emitError(err) {
 	this.emit('error', err);

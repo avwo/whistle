@@ -10,7 +10,7 @@
   "uisslport": 9529,
   "tianmaport": 19528,
   "tianmasslport": 19529,
-  "timeout": 16000,
+  "timeout": 24000,
   "tianmaRoot": "x-tianma-root",
   "tianmaDebug": "x-tianma-debug",
   "webui": "whistleui",
