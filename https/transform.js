@@ -46,9 +46,7 @@ function transform(headers, res) {
 		} else {
 			rest = data;
 		}
-	});
-	
-	res.on('end', function() {
+	}).on('end', function() {
 		stream.end(rest, charset);
 	});
 	

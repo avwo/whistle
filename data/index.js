@@ -4,9 +4,11 @@ var fs = require('fs');
 var http = require('http');
 var https = require('https');
 var url = require('url');
+var zlib = require('zlib');
 var extend = require('util')._extend;
 var EventEmitter = require('events').EventEmitter;
 var Transform = require('stream').Transform;
+var PassThrough = require('stream').PassThrough;
 var transformHttps = require('../https/transform.js');
 var config = require('../package.json');
 
@@ -60,8 +62,7 @@ function getUIPort(options) {
 
 var RESET_COOKIE_RE = /secure;?|domain=([^;]+);?/ig;
 
-function setWhistleHeaders(res, req, isHttp, isHttps) {
-	var headers = res.headers = res.headers || {};
+function setWhistleHeaders(headers, req, isHttp, isHttps) {
 	var options = req.options;
 	var host = options.host ? options.host.split(':')[0] : '';
 	options.host = host + (options.port ? ':' + options.port : '');
@@ -221,31 +222,30 @@ module.exports = function(req, res, next) {
 				return;
 			}
 			
-			if (res.resHeaders) {
-				extend(_res.headers, res.resHeaders);
-			}
+			var headers = _res.headers || {};
+			var statusCode = _res.statusCode || 0;
+			extend(headers, res.resHeaders);
 			setResponseTimeout();
 			bindErrorEvents(_res);
 			isResponded = true;
 			
-			if (_res.headers && _res.headers.location) {
+			if (headers.location) {
 				//nodejs的url只支持ascii，对非ascii的字符要encodeURIComponent，否则传到浏览器是乱码
-				_res.headers.location = util.toWhistleSsl(req, util.encodeNonAsciiChar(_res.headers.location));
+				headers.location = util.toWhistleSsl(req, util.encodeNonAsciiChar(headers.location));
 			}
 			
-			setWhistleHeaders(_res, req, util.isWebProtocol(req.options.protocol), req.isHttps);
+			setWhistleHeaders(headers, req, util.isWebProtocol(req.options.protocol), req.isHttps);
 			response.emit('response', _res);
-			res.writeHead(_res.statusCode || 0, _res.headers);
 			response._setResponseTimeout = setResponseTimeout;
 			response._clearResponseTimeout = clearResponseTimeout;
-			
-			var headers = _res.headers;
 			_res = _res.pipe(getTransform(response));
+			
 			if (req.isHttps) {
-				transformHttps(headers, _res).pipe(res);
-			} else {
-				_res.pipe(res);
+				_res = transformHttps(headers, _res);
 			}
+			
+			res.writeHead(statusCode, headers);
+			_res.pipe(res);
 		};
 		
 		function bindErrorEvents(req) {
@@ -270,13 +270,9 @@ module.exports = function(req, res, next) {
 					return;
 				}
 				
-				if (data.res) {
-					res.resHeaders = data.res;
-				}
+				res.resHeaders = data.res;
+				extend(req.headers, data.req);
 				
-				if (data.req) {
-					extend(req.headers, data.req);
-				}
 			} else if (headPath) {
 				req.headPath = 'error(' + (err ? err.message : 'SyntaxError') + ')';
 			}

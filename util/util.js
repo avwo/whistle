@@ -2,7 +2,9 @@ var net = require('net');
 var url = require('url');
 var path = require('path');
 var os = require('os');
-var Readable = require('stream').Readable;
+var PassThrough = require('stream').PassThrough;
+var iconv = require('iconv-lite');
+var zlib = require('zlib');
 var config = require('../package.json');
 
 function noop() {}
@@ -135,16 +137,12 @@ exports.getPath = function getPath(url) {
 };
 
 exports.wrapResponse = function wrapResponse(res) {
-	var reader = new Readable();
-	reader.statusCode = res.statusCode;
-	reader.headers = res.headers || {};
-	reader.headers.Server = config.name;
-	reader._read = function() {
-		reader.push(res.body);
-		reader.push(null);
-	};
-	
-	return reader;
+	var passThrough = new PassThrough();
+	passThrough.statusCode = res.statusCode;
+	passThrough.headers = res.headers || {};
+	passThrough.headers.Server = config.name;
+	passThrough.push(res.body == null ? null : String(res.body));
+	return passThrough;
 };
 
 exports.parseJSON = function parseJSON(data) {
@@ -154,4 +152,111 @@ exports.parseJSON = function parseJSON(data) {
 	
 	return null;
 }
+
+function getContentType(contentType) {
+	if (contentType && typeof (contentType = contentType['content-type'] ||
+			contentType.contentType || contentType) == 'string') {
+		
+		contentType = contentType.toLowerCase();
+		if (contentType.indexOf('javascript') >= 0) {
+	        return 'JS';
+	    }
+		
+		if (contentType.indexOf('css') >= 0) {
+	        return 'CSS';
+	    }
+		
+		if (contentType.indexOf('html') >= 0) {
+	        return 'HTML';
+	    }
+		
+		if (contentType.indexOf('json') >= 0) {
+	        return 'JSON';
+	    }
+		
+		if (contentType.indexOf('image') >= 0) {
+	        return 'IMG';
+	    } 
+	}
+	
+	return '';
+}
+
+exports.getContentType = getContentType;
+
+var CHARSET_RE = /charset=([\w-]+)/i;
+exports.transform = function(res, out, transform, cb) {
+	var headers = res.headers || {};
+	var type = getContentType(headers);
+	
+	if (!transform || !type || type == 'IMG') {
+		cb && cb(false);
+		return false;
+	}
+	
+	var cacheData, charset;
+	
+	if (CHARSET_RE.test(headers['content-type'])) {
+		charset = RegExp.$1;
+		if (!iconv.encodingExists(charset)) {
+			return res.pipe(out);
+		}
+		
+		
+	}
+	
+	function transformText(charset) {
+		
+	}
+	
+	return out;
+};
+
+function transformUnzip(res, out, transform) {
+	var unzip, zip;
+	var contentEncoding = res.headers && res.headers['content-encoding'];
+	switch (contentEncoding) {
+	    case 'gzip':
+	    	unzip = zlib.createGunzip();
+	    	zip = zlib.createGzip();
+	      break;
+	    case 'deflate':
+	    	unzip = zlib.createInflate();
+	    	zip = zlib.createDeflate();
+	      break;
+	}
+	
+	if (contentEncoding && !unzip || !transform) {
+		return false;
+	}
+	
+	if (unzip) {
+		res = res.pipe(unzip).on('error', emitError.bind(out));
+		zip.on('error', emitError.bind(out)).pipe(out);
+		out = zip;
+	}
+	
+	var ended;
+	var afterTransform = function(data) {
+		out.write(data);
+		if (ended) {
+			out.end();
+		}
+	};
+	
+	res.on('data', function(data) {
+		transform(data, afterTransform);
+	}).on('end', function() {
+		ended = true;
+		transform(null, afterTransform);
+	});
+	
+	return true;
+}
+
+function emitError(err) {
+	this.emit('error', err);
+}
+
+
 
