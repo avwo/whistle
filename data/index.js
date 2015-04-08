@@ -4,7 +4,6 @@ var fs = require('fs');
 var http = require('http');
 var https = require('https');
 var url = require('url');
-var zlib = require('zlib');
 var extend = require('util')._extend;
 var EventEmitter = require('events').EventEmitter;
 var Transform = require('stream').Transform;

@@ -189,9 +189,9 @@ exports.transform = function(res, out, transform, cb) {
 	var headers = res.headers || {};
 	var type = getContentType(headers);
 	var cb = cb || noop;
-	var emitFalse = function() {
+	var emitFalse = function(passThrough) {
 		cb(false);
-		res.pipe(out);
+		(passThrough || res).pipe(out);
 		return false;
 	};
 	
@@ -210,7 +210,7 @@ exports.transform = function(res, out, transform, cb) {
 	}
 	
 	resolveCharset(res, function (passThrough, charset) {
-		charset ? transformUnzip(passThrough, out, transform, charset) : emitFalse();
+		charset ? transformUnzip(passThrough, out, transform, charset) : emitFalse(passThrough);
 	});
 	
 	return out;
@@ -282,7 +282,7 @@ function resolveCharset(stream, cb) {
 	stream.on('data', function(data) {
 		passThrough.push(data);
 		cacheData = cacheData ? Buffer.concat([cacheData, data]) : data;
-		if (!charset && cacheData.length > 1024) {
+		if (!done && cacheData.length > 1024) {
 			execCb();
 		}
 		
