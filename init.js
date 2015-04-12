@@ -1,6 +1,6 @@
 var path = require('path');
 var fs = require('fs');
-var proxy = require('./lib/proxy');
+var proxy = require('./lib');
 var util = require('./util');
 var config = util.config;
 var argvs = util.argvs;
