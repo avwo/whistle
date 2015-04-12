@@ -1,4 +1,4 @@
-var util = require('../util/util');
+var util = require('../util');
 var hosts = require('./hosts');
 var fs = require('fs');
 var http = require('http');
