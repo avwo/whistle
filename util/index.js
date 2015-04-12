@@ -10,6 +10,7 @@ var PipeStream = require('pipestream');
 var config = require('../package.json');
 
 exports.LOCAL_DATA_PATH = path.join(__dirname, '../../' + config.dataDirname);
+exports.config = config;
 
 function noop() {}
 

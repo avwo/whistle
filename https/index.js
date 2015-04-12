@@ -1,4 +1,4 @@
-var HTTPS_FLAG = require('../package.json').whistleSsl + '.';
+var HTTPS_FLAG = require('../util').config.whistleSsl + '.';
 var HTTPS_FLAG_LEN = HTTPS_FLAG.length;
 
 module.exports = function(req, res, next) {

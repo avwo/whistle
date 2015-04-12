@@ -3,12 +3,11 @@ var cp = require('child_process'),
 	path = require('path'),
 	util = require('util'),
 	argvs = require('../data/argvs'),
-	config = require('../package.json'),
-	meta = require('../data/meta');
+	config = require('../util').config;
 
 var PATH_BOOTSTRAP = path.join(__dirname, 'bootstrap.js'),
 	START_PATH = path.join(__dirname, '../init.js'),
-	RUNNING_PATH = path.join(meta.dataPath, '.running'),
+	RUNNING_PATH = path.join(require('../util').LOCAL_DATA_PATH, '.running'),
 
 	/**
 	 * Check whether a node process is running.

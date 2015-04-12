@@ -1,7 +1,7 @@
 var iconv = require('iconv-lite');
 var zlib = require('zlib');
 var WHISTLE_SSL_RE = /https:\/\//ig;
-var HTTPS_FLAG = require('../package.json').whistleSsl + '.';
+var HTTPS_FLAG = require('../util').config.whistleSsl + '.';
 
 function transform(headers, res) {
 	var charset = headers['content-type'];

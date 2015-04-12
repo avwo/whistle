@@ -3,7 +3,7 @@ var unicorn = require('tianma-unicorn');
 var pipe = tianma.pipe;
 var readFile = require('./file-reader');
 var debug = require('./debug');
-var config = require('../package.json');
+var config = require('../util').config;
 var root, _debug;
 
 function accessControlHandler(context, next) {

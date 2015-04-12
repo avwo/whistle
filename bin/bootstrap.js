@@ -1,6 +1,6 @@
 var path = require('path');
 var program = require('commander');
-var config = require('../package.json');
+var config = require('../util').config;
 
 /**
  * Prepare the environment before run main program.

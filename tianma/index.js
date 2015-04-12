@@ -1,4 +1,4 @@
-var config = require('../package.json');
+var config = require('../util').config;
 var url = require('url');
 
 module.exports = function(req, res, next) {

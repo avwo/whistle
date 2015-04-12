@@ -1,7 +1,7 @@
 var program = require('commander');
 var nodectl = require('./nodectl');
 var bootstrap = require('./bootstrap');
-var config = require('../package.json');
+var config = require('../util').config;
 var bingo = false;
 
 program
