@@ -5,7 +5,7 @@ var util = require('./util');
 var config = util.config;
 var argvs = util.argvs;
 var rulesUtil = require('./lib/rules/util');
-var tianma = require('./biz/tianma/tianma');
+var tianma = require('./biz/tianma/app');
 
 function parseHosts(hostsPath) {
 	if (hostsPath) {
