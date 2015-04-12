@@ -3,17 +3,17 @@ var fs = require('fs');
 var proxy = require('./lib/proxy');
 var config = require('./util').config;
 var argvs = require('./data/argvs');
-var meta = require('./data/meta');
+var rulesUtil = require('./lib/rules/util');
 var tianma = require('./tianma/tianma');
 
 function parseHosts(hostsPath) {
 	if (hostsPath) {
 		try {
-			meta.setPublicHosts(fs.readFileSync(path.resolve(hostsPath), {encoding: 'utf8'}));
+			rulesUtil.setPublicHosts(fs.readFileSync(path.resolve(hostsPath), {encoding: 'utf8'}));
 		} catch(e) {}
 	}
 	
-	meta.loadHosts();
+	rulesUtil.loadHosts();
 }
 
 function start(options) {
