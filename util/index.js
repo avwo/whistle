@@ -9,6 +9,8 @@ var zlib = require('zlib');
 var PipeStream = require('pipestream');
 var config = require('../package.json');
 
+exports.LOCAL_DATA_PATH = path.join(__dirname, '../../' + config.dataDirname);
+
 function noop() {}
 
 exports.noop = noop;
