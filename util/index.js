@@ -11,6 +11,7 @@ var config = require('../package.json');
 
 exports.LOCAL_DATA_PATH = path.join(__dirname, '../../' + config.dataDirname);
 exports.config = config;
+exports.argvs = require('./argvs');
 
 function noop() {}
 

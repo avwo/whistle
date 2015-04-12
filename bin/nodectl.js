@@ -2,8 +2,9 @@ var cp = require('child_process'),
 	fs = require('fs'),
 	path = require('path'),
 	util = require('util'),
-	argvs = require('../data/argvs'),
-	config = require('../util').config;
+	commonUtil = require('../util'),
+	argvs = commonUtil.argvs,
+	config = commonUtil.config;
 
 var PATH_BOOTSTRAP = path.join(__dirname, 'bootstrap.js'),
 	START_PATH = path.join(__dirname, '../init.js'),

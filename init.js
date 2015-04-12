@@ -1,8 +1,9 @@
 var path = require('path');
 var fs = require('fs');
 var proxy = require('./lib/proxy');
-var config = require('./util').config;
-var argvs = require('./data/argvs');
+var util = require('./util');
+var config = util.config;
+var argvs = util.argvs;
 var rulesUtil = require('./lib/rules/util');
 var tianma = require('./biz/tianma/tianma');
 
