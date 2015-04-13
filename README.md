@@ -76,7 +76,7 @@ PS: **设置完代理后，代理会把请求服务器的ip给屏蔽，可以在
 
 ###流程图###
 
-![whistle工作流程图](https://raw.githubusercontent.com/avwo/whistle/master/flow-chart.png)
+![whistle工作流程图](https://raw.githubusercontent.com/avwo/whistle/master/assets/img/flow-chart.png)
 
 ###基本功能（以windows为例，mac、linux等其它系统同理）###
 
