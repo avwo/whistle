@@ -175,20 +175,6 @@ PS: **设置完代理后，代理会把请求服务器的ip给屏蔽，可以在
 	- 支持合并同类项
 			
 			head://D:\test\     www.example.com/ www.example2.com/
-
-	- 在响应内容底部注入脚本
-	
-		利用该功能可以注入weinre脚本，利用pc的chrome调试手机端的页面
-
-			{
-				"req": {
-					//headers
-				},
-				"res": {
-					//headers
-				},
-				"inject": "<script src='...'></script>"
-			}
 		
 
 	- 正则匹配
