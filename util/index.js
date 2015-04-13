@@ -182,6 +182,10 @@ function getContentType(contentType) {
 	        return 'JSON';
 	    }
 		
+		if (contentType.indexOf('text/') != -1) {
+	        return 'TEXT';
+	    }
+		
 		if (contentType.indexOf('image') != -1) {
 	        return 'IMG';
 	    } 
