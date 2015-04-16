@@ -224,7 +224,7 @@ function getPipeZipStream(headers) {
 	return pipeStream;
 }
 
-function getPipeIcovStream(headers, plainText) {
+function getPipeIconvStream(headers, plainText) {
 	var pipeStream = new PipeStream();
 	var charset = plainText ? null : getCharset(headers['content-type']);
 	
