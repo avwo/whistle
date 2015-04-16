@@ -208,15 +208,9 @@ function supportHtmlTransform(headers) {
 
 exports.supportHtmlTransform = supportHtmlTransform;
 
-function wrapHtmlTransform(headers, transform) {
-	if (!supportHtmlTransform(headers)) {
-		return false;
-	}
-	
-	var headers = headers || {};
-	var contentEncoding = toLowerCase(headers['content-encoding']);
+function getPipeZipStream(headers) {
 	var pipeStream = new PipeStream();
-	switch (contentEncoding) {
+	switch (toLowerCase(headers && headers['content-encoding'])) {
 	    case 'gzip':
 	    	pipeStream.addHead(zlib.createGunzip());
 	    	pipeStream.addTail(zlib.createGzip());
@@ -227,12 +221,15 @@ function wrapHtmlTransform(headers, transform) {
 	      break;
 	}
 	
-	var charset = getCharset(headers['content-type']);
-	delete headers['content-length'];
+	return pipeStream;
+}
+
+function getPipeIcovStream(headers, plainText) {
+	var pipeStream = new PipeStream();
+	var charset = plainText ? null : getCharset(headers['content-type']);
 	
 	function pipeTransform() {
 		var stream = new PipeStream();
-		stream.add(transform, {end: false});
 		stream.addHead(iconv.decodeStream(charset));
 		stream.addTail(iconv.encodeStream(charset));
     	return stream;
@@ -247,7 +244,7 @@ function wrapHtmlTransform(headers, transform) {
 			var content = '';
 			
 			res.on('data', function(chunk) {
-				if (!charset) {//如果没charset
+				if (!charset && !plainText) {//如果没charset
 					content += decoder.write(chunk);
 					charset = getMetaCharset(content);
 					setTransform();
@@ -274,11 +271,9 @@ function wrapHtmlTransform(headers, transform) {
 			
 		});
 	}
-	
+
 	return pipeStream;
 }
-
-exports.wrapHtmlTransform = wrapHtmlTransform;
 
 function toLowerCase(str) {
 	return str && str.trim().toLowerCase();
