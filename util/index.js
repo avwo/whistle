@@ -218,7 +218,7 @@ function getPipeIconvStream(headers, plainText) {
 	if (charset) {
 		pipeStream.add(pipeTransform());
 	} else {
-		pipeStream.addHead(function(res, callback) {
+		pipeStream.addHead(function(res, next) {
 			var passThrough = new PassThrough();
 			var decoder = new StringDecoder();
 			var content = '';
@@ -243,9 +243,7 @@ function getPipeIconvStream(headers, plainText) {
 			
 			function setTransform() {
 				if (charset) {
-					var stream = pipeTransform();
-					passThrough.pipe(stream);
-					callback(stream);
+					next(passThrough.pipe(pipeTransform()));
 				}
 			}
 			
