@@ -202,6 +202,8 @@ function getPipeZipStream(headers) {
 	return pipeStream;
 }
 
+exports.getPipeZipStream = getPipeZipStream;
+
 function getPipeIconvStream(headers, plainText) {
 	var pipeStream = new PipeStream();
 	var charset = plainText ? null : getCharset(headers['content-type']);
@@ -252,6 +254,8 @@ function getPipeIconvStream(headers, plainText) {
 
 	return pipeStream;
 }
+
+exports.getPipeIconvStream = getPipeIconvStream;
 
 function toLowerCase(str) {
 	return str && str.trim().toLowerCase();
