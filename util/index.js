@@ -147,12 +147,8 @@ exports.parseFileToJson = function parseFileToJson(path, callback) {
 		return;
 	}
 	fs.readFile(getPath(path), {encoding: 'utf8'}, function(err, data) {
-		if (err || !(data = data && data.trim())) {
-			callback(err);
-			return;
-		}
 		
-		callback(null, parseJSON(data));
+		callback(err, (data = data && data.trim()) && parseJSON(data));
 	});
 };
 
