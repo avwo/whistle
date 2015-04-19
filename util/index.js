@@ -114,11 +114,13 @@ exports.encodeNonAsciiChar = function encodeNonAsciiChar(str) {
 	return  str ? str.replace(/[^\x00-\x7F]/g, encodeURIComponent) : str;
 };
 
-exports.getPath = function getPath(url) {
+function getPath(url) {
 	url = url && url.replace(/\/?(?:\?|#).*$/, '') || '';
 	var index = url.indexOf('://');
 	return index > -1 ? url.substring(index + 3) : url;
-};
+}
+
+exports.getPath = getPath;
 
 exports.wrapResponse = function wrapResponse(res) {
 	var passThrough = new PassThrough();
@@ -129,13 +131,30 @@ exports.wrapResponse = function wrapResponse(res) {
 	return passThrough;
 };
 
-exports.parseJSON = function parseJSON(data) {
+function parseJSON(data) {
 	try {
 		return JSON.parse(data);
 	} catch(e) {}
 	
 	return null;
 }
+
+exports.parseJSON = parseJSON;
+
+exports.parseFileToJson = function parseFileToJson(path, callback) {
+	if (!path) {
+		callback();
+		return;
+	}
+	fs.readFile(getPath(path), {encoding: 'utf8'}, function(err, data) {
+		if (err || !(data = data && data.trim())) {
+			callback(err);
+			return;
+		}
+		
+		callback(null, parseJSON(data));
+	});
+};
 
 function getContentType(contentType) {
 	if (contentType && typeof contentType != 'string') {
