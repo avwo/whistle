@@ -22,7 +22,7 @@ module.exports = function(req, res, next) {
 			options.protocol = 'http:';
 			options.port = this.tianmaport;
 		}
-		options.hosts = [null, '127.0.0.1'];
+		options.host = '127.0.0.1';
 	}
 	next();
 };
