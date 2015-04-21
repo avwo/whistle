@@ -1,6 +1,7 @@
 var net = require('net');
 var url = require('url');
 var path = require('path');
+var util = require('util');
 var os = require('os');
 var StringDecoder = require('string_decoder').StringDecoder;
 var PassThrough = require('stream').PassThrough;
@@ -10,7 +11,7 @@ var PipeStream = require('pipestream');
 var config = require('../package.json');
 
 exports.LOCAL_DATA_PATH = path.join(__dirname, '../../' + config.dataDirname);
-exports.config = config;
+exports.config = util._extend({}, config);
 exports.argvs = require('./argvs');
 exports.WhistleTransform = require('./whistle-transform');
 
