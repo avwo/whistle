@@ -12,7 +12,7 @@ var config = require('../package.json');
 exports.LOCAL_DATA_PATH = path.join(__dirname, '../../' + config.dataDirname);
 exports.config = config;
 exports.argvs = require('./argvs');
-exports.LimitedSpeedTransform = require('./limitted-speed-transform');
+exports.WhistleTransform = require('./whistle-transform');
 
 function noop() {}
 
