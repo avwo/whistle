@@ -1,6 +1,6 @@
-var metaUtil = require('../../lib/meta-util');
+var rulesUtil = require('../../lib/rules-util');
 
 module.exports = function(req, res) {
-	req.body.enable == '1' ? metaUtil.enablePublicHosts() : metaUtil.disablePublicHosts();
+	req.body.enable == '1' ? rulesUtil.enablePublicHosts() : rulesUtil.disablePublicHosts();
 	res.json({ec: 0, em: 'success'});
 };

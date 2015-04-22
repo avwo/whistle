@@ -1,9 +1,9 @@
-var metaUtil = require('../../lib/meta-util');
+var rulesUtil = require('../../lib/rules-util');
 
 module.exports = function(req, res) {
-	var data = metaUtil.getHostsData();
-	data.fontSize = metaUtil.getProperty('fontSize');
-	data.showLineNumbers = metaUtil.getProperty('showLineNumbers');
-	data.theme = metaUtil.getProperty('theme');
+	var data = rulesUtil.getHostsData();
+	data.fontSize = rulesUtil.getProperty('fontSize');
+	data.showLineNumbers = rulesUtil.getProperty('showLineNumbers');
+	data.theme = rulesUtil.getProperty('theme');
 	res.json(data);
 };

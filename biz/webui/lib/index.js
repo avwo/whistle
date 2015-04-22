@@ -26,6 +26,6 @@ app.get('/style/*', function(req, res){
 });
 
 module.exports = function(proxy) {
-	require('./meta-util')(proxy.metaUtil);
+	require('./rules-util')(proxy.rulesUtil);
 	app.listen(proxy.uiport);
 };
