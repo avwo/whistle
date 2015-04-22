@@ -33,6 +33,9 @@ var PATH_BOOTSTRAP = path.join(__dirname, 'bootstrap.js'),
 		}
 	},
 
+	resolvePath = function(name) {
+		return /^[\w-]+$/.test(name) ? name : path.resolve(name);
+	},
 	setArgs = function(options, args) {
 		if (!options) {
 			return {};
@@ -41,14 +44,14 @@ var PATH_BOOTSTRAP = path.join(__dirname, 'bootstrap.js'),
 		if (options.plugins) {
 			options.plugins = options.plugins.
 			split(',').map(function(plugin) {
-				return path.resolve(plugin);
+				return resolvePath(plugin);
 			}).join();
 		}
 		var pureOptions = {};
 		for (var name in argvs) {
 			if (options[name]) {
 				if (argvs[name]) {
-					options[name] = path.resolve(options[name]);
+					options[name] = resolvePath(options[name]);
 				}
 				args.push('--' + name);
 				args.push(options[name]);
