@@ -29,7 +29,7 @@ function start(options) {
 	}
 	tianma(app);
 	try {
-		require(app.uipath || config.webui)(app);
+		require(app.uipath || './biz/webui/app')(app);
 	} catch(e) {}
 	return app;
 }

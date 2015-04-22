@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>Whistle</title>
+<link href="/style/css/lib/bootstrap.css" rel="stylesheet" />
+<link href="/style/css/lib/codemirror.css" rel="stylesheet" />
+<link rel="stylesheet" href="/style/css/biz/theme/neat.css">
+<link rel="stylesheet" href="/style/css/biz/theme/elegant.css">
+<link rel="stylesheet" href="/style/css/biz/theme/erlang-dark.css">
+<link rel="stylesheet" href="/style/css/biz/theme/night.css">
+<link rel="stylesheet" href="/style/css/biz/theme/monokai.css">
+<link rel="stylesheet" href="/style/css/biz/theme/cobalt.css">
+<link rel="stylesheet" href="/style/css/biz/theme/eclipse.css">
+<link rel="stylesheet" href="/style/css/biz/theme/rubyblue.css">
+<link rel="stylesheet" href="/style/css/biz/theme/lesser-dark.css">
+<link rel="stylesheet" href="/style/css/biz/theme/xq-dark.css">
+<link rel="stylesheet" href="/style/css/biz/theme/xq-light.css">
+<link rel="stylesheet" href="/style/css/biz/theme/ambiance.css">
+<link rel="stylesheet" href="/style/css/biz/theme/blackboard.css">
+<link rel="stylesheet" href="/style/css/biz/theme/vibrant-ink.css">
+<link rel="stylesheet" href="/style/css/biz/theme/solarized.css">
+<link rel="stylesheet" href="/style/css/biz/theme/twilight.css">
+<link rel="stylesheet" href="/style/css/biz/theme/midnight.css">
+
+<style>
+html, body {height: 100%; padding: 0; margin: 0; overflow: hidden;}
+
+::-webkit-scrollbar{ width:10px; height:10px; }
+::-webkit-scrollbar-button{ width:10px;height:1px; }
+::-webkit-scrollbar-thumb{ background-clip:padding-box; background-color:rgba(0,0,0,.2); border-radius:8px; min-height: 30px;}
+::-webkit-scrollbar-thumb:hover{ background-clip:padding-box; background-color:rgba(0,0,0,.5); border-radius:8px;}
+::-webkit-scrollbar-track,::-webkit-scrollbar-thumb { border-left:2px solid transparent; border-right:2px solid transparent;}
+::-webkit-scrollbar-track:hover{ background-clip:padding-box; background-color:rgba(0,0,0,.15);}
+
+.hosts {height: 100%; width: 100%; background: #fff; overflow: hidden; display:-moz-box; display:-webkit-box; display:box;}
+.hosts .box-orient-vertical {-moz-box-orient:vertical; -webkit-box-orient:vertical; box-orient:vertical; display:-moz-box; display:-webkit-box; display: box;}
+.hosts .fill {-moz-box-flex:1; -webkit-box-flex:1; box-flex:1;}
+.hosts .hosts-list {width: 220px; height: 100%;}
+.hosts .hosts-rules {padding-right: 2px; height: 100%;}
+.hosts .hosts-nav {height: 50px; border: 1px solid transparent;}
+.hosts .hosts-nav h6 {float: left; margin: 16px 0 0 10px; max-width: 400px; font-weight: bold; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;}
+.hosts .hosts-nav .action-bar {float: right; margin-top: 15px; padding-right: 20px;}
+.hosts .hosts-footer {height: 52px; text-align: right; padding-right: 30px;}
+.hosts .hosts-footer .btn {margin-left: 20px; margin-top: 10px;}
+.hosts .hosts-list .list-group-item {padding-right: 25px; position: relative;}
+.hosts .public-hosts {border-top-right-radius: 0; margin-bottom: 0; color: #000; border-top: none; font-weight: bold; padding: 15px;}
+.hosts .create-hosts { border-bottom-right-radius: 0; line-height: 32px; color: #000; border-bottom: none; font-weight: bold;}
+.hosts .hosts-list .active {color: #fff;}
+.hosts .hosts-list .glyphicon-ok {color: #5bbd72; position: absolute; margin-top: -7px; top: 50%; right: 10px;}
+.hosts .new-hosts-list {overflow-x: hidden; overflow-y: auto; border-right: 1px solid #ddd;}
+.hosts .new-hosts-list .list-group-item {border-radius: 0; padding: 15px;}
+.hosts .new-hosts-list .list-group-item:first-child {border-top: none;}
+.hosts .changed:before {content: '*'; margin-right: 5px; color: red; margin-right: 5px;}
+.hosts .help {margin-left: 20px;}
+
+.action-bar label {margin-right: 15px; font-weight: normal;}
+.create-hosts-dialog .new-hosts-name {width: 570px; padding: 0; height: 36px;}
+.hosts .disabled {color: #ccc;}
+
+.hosts .hosts-text {resize:none; width: 100%; padding: 0; border: 1px solid #ddd; border-left: none; display: block;}
+</style>
+</head>
+<body>
+<div class="main hosts">
+	<div id="hostsList" class="hosts-list box-orient-vertical list-group">
+	  <a id="publicHosts" href="javascript:;" class="list-group-item public-hosts">公用环境<span class="glyphicon glyphicon-ok"></span></a>
+	  <div id="newHostsList" class="new-hosts-list fill"></div>
+	  <a id="createHostsBtn" href="javascript:;" class="list-group-item create-hosts">+ 新建环境</a>
+	</div>
+	<div class="hosts-rules box-orient-vertical fill">
+		<div id="hostsNav" class="hosts-nav">
+			<h6 class="hosts-title"></h6><div class="action-bar"><a href="javascript:;" class="remove-hosts">删除</a><label class="enable-public-hosts"><input id="enablePublicHosts" type="checkbox" checked="checked" /> 启用</label><a href="https://github.com/avwo/whistle" class="help" target="_blank">帮助</a></div>
+		</div>
+		<div class="action-bar" style="height: 36px; line-height: 36px; padding-left: 10px; border-top: 1px solid #ddd;">
+			<label>Theme: <select id="themeOptions">
+				<option selected="selected" value="default">default</option>
+		        <option value="ambiance">ambiance</option>
+		        <option  value="blackboard">blackboard</option>
+		        <option  value="cobalt">cobalt</option>
+		        <option  value="eclipse">eclipse</option>
+		        <option  value="elegant">elegant</option>
+		        <option  value="erlang-dark">erlang-dark</option>
+		        <option  value="lesser-dark">lesser-dark</option>
+		        <option  value="midnight">midnight</option>
+		        <option  value="monokai">monokai</option>
+		        <option  value="neat">neat</option>
+		        <option  value="night">night</option>
+		        <option  value="rubyblue">rubyblue</option>
+		        <option  value="solarized dark">solarized dark</option>
+		        <option  value="solarized light">solarized light</option>
+		        <option  value="twilight">twilight</option>
+		        <option  value="vibrant-ink">vibrant-ink</option>
+		        <option  value="xq-dark">xq-dark</option>
+		        <option  value="xq-light">xq-light</option>
+			</select></label>
+			<label>Font size: <select id="fontSizeOptions">
+				<option value="13px">13px</option>
+				<option selected="selected" value="14px">14px</option>
+				<option value="16px">16px</option>
+				<option value="18px">18px</option>
+				<option value="20px">20px</option>
+				<option value="24px">24px</option>
+				<option value="26px">26px</option>
+				<option value="28px">28px</option>
+				<option value="30px">30px</option>
+				<option value="32px">32px</option>
+				<option value="34px">34px</option>
+				<option value="36px">36px</option>
+			</select></label>
+			
+			<label><input  id="showLineNumbers" type="checkbox" /> Show line numbers</label>
+		</div>
+		<div id="hostsEditor" class="hosts-text fill"></div>
+		<div class="hosts-footer">
+				<button type="button" class="btn btn-success apply-hosts">应用</button>
+		</div>
+	</div>
+</div>
+
+<div id="createHostsDialog" class="modal fade create-hosts-dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">新建环境</h4>
+      </div>
+      <div class="modal-body">
+        <p><input id="newHostsName" class="new-hosts-name" maxlength="50" type="text" placeholder="Input the name" /></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <button id="createHostsNameBtn" type="button" class="btn btn-primary">确定</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<script src="/style/js/lib/ae.js"></script>
+<script src="/style/js/lib/bootstrap.js"></script>
+<script src="/style/js/lib/codemirror.js"></script>
+<script src="/style/js/biz/mode/whistle.js"></script>
+<script>
+	seajs.use('/style/js/biz/init.js')
+</script>
+</body>
+</html>
