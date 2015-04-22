@@ -65,8 +65,8 @@ function getProtocol(url) {
 	return hasProtocol(url) ? url.substring(0, url.indexOf('://') + 1) : null;
 }
 
-function removeProtocol(url) {
-	return hasProtocol(url) ? url.substring(url.indexOf('://') + 3) : url;
+function removeProtocol(url, clear) {
+	return hasProtocol(url) ? url.substring(url.indexOf('://') + (clear ? 3 : 1)) : url;
 }
 
 exports.hasProtocol = hasProtocol;
