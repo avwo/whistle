@@ -5,7 +5,6 @@ var util = require('./util');
 var config = util.config;
 var argvs = util.argvs;
 var rulesUtil = require('./lib/rules/util');
-var tianma = require('./biz/tianma/app');
 
 function parseHosts(hostsPath) {
 	if (hostsPath) {
@@ -27,9 +26,10 @@ function start(options) {
 	for (var i in argvs) {
 		app[i] = options[i] || config[i];
 	}
-	tianma(app);
+	
 	try {
 		require(app.uipath || './biz/webui/app')(app);
+		require('./biz/tianma/app')(app);
 	} catch(e) {}
 	return app;
 }
