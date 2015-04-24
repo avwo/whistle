@@ -9,13 +9,20 @@ var iconv = require('iconv-lite');
 var zlib = require('zlib');
 var PipeStream = require('pipestream');
 var config = require('../package.json');
-var npm = require('./npm');
+var getNpm = require('./npm');
+var npm = getNpm({
+	loglevel: 'silent',
+	tmp: path.join(__dirname, './tmp'),
+	global: true,
+	prefix: path.join(__dirname, '../')
+});
 var installedTianma, startedTianma;
 
 exports.LOCAL_DATA_PATH = path.join(__dirname, '../../' + config.dataDirname);
 exports.config = util._extend({}, config);
 exports.argvs = require('./argvs');
 exports.WhistleTransform = require('./whistle-transform');
+exports.getNpm = getNpm;
 
 exports.installTianma = function(config, callback) {
 	if (installedTianma) {
