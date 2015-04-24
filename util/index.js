@@ -3,6 +3,7 @@ var url = require('url');
 var path = require('path');
 var util = require('util');
 var os = require('os');
+var fs = require('fs');
 var StringDecoder = require('string_decoder').StringDecoder;
 var PassThrough = require('stream').PassThrough;
 var iconv = require('iconv-lite');
@@ -10,6 +11,7 @@ var zlib = require('zlib');
 var PipeStream = require('pipestream');
 var config = require('../package.json');
 var getNpm = require('./npm');
+var NODE_MODULES_PATH = path.join(__dirname, '../node_modules');
 var npm = getNpm({
 	loglevel: 'silent',
 	tmp: path.join(__dirname, './tmp'),
@@ -26,8 +28,12 @@ exports.WhistleTransform = require('./whistle-transform');
 exports.getNpm = getNpm;
 
 exports.installTianma = function(callback) {
-	if (installedTianma) {
+	if (!callback && fs.existsSync(path.join(NODE_MODULES_PATH, 'tianma')) 
+			&& fs.existsSync(path.join(NODE_MODULES_PATH, 'tianma-unicorn')) &&
+			fs.existsSync(path.join(NODE_MODULES_PATH, 'pegasus'))) {
 		start();
+	}
+	if (installedTianma) {
 		callback && callback();
 		return;
 	}
@@ -43,7 +49,7 @@ exports.installTianma = function(callback) {
 	
 	function start() {
 		try {
-			!installedTianma && require('../biz/tianma/app')(config);
+			require('../biz/tianma/app')(config);
 			installedTianma = true;
 		} catch(e) {}
 	}
