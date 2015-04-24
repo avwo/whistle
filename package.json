@@ -25,6 +25,10 @@
   "bin": {
     "whistle": "./bin/whistle.js"
   },
+  "repository": {
+	  "type": "git",
+	  "url": "https://github.com/avwo/whistle.git"
+  },
   "dependencies": {
    "express": "4.12.3",
    "body-parser": "1.12.0",
