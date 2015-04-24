@@ -16,7 +16,8 @@ var npm = getNpm({
 	global: true,
 	prefix: path.join(__dirname, '../')
 });
-var installedTianma, startedTianma;
+var installedTianma;
+var tianmaCallbacks = [];
 
 exports.LOCAL_DATA_PATH = path.join(__dirname, '../../' + config.dataDirname);
 exports.config = util._extend({}, config);
@@ -24,23 +25,26 @@ exports.argvs = require('./argvs');
 exports.WhistleTransform = require('./whistle-transform');
 exports.getNpm = getNpm;
 
-exports.installTianma = function(config, callback) {
+exports.installTianma = function(callback) {
 	if (installedTianma) {
 		start();
 		callback && callback();
 		return;
 	}
 	
+	callback && tianmaCallbacks.push(callback);
 	npm(['tianma@0.8.1', 'tianma-unicorn@1.0.15', 'pegasus@0.7.5'], function(err) {
 		!err && start();
-		callback && callback(err);
+		tianmaCallbacks.forEach(function(cb) {
+			cb(err);
+		});
+		tianmaCallbacks = [];
 	});
 	
 	function start() {
 		try {
+			!installedTianma && require('../biz/tianma/app')(config);
 			installedTianma = true;
-			!startedTianma && require('../biz/tianma/app')(config);
-			startedTianma = true;
 		} catch(e) {}
 	}
 };

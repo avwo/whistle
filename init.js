@@ -29,7 +29,7 @@ function start(options) {
 	
 	try {
 		require(app.uipath || './biz/webui/app')(app);
-		util.installTianma(app);
+		util.installTianma();
 	} catch(e) {}
 	return app;
 }
