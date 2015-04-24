@@ -31,7 +31,8 @@ function getInstaller() {
 		options = {
 			loglevel: 'silent',
 			tmp: './tmp',
-			global: true
+			global: true,
+			prefix: path.join(__dirname, '../')
 		};
 
 		if (process.platform === 'win32') {

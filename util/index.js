@@ -16,7 +16,6 @@ exports.LOCAL_DATA_PATH = path.join(__dirname, '../../' + config.dataDirname);
 exports.config = util._extend({}, config);
 exports.argvs = require('./argvs');
 exports.WhistleTransform = require('./whistle-transform');
-exports.npm = npm;
 
 exports.installTianma = function(config, callback) {
 	if (installedTianma) {
