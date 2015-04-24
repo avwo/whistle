@@ -27,5 +27,6 @@ module.exports = function(req, res, next) {
 		util.installTianma(this, next);
 		return;
 	}
+	
 	next();
 };
