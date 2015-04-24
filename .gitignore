@@ -3,6 +3,7 @@ logs
 *.log
 tmp
 tianma.cmd
+./tianma
 
 # Runtime data
 pids
