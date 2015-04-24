@@ -1,4 +1,5 @@
-var config = require('../../util').config;
+var util = require('../../util');
+var config = util.config;
 var url = require('url');
 
 module.exports = function(req, res, next) {
@@ -23,6 +24,8 @@ module.exports = function(req, res, next) {
 			options.port = this.tianmaport;
 		}
 		options.host = '127.0.0.1';
+		util.installTianma(this, next);
+		return;
 	}
 	next();
 };

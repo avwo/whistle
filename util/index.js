@@ -9,11 +9,35 @@ var iconv = require('iconv-lite');
 var zlib = require('zlib');
 var PipeStream = require('pipestream');
 var config = require('../package.json');
+var npm = require('./npm');
+var installedTianma, startedTianma;
 
 exports.LOCAL_DATA_PATH = path.join(__dirname, '../../' + config.dataDirname);
 exports.config = util._extend({}, config);
 exports.argvs = require('./argvs');
 exports.WhistleTransform = require('./whistle-transform');
+exports.npm = npm;
+
+exports.installTianma = function(config, callback) {
+	if (installedTianma) {
+		start();
+		callback && callback();
+		return;
+	}
+	
+	npm(['tianma@0.8.1', 'tianma-unicorn@1.0.15', 'pegasus@0.7.5'], function(err) {
+		!err && start();
+		callback && callback(err);
+	});
+	
+	function start() {
+		try {
+			installedTianma = true;
+			!startedTianma && require('../biz/tianma/app')(config);
+			startedTianma = true;
+		} catch(e) {}
+	}
+};
 
 function noop() {}
 
