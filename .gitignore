@@ -2,6 +2,7 @@
 logs
 *.log
 tmp
+tianma.cmd
 
 # Runtime data
 pids
