@@ -60,9 +60,8 @@ function resolveResponse(proxyReq, callback) {
 						value = [value];
 					}
 					value.push(entry.value);
-				} else {
-					headers[entry.key] = entry.value;
 				}
+				headers[entry.key] = value || entry.value;
 			}
 		}
 		proxyRes.headers = headers;
