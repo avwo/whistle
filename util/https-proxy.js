@@ -48,7 +48,7 @@ function resolveResponse(proxyReq, callback) {
 		var firstLine = getEntry(buffer[0]);
 		if (firstLine) {
 			proxyRes.httpVersion = firstLine.key.split('/')[1];
-			proxyRes.statusCode = firstLine.value;
+			proxyRes.statusCode = firstLine.value.split(' ')[0];
 		}
 		
 		for (var i = 1, len = buffer.length; i < len; i++) {
@@ -70,19 +70,15 @@ function resolveResponse(proxyReq, callback) {
 	}
 	
 	function getEntry(line) {
-		if (line) {
-			line = line.trim().split(/\s+/g);
-			if (line[0] && line[1]) {
-				line = {
-						key: line[0].toLowerCase(),
-						value: line[1]
-				}
-			} else {
-				line = null;
-			}
+		if (!(line = line && line.trim())) {
+			return;
 		}
 		
-		return line;
+		var index = line.indexOf(' ');
+		return index != -1 ? {
+			key: line.substring(0, index),
+			value: line.substring(index + 1)
+		} : null;
 	}
    
    proxyReq.on('data', function(data) {
