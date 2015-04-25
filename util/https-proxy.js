@@ -74,10 +74,10 @@ function resolveResponse(proxyReq, callback) {
 			return;
 		}
 		
-		var index = line.indexOf(' ');
+		var index = line.indexOf(':');
 		return index != -1 ? {
-			key: line.substring(0, index),
-			value: line.substring(index + 1)
+			key: line.substring(0, index).trim().toLowerCase(),
+			value: line.substring(index + 1).trim()
 		} : null;
 	}
    
