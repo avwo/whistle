@@ -33,7 +33,7 @@ function getStringHeaders(req) {
 function resolveResponse(proxyReq, callback) {
 	var proxyRes = new IncomingMessage(proxyReq);
 	var index = 0;
-	var buffer, ended, done, over;
+	var buffer, ended, done, overflow;
 	
 	function execCallback(err) {
 		if (!done) {
@@ -90,19 +90,24 @@ function resolveResponse(proxyReq, callback) {
 	   while(buffer[index]) {
 		   if (isCRLF(buffer, index)) {
 			   ended = isCRLF(buffer, index + 2);
-			   if (!over) {
-				   over = buffer.length >= MAX_BYTES;
-				   if (ended) {
-					   index += 4;
+			   if (ended) {
+				   index += 4;
+				   if (!overflow) {
 					   setHeaders(proxyRes, buffer.slice(0, index));
 					   execCallback();
-					   buffer = buffer.slice(index);
-					   index = 0;
-				   }
-			   } else if (ended) {
-				   proxyRes.push(buffer.slice(index + 4));
+				   } 
+				   proxyRes.push(buffer.slice(index));
+				   break;
+			   } 
+			   
+			   if (overflow = buffer.length >= MAX_BYTES) {
+				   setHeaders(proxyRes, buffer.slice(0,  index));
+				   execCallback();
+				   buffer = buffer.slice(index);
+				   index = -1;
 			   }
 		   }
+		   
 		   index++;
 	   }
 	   
