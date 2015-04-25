@@ -110,7 +110,7 @@ function resolveResponse(proxyReq, callback) {
    });
    
    proxyReq.on('end', function() {
-	   execCallback(new Error('Bad response'));
+	   !done && execCallback(new Error('Bad response'));
 	   proxyRes.push(null);
    });
 }
