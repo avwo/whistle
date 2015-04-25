@@ -151,7 +151,12 @@ module.exports = function proxy(req, callback) {
 	        socket: socket
 	    }, function () {
 	        proxyReq.write(getStringHeaders(req));
-	        req.pipe(proxyReq);
+	        req.on('data', function(data) {
+	        	proxyReq.write(data);
+	        });
+	        req.on('end', function() {
+	        	proxyReq.end();
+	        });
 	    }).on('error', execCallback);
 	    
 	 resolveResponse(proxyReq, execCallback);
