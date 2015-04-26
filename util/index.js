@@ -308,7 +308,7 @@ function getPipeIconvStream(headers, plainText) {
 				if (charset) {
 					iconvDecoder = iconv.decodeStream(charset);
 					next(iconvDecoder);
-					write(chunk);
+					write(buffer);
 				}
 			}
 		});
