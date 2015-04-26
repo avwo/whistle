@@ -281,30 +281,24 @@ function getPipeIconvStream(headers, plainText) {
 			var decoder = new StringDecoder();
 			var content = '';
 			
-			res.on('data', function(chunk) {
-				if (!charset && !plainText) {//如果没charset
-					content += decoder.write(chunk);
-					charset = getMetaCharset(content);
-					setTransform();
-				}
-				passThrough.write(chunk);
-			});
-			
-			res.on('end', function() {
+			res.on('data', resolveCharset);
+			res.on('end', resolveCharset);
+			function resolveCharset(chunk) {
+				console.log('========')
 				if (!charset) {
-					content += decoder.end();
-					charset = content.indexOf('�') != -1 ? 'gbk' : 'utf8';
-					setTransform();
-				}
-				passThrough.end();
-			});
-			
-			function setTransform() {
-				if (charset) {
-					next(passThrough.pipe(pipeTransform()));
-				}
+					content += chunk ? decoder.write(chunk) : decoder.end();
+					if (!plainText) {//如果没charset
+						charset = getMetaCharset(content);
+					}
+					
+					if (!charset && (!chunk || content.length >= 102400)) {
+						charset = content.indexOf('�') != -1 ? 'gbk' : 'utf8';
+					}
+				} 
+				
+				charset && next(passThrough.pipe(pipeTransform()));
+				chunk ? passThrough.write(chunk) : passThrough.end();
 			}
-			
 		});
 	}
 
