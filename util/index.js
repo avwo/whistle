@@ -301,7 +301,7 @@ function getPipeIconvStream(headers, plainText) {
 						charset = getMetaCharset(content);
 					}
 					
-					if (!charset && (!chunk || content.length >= 102400)) {
+					if (!charset && (!chunk || content.length >= 204800)) {
 						charset = content.indexOf('�') != -1 ? 'gbk' : 'utf8';
 					}
 				} 
