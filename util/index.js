@@ -271,13 +271,30 @@ function getPipeIconvStream(headers, plainText) {
 		pipeStream.addTail(iconv.encodeStream(charset));
 	} else {
 		pipeStream.addHead(function(res, next) {
-			var passThrough = new PassThrough();
+			var buffer;
+			var iconvDecoder;
 			var decoder = new StringDecoder();
 			var content = '';
+			
+			function write(chunk) {
+				if (!iconvDecoder) {
+					return false;
+				}
+				chunk ? iconvDecoder.write(chunk) : iconvDecoder.end();
+				return true;
+			}
 			
 			res.on('data', resolveCharset);
 			res.on('end', resolveCharset);
 			function resolveCharset(chunk) {
+				if (write(chunk)) {
+					return;
+				}
+				
+				if (chunk) {
+					buffer = buffer ? Buffer.concat([buffer, chunk]) : chunk;
+				}
+				
 				if (!charset) {
 					content += chunk ? decoder.write(chunk) : decoder.end();
 					if (!plainText) {//如果没charset
@@ -289,9 +306,10 @@ function getPipeIconvStream(headers, plainText) {
 					}
 				} 
 				if (charset) {
-					next(passThrough.pipe(iconv.decodeStream(charset)));
+					iconvDecoder = iconv.decodeStream(charset);
+					next(iconvDecoder);
+					write(chunk);
 				}
-				chunk ? passThrough.write(chunk) : passThrough.end();
 			}
 		});
 		
