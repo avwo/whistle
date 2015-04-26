@@ -284,7 +284,6 @@ function getPipeIconvStream(headers, plainText) {
 			res.on('data', resolveCharset);
 			res.on('end', resolveCharset);
 			function resolveCharset(chunk) {
-				console.log('========')
 				if (!charset) {
 					content += chunk ? decoder.write(chunk) : decoder.end();
 					if (!plainText) {//如果没charset
