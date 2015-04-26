@@ -266,15 +266,9 @@ function getPipeIconvStream(headers, plainText) {
 	var pipeStream = new PipeStream();
 	var charset = plainText ? null : getCharset(headers['content-type']);
 	
-	function pipeTransform() {
-		var stream = new PipeStream();
-		stream.addHead(iconv.decodeStream(charset));
-		stream.addTail(iconv.encodeStream(charset));
-    	return stream;
-	}
-	
 	if (charset) {
-		pipeStream.add(pipeTransform());
+		pipeStream.addHead(iconv.decodeStream(charset));
+		pipeStream.addTail(iconv.encodeStream(charset));
 	} else {
 		pipeStream.addHead(function(res, next) {
 			var passThrough = new PassThrough();
@@ -294,10 +288,15 @@ function getPipeIconvStream(headers, plainText) {
 						charset = content.indexOf('�') != -1 ? 'gbk' : 'utf8';
 					}
 				} 
-				
-				charset && next(passThrough.pipe(pipeTransform()));
+				if (charset) {
+					next(passThrough.pipe(iconv.decodeStream(charset)));
+				}
 				chunk ? passThrough.write(chunk) : passThrough.end();
 			}
+		});
+		
+		pipeStream.addTail(function(src, next) {
+			next(src.pipe(iconv.encodeStream(charset)));
 		});
 	}
 
