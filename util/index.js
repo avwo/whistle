@@ -277,34 +277,39 @@ function getPipeIconvStream(headers, plainText) {
 		pipeStream.add(pipeTransform());
 	} else {
 		pipeStream.addHead(function(res, next) {
-			var passThrough = new PassThrough();
+			var decoderTransform = new (PipeStream.Transform)();
 			var decoder = new StringDecoder();
 			var content = '';
+			var buffer;
 			
-			res.on('data', function(chunk) {
-				if (!charset && !plainText) {//如果没charset
-					content += decoder.write(chunk);
-					charset = getMetaCharset(content);
-					setTransform();
-				}
-				passThrough.write(chunk);
-			});
-			
-			res.on('end', function() {
+			decoderTransform._transform = function(chunk, encoding, callback) {
 				if (!charset) {
-					content += decoder.end();
-					charset = content.indexOf('�') != -1 ? 'gbk' : 'utf8';
-					setTransform();
-				}
-				passThrough.end();
-			});
-			
-			function setTransform() {
+					if (chunk) {
+						buffer = buffer ? Buffer.concat([buffer, data]) : data;
+						content += decoder.write(chunk);
+					} else {
+						content += decoder.end();
+					}
+					
+					if (!plainText) {//如果没charset
+						charset = getMetaCharset(content);
+					}
+					
+					if (!charset) {
+						var notUtf8 = content.indexOf('�') != -1;
+						if (!notUtf8 || !chunk || buffer.length >= 1048576) {
+							charset = notUtf8 ? 'gbk' : 'utf8';
+						}
+					}
+				} 
+				
 				if (charset) {
-					next(passThrough.pipe(pipeTransform()));
+					callback(null, buffer || chunk); 
+					buffer = null;
 				}
-			}
+			};
 			
+			next(PipeStream.pipe(res, decoderTransform).pipe(pipeTransform()));
 		});
 	}
 
