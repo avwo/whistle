@@ -285,7 +285,7 @@ function getPipeIconvStream(headers, plainText) {
 			decoderTransform._transform = function(chunk, encoding, callback) {
 				if (!charset) {
 					if (chunk) {
-						buffer = buffer ? Buffer.concat([buffer, data]) : data;
+						buffer = buffer ? Buffer.concat([buffer, chunk]) : chunk;
 						content += decoder.write(chunk);
 					} else {
 						content += decoder.end();
