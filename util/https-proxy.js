@@ -54,6 +54,7 @@ module.exports = function proxy(req, callback) {
 	        rejectUnauthorized: false,
 	        socket: socket
 	    }, function () {
+	    	proxyReq.abort = proxyReq.destroy;
 	        proxyReq.write(getHeadersContent(req));
 	        req.pipe(proxyReq);
 	        
