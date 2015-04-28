@@ -10,6 +10,8 @@
   "uisslport": 9529,
   "tianmaport": 19528,
   "tianmasslport": 19529,
+  "httpsproxyport": 19530,
+  "maxSockets": 10,
   "timeout": 36000,
   "tianmaRoot": "x-tianma-root",
   "tianmaDebug": "x-tianma-debug",
