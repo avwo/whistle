@@ -29,12 +29,12 @@ function HttpIncomingMessage(socket) {
 	function parseData(data) {
 		clearTimeout(timeoutId);
 		timeoutId = setTimeout(destroy, TIMEOUT);
-		buffer = buffer ? Buffer.concat([buffer, data]) : data;
 		if (parsedHeaders) {
-			self._parseBody(buffer);
+			self._parseBody(data);
 			return;
 		}
 		
+		buffer = buffer ? Buffer.concat([buffer, data]) : data;
 		var endIndex = endIndexOf(buffer, index);
 		if (endIndex == -1) {
 			endIndex = lastIndexOfCRLF(buffer, index);
@@ -88,8 +88,8 @@ proto._parseBody = function(buffer) {
 		return;
 	}
 	
-	this.contentLength_ -= buffer.length;
 	this.push(buffer);
+	this.contentLength_ -= buffer.length;
 	if (this.contentLength_ <= 0) {
 		this._emitEnd();
 	}
