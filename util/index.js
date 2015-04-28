@@ -146,7 +146,7 @@ exports.isWebProtocol = function isWebProtocol(protocol) {
 
 
 exports.drain = function drain(stream, end) {
-	end && stream.on('end', end);
+	end && stream.once('end', end);
 	stream.on('data', noop);
 };
 
