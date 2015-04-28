@@ -55,6 +55,7 @@ module.exports = function proxy(req, callback) {
 	        socket: socket
 	    }, function () {
 	        proxyReq.write(getHeadersContent(req));
+	        req.pipe(proxyReq);
 	        
 	        var proxyRes = new IncomingMessage(proxyReq);
 	        proxyRes.on('response', function(res) {
