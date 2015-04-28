@@ -58,7 +58,7 @@ function HttpIncomingMessage(socket) {
 		self.emit('response', self);
 		if (statusCode == 204 || statusCode == 304 ||
 			      (100 <= statusCode && statusCode <= 199)) {
-			    this._emitEnd();
+			    self._emitEnd();
 		}
 	}
 	
