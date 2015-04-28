@@ -146,9 +146,7 @@ exports.isWebProtocol = function isWebProtocol(protocol) {
 
 
 exports.drain = function drain(stream, end) {
-	if (end) {
-		stream._readableState.endEmitted ? end.call(stream) : stream.on('end', end);
-	}
+	end && stream.on('end', end);
 	stream.on('data', noop);
 };
 
