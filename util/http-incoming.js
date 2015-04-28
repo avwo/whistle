@@ -119,7 +119,7 @@ proto._parseChunkedBody = function(buffer) {
 	var size = parseInt(buffer.slice(0, index).toString(), 16);
 	if (!size) {
 		if (isNaN(size)) {
-			this.socket.emit('error', new Error('Parse error'))
+			this.socket.emit('error', new Error('parse error'))
 		} else {
 			this.contentLength_ = -1;
 			this.buffer_ = buffer.slice(index);
