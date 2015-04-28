@@ -50,11 +50,11 @@ function HttpIncomingMessage(socket) {
 		}
 		
 		endIndex += 4;
-		self._parseHeaders(buffer.slice(0, endIndex));
+		!overflow && self._parseHeaders(buffer.slice(0, endIndex));
+		parsedHeaders = true;
 		var statusCode = self.statusCode;
 		self._parseBody(buffer.slice(endIndex));
 		buffer = null;
-		parsedHeaders = true;
 		self.emit('response', self);
 		if (statusCode == 204 || statusCode == 304 ||
 			      (100 <= statusCode && statusCode <= 199)) {
