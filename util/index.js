@@ -169,6 +169,7 @@ exports.wrapResponse = function wrapResponse(res) {
 	var passThrough = new PassThrough();
 	passThrough.statusCode = res.statusCode;
 	passThrough.headers = res.headers || {};
+	passThrough.trailers = res.trailers || {};
 	passThrough.headers.Server = config.name;
 	passThrough.push(res.body == null ? null : String(res.body));
 	return passThrough;
