@@ -232,8 +232,9 @@ function getContentType(contentType) {
 
 exports.getContentType = getContentType;
 
-function supportHtmlTransform(headers) {
-	if (getContentType(headers) != 'HTML') {
+function supportHtmlTransform(res) {
+	var headers = res.headers;
+	if (getContentType(headers) != 'HTML' || !hasBody(res)) {
 		return false;
 	}
 	
@@ -243,6 +244,14 @@ function supportHtmlTransform(headers) {
 }
 
 exports.supportHtmlTransform = supportHtmlTransform;
+
+function hasBody(res) {
+	var statusCode = res.statusCode;
+	return !(statusCode == 204 || statusCode == 304 ||
+		      (100 <= statusCode && statusCode <= 199));
+}
+
+exports.hasBody = hasBody;
 
 function getPipeZipStream(headers) {
 	var pipeStream = new PipeStream();
