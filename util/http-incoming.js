@@ -96,8 +96,15 @@ proto._parseBody = function(buffer) {
 };
 
 proto._emitEnd = function() {
-	this.socket.emit('free');
-	this.push(null);
+	var self = this;
+	if (self.emitedEnd_) {
+		return;
+	}
+	self.emitedEnd_ = true;
+	process.nextTick(function() {
+		self.socket.emit('free');
+		self.push(null);
+	});
 };
 
 proto._parseChunkedBody = function(buffer) {
