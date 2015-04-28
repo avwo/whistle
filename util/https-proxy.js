@@ -62,9 +62,10 @@ module.exports = function proxy(req, callback) {
 		    });
 	        proxyRes.on('error', execCallback);
 	    });
-	}).end();
+	});
+	connect.end();
 	
-	req.on('error', function() {
+	req.on('error', function(err) {
 		connect.abort();
 		proxyReq && proxyReq.destroy();
 	});
