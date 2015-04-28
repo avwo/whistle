@@ -27,7 +27,7 @@ function getHeadersContent(req) {
 module.exports = function proxy(req, callback) {
 	var headers = req.headers;
 	var options = req.options;
-	var done;
+	var done, proxyReq;
 	
 	function execCallback(err, proxyRes) {
 		if (!done) {
@@ -47,10 +47,10 @@ module.exports = function proxy(req, callback) {
 			'user-agent': headers['user-agent']
 		};
 	
-	http.request(options).on('error', execCallback)
+	var connect = http.request(options).on('error', execCallback)
 	.on('connect', function (res, socket, head) {
 		socket.on('error', execCallback);
-	    var proxyReq = tls.connect({
+	    proxyReq = tls.connect({
 	        rejectUnauthorized: false,
 	        socket: socket
 	    }, function () {
@@ -63,6 +63,11 @@ module.exports = function proxy(req, callback) {
 	        proxyRes.on('error', execCallback);
 	    });
 	}).end();
+	
+	req.on('error', function() {
+		connect.abort();
+		proxyReq && proxyReq.destroy();
+	});
 };
 
 
