@@ -15,6 +15,7 @@
   "timeout": 36000,
   "tianmaRoot": "x-tianma-root",
   "tianmaDebug": "x-tianma-debug",
+  "httpsProxyHead": "x-whistle-proxy",
   "author": "avenwu <avenwu@vip.qq.com>",
   "contributors": [],
   "license": "MIT",
