@@ -24,7 +24,7 @@ function start(options) {
 	}
 	var app = proxy(options.port, options.plugins);
 	for (var i in argvs) {
-		app[i] = options[i] || config[i] || 9527;
+		app[i] = options[i] || config[i];
 	}
 	
 	var port = app.port;
