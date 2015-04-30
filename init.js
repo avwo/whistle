@@ -17,6 +17,17 @@ function parseHosts(hostsPath) {
 }
 
 function start(options) {
+	var app = proxy(options.port, options.plugins);
+	require('util')._extend(app, config);
+	
+	try {
+		require(app.uipath || './biz/webui/app')(app);
+		util.installTianma();
+	} catch(e) {}
+	return app;
+}
+
+function updateConfig(options) {
 	if (options.plugins) {
 		options.plugins = options.plugins.split(',').map(function(plugin) {
 			return /[^\w-]/i.test(plugin) ? path.resolve(plugin.trim()) : plugin;
@@ -33,19 +44,11 @@ function start(options) {
 			config[name] = ++port;
 		});
 	}
-	
-	var app = proxy(options.port, options.plugins);
-	require('util')._extend(app, config);
-	
-	try {
-		require(app.uipath || './biz/webui/app')(app);
-		util.installTianma();
-	} catch(e) {}
-	return app;
 }
 
 module.exports = function init(options) {
 	options = options || {};
+	updateConfig(options);
 	parseHosts(options.hosts);
 	return start(options);
 };
