@@ -22,17 +22,20 @@ function start(options) {
 			return /[^\w-]/i.test(plugin) ? path.resolve(plugin.trim()) : plugin;
 		});
 	}
-	var app = proxy(options.port, options.plugins);
-	for (var i in argvs) {
-		config[i] = app[i] = options[i] || config[i];
-	}
 	
-	var port = app.port;
+	for (var i in argvs) {
+		config[i] = options[i] || config[i];
+	} 
+	
+	var port = config.port;
 	if (Array.isArray(config.ports)) {
 		config.ports.forEach(function(name) {
-			config[name] = app[name] = ++port;
+			config[name] = ++port;
 		});
 	}
+	
+	var app = proxy(options.port, options.plugins);
+	require('util')._extend(app, config);
 	
 	try {
 		require(app.uipath || './biz/webui/app')(app);
