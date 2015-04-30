@@ -24,7 +24,14 @@ function start(options) {
 	}
 	var app = proxy(options.port, options.plugins);
 	for (var i in argvs) {
-		app[i] = options[i] || config[i];
+		app[i] = options[i] || config[i] || 9527;
+	}
+	
+	var port = app.port;
+	if (Array.isArray(config.ports)) {
+		config.ports.forEach(function(name) {
+			app[name] = ++port;
+		});
 	}
 	
 	try {

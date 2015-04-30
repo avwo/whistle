@@ -6,11 +6,13 @@
   "localUIHost": "local.whistlejs.com",
   "whistleSsl": "whistle-ssl",
   "port": 9527,
-  "uiport": 9528,
-  "uisslport": 9529,
-  "tianmaport": 9530,
-  "tianmasslport": 9531,
-  "httpsproxyport": 9532,
+  "ports": [
+  		"uiport", 
+  		"uisslport",
+		"tianmaport",
+		"tianmasslport",
+		"httpsproxyport"
+	],
   "maxSockets": 10,
   "timeout": 36000,
   "tianmaRoot": "x-tianma-root",
