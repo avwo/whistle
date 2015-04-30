@@ -19,7 +19,7 @@ function parseHosts(hostsPath) {
 function start(options) {
 	if (options.plugins) {
 		options.plugins = options.plugins.split(',').map(function(plugin) {
-			return path.resolve(plugin.trim());
+			return /[^\w-]/i.test(plugin) ? path.resolve(plugin.trim()) : plugin;
 		});
 	}
 	var app = proxy(options.port, options.plugins);
