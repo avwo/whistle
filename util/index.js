@@ -26,7 +26,7 @@ exports.config = util._extend({}, config);
 exports.argvs = require('./argvs');
 exports.WhistleTransform = require('./whistle-transform');
 exports.getNpm = getNpm;
-exports.PROXY_ID = config.name + ':' + Date.now();
+exports.PROXY_ID = 'x-' + config.name + '-' + Date.now();
 
 exports.installTianma = function(callback) {
 	if (!callback && fs.existsSync(path.join(NODE_MODULES_PATH, 'tianma')) 
