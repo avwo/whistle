@@ -13,7 +13,7 @@
 		"tianmasslport",
 		"httpsproxyport"
 	],
-  "maxSockets": 10,
+  "sockets": 10,
   "timeout": 36000,
   "tianmaRoot": "x-tianma-root",
   "tianmaDebug": "x-tianma-debug",

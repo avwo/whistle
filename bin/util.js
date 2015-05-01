@@ -8,7 +8,9 @@ function setOptions(program) {
 			.option('-p, --port [port]', config.name + ' port(' + config.port + ' by default)', '')
 			.option('-m, --plugins [plugins]', 'express middlewares(plugins) path (as: xx.js,yy/zz.js)', '')
 			.option('-u, --uipath [uipath]', 'web ui plugin path', '')
-			.option('-t, --timneout [timneout]', 'request timeout(' + config.timeout + ' ms by default)', parseInt);
+			.option('-t, --timneout [timneout]', 'request timeout(' + config.timeout + ' ms by default)', parseInt)
+			.option('-s, --sockets [sockets]', 'max sockets', parseInt)
+			.option('-d, --days [days]', 'the maximum days of cache', parseInt);
 }
 
 exports.setOptions = setOptions;

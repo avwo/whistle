@@ -5,5 +5,6 @@ module.exports = {
 	password : false,
 	hosts : true,
 	uipath : true,
-	timeout : false
+	timeout : false,
+	sockets: false
 };
