@@ -9,7 +9,7 @@ var PassThrough = require('stream').PassThrough;
 var iconv = require('iconv-lite');
 var zlib = require('zlib');
 var PipeStream = require('pipestream');
-var config = require('../package.json');
+var config = exports.config = util._extend({}, require('../package.json'));
 var getNpm = require('./npm');
 var NODE_MODULES_PATH = path.join(__dirname, '../node_modules');
 var npm = getNpm({
@@ -22,7 +22,6 @@ var installedTianma;
 var tianmaCallbacks = [];
 
 exports.LOCAL_DATA_PATH = path.join(__dirname, '../../' + config.dataDirname);
-exports.config = util._extend({}, config);
 exports.argvs = require('./argvs');
 exports.WhistleTransform = require('./whistle-transform');
 exports.getNpm = getNpm;
