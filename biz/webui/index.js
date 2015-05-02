@@ -10,6 +10,7 @@ module.exports = function(req, res, next) {
 		options.host = '127.0.0.1';
 		options.hostname = null;
 		options.port = config.uiport;
+		req.headers['x-forwarded-for'] = util.getClientIp(req);
 		options.headers = req.headers;
 		req.pipe(http.request(options, function(_res) {
 			res.writeHead(_res.statusCode || 0, _res.headers);
