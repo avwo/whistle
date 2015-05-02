@@ -43,32 +43,35 @@ app.get('/style/*', function(req, res){
 
 function checkLogin(req, res) {
 	if (!username && !password) {
+		
 		return true;
 	}
 	
-	var login = false;
 	var userInfo = auth(req);
 	if (userInfo && (userInfo.name || userInfo.pass)) {
 		if (username == userInfo.name && password == userInfo.pass) {
-			login = true;
 			res.setHeader('set-cookie', '_lkey=' + getLoginKey(req) 
 					+ '; max-age=' + 60 * 60 * 24 * 1000 + '; path=/');
+			return true;
 		}
-	} else {
-		var cookies = req.headers.cookie;
-		if (cookies) {
-			cookies = cookies.split(/;\s*/g);
-			for (var i = 0, len = cookies.length; i < len; i++) {
-				var cookie = cookies[i].split('=');
-				if (cookie[0] == '_lkey') {
-					login = cookie.slice(1).join('=') == getLoginKey(req);
-					break;
-				}
+	} 
+	
+	return checkCookie(req);
+}
+
+function checkCookie(req) {
+	var cookies = req.headers.cookie;
+	if (cookies) {
+		cookies = cookies.split(/;\s*/g);
+		for (var i = 0, len = cookies.length; i < len; i++) {
+			var cookie = cookies[i].split('=');
+			if (cookie[0] == '_lkey') {
+				return cookie.slice(1).join('=') == getLoginKey(req);
 			}
 		}
 	}
 	
-	return login;
+	return false;
 }
 
 function getLoginKey(req) {
