@@ -371,5 +371,11 @@ function _getCharset(str, isMeta) {
 exports.getCharset = getCharset;
 exports.getMetaCharset = getMetaCharset;
 
+function getClientIp(req) {
+    return req.headers['x-forwarded-for'] ||
+    req.connection.remoteAddress ||
+    req.socket.remoteAddress;
+}
 
+exports.getClientIp = getClientIp;
 

@@ -1,6 +1,7 @@
 var app = require('express')();
 var path = require('path');
 var htdocs = require('../htdocs');
+var util = require('../../util');
 var bodyParser = require('body-parser');
 
 app.use(bodyParser.json());

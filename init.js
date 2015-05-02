@@ -1,6 +1,6 @@
 var path = require('path');
 var fs = require('fs');
-var util = require('./util');
+var util = require('./util'); //必须第一个加载
 var proxy = require('./lib');
 var config = util.config;
 var argvs = util.argvs;
