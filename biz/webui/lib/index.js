@@ -1,10 +1,26 @@
 var app = require('express')();
 var path = require('path');
-var htdocs = require('../htdocs');
 var bodyParser = require('body-parser');
+var auth = require('basic-auth');
+var crypto = require('crypto');
+var htdocs = require('../htdocs');
+var util = require('../../../util');
+var config = util.config;
+var username = config.username || '';
+var password = config.password || '';
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(function(req, res, next) {
+	if (checkLogin(req, res)) {
+		next();
+		return;
+	}
+	
+	res.setHeader('WWW-Authenticate', ' Basic realm=User Login');
+	res.status(401).end('Please enter your username and password.');
+});
+
 app.get('/', function(req, res) {
 	res.sendFile(htdocs.getHtmlFile('index.html'));
 });
@@ -24,6 +40,47 @@ app.get('*.html', function(req, res) {
 app.get('/style/*', function(req, res){
 	  res.sendFile(htdocs.getFile(req.url.substring(7)));
 });
+
+function checkLogin(req, res) {
+	if (!username && !password) {
+		return true;
+	}
+	
+	var login = false;
+	var userInfo = auth(req);
+	if (userInfo && (userInfo.name || userInfo.pass)) {
+		if (username == userInfo.name && password == userInfo.pass) {
+			login = true;
+			res.setHeader('set-cookie', '_lkey=' + getLoginKey(req) 
+					+ '; max-age=' + 60 * 60 * 24 * 1000 + '; path=/');
+		}
+	} else {
+		var cookies = req.headers.cookie;
+		if (cookies) {
+			cookies = cookies.split(/;\s*/g);
+			for (var i = 0, len = cookies.length; i < len; i++) {
+				var cookie = cookies[i].split('=');
+				if (cookie[0] == '_lkey') {
+					login = cookie.slice(1).join('=') == getLoginKey(req);
+					break;
+				}
+			}
+		}
+	}
+	
+	return login;
+}
+
+function getLoginKey(req) {
+	return shasum(username + '\n' + password 
+	+ '\n' + util.getClientIp(req, true));
+}
+
+function shasum(str) {
+	var shasum = crypto.createHash('sha1');
+	shasum.update(str);
+	return shasum.digest('hex');
+}
 
 module.exports = function(proxy) {
 	require('./rules-util')(proxy.rulesUtil);
