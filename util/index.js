@@ -371,10 +371,10 @@ function _getCharset(str, isMeta) {
 exports.getCharset = getCharset;
 exports.getMetaCharset = getMetaCharset;
 
-function getClientIp(req) {
+function getClientIp(req, forwarded) {
 	var ip;
 	try {
-		ip = req.headers['x-forwarded-for'] ||
+		ip = forwarded && req.headers['x-forwarded-for'] ||
 	    req.connection.remoteAddress ||
 	    req.socket.remoteAddress;
 	} catch(e) {}

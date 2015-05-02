@@ -1,19 +1,10 @@
 var app = require('express')();
 var path = require('path');
-var bodyParser = require('body-parser');
 var htdocs = require('../htdocs');
-var util = require('../../util');
-var config = util.config;
-var username = config.username && config.password && 
-(config.username + '\n' + config.password);
+var bodyParser = require('body-parser');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(function(req, res, next) {
-	
-	next();
-});
-
 app.get('/', function(req, res) {
 	res.sendFile(htdocs.getHtmlFile('index.html'));
 });
