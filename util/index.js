@@ -372,9 +372,14 @@ exports.getCharset = getCharset;
 exports.getMetaCharset = getMetaCharset;
 
 function getClientIp(req) {
-    return req.headers['x-forwarded-for'] ||
-    req.connection.remoteAddress ||
-    req.socket.remoteAddress;
+	var ip;
+	try {
+		ip = req.headers['x-forwarded-for'] ||
+	    req.connection.remoteAddress ||
+	    req.socket.remoteAddress;
+	} catch(e) {}
+	
+	return ip;
 }
 
 exports.getClientIp = getClientIp;
