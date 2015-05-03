@@ -47,6 +47,10 @@
    "weinre": "2.0.0-pre-I0Z7U9OV",
    "pipestream": "*"
   },
+  "scripts": {
+		"test": "node test",
+		"start": "node app.js"
+},
   "engines": {
     "node": ">= 0.10.0"
   }
