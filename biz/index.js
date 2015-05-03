@@ -8,6 +8,7 @@ var FULL_WEINRE_HOST = config.WEINRE_HOST + ':' + config.weinreport;
 function request(req, res, port) {
 	var options = url.parse(util.getFullUrl(req));
 	options.host = '127.0.0.1';
+	options.method = req.method;
 	options.hostname = null;
 	if (port) {
 		options.port = port;
