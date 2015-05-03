@@ -7,5 +7,6 @@ module.exports = {
 	uipath : true,
 	timeout : false,
 	sockets: false,
-	days: false
+	days: false,
+	keepAlive: false
 };

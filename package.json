@@ -17,6 +17,7 @@
   "sockets": 10,
   "days": 36,
   "timeout": 36000,
+  "keepAlive": true,
   "tianmaRoot": "x-tianma-root",
   "tianmaDebug": "x-tianma-debug",
   "httpsProxyHost": "x-whistle-proxy-host",

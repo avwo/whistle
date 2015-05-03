@@ -10,6 +10,7 @@ function setOptions(program) {
 			.option('-u, --uipath [uipath]', 'web ui plugin path', '')
 			.option('-t, --timneout [timneout]', 'request timeout(' + config.timeout + ' ms by default)', parseInt)
 			.option('-s, --sockets [sockets]', 'max sockets', parseInt)
+			.option('-a, --keepAlive [keepAlive]', 'keep alive', '')
 			.option('-d, --days [days]', 'the maximum days of cache', parseInt);
 }
 

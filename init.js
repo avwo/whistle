@@ -41,6 +41,8 @@ function updateConfig(options) {
 		config[i] = options[i] || config[i];
 	} 
 	
+	config.keepAlive = !(config.keepAlive == 'false' || config.keepAlive == '0');
+		
 	var port = config.port;
 	if (Array.isArray(config.ports)) {
 		config.ports.forEach(function(name) {
