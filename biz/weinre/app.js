@@ -4,6 +4,6 @@ var util = require('../../util');
 var config = util.config;
 
 cp.spawn('node', [path.join(__dirname, 'weinre.js'), '--boundHost', 
-                  '-all-', '--httpPort', config.weinreport], {
+                  config.WEINRE_HOST, '--httpPort', config.weinreport], {
 	stdio: [ 0, 1, 2 ]
 });
