@@ -10,6 +10,7 @@ var iconv = require('iconv-lite');
 var zlib = require('zlib');
 var PipeStream = require('pipestream');
 var config = exports.config = util._extend({}, require('../package.json'));
+config.WEINRE_HOST = 'weinre.' + config.localUIHost;
 var getNpm = require('./npm');
 var NODE_MODULES_PATH = path.join(__dirname, '../node_modules');
 var npm = getNpm({
