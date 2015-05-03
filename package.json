@@ -11,9 +11,11 @@
   		"uisslport",
 		"tianmaport",
 		"tianmasslport",
-		"httpsproxyport"
+		"httpsproxyport",
+		"weinreport"
 	],
   "sockets": 10,
+  "days": 36,
   "timeout": 36000,
   "tianmaRoot": "x-tianma-root",
   "tianmaDebug": "x-tianma-debug",
@@ -42,6 +44,7 @@
    "commander": "2.7.1",
    "iconv-lite": "0.4.7",
    "dustjs-helpers": "1.6.1",
+   "weinre": "2.0.0-pre-I0Z7U9OV",
    "pipestream": "*"
   },
   "engines": {
