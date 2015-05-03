@@ -10,6 +10,7 @@ function request(req, res, port) {
 	options.host = '127.0.0.1';
 	options.method = req.method;
 	options.hostname = null;
+	options.protocol = null;
 	if (port) {
 		options.port = port;
 	}
