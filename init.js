@@ -24,7 +24,9 @@ function start(options) {
 		require(app.uipath || './biz/webui/app')(app);
 		util.installTianma();
 		require('./biz/weinre/app');
-	} catch(e) {}
+	} catch(e) {
+		console.log(e);
+	}
 	return app;
 }
 
