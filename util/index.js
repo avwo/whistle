@@ -175,7 +175,8 @@ exports.wrapResponse = function wrapResponse(res) {
 	passThrough.headers = res.headers || {};
 	passThrough.trailers = res.trailers || {};
 	passThrough.headers.server = config.name;
-	passThrough.push(res.body == null ? null : String(res.body));
+	res.body != null && passThrough.push(String(res.body));
+	passThrough.push(null);
 	return passThrough;
 };
 
