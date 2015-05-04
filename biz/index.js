@@ -3,7 +3,6 @@ var https = require('https');
 var http = require('http');
 var util = require('../util');
 var config = util.config;
-var FULL_WEINRE_HOST = config.WEINRE_HOST + ':' + config.weinreport;
 
 function request(req, res, port) {
 	var options = url.parse(util.getFullUrl(req));
@@ -26,7 +25,7 @@ module.exports = function(req, res, next) {
 	var host = req.headers.host;
 	if (host == config.localUIHost) {
 		request(req, res, config.uiport);
-	} else if (host == config.WEINRE_HOST || host == FULL_WEINRE_HOST) {
+	} else if (host == config.WEINRE_HOST) {
 		request(req, res, config.weinreport);
 	} else {
 		next();
