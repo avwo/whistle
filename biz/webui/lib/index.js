@@ -87,5 +87,6 @@ function shasum(str) {
 
 module.exports = function(proxy) {
 	require('./rules-util')(proxy.rulesUtil);
+	require('./data')(proxy);
 	app.listen(proxy.uiport);
 };
