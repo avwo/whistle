@@ -191,11 +191,11 @@ function parseJSON(data) {
 exports.parseJSON = parseJSON;
 
 exports.parseFileToJson = function parseFileToJson(path, callback) {
-	if (!path) {
+	if (!path || !(path = getPath(path))) {
 		callback();
 		return;
 	}
-	fs.readFile(getPath(path), {encoding: 'utf8'}, function(err, data) {
+	fs.readFile(path, {encoding: 'utf8'}, function(err, data) {
 		
 		callback(err, (data = data && data.trim()) && parseJSON(data));
 	});
