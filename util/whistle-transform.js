@@ -62,7 +62,7 @@ WhistleTransform.prototype._transform = function(chunk, encoding, callback) {
 			chunk = chunk ? Buffer.concat([self._top, chunk]) : self._top;
 			self._top = null;
 		}
-		return self._delay ? cb() : setTimeout(cb, self._delay);
+		return self._delay ? setTimeout(cb, self._delay) :  cb();
 	}
 	
 	if (self._body) {
