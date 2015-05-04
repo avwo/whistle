@@ -5,7 +5,7 @@ function handleRequest(request) {
 }
 
 module.exports = function(proxy) {
-	proxy.on('request', handleRequest);
+//	proxy.on('request', handleRequest);
 	
 };
 
