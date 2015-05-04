@@ -162,9 +162,13 @@ exports.encodeNonAsciiChar = function encodeNonAsciiChar(str) {
 };
 
 function getPath(url) {
-	url = url && url.replace(/\/?(?:\?|#).*$/, '') || '';
-	var index = url.indexOf('://');
-	return index > -1 ? url.substring(index + 3) : url;
+	if (url) {
+		url = url.replace(/\/?(?:\?|#).*$/, '');
+		var index = url.indexOf('://');
+		url = index > -1 ? url.substring(index + 3) : url;
+	}
+	
+	return url;
 }
 
 exports.getPath = getPath;
@@ -191,7 +195,7 @@ function parseJSON(data) {
 exports.parseJSON = parseJSON;
 
 exports.parseFileToJson = function parseFileToJson(path, callback) {
-	if (!path || !(path = getPath(path))) {
+	if (!(path = getPath(path))) {
 		callback();
 		return;
 	}
