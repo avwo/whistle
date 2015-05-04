@@ -297,35 +297,34 @@ function getPipeIconvStream(headers, plainText) {
 					if (!plainText) {//如果没charset
 						charset = getMetaCharset(content);
 					}
-					
-					if (!charset && content.length >= 204800) {
-						charset = content.indexOf('�') != -1 ? 'gbk' : 'utf8';
-					}
 				} 
-				
-				if (charset) {
-					createIconvDecoder().write(buffer);
-					buffer = null;
-				}
+				resolveCharset(buffer);
 			});
-			res.on('end', function() {
-				if (!charset) {
-					charset = content.indexOf('�') != -1 ? 'gbk' : 'utf8';
-				}
-				
-				createIconvDecoder().end(buffer);
-				buffer = null;
-			});
+			res.on('end', resolveCharset);
 			
-			function createIconvDecoder() {
-				if (!iconvDecoder) {
-					iconvDecoder = iconv.decodeStream(charset);
-					next(iconvDecoder);
+			function resolveCharset(chunk) {
+				if (!charset && (!chunk || content.length >= 204800)) {
+					charset = content.indexOf('�') != -1 ? 'gbk' : 'utf8';
 					content = null;
 				}
 				
-				return iconvDecoder;
+				if (!charset) {
+					return;
+				}
+				
+				if (!iconvDecoder) {
+					iconvDecoder = iconv.decodeStream(charset);
+					next(iconvDecoder);
+				}
+				
+				if (buffer) {
+					iconvDecoder.write(buffer);
+					buffer = null;
+				}
+				
+				!chunk && iconvDecoder.end();
 			}
+			
 		});
 		
 		pipeStream.addTail(function(src, next) {
