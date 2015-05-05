@@ -214,7 +214,7 @@ function parseRuleToJson(rule, callback) {
 	}
 	
 	if (rule.value) {
-		callback(null, util.parseJSON(removeProtocol(rule.value, true)));
+		callback(null, parseJSON(removeProtocol(rule.value, true)));
 		return;
 	}
 	
