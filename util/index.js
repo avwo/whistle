@@ -223,6 +223,20 @@ function parseRuleToJson(rule, callback) {
 
 exports.parseRuleToJson = parseRuleToJson;
 
+function getValue(rule) {
+	return rule.value || rule.path;
+}
+
+exports.rule = {
+		getMatcher: function getMatcher(rule) {
+			return rule && (getValue(rule) || rule.matcher);
+		},
+
+		getUrl: function getUrl(rule) {
+			return rule && (getValue(rule) || rule.url);
+		}
+};
+
 function getContentType(contentType) {
 	if (contentType && typeof contentType != 'string') {
 		contentType = contentType['content-type'] || contentType.contentType;
