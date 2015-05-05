@@ -24,7 +24,7 @@ module.exports = function(req, res, next) {
 			options.port = this.tianmaport;
 		}
 		options.host = '127.0.0.1';
-		util.installTianma(next);
+		util.installTianma(this, next);
 		return;
 	}
 	

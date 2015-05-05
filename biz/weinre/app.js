@@ -3,7 +3,7 @@ var path = require('path');
 
 module.exports = function init(app) {
 	var util = app.rulesUtil;
-	var pid = util.getProperty('weinreChildId');
+	var pid = util.getProperty('weinreChildPid');
 	if (pid) {
 		try {
 			process.kill(pid);
@@ -13,5 +13,5 @@ module.exports = function init(app) {
 	var child = cp.spawn('node', [path.join(__dirname, 'weinre.js'), '--boundHost', 
 	                              'localhost', '--httpPort', app.util.config.weinreport], 
 	                              {stdio: [ 0, 1, 2 ]});
-	util.setProperty('weinreChildId', child.pid);
+	util.setProperty('weinreChildPid', child.pid);
 };
