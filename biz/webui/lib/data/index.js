@@ -1,11 +1,20 @@
 
 
 function handleRequest(request) {
-	console.log(request.url)
+	
+}
+
+function handleTunnel(request) {
+	
+}
+
+function handleTunnelProxy(request) {
+	
 }
 
 module.exports = function(proxy) {
-//	proxy.on('request', handleRequest);
-	
+	proxy.on('request', handleRequest);
+	proxy.on('tunnel', handleTunnel);
+	proxy.on('tunnelProxy', handleRequest);
 };
 
