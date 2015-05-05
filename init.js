@@ -23,7 +23,7 @@ function start(options) {
 	try {
 		require(app.uipath || './biz/webui/app')(app);
 		util.installTianma();
-		require('./biz/weinre/app');
+		require('./biz/weinre/app')(app);
 	} catch(e) {
 		console.log(e);
 	}

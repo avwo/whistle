@@ -1,9 +1,17 @@
 var cp = require('child_process');
 var path = require('path');
-var util = require('../../util');
-var config = util.config;
 
-cp.spawn('node', [path.join(__dirname, 'weinre.js'), '--boundHost', 
-                  'localhost', '--httpPort', config.weinreport], {
-	stdio: [ 0, 1, 2 ]
-});
+module.exports = function init(app) {
+	var util = app.rulesUtil;
+	var pid = util.getProperty('weinreChildId');
+	if (pid) {
+		try {
+			process.kill(pid);
+		} catch(e) {}
+	}
+	
+	var child = cp.spawn('node', [path.join(__dirname, 'weinre.js'), '--boundHost', 
+	                              'localhost', '--httpPort', app.util.config.weinreport], 
+	                              {stdio: [ 0, 1, 2 ]});
+	util.setProperty('weinreChildId', child.pid);
+};
