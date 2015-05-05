@@ -27,7 +27,8 @@
   "keywords": [
     "proxy",
     "web proxy",
-    "fiddler"
+    "fiddler",
+    "charles"
   ],
   "bin": {
     "whistle": "./bin/whistle.js"
