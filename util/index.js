@@ -4,6 +4,7 @@ var path = require('path');
 var util = require('util');
 var os = require('os');
 var fs = require('fs');
+var EventEmitter = require('events').EventEmitter;
 var StringDecoder = require('string_decoder').StringDecoder;
 var PassThrough = require('stream').PassThrough;
 var iconv = require('iconv-lite');
@@ -66,6 +67,11 @@ exports.isRegExp = function isRegExp(regExp) {
 	return REG_EXP_RE.test(regExp);
 };
 
+exports.emitErrorIfExist = function(obj, err) {
+	if (obj && EventEmitter.listenerCount(obj, 'error') > 0) {
+		obj.emit('error', err || new Error('unknown'));
+	}
+};
 
 exports.getHost = function parseHost(_url) {
 	_url = url.parse(setProtocol(_url || '')).hostname;
