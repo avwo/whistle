@@ -2,7 +2,7 @@ var cp = require('child_process');
 var path = require('path');
 
 module.exports = function start(util, name, argv) {
-	var pid = util.getProperty(name);
+	var pid = util.register(name);
 	if (pid) {
 		try {
 			process.kill(pid);
@@ -10,5 +10,5 @@ module.exports = function start(util, name, argv) {
 	}
 	
 	var child = cp.spawn('node', argv, {stdio: [ 0, 1, 2 ]});
-	util.setProperty(name, child.pid);
+	util.register(name, child.pid);
 };
