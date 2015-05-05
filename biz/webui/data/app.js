@@ -10,7 +10,7 @@ module.exports = function init(app) {
 		} catch(e) {}
 	}
 	
-	var child = cp.spawn('node', [path.join(__dirname, 'uidata.js'), app.util.config.weinreport], 
+	var child = cp.spawn('node', [path.join(__dirname, 'uidata.js'), app.util.config.uidataport], 
 	                              {stdio: [ 0, 1, 2 ]});
 	util.setProperty('uidataChildPid', child.pid);
 };
