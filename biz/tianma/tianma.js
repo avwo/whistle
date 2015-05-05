@@ -23,7 +23,7 @@ function accessControlHandler(context, next) {
 }
 	
 tianma
-	.createHost({ port: process.argv[2], portssl: process.argv[3]})
+	.createHost({ port: parseInt(process.argv[2], 10), portssl: parseInt(process.argv[3], 10)})
 		.mount('*.*', [function(context, next) {//独角兽没有把headers传递过去，比较坑，不得已而为之，目前不支持同时指向两个目录，这种应用场景很少
 			if (root = context.request.head('x-tianma-root')) {
 				root = decodeURIComponent(root);
