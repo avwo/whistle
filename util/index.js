@@ -194,7 +194,7 @@ function parseJSON(data) {
 
 exports.parseJSON = parseJSON;
 
-exports.parseFileToJson = function parseFileToJson(path, callback) {
+function parseFileToJson(path, callback) {
 	if (!(path = getPath(path))) {
 		callback();
 		return;
@@ -203,7 +203,25 @@ exports.parseFileToJson = function parseFileToJson(path, callback) {
 		
 		callback(err, (data = data && data.trim()) && parseJSON(data));
 	});
-};
+}
+
+exports.parseFileToJson = parseFileToJson;
+
+function parseRuleToJson(rule, callback) {
+	if (!rule) {
+		callback();
+		return;
+	}
+	
+	if (rule.value) {
+		callback(null, util.parseJSON(removeProtocol(rule.value, true)));
+		return;
+	}
+	
+	parseFileToJson(rule && (rule.path || rule.url), callback);
+}
+
+exports.parseRuleToJson = parseRuleToJson;
 
 function getContentType(contentType) {
 	if (contentType && typeof contentType != 'string') {
