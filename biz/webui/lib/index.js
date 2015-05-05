@@ -1,6 +1,5 @@
 var app = require('express')();
 var path = require('path');
-var bodyParser = require('body-parser');
 var auth = require('basic-auth');
 var crypto = require('crypto');
 var htdocs = require('../htdocs');
@@ -9,8 +8,7 @@ var config = util.config;
 var username = config.username || '';
 var password = config.password || '';
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+require('../util').addCommonMW(app);
 app.use(function(req, res, next) {
 	if (checkLogin(req, res)) {
 		next();
