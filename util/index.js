@@ -69,6 +69,7 @@ exports.isRegExp = function isRegExp(regExp) {
 
 exports.emitErrorIfExist = function(obj, err) {
 	if (obj && EventEmitter.listenerCount(obj, 'error') > 0) {
+		console.log(err)
 		obj.emit('error', err || new Error('unknown'));
 	}
 };
