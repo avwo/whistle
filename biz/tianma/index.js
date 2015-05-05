@@ -7,12 +7,12 @@ module.exports = function(req, res, next) {
 	var protocol = options && options.protocol;
 	
 	if (protocol == 'tianma-debug:' || protocol == 'stianma-debug:') {
-		req.headers[config.tianmaDebug] = 'debug';
+		req.headers['x-tianma-debug'] = 'debug';
 		protocol = protocol.split('-')[0] + ':';
 	}
 	
 	if (protocol == 'tianma:' || protocol == 'stianma:') {
-		req.headers[config.tianmaRoot] = encodeURIComponent(options.rule.matcher.substring(protocol.length + 2));
+		req.headers['x-tianma-root'] = encodeURIComponent(options.rule.matcher.substring(protocol.length + 2));
 		req.options = url.parse(req.fullUrl);
 		req.options.rule = options.rule;
 		options = req.options;

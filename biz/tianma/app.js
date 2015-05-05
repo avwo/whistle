@@ -27,10 +27,10 @@ module.exports = function init(options) {
 tianma
 	.createHost({ port: options.tianmaport, portssl: options.tianmasslport})
 		.mount('*.*', [function(context, next) {//独角兽没有把headers传递过去，比较坑，不得已而为之，目前不支持同时指向两个目录，这种应用场景很少
-			if (root = context.request.head(config.tianmaRoot)) {
+			if (root = context.request.head('x-tianma-root')) {
 				root = decodeURIComponent(root);
 			}
-			_debug = context.request.head(config.tianmaDebug) == 'debug';
+			_debug = context.request.head('x-tianma-debug') == 'debug';
 			
 			next();
 		}, unicorn({ source: 'loop://localhost/'}),

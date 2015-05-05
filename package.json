@@ -17,8 +17,6 @@
   "sockets": 10,
   "days": 36,
   "timeout": 36000,
-  "tianmaRoot": "x-tianma-root",
-  "tianmaDebug": "x-tianma-debug",
   "httpsProxyHost": "x-whistle-proxy-host",
   "author": "avenwu <avenwu@vip.qq.com>",
   "contributors": [],
