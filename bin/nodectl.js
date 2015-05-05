@@ -149,9 +149,7 @@ function stop(callback) {
 
 	if (fs.existsSync(RUNNING_PATH)) {
 		data = fs.readFileSync(RUNNING_PATH, 'utf-8').split('\n');
-		try {
-			options = data[0];
-		} catch(e) {}
+		options = commonUtil.parseJSON(data[0]) || {};
 		pid = data[1];
 	}
 
