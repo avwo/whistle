@@ -13,12 +13,13 @@ require('./bootstrap')(function () {
 			var options = util.getOptions(program);
 			
 			if (options.config) {
-				var _config = require(options.config);
+				var _config = require(options.config) || {};
 				if (Array.isArray(_config.ports)) {
 					config.ports = config.ports.concat(_config.ports);
 				}
 				delete _config.ports;
 				delete options.config;
+				options = require('util')._extend(_config, options);
 			}
 			
 			var argv = util.argv;
