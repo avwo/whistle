@@ -11,11 +11,12 @@ bootstrap(function () {
 			require('util')._extend(config, require(program.config));
 		}
 		
+		require('./lib/util')
+			.options(program);
+		
 		program
 		  .version(config.version)
 		  .usage('<command> [options]');
-
-		require('./lib/util').options(program);
 
 		program
 			.command('run')
