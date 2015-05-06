@@ -1,9 +1,8 @@
 var path = require('path');
 var fs = require('fs');
+var config = require('./util').config; //位置不能变
 var extend = require('util')._extend;
-var util = require('./util'); //必须第一个加载
 var proxy = require('./lib');
-var config = util.config;
 var rulesUtil = require('./lib/rules/util');
 
 function parseHosts(rulesPath) {
@@ -19,7 +18,7 @@ function parseHosts(rulesPath) {
 
 function start(options) {
 	var app = proxy(options.port, options.plugins);
-	require('util')._extend(app, config);
+	extend(app, config);
 	require('./biz/init')(app);
 	return app;
 }
