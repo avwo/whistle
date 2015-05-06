@@ -1,9 +1,9 @@
 var path = require('path');
 var fs = require('fs');
+var extend = require('util')._extend;
 var util = require('./util'); //必须第一个加载
 var proxy = require('./lib');
 var config = util.config;
-var argvs = util.argvs;
 var rulesUtil = require('./lib/rules/util');
 
 function parseHosts(rulesPath) {
@@ -24,28 +24,8 @@ function start(options) {
 	return app;
 }
 
-function updateConfig(options) {
-	if (options.plugins) {
-		options.plugins = options.plugins.split(',').map(function(plugin) {
-			return /[^\w-]/i.test(plugin) ? path.resolve(plugin.trim()) : plugin;
-		});
-	}
-	
-	for (var i in argvs) {
-		config[i] = options[i] || config[i];
-	} 
-	
-	var port = config.port;
-	if (Array.isArray(config.ports)) {
-		config.ports.forEach(function(name) {
-			config[name] = ++port;
-		});
-	}
-}
-
 module.exports = function init(options) {
-	options = options || {};
-	updateConfig(options);
+	extend(config, options);
 	parseHosts(options.rules);
 	return start(options);
 };

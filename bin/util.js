@@ -1,6 +1,6 @@
 var config = require('../util').config;
 
-function setOptions(program) {
+function options(program) {
 	return program
 			.option('-r, --rules [rules]', 'rules file', '')
 			.option('-n, --username [username]', 'login username', '')
@@ -13,4 +13,17 @@ function setOptions(program) {
 			.option('-d, --days [days]', 'the maximum days of cache', parseInt);
 }
 
-exports.setOptions = setOptions;
+exports.options = options;
+
+exports.argv = {
+		port : false, //is not path
+		plugins : false,
+		username : false,
+		password : false,
+		rules : true,
+		uipath : true,
+		timeout : false,
+		sockets: false,
+		days: false
+	};
+

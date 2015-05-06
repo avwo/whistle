@@ -8,7 +8,7 @@ program
   .version(config.version)
   .usage('<command> [options]');
 
-require('./util').setOptions(program);
+require('./util').options(program);
 
 program
 	.command('run')

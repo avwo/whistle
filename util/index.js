@@ -14,7 +14,6 @@ var config = exports.config = util._extend({}, require('../package.json'));
 config.WEINRE_HOST = 'weinre.' + config.localUIHost;
 
 exports.LOCAL_DATA_PATH = path.join(__dirname, '../../' + config.dataDirname);
-exports.argvs = require('./argvs');
 exports.WhistleTransform = require('./whistle-transform');
 exports.PROXY_ID = 'x-' + config.name + '-' + Date.now();
 

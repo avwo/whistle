@@ -51,10 +51,10 @@ function setArgs(options, args) {
 		}).join();
 	}
 	var pureOptions = {};
-	var argvs = commonUtil.argvs;
-	for (var name in argvs) {
+	var argv = require('./util').argv;
+	for (var name in argv) {
 		if (options[name]) {
-			if (argvs[name]) {
+			if (argv[name]) {
 				options[name] = resolvePath(options[name]);
 			}
 			args.push('--' + name);
