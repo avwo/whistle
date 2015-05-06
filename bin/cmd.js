@@ -51,9 +51,13 @@ program
 	});
 
 bootstrap(function () {
-	program.parse(process.argv);
+	process.nextTick(function() {
+		program.parse(process.argv);
 
-	if (!bingo) {
-		console.log('Type \'' + config.name + ' help\' for usage.');
-	}
+		if (!bingo) {
+			console.log('Type \'' + config.name + ' help\' for usage.');
+		}
+	});
 });
+
+module.exports = program;
