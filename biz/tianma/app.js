@@ -3,6 +3,7 @@ var unicorn = require('tianma-unicorn');
 var pipe = tianma.pipe;
 var readFile = require('./file-reader');
 var debug = require('./debug');
+var config = require('../../util').config;
 var root, _debug;
 
 function accessControlHandler(context, next) {
@@ -22,9 +23,9 @@ function accessControlHandler(context, next) {
 	next();
 }
 	
-module.exports = function init(options) {
+
 tianma
-	.createHost({ port: options.tianmaport, portssl: options.tianmasslport})
+	.createHost({ port: config.tianmaport, portssl: config.tianmasslport})
 		.mount('*.*', [function(context, next) {//独角兽没有把headers传递过去，比较坑，不得已而为之，目前不支持同时指向两个目录，这种应用场景很少
 			if (root = context.request.head('x-tianma-root')) {
 				root = decodeURIComponent(root);
@@ -54,4 +55,3 @@ tianma
         	return _debug;
         }), accessControlHandler])
 		.start();
-};

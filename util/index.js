@@ -29,7 +29,7 @@ exports.WhistleTransform = require('./whistle-transform');
 exports.getNpm = getNpm;
 exports.PROXY_ID = 'x-' + config.name + '-' + Date.now();
 
-exports.installTianma = function(app, callback) {
+exports.installTianma = function(callback) {
 	if (!callback && fs.existsSync(path.join(NODE_MODULES_PATH, 'tianma')) 
 			&& fs.existsSync(path.join(NODE_MODULES_PATH, 'tianma-unicorn')) &&
 			fs.existsSync(path.join(NODE_MODULES_PATH, 'pegasus'))) {
@@ -51,7 +51,7 @@ exports.installTianma = function(app, callback) {
 	
 	function start() {
 		try {
-			require('../biz/tianma/app')(app);
+			require('../biz/tianma/app');
 			installedTianma = true;
 		} catch(e) {}
 	}

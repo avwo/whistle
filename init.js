@@ -22,7 +22,7 @@ function start(options) {
 	
 	try {
 		require('./biz/init')(app);
-		util.installTianma(app);
+		util.installTianma();
 	} catch(e) {
 		console.log(e);
 	}
