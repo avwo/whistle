@@ -5,7 +5,7 @@ module.exports.run = function(options) {
 		program.bootstrap = options.bootstrap;
 	}
 	if (options.config) {
-		program._config = options.config;
+		program.config = options.config;
 	}
 	return program;
 };

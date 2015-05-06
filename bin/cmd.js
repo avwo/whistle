@@ -7,7 +7,10 @@ var bingo = false;
 
 bootstrap(function () {
 	process.nextTick(function() {
-		require('util')._extend(config, program._config);
+		if (program.config) {
+			require('util')._extend(config, require(program.config));
+		}
+		
 		program
 		  .version(config.version)
 		  .usage('<command> [options]');

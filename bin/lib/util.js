@@ -11,7 +11,8 @@ function options(program) {
 			.option('-t, --timneout [ms]', 'request timeout(' + config.timeout + ' ms by default)', parseInt)
 			.option('-s, --sockets [number]', 'max sockets', parseInt)
 			.option('-d, --days [number]', 'the maximum days of cache', parseInt)
-			.option('-b, --bootstrap [script path]', 'automatic startup script path', String);
+			.option('-b, --bootstrap [script path]', 'automatic startup script path', String)
+			.option('-c, --config [config file path]', 'startup config file path', String);
 }
 
 exports.options = options;

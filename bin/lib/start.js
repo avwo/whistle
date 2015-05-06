@@ -11,6 +11,16 @@ require('./bootstrap')(function () {
 		.description('Start a front service')
 		.action(function (path) {
 			var options = util.getOptions(program);
+			
+			if (options.config) {
+				var _config = require(options.config);
+				if (Array.isArray(_config.ports)) {
+					config.ports = config.ports.concat(_config.ports);
+				}
+				delete _config.ports;
+				delete options.config;
+			}
+			
 			var argv = util.argv;
 			
 			for (var i in options) {
