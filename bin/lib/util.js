@@ -21,7 +21,8 @@ var excludes = ['commands', 'options', '_execs', '_allowUnknownOption',
 exports.getOptions = function getOptions(program) {
 	var options = {};
 	Object.keys(program).forEach(function(name) {
-		if (excludes.indexOf(name) == -1 && typeof program[name] != 'object') {
+		if (excludes.indexOf(name) == -1 && name.indexOf('_') !== 0 
+				&& typeof program[name] != 'object') {
 			options[name] = program[name];
 		}
 	});
