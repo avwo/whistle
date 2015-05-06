@@ -3,7 +3,7 @@ module.exports = {
 	plugins : false,
 	username : false,
 	password : false,
-	hosts : true,
+	rules : true,
 	uipath : true,
 	timeout : false,
 	sockets: false,
