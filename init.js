@@ -19,13 +19,7 @@ function parseHosts(hostsPath) {
 function start(options) {
 	var app = proxy(options.port, options.plugins);
 	require('util')._extend(app, config);
-	
-	try {
-		require('./biz/init')(app);
-		util.installTianma();
-	} catch(e) {
-		console.log(e);
-	}
+	require('./biz/init')(app);
 	return app;
 }
 

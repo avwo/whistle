@@ -12,50 +12,11 @@ var zlib = require('zlib');
 var PipeStream = require('pipestream');
 var config = exports.config = util._extend({}, require('../package.json'));
 config.WEINRE_HOST = 'weinre.' + config.localUIHost;
-var getNpm = require('./npm');
-var NODE_MODULES_PATH = path.join(__dirname, '../node_modules');
-var npm = getNpm({
-	loglevel: 'silent',
-	tmp: path.join(__dirname, './tmp'),
-	global: true,
-	prefix: path.join(__dirname, '../')
-});
-var installedTianma;
-var tianmaCallbacks = [];
 
 exports.LOCAL_DATA_PATH = path.join(__dirname, '../../' + config.dataDirname);
 exports.argvs = require('./argvs');
 exports.WhistleTransform = require('./whistle-transform');
-exports.getNpm = getNpm;
 exports.PROXY_ID = 'x-' + config.name + '-' + Date.now();
-
-exports.installTianma = function(callback) {
-	if (!callback && fs.existsSync(path.join(NODE_MODULES_PATH, 'tianma')) 
-			&& fs.existsSync(path.join(NODE_MODULES_PATH, 'tianma-unicorn')) &&
-			fs.existsSync(path.join(NODE_MODULES_PATH, 'pegasus'))) {
-		start();
-	}
-	if (installedTianma) {
-		callback && callback();
-		return;
-	}
-	
-	callback && tianmaCallbacks.push(callback);
-	npm(['tianma@0.8.1', 'tianma-unicorn@1.0.15', 'pegasus@0.7.5'], function(err) {
-		!err && start();
-		tianmaCallbacks.forEach(function(cb) {
-			cb(err);
-		});
-		tianmaCallbacks = [];
-	});
-	
-	function start() {
-		try {
-			require('../biz/tianma/app');
-			installedTianma = true;
-		} catch(e) {}
-	}
-};
 
 function noop() {}
 
