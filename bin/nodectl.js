@@ -4,8 +4,8 @@ var	path = require('path');
 var	util = require('util');
 var	commonUtil = require('../util');
 var	config = commonUtil.config;
-var PATH_BOOTSTRAP = path.join(__dirname, 'bootstrap.js');
-var	START_PATH = path.join(__dirname, '../init.js');
+var START_PATH = path.join(__dirname, 'start.js');
+var	INIT_PATH = path.join(__dirname, '../init.js');
 var RUNNING_PATH = path.join(commonUtil.LOCAL_DATA_PATH, '.running');
 
 function getRunningPath(options) {
@@ -88,7 +88,7 @@ exports.restart = restart;
 
 function run(options) {
 	console.log('[i] Press [Ctrl+C] to stop ' + config.name + '.. port: ' + (options.port || config.port));
-	var args = [PATH_BOOTSTRAP, 'run', START_PATH];
+	var args = [START_PATH, 'run', INIT_PATH];
 	options = setArgs(options, args);
 	
 	cp.spawn('node', args, {
@@ -121,7 +121,7 @@ function start(options, callback) {
 				fs.mkdirSync('log');
 			}
 			
-			var args = [PATH_BOOTSTRAP, 'run', START_PATH];
+			var args = [START_PATH, 'run', INIT_PATH];
 			options = setArgs(options, args);
 
 			child = cp.spawn('node', args, {
