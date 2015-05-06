@@ -43,8 +43,8 @@ require('./bootstrap')(function () {
 				});
 			}
 			
-			require(path)(config);
-			options.bootstrap && require(options.bootstrap)(config);
+			var app = require(path)(config);
+			options.bootstrap && require(options.bootstrap)(app);
 		});
 
 	util.options(program)
