@@ -7,5 +7,9 @@ module.exports.run = function(options) {
 	if (options.config) {
 		program.config = options.config;
 	}
+	
+	if (options.middlewares) {
+		program.middlewares = options.middlewares;
+	}
 	return program;
 };

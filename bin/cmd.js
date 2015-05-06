@@ -11,6 +11,10 @@ bootstrap(function () {
 			require('util')._extend(config, require(program.config));
 		}
 		
+		if (program.middlewares) {
+			program.middlewares
+		}
+		
 		program
 		  .version(config.version)
 		  .usage('<command> [options]');
@@ -22,7 +26,7 @@ bootstrap(function () {
 			.description('Start a front service')
 			.action(function () {
 				bingo = true;
-				nodectl.run(util.getOptions(program));
+				nodectl.run(getOptions());
 			});
 
 		program
@@ -30,7 +34,7 @@ bootstrap(function () {
 			.description('Start a background service')
 			.action(function () {
 				bingo = true;
-				nodectl.start(util.getOptions(program));
+				nodectl.start(getOptions());
 			});
 
 		program
@@ -38,7 +42,7 @@ bootstrap(function () {
 			.description('Stop current background service')
 			.action(function () {
 				bingo = true;
-				nodectl.stop(util.getOptions(program));
+				nodectl.stop(getOptions());
 			});
 
 		program
@@ -46,7 +50,7 @@ bootstrap(function () {
 			.description('Restart current background service')
 			.action(function () {
 				bingo = true;
-				nodectl.restart(util.getOptions(program));
+				nodectl.restart(getOptions());
 			});
 
 		program
@@ -64,5 +68,12 @@ bootstrap(function () {
 		}
 	});
 });
+
+function getOptions() {
+	var options = util.getOptions(program);
+	options.plugins = options.plugins ? program.middlewares + ',' 
+			+ options.plugins : program.middlewares;
+	return options;
+}
 
 module.exports = program;
