@@ -1,6 +1,7 @@
 var app = require('express')();
 var path = require('path');
 var auth = require('basic-auth');
+var bodyParser = require('body-parser');
 var crypto = require('crypto');
 var htdocs = require('../htdocs');
 var util = require('../../../util');
@@ -8,7 +9,17 @@ var config = util.config;
 var username = config.username || '';
 var password = config.password || '';
 
-require('../util').addCommonMW(app);
+app.use(function(req, res, next) {
+	req.on('error', abort).on('close', abort);
+	res.on('error', abort);
+	function abort(err) {
+		res.destroy();
+	}
+	next();
+});
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
 app.use(function(req, res, next) {
 	if (checkLogin(req, res)) {
 		next();
@@ -87,5 +98,4 @@ module.exports = function(proxy) {
 	require('./rules-util')(proxy.rulesUtil);
 	require('./data')(proxy);
 	app.listen(proxy.uiport);
-	require('../data/app')(proxy);
 };

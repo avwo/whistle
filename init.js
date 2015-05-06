@@ -21,9 +21,8 @@ function start(options) {
 	require('util')._extend(app, config);
 	
 	try {
-		require(app.uipath || './biz/webui/app')(app);
+		require('./biz/init')(app);
 		util.installTianma(app);
-		require('./biz/weinre/app')(app);
 	} catch(e) {
 		console.log(e);
 	}

@@ -24,8 +24,7 @@ function request(req, res, port) {
 module.exports = function(req, res, next) {
 	var host = req.headers.host;
 	if (host == config.localUIHost) {
-		var path = util.hasProtocol(req.url) ? url.parse(req.url).path : req.url;
-		request(req, res, /^\/data\b/.test(path) ? config.uidataport : config.uiport);
+		request(req, res, config.uiport);
 	} else if (host == config.WEINRE_HOST) {
 		request(req, res, config.weinreport);
 	} else {

@@ -1,9 +1,13 @@
-var cp = require('child_process');
-var path = require('path');
+var config = require('../../util').config;
+var weinre = require('weinre');
 
 module.exports = function init(app) {
-	var util = app.rulesUtil;
-	require('../start')(util, 'weinreChildPid', 
-			[path.join(__dirname, 'weinre.js'), '--boundHost', 
-	     	                              'localhost', '--httpPort', app.util.config.weinreport]);
+	weinre.run({
+		boundHost: 'localhost',
+		httpPort: parseInt(app.weinreport, 10),
+		verbose: false,
+		debug: false,
+		readTimeout: 5,
+		deathTimeout: 15
+	});
 };
