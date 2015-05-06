@@ -7,7 +7,7 @@ var bingo = false;
 
 bootstrap(function () {
 	process.nextTick(function() {
-		if (program.config) {
+		if (program.config && program.config !== true) {
 			require('util')._extend(config, require(program.config));
 		}
 		
