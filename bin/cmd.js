@@ -2,6 +2,7 @@ var program = require('commander');
 var nodectl = require('./lib/nodectl');
 var bootstrap = require('./lib/bootstrap');
 var config = require('../util').config;
+var util = require('./lib/util');
 var bingo = false;
 
 program
@@ -15,7 +16,7 @@ program
 	.description('Start a front service')
 	.action(function () {
 		bingo = true;
-		nodectl.run(program);
+		nodectl.run(util.getOptions(program));
 	});
 
 program
@@ -23,7 +24,7 @@ program
 	.description('Start a background service')
 	.action(function () {
 		bingo = true;
-		nodectl.start(program);
+		nodectl.start(util.getOptions(program));
 	});
 
 program
@@ -31,7 +32,7 @@ program
 	.description('Stop current background service')
 	.action(function () {
 		bingo = true;
-		nodectl.stop(program);
+		nodectl.stop(util.getOptions(program));
 	});
 
 program
@@ -39,7 +40,7 @@ program
 	.description('Restart current background service')
 	.action(function () {
 		bingo = true;
-		nodectl.restart(program);
+		nodectl.restart(util.getOptions(program));
 	});
 
 program

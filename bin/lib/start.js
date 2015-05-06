@@ -10,12 +10,19 @@ require('./bootstrap')(function () {
 		.command('run <path>')
 		.description('Start a front service')
 		.action(function (path) {
-			for (var i in util.argv) {
-				config[i] = program[i] || config[i];
-			} 
+			var options = util.getOptions(program);
+			var argv = util.argv;
+			
+			for (var i in options) {
+				var opt = options[i] == null ? config[i] : options[i];
+				config[i] = argv[i] ? util.resolvePath(config[i]) : opt;
+			}
 			
 			if (config.plugins) {
-				config.plugins = config.plugins.split(',');
+				config.plugins = config.plugins.split(',')
+						.map(function(plugin) {
+							return util.resolvePath(plugin);
+						});
 			}
 			
 			if (Array.isArray(config.ports)) {
@@ -24,6 +31,7 @@ require('./bootstrap')(function () {
 					config[name] = ++port;
 				});
 			}
+			
 			require(path)(config);
 		});
 

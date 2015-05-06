@@ -40,30 +40,15 @@ function resolvePath(name) {
 }
 
 function setArgs(options, args) {
-	if (!options) {
-		return {};
-	}
-	
-	if (options.plugins) {
-		options.plugins = options.plugins.
-		split(',').map(function(plugin) {
-			return resolvePath(plugin);
-		}).join();
-	}
-	var pureOptions = {};
-	var argv = require('./util').argv;
-	for (var name in argv) {
-		if (options[name]) {
-			if (argv[name]) {
-				options[name] = resolvePath(options[name]);
-			}
+	for (var name in options) {
+		var opt = options[name];
+		if (opt && opt !== true) {
 			args.push('--' + name);
-			args.push(options[name]);
-			pureOptions[name] = options[name];
+			args.push(opt);
 		}
 	}
 	
-	return pureOptions;
+	return options || {};
 }
 
 /**
