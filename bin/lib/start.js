@@ -15,7 +15,7 @@ require('./bootstrap')(function () {
 			
 			for (var i in options) {
 				var opt = options[i] == null ? config[i] : options[i];
-				config[i] = argv[i] ? util.resolvePath(config[i]) : opt;
+				config[i] = argv[i] ? util.resolvePath(opt) : opt;
 			}
 			
 			if (config.plugins) {
