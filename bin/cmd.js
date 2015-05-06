@@ -31,7 +31,7 @@ program
 	.description('Stop current background service')
 	.action(function () {
 		bingo = true;
-		nodectl.stop();
+		nodectl.stop(program);
 	});
 
 program

@@ -8,6 +8,10 @@ var PATH_BOOTSTRAP = path.join(__dirname, 'bootstrap.js');
 var	START_PATH = path.join(__dirname, '../init.js');
 var RUNNING_PATH = path.join(commonUtil.LOCAL_DATA_PATH, '.running');
 
+function getRunningPath(options) {
+	return RUNNING_PATH + (!options.port || options.port == 9527 ? '' : '-' + options.port);
+}
+
 /**
  * Check whether a node process is running.
  * @param pid {string}
@@ -101,11 +105,12 @@ exports.run = run;
  */
 
 function start(options, callback) {
+	var runningPath = getRunningPath(options);
 	var now = new Date(),
 		log = util.format('log/%s-%s-%s.log',
 			now.getFullYear(), now.getMonth() + 1, now.getDate()),
-		pid = fs.existsSync(RUNNING_PATH)
-			&& fs.readFileSync(RUNNING_PATH, 'utf-8').split('\n')[1],
+		pid = fs.existsSync(runningPath)
+			&& fs.readFileSync(runningPath, 'utf-8').split('\n')[1],
 		child;
 
 	isRunning(pid, function (running) {
@@ -124,7 +129,7 @@ function start(options, callback) {
 				stdio: [ 'ignore', 'ignore', fs.openSync(log, 'a+') ]
 			});
 
-			fs.writeFileSync(RUNNING_PATH, JSON.stringify(options) + '\n' + child.pid);
+			fs.writeFileSync(runningPath, JSON.stringify(options) + '\n' + child.pid);
 
 			child.unref();
 
@@ -143,13 +148,13 @@ exports.start = start;
  * @param [callback] {Function}
  */
 
-function stop(callback) {
+function stop(options, callback) {
 	var data, pid;
-	var options = {};
-
-	if (fs.existsSync(RUNNING_PATH)) {
-		data = fs.readFileSync(RUNNING_PATH, 'utf-8').split('\n');
-		options = commonUtil.parseJSON(data[0]) || {};
+	var runningPath = getRunningPath(options);
+	
+	if (fs.existsSync(runningPath)) {
+		data = fs.readFileSync(runningPath, 'utf-8').split('\n');
+		options = util._extend(commonUtil.parseJSON(data[0]) || {}, options);
 		pid = data[1];
 	}
 
@@ -157,7 +162,7 @@ function stop(callback) {
 		if (running) {
 			try {
 				process.kill(pid);
-				fs.unlinkSync(RUNNING_PATH);
+				fs.unlinkSync(runningPath);
 				console.log('[i] ' + config.name + ' killed.');
 			} catch (err) {
 				if (err.code === 'EPERM') {
@@ -178,3 +183,4 @@ function stop(callback) {
 }
 
 exports.stop = stop;
+
