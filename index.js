@@ -1,4 +1,5 @@
 module.exports = require('./lib');
-module.exports.run = function() {
-	return require('./bin/cmd');
+module.exports.run = function(options) {
+	var program = require('./bin/cmd');
+	return program;
 };
