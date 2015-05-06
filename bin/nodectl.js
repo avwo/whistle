@@ -83,7 +83,7 @@ exports.restart = restart;
  */
 
 function run(options) {
-	console.log('[i] Press [Ctrl+C] to stop ' + config.name + '.., port: ' + (options.port || config.port));
+	console.log('[i] Press [Ctrl+C] to stop ' + config.name + '.. port: ' + (options.port || config.port));
 	var args = [PATH_BOOTSTRAP, 'run', START_PATH];
 	options = setArgs(options, args);
 	
