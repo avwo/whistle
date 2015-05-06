@@ -29,15 +29,13 @@ if (module.parent) { // Use as a sub module.
 			.action(function (path) {
 				var options = {};
 				
-				if (program.plugins) {
-					options.plugins = program.plugins.split(',').map(function(plugin) {
-						return /[^\w-]/i.test(plugin) ? path.resolve(plugin.trim()) : plugin;
-					});
-				}
-				
 				for (var i in require('./util').argv) {
 					options[i] = program[i] || config[i];
 				} 
+				
+				if (options.plugins) {
+					options.plugins = options.plugins.split(',');
+				}
 				
 				if (Array.isArray(config.ports)) {
 					var port = options.port;
