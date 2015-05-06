@@ -10,6 +10,7 @@ function parseHosts(hostsPath) {
 	if (hostsPath) {
 		try {
 			rulesUtil.setPublicHosts(fs.readFileSync(path.resolve(hostsPath), {encoding: 'utf8'}));
+			rulesUtil.enablePublicHosts();
 		} catch(e) {}
 	}
 	
