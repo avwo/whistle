@@ -2,15 +2,15 @@ var config = require('../util').config;
 
 function options(program) {
 	return program
-			.option('-r, --rules [rules]', 'rules file', '')
+			.option('-r, --rules [rule file path]', 'rules file', '')
 			.option('-n, --username [username]', 'login username', '')
 			.option('-w, --password [password]', 'login password', '')
 			.option('-p, --port [port]', config.name + ' port(' + config.port + ' by default)', '')
-			.option('-m, --plugins [plugins]', 'express middlewares(plugins) path (as: xx.js,yy/zz.js)', '')
-			.option('-u, --uipath [uipath]', 'web ui plugin path', '')
-			.option('-t, --timneout [timneout]', 'request timeout(' + config.timeout + ' ms by default)', parseInt)
-			.option('-s, --sockets [sockets]', 'max sockets', parseInt)
-			.option('-d, --days [days]', 'the maximum days of cache', parseInt);
+			.option('-m, --plugins [file path or module name]', 'express middlewares(plugins) path (as: xx.js,yy/zz.js)', '')
+			.option('-u, --uipath [file path]', 'web ui plugin path', '')
+			.option('-t, --timneout [ms]', 'request timeout(' + config.timeout + ' ms by default)', parseInt)
+			.option('-s, --sockets [number]', 'max sockets', parseInt)
+			.option('-d, --days [number]', 'the maximum days of cache', parseInt);
 }
 
 exports.options = options;
