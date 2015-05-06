@@ -1,4 +1,4 @@
-var config = require('../util').config;
+var config = require('../../util').config;
 
 function options(program) {
 	return program

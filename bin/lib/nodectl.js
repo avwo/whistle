@@ -2,10 +2,10 @@ var cp = require('child_process');
 var	fs = require('fs');
 var	path = require('path');
 var	util = require('util');
-var	commonUtil = require('../util');
+var	commonUtil = require('../../util');
 var	config = commonUtil.config;
 var START_PATH = path.join(__dirname, 'start.js');
-var	INIT_PATH = path.join(__dirname, '../init.js');
+var	INIT_PATH = path.join(__dirname, '../../init.js');
 var RUNNING_PATH = path.join(commonUtil.LOCAL_DATA_PATH, '.running');
 
 function getRunningPath(options) {

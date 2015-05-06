@@ -1,5 +1,6 @@
 var program = require('commander');
-var config = require('../util').config;
+var config = require('../../util').config;
+var util = require('./util');
 
 require('./bootstrap')(function () {
 	program
@@ -9,7 +10,7 @@ require('./bootstrap')(function () {
 		.command('run <path>')
 		.description('Start a front service')
 		.action(function (path) {
-			for (var i in require('./util').argv) {
+			for (var i in util.argv) {
 				config[i] = program[i] || config[i];
 			} 
 			
@@ -26,7 +27,7 @@ require('./bootstrap')(function () {
 			require(path)(config);
 		});
 
-	require('./util').options(program)
+	util.options(program)
 	.parse(process.argv);
 		
 });

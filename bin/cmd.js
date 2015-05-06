@@ -1,6 +1,6 @@
 var program = require('commander');
-var nodectl = require('./nodectl');
-var bootstrap = require('./bootstrap');
+var nodectl = require('./lib/nodectl');
+var bootstrap = require('./lib/bootstrap');
 var config = require('../util').config;
 var bingo = false;
 
@@ -8,7 +8,7 @@ program
   .version(config.version)
   .usage('<command> [options]');
 
-require('./util').options(program);
+require('./lib/util').options(program);
 
 program
 	.command('run')
