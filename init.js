@@ -6,10 +6,10 @@ var config = util.config;
 var argvs = util.argvs;
 var rulesUtil = require('./lib/rules/util');
 
-function parseHosts(hostsPath) {
-	if (hostsPath) {
+function parseHosts(rulesPath) {
+	if (rulesPath) {
 		try {
-			rulesUtil.setPublicHosts(fs.readFileSync(path.resolve(hostsPath), {encoding: 'utf8'}));
+			rulesUtil.setPublicHosts(fs.readFileSync(path.resolve(rulesPath), {encoding: 'utf8'}));
 			rulesUtil.enablePublicHosts();
 		} catch(e) {}
 	}
@@ -46,6 +46,6 @@ function updateConfig(options) {
 module.exports = function init(options) {
 	options = options || {};
 	updateConfig(options);
-	parseHosts(options.hosts);
+	parseHosts(options.rules);
 	return start(options);
 };
