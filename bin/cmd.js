@@ -11,10 +11,6 @@ bootstrap(function () {
 			require('util')._extend(config, require(program.config));
 		}
 		
-		if (program.middlewares) {
-			program.middlewares
-		}
-		
 		program
 		  .version(config.version)
 		  .usage('<command> [options]');
