@@ -32,7 +32,7 @@ require('./bootstrap')(function () {
 			if (config.plugins) {
 				config.plugins = config.plugins.split(',')
 						.map(function(plugin) {
-							return util.resolvePath(plugin);
+							return util.resolvePath(plugin.trim());
 						});
 			}
 			
