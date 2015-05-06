@@ -71,10 +71,10 @@ bootstrap(function () {
 
 function getOptions() {
 	var options = util.getOptions(program);
-	if (program.middlewares) {
+	if (options.middlewares) {
 		options.plugins = options.plugins ? program.middlewares + ',' 
 				+ options.plugins : program.middlewares;
-		delete program.middlewares;
+		delete options.middlewares;
 	}
 	return options;
 }

@@ -1,3 +1,4 @@
+var path = require('path');
 var config = require('../../util').config;
 
 function options(program) {
