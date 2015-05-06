@@ -35,7 +35,6 @@
 	   "pipestream": "*"
   },
   "scripts": {
-		"test": "node test",
 		"start": "node app.js"
 },
   "engines": {
