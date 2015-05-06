@@ -18,14 +18,10 @@ function options(program) {
 
 exports.options = options;
 
-var excludes = ['commands', 'options', '_execs', '_allowUnknownOption',
-                 '_args', '_name', 'Command', 'Option', '_version',
-                 '_events', '_usage', 'rawArgs', 'args'];
 exports.getOptions = function getOptions(program) {
 	var options = {};
 	Object.keys(program).forEach(function(name) {
-		if (excludes.indexOf(name) == -1 && name.indexOf('_') !== 0 
-				&& typeof program[name] != 'object') {
+		if (program.optionFor('--' + name)) {
 			options[name] = program[name];
 		}
 	});
