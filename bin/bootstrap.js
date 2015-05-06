@@ -1,4 +1,3 @@
-var path = require('path');
 var program = require('commander');
 var config = require('../package.json');
 
