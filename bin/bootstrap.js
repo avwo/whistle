@@ -1,5 +1,5 @@
 var program = require('commander');
-var config = require('../package.json');
+var config = require('../util').config;
 
 /**
  * Prepare the environment before run main program.
@@ -27,24 +27,21 @@ if (module.parent) { // Use as a sub module.
 			.command('run <path>')
 			.description('Start a front service')
 			.action(function (path) {
-				var options = {};
-				
 				for (var i in require('./util').argv) {
-					options[i] = program[i] || config[i];
+					config[i] = program[i] || config[i];
 				} 
 				
-				if (options.plugins) {
-					options.plugins = options.plugins.split(',');
+				if (config.plugins) {
+					config.plugins = config.plugins.split(',');
 				}
 				
 				if (Array.isArray(config.ports)) {
-					var port = options.port;
+					var port = config.port;
 					config.ports.forEach(function(name) {
-						options[name] = ++port;
+						config[name] = ++port;
 					});
 				}
-				
-				require(path)(options);
+				require(path)(config);
 			});
 	
 		require('./util').options(program)
