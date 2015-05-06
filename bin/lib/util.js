@@ -6,11 +6,12 @@ function options(program) {
 			.option('-n, --username [username]', 'login username', String)
 			.option('-w, --password [password]', 'login password', String)
 			.option('-p, --port [port]', config.name + ' port(' + config.port + ' by default)', parseInt)
-			.option('-m, --plugins [file path or module name]', 'express middlewares(plugins) path (as: xx.js,yy/zz.js)', String)
-			.option('-u, --uipath [file path]', 'web ui plugin path', String)
+			.option('-m, --plugins [script path or module name]', 'express middlewares(plugins) path (as: xx.js,yy/zz.js)', String)
+			.option('-u, --uipath [script path]', 'web ui plugin path', String)
 			.option('-t, --timneout [ms]', 'request timeout(' + config.timeout + ' ms by default)', parseInt)
 			.option('-s, --sockets [number]', 'max sockets', parseInt)
-			.option('-d, --days [number]', 'the maximum days of cache', parseInt);
+			.option('-d, --days [number]', 'the maximum days of cache', parseInt)
+			.option('-b, --bootstrap [script path]', 'automatic startup script path', String);
 }
 
 exports.options = options;

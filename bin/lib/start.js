@@ -33,6 +33,7 @@ require('./bootstrap')(function () {
 			}
 			
 			require(path)(config);
+			options.bootstrap && require(options.bootstrap)(config);
 		});
 
 	util.options(program)
