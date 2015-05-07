@@ -35,10 +35,6 @@ function isRunning(pid, callback) {
 	}
 }
 
-function resolvePath(name) {
-	return /^[\w-]+$/.test(name) ? name : path.resolve(name);
-}
-
 function setArgs(options, args) {
 	options = options || {};
 	args.push('--json');
