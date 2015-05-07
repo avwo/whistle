@@ -40,15 +40,10 @@ function resolvePath(name) {
 }
 
 function setArgs(options, args) {
-	for (var name in options) {
-		var opt = options[name];
-		if (opt && opt !== true) {
-			args.push('--' + name);
-			args.push(opt);
-		}
-	}
-	
-	return options || {};
+	options = options || {};
+	args.push('--json');
+	args.push(encodeURIComponent(JSON.stringify(options)));
+	return options;
 }
 
 /**

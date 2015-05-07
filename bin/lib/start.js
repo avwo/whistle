@@ -10,7 +10,13 @@ require('./bootstrap')(function () {
 		.command('run <path>')
 		.description('Start a front service')
 		.action(function (path) {
-			var options = util.getOptions(program);
+			var options = program.json;
+			if (options) {
+				try {
+					options = JSON.parse(decodeURIComponent(options));
+				} catch(e) {}
+			}
+			options = options || {};
 			
 			if (options.config) {
 				var _config = require(options.config) || {};
@@ -47,7 +53,8 @@ require('./bootstrap')(function () {
 			options.bootstrap && require(options.bootstrap)(app);
 		});
 
-	util.options(program)
-	.parse(process.argv);
+	program
+		.option('-j, --json [json]', 'json', String, '')
+		.parse(process.argv);
 		
 });

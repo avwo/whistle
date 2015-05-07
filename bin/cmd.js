@@ -11,9 +11,6 @@ bootstrap(function () {
 			require('util')._extend(config, require(program.config));
 		}
 		
-		require('./lib/util')
-			.options(program);
-		
 		program
 		  .version(config.version)
 		  .usage('<command> [options]');
@@ -58,7 +55,19 @@ bootstrap(function () {
 				program.help();
 			});
 		
-		program.parse(process.argv);
+		program
+			.option('-r, --rules [rule file path]', 'rules file', String, undefined)
+			.option('-n, --username [username]', 'login username', String, undefined)
+			.option('-w, --password [password]', 'login password', String, undefined)
+			.option('-p, --port [port]', config.name + ' port(' + config.port + ' by default)', parseInt, undefined)
+			.option('-m, --plugins [script path or module name]', 'express middlewares(plugins) path (as: xx.js,yy/zz.js)', String, undefined)
+			.option('-u, --uipath [script path]', 'web ui plugin path', String, undefined)
+			.option('-t, --timneout [ms]', 'request timeout(' + config.timeout + ' ms by default)', parseInt, undefined)
+			.option('-s, --sockets [number]', 'max sockets', parseInt, undefined)
+			.option('-d, --days [number]', 'the maximum days of cache', parseInt, undefined)
+			.option('-b, --bootstrap [script path]', 'automatic startup script path', String, undefined)
+			.option('-c, --config [config file path]', 'startup config file path', String, undefined)
+			.parse(process.argv);
 
 		if (!bingo) {
 			console.log('Type \'' + config.name + ' help\' for usage.');
@@ -67,11 +76,18 @@ bootstrap(function () {
 });
 
 function getOptions() {
-	var options = util.getOptions(program);
+	var options = {};
+	Object.keys(program).forEach(function(name) {
+		if (program.optionFor('--' + name)) {
+			options[name] = program[name];
+		}
+	});
+	
 	if (program.middlewares) {
 		options.plugins = options.plugins ? program.middlewares + ',' 
 				+ options.plugins : program.middlewares;
 	}
+	
 	return options;
 }
 
