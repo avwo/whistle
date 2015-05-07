@@ -4,11 +4,7 @@ var util = require('./util');
 
 require('./bootstrap')(function () {
 	program
-		.version(config.version)
-		.usage('<command> [options]');
-	program
 		.command('run <path>')
-		.description('Start a front service')
 		.action(function (path) {
 			var options = program.json;
 			if (options) {
