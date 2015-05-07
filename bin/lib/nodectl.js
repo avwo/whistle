@@ -43,7 +43,7 @@ function setArgs(options, args) {
 }
 
 /**
- * Restart current background aeproxy.
+ * Restart current background whistle.
  * @param config {string}
  */
 
@@ -58,7 +58,7 @@ function restart(_options) {
 exports.restart = restart;
 
 /**
- * Start a front aeproxy.
+ * Start a front whistle.
  * @param [config] {string}
  */
 
@@ -75,7 +75,7 @@ function run(options) {
 exports.run = run;
 
 /**
- * Start a background aeproxy.
+ * Start a background whistle.
  * @param [config] {string}
  * @param [callback] {Function}
  */
@@ -120,7 +120,7 @@ function start(options, callback) {
 exports.start = start;
 
 /**
- * Stop current background aeproxy.
+ * Stop current background whistle.
  * @param [callback] {Function}
  */
 
