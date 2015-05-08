@@ -28,6 +28,10 @@ exports.resolvePath = function(file) {
 	return /^[\w-]+$/.test(file) ? file : path.resolve(file);
 };
 
+exports.mkdir = function mkdir(path) {
+	!fs.existsSync(path) && fs.mkdirSync(path);
+};
+
 function formatDate(now) {
 	now = now || new Date();
 	var date = [now.getFullYear(), paddingLeft(now.getMonth() + 1), 
