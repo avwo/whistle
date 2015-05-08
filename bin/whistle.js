@@ -3,14 +3,10 @@
 var program = require('starting');
 var path = require('path');
 var config = require('../package.json');
-var RUNNING_PATH = path.join(require('../util').LOCAL_DATA_PATH, '.running');
 
 program.setConfig({
 	main: path.join(__dirname, '../index.js'),
-	running: function(options) {
-		
-		return RUNNING_PATH + (!options.port || options.port == config.port ? '' : '-' + options.port);
-	},
+	running: path.join(require('../util').LOCAL_DATA_PATH, '.running'),
 	name: config.name,
 	version: config.version,
 	runCallback: function() {
