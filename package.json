@@ -32,7 +32,8 @@
 	   "iconv-lite": "0.4.7",
 	   "dustjs-helpers": "1.6.1",
 	   "weinre": "2.0.0-pre-I0Z7U9OV",
-	   "pipestream": "*"
+	   "pipestream": "*",
+	   "starting": "*"
   },
   "scripts": {
 		"start": "node app.js"

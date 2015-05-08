@@ -5,9 +5,7 @@ var bodyParser = require('body-parser');
 var crypto = require('crypto');
 var htdocs = require('../htdocs');
 var util = require('../../../util');
-var config = util.config;
-var username = config.username || '';
-var password = config.password || '';
+var username, password;
 
 app.use(function(req, res, next) {
 	req.on('error', abort).on('close', abort);
@@ -95,7 +93,11 @@ function shasum(str) {
 }
 
 module.exports = function(proxy) {
+	var config = proxy.config;
+	username = config.username || '';
+	password = config.password || '';
+	
 	require('./rules-util')(proxy.rulesUtil);
 	require('./data')(proxy);
-	app.listen(proxy.uiport);
+	app.listen(config.uiport);
 };

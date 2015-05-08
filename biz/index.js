@@ -2,7 +2,6 @@ var url = require('url');
 var https = require('https');
 var http = require('http');
 var util = require('../util');
-var config = util.config;
 
 function request(req, res, port) {
 	var options = url.parse(util.getFullUrl(req));
@@ -23,6 +22,7 @@ function request(req, res, port) {
 
 module.exports = function(req, res, next) {
 	var host = req.headers.host;
+	var config = this.config;
 	if (host == config.localUIHost) {
 		request(req, res, config.uiport);
 	} else if (host == config.WEINRE_HOST) {

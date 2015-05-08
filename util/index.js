@@ -10,8 +10,7 @@ var PassThrough = require('stream').PassThrough;
 var iconv = require('iconv-lite');
 var zlib = require('zlib');
 var PipeStream = require('pipestream');
-var config = exports.config = util._extend({}, require('../package.json'));
-config.WEINRE_HOST = 'weinre.' + config.localUIHost;
+var config = require('../package.json');
 
 exports.LOCAL_DATA_PATH = path.join(__dirname, '../../' + config.dataDirname);
 exports.WhistleTransform = require('./whistle-transform');
@@ -20,6 +19,21 @@ exports.PROXY_ID = 'x-' + config.name + '-' + Date.now();
 function noop() {}
 
 exports.noop = noop;
+
+function formatDate(now) {
+	now = now || new Date();
+	var date = [now.getFullYear(), paddingLeft(now.getMonth() + 1), 
+	            paddingLeft(now.getDate())].join('-');
+	var time = [paddingLeft(now.getHours()), paddingLeft(now.getMinutes()), 
+	            paddingLeft(now.getSeconds())].join(':')
+	return date + ' ' + time;
+}
+
+function paddingLeft(num) {
+	return num < 10 ? '0' + num : num;
+}
+
+exports.formatDate = formatDate;
 
 var REG_EXP_RE = /^\/(.+)\/(i)?$/
 

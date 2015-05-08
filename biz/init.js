@@ -1,5 +1,6 @@
 
-module.exports = function init(app) {
-	require(app.uipath || './webui/app')(app);
-	require('./weinre/app')(app);
+module.exports = function init(proxy) {
+	var config = proxy.config;
+	require(config.uipath || './webui/app')(proxy);
+	require('./weinre/app')(config);
 };
