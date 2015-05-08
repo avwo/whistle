@@ -17,11 +17,11 @@ function handleTunnelProxy(request) {
 	
 }
 
-function mkdir(util) {
-	
-}
-
 module.exports = function(proxy) {
+	util.mkdir(CAPTURE_DATA_PATH);
+	util.mkdir(URLS_DATA_PATH);
+	util.mkdir(HEADERS_DATA_PATH);
+	util.mkdir(BODIES_DATA_PATH);
 	proxy.on('request', handleRequest);
 	proxy.on('tunnel', handleTunnel);
 	proxy.on('tunnelProxy', handleRequest);
