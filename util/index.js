@@ -20,6 +20,14 @@ function noop() {}
 
 exports.noop = noop;
 
+exports.resolvePath = function(file) {
+	if (!file || !(file = file.trim())) {
+		return file;
+	}
+	
+	return /^[\w-]+$/.test(file) ? file : path.resolve(file);
+};
+
 function formatDate(now) {
 	now = now || new Date();
 	var date = [now.getFullYear(), paddingLeft(now.getMonth() + 1), 
