@@ -151,8 +151,22 @@ exports.drain = function drain(stream, end) {
 
 exports.encodeNonAsciiChar = function encodeNonAsciiChar(str) {
 	
-	return  str ? str.replace(/[^\x00-\x7F]/g, encodeURIComponent) : str;
+	return  str ? str.replace(/[^\x00-\x7F]/g, safeEncodeURIComponent) : str;
 };
+
+/**
+ * 解析一些字符时，encodeURIComponent可能会抛异常，对这种字符不做任何处理
+ * http://stackoverflow.com/questions/16868415/encodeuricomponent-throws-an-exception
+ * @param ch
+ * @returns
+ */
+function safeEncodeURIComponent(ch) {
+	try {
+		return encodeURIComponent(ch);
+	} catch(e) {}
+	
+	return ch;
+}
 
 function getPath(url) {
 	if (url) {
