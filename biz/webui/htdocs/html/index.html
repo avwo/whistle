@@ -122,12 +122,13 @@ html, body, .main {overflow: hidden; margin: 0; padding: 0; height: 100%;}
 .hosts .fill {-moz-box-flex:1; -webkit-box-flex:1; box-flex:1;}
 .hosts .hosts-list {width: 220px; height: 100%;}
 .hosts .hosts-rules {padding-right: 2px; height: 100%;}
-.hosts .hosts-nav, .values .values-nav {height: 40px; border: 1px solid transparent;}
+.hosts .hosts-nav, .values .values-nav {height: 40px; border: 1px solid transparent; position: relative;}
 .hosts .hosts-nav h6 {float: left; margin: 16px 0 0 10px; max-width: 400px; font-weight: bold; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;}
 .hosts .hosts-nav .action-bar {float: right; margin-top: 10px; padding-right: 10px; position: relative;}
-.hosts .hosts-nav .action-bar .settings-list {position: absolute; z-index: 3; right: 15px; top: 22px; margin: 0; padding: 0; list-style: none;  white-space: nowrap;}
-.hosts .hosts-nav .action-bar .settings-list a, .hosts .hosts-nav .action-bar .settings-list label {margin: 0; padding: 0 20px; display: block;}
-.hosts .hosts-nav .action-bar .settings-list label {font-weight: normal; line-height: 34px;}
+.settings-list {position: absolute; z-index: 3; right: 15px; top: 26px; margin: 0; padding: 0; list-style: none;  white-space: nowrap; display: none;}
+.settings-list a, .settings-list label {margin: 0; padding: 0 20px; display: block;}
+.settings-list label {font-weight: normal; line-height: 34px;}
+.values .values-nav .settings-list {top: 30px;}
 
 .hosts .hosts-footer, .values .values-footer {height: 42px; text-align: right; padding-right: 10px;}
 .hosts .hosts-footer .btn, .values .values-footer .btn {margin-left: 20px; margin-top: 5px;}
@@ -169,9 +170,10 @@ text-align: center; line-height: 12px; top: -6px; right: -6px; background: red; 
 .values .values-keys {width: 220px;}
 .values .values-keys .values-list {height: 476px;}
 .values .values-nav input[type=text] {padding: 0 5px;}
-.values .remove-key-value {margin-left: 10px; display: inline-block; padding: 5px;}
+.values .remove-key-value {margin: 0 20px 0 10px; display: inline-block; padding: 5px;}
 .values .values-nav {padding-top: 2px;}
 .values .values-content {display: none;}
+.values-nav  .help  {margin-right: 10px;}
 .values .key-name {line-height: 32px; font-weight: bold; padding-left: 5px; overflow: hidden; text-overflow: ellipsis; white-space: no}
 
 /**composer**/
@@ -806,6 +808,55 @@ color-stop(0.90, #3f86d3), color-stop(1, #3f86d3));}
         	<div class="values-nav box">
         		<div id="keyName" class="fill key-name"></div>
         		<a id="removeKeyValue" href="javascritp:;" class="remove-key-value">Delete</a>
+        		<a href="javascript:;" id="valuesSettings" class="help">Settings</a>
+						<ul id="valuesSettingsList" class="settings-list shadow">
+							<li>
+								<label><input  id="valuesShowLineNumbers" type="checkbox" /> Show line numbers</label>
+							</li>
+							<li>
+								<label>Theme: 
+									<select id="valuesThemeOptions">
+										<option selected="selected" value="default">default</option>
+								        <option value="ambiance">ambiance</option>
+								        <option  value="blackboard">blackboard</option>
+								        <option  value="cobalt">cobalt</option>
+								        <option  value="eclipse">eclipse</option>
+								        <option  value="elegant">elegant</option>
+								        <option  value="erlang-dark">erlang-dark</option>
+								        <option  value="lesser-dark">lesser-dark</option>
+								        <option  value="midnight">midnight</option>
+								        <option  value="monokai">monokai</option>
+								        <option  value="neat">neat</option>
+								        <option  value="night">night</option>
+								        <option  value="rubyblue">rubyblue</option>
+								        <option  value="solarized dark">solarized dark</option>
+								        <option  value="solarized light">solarized light</option>
+								        <option  value="twilight">twilight</option>
+								        <option  value="vibrant-ink">vibrant-ink</option>
+								        <option  value="xq-dark">xq-dark</option>
+								        <option  value="xq-light">xq-light</option>
+									</select>
+								</label>
+							</li>
+							<li>
+								<label>Font size:
+									<select id="valuesFontSizeOptions">
+										<option value="13px">13px</option>
+										<option selected="selected" value="14px">14px</option>
+										<option value="16px">16px</option>
+										<option value="18px">18px</option>
+										<option value="20px">20px</option>
+										<option value="24px">24px</option>
+										<option value="26px">26px</option>
+										<option value="28px">28px</option>
+										<option value="30px">30px</option>
+										<option value="32px">32px</option>
+										<option value="34px">34px</option>
+										<option value="36px">36px</option>
+									</select>
+								</label>
+							</li>
+						</ul>
         	</div>
         	<div id="keyValue" class="values-text"></div>
         	<div class="values-footer">

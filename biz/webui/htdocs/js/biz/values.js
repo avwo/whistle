@@ -1,5 +1,5 @@
 define('/style/js/biz/values.js', function(require, exports, module) {
-	var VALUES, editor;
+	var VALUES, THEME, editor;
 	
 	function addEvents() {
 		var keyName = $('#keyName');
@@ -60,6 +60,8 @@ define('/style/js/biz/values.js', function(require, exports, module) {
 			}
 			
 			list.find('a:first').trigger('click');
+			
+			initActionBar(THEME);
 		});
 		
 		function initEidtor() {
@@ -72,7 +74,6 @@ define('/style/js/biz/values.js', function(require, exports, module) {
 			                      {matches: /(text|application)\/(x-)?vb(a|script)/i,
 			                       mode: "vbscript"}]
 			      },
-			 theme: 'cobalt',
 	        selectionPointer: true
 	      });
 	      
@@ -137,15 +138,64 @@ define('/style/js/biz/values.js', function(require, exports, module) {
 		
 		$('#newValuesKey').on('keyup', function(e) {
 			e.keyCode == 13 && $('#createValuesKeyBtn').trigger('click');
-		})
+		});
 		
+		addSettingsEvents();
+	}
+	
+	function addSettingsEvents() {
+		var valuesSettingsList = $('#valuesSettingsList');
+		$(document.body).on('click', function(e) {
+			var target = $(e.target);
+			if (!target.closest('#valuesSettings').length && !target.closest('#valuesSettingsList').length) {
+				valuesSettingsList.hide();
+			}
+		});
+		
+		$('#valuesSettings').click(function() {
+			valuesSettingsList.show();
+		});
+		
+	}
+	
+	var themeOptions = $('#valuesThemeOptions').change(function() {
+		var theme = this.value;
+		$.post('/cgi-bin/values/set-theme',{theme: theme});
+		editor.setOption('theme', theme);
+	});
+	
+	var fontSizeOptions = $('#valuesFontSizeOptions').change(function() {
+        var fontSize = this.value;
+        $.post('/cgi-bin/values/set-font-size',{fontSize: fontSize});
+        editor.getWrapperElement().style.fontSize = fontSize;
+        editor.refresh();
+	});
+		
+	var showLineNumbers = $('#valuesShowLineNumbers').change(function() {
+		$.post('/cgi-bin/values/show-line-numbers',{showLineNumbers: this.checked ? 1 : 0});
+		editor.setOption('lineNumbers', this.checked);
+	});
+	
+	function initActionBar(data) {
+		if (data.theme) {
+			themeOptions.val(data.theme).trigger('change');
+		}
+		
+		if (data.fontSize) {
+			fontSizeOptions.val(data.fontSize).trigger('change');
+		}
+		
+		showLineNumbers.prop('checked', data.showLineNumbers == true);
+		showLineNumbers.trigger('change');
 	}
 	
 	$.ajax({
 			url: '/cgi-bin/values/get',
 			dataType: 'json',
 			success: function(data) {
-				VALUES = data || {};
+				data = data || {};
+				VALUES = data.values || {};
+				THEME = data;
 				var keys = Object.keys(VALUES);
 				for (var i = 0; i < keys.length; i++) {
 					keys[i] = $('<a href="javascript:;" class="list-group-item" title="双击保存"></a>').text(keys[i]);
