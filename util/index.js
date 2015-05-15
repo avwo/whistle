@@ -151,7 +151,7 @@ exports.drain = function drain(stream, end) {
 
 exports.encodeNonAsciiChar = function encodeNonAsciiChar(str) {
 	
-	return  str ? str.replace(/[^\x00-\x7F]/g, safeEncodeURIComponent) : str;
+	return  str && str.replace(/[^\x00-\x7F]/g, safeEncodeURIComponent);
 };
 
 /**
@@ -183,8 +183,8 @@ exports.getPath = getPath;
 exports.wrapResponse = function wrapResponse(res) {
 	var passThrough = new PassThrough();
 	passThrough.statusCode = res.statusCode;
-	passThrough.headers = res.headers || {};
-	passThrough.trailers = res.trailers || {};
+	passThrough.headers = lowerCaseify(res.headers);
+	passThrough.trailers = lowerCaseify(res.trailers);
 	passThrough.headers.server = config.name;
 	res.body != null && passThrough.push(String(res.body));
 	passThrough.push(null);
@@ -200,6 +200,17 @@ function parseJSON(data) {
 }
 
 exports.parseJSON = parseJSON;
+
+function lowerCaseify(obj) {
+	var result = {};
+	for (var i in obj) {
+		result[i.toLowerCase()] = obj[i];
+	}
+	
+	return result;
+}
+
+exports.lowerCaseify = lowerCaseify;
 
 function parseFileToJson(path, callback) {
 	if (!(path = getPath(path))) {
@@ -296,11 +307,20 @@ exports.supportHtmlTransform = supportHtmlTransform;
 
 function hasBody(res) {
 	var statusCode = res.statusCode;
-	return !(statusCode == 204 || statusCode == 304 ||
+	return !(statusCode == 204 || (statusCode >= 300 && statusCode < 400) ||
 		      (100 <= statusCode && statusCode <= 199));
 }
 
 exports.hasBody = hasBody;
+
+function hasRequestBody(req) {
+	req = typeof req == 'string' ? req : req.method;
+	return !(req === 'GET' || req === 'HEAD' ||
+		   req === 'DELETE' || req === 'OPTIONS' ||
+		   req === 'CONNECT');
+}
+
+exports.hasRequestBody = hasRequestBody;
 
 function getPipeZipStream(headers) {
 	var pipeStream = new PipeStream();

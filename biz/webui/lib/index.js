@@ -15,8 +15,10 @@ app.use(function(req, res, next) {
 	}
 	next();
 });
+
+app.use(bodyParser.urlencoded({ extended: true, limit: '1mb'}));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+
 
 app.use(function(req, res, next) {
 	if (checkLogin(req, res)) {
@@ -97,6 +99,7 @@ module.exports = function(proxy) {
 	username = config.username || '';
 	password = config.password || '';
 	
+	require('./config')(config);
 	require('./rules-util')(proxy.rulesUtil);
 	require('./data')(proxy);
 	app.listen(config.uiport);

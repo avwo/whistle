@@ -1,5 +1,5 @@
-define('/style/js/biz/hosts.js', function(require, exports, module) {
-	var hostsData;
+define('/style/js/biz/rules.js', function(require, exports, module) {
+	var hostsData, inited;
 	var newHostsList = $('#newHostsList');
 	var glyphiconOk = '<span class="glyphicon glyphicon-ok"></span>';
 	
@@ -85,7 +85,7 @@ define('/style/js/biz/hosts.js', function(require, exports, module) {
 	function updatePublicHostsState() {
 		var enable = $('#enablePublicHosts').prop('checked');
 		$('#publicHosts').css('color', enable ? '' : '#ccc')
-		.attr('title', enable ? '先在自定义分组找hosts、head协议及匹配规则，找不到再到公用环境找' : '公用环境已禁用');
+		.attr('title', enable ? '先到自定义规则查找，如果没有匹配的再查找Public rules' : '公用环境已禁用');
 	}
 	
 	body.on('click', '.remove-hosts', function() {
@@ -102,24 +102,19 @@ define('/style/js/biz/hosts.js', function(require, exports, module) {
 		
 	});
 	
-	$(window).keydown(function(e) {
+	$('#hostsEditor').keyup(function(e) {
+		if (e.ctrlKey) {
+			(e.keyCode == 13 || e.keyCode == 83) 
+			&& $('.apply-hosts').trigger('click');
+		}
+	}).keydown(function(e) {
 		if (e.ctrlKey && e.keyCode == 83) {
 			e.preventDefault();
 			return false;
 		}
-	}).keyup(function(e) {
-		if (e.ctrlKey && e.keyCode == 83) {
-			$('.apply-hosts').trigger('click');
-		}
 	});
 	
-	$('#hostsEditor').keyup(function(e) {
-		if (e.ctrlKey && e.keyCode == 13) {
-			$('.apply-hosts').trigger('click');
-		}
-	});
-	
-	body.on('click', '.apply-hosts', function() {
+	body.on('click', '.apply-hosts,.confirm-hosts', function(e) {
 		var self = $(this);
 		var hostsList = $('#hostsList');
 		var activeHosts = hostsList.find('.active');
@@ -141,6 +136,9 @@ define('/style/js/biz/hosts.js', function(require, exports, module) {
 		}
 		
 		$('#hostsList').find('a.active').removeClass('changed');
+		if (self.hasClass('confirm-hosts')) {
+			$('.rules-dialog').modal('hide');
+		}
 	});
 	
 	var createHostsBtn = $('#createHostsBtn').click(function() {
@@ -191,72 +189,96 @@ define('/style/js/biz/hosts.js', function(require, exports, module) {
 		}
 	}
 	
-	$.ajax({
-		url: '/cgi-bin/hosts/list',
-		dataType: 'json',
-		success: function(data) {
-			hostsData = data || {};
-			initActionBar(data);
-			
-			var hostsList = hostsData.hostsList;
-			var curHostsName = hostsData.curHostsName;
-			var hasActive;
-			for (var i = 0, len = hostsList.length; i < len; i++) {
-				var name = hostsList[i];
-				var item = createHosts(name);
-				if (curHostsName == name) {
-					item.append(glyphiconOk).trigger('click');
-					hasActive = true;
-					hostsEditor.setValue(hostsData.hostsData[name] || '');
-					curHostsName = null;
-				}
-			}
-			if (hostsData.disabled) {
-				$('#publicHosts').find('.glyphicon-ok').hide();
-				$('#enablePublicHosts').prop('checked', false);
-			}
-			updateCreateHostsBtnState();
-			
-			if (!hasActive) {
-				$('#publicHosts').trigger('click');
-			}
-			
-			updatePublicHostsState();
-			setInterval(function() {
-				var activeItem = $('#hostsList').find('a.active');
-				var value = hostsEditor.getValue();
-				var hosts = hostsData.hostsData[activeItem.text()];
-				if (activeItem.hasClass('public-hosts')) {
-					if((!value && !hostsData.publicHosts) || hostsData.publicHosts == value) {
-						activeItem.removeClass('changed');
-						return;
-					}
-				} else if((!value && !hosts) || hosts == value) {
-						activeItem.removeClass('changed');
-						return;
-				}
-				
-				activeItem.addClass('changed');
-			}, 300)
-		},
-		error: function() {
-			alert('加载失败，请重新刷新页面。');
-		}
-	});
-	
-	function addResizeEvents() {
-		var editor = $('#hostsEditor')[0];
-		var timeoutId;
-		
-		function resize() {
-			clearTimeout(timeoutId);
-			timeoutId = setTimeout(function() {
-				hostsEditor.setSize(editor.offsetWidth, editor.offsetHeight - 2);
-			}, 60);
+	function initRulesDialog() {
+		if (inited) {
+			return;
 		}
 		
-		$(window).on('resize', resize);
-		resize();
+		inited = true;
+		
+		if (hostsData == false) {
+			loadData();
+			return;
+		};
+		
+		if (!hostsData) {
+			return;
+		}
+		
+		initActionBar(hostsData);
+		var hostsList = hostsData.hostsList;
+		var curHostsName = hostsData.curHostsName;
+		var hasActive;
+		for (var i = 0, len = hostsList.length; i < len; i++) {
+			var name = hostsList[i];
+			var item = createHosts(name);
+			if (curHostsName == name) {
+				item.append(glyphiconOk).trigger('click');
+				hasActive = true;
+				hostsEditor.setValue(hostsData.hostsData[name] || '');
+				curHostsName = null;
+			}
+		}
+		if (hostsData.disabled) {
+			$('#publicHosts').find('.glyphicon-ok').hide();
+			$('#enablePublicHosts').prop('checked', false);
+		}
+		updateCreateHostsBtnState();
+		
+		if (!hasActive) {
+			$('#publicHosts').trigger('click');
+		}
+		
+		updatePublicHostsState();
+		setInterval(function() {
+			var activeItem = $('#hostsList').find('a.active');
+			var value = hostsEditor.getValue();
+			var hosts = hostsData.hostsData[activeItem.text()];
+			if (activeItem.hasClass('public-hosts')) {
+				if((!value && !hostsData.publicHosts) || hostsData.publicHosts == value) {
+					activeItem.removeClass('changed');
+					return;
+				}
+			} else if((!value && !hosts) || hosts == value) {
+					activeItem.removeClass('changed');
+					return;
+			}
+			
+			activeItem.addClass('changed');
+		}, 360);
 	}
-	addResizeEvents();
+	
+	function loadData() {
+		hostsData = null;
+		$.ajax({
+			url: '/cgi-bin/hosts/list',
+			dataType: 'json',
+			success: function(data) {
+				hostsData = data || {};
+				$('#aboutVersion').text(hostsData.version);
+				var aboutUrl = $('#aboutUrl');
+				aboutUrl.attr('href', aboutUrl.attr('href').replace('{version}', hostsData.version));
+			},
+			error: function() {
+				hostsData = false;
+			}
+		});
+	}
+	
+	module.exports = function init() {
+		loadData();
+		$('.rules-dialog').on('shown.bs.modal', initRulesDialog);
+		
+		var rulesSettingsList = $('#rulesSettingsList');
+		$(document.body).on('click', function(e) {
+			var target = $(e.target);
+			if (!target.closest('#rulesSettings').length && !target.closest('#rulesSettingsList').length) {
+				rulesSettingsList.hide();
+			}
+		});
+		
+		$('#rulesSettings').click(function() {
+			rulesSettingsList.show();
+		});
+	};
 });
