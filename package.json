@@ -8,7 +8,7 @@
   "port": 9527,
   "ports": ["uiport", "uidataport", "httpsproxyport", "weinreport"],
   "sockets": 10,
-  "days": 36,
+  "days": 1,
   "timeout": 36000,
   "httpsProxyHost": "x-whistle-proxy-host",
   "author": "avenwu <avenwu@vip.qq.com>",

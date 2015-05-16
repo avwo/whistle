@@ -38,7 +38,7 @@ function writeResponseCb(err) {
 }
 
 function getFilename() {
-	return Math.floor(Date.now() / 3600000) + '';
+	return Math.floor(Date.now() / dataUtil.ONE_HOUR) + '';
 }
 
 function pushRequest(req) {
@@ -169,5 +169,6 @@ module.exports = function(proxy) {
 	proxy.on('request', handleRequest);
 	proxy.on('tunnel', handleTunnel);
 	proxy.on('tunnelProxy', handleTunnelProxy);
+	require('./clean')();
 };
 

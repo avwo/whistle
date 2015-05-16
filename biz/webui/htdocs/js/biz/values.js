@@ -189,7 +189,8 @@ define('/style/js/biz/values.js', function(require, exports, module) {
 		showLineNumbers.trigger('change');
 	}
 	
-	$.ajax({
+	module.exports = function initValues() {
+		$.ajax({
 			url: '/cgi-bin/values/get',
 			dataType: 'json',
 			success: function(data) {
@@ -208,8 +209,5 @@ define('/style/js/biz/values.js', function(require, exports, module) {
 				VALUES = false;
 			}
 		});
-	
-	module.exports = function initValues() {
-		
 	};
 });

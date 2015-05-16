@@ -33,6 +33,7 @@ html, body, .main {overflow: hidden; margin: 0; padding: 0; height: 100%;}
 ::-webkit-scrollbar-track,::-webkit-scrollbar-thumb { border-left:2px solid transparent; border-right:2px solid transparent;}
 ::-webkit-scrollbar-track:hover{ background-clip:padding-box; background-color:rgba(0,0,0,.15);}
 
+.cm-header {text-decoration: line-through;}
 
 .cm-s-ambiance ::-webkit-scrollbar-thumb, 
 .cm-s-blackboard ::-webkit-scrollbar-thumb, 
@@ -141,10 +142,11 @@ html, body, .main {overflow: hidden; margin: 0; padding: 0; height: 100%;}
 .hosts .new-hosts-list .list-group-item {border-radius: 0; padding: 10px;}
 .hosts .new-hosts-list .list-group-item:first-child {border-top: none;}
 .hosts .changed:before, .values-list .changed:before {content: '*'; margin-right: 5px; color: red; margin-right: 5px;}
-.hosts .help {margin-left: 20px;}
+.hosts .help, .hosts .remove-hosts, .hosts .enable-public-hosts, .hosts .view-values {margin-left: 20px;}
 .hosts .theme-bar {height: 30px; line-height: 30px; padding-left: 10px; border-top: 1px solid #ddd;}
 
-.action-bar label {margin-right: 15px; font-weight: normal;}
+.action-bar label {font-weight: normal;}
+.action-bar label input {margin: 0;}
 .create-hosts-dialog .new-hosts-name, .create-values-dialog .new-values-key {width: 570px;}
 .hosts .disabled {color: #ccc;}
 
@@ -160,7 +162,7 @@ html, body, .main {overflow: hidden; margin: 0; padding: 0; height: 100%;}
 .advance-btn {position: relative;}
 .advance-btn .cancel-search {display: none;}
 .advance-btn.active .cancel-search {position: absolute; display: block; width: 12px; height: 12px; 
-text-align: center; line-height: 12px; top: -6px; right: -6px; background: red; color: #fff; border-radius: 12px;}
+text-align: center; line-height: 12px; top: -6px; right: -6px; background: #a1c3fa; color: #fff; border-radius: 12px;}
 
 /**About**/
 .about-dialog .modal-body {padding-left: 90px; position: relative; height: 120px;}
@@ -194,7 +196,7 @@ color-stop(0.90, #3f86d3), color-stop(1, #3f86d3));}
 <div class="main box box-orient-vertical">
 <div class="box nav-bar">
 	<input id="quickSearch" type="text" class="fill form-control quick-search" placeholder="type filter text" autofocus="autofocus" />
-	<a id="advanceBtn" class="advance-btn" href="javascript:;" data-toggle="modal" data-target=".advance-dialog">Advance<span id="cancelSearch" class="cancel-search">&times;</span></a>
+	<a id="advanceBtn" class="advance-btn" href="javascript:;" data-toggle="modal" data-target=".advance-dialog">Advance<span id="cancelSearch" title="清空查找条件" class="cancel-search">&times;</span></a>
 	<a href="javascript:;" data-toggle="modal" data-target=".rules-dialog">Rules</a>
 	<a href="javascript:;" data-toggle="modal" data-target=".values-dialog">Values</a>
 	<a href="javascript:;" id="moreActions">More <span class="caret"></span></a>
@@ -586,6 +588,8 @@ color-stop(0.90, #3f86d3), color-stop(1, #3f86d3));}
 				<div id="hostsNav" class="hosts-nav">
 					<h6 class="hosts-title"></h6>
 					<div class="action-bar">
+						<a href="http://weinre.local.whistlejs.com/client/#{key}" class="open-weinre" target="_blank" title="open weinre">Weinre</a>
+						<a href="javascript:;" class="view-values" data-toggle="modal" data-target=".values-dialog">Values</a>
 						<a href="javascript:;" class="remove-hosts">Delete</a>
 						<label class="enable-public-hosts"><input id="enablePublicHosts" type="checkbox" checked="checked" /> 启用</label>
 						<a href="javascript:;" id="rulesSettings" class="help">Settings</a>

@@ -5,6 +5,7 @@ define('/style/js/biz/init.js', function(require, exports, module) {
 	var initComposer = require('./composer');
 	var initValues = require('./values');
 	var detail = require('./detail');
+	var list = require('./list');
 	
 	function addEvents() {
 		var list = $('#captureList').on('dblclick', 'tr', function() {
