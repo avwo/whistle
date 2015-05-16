@@ -141,6 +141,12 @@ define('/style/js/biz/rules.js', function(require, exports, module) {
 		}
 	});
 	
+	$('#openWeinreBtn').click(function() {
+		var weinreId = $.trim($('#weinreId').val()) || 'weinre';
+		window.open('http://weinre.local.whistlejs.com/client/#' + weinreId);
+		$('#openWeinreDialog').modal('hide');
+	});
+	
 	var createHostsBtn = $('#createHostsBtn').click(function() {
 		if (createHostsBtn.hasClass('disabled')) {
 			return;

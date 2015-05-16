@@ -588,7 +588,7 @@ color-stop(0.90, #3f86d3), color-stop(1, #3f86d3));}
 				<div id="hostsNav" class="hosts-nav">
 					<h6 class="hosts-title"></h6>
 					<div class="action-bar">
-						<a href="http://weinre.local.whistlejs.com/client/#{key}" class="open-weinre" target="_blank" title="open weinre">Weinre</a>
+						<a href="javascript:;" class="open-weinre" data-toggle="modal" data-target="#openWeinreDialog" title="open weinre">Weinre</a>
 						<a href="javascript:;" class="view-values" data-toggle="modal" data-target=".values-dialog">Values</a>
 						<a href="javascript:;" class="remove-hosts">Delete</a>
 						<label class="enable-public-hosts"><input id="enablePublicHosts" type="checkbox" checked="checked" /> 启用</label>
@@ -668,6 +668,24 @@ color-stop(0.90, #3f86d3), color-stop(1, #3f86d3));}
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
         <button id="createHostsNameBtn" type="button" class="btn btn-primary">Confirm</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="openWeinreDialog" data-remote="false" class="modal fade open-weinre-dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Weinre id</h4>
+      </div>
+      <div class="modal-body">
+        <p><input id="weinreId" class="form-control new-hosts-name" type="text" placeholder="Input the weinre id" /></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button id="openWeinreBtn" type="button" class="btn btn-primary">Confirm</button>
       </div>
     </div>
   </div>
