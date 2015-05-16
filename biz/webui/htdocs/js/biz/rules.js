@@ -274,6 +274,11 @@ define('/style/js/biz/rules.js', function(require, exports, module) {
 	module.exports = function init() {
 		loadData();
 		$('.rules-dialog').on('shown.bs.modal', initRulesDialog);
+		$('#openWeinreDialog').on('shown.bs.modal', function() {
+			setTimeout(function() {
+				$('#weinreId').focus();
+			}, 300);
+		});
 		
 		var rulesSettingsList = $('#rulesSettingsList');
 		$(document.body).on('click', function(e) {
