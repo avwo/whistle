@@ -189,25 +189,16 @@ define('/style/js/biz/values.js', function(require, exports, module) {
 		showLineNumbers.trigger('change');
 	}
 	
-	module.exports = function initValues() {
-		$.ajax({
-			url: '/cgi-bin/values/get',
-			dataType: 'json',
-			success: function(data) {
-				data = data || {};
-				VALUES = data.values || {};
-				THEME = data;
-				var keys = Object.keys(VALUES);
-				for (var i = 0; i < keys.length; i++) {
-					keys[i] = $('<a href="javascript:;" class="list-group-item" title="双击保存"></a>').text(keys[i]);
-				}
-				
-				$('#valuesList').html(keys);
-				addEvents();
-			},
-			error: function() {
-				VALUES = false;
-			}
-		});
+	module.exports = function initValues(data) {
+		data = data || {};
+		VALUES = data.values || {};
+		THEME = data;
+		var keys = Object.keys(VALUES);
+		for (var i = 0; i < keys.length; i++) {
+			keys[i] = $('<a href="javascript:;" class="list-group-item" title="双击保存"></a>').text(keys[i]);
+		}
+		
+		$('#valuesList').html(keys);
+		addEvents();
 	};
 });

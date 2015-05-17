@@ -61,19 +61,19 @@ CodeMirror.defineMode("whistle", function() {
 						str += ch;
 						if (!type && ch == '/' && pre == '/') {
 							if (isHead(str)) {
-								 type = 'header';
+								 type = 'header js-head';
 							 } else if (isWeinre(str)) {
-								 type = 'atom';
+								 type = 'atom js-weinre';
 							 } else if (isProxy(str)) {
-								 type = 'tag';
+								 type = 'tag js-proxy';
 							 } else if (isReq(str)) {
-								 type = 'negative';
+								 type = 'negative js-req';
 							 } else if (isRes(str)) {
-								 type = 'positive';
+								 type = 'positive js-res';
 							 } else if (isUrl(str)) {
-								 type = 'link';
+								 type = 'link js-url';
 							 } else if (isRule(str)) {
-								 type = 'builtin';
+								 type = 'builtin js-rule';
 							 }
 						}
 						pre = ch;

@@ -1,5 +1,5 @@
 define('/style/js/biz/rules.js', function(require, exports, module) {
-	var hostsData, inited;
+	var hostsData, inited, values;
 	var newHostsList = $('#newHostsList');
 	var glyphiconOk = '<span class="glyphicon glyphicon-ok"></span>';
 	
@@ -254,25 +254,13 @@ define('/style/js/biz/rules.js', function(require, exports, module) {
 		}, 360);
 	}
 	
-	function loadData() {
-		hostsData = null;
-		$.ajax({
-			url: '/cgi-bin/hosts/list',
-			dataType: 'json',
-			success: function(data) {
-				hostsData = data || {};
-				$('#aboutVersion').text(hostsData.version);
-				var aboutUrl = $('#aboutUrl');
-				aboutUrl.attr('href', aboutUrl.attr('href').replace('{version}', hostsData.version));
-			},
-			error: function() {
-				hostsData = false;
-			}
-		});
-	}
-	
-	module.exports = function init() {
-		loadData();
+	module.exports = function init(data, valuesData) {
+		hostsData = data || {};
+		values = valuesData || {};
+		$('#aboutVersion').text(hostsData.version);
+		var aboutUrl = $('#aboutUrl');
+		aboutUrl.attr('href', aboutUrl.attr('href').replace('{version}', hostsData.version));
+		
 		$('.rules-dialog').on('shown.bs.modal', initRulesDialog);
 		$('#openWeinreDialog').on('shown.bs.modal', function() {
 			setTimeout(function() {

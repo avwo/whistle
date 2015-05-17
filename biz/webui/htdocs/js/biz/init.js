@@ -105,8 +105,19 @@ define('/style/js/biz/init.js', function(require, exports, module) {
 	
 	addEvents();
 	initActions();
-	initRules();
 	initAdvance();
 	initComposer();
-	initValues();
+	
+	$.ajax({
+		url: '/cgi-bin/init',
+		dataType: 'json',
+		success: function(data) {
+			data = data || {};
+			initRules(data.rules, data.values && data.values.values);
+			initValues(data.values);
+		},
+		error: function() {
+			alert('数据加载失败，请刷新页面重试.')
+		}
+	});
 });
