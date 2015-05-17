@@ -228,7 +228,7 @@ define('/style/js/biz/rules.js', function(require, exports, module) {
 	});
 	
 	function openWeinre(weinreId) {
-		weinreId = weinreId || 'weinre';
+		weinreId = (weinreId || 'weinre').substring(0, 120);
 		window.open('http://weinre.local.whistlejs.com/client/#' + weinreId, weinreId);
 	}
 	
