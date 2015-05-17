@@ -94,7 +94,11 @@ define('/style/js/biz/rules.js', function(require, exports, module) {
 			var name = hosts.text();
 			
 			$.post('/cgi-bin/hosts/remove',{name: name});
-			$('#publicHosts').trigger('click');
+			var next = hosts.next();
+			if (!next.length) {
+				next = hosts.prev();
+			}
+			(next.length ? next : $('#publicHosts')).trigger('click');
 			hosts.remove();
 			delete hostsData.hostsData[name];
 			updateCreateHostsBtnState();
@@ -139,13 +143,94 @@ define('/style/js/biz/rules.js', function(require, exports, module) {
 		if (self.hasClass('confirm-hosts')) {
 			$('.rules-dialog').modal('hide');
 		}
+	}).on('mouseenter', '.cm-js-type', function(e) {
+		var self = $(this);
+		if (e.ctrlKey && getKey(self.text())) {
+			self.addClass('has-key');
+		}
+	}).on('mouseenter', '.cm-js-weinre', function(e) {
+		e.ctrlKey && $(this).addClass('has-key');
+	}).on('mouseleave', '.cm-js-type', function() {
+		$(this).removeClass('has-key');
+	}).on('dblclick', '.cm-js-type', function(e) {
+		var key, item;
+		if (!e.ctrlKey) {
+			return;
+		}
+		
+		var self = $(this);
+		var url = self.text();
+		key = getKey(url);
+		if (self.hasClass('cm-js-weinre')) {
+			var weinreId;
+			if (key) {
+				weinreId = values[key];
+			} else {
+				weinreId = getKey(url, '<', '>') || getKey(url, '(', ')') || url;
+				if (!weinreId) {
+					weinreId = url.substring(url.indexOf('://') + 3);
+				}
+			}
+			
+			if (weinreId) {
+				openWeinre(weinreId);
+				return;
+			}
+		}
+		
+		if (!key) {
+			return;
+		}
+
+		$('.view-values').trigger('click');
+		var valuesCon = $('#valuesList');
+		var valuesList = valuesCon.find('a');
+		for (var i = 0; i < valuesList.length; i++) {
+			item = $(valuesList[i]);
+			if (item.text() == key) {
+				setTimeout(function() {
+					item.trigger('click');
+				}, 800);
+				return;
+			}
+		}
+		item = $('<a href="javascript:;" class="list-group-item" title="双击保存"></a>')
+			.text(key).appendTo(valuesCon);
+		setTimeout(function() {
+			item.trigger('click');
+			$('.apply-values').trigger('click');
+		}, 800);
+	
 	});
 	
+	function getKey(url, start, end) {
+		if (!url || !(url = $.trim(url))) {
+			return null;
+		}
+		
+		var index = url.indexOf('://') + 3;
+		if (index != -1) {
+			url = url.substring(index);
+		}
+		
+		if (url.indexOf(start || '{') == 0) {
+			var index = url.lastIndexOf(end || '}');
+			return index > 1 && url.substring(1, index);
+		}
+		
+		return null;
+	}
+	
 	$('#openWeinreBtn').click(function() {
-		var weinreId = $.trim($('#weinreId').val()) || 'weinre';
-		window.open('http://weinre.local.whistlejs.com/client/#' + weinreId);
+		var weinreId = $.trim($('#weinreId').val());
+		openWeinre(weinreId);
 		$('#openWeinreDialog').modal('hide');
 	});
+	
+	function openWeinre(weinreId) {
+		weinreId = weinreId || 'weinre';
+		window.open('http://weinre.local.whistlejs.com/client/#' + weinreId, weinreId);
+	}
 	
 	var createHostsBtn = $('#createHostsBtn').click(function() {
 		if (createHostsBtn.hasClass('disabled')) {

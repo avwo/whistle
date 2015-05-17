@@ -16,11 +16,27 @@ define('/style/js/biz/values.js', function(require, exports, module) {
 			var key = self.text();
 			keyName.text(key);
 			editor.setValue(VALUES[key] || '');
+			
+			var top = list.offset().top;
+			var _top = self.offset().top - top;
+			if (_top < 0) {
+				list.scrollTop(list.scrollTop() + _top);
+				return;
+			}
+			
+			_top += self[0].offsetHeight - list[0].offsetHeight;
+			if (_top > 0) {
+				list.scrollTop(list.scrollTop() + _top);
+			}
+			
 		}).on('dblclick', 'a', function() {
 			$('.apply-values').trigger('click');
 		});
 		
 		$('.apply-values').click(function() {
+			if (!editor) {
+				return;
+			}
 			var elem = list.find('a.active').removeClass('changed');
 			var key = elem.text();
 			var value = VALUES[key] = editor.getValue();
@@ -101,9 +117,14 @@ define('/style/js/biz/values.js', function(require, exports, module) {
 					});
 				}
 				
-				list.find('a.active').remove();
+				var elem = list.find('a.active');
+				var next = elem.next();
+				if (!next.length) {
+					next = elem.prev();
+				}
+				elem.remove();
 				$('.values-content').hide();
-				list.find('a:first').trigger('click');
+				next.trigger('click');
 			}
 		});
 		
@@ -133,6 +154,7 @@ define('/style/js/biz/values.js', function(require, exports, module) {
 			$('<a href="javascript:;" class="list-group-item" title="双击保存"></a>')
 				.text(key).appendTo(list).trigger('click');
 			$('#createValuesDialog').modal('hide');
+			initActionBar(THEME);
 			$('.apply-values').trigger('click');
 		});
 		
@@ -160,20 +182,26 @@ define('/style/js/biz/values.js', function(require, exports, module) {
 	
 	var themeOptions = $('#valuesThemeOptions').change(function() {
 		var theme = this.value;
+		THEME.theme = theme;
 		$.post('/cgi-bin/values/set-theme',{theme: theme});
-		editor.setOption('theme', theme);
+		editor && editor.setOption('theme', theme);
 	});
 	
 	var fontSizeOptions = $('#valuesFontSizeOptions').change(function() {
         var fontSize = this.value;
+        THEME.fontSize = fontSize;
         $.post('/cgi-bin/values/set-font-size',{fontSize: fontSize});
-        editor.getWrapperElement().style.fontSize = fontSize;
-        editor.refresh();
+        if (editor) {
+        	editor.getWrapperElement().style.fontSize = fontSize;
+            editor.refresh();
+        }
 	});
 		
 	var showLineNumbers = $('#valuesShowLineNumbers').change(function() {
-		$.post('/cgi-bin/values/show-line-numbers',{showLineNumbers: this.checked ? 1 : 0});
-		editor.setOption('lineNumbers', this.checked);
+		var showLineNumbers = this.checked ? 1 : 0;
+		 THEME.showLineNumbers = !!showLineNumbers;
+		$.post('/cgi-bin/values/show-line-numbers',{showLineNumbers: showLineNumbers});
+		editor && editor.setOption('lineNumbers', this.checked);
 	});
 	
 	function initActionBar(data) {
