@@ -5,7 +5,7 @@ define('/style/js/biz/init.js', function(require, exports, module) {
 	var initComposer = require('./composer');
 	var initValues = require('./values');
 	var detail = require('./detail');
-	var list = require('./list');
+	var initList = require('./list');
 	
 	function addEvents() {
 		var list = $('#captureList').on('dblclick', 'tr', function() {
@@ -104,6 +104,7 @@ define('/style/js/biz/init.js', function(require, exports, module) {
 	$('.timeline').attr('title', 'Stalled: 100ms\r\nDNS: 22ms\r\nRequest: 120ms\r\nResponse: 200ms\r\nContent Download: 500ms\r\n');
 	
 	addEvents();
+	initList();
 	initActions();
 	initAdvance();
 	initComposer();

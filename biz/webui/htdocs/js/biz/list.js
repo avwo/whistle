@@ -1,28 +1,78 @@
 define('/style/js/biz/list.js', function(require, exports, module) {
+	var captureListBody = $('#captureListBody');
+	var xhr;
+	var	MAX_COUNT = 360;
+	var urls = [];
+	var headers = {};
+	var bodies = {};
 	
-	exports = module.exports = function init() {
+	function getList(options) {
 		
-	};
-	
-	exports.getList = function getList(data) {
-		return $.ajax({
+		xhr = $.ajax({
 			url: '/cgi-bin/list/get-urls',
 			dataType: 'json',
+			timeout: 10000,
 			cache: false,
-			data: data
+			data: options,
+			success: handleData,
+			complete: function() {
+				xhr = null;
+				console.log(urls[urls.length - 1])
+				if (urls.length >= MAX_COUNT) {
+					return;
+				}
+				var last = urls[urls.length - 1];
+				if (last) {
+					console.log(last)
+				}
+			}
 		});
-	};
-	
-	exports.getHeaders = function getHeaders(ids) {
 		
-	};
+		return xhr;
+	}
 	
-	exports.getReq = function getReq(id) {
+	function handleData(data) {
+		for (var i = 0, len = data && data.length; i < len; i++) {
+			var line = data[i].split(' ');
+			urls.push({
+				id: line[0],
+				method: line[1],
+				versiont: line[2],
+				url: line[3],
+				host: line[4],
+				headers: parseJSON(line.slice(5).join(' '))
+			});
+		}
+	}
+
+	function parseJSON(str) {
+		try {
+			return $.parseJSON(str) || {};
+		} catch(e) {}
 		
-	};
+		return {};
+	}
 	
-	exports.getRes = function getRes(id) {
+	function getHeaders(ids) {
 		
+	}
+	
+	function getReq(id) {
+		
+	}
+	
+	function getRes(id) {
+		
+	}
+	
+	function clear() {
+		
+	}
+	
+	module.exports = function init(options) {
+		xhr && xhr.abort();
+		captureListBody.html('');
+		getList(options);
 	};
 	
 });

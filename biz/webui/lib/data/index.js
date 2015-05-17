@@ -42,8 +42,8 @@ function getFilename() {
 }
 
 function pushRequest(req) {
-	requests.push([req.id, req.method || 'GET', req.httpVersion || '1.1', req.url, 
-	               JSON.stringify(req.headers || {}), req.host || '127.0.0.1'].join(' '));
+	requests.push([req.id, req.method || 'GET', req.httpVersion || '1.1', req.url,
+	               req.host || '127.0.0.1', JSON.stringify(req.headers || {})].join(' '));
 	writeRequest();
 }
 

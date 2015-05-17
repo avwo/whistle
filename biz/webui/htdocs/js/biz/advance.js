@@ -1,6 +1,6 @@
 
 define('/style/js/biz/advance.js', function(require, exports, module) {
-	var list = require('./list');
+	var initList = require('./list');
 	var ONE_HOUR = 1000 * 60 * 60;
 	var ONE_DAY = ONE_HOUR *24;
 	
@@ -25,12 +25,10 @@ define('/style/js/biz/advance.js', function(require, exports, module) {
 	function addEvents() {
 		$('#advanceSearch').click(function() {
 			
-			list.getList({
+			initList({
 				keyword: $.trim($('#advanceKeyword').val()),
 				startDate: getTime($('#advanceStartDate').val(), $('#advanceStartTime').val()),
 				endDate: getTime($('#advanceEndDate').val(), $('#advanceEndTime').val())
-			}).done(function(data) {
-				
 			});
 			
 			$('#advanceBtn').addClass('active');
