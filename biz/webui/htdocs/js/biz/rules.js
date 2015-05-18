@@ -166,7 +166,7 @@ define('/style/js/biz/rules.js', function(require, exports, module) {
 			if (key) {
 				weinreId = values[key];
 			} else {
-				weinreId = getKey(url, '<', '>') || getKey(url, '(', ')') || url;
+				weinreId = getKey(url, '<', '>') || getKey(url, '(', ')') || removeProtocol(url);
 				if (!weinreId) {
 					weinreId = url.substring(url.indexOf('://') + 3);
 				}
@@ -203,16 +203,17 @@ define('/style/js/biz/rules.js', function(require, exports, module) {
 	
 	});
 	
+	function removeProtocol(url) {
+		var index = url.indexOf('://') + 3;
+		return index != -1 ? url.substring(index) : url;
+	}
+	
 	function getKey(url, start, end) {
 		if (!url || !(url = $.trim(url))) {
 			return null;
 		}
 		
-		var index = url.indexOf('://') + 3;
-		if (index != -1) {
-			url = url.substring(index);
-		}
-		
+		url = removeProtocol(url);
 		if (url.indexOf(start || '{') == 0) {
 			var index = url.lastIndexOf(end || '}');
 			return index > 1 && url.substring(1, index);

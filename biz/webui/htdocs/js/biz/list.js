@@ -71,7 +71,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 	
 	module.exports = function init(options) {
 		xhr && xhr.abort();
-		captureListBody.html('');
+//		captureListBody.html('');
 		getList(options);
 	};
 	
