@@ -71,7 +71,7 @@ CodeMirror.defineMode("whistle", function() {
 							 } else if (isRes(str)) {
 								 type = 'positive js-res js-type';
 							 } else if (isUrl(str)) {
-								 type = 'link js-url js-type';
+								 type = 'string-2 js-url js-type';
 							 } else if (isRule(str)) {
 								 type = 'builtin js-rule js-type';
 							 }
