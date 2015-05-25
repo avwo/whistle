@@ -101,6 +101,6 @@ module.exports = function(proxy) {
 	
 	require('./config')(config);
 	require('./rules-util')(proxy.rulesUtil);
-	require('./data')(proxy);
+//	require('./data')(proxy);
 	app.listen(config.uiport);
 };
