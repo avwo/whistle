@@ -230,6 +230,10 @@ define('/style/js/biz/rules.js', function(require, exports, module) {
 		$('#openWeinreDialog').modal('hide');
 	});
 	
+	$('#weinreId').keyup(function(e) {
+		e.keyCode == 13 && $('#openWeinreBtn').trigger('click');
+	});
+	
 	function openWeinre(weinreId) {
 		weinreId = (weinreId || 'weinre').substring(0, 120);
 		window.open('http://weinre.local.whistlejs.com/client/#' + weinreId, weinreId);
