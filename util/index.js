@@ -12,7 +12,11 @@ var zlib = require('zlib');
 var PipeStream = require('pipestream');
 var config = require('../package.json');
 
-exports.LOCAL_DATA_PATH = path.join(__dirname, '../../' + config.dataDirname);
+var nodePath = process.env['NODE_PATH'],
+nodePath = nodePath ? nodePath.split(process.platform === 'win32' ? ';' : ':') : [];
+nodePath = nodePath[nodePath.length - 1];
+exports.LOCAL_DATA_PATH = nodePath ? path.join(nodePath, config.dataDirname) : 
+	path.join(__dirname, '../../' + config.dataDirname);
 exports.WhistleTransform = require('./whistle-transform');
 exports.PROXY_ID = 'x-' + config.name + '-' + Date.now();
 
