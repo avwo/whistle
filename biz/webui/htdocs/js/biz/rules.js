@@ -107,12 +107,12 @@ define('/style/js/biz/rules.js', function(require, exports, module) {
 	});
 	
 	$('#hostsEditor').keyup(function(e) {
-		if (e.ctrlKey) {
+		if (e.metaKey !== false && e.ctrlKey || e.metaKey) {
 			(e.keyCode == 13 || e.keyCode == 83) 
 			&& $('.apply-hosts').trigger('click');
 		}
 	}).keydown(function(e) {
-		if (e.ctrlKey && e.keyCode == 83) {
+		if ((e.metaKey !== false && e.ctrlKey || e.metaKey) && e.keyCode == 83) {
 			e.preventDefault();
 			return false;
 		}
@@ -145,16 +145,16 @@ define('/style/js/biz/rules.js', function(require, exports, module) {
 		}
 	}).on('mouseenter', '.cm-js-type', function(e) {
 		var self = $(this);
-		if (e.ctrlKey && getKey(self.text())) {
+		if ((e.metaKey !== false && e.ctrlKey || e.metaKey) && getKey(self.text())) {
 			self.addClass('has-key');
 		}
 	}).on('mouseenter', '.cm-js-weinre', function(e) {
-		e.ctrlKey && $(this).addClass('has-key');
+		(e.metaKey !== false && e.ctrlKey || e.metaKey) && $(this).addClass('has-key');
 	}).on('mouseleave', '.cm-js-type', function() {
 		$(this).removeClass('has-key');
 	}).on('click', '.cm-js-type', function(e) {
 		var key, item;
-		if (!e.ctrlKey) {
+		if (!e.ctrlKey && !e.metaKey) {
 			return;
 		}
 		
