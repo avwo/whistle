@@ -340,14 +340,29 @@ define('/style/js/biz/rules.js', function(require, exports, module) {
 		}, 360);
 	}
 	
-	module.exports = function init(data, valuesData) {
+	function addResizeEvents() {
+		var editor = $('#hostsEditor')[0];
+		var timeoutId;
+		
+		function resize() {
+			clearTimeout(timeoutId);
+			timeoutId = setTimeout(function() {
+				hostsEditor.setSize(editor.offsetWidth, editor.offsetHeight);
+			}, 60);
+		}
+		
+		$(window).on('resize', resize);
+		resize();
+	}
+	
+	module.exports = function init(data, valuesData, homePage) {
 		hostsData = data || {};
 		values = valuesData || {};
 		$('#aboutVersion').text(hostsData.version);
 		var aboutUrl = $('#aboutUrl');
 		aboutUrl.attr('href', aboutUrl.attr('href').replace('{version}', hostsData.version));
 		
-		$('.rules-dialog').on('shown.bs.modal', initRulesDialog);
+		homePage ? initRulesDialog() : $('.rules-dialog').on('shown.bs.modal', initRulesDialog);
 		$('#openWeinreDialog').on('shown.bs.modal', function() {
 			setTimeout(function() {
 				$('#weinreId').focus();
@@ -365,5 +380,8 @@ define('/style/js/biz/rules.js', function(require, exports, module) {
 		$('#rulesSettings').click(function() {
 			rulesSettingsList.show();
 		});
+		
 	};
+	
+	module.exports.resize = addResizeEvents;
 });
