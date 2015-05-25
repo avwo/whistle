@@ -152,7 +152,7 @@ define('/style/js/biz/rules.js', function(require, exports, module) {
 		e.ctrlKey && $(this).addClass('has-key');
 	}).on('mouseleave', '.cm-js-type', function() {
 		$(this).removeClass('has-key');
-	}).on('dblclick', '.cm-js-type', function(e) {
+	}).on('click', '.cm-js-type', function(e) {
 		var key, item;
 		if (!e.ctrlKey) {
 			return;
