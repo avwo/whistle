@@ -205,13 +205,8 @@ define('/style/js/biz/values.js', function(require, exports, module) {
 	});
 	
 	function initActionBar(data) {
-		if (data.theme) {
-			themeOptions.val(data.theme).trigger('change');
-		}
-		
-		if (data.fontSize) {
-			fontSizeOptions.val(data.fontSize).trigger('change');
-		}
+		themeOptions.val(data.theme || 'cobalt').trigger('change');
+		fontSizeOptions.val(data.fontSize || '16px').trigger('change');
 		
 		showLineNumbers.prop('checked', data.showLineNumbers == true);
 		showLineNumbers.trigger('change');
