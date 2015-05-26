@@ -5,7 +5,7 @@
   "dataDirname": ".whistle data", 
   "localUIHost": "local.whistlejs.com",
   "whistleSsl": "whistle-ssl",
-  "port": 9527,
+  "port": 8899,
   "ports": ["uiport", "uidataport", "httpsproxyport", "weinreport"],
   "sockets": 10,
   "days": 1,
