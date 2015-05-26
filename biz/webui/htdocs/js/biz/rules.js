@@ -101,8 +101,6 @@ define('/style/js/biz/rules.js', function(require, exports, module) {
 	});
 	
 	$('#hostsEditor').keyup(function(e) {
-		console.log(e.metaKey)
-		console.log(e.keyCode)
 		if ((e.ctrlKey || e.metaKey)
 				&& (e.keyCode == 13 || e.keyCode == 83)) {
 			$('.apply-hosts').trigger('click');

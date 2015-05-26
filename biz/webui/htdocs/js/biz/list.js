@@ -16,15 +16,6 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 			data: options,
 			success: handleData,
 			complete: function() {
-				xhr = null;
-				console.log(urls[urls.length - 1])
-				if (urls.length >= MAX_COUNT) {
-					return;
-				}
-				var last = urls[urls.length - 1];
-				if (last) {
-					console.log(last)
-				}
 			}
 		});
 		
