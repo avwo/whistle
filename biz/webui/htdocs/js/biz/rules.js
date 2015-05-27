@@ -228,7 +228,7 @@ define('/style/js/biz/rules.js', function(require, exports, module) {
 	
 	function openWeinre(weinreId) {
 		weinreId = (weinreId || 'weinre').substring(0, 120);
-		window.open('http://weinre.local.whistlejs.com/client/#' + weinreId, weinreId);
+		window.open('http://weinre.local.whistlejs.com/client/#' + weinreId);
 	}
 	
 	var createHostsBtn = $('#createHostsBtn').click(function() {
@@ -345,7 +345,7 @@ define('/style/js/biz/rules.js', function(require, exports, module) {
 		function resize() {
 			clearTimeout(timeoutId);
 			timeoutId = setTimeout(function() {
-				hostsEditor.setSize(editor.offsetWidth, editor.offsetHeight);
+				hostsEditor.setSize(editor.offsetWidth, editor.offsetHeight + 1);
 			}, 60);
 		}
 		
