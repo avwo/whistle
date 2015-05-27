@@ -11,9 +11,11 @@ program.setConfig({
 	version: config.version,
 	runCallback: function() {
 		console.log('[i] Press [Ctrl+C] to stop %s...', config.name);
+		console.log('[i] visit http://' + config.localUIHost + '/ to get started');
 	},
 	startCallback: function(alreadyInRunning) {
 		console.log('[!] ' + config.name + ( alreadyInRunning ? ' is running.' : ' started.'));
+		console.log('[i] visit http://' + config.localUIHost + '/ to get started');
 	},
 	restartCallback: function() {
 		console.log('[!] %s started.', config.name);
