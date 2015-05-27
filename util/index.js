@@ -236,7 +236,7 @@ function parseRuleToJson(rule, callback) {
 		return;
 	}
 	
-	parseFileToJson(rule && (rule.path || rule.url), callback);
+	parseFileToJson(rule && (rule.path || rule.matcher), callback);
 }
 
 exports.parseRuleToJson = parseRuleToJson;
