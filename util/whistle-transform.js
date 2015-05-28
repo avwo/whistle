@@ -36,10 +36,31 @@ util.inherits(WhistleTransform, Transform);
 
 WhistleTransform.prototype._transform = function(chunk, encoding, callback) {
 	var self = this;
-	var end = !chunk;
+	if (!self._ended) {
+		self._ended = !chunk;
+	}
+	
+	if (!self._inited) {
+		self._inited = true;
+		if (self._body) {
+			self._ended = true;
+			chunk = self._body;
+		}
+		if (self._top) {
+			chunk = chunk ? Buffer.concat([self._top, chunk]) : self._top;
+			self._top = null;
+		}
+		return self._delay ? setTimeout(cb, self._delay) :  cb();
+	}
+	
+	if (self._ended) {
+		chunk = null;
+	}
+	
+	cb();
 	
 	function cb() {
-		if (end && self._bottom) {
+		if (self._ended && self._bottom) {
 			chunk = chunk ? Buffer.concat([chunk, self._bottom]) : self._bottom;
 			self._bottom = null;
 		}
@@ -51,25 +72,6 @@ WhistleTransform.prototype._transform = function(chunk, encoding, callback) {
 			callback(null, chunk);
 		}
 	}
-	
-	if (!self._inited) {
-		self._inited = true;
-		if (self._body) {
-			end = true;
-			chunk = self._body;
-		}
-		if (self._top) {
-			chunk = chunk ? Buffer.concat([self._top, chunk]) : self._top;
-			self._top = null;
-		}
-		return self._delay ? setTimeout(cb, self._delay) :  cb();
-	}
-	
-	if (self._body) {
-		chunk = null;
-	}
-	
-	cb();
 };
 
 module.exports = WhistleTransform;
