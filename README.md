@@ -405,7 +405,7 @@ whistle有三种方式匹配请求url分别为：
 			"top": "preappend body"
 		}
 
-5. 在响应内容后面追加新的内容
+5. 在响应内容后面追加新的内容(可用于注入脚本等)
 
 		# mac
 		www.aliexpress.com req:///Users/username/test/res.txt
