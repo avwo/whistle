@@ -552,7 +552,7 @@ whistle内置了weinre，无需再重新安装weinre、注入weinre的js，只�
 
 # UI操作
 
-注意[配置页面](http://m.aliexpress.com/)左下角的的Create按钮和右上角的Settting、More按钮。
+注意[配置页面](http://local.whistlejs.com/)左下角的的Create按钮和右上角的Settting、More按钮。
 
 上面每个操作的配置信息都是写在本地的文件，会给使用配置带来一定麻烦，这个时候我可以借助操作符 `{}`、 `()`来解决；
 
@@ -566,7 +566,7 @@ whistle内置了weinre，无需再重新安装weinre、注入weinre的js，只�
 
 ### {}操作符
 
-打开[配置页面](http://m.aliexpress.com/)右上角的More --> Values对话框，这是一个key-value配置系统，创建一个key: index.html，并随便写上一段html；
+打开[配置页面](http://local.whistlejs.com/)右上角的More --> Values对话框，这是一个key-value配置系统，创建一个key: index.html，并随便写上一段html；
 
 配置规则：
 
