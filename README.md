@@ -595,13 +595,13 @@ whistle内置了weinre，无需再重新安装weinre、注入weinre的js，只�
 
 注意[配置页面](http://local.whistlejs.com/)左下角的的Create按钮和右上角的Settting、More按钮。
 
-上面每个操作的配置信息都是写在本地的文件，会给使用配置带来一定麻烦，可以借助操作符 `{}`、 `()` 来解决；
+1. 每个操作的配置信息都是写在本地的文件，会给使用配置带来一定麻烦，可以借助操作符 `{}`、 `()` 来解决；
 
-在自定义响应方式的时候，whistle会自动根据请求的url拼接operator-uri：
+2. 在自定义响应方式的时候，whistle会自动根据请求的url拼接operator-uri：
 
-	www.example.com xfile://D:\test\index.html
+		www.example.com xfile://D:\test\index.html
 
-请求 http://www.example.com/index.html 会去加载文件 D:\test\index.html\index.html ，某些情况我们可能不想让它自动拼接，可以借助操作符 `<>` 来解决
+	请求 http://www.example.com/index.html 会去加载文件 D:\test\index.html\index.html ，某些情况我们可能不想让它自动拼接，可以借助操作符 `<>` 来解决
 
 下面详细讲下`{}`、`()`、`<>`三个操作符的作用
 
@@ -613,7 +613,7 @@ whistle内置了weinre，无需再重新安装weinre、注入weinre的js，只�
 
 	www.qq.com res://{index.html}
 
-*Note: windows安装Ctrl键(Mac可以安装Command键)，点击配置框里面的 `res://{index.html}`，可以快速打开Values对话框并创建或定位到对应的key*
+*Note: windows按住Ctrl键(Mac可以按住Command键)，点击配置框里面的 `res://{index.html}`，可以快速打开Values对话框并创建或定位到对应的key*
 
 ### `()` 操作符
 
@@ -630,7 +630,7 @@ whistle内置了weinre，无需再重新安装weinre、注入weinre的js，只�
 上述配置后请求 http://www.aliexpress.com/index.html 会直接加载本地的 /Users/index.html 文件，不会再自动做url拼接。
 
 
-# 查看请求过程的详细信息(v0.2.0及以上版本实现)
+# 查看请求数据(v0.2.0及以上版本实现)
 实现中...
 
 # 扩展功能
