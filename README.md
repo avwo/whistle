@@ -541,7 +541,7 @@ whistle内置了weinre，无需再重新安装weinre、注入weinre的js，只�
 
 ### https转http
 
-在https请求的host前面加 whistle-ssl. 即可用http来访问https的网站，如：直接在浏览器访问 http://whistle-ssl.www.baidu.com/，等价于访问 https://www.baidu.com/，这样上面的各种功能也可以应用到https请求上。
+在https请求的host前面加 whistle-ssl. 即可用http来访问https的网站，如：直接在浏览器访问  http://whistle-ssl.www.baidu.com/ ，等价于访问 https://www.baidu.com/ ，这样上面的各种功能也可以应用到https请求上。
 
 
 *Note: 如果服务器需要验证客户端的证书，由于http无法把客户端证书自动带上，这种情况下无法将https转成http； Firefox和chrome有一个特性也可能导致无法用这种方式访问，如github，遇到这种情况可以用IE来访问，想了解原因请参考： http://blog.csdn.net/lk188/article/details/7221767*
