@@ -145,7 +145,7 @@ whistle安装完成后，执行命令 `whistle help`，查看whistle的帮助信
 
 配置完代理，用chrome(或safari)访问配置页面 [http://local.whistlejs.com/](http://local.whistlejs.com/)，如果能正常打开页面，whistle安装启动完毕，可以开始使用。
 
-配置页面默认有一个 **Public** 公用分组，也可以通过左下角的create按钮创建自定义分组，whistle的配置方式跟配置hosts一样，每一行表示一条规则，注释也是使用 `#`。
+配置页面默认有一个 **Public** 公用分组(Public分组的作用是配置一些公共的信息，whistle会先在自定义的分组里面找匹配的操作，如果没有找到会到Public分组找)，也可以通过左下角的create按钮创建自定义分组，whistle的配置方式跟配置hosts一样，每一行表示一条规则，注释也是使用 `#`。
 
 下面我们开始详细讲下whistle的匹配方式和基本功能。
 
