@@ -554,17 +554,17 @@ whistle内置了weinre，无需再重新安装weinre、注入weinre的js，只�
 
 注意[配置页面](http://local.whistlejs.com/)左下角的的Create按钮和右上角的Settting、More按钮。
 
-上面每个操作的配置信息都是写在本地的文件，会给使用配置带来一定麻烦，这个时候我可以借助操作符 `{}`、 `()`来解决；
+上面每个操作的配置信息都是写在本地的文件，会给使用配置带来一定麻烦，可以借助操作符 `{}`、 `()` 来解决；
 
 在自定义响应方式的时候，whistle会自动根据请求的url拼接operator-uri：
 
 	www.example.com xfile://D:\test\index.html
 
-请求 http://www.example.com/index.html 会去加载文件 D:\test\index.html\index.html ，某些情况我们可能不想让它自动拼接，这个时候我可以借助操作符 `<>`来解决
+请求 http://www.example.com/index.html 会去加载文件 D:\test\index.html\index.html ，某些情况我们可能不想让它自动拼接，可以借助操作符 `<>` 来解决
 
 下面详细讲下`{}`、`()`、`<>`三个操作符的作用
 
-### {}操作符
+### `{}` 操作符
 
 打开[配置页面](http://local.whistlejs.com/)右上角的More --> Values对话框，这是一个key-value配置系统，创建一个key: index.html，并随便写上一段html；
 
@@ -574,13 +574,13 @@ whistle内置了weinre，无需再重新安装weinre、注入weinre的js，只�
 
 *Note: windows安装Ctrl键(Mac可以安装Command键)，点击配置框里面的 `res://{index.html}`，可以快速打开Values对话框并创建或定位到对应的key*
 
-### ()操作符
+### `()` 操作符
 
 	可以通过 `()` 直接在[配置页面](http://m.aliexpress.com/)上设置value	
 
 	www.qq.com res://({"delay":6000,"body":"1234567890"}) # () 里面不能有空格
 
-### <>操作符
+### `<>` 操作符
 
 在做本地替换时，whistle会自动进行路径拼接：	
 
