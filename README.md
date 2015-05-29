@@ -32,6 +32,45 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 
 whistle也可以通过实现express中间件的形式扩展功能，也可以作为第三模块集成到其它应用中，这些后面再详细讲，现在我们先让whistle运行起来。
 
+# 目录
+1. [Installation](#Installation)
+
+	- [安装node](#安装node)
+	- [安装whistle](#安装whistle)
+	- [配置代理](#配置代理)
+	- [访问配置页面](#访问配置页面)
+
+2. [匹配方式](#匹配方式)
+
+	- [域名匹配](#域名匹配)
+	- [路径匹配](#路径匹配)
+	- [正则匹配](#正则匹配)
+
+3. [基本功能](#基本功能)
+
+	- [注释](#注释)
+	- [配置hosts](#配置hosts)
+	- [设置代理](#设置代理)
+	- [修改请求](#修改请求)
+	- [修改响应](#修改响应)
+	- [自定义响应方式](#自定义响应方式)
+	- [调试手机web页面](#调试手机web页面)
+	- [https转http](#https转http)
+
+4. [UI操作](#UI操作)
+
+	- [{} 操作符](#-操作符)
+	- [() 操作符](#-操作符-1)
+	- [<> 操作符](#-操作符-2)
+
+5. [扩展功能](#扩展功能)
+
+	- [插件扩展](#插件扩展)
+	- [作为第三方模块使用](#作为第三方模块使用可以集成到自己的开发环境中)
+	- [自定义UI界面](#自定义UI界面)
+
+6. [更多帮助](#更多帮助请执行命令)
+
 # Installation
 
 whistle是node实现的web调试代理工具，需要我们的机器上先安装了 `v0.10.0` 及以上版本的node，并通过命令行安装启动whistle，再把系统或浏览器的代理指向部署whistle的机器IP(本机为 `127.0.0.1`)及whistle监听的端口号(默认为 `8899` )即可。
@@ -143,6 +182,7 @@ whistle安装完成后，执行命令 `whistle help`，查看whistle的帮助信
 
 	2) 安装firefox代理插件： [Proxy Selector](https://addons.mozilla.org/zh-cn/firefox/addon/proxy-selector/)
 
+### 访问配置页面
 配置完代理，用chrome(或safari)访问配置页面 [http://local.whistlejs.com/](http://local.whistlejs.com/)，如果能正常打开页面，whistle安装启动完毕，可以开始使用。
 
 配置页面默认有一个 **Public** 公用分组(Public分组的作用是配置一些公共的信息，whistle会先在自定义的分组里面找匹配的操作，如果没有找到会到Public分组找)，也可以通过左下角的create按钮创建自定义分组，whistle的配置方式跟配置hosts一样，每一行表示一条规则，注释也是使用 `#`。
@@ -153,45 +193,45 @@ whistle安装完成后，执行命令 `whistle help`，查看whistle的帮助信
 
 whistle有三种方式匹配请求url分别为：
 
-1. 域名匹配(与端口号无关)
+### 域名匹配(与端口号无关)
 
-		# 匹配域名www.example.com下的所有请求
-		www.example.com operator-uri
+	# 匹配域名www.example.com下的所有请求
+	www.example.com operator-uri
 
-		# 匹配域名www.example.com下的所有http请求
-		http://www.example.com operator-uri
+	# 匹配域名www.example.com下的所有http请求
+	http://www.example.com operator-uri
 
-		# 匹配域名www.example.com下的所有https、ws、wss请求
-		https://www.example.com operator-uri
+	# 匹配域名www.example.com下的所有https、ws、wss请求
+	https://www.example.com operator-uri
 
-2. 路径匹配
+### 路径匹配
 		
-		# 匹配请求 http[s]://www.example.com/[dir1/...[/...]]
-		www.example.com/[dir1/...]  operator-uri
+	# 匹配请求 http[s]://www.example.com/[dir1/...[/...]]
+	www.example.com/[dir1/...]  operator-uri
 
-		# 匹配请求 http://www.example.com/[dir1/...[/...]] 的请求生效
-		http://www.example.com/[dir1/...]  operator-uri
+	# 匹配请求 http://www.example.com/[dir1/...[/...]] 的请求生效
+	http://www.example.com/[dir1/...]  operator-uri
 
-		# 匹配请求 https://www.example.com/[dir1/...[/...]] 的请求生效
-		https://www.example.com/[dir1/...]  operator-uri
+	# 匹配请求 https://www.example.com/[dir1/...[/...]] 的请求生效
+	https://www.example.com/[dir1/...]  operator-uri
 
 
-	域名匹配和路径匹配的 `operator-uri` 的协议如果不是http或https，则配置两边的位置可以调换，即： `pattern operator-uri` 等价于 `operator-uri pattern`
+域名匹配和路径匹配的 `operator-uri` 的协议如果不是http或https，则配置两边的位置可以调换，即： `pattern operator-uri` 等价于 `operator-uri pattern`
 
-3. 正则匹配
+### 正则匹配
 
-	可以利用js的正则表达式匹配请求url
+可以利用js的正则表达式匹配请求url
 
-		# 匹配所有包含 www.example.com 的url
-		/www\.example\.com/i operator-uri #忽略大小写
+	# 匹配所有包含 www.example.com 的url
+	/www\.example\.com/i operator-uri #忽略大小写
 
-	子匹配
+子匹配
 
-		# 某些情况下我们需要获取请求url里面的部分内容放到匹配的uri中，可以采用如下子匹配
-		/[^?#]\/([^\/]+)\.html/ protocol://...$1... #最多支持9个子匹配 $1...9
-		
-		
-	正则匹配的两边位置可以调换，即：`regexp-pattern operator-uri` 等价于 `operator-uri regexp-pattern`
+	# 某些情况下我们需要获取请求url里面的部分内容放到匹配的uri中，可以采用如下子匹配
+	/[^?#]\/([^\/]+)\.html/ protocol://...$1... #最多支持9个子匹配 $1...9
+	
+	
+正则匹配的两边位置可以调换，即：`regexp-pattern operator-uri` 等价于 `operator-uri regexp-pattern`
 
 *Note: 由于浏览器发出的https请求只能获取去域名，无法获得路径信息，所以浏览器的非http请求只能确保对域名匹配生效，如果要让上述各种匹配方式适用https请求，需要用到下面的https转http的功能，后面再详细讲*
 
