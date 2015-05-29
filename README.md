@@ -598,7 +598,7 @@ whistle内置了weinre，无需再重新安装weinre、注入weinre的js，只�
 
 通过实现express的中间件扩展功能，可以参考源码的实现，插件加载可以通过启动是whistle是加载进来(多个插件用逗号 , 分隔) `whistle start -m xx/x.js,y.js`
 
-### 作为第三方模块使用
+### 作为第三方模块使用(可以集成到自己的开发环境中)
 参考aeproxy的实现: [https://github.com/avwo/aeproxy](https://github.com/avwo/aeproxy)
 
 ### 自定义UI界面
