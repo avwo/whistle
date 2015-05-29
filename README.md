@@ -9,7 +9,7 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 6. 修改响应: 修改响应状态码、响应头、响应内容，延迟响应、限制响应速度
 7. 集成手机web调试工具weinre: 直接在pc的chrome浏览器上调试手机上的页面
 8. https转http: 利用http请求https
-9. *查看请求过程的详细信息(实现中...)*
+9. *显示请求列表数据(实现中...)*
 
 每个功能对应一个协议，这样每个功能里面的具体每个操作可以抽象成一个uri，并通过配置请求url到每个操作uri的匹配规则，实现操作http[s]请求，且无需重启whistle。
 
@@ -628,10 +628,6 @@ whistle内置了weinre，无需再重新安装weinre、注入weinre的js，只�
 	www.aliexpress.com xfile://</Users/index.html>
 
 上述配置后请求 http://www.aliexpress.com/index.html 会直接加载本地的 /Users/index.html 文件，不会再自动做url拼接。
-
-
-# 查看请求数据(v0.2.0及以上版本实现)
-实现中...
 
 # 扩展功能
 
