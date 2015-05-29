@@ -560,7 +560,7 @@ whistle内置了weinre，无需再重新安装weinre、注入weinre的js，只�
 
 	www.example.com xfile://D:\test\index.html
 
-请求http://www.example.com/index.html会去加载文件D:\test\index.html\index.html，某些情况我们可能不想让它自动拼接，这个时候我可以借助操作符 `<>`来解决
+请求 http://www.example.com/index.html 会去加载文件 D:\test\index.html\index.html ，某些情况我们可能不想让它自动拼接，这个时候我可以借助操作符 `<>`来解决
 
 下面详细讲下`{}`、`()`、`<>`三个操作符的作用
 
