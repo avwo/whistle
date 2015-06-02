@@ -3,10 +3,14 @@
 var program = require('starting');
 var path = require('path');
 var config = require('../package.json');
+var util = require('../util');
+var CONFIG_DIR = util.LOCAL_DATA_PATH;
+
+util.mkdir(CONFIG_DIR);
 
 program.setConfig({
 	main: path.join(__dirname, '../index.js'),
-	running: path.join(require('../util').LOCAL_DATA_PATH, '.running'),
+	running: path.join(CONFIG_DIR, '.running'),
 	name: config.name,
 	version: config.version,
 	runCallback: function() {
