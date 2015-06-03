@@ -100,13 +100,13 @@ define('/style/js/biz/rules.js', function(require, exports, module) {
 		
 	});
 	
-	$('#hostsEditor').keyup(function(e) {
+	$('#hostsEditor').keydown(function(e) {
 		if ((e.ctrlKey || e.metaKey)
 				&& (e.keyCode == 13 || e.keyCode == 83)) {
 			$('.apply-hosts').trigger('click');
 		}
 	}).keydown(function(e) {
-		if (e.ctrlKey && e.keyCode == 83) {
+		if ((e.ctrlKey || e.metaKey) && e.keyCode == 83) {
 			e.preventDefault();
 			return false;
 		}
@@ -116,7 +116,7 @@ define('/style/js/biz/rules.js', function(require, exports, module) {
 		var self = $(this);
 		var hostsList = $('#hostsList');
 		var activeHosts = hostsList.find('.active');
-		if (!activeHosts.length) {
+		if (!activeHosts.length || !activeHosts.hasClass('changed')) {
 			return;
 		}
 		
@@ -133,7 +133,7 @@ define('/style/js/biz/rules.js', function(require, exports, module) {
 			activeHosts.append(glyphicon.length ? glyphicon : glyphiconOk);
 		}
 		
-		$('#hostsList').find('a.active').removeClass('changed');
+		activeHosts.removeClass('changed');
 		if (self.hasClass('confirm-hosts')) {
 			$('.rules-dialog').modal('hide');
 		}
@@ -322,6 +322,9 @@ define('/style/js/biz/rules.js', function(require, exports, module) {
 		updatePublicHostsState();
 		setInterval(function() {
 			var activeItem = $('#hostsList').find('a.active');
+			if (activeItem.hasClass('changed')) {
+				return;
+			}
 			var value = hostsEditor.getValue();
 			var hosts = hostsData.hostsData[activeItem.text()];
 			if (activeItem.hasClass('public-hosts')) {
