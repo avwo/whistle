@@ -116,7 +116,8 @@ define('/style/js/biz/rules.js', function(require, exports, module) {
 		var self = $(this);
 		var hostsList = $('#hostsList');
 		var activeHosts = hostsList.find('.active');
-		if (!activeHosts.length || !activeHosts.hasClass('changed')) {
+		if (!activeHosts.length || (!activeHosts.hasClass('changed') && 
+				activeHosts.find('.glyphicon-ok').is(':visible'))) {
 			return;
 		}
 		
