@@ -37,7 +37,11 @@ define('/style/js/biz/values.js', function(require, exports, module) {
 			if (!editor) {
 				return;
 			}
-			var elem = list.find('a.active').removeClass('changed');
+			var elem = list.find('a.active');
+			if (!elem.hasClass('changed')) {
+				return;
+			}
+			elem.removeClass('changed');
 			var key = elem.text();
 			var value = VALUES[key] = editor.getValue();
 			$.ajax({
@@ -52,13 +56,13 @@ define('/style/js/biz/values.js', function(require, exports, module) {
 		
 		});
 		
-		$('#keyValue').keyup(function(e) {
-			if (e.ctrlKey) {
-				(e.keyCode == 13 || e.keyCode == 83) 
-				&& $('.apply-values').trigger('click');
+		$('#keyValue').keydown(function(e) {
+			if ((e.ctrlKey || e.metaKey)
+					&& (e.keyCode == 13 || e.keyCode == 83)) {
+				$('.apply-values').trigger('click');
 			}
 		}).keydown(function(e) {
-			if (e.ctrlKey && e.keyCode == 83) {
+			if ((e.ctrlKey || e.metaKey) && e.keyCode == 83) {
 				e.preventDefault();
 				return false;
 			}
@@ -95,8 +99,11 @@ define('/style/js/biz/values.js', function(require, exports, module) {
 	      
 	      setInterval(function() {
 				var elem = list.find('a.active');
+				if (elem.hasClass('changed')) {
+					return;
+				}
 				var key = elem.text();
-				if (editor.getValue() != VALUES[key]) {
+				if ((editor.getValue() || '') != (VALUES[key] || '')) {
 					elem.addClass('changed');
 				} else {
 					elem.removeClass('changed');
@@ -151,7 +158,7 @@ define('/style/js/biz/values.js', function(require, exports, module) {
 				alert('该key已存在');
 				return;
 			}
-			$('<a href="javascript:;" class="list-group-item" title="双击保存"></a>')
+			$('<a href="javascript:;" class="list-group-item changed" title="双击保存"></a>')
 				.text(key).appendTo(list).trigger('click');
 			$('#createValuesDialog').modal('hide');
 			initActionBar(THEME);
