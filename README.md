@@ -20,7 +20,7 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 3. 修改请求: **req://[filepath|{key}|(value)]**
 4. 响应方式: **[httphttps|file|xfile|jsonp|xjsonp|...://]path**
 5. 修改响应: **res://[filepath|{key}|(value)]**
-6. 注入weinre: **weinre://weirneId** (默认为 `weinreid`)
+6. 注入weinre: **weinre://weirneId** (默认id为 `weinre`)
 
 *Note: `[]` 表示可选*
 
