@@ -50,7 +50,7 @@ define('/style/js/biz/values.js', function(require, exports, module) {
 				type: 'POST',
 				data: {
 					key: key,
-					value: $.trim(value)
+					value: value
 				}
 			});
 		
