@@ -189,7 +189,7 @@ define('/style/js/biz/rules.js', function(require, exports, module) {
 				return;
 			}
 		}
-		item = $('<a href="javascript:;" class="list-group-item" title="双击保存"></a>')
+		item = $('<a href="javascript:;" class="list-group-item changed" title="双击保存"></a>')
 			.text(key).appendTo(valuesCon);
 		setTimeout(function() {
 			item.trigger('click');
