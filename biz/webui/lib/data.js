@@ -70,6 +70,7 @@ function handleRequest(req) {
 		reqData.requestTime = Date.now() - startTime;
 		req.removeListener('response', handleResponse);
 		req._transform = passThrough;
+		data[id].end = true;
 	});
 	
 	var reqBody;
@@ -103,6 +104,7 @@ function handleRequest(req) {
 			resData.body = err && err.stack;
 			resData.totalTime = Date.now() - startTime;
 			res._transform = passThrough;
+			data[id].end = true;
 		});
 		
 		var resBody;
@@ -123,6 +125,7 @@ function handleRequest(req) {
 			if (!chunk) {
 				resData.totalTime = Date.now() - startTime;
 				resData.state = 'close';
+				data[id].end = true;
 				if (resBody) {
 					var unzip;
 					switch (util.toLowerCase(res.headers['content-encoding'])) {
