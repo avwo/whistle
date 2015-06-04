@@ -17,17 +17,15 @@ function uid() {
 	return ID + ++count;
 }
 
-function get(callback) {
+function get() {
 	!binded && proxy.on('request', handleRequest);
 	binded = true;
 	clearTimeout(timeout);
 	timeout = setTimeout(disable, TIMEOUT);
-	callback && callback(getList());
-}
-
-function getList() {
+	
 	return [];
 }
+
 
 function handleRequest(req) {
 	
