@@ -97,6 +97,12 @@ function handleRequest(req) {
 	
 	function handleResponse(res) {
 		resData.responseTime = Date.now() - startTime;
+		res.on('error', function(err) {
+			resData.state = 'error';
+			resData.body = err && err.stack;
+			resData.totalTime = Date.now() - startTime;
+			res._transform = passThrough;
+		});
 		
 		var resBody;
 		var contentType = util.getContentType(res.headers);
@@ -121,13 +127,6 @@ function handleRequest(req) {
 			
 			callback(null, chunk);
 		};
-		
-		res.on('error', function(err) {
-			resData.state = 'error';
-			resData.body = err && err.stack;
-			resData.totalTime = Date.now() - startTime;
-			res._transform = passThrough;
-		});
 	}
 	
 }
