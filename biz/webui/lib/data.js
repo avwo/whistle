@@ -124,9 +124,8 @@ function handleRequest(req) {
 				resData.totalTime = Date.now() - startTime;
 				resData.state = 'close';
 				if (resBody) {
-					var contentEncoding = res.headers['content-encoding'];
 					var unzip;
-					switch (util.toLowerCase(contentEncoding)) {
+					switch (util.toLowerCase(res.headers['content-encoding'])) {
 					    case 'gzip':
 					    	unzip = zlib.gunzip.bind(zlib);
 					      break;
