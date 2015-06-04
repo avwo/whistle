@@ -46,5 +46,4 @@ program
 	.option('-u, --uipath [script path]', 'web ui plugin path', String, undefined)
 	.option('-t, --timneout [ms]', 'request timeout(' + config.timeout + ' ms by default)', parseInt, undefined)
 	.option('-s, --sockets [number]', 'max sockets', parseInt, undefined)
-	.option('-d, --days [number]', 'the maximum days of cache', parseInt, undefined)
 	.parse(process.argv);
