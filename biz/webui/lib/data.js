@@ -33,6 +33,7 @@ function handleRequest(req) {
 	
 }
 
-function init(_proxy) {
+module.exports = function init(_proxy) {
 	proxy = _proxy;
-}
+	module.exports = get;
+};
