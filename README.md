@@ -33,7 +33,7 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 whistle也可以通过实现express中间件的形式扩展功能，也可以作为第三模块集成到其它应用中，这些后面再详细讲，现在我们先让whistle运行起来。
 
 # 目录
-1. [安装](#installation)
+1. [安装](#安装)
 
 	- [安装node](#安装node)
 	- [安装whistle](#安装whistle)
@@ -72,7 +72,7 @@ whistle也可以通过实现express中间件的形式扩展功能，也可以作
 
 6. [更多帮助](#更多帮助请执行命令)
 
-# Installation
+# 安装
 
 whistle是node实现的web调试代理工具，需要我们的机器上先安装了 `v0.10.0` 及以上版本的node，并通过命令行安装启动whistle，再把系统或浏览器的代理指向部署whistle的机器IP(本机为 `127.0.0.1`)及whistle监听的端口号(默认为 `8899` )即可。
 
