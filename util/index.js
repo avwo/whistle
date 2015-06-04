@@ -315,6 +315,11 @@ exports.hasBody = hasBody;
 
 function hasRequestBody(req) {
 	req = typeof req == 'string' ? req : req.method;
+	if (typeof req != 'string') {
+		return false;
+	}
+	
+	req = req.toUpperCase();
 	return !(req === 'GET' || req === 'HEAD' ||
 		   req === 'DELETE' || req === 'OPTIONS' ||
 		   req === 'CONNECT');
