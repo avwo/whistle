@@ -127,7 +127,6 @@ whistle安装完成后，执行命令 `whistle help`，查看whistle的帮助信
 	    -t, --timneout [ms]                             request timeout(36000 ms by
 	default)
 	    -s, --sockets [number]                          max sockets
-	    -d, --days [number]                             the maximum days of cache
 	    -V, --version                                   output the version number
 	    -c, --custom <custom>                           custom parameters ("node --h
 	armony")
