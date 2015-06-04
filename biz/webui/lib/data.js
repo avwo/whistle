@@ -1,4 +1,5 @@
 var iconv = require('iconv-lite');
+var zlib = require('zlib');
 var MAX_REQ_SIZE = 128 * 1024;
 var MAX_RES_SIZE = 256 * 1024;
 var TIMEOUT = 10000;
@@ -122,6 +123,30 @@ function handleRequest(req) {
 			if (!chunk) {
 				resData.totalTime = Date.now() - startTime;
 				resData.state = 'close';
+				if (resBody) {
+					var contentEncoding = res.headers['content-encoding'];
+					var unzip;
+					switch (util.toLowerCase(contentEncoding)) {
+					    case 'gzip':
+					    	unzip = zlib.gunzip.bind(zlib);
+					      break;
+					    case 'deflate':
+					    	unzip = zlib.inflate.bind(zlib);
+					      break;
+					}
+					
+					if (unzip) {
+						unzip(resBody, function(err, body) {
+							if (err) {
+								callback(err, chunk);
+								return;
+							}
+							resData.body = decode(body);
+							callback(null, chunk);
+						});
+						return;
+					}
+				}
 				resData.body = decode(resBody);
 			}
 			
