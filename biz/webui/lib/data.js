@@ -1,3 +1,4 @@
+var iconv = require('iconv-lite');
 var MAX_REQ_SIZE = 128 * 1024;
 var MAX_RES_SIZE = 256 * 1024;
 var TIMEOUT = 10000;
@@ -14,6 +15,18 @@ function disable() {
 
 function passThrough(chunk, encoding, callback) {
 	callback(null, chunk);
+}
+
+function decode(body) {
+	if (body) {
+		var _body = body + '';
+		if (_body.indexOf('�') != -1) {
+			_body = iconv.decode(body, 'gbk');
+		}
+		body = _body;
+	}
+	
+	return body;
 }
 
 function get() {
@@ -76,12 +89,11 @@ function handleRequest(req) {
 		if (!chunk) {
 			reqData.requestTime = Date.now() - startTime;
 			reqData.state = 'close';
-			reqData.body = reqBody;
+			reqData.body = decode(reqBody);
 		}
 		
 		callback(null, chunk);
 	};
-	
 	
 	function handleResponse(res) {
 		resData.responseTime = Date.now() - startTime;
@@ -104,7 +116,7 @@ function handleRequest(req) {
 			if (!chunk) {
 				resData.totalTime = Date.now() - startTime;
 				resData.state = 'close';
-				resData.body = resBody;
+				resData.body = decode(resBody);
 			}
 			
 			callback(null, chunk);
