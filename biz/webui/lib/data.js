@@ -67,12 +67,11 @@ function handleRequest(req) {
 	
 	req.on('response', handleResponse);
 	req.on('error', function(err) {
-		reqData.state = 'error';
 		reqData.body = err && err.stack;
 		reqData.requestTime = Date.now() - startTime;
 		req.removeListener('response', handleResponse);
 		req._transform = passThrough;
-		curData.end = true;
+		curData.reqError = true;
 	});
 	
 	var reqBody;
@@ -92,7 +91,7 @@ function handleRequest(req) {
 		
 		if (!chunk) {
 			reqData.requestTime = Date.now() - startTime;
-			reqData.state = 'close';
+			curData.reqEnd = true;
 			reqData.body = decode(reqBody);
 		}
 		
@@ -102,11 +101,10 @@ function handleRequest(req) {
 	function handleResponse(res) {
 		resData.responseTime = Date.now() - startTime;
 		res.on('error', function(err) {
-			resData.state = 'error';
 			resData.body = err && err.stack;
 			resData.totalTime = Date.now() - startTime;
 			res._transform = passThrough;
-			curData.end = true;
+			curData.resError = true;
 		});
 		
 		var resBody;
@@ -127,7 +125,7 @@ function handleRequest(req) {
 			if (!chunk) {
 				resData.totalTime = Date.now() - startTime;
 				resData.state = 'close';
-				curData.end = true;
+				curData.resEnd = true;
 				if (resBody) {
 					var unzip;
 					switch (util.toLowerCase(res.headers['content-encoding'])) {
