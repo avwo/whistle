@@ -116,6 +116,10 @@ define('/style/js/biz/rules.js', function(require, exports, module) {
 		var self = $(this);
 		var hostsList = $('#hostsList');
 		var activeHosts = hostsList.find('.active');
+		if (self.hasClass('confirm-hosts')) {
+			$('.rules-dialog').modal('hide');
+		}
+		
 		if (!activeHosts.length || (!activeHosts.hasClass('changed') && 
 				activeHosts.find('.glyphicon-ok').is(':visible'))) {
 			return;
@@ -135,9 +139,6 @@ define('/style/js/biz/rules.js', function(require, exports, module) {
 		}
 		
 		activeHosts.removeClass('changed');
-		if (self.hasClass('confirm-hosts')) {
-			$('.rules-dialog').modal('hide');
-		}
 	}).on('mouseenter', '.cm-js-type', function(e) {
 		var self = $(this);
 		if ((e.ctrlKey || e.metaKey) && getKey(self.text())) {
