@@ -3,7 +3,7 @@ var zlib = require('zlib');
 var MAX_REQ_SIZE = 128 * 1024;
 var MAX_RES_SIZE = 256 * 1024;
 var TIMEOUT = 10000;
-var MAX_LENGTH = 256;
+var MAX_LENGTH = 512;
 var count = 0;
 var ids = [];
 var data = {};
@@ -11,6 +11,8 @@ var proxy, binded, timeout, util;
 
 function disable() {
 	proxy.removeListener('request', handleRequest);
+	ids = [];
+	data = {};
 	binded = false;
 }
 
