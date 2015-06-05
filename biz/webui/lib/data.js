@@ -42,7 +42,8 @@ function get() {
 }
 
 function handleRequest(req) {
-	var startTime = Date.now() - (req.dnsTime || 0);
+	req.dnsTime = req.dnsTime || 0;
+	var startTime = Date.now() - req.dnsTime;
 	var id = startTime + '-' + ++count;
 	var reqData = {
 			dnsTime: req.dnsTime,

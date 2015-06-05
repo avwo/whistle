@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8" />
-<title>Whistle Proxy</title>
+<title>Whistle Data</title>
 <link href="/style/css/lib/bootstrap.css" rel="stylesheet" />
 <link href="/style/css/lib/codemirror.css" rel="stylesheet" />
 <link href="/style/css/lib/datepicker.css" rel="stylesheet" />
@@ -109,7 +109,7 @@ html, body, .main {overflow: hidden; margin: 0; padding: 0; height: 100%;}
 
 
 .capture-detail {width: 72%; height: 456px; background: #fff; position: fixed; left: 0; top: 50%; margin-top: -176px; display: none;}
-.capture-detail textarea {width: 860px; height: 204px; resize: none; border: 1px solid #ddd; padding: 5px;}
+.capture-detail textarea {display: block; width: 100%; height: 204px; resize: none; border: 1px solid #ddd; padding: 5px;}
 .capture-detail .res textarea {border-bottom-right-radius: 6px;}
 .capture-detail .req {border-bottom: 1px solid #ddd;}
 .capture-detail .content {display: block; resize: none;}
@@ -155,16 +155,6 @@ html, body, .main {overflow: hidden; margin: 0; padding: 0; height: 100%;}
 .hosts .hosts-text>.CodeMirror, .values .CodeMirror {width: 676px; height: 437px; border: 1px solid #ddd; border-left: none;}
 .hosts .hosts-text>.CodeMirror {height: 439px;}
 
-/**advance-dialog**/
-.advance p label {width: 80px; text-align: right; margin-right: 10px;}
-.advance p .form-control {display: inline-block; width: 420px;}
-.advance p .advance-start-date, .advance p .advance-end-date {width: 280px;}
-.advance p .advance-start-time, .advance p .advance-end-time {width: 130px; margin-left: 5px;}
-.advance-btn {position: relative;}
-.advance-btn .cancel-search {display: none;}
-.advance-btn.active .cancel-search {position: absolute; display: block; width: 12px; height: 12px; 
-text-align: center; line-height: 12px; top: -6px; right: -6px; background: #a1c3fa; color: #fff; border-radius: 12px;}
-
 /**About**/
 .about-dialog .modal-body {padding-left: 90px; position: relative; height: 120px;}
 .about-dialog .modal-body img {width: 60px; position: absolute; left: 10px; top: 30px;}
@@ -197,14 +187,12 @@ color-stop(0.90, #3f86d3), color-stop(1, #3f86d3));}
 <div class="main box box-orient-vertical">
 <div class="box nav-bar">
 	<input id="quickSearch" type="text" class="fill form-control quick-search" placeholder="type filter text" autofocus="autofocus" />
-	<a id="advanceBtn" class="advance-btn" href="javascript:;" data-toggle="modal" data-target=".advance-dialog">Advance<span id="cancelSearch" title="清空查找条件" class="cancel-search">&times;</span></a>
 	<a href="javascript:;" data-toggle="modal" data-target=".rules-dialog">Rules</a>
-	<a href="javascript:;" data-toggle="modal" data-target=".values-dialog">Values</a>
+	<a href="javascript:;" data-toggle="modal" data-target=".timeline-dialog">Timeline</a>
 	<a href="javascript:;" id="moreActions">More <span class="caret"></span></a>
 	<ul id="helpList" class="help-list shadow">
-		<li><label><input type="checkbox" /> Hide https</label></li>
 		<li><a id="clearAll" href="javascript:;">Clear</a></li>
-		<li><a href="javascript:;" data-toggle="modal" data-target=".timeline-dialog">Timeline</a></li>
+		<li><a href="javascript:;" data-toggle="modal" data-target=".values-dialog">Values</a></li>
 		<li><a href="javascript:;" data-toggle="modal" data-target=".composer-dialog">Composer</a></li>
 		<li><a href="https://github.com/avwo/whistle" target="_blank">Github</a></li>
         <li><a href="https://github.com/avwo/whistle/blob/master/README.md" target="_blank">Help</a></li>
@@ -225,13 +213,6 @@ color-stop(0.90, #3f86d3), color-stop(1, #3f86d3));}
 			<div class="action-bar">
 				<a href="javascript:;" class="replay"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Replay</a>
 				<a href="javascript:;" class="composer" data-toggle="modal" data-target=".composer-dialog"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Composer</a>
-				<select>
-					<option>UTF-8</option>
-					<option>GBK</option>
-					<option>GB18030</option>
-					<option>Big5</option>
-					<option>ISO-8859-1</option>
-				</select>
 				<button type="button" class="close"><span aria-hidden="true">&times;</span></button>
 			</div>
 			<textarea></textarea>
@@ -727,89 +708,6 @@ color-stop(0.90, #3f86d3), color-stop(1, #3f86d3));}
           <textarea id="composerHeaders" class="composer-headers fill" placeholder="headers"></textarea>
           <textarea id="composerBody" class="composer-body fill" placeholder="body"></textarea>
      </div>
-    </div>
-  </div>
-</div>
-
-<!-- advance -->
-<div class="modal fade advance-dialog" data-remote="false" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-    <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="myLargeModalLabel">Advance</h4>
-    </div>
-    <div class="modal-body advance">
-          <p>
-          	<label>Keyword:</label> <input id="advanceKeyword" class="form-control advance-keyword" maxlength="120" />
-          </p>
-          <p>
-          	<label>Start date:</label>
-          	<input id="advanceStartDate" class="form-control advance-start-date" maxlength="32" placeholder="yyyy-mm-dd" />
-          	<select id="advanceStartTime" class="form-control advance-start-time">
-          		<option value="0">00:00</option>
-          		<option value="1">01:00</option>
-          		<option value="2">02:00</option>
-          		<option value="3">03:00</option>
-          		<option value="4">04:00</option>
-          		<option value="5">05:00</option>
-          		<option value="6">06:00</option>
-          		<option value="7">06:00</option>
-          		<option value="8">08:00</option>
-          		<option value="9">09:00</option>
-          		<option value="10">10:00</option>
-          		<option value="11">11:00</option>
-          		<option value="12">12:00</option>
-          		<option value="13">13:00</option>
-          		<option value="14">14:00</option>
-          		<option value="15">15:00</option>
-          		<option value="16">16:00</option>
-          		<option value="17">17:00</option>
-          		<option value="18">18:00</option>
-          		<option value="19">19:00</option>
-          		<option value="20">20:00</option>
-          		<option value="21">21:00</option>
-          		<option value="22">22:00</option>
-          		<option value="23">23:00</option>
-          		<option value="24">24:00</option>
-          	</select>
-          </p>
-          <p>
-          	<label>End date:</label> 
-          	<input id="advanceEndDate" class="form-control advance-end-date" maxlength="32" placeholder="yyyy-mm-dd" />
-          	<select id="advanceEndTime" class="form-control advance-end-time">
-          		<option value="0">00:00</option>
-          		<option value="1">01:00</option>
-          		<option value="2">02:00</option>
-          		<option value="3">03:00</option>
-          		<option value="4">04:00</option>
-          		<option value="5">05:00</option>
-          		<option value="6">06:00</option>
-          		<option value="7">06:00</option>
-          		<option value="8">08:00</option>
-          		<option value="9">09:00</option>
-          		<option value="10">10:00</option>
-          		<option value="11">11:00</option>
-          		<option value="12">12:00</option>
-          		<option value="13">13:00</option>
-          		<option value="14">14:00</option>
-          		<option value="15">15:00</option>
-          		<option value="16">16:00</option>
-          		<option value="17">17:00</option>
-          		<option value="18">18:00</option>
-          		<option value="19">19:00</option>
-          		<option value="20">20:00</option>
-          		<option value="21">21:00</option>
-          		<option value="22">22:00</option>
-          		<option value="23">23:00</option>
-          		<option value="24" selected="selected">24:00</option>
-          	</select>
-          </p>
-     </div>
-     <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-        <button id="advanceSearch" type="button" class="btn btn-primary">Search</button>
-      </div>
     </div>
   </div>
 </div>
