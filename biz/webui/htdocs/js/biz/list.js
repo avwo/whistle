@@ -77,10 +77,6 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 	
 	function createList() {
 		var list = body.find('tr');
-		if (list.length >= MAX_COUNT) {
-			return;
-		}
-		
 		list.filter('.pending').each(function() {
 			var self = $(this);
 			var curData = data[self.attr('id')];
@@ -90,11 +86,14 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		var last = list.filter(':last');
 		var lastId = last.attr('id');
 		lastId = lastId && (lastId = $.inArray(lastId, ids)) != -1 ? lastId : 0;
-		var html = [];
-		for (len = ids.length; lastId < len; lastId++) {
-			html.push(getHtml(data[ids[lastId]]));
+		if (list.length < MAX_COUNT) {
+			var html = [];
+			for (len = ids.length; lastId < len; lastId++) {
+				html.push(getHtml(data[ids[lastId]]));
+			}
+			body.append(html.join(''));
 		}
-		body.append(html.join(''));
+		
 	}
 	
 	function getHtml(data) {
