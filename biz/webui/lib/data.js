@@ -45,17 +45,16 @@ function clearCache() {
 	}
 	
 	var _ids = [];
+	var end;
 	++index;
 	for (var i = 0; i < index; i++) {
 		var id = ids[i];
 		var curData = data[id];
-		if (curData.read && !curData.endTime) {
+		if (end || (curData.read && !curData.endTime)) {
 			_ids.push(id);
 		} else {
 			delete data[id];
-			if (--len <= MIN_LENGTH) {
-				break;
-			}
+			end = len-- < MIN_LENGTH;
 		}
 	}
 	ids = _ids.concat(ids.slice(index));
