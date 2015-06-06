@@ -53,9 +53,7 @@ function clearCache() {
 			delete data[id];
 		}
 	}
-	if (_ids.length) {
-		ids = _ids.concat(ids.slice(index));
-	}
+	ids = _ids.concat(ids.slice(index));
 }
 
 
