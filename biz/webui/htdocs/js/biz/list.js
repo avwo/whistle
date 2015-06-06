@@ -106,11 +106,11 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 	
 	function updateElement(elem, data) {
 		var res = data.res;
-		var error = data.reqError || data.resError;
-		elem.find('.result').text(error ? 'error' : (res.statusCode || '-'));
-		elem.find('.host-ip').text(res.host || '-');
-		elem.find('.type').text((res.headers && res.headers['content-type'] || '-'));
-		elem.find('.time').text(data.endTime ? data.endTime - data.startTime : '-');
+		var defaultValue = data.reqError || data.resError ? 'error' : '-';
+		elem.find('.result').text(res.statusCode || defaultValue);
+		elem.find('.host-ip').text(res.host || defaultValue);
+		elem.find('.type').text((res.headers && res.headers['content-type'] || defaultValue));
+		elem.find('.time').text(data.endTime ? data.endTime - data.startTime : defaultValue);
 		elem.addClass(getClassname(data));
 		if (data.endTime) {
 			elem.removeClass('pending');
