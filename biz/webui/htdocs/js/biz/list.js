@@ -65,13 +65,17 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 	
 	function createList() {
 		var list = body.find('tr');
-		var pendingList = list.filter('.pending');
-		var last = list.filter(':last');
-		
 		if (list.length >= MAX_COUNT) {
 			return;
 		}
 		
+		list.filter('.pending').each(function() {
+			var self = $(this);
+			var curData = data[self.attr('id')];
+			curData && updateElement(self, curData);
+		});
+		
+		var last = list.filter(':last');
 		var lastId = last.attr('id');
 		lastId = lastId && (lastId = $.inArray(lastId, ids)) != -1 ? lastId : 0;
 		var html = [];
@@ -87,7 +91,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		}
 		var res = data.res;
 		var req = data.req;
-		return '<tr class="' + (data.endTime ? '' : 'pending') + '">\
+		return '<tr class="' + (data.endTime ? getClassname(res.headers) : 'pending') + '">\
 			        <th class="order" scope="row">' + ++index + '</th>\
 			        <td class="result">' + (res.statusCode || '-') + '</td>\
 			        <td class="protocol">' + getProtocol(data.url) + '</td>\
@@ -100,13 +104,41 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 			     </tr>';
 	}
 	
+	function updateElement(elem, data) {
+		var res = data.res;
+		elem.find('.result').text(res.statusCode || '-');
+		elem.find('.host-ip').text(res.host || '-');
+		elem.find('.type').text((res.headers && res.headers['content-type'] || '-'));
+		elem.find('.time').text(data.endTime ? data.endTime - data.startTime : '-');
+		elem.addClass(getClassname(res.headers));
+		if (data.endTime) {
+			elem.removeClass('pending');
+		}
+	}
+	
 	function getHostname(url) {
 		var index = url.indexOf(':\/\/') + 3;
 		return url.substring(index, url.indexOf('\/', index));
 	}
 	
 	function getProtocol(url) {
-		return url.substring(0, url.indexOf(':\/\/'));
+		return url.substring(0, url.indexOf(':\/\/')).toUpperCase();
+	}
+	
+	function getClassname(headers) {
+		
+		switch(getContentType(headers)) {
+			case 'JS':
+				return 'warning';
+			case 'CSS':
+				return 'info';
+			case 'HTML':
+				return 'success';
+			case 'IMG':
+				return 'active';
+		}
+		
+		return '';
 	}
 	
 	function getContentType(contentType) {
