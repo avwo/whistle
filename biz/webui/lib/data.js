@@ -118,7 +118,7 @@ function getIds(startTime, count) {
 	count = Math.min(count || MIN_LENGTH, len);
 	if (ids[0] > startTime) {
 		
-		return getList(ids.slice(0, count));
+		return ids.slice(0, count);
 	}
 	
 	if (len === 1 || ids[len - 1] <= startTime) {
