@@ -85,7 +85,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		
 		var last = list.filter(':last');
 		var lastId = last.attr('id');
-		lastId = lastId && (lastId = $.inArray(lastId, ids)) != -1 ? lastId + 1 : 0;
+		lastId = lastId ? $.inArray(lastId, ids) + 1 : 0;
 		if (list.length < MAX_COUNT) {
 			var html = [];
 			for (len = ids.length; lastId < len; lastId++) {
