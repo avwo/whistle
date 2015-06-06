@@ -1,69 +1,158 @@
 define('/style/js/biz/list.js', function(require, exports, module) {
-	var captureListBody = $('#captureListBody');
-	var xhr;
-	var	MAX_COUNT = 360;
-	var urls = [];
-	var headers = {};
-	var bodies = {};
+	var body = $('#captureListBody');
+	var	MAX_COUNT = 512;
+	var ids = [];
+	var data = {};
+	var index = 0;
+	var pending;
 	
 	function getList(options) {
+		if (pending) {
+			return;
+		}
+		pending = true;
 		
-		xhr = $.ajax({
-			url: '/cgi-bin/list/get-urls',
+		return $.ajax({
+			url: '/cgi-bin/list/get',
 			dataType: 'json',
-			timeout: 10000,
-			cache: false,
+			timeout: 5000,
+			type: 'post',
 			data: options,
 			success: handleData,
 			complete: function() {
+				setTimeout(load, 1600);
 			}
 		});
-		
-		return xhr;
 	}
 	
-	function handleData(data) {
-		for (var i = 0, len = data && data.length; i < len; i++) {
-			var line = data[i].split(' ');
-			urls.push({
-				id: line[0],
-				method: line[1],
-				versiont: line[2],
-				url: line[3],
-				host: line[4],
-				headers: parseJSON(line.slice(5).join(' '))
+	function load() {
+		var id;
+		var pendingIds = [];
+		for (var i = 0, len = ids.length; i < len; i++) {
+			id = ids[i];
+			var curData = data[id];
+			if (curData && !curData.endTime) {
+				pendingIds.push(id);
+			}
+		}
+		var startTime = ids.length <= MAX_COUNT ? id : -1;
+		
+		function _load() {
+			pending = false;
+			getList({
+				ids: pendingIds.join(),
+				startTime: startTime
 			});
 		}
-	}
-
-	function parseJSON(str) {
-		try {
-			return $.parseJSON(str) || {};
-		} catch(e) {}
 		
-		return {};
+		if (startTime == -1 && !pendingIds.length) {
+			setTimeout(_load, 5000);
+		} else {
+			_load();
+		}
 	}
 	
-	function getHeaders(ids) {
-		
+	function handleData(json) {
+		for (var i in json.data) {
+			var curData = json.data[i];
+			if (curData) {
+				data[i] = curData;
+			}
+		}
+		ids = ids.concat(json.newIds);
+		createList();
 	}
 	
-	function getReq(id) {
+	function createList() {
+		var list = body.find('tr');
+		var pendingList = list.filter('.pending');
+		var last = list.filter(':last');
 		
+		if (list.length >= MAX_COUNT) {
+			return;
+		}
+		
+		var lastId = last.attr('id');
+		lastId = lastId && (lastId = $.inArray(lastId, ids)) != -1 ? lastId : 0;
+		var html = [];
+		for (len = ids.length; lastId < len; lastId++) {
+			html.push(getHtml(data[ids[lastId]]));
+		}
+		body.append(html.join(''));
 	}
 	
-	function getRes(id) {
-		
+	function getHtml(data) {
+		if (!data) {
+			return '';
+		}
+		var res = data.res;
+		var req = data.req;
+		return '<tr class="' + (data.endTime ? '' : 'pending') + '">\
+			        <th class="order" scope="row">' + ++index + '</th>\
+			        <td class="result">' + (res.statusCode || '-') + '</td>\
+			        <td class="protocol">' + getProtocol(data.url) + '</td>\
+			        <td class="method">' + req.method + '</td>\
+			        <td class="host">' + getHostname(data.url) + '</td>\
+			        <td class="host-ip">' + (res.host || '-') + '</td>\
+			        <td class="url">' + data.url + '</td>\
+			        <td class="type">' + (res.headers && res.headers['content-type'] || '-') + '</td>\
+			        <td class="time">' + (data.endTime ? data.endTime - data.startTime : '-') + '</td>\
+			     </tr>';
 	}
 	
-	function clear() {
-		
+	function getHostname(url) {
+		var index = url.indexOf(':\/\/') + 3;
+		return url.substring(index, url.indexOf('\/', index));
 	}
 	
-	module.exports = function init(options) {
-		xhr && xhr.abort();
-//		captureListBody.html('');
-		getList(options);
+	function getProtocol(url) {
+		return url.substring(0, url.indexOf(':\/\/'));
+	}
+	
+	function getContentType(contentType) {
+		if (contentType && typeof contentType != 'string') {
+			contentType = contentType['content-type'] || contentType.contentType;
+		}
+		
+		if (typeof contentType == 'string') {
+			contentType = contentType.toLowerCase();
+			if (contentType.indexOf('javascript') != -1) {
+		        return 'JS';
+		    }
+			
+			if (contentType.indexOf('css') != -1) {
+		        return 'CSS';
+		    }
+			
+			if (contentType.indexOf('html') != -1) {
+		        return 'HTML';
+		    }
+			
+			if (contentType.indexOf('json') != -1) {
+		        return 'JSON';
+		    }
+			
+			if (contentType.indexOf('text/') != -1) {
+		        return 'TEXT';
+		    }
+			
+			if (contentType.indexOf('image') != -1) {
+		        return 'IMG';
+		    } 
+		}
+		
+		return null;
+	}
+	
+	function removeElements(elems) {
+		var index = $.inArray(elems.id, ids);
+		if (index != -1) {
+			ids.splice(index, 1);
+		}
+		elems.remove();
+	}
+	
+	module.exports = function init() {
+		getList();
 	};
-	
 });

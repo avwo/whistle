@@ -94,7 +94,7 @@ function get(options) {
 	enable();
 	options = options || {};
 	var data = {};
-	var newIds = getIds(options.startTime, options.count);
+	var newIds = options.startTime == -1 ? [] : getIds(options.startTime, options.count);
 	var list = getList(newIds).concat(getList(options.ids));
 	for (var i = 0, len = list.length; i < len; i++) {
 		var item = list[i];
@@ -114,7 +114,7 @@ function getIds(startTime, count) {
 		return [];
 	}
 	
-	startTime = (startTime || Date.now() - 1000) + '';
+	startTime = (startTime || Date.now() - 2000) + '';
 	count = Math.min(count || MIN_LENGTH, len);
 	if (ids[0] > startTime) {
 		
