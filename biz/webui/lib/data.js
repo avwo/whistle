@@ -81,7 +81,7 @@ function get() {
 	clearTimeout(timeout);
 	timeout = setTimeout(disable, TIMEOUT);
 	if (!interval) {
-		interval = setInterval(clearCache, 6000);
+		interval = setInterval(clearCache, 3000);
 	}
 	return [];
 }
