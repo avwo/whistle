@@ -50,6 +50,7 @@ module.exports = function(req, res) {
 		options.host = '127.0.0.1';
 		options.port = config.port;
 		options.headers = headers;
+		console.log(options.headers)
 		http.request(options, function(res) {
 			res.on('error', util.noop);
 			util.drain(res);

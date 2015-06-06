@@ -208,6 +208,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 			body.html('');
 			data = {};
 			ids = [];
+			index = 0;
 		});
 	};
 });
