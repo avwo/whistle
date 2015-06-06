@@ -50,11 +50,14 @@ function clearCache() {
 	for (var i = 0; i < index; i++) {
 		var id = ids[i];
 		var curData = data[id];
-		if (end || (curData.read && !curData.endTime)) {
+		if (curData.read && !curData.endTime) {
 			_ids.push(id);
 		} else {
 			delete data[id];
-			end = len-- < MIN_LENGTH;
+			if (len-- < MIN_LENGTH) {
+				_ids.push.apply(_ids, ids.slice(i + 1, index));
+				break;
+			}
 		}
 	}
 	ids = _ids.concat(ids.slice(index));
