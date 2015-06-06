@@ -136,7 +136,7 @@ whistle安装完成后，执行命令 `whistle help`，查看whistle的帮助信
 
 ### 启动whistle
 
-配置完系统或浏览器代理后，可以执行如下命令启动whistle
+执行如下命令启动whistle
 
 	$ whistle start
 
