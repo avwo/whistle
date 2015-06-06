@@ -11,7 +11,7 @@ define('/style/js/biz/init.js', function(require, exports, module) {
 		var list = $('#captureList').on('dblclick', 'tr', function() {
 			detail.show();
 		}).on('click', 'tr', function(e) {
-			!e.ctrlKey && list.find('tr').removeClass('selected');
+			!e.ctrlKey && !e.metaKey && list.find('tr').removeClass('selected');
 			$(this).addClass('selected');
 		});
 		
