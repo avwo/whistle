@@ -35,7 +35,6 @@ function enable() {
  * 2. 请求#1前面的未结束且未被ui读取过的请求
  */
 function clearCache() {
-	console.log(getList()[0])
 	var len = ids.length;
 	if (len <= MAX_LENGTH) {
 		return;
