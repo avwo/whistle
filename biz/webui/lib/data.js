@@ -42,8 +42,9 @@ function get() {
 }
 
 function handleRequest(req) {
-	req.dnsTime = req.dnsTime || 0;
-	var startTime = Date.now() - req.dnsTime;
+	var dnsTime = req.dnsTime || 0;
+	req.dnsTime = Date.now();
+	var startTime = startTime - dnsTime;
 	var id = startTime + '-' + ++count;
 	var reqData = {
 			dnsTime: req.dnsTime,
@@ -69,7 +70,7 @@ function handleRequest(req) {
 	req.on('response', handleResponse);
 	req.on('error', function(err) {
 		reqData.body = err && err.stack;
-		reqData.requestTime = Date.now() - startTime;
+		resData.endTime = reqData.requestTime = Date.now();
 		req.removeListener('response', handleResponse);
 		req._transform = passThrough;
 		curData.reqError = true;
@@ -91,7 +92,7 @@ function handleRequest(req) {
 		}
 		
 		if (!chunk) {
-			reqData.requestTime = Date.now() - startTime;
+			reqData.requestTime = Date.now();
 			curData.reqEnd = true;
 			reqData.body = decode(reqBody);
 		}
@@ -100,10 +101,10 @@ function handleRequest(req) {
 	};
 	
 	function handleResponse(res) {
-		resData.responseTime = Date.now() - startTime;
+		resData.responseTime = Date.now();
 		res.on('error', function(err) {
 			resData.body = err && err.stack;
-			resData.totalTime = Date.now() - startTime;
+			resData.endTime = Date.now();
 			res._transform = passThrough;
 			curData.resError = true;
 		});
@@ -124,7 +125,7 @@ function handleRequest(req) {
 			}
 			
 			if (!chunk) {
-				resData.totalTime = Date.now() - startTime;
+				resData.endTime = Date.now();
 				resData.state = 'close';
 				curData.resEnd = true;
 				if (resBody) {
