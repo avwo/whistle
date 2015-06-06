@@ -15,21 +15,6 @@ define('/style/js/biz/init.js', function(require, exports, module) {
 			$(this).addClass('selected');
 		});
 		
-		$('#quickSearch').on('input', function() {
-			var rows = list.find('tr');
-			var keywords = $.trim(this.value);
-			if (!keywords) {
-				rows.show();
-				return;
-			}
-			keywords = keywords.toLowerCase().split(/\s+/g).slice(0, 5);
-			rows.each(function() {
-				var row = $(this);
-				var text = (row.text() || '').toLowerCase();
-				contains(text, keywords) ? row.show() : row.hide();
-			});
-		});
-		
 		$(window).on('keydown', function(e) {
 			if (isEditable(e.target)) {
 				return;
@@ -72,12 +57,6 @@ define('/style/js/biz/init.js', function(require, exports, module) {
 				elem = elem.next();
 			}
 			return elem;
-		}
-		
-		function contains(text, keywords) {
-			return keywords[0] && text.indexOf(keywords[0]) != -1 || (keywords[1] && text.indexOf(keywords[1]) != -1)
-				|| (keywords[2] && text.indexOf(keywords[2]) != -1) || (keywords[3] && text.indexOf(keywords[3]) != -1)
-				|| (keywords[4] && text.indexOf(keywords[4]) != -1);
 		}
 		
 		function isEditable(elem) {

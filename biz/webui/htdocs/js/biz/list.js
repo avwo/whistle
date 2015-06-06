@@ -1,6 +1,7 @@
 define('/style/js/biz/list.js', function(require, exports, module) {
 	var container = $('#captureList');
 	var body = $('#captureListBody');
+	var quickSearch = $('#quickSearch');
 	var	MAX_COUNT = 720;
 	var ids = [];
 	var data = {};
@@ -98,6 +99,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 			html.push(getHtml(data[ids[lastId]]));
 		}
 		body.append(html.join(''));
+		html.length && search();
 		bottom && container.scrollTop(1000000);
 	}
 	
@@ -117,7 +119,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 			        <td class="host">' + getHostname(data.url) + '</td>\
 			        <td class="host-ip">' + (res.host || defaultValue) + '</td>\
 			        <td class="url" title="' + escapeHtml(data.url) + '">' + escapeHtml(data.url) + '</td>\
-			        <td class="type">' + (res.headers && res.headers['content-type'] || defaultValue) + '</td>\
+			        <td class="type">' + (res.headers ? (res.headers['content-type'] || '') : defaultValue) + '</td>\
 			        <td class="time">' + (data.endTime ? data.endTime - data.startTime : defaultValue) + '</td>\
 			     </tr>';
 	}
@@ -127,13 +129,14 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		var defaultValue = data.reqError || data.resError ? 'error' : '-';
 		elem.find('.result').text(res.statusCode || defaultValue);
 		elem.find('.host-ip').text(res.host || defaultValue);
-		elem.find('.type').text((res.headers && res.headers['content-type'] || defaultValue));
+		elem.find('.type').text(res.headers ? (res.headers['content-type'] || '') : defaultValue);
 		elem.find('.time').text(data.endTime ? data.endTime - data.startTime : defaultValue);
 		elem.addClass(getClassname(data));
 		if (data.endTime) {
 			elem.removeClass('pending');
 		}
 	}
+	
 	
 	function getHostname(url) {
 		var index = url.indexOf(':\/\/') + 3;
@@ -216,6 +219,27 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		return bodyHeight <= conHeight || (bodyHeight - container.scrollTop() < conHeight);
 	}
 	
+	function search() {
+		var rows = body.find('tr');
+		var keywords = $.trim(quickSearch.val());
+		if (!keywords) {
+			rows.show();
+			return;
+		}
+		keywords = keywords.toLowerCase().split(/\s+/g).slice(0, 5);
+		rows.each(function() {
+			var row = $(this);
+			var text = (row.text() || '').toLowerCase();
+			contains(text, keywords) ? row.show() : row.hide();
+		});
+	}
+	
+	function contains(text, keywords) {
+		return keywords[0] && text.indexOf(keywords[0]) != -1 || (keywords[1] && text.indexOf(keywords[1]) != -1)
+			|| (keywords[2] && text.indexOf(keywords[2]) != -1) || (keywords[3] && text.indexOf(keywords[3]) != -1)
+			|| (keywords[4] && text.indexOf(keywords[4]) != -1);
+	}
+	
 	module.exports = function init() {
 		getList();
 		$('#clearAll').click(function() {
@@ -223,6 +247,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 			data = {};
 			ids = [];
 			index = 0;
+			quickSearch.val('');
 		});
 		
 		container.on('scroll', function() {
@@ -234,5 +259,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 				}
 			}
 		});
+		
+		quickSearch.on('input', search);
 	};
 });
