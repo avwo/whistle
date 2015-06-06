@@ -57,7 +57,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		}
 		
 		if (startTime == -1 && !pendingIds.length) {
-			setTimeout(_load, 5000);
+			setTimeout(_load, 3000);
 		} else {
 			_load();
 		}
