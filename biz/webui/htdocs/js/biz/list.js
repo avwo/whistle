@@ -1,7 +1,7 @@
 define('/style/js/biz/list.js', function(require, exports, module) {
 	var container = $('#captureList');
 	var body = $('#captureListBody');
-	var	MAX_COUNT = 512;
+	var	MAX_COUNT = 720;
 	var ids = [];
 	var data = {};
 	var index = 0;
@@ -225,7 +225,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 			index = 0;
 		});
 		
-		body.on('scroll', function() {
+		container.on('scroll', function() {
 			if (atBottom()) {
 				var list = body.find('tr');
 				var exceedCount = list.length - MAX_COUNT;
