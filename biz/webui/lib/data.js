@@ -143,7 +143,7 @@ function getListByIds(idList) {
 function handleRequest(req) {
 	var dnsTime = req.dnsTime || 0;
 	req.dnsTime = Date.now();
-	var startTime = startTime - dnsTime;
+	var startTime = req.dnsTime - dnsTime;
 	var id = startTime + '-' + ++count;
 	var reqData = {
 			dnsTime: req.dnsTime,
