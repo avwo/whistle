@@ -205,5 +205,7 @@ module.exports = function init(_proxy) {
 	proxy = _proxy;
 	util = proxy.util;
 	proxy.on('request', handleRequest);
+	binned = true;
+	interval = setInterval(clearCache, 3000);
 	module.exports = get;
 };
