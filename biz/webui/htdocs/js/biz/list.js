@@ -91,7 +91,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		}
 		var res = data.res;
 		var req = data.req;
-		return '<tr class="' + (data.endTime ? getClassname(res.headers) : 'pending') + '">\
+		return '<tr id="' + data.id + '" class="' + (data.endTime ? getClassname(data) : 'pending') + '">\
 			        <th class="order" scope="row">' + ++index + '</th>\
 			        <td class="result">' + (res.statusCode || '-') + '</td>\
 			        <td class="protocol">' + getProtocol(data.url) + '</td>\
@@ -106,11 +106,12 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 	
 	function updateElement(elem, data) {
 		var res = data.res;
-		elem.find('.result').text(res.statusCode || '-');
+		var error = data.reqError || data.resError;
+		elem.find('.result').text(error ? 'error' : (res.statusCode || '-'));
 		elem.find('.host-ip').text(res.host || '-');
 		elem.find('.type').text((res.headers && res.headers['content-type'] || '-'));
 		elem.find('.time').text(data.endTime ? data.endTime - data.startTime : '-');
-		elem.addClass(getClassname(res.headers));
+		elem.addClass(getClassname(data));
 		if (data.endTime) {
 			elem.removeClass('pending');
 		}
@@ -125,8 +126,11 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		return url.substring(0, url.indexOf(':\/\/')).toUpperCase();
 	}
 	
-	function getClassname(headers) {
-		
+	function getClassname(data) {
+		if (data.reqError || data.resError) {
+			return 'danger';
+		}
+		var headers = data.res.headers;
 		switch(getContentType(headers)) {
 			case 'JS':
 				return 'warning';
