@@ -91,16 +91,18 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		}
 		var res = data.res;
 		var req = data.req;
+		var defaultValue = data.reqError || data.resError ? 'error' : '-';
+		
 		return '<tr id="' + data.id + '" class="' + (data.endTime ? getClassname(data) : 'pending') + '">\
 			        <th class="order" scope="row">' + ++index + '</th>\
-			        <td class="result">' + (res.statusCode || '-') + '</td>\
+			        <td class="result">' + (res.statusCode || defaultValue) + '</td>\
 			        <td class="protocol">' + getProtocol(data.url) + '</td>\
 			        <td class="method">' + req.method + '</td>\
 			        <td class="host">' + getHostname(data.url) + '</td>\
-			        <td class="host-ip">' + (res.host || '-') + '</td>\
+			        <td class="host-ip">' + (res.host || defaultValue) + '</td>\
 			        <td class="url" title="' + data.url + '">' + data.url + '</td>\
-			        <td class="type">' + (res.headers && res.headers['content-type'] || '-') + '</td>\
-			        <td class="time">' + (data.endTime ? data.endTime - data.startTime : '-') + '</td>\
+			        <td class="type">' + (res.headers && res.headers['content-type'] || defaultValue) + '</td>\
+			        <td class="time">' + (data.endTime ? data.endTime - data.startTime : defaultValue) + '</td>\
 			     </tr>';
 	}
 	
