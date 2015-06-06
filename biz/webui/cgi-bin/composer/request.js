@@ -28,7 +28,8 @@ function parseHeaders(headers) {
 module.exports = function(req, res) {
 	var _url = req.body.url;
 	
-	if (_url) {
+	if (_url && typeof _url == 'string') {
+		_url = _url.replace(/#.*$/, '');
 		var options = url.parse(util.setProtocol(_url));
 		var headers = parseHeaders(req.body.headers);
 		if (!headers['user-agent']) {
