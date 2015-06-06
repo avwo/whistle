@@ -64,13 +64,14 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 	}
 	
 	function handleData(json) {
-		for (var i in json.data) {
-			var curData = json.data[i];
+		ids = ids.concat(json.newIds);
+		for (var i = 0, len = ids.length; i < len; i++) {
+			var id = ids[i];
+			var curData = json.data[id];
 			if (curData) {
-				data[i] = curData;
+				data[id] = curData;
 			}
 		}
-		ids = ids.concat(json.newIds);
 		createList();
 	}
 	
@@ -203,5 +204,10 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 	
 	module.exports = function init() {
 		getList();
+		$('#clearAll').click(function() {
+			body.html('');
+			data = {};
+			ids = [];
+		});
 	};
 });
