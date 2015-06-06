@@ -4,6 +4,7 @@ var MAX_REQ_SIZE = 128 * 1024;
 var MAX_RES_SIZE = 256 * 1024;
 var TIMEOUT = 10000;
 var MAX_LENGTH = 512;
+var MIN_LENGTH = 256;
 var count = 0;
 var ids = [];
 var data = {};
@@ -24,13 +25,14 @@ function disable() {
  * 2. 请求#1前面的未结束且未被ui读取过的请求
  */
 function clearCache() {
-	if (ids.length <= MAX_LENGTH) {
+	var len = ids.length;
+	if (len <= MAX_LENGTH) {
 		return;
 	}
 	
 	var index = -1; //已经完成，且缓存超过10s的最后一个请求
 	var now = Date.now();
-	for (var i = ids.length - 1; i >= 0; i--) {
+	for (var i = len - 1; i >= 0; i--) {
 		var curData = data[ids[i]];
 		if (curData.endTime && now - curData.endTime > TIMEOUT) {
 			index = i;
@@ -51,6 +53,9 @@ function clearCache() {
 			_ids.push(id);
 		} else {
 			delete data[id];
+			if (--len <= MIN_LENGTH) {
+				break;
+			}
 		}
 	}
 	ids = _ids.concat(ids.slice(index));
