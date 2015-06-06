@@ -148,7 +148,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 	}
 	
 	function getClassname(data) {
-		if (data.reqError || data.resError) {
+		if (data.reqError || data.resError || data.res.statusCode >= 400) {
 			return 'danger';
 		}
 		var headers = data.res.headers;
