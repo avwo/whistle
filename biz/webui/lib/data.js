@@ -123,7 +123,7 @@ function getIndex(startTime, start, end) {
 		return end;
 	}
 	
-	var mid = Math.floor(start + end / 2);
+	var mid = Math.floor((start + end) / 2);
 	return ids[mid] <= startTime ? getIndex(startTime, mid + 1, end)
 			: getIndex(startTime, start, mid);
 }
