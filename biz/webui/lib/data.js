@@ -19,6 +19,16 @@ function disable() {
 	binded = false;
 }
 
+function enable() {
+	!binded && proxy.on('request', handleRequest);
+	binded = true;
+	clearTimeout(timeout);
+	timeout = setTimeout(disable, TIMEOUT);
+	if (!interval) {
+		interval = setInterval(clearCache, 3000);
+	}
+}
+
 /**
  * 如果超过最大缓存数，清理如下请求数据：
  * 1. 已经请求结束且结束时间超过10秒
@@ -80,15 +90,54 @@ function decode(body) {
 	return body;
 }
 
-function get() {
-	!binded && proxy.on('request', handleRequest);
-	binded = true;
-	clearTimeout(timeout);
-	timeout = setTimeout(disable, TIMEOUT);
-	if (!interval) {
-		interval = setInterval(clearCache, 3000);
-	}
+function get(options) {
+	enable();
+	
 	return [];
+}
+
+function getList(startTime, count) {
+	var len = ids.length;
+	if (!len) {
+		return [];
+	}
+	
+	startTime = (startTime || Date.now() - 1000) + '';
+	count = Math.min(count || MIN_LENGTH, len);
+	if (ids[0] > startTime) {
+		
+		return getListByIds(ids.slice(0, count));
+	}
+	
+	if (len === 1 || ids[len - 1] <= startTime) {
+		
+		return  [];
+	}
+	
+	var index = getIndex(startTime, 0, len - 1);
+	return getListByIds(ids.slice(index, index + count));
+}
+
+function getIndex(startTime, start, end) {
+	if (end - start <= 1) {
+		return end;
+	}
+	
+	var mid = Math.floor(start + end / 2);
+	return ids[mid] <= startTime ? getIndex(startTime, mid + 1, end)
+			: getIndex(startTime, start, mid);
+}
+
+function getListByIds(idList) {
+	var result = [];
+	for (var i = 0, len = idList && idList.length; i < len; i++) {
+		var id = idList[i];
+		var curData = data[id];
+		curData.read = true;
+		result[i] = curData;
+	}
+	
+	return result;
 }
 
 function handleRequest(req) {
@@ -106,6 +155,7 @@ function handleRequest(req) {
 	var resData = {};
 	
 	var curData = data[id] = {
+			id: id,
 			url: req.url,
 			startTime: startTime,
 			req: reqData,
@@ -209,8 +259,6 @@ function handleRequest(req) {
 module.exports = function init(_proxy) {
 	proxy = _proxy;
 	util = proxy.util;
-	proxy.on('request', handleRequest);
-	binned = true;
-	interval = setInterval(clearCache, 3000);
+	enable();
 	module.exports = get;
 };
