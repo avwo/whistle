@@ -54,7 +54,7 @@ function clearCache() {
 			_ids.push(id);
 		} else {
 			delete data[id];
-			if (len-- < MIN_LENGTH) {
+			if (--len <= MIN_LENGTH) {
 				_ids.push.apply(_ids, ids.slice(i + 1, index));
 				break;
 			}
