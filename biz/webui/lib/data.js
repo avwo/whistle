@@ -92,11 +92,23 @@ function decode(body) {
 
 function get(options) {
 	enable();
+	options = options || {};
+	var data = {};
+	var newIds = getIds(options.startTime, options.count);
+	var list = getList(newIds).concat(getList(options.ids));
+	for (var i = 0, len = list.length; i < len; i++) {
+		var item = list[i];
+		data[item.id] = item;
+	}
 	
-	return [];
+	return {
+		ids: options.ids || [],
+		newIds: newIds,
+		data: data
+	};
 }
 
-function getList(startTime, count) {
+function getIds(startTime, count) {
 	var len = ids.length;
 	if (!len) {
 		return [];
@@ -106,7 +118,7 @@ function getList(startTime, count) {
 	count = Math.min(count || MIN_LENGTH, len);
 	if (ids[0] > startTime) {
 		
-		return getListByIds(ids.slice(0, count));
+		return getList(ids.slice(0, count));
 	}
 	
 	if (len === 1 || ids[len - 1] <= startTime) {
@@ -115,7 +127,7 @@ function getList(startTime, count) {
 	}
 	
 	var index = getIndex(startTime, 0, len - 1);
-	return getListByIds(ids.slice(index, index + count));
+	return ids.slice(index, index + count);
 }
 
 function getIndex(startTime, start, end) {
@@ -128,10 +140,10 @@ function getIndex(startTime, start, end) {
 			: getIndex(startTime, start, mid);
 }
 
-function getListByIds(idList) {
+function getList(ids) {
 	var result = [];
-	for (var i = 0, len = idList && idList.length; i < len; i++) {
-		var id = idList[i];
+	for (var i = 0, len = ids && ids.length; i < len; i++) {
+		var id = ids[i];
 		var curData = data[id];
 		curData.read = true;
 		result[i] = curData;
