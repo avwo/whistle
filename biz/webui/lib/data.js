@@ -145,8 +145,10 @@ function getList(ids) {
 	for (var i = 0, len = ids && ids.length; i < len; i++) {
 		var id = ids[i];
 		var curData = data[id];
-		curData.read = true;
-		result[i] = curData;
+		if (curData) {
+			curData.read = true;
+			result[i] = curData;
+		}
 	}
 	
 	return result;
