@@ -6,6 +6,17 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 	var index = 0;
 	var pending;
 	
+	var AMP    = /&/g,
+	    LT     = /</g,
+	    GT     = />/g,
+	    QUOT   = /\"/g,
+	    SQUOT  = /\'/g;
+	
+	function escapeHtml(s) {
+	    return typeof s === 'string' ? s.replace(AMP,'&amp;').replace(LT,'&lt;').replace(GT,'&gt;')
+	  	      .replace(QUOT,'&quot;').replace(SQUOT, '&#39;') : s;
+	}
+	
 	function getList(options) {
 		if (pending) {
 			return;
@@ -100,7 +111,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 			        <td class="method">' + req.method + '</td>\
 			        <td class="host">' + getHostname(data.url) + '</td>\
 			        <td class="host-ip">' + (res.host || defaultValue) + '</td>\
-			        <td class="url" title="' + data.url + '">' + data.url + '</td>\
+			        <td class="url" title="' + escapeHtml(data.url) + '">' + escapeHtml(data.url) + '</td>\
 			        <td class="type">' + (res.headers && res.headers['content-type'] || defaultValue) + '</td>\
 			        <td class="time">' + (data.endTime ? data.endTime - data.startTime : defaultValue) + '</td>\
 			     </tr>';
