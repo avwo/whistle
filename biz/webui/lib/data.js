@@ -198,6 +198,9 @@ function handleRequest(req) {
 	
 	function handleResponse(res) {
 		resData.responseTime = Date.now();
+		resData.headers = res.headers;
+		resData.statusCode = res.statusCode;
+		resData.host = res.host;
 		res.on('error', function(err) {
 			resData.body = err && err.stack;
 			curData.endTime = Date.now();
