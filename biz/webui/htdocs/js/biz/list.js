@@ -1,4 +1,5 @@
 define('/style/js/biz/list.js', function(require, exports, module) {
+	var container = $('#captureList');
 	var body = $('#captureListBody');
 	var	MAX_COUNT = 512;
 	var ids = [];
@@ -46,7 +47,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 				pendingIds.push(id);
 			}
 		}
-		var startTime = ids.length <= MAX_COUNT ? id : -1;
+		var startTime = ids.length < MAX_COUNT ? id : -1;
 		
 		function _load() {
 			pending = false;
@@ -86,14 +87,18 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		var last = list.filter(':last');
 		var lastId = last.attr('id');
 		lastId = lastId ? $.inArray(lastId, ids) + 1 : 0;
-		if (list.length < MAX_COUNT) {
-			var html = [];
-			for (len = ids.length; lastId < len; lastId++) {
-				html.push(getHtml(data[ids[lastId]]));
-			}
-			body.append(html.join(''));
+		var bottom = atBottom();
+		var exceedCount = list.length - MAX_COUNT + (bottom ? 1 : 0);
+		if (exceedCount > 0) {
+			removeElements(list.slice(0, exceedCount));
 		}
 		
+		var html = [];
+		for (var len = ids.length; lastId < len; lastId++) {
+			html.push(getHtml(data[ids[lastId]]));
+		}
+		body.append(html.join(''));
+		bottom && container.scrollTop(1000000);
 	}
 	
 	function getHtml(data) {
@@ -194,11 +199,21 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 	}
 	
 	function removeElements(elems) {
-		var index = $.inArray(elems.id, ids);
-		if (index != -1) {
-			ids.splice(index, 1);
-		}
-		elems.remove();
+		elems.each(function() {
+			var id = this.id;
+			delete data[id];
+			var index = $.inArray(id, ids);
+			if (index != -1) {
+				ids.splice(index, 1);
+			}
+		}).remove();
+	}
+	
+	function atBottom() {
+		var conHeight = container[0].offsetHeight + 2;
+		var bodyHeight = body[0].offsetHeight;
+		
+		return bodyHeight <= conHeight || (bodyHeight - container.scrollTop() < conHeight);
 	}
 	
 	module.exports = function init() {
@@ -208,6 +223,16 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 			data = {};
 			ids = [];
 			index = 0;
+		});
+		
+		body.on('scroll', function() {
+			if (atBottom()) {
+				var list = body.find('tr');
+				var exceedCount = list.length - MAX_COUNT;
+				if (exceedCount >= 0) {
+					removeElements(list.slice(0, exceedCount + 1));
+				}
+			}
 		});
 	};
 });
