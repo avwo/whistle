@@ -7,14 +7,57 @@ var MAX_LENGTH = 512;
 var count = 0;
 var ids = [];
 var data = {};
-var proxy, binded, timeout, util;
+var proxy, binded, timeout, interval, util;
 
 function disable() {
 	proxy.removeListener('request', handleRequest);
 	ids = [];
 	data = {};
+	interval && clearInterval(interval);
+	interval = null;
 	binded = false;
 }
+
+/**
+ * 如果超过最大缓存数，清理如下请求数据：
+ * 1. 已经请求结束且结束时间超过10秒
+ * 2. 请求#1前面的未结束且未被ui读取过的请求
+ */
+function clearCache() {
+	if (ids.length <= MAX_LENGTH) {
+		return;
+	}
+	
+	var index = -1; //已经完成，且缓存超过10s的最后一个请求
+	var now = Date.now();
+	for (var i = ids.length - 1; i >= 0; i--) {
+		var curData = data[ids[i]];
+		if (curData.endTime && now - curData.endTime > TIMEOUT) {
+			index = i;
+			break;
+		}
+	}
+	
+	if (index < 0) {
+		return;
+	}
+	
+	var _ids = [];
+	++index;
+	for (var i = 0; i < index; i++) {
+		var id = ids[i];
+		var curData = data[id];
+		if (curData.read && !curData.endTime) {
+			_ids.push(id);
+		} else {
+			delete data[id];
+		}
+	}
+	if (_ids.length) {
+		ids = _ids.concat(ids.slice(index));
+	}
+}
+
 
 function passThrough(chunk, encoding, callback) {
 	callback(null, chunk);
@@ -37,7 +80,9 @@ function get() {
 	binded = true;
 	clearTimeout(timeout);
 	timeout = setTimeout(disable, TIMEOUT);
-	
+	if (!interval) {
+		interval = setInterval(clearCache, 6000);
+	}
 	return [];
 }
 
@@ -63,14 +108,10 @@ function handleRequest(req) {
 	};
 	
 	ids.push(id);
-	if (ids.length > MAX_LENGTH) {
-		delete data[ids.shift()];
-	}
-	
 	req.on('response', handleResponse);
 	req.on('error', function(err) {
 		reqData.body = err && err.stack;
-		resData.endTime = reqData.requestTime = Date.now();
+		curData.endTime = reqData.requestTime = Date.now();
 		req.removeListener('response', handleResponse);
 		req._transform = passThrough;
 		curData.reqError = true;
@@ -104,7 +145,7 @@ function handleRequest(req) {
 		resData.responseTime = Date.now();
 		res.on('error', function(err) {
 			resData.body = err && err.stack;
-			resData.endTime = Date.now();
+			curData.endTime = Date.now();
 			res._transform = passThrough;
 			curData.resError = true;
 		});
@@ -125,7 +166,7 @@ function handleRequest(req) {
 			}
 			
 			if (!chunk) {
-				resData.endTime = Date.now();
+				curData.endTime = Date.now();
 				resData.state = 'close';
 				curData.resEnd = true;
 				if (resBody) {
