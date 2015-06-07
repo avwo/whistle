@@ -169,9 +169,14 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 	}
 	
 	function getClassName(data) {
-		if (data.reqError || data.resError || data.res.statusCode >= 400) {
+		if (data.reqError || data.resError) {
 			return 'danger';
 		}
+		
+		if (data.res.statusCode >= 400) {
+			return 'error-status';
+		}
+		
 		var headers = data.res.headers;
 		switch(getContentType(headers)) {
 			case 'JS':
