@@ -137,9 +137,11 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 	function updateElement(elem, data) {
 		var res = data.res;
 		var defaultValue = getErrorMsg(data) || '-';
+		var type = res.headers ? (res.headers['content-type'] || '') : defaultValue;
+		
 		elem.find('.result').text(res.statusCode || defaultValue);
 		elem.find('.host-ip').text(res.ip || defaultValue);
-		elem.find('.type').text(res.headers ? (res.headers['content-type'] || '') : defaultValue);
+		elem.find('.type').text(type).attr('title', type);
 		elem.find('.time').text(data.endTime ? data.endTime - data.startTime + 'ms' : defaultValue);
 		elem.addClass(getClassName(data));
 		if (data.endTime) {
