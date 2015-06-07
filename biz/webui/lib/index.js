@@ -34,6 +34,10 @@ app.get('/', function(req, res) {
 	res.sendFile(htdocs.getHtmlFile('index.html'));
 });
 
+app.get('/index.html', function(req, res) {
+	res.sendFile(htdocs.getHtmlFile('network.html'));
+});
+
 app.all('/cgi-bin/*', function(req, res) {
 	try {
 		require(path.join(__dirname, '..' + req.url.replace(/\?.*$/, '')))(req, res);
