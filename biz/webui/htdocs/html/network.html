@@ -117,6 +117,9 @@ body .table>tbody>tr:first-child>th, body .table>tbody>tr:first-child>td {border
 .capture-detail .action-bar a {text-decoration: none; margin-left: 10px; display: inline-block; line-height: 32px;}
 .capture-detail .headers {border-bottom: 1px solid #ddd;}
 .capture-detail-content > div {overflow: auto;}
+.capture-detail-content .table {table-layout: fixed;}
+.capture-detail-content .table td, .capture-detail-content .table th {border: none!important; white-space: normal; word-wrap: break-word; word-break: break-all;}
+.capture-detail-content .table th {width: 160px; text-align: right; padding-right: 10px;}
 
 /**Rules**/
 .hosts {height: 100%; width: 100%; background: #fff; overflow: hidden; display:-webkit-box; display:box;}
@@ -210,12 +213,8 @@ color-stop(0.90, #3f86d3), color-stop(1, #3f86d3));}
 			<button type="button" class="close"><span aria-hidden="true">&times;</span></button>
 		</div>
 		<div id="captureDetailContent" class="fill box-orient-vertical capture-detail-content">
-			<div class="headers fill">
-				
-			</div>
-			<div class="body fill">
-				
-			</div>
+			<div class="headers fill"></div>
+			<div class="body fill"></div>
 		</div>
 	</div>
 </div>

@@ -9,17 +9,18 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 	var ids = [];
 	var data = {};
 	var index = 0;
-	var pending;
+	var pending, selectedData;
 	
 	var AMP    = /&/g,
 	    LT     = /</g,
 	    GT     = />/g,
 	    QUOT   = /\"/g,
+	    CRLF   = /\r\n|\n|\r/g,
 	    SQUOT  = /\'/g;
 	
 	function escapeHtml(s) {
 	    return typeof s === 'string' ? s.replace(AMP,'&amp;').replace(LT,'&lt;').replace(GT,'&gt;')
-	  	      .replace(QUOT,'&quot;').replace(SQUOT, '&#39;') : s;
+	  	      .replace(QUOT,'&quot;').replace(SQUOT, '&#39;').replace(CRLF, '<br>') : '';
 	}
 	
 	function getList(options) {
@@ -266,6 +267,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		quickSearch.on('input', search);
 		
 		body.on('dblclick', 'tr', function() {
+			selectedData = data[this.id];
 			captureDetail.show();
 			resizeDetail();
 		}).on('click', 'tr', function(e) {
@@ -356,7 +358,24 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 				}
 				captureDetailTabs.removeClass('active');
 				self.addClass('active');
+				if (self.hasClass('statistics')) {
+					
+				} else if (self.hasClass('request')) {
+					
+				} else if (self.hasClass('response')) {
+					
+				}
 			});
+	}
+	
+	function getPropertiesTable(data) {
+		var table = ['<table class="table"><tbody>'];
+		for (var i in data) {
+			table.push('<tr>' + escapeHtml(i) + '<th></th><td>' + escapeHtml(data[i]) + '</td></tr>')
+		}
+		table.push('</tbody></table>');
+		
+	    return table.join('');
 	}
 	
 	module.exports = function init() {
