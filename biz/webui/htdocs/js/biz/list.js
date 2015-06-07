@@ -492,7 +492,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 				if (!startTime || startTime > curData.startTime) {
 					startTime = curData.startTime;
 				}
-				if (curData.endTime && (!endTime || startTime > curData.endTime)) {
+				if (curData.endTime && (!endTime || endTime < curData.endTime)) {
 					endTime = curData.endTime;
 				}
 				
@@ -501,8 +501,9 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 			var total = endTime - startTime || 1;
 			
 			$.each(list, function(i) {
+				var end = this.endTime ? this.endTime - this.startTime : 0;
 				list[i] = getTimeline({
-						order: i + i,
+						order: i + 1,
 						className: resolveClassName(elems[i].className),
 						url: this.url,
 						startTime: this.startTime,
@@ -510,9 +511,9 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 						statusCode: this.res.statusCode || getErrorMsg(this) || '-',
 						stalled: this.startTime - startTime,
 						dns: this.dnsTime - this.startTime,
-						request: this.requestTime - this.dnsTime,
-						response: this.responseTime ? this.responseTime - this.requestTime : 0,
-						end: this.endTime && this.responseTime ? this.endTime- this.responseTime : 0,
+						request: this.requestTime - this.startTime,
+						response: this.responseTime ? this.responseTime - this.startTime : end,
+						end: end,
 						total: total
 					});
 			});
@@ -523,15 +524,18 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		
 		function getTimeline(data) {
 			var url = escapeHtml(data.url);
-			return '<tr class="' + data.className + '">\
+			
+			return '<tr class="' + data.className + '" ' + (data.endTime ?  'title="' + 'Stalled: ' + data.stalled + 'ms\r\nDNS: ' + 
+				data.dns + 'ms\r\nRequest: ' + data.request + 'ms\r\nResponse: ' + 
+				data.response + 'ms\r\nContent Download: ' + data.end + 'ms\r\n' + '"' : '') + '>\
 	          <th class="order" scope="row">' + data.order + '</th>\
 	          <td class="result">' + data.statusCode + '</td>\
 	          <td class="url" title="' + url + '">' + url + '</td>\
 	          <td class="timeline" ' + (data.endTime ? ('style="background-image: -webkit-gradient(linear, left top, right top, color-stop(0, rgba(0, 0, 0, 0)), color-stop('
 	        		   + data.stalled / data.total + ', rgba(0, 0, 0, 0)), color-stop(' + data.stalled / data.total + ', #fec2ba), color-stop(' 
-	        		   + data.dns / data.total + ', #fec2ba), color-stop(' + data.dns / data.total + ', #e58226), color-stop(' 
-	        		   + data.request / data.total + ', #e58226), color-stop(' + data.request / data.total + ', #5fee5f), color-stop(' 
-	        		   + data.end / data.total + ', #5fee5f), color-stop(' + data.end / data.total + ', #3f86d3), color-stop(1, #3f86d3));"') : '') + '>' 
+	        		   + (data.dns + data.stalled) / data.total + ', #fec2ba), color-stop(' + (data.dns + data.stalled) / data.total + ', #e58226), color-stop(' 
+	        		   + (data.request + data.stalled) / data.total + ', #e58226), color-stop(' + (data.request + data.stalled) / data.total + ', #5fee5f), color-stop(' 
+	        		   + (data.end + data.stalled) / data.total + ', #5fee5f), color-stop(' + (data.end + data.stalled) / data.total + ', #3f86d3), color-stop(1, #3f86d3));"') : '') + '>' 
 	          + (data.endTime ? data.endTime - data.startTime + 'ms' : '-') + '</td>\
 	        </tr>';
 		}
