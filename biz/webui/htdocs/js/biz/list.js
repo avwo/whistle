@@ -20,7 +20,8 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 	
 	function escapeHtml(s) {
 	    return typeof s === 'string' ? s.replace(AMP,'&amp;').replace(LT,'&lt;').replace(GT,'&gt;')
-	  	      .replace(QUOT,'&quot;').replace(SQUOT, '&#39;').replace(CRLF, '<br>') : (s == null ? '' : String(s));
+	  	      .replace(QUOT,'&quot;').replace(SQUOT, '&#39;').replace(CRLF, '<br>').
+	  	      replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;').replace(/\s/g, '&nbsp;') : (s == null ? '' : String(s));
 	}
 	
 	function getList(options) {
@@ -396,7 +397,15 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 				} else if (self.hasClass('request')) {
 					
 				} else if (self.hasClass('response')) {
-					
+					var res = selectedData.res;
+					var resHeaders = res.headers;
+					delete resHeaders['x-remote-ip'];
+					for (var i in resHeaders) {
+						if (/^x-whistle-/.test(i)) {
+							delete resHeaders[i];
+						}
+					}
+					body.html(res.body === null ? '<i style="color: #ccc;">只能显示不超过256kb的响应内容</i>' : (res.body === false ?　'<i style="color: #ccc;">只支持显示文本内容</i>' : escapeHtml(res.body)));
 				}
 			});
 	}
