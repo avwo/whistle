@@ -404,8 +404,9 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 					var reqHeaders = req.headers;
 					headers.html(getProperties(reqHeaders));
 					body.hide();
-					body = captureDetailContent.find('.text-body').css('display', 'block');
-					body.val(req.body === null ? '<i style="color: #ccc;">只能显示不超过128kb的请求内容</i>' : req.body);
+					body = captureDetailContent.find('.text-body');
+					body.val(req.body === null ? '只抓取不超过128kb的请求内容' : req.body)
+					.css('display', 'block');
 				} else if (self.hasClass('response')) {
 					var res = selectedData.res;
 					var resHeaders = res.headers;
@@ -417,9 +418,9 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 					}
 					headers.html(getProperties(resHeaders));
 					body.hide();
-					body = captureDetailContent.find('.text-body').css('display', 'block');
-					body.val(res.body === null ? '只能显示不超过256kb的响应内容' : 
-						(res.body === false ?　'只支持显示文本内容' : res.body));
+					body = captureDetailContent.find('.text-body');
+					body.val(res.body === null ? '只抓取不超过256kb的响应内容' : 
+						(res.body === false ?　'只抓取文本内容' : res.body)).css('display', 'block');
 				}
 			});
 	}
