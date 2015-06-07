@@ -111,7 +111,8 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		var res = data.res;
 		var req = data.req;
 		var defaultValue = data.reqError ? 'req error' : (data.resError ? 'res error' : '-');
-		
+		var url = escapeHtml(data.url);
+		var type = escapeHtml(res.headers ? (res.headers['content-type'] || '') : defaultValue);
 		return '<tr id="' + data.id + '" class="' + (data.endTime ? getClassname(data) : 'pending') + '">\
 			        <th class="order" scope="row">' + ++index + '</th>\
 			        <td class="result">' + (res.statusCode || defaultValue) + '</td>\
@@ -119,8 +120,8 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 			        <td class="method">' + req.method + '</td>\
 			        <td class="host">' + getHostname(data.url) + '</td>\
 			        <td class="host-ip">' + (res.ip || defaultValue) + '</td>\
-			        <td class="url" title="' + escapeHtml(data.url) + '">' + escapeHtml(data.url) + '</td>\
-			        <td class="type">' + (res.headers ? (res.headers['content-type'] || '') : defaultValue) + '</td>\
+			        <td class="url" title="' + url + '">' + url + '</td>\
+			        <td class="type" title="' + type + '">' + type + '</td>\
 			        <td class="time">' + (data.endTime ? data.endTime - data.startTime : defaultValue) + '</td>\
 			     </tr>';
 	}
