@@ -395,7 +395,10 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 					}));
 					
 				} else if (self.hasClass('request')) {
-					
+					var req = selectedData.req;
+					var reqHeaders = req.headers;
+					headers.html(getProperties(reqHeaders));
+					body.html(req.body === null ? '<i style="color: #ccc;">只能显示不超过128kb的请求内容</i>' : escapeHtml(req.body));
 				} else if (self.hasClass('response')) {
 					var res = selectedData.res;
 					var resHeaders = res.headers;
@@ -405,7 +408,9 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 							delete resHeaders[i];
 						}
 					}
-					body.html(res.body === null ? '<i style="color: #ccc;">只能显示不超过256kb的响应内容</i>' : (res.body === false ?　'<i style="color: #ccc;">只支持显示文本内容</i>' : escapeHtml(res.body)));
+					headers.html(getProperties(resHeaders));
+					body.html(res.body === null ? '<i style="color: #ccc;">只能显示不超过256kb的响应内容</i>' : 
+						(res.body === false ?　'<i style="color: #ccc;">只支持显示文本内容</i>' : escapeHtml(res.body)));
 				}
 			});
 	}
