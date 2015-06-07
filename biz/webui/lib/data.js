@@ -165,11 +165,11 @@ function handleRequest(req) {
 	var reqData = {
 			method: req.method || 'GET', 
 			httpVersion: req.httpVersion || '1.1',
-            host: req.host || '::ffff:127.0.0.1',
+            ip: req.ip || '::ffff:127.0.0.1',
             headers: req.headers
 		};
 	var resData = {
-			host: req.hostIp
+			ip: req.host
 	};
 	
 	var curData = data[id] = {
@@ -219,7 +219,7 @@ function handleRequest(req) {
 		curData.responseTime = Date.now();
 		resData.headers = res.headers;
 		resData.statusCode = res.statusCode;
-		resData.host = res.host;
+		resData.ip = res.ip;
 		res.on('error', function(err) {
 			resData.body = err && err.stack;
 			curData.endTime = Date.now();

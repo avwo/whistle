@@ -117,7 +117,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 			        <td class="protocol">' + getProtocol(data.url) + '</td>\
 			        <td class="method">' + req.method + '</td>\
 			        <td class="host">' + getHostname(data.url) + '</td>\
-			        <td class="host-ip">' + (res.host || defaultValue) + '</td>\
+			        <td class="host-ip">' + (res.ip || defaultValue) + '</td>\
 			        <td class="url" title="' + escapeHtml(data.url) + '">' + escapeHtml(data.url) + '</td>\
 			        <td class="type">' + (res.headers ? (res.headers['content-type'] || '') : defaultValue) + '</td>\
 			        <td class="time">' + (data.endTime ? data.endTime - data.startTime : defaultValue) + '</td>\
@@ -128,7 +128,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		var res = data.res;
 		var defaultValue = data.reqError || data.resError ? 'error' : '-';
 		elem.find('.result').text(res.statusCode || defaultValue);
-		elem.find('.host-ip').text(res.host || defaultValue);
+		elem.find('.host-ip').text(res.ip || defaultValue);
 		elem.find('.type').text(res.headers ? (res.headers['content-type'] || '') : defaultValue);
 		elem.find('.time').text(data.endTime ? data.endTime - data.startTime : defaultValue);
 		elem.addClass(getClassname(data));
