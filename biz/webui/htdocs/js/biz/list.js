@@ -109,7 +109,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		}
 		body.append(html.join(''));
 		html.length && search();
-		bottom && container.scrollTop(1000000);
+		bottom && container.scrollTop(body[0].offsetHeight);
 	}
 	
 	function getHtml(data) {
