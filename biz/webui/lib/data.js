@@ -135,7 +135,7 @@ function getIds(startTime, count) {
 
 function getIndex(startTime, start, end) {
 	if (end - start <= 1) {
-		return end;
+		return ids[start] > startTime ? start : end;
 	}
 	
 	var mid = Math.floor((start + end) / 2);
