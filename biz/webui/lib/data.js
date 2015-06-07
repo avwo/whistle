@@ -139,8 +139,9 @@ function getIndex(startTime, start, end) {
 	}
 	
 	var mid = Math.floor((start + end) / 2);
-	return ids[mid] <= startTime ? getIndex(startTime, mid + 1, end)
-			: getIndex(startTime, start, mid);
+	var id = ids[mid];
+	return id == startTime ? mid + 1 : (id < startTime ? getIndex(startTime, mid + 1, end)
+			: getIndex(startTime, start, mid));
 }
 
 function getList(ids) {
