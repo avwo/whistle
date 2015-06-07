@@ -415,7 +415,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 						Url: selectedData.url,
 						Method: req.method,
 						StatusCode: res.statusCode,
-						'Host Ip': res.ip,
+						'Host IP': res.ip,
 						'Client IP': req.ip,
 						'Start Time': selectedData.startTime,
 						DNS: selectedData.dnsTime - selectedData.startTime + 'ms',
