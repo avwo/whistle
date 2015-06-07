@@ -265,12 +265,18 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		
 		body.on('dblclick', 'tr', function() {
 			captureDetail.show();
+			resizeDetail();
 		}).on('click', 'tr', function(e) {
 			!e.ctrlKey && !e.metaKey && body.find('tr').removeClass('selected');
 			$(this).addClass('selected');
 		});
 		
-		$(window).on('keydown', function(e) {
+		function resizeDetail() {
+			captureDetail.css('height', container[0].offsetHeight - 6);
+		}
+		
+		$(window).on('resize', resizeDetail)
+		.on('keydown', function(e) {
 			if (isEditable(e.target)) {
 				return;
 			}
