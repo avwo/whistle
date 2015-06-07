@@ -274,7 +274,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 			}
 			captureDetail.show();
 			resizeDetail();
-			var activeElem = captureDetailTabs.find('.active');
+			var activeElem = captureDetailTabs.filter('.active');
 			if (!activeElem.length) {
 				activeElem = captureDetailTabs.filter('.request');
 			}
