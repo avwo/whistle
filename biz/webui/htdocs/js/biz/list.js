@@ -498,6 +498,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 				
 				list.push(curData);
 			});
+			var total = endTime - startTime || 1;
 			
 			$.each(list, function(i) {
 				list[i] = getTimeline({
@@ -512,7 +513,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 						request: this.requestTime - this.dnsTime,
 						response: this.responseTime ? this.responseTime - this.requestTime : 0,
 						end: this.endTime && this.responseTime ? this.endTime- this.responseTime : 0,
-						total: endTime - startTime || 1
+						total: total
 					});
 			});
 			
