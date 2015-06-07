@@ -24,6 +24,10 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 	  	      replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;').replace(/\s/g, '&nbsp;') : (s == null ? '' : String(s));
 	}
 	
+	function getSelectedData() {
+		return selectedData ? (data[selectedData.id] || selectedData) : null;
+	}
+	
 	function getList(options) {
 		if (pending) {
 			return;
@@ -375,6 +379,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		});
 		
 		captureDetail.on('click', '.replay', function() {
+			var selectedData = getSelectedData();
 			request({
 					url: selectedData.url,
 					method: selectedData.req.method,
@@ -382,6 +387,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 					body: selectedData.req.body || null
 				});
 		}).on('click', '.composer', function() {
+			var selectedData = getSelectedData();
 			if (!selectedData) {
 				return;
 			}
@@ -405,6 +411,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 				var headers = captureDetailContent.find('.headers');
 				var body = captureDetailContent.find('.body');
 				var textarea = captureDetailContent.find('.text-body').hide();
+				var selectedData = getSelectedData();
 				var req = selectedData.req;
 				var res = selectedData.res;
 				
