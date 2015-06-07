@@ -415,12 +415,15 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 				} else if (self.hasClass('response')) {
 					var res = selectedData.res;
 					var resHeaders = res.headers;
-					delete resHeaders['x-remote-ip'];
-					for (var i in resHeaders) {
-						if (/^x-whistle-/.test(i)) {
-							delete resHeaders[i];
+					if (resHeaders) {
+						delete resHeaders['x-remote-ip'];
+						for (var i in resHeaders) {
+							if (/^x-whistle-/.test(i)) {
+								delete resHeaders[i];
+							}
 						}
 					}
+					
 					headers.html(getProperties(resHeaders));
 					clearTimeout(delayTimeout);
 					body.hide();
