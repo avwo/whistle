@@ -366,16 +366,12 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		});
 		
 		captureDetail.on('click', '.replay', function() {
-			$.ajax({
-				url: '/cgi-bin/composer/request',
-				method: 'POST',
-				data: {
+			request({
 					url: selectedData.url,
 					method: selectedData.req.method,
 					headers: JSON.stringify(selectedData.req.headers),
 					body: selectedData.req.body || null
-				}
-			});
+				});
 		}).on('click', '.composer', function() {
 			if (!selectedData) {
 				return;
@@ -458,6 +454,29 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 					}, 16);
 				}
 			});
+		
+		$('#executeComposer').click(function() {
+			var url = $.trim($('#composerUrl').val());
+			if (!url) {
+				alert('url不能为空');
+				return;
+			}
+			request({
+				url: url,
+				method: $('#composerMethod').val(),
+				headers: $('#composerHeaders').val(),
+				body: $('#composerBody').val()
+			});
+			$('.composer-dialog').modal('hide');
+		});
+	}
+	
+	function request(data) {
+		$.ajax({
+			url: '/cgi-bin/composer/request',
+			method: 'POST',
+			data: data
+		});
 	}
 	
 	function getProperties(data) {
