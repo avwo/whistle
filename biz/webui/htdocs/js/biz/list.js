@@ -287,12 +287,15 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		
 		function resizeDetail() {
 			captureDetail.css('height', container[0].offsetHeight - 6);
-			captureDetailContent.find('>div').height(captureDetailContent[0].offsetHeight / 2);
+			captureDetailContent.find('>div,>textarea').height(captureDetailContent[0].offsetHeight / 2);
 		}
 		
 		$(window).on('resize', resizeDetail)
 		.on('keydown', function(e) {
 			if (isEditable(e.target)) {
+				if (e.target.readOnly && e.keyCode === 8) {
+					e.preventDefault();
+				}
 				return;
 			}
 			var keyCode = e.keyCode;
@@ -386,6 +389,8 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 						'Content Loaded': selectedData.endTime && (selectedData.endTime - selectedData.startTime + 'ms')
 					}));
 					var rules = selectedData.rules || {};
+					body.show();
+					captureDetailContent.find('.text-body').hide();
 					body.html(getProperties({
 						Req: rules.req && rules.req.raw,
 						Proxy: rules.proxy && rules.proxy.raw,
@@ -398,7 +403,9 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 					var req = selectedData.req;
 					var reqHeaders = req.headers;
 					headers.html(getProperties(reqHeaders));
-					body.html(req.body === null ? '<i style="color: #ccc;">只能显示不超过128kb的请求内容</i>' : escapeHtml(req.body));
+					body.hide();
+					body = captureDetailContent.find('.text-body').css('display', 'block');
+					body.val(req.body === null ? '<i style="color: #ccc;">只能显示不超过128kb的请求内容</i>' : req.body);
 				} else if (self.hasClass('response')) {
 					var res = selectedData.res;
 					var resHeaders = res.headers;
@@ -409,8 +416,10 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 						}
 					}
 					headers.html(getProperties(resHeaders));
-					body.html(res.body === null ? '<i style="color: #ccc;">只能显示不超过256kb的响应内容</i>' : 
-						(res.body === false ?　'<i style="color: #ccc;">只支持显示文本内容</i>' : escapeHtml(res.body)));
+					body.hide();
+					body = captureDetailContent.find('.text-body').css('display', 'block');
+					body.val(res.body === null ? '只能显示不超过256kb的响应内容' : 
+						(res.body === false ?　'只支持显示文本内容' : res.body));
 				}
 			});
 	}
