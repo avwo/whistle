@@ -114,7 +114,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		}
 		var res = data.res;
 		var req = data.req;
-		var defaultValue = data.reqError ? 'req error' : (data.resError ? 'res error' : '-');
+		var defaultValue = data.reqError ? 'aborted' : (data.resError ? 'error' : '-');
 		var url = escapeHtml(data.url);
 		var type = escapeHtml(res.headers ? (res.headers['content-type'] || '') : defaultValue);
 		return '<tr id="' + data.id + '" class="' + (data.endTime ? getClassname(data) : 'pending') + '">\
@@ -132,7 +132,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 	
 	function updateElement(elem, data) {
 		var res = data.res;
-		var defaultValue = data.reqError ? 'req error' : (data.resError ? 'res error' : '-');
+		var defaultValue = data.reqError ? 'aborted' : (data.resError ? 'error' : '-');
 		elem.find('.result').text(res.statusCode || defaultValue);
 		elem.find('.host-ip').text(res.ip || defaultValue);
 		elem.find('.type').text(res.headers ? (res.headers['content-type'] || '') : defaultValue);
@@ -468,6 +468,11 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 				body: $('#composerBody').val()
 			});
 			$('.composer-dialog').modal('hide');
+		});
+		
+		$('#showTimeline').click(function() {
+			
+			$('.timeline-dialog').modal();
 		});
 	}
 	
