@@ -3,6 +3,8 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 	var body = $('#captureListBody');
 	var quickSearch = $('#quickSearch');
 	var captureDetail = $('#captureDetail');
+	var captureDetailContent = $('#captureDetailContent');
+	var captureDetailTabs = captureDetail.find('.tabs button');
 	var	MAX_COUNT = 720;
 	var ids = [];
 	var data = {};
@@ -273,6 +275,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		
 		function resizeDetail() {
 			captureDetail.css('height', container[0].offsetHeight - 6);
+			captureDetailContent.find('>div').height(captureDetailContent[0].offsetHeight / 2);
 		}
 		
 		$(window).on('resize', resizeDetail)
@@ -346,7 +349,14 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		captureDetail.on('click', '.close', function() {
 			captureDetail.hide();
 		});
-		
+		captureDetailTabs.on('click', function() {
+				var self = $(this);
+				if (self.hasClass('active')) {
+					return;
+				}
+				captureDetailTabs.removeClass('active');
+				self.addClass('active');
+			});
 	}
 	
 	module.exports = function init() {
