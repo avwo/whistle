@@ -194,14 +194,18 @@ function handleRequest(req) {
 	});
 	
 	var reqBody;
+	var reqSize = 0;
 	
 	if (util.hasRequestBody(req)) {
 		reqBody = false;
 	}
 	req._transform = function(chunk, encoding, callback) {
 		
-		if (chunk && (reqBody || reqBody === false)) {
-			reqBody = reqBody ? Buffer.concat([reqBody, chunk]) : chunk;
+		if (chunk) {
+			if (reqBody || reqBody === false) {
+				reqBody = reqBody ? Buffer.concat([reqBody, chunk]) : chunk;
+			}
+			reqSize += chunk.length;
 		}
 		
 		if (reqBody && reqBody.length > MAX_REQ_SIZE) {
@@ -211,6 +215,7 @@ function handleRequest(req) {
 		if (!chunk) {
 			curData.requestTime = Date.now();
 			curData.reqEnd = true;
+			reqData.size = reqSize;
 			reqData.body = decode(reqBody);
 		}
 		
@@ -230,14 +235,19 @@ function handleRequest(req) {
 		});
 		
 		var resBody;
+		var resSize = 0;
 		var contentType = util.getContentType(res.headers);
 		if (contentType && contentType != 'IMG' && util.hasBody(res)) {
 			resBody = false;
 		}
 
 		res._transform = function(chunk, encoding, callback) {
-			if (chunk && (resBody || resBody === false)) {
-				resBody = resBody ? Buffer.concat([resBody, chunk]) : chunk;
+			if (chunk) {
+				if (resBody || resBody === false) {
+					resBody = resBody ? Buffer.concat([resBody, chunk]) : chunk;
+				}
+				
+				resSize += chunk.length;
 			}
 			
 			if (resBody && resBody.length > MAX_RES_SIZE) {
@@ -247,6 +257,7 @@ function handleRequest(req) {
 			if (!chunk) {
 				curData.endTime = Date.now();
 				curData.resEnd = true;
+				resData.size = resSize;
 				if (resBody) {
 					var unzip;
 					switch (util.toLowerCase(res.headers['content-encoding'])) {

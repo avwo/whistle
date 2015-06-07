@@ -417,6 +417,8 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 						StatusCode: res.statusCode,
 						'Host IP': res.ip,
 						'Client IP': req.ip,
+						'Request Length': req.size == null ? '' : req.size,
+						'Content Length': res.size == null ? '' : res.size,
 						'Start Time': selectedData.startTime,
 						'DNS Lookup': selectedData.dnsTime - selectedData.startTime + 'ms',
 						'Request Sent': selectedData.requestTime  && (selectedData.requestTime - selectedData.startTime + 'ms'),
