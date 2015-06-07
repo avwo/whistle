@@ -5,7 +5,7 @@ var util = require('../../../../util');
 var HTTPS_FLAG = require('../../../../package.json').whistleSsl + '.';
 
 function parseHeaders(headers) {
-	if (!headers) {
+	if (!headers || typeof headers != 'string') {
 		return {};
 	}
 	
