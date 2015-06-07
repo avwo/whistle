@@ -400,15 +400,18 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 				var headers = captureDetailContent.find('.headers');
 				var body = captureDetailContent.find('.body');
 				var textarea = captureDetailContent.find('.text-body').hide();
+				var req = selectedData.req;
+				var res = selectedData.res;
 				
 				if (self.hasClass('statistics')) {
 					body.show();
 					textarea.hide();
 					headers.html(getProperties({
 						Url: selectedData.url,
-						Method: selectedData.req.method,
-						'Host Ip': selectedData.res.ip,
-						'Client IP': selectedData.req.ip,
+						Method: req.method,
+						StatusCode: res.statusCode,
+						'Host Ip': res.ip,
+						'Client IP': req.ip,
 						'Start Time': selectedData.startTime,
 						DNS: selectedData.dnsTime - selectedData.startTime + 'ms',
 						Request: selectedData.requestTime  && (selectedData.requestTime - selectedData.startTime + 'ms'),
@@ -425,7 +428,6 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 					}));
 					
 				} else if (self.hasClass('request')) {
-					var req = selectedData.req;
 					var reqHeaders = req.headers;
 					headers.html(getProperties(reqHeaders));
 					clearTimeout(delayTimeout);
@@ -436,7 +438,6 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 						textarea.val(req.body || '');
 					}, 16);
 				} else if (self.hasClass('response')) {
-					var res = selectedData.res;
 					var resHeaders = res.headers;
 					if (resHeaders) {
 						delete resHeaders['x-remote-ip'];
