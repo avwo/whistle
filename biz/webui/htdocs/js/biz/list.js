@@ -526,8 +526,8 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 			var url = escapeHtml(data.url);
 			
 			return '<tr class="' + data.className + '" ' + (data.endTime ?  'title="' + 'Stalled: ' + data.stalled + 'ms\r\nDNS: ' + 
-				data.dns + 'ms\r\nRequest: ' + data.request + 'ms\r\nResponse: ' + 
-				data.response + 'ms\r\nContent Download: ' + data.end + 'ms\r\n' + '"' : '') + '>\
+				data.dns + 'ms\r\nRequest: ' + (data.request - data.dns) + 'ms\r\nResponse: ' + 
+				(data.response - data.request) + 'ms\r\nContent Download: ' + (data.end - data.response) + 'ms\r\n' + '"' : '') + '>\
 	          <th class="order" scope="row">' + data.order + '</th>\
 	          <td class="result">' + data.statusCode + '</td>\
 	          <td class="url" title="' + url + '">' + url + '</td>\
@@ -535,7 +535,8 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 	        		   + data.stalled / data.total + ', rgba(0, 0, 0, 0)), color-stop(' + data.stalled / data.total + ', #fec2ba), color-stop(' 
 	        		   + (data.dns + data.stalled) / data.total + ', #fec2ba), color-stop(' + (data.dns + data.stalled) / data.total + ', #e58226), color-stop(' 
 	        		   + (data.request + data.stalled) / data.total + ', #e58226), color-stop(' + (data.request + data.stalled) / data.total + ', #5fee5f), color-stop(' 
-	        		   + (data.end + data.stalled) / data.total + ', #5fee5f), color-stop(' + (data.end + data.stalled) / data.total + ', #3f86d3), color-stop(1, #3f86d3));"') : '') + '>' 
+	        		   + (data.response + data.stalled) / data.total + ', #5fee5f), color-stop(' + (data.response + data.stalled) / data.total + ', #3f86d3), color-stop(' + (data.end + data.stalled) / data.total + ', #3f86d3), color-stop(' + (data.end + data.stalled) / data.total 
+	        		   + ', rgba(0, 0, 0, 0)), color-stop(1, rgba(0, 0, 0, 0)));"') : '') + '>' 
 	          + (data.endTime ? data.endTime - data.startTime + 'ms' : '-') + '</td>\
 	        </tr>';
 		}
