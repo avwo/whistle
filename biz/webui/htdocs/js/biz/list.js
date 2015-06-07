@@ -414,7 +414,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 					headers.html(getProperties({
 						Url: selectedData.url,
 						Method: req.method,
-						StatusCode: res.statusCode,
+						'Status Code': res.statusCode,
 						'Host IP': res.ip,
 						'Client IP': req.ip,
 						'Request Length': req.size == null ? '' : req.size,
