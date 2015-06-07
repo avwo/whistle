@@ -3,6 +3,7 @@ var zlib = require('zlib');
 var MAX_REQ_SIZE = 128 * 1024;
 var MAX_RES_SIZE = 256 * 1024;
 var TIMEOUT = 10000;
+var CLEAR_INTERVAL = 3000;
 var MAX_LENGTH = 512;
 var MIN_LENGTH = 412;
 var COUNT = 100;
@@ -26,7 +27,7 @@ function enable() {
 	clearTimeout(timeout);
 	timeout = setTimeout(disable, TIMEOUT);
 	if (!interval) {
-		interval = setInterval(clearCache, 3000);
+		interval = setInterval(clearCache, CLEAR_INTERVAL);
 	}
 }
 
@@ -61,7 +62,7 @@ function clearCache() {
 	for (var i = 0; i < index; i++) {
 		var id = ids[i];
 		var curData = data[id];
-		if (curData.read && !curData.endTime) {
+		if (curData.read && (!curData.endTime || now - curData.endTime < CLEAR_INTERVAL)) {
 			_ids.push(id);
 		} else {
 			delete data[id];
