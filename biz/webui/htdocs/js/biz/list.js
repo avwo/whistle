@@ -418,10 +418,9 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 						'Host IP': res.ip,
 						'Client IP': req.ip,
 						'Start Time': selectedData.startTime,
-						DNS: selectedData.dnsTime - selectedData.startTime + 'ms',
-						Request: selectedData.requestTime  && (selectedData.requestTime - selectedData.startTime + 'ms'),
-						Response: selectedData.responseTime &&  (selectedData.responseTime - selectedData.startTime + 'ms'),
-						'Content Loaded': selectedData.endTime && (selectedData.endTime - selectedData.startTime + 'ms')
+						'DNS Lookup': selectedData.dnsTime - selectedData.startTime + 'ms',
+						'Request Sent': selectedData.requestTime  && (selectedData.requestTime - selectedData.startTime + 'ms'),
+						'Content Download': selectedData.endTime &&  (selectedData.endTime - selectedData.startTime + 'ms')
 					}));
 					var rules = selectedData.rules || {};
 					body.html(getProperties({
@@ -525,18 +524,22 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		function getTimeline(data) {
 			var url = escapeHtml(data.url);
 			
-			return '<tr class="' + data.className + '" ' + (data.endTime ?  'title="' + 'Stalled: ' + data.stalled + 'ms\r\nDNS: ' + 
-				data.dns + 'ms\r\nRequest: ' + (data.request - data.dns) + 'ms\r\nResponse: ' + 
-				(data.response - data.request) + 'ms\r\nContent Download: ' + (data.end - data.response) + 'ms\r\n' + '"' : '') + '>\
+			return '<tr class="' + data.className + '" ' + (data.endTime ?  'title="' 
+					+ 'Stalled: ' + data.stalled + 'ms\r\nDNS: ' 
+					+ data.dns + 'ms\r\nRequest: ' + (data.request - data.dns) + 'ms\r\Response: ' 
+					+ (data.end - data.request) + 'ms\r\n' + '"' : '') + '>\
 	          <th class="order" scope="row">' + data.order + '</th>\
 	          <td class="result">' + data.statusCode + '</td>\
 	          <td class="url" title="' + url + '">' + url + '</td>\
 	          <td class="timeline" ' + (data.endTime ? ('style="background-image: -webkit-gradient(linear, left top, right top, color-stop(0, rgba(0, 0, 0, 0)), color-stop('
-	        		   + data.stalled / data.total + ', rgba(0, 0, 0, 0)), color-stop(' + data.stalled / data.total + ', #fec2ba), color-stop(' 
-	        		   + (data.dns + data.stalled) / data.total + ', #fec2ba), color-stop(' + (data.dns + data.stalled) / data.total + ', #e58226), color-stop(' 
-	        		   + (data.request + data.stalled) / data.total + ', #e58226), color-stop(' + (data.request + data.stalled) / data.total + ', #5fee5f), color-stop(' 
-	        		   + (data.response + data.stalled) / data.total + ', #5fee5f), color-stop(' + (data.response + data.stalled) / data.total + ', #3f86d3), color-stop(' + (data.end + data.stalled) / data.total + ', #3f86d3), color-stop(' + (data.end + data.stalled) / data.total 
-	        		   + ', rgba(0, 0, 0, 0)), color-stop(1, rgba(0, 0, 0, 0)));"') : '') + '>' 
+	        		   + data.stalled / data.total + ', rgba(0, 0, 0, 0)), color-stop(' 
+	        		   + data.stalled / data.total + ', #fec2ba), color-stop(' 
+	        		   + (data.dns + data.stalled) / data.total + ', #fec2ba), color-stop(' 
+	        		   + (data.dns + data.stalled) / data.total + ', #e58226), color-stop(' 
+	        		   + (data.request + data.stalled) / data.total + ', #e58226), color-stop(' 
+	        		   + (data.request + data.stalled) / data.total + ', #5fee5f), color-stop(' 
+	        		   + (data.end + data.stalled) / data.total + ', #5fee5f), color-stop(' 
+	        		   + (data.end + data.stalled) / data.total + ', rgba(0, 0, 0, 0)), color-stop(1, rgba(0, 0, 0, 0)));"') : '') + '>' 
 	          + (data.endTime ? data.endTime - data.startTime + 'ms' : '-') + '</td>\
 	        </tr>';
 		}
