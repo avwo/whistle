@@ -178,7 +178,8 @@ function handleRequest(req) {
 			startTime: startTime,
 			dnsTime: req.dnsTime,
 			req: reqData,
-			res: resData
+			res: resData,
+			rules: req.rules
 	};
 	
 	ids.push(id);

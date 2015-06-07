@@ -20,7 +20,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 	
 	function escapeHtml(s) {
 	    return typeof s === 'string' ? s.replace(AMP,'&amp;').replace(LT,'&lt;').replace(GT,'&gt;')
-	  	      .replace(QUOT,'&quot;').replace(SQUOT, '&#39;').replace(CRLF, '<br>') : '';
+	  	      .replace(QUOT,'&quot;').replace(SQUOT, '&#39;').replace(CRLF, '<br>') : (s == null ? '' : String(s));
 	}
 	
 	function getList(options) {
@@ -125,7 +125,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 			        <td class="host-ip">' + (res.ip || defaultValue) + '</td>\
 			        <td class="url" title="' + url + '">' + url + '</td>\
 			        <td class="type" title="' + type + '">' + type + '</td>\
-			        <td class="time">' + (data.endTime ? data.endTime - data.startTime : defaultValue) + '</td>\
+			        <td class="time">' + (data.endTime ? data.endTime - data.startTime + 'ms' : defaultValue) + '</td>\
 			     </tr>';
 	}
 	
@@ -135,7 +135,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		elem.find('.result').text(res.statusCode || defaultValue);
 		elem.find('.host-ip').text(res.ip || defaultValue);
 		elem.find('.type').text(res.headers ? (res.headers['content-type'] || '') : defaultValue);
-		elem.find('.time').text(data.endTime ? data.endTime - data.startTime : defaultValue);
+		elem.find('.time').text(data.endTime ? data.endTime - data.startTime + 'ms' : defaultValue);
 		elem.addClass(getClassname(data));
 		if (data.endTime) {
 			elem.removeClass('pending');
@@ -268,8 +268,17 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		
 		body.on('dblclick', 'tr', function() {
 			selectedData = data[this.id];
+			if (!selectedData) {
+				captureDetail.hide();
+				return;
+			}
 			captureDetail.show();
 			resizeDetail();
+			var activeElem = captureDetailTabs.find('.active');
+			if (!activeElem.length) {
+				activeElem = captureDetailTabs.filter('.request');
+			}
+			activeElem.trigger('click', {force: true});
 		}).on('click', 'tr', function(e) {
 			!e.ctrlKey && !e.metaKey && body.find('tr').removeClass('selected');
 			$(this).addClass('selected');
@@ -351,14 +360,38 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		captureDetail.on('click', '.close', function() {
 			captureDetail.hide();
 		});
-		captureDetailTabs.on('click', function() {
+		captureDetailTabs.on('click', function(e, data) {
 				var self = $(this);
-				if (self.hasClass('active')) {
+				if (!(data && data.force) && self.hasClass('active')) {
 					return;
 				}
+				
 				captureDetailTabs.removeClass('active');
 				self.addClass('active');
+				
+				var headers = captureDetailContent.find('.headers');
+				var body = captureDetailContent.find('.body');
+				
 				if (self.hasClass('statistics')) {
+					
+					headers.html(getProperties({
+						Url: selectedData.url,
+						'Host Ip': selectedData.res.ip,
+						'Client IP': selectedData.req.ip,
+						'Start Time': selectedData.startTime,
+						DNS: selectedData.dnsTime - selectedData.startTime + 'ms',
+						Request: selectedData.requestTime  && (selectedData.requestTime - selectedData.startTime + 'ms'),
+						Response: selectedData.responseTime &&  (selectedData.responseTime - selectedData.startTime + 'ms'),
+						'Content Loaded': selectedData.endTime && (selectedData.endTime - selectedData.startTime + 'ms')
+					}));
+					var rules = selectedData.rules || {};
+					body.html(getProperties({
+						Req: escapeHtml(rules.req && rules.req.raw),
+						Proxy: escapeHtml(rules.proxy && rules.proxy.raw),
+						Rule: escapeHtml(rules.rule && rules.rule.raw),
+						Res: escapeHtml(rules.res && rules.res.raw),
+						Weinre: escapeHtml(rules.weinre && rules.weinre.raw)
+					}));
 					
 				} else if (self.hasClass('request')) {
 					
@@ -368,12 +401,12 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 			});
 	}
 	
-	function getPropertiesTable(data) {
-		var table = ['<table class="table"><tbody>'];
+	function getProperties(data) {
+		var table = ['<ul>'];
 		for (var i in data) {
-			table.push('<tr>' + escapeHtml(i) + '<th></th><td>' + escapeHtml(data[i]) + '</td></tr>')
+			table.push('<li><label>' + escapeHtml(i) + ':</label><span>' + escapeHtml(data[i]) + '</span></li>')
 		}
-		table.push('</tbody></table>');
+		table.push('</ul>');
 		
 	    return table.join('');
 	}
