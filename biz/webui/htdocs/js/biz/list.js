@@ -117,7 +117,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		var defaultValue = getErrorMsg(data) || '-';
 		var url = escapeHtml(data.url);
 		var type = escapeHtml(res.headers ? (res.headers['content-type'] || '') : defaultValue);
-		return '<tr id="' + data.id + '" class="' + (data.endTime ? getClassname(data) : 'pending') + '">\
+		return '<tr id="' + data.id + '" class="' + (data.endTime ? getClassName(data) : 'pending') + '">\
 			        <th class="order" scope="row">' + ++index + '</th>\
 			        <td class="result">' + (res.statusCode || defaultValue) + '</td>\
 			        <td class="protocol">' + getProtocol(data.url) + '</td>\
@@ -137,7 +137,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		elem.find('.host-ip').text(res.ip || defaultValue);
 		elem.find('.type').text(res.headers ? (res.headers['content-type'] || '') : defaultValue);
 		elem.find('.time').text(data.endTime ? data.endTime - data.startTime + 'ms' : defaultValue);
-		elem.addClass(getClassname(data));
+		elem.addClass(getClassName(data));
 		if (data.endTime) {
 			elem.removeClass('pending');
 		}
@@ -162,7 +162,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		return url.substring(0, url.indexOf(':\/\/')).toUpperCase();
 	}
 	
-	function getClassname(data) {
+	function getClassName(data) {
 		if (data.reqError || data.resError || data.res.statusCode >= 400) {
 			return 'danger';
 		}
@@ -480,9 +480,37 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		});
 		
 		$('#showTimeline').click(function() {
+			var elems = body.find('tr.selected:visible');
+			if (!elems.length) {
+				alert('请至少选择一条数据，windows按住 `Ctrl`键，mac按住 `Command`键，可以进行多选。');
+				return;
+			}
 			
 			$('.timeline-dialog').modal();
 		});
+		
+		function getResultClassName(elem) {
+			var className = elem.attr('class');
+			if (className) {
+				if (/\bwarning\b/.test(className)) {
+					return 'warning';
+				}
+				
+				if (/\binfo\b/.test(className)) {
+					return 'info';
+				}
+				
+				if (/\bsuccess\b/.test(className)) {
+					return 'success';
+				}
+				
+				if (/\bactive\b/.test(className)) {
+					return 'active';
+				}
+			}
+		
+			return '';
+		}
 	}
 	
 	function request(data) {
