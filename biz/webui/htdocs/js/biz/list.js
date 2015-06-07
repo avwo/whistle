@@ -387,7 +387,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 			}
 			
 			$('#composerUrl').val(selectedData.url);
-			$('#composerHeaders').val(JSON.stringify(selectedData.req.headers));
+			$('#composerHeaders').val(JSON.stringify(selectedData.req.headers, null, '\t'));
 			$('#composerBody').val(selectedData.req.body || null);
 			$('#composerMethod').val(selectedData.req.method);
 		});
