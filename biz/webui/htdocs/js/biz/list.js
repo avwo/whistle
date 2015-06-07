@@ -356,17 +356,17 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 			return elem == 'TEXTAREA';
 		}
 		
-		var top = body.offset().top;
+		var top = container.offset().top;
 		function ensureVisible(tr) {
 			var _top = tr.offset().top - top;
 			if (_top < 0) {
-				body.scrollTop(body.scrollTop() + _top);
+				container.scrollTop(container.scrollTop() + _top);
 				return;
 			}
 			
-			_top += tr[0].offsetHeight - body[0].offsetHeight;
+			_top += tr[0].offsetHeight - container[0].offsetHeight;
 			if (_top > 0) {
-				body.scrollTop(body.scrollTop() + _top);
+				container.scrollTop(container.scrollTop() + _top);
 			}
 		}
 		
