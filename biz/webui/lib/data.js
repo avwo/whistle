@@ -117,7 +117,7 @@ function getIds(startTime, count) {
 		return [];
 	}
 	
-	startTime = (startTime || Date.now() - 3000) + '';
+	startTime = (startTime || Date.now() - 6000) + '';
 	count = Math.min(count || COUNT, len);
 	if (ids[0] > startTime) {
 		

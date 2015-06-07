@@ -411,7 +411,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 					delayTimeout = setTimeout(function() {
 						body.hide();
 						textarea.val(req.body === null ? '只抓取不超过128kb的请求内容' : req.body);
-					}, 30);
+					}, 16);
 				} else if (self.hasClass('response')) {
 					var res = selectedData.res;
 					var resHeaders = res.headers;
@@ -429,7 +429,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 						body.hide();
 						textarea.val(res.body === null ? '只抓取不超过256kb的响应内容' : 
 							(res.body === false ?　'只抓取文本内容' : res.body));
-					}, 30);
+					}, 16);
 				}
 			});
 	}
