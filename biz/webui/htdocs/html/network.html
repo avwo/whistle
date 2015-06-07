@@ -116,7 +116,7 @@ body .table>tbody>tr:first-child>th, body .table>tbody>tr:first-child>td {border
 .capture-detail .action-bar .close {position: absolute; right: 10px; top: 5px;}
 .capture-detail .action-bar a {text-decoration: none; margin-left: 10px; display: inline-block; line-height: 32px;}
 .capture-detail .headers {border-bottom: 1px solid #ddd;}
-.capture-detail-content > div, .capture-detail-content > textarea {overflow: auto; padding: 8px;}
+.capture-detail-content > div, .capture-detail-content > textarea {overflow: auto; padding: 8px; border: none; box-sizing: border-box;}
 .capture-detail-content > textarea {display: none; outline: none; resize: none;}
 .capture-detail-content ul, .capture-detail-content li {list-style: none; margin: 0; padding: 0;}
 .capture-detail-content li label {font-weight: bold; margin-right: 8px;}
@@ -215,7 +215,7 @@ color-stop(0.90, #3f86d3), color-stop(1, #3f86d3));}
 		<div id="captureDetailContent" class="fill box-orient-vertical capture-detail-content">
 			<div class="headers fill"></div>
 			<div class="body fill"></div>
-			<textarea class="text-body" readonly="readonly"></textarea>
+			<textarea class="text-body fill" readonly="readonly"></textarea>
 		</div>
 	</div>
 </div>

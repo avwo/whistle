@@ -364,6 +364,8 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		captureDetail.on('click', '.close', function() {
 			captureDetail.hide();
 		});
+		
+		var delayTimeout;
 		captureDetailTabs.on('click', function(e, data) {
 				var self = $(this);
 				if (!(data && data.force) && self.hasClass('active')) {
@@ -375,9 +377,11 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 				
 				var headers = captureDetailContent.find('.headers');
 				var body = captureDetailContent.find('.body');
+				var textarea = captureDetailContent.find('.text-body').hide();
 				
 				if (self.hasClass('statistics')) {
-					
+					body.show();
+					textarea.hide();
 					headers.html(getProperties({
 						Url: selectedData.url,
 						'Host Ip': selectedData.res.ip,
@@ -389,8 +393,6 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 						'Content Loaded': selectedData.endTime && (selectedData.endTime - selectedData.startTime + 'ms')
 					}));
 					var rules = selectedData.rules || {};
-					body.show();
-					captureDetailContent.find('.text-body').hide();
 					body.html(getProperties({
 						Req: rules.req && rules.req.raw,
 						Proxy: rules.proxy && rules.proxy.raw,
@@ -403,10 +405,13 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 					var req = selectedData.req;
 					var reqHeaders = req.headers;
 					headers.html(getProperties(reqHeaders));
+					clearTimeout(delayTimeout);
 					body.hide();
-					body = captureDetailContent.find('.text-body');
-					body.val(req.body === null ? '只抓取不超过128kb的请求内容' : req.body)
-					.css('display', 'block');
+					textarea.val('').css('display', 'block');
+					delayTimeout = setTimeout(function() {
+						body.hide();
+						textarea.val(req.body === null ? '只抓取不超过128kb的请求内容' : req.body);
+					}, 30);
 				} else if (self.hasClass('response')) {
 					var res = selectedData.res;
 					var resHeaders = res.headers;
@@ -417,10 +422,14 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 						}
 					}
 					headers.html(getProperties(resHeaders));
+					clearTimeout(delayTimeout);
 					body.hide();
-					body = captureDetailContent.find('.text-body');
-					body.val(res.body === null ? '只抓取不超过256kb的响应内容' : 
-						(res.body === false ?　'只抓取文本内容' : res.body)).css('display', 'block');
+					textarea.val('').css('display', 'block');
+					delayTimeout = setTimeout(function() {
+						body.hide();
+						textarea.val(res.body === null ? '只抓取不超过256kb的响应内容' : 
+							(res.body === false ?　'只抓取文本内容' : res.body));
+					}, 30);
 				}
 			});
 	}
