@@ -485,12 +485,58 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 				alert('请至少选择一条数据，windows按住 `Ctrl`键，mac按住 `Command`键，可以进行多选。');
 				return;
 			}
+			var list = [];
+			var startTime, endTime;
+			elems.each(function() {
+				var curData = data[this.id];
+				if (!startTime || startTime > curData.startTime) {
+					startTime = curData.startTime;
+				}
+				if (curData.endTime && (!endTime || startTime > curData.endTime)) {
+					endTime = curData.endTime;
+				}
+				
+				list.push(curData);
+			});
 			
+			$.each(list, function(i) {
+				list[i] = getTimeline({
+						order: i + i,
+						className: resolveClassName(elems[i].className),
+						url: this.url,
+						startTime: this.startTime,
+						endTime: this.endTime,
+						statusCode: this.res.statusCode || getErrorMsg(this) || '-',
+						stalled: this.startTime - startTime,
+						dns: this.dnsTime - this.startTime,
+						request: this.requestTime - this.dnsTime,
+						response: this.responseTime ? this.responseTime - this.requestTime : 0,
+						end: this.endTime && this.responseTime ? this.endTime- this.responseTime : 0,
+						total: endTime - startTime || 1
+					});
+			});
+			
+			$('#timelineList').html(list.join(''));
 			$('.timeline-dialog').modal();
 		});
 		
-		function getResultClassName(elem) {
-			var className = elem.attr('class');
+		function getTimeline(data) {
+			var url = escapeHtml(data.url);
+			return '<tr class="' + data.className + '">\
+	          <th class="order" scope="row">' + data.order + '</th>\
+	          <td class="result">' + data.statusCode + '</td>\
+	          <td class="url" title="' + url + '">' + url + '</td>\
+	          <td class="timeline" ' + (data.endTime ? ('style="background-image: -webkit-gradient(linear, left top, right top, color-stop(0, rgba(0, 0, 0, 0)), color-stop('
+	        		   + data.stalled / data.total + ', rgba(0, 0, 0, 0)), color-stop(' + data.stalled / data.total + ', #fec2ba), color-stop(' 
+	        		   + data.dns / data.total + ', #fec2ba), color-stop(' + data.dns / data.total + ', #e58226), color-stop(' 
+	        		   + data.request / data.total + ', #e58226), color-stop(' + data.request / data.total + ', #5fee5f), color-stop(' 
+	        		   + data.end / data.total + ', #5fee5f), color-stop(' + data.end / data.total + ', #3f86d3), color-stop(1, #3f86d3));"') : '') + '>' 
+	          + (data.endTime ? data.endTime - data.startTime + 'ms' : '-') + '</td>\
+	        </tr>';
+		}
+		
+		function resolveClassName(className) {
+			
 			if (className) {
 				if (/\bwarning\b/.test(className)) {
 					return 'warning';
@@ -506,6 +552,10 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 				
 				if (/\bactive\b/.test(className)) {
 					return 'active';
+				}
+				
+				if (/\bdanger\b/.test(className)) {
+					return 'danger';
 				}
 			}
 		
