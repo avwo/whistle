@@ -114,7 +114,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		}
 		var res = data.res;
 		var req = data.req;
-		var defaultValue = data.reqError ? 'aborted' : (data.resError ? 'error' : '-');
+		var defaultValue = getErrorMsg(data) || '-';
 		var url = escapeHtml(data.url);
 		var type = escapeHtml(res.headers ? (res.headers['content-type'] || '') : defaultValue);
 		return '<tr id="' + data.id + '" class="' + (data.endTime ? getClassname(data) : 'pending') + '">\
@@ -132,7 +132,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 	
 	function updateElement(elem, data) {
 		var res = data.res;
-		var defaultValue = data.reqError ? 'aborted' : (data.resError ? 'error' : '-');
+		var defaultValue = getErrorMsg(data) || '-';
 		elem.find('.result').text(res.statusCode || defaultValue);
 		elem.find('.host-ip').text(res.ip || defaultValue);
 		elem.find('.type').text(res.headers ? (res.headers['content-type'] || '') : defaultValue);
@@ -143,6 +143,15 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		}
 	}
 	
+	function getErrorMsg(data) {
+		if (data.reqError) {
+			return 'aborted';
+		}
+		
+		if (data.resError) {
+			return 'error';
+		}
+	}
 	
 	function getHostname(url) {
 		var index = url.indexOf(':\/\/') + 3;
