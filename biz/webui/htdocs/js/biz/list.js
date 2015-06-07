@@ -109,7 +109,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		}
 		var res = data.res;
 		var req = data.req;
-		var defaultValue = data.reqError || data.resError ? 'error' : '-';
+		var defaultValue = data.reqError ? 'req error' : (data.resError ? 'res error' : '-');
 		
 		return '<tr id="' + data.id + '" class="' + (data.endTime ? getClassname(data) : 'pending') + '">\
 			        <th class="order" scope="row">' + ++index + '</th>\
@@ -126,7 +126,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 	
 	function updateElement(elem, data) {
 		var res = data.res;
-		var defaultValue = data.reqError || data.resError ? 'error' : '-';
+		var defaultValue = data.reqError ? 'req error' : (data.resError ? 'res error' : '-');
 		elem.find('.result').text(res.statusCode || defaultValue);
 		elem.find('.host-ip').text(res.ip || defaultValue);
 		elem.find('.type').text(res.headers ? (res.headers['content-type'] || '') : defaultValue);
