@@ -366,7 +366,16 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		});
 		
 		captureDetail.on('click', '.replay', function() {
-			
+			$.ajax({
+				url: '/cgi-bin/composer/request',
+				method: 'POST',
+				data: {
+					url: selectedData.url,
+					method: selectedData.req.method,
+					headers: JSON.stringify(selectedData.req.headers),
+					body: selectedData.req.body || null
+				}
+			});
 		}).on('click', '.composer', function() {
 			if (!selectedData) {
 				return;
@@ -374,7 +383,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 			
 			$('#composerUrl').val(selectedData.url);
 			$('#composerHeaders').val(JSON.stringify(selectedData.req.headers));
-			$('#composerBody').val(selectedData.req.body || '');
+			$('#composerBody').val(selectedData.req.body || null);
 			$('#composerMethod').val(selectedData.req.method);
 		});
 		
