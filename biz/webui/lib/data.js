@@ -4,7 +4,8 @@ var MAX_REQ_SIZE = 128 * 1024;
 var MAX_RES_SIZE = 256 * 1024;
 var TIMEOUT = 10000;
 var MAX_LENGTH = 512;
-var MIN_LENGTH = 360;
+var MIN_LENGTH = 412;
+var COUNT = 100;
 var count = 0;
 var ids = [];
 var data = {};
@@ -115,7 +116,7 @@ function getIds(startTime, count) {
 	}
 	
 	startTime = (startTime || Date.now() - 2000) + '';
-	count = Math.min(count || MIN_LENGTH, len);
+	count = Math.min(count || COUNT, len);
 	if (ids[0] > startTime) {
 		
 		return ids.slice(0, count);

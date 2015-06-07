@@ -33,7 +33,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 			data: options,
 			success: handleData,
 			complete: function() {
-				setTimeout(load, 1600);
+				setTimeout(load, 1000);
 			}
 		});
 	}
