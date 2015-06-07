@@ -365,6 +365,19 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 			captureDetail.hide();
 		});
 		
+		captureDetail.on('click', '.replay', function() {
+			
+		}).on('click', '.composer', function() {
+			if (!selectedData) {
+				return;
+			}
+			
+			$('#composerUrl').val(selectedData.url);
+			$('#composerHeaders').val(JSON.stringify(selectedData.req.headers));
+			$('#composerBody').val(selectedData.req.body || '');
+			$('#composerMethod').val(selectedData.req.method);
+		});
+		
 		var delayTimeout;
 		captureDetailTabs.on('click', function(e, data) {
 				var self = $(this);
@@ -384,6 +397,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 					textarea.hide();
 					headers.html(getProperties({
 						Url: selectedData.url,
+						Method: selectedData.req.method,
 						'Host Ip': selectedData.res.ip,
 						'Client IP': selectedData.req.ip,
 						'Start Time': selectedData.startTime,
@@ -410,7 +424,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 					textarea.val('').css('display', 'block');
 					delayTimeout = setTimeout(function() {
 						body.hide();
-						textarea.val(req.body === null ? '只抓取不超过128kb的请求内容' : req.body);
+						textarea.val(req.body || '');
 					}, 16);
 				} else if (self.hasClass('response')) {
 					var res = selectedData.res;
@@ -430,8 +444,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 					textarea.val('').css('display', 'block');
 					delayTimeout = setTimeout(function() {
 						body.hide();
-						textarea.val(res.body === null ? '只抓取不超过256kb的响应内容' : 
-							(res.body === false ?　'只抓取文本内容' : res.body));
+						textarea.val(res.body || '');
 					}, 16);
 				}
 			});
