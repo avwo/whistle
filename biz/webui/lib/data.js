@@ -168,7 +168,9 @@ function handleRequest(req) {
             host: req.host || '::ffff:127.0.0.1',
             headers: req.headers
 		};
-	var resData = {};
+	var resData = {
+			host: req.hostIp
+	};
 	
 	var curData = data[id] = {
 			id: id,
