@@ -2,6 +2,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 	var container = $('#captureList');
 	var body = $('#captureListBody');
 	var quickSearch = $('#quickSearch');
+	var captureDetail = $('#captureDetail');
 	var	MAX_COUNT = 720;
 	var ids = [];
 	var data = {};
@@ -240,8 +241,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 			|| (keywords[4] && text.indexOf(keywords[4]) != -1);
 	}
 	
-	module.exports = function init() {
-		getList();
+	function addEvents() {
 		$('#clearAll').click(function() {
 			body.html('');
 			data = {};
@@ -261,5 +261,89 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		});
 		
 		quickSearch.on('input', search);
+		
+		body.on('dblclick', 'tr', function() {
+			captureDetail.show();
+		}).on('click', 'tr', function(e) {
+			!e.ctrlKey && !e.metaKey && body.find('tr').removeClass('selected');
+			$(this).addClass('selected');
+		});
+		
+		$(window).on('keydown', function(e) {
+			if (isEditable(e.target)) {
+				return;
+			}
+			var keyCode = e.keyCode;
+			var selectedElem = body.find('tr.selected:last');
+			if (!selectedElem.length) {
+				return;
+			}
+			var prev = keyCode == 38;
+			if (prev || keyCode == 40) {
+				prev  = prev ? getPrevVisible(selectedElem) : getNextVisible(selectedElem);
+				if (prev.length > 0) {
+					body.find('tr.selected').removeClass('selected');
+					prev.addClass('selected');
+					ensureVisible(prev);
+				}
+				e.preventDefault();
+			}
+		}).on('keyup', function(e) {
+			if (e.keyCode == 27) {
+				captureDetail.hide();
+			}
+			
+			if (isEditable(e.target)) {
+				return;
+			}
+			if (e.keyCode == 13) {
+				body.find('tr.selected:last').trigger('dblclick');
+			}
+		});
+		
+		function getPrevVisible(elem) {
+			elem = elem.prev();
+			while(elem.length && !elem.is(':visible')) {
+				elem = elem.prev();
+			}
+			return elem;
+		}
+		
+		function getNextVisible(elem) {
+			elem = elem.next();
+			while(elem.length && !elem.is(':visible')) {
+				elem = elem.next();
+			}
+			return elem;
+		}
+		
+		function isEditable(elem) {
+			elem = elem.nodeName;
+			return elem == 'TEXTAREA';
+		}
+		
+		var top = body.offset().top;
+		function ensureVisible(tr) {
+			var _top = tr.offset().top - top;
+			if (_top < 0) {
+				body.scrollTop(body.scrollTop() + _top);
+				return;
+			}
+			
+			_top += tr[0].offsetHeight - body[0].offsetHeight;
+			if (_top > 0) {
+				body.scrollTop(body.scrollTop() + _top);
+			}
+		}
+		
+		captureDetail.on('click', '.close', function() {
+			captureDetail.hide();
+		});
+		
+	}
+	
+	module.exports = function init() {
+		getList();
+		addEvents();
 	};
 });
