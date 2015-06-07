@@ -387,11 +387,11 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 					}));
 					var rules = selectedData.rules || {};
 					body.html(getProperties({
-						Req: escapeHtml(rules.req && rules.req.raw),
-						Proxy: escapeHtml(rules.proxy && rules.proxy.raw),
-						Rule: escapeHtml(rules.rule && rules.rule.raw),
-						Res: escapeHtml(rules.res && rules.res.raw),
-						Weinre: escapeHtml(rules.weinre && rules.weinre.raw)
+						Req: rules.req && rules.req.raw,
+						Proxy: rules.proxy && rules.proxy.raw,
+						Rule: rules.rule && rules.rule.raw,
+						Res: rules.res && rules.res.raw,
+						Weinre: rules.weinre && rules.weinre.raw
 					}));
 					
 				} else if (self.hasClass('request')) {
