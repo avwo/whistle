@@ -267,6 +267,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		var keywords = $.trim(quickSearch.val());
 		if (!keywords) {
 			rows.show();
+			container.scrollTop(body[0].offsetHeight);
 			return;
 		}
 		keywords = keywords.toLowerCase().split(/\s+/g).slice(0, 5);
