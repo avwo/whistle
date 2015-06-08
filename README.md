@@ -4,7 +4,7 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 
 1. 更灵活的hosts配置方式：没有dns缓存、支持域名匹配、路径匹配、正则匹配
 2. 设置代理: 把请求代理到其它代理上，如Fiddler、Charles或其它机器上的whistle等
-3. 修改请求: 修改请求头、请求方法、请求内容，延迟发送请求、限制请求速度
+3. 修改请求: 修改请求头、请求方法、请求内容，延迟发送请求、限制请求速度，设置timeout
 4. 自定义响应方式: 更改请求url(替换成其它请求或端口)、本地替换(支持jsonp、目录替换等)
 6. 修改响应: 修改响应状态码、响应头、响应内容，延迟响应、限制响应速度
 7. 集成手机web调试工具weinre: 直接在pc的chrome浏览器上调试手机上的页面
@@ -366,8 +366,19 @@ whistle有三种方式匹配请求url分别为：
 			"speed": 20
 		}
 
+8. 设置请求超时timeout
+		# mac
+		www.aliexpress.com req:///Users/username/test/req.txt
+		# windows
+		www.aliexpress.com req://D:\username\test\req.txt
 
-8. 设置charset
+	文件 `/Users/username/test/req.txt` 内容:(单位：ms):
+
+		{
+			"timeout": 36000
+		}
+
+9. 设置charset
 
 	如果新增的请求内容包含非ascii字符且后台使用的是非utf8编码，需要设置后台处理请求使用的编码charset，不然后台可能获取到乱码
 
@@ -384,7 +395,8 @@ whistle有三种方式匹配请求url分别为：
 		"body": "request body",
 		"bottom": "append body",
 		"delay": 6000,
-		"speed": 20
+		"speed": 20,
+		"timeout": 36000
 	}
 
 ### 修改响应
