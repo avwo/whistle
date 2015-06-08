@@ -37,7 +37,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		return $.ajax({
 			url: '/cgi-bin/list/get',
 			dataType: 'json',
-			timeout: 5000,
+			timeout: 10000,
 			type: 'post',
 			data: options,
 			success: handleData,
