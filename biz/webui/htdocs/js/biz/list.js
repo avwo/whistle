@@ -124,32 +124,30 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		}
 		var res = data.res;
 		var req = data.req;
-		var defaultValue = getErrorMsg(data) || '-';
 		var url = escapeHtml(data.url);
-		var type = escapeHtml(res.headers ? (res.headers['content-type'] || '') : defaultValue);
+		var type = escapeHtml(res.headers ? (res.headers['content-type'] || '') : '-');
 		return '<tr id="' + data.id + '" class="' + (data.endTime ? getClassName(data) : 'pending') 
 					+ (data.isHttps ? ' tunnel' : '') + '">\
 			        <th class="order" scope="row">' + ++index + '</th>\
-			        <td class="result">' + (res.statusCode || defaultValue) + '</td>\
+			        <td class="result">' + (res.statusCode || getErrorMsg(data) || '-') + '</td>\
 			        <td class="protocol">' + getProtocol(data.url) + '</td>\
 			        <td class="method">' + req.method + '</td>\
 			        <td class="host">' + getHostname(data.url) + '</td>\
-			        <td class="host-ip">' + (res.ip || defaultValue) + '</td>\
+			        <td class="host-ip">' + (res.ip || '-') + '</td>\
 			        <td class="url" title="' + url + '">' + url + '</td>\
 			        <td class="type" title="' + type + '">' + type + '</td>\
-			        <td class="time">' + (data.endTime ? data.endTime - data.startTime + 'ms' : defaultValue) + '</td>\
+			        <td class="time">' + (data.endTime ? data.endTime - data.startTime + 'ms' : '-') + '</td>\
 			     </tr>';
 	}
 	
 	function updateElement(elem, data) {
 		var res = data.res;
-		var defaultValue = getErrorMsg(data) || '-';
-		var type = res.headers ? (res.headers['content-type'] || '') : defaultValue;
+		var type = res.headers ? (res.headers['content-type'] || '') : '-';
 		
-		elem.find('.result').text(res.statusCode || defaultValue);
-		elem.find('.host-ip').text(res.ip || defaultValue);
+		elem.find('.result').text(res.statusCode || getErrorMsg(data) || '-');
+		elem.find('.host-ip').text(res.ip || '-');
 		elem.find('.type').text(type).attr('title', type);
-		elem.find('.time').text(data.endTime ? data.endTime - data.startTime + 'ms' : defaultValue);
+		elem.find('.time').text(data.endTime ? data.endTime - data.startTime + 'ms' : '-');
 		elem.addClass(getClassName(data));
 		if (data.endTime) {
 			elem.removeClass('pending');
