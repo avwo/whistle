@@ -170,10 +170,46 @@ function getList(ids) {
 }
 
 function handleTunnel(req) {
-	
+	handleTunnelRequest(req, true);
 }
+
 function handleTunnelProxy(req) {
+	handleTunnelRequest(req);
+}
+
+function handleTunnelRequest(req, isHttps) {
+	var dnsTime = req.dnsTime || 0;
+	var now = req.dnsTime = Date.now();
+	var startTime = req.dnsTime - dnsTime;
+	var id = startTime + '-' + ++count;
 	
+	ids.push(id);
+	
+	var curData = data[id] = {
+			id: id,
+			url: util.removeProtocol(req.url, true),
+			isHttps: isHttps,
+			isHttpsProxy: true,
+			startTime: startTime,
+			dnsTime: req.dnsTime,
+			requestTime: now,
+			responseTime: now,
+			endTime: now,
+			reqError: !!req.error,
+			req: {
+				method: req.method || 'CONNECT', 
+				httpVersion: req.httpVersion || '1.1',
+	            ip: util.getClientIp(req) || '::ffff:127.0.0.1',
+	            headers: req.headers,
+	            body: req.error && req.error.stack
+			},
+			res: {
+				statusCode: '0',
+				headers: {},
+				ip: req.host
+			},
+			rules: req.rules
+	};
 }
 
 function handleRequest(req) {
@@ -205,7 +241,7 @@ function handleRequest(req) {
 	req.on('response', handleResponse);
 	req.on('error', function(err) {
 		reqData.body = err && err.stack;
-		curData.endTime = reqData.requestTime = Date.now();
+		curData.endTime = curData.requestTime = Date.now();
 		curData.reqError = true;
 		req.removeListener('response', handleResponse);
 		req._transform = passThrough;

@@ -166,12 +166,16 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 	}
 	
 	function getHostname(url) {
-		var index = url.indexOf(':\/\/') + 3;
-		return url.substring(index, url.indexOf('\/', index));
+		var start = url.indexOf(':\/\/');
+		if (start == -1) {
+			return 'Tunnel to';
+		}
+		var end = url.indexOf('\/', start += 3);
+		return end == -1 ? url.substring(start) : url.substring(start, end);
 	}
 	
 	function getProtocol(url) {
-		return url.substring(0, url.indexOf(':\/\/')).toUpperCase();
+		return url.substring(0, url.indexOf(':\/\/')).toUpperCase() || 'HTTPS';
 	}
 	
 	function getClassName(data) {
