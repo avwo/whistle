@@ -83,6 +83,12 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 				data[id] = curData;
 			}
 		}
+		for (var i = 0, len = json.ids && json.ids.length; i < len; i++) {
+			var id = json.ids[i];
+			if (!json.data[id]) {
+				$('#' + id).removeClass('pending');
+			}
+		}
 		createList();
 	}
 	
