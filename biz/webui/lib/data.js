@@ -204,7 +204,7 @@ function handleTunnelRequest(req, isHttps) {
 	            body: req.error && req.error.stack
 			},
 			res: {
-				statusCode: '0',
+				statusCode: req.error ? undefined : '0',
 				headers: {},
 				ip: req.host
 			},
