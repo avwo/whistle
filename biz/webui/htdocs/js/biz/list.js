@@ -423,8 +423,9 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 				var res = selectedData.res;
 				
 				if (self.hasClass('statistics')) {
-					body.show();
+					body.hide();
 					textarea.hide();
+					var rules = selectedData.rules || {};
 					headers.html(getProperties({
 						Url: selectedData.url,
 						Method: req.method,
@@ -437,15 +438,14 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 						'DNS Lookup': selectedData.dnsTime - selectedData.startTime + 'ms',
 						'Request Sent': selectedData.requestTime  && (selectedData.requestTime - selectedData.startTime + 'ms'),
 						'Content Download': selectedData.endTime &&  (selectedData.endTime - selectedData.startTime + 'ms')
-					}));
-					var rules = selectedData.rules || {};
-					body.html(getProperties({
+					}) + '<hr/>' + getProperties({
 						Req: rules.req && rules.req.raw,
 						Proxy: rules.proxy && rules.proxy.raw,
 						Rule: rules.rule && rules.rule.raw,
 						Res: rules.res && rules.res.raw,
 						Weinre: rules.weinre && rules.weinre.raw
 					}));
+					
 					
 				} else if (self.hasClass('request')) {
 					var reqHeaders = req.headers;
