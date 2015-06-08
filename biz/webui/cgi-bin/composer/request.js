@@ -41,7 +41,7 @@ module.exports = function(req, res) {
 		}
 		
 		if (options.protocol == 'https:') {
-			headers.host = HTTPS_FLAG + headers.host;
+			headers[util.HTTPS_FIELD] = 1;
 		}
 		
 		options.protocol = null;

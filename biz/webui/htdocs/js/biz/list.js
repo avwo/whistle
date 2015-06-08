@@ -399,7 +399,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		captureDetail.on('click', '.replay', function() {
 			var selectedData = getSelectedData();
 			request({
-					url: selectedData.url,
+					url: (selectedData.isHttps ? 'https://' : '') + selectedData.url,
 					method: selectedData.req.method,
 					headers: JSON.stringify(selectedData.req.headers),
 					body: selectedData.req.body || null
@@ -410,7 +410,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 				return;
 			}
 			
-			$('#composerUrl').val(selectedData.url);
+			$('#composerUrl').val((selectedData.isHttps ? 'https://' : '') + selectedData.url);
 			$('#composerHeaders').val(JSON.stringify(selectedData.req.headers, null, '\t'));
 			$('#composerBody').val(selectedData.req.body || null);
 			$('#composerMethod').val(selectedData.req.method);

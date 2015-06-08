@@ -15,6 +15,7 @@ var config = require('../package.json');
 exports.LOCAL_DATA_PATH = path.join(__dirname, '../../' + config.dataDirname);
 exports.WhistleTransform = require('./whistle-transform');
 exports.PROXY_ID = 'x-' + config.name + '-' + Date.now();
+exports.HTTPS_FIELD = 'x-' + config.name + '-https-' + Date.now();
 
 function noop() {}
 
