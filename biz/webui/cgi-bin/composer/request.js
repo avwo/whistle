@@ -36,14 +36,19 @@ module.exports = function(req, res) {
 			headers['user-agent'] = 'whistle/' + config.version;
 		}
 		
-		if (!headers.host) {
-			headers.host = options.hostname;
-		}
-		
 		if (options.protocol == 'https:') {
 			headers[util.HTTPS_FIELD] = 1;
+			if (options.port == 443) {
+				options.port = '';
+			}
+		} else if (options.port == 80) {
+			options.port = '';
 		}
 		
+		headers.host = options.hostname;
+		if (options.port) {
+			headers.host += ':' + options.port;
+		}
 		options.protocol = null;
 		options.hostname = null;
 		options.method = req.body.method;
