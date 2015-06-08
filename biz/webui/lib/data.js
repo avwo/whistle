@@ -15,6 +15,9 @@ var proxy, binded, timeout, interval, util;
 
 function disable() {
 	proxy.removeListener('request', handleRequest);
+	proxy.removeListener('tunnel', handleTunnel);
+	proxy.removeListener('tunnelProxy', handleTunnelProxy);
+	
 	ids = [];
 	data = {};
 	interval && clearInterval(interval);
@@ -23,7 +26,12 @@ function disable() {
 }
 
 function enable() {
-	!binded && proxy.on('request', handleRequest);
+	if (!binded) {
+		proxy.on('request', handleRequest);
+		proxy.on('tunnel', handleTunnel);
+		proxy.on('tunnelProxy', handleTunnelProxy);
+	}
+	
 	binded = true;
 	clearTimeout(timeout);
 	timeout = setTimeout(disable, TIMEOUT);
@@ -159,6 +167,13 @@ function getList(ids) {
 	}
 	
 	return result;
+}
+
+function handleTunnel(req) {
+	
+}
+function handleTunnelProxy(req) {
+	
 }
 
 function handleRequest(req) {
