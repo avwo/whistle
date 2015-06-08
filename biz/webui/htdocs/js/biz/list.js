@@ -91,7 +91,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		list.filter('.pending').each(function() {
 			var self = $(this);
 			var curData = data[self.attr('id')];
-			curData && updateElement(self, curData);
+			curData ? updateElement(self, curData) : self.removeClass('.pending');
 		});
 		
 		var last = list.filter(':last');
