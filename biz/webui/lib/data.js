@@ -280,7 +280,7 @@ function handleRequest(req) {
 		curData.responseTime = Date.now();
 		resData.headers = res.headers;
 		resData.statusCode = res.statusCode;
-		resData.ip = res.ip;
+		resData.ip = req.host;
 		res.on('error', function(err) {
 			resData.body = err && err.stack;
 			curData.endTime = Date.now();
