@@ -240,6 +240,7 @@ function handleRequest(req) {
 	ids.push(id);
 	req.on('response', handleResponse);
 	req.on('error', function(err) {
+		resData.ip = req.host;
 		reqData.body = err && err.stack;
 		curData.endTime = curData.requestTime = Date.now();
 		curData.reqError = true;
@@ -282,6 +283,7 @@ function handleRequest(req) {
 		resData.statusCode = res.statusCode;
 		resData.ip = req.host;
 		res.on('error', function(err) {
+			resData.ip = req.host;
 			resData.body = err && err.stack;
 			curData.endTime = Date.now();
 			curData.resError = true;
