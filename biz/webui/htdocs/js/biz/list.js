@@ -127,7 +127,8 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		var defaultValue = getErrorMsg(data) || '-';
 		var url = escapeHtml(data.url);
 		var type = escapeHtml(res.headers ? (res.headers['content-type'] || '') : defaultValue);
-		return '<tr id="' + data.id + '" class="' + (data.endTime ? getClassName(data) : 'pending') + '">\
+		return '<tr id="' + data.id + '" class="' + (data.endTime ? getClassName(data) : 'pending') 
+					+ (data.isHttps ? ' tunnel' : '') + '">\
 			        <th class="order" scope="row">' + ++index + '</th>\
 			        <td class="result">' + (res.statusCode || defaultValue) + '</td>\
 			        <td class="protocol">' + getProtocol(data.url) + '</td>\
@@ -572,30 +573,8 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		}
 		
 		function resolveClassName(className) {
-			
-			if (className) {
-				if (/\bwarning\b/.test(className)) {
-					return 'warning';
-				}
-				
-				if (/\binfo\b/.test(className)) {
-					return 'info';
-				}
-				
-				if (/\bsuccess\b/.test(className)) {
-					return 'success';
-				}
-				
-				if (/\bactive\b/.test(className)) {
-					return 'active';
-				}
-				
-				if (/\bdanger\b/.test(className)) {
-					return 'danger';
-				}
-			}
 		
-			return '';
+			return /\b(tunnel|warning|info|success|active|danger)\b/.test(className) ? RegExp.$1 : '';
 		}
 	}
 	

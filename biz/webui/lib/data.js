@@ -188,8 +188,8 @@ function handleTunnelRequest(req, isHttps) {
 	var curData = data[id] = {
 			id: id,
 			url: util.removeProtocol(req.url, true),
-			isHttps: isHttps,
-			isHttpsProxy: true,
+			isHttps: true,
+			isHttpsProxy: !isHttps,
 			startTime: startTime,
 			dnsTime: req.dnsTime,
 			requestTime: now,
