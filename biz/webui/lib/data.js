@@ -3,8 +3,9 @@ var zlib = require('zlib');
 var MAX_REQ_SIZE = 128 * 1024;
 var MAX_RES_SIZE = 256 * 1024;
 var TIMEOUT = 20000;
-var CACHE_TIME = 6000;
 var CLEAR_INTERVAL = 3000;
+var CACHE_TIME = CLEAR_INTERVAL * 2;
+var WAITING_TIME = CLEAR_INTERVAL * 10;
 var MAX_LENGTH = 512;
 var MIN_LENGTH = 412;
 var COUNT = 100;
@@ -63,7 +64,8 @@ function clearCache() {
 	for (var i = 0; i < index; i++) {
 		var id = ids[i];
 		var curData = data[id];
-		if (curData.read && (!curData.endTime || now - curData.endTime < CACHE_TIME)) {
+		if (curData.read && (!curData.endTime || now - curData.endTime < CACHE_TIME 
+				|| now - curData.startTime < WAITING_TIME)) {
 			_ids.push(id);
 		} else {
 			delete data[id];
