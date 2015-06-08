@@ -184,6 +184,10 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 			return 'danger';
 		}
 		
+		if (data.res.statusCode == 403) {
+			return 'forbidden';
+		}
+		
 		if (data.res.statusCode >= 400) {
 			return 'error-status';
 		}
