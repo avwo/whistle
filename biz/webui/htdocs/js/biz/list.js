@@ -428,6 +428,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 					var rules = selectedData.rules || {};
 					headers.html(getProperties({
 						Url: selectedData.url,
+						Date: new Date(selectedData.startTime).toString(),
 						Method: req.method,
 						'Status Code': res.statusCode,
 						'Host IP': res.ip,
