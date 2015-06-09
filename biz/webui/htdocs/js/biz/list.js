@@ -53,7 +53,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		for (var i = 0, len = ids.length; i < len; i++) {
 			id = ids[i];
 			var curData = data[id];
-			if (curData && !curData.endTime) {
+			if (curData && !curData.endTime && !curData.close) {
 				pendingIds.push(id);
 			}
 		}
@@ -87,6 +87,10 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 			var id = json.ids[i];
 			if (!json.data[id]) {
 				$('#' + id).removeClass('pending');
+				var curData = data[id];
+				if (curData) {
+					curData.close = true;
+				}
 			}
 		}
 		createList();

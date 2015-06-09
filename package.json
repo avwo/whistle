@@ -1,7 +1,7 @@
 {
   "name": "whistle",
   "description": "web proxy",
-  "version": "0.1.22",
+  "version": "0.1.23",
   "dataDirname": ".whistle data", 
   "localUIHost": "local.whistlejs.com",
   "whistleSsl": "whistle-ssl",
