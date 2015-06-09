@@ -5,7 +5,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 	var captureDetail = $('#captureDetail');
 	var captureDetailContent = $('#captureDetailContent');
 	var captureDetailTabs = captureDetail.find('.tabs button');
-	var	MAX_COUNT = 720;
+	var	MAX_COUNT = 1024;
 	var ids = [];
 	var data = {};
 	var index = 0;
