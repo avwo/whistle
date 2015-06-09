@@ -606,7 +606,7 @@ whistle内置了weinre，无需再重新安装weinre、注入weinre的js，只�
 
 # 查看请求数据
 
-点击配置页面[http://local.whistlejs.com/](http://local.whistlejs.com/)右上角的 `Network` 按钮打开一个请求列表页。
+点击配置页面[http://local.whistlejs.com/](http://local.whistlejs.com/)右上角的 `Network` 按钮打开一个请求列表页，或直接访问 [http://local.whistlejs.com/index.html](http://local.whistlejs.com/index.html)。
 
 # UI操作
 
