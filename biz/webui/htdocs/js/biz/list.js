@@ -545,7 +545,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 						statusCode: this.res.statusCode || getErrorMsg(this) || '-',
 						stalled: this.startTime - startTime,
 						dns: this.dnsTime - this.startTime,
-						request: this.requestTime - this.startTime,
+						request: this.requestTime ? this.requestTime - this.startTime : end,
 						response: this.responseTime ? this.responseTime - this.startTime : end,
 						end: end,
 						total: total
