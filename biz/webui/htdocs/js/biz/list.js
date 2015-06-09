@@ -262,12 +262,12 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		return bodyHeight <= conHeight || (bodyHeight - container.scrollTop() < conHeight);
 	}
 	
-	function search() {
+	function search(scrollToBottom) {
 		var rows = body.find('tr');
 		var keywords = $.trim(quickSearch.val());
 		if (!keywords) {
 			rows.show();
-			container.scrollTop(body[0].offsetHeight);
+			scrollToBottom && container.scrollTop(body[0].offsetHeight);
 			return;
 		}
 		keywords = keywords.toLowerCase().split(/\s+/g).slice(0, 5);
