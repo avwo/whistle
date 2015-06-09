@@ -591,6 +591,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 			method: 'POST',
 			data: data
 		});
+		container.scrollTop(body[0].offsetHeight);
 	}
 	
 	function getProperties(data) {
