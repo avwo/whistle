@@ -129,12 +129,13 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		var res = data.res;
 		var req = data.req;
 		var url = escapeHtml(data.url);
-		var defaultValue = setErrorStatus(data) ? '' : '-';
+		var errorMsg = getErrorMsg(data);
+		var defaultValue = errorMsg ? '' : '-';
 		var type = escapeHtml(res.headers ? (res.headers['content-type'] || '') : defaultValue);
 		return '<tr id="' + data.id + '" class="' + (data.endTime ? getClassName(data) : 'pending') 
 					+ (data.isHttps ? ' tunnel' : '') + '">\
 			        <th class="order" scope="row">' + ++index + '</th>\
-			        <td class="result">' + (res.statusCode || '-') + '</td>\
+			        <td class="result">' + (res.statusCode || errorMsg || '-') + '</td>\
 			        <td class="protocol">' + getProtocol(data.url) + '</td>\
 			        <td class="method">' + req.method + '</td>\
 			        <td class="host">' + getHostname(data.url) + '</td>\
@@ -147,10 +148,11 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 	
 	function updateElement(elem, data) {
 		var res = data.res;
-		var defaultValue = setErrorStatus(data) ? '' : '-';
+		var errorMsg = getErrorMsg(data);
+		var defaultValue = errorMsg ? '' : '-';
 		var type = escapeHtml(res.headers ? (res.headers['content-type'] || '') : defaultValue);
 		
-		elem.find('.result').text(res.statusCode || '-');
+		elem.find('.result').text(res.statusCode || getErrorMsg(data) || '-');
 		elem.find('.host-ip').text(res.ip || defaultValue);
 		elem.find('.type').text(type).attr('title', type);
 		elem.find('.time').text(data.endTime ? data.endTime - data.startTime + 'ms' : defaultValue);
@@ -160,16 +162,13 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		}
 	}
 	
-	function setErrorStatus(data) {
-		if (data.res.statusCode) {
-			return;
-		}
+	function getErrorMsg(data) {
 		if (data.reqError) {
-			return (data.res.statusCode = 502);
+			return 'aborted';
 		}
 		
 		if (data.resError) {
-			return (data.res.statusCode = 500);
+			return 'error';
 		}
 	}
 	
@@ -187,6 +186,9 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 	}
 	
 	function getClassName(data) {
+		if (data.reqError || data.resError) {
+			return 'danger';
+		}
 		
 		if (data.res.statusCode == 403) {
 			return 'forbidden';
@@ -194,10 +196,6 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		
 		if (data.res.statusCode >= 400) {
 			return 'error-status';
-		}
-		
-		if (data.reqError || data.resError) {
-			return 'danger';
 		}
 		
 		var headers = data.res.headers;
@@ -548,7 +546,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 						url: this.url,
 						startTime: this.startTime,
 						endTime: this.endTime,
-						statusCode: this.res.statusCode || setErrorStatus(this) || '-',
+						statusCode: this.res.statusCode || getErrorMsg(this) || '-',
 						stalled: this.startTime - startTime,
 						dns: this.dnsTime - this.startTime,
 						request: this.requestTime ? this.requestTime - this.startTime : end,
