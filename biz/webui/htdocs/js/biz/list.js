@@ -444,7 +444,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 				var req = selectedData.req;
 				var res = selectedData.res;
 				
-				if (self.hasClass('statistics')) {
+				if (self.hasClass('overview')) {
 					body.hide();
 					textarea.hide();
 					var rules = selectedData.rules || {};
