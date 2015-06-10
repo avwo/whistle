@@ -164,11 +164,11 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 	
 	function getErrorMsg(data) {
 		if (data.reqError) {
-			return 'aborted';
+			return '502';
 		}
 		
 		if (data.resError) {
-			return 'error';
+			return '500';
 		}
 	}
 	
