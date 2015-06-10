@@ -181,7 +181,7 @@ function getPath(url) {
 
 exports.getPath = getPath;
 
-exports.wrapResponse = function wrapResponse(res) {
+function wrapResponse(res) {
 	var passThrough = new PassThrough();
 	passThrough.statusCode = res.statusCode;
 	passThrough.headers = lowerCaseify(res.headers);
@@ -190,6 +190,18 @@ exports.wrapResponse = function wrapResponse(res) {
 	res.body != null && passThrough.push(String(res.body));
 	passThrough.push(null);
 	return passThrough;
+}
+
+exports.wrapResponse = wrapResponse;
+
+exports.wrapGatewayError = function(body) {
+	return wrapResponse({
+		statusCode: 502,
+		headers: {
+			'content-type': 'text/plain'
+		},
+		body: body
+	});
 };
 
 function parseJSON(data) {
