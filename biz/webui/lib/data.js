@@ -151,7 +151,7 @@ function getIds(startTime, count) {
 
 function compareId(curId, refId) {
 	curId = curId.split('-');
-	return curId[0] == refId[0] && curId[1] > refId[1] || curId[0] > refId[0];
+	return curId[0] > refId[0] || (curId[0] == refId[0] && curId[1] > refId[1]);
 }
 
 function getIndex(startTime, start, end) {
@@ -190,7 +190,7 @@ function handleTunnelRequest(req, isHttps) {
 	var dnsTime = req.dnsTime || 0;
 	var now = req.dnsTime = Date.now();
 	var startTime = req.dnsTime - dnsTime;
-	var id = startTime + '-' + ++count;
+	var id = req.dnsTime + '-' + ++count;
 	
 	ids.push(id);
 	
@@ -225,7 +225,7 @@ function handleRequest(req) {
 	var dnsTime = req.dnsTime || 0;
 	req.dnsTime = Date.now();
 	var startTime = req.dnsTime - dnsTime;
-	var id = startTime + '-' + ++count;
+	var id = req.dnsTime + '-' + ++count;
 	var reqData = {
 			method: req.method || 'GET', 
 			httpVersion: req.httpVersion || '1.1',
