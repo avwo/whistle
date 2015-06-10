@@ -140,11 +140,11 @@ exports.isWebProtocol = function isWebProtocol(protocol) {
 
 
 exports.drain = function drain(stream, end) {
-	stream.on('data', noop);
-	
-	if (typeof end == 'function') {
-		stream.readable ? stream.on('end', end) : end();
-	}
+	var emitEndStream = new PassThrough();
+	emitEndStream.on('data', noop)
+		.on('error', noop);
+	typeof end == 'function' && emitEndStream.on('end', end);
+	stream.pipe(emitEndStream);
 };
 
 exports.encodeNonAsciiChar = function encodeNonAsciiChar(str) {
