@@ -42,7 +42,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 			data: options,
 			success: handleData,
 			complete: function() {
-				setTimeout(load, 1000);
+				setTimeout(load, 600);
 			}
 		});
 	}
