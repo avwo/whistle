@@ -319,7 +319,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 			resizeDetail();
 			var activeElem = captureDetailTabs.filter('.active');
 			if (!activeElem.length) {
-				activeElem = captureDetailTabs.filter('.request');
+				activeElem = captureDetailTabs.filter('.overview');
 			}
 			activeElem.trigger('click', {force: true});
 		}).on('click', 'tr', function(e) {
