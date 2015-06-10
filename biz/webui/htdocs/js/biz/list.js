@@ -187,7 +187,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 	
 	function getClassName(data) {
 		if (data.reqError || data.resError) {
-			return 'danger';
+			return 'danger error-status';
 		}
 		
 		if (data.res.statusCode == 403) {
