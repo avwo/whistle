@@ -250,7 +250,7 @@ function handleRequest(req) {
 	req.on('response', handleResponse);
 	req.on('error', function(err) {
 		resData.ip = req.host;
-		reqData.body = err && err.stack;
+		reqData.body = err.stack;
 		curData.endTime = curData.requestTime = Date.now();
 		curData.reqError = true;
 		req.removeListener('response', handleResponse);
@@ -293,7 +293,7 @@ function handleRequest(req) {
 		resData.ip = req.host;
 		res.on('error', function(err) {
 			resData.ip = req.host;
-			resData.body = err && err.stack;
+			resData.body = err.stack;
 			curData.endTime = Date.now();
 			curData.resError = true;
 			res._transform = passThrough;
