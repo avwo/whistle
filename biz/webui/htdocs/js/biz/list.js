@@ -187,9 +187,6 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 	}
 	
 	function getClassName(data) {
-		if (data.reqError || data.resError) {
-			return 'danger';
-		}
 		
 		if (data.res.statusCode == 403) {
 			return 'forbidden';
@@ -197,6 +194,10 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		
 		if (data.res.statusCode >= 400) {
 			return 'error-status';
+		}
+		
+		if (data.reqError || data.resError) {
+			return 'danger';
 		}
 		
 		var headers = data.res.headers;
