@@ -128,31 +128,40 @@ function getIds(startTime, count) {
 		return [];
 	}
 	
-	startTime = (startTime || Date.now() - 6000) + '';
+	startTime = ((startTime || Date.now() - 6000) + '').split('-');
 	count = Math.min(count || COUNT, len);
-	if (ids[0] > startTime) {
+	
+	startTime[0] = parseInt(startTime[0], 10) || 0;
+	startTime[1] = parseInt(startTime[1], 10) || 0;
+	
+	if (compareId(ids[0], startTime)) {
 		
 		return ids.slice(0, count);
 	}
 	
-	if (len === 1 || ids[len - 1] <= startTime) {
+	var end = len - 1;
+	if (!end || !compareId(ids[end], startTime)) {
 		
 		return  [];
 	}
 	
-	var index = getIndex(startTime, 0, len - 1);
+	var index = getIndex(startTime, 0, end);
 	return ids.slice(index, index + count);
+}
+
+function compareId(curId, refId) {
+	curId = curId.split('-');
+	return curId[0] == refId[0] && curId[1] > refId[1] || curId[0] > refId[0];
 }
 
 function getIndex(startTime, start, end) {
 	if (end - start <= 1) {
-		return ids[start] > startTime ? start : end;
+		return compareId(ids[start], startTime) ? start : end;
 	}
 	
 	var mid = Math.floor((start + end) / 2);
 	var id = ids[mid];
-	return id == startTime ? mid + 1 : (id < startTime ? getIndex(startTime, mid + 1, end)
-			: getIndex(startTime, start, mid));
+	return compareId(id, startTime) ? getIndex(startTime, start, mid) : getIndex(startTime, mid + 1, end);
 }
 
 function getList(ids) {
