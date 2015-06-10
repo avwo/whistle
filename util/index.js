@@ -140,13 +140,10 @@ exports.isWebProtocol = function isWebProtocol(protocol) {
 
 
 exports.drain = function drain(stream, end) {
-	if (end) {
-		var emitEndStream = new PassThrough();
-		emitEndStream.on('data', noop);
-		emitEndStream.on('end', end);
-		stream.pipe(emitEndStream);
-	} else {
-		stream.on('data', noop);
+	stream.on('data', noop);
+	
+	if (typeof end == 'function') {
+		stream.readable ? stream.on('end', end) : end();
 	}
 };
 
