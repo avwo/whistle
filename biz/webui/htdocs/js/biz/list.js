@@ -161,12 +161,15 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 	}
 	
 	function setErrorStatus(data) {
+		if (data.res.statusCode) {
+			return;
+		}
 		if (data.reqError) {
-			return (data.res.statusCode = '502');
+			return (data.res.statusCode = 502);
 		}
 		
 		if (data.resError) {
-			return (data.res.statusCode = '500');
+			return (data.res.statusCode = 500);
 		}
 	}
 	
