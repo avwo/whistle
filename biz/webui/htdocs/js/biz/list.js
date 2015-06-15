@@ -150,7 +150,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		var res = data.res;
 		var errorMsg = getErrorMsg(data);
 		var defaultValue = errorMsg ? '' : '-';
-		var type = escapeHtml(res.headers ? (res.headers['content-type'] || '') : defaultValue);
+		var type = res.headers ? (res.headers['content-type'] || '') : defaultValue
 		
 		elem.find('.result').text(res.statusCode || getErrorMsg(data) || '-');
 		elem.find('.host-ip').text(res.ip || defaultValue);
