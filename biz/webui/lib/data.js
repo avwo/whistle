@@ -250,7 +250,9 @@ function handleRequest(req) {
 	req.on('response', handleResponse);
 	req.on('error', function(err) {
 		resData.ip = req.host;
-		reqData.body = err.stack;
+		if (reqData.body == null) {
+			reqData.body = err.stack;
+		}
 		curData.endTime = curData.requestTime = Date.now();
 		curData.reqError = true;
 		req.removeListener('response', handleResponse);
