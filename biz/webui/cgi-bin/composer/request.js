@@ -32,7 +32,6 @@ module.exports = function(req, res) {
 		_url = _url.replace(/#.*$/, '');
 		var options = url.parse(util.setProtocol(_url));
 		var headers = parseHeaders(req.body.headers);
-		delete headers['content-length'];
 		if (!headers['user-agent']) {
 			headers['user-agent'] = 'whistle/' + config.version;
 		}
@@ -56,6 +55,10 @@ module.exports = function(req, res) {
 		options.host = '127.0.0.1';
 		options.port = config.port;
 		options.headers = headers;
+		if (headers['content-length'] != null) {
+			req.body.body = new Buffer(req.body.body || '');
+			headers['content-length'] = req.body.body.length;
+		}
 		http.request(options, function(res) {
 			res.on('error', util.noop);
 			util.drain(res);
