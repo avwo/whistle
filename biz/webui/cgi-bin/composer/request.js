@@ -32,6 +32,7 @@ module.exports = function(req, res) {
 		_url = _url.replace(/#.*$/, '');
 		var options = url.parse(util.setProtocol(_url));
 		var headers = parseHeaders(req.body.headers);
+		delete headers['content-length'];
 		if (!headers['user-agent']) {
 			headers['user-agent'] = 'whistle/' + config.version;
 		}
