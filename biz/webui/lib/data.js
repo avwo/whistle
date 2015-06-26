@@ -215,7 +215,7 @@ function handleTunnelRequest(req, isHttps) {
 			res: {
 				statusCode: req.error ? 502 : '0',
 				headers: {},
-				ip: req.host
+				ip: req.host || '127.0.0.1'
 			},
 			rules: req.rules
 	};
