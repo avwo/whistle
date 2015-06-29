@@ -33,9 +33,9 @@ define('/style/js/biz/rules.js', function(require, exports, module) {
 		showLineNumbers.trigger('change');
 	}
 	
-	var body = $(document.body).on('click', '.hosts-list .list-group-item', function() {
+	var body = $(document.body).on('click', '.hosts-list .list-group-item', function(e) {
 		var self = $(this);
-		if (self.hasClass('create-hosts')) {
+		if (self.hasClass('create-hosts') || $(e.target).hasClass('glyphicon-ok')) {
 			return;
 		}
 		
@@ -72,8 +72,7 @@ define('/style/js/biz/rules.js', function(require, exports, module) {
 			var publicRules = $('#enablePublicHosts').prop('checked', true);
 			publicRules.trigger('change');
 		}
-	}).on('click', '.hosts-list .glyphicon-ok', function(e) {
-		e.stopPropagation();
+	}).on('click', '.hosts-list .glyphicon-ok', function() {
 		var self = $(this).hide();
 		if (self.closest('.public-hosts').length) {
 			var publicRules = $('#enablePublicHosts');
