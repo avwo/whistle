@@ -72,7 +72,8 @@ define('/style/js/biz/rules.js', function(require, exports, module) {
 			var publicRules = $('#enablePublicHosts').prop('checked', true);
 			publicRules.trigger('change');
 		}
-	}).on('click', '.hosts-list .glyphicon-ok', function() {
+	}).on('click', '.hosts-list .glyphicon-ok', function(e) {
+		e.stopPropagation();
 		var self = $(this).hide();
 		if (self.closest('.public-hosts').length) {
 			var publicRules = $('#enablePublicHosts');
