@@ -105,20 +105,23 @@ whistle安装完成后，执行命令 `whistle help`，查看whistle的帮助信
 
 	$ whistle help
 
-	  Usage: whistle <command> [options]
+	  
+	Usage: whistle <command> [options]
+	
+	
+	Commands:
 
-	  Commands:
-	
-	    run       Start a front service
-	    start     Start a background service
-	    stop      Stop current background service
-	    restart   Restart current background service
-	    help      Display help information
-	
-	  Options:
+    run       Start a front service
+    start     Start a background service
+    stop      Stop current background service
+    restart   Restart current background service
+    help      Display help information
+
+	Options:
 	
 	    -h, --help                                      output usage information
 	    -r, --rules [rule file path]                    rules file
+	    -d, --debug [debug]                             debug mode
 	    -n, --username [username]                       login username
 	    -w, --password [password]                       login password
 	    -p, --port [port]                               whistle port(8899 by default
@@ -132,6 +135,7 @@ whistle安装完成后，执行命令 `whistle help`，查看whistle的帮助信
 	    -V, --version                                   output the version number
 	    -c, --custom <custom>                           custom parameters ("node --h
 	armony")
+
 	
 如果能正常输出whistle的帮助信息，表示whistle已安装成功。
 
