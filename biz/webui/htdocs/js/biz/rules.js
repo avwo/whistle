@@ -1,7 +1,8 @@
 define('/style/js/biz/rules.js', function(require, exports, module) {
 	var hostsData, inited, values;
 	var newHostsList = $('#newHostsList');
-	var glyphiconOk = '<span class="glyphicon glyphicon-ok"></span>';
+	var glyphiconOk = '<span class="glyphicon glyphicon-ok" title="单击图标取消该规则"></span>';
+	$('#publicHosts').append(glyphiconOk);
 	
 	var hostsEditor = CodeMirror($('#hostsEditor')[0], {
     	mode: 'text/whistle'
@@ -66,9 +67,23 @@ define('/style/js/biz/rules.js', function(require, exports, module) {
 		}
 	}).on('dblclick', '.hosts-list .list-group-item', function() {
 		$('.apply-hosts').trigger('click');
+		var self = $(this);
+		if (self.closest('.public-hosts').length) {
+			var publicRules = $('#enablePublicHosts').prop('checked', true);
+			publicRules.trigger('change');
+		}
+	}).on('click', '.hosts-list .glyphicon-ok', function() {
+		var self = $(this).hide();
+		if (self.closest('.public-hosts').length) {
+			var publicRules = $('#enablePublicHosts');
+			publicRules.prop('checked', !publicRules.prop('checked'));
+			publicRules.trigger('change');
+			return;
+		}
+		$.post('/cgi-bin/hosts/disable');
 	});
 	
-	body.on('click', '.enable-public-hosts', function() {
+	body.on('change', '.enable-public-hosts', function() {
 		var enable = $('#enablePublicHosts').prop('checked');
 		var glyphicon = $('#publicHosts').find('.glyphicon-ok');
 		enable ? glyphicon.show() : glyphicon.hide();
@@ -135,7 +150,7 @@ define('/style/js/biz/rules.js', function(require, exports, module) {
 			hostsData.hostsData[name] = content;
 			$.post('/cgi-bin/hosts/save', {name: name, content: content});
 			var glyphicon = newHostsList.find('.glyphicon-ok').remove();
-			activeHosts.append(glyphicon.length ? glyphicon : glyphiconOk);
+			activeHosts.append(glyphicon.length ? glyphicon.show() : glyphiconOk);
 		}
 		
 		activeHosts.removeClass('changed');
