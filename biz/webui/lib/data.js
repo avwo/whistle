@@ -338,11 +338,7 @@ function handleRequest(req) {
 					
 					if (unzip) {
 						unzip(resBody, function(err, body) {
-							if (err) {
-								callback(err, chunk);
-								return;
-							}
-							resData.body = decode(body);
+							resData.body = err ? err.stack : decode(body);
 							callback(null, chunk);
 						});
 						return;
