@@ -315,6 +315,28 @@ function supportHtmlTransform(res) {
 
 exports.supportHtmlTransform = supportHtmlTransform;
 
+function removeUnsupportsHeaders(headers, supportsDeflate) {//只保留支持的zip格式：gzip、deflate
+	if (!headers || !headers['accept-encoding']) {
+		return;
+	}
+	var list = headers['accept-encoding'].split(/\s*,\s*/g);
+	var acceptEncoding = [];
+	for (var i = 0, len = list.length; i < len; i++) {
+		var ae = list[i].toLowerCase();
+		if (ae && (supportsDeflate && ae == 'deflate' || ae == 'gzip')) {
+			acceptEncoding.push(ae);
+		}
+	}
+	
+	if (acceptEncoding = acceptEncoding.join(', ')) {
+		headers['accept-encoding'] = acceptEncoding;
+	} else {
+		delete headers['accept-encoding'];
+	}
+}
+
+exports.removeUnsupportsHeaders = removeUnsupportsHeaders;
+
 function hasBody(res) {
 	var statusCode = res.statusCode;
 	return !(statusCode == 204 || (statusCode >= 300 && statusCode < 400) ||
