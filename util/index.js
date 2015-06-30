@@ -309,7 +309,7 @@ function supportHtmlTransform(res) {
 	}
 	
 	var contentEncoding = toLowerCase(headers && headers['content-encoding']);
-	//chrome新增了sdch压缩算法，对此类响应无法解码
+	//chrome新增了sdch压缩算法，对此类响应无法解码，deflate无法区分deflate还是deflateRaw
 	return !contentEncoding || contentEncoding == 'gzip' || contentEncoding == 'deflate';
 }
 
