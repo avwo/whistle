@@ -337,9 +337,16 @@ function handleRequest(req) {
 					}
 					
 					if (unzip) {
-						unzip(resBody, function(err, body) {
+						var next = function(err, body) {
 							resData.body = err ? err.stack : decode(body);
 							callback(null, chunk);
+						};
+						unzip(resBody, function(err, body) {
+							if (err) {
+								zlib.inflateRaw(resBody, next);
+								return;
+							} 
+							next(err, body);
 						});
 						return;
 					}
