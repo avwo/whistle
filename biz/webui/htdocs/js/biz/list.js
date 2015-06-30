@@ -315,7 +315,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 				captureDetail.hide();
 				return;
 			}
-			captureDetail.show();
+			captureDetail.show().focus();
 			resizeDetail();
 			var activeElem = captureDetailTabs.filter('.active');
 			if (!activeElem.length) {
@@ -332,6 +332,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 			captureDetailContent.find('>div,>textarea').height(captureDetailContent[0].offsetHeight / 2);
 		}
 		
+		var docBody = $(document.body);
 		$(window).on('resize', resizeDetail)
 		.on('keydown', function(e) {
 			if (isEditable(e.target)) {
@@ -366,6 +367,14 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 			if (e.keyCode == 13) {
 				body.find('tr.selected:last').trigger('dblclick');
 			}
+		}).on('keydown', function(e) {
+			if (!e.ctrlKey || e.keyCode != 88 
+					|| /^TEXTAREA|INPUT$/.test(e.target.nodeName)
+					|| docBody.find('.modal:visible:first').length) {
+				return;
+			}
+			
+			$('#clearAll').trigger('click');
 		});
 		
 		function getPrevVisible(elem) {
@@ -403,8 +412,13 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 			}
 		}
 		
-		captureDetail.on('click', '.close', function() {
+		captureDetail.attr('tabIndex', 1)
+		.on('click', '.close', function() {
 			captureDetail.hide();
+		}).on('keydown', function(e) {
+			if (e.ctrlKey && e.keyCode == 88) {
+				e.stopPropagation();
+			}
 		});
 		
 		captureDetail.on('click', '.replay', function() {
