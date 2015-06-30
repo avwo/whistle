@@ -357,7 +357,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 				e.preventDefault();
 			}
 		}).on('keyup', function(e) {
-			if (e.keyCode == 27) {
+			if (e.keyCode == 27 && !docBody.find('.modal:visible:first').length) {
 				captureDetail.hide();
 			}
 			
