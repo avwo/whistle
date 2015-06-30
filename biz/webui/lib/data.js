@@ -360,6 +360,5 @@ function handleRequest(req) {
 module.exports = function init(_proxy) {
 	proxy = _proxy;
 	util = proxy.util;
-	enable();
 	module.exports = get;
 };
