@@ -292,6 +292,10 @@ function getContentType(contentType) {
 	        return 'TEXT';
 	    }
 		
+		if (contentType.indexOf('xml') != -1) {
+	        return 'XML';
+	    }
+		
 		if (contentType.indexOf('image') != -1) {
 	        return 'IMG';
 	    } 
