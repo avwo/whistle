@@ -368,7 +368,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 				body.find('tr.selected:last').trigger('dblclick');
 			}
 		}).on('keydown', function(e) {
-			if (!e.ctrlKey || e.keyCode != 88 
+			if ((!e.ctrlKey && !e.metaKey) || e.keyCode != 88 
 					|| /^TEXTAREA|INPUT$/.test(e.target.nodeName)
 					|| docBody.find('.modal:visible:first').length) {
 				return;
