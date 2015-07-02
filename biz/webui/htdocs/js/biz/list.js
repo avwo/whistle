@@ -457,12 +457,30 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 				var selectedData = getSelectedData();
 				var req = selectedData.req;
 				var res = selectedData.res;
+				var realUrl = selectedData.realUrl;
+				if (!realUrl || realUrl == selectedData.url) {
+					realUrl = '';
+				}
 				
 				if (self.hasClass('overview')) {
 					body.hide();
 					textarea.hide();
 					var rules = selectedData.rules || {};
-					headers.html(getProperties({
+					headers.html(getProperties(realUrl ? {
+						Url: selectedData.url,
+						'Real Url': realUrl,
+						Date: new Date(selectedData.startTime).toString(),
+						Method: req.method,
+						'Status Code': res.statusCode,
+						'Host IP': res.ip,
+						'Client IP': req.ip,
+						'Request Length': req.size == null ? '' : req.size,
+						'Content Length': res.size == null ? '' : res.size,
+						'Start Time': selectedData.startTime,
+						'DNS Lookup': selectedData.dnsTime - selectedData.startTime + 'ms',
+						'Request Sent': selectedData.requestTime  && (selectedData.requestTime - selectedData.startTime + 'ms'),
+						'Content Download': selectedData.endTime &&  (selectedData.endTime - selectedData.startTime + 'ms')
+					} : {
 						Url: selectedData.url,
 						Date: new Date(selectedData.startTime).toString(),
 						Method: req.method,
