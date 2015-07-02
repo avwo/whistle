@@ -250,6 +250,9 @@ function handleRequest(req) {
 	req.on('response', handleResponse);
 	req.on('error', function(err) {
 		resData.ip = req.host;
+		if (req.realUrl && req.realUrl != req.url) {
+			curData.realUrl = req.realUrl;
+		}
 		if (reqData.body == null) {
 			reqData.body = err.stack;
 		}
@@ -293,6 +296,9 @@ function handleRequest(req) {
 		resData.headers = res.headers;
 		resData.statusCode = res.statusCode;
 		resData.ip = req.host;
+		if (res.realUrl) {
+			curData.realUrl = res.realUrl;
+		}
 		res.on('error', function(err) {
 			resData.ip = req.host;
 			resData.body = err.stack;
