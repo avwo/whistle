@@ -30,7 +30,7 @@ exports.resolvePath = function(file) {
 };
 
 exports.mkdir = function mkdir(path) {
-	!fs.existsSync(path) && fs.mkdirSync(path);
+	!fs.existsSync(path) && fs.mkdirSync(path, '0777');
 };
 
 function formatDate(now) {
