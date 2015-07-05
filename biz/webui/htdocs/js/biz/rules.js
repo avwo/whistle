@@ -94,7 +94,7 @@ define('/style/js/biz/rules.js', function(require, exports, module) {
 	function updatePublicHostsState() {
 		var enable = $('#enablePublicHosts').prop('checked');
 		$('#publicHosts').css('color', enable ? '' : '#ccc')
-		.attr('title', enable ? '先到自定义规则查找，如果没有匹配的再查找Public' : '公用环境已禁用');
+		.attr('title', enable ? '先到自定义规则查找，如果没有匹配的再查找Default' : '公用环境已禁用');
 	}
 	
 	body.on('click', '.remove-hosts', function() {
