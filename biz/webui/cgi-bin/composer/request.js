@@ -2,7 +2,6 @@ var http = require('http');
 var url = require('url');
 var config = require('../../lib/config');
 var util = require('../../../../util');
-var HTTPS_FLAG = require('../../../../package.json').whistleSsl + '.';
 
 function parseHeaders(headers) {
 	if (!headers || typeof headers != 'string') {
