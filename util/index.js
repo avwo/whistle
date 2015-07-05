@@ -138,6 +138,9 @@ exports.isWebProtocol = function isWebProtocol(protocol) {
 	return protocol == 'http:' || protocol == 'https:';
 };
 
+exports.isWebsocketProtocol = function isWebsocketProtocol(protocol) {
+	return protocol == 'ws:' || protocol == 'wss:';
+};
 
 exports.drain = function drain(stream, end) {
 	var emitEndStream = new PassThrough();
