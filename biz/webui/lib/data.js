@@ -206,7 +206,7 @@ function handleTunnelRequest(req, isHttps) {
 			endTime: now,
 			reqError: !!req.error,
 			req: {
-				method: req.method || 'CONNECT', 
+				method: req.method && req.method.toUpperCase() || 'CONNECT', 
 				httpVersion: req.httpVersion || '1.1',
 	            ip: util.getClientIp(req) || '::ffff:127.0.0.1',
 	            headers: req.headers,
@@ -227,7 +227,7 @@ function handleRequest(req) {
 	var startTime = req.dnsTime - dnsTime;
 	var id = req.dnsTime + '-' + ++count;
 	var reqData = {
-			method: req.method || 'GET', 
+			method: req.method && req.method.toUpperCase() || 'GET', 
 			httpVersion: req.httpVersion || '1.1',
             ip: req.ip || '::ffff:127.0.0.1',
             headers: req.headers
@@ -260,6 +260,10 @@ function handleRequest(req) {
 		curData.reqError = true;
 		req.removeListener('response', handleResponse);
 		req._transform = passThrough;
+	});
+	req.on('send', function() {
+		resData.ip = req.host;
+		resData.realUrl = req.realUrl;
 	});
 	
 	var reqBody;
@@ -296,9 +300,7 @@ function handleRequest(req) {
 		resData.headers = res.headers;
 		resData.statusCode = res.statusCode;
 		resData.ip = req.host;
-		if (res.realUrl) {
-			curData.realUrl = res.realUrl;
-		}
+		curData.realUrl = res.realUrl;
 		res.on('error', function(err) {
 			resData.ip = req.host;
 			resData.body = err.stack;

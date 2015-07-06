@@ -133,7 +133,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		var defaultValue = errorMsg ? '' : '-';
 		var type = escapeHtml(res.headers ? (res.headers['content-type'] || '') : defaultValue);
 		return '<tr id="' + data.id + '" class="' + (data.endTime ? getClassName(data) : 'pending') 
-					+ (data.isHttps ? ' tunnel' : '') + '">\
+					+ (data.isHttps ? ' tunnel' : '') + (hasRules(data) ? ' has-rules' : '') + '">\
 			        <th class="order" scope="row">' + ++index + '</th>\
 			        <td class="result">' + (res.statusCode || errorMsg || '-') + '</td>\
 			        <td class="protocol">' + getProtocol(data.url) + '</td>\
@@ -144,6 +144,11 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 			        <td class="type" title="' + type + '">' + type + '</td>\
 			        <td class="time">' + (data.endTime ? data.endTime - data.startTime + 'ms' : defaultValue) + '</td>\
 			     </tr>';
+	}
+	
+	function hasRules(data) {
+		
+		return Object.keys(data.rules || {}).length
 	}
 	
 	function updateElement(elem, data) {
