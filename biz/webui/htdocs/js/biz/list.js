@@ -332,7 +332,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 			var self = $(this);
 			var that = this;
 			
-			if (e.shiftKey && selectedElement && that != selectedElement[0]) {
+			if (e.shiftKey && selectedElement && selectedElement.parent().length && that != selectedElement[0]) {
 				var matched, selected;
 				body.find('tr').each(function() {
 					if (matched = this == that || this == selectedElement[0]) {
