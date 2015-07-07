@@ -9,7 +9,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 	var ids = [];
 	var data = {};
 	var index = 0;
-	var pending, selectedData;
+	var pending, selectedData, selectedElement;
 	
 	var AMP    = /&/g,
 	    LT     = /</g,
@@ -299,6 +299,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 			data = {};
 			ids = [];
 			index = 0;
+			selectedElement = null;
 			quickSearch.val('');
 		});
 		
@@ -328,8 +329,25 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 			}
 			activeElem.trigger('click', {force: true});
 		}).on('click', 'tr', function(e) {
-			!e.ctrlKey && !e.metaKey && body.find('tr').removeClass('selected');
-			$(this).addClass('selected');
+			var self = $(this);
+			var that = this;
+			
+			if (e.shiftKey && selectedElement && that != selectedElement[0]) {
+				var matched, selected;
+				body.find('tr').each(function() {
+					if (matched = this == that || this == selectedElement[0]) {
+						selected = !selected;
+						$(this).addClass('selected');
+					} else if (selected) {
+						$(this).addClass('selected');
+					} else {
+						$(this).removeClass('selected');
+					}
+				});
+			} else {
+				!e.ctrlKey && !e.metaKey && body.find('tr').removeClass('selected');
+				selectedElement = self.addClass('selected');
+			}
 		});
 		
 		function resizeDetail() {
