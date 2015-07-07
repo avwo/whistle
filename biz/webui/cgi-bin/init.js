@@ -16,6 +16,6 @@ module.exports = function(req, res) {
 			showLineNumbers: rulesUtil.getProperty('valuesShowLineNumbers'),
 			values: rulesUtil.getValue()
 		}, 
-		https: rulesUtil.getInterceptRuleList
+		https: rulesUtil.getInterceptRuleList()
 	});
 };

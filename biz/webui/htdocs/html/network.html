@@ -569,10 +569,10 @@ body .table>tbody>tr:first-child>th, body .table>tbody>tr:first-child>td {border
     </div>
     <div class="modal-body">
         <div class="box intecept-rule-action-bar">
-        	<input type="text" class="fill form-control intercept-rule-input" placeholder="input Domain/Rule" />
+        	<input type="text" maxlength="256" class="fill form-control intercept-rule-input" placeholder="input Domain/Rule" />
         	<button type="button" class="btn btn-success add-intercept-rule">Add</button>
         	<a href="javascript:;">Root CA</a>
-        	<a href="javascript:;">Clear</a>
+        	<a href="javascript:;" class="clear-intercept-rule">Clear</a>
         </div>
         <table class="table">
 		      <thead>
@@ -584,104 +584,7 @@ body .table>tbody>tr:first-child>th, body .table>tbody>tr:first-child>td {border
 	    </table>
 	    <div class="intercept-rule-list">
 	    	<table class="table">
-	    		<tbody id="interceptRuleList">
-	    			<tr>
-	    				<td>www.google.com</td>
-	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
-	    			</tr>
-	    			<tr>
-	    				<td>www.baidu.com</td>
-	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
-	    			</tr>
-	    			<tr>
-	    				<td>www.google.com</td>
-	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
-	    			</tr>
-	    			<tr>
-	    				<td>www.baidu.com</td>
-	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
-	    			</tr>
-	    			<tr>
-	    				<td>www.google.com</td>
-	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
-	    			</tr>
-	    			<tr>
-	    				<td>www.baidu.com</td>
-	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
-	    			</tr>
-	    			<tr>
-	    				<td>www.google.com</td>
-	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
-	    			</tr>
-	    			<tr>
-	    				<td>www.baidu.com</td>
-	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
-	    			</tr>
-	    			<tr>
-	    				<td>www.google.com</td>
-	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
-	    			</tr>
-	    			<tr>
-	    				<td>www.baidu.com</td>
-	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
-	    			</tr>
-	    			<tr>
-	    				<td>www.google.com</td>
-	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
-	    			</tr>
-	    			<tr>
-	    				<td>www.baidu.com</td>
-	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
-	    			</tr>
-	    			<tr>
-	    				<td>www.google.com</td>
-	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
-	    			</tr>
-	    			<tr>
-	    				<td>www.baidu.com</td>
-	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
-	    			</tr>
-	    			<tr>
-	    				<td>www.google.com</td>
-	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
-	    			</tr>
-	    			<tr>
-	    				<td>www.baidu.com</td>
-	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
-	    			</tr>
-	    			<tr>
-	    				<td>www.google.com</td>
-	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
-	    			</tr>
-	    			<tr>
-	    				<td>www.baidu.com</td>
-	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
-	    			</tr>
-	    			<tr>
-	    				<td>www.google.com</td>
-	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
-	    			</tr>
-	    			<tr>
-	    				<td>www.baidu.com</td>
-	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
-	    			</tr>
-	    			<tr>
-	    				<td>www.google.com</td>
-	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
-	    			</tr>
-	    			<tr>
-	    				<td>www.baidu.com</td>
-	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
-	    			</tr>
-	    			<tr>
-	    				<td>www.google.com</td>
-	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
-	    			</tr>
-	    			<tr>
-	    				<td>www.baidu.com</td>
-	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
-	    			</tr>
-	    		</tbody>
+	    		<tbody id="interceptRuleList"></tbody>
 	    	</table>
 	    </div>
      </div>
