@@ -152,6 +152,14 @@ html, body, .main {overflow: hidden; margin: 0; padding: 0; height: 100%;}
 .values-nav  .help  {margin-right: 10px;}
 .values .key-name {line-height: 32px; font-weight: bold; padding-left: 5px; overflow: hidden; text-overflow: ellipsis; white-space: no}
 
+/** https settings **/
+.intecept-rule-action-bar  {border-bottom: 1px solid #ddd; padding-bottom: 10px;}
+.https-settings-dialog tr th:last-child, .https-settings-dialog tr td:last-child {width: 80px;}
+.https-settings-dialog tr th {border-bottom-width: 1px;}
+.intercept-rule-list tr td {border-top: none; border-bottom: 1px solid #ddd;}
+.intercept-rule-list {height: 420px; overflow-x: hidden; overflow-y: auto;}
+.intecept-rule-action-bar button, .intecept-rule-action-bar a {margin-left: 10px;}
+
 </style>
 </head>
 <body>
@@ -221,6 +229,7 @@ html, body, .main {overflow: hidden; margin: 0; padding: 0; height: 100%;}
 							<li><a href="javascript:;" class="remove-hosts" title="Delete this rules">Delete</a><label class="enable-public-hosts"><input id="enablePublicHosts" type="checkbox" checked="checked" /> Enable</label></li>
 							<li><a href="javascript:;" class="open-weinre" data-toggle="modal" data-target="#openWeinreDialog" title="open weinre">Weinre</a></li>
 							<li><a href="javascript:;" class="view-values" data-toggle="modal" data-target=".values-dialog">Values</a></li>
+							<li><a href="javascript:;" data-toggle="modal" data-target=".https-settings-dialog">Https Settings</a></li>
 							<li><a href="https://github.com/avwo/whistle" target="_blank">Github</a></li>
 					        <li><a href="https://github.com/avwo/whistle/blob/master/README.md" target="_blank">Help</a></li>
 					        <li><a href="javascript:;" data-toggle="modal" data-target=".about-dialog">About</a></li>
@@ -382,6 +391,136 @@ html, body, .main {overflow: hidden; margin: 0; padding: 0; height: 100%;}
           Whistle for Web Developers.<br><br>
 		  Version: <span id="aboutVersion">{version}</span><br>
 		  Visit <a id="aboutUrl" href="http://www.whistlejs.com#v={version}" target="_blank">http://www.whistlejs.com</a>
+     </div>
+    </div>
+  </div>
+</div>
+<!-- https settings -->
+
+<div class="modal fade https-settings-dialog" data-remote="false" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+    <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myLargeModalLabel">Https Settings</h4>
+    </div>
+    <div class="modal-body">
+        <div class="box intecept-rule-action-bar">
+        	<input type="text" class="fill form-control intercept-rule-input" placeholder="input Domain/Rule" />
+        	<button type="button" class="btn btn-success add-intercept-rule">Add</button>
+        	<a href="javascript:;">Root CA</a>
+        	<a href="javascript:;">Clear</a>
+        </div>
+        <table class="table">
+		      <thead>
+		        <tr>
+		          <th class="domain">Domain/Rule</th>
+		          <th class="timeline">Delete</th>
+		        </tr>
+		      </thead>
+	    </table>
+	    <div class="intercept-rule-list">
+	    	<table class="table">
+	    		<tbody id="interceptRuleList">
+	    			<tr>
+	    				<td>www.google.com</td>
+	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
+	    			</tr>
+	    			<tr>
+	    				<td>www.baidu.com</td>
+	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
+	    			</tr>
+	    			<tr>
+	    				<td>www.google.com</td>
+	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
+	    			</tr>
+	    			<tr>
+	    				<td>www.baidu.com</td>
+	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
+	    			</tr>
+	    			<tr>
+	    				<td>www.google.com</td>
+	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
+	    			</tr>
+	    			<tr>
+	    				<td>www.baidu.com</td>
+	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
+	    			</tr>
+	    			<tr>
+	    				<td>www.google.com</td>
+	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
+	    			</tr>
+	    			<tr>
+	    				<td>www.baidu.com</td>
+	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
+	    			</tr>
+	    			<tr>
+	    				<td>www.google.com</td>
+	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
+	    			</tr>
+	    			<tr>
+	    				<td>www.baidu.com</td>
+	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
+	    			</tr>
+	    			<tr>
+	    				<td>www.google.com</td>
+	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
+	    			</tr>
+	    			<tr>
+	    				<td>www.baidu.com</td>
+	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
+	    			</tr>
+	    			<tr>
+	    				<td>www.google.com</td>
+	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
+	    			</tr>
+	    			<tr>
+	    				<td>www.baidu.com</td>
+	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
+	    			</tr>
+	    			<tr>
+	    				<td>www.google.com</td>
+	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
+	    			</tr>
+	    			<tr>
+	    				<td>www.baidu.com</td>
+	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
+	    			</tr>
+	    			<tr>
+	    				<td>www.google.com</td>
+	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
+	    			</tr>
+	    			<tr>
+	    				<td>www.baidu.com</td>
+	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
+	    			</tr>
+	    			<tr>
+	    				<td>www.google.com</td>
+	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
+	    			</tr>
+	    			<tr>
+	    				<td>www.baidu.com</td>
+	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
+	    			</tr>
+	    			<tr>
+	    				<td>www.google.com</td>
+	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
+	    			</tr>
+	    			<tr>
+	    				<td>www.baidu.com</td>
+	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
+	    			</tr>
+	    			<tr>
+	    				<td>www.google.com</td>
+	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
+	    			</tr>
+	    			<tr>
+	    				<td>www.baidu.com</td>
+	    				<td> <button type="button" class="close"><span aria-hidden="true">&times;</span></button></td>
+	    			</tr>
+	    		</tbody>
+	    	</table>
+	    </div>
      </div>
     </div>
   </div>
