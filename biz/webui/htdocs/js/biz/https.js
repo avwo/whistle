@@ -1,6 +1,6 @@
 define('/style/js/biz/https.js', function(require, exports, module) {
 	var listCon = $('#interceptRuleList');
-	var domainInput = listCon.find('.intercept-rule-input');
+	var domainInput = $('.intercept-rule-input');
 	var ITEM_HTML = '<tr><td></td><td><button type="button" class="close"><span aria-hidden="true">&times;</span></button></td></tr>';
 	var list = [];
 	
@@ -26,15 +26,31 @@ define('/style/js/biz/https.js', function(require, exports, module) {
 		}).on('click', '.add-intercept-rule', function () {
 			var domain = $.trim(domainInput.val());
 			if (!domain) {
-				alert('请输入拦截规则域名或正则表达式');
+				alert('请输入拦截的域名或正则表达式');
 				return;
 			}
 			if (domain.length > 256) {
 				alert('拦截规则不能超过256个字符');
 				return;
 			}
+			
+			if (/\s/.test(domain)) {
+				alert('中间不能有空格');
+				return;
+			}
+			
+			if ($.inArray(domain, list) != -1) {
+				alert('该规则已存在');
+				return;
+			}
 			$.post('/cgi-bin/https/add',{domain: domain});
 			domainInput.val('');
+			$(ITEM_HTML).appendTo(listCon).find('td:first').text(domain);
+			list.push(domain);
+		});
+		
+		domainInput.on('keyup', function(e) {
+			e.keyCode == 13 && $('.add-intercept-rule').trigger('click');
 		});
 	}
 	
