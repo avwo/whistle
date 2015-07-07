@@ -373,8 +373,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 			if (prev || keyCode == 40) {
 				prev  = prev ? getPrevVisible(selectedElem) : getNextVisible(selectedElem);
 				if (prev.length > 0) {
-					body.find('tr.selected').removeClass('selected');
-					prev.addClass('selected');
+					prev.trigger('click');
 					ensureVisible(prev);
 				}
 				e.preventDefault();
