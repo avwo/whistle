@@ -115,18 +115,6 @@ define('/style/js/biz/rules.js', function(require, exports, module) {
 		
 	});
 	
-	$('#hostsEditor').keydown(function(e) {
-		if ((e.ctrlKey || e.metaKey)
-				&& (e.keyCode == 13 || e.keyCode == 83)) {
-			$('.apply-hosts').trigger('click');
-		}
-	}).keydown(function(e) {
-		if ((e.ctrlKey || e.metaKey) && e.keyCode == 83) {
-			e.preventDefault();
-			return false;
-		}
-	});
-	
 	body.on('click', '.apply-hosts,.confirm-hosts', function(e) {
 		var self = $(this);
 		var hostsList = $('#hostsList');
@@ -397,6 +385,18 @@ define('/style/js/biz/rules.js', function(require, exports, module) {
 		
 		$('#rulesSettings').click(function() {
 			rulesSettingsList.show();
+		});
+		
+		(homePage ? $(window) : $('#hostsEditor')).keydown(function(e) {
+			if ((e.ctrlKey || e.metaKey)
+					&& (e.keyCode == 13 || e.keyCode == 83)) {
+				$('.apply-hosts').trigger('click');
+			}
+		}).keydown(function(e) {
+			if ((e.ctrlKey || e.metaKey) && e.keyCode == 83) {
+				e.preventDefault();
+				return false;
+			}
 		});
 		
 	};
