@@ -15,6 +15,7 @@ module.exports = function(req, res) {
 			theme: rulesUtil.getProperty('valuesTheme'),
 			showLineNumbers: rulesUtil.getProperty('valuesShowLineNumbers'),
 			values: rulesUtil.getValue()
-		}
+		}, 
+		https: rulesUtil.getInterceptRuleList
 	});
 };
