@@ -23,8 +23,8 @@ define('/style/js/biz/https.js', function(require, exports, module) {
 			$.post('/cgi-bin/https/clear');
 			list = [];
 			listCon.html('');
-		}).on('click', '.add-intercept-rule', function () {
-			var domain = $.trim(domainInput.val());
+		}).on('click', '.add-intercept-rule', function (e, domain) {
+			domain = domain || $.trim(domainInput.val());
 			if (!domain) {
 				alert('请输入拦截的域名或正则表达式');
 				return;

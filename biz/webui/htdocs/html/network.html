@@ -119,6 +119,7 @@ body .table>tbody>tr:first-child>th, body .table>tbody>tr:first-child>td {border
 .capture-detail .action-bar {padding: 0 10px 0 0; position: relative; border-bottom: 1px solid #ddd;}
 .capture-detail .action-bar .close {position: absolute; right: 10px; top: 5px;}
 .capture-detail .action-bar a {text-decoration: none; margin-left: 10px; display: inline-block; line-height: 32px;}
+.capture-detail .action-bar .encrypt-https {display: none;}
 .capture-detail .headers {border-bottom: 1px solid #ddd;}
 .capture-detail-content > div, .capture-detail-content > textarea {overflow: auto; padding: 8px; border: none; box-sizing: border-box;}
 .capture-detail-content > textarea {display: none; outline: none; resize: none;}
@@ -221,6 +222,7 @@ body .table>tbody>tr:first-child>th, body .table>tbody>tr:first-child>td {border
 			</div>
 			<a href="javascript:;" class="replay"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Replay</a>
 			<a href="javascript:;" class="composer" data-toggle="modal" data-target=".composer-dialog"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Composer</a>
+			<a href="javascript:;" id="encryptHttps" class="encrypt-https"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> Encrypt</a>
 			<button type="button" class="close"><span aria-hidden="true">&times;</span></button>
 		</div>
 		<div id="captureDetailContent" class="fill box-orient-vertical capture-detail-content">

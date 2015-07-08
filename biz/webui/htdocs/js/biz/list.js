@@ -294,6 +294,10 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 	}
 	
 	function addEvents() {
+		var encryptHttps = $('#encryptHttps').click(function() {
+			$('.add-intercept-rule').trigger('click', selectedData.url.split(':')[0]);
+		});
+		
 		$('#clearAll').click(function() {
 			body.html('');
 			data = {};
@@ -321,6 +325,8 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 				captureDetail.hide();
 				return;
 			}
+			
+			selectedData.req.method == 'CONNECT' ? encryptHttps.show() : encryptHttps.hide();
 			captureDetail.show().focus();
 			resizeDetail();
 			var activeElem = captureDetailTabs.filter('.active');
@@ -641,6 +647,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		
 			return /\b(tunnel|warning|info|success|active|danger)\b/.test(className) ? RegExp.$1 : '';
 		}
+		
 	}
 	
 	function request(data) {
