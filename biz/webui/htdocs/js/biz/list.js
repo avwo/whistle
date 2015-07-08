@@ -326,7 +326,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 				return;
 			}
 			
-			selectedData.req.method == 'CONNECT' ? encryptHttps.show() : encryptHttps.hide();
+			selectedData.req.method == 'CONNECT' ? encryptHttps.css('display', 'inline-block') : encryptHttps.hide();
 			captureDetail.show().focus();
 			resizeDetail();
 			var activeElem = captureDetailTabs.filter('.active');
