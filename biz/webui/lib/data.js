@@ -230,6 +230,7 @@ function handleRequest(req) {
 			method: req.method && req.method.toUpperCase() || 'GET', 
 			httpVersion: req.httpVersion || '1.1',
             ip: req.ip || '::ffff:127.0.0.1',
+            isWhistleHttps: req.isWhistleHttps,
             headers: req.headers
 		};
 	var resData = {
