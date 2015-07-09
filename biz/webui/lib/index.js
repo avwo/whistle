@@ -42,7 +42,13 @@ app.all('/cgi-bin/*', function(req, res) {
 	try {
 		require(path.join(__dirname, '..' + req.url.replace(/\?.*$/, '')))(req, res);
 	} catch(e) {
-		res.sendStatus(404);
+		res.setHeaders({
+			statusCode: 500,
+			headers: {
+				"content-type": "text/plain; charset=utf8"
+			}
+		});
+		res.send(e.stack);
 	}
 });
 
