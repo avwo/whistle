@@ -17,6 +17,7 @@ function disable() {
 	proxy.removeListener('request', handleRequest);
 	proxy.removeListener('tunnel', handleTunnel);
 	proxy.removeListener('tunnelProxy', handleTunnelProxy);
+	proxy.removeListener('websocket', handleWebsocket);
 	
 	ids = [];
 	data = {};
@@ -30,6 +31,7 @@ function enable() {
 		proxy.on('request', handleRequest);
 		proxy.on('tunnel', handleTunnel);
 		proxy.on('tunnelProxy', handleTunnelProxy);
+		proxy.on('websocket', handleWebsocket);
 	}
 	
 	binded = true;
@@ -176,6 +178,10 @@ function getList(ids) {
 	}
 	
 	return result;
+}
+
+function handleWebsocket(req) {
+	console.log(req.headers)
 }
 
 function handleTunnel(req) {
