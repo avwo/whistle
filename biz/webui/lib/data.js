@@ -396,13 +396,9 @@ function handleRequest(req) {
 			if (req.realUrl && req.realUrl != req.url) {
 				curData.realUrl = req.realUrl;
 			}
-			if (reqData.body == null) {
-				reqData.body = err.stack;
-			}
 			curData.endTime = curData.requestTime = Date.now();
 			curData.reqError = true;
 			req.removeListener('response', handleResponse);
-			req._transform = passThrough;
 		});
 		req.on('send', function() {
 			resData.ip = req.host;
