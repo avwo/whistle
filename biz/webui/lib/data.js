@@ -266,7 +266,7 @@ function handleRequest(req) {
 	});
 	req.on('send', function() {
 		resData.ip = req.host;
-		resData.realUrl = req.realUrl;
+		curData.realUrl = req.realUrl;
 	});
 	
 	var reqBody;
@@ -385,7 +385,7 @@ function handleWebsocket(req) {
 			id: id,
 			url: req.url,
 			startTime: startTime,
-			dnsTime: req.dnsTime || 0,
+			dnsTime: startTime,
 			req: reqData,
 			res: resData,
 			rules: req.rules
@@ -394,17 +394,20 @@ function handleWebsocket(req) {
 	ids.push(id);
 	req.on('response', handleResponse);
 	req.on('error', function(err) {
+		resData.statusCode = 502;
 		resData.ip = req.host;
 		if (req.realUrl && req.realUrl != req.url) {
 			curData.realUrl = req.realUrl;
 		}
 		curData.endTime = curData.requestTime = Date.now();
-		curData.reqError = true;
+		reqData.body = err.stack;
+		curData.resEnd = true;
 		req.removeListener('response', handleResponse);
 	});
 	req.on('send', function() {
+		curData.dnsTime = (req.dnsTime || 0) + startTime;
 		resData.ip = req.host;
-		resData.realUrl = req.realUrl;
+		curData.realUrl = req.realUrl;
 	});
 	
 	function handleResponse(res) {

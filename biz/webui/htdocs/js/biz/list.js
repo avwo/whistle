@@ -131,7 +131,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		var url = escapeHtml(data.url);
 		var errorMsg = getErrorMsg(data);
 		var defaultValue = errorMsg ? '' : '-';
-		var type = escapeHtml(res.headers ? (res.headers['content-type'] || '') : defaultValue);
+		var type = /^wss?:\/\//.test(url) ? '' : escapeHtml(res.headers ? (res.headers['content-type'] || '') : defaultValue);
 		return '<tr id="' + data.id + '" class="' + (data.endTime ? getClassName(data) : 'pending') 
 					+ (data.isHttps ? ' tunnel' : '') + (hasRules(data) ? ' has-rules' : '') + '">\
 			        <th class="order" scope="row">' + ++index + '</th>\
