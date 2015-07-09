@@ -5,7 +5,7 @@ var bodyParser = require('body-parser');
 var crypto = require('crypto');
 var htdocs = require('../htdocs');
 var util = require('../../../util');
-var username, password;
+var username, password, config;
 
 app.use(function(req, res, next) {
 	req.on('error', abort).on('close', abort);
@@ -45,7 +45,8 @@ app.all('/cgi-bin/*', function(req, res) {
 		res.setHeaders({
 			statusCode: 500,
 			headers: {
-				"content-type": "text/plain; charset=utf8"
+				'content-type': 'text/plain; charset=utf8',
+				server: config.name
 			}
 		});
 		res.send(e.stack);
@@ -105,7 +106,7 @@ function shasum(str) {
 }
 
 module.exports = function(proxy) {
-	var config = proxy.config;
+	config = proxy.config;
 	username = config.username || '';
 	password = config.password || '';
 	
