@@ -405,6 +405,7 @@ function handleWebsocket(req) {
 		req.removeListener('response', handleResponse);
 	});
 	req.on('send', function() {
+		curData.rules = req.rules;
 		curData.dnsTime = (req.dnsTime || 0) + startTime;
 		resData.ip = req.host;
 		curData.realUrl = req.realUrl;
