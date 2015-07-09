@@ -180,10 +180,6 @@ function getList(ids) {
 	return result;
 }
 
-function handleWebsocket(req) {
-	console.log(req.headers)
-}
-
 function handleTunnel(req) {
 	handleTunnelRequest(req, true);
 }
@@ -372,6 +368,52 @@ function handleRequest(req) {
 			callback(null, chunk);
 		};
 	}
+	
+	function handleWebsocket(req) {
+		var startTime = Date.now();
+		var id = startTime + '-' + ++count;
+		var reqData = {
+				method: req.method && req.method.toUpperCase() || 'GET', 
+				httpVersion: req.httpVersion || '1.1',
+	            ip: req.ip || '::ffff:127.0.0.1',
+	            headers: req.headers
+			};
+		var resData = {};
+		var curData = data[id] = {
+				id: id,
+				url: req.url,
+				startTime: startTime,
+				dnsTime: req.dnsTime || 0,
+				req: reqData,
+				res: resData,
+				rules: req.rules
+		};
+		
+		ids.push(id);
+		req.on('response', handleResponse);
+		req.on('error', function(err) {
+			resData.ip = req.host;
+			if (req.realUrl && req.realUrl != req.url) {
+				curData.realUrl = req.realUrl;
+			}
+			if (reqData.body == null) {
+				reqData.body = err.stack;
+			}
+			curData.endTime = curData.requestTime = Date.now();
+			curData.reqError = true;
+			req.removeListener('response', handleResponse);
+			req._transform = passThrough;
+		});
+		req.on('send', function() {
+			resData.ip = req.host;
+			resData.realUrl = req.realUrl;
+		});
+		
+		function handleResponse(res) {
+			
+		}
+	}
+
 	
 }
 
