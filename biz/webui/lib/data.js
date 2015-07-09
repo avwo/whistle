@@ -411,7 +411,11 @@ function handleWebsocket(req) {
 	});
 	
 	function handleResponse(res) {
-		
+		curData.responseTime = Date.now();
+		resData.headers = res.headers;
+		resData.statusCode = res.statusCode;
+		resData.ip = req.host;
+		curData.realUrl = res.realUrl;
 	}
 }
 
