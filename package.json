@@ -6,7 +6,7 @@
   "localUIHost": "local.whistlejs.com",
   "whistleSsl": "whistle-ssl",
   "port": 8899,
-  "ports": ["uiport", "uidataport", "httpsproxyport", "weinreport", "dispatcherport", "httpsport"],
+  "ports": ["uiport", "uidataport", "httpsproxyport", "weinreport", "httpsport"],
   "sockets": 8,
   "keepAlive": true,
   "keepAliveMsecs": 30000,
