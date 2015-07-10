@@ -206,7 +206,10 @@ body .table>tbody>tr:first-child>th, body .table>tbody>tr:first-child>td {border
 	<ul id="helpList" class="help-list shadow">
 		<li><a id="clearAll" href="javascript:;">Clear</a></li>
 		<li><a href="javascript:;" data-toggle="modal" data-target=".composer-dialog">Composer</a></li>
+		<li><a href="javascript:;" class="open-weinre" data-toggle="modal" data-target="#openWeinreDialog" title="open weinre">Weinre</a></li>
+		<li><a href="javascript:;" class="view-values" data-toggle="modal" data-target=".values-dialog">Values</a></li>
 		<li><a href="javascript:;" data-toggle="modal" data-target=".https-settings-dialog">Https Settings</a></li>
+		<li><a href="/root-ca.html" target="_blank">Download RootCA</a></li>
 		<li><a href="https://github.com/avwo/whistle" target="_blank">Github</a></li>
         <li><a href="https://github.com/avwo/whistle/blob/master/README.md" target="_blank">Help</a></li>
         <li><a href="javascript:;" data-toggle="modal" data-target=".about-dialog">About</a></li>
@@ -573,7 +576,6 @@ body .table>tbody>tr:first-child>th, body .table>tbody>tr:first-child>td {border
         <div class="box intecept-rule-action-bar">
         	<input type="text" maxlength="256" class="fill form-control intercept-rule-input" placeholder="input Domain/Rule" />
         	<button type="button" class="btn btn-success add-intercept-rule">Add</button>
-        	<a href="javascript:;">Root CA</a>
         	<a href="javascript:;" class="clear-intercept-rule">Clear</a>
         </div>
         <table class="table">
