@@ -277,7 +277,7 @@ define('/style/js/biz/rules.js', function(require, exports, module) {
 	}
 	
 	function updateCreateHostsBtnState() {
-		if (newHostsList.find('.list-group-item').length >= 36) {
+		if (newHostsList.find('.list-group-item').length >= 100) {
 			createHostsBtn.addClass('disabled');
 		} else {
 			createHostsBtn.removeClass('disabled');
