@@ -203,6 +203,7 @@ function handleTunnelRequest(req, isHttps) {
 			isHttpsProxy: !isHttps,
 			startTime: startTime,
 			dnsTime: req.dnsTime,
+			customHost: req.customHost,
 			requestTime: now,
 			responseTime: now,
 			endTime: now,
@@ -243,6 +244,7 @@ function handleRequest(req) {
 			id: id,
 			url: req.url,
 			startTime: startTime,
+			customHost: req.customHost,
 			dnsTime: req.dnsTime,
 			req: reqData,
 			res: resData,
@@ -253,6 +255,7 @@ function handleRequest(req) {
 	req.on('response', handleResponse);
 	req.on('error', function(err) {
 		resData.ip = req.host;
+		curData.customHost = req.customHost;
 		if (req.realUrl && req.realUrl != req.url) {
 			curData.realUrl = req.realUrl;
 		}
@@ -266,6 +269,7 @@ function handleRequest(req) {
 	});
 	req.on('send', function() {
 		resData.ip = req.host;
+		curData.customHost = req.customHost;
 		curData.realUrl = req.realUrl;
 	});
 	
@@ -300,6 +304,7 @@ function handleRequest(req) {
 	
 	function handleResponse(res) {
 		curData.responseTime = Date.now();
+		curData.customHost = req.customHost;
 		resData.headers = res.headers;
 		resData.statusCode = res.statusCode;
 		resData.ip = req.host;
@@ -384,6 +389,7 @@ function handleWebsocket(req) {
 	var curData = data[id] = {
 			id: id,
 			url: req.url,
+			customHost: req.customHost,
 			startTime: startTime,
 			dnsTime: startTime,
 			req: reqData,
@@ -395,6 +401,7 @@ function handleWebsocket(req) {
 	req.on('response', handleResponse);
 	req.on('error', function(err) {
 		resData.statusCode = 502;
+		curData.customHost = req.customHost;
 		resData.ip = req.host;
 		if (req.realUrl && req.realUrl != req.url) {
 			curData.realUrl = req.realUrl;
@@ -406,6 +413,7 @@ function handleWebsocket(req) {
 	});
 	req.on('send', function() {
 		curData.rules = req.rules;
+		curData.customHost = req.customHost;
 		curData.dnsTime = (req.dnsTime || 0) + startTime;
 		resData.ip = req.host;
 		curData.realUrl = req.realUrl;
@@ -413,6 +421,7 @@ function handleWebsocket(req) {
 	
 	function handleResponse(res) {
 		curData.responseTime = Date.now();
+		curData.customHost = req.customHost;
 		curData.endTime = curData.requestTime = Date.now();
 		resData.headers = res.headers;
 		resData.statusCode = res.statusCode;

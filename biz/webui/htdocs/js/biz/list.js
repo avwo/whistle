@@ -148,7 +148,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 	
 	function hasRules(data) {
 		
-		return Object.keys(data.rules || {}).length
+		return data.customHost || Object.keys(data.rules || {}).length
 	}
 	
 	function updateElement(elem, data) {
@@ -522,6 +522,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 						'Request Sent': selectedData.requestTime  && (selectedData.requestTime - selectedData.startTime + 'ms'),
 						'Content Download': selectedData.endTime &&  (selectedData.endTime - selectedData.startTime + 'ms')
 					}) + '<hr/>' + getProperties({
+						Host: selectedData.customHost && res.ip,
 						Req: rules.req && rules.req.raw,
 						Proxy: rules.proxy && rules.proxy.raw,
 						Rule: rules.rule && rules.rule.raw,
