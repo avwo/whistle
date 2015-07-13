@@ -225,10 +225,8 @@ function handleTunnelRequest(req, isHttps) {
 }
 
 function handleRequest(req) {
-	var dnsTime = req.dnsTime || 0;
-	req.dnsTime = Date.now();
-	var startTime = req.dnsTime - dnsTime;
-	var id = req.dnsTime + '-' + ++count;
+	var startTime = Date.now();
+	var id = startTime + '-' + ++count;
 	var reqData = {
 			method: req.method && req.method.toUpperCase() || 'GET', 
 			httpVersion: req.httpVersion || '1.1',
@@ -245,7 +243,6 @@ function handleRequest(req) {
 			url: req.url,
 			startTime: startTime,
 			customHost: req.customHost,
-			dnsTime: req.dnsTime,
 			req: reqData,
 			res: resData,
 			rules: req.rules
@@ -254,11 +251,7 @@ function handleRequest(req) {
 	ids.push(id);
 	req.on('response', handleResponse);
 	req.on('error', function(err) {
-		resData.ip = req.host;
-		curData.customHost = req.customHost;
-		if (req.realUrl && req.realUrl != req.url) {
-			curData.realUrl = req.realUrl;
-		}
+		update();
 		if (reqData.body == null) {
 			reqData.body = err.stack;
 		}
@@ -267,11 +260,16 @@ function handleRequest(req) {
 		req.removeListener('response', handleResponse);
 		req._transform = passThrough;
 	});
-	req.on('send', function() {
-		resData.ip = req.host;
+	req.on('send', update);
+	
+	function update() {
+		curData.dnsTime = (req.dnsTime || 0) + startTime;
 		curData.customHost = req.customHost;
-		curData.realUrl = req.realUrl;
-	});
+		resData.ip = req.host;
+		if (req.realUrl && req.realUrl != req.url) {
+			curData.realUrl = req.realUrl;
+		}
+	}
 	
 	var reqBody;
 	var reqSize = 0;
@@ -401,23 +399,22 @@ function handleWebsocket(req) {
 	req.on('response', handleResponse);
 	req.on('error', function(err) {
 		resData.statusCode = 502;
-		curData.customHost = req.customHost;
-		resData.ip = req.host;
-		if (req.realUrl && req.realUrl != req.url) {
-			curData.realUrl = req.realUrl;
-		}
-		curData.endTime = curData.requestTime = Date.now();
+		update();
 		reqData.body = err.stack;
 		curData.resEnd = true;
 		req.removeListener('response', handleResponse);
 	});
-	req.on('send', function() {
-		curData.rules = req.rules;
+	req.on('send', update);
+	
+	function update() {
 		curData.customHost = req.customHost;
 		curData.dnsTime = (req.dnsTime || 0) + startTime;
+		curData.rules = req.rules;
 		resData.ip = req.host;
-		curData.realUrl = req.realUrl;
-	});
+		if (req.realUrl && req.realUrl != req.url) {
+			curData.realUrl = req.realUrl;
+		}
+	}
 	
 	function handleResponse(res) {
 		curData.responseTime = Date.now();
