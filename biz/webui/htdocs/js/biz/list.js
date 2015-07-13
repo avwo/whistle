@@ -505,7 +505,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 						'Request Length': req.size == null ? '' : req.size,
 						'Content Length': res.size == null ? '' : res.size,
 						'Start Time': selectedData.startTime,
-						'DNS Lookup': selectedData.dnsTime - selectedData.startTime + 'ms',
+						'DNS Lookup': selectedData.dnsTime && (selectedData.dnsTime - selectedData.startTime + 'ms'),
 						'Request Sent': selectedData.requestTime  && (selectedData.requestTime - selectedData.startTime + 'ms'),
 						'Content Download': selectedData.endTime &&  (selectedData.endTime - selectedData.startTime + 'ms')
 					} : {
@@ -518,7 +518,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 						'Request Length': req.size == null ? '' : req.size,
 						'Content Length': res.size == null ? '' : res.size,
 						'Start Time': selectedData.startTime,
-						'DNS Lookup': selectedData.dnsTime - selectedData.startTime + 'ms',
+						'DNS Lookup': selectedData.dnsTime && (selectedData.dnsTime - selectedData.startTime + 'ms'),
 						'Request Sent': selectedData.requestTime  && (selectedData.requestTime - selectedData.startTime + 'ms'),
 						'Content Download': selectedData.endTime &&  (selectedData.endTime - selectedData.startTime + 'ms')
 					}) + '<hr/>' + getProperties({
@@ -609,7 +609,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 						endTime: this.endTime,
 						statusCode: this.res.statusCode || getErrorMsg(this) || '-',
 						stalled: this.startTime - startTime,
-						dns: this.dnsTime - this.startTime,
+						dns: this.dnsTime ? this.dnsTime - this.startTime : end,
 						request: this.requestTime ? this.requestTime - this.startTime : end,
 						response: this.responseTime ? this.responseTime - this.startTime : end,
 						end: end,
