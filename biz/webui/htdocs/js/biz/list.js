@@ -626,7 +626,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 			
 			return '<tr class="' + data.className + '" ' + (data.endTime ?  'title="' 
 					+ 'Stalled: ' + data.stalled + 'ms\r\nDNS: ' 
-					+ data.dns + 'ms\r\nRequest: ' + (data.request - data.dns) + 'ms\r\Response: ' 
+					+ data.dns + 'ms\r\nRequest: ' + (data.request - data.dns) + 'ms\r\nResponse: ' 
 					+ (data.end - data.request) + 'ms"' : '') + '>\
 	          <th class="order" scope="row">' + data.order + '</th>\
 	          <td class="result">' + data.statusCode + '</td>\
