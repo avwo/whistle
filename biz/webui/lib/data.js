@@ -402,6 +402,7 @@ function handleWebsocket(req) {
 		update();
 		reqData.body = err.stack;
 		curData.resEnd = true;
+		curData.endTime = curData.requestTime = Date.now();
 		req.removeListener('response', handleResponse);
 	});
 	req.on('send', update);
