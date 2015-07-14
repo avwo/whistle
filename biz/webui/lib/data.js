@@ -398,8 +398,9 @@ function handleWebsocket(req) {
 	ids.push(id);
 	req.on('response', handleResponse);
 	req.on('error', function(err) {
-		resData.statusCode = 502;
 		update();
+		resData.statusCode = 502;
+		resData.headers = {};
 		reqData.body = err.stack;
 		curData.resEnd = true;
 		curData.endTime = curData.requestTime = Date.now();
