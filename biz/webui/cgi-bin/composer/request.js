@@ -58,7 +58,11 @@ module.exports = function(req, res) {
 			req.body.body = new Buffer(req.body.body || '');
 			headers['content-length'] = req.body.body.length;
 		}
-		headers['x-forwarded-for-' + config.name] = req.ip;
+		var clinetIp = 'x-forwarded-for-' + config.name;
+		if (!headers[clientIp]) {
+			headers[clinetIp] = req.ip;
+		}
+		
 		http.request(options, function(res) {
 			res.on('error', util.noop);
 			util.drain(res);
