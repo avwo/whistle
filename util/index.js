@@ -16,6 +16,7 @@ exports.LOCAL_DATA_PATH = path.join(__dirname, '../../' + config.dataDirname);
 exports.WhistleTransform = require('./whistle-transform');
 exports.PROXY_ID = 'x-' + config.name + '-' + Date.now();
 exports.HTTPS_FIELD = 'x-' + config.name + '-https-' + Date.now();
+exports.CLIENT_IP_HEAD = 'x-forwarded-for-' + config.name;
 
 function noop() {}
 

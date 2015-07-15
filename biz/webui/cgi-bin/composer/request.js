@@ -58,9 +58,8 @@ module.exports = function(req, res) {
 			req.body.body = new Buffer(req.body.body || '');
 			headers['content-length'] = req.body.body.length;
 		}
-		var clientIp = 'x-forwarded-for-' + config.name;
-		if (!headers[clientIp]) {
-			headers[clientIp] = req.ip;
+		if (!headers[util.CLIENT_IP_HEAD]) {
+			headers[util.CLIENT_IP_HEAD] = req.ip;
 		}
 		
 		http.request(options, function(res) {
