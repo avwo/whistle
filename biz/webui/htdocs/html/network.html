@@ -103,6 +103,8 @@ html, body, .main {overflow: hidden; margin: 0; padding: 0; height: 100%;}
 .nav-bar {position: relative;}
 .nav-bar {line-height: 34px; height: 54px; padding: 10px 10px 10px 5px; background: #f8f8f9; border-bottom: 1px solid #ddd;}
 .nav-bar .quick-search {display: block; padding: 0 5px;} 
+.nav-bar .quick-search-wrapper {position: relative;}
+.nav-bar .quick-search-wrapper .clear-input {position: absolute; right: 10px; top: 6px; display: none;}
 .nav-bar a {margin-left: 10px; padding: 0 10px; display: inline-block;}
 .nav-bar .help-list {position: absolute; z-index: 1; right: 15px; top: 46px; margin: 0; padding: 0; list-style: none; display: none;}
 .nav-bar .help-list a, .nav-bar .help-list label {margin: 0; padding: 0 20px; display: block;}
@@ -199,7 +201,7 @@ body .table>tbody>tr:first-child>th, body .table>tbody>tr:first-child>td {border
 <body>
 <div class="main box box-orient-vertical">
 <div class="box nav-bar">
-	<input id="quickSearch" type="text" class="fill form-control quick-search" placeholder="type filter text" autofocus="autofocus" />
+	<div class="box fill quick-search-wrapper"><input id="quickSearch" type="text" class="fill form-control quick-search" placeholder="type filter text" autofocus="autofocus" /><button type="button" id="clearQuickSeachInput" class="close clear-input"><span aria-hidden="true">&times;</span></button></div>
 	<a href="javascript:;" data-toggle="modal" data-target=".rules-dialog">Rules</a>
 	<a href="javascript:;" id="showTimeline">Timeline</a>
 	<a href="javascript:;" id="moreActions">More <span class="caret"></span></a>

@@ -2,6 +2,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 	var container = $('#captureList');
 	var body = $('#captureListBody');
 	var quickSearch = $('#quickSearch');
+	var clearQuickSeachInputBtn = $('#clearQuickSeachInput');
 	var captureDetail = $('#captureDetail');
 	var captureDetailContent = $('#captureDetailContent');
 	var captureDetailTabs = captureDetail.find('.tabs button');
@@ -273,7 +274,9 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 	
 	function search(scrollToBottom) {
 		var rows = body.find('tr');
-		var keywords = $.trim(quickSearch.val());
+		var keywords = quickSearch.val();
+		keywords ? clearQuickSeachInputBtn.show() : clearQuickSeachInputBtn.hide();
+		keywords = $.trim(keywords);
 		if (!keywords) {
 			rows.show();
 			scrollToBottom && container.scrollTop(body[0].offsetHeight);
@@ -318,6 +321,13 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		});
 		
 		quickSearch.on('input', search);
+		clearQuickSeachInputBtn.click(function() {
+			quickSearch.val('');
+			search(true);
+			setTimeout(function() {
+				quickSearch.focus();
+			}, 0);
+		});
 		
 		body.on('dblclick', 'tr', function() {
 			selectedData = data[this.id];
