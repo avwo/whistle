@@ -181,7 +181,7 @@ define('/style/js/biz/rules.js', function(require, exports, module) {
 			return;
 		}
 
-		$('.view-values').trigger('click');
+		$('.values-dialog').modal('show');
 		var valuesCon = $('#valuesList');
 		var valuesList = valuesCon.find('a');
 		for (var i = 0; i < valuesList.length; i++) {
