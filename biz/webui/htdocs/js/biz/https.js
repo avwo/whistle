@@ -50,7 +50,10 @@ define('/style/js/biz/https.js', function(require, exports, module) {
 		});
 		
 		domainInput.on('keyup', function(e) {
-			e.keyCode == 13 && $('.add-intercept-rule').trigger('click');
+			if (e.keyCode == 13) {
+				$('.add-intercept-rule').trigger('click');
+				e.stopPropagation();
+			}
 		});
 	}
 	
