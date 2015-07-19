@@ -189,10 +189,8 @@ function handleTunnelProxy(req) {
 }
 
 function handleTunnelRequest(req, isHttps) {
-	var dnsTime = req.dnsTime || 0;
-	var now = req.dnsTime = Date.now();
-	var startTime = req.dnsTime - dnsTime;
-	var id = req.dnsTime + '-' + ++count;
+	var startTime = Date.now();
+	var id = startTime + '-' + ++count;
 	
 	ids.push(id);
 	
@@ -202,26 +200,31 @@ function handleTunnelRequest(req, isHttps) {
 			isHttps: true,
 			isHttpsProxy: !isHttps,
 			startTime: startTime,
-			dnsTime: req.dnsTime,
-			customHost: req.customHost,
-			requestTime: now,
-			responseTime: now,
-			endTime: now,
-			reqError: !!req.error,
 			req: {
 				method: req.method && req.method.toUpperCase() || 'CONNECT', 
 				httpVersion: req.httpVersion || '1.1',
 	            ip: util.getClientIp(req) || '::ffff:127.0.0.1',
-	            headers: req.headers,
-	            body: req.error && req.error.stack
+	            headers: req.headers
 			},
 			res: {
 				statusCode: req.error ? 502 : '0',
-				headers: {},
-				ip: req.host || '127.0.0.1'
+				headers: {}
 			},
 			rules: req.rules
 	};
+	
+	req.on('error', function(err) {
+		curData.reqError = true;
+		curData.req.body = err.stack;
+	});
+	
+	req.on('send', function() {
+		var now = Date.now();
+		curData.res.ip = req.host || '127.0.0.1';
+		curData.customHost = req.customHost;
+		curData.requestTime = curData.dnsTime =
+			curData.responseTime = curData.endTime = now;
+	});
 }
 
 function handleRequest(req) {
