@@ -41,8 +41,8 @@ app.get('/index.html', function(req, res) {
 app.all('/cgi-bin/*', function(req, res) {
 	try {
 		require(path.join(__dirname, '..' + req.url.replace(/\?.*$/, '')))(req, res);
-	} catch(e) {
-		res.status(500).send(e.stack);
+	} catch(err) {
+		res.status(500).send(util.getErrorStack(err));
 	}
 });
 

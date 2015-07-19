@@ -34,6 +34,21 @@ exports.mkdir = function mkdir(path) {
 	!fs.existsSync(path) && fs.mkdirSync(path);
 };
 
+function getErrorStack(err) {
+	if (!err) {
+		return '';
+	}
+	
+	var stack = err.message;
+	try {
+		stack = err.stack;
+	} catch(e) {}
+	
+	return stack;
+}
+
+exports.getErrorStack = getErrorStack;
+
 function formatDate(now) {
 	now = now || new Date();
 	var date = [now.getFullYear(), paddingLeft(now.getMonth() + 1), 

@@ -216,7 +216,7 @@ function handleTunnelRequest(req, isHttps) {
 		curData.reqError = true;
 		curData.res.ip = req.host || '127.0.0.1';
 		curData.res.statusCode = 502;
-		curData.req.body = err.stack;
+		curData.req.body = util.getErrorStack(err);
 	});
 	
 	req.on('send', function() {
@@ -260,7 +260,7 @@ function handleRequest(req) {
 	req.on('error', function(err) {
 		update();
 		if (reqData.body == null) {
-			reqData.body = err.stack;
+			reqData.body = util.getErrorStack(err);
 		}
 		curData.endTime = curData.requestTime = Date.now();
 		curData.reqError = true;
@@ -316,7 +316,7 @@ function handleRequest(req) {
 		curData.realUrl = res.realUrl;
 		res.on('error', function(err) {
 			resData.ip = req.host;
-			resData.body = err.stack;
+			resData.body = util.getErrorStack(err);
 			curData.endTime = Date.now();
 			curData.resError = true;
 			res._transform = passThrough;
@@ -359,7 +359,7 @@ function handleRequest(req) {
 					
 					if (unzip) {
 						var next = function(err, body) {
-							resData.body = err ? err.stack : decode(body);
+							resData.body = err ? util.getErrorStack(err) : decode(body);
 							callback(null, chunk);
 						};
 						unzip(resBody, function(err, body) {
@@ -408,7 +408,7 @@ function handleWebsocket(req) {
 		update();
 		resData.statusCode = 502;
 		resData.headers = {};
-		reqData.body = err.stack;
+		reqData.body = util.getErrorStack(err);
 		curData.resEnd = true;
 		curData.endTime = curData.requestTime = Date.now();
 		req.removeListener('response', handleResponse);
