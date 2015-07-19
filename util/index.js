@@ -15,7 +15,6 @@ var now = Date.now();
 
 exports.LOCAL_DATA_PATH = path.join(__dirname, '../../' + config.dataDirname);
 exports.WhistleTransform = require('./whistle-transform');
-exports.PROXY_ID = 'x-' + config.name + '-' + now;
 exports.HTTPS_FIELD = 'x-' + config.name + '-https-' + now;
 var CLIENT_IP_HEAD = exports.CLIENT_IP_HEAD = 'x-forwarded-for-' + config.name + '-' + now;
 
