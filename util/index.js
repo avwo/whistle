@@ -11,12 +11,13 @@ var iconv = require('iconv-lite');
 var zlib = require('zlib');
 var PipeStream = require('pipestream');
 var config = require('../package.json');
+var now = Date.now();
 
 exports.LOCAL_DATA_PATH = path.join(__dirname, '../../' + config.dataDirname);
 exports.WhistleTransform = require('./whistle-transform');
-exports.PROXY_ID = 'x-' + config.name + '-' + Date.now();
-exports.HTTPS_FIELD = 'x-' + config.name + '-https-' + Date.now();
-exports.CLIENT_IP_HEAD = 'x-forwarded-for-' + config.name;
+exports.PROXY_ID = 'x-' + config.name + '-' + now;
+exports.HTTPS_FIELD = 'x-' + config.name + '-https-' + now;
+var CLIENT_IP_HEAD = exports.CLIENT_IP_HEAD = 'x-forwarded-for-' + config.name + '-' + now;
 
 function noop() {}
 
@@ -503,10 +504,12 @@ exports.getMetaCharset = getMetaCharset;
 
 function getClientIp(req, forwarded) {
 	var ip;
+	var headers = req.headers || {};
 	try {
-		ip = forwarded && req.headers['x-forwarded-for'] ||
-	    req.connection.remoteAddress ||
-	    req.socket.remoteAddress;
+		ip = (forwarded && headers['x-forwarded-for']) 
+				|| headers[CLIENT_IP_HEAD]
+					|| req.connection.remoteAddress 
+						|| req.socket.remoteAddress;
 	} catch(e) {}
 	
 	return ip;

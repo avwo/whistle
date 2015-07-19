@@ -58,9 +58,8 @@ module.exports = function(req, res) {
 			req.body.body = new Buffer(req.body.body || '');
 			headers['content-length'] = req.body.body.length;
 		}
-		if (!headers[util.CLIENT_IP_HEAD]) {
-			headers[util.CLIENT_IP_HEAD] = req.ip;
-		}
+		
+		headers[util.CLIENT_IP_HEAD] = util.getClientIp(req);
 		
 		http.request(options, function(res) {
 			res.on('error', util.noop);
