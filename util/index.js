@@ -171,6 +171,9 @@ exports.drain = function drain(stream, end) {
 };
 
 exports.encodeNonAsciiChar = function encodeNonAsciiChar(str) {
+	if (!str || typeof str != 'string') {
+		return '';
+	}
 	
 	return  str && str.replace(/[^\x00-\x7F]/g, safeEncodeURIComponent);
 };
