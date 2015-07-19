@@ -40,12 +40,12 @@ function getErrorStack(err) {
 		return '';
 	}
 	
-	var stack = err.message;
+	var stack;
 	try {
 		stack = err.stack;
 	} catch(e) {}
 	
-	return stack;
+	return stack || err.message;
 }
 
 exports.getErrorStack = getErrorStack;
