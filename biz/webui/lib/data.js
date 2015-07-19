@@ -207,7 +207,6 @@ function handleTunnelRequest(req, isHttps) {
 	            headers: req.headers
 			},
 			res: {
-				statusCode: req.error ? 502 : '200',
 				headers: {}
 			},
 			rules: req.rules
@@ -215,15 +214,19 @@ function handleTunnelRequest(req, isHttps) {
 	
 	req.on('error', function(err) {
 		curData.reqError = true;
+		curData.res.statusCode = 502;
 		curData.req.body = err.stack;
 	});
 	
 	req.on('send', function() {
-		var now = Date.now();
 		curData.res.ip = req.host || '127.0.0.1';
 		curData.customHost = req.customHost;
-		curData.requestTime = curData.dnsTime =
-			curData.responseTime = curData.endTime = now;
+		curData.requestTime = curData.dnsTime = Date.now();
+	});
+	
+	req.on('response', function() {
+		curData.res.statusCode = 200;
+		curData.responseTime = curData.endTime = Date.now();
 	});
 }
 
