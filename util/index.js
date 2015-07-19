@@ -82,7 +82,11 @@ exports.getFullUrl = function getFullUrl(req) {
 	if (hasProtocol(req.url)) {
 		req.url = url.parse(req.url).path;
 	}
-	return _getProtocol(req.isHttps) + req.headers.host + req.url;
+	var host = req.headers.host;
+	if (host) {
+		host = req.isHttps ? host.replace(/:443$/, '') : host.replace(/:80$/, '');
+	}
+	return _getProtocol(req.isHttps) + host + req.url;
 };
 
 function setProtocol(url, isHttps) {
