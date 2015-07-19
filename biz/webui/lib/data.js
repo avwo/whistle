@@ -214,6 +214,7 @@ function handleTunnelRequest(req, isHttps) {
 	
 	req.on('error', function(err) {
 		curData.reqError = true;
+		curData.res.ip = req.host || '127.0.0.1';
 		curData.res.statusCode = 502;
 		curData.req.body = err.stack;
 	});
