@@ -207,7 +207,7 @@ function handleTunnelRequest(req, isHttps) {
 	            headers: req.headers
 			},
 			res: {
-				statusCode: req.error ? 502 : '0',
+				statusCode: req.error ? 502 : '200',
 				headers: {}
 			},
 			rules: req.rules
