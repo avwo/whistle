@@ -192,10 +192,10 @@ function safeEncodeURIComponent(ch) {
 	return ch;
 }
 
-function getPath(url) {
+function getPath(url, noProtocol) {
 	if (url) {
 		url = url.replace(/\/?(?:\?|#).*$/, '');
-		var index = url.indexOf('://');
+		var index = noProtocol ? -1 : url.indexOf('://');
 		url = index > -1 ? url.substring(index + 3) : url;
 	}
 	
