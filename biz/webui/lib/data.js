@@ -308,12 +308,10 @@ function handleRequest(req) {
 	};
 	
 	function handleResponse(res) {
+		update();
 		curData.responseTime = Date.now();
-		curData.customHost = req.customHost;
 		resData.headers = res.headers;
 		resData.statusCode = res.statusCode;
-		resData.ip = req.host;
-		curData.realUrl = res.realUrl;
 		res.on('error', function(err) {
 			resData.ip = req.host;
 			resData.body = util.getErrorStack(err);
@@ -426,13 +424,11 @@ function handleWebsocket(req) {
 	}
 	
 	function handleResponse(res) {
+		update();
 		curData.responseTime = Date.now();
-		curData.customHost = req.customHost;
 		curData.endTime = curData.requestTime = Date.now();
 		resData.headers = res.headers;
 		resData.statusCode = res.statusCode;
-		resData.ip = req.host;
-		curData.realUrl = res.realUrl;
 	}
 }
 
