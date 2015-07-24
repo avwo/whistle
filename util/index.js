@@ -32,6 +32,7 @@ exports.resolvePath = function(file) {
 
 exports.mkdir = function mkdir(path) {
 	!fs.existsSync(path) && fs.mkdirSync(path);
+	return path;
 };
 
 function getErrorStack(err) {

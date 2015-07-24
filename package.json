@@ -34,7 +34,8 @@
 	   "weinre": "2.0.0-pre-I0Z7U9OV",
 	   "q": "1.4.1",
 	   "pipestream": "*",
-	   "starting": "*"
+	   "starting": "*",
+	   "node-forge": "0.6.34"
   },
   "scripts": {
 		"start": "node app.js"
