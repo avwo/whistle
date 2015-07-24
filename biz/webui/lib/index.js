@@ -4,7 +4,7 @@ var auth = require('basic-auth');
 var bodyParser = require('body-parser');
 var crypto = require('crypto');
 var htdocs = require('../htdocs');
-var util = require('../../../util');
+var util = require('../../../lib/util');
 var username, password, config;
 
 app.use(function(req, res, next) {

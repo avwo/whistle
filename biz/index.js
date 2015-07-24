@@ -1,7 +1,7 @@
 var url = require('url');
 var https = require('https');
 var http = require('http');
-var util = require('../util');
+var util = require('../lib/util');
 
 function request(req, res, port) {
 	var options = url.parse(util.getFullUrl(req));

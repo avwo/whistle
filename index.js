@@ -1,4 +1,4 @@
-var util = require('./util');
+var util = require('./lib/util');
 
 module.exports = function init(options) {
 	options = options || {};

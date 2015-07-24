@@ -1,7 +1,7 @@
 var http = require('http');
 var url = require('url');
 var config = require('../../lib/config');
-var util = require('../../../../util');
+var util = require('../../../../lib/util');
 
 function parseHeaders(headers) {
 	if (!headers || typeof headers != 'string') {
