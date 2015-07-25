@@ -188,14 +188,6 @@ body .table>tbody>tr:first-child>th, body .table>tbody>tr:first-child>td {border
 .timeline-dialog .timeline-list {overflow-x: hidden; overflow-y: auto; height: 480px; font-size: 12px;}
 .timeline-dialog .timeline-list .timeline {width: 360px;}
 
-/** https settings **/
-.intecept-rule-action-bar  {border-bottom: 1px solid #ddd; padding-bottom: 10px;}
-.https-settings-dialog tr th:last-child, .https-settings-dialog tr td:last-child {width: 80px;}
-.https-settings-dialog tr th {border-bottom-width: 1px!important;}
-.intercept-rule-list tr td {border-top: none!important; border-bottom: 1px solid #ddd;}
-.intercept-rule-list {height: 420px; overflow-x: hidden; overflow-y: auto;}
-.intecept-rule-action-bar button, .intecept-rule-action-bar a {margin-left: 10px;}
-
 </style>
 </head>
 <body>
@@ -210,8 +202,7 @@ body .table>tbody>tr:first-child>th, body .table>tbody>tr:first-child>td {border
 		<li><a href="javascript:;" data-toggle="modal" data-target=".composer-dialog">Composer</a></li>
 		<li><a href="javascript:;" class="open-weinre" data-toggle="modal" data-target="#openWeinreDialog" title="open weinre">Weinre</a></li>
 		<li><a href="javascript:;" class="view-values" data-toggle="modal" data-target=".values-dialog">Values</a></li>
-		<li><a href="javascript:;" data-toggle="modal" data-target=".https-settings-dialog">Https Settings</a></li>
-		<li><a href="/cgi-bin/https/get-root-ca" target="_blank">Download RootCA</a></li>
+		<li><a href="/cgi-bin/https/get-root-ca" target="_blank">RootCA</a></li>
 		<li><a href="https://github.com/avwo/whistle" target="_blank">Github</a></li>
         <li><a href="https://github.com/avwo/whistle/blob/master/README.md" target="_blank">Help</a></li>
         <li><a href="javascript:;" data-toggle="modal" data-target=".about-dialog">About</a></li>
@@ -564,40 +555,6 @@ body .table>tbody>tr:first-child>th, body .table>tbody>tr:first-child>td {border
     </div>
   </div>
 </div>
-
-<!-- https settings -->
-
-<div class="modal fade https-settings-dialog" data-remote="false" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-    <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="myLargeModalLabel">Https Settings</h4>
-    </div>
-    <div class="modal-body">
-        <div class="box intecept-rule-action-bar">
-        	<input type="text" maxlength="256" class="fill form-control intercept-rule-input" placeholder="input Domain/Rule" />
-        	<button type="button" class="btn btn-success add-intercept-rule">Add</button>
-        	<a href="javascript:;" class="clear-intercept-rule">Clear</a>
-        </div>
-        <table class="table">
-		      <thead>
-		        <tr>
-		          <th class="domain">Domain/Rule</th>
-		          <th class="timeline">Delete</th>
-		        </tr>
-		      </thead>
-	    </table>
-	    <div class="intercept-rule-list">
-	    	<table class="table">
-	    		<tbody id="interceptRuleList"></tbody>
-	    	</table>
-	    </div>
-     </div>
-    </div>
-  </div>
-</div>
-
 
 <script src="/style/js/lib/base.js"></script>
 <script src="/style/js/lib/bootstrap.js"></script>
