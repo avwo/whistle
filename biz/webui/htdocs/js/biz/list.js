@@ -537,7 +537,8 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 						Proxy: rules.proxy && rules.proxy.raw,
 						Rule: rules.rule && rules.rule.raw,
 						Res: rules.res && rules.res.raw,
-						Weinre: rules.weinre && rules.weinre.raw
+						Weinre: rules.weinre && rules.weinre.raw,
+						Filter: rules.filter && rules.filter.raw
 					}));
 					
 					
