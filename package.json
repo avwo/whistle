@@ -35,7 +35,8 @@
 	   "q": "1.4.1",
 	   "pipestream": "*",
 	   "starting": "*",
-	   "node-forge": "0.6.34"
+	   "node-forge": "0.6.34",
+	   "socksv5": "0.0.6"
   },
   "scripts": {
 		"start": "node app.js"
