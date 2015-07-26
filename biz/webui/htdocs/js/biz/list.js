@@ -148,8 +148,16 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 	}
 	
 	function hasRules(data) {
+		if (data.customHost) {
+			return true;
+		}
 		
-		return data.customHost || Object.keys(data.rules || {}).length
+		for (var i in data.rules) {
+			if (i != 'filter') {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	function updateElement(elem, data) {
