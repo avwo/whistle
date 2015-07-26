@@ -1,6 +1,15 @@
 define('/style/js/biz/server-info.js', function(require, exports, module) {
 	var whistle = window.whistle = {};
 	var curServerInfo;
+	var serverStateDialog = $('.server-disconnected-dialog');
+	
+	var post = $.post;
+	$.post = function() {
+		if (whistle.disconnected) {
+			serverStateDialog.modal('show');
+		}
+		post.apply($, arguments);
+	};
 	
 	$(document.body).on('click', '.reload', function() {
 		location.reload();
