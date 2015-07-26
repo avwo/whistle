@@ -222,6 +222,7 @@ function handleTunnelRequest(req, isHttps) {
 	req.on('send', function() {
 		curData.res.ip = req.host || '127.0.0.1';
 		curData.customHost = req.customHost;
+		curData.realUrl = req.realUrl;
 		curData.requestTime = curData.dnsTime = Date.now();
 	});
 	
