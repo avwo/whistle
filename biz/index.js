@@ -1,4 +1,5 @@
 var url = require('url');
+var net = require('net');
 var https = require('https');
 var http = require('http');
 var util = require('../lib/util');
@@ -21,8 +22,19 @@ function request(req, res, port) {
 }
 
 module.exports = function(req, res, next) {
-	var host = req.headers.host;
+	var host = req.headers.host || '';
 	var config = this.config;
+	var hostname = host.split(':');
+	var port = hostname[1] || 80
+	hostname = hostname[0];
+	if (net.isIP(hostname) && util.isLocalAddress(hostname)) {
+		if (port == config.port || port == config.uiport) {
+			host = config.localUIHost;
+		} else if (port == config.weinreport) {
+			host = config.WEINRE_HOST;
+		}
+	}
+	
 	if (host == config.localUIHost) {
 		request(req, res, config.uiport);
 	} else if (host == config.WEINRE_HOST) {
