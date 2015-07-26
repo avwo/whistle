@@ -1,8 +1,10 @@
 var os = require('os');
+var config = require('../lib/config');
 
 exports.getServerInfo = function getServerInfo() {
 	var info = {
 			host: os.hostname(),
+			port: config.port,
 			ipv4: [],
 			ipv6: []
 	};

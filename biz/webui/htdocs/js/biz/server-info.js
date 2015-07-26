@@ -1,6 +1,10 @@
 define('/style/js/biz/server-info.js', function(require, exports, module) {
-	var errorCount = 0;
 	var whistle = window.whistle = {};
+	var curServerInfo;
+	
+	$(document.body).on('click', '.reload', function() {
+		location.reload();
+	});
 	
 	function getServerInfo() {
 		$.ajax({
@@ -8,9 +12,9 @@ define('/style/js/biz/server-info.js', function(require, exports, module) {
 			dataType: 'json',
 			timeout: 10000,
 			success: handleServerInfo,
-			error: handleError,
+			error: showDisconnectedDialog,
 			complete: function() {
-				setTimeout(getServerInfo, 1000);
+				setTimeout(getServerInfo, 2000);
 			}
 		});
 	}
@@ -18,51 +22,60 @@ define('/style/js/biz/server-info.js', function(require, exports, module) {
 	function handleServerInfo(data) {
 		data = data.server;
 		hideDisconnectedDialog();
-		
+		checkServerInfo(data) ? hideServerChangedDialog() : showServerChangedDialog(data);
 	}
 	
-	function handleError() {
-		if (!whistle.disconnected && ++errorCount > 2) {
-			errorCount = 0;
-			showDisconnectedDialog();
-		}
-	}
-	
-	function checkServerInfo(newServerInfo) {
+	function checkServerInfo(newServerInfo, serverInfo) {
+		serverInfo = serverInfo || whistle.serverInfo;
 		
+		return !(serverInfo.port != newServerInfo.port || serverInfo.host != newServerInfo.host || 
+				serverInfo.ipv4.sort().join() != newServerInfo.ipv4.sort().join() || 
+				serverInfo.ipv6.sort().join() != newServerInfo.ipv6.sort().join());
 	}
 	
 	function renderAboutDialog(serverInfo) {
-		var html = ['<label>Host: </label> ' + serverInfo.host];
+		var html = ['<label>Host: </label> ' + serverInfo.host, '<label>Port: </label> ' + serverInfo.port];
 		if (serverInfo.ipv4.length) {
 			html.push('<label>IPv4:</label><br>' + serverInfo.ipv4.join('<br>'));
 		}
 		if (serverInfo.ipv6.length) {
 			html.push('<label>IPv6:</label><br>' + serverInfo.ipv6.join('<br>'));
 		}
-		
-		$('.about-server-dialog').find('.modal-body').html(html.join('<br>'));
+		$('.about-server-info').html(html.join('<br>'));
 	}
 	
 	function showDisconnectedDialog() {
+		curServerInfo = null;
+		if (whistle.disconnected) {
+			return;
+		}
+		hideServerChangedDialog();
 		whistle.disconnected = true;
+		$('.server-disconnected-dialog').modal('show');
 	}
 	
 	function hideDisconnectedDialog() {
 		whistle.disconnected = false;
-		errorCount = 0;
+		$('.server-disconnected-dialog').modal('hide');
 	}
 	
-	function showServerChangedDialog() {
-		
+	function showServerChangedDialog(serverInfo) {
+		if (checkServerInfo(serverInfo, curServerInfo)) {
+			return;
+		}
+		curServerInfo = serverInfo;
+		hideDisconnectedDialog();
+		$('.server-changed-dialog').modal('show');
+		renderAboutDialog(serverInfo);
 	}
 	
 	function hideServerChangedDialog() {
-		
+		$('.server-changed-dialog').modal('hide');
 	}
 	
 	module.exports = function init(serverInfo) {
 		whistle.serverInfo = serverInfo;
 		renderAboutDialog(serverInfo);
+		setTimeout(getServerInfo, 1000);
 	};
 });

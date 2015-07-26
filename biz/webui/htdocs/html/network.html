@@ -258,7 +258,7 @@ body .table>tbody>tr:first-child>th, body .table>tbody>tr:first-child>td {border
     <div class="modal-content">
     <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="myLargeModalLabel">Rules</h4>
+          <h4 class="modal-title">Rules</h4>
     </div>
     <div class="modal-body">
          <div class="hosts">
@@ -381,7 +381,7 @@ body .table>tbody>tr:first-child>th, body .table>tbody>tr:first-child>td {border
     <div class="modal-content">
     <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="myLargeModalLabel">Composer</h4>
+          <h4 class="modal-title">Composer</h4>
     </div>
     <div class="modal-body">
           <div class="composer-url box">
@@ -419,7 +419,7 @@ body .table>tbody>tr:first-child>th, body .table>tbody>tr:first-child>td {border
     <div class="modal-content">
     <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="myLargeModalLabel">Values</h4>
+          <h4 class="modal-title">Values</h4>
     </div>
     <div class="modal-body values box">
         <div class="values-keys">
@@ -515,7 +515,7 @@ body .table>tbody>tr:first-child>th, body .table>tbody>tr:first-child>td {border
     <div class="modal-content">
     <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="myLargeModalLabel">About</h4>
+          <h4 class="modal-title">About</h4>
     </div>
     <div class="modal-body">
           <img alt="logo" src="/style/img/whistle.jpg">
@@ -533,11 +533,46 @@ body .table>tbody>tr:first-child>th, body .table>tbody>tr:first-child>td {border
     <div class="modal-content">
     <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="myLargeModalLabel">About Server</h4>
+          <h4 class="modal-title">About Server</h4>
+    </div>
+    <div class="modal-body about-server-info"></div>
+    </div>
+  </div>
+</div>
+
+<!-- disconnected -->
+<div class="modal fade server-disconnected-dialog" data-remote="false" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+    <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">Disconneced</h4>
     </div>
     <div class="modal-body">
-          
+          代理被切换到其它模式，或者whistle已被关闭，请检查<label>代理设置</label>是否正确及<label>whistle</label>是否运行中。
      </div>
+     <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">I know</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- server changed -->
+<div class="modal fade server-changed-dialog" data-remote="false" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+    <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">Whistle Changed</h4>
+    </div>
+    <div class="modal-body">
+          <label>whistle服务已经切换到如下：</label>
+          <div class="about-server-info"></div>
+     </div>
+     <div class="modal-footer">
+        <button type="button" class="btn btn-primary reload">Reload</button>
+      </div>
     </div>
   </div>
 </div>
@@ -548,7 +583,7 @@ body .table>tbody>tr:first-child>th, body .table>tbody>tr:first-child>td {border
     <div class="modal-content">
     <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="myLargeModalLabel">Timeline</h4>
+          <h4 class="modal-title">Timeline</h4>
     </div>
     <div class="modal-body">
         <table class="table">
