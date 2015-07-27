@@ -38,8 +38,7 @@ define('/style/js/biz/server-info.js', function(require, exports, module) {
 		serverInfo = serverInfo || whistle.serverInfo;
 		
 		return !(serverInfo.port != newServerInfo.port || serverInfo.host != newServerInfo.host || 
-				serverInfo.ipv4.sort().join() != newServerInfo.ipv4.sort().join() || 
-				serverInfo.ipv6.sort().join() != newServerInfo.ipv6.sort().join());
+				serverInfo.ipv4.sort().join() != newServerInfo.ipv4.sort().join());
 	}
 	
 	function renderAboutDialog(serverInfo) {
