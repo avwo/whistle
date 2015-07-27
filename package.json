@@ -36,8 +36,7 @@
 	   "pipestream": "*",
 	   "starting": "*",
 	   "node-forge": "0.6.34",
-	   "socksv5": "0.0.6",
-	   "fs-extra": "0.22.1"
+	   "socksv5": "0.0.6"
   },
   "scripts": {
 		"start": "node app.js"
