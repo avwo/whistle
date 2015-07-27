@@ -11,6 +11,7 @@ util.mkdir(CONFIG_DIR);
 program.setConfig({
 	main: path.join(__dirname, '../index.js'),
 	running: path.join(CONFIG_DIR, '.running'),
+	log: path.join(CONFIG_DIR, 'starting.log'),
 	name: config.name,
 	version: config.version,
 	runCallback: function() {
