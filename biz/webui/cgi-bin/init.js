@@ -1,4 +1,5 @@
 var rulesUtil = require('../lib/rules-util');
+var util = require('./util');
 var config = require('../lib/config');
 
 module.exports = function(req, res) {
@@ -10,6 +11,7 @@ module.exports = function(req, res) {
 	
 	res.json({
 		rules: data,
+		server: util.getServerInfo(),
 		values: {
 			fontSize: rulesUtil.getProperty('valuesFontSize'),
 			theme: rulesUtil.getProperty('valuesTheme'),

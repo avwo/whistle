@@ -2,6 +2,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 	var container = $('#captureList');
 	var body = $('#captureListBody');
 	var quickSearch = $('#quickSearch');
+	var clearQuickSeachInputBtn = $('#clearQuickSeachInput');
 	var captureDetail = $('#captureDetail');
 	var captureDetailContent = $('#captureDetailContent');
 	var captureDetailTabs = captureDetail.find('.tabs button');
@@ -9,7 +10,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 	var ids = [];
 	var data = {};
 	var index = 0;
-	var pending, selectedData;
+	var pending, selectedData, selectedElement;
 	
 	var AMP    = /&/g,
 	    LT     = /</g,
@@ -131,9 +132,9 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		var url = escapeHtml(data.url);
 		var errorMsg = getErrorMsg(data);
 		var defaultValue = errorMsg ? '' : '-';
-		var type = escapeHtml(res.headers ? (res.headers['content-type'] || '') : defaultValue);
+		var type = /^wss?:\/\//.test(url) ? '' : escapeHtml(res.headers ? (res.headers['content-type'] || '') : defaultValue);
 		return '<tr id="' + data.id + '" class="' + (data.endTime ? getClassName(data) : 'pending') 
-					+ (data.isHttps ? ' tunnel' : '') + '">\
+					+ (data.isHttps ? ' tunnel' : '') + (hasRules(data) ? ' has-rules' : '') + '">\
 			        <th class="order" scope="row">' + ++index + '</th>\
 			        <td class="result">' + (res.statusCode || errorMsg || '-') + '</td>\
 			        <td class="protocol">' + getProtocol(data.url) + '</td>\
@@ -144,6 +145,19 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 			        <td class="type" title="' + type + '">' + type + '</td>\
 			        <td class="time">' + (data.endTime ? data.endTime - data.startTime + 'ms' : defaultValue) + '</td>\
 			     </tr>';
+	}
+	
+	function hasRules(data) {
+		if (data.customHost) {
+			return true;
+		}
+		
+		for (var i in data.rules) {
+			if (i != 'filter') {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	function updateElement(elem, data) {
@@ -268,7 +282,9 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 	
 	function search(scrollToBottom) {
 		var rows = body.find('tr');
-		var keywords = $.trim(quickSearch.val());
+		var keywords = quickSearch.val();
+		keywords ? clearQuickSeachInputBtn.show() : clearQuickSeachInputBtn.hide();
+		keywords = $.trim(keywords);
 		if (!keywords) {
 			rows.show();
 			scrollToBottom && container.scrollTop(body[0].offsetHeight);
@@ -294,6 +310,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 			data = {};
 			ids = [];
 			index = 0;
+			selectedElement = null;
 			quickSearch.val('');
 		});
 		
@@ -308,6 +325,13 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		});
 		
 		quickSearch.on('input', search);
+		clearQuickSeachInputBtn.click(function() {
+			quickSearch.val('');
+			search(true);
+			setTimeout(function() {
+				quickSearch.focus();
+			}, 0);
+		});
 		
 		body.on('dblclick', 'tr', function() {
 			selectedData = data[this.id];
@@ -315,6 +339,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 				captureDetail.hide();
 				return;
 			}
+			
 			captureDetail.show().focus();
 			resizeDetail();
 			var activeElem = captureDetailTabs.filter('.active');
@@ -323,8 +348,25 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 			}
 			activeElem.trigger('click', {force: true});
 		}).on('click', 'tr', function(e) {
-			!e.ctrlKey && !e.metaKey && body.find('tr').removeClass('selected');
-			$(this).addClass('selected');
+			var self = $(this);
+			var that = this;
+			
+			if (e.shiftKey && selectedElement && selectedElement.parent().length && that != selectedElement[0]) {
+				var matched, selected;
+				body.find('tr').each(function() {
+					if (matched = this == that || this == selectedElement[0]) {
+						selected = !selected;
+						$(this).addClass('selected');
+					} else if (selected) {
+						$(this).addClass('selected');
+					} else {
+						$(this).removeClass('selected');
+					}
+				});
+			} else {
+				!e.ctrlKey && !e.metaKey && body.find('tr').removeClass('selected');
+				selectedElement = self.addClass('selected');
+			}
 		});
 		
 		function resizeDetail() {
@@ -350,8 +392,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 			if (prev || keyCode == 40) {
 				prev  = prev ? getPrevVisible(selectedElem) : getNextVisible(selectedElem);
 				if (prev.length > 0) {
-					body.find('tr.selected').removeClass('selected');
-					prev.addClass('selected');
+					prev.trigger('click');
 					ensureVisible(prev);
 				}
 				e.preventDefault();
@@ -477,7 +518,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 						'Request Length': req.size == null ? '' : req.size,
 						'Content Length': res.size == null ? '' : res.size,
 						'Start Time': selectedData.startTime,
-						'DNS Lookup': selectedData.dnsTime - selectedData.startTime + 'ms',
+						'DNS Lookup': selectedData.dnsTime && (selectedData.dnsTime - selectedData.startTime + 'ms'),
 						'Request Sent': selectedData.requestTime  && (selectedData.requestTime - selectedData.startTime + 'ms'),
 						'Content Download': selectedData.endTime &&  (selectedData.endTime - selectedData.startTime + 'ms')
 					} : {
@@ -490,15 +531,16 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 						'Request Length': req.size == null ? '' : req.size,
 						'Content Length': res.size == null ? '' : res.size,
 						'Start Time': selectedData.startTime,
-						'DNS Lookup': selectedData.dnsTime - selectedData.startTime + 'ms',
+						'DNS Lookup': selectedData.dnsTime && (selectedData.dnsTime - selectedData.startTime + 'ms'),
 						'Request Sent': selectedData.requestTime  && (selectedData.requestTime - selectedData.startTime + 'ms'),
 						'Content Download': selectedData.endTime &&  (selectedData.endTime - selectedData.startTime + 'ms')
 					}) + '<hr/>' + getProperties({
+						Host: selectedData.customHost && res.ip,
 						Req: rules.req && rules.req.raw,
-						Proxy: rules.proxy && rules.proxy.raw,
 						Rule: rules.rule && rules.rule.raw,
 						Res: rules.res && rules.res.raw,
-						Weinre: rules.weinre && rules.weinre.raw
+						Weinre: rules.weinre && rules.weinre.raw,
+						Filter: rules.filter && rules.filter.raw
 					}));
 					
 					
@@ -580,7 +622,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 						endTime: this.endTime,
 						statusCode: this.res.statusCode || getErrorMsg(this) || '-',
 						stalled: this.startTime - startTime,
-						dns: this.dnsTime - this.startTime,
+						dns: this.dnsTime ? this.dnsTime - this.startTime : end,
 						request: this.requestTime ? this.requestTime - this.startTime : end,
 						response: this.responseTime ? this.responseTime - this.startTime : end,
 						end: end,
@@ -597,7 +639,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 			
 			return '<tr class="' + data.className + '" ' + (data.endTime ?  'title="' 
 					+ 'Stalled: ' + data.stalled + 'ms\r\nDNS: ' 
-					+ data.dns + 'ms\r\nRequest: ' + (data.request - data.dns) + 'ms\r\Response: ' 
+					+ data.dns + 'ms\r\nRequest: ' + (data.request - data.dns) + 'ms\r\nResponse: ' 
 					+ (data.end - data.request) + 'ms"' : '') + '>\
 	          <th class="order" scope="row">' + data.order + '</th>\
 	          <td class="result">' + data.statusCode + '</td>\
@@ -619,6 +661,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		
 			return /\b(tunnel|warning|info|success|active|danger)\b/.test(className) ? RegExp.$1 : '';
 		}
+		
 	}
 	
 	function request(data) {

@@ -1,4 +1,11 @@
 # whistle
+[![node version][node-image]][node-url]
+[![npm download][download-image]][download-url]
+
+[node-image]: https://img.shields.io/badge/node.js-%3E=_0.10-green.svg?style=flat-square
+[node-url]: http://nodejs.org/download/
+[download-image]: https://img.shields.io/npm/dm/whistle.svg?style=flat-square
+[download-url]: https://npmjs.org/package/whistle
 
 whistle是用node实现的跨平台web调试代理工具，支持windows、mac、linux等操作系统，具有以下功能：
 
@@ -191,7 +198,7 @@ whistle安装完成后，执行命令 `whistle help`，查看whistle的帮助信
 ### 访问配置页面
 配置完代理，用chrome(或safari)访问配置页面 [http://local.whistlejs.com/](http://local.whistlejs.com/)，如果能正常打开页面，whistle安装启动完毕，可以开始使用。
 
-配置页面默认有一个 **Public** 公用分组(Public分组的作用是配置一些公共的信息，whistle会先在自定义的分组里面找匹配的操作，如果没有找到会到Public分组找)，也可以通过左下角的create按钮创建自定义分组，whistle的配置方式跟配置hosts一样，每一行表示一条规则，注释也是使用 `#`。
+配置页面默认有一个 **Default** 公用分组(Default分组的作用是配置一些公共的信息，whistle会先在自定义的分组里面找匹配的操作，如果没有找到会到Default分组找)，也可以通过左下角的create按钮创建自定义分组，whistle的配置方式跟配置hosts一样，每一行表示一条规则，注释也是使用 `#`。
 
 下面我们开始详细讲下whistle的匹配方式和基本功能。
 

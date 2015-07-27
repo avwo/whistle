@@ -1,8 +1,7 @@
 var http = require('http');
 var url = require('url');
 var config = require('../../lib/config');
-var util = require('../../../../util');
-var HTTPS_FLAG = require('../../../../package.json').whistleSsl + '.';
+var util = require('../../../../lib/util');
 
 function parseHeaders(headers) {
 	if (!headers || typeof headers != 'string') {
@@ -59,6 +58,9 @@ module.exports = function(req, res) {
 			req.body.body = new Buffer(req.body.body || '');
 			headers['content-length'] = req.body.body.length;
 		}
+		
+		headers[util.CLIENT_IP_HEAD] = util.getClientIp(req);
+		
 		http.request(options, function(res) {
 			res.on('error', util.noop);
 			util.drain(res);

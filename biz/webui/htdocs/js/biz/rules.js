@@ -94,7 +94,7 @@ define('/style/js/biz/rules.js', function(require, exports, module) {
 	function updatePublicHostsState() {
 		var enable = $('#enablePublicHosts').prop('checked');
 		$('#publicHosts').css('color', enable ? '' : '#ccc')
-		.attr('title', enable ? '先到自定义规则查找，如果没有匹配的再查找Public' : '公用环境已禁用');
+		.attr('title', enable ? '先到自定义规则查找，如果没有匹配的再查找Default' : '公用环境已禁用');
 	}
 	
 	body.on('click', '.remove-hosts', function() {
@@ -113,18 +113,6 @@ define('/style/js/biz/rules.js', function(require, exports, module) {
 			updateCreateHostsBtnState();
 		}
 		
-	});
-	
-	$('#hostsEditor').keydown(function(e) {
-		if ((e.ctrlKey || e.metaKey)
-				&& (e.keyCode == 13 || e.keyCode == 83)) {
-			$('.apply-hosts').trigger('click');
-		}
-	}).keydown(function(e) {
-		if ((e.ctrlKey || e.metaKey) && e.keyCode == 83) {
-			e.preventDefault();
-			return false;
-		}
 	});
 	
 	body.on('click', '.apply-hosts,.confirm-hosts', function(e) {
@@ -193,7 +181,7 @@ define('/style/js/biz/rules.js', function(require, exports, module) {
 			return;
 		}
 
-		$('.view-values').trigger('click');
+		$('.values-dialog').modal('show');
 		var valuesCon = $('#valuesList');
 		var valuesList = valuesCon.find('a');
 		for (var i = 0; i < valuesList.length; i++) {
@@ -289,7 +277,7 @@ define('/style/js/biz/rules.js', function(require, exports, module) {
 	}
 	
 	function updateCreateHostsBtnState() {
-		if (newHostsList.find('.list-group-item').length >= 36) {
+		if (newHostsList.find('.list-group-item').length >= 100) {
 			createHostsBtn.addClass('disabled');
 		} else {
 			createHostsBtn.removeClass('disabled');
@@ -397,6 +385,18 @@ define('/style/js/biz/rules.js', function(require, exports, module) {
 		
 		$('#rulesSettings').click(function() {
 			rulesSettingsList.show();
+		});
+		
+		(homePage ? $(window) : $('#hostsEditor')).keydown(function(e) {
+			if ((e.ctrlKey || e.metaKey)
+					&& (e.keyCode == 13 || e.keyCode == 83)) {
+				$('.apply-hosts').trigger('click');
+			}
+		}).keydown(function(e) {
+			if ((e.ctrlKey || e.metaKey) && e.keyCode == 83) {
+				e.preventDefault();
+				return false;
+			}
 		});
 		
 	};

@@ -93,6 +93,7 @@ html, body, .main {overflow: hidden; margin: 0; padding: 0; height: 100%;}
 .table .host-ip {width: 150px;}
 .table .type, .table .time {width: 100px;}
 .table .tunnel {color: #808080;}
+.table .has-rules {font-weight: bold;}
 
 .main .table {margin: 0; padding: 0;}
 .box {display:-webkit-box; display:box;}
@@ -102,6 +103,8 @@ html, body, .main {overflow: hidden; margin: 0; padding: 0; height: 100%;}
 .nav-bar {position: relative;}
 .nav-bar {line-height: 34px; height: 54px; padding: 10px 10px 10px 5px; background: #f8f8f9; border-bottom: 1px solid #ddd;}
 .nav-bar .quick-search {display: block; padding: 0 5px;} 
+.nav-bar .quick-search-wrapper {position: relative;}
+.nav-bar .quick-search-wrapper .clear-input {position: absolute; right: 10px; top: 6px; display: none;}
 .nav-bar a {margin-left: 10px; padding: 0 10px; display: inline-block;}
 .nav-bar .help-list {position: absolute; z-index: 1; right: 15px; top: 46px; margin: 0; padding: 0; list-style: none; display: none;}
 .nav-bar .help-list a, .nav-bar .help-list label {margin: 0; padding: 0 20px; display: block;}
@@ -118,6 +121,7 @@ body .table>tbody>tr:first-child>th, body .table>tbody>tr:first-child>td {border
 .capture-detail .action-bar {padding: 0 10px 0 0; position: relative; border-bottom: 1px solid #ddd;}
 .capture-detail .action-bar .close {position: absolute; right: 10px; top: 5px;}
 .capture-detail .action-bar a {text-decoration: none; margin-left: 10px; display: inline-block; line-height: 32px;}
+.capture-detail .action-bar .encrypt-https {display: none;}
 .capture-detail .headers {border-bottom: 1px solid #ddd;}
 .capture-detail-content > div, .capture-detail-content > textarea {overflow: auto; padding: 8px; border: none; box-sizing: border-box;}
 .capture-detail-content > textarea {display: none; outline: none; resize: none;}
@@ -189,15 +193,19 @@ body .table>tbody>tr:first-child>th, body .table>tbody>tr:first-child>td {border
 <body>
 <div class="main box box-orient-vertical">
 <div class="box nav-bar">
-	<input id="quickSearch" type="text" class="fill form-control quick-search" placeholder="type filter text" autofocus="autofocus" />
+	<div class="box fill quick-search-wrapper"><input id="quickSearch" type="text" class="fill form-control quick-search" placeholder="type filter text" autofocus="autofocus" /><button type="button" id="clearQuickSeachInput" class="close clear-input"><span aria-hidden="true">&times;</span></button></div>
 	<a href="javascript:;" data-toggle="modal" data-target=".rules-dialog">Rules</a>
 	<a href="javascript:;" id="showTimeline">Timeline</a>
 	<a href="javascript:;" id="moreActions">More <span class="caret"></span></a>
 	<ul id="helpList" class="help-list shadow">
 		<li><a id="clearAll" href="javascript:;">Clear</a></li>
 		<li><a href="javascript:;" data-toggle="modal" data-target=".composer-dialog">Composer</a></li>
+		<li><a href="javascript:;" class="open-weinre" data-toggle="modal" data-target="#openWeinreDialog" title="open weinre">Weinre</a></li>
+		<li><a href="javascript:;" class="view-values" data-toggle="modal" data-target=".values-dialog">Values</a></li>
+		<li><a href="/root-ca.html" target="_blank">RootCA</a></li>
 		<li><a href="https://github.com/avwo/whistle" target="_blank">Github</a></li>
         <li><a href="https://github.com/avwo/whistle/blob/master/README.md" target="_blank">Help</a></li>
+        <li><a href="javascript:;" data-toggle="modal" data-target=".about-server-dialog">About Server</a></li>
         <li><a href="javascript:;" data-toggle="modal" data-target=".about-dialog">About</a></li>
       </ul>
 </div>
@@ -250,12 +258,12 @@ body .table>tbody>tr:first-child>th, body .table>tbody>tr:first-child>td {border
     <div class="modal-content">
     <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="myLargeModalLabel">Rules</h4>
+          <h4 class="modal-title">Rules</h4>
     </div>
     <div class="modal-body">
          <div class="hosts">
 			<div id="hostsList" class="hosts-list box-orient-vertical list-group">
-			  <a id="publicHosts" href="javascript:;" class="list-group-item public-hosts">Public</a>
+			  <a id="publicHosts" href="javascript:;" class="list-group-item public-hosts">Default</a>
 			  <div id="newHostsList" class="new-hosts-list fill"></div>
 			  <a id="createHostsBtn" href="javascript:;" class="list-group-item create-hosts">+ Create</a>
 			</div>
@@ -338,7 +346,7 @@ body .table>tbody>tr:first-child>th, body .table>tbody>tr:first-child>td {border
         <h4 class="modal-title">Create</h4>
       </div>
       <div class="modal-body">
-        <p><input id="newHostsName" class="form-control new-hosts-name" maxlength="50" type="text" placeholder="Input the name" /></p>
+        <p><input id="newHostsName" class="form-control new-hosts-name" maxlength="50" type="text" placeholder="input the name" /></p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -356,7 +364,7 @@ body .table>tbody>tr:first-child>th, body .table>tbody>tr:first-child>td {border
         <h4 class="modal-title">Weinre id</h4>
       </div>
       <div class="modal-body">
-        <p><input id="weinreId" class="form-control new-hosts-name" type="text" placeholder="Input the weinre id" maxlength="120" /></p>
+        <p><input id="weinreId" class="form-control new-hosts-name" type="text" placeholder="input the weinre id" maxlength="120" /></p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -373,7 +381,7 @@ body .table>tbody>tr:first-child>th, body .table>tbody>tr:first-child>td {border
     <div class="modal-content">
     <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="myLargeModalLabel">Composer</h4>
+          <h4 class="modal-title">Composer</h4>
     </div>
     <div class="modal-body">
           <div class="composer-url box">
@@ -411,7 +419,7 @@ body .table>tbody>tr:first-child>th, body .table>tbody>tr:first-child>td {border
     <div class="modal-content">
     <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="myLargeModalLabel">Values</h4>
+          <h4 class="modal-title">Values</h4>
     </div>
     <div class="modal-body values box">
         <div class="values-keys">
@@ -491,7 +499,7 @@ body .table>tbody>tr:first-child>th, body .table>tbody>tr:first-child>td {border
         <h4 class="modal-title">Create</h4>
       </div>
       <div class="modal-body">
-        <p><input id="newValuesKey" class="form-control new-values-key" maxlength="120" type="text" placeholder="Input the key" /></p>
+        <p><input id="newValuesKey" class="form-control new-values-key" maxlength="120" type="text" placeholder="input the key" /></p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -507,7 +515,7 @@ body .table>tbody>tr:first-child>th, body .table>tbody>tr:first-child>td {border
     <div class="modal-content">
     <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="myLargeModalLabel">About</h4>
+          <h4 class="modal-title">About</h4>
     </div>
     <div class="modal-body">
           <img alt="logo" src="/style/img/whistle.jpg">
@@ -519,13 +527,63 @@ body .table>tbody>tr:first-child>th, body .table>tbody>tr:first-child>td {border
   </div>
 </div>
 
+<!-- about server -->
+<div class="modal fade about-server-dialog" data-remote="false" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+    <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">About Server</h4>
+    </div>
+    <div class="modal-body about-server-info"></div>
+    </div>
+  </div>
+</div>
+
+<!-- disconnected -->
+<div class="modal fade server-disconnected-dialog" data-remote="false" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+    <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">Disconneced</h4>
+    </div>
+    <div class="modal-body">
+          当前代理设置没指向任何whistle服务，或者whistle已被关闭，请检查<label>代理设置</label>是否正确及<label>whistle</label>是否在运行中。
+     </div>
+     <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">I know</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- server changed -->
+<div class="modal fade server-changed-dialog" data-remote="false" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+    <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">Whistle Changed</h4>
+    </div>
+    <div class="modal-body">
+          <label>whistle服务已经被切换，请重新加载页面：</label>
+          <div class="about-server-info"></div>
+     </div>
+     <div class="modal-footer">
+        <button type="button" class="btn btn-primary reload">Reload</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Timeline -->
 <div class="modal fade timeline-dialog" data-remote="false" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
     <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="myLargeModalLabel">Timeline</h4>
+          <h4 class="modal-title">Timeline</h4>
     </div>
     <div class="modal-body">
         <table class="table">
@@ -547,7 +605,6 @@ body .table>tbody>tr:first-child>th, body .table>tbody>tr:first-child>td {border
     </div>
   </div>
 </div>
-
 
 <script src="/style/js/lib/base.js"></script>
 <script src="/style/js/lib/bootstrap.js"></script>

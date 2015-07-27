@@ -4,8 +4,8 @@ var auth = require('basic-auth');
 var bodyParser = require('body-parser');
 var crypto = require('crypto');
 var htdocs = require('../htdocs');
-var util = require('../../../util');
-var username, password;
+var util = require('../../../lib/util');
+var username, password, config;
 
 app.use(function(req, res, next) {
 	req.on('error', abort).on('close', abort);
@@ -41,8 +41,8 @@ app.get('/index.html', function(req, res) {
 app.all('/cgi-bin/*', function(req, res) {
 	try {
 		require(path.join(__dirname, '..' + req.url.replace(/\?.*$/, '')))(req, res);
-	} catch(e) {
-		res.sendStatus(404);
+	} catch(err) {
+		res.status(500).send(util.getErrorStack(err));
 	}
 });
 
@@ -99,7 +99,7 @@ function shasum(str) {
 }
 
 module.exports = function(proxy) {
-	var config = proxy.config;
+	config = proxy.config;
 	username = config.username || '';
 	password = config.password || '';
 	

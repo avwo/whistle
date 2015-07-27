@@ -17,6 +17,7 @@ function disable() {
 	proxy.removeListener('request', handleRequest);
 	proxy.removeListener('tunnel', handleTunnel);
 	proxy.removeListener('tunnelProxy', handleTunnelProxy);
+	proxy.removeListener('websocket', handleWebsocket);
 	
 	ids = [];
 	data = {};
@@ -30,6 +31,7 @@ function enable() {
 		proxy.on('request', handleRequest);
 		proxy.on('tunnel', handleTunnel);
 		proxy.on('tunnelProxy', handleTunnelProxy);
+		proxy.on('websocket', handleWebsocket);
 	}
 	
 	binded = true;
@@ -187,10 +189,8 @@ function handleTunnelProxy(req) {
 }
 
 function handleTunnelRequest(req, isHttps) {
-	var dnsTime = req.dnsTime || 0;
-	var now = req.dnsTime = Date.now();
-	var startTime = req.dnsTime - dnsTime;
-	var id = req.dnsTime + '-' + ++count;
+	var startTime = Date.now();
+	var id = startTime + '-' + ++count;
 	
 	ids.push(id);
 	
@@ -200,36 +200,46 @@ function handleTunnelRequest(req, isHttps) {
 			isHttps: true,
 			isHttpsProxy: !isHttps,
 			startTime: startTime,
-			dnsTime: req.dnsTime,
-			requestTime: now,
-			responseTime: now,
-			endTime: now,
-			reqError: !!req.error,
 			req: {
-				method: req.method || 'CONNECT', 
+				method: req.method && req.method.toUpperCase() || 'CONNECT', 
 				httpVersion: req.httpVersion || '1.1',
 	            ip: util.getClientIp(req) || '::ffff:127.0.0.1',
-	            headers: req.headers,
-	            body: req.error && req.error.stack
+	            headers: req.headers
 			},
 			res: {
-				statusCode: req.error ? 502 : '0',
-				headers: {},
-				ip: req.host || '127.0.0.1'
+				headers: {}
 			},
 			rules: req.rules
 	};
+	
+	req.on('error', function(err) {
+		curData.reqError = true;
+		curData.res.ip = req.host || '127.0.0.1';
+		curData.res.statusCode = 502;
+		curData.req.body = util.getErrorStack(err);
+	});
+	
+	req.on('send', function() {
+		curData.res.ip = req.host || '127.0.0.1';
+		curData.customHost = req.customHost;
+		curData.realUrl = req.realUrl;
+		curData.requestTime = curData.dnsTime = Date.now();
+	});
+	
+	req.on('response', function() {
+		curData.res.statusCode = 200;
+		curData.responseTime = curData.endTime = Date.now();
+	});
 }
 
 function handleRequest(req) {
-	var dnsTime = req.dnsTime || 0;
-	req.dnsTime = Date.now();
-	var startTime = req.dnsTime - dnsTime;
-	var id = req.dnsTime + '-' + ++count;
+	var startTime = Date.now();
+	var id = startTime + '-' + ++count;
 	var reqData = {
-			method: req.method || 'GET', 
+			method: req.method && req.method.toUpperCase() || 'GET', 
 			httpVersion: req.httpVersion || '1.1',
             ip: req.ip || '::ffff:127.0.0.1',
+            isWhistleHttps: req.isWhistleHttps,
             headers: req.headers
 		};
 	var resData = {
@@ -240,7 +250,7 @@ function handleRequest(req) {
 			id: id,
 			url: req.url,
 			startTime: startTime,
-			dnsTime: req.dnsTime,
+			customHost: req.customHost,
 			req: reqData,
 			res: resData,
 			rules: req.rules
@@ -249,18 +259,25 @@ function handleRequest(req) {
 	ids.push(id);
 	req.on('response', handleResponse);
 	req.on('error', function(err) {
-		resData.ip = req.host;
-		if (req.realUrl && req.realUrl != req.url) {
-			curData.realUrl = req.realUrl;
-		}
+		update();
 		if (reqData.body == null) {
-			reqData.body = err.stack;
+			reqData.body = util.getErrorStack(err);
 		}
 		curData.endTime = curData.requestTime = Date.now();
 		curData.reqError = true;
 		req.removeListener('response', handleResponse);
 		req._transform = passThrough;
 	});
+	req.on('send', update);
+	
+	function update() {
+		curData.dnsTime = (req.dnsTime || 0) + startTime;
+		curData.customHost = req.customHost;
+		resData.ip = req.host;
+		if (req.realUrl && req.realUrl != req.url) {
+			curData.realUrl = req.realUrl;
+		}
+	}
 	
 	var reqBody;
 	var reqSize = 0;
@@ -292,16 +309,13 @@ function handleRequest(req) {
 	};
 	
 	function handleResponse(res) {
+		update();
 		curData.responseTime = Date.now();
 		resData.headers = res.headers;
 		resData.statusCode = res.statusCode;
-		resData.ip = req.host;
-		if (res.realUrl) {
-			curData.realUrl = res.realUrl;
-		}
 		res.on('error', function(err) {
 			resData.ip = req.host;
-			resData.body = err.stack;
+			resData.body = util.getErrorStack(err);
 			curData.endTime = Date.now();
 			curData.resError = true;
 			res._transform = passThrough;
@@ -344,7 +358,7 @@ function handleRequest(req) {
 					
 					if (unzip) {
 						var next = function(err, body) {
-							resData.body = err ? err.stack : decode(body);
+							resData.body = err ? util.getErrorStack(err) : decode(body);
 							callback(null, chunk);
 						};
 						unzip(resBody, function(err, body) {
@@ -364,6 +378,59 @@ function handleRequest(req) {
 		};
 	}
 	
+}
+
+function handleWebsocket(req) {
+	var startTime = Date.now();
+	var id = startTime + '-' + ++count;
+	var reqData = {
+			method: req.method && req.method.toUpperCase() || 'GET', 
+			httpVersion: req.httpVersion || '1.1',
+            ip: req.ip || '::ffff:127.0.0.1',
+            headers: req.headers
+		};
+	var resData = {};
+	var curData = data[id] = {
+			id: id,
+			url: req.url,
+			customHost: req.customHost,
+			startTime: startTime,
+			dnsTime: startTime,
+			req: reqData,
+			res: resData,
+			rules: req.rules
+	};
+	
+	ids.push(id);
+	req.on('response', handleResponse);
+	req.on('error', function(err) {
+		update();
+		resData.statusCode = 502;
+		resData.headers = {};
+		reqData.body = util.getErrorStack(err);
+		curData.resEnd = true;
+		curData.endTime = curData.requestTime = Date.now();
+		req.removeListener('response', handleResponse);
+	});
+	req.on('send', update);
+	
+	function update() {
+		curData.customHost = req.customHost;
+		curData.dnsTime = (req.dnsTime || 0) + startTime;
+		curData.rules = req.rules;
+		resData.ip = req.host;
+		if (req.realUrl && req.realUrl != req.url) {
+			curData.realUrl = req.realUrl;
+		}
+	}
+	
+	function handleResponse(res) {
+		update();
+		curData.responseTime = Date.now();
+		curData.endTime = curData.requestTime = Date.now();
+		resData.headers = res.headers;
+		resData.statusCode = res.statusCode;
+	}
 }
 
 module.exports = function init(_proxy) {

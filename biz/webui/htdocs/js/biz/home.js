@@ -1,6 +1,7 @@
 define('/style/js/biz/home.js', function(require, exports, module) {
 	var initRules = require('./rules');
 	var initValues = require('./values');
+	var initServerInfo = require('./server-info');
 	
 	function addEvents() {
 		var actionList = $('#moreActionList').click(function() {
@@ -28,6 +29,7 @@ define('/style/js/biz/home.js', function(require, exports, module) {
 			data = data || {};
 			initRules(data.rules, data.values && data.values.values, true);
 			initValues(data.values);
+			initServerInfo(data.server);
 			addEvents();
 		},
 		error: function() {
