@@ -1,4 +1,11 @@
 # whistle
+[![node version][node-image]][node-url]
+[![npm download][download-image]][download-url]
+
+[node-image]: https://img.shields.io/badge/node.js-%3E=_0.10-green.svg?style=flat-square
+[node-url]: http://nodejs.org/download/
+[download-image]: https://img.shields.io/npm/dm/whistle.svg?style=flat-square
+[download-url]: https://npmjs.org/package/whistle
 
 whistle是用node实现的跨平台web调试代理工具，支持windows、mac、linux等操作系统，具有以下功能：
 
