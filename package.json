@@ -9,7 +9,7 @@
   "ports": ["uiport", "uidataport", "weinreport"],
   "sockets": 8,
   "keepAlive": true,
-  "keepAliveMsecs": 30000,
+  "keepAliveMsecs": 10000,
   "days": 1,
   "timeout": 36000,
   "httpsProxyHost": "x-whistle-proxy-host",
