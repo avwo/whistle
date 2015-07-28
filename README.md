@@ -25,7 +25,7 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 
 - 丰富的操作规则：
 
-	1. 配置hosts： 
+	1. 配置host： 
 
 			pattern ip
 			#或
@@ -58,33 +58,155 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 
 			pattern [x]file://path1|path2... 
 			#或 
-			[x]file://path1|path2... pattern
+			[x]file://path1|path2|...|pathN pattern
 
 			#支持模板替换，主要用于替换jsonp请求
 			pattern [x]tpl://path1|path2...
 			#或
-			[x]tpl://path1|path2... pattern
+			[x]tpl://path1|path2|...|pathN pattern
 
 			#组合方式
-			[x]file://path1|path2... pattern1 pattern2 ... patternN
-			[x]tpl://path1|path2... pattern1 pattern2 ... patternN
+			[x]file://path1|path2|...|pathN pattern1 pattern2 ... patternN
+			[x]tpl://path1|path2|...|pathN pattern1 pattern2 ... patternN
 
-		2) 设置代理： `pattern proxy://host:port` `pattern socks://host:port` 或  `proxy://host:port pattern` `pattern socks://host:port`
+		2) 设置代理： 
 
-		3) url替换：`pattern [http[s]://]path` 或 `[http[s]://]path pattern`
+			#设置http、https代理， host为ip或域名
+			pattern proxy://host:port
+			pattern proxy://username:password@host:port #需要用户名密码的情况
+			pattern proxy://u1:p1|u2:p2|un|pn@host:port #同时带上多个用户名密码
+			#或
+			proxy://host:port pattern
+			proxy://username:password@host:port pattern #需要用户名密码的情况
+			proxy://u1:p1|u2:p2|un|pn@host:port pattern #同时带上多个用户名密码
+
+			#设置socksv5代理
+			pattern socks://host:port
+			pattern socks://username:password@host:port  #需要用户名密码的情况
+			#或 
+			socks://host:port pattern
+			socks://username:password@host:port pattern #需要用户名密码的情况
+
+			#组合方式
+			proxy://host:port pattern1 pattern2 ... patternN
+			socks://host:port pattern1 pattern2 ... patternN
+
+		3) url替换： 
+			
+			pattern [http[s]://]path
+			#或
+			[http[s]://]path pattern #pattern必须为正则表达式
+
+			#不支持组合模式
 
 		4) 自定义规则： 如果上述规则无法满足需求，还可以自定义规则，详见后面文档。
 
 	5. 注入文本： 
 
 		1) 注入到请求内容：
+			
+			#在替换请求内容
+			pattern body://path
+			pattern body://path1|path2|...|pathN
+			#或
+			body://path1|path2|...|pathN pattern
+
+			#在请求内容前面注入文本
+			pattern 
+			pattern prepend://path1|path2|...|pathN
+			#或
+			prepend://path1|path2|...|pathN pattern
+
+			#在请求内容底部注入文本
+			pattern append://path1|path2|...|pathN
+			#或
+			append://path1|path2|...|pathN pattern
+
+			#组合模式
+			append://path pattern1 pattern2 ... patternN
+			append://path1|path2|...|pathN pattern1 pattern2 ... patternN
 
 		2） 注入到响应内容：
+			
+			#在替换响应内容，这与本地替换的区别是：body是修改了响应后的内容，而本地替换是直接把请求替换成本地。
+			pattern body://path
+			pattern body://path1|path2|...|pathN
+			#或
+			body://path1|path2|...|pathN pattern
 
-	6. 内置weinre：
-	7. 设置过滤：
+			#在响应内容前面注入文本
+			pattern 
+			pattern prepend://path1|path2|...|pathN
+			#或
+			prepend://path1|path2|...|pathN pattern
 
-	*Note: `[]` 表示可选*
+			#在响应内容底部注入文本
+			pattern append://path1|path2|...|pathN
+			#或
+			append://path1|path2|...|pathN pattern
+
+			#组合模式
+			append://path pattern1 pattern2 ... patternN
+			append://path1|path2|...|pathN pattern1 pattern2 ... patternN
+		
+
+	6. 内置weinre： 利用pc浏览器调试手机页面
+
+			# `weinreId` 表示任意一个id，主要用于把请求按类型分组，方便调试
+			pattern weinre://weinreId 
+			#或
+			weinre://weinreId pattern
+
+			#组合模式
+			weinre://weinreId pattern1 pattern2 ... patternN
+			
+
+	7. 设置过滤： 拦截https请求、隐藏抓包数据、禁用上述各种协议
+
+		1) 拦截https请求：只有配置该过滤器，https及websocket的抓包，替换功能才能启用
+
+			pattern filter://https
+			#或
+			filter://https pattern
+
+			#组合模式
+			filter://https pattern1 pattern2 ... patternN
+
+		2) 隐藏抓包数据：某些请求的数据不想在抓包列表展示出来，以免影响查看其它请求
+		
+			pattern filter://hide
+			#或
+			filter://hide pattern
+
+			#组合模式
+			filter://hide pattern1 pattern2 ... patternN
+
+		3）禁用规则配置：可以把配置页面配置的各种规则禁用掉，包括：host、req、res、rule、prepend、body、append、weinre等，下面用 `rule` 代替上述名称
+
+			pattern filter://rule
+			#或
+			filter://rule pattern
+
+			#组合模式
+			filter://rule pattern1 pattern2 ... patternN
+
+		4) 组合功能：
+			
+			pattern filter://https|hide|host|req|res|rule|prepend|body|append|weinre 
+			#或
+			filter://https|hide|host|req|res|rule|prepend|body|append|weinre pattern
+
+			#组合模式
+			filter://https|hide|host|req|res|rule|prepend|body|append|weinre pattern1 pattern2 ... patternN
+
+
+
+	*Note: `[]` 表示可选*，前面带 `x` 的协议，表示如果本地请求不到，会直接请求线上， 路径组合 `path1|...|pathN` 表示whistle会顺序在这些文件或目录里面找，找到为止。
+
+- 支持配置分组功能:
+
+		图1
+
 
 1. 更灵活的hosts配置方式：没有dns缓存、支持域名匹配、路径匹配、正则匹配
 2. 设置代理: 把请求代理到其它代理上，如Fiddler、Charles或其它机器上的whistle等
