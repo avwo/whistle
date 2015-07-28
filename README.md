@@ -7,36 +7,82 @@
 [download-image]: https://img.shields.io/npm/dm/whistle.svg?style=flat-square
 [download-url]: https://npmjs.org/package/whistle
 
-whistle是用node实现的跨平台web调试代理工具，支持windows、mac、linux等操作系统，支持操作http、https、websocket请求，可以部署在本地电脑、虚拟机、或远程服务器，并通过本地浏览器访问whistle的配置页面，查看代理到whistle请求数据，及配置相应规则操作http[s]、ws[s]请求，主要有如下功能：
+whistle是用node实现的跨平台web调试代理工具，支持windows、mac、linux等操作系统，支持http、https、websocket请求，可以部署在本地电脑、虚拟机、或远程服务器，并通过本地浏览器访问whistle的配置页面，查看代理到whistle请求数据，及配置相应规则操作http[s]、ws[s]请求，包含如下功能：
 
 - 简单的配置方式，把每个规则抽象成一个uri，并通过配置请求url到规则uri，实现对请求的操作
+	1. 匹配方式 --> 操作规则
 
-		# 匹配方式 --> 操作规则
-		pattern   operatorUri
+			pattern   operatorUri
 
-		# 如果pattern和operatorUri其中有一个不是http[s]、ws[s]协议，则两个的位置可以调换
-		operatorUri pattern
+	2. 如果pattern和operatorUri其中有一个不是http[s]、ws[s]协议，则两个的位置可以调换
+		
+			operatorUri pattern
 
 - 灵活的匹配方式(**pattern**)，支持三种匹配方式：
-	1. 域名匹配：把规则作用于所有该域名
+	1. 域名匹配：把规则作用于所有该域名的请求
 	2. 路径匹配：把规则作用于该路径或该路径的子路径
 	3. 正则匹配：通过正则匹配规则，支持通过子匹配把请求url里面的参数带到新的url
 
 - 丰富的操作规则：
 
-	1. 配置hosts： `pattern ip` 或 `ip pattern`
-	2. 修改请求： `pattern req://path` 或 `req://path pattern`
-	3. 修改响应： `pattern req://path` 或 `req://path pattern`
+	1. 配置hosts： 
+
+			pattern ip
+			#或
+			ip pattern
+	
+			#组合方式
+			ip pattern1 pattern2 ... patternN
+
+	2. 修改请求： 请求方法、 请求头、延迟发送请求、限制请求速度，设置timeout
+
+			pattern req://path 
+			#或 
+			req://path pattern
+	
+			#组合方式
+			req://path pattern1 pattern2 ... patternN
+
+	3. 修改响应： 响应状态码、响应头、 延迟响应、 限制响应速度
+
+			pattern res://path 
+			#或 
+			res://path pattern
+	
+			#组合方式
+			res://path pattern1 pattern2 ... patternN
+
 	4. 请求替换： 
 		
-		1) 本地替换: `pattern [x]file://path1|path2...` 或 `[x]file://path1|path2... pattern`
+		1) 本地替换: 
+
+			pattern [x]file://path1|path2... 
+			#或 
+			[x]file://path1|path2... pattern
+
+			#支持模板替换，主要用于替换jsonp请求
+			pattern [x]tpl://path1|path2...
+			#或
+			[x]tpl://path1|path2... pattern
+
+			#组合方式
+			[x]file://path1|path2... pattern1 pattern2 ... patternN
+			[x]tpl://path1|path2... pattern1 pattern2 ... patternN
 
 		2) 设置代理： `pattern proxy://host:port` `pattern socks://host:port` 或  `proxy://host:port pattern` `pattern socks://host:port`
 
-		3) 
+		3) url替换：`pattern [http[s]://]path` 或 `[http[s]://]path pattern`
 
-	5. 注入文本：
-	6. 设置过滤：
+		4) 自定义规则： 如果上述规则无法满足需求，还可以自定义规则，详见后面文档。
+
+	5. 注入文本： 
+
+		1) 注入到请求内容：
+
+		2） 注入到响应内容：
+
+	6. 内置weinre：
+	7. 设置过滤：
 
 	*Note: `[]` 表示可选*
 

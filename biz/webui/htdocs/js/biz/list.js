@@ -540,6 +540,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 						Rule: rules.rule && rules.rule.raw,
 						Res: rules.res && rules.res.raw,
 						Prepend: rules.prepend && rules.prepend.raw,
+						Body: rules.body && rules.body.raw,
 						Append: rules.append && rules.append.raw,
 						Weinre: rules.weinre && rules.weinre.raw,
 						Filter: rules.filter && rules.filter.raw
