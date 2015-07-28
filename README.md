@@ -128,7 +128,8 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 
 		2) 注入到响应内容：
 			
-			#在替换响应内容，这与本地替换的区别是：body是修改了响应后的内容，而本地替换是直接把请求替换成本地。
+			#在替换响应内容，这与本地替换的区别是：
+			#body是修改了响应后的内容，而本地替换是直接把请求替换成本地。
 			pattern body://path
 			pattern body://path1|path2|...|pathN
 			#或
@@ -197,7 +198,7 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 			filter://https|hide|host|req|res|rule|prepend|body|append|weinre pattern
 
 			#组合模式
-			filter://https|hide|host|req|res|rule|prepend|body|append|weinre pattern1 pattern2 ... patternN
+			filter://https|hide|host|...|weinre pattern1 pattern2 ... patternN
 
 
 
