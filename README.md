@@ -18,7 +18,7 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 		
 			operatorUri pattern
 
-- 灵活的匹配方式(**pattern**)，支持三种匹配方式：
+- 灵活的匹配方式(**pattern**)，支持三种[匹配方式](https://github.com/avwo/whistle/wiki/%E5%8C%B9%E9%85%8D%E6%96%B9%E5%BC%8F)：
 	1. 域名匹配：把规则作用于所有该域名的请求
 	2. 路径匹配：把规则作用于该路径或该路径的子路径
 	3. 正则匹配：通过正则匹配规则，支持通过子匹配把请求url里面的参数带到新的url
@@ -335,7 +335,7 @@ whistle安装完成后，执行命令 `whistle help`，查看whistle的帮助信
 *Note: 也支持直接用ip访问配置页面： [http://whistleServerIP:whistlePort/](http://127.0.0.1:8899)*
 
 
-至此，whistle已经安装启动配置完毕，匹配方式、规则配置、ui操作、查看抓包数据、重发请求、构造请求等功能请参考： [使用说明]()。
+至此，whistle已经安装启动配置完毕，匹配方式、规则配置、ui操作、查看抓包数据、重发请求、构造请求等功能请参考： [使用说明](https://github.com/avwo/whistle/wiki)。
 
 # 用户反馈
 
