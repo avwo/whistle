@@ -126,7 +126,7 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 			append://path pattern1 pattern2 ... patternN
 			append://path1|path2|...|pathN pattern1 pattern2 ... patternN
 
-		2） 注入到响应内容：
+		2) 注入到响应内容：
 			
 			#在替换响应内容，这与本地替换的区别是：body是修改了响应后的内容，而本地替换是直接把请求替换成本地。
 			pattern body://path
@@ -181,7 +181,7 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 			#组合模式
 			filter://hide pattern1 pattern2 ... patternN
 
-		3）禁用规则配置：可以把配置页面配置的各种规则禁用掉，包括：host、req、res、rule、prepend、body、append、weinre等，下面用 `rule` 代替上述名称
+		3) 禁用规则配置：可以把配置页面配置的各种规则禁用掉，包括：host、req、res、rule、prepend、body、append、weinre等，下面用 `rule` 代替上述名称
 
 			pattern filter://rule
 			#或
