@@ -5,6 +5,8 @@ module.exports = function init(config) {
 	var req = require('http').IncomingMessage.prototype;
 	var __defineGetter__ = req.__defineGetter__;
 	req.__defineGetter__ = function() {};
+	var log = console.log;
+	console.log = function() {};
 	require('weinre').run({
 		boundHost: 'localhost',
 		httpPort: parseInt(config.weinreport, 10),
@@ -14,4 +16,5 @@ module.exports = function init(config) {
 		deathTimeout: 15
 	});
 	req.__defineGetter__ = __defineGetter__;
+	console.log = log;
 };
