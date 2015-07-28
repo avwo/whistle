@@ -34,7 +34,7 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 			#组合方式
 			ip pattern1 pattern2 ... patternN
 
-	2. 修改请求： 请求方法、 请求头、延迟发送请求、限制请求速度，设置timeout
+	2. 修改请求： 请求方法、请求头、修改内容、延迟发送请求、限制请求速度，设置timeout
 
 			pattern req://path 
 			#或 
@@ -43,7 +43,7 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 			#组合方式
 			req://path pattern1 pattern2 ... patternN
 
-	3. 修改响应： 响应状态码、响应头、 延迟响应、 限制响应速度
+	3. 修改响应： 响应状态码、响应头、修改内容、 延迟响应、 限制响应速度
 
 			pattern res://path 
 			#或 
