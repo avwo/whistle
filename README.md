@@ -52,7 +52,7 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 			#组合方式
 			res://path pattern1 pattern2 ... patternN
 
-	4. 请求替换： 
+	4. 替换请求： 
 		
 		1) 本地替换: 
 
@@ -101,7 +101,7 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 
 		4) 自定义规则： 如果上述规则无法满足需求，还可以自定义规则，详见后面文档。
 
-	5. 注入文本： 
+	5. 注入内容： 
 
 		1) 注入到请求内容：
 			
@@ -332,27 +332,10 @@ whistle安装完成后，执行命令 `whistle help`，查看whistle的帮助信
 ### 访问配置页面
 启动whistle及配置完代理后，用chrome(或safari)访问配置页面 [http://local.whistlejs.com/](http://local.whistlejs.com/)，如果能正常打开页面，whistle安装启动完毕，可以开始使用。
 
-*Note: 也支持直接用ip访问配置页面： [http://yourServerId:whistlePort/](http://127.0.0.1:8899)*
+*Note: 也支持直接用ip访问配置页面： [http://whistleServerIP:whistlePort/](http://127.0.0.1:8899)*
 
 
-至此，whistle已经安装启动配置完毕，下面详细讲下：匹配方式、规则配置、ui操作、查看抓包数据、重发请求、构造请求等功能。
-
-# 匹配方式
-
-
-
-# 基本功能
-
-
-# UI操作
-
-
-# 扩展（自定义协议）
-
-
-
-
-
+至此，whistle已经安装启动配置完毕，匹配方式、规则配置、ui操作、查看抓包数据、重发请求、构造请求等功能请参考： [使用说明]()。
 
 # 用户反馈
 
