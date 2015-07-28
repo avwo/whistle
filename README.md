@@ -7,24 +7,38 @@
 [download-image]: https://img.shields.io/npm/dm/whistle.svg?style=flat-square
 [download-url]: https://npmjs.org/package/whistle
 
-whistle是用node实现的跨平台web调试代理工具，支持windows、mac、linux等操作系统，可以部署在本地电脑、虚拟机、或远程服务器，并通过本地浏览器访问whistle的配置页面，查看代理到whistle请求数据，及配置相应规则操作http[s]请求，主要有如下功能：
+whistle是用node实现的跨平台web调试代理工具，支持windows、mac、linux等操作系统，支持操作http、https、websocket请求，可以部署在本地电脑、虚拟机、或远程服务器，并通过本地浏览器访问whistle的配置页面，查看代理到whistle请求数据，及配置相应规则操作http[s]、ws[s]请求，主要有如下功能：
 
 - 简单的配置方式，把每个规则抽象成一个uri，并通过配置请求url到规则uri，实现对请求的操作
 
 		# 匹配方式 --> 操作规则
 		pattern   operatorUri
 
-		# 如果pattern和operatorUri其中有一个不是http协议，则两个的位置可以调换
+		# 如果pattern和operatorUri其中有一个不是http[s]、ws[s]协议，则两个的位置可以调换
 		operatorUri pattern
 
-- 灵活的匹配方式，支持三种匹配方式：
+- 灵活的匹配方式(**pattern**)，支持三种匹配方式：
 	1. 域名匹配：把规则作用于所有该域名
 	2. 路径匹配：把规则作用于该路径或该路径的子路径
 	3. 正则匹配：通过正则匹配规则，支持通过子匹配把请求url里面的参数带到新的url
 
-- 多样的操作规则：
+- 丰富的操作规则：
 
-	1. 
+	1. 配置hosts： `pattern ip` 或 `ip pattern`
+	2. 修改请求： `pattern req://path` 或 `req://path pattern`
+	3. 修改响应： `pattern req://path` 或 `req://path pattern`
+	4. 请求替换： 
+		
+		1) 本地替换: `pattern [x]file://path1|path2...` 或 `[x]file://path1|path2... pattern`
+
+		2) 设置代理： `pattern proxy://host:port` `pattern socks://host:port` 或  `proxy://host:port pattern` `pattern socks://host:port`
+
+		3) 
+
+	5. 注入文本：
+	6. 设置过滤：
+
+	*Note: `[]` 表示可选*
 
 1. 更灵活的hosts配置方式：没有dns缓存、支持域名匹配、路径匹配、正则匹配
 2. 设置代理: 把请求代理到其它代理上，如Fiddler、Charles或其它机器上的whistle等
