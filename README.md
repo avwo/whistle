@@ -337,7 +337,9 @@ whistle安装完成后，执行命令 `whistle help`，查看whistle的帮助信
 *Note: 也支持直接用ip访问配置页面： [http://whistleServerIP:whistlePort/](http://127.0.0.1:8899)*
 
 
-至此，whistle已经安装启动配置完毕，匹配方式、规则配置、ui操作、查看抓包数据、重发请求、构造请求等功能请参考： [使用说明](https://github.com/avwo/whistle/wiki)。
+至此，whistle已经安装启动配置完毕，匹配方式、规则配置、ui操作、查看抓包数据、重发请求、构造请求等功能请参考：
+
+# [使用说明](https://github.com/avwo/whistle/wiki)
 
 # 用户反馈
 
