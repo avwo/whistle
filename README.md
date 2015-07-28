@@ -206,13 +206,15 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 
 - 友好的配置页面，支持配置分组，高亮显示，可以把规则内容配置的ui的values系统里面，无需用本地文件承载，查看请求信息，重发请求，构造请求:
 
-	1. 配置页面：
+	1. 配置页面：[http://local.whistlejs.com/](http://local.whistlejs.com/)
 		
-		图1
+		![http://local.whistlejs.com/](https://raw.githubusercontent.com/avwo/whistle/avenwu/assets/img/config-page.png)
 
-	2. 请求列表：
+	2. 请求列表：[http://local.whistlejs.com/index.html](http://local.whistlejs.com/index.html)
 
-		图2
+		![http://local.whistlejs.com/](https://raw.githubusercontent.com/avwo/whistle/avenwu/assets/img/req-list.png)
+
+		![http://local.whistlejs.com/](https://raw.githubusercontent.com/avwo/whistle/avenwu/assets/img/req-detail.png)
 
 下面先讲下如何安装启动whistle，然后再对上述功能给出一些例子。
 
@@ -330,7 +332,7 @@ whistle安装完成后，执行命令 `whistle help`，查看whistle的帮助信
 	2) 安装firefox代理插件： [Proxy Selector](https://addons.mozilla.org/zh-cn/firefox/addon/proxy-selector/)
 
 ### 访问配置页面
-启动whistle及配置完代理后，用chrome(或safari)访问配置页面 [http://local.whistlejs.com/](http://local.whistlejs.com/)，如果能正常打开页面，whistle安装启动完毕，可以开始使用。
+启动whistle及配置完代理后，用chrome(或safari)访问配置页面 [http://local.whistlejs.com/](http://local.whistlejs.com/)或请求列表页面[http://local.whistlejs.com/index.html](http://local.whistlejs.com/index.html)，如果能正常打开页面，whistle安装启动完毕，可以开始使用。
 
 *Note: 也支持直接用ip访问配置页面： [http://whistleServerIP:whistlePort/](http://127.0.0.1:8899)*
 
