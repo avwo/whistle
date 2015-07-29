@@ -265,16 +265,7 @@ function handleRequest(req) {
 	
 	ids.push(id);
 	req.on('response', handleResponse);
-	req.on('error', function(err) {
-		update();
-		if (reqData.body == null) {
-			reqData.body = util.getErrorStack(err);
-		}
-		curData.endTime = curData.requestTime = Date.now();
-		curData.reqError = true;
-		req.removeListener('response', handleResponse);
-		req._transform = passThrough;
-	});
+	req.on('error', handleReqError);
 	req.on('send', update);
 	
 	function update() {
@@ -284,6 +275,17 @@ function handleRequest(req) {
 		if (req.realUrl && req.realUrl != req.url) {
 			curData.realUrl = req.realUrl;
 		}
+	}
+	
+	function handleReqError(err) {
+		update();
+		if (reqData.body == null) {
+			reqData.body = util.getErrorStack(err);
+		}
+		curData.endTime = curData.requestTime = Date.now();
+		curData.reqError = true;
+		rclearReqEvents();
+		req._transform = passThrough;
 	}
 	
 	var reqBody;
@@ -315,18 +317,32 @@ function handleRequest(req) {
 		callback(null, chunk);
 	};
 	
+	function clearReqEvents() {
+		req.removeListener('response', handleResponse);
+		req.removeListener('error', handleReqError);
+		req.removeListener('send', update);
+	}
+	
 	function handleResponse(res) {
 		update();
 		curData.responseTime = Date.now();
 		resData.headers = res.headers;
 		resData.statusCode = res.statusCode;
-		res.on('error', function(err) {
+		res.on('error', handleResError);
+		
+		function clear() {
+			res.removeListener('error', handleResError);
+			clearReqEvents();
+		}
+		
+		function handleResError(err) {
 			resData.ip = req.host;
 			resData.body = util.getErrorStack(err);
 			curData.endTime = Date.now();
 			curData.resError = true;
 			res._transform = passThrough;
-		});
+			clear();
+		}
 		
 		var resBody;
 		var resSize = 0;
@@ -352,6 +368,7 @@ function handleRequest(req) {
 				curData.endTime = Date.now();
 				curData.resEnd = true;
 				resData.size = resSize;
+				clear();
 				if (resBody) {
 					var unzip;
 					switch (util.toLowerCase(res.headers['content-encoding'])) {
@@ -371,9 +388,9 @@ function handleRequest(req) {
 						unzip(resBody, function(err, body) {
 							if (err) {
 								zlib.inflateRaw(resBody, next);
-								return;
-							} 
-							next(err, body);
+							} else {
+								next(err, body);
+							}
 						});
 						return;
 					}
