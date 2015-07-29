@@ -12,7 +12,7 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 - 简单的配置方式，把每个规则抽象成一个uri，并通过配置请求url到规则uri，实现对请求的操作
 	1. 匹配方式 --> 操作规则
 
-			pattern   operatorUri
+			pattern   operatorUri 
 
 	2. 如果pattern和operatorUri其中有一个不是http[s]、ws[s]协议，则两个的位置可以调换
 		
@@ -175,7 +175,7 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 
 ### 安装node
 
-如果你的机器上已经安装了 `v0.10.0` 及以上版本的node，可以忽略此步骤。
+如果你的机器上已经安装了 `v0.10.0` 及以上版本的node(推荐安装最新的node版本)，可以忽略此步骤。
 
 windows或mac可以直接访问[https://nodejs.org/](https://nodejs.org/)点击页面中间的 **INSTALL** 按钮下载安装包，下载完毕后默认安装即可。
 
