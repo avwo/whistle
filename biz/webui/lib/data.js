@@ -212,24 +212,31 @@ function handleTunnelRequest(req, isHttps) {
 			rules: req.rules
 	};
 	
-	req.on('error', function(err) {
+	req.on('error', handleError);
+	req.on('send', update);
+	req.on('response', handleResponse);
+	
+	function handleError(err) {
 		curData.reqError = true;
 		curData.res.ip = req.host || '127.0.0.1';
 		curData.res.statusCode = 502;
 		curData.req.body = util.getErrorStack(err);
-	});
+	}
 	
-	req.on('send', function() {
+	function update() {
 		curData.res.ip = req.host || '127.0.0.1';
 		curData.customHost = req.customHost;
 		curData.realUrl = req.realUrl;
 		curData.requestTime = curData.dnsTime = Date.now();
-	});
+	}
 	
-	req.on('response', function() {
+	function handleResponse() {
 		curData.res.statusCode = 200;
 		curData.responseTime = curData.endTime = Date.now();
-	});
+		req.removeListener('response', handleResponse);
+		req.removeListener('error', handleError);
+		req.removeListener('send', update);
+	}
 }
 
 function handleRequest(req) {
