@@ -286,6 +286,7 @@ function handleRequest(req) {
 		curData.reqError = true;
 		rclearReqEvents();
 		req._transform = passThrough;
+		clearReqEvents();
 	}
 	
 	var reqBody;
@@ -320,7 +321,6 @@ function handleRequest(req) {
 	function clearReqEvents() {
 		req.removeListener('response', handleResponse);
 		req.removeListener('error', handleReqError);
-		req.removeListener('send', update);
 	}
 	
 	function handleResponse(res) {
@@ -331,6 +331,7 @@ function handleRequest(req) {
 		res.on('error', handleResError);
 		
 		function clear() {
+			req.removeListener('send', update);
 			res.removeListener('error', handleResError);
 			clearReqEvents();
 		}
