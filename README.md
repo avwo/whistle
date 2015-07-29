@@ -292,6 +292,8 @@ whistle安装完成后，执行命令 `whistle help`，查看whistle的帮助信
 
 # [使用说明](https://github.com/avwo/whistle/wiki)
 
+[https://github.com/avwo/whistle/wiki](https://github.com/avwo/whistle/wiki)
+
 # 用户反馈
 
 有什么问题可以通过QQ群反馈： 462558941
