@@ -403,7 +403,10 @@ function handleWebsocket(req) {
 	
 	ids.push(id);
 	req.on('response', handleResponse);
-	req.on('error', function(err) {
+	req.on('error', handleError);
+	req.on('send', update);
+	
+	function handleError(err) {
 		update();
 		resData.statusCode = 502;
 		resData.headers = {};
@@ -411,9 +414,7 @@ function handleWebsocket(req) {
 		curData.resEnd = true;
 		curData.endTime = curData.requestTime = Date.now();
 		req.removeListener('response', handleResponse);
-	});
-	req.on('send', update);
-	
+	}
 	function update() {
 		curData.customHost = req.customHost;
 		curData.dnsTime = (req.dnsTime || 0) + startTime;
@@ -430,6 +431,9 @@ function handleWebsocket(req) {
 		curData.endTime = curData.requestTime = Date.now();
 		resData.headers = res.headers;
 		resData.statusCode = res.statusCode;
+		req.removeListener('response', handleResponse);
+		req.removeListener('error', handleError);
+		req.removeListener('send', update);
 	}
 }
 
