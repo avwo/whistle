@@ -284,7 +284,7 @@ function handleRequest(req) {
 		}
 		curData.endTime = curData.requestTime = Date.now();
 		curData.reqError = true;
-		rclearReqEvents();
+		clearReqEvents();
 		req._transform = passThrough;
 		clearReqEvents();
 	}
