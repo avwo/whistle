@@ -439,6 +439,7 @@ function handleWebsocket(req) {
 		curData.resEnd = true;
 		curData.endTime = curData.requestTime = Date.now();
 		req.removeListener('response', handleResponse);
+		clear();
 	}
 	function update() {
 		curData.customHost = req.customHost;
@@ -456,6 +457,10 @@ function handleWebsocket(req) {
 		curData.endTime = curData.requestTime = Date.now();
 		resData.headers = res.headers;
 		resData.statusCode = res.statusCode;
+		clear();
+	}
+	
+	function clear() {
 		req.removeListener('response', handleResponse);
 		req.removeListener('error', handleError);
 		req.removeListener('send', update);
