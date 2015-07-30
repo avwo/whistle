@@ -113,7 +113,7 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 			weinre://weinreId pattern1 pattern2 ... patternN
 			
 
-	6. 设置过滤： [拦截https请求](https://github.com/avwo/whistle/wiki/%E5%90%AF%E7%94%A8HTTPS)、隐藏抓包数据、禁用上述各种协议
+	6. 设置过滤： [拦截https请求](https://github.com/avwo/whistle/wiki/%E5%90%AF%E7%94%A8HTTPS)、隐藏抓包数据、禁用上述各种协议；可以用这个filter来做排除功能。
 
 		1) 拦截https请求：只有配置该过滤器，https及websocket的抓包，替换功能才能启用
 
@@ -140,7 +140,7 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 			filter://rule pattern
 
 			#组合模式
-			filter://rule pattern1 pattern2 ... patternN
+			filter://rule pattern1 pattern2 ... patternN						
 
 		4) 组合功能：
 			
@@ -150,6 +150,14 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 
 			#组合模式
 			filter://https|hide|host|...|weinre pattern1 pattern2 ... patternN
+			
+		5) 排除功能：
+			
+			#所有含alibaba关键字的url，禁用filter的功能
+			/alibaba/i filter://
+			
+			#其它https请求都自动拦截
+			/./ filter://https
 
 
 
