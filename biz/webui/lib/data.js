@@ -17,7 +17,7 @@ function disable() {
 	proxy.removeListener('request', handleRequest);
 	proxy.removeListener('tunnel', handleTunnel);
 	proxy.removeListener('tunnelProxy', handleTunnelProxy);
-	proxy.removeListener('websocket', handleWebsocket);
+	proxy.removeListener('upgrade', handleRequest);
 	
 	ids = [];
 	data = {};
@@ -31,7 +31,7 @@ function enable() {
 		proxy.on('request', handleRequest);
 		proxy.on('tunnel', handleTunnel);
 		proxy.on('tunnelProxy', handleTunnelProxy);
-		proxy.on('websocket', handleWebsocket);
+		proxy.on('upgrade', handleRequest);
 	}
 	
 	binded = true;
@@ -245,71 +245,6 @@ function handleRequest(req) {
 	var id = curData.id = startTime + '-' + ++count;
 	data[id] = curData;
 	ids.push(id);
-	req.on('end', function() {
-		
-	});
-}
-
-function handleWebsocket(req) {
-	var startTime = Date.now();
-	var id = startTime + '-' + ++count;
-	var reqData = {
-			method: req.method && req.method.toUpperCase() || 'GET', 
-			httpVersion: req.httpVersion || '1.1',
-            ip: req.ip || '::ffff:127.0.0.1',
-            headers: req.headers
-		};
-	var resData = {};
-	var curData = data[id] = {
-			id: id,
-			url: req.url,
-			customHost: req.customHost,
-			startTime: startTime,
-			dnsTime: startTime,
-			req: reqData,
-			res: resData,
-			rules: req.rules
-	};
-	
-	ids.push(id);
-	req.on('response', handleResponse);
-	req.on('error', handleError);
-	req.on('send', update);
-	
-	function handleError(err) {
-		update();
-		resData.statusCode = 502;
-		resData.headers = {};
-		reqData.body = util.getErrorStack(err);
-		curData.resEnd = true;
-		curData.endTime = curData.requestTime = Date.now();
-		req.removeListener('response', handleResponse);
-		clear();
-	}
-	function update() {
-		curData.customHost = req.customHost;
-		curData.dnsTime = (req.dnsTime || 0) + startTime;
-		curData.rules = req.rules;
-		resData.ip = req.host;
-		if (req.realUrl && req.realUrl != req.url) {
-			curData.realUrl = req.realUrl;
-		}
-	}
-	
-	function handleResponse(res) {
-		update();
-		curData.responseTime = Date.now();
-		curData.endTime = curData.requestTime = Date.now();
-		resData.headers = res.headers;
-		resData.statusCode = res.statusCode;
-		clear();
-	}
-	
-	function clear() {
-		req.removeListener('response', handleResponse);
-		req.removeListener('error', handleError);
-		req.removeListener('send', update);
-	}
 }
 
 module.exports = function init(_proxy) {
