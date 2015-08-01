@@ -11,9 +11,6 @@ var proxy, binded, timeout, interval;
 
 function disable() {
 	proxy.removeListener('request', handleRequest);
-	proxy.removeListener('connect', handleRequest);
-	proxy.removeListener('upgrade', handleRequest);
-	
 	ids = [];
 	data = {};
 	interval && clearInterval(interval);
@@ -22,11 +19,7 @@ function disable() {
 }
 
 function enable() {
-	if (!binded) {
-		proxy.on('request', handleRequest);
-		proxy.on('connect', handleRequest);
-		proxy.on('upgrade', handleRequest);
-	}
+	!binded && proxy.on('request', handleRequest);
 	
 	binded = true;
 	clearTimeout(timeout);
