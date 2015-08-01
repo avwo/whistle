@@ -36,7 +36,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 		pending = true;
 		
 		return $.ajax({
-			url: '/cgi-bin/list/get',
+			url: '/cgi-bin/get-data',
 			dataType: 'json',
 			timeout: 10000,
 			type: 'post',
@@ -666,7 +666,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 	
 	function request(data) {
 		$.ajax({
-			url: '/cgi-bin/composer/request',
+			url: '/cgi-bin/composer',
 			method: 'POST',
 			data: data
 		});

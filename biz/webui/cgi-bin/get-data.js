@@ -1,4 +1,4 @@
-var getData = require('../../lib/data');
+var getData = require('../lib/data');
 
 module.exports = function(req, res) {
 	var data = req.body;
