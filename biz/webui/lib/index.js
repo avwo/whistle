@@ -4,8 +4,7 @@ var auth = require('basic-auth');
 var bodyParser = require('body-parser');
 var crypto = require('crypto');
 var htdocs = require('../htdocs');
-var util = require('../../../lib/util');
-var username, password, config;
+var util, username, password, config;
 
 app.use(function(req, res, next) {
 	req.on('error', abort).on('close', abort);
@@ -103,6 +102,7 @@ module.exports = function(proxy) {
 	username = config.username || '';
 	password = config.password || '';
 	
+	require('./util')(util = proxy.util);
 	require('./config')(config);
 	require('./rules-util')(proxy.rulesUtil);
 	require('./data')(proxy);
