@@ -1,7 +1,3 @@
-var iconv = require('iconv-lite');
-var zlib = require('zlib');
-var MAX_REQ_SIZE = 256 * 1024;
-var MAX_RES_SIZE = 512 * 1024;
 var TIMEOUT = 36000;
 var CLEAR_INTERVAL = 5000;
 var CACHE_TIME = CLEAR_INTERVAL * 2;
@@ -11,7 +7,7 @@ var COUNT = 100;
 var count = 0;
 var ids = [];
 var data = {};
-var proxy, binded, timeout, interval, util;
+var proxy, binded, timeout, interval;
 
 function disable() {
 	proxy.removeListener('request', handleRequest);
@@ -85,22 +81,6 @@ function clearCache() {
 	ids = _ids.concat(ids.slice(index));
 }
 
-
-function passThrough(chunk, encoding, callback) {
-	callback(null, chunk);
-}
-
-function decode(body) {
-	if (body) {
-		var _body = body + '';
-		if (_body.indexOf('�') != -1) {
-			_body = iconv.decode(body, 'gbk');
-		}
-		body = _body;
-	}
-	
-	return body;
-}
 
 function get(options) {
 	enable();
@@ -188,6 +168,5 @@ function handleRequest(req) {
 
 module.exports = function init(_proxy) {
 	proxy = _proxy;
-	util = proxy.util;
 	module.exports = get;
 };
