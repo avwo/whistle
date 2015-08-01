@@ -15,8 +15,7 @@ var proxy, binded, timeout, interval, util;
 
 function disable() {
 	proxy.removeListener('request', handleRequest);
-	proxy.removeListener('tunnel', handleTunnel);
-	proxy.removeListener('tunnelProxy', handleTunnelProxy);
+	proxy.removeListener('connect', handleRequest);
 	proxy.removeListener('upgrade', handleRequest);
 	
 	ids = [];
@@ -29,8 +28,7 @@ function disable() {
 function enable() {
 	if (!binded) {
 		proxy.on('request', handleRequest);
-		proxy.on('tunnel', handleTunnel);
-		proxy.on('tunnelProxy', handleTunnelProxy);
+		proxy.on('connect', handleRequest);
 		proxy.on('upgrade', handleRequest);
 	}
 	
@@ -178,65 +176,6 @@ function getList(ids) {
 	}
 	
 	return result;
-}
-
-function handleTunnel(req) {
-	handleTunnelRequest(req, true);
-}
-
-function handleTunnelProxy(req) {
-	handleTunnelRequest(req);
-}
-
-function handleTunnelRequest(req, isHttps) {
-	var startTime = Date.now();
-	var id = startTime + '-' + ++count;
-	
-	ids.push(id);
-	
-	var curData = data[id] = {
-			id: id,
-			url: util.removeProtocol(req.url, true),
-			isHttps: true,
-			isHttpsProxy: !isHttps,
-			startTime: startTime,
-			req: {
-				method: req.method && req.method.toUpperCase() || 'CONNECT', 
-				httpVersion: req.httpVersion || '1.1',
-	            ip: util.getClientIp(req) || '::ffff:127.0.0.1',
-	            headers: req.headers
-			},
-			res: {
-				headers: {}
-			},
-			rules: req.rules
-	};
-	
-	req.on('error', handleError);
-	req.on('send', update);
-	req.on('response', handleResponse);
-	
-	function handleError(err) {
-		curData.reqError = true;
-		curData.res.ip = req.host || '127.0.0.1';
-		curData.res.statusCode = 502;
-		curData.req.body = util.getErrorStack(err);
-	}
-	
-	function update() {
-		curData.res.ip = req.host || '127.0.0.1';
-		curData.customHost = req.customHost;
-		curData.realUrl = req.realUrl;
-		curData.requestTime = curData.dnsTime = Date.now();
-	}
-	
-	function handleResponse() {
-		curData.res.statusCode = 200;
-		curData.responseTime = curData.endTime = Date.now();
-		req.removeListener('response', handleResponse);
-		req.removeListener('error', handleError);
-		req.removeListener('send', update);
-	}
 }
 
 function handleRequest(req) {
