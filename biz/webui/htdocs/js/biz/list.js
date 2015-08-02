@@ -148,14 +148,8 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 	}
 	
 	function hasRules(data) {
-		if (data.customHost) {
-			return true;
-		}
-		
 		for (var i in data.rules) {
-			if (i != 'filter') {
-				return true;
-			}
+			return true;
 		}
 		return false;
 	}
@@ -535,7 +529,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 						'Request Sent': selectedData.requestTime  && (selectedData.requestTime - selectedData.startTime + 'ms'),
 						'Content Download': selectedData.endTime &&  (selectedData.endTime - selectedData.startTime + 'ms')
 					}) + '<hr/>' + getProperties({
-						Host: selectedData.customHost && res.ip,
+						Host: rules.host && res.host.raw,
 						Req: rules.req && rules.req.raw,
 						Rule: rules.rule && rules.rule.raw,
 						Res: rules.res && rules.res.raw,
