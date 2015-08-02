@@ -534,7 +534,15 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 						Rule: rules.rule && rules.rule.raw,
 						Res: rules.res && rules.res.raw,
 						Weinre: rules.weinre && rules.weinre.raw,
-						Filter: rules.filter && rules.filter.raw
+						Filter: rules.filter && rules.filter.raw,
+						reqHeaders: rules.reqHeaders && rules.reqHeaders.raw,
+						reqBody: rules.reqBody && rules.reqBody.raw,
+						prependReq: rules.prependReq && rules.prependReq.raw,
+						appendReq: rules.appendReq && rules.appendReq.raw,
+						resHeaders: rules.resHeaders && rules.resHeaders.raw,
+						resBody: rules.resBody && rules.resBody.raw,
+						prependRes: rules.prependRes && rules.prependRes.raw,
+						appendRes: rules.appendRes && rules.appendRes.raw
 					}));
 					
 					
