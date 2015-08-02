@@ -529,7 +529,7 @@ define('/style/js/biz/list.js', function(require, exports, module) {
 						'Request Sent': selectedData.requestTime  && (selectedData.requestTime - selectedData.startTime + 'ms'),
 						'Content Download': selectedData.endTime &&  (selectedData.endTime - selectedData.startTime + 'ms')
 					}) + '<hr/>' + getProperties({
-						Host: rules.host && res.host.raw,
+						Host: rules.host && rules.host.raw,
 						Req: rules.req && rules.req.raw,
 						Rule: rules.rule && rules.rule.raw,
 						Res: rules.res && rules.res.raw,
