@@ -102,6 +102,7 @@ module.exports = function(proxy) {
 	username = config.username || '';
 	password = config.password || '';
 	
+	require('./proxy')(proxy);
 	require('./util')(util = proxy.util);
 	require('./config')(config);
 	require('./rules-util')(proxy.rulesUtil);
