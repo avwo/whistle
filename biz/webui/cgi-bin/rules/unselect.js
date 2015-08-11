@@ -1,6 +1,6 @@
-var rulesUtil = require('../../lib/rules-util');
+var util = require('./util');
 
 module.exports = function(req, res) {
-	rulesUtil.createHosts(req.body.name, req.body.content);
+	util.unselect(req.body.name);
 	res.json({ec: 0, em: 'success'});
 };
