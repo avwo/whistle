@@ -1,4 +1,5 @@
-var rulesUtil = require('../lib/rules-util');
+var getRules = require('./rules');
+var getValues = require('./values');
 var util = require('./util');
 var config = require('../lib/config');
 
@@ -10,13 +11,8 @@ module.exports = function(req, res) {
 	data.version = config.version;
 	
 	res.json({
-		rules: data,
 		server: util.getServerInfo(),
-		values: {
-			fontSize: rulesUtil.getProperty('valuesFontSize'),
-			theme: rulesUtil.getProperty('valuesTheme'),
-			showLineNumbers: rulesUtil.getProperty('valuesShowLineNumbers'),
-			values: rulesUtil.getValue()
-		}
+		rules: getRules(),
+		values: getValues()
 	});
 };

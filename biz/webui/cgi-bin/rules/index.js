@@ -1,0 +1,14 @@
+var rules = require('../../lib/rules');
+var properties = require('../../lib/properties');
+
+module.exports = function get() {
+	return {
+		defaultRulesIsDisabled: rules.defaultRulesIsDisabled(),
+		defaultRules: rules.getDefault(),
+		current: properties.get('currentRulesFile'),
+		fontSize: properties.get('fontSize'),
+		showLineNumbers: properties.get('showLineNumbers'),
+		theme: properties.get('theme'),
+		list: rules.list()
+	};
+};
