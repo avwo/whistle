@@ -1,6 +1,6 @@
-var util = require('./util');
+var rules = require('./util');
 
 module.exports = function(req, res) {
-	util.rename(req.body.name, req.body.newName);
+	rules.rename(req.body.name, req.body.newName);
 	res.json({ec: 0, em: 'success'});
 };

@@ -1,7 +1,7 @@
-var util = require('./util');
+var rules = require('../../lib/rules');
 
 module.exports = function(req, res) {
-	util.add(req.body.name, req.body.content);
-	util.select(req.body.name);
+	rules.add(req.body.name, req.body.content);
+	rules.select(req.body.name);
 	res.json({ec: 0, em: 'success'});
 };

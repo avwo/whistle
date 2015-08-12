@@ -1,6 +1,6 @@
-var util = require('./util');
+var rules = require('../../lib/rules');
 
 module.exports = function(req, res) {
-	util.disableDefault();
+	rules.disableDefault();
 	res.json({ec: 0, em: 'success'});
 };

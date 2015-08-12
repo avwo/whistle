@@ -1,9 +1,9 @@
-var util = require('./util');
+var rules = require('../../lib/rules');
 
 module.exports = function(req, res) {
 	res.json({
-		defaultRulesIsDisabled: util.defaultRulesIsDisabled(),
-		defaultRules: util.getDefault(),
-		list: util.list()
+		defaultRulesIsDisabled: rules.defaultRulesIsDisabled(),
+		defaultRules: rules.getDefault(),
+		list: rules.list()
 	});
 };
