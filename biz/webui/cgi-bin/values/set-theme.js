@@ -1,6 +1,6 @@
-var rulesUtil = require('../../lib/rules-util');
+var properties = require('../../lib/properties');
 
 module.exports = function(req, res) {
-	rulesUtil.setProperty('valuesTheme', req.body.theme);
+	properties.set('valuesTheme', req.body.theme);
 	res.json({ec: 0, em: 'success'});
 };

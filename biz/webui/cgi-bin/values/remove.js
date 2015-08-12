@@ -1,6 +1,6 @@
-var rulesUtil = require('../../lib/rules-util');
+var values = require('../../lib/values');
 
 module.exports = function(req, res) {
-	rulesUtil.removeValue(req.body.key);
+	values.remove(req.body.key);
 	res.json({ec: 0, em: 'success'});
 };

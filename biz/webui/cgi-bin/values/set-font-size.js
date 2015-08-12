@@ -1,6 +1,6 @@
-var rulesUtil = require('../../lib/rules-util');
+var properties = require('../../lib/properties');
 
 module.exports = function(req, res) {
-	rulesUtil.setProperty('valuesFontSize', req.body.fontSize);
+	properties.set('valuesFontSize', req.body.fontSize);
 	res.json({ec: 0, em: 'success'});
 };
