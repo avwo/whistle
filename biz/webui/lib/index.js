@@ -99,13 +99,16 @@ function shasum(str) {
 
 module.exports = function(proxy) {
 	config = proxy.config;
+	var rulesUtil = proxy.rulesUtil;
 	username = config.username || '';
 	password = config.password || '';
 	
 	require('./proxy')(proxy);
 	require('./util')(util = proxy.util);
 	require('./config')(config);
-	require('./rules-util')(proxy.rulesUtil);
+	require('./rules')(rulesUtil.rules);
+	require('./properties')(rulesUtil.properties);
+	require('./values')(rulesUtil.values);
 	require('./https-util')(proxy.httpsUtil);
 	require('./data')(proxy);
 	app.listen(config.uiport);
