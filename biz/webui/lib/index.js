@@ -1,4 +1,5 @@
-var app = require('express')();
+var express = require('express');
+var app = express();
 var path = require('path');
 var auth = require('basic-auth');
 var bodyParser = require('body-parser');
@@ -29,14 +30,6 @@ app.use(function(req, res, next) {
 	res.status(401).end('Please enter your username and password.');
 });
 
-app.get('/', function(req, res) {
-	res.sendFile(htdocs.getHtmlFile('index.html'));
-});
-
-app.get('/index.html', function(req, res) {
-	res.sendFile(htdocs.getHtmlFile('network.html'));
-});
-
 app.all('/cgi-bin/*', function(req, res) {
 	try {
 		require(path.join(__dirname, '..' + req.url.replace(/\?.*$/, '')))(req, res);
@@ -45,12 +38,10 @@ app.all('/cgi-bin/*', function(req, res) {
 	}
 });
 
-app.get('*.html', function(req, res) {
-	res.sendFile(htdocs.getHtmlFile(req.url.substring(1).replace(/(?:\?|#).*$/, '')));
-});
+app.use(express.static(path.join(__dirname, '../htdocs'), {maxAge: 300000}));
 
-app.get('/style/*', function(req, res){
-	  res.sendFile(htdocs.getFile(req.url.substring(7)));
+app.get('*', function(req, res) {
+	res.sendFile(htdocs.getHtmlFile('index.html'));
 });
 
 function checkLogin(req, res) {
