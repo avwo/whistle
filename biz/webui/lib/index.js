@@ -32,8 +32,10 @@ app.use(function(req, res, next) {
 
 app.all('/cgi-bin/*', function(req, res) {
 	try {
-		res.setHeader('Access-Control-Allow-Origin', '*');
-		res.setHeader('Access-Control-Allow-Credentials', true);
+		if (req.headers.origin) {
+			res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
+			res.setHeader('Access-Control-Allow-Credentials', true);
+		}
 		require(path.join(__dirname, '..' + req.url.replace(/\?.*$/, '')))(req, res);
 	} catch(err) {
 		res.status(500).send(util.getErrorStack(err));
