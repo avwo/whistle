@@ -47,8 +47,8 @@
 	var React = __webpack_require__(1);
 	var Menu = __webpack_require__(157);
 	var Network = __webpack_require__(177);
-	var Rules = __webpack_require__(216);
-	var Values = __webpack_require__(267);
+	var Rules = __webpack_require__(215);
+	var Values = __webpack_require__(266);
 	var filename = location.href.replace(/[#?].*$/, '').replace(/.*\//, '');
 
 	var Index = React.createClass({displayName: "Index",
@@ -31579,7 +31579,11 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var $ = __webpack_require__(176);
-	var createCgi = __webpack_require__(215);
+	var createCgi = __webpack_require__(269);
+	var	MAX_COUNT = 1024;
+	var TIMEOUT = 10000;
+	var dataCallbacks = [];
+	var dataList = [];
 
 	var cgi = $.extend(createCgi({
 		getData: '/cgi-bin/get-data',
@@ -31588,7 +31592,9 @@
 		getLog: '/cgi-bin/log/get',
 		getRules: '/cgi-bin/rules/list'
 	}, {
-		mode: 'ignore'
+		mode: 'ignore', 
+		timeout: TIMEOUT,
+		cache: false
 	}), createCgi({
 		composer: '/cgi-bin/composer',
 		removeValues: '/cgi-bin/values/remove',
@@ -31610,7 +31616,86 @@
 		setRulesTheme: '/cgi-bin/rules/set-theme',
 		showRulesLineNumbers: '/cgi-bin/rules/show-line-numbers',
 		unselectRules: '/cgi-bin/rules/unselect'
-	}, {mode: 'ignore', type: 'post'}));
+	}, {
+		mode: 'ignore', 
+		type: 'post', 
+		timeout: TIMEOUT
+	}));
+
+	function startLadData() {
+		if (dataList.length) {
+			return;
+		}
+		
+		var pendingIds = getPendingIds();
+		var startTime = getStartTime();
+		
+		function _load() {
+			cgi.getData({
+				ids: pendingIds.join(),
+				startTime: startTime,
+				count: 60
+			}, function(data) {
+				setTimeout(_load, 600);
+				if (!data || (!data.ids.length && !data.newIds.length)) {
+					return;
+				}
+				var ids = data.ids;
+				var data = data.data;
+				$.each(dataList, function(i) {
+					var item = this;
+					var newItem = data[item.id];
+					if (newItem) {
+						dataList[i] = newItem;
+					} else {
+						item.lost = true;
+					}
+				});
+				
+				$.each(ids, function() {
+					var item = data[this];
+					item && dataList.push(item);
+				});
+				$.each(dataCallbacks, function() {
+					this(dataList);
+				});
+			});
+		}
+		
+		if (startTime == -1 && !pendingIds.length) {
+			setTimeout(_load, 3000);
+		} else {
+			_load();
+		}
+	}
+
+	function getPendingIds() {
+		var pendingIds = [];
+		$.each(dataList, function() {
+			var item = this;
+			if (!item.endTime && !item.lost) {
+				pendingIds.push(id);
+			}
+		});
+		return pendingIds;
+	}
+
+	function getStartTime() {
+		var len = dataList.length;
+		return len < MAX_COUNT ? dataList[len - 1] : -1;
+	}
+
+	exports.on = function(type, callback) {
+		if (type == 'data') {
+			if (typeof callback == 'function') {
+				startLadData();
+				dataCallbacks.push(callback);
+			}
+			return;
+		}
+	};
+
+
 
 
 
@@ -31619,73 +31704,9 @@
 /* 215 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var $ = __webpack_require__(176);
-
-	function createCgi(url, settings) {
-		var self = this;
-		if (typeof url == 'string') {
-			url = {url: url};
-		}
-		settings = $.extend({}, settings, url);
-		var queue = [];
-		var jqXhr;
-		
-		function cgiFn(data, callback, options) {
-			if (typeof data == 'function') {
-				options = callback;
-				callback = data;
-				data = null;
-			}
-			
-			var options = $.extend({}, settings, options);
-			if (jqXhr) {
-				var mode = options.mode;
-				if (mode == 'ignore') {
-					return;
-				}
-				if (mode == 'cancel') {
-					jqXhr.abort();
-				} else if (mode == 'chain') {
-					queue.push([data, callback, options]);
-				}
-			}
-			
-			var execCallback = function(data, xhr) {
-				jqXhr = null;
-				callback && callback.call(this, data, xhr);
-				var args = queue.shift();
-				args && cgiFn.apply(self, args);
-			};
-			options.success = function(data, statusText, xhr) {
-				execCallback.call(this, data, xhr);
-			};
-			options.error = function(xhr) {
-				execCallback.call(this, false, xhr)
-			};
-			
-			return (jqXhr = $.ajax(options));
-		}
-		
-		return cgiFn;
-	}
-
-	function create(obj, settings) {
-		var cgi = {};
-		Object.keys(obj).forEach(function(name) {
-			cgi[name] = createCgi(obj[name], settings);
-		});
-		return cgi;
-	}
-
-	module.exports = create;
-
-/***/ },
-/* 216 */
-/***/ function(module, exports, __webpack_require__) {
-
 	__webpack_require__(158);
 	var React = __webpack_require__(1);
-	var List = __webpack_require__(217);
+	var List = __webpack_require__(216);
 	var dataCenter = __webpack_require__(214);
 
 	var modal = {
@@ -31716,16 +31737,16 @@
 	module.exports = Rules;
 
 /***/ },
-/* 217 */
+/* 216 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(158);
-	__webpack_require__(218);
+	__webpack_require__(217);
 	var $ = __webpack_require__(176);
 	var util = __webpack_require__(175);
 	var React = __webpack_require__(1);
 	var Divider = __webpack_require__(178);
-	var Editor = __webpack_require__(220);
+	var Editor = __webpack_require__(219);
 
 	function getSuffix(name) {
 		if (typeof name != 'string') {
@@ -31995,13 +32016,13 @@
 
 
 /***/ },
-/* 218 */
+/* 217 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(219);
+	var content = __webpack_require__(218);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(167)(content, {});
@@ -32021,7 +32042,7 @@
 	}
 
 /***/ },
-/* 219 */
+/* 218 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(161)();
@@ -32035,41 +32056,41 @@
 
 
 /***/ },
-/* 220 */
+/* 219 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(221);
-	__webpack_require__(223);
-	__webpack_require__(225);
-	__webpack_require__(227);
-	__webpack_require__(229);
-	__webpack_require__(231);
-	__webpack_require__(233);
-	__webpack_require__(235);
-	__webpack_require__(237);
-	__webpack_require__(239);
-	__webpack_require__(241);
-	__webpack_require__(243);
-	__webpack_require__(245);
-	__webpack_require__(247);
-	__webpack_require__(249);
-	__webpack_require__(251);
-	__webpack_require__(253);
-	__webpack_require__(255);
-	__webpack_require__(218);
-	__webpack_require__(257);
+	__webpack_require__(220);
+	__webpack_require__(222);
+	__webpack_require__(224);
+	__webpack_require__(226);
+	__webpack_require__(228);
+	__webpack_require__(230);
+	__webpack_require__(232);
+	__webpack_require__(234);
+	__webpack_require__(236);
+	__webpack_require__(238);
+	__webpack_require__(240);
+	__webpack_require__(242);
+	__webpack_require__(244);
+	__webpack_require__(246);
+	__webpack_require__(248);
+	__webpack_require__(250);
+	__webpack_require__(252);
+	__webpack_require__(254);
+	__webpack_require__(217);
+	__webpack_require__(256);
 	var $ = __webpack_require__(176);
 	var React = __webpack_require__(1);
-	var CodeMirror = __webpack_require__(259);
-	var javascript = __webpack_require__(260);
-	var css = __webpack_require__(261);
-	var xml = __webpack_require__(262);
-	var htmlmixed = __webpack_require__(263);
-	var markdown = __webpack_require__(264);
+	var CodeMirror = __webpack_require__(258);
+	var javascript = __webpack_require__(259);
+	var css = __webpack_require__(260);
+	var xml = __webpack_require__(261);
+	var htmlmixed = __webpack_require__(262);
+	var markdown = __webpack_require__(263);
 	var themes = ['default', 'neat', 'elegant', 'erlang-dark', 'night', 'monokai', 'cobalt', 'eclipse'
 	              , 'rubyblue', 'lesser-dark', 'xq-dark', 'xq-light', 'ambiance'
 	              , 'blackboard', 'vibrant-ink', 'solarized dark', 'solarized light', 'twilight', 'midnight'];
-	var rules = __webpack_require__(266);
+	var rules = __webpack_require__(265);
 	var DEFAULT_THEME = 'cobalt';
 	var DEFAULT_FONT_SIZE = '16px';
 
@@ -32172,13 +32193,13 @@
 	module.exports = Editor;
 
 /***/ },
-/* 221 */
+/* 220 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(222);
+	var content = __webpack_require__(221);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(167)(content, {});
@@ -32198,7 +32219,7 @@
 	}
 
 /***/ },
-/* 222 */
+/* 221 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(161)();
@@ -32212,13 +32233,13 @@
 
 
 /***/ },
-/* 223 */
+/* 222 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(224);
+	var content = __webpack_require__(223);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(167)(content, {});
@@ -32238,7 +32259,7 @@
 	}
 
 /***/ },
-/* 224 */
+/* 223 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(161)();
@@ -32252,13 +32273,13 @@
 
 
 /***/ },
-/* 225 */
+/* 224 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(226);
+	var content = __webpack_require__(225);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(167)(content, {});
@@ -32278,7 +32299,7 @@
 	}
 
 /***/ },
-/* 226 */
+/* 225 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(161)();
@@ -32292,13 +32313,13 @@
 
 
 /***/ },
-/* 227 */
+/* 226 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(228);
+	var content = __webpack_require__(227);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(167)(content, {});
@@ -32318,7 +32339,7 @@
 	}
 
 /***/ },
-/* 228 */
+/* 227 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(161)();
@@ -32332,13 +32353,13 @@
 
 
 /***/ },
-/* 229 */
+/* 228 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(230);
+	var content = __webpack_require__(229);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(167)(content, {});
@@ -32358,7 +32379,7 @@
 	}
 
 /***/ },
-/* 230 */
+/* 229 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(161)();
@@ -32372,13 +32393,13 @@
 
 
 /***/ },
-/* 231 */
+/* 230 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(232);
+	var content = __webpack_require__(231);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(167)(content, {});
@@ -32398,7 +32419,7 @@
 	}
 
 /***/ },
-/* 232 */
+/* 231 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(161)();
@@ -32412,13 +32433,13 @@
 
 
 /***/ },
-/* 233 */
+/* 232 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(234);
+	var content = __webpack_require__(233);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(167)(content, {});
@@ -32438,7 +32459,7 @@
 	}
 
 /***/ },
-/* 234 */
+/* 233 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(161)();
@@ -32452,13 +32473,13 @@
 
 
 /***/ },
-/* 235 */
+/* 234 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(236);
+	var content = __webpack_require__(235);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(167)(content, {});
@@ -32478,7 +32499,7 @@
 	}
 
 /***/ },
-/* 236 */
+/* 235 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(161)();
@@ -32492,13 +32513,13 @@
 
 
 /***/ },
-/* 237 */
+/* 236 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(238);
+	var content = __webpack_require__(237);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(167)(content, {});
@@ -32518,7 +32539,7 @@
 	}
 
 /***/ },
-/* 238 */
+/* 237 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(161)();
@@ -32532,13 +32553,13 @@
 
 
 /***/ },
-/* 239 */
+/* 238 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(240);
+	var content = __webpack_require__(239);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(167)(content, {});
@@ -32558,7 +32579,7 @@
 	}
 
 /***/ },
-/* 240 */
+/* 239 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(161)();
@@ -32572,13 +32593,13 @@
 
 
 /***/ },
-/* 241 */
+/* 240 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(242);
+	var content = __webpack_require__(241);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(167)(content, {});
@@ -32598,7 +32619,7 @@
 	}
 
 /***/ },
-/* 242 */
+/* 241 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(161)();
@@ -32612,13 +32633,13 @@
 
 
 /***/ },
-/* 243 */
+/* 242 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(244);
+	var content = __webpack_require__(243);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(167)(content, {});
@@ -32638,7 +32659,7 @@
 	}
 
 /***/ },
-/* 244 */
+/* 243 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(161)();
@@ -32652,13 +32673,13 @@
 
 
 /***/ },
-/* 245 */
+/* 244 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(246);
+	var content = __webpack_require__(245);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(167)(content, {});
@@ -32678,7 +32699,7 @@
 	}
 
 /***/ },
-/* 246 */
+/* 245 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(161)();
@@ -32692,13 +32713,13 @@
 
 
 /***/ },
-/* 247 */
+/* 246 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(248);
+	var content = __webpack_require__(247);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(167)(content, {});
@@ -32718,7 +32739,7 @@
 	}
 
 /***/ },
-/* 248 */
+/* 247 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(161)();
@@ -32732,13 +32753,13 @@
 
 
 /***/ },
-/* 249 */
+/* 248 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(250);
+	var content = __webpack_require__(249);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(167)(content, {});
@@ -32758,7 +32779,7 @@
 	}
 
 /***/ },
-/* 250 */
+/* 249 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(161)();
@@ -32772,13 +32793,13 @@
 
 
 /***/ },
-/* 251 */
+/* 250 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(252);
+	var content = __webpack_require__(251);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(167)(content, {});
@@ -32798,7 +32819,7 @@
 	}
 
 /***/ },
-/* 252 */
+/* 251 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(161)();
@@ -32812,13 +32833,13 @@
 
 
 /***/ },
-/* 253 */
+/* 252 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(254);
+	var content = __webpack_require__(253);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(167)(content, {});
@@ -32838,7 +32859,7 @@
 	}
 
 /***/ },
-/* 254 */
+/* 253 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(161)();
@@ -32852,13 +32873,13 @@
 
 
 /***/ },
-/* 255 */
+/* 254 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(256);
+	var content = __webpack_require__(255);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(167)(content, {});
@@ -32878,7 +32899,7 @@
 	}
 
 /***/ },
-/* 256 */
+/* 255 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(161)();
@@ -32892,13 +32913,13 @@
 
 
 /***/ },
-/* 257 */
+/* 256 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(258);
+	var content = __webpack_require__(257);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(167)(content, {});
@@ -32918,7 +32939,7 @@
 	}
 
 /***/ },
-/* 258 */
+/* 257 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(161)();
@@ -32932,7 +32953,7 @@
 
 
 /***/ },
-/* 259 */
+/* 258 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -41726,7 +41747,7 @@
 
 
 /***/ },
-/* 260 */
+/* 259 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -41736,7 +41757,7 @@
 
 	(function(mod) {
 	  if (true) // CommonJS
-	    mod(__webpack_require__(259));
+	    mod(__webpack_require__(258));
 	  else if (typeof define == "function" && define.amd) // AMD
 	    define(["../../lib/codemirror"], mod);
 	  else // Plain browser env
@@ -42436,7 +42457,7 @@
 
 
 /***/ },
-/* 261 */
+/* 260 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -42444,7 +42465,7 @@
 
 	(function(mod) {
 	  if (true) // CommonJS
-	    mod(__webpack_require__(259));
+	    mod(__webpack_require__(258));
 	  else if (typeof define == "function" && define.amd) // AMD
 	    define(["../../lib/codemirror"], mod);
 	  else // Plain browser env
@@ -43198,7 +43219,7 @@
 
 
 /***/ },
-/* 262 */
+/* 261 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -43206,7 +43227,7 @@
 
 	(function(mod) {
 	  if (true) // CommonJS
-	    mod(__webpack_require__(259));
+	    mod(__webpack_require__(258));
 	  else if (typeof define == "function" && define.amd) // AMD
 	    define(["../../lib/codemirror"], mod);
 	  else // Plain browser env
@@ -43589,7 +43610,7 @@
 
 
 /***/ },
-/* 263 */
+/* 262 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -43597,7 +43618,7 @@
 
 	(function(mod) {
 	  if (true) // CommonJS
-	    mod(__webpack_require__(259), __webpack_require__(262), __webpack_require__(260), __webpack_require__(261));
+	    mod(__webpack_require__(258), __webpack_require__(261), __webpack_require__(259), __webpack_require__(260));
 	  else if (typeof define == "function" && define.amd) // AMD
 	    define(["../../lib/codemirror", "../xml/xml", "../javascript/javascript", "../css/css"], mod);
 	  else // Plain browser env
@@ -43716,7 +43737,7 @@
 
 
 /***/ },
-/* 264 */
+/* 263 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -43724,7 +43745,7 @@
 
 	(function(mod) {
 	  if (true) // CommonJS
-	    mod(__webpack_require__(259), __webpack_require__(262), __webpack_require__(265));
+	    mod(__webpack_require__(258), __webpack_require__(261), __webpack_require__(264));
 	  else if (typeof define == "function" && define.amd) // AMD
 	    define(["../../lib/codemirror", "../xml/xml", "../meta"], mod);
 	  else // Plain browser env
@@ -44503,7 +44524,7 @@
 
 
 /***/ },
-/* 265 */
+/* 264 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -44511,7 +44532,7 @@
 
 	(function(mod) {
 	  if (true) // CommonJS
-	    mod(__webpack_require__(259));
+	    mod(__webpack_require__(258));
 	  else if (typeof define == "function" && define.amd) // AMD
 	    define(["../lib/codemirror"], mod);
 	  else // Plain browser env
@@ -44699,10 +44720,10 @@
 
 
 /***/ },
-/* 266 */
+/* 265 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var CodeMirror = __webpack_require__(259);
+	var CodeMirror = __webpack_require__(258);
 	CodeMirror.defineMode('rules', function() {
 				function isIP(str) {
 					return /^(?:(?:25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)\.){3}(?:25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)$/.test(str);
@@ -44802,13 +44823,13 @@
 	});
 
 /***/ },
-/* 267 */
+/* 266 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(158);
-	__webpack_require__(268);
+	__webpack_require__(267);
 	var React = __webpack_require__(1);
-	var List = __webpack_require__(217);
+	var List = __webpack_require__(216);
 	var dataCenter = __webpack_require__(214);
 
 	var modal = {
@@ -44829,13 +44850,13 @@
 
 
 /***/ },
-/* 268 */
+/* 267 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(269);
+	var content = __webpack_require__(268);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(167)(content, {});
@@ -44855,7 +44876,7 @@
 	}
 
 /***/ },
-/* 269 */
+/* 268 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(161)();
@@ -44867,6 +44888,70 @@
 
 	// exports
 
+
+/***/ },
+/* 269 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var $ = __webpack_require__(176);
+
+	function createCgi(url, settings) {
+		var self = this;
+		if (typeof url == 'string') {
+			url = {url: url};
+		}
+		settings = $.extend({dataType: 'json'}, settings, url);
+		var queue = [];
+		var jqXhr;
+		
+		function cgiFn(data, callback, options) {
+			if (typeof data == 'function') {
+				options = callback;
+				callback = data;
+				data = null;
+			}
+			
+			var options = $.extend({}, settings, options);
+			if (jqXhr) {
+				var mode = options.mode;
+				if (mode == 'ignore') {
+					return;
+				}
+				if (mode == 'cancel') {
+					jqXhr.abort();
+				} else if (mode == 'chain') {
+					queue.push([data, callback, options]);
+				}
+			}
+			
+			var execCallback = function(data, xhr) {
+				jqXhr = null;
+				callback && callback.call(this, data, xhr);
+				var args = queue.shift();
+				args && cgiFn.apply(self, args);
+			};
+			options.success = function(data, statusText, xhr) {
+				execCallback.call(this, data, xhr);
+			};
+			options.error = function(xhr) {
+				execCallback.call(this, false, xhr)
+			};
+			
+			return (jqXhr = $.ajax(options));
+		}
+		
+		return cgiFn;
+	}
+
+	function create(obj, settings) {
+		var cgi = {};
+		Object.keys(obj).forEach(function(name) {
+			cgi[name] = createCgi(obj[name], settings);
+		});
+		return cgi;
+	}
+
+	module.exports = create;
 
 /***/ }
 /******/ ]);
