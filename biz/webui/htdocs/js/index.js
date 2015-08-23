@@ -50,6 +50,7 @@
 	var Network = __webpack_require__(177);
 	var Rules = __webpack_require__(216);
 	var Values = __webpack_require__(267);
+	var MenuItem = __webpack_require__(172);
 	var dataCenter = __webpack_require__(214);
 	var filename = location.href.replace(/[#?].*$/, '').replace(/.*\//, '');
 
@@ -100,7 +101,9 @@
 			
 			return (
 				React.createElement("div", {className: "main orient-vertical-box"}, 
-					React.createElement(Menu, {name: name, onClick: this.onClickMenu}), 
+					React.createElement(Menu, {name: name, onClick: this.onClickMenu}, 
+						React.createElement(MenuItem, {onClick: this.props.onClickItem, onClickOption: this.props.onClickOption})
+					), 
 					this.state.hasRules ? React.createElement(Rules, {hide: name == 'rules' ? false : true}) : '', 
 					this.state.hasValues ? React.createElement(Values, {hide: name == 'values' ? false : true}) : '', 
 					this.state.hasNetwork ? React.createElement(Network, {hide: name != 'rules' && name != 'values' ? false : true}) : ''
@@ -20497,7 +20500,6 @@
 	__webpack_require__(158);
 	__webpack_require__(170);
 	var React = __webpack_require__(1);
-	var MenuItem = __webpack_require__(172);
 	var About = __webpack_require__(276);
 	var Online = __webpack_require__(270);
 
@@ -20526,7 +20528,7 @@
 						React.createElement("a", {onClick: this.props.onClick, className: "w-help-menu", href: "https://github.com/avwo/whistle#whistle", target: "_blank"}, React.createElement("span", {className: "glyphicon glyphicon-question-sign"}), "Help"), 
 						React.createElement(About, null), 
 						React.createElement(Online, null), 
-						React.createElement(MenuItem, {onClick: this.props.onClickItem, onClickOption: this.props._onClickOption})
+						this.props.children
 					)
 			);
 		}
