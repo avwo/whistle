@@ -44,11 +44,13 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
+	var $ = __webpack_require__(176);
 	var React = __webpack_require__(1);
 	var Menu = __webpack_require__(157);
 	var Network = __webpack_require__(177);
 	var Rules = __webpack_require__(216);
 	var Values = __webpack_require__(267);
+	var dataCenter = __webpack_require__(214);
 	var filename = location.href.replace(/[#?].*$/, '').replace(/.*\//, '');
 
 	var Index = React.createClass({displayName: "Index",
@@ -83,12 +85,22 @@
 				name: 'values'
 			});
 		},
+		onClickMenu: function(e) {
+			var target = $(e.target).closest('a');
+			if (target.hasClass('w-network-menu')) {
+				this.showNetwork();
+			} else if (target.hasClass('w-rules-menu')){
+				this.showRules();
+			} else if (target.hasClass('w-values-menu')) {
+				this.showValues();
+			}
+		},
 		render: function() {
 			var name = this.state.name;
 			
 			return (
 				React.createElement("div", {className: "main orient-vertical-box"}, 
-					React.createElement(Menu, {name: name}), 
+					React.createElement(Menu, {name: name, onClick: this.onClickMenu}), 
 					this.state.hasRules ? React.createElement(Rules, {hide: name == 'rules' ? false : true}) : '', 
 					this.state.hasValues ? React.createElement(Values, {hide: name == 'values' ? false : true}) : '', 
 					this.state.hasNetwork ? React.createElement(Network, {hide: name != 'rules' && name != 'values' ? false : true}) : ''
@@ -96,8 +108,11 @@
 			);
 		}
 	});
+	dataCenter.getInitialData(function(data) {
+		React.render(React.createElement(Index, null), document.body);	
+	});
 
-	React.render(React.createElement(Index, null), document.body);
+
 
 
 /***/ },
@@ -31741,7 +31756,8 @@
 					return;
 				}
 				
-				if (curServerInfo && curServerInfo.port == data.port && curServerInfo.host == data.host && 
+				if (curServerInfo && curServerInfo.version == data.version && 
+					curServerInfo.port == data.port && curServerInfo.host == data.host && 
 					curServerInfo.ipv4.sort().join() == data.ipv4.sort().join()
 					&& curServerInfo.ipv6.sort().join() == data.ipv6.sort().join()) {
 					return;
@@ -47607,8 +47623,8 @@
 					      '<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
 					        '<img alt="logo" src="/img/whistle.png">' + 
 				          '<span" class="w-about-dialog-ctn"><span class="w-about-dialog-title">Whistle for Web Developers.</span>' +
-						  'Version: ' + version + '<br>' + 
-						  'Visit <a id="aboutUrl" href="http://www.whistlejs.com#v=' + version + '" target="_blank">http://www.whistlejs.com</a></span>' +
+						  'Version: <span class="w-about-version">' + version + '</span><br>' + 
+						  'Visit <a class="w-about-url" href="http://www.whistlejs.com#v=' + version + '" target="_blank">http://www.whistlejs.com</a></span>' +
 					      '</div>' + 
 					      '<div class="modal-footer">' + 
 					        '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>' + 
@@ -47616,6 +47632,13 @@
 					    '</div>' + 
 					  '</div>' + 
 					'</div>').appendTo(document.body);
+			dataCenter.on('serverInfo', function(server) {
+				if (!server) {
+					return;
+				}
+				dialog.find('.w-about-version').html(server.version);
+				dialog.find('.w-about-url').attr('href', 'http://www.whistlejs.com#v=' + server.version);
+			});
 		}
 		
 		return dialog;

@@ -3,6 +3,7 @@ var config = require('../lib/config');
 
 exports.getServerInfo = function getServerInfo() {
 	var info = {
+			version: config.version,
 			host: os.hostname(),
 			port: config.port,
 			ipv4: [],
