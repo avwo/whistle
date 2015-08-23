@@ -31581,7 +31581,7 @@
 	var $ = __webpack_require__(176);
 	var createCgi = __webpack_require__(215);
 
-	var getCgi = createCgi({
+	var cgi = $.extend(createCgi({
 		getData: '/cgi-bin/get-data',
 		getInitaial: '/cgi-bin/init',
 		getServerInfo: '/cgi-bin/server-info',
@@ -31589,9 +31589,7 @@
 		getRules: '/cgi-bin/rules/list'
 	}, {
 		mode: 'ignore'
-	});
-
-	var postCgi = createCgi({
+	}), createCgi({
 		composer: '/cgi-bin/composer',
 		removeValues: '/cgi-bin/values/remove',
 		renameValues: '/cgi-bin/values/rename',
@@ -31601,18 +31599,19 @@
 		showValuesLineNumbers: '/cgi-bin/values/show-line-numbers',
 		setValues: '/cgi-bin/values/add',
 		setLog: '/cgi-bin/log/set',
-		addRules: '/cgi-bin/rules/',
-		disableDefaultRules: '/cgi-bin/rules/',
-		enableDefaultRules: '/cgi-bin/rules/',
-		removeRules: '/cgi-bin/rules/',
-		renameRules: '/cgi-bin/rules/',
-		selectRules: '/cgi-bin/rules/',
-		setCurrentRules: '/cgi-bin/rules/',
-		setRulesFontSize: '/cgi-bin/rules/',
-		setRulesTheme: '/cgi-bin/rules/',
-		showRulesLineNumbers: '/cgi-bin/rules/',
+		addRules: '/cgi-bin/rules/add',
+		disableDefaultRules: '/cgi-bin/rules/disable-default',
+		enableDefaultRules: '/cgi-bin/rules/enable-default',
+		removeRules: '/cgi-bin/rules/remove',
+		renameRules: '/cgi-bin/rules/rename',
+		selectRules: '/cgi-bin/rules/select',
+		setCurrentRules: '/cgi-bin/rules/set-current',
+		setRulesFontSize: '/cgi-bin/rules/set-font-size',
+		setRulesTheme: '/cgi-bin/rules/set-theme',
+		showRulesLineNumbers: '/cgi-bin/rules/show-line-numbers',
 		unselectRules: '/cgi-bin/rules/unselect'
-	}, {mode: 'ignore', type: 'post'});
+	}, {mode: 'ignore', type: 'post'}));
+
 
 
 
