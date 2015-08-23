@@ -45051,7 +45051,7 @@
 					      '<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
 					        '<div class="w-online-dialog-ctn">One fine body&hellip;</div>' + 
 					        '<div class="w-switch-to-server"><h5>Switch to:</h5>' + 
-					        '<input class="w-ip" maxlength="256" type="text" placeholder="ip" /> : <input maxlength="5" class="w-port" type="text" placeholder="port" />' +
+					        '<input class="w-ip" maxlength="256" type="text" placeholder="whistle ip" /> : <input maxlength="5" class="w-port" type="text" placeholder="whistle port" />' +
 					        '</div>' +
 					      '</div>' + 
 					      '<div class="modal-footer">' + 
@@ -45190,7 +45190,7 @@
 
 
 	// module
-	exports.push([module.id, ".w-online-dialog .modal-dialog {width: 275px;}\n.w-online-dialog-ctn h5 {padding: 5px 0; margin: 0;}\n.w-switch-to-server {white-space: nowrap; padding-bottom: 5px;}\n.w-switch-to-server input {border: 1px solid #ccc; padding: 0 5px; height: 26px; border-radius: 2px;}\n.w-switch-to-server .w-ip {width: 168px;}\n.w-switch-to-server .w-port {width: 72px;}", ""]);
+	exports.push([module.id, ".w-online-dialog .modal-dialog {width: 290px;}\n.w-online-dialog-ctn h5 {padding: 5px 0; margin: 0;}\n.w-switch-to-server {white-space: nowrap; padding-bottom: 5px;}\n.w-switch-to-server input {border: 1px solid #ccc; padding: 0 5px; height: 26px; border-radius: 2px;}\n.w-switch-to-server .w-ip {width: 168px;}\n.w-switch-to-server .w-port {width: 86px;}", ""]);
 
 	// exports
 
