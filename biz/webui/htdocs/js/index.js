@@ -31764,6 +31764,7 @@
 			xhrFields: {
 				withCredentials: true
 			},
+			timeout: 3000,
 			dataType: 'json',
 			success: function(data) {
 				callback(!!data && data.ec === 0 && !!data.server);
@@ -45061,20 +45062,24 @@
 					  '</div>' + 
 					'</div>').appendTo(document.body);
 			dialog.on('click', '.w-switch-btn', function() {
-				var ip = $.trim(dialog.find('.w-ip').val());
+				var ipInput = dialog.find('.w-ip');
+				var ip = $.trim(ipInput.val());
 				if (!ip) {
-					alert('请输入正确的whistle服务器IP或域名');
+					alert('Please enter the IP or domain name of the whistle server.');
+					ipInput.focus();
 					return;
 				}
-				var port = $.trim(dialog.find('.w-port').val());
+				var portInput = dialog.find('.w-port');
+				var port = $.trim(portInput.val());
 				if (!/^\d+$/.test(port)) {
-					alert('请输入正确的whistle服务器端口号');
+					alert('Please enter the port number of the whistle server.');
+					portInput.focus();
 					return;
 				}
 				dataCenter.checkExists({ip: ip, port: port}, function(exists) {
 					var host = ip + ':' + port;
 					if (!exists) {
-						alert('请检查whistle(' + host + ')是否启动');
+						alert('Please check if the whistle server(' + host + ') is started.');
 						return;
 					}
 					location.href = '//' + host + location.pathname + location.search + location.hash;
