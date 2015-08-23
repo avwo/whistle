@@ -20483,6 +20483,7 @@
 	__webpack_require__(170);
 	var React = __webpack_require__(1);
 	var MenuItem = __webpack_require__(172);
+	var About = __webpack_require__(276);
 	var Online = __webpack_require__(270);
 
 	var Menu = React.createClass({displayName: "Menu",
@@ -20508,7 +20509,7 @@
 						React.createElement("a", {onClick: this.props.onClick, className: "w-weinre-menu", href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-globe"}), "Weinre"), 
 						React.createElement("a", {onClick: this.props.onClick, className: "w-rootca-menu", href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-download-alt"}), "RootCA"), 
 						React.createElement("a", {onClick: this.props.onClick, className: "w-help-menu", href: "https://github.com/avwo/whistle#whistle", target: "_blank"}, React.createElement("span", {className: "glyphicon glyphicon-question-sign"}), "Help"), 
-						React.createElement("a", {onClick: this.props.onClick, className: "w-about-menu", href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-info-sign"}), "About"), 
+						React.createElement(About, null), 
 						React.createElement(Online, null), 
 						React.createElement(MenuItem, {onClick: this.props.onClickItem, onClickOption: this.props._onClickOption})
 					)
@@ -31587,6 +31588,7 @@
 	var serverInfoCallbacks = [];
 	var dataList = [];
 	var curServerInfo;
+	var initialData;
 	var DEFAULT_CONF = {
 			mode: 'ignore', 
 			timeout: TIMEOUT,
@@ -31598,7 +31600,8 @@
 	var GET_CONF = $.extend({cache: false}, DEFAULT_CONF);
 	var cgi = createCgi({
 		getData: '/cgi-bin/get-data',
-		getServerInfo: '/cgi-bin/server-info'
+		getServerInfo: '/cgi-bin/server-info',
+		getInitaial: '/cgi-bin/init'
 	}, GET_CONF);
 
 	exports.values = createCgi({
@@ -31641,9 +31644,21 @@
 		composer: {
 			url: '/cgi-bin/composer',
 			type: 'post'
-		},
-		getInitaial: '/cgi-bin/init'
+		}
 	}, GET_CONF));
+
+	exports.getInitialData = function(callback) {
+		if (initialData) {
+			return initialData.done(initialData);
+		}
+		initialData = $.Deferred();
+		function load() {
+			cgi.getInitaial(function(data) {
+				data ? initialData.resolve(data) : setTimeout(load, 1000);
+			});
+		}
+		load();
+	};
 
 	function startLadData() {
 		if (dataList.length) {
@@ -45049,7 +45064,7 @@
 					    '<div class="modal-content">' + 
 					      '<div class="modal-body">' + 
 					      '<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
-					        '<div class="w-online-dialog-ctn">One fine body&hellip;</div>' + 
+					        '<div class="w-online-dialog-ctn"></div>' + 
 					        '<div class="w-switch-to-server"><h5>Switch to:</h5>' + 
 					        '<input class="w-ip" maxlength="256" type="text" placeholder="whistle ip" /> : <input maxlength="5" class="w-port" type="text" placeholder="whistle port" />' +
 					        '</div>' +
@@ -47562,6 +47577,96 @@
 	  })
 
 	}(jQuery);
+
+
+/***/ },
+/* 276 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(158);
+	__webpack_require__(277);
+	var $ = window.jQuery = __webpack_require__(176); //for bootstrap
+	__webpack_require__(275);
+	var React = __webpack_require__(1);
+	var dataCenter = __webpack_require__(214);
+	var dialog;
+
+	function createDialog(version) {
+		if (!dialog) {
+			dialog = $('<div class="modal fade w-online-dialog">' + 
+					  '<div class="modal-dialog">' + 
+					    '<div class="modal-content">' + 
+					      '<div class="modal-body">' + 
+					      '<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
+					        '<img alt="logo" src="/style/img/whistle.jpg">' + 
+				          'Whistle for Web Developers.<br><br>' +
+						  'Version: <span id="aboutVersion">' + version + '</span><br>' + 
+						  'Visit <a id="aboutUrl" href="http://www.whistlejs.com#v=' + version + '" target="_blank">http://www.whistlejs.com</a>' +
+					      '</div>' + 
+					      '<div class="modal-footer">' + 
+					        '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>' + 
+					      '</div>' + 
+					    '</div>' + 
+					  '</div>' + 
+					'</div>').appendTo(document.body);
+		}
+		
+		return dialog;
+	}
+
+	var About = React.createClass({displayName: "About",
+		showAboutInfo: function() {
+			dataCenter.getInitialData(function(data) {
+				createDialog(data.version).modal('show');
+			});
+		},
+		render: function() {
+			return (
+					React.createElement("a", {onClick: this.showAboutInfo, className: "w-about-menu", href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-info-sign"}), "About")
+			);
+		}
+	});
+
+	module.exports = About;
+
+/***/ },
+/* 277 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(278);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(167)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../node_modules/css-loader/index.js!./about.css", function() {
+				var newContent = require("!!./../node_modules/css-loader/index.js!./about.css");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 278 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(161)();
+	// imports
+
+
+	// module
+	exports.push([module.id, "", ""]);
+
+	// exports
 
 
 /***/ }
