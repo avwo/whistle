@@ -31648,16 +31648,17 @@
 	}, GET_CONF));
 
 	exports.getInitialData = function(callback) {
-		if (initialData) {
-			return initialData.done(initialData);
+		if (!initialData) {
+			initialData = $.Deferred();
+			function load() {
+				cgi.getInitaial(function(data) {
+					data ? initialData.resolve(data) : setTimeout(load, 1000);
+				});
+			}
+			load();
 		}
-		initialData = $.Deferred();
-		function load() {
-			cgi.getInitaial(function(data) {
-				data ? initialData.resolve(data) : setTimeout(load, 1000);
-			});
-		}
-		load();
+		
+		initialData.done(callback);
 	};
 
 	function startLadData() {
@@ -47593,15 +47594,15 @@
 
 	function createDialog(version) {
 		if (!dialog) {
-			dialog = $('<div class="modal fade w-online-dialog">' + 
+			dialog = $('<div class="modal fade w-about-dialog">' + 
 					  '<div class="modal-dialog">' + 
 					    '<div class="modal-content">' + 
 					      '<div class="modal-body">' + 
 					      '<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
-					        '<img alt="logo" src="/style/img/whistle.jpg">' + 
-				          'Whistle for Web Developers.<br><br>' +
+					        '<img alt="logo" src="/img/whistle.png">' + 
+				          '<span" class="w-about-dialog-ctn">Whistle for Web Developers.<br><br>' +
 						  'Version: <span id="aboutVersion">' + version + '</span><br>' + 
-						  'Visit <a id="aboutUrl" href="http://www.whistlejs.com#v=' + version + '" target="_blank">http://www.whistlejs.com</a>' +
+						  'Visit <a id="aboutUrl" href="http://www.whistlejs.com#v=' + version + '" target="_blank">http://www.whistlejs.com</a></span>' +
 					      '</div>' + 
 					      '<div class="modal-footer">' + 
 					        '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>' + 
@@ -47664,7 +47665,7 @@
 
 
 	// module
-	exports.push([module.id, "", ""]);
+	exports.push([module.id, ".w-about-dialog .modal-dialog {width: 300px;}\n.w-about-dialog-ctn {display: inline-block; padding-top: 10px; margin-left: 10px;}\n.w-about-dialog img {width: 60px; vertical-align: top;}", ""]);
 
 	// exports
 
