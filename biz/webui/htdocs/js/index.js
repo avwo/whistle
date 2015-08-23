@@ -45126,8 +45126,10 @@
 			}
 			var info = [];
 			if (server.host) {
-				info.push('<h5>Host:</h5>');
-				info.push('<p>' + server.host + '</p>');
+				info.push('<h5>Host: ' + server.host + '</h5>');
+			}
+			if (server.port) {
+				info.push('<h5>Port: ' + server.port + '</h5>');
 			}
 			if (server.ipv4.length) {
 				info.push('<h5>IPv4:</h5>');
@@ -45146,9 +45148,13 @@
 			var server = this.state.server;
 			if (server) {
 				if (server.host) {
-					info.push('Host:');
-					info.push(server.host);
+					info.push('Host: ' + server.host);
 				}
+				
+				if (server.port) {
+					info.push('Port: ' + server.port);
+				}
+				
 				if (server.ipv4.length) {
 					info.push('IPv4:');
 					info.push.apply(info, server.ipv4);
@@ -47600,8 +47606,8 @@
 					      '<div class="modal-body">' + 
 					      '<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
 					        '<img alt="logo" src="/img/whistle.png">' + 
-				          '<span" class="w-about-dialog-ctn">Whistle for Web Developers.<br><br>' +
-						  'Version: <span id="aboutVersion">' + version + '</span><br>' + 
+				          '<span" class="w-about-dialog-ctn"><span class="w-about-dialog-title">Whistle for Web Developers.</span>' +
+						  'Version: ' + version + '<br>' + 
 						  'Visit <a id="aboutUrl" href="http://www.whistlejs.com#v=' + version + '" target="_blank">http://www.whistlejs.com</a></span>' +
 					      '</div>' + 
 					      '<div class="modal-footer">' + 
@@ -47665,7 +47671,7 @@
 
 
 	// module
-	exports.push([module.id, ".w-about-dialog .modal-dialog {width: 300px;}\n.w-about-dialog-ctn {display: inline-block; padding-top: 10px; margin-left: 10px;}\n.w-about-dialog img {width: 60px; vertical-align: top;}", ""]);
+	exports.push([module.id, ".w-about-dialog .modal-dialog {width: 300px;}\n.w-about-dialog-ctn {display: inline-block; padding-top: 10px; margin-left: 10px;}\n.w-about-dialog-title {margin-bottom: 10px; display: block;}\n.w-about-dialog img {width: 60px; vertical-align: top;}", ""]);
 
 	// exports
 
