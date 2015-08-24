@@ -44,6 +44,7 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
+	__webpack_require__(279);
 	var $ = __webpack_require__(176);
 	var React = __webpack_require__(1);
 	var Menu = __webpack_require__(157);
@@ -51,6 +52,7 @@
 	var Network = __webpack_require__(177);
 	var MenuItem = __webpack_require__(172);
 	var dataCenter = __webpack_require__(214);
+	var util = __webpack_require__(175);
 	var pageName = getPageName();
 
 	function getPageName() {
@@ -150,11 +152,75 @@
 			});
 			location.hash = 'values';
 		},
-		createRules: function() {
-			
+		showCreateRules: function() {
+			var createRulesInput = this.refs.createRulesInput.getDOMNode();
+			this.setState({
+				showCreateRules: true,
+				showCreateValues: false
+			}, function() {
+				createRulesInput.focus();
+			});
 		},
-		createValues: function() {
-				
+		showCreateValues: function() {
+			var createValuesInput = this.refs.createValuesInput.getDOMNode();
+			this.setState({
+				showCreateRules: false,
+				showCreateValues: true
+			}, function() {
+				createValuesInput.focus();
+			});
+		},
+		createRules: function(e) {
+			if (e.keyCode != 13) {
+				return;
+			}
+			var target = e.target;
+			var name = $.trim(target.value);
+			if (!name) {
+				alert('Rule name can not be empty.');
+				return;
+			}
+			
+			if (this.state.rules.list.indexOf(name) != -1) {
+				alert('Rule name  \'' + name + '\' already exists.');
+				return;
+			}
+			var rulesList = this.refs.rules;
+			dataCenter.rules.add({name: name}, function(data) {
+				if (data && data.ec === 0) {
+					target.value = '';
+					target.blur();
+					rulesList.add(name);
+				} else {
+					util.showSystemError();
+				}
+			});
+		},
+		createValues: function(e) {
+			if (e.keyCode != 13) {
+				return;
+			}
+			var target = e.target;
+			var name = $.trim(target.value);
+			if (!name) {
+				alert('Value name can not be empty.');
+				return;
+			}
+			
+			if (this.state.values.list.indexOf(name) != -1) {
+				alert('Value name  \'' + name + '\' already exists.');
+				return;
+			}
+			var valuesList = this.refs.values;
+			dataCenter.values.add({name: name}, function(data) {
+				if (data && data.ec === 0) {
+					target.value = '';
+					target.blur();
+					valuesList.add(name);
+				} else {
+					util.showSystemError();
+				}
+			});
 		},
 		editRules: function() {
 				
@@ -175,26 +241,36 @@
 			
 		},
 		removeRules: function() {
-			var self = this;
-			var rules = self.state.rules;
-			$.each(rules.list, function(i, name) {
-				var item = rules.data[name];
-				if (item.selected) {
-					if (!item.isDefault && confirm('Confirm delete this rule `' + name + '`.')) {
-						dataCenter.values.remove({name: name}, function(data) {
-							if (data && data.ec === 0) {
-								rules.list.splice(i, 1);
-								delete rules.data[name];
-								self.forceUpdate();
-							}
-						});
-					}
-					return false;
+			var rulesList = this.refs.rules;
+			var selectedItem = rulesList.getSelectedItem();
+			if (selectedItem && !selectedItem.isDefault) {
+				var name = selectedItem.name;
+				if (confirm('Confirm delete this Rule \'' + name + '\'.')) {
+					dataCenter.rules.remove({name: name}, function(data) {
+						if (data && data.ec === 0) {
+							rulesList.remove(name);
+						} else {
+							util.showSystemError();
+						}
+					});
 				}
-			});
+			}
 		},
 		removeValues: function() {
-			
+			var valuesList = this.refs.values;
+			var selectedItem = valuesList.getSelectedItem();
+			if (selectedItem && !selectedItem.isDefault) {
+				var name = selectedItem.name;
+				if (confirm('Confirm delete this Value \'' + name + '\'.')) {
+					dataCenter.values.remove({name: name}, function(data) {
+						if (data && data.ec === 0) {
+							valuesList.remove(name);
+						} else {
+							util.showSystemError();
+						}
+					});
+				}
+			}
 		},
 		setRulesSettings: function() {
 			
@@ -205,6 +281,12 @@
 		showWeinre: function() {
 			
 		},
+		hideOnBlur: function() {
+			this.setState({
+				showCreateRules: false,
+				showCreateValues: false
+			});
+		},
 		onClickMenu: function(e) {
 			var target = $(e.target).closest('a');
 			if (target.hasClass('w-network-menu')) {
@@ -214,7 +296,7 @@
 			} else if (target.hasClass('w-values-menu')) {
 				this.showValues();
 			} else if (target.hasClass('w-create-menu')) {
-				this.state.name == 'rules' ? this.createRules() : this.createValues();
+				this.state.name == 'rules' ? this.showCreateRules() : this.showCreateValues();
 			} else if (target.hasClass('w-edit-menu')) {
 				this.state.name == 'rules' ? this.editRules() : this.editValues();
 			} else if (target.hasClass('w-replay-menu')) {
@@ -239,10 +321,14 @@
 			return (
 				React.createElement("div", {className: "main orient-vertical-box"}, 
 					React.createElement(Menu, {name: name, onClick: this.onClickMenu}, 
-						React.createElement(MenuItem, {onClick: this.props.onClickItem, onClickOption: this.props.onClickOption})
+						React.createElement(MenuItem, {ref: "rulesOptions", onClick: this.props.onClickItem, onClickOption: this.props.onClickOption}), 
+						React.createElement(MenuItem, {ref: "valuesOptions", onClick: this.props.onClickItem, onClickOption: this.props.onClickOption}), 
+						React.createElement(MenuItem, {ref: "weinreOptions", onClick: this.props.onClickItem, onClickOption: this.props.onClickOption}), 
+						React.createElement("input", {ref: "createRulesInput", onKeyDown: this.createRules, onBlur: this.hideOnBlur, type: "text", style: {display: this.state.showCreateRules ? 'block' : 'none'}, className: "shadow w-create-rules-input", maxLength: "64", placeholder: "press 'enter' to save the rules name"}), 
+						React.createElement("input", {ref: "createValuesInput", onKeyDown: this.createValues, onBlur: this.hideOnBlur, type: "text", style: {display: this.state.showCreateValues ? 'block' : 'none'}, className: "shadow w-create-values-input", maxLength: "64", placeholder: "press 'enter' to save the values name"})
 					), 
-					this.state.hasRules ? React.createElement(List, {modal: this.state.rules, hide: name == 'rules' ? false : true, name: "rules"}) : '', 
-					this.state.hasValues ? React.createElement(List, {modal: this.state.values, hide: name == 'values' ? false : true, className: "w-values-list"}) : '', 
+					this.state.hasRules ? React.createElement(List, {ref: "rules", modal: this.state.rules, hide: name == 'rules' ? false : true, name: "rules"}) : '', 
+					this.state.hasValues ? React.createElement(List, {ref: "values", modal: this.state.values, hide: name == 'values' ? false : true, className: "w-values-list"}) : '', 
 					this.state.hasNetwork ? React.createElement(Network, {hide: name != 'rules' && name != 'values' ? false : true}) : ''
 				)
 			);
@@ -21066,7 +21152,7 @@
 
 
 	// module
-	exports.push([module.id, "html, body, .main {margin: 0; padding: 0; width: 100%; height: 100%;}\n.main {min-width: 960px; min-height: 360px;}\n::-webkit-scrollbar{ width:10px; height:10px; }\n::-webkit-scrollbar-button{ width:10px;height:1px; }\n::-webkit-scrollbar-thumb{ background-clip:padding-box; background-color:rgba(0,0,0,.5); border-radius:8px; min-height: 30px;}\n::-webkit-scrollbar-thumb:hover{ background-clip:padding-box; background-color:rgba(0,0,0,.7); border-radius:8px;}\n::-webkit-scrollbar-track,::-webkit-scrollbar-thumb { border-left:2px solid transparent; border-right:2px solid transparent;}\n::-webkit-scrollbar-track:hover{ background-clip:padding-box; background-color:rgba(0,0,0,.15);}\n\ntextarea[readonly] {outline: none;}\n.hide {display: none!important;}\n.box {display:-webkit-box; display:-moz-box; display:box;}\n.orient-vertical-box {-moz-box-orient:vertical; -webkit-box-orient:vertical; box-orient:vertical; display:-moz-box; display:-webkit-box; display: box;}\n.fill {-moz-box-flex:1; -webkit-box-flex:1; box-flex:1;}\n.table {table-layout: fixed; margin: 0!important;}\n\n.modal-dialog .modal-body, .modal-dialog .modal-footer {padding: 10px;}\n.modal-dialog .btn {padding: 5px 10px;}\n\n.cm-header {text-decoration: line-through;}\n.cm-s-ambiance ::-webkit-scrollbar-thumb, \n.cm-s-blackboard ::-webkit-scrollbar-thumb, \n.cm-s-cobalt ::-webkit-scrollbar-thumb, \n.cm-s-erlang-dark ::-webkit-scrollbar-thumb, \n.cm-s-lesser-dark ::-webkit-scrollbar-thumb, \n.cm-s-midnight ::-webkit-scrollbar-thumb, \n.cm-s-monokai ::-webkit-scrollbar-thumb, \n.cm-s-night ::-webkit-scrollbar-thumb, \n.cm-s-dark ::-webkit-scrollbar-thumb, \n.cm-s-twilight ::-webkit-scrollbar-thumb, \n.cm-s-vibrant-ink ::-webkit-scrollbar-thumb, \n.cm-s-xq-dark ::-webkit-scrollbar-thumb {background-color:rgba(255,255,255,.5);}\n\n.cm-s-ambiance ::-webkit-scrollbar-thumb:hover, \n.cm-s-blackboard ::-webkit-scrollbar-thumb:hover, \n.cm-s-cobalt ::-webkit-scrollbar-thumb:hover, \n.cm-s-erlang-dark ::-webkit-scrollbar-thumb:hover, \n.cm-s-lesser-dark ::-webkit-scrollbar-thumb:hover, \n.cm-s-midnight ::-webkit-scrollbar-thumb:hover, \n.cm-s-monokai ::-webkit-scrollbar-thumb:hover, \n.cm-s-night ::-webkit-scrollbar-thumb:hover, \n.cm-s-dark ::-webkit-scrollbar-thumb:hover, \n.cm-s-twilight ::-webkit-scrollbar-thumb:hover, \n.cm-s-vibrant-ink ::-webkit-scrollbar-thumb:hover, \n.cm-s-xq-dark ::-webkit-scrollbar-thumb:hover {background-color:rgba(255,255,255,.7);}\n\n.cm-s-ambiance ::-webkit-scrollbar-track:hover, \n.cm-s-blackboard ::-webkit-scrollbar-track:hover, \n.cm-s-cobalt ::-webkit-scrollbar-track:hover, \n.cm-s-erlang-dark ::-webkit-scrollbar-track:hover, \n.cm-s-lesser-dark ::-webkit-scrollbar-track:hover, \n.cm-s-midnight ::-webkit-scrollbar-track:hover, \n.cm-s-monokai ::-webkit-scrollbar-track:hover, \n.cm-s-night ::-webkit-scrollbar-track:hover, \n.cm-s-dark ::-webkit-scrollbar-track:hover, \n.cm-s-twilight ::-webkit-scrollbar-track:hover, \n.cm-s-vibrant-ink ::-webkit-scrollbar-track:hover, \n.cm-s-xq-dark ::-webkit-scrollbar-track:hover {background-color:rgba(255,255,255,.15);}\n\n\n", ""]);
+	exports.push([module.id, "html, body, .main {margin: 0; padding: 0; width: 100%; height: 100%;}\n.main {min-width: 960px; min-height: 360px;}\n::-webkit-scrollbar{ width:10px; height:10px; }\n::-webkit-scrollbar-button{ width:10px;height:1px; }\n::-webkit-scrollbar-thumb{ background-clip:padding-box; background-color:rgba(0,0,0,.5); border-radius:8px; min-height: 30px;}\n::-webkit-scrollbar-thumb:hover{ background-clip:padding-box; background-color:rgba(0,0,0,.7); border-radius:8px;}\n::-webkit-scrollbar-track,::-webkit-scrollbar-thumb { border-left:2px solid transparent; border-right:2px solid transparent;}\n::-webkit-scrollbar-track:hover{ background-clip:padding-box; background-color:rgba(0,0,0,.15);}\n\n.shadow {border: 1px solid rgba(0,0,0,.15)!important; -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175)!important; box-shadow: 0 6px 12px rgba(0,0,0,.175)!important;}\ntextarea[readonly] {outline: none;}\n.hide {display: none!important;}\n.box {display:-webkit-box; display:-moz-box; display:box;}\n.orient-vertical-box {-moz-box-orient:vertical; -webkit-box-orient:vertical; box-orient:vertical; display:-moz-box; display:-webkit-box; display: box;}\n.fill {-moz-box-flex:1; -webkit-box-flex:1; box-flex:1;}\n.table {table-layout: fixed; margin: 0!important;}\n\n.modal-dialog .modal-body, .modal-dialog .modal-footer {padding: 10px;}\n.modal-dialog .btn {padding: 5px 10px;}\n\n.cm-header {text-decoration: line-through;}\n.cm-s-ambiance ::-webkit-scrollbar-thumb, \n.cm-s-blackboard ::-webkit-scrollbar-thumb, \n.cm-s-cobalt ::-webkit-scrollbar-thumb, \n.cm-s-erlang-dark ::-webkit-scrollbar-thumb, \n.cm-s-lesser-dark ::-webkit-scrollbar-thumb, \n.cm-s-midnight ::-webkit-scrollbar-thumb, \n.cm-s-monokai ::-webkit-scrollbar-thumb, \n.cm-s-night ::-webkit-scrollbar-thumb, \n.cm-s-dark ::-webkit-scrollbar-thumb, \n.cm-s-twilight ::-webkit-scrollbar-thumb, \n.cm-s-vibrant-ink ::-webkit-scrollbar-thumb, \n.cm-s-xq-dark ::-webkit-scrollbar-thumb {background-color:rgba(255,255,255,.5);}\n\n.cm-s-ambiance ::-webkit-scrollbar-thumb:hover, \n.cm-s-blackboard ::-webkit-scrollbar-thumb:hover, \n.cm-s-cobalt ::-webkit-scrollbar-thumb:hover, \n.cm-s-erlang-dark ::-webkit-scrollbar-thumb:hover, \n.cm-s-lesser-dark ::-webkit-scrollbar-thumb:hover, \n.cm-s-midnight ::-webkit-scrollbar-thumb:hover, \n.cm-s-monokai ::-webkit-scrollbar-thumb:hover, \n.cm-s-night ::-webkit-scrollbar-thumb:hover, \n.cm-s-dark ::-webkit-scrollbar-thumb:hover, \n.cm-s-twilight ::-webkit-scrollbar-thumb:hover, \n.cm-s-vibrant-ink ::-webkit-scrollbar-thumb:hover, \n.cm-s-xq-dark ::-webkit-scrollbar-thumb:hover {background-color:rgba(255,255,255,.7);}\n\n.cm-s-ambiance ::-webkit-scrollbar-track:hover, \n.cm-s-blackboard ::-webkit-scrollbar-track:hover, \n.cm-s-cobalt ::-webkit-scrollbar-track:hover, \n.cm-s-erlang-dark ::-webkit-scrollbar-track:hover, \n.cm-s-lesser-dark ::-webkit-scrollbar-track:hover, \n.cm-s-midnight ::-webkit-scrollbar-track:hover, \n.cm-s-monokai ::-webkit-scrollbar-track:hover, \n.cm-s-night ::-webkit-scrollbar-track:hover, \n.cm-s-dark ::-webkit-scrollbar-track:hover, \n.cm-s-twilight ::-webkit-scrollbar-track:hover, \n.cm-s-vibrant-ink ::-webkit-scrollbar-track:hover, \n.cm-s-xq-dark ::-webkit-scrollbar-track:hover {background-color:rgba(255,255,255,.15);}\n\n\n", ""]);
 
 	// exports
 
@@ -21199,7 +21285,7 @@
 
 
 	// module
-	exports.push([module.id, ".w-menu-item {position: absolute; background: #ededed; border: 1px solid #ccc; z-index: 1; top: 30px;}\n.w-menu-item a {display: block; padding: 0 10px; font-weight: normal; white-space: nowrap; margin: 0!important;}\n.w-menu-item .w-menu-options {border-bottom: 1px dashed #ccc; max-height: 320px; overflow-x: hidden; overflow-y: auto;}\n.w-menu-item a .glyphicon {margin-right: 8px; font-size: 12px;}\n", ""]);
+	exports.push([module.id, ".w-menu-item {position: absolute; background: #ededed; border: 1px solid #ccc; z-index: 2; top: 30px;}\n.w-menu-item a {display: block; padding: 0 10px; font-weight: normal; white-space: nowrap; margin: 0!important;}\n.w-menu-item .w-menu-options {border-bottom: 1px dashed #ccc; max-height: 320px; overflow-x: hidden; overflow-y: auto;}\n.w-menu-item a .glyphicon {margin-right: 8px; font-size: 12px;}\n", ""]);
 
 	// exports
 
@@ -21324,6 +21410,12 @@
 	}
 
 	exports.getBoolean = getBoolean;
+
+	exports.showSystemError = function showSystemError() {
+		alert('Please check if the whistle server is started.');
+	};
+
+
 
 
 
@@ -31759,13 +31851,17 @@
 	}, GET_CONF);
 
 	exports.values = createCgi({
+		get: {
+			type: 'get',
+			get: '/cgi-bin/values/list'
+		},
+		add: '/cgi-bin/values/add',
 		remove: '/cgi-bin/values/remove',
 		rename: '/cgi-bin/values/rename',
 		setCurrent: '/cgi-bin/values/set-current',
 		setFontSize: '/cgi-bin/values/set-font-size',
 		setTheme: '/cgi-bin/values/set-theme',
-		showLineNumbers: '/cgi-bin/values/show-line-numbers',
-		set: '/cgi-bin/values/add'
+		showLineNumbers: '/cgi-bin/values/show-line-numbers'
 	}, POST_CONF);
 
 	exports.rules = createCgi({
@@ -31960,17 +32056,21 @@
 			url = {url: url};
 		}
 		settings = $.extend({dataType: 'json'}, settings, url);
+		url = url.url;
 		var queue = [];
 		var jqXhr;
 		
 		function cgiFn(data, callback, options) {
+			var opts = {url: typeof url == 'function' ? url() : url};
 			if (typeof data == 'function') {
 				options = callback;
 				callback = data;
 				data = null;
+			} else {
+				opts.data = data;
 			}
 			
-			var options = $.extend({}, settings, options);
+			options = $.extend({}, settings, options, opts);
 			if (jqXhr) {
 				var mode = options.mode;
 				if (mode == 'ignore') {
@@ -32049,13 +32149,23 @@
 			
 			return items;
 		},
+		getSelectedItem: function() {
+			var selectedItem;
+			$.each(this._data, function(name, item) {
+				if (item.selected) {
+					selectedItem = item;
+					return false;
+				}
+			});
+			return selectedItem;
+		},
 		add: function(name, value) {
 			if (this.getItem(name)) {
 				return false;
 			}
 			var list = this._list;
-			var data = this._data;
-			
+			var data =  this._data;
+			this._clearSelection();
 			list.push(name);
 			data[name] = {
 					selected: true,
@@ -32063,12 +32173,7 @@
 					name: name,
 					value: value
 			};
-			this.setProps({
-				modal: {
-					list: list,
-					data: data
-				}
-			});
+			this.forceUpdate();
 			return true;
 		},
 		remove: function(name) {
@@ -32091,24 +32196,31 @@
 		select: function(name) {
 			var item = this.getItem(name);
 			if (item) {
-				var data = this._data;
-				Object.keys(data).forEach(function(name) {
-					data[name].selected = false;
-				});
+				this._clearSelection();
 				item.selected = true;
 				this.forceUpdate();
 			}
 		},
 		unselect: function(name) {
 			if (!arguments.length) {
-				Object.keys(data).forEach(function(name) {
-					data[name].selected = false;
-				});
+				this._clearSelection();
 				this.forceUpdate();
 			}else if (name = this.getItem(name)) {
 				name.selected = false;
 				this.forceUpdate();
 			}
+		},
+		_clearSelection: function() {
+			var data = this._data;
+			Object.keys(data).forEach(function(name) {
+				data[name].selected = false;
+			});
+		},
+		_clearActive: function() {
+			var data = this._data;
+			Object.keys(data).forEach(function(name) {
+				data[name].active = false;
+			});
 		},
 		enable: function(name) {
 			if (name = this.getItem(name)) {
@@ -32119,9 +32231,7 @@
 		},
 		disable: function(name) {
 			if (!arguments.length) {
-				Object.keys(data).forEach(function(name) {
-					data[name].active = false;
-				});
+				this._clearActive();
 				this.forceUpdate();
 			} else if (name = this.getItem(name)) {
 				name.active = false;
@@ -32432,7 +32542,7 @@
 			var elem = self.refs.editor.getDOMNode();
 			var editor = self._editor = CodeMirror(elem);
 			editor.on('change', function(e) {
-				if (typeof self.props.onChange == 'function') {
+				if (typeof self.props.onChange == 'function' && editor.getValue() !== (self.props.value || '')) {
 					self.props.onChange.call(self, e);
 				}
 			});
@@ -47735,6 +47845,46 @@
 
 	// module
 	exports.push([module.id, ".w-about-dialog .modal-dialog {width: 300px;}\n.w-about-dialog-ctn {display: inline-block; padding-top: 10px; margin-left: 10px;}\n.w-about-dialog-title {margin-bottom: 10px; display: block;}\n.w-about-dialog img {width: 60px; vertical-align: top;}", ""]);
+
+	// exports
+
+
+/***/ },
+/* 279 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(280);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(167)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../node_modules/css-loader/index.js!./index.css", function() {
+				var newContent = require("!!./../node_modules/css-loader/index.js!./index.css");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 280 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(161)();
+	// imports
+
+
+	// module
+	exports.push([module.id, ".w-create-rules-input, .w-create-values-input {width: 246px; height: 32px; border: none; display: block; padding: 0 5px;\nposition: absolute; background: #fff; border: 1px solid #ccc; border-radius: 2px; z-index: 101; top: 30px; display: none;}\n.w-create-rules-input {left: 170px;}\n.w-create-values-input {left: 160px;}", ""]);
 
 	// exports
 
