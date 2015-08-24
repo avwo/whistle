@@ -286,11 +286,11 @@
 				}
 			});
 		},
-		editValues: function() {
+		editValues: function(e) {
 			if (e.keyCode != 13) {
 				return;
 			}
-			var selectedItem = this.state.selectedRule;
+			var selectedItem = this.state.selectedValue;
 			if (!selectedItem) {
 				return;
 			}
