@@ -47,44 +47,163 @@
 	var $ = __webpack_require__(176);
 	var React = __webpack_require__(1);
 	var Menu = __webpack_require__(157);
+	var List = __webpack_require__(217);
 	var Network = __webpack_require__(177);
-	var Rules = __webpack_require__(216);
-	var Values = __webpack_require__(267);
 	var MenuItem = __webpack_require__(172);
 	var dataCenter = __webpack_require__(214);
-	var filename = location.href.replace(/[#?].*$/, '').replace(/.*\//, '');
+	var pageName = getPageName();
+
+	function getPageName() {
+		return location.hash.substring(1) || location.href.replace(/[#?].*$/, '').replace(/.*\//, '');
+	}
 
 	var Index = React.createClass({displayName: "Index",
 		getInitialState: function() {
 			var state = {};
-			if (!filename || filename.indexOf('rules') != -1) {
+			if (!pageName || pageName.indexOf('rules') != -1) {
 				state.hasRules = true;
 				state.name = 'rules';
-			} else if (filename.indexOf('values') != -1) {
+			} else if (pageName.indexOf('values') != -1) {
 				state.hasValues = true;
 				state.name = 'values';
 			} else {
 				state.hasNetwork = true;
 			}
+			var rulesList = [];
+			var rulesData = [];
+			var valuesList = [];
+			var valuesData = [];
+			
+			state.rules = {
+					list: rulesList,
+					data: rulesData
+				};
+			state.values = {
+					list: valuesList,
+					data: valuesData
+				};
+			var modal = this.props.modal;
+			var rules = modal.rules;
+			var values = modal.values;
+			if (rules) {
+				rulesList.push('Default');
+				rulesData.Default = {
+						name: 'Default',
+						value: rules.defaultRules,
+						active: !rules.defaultRulesIsDisabled,
+						isDefault: true
+				};
+				$.each(rules.list, function() {
+					rulesList.push(this.name);
+					rulesData[this.name] = {
+						name: this.name,
+						value: this.data,
+						active: this.selected
+					};
+				});
+			}
+			
+			if (values) {
+				$.each(values.list, function() {
+					valuesList.push(this.name);
+					valuesData[this.name] = {
+						name: this.name,
+						value: this.data,
+						active: this.selected
+					};
+				});
+			}
+			
 			return state;
+		},
+		componentDidMount: function() {
+			var self = this;
+			$(window).on('hashchange', function() {
+				var pageName = getPageName();
+				if (!pageName || pageName.indexOf('rules') != -1) {
+					self.showRules();
+				} else if (pageName.indexOf('values') != -1) {
+					self.showValues();
+				} else {
+					self.showNetwork();
+				}
+			});
 		},
 		showNetwork: function() {
 			this.setState({
 				hasNetwork: true,
 				name: 'network'
 			});
+			location.hash = 'network';
 		},
 		showRules: function() {
 			this.setState({
 				hasRules: true,
 				name: 'rules'
 			});
+			location.hash = 'rules';
 		},
 		showValues: function() {
 			this.setState({
 				hasValues: true,
 				name: 'values'
 			});
+			location.hash = 'values';
+		},
+		createRules: function() {
+			
+		},
+		createValues: function() {
+				
+		},
+		editRules: function() {
+				
+		},
+		editValues: function() {
+			
+		},
+		replay: function() {
+			
+		},
+		composer: function() {
+			
+		},
+		setFilter: function() {
+			
+		},
+		clear: function() {
+			
+		},
+		removeRules: function() {
+			var self = this;
+			var rules = self.state.rules;
+			$.each(rules.list, function(i, name) {
+				var item = rules.data[name];
+				if (item.selected) {
+					if (!item.isDefault && confirm('Confirm delete this rule `' + name + '`.')) {
+						dataCenter.values.remove({name: name}, function(data) {
+							if (data && data.ec === 0) {
+								rules.list.splice(i, 1);
+								delete rules.data[name];
+								self.forceUpdate();
+							}
+						});
+					}
+					return false;
+				}
+			});
+		},
+		removeValues: function() {
+			
+		},
+		setRulesSettings: function() {
+			
+		},
+		setValuesSettings: function() {
+			
+		},
+		showWeinre: function() {
+			
 		},
 		onClickMenu: function(e) {
 			var target = $(e.target).closest('a');
@@ -94,6 +213,24 @@
 				this.showRules();
 			} else if (target.hasClass('w-values-menu')) {
 				this.showValues();
+			} else if (target.hasClass('w-create-menu')) {
+				this.state.name == 'rules' ? this.createRules() : this.createValues();
+			} else if (target.hasClass('w-edit-menu')) {
+				this.state.name == 'rules' ? this.editRules() : this.editValues();
+			} else if (target.hasClass('w-replay-menu')) {
+				this.replay();
+			} else if (target.hasClass('w-composer-menu')) {
+				this.composer();
+			} else if (target.hasClass('w-filter-menu')) {
+				this.setFilter();
+			} else if (target.hasClass('w-clear-menu')) {
+				this.clear();
+			} else if (target.hasClass('w-delete-menu')) {
+				this.state.name == 'rules' ? this.removeRules() : this.removeValues();
+			} else if (target.hasClass('w-settings-menu')) {
+				this.state.name == 'rules' ? this.setRulesSettings() : this.setValuesSettings();
+			} else if (target.hasClass('w-weinre-menu')) {
+				this.showWeinre();
 			}
 		},
 		render: function() {
@@ -104,15 +241,15 @@
 					React.createElement(Menu, {name: name, onClick: this.onClickMenu}, 
 						React.createElement(MenuItem, {onClick: this.props.onClickItem, onClickOption: this.props.onClickOption})
 					), 
-					this.state.hasRules ? React.createElement(Rules, {hide: name == 'rules' ? false : true}) : '', 
-					this.state.hasValues ? React.createElement(Values, {hide: name == 'values' ? false : true}) : '', 
+					this.state.hasRules ? React.createElement(List, {modal: this.state.rules, hide: name == 'rules' ? false : true, name: "rules"}) : '', 
+					this.state.hasValues ? React.createElement(List, {modal: this.state.values, hide: name == 'values' ? false : true, className: "w-values-list"}) : '', 
 					this.state.hasNetwork ? React.createElement(Network, {hide: name != 'rules' && name != 'values' ? false : true}) : ''
 				)
 			);
 		}
 	});
 	dataCenter.getInitialData(function(data) {
-		React.render(React.createElement(Index, null), document.body);	
+		React.render(React.createElement(Index, {modal: data}), document.body);	
 	});
 
 
@@ -31876,42 +32013,7 @@
 	module.exports = create;
 
 /***/ },
-/* 216 */
-/***/ function(module, exports, __webpack_require__) {
-
-	__webpack_require__(158);
-	var React = __webpack_require__(1);
-	var List = __webpack_require__(217);
-	var dataCenter = __webpack_require__(214);
-
-	var modal = {
-			list: [1, 2, 3, 4, 5, 6, 7, 8, 9, 0],
-			data: {
-				'1': {
-					value: 'test',
-					active: true
-				}
-			}
-	};
-
-	var Rules = React.createClass({displayName: "Rules",
-		render: function() {
-			
-			return (
-					React.createElement(List, {hide: this.props.hide, name: "rules", onEnable: function(e) {
-						this.enable(e.data.name);
-						return false;
-					}, onDisable: function(e) {
-						this.disable(e.data.name);
-						return false;
-					}, modal: modal})
-			);
-		}
-	});
-
-	module.exports = Rules;
-
-/***/ },
+/* 216 */,
 /* 217 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -32146,13 +32248,13 @@
 				if (item) {
 					item.key = item.key || util.getKey();
 					item.name = name;
-					return;
+				} else {
+					data[name] = {
+						key: util.getKey(),
+						name: name,
+						value: ''
+					};
 				}
-				data[name] = {
-					key: util.getKey(),
-					name: name,
-					value: ''
-				};
 			});
 			
 			var selectedItem = self.getSelectedItem();
@@ -32225,7 +32327,7 @@
 
 
 	// module
-	exports.push([module.id, ".w-divider-con .w-divider {border: none;}\n.w-list-data {border-top: 1px solid #ccc; border-bottom: 1px solid #ccc; overflow-x: hidden; overflow-y: auto;}\n.w-list-data a {display: block; padding-left: 10px; line-height: 32px; position: relative; border-bottom: 1px solid #ccc; color: #000; \ntext-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}\n.w-list-data a .glyphicon-ok {position: absolute; top: 50%; right: 10px; margin-top: -8px; color: #5bbd72; display: none;}\n.w-list-content {border: 1px solid #ccc;} \n.w-list-data .w-changed:before {content: '*'; margin-right: 5px; color: red; margin-right: 5px;}\n.w-list-data .w-selected, .w-list-data .w-hover {background: #337AB7; color: #fff;}\n.w-list-data .w-active .glyphicon-ok {display: inline-block;}", ""]);
+	exports.push([module.id, ".w-divider-con .w-divider {border: none;}\n.w-list-data {border-top: 1px solid #ccc; border-bottom: 1px solid #ccc; overflow-x: hidden; overflow-y: auto;}\n.w-list-data a {display: block; padding-left: 10px; line-height: 32px; position: relative; border-bottom: 1px solid #ccc; color: #000; \ntext-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}\n.w-list-data a .glyphicon-ok {position: absolute; top: 50%; right: 10px; margin-top: -8px; color: #5bbd72; display: none;}\n.w-list-content {border: 1px solid #ccc;} \n.w-list-data .w-changed:before {content: '*'; margin-right: 5px; color: red; margin-right: 5px;}\n.w-list-data .w-selected, .w-list-data .w-hover {background: #337AB7; color: #fff;}\n.w-list-data .w-active {font-weight: bold;}\n.w-list-data .w-active .glyphicon-ok {display: inline-block;}", ""]);
 
 	// exports
 
@@ -44998,73 +45100,9 @@
 	});
 
 /***/ },
-/* 267 */
-/***/ function(module, exports, __webpack_require__) {
-
-	__webpack_require__(158);
-	__webpack_require__(268);
-	var React = __webpack_require__(1);
-	var List = __webpack_require__(217);
-	var dataCenter = __webpack_require__(214);
-
-	var modal = {
-			list: ['1.js', '2.html', '3.md', '4.json', '5.css', '6.xml', 7, 8, 9, 0]
-	};
-
-	var Values = React.createClass({displayName: "Values",
-		
-		render: function() {
-			
-			return (
-				React.createElement(List, {hide: this.props.hide, modal: modal, className: "w-values-list"})
-			);
-		}
-	});
-
-	module.exports = Values;
-
-
-/***/ },
-/* 268 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-
-	// load the styles
-	var content = __webpack_require__(269);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(167)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../node_modules/css-loader/index.js!./values.css", function() {
-				var newContent = require("!!./../node_modules/css-loader/index.js!./values.css");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
-/* 269 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(161)();
-	// imports
-
-
-	// module
-	exports.push([module.id, ".w-values-list a .glyphicon-ok {display: none!important;}", ""]);
-
-	// exports
-
-
-/***/ },
+/* 267 */,
+/* 268 */,
+/* 269 */,
 /* 270 */
 /***/ function(module, exports, __webpack_require__) {
 
