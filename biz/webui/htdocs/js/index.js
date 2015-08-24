@@ -129,6 +129,10 @@
 				} else {
 					self.showNetwork();
 				}
+			}).on('keyup', function(e) {
+				if (e.keyCode == 27) {
+					self.hideOnBlur();
+				}
 			});
 		},
 		showNetwork: function() {
@@ -155,8 +159,7 @@
 		showCreateRules: function() {
 			var createRulesInput = this.refs.createRulesInput.getDOMNode();
 			this.setState({
-				showCreateRules: true,
-				showCreateValues: false
+				showCreateRules: true
 			}, function() {
 				createRulesInput.focus();
 			});
@@ -164,7 +167,6 @@
 		showCreateValues: function() {
 			var createValuesInput = this.refs.createValuesInput.getDOMNode();
 			this.setState({
-				showCreateRules: false,
 				showCreateValues: true
 			}, function() {
 				createValuesInput.focus();
@@ -222,11 +224,97 @@
 				}
 			});
 		},
-		editRules: function() {
-				
+		showEditRules: function() {
+			var rulesList = this.refs.rules;
+			var selectedItem = rulesList.getSelectedItem();
+			if (!selectedItem || selectedItem.isDefault) {
+				return;
+			}
+			
+			var editRulesInput = this.refs.editRulesInput.getDOMNode();
+			this.setState({
+				showEditRules: true,
+				selectedRuleName: selectedItem.name,
+				selectedRule: selectedItem
+			}, function() {
+				editRulesInput.focus();
+			});	
+		},
+		showEditValues: function() {
+			var valuesList = this.refs.values;
+			var selectedItem = valuesList.getSelectedItem();
+			if (!selectedItem || selectedItem.isDefault) {
+				return;
+			}
+			
+			var editValuesInput = this.refs.editValuesInput.getDOMNode();
+			this.setState({
+				showEditValues: true,
+				selectedValueName: selectedItem.name,
+				selectedValue: selectedItem
+			}, function() {
+				editValuesInput.focus();
+			});	
+		},
+		editRules: function(e) {
+			if (e.keyCode != 13) {
+				return;
+			}
+			var selectedItem = this.state.selectedRule;
+			if (!selectedItem) {
+				return;
+			}
+			var target = e.target;
+			var name = $.trim(target.value);
+			if (!name) {
+				alert('Rule name can not be empty.');
+				return;
+			}
+			
+			if (this.state.rules.list.indexOf(name) != -1) {
+				alert('Rule name  \'' + name + '\' already exists.');
+				return;
+			}
+			var rulesList = this.refs.rules;
+			dataCenter.rules.rename({name: selectedItem.name, newName: name}, function(data) {
+				if (data && data.ec === 0) {
+					target.value = '';
+					target.blur();
+					rulesList.rename(selectedItem.name, name);
+				} else {
+					util.showSystemError();
+				}
+			});
 		},
 		editValues: function() {
+			if (e.keyCode != 13) {
+				return;
+			}
+			var selectedItem = this.state.selectedRule;
+			if (!selectedItem) {
+				return;
+			}
+			var target = e.target;
+			var name = $.trim(target.value);
+			if (!name) {
+				alert('Rule name can not be empty.');
+				return;
+			}
 			
+			if (this.state.values.list.indexOf(name) != -1) {
+				alert('Rule name  \'' + name + '\' already exists.');
+				return;
+			}
+			var valuesList = this.refs.values;
+			dataCenter.values.rename({name: selectedItem.name, newName: name}, function(data) {
+				if (data && data.ec === 0) {
+					target.value = '';
+					target.blur();
+					valuesList.rename(selectedItem.name, name);
+				} else {
+					util.showSystemError();
+				}
+			});
 		},
 		replay: function() {
 			
@@ -284,7 +372,9 @@
 		hideOnBlur: function() {
 			this.setState({
 				showCreateRules: false,
-				showCreateValues: false
+				showCreateValues: false,
+				showEditRules: false,
+				showEditValues: false
 			});
 		},
 		onClickMenu: function(e) {
@@ -298,7 +388,7 @@
 			} else if (target.hasClass('w-create-menu')) {
 				this.state.name == 'rules' ? this.showCreateRules() : this.showCreateValues();
 			} else if (target.hasClass('w-edit-menu')) {
-				this.state.name == 'rules' ? this.editRules() : this.editValues();
+				this.state.name == 'rules' ? this.showEditRules() : this.showEditValues();
 			} else if (target.hasClass('w-replay-menu')) {
 				this.replay();
 			} else if (target.hasClass('w-composer-menu')) {
@@ -324,8 +414,10 @@
 						React.createElement(MenuItem, {ref: "rulesOptions", onClick: this.props.onClickItem, onClickOption: this.props.onClickOption}), 
 						React.createElement(MenuItem, {ref: "valuesOptions", onClick: this.props.onClickItem, onClickOption: this.props.onClickOption}), 
 						React.createElement(MenuItem, {ref: "weinreOptions", onClick: this.props.onClickItem, onClickOption: this.props.onClickOption}), 
-						React.createElement("input", {ref: "createRulesInput", onKeyDown: this.createRules, onBlur: this.hideOnBlur, type: "text", style: {display: this.state.showCreateRules ? 'block' : 'none'}, className: "shadow w-create-rules-input", maxLength: "64", placeholder: "press 'enter' to save the rules name"}), 
-						React.createElement("input", {ref: "createValuesInput", onKeyDown: this.createValues, onBlur: this.hideOnBlur, type: "text", style: {display: this.state.showCreateValues ? 'block' : 'none'}, className: "shadow w-create-values-input", maxLength: "64", placeholder: "press 'enter' to save the values name"})
+						React.createElement("input", {ref: "createRulesInput", onKeyDown: this.createRules, onBlur: this.hideOnBlur, type: "text", style: {display: this.state.showCreateRules ? 'block' : 'none'}, className: "w-input-menu-item w-create-rules-input", maxLength: "64", placeholder: "press 'enter' to save the rules name"}), 
+						React.createElement("input", {ref: "createValuesInput", onKeyDown: this.createValues, onBlur: this.hideOnBlur, type: "text", style: {display: this.state.showCreateValues ? 'block' : 'none'}, className: "w-input-menu-item w-create-values-input", maxLength: "64", placeholder: "press 'enter' to save the values name"}), 
+						React.createElement("input", {ref: "editRulesInput", onKeyDown: this.editRules, onBlur: this.hideOnBlur, type: "text", style: {display: this.state.showEditRules ? 'block' : 'none'}, className: "w-input-menu-item w-edit-rules-input", maxLength: "64", placeholder: 'press \'enter\' to rename ' + (this.state.selectedRuleName || '')}), 
+						React.createElement("input", {ref: "editValuesInput", onKeyDown: this.editValues, onBlur: this.hideOnBlur, type: "text", style: {display: this.state.showEditValues ? 'block' : 'none'}, className: "w-input-menu-item w-edit-values-input", maxLength: "64", placeholder: 'press \'enter\' to rename ' + (this.state.selectedValueName || '')})
 					), 
 					this.state.hasRules ? React.createElement(List, {ref: "rules", modal: this.state.rules, hide: name == 'rules' ? false : true, name: "rules"}) : '', 
 					this.state.hasValues ? React.createElement(List, {ref: "values", modal: this.state.values, hide: name == 'values' ? false : true, className: "w-values-list"}) : '', 
@@ -21152,7 +21244,7 @@
 
 
 	// module
-	exports.push([module.id, "html, body, .main {margin: 0; padding: 0; width: 100%; height: 100%;}\n.main {min-width: 960px; min-height: 360px;}\n::-webkit-scrollbar{ width:10px; height:10px; }\n::-webkit-scrollbar-button{ width:10px;height:1px; }\n::-webkit-scrollbar-thumb{ background-clip:padding-box; background-color:rgba(0,0,0,.5); border-radius:8px; min-height: 30px;}\n::-webkit-scrollbar-thumb:hover{ background-clip:padding-box; background-color:rgba(0,0,0,.7); border-radius:8px;}\n::-webkit-scrollbar-track,::-webkit-scrollbar-thumb { border-left:2px solid transparent; border-right:2px solid transparent;}\n::-webkit-scrollbar-track:hover{ background-clip:padding-box; background-color:rgba(0,0,0,.15);}\n\n.shadow {border: 1px solid rgba(0,0,0,.15)!important; -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175)!important; box-shadow: 0 6px 12px rgba(0,0,0,.175)!important;}\ntextarea[readonly] {outline: none;}\n.hide {display: none!important;}\n.box {display:-webkit-box; display:-moz-box; display:box;}\n.orient-vertical-box {-moz-box-orient:vertical; -webkit-box-orient:vertical; box-orient:vertical; display:-moz-box; display:-webkit-box; display: box;}\n.fill {-moz-box-flex:1; -webkit-box-flex:1; box-flex:1;}\n.table {table-layout: fixed; margin: 0!important;}\n\n.modal-dialog .modal-body, .modal-dialog .modal-footer {padding: 10px;}\n.modal-dialog .btn {padding: 5px 10px;}\n\n.cm-header {text-decoration: line-through;}\n.cm-s-ambiance ::-webkit-scrollbar-thumb, \n.cm-s-blackboard ::-webkit-scrollbar-thumb, \n.cm-s-cobalt ::-webkit-scrollbar-thumb, \n.cm-s-erlang-dark ::-webkit-scrollbar-thumb, \n.cm-s-lesser-dark ::-webkit-scrollbar-thumb, \n.cm-s-midnight ::-webkit-scrollbar-thumb, \n.cm-s-monokai ::-webkit-scrollbar-thumb, \n.cm-s-night ::-webkit-scrollbar-thumb, \n.cm-s-dark ::-webkit-scrollbar-thumb, \n.cm-s-twilight ::-webkit-scrollbar-thumb, \n.cm-s-vibrant-ink ::-webkit-scrollbar-thumb, \n.cm-s-xq-dark ::-webkit-scrollbar-thumb {background-color:rgba(255,255,255,.5);}\n\n.cm-s-ambiance ::-webkit-scrollbar-thumb:hover, \n.cm-s-blackboard ::-webkit-scrollbar-thumb:hover, \n.cm-s-cobalt ::-webkit-scrollbar-thumb:hover, \n.cm-s-erlang-dark ::-webkit-scrollbar-thumb:hover, \n.cm-s-lesser-dark ::-webkit-scrollbar-thumb:hover, \n.cm-s-midnight ::-webkit-scrollbar-thumb:hover, \n.cm-s-monokai ::-webkit-scrollbar-thumb:hover, \n.cm-s-night ::-webkit-scrollbar-thumb:hover, \n.cm-s-dark ::-webkit-scrollbar-thumb:hover, \n.cm-s-twilight ::-webkit-scrollbar-thumb:hover, \n.cm-s-vibrant-ink ::-webkit-scrollbar-thumb:hover, \n.cm-s-xq-dark ::-webkit-scrollbar-thumb:hover {background-color:rgba(255,255,255,.7);}\n\n.cm-s-ambiance ::-webkit-scrollbar-track:hover, \n.cm-s-blackboard ::-webkit-scrollbar-track:hover, \n.cm-s-cobalt ::-webkit-scrollbar-track:hover, \n.cm-s-erlang-dark ::-webkit-scrollbar-track:hover, \n.cm-s-lesser-dark ::-webkit-scrollbar-track:hover, \n.cm-s-midnight ::-webkit-scrollbar-track:hover, \n.cm-s-monokai ::-webkit-scrollbar-track:hover, \n.cm-s-night ::-webkit-scrollbar-track:hover, \n.cm-s-dark ::-webkit-scrollbar-track:hover, \n.cm-s-twilight ::-webkit-scrollbar-track:hover, \n.cm-s-vibrant-ink ::-webkit-scrollbar-track:hover, \n.cm-s-xq-dark ::-webkit-scrollbar-track:hover {background-color:rgba(255,255,255,.15);}\n\n\n", ""]);
+	exports.push([module.id, "html, body, .main {margin: 0; padding: 0; width: 100%; height: 100%;}\n.main {min-width: 960px; min-height: 360px;}\n::-webkit-scrollbar{ width:10px; height:10px; }\n::-webkit-scrollbar-button{ width:10px;height:1px; }\n::-webkit-scrollbar-thumb{ background-clip:padding-box; background-color:rgba(0,0,0,.5); border-radius:8px; min-height: 30px;}\n::-webkit-scrollbar-thumb:hover{ background-clip:padding-box; background-color:rgba(0,0,0,.7); border-radius:8px;}\n::-webkit-scrollbar-track,::-webkit-scrollbar-thumb { border-left:2px solid transparent; border-right:2px solid transparent;}\n::-webkit-scrollbar-track:hover{ background-clip:padding-box; background-color:rgba(0,0,0,.15);}\n\n.w-input-menu-item {width: 246px; height: 32px; border: none; display: block; padding: 0 5px;\nposition: absolute; background: #fff; border: 1px solid #ccc; border-radius: 2px; z-index: 101; top: 30px; display: none; \nborder: 1px solid rgba(0,0,0,.15)!important; -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175)!important; box-shadow: 0 6px 12px rgba(0,0,0,.175)!important;}\ntextarea[readonly] {outline: none;}\n.hide {display: none!important;}\n.box {display:-webkit-box; display:-moz-box; display:box;}\n.orient-vertical-box {-moz-box-orient:vertical; -webkit-box-orient:vertical; box-orient:vertical; display:-moz-box; display:-webkit-box; display: box;}\n.fill {-moz-box-flex:1; -webkit-box-flex:1; box-flex:1;}\n.table {table-layout: fixed; margin: 0!important;}\n\n.modal-dialog .modal-body, .modal-dialog .modal-footer {padding: 10px;}\n.modal-dialog .btn {padding: 5px 10px;}\n\n.cm-header {text-decoration: line-through;}\n.cm-s-ambiance ::-webkit-scrollbar-thumb, \n.cm-s-blackboard ::-webkit-scrollbar-thumb, \n.cm-s-cobalt ::-webkit-scrollbar-thumb, \n.cm-s-erlang-dark ::-webkit-scrollbar-thumb, \n.cm-s-lesser-dark ::-webkit-scrollbar-thumb, \n.cm-s-midnight ::-webkit-scrollbar-thumb, \n.cm-s-monokai ::-webkit-scrollbar-thumb, \n.cm-s-night ::-webkit-scrollbar-thumb, \n.cm-s-dark ::-webkit-scrollbar-thumb, \n.cm-s-twilight ::-webkit-scrollbar-thumb, \n.cm-s-vibrant-ink ::-webkit-scrollbar-thumb, \n.cm-s-xq-dark ::-webkit-scrollbar-thumb {background-color:rgba(255,255,255,.5);}\n\n.cm-s-ambiance ::-webkit-scrollbar-thumb:hover, \n.cm-s-blackboard ::-webkit-scrollbar-thumb:hover, \n.cm-s-cobalt ::-webkit-scrollbar-thumb:hover, \n.cm-s-erlang-dark ::-webkit-scrollbar-thumb:hover, \n.cm-s-lesser-dark ::-webkit-scrollbar-thumb:hover, \n.cm-s-midnight ::-webkit-scrollbar-thumb:hover, \n.cm-s-monokai ::-webkit-scrollbar-thumb:hover, \n.cm-s-night ::-webkit-scrollbar-thumb:hover, \n.cm-s-dark ::-webkit-scrollbar-thumb:hover, \n.cm-s-twilight ::-webkit-scrollbar-thumb:hover, \n.cm-s-vibrant-ink ::-webkit-scrollbar-thumb:hover, \n.cm-s-xq-dark ::-webkit-scrollbar-thumb:hover {background-color:rgba(255,255,255,.7);}\n\n.cm-s-ambiance ::-webkit-scrollbar-track:hover, \n.cm-s-blackboard ::-webkit-scrollbar-track:hover, \n.cm-s-cobalt ::-webkit-scrollbar-track:hover, \n.cm-s-erlang-dark ::-webkit-scrollbar-track:hover, \n.cm-s-lesser-dark ::-webkit-scrollbar-track:hover, \n.cm-s-midnight ::-webkit-scrollbar-track:hover, \n.cm-s-monokai ::-webkit-scrollbar-track:hover, \n.cm-s-night ::-webkit-scrollbar-track:hover, \n.cm-s-dark ::-webkit-scrollbar-track:hover, \n.cm-s-twilight ::-webkit-scrollbar-track:hover, \n.cm-s-vibrant-ink ::-webkit-scrollbar-track:hover, \n.cm-s-xq-dark ::-webkit-scrollbar-track:hover {background-color:rgba(255,255,255,.15);}\n\n\n", ""]);
 
 	// exports
 
@@ -47884,7 +47976,7 @@
 
 
 	// module
-	exports.push([module.id, ".w-create-rules-input, .w-create-values-input {width: 246px; height: 32px; border: none; display: block; padding: 0 5px;\nposition: absolute; background: #fff; border: 1px solid #ccc; border-radius: 2px; z-index: 101; top: 30px; display: none;}\n.w-create-rules-input {left: 170px;}\n.w-create-values-input {left: 160px;}", ""]);
+	exports.push([module.id, ".w-create-rules-input {left: 170px;}\n.w-create-values-input {left: 160px;}\n.w-edit-rules-input {left: 242px;}\n.w-edit-values-input {left: 232px;}", ""]);
 
 	// exports
 

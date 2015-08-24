@@ -1,4 +1,4 @@
-var rules = require('./util');
+var rules = require('../../lib/rules');
 
 module.exports = function(req, res) {
 	rules.rename(req.body.name, req.body.newName);
