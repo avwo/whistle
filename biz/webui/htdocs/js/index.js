@@ -48,12 +48,12 @@
 	var $ = __webpack_require__(5);
 	var React = __webpack_require__(6);
 	var List = __webpack_require__(162);
-	var ListModal = __webpack_require__(272);
-	var Network = __webpack_require__(226);
-	var About = __webpack_require__(262);
-	var Online = __webpack_require__(266);
-	var MenuItem = __webpack_require__(269);
-	var dataCenter = __webpack_require__(260);
+	var ListModal = __webpack_require__(226);
+	var Network = __webpack_require__(227);
+	var About = __webpack_require__(263);
+	var Online = __webpack_require__(267);
+	var MenuItem = __webpack_require__(270);
+	var dataCenter = __webpack_require__(261);
 	var util = __webpack_require__(175);
 	var pageName = getPageName();
 
@@ -189,16 +189,18 @@
 				return;
 			}
 			var self = this;
-			if (self.state.rules.list.indexOf(name) != -1) {
+			var modal = this.state.rules;
+			if (modal.exists(name)) {
 				alert('Rule name \'' + name + '\' already exists.');
 				return;
 			}
-			var rulesList = self.refs.rules;
+			
 			dataCenter.rules.add({name: name}, function(data) {
 				if (data && data.ec === 0) {
+					modal.add(name);
+					self.setRulesActive(name);
 					target.value = '';
 					target.blur();
-					rulesList.add(name);
 					self.forceUpdate();
 				} else {
 					util.showSystemError();
@@ -215,29 +217,31 @@
 				alert('Value name can not be empty.');
 				return;
 			}
-			
-			if (this.state.values.list.indexOf(name) != -1) {
+			var self = this;
+			var modal = this.state.values;
+			if (modal.exists(name)) {
 				alert('Value name \'' + name + '\' already exists.');
 				return;
 			}
-			var valuesList = this.refs.values;
+			
 			dataCenter.values.add({name: name}, function(data) {
 				if (data && data.ec === 0) {
+					modal.add(name);
+					self.setValuesActive(name);
 					target.value = '';
 					target.blur();
-					valuesList.add(name);
+					self.forceUpdate();
 				} else {
 					util.showSystemError();
 				}
 			});
 		},
 		showEditRules: function() {
-			var rulesList = this.refs.rules;
-			var activeItem = rulesList.getActiveItem();
+			var modal = this.state.rules;
+			var activeItem = modal.getActive();
 			if (!activeItem || activeItem.isDefault) {
 				return;
 			}
-			
 			var editRulesInput = this.refs.editRulesInput.getDOMNode();
 			this.setState({
 				showEditRules: true,
@@ -248,8 +252,8 @@
 			});	
 		},
 		showEditValues: function() {
-			var valuesList = this.refs.values;
-			var activeItem = valuesList.getActiveItem();
+			var modal = this.state.values;
+			var activeItem = modal.getActive();
 			if (!activeItem || activeItem.isDefault) {
 				return;
 			}
@@ -280,17 +284,17 @@
 				return;
 			}
 			
-			if (modal.getIndex(name) != -1) {
+			if (modal.exists(name)) {
 				alert('Rule name \'' + name + '\' already exists.');
 				return;
 			}
 			
 			dataCenter.rules.rename({name: activeItem.name, newName: name}, function(data) {
 				if (data && data.ec === 0) {
+					modal.rename(activeItem.name, name);
+					self.setRulesActive(name);
 					target.value = '';
 					target.blur();
-					modal.rename(activeItem.name, name);
-					dataCenter.rules.setCurrent({name: name});
 					self.forceUpdate();
 				} else {
 					util.showSystemError();
@@ -314,39 +318,39 @@
 				return;
 			}
 			
-			if (modal.getIndex(name) != -1) {
+			if (modal.exists(name)) {
 				alert('Rule name \'' + name + '\' already exists.');
 				return;
 			}
 			
 			dataCenter.values.rename({name: activeItem.name, newName: name}, function(data) {
 				if (data && data.ec === 0) {
+					modal.rename(activeItem.name, name);
+					self.setValuesActive(name);
 					target.value = '';
 					target.blur();
-					modal.rename(activeItem.name, name);
-					dataCenter.values.setCurrent({name: name});
 					self.forceUpdate();
 				} else {
 					util.showSystemError();
 				}
 			});
 		},
-		enableRules: function(item) {
-			var rulesList = this.refs.rules; 
+		selectRules: function(item) {
+			var self = this;
 			dataCenter.rules[item.isDefault ? 'enableDefault' : 'select'](item, function(data) {
 				if (data && data.ec === 0) {
-					rulesList.enable(item.name);
+					self.setSelected(self.state.rules, item.name);
 				} else {
 					util.showSystemError();
 				}
 			});
 			return false;
 		},
-		disableRules: function(item) {
-			var rulesList = this.refs.rules; 
+		unselectRules: function(item) {
+			var self = this;
 			dataCenter.rules[item.isDefault ? 'disableDefault' : 'unselect'](item, function(data) {
 				if (data && data.ec === 0) {
-					rulesList.disable(item.name);
+					self.setSelected(self.state.rules, item.name, false);
 				} else {
 					util.showSystemError();
 				}
@@ -354,15 +358,21 @@
 			return false;
 		},
 		saveValues: function(item) {
-			var valuesList = this.refs.values; 
+			var self = this;
 			dataCenter.values.add(item, function(data) {
 				if (data && data.ec === 0) {
-					valuesList.enable(item.name);
+					self.setSelected(self.state.values, item.name);
 				} else {
 					util.showSystemError();
 				}
 			});
 			return false;
+		},
+		setSelected: function(modal, name, selected) {
+			if (modal.setSelected(name, selected)) {
+				modal.setChanged(name, false);
+				this.forceUpdate();
+			}
 		},
 		replay: function() {
 			
@@ -378,17 +388,16 @@
 		},
 		removeRules: function() {
 			var self = this;
-			var rulesList = self.refs.rules;
-			var activeItem = rulesList.getActiveItem();
+			var modal = this.state.rules;
+			var activeItem = modal.getActive();
 			if (activeItem && !activeItem.isDefault) {
 				var name = activeItem.name;
-				if (confirm('Confirm delete this Rule \'' + name + '\'.')) {
+				if (confirm('Confirm delete this Rule \'' + name + '\'.')) { 
 					dataCenter.rules.remove({name: name}, function(data) {
 						if (data && data.ec === 0) {
-							var nextItem = rulesList.remove(name);
-							if (nextItem) {
-								dataCenter.rules.setCurrent({name: nextItem.name});
-							}
+							var nextItem = modal.getSibling(name);
+							nextItem && self.setRulesActive(nextItem.name);
+							modal.remove(name);
 							self.forceUpdate();
 						} else {
 							util.showSystemError();
@@ -398,23 +407,32 @@
 			}
 		},
 		removeValues: function() {
-			var valuesList = this.refs.values;
-			var activeItem = valuesList.getActiveItem();
+			var self = this;
+			var modal = this.state.values;
+			var activeItem = modal.getActive();
 			if (activeItem && !activeItem.isDefault) {
 				var name = activeItem.name;
 				if (confirm('Confirm delete this Value \'' + name + '\'.')) {
 					dataCenter.values.remove({name: name}, function(data) {
 						if (data && data.ec === 0) {
-							var nextItem = valuesList.remove(name);
-							if (nextItem) {
-								dataCenter.values.setCurrent({name: nextItem.name});
-							}
+							var nextItem = modal.getSibling(name);
+							nextItem && self.setValuesActive(nextItem.name);
+							modal.remove(name);
+							self.forceUpdate();
 						} else {
 							util.showSystemError();
 						}
 					});
 				}
 			}
+		},
+		setRulesActive: function(name) {
+			dataCenter.rules.setCurrent({name: name});
+			this.state.rules.setActive(name);
+		},
+		setValuesActive: function(name) {
+			dataCenter.values.setCurrent({name: name});
+			this.state.values.setActive(name);
 		},
 		setRulesSettings: function() {
 			this.setState({
@@ -447,14 +465,15 @@
 		},
 		onClickMenu: function(e) {
 			var target = $(e.target).closest('a');
+			var isRules = this.state.name == 'rules';
 			if (target.hasClass('w-create-menu')) {
-				this.state.name == 'rules' ? this.showCreateRules() : this.showCreateValues();
+				isRules ? this.showCreateRules() : this.showCreateValues();
 			} else if (target.hasClass('w-edit-menu')) {
-				this.state.name == 'rules' ? this.showEditRules() : this.showEditValues();
+				isRules ? this.showEditRules() : this.showEditValues();
 			} else if (target.hasClass('w-delete-menu')) {
-				this.state.name == 'rules' ? this.removeRules() : this.removeValues();
+				isRules ? this.removeRules() : this.removeValues();
 			} else if (target.hasClass('w-settings-menu')) {
-				this.state.name == 'rules' ? this.setRulesSettings() : this.setValuesSettings();
+				isRules ? this.setRulesSettings() : this.setValuesSettings();
 			}
 		},
 		activeRules: function(item) {
@@ -480,9 +499,7 @@
 						break;
 					}
 				}
-			}
-			
-			if (isValues) {
+			} else if (isValues) {
 				var data = this.state.values.data;
 				for (var i in data) {
 					if (data[i].active) {
@@ -519,8 +536,8 @@
 						React.createElement("div", {onMouseDown: this.preventBlur, style: {display: this.state.showEditRules ? 'block' : 'none'}, className: "shadow w-input-menu-item w-edit-rules-input"}, React.createElement("input", {ref: "editRulesInput", onKeyDown: this.editRules, onBlur: this.hideOnBlur, type: "text", maxLength: "64", placeholder: 'rename ' + (this.state.selectedRuleName || '')}), React.createElement("button", {type: "button", className: "btn btn-primary"}, "OK")), 
 						React.createElement("div", {onMouseDown: this.preventBlur, style: {display: this.state.showEditValues ? 'block' : 'none'}, className: "shadow w-input-menu-item w-edit-values-input"}, React.createElement("input", {ref: "editValuesInput", onKeyDown: this.editValues, onBlur: this.hideOnBlur, type: "text", maxLength: "64", placeholder: 'rename ' + (this.state.selectedValueName || '')}), React.createElement("button", {type: "button", className: "btn btn-primary"}, "OK"))
 					), 
-					this.state.hasRules ? React.createElement(List, {ref: "rules", onEnable: this.enableRules, onDisable: this.disableRules, onActive: this.activeRules, modal: this.state.rules, hide: name == 'rules' ? false : true, name: "rules"}) : '', 
-					this.state.hasValues ? React.createElement(List, {ref: "values", onEnable: this.saveValues, onActive: this.activeValues, modal: this.state.values, hide: name == 'values' ? false : true, className: "w-values-list"}) : '', 
+					this.state.hasRules ? React.createElement(List, {onSelect: this.selectRules, onUnselect: this.unselectRules, onActive: this.activeRules, modal: this.state.rules, hide: name == 'rules' ? false : true, name: "rules"}) : '', 
+					this.state.hasValues ? React.createElement(List, {onSelect: this.saveValues, onActive: this.activeValues, modal: this.state.values, hide: name == 'values' ? false : true, className: "w-values-list"}) : '', 
 					this.state.hasNetwork ? React.createElement(Network, {hide: name != 'rules' && name != 'values' ? false : true}) : ''
 				)
 			);
@@ -30466,121 +30483,52 @@
 	}
 
 	var List = React.createClass({displayName: "List",
-		componentWillMount: function() {
-			this._data = {};
-			this._list = [];
-		},
-		add: function(name, value) {
-			var modal = this.props.modal;
-			if (modal.add(name, value)) {
-				modal.setActive(name);
-				this.forceUpdate();
-				return true;
-			}
-			return false;
-		},
-		remove: function(name) {
-			var modal = this.props.modal;
-			var index = modal.getIndex(name);
-			if (modal.remove(name) && (name = modal.list[index] 
-						|| modal.list[index - 1])) {
-				modal.setActive(name);
-				this.forceUpdate();
-			}
-		},
-		rename: function(name, newName) {
-			if (this.props.modal.rename(name, newName)) {
-				this.forceUpdate();
-			}
-		},
-		enable: function(name) {
-			var modal = this.props.modal;
-			if (modal.setSelected(name)) {
-				modal.setChanged(name, false);
-				this.forceUpdate();
-			}
-		},
-		disable: function(name) {
-			if (this.props.modal.setSelected(name, false)) {
-				this.forceUpdate();
-				return true;
-			}
-			return false;
-		},
-		getActiveItem: function() {
-			
-			return this.props.modal.getActive();
-		},
-
-		getItem: function(name) {
-			return this._data[name];
-		},
 		componentDidMount: function() {
 			var self = this;
-			var list = $(self.refs.list.getDOMNode());
+			var visible = !self.props.hide;
 			$(window).keydown(function(e) {
-				if (isSaveFile(e)) {
-					list.find('.w-changed').each(trigger);
+				if (visible && (e.ctrlKey || e.metaKey) && e.keyCode == 83) {
+					var modal = self.props.modal;
+					modal.getChangedList().forEach(trigger);
+					var activeItem = modal.getActive();
+					activeItem && trigger(activeItem);
 					return false;
 				}
 			});
 			
-			var editor = $(this.refs.editor.getDOMNode()).keydown(function(e) {
-				if (isSaveFile(e)) {
-					var selectedElem = list.find('.w-active');
-					if (selectedElem.hasClass('w-changed') || !selectedElem.hasClass('w-selected')) {
-						selectedElem.each(trigger);
-					}
-					return false;
-				}
-			});
-			
-			function trigger() {
-				self._onDoubleClick({target: this});
-			}
-			
-			function isSaveFile(e) {
-				return editor.is(':visible') && (e.ctrlKey || e.metaKey) && e.keyCode == 83;
+			function trigger(item) {
+				self.onDoubleClick(item);
 			}
 		},
-		_onMouseEnter: function(e) {
-			this._getItemByKey($(e.target).closest('a').attr('data-key')).hover = true;
+		onMouseEnter: function(e) {
+			this.getItemByKey($(e.target).closest('a').attr('data-key')).hover = true;
 			this.forceUpdate();
 		},
-		_onMouseLeave: function(e) {
-			this._getItemByKey($(e.target).closest('a').attr('data-key')).hover = false;
+		onMouseLeave: function(e) {
+			this.getItemByKey($(e.target).closest('a').attr('data-key')).hover = false;
 			this.forceUpdate();
 		},
-		_onClick: function(e) {
+		onClick: function(e) {
 			var elem = $(e.target).closest('a');
-			var item = this._getItemByKey(elem.attr('data-key'));
+			var item = this.getItemByKey(elem.attr('data-key'));
 			if (!item || (typeof this.props.onActive == 'function' && 
 					this.props.onActive(item) === false)) {
 				return;
 			}
 			this.props.modal.setActive(item.name);
 		},
-		_onDoubleClick: function(e) {
-			var target = $(e.target);
-			var elem = target.closest('a');
-			var item = this._getItemByKey(elem.attr('data-key'));
-			var okIcon = target.hasClass('glyphicon-ok');
-			item.selected && !item.changed || okIcon ? this._onDisable(item) : this._onEnable(item);
-			okIcon && e.stopPropagation();
+		onDoubleClick: function(item, okIcon) {
+			item.selected && !item.changed || okIcon ? this.onUnselect(item) : this.onSelect(item);
 		},
-		_onEnable: function(data) {
-			if (typeof this.props.onEnable != 'function' || 
-					this.props.onEnable.call(this, data) !== false) {
-				this.enable(data.name);
-			}
+		onSelect: function(data) {
+			var onSelect = this.props.onSelect;
+			typeof  onSelect == 'function' && onSelect(data);
 		},
-		_onDisable: function(data) {
-			if (typeof this.props.onDisable != 'function' || 
-					this.props.onDisable.call(this, data) !== false) {
-				this.disable(data.name);
-			}
+		onUnselect: function(data) {
+			var onUnselect = this.props.onUnselect;
+			typeof onUnselect == 'function' && onUnselect(data);
 		},
-		_onChange: function(e) {
+		onChange: function(e) {
 			var item = this.props.modal.getActive();
 			if (!item) {
 				return;
@@ -30593,14 +30541,14 @@
 				this.forceUpdate();
 			}
 		},
-		_getItemByKey: function(key) {
+		getItemByKey: function(key) {
 			return this.props.modal.getByKey(key);
 		},
 		render: function() {
 			var self = this;
 			var modal = self.props.modal;
-			var list = self._list = modal.list;
-			var data = self._data = modal.data;
+			var list = modal.list;
+			var data = modal.data;
 			var activeItem = modal.getActive();
 			
 			return (
@@ -30609,20 +30557,28 @@
 							
 								list.map(function(name) {
 									var item = data[name];
+									function handleDoubleClick() {
+										
+									}
 									return React.createElement("a", {key: item.key, "data-key": item.key, 
-												onMouseEnter: self._onMouseEnter, 
-												onMouseLeave: self._onMouseLeave, 
-												onClick: self._onClick, 
-												onDoubleClick: self._onDoubleClick, 
+												onMouseEnter: self.onMouseEnter, 
+												onMouseLeave: self.onMouseLeave, 
+												onClick: self.onClick, 
+												onDoubleClick: function() {
+													self.onDoubleClick(item);
+												}, 
 												className: (item.hover ? 'w-hover' : '') 
 												+ (item.active ? ' w-active' : '') 
 												+ (item.changed ? ' w-changed' : '')
 												+ (item.selected ? ' w-selected' : ''), 
-												href: "javascript:;"}, name, React.createElement("span", {onClick: self._onDoubleClick, className: "glyphicon glyphicon-ok"}));
+												href: "javascript:;"}, name, React.createElement("span", {onClick: function(e) {
+													self.onDoubleClick(item, true);
+													e.stopPropagation();
+												}, className: "glyphicon glyphicon-ok"}));
 								})
 							
 						), 
-						React.createElement(Editor, React.__spread({},  self.props, {ref: "editor", onChange: self._onChange, readOnly: !activeItem, value: activeItem && activeItem.value, 
+						React.createElement(Editor, React.__spread({},  self.props, {onChange: self.onChange, readOnly: !activeItem, value: activeItem ? activeItem.value : '', 
 						mode: self.props.name == 'rules' ? 'rules' : getSuffix(activeItem && activeItem.name)}))
 					)
 			);
@@ -43794,12 +43750,176 @@
 /* 226 */
 /***/ function(module, exports, __webpack_require__) {
 
+	var $ = __webpack_require__(5);
+	var util = __webpack_require__(175);
+
+	function ListModal(list, data) {
+		var self = this;
+		self.list = Array.isArray(list) ? list : [];
+		data = data || {};
+		self.data = {};
+		self.list.forEach(function(name) {
+			var item = self.data[name] = data[name] || {};
+			item.key = item.key || util.getKey();
+			item.name = name;
+		});
+	}
+
+	var proto = ListModal.prototype;
+
+	proto._getList = function(prop) {
+		var list = [];
+		var data = this.data;
+		Object.keys(data)
+				.forEach(function(name) {
+					var item = data[name];
+					if (item && item[prop]) {
+						list.push(item);
+					}
+				});
+		return list;
+	};
+
+	proto._setBoolProp = function(name, prop, bool) {
+		var item = this.get(name);
+		if (item) {
+			item[prop] = bool !== false;
+		}
+		return item;
+	};
+
+	proto.exists = function(name) {
+		return this.list.indexOf(name) != -1;
+	};
+
+	proto.add = function(name, value) {
+		if (!name || this.get(name)) {
+			return false;
+		}
+		this.list.push(name);
+		this.data[name] = {
+			key: util.getKey(),
+			name: name,
+			value: value || ''
+		};
+		return true;
+	};
+
+	proto.set = function(name, value) {
+		var item = this.get(name);
+		if (item) {
+			if (typeof value == 'string') {
+				item.value = value;
+			} else {
+				$.extend(item, value);
+			}
+		}
+	};
+
+	proto.get = function(name) {
+		
+		return this.data[name];
+	};
+
+	proto.getByKey = function(key) {
+		for (var i in this.data) {
+			var item = this.data[i];
+			if (item.key == key) {
+				return item;
+			}
+		}
+	};
+
+	proto.setSelected = function(name, selected) {
+		
+		return this._setBoolProp(name, 'selected', selected);
+	};
+
+	proto.getSelectedList = function() {
+		
+		return this._getList('selected');
+	};
+
+	proto.setChanged = function(name, changed) {
+
+		return this._setBoolProp(name, 'changed', changed);
+	};
+
+	proto.getChangedList = function() {
+		
+		return this._getList('changed');
+	};
+
+	proto.clearAllActive = function() {
+		var data = this.data;
+		Object.keys(data).forEach(function(name) {
+			data[name].active = false;
+		});
+	};
+
+	proto.setActive = function(name, active) {
+		var item = this.get(name);
+		if (item) {
+			active = active !== false;
+			active && this.clearAllActive();
+			item.active = active;
+		}
+	};
+
+	proto.getActive = function() {
+		for (var i in this.data) {
+			var item = this.data[i];
+			if (item.active) {
+				return item;
+			}
+		}
+	};
+
+	proto.remove = function(name) {
+		var index = this.getIndex(name);
+		if (index != -1) {
+			this.list.splice(index, 1);
+			delete this.data[name];
+			return true;
+		}
+	};
+
+	proto.rename = function(name, newName) {
+		if (!name || !newName || name == newName) {
+			return;
+		}
+		
+		var index = this.getIndex(name);
+		if (index != -1) {
+			this.list[index] = newName;
+			this.data[newName] = this.data[name];
+			delete this.data[name];
+			return true;
+		}
+	};
+
+	proto.getIndex = function(name) {
+		return this.list.indexOf(name);
+	};
+
+	proto.getSibling = function(name) {
+		var index = this.getIndex(name);
+		name = this.list[index + 1] || this.list[index - 1];
+		return name && this.data[name];
+	};
+
+	module.exports = ListModal;
+
+/***/ },
+/* 227 */
+/***/ function(module, exports, __webpack_require__) {
+
 	__webpack_require__(163);
 	var React = __webpack_require__(6);
 	var Divider = __webpack_require__(176);
-	var ReqData = __webpack_require__(227);
-	var Detail = __webpack_require__(230);
-	var dataCenter = __webpack_require__(260);
+	var ReqData = __webpack_require__(228);
+	var Detail = __webpack_require__(231);
+	var dataCenter = __webpack_require__(261);
 
 	var Network = React.createClass({displayName: "Network",
 		onClickMenu: function() {
@@ -43828,11 +43948,11 @@
 
 
 /***/ },
-/* 227 */
+/* 228 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(228);
+	__webpack_require__(229);
 	var React = __webpack_require__(6);
 
 	var ReqData = React.createClass({displayName: "ReqData",
@@ -43903,13 +44023,13 @@
 	module.exports = ReqData;
 
 /***/ },
-/* 228 */
+/* 229 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(229);
+	var content = __webpack_require__(230);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -43929,7 +44049,7 @@
 	}
 
 /***/ },
-/* 229 */
+/* 230 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -43943,20 +44063,20 @@
 
 
 /***/ },
-/* 230 */
+/* 231 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(231);
+	__webpack_require__(232);
 	var React = __webpack_require__(6);
 	var util = __webpack_require__(175);
-	var BtnGroup = __webpack_require__(233);
-	var Overview = __webpack_require__(236);
-	var ReqDetail = __webpack_require__(242);
-	var ResDetail = __webpack_require__(248);
-	var Timeline = __webpack_require__(251);
-	var Composer = __webpack_require__(254);
-	var Log = __webpack_require__(257);
+	var BtnGroup = __webpack_require__(234);
+	var Overview = __webpack_require__(237);
+	var ReqDetail = __webpack_require__(243);
+	var ResDetail = __webpack_require__(249);
+	var Timeline = __webpack_require__(252);
+	var Composer = __webpack_require__(255);
+	var Log = __webpack_require__(258);
 	var TABS = [{
 					name: 'Overview',
 					icon: 'eye-open'
@@ -44004,13 +44124,13 @@
 	module.exports = ReqData;
 
 /***/ },
-/* 231 */
+/* 232 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(232);
+	var content = __webpack_require__(233);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -44030,7 +44150,7 @@
 	}
 
 /***/ },
-/* 232 */
+/* 233 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -44044,11 +44164,11 @@
 
 
 /***/ },
-/* 233 */
+/* 234 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(234);
+	__webpack_require__(235);
 	var React = __webpack_require__(6);
 	var util = __webpack_require__(175);
 
@@ -44110,13 +44230,13 @@
 	module.exports = BtnGroup;
 
 /***/ },
-/* 234 */
+/* 235 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(235);
+	var content = __webpack_require__(236);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -44136,7 +44256,7 @@
 	}
 
 /***/ },
-/* 235 */
+/* 236 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -44150,13 +44270,13 @@
 
 
 /***/ },
-/* 236 */
+/* 237 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(237);
+	__webpack_require__(238);
 	var React = __webpack_require__(6);
-	var Properties = __webpack_require__(239);
+	var Properties = __webpack_require__(240);
 	var OVERVIEW = ['Url', 'Method', 'Status Code', 'Host IP', 'Client IP', 'Request Length', 'Content Length'
 	                      , 'Start Date', 'DNS Lookup', 'Request Sent', 'Content Download'];
 	/**
@@ -44194,13 +44314,13 @@
 	module.exports = Overview;
 
 /***/ },
-/* 237 */
+/* 238 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(238);
+	var content = __webpack_require__(239);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -44220,7 +44340,7 @@
 	}
 
 /***/ },
-/* 238 */
+/* 239 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -44234,11 +44354,11 @@
 
 
 /***/ },
-/* 239 */
+/* 240 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(240);
+	__webpack_require__(241);
 	var React = __webpack_require__(6);
 
 	var Properties = React.createClass({displayName: "Properties",
@@ -44264,13 +44384,13 @@
 	module.exports = Properties;
 
 /***/ },
-/* 240 */
+/* 241 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(241);
+	var content = __webpack_require__(242);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -44290,7 +44410,7 @@
 	}
 
 /***/ },
-/* 241 */
+/* 242 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -44304,17 +44424,17 @@
 
 
 /***/ },
-/* 242 */
+/* 243 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(243);
+	__webpack_require__(244);
 	var React = __webpack_require__(6);
-	var Table = __webpack_require__(245);
+	var Table = __webpack_require__(246);
 	var Divider = __webpack_require__(176);
-	var Properties = __webpack_require__(239);
+	var Properties = __webpack_require__(240);
 	var util = __webpack_require__(175);
-	var BtnGroup = __webpack_require__(233);
+	var BtnGroup = __webpack_require__(234);
 	var BTNS = [{name: 'Headers', active: true}, {name: 'TextView'}, {name: 'Cookies'}, {name: 'WebForms'}, {name: 'Raw'}];
 
 	var ReqDetail = React.createClass({displayName: "ReqDetail",
@@ -44349,13 +44469,13 @@
 
 
 /***/ },
-/* 243 */
+/* 244 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(244);
+	var content = __webpack_require__(245);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -44375,7 +44495,7 @@
 	}
 
 /***/ },
-/* 244 */
+/* 245 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -44389,11 +44509,11 @@
 
 
 /***/ },
-/* 245 */
+/* 246 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(246);
+	__webpack_require__(247);
 	var React = __webpack_require__(6);
 
 	var Table = React.createClass({displayName: "Table",
@@ -44436,13 +44556,13 @@
 	module.exports = Table;
 
 /***/ },
-/* 246 */
+/* 247 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(247);
+	var content = __webpack_require__(248);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -44462,7 +44582,7 @@
 	}
 
 /***/ },
-/* 247 */
+/* 248 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -44476,16 +44596,16 @@
 
 
 /***/ },
-/* 248 */
+/* 249 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(249);
+	__webpack_require__(250);
 	var React = __webpack_require__(6);
-	var Table = __webpack_require__(245);
-	var Properties = __webpack_require__(239);
+	var Table = __webpack_require__(246);
+	var Properties = __webpack_require__(240);
 	var util = __webpack_require__(175);
-	var BtnGroup = __webpack_require__(233);
+	var BtnGroup = __webpack_require__(234);
 	BTNS = [{name: 'Headers', active: true}, {name: 'TextView'}, {name: 'Cookies'}, {name: 'JSON'}, {name: 'Raw'}];
 	var COOKIE_HEADERS = ['Name', 'Value', 'Domain', 'Path', 'Http Only', 'Secure'];
 
@@ -44517,13 +44637,13 @@
 
 
 /***/ },
-/* 249 */
+/* 250 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(250);
+	var content = __webpack_require__(251);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -44543,7 +44663,7 @@
 	}
 
 /***/ },
-/* 250 */
+/* 251 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -44557,11 +44677,11 @@
 
 
 /***/ },
-/* 251 */
+/* 252 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(252);
+	__webpack_require__(253);
 	var React = __webpack_require__(6);
 
 	var Timeline = React.createClass({displayName: "Timeline",
@@ -44600,13 +44720,13 @@
 	module.exports = Timeline;
 
 /***/ },
-/* 252 */
+/* 253 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(253);
+	var content = __webpack_require__(254);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -44626,7 +44746,7 @@
 	}
 
 /***/ },
-/* 253 */
+/* 254 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -44640,11 +44760,11 @@
 
 
 /***/ },
-/* 254 */
+/* 255 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(255);
+	__webpack_require__(256);
 	var React = __webpack_require__(6);
 	var Divider = __webpack_require__(176);
 
@@ -44686,13 +44806,13 @@
 	module.exports = Composer;
 
 /***/ },
-/* 255 */
+/* 256 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(256);
+	var content = __webpack_require__(257);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -44712,7 +44832,7 @@
 	}
 
 /***/ },
-/* 256 */
+/* 257 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -44726,11 +44846,11 @@
 
 
 /***/ },
-/* 257 */
+/* 258 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(258);
+	__webpack_require__(259);
 	var React = __webpack_require__(6);
 
 	var Log = React.createClass({displayName: "Log",
@@ -44848,13 +44968,13 @@
 	module.exports = Log;
 
 /***/ },
-/* 258 */
+/* 259 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(259);
+	var content = __webpack_require__(260);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -44874,7 +44994,7 @@
 	}
 
 /***/ },
-/* 259 */
+/* 260 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -44888,11 +45008,11 @@
 
 
 /***/ },
-/* 260 */
+/* 261 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var $ = __webpack_require__(5);
-	var createCgi = __webpack_require__(261);
+	var createCgi = __webpack_require__(262);
 	var	MAX_COUNT = 1024;
 	var TIMEOUT = 10000;
 	var dataCallbacks = [];
@@ -45109,7 +45229,7 @@
 
 
 /***/ },
-/* 261 */
+/* 262 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var $ = __webpack_require__(5);
@@ -45177,15 +45297,15 @@
 	module.exports = create;
 
 /***/ },
-/* 262 */
+/* 263 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(263);
+	__webpack_require__(264);
 	var $ = window.jQuery = __webpack_require__(5); //for bootstrap
-	__webpack_require__(265);
+	__webpack_require__(266);
 	var React = __webpack_require__(6);
-	var dataCenter = __webpack_require__(260);
+	var dataCenter = __webpack_require__(261);
 	var dialog;
 
 	function createDialog(version) {
@@ -45234,13 +45354,13 @@
 	module.exports = About;
 
 /***/ },
-/* 263 */
+/* 264 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(264);
+	var content = __webpack_require__(265);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -45260,7 +45380,7 @@
 	}
 
 /***/ },
-/* 264 */
+/* 265 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -45274,7 +45394,7 @@
 
 
 /***/ },
-/* 265 */
+/* 266 */
 /***/ function(module, exports) {
 
 	/*!
@@ -47643,15 +47763,15 @@
 
 
 /***/ },
-/* 266 */
+/* 267 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(267);
+	__webpack_require__(268);
 	var $ = window.jQuery = __webpack_require__(5); //for bootstrap
-	__webpack_require__(265);
+	__webpack_require__(266);
 	var React = __webpack_require__(6);
-	var dataCenter = __webpack_require__(260);
+	var dataCenter = __webpack_require__(261);
 	var dialog;
 
 	function createDialog() {
@@ -47772,13 +47892,13 @@
 	module.exports = Online;
 
 /***/ },
-/* 267 */
+/* 268 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(268);
+	var content = __webpack_require__(269);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -47798,7 +47918,7 @@
 	}
 
 /***/ },
-/* 268 */
+/* 269 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -47812,11 +47932,11 @@
 
 
 /***/ },
-/* 269 */
+/* 270 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(270);
+	__webpack_require__(271);
 	var React = __webpack_require__(6);
 	var util = __webpack_require__(175);
 
@@ -47856,13 +47976,13 @@
 
 
 /***/ },
-/* 270 */
+/* 271 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(271);
+	var content = __webpack_require__(272);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -47882,7 +48002,7 @@
 	}
 
 /***/ },
-/* 271 */
+/* 272 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -47894,160 +48014,6 @@
 
 	// exports
 
-
-/***/ },
-/* 272 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var $ = __webpack_require__(5);
-	var util = __webpack_require__(175);
-
-	function ListModal(list, data) {
-		var self = this;
-		self.list = Array.isArray(list) ? list : [];
-		data = data || {};
-		self.data = {};
-		self.list.forEach(function(name) {
-			var item = self.data[name] = data[name] || {};
-			item.key = item.key || util.getKey();
-			item.name = name;
-		});
-	}
-
-	var proto = ListModal.prototype;
-
-	proto._getList = function(prop) {
-		var list = [];
-		var data = this.data;
-		Object.keys(data)
-				.forEach(function(name) {
-					var item = data[name];
-					if (item && item[prop]) {
-						list.push(item);
-					}
-				});
-		return list;
-	};
-
-	proto._setBoolProp = function(name, prop, bool) {
-		var item = this.get(name);
-		if (item) {
-			item[prop] = bool !== false;
-		}
-		return item;
-	};
-
-	proto.add = function(name, value) {
-		if (!name || this.get(name)) {
-			return false;
-		}
-		this.list.push(name);
-		this.data[name] = {
-			key: util.getKey(),
-			name: name,
-			value: value || ''
-		};
-		return true;
-	};
-
-	proto.set = function(name, value) {
-		var item = this.get(name);
-		if (item) {
-			if (typeof value == 'string') {
-				item.value = value;
-			} else {
-				$.extend(item, value);
-			}
-		}
-	};
-
-	proto.get = function(name) {
-		
-		return this.data[name];
-	};
-
-	proto.getByKey = function(key) {
-		for (var i in this.data) {
-			var item = this.data[i];
-			if (item.key == key) {
-				return item;
-			}
-		}
-	};
-
-	proto.setSelected = function(name, selected) {
-		
-		return this._setBoolProp(name, 'selected', selected);
-	};
-
-	proto.getSelectedList = function() {
-		
-		return this._getList('selected');
-	};
-
-	proto.setChanged = function(name, changed) {
-
-		return this._setBoolProp(name, 'changed', changed);
-	};
-
-	proto.getChangedList = function() {
-		
-		return this._getList('changed');
-	};
-
-	proto.clearAllActive = function() {
-		var data = this.data;
-		Object.keys(data).forEach(function(name) {
-			data[name].active = false;
-		});
-	};
-
-	proto.setActive = function(name, active) {
-		var item = this.get(name);
-		if (item) {
-			active = active !== false;
-			active && this.clearAllActive();
-			item.active = active;
-		}
-	};
-
-	proto.getActive = function() {
-		for (var i in this.data) {
-			var item = this.data[i];
-			if (item.active) {
-				return item;
-			}
-		}
-	};
-
-	proto.remove = function(name) {
-		var index = this.getIndex(name);
-		if (index != -1) {
-			this.list.splice(index, 1);
-			delete this.data[name];
-			return true;
-		}
-	};
-
-	proto.rename = function(name, newName) {
-		if (!name || !newName || name == newName) {
-			return;
-		}
-		
-		var index = this.getIndex(name);
-		if (index != -1) {
-			this.list[index] = newName;
-			this.data[newName] = this.data[name];
-			delete this.data[name];
-			return true;
-		}
-	};
-
-	proto.getIndex = function(name) {
-		return this.list.indexOf(name);
-	};
-
-	module.exports = ListModal;
 
 /***/ }
 /******/ ]);
