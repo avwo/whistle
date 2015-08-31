@@ -72,10 +72,13 @@
 				state.name = 'values';
 			} else {
 				state.hasNetwork = true;
+				state.name = 'network';
 			}
 			var rulesList = [];
+			var rulesOptions = [];
 			var rulesData = {};
 			var valuesList = [];
+			var valuesOptions = [];
 			var valuesData = {};
 			
 			var modal = this.props.modal;
@@ -83,13 +86,19 @@
 			var values = modal.values;
 			if (rules) {
 				var selectedName = rules.current;
-				rulesList.push('Default');
+				var DEFAULT = 'Default';
+				var selected = !rules.defaultRulesIsDisabled;
+				rulesOptions.push({
+					name: DEFAULT,
+					icon: selected ? 'ok' : ''
+				});
+				rulesList.push(DEFAULT);
 				rulesData.Default = {
-						name: 'Default',
+						name: DEFAULT,
 						value: rules.defaultRules,
-						active: !rules.defaultRulesIsDisabled,
+						selected: selected,
 						isDefault: true,
-						active: selectedName === 'Default'
+						active: selectedName === DEFAULT
 				};
 				
 				$.each(rules.list, function() {
@@ -101,6 +110,10 @@
 						selected: this.selected,
 						active: selectedName === this.name
 					};
+					rulesOptions.push({
+						name: this.name,
+						icon: this.selected ? 'ok' : ''
+					});
 				});
 			}
 			
@@ -113,11 +126,17 @@
 						value: this.data,
 						active: selectedName === this.name
 					};
+					valuesOptions.push({
+						name: this.name,
+						icon: 'edit'
+					});
 				});
 			}
 			
 			state.rules = new ListModal(rulesList, rulesData);
+			state.rulesOptions = rulesOptions;
 			state.values = new ListModal(valuesList, valuesData);
+			state.valuesOptions = valuesOptions;
 			
 			return state;
 		},
@@ -137,11 +156,22 @@
 					self.hideOnBlur();
 				}
 			});
+			if (self.state.name == 'network') {
+				self.startLoadData();
+			}
 		},
 		preventBlur: function(e) {
 			e.target.nodeName != 'INPUT' && e.preventDefault();
 		},
+		startLoadData: function() {
+			!this._startLoadData && dataCenter.on('data', function(data) {
+				console.log(data);
+			});
+			this._startLoadData = true;
+		},
 		showNetwork: function() {
+			this.setMenuOptionsState();
+			this.startLoadData();
 			this.setState({
 				hasNetwork: true,
 				name: 'network'
@@ -149,6 +179,7 @@
 			location.hash = 'network';
 		},
 		showRules: function() {
+			this.setMenuOptionsState();
 			this.setState({
 				hasRules: true,
 				name: 'rules'
@@ -156,11 +187,38 @@
 			location.hash = 'rules';
 		},
 		showValues: function() {
+			this.setMenuOptionsState();
 			this.setState({
 				hasValues: true,
 				name: 'values'
 			});
 			location.hash = 'values';
+		},
+		showRulesOptions: function() {
+			var self = this;
+			self.setMenuOptionsState('showRulesOptions', function() {
+				self.refs.rulesMenuItem.getDOMNode().focus();
+			});
+		},
+		showValuesOptions: function() {
+			var self = this;
+			self.setMenuOptionsState('showValuesOptions', function() {
+				self.refs.valuesMenuItem.getDOMNode().focus();
+			});
+		},
+		hideOptions: function() {
+			this.setMenuOptionsState();
+		},
+		setMenuOptionsState: function(name, callback) {
+			var state = {
+					showRulesOptions: false,
+					showValuesOptions: false,
+					showWeinreOptions: false
+			};
+			if (name) {
+				state[name] = true;
+			}
+			this.setState(state, callback);
 		},
 		showCreateRules: function() {
 			var createRulesInput = this.refs.createRulesInput.getDOMNode();
@@ -179,17 +237,18 @@
 			});
 		},
 		createRules: function(e) {
-			if (e.keyCode != 13) {
+			if (e.keyCode != 13 && e.type != 'click') {
 				return;
 			}
-			var target = e.target;
+			var self = this;
+			var target = self.refs.createRulesInput.getDOMNode();
 			var name = $.trim(target.value);
 			if (!name) {
 				alert('Rule name can not be empty.');
 				return;
 			}
-			var self = this;
-			var modal = this.state.rules;
+			
+			var modal = self.state.rules;
 			if (modal.exists(name)) {
 				alert('Rule name \'' + name + '\' already exists.');
 				return;
@@ -208,17 +267,18 @@
 			});
 		},
 		createValues: function(e) {
-			if (e.keyCode != 13) {
+			if (e.keyCode != 13 && e.type != 'click') {
 				return;
 			}
-			var target = e.target;
+			var self = this;
+			var target = self.refs.createValuesInput.getDOMNode();
 			var name = $.trim(target.value);
 			if (!name) {
 				alert('Value name can not be empty.');
 				return;
 			}
-			var self = this;
-			var modal = this.state.values;
+			
+			var modal = self.state.values;
 			if (modal.exists(name)) {
 				alert('Value name \'' + name + '\' already exists.');
 				return;
@@ -268,7 +328,7 @@
 			});	
 		},
 		editRules: function(e) {
-			if (e.keyCode != 13) {
+			if (e.keyCode != 13 && e.type != 'click') {
 				return;
 			}
 			var self = this;
@@ -277,7 +337,7 @@
 			if (!activeItem) {
 				return;
 			}
-			var target = e.target;
+			var target = self.refs.editRulesInput.getDOMNode();
 			var name = $.trim(target.value);
 			if (!name) {
 				alert('Rule name can not be empty.');
@@ -302,7 +362,7 @@
 			});
 		},
 		editValues: function(e) {
-			if (e.keyCode != 13) {
+			if (e.keyCode != 13 && e.type != 'click') {
 				return;
 			}
 			var self = this;
@@ -311,7 +371,7 @@
 			if (!activeItem) {
 				return;
 			}
-			var target = e.target;
+			var target = self.refs.editValuesInput.getDOMNode();
 			var name = $.trim(target.value);
 			if (!name) {
 				alert('Rule name can not be empty.');
@@ -358,6 +418,9 @@
 			return false;
 		},
 		saveValues: function(item) {
+			if (!item.changed) {
+				return;
+			}
 			var self = this;
 			dataCenter.values.add(item, function(data) {
 				if (data && data.ec === 0) {
@@ -511,10 +574,10 @@
 			
 			return (
 				React.createElement("div", {className: "main orient-vertical-box"}, 
-					React.createElement("div", {className: "w-menu"}, 
+					React.createElement("div", {className: 'w-menu w-' + name + '-menu'}, 
 						React.createElement("a", {onClick: this.showNetwork, className: "w-network-menu", style: {display: isNetwork ? 'none' : ''}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-align-justify"}), "Network"), 
-						React.createElement("a", {onClick: this.showRules, className: "w-rules-menu", style: {display: isRules ? 'none' : ''}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-list"}), "Rules"), 
-						React.createElement("a", {onClick: this.showValues, className: "w-values-menu", style: {display: isValues ? 'none' : ''}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-folder-open"}), "Values"), 
+						React.createElement("a", {onClick: this.showRulesOptions, className: "w-rules-menu", style: {display: isRules ? 'none' : ''}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-list"}), "Rules"), 
+						React.createElement("a", {onClick: this.showValuesOptions, className: "w-values-menu", style: {display: isValues ? 'none' : ''}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-folder-open"}), "Values"), 
 						React.createElement("a", {onClick: this.onClickMenu, className: "w-create-menu", style: {display: isNetwork ? 'none' : ''}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-plus"}), "Create"), 
 						React.createElement("a", {onClick: this.onClickMenu, className: 'w-edit-menu' + (disabledEditBtn ? ' w-disabled' : ''), style: {display: isNetwork ? 'none' : ''}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-edit"}), "Edit"), 
 						React.createElement("a", {onClick: this.replay, className: 'w-replay-menu' + (this.state.disabledReplayBtn ? ' w-disabled' : ''), style: {display: isNetwork ? '' : 'none'}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-repeat"}), "Replay"), 
@@ -528,13 +591,13 @@
 						React.createElement("a", {className: "w-help-menu", href: "https://github.com/avwo/whistle#whistle", target: "_blank"}, React.createElement("span", {className: "glyphicon glyphicon-question-sign"}), "Help"), 
 						React.createElement(About, null), 
 						React.createElement(Online, null), 
-						React.createElement(MenuItem, {hide: !this.state.showRulesOptions, onClick: this.props.onClickItem, onClickOption: this.props.onClickOption}), 
-						React.createElement(MenuItem, {hide: !this.state.showValuessOptions, onClick: this.props.onClickItem, onClickOption: this.props.onClickOption}), 
-						React.createElement(MenuItem, {hide: !this.state.showWeinreOptions, onClick: this.props.onClickItem, onClickOption: this.props.onClickOption}), 
-						React.createElement("div", {onMouseDown: this.preventBlur, style: {display: this.state.showCreateRules ? 'block' : 'none'}, className: "shadow w-input-menu-item w-create-rules-input"}, React.createElement("input", {ref: "createRulesInput", onKeyDown: this.createRules, onBlur: this.hideOnBlur, type: "text", maxLength: "64", placeholder: "create rules"}), React.createElement("button", {type: "button", className: "btn btn-primary"}, "OK")), 
-						React.createElement("div", {onMouseDown: this.preventBlur, style: {display: this.state.showCreateValues ? 'block' : 'none'}, className: "shadow w-input-menu-item w-create-values-input"}, React.createElement("input", {ref: "createValuesInput", onKeyDown: this.createValues, onBlur: this.hideOnBlur, type: "text", maxLength: "64", placeholder: "create values"}), React.createElement("button", {type: "button", className: "btn btn-primary"}, "OK")), 
-						React.createElement("div", {onMouseDown: this.preventBlur, style: {display: this.state.showEditRules ? 'block' : 'none'}, className: "shadow w-input-menu-item w-edit-rules-input"}, React.createElement("input", {ref: "editRulesInput", onKeyDown: this.editRules, onBlur: this.hideOnBlur, type: "text", maxLength: "64", placeholder: 'rename ' + (this.state.selectedRuleName || '')}), React.createElement("button", {type: "button", className: "btn btn-primary"}, "OK")), 
-						React.createElement("div", {onMouseDown: this.preventBlur, style: {display: this.state.showEditValues ? 'block' : 'none'}, className: "shadow w-input-menu-item w-edit-values-input"}, React.createElement("input", {ref: "editValuesInput", onKeyDown: this.editValues, onBlur: this.hideOnBlur, type: "text", maxLength: "64", placeholder: 'rename ' + (this.state.selectedValueName || '')}), React.createElement("button", {type: "button", className: "btn btn-primary"}, "OK"))
+						React.createElement(MenuItem, {ref: "rulesMenuItem", name: "Open", options: this.state.rulesOptions, hide: !this.state.showRulesOptions, className: "w-rules-menu-item", onBlur: this.hideOptions, onClick: this.showRules, onClickOption: this.props.onClickOption}), 
+						React.createElement(MenuItem, {ref: "weinreMenuItem", ref: "valuesMenuItem", name: "Open", options: this.state.valuesOptions, hide: !this.state.showValuesOptions, className: "w-values-menu-item", onBlur: this.hideOptions, onClick: this.showValues, onClickOption: this.props.onClickOption}), 
+						React.createElement(MenuItem, {name: "Default", options: this.state.weinreOptions, hide: !this.state.showWeinreOptions, className: "w-weinre-menu-item", onBlur: this.hideOptions, onClick: this.props.onClickItem, onClickOption: this.props.onClickOption}), 
+						React.createElement("div", {onMouseDown: this.preventBlur, style: {display: this.state.showCreateRules ? 'block' : 'none'}, className: "shadow w-input-menu-item w-create-rules-input"}, React.createElement("input", {ref: "createRulesInput", onKeyDown: this.createRules, onBlur: this.hideOnBlur, type: "text", maxLength: "64", placeholder: "create rules"}), React.createElement("button", {type: "button", onClick: this.createRules, className: "btn btn-primary"}, "OK")), 
+						React.createElement("div", {onMouseDown: this.preventBlur, style: {display: this.state.showCreateValues ? 'block' : 'none'}, className: "shadow w-input-menu-item w-create-values-input"}, React.createElement("input", {ref: "createValuesInput", onKeyDown: this.createValues, onBlur: this.hideOnBlur, type: "text", maxLength: "64", placeholder: "create values"}), React.createElement("button", {type: "button", onClick: this.createValues, className: "btn btn-primary"}, "OK")), 
+						React.createElement("div", {onMouseDown: this.preventBlur, style: {display: this.state.showEditRules ? 'block' : 'none'}, className: "shadow w-input-menu-item w-edit-rules-input"}, React.createElement("input", {ref: "editRulesInput", onKeyDown: this.editRules, onBlur: this.hideOnBlur, type: "text", maxLength: "64", placeholder: 'rename ' + (this.state.selectedRuleName || '')}), React.createElement("button", {type: "button", onClick: this.editRules, className: "btn btn-primary"}, "OK")), 
+						React.createElement("div", {onMouseDown: this.preventBlur, style: {display: this.state.showEditValues ? 'block' : 'none'}, className: "shadow w-input-menu-item w-edit-values-input"}, React.createElement("input", {ref: "editValuesInput", onKeyDown: this.editValues, onBlur: this.hideOnBlur, type: "text", maxLength: "64", placeholder: 'rename ' + (this.state.selectedValueName || '')}), React.createElement("button", {type: "button", onClick: this.editValues, className: "btn btn-primary"}, "OK"))
 					), 
 					this.state.hasRules ? React.createElement(List, {onSelect: this.selectRules, onUnselect: this.unselectRules, onActive: this.activeRules, modal: this.state.rules, hide: name == 'rules' ? false : true, name: "rules"}) : '', 
 					this.state.hasValues ? React.createElement(List, {onSelect: this.saveValues, onActive: this.activeValues, modal: this.state.values, hide: name == 'values' ? false : true, className: "w-values-list"}) : '', 
@@ -585,7 +648,7 @@
 
 
 	// module
-	exports.push([module.id, ".w-menu {height: 28px; border-top: 1px solid #fcfcfc; border-bottom: 1px solid #d3d3d3; padding: 0 5px; \nbackground: -moz-linear-gradient(rgb(239, 238, 238), rgb(211, 212, 213));\nbackground: -webkit-linear-gradient(rgb(239, 238, 238), rgb(211, 212, 213)); \nbackground: linear-gradient(rgb(239, 238, 238), rgb(211, 212, 213)); padding-right: 80px; position: relative;}\n.w-menu a {text-decoration: none!important; color: #000; padding: 0 5px; line-height: 26px; height: 26px; margin-right: 5px; display: inline-block;}\n.w-menu .glyphicon, .w-detail .glyphicon {margin-right: 3px;}\n.w-menu .glyphicon-folder-open {margin-right: 6px;}\n.w-menu .w-online {position: absolute; right: 0;}\n.w-menu .w-online, .w-menu a:hover {color: #337ab7;}\n.w-menu .w-offline {color: #ccc!important; cursor: default;}\n.w-menu .w-disabled {color: #888!important; cursor: default!important;}\n.w-menu .w-menu-enable {color: #337ab7;}\n\n.w-input-menu-item {display: block; position: absolute; background: #fff; border: 1px solid #ccc; border-radius: 2px; z-index: 101; top: 30px; display: none; white-space: nowrap;}\n.w-input-menu-item input {width: 246px; height: 32px; border: 1px solid #ccc; border-radius: 2px; padding: 0 5px; vertical-align: middle;}\n.w-input-menu-item .btn {height: 32px; padding: 0 12px; vertical-align: middle; border-radius: 0; border-right-top-radius: 2px; border-right-bottom-radius: 2px;}\n\n.w-create-rules-input {left: 170px;}\n.w-create-values-input {left: 160px;}\n.w-edit-rules-input {left: 242px;}\n.w-edit-values-input {left: 232px;}\n\n.w-values-list .glyphicon {display: none!important;}\n.w-values-list a {font-weight: normal!important;}", ""]);
+	exports.push([module.id, ".w-menu {height: 28px; border-top: 1px solid #fcfcfc; border-bottom: 1px solid #d3d3d3; padding: 0 5px; \nbackground: -moz-linear-gradient(rgb(239, 238, 238), rgb(211, 212, 213));\nbackground: -webkit-linear-gradient(rgb(239, 238, 238), rgb(211, 212, 213)); \nbackground: linear-gradient(rgb(239, 238, 238), rgb(211, 212, 213)); padding-right: 80px; position: relative; z-index: 1001;}\n.w-menu a {text-decoration: none!important; color: #000; padding: 0 5px; line-height: 26px; height: 26px; margin-right: 5px; display: inline-block;}\n.w-menu .glyphicon, .w-detail .glyphicon {margin-right: 3px;}\n.w-menu .glyphicon-folder-open {margin-right: 6px;}\n.w-menu .w-online {position: absolute; right: 0;}\n.w-menu .w-online, .w-menu a:hover {color: #337ab7;}\n.w-menu .w-offline {color: #ccc!important; cursor: default;}\n.w-menu .w-disabled {color: #888!important; cursor: default!important;}\n.w-menu .w-menu-enable {color: #337ab7;}\n\n.w-input-menu-item {display: block; position: absolute; background: #fff; border: 1px solid #ccc; border-radius: 2px; z-index: 101; top: 30px; display: none; white-space: nowrap;}\n.w-input-menu-item input {width: 246px; height: 32px; border: 1px solid #ccc; border-radius: 2px; padding: 0 5px; vertical-align: middle;}\n.w-input-menu-item .btn {height: 32px; padding: 0 12px; vertical-align: middle; border-radius: 0; border-right-top-radius: 2px; border-right-bottom-radius: 2px;}\n\n.w-create-rules-input {left: 170px;}\n.w-create-values-input {left: 160px;}\n.w-edit-rules-input {left: 242px;}\n.w-edit-values-input {left: 232px;}\n\n.w-values-list .glyphicon {display: none!important;}\n.w-values-list a {font-weight: normal!important;}\n\n.w-rules-menu .w-values-menu-item {left: 92px;}\n.w-network-menu .w-values-menu-item {left: 75px;}\n.w-network-menu .w-rules-menu-item {left: 8px;}\n.w-values-menu .w-rules-menu-item {left: 92px;}", ""]);
 
 	// exports
 
@@ -30550,27 +30613,24 @@
 			var list = modal.list;
 			var data = modal.data;
 			var activeItem = modal.getActive();
-			
+			//不设置height为0，滚动会有问题
 			return (
 					React.createElement(Divider, {hide: this.props.hide, leftWidth: "200"}, 
 						React.createElement("div", {ref: "list", className: 'fill orient-vertical-box w-list-data ' + (this.props.className || '')}, 
 							
 								list.map(function(name) {
 									var item = data[name];
-									function handleDoubleClick() {
-										
-									}
-									return React.createElement("a", {key: item.key, "data-key": item.key, 
-												onMouseEnter: self.onMouseEnter, 
-												onMouseLeave: self.onMouseLeave, 
+									
+									return React.createElement("a", {key: item.key, "data-key": item.key, href: "javascript:;", 
 												onClick: self.onClick, 
 												onDoubleClick: function() {
 													self.onDoubleClick(item);
 												}, 
-												className: (item.hover ? 'w-hover' : '') 
-												+ (item.active ? ' w-active' : '') 
-												+ (item.changed ? ' w-changed' : '')
-												+ (item.selected ? ' w-selected' : ''), 
+												className: util.getClasses({
+													'w-active': item.active,
+													'w-changed': item.changed,
+													'w-selected': item.selected
+												}), 
 												href: "javascript:;"}, name, React.createElement("span", {onClick: function(e) {
 													self.onDoubleClick(item, true);
 													e.stopPropagation();
@@ -30700,7 +30760,7 @@
 
 
 	// module
-	exports.push([module.id, "html, body, .main {margin: 0; padding: 0; width: 100%; height: 100%;}\n.main {min-width: 960px; min-height: 360px;}\n::-webkit-scrollbar{ width:10px; height:10px; }\n::-webkit-scrollbar-button{ width:10px;height:1px; }\n::-webkit-scrollbar-thumb{ background-clip:padding-box; background-color:rgba(0,0,0,.5); border-radius:8px; min-height: 30px;}\n::-webkit-scrollbar-thumb:hover{ background-clip:padding-box; background-color:rgba(0,0,0,.7); border-radius:8px;}\n::-webkit-scrollbar-track,::-webkit-scrollbar-thumb { border-left:2px solid transparent; border-right:2px solid transparent;}\n::-webkit-scrollbar-track:hover{ background-clip:padding-box; background-color:rgba(0,0,0,.15);}\n\n.shadow {border: 1px solid rgba(0,0,0,.15)!important; -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175)!important; box-shadow: 0 6px 12px rgba(0,0,0,.175)!important;}\ntextarea[readonly] {outline: none;}\n.hide {display: none!important;}\n.box {display:-webkit-box; display:-moz-box; display:box;}\n.orient-vertical-box {-moz-box-orient:vertical; -webkit-box-orient:vertical; box-orient:vertical; display:-moz-box; display:-webkit-box; display: box;}\n.fill {-moz-box-flex:1; -webkit-box-flex:1; box-flex:1;}\n.table {table-layout: fixed; margin: 0!important;}\n\n.modal-dialog .modal-body, .modal-dialog .modal-footer {padding: 10px;}\n.modal-dialog .btn {padding: 5px 10px;}\n\n.cm-header {text-decoration: line-through;}\n.cm-s-ambiance ::-webkit-scrollbar-thumb, \n.cm-s-blackboard ::-webkit-scrollbar-thumb, \n.cm-s-cobalt ::-webkit-scrollbar-thumb, \n.cm-s-erlang-dark ::-webkit-scrollbar-thumb, \n.cm-s-lesser-dark ::-webkit-scrollbar-thumb, \n.cm-s-midnight ::-webkit-scrollbar-thumb, \n.cm-s-monokai ::-webkit-scrollbar-thumb, \n.cm-s-night ::-webkit-scrollbar-thumb, \n.cm-s-dark ::-webkit-scrollbar-thumb, \n.cm-s-twilight ::-webkit-scrollbar-thumb, \n.cm-s-vibrant-ink ::-webkit-scrollbar-thumb, \n.cm-s-xq-dark ::-webkit-scrollbar-thumb {background-color:rgba(255,255,255,.5);}\n\n.cm-s-ambiance ::-webkit-scrollbar-thumb:hover, \n.cm-s-blackboard ::-webkit-scrollbar-thumb:hover, \n.cm-s-cobalt ::-webkit-scrollbar-thumb:hover, \n.cm-s-erlang-dark ::-webkit-scrollbar-thumb:hover, \n.cm-s-lesser-dark ::-webkit-scrollbar-thumb:hover, \n.cm-s-midnight ::-webkit-scrollbar-thumb:hover, \n.cm-s-monokai ::-webkit-scrollbar-thumb:hover, \n.cm-s-night ::-webkit-scrollbar-thumb:hover, \n.cm-s-dark ::-webkit-scrollbar-thumb:hover, \n.cm-s-twilight ::-webkit-scrollbar-thumb:hover, \n.cm-s-vibrant-ink ::-webkit-scrollbar-thumb:hover, \n.cm-s-xq-dark ::-webkit-scrollbar-thumb:hover {background-color:rgba(255,255,255,.7);}\n\n.cm-s-ambiance ::-webkit-scrollbar-track:hover, \n.cm-s-blackboard ::-webkit-scrollbar-track:hover, \n.cm-s-cobalt ::-webkit-scrollbar-track:hover, \n.cm-s-erlang-dark ::-webkit-scrollbar-track:hover, \n.cm-s-lesser-dark ::-webkit-scrollbar-track:hover, \n.cm-s-midnight ::-webkit-scrollbar-track:hover, \n.cm-s-monokai ::-webkit-scrollbar-track:hover, \n.cm-s-night ::-webkit-scrollbar-track:hover, \n.cm-s-dark ::-webkit-scrollbar-track:hover, \n.cm-s-twilight ::-webkit-scrollbar-track:hover, \n.cm-s-vibrant-ink ::-webkit-scrollbar-track:hover, \n.cm-s-xq-dark ::-webkit-scrollbar-track:hover {background-color:rgba(255,255,255,.15);}\n\n\n", ""]);
+	exports.push([module.id, "html, body, .main {margin: 0; padding: 0; width: 100%; height: 100%;}\n.main {min-width: 960px; min-height: 360px;}\n::-webkit-scrollbar{ width:10px; height:10px; }\n::-webkit-scrollbar-button{ width:10px;height:1px; }\n::-webkit-scrollbar-thumb{ background-clip:padding-box; background-color:rgba(0,0,0,.5); border-radius:8px; min-height: 30px;}\n::-webkit-scrollbar-thumb:hover{ background-clip:padding-box; background-color:rgba(0,0,0,.7); border-radius:8px;}\n::-webkit-scrollbar-track,::-webkit-scrollbar-thumb { border-left:2px solid transparent; border-right:2px solid transparent;}\n::-webkit-scrollbar-track:hover{ background-clip:padding-box; background-color:rgba(0,0,0,.15);}\n\n.shadow {border: 1px solid rgba(0,0,0,.15)!important; -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175)!important; box-shadow: 0 6px 12px rgba(0,0,0,.175)!important;}\ntextarea[readonly] {outline: none;}\n.hide {display: none!important;}\n.box {display:-webkit-box; display:-moz-box; display:box;}\n.orient-vertical-box {-moz-box-orient:vertical; -webkit-box-orient:vertical; box-orient:vertical; display:-moz-box; display:-webkit-box; display: box;}\n.fill {-moz-box-flex:1; -webkit-box-flex:1; box-flex:1;}\n.box>.fill {width: 0;}\n.orient-vertical-box>.fill {height: 0;} /**不加这个滚动会有问题**/\n.table {table-layout: fixed; margin: 0!important;}\n\n.modal-dialog .modal-body, .modal-dialog .modal-footer {padding: 10px;}\n.modal-dialog .btn {padding: 5px 10px;}\n\n.cm-header {text-decoration: line-through;}\n.cm-s-ambiance ::-webkit-scrollbar-thumb, \n.cm-s-blackboard ::-webkit-scrollbar-thumb, \n.cm-s-cobalt ::-webkit-scrollbar-thumb, \n.cm-s-erlang-dark ::-webkit-scrollbar-thumb, \n.cm-s-lesser-dark ::-webkit-scrollbar-thumb, \n.cm-s-midnight ::-webkit-scrollbar-thumb, \n.cm-s-monokai ::-webkit-scrollbar-thumb, \n.cm-s-night ::-webkit-scrollbar-thumb, \n.cm-s-dark ::-webkit-scrollbar-thumb, \n.cm-s-twilight ::-webkit-scrollbar-thumb, \n.cm-s-vibrant-ink ::-webkit-scrollbar-thumb, \n.cm-s-xq-dark ::-webkit-scrollbar-thumb {background-color:rgba(255,255,255,.5);}\n\n.cm-s-ambiance ::-webkit-scrollbar-thumb:hover, \n.cm-s-blackboard ::-webkit-scrollbar-thumb:hover, \n.cm-s-cobalt ::-webkit-scrollbar-thumb:hover, \n.cm-s-erlang-dark ::-webkit-scrollbar-thumb:hover, \n.cm-s-lesser-dark ::-webkit-scrollbar-thumb:hover, \n.cm-s-midnight ::-webkit-scrollbar-thumb:hover, \n.cm-s-monokai ::-webkit-scrollbar-thumb:hover, \n.cm-s-night ::-webkit-scrollbar-thumb:hover, \n.cm-s-dark ::-webkit-scrollbar-thumb:hover, \n.cm-s-twilight ::-webkit-scrollbar-thumb:hover, \n.cm-s-vibrant-ink ::-webkit-scrollbar-thumb:hover, \n.cm-s-xq-dark ::-webkit-scrollbar-thumb:hover {background-color:rgba(255,255,255,.7);}\n\n.cm-s-ambiance ::-webkit-scrollbar-track:hover, \n.cm-s-blackboard ::-webkit-scrollbar-track:hover, \n.cm-s-cobalt ::-webkit-scrollbar-track:hover, \n.cm-s-erlang-dark ::-webkit-scrollbar-track:hover, \n.cm-s-lesser-dark ::-webkit-scrollbar-track:hover, \n.cm-s-midnight ::-webkit-scrollbar-track:hover, \n.cm-s-monokai ::-webkit-scrollbar-track:hover, \n.cm-s-night ::-webkit-scrollbar-track:hover, \n.cm-s-dark ::-webkit-scrollbar-track:hover, \n.cm-s-twilight ::-webkit-scrollbar-track:hover, \n.cm-s-vibrant-ink ::-webkit-scrollbar-track:hover, \n.cm-s-xq-dark ::-webkit-scrollbar-track:hover {background-color:rgba(255,255,255,.15);}\n\n\n", ""]);
 
 	// exports
 
@@ -30740,7 +30800,7 @@
 
 
 	// module
-	exports.push([module.id, ".w-divider-con .w-divider {border: none;}\n.w-list-data {border-top: 1px solid #ccc; border-bottom: 1px solid #ccc; overflow-x: hidden; overflow-y: auto;}\n.w-list-data a {display: block; padding-left: 10px; line-height: 32px; position: relative; border-bottom: 1px solid #ccc; color: #000; \ntext-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}\n.w-list-data a .glyphicon-ok {position: absolute; top: 50%; right: 10px; margin-top: -8px; color: #5bbd72; display: none;}\n.w-list-content {border: 1px solid #ccc; border-left: none;} \n.w-list-data .w-changed:before {content: '*'; margin-right: 5px; color: red; margin-right: 5px;}\n.w-list-data .w-hover {color: #337ab7;}\n.w-list-data .w-active {background: #337AB7; color: #fff;}\n.w-list-data .w-selected {font-weight: bold;}\n.w-list-data .w-selected .glyphicon-ok {display: inline-block;}", ""]);
+	exports.push([module.id, ".w-divider-con .w-divider {border: none;}\n.w-list-data {border-top: 1px solid #ccc; border-bottom: 1px solid #ccc; overflow-x: hidden; overflow-y: auto;}\n.w-list-data a {display: block; padding-left: 10px; line-height: 32px; position: relative; border-bottom: 1px solid #ccc; color: #000; \ntext-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}\n.w-list-data a .glyphicon-ok {position: absolute; top: 50%; right: 10px; margin-top: -8px; color: #5bbd72; display: none;}\n.w-list-content {border: 1px solid #ccc; border-left: none;} \n.w-list-data .w-changed:before {content: '*'; margin-right: 5px; color: red; margin-right: 5px;}\n.w-list-data a:hover {color: #337ab7;}\n.w-list-data .w-active {background: #337AB7; color: #fff!important;}\n.w-list-data .w-selected {font-weight: bold;}\n.w-list-data .w-selected .glyphicon-ok {display: inline-block;}", ""]);
 
 	// exports
 
@@ -30870,6 +30930,13 @@
 		alert('Please check if the whistle server is started.');
 	};
 
+	exports.getClasses = function getClasses(obj) {
+		var classes = [];
+		for (var i in obj) {
+			obj[i] && classes.push(i);
+		}
+		return classes.join(' ');
+	};
 
 
 
@@ -43892,8 +43959,10 @@
 		var index = this.getIndex(name);
 		if (index != -1) {
 			this.list[index] = newName;
-			this.data[newName] = this.data[name];
+			var item = this.data[name];
 			delete this.data[name];
+			this.data[newName] = item;
+			item.name = newName;
 			return true;
 		}
 	};
@@ -45013,7 +45082,7 @@
 
 	var $ = __webpack_require__(5);
 	var createCgi = __webpack_require__(262);
-	var	MAX_COUNT = 1024;
+	var	MAX_COUNT = 2000;
 	var TIMEOUT = 10000;
 	var dataCallbacks = [];
 	var serverInfoCallbacks = [];
@@ -45095,7 +45164,7 @@
 		initialData.done(callback);
 	};
 
-	function startLadData() {
+	function startLoadData() {
 		if (dataList.length) {
 			return;
 		}
@@ -45103,20 +45172,17 @@
 		function load() {
 			var pendingIds = getPendingIds();
 			var startTime = getStartTime();
-			if (startTime == -1 && !pendingIds.length) {
-				return setTimeout(load, 3000);
-			}
 			
 			cgi.getData({
 				ids: pendingIds.join(),
 				startTime: startTime,
 				count: 60
 			}, function(data) {
-				setTimeout(load, 600);
+				setTimeout(load, 800);
 				if (!data || (!data.ids.length && !data.newIds.length)) {
 					return;
 				}
-				var ids = data.ids;
+				var ids = data.newIds;
 				var data = data.data;
 				$.each(dataList, function(i) {
 					var item = this;
@@ -45145,15 +45211,16 @@
 		$.each(dataList, function() {
 			var item = this;
 			if (!item.endTime && !item.lost) {
-				pendingIds.push(id);
+				pendingIds.push(item.id);
 			}
 		});
 		return pendingIds;
 	}
 
 	function getStartTime() {
-		var len = dataList.length;
-		return len < MAX_COUNT ? dataList[len - 1] : -1;
+		var len = dataList.length - 1;
+		var item = dataList[len];
+		return len > MAX_COUNT || !item ? -1 : item.id;
 	}
 
 	function startLoadServerInfo() {
@@ -45194,8 +45261,8 @@
 	exports.on = function(type, callback) {
 		if (type == 'data') {
 			if (typeof callback == 'function') {
-				startLadData();
 				dataCallbacks.push(callback);
+				startLoadData();
 			}
 		} else if (type == 'serverInfo') {
 			if (typeof callback == 'function') {
@@ -47783,7 +47850,7 @@
 					      '<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
 					        '<div class="w-online-dialog-ctn"></div>' + 
 					        '<div class="w-switch-to-server"><h5>Switch to:</h5>' + 
-					        '<input class="w-ip" maxlength="256" type="text" placeholder="whistle ip" /> : <input maxlength="5" class="w-port" type="text" placeholder="whistle port" />' +
+					        '<input class="w-ip" maxlength="256" type="text" placeholder="127.0.0.1" /> : <input maxlength="5" class="w-port" type="text" placeholder="8899" />' +
 					        '</div>' +
 					      '</div>' + 
 					      '<div class="modal-footer">' + 
@@ -47795,14 +47862,9 @@
 					'</div>').appendTo(document.body);
 			dialog.on('click', '.w-switch-btn', function() {
 				var ipInput = dialog.find('.w-ip');
-				var ip = $.trim(ipInput.val());
-				if (!ip) {
-					alert('Please enter the IP or domain name of the whistle server.');
-					ipInput.focus();
-					return;
-				}
+				var ip = $.trim(ipInput.val()) || '127.0.0.1';
 				var portInput = dialog.find('.w-port');
-				var port = $.trim(portInput.val());
+				var port = $.trim(portInput.val()) || '8899';
 				if (!/^\d+$/.test(port)) {
 					alert('Please enter the port number of the whistle server.');
 					portInput.focus();
@@ -47814,7 +47876,12 @@
 						alert('Please check if the whistle server(' + host + ') is started.');
 						return;
 					}
-					location.href = '//' + host + location.pathname + location.search + location.hash;
+					host = 'http://' + host + location.pathname + location.search + location.hash;
+					if (location.href != host) {
+						location.href = host;
+					} else {
+						dialog.modal('hide');
+					}
 				});
 			});
 			dialog.find('input').keydown(function(e) {
@@ -47941,6 +48008,9 @@
 	var util = __webpack_require__(175);
 
 	var MenuItem = React.createClass({displayName: "MenuItem",
+		preventBlur: function(e) {
+			e.preventDefault();
+		},
 		render: function() {
 			var options = this.props.options;
 			if (options && !options.length) {
@@ -47950,22 +48020,22 @@
 			var onClick = this.props.onClick || util.noop;
 			var onClickOption = this.props.onClickOption || util.noop;
 			return (
-				React.createElement("div", {style: {display: util.getBoolean(this.props.hide) ? 'none' : 'block'}, className: "w-menu-item"}, 
+				React.createElement("div", {onBlur: this.props.onBlur, tabIndex: "1", onMouseDown: this.preventBlur, style: {display: util.getBoolean(this.props.hide) ? 'none' : 'block'}, className: 'w-menu-item ' + (this.props.className || '')}, 
+				
+					name ? React.createElement("a", {onClick: onClick, className: "w-menu-open", href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-folder-open"}), name) : '', 
 					
+				
 						options ? React.createElement("div", {className: "w-menu-options"}, options.map(function(option) {
 							
 							return (
-									React.createElement("a", {key: options.name, onClick: function() {
+									React.createElement("a", {key: option.name, onClick: function() {
 										onClickOption(option);
 									}, href: "javascript:;"}, 
 										React.createElement("span", {className: 'glyphicon glyphicon-' + (option.icon || 'asterisk'), style: {visibility: option.icon ? '' : 'hidden'}}), 
 										option.name
 									)
 							);
-						})) : '', 
-					
-					
-						name ? React.createElement("a", {onClick: onClick, className: "w-menu-open", href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-folder-open"}), name) : ''
+						})) : ''
 					
 				)
 			);
@@ -48010,7 +48080,7 @@
 
 
 	// module
-	exports.push([module.id, ".w-menu-item {position: absolute; background: #ededed; border: 1px solid #ccc; z-index: 2; top: 30px;}\n.w-menu-item a {display: block; padding: 0 10px; font-weight: normal; white-space: nowrap; margin: 0!important;}\n.w-menu-item .w-menu-options {border-bottom: 1px dashed #ccc; max-height: 320px; overflow-x: hidden; overflow-y: auto;}\n.w-menu-item a .glyphicon {margin-right: 8px; font-size: 12px;}\n", ""]);
+	exports.push([module.id, ".w-menu-item {position: absolute; background: #fff; border: 1px solid #ccc; z-index: 2; top: 30px; border-radius: 2px; outline: none;}\n.w-menu-item a {display: block; max-width: 160px; text-overflow: ellipsis; overflow: hidden; padding: 0 6px; font-weight: normal; white-space: nowrap; margin: 0!important;}\n.w-menu-item .w-menu-options {border-top: 1px dashed #ccc; max-height: 320px; overflow-x: hidden; overflow-y: auto;}\n.w-menu-item a .glyphicon {margin-right: 8px; font-size: 12px;}\n.w-menu-item a .glyphicon-ok {color: #5bbd72;}\n", ""]);
 
 	// exports
 
