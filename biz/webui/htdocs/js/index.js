@@ -49,11 +49,12 @@
 	var React = __webpack_require__(6);
 	var List = __webpack_require__(162);
 	var ListModal = __webpack_require__(226);
-	var Network = __webpack_require__(227);
-	var About = __webpack_require__(263);
-	var Online = __webpack_require__(267);
-	var MenuItem = __webpack_require__(270);
-	var dataCenter = __webpack_require__(261);
+	var NetworkModal = __webpack_require__(227);
+	var Network = __webpack_require__(228);
+	var About = __webpack_require__(264);
+	var Online = __webpack_require__(268);
+	var MenuItem = __webpack_require__(271);
+	var dataCenter = __webpack_require__(262);
 	var util = __webpack_require__(175);
 	var pageName = getPageName();
 
@@ -155,7 +156,12 @@
 				if (e.keyCode == 27) {
 					self.hideOnBlur();
 				}
+			}).on('keydown', function(e) {
+				if ((e.ctrlKey || e.metaKey) && e.keyCode == 88) {
+					self.clear();
+				}
 			});
+			
 			if (self.state.name == 'network') {
 				self.startLoadData();
 			}
@@ -164,10 +170,32 @@
 			e.target.nodeName != 'INPUT' && e.preventDefault();
 		},
 		startLoadData: function() {
-			!this._startLoadData && dataCenter.on('data', function(data) {
-				console.log(data);
+			var self = this;
+			if (self._startLoadData) {
+				return;
+			}
+			
+			var con = $(self.refs.network.getDOMNode()).find('.w-req-data-list');
+			var body = con.children('table')[0];
+			con = con[0];
+			dataCenter.on('data', function(data) {
+				if (!self._networkModal) {
+					self._networkModal = new NetworkModal(data);
+				}
+				
+				if (self.state.name != 'network') {
+					return;
+				}
+				var atBottom = con.scrollTop + con.offsetHeight + 5 > body.offsetHeight;
+				self.setState({
+					network: self._networkModal
+				}, function() {
+					if (atBottom) {
+						con.scrollTop = body.offsetHeight;
+					}
+				});
 			});
-			this._startLoadData = true;
+			self._startLoadData = true;
 		},
 		showNetwork: function() {
 			this.setMenuOptionsState();
@@ -447,7 +475,10 @@
 			
 		},
 		clear: function() {
-			
+			var modal = this.state.network;
+			this.setState({
+				network: modal.clear()
+			});
 		},
 		removeRules: function() {
 			var self = this;
@@ -601,7 +632,7 @@
 					), 
 					this.state.hasRules ? React.createElement(List, {onSelect: this.selectRules, onUnselect: this.unselectRules, onActive: this.activeRules, modal: this.state.rules, hide: name == 'rules' ? false : true, name: "rules"}) : '', 
 					this.state.hasValues ? React.createElement(List, {onSelect: this.saveValues, onActive: this.activeValues, modal: this.state.values, hide: name == 'values' ? false : true, className: "w-values-list"}) : '', 
-					this.state.hasNetwork ? React.createElement(Network, {hide: name != 'rules' && name != 'values' ? false : true}) : ''
+					this.state.hasNetwork ? React.createElement(Network, {ref: "network", hide: name != 'rules' && name != 'values' ? false : true, modal: this.state.network}) : ''
 				)
 			);
 		}
@@ -43981,14 +44012,33 @@
 
 /***/ },
 /* 227 */
+/***/ function(module, exports) {
+
+	function NetworkModal(list) {
+		this.list = list || [];
+	}
+
+	var proto = NetworkModal.prototype;
+
+	proto.clear = function clear() {
+		this.list.splice(0, this.list.length);
+		return this;
+	};
+
+	module.exports = NetworkModal;
+
+
+
+/***/ },
+/* 228 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
 	var React = __webpack_require__(6);
 	var Divider = __webpack_require__(176);
-	var ReqData = __webpack_require__(228);
-	var Detail = __webpack_require__(231);
-	var dataCenter = __webpack_require__(261);
+	var ReqData = __webpack_require__(229);
+	var Detail = __webpack_require__(232);
+	var dataCenter = __webpack_require__(262);
 
 	var Network = React.createClass({displayName: "Network",
 		onClickMenu: function() {
@@ -44004,10 +44054,11 @@
 			
 		},
 		render: function() {
+			var modal = this.props.modal;
 			return (
 				React.createElement(Divider, {hide: this.props.hide, rightWidth: "560"}, 
-					React.createElement(ReqData, null), 
-					React.createElement(Detail, null)
+					React.createElement(ReqData, {modal: modal}), 
+					React.createElement(Detail, {modal: null})
 				)		
 			);
 		}
@@ -44017,11 +44068,11 @@
 
 
 /***/ },
-/* 228 */
+/* 229 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(229);
+	__webpack_require__(230);
 	var React = __webpack_require__(6);
 
 	var ReqData = React.createClass({displayName: "ReqData",
@@ -44045,7 +44096,8 @@
 			this.setState({filterText: ''});
 		},
 		render: function() {
-			
+			var modal = this.props.modal;
+			var list = modal ? modal.list : [];
 			return (
 					React.createElement("div", {className: "fill w-req-data-con orient-vertical-box"}, 
 						React.createElement("div", {className: "w-req-data-content fill orient-vertical-box"}, 
@@ -44069,8 +44121,24 @@
 							React.createElement("div", {className: "w-req-data-list fill"}, 
 								React.createElement("table", {className: "table"}, 
 							      React.createElement("tbody", null, 
-							      	React.createElement("tr", {id: "1439623451575-2015", className: "success"}, "           ", React.createElement("th", {className: "order", scope: "row"}, "2015"), "           ", React.createElement("td", {className: "result"}, "200"), "           ", React.createElement("td", {className: "protocol"}, "HTTP"), "           ", React.createElement("td", {className: "method"}, "GET"), "           ", React.createElement("td", {className: "host"}, "api.cupid.iqiyi.com"), "           ", React.createElement("td", {className: "host-ip"}, "101.227.14.80"), "           ", React.createElement("td", {className: "url", title: "http://api.cupid.iqiyi.com/track2?k=200766801&j=6&b=1439623451&f=e57e36816a869438d8768caa2b4a3f7c&s=ff2c7c1c7fa50e23f860fd0b151b560e&cv=5.2.26&ve=1&r=6c20cbcbfae6aa6222fd1c47a4cb1432&g=0ba53baedff5c4b528548d9726f3af9a&a=0&n=387365100&u=1&sv=AdManager%203.2.0&o=4&i=qc_100001_100016&v=5000000707222&c=cbbc0ad38b09743a0863402ae0055cd8&p=1000000000457&kp=e57e36816a869438d8768caa2b4a3f7c&w=1&d=5000000707222&q=5000000774191"}, "http://api.cupid.iqiyi.com/track2?k=200766801&j=6&b=1439623451&f=e57e36816a869438d8768caa2b4a3f7c&s=ff2c7c1c7fa50e23f860fd0b151b560e&cv=5.2.26&ve=1&r=6c20cbcbfae6aa6222fd1c47a4cb1432&g=0ba53baedff5c4b528548d9726f3af9a&a=0&n=387365100&u=1&sv=AdManager%203.2.0&o=4&i=qc_100001_100016&v=5000000707222&c=cbbc0ad38b09743a0863402ae0055cd8&p=1000000000457&kp=e57e36816a869438d8768caa2b4a3f7c&w=1&d=5000000707222&q=5000000774191"), "           ", React.createElement("td", {className: "type", title: "text/html; charset=utf-8"}, "text/html; charset=utf-8"), "           ", React.createElement("td", {className: "time"}, "18ms"), "        "), 
-							      	React.createElement("tr", {id: "1439623451576-2016", className: ""}, "           ", React.createElement("th", {className: "order", scope: "row"}, "2016"), "           ", React.createElement("td", {className: "result"}, "200"), "           ", React.createElement("td", {className: "protocol"}, "HTTP"), "           ", React.createElement("td", {className: "method"}, "GET"), "           ", React.createElement("td", {className: "host"}, "api.cupid.iqiyi.com"), "           ", React.createElement("td", {className: "host-ip"}, "101.227.14.80"), "           ", React.createElement("td", {className: "url", title: "http://api.cupid.iqiyi.com/etx?k=200766801&r=6c20cbcbfae6aa6222fd1c47a4cb1432&b=1439623451&f=e57e36816a869438d8768caa2b4a3f7c&du=0&cv=5.2.26&ve=1&z=1000000000457&g=0ba53baedff5c4b528548d9726f3af9a&a=0&n=387365100&s=f4791bd45eee5b018797e765ab679731&ds=71000001&sv=AdManager%203.2.0&o=4&i=qc_100001_100016&v=CAASEGseMM8pVUkpiJFs6m_FE1YaIDlhZTlmN2FkN2I4MzFiMDEyZjkwZjIxMzkyNTlhZmNj&c=cbbc0ad38b09743a0863402ae0055cd8&j=6&d=81000009&q=5000000774191"}, "http://api.cupid.iqiyi.com/etx?k=200766801&r=6c20cbcbfae6aa6222fd1c47a4cb1432&b=1439623451&f=e57e36816a869438d8768caa2b4a3f7c&du=0&cv=5.2.26&ve=1&z=1000000000457&g=0ba53baedff5c4b528548d9726f3af9a&a=0&n=387365100&s=f4791bd45eee5b018797e765ab679731&ds=71000001&sv=AdManager%203.2.0&o=4&i=qc_100001_100016&v=CAASEGseMM8pVUkpiJFs6m_FE1YaIDlhZTlmN2FkN2I4MzFiMDEyZjkwZjIxMzkyNTlhZmNj&c=cbbc0ad38b09743a0863402ae0055cd8&j=6&d=81000009&q=5000000774191"), "           ", React.createElement("td", {className: "type", title: ""}), "           ", React.createElement("td", {className: "time"}, "17ms"), "        ")
+							      
+							    	  list.map(function(item, i) {
+							    		  var end = item.endTime;
+							    		  var defaultValue = end ? '' : '-';
+							    		  var type;
+							    		  return (React.createElement("tr", {key: item.id, className: "success"}, 
+							    		  				React.createElement("th", {className: "order", scope: "row"}, i + 1), 			        
+							    		  				React.createElement("td", {className: "result"}, item.res.statusCode || '-'), 			        
+							    		  				React.createElement("td", {className: "protocol"}, "HTTP"), 			        
+							    		  				React.createElement("td", {className: "method"}, "GET"), 			        
+							    		  				React.createElement("td", {className: "host"}, "api.cupid.iqiyi.com"), 			        
+							    		  				React.createElement("td", {className: "host-ip"}, "101.227.14.80"), 			        
+							    		  				React.createElement("td", {className: "url", title: item.url}, item.url), 			        
+							    		  				React.createElement("td", {className: "type", title: "text/html; charset=utf-8"}, "text/html"), 			        
+							    		  				React.createElement("td", {className: "time"}, "18ms")			     
+							    		  			));
+							    	  })
+							      	
 							      )
 							    )	
 							)
@@ -44092,13 +44160,13 @@
 	module.exports = ReqData;
 
 /***/ },
-/* 229 */
+/* 230 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(230);
+	var content = __webpack_require__(231);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -44118,7 +44186,7 @@
 	}
 
 /***/ },
-/* 230 */
+/* 231 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -44132,20 +44200,20 @@
 
 
 /***/ },
-/* 231 */
+/* 232 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(232);
+	__webpack_require__(233);
 	var React = __webpack_require__(6);
 	var util = __webpack_require__(175);
-	var BtnGroup = __webpack_require__(234);
-	var Overview = __webpack_require__(237);
-	var ReqDetail = __webpack_require__(243);
-	var ResDetail = __webpack_require__(249);
-	var Timeline = __webpack_require__(252);
-	var Composer = __webpack_require__(255);
-	var Log = __webpack_require__(258);
+	var BtnGroup = __webpack_require__(235);
+	var Overview = __webpack_require__(238);
+	var ReqDetail = __webpack_require__(244);
+	var ResDetail = __webpack_require__(250);
+	var Timeline = __webpack_require__(253);
+	var Composer = __webpack_require__(256);
+	var Log = __webpack_require__(259);
 	var TABS = [{
 					name: 'Overview',
 					icon: 'eye-open'
@@ -44193,13 +44261,13 @@
 	module.exports = ReqData;
 
 /***/ },
-/* 232 */
+/* 233 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(233);
+	var content = __webpack_require__(234);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -44219,7 +44287,7 @@
 	}
 
 /***/ },
-/* 233 */
+/* 234 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -44233,11 +44301,11 @@
 
 
 /***/ },
-/* 234 */
+/* 235 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(235);
+	__webpack_require__(236);
 	var React = __webpack_require__(6);
 	var util = __webpack_require__(175);
 
@@ -44299,13 +44367,13 @@
 	module.exports = BtnGroup;
 
 /***/ },
-/* 235 */
+/* 236 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(236);
+	var content = __webpack_require__(237);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -44325,7 +44393,7 @@
 	}
 
 /***/ },
-/* 236 */
+/* 237 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -44339,13 +44407,13 @@
 
 
 /***/ },
-/* 237 */
+/* 238 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(238);
+	__webpack_require__(239);
 	var React = __webpack_require__(6);
-	var Properties = __webpack_require__(240);
+	var Properties = __webpack_require__(241);
 	var OVERVIEW = ['Url', 'Method', 'Status Code', 'Host IP', 'Client IP', 'Request Length', 'Content Length'
 	                      , 'Start Date', 'DNS Lookup', 'Request Sent', 'Content Download'];
 	/**
@@ -44383,13 +44451,13 @@
 	module.exports = Overview;
 
 /***/ },
-/* 238 */
+/* 239 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(239);
+	var content = __webpack_require__(240);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -44409,7 +44477,7 @@
 	}
 
 /***/ },
-/* 239 */
+/* 240 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -44423,11 +44491,11 @@
 
 
 /***/ },
-/* 240 */
+/* 241 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(241);
+	__webpack_require__(242);
 	var React = __webpack_require__(6);
 
 	var Properties = React.createClass({displayName: "Properties",
@@ -44453,13 +44521,13 @@
 	module.exports = Properties;
 
 /***/ },
-/* 241 */
+/* 242 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(242);
+	var content = __webpack_require__(243);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -44479,7 +44547,7 @@
 	}
 
 /***/ },
-/* 242 */
+/* 243 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -44493,17 +44561,17 @@
 
 
 /***/ },
-/* 243 */
+/* 244 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(244);
+	__webpack_require__(245);
 	var React = __webpack_require__(6);
-	var Table = __webpack_require__(246);
+	var Table = __webpack_require__(247);
 	var Divider = __webpack_require__(176);
-	var Properties = __webpack_require__(240);
+	var Properties = __webpack_require__(241);
 	var util = __webpack_require__(175);
-	var BtnGroup = __webpack_require__(234);
+	var BtnGroup = __webpack_require__(235);
 	var BTNS = [{name: 'Headers', active: true}, {name: 'TextView'}, {name: 'Cookies'}, {name: 'WebForms'}, {name: 'Raw'}];
 
 	var ReqDetail = React.createClass({displayName: "ReqDetail",
@@ -44538,13 +44606,13 @@
 
 
 /***/ },
-/* 244 */
+/* 245 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(245);
+	var content = __webpack_require__(246);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -44564,7 +44632,7 @@
 	}
 
 /***/ },
-/* 245 */
+/* 246 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -44578,11 +44646,11 @@
 
 
 /***/ },
-/* 246 */
+/* 247 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(247);
+	__webpack_require__(248);
 	var React = __webpack_require__(6);
 
 	var Table = React.createClass({displayName: "Table",
@@ -44625,13 +44693,13 @@
 	module.exports = Table;
 
 /***/ },
-/* 247 */
+/* 248 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(248);
+	var content = __webpack_require__(249);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -44651,7 +44719,7 @@
 	}
 
 /***/ },
-/* 248 */
+/* 249 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -44665,16 +44733,16 @@
 
 
 /***/ },
-/* 249 */
+/* 250 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(250);
+	__webpack_require__(251);
 	var React = __webpack_require__(6);
-	var Table = __webpack_require__(246);
-	var Properties = __webpack_require__(240);
+	var Table = __webpack_require__(247);
+	var Properties = __webpack_require__(241);
 	var util = __webpack_require__(175);
-	var BtnGroup = __webpack_require__(234);
+	var BtnGroup = __webpack_require__(235);
 	BTNS = [{name: 'Headers', active: true}, {name: 'TextView'}, {name: 'Cookies'}, {name: 'JSON'}, {name: 'Raw'}];
 	var COOKIE_HEADERS = ['Name', 'Value', 'Domain', 'Path', 'Http Only', 'Secure'];
 
@@ -44706,13 +44774,13 @@
 
 
 /***/ },
-/* 250 */
+/* 251 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(251);
+	var content = __webpack_require__(252);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -44732,7 +44800,7 @@
 	}
 
 /***/ },
-/* 251 */
+/* 252 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -44746,11 +44814,11 @@
 
 
 /***/ },
-/* 252 */
+/* 253 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(253);
+	__webpack_require__(254);
 	var React = __webpack_require__(6);
 
 	var Timeline = React.createClass({displayName: "Timeline",
@@ -44789,13 +44857,13 @@
 	module.exports = Timeline;
 
 /***/ },
-/* 253 */
+/* 254 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(254);
+	var content = __webpack_require__(255);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -44815,7 +44883,7 @@
 	}
 
 /***/ },
-/* 254 */
+/* 255 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -44829,11 +44897,11 @@
 
 
 /***/ },
-/* 255 */
+/* 256 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(256);
+	__webpack_require__(257);
 	var React = __webpack_require__(6);
 	var Divider = __webpack_require__(176);
 
@@ -44875,13 +44943,13 @@
 	module.exports = Composer;
 
 /***/ },
-/* 256 */
+/* 257 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(257);
+	var content = __webpack_require__(258);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -44901,7 +44969,7 @@
 	}
 
 /***/ },
-/* 257 */
+/* 258 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -44915,11 +44983,11 @@
 
 
 /***/ },
-/* 258 */
+/* 259 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(259);
+	__webpack_require__(260);
 	var React = __webpack_require__(6);
 
 	var Log = React.createClass({displayName: "Log",
@@ -45037,13 +45105,13 @@
 	module.exports = Log;
 
 /***/ },
-/* 259 */
+/* 260 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(260);
+	var content = __webpack_require__(261);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -45063,7 +45131,7 @@
 	}
 
 /***/ },
-/* 260 */
+/* 261 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -45077,11 +45145,11 @@
 
 
 /***/ },
-/* 261 */
+/* 262 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var $ = __webpack_require__(5);
-	var createCgi = __webpack_require__(262);
+	var createCgi = __webpack_require__(263);
 	var	MAX_COUNT = 2000;
 	var TIMEOUT = 10000;
 	var dataCallbacks = [];
@@ -45220,7 +45288,7 @@
 	function getStartTime() {
 		var len = dataList.length - 1;
 		var item = dataList[len];
-		return len > MAX_COUNT || !item ? -1 : item.id;
+		return len <= MAX_COUNT ? (item ? item.id : '') : -1;
 	}
 
 	function startLoadServerInfo() {
@@ -45296,7 +45364,7 @@
 
 
 /***/ },
-/* 262 */
+/* 263 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var $ = __webpack_require__(5);
@@ -45364,15 +45432,15 @@
 	module.exports = create;
 
 /***/ },
-/* 263 */
+/* 264 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(264);
+	__webpack_require__(265);
 	var $ = window.jQuery = __webpack_require__(5); //for bootstrap
-	__webpack_require__(266);
+	__webpack_require__(267);
 	var React = __webpack_require__(6);
-	var dataCenter = __webpack_require__(261);
+	var dataCenter = __webpack_require__(262);
 	var dialog;
 
 	function createDialog(version) {
@@ -45421,13 +45489,13 @@
 	module.exports = About;
 
 /***/ },
-/* 264 */
+/* 265 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(265);
+	var content = __webpack_require__(266);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -45447,7 +45515,7 @@
 	}
 
 /***/ },
-/* 265 */
+/* 266 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -45461,7 +45529,7 @@
 
 
 /***/ },
-/* 266 */
+/* 267 */
 /***/ function(module, exports) {
 
 	/*!
@@ -47830,15 +47898,15 @@
 
 
 /***/ },
-/* 267 */
+/* 268 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(268);
+	__webpack_require__(269);
 	var $ = window.jQuery = __webpack_require__(5); //for bootstrap
-	__webpack_require__(266);
+	__webpack_require__(267);
 	var React = __webpack_require__(6);
-	var dataCenter = __webpack_require__(261);
+	var dataCenter = __webpack_require__(262);
 	var dialog;
 
 	function createDialog() {
@@ -47862,9 +47930,9 @@
 					'</div>').appendTo(document.body);
 			dialog.on('click', '.w-switch-btn', function() {
 				var ipInput = dialog.find('.w-ip');
-				var ip = $.trim(ipInput.val()) || '127.0.0.1';
+				var ip = $.trim(ipInput.val()) || ipInput.prop('placeholder');
 				var portInput = dialog.find('.w-port');
-				var port = $.trim(portInput.val()) || '8899';
+				var port = $.trim(portInput.val()) || portInput.prop('placeholder');
 				if (!/^\d+$/.test(port)) {
 					alert('Please enter the port number of the whistle server.');
 					portInput.focus();
@@ -47924,6 +47992,8 @@
 			}
 			
 			createDialog().find('.w-online-dialog-ctn').html(info.join(''));
+			dialog.find('.w-ip').prop('placeholder', server.ipv4[0] || '127.0.0.1');
+			dialog.find('.w-port').prop('placeholder', server.port || '8899');
 			dialog.modal('show');
 		},
 		render: function() {
@@ -47959,13 +48029,13 @@
 	module.exports = Online;
 
 /***/ },
-/* 268 */
+/* 269 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(269);
+	var content = __webpack_require__(270);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -47985,7 +48055,7 @@
 	}
 
 /***/ },
-/* 269 */
+/* 270 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -47999,11 +48069,11 @@
 
 
 /***/ },
-/* 270 */
+/* 271 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(271);
+	__webpack_require__(272);
 	var React = __webpack_require__(6);
 	var util = __webpack_require__(175);
 
@@ -48046,13 +48116,13 @@
 
 
 /***/ },
-/* 271 */
+/* 272 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(272);
+	var content = __webpack_require__(273);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -48072,7 +48142,7 @@
 	}
 
 /***/ },
-/* 272 */
+/* 273 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
