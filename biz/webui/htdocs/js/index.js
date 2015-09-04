@@ -199,10 +199,11 @@
 		},
 		showNetwork: function() {
 			this.setMenuOptionsState();
-			this.startLoadData();
 			this.setState({
 				hasNetwork: true,
 				name: 'network'
+			}, function() {
+				this.startLoadData();
 			});
 			location.hash = 'network';
 		},
@@ -30584,8 +30585,6 @@
 				if (visible && (e.ctrlKey || e.metaKey) && e.keyCode == 83) {
 					var modal = self.props.modal;
 					modal.getChangedList().forEach(trigger);
-					var activeItem = modal.getActive();
-					activeItem && trigger(activeItem);
 					return false;
 				}
 			});
@@ -30967,6 +30966,55 @@
 			obj[i] && classes.push(i);
 		}
 		return classes.join(' ');
+	};
+
+	exports.getContentType = function getContentType(contentType) {
+		if (contentType && typeof contentType != 'string') {
+			contentType = contentType['content-type'] || contentType.contentType;
+		}
+		
+		if (typeof contentType == 'string') {
+			contentType = contentType.toLowerCase();
+			if (contentType.indexOf('javascript') != -1) {
+		        return 'JS';
+		    }
+			
+			if (contentType.indexOf('css') != -1) {
+		        return 'CSS';
+		    }
+			
+			if (contentType.indexOf('html') != -1) {
+		        return 'HTML';
+		    }
+			
+			if (contentType.indexOf('json') != -1) {
+		        return 'JSON';
+		    }
+			
+			if (contentType.indexOf('text/') != -1) {
+		        return 'TEXT';
+		    }
+			
+			if (contentType.indexOf('image') != -1) {
+		        return 'IMG';
+		    } 
+		}
+		
+		return null;
+	};
+
+	exports.getHostname = function getHostname(url) {
+		var start = url.indexOf(':\/\/');
+		start = start == -1 ? 0 : start + 3;
+		var end = url.indexOf('\/', start);
+		url = end == -1 ? url.substring(start) : url.substring(start, end);
+		end = url.indexOf(':', start);
+		return end == -1 ? url : url.substring(0, end);
+	};
+
+	exports.getProtocol = function getProtocol(url) {
+		var index = url.indexOf(':\/\/');
+		return index == -1 ? 'TUNNEL' : url.substring(0, index).toUpperCase();
 	};
 
 
@@ -44074,6 +44122,48 @@
 	__webpack_require__(163);
 	__webpack_require__(230);
 	var React = __webpack_require__(6);
+	var util = __webpack_require__(175);
+
+	function getClassName(data) {
+		return getStatusClass(data) 
+			+ (data.isHttps ? ' w-tunnel' : '') 
+				+ (hasRules(data) ? ' w-has-rules' : '');
+	}
+
+	function hasRules(data) {
+		for (var i in data.rules) {
+			return true;
+		}
+		return false;
+	}
+
+	function getStatusClass(data) {
+		if (data.reqError || data.resError) {
+			return 'danger w-error-status';
+		}
+		
+		if (data.res.statusCode == 403) {
+			return 'w-forbidden';
+		}
+		
+		if (data.res.statusCode >= 400) {
+			return 'w-error-status';
+		}
+		
+		var headers = data.res.headers;
+		switch(util.getContentType(headers)) {
+			case 'JS':
+				return 'warning';
+			case 'CSS':
+				return 'info';
+			case 'HTML':
+				return 'success';
+			case 'IMG':
+				return 'active';
+		}
+		
+		return '';
+	}
 
 	var ReqData = React.createClass({displayName: "ReqData",
 		getInitialState: function() {
@@ -44125,17 +44215,20 @@
 							    	  list.map(function(item, i) {
 							    		  var end = item.endTime;
 							    		  var defaultValue = end ? '' : '-';
-							    		  var type;
-							    		  return (React.createElement("tr", {key: item.id, className: "success"}, 
+							    		  var req = item.req;
+							    		  var res = item.res;
+							    		  var type = (res.headers && res.headers['content-type'] || defaultValue).split(';')[0];
+							    		  
+							    		  return (React.createElement("tr", {key: item.id, className: getClassName(item)}, 
 							    		  				React.createElement("th", {className: "order", scope: "row"}, i + 1), 			        
 							    		  				React.createElement("td", {className: "result"}, item.res.statusCode || '-'), 			        
-							    		  				React.createElement("td", {className: "protocol"}, "HTTP"), 			        
-							    		  				React.createElement("td", {className: "method"}, "GET"), 			        
-							    		  				React.createElement("td", {className: "host"}, "api.cupid.iqiyi.com"), 			        
-							    		  				React.createElement("td", {className: "host-ip"}, "101.227.14.80"), 			        
+							    		  				React.createElement("td", {className: "protocol"}, util.getProtocol(item.url)), 			        
+							    		  				React.createElement("td", {className: "method"}, req.method), 			        
+							    		  				React.createElement("td", {className: "host"}, util.getHostname(item.url)), 			        
+							    		  				React.createElement("td", {className: "host-ip"}, res.ip || defaultValue), 			        
 							    		  				React.createElement("td", {className: "url", title: item.url}, item.url), 			        
-							    		  				React.createElement("td", {className: "type", title: "text/html; charset=utf-8"}, "text/html"), 			        
-							    		  				React.createElement("td", {className: "time"}, "18ms")			     
+							    		  				React.createElement("td", {className: "type", title: type}, type), 			        
+							    		  				React.createElement("td", {className: "time"}, end ? end - item.startTime + 'ms' : defaultValue)			     
 							    		  			));
 							    	  })
 							      	
@@ -44194,7 +44287,7 @@
 
 
 	// module
-	exports.push([module.id, ".w-req-data-con {overflow-x: auto;}\n.w-req-data-filter {width: 100%; background: rgba(0, 0, 0, 0.8); height: 30px; color: #fff; padding: 2px 5px; border: none; border-top: 1px solid #ccc; border-bottom: 1px solid #ccc;}\n.w-req-data-content {overflow-x: auto; overflow-y: hidden;}\n.w-req-data-content .order {width: 50px;}\n.w-req-data-content .result {width: 60px;}\n.w-req-data-content .protocol {width: 70px;}\n.w-req-data-content .method, .w-req-data-content .time {width: 65px;}\n.w-req-data-content .host-ip, .w-req-data-content .type {width: 100px;}\n.w-req-data-content .host {width: 136px;}\n\n.w-req-data-headers {height: 30px; border-top: 1px solid #ccc; border-bottom: 1px solid #ccc; overflow: hidden;}\n.w-req-data-headers .table {height: 30px;}\n.w-req-data-headers .table th {border: none!important; padding: 4px 0 4px 6px; font-weight: normal; color: #000;}\n.w-req-data-list {overflow-y: auto; overflow-x: hidden;}\n.w-req-data-list th, .w-req-data-list td {border-top: none!important; border-bottom: 1px solid #ddd; font-weight: normal; font-size: 12px; padding: 3px 0 3px 6px!important; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}\n.w-req-data-bar, .w-req-data-content {min-width: 720px;}\n.w-req-data-bar {position: relative;}\n.w-req-data-bar .close {position: absolute; right: 5px; top: 5px; color: #fff; line-height: 16px; display: none;}", ""]);
+	exports.push([module.id, ".w-req-data-con {overflow-x: auto;}\n.w-req-data-filter {width: 100%; background: rgba(0, 0, 0, 0.8); height: 30px; color: #fff; padding: 2px 5px; border: none; border-top: 1px solid #ccc; border-bottom: 1px solid #ccc;}\n.w-req-data-content {overflow-x: auto; overflow-y: hidden;}\n.w-req-data-content .order {width: 50px;}\n.w-req-data-content .result {width: 60px;}\n.w-req-data-content .protocol, .w-req-data-content .method {width: 70px;}\n.w-req-data-content .time {width: 65px;}\n.w-req-data-content .host-ip, .w-req-data-content .type {width: 100px;}\n.w-req-data-content .host {width: 136px;}\n\n.w-req-data-headers {height: 30px; border-top: 1px solid #ccc; border-bottom: 1px solid #ccc; overflow: hidden;}\n.w-req-data-headers .table {height: 30px;}\n.w-req-data-headers .table th {border: none!important; padding: 4px 0 4px 6px; font-weight: normal; color: #000;}\n.w-req-data-list {overflow-y: auto; overflow-x: hidden;}\n.w-req-data-list th, .w-req-data-list td {border-top: none!important; border-bottom: 1px solid #ddd; font-weight: normal; font-size: 12px; padding: 3px 0 3px 6px!important; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}\n.w-req-data-bar, .w-req-data-content {min-width: 720px;}\n.w-req-data-bar {position: relative;}\n.w-req-data-bar .close {position: absolute; right: 5px; top: 5px; color: #fff; line-height: 16px; display: none;}\n.w-req-data-list .w-error-status td {color: #ff3a90;}\n.w-req-data-list .w-forbidden td {color: #808000;}\n.w-req-data-list .w-tunnel td {color: #808080;}\n.w-req-data-list .w-has-rules td {font-weight: bold;}\n", ""]);
 
 	// exports
 
@@ -45150,7 +45243,7 @@
 
 	var $ = __webpack_require__(5);
 	var createCgi = __webpack_require__(263);
-	var	MAX_COUNT = 2000;
+	var	MAX_COUNT = 1200;
 	var TIMEOUT = 10000;
 	var dataCallbacks = [];
 	var serverInfoCallbacks = [];
