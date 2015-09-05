@@ -49,14 +49,12 @@
 	var React = __webpack_require__(6);
 	var List = __webpack_require__(162);
 	var ListModal = __webpack_require__(226);
-	var NetworkModal = __webpack_require__(227);
 	var Network = __webpack_require__(228);
 	var About = __webpack_require__(264);
 	var Online = __webpack_require__(268);
 	var MenuItem = __webpack_require__(271);
 	var dataCenter = __webpack_require__(262);
 	var util = __webpack_require__(175);
-	var pageName = getPageName();
 
 	function getPageName() {
 		return location.hash.substring(1) || location.href.replace(/[#?].*$/, '').replace(/.*\//, '');
@@ -65,6 +63,7 @@
 	var Index = React.createClass({displayName: "Index",
 		getInitialState: function() {
 			var state = {};
+			var pageName = getPageName();
 			if (!pageName || pageName.indexOf('rules') != -1) {
 				state.hasRules = true;
 				state.name = 'rules';
@@ -171,31 +170,51 @@
 		},
 		startLoadData: function() {
 			var self = this;
-			if (self._startLoadData) {
+			if (self._updateNetwork) {
+				self._updateNetwork;
 				return;
 			}
 			
-			var con = $(self.refs.network.getDOMNode()).find('.w-req-data-list');
-			var body = con.children('table')[0];
-			con = con[0];
-			dataCenter.on('data', function(data) {
-				if (!self._networkModal) {
-					self._networkModal = new NetworkModal(data);
-				}
-				
-				if (self.state.name != 'network') {
-					return;
-				}
-				var atBottom = con.scrollTop + con.offsetHeight + 5 > body.offsetHeight;
-				self.setState({
-					network: self._networkModal
-				}, function() {
-					if (atBottom) {
-						con.scrollTop = body.offsetHeight;
+			var con = $(self.refs.network.getDOMNode())
+				.find('.w-req-data-list').scroll(function() {
+					var modal = self.state.network;
+					if (modal && atBottom()) {
+						update(modal, true);
 					}
 				});
-			});
-			self._startLoadData = true;
+			var body = con.children('table')[0];
+			var timeout;
+			con = con[0];
+			dataCenter.on('data', update);
+			
+			function update(modal, _atBottom) {
+				modal = modal || self.state.network;
+				clearTimeout(timeout);
+				timeout = null;
+				if (self.state.name != 'network' || !modal) {
+					return;
+				}
+				_atBottom = _atBottom || atBottom();
+				if (modal.update(_atBottom) && _atBottom) {
+					timeout = setTimeout(update, 3000);
+				}
+				self.setState({
+					network: modal
+				}, function() {
+					_atBottom && scrollToBottom();
+				});
+			}
+			
+			function scrollToBottom() {
+				con.scrollTop = body.offsetHeight;
+			}
+			
+			self._updateNetwork = update;
+			self.autoScroll = scrollToBottom;
+			
+			function atBottom() {
+				return con.scrollTop + con.offsetHeight + 5 > body.offsetHeight;
+			}
 		},
 		showNetwork: function() {
 			this.setMenuOptionsState();
@@ -356,6 +375,14 @@
 				editValuesInput.focus();
 			});	
 		},
+		showEditFilter: function() {
+			var editFilterInput = this.refs.editFilterInput.getDOMNode();
+			this.setState({
+				showEditFilter: true
+			}, function() {
+				editFilterInput.focus();
+			});
+		},
 		editRules: function(e) {
 			if (e.keyCode != 13 && e.type != 'click') {
 				return;
@@ -472,8 +499,11 @@
 		composer: function() {
 			
 		},
-		setFilter: function() {
-			
+		setFilter: function(e) {
+			if (e.keyCode != 13 && e.type != 'click') {
+				return;
+			}
+			alert(2)
 		},
 		clear: function() {
 			var modal = this.state.network;
@@ -555,7 +585,8 @@
 				showCreateRules: false,
 				showCreateValues: false,
 				showEditRules: false,
-				showEditValues: false
+				showEditValues: false,
+				showEditFilter: false
 			});
 		},
 		onClickMenu: function(e) {
@@ -612,9 +643,10 @@
 						React.createElement("a", {onClick: this.showValuesOptions, className: "w-values-menu", style: {display: isValues ? 'none' : ''}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-folder-open"}), "Values"), 
 						React.createElement("a", {onClick: this.onClickMenu, className: "w-create-menu", style: {display: isNetwork ? 'none' : ''}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-plus"}), "Create"), 
 						React.createElement("a", {onClick: this.onClickMenu, className: 'w-edit-menu' + (disabledEditBtn ? ' w-disabled' : ''), style: {display: isNetwork ? 'none' : ''}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-edit"}), "Edit"), 
+						React.createElement("a", {onClick: this.autoScroll, className: "w-clear-menu", style: {display: isNetwork ? '' : 'none'}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-play"}), "AutoScroll"), 
 						React.createElement("a", {onClick: this.replay, className: 'w-replay-menu' + (this.state.disabledReplayBtn ? ' w-disabled' : ''), style: {display: isNetwork ? '' : 'none'}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-repeat"}), "Replay"), 
 						React.createElement("a", {onClick: this.composer, className: "w-composer-menu", style: {display: isNetwork ? '' : 'none'}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-edit"}), "Composer"), 
-						React.createElement("a", {onClick: this.setFilter, className: 'w-filter-menu' + (this.state.hasFilterText ? ' w-menu-enable' : ''), style: {display: isNetwork ? '' : 'none'}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-filter"}), "Filter"), 
+						React.createElement("a", {onClick: this.showEditFilter, className: 'w-filter-menu' + (this.state.hasFilterText ? ' w-menu-enable' : ''), style: {display: isNetwork ? '' : 'none'}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-filter"}), "Filter"), 
 						React.createElement("a", {onClick: this.clear, className: "w-clear-menu", style: {display: isNetwork ? '' : 'none'}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-remove"}), "Clear"), 
 						React.createElement("a", {onClick: this.onClickMenu, className: 'w-delete-menu' + (disabledDeleteBtn ? ' w-disabled' : ''), style: {display: isNetwork ? 'none' : ''}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-trash"}), "Delete"), 
 						React.createElement("a", {onClick: this.onClickMenu, className: "w-settings-menu", style: {display: isNetwork ? 'none' : ''}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-cog"}), "Settings"), 
@@ -629,7 +661,8 @@
 						React.createElement("div", {onMouseDown: this.preventBlur, style: {display: this.state.showCreateRules ? 'block' : 'none'}, className: "shadow w-input-menu-item w-create-rules-input"}, React.createElement("input", {ref: "createRulesInput", onKeyDown: this.createRules, onBlur: this.hideOnBlur, type: "text", maxLength: "64", placeholder: "create rules"}), React.createElement("button", {type: "button", onClick: this.createRules, className: "btn btn-primary"}, "OK")), 
 						React.createElement("div", {onMouseDown: this.preventBlur, style: {display: this.state.showCreateValues ? 'block' : 'none'}, className: "shadow w-input-menu-item w-create-values-input"}, React.createElement("input", {ref: "createValuesInput", onKeyDown: this.createValues, onBlur: this.hideOnBlur, type: "text", maxLength: "64", placeholder: "create values"}), React.createElement("button", {type: "button", onClick: this.createValues, className: "btn btn-primary"}, "OK")), 
 						React.createElement("div", {onMouseDown: this.preventBlur, style: {display: this.state.showEditRules ? 'block' : 'none'}, className: "shadow w-input-menu-item w-edit-rules-input"}, React.createElement("input", {ref: "editRulesInput", onKeyDown: this.editRules, onBlur: this.hideOnBlur, type: "text", maxLength: "64", placeholder: 'rename ' + (this.state.selectedRuleName || '')}), React.createElement("button", {type: "button", onClick: this.editRules, className: "btn btn-primary"}, "OK")), 
-						React.createElement("div", {onMouseDown: this.preventBlur, style: {display: this.state.showEditValues ? 'block' : 'none'}, className: "shadow w-input-menu-item w-edit-values-input"}, React.createElement("input", {ref: "editValuesInput", onKeyDown: this.editValues, onBlur: this.hideOnBlur, type: "text", maxLength: "64", placeholder: 'rename ' + (this.state.selectedValueName || '')}), React.createElement("button", {type: "button", onClick: this.editValues, className: "btn btn-primary"}, "OK"))
+						React.createElement("div", {onMouseDown: this.preventBlur, style: {display: this.state.showEditValues ? 'block' : 'none'}, className: "shadow w-input-menu-item w-edit-values-input"}, React.createElement("input", {ref: "editValuesInput", onKeyDown: this.editValues, onBlur: this.hideOnBlur, type: "text", maxLength: "64", placeholder: 'rename ' + (this.state.selectedValueName || '')}), React.createElement("button", {type: "button", onClick: this.editValues, className: "btn btn-primary"}, "OK")), 
+						React.createElement("div", {onMouseDown: this.preventBlur, style: {display: this.state.showEditFilter ? 'block' : 'none'}, className: "shadow w-input-menu-item w-edit-filter-input"}, React.createElement("input", {ref: "editFilterInput", onKeyDown: this.setFilter, onBlur: this.hideOnBlur, type: "text", maxLength: "64", placeholder: "string or regular"}), React.createElement("button", {type: "button", onClick: this.setFilter, className: "btn btn-primary"}, "OK"))
 					), 
 					this.state.hasRules ? React.createElement(List, {onSelect: this.selectRules, onUnselect: this.unselectRules, onActive: this.activeRules, modal: this.state.rules, hide: name == 'rules' ? false : true, name: "rules"}) : '', 
 					this.state.hasValues ? React.createElement(List, {onSelect: this.saveValues, onActive: this.activeValues, modal: this.state.values, hide: name == 'values' ? false : true, className: "w-values-list"}) : '', 
@@ -680,7 +713,7 @@
 
 
 	// module
-	exports.push([module.id, ".w-menu {height: 28px; border-top: 1px solid #fcfcfc; border-bottom: 1px solid #d3d3d3; padding: 0 5px; \nbackground: -moz-linear-gradient(rgb(239, 238, 238), rgb(211, 212, 213));\nbackground: -webkit-linear-gradient(rgb(239, 238, 238), rgb(211, 212, 213)); \nbackground: linear-gradient(rgb(239, 238, 238), rgb(211, 212, 213)); padding-right: 80px; position: relative; z-index: 1001;}\n.w-menu a {text-decoration: none!important; color: #000; padding: 0 5px; line-height: 26px; height: 26px; margin-right: 5px; display: inline-block;}\n.w-menu .glyphicon, .w-detail .glyphicon {margin-right: 3px;}\n.w-menu .glyphicon-folder-open {margin-right: 6px;}\n.w-menu .w-online {position: absolute; right: 0;}\n.w-menu .w-online, .w-menu a:hover {color: #337ab7;}\n.w-menu .w-offline {color: #ccc!important; cursor: default;}\n.w-menu .w-disabled {color: #888!important; cursor: default!important;}\n.w-menu .w-menu-enable {color: #337ab7;}\n\n.w-input-menu-item {display: block; position: absolute; background: #fff; border: 1px solid #ccc; border-radius: 2px; z-index: 101; top: 30px; display: none; white-space: nowrap;}\n.w-input-menu-item input {width: 246px; height: 32px; border: 1px solid #ccc; border-radius: 2px; padding: 0 5px; vertical-align: middle;}\n.w-input-menu-item .btn {height: 32px; padding: 0 12px; vertical-align: middle; border-radius: 0; border-right-top-radius: 2px; border-right-bottom-radius: 2px;}\n\n.w-create-rules-input {left: 170px;}\n.w-create-values-input {left: 160px;}\n.w-edit-rules-input {left: 242px;}\n.w-edit-values-input {left: 232px;}\n\n.w-values-list .glyphicon {display: none!important;}\n.w-values-list a {font-weight: normal!important;}\n\n.w-rules-menu .w-values-menu-item {left: 92px;}\n.w-network-menu .w-values-menu-item {left: 75px;}\n.w-network-menu .w-rules-menu-item {left: 8px;}\n.w-values-menu .w-rules-menu-item {left: 92px;}", ""]);
+	exports.push([module.id, ".w-menu {height: 28px; border-top: 1px solid #fcfcfc; border-bottom: 1px solid #d3d3d3; padding: 0 5px; \nbackground: -moz-linear-gradient(rgb(239, 238, 238), rgb(211, 212, 213));\nbackground: -webkit-linear-gradient(rgb(239, 238, 238), rgb(211, 212, 213)); \nbackground: linear-gradient(rgb(239, 238, 238), rgb(211, 212, 213)); padding-right: 80px; position: relative; z-index: 1001;}\n.w-menu a {text-decoration: none!important; color: #000; padding: 0 5px; line-height: 26px; height: 26px; margin-right: 5px; display: inline-block;}\n.w-menu .glyphicon, .w-detail .glyphicon {margin-right: 3px;}\n.w-menu .glyphicon-folder-open {margin-right: 6px;}\n.w-menu .w-online {position: absolute; right: 0;}\n.w-menu .w-online, .w-menu a:hover {color: #337ab7;}\n.w-menu .w-offline {color: #ccc!important; cursor: default;}\n.w-menu .w-disabled {color: #888!important; cursor: default!important;}\n.w-menu .w-menu-enable {color: #337ab7;}\n\n.w-input-menu-item {display: block; position: absolute; background: #fff; border: 1px solid #ccc; border-radius: 2px; z-index: 101; top: 30px; display: none; white-space: nowrap;}\n.w-input-menu-item input {width: 246px; height: 32px; border: 1px solid #ccc; border-radius: 2px; padding: 0 5px; vertical-align: middle;}\n.w-input-menu-item .btn {height: 32px; padding: 0 12px; vertical-align: middle; border-radius: 0; border-right-top-radius: 2px; border-right-bottom-radius: 2px;}\n\n.w-create-rules-input {left: 170px;}\n.w-create-values-input {left: 160px;}\n.w-edit-rules-input {left: 242px;}\n.w-edit-values-input {left: 232px;}\n.w-edit-filter-input {left: 425px;}\n\n.w-values-list .glyphicon {display: none!important;}\n.w-values-list a {font-weight: normal!important;}\n\n.w-rules-menu .w-values-menu-item {left: 92px;}\n.w-network-menu .w-values-menu-item {left: 75px;}\n.w-network-menu .w-rules-menu-item {left: 8px;}\n.w-values-menu .w-rules-menu-item {left: 92px;}", ""]);
 
 	// exports
 
@@ -44062,15 +44095,34 @@
 /* 227 */
 /***/ function(module, exports) {
 
+	var MAX_LENGTH = 360;
+	var MAX_COUNT = 2560;//不能超过MAX_LENGTH * 2，否则order衔接会有问题
+
 	function NetworkModal(list) {
-		this.list = list || [];
+		this._list = list;
+		this.list = list.slice(0, MAX_LENGTH);
 	}
+
+	NetworkModal.MAX_COUNT = MAX_COUNT;
 
 	var proto = NetworkModal.prototype;
 
 	proto.clear = function clear() {
-		this.list.splice(0, this.list.length);
+		this._list.splice(0, this.list.length);
+		this.update();
 		return this;
+	};
+
+	proto.update = function(scrollAtBottom) {
+		if (scrollAtBottom) {
+			var exceed = this._list.length - MAX_LENGTH;
+			if (exceed > 0) {
+				this._list.splice(0, Math.min(exceed, MAX_LENGTH - 1));
+			}
+		}
+		
+		this.list = this._list.slice(0, MAX_LENGTH);
+		return this._list.length > MAX_LENGTH;
 	};
 
 	module.exports = NetworkModal;
@@ -44188,6 +44240,9 @@
 		render: function() {
 			var modal = this.props.modal;
 			var list = modal ? modal.list : [];
+			var first = list[0];
+			var index = first && first.order || 1;
+			
 			return (
 					React.createElement("div", {className: "fill w-req-data-con orient-vertical-box"}, 
 						React.createElement("div", {className: "w-req-data-content fill orient-vertical-box"}, 
@@ -44218,9 +44273,9 @@
 							    		  var req = item.req;
 							    		  var res = item.res;
 							    		  var type = (res.headers && res.headers['content-type'] || defaultValue).split(';')[0];
-							    		  
+							    		  item.order = index + i;
 							    		  return (React.createElement("tr", {key: item.id, className: getClassName(item)}, 
-							    		  				React.createElement("th", {className: "order", scope: "row"}, i + 1), 			        
+							    		  				React.createElement("th", {className: "order", scope: "row"}, item.order), 			        
 							    		  				React.createElement("td", {className: "result"}, item.res.statusCode || '-'), 			        
 							    		  				React.createElement("td", {className: "protocol"}, util.getProtocol(item.url)), 			        
 							    		  				React.createElement("td", {className: "method"}, req.method), 			        
@@ -45243,11 +45298,13 @@
 
 	var $ = __webpack_require__(5);
 	var createCgi = __webpack_require__(263);
-	var	MAX_COUNT = 1200;
+	var NetworkModal = __webpack_require__(227);
+	var	MAX_COUNT = NetworkModal.MAX_COUNT;
 	var TIMEOUT = 10000;
 	var dataCallbacks = [];
 	var serverInfoCallbacks = [];
 	var dataList = [];
+	var networkModal = new NetworkModal(dataList);
 	var curServerInfo;
 	var initialData;
 	var DEFAULT_CONF = {
@@ -45360,7 +45417,7 @@
 					item && dataList.push(item);
 				});
 				$.each(dataCallbacks, function() {
-					this(dataList);
+					this(networkModal);
 				});
 			});
 		}
