@@ -6,6 +6,7 @@ exports.getServerInfo = function getServerInfo() {
 			version: config.version,
 			host: os.hostname(),
 			port: config.port,
+			weinrePort: config.weinreport,
 			ipv4: [],
 			ipv6: []
 	};

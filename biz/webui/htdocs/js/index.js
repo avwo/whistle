@@ -154,7 +154,7 @@
 				}
 			}).on('keyup', function(e) {
 				if (e.keyCode == 27) {
-					self.hideOnBlur();
+					self.hideOptions();
 				}
 			}).on('keydown', function(e) {
 				if ((e.ctrlKey || e.metaKey) && e.keyCode == 88) {
@@ -165,6 +165,10 @@
 			if (self.state.name == 'network') {
 				self.startLoadData();
 			}
+			
+			dataCenter.on('serverInfo', function(data) {
+				self.serverInfo = data;
+			});
 		},
 		preventBlur: function(e) {
 			e.target.nodeName != 'INPUT' && e.preventDefault();
@@ -255,6 +259,12 @@
 				self.refs.valuesMenuItem.getDOMNode().focus();
 			});
 		},
+		showWeinreOptions: function() {
+			var self = this;
+			self.setMenuOptionsState('showWeinreOptions', function() {
+				self.refs.weinreMenuItem.getDOMNode().focus();
+			});
+		},
 		hideOptions: function() {
 			this.setMenuOptionsState();
 		},
@@ -262,7 +272,15 @@
 			var state = {
 					showRulesOptions: false,
 					showValuesOptions: false,
-					showWeinreOptions: false
+					showWeinreOptions: false,
+					showCreateRules: false,
+					showCreateValues: false,
+					showEditRules: false,
+					showEditValues: false,
+					showEditFilter: false,
+					showValuesSettings: false,
+					showRulesSettings: false
+				
 			};
 			if (name) {
 				state[name] = true;
@@ -452,6 +470,19 @@
 				}
 			});
 		},
+		showAnonymousWeinre: function() {
+			this.openWeinre();
+		},
+		showWeinre: function(options) {
+			this.openWeinre(options.name);
+		},
+		openWeinre: function(name) {
+			var hostname = location.hostname;
+			hostname = /^\d{1,3}(\.\d{1,3}){3}$/.test(hostname) && this.serverInfo ? 
+					hostname + ':' + this.serverInfo.weinrePort : 'weinre.local.whistlejs.com';
+			window.open('http://' + hostname + '/client/#' + (name || 'anonymous'));
+			this.hideOptions();
+		},
 		selectRules: function(item) {
 			var self = this;
 			dataCenter.rules[item.isDefault ? 'enableDefault' : 'select'](item, function(data) {
@@ -573,34 +604,16 @@
 			dataCenter.values.setCurrent({name: name});
 			this.state.values.setActive(name);
 		},
-		setRulesSettings: function() {
-			this.setState({
-				showRulesOptions: true,
-				showValuesOptions: false,
-				showWeinreOptions: false
+		showRulesSettings: function() {
+			var self = this;
+			self.setMenuOptionsState('showRulesSettings', function() {
+				self.refs.rulesSettings.getDOMNode().focus();
 			});
 		},
-		setValuesSettings: function() {
-			this.setState({
-				showRulesOptions: false,
-				showValuesOptions: true,
-				showWeinreOptions: false
-			});
-		},
-		showWeinre: function() {
-			this.setState({
-				showRulesOptions: false,
-				showValuesOptions: false,
-				showWeinreOptions: true
-			});
-		},
-		hideOnBlur: function() {
-			this.setState({
-				showCreateRules: false,
-				showCreateValues: false,
-				showEditRules: false,
-				showEditValues: false,
-				showEditFilter: false
+		showValuesSettings: function() {
+			var self = this;
+			self.setMenuOptionsState('showValuesSettings', function() {
+				self.refs.valuesSettings.getDOMNode().focus();
 			});
 		},
 		onClickMenu: function(e) {
@@ -612,9 +625,10 @@
 				isRules ? this.showEditRules() : this.showEditValues();
 			} else if (target.hasClass('w-delete-menu')) {
 				isRules ? this.removeRules() : this.removeValues();
-			} else if (target.hasClass('w-settings-menu')) {
-				isRules ? this.setRulesSettings() : this.setValuesSettings();
 			}
+		},
+		showSettings: function(e) {
+			this.state.name == 'rules' ? this.showRulesSettings() : this.showValuesSettings();
 		},
 		activeRules: function(item) {
 			dataCenter.rules.setCurrent({name: item.name});
@@ -651,7 +665,7 @@
 			
 			return (
 				React.createElement("div", {className: "main orient-vertical-box"}, 
-					React.createElement("div", {className: 'w-menu w-' + name + '-menu'}, 
+					React.createElement("div", {className: 'w-menu w-' + name + '-menu-list'}, 
 						React.createElement("a", {onClick: this.showNetwork, className: "w-network-menu", style: {display: isNetwork ? 'none' : ''}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-align-justify"}), "Network"), 
 						React.createElement("a", {onClick: this.showRulesOptions, className: "w-rules-menu", style: {display: isRules ? 'none' : ''}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-list"}), "Rules"), 
 						React.createElement("a", {onClick: this.showValuesOptions, className: "w-values-menu", style: {display: isValues ? 'none' : ''}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-folder-open"}), "Values"), 
@@ -663,20 +677,30 @@
 						React.createElement("a", {onClick: this.showEditFilter, className: 'w-filter-menu' + (this.state.filterText ? ' w-menu-enable' : ''), style: {display: isNetwork ? '' : 'none'}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-filter"}), "Filter"), 
 						React.createElement("a", {onClick: this.clear, className: "w-clear-menu", style: {display: isNetwork ? '' : 'none'}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-remove"}), "Clear"), 
 						React.createElement("a", {onClick: this.onClickMenu, className: 'w-delete-menu' + (disabledDeleteBtn ? ' w-disabled' : ''), style: {display: isNetwork ? 'none' : ''}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-trash"}), "Delete"), 
-						React.createElement("a", {onClick: this.onClickMenu, className: "w-settings-menu", style: {display: isNetwork ? 'none' : ''}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-cog"}), "Settings"), 
-						React.createElement("a", {onClick: this.showWeinre, className: "w-weinre-menu", href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-globe"}), "Weinre"), 
+						React.createElement("a", {onClick: this.showSettings, className: "w-settings-menu", style: {display: isNetwork ? 'none' : ''}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-cog"}), "Settings"), 
+						React.createElement("a", {onClick: this.showWeinreOptions, className: "w-weinre-menu", href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-globe"}), "Weinre"), 
 						React.createElement("a", {onClick: this.onClickMenu, className: "w-rootca-menu", href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-download-alt"}), "RootCA"), 
 						React.createElement("a", {className: "w-help-menu", href: "https://github.com/avwo/whistle#whistle", target: "_blank"}, React.createElement("span", {className: "glyphicon glyphicon-question-sign"}), "Help"), 
 						React.createElement(About, null), 
 						React.createElement(Online, null), 
 						React.createElement(MenuItem, {ref: "rulesMenuItem", name: "Open", options: this.state.rulesOptions, hide: !this.state.showRulesOptions, className: "w-rules-menu-item", onBlur: this.hideOptions, onClick: this.showRules, onClickOption: this.props.onClickOption}), 
-						React.createElement(MenuItem, {ref: "weinreMenuItem", ref: "valuesMenuItem", name: "Open", options: this.state.valuesOptions, hide: !this.state.showValuesOptions, className: "w-values-menu-item", onBlur: this.hideOptions, onClick: this.showValues, onClickOption: this.props.onClickOption}), 
-						React.createElement(MenuItem, {name: "Default", options: this.state.weinreOptions, hide: !this.state.showWeinreOptions, className: "w-weinre-menu-item", onBlur: this.hideOptions, onClick: this.props.onClickItem, onClickOption: this.props.onClickOption}), 
-						React.createElement("div", {onMouseDown: this.preventBlur, style: {display: this.state.showCreateRules ? 'block' : 'none'}, className: "shadow w-input-menu-item w-create-rules-input"}, React.createElement("input", {ref: "createRulesInput", onKeyDown: this.createRules, onBlur: this.hideOnBlur, type: "text", maxLength: "64", placeholder: "create rules"}), React.createElement("button", {type: "button", onClick: this.createRules, className: "btn btn-primary"}, "OK")), 
-						React.createElement("div", {onMouseDown: this.preventBlur, style: {display: this.state.showCreateValues ? 'block' : 'none'}, className: "shadow w-input-menu-item w-create-values-input"}, React.createElement("input", {ref: "createValuesInput", onKeyDown: this.createValues, onBlur: this.hideOnBlur, type: "text", maxLength: "64", placeholder: "create values"}), React.createElement("button", {type: "button", onClick: this.createValues, className: "btn btn-primary"}, "OK")), 
-						React.createElement("div", {onMouseDown: this.preventBlur, style: {display: this.state.showEditRules ? 'block' : 'none'}, className: "shadow w-input-menu-item w-edit-rules-input"}, React.createElement("input", {ref: "editRulesInput", onKeyDown: this.editRules, onBlur: this.hideOnBlur, type: "text", maxLength: "64", placeholder: 'rename ' + (this.state.selectedRuleName || '')}), React.createElement("button", {type: "button", onClick: this.editRules, className: "btn btn-primary"}, "OK")), 
-						React.createElement("div", {onMouseDown: this.preventBlur, style: {display: this.state.showEditValues ? 'block' : 'none'}, className: "shadow w-input-menu-item w-edit-values-input"}, React.createElement("input", {ref: "editValuesInput", onKeyDown: this.editValues, onBlur: this.hideOnBlur, type: "text", maxLength: "64", placeholder: 'rename ' + (this.state.selectedValueName || '')}), React.createElement("button", {type: "button", onClick: this.editValues, className: "btn btn-primary"}, "OK")), 
-						React.createElement("div", {onMouseDown: this.preventBlur, style: {display: this.state.showEditFilter ? 'block' : 'none'}, className: "shadow w-input-menu-item w-edit-filter-input"}, React.createElement("input", {ref: "editFilterInput", onKeyDown: this.setFilter, onBlur: this.hideOnBlur, type: "text", maxLength: "64", placeholder: this.state.filterText || 'string or regular'}), React.createElement("button", {type: "button", onClick: this.setFilter, className: "btn btn-primary"}, "OK"))
+						React.createElement(MenuItem, {ref: "valuesMenuItem", name: "Open", options: this.state.valuesOptions, hide: !this.state.showValuesOptions, className: "w-values-menu-item", onBlur: this.hideOptions, onClick: this.showValues, onClickOption: this.props.onClickOption}), 
+						React.createElement(MenuItem, {ref: "weinreMenuItem", name: "Anonymous", options: this.state.weinreOptions, hide: !this.state.showWeinreOptions, className: "w-weinre-menu-item", onBlur: this.hideOptions, onClick: this.showAnonymousWeinre, onClickOption: this.showWeinre}), 
+						React.createElement("div", {onMouseDown: this.preventBlur, style: {display: this.state.showCreateRules ? 'block' : 'none'}, className: "shadow w-input-menu-item w-create-rules-input"}, React.createElement("input", {ref: "createRulesInput", onKeyDown: this.createRules, onBlur: this.hideOptions, type: "text", maxLength: "64", placeholder: "create rules"}), React.createElement("button", {type: "button", onClick: this.createRules, className: "btn btn-primary"}, "OK")), 
+						React.createElement("div", {onMouseDown: this.preventBlur, style: {display: this.state.showCreateValues ? 'block' : 'none'}, className: "shadow w-input-menu-item w-create-values-input"}, React.createElement("input", {ref: "createValuesInput", onKeyDown: this.createValues, onBlur: this.hideOptions, type: "text", maxLength: "64", placeholder: "create values"}), React.createElement("button", {type: "button", onClick: this.createValues, className: "btn btn-primary"}, "OK")), 
+						React.createElement("div", {onMouseDown: this.preventBlur, style: {display: this.state.showEditRules ? 'block' : 'none'}, className: "shadow w-input-menu-item w-edit-rules-input"}, React.createElement("input", {ref: "editRulesInput", onKeyDown: this.editRules, onBlur: this.hideOptions, type: "text", maxLength: "64", placeholder: 'rename ' + (this.state.selectedRuleName || '')}), React.createElement("button", {type: "button", onClick: this.editRules, className: "btn btn-primary"}, "OK")), 
+						React.createElement("div", {onMouseDown: this.preventBlur, style: {display: this.state.showEditValues ? 'block' : 'none'}, className: "shadow w-input-menu-item w-edit-values-input"}, React.createElement("input", {ref: "editValuesInput", onKeyDown: this.editValues, onBlur: this.hideOptions, type: "text", maxLength: "64", placeholder: 'rename ' + (this.state.selectedValueName || '')}), React.createElement("button", {type: "button", onClick: this.editValues, className: "btn btn-primary"}, "OK")), 
+						React.createElement("div", {onMouseDown: this.preventBlur, style: {display: this.state.showEditFilter ? 'block' : 'none'}, className: "shadow w-input-menu-item w-edit-filter-input"}, React.createElement("input", {ref: "editFilterInput", onKeyDown: this.setFilter, onBlur: this.hideOptions, type: "text", maxLength: "64", placeholder: this.state.filterText || 'string or regular'}), React.createElement("button", {type: "button", onClick: this.setFilter, className: "btn btn-primary"}, "OK")), 
+						React.createElement("div", {tabIndex: "1", ref: "valuesSettings", onMouseDown: this.preventBlur, onBlur: this.hideOptions, style: {display: this.state.showValuesSettings ? 'block' : 'none'}, className: "shadow w-input-menu-item w-values-settings-dialog"}, 
+							React.createElement("p", null, React.createElement("label", null, "Theme:")), 
+							React.createElement("p", null, React.createElement("label", null, "Font size:")), 
+							React.createElement("p", null, React.createElement("label", null, React.createElement("input", {type: "checkbox"}), " Show line number"))
+						), 
+						React.createElement("div", {tabIndex: "1", ref: "rulesSettings", onMouseDown: this.preventBlur, onBlur: this.hideOptions, style: {display: this.state.showRulesSettings ? 'block' : 'none'}, className: "shadow w-input-menu-item w-values-settings-dialog"}, 
+							React.createElement("p", null, React.createElement("label", null, "Theme:")), 
+							React.createElement("p", null, React.createElement("label", null, "Font size:")), 
+							React.createElement("p", null, React.createElement("label", null, React.createElement("input", {type: "checkbox"}), " Show line number"))
+						)
 					), 
 					this.state.hasRules ? React.createElement(List, {onSelect: this.selectRules, onUnselect: this.unselectRules, onActive: this.activeRules, modal: this.state.rules, hide: name == 'rules' ? false : true, name: "rules"}) : '', 
 					this.state.hasValues ? React.createElement(List, {onSelect: this.saveValues, onActive: this.activeValues, modal: this.state.values, hide: name == 'values' ? false : true, className: "w-values-list"}) : '', 
@@ -727,7 +751,7 @@
 
 
 	// module
-	exports.push([module.id, ".w-menu {height: 28px; border-top: 1px solid #fcfcfc; border-bottom: 1px solid #d3d3d3; padding: 0 5px; \nbackground: -moz-linear-gradient(rgb(239, 238, 238), rgb(211, 212, 213));\nbackground: -webkit-linear-gradient(rgb(239, 238, 238), rgb(211, 212, 213)); \nbackground: linear-gradient(rgb(239, 238, 238), rgb(211, 212, 213)); padding-right: 80px; position: relative; z-index: 1001;}\n.w-menu a {text-decoration: none!important; color: #000; padding: 0 5px; line-height: 26px; height: 26px; margin-right: 5px; display: inline-block;}\n.w-menu .glyphicon, .w-detail .glyphicon {margin-right: 3px;}\n.w-menu .glyphicon-folder-open {margin-right: 6px;}\n.w-menu .w-online {position: absolute; right: 0;}\n.w-menu .w-online, .w-menu a:hover {color: #337ab7;}\n.w-menu .w-offline {color: #ccc!important; cursor: default;}\n.w-menu .w-disabled {color: #888!important; cursor: default!important;}\n.w-menu .w-menu-enable {color: #337ab7;}\n\n.w-input-menu-item {display: block; position: absolute; background: #fff; border: 1px solid #ccc; border-radius: 2px; z-index: 101; top: 30px; display: none; white-space: nowrap;}\n.w-input-menu-item input {width: 246px; height: 32px; border: 1px solid #ccc; border-radius: 2px; padding: 0 5px; vertical-align: middle;}\n.w-input-menu-item .btn {height: 32px; padding: 0 12px; vertical-align: middle; border-radius: 0; border-right-top-radius: 2px; border-right-bottom-radius: 2px;}\n\n.w-create-rules-input {left: 170px;}\n.w-create-values-input {left: 160px;}\n.w-edit-rules-input {left: 242px;}\n.w-edit-values-input {left: 232px;}\n.w-edit-filter-input {left: 425px;}\n\n.w-values-list .glyphicon {display: none!important;}\n.w-values-list a {font-weight: normal!important;}\n\n.w-rules-menu .w-values-menu-item {left: 92px;}\n.w-network-menu .w-values-menu-item {left: 75px;}\n.w-network-menu .w-rules-menu-item {left: 8px;}\n.w-values-menu .w-rules-menu-item {left: 92px;}", ""]);
+	exports.push([module.id, ".w-menu {height: 28px; border-top: 1px solid #fcfcfc; border-bottom: 1px solid #d3d3d3; padding: 0 5px; \nbackground: -moz-linear-gradient(rgb(239, 238, 238), rgb(211, 212, 213));\nbackground: -webkit-linear-gradient(rgb(239, 238, 238), rgb(211, 212, 213)); \nbackground: linear-gradient(rgb(239, 238, 238), rgb(211, 212, 213)); padding-right: 80px; position: relative; z-index: 1001;}\n.w-menu a {text-decoration: none!important; color: #000; padding: 0 5px; line-height: 26px; height: 26px; margin-right: 5px; display: inline-block;}\n.w-menu .glyphicon, .w-detail .glyphicon {margin-right: 3px;}\n.w-menu .glyphicon-folder-open {margin-right: 6px;}\n.w-menu .w-online {position: absolute; right: 0;}\n.w-menu .w-online, .w-menu a:hover {color: #337ab7;}\n.w-menu .w-offline {color: #ccc!important; cursor: default;}\n.w-menu .w-disabled {color: #888!important; cursor: default!important;}\n.w-menu .w-menu-enable {color: #337ab7;}\n\n.w-input-menu-item {display: block; position: absolute; background: #fff; border: 1px solid #ccc; border-radius: 2px; z-index: 101; top: 30px; display: none; white-space: nowrap;}\n.w-input-menu-item input {width: 246px; height: 32px; border: 1px solid #ccc; border-radius: 2px; padding: 0 5px; vertical-align: middle;}\n.w-input-menu-item .btn {height: 32px; padding: 0 12px; vertical-align: middle; border-radius: 0; border-right-top-radius: 2px; border-right-bottom-radius: 2px;}\n\n.w-create-rules-input {left: 170px;}\n.w-create-values-input {left: 160px;}\n.w-edit-rules-input {left: 242px;}\n.w-edit-values-input {left: 232px;}\n.w-edit-filter-input {left: 425px;}\n\n.w-values-list .glyphicon {display: none!important;}\n.w-values-list a {font-weight: normal!important;}\n\n.w-rules-menu-list .w-values-menu-item {left: 92px;}\n.w-network-menu-list .w-values-menu-item {left: 75px;}\n.w-network-menu-list .w-rules-menu-item {left: 8px;}\n.w-values-menu-list .w-rules-menu-item {left: 92px;}\n.w-rules-menu-list .w-weinre-menu-item {left: 457px;}\n.w-network-menu-list .w-weinre-menu-item {left: 550px;}\n.w-values-menu-list .w-weinre-menu-item {left: 447px;}\n", ""]);
 
 	// exports
 
@@ -44193,7 +44217,8 @@
 	function getClassName(data) {
 		return getStatusClass(data) 
 			+ (data.isHttps ? ' w-tunnel' : '') 
-				+ (hasRules(data) ? ' w-has-rules' : '');
+				+ (hasRules(data) ? ' w-has-rules' : '')
+					+ (data.selected ? ' w-selected' : '');
 	}
 
 	function hasRules(data) {
@@ -44238,6 +44263,19 @@
 		componentDidMount: function() {
 			
 		},
+		select: function(item) {
+			this.clearSelection();
+			item.selected = true;
+			this.forceUpdate();
+		},
+		clearSelection: function() {
+			var modal = this.props.modal;
+			if (modal) {
+				modal.list.forEach(function(item) {
+					item.selected = false;
+				});
+			}
+		},
 		_onFilterChange: function(e) {
 			this.setState({filterText: e.target.value});
 		},
@@ -44252,7 +44290,8 @@
 			this.setState({filterText: ''});
 		},
 		render: function() {
-			var modal = this.props.modal;
+			var self = this;
+			var modal = self.props.modal;
 			var list = modal ? modal.list : [];
 			var first = list[0];
 			var index = first && first.order || 1;
@@ -44288,7 +44327,7 @@
 							    		  var res = item.res;
 							    		  var type = (res.headers && res.headers['content-type'] || defaultValue).split(';')[0];
 							    		  item.order = index + i;
-							    		  return (React.createElement("tr", {key: item.id, className: getClassName(item)}, 
+							    		  return (React.createElement("tr", {key: item.id, className: getClassName(item), onClick: function() {self.select(item);}}, 
 							    		  				React.createElement("th", {className: "order", scope: "row"}, item.order), 			        
 							    		  				React.createElement("td", {className: "result"}, item.res.statusCode || '-'), 			        
 							    		  				React.createElement("td", {className: "protocol"}, util.getProtocol(item.url)), 			        
@@ -44356,7 +44395,7 @@
 
 
 	// module
-	exports.push([module.id, ".w-req-data-con {overflow-x: auto;}\n.w-req-data-filter {width: 100%; background: rgba(0, 0, 0, 0.8); height: 30px; color: #fff; padding: 2px 5px; border: none; border-top: 1px solid #ccc; border-bottom: 1px solid #ccc;}\n.w-req-data-content {overflow-x: auto; overflow-y: hidden;}\n.w-req-data-content .order {width: 50px;}\n.w-req-data-content .result {width: 60px;}\n.w-req-data-content .protocol, .w-req-data-content .method {width: 70px;}\n.w-req-data-content .time {width: 65px;}\n.w-req-data-content .host-ip, .w-req-data-content .type {width: 100px;}\n.w-req-data-content .host {width: 136px;}\n\n.w-req-data-headers {height: 30px; border-top: 1px solid #ccc; border-bottom: 1px solid #ccc; overflow: hidden;}\n.w-req-data-headers .table {height: 30px;}\n.w-req-data-headers .table th {border: none!important; padding: 4px 0 4px 6px; font-weight: normal; color: #000;}\n.w-req-data-list {overflow-y: auto; overflow-x: hidden;}\n.w-req-data-list th, .w-req-data-list td {border-top: none!important; border-bottom: 1px solid #ddd; font-weight: normal; font-size: 12px; padding: 3px 0 3px 6px!important; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}\n.w-req-data-bar, .w-req-data-content {min-width: 720px;}\n.w-req-data-bar {position: relative;}\n.w-req-data-bar .close {position: absolute; right: 5px; top: 5px; color: #fff; line-height: 16px; display: none;}\n.w-req-data-list .w-error-status td {color: #ff3a90;}\n.w-req-data-list .w-forbidden td {color: #808000;}\n.w-req-data-list .w-tunnel td {color: #808080;}\n.w-req-data-list .w-has-rules td {font-weight: bold;}\n", ""]);
+	exports.push([module.id, ".w-req-data-con {overflow-x: auto;}\n.w-req-data-filter {width: 100%; background: rgba(0, 0, 0, 0.8); height: 30px; color: #fff; padding: 2px 5px; border: none; border-top: 1px solid #ccc; border-bottom: 1px solid #ccc;}\n.w-req-data-content {overflow-x: auto; overflow-y: hidden;}\n.w-req-data-content .order {width: 50px;}\n.w-req-data-content .result {width: 60px;}\n.w-req-data-content .protocol, .w-req-data-content .method {width: 70px;}\n.w-req-data-content .time {width: 65px;}\n.w-req-data-content .host-ip, .w-req-data-content .type {width: 100px;}\n.w-req-data-content .host {width: 136px;}\n\n.w-req-data-headers {height: 30px; border-top: 1px solid #ccc; border-bottom: 1px solid #ccc; overflow: hidden;}\n.w-req-data-headers .table {height: 30px;}\n.w-req-data-headers .table th {border: none!important; padding: 4px 0 4px 6px; font-weight: normal; color: #000;}\n.w-req-data-list {overflow-y: auto; overflow-x: hidden;}\n.w-req-data-list th, .w-req-data-list td {border-top: none!important; border-bottom: 1px solid #ddd; font-weight: normal; font-size: 12px; padding: 3px 0 3px 6px!important; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}\n.w-req-data-bar, .w-req-data-content {min-width: 720px;}\n.w-req-data-bar {position: relative;}\n.w-req-data-bar .close {position: absolute; right: 5px; top: 5px; color: #fff; line-height: 16px; display: none;}\n.w-req-data-list .w-error-status td {color: #ff3a90;}\n.w-req-data-list .w-forbidden td {color: #808000;}\n.w-req-data-list .w-tunnel td {color: #808080;}\n.w-req-data-list .w-has-rules td {font-weight: bold;}\n.w-req-data-list tr {cursor: default;}\n.w-req-data-list tr.w-selected th, .w-req-data-list tr.w-selected td {background-color: #337ab7!important; color: #fff;}\n", ""]);
 
 	// exports
 
@@ -45418,7 +45457,7 @@
 					var item = this;
 					var newItem = data[item.id];
 					if (newItem) {
-						dataList[i] = newItem;
+						$.extend(dataList[i], newItem);
 					} else {
 						item.lost = true;
 					}
