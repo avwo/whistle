@@ -2,6 +2,7 @@ var getRules = require('./rules');
 var getValues = require('./values');
 var util = require('./util');
 var config = require('../lib/config');
+var properties = require('../lib/properties');
 
 module.exports = function(req, res) {
 	
@@ -9,6 +10,7 @@ module.exports = function(req, res) {
 		version: config.version,
 		server: util.getServerInfo(),
 		rules: getRules(),
-		values: getValues()
+		values: getValues(),
+		filterText: properties.get('filterText')
 	});
 };

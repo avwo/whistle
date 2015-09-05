@@ -101,6 +101,7 @@ module.exports = function(proxy) {
 	require('./proxy')(proxy);
 	require('./util')(util = proxy.util);
 	require('./config')(config);
+	require('./rules-util')(rulesUtil);
 	require('./rules')(rulesUtil.rules);
 	require('./properties')(rulesUtil.properties);
 	require('./values')(rulesUtil.values);

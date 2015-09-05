@@ -1,6 +1,6 @@
-var rules = require('../lib/rules');
+var rulesUtil = require('../lib/rules-util');
 
 module.exports = function(req, res) {
-	rules.setFilter(req.body.filter);
+	rulesUtil.setFilter(req.body.filter);
 	res.json({ec: 0, em: 'success'});
 };
