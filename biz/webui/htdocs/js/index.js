@@ -525,8 +525,23 @@
 				this.forceUpdate();
 			}
 		},
-		replay: function() {
+		replay: function() { 
+			var modal = this.state.network;
+			if (!modal) {
+				return;
+			}
+			var item = modal.getSelected();
+			if (!item || item.isHttps) {
+				return;
+			}
 			
+			dataCenter.composer({
+				url: item.url,
+				headers: item.req.headers,
+				method: item.req.method,
+				body: item.reqError ? '' : item.req.body
+			});
+			this.autoScroll && this.autoScroll();
 		},
 		composer: function() {
 			
@@ -552,7 +567,7 @@
 		},
 		clear: function() {
 			var modal = this.state.network;
-			this.setState({
+			modal && this.setState({
 				network: modal.clear()
 			});
 		},
@@ -44137,13 +44152,101 @@
 	var MAX_COUNT = 2560;//不能超过MAX_LENGTH * 2，否则order衔接会有问题
 
 	function NetworkModal(list) {
-		this._list = list;
-		this.list = list.slice(0, MAX_LENGTH);
+		this._list = updateOrder(list);
+		this.list =list.slice(0, MAX_LENGTH);
 	}
 
 	NetworkModal.MAX_COUNT = MAX_COUNT;
 
 	var proto = NetworkModal.prototype;
+
+	/**
+	 * 默认搜索url
+	 * url[u]:搜索url
+	 * content[c]: 搜索请求或响应内容
+	 * headers[h]: 搜索头部内容
+	 * ip: 搜索ip
+	 * status[result]: 搜索响应状态码
+	 * protocol[p]: 搜索协议
+	 */
+	proto.search = function(keyword) {
+		this._type = 'url';
+		this._keyword = typeof keyword != 'string' ? '' : keyword.trim();
+		if (this._keyword && /^(url|u|content|c|headers|h|ip|i|status|result|s|r|protocol|p):(.*)$/.test(keyword)) {
+			this._type = RegExp.$1;
+			this._keyword = RegExp.$2.trim();
+		}
+		this.filter();
+		return !this._keyword;
+	};
+
+	proto.filter = function() {
+		var keyword = this._keyword;
+		var list = this.list;
+		if (!keyword) {
+			list.forEach(function(item) {
+				item.hide = false;
+			});
+			return;
+		}
+		
+		switch(this._type) {
+			case 'c':
+			case 'content':
+				list.forEach(function(item) {
+					var reqBody = item.req.body;
+					var resBody = item.res.body;
+					item.hide = (!reqBody || reqBody.indexOf(keyword) == -1) && 
+					 			(!resBody || resBody.indexOf(keyword) == -1);
+				});
+				break;
+			case 'headers':
+			case 'h':
+				list.forEach(function(item) {
+					item.hide = !inObject(item.req.headers, keyword) 
+								&& !inObject(item.res.headers, keyword);
+				});
+				break;
+			case 'ip':
+			case 'i':
+				list.forEach(function(item) {
+					var ip = item.req.ip || '';
+					var host = item.res.ip || '';
+					item.hide = ip.indexOf(keyword) == -1 
+								&& host.indexOf(keyword) == -1;
+				});
+				break;
+			case 'status':
+			case 's':
+			case 'result':
+			case 'r':
+				list.forEach(function(item) {
+					item.hide = item.res.statusCode == null ? true : 
+						(item.res.statusCode + '').indexOf(keyword) == -1;
+				});
+				break;
+			default:
+				list.forEach(function(item) {
+					item.hide = item.url.indexOf(keyword) == -1;
+				});
+		}
+		return list;
+	}
+
+	function inObject(obj, keyword) {
+		for (var i in obj) {
+			if (i.indexOf(keyword) != -1) {
+				return true;
+			}
+			var value = obj[i];
+			if (typeof value == 'string' 
+					&& value.indexOf(keyword) != -1) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
 
 	proto.clear = function clear() {
 		this._list.splice(0, this.list.length);
@@ -44152,6 +44255,7 @@
 	};
 
 	proto.update = function(scrollAtBottom) {
+		updateOrder(this._list);
 		if (scrollAtBottom) {
 			var exceed = this._list.length - MAX_LENGTH;
 			if (exceed > 0) {
@@ -44160,8 +44264,72 @@
 		}
 		
 		this.list = this._list.slice(0, MAX_LENGTH);
+		this.filter();
 		return this._list.length > MAX_LENGTH;
 	};
+
+	proto.getSelected = function() {
+		
+		return this.getSelectedList()[0];
+	};
+
+	proto.setSelected = function(item, selected) {
+		item.selected = selected !== false;
+	};
+
+	proto.getSelectedList = function() {
+		
+		return this.list.filter(function(item) {
+			return item.selected;
+		});
+	};
+
+	proto.setSelectedList = function(startId, endId) {
+		if (!startId || !endId) {
+			return;
+		}
+		
+		var selected, item;
+		for (var i = 0, len = this.list.length; i < len; i++) {
+			item = this.list[i];
+			if (item.id == startId) {
+				selected = !selected;
+				item.selected = true;
+			} else {
+				item.selected = selected;
+			}
+			
+			if (item.id == endId) {
+				selected = !selected;
+			}
+		}
+	};
+
+	proto.clearSelection = function() {
+		this.list.forEach(function(item) {
+			item.selected = false;
+		});
+	};
+
+	proto.hide = function(item) {
+		item.hide = true;
+	};
+
+	proto.show = function(item) {
+		item.hide = false;
+	};
+
+	function updateOrder(list) {
+		var len = list.length;
+		if (len && !list[len - 1].order) {
+			var order = list[0].order || 1;
+			list.forEach(function(item, i) {
+				item.order = order + i;
+			});
+		}
+		
+		return list;
+	}
 
 	module.exports = NetworkModal;
 
@@ -44212,10 +44380,11 @@
 	__webpack_require__(163);
 	__webpack_require__(230);
 	var React = __webpack_require__(6);
+	var $ = __webpack_require__(5);
 	var util = __webpack_require__(175);
 
 	function getClassName(data) {
-		return getStatusClass(data) 
+		return getStatusClass(data) + ' w-req-data-item'
 			+ (data.isHttps ? ' w-tunnel' : '') 
 				+ (hasRules(data) ? ' w-has-rules' : '')
 					+ (data.selected ? ' w-selected' : '');
@@ -44256,45 +44425,88 @@
 		return '';
 	}
 
+	function getSelectedRows() {
+		var range = getSelection();
+		if (!range) {
+			return;
+		}
+		range = range.getRangeAt(0);
+		var startElem = $(range.startContainer).closest('.w-req-data-item');
+		if (!startElem.length) {
+			return null;
+		}
+		var endElem = $(range.endContainer).closest('.w-req-data-item');
+		if (!startElem.length || !endElem.length) {
+			return null;
+		}
+		return [startElem, endElem];
+	}
+
+	function getSelection() {
+		if (window.getSelection) {
+			return window.getSelection();
+		}
+		return document.getSelection();
+	}
+
 	var ReqData = React.createClass({displayName: "ReqData",
 		getInitialState: function() {
 			return {};
 		},
 		componentDidMount: function() {
-			
+			this.container = this.refs.container.getDOMNode();
+			this.content = this.refs.content.getDOMNode();
 		},
-		select: function(item) {
-			this.clearSelection();
-			item.selected = true;
+		onClick: function(e, item) {
+			var modal = this.props.modal;
+			if (!e.ctrlKey && !e.metaKey || !modal) {
+				this.clearSelection();
+			}
+			
+			var rows;
+			if (e.shiftKey && (rows = getSelectedRows())) {
+				modal.setSelectedList(rows[0].attr('data-id'), 
+						rows[1].attr('data-id'));
+			} else {
+				modal.setSelected(item);
+			}
+			
 			this.forceUpdate();
 		},
 		clearSelection: function() {
 			var modal = this.props.modal;
-			if (modal) {
-				modal.list.forEach(function(item) {
-					item.selected = false;
-				});
-			}
+			modal && modal.clearSelection();
 		},
-		_onFilterChange: function(e) {
-			this.setState({filterText: e.target.value});
+		onFilterChange: function(e) {
+			var self = this;
+			var modal = self.props.modal;
+			var value = e.target.value;
+			var autoScroll = modal && modal.search(value);
+			this.setState({filterText: value}, function() {
+				autoScroll && self.autoScroll()
+			});
 		},
-		_onFilterKeyDown: function(e) {
+		onFilterKeyDown: function(e) {
 			if ((e.ctrlKey || e.metaKey) && e.keyCode == 68) {
-				this._clearFilterText();
+				this.clearFilterText();
 				e.preventDefault();
 				e.stopPropagation();
 			}
 		},
-		_clearFilterText: function() {
-			this.setState({filterText: ''});
+		clearFilterText: function() {
+			var modal = this.props.modal;
+			modal && modal.search();
+			this.setState({filterText: ''}, this.autoScroll.bind(this));
+		},
+		autoScroll: function() {
+			if (this.container) {
+				this.container.scrollTop = this.content.offsetHeight;
+			}
 		},
 		render: function() {
 			var self = this;
 			var modal = self.props.modal;
 			var list = modal ? modal.list : [];
-			var first = list[0];
-			var index = first && first.order || 1;
 			
 			return (
 					React.createElement("div", {className: "fill w-req-data-con orient-vertical-box"}, 
@@ -44316,8 +44528,8 @@
 							      )
 							    )
 							), 
-							React.createElement("div", {className: "w-req-data-list fill"}, 
-								React.createElement("table", {className: "table"}, 
+							React.createElement("div", {ref: "container", className: "w-req-data-list fill"}, 
+								React.createElement("table", {ref: "content", className: "table"}, 
 							      React.createElement("tbody", null, 
 							      
 							    	  list.map(function(item, i) {
@@ -44326,8 +44538,7 @@
 							    		  var req = item.req;
 							    		  var res = item.res;
 							    		  var type = (res.headers && res.headers['content-type'] || defaultValue).split(';')[0];
-							    		  item.order = index + i;
-							    		  return (React.createElement("tr", {key: item.id, className: getClassName(item), onClick: function() {self.select(item);}}, 
+							    		  return (React.createElement("tr", {"data-id": item.id, key: item.id, style: {display: item.hide ? 'none' : ''}, className: getClassName(item), onClick: function(e) {self.onClick(e, item);}}, 
 							    		  				React.createElement("th", {className: "order", scope: "row"}, item.order), 			        
 							    		  				React.createElement("td", {className: "result"}, item.res.statusCode || '-'), 			        
 							    		  				React.createElement("td", {className: "protocol"}, util.getProtocol(item.url)), 			        
@@ -44346,11 +44557,11 @@
 						), 
 						React.createElement("div", {className: "w-req-data-bar"}, 
 							React.createElement("input", {type: "text", value: this.state.filterText, 
-							onChange: this._onFilterChange, 
-							onKeyDown: this._onFilterKeyDown, 
+							onChange: this.onFilterChange, 
+							onKeyDown: this.onFilterKeyDown, 
 							className: "w-req-data-filter", maxLength: "128", placeholder: "type filter text"}), 
 							React.createElement("button", {
-							onClick: this._clearFilterText, 
+							onClick: this.clearFilterText, 
 							style: {display: this.state.filterText ? 'block' :  'none'}, type: "button", className: "close", title: "Ctrl+D"}, React.createElement("span", {"aria-hidden": "true"}, "×"))
 						)
 				)
