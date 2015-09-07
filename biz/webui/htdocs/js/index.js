@@ -49,11 +49,11 @@
 	var React = __webpack_require__(6);
 	var List = __webpack_require__(162);
 	var ListModal = __webpack_require__(226);
-	var Network = __webpack_require__(228);
-	var About = __webpack_require__(264);
-	var Online = __webpack_require__(268);
-	var MenuItem = __webpack_require__(271);
-	var dataCenter = __webpack_require__(262);
+	var Network = __webpack_require__(227);
+	var About = __webpack_require__(262);
+	var Online = __webpack_require__(266);
+	var MenuItem = __webpack_require__(269);
+	var dataCenter = __webpack_require__(259);
 	var util = __webpack_require__(175);
 
 	function getPageName() {
@@ -176,7 +176,7 @@
 		startLoadData: function() {
 			var self = this;
 			if (self._updateNetwork) {
-				self._updateNetwork;
+				self._updateNetwork();
 				return;
 			}
 			
@@ -222,6 +222,9 @@
 			}
 		},
 		showNetwork: function() {
+			if (this.state.name == 'network') {
+				return;
+			}
 			this.setMenuOptionsState();
 			this.setState({
 				hasNetwork: true,
@@ -232,6 +235,9 @@
 			location.hash = 'network';
 		},
 		showRules: function() {
+			if (this.state.name == 'rules') {
+				return;
+			}
 			this.setMenuOptionsState();
 			this.setState({
 				hasRules: true,
@@ -240,6 +246,9 @@
 			location.hash = 'rules';
 		},
 		showValues: function() {
+			if (this.state.name == 'values') {
+				return;
+			}
 			this.setMenuOptionsState();
 			this.setState({
 				hasValues: true,
@@ -323,11 +332,13 @@
 			
 			dataCenter.rules.add({name: name}, function(data) {
 				if (data && data.ec === 0) {
-					modal.add(name);
+					var item = modal.add(name);
 					self.setRulesActive(name);
 					target.value = '';
 					target.blur();
-					self.forceUpdate();
+					self.setState({
+						activeRules: item
+					});
 				} else {
 					util.showSystemError();
 				}
@@ -357,7 +368,9 @@
 					self.setValuesActive(name);
 					target.value = '';
 					target.blur();
-					self.forceUpdate();
+					self.setState({
+						activeValues: item
+					});
 				} else {
 					util.showSystemError();
 				}
@@ -430,7 +443,9 @@
 					self.setRulesActive(name);
 					target.value = '';
 					target.blur();
-					self.forceUpdate();
+					self.setState({
+						activeValues: activeItem
+					});
 				} else {
 					util.showSystemError();
 				}
@@ -464,7 +479,9 @@
 					self.setValuesActive(name);
 					target.value = '';
 					target.blur();
-					self.forceUpdate();
+					self.setState({
+						activeValues: activeItem
+					});
 				} else {
 					util.showSystemError();
 				}
@@ -522,7 +539,9 @@
 		setSelected: function(modal, name, selected) {
 			if (modal.setSelected(name, selected)) {
 				modal.setChanged(name, false);
-				this.forceUpdate();
+				this.setState({
+					curSelectedName: name
+				});
 			}
 		},
 		replay: function() { 
@@ -583,7 +602,9 @@
 							var nextItem = modal.getSibling(name);
 							nextItem && self.setRulesActive(nextItem.name);
 							modal.remove(name);
-							self.forceUpdate();
+							self.setState({
+								activeRules: nextItem
+							});
 						} else {
 							util.showSystemError();
 						}
@@ -603,7 +624,9 @@
 							var nextItem = modal.getSibling(name);
 							nextItem && self.setValuesActive(nextItem.name);
 							modal.remove(name);
-							self.forceUpdate();
+							self.setState({
+								activeValues: nextItem
+							});
 						} else {
 							util.showSystemError();
 						}
@@ -647,11 +670,15 @@
 		},
 		activeRules: function(item) {
 			dataCenter.rules.setCurrent({name: item.name});
-			this.forceUpdate();
+			this.setState({
+				activeRules: item
+			});
 		},
 		activeValues: function(item) {
 			dataCenter.values.setCurrent({name: item.name});
-			this.forceUpdate();
+			this.setState({
+				activeValues: item
+			});
 		},
 		render: function() {
 			var name = this.state.name;
@@ -686,11 +713,11 @@
 						React.createElement("a", {onClick: this.showValuesOptions, className: "w-values-menu", style: {display: isValues ? 'none' : ''}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-folder-open"}), "Values"), 
 						React.createElement("a", {onClick: this.onClickMenu, className: "w-create-menu", style: {display: isNetwork ? 'none' : ''}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-plus"}), "Create"), 
 						React.createElement("a", {onClick: this.onClickMenu, className: 'w-edit-menu' + (disabledEditBtn ? ' w-disabled' : ''), style: {display: isNetwork ? 'none' : ''}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-edit"}), "Edit"), 
-						React.createElement("a", {onClick: this.autoScroll, className: "w-clear-menu", style: {display: isNetwork ? '' : 'none'}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-play"}), "AutoScroll"), 
-						React.createElement("a", {onClick: this.replay, className: 'w-replay-menu' + (this.state.disabledReplayBtn ? ' w-disabled' : ''), style: {display: isNetwork ? '' : 'none'}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-repeat"}), "Replay"), 
+						React.createElement("a", {onClick: this.autoScroll, className: "w-scroll-menu", style: {display: isNetwork ? '' : 'none'}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-play"}), "AutoScroll"), 
+						React.createElement("a", {onClick: this.replay, className: "w-replay-menu", style: {display: isNetwork ? '' : 'none'}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-repeat"}), "Replay"), 
 						React.createElement("a", {onClick: this.composer, className: "w-composer-menu", style: {display: isNetwork ? '' : 'none'}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-edit"}), "Composer"), 
 						React.createElement("a", {onClick: this.showEditFilter, className: 'w-filter-menu' + (this.state.filterText ? ' w-menu-enable' : ''), style: {display: isNetwork ? '' : 'none'}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-filter"}), "Filter"), 
-						React.createElement("a", {onClick: this.clear, className: "w-clear-menu", style: {display: isNetwork ? '' : 'none'}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-remove"}), "Clear"), 
+						React.createElement("a", {onClick: this.clear, className: "w-clear-menu", style: {display: isNetwork ? '' : 'none'}, href: "javascript:;", title: "Ctrl[Command]+D"}, React.createElement("span", {className: "glyphicon glyphicon-remove"}), "Clear"), 
 						React.createElement("a", {onClick: this.onClickMenu, className: 'w-delete-menu' + (disabledDeleteBtn ? ' w-disabled' : ''), style: {display: isNetwork ? 'none' : ''}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-trash"}), "Delete"), 
 						React.createElement("a", {onClick: this.showSettings, className: "w-settings-menu", style: {display: isNetwork ? 'none' : ''}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-cog"}), "Settings"), 
 						React.createElement("a", {onClick: this.showWeinreOptions, className: "w-weinre-menu", href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-globe"}), "Weinre"), 
@@ -30654,6 +30681,7 @@
 	var React = __webpack_require__(6);
 	var Divider = __webpack_require__(176);
 	var Editor = __webpack_require__(179);
+	var FilterInput = __webpack_require__(292);
 
 	function getSuffix(name) {
 		if (typeof name != 'string') {
@@ -30679,13 +30707,9 @@
 				self.onDoubleClick(item);
 			}
 		},
-		onMouseEnter: function(e) {
-			this.getItemByKey($(e.target).closest('a').attr('data-key')).hover = true;
-			this.forceUpdate();
-		},
-		onMouseLeave: function(e) {
-			this.getItemByKey($(e.target).closest('a').attr('data-key')).hover = false;
-			this.forceUpdate();
+		shouldComponentUpdate: function(nextProps) {
+			var hide = util.getBoolean(this.props.hide);
+			return hide != util.getBoolean(nextProps.hide) || !hide;
 		},
 		onClick: function(e) {
 			var elem = $(e.target).closest('a');
@@ -30717,8 +30741,14 @@
 			if (value != item.value && value != item.value) {
 				item.changed = true;
 				item.value = value;
-				this.forceUpdate();
+				this.setState({
+					selectedItem: item
+				});
 			}
+		},
+		onFilterChange: function(keyword) {
+			this.props.modal.search(keyword, this.props.name != 'rules');
+			this.setState({filterText: keyword});
 		},
 		getItemByKey: function(key) {
 			return this.props.modal.getByKey(key);
@@ -30732,27 +30762,30 @@
 			//不设置height为0，滚动会有问题
 			return (
 					React.createElement(Divider, {hide: this.props.hide, leftWidth: "200"}, 
+					React.createElement("div", {className: "fill orient-vertical-box w-list-left"}, 	
 						React.createElement("div", {ref: "list", className: 'fill orient-vertical-box w-list-data ' + (this.props.className || '')}, 
-							
-								list.map(function(name) {
-									var item = data[name];
-									
-									return React.createElement("a", {key: item.key, "data-key": item.key, href: "javascript:;", 
-												onClick: self.onClick, 
-												onDoubleClick: function() {
-													self.onDoubleClick(item);
-												}, 
-												className: util.getClasses({
-													'w-active': item.active,
-													'w-changed': item.changed,
-													'w-selected': item.selected
-												}), 
-												href: "javascript:;"}, name, React.createElement("span", {onClick: function(e) {
-													self.onDoubleClick(item, true);
-													e.stopPropagation();
-												}, className: "glyphicon glyphicon-ok"}));
-								})
-							
+								
+									list.map(function(name) {
+										var item = data[name];
+										
+										return React.createElement("a", {style: {display: item.hide ? 'none' : null}, key: item.key, "data-key": item.key, href: "javascript:;", 
+													onClick: self.onClick, 
+													onDoubleClick: function() {
+														self.onDoubleClick(item);
+													}, 
+													className: util.getClasses({
+														'w-active': item.active,
+														'w-changed': item.changed,
+														'w-selected': item.selected
+													}), 
+													href: "javascript:;"}, name, React.createElement("span", {onClick: function(e) {
+														self.onDoubleClick(item, true);
+														e.stopPropagation();
+													}, className: "glyphicon glyphicon-ok"}));
+									})
+								
+							), 
+							React.createElement(FilterInput, {onChange: this.onFilterChange})
 						), 
 						React.createElement(Editor, React.__spread({},  self.props, {onChange: self.onChange, readOnly: !activeItem, value: activeItem ? activeItem.value : '', 
 						mode: self.props.name == 'rules' ? 'rules' : getSuffix(activeItem && activeItem.name)}))
@@ -30876,7 +30909,7 @@
 
 
 	// module
-	exports.push([module.id, "html, body, .main {margin: 0; padding: 0; width: 100%; height: 100%;}\n.main {min-width: 960px; min-height: 360px;}\n::-webkit-scrollbar{ width:10px; height:10px; }\n::-webkit-scrollbar-button{ width:10px;height:1px; }\n::-webkit-scrollbar-thumb{ background-clip:padding-box; background-color:rgba(0,0,0,.5); border-radius:8px; min-height: 30px;}\n::-webkit-scrollbar-thumb:hover{ background-clip:padding-box; background-color:rgba(0,0,0,.7); border-radius:8px;}\n::-webkit-scrollbar-track,::-webkit-scrollbar-thumb { border-left:2px solid transparent; border-right:2px solid transparent;}\n::-webkit-scrollbar-track:hover{ background-clip:padding-box; background-color:rgba(0,0,0,.15);}\n\n.shadow {border: 1px solid rgba(0,0,0,.15)!important; -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175)!important; box-shadow: 0 6px 12px rgba(0,0,0,.175)!important;}\ntextarea[readonly] {outline: none;}\n.hide {display: none!important;}\n.box {display:-webkit-box; display:-moz-box; display:box;}\n.orient-vertical-box {-moz-box-orient:vertical; -webkit-box-orient:vertical; box-orient:vertical; display:-moz-box; display:-webkit-box; display: box;}\n.fill {-moz-box-flex:1; -webkit-box-flex:1; box-flex:1;}\n.box>.fill {width: 0;}\n.orient-vertical-box>.fill {height: 0;} /**不加这个滚动会有问题**/\n.table {table-layout: fixed; margin: 0!important;}\n\n.modal-dialog .modal-body, .modal-dialog .modal-footer {padding: 10px;}\n.modal-dialog .btn {padding: 5px 10px;}\n\n.cm-header {text-decoration: line-through;}\n.cm-s-ambiance ::-webkit-scrollbar-thumb, \n.cm-s-blackboard ::-webkit-scrollbar-thumb, \n.cm-s-cobalt ::-webkit-scrollbar-thumb, \n.cm-s-erlang-dark ::-webkit-scrollbar-thumb, \n.cm-s-lesser-dark ::-webkit-scrollbar-thumb, \n.cm-s-midnight ::-webkit-scrollbar-thumb, \n.cm-s-monokai ::-webkit-scrollbar-thumb, \n.cm-s-night ::-webkit-scrollbar-thumb, \n.cm-s-dark ::-webkit-scrollbar-thumb, \n.cm-s-twilight ::-webkit-scrollbar-thumb, \n.cm-s-vibrant-ink ::-webkit-scrollbar-thumb, \n.cm-s-xq-dark ::-webkit-scrollbar-thumb {background-color:rgba(255,255,255,.5);}\n\n.cm-s-ambiance ::-webkit-scrollbar-thumb:hover, \n.cm-s-blackboard ::-webkit-scrollbar-thumb:hover, \n.cm-s-cobalt ::-webkit-scrollbar-thumb:hover, \n.cm-s-erlang-dark ::-webkit-scrollbar-thumb:hover, \n.cm-s-lesser-dark ::-webkit-scrollbar-thumb:hover, \n.cm-s-midnight ::-webkit-scrollbar-thumb:hover, \n.cm-s-monokai ::-webkit-scrollbar-thumb:hover, \n.cm-s-night ::-webkit-scrollbar-thumb:hover, \n.cm-s-dark ::-webkit-scrollbar-thumb:hover, \n.cm-s-twilight ::-webkit-scrollbar-thumb:hover, \n.cm-s-vibrant-ink ::-webkit-scrollbar-thumb:hover, \n.cm-s-xq-dark ::-webkit-scrollbar-thumb:hover {background-color:rgba(255,255,255,.7);}\n\n.cm-s-ambiance ::-webkit-scrollbar-track:hover, \n.cm-s-blackboard ::-webkit-scrollbar-track:hover, \n.cm-s-cobalt ::-webkit-scrollbar-track:hover, \n.cm-s-erlang-dark ::-webkit-scrollbar-track:hover, \n.cm-s-lesser-dark ::-webkit-scrollbar-track:hover, \n.cm-s-midnight ::-webkit-scrollbar-track:hover, \n.cm-s-monokai ::-webkit-scrollbar-track:hover, \n.cm-s-night ::-webkit-scrollbar-track:hover, \n.cm-s-dark ::-webkit-scrollbar-track:hover, \n.cm-s-twilight ::-webkit-scrollbar-track:hover, \n.cm-s-vibrant-ink ::-webkit-scrollbar-track:hover, \n.cm-s-xq-dark ::-webkit-scrollbar-track:hover {background-color:rgba(255,255,255,.15);}\n\n\n", ""]);
+	exports.push([module.id, "html, body, .main {margin: 0; padding: 0; width: 100%; height: 100%;}\n.main {min-width: 960px; min-height: 360px;}\n::-webkit-scrollbar{ width:10px; height:10px; }\n::-webkit-scrollbar-button{ width:10px;height:1px; }\n::-webkit-scrollbar-thumb{ background-clip:padding-box; background-color:rgba(0,0,0,.5); border-radius:8px; min-height: 30px;}\n::-webkit-scrollbar-thumb:hover{ background-clip:padding-box; background-color:rgba(0,0,0,.7); border-radius:8px;}\n::-webkit-scrollbar-track,::-webkit-scrollbar-thumb { border-left:2px solid transparent; border-right:2px solid transparent;}\n::-webkit-scrollbar-track:hover{ background-clip:padding-box; background-color:rgba(0,0,0,.15);}\n\n.w-filter-input {width: 100%; background: rgba(0, 0, 0, 0.8); height: 30px; color: #fff; padding: 2px 5px; border: none; border-top: 1px solid #ccc; border-bottom: 1px solid #ccc;}\n.shadow {border: 1px solid rgba(0,0,0,.15)!important; -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175)!important; box-shadow: 0 6px 12px rgba(0,0,0,.175)!important;}\ntextarea[readonly] {outline: none;}\ntextarea {resize: none; display: block;}\n.hide {display: none!important;}\n.box {display:-webkit-box; display:-moz-box; display:box;}\n.orient-vertical-box {-moz-box-orient:vertical; -webkit-box-orient:vertical; box-orient:vertical; display:-moz-box; display:-webkit-box; display: box;}\n.fill {-moz-box-flex:1; -webkit-box-flex:1; box-flex:1;}\n.box>.fill {width: 0;}\n.orient-vertical-box>.fill {height: 0;} /**不加这个滚动会有问题**/\n.table {table-layout: fixed; margin: 0!important;}\n\n.modal-dialog .modal-body, .modal-dialog .modal-footer {padding: 10px;}\n.modal-dialog .btn {padding: 5px 10px;}\n\n.cm-header {text-decoration: line-through;}\n.cm-s-ambiance ::-webkit-scrollbar-thumb, \n.cm-s-blackboard ::-webkit-scrollbar-thumb, \n.cm-s-cobalt ::-webkit-scrollbar-thumb, \n.cm-s-erlang-dark ::-webkit-scrollbar-thumb, \n.cm-s-lesser-dark ::-webkit-scrollbar-thumb, \n.cm-s-midnight ::-webkit-scrollbar-thumb, \n.cm-s-monokai ::-webkit-scrollbar-thumb, \n.cm-s-night ::-webkit-scrollbar-thumb, \n.cm-s-dark ::-webkit-scrollbar-thumb, \n.cm-s-twilight ::-webkit-scrollbar-thumb, \n.cm-s-vibrant-ink ::-webkit-scrollbar-thumb, \n.cm-s-xq-dark ::-webkit-scrollbar-thumb {background-color:rgba(255,255,255,.5);}\n\n.cm-s-ambiance ::-webkit-scrollbar-thumb:hover, \n.cm-s-blackboard ::-webkit-scrollbar-thumb:hover, \n.cm-s-cobalt ::-webkit-scrollbar-thumb:hover, \n.cm-s-erlang-dark ::-webkit-scrollbar-thumb:hover, \n.cm-s-lesser-dark ::-webkit-scrollbar-thumb:hover, \n.cm-s-midnight ::-webkit-scrollbar-thumb:hover, \n.cm-s-monokai ::-webkit-scrollbar-thumb:hover, \n.cm-s-night ::-webkit-scrollbar-thumb:hover, \n.cm-s-dark ::-webkit-scrollbar-thumb:hover, \n.cm-s-twilight ::-webkit-scrollbar-thumb:hover, \n.cm-s-vibrant-ink ::-webkit-scrollbar-thumb:hover, \n.cm-s-xq-dark ::-webkit-scrollbar-thumb:hover {background-color:rgba(255,255,255,.7);}\n\n.cm-s-ambiance ::-webkit-scrollbar-track:hover, \n.cm-s-blackboard ::-webkit-scrollbar-track:hover, \n.cm-s-cobalt ::-webkit-scrollbar-track:hover, \n.cm-s-erlang-dark ::-webkit-scrollbar-track:hover, \n.cm-s-lesser-dark ::-webkit-scrollbar-track:hover, \n.cm-s-midnight ::-webkit-scrollbar-track:hover, \n.cm-s-monokai ::-webkit-scrollbar-track:hover, \n.cm-s-night ::-webkit-scrollbar-track:hover, \n.cm-s-dark ::-webkit-scrollbar-track:hover, \n.cm-s-twilight ::-webkit-scrollbar-track:hover, \n.cm-s-vibrant-ink ::-webkit-scrollbar-track:hover, \n.cm-s-xq-dark ::-webkit-scrollbar-track:hover {background-color:rgba(255,255,255,.15);}\n\n\n", ""]);
 
 	// exports
 
@@ -30916,7 +30949,7 @@
 
 
 	// module
-	exports.push([module.id, ".w-divider-con .w-divider {border: none;}\n.w-list-data {border-top: 1px solid #ccc; border-bottom: 1px solid #ccc; overflow-x: hidden; overflow-y: auto;}\n.w-list-data a {display: block; padding-left: 10px; line-height: 32px; position: relative; border-bottom: 1px solid #ccc; color: #000; \ntext-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}\n.w-list-data a .glyphicon-ok {position: absolute; top: 50%; right: 10px; margin-top: -8px; color: #5bbd72; display: none;}\n.w-list-content {border: 1px solid #ccc; border-left: none;} \n.w-list-data .w-changed:before {content: '*'; margin-right: 5px; color: red; margin-right: 5px;}\n.w-list-data a:hover {color: #337ab7;}\n.w-list-data .w-active {background: #337AB7; color: #fff!important;}\n.w-list-data .w-selected {font-weight: bold;}\n.w-list-data .w-selected .glyphicon-ok {display: inline-block;}", ""]);
+	exports.push([module.id, ".w-divider-con .w-divider {border: none;}\n.w-list-data {border-top: 1px solid #ccc; overflow-x: hidden; overflow-y: auto;}\n.w-list-data a {display: block; padding-left: 10px; line-height: 32px; position: relative; border-bottom: 1px solid #ccc; color: #000; \ntext-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}\n.w-list-data a .glyphicon-ok {position: absolute; top: 50%; right: 10px; margin-top: -8px; color: #5bbd72; display: none;}\n.w-list-content {border: 1px solid #ccc; border-left: none;} \n.w-list-data .w-changed:before {content: '*'; margin-right: 5px; color: red; margin-right: 5px;}\n.w-list-data a:hover {color: #337ab7;}\n.w-list-data .w-active {background: #337AB7; color: #fff!important;}\n.w-list-data .w-selected {font-weight: bold;}\n.w-list-data .w-selected .glyphicon-ok {display: inline-block;}", ""]);
 
 	// exports
 
@@ -30936,6 +30969,10 @@
 
 	exports.preventDefault = function preventDefault(e) {
 		e.keyCode == 8 && e.preventDefault();
+	};
+
+	exports.preventBlur = function preventDefault(e) {
+		e.preventDefault();
 	};
 
 	$(document).on('mousedown', function(e) {
@@ -44017,6 +44054,7 @@
 		if (item) {
 			item[prop] = bool !== false;
 		}
+		this.filter();
 		return item;
 	};
 
@@ -44029,12 +44067,13 @@
 			return false;
 		}
 		this.list.push(name);
-		this.data[name] = {
+		var item = this.data[name] = {
 			key: util.getKey(),
 			name: name,
 			value: value || ''
 		};
-		return true;
+		this.filter();
+		return item;
 	};
 
 	proto.set = function(name, value) {
@@ -44128,6 +44167,7 @@
 			delete this.data[name];
 			this.data[newName] = item;
 			item.name = newName;
+			this.filter();
 			return true;
 		}
 	};
@@ -44142,37 +44182,14 @@
 		return name && this.data[name];
 	};
 
-	module.exports = ListModal;
-
-/***/ },
-/* 227 */
-/***/ function(module, exports) {
-
-	var MAX_LENGTH = 360;
-	var MAX_COUNT = 2560;//不能超过MAX_LENGTH * 2，否则order衔接会有问题
-
-	function NetworkModal(list) {
-		this._list = updateOrder(list);
-		this.list =list.slice(0, MAX_LENGTH);
-	}
-
-	NetworkModal.MAX_COUNT = MAX_COUNT;
-
-	var proto = NetworkModal.prototype;
-
 	/**
-	 * 默认搜索url
-	 * url[u]:搜索url
-	 * content[c]: 搜索请求或响应内容
-	 * headers[h]: 搜索头部内容
-	 * ip: 搜索ip
-	 * status[result]: 搜索响应状态码
-	 * protocol[p]: 搜索协议
+	 * 默认根据name过滤
+	 * selected[s, active, a]: 根据激活的过滤
 	 */
-	proto.search = function(keyword) {
-		this._type = 'url';
+	proto.search = function(keyword, disabledType) {
+		this._type = '';
 		this._keyword = typeof keyword != 'string' ? '' : keyword.trim();
-		if (this._keyword && /^(url|u|content|c|headers|h|ip|i|status|result|s|r|protocol|p):(.*)$/.test(keyword)) {
+		if (!disabledType && this._keyword && /^(selected|s|active|a):(.*)$/.test(keyword)) {
 			this._type = RegExp.$1;
 			this._keyword = RegExp.$2.trim();
 		}
@@ -44183,188 +44200,52 @@
 	proto.filter = function() {
 		var keyword = this._keyword;
 		var list = this.list;
+		var hasFilterType = !!this._type;
+		var data = this.data;
+		
 		if (!keyword) {
-			list.forEach(function(item) {
-				item.hide = false;
+			list.forEach(function(name) {
+				var item = data[name];
+				item.hide = hasFilterType && !item.selected;
 			});
 			return;
 		}
 		
-		switch(this._type) {
-			case 'c':
-			case 'content':
-				list.forEach(function(item) {
-					var reqBody = item.req.body;
-					var resBody = item.res.body;
-					item.hide = (!reqBody || reqBody.indexOf(keyword) == -1) && 
-					 			(!resBody || resBody.indexOf(keyword) == -1);
-				});
-				break;
-			case 'headers':
-			case 'h':
-				list.forEach(function(item) {
-					item.hide = !inObject(item.req.headers, keyword) 
-								&& !inObject(item.res.headers, keyword);
-				});
-				break;
-			case 'ip':
-			case 'i':
-				list.forEach(function(item) {
-					var ip = item.req.ip || '';
-					var host = item.res.ip || '';
-					item.hide = ip.indexOf(keyword) == -1 
-								&& host.indexOf(keyword) == -1;
-				});
-				break;
-			case 'status':
-			case 's':
-			case 'result':
-			case 'r':
-				list.forEach(function(item) {
-					item.hide = item.res.statusCode == null ? true : 
-						(item.res.statusCode + '').indexOf(keyword) == -1;
-				});
-				break;
-			default:
-				list.forEach(function(item) {
-					item.hide = item.url.indexOf(keyword) == -1;
-				});
-		}
+		list.forEach(function(name) {
+			var item = data[name];
+			item.hide = hasFilterType && !item.selected || (name || '').indexOf(keyword) == -1;
+		});
 		return list;
 	}
 
-	function inObject(obj, keyword) {
-		for (var i in obj) {
-			if (i.indexOf(keyword) != -1) {
-				return true;
-			}
-			var value = obj[i];
-			if (typeof value == 'string' 
-					&& value.indexOf(keyword) != -1) {
-				return true;
-			}
-		}
-		
-		return false;
-	}
-
-	proto.clear = function clear() {
-		this._list.splice(0, this.list.length);
-		this.update();
-		return this;
-	};
-
-	proto.update = function(scrollAtBottom) {
-		updateOrder(this._list);
-		if (scrollAtBottom) {
-			var exceed = this._list.length - MAX_LENGTH;
-			if (exceed > 0) {
-				this._list.splice(0, Math.min(exceed, MAX_LENGTH - 1));
-			}
-		}
-		
-		this.list = this._list.slice(0, MAX_LENGTH);
-		this.filter();
-		return this._list.length > MAX_LENGTH;
-	};
-
-	proto.getSelected = function() {
-		
-		return this.getSelectedList()[0];
-	};
-
-	proto.setSelected = function(item, selected) {
-		item.selected = selected !== false;
-	};
-
-	proto.getSelectedList = function() {
-		
-		return this.list.filter(function(item) {
-			return item.selected;
-		});
-	};
-
-	proto.setSelectedList = function(startId, endId) {
-		if (!startId || !endId) {
-			return;
-		}
-		
-		var selected, item;
-		for (var i = 0, len = this.list.length; i < len; i++) {
-			item = this.list[i];
-			if (item.id == startId) {
-				selected = !selected;
-				item.selected = true;
-			} else {
-				item.selected = selected;
-			}
-			
-			if (item.id == endId) {
-				selected = !selected;
-			}
-		}
-	};
-
-	proto.clearSelection = function() {
-		this.list.forEach(function(item) {
-			item.selected = false;
-		});
-	};
-
-	proto.hide = function(item) {
-		item.hide = true;
-	};
-
-	proto.show = function(item) {
-		item.hide = false;
-	};
-
-	function updateOrder(list) {
-		var len = list.length;
-		if (len && !list[len - 1].order) {
-			var order = list[0].order || 1;
-			list.forEach(function(item, i) {
-				item.order = order + i;
-			});
-		}
-		
-		return list;
-	}
-
-	module.exports = NetworkModal;
-
-
+	module.exports = ListModal;
 
 /***/ },
-/* 228 */
+/* 227 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
 	var React = __webpack_require__(6);
+	var util = __webpack_require__(175);
 	var Divider = __webpack_require__(176);
-	var ReqData = __webpack_require__(229);
-	var Detail = __webpack_require__(232);
-	var dataCenter = __webpack_require__(262);
+	var ReqData = __webpack_require__(228);
+	var Detail = __webpack_require__(231);
+	var dataCenter = __webpack_require__(259);
 
 	var Network = React.createClass({displayName: "Network",
-		onClickMenu: function() {
-			
+		shouldComponentUpdate: function(nextProps) {
+			var hide = util.getBoolean(this.props.hide);
+			return hide != util.getBoolean(nextProps.hide) || !hide;
 		},
-		onClickMenuItem: function() {
-			
-		},
-		onClickMenuOption: function() {
-			
-		},
-		componentDidMount: function() {
-			
+		onClick: function(item) {
+			this.setState({activeItem: item});
 		},
 		render: function() {
 			var modal = this.props.modal;
 			return (
 				React.createElement(Divider, {hide: this.props.hide, rightWidth: "560"}, 
-					React.createElement(ReqData, {modal: modal}), 
-					React.createElement(Detail, {modal: null})
+					React.createElement(ReqData, {modal: modal, onClick: this.onClick}), 
+					React.createElement(Detail, {modal: modal})
 				)		
 			);
 		}
@@ -44374,14 +44255,15 @@
 
 
 /***/ },
-/* 229 */
+/* 228 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(230);
+	__webpack_require__(229);
 	var React = __webpack_require__(6);
 	var $ = __webpack_require__(5);
 	var util = __webpack_require__(175);
+	var FilterInput = __webpack_require__(292);
 
 	function getClassName(data) {
 		return getStatusClass(data) + ' w-req-data-item'
@@ -44398,31 +44280,32 @@
 	}
 
 	function getStatusClass(data) {
-		if (data.reqError || data.resError) {
-			return 'danger w-error-status';
-		}
-		
-		if (data.res.statusCode == 403) {
-			return 'w-forbidden';
-		}
-		
-		if (data.res.statusCode >= 400) {
-			return 'w-error-status';
-		}
-		
+		var type = '';
 		var headers = data.res.headers;
 		switch(util.getContentType(headers)) {
 			case 'JS':
-				return 'warning';
+				type = 'warning';
+				break;
 			case 'CSS':
-				return 'info';
+				type = 'info';
+				break;
 			case 'HTML':
-				return 'success';
+				type = 'success';
+				break;
 			case 'IMG':
-				return 'active';
+				type = 'active';
+				break;
 		}
 		
-		return '';
+		if (data.reqError || data.resError) {
+			type += ' danger w-error-status';
+		} else if (data.res.statusCode == 403) {
+			type += ' w-forbidden';
+		} else if (data.res.statusCode >= 400) {
+			type += ' w-error-status';
+		}
+		
+		return type;
 	}
 
 	function getSelectedRows() {
@@ -44450,16 +44333,14 @@
 	}
 
 	var ReqData = React.createClass({displayName: "ReqData",
-		getInitialState: function() {
-			return {};
-		},
 		componentDidMount: function() {
 			this.container = this.refs.container.getDOMNode();
 			this.content = this.refs.content.getDOMNode();
 		},
 		onClick: function(e, item) {
 			var modal = this.props.modal;
-			if (!e.ctrlKey && !e.metaKey || !modal) {
+			var allowMultiSelect = e.ctrlKey || e.metaKey;
+			if (!allowMultiSelect) {
 				this.clearSelection();
 			}
 			
@@ -44468,35 +44349,27 @@
 				modal.setSelectedList(rows[0].attr('data-id'), 
 						rows[1].attr('data-id'));
 			} else {
-				modal.setSelected(item);
+				item.selected = !allowMultiSelect || !item.selected;
 			}
-			
-			this.forceUpdate();
+			modal.clearActive();
+			item.active = true;
+			if (this.props.onClick && this.props.onClick(item)) {
+				this.setState({
+					activeItem: item
+				});
+			}
 		},
 		clearSelection: function() {
 			var modal = this.props.modal;
 			modal && modal.clearSelection();
 		},
-		onFilterChange: function(e) {
+		onFilterChange: function(keyword) {
 			var self = this;
 			var modal = self.props.modal;
-			var value = e.target.value;
-			var autoScroll = modal && modal.search(value);
-			this.setState({filterText: value}, function() {
+			var autoScroll = modal && modal.search(keyword);
+			self.setState({filterText: keyword}, function() {
 				autoScroll && self.autoScroll()
 			});
-		},
-		onFilterKeyDown: function(e) {
-			if ((e.ctrlKey || e.metaKey) && e.keyCode == 68) {
-				this.clearFilterText();
-				e.preventDefault();
-				e.stopPropagation();
-			}
-		},
-		clearFilterText: function() {
-			var modal = this.props.modal;
-			modal && modal.search();
-			this.setState({filterText: ''}, this.autoScroll.bind(this));
 		},
 		autoScroll: function() {
 			if (this.container) {
@@ -44555,15 +44428,7 @@
 							    )	
 							)
 						), 
-						React.createElement("div", {className: "w-req-data-bar"}, 
-							React.createElement("input", {type: "text", value: this.state.filterText, 
-							onChange: this.onFilterChange, 
-							onKeyDown: this.onFilterKeyDown, 
-							className: "w-req-data-filter", maxLength: "128", placeholder: "type filter text"}), 
-							React.createElement("button", {
-							onClick: this.clearFilterText, 
-							style: {display: this.state.filterText ? 'block' :  'none'}, type: "button", className: "close", title: "Ctrl+D"}, React.createElement("span", {"aria-hidden": "true"}, "×"))
-						)
+						React.createElement(FilterInput, {onChange: this.onFilterChange})
 				)
 			);
 		}
@@ -44572,13 +44437,13 @@
 	module.exports = ReqData;
 
 /***/ },
-/* 230 */
+/* 229 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(231);
+	var content = __webpack_require__(230);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -44598,7 +44463,7 @@
 	}
 
 /***/ },
-/* 231 */
+/* 230 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -44606,26 +44471,26 @@
 
 
 	// module
-	exports.push([module.id, ".w-req-data-con {overflow-x: auto;}\n.w-req-data-filter {width: 100%; background: rgba(0, 0, 0, 0.8); height: 30px; color: #fff; padding: 2px 5px; border: none; border-top: 1px solid #ccc; border-bottom: 1px solid #ccc;}\n.w-req-data-content {overflow-x: auto; overflow-y: hidden;}\n.w-req-data-content .order {width: 50px;}\n.w-req-data-content .result {width: 60px;}\n.w-req-data-content .protocol, .w-req-data-content .method {width: 70px;}\n.w-req-data-content .time {width: 65px;}\n.w-req-data-content .host-ip, .w-req-data-content .type {width: 100px;}\n.w-req-data-content .host {width: 136px;}\n\n.w-req-data-headers {height: 30px; border-top: 1px solid #ccc; border-bottom: 1px solid #ccc; overflow: hidden;}\n.w-req-data-headers .table {height: 30px;}\n.w-req-data-headers .table th {border: none!important; padding: 4px 0 4px 6px; font-weight: normal; color: #000;}\n.w-req-data-list {overflow-y: auto; overflow-x: hidden;}\n.w-req-data-list th, .w-req-data-list td {border-top: none!important; border-bottom: 1px solid #ddd; font-weight: normal; font-size: 12px; padding: 3px 0 3px 6px!important; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}\n.w-req-data-bar, .w-req-data-content {min-width: 720px;}\n.w-req-data-bar {position: relative;}\n.w-req-data-bar .close {position: absolute; right: 5px; top: 5px; color: #fff; line-height: 16px; display: none;}\n.w-req-data-list .w-error-status td {color: #ff3a90;}\n.w-req-data-list .w-forbidden td {color: #808000;}\n.w-req-data-list .w-tunnel td {color: #808080;}\n.w-req-data-list .w-has-rules td {font-weight: bold;}\n.w-req-data-list tr {cursor: default;}\n.w-req-data-list tr.w-selected th, .w-req-data-list tr.w-selected td {background-color: #337ab7!important; color: #fff;}\n", ""]);
+	exports.push([module.id, ".w-req-data-con {overflow-x: auto;}\n.w-req-data-content {overflow-x: auto; overflow-y: hidden;}\n.w-req-data-content .order {width: 50px;}\n.w-req-data-content .result {width: 60px;}\n.w-req-data-content .protocol, .w-req-data-content .method {width: 70px;}\n.w-req-data-content .time {width: 65px;}\n.w-req-data-content .host-ip, .w-req-data-content .type {width: 100px;}\n.w-req-data-content .host {width: 136px;}\n\n.w-req-data-headers {height: 30px; border-top: 1px solid #ccc; border-bottom: 1px solid #ccc; overflow: hidden;}\n.w-req-data-headers .table {height: 30px;}\n.w-req-data-headers .table th {border: none!important; padding: 4px 0 4px 6px; font-weight: normal; color: #000;}\n.w-req-data-list {overflow-y: auto; overflow-x: hidden;}\n.w-req-data-list th, .w-req-data-list td {border-top: none!important; border-bottom: 1px solid #ddd; font-weight: normal; font-size: 12px; padding: 3px 0 3px 6px!important; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}\n.w-req-data-con .w-filter-con, .w-req-data-content {min-width: 720px;}\n.w-req-data-list .w-error-status th, .w-req-data-list .w-error-status td {color: #ff3a90;}\n.w-req-data-list .w-forbidden th, .w-req-data-list .w-forbidden td {color: #808000;}\n.w-req-data-list .w-tunnel th, .w-req-data-list .w-tunnel td {color: #808080;}\n.w-req-data-list .w-has-rules th, .w-req-data-list .w-has-rules td {font-weight: bold;}\n.w-req-data-list tr {cursor: default;}\n.w-req-data-list tr.w-selected th, .w-req-data-list tr.w-selected td {background-color: #337ab7!important; color: #fff;}\n", ""]);
 
 	// exports
 
 
 /***/ },
-/* 232 */
+/* 231 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(233);
+	__webpack_require__(232);
 	var React = __webpack_require__(6);
 	var util = __webpack_require__(175);
-	var BtnGroup = __webpack_require__(235);
-	var Overview = __webpack_require__(238);
-	var ReqDetail = __webpack_require__(244);
-	var ResDetail = __webpack_require__(250);
-	var Timeline = __webpack_require__(253);
-	var Composer = __webpack_require__(256);
-	var Log = __webpack_require__(259);
+	var BtnGroup = __webpack_require__(234);
+	var Overview = __webpack_require__(237);
+	var ReqDetail = __webpack_require__(243);
+	var ResDetail = __webpack_require__(249);
+	var Timeline = __webpack_require__(250);
+	var Composer = __webpack_require__(253);
+	var Log = __webpack_require__(256);
 	var TABS = [{
 					name: 'Overview',
 					icon: 'eye-open'
@@ -44647,24 +44512,38 @@
 				}];
 
 	var ReqData = React.createClass({displayName: "ReqData",
-		_handleTab: function(tab) {
-			this.setState({tab: tab});
-		}, 
-		componentDidMount: function() {
+		getInitialState: function() {
 			
+			return {
+				initedOverview: false,
+				initedRequest: false,
+				initedResponse: false,
+				initedTimeline: false,
+				initedComposer: false,
+				initedLog: false
+			};
 		},
+		toggleTab: function(tab) {
+			var state = {tab: tab};
+			state['inited' + tab.name] = true;
+			this.setState(state);
+		}, 
 		render: function() {
+			var modal = this.props.modal;
+			var selectedList = modal && modal.getSelectedList();
+			var activeItem = modal && modal.getActive();
+			var curTab = this.state.tab;
+			var name = curTab && curTab.name;
+			
 			return (
 					React.createElement("div", {className: "fill orient-vertical-box w-detail"}, 
-					React.createElement(BtnGroup, {onClick: this._handleTab, tabs: TABS}), 
-					React.createElement("div", {className: 'fill orient-vertical-box w-detail-content w-show-detail-' + util.getProperty(this, 'state.tab.name', '').toLowerCase()}, 
-						React.createElement(Overview, null), 
-						React.createElement(ReqDetail, null), 
-						React.createElement(ResDetail, null), 
-						React.createElement(Timeline, null), 
-						React.createElement(Composer, null), 
-						React.createElement(Log, null)
-					)
+					React.createElement(BtnGroup, {onClick: this.toggleTab, tabs: TABS}), 
+					this.state.initedOverview ? React.createElement(Overview, {modal: activeItem, hide: name != TABS[0].name}) : '', 
+					this.state.initedRequest ? React.createElement(ReqDetail, {modal: activeItem, hide: name != TABS[1].name}) : '', 
+					this.state.initedResponse ? React.createElement(ResDetail, {modal: activeItem, hide: name != TABS[2].name}) : '', 
+					this.state.initedTimeline ? React.createElement(Timeline, {hide: name != TABS[3].name}) : '', 
+					this.state.initedComposer ? React.createElement(Composer, {hide: name != TABS[4].name}) : '', 
+					this.state.initedLog ? React.createElement(Log, {hide: name != TABS[5].name}) : ''
 				)
 			);
 		}
@@ -44673,13 +44552,13 @@
 	module.exports = ReqData;
 
 /***/ },
-/* 233 */
+/* 232 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(234);
+	var content = __webpack_require__(233);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -44699,7 +44578,7 @@
 	}
 
 /***/ },
-/* 234 */
+/* 233 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -44707,66 +44586,52 @@
 
 
 	// module
-	exports.push([module.id, ".w-detail {border-left: 1px solid #ccc; border-bottom: 1px solid #ccc; overflow-x: auto; overflow-y: hidden;}\n.w-detail-content {position: relative; overflow: auto;}\n.w-detail-divider {position: absolute; left: 0; top: 0; width: 5px; height: 100%; cursor: ew-resize;}\n.w-detail-content, .w-detail>.w-tabs-sm {min-width: 550px;}\n\n.w-detail-overview, .w-detail-request, .w-detail-response, .w-detail-timeline, .w-detail-composer, .w-detail-log  {display: none;}\n.w-show-detail-overview .w-detail-overview,  .w-show-detail-request .w-detail-request, \n.w-show-detail-response .w-detail-response,  .w-show-detail-timeline .w-detail-timeline, \n.w-show-detail-composer .w-detail-composer,  .w-show-detail-log .w-detail-log  {display:-webkit-box; display:-moz-box; display:box;}", ""]);
+	exports.push([module.id, ".w-detail {border-left: 1px solid #ccc; border-bottom: 1px solid #ccc; overflow-x: auto; overflow-y: hidden;}\n.w-detail-content {position: relative; overflow: auto;}\n.w-detail-divider {position: absolute; left: 0; top: 0; width: 5px; height: 100%; cursor: ew-resize;}\n.w-detail-content, .w-detail>.w-tabs-sm {min-width: 550px;}\n", ""]);
 
 	// exports
 
 
 /***/ },
-/* 235 */
+/* 234 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(236);
+	__webpack_require__(235);
 	var React = __webpack_require__(6);
 	var util = __webpack_require__(175);
 
 	var BtnGroup = React.createClass({displayName: "BtnGroup",
-		clearSelection: function() {
-			this._clearSelection();
-			this.forceUpdate();
-		},
-		_clearSelection: function() {
-			var list = this.props.tabs || this.props.btns;
-			list.forEach(function(btn) {
+		handleClick: function(btn) {
+			 if (btn.active || btn.disabled) {
+				 return;
+			 }
+			 var list = this.props.tabs || this.props.btns;
+			 list.forEach(function(btn) {
 				 btn.active = false;
 			 });
-		},
-		componentDidMount: function() {
-			this._handleInitClick && this._handleInitClick();
+			 btn.active = true;
+			 if (!this.props.onClick || this.props.onClick(btn)) {
+				 this.setState({
+					 curBtn: btn
+				 });
+			 }
 		},
 		render: function() {
 			var self = this;
 			var tabs = self.props.tabs;
 			var list = tabs || self.props.btns;
-			var handleClick = self.props.onClick || util.noop;
+			var disabled = util.getBoolean(self.props.disabled);
 			
 			return (
 					React.createElement("div", {className: 'btn-group btn-group-sm ' + (tabs ? 'w-tabs-sm' : 'w-btn-group-sm')}, 
 						list.map(function(btn, i) {
-							var disabled = util.getBoolean(self.props.disabled);
-							 function onClick() {
-								 if (btn.active || disabled) {
-									 return;
-								 }
-								 self._clearSelection();
-								 btn.active = true;
-								 handleClick(btn);
-								 self.forceUpdate();
-							 }
-							 
-							 if (btn.active) {
-								 self._handleInitClick = function() {
-									 self._handleInitClick = null;
-									 btn.active = false;
-									 onClick();
-								 };
-							 }
-							 
+							 btn.disabled = disabled;
 							 var icon = btn.icon ? React.createElement("span", {className: 'glyphicon glyphicon-' + btn.icon}) : '';
 							 btn.key = btn.key || util.getKey();
 							 
-							 return React.createElement("button", {onClick: onClick, key: btn.key, type: "button", 
+							 return React.createElement("button", {onClick: function() {
+								 self.handleClick(btn);
+							 }, key: btn.key, type: "button", 
 								 	className: 'btn btn-default' + (btn.active && !disabled ? ' active' : '')}, 
 									 icon, btn.name
 									);	
@@ -44779,13 +44644,13 @@
 	module.exports = BtnGroup;
 
 /***/ },
-/* 236 */
+/* 235 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(237);
+	var content = __webpack_require__(236);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -44805,7 +44670,7 @@
 	}
 
 /***/ },
-/* 237 */
+/* 236 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -44819,15 +44684,17 @@
 
 
 /***/ },
-/* 238 */
+/* 237 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(239);
+	__webpack_require__(238);
 	var React = __webpack_require__(6);
-	var Properties = __webpack_require__(241);
+	var util = __webpack_require__(175);
+	var Properties = __webpack_require__(240);
 	var OVERVIEW = ['Url', 'Method', 'Status Code', 'Host IP', 'Client IP', 'Request Length', 'Content Length'
 	                      , 'Start Date', 'DNS Lookup', 'Request Sent', 'Content Download'];
+	var OVERVIEW_PROPS = ['url', 'req.method', 'res.statusCode', 'res.ip', 'req.ip', 'req.size', 'res.size'];
 	/**
 	 * statusCode://, redirect://[statusCode:]url, [req, res]speed://, 
 	 * [req, res]delay://, method://, [req, res][content]Type://自动lookup, 
@@ -44836,22 +44703,72 @@
 	var RULES = ['host', 'req', 'rule', 'res', 'weinre', 'filter', 'log', 'params', 'delayReq', 'reqSpeed', 'reqHeaders',
 	             'method', 'reqType', 'reqBody', 'prependReq', 'appendReq', 'resHeaders', 'statusCode', 'redirect', 'delayRes', 
 	             'resSpeed', 'resType', 'cache', 'resBody', 'prependRes', 'appendRes'];
+	var DEFAULT_OVERVIEW_MODAL = {};
+	var DEFAULT_RULES_MODAL = {};
+
+	OVERVIEW.forEach(function(name) {
+		DEFAULT_OVERVIEW_MODAL[name] = '';
+	});
+	RULES.forEach(function(name) {
+		DEFAULT_RULES_MODAL[name] = '';
+	});
 
 	var Overview = React.createClass({displayName: "Overview",
+		shouldComponentUpdate: function(nextProps) {
+			var hide = util.getBoolean(this.props.hide);
+			return hide != util.getBoolean(nextProps.hide) || !hide;
+		},
 		render: function() {
-			var overviewModal = {};
-			var rulesModal = {};
-			var _modal = this.props.modal || {};
-			var _overviewModal = _modal.overview || {};
-			var _rulesModal = _modal.rules || {};
-			OVERVIEW.forEach(function(name) {
-				overviewModal[name] = _overviewModal[name];
-			});
-			RULES.forEach(function(name) {
-				rulesModal[name] = _rulesModal[name];
-			});
+			var overviewModal = DEFAULT_OVERVIEW_MODAL;
+			var rulesModal = DEFAULT_RULES_MODAL;
+			var modal = this.props.modal;
+			
+			if (modal) {
+				OVERVIEW.forEach(function(name, i) {
+					var prop = OVERVIEW_PROPS[i];
+					if (prop) {
+						var value = util.getProperty(modal, prop);
+						if (value && (prop == 'req.size' || prop == 'res.size') && value > 1024) {
+							value += '(' + Number(value / 1024).toFixed(2) + 'k)'
+						}
+						overviewModal[name] = value;
+					} else {
+						var lastIndex = OVERVIEW.length - 1;
+						var time;
+						switch(name) {
+							case OVERVIEW[lastIndex - 3]:
+								time = new Date(modal.startTime).toLocaleString();
+								break;
+							case OVERVIEW[lastIndex - 2]:
+								if (modal.dnsTime) {
+									time = modal.dnsTime - modal.startTime + 'ms'
+								}
+								break;
+							case OVERVIEW[lastIndex - 1]:
+								if (modal.requestTime) {
+									time = modal.requestTime - modal.startTime + 'ms'
+								}
+								break;
+							case OVERVIEW[lastIndex]:
+								if (modal.endTime) {
+									time = modal.endTime - modal.startTime + 'ms'
+								}
+								break;
+						}
+						overviewModal[name] = time;
+					}
+				});
+				var rules = modal.rules;
+				if (rules) {
+					RULES.forEach(function(name) {
+						var rule = rules[name];
+						rulesModal[name] = rule && rule.raw;
+					});
+				}
+			}
+			
 			return (
-				React.createElement("div", {className: "w-detail-overview orient-vertical-box"}, 
+				React.createElement("div", {className: 'fill orient-vertical-box w-detail-content w-detail-overview' + (util.getBoolean(this.props.hide) ? ' hide' : '')}, 
 					React.createElement(Properties, {modal: overviewModal}), 
 					React.createElement("p", {className: "w-detail-overview-title"}, React.createElement("a", {href: "https://github.com/avwo/whistle#whistle", target: "_blank"}, React.createElement("span", {className: "glyphicon glyphicon-question-sign"})), "All rules:"), 
 					React.createElement(Properties, {modal: rulesModal})
@@ -44863,13 +44780,13 @@
 	module.exports = Overview;
 
 /***/ },
-/* 239 */
+/* 238 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(240);
+	var content = __webpack_require__(239);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -44889,7 +44806,7 @@
 	}
 
 /***/ },
-/* 240 */
+/* 239 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -44903,11 +44820,11 @@
 
 
 /***/ },
-/* 241 */
+/* 240 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(242);
+	__webpack_require__(241);
 	var React = __webpack_require__(6);
 
 	var Properties = React.createClass({displayName: "Properties",
@@ -44933,13 +44850,13 @@
 	module.exports = Properties;
 
 /***/ },
-/* 242 */
+/* 241 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(243);
+	var content = __webpack_require__(242);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -44959,7 +44876,7 @@
 	}
 
 /***/ },
-/* 243 */
+/* 242 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -44973,40 +44890,52 @@
 
 
 /***/ },
-/* 244 */
+/* 243 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(245);
+	__webpack_require__(244);
 	var React = __webpack_require__(6);
-	var Table = __webpack_require__(247);
+	var Table = __webpack_require__(246);
 	var Divider = __webpack_require__(176);
-	var Properties = __webpack_require__(241);
+	var Properties = __webpack_require__(240);
 	var util = __webpack_require__(175);
-	var BtnGroup = __webpack_require__(235);
+	var BtnGroup = __webpack_require__(234);
 	var BTNS = [{name: 'Headers', active: true}, {name: 'TextView'}, {name: 'Cookies'}, {name: 'WebForms'}, {name: 'Raw'}];
 
 	var ReqDetail = React.createClass({displayName: "ReqDetail",
-		_onClickBtn: function(btn) {
-			this.setState({btn: btn});
+		getInitialState: function() {
+			return {
+				initedHeaders: false,
+				initedTextView: false,
+				initedCookies: false,
+				initedWebForms: false,
+				initedRaw: false
+			};
+		},
+		shouldComponentUpdate: function(nextProps) {
+			var hide = util.getBoolean(this.props.hide);
+			return hide != util.getBoolean(nextProps.hide) || !hide;
+		},
+		onClickBtn: function(btn) {
+			var state = {btn: btn};
+			state['inited' + btn.name] = true;
+			this.setState(state);
 		},
 		render: function() {
+			var btn = this.state.btn;
+			var name = btn && btn.name;
 			return (
-				React.createElement("div", {className: 'fill orient-vertical-box w-detail-request w-detail-show-request-' 
-						+ util.getProperty(this, 'state.btn.name', '').toLowerCase()}, 
-					React.createElement(BtnGroup, {onClick: this._onClickBtn, btns: BTNS}), 
-					React.createElement("div", {className: "w-detail-request-headers"}, 
-						React.createElement(Properties, null)
-					), 
-					React.createElement("textarea", {onKeyDown: util.preventDefault, readOnly: "readonly", className: "orient-vertical-box w-detail-request-textview"}), 
-					React.createElement("div", {className: "w-detail-request-cookies"}, 
-						React.createElement(Properties, null)
-					), 
-					React.createElement(Divider, {leftWidth: (Math.max(window.innerHeight, 360) - 120) / 2, vertical: "true", className: "w-detail-request-webforms"}, 
+				React.createElement("div", {className: 'fill orient-vertical-box w-detail-content w-detail-request' + (util.getBoolean(this.props.hide) ? ' hide' : '')}, 
+					React.createElement(BtnGroup, {onClick: this.onClickBtn, btns: BTNS}), 
+					this.state.initedHeaders ? React.createElement("div", {className: 'w-detail-request-headers' + (name == BTNS[0].name ? '' : ' hide')}, React.createElement(Properties, null)) : '', 
+					this.state.initedTextView ? React.createElement("textarea", {onKeyDown: util.preventDefault, readOnly: "readonly", className: 'orient-vertical-box w-detail-request-textview' + (name == BTNS[1].name ? '' : ' hide')}) : '', 
+					this.state.initedCookies ? React.createElement("div", {className: 'w-detail-request-cookies' + (name == BTNS[2].name ? '' : ' hide')}, React.createElement(Properties, null)) : '', 
+					this.state.initedWebForms ? React.createElement(Divider, {vertical: "true", className: 'w-detail-request-webforms' + (name == BTNS[3].name ? '' : ' hide')}, 
 						React.createElement(Properties, null), 
 						React.createElement(Properties, null)
-					), 
-					React.createElement("textarea", {onKeyDown: util.preventDefault, readOnly: "readonly", className: "orient-vertical-box w-detail-request-raw"})
+					) : '', 
+					this.state.initedRaw ? React.createElement("textarea", {onKeyDown: util.preventDefault, readOnly: "readonly", className: 'fill w-detail-request-raw' + (name == BTNS[4].name ? '' : ' hide')}) : ''
 				)
 			);
 		}
@@ -45018,13 +44947,13 @@
 
 
 /***/ },
-/* 245 */
+/* 244 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(246);
+	var content = __webpack_require__(245);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -45044,7 +44973,7 @@
 	}
 
 /***/ },
-/* 246 */
+/* 245 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -45052,17 +44981,17 @@
 
 
 	// module
-	exports.push([module.id, ".w-detail-request-headers, .w-detail-request-textview, .w-detail-request-cookies\n, .w-detail-request-webforms, .w-detail-request-raw {display: none;}\n.w-detail-request textarea {padding: 5px; border: none;}\n.w-detail-show-request-headers .w-detail-request-headers, .w-detail-show-request-textview .w-detail-request-textview,\n.w-detail-show-request-cookies .w-detail-request-cookies, .w-detail-show-request-webforms .w-detail-request-webforms, \n.w-detail-show-request-raw .w-detail-request-raw {display:-webkit-box; display:-moz-box; display:box;  -moz-box-flex:1; -webkit-box-flex:1; box-flex:1;}", ""]);
+	exports.push([module.id, ".w-detail-request textarea {padding: 5px; border: none;}\n", ""]);
 
 	// exports
 
 
 /***/ },
-/* 247 */
+/* 246 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(248);
+	__webpack_require__(247);
 	var React = __webpack_require__(6);
 
 	var Table = React.createClass({displayName: "Table",
@@ -45105,13 +45034,13 @@
 	module.exports = Table;
 
 /***/ },
-/* 248 */
+/* 247 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(249);
+	var content = __webpack_require__(248);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -45131,7 +45060,7 @@
 	}
 
 /***/ },
-/* 249 */
+/* 248 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -45139,44 +45068,57 @@
 
 
 	// module
-	exports.push([module.id, ".w-table>thead>tr>th {background: #e1e3e6; font-weight: normal; border-bottom: 1px solid #ccc;}\n.w-table th, .w-table td {font-size: 12px; padding: 3px 8px!important; border-top: none; border-bottom: 1px solid #ccc;}", ""]);
+	exports.push([module.id, ".w-table>thead>tr>th {background: #eee; font-weight: normal; border-bottom: 1px solid #ccc;}\n.w-table th, .w-table td {font-size: 12px; padding: 3px 8px!important; border-top: none; border-bottom: 1px solid #ccc;}", ""]);
 
 	// exports
 
 
 /***/ },
-/* 250 */
+/* 249 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(251);
+	__webpack_require__(272);
 	var React = __webpack_require__(6);
-	var Table = __webpack_require__(247);
-	var Properties = __webpack_require__(241);
+	var Table = __webpack_require__(246);
+	var Properties = __webpack_require__(240);
 	var util = __webpack_require__(175);
-	var BtnGroup = __webpack_require__(235);
+	var BtnGroup = __webpack_require__(234);
 	BTNS = [{name: 'Headers', active: true}, {name: 'TextView'}, {name: 'Cookies'}, {name: 'JSON'}, {name: 'Raw'}];
 	var COOKIE_HEADERS = ['Name', 'Value', 'Domain', 'Path', 'Http Only', 'Secure'];
 
 	var ResDetail = React.createClass({displayName: "ResDetail",
-		_onClickBtn: function(btn) {
-			this.setState({btn: btn});
+		getInitialState: function() {
+			return {
+				initedHeaders: false,
+				initedTextView: false,
+				initedCookies: false,
+				initedJSON: false,
+				initedRaw: false
+			};
+		},
+		shouldComponentUpdate: function(nextProps) {
+			var hide = util.getBoolean(this.props.hide);
+			return hide != util.getBoolean(nextProps.hide) || !hide;
+		},
+		onClickBtn: function(btn) {
+			var state = {btn: btn};
+			state['inited' + btn.name] = true;
+			this.setState(state);
 		},
 		render: function() {
-			
+			var btn = this.state.btn;
+			var name = btn && btn.name;
 			return (
-				React.createElement("div", {className: 'fill orient-vertical-box w-detail-response w-detail-show-response-' 
-					+ util.getProperty(this, 'state.btn.name', '').toLowerCase()}, 
-					React.createElement(BtnGroup, {onClick: this._onClickBtn, btns: BTNS}), 
-					React.createElement("div", {className: "w-detail-response-headers"}, 
-						React.createElement(Properties, null)
-					), 
-					React.createElement("textarea", {onKeyDown: util.preventDefault, readOnly: "readonly", className: "orient-vertical-box w-detail-response-textview"}), 
-					React.createElement("div", {className: "w-detail-response-cookies"}, 
-						React.createElement(Table, {head: COOKIE_HEADERS})
-					), 
-					React.createElement("div", {className: "w-detail-response-json"}), 
-					React.createElement("textarea", {onKeyDown: util.preventDefault, readOnly: "readonly", className: "orient-vertical-box w-detail-response-raw"})
+				React.createElement("div", {className: 'fill orient-vertical-box w-detail-content w-detail-response w-detail-show-response-' 
+					+ util.getProperty(this, 'state.btn.name', '').toLowerCase() 
+					+ (util.getBoolean(this.props.hide) ? ' hide' : '')}, 
+					React.createElement(BtnGroup, {onClick: this.onClickBtn, btns: BTNS}), 
+					this.state.initedHeaders ? React.createElement("div", {className: 'w-detail-response-headers' + (name == BTNS[0].name ? '' : ' hide')}, React.createElement(Properties, null)) : '', 
+					this.state.initedTextView ? React.createElement("textarea", {onKeyDown: util.preventDefault, readOnly: "readonly", className: 'orient-vertical-box w-detail-response-textview' + (name == BTNS[1].name ? '' : ' hide')}) : '', 
+					this.state.initedCookies ? React.createElement("div", {className: 'w-detail-response-cookies' + (name == BTNS[2].name ? '' : ' hide')}, React.createElement(Table, {head: COOKIE_HEADERS})) : '', 
+					this.state.initedJSON ? React.createElement("textarea", {onKeyDown: util.preventDefault, readOnly: "readonly", className: 'fill w-detail-response-json' + (name == BTNS[3].name ? '' : ' hide')}) : '', 
+					this.state.initedRaw ? React.createElement("textarea", {onKeyDown: util.preventDefault, readOnly: "readonly", className: 'fill w-detail-response-raw' + (name == BTNS[4].name ? '' : ' hide')}) : ''
 				)
 			);
 		}
@@ -45186,58 +45128,23 @@
 
 
 /***/ },
-/* 251 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-
-	// load the styles
-	var content = __webpack_require__(252);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(4)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../node_modules/css-loader/index.js!./res-detail.css", function() {
-				var newContent = require("!!./../node_modules/css-loader/index.js!./res-detail.css");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
-/* 252 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(3)();
-	// imports
-
-
-	// module
-	exports.push([module.id, ".w-detail-response-headers, .w-detail-response-textview, .w-detail-response-cookies\n, .w-detail-response-json, .w-detail-response-raw {display: none;}\n.w-detail-response textarea {padding: 5px; border: none;}\n.w-detail-show-response-headers .w-detail-response-headers, .w-detail-show-response-textview .w-detail-response-textview,\n.w-detail-show-response-cookies .w-detail-response-cookies, .w-detail-show-response-json .w-detail-response-json, \n.w-detail-show-response-raw .w-detail-response-raw {display:-webkit-box; display:-moz-box; display:box; -moz-box-flex:1; -webkit-box-flex:1; box-flex:1;}", ""]);
-
-	// exports
-
-
-/***/ },
-/* 253 */
+/* 250 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(254);
+	__webpack_require__(251);
 	var React = __webpack_require__(6);
+	var util = __webpack_require__(175);
 
 	var Timeline = React.createClass({displayName: "Timeline",
+		shouldComponentUpdate: function(nextProps) {
+			var hide = util.getBoolean(this.props.hide);
+			return hide != util.getBoolean(nextProps.hide) || !hide;
+		},
 		render: function() {
 			
 			return (
-					React.createElement("div", {className: "w-detail-timeline"}, 
+					React.createElement("div", {className: 'fill orient-vertical-box w-detail-content w-detail-timeline' + (util.getBoolean(this.props.hide) ? ' hide' : '')}, 
 						React.createElement("ul", null, 
 							React.createElement("li", null, 
 								React.createElement("span", {title: "Stalled: 0ms", className: "w-detail-timeline-stalled", style: {width: 0}}, "-1"), 
@@ -45269,13 +45176,13 @@
 	module.exports = Timeline;
 
 /***/ },
-/* 254 */
+/* 251 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(255);
+	var content = __webpack_require__(252);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -45295,7 +45202,7 @@
 	}
 
 /***/ },
-/* 255 */
+/* 252 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -45309,18 +45216,23 @@
 
 
 /***/ },
-/* 256 */
+/* 253 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(257);
+	__webpack_require__(254);
 	var React = __webpack_require__(6);
+	var util = __webpack_require__(175);
 	var Divider = __webpack_require__(176);
 
 	var Composer = React.createClass({displayName: "Composer",
+		shouldComponentUpdate: function(nextProps) {
+			var hide = util.getBoolean(this.props.hide);
+			return hide != util.getBoolean(nextProps.hide) || !hide;
+		},
 		render: function() {
 			return (
-				React.createElement("div", {className: "fill orient-vertical-box w-detail-composer"}, 
+				React.createElement("div", {className: 'fill orient-vertical-box w-detail-content w-detail-composer' + (util.getBoolean(this.props.hide) ? ' hide' : '')}, 
 					React.createElement("div", {className: "w-composer-url box"}, 
 						React.createElement("input", {type: "text", maxLength: "8192", placeholder: "url", className: "fill w-composer-input"}), 
 						React.createElement("select", {className: "form-control w-composer-method"}, 
@@ -45343,7 +45255,7 @@
 			          	), 
 						React.createElement("button", {className: "btn btn-primary w-composer-execute"}, "Execute")
 					), 
-					React.createElement(Divider, {leftWidth: (Math.max(window.innerHeight, 360) - 120) / 2, vertical: "true"}, 
+					React.createElement(Divider, {vertical: "true"}, 
 						React.createElement("textarea", {className: "fill w-composer-headers", placeholder: "headers"}), 
 						React.createElement("textarea", {className: "fill w-composer-body", placeholder: "body"})
 					)
@@ -45355,13 +45267,13 @@
 	module.exports = Composer;
 
 /***/ },
-/* 257 */
+/* 254 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(258);
+	var content = __webpack_require__(255);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -45381,7 +45293,7 @@
 	}
 
 /***/ },
-/* 258 */
+/* 255 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -45395,18 +45307,23 @@
 
 
 /***/ },
-/* 259 */
+/* 256 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(260);
+	__webpack_require__(257);
 	var React = __webpack_require__(6);
+	var util = __webpack_require__(175);
 
 	var Log = React.createClass({displayName: "Log",
+		shouldComponentUpdate: function(nextProps) {
+			var hide = util.getBoolean(this.props.hide);
+			return hide != util.getBoolean(nextProps.hide) || !hide;
+		},
 		render: function() {
 			
 			return (
-					React.createElement("div", {className: "w-detail-log"}, 
+					React.createElement("div", {className: 'fill orient-vertical-box w-detail-content w-detail-log' + (util.getBoolean(this.props.hide) ? ' hide' : '')}, 
 						React.createElement("ul", null, 
 							React.createElement("li", {className: "fatal"}, 
 								React.createElement("h5", null, "Level: FATAL"), 
@@ -45517,13 +45434,13 @@
 	module.exports = Log;
 
 /***/ },
-/* 260 */
+/* 257 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(261);
+	var content = __webpack_require__(258);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -45543,7 +45460,7 @@
 	}
 
 /***/ },
-/* 261 */
+/* 258 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -45557,12 +45474,12 @@
 
 
 /***/ },
-/* 262 */
+/* 259 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var $ = __webpack_require__(5);
-	var createCgi = __webpack_require__(263);
-	var NetworkModal = __webpack_require__(227);
+	var createCgi = __webpack_require__(260);
+	var NetworkModal = __webpack_require__(261);
 	var	MAX_COUNT = NetworkModal.MAX_COUNT;
 	var TIMEOUT = 10000;
 	var dataCallbacks = [];
@@ -45776,7 +45693,7 @@
 
 
 /***/ },
-/* 263 */
+/* 260 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var $ = __webpack_require__(5);
@@ -45844,15 +45761,223 @@
 	module.exports = create;
 
 /***/ },
-/* 264 */
+/* 261 */
+/***/ function(module, exports) {
+
+	var MAX_LENGTH = 360;
+	var MAX_COUNT = 2560;//不能超过MAX_LENGTH * 2，否则order衔接会有问题
+
+	function NetworkModal(list) {
+		this._list = updateOrder(list);
+		this.list =list.slice(0, MAX_LENGTH);
+	}
+
+	NetworkModal.MAX_COUNT = MAX_COUNT;
+
+	var proto = NetworkModal.prototype;
+
+	/**
+	 * 默认根据url过滤
+	 * url[u]:根据url过滤
+	 * content[c]: 根据content过滤
+	 * headers[h]: 根据headers过滤
+	 * ip[i]: 根据ip过滤
+	 * status[result]: 根据status过滤
+	 * method[m]: 根据method过滤
+	 */
+	proto.search = function(keyword) {
+		this._type = 'url';
+		this._keyword = typeof keyword != 'string' ? '' : keyword.trim();
+		if (this._keyword && /^(url|u|content|c|headers|h|ip|i|status|result|s|r|method|m):(.*)$/.test(keyword)) {
+			this._type = RegExp.$1;
+			this._keyword = RegExp.$2.trim();
+		}
+		this.filter();
+		return !this._keyword;
+	};
+
+	proto.filter = function() {
+		var keyword = this._keyword;
+		var list = this.list;
+		if (!keyword) {
+			list.forEach(function(item) {
+				item.hide = false;
+			});
+			return;
+		}
+		
+		switch(this._type) {
+			case 'c':
+			case 'content':
+				list.forEach(function(item) {
+					var reqBody = item.req.body;
+					var resBody = item.res.body;
+					item.hide = (!reqBody || reqBody.indexOf(keyword) == -1) && 
+					 			(!resBody || resBody.indexOf(keyword) == -1);
+				});
+				break;
+			case 'headers':
+			case 'h':
+				list.forEach(function(item) {
+					item.hide = !inObject(item.req.headers, keyword) 
+								&& !inObject(item.res.headers, keyword);
+				});
+				break;
+			case 'ip':
+			case 'i':
+				list.forEach(function(item) {
+					var ip = item.req.ip || '';
+					var host = item.res.ip || '';
+					item.hide = ip.indexOf(keyword) == -1 
+								&& host.indexOf(keyword) == -1;
+				});
+				break;
+			case 'status':
+			case 's':
+			case 'result':
+			case 'r':
+				list.forEach(function(item) {
+					item.hide = item.res.statusCode == null ? true : 
+						(item.res.statusCode + '').indexOf(keyword) == -1;
+				});
+				break;
+			case 'method':
+			case 'm':
+				keyword = keyword.toUpperCase();
+				list.forEach(function(item) {
+					item.hide = (item.req.method || '').indexOf(keyword) == -1;
+				});
+				break;
+			default:
+				keyword = keyword.toLowerCase();
+				list.forEach(function(item) {
+					item.hide = item.url.toLowerCase().indexOf(keyword) == -1;
+				});
+		}
+		return list;
+	}
+
+	function inObject(obj, keyword) {
+		for (var i in obj) {
+			if (i.indexOf(keyword) != -1) {
+				return true;
+			}
+			var value = obj[i];
+			if (typeof value == 'string' 
+					&& value.indexOf(keyword) != -1) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+
+	proto.clear = function clear() {
+		this._list.splice(0, this.list.length);
+		this.update();
+		return this;
+	};
+
+	proto.update = function(scrollAtBottom) {
+		updateOrder(this._list);
+		if (scrollAtBottom) {
+			var exceed = this._list.length - MAX_LENGTH;
+			if (exceed > 0) {
+				this._list.splice(0, Math.min(exceed, MAX_LENGTH - 1));
+			}
+		}
+		
+		this.list = this._list.slice(0, MAX_LENGTH);
+		this.filter();
+		return this._list.length > MAX_LENGTH;
+	};
+
+	proto.getSelected = function() {
+		
+		return this.getActive();
+	};
+
+	proto.getActive = function() {
+		for (var i = 0, len = this.list; i < len; i++) {
+			var item = this.list[i];
+			if (item.active) {
+				return item;
+			}
+		}
+		
+		return this.getSelectedList()[0];
+	};
+
+	proto.setSelected = function(item, selected) {
+		item.selected = selected !== false;
+	};
+
+	proto.getSelectedList = function() {
+		
+		return this.list.filter(function(item) {
+			return !item.hide && item.selected;
+		});
+	};
+
+	proto.setSelectedList = function(startId, endId) {
+		if (!startId || !endId) {
+			return;
+		}
+		
+		var selected, item;
+		for (var i = 0, len = this.list.length; i < len; i++) {
+			item = this.list[i];
+			if (item.id == startId) {
+				selected = !selected;
+				item.selected = true;
+			} else {
+				item.selected = selected;
+			}
+			
+			if (item.id == endId) {
+				selected = !selected;
+			}
+		}
+	};
+
+	proto.clearSelection = function() {
+		this.list.forEach(function(item) {
+			item.selected = false;
+		});
+	};
+
+	proto.clearActive = function() {
+		this.list.forEach(function(item) {
+			item.active = false;
+		});
+	};
+
+	function updateOrder(list) {
+		var len = list.length;
+		if (len && !list[len - 1].order) {
+			var order = list[0].order || 1;
+			list.forEach(function(item, i) {
+				item.order = order + i;
+			});
+		}
+		
+		return list;
+	}
+
+	module.exports = NetworkModal;
+
+
+
+/***/ },
+/* 262 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(265);
+	__webpack_require__(263);
 	var $ = window.jQuery = __webpack_require__(5); //for bootstrap
-	__webpack_require__(267);
+	__webpack_require__(265);
 	var React = __webpack_require__(6);
-	var dataCenter = __webpack_require__(262);
+	var dataCenter = __webpack_require__(259);
 	var dialog;
 
 	function createDialog(version) {
@@ -45901,13 +46026,13 @@
 	module.exports = About;
 
 /***/ },
-/* 265 */
+/* 263 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(266);
+	var content = __webpack_require__(264);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -45927,7 +46052,7 @@
 	}
 
 /***/ },
-/* 266 */
+/* 264 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -45941,7 +46066,7 @@
 
 
 /***/ },
-/* 267 */
+/* 265 */
 /***/ function(module, exports) {
 
 	/*!
@@ -48310,15 +48435,15 @@
 
 
 /***/ },
-/* 268 */
+/* 266 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(269);
-	var $ = window.jQuery = __webpack_require__(5); //for bootstrap
 	__webpack_require__(267);
+	var $ = window.jQuery = __webpack_require__(5); //for bootstrap
+	__webpack_require__(265);
 	var React = __webpack_require__(6);
-	var dataCenter = __webpack_require__(262);
+	var dataCenter = __webpack_require__(259);
 	var dialog;
 
 	function createDialog() {
@@ -48379,34 +48504,36 @@
 		componentWillMount: function() {
 			var self = this;
 			dataCenter.on('serverInfo', function(data) {
+				self.updateServerInfo(data);
 				self.setState({server: data});
 			});
 		},
 		showServerInfo: function() {
-			var server = this.state.server;
-			if (!server) {
-				return;
-			}
+			this.updateServerInfo(this.state.server);
+			dialog.modal('show');
+		},
+		updateServerInfo: function(server) {
 			var info = [];
-			if (server.host) {
-				info.push('<h5>Host: ' + server.host + '</h5>');
-			}
-			if (server.port) {
-				info.push('<h5>Port: ' + server.port + '</h5>');
-			}
-			if (server.ipv4.length) {
-				info.push('<h5>IPv4:</h5>');
-				info.push('<p>' + server.ipv4.join('<br/>') + '</p>');
-			}
-			if (server.ipv4.length) {
-				info.push('<h5>IPv6:</h5>');
-				info.push('<p>' + server.ipv6.join('<br/>') + '</p>');
+			if (server) {
+				if (server.host) {
+					info.push('<h5>Host: ' + server.host + '</h5>');
+				}
+				if (server.port) {
+					info.push('<h5>Port: ' + server.port + '</h5>');
+				}
+				if (server.ipv4.length) {
+					info.push('<h5>IPv4:</h5>');
+					info.push('<p>' + server.ipv4.join('<br/>') + '</p>');
+				}
+				if (server.ipv6.length) {
+					info.push('<h5>IPv6:</h5>');
+					info.push('<p>' + server.ipv6.join('<br/>') + '</p>');
+				}
 			}
 			
 			createDialog().find('.w-online-dialog-ctn').html(info.join(''));
-			dialog.find('.w-ip').prop('placeholder', server.ipv4[0] || '127.0.0.1');
-			dialog.find('.w-port').prop('placeholder', server.port || '8899');
-			dialog.modal('show');
+			dialog.find('.w-ip').prop('placeholder', server && server.ipv4[0] || '127.0.0.1');
+			dialog.find('.w-port').prop('placeholder', server && server.port || '8899');
 		},
 		render: function() {
 			var info = [];
@@ -48441,13 +48568,13 @@
 	module.exports = Online;
 
 /***/ },
-/* 269 */
+/* 267 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(270);
+	var content = __webpack_require__(268);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -48467,7 +48594,7 @@
 	}
 
 /***/ },
-/* 270 */
+/* 268 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -48481,11 +48608,11 @@
 
 
 /***/ },
-/* 271 */
+/* 269 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(272);
+	__webpack_require__(270);
 	var React = __webpack_require__(6);
 	var util = __webpack_require__(175);
 
@@ -48528,13 +48655,13 @@
 
 
 /***/ },
-/* 272 */
+/* 270 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(273);
+	var content = __webpack_require__(271);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -48554,7 +48681,7 @@
 	}
 
 /***/ },
-/* 273 */
+/* 271 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -48563,6 +48690,152 @@
 
 	// module
 	exports.push([module.id, ".w-menu-item {position: absolute; background: #fff; border: 1px solid #ccc; z-index: 2; top: 30px; border-radius: 2px; outline: none;}\n.w-menu-item a {display: block; max-width: 160px; text-overflow: ellipsis; overflow: hidden; padding: 0 6px; font-weight: normal; white-space: nowrap; margin: 0!important;}\n.w-menu-item .w-menu-options {border-top: 1px dashed #ccc; max-height: 320px; overflow-x: hidden; overflow-y: auto;}\n.w-menu-item a .glyphicon {margin-right: 8px; font-size: 12px;}\n.w-menu-item a .glyphicon-ok {color: #5bbd72;}\n", ""]);
+
+	// exports
+
+
+/***/ },
+/* 272 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(273);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(4)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../node_modules/css-loader/index.js!./res-detail.css", function() {
+				var newContent = require("!!./../node_modules/css-loader/index.js!./res-detail.css");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 273 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(3)();
+	// imports
+
+
+	// module
+	exports.push([module.id, ".w-detail-response textarea {padding: 5px; border: none;}\n", ""]);
+
+	// exports
+
+
+/***/ },
+/* 274 */,
+/* 275 */,
+/* 276 */,
+/* 277 */,
+/* 278 */,
+/* 279 */,
+/* 280 */,
+/* 281 */,
+/* 282 */,
+/* 283 */,
+/* 284 */,
+/* 285 */,
+/* 286 */,
+/* 287 */,
+/* 288 */,
+/* 289 */,
+/* 290 */,
+/* 291 */,
+/* 292 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(163);
+	__webpack_require__(293);
+	var $ = __webpack_require__(5);
+	var util = __webpack_require__(175);
+	var React = __webpack_require__(6);
+
+	var FilterInput = React.createClass({displayName: "FilterInput",
+		getInitialState: function() {
+			return {};
+		},
+		onFilterChange: function(e) {
+			var value = e.target.value;
+			this.props.onChange && this.props.onChange(value);
+			this.setState({filterText: value});
+		},
+		onFilterKeyDown: function(e) {
+			if ((e.ctrlKey || e.metaKey) && e.keyCode == 68) {
+				this.clearFilterText();
+				e.preventDefault();
+				e.stopPropagation();
+			}
+		},
+		clearFilterText: function() {
+			this.props.onChange && this.props.onChange('');
+			this.setState({filterText: ''});
+		},
+		render: function() {
+			
+			return (
+					React.createElement("div", {className: "w-filter-con"}, 
+						React.createElement("input", {type: "text", value: this.state.filterText, 
+						onChange: this.onFilterChange, 
+						onKeyDown: this.onFilterKeyDown, 
+						className: "w-filter-input", maxLength: "128", placeholder: "type filter text"}), 
+						React.createElement("button", {onMouseDown: util.preventBlur, 
+						onClick: this.clearFilterText, 
+						style: {display: this.state.filterText ? 'block' :  'none'}, type: "button", className: "close", title: "Ctrl[Command]+D"}, React.createElement("span", {"aria-hidden": "true"}, "×"))
+					)
+			);
+		}
+	});
+
+	module.exports = FilterInput;
+
+/***/ },
+/* 293 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(294);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(4)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../node_modules/css-loader/index.js!./filter-input.css", function() {
+				var newContent = require("!!./../node_modules/css-loader/index.js!./filter-input.css");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 294 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(3)();
+	// imports
+
+
+	// module
+	exports.push([module.id, ".w-filter-con {position: relative;}\n.w-filter-con .close {position: absolute; right: 5px; top: 5px; color: #fff; line-height: 16px; display: none;}", ""]);
 
 	// exports
 
