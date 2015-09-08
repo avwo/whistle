@@ -55,6 +55,7 @@
 	var MenuItem = __webpack_require__(274);
 	var dataCenter = __webpack_require__(264);
 	var util = __webpack_require__(175);
+	var events = __webpack_require__(277);
 
 	function getPageName() {
 		return location.hash.substring(1) || location.href.replace(/[#?].*$/, '').replace(/.*\//, '');
@@ -168,6 +169,10 @@
 			
 			dataCenter.on('serverInfo', function(data) {
 				self.serverInfo = data;
+			});
+			
+			events.on('executeComposer', function() {
+				self.autoScroll && self.autoScroll();
 			});
 		},
 		preventBlur: function(e) {
@@ -549,21 +554,25 @@
 			if (!modal) {
 				return;
 			}
-			var item = modal.getSelected();
-			if (!item || item.isHttps) {
+			var list = modal.getSelectedList();
+			if (!list.length) {
 				return;
 			}
 			
-			dataCenter.composer({
-				url: item.url,
-				headers: item.req.headers,
-				method: item.req.method,
-				body: item.reqError ? '' : item.req.body
+			list.forEach(function(item) {
+				if (!item.isHttps) {
+					dataCenter.composer({
+						url: item.url,
+						headers: JSON.stringify(item.req.headers),
+						method: item.req.method,
+						body: item.reqError ? '' : item.req.body
+					});
+				}
 			});
 			this.autoScroll && this.autoScroll();
 		},
 		composer: function() {
-			
+			events.trigger('composer');
 		},
 		setFilter: function(e) {
 			if (e.keyCode != 13 && e.type != 'click') {
@@ -30909,7 +30918,7 @@
 
 
 	// module
-	exports.push([module.id, "html, body, .main {margin: 0; padding: 0; width: 100%; height: 100%;}\n.main {min-width: 960px; min-height: 360px;}\n::-webkit-scrollbar{ width:10px; height:10px; }\n::-webkit-scrollbar-button{ width:10px;height:1px; }\n::-webkit-scrollbar-thumb{ background-clip:padding-box; background-color:rgba(0,0,0,.5); border-radius:8px; min-height: 30px;}\n::-webkit-scrollbar-thumb:hover{ background-clip:padding-box; background-color:rgba(0,0,0,.7); border-radius:8px;}\n::-webkit-scrollbar-track,::-webkit-scrollbar-thumb { border-left:2px solid transparent; border-right:2px solid transparent;}\n::-webkit-scrollbar-track:hover{ background-clip:padding-box; background-color:rgba(0,0,0,.15);}\n\n.w-filter-input {width: 100%; background: rgba(0, 0, 0, 0.8); height: 30px; color: #fff; padding: 2px 5px; border: none; border-top: 1px solid #ccc; border-bottom: 1px solid #ccc;}\n.shadow {border: 1px solid rgba(0,0,0,.15)!important; -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175)!important; box-shadow: 0 6px 12px rgba(0,0,0,.175)!important;}\ntextarea[readonly] {outline: none;}\ntextarea {resize: none; display: block;}\n.hide {display: none!important;}\n.box {display:-webkit-box; display:-moz-box; display:box;}\n.orient-vertical-box {-moz-box-orient:vertical; -webkit-box-orient:vertical; box-orient:vertical; display:-moz-box; display:-webkit-box; display: box;}\n.fill {-moz-box-flex:1; -webkit-box-flex:1; box-flex:1;}\n.box>.fill {width: 0;}\n.orient-vertical-box>.fill {height: 0;} /**不加这个滚动会有问题**/\n.table {table-layout: fixed; margin: 0!important;}\n\n.modal-dialog .modal-body, .modal-dialog .modal-footer {padding: 10px;}\n.modal-dialog .btn {padding: 5px 10px;}\n\n.cm-header {text-decoration: line-through;}\n.cm-s-ambiance ::-webkit-scrollbar-thumb, \n.cm-s-blackboard ::-webkit-scrollbar-thumb, \n.cm-s-cobalt ::-webkit-scrollbar-thumb, \n.cm-s-erlang-dark ::-webkit-scrollbar-thumb, \n.cm-s-lesser-dark ::-webkit-scrollbar-thumb, \n.cm-s-midnight ::-webkit-scrollbar-thumb, \n.cm-s-monokai ::-webkit-scrollbar-thumb, \n.cm-s-night ::-webkit-scrollbar-thumb, \n.cm-s-dark ::-webkit-scrollbar-thumb, \n.cm-s-twilight ::-webkit-scrollbar-thumb, \n.cm-s-vibrant-ink ::-webkit-scrollbar-thumb, \n.cm-s-xq-dark ::-webkit-scrollbar-thumb {background-color:rgba(255,255,255,.5);}\n\n.cm-s-ambiance ::-webkit-scrollbar-thumb:hover, \n.cm-s-blackboard ::-webkit-scrollbar-thumb:hover, \n.cm-s-cobalt ::-webkit-scrollbar-thumb:hover, \n.cm-s-erlang-dark ::-webkit-scrollbar-thumb:hover, \n.cm-s-lesser-dark ::-webkit-scrollbar-thumb:hover, \n.cm-s-midnight ::-webkit-scrollbar-thumb:hover, \n.cm-s-monokai ::-webkit-scrollbar-thumb:hover, \n.cm-s-night ::-webkit-scrollbar-thumb:hover, \n.cm-s-dark ::-webkit-scrollbar-thumb:hover, \n.cm-s-twilight ::-webkit-scrollbar-thumb:hover, \n.cm-s-vibrant-ink ::-webkit-scrollbar-thumb:hover, \n.cm-s-xq-dark ::-webkit-scrollbar-thumb:hover {background-color:rgba(255,255,255,.7);}\n\n.cm-s-ambiance ::-webkit-scrollbar-track:hover, \n.cm-s-blackboard ::-webkit-scrollbar-track:hover, \n.cm-s-cobalt ::-webkit-scrollbar-track:hover, \n.cm-s-erlang-dark ::-webkit-scrollbar-track:hover, \n.cm-s-lesser-dark ::-webkit-scrollbar-track:hover, \n.cm-s-midnight ::-webkit-scrollbar-track:hover, \n.cm-s-monokai ::-webkit-scrollbar-track:hover, \n.cm-s-night ::-webkit-scrollbar-track:hover, \n.cm-s-dark ::-webkit-scrollbar-track:hover, \n.cm-s-twilight ::-webkit-scrollbar-track:hover, \n.cm-s-vibrant-ink ::-webkit-scrollbar-track:hover, \n.cm-s-xq-dark ::-webkit-scrollbar-track:hover {background-color:rgba(255,255,255,.15);}\n\n\n", ""]);
+	exports.push([module.id, "html, body, .main {margin: 0; padding: 0; width: 100%; height: 100%;}\n.main {min-width: 960px; min-height: 360px;}\n::-webkit-scrollbar{ width:10px; height:10px; }\n::-webkit-scrollbar-button{ width:10px;height:1px; }\n::-webkit-scrollbar-thumb{ background-clip:padding-box; background-color:rgba(0,0,0,.5); border-radius:8px; min-height: 30px;}\n::-webkit-scrollbar-thumb:hover{ background-clip:padding-box; background-color:rgba(0,0,0,.7); border-radius:8px;}\n::-webkit-scrollbar-track,::-webkit-scrollbar-thumb { border-left:2px solid transparent; border-right:2px solid transparent;}\n::-webkit-scrollbar-track:hover{ background-clip:padding-box; background-color:rgba(0,0,0,.15);}\n\n.w-filter-input {width: 100%; background: rgba(0, 0, 0, 0.8); height: 30px; color: #fff; padding: 2px 5px; border: none; border-top: 1px solid #ccc; border-bottom: 1px solid #ccc;}\n.shadow {border: 1px solid rgba(0,0,0,.15)!important; -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175)!important; box-shadow: 0 6px 12px rgba(0,0,0,.175)!important;}\ntextarea[readonly] {outline: none;}\ntextarea {resize: none; display: block; font-size: 12px;}\n.hide {display: none!important;}\n.box {display:-webkit-box; display:-moz-box; display:box;}\n.orient-vertical-box {-moz-box-orient:vertical; -webkit-box-orient:vertical; box-orient:vertical; display:-moz-box; display:-webkit-box; display: box;}\n.fill {-moz-box-flex:1; -webkit-box-flex:1; box-flex:1;}\n.box>.fill {width: 0;}\n.orient-vertical-box>.fill {height: 0;} /**不加这个滚动会有问题**/\n.table {table-layout: fixed; margin: 0!important;}\n\n.modal-dialog .modal-body, .modal-dialog .modal-footer {padding: 10px;}\n.modal-dialog .btn {padding: 5px 10px;}\n\n.cm-header {text-decoration: line-through;}\n.cm-s-ambiance ::-webkit-scrollbar-thumb, \n.cm-s-blackboard ::-webkit-scrollbar-thumb, \n.cm-s-cobalt ::-webkit-scrollbar-thumb, \n.cm-s-erlang-dark ::-webkit-scrollbar-thumb, \n.cm-s-lesser-dark ::-webkit-scrollbar-thumb, \n.cm-s-midnight ::-webkit-scrollbar-thumb, \n.cm-s-monokai ::-webkit-scrollbar-thumb, \n.cm-s-night ::-webkit-scrollbar-thumb, \n.cm-s-dark ::-webkit-scrollbar-thumb, \n.cm-s-twilight ::-webkit-scrollbar-thumb, \n.cm-s-vibrant-ink ::-webkit-scrollbar-thumb, \n.cm-s-xq-dark ::-webkit-scrollbar-thumb {background-color:rgba(255,255,255,.5);}\n\n.cm-s-ambiance ::-webkit-scrollbar-thumb:hover, \n.cm-s-blackboard ::-webkit-scrollbar-thumb:hover, \n.cm-s-cobalt ::-webkit-scrollbar-thumb:hover, \n.cm-s-erlang-dark ::-webkit-scrollbar-thumb:hover, \n.cm-s-lesser-dark ::-webkit-scrollbar-thumb:hover, \n.cm-s-midnight ::-webkit-scrollbar-thumb:hover, \n.cm-s-monokai ::-webkit-scrollbar-thumb:hover, \n.cm-s-night ::-webkit-scrollbar-thumb:hover, \n.cm-s-dark ::-webkit-scrollbar-thumb:hover, \n.cm-s-twilight ::-webkit-scrollbar-thumb:hover, \n.cm-s-vibrant-ink ::-webkit-scrollbar-thumb:hover, \n.cm-s-xq-dark ::-webkit-scrollbar-thumb:hover {background-color:rgba(255,255,255,.7);}\n\n.cm-s-ambiance ::-webkit-scrollbar-track:hover, \n.cm-s-blackboard ::-webkit-scrollbar-track:hover, \n.cm-s-cobalt ::-webkit-scrollbar-track:hover, \n.cm-s-erlang-dark ::-webkit-scrollbar-track:hover, \n.cm-s-lesser-dark ::-webkit-scrollbar-track:hover, \n.cm-s-midnight ::-webkit-scrollbar-track:hover, \n.cm-s-monokai ::-webkit-scrollbar-track:hover, \n.cm-s-night ::-webkit-scrollbar-track:hover, \n.cm-s-dark ::-webkit-scrollbar-track:hover, \n.cm-s-twilight ::-webkit-scrollbar-track:hover, \n.cm-s-vibrant-ink ::-webkit-scrollbar-track:hover, \n.cm-s-xq-dark ::-webkit-scrollbar-track:hover {background-color:rgba(255,255,255,.15);}\n\n\n", ""]);
 
 	// exports
 
@@ -31156,6 +31165,75 @@
 		if (top > 0) {
 			container.scrollTop(container.scrollTop() + top + 2);
 		}
+	};
+
+	exports.parseQueryString = function(str, delimiter, seperator, decode) {
+		var result = {};
+		if (!str || !(str = str.trim())) {
+			return result;
+		}
+		delimiter = delimiter || '&';
+		seperator = seperator || '=';
+		str.split(delimiter).forEach(function(pair) {
+			pair = pair.split(seperator);
+			var key = pair[0];
+			var value = pair.slice(1).join('=');
+			if (key || value) {
+				try {
+					value = decode ? decode(value) : value;
+				} catch(e) {}
+				
+				result[key] = value;
+			}
+		});
+		return result;
+	}
+
+	exports.objectToString = function(obj) {
+		var result = [];
+		for (var i in obj) {
+			result.push(i + ': ' + (obj[i] || ''))
+		}
+		return result.join('\r\n');
+	};
+
+	function removeProtocol(url) {
+		var index = url.indexOf('://');
+		return index == -1 ? url : url.substring(index + 3);
+	}
+
+	exports.getPath = function(url) {
+		url = removeProtocol(url);
+		var index = url.indexOf('/');
+		return index == -1 ? '/' : url.substring(index);
+	};
+
+	exports.stringify = function(str) {
+		if (!str || !(str = str.trim())) {
+			return '';
+		}
+		if (!/^[\{\[]/.test(str)) {
+			var index = str.indexOf('(');
+			if (index != -1) {
+				str = str.substring(index + 1);
+				index = str.lastIndexOf(')');
+				str = index == -1 ? '' : str.substring(0, index);
+			}
+		}
+		if (str) {
+			try {
+				str = JSON.parse(str);
+				return str ? JSON.stringify(str, null, '    ') : '';
+			} catch(e) {}
+		}
+		
+		return '';
+	};
+
+	exports.getFilename = function(url) {
+		url = removeProtocol(url.replace(/[?#].*/, ''));
+		var index = url.lastIndexOf('/');
+		return index != -1 && url.substring(index + 1) || '/';
 	};
 
 
@@ -44333,6 +44411,7 @@
 	__webpack_require__(163);
 	var React = __webpack_require__(6);
 	var util = __webpack_require__(175);
+	var events = __webpack_require__(277);
 	var Divider = __webpack_require__(176);
 	var ReqData = __webpack_require__(231);
 	var Detail = __webpack_require__(234);
@@ -44347,19 +44426,15 @@
 			this.setState({activeItem: item});
 		},
 		onDoubleClick: function() {
-			this.setState({showFirstTab: true});
+			events.trigger('showOverview');
 		},
 		render: function() {
 			var modal = this.props.modal;
-			var showFirstTab = false;
-			if (this.state && this.state.showFirstTab) {
-				this.state.showFirstTab = false;
-				showFirstTab = true;
-			}
+			
 			return (
 				React.createElement(Divider, {hide: this.props.hide, rightWidth: "560"}, 
 					React.createElement(ReqData, {modal: modal, onClick: this.onClick, onDoubleClick: this.onDoubleClick}), 
-					React.createElement(Detail, {showFirstTab: showFirstTab, modal: modal})
+					React.createElement(Detail, {modal: modal})
 				)		
 			);
 		}
@@ -44504,6 +44579,8 @@
 			var self = this;
 			var modal = self.props.modal;
 			var list = modal ? modal.list : [];
+			var hasKeyword = modal && modal.hasKeyword();
+			var order = 0;
 			
 			return (
 					React.createElement("div", {className: "fill w-req-data-con orient-vertical-box"}, 
@@ -44539,7 +44616,7 @@
 							    		  				className: getClassName(item), 
 							    		  				onClick: function(e) {self.onClick(e, item);}, 
 							    		  				onDoubleClick: self.props.onDoubleClick}, 
-							    		  				React.createElement("th", {className: "order", scope: "row"}, item.order), 			        
+							    		  				React.createElement("th", {className: "order", scope: "row"}, hasKeyword && !item.hide ? ++order : item.order), 			        
 							    		  				React.createElement("td", {className: "result"}, item.res.statusCode || '-'), 			        
 							    		  				React.createElement("td", {className: "protocol"}, util.getProtocol(item.url)), 			        
 							    		  				React.createElement("td", {className: "method"}, req.method), 			        
@@ -44611,6 +44688,7 @@
 	__webpack_require__(235);
 	var React = __webpack_require__(6);
 	var util = __webpack_require__(175);
+	var events = __webpack_require__(277);
 	var BtnGroup = __webpack_require__(237);
 	var Overview = __webpack_require__(240);
 	var ReqDetail = __webpack_require__(246);
@@ -44650,9 +44728,17 @@
 				initedLog: false
 			};
 		},
+		componentDidMount: function() {
+			var self = this;
+			events.on('showOverview', function() {
+				self.toggleTab(TABS[0]);
+			}).on('composer', function() {
+				self.toggleTab(TABS[4]);
+			});
+		},
 		toggleTab: function(tab) {
 			this.selectTab(tab);
-			this.setState({});
+			this.setState({tab: tab});
 		}, 
 		selectTab: function(tab) {
 			tab.active = true;
@@ -44664,7 +44750,7 @@
 			var selectedList = modal && modal.getSelectedList();
 			var activeItem = modal && modal.getActive();
 			var curTab = this.state.tab;
-			if (!curTab && activeItem || this.props.showFirstTab) {
+			if (!curTab && activeItem) {
 				curTab = TABS[0];
 				TABS.forEach(function(tab) {
 					tab.active = false;
@@ -44679,8 +44765,8 @@
 					this.state.initedOverview ? React.createElement(Overview, {modal: activeItem, hide: name != TABS[0].name}) : '', 
 					this.state.initedRequest ? React.createElement(ReqDetail, {modal: activeItem, hide: name != TABS[1].name}) : '', 
 					this.state.initedResponse ? React.createElement(ResDetail, {modal: activeItem, hide: name != TABS[2].name}) : '', 
-					this.state.initedTimeline ? React.createElement(Timeline, {hide: name != TABS[3].name}) : '', 
-					this.state.initedComposer ? React.createElement(Composer, {hide: name != TABS[4].name}) : '', 
+					this.state.initedTimeline ? React.createElement(Timeline, {modal: modal, hide: name != TABS[3].name}) : '', 
+					this.state.initedComposer ? React.createElement(Composer, {modal: activeItem, hide: name != TABS[4].name}) : '', 
 					this.state.initedLog ? React.createElement(Log, {hide: name != TABS[5].name}) : ''
 				)
 			);
@@ -44830,9 +44916,9 @@
 	var React = __webpack_require__(6);
 	var util = __webpack_require__(175);
 	var Properties = __webpack_require__(243);
-	var OVERVIEW = ['Url', 'Method', 'Status Code', 'Host IP', 'Client IP', 'Request Length', 'Content Length'
-	                      , 'Start Date', 'DNS Lookup', 'Request Sent', 'Content Download'];
-	var OVERVIEW_PROPS = ['url', 'req.method', 'res.statusCode', 'res.ip', 'req.ip', 'req.size', 'res.size'];
+	var OVERVIEW = ['Url', 'Method', 'Http Version', 'Status Code', 'Host IP', 'Client IP', 'Request Length', 'Content Length'
+	                      , 'Start Date', 'DNS Lookup', 'Request Sent', 'Response Headers', 'Content Download'];
+	var OVERVIEW_PROPS = ['url', 'req.method', 'req.httpVersion', 'res.statusCode', 'res.ip', 'req.ip', 'req.size', 'res.size'];
 	/**
 	 * statusCode://, redirect://[statusCode:]url, [req, res]speed://, 
 	 * [req, res]delay://, method://, [req, res][content]Type://自动lookup, 
@@ -44875,17 +44961,22 @@
 						var lastIndex = OVERVIEW.length - 1;
 						var time;
 						switch(name) {
-							case OVERVIEW[lastIndex - 3]:
+							case OVERVIEW[lastIndex - 4]:
 								time = new Date(modal.startTime).toLocaleString();
 								break;
-							case OVERVIEW[lastIndex - 2]:
+							case OVERVIEW[lastIndex - 3]:
 								if (modal.dnsTime) {
 									time = modal.dnsTime - modal.startTime + 'ms'
 								}
 								break;
-							case OVERVIEW[lastIndex - 1]:
+							case OVERVIEW[lastIndex - 2]:
 								if (modal.requestTime) {
 									time = modal.requestTime - modal.startTime + 'ms'
+								}
+								break;
+							case OVERVIEW[lastIndex - 1]:
+								if (modal.responseTime) {
+									time = modal.responseTime - modal.startTime + 'ms'
 								}
 								break;
 							case OVERVIEW[lastIndex]:
@@ -44972,16 +45063,29 @@
 			var modal = this.props.modal || {};
 			return (
 					React.createElement("table", {className: "table w-properties"}, 
-						
-							Object.keys(modal).map(function(name) {
-								return (
-										React.createElement("tr", {key: name}, 
-											React.createElement("th", null, name), 
-											React.createElement("td", null, modal[name])
-										)	
-								);
-							})
-						
+						React.createElement("tbody", null, 
+							
+								Object.keys(modal).map(function(name) {
+									var value = modal[name];
+									
+									return (Array.isArray(value) ?
+											value.map(function(val, i) {
+												return (
+													React.createElement("tr", {key: i}, 
+														React.createElement("th", null, name), 
+														React.createElement("td", null, val)
+													)		
+												);
+											})
+											: 
+											React.createElement("tr", {key: name}, 
+												React.createElement("th", null, name), 
+												React.createElement("td", null, value)
+											)	
+									);
+								})
+							
+						)
 					)
 			);
 		}
@@ -45073,17 +45177,32 @@
 				this.selectBtn(btn);
 			}
 			var name = btn && btn.name;
+			var modal = this.props.modal;
+			var req, headers, cookies, body, raw, query, form;
+			if (modal) {
+				req = modal.req
+				body = req.body || '';
+				headers = req.headers;
+				cookies = util.parseQueryString(headers.cookie, /;\s*/g, null, decodeURIComponent);
+				query = util.parseQueryString(modal.url.split('#')[0].split('?')[1], null, null, decodeURIComponent);
+				if (headers['content-type'] == 'application/x-www-form-urlencoded') {
+					form = util.parseQueryString(req.body);
+				}
+				
+				raw = [req.method, util.getPath(modal.url), 'HTTP/' + (req.httpVersion || '1.1')].join(' ')
+						+ '\r\n' + util.objectToString(headers) + '\r\n\r\n' + body;
+			}
 			return (
 				React.createElement("div", {className: 'fill orient-vertical-box w-detail-content w-detail-request' + (util.getBoolean(this.props.hide) ? ' hide' : '')}, 
 					React.createElement(BtnGroup, {onClick: this.onClickBtn, btns: BTNS}), 
-					this.state.initedHeaders ? React.createElement("div", {className: 'w-detail-request-headers' + (name == BTNS[0].name ? '' : ' hide')}, React.createElement(Properties, null)) : '', 
-					this.state.initedTextView ? React.createElement("textarea", {onKeyDown: util.preventDefault, readOnly: "readonly", className: 'orient-vertical-box w-detail-request-textview' + (name == BTNS[1].name ? '' : ' hide')}) : '', 
-					this.state.initedCookies ? React.createElement("div", {className: 'w-detail-request-cookies' + (name == BTNS[2].name ? '' : ' hide')}, React.createElement(Properties, null)) : '', 
+					this.state.initedHeaders ? React.createElement("div", {className: 'fill w-detail-request-headers' + (name == BTNS[0].name ? '' : ' hide')}, React.createElement(Properties, {modal: headers})) : '', 
+					this.state.initedTextView ? React.createElement("textarea", {value: body, onKeyDown: util.preventDefault, readOnly: "readonly", className: 'fill w-detail-request-textview' + (name == BTNS[1].name ? '' : ' hide')}) : '', 
+					this.state.initedCookies ? React.createElement("div", {className: 'fill w-detail-request-cookies' + (name == BTNS[2].name ? '' : ' hide')}, React.createElement(Properties, {modal: cookies})) : '', 
 					this.state.initedWebForms ? React.createElement(Divider, {vertical: "true", className: 'w-detail-request-webforms' + (name == BTNS[3].name ? '' : ' hide')}, 
-						React.createElement(Properties, null), 
-						React.createElement(Properties, null)
+						React.createElement("div", {className: "fill w-detail-request-query"}, React.createElement(Properties, {modal: query})), 
+						React.createElement("div", {className: "fill w-detail-request-form"}, React.createElement(Properties, {modal: form}))
 					) : '', 
-					this.state.initedRaw ? React.createElement("textarea", {onKeyDown: util.preventDefault, readOnly: "readonly", className: 'fill w-detail-request-raw' + (name == BTNS[4].name ? '' : ' hide')}) : ''
+					this.state.initedRaw ? React.createElement("textarea", {value: raw, onKeyDown: util.preventDefault, readOnly: "readonly", className: 'fill w-detail-request-raw' + (name == BTNS[4].name ? '' : ' hide')}) : ''
 				)
 			);
 		}
@@ -45129,7 +45248,7 @@
 
 
 	// module
-	exports.push([module.id, ".w-detail-request textarea {padding: 5px; border: none;}\n", ""]);
+	exports.push([module.id, ".w-detail-request textarea {padding: 5px; border: none;}\n.w-detail-request-headers, .w-detail-request-cookies, .w-detail-request-query, w-detail-request-form, .w-detail-request-form {overflow: auto;}\n", ""]);
 
 	// exports
 
@@ -45146,6 +45265,7 @@
 		render: function() {
 			var head = this.props.head;
 			var hasHead = Array.isArray(head) && head.length;
+			var modal = this.props.modal || [];
 			
 			return (
 				React.createElement("table", {className: "table w-table"}, 
@@ -45158,21 +45278,21 @@
 								)
 						) : '', 
 					
-					React.createElement("tr", null, 
-						React.createElement("td", null, "test"), 
-						React.createElement("td", null, "test"), 
-						React.createElement("td", null, "test"), 
-						React.createElement("td", null, "test"), 
-						React.createElement("td", null, "test"), 
-						React.createElement("td", null, "√")
-					), 
-					React.createElement("tr", null, 
-						React.createElement("td", null, "test"), 
-						React.createElement("td", null, "test"), 
-						React.createElement("td", null, "test"), 
-						React.createElement("td", null, "test"), 
-						React.createElement("td", null, "√"), 
-						React.createElement("td", null, "test")
+					React.createElement("tbody", null, 
+						
+							modal.map(function(list, i) {
+								
+								return (
+									React.createElement("tr", {key: i}, 
+										
+											list.map(function(value, j) {
+												return React.createElement("td", {key: i + '.' + j}, value);
+											})
+										
+									)	
+								);
+							})
+						
 					)
 				)
 			);
@@ -45216,7 +45336,7 @@
 
 
 	// module
-	exports.push([module.id, ".w-table>thead>tr>th {background: #eee; font-weight: normal; border-bottom: 1px solid #ccc;}\n.w-table th, .w-table td {font-size: 12px; padding: 3px 8px!important; border-top: none; border-bottom: 1px solid #ccc; word-break: break-word;}", ""]);
+	exports.push([module.id, ".w-table>thead>tr>th {background: #eee; font-weight: normal; border-bottom: 1px solid #ccc; vertical-align: top;}\n.w-table th, .w-table td {font-size: 12px; padding: 3px 8px!important; border-top: none; border-bottom: 1px solid #ccc; word-break: break-word;}", ""]);
 
 	// exports
 
@@ -45233,7 +45353,66 @@
 	var util = __webpack_require__(175);
 	var BtnGroup = __webpack_require__(237);
 	BTNS = [{name: 'Headers'}, {name: 'TextView'}, {name: 'Cookies'}, {name: 'JSON'}, {name: 'Raw'}];
-	var COOKIE_HEADERS = ['Name', 'Value', 'Domain', 'Path', 'Http Only', 'Secure'];
+	var COOKIE_HEADERS = ['Name', 'Value', 'Domain', 'Path', 'Expires/Max-Age', 'Http Only', 'Secure'];
+	var STATUS_CODES = {
+			  100 : 'Continue',
+			  101 : 'Switching Protocols',
+			  102 : 'Processing',                 // RFC 2518, obsoleted by RFC 4918
+			  200 : 'OK',
+			  201 : 'Created',
+			  202 : 'Accepted',
+			  203 : 'Non-Authoritative Information',
+			  204 : 'No Content',
+			  205 : 'Reset Content',
+			  206 : 'Partial Content',
+			  207 : 'Multi-Status',               // RFC 4918
+			  300 : 'Multiple Choices',
+			  301 : 'Moved Permanently',
+			  302 : 'Moved Temporarily',
+			  303 : 'See Other',
+			  304 : 'Not Modified',
+			  305 : 'Use Proxy',
+			  307 : 'Temporary Redirect',
+			  308 : 'Permanent Redirect',         // RFC 7238
+			  400 : 'Bad Request',
+			  401 : 'Unauthorized',
+			  402 : 'Payment Required',
+			  403 : 'Forbidden',
+			  404 : 'Not Found',
+			  405 : 'Method Not Allowed',
+			  406 : 'Not Acceptable',
+			  407 : 'Proxy Authentication Required',
+			  408 : 'Request Time-out',
+			  409 : 'Conflict',
+			  410 : 'Gone',
+			  411 : 'Length Required',
+			  412 : 'Precondition Failed',
+			  413 : 'Request Entity Too Large',
+			  414 : 'Request-URI Too Large',
+			  415 : 'Unsupported Media Type',
+			  416 : 'Requested Range Not Satisfiable',
+			  417 : 'Expectation Failed',
+			  418 : 'I\'m a teapot',              // RFC 2324
+			  422 : 'Unprocessable Entity',       // RFC 4918
+			  423 : 'Locked',                     // RFC 4918
+			  424 : 'Failed Dependency',          // RFC 4918
+			  425 : 'Unordered Collection',       // RFC 4918
+			  426 : 'Upgrade Required',           // RFC 2817
+			  428 : 'Precondition Required',      // RFC 6585
+			  429 : 'Too Many Requests',          // RFC 6585
+			  431 : 'Request Header Fields Too Large',// RFC 6585
+			  500 : 'Internal Server Error',
+			  501 : 'Not Implemented',
+			  502 : 'Bad Gateway',
+			  503 : 'Service Unavailable',
+			  504 : 'Gateway Time-out',
+			  505 : 'HTTP Version Not Supported',
+			  506 : 'Variant Also Negotiates',    // RFC 2295
+			  507 : 'Insufficient Storage',       // RFC 4918
+			  509 : 'Bandwidth Limit Exceeded',
+			  510 : 'Not Extended',               // RFC 2774
+			  511 : 'Network Authentication Required' // RFC 6585
+			};
 
 	var ResDetail = React.createClass({displayName: "ResDetail",
 		getInitialState: function() {
@@ -45265,16 +45444,61 @@
 				this.selectBtn(btn);
 			}
 			var name = btn && btn.name;
+			var modal = this.props.modal;
+			var res, headers, cookies, body, raw, json;
+			if (modal) {
+				res = modal.res
+				body = res.body || '';
+				headers = res.headers;
+				json = util.stringify(body);
+				if (headers && headers['set-cookie']) {
+					cookies = headers['set-cookie'].map(function(cookie) {
+								cookie = util.parseQueryString(cookie, /;\s*/, null, decodeURIComponent);
+								var row = ['', '', '', '', '', '', ''];
+								for (var i in cookie) {
+									switch(i.toLowerCase()) {
+										case 'domain':
+											row[2] = cookie[i];
+											break;
+										case 'path':
+											row[3] = cookie[i];
+											break;
+										case 'expires':
+										case 'max-age':
+											row[4] = cookie[i];
+											break;
+										case 'httponly':
+											row[5] = '√';
+											break;
+										case 'secure':
+											row[6] = '√';
+											break;
+										default:
+											if (!row[0]) {
+												row[0] = i;
+												row[1] = cookie[i];
+											}
+									}
+								}
+								
+								return row;
+							});
+				}
+				if (res.statusCode != null) {
+					raw = ['HTTP/' + (modal.req.httpVersion || '1.1'), res.statusCode, STATUS_CODES[res.statusCode] || ''].join(' ')
+						  + '\r\n' + util.objectToString(headers) + '\r\n\r\n' + body;
+				}
+			}
+			
 			return (
-				React.createElement("div", {className: 'fill orient-vertical-box w-detail-content w-detail-response w-detail-show-response-' 
-					+ util.getProperty(this, 'state.btn.name', '').toLowerCase() 
+				React.createElement("div", {className: 'fill orient-vertical-box w-detail-content w-detail-response' 
 					+ (util.getBoolean(this.props.hide) ? ' hide' : '')}, 
 					React.createElement(BtnGroup, {onClick: this.onClickBtn, btns: BTNS}), 
-					this.state.initedHeaders ? React.createElement("div", {className: 'w-detail-response-headers' + (name == BTNS[0].name ? '' : ' hide')}, React.createElement(Properties, null)) : '', 
-					this.state.initedTextView ? React.createElement("textarea", {onKeyDown: util.preventDefault, readOnly: "readonly", className: 'orient-vertical-box w-detail-response-textview' + (name == BTNS[1].name ? '' : ' hide')}) : '', 
-					this.state.initedCookies ? React.createElement("div", {className: 'w-detail-response-cookies' + (name == BTNS[2].name ? '' : ' hide')}, React.createElement(Table, {head: COOKIE_HEADERS})) : '', 
-					this.state.initedJSON ? React.createElement("textarea", {onKeyDown: util.preventDefault, readOnly: "readonly", className: 'fill w-detail-response-json' + (name == BTNS[3].name ? '' : ' hide')}) : '', 
-					this.state.initedRaw ? React.createElement("textarea", {onKeyDown: util.preventDefault, readOnly: "readonly", className: 'fill w-detail-response-raw' + (name == BTNS[4].name ? '' : ' hide')}) : ''
+					this.state.initedHeaders ? React.createElement("div", {className: 'fill w-detail-response-headers' + (name == BTNS[0].name ? '' : ' hide')}, React.createElement(Properties, {modal: headers})) : '', 
+					this.state.initedTextView ? React.createElement("textarea", {value: body, onKeyDown: util.preventDefault, readOnly: "readonly", className: 'fill w-detail-response-textview' + (name == BTNS[1].name ? '' : ' hide')}) : '', 
+					this.state.initedCookies ? React.createElement("div", {className: 'fill w-detail-response-cookies' + (name == BTNS[2].name ? '' : ' hide')}, React.createElement(Table, {head: COOKIE_HEADERS, modal: cookies})) : '', 
+					this.state.initedJSON ? React.createElement("textarea", {value: json, onKeyDown: util.preventDefault, readOnly: "readonly", className: 'fill w-detail-response-json' + (name == BTNS[3].name ? '' : ' hide')}) : '', 
+					this.state.initedRaw ? React.createElement("textarea", {value: raw, onKeyDown: util.preventDefault, readOnly: "readonly", className: 'fill w-detail-response-raw' + (name == BTNS[4].name ? '' : ' hide')}) : ''
 				)
 			);
 		}
@@ -45318,7 +45542,7 @@
 
 
 	// module
-	exports.push([module.id, ".w-detail-response textarea {padding: 5px; border: none;}\n", ""]);
+	exports.push([module.id, ".w-detail-response textarea {padding: 5px; border: none;}\n.w-detail-response-headers, .w-detail-response-cookies {overflow: auto;}\n", ""]);
 
 	// exports
 
@@ -45331,6 +45555,7 @@
 	__webpack_require__(256);
 	var React = __webpack_require__(6);
 	var util = __webpack_require__(175);
+	var TOTAL_RATE = 80;
 
 	var Timeline = React.createClass({displayName: "Timeline",
 		shouldComponentUpdate: function(nextProps) {
@@ -45338,31 +45563,92 @@
 			return hide != util.getBoolean(nextProps.hide) || !hide;
 		},
 		render: function() {
+			var modal = this.props.modal;
+			var list = modal && modal.getSelectedList() || [];
+			var maxTotal = 1;
+			var startTime;
+			
+			list.forEach(function(item) {
+				if (!startTime || item.startTime < startTime) {
+					startTime = item.startTime;
+				}
+				
+			});
+			
+			list.forEach(function(item) {
+				var total = (item.endTime || item.responseTime || item.requestTime || item.dnsTime) - startTime;
+				if (total > maxTotal) {
+					maxTotal = total;
+				}
+			});
 			
 			return (
 					React.createElement("div", {className: 'fill orient-vertical-box w-detail-content w-detail-timeline' + (util.getBoolean(this.props.hide) ? ' hide' : '')}, 
 						React.createElement("ul", null, 
-							React.createElement("li", null, 
-								React.createElement("span", {title: "Stalled: 0ms", className: "w-detail-timeline-stalled", style: {width: 0}}, "-1"), 
-								React.createElement("span", {title: "DNS: 10ms", className: "w-detail-timeline-dns"}, "1"), 
-								React.createElement("span", {title: "Request: 10ms", className: "w-detail-timeline-request"}, "2"), 
-								React.createElement("span", {title: "Response: 10ms", className: "w-detail-timeline-response"}, "3"), 
-								React.createElement("span", {title: 'Stalled: 0ms\nDNS: 10ms\nRequest: 10ms\nResponse: 10ms', className: "w-detail-timeline-time"}, "222ms")
-							), 
-							React.createElement("li", null, 
-							React.createElement("span", {className: "w-detail-timeline-stalled", style: {width: '10%'}}, "-1"), 
-								React.createElement("span", {className: "w-detail-timeline-dns"}, "1"), 
-								React.createElement("span", {className: "w-detail-timeline-request"}, "2"), 
-								React.createElement("span", {className: "w-detail-timeline-response"}, "3"), 
-								React.createElement("span", {className: "w-detail-timeline-time"}, "222ms")
-							), 
-							React.createElement("li", null, 
-							React.createElement("span", {className: "w-detail-timeline-stalled", style: {width: '20%'}}, "-1"), 
-								React.createElement("span", {className: "w-detail-timeline-dns"}, "1"), 
-								React.createElement("span", {className: "w-detail-timeline-request"}, "2"), 
-								React.createElement("span", {className: "w-detail-timeline-response"}, "3"), 
-								React.createElement("span", {className: "w-detail-timeline-time"}, "222ms")
-							)
+							list.map(function(item) {
+								var stalled = item.startTime - startTime;
+								var stalled, stalledRate, dns, dnsRate, request, requestRate, response, responseRate, load, loadRate;
+								if (item.dnsTime) {
+									stalled = item.startTime - startTime;
+									stalledRate = stalled * TOTAL_RATE / maxTotal + '%';
+									stalled += 'ms';
+								} else {
+									stalled = '-';
+									stalledRate = 0;
+								}
+								
+								if (item.dnsTime) {
+									dns = item.dnsTime - item.startTime;
+									dnsRate = dns * TOTAL_RATE / maxTotal + '%';
+									dns += 'ms';
+								} else {
+									dns = '-';
+									dnsRate = 0;
+								}
+								
+								if (item.requestTime) {
+									request = item.requestTime - item.dnsTime;
+									requestRate = request * TOTAL_RATE / maxTotal + '%';
+									request += 'ms';
+								} else {
+									request = '-';
+									requestRate = 0;
+								}
+								
+								if (item.responseTime) {
+									response = item.responseTime - item.requestTime;
+									responseRate = response * TOTAL_RATE / maxTotal + '%';
+									response += 'ms';
+								} else {
+									response = '-';
+									responseRate = 0;
+								}
+								
+								if (item.endTime) {
+									load = item.endTime - item.responseTime;
+									loadRate = load * TOTAL_RATE / maxTotal + '%';
+									load += 'ms';
+								} else {
+									load = '-';
+									loadRate = 0;
+								}
+								
+								var total = item.endTime ? item.endTime - item.startTime + 'ms' : '-';
+								var title = 'Stalled: ' + stalled + '\nDNS: ' + dns + '\nRequest: ' + 
+								request + '\nResponse: ' + response + '\nLoad: ' + load + '\nTotal: ' + total;
+								
+								return (
+										React.createElement("li", {key: item.id, title: title}, 
+											React.createElement("span", {title: item.url, className: "w-detail-timeline-url"}, util.getFilename(item.url)), 	
+											React.createElement("span", {style: {width: stalledRate}, className: "w-detail-timeline-stalled"}), 
+											React.createElement("span", {style: {width: dnsRate}, className: "w-detail-timeline-dns"}), 
+											React.createElement("span", {style: {width: requestRate}, className: "w-detail-timeline-request"}, " "), 
+											React.createElement("span", {style: {width: responseRate}, className: "w-detail-timeline-response"}, " "), 
+											React.createElement("span", {style: {width: loadRate}, className: "w-detail-timeline-load"}, " "), 
+											React.createElement("span", {title: title, className: "w-detail-timeline-time"}, total)
+										)		
+								);
+							})
 						)
 					)
 			);
@@ -45406,7 +45692,7 @@
 
 
 	// module
-	exports.push([module.id, ".w-detail-timeline ul, .w-detail-timeline li {list-style: none; margin: 0; padding: 0; white-space: nowrap; font-size: 0; width: 100%; display: block;}\n.w-detail-timeline li {padding: 2px 0 2px; position: relative;}\n.w-detail-timeline  span {display: inline-block; font-size: 12px; line-height: 20px; overflow: hidden; cursor: default;}\n.w-detail-timeline-dns {background: #8cd2c6;}\n.w-detail-timeline-request {background: #fdfdb2;}\n.w-detail-timeline-response {background: #fbb361;}\n.w-detail-timeline-time {position: absolute; top: 2px; right: 0; padding-right: 5px;}\n", ""]);
+	exports.push([module.id, ".w-detail-timeline ul, .w-detail-timeline li {list-style: none; margin: 0; padding: 0; white-space: nowrap; font-size: 0; width: 100%; display: block;}\n.w-detail-timeline li {padding: 2px 0 2px; position: relative; white-space: nowrap;}\n.w-detail-timeline  span {display: inline-block; font-size: 12px; height: 20px; line-height: 20px; overflow: hidden; text-overflow: ellipsis; cursor: default;}\n.w-detail-timeline-url {padding-right: 5px; width: 20%; text-align: right;}\n.w-detail-timeline-stalled {background: #eee;}\n.w-detail-timeline-dns {background: #8cd2c6;}\n.w-detail-timeline-request {background: #fdfdb2;}\n.w-detail-timeline-response {background: #fbb361;}\n.w-detail-timeline-load {background: #7eabe1;}\n.w-detail-timeline-time {position: absolute; top: 2px; right: 0; padding-right: 5px;}\n", ""]);
 
 	// exports
 
@@ -45418,20 +45704,62 @@
 	__webpack_require__(163);
 	__webpack_require__(259);
 	var React = __webpack_require__(6);
+	var dataCenter = __webpack_require__(264);
 	var util = __webpack_require__(175);
+	var events = __webpack_require__(277);
 	var Divider = __webpack_require__(176);
 
 	var Composer = React.createClass({displayName: "Composer",
+		componentDidMount: function() {
+			var self = this;
+			self.update(self.props.modal);
+			events.on('composer', function() {
+				var activeItem = self.props.modal;
+				activeItem && self.setState({
+					data: activeItem
+				}, function() {
+					self.update(activeItem);
+				});
+			});
+		},
+		update: function(item) {
+			if (!item) {
+				return;
+			}
+			var refs = this.refs;
+			var req = item.req;
+			refs.url.getDOMNode().value = item.url;
+			refs.method.getDOMNode().value = req.method;
+			refs.headers.getDOMNode().value = util.objectToString(req.headers);
+			refs.body.getDOMNode().value = req.body || '';
+		},
 		shouldComponentUpdate: function(nextProps) {
 			var hide = util.getBoolean(this.props.hide);
 			return hide != util.getBoolean(nextProps.hide) || !hide;
 		},
+		execute: function() {
+			var refs = this.refs;
+			var url = refs.url.getDOMNode().value.trim();
+			if (!url) {
+				alert('Please input the url.');
+				return;
+			}
+			
+			dataCenter.composer({
+				url: url,
+				headers: refs.headers.getDOMNode().value,
+				method: refs.method.getDOMNode().value || 'GET',
+				body: refs.body.getDOMNode().value
+			});
+			events.trigger('executeComposer');
+		},
 		render: function() {
+			
 			return (
 				React.createElement("div", {className: 'fill orient-vertical-box w-detail-content w-detail-composer' + (util.getBoolean(this.props.hide) ? ' hide' : '')}, 
 					React.createElement("div", {className: "w-composer-url box"}, 
-						React.createElement("input", {type: "text", maxLength: "8192", placeholder: "url", className: "fill w-composer-input"}), 
-						React.createElement("select", {className: "form-control w-composer-method"}, 
+						React.createElement("input", {ref: "url", type: "text", maxLength: "8192", placeholder: "url", className: "fill w-composer-input"}), 
+						React.createElement("select", {ref: "method", className: "form-control w-composer-method"}, 
 			          		React.createElement("option", {value: "GET"}, "GET"), 
 			          		React.createElement("option", {value: "POST"}, "POST"), 
 			          		React.createElement("option", {value: "PUT"}, "PUT"), 
@@ -45449,11 +45777,11 @@
 			          		React.createElement("option", {value: "UNLOCK"}, "UNLOCK"), 
 			          		React.createElement("option", {value: "OPTIONS"}, "OPTIONS")
 			          	), 
-						React.createElement("button", {className: "btn btn-primary w-composer-execute"}, "Execute")
+						React.createElement("button", {onClick: this.execute, className: "btn btn-primary w-composer-execute"}, "Execute")
 					), 
 					React.createElement(Divider, {vertical: "true"}, 
-						React.createElement("textarea", {className: "fill w-composer-headers", placeholder: "headers"}), 
-						React.createElement("textarea", {className: "fill w-composer-body", placeholder: "body"})
+						React.createElement("textarea", {ref: "headers", className: "fill w-composer-headers", placeholder: "headers"}), 
+						React.createElement("textarea", {ref: "body", className: "fill w-composer-body", placeholder: "body"})
 					)
 				)
 			);
@@ -45989,8 +46317,12 @@
 			this._keyword = RegExp.$2.trim();
 		}
 		this.filter();
-		return !this._keyword;
+		return !!this._keyword;
 	};
+
+	proto.hasKeyword = function() {
+		return !!this._keyword;
+	}
 
 	proto.filter = function() {
 		var keyword = this._keyword;
@@ -48904,6 +49236,14 @@
 
 	// exports
 
+
+/***/ },
+/* 277 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var $ = __webpack_require__(5);
+
+	module.exports = $({});
 
 /***/ }
 /******/ ]);
