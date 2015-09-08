@@ -31236,6 +31236,70 @@
 		return index != -1 && url.substring(index + 1) || '/';
 	};
 
+	var STATUS_CODES = {
+			  100 : 'Continue',
+			  101 : 'Switching Protocols',
+			  102 : 'Processing',                 // RFC 2518, obsoleted by RFC 4918
+			  200 : 'OK',
+			  201 : 'Created',
+			  202 : 'Accepted',
+			  203 : 'Non-Authoritative Information',
+			  204 : 'No Content',
+			  205 : 'Reset Content',
+			  206 : 'Partial Content',
+			  207 : 'Multi-Status',               // RFC 4918
+			  300 : 'Multiple Choices',
+			  301 : 'Moved Permanently',
+			  302 : 'Moved Temporarily',
+			  303 : 'See Other',
+			  304 : 'Not Modified',
+			  305 : 'Use Proxy',
+			  307 : 'Temporary Redirect',
+			  308 : 'Permanent Redirect',         // RFC 7238
+			  400 : 'Bad Request',
+			  401 : 'Unauthorized',
+			  402 : 'Payment Required',
+			  403 : 'Forbidden',
+			  404 : 'Not Found',
+			  405 : 'Method Not Allowed',
+			  406 : 'Not Acceptable',
+			  407 : 'Proxy Authentication Required',
+			  408 : 'Request Time-out',
+			  409 : 'Conflict',
+			  410 : 'Gone',
+			  411 : 'Length Required',
+			  412 : 'Precondition Failed',
+			  413 : 'Request Entity Too Large',
+			  414 : 'Request-URI Too Large',
+			  415 : 'Unsupported Media Type',
+			  416 : 'Requested Range Not Satisfiable',
+			  417 : 'Expectation Failed',
+			  418 : 'I\'m a teapot',              // RFC 2324
+			  422 : 'Unprocessable Entity',       // RFC 4918
+			  423 : 'Locked',                     // RFC 4918
+			  424 : 'Failed Dependency',          // RFC 4918
+			  425 : 'Unordered Collection',       // RFC 4918
+			  426 : 'Upgrade Required',           // RFC 2817
+			  428 : 'Precondition Required',      // RFC 6585
+			  429 : 'Too Many Requests',          // RFC 6585
+			  431 : 'Request Header Fields Too Large',// RFC 6585
+			  500 : 'Internal Server Error',
+			  501 : 'Not Implemented',
+			  502 : 'Bad Gateway',
+			  503 : 'Service Unavailable',
+			  504 : 'Gateway Time-out',
+			  505 : 'HTTP Version Not Supported',
+			  506 : 'Variant Also Negotiates',    // RFC 2295
+			  507 : 'Insufficient Storage',       // RFC 4918
+			  509 : 'Bandwidth Limit Exceeded',
+			  510 : 'Not Extended',               // RFC 2774
+			  511 : 'Network Authentication Required' // RFC 6585
+			};
+
+	exports.getStatusMessage = function(res) {
+		return res.statusMessage || STATUS_CODES[res.statusCode] || '';
+	};
+
 
 
 
@@ -44741,6 +44805,9 @@
 			this.setState({tab: tab});
 		}, 
 		selectTab: function(tab) {
+			TABS.forEach(function(tab) {
+				tab.active = false;
+			});
 			tab.active = true;
 			this.state.tab = tab;
 			this.state['inited' + tab.name] = true;
@@ -44916,9 +44983,9 @@
 	var React = __webpack_require__(6);
 	var util = __webpack_require__(175);
 	var Properties = __webpack_require__(243);
-	var OVERVIEW = ['Url', 'Method', 'Http Version', 'Status Code', 'Host IP', 'Client IP', 'Request Length', 'Content Length'
+	var OVERVIEW = ['Url', 'Method', 'Http Version', 'Status Code', 'Status Message', 'Host IP', 'Client IP', 'Request Length', 'Content Length'
 	                      , 'Start Date', 'DNS Lookup', 'Request Sent', 'Response Headers', 'Content Download'];
-	var OVERVIEW_PROPS = ['url', 'req.method', 'req.httpVersion', 'res.statusCode', 'res.ip', 'req.ip', 'req.size', 'res.size'];
+	var OVERVIEW_PROPS = ['url', 'req.method', 'req.httpVersion', 'res.statusCode', 'res.statusMessage', 'res.ip', 'req.ip', 'req.size', 'res.size'];
 	/**
 	 * statusCode://, redirect://[statusCode:]url, [req, res]speed://, 
 	 * [req, res]delay://, method://, [req, res][content]Type://自动lookup, 
@@ -44953,8 +45020,12 @@
 					var prop = OVERVIEW_PROPS[i];
 					if (prop) {
 						var value = util.getProperty(modal, prop);
-						if (value && (prop == 'req.size' || prop == 'res.size') && value > 1024) {
-							value += '(' + Number(value / 1024).toFixed(2) + 'k)'
+						if (value) {
+							if ((prop == 'req.size' || prop == 'res.size') && value > 1024) {
+								value += '(' + Number(value / 1024).toFixed(2) + 'k)'
+							}
+						} else if (prop == 'res.statusMessage') {
+							value = util.getStatusMessage(modal.res);
 						}
 						overviewModal[name] = value;
 					} else {
@@ -45354,65 +45425,6 @@
 	var BtnGroup = __webpack_require__(237);
 	BTNS = [{name: 'Headers'}, {name: 'TextView'}, {name: 'Cookies'}, {name: 'JSON'}, {name: 'Raw'}];
 	var COOKIE_HEADERS = ['Name', 'Value', 'Domain', 'Path', 'Expires/Max-Age', 'Http Only', 'Secure'];
-	var STATUS_CODES = {
-			  100 : 'Continue',
-			  101 : 'Switching Protocols',
-			  102 : 'Processing',                 // RFC 2518, obsoleted by RFC 4918
-			  200 : 'OK',
-			  201 : 'Created',
-			  202 : 'Accepted',
-			  203 : 'Non-Authoritative Information',
-			  204 : 'No Content',
-			  205 : 'Reset Content',
-			  206 : 'Partial Content',
-			  207 : 'Multi-Status',               // RFC 4918
-			  300 : 'Multiple Choices',
-			  301 : 'Moved Permanently',
-			  302 : 'Moved Temporarily',
-			  303 : 'See Other',
-			  304 : 'Not Modified',
-			  305 : 'Use Proxy',
-			  307 : 'Temporary Redirect',
-			  308 : 'Permanent Redirect',         // RFC 7238
-			  400 : 'Bad Request',
-			  401 : 'Unauthorized',
-			  402 : 'Payment Required',
-			  403 : 'Forbidden',
-			  404 : 'Not Found',
-			  405 : 'Method Not Allowed',
-			  406 : 'Not Acceptable',
-			  407 : 'Proxy Authentication Required',
-			  408 : 'Request Time-out',
-			  409 : 'Conflict',
-			  410 : 'Gone',
-			  411 : 'Length Required',
-			  412 : 'Precondition Failed',
-			  413 : 'Request Entity Too Large',
-			  414 : 'Request-URI Too Large',
-			  415 : 'Unsupported Media Type',
-			  416 : 'Requested Range Not Satisfiable',
-			  417 : 'Expectation Failed',
-			  418 : 'I\'m a teapot',              // RFC 2324
-			  422 : 'Unprocessable Entity',       // RFC 4918
-			  423 : 'Locked',                     // RFC 4918
-			  424 : 'Failed Dependency',          // RFC 4918
-			  425 : 'Unordered Collection',       // RFC 4918
-			  426 : 'Upgrade Required',           // RFC 2817
-			  428 : 'Precondition Required',      // RFC 6585
-			  429 : 'Too Many Requests',          // RFC 6585
-			  431 : 'Request Header Fields Too Large',// RFC 6585
-			  500 : 'Internal Server Error',
-			  501 : 'Not Implemented',
-			  502 : 'Bad Gateway',
-			  503 : 'Service Unavailable',
-			  504 : 'Gateway Time-out',
-			  505 : 'HTTP Version Not Supported',
-			  506 : 'Variant Also Negotiates',    // RFC 2295
-			  507 : 'Insufficient Storage',       // RFC 4918
-			  509 : 'Bandwidth Limit Exceeded',
-			  510 : 'Not Extended',               // RFC 2774
-			  511 : 'Network Authentication Required' // RFC 6585
-			};
 
 	var ResDetail = React.createClass({displayName: "ResDetail",
 		getInitialState: function() {
@@ -45485,7 +45497,7 @@
 							});
 				}
 				if (res.statusCode != null) {
-					raw = ['HTTP/' + (modal.req.httpVersion || '1.1'), res.statusCode, STATUS_CODES[res.statusCode] || ''].join(' ')
+					raw = ['HTTP/' + (modal.req.httpVersion || '1.1'), res.statusCode, util.getStatusMessage(res)].join(' ')
 						  + '\r\n' + util.objectToString(headers) + '\r\n\r\n' + body;
 				}
 			}
