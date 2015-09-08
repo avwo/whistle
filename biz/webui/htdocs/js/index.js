@@ -31248,6 +31248,8 @@
 			  205 : 'Reset Content',
 			  206 : 'Partial Content',
 			  207 : 'Multi-Status',               // RFC 4918
+			  208 : 'Already Reported',
+			  226 : 'IM Used',
 			  300 : 'Multiple Choices',
 			  301 : 'Moved Permanently',
 			  302 : 'Moved Temporarily',
