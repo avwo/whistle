@@ -718,8 +718,8 @@
 				React.createElement("div", {className: "main orient-vertical-box"}, 
 					React.createElement("div", {className: 'w-menu w-' + name + '-menu-list'}, 
 						React.createElement("a", {onClick: this.showNetwork, className: "w-network-menu", style: {display: isNetwork ? 'none' : ''}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-align-justify"}), "Network"), 
-						React.createElement("a", {onClick: this.showRulesOptions, className: "w-rules-menu", style: {display: isRules ? 'none' : ''}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-list"}), "Rules"), 
-						React.createElement("a", {onClick: this.showValuesOptions, className: "w-values-menu", style: {display: isValues ? 'none' : ''}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-folder-open"}), "Values"), 
+						React.createElement("a", {onClick: this.showRulesOptions, onDoubleClick: this.showRules, className: "w-rules-menu", style: {display: isRules ? 'none' : ''}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-list"}), "Rules"), 
+						React.createElement("a", {onClick: this.showValuesOptions, onDoubleClick: this.showValues, className: "w-values-menu", style: {display: isValues ? 'none' : ''}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-folder-open"}), "Values"), 
 						React.createElement("a", {onClick: this.onClickMenu, className: "w-create-menu", style: {display: isNetwork ? 'none' : ''}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-plus"}), "Create"), 
 						React.createElement("a", {onClick: this.onClickMenu, className: 'w-edit-menu' + (disabledEditBtn ? ' w-disabled' : ''), style: {display: isNetwork ? 'none' : ''}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-edit"}), "Edit"), 
 						React.createElement("a", {onClick: this.autoScroll, className: "w-scroll-menu", style: {display: isNetwork ? '' : 'none'}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-play"}), "AutoScroll"), 
@@ -729,7 +729,7 @@
 						React.createElement("a", {onClick: this.clear, className: "w-clear-menu", style: {display: isNetwork ? '' : 'none'}, href: "javascript:;", title: "Ctrl[Command]+D"}, React.createElement("span", {className: "glyphicon glyphicon-remove"}), "Clear"), 
 						React.createElement("a", {onClick: this.onClickMenu, className: 'w-delete-menu' + (disabledDeleteBtn ? ' w-disabled' : ''), style: {display: isNetwork ? 'none' : ''}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-trash"}), "Delete"), 
 						React.createElement("a", {onClick: this.showSettings, className: "w-settings-menu", style: {display: isNetwork ? 'none' : ''}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-cog"}), "Settings"), 
-						React.createElement("a", {onClick: this.showWeinreOptions, className: "w-weinre-menu", href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-globe"}), "Weinre"), 
+						React.createElement("a", {onClick: this.showWeinreOptions, onDoubleClick: this.showAnonymousWeinre, className: "w-weinre-menu", href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-globe"}), "Weinre"), 
 						React.createElement("a", {onClick: this.onClickMenu, className: "w-rootca-menu", href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-download-alt"}), "RootCA"), 
 						React.createElement("a", {className: "w-help-menu", href: "https://github.com/avwo/whistle#whistle", target: "_blank"}, React.createElement("span", {className: "glyphicon glyphicon-question-sign"}), "Help"), 
 						React.createElement(About, null), 
@@ -30715,19 +30715,38 @@
 			function trigger(item) {
 				self.onDoubleClick(item);
 			}
+			var modal = self.props.modal;
+			var listCon = $(self.refs.list.getDOMNode()).focus().on('keydown', function(e) {
+				var item;
+				if (e.keyCode == 38) { //up
+					item = modal.prev();
+				} else if (e.keyCode == 40) {//down
+					item = modal.next();
+				}
+				
+				if (item) {
+					self.onClick(item, true);
+					e.preventDefault();
+				}
+			});
+			
+			var activeItem = modal.getActive();
+			if (activeItem) {
+				util.ensureVisible(self.refs[activeItem.name].getDOMNode(), listCon);
+			}
 		},
 		shouldComponentUpdate: function(nextProps) {
 			var hide = util.getBoolean(this.props.hide);
 			return hide != util.getBoolean(nextProps.hide) || !hide;
 		},
-		onClick: function(e) {
-			var elem = $(e.target).closest('a');
-			var item = this.getItemByKey(elem.attr('data-key'));
-			if (!item || (typeof this.props.onActive == 'function' && 
-					this.props.onActive(item) === false)) {
-				return;
+		onClick: function(item, hm) {
+			var self = this;
+			if (typeof self.props.onActive != 'function' ||
+					self.props.onActive(item) !== false) {
+				self.props.modal.setActive(item.name);
+				self.setState({activeItem: item});
 			}
-			this.props.modal.setActive(item.name);
+			hm && util.ensureVisible(self.refs[item.name].getDOMNode(), self.refs.list.getDOMNode());
 		},
 		onDoubleClick: function(item, okIcon) {
 			item.selected && !item.changed || okIcon ? this.onUnselect(item) : this.onSelect(item);
@@ -30772,13 +30791,15 @@
 			return (
 					React.createElement(Divider, {hide: this.props.hide, leftWidth: "200"}, 
 					React.createElement("div", {className: "fill orient-vertical-box w-list-left"}, 	
-						React.createElement("div", {ref: "list", className: 'fill orient-vertical-box w-list-data ' + (this.props.className || '')}, 
+						React.createElement("div", {ref: "list", tabIndex: "0", className: 'fill orient-vertical-box w-list-data ' + (this.props.className || '')}, 
 								
 									list.map(function(name) {
 										var item = data[name];
 										
-										return React.createElement("a", {style: {display: item.hide ? 'none' : null}, key: item.key, "data-key": item.key, href: "javascript:;", 
-													onClick: self.onClick, 
+										return React.createElement("a", {ref: name, style: {display: item.hide ? 'none' : null}, key: item.key, "data-key": item.key, href: "javascript:;", 
+													onClick: function() {
+														self.onClick(item);
+													}, 
 													onDoubleClick: function() {
 														self.onDoubleClick(item);
 													}, 
@@ -31209,23 +31230,15 @@
 	};
 
 	exports.stringify = function(str) {
-		if (!str || !(str = str.trim())) {
+		if (!str || !(str = str.trim()) || !/({[\w\W]+}|\[[\w\W]+\])/.test(str)) {
 			return '';
 		}
-		if (!/^[\{\[]/.test(str)) {
-			var index = str.indexOf('(');
-			if (index != -1) {
-				str = str.substring(index + 1);
-				index = str.lastIndexOf(')');
-				str = index == -1 ? '' : str.substring(0, index);
-			}
-		}
-		if (str) {
-			try {
-				str = JSON.parse(str);
-				return str ? JSON.stringify(str, null, '    ') : '';
-			} catch(e) {}
-		}
+		
+		str = RegExp.$1;
+		try {
+			str = JSON.parse(str);
+			return str ? JSON.stringify(str, null, '    ') : '';
+		} catch(e) {}
 		
 		return '';
 	};
@@ -44468,6 +44481,54 @@
 		return list;
 	}
 
+	proto.prev = function() {
+		var list = this.list;
+		var len = list.length;
+		if (!len) {
+			return;
+		}
+		var activeItem = this.getActive();
+		var index = activeItem ? list.indexOf(activeItem.name) : len - 1;
+		var data = this.data;
+		for (var i = index - 1; i >= 0; i--) {
+			var item = data[list[i]];
+			if (!item.hide) {
+				return item;
+			}
+		}
+		
+		for (var i = len - 1; i > index; i--) {
+			var item = data[list[i]];
+			if (!item.hide) {
+				return item;
+			}
+		}
+	};
+
+	proto.next = function() {
+		var list = this.list;
+		var len = list.length;
+		if (!len) {
+			return;
+		}
+		var activeItem = this.getActive();
+		var index = activeItem ? list.indexOf(activeItem.name) : 0;
+		var data = this.data;
+		for (var i = index + 1; i < len; i++) {
+			var item = data[list[i]];
+			if (!item.hide) {
+				return item;
+			}
+		}
+		
+		for (var i = 0; i < index; i++) {
+			var item = data[list[i]];
+			if (!item.hide) {
+				return item;
+			}
+		}
+	};
+
 	module.exports = ListModal;
 
 /***/ },
@@ -44589,40 +44650,54 @@
 
 	var ReqData = React.createClass({displayName: "ReqData",
 		componentDidMount: function() {
-			this.container = this.refs.container.getDOMNode();
-			this.content = this.refs.content.getDOMNode();
-			$(this.container).on('keydown', function(e) {
-				if (e.keyCode == 38) { //up
-					
+			var self = this;
+			self.container = self.refs.container.getDOMNode();
+			self.content = self.refs.content.getDOMNode();
+			$(self.container).on('keydown', function(e) {
+				var modal = self.props.modal;
+				if (!modal) {
 					return;
 				}
+				var item;
+				if (e.keyCode == 38) { //up
+					item = modal.prev();
+				} else if (e.keyCode == 40) {//down
+					item = modal.next();
+				}
 				
-				if (e.keyCode == 40) {//down
-					
+				if (item) {
+					self.onClick(e, item, true);
+					e.preventDefault();
 				}
 			});
 		},
-		onClick: function(e, item) {
-			var modal = this.props.modal;
+		onClick: function(e, item, hm) {
+			var self = this;
+			var modal = self.props.modal;
 			var allowMultiSelect = e.ctrlKey || e.metaKey;
-			if (!allowMultiSelect) {
-				this.clearSelection();
+			if (hm || !allowMultiSelect) {
+				self.clearSelection();
+			}
+			if (hm) {
+				item.selected = true;
+			} else {
+				var rows;
+				if (e.shiftKey && (rows = getSelectedRows())) {
+					modal.setSelectedList(rows[0].attr('data-id'), 
+							rows[1].attr('data-id'));
+				} else {
+					item.selected = !allowMultiSelect || !item.selected;
+				}
 			}
 			
-			var rows;
-			if (e.shiftKey && (rows = getSelectedRows())) {
-				modal.setSelectedList(rows[0].attr('data-id'), 
-						rows[1].attr('data-id'));
-			} else {
-				item.selected = !allowMultiSelect || !item.selected;
-			}
 			modal.clearActive();
 			item.active = true;
-			if (this.props.onClick && this.props.onClick(item)) {
-				this.setState({
+			if (self.props.onClick && self.props.onClick(item)) {
+				self.setState({
 					activeItem: item
 				});
 			}
+			hm && util.ensureVisible(self.refs[item.id].getDOMNode(), self.container);
 		},
 		clearSelection: function() {
 			var modal = this.props.modal;
@@ -44678,7 +44753,7 @@
 							    		  var req = item.req;
 							    		  var res = item.res;
 							    		  var type = (res.headers && res.headers['content-type'] || defaultValue).split(';')[0];
-							    		  return (React.createElement("tr", {"data-id": item.id, key: item.id, style: {display: item.hide ? 'none' : ''}, 
+							    		  return (React.createElement("tr", {ref: item.id, "data-id": item.id, key: item.id, style: {display: item.hide ? 'none' : ''}, 
 							    		  				className: getClassName(item), 
 							    		  				onClick: function(e) {self.onClick(e, item);}, 
 							    		  				onDoubleClick: self.props.onDoubleClick}, 
@@ -45428,7 +45503,7 @@
 	var util = __webpack_require__(175);
 	var BtnGroup = __webpack_require__(237);
 	BTNS = [{name: 'Headers'}, {name: 'TextView'}, {name: 'Cookies'}, {name: 'JSON'}, {name: 'Raw'}];
-	var COOKIE_HEADERS = ['Name', 'Value', 'Domain', 'Path', 'Expires/Max-Age', 'Http Only', 'Secure'];
+	var COOKIE_HEADERS = ['Name', 'Value', 'Domain', 'Path', 'Expires', 'Http Only', 'Secure'];
 
 	var ResDetail = React.createClass({displayName: "ResDetail",
 		getInitialState: function() {
@@ -46423,16 +46498,48 @@
 	};
 
 	proto.prev = function() {
-		var activeItem = this.getActive();
-		if (!activeItem) {
+		var list = this.list;
+		var len = list.length;
+		if (!len) {
 			return;
+		}
+		var activeItem = this.getActive();
+		var index = activeItem ? list.indexOf(activeItem) : len - 1;
+		for (var i = index - 1; i >= 0; i--) {
+			var item = list[i];
+			if (!item.hide) {
+				return item;
+			}
+		}
+		
+		for (var i = len - 1; i > index; i--) {
+			var item = list[i];
+			if (!item.hide) {
+				return item;
+			}
 		}
 	};
 
 	proto.next = function() {
-		var activeItem = this.getActive();
-		if (!activeItem) {
+		var list = this.list;
+		var len = list.length;
+		if (!len) {
 			return;
+		}
+		var activeItem = this.getActive();
+		var index = activeItem ? list.indexOf(activeItem) : 0;
+		for (var i = index + 1; i < len; i++) {
+			var item = list[i];
+			if (!item.hide) {
+				return item;
+			}
+		}
+		
+		for (var i = 0; i < index; i++) {
+			var item = list[i];
+			if (!item.hide) {
+				return item;
+			}
 		}
 	};
 
