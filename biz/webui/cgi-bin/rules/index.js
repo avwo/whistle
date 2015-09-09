@@ -9,6 +9,8 @@ module.exports = function get() {
 		fontSize: properties.get('fontSize'),
 		showLineNumbers: properties.get('showLineNumbers'),
 		theme: properties.get('theme'),
+		syncWithSysHosts: properties.get('syncWithSysHosts'),
+		allowMultipleChoice: properties.get('allowMultipleChoice'),
 		list: rules.list()
 	};
 };

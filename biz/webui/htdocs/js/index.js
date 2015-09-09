@@ -50,12 +50,13 @@
 	var List = __webpack_require__(162);
 	var ListModal = __webpack_require__(229);
 	var Network = __webpack_require__(230);
-	var About = __webpack_require__(267);
-	var Online = __webpack_require__(271);
-	var MenuItem = __webpack_require__(274);
-	var dataCenter = __webpack_require__(264);
+	var About = __webpack_require__(268);
+	var Online = __webpack_require__(272);
+	var MenuItem = __webpack_require__(275);
+	var EditorSettings = __webpack_require__(278);
+	var dataCenter = __webpack_require__(262);
 	var util = __webpack_require__(175);
-	var events = __webpack_require__(277);
+	var events = __webpack_require__(231);
 
 	function getPageName() {
 		return location.hash.substring(1) || location.href.replace(/[#?].*$/, '').replace(/.*\//, '');
@@ -63,7 +64,13 @@
 
 	var Index = React.createClass({displayName: "Index",
 		getInitialState: function() {
-			var state = {};
+			var modal = this.props.modal;
+			var rules = modal.rules;
+			var values = modal.values;
+			var state = {
+					allowMultipleChoice: modal.rules.allowMultipleChoice,
+					syncWithSysHosts: modal.rules.syncWithSysHosts
+			};
 			var pageName = getPageName();
 			if (!pageName || pageName.indexOf('rules') != -1) {
 				state.hasRules = true;
@@ -82,13 +89,13 @@
 			var valuesOptions = [];
 			var valuesData = {};
 			
-			var modal = this.props.modal;
-			var rules = modal.rules;
-			var values = modal.values;
 			if (rules) {
 				var selectedName = rules.current;
 				var DEFAULT = 'Default';
 				var selected = !rules.defaultRulesIsDisabled;
+				state.rulesTheme = rules.theme;
+				state.rulesFontSize = rules.fontSize;
+				state.showRulesLineNumbers = rules.showLineNumbers;
 				rulesOptions.push({
 					name: DEFAULT,
 					icon: selected ? 'ok' : ''
@@ -120,6 +127,9 @@
 			
 			if (values) {
 				var selectedName = values.current;
+				state.valuesTheme = values.theme;
+				state.valuesFontSize = values.fontSize;
+				state.showValuesLineNumbers = values.showLineNumbers;
 				$.each(values.list, function() {
 					valuesList.push(this.name);
 					valuesData[this.name] = {
@@ -652,16 +662,10 @@
 			this.state.values.setActive(name);
 		},
 		showRulesSettings: function() {
-			var self = this;
-			self.setMenuOptionsState('showRulesSettings', function() {
-				self.refs.rulesSettings.getDOMNode().focus();
-			});
+			$(this.refs.rulesSettingsDialog.getDOMNode()).modal('show');
 		},
 		showValuesSettings: function() {
-			var self = this;
-			self.setMenuOptionsState('showValuesSettings', function() {
-				self.refs.valuesSettings.getDOMNode().focus();
-			});
+			$(this.refs.valuesSettingsDialog.getDOMNode()).modal('show');
 		},
 		onClickMenu: function(e) {
 			var target = $(e.target).closest('a');
@@ -689,28 +693,115 @@
 				activeValues: item
 			});
 		},
+		onRulesThemeChange: function(e) {
+			var theme = e.target.value;
+			dataCenter.rules.setTheme({theme: theme});
+			this.setState({
+				rulesTheme: theme
+			});
+		},
+		onValuesThemeChange: function(e) {
+			var theme = e.target.value;
+			dataCenter.values.setTheme({theme: theme});
+			this.setState({
+				valuesTheme: theme
+			});
+		},
+		onRulesFontSizeChange: function(e) {
+			var fontSize = e.target.value;
+			dataCenter.rules.setFontSize({fontSize: fontSize});
+			this.setState({
+				rulesFontSize: fontSize
+			});
+		},
+		onValuesFontSizeChange: function(e) {
+			var fontSize = e.target.value;
+			dataCenter.values.setFontSize({fontSize: fontSize});
+			this.setState({
+				valuesFontSize: fontSize
+			});
+		},
+		onRulesLineNumberChange: function(e) {
+			var checked = e.target.checked;
+			dataCenter.rules.showLineNumbers({showLineNumbers: checked ? 1 : 0});
+			this.setState({
+				showRulesLineNumbers: checked
+			});
+		},
+		onValuesLineNumberChange: function(e) {
+			var checked = e.target.checked;
+			dataCenter.values.showLineNumbers({showLineNumbers: checked ? 1 : 0});
+			this.setState({
+				showValuesLineNumbers: checked
+			});
+		},
+		allowMultipleChoice: function(e) {
+			var checked = e.target.checked;
+			dataCenter.rules.allowMultipleChoice({allowMultipleChoice: checked ? 1 : 0});
+			this.setState({
+				allowMultipleChoice: checked
+			});
+		},
+		syncWithSysHosts: function(e) {
+			var checked = e.target.checked;
+			dataCenter.rules.syncWithSysHosts({syncWithSysHosts: checked ? 1 : 0});
+			this.setState({
+				syncWithSysHosts: checked
+			});
+		},
 		render: function() {
-			var name = this.state.name;
+			var state = this.state;
+			var name = state.name;
 			var isNetwork = name === undefined || name == 'network';
 			var isRules = name == 'rules';
 			var isValues = name == 'values';
 			var disabledEditBtn = true;
 			var disabledDeleteBtn = true;
+			var rulesTheme = 'cobalt';
+			var valuesTheme = 'cobalt';
+			var rulesFontSize = '14px';
+			var valuesFontSize = '14px';
+			var showRulesLineNumbers = false;
+			var showValuesLineNumbers = false;
+			
 			if (isRules) {
-				var data = this.state.rules.data;
+				var data = state.rules.data;
 				for (var i in data) {
 					if (data[i].active) {
 						disabledEditBtn = disabledDeleteBtn = data[i].isDefault;
 						break;
 					}
 				}
+				if (state.rulesTheme) {
+					rulesTheme = state.rulesTheme;
+				}
+				
+				if (state.rulesFontSize) {
+					rulesFontSize = state.rulesFontSize;
+				}
+				
+				if (state.showRulesLineNumbers) {
+					showRulesLineNumbers = state.showRulesLineNumbers;
+				}
+				
 			} else if (isValues) {
-				var data = this.state.values.data;
+				var data = state.values.data;
 				for (var i in data) {
 					if (data[i].active) {
 						disabledEditBtn = disabledDeleteBtn = false;
 						break;
 					}
+				}
+				if (state.valuesTheme) {
+					valuesTheme = state.valuesTheme;
+				}
+				
+				if (state.valuesFontSize) {
+					valuesFontSize = state.valuesFontSize;
+				}
+				
+				if (state.showValuesLineNumbers) {
+					showValuesLineNumbers = state.showValuesLineNumbers;
 				}
 			}
 			
@@ -725,7 +816,7 @@
 						React.createElement("a", {onClick: this.autoScroll, className: "w-scroll-menu", style: {display: isNetwork ? '' : 'none'}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-play"}), "AutoScroll"), 
 						React.createElement("a", {onClick: this.replay, className: "w-replay-menu", style: {display: isNetwork ? '' : 'none'}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-repeat"}), "Replay"), 
 						React.createElement("a", {onClick: this.composer, className: "w-composer-menu", style: {display: isNetwork ? '' : 'none'}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-edit"}), "Composer"), 
-						React.createElement("a", {onClick: this.showEditFilter, className: 'w-filter-menu' + (this.state.filterText ? ' w-menu-enable' : ''), style: {display: isNetwork ? '' : 'none'}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-filter"}), "Filter"), 
+						React.createElement("a", {onClick: this.showEditFilter, className: 'w-filter-menu' + (state.filterText ? ' w-menu-enable' : ''), style: {display: isNetwork ? '' : 'none'}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-filter"}), "Filter"), 
 						React.createElement("a", {onClick: this.clear, className: "w-clear-menu", style: {display: isNetwork ? '' : 'none'}, href: "javascript:;", title: "Ctrl[Command]+D"}, React.createElement("span", {className: "glyphicon glyphicon-remove"}), "Clear"), 
 						React.createElement("a", {onClick: this.onClickMenu, className: 'w-delete-menu' + (disabledDeleteBtn ? ' w-disabled' : ''), style: {display: isNetwork ? 'none' : ''}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-trash"}), "Delete"), 
 						React.createElement("a", {onClick: this.showSettings, className: "w-settings-menu", style: {display: isNetwork ? 'none' : ''}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-cog"}), "Settings"), 
@@ -734,28 +825,51 @@
 						React.createElement("a", {className: "w-help-menu", href: "https://github.com/avwo/whistle#whistle", target: "_blank"}, React.createElement("span", {className: "glyphicon glyphicon-question-sign"}), "Help"), 
 						React.createElement(About, null), 
 						React.createElement(Online, null), 
-						React.createElement(MenuItem, {ref: "rulesMenuItem", name: "Open", options: this.state.rulesOptions, hide: !this.state.showRulesOptions, className: "w-rules-menu-item", onBlur: this.hideOptions, onClick: this.showRules, onClickOption: this.props.onClickOption}), 
-						React.createElement(MenuItem, {ref: "valuesMenuItem", name: "Open", options: this.state.valuesOptions, hide: !this.state.showValuesOptions, className: "w-values-menu-item", onBlur: this.hideOptions, onClick: this.showValues, onClickOption: this.props.onClickOption}), 
-						React.createElement(MenuItem, {ref: "weinreMenuItem", name: "Anonymous", options: this.state.weinreOptions, hide: !this.state.showWeinreOptions, className: "w-weinre-menu-item", onBlur: this.hideOptions, onClick: this.showAnonymousWeinre, onClickOption: this.showWeinre}), 
-						React.createElement("div", {onMouseDown: this.preventBlur, style: {display: this.state.showCreateRules ? 'block' : 'none'}, className: "shadow w-input-menu-item w-create-rules-input"}, React.createElement("input", {ref: "createRulesInput", onKeyDown: this.createRules, onBlur: this.hideOptions, type: "text", maxLength: "64", placeholder: "create rules"}), React.createElement("button", {type: "button", onClick: this.createRules, className: "btn btn-primary"}, "OK")), 
-						React.createElement("div", {onMouseDown: this.preventBlur, style: {display: this.state.showCreateValues ? 'block' : 'none'}, className: "shadow w-input-menu-item w-create-values-input"}, React.createElement("input", {ref: "createValuesInput", onKeyDown: this.createValues, onBlur: this.hideOptions, type: "text", maxLength: "64", placeholder: "create values"}), React.createElement("button", {type: "button", onClick: this.createValues, className: "btn btn-primary"}, "OK")), 
-						React.createElement("div", {onMouseDown: this.preventBlur, style: {display: this.state.showEditRules ? 'block' : 'none'}, className: "shadow w-input-menu-item w-edit-rules-input"}, React.createElement("input", {ref: "editRulesInput", onKeyDown: this.editRules, onBlur: this.hideOptions, type: "text", maxLength: "64", placeholder: 'rename ' + (this.state.selectedRuleName || '')}), React.createElement("button", {type: "button", onClick: this.editRules, className: "btn btn-primary"}, "OK")), 
-						React.createElement("div", {onMouseDown: this.preventBlur, style: {display: this.state.showEditValues ? 'block' : 'none'}, className: "shadow w-input-menu-item w-edit-values-input"}, React.createElement("input", {ref: "editValuesInput", onKeyDown: this.editValues, onBlur: this.hideOptions, type: "text", maxLength: "64", placeholder: 'rename ' + (this.state.selectedValueName || '')}), React.createElement("button", {type: "button", onClick: this.editValues, className: "btn btn-primary"}, "OK")), 
-						React.createElement("div", {onMouseDown: this.preventBlur, style: {display: this.state.showEditFilter ? 'block' : 'none'}, className: "shadow w-input-menu-item w-edit-filter-input"}, React.createElement("input", {ref: "editFilterInput", onKeyDown: this.setFilter, onBlur: this.hideOptions, type: "text", maxLength: "64", placeholder: this.state.filterText || 'string or regular'}), React.createElement("button", {type: "button", onClick: this.setFilter, className: "btn btn-primary"}, "OK")), 
-						React.createElement("div", {tabIndex: "0", ref: "valuesSettings", onMouseDown: this.preventBlur, onBlur: this.hideOptions, style: {display: this.state.showValuesSettings ? 'block' : 'none'}, className: "shadow w-input-menu-item w-values-settings-dialog"}, 
-							React.createElement("p", null, React.createElement("label", null, "Theme:")), 
-							React.createElement("p", null, React.createElement("label", null, "Font size:")), 
-							React.createElement("p", null, React.createElement("label", null, React.createElement("input", {type: "checkbox"}), " Show line number"))
-						), 
-						React.createElement("div", {tabIndex: "0", ref: "rulesSettings", onMouseDown: this.preventBlur, onBlur: this.hideOptions, style: {display: this.state.showRulesSettings ? 'block' : 'none'}, className: "shadow w-input-menu-item w-values-settings-dialog"}, 
-							React.createElement("p", null, React.createElement("label", null, "Theme:")), 
-							React.createElement("p", null, React.createElement("label", null, "Font size:")), 
-							React.createElement("p", null, React.createElement("label", null, React.createElement("input", {type: "checkbox"}), " Show line number"))
+						React.createElement(MenuItem, {ref: "rulesMenuItem", name: "Open", options: state.rulesOptions, hide: !state.showRulesOptions, className: "w-rules-menu-item", onBlur: this.hideOptions, onClick: this.showRules, onClickOption: this.props.onClickOption}), 
+						React.createElement(MenuItem, {ref: "valuesMenuItem", name: "Open", options: state.valuesOptions, hide: !state.showValuesOptions, className: "w-values-menu-item", onBlur: this.hideOptions, onClick: this.showValues, onClickOption: this.props.onClickOption}), 
+						React.createElement(MenuItem, {ref: "weinreMenuItem", name: "Anonymous", options: state.weinreOptions, hide: !state.showWeinreOptions, className: "w-weinre-menu-item", onBlur: this.hideOptions, onClick: this.showAnonymousWeinre, onClickOption: this.showWeinre}), 
+						React.createElement("div", {onMouseDown: this.preventBlur, style: {display: state.showCreateRules ? 'block' : 'none'}, className: "shadow w-input-menu-item w-create-rules-input"}, React.createElement("input", {ref: "createRulesInput", onKeyDown: this.createRules, onBlur: this.hideOptions, type: "text", maxLength: "64", placeholder: "create rules"}), React.createElement("button", {type: "button", onClick: this.createRules, className: "btn btn-primary"}, "OK")), 
+						React.createElement("div", {onMouseDown: this.preventBlur, style: {display: state.showCreateValues ? 'block' : 'none'}, className: "shadow w-input-menu-item w-create-values-input"}, React.createElement("input", {ref: "createValuesInput", onKeyDown: this.createValues, onBlur: this.hideOptions, type: "text", maxLength: "64", placeholder: "create values"}), React.createElement("button", {type: "button", onClick: this.createValues, className: "btn btn-primary"}, "OK")), 
+						React.createElement("div", {onMouseDown: this.preventBlur, style: {display: state.showEditRules ? 'block' : 'none'}, className: "shadow w-input-menu-item w-edit-rules-input"}, React.createElement("input", {ref: "editRulesInput", onKeyDown: this.editRules, onBlur: this.hideOptions, type: "text", maxLength: "64", placeholder: 'rename ' + (state.selectedRuleName || '')}), React.createElement("button", {type: "button", onClick: this.editRules, className: "btn btn-primary"}, "OK")), 
+						React.createElement("div", {onMouseDown: this.preventBlur, style: {display: state.showEditValues ? 'block' : 'none'}, className: "shadow w-input-menu-item w-edit-values-input"}, React.createElement("input", {ref: "editValuesInput", onKeyDown: this.editValues, onBlur: this.hideOptions, type: "text", maxLength: "64", placeholder: 'rename ' + (state.selectedValueName || '')}), React.createElement("button", {type: "button", onClick: this.editValues, className: "btn btn-primary"}, "OK")), 
+						React.createElement("div", {onMouseDown: this.preventBlur, style: {display: state.showEditFilter ? 'block' : 'none'}, className: "shadow w-input-menu-item w-edit-filter-input"}, React.createElement("input", {ref: "editFilterInput", onKeyDown: this.setFilter, onBlur: this.hideOptions, type: "text", maxLength: "64", placeholder: state.filterText || 'string or regular'}), React.createElement("button", {type: "button", onClick: this.setFilter, className: "btn btn-primary"}, "OK"))
+					), 
+					state.hasRules ? React.createElement(List, {theme: rulesTheme, fontSize: rulesFontSize, lineNumbers: showRulesLineNumbers, onSelect: this.selectRules, onUnselect: this.unselectRules, onActive: this.activeRules, modal: state.rules, hide: name == 'rules' ? false : true, name: "rules"}) : '', 
+					state.hasValues ? React.createElement(List, {theme: valuesTheme, fontSize: valuesFontSize, lineNumbers: showValuesLineNumbers, onSelect: this.saveValues, onActive: this.activeValues, modal: state.values, hide: name == 'values' ? false : true, className: "w-values-list"}) : '', 
+					state.hasNetwork ? React.createElement(Network, {ref: "network", hide: name != 'rules' && name != 'values' ? false : true, modal: state.network}) : '', 
+					React.createElement("div", {ref: "rulesSettingsDialog", className: "modal fade w-rules-settings-dialog"}, 
+						React.createElement("div", {className: "modal-dialog"}, 
+						  	React.createElement("div", {className: "modal-content"}, 
+						      React.createElement("div", {className: "modal-body"}, 
+						      	React.createElement(EditorSettings, {theme: rulesTheme, fontSize: rulesFontSize, lineNumbers: showRulesLineNumbers, 
+							      	onThemeChange: this.onRulesThemeChange, 
+							      	onFontSizeChange: this.onRulesFontSizeChange, 
+							      	onLineNumberChange: this.onRulesLineNumberChange}), 
+						      	React.createElement("p", {className: "w-editor-settings-box"}, React.createElement("label", null, React.createElement("input", {type: "checkbox", checked: state.allowMultipleChoice, onChange: this.allowMultipleChoice}), " Allow multiple choice")), 
+						      	React.createElement("p", {className: "w-editor-settings-box"}, React.createElement("label", null, React.createElement("input", {type: "checkbox", checked: state.syncWithSysHosts, onChange: this.syncWithSysHosts}), " Synchronized with the system hosts")), 
+						      	React.createElement("p", {className: "w-editor-settings-box"}, React.createElement("a", {href: "javascript:;"}, "Import system hosts to ", React.createElement("strong", null, "Default")))
+						      ), 
+						      React.createElement("div", {className: "modal-footer"}, 
+						        React.createElement("button", {type: "button", className: "btn btn-default", "data-dismiss": "modal"}, "Close")
+						      )
+						    )
 						)
 					), 
-					this.state.hasRules ? React.createElement(List, {onSelect: this.selectRules, onUnselect: this.unselectRules, onActive: this.activeRules, modal: this.state.rules, hide: name == 'rules' ? false : true, name: "rules"}) : '', 
-					this.state.hasValues ? React.createElement(List, {onSelect: this.saveValues, onActive: this.activeValues, modal: this.state.values, hide: name == 'values' ? false : true, className: "w-values-list"}) : '', 
-					this.state.hasNetwork ? React.createElement(Network, {ref: "network", hide: name != 'rules' && name != 'values' ? false : true, modal: this.state.network}) : ''
+					React.createElement("div", {ref: "valuesSettingsDialog", className: "modal fade w-values-settings-dialog"}, 
+						React.createElement("div", {className: "modal-dialog"}, 
+					  		React.createElement("div", {className: "modal-content"}, 
+						      React.createElement("div", {className: "modal-body"}, 
+							      React.createElement(EditorSettings, {theme: valuesTheme, fontSize: valuesFontSize, lineNumbers: showValuesLineNumbers, 
+								      onThemeChange: this.onValuesThemeChange, 
+								      onFontSizeChange: this.onValuesFontSizeChange, 
+								      onLineNumberChange: this.onValuesLineNumberChange})
+						      ), 
+						      React.createElement("div", {className: "modal-footer"}, 
+						        React.createElement("button", {type: "button", className: "btn btn-default", "data-dismiss": "modal"}, "Close")
+						      )
+						    )
+					    )
+					)
 				)
 			);
 		}
@@ -802,7 +916,7 @@
 
 
 	// module
-	exports.push([module.id, ".w-menu {height: 28px; border-top: 1px solid #fcfcfc; border-bottom: 1px solid #d3d3d3; padding: 0 5px; \nbackground: -moz-linear-gradient(rgb(239, 238, 238), rgb(211, 212, 213));\nbackground: -webkit-linear-gradient(rgb(239, 238, 238), rgb(211, 212, 213)); \nbackground: linear-gradient(rgb(239, 238, 238), rgb(211, 212, 213)); padding-right: 80px; position: relative; z-index: 1001;}\n.w-menu a {text-decoration: none!important; color: #000; padding: 0 5px; line-height: 26px; height: 26px; margin-right: 5px; display: inline-block;}\n.w-menu .glyphicon, .w-detail .glyphicon {margin-right: 3px;}\n.w-menu .glyphicon-folder-open {margin-right: 6px;}\n.w-menu .w-online {position: absolute; right: 0;}\n.w-menu .w-online, .w-menu a:hover {color: #337ab7;}\n.w-menu .w-offline {color: #ccc!important; cursor: default;}\n.w-menu .w-disabled {color: #888!important; cursor: default!important;}\n.w-menu .w-menu-enable {color: #337ab7;}\n\n.w-input-menu-item {display: block; position: absolute; background: #fff; border: 1px solid #ccc; border-radius: 2px; z-index: 101; top: 30px; display: none; white-space: nowrap;}\n.w-input-menu-item input {width: 246px; height: 32px; border: 1px solid #ccc; border-radius: 2px; padding: 0 5px; vertical-align: middle;}\n.w-input-menu-item .btn {height: 32px; padding: 0 12px; vertical-align: middle; border-radius: 0; border-right-top-radius: 2px; border-right-bottom-radius: 2px;}\n\n.w-create-rules-input {left: 170px;}\n.w-create-values-input {left: 160px;}\n.w-edit-rules-input {left: 242px;}\n.w-edit-values-input {left: 232px;}\n.w-edit-filter-input {left: 425px;}\n\n.w-values-list .glyphicon {display: none!important;}\n.w-values-list a {font-weight: normal!important;}\n\n.w-rules-menu-list .w-values-menu-item {left: 92px;}\n.w-network-menu-list .w-values-menu-item {left: 75px;}\n.w-network-menu-list .w-rules-menu-item {left: 8px;}\n.w-values-menu-list .w-rules-menu-item {left: 92px;}\n.w-rules-menu-list .w-weinre-menu-item {left: 457px;}\n.w-network-menu-list .w-weinre-menu-item {left: 550px;}\n.w-values-menu-list .w-weinre-menu-item {left: 447px;}\n", ""]);
+	exports.push([module.id, ".w-menu {height: 28px; border-top: 1px solid #fcfcfc; border-bottom: 1px solid #d3d3d3; padding: 0 5px; \nbackground: -moz-linear-gradient(rgb(239, 238, 238), rgb(211, 212, 213));\nbackground: -webkit-linear-gradient(rgb(239, 238, 238), rgb(211, 212, 213)); \nbackground: linear-gradient(rgb(239, 238, 238), rgb(211, 212, 213)); padding-right: 80px; position: relative; z-index: 1001;}\n.w-menu a {text-decoration: none!important; color: #000; padding: 0 5px; line-height: 26px; height: 26px; margin-right: 5px; display: inline-block;}\n.w-menu .glyphicon, .w-detail .glyphicon {margin-right: 3px;}\n.w-menu .glyphicon-folder-open {margin-right: 6px;}\n.w-menu .w-online {position: absolute; right: 0;}\n.w-menu .w-online, .w-menu a:hover {color: #337ab7;}\n.w-menu .w-offline {color: #ccc!important; cursor: default;}\n.w-menu .w-disabled {color: #888!important; cursor: default!important;}\n.w-menu .w-menu-enable {color: #337ab7;}\n\n.w-input-menu-item {display: block; position: absolute; background: #fff; border: 1px solid #ccc; border-radius: 2px; z-index: 101; top: 30px; display: none; white-space: nowrap;}\n.w-input-menu-item input {width: 246px; height: 32px; border: 1px solid #ccc; border-radius: 2px; padding: 0 5px; vertical-align: middle;}\n.w-input-menu-item .btn {height: 32px; padding: 0 12px; vertical-align: middle; border-radius: 0; border-right-top-radius: 2px; border-right-bottom-radius: 2px;}\n\n.w-create-rules-input {left: 170px;}\n.w-create-values-input {left: 160px;}\n.w-edit-rules-input {left: 242px;}\n.w-edit-values-input {left: 232px;}\n.w-edit-filter-input {left: 425px;}\n\n.w-values-list .glyphicon {display: none!important;}\n.w-values-list a {font-weight: normal!important;}\n\n.w-rules-menu-list .w-values-menu-item {left: 92px;}\n.w-network-menu-list .w-values-menu-item {left: 75px;}\n.w-network-menu-list .w-rules-menu-item {left: 8px;}\n.w-values-menu-list .w-rules-menu-item {left: 92px;}\n.w-rules-menu-list .w-weinre-menu-item {left: 457px;}\n.w-network-menu-list .w-weinre-menu-item {left: 550px;}\n.w-values-menu-list .w-weinre-menu-item {left: 447px;}\n\n.w-rules-settings-dialog .modal-dialog {width: 336px;}\n.w-values-settings-dialog .modal-dialog {width: 282px;}\n", ""]);
 
 	// exports
 
@@ -31541,7 +31655,7 @@
 		_init: function() {
 			this.setMode(this.props.mode);
 			this.setValue(this.props.value);
-			this.setTheme(this.props.mode);
+			this.setTheme(this.props.theme);
 			this.setFontSize(this.props.fontSize);
 			this.setTheme(this.props.theme);
 			this.showLineNumber(this.props.lineNumbers || false);
@@ -44538,11 +44652,11 @@
 	__webpack_require__(163);
 	var React = __webpack_require__(6);
 	var util = __webpack_require__(175);
-	var events = __webpack_require__(277);
+	var events = __webpack_require__(231);
 	var Divider = __webpack_require__(176);
-	var ReqData = __webpack_require__(231);
-	var Detail = __webpack_require__(234);
-	var dataCenter = __webpack_require__(264);
+	var ReqData = __webpack_require__(232);
+	var Detail = __webpack_require__(235);
+	var dataCenter = __webpack_require__(262);
 
 	var Network = React.createClass({displayName: "Network",
 		shouldComponentUpdate: function(nextProps) {
@@ -44574,8 +44688,16 @@
 /* 231 */
 /***/ function(module, exports, __webpack_require__) {
 
+	var $ = __webpack_require__(5);
+
+	module.exports = $({});
+
+/***/ },
+/* 232 */
+/***/ function(module, exports, __webpack_require__) {
+
 	__webpack_require__(163);
-	__webpack_require__(232);
+	__webpack_require__(233);
 	var React = __webpack_require__(6);
 	var $ = __webpack_require__(5);
 	var util = __webpack_require__(175);
@@ -44782,13 +44904,13 @@
 	module.exports = ReqData;
 
 /***/ },
-/* 232 */
+/* 233 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(233);
+	var content = __webpack_require__(234);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -44808,7 +44930,7 @@
 	}
 
 /***/ },
-/* 233 */
+/* 234 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -44822,21 +44944,21 @@
 
 
 /***/ },
-/* 234 */
+/* 235 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(235);
+	__webpack_require__(236);
 	var React = __webpack_require__(6);
 	var util = __webpack_require__(175);
-	var events = __webpack_require__(277);
-	var BtnGroup = __webpack_require__(237);
-	var Overview = __webpack_require__(240);
-	var ReqDetail = __webpack_require__(246);
-	var ResDetail = __webpack_require__(252);
-	var Timeline = __webpack_require__(255);
-	var Composer = __webpack_require__(258);
-	var Log = __webpack_require__(261);
+	var events = __webpack_require__(231);
+	var BtnGroup = __webpack_require__(238);
+	var Overview = __webpack_require__(241);
+	var ReqDetail = __webpack_require__(247);
+	var ResDetail = __webpack_require__(253);
+	var Timeline = __webpack_require__(256);
+	var Composer = __webpack_require__(259);
+	var Log = __webpack_require__(265);
 	var TABS = [{
 					name: 'Overview',
 					icon: 'eye-open'
@@ -44920,13 +45042,13 @@
 	module.exports = ReqData;
 
 /***/ },
-/* 235 */
+/* 236 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(236);
+	var content = __webpack_require__(237);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -44946,7 +45068,7 @@
 	}
 
 /***/ },
-/* 236 */
+/* 237 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -44960,11 +45082,11 @@
 
 
 /***/ },
-/* 237 */
+/* 238 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(238);
+	__webpack_require__(239);
 	var React = __webpack_require__(6);
 	var util = __webpack_require__(175);
 
@@ -45012,13 +45134,13 @@
 	module.exports = BtnGroup;
 
 /***/ },
-/* 238 */
+/* 239 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(239);
+	var content = __webpack_require__(240);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -45038,7 +45160,7 @@
 	}
 
 /***/ },
-/* 239 */
+/* 240 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -45052,14 +45174,14 @@
 
 
 /***/ },
-/* 240 */
+/* 241 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(241);
+	__webpack_require__(242);
 	var React = __webpack_require__(6);
 	var util = __webpack_require__(175);
-	var Properties = __webpack_require__(243);
+	var Properties = __webpack_require__(244);
 	var OVERVIEW = ['Url', 'Real Url', 'Method', 'Http Version', 'Status Code', 'Status Message', 'Host IP', 'Client IP', 'Request Length', 'Content Length'
 	                      , 'Start Date', 'DNS Lookup', 'Request Sent', 'Response Headers', 'Content Download'];
 	var OVERVIEW_PROPS = ['url', 'realUrl', 'req.method', 'req.httpVersion', 'res.statusCode', 'res.statusMessage', 'res.ip', 'req.ip', 'req.size', 'res.size'];
@@ -45161,13 +45283,13 @@
 	module.exports = Overview;
 
 /***/ },
-/* 241 */
+/* 242 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(242);
+	var content = __webpack_require__(243);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -45187,7 +45309,7 @@
 	}
 
 /***/ },
-/* 242 */
+/* 243 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -45201,11 +45323,11 @@
 
 
 /***/ },
-/* 243 */
+/* 244 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(244);
+	__webpack_require__(245);
 	var React = __webpack_require__(6);
 
 	var Properties = React.createClass({displayName: "Properties",
@@ -45244,13 +45366,13 @@
 	module.exports = Properties;
 
 /***/ },
-/* 244 */
+/* 245 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(245);
+	var content = __webpack_require__(246);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -45270,7 +45392,7 @@
 	}
 
 /***/ },
-/* 245 */
+/* 246 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -45284,17 +45406,17 @@
 
 
 /***/ },
-/* 246 */
+/* 247 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(247);
+	__webpack_require__(248);
 	var React = __webpack_require__(6);
-	var Table = __webpack_require__(249);
+	var Table = __webpack_require__(250);
 	var Divider = __webpack_require__(176);
-	var Properties = __webpack_require__(243);
+	var Properties = __webpack_require__(244);
 	var util = __webpack_require__(175);
-	var BtnGroup = __webpack_require__(237);
+	var BtnGroup = __webpack_require__(238);
 	var BTNS = [{name: 'Headers'}, {name: 'TextView'}, {name: 'Cookies'}, {name: 'WebForms'}, {name: 'Raw'}];
 
 	var ReqDetail = React.createClass({displayName: "ReqDetail",
@@ -45364,13 +45486,13 @@
 
 
 /***/ },
-/* 247 */
+/* 248 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(248);
+	var content = __webpack_require__(249);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -45390,7 +45512,7 @@
 	}
 
 /***/ },
-/* 248 */
+/* 249 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -45404,11 +45526,11 @@
 
 
 /***/ },
-/* 249 */
+/* 250 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(250);
+	__webpack_require__(251);
 	var React = __webpack_require__(6);
 
 	var Table = React.createClass({displayName: "Table",
@@ -45452,13 +45574,13 @@
 	module.exports = Table;
 
 /***/ },
-/* 250 */
+/* 251 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(251);
+	var content = __webpack_require__(252);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -45478,7 +45600,7 @@
 	}
 
 /***/ },
-/* 251 */
+/* 252 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -45492,16 +45614,16 @@
 
 
 /***/ },
-/* 252 */
+/* 253 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(253);
+	__webpack_require__(254);
 	var React = __webpack_require__(6);
-	var Table = __webpack_require__(249);
-	var Properties = __webpack_require__(243);
+	var Table = __webpack_require__(250);
+	var Properties = __webpack_require__(244);
 	var util = __webpack_require__(175);
-	var BtnGroup = __webpack_require__(237);
+	var BtnGroup = __webpack_require__(238);
 	BTNS = [{name: 'Headers'}, {name: 'TextView'}, {name: 'Cookies'}, {name: 'JSON'}, {name: 'Raw'}];
 	var COOKIE_HEADERS = ['Name', 'Value', 'Domain', 'Path', 'Expires', 'Http Only', 'Secure'];
 
@@ -45599,13 +45721,13 @@
 
 
 /***/ },
-/* 253 */
+/* 254 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(254);
+	var content = __webpack_require__(255);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -45625,7 +45747,7 @@
 	}
 
 /***/ },
-/* 254 */
+/* 255 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -45639,11 +45761,11 @@
 
 
 /***/ },
-/* 255 */
+/* 256 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(256);
+	__webpack_require__(257);
 	var React = __webpack_require__(6);
 	var util = __webpack_require__(175);
 	var TOTAL_RATE = 80;
@@ -45749,13 +45871,13 @@
 	module.exports = Timeline;
 
 /***/ },
-/* 256 */
+/* 257 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(257);
+	var content = __webpack_require__(258);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -45775,7 +45897,7 @@
 	}
 
 /***/ },
-/* 257 */
+/* 258 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -45789,15 +45911,15 @@
 
 
 /***/ },
-/* 258 */
+/* 259 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(259);
+	__webpack_require__(260);
 	var React = __webpack_require__(6);
-	var dataCenter = __webpack_require__(264);
+	var dataCenter = __webpack_require__(262);
 	var util = __webpack_require__(175);
-	var events = __webpack_require__(277);
+	var events = __webpack_require__(231);
 	var Divider = __webpack_require__(176);
 
 	var Composer = React.createClass({displayName: "Composer",
@@ -45832,7 +45954,6 @@
 			var refs = this.refs;
 			var url = refs.url.getDOMNode().value.trim();
 			if (!url) {
-				alert('Please input the url.');
 				return;
 			}
 			
@@ -45882,13 +46003,13 @@
 	module.exports = Composer;
 
 /***/ },
-/* 259 */
+/* 260 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(260);
+	var content = __webpack_require__(261);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -45908,7 +46029,7 @@
 	}
 
 /***/ },
-/* 260 */
+/* 261 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -45922,179 +46043,12 @@
 
 
 /***/ },
-/* 261 */
-/***/ function(module, exports, __webpack_require__) {
-
-	__webpack_require__(163);
-	__webpack_require__(262);
-	var React = __webpack_require__(6);
-	var util = __webpack_require__(175);
-
-	var Log = React.createClass({displayName: "Log",
-		shouldComponentUpdate: function(nextProps) {
-			var hide = util.getBoolean(this.props.hide);
-			return hide != util.getBoolean(nextProps.hide) || !hide;
-		},
-		render: function() {
-			
-			return (
-					React.createElement("div", {className: 'fill orient-vertical-box w-detail-content w-detail-log' + (util.getBoolean(this.props.hide) ? ' hide' : '')}, 
-						React.createElement("ul", null, 
-							React.createElement("li", {className: "fatal"}, 
-								React.createElement("h5", null, "Level: FATAL"), 
-								React.createElement("h5", null, "Date: xxxxxx"), 
-								React.createElement("h5", null, "Source:"), 
-								React.createElement("pre", null, 
-									"xxxxxx"
-								), 
-								React.createElement("h5", null, "Message:"), 
-								React.createElement("pre", null, 
-									"mmmmmmm"
-								), 
-								React.createElement("h5", null, "stack:"), 
-								React.createElement("pre", null, 
-									"ssssssssssssssss"
-								), 
-								React.createElement("h5", null, "UA:"), 
-								React.createElement("pre", null, 
-									"xxxxxx"
-								)
-							), 
-							React.createElement("li", {className: "error"}, 
-								React.createElement("h5", null, "Level: ERROR"), 
-								React.createElement("h5", null, "Date: xxxxxx"), 
-								React.createElement("h5", null, "Source:"), 
-								React.createElement("pre", null, 
-									"xxxxxx"
-								), 
-								React.createElement("h5", null, "Message:"), 
-								React.createElement("pre", null, 
-									"mmmmmmm"
-								), 
-								React.createElement("h5", null, "stack:"), 
-								React.createElement("pre", null, 
-									"ssssssssssssssss"
-								), 
-								React.createElement("h5", null, "UA:"), 
-								React.createElement("pre", null, 
-									"xxxxxx"
-								)
-							), 
-							React.createElement("li", {className: "warn"}, 
-								React.createElement("h5", null, "Level: WARN"), 
-								React.createElement("h5", null, "Date: xxxxxx"), 
-								React.createElement("h5", null, "Source:"), 
-								React.createElement("pre", null, 
-									"xxxxxx"
-								), 
-								React.createElement("h5", null, "Message:"), 
-								React.createElement("pre", null, 
-									"mmmmmmm"
-								), 
-								React.createElement("h5", null, "stack:"), 
-								React.createElement("pre", null, 
-									"ssssssssssssssss"
-								), 
-								React.createElement("h5", null, "UA:"), 
-								React.createElement("pre", null, 
-									"xxxxxx"
-								)
-							), 
-							React.createElement("li", {className: "info"}, 
-								React.createElement("h5", null, "Level: INFO"), 
-								React.createElement("h5", null, "Date: xxxxxx"), 
-								React.createElement("h5", null, "Source:"), 
-								React.createElement("pre", null, 
-									"xxxxxx"
-								), 
-								React.createElement("h5", null, "Message:"), 
-								React.createElement("pre", null, 
-									"mmmmmmm"
-								), 
-								React.createElement("h5", null, "stack:"), 
-								React.createElement("pre", null, 
-									"ssssssssssssssss"
-								), 
-								React.createElement("h5", null, "UA:"), 
-								React.createElement("pre", null, 
-									"xxxxxx"
-								)
-							), 
-							React.createElement("li", {className: "debug"}, 
-								React.createElement("h5", null, "Level: DEBUG"), 
-								React.createElement("h5", null, "Date: xxxxxx"), 
-								React.createElement("h5", null, "Source:"), 
-								React.createElement("pre", null, 
-									"xxxxxx"
-								), 
-								React.createElement("h5", null, "Message:"), 
-								React.createElement("pre", null, 
-									"mmmmmmm"
-								), 
-								React.createElement("h5", null, "stack:"), 
-								React.createElement("pre", null, 
-									"ssssssssssssssss"
-								), 
-								React.createElement("h5", null, "UA:"), 
-								React.createElement("pre", null, 
-									"xxxxxx"
-								)
-							)
-						)
-				)
-			);
-		}
-	});
-
-	module.exports = Log;
-
-/***/ },
 /* 262 */
 /***/ function(module, exports, __webpack_require__) {
 
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-
-	// load the styles
-	var content = __webpack_require__(263);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(4)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../node_modules/css-loader/index.js!./log.css", function() {
-				var newContent = require("!!./../node_modules/css-loader/index.js!./log.css");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
-/* 263 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(3)();
-	// imports
-
-
-	// module
-	exports.push([module.id, ".w-detail-log ul, .w-detail-log li {list-style: none; padding: 0; margin: 0; display: block; width: 100%; font-size: 12px;}\n.w-detail-log li {border-bottom: 1px solid #ccc; width: 100%; padding: 1px 0;}\n.w-detail-log h5 {padding-left: 10px; font-size: 12px}\n.w-detail-log pre {background: none; border: none; padding: 0 10px 0 20px; font-size: 12px}\n.w-detail-log li.fatal {background: #bbb;}\n.w-detail-log li.error {background: #f2dede;}\n.w-detail-log li.warn {background: #fee;}\n.w-detail-log li.info {background: #f5f5f5;}\n.w-detail-log li.debug {background: #fff;}\n", ""]);
-
-	// exports
-
-
-/***/ },
-/* 264 */
-/***/ function(module, exports, __webpack_require__) {
-
 	var $ = __webpack_require__(5);
-	var createCgi = __webpack_require__(265);
-	var NetworkModal = __webpack_require__(266);
+	var createCgi = __webpack_require__(263);
+	var NetworkModal = __webpack_require__(264);
 	var	MAX_COUNT = NetworkModal.MAX_COUNT;
 	var TIMEOUT = 10000;
 	var dataCallbacks = [];
@@ -46146,7 +46100,9 @@
 		setFontSize: '/cgi-bin/rules/set-font-size',
 		setTheme: '/cgi-bin/rules/set-theme',
 		showLineNumbers: '/cgi-bin/rules/show-line-numbers',
-		unselect: '/cgi-bin/rules/unselect'
+		unselect: '/cgi-bin/rules/unselect',
+		allowMultipleChoice: '/cgi-bin/rules/allow-multiple-choice',
+		syncWithSysHosts: '/cgi-bin/rules/sync-with-sys-hosts'
 	}, POST_CONF);
 
 	exports.log = createCgi({
@@ -46308,7 +46264,7 @@
 
 
 /***/ },
-/* 265 */
+/* 263 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var $ = __webpack_require__(5);
@@ -46376,7 +46332,7 @@
 	module.exports = create;
 
 /***/ },
-/* 266 */
+/* 264 */
 /***/ function(module, exports) {
 
 	var MAX_LENGTH = 360;
@@ -46635,15 +46591,182 @@
 
 
 /***/ },
-/* 267 */
+/* 265 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(268);
-	var $ = window.jQuery = __webpack_require__(5); //for bootstrap
-	__webpack_require__(270);
+	__webpack_require__(266);
 	var React = __webpack_require__(6);
-	var dataCenter = __webpack_require__(264);
+	var util = __webpack_require__(175);
+
+	var Log = React.createClass({displayName: "Log",
+		shouldComponentUpdate: function(nextProps) {
+			var hide = util.getBoolean(this.props.hide);
+			return hide != util.getBoolean(nextProps.hide) || !hide;
+		},
+		render: function() {
+			
+			return (
+					React.createElement("div", {className: 'fill orient-vertical-box w-detail-content w-detail-log' + (util.getBoolean(this.props.hide) ? ' hide' : '')}, 
+						React.createElement("ul", null, 
+							React.createElement("li", {className: "fatal"}, 
+								React.createElement("h5", null, "Level: FATAL"), 
+								React.createElement("h5", null, "Date: xxxxxx"), 
+								React.createElement("h5", null, "Source:"), 
+								React.createElement("pre", null, 
+									"xxxxxx"
+								), 
+								React.createElement("h5", null, "Message:"), 
+								React.createElement("pre", null, 
+									"mmmmmmm"
+								), 
+								React.createElement("h5", null, "stack:"), 
+								React.createElement("pre", null, 
+									"ssssssssssssssss"
+								), 
+								React.createElement("h5", null, "UA:"), 
+								React.createElement("pre", null, 
+									"xxxxxx"
+								)
+							), 
+							React.createElement("li", {className: "error"}, 
+								React.createElement("h5", null, "Level: ERROR"), 
+								React.createElement("h5", null, "Date: xxxxxx"), 
+								React.createElement("h5", null, "Source:"), 
+								React.createElement("pre", null, 
+									"xxxxxx"
+								), 
+								React.createElement("h5", null, "Message:"), 
+								React.createElement("pre", null, 
+									"mmmmmmm"
+								), 
+								React.createElement("h5", null, "stack:"), 
+								React.createElement("pre", null, 
+									"ssssssssssssssss"
+								), 
+								React.createElement("h5", null, "UA:"), 
+								React.createElement("pre", null, 
+									"xxxxxx"
+								)
+							), 
+							React.createElement("li", {className: "warn"}, 
+								React.createElement("h5", null, "Level: WARN"), 
+								React.createElement("h5", null, "Date: xxxxxx"), 
+								React.createElement("h5", null, "Source:"), 
+								React.createElement("pre", null, 
+									"xxxxxx"
+								), 
+								React.createElement("h5", null, "Message:"), 
+								React.createElement("pre", null, 
+									"mmmmmmm"
+								), 
+								React.createElement("h5", null, "stack:"), 
+								React.createElement("pre", null, 
+									"ssssssssssssssss"
+								), 
+								React.createElement("h5", null, "UA:"), 
+								React.createElement("pre", null, 
+									"xxxxxx"
+								)
+							), 
+							React.createElement("li", {className: "info"}, 
+								React.createElement("h5", null, "Level: INFO"), 
+								React.createElement("h5", null, "Date: xxxxxx"), 
+								React.createElement("h5", null, "Source:"), 
+								React.createElement("pre", null, 
+									"xxxxxx"
+								), 
+								React.createElement("h5", null, "Message:"), 
+								React.createElement("pre", null, 
+									"mmmmmmm"
+								), 
+								React.createElement("h5", null, "stack:"), 
+								React.createElement("pre", null, 
+									"ssssssssssssssss"
+								), 
+								React.createElement("h5", null, "UA:"), 
+								React.createElement("pre", null, 
+									"xxxxxx"
+								)
+							), 
+							React.createElement("li", {className: "debug"}, 
+								React.createElement("h5", null, "Level: DEBUG"), 
+								React.createElement("h5", null, "Date: xxxxxx"), 
+								React.createElement("h5", null, "Source:"), 
+								React.createElement("pre", null, 
+									"xxxxxx"
+								), 
+								React.createElement("h5", null, "Message:"), 
+								React.createElement("pre", null, 
+									"mmmmmmm"
+								), 
+								React.createElement("h5", null, "stack:"), 
+								React.createElement("pre", null, 
+									"ssssssssssssssss"
+								), 
+								React.createElement("h5", null, "UA:"), 
+								React.createElement("pre", null, 
+									"xxxxxx"
+								)
+							)
+						)
+				)
+			);
+		}
+	});
+
+	module.exports = Log;
+
+/***/ },
+/* 266 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(267);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(4)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../node_modules/css-loader/index.js!./log.css", function() {
+				var newContent = require("!!./../node_modules/css-loader/index.js!./log.css");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 267 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(3)();
+	// imports
+
+
+	// module
+	exports.push([module.id, ".w-detail-log ul, .w-detail-log li {list-style: none; padding: 0; margin: 0; display: block; width: 100%; font-size: 12px;}\n.w-detail-log li {border-bottom: 1px solid #ccc; width: 100%; padding: 1px 0;}\n.w-detail-log h5 {padding-left: 10px; font-size: 12px}\n.w-detail-log pre {background: none; border: none; padding: 0 10px 0 20px; font-size: 12px}\n.w-detail-log li.fatal {background: #bbb;}\n.w-detail-log li.error {background: #f2dede;}\n.w-detail-log li.warn {background: #fee;}\n.w-detail-log li.info {background: #f5f5f5;}\n.w-detail-log li.debug {background: #fff;}\n", ""]);
+
+	// exports
+
+
+/***/ },
+/* 268 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(163);
+	__webpack_require__(269);
+	var $ = window.jQuery = __webpack_require__(5); //for bootstrap
+	__webpack_require__(271);
+	var React = __webpack_require__(6);
+	var dataCenter = __webpack_require__(262);
 	var dialog;
 
 	function createDialog(version) {
@@ -46692,13 +46815,13 @@
 	module.exports = About;
 
 /***/ },
-/* 268 */
+/* 269 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(269);
+	var content = __webpack_require__(270);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -46718,7 +46841,7 @@
 	}
 
 /***/ },
-/* 269 */
+/* 270 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -46732,7 +46855,7 @@
 
 
 /***/ },
-/* 270 */
+/* 271 */
 /***/ function(module, exports) {
 
 	/*!
@@ -49101,15 +49224,15 @@
 
 
 /***/ },
-/* 271 */
+/* 272 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(272);
+	__webpack_require__(273);
 	var $ = window.jQuery = __webpack_require__(5); //for bootstrap
-	__webpack_require__(270);
+	__webpack_require__(271);
 	var React = __webpack_require__(6);
-	var dataCenter = __webpack_require__(264);
+	var dataCenter = __webpack_require__(262);
 	var dialog;
 
 	function createDialog() {
@@ -49234,13 +49357,13 @@
 	module.exports = Online;
 
 /***/ },
-/* 272 */
+/* 273 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(273);
+	var content = __webpack_require__(274);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -49260,7 +49383,7 @@
 	}
 
 /***/ },
-/* 273 */
+/* 274 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -49274,11 +49397,11 @@
 
 
 /***/ },
-/* 274 */
+/* 275 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(275);
+	__webpack_require__(276);
 	var React = __webpack_require__(6);
 	var util = __webpack_require__(175);
 
@@ -49321,13 +49444,13 @@
 
 
 /***/ },
-/* 275 */
+/* 276 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(276);
+	var content = __webpack_require__(277);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -49347,7 +49470,7 @@
 	}
 
 /***/ },
-/* 276 */
+/* 277 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -49361,12 +49484,109 @@
 
 
 /***/ },
-/* 277 */
+/* 278 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var $ = __webpack_require__(5);
+	__webpack_require__(163);
+	__webpack_require__(279);
+	var React = __webpack_require__(6);
 
-	module.exports = $({});
+	var EditorSettings = React.createClass({displayName: "EditorSettings",
+		
+		render: function() {
+			
+			return (
+					React.createElement("div", {className: "w-editor-settings"}, 
+						React.createElement("p", null, 
+					      React.createElement("label", null, React.createElement("span", {className: "w-label"}, "Theme:"), 
+					    	  React.createElement("select", {value: this.props.theme, onChange: this.props.onThemeChange, className: "form-control"}, 
+									React.createElement("option", {value: "default"}, "default"), 
+							        React.createElement("option", {value: "ambiance"}, "ambiance"), 
+							        React.createElement("option", {value: "blackboard"}, "blackboard"), 
+							        React.createElement("option", {value: "cobalt"}, "cobalt"), 
+							        React.createElement("option", {value: "eclipse"}, "eclipse"), 
+							        React.createElement("option", {value: "elegant"}, "elegant"), 
+							        React.createElement("option", {value: "erlang-dark"}, "erlang-dark"), 
+							        React.createElement("option", {value: "lesser-dark"}, "lesser-dark"), 
+							        React.createElement("option", {value: "midnight"}, "midnight"), 
+							        React.createElement("option", {value: "monokai"}, "monokai"), 
+							        React.createElement("option", {value: "neat"}, "neat"), 
+							        React.createElement("option", {value: "night"}, "night"), 
+							        React.createElement("option", {value: "rubyblue"}, "rubyblue"), 
+							        React.createElement("option", {value: "solarized dark"}, "solarized dark"), 
+							        React.createElement("option", {value: "solarized light"}, "solarized light"), 
+							        React.createElement("option", {value: "twilight"}, "twilight"), 
+							        React.createElement("option", {value: "vibrant-ink"}, "vibrant-ink"), 
+							        React.createElement("option", {value: "xq-dark"}, "xq-dark"), 
+							        React.createElement("option", {value: "xq-light"}, "xq-light")
+								)
+							)
+				      ), 
+					  React.createElement("p", null, 
+						  React.createElement("label", null, React.createElement("span", {className: "w-label"}, "Font size:"), 
+							  React.createElement("select", {value: this.props.fontSize, onChange: this.props.onFontSizeChange, className: "form-control"}, 
+									React.createElement("option", {value: "13px"}, "13px"), 
+									React.createElement("option", {value: "14px"}, "14px"), 
+									React.createElement("option", {value: "16px"}, "16px"), 
+									React.createElement("option", {value: "18px"}, "18px"), 
+									React.createElement("option", {value: "20px"}, "20px"), 
+									React.createElement("option", {value: "24px"}, "24px"), 
+									React.createElement("option", {value: "26px"}, "26px"), 
+									React.createElement("option", {value: "28px"}, "28px"), 
+									React.createElement("option", {value: "30px"}, "30px"), 
+									React.createElement("option", {value: "32px"}, "32px"), 
+									React.createElement("option", {value: "34px"}, "34px"), 
+									React.createElement("option", {value: "36px"}, "36px")
+								)
+							)
+					  ), 
+					  React.createElement("p", {className: "w-editor-settings-box"}, React.createElement("label", null, React.createElement("input", {checked: this.props.lineNumbers, onChange: this.props.onLineNumberChange, type: "checkbox"}), " Show line number"))
+					 )
+			);
+		}
+	});
+
+	module.exports = EditorSettings;
+
+/***/ },
+/* 279 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(280);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(4)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../node_modules/css-loader/index.js!./editor-settings.css", function() {
+				var newContent = require("!!./../node_modules/css-loader/index.js!./editor-settings.css");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 280 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(3)();
+	// imports
+
+
+	// module
+	exports.push([module.id, ".w-editor-settings label, .w-editor-settings-box label {font-weight: normal; white-space: nowrap;}\n.w-editor-settings label .w-label {display: inline-block; width: 60px; text-align: right;}\n.w-editor-settings select {width: 186px;}\n.w-editor-settings-box {padding-left: 65px; margin: 5px;}\n.w-editor-settings .form-control {display: inline-block; margin-left: 5px;}\n.w-editor-settings p {margin: 5px;}", ""]);
+
+	// exports
+
 
 /***/ }
 /******/ ]);
