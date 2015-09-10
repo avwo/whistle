@@ -46691,15 +46691,22 @@
 				});
 			});
 			
-			$(container).on('click', '.w-level', function() {
-				container.scrollTop = content.offsetHeight;
-			}).on('scroll', function() {
+			$(container).on('scroll', function() {
 				var data = self.state.logs;
 				if (data && scrollAtBottom()) {
 					var len = data.length - 110;
 					if (len > 0) {
 						data.splice(0, len);
+						self.setState({logs: data});
 					}
+				}
+			}).on('click', '.w-auto-scroll-log', function() {
+				container.scrollTop = content.offsetHeight;
+			}).on('click', '.w-clear-log', function() {
+				var data = self.state.logs;
+				if (data) {
+					data.splice(0, data.length);
+					self.setState({logs: data});
 				}
 			});
 			
@@ -46715,12 +46722,15 @@
 			var logs = this.state && this.state.logs || [];
 			return (
 					React.createElement("div", {ref: "container", className: 'fill orient-vertical-box w-detail-content w-detail-log' + (util.getBoolean(this.props.hide) ? ' hide' : '')}, 
+						React.createElement("div", {style: {display: logs.length ? 'block' : 'none'}, className: "w-detail-log-bar"}, 
+							React.createElement("a", {className: "w-auto-scroll-log", href: "javascript:;"}, "AutoScroll"), 
+							React.createElement("a", {className: "w-clear-log", href: "javascript:;"}, "Clear")
+						), 
 						React.createElement("ul", {ref: "content"}, 
 							logs.map(function(log) {
 								
 								return (
 									React.createElement("li", {key: log.id, className: 'w-' + log.level}, 
-										React.createElement("label", {className: "w-level", title: "Auto scroll"}, log.level, React.createElement("span", {className: "glyphicon glyphicon-arrow-down", "aria-hidden": "true"})), 
 										React.createElement("pre", null, 
 											'Date: ' + (new Date(log.date)).toLocaleString() + '\r\n' + log.text
 										)
@@ -49601,7 +49611,7 @@
 
 
 	// module
-	exports.push([module.id, ".w-detail-log ul, .w-detail-log li {list-style: none; padding: 0; margin: 0; display: block; width: 100%; font-size: 12px;}\n.w-detail-log li {border-bottom: 1px solid #ccc; width: 100%; padding: 1px 0; position: relative;}\n.w-detail-log li .w-level { display: none; padding: 0 5px; white-space: nowrap; line-height: 1.5; text-align: right; background: #eee; position: absolute; top: 2px; right: 2px; border-radius: 1px;}\n.w-detail-log li .w-level span {margin: 0;}\n.w-detail-log li:hover .w-level {display: block;}\n.w-detail-log pre {background: none; border: none; padding: 5px 10px; margin: 0; font-size: 12px}\n.w-detail-log li.w-fatal {background: #bbb;}\n.w-detail-log li.w-error {background: #fbaaaa;}\n.w-detail-log li.w-warn {background: #f2dede;}\n.w-detail-log li.w-info {background: #f5f5f5;}\n.w-detail-log li.w-debug {background: #fff;}\n\n", ""]);
+	exports.push([module.id, ".w-detail-log ul, .w-detail-log li {list-style: none; padding: 0; margin: 0; display: block; width: 100%; font-size: 12px;}\n.w-detail-log li {border-bottom: 1px solid #ccc; width: 100%; padding: 1px 0; position: relative;}\n.w-detail-log pre {background: none; border: none; padding: 5px 10px; margin: 0; font-size: 12px}\n.w-detail-log li.w-fatal {background: #bbb;}\n.w-detail-log li.w-error {background: #fbaaaa;}\n.w-detail-log li.w-warn {background: #f2dede;}\n.w-detail-log li.w-info {background: #f5f5f5;}\n.w-detail-log li.w-debug {background: #fff;}\n.w-detail-log-bar {position: fixed; z-index: 1; border-radius: 2px; right: 12px; font-size: 12px; top: 60px; white-space: nowrap; line-height: 1.5; background: #eee;}\n.w-detail-log-bar a {display: inline-block; text-decoration: none; color: #000; padding: 0 5px;}\n.w-detail-log-bar a:hover {color: #337ab7;}\n.w-detail-log-bar .w-auto-scroll-log {margin-right: 5px;}", ""]);
 
 	// exports
 
