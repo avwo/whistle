@@ -45033,12 +45033,16 @@
 			events.on('showOverview', function() {
 				self.toggleTab(TABS[0]);
 			}).on('composer', function() {
-				self.toggleTab(TABS[4]);
+				var modal = self.props.modal;
+				self.state.activeItem = modal && modal.getActive();
+				self.toggleTab(TABS[4], function() {
+					events.trigger('setComposer');
+				});
 			});
 		},
-		toggleTab: function(tab) {
+		toggleTab: function(tab, callback) {
 			this.selectTab(tab);
-			this.setState({tab: tab});
+			this.setState({tab: tab}, callback);
 		}, 
 		selectTab: function(tab) {
 			TABS.forEach(function(tab) {
@@ -45069,7 +45073,7 @@
 					this.state.initedRequest ? React.createElement(ReqDetail, {modal: activeItem, hide: name != TABS[1].name}) : '', 
 					this.state.initedResponse ? React.createElement(ResDetail, {modal: activeItem, hide: name != TABS[2].name}) : '', 
 					this.state.initedTimeline ? React.createElement(Timeline, {modal: modal, hide: name != TABS[3].name}) : '', 
-					this.state.initedComposer ? React.createElement(Composer, {modal: activeItem, hide: name != TABS[4].name}) : '', 
+					this.state.initedComposer ? React.createElement(Composer, {modal: this.state.activeItem, hide: name != TABS[4].name}) : '', 
 					this.state.initedLog ? React.createElement(Log, {hide: name != TABS[5].name}) : ''
 				)
 			);
@@ -45963,7 +45967,7 @@
 		componentDidMount: function() {
 			var self = this;
 			self.update(self.props.modal);
-			events.on('composer', function() {
+			events.on('setComposer', function() {
 				var activeItem = self.props.modal;
 				activeItem && self.setState({
 					data: activeItem
@@ -46090,7 +46094,9 @@
 	var TIMEOUT = 10000;
 	var dataCallbacks = [];
 	var serverInfoCallbacks = [];
+	var logCallbacks = [];
 	var dataList = [];
+	var logList = [];
 	var networkModal = new NetworkModal(dataList);
 	var curServerInfo;
 	var initialData;
@@ -46103,6 +46109,7 @@
 	var POST_CONF = $.extend({type: 'post'}, DEFAULT_CONF);
 	var GET_CONF = $.extend({cache: false}, DEFAULT_CONF);
 	var cgi = createCgi({
+		getLog: '/cgi-bin/log/get',
 		getData: '/cgi-bin/get-data',
 		getServerInfo: '/cgi-bin/server-info',
 		getInitaial: '/cgi-bin/init'
@@ -46145,12 +46152,8 @@
 	}, POST_CONF);
 
 	exports.log = createCgi({
-		get: '/cgi-bin/log/get',
-		set: {
-			type: 'post',
-			url: '/cgi-bin/log/set'
-		}
-	}, GET_CONF);
+		set: '/cgi-bin/log/set'
+	}, POST_CONF);
 
 	$.extend(exports, createCgi({
 		composer: '/cgi-bin/composer',
@@ -46265,6 +46268,30 @@
 		load();
 	}
 
+	function startLoadLog() {
+		if (logList.length) {
+			return;
+		}
+		
+		function load() {
+			var lastLog = logList[logList.length - 1];
+			cgi.getLog({
+				startTime: lastLog ? lastLog.id : Date.now(),
+				count: 60
+			}, function(data) {
+				setTimeout(load, 2000);
+				if (data && data.length) {
+					dataList.push.apply(dataList, data);
+					$.each(logCallbacks, function() {
+						this(dataList);
+					});
+				}
+				
+			});
+		}
+		load();
+	} 
+
 	exports.on = function(type, callback) {
 		if (type == 'data') {
 			if (typeof callback == 'function') {
@@ -46275,6 +46302,11 @@
 			if (typeof callback == 'function') {
 				startLoadServerInfo();
 				serverInfoCallbacks.push(callback);
+			}
+		} else if (type == 'log') {
+			if (typeof callback == 'function') {
+				startLoadLog();
+				logCallbacks.push(callback);
 			}
 		}
 	};
@@ -46637,115 +46669,51 @@
 	__webpack_require__(266);
 	var React = __webpack_require__(6);
 	var util = __webpack_require__(175);
+	var dataCenter = __webpack_require__(262);
 
 	var Log = React.createClass({displayName: "Log",
+		componentDidMount: function() {
+			dataCenter.on('log', function(data) {
+				console.log(data)
+			});
+		},
 		shouldComponentUpdate: function(nextProps) {
 			var hide = util.getBoolean(this.props.hide);
 			return hide != util.getBoolean(nextProps.hide) || !hide;
 		},
 		render: function() {
-			
+			var text = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\r\nbbbbb\r\nccccc\r\ndddddd';
 			return (
 					React.createElement("div", {className: 'fill orient-vertical-box w-detail-content w-detail-log' + (util.getBoolean(this.props.hide) ? ' hide' : '')}, 
 						React.createElement("ul", null, 
-							React.createElement("li", {className: "fatal"}, 
-								React.createElement("h5", null, "Level: FATAL"), 
-								React.createElement("h5", null, "Date: xxxxxx"), 
-								React.createElement("h5", null, "Source:"), 
+							React.createElement("li", {className: "w-fatal"}, 
+								React.createElement("label", {className: "w-level"}, "Fatal"), 
 								React.createElement("pre", null, 
-									"xxxxxx"
-								), 
-								React.createElement("h5", null, "Message:"), 
-								React.createElement("pre", null, 
-									"mmmmmmm"
-								), 
-								React.createElement("h5", null, "stack:"), 
-								React.createElement("pre", null, 
-									"ssssssssssssssss"
-								), 
-								React.createElement("h5", null, "UA:"), 
-								React.createElement("pre", null, 
-									"xxxxxx"
+									text
 								)
 							), 
-							React.createElement("li", {className: "error"}, 
-								React.createElement("h5", null, "Level: ERROR"), 
-								React.createElement("h5", null, "Date: xxxxxx"), 
-								React.createElement("h5", null, "Source:"), 
+							React.createElement("li", {className: "w-error"}, 
+								React.createElement("label", {className: "w-level"}, "Error"), 
 								React.createElement("pre", null, 
-									"xxxxxx"
-								), 
-								React.createElement("h5", null, "Message:"), 
-								React.createElement("pre", null, 
-									"mmmmmmm"
-								), 
-								React.createElement("h5", null, "stack:"), 
-								React.createElement("pre", null, 
-									"ssssssssssssssss"
-								), 
-								React.createElement("h5", null, "UA:"), 
-								React.createElement("pre", null, 
-									"xxxxxx"
+									text
 								)
 							), 
-							React.createElement("li", {className: "warn"}, 
-								React.createElement("h5", null, "Level: WARN"), 
-								React.createElement("h5", null, "Date: xxxxxx"), 
-								React.createElement("h5", null, "Source:"), 
+							React.createElement("li", {className: "w-warn"}, 
+								React.createElement("label", {className: "w-level"}, "Warn"), 
 								React.createElement("pre", null, 
-									"xxxxxx"
-								), 
-								React.createElement("h5", null, "Message:"), 
-								React.createElement("pre", null, 
-									"mmmmmmm"
-								), 
-								React.createElement("h5", null, "stack:"), 
-								React.createElement("pre", null, 
-									"ssssssssssssssss"
-								), 
-								React.createElement("h5", null, "UA:"), 
-								React.createElement("pre", null, 
-									"xxxxxx"
+									text
 								)
 							), 
-							React.createElement("li", {className: "info"}, 
-								React.createElement("h5", null, "Level: INFO"), 
-								React.createElement("h5", null, "Date: xxxxxx"), 
-								React.createElement("h5", null, "Source:"), 
+							React.createElement("li", {className: "w-info"}, 
+								React.createElement("label", {className: "w-level"}, "Info"), 
 								React.createElement("pre", null, 
-									"xxxxxx"
-								), 
-								React.createElement("h5", null, "Message:"), 
-								React.createElement("pre", null, 
-									"mmmmmmm"
-								), 
-								React.createElement("h5", null, "stack:"), 
-								React.createElement("pre", null, 
-									"ssssssssssssssss"
-								), 
-								React.createElement("h5", null, "UA:"), 
-								React.createElement("pre", null, 
-									"xxxxxx"
+									text
 								)
 							), 
-							React.createElement("li", {className: "debug"}, 
-								React.createElement("h5", null, "Level: DEBUG"), 
-								React.createElement("h5", null, "Date: xxxxxx"), 
-								React.createElement("h5", null, "Source:"), 
+							React.createElement("li", {className: "w-debug"}, 
+								React.createElement("label", {className: "w-level"}, "Debug"), 
 								React.createElement("pre", null, 
-									"xxxxxx"
-								), 
-								React.createElement("h5", null, "Message:"), 
-								React.createElement("pre", null, 
-									"mmmmmmm"
-								), 
-								React.createElement("h5", null, "stack:"), 
-								React.createElement("pre", null, 
-									"ssssssssssssssss"
-								), 
-								React.createElement("h5", null, "UA:"), 
-								React.createElement("pre", null, 
-									"xxxxxx"
+									text
 								)
 							)
 						)
@@ -46791,7 +46759,7 @@
 
 
 	// module
-	exports.push([module.id, ".w-detail-log ul, .w-detail-log li {list-style: none; padding: 0; margin: 0; display: block; width: 100%; font-size: 12px;}\n.w-detail-log li {border-bottom: 1px solid #ccc; width: 100%; padding: 1px 0;}\n.w-detail-log h5 {padding-left: 10px; font-size: 12px}\n.w-detail-log pre {background: none; border: none; padding: 0 10px 0 20px; font-size: 12px}\n.w-detail-log li.fatal {background: #bbb;}\n.w-detail-log li.error {background: #f2dede;}\n.w-detail-log li.warn {background: #fee;}\n.w-detail-log li.info {background: #f5f5f5;}\n.w-detail-log li.debug {background: #fff;}\n", ""]);
+	exports.push([module.id, ".w-detail-log ul, .w-detail-log li {list-style: none; padding: 0; margin: 0; display: block; width: 100%; font-size: 12px;}\n.w-detail-log li {border-bottom: 1px solid #ccc; width: 100%; padding: 1px 0; position: relative;}\n.w-detail-log li .w-level { display: none; width: 42px; line-height: 1.5; text-align: center; background: #eee; position: absolute; top: 2px; right: 2px; border-radius: 1px;}\n.w-detail-log li:hover .w-level {display: block;}\n.w-detail-log pre {background: none; border: none; padding: 0 10px 0 20px; font-size: 12px}\n.w-detail-log li.w-fatal {background: #bbb;}\n.w-detail-log li.w-error {background: #fbaaaa;}\n.w-detail-log li.w-warn {background: #f2dede;}\n.w-detail-log li.w-info {background: #f5f5f5;}\n.w-detail-log li.w-debug {background: #fff;}\n\n", ""]);
 
 	// exports
 
