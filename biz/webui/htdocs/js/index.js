@@ -519,7 +519,7 @@
 			var self = this;
 			dataCenter.rules[item.isDefault ? 'enableDefault' : 'select'](item, function(data) {
 				if (data && data.ec === 0) {
-					self.setSelected(self.state.rules, item.name);
+					self.reselectRules(data);
 				} else {
 					util.showSystemError();
 				}
@@ -530,12 +530,20 @@
 			var self = this;
 			dataCenter.rules[item.isDefault ? 'disableDefault' : 'unselect'](item, function(data) {
 				if (data && data.ec === 0) {
-					self.setSelected(self.state.rules, item.name, false);
+					self.reselectRules(data);
 				} else {
 					util.showSystemError();
 				}
 			});
 			return false;
+		},
+		reselectRules: function(data) {
+			var self = this;
+			self.state.rules.clearAllSelected();
+			self.setSelected(self.state.rules, 'Default', !data.defaultRulesIsDisabled);
+			data.list.forEach(function(name) {
+				self.setSelected(self.state.rules, name);
+			});
 		},
 		saveValues: function(item) {
 			if (!item.changed) {
@@ -750,12 +758,26 @@
 			});
 		},
 		importSysHosts: function() {
-			dataCenter.rules.getSysHosts(function(data) {
-				if (data.ec !== 0) {
-					alert(data.hosts);
-					return;
-				}
-			});
+			var self = this;
+			var modal = self.state.rules;
+			var defaultRules = modal.data['Default'];
+			if (!(defaultRules.value || '').trim() || confirm('Confirm overwrite the original Default data?')) {
+				dataCenter.rules.getSysHosts(function(data) {
+					if (data.ec !== 0) {
+						alert(data.em);
+						return;
+					}
+					
+					modal.setActive('Default');
+					defaultRules.changed = defaultRules.value != data.hosts;
+					defaultRules.value = data.hosts;
+					self.activeRules(defaultRules);
+					self.setState({}, function() {
+						self.refs.rules.refs.list.getDOMNode().scrollTop = 0;
+					});
+				});
+			}
+			
 		},
 		render: function() {
 			var state = this.state;
@@ -842,7 +864,7 @@
 						React.createElement("div", {onMouseDown: this.preventBlur, style: {display: state.showEditValues ? 'block' : 'none'}, className: "shadow w-input-menu-item w-edit-values-input"}, React.createElement("input", {ref: "editValuesInput", onKeyDown: this.editValues, onBlur: this.hideOptions, type: "text", maxLength: "64", placeholder: 'rename ' + (state.selectedValueName || '')}), React.createElement("button", {type: "button", onClick: this.editValues, className: "btn btn-primary"}, "OK")), 
 						React.createElement("div", {onMouseDown: this.preventBlur, style: {display: state.showEditFilter ? 'block' : 'none'}, className: "shadow w-input-menu-item w-edit-filter-input"}, React.createElement("input", {ref: "editFilterInput", onKeyDown: this.setFilter, onBlur: this.hideOptions, type: "text", maxLength: "64", placeholder: state.filterText || 'string or regular'}), React.createElement("button", {type: "button", onClick: this.setFilter, className: "btn btn-primary"}, "OK"))
 					), 
-					state.hasRules ? React.createElement(List, {theme: rulesTheme, fontSize: rulesFontSize, lineNumbers: showRulesLineNumbers, onSelect: this.selectRules, onUnselect: this.unselectRules, onActive: this.activeRules, modal: state.rules, hide: name == 'rules' ? false : true, name: "rules"}) : '', 
+					state.hasRules ? React.createElement(List, {ref: "rules", theme: rulesTheme, fontSize: rulesFontSize, lineNumbers: showRulesLineNumbers, onSelect: this.selectRules, onUnselect: this.unselectRules, onActive: this.activeRules, modal: state.rules, hide: name == 'rules' ? false : true, name: "rules"}) : '', 
 					state.hasValues ? React.createElement(List, {theme: valuesTheme, fontSize: valuesFontSize, lineNumbers: showValuesLineNumbers, onSelect: this.saveValues, onActive: this.activeValues, modal: state.values, hide: name == 'values' ? false : true, className: "w-values-list"}) : '', 
 					state.hasNetwork ? React.createElement(Network, {ref: "network", hide: name != 'rules' && name != 'values' ? false : true, modal: state.network}) : '', 
 					React.createElement("div", {ref: "rulesSettingsDialog", className: "modal fade w-rules-settings-dialog"}, 
@@ -44510,6 +44532,13 @@
 		var data = this.data;
 		Object.keys(data).forEach(function(name) {
 			data[name].active = false;
+		});
+	};
+
+	proto.clearAllSelected = function() {
+		var data = this.data;
+		Object.keys(data).forEach(function(name) {
+			data[name].selected = false;
 		});
 	};
 
