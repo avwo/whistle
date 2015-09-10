@@ -8,5 +8,5 @@ module.exports = function(req, res) {
 	} else {
 		data.ids = null;
 	}
-	res.json({ec: 0, log: proxy.getLogs({startTime: data.startLogTime, count: data.count}), data: getData(data)});
+	res.json({ec: 0, log: proxy.getLogs( data.startLogTime, data.count), data: getData(data)});
 };

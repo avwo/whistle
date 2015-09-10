@@ -46200,7 +46200,7 @@
 				if (!data || data.ec !== 0) {
 					return;
 				}
-				if (data.log) {
+				if (data.log.length) {
 					logList.push.apply(logList, data.log);
 					$.each(logCallbacks, function() {
 						this(logList);
@@ -46300,8 +46300,8 @@
 			}
 		} else if (type == 'log') {
 			if (typeof callback == 'function') {
-				startLoadServerInfo();
 				logCallbacks.push(callback);
+				startLoadData();
 			}
 		}
 	};
@@ -49212,8 +49212,8 @@
 					        '</div>' +
 					      '</div>' + 
 					      '<div class="modal-footer">' + 
-					        '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>' + 
 					        '<button type="button" class="btn btn-primary w-switch-btn">Switch</button>' + 
+					        '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>' + 
 					      '</div>' + 
 					    '</div>' + 
 					  '</div>' + 
