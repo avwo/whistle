@@ -749,6 +749,14 @@
 				syncWithSysHosts: checked
 			});
 		},
+		importSysHosts: function() {
+			dataCenter.rules.getSysHosts(function(data) {
+				if (data.ec !== 0) {
+					alert(data.hosts);
+					return;
+				}
+			});
+		},
 		render: function() {
 			var state = this.state;
 			var name = state.name;
@@ -847,7 +855,7 @@
 							      	onLineNumberChange: this.onRulesLineNumberChange}), 
 						      	React.createElement("p", {className: "w-editor-settings-box"}, React.createElement("label", null, React.createElement("input", {type: "checkbox", checked: state.allowMultipleChoice, onChange: this.allowMultipleChoice}), " Allow multiple choice")), 
 						      	React.createElement("p", {className: "w-editor-settings-box"}, React.createElement("label", null, React.createElement("input", {type: "checkbox", checked: state.syncWithSysHosts, onChange: this.syncWithSysHosts}), " Synchronized with the system hosts")), 
-						      	React.createElement("p", {className: "w-editor-settings-box"}, React.createElement("a", {href: "javascript:;"}, "Import system hosts to ", React.createElement("strong", null, "Default")))
+						      	React.createElement("p", {className: "w-editor-settings-box"}, React.createElement("a", {onClick: this.importSysHosts, href: "javascript:;"}, "Import system hosts to ", React.createElement("strong", null, "Default")))
 						      ), 
 						      React.createElement("div", {className: "modal-footer"}, 
 						        React.createElement("button", {type: "button", className: "btn btn-default", "data-dismiss": "modal"}, "Close")
@@ -46102,7 +46110,9 @@
 		showLineNumbers: '/cgi-bin/rules/show-line-numbers',
 		unselect: '/cgi-bin/rules/unselect',
 		allowMultipleChoice: '/cgi-bin/rules/allow-multiple-choice',
-		syncWithSysHosts: '/cgi-bin/rules/sync-with-sys-hosts'
+		syncWithSysHosts: '/cgi-bin/rules/sync-with-sys-hosts',
+		setSysHosts: '/cgi-bin/rules/set-sys-hosts',
+		getSysHosts: '/cgi-bin/rules/get-sys-hosts'
 	}, POST_CONF);
 
 	exports.log = createCgi({
