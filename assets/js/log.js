@@ -218,7 +218,7 @@
 	
 	function addLog(level, text) {
 		var img = new Image();
-		img.src ='http://127.0.0.1:8899/cgi-bin/log/set?level=' + level + '&text=' + encodeURIComponent(text); 
+		img.src ='$LOG_CGI?level=' + level + '&text=' + encodeURIComponent(text); 
 	}
 	
 	var console = window.console = window.console || {};
