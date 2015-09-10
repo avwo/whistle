@@ -46292,6 +46292,7 @@
 			if (typeof callback == 'function') {
 				dataCallbacks.push(callback);
 				startLoadData();
+				callback(networkModal);
 			}
 		} else if (type == 'serverInfo') {
 			if (typeof callback == 'function') {
@@ -46302,6 +46303,7 @@
 			if (typeof callback == 'function') {
 				logCallbacks.push(callback);
 				startLoadData();
+				callback(logList);
 			}
 		}
 	};
@@ -46674,7 +46676,7 @@
 			var content = self.refs.content.getDOMNode();
 			
 			dataCenter.on('log', function(data) {
-				var atBottom = container.scrollTop + container.offsetHeight + 5 > content.offsetHeight;
+				var atBottom = scrollAtBottom();
 				if (atBottom) {
 					var len = data.length - 110;
 					if (len > 0) {
@@ -46691,7 +46693,19 @@
 			
 			$(container).on('click', '.w-level', function() {
 				container.scrollTop = content.offsetHeight;
+			}).on('scroll', function() {
+				var data = self.state.logs;
+				if (data && scrollAtBottom()) {
+					var len = data.length - 110;
+					if (len > 0) {
+						data.splice(0, len);
+					}
+				}
 			});
+			
+			function scrollAtBottom() {
+				return container.scrollTop + container.offsetHeight + 5 > content.offsetHeight;
+			}
 		},
 		shouldComponentUpdate: function(nextProps) {
 			var hide = util.getBoolean(this.props.hide);
