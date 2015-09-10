@@ -46151,7 +46151,7 @@
 		getSysHosts: '/cgi-bin/rules/get-sys-hosts'
 	}, POST_CONF);
 
-	window.log = exports.log = createCgi({
+	exports.log = createCgi({
 		set: '/cgi-bin/log/set'
 	}, POST_CONF);
 
@@ -46687,7 +46687,7 @@
 			dataCenter.on('log', function(data) {
 				var atBottom = container.scrollTop + container.offsetHeight + 5 > content.offsetHeight;
 				if (atBottom) {
-					var len = data.length - 120;
+					var len = data.length - 110;
 					if (len > 0) {
 						data.splice(0, len);
 					}
