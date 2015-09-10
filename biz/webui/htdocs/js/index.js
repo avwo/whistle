@@ -46182,14 +46182,33 @@
 		function load() {
 			var pendingIds = getPendingIds();
 			var startTime = getStartTime();
+			var len = logList.length;
+			var startLogTime = -1;
+			if (!len) {
+				startLogTime = null;
+			} else if (len < 120) {
+				startLogTime = logList[len - 1].id;
+			}
 			
 			cgi.getData({
+				startLogTime: startLogTime,
 				ids: pendingIds.join(),
 				startTime: startTime,
 				count: 60
 			}, function(data) {
 				setTimeout(load, 800);
-				if (!data || (!data.ids.length && !data.newIds.length)) {
+				if (!data || data.ec !== 0) {
+					return;
+				}
+				if (data.log) {
+					logList.push.apply(logList, data.log);
+					$.each(logCallbacks, function() {
+						this(logList);
+					});
+				}
+				
+				data = data.data;
+				if (!data.ids.length && !data.newIds.length) {
 					return;
 				}
 				var ids = data.newIds;
@@ -46268,37 +46287,6 @@
 		load();
 	}
 
-	function startLoadLog() {
-		if (logList.length) {
-			return;
-		}
-		
-		function load() {
-			var len = logList.length;
-			var startTime = -1;
-			if (!len) {
-				startTime = null;
-			} else if (len < 120) {
-				startTime = logList[len - 1].id;
-			}
-			
-			cgi.getLog({
-				startTime: startTime,
-				count: 60
-			}, function(data) {
-				setTimeout(load, 2000);
-				if (data && data.length) {
-					logList.push.apply(logList, data);
-					$.each(logCallbacks, function() {
-						this(logList);
-					});
-				}
-				
-			});
-		}
-		load();
-	} 
-
 	exports.on = function(type, callback) {
 		if (type == 'data') {
 			if (typeof callback == 'function') {
@@ -46312,7 +46300,7 @@
 			}
 		} else if (type == 'log') {
 			if (typeof callback == 'function') {
-				startLoadLog();
+				startLoadServerInfo();
 				logCallbacks.push(callback);
 			}
 		}
@@ -49599,7 +49587,7 @@
 
 
 	// module
-	exports.push([module.id, ".w-detail-log ul, .w-detail-log li {list-style: none; padding: 0; margin: 0; display: block; width: 100%; font-size: 12px;}\n.w-detail-log li {border-bottom: 1px solid #ccc; width: 100%; padding: 1px 0; position: relative;}\n.w-detail-log li .w-level { display: none; padding: 2px 5px; white-space: nowrap; line-height: 1.5; text-align: right; background: #eee; position: absolute; top: 2px; right: 2px; border-radius: 1px;}\n.w-detail-log li .w-level span {margin: 0;}\n.w-detail-log li:hover .w-level {display: block;}\n.w-detail-log pre {background: none; border: none; padding: 5px 10px; margin: 0; font-size: 12px}\n.w-detail-log li.w-fatal {background: #bbb;}\n.w-detail-log li.w-error {background: #fbaaaa;}\n.w-detail-log li.w-warn {background: #f2dede;}\n.w-detail-log li.w-info {background: #f5f5f5;}\n.w-detail-log li.w-debug {background: #fff;}\n\n", ""]);
+	exports.push([module.id, ".w-detail-log ul, .w-detail-log li {list-style: none; padding: 0; margin: 0; display: block; width: 100%; font-size: 12px;}\n.w-detail-log li {border-bottom: 1px solid #ccc; width: 100%; padding: 1px 0; position: relative;}\n.w-detail-log li .w-level { display: none; padding: 0 5px; white-space: nowrap; line-height: 1.5; text-align: right; background: #eee; position: absolute; top: 2px; right: 2px; border-radius: 1px;}\n.w-detail-log li .w-level span {margin: 0;}\n.w-detail-log li:hover .w-level {display: block;}\n.w-detail-log pre {background: none; border: none; padding: 5px 10px; margin: 0; font-size: 12px}\n.w-detail-log li.w-fatal {background: #bbb;}\n.w-detail-log li.w-error {background: #fbaaaa;}\n.w-detail-log li.w-warn {background: #f2dede;}\n.w-detail-log li.w-info {background: #f5f5f5;}\n.w-detail-log li.w-debug {background: #fff;}\n\n", ""]);
 
 	// exports
 
