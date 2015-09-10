@@ -46674,6 +46674,7 @@
 
 	__webpack_require__(163);
 	__webpack_require__(279);
+	var $ = __webpack_require__(5);
 	var React = __webpack_require__(6);
 	var util = __webpack_require__(175);
 	var dataCenter = __webpack_require__(262);
@@ -46699,6 +46700,10 @@
 					}
 				});
 			});
+			
+			$(container).on('click', '.w-level', function() {
+				container.scrollTop = content.offsetHeight;
+			});
 		},
 		shouldComponentUpdate: function(nextProps) {
 			var hide = util.getBoolean(this.props.hide);
@@ -46713,7 +46718,7 @@
 								
 								return (
 									React.createElement("li", {key: log.id, className: 'w-' + log.level}, 
-										React.createElement("label", {className: "w-level"}, log.level), 
+										React.createElement("label", {className: "w-level", title: "Auto scroll"}, log.level, React.createElement("span", {className: "glyphicon glyphicon-arrow-down", "aria-hidden": "true"})), 
 										React.createElement("pre", null, 
 											'Date: ' + (new Date(log.date)).toLocaleString() + '\r\n' + log.text
 										)
@@ -49594,7 +49599,7 @@
 
 
 	// module
-	exports.push([module.id, ".w-detail-log ul, .w-detail-log li {list-style: none; padding: 0; margin: 0; display: block; width: 100%; font-size: 12px;}\n.w-detail-log li {border-bottom: 1px solid #ccc; width: 100%; padding: 1px 0; position: relative;}\n.w-detail-log li .w-level { display: none; width: 42px; line-height: 1.5; text-align: center; background: #eee; position: absolute; top: 2px; right: 2px; border-radius: 1px;}\n.w-detail-log li:hover .w-level {display: block;}\n.w-detail-log pre {background: none; border: none; padding: 5px 10px; margin: 0; font-size: 12px}\n.w-detail-log li.w-fatal {background: #bbb;}\n.w-detail-log li.w-error {background: #fbaaaa;}\n.w-detail-log li.w-warn {background: #f2dede;}\n.w-detail-log li.w-info {background: #f5f5f5;}\n.w-detail-log li.w-debug {background: #fff;}\n\n", ""]);
+	exports.push([module.id, ".w-detail-log ul, .w-detail-log li {list-style: none; padding: 0; margin: 0; display: block; width: 100%; font-size: 12px;}\n.w-detail-log li {border-bottom: 1px solid #ccc; width: 100%; padding: 1px 0; position: relative;}\n.w-detail-log li .w-level { display: none; padding: 2px 5px; white-space: nowrap; line-height: 1.5; text-align: right; background: #eee; position: absolute; top: 2px; right: 2px; border-radius: 1px;}\n.w-detail-log li .w-level span {margin: 0;}\n.w-detail-log li:hover .w-level {display: block;}\n.w-detail-log pre {background: none; border: none; padding: 5px 10px; margin: 0; font-size: 12px}\n.w-detail-log li.w-fatal {background: #bbb;}\n.w-detail-log li.w-error {background: #fbaaaa;}\n.w-detail-log li.w-warn {background: #f2dede;}\n.w-detail-log li.w-info {background: #f5f5f5;}\n.w-detail-log li.w-debug {background: #fff;}\n\n", ""]);
 
 	// exports
 
