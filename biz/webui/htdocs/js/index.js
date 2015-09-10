@@ -46151,7 +46151,7 @@
 		getSysHosts: '/cgi-bin/rules/get-sys-hosts'
 	}, POST_CONF);
 
-	exports.log = createCgi({
+	window.log = exports.log = createCgi({
 		set: '/cgi-bin/log/set'
 	}, POST_CONF);
 
@@ -46274,16 +46274,23 @@
 		}
 		
 		function load() {
-			var lastLog = logList[logList.length - 1];
+			var len = logList.length;
+			var startTime = -1;
+			if (!len) {
+				startTime = null;
+			} else if (len < 120) {
+				startTime = logList[len - 1].id;
+			}
+			
 			cgi.getLog({
-				startTime: lastLog ? lastLog.id : Date.now(),
+				startTime: startTime,
 				count: 60
 			}, function(data) {
 				setTimeout(load, 2000);
 				if (data && data.length) {
-					dataList.push.apply(dataList, data);
+					logList.push.apply(logList, data);
 					$.each(logCallbacks, function() {
-						this(dataList);
+						this(logList);
 					});
 				}
 				
@@ -46673,8 +46680,24 @@
 
 	var Log = React.createClass({displayName: "Log",
 		componentDidMount: function() {
+			var self = this;
+			var container = self.refs.container.getDOMNode();
+			var content = self.refs.content.getDOMNode();
+			
 			dataCenter.on('log', function(data) {
-				this.setState({logs: data});
+				var atBottom = container.scrollTop + container.offsetHeight + 5 > content.offsetHeight;
+				if (atBottom) {
+					var len = data.length - 120;
+					if (len > 0) {
+						data.splice(0, len);
+					}
+				}
+				
+				self.setState({logs: data}, function() {
+					if (atBottom) {
+						container.scrollTop = content.offsetHeight;
+					}
+				});
 			});
 		},
 		shouldComponentUpdate: function(nextProps) {
@@ -46684,15 +46707,15 @@
 		render: function() {
 			var logs = this.state && this.state.logs || [];
 			return (
-					React.createElement("div", {className: 'fill orient-vertical-box w-detail-content w-detail-log' + (util.getBoolean(this.props.hide) ? ' hide' : '')}, 
-						React.createElement("ul", null, 
+					React.createElement("div", {ref: "container", className: 'fill orient-vertical-box w-detail-content w-detail-log' + (util.getBoolean(this.props.hide) ? ' hide' : '')}, 
+						React.createElement("ul", {ref: "content"}, 
 							logs.map(function(log) {
 								
 								return (
-									React.createElement("li", {className: 'w-' + log.level}, 
+									React.createElement("li", {key: log.id, className: 'w-' + log.level}, 
 										React.createElement("label", {className: "w-level"}, log.level), 
 										React.createElement("pre", null, 
-											(new Date(log.date)).toLocaleString() + '\r\n' + log.text
+											'Date: ' + (new Date(log.date)).toLocaleString() + '\r\n' + log.text
 										)
 									)		
 								);
@@ -49571,7 +49594,7 @@
 
 
 	// module
-	exports.push([module.id, ".w-detail-log ul, .w-detail-log li {list-style: none; padding: 0; margin: 0; display: block; width: 100%; font-size: 12px;}\n.w-detail-log li {border-bottom: 1px solid #ccc; width: 100%; padding: 1px 0; position: relative;}\n.w-detail-log li .w-level { display: none; width: 42px; line-height: 1.5; text-align: center; background: #eee; position: absolute; top: 2px; right: 2px; border-radius: 1px;}\n.w-detail-log li:hover .w-level {display: block;}\n.w-detail-log pre {background: none; border: none; padding: 0 10px 0 20px; font-size: 12px}\n.w-detail-log li.w-fatal {background: #bbb;}\n.w-detail-log li.w-error {background: #fbaaaa;}\n.w-detail-log li.w-warn {background: #f2dede;}\n.w-detail-log li.w-info {background: #f5f5f5;}\n.w-detail-log li.w-debug {background: #fff;}\n\n", ""]);
+	exports.push([module.id, ".w-detail-log ul, .w-detail-log li {list-style: none; padding: 0; margin: 0; display: block; width: 100%; font-size: 12px;}\n.w-detail-log li {border-bottom: 1px solid #ccc; width: 100%; padding: 1px 0; position: relative;}\n.w-detail-log li .w-level { display: none; width: 42px; line-height: 1.5; text-align: center; background: #eee; position: absolute; top: 2px; right: 2px; border-radius: 1px;}\n.w-detail-log li:hover .w-level {display: block;}\n.w-detail-log pre {background: none; border: none; padding: 5px 10px; margin: 0; font-size: 12px}\n.w-detail-log li.w-fatal {background: #bbb;}\n.w-detail-log li.w-error {background: #fbaaaa;}\n.w-detail-log li.w-warn {background: #f2dede;}\n.w-detail-log li.w-info {background: #f5f5f5;}\n.w-detail-log li.w-debug {background: #fff;}\n\n", ""]);
 
 	// exports
 
