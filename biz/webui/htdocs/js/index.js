@@ -50,10 +50,10 @@
 	var List = __webpack_require__(162);
 	var ListModal = __webpack_require__(229);
 	var Network = __webpack_require__(230);
-	var About = __webpack_require__(268);
-	var Online = __webpack_require__(272);
-	var MenuItem = __webpack_require__(275);
-	var EditorSettings = __webpack_require__(278);
+	var About = __webpack_require__(266);
+	var Online = __webpack_require__(270);
+	var MenuItem = __webpack_require__(273);
+	var EditorSettings = __webpack_require__(276);
 	var dataCenter = __webpack_require__(262);
 	var util = __webpack_require__(175);
 	var events = __webpack_require__(231);
@@ -46666,7 +46666,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(266);
+	__webpack_require__(279);
 	var React = __webpack_require__(6);
 	var util = __webpack_require__(175);
 	var dataCenter = __webpack_require__(262);
@@ -46674,7 +46674,7 @@
 	var Log = React.createClass({displayName: "Log",
 		componentDidMount: function() {
 			dataCenter.on('log', function(data) {
-				console.log(data)
+				this.setState({logs: data});
 			});
 		},
 		shouldComponentUpdate: function(nextProps) {
@@ -46682,40 +46682,21 @@
 			return hide != util.getBoolean(nextProps.hide) || !hide;
 		},
 		render: function() {
-			var text = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\r\nbbbbb\r\nccccc\r\ndddddd';
+			var logs = this.state && this.state.logs || [];
 			return (
 					React.createElement("div", {className: 'fill orient-vertical-box w-detail-content w-detail-log' + (util.getBoolean(this.props.hide) ? ' hide' : '')}, 
 						React.createElement("ul", null, 
-							React.createElement("li", {className: "w-fatal"}, 
-								React.createElement("label", {className: "w-level"}, "Fatal"), 
-								React.createElement("pre", null, 
-									text
-								)
-							), 
-							React.createElement("li", {className: "w-error"}, 
-								React.createElement("label", {className: "w-level"}, "Error"), 
-								React.createElement("pre", null, 
-									text
-								)
-							), 
-							React.createElement("li", {className: "w-warn"}, 
-								React.createElement("label", {className: "w-level"}, "Warn"), 
-								React.createElement("pre", null, 
-									text
-								)
-							), 
-							React.createElement("li", {className: "w-info"}, 
-								React.createElement("label", {className: "w-level"}, "Info"), 
-								React.createElement("pre", null, 
-									text
-								)
-							), 
-							React.createElement("li", {className: "w-debug"}, 
-								React.createElement("label", {className: "w-level"}, "Debug"), 
-								React.createElement("pre", null, 
-									text
-								)
-							)
+							logs.map(function(log) {
+								
+								return (
+									React.createElement("li", {className: 'w-' + log.level}, 
+										React.createElement("label", {className: "w-level"}, log.level), 
+										React.createElement("pre", null, 
+											(new Date(log.date)).toLocaleString() + '\r\n' + log.text
+										)
+									)		
+								);
+							})
 						)
 				)
 			);
@@ -46728,50 +46709,10 @@
 /* 266 */
 /***/ function(module, exports, __webpack_require__) {
 
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-
-	// load the styles
-	var content = __webpack_require__(267);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(4)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../node_modules/css-loader/index.js!./log.css", function() {
-				var newContent = require("!!./../node_modules/css-loader/index.js!./log.css");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
-/* 267 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(3)();
-	// imports
-
-
-	// module
-	exports.push([module.id, ".w-detail-log ul, .w-detail-log li {list-style: none; padding: 0; margin: 0; display: block; width: 100%; font-size: 12px;}\n.w-detail-log li {border-bottom: 1px solid #ccc; width: 100%; padding: 1px 0; position: relative;}\n.w-detail-log li .w-level { display: none; width: 42px; line-height: 1.5; text-align: center; background: #eee; position: absolute; top: 2px; right: 2px; border-radius: 1px;}\n.w-detail-log li:hover .w-level {display: block;}\n.w-detail-log pre {background: none; border: none; padding: 0 10px 0 20px; font-size: 12px}\n.w-detail-log li.w-fatal {background: #bbb;}\n.w-detail-log li.w-error {background: #fbaaaa;}\n.w-detail-log li.w-warn {background: #f2dede;}\n.w-detail-log li.w-info {background: #f5f5f5;}\n.w-detail-log li.w-debug {background: #fff;}\n\n", ""]);
-
-	// exports
-
-
-/***/ },
-/* 268 */
-/***/ function(module, exports, __webpack_require__) {
-
 	__webpack_require__(163);
-	__webpack_require__(269);
+	__webpack_require__(267);
 	var $ = window.jQuery = __webpack_require__(5); //for bootstrap
-	__webpack_require__(271);
+	__webpack_require__(269);
 	var React = __webpack_require__(6);
 	var dataCenter = __webpack_require__(262);
 	var dialog;
@@ -46822,13 +46763,13 @@
 	module.exports = About;
 
 /***/ },
-/* 269 */
+/* 267 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(270);
+	var content = __webpack_require__(268);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -46848,7 +46789,7 @@
 	}
 
 /***/ },
-/* 270 */
+/* 268 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -46862,7 +46803,7 @@
 
 
 /***/ },
-/* 271 */
+/* 269 */
 /***/ function(module, exports) {
 
 	/*!
@@ -49231,13 +49172,13 @@
 
 
 /***/ },
-/* 272 */
+/* 270 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(273);
-	var $ = window.jQuery = __webpack_require__(5); //for bootstrap
 	__webpack_require__(271);
+	var $ = window.jQuery = __webpack_require__(5); //for bootstrap
+	__webpack_require__(269);
 	var React = __webpack_require__(6);
 	var dataCenter = __webpack_require__(262);
 	var dialog;
@@ -49364,13 +49305,13 @@
 	module.exports = Online;
 
 /***/ },
-/* 273 */
+/* 271 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(274);
+	var content = __webpack_require__(272);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -49390,7 +49331,7 @@
 	}
 
 /***/ },
-/* 274 */
+/* 272 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -49404,11 +49345,11 @@
 
 
 /***/ },
-/* 275 */
+/* 273 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(276);
+	__webpack_require__(274);
 	var React = __webpack_require__(6);
 	var util = __webpack_require__(175);
 
@@ -49451,13 +49392,13 @@
 
 
 /***/ },
-/* 276 */
+/* 274 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(277);
+	var content = __webpack_require__(275);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -49477,7 +49418,7 @@
 	}
 
 /***/ },
-/* 277 */
+/* 275 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -49491,11 +49432,11 @@
 
 
 /***/ },
-/* 278 */
+/* 276 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(279);
+	__webpack_require__(277);
 	var React = __webpack_require__(6);
 
 	var EditorSettings = React.createClass({displayName: "EditorSettings",
@@ -49556,13 +49497,13 @@
 	module.exports = EditorSettings;
 
 /***/ },
-/* 279 */
+/* 277 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(280);
+	var content = __webpack_require__(278);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -49582,7 +49523,7 @@
 	}
 
 /***/ },
-/* 280 */
+/* 278 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -49591,6 +49532,46 @@
 
 	// module
 	exports.push([module.id, ".w-editor-settings label, .w-editor-settings-box label {font-weight: normal; white-space: nowrap;}\n.w-editor-settings label .w-label {display: inline-block; width: 60px; text-align: right;}\n.w-editor-settings select {width: 186px;}\n.w-editor-settings-box {padding-left: 65px; margin: 5px;}\n.w-editor-settings .form-control {display: inline-block; margin-left: 5px;}\n.w-editor-settings p {margin: 5px;}", ""]);
+
+	// exports
+
+
+/***/ },
+/* 279 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(280);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(4)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../node_modules/css-loader/index.js!./log.css", function() {
+				var newContent = require("!!./../node_modules/css-loader/index.js!./log.css");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 280 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(3)();
+	// imports
+
+
+	// module
+	exports.push([module.id, ".w-detail-log ul, .w-detail-log li {list-style: none; padding: 0; margin: 0; display: block; width: 100%; font-size: 12px;}\n.w-detail-log li {border-bottom: 1px solid #ccc; width: 100%; padding: 1px 0; position: relative;}\n.w-detail-log li .w-level { display: none; width: 42px; line-height: 1.5; text-align: center; background: #eee; position: absolute; top: 2px; right: 2px; border-radius: 1px;}\n.w-detail-log li:hover .w-level {display: block;}\n.w-detail-log pre {background: none; border: none; padding: 0 10px 0 20px; font-size: 12px}\n.w-detail-log li.w-fatal {background: #bbb;}\n.w-detail-log li.w-error {background: #fbaaaa;}\n.w-detail-log li.w-warn {background: #f2dede;}\n.w-detail-log li.w-info {background: #f5f5f5;}\n.w-detail-log li.w-debug {background: #fff;}\n\n", ""]);
 
 	// exports
 
