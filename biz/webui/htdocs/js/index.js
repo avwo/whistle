@@ -46730,7 +46730,7 @@
 							logs.map(function(log) {
 								
 								return (
-									React.createElement("li", {key: log.id, className: 'w-' + log.level}, 
+									React.createElement("li", {key: log.id, title: log.level.toUpperCase(), className: 'w-' + log.level}, 
 										React.createElement("pre", null, 
 											'Date: ' + (new Date(log.date)).toLocaleString() + '\r\n' + log.text
 										)
