@@ -50,16 +50,34 @@
 	var List = __webpack_require__(162);
 	var ListModal = __webpack_require__(229);
 	var Network = __webpack_require__(230);
-	var About = __webpack_require__(266);
-	var Online = __webpack_require__(270);
-	var MenuItem = __webpack_require__(273);
-	var EditorSettings = __webpack_require__(276);
+	var About = __webpack_require__(268);
+	var Online = __webpack_require__(272);
+	var MenuItem = __webpack_require__(275);
+	var EditorSettings = __webpack_require__(278);
 	var dataCenter = __webpack_require__(262);
 	var util = __webpack_require__(175);
 	var events = __webpack_require__(231);
 
 	function getPageName() {
 		return location.hash.substring(1) || location.href.replace(/[#?].*$/, '').replace(/.*\//, '');
+	}
+
+	function getKey(url) {
+		if (url.indexOf('{') == 0) {
+			var index = url.lastIndexOf('}');
+			return index > 1 && url.substring(1, index);
+		}
+		
+		return false;
+	}
+
+	function getValue(url) {
+		if (url.indexOf('(') == 0) {
+			var index = url.lastIndexOf(')');
+			return index != -1 && url.substring(1, index) || '';
+		}
+		
+		return false;
 	}
 
 	var Index = React.createClass({displayName: "Index",
@@ -96,12 +114,8 @@
 				state.rulesTheme = rules.theme;
 				state.rulesFontSize = rules.fontSize;
 				state.showRulesLineNumbers = rules.showLineNumbers;
-				rulesOptions.push({
-					name: DEFAULT,
-					icon: selected ? 'ok' : ''
-				});
 				rulesList.push(DEFAULT);
-				rulesData.Default = {
+				var item = rulesData.Default = {
 						name: DEFAULT,
 						value: rules.defaultRules,
 						selected: selected,
@@ -109,19 +123,17 @@
 						active: selectedName === DEFAULT
 				};
 				
+				rulesOptions.push(rulesData.Default);
+				
 				$.each(rules.list, function() {
 					rulesList.push(this.name);
-					
-					rulesData[this.name] = {
+					item = rulesData[this.name] = {
 						name: this.name,
 						value: this.data,
 						selected: this.selected,
 						active: selectedName === this.name
 					};
-					rulesOptions.push({
-						name: this.name,
-						icon: this.selected ? 'ok' : ''
-					});
+					rulesOptions.push(item);
 				});
 			}
 			
@@ -184,6 +196,52 @@
 			events.on('executeComposer', function() {
 				self.autoScroll && self.autoScroll();
 			});
+		},
+		getWeinreFromRules: function() {
+			var values = this.state.values;
+			var text = ' ' + this.getAllRulesValue();
+			if (text = text.match(/\s?weinre:\/\/[^\s#]+/g)) {
+				text = text.map(function(weinre) {
+					weinre = util.removeProtocol(weinre);
+					var value = getValue(weinre);
+					if (value !== false) {
+						return value;
+					}
+					var key = getKey(weinre);
+					if (key !== false) {
+						key = values.get(key);
+						return key && key.value;
+					}
+					
+					return weinre;
+				}).filter(function(weinre) {
+					return !!weinre;
+				});
+			}
+			
+			return text;
+		},
+		getValuesFromRules: function() {
+			var values = this.state.values;
+			var text = ' ' + this.getAllRulesValue();
+			if (text = text.match(/\s(?:[\w-]+:\/\/)?\{[^\s#]+\}/g)) {
+				text = text.map(function(key) {
+					return getKey(util.removeProtocol(key.trim()));
+				}).filter(function(key) {
+					return !!key;
+				});
+			}
+			return text;
+		},
+		getAllRulesValue: function() {
+			var result = [];
+			var modal = this.state.rules;
+			var data = modal.data;
+			modal.list.forEach(function(name) {
+				var value = data[name].value;
+				value && result.push(value);
+			});
+			return result.join('\r\n');
 		},
 		preventBlur: function(e) {
 			e.target.nodeName != 'INPUT' && e.preventDefault();
@@ -249,6 +307,10 @@
 			});
 			location.hash = 'network';
 		},
+		showAndActiveRules: function(item) {
+			this.setRulesActive(item.name);
+			this.showRules();
+		},
 		showRules: function() {
 			if (this.state.name == 'rules') {
 				return;
@@ -259,6 +321,28 @@
 				name: 'rules'
 			});
 			location.hash = 'rules';
+		},
+		showAndActiveValues: function(item) {
+			var self = this;
+			var modal = self.state.values;
+			var name = item.name;
+			if (!modal.exists(name)) {
+				dataCenter.values.add({name: name}, function(data) {
+					if (data && data.ec === 0) {
+						var item = modal.add(name);
+						self.setValuesActive(name);
+						self.setState({
+							activeValues: item
+						});
+					} else {
+						util.showSystemError();
+					}
+				});
+			} else {
+				self.setValuesActive(name);
+			}
+			
+			this.showValues();
 		},
 		showValues: function() {
 			if (this.state.name == 'values') {
@@ -273,18 +357,40 @@
 		},
 		showRulesOptions: function() {
 			var self = this;
+			var rules = self.state.rules;
+			var data = rules.data;
+			self.state.rulesOptions = rules.list.map(function(name) {
+				return data[name];
+			});
 			self.setMenuOptionsState('showRulesOptions', function() {
 				self.refs.rulesMenuItem.getDOMNode().focus();
 			});
 		},
 		showValuesOptions: function() {
 			var self = this;
+			var valuesList = this.state.values.list;
+			var list = self.getValuesFromRules() || [];
+			list.push.apply(list, valuesList);
+			list = util.unique(list, true);
+			self.state.valuesOptions = list.map(function(name) {
+				return {
+					name: name,
+					icon: valuesList.indexOf(name) == -1 ? 'plus' : 'edit'
+				};
+			});
 			self.setMenuOptionsState('showValuesOptions', function() {
 				self.refs.valuesMenuItem.getDOMNode().focus();
 			});
 		},
 		showWeinreOptions: function() {
 			var self = this;
+			var list = self.state.weinreOptions = self.getWeinreFromRules() || [];
+			self.state.weinreOptions = util.unique(list).map(function(name) {
+				return {
+					name: name,
+					icon: 'globe'
+				};
+			});
 			self.setMenuOptionsState('showWeinreOptions', function() {
 				self.refs.weinreMenuItem.getDOMNode().focus();
 			});
@@ -515,11 +621,15 @@
 			window.open('http://' + hostname + '/client/#' + (name || 'anonymous'));
 			this.hideOptions();
 		},
+		onClickRulesOption: function(item) {
+			item.selected ? this.unselectRules(item) : this.selectRules(item);
+		},
 		selectRules: function(item) {
 			var self = this;
 			dataCenter.rules[item.isDefault ? 'enableDefault' : 'select'](item, function(data) {
 				if (data && data.ec === 0) {
 					self.reselectRules(data);
+					self.setState({});
 				} else {
 					util.showSystemError();
 				}
@@ -531,6 +641,7 @@
 			dataCenter.rules[item.isDefault ? 'disableDefault' : 'unselect'](item, function(data) {
 				if (data && data.ec === 0) {
 					self.reselectRules(data);
+					self.setState({});
 				} else {
 					util.showSystemError();
 				}
@@ -677,13 +788,32 @@
 		},
 		onClickMenu: function(e) {
 			var target = $(e.target).closest('a');
-			var isRules = this.state.name == 'rules';
+			var self = this;
+			var isRules = self.state.name == 'rules';
 			if (target.hasClass('w-create-menu')) {
-				isRules ? this.showCreateRules() : this.showCreateValues();
+				isRules ? self.showCreateRules() : self.showCreateValues();
 			} else if (target.hasClass('w-edit-menu')) {
-				isRules ? this.showEditRules() : this.showEditValues();
+				isRules ? self.showEditRules() : self.showEditValues();
 			} else if (target.hasClass('w-delete-menu')) {
-				isRules ? this.removeRules() : this.removeValues();
+				isRules ? self.removeRules() : self.removeValues();
+			} else if (target.hasClass('w-save-menu')) {
+				if (isRules) {
+					var list = self.state.rules.getChangedList();
+					if(list.length) {
+						list.forEach(function(item) {
+							self.selectRules(item);
+						});
+						self.setState({});
+					}
+				} else {
+					var list = self.state.values.getChangedList();
+					if (list.length) {
+						list.forEach(function(item) {
+							self.saveValues(item);
+						});
+						self.setState({});
+					}
+				}
 			}
 		},
 		showSettings: function(e) {
@@ -793,6 +923,11 @@
 			var valuesFontSize = '14px';
 			var showRulesLineNumbers = false;
 			var showValuesLineNumbers = false;
+			var rulesOptions = state.rulesOptions;
+			
+			rulesOptions.forEach(function(item) {
+				item.icon = item.selected ? 'ok' : '';
+			});
 			
 			if (isRules) {
 				var data = state.rules.data;
@@ -841,6 +976,7 @@
 						React.createElement("a", {onClick: this.showNetwork, className: "w-network-menu", style: {display: isNetwork ? 'none' : ''}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-align-justify"}), "Network"), 
 						React.createElement("a", {onClick: this.showRulesOptions, onDoubleClick: this.showRules, className: "w-rules-menu", style: {display: isRules ? 'none' : ''}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-list"}), "Rules"), 
 						React.createElement("a", {onClick: this.showValuesOptions, onDoubleClick: this.showValues, className: "w-values-menu", style: {display: isValues ? 'none' : ''}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-folder-open"}), "Values"), 
+						React.createElement("a", {onClick: this.onClickMenu, className: "w-save-menu", style: {display: isNetwork ? 'none' : ''}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-save-file"}), "Save"), 
 						React.createElement("a", {onClick: this.onClickMenu, className: "w-create-menu", style: {display: isNetwork ? 'none' : ''}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-plus"}), "Create"), 
 						React.createElement("a", {onClick: this.onClickMenu, className: 'w-edit-menu' + (disabledEditBtn ? ' w-disabled' : ''), style: {display: isNetwork ? 'none' : ''}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-edit"}), "Edit"), 
 						React.createElement("a", {onClick: this.autoScroll, className: "w-scroll-menu", style: {display: isNetwork ? '' : 'none'}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-play"}), "AutoScroll"), 
@@ -851,12 +987,12 @@
 						React.createElement("a", {onClick: this.onClickMenu, className: 'w-delete-menu' + (disabledDeleteBtn ? ' w-disabled' : ''), style: {display: isNetwork ? 'none' : ''}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-trash"}), "Delete"), 
 						React.createElement("a", {onClick: this.showSettings, className: "w-settings-menu", style: {display: isNetwork ? 'none' : ''}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-cog"}), "Settings"), 
 						React.createElement("a", {onClick: this.showWeinreOptions, onDoubleClick: this.showAnonymousWeinre, className: "w-weinre-menu", href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-globe"}), "Weinre"), 
-						React.createElement("a", {onClick: this.onClickMenu, className: "w-rootca-menu", href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-download-alt"}), "RootCA"), 
+						React.createElement("a", {onClick: this.onClickMenu, className: "w-rootca-menu", href: "/cgi-bin/rootca", target: "_blank"}, React.createElement("span", {className: "glyphicon glyphicon-download-alt"}), "RootCA"), 
 						React.createElement("a", {className: "w-help-menu", href: "https://github.com/avwo/whistle#whistle", target: "_blank"}, React.createElement("span", {className: "glyphicon glyphicon-question-sign"}), "Help"), 
 						React.createElement(About, null), 
 						React.createElement(Online, null), 
-						React.createElement(MenuItem, {ref: "rulesMenuItem", name: "Open", options: state.rulesOptions, hide: !state.showRulesOptions, className: "w-rules-menu-item", onBlur: this.hideOptions, onClick: this.showRules, onClickOption: this.props.onClickOption}), 
-						React.createElement(MenuItem, {ref: "valuesMenuItem", name: "Open", options: state.valuesOptions, hide: !state.showValuesOptions, className: "w-values-menu-item", onBlur: this.hideOptions, onClick: this.showValues, onClickOption: this.props.onClickOption}), 
+						React.createElement(MenuItem, {ref: "rulesMenuItem", name: "Open", options: rulesOptions, hide: !state.showRulesOptions, className: "w-rules-menu-item", onBlur: this.hideOptions, onClick: this.showRules, onClickOption: this.onClickRulesOption, onDoubleClickOption: this.showAndActiveRules}), 
+						React.createElement(MenuItem, {ref: "valuesMenuItem", name: "Open", options: state.valuesOptions, hide: !state.showValuesOptions, className: "w-values-menu-item", onBlur: this.hideOptions, onClick: this.showValues, onClickOption: this.showAndActiveValues}), 
 						React.createElement(MenuItem, {ref: "weinreMenuItem", name: "Anonymous", options: state.weinreOptions, hide: !state.showWeinreOptions, className: "w-weinre-menu-item", onBlur: this.hideOptions, onClick: this.showAnonymousWeinre, onClickOption: this.showWeinre}), 
 						React.createElement("div", {onMouseDown: this.preventBlur, style: {display: state.showCreateRules ? 'block' : 'none'}, className: "shadow w-input-menu-item w-create-rules-input"}, React.createElement("input", {ref: "createRulesInput", onKeyDown: this.createRules, onBlur: this.hideOptions, type: "text", maxLength: "64", placeholder: "create rules"}), React.createElement("button", {type: "button", onClick: this.createRules, className: "btn btn-primary"}, "OK")), 
 						React.createElement("div", {onMouseDown: this.preventBlur, style: {display: state.showCreateValues ? 'block' : 'none'}, className: "shadow w-input-menu-item w-create-values-input"}, React.createElement("input", {ref: "createValuesInput", onKeyDown: this.createValues, onBlur: this.hideOptions, type: "text", maxLength: "64", placeholder: "create values"}), React.createElement("button", {type: "button", onClick: this.createValues, className: "btn btn-primary"}, "OK")), 
@@ -946,7 +1082,7 @@
 
 
 	// module
-	exports.push([module.id, ".w-menu {height: 28px; border-top: 1px solid #fcfcfc; border-bottom: 1px solid #d3d3d3; padding: 0 5px; \nbackground: -moz-linear-gradient(rgb(239, 238, 238), rgb(211, 212, 213));\nbackground: -webkit-linear-gradient(rgb(239, 238, 238), rgb(211, 212, 213)); \nbackground: linear-gradient(rgb(239, 238, 238), rgb(211, 212, 213)); padding-right: 80px; position: relative; z-index: 1001;}\n.w-menu a {text-decoration: none!important; color: #000; padding: 0 5px; line-height: 26px; height: 26px; margin-right: 5px; display: inline-block;}\n.w-menu .glyphicon, .w-detail .glyphicon {margin-right: 3px;}\n.w-menu .glyphicon-folder-open {margin-right: 6px;}\n.w-menu .w-online {position: absolute; right: 0;}\n.w-menu .w-online, .w-menu a:hover {color: #337ab7;}\n.w-menu .w-offline {color: #ccc!important; cursor: default;}\n.w-menu .w-disabled {color: #888!important; cursor: default!important;}\n.w-menu .w-menu-enable {color: #337ab7;}\n\n.w-input-menu-item {display: block; position: absolute; background: #fff; border: 1px solid #ccc; border-radius: 2px; z-index: 101; top: 30px; display: none; white-space: nowrap;}\n.w-input-menu-item input {width: 246px; height: 32px; border: 1px solid #ccc; border-radius: 2px; padding: 0 5px; vertical-align: middle;}\n.w-input-menu-item .btn {height: 32px; padding: 0 12px; vertical-align: middle; border-radius: 0; border-right-top-radius: 2px; border-right-bottom-radius: 2px;}\n\n.w-create-rules-input {left: 170px;}\n.w-create-values-input {left: 160px;}\n.w-edit-rules-input {left: 242px;}\n.w-edit-values-input {left: 232px;}\n.w-edit-filter-input {left: 425px;}\n\n.w-values-list .glyphicon {display: none!important;}\n.w-values-list a {font-weight: normal!important;}\n\n.w-rules-menu-list .w-values-menu-item {left: 92px;}\n.w-network-menu-list .w-values-menu-item {left: 75px;}\n.w-network-menu-list .w-rules-menu-item {left: 8px;}\n.w-values-menu-list .w-rules-menu-item {left: 92px;}\n.w-rules-menu-list .w-weinre-menu-item {left: 457px;}\n.w-network-menu-list .w-weinre-menu-item {left: 550px;}\n.w-values-menu-list .w-weinre-menu-item {left: 447px;}\n\n.w-rules-settings-dialog .modal-dialog {width: 336px;}\n.w-values-settings-dialog .modal-dialog {width: 282px;}\n", ""]);
+	exports.push([module.id, ".w-menu {height: 28px; border-top: 1px solid #fcfcfc; border-bottom: 1px solid #d3d3d3; padding: 0 5px; \nbackground: -moz-linear-gradient(rgb(239, 238, 238), rgb(211, 212, 213));\nbackground: -webkit-linear-gradient(rgb(239, 238, 238), rgb(211, 212, 213)); \nbackground: linear-gradient(rgb(239, 238, 238), rgb(211, 212, 213)); padding-right: 80px; position: relative; z-index: 1001;}\n.w-menu a {text-decoration: none!important; color: #000; padding: 0 5px; line-height: 26px; height: 26px; margin-right: 5px; display: inline-block;}\n.w-menu .glyphicon, .w-detail .glyphicon {margin-right: 3px;}\n.w-menu .glyphicon-folder-open {margin-right: 6px;}\n.w-menu .w-online {position: absolute; right: 0;}\n.w-menu .w-online, .w-menu a:hover {color: #337ab7;}\n.w-menu .w-offline {color: #ccc!important; cursor: default;}\n.w-menu .w-disabled {color: #888!important; cursor: default!important;}\n.w-menu .w-menu-enable {color: #337ab7;}\n\n.w-input-menu-item {display: block; position: absolute; background: #fff; border: 1px solid #ccc; border-radius: 2px; z-index: 101; top: 30px; display: none; white-space: nowrap;}\n.w-input-menu-item input {width: 246px; height: 32px; border: 1px solid #ccc; border-radius: 2px; padding: 0 5px; vertical-align: middle;}\n.w-input-menu-item .btn {height: 32px; padding: 0 12px; vertical-align: middle; border-radius: 0; border-right-top-radius: 2px; border-right-bottom-radius: 2px;}\n\n.w-create-rules-input {left: 232px;}\n.w-create-values-input {left: 222px;}\n.w-edit-rules-input {left: 304px;}\n.w-edit-values-input {left: 294px;}\n.w-edit-filter-input {left: 425px;}\n\n.w-values-list .glyphicon {display: none!important;}\n.w-values-list a {font-weight: normal!important;}\n\n.w-rules-menu-list .w-values-menu-item {left: 92px;}\n.w-network-menu-list .w-values-menu-item {left: 75px;}\n.w-network-menu-list .w-rules-menu-item {left: 8px;}\n.w-values-menu-list .w-rules-menu-item {left: 92px;}\n.w-rules-menu-list .w-weinre-menu-item {left: 519px;}\n.w-network-menu-list .w-weinre-menu-item {left: 550px;}\n.w-values-menu-list .w-weinre-menu-item {left: 509px;}\n\n.w-rules-settings-dialog .modal-dialog {width: 336px;}\n.w-values-settings-dialog .modal-dialog {width: 282px;}\n", ""]);
 
 	// exports
 
@@ -31371,6 +31507,8 @@
 		return index == -1 ? url : url.substring(index + 3);
 	}
 
+	exports.removeProtocol = removeProtocol;
+
 	exports.getPath = function(url) {
 		url = removeProtocol(url);
 		var index = url.indexOf('/');
@@ -31389,6 +31527,26 @@
 		} catch(e) {}
 		
 		return '';
+	};
+
+	exports.unique = function(arr, reverse) {
+		var result = [];
+		if (reverse) {
+			for (var i = arr.length - 1; i >= 0; i--) {
+				var item = arr[i];
+				if (result.indexOf(item) == -1) {
+					result.unshift(item);
+				}
+			}
+		} else {
+			arr.forEach(function(item) {
+				if (result.indexOf(item) == -1) {
+					result.push(item);
+				}
+			});
+		}
+		
+		return result;
 	};
 
 	exports.getFilename = function(url) {
@@ -44258,11 +44416,11 @@
 				}
 				
 				function isReq(str) {
-					return /^req:\/\//.test(str);
+					return /^(?:req|delayReq|reqSpeed|reqHeaders|method|reqType|reqBody|prependReq|appendReq):\/\//.test(str);
 				}
 				
 				function isRes(str) {
-					return /^res:\/\//.test(str);
+					return /^(?:res|resHeaders|statusCode|redirect|delayRes|resSpeed|resType|cache|resBody|prependRes|appendRes):\/\//.test(str);
 				}
 				
 				function isUrl(str) {
@@ -44276,6 +44434,14 @@
 				function isRegExp(str) {
 					
 					return /^\/(.+)\/(i)?$/.test(str);
+				}
+				
+				function isParams(str) {
+					return /^params:\/\//.test(str);
+				}
+				
+				function isLog(str) {
+					return /^log:\/\//.test(str);
 				}
 				
 				return {
@@ -44313,6 +44479,10 @@
 									 type = 'positive js-res js-type';
 								 } else if (isUrl(str)) {
 									 type = 'string-2 js-url js-type';
+								 } else if (isParams(str)) {
+									 type = 'meta js-params js-type';
+								 } else if (isLog(str)) {
+									 type = 'error js-log js-type';
 								 } else if (isRule(str)) {
 									 type = 'builtin js-rule js-type';
 								 }
@@ -44553,6 +44723,7 @@
 			active && this.clearAllActive();
 			item.active = active;
 		}
+		return item;
 	};
 
 	proto.getActive = function() {
@@ -46667,7 +46838,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(279);
+	__webpack_require__(266);
 	var $ = __webpack_require__(5);
 	var React = __webpack_require__(6);
 	var util = __webpack_require__(175);
@@ -46753,10 +46924,50 @@
 /* 266 */
 /***/ function(module, exports, __webpack_require__) {
 
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(267);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(4)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../node_modules/css-loader/index.js!./log.css", function() {
+				var newContent = require("!!./../node_modules/css-loader/index.js!./log.css");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 267 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(3)();
+	// imports
+
+
+	// module
+	exports.push([module.id, ".w-detail-log ul, .w-detail-log li {list-style: none; padding: 0; margin: 0; display: block; width: 100%; font-size: 12px;}\n.w-detail-log li {border-bottom: 1px solid #ccc; width: 100%; padding: 1px 0; position: relative;}\n.w-detail-log pre {background: none; border: none; padding: 5px 10px; margin: 0; font-size: 12px}\n.w-detail-log li.w-fatal {background: #bbb;}\n.w-detail-log li.w-error {background: #fbaaaa;}\n.w-detail-log li.w-warn {background: #f2dede;}\n.w-detail-log li.w-info {background: #f5f5f5;}\n.w-detail-log li.w-debug {background: #fff;}\n.w-detail-log-bar {position: fixed; z-index: 1; border-radius: 2px; right: 12px; font-size: 12px; top: 60px; white-space: nowrap; line-height: 1.5; background: #eee;}\n.w-detail-log-bar a {display: inline-block; text-decoration: none; color: #000; padding: 0 5px;}\n.w-detail-log-bar a:hover {color: #337ab7;}\n", ""]);
+
+	// exports
+
+
+/***/ },
+/* 268 */
+/***/ function(module, exports, __webpack_require__) {
+
 	__webpack_require__(163);
-	__webpack_require__(267);
-	var $ = window.jQuery = __webpack_require__(5); //for bootstrap
 	__webpack_require__(269);
+	var $ = window.jQuery = __webpack_require__(5); //for bootstrap
+	__webpack_require__(271);
 	var React = __webpack_require__(6);
 	var dataCenter = __webpack_require__(262);
 	var dialog;
@@ -46774,7 +46985,7 @@
 				          '<span" class="w-about-dialog-ctn"><span class="w-about-dialog-title">Whistle for Web Developers.</span>' +
 						  'Version: <span class="w-about-version">' + version + '</span><br>' +
 						  (!latest || latest == version ? '' : 'Latest version: <span class="w-about-version"><a class="w-about-url" href="https://github.com/avwo/whistle/wiki/%E5%A6%82%E4%BD%95%E6%9B%B4%E6%96%B0whistle" target="_blank">' + latest + '</a></span><br>') +
-						  'Visit <a class="w-about-url" href="http://www.whistlejs.com#v=' + version + '" target="_blank">http://www.whistlejs.com</a></span>' +
+						  'Visit <a class="w-about-url" title="How to update whistle" href="http://www.whistlejs.com#v=' + version + '" target="_blank">http://www.whistlejs.com</a></span>' +
 					      '</div>' + 
 					      '<div class="modal-footer">' + 
 					        '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>' + 
@@ -46810,13 +47021,13 @@
 	module.exports = About;
 
 /***/ },
-/* 267 */
+/* 269 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(268);
+	var content = __webpack_require__(270);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -46836,7 +47047,7 @@
 	}
 
 /***/ },
-/* 268 */
+/* 270 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -46850,7 +47061,7 @@
 
 
 /***/ },
-/* 269 */
+/* 271 */
 /***/ function(module, exports) {
 
 	/*!
@@ -49219,13 +49430,13 @@
 
 
 /***/ },
-/* 270 */
+/* 272 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(271);
+	__webpack_require__(273);
 	var $ = window.jQuery = __webpack_require__(5); //for bootstrap
-	__webpack_require__(269);
+	__webpack_require__(271);
 	var React = __webpack_require__(6);
 	var dataCenter = __webpack_require__(262);
 	var dialog;
@@ -49352,13 +49563,13 @@
 	module.exports = Online;
 
 /***/ },
-/* 271 */
+/* 273 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(272);
+	var content = __webpack_require__(274);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -49378,7 +49589,7 @@
 	}
 
 /***/ },
-/* 272 */
+/* 274 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -49392,11 +49603,11 @@
 
 
 /***/ },
-/* 273 */
+/* 275 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(274);
+	__webpack_require__(276);
 	var React = __webpack_require__(6);
 	var util = __webpack_require__(175);
 
@@ -49412,24 +49623,27 @@
 			var name = this.props.name;
 			var onClick = this.props.onClick || util.noop;
 			var onClickOption = this.props.onClickOption || util.noop;
+			var onDoubleClickOption = this.props.onDoubleClickOption || util.noop;
 			return (
 				React.createElement("div", {onBlur: this.props.onBlur, tabIndex: "0", onMouseDown: this.preventBlur, style: {display: util.getBoolean(this.props.hide) ? 'none' : 'block'}, className: 'w-menu-item ' + (this.props.className || '')}, 
-				
-					name ? React.createElement("a", {onClick: onClick, className: "w-menu-open", href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-folder-open"}), name) : '', 
-					
 				
 						options ? React.createElement("div", {className: "w-menu-options"}, options.map(function(option) {
 							
 							return (
 									React.createElement("a", {key: option.name, onClick: function() {
 										onClickOption(option);
+									}, onDoubleClick: function() {
+										onDoubleClickOption(option);
 									}, href: "javascript:;"}, 
 										React.createElement("span", {className: 'glyphicon glyphicon-' + (option.icon || 'asterisk'), style: {visibility: option.icon ? '' : 'hidden'}}), 
 										option.name
 									)
 							);
-						})) : ''
-					
+						})) : '', 
+				
+				
+					name ? React.createElement("a", {onClick: onClick, className: "w-menu-open", href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-folder-open"}), name) : ''
+				
 				)
 			);
 		}
@@ -49439,13 +49653,13 @@
 
 
 /***/ },
-/* 274 */
+/* 276 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(275);
+	var content = __webpack_require__(277);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -49465,7 +49679,7 @@
 	}
 
 /***/ },
-/* 275 */
+/* 277 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -49473,17 +49687,17 @@
 
 
 	// module
-	exports.push([module.id, ".w-menu-item {position: absolute; background: #fff; border: 1px solid #ccc; z-index: 2; top: 30px; border-radius: 2px; outline: none;}\n.w-menu-item a {display: block; max-width: 160px; text-overflow: ellipsis; overflow: hidden; padding: 0 6px; font-weight: normal; white-space: nowrap; margin: 0!important;}\n.w-menu-item .w-menu-options {border-top: 1px dashed #ccc; max-height: 320px; overflow-x: hidden; overflow-y: auto;}\n.w-menu-item a .glyphicon {margin-right: 8px; font-size: 12px;}\n.w-menu-item a .glyphicon-ok {color: #5bbd72;}\n", ""]);
+	exports.push([module.id, ".w-menu-item {position: absolute; background: #fff; border: 1px solid #ccc; z-index: 2; top: 30px; border-radius: 2px; outline: none;}\n.w-menu-item a {display: block; max-width: 160px; text-overflow: ellipsis; overflow: hidden; padding: 0 6px; font-weight: normal; white-space: nowrap; margin: 0!important;}\n.w-menu-item .w-menu-options {border-bottom: 1px dashed #ccc; max-height: 320px; overflow-x: hidden; overflow-y: auto;}\n.w-menu-item a .glyphicon {margin-right: 8px; font-size: 12px;}\n.w-menu-item a .glyphicon-ok, .w-menu-item a .glyphicon-plus {color: #5bbd72;}\n", ""]);
 
 	// exports
 
 
 /***/ },
-/* 276 */
+/* 278 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(277);
+	__webpack_require__(279);
 	var React = __webpack_require__(6);
 
 	var EditorSettings = React.createClass({displayName: "EditorSettings",
@@ -49544,13 +49758,13 @@
 	module.exports = EditorSettings;
 
 /***/ },
-/* 277 */
+/* 279 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(278);
+	var content = __webpack_require__(280);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -49570,46 +49784,6 @@
 	}
 
 /***/ },
-/* 278 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(3)();
-	// imports
-
-
-	// module
-	exports.push([module.id, ".w-editor-settings label, .w-editor-settings-box label {font-weight: normal; white-space: nowrap;}\n.w-editor-settings label .w-label {display: inline-block; width: 60px; text-align: right;}\n.w-editor-settings select {width: 186px;}\n.w-editor-settings-box {padding-left: 65px; margin: 5px;}\n.w-editor-settings .form-control {display: inline-block; margin-left: 5px;}\n.w-editor-settings p {margin: 5px;}", ""]);
-
-	// exports
-
-
-/***/ },
-/* 279 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-
-	// load the styles
-	var content = __webpack_require__(280);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(4)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../node_modules/css-loader/index.js!./log.css", function() {
-				var newContent = require("!!./../node_modules/css-loader/index.js!./log.css");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
 /* 280 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -49618,7 +49792,7 @@
 
 
 	// module
-	exports.push([module.id, ".w-detail-log ul, .w-detail-log li {list-style: none; padding: 0; margin: 0; display: block; width: 100%; font-size: 12px;}\n.w-detail-log li {border-bottom: 1px solid #ccc; width: 100%; padding: 1px 0; position: relative;}\n.w-detail-log pre {background: none; border: none; padding: 5px 10px; margin: 0; font-size: 12px}\n.w-detail-log li.w-fatal {background: #bbb;}\n.w-detail-log li.w-error {background: #fbaaaa;}\n.w-detail-log li.w-warn {background: #f2dede;}\n.w-detail-log li.w-info {background: #f5f5f5;}\n.w-detail-log li.w-debug {background: #fff;}\n.w-detail-log-bar {position: fixed; z-index: 1; border-radius: 2px; right: 12px; font-size: 12px; top: 60px; white-space: nowrap; line-height: 1.5; background: #eee;}\n.w-detail-log-bar a {display: inline-block; text-decoration: none; color: #000; padding: 0 5px;}\n.w-detail-log-bar a:hover {color: #337ab7;}\n", ""]);
+	exports.push([module.id, ".w-editor-settings label, .w-editor-settings-box label {font-weight: normal; white-space: nowrap;}\n.w-editor-settings label .w-label {display: inline-block; width: 60px; text-align: right;}\n.w-editor-settings select {width: 186px;}\n.w-editor-settings-box {padding-left: 65px; margin: 5px;}\n.w-editor-settings .form-control {display: inline-block; margin-left: 5px;}\n.w-editor-settings p {margin: 5px;}", ""]);
 
 	// exports
 
