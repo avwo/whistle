@@ -1,8 +1,9 @@
 
 ;(function() {
-	var JSON = window.JSON || {};
-	(function () {
-	    var rx_one = /^[\],:{}\s]*$/,
+	var JSON = window.JSON || patchJSON();
+	function patchJSON() {
+	    var JSON = {};
+		var rx_one = /^[\],:{}\s]*$/,
 	        rx_two = /\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g,
 	        rx_three = /"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g,
 	        rx_four = /(?:^|:|,)(?:\s*\[)+/g,
@@ -194,7 +195,10 @@
 	            return str('', {'': value});
 	        };
 	    }
-	}());
+	    
+	    return JSON;
+	}
+	
 	function stringify(obj) {
 		if (obj == null) {
 			return '';
