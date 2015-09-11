@@ -46773,7 +46773,7 @@
 					        '<img alt="logo" src="/img/whistle.png">' + 
 				          '<span" class="w-about-dialog-ctn"><span class="w-about-dialog-title">Whistle for Web Developers.</span>' +
 						  'Version: <span class="w-about-version">' + version + '</span><br>' +
-						  (latest == version ? '' : 'Latest version: <span class="w-about-version"><a class="w-about-url" href="https://github.com/avwo/whistle/wiki/%E5%A6%82%E4%BD%95%E6%9B%B4%E6%96%B0whistle" target="_blank">' + latest + '</a></span><br>') +
+						  (!latest || latest == version ? '' : 'Latest version: <span class="w-about-version"><a class="w-about-url" href="https://github.com/avwo/whistle/wiki/%E5%A6%82%E4%BD%95%E6%9B%B4%E6%96%B0whistle" target="_blank">' + latest + '</a></span><br>') +
 						  'Visit <a class="w-about-url" href="http://www.whistlejs.com#v=' + version + '" target="_blank">http://www.whistlejs.com</a></span>' +
 					      '</div>' + 
 					      '<div class="modal-footer">' + 
