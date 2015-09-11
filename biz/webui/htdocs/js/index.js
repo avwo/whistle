@@ -31485,7 +31485,11 @@
 			var value = pair.slice(1).join('=');
 			if (key || value) {
 				try {
-					value = decode ? decode(value) : value;
+					var val = value;
+					if (decode == decodeURIComponent) {
+						val = value.replace(/\+/g, '%20');
+					}
+					value = decode ? decode(val) : value;
 				} catch(e) {}
 				
 				result[key] = value;
@@ -45672,9 +45676,9 @@
 				body = req.body || '';
 				headers = req.headers;
 				cookies = util.parseQueryString(headers.cookie, /;\s*/g, null, decodeURIComponent);
-				query = util.parseQueryString(modal.url.split('#')[0].split('?')[1], null, null, decodeURIComponent);
+				query = util.parseQueryString(modal.url.replace(/#.*$/, '').replace(/^.*\?/, ''), null, null, decodeURIComponent);
 				if (headers['content-type'] == 'application/x-www-form-urlencoded') {
-					form = util.parseQueryString(req.body);
+					form = util.parseQueryString(req.body, null, null, decodeURIComponent);
 				}
 				
 				raw = [req.method, util.getPath(modal.url), 'HTTP/' + (req.httpVersion || '1.1')].join(' ')
@@ -46371,7 +46375,7 @@
 				startTime: startTime,
 				count: 60
 			}, function(data) {
-				setTimeout(load, 800);
+				setTimeout(load, 900);
 				if (!data || data.ec !== 0) {
 					return;
 				}
@@ -46955,7 +46959,7 @@
 
 
 	// module
-	exports.push([module.id, ".w-detail-log ul, .w-detail-log li {list-style: none; padding: 0; margin: 0; display: block; width: 100%; font-size: 12px;}\n.w-detail-log li {border-bottom: 1px solid #ccc; width: 100%; padding: 1px 0; position: relative;}\n.w-detail-log pre {background: none; border: none; padding: 5px 10px; margin: 0; font-size: 12px}\n.w-detail-log li.w-fatal {background: #bbb;}\n.w-detail-log li.w-error {background: #fbaaaa;}\n.w-detail-log li.w-warn {background: #f2dede;}\n.w-detail-log li.w-info {background: #f5f5f5;}\n.w-detail-log li.w-debug {background: #fff;}\n.w-detail-log-bar {position: fixed; z-index: 1; border-radius: 2px; right: 12px; font-size: 12px; top: 60px; white-space: nowrap; line-height: 1.5; background: #eee;}\n.w-detail-log-bar a {display: inline-block; text-decoration: none; color: #000; padding: 0 5px;}\n.w-detail-log-bar a:hover {color: #337ab7;}\n", ""]);
+	exports.push([module.id, ".w-detail-log ul, .w-detail-log li {list-style: none; padding: 0; margin: 0; display: block; width: 100%; font-size: 12px;}\n.w-detail-log li {border-bottom: 1px solid #ccc; width: 100%; padding: 1px 0; position: relative;}\n.w-detail-log pre {background: none; border: none; padding: 5px 10px; margin: 0; font-size: 12px}\n.w-detail-log li.w-fatal {background: #bbb;}\n.w-detail-log li.w-error {background: #ffefef;}\n.w-detail-log li.w-warn {background: #fffbe6;}\n.w-detail-log li.w-info {background: #f5f5f5;}\n.w-detail-log li.w-debug {background: #fff;}\n\n.w-detail-log li.w-error pre {color: #c41a16;}\n.w-detail-log li.w-warn pre {color: #5c3b00;}\n\n.w-detail-log-bar {position: fixed; z-index: 1; border-radius: 2px; right: 12px; font-size: 12px; top: 60px; white-space: nowrap; line-height: 1.5; background: #eee;}\n.w-detail-log-bar a {display: inline-block; text-decoration: none; color: #000; padding: 0 5px;}\n.w-detail-log-bar a:hover {color: #337ab7;}\n", ""]);
 
 	// exports
 
