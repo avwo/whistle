@@ -196,10 +196,13 @@
 	    }
 	}());
 	function stringify(obj) {
-		if (!obj) {
+		if (obj == null) {
 			return '';
 		}
 		
+		if (!obj) {
+			return obj + '';
+		}
 		var type = typeof obj;
 		if (type == 'string') {
 			return obj;
