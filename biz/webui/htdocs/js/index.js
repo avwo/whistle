@@ -252,12 +252,16 @@
 				self._updateNetwork();
 				return;
 			}
-			
+			var scrollTimeout;
 			var con = $(self.refs.network.getDOMNode())
 				.find('.w-req-data-list').scroll(function() {
 					var modal = self.state.network;
+					scrollTimeout && clearTimeout(scrollTimeout);
+					scrollTimeout = null;
 					if (modal && atBottom()) {
-						update(modal, true);
+						scrollTimeout = setTimeout(function() {
+							update(modal, true);
+						}, 2000);
 					}
 				});
 			var body = con.children('table')[0];
@@ -45410,9 +45414,9 @@
 	 * [req, res]delay://, method://, [req, res][content]Type://自动lookup, 
 	 * cache://xxxs[no], params://json|string(放在url)
 	 */
-	var RULES = ['host', 'req', 'rule', 'res', 'weinre', 'filter', 'log', 'params', 'rawParams', 'delayReq', 'reqSpeed', 'reqHeaders',
-	             'method', 'reqType', 'reqBody', 'prependReq', 'appendReq', 'resHeaders', 'statusCode', 'redirect', 'delayRes', 
-	             'resSpeed', 'resType', 'cache', 'resBody', 'prependRes', 'appendRes'];
+	var RULES = ['host', 'req', 'rule', 'res', 'weinre', 'filter', 'log', 'params', 'statusCode', 'redirect', 'delayReq', 
+	             'reqSpeed', 'reqHeaders', 'method', 'reqType', 'reqBody', 'prependReq', 'appendReq', 'delayRes', 'resSpeed', 
+	             'resHeaders', 'resType', 'cache', 'resBody', 'prependRes', 'appendRes'];
 	var DEFAULT_OVERVIEW_MODAL = {};
 	var DEFAULT_RULES_MODAL = {};
 
@@ -46869,15 +46873,18 @@
 					}
 				});
 			});
-			
+			var timeout;
 			$(container).on('scroll', function() {
 				var data = self.state.logs;
+				timeout && clearTimeout(timeout);
 				if (data && scrollAtBottom()) {
-					var len = data.length - 110;
-					if (len > 0) {
-						data.splice(0, len);
-						self.setState({logs: data});
-					}
+					timeout = setTimeout(function() {
+						var len = data.length - 110;
+						if (len > 0) {
+							data.splice(0, len);
+							self.setState({logs: data});
+						}
+					}, 2000);
 				}
 			}).on('click', '.w-auto-scroll-log', function() {
 				container.scrollTop = content.offsetHeight;
