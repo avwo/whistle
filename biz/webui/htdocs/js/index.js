@@ -45435,9 +45435,9 @@
 	 * [req, res]delay://, method://, [req, res][content]Type://自动lookup, 
 	 * cache://xxxs[no], params://json|string(放在url)
 	 */
-	var RULES = ['host', 'req', 'rule', 'res', 'weinre', 'filter', 'log', 'params', 'statusCode', 'redirect', 'delayReq', 
-	             'reqSpeed', 'reqHeaders', 'method', 'reqType', 'reqBody', 'prependReq', 'appendReq', 'delayRes', 'resSpeed', 
-	             'resHeaders', 'resType', 'cache', 'resBody', 'prependRes', 'appendRes'];
+	var RULES = ['host', 'req', 'rule', 'res', 'weinre', 'filter', 'log', 'params', 'statusCode', 'redirect', 'method', 'cache', 
+	             'delayReq', 'reqSpeed', 'reqHeaders', 'reqType', 'reqBody', 'prependReq', 'appendReq', 'delayRes', 'resSpeed', 
+	             'resHeaders', 'resType', 'resBody', 'prependRes', 'appendRes'];
 	var DEFAULT_OVERVIEW_MODAL = {};
 	var DEFAULT_RULES_MODAL = {};
 
