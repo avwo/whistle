@@ -235,13 +235,22 @@
 		},
 		getAllRulesValue: function() {
 			var result = [];
+			var activeList = [];
+			var selectedList = [];
 			var modal = this.state.rules;
-			var data = modal.data;
 			modal.list.forEach(function(name) {
-				var value = data[name].value;
-				value && result.push(value);
+				var item = modal.get(name);
+				var value = item.value || '';
+				if (item.active) {
+					activeList.push(value);
+				} else if (item.selected) {
+					selectedList.push(values);
+				} else {
+					result.push(value);
+				}
 			});
-			return result.join('\r\n');
+			
+			return activeList.concat(selectedList).concat(result).join('\r\n');
 		},
 		preventBlur: function(e) {
 			e.target.nodeName != 'INPUT' && e.preventDefault();
@@ -374,14 +383,19 @@
 			var self = this;
 			var valuesList = this.state.values.list;
 			var list = self.getValuesFromRules() || [];
-			list.push.apply(list, valuesList);
-			list = util.unique(list, true);
-			self.state.valuesOptions = list.map(function(name) {
-				return {
-					name: name,
-					icon: valuesList.indexOf(name) == -1 ? 'plus' : 'edit'
-				};
+			list = util.unique(list.concat(valuesList));
+			var valuesOptions = [];
+			var newValues = [];
+			list.forEach(function(name) {
+				var exists = valuesList.indexOf(name) != -1;
+				var item = {
+						name: name,
+						icon: exists ? 'edit' : 'plus'
+					};
+				exists ? valuesOptions.push(item) : newValues.push(item);
 			});
+			self.state.valuesOptions = newValues.concat(valuesOptions);
+			
 			self.setMenuOptionsState('showValuesOptions', function() {
 				self.refs.valuesMenuItem.getDOMNode().focus();
 			});
@@ -31629,6 +31643,13 @@
 		return res.statusMessage || STATUS_CODES[res.statusCode] || '';
 	};
 
+	function isUrlEncoded(req) {
+		
+		return /^post$/i.test(req.method) && /urlencoded/i.test(req.headers && req.headers['content-type']);
+	}
+
+	exports.isUrlEncoded = isUrlEncoded;
+
 
 
 
@@ -45683,7 +45704,7 @@
 				var url = modal.url;
 				var index = modal.url.indexOf('?');
 				query = util.parseQueryString(index == -1 ? '' : url.substring(index + 1), null, null, decodeURIComponent);
-				if (headers['content-type'] == 'application/x-www-form-urlencoded') {
+				if (util.isUrlEncoded(req)) {
 					form = util.parseQueryString(req.body, null, null, decodeURIComponent);
 				}
 				
