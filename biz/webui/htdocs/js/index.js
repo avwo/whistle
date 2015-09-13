@@ -49867,9 +49867,10 @@
 /* 281 */
 /***/ function(module, exports, __webpack_require__) {
 
+	__webpack_require__(282);
 	var React = __webpack_require__(6);
 	var util = __webpack_require__(175);
-	var MAX_LENGTH =1024 * 160;
+	var MAX_LENGTH =1024 * 100;
 
 	var Textarea = React.createClass({displayName: "Textarea",
 		getInitialState: function() {
@@ -49884,6 +49885,16 @@
 		shouldComponentUpdate: function(nextProps) {
 			var hide = util.getBoolean(this.props.hide);
 			return hide != util.getBoolean(nextProps.hide) || (!hide && this.props.value != nextProps.value);
+		},
+		edit: function() {
+			var self = this;
+			var win = window.open('/editor.html');
+			win.getValue = function() {
+				return self.props.value;
+			};
+			if (win.setValue) {
+				win.setValue(self.props.value);
+			}
 		},
 		updateValue: function() {
 			var self = this;
@@ -49901,13 +49912,55 @@
 			}
 			this.state.value = value;
 			return (
-					React.createElement("textarea", {ref: "textarea", onKeyDown: util.preventDefault, readOnly: "readonly", 
-						className: (this.props.className || '') + (this.props.hide ? ' hide' : '')})
+					React.createElement("div", {className: 'fill orient-vertical-box w-textarea' + (this.props.hide ? ' hide' : '')}, 
+						React.createElement("a", {className: 'w-edit' + (value ? '' : ' hide'), onClick: this.edit, href: "javascript:;"}, "Edit"), 
+						React.createElement("textarea", {ref: "textarea", onKeyDown: util.preventDefault, readOnly: "readonly", className: this.props.className || ''})
+					)
 			);
 		}
 	});
 
 	module.exports = Textarea;
+
+/***/ },
+/* 282 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(283);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(4)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../node_modules/css-loader/index.js!./textarea.css", function() {
+				var newContent = require("!!./../node_modules/css-loader/index.js!./textarea.css");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 283 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(3)();
+	// imports
+
+
+	// module
+	exports.push([module.id, ".w-textarea {position: relative;}\n.w-textarea .w-edit {position: absolute; z-index: 1; border-radius: 2px; right: 12px; font-size: 12px; top: 2px;\n white-space: nowrap; line-height: 1.5; background: #eee; display: block; text-decoration: none; color: #000; padding: 0 5px;}", ""]);
+
+	// exports
+
 
 /***/ }
 /******/ ]);

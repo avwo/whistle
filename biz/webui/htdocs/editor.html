@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="shortcut icon" href="/img/favicon.ico" />
+<title>Whistle Editor</title>
+<style>
+html, body, .main {padding: 0; margin: 0; height: 100%; overflow: hidden;}
+textarea {resize: none; display: block; font-size: 12px; width: 100%; height: 100%; border: none;}
+</style>
+</head>
+<body>
+<div class="main">
+	<textarea id="editor"></textarea>
+</div>
+<script>
+	var editor = document.getElementById('editor');
+	if (window.getValue) {
+		editor.value = getValue();
+	} else {
+		window.setValue = function(value) {
+			editor.value = value;
+		};
+	}
+</script>
+</body>
+</html>
