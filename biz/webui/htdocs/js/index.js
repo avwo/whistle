@@ -45436,7 +45436,7 @@
 	 * cache://xxxs[no], params://json|string(放在url)
 	 */
 	var RULES = ['host', 'req', 'rule', 'res', 'weinre', 'filter', 'log', 'params', 'statusCode', 'redirect', 'method', 'cache', 
-	             'delayReq', 'reqSpeed', 'reqHeaders', 'reqType', 'reqBody', 'prependReq', 'appendReq', 'delayRes', 'resSpeed', 
+	             'delayReq', 'reqSpeed', 'reqType', 'reqHeaders', 'reqBody', 'prependReq', 'appendReq', 'delayRes', 'resSpeed', 
 	             'resHeaders', 'resType', 'resBody', 'prependRes', 'appendRes'];
 	var DEFAULT_OVERVIEW_MODAL = {};
 	var DEFAULT_RULES_MODAL = {};
@@ -45696,6 +45696,7 @@
 			var name = btn && btn.name;
 			var modal = this.props.modal;
 			var req, headers, cookies, body, raw, query, form;
+			body = raw = '';
 			if (modal) {
 				req = modal.req
 				body = req.body || '';
@@ -45906,6 +45907,7 @@
 			var name = btn && btn.name;
 			var modal = this.props.modal;
 			var res, headers, cookies, body, raw, json;
+			body = raw = json = '';
 			if (modal) {
 				res = modal.res
 				body = res.body || '';
