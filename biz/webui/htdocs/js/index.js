@@ -244,7 +244,7 @@
 				if (item.active) {
 					activeList.push(value);
 				} else if (item.selected) {
-					selectedList.push(values);
+					selectedList.push(value);
 				} else {
 					result.push(value);
 				}
@@ -45437,7 +45437,7 @@
 	 */
 	var RULES = ['host', 'req', 'rule', 'res', 'weinre', 'filter', 'log', 'params', 'statusCode', 'redirect', 'method', 'cache', 
 	             'delayReq', 'reqSpeed', 'reqType', 'reqHeaders', 'reqBody', 'prependReq', 'appendReq', 'delayRes', 'resSpeed', 
-	             'resHeaders', 'resType', 'resBody', 'prependRes', 'appendRes'];
+	             'resType', 'resHeaders', 'resBody', 'prependRes', 'appendRes'];
 	var DEFAULT_OVERVIEW_MODAL = {};
 	var DEFAULT_RULES_MODAL = {};
 
