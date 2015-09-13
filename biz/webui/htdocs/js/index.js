@@ -50,11 +50,11 @@
 	var List = __webpack_require__(162);
 	var ListModal = __webpack_require__(229);
 	var Network = __webpack_require__(230);
-	var About = __webpack_require__(268);
-	var Online = __webpack_require__(272);
-	var MenuItem = __webpack_require__(275);
-	var EditorSettings = __webpack_require__(278);
-	var dataCenter = __webpack_require__(262);
+	var About = __webpack_require__(266);
+	var Online = __webpack_require__(270);
+	var MenuItem = __webpack_require__(273);
+	var EditorSettings = __webpack_require__(276);
+	var dataCenter = __webpack_require__(260);
 	var util = __webpack_require__(175);
 	var events = __webpack_require__(231);
 
@@ -196,6 +196,17 @@
 			events.on('executeComposer', function() {
 				self.autoScroll && self.autoScroll();
 			});
+			
+			var timeout;
+			$(document).on('visibilitychange', function() {
+				clearTimeout(timeout);
+				if (document.hidden) {
+					return;
+				}
+				timeout = setTimeout(function() {
+					self.setState({});
+				}, 100);
+			});
 		},
 		getWeinreFromRules: function() {
 			var values = this.state.values;
@@ -288,6 +299,9 @@
 				_atBottom = _atBottom || atBottom();
 				if (modal.update(_atBottom) && _atBottom) {
 					timeout = setTimeout(update, 3000);
+				}
+				if (document.hidden) {
+					return;
 				}
 				self.setState({
 					network: modal
@@ -44897,7 +44911,7 @@
 	var Divider = __webpack_require__(176);
 	var ReqData = __webpack_require__(232);
 	var Detail = __webpack_require__(235);
-	var dataCenter = __webpack_require__(262);
+	var dataCenter = __webpack_require__(260);
 
 	var Network = React.createClass({displayName: "Network",
 		shouldComponentUpdate: function(nextProps) {
@@ -45196,10 +45210,10 @@
 	var BtnGroup = __webpack_require__(238);
 	var Overview = __webpack_require__(241);
 	var ReqDetail = __webpack_require__(247);
-	var ResDetail = __webpack_require__(253);
-	var Timeline = __webpack_require__(256);
-	var Composer = __webpack_require__(259);
-	var Log = __webpack_require__(265);
+	var ResDetail = __webpack_require__(248);
+	var Timeline = __webpack_require__(254);
+	var Composer = __webpack_require__(257);
+	var Log = __webpack_require__(263);
 	var TABS = [{
 					name: 'Overview',
 					icon: 'eye-open'
@@ -45655,13 +45669,14 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(248);
+	__webpack_require__(279);
 	var React = __webpack_require__(6);
-	var Table = __webpack_require__(250);
+	var Table = __webpack_require__(251);
 	var Divider = __webpack_require__(176);
 	var Properties = __webpack_require__(244);
 	var util = __webpack_require__(175);
 	var BtnGroup = __webpack_require__(238);
+	var Textarea = __webpack_require__(281);
 	var BTNS = [{name: 'Headers'}, {name: 'TextView'}, {name: 'Cookies'}, {name: 'WebForms'}, {name: 'Raw'}];
 
 	var ReqDetail = React.createClass({displayName: "ReqDetail",
@@ -45712,17 +45727,20 @@
 				raw = [req.method, util.getPath(modal.url), 'HTTP/' + (req.httpVersion || '1.1')].join(' ')
 						+ '\r\n' + util.objectToString(headers) + '\r\n\r\n' + body;
 			}
+			this.state.raw = raw;
+			this.state.body = body;
+			
 			return (
 				React.createElement("div", {className: 'fill orient-vertical-box w-detail-content w-detail-request' + (util.getBoolean(this.props.hide) ? ' hide' : '')}, 
 					React.createElement(BtnGroup, {onClick: this.onClickBtn, btns: BTNS}), 
 					this.state.initedHeaders ? React.createElement("div", {className: 'fill w-detail-request-headers' + (name == BTNS[0].name ? '' : ' hide')}, React.createElement(Properties, {modal: headers})) : '', 
-					this.state.initedTextView ? React.createElement("textarea", {value: body, onKeyDown: util.preventDefault, readOnly: "readonly", className: 'fill w-detail-request-textview' + (name == BTNS[1].name ? '' : ' hide')}) : '', 
+					this.state.initedTextView ? React.createElement(Textarea, {value: body, className: "fill w-detail-request-textview", hide: name != BTNS[1].name}) : '', 
 					this.state.initedCookies ? React.createElement("div", {className: 'fill w-detail-request-cookies' + (name == BTNS[2].name ? '' : ' hide')}, React.createElement(Properties, {modal: cookies})) : '', 
 					this.state.initedWebForms ? React.createElement(Divider, {vertical: "true", className: 'w-detail-request-webforms' + (name == BTNS[3].name ? '' : ' hide')}, 
 						React.createElement("div", {className: "fill w-detail-request-query"}, React.createElement(Properties, {modal: query})), 
 						React.createElement("div", {className: "fill w-detail-request-form"}, React.createElement(Properties, {modal: form}))
 					) : '', 
-					this.state.initedRaw ? React.createElement("textarea", {value: raw, onKeyDown: util.preventDefault, readOnly: "readonly", className: 'fill w-detail-request-raw' + (name == BTNS[4].name ? '' : ' hide')}) : ''
+					this.state.initedRaw ? React.createElement(Textarea, {value: raw, className: "fill w-detail-request-raw", hide: name != BTNS[4].name}) : ''
 				)
 			);
 		}
@@ -45737,142 +45755,15 @@
 /* 248 */
 /***/ function(module, exports, __webpack_require__) {
 
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-
-	// load the styles
-	var content = __webpack_require__(249);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(4)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../node_modules/css-loader/index.js!./req-detail.css", function() {
-				var newContent = require("!!./../node_modules/css-loader/index.js!./req-detail.css");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
-/* 249 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(3)();
-	// imports
-
-
-	// module
-	exports.push([module.id, ".w-detail-request textarea {padding: 5px; border: none;}\n.w-detail-request-headers, .w-detail-request-cookies, .w-detail-request-query, w-detail-request-form, .w-detail-request-form {overflow: auto;}\n", ""]);
-
-	// exports
-
-
-/***/ },
-/* 250 */
-/***/ function(module, exports, __webpack_require__) {
-
 	__webpack_require__(163);
-	__webpack_require__(251);
+	__webpack_require__(249);
 	var React = __webpack_require__(6);
-
-	var Table = React.createClass({displayName: "Table",
-		render: function() {
-			var head = this.props.head;
-			var hasHead = Array.isArray(head) && head.length;
-			var modal = this.props.modal || [];
-			
-			return (
-				React.createElement("table", {className: "table w-table"}, 
-					
-						hasHead ? (
-								React.createElement("thead", null, 
-								head.map(function(head) {
-									return React.createElement("th", {key: head}, head);
-								})
-								)
-						) : '', 
-					
-					React.createElement("tbody", null, 
-						
-							modal.map(function(list, i) {
-								
-								return (
-									React.createElement("tr", {key: i}, 
-										
-											list.map(function(value, j) {
-												return React.createElement("td", {key: i + '.' + j}, value);
-											})
-										
-									)	
-								);
-							})
-						
-					)
-				)
-			);
-		}
-	});
-
-	module.exports = Table;
-
-/***/ },
-/* 251 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-
-	// load the styles
-	var content = __webpack_require__(252);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(4)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../node_modules/css-loader/index.js!./table.css", function() {
-				var newContent = require("!!./../node_modules/css-loader/index.js!./table.css");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
-/* 252 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(3)();
-	// imports
-
-
-	// module
-	exports.push([module.id, ".w-table>thead>tr>th {background: #eee; font-weight: normal; border-bottom: 1px solid #ccc; vertical-align: top;}\n.w-table th, .w-table td {font-size: 12px; padding: 3px 8px!important; border-top: none; border-bottom: 1px solid #ccc; word-break: break-word;}", ""]);
-
-	// exports
-
-
-/***/ },
-/* 253 */
-/***/ function(module, exports, __webpack_require__) {
-
-	__webpack_require__(163);
-	__webpack_require__(254);
-	var React = __webpack_require__(6);
-	var Table = __webpack_require__(250);
+	var Table = __webpack_require__(251);
 	var Properties = __webpack_require__(244);
 	var util = __webpack_require__(175);
 	var BtnGroup = __webpack_require__(238);
-	BTNS = [{name: 'Headers'}, {name: 'TextView'}, {name: 'Cookies'}, {name: 'JSON'}, {name: 'Raw'}];
+	var Textarea = __webpack_require__(281);
+	var BTNS = [{name: 'Headers'}, {name: 'TextView'}, {name: 'Cookies'}, {name: 'JSON'}, {name: 'Raw'}];
 	var COOKIE_HEADERS = ['Name', 'Value', 'Domain', 'Path', 'Expires', 'Http Only', 'Secure'];
 
 	var ResDetail = React.createClass({displayName: "ResDetail",
@@ -45952,15 +45843,18 @@
 				}
 			}
 			
+			this.state.raw = raw;
+			this.state.body = body;
+			
 			return (
 				React.createElement("div", {className: 'fill orient-vertical-box w-detail-content w-detail-response' 
 					+ (util.getBoolean(this.props.hide) ? ' hide' : '')}, 
 					React.createElement(BtnGroup, {onClick: this.onClickBtn, btns: BTNS}), 
 					this.state.initedHeaders ? React.createElement("div", {className: 'fill w-detail-response-headers' + (name == BTNS[0].name ? '' : ' hide')}, React.createElement(Properties, {modal: headers})) : '', 
-					this.state.initedTextView ? React.createElement("textarea", {value: body, onKeyDown: util.preventDefault, readOnly: "readonly", className: 'fill w-detail-response-textview' + (name == BTNS[1].name ? '' : ' hide')}) : '', 
+					this.state.initedTextView ? React.createElement(Textarea, {value: body, className: "fill w-detail-response-textview", hide: name != BTNS[1].name}) : '', 
 					this.state.initedCookies ? React.createElement("div", {className: 'fill w-detail-response-cookies' + (name == BTNS[2].name ? '' : ' hide')}, React.createElement(Table, {head: COOKIE_HEADERS, modal: cookies})) : '', 
-					this.state.initedJSON ? React.createElement("textarea", {value: json, onKeyDown: util.preventDefault, readOnly: "readonly", className: 'fill w-detail-response-json' + (name == BTNS[3].name ? '' : ' hide')}) : '', 
-					this.state.initedRaw ? React.createElement("textarea", {value: raw, onKeyDown: util.preventDefault, readOnly: "readonly", className: 'fill w-detail-response-raw' + (name == BTNS[4].name ? '' : ' hide')}) : ''
+					this.state.initedJSON ? React.createElement(Textarea, {value: json, className: "fill w-detail-response-json", hide: name != BTNS[3].name}) : '', 
+					this.state.initedRaw ? React.createElement(Textarea, {value: raw, className: "fill w-detail-response-raw", hide: name != BTNS[4].name}) : ''
 				)
 			);
 		}
@@ -45970,13 +45864,13 @@
 
 
 /***/ },
-/* 254 */
+/* 249 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(255);
+	var content = __webpack_require__(250);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -45996,7 +45890,7 @@
 	}
 
 /***/ },
-/* 255 */
+/* 250 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -46010,11 +45904,99 @@
 
 
 /***/ },
-/* 256 */
+/* 251 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(257);
+	__webpack_require__(252);
+	var React = __webpack_require__(6);
+
+	var Table = React.createClass({displayName: "Table",
+		render: function() {
+			var head = this.props.head;
+			var hasHead = Array.isArray(head) && head.length;
+			var modal = this.props.modal || [];
+			
+			return (
+				React.createElement("table", {className: "table w-table"}, 
+					
+						hasHead ? (
+								React.createElement("thead", null, 
+								head.map(function(head) {
+									return React.createElement("th", {key: head}, head);
+								})
+								)
+						) : '', 
+					
+					React.createElement("tbody", null, 
+						
+							modal.map(function(list, i) {
+								
+								return (
+									React.createElement("tr", {key: i}, 
+										
+											list.map(function(value, j) {
+												return React.createElement("td", {key: i + '.' + j}, value);
+											})
+										
+									)	
+								);
+							})
+						
+					)
+				)
+			);
+		}
+	});
+
+	module.exports = Table;
+
+/***/ },
+/* 252 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(253);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(4)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../node_modules/css-loader/index.js!./table.css", function() {
+				var newContent = require("!!./../node_modules/css-loader/index.js!./table.css");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 253 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(3)();
+	// imports
+
+
+	// module
+	exports.push([module.id, ".w-table>thead>tr>th {background: #eee; font-weight: normal; border-bottom: 1px solid #ccc; vertical-align: top;}\n.w-table th, .w-table td {font-size: 12px; padding: 3px 8px!important; border-top: none; border-bottom: 1px solid #ccc; word-break: break-word;}", ""]);
+
+	// exports
+
+
+/***/ },
+/* 254 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(163);
+	__webpack_require__(255);
 	var React = __webpack_require__(6);
 	var util = __webpack_require__(175);
 	var TOTAL_RATE = 80;
@@ -46120,13 +46102,13 @@
 	module.exports = Timeline;
 
 /***/ },
-/* 257 */
+/* 255 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(258);
+	var content = __webpack_require__(256);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -46146,7 +46128,7 @@
 	}
 
 /***/ },
-/* 258 */
+/* 256 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -46160,13 +46142,13 @@
 
 
 /***/ },
-/* 259 */
+/* 257 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(260);
+	__webpack_require__(258);
 	var React = __webpack_require__(6);
-	var dataCenter = __webpack_require__(262);
+	var dataCenter = __webpack_require__(260);
 	var util = __webpack_require__(175);
 	var events = __webpack_require__(231);
 	var Divider = __webpack_require__(176);
@@ -46252,13 +46234,13 @@
 	module.exports = Composer;
 
 /***/ },
-/* 260 */
+/* 258 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(261);
+	var content = __webpack_require__(259);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -46278,7 +46260,7 @@
 	}
 
 /***/ },
-/* 261 */
+/* 259 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -46292,12 +46274,12 @@
 
 
 /***/ },
-/* 262 */
+/* 260 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var $ = __webpack_require__(5);
-	var createCgi = __webpack_require__(263);
-	var NetworkModal = __webpack_require__(264);
+	var createCgi = __webpack_require__(261);
+	var NetworkModal = __webpack_require__(262);
 	var	MAX_COUNT = NetworkModal.MAX_COUNT;
 	var TIMEOUT = 10000;
 	var dataCallbacks = [];
@@ -46540,7 +46522,7 @@
 
 
 /***/ },
-/* 263 */
+/* 261 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var $ = __webpack_require__(5);
@@ -46608,7 +46590,7 @@
 	module.exports = create;
 
 /***/ },
-/* 264 */
+/* 262 */
 /***/ function(module, exports) {
 
 	var MAX_LENGTH = 360;
@@ -46635,7 +46617,7 @@
 	proto.search = function(keyword) {
 		this._type = 'url';
 		this._keyword = typeof keyword != 'string' ? '' : keyword.trim();
-		if (this._keyword && /^(url|u|content|c|headers|h|ip|i|status|result|s|r|method|m):(.*)$/.test(keyword)) {
+		if (this._keyword && /^(url|u|content|c|headers|h|ip|i|status|result|s|r|method|m|type|t):(.*)$/.test(keyword)) {
 			this._type = RegExp.$1;
 			this._keyword = RegExp.$2.trim();
 		}
@@ -46672,6 +46654,14 @@
 				list.forEach(function(item) {
 					item.hide = !inObject(item.req.headers, keyword) 
 								&& !inObject(item.res.headers, keyword);
+				});
+				break;
+			case 'type':
+			case 't':
+				list.forEach(function(item) {
+					var type = item.res.headers;
+					type = type && type['content-type'];
+					item.hide = !(typeof type == 'string' && type.indexOf(keyword) != -1);
 				});
 				break;
 			case 'ip':
@@ -46867,15 +46857,15 @@
 
 
 /***/ },
-/* 265 */
+/* 263 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(266);
+	__webpack_require__(264);
 	var $ = __webpack_require__(5);
 	var React = __webpack_require__(6);
 	var util = __webpack_require__(175);
-	var dataCenter = __webpack_require__(262);
+	var dataCenter = __webpack_require__(260);
 
 	var Log = React.createClass({displayName: "Log",
 		componentDidMount: function() {
@@ -46957,13 +46947,13 @@
 	module.exports = Log;
 
 /***/ },
-/* 266 */
+/* 264 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(267);
+	var content = __webpack_require__(265);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -46983,7 +46973,7 @@
 	}
 
 /***/ },
-/* 267 */
+/* 265 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -46997,15 +46987,15 @@
 
 
 /***/ },
-/* 268 */
+/* 266 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(269);
+	__webpack_require__(267);
 	var $ = window.jQuery = __webpack_require__(5); //for bootstrap
-	__webpack_require__(271);
+	__webpack_require__(269);
 	var React = __webpack_require__(6);
-	var dataCenter = __webpack_require__(262);
+	var dataCenter = __webpack_require__(260);
 	var dialog;
 
 	function createDialog(data) {
@@ -47057,13 +47047,13 @@
 	module.exports = About;
 
 /***/ },
-/* 269 */
+/* 267 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(270);
+	var content = __webpack_require__(268);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -47083,7 +47073,7 @@
 	}
 
 /***/ },
-/* 270 */
+/* 268 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -47097,7 +47087,7 @@
 
 
 /***/ },
-/* 271 */
+/* 269 */
 /***/ function(module, exports) {
 
 	/*!
@@ -49466,15 +49456,15 @@
 
 
 /***/ },
-/* 272 */
+/* 270 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(273);
-	var $ = window.jQuery = __webpack_require__(5); //for bootstrap
 	__webpack_require__(271);
+	var $ = window.jQuery = __webpack_require__(5); //for bootstrap
+	__webpack_require__(269);
 	var React = __webpack_require__(6);
-	var dataCenter = __webpack_require__(262);
+	var dataCenter = __webpack_require__(260);
 	var dialog;
 
 	function createDialog() {
@@ -49599,13 +49589,13 @@
 	module.exports = Online;
 
 /***/ },
-/* 273 */
+/* 271 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(274);
+	var content = __webpack_require__(272);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -49625,7 +49615,7 @@
 	}
 
 /***/ },
-/* 274 */
+/* 272 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -49639,11 +49629,11 @@
 
 
 /***/ },
-/* 275 */
+/* 273 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(276);
+	__webpack_require__(274);
 	var React = __webpack_require__(6);
 	var util = __webpack_require__(175);
 
@@ -49689,13 +49679,13 @@
 
 
 /***/ },
-/* 276 */
+/* 274 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(277);
+	var content = __webpack_require__(275);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -49715,7 +49705,7 @@
 	}
 
 /***/ },
-/* 277 */
+/* 275 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -49729,11 +49719,11 @@
 
 
 /***/ },
-/* 278 */
+/* 276 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(279);
+	__webpack_require__(277);
 	var React = __webpack_require__(6);
 
 	var EditorSettings = React.createClass({displayName: "EditorSettings",
@@ -49794,13 +49784,13 @@
 	module.exports = EditorSettings;
 
 /***/ },
-/* 279 */
+/* 277 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(280);
+	var content = __webpack_require__(278);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -49820,7 +49810,7 @@
 	}
 
 /***/ },
-/* 280 */
+/* 278 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -49832,6 +49822,92 @@
 
 	// exports
 
+
+/***/ },
+/* 279 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(280);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(4)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../node_modules/css-loader/index.js!./req-detail.css", function() {
+				var newContent = require("!!./../node_modules/css-loader/index.js!./req-detail.css");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 280 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(3)();
+	// imports
+
+
+	// module
+	exports.push([module.id, ".w-detail-request textarea {padding: 5px; border: none;}\n.w-detail-request-headers, .w-detail-request-cookies, .w-detail-request-query, w-detail-request-form, .w-detail-request-form {overflow: auto;}\n", ""]);
+
+	// exports
+
+
+/***/ },
+/* 281 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(6);
+	var util = __webpack_require__(175);
+	var MAX_LENGTH =1024 * 160;
+
+	var Textarea = React.createClass({displayName: "Textarea",
+		getInitialState: function() {
+			return {};
+		},
+		componentDidMount: function() {
+			this.updateValue();
+		},
+		componentDidUpdate: function() {
+			this.updateValue();
+		},
+		shouldComponentUpdate: function(nextProps) {
+			var hide = util.getBoolean(this.props.hide);
+			return hide != util.getBoolean(nextProps.hide) || (!hide && this.props.value != nextProps.value);
+		},
+		updateValue: function() {
+			var self = this;
+			clearTimeout(self._timeout);
+			var value = self.state.value;
+			self._timeout = setTimeout(function() {
+				self.refs.textarea.getDOMNode().value = value;
+			}, Math.ceil((value && value.length || 0) / 1024));
+		},
+		render: function() {
+			var value = this.props.value || '';
+			var exceed = value.length - MAX_LENGTH;
+			if (exceed > 0) {
+				value = value.substring(0, MAX_LENGTH) + '...(' + exceed + ' characters left)';
+			}
+			this.state.value = value;
+			return (
+					React.createElement("textarea", {ref: "textarea", onKeyDown: util.preventDefault, readOnly: "readonly", 
+						className: (this.props.className || '') + (this.props.hide ? ' hide' : '')})
+			);
+		}
+	});
+
+	module.exports = Textarea;
 
 /***/ }
 /******/ ]);
