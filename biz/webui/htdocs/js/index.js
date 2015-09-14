@@ -158,7 +158,7 @@
 			
 			state.rules = new ListModal(rulesList, rulesData);
 			state.rulesOptions = rulesOptions;
-			state.values = new ListModal(valuesList, valuesData);
+			dataCenter.valuesModal = state.values = new ListModal(valuesList, valuesData);
 			state.valuesOptions = valuesOptions;
 			state.filterText = modal.filterText;
 			
@@ -31084,9 +31084,9 @@
 			if (!item) {
 				return;
 			}
-			
-			var value = e.getValue();
-			if (value != item.value && value != item.value) {
+			var oldValue = item.value || '';
+			var value = e.getValue() || '';
+			if (value != oldValue) {
 				item.changed = true;
 				item.value = value;
 				this.setState({
@@ -49874,6 +49874,7 @@
 	__webpack_require__(282);
 	var React = __webpack_require__(6);
 	var util = __webpack_require__(175);
+	var dataCenter = __webpack_require__(260);
 	var MAX_LENGTH =1024 * 100;
 
 	var Textarea = React.createClass({displayName: "Textarea",
@@ -49890,6 +49891,9 @@
 			var hide = util.getBoolean(this.props.hide);
 			return hide != util.getBoolean(nextProps.hide) || (!hide && this.props.value != nextProps.value);
 		},
+		preventBlur: function(e) {
+			e.target.nodeName != 'INPUT' && e.preventDefault();
+		},
 		edit: function() {
 			var self = this;
 			var win = window.open('/editor.html');
@@ -49899,6 +49903,48 @@
 			if (win.setValue) {
 				win.setValue(self.props.value);
 			}
+		},
+		showAddToValues: function() {
+			var self = this;
+			self.state.showAddToValues = true;
+			self.forceUpdate(function() {
+				self.refs.valuesNameInput.getDOMNode().focus();
+			});
+		},
+		addToValues: function(e) {
+			if (e.keyCode != 13 && e.type != 'click') {
+				return;
+			}
+			var modal = dataCenter.valuesModal;
+			if (!modal) {
+				return;
+			}
+			var target = this.refs.valuesNameInput.getDOMNode();
+			var name = target.value;
+			if (!name) {
+				alert('Value name can not be empty.');
+				return;
+			}
+			
+			if (modal.exists(name)) {
+				alert('Value name \'' + name + '\' already exists.');
+				return;
+			}
+			
+			var value = (this.props.value || '').replace(/\r\n|\r/g, '\n');
+			dataCenter.values.add({name: name, value: value}, function(data) {
+				if (data && data.ec === 0) {
+					modal.add(name, value);
+					target.value = '';
+					target.blur();
+				} else {
+					util.showSystemError();
+				}
+			});
+		},
+		hideAddValuesInput: function() {
+			this.state.showAddToValues = false;
+			this.forceUpdate();
 		},
 		updateValue: function() {
 			var self = this;
@@ -49911,13 +49957,21 @@
 		render: function() {
 			var value = this.props.value || '';
 			var exceed = value.length - MAX_LENGTH;
-			if (exceed > 10240) {
-				value = value.substring(0, MAX_LENGTH) + '...(' + exceed + ' characters left)';
+			var showAddToValuesBtn = /[^\s]/.test(value);
+			if (exceed > 512) {
+				showAddToValuesBtn = false;
+				value = value.substring(0, MAX_LENGTH) + '...(' + exceed + ' characters left, you can click on the Edit button in the upper right corner to view all)';
 			}
+			
 			this.state.value = value;
+			var displayClass = value ? '' : ' hide';
 			return (
 					React.createElement("div", {className: 'fill orient-vertical-box w-textarea' + (this.props.hide ? ' hide' : '')}, 
-						React.createElement("a", {className: 'w-edit' + (value ? '' : ' hide'), onClick: this.edit, href: "javascript:;"}, "Edit"), 
+						React.createElement("div", {className: "w-textarea-bar"}, 
+							showAddToValuesBtn ? React.createElement("a", {className: 'w-add' + displayClass, onClick: this.showAddToValues, href: "javascript:;"}, "AddToValues") : '', 	
+							React.createElement("a", {className: 'w-edit' + displayClass, onClick: this.edit, href: "javascript:;"}, "Edit"), 
+							React.createElement("div", {onMouseDown: this.preventBlur, style: {display: this.state.showAddToValues ? 'block' : 'none'}, className: "shadow w-textarea-input"}, React.createElement("input", {ref: "valuesNameInput", onKeyDown: this.addToValues, onBlur: this.hideAddValuesInput, type: "text", maxLength: "64", placeholder: "name"}), React.createElement("button", {type: "button", onClick: this.addToValues, className: "btn btn-primary"}, "OK"))
+						), 
 						React.createElement("textarea", {ref: "textarea", onKeyDown: util.preventDefault, readOnly: "readonly", className: this.props.className || ''})
 					)
 			);
@@ -49961,7 +50015,7 @@
 
 
 	// module
-	exports.push([module.id, ".w-textarea {position: relative;}\n.w-textarea .w-edit {position: absolute; z-index: 1; border-radius: 2px; right: 12px; font-size: 12px; top: 2px;\n white-space: nowrap; line-height: 1.5; background: #eee; display: block; text-decoration: none; color: #000; padding: 0 5px;}", ""]);
+	exports.push([module.id, ".w-textarea {position: relative;}\n.w-textarea-bar {position: absolute; z-index: 1; border-radius: 2px; top: 2px; right: 12px; font-size: 12px;\n white-space: nowrap; line-height: 1.5; background: #eee;}\n.w-textarea-bar a {display: inline-block; text-decoration: none; color: #000; padding: 0 5px;}\n.w-textarea-bar a:hover {color: #337ab7;}\n\n.w-textarea-input {display: block; position: absolute; background: #fff; border: 1px solid #ccc; border-radius: 2px; z-index: 101; top: 22px; right: 0; display: none; white-space: nowrap;}\n.w-textarea-input input {width: 246px; height: 32px; border: 1px solid #ccc; border-radius: 2px; padding: 0 5px; vertical-align: middle;}\n.w-textarea-input .btn {height: 32px; padding: 0 12px; vertical-align: middle; border-radius: 0; border-right-top-radius: 2px; border-right-bottom-radius: 2px;}", ""]);
 
 	// exports
 
