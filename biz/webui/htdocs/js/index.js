@@ -390,9 +390,13 @@
 			var self = this;
 			var rules = self.state.rules;
 			var data = rules.data;
-			self.state.rulesOptions = rules.list.map(function(name) {
-				return data[name];
+			var selectedList = [];
+			var list = [];
+			rules.list.forEach(function(name) {
+				var item = data[name];
+				item.selected ? selectedList.push(item) : list.push(item);
 			});
+			self.state.rulesOptions = selectedList.concat(list);
 			self.setMenuOptionsState('showRulesOptions', function() {
 				self.refs.rulesMenuItem.getDOMNode().focus();
 			});
