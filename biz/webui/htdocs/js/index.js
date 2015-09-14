@@ -50,11 +50,11 @@
 	var List = __webpack_require__(162);
 	var ListModal = __webpack_require__(229);
 	var Network = __webpack_require__(230);
-	var About = __webpack_require__(266);
-	var Online = __webpack_require__(270);
-	var MenuItem = __webpack_require__(273);
-	var EditorSettings = __webpack_require__(276);
-	var dataCenter = __webpack_require__(260);
+	var About = __webpack_require__(271);
+	var Online = __webpack_require__(275);
+	var MenuItem = __webpack_require__(278);
+	var EditorSettings = __webpack_require__(281);
+	var dataCenter = __webpack_require__(256);
 	var util = __webpack_require__(175);
 	var events = __webpack_require__(231);
 
@@ -31890,14 +31890,19 @@
 				}
 			});
 			self._init();
-			$(elem).find('.CodeMirror').addClass('fill');
+			var codeMirrorElem = $(elem).find('.CodeMirror').addClass('fill');
 			resize();
 			$(window).on('resize', function() {
 				clearTimeout(timeout);
 				timeout = setTimeout(resize, 30);
 			});
 			function resize() {
-				editor.setSize(null, elem.offsetHeight);
+				var height = elem.offsetHeight || 0;
+				if (height < 10) {
+					timeout = setTimeout(resize, 300);
+				} else {
+					editor.setSize(null, height);
+				}
 			}
 		},
 		_init: function() {
@@ -44924,7 +44929,7 @@
 	var Divider = __webpack_require__(176);
 	var ReqData = __webpack_require__(232);
 	var Detail = __webpack_require__(235);
-	var dataCenter = __webpack_require__(260);
+	var dataCenter = __webpack_require__(256);
 
 	var Network = React.createClass({displayName: "Network",
 		shouldComponentUpdate: function(nextProps) {
@@ -45223,10 +45228,10 @@
 	var BtnGroup = __webpack_require__(238);
 	var Overview = __webpack_require__(241);
 	var ReqDetail = __webpack_require__(247);
-	var ResDetail = __webpack_require__(248);
-	var Timeline = __webpack_require__(254);
-	var Composer = __webpack_require__(257);
-	var Log = __webpack_require__(263);
+	var ResDetail = __webpack_require__(259);
+	var Timeline = __webpack_require__(262);
+	var Composer = __webpack_require__(265);
+	var Log = __webpack_require__(268);
 	var TABS = [{
 					name: 'Overview',
 					icon: 'eye-open'
@@ -45682,14 +45687,14 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(279);
+	__webpack_require__(248);
 	var React = __webpack_require__(6);
-	var Table = __webpack_require__(251);
+	var Table = __webpack_require__(250);
 	var Divider = __webpack_require__(176);
 	var Properties = __webpack_require__(244);
 	var util = __webpack_require__(175);
 	var BtnGroup = __webpack_require__(238);
-	var Textarea = __webpack_require__(281);
+	var Textarea = __webpack_require__(253);
 	var BTNS = [{name: 'Headers'}, {name: 'TextView'}, {name: 'Cookies'}, {name: 'WebForms'}, {name: 'Raw'}];
 
 	var ReqDetail = React.createClass({displayName: "ReqDetail",
@@ -45768,122 +45773,10 @@
 /* 248 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(163);
-	__webpack_require__(249);
-	var React = __webpack_require__(6);
-	var Table = __webpack_require__(251);
-	var Properties = __webpack_require__(244);
-	var util = __webpack_require__(175);
-	var BtnGroup = __webpack_require__(238);
-	var Textarea = __webpack_require__(281);
-	var BTNS = [{name: 'Headers'}, {name: 'TextView'}, {name: 'Cookies'}, {name: 'JSON'}, {name: 'Raw'}];
-	var COOKIE_HEADERS = ['Name', 'Value', 'Domain', 'Path', 'Expires', 'Http Only', 'Secure'];
-
-	var ResDetail = React.createClass({displayName: "ResDetail",
-		getInitialState: function() {
-			return {
-				initedHeaders: false,
-				initedTextView: false,
-				initedCookies: false,
-				initedJSON: false,
-				initedRaw: false
-			};
-		},
-		shouldComponentUpdate: function(nextProps) {
-			var hide = util.getBoolean(this.props.hide);
-			return hide != util.getBoolean(nextProps.hide) || !hide;
-		},
-		onClickBtn: function(btn) {
-			this.selectBtn(btn);
-			this.setState({});
-		},
-		selectBtn: function(btn) {
-			btn.active = true;
-			this.state.btn = btn;
-			this.state['inited' + btn.name] = true;
-		},
-		render: function() {
-			var btn = this.state.btn;
-			if (!btn) {
-				btn = BTNS[0];
-				this.selectBtn(btn);
-			}
-			var name = btn && btn.name;
-			var modal = this.props.modal;
-			var res, headers, cookies, body, raw, json;
-			body = raw = json = '';
-			if (modal) {
-				res = modal.res
-				body = res.body || '';
-				headers = res.headers;
-				json = util.stringify(body);
-				if (headers && headers['set-cookie']) {
-					cookies = headers['set-cookie'].map(function(cookie) {
-								cookie = util.parseQueryString(cookie, /;\s*/, null, decodeURIComponent);
-								var row = ['', '', '', '', '', '', ''];
-								for (var i in cookie) {
-									switch(i.toLowerCase()) {
-										case 'domain':
-											row[2] = cookie[i];
-											break;
-										case 'path':
-											row[3] = cookie[i];
-											break;
-										case 'expires':
-										case 'max-age':
-											row[4] = cookie[i];
-											break;
-										case 'httponly':
-											row[5] = '√';
-											break;
-										case 'secure':
-											row[6] = '√';
-											break;
-										default:
-											if (!row[0]) {
-												row[0] = i;
-												row[1] = cookie[i];
-											}
-									}
-								}
-								
-								return row;
-							});
-				}
-				if (res.statusCode != null) {
-					raw = ['HTTP/' + (modal.req.httpVersion || '1.1'), res.statusCode, util.getStatusMessage(res)].join(' ')
-						  + '\r\n' + util.objectToString(headers) + '\r\n\r\n' + body;
-				}
-			}
-			
-			this.state.raw = raw;
-			this.state.body = body;
-			
-			return (
-				React.createElement("div", {className: 'fill orient-vertical-box w-detail-content w-detail-response' 
-					+ (util.getBoolean(this.props.hide) ? ' hide' : '')}, 
-					React.createElement(BtnGroup, {onClick: this.onClickBtn, btns: BTNS}), 
-					this.state.initedHeaders ? React.createElement("div", {className: 'fill w-detail-response-headers' + (name == BTNS[0].name ? '' : ' hide')}, React.createElement(Properties, {modal: headers})) : '', 
-					this.state.initedTextView ? React.createElement(Textarea, {value: body, className: "fill w-detail-response-textview", hide: name != BTNS[1].name}) : '', 
-					this.state.initedCookies ? React.createElement("div", {className: 'fill w-detail-response-cookies' + (name == BTNS[2].name ? '' : ' hide')}, React.createElement(Table, {head: COOKIE_HEADERS, modal: cookies})) : '', 
-					this.state.initedJSON ? React.createElement(Textarea, {value: json, className: "fill w-detail-response-json", hide: name != BTNS[3].name}) : '', 
-					this.state.initedRaw ? React.createElement(Textarea, {value: raw, className: "fill w-detail-response-raw", hide: name != BTNS[4].name}) : ''
-				)
-			);
-		}
-	});
-
-	module.exports = ResDetail;
-
-
-/***/ },
-/* 249 */
-/***/ function(module, exports, __webpack_require__) {
-
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(250);
+	var content = __webpack_require__(249);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -45892,8 +45785,8 @@
 	if(false) {
 		// When the styles change, update the <style> tags
 		if(!content.locals) {
-			module.hot.accept("!!./../node_modules/css-loader/index.js!./res-detail.css", function() {
-				var newContent = require("!!./../node_modules/css-loader/index.js!./res-detail.css");
+			module.hot.accept("!!./../node_modules/css-loader/index.js!./req-detail.css", function() {
+				var newContent = require("!!./../node_modules/css-loader/index.js!./req-detail.css");
 				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 				update(newContent);
 			});
@@ -45903,7 +45796,7 @@
 	}
 
 /***/ },
-/* 250 */
+/* 249 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -45911,17 +45804,17 @@
 
 
 	// module
-	exports.push([module.id, ".w-detail-response textarea {padding: 5px; border: none;}\n.w-detail-response-headers, .w-detail-response-cookies {overflow: auto;}\n", ""]);
+	exports.push([module.id, ".w-detail-request textarea {padding: 5px; border: none;}\n.w-detail-request-headers, .w-detail-request-cookies, .w-detail-request-query, w-detail-request-form, .w-detail-request-form {overflow: auto;}\n", ""]);
 
 	// exports
 
 
 /***/ },
-/* 251 */
+/* 250 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(252);
+	__webpack_require__(251);
 	var React = __webpack_require__(6);
 
 	var Table = React.createClass({displayName: "Table",
@@ -45965,13 +45858,13 @@
 	module.exports = Table;
 
 /***/ },
-/* 252 */
+/* 251 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(253);
+	var content = __webpack_require__(252);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -45991,7 +45884,7 @@
 	}
 
 /***/ },
-/* 253 */
+/* 252 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -46005,294 +45898,170 @@
 
 
 /***/ },
-/* 254 */
+/* 253 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(163);
-	__webpack_require__(255);
+	__webpack_require__(254);
 	var React = __webpack_require__(6);
 	var util = __webpack_require__(175);
-	var TOTAL_RATE = 80;
+	var dataCenter = __webpack_require__(256);
+	var MAX_LENGTH =1024 * 100;
 
-	var Timeline = React.createClass({displayName: "Timeline",
+	var Textarea = React.createClass({displayName: "Textarea",
+		getInitialState: function() {
+			return {};
+		},
+		componentDidMount: function() {
+			this.updateValue();
+		},
+		componentDidUpdate: function() {
+			this.updateValue();
+		},
 		shouldComponentUpdate: function(nextProps) {
 			var hide = util.getBoolean(this.props.hide);
-			return hide != util.getBoolean(nextProps.hide) || !hide;
+			return hide != util.getBoolean(nextProps.hide) || (!hide && this.props.value != nextProps.value);
+		},
+		preventBlur: function(e) {
+			e.target.nodeName != 'INPUT' && e.preventDefault();
+		},
+		edit: function() {
+			var self = this;
+			var win = window.open('/editor.html');
+			win.getValue = function() {
+				return self.props.value;
+			};
+			if (win.setValue) {
+				win.setValue(self.props.value);
+			}
+		},
+		showAddToValues: function() {
+			var self = this;
+			self.state.showAddToValues = true;
+			self.forceUpdate(function() {
+				self.refs.valuesNameInput.getDOMNode().focus();
+			});
+		},
+		addToValues: function(e) {
+			if (e.keyCode != 13 && e.type != 'click') {
+				return;
+			}
+			var modal = dataCenter.valuesModal;
+			if (!modal) {
+				return;
+			}
+			var target = this.refs.valuesNameInput.getDOMNode();
+			var name = target.value.trim();
+			if (!name) {
+				alert('Value name can not be empty.');
+				return;
+			}
+			
+			if (/\s/.test(name)) {
+				alert('Name can not have spaces.');
+				return;
+			}
+			
+			if (modal.exists(name)) {
+				alert('Value name \'' + name + '\' already exists.');
+				return;
+			}
+			
+			var value = (this.props.value || '').replace(/\r\n|\r/g, '\n');
+			dataCenter.values.add({name: name, value: value}, function(data) {
+				if (data && data.ec === 0) {
+					modal.add(name, value);
+					target.value = '';
+					target.blur();
+				} else {
+					util.showSystemError();
+				}
+			});
+		},
+		hideAddValuesInput: function() {
+			this.state.showAddToValues = false;
+			this.forceUpdate();
+		},
+		updateValue: function() {
+			var self = this;
+			clearTimeout(self._timeout);
+			var value = self.state.value;
+			self._timeout = setTimeout(function() {
+				self.refs.textarea.getDOMNode().value = value;
+			}, Math.ceil((value && value.length || 0) / 1024));
 		},
 		render: function() {
-			var modal = this.props.modal;
-			var list = modal && modal.getSelectedList() || [];
-			var maxTotal = 1;
-			var startTime;
+			var value = this.props.value || '';
+			var exceed = value.length - MAX_LENGTH;
+			var showAddToValuesBtn = /[^\s]/.test(value);
+			if (exceed > 512) {
+				showAddToValuesBtn = false;
+				value = value.substring(0, MAX_LENGTH) + '...\r\n\r\n(' + exceed + ' characters left, you can click on the Edit button in the upper right corner to view all)\r\n';
+			}
 			
-			list.forEach(function(item) {
-				if (!startTime || item.startTime < startTime) {
-					startTime = item.startTime;
-				}
-				
-			});
-			
-			list.forEach(function(item) {
-				var total = (item.endTime || item.responseTime || item.requestTime || item.dnsTime) - startTime;
-				if (total > maxTotal) {
-					maxTotal = total;
-				}
-			});
-			
+			this.state.value = value;
+			var displayClass = value ? '' : ' hide';
 			return (
-					React.createElement("div", {className: 'fill orient-vertical-box w-detail-content w-detail-timeline' + (util.getBoolean(this.props.hide) ? ' hide' : '')}, 
-						React.createElement("ul", null, 
-							list.map(function(item) {
-								var stalled = item.startTime - startTime;
-								var stalled, stalledRate, dns, dnsRate, request, requestRate, response, responseRate, load, loadRate;
-								if (item.dnsTime) {
-									stalled = item.startTime - startTime;
-									stalledRate = stalled * TOTAL_RATE / maxTotal + '%';
-									stalled += 'ms';
-								} else {
-									stalled = '-';
-									stalledRate = 0;
-								}
-								
-								if (item.dnsTime) {
-									dns = item.dnsTime - item.startTime;
-									dnsRate = dns * TOTAL_RATE / maxTotal + '%';
-									dns += 'ms';
-								} else {
-									dns = '-';
-									dnsRate = 0;
-								}
-								
-								if (item.requestTime) {
-									request = item.requestTime - item.dnsTime;
-									requestRate = request * TOTAL_RATE / maxTotal + '%';
-									request += 'ms';
-								} else {
-									request = '-';
-									requestRate = 0;
-								}
-								
-								if (item.responseTime) {
-									response = item.responseTime - item.requestTime;
-									responseRate = response * TOTAL_RATE / maxTotal + '%';
-									response += 'ms';
-								} else {
-									response = '-';
-									responseRate = 0;
-								}
-								
-								if (item.endTime) {
-									load = item.endTime - item.responseTime;
-									loadRate = load * TOTAL_RATE / maxTotal + '%';
-									load += 'ms';
-								} else {
-									load = '-';
-									loadRate = 0;
-								}
-								
-								var total = item.endTime ? item.endTime - item.startTime + 'ms' : '-';
-								var title = 'Stalled: ' + stalled + '\nDNS: ' + dns + '\nRequest: ' + 
-								request + '\nResponse: ' + response + '\nLoad: ' + load + '\nTotal: ' + total;
-								
-								return (
-										React.createElement("li", {key: item.id, title: title}, 
-											React.createElement("span", {title: item.url, className: "w-detail-timeline-url"}, util.getFilename(item.url)), 	
-											React.createElement("span", {style: {width: stalledRate}, className: "w-detail-timeline-stalled"}), 
-											React.createElement("span", {style: {width: dnsRate}, className: "w-detail-timeline-dns"}), 
-											React.createElement("span", {style: {width: requestRate}, className: "w-detail-timeline-request"}, " "), 
-											React.createElement("span", {style: {width: responseRate}, className: "w-detail-timeline-response"}, " "), 
-											React.createElement("span", {style: {width: loadRate}, className: "w-detail-timeline-load"}, " "), 
-											React.createElement("span", {title: title, className: "w-detail-timeline-time"}, total)
-										)		
-								);
-							})
-						)
+					React.createElement("div", {className: 'fill orient-vertical-box w-textarea' + (this.props.hide ? ' hide' : '')}, 
+						React.createElement("div", {className: "w-textarea-bar"}, 
+							showAddToValuesBtn ? React.createElement("a", {className: 'w-add' + displayClass, onClick: this.showAddToValues, href: "javascript:;"}, "AddToValues") : '', 	
+							React.createElement("a", {className: 'w-edit' + displayClass, onClick: this.edit, href: "javascript:;"}, "Edit"), 
+							React.createElement("div", {onMouseDown: this.preventBlur, style: {display: this.state.showAddToValues ? 'block' : 'none'}, className: "shadow w-textarea-input"}, React.createElement("input", {ref: "valuesNameInput", onKeyDown: this.addToValues, onBlur: this.hideAddValuesInput, type: "text", maxLength: "64", placeholder: "name"}), React.createElement("button", {type: "button", onClick: this.addToValues, className: "btn btn-primary"}, "OK"))
+						), 
+						React.createElement("textarea", {ref: "textarea", onKeyDown: util.preventDefault, readOnly: "readonly", className: this.props.className || ''})
 					)
 			);
 		}
 	});
 
-	module.exports = Timeline;
+	module.exports = Textarea;
+
+/***/ },
+/* 254 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(255);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(4)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../node_modules/css-loader/index.js!./textarea.css", function() {
+				var newContent = require("!!./../node_modules/css-loader/index.js!./textarea.css");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
 
 /***/ },
 /* 255 */
 /***/ function(module, exports, __webpack_require__) {
 
-	// style-loader: Adds some css to the DOM by adding a <style> tag
+	exports = module.exports = __webpack_require__(3)();
+	// imports
 
-	// load the styles
-	var content = __webpack_require__(256);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(4)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../node_modules/css-loader/index.js!./timeline.css", function() {
-				var newContent = require("!!./../node_modules/css-loader/index.js!./timeline.css");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
+
+	// module
+	exports.push([module.id, ".w-textarea {position: relative;}\n.w-textarea-bar {position: absolute; z-index: 1; border-radius: 2px; top: 2px; right: 12px; font-size: 12px;\n white-space: nowrap; line-height: 1.5; background: #eee;}\n.w-textarea-bar a {display: inline-block; text-decoration: none; color: #000; padding: 0 5px;}\n.w-textarea-bar a:hover {color: #337ab7;}\n\n.w-textarea-input {display: block; position: absolute; background: #fff; border: 1px solid #ccc; border-radius: 2px; z-index: 101; top: 22px; right: 0; display: none; white-space: nowrap;}\n.w-textarea-input input {width: 246px; height: 32px; border: 1px solid #ccc; border-radius: 2px; padding: 0 5px; vertical-align: middle;}\n.w-textarea-input .btn {height: 32px; padding: 0 12px; vertical-align: middle; border-radius: 0; border-right-top-radius: 2px; border-right-bottom-radius: 2px;}", ""]);
+
+	// exports
+
 
 /***/ },
 /* 256 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(3)();
-	// imports
-
-
-	// module
-	exports.push([module.id, ".w-detail-timeline ul, .w-detail-timeline li {list-style: none; margin: 0; padding: 0; white-space: nowrap; font-size: 0; width: 100%; display: block;}\n.w-detail-timeline li {padding: 2px 0 2px; position: relative; white-space: nowrap;}\n.w-detail-timeline  span {display: inline-block; font-size: 12px; height: 20px; line-height: 20px; overflow: hidden; text-overflow: ellipsis; cursor: default;}\n.w-detail-timeline-url {padding-right: 5px; width: 20%; text-align: right;}\n.w-detail-timeline-stalled {background: #eee;}\n.w-detail-timeline-dns {background: #8cd2c6;}\n.w-detail-timeline-request {background: #fdfdb2;}\n.w-detail-timeline-response {background: #fbb361;}\n.w-detail-timeline-load {background: #7eabe1;}\n.w-detail-timeline-time {position: absolute; top: 2px; right: 0; padding-right: 5px;}\n", ""]);
-
-	// exports
-
-
-/***/ },
-/* 257 */
-/***/ function(module, exports, __webpack_require__) {
-
-	__webpack_require__(163);
-	__webpack_require__(258);
-	var React = __webpack_require__(6);
-	var dataCenter = __webpack_require__(260);
-	var util = __webpack_require__(175);
-	var events = __webpack_require__(231);
-	var Divider = __webpack_require__(176);
-
-	var Composer = React.createClass({displayName: "Composer",
-		componentDidMount: function() {
-			var self = this;
-			self.update(self.props.modal);
-			events.on('setComposer', function() {
-				var activeItem = self.props.modal;
-				activeItem && self.setState({
-					data: activeItem
-				}, function() {
-					self.update(activeItem);
-				});
-			});
-		},
-		update: function(item) {
-			if (!item) {
-				return;
-			}
-			var refs = this.refs;
-			var req = item.req;
-			refs.url.getDOMNode().value = item.url;
-			refs.method.getDOMNode().value = req.method;
-			refs.headers.getDOMNode().value = util.objectToString(req.headers);
-			refs.body.getDOMNode().value = req.body || '';
-		},
-		shouldComponentUpdate: function(nextProps) {
-			var hide = util.getBoolean(this.props.hide);
-			return hide != util.getBoolean(nextProps.hide) || !hide;
-		},
-		execute: function() {
-			var refs = this.refs;
-			var url = refs.url.getDOMNode().value.trim();
-			if (!url) {
-				return;
-			}
-			
-			dataCenter.composer({
-				url: url,
-				headers: refs.headers.getDOMNode().value,
-				method: refs.method.getDOMNode().value || 'GET',
-				body: refs.body.getDOMNode().value
-			});
-			events.trigger('executeComposer');
-		},
-		render: function() {
-			
-			return (
-				React.createElement("div", {className: 'fill orient-vertical-box w-detail-content w-detail-composer' + (util.getBoolean(this.props.hide) ? ' hide' : '')}, 
-					React.createElement("div", {className: "w-composer-url box"}, 
-						React.createElement("input", {ref: "url", type: "text", maxLength: "8192", placeholder: "url", className: "fill w-composer-input"}), 
-						React.createElement("select", {ref: "method", className: "form-control w-composer-method"}, 
-			          		React.createElement("option", {value: "GET"}, "GET"), 
-			          		React.createElement("option", {value: "POST"}, "POST"), 
-			          		React.createElement("option", {value: "PUT"}, "PUT"), 
-			          		React.createElement("option", {value: "HEAD"}, "HEAD"), 
-			          		React.createElement("option", {value: "TRACE"}, "TRACE"), 
-			          		React.createElement("option", {value: "DELETE"}, "DELETE"), 
-			          		React.createElement("option", {value: "SEARCH"}, "SEARCH"), 
-			          		React.createElement("option", {value: "CONNECT"}, "CONNECT"), 
-			          		React.createElement("option", {value: "PROPFIND"}, "PROPFIND"), 
-			          		React.createElement("option", {value: "PROPPATCH"}, "PROPPATCH"), 
-			          		React.createElement("option", {value: "MKCOL"}, "MKCOL"), 
-			          		React.createElement("option", {value: "COPY"}, "COPY"), 
-			          		React.createElement("option", {value: "MOVE"}, "MOVE"), 
-			          		React.createElement("option", {value: "LOCK"}, "LOCK"), 
-			          		React.createElement("option", {value: "UNLOCK"}, "UNLOCK"), 
-			          		React.createElement("option", {value: "OPTIONS"}, "OPTIONS")
-			          	), 
-						React.createElement("button", {onClick: this.execute, className: "btn btn-primary w-composer-execute"}, "Execute")
-					), 
-					React.createElement(Divider, {vertical: "true"}, 
-						React.createElement("textarea", {ref: "headers", className: "fill w-composer-headers", placeholder: "headers"}), 
-						React.createElement("textarea", {ref: "body", className: "fill w-composer-body", placeholder: "body"})
-					)
-				)
-			);
-		}
-	});
-
-	module.exports = Composer;
-
-/***/ },
-/* 258 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-
-	// load the styles
-	var content = __webpack_require__(259);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(4)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../node_modules/css-loader/index.js!./composer.css", function() {
-				var newContent = require("!!./../node_modules/css-loader/index.js!./composer.css");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
-/* 259 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(3)();
-	// imports
-
-
-	// module
-	exports.push([module.id, ".w-detail-composer {overflow-x: hidden; overflow-y: auto;}\n.w-detail-composer textarea {display: block; width: 100%; resize: none; border: none; padding: 5px;}\n.w-composer-url {padding: 5px 3px 5px 0; border-bottom: 1px solid #ccc;}\n.w-composer-input, .w-composer-method, .w-composer-execute {height: 26px;}\n.w-composer-input {padding: 0 5px; display: block; border: 1px solid #ccc; margin-left: 2px;}\n.w-composer-method {display: block; width: 118px; margin: 0 2px;}\n.w-composer-execute {padding: 0 6px; line-height: 24px;}\n.w-composer-headers {}", ""]);
-
-	// exports
-
-
-/***/ },
-/* 260 */
-/***/ function(module, exports, __webpack_require__) {
-
 	var $ = __webpack_require__(5);
-	var createCgi = __webpack_require__(261);
-	var NetworkModal = __webpack_require__(262);
+	var createCgi = __webpack_require__(257);
+	var NetworkModal = __webpack_require__(258);
 	var	MAX_COUNT = NetworkModal.MAX_COUNT;
 	var TIMEOUT = 10000;
 	var dataCallbacks = [];
@@ -46535,7 +46304,7 @@
 
 
 /***/ },
-/* 261 */
+/* 257 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var $ = __webpack_require__(5);
@@ -46603,7 +46372,7 @@
 	module.exports = create;
 
 /***/ },
-/* 262 */
+/* 258 */
 /***/ function(module, exports) {
 
 	var MAX_LENGTH = 360;
@@ -46870,15 +46639,449 @@
 
 
 /***/ },
-/* 263 */
+/* 259 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(264);
+	__webpack_require__(260);
+	var React = __webpack_require__(6);
+	var Table = __webpack_require__(250);
+	var Properties = __webpack_require__(244);
+	var util = __webpack_require__(175);
+	var BtnGroup = __webpack_require__(238);
+	var Textarea = __webpack_require__(253);
+	var BTNS = [{name: 'Headers'}, {name: 'TextView'}, {name: 'Cookies'}, {name: 'JSON'}, {name: 'Raw'}];
+	var COOKIE_HEADERS = ['Name', 'Value', 'Domain', 'Path', 'Expires', 'Http Only', 'Secure'];
+
+	var ResDetail = React.createClass({displayName: "ResDetail",
+		getInitialState: function() {
+			return {
+				initedHeaders: false,
+				initedTextView: false,
+				initedCookies: false,
+				initedJSON: false,
+				initedRaw: false
+			};
+		},
+		shouldComponentUpdate: function(nextProps) {
+			var hide = util.getBoolean(this.props.hide);
+			return hide != util.getBoolean(nextProps.hide) || !hide;
+		},
+		onClickBtn: function(btn) {
+			this.selectBtn(btn);
+			this.setState({});
+		},
+		selectBtn: function(btn) {
+			btn.active = true;
+			this.state.btn = btn;
+			this.state['inited' + btn.name] = true;
+		},
+		render: function() {
+			var btn = this.state.btn;
+			if (!btn) {
+				btn = BTNS[0];
+				this.selectBtn(btn);
+			}
+			var name = btn && btn.name;
+			var modal = this.props.modal;
+			var res, headers, cookies, body, raw, json;
+			body = raw = json = '';
+			if (modal) {
+				res = modal.res
+				body = res.body || '';
+				headers = res.headers;
+				json = util.stringify(body);
+				if (headers && headers['set-cookie']) {
+					cookies = headers['set-cookie'].map(function(cookie) {
+								cookie = util.parseQueryString(cookie, /;\s*/, null, decodeURIComponent);
+								var row = ['', '', '', '', '', '', ''];
+								for (var i in cookie) {
+									switch(i.toLowerCase()) {
+										case 'domain':
+											row[2] = cookie[i];
+											break;
+										case 'path':
+											row[3] = cookie[i];
+											break;
+										case 'expires':
+										case 'max-age':
+											row[4] = cookie[i];
+											break;
+										case 'httponly':
+											row[5] = '√';
+											break;
+										case 'secure':
+											row[6] = '√';
+											break;
+										default:
+											if (!row[0]) {
+												row[0] = i;
+												row[1] = cookie[i];
+											}
+									}
+								}
+								
+								return row;
+							});
+				}
+				if (res.statusCode != null) {
+					raw = ['HTTP/' + (modal.req.httpVersion || '1.1'), res.statusCode, util.getStatusMessage(res)].join(' ')
+						  + '\r\n' + util.objectToString(headers) + '\r\n\r\n' + body;
+				}
+			}
+			
+			this.state.raw = raw;
+			this.state.body = body;
+			
+			return (
+				React.createElement("div", {className: 'fill orient-vertical-box w-detail-content w-detail-response' 
+					+ (util.getBoolean(this.props.hide) ? ' hide' : '')}, 
+					React.createElement(BtnGroup, {onClick: this.onClickBtn, btns: BTNS}), 
+					this.state.initedHeaders ? React.createElement("div", {className: 'fill w-detail-response-headers' + (name == BTNS[0].name ? '' : ' hide')}, React.createElement(Properties, {modal: headers})) : '', 
+					this.state.initedTextView ? React.createElement(Textarea, {value: body, className: "fill w-detail-response-textview", hide: name != BTNS[1].name}) : '', 
+					this.state.initedCookies ? React.createElement("div", {className: 'fill w-detail-response-cookies' + (name == BTNS[2].name ? '' : ' hide')}, React.createElement(Table, {head: COOKIE_HEADERS, modal: cookies})) : '', 
+					this.state.initedJSON ? React.createElement(Textarea, {value: json, className: "fill w-detail-response-json", hide: name != BTNS[3].name}) : '', 
+					this.state.initedRaw ? React.createElement(Textarea, {value: raw, className: "fill w-detail-response-raw", hide: name != BTNS[4].name}) : ''
+				)
+			);
+		}
+	});
+
+	module.exports = ResDetail;
+
+
+/***/ },
+/* 260 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(261);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(4)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../node_modules/css-loader/index.js!./res-detail.css", function() {
+				var newContent = require("!!./../node_modules/css-loader/index.js!./res-detail.css");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 261 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(3)();
+	// imports
+
+
+	// module
+	exports.push([module.id, ".w-detail-response textarea {padding: 5px; border: none;}\n.w-detail-response-headers, .w-detail-response-cookies {overflow: auto;}\n", ""]);
+
+	// exports
+
+
+/***/ },
+/* 262 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(163);
+	__webpack_require__(263);
+	var React = __webpack_require__(6);
+	var util = __webpack_require__(175);
+	var TOTAL_RATE = 80;
+
+	var Timeline = React.createClass({displayName: "Timeline",
+		shouldComponentUpdate: function(nextProps) {
+			var hide = util.getBoolean(this.props.hide);
+			return hide != util.getBoolean(nextProps.hide) || !hide;
+		},
+		render: function() {
+			var modal = this.props.modal;
+			var list = modal && modal.getSelectedList() || [];
+			var maxTotal = 1;
+			var startTime;
+			
+			list.forEach(function(item) {
+				if (!startTime || item.startTime < startTime) {
+					startTime = item.startTime;
+				}
+				
+			});
+			
+			list.forEach(function(item) {
+				var total = (item.endTime || item.responseTime || item.requestTime || item.dnsTime) - startTime;
+				if (total > maxTotal) {
+					maxTotal = total;
+				}
+			});
+			
+			return (
+					React.createElement("div", {className: 'fill orient-vertical-box w-detail-content w-detail-timeline' + (util.getBoolean(this.props.hide) ? ' hide' : '')}, 
+						React.createElement("ul", null, 
+							list.map(function(item) {
+								var stalled = item.startTime - startTime;
+								var stalled, stalledRate, dns, dnsRate, request, requestRate, response, responseRate, load, loadRate;
+								if (item.dnsTime) {
+									stalled = item.startTime - startTime;
+									stalledRate = stalled * TOTAL_RATE / maxTotal + '%';
+									stalled += 'ms';
+								} else {
+									stalled = '-';
+									stalledRate = 0;
+								}
+								
+								if (item.dnsTime) {
+									dns = item.dnsTime - item.startTime;
+									dnsRate = dns * TOTAL_RATE / maxTotal + '%';
+									dns += 'ms';
+								} else {
+									dns = '-';
+									dnsRate = 0;
+								}
+								
+								if (item.requestTime) {
+									request = item.requestTime - item.dnsTime;
+									requestRate = request * TOTAL_RATE / maxTotal + '%';
+									request += 'ms';
+								} else {
+									request = '-';
+									requestRate = 0;
+								}
+								
+								if (item.responseTime) {
+									response = item.responseTime - item.requestTime;
+									responseRate = response * TOTAL_RATE / maxTotal + '%';
+									response += 'ms';
+								} else {
+									response = '-';
+									responseRate = 0;
+								}
+								
+								if (item.endTime) {
+									load = item.endTime - item.responseTime;
+									loadRate = load * TOTAL_RATE / maxTotal + '%';
+									load += 'ms';
+								} else {
+									load = '-';
+									loadRate = 0;
+								}
+								
+								var total = item.endTime ? item.endTime - item.startTime + 'ms' : '-';
+								var title = 'Stalled: ' + stalled + '\nDNS: ' + dns + '\nRequest: ' + 
+								request + '\nResponse: ' + response + '\nLoad: ' + load + '\nTotal: ' + total;
+								
+								return (
+										React.createElement("li", {key: item.id, title: title}, 
+											React.createElement("span", {title: item.url, className: "w-detail-timeline-url"}, util.getFilename(item.url)), 	
+											React.createElement("span", {style: {width: stalledRate}, className: "w-detail-timeline-stalled"}), 
+											React.createElement("span", {style: {width: dnsRate}, className: "w-detail-timeline-dns"}), 
+											React.createElement("span", {style: {width: requestRate}, className: "w-detail-timeline-request"}, " "), 
+											React.createElement("span", {style: {width: responseRate}, className: "w-detail-timeline-response"}, " "), 
+											React.createElement("span", {style: {width: loadRate}, className: "w-detail-timeline-load"}, " "), 
+											React.createElement("span", {title: title, className: "w-detail-timeline-time"}, total)
+										)		
+								);
+							})
+						)
+					)
+			);
+		}
+	});
+
+	module.exports = Timeline;
+
+/***/ },
+/* 263 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(264);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(4)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../node_modules/css-loader/index.js!./timeline.css", function() {
+				var newContent = require("!!./../node_modules/css-loader/index.js!./timeline.css");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 264 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(3)();
+	// imports
+
+
+	// module
+	exports.push([module.id, ".w-detail-timeline ul, .w-detail-timeline li {list-style: none; margin: 0; padding: 0; white-space: nowrap; font-size: 0; width: 100%; display: block;}\n.w-detail-timeline li {padding: 2px 0 2px; position: relative; white-space: nowrap;}\n.w-detail-timeline  span {display: inline-block; font-size: 12px; height: 20px; line-height: 20px; overflow: hidden; text-overflow: ellipsis; cursor: default;}\n.w-detail-timeline-url {padding-right: 5px; width: 20%; text-align: right;}\n.w-detail-timeline-stalled {background: #eee;}\n.w-detail-timeline-dns {background: #8cd2c6;}\n.w-detail-timeline-request {background: #fdfdb2;}\n.w-detail-timeline-response {background: #fbb361;}\n.w-detail-timeline-load {background: #7eabe1;}\n.w-detail-timeline-time {position: absolute; top: 2px; right: 0; padding-right: 5px;}\n", ""]);
+
+	// exports
+
+
+/***/ },
+/* 265 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(163);
+	__webpack_require__(266);
+	var React = __webpack_require__(6);
+	var dataCenter = __webpack_require__(256);
+	var util = __webpack_require__(175);
+	var events = __webpack_require__(231);
+	var Divider = __webpack_require__(176);
+
+	var Composer = React.createClass({displayName: "Composer",
+		componentDidMount: function() {
+			var self = this;
+			self.update(self.props.modal);
+			events.on('setComposer', function() {
+				var activeItem = self.props.modal;
+				activeItem && self.setState({
+					data: activeItem
+				}, function() {
+					self.update(activeItem);
+				});
+			});
+		},
+		update: function(item) {
+			if (!item) {
+				return;
+			}
+			var refs = this.refs;
+			var req = item.req;
+			refs.url.getDOMNode().value = item.url;
+			refs.method.getDOMNode().value = req.method;
+			refs.headers.getDOMNode().value = util.objectToString(req.headers);
+			refs.body.getDOMNode().value = req.body || '';
+		},
+		shouldComponentUpdate: function(nextProps) {
+			var hide = util.getBoolean(this.props.hide);
+			return hide != util.getBoolean(nextProps.hide) || !hide;
+		},
+		execute: function() {
+			var refs = this.refs;
+			var url = refs.url.getDOMNode().value.trim();
+			if (!url) {
+				return;
+			}
+			
+			dataCenter.composer({
+				url: url,
+				headers: refs.headers.getDOMNode().value,
+				method: refs.method.getDOMNode().value || 'GET',
+				body: refs.body.getDOMNode().value
+			});
+			events.trigger('executeComposer');
+		},
+		render: function() {
+			
+			return (
+				React.createElement("div", {className: 'fill orient-vertical-box w-detail-content w-detail-composer' + (util.getBoolean(this.props.hide) ? ' hide' : '')}, 
+					React.createElement("div", {className: "w-composer-url box"}, 
+						React.createElement("input", {ref: "url", type: "text", maxLength: "8192", placeholder: "url", className: "fill w-composer-input"}), 
+						React.createElement("select", {ref: "method", className: "form-control w-composer-method"}, 
+			          		React.createElement("option", {value: "GET"}, "GET"), 
+			          		React.createElement("option", {value: "POST"}, "POST"), 
+			          		React.createElement("option", {value: "PUT"}, "PUT"), 
+			          		React.createElement("option", {value: "HEAD"}, "HEAD"), 
+			          		React.createElement("option", {value: "TRACE"}, "TRACE"), 
+			          		React.createElement("option", {value: "DELETE"}, "DELETE"), 
+			          		React.createElement("option", {value: "SEARCH"}, "SEARCH"), 
+			          		React.createElement("option", {value: "CONNECT"}, "CONNECT"), 
+			          		React.createElement("option", {value: "PROPFIND"}, "PROPFIND"), 
+			          		React.createElement("option", {value: "PROPPATCH"}, "PROPPATCH"), 
+			          		React.createElement("option", {value: "MKCOL"}, "MKCOL"), 
+			          		React.createElement("option", {value: "COPY"}, "COPY"), 
+			          		React.createElement("option", {value: "MOVE"}, "MOVE"), 
+			          		React.createElement("option", {value: "LOCK"}, "LOCK"), 
+			          		React.createElement("option", {value: "UNLOCK"}, "UNLOCK"), 
+			          		React.createElement("option", {value: "OPTIONS"}, "OPTIONS")
+			          	), 
+						React.createElement("button", {onClick: this.execute, className: "btn btn-primary w-composer-execute"}, "Execute")
+					), 
+					React.createElement(Divider, {vertical: "true"}, 
+						React.createElement("textarea", {ref: "headers", className: "fill w-composer-headers", placeholder: "headers"}), 
+						React.createElement("textarea", {ref: "body", className: "fill w-composer-body", placeholder: "body"})
+					)
+				)
+			);
+		}
+	});
+
+	module.exports = Composer;
+
+/***/ },
+/* 266 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(267);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(4)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../node_modules/css-loader/index.js!./composer.css", function() {
+				var newContent = require("!!./../node_modules/css-loader/index.js!./composer.css");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 267 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(3)();
+	// imports
+
+
+	// module
+	exports.push([module.id, ".w-detail-composer {overflow-x: hidden; overflow-y: auto;}\n.w-detail-composer textarea {display: block; width: 100%; resize: none; border: none; padding: 5px;}\n.w-composer-url {padding: 5px 3px 5px 0; border-bottom: 1px solid #ccc;}\n.w-composer-input, .w-composer-method, .w-composer-execute {height: 26px;}\n.w-composer-input {padding: 0 5px; display: block; border: 1px solid #ccc; margin-left: 2px;}\n.w-composer-method {display: block; width: 118px; margin: 0 2px;}\n.w-composer-execute {padding: 0 6px; line-height: 24px;}\n.w-composer-headers {}", ""]);
+
+	// exports
+
+
+/***/ },
+/* 268 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(163);
+	__webpack_require__(269);
 	var $ = __webpack_require__(5);
 	var React = __webpack_require__(6);
 	var util = __webpack_require__(175);
-	var dataCenter = __webpack_require__(260);
+	var dataCenter = __webpack_require__(256);
 
 	var Log = React.createClass({displayName: "Log",
 		componentDidMount: function() {
@@ -46960,13 +47163,13 @@
 	module.exports = Log;
 
 /***/ },
-/* 264 */
+/* 269 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(265);
+	var content = __webpack_require__(270);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -46986,7 +47189,7 @@
 	}
 
 /***/ },
-/* 265 */
+/* 270 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -47000,15 +47203,15 @@
 
 
 /***/ },
-/* 266 */
+/* 271 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(267);
+	__webpack_require__(272);
 	var $ = window.jQuery = __webpack_require__(5); //for bootstrap
-	__webpack_require__(269);
+	__webpack_require__(274);
 	var React = __webpack_require__(6);
-	var dataCenter = __webpack_require__(260);
+	var dataCenter = __webpack_require__(256);
 	var dialog;
 
 	function createDialog(data) {
@@ -47060,13 +47263,13 @@
 	module.exports = About;
 
 /***/ },
-/* 267 */
+/* 272 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(268);
+	var content = __webpack_require__(273);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -47086,7 +47289,7 @@
 	}
 
 /***/ },
-/* 268 */
+/* 273 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -47100,7 +47303,7 @@
 
 
 /***/ },
-/* 269 */
+/* 274 */
 /***/ function(module, exports) {
 
 	/*!
@@ -49469,15 +49672,15 @@
 
 
 /***/ },
-/* 270 */
+/* 275 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(271);
+	__webpack_require__(276);
 	var $ = window.jQuery = __webpack_require__(5); //for bootstrap
-	__webpack_require__(269);
+	__webpack_require__(274);
 	var React = __webpack_require__(6);
-	var dataCenter = __webpack_require__(260);
+	var dataCenter = __webpack_require__(256);
 	var dialog;
 
 	function createDialog() {
@@ -49602,13 +49805,13 @@
 	module.exports = Online;
 
 /***/ },
-/* 271 */
+/* 276 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(272);
+	var content = __webpack_require__(277);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -49628,7 +49831,7 @@
 	}
 
 /***/ },
-/* 272 */
+/* 277 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -49642,11 +49845,11 @@
 
 
 /***/ },
-/* 273 */
+/* 278 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(274);
+	__webpack_require__(279);
 	var React = __webpack_require__(6);
 	var util = __webpack_require__(175);
 
@@ -49692,13 +49895,13 @@
 
 
 /***/ },
-/* 274 */
+/* 279 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(275);
+	var content = __webpack_require__(280);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -49718,7 +49921,7 @@
 	}
 
 /***/ },
-/* 275 */
+/* 280 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -49732,11 +49935,11 @@
 
 
 /***/ },
-/* 276 */
+/* 281 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(163);
-	__webpack_require__(277);
+	__webpack_require__(282);
 	var React = __webpack_require__(6);
 
 	var EditorSettings = React.createClass({displayName: "EditorSettings",
@@ -49797,13 +50000,13 @@
 	module.exports = EditorSettings;
 
 /***/ },
-/* 277 */
+/* 282 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(278);
+	var content = __webpack_require__(283);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(4)(content, {});
@@ -49823,204 +50026,6 @@
 	}
 
 /***/ },
-/* 278 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(3)();
-	// imports
-
-
-	// module
-	exports.push([module.id, ".w-editor-settings label, .w-editor-settings-box label {font-weight: normal; white-space: nowrap;}\n.w-editor-settings label .w-label {display: inline-block; width: 60px; text-align: right;}\n.w-editor-settings select {width: 186px;}\n.w-editor-settings-box {padding-left: 65px; margin: 5px;}\n.w-editor-settings .form-control {display: inline-block; margin-left: 5px;}\n.w-editor-settings p {margin: 5px;}", ""]);
-
-	// exports
-
-
-/***/ },
-/* 279 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-
-	// load the styles
-	var content = __webpack_require__(280);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(4)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../node_modules/css-loader/index.js!./req-detail.css", function() {
-				var newContent = require("!!./../node_modules/css-loader/index.js!./req-detail.css");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
-/* 280 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(3)();
-	// imports
-
-
-	// module
-	exports.push([module.id, ".w-detail-request textarea {padding: 5px; border: none;}\n.w-detail-request-headers, .w-detail-request-cookies, .w-detail-request-query, w-detail-request-form, .w-detail-request-form {overflow: auto;}\n", ""]);
-
-	// exports
-
-
-/***/ },
-/* 281 */
-/***/ function(module, exports, __webpack_require__) {
-
-	__webpack_require__(282);
-	var React = __webpack_require__(6);
-	var util = __webpack_require__(175);
-	var dataCenter = __webpack_require__(260);
-	var MAX_LENGTH =1024 * 100;
-
-	var Textarea = React.createClass({displayName: "Textarea",
-		getInitialState: function() {
-			return {};
-		},
-		componentDidMount: function() {
-			this.updateValue();
-		},
-		componentDidUpdate: function() {
-			this.updateValue();
-		},
-		shouldComponentUpdate: function(nextProps) {
-			var hide = util.getBoolean(this.props.hide);
-			return hide != util.getBoolean(nextProps.hide) || (!hide && this.props.value != nextProps.value);
-		},
-		preventBlur: function(e) {
-			e.target.nodeName != 'INPUT' && e.preventDefault();
-		},
-		edit: function() {
-			var self = this;
-			var win = window.open('/editor.html');
-			win.getValue = function() {
-				return self.props.value;
-			};
-			if (win.setValue) {
-				win.setValue(self.props.value);
-			}
-		},
-		showAddToValues: function() {
-			var self = this;
-			self.state.showAddToValues = true;
-			self.forceUpdate(function() {
-				self.refs.valuesNameInput.getDOMNode().focus();
-			});
-		},
-		addToValues: function(e) {
-			if (e.keyCode != 13 && e.type != 'click') {
-				return;
-			}
-			var modal = dataCenter.valuesModal;
-			if (!modal) {
-				return;
-			}
-			var target = this.refs.valuesNameInput.getDOMNode();
-			var name = target.value.trim();
-			if (!name) {
-				alert('Value name can not be empty.');
-				return;
-			}
-			
-			if (/\s/.test(name)) {
-				alert('Name can not have spaces.');
-				return;
-			}
-			
-			if (modal.exists(name)) {
-				alert('Value name \'' + name + '\' already exists.');
-				return;
-			}
-			
-			var value = (this.props.value || '').replace(/\r\n|\r/g, '\n');
-			dataCenter.values.add({name: name, value: value}, function(data) {
-				if (data && data.ec === 0) {
-					modal.add(name, value);
-					target.value = '';
-					target.blur();
-				} else {
-					util.showSystemError();
-				}
-			});
-		},
-		hideAddValuesInput: function() {
-			this.state.showAddToValues = false;
-			this.forceUpdate();
-		},
-		updateValue: function() {
-			var self = this;
-			clearTimeout(self._timeout);
-			var value = self.state.value;
-			self._timeout = setTimeout(function() {
-				self.refs.textarea.getDOMNode().value = value;
-			}, Math.ceil((value && value.length || 0) / 1024));
-		},
-		render: function() {
-			var value = this.props.value || '';
-			var exceed = value.length - MAX_LENGTH;
-			var showAddToValuesBtn = /[^\s]/.test(value);
-			if (exceed > 512) {
-				showAddToValuesBtn = false;
-				value = value.substring(0, MAX_LENGTH) + '...\r\n\r\n(' + exceed + ' characters left, you can click on the Edit button in the upper right corner to view all)\r\n';
-			}
-			
-			this.state.value = value;
-			var displayClass = value ? '' : ' hide';
-			return (
-					React.createElement("div", {className: 'fill orient-vertical-box w-textarea' + (this.props.hide ? ' hide' : '')}, 
-						React.createElement("div", {className: "w-textarea-bar"}, 
-							showAddToValuesBtn ? React.createElement("a", {className: 'w-add' + displayClass, onClick: this.showAddToValues, href: "javascript:;"}, "AddToValues") : '', 	
-							React.createElement("a", {className: 'w-edit' + displayClass, onClick: this.edit, href: "javascript:;"}, "Edit"), 
-							React.createElement("div", {onMouseDown: this.preventBlur, style: {display: this.state.showAddToValues ? 'block' : 'none'}, className: "shadow w-textarea-input"}, React.createElement("input", {ref: "valuesNameInput", onKeyDown: this.addToValues, onBlur: this.hideAddValuesInput, type: "text", maxLength: "64", placeholder: "name"}), React.createElement("button", {type: "button", onClick: this.addToValues, className: "btn btn-primary"}, "OK"))
-						), 
-						React.createElement("textarea", {ref: "textarea", onKeyDown: util.preventDefault, readOnly: "readonly", className: this.props.className || ''})
-					)
-			);
-		}
-	});
-
-	module.exports = Textarea;
-
-/***/ },
-/* 282 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-
-	// load the styles
-	var content = __webpack_require__(283);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(4)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../node_modules/css-loader/index.js!./textarea.css", function() {
-				var newContent = require("!!./../node_modules/css-loader/index.js!./textarea.css");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
 /* 283 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -50029,7 +50034,7 @@
 
 
 	// module
-	exports.push([module.id, ".w-textarea {position: relative;}\n.w-textarea-bar {position: absolute; z-index: 1; border-radius: 2px; top: 2px; right: 12px; font-size: 12px;\n white-space: nowrap; line-height: 1.5; background: #eee;}\n.w-textarea-bar a {display: inline-block; text-decoration: none; color: #000; padding: 0 5px;}\n.w-textarea-bar a:hover {color: #337ab7;}\n\n.w-textarea-input {display: block; position: absolute; background: #fff; border: 1px solid #ccc; border-radius: 2px; z-index: 101; top: 22px; right: 0; display: none; white-space: nowrap;}\n.w-textarea-input input {width: 246px; height: 32px; border: 1px solid #ccc; border-radius: 2px; padding: 0 5px; vertical-align: middle;}\n.w-textarea-input .btn {height: 32px; padding: 0 12px; vertical-align: middle; border-radius: 0; border-right-top-radius: 2px; border-right-bottom-radius: 2px;}", ""]);
+	exports.push([module.id, ".w-editor-settings label, .w-editor-settings-box label {font-weight: normal; white-space: nowrap;}\n.w-editor-settings label .w-label {display: inline-block; width: 60px; text-align: right;}\n.w-editor-settings select {width: 186px;}\n.w-editor-settings-box {padding-left: 65px; margin: 5px;}\n.w-editor-settings .form-control {display: inline-block; margin-left: 5px;}\n.w-editor-settings p {margin: 5px;}", ""]);
 
 	// exports
 
