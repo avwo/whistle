@@ -204,7 +204,10 @@
 					return;
 				}
 				timeout = setTimeout(function() {
-					self.setState({});
+					var atBottom = self.scrollerAtBottom && self.scrollerAtBottom();
+					self.setState({}, function() {
+						atBottom && self.autoScroll();
+					});
 				}, 100);
 			});
 		},
@@ -316,6 +319,7 @@
 			
 			self._updateNetwork = update;
 			self.autoScroll = scrollToBottom;
+			self.scrollerAtBottom = atBottom;
 			
 			function atBottom() {
 				return con.scrollTop + con.offsetHeight + 5 > body.offsetHeight;
