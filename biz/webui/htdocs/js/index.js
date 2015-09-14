@@ -44468,11 +44468,11 @@
 				}
 				
 				function isReq(str) {
-					return /^(?:req|reqDelay|reqSpeed|reqHeaders|method|reqType|reqBody|prependReq|appendReq):\/\//.test(str);
+					return /^(?:req|referer|auth|ua|reqCookies|reqDelay|reqSpeed|reqHeaders|method|reqType|reqBody|prependReq|appendReq):\/\//.test(str);
 				}
 				
 				function isRes(str) {
-					return /^(?:res|resHeaders|statusCode|redirect|resDelay|resSpeed|resType|cache|resBody|prependRes|appendRes):\/\//.test(str);
+					return /^(?:res|reqCookies|resHeaders|statusCode|redirect|resDelay|resSpeed|resType|cache|resBody|prependRes|appendRes):\/\//.test(str);
 				}
 				
 				function isUrl(str) {
@@ -45458,9 +45458,9 @@
 	 * [req, res]delay://, method://, [req, res][content]Type://自动lookup, 
 	 * cache://xxxs[no], params://json|string(放在url)
 	 */
-	var RULES = ['host', 'req', 'rule', 'res', 'weinre', 'filter', 'log', 'params', 'statusCode', 'redirect', 'method', 'cache', 
+	var RULES = ['host', 'req', 'rule', 'res', 'weinre', 'filter', 'log', 'referer', 'auth', 'params', 'statusCode', 'redirect', 'method', 'cache', 
 	             'reqDelay', 'reqSpeed', 'reqType', 'reqHeaders', 'reqBody', 'prependReq', 'appendReq', 'resDelay', 'resSpeed', 
-	             'resType', 'referer', 'resHeaders', 'resBody', 'prependRes', 'appendRes'];
+	             'resType', 'resHeaders', 'resBody', 'prependRes', 'appendRes'];
 	var DEFAULT_OVERVIEW_MODAL = {};
 	var DEFAULT_RULES_MODAL = {};
 
