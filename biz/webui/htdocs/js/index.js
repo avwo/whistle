@@ -49907,7 +49907,7 @@
 		render: function() {
 			var value = this.props.value || '';
 			var exceed = value.length - MAX_LENGTH;
-			if (exceed > 0) {
+			if (exceed > 10240) {
 				value = value.substring(0, MAX_LENGTH) + '...(' + exceed + ' characters left)';
 			}
 			this.state.value = value;
