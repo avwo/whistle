@@ -49960,7 +49960,7 @@
 			var showAddToValuesBtn = /[^\s]/.test(value);
 			if (exceed > 512) {
 				showAddToValuesBtn = false;
-				value = value.substring(0, MAX_LENGTH) + '...(' + exceed + ' characters left, you can click on the Edit button in the upper right corner to view all)';
+				value = value.substring(0, MAX_LENGTH) + '...\r\n(' + exceed + ' characters left, you can click on the Edit button in the upper right corner to view all)';
 			}
 			
 			this.state.value = value;
