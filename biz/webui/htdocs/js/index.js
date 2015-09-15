@@ -1121,7 +1121,7 @@
 					      	React.createElement("button", {type: "button", className: "close", "data-dismiss": "modal", "aria-label": "Close"}, React.createElement("span", {"aria-hidden": "true"}, "×")), 
 						      React.createElement("div", null, 
 						      	React.createElement("a", {className: "w-download-rootca", href: "/cgi-bin/rootca", target: "_blank"}, "Download RootCA"), 
-						      	React.createElement("a", {className: "w-https-help", href: "https://github.com/avwo/whistle/wiki/%E5%A6%82%E4%BD%95%E6%8B%A6%E6%88%AAhttps%E8%AF%B7%E6%B1%82", target: "_blank", title: "How to intercept HTTPS CONNECTs"}, "Help")
+						      	React.createElement("a", {className: "w-https-help", href: "https://github.com/avwo/whistle/wiki/%E5%90%AF%E7%94%A8https", target: "_blank", title: "How to intercept HTTPS CONNECTs"}, "Help")
 						      ), 
 						      React.createElement("a", {title: "Download RootCA", href: "/cgi-bin/rootca", target: "_blank"}, React.createElement("img", {src: "/img/rootca.png"})), 
 						      React.createElement("div", {className: "w-https-settings"}, 
@@ -31947,12 +31947,14 @@
 			var codeMirrorElem = $(elem).find('.CodeMirror').addClass('fill');
 			resize();
 			$(window).on('resize', function() {
-				clearTimeout(timeout);
+				timeout && clearTimeout(timeout);
+				timeout = null;
 				timeout = setTimeout(resize, 30);
 			});
 			function resize() {
 				var height = elem.offsetHeight || 0;
 				if (height < 10) {
+					timeout && clearTimeout(timeout);
 					timeout = setTimeout(resize, 300);
 				} else {
 					editor.setSize(null, height);
@@ -45604,7 +45606,7 @@
 			return (
 				React.createElement("div", {className: 'fill orient-vertical-box w-detail-content w-detail-overview' + (util.getBoolean(this.props.hide) ? ' hide' : '')}, 
 					React.createElement(Properties, {modal: overviewModal}), 
-					React.createElement("p", {className: "w-detail-overview-title"}, React.createElement("a", {href: "https://github.com/avwo/whistle#whistle", target: "_blank"}, React.createElement("span", {className: "glyphicon glyphicon-question-sign"})), "All rules:"), 
+					React.createElement("p", {className: "w-detail-overview-title"}, React.createElement("a", {href: "https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8", target: "_blank"}, React.createElement("span", {className: "glyphicon glyphicon-question-sign"})), "All rules:"), 
 					React.createElement(Properties, {modal: rulesModal})
 				)		
 			);
@@ -47282,7 +47284,7 @@
 					        '<img alt="logo" src="/img/whistle.png">' + 
 				          '<span" class="w-about-dialog-ctn"><span class="w-about-dialog-title">Whistle for Web Developers.</span>' +
 						  'Version: <span class="w-about-version">' + version + '</span><br>' +
-						  (!latest || latest == version ? '' : 'Latest version: <span class="w-about-version"><a class="w-about-url" href="https://github.com/avwo/whistle/wiki/%E5%A6%82%E4%BD%95%E6%9B%B4%E6%96%B0whistle" target="_blank">' + latest + '</a></span><br>') +
+						  (!latest || latest == version ? '' : 'Latest version: <span class="w-about-version"><a class="w-about-url" href="https://github.com/avwo/whistle/wiki/%E6%9B%B4%E6%96%B0whistle" target="_blank">' + latest + '</a></span><br>') +
 						  'Visit <a class="w-about-url" title="How to update whistle" href="http://www.whistlejs.com#v=' + version + '" target="_blank">http://www.whistlejs.com</a></span>' +
 					      '</div>' + 
 					      '<div class="modal-footer">' + 
