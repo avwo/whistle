@@ -246,7 +246,7 @@
 		if (error) {
 			console.error(error);
 		} else {
-			console.error('Error: ' + message + '( ' + lineno + ':' + (colno || -1) + ')' + '\r\n' + filename);
+			console.error('Error: ' + message + '(' + lineno + ':' + (colno == null ? -1 : colno) + ')' + '\r\n' + filename);
 		}
 	};
 	
