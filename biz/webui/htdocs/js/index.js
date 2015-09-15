@@ -1063,7 +1063,7 @@
 						React.createElement("a", {onClick: this.onClickMenu, className: 'w-delete-menu' + (disabledDeleteBtn ? ' w-disabled' : ''), style: {display: isNetwork ? 'none' : ''}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-trash"}), "Delete"), 
 						React.createElement("a", {onClick: this.showSettings, className: "w-settings-menu", style: {display: isNetwork ? 'none' : ''}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-cog"}), "Settings"), 
 						React.createElement("a", {onClick: this.showWeinreOptions, onDoubleClick: this.showAnonymousWeinre, className: "w-weinre-menu", href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-globe"}), "Weinre"), 
-						React.createElement("a", {onClick: this.showHttpsSettingsDialog, className: "w-https-menu", href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-transfer"}), "Https"), 
+						React.createElement("a", {onClick: this.showHttpsSettingsDialog, className: "w-https-menu", href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-lock"}), "Https"), 
 						React.createElement("a", {className: "w-help-menu", href: "https://github.com/avwo/whistle#whistle", target: "_blank"}, React.createElement("span", {className: "glyphicon glyphicon-question-sign"}), "Help"), 
 						React.createElement(About, null), 
 						React.createElement(Online, null), 
