@@ -242,4 +242,12 @@
 		})(level);
 	}
 	
+	window.onerror = function(message, filename, lineno, colno, error) {
+		if (error) {
+			console.error(error);
+		} else {
+			console.error('Error: ' + message + '( ' + lineno + ':' + (colno || -1) + ')' + '\r\n' + filename);
+		}
+	};
+	
 })();
