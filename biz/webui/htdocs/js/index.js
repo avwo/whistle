@@ -473,8 +473,28 @@
 				createValuesInput.focus();
 			});
 		},
-		showRootCADialog: function() {
+		showHttpsSettingsDialog: function() {
 			$(this.refs.rootCADialog.getDOMNode()).modal('show');
+		},
+		hideHttpsConnects: function(e) {
+			var target = e.target;
+			dataCenter.hideHttpsConnects({hideHttpsConnects: target.checked ? 0 : 1},
+					function(data) {
+				if (!data || data.ec !== 0) {
+					target.checked = !target.checked;
+					util.showSystemError();
+				}
+			});
+		},
+		interceptHttpsConnects: function(e) {
+			var target = e.target;
+			dataCenter.interceptHttpsConnects({interceptHttpsConnects: target.checked ? 1 : 0},
+					function(data) {
+				if (!data || data.ec !== 0) {
+					target.checked = !target.checked;
+					util.showSystemError();
+				}
+			});
 		},
 		createRules: function(e) {
 			if (e.keyCode != 13 && e.type != 'click') {
@@ -1035,7 +1055,7 @@
 						React.createElement("a", {onClick: this.onClickMenu, className: 'w-delete-menu' + (disabledDeleteBtn ? ' w-disabled' : ''), style: {display: isNetwork ? 'none' : ''}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-trash"}), "Delete"), 
 						React.createElement("a", {onClick: this.showSettings, className: "w-settings-menu", style: {display: isNetwork ? 'none' : ''}, href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-cog"}), "Settings"), 
 						React.createElement("a", {onClick: this.showWeinreOptions, onDoubleClick: this.showAnonymousWeinre, className: "w-weinre-menu", href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-globe"}), "Weinre"), 
-						React.createElement("a", {onClick: this.showRootCADialog, className: "w-rootca-menu", href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-download-alt"}), "RootCA"), 
+						React.createElement("a", {onClick: this.showHttpsSettingsDialog, className: "w-https-menu", href: "javascript:;"}, React.createElement("span", {className: "glyphicon glyphicon-transfer"}), "Https"), 
 						React.createElement("a", {className: "w-help-menu", href: "https://github.com/avwo/whistle#whistle", target: "_blank"}, React.createElement("span", {className: "glyphicon glyphicon-question-sign"}), "Help"), 
 						React.createElement(About, null), 
 						React.createElement(Online, null), 
@@ -1086,16 +1106,20 @@
 						    )
 					    )
 					), 
-					React.createElement("div", {ref: "rootCADialog", className: "modal fade w-rootca-dialog"}, 
+					React.createElement("div", {ref: "rootCADialog", className: "modal fade w-https-dialog"}, 
 					React.createElement("div", {className: "modal-dialog"}, 
 				  		React.createElement("div", {className: "modal-content"}, 
 					      React.createElement("div", {className: "modal-body"}, 
 					      	React.createElement("button", {type: "button", className: "close", "data-dismiss": "modal", "aria-label": "Close"}, React.createElement("span", {"aria-hidden": "true"}, "×")), 
 						      React.createElement("div", null, 
-						      	React.createElement("a", {className: "w-download-rootca", href: "/cgi-bin/rootca", target: "_blank"}, "Download"), 
-						      	React.createElement("a", {className: "w-rootca-help", href: "https://github.com/avwo/whistle/wiki/%E5%A6%82%E4%BD%95%E5%AE%89%E8%A3%85%E6%A0%B9%E8%AF%81%E4%B9%A6", target: "_blank", title: "How to install a root certificate"}, "Help")
+						      	React.createElement("a", {className: "w-download-rootca", href: "/cgi-bin/rootca", target: "_blank"}, "Download RootCA"), 
+						      	React.createElement("a", {className: "w-https-help", href: "https://github.com/avwo/whistle/wiki/%E5%A6%82%E4%BD%95%E6%8B%A6%E6%88%AAhttps%E8%AF%B7%E6%B1%82", target: "_blank", title: "How to intercept HTTPS CONNECTs"}, "Help")
 						      ), 
-						      React.createElement("a", {href: "/cgi-bin/rootca", target: "_blank"}, React.createElement("img", {src: "/img/rootca.png"}))
+						      React.createElement("a", {title: "Download RootCA", href: "/cgi-bin/rootca", target: "_blank"}, React.createElement("img", {src: "/img/rootca.png"})), 
+						      React.createElement("div", {className: "w-https-settings"}, 
+						      	React.createElement("p", null, React.createElement("label", null, React.createElement("input", {onChange: this.hideHttpsConnects, type: "checkbox"}), " Hide HTTPS CONNECTs")), 
+						      	React.createElement("p", null, React.createElement("label", null, React.createElement("input", {onChange: this.interceptHttpsConnects, type: "checkbox"}), " Intercept HTTPS CONNECTs"))
+						      )
 					      ), 
 					      React.createElement("div", {className: "modal-footer"}, 
 					        React.createElement("button", {type: "button", className: "btn btn-default", "data-dismiss": "modal"}, "Close")
@@ -1149,7 +1173,7 @@
 
 
 	// module
-	exports.push([module.id, ".w-menu {height: 28px; border-top: 1px solid #fcfcfc; border-bottom: 1px solid #d3d3d3; padding: 0 5px; \nbackground: -moz-linear-gradient(rgb(239, 238, 238), rgb(211, 212, 213));\nbackground: -webkit-linear-gradient(rgb(239, 238, 238), rgb(211, 212, 213)); \nbackground: linear-gradient(rgb(239, 238, 238), rgb(211, 212, 213)); padding-right: 80px; position: relative; z-index: 1001;}\n.w-menu a {text-decoration: none!important; color: #000; padding: 0 5px; line-height: 26px; height: 26px; margin-right: 5px; display: inline-block;}\n.w-menu .glyphicon, .w-detail .glyphicon {margin-right: 3px;}\n.w-menu .glyphicon-folder-open {margin-right: 6px;}\n.w-menu .w-online {position: absolute; right: 0;}\n.w-menu .w-online, .w-menu a:hover {color: #337ab7;}\n.w-menu .w-offline {color: #ccc!important; cursor: default;}\n.w-menu .w-disabled {color: #888!important; cursor: default!important;}\n.w-menu .w-menu-enable {color: #337ab7;}\n\n.w-input-menu-item {display: block; position: absolute; background: #fff; border: 1px solid #ccc; border-radius: 2px; z-index: 101; top: 30px; display: none; white-space: nowrap;}\n.w-input-menu-item input {width: 246px; height: 32px; border: 1px solid #ccc; border-radius: 2px; padding: 0 5px; vertical-align: middle;}\n.w-input-menu-item .btn {height: 32px; padding: 0 12px; vertical-align: middle; border-radius: 0; border-right-top-radius: 2px; border-right-bottom-radius: 2px;}\n\n.w-create-rules-input {left: 232px;}\n.w-create-values-input {left: 222px;}\n.w-edit-rules-input {left: 304px;}\n.w-edit-values-input {left: 294px;}\n.w-edit-filter-input {left: 425px;}\n\n.w-values-list .glyphicon {display: none!important;}\n.w-values-list a {font-weight: normal!important;}\n\n.w-rules-menu-list .w-values-menu-item {left: 92px;}\n.w-network-menu-list .w-values-menu-item {left: 75px;}\n.w-network-menu-list .w-rules-menu-item {left: 8px;}\n.w-values-menu-list .w-rules-menu-item {left: 92px;}\n.w-rules-menu-list .w-weinre-menu-item {left: 519px;}\n.w-network-menu-list .w-weinre-menu-item {left: 550px;}\n.w-values-menu-list .w-weinre-menu-item {left: 509px;}\n\n.w-rules-settings-dialog .modal-dialog {width: 336px;}\n.w-values-settings-dialog .modal-dialog {width: 282px;}\n.w-rootca-dialog .modal-dialog {width: 340px;}\n.w-rootca-help {margin-left: 200px;}\n.w-rootca-dialog .modal-dialog div {white-space: nowrap;}\n.w-rootca-dialog a {display: inline-block;}\n.w-download-rootca, .w-rootca-help { line-height: 30px;}\n", ""]);
+	exports.push([module.id, ".w-menu {height: 28px; border-top: 1px solid #fcfcfc; border-bottom: 1px solid #d3d3d3; padding: 0 5px; \nbackground: -moz-linear-gradient(rgb(239, 238, 238), rgb(211, 212, 213));\nbackground: -webkit-linear-gradient(rgb(239, 238, 238), rgb(211, 212, 213)); \nbackground: linear-gradient(rgb(239, 238, 238), rgb(211, 212, 213)); padding-right: 80px; position: relative; z-index: 1001;}\n.w-menu a {text-decoration: none!important; color: #000; padding: 0 5px; line-height: 26px; height: 26px; margin-right: 5px; display: inline-block;}\n.w-menu .glyphicon, .w-detail .glyphicon {margin-right: 3px;}\n.w-menu .glyphicon-folder-open {margin-right: 6px;}\n.w-menu .w-online {position: absolute; right: 0;}\n.w-menu .w-online, .w-menu a:hover {color: #337ab7;}\n.w-menu .w-offline {color: #ccc!important; cursor: default;}\n.w-menu .w-disabled {color: #888!important; cursor: default!important;}\n.w-menu .w-menu-enable {color: #337ab7;}\n\n.w-input-menu-item {display: block; position: absolute; background: #fff; border: 1px solid #ccc; border-radius: 2px; z-index: 101; top: 30px; display: none; white-space: nowrap;}\n.w-input-menu-item input {width: 246px; height: 32px; border: 1px solid #ccc; border-radius: 2px; padding: 0 5px; vertical-align: middle;}\n.w-input-menu-item .btn {height: 32px; padding: 0 12px; vertical-align: middle; border-radius: 0; border-right-top-radius: 2px; border-right-bottom-radius: 2px;}\n\n.w-create-rules-input {left: 232px;}\n.w-create-values-input {left: 222px;}\n.w-edit-rules-input {left: 304px;}\n.w-edit-values-input {left: 294px;}\n.w-edit-filter-input {left: 425px;}\n\n.w-values-list .glyphicon {display: none!important;}\n.w-values-list a {font-weight: normal!important;}\n\n.w-rules-menu-list .w-values-menu-item {left: 92px;}\n.w-network-menu-list .w-values-menu-item {left: 75px;}\n.w-network-menu-list .w-rules-menu-item {left: 8px;}\n.w-values-menu-list .w-rules-menu-item {left: 92px;}\n.w-rules-menu-list .w-weinre-menu-item {left: 519px;}\n.w-network-menu-list .w-weinre-menu-item {left: 550px;}\n.w-values-menu-list .w-weinre-menu-item {left: 509px;}\n\n.w-rules-settings-dialog .modal-dialog {width: 336px;}\n.w-values-settings-dialog .modal-dialog {width: 282px;}\n.w-https-dialog .modal-dialog {width: 340px;}\n.w-https-help {margin-left: 150px;}\n.w-https-dialog .modal-dialog div {white-space: nowrap;}\n.w-https-dialog a {display: inline-block;}\n.w-download-rootca, .w-https-help { line-height: 30px;}\n.w-https-settings label {font-weight: normal;}\n.w-https-settings p {margin: 10px 0;}\n\n", ""]);
 
 	// exports
 
@@ -46151,7 +46175,9 @@
 
 	$.extend(exports, createCgi({
 		composer: '/cgi-bin/composer',
-		setFilter: '/cgi-bin/set-filter'
+		setFilter: '/cgi-bin/set-filter',
+		interceptHttpsConnects: '/cgi-bin/intercept-https-connects',
+		hideHttpsConnects: '/cgi-bin/hide-https-connects'
 	}, POST_CONF));
 
 	exports.getInitialData = function(callback) {
