@@ -12,6 +12,8 @@ module.exports = function(req, res) {
 		server: util.getServerInfo(),
 		rules: getRules(),
 		values: getValues(),
+		hideHttpsConnects: properties.get('hideHttpsConnects'),
+		interceptHttpsConnects: properties.get('interceptHttpsConnects'),
 		filterText: properties.get('filterText')
 	});
 };
