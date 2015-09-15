@@ -46709,7 +46709,7 @@
 	var BtnGroup = __webpack_require__(238);
 	var Textarea = __webpack_require__(253);
 	var BTNS = [{name: 'Headers'}, {name: 'TextView'}, {name: 'Cookies'}, {name: 'JSON'}, {name: 'Raw'}];
-	var COOKIE_HEADERS = ['Name', 'Value', 'Domain', 'Path', 'Expires', 'Http Only', 'Secure'];
+	var COOKIE_HEADERS = ['Name', 'Value', 'Domain', 'Path', 'Expires', 'HttpOnly', 'Secure'];
 
 	var ResDetail = React.createClass({displayName: "ResDetail",
 		getInitialState: function() {
