@@ -1,3 +1,3 @@
-module.exports = function init(rulesUtil) {
-	module.exports = rulesUtil;
+module.exports = function init(util) {
+	module.exports = util;
 };

@@ -1,10 +1,14 @@
 var os = require('os');
 var config = require('../lib/config');
+var properties = require('../lib/properties');
 
 exports.getServerInfo = function getServerInfo() {
 	var info = {
+			version: config.version,
+			latestVersion: properties.get('latestVersion'),
 			host: os.hostname(),
 			port: config.port,
+			weinrePort: config.weinreport,
 			ipv4: [],
 			ipv6: []
 	};

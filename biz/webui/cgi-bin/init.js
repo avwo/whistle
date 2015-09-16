@@ -1,22 +1,19 @@
-var rulesUtil = require('../lib/rules-util');
+var getRules = require('./rules');
+var getValues = require('./values');
 var util = require('./util');
 var config = require('../lib/config');
+var properties = require('../lib/properties');
 
 module.exports = function(req, res) {
-	var data = rulesUtil.getHostsData();
-	data.fontSize = rulesUtil.getProperty('fontSize');
-	data.showLineNumbers = rulesUtil.getProperty('showLineNumbers');
-	data.theme = rulesUtil.getProperty('theme');
-	data.version = config.version;
 	
 	res.json({
-		rules: data,
+		version: config.version,
+		latestVersion: properties.get('latestVersion'),
 		server: util.getServerInfo(),
-		values: {
-			fontSize: rulesUtil.getProperty('valuesFontSize'),
-			theme: rulesUtil.getProperty('valuesTheme'),
-			showLineNumbers: rulesUtil.getProperty('valuesShowLineNumbers'),
-			values: rulesUtil.getValue()
-		}
+		rules: getRules(),
+		values: getValues(),
+		hideHttpsConnects: properties.get('hideHttpsConnects'),
+		interceptHttpsConnects: properties.get('interceptHttpsConnects'),
+		filterText: properties.get('filterText')
 	});
 };

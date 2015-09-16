@@ -1,10 +1,11 @@
-var rulesUtil = require('../../lib/rules-util');
+var values = require('../../lib/values');
+var properties = require('../../lib/properties');
 
 module.exports = function(req, res) {
 	res.json({
-		fontSize: rulesUtil.getProperty('valuesFontSize'),
-		theme: rulesUtil.getProperty('valuesTheme'),
-		showLineNumbers: rulesUtil.getProperty('valuesShowLineNumbers'),
-		values: rulesUtil.getValue()
+		fontSize: properties.get('valuesFontSize'),
+		theme: properties.get('valuesTheme'),
+		showLineNumbers: properties.get('valuesShowLineNumbers'),
+		values: values.list()
 	});
 };

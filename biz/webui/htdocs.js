@@ -14,7 +14,7 @@ function getJsFile(file) {
 exports.getJsFile = getJsFile;
 
 function getHtmlFile(file) {
-	return path.join(ROOT, 'html', file || '');
+	return path.join(ROOT, file || '');
 }
 
 exports.getHtmlFile = getHtmlFile;

@@ -1,11 +1,11 @@
-var app = require('express')();
+var express = require('express');
+var app = express();
 var path = require('path');
 var auth = require('basic-auth');
 var bodyParser = require('body-parser');
 var crypto = require('crypto');
 var htdocs = require('../htdocs');
-var util = require('../../../lib/util');
-var username, password, config;
+var util, username, password, config;
 
 app.use(function(req, res, next) {
 	req.on('error', abort).on('close', abort);
@@ -30,28 +30,22 @@ app.use(function(req, res, next) {
 	res.status(401).end('Please enter your username and password.');
 });
 
-app.get('/', function(req, res) {
-	res.sendFile(htdocs.getHtmlFile('index.html'));
-});
-
-app.get('/index.html', function(req, res) {
-	res.sendFile(htdocs.getHtmlFile('network.html'));
-});
-
 app.all('/cgi-bin/*', function(req, res) {
 	try {
+		if (req.headers.origin) {
+			res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
+			res.setHeader('Access-Control-Allow-Credentials', true);
+		}
 		require(path.join(__dirname, '..' + req.url.replace(/\?.*$/, '')))(req, res);
 	} catch(err) {
 		res.status(500).send(util.getErrorStack(err));
 	}
 });
 
-app.get('*.html', function(req, res) {
-	res.sendFile(htdocs.getHtmlFile(req.url.substring(1).replace(/(?:\?|#).*$/, '')));
-});
+app.use(express.static(path.join(__dirname, '../htdocs'), {maxAge: 300000}));
 
-app.get('/style/*', function(req, res){
-	  res.sendFile(htdocs.getFile(req.url.substring(7)));
+app.get('*', function(req, res) {
+	res.sendFile(htdocs.getHtmlFile('index.html'));
 });
 
 function checkLogin(req, res) {
@@ -100,11 +94,18 @@ function shasum(str) {
 
 module.exports = function(proxy) {
 	config = proxy.config;
+	var rulesUtil = proxy.rulesUtil;
 	username = config.username || '';
 	password = config.password || '';
 	
+	require('./proxy')(proxy);
+	require('./util')(util = proxy.util);
 	require('./config')(config);
-	require('./rules-util')(proxy.rulesUtil);
+	require('./rules-util')(rulesUtil);
+	require('./rules')(rulesUtil.rules);
+	require('./properties')(rulesUtil.properties);
+	require('./values')(rulesUtil.values);
+	require('./https-util')(proxy.httpsUtil);
 	require('./data')(proxy);
 	app.listen(config.uiport);
 };
