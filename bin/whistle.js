@@ -1,6 +1,6 @@
 #! /usr/bin/env node
 
-var program = require('starting');
+var program = require('../../starting');
 var path = require('path');
 var config = require('../package.json');
 var util = require('../lib/util');
