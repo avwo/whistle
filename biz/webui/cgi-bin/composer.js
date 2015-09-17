@@ -36,7 +36,7 @@ module.exports = function(req, res) {
 		}
 		
 		if (options.protocol == 'https:') {
-			headers[util.HTTPS_FIELD] = 1;
+			headers[config.HTTPS_FIELD] = 1;
 			if (options.port == 443) {
 				options.port = '';
 			}
@@ -59,7 +59,7 @@ module.exports = function(req, res) {
 			headers['content-length'] = req.body.body.length;
 		}
 		
-		headers[util.CLIENT_IP_HEAD] = util.getClientIp(req);
+		headers[config.CLIENT_IP_HEAD] = util.getClientIp(req);
 		
 		http.request(options, function(res) {
 			res.on('error', util.noop);
