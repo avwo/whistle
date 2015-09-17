@@ -39,7 +39,6 @@ program.setConfig({
 });
 
 program
-	.option('-r, --rules [rule file path]', 'rules file', String, undefined)
 	.option('-d, --debug', 'debug mode')
 	.option('-n, --username [username]', 'login username', String, undefined)
 	.option('-w, --password [password]', 'login password', String, undefined)
