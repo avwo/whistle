@@ -2,7 +2,7 @@
 
 var program = require('../../starting');
 var path = require('path');
-var config = require('../package.json');
+var config = require('../lib/config');
 var util = require('../lib/util');
 var CONFIG_DIR = util.LOCAL_DATA_PATH;
 
