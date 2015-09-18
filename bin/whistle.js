@@ -1,6 +1,6 @@
 #! /usr/bin/env node
 
-var program = require('../../starting');
+var program = require('../../starting');//TODO: 记得还原 
 var path = require('path');
 var config = require('../lib/config');
 var util = require('../lib/util');
@@ -10,8 +10,6 @@ util.mkdir(CONFIG_DIR);
 
 program.setConfig({
 	main: path.join(__dirname, '../index.js'),
-	running: path.join(CONFIG_DIR, '.running'),
-	log: path.join(CONFIG_DIR, 'starting.log'),
 	name: config.name,
 	version: config.version,
 	runCallback: function() {
