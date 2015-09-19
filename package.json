@@ -34,7 +34,7 @@
 	   "weinre": "2.0.0-pre-I0Z7U9OV",
 	   "q": "1.4.1",
 	   "pipestream": "*",
-	   "starting": ">=0.0.9",
+	   "starting": ">=0.1.0",
 	   "node-forge": "0.6.34",
 	   "socksv5": "0.0.6",
 	   "fs-extra": "0.22.1"

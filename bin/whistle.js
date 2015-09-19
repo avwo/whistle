@@ -1,6 +1,6 @@
 #! /usr/bin/env node
 
-var program = require('../../starting');//TODO: 记得还原 
+var program = require('../../starting'); //TODO: 记得还原 
 var path = require('path');
 var config = require('../lib/config');
 var util = require('../lib/util');
