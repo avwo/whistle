@@ -4,6 +4,13 @@
 [node-image]: https://img.shields.io/badge/node.js-%3E=_0.10-green.svg?style=flat-square
 [node-url]: http://nodejs.org/download/
 
+# 目录
+
+1. [概述](#概述)
+2. [安装](#安装)
+3. [使用方法](#使用方法)
+
+### 概述
 
 whistle是用node实现的跨平台web调试代理工具，支持windows、mac、linux等操作系统，支持http、https、websocket请求，可以部署在本地电脑、虚拟机、或远程服务器，并通过本地浏览器访问whistle的配置页面，查看代理到whistle请求数据，及配置相应规则操作http[s]、ws[s]请求，包含如下功能：
 
@@ -165,13 +172,11 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 
 	1. 配置页面：[http://local.whistlejs.com/](http://local.whistlejs.com/)
 		
-		![http://local.whistlejs.com/](https://raw.githubusercontent.com/avwo/whistle/avenwu/assets/img/config-page.png)
+		![Rules](https://raw.githubusercontent.com/avwo/whistleui/master/img/rules.png)
 
 	2. 请求列表：[http://local.whistlejs.com/index.html](http://local.whistlejs.com/index.html)
 
-		![http://local.whistlejs.com/](https://raw.githubusercontent.com/avwo/whistle/avenwu/assets/img/req-list.png)
-
-		![http://local.whistlejs.com/](https://raw.githubusercontent.com/avwo/whistle/avenwu/assets/img/req-detail.png)
+		![Network](https://raw.githubusercontent.com/avwo/whistleui/master/img/network.png)
 
 下面先讲下如何安装启动whistle，然后再对上述功能给出一些例子。
 
@@ -296,11 +301,10 @@ whistle安装完成后，执行命令 `whistle help`，查看whistle的帮助信
 
 至此，whistle已经安装启动配置完毕，匹配方式、规则配置、ui操作、查看抓包数据、重发请求、构造请求等功能请参考：
 
-# [使用说明](https://github.com/avwo/whistle/wiki)
+# [使用方法](https://github.com/avwo/whistle/wiki)
 
 [https://github.com/avwo/whistle/wiki](https://github.com/avwo/whistle/wiki)
 
-# 用户反馈
 
 有什么问题可以通过QQ群反馈： 462558941
 	
