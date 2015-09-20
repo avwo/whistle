@@ -1,12 +1,9 @@
 #! /usr/bin/env node
 
-var program = require('../../starting'); //TODO: 记得还原 
+var program = require('starting');
 var path = require('path');
 var config = require('../lib/config');
 var util = require('../lib/util');
-var CONFIG_DIR = util.LOCAL_DATA_PATH;
-
-util.mkdir(CONFIG_DIR);
 
 program.setConfig({
 	main: path.join(__dirname, '../index.js'),
