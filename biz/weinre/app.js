@@ -10,7 +10,7 @@ module.exports = function init(config) {
 	var log = console.log;
 	console.log = noop;
 	require('weinre').run({
-		boundHost: 'localhost',
+		boundHost: '-all-',
 		httpPort: parseInt(config.weinreport, 10),
 		verbose: false,
 		debug: false,
