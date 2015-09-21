@@ -204,6 +204,16 @@ linux可以参考（推荐使用源码安装）：[http://my.oschina.net/blogshi
 执行npm命令 `npm install -g whistle`，开始安装whistle （**mac或linux用户，如果安装过程出现异常，可以使用 `sudo npm install -g whistle`安装，下面命令类同，如果max或linux用户执行命令过程出现异常信息，都在命令前面加个 `sudo`**）
 
 	$ npm install -g whistle
+	
+npm默认镜像是在国外，有时候安装速度很慢或者出现安装不了的情况，如果无法安装或者安装很慢，可以使用taobao的镜像安装：
+
+	$ npm install cnpm -g --registry=https://registry.npm.taobao.org
+	
+安装成功后，直接执行：
+
+	$ cnpm install -g whistle
+	
+*mac或linux用户，如果安装过程出现异常，可以使用 `sudo cnpm install -g whistle`安装*
 
 
 whistle安装完成后，执行命令 `whistle help`，查看whistle的帮助信息
