@@ -9,5 +9,5 @@ fix如果请求包含content-length导致weinre无法注入的bug
 # v0.4.0
 
 1. 菜单 `Rules`、`Values`、`Weinre`，hover出现列表（原来需要点击才能出现列表）
-2. 优化请求列表的性能
+2. 新增快捷键 `ctrl + /` 来注释（取消注释）选中的行
 3. 新增 `css`、`html`、`js` 3个协议，分别用来注入css、js、html到html页面，或css代码到css文件，js代码到js文件的底部。这个与resPrepend、resBody、resAppend的区别是：系统会自动判断响应的类型来选择注入
