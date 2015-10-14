@@ -46502,8 +46502,8 @@
 /* 258 */
 /***/ function(module, exports) {
 
-	var MAX_LENGTH = 330;
-	var MAX_COUNT = 1320;
+	var MAX_LENGTH = 360;
+	var MAX_COUNT = 1600;
 
 	function NetworkModal(list) {
 		this._list = updateOrder(list);
