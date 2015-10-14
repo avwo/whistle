@@ -286,7 +286,7 @@
 					if (modal && atBottom()) {
 						scrollTimeout = setTimeout(function() {
 							update(modal, true);
-						}, 2000);
+						}, 1000);
 					}
 				});
 			var body = con.children('table')[0];
