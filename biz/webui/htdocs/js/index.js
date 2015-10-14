@@ -46503,7 +46503,7 @@
 /***/ function(module, exports) {
 
 	var MAX_LENGTH = 360;
-	var MAX_COUNT = 1600;
+	var MAX_COUNT = 1200;
 
 	function NetworkModal(list) {
 		this._list = updateOrder(list);
