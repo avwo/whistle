@@ -32008,14 +32008,16 @@
 							if (anchor.ch > 0) {
 								anchor.ch += 1;
 							}
-							head.ch += 1;
+							if (head != anchor) {
+								head.ch += 1;
+							}
 						} else {
 							var lastLine = lines[lines.length - 1];
 							var hashIndex = lastLine.indexOf('#');
 							if (hashIndex < head.ch) {
 								head.ch -= 1;
 							}
-							if (anchor.ch > 0) {
+							if (head != anchor && anchor.ch > 0) {
 								anchor.ch -= 1;
 							}
 			
