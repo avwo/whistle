@@ -50056,7 +50056,7 @@
 
 
 	// module
-	exports.push([module.id, ".w-menu-item {position: absolute; background: #fff; border: 1px solid #ccc; z-index: 2; top: 29px; border-radius: 2px; outline: none;}\n.w-menu-item a {display: block; max-width: 160px; text-overflow: ellipsis; overflow: hidden; padding: 0 6px; font-weight: normal; white-space: nowrap; margin: 0!important;}\n.w-menu-item .w-menu-options {border-bottom: 1px dashed #ccc; max-height: 320px; overflow-x: hidden; overflow-y: auto;}\n.w-menu-item a .glyphicon {margin-right: 8px; font-size: 12px;}\n.w-menu-item a .glyphicon-ok, .w-menu-item a .glyphicon-plus {color: #5bbd72;}\n", ""]);
+	exports.push([module.id, ".w-menu-item {position: absolute; background: #fff; border: 1px solid #ccc; z-index: 1001; top: 29px; border-radius: 2px; outline: none;}\n.w-menu-item a {display: block; max-width: 160px; text-overflow: ellipsis; overflow: hidden; padding: 0 6px; font-weight: normal; white-space: nowrap; margin: 0!important;}\n.w-menu-item .w-menu-options {border-bottom: 1px dashed #ccc; max-height: 320px; overflow-x: hidden; overflow-y: auto;}\n.w-menu-item a .glyphicon {margin-right: 8px; font-size: 12px;}\n.w-menu-item a .glyphicon-ok, .w-menu-item a .glyphicon-plus {color: #5bbd72;}\n", ""]);
 
 	// exports
 
