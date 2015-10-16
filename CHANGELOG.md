@@ -15,3 +15,7 @@ fix如果请求包含content-length导致weinre无法注入的bug
 # v0.4.1、v0.4.2
 
 修改快捷键 `ctrl + /` 的小bug：没有选中，及从后往前选择会导致聚焦有点问题。
+
+# v0.4.3
+
+fix了一些子匹配的问题，及urlParams，params可能无效的问题
