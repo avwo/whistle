@@ -33,7 +33,7 @@ module.exports = function(req, res) {
 	res.json({
 		ec: 0, 
 		em: 'success', 
-		updateIt: compare(latestVersion, version) && compare(latestVersion, doNotShowAgainVersion), 
+		showUpdate: compare(latestVersion, version) && compare(latestVersion, doNotShowAgainVersion), 
 		version: config.version,
 		latestVersion: latestVersion
 	});
