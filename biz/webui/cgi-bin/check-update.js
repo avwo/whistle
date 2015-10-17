@@ -11,7 +11,7 @@ function compare(v1, v2) {
 	v1 = v1.split('.');
 	v2 = v2.split('.');
 	var v1Major = parseInt(v1[0], 10) || 0;
-	var v2Major = parseInt(v1[0], 10) || 0;
+	var v2Major = parseInt(v2[0], 10) || 0;
 	
 	if (v1Major < v2Major) {
 		return false;
