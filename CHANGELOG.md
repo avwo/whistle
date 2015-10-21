@@ -32,3 +32,7 @@ bugFix:
 # v0.5.2
 
 新增：支持 www.qq.com resHeaders://(content-type=text/plain)格式
+
+# v0.5.3
+
+  微调parseInlineJSON的实现
