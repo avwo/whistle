@@ -24,3 +24,7 @@ fix如果请求包含content-length导致weinre无法注入的bug
 bugFix:
 
 修改了一些子匹配的问题，及urlParams，params可能无效的问题
+
+# v0.5.1
+
+修复：本地调试时，https的根证书可能被开发目录的根证书自动覆盖问题
