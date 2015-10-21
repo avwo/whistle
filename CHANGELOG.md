@@ -28,3 +28,7 @@ bugFix:
 # v0.5.1
 
 修复：本地调试时，https的根证书可能被开发目录的根证书自动覆盖问题
+
+# v0.5.2
+
+新增：支持 www.qq.com resHeaders://(content-type=text/plain)格式
