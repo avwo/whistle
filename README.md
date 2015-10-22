@@ -161,6 +161,10 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 			
 			#对url里面包含alibaba的请求禁用https拦截，这样whistle就不会拦截https请求
 			/alibaba/ filter://intercept
+			
+			# 如果采用filter://https方式开启的https拦截，可以采用下面的方式禁用一部分拦截
+			/alibaba/ filter://intercept
+			/./ filter://https
 
 
 
