@@ -122,6 +122,7 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 
 		1) 拦截https请求：只有配置该过滤器，https及websocket的抓包，替换功能才能启用
 
+			# 建议使用页面的https菜单功能来全局启用https拦截
 			pattern filter://https
 			#或
 			filter://https pattern
@@ -159,7 +160,7 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 		5) 排除功能：
 			
 			#对url里面包含alibaba的请求禁用https拦截，这样whistle就不会拦截https请求
-			/alibaba/ filter://https
+			/alibaba/ filter://intercept
 
 
 
