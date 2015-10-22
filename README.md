@@ -158,11 +158,8 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 			
 		5) 排除功能：
 			
-			#所有含alibaba关键字的url，禁用filter的功能
-			/alibaba/i filter://
-			
-			#其它https请求都自动拦截
-			/./ filter://https
+			#对url里面包含alibaba的请求禁用https拦截，这样whistle就不会拦截https请求
+			/alibaba/ filter://https
 
 
 
