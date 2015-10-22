@@ -28,7 +28,7 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 	2. 路径匹配：把规则作用于该路径或该路径的子路径
 	3. 正则匹配：通过正则匹配规则，支持通过子匹配把请求url里面的参数带到新的url
 
-- 丰富的[操作规则](https://github.com/avwo/whistle/wiki/%E5%9F%BA%E6%9C%AC%E5%8A%9F%E8%83%BD)：
+- 丰富的[操作规则](https://github.com/avwo/whistle/wiki/功能列表)：
 
 	1. 配置host： 
 
@@ -168,7 +168,7 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 
 	*Note: `[]` 表示可选*，前面带 `x` 的协议(如：`xfile`)，表示如果本地请求不到，会直接请求线上， 路径组合 `path1|...|pathN` 表示whistle会顺序在这些文件或目录里面找，找到为止。*
 
-- 友好的[配置页面](https://github.com/avwo/whistle/wiki/UI%E6%93%8D%E4%BD%9C)，支持配置分组，高亮显示，可以把规则内容配置的ui的values系统里面，无需用本地文件承载，查看请求信息，重发请求，构造请求:
+- 友好的[配置页面](https://github.com/avwo/whistle/wiki/界面操作)，支持配置分组，高亮显示，可以把规则内容配置的ui的values系统里面，无需用本地文件承载，查看请求信息，重发请求，构造请求:
 
 	1. 配置页面：[http://local.whistlejs.com/](http://local.whistlejs.com/)
 		
