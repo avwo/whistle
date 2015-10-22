@@ -104,7 +104,7 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 
 			#不支持组合模式
 
-		4) 自定义规则： 如果上述规则无法满足需求，还可以自定义规则，详见后面文档。
+		4) 自定义规则： 如果上述规则无法满足需求，还可以自定义规则，详见：[https://github.com/avwo/whistle/wiki](https://github.com/avwo/whistle/wiki)。
 		
 
 	5. 内置weinre： 利用pc浏览器调试手机页面
@@ -166,7 +166,9 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 
 
 
-	*Note: `[]` 表示可选*，前面带 `x` 的协议(如：`xfile`)，表示如果本地请求不到，会直接请求线上， 路径组合 `path1|...|pathN` 表示whistle会顺序在这些文件或目录里面找，找到为止。*
+*Note: `[]` 表示可选，前面带 `x` 的协议(如：`xfile`)，表示如果本地请求不到，会直接请求线上， 路径组合 `path1|...|pathN` 表示whistle会顺序在这些文件或目录里面找，找到为止。*
+
+更多功能请查看：[https://github.com/avwo/whistle/wiki](https://github.com/avwo/whistle/wiki)
 
 - 友好的[配置页面](https://github.com/avwo/whistle/wiki/界面操作)，支持配置分组，高亮显示，可以把规则内容配置的ui的values系统里面，无需用本地文件承载，查看请求信息，重发请求，构造请求:
 
