@@ -312,9 +312,10 @@ whistle安装完成后，执行命令 `whistle help`，查看whistle的帮助信
 
 2. 安装浏览器代理插件 (**推荐**)
 
-	1) 安装chrome代理插件： [Proxy SwitchySharp](https://chrome.google.com/webstore/detail/proxy-switchysharp/dpplabbmogkhghncfbfdeeokoefdjegm)
+	1) 安装chrome代理插件： [Proxy SwitchySharp](https://chrome.google.com/webstore/detail/proxy-switchysharp/dpplabbmogkhghncfbfdeeokoefdjegm)，或者 [whistle管理插件](https://github.com/avwo/whistle-for-chrome#whistle-for-chrome)
 
 	2) 安装firefox代理插件： [Proxy Selector](https://addons.mozilla.org/zh-cn/firefox/addon/proxy-selector/)
+	
 
 ### 访问配置页面
 启动whistle及配置完代理后，用chrome(或safari)访问配置页面 [http://local.whistlejs.com/](http://local.whistlejs.com/)或请求列表页面[http://local.whistlejs.com/index.html](http://local.whistlejs.com/index.html)，如果能正常打开页面，whistle安装启动完毕，可以开始使用。
