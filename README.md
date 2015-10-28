@@ -17,11 +17,11 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 - 简单的配置方式，把每个规则抽象成一个uri，并通过配置请求url到规则uri，实现对请求的操作
 	1. 匹配方式 --> 操作规则
 
-			pattern   operatorUri 
+			pattern   operator-uri 
 
 	2. 如果pattern和operatorUri其中有一个不是http[s]、ws[s]协议，则两个的位置可以调换
 		
-			operatorUri pattern
+			operator-uri pattern
 
 - 灵活的匹配方式(**pattern**)，支持三种[匹配方式](https://github.com/avwo/whistle/wiki/%E5%8C%B9%E9%85%8D%E6%96%B9%E5%BC%8F)：
 	1. 域名匹配：把规则作用于所有该域名的请求
@@ -39,7 +39,7 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 			#组合方式
 			ip pattern1 pattern2 ... patternN
 			
-		完整功能请参考：[功能列表](https://github.com/avwo/whistle/wiki/功能列表)
+		完整功能请参考：[功能列表](https://github.com/avwo/whistle/wiki/功能列表)，[配置模式](https://github.com/avwo/whistle/wiki/配置模式)
 
 	2. 修改请求： 请求方法、请求头、修改内容、延迟发送请求、限制请求速度，设置timeout
 
@@ -49,6 +49,8 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 	
 			#组合方式
 			req://path pattern1 pattern2 ... patternN
+			# 或
+			pattern req://path1 req://path2 ... req://pathN
 			
 		完整功能请参考：[功能列表](https://github.com/avwo/whistle/wiki/功能列表)
 
@@ -60,8 +62,10 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 	
 			#组合方式
 			res://path pattern1 pattern2 ... patternN
+			# 或
+			pattern res://path1 res://path2 ... res://pathN
 
-		完整功能请参考：[功能列表](https://github.com/avwo/whistle/wiki/功能列表)
+		完整功能请参考：[功能列表](https://github.com/avwo/whistle/wiki/功能列表)，[配置模式](https://github.com/avwo/whistle/wiki/配置模式)
 
 	4. 替换请求： 
 		
@@ -79,6 +83,8 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 			#组合方式
 			[x]file://path1|path2|...|pathN pattern1 pattern2 ... patternN
 			[x]tpl://path1|path2|...|pathN pattern1 pattern2 ... patternN
+			# 或
+			pattern [x]file://path11|path12|...|path1N [x]file://path21|path22|...|path2N
 
 		2) 设置代理： 
 
@@ -101,6 +107,8 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 			#组合方式
 			proxy://host:port pattern1 pattern2 ... patternN
 			socks://host:port pattern1 pattern2 ... patternN
+			# 或
+			pattern proxy://host1:port1 proxy://host2:port2 ... proxy://hostN:portN
 
 		3) url替换： 
 			
@@ -112,7 +120,7 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 
 		4) 自定义规则： 如果上述规则无法满足需求，还可以自定义规则，详见：[https://github.com/avwo/whistle/wiki](https://github.com/avwo/whistle/wiki)。
 		
-		完整功能请参考：[功能列表](https://github.com/avwo/whistle/wiki/功能列表)
+		完整功能请参考：[功能列表](https://github.com/avwo/whistle/wiki/功能列表)，[配置模式](https://github.com/avwo/whistle/wiki/配置模式)
 		
 
 	5. 内置weinre： 利用pc浏览器调试手机页面
@@ -125,7 +133,7 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 			#组合模式
 			weinre://weinreId pattern1 pattern2 ... patternN
 		
-		完整功能请参考：[功能列表](https://github.com/avwo/whistle/wiki/功能列表)
+		完整功能请参考：[功能列表](https://github.com/avwo/whistle/wiki/功能列表)，[配置模式](https://github.com/avwo/whistle/wiki/配置模式)
 
 	6. 设置过滤： [拦截https请求](https://github.com/avwo/whistle/wiki/%E5%90%AF%E7%94%A8HTTPS)、隐藏抓包数据、禁用上述各种协议；可以用这个filter来做排除功能。
 
