@@ -42,3 +42,5 @@ bugFix:
  
  1. 新增支持配置模式：pattern operator-uri1 operator-uri2 ... operator-uriN （原来只支持operator-uri pattern1 pattern2 ... patternN）
  2. (实现中)新增支持配置pac代理：pattern pac://pac-url （pac-url为本地文件路径、或者http[s]的url、或者直接是一个values的key，或者是用 `()` 设置的值）
+ 3. (实现中)新增 `whistle update` 命令行及页面按钮用于一键更新whistle
+ 4. ... 
