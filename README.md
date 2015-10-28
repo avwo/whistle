@@ -49,8 +49,6 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 	
 			#组合方式
 			req://path pattern1 pattern2 ... patternN
-			# 或
-			pattern req://path1 req://path2 ... req://pathN
 			
 		完整功能请参考：[功能列表](https://github.com/avwo/whistle/wiki/功能列表)
 
@@ -62,8 +60,6 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 	
 			#组合方式
 			res://path pattern1 pattern2 ... patternN
-			# 或
-			pattern res://path1 res://path2 ... res://pathN
 
 		完整功能请参考：[功能列表](https://github.com/avwo/whistle/wiki/功能列表)，[配置模式](https://github.com/avwo/whistle/wiki/配置模式)
 
@@ -83,8 +79,6 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 			#组合方式
 			[x]file://path1|path2|...|pathN pattern1 pattern2 ... patternN
 			[x]tpl://path1|path2|...|pathN pattern1 pattern2 ... patternN
-			# 或
-			pattern [x]file://path11|path12|...|path1N [x]file://path21|path22|...|path2N
 
 		2) 设置代理： 
 
@@ -107,8 +101,6 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 			#组合方式
 			proxy://host:port pattern1 pattern2 ... patternN
 			socks://host:port pattern1 pattern2 ... patternN
-			# 或
-			pattern proxy://host1:port1 proxy://host2:port2 ... proxy://hostN:portN
 
 		3) url替换： 
 			
