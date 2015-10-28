@@ -37,8 +37,8 @@ bugFix:
 
  微调parseInlineJSON的实现
   
-  
- # v0.5.4
+# v0.5.4
+# v0.5.5
  
 新增支持配置模式：pattern operator-uri1 operator-uri2 ... operator-uriN （原来只支持operator-uri pattern1 pattern2 ... patternN）
 
