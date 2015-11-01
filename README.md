@@ -19,7 +19,7 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 
 			pattern   operator-uri 
 
-	2. 如果pattern和operatorUri其中有一个不是http[s]、ws[s]协议，则两个的位置可以调换
+	2. 如果 `pattern` 和 `operator-uri` 其中有一个不是http[s]、ws[s]协议，则两个的位置可以调换
 		
 			operator-uri pattern
 
