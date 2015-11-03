@@ -35,7 +35,7 @@ bugFix:
 
 # v0.5.3
 
- 微调parseInlineJSON的实现
+微调parseInlineJSON的实现
   
 # v0.5.4
 # v0.5.5
@@ -43,3 +43,7 @@ bugFix:
 新增支持配置模式：pattern operator-uri1 operator-uri2 ... operator-uriN （原来只支持operator-uri pattern1 pattern2 ... patternN）
 
 这种情况下 `pattern` 和 `operator-uri1` 不能同时为形如这种形式的uri：`[http[s]|ws[s]://]www.example.com/*`，否则会忽略后面的 `operator-uri2 ... operator-uriN`
+
+# v0.5.6
+
+修复低版本的node在https拦截时，可能产生的重复关闭server会抛出异常
