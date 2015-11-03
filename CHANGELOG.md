@@ -46,4 +46,5 @@ bugFix:
 
 # v0.5.6
 
-修复低版本的node在https拦截时，可能产生的重复关闭server会抛出异常
+修复低版本的node在[拦截https](https://github.com/avwo/whistle/wiki/%E5%90%AF%E7%94%A8HTTPS)时，有可能产生的重复关闭server会抛出异常的情况
+
