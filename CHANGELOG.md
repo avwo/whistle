@@ -48,3 +48,8 @@ bugFix:
 
 修复低版本的node在[拦截https](https://github.com/avwo/whistle/wiki/%E5%90%AF%E7%94%A8HTTPS)时，有可能产生的重复关闭server会抛出异常的情况
 
+# v0.5.7
+
+加入一些快捷键：
+新增快捷键：`ctrl[command]+鼠标点击：快速打开rules设置的key(形如：`protocol://{key}`)在values中的位置(如果不存在自动创建)
+
