@@ -51,5 +51,5 @@ bugFix:
 # v0.5.7
 
 加入一些快捷键：
-新增快捷键：`ctrl[command]+鼠标点击：快速打开rules设置的key(形如：`protocol://{key}`)在values中的位置(如果不存在自动创建)
+新增快捷键：`ctrl[command]+鼠标点击：快速打开rules设置的key(形如：`file://{key}`)在values中的位置(如果不存在自动创建)
 
