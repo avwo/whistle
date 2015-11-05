@@ -329,6 +329,19 @@ whistle安装完成后，执行命令 `whistle help`，查看whistle的帮助信
 
 [https://github.com/avwo/whistle/wiki](https://github.com/avwo/whistle/wiki)
 
+目录
+
+1. [**功能列表**](https://github.com/avwo/whistle/wiki/功能列表)
+2. [界面操作](https://github.com/avwo/whistle/wiki/界面操作)
+3. [配置模式](https://github.com/avwo/whistle/wiki/配置模式)
+4. [匹配方式](https://github.com/avwo/whistle/wiki/匹配方式) 
+5. [启用HTTPS](https://github.com/avwo/whistle/wiki/启用HTTPS)
+6. [JSON格式](https://github.com/avwo/whistle/wiki/JSON格式)
+7. [更新whistle](https://github.com/avwo/whistle/wiki/更新whistle)
+8. [老版本手册(供参考)](https://github.com/avwo/whistle/wiki/老版本手册)
+9. [Q&A](https://github.com/avwo/whistle/wiki/Q&A)
+
+
 
 有什么问题可以通过QQ群反馈： 462558941
 	
