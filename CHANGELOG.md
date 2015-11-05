@@ -50,5 +50,5 @@ bugFix:
 
 # v0.5.7
 
-新增快捷键：`ctrl[command]+鼠标点击：快速打开rules设置的key(形如：`file://{key}`)在values中的位置(如果不存在自动创建)
+新增快捷键：`ctrl[command]+鼠标点击：快速打开rules设置的key(点击形如：`xxx://{key}` 的规则)在values中的位置(如果values中不存在对应的key，则会自动创建)，更多内容请参考：[界面操作](https://github.com/avwo/whistle/wiki/%E7%95%8C%E9%9D%A2%E6%93%8D%E4%BD%9C)
 
