@@ -54,14 +54,19 @@ bugFix:
 
 # v0.5.8
 
-bugfix：修改v0.5.7版脚本出错的问题
+bugfix：修改v0.5.7版直接访问[http://local.whistlejs.com/index.html](http://local.whistlejs.com/index.html)脚本出错的问题
 
 # v0.6.0
 
 bugfix：修改了路径匹配可能多加一个 `/` 的问题
 
 形如：
-	http://
+
+	http://www.test.com/index.html http://www.test.com:8888/index.html
+	
+	# http://www.test.com/index.html?query --> http://www.test.com:8888/index.html/?query
+	
+	
 
 
 
