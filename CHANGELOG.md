@@ -74,6 +74,11 @@ bugfix：修改了路径匹配可能多加一个 `/` 的问题
 3. 原来通过filter启用HTTPS，推荐改用这种方式：[启用HTTPS](https://github.com/avwo/whistle/wiki/%E5%90%AF%E7%94%A8HTTPS)
 	
 	
+# v0.6.2
+
+1. 加入小版本更新时给出小提示
+2. 
+	
 
 
 
