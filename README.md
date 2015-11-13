@@ -339,8 +339,7 @@ whistle安装完成后，执行命令 `whistle help`，查看whistle的帮助信
 6. [JSON格式](https://github.com/avwo/whistle/wiki/JSON格式)
 7. [更新whistle](https://github.com/avwo/whistle/wiki/更新whistle)
 8. [老版本手册(供参考)](https://github.com/avwo/whistle/wiki/老版本手册)
-9. [Q&A](https://github.com/avwo/whistle/wiki/Q&A)
-10. [CHANGELOG](https://github.com/avwo/whistle/blob/master/CHANGELOG.md)
+9. [CHANGELOG](https://github.com/avwo/whistle/blob/master/CHANGELOG.md)
 
 
 
