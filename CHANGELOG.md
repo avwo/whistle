@@ -77,7 +77,10 @@ bugfix：修改了路径匹配可能多加一个 `/` 的问题
 # v0.6.2
 
 1. 加入小版本更新时给出小提示
-2. 
+2. 添加 `disable` 的新功能：301、dnsCache、keepAlive、intercept
+3. 新增 `reqReplace` 和 `resReplace` 两个功能：类似js字符串的 `replace` 方法，分别用来替换请求和响应的文本内容
+
+具体参考：[功能列表](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#%E7%9B%AE%E5%BD%95)
 	
 
 
