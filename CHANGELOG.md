@@ -83,8 +83,7 @@ bugfix：修改了路径匹配可能多加一个 `/` 的问题
 
 # v0.6.3
 
-1. `params`、`reqReplace` 支持上传表单
-2. 新增`reqWriter`、`resWrite`分别用来把请求内容和响应内容写入到本地文件
+ 新增`reqWriter`、`resWrite`分别用来把请求内容和响应内容写入到本地文件
 
 具体参考：[功能列表](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#%E7%9B%AE%E5%BD%95)
 	
