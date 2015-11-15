@@ -74,11 +74,17 @@ bugfix：修改了路径匹配可能多加一个 `/` 的问题
 3. 原来通过filter启用HTTPS，推荐改用这种方式：[启用HTTPS](https://github.com/avwo/whistle/wiki/%E5%90%AF%E7%94%A8HTTPS)
 	
 	
-# v0.6.2
+### v0.6.2
 
 1. 加入小版本更新时给出小提示
 2. 添加 `disable` 的新功能：301、dnsCache、keepAlive、intercept
 3. 新增 `reqReplace` 和 `resReplace` 两个功能：类似js字符串的 `replace` 方法，分别用来替换请求和响应的文本内容
+
+
+# v0.6.3
+
+1. `params`、`reqReplace` 支持上传表单
+2. 新增`reqWriter`、`resWrite`分别用来把请求内容和响应内容写入到本地文件
 
 具体参考：[功能列表](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#%E7%9B%AE%E5%BD%95)
 	
