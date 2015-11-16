@@ -83,7 +83,8 @@ bugfix：修改了路径匹配可能多加一个 `/` 的问题
 
 # v0.6.3
 
- 新增`reqWriter`、`resWrite`分别用来把请求内容和响应内容写入到本地文件
+ 1. 新增`reqWriter`、`resWrite`分别用来把请求内容和响应内容写入到本地文件
+ 2. 新增`reqWriterRaw`、`resWriteRaw`分别用来把请求完整信息和响应的完整信息写入到本地文件（包括路径、协议、方法、响应状态码、头部、内容等）
 
 具体参考：[功能列表](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#%E7%9B%AE%E5%BD%95)
 	
