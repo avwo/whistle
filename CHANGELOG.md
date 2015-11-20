@@ -88,6 +88,12 @@ bugfix：修改了路径匹配可能多加一个 `/` 的问题
  3. bugfix: 使用`reqReplace`改变了请求内容长度没有同步处理headers的content-length的问题
  4. 支持通过 `params` 替换上传表单的字段
  5. 对形如 `[a-z]:\*`、`[a-z]:/xxx`、`/xxx` 自动识别为 `file://...`
+ 
+ 	即：
+ 	
+ 		www.text.com/ /User/xxx # 或 www.text.com/ D:\workspace 
+ 		# 等价于
+ 		www.text.com/ file:///User/xxx # 或 www.text.com/ file://D:\workspace 
 
 具体参考：[功能列表](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#%E7%9B%AE%E5%BD%95)
 	
