@@ -87,6 +87,7 @@ bugfix：修改了路径匹配可能多加一个 `/` 的问题
  2. 新增`reqWriterRaw`、`resWriteRaw`分别用来把请求完整信息和响应的完整信息写入到本地文件（包括路径、协议、方法、响应状态码、头部、内容等）
  3. bugfix: 使用`reqReplace`改变了请求内容长度没有同步处理headers的content-length的问题
  4. 支持通过 `params` 替换上传表单的字段
+ 5. 对形如 `[a-z]:\*`、`[a-z]:/xxx`、`/xxx` 自动识别为 `file://...`
 
 具体参考：[功能列表](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#%E7%9B%AE%E5%BD%95)
 	
