@@ -1,5 +1,10 @@
 
 ;(function() {
+	var console = window.console = window.console || {};
+	if (console._whistleConsole) {
+		return;
+	}
+	console._whistleConsole = true;
 	var JSON = window.JSON || patchJSON();
 	function patchJSON() {
 	    var JSON = {};
@@ -228,7 +233,6 @@
 		img.src ='$LOG_CGI?level=' + level + '&text=' + encodeURIComponent(text); 
 	}
 	
-	var console = window.console = window.console || {};
 	var levels = ['fatal', 'error', 'warn', 'info', 'debug', 'log'];
 	var noop = function() {};
 	for (var i = 0, len = levels.length; i < len; i++) {
