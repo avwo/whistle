@@ -252,7 +252,7 @@
 			console.error((error.stack || error.message) + pageInfo);
 		} else {
 			console.error('Error: ' + message + '(' + filename
-					+ ':' + lineno + ':' + (colno == null ? -1 : colno) + ')' + pageInfo);
+					+ ':' + lineno + ':' + (colno || 0) + ')' + pageInfo);
 		}
 	};
 	
