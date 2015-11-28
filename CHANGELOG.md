@@ -94,6 +94,11 @@ bugfix：修改了路径匹配可能多加一个 `/` 的问题
  		www.text.com/ /User/xxx # 或 www.text.com/ D:\workspace 
  		# 等价于
  		www.text.com/ file:///User/xxx # 或 www.text.com/ file://D:\workspace 
+ 		
+# 0.6.4
+
+ 1. 修复使用log的时候，多次注入脚本导致console的时候会重复打印多次
+ 2. 增加repReplace、resReplace的缓存字符串大小
 
 具体参考：[功能列表](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#%E7%9B%AE%E5%BD%95)
 	
