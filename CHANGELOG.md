@@ -81,7 +81,7 @@ bugfix：修改了路径匹配可能多加一个 `/` 的问题
 3. 新增 `reqReplace` 和 `resReplace` 两个功能：类似js字符串的 `replace` 方法，分别用来替换请求和响应的文本内容
 
 
-# v0.6.3
+### v0.6.3
 
  1. 新增`reqWriter`、`resWrite`分别用来把请求内容和响应内容写入到本地文件
  2. 新增`reqWriterRaw`、`resWriteRaw`分别用来把请求完整信息和响应的完整信息写入到本地文件（包括路径、协议、方法、响应状态码、头部、内容等）
@@ -95,10 +95,26 @@ bugfix：修改了路径匹配可能多加一个 `/` 的问题
  		# 等价于
  		www.text.com/ file:///User/xxx # 或 www.text.com/ file://D:\workspace 
  		
-# 0.6.4
+### 0.6.4
 
  1. 修复使用log的时候，多次注入脚本导致console的时候会重复打印多次
  2. 增加repReplace、resReplace的缓存字符串大小
+ 
+# 0.6.5
+
+1. bug:
+	
+	配置：
+	
+		/(.*):8899(\/.*)/ $1$2 
+		
+	结果：
+		
+		http://xxx:8899 http://http://xxx
+		
+	修复后：
+	
+		/(.*):8899(\/.*)/ $1$2 --> http://xxx:8899 http://xxx
 
 具体参考：[功能列表](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#%E7%9B%AE%E5%BD%95)
 	
