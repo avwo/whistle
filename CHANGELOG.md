@@ -100,7 +100,7 @@ bugfix：修改了路径匹配可能多加一个 `/` 的问题
  1. 修复使用log的时候，多次注入脚本导致console的时候会重复打印多次
  2. 增加repReplace、resReplace的缓存字符串大小
  
-# 0.6.5
+### 0.6.5
 
 1. bugfix:
 	
@@ -115,6 +115,34 @@ bugfix：修改了路径匹配可能多加一个 `/` 的问题
 	修复后：
 	
 		/(.*):8899(\/.*)/ $1$2 --> http://xxx:8899 http://xxx
+		
+# 0.6.6
+
+新增 `exports` 功能，用于把请求导出到指定文件（如果该文件不存在，则会自动创建），每一行都是如下json对象（第一行可能为空）：
+
+	{
+		startTime: '请求的开始时间',
+		dnsTime: 'dns结束时间',
+		requestTime: '请求结束时间',
+		responseTime: '开始响应的时间',
+		endTime: '响应结束的时间',
+		url: '请求的url',
+		realUrl: '实际请求的url（一般设置了替换规则，才会有realUrl，否则不会显示该字段）',
+		method: '请求使用的方法', 
+		httpVersion: 'http版本号',
+	    clientIp: '用户ip',
+	    hostIp: '服务器ip',
+	    reqError: '是否请求阶段出错',
+	    reqSize: '请求内容的长度',
+		reqHeaders: '请求头',
+		reqTrailers: '请求的trailers',
+		statusCode: '响应状态码',
+		resError: '是否在响应阶段出错',
+		resSize: '响应内容的长度',
+		resHeaders: '响应头',
+		resTrailers: '响应的trailers',
+		rules: '匹配到的规则'
+	}
 
 具体参考：[功能列表](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#%E7%9B%AE%E5%BD%95)
 	
