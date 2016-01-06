@@ -146,7 +146,7 @@ bugfix：修改了路径匹配可能多加一个 `/` 的问题
 	
 # 0.7.0
 1. 支持通过插件开启在网页的右下角显示访问的真实ip，需要安装最新版的Chrome插件：[https://github.com/avwo/whistle-for-chrome](https://github.com/avwo/whistle-for-chrome)
-2. 支持`exportUrls`，可以把匹配到的请求url导出到指定的文件
+2. 支持`exportsUrl`，可以把匹配到的请求url导出到指定的文件
 3. 新增功能`resCors://use-credentials`(等价于`resCors://enable`)，让语义更清晰
 4. 新增更简洁的命令行命令 `w2`，新版的whistle同时支持`whistle xxx`和`w2 xxx`，如 `w2 start`、`w2 restart`、`w2 stop`、`w2 --help`等
 
