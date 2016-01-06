@@ -13,7 +13,7 @@
   ],
   "sockets": 8,
   "keepAlive": true,
-  "keepAliveMsecs": 6000,
+  "keepAliveMsecs": 3000,
   "timeout": 36000,
   "httpsProxyHost": "x-whistle-proxy-host",
   "author": "avenwu <avenwu@vip.qq.com>",
@@ -26,7 +26,8 @@
     "charles"
   ],
   "bin": {
-    "whistle": "./bin/whistle.js"
+    "whistle": "./bin/whistle.js",
+    "w2": "./bin/whistle.js"
   },
   "registry": "http://registry.npmjs.org/whistle",
   "repository": {
