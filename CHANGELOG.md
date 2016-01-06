@@ -116,7 +116,7 @@ bugfix：修改了路径匹配可能多加一个 `/` 的问题
 	
 		/(.*):8899(\/.*)/ $1$2 --> http://xxx:8899 http://xxx
 		
-# 0.6.6
+### 0.6.6
 
 新增 `exports` 功能，用于把请求导出到指定文件（如果该文件不存在，则会自动创建），每一行都是如下json对象（第一行可能为空）：
 
@@ -143,6 +143,13 @@ bugfix：修改了路径匹配可能多加一个 `/` 的问题
 		resTrailers: '响应的trailers',
 		rules: '匹配到的规则'
 	}
+	
+# 0.7.0
+1. 支持通过插件开启在网页的右下角显示访问的真实ip，需要安装最新版的Chrome插件：[https://github.com/avwo/whistle-for-chrome](https://github.com/avwo/whistle-for-chrome)
+2. 支持`exportUrls`，可以把匹配到的请求url导出到指定的文件
+3. 新增功能`resCors://use-credentials`(等价于`resCors://enable`)，让语义更清晰
+4. 新增更简洁的命令行命令 `w2`，新版的whistle同时支持`whistle xxx`和`w2 xxx`，如 `w2 start`、`w2 restart`、`w2 stop`、`w2 --help`等
+
 
 具体参考：[功能列表](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#%E7%9B%AE%E5%BD%95)
 	
