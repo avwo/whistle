@@ -229,9 +229,9 @@ npm默认镜像是在国外，有时候安装速度很慢或者出现安装不�
 *mac或linux用户，如果安装过程出现异常，可以使用 `sudo cnpm install -g whistle`安装*
 
 
-whistle安装完成后，执行命令 `whistle help`，查看whistle的帮助信息
+whistle安装完成后，执行命令 `whistle help` (`v0.7.0`及以上版本也可以使用`w2 help`)，查看whistle的帮助信息
 
-	$ whistle help
+	$ whistle help		
 
 	  
 	Usage: whistle <command> [options]
@@ -270,22 +270,22 @@ whistle安装完成后，执行命令 `whistle help`，查看whistle的帮助信
 
 ### 启动whistle
 
-执行如下命令启动whistle
+执行如下命令启动whistle (`v0.7.0`及以上版本也可以使用`w2 start`)
 
 	$ whistle start
 
 
 *Note: 如果要防止其他机器访问配置页面，可以在启动时加上登录用户名和密码 `-n yourusername -w yourpassword`。*
 
-重启whsitle
+重启whsitle (`v0.7.0`及以上版本也可以使用`w2 restart`)
 
 	$ whistle restart
 
-停止whistle
+停止whistle (`v0.7.0`及以上版本也可以使用`w2 stop`)
 
 	$ whistle stop
 
-如果whistle无法启动，可以执行如下命令启动whistle可以打印出错误信息
+如果whistle无法启动，可以执行如下命令启动whistle可以打印出错误信息 (`v0.7.0`及以上版本也可以使用`w2 run`)
 
 	$ whistle run
 
@@ -297,7 +297,7 @@ whistle安装完成后，执行命令 `whistle help`，查看whistle的帮助信
 
 1. IP： 127.0.0.1(如果部署在远程服务器或虚拟机上，把ip改成对应服务器或虚拟机的ip即可)
 
-2. 端口： 8899(默认端口为8899，如果端口被占用，可以在启动是通过 `-p` 来指定新的端口，更多信息可以通过执行命令行 `whistle help` 查看)
+2. 端口： 8899(默认端口为8899，如果端口被占用，可以在启动是通过 `-p` 来指定新的端口，更多信息可以通过执行命令行 `whistle help` (`v0.7.0`及以上版本也可以使用`w2 help`) 查看)
 
 3. 勾选上 **对所有协议均使用相同的代理服务器**
 
