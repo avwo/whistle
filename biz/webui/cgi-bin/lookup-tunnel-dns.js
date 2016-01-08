@@ -1,9 +1,10 @@
 var url = require('url');
+var properties = require('../lib/properties');
 var rules = require('../lib/proxy').rules;
 var util = require('../lib/util');
 
 module.exports = function(req, res) {
-	var tunnelUrl = req.query.url;
+	var tunnelUrl = properties.get('showHostIpInResHeaders') ? req.query.url : null;
 	if (typeof tunnelUrl != 'string') {
 		tunnelUrl = null;
 	} else if (tunnelUrl) {
