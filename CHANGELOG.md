@@ -154,42 +154,9 @@ bugfix：修改了路径匹配可能多加一个 `/` 的问题
 
 新增 [dispatch](https://github.com/avwo/whistle/wiki/功能列表#dispatch) 协议，主要用途：某些情况需要我们根据用户的ip、或ua、或cookie等来动态决定匹配规则，这时可以利用 `dispatch` 来执行自定义脚本来修改url里面的请求参数从而修改请求的url，最后达到修改请求url匹配的规则的目的。
 
-# v0.7.2
+# v0.8.0
 
-1. 新增 [plugin](https://github.com/avwo/whistle/wiki/功能列表#plugin) 协议 ，可以把请求转发到通过 `plugin` 加载的web服务器
-
-		pattern  plugin://module
-		pattern plugin://value@module
-		pattern  plugin://{server.js}
-		pattern plugin://value@{server.js}
-		pattern  plugin://filepath
-		pattern plugin://value@filepath
-		
-2. 通过命令行安装whistle插件
-
-	通过 `whistle`、`w2`、`npm`安装插件
-	
-		# 安装
-		npm i -g whistle.xxx
-		w2 i whistle.xxx
-		whistle i whistle.xxx
-		
-		# 更新
-		npm update -g whistle.xxx
-		w2 update whistle.xxx
-		whistle update whistle.xxx
-		
-		# 卸载
-		npm uninstall -g whistle.xxx
-		w2 uninstall whistle.xxx
-		whistle uninstall whistle.xxx
-	
-	安装后，使用插件
-	
-		pattern xxx://value
-	
-	
-	如何自定义whistle插件及使用，请查看：[自定义whistle插件]()
+新增插件机制，可以很方便的自定义插件，并提供了一些应用例子，如何自定义whistle插件及使用，请查看：[自定义whistle插件]()
 
 
 
