@@ -3,6 +3,7 @@ var getValues = require('./values');
 var util = require('./util');
 var config = require('../lib/config');
 var properties = require('../lib/properties');
+var pluginMgr = require('../lib/proxy').pluginMgr;
 
 module.exports = function(req, res) {
 	
@@ -14,6 +15,7 @@ module.exports = function(req, res) {
 		values: getValues(),
 		hideHttpsConnects: properties.get('hideHttpsConnects'),
 		interceptHttpsConnects: properties.get('interceptHttpsConnects'),
-		filterText: properties.get('filterText')
+		filterText: properties.get('filterText'),
+		plugins: pluginMgr.getPlugins()
 	});
 };
