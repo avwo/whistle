@@ -29,11 +29,11 @@ function request(req, res, port, weinre) {
 }
 
 function response(req, res, statusCode, msg) {
-	res.writeHead(statusCode || 404, {
+	res.writeHead(statusCode || 501, {
     	'content-type': 'text/html; charset=utf-8'
     });
 	res.src(util.wrapResponse({
-				body: msg || 'Not Found'
+				body: msg || 'Not implemented'
 			}));
 }
 
