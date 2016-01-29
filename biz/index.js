@@ -57,7 +57,7 @@ module.exports = function(req, res, next) {
 		request(req, res, config.uiport);
 	} else if (host == config.WEINRE_HOST) {
 		request(req, res, config.weinreport, true);
-	} else if (pluginHomePage = pluginMgr.getPluginFromHomePage(util.getFullUrl(req))) {
+	} else if (pluginHomePage = pluginMgr.getPluginByHomePage(util.getFullUrl(req))) {
 		pluginMgr.loadPlugin(pluginHomePage, function(err, ports) {
 			if (err) {
 				response(req, res, 503, err);
