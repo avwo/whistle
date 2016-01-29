@@ -52,13 +52,13 @@ module.exports = function(req, res, next) {
 	}
 	
 	var pluginMgr = this.pluginMgr;
-	var homePage;
+	var pluginHomePage;
 	if (host == config.localUIHost) {
 		request(req, res, config.uiport);
 	} else if (host == config.WEINRE_HOST) {
 		request(req, res, config.weinreport, true);
-	} else if (homePage = pluginMgr.getPluginFromHomePage(util.getFullUrl(req))) {
-		pluginMgr.loadPlugin(homePage, function(err, ports) {
+	} else if (pluginHomePage = pluginMgr.getPluginFromHomePage(util.getFullUrl(req))) {
+		pluginMgr.loadPlugin(pluginHomePage, function(err, ports) {
 			if (err) {
 				response(req, res, 503, err);
 				return;
