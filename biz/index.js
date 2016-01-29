@@ -68,7 +68,7 @@ module.exports = function(req, res, next) {
 				response(req, res);
 				return;
 			}
-			
+			 
 			request(req, res, ports.uiPort);
 		});
 	} else {
