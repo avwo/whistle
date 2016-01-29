@@ -68,7 +68,11 @@ module.exports = function(req, res, next) {
 				response(req, res);
 				return;
 			}
-			 
+			if (req.headers[config.HTTPS_FIELD] || req.socket.isHttps) {//防止socket长连接导致新请求的头部无法加util.HTTPS_FIELD
+				req.socket.isHttps = true;
+				req.isHttps = true;
+				delete req.headers[config.HTTPS_FIELD];
+			}
 			request(req, res, ports.uiPort);
 		});
 	} else {
