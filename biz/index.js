@@ -28,17 +28,6 @@ function request(req, res, port, weinre) {
 	}));
 }
 
-function response(req, res, statusCode, msg) {
-	util.drain(req, function() {
-		res.writeHead(statusCode || 501, {
-	    	'content-type': 'text/html; charset=utf-8'
-	    });
-		res.src(util.wrapResponse({
-					body: msg || 'Not implemented'
-				}));
-	});
-}
-
 module.exports = function(req, res, next) {
 	var host = req.headers.host || '';
 	var config = this.config;
@@ -61,13 +50,16 @@ module.exports = function(req, res, next) {
 		request(req, res, config.weinreport, true);
 	} else if (pluginHomePage = pluginMgr.getPluginByHomePage(util.getFullUrl(req))) {
 		pluginMgr.loadPlugin(pluginHomePage, function(err, ports) {
-			if (err) {
-				response(req, res, 503, err);
-				return;
-			}
-			
-			if (!ports.uiPort) {
-				response(req, res);
+			if (err || !ports.uiPort) {
+				util.drain(req, function() {
+					res.response(util.wrapResponse({
+							statusCode: err ? 503 : 501,
+							headers: {
+						    	'content-type': 'text/html; charset=utf-8'
+						    },
+							body: err || 'Not implemented'
+					}));
+				});
 				return;
 			}
 			
