@@ -29,12 +29,14 @@ function request(req, res, port, weinre) {
 }
 
 function response(req, res, statusCode, msg) {
-	res.writeHead(statusCode || 501, {
-    	'content-type': 'text/html; charset=utf-8'
-    });
-	res.src(util.wrapResponse({
-				body: msg || 'Not implemented'
-			}));
+	util.drain(req, function() {
+		res.writeHead(statusCode || 501, {
+	    	'content-type': 'text/html; charset=utf-8'
+	    });
+		res.src(util.wrapResponse({
+					body: msg || 'Not implemented'
+				}));
+	});
 }
 
 module.exports = function(req, res, next) {
