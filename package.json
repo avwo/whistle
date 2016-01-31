@@ -19,6 +19,9 @@
   "author": "avenwu <avenwu@vip.qq.com>",
   "contributors": [],
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/avwo/whistle/issues"
+  },
   "homepage": "https://github.com/avwo/whistle",
   "keywords": [
     "proxy",
