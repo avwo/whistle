@@ -51,15 +51,13 @@ module.exports = function(req, res, next) {
 	} else if (pluginHomePage = pluginMgr.getPluginByHomePage(util.getFullUrl(req))) {
 		pluginMgr.loadPlugin(pluginHomePage, function(err, ports) {
 			if (err || !ports.uiPort) {
-				util.drain(req, function() {
-					res.response(util.wrapResponse({
-							statusCode: err ? 503 : 501,
-							headers: {
-						    	'content-type': 'text/html; charset=utf-8'
-						    },
-							body: err || 'Not implemented'
-					}));
-				});
+				res.response(util.wrapResponse({
+					statusCode: err ? 503 : 501,
+					headers: {
+				    	'content-type': 'text/html; charset=utf-8'
+				    },
+					body: err || 'Not implemented'
+				}));
 				return;
 			}
 			request(req, res, ports.uiPort);
