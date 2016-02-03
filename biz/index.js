@@ -62,7 +62,6 @@ module.exports = function(req, res, next) {
 				});
 				return;
 			}
-			
 			request(req, res, ports.uiPort);
 		});
 	} else {
