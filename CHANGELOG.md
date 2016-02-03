@@ -150,9 +150,14 @@ bugfix：修改了路径匹配可能多加一个 `/` 的问题
 3. 新增功能`resCors://use-credentials`(等价于`resCors://enable`)，让语义更清晰
 4. 新增更简洁的命令行命令 `w2`，新版的whistle同时支持`whistle xxx`和`w2 xxx`，如 `w2 start`、`w2 restart`、`w2 stop`、`w2 --help`等
 
-# v0.7.1
+### v0.7.1
 
 新增 [dispatch](https://github.com/avwo/whistle/wiki/功能列表#dispatch) 协议，主要用途：某些情况需要我们根据用户的ip、或ua、或cookie等来动态决定匹配规则，这时可以利用 `dispatch` 来执行自定义脚本来修改url里面的请求参数从而修改请求的url，最后达到修改请求url匹配的规则的目的。
+
+
+# v0.7.2
+
+	bugfix: Cannot read property 'dist-tags' of null
 
 
 具体参考：[功能列表](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#%E7%9B%AE%E5%BD%95)
