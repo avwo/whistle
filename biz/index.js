@@ -54,7 +54,7 @@ module.exports = function(req, res, next) {
 				res.response(util.wrapResponse({
 					statusCode: err ? 503 : 501,
 					headers: {
-				    	'content-type': 'text/html; charset=utf-8'
+				    	'content-type': 'text/plain; charset=utf-8'
 				    },
 					body: err || 'Not implemented'
 				}));
