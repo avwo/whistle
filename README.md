@@ -3,6 +3,8 @@
 [![NPM count](https://img.shields.io/npm/dt/whistle.svg?style=flat)](https://www.npmjs.com/package/whistle)
 [![License](https://img.shields.io/npm/l/whistle.svg?style=flat)](https://www.npmjs.com/package/whistle)
 
+> whistle@0.8.0及以上版本支持通过安装node模块的方式动态加载卸载插件，具体参考：[自定义插件](https://github.com/avwo/whistle/wiki/自定义插件)
+
 
 # 目录
 
