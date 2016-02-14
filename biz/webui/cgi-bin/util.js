@@ -5,6 +5,7 @@ var properties = require('../lib/properties');
 exports.getServerInfo = function getServerInfo() {
 	var info = {
 			version: config.version,
+			nodeVersion: process.version,
 			latestVersion: properties.get('latestVersion'),
 			host: os.hostname(),
 			port: config.port,

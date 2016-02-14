@@ -340,6 +340,7 @@ whistle安装完成后，执行命令 `whistle help` (`v0.7.0`及以上版本也
 7. [更新whistle](https://github.com/avwo/whistle/wiki/更新whistle)
 8. [老版本手册(供参考)](https://github.com/avwo/whistle/wiki/老版本手册)
 9. [CHANGELOG](https://github.com/avwo/whistle/blob/master/CHANGELOG.md)
+10. [自定义插件](https://github.com/avwo/whistle/blob/master/自定义插件)
 
 
 

@@ -6,6 +6,10 @@ var util = require('../lib/util');
 
 function request(req, res, port, weinre) {
 	var options = url.parse(util.getFullUrl(req));
+	if (options.protocol == 'https:') {
+		options.protocol = 'http:';
+		req.headers['x-whistle-https'] = 'true';
+	}
 	options.host = '127.0.0.1';
 	options.method = req.method;
 	options.hostname = null;
@@ -38,10 +42,26 @@ module.exports = function(req, res, next) {
 		}
 	}
 	
+	var pluginMgr = this.pluginMgr;
+	var pluginHomePage;
 	if (host == config.localUIHost) {
 		request(req, res, config.uiport);
 	} else if (host == config.WEINRE_HOST) {
 		request(req, res, config.weinreport, true);
+	} else if (pluginHomePage = pluginMgr.getPluginByHomePage(util.getFullUrl(req))) {
+		pluginMgr.loadPlugin(pluginHomePage, function(err, ports) {
+			if (err || !ports.uiPort) {
+				res.response(util.wrapResponse({
+					statusCode: err ? 503 : 501,
+					headers: {
+				    	'content-type': 'text/plain; charset=utf-8'
+				    },
+					body: err || 'Not implemented'
+				}));
+				return;
+			}
+			request(req, res, ports.uiPort);
+		});
 	} else {
 		next();
 	}
