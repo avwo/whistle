@@ -154,16 +154,17 @@ bugfix：修改了路径匹配可能多加一个 `/` 的问题
 
 新增 [dispatch](https://github.com/avwo/whistle/wiki/功能列表#dispatch) 协议，主要用途：某些情况需要我们根据用户的ip、或ua、或cookie等来动态决定匹配规则，这时可以利用 `dispatch` 来执行自定义脚本来修改url里面的请求参数从而修改请求的url，最后达到修改请求url匹配的规则的目的。
 
+### v0.7.2
+
+	bugfix: Cannot read property 'dist-tags' of null
+
+
 # v0.8.0
 
 1. 新增插件机制，可以很方便的自定义插件，并提供了平时开发中有用的插件作为例子，具体请参考请查看：[自定义whistle插件](https://github.com/avwo/whistle/wiki/%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8F%92%E4%BB%B6)
 2. 加入请求失败自动重试机制，减少请求出错的情况
 
-# v0.7.2
-
-	bugfix: Cannot read property 'dist-tags' of null
-
-
+### .
 具体参考：[功能列表](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#%E7%9B%AE%E5%BD%95)
 	
 
