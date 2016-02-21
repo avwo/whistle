@@ -164,11 +164,16 @@ bugfix：修改了路径匹配可能多加一个 `/` 的问题
 1. 新增插件机制，可以很方便的自定义插件，并提供了平时开发中有用的插件作为例子，具体请参考请查看：[自定义whistle插件](https://github.com/avwo/whistle/wiki/%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8F%92%E4%BB%B6)
 2. 加入请求失败自动重试机制，减少请求出错的情况
 
-# v0.8.1
+### v0.8.1
 
 1. whistle ui -> about -> 插件列表：插件列表显示按ascii码排序
 2. 缓存[dispatch](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#dispatch)的script，提升速度
 3. 新增[attachment](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#attachment)用于设置下载文件的响应头 `content-disposition: attachment; filename="attachment"`
+
+# v0.8.2
+
+1. 修复自定义插件不能获取[values]()的值，即 `pattern plugin://{key}` 无法正确获取ruleValue的问题
+2. 限制自定义插件的名称不能与内置的协议名称冲突，如果冲突则该自定义插件将无效
 
 ### -
 具体参考：[功能列表](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#%E7%9B%AE%E5%BD%95)
