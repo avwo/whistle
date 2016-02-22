@@ -170,10 +170,15 @@ bugfix：修改了路径匹配可能多加一个 `/` 的问题
 2. 缓存[dispatch](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#dispatch)的script，提升速度
 3. 新增[attachment](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#attachment)用于设置下载文件的响应头 `content-disposition: attachment; filename="attachment"`
 
-# v0.8.2
+### v0.8.2
 
 1. 修复自定义插件不能获取[values]()的值，即 `pattern plugin://{key}` 无法正确获取ruleValue的问题
 2. 限制自定义插件的名称不能与内置的协议名称冲突，如果冲突则该自定义插件将无效
+
+# v0.8.3
+
+1. 新增[etag](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#etag)协议，用于修改请求头的etag
+2. 支持通过`ua://`、`referer://`、`reqType://`、`resType://`等，把对应的字段置空
 
 ### -
 具体参考：[功能列表](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#%E7%9B%AE%E5%BD%95)
