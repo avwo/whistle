@@ -178,9 +178,7 @@ bugfix：修改了路径匹配可能多加一个 `/` 的问题
 # v0.9.0
 1. **重要bugfix：**Fix https post数据时可能出现pending的问题
 2. 新增[etag](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#etag)协议，用于修改请求头的etag
-3. 新增[reqCharset](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#reqcharset)协议，用于修改请求内容的编码
-4. 新增[resCharset](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#etag)协议，用于修改响应内容的编码
-5. 支持通过`ua://`、`referer://`、`reqType://`、`resType://`等，把对应的字段置空
+3. 支持通过`ua://`、`referer://`、`reqType://`、`resType://`等，把对应的字段置空
 
 ### -
 具体参考：[功能列表](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#%E7%9B%AE%E5%BD%95)
