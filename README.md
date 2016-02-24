@@ -3,9 +3,7 @@
 [![NPM count](https://img.shields.io/npm/dt/whistle.svg?style=flat)](https://www.npmjs.com/package/whistle)
 [![License](https://img.shields.io/npm/l/whistle.svg?style=flat)](https://www.npmjs.com/package/whistle)
 
-> whistle@0.8.0及以上版本支持通过安装node模块的方式动态加载卸载插件，具体参考：[自定义插件](https://github.com/avwo/whistle/wiki/自定义插件)；
-> whistle@0.9.0及以上版本修复了[启用HTTPS](https://github.com/avwo/whistle/wiki/启用HTTPS)后POST请求可能失败的问题，建议大家[更新whistle](https://github.com/avwo/whistle/wiki/更新whistle)到最新的版本
-
+> whistle@0.9.0及以上版本修复了[启用HTTPS](https://github.com/avwo/whistle/wiki/启用HTTPS)后POST请求可能失败的问题，建议大家[更新到最新版本](https://github.com/avwo/whistle/wiki/更新whistle)，变更点请查看：[CHANGELOG](https://github.com/avwo/whistle/blob/master/CHANGELOG.md#-)
 
 # 目录
 
