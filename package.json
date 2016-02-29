@@ -53,7 +53,10 @@
     "weinre": "2.0.0-pre-I0Z7U9OV"
   },
   "scripts": {
-    "start": "node app.js"
+    "run": "node bin/whistle.js run -p 8888",
+    "start": "node bin/whistle.js start -p 8888",
+    "restart": "node bin/whistle.js restart",
+    "stop": "node bin/whistle.js stop"
   },
   "engines": {
     "node": ">= 0.10.0"
