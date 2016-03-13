@@ -10,6 +10,17 @@
 1. [概述](#概述)
 2. [安装](#安装)
 3. [使用方法](#使用方法)
+	- [**功能列表**](https://github.com/avwo/whistle/wiki/功能列表)
+	- [界面操作](https://github.com/avwo/whistle/wiki/界面操作)
+	- [配置模式](https://github.com/avwo/whistle/wiki/配置模式)
+	- [匹配方式](https://github.com/avwo/whistle/wiki/匹配方式) 
+	- [启用HTTPS](https://github.com/avwo/whistle/wiki/启用HTTPS)
+	- [JSON格式](https://github.com/avwo/whistle/wiki/JSON格式)
+	- [更新whistle](https://github.com/avwo/whistle/wiki/更新whistle)
+	- [老版本手册(供参考)](https://github.com/avwo/whistle/wiki/老版本手册)
+	- [CHANGELOG](https://github.com/avwo/whistle/blob/master/CHANGELOG.md)
+	- [自定义插件](https://github.com/avwo/whistle/wiki/自定义插件)
+
 
 ### 概述
 
@@ -196,25 +207,7 @@ whistle安装完成后，执行命令 `whistle help` (`v0.7.0`及以上版本也
 *Note: 也支持直接用ip访问配置页面： [http://whistleServerIP:whistlePort/](http://127.0.0.1:8899)*
 
 
-至此，whistle已经安装启动配置完毕，匹配方式、规则配置、ui操作、查看抓包数据、重发请求、构造请求等功能请参考：
-
-# [使用方法](https://github.com/avwo/whistle/wiki)
-
-[https://github.com/avwo/whistle/wiki](https://github.com/avwo/whistle/wiki)
-
-目录
-
-1. [**功能列表**](https://github.com/avwo/whistle/wiki/功能列表)
-2. [界面操作](https://github.com/avwo/whistle/wiki/界面操作)
-3. [配置模式](https://github.com/avwo/whistle/wiki/配置模式)
-4. [匹配方式](https://github.com/avwo/whistle/wiki/匹配方式) 
-5. [启用HTTPS](https://github.com/avwo/whistle/wiki/启用HTTPS)
-6. [JSON格式](https://github.com/avwo/whistle/wiki/JSON格式)
-7. [更新whistle](https://github.com/avwo/whistle/wiki/更新whistle)
-8. [老版本手册(供参考)](https://github.com/avwo/whistle/wiki/老版本手册)
-9. [CHANGELOG](https://github.com/avwo/whistle/blob/master/CHANGELOG.md)
-10. [自定义插件](https://github.com/avwo/whistle/wiki/自定义插件)
-
+至此，whistle已经安装启动配置完毕，匹配方式、规则配置、ui操作、查看抓包数据、重发请求、构造请求等功能请参考：[使用方法](https://github.com/avwo/whistle/wiki)
 
 
 有什么问题可以通过QQ群反馈： 462558941
