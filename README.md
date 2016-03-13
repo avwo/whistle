@@ -15,7 +15,7 @@
 
 whistle是用node实现的跨平台web调试代理工具，支持windows、mac、linux等操作系统，支持操作http、https、websocket请求，查看请求数据等，可以部署在本地电脑、虚拟机、或远程服务器，并通过本地浏览器访问whistle的配置页面，查看操作请求；内置 `weinre` 支持移动端页面调试，且通过log模块可以自动获取页面js错误、查看console打印出来的数据及注入自定义的js手动调试页面，有以下主要特点(详细内容请参考：[使用方法](https://github.com/avwo/whistle/wiki))：
 
-- 简单的配置方式，把每个规则抽象成一个uri，并通过配置请求url到规则uri，实现对请求的操作
+- 简单自然的配置方式，把每个规则抽象成一个uri，并通过配置请求url到规则uri，实现对请求的操作
 	1. 匹配方式 --> 操作规则
 
 			pattern   operator-uri 
@@ -29,156 +29,23 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 	2. 路径匹配：把规则作用于该路径或该路径的子路径
 	3. 正则匹配：通过正则匹配规则，支持通过子匹配把请求url里面的参数带到新的url
 
-- 丰富的操作规则(完整功能请参考：[功能列表](https://github.com/avwo/whistle/wiki/功能列表))：
+- 丰富的操作规则，通过简单类hosts的映射配置，可以实现如下功能(完整功能请参考：[功能列表](https://github.com/avwo/whistle/wiki/功能列表))：
 
-	1. 配置host： 
-
-			pattern ip
-			#或
-			ip pattern
-	
-			#组合方式
-			ip pattern1 pattern2 ... patternN
-			
-		完整功能请参考：[功能列表](https://github.com/avwo/whistle/wiki/功能列表)，[配置模式](https://github.com/avwo/whistle/wiki/配置模式)
-
-	2. 修改请求： 请求方法、请求头、修改内容、延迟发送请求、限制请求速度，设置timeout
-
-			pattern req://path 
-			#或 
-			req://path pattern
-	
-			#组合方式
-			req://path pattern1 pattern2 ... patternN
-			
-		完整功能请参考：[功能列表](https://github.com/avwo/whistle/wiki/功能列表)
-
-	3. 修改响应： 响应状态码、响应头、修改内容、 延迟响应、 限制响应速度
-
-			pattern res://path 
-			#或 
-			res://path pattern
-	
-			#组合方式
-			res://path pattern1 pattern2 ... patternN
-
-		完整功能请参考：[功能列表](https://github.com/avwo/whistle/wiki/功能列表)，[配置模式](https://github.com/avwo/whistle/wiki/配置模式)
-
+	1. 配置host
+	2. 修改请求，包括： 请求方法、请求头、修改内容、延迟发送请求、限制请求速度，设置timeout
+	3. 修改响应，包括： 响应状态码、响应头、修改内容、 延迟响应、 限制响应速度
 	4. 替换请求： 
 		
-		1) 本地替换: 
-
-			pattern [x]file://path1|path2... 
-			#或 
-			[x]file://path1|path2|...|pathN pattern
-
-			#支持模板替换，主要用于替换jsonp请求
-			pattern [x]tpl://path1|path2...
-			#或
-			[x]tpl://path1|path2|...|pathN pattern
-
-			#组合方式
-			[x]file://path1|path2|...|pathN pattern1 pattern2 ... patternN
-			[x]tpl://path1|path2|...|pathN pattern1 pattern2 ... patternN
-
-		2) 设置代理： 
-
-			#设置http、https代理， host为ip或域名
-			pattern proxy://host:port
-			pattern proxy://username:password@host:port #需要用户名密码的情况
-			pattern proxy://u1:p1|u2:p2|un|pn@host:port #同时带上多个用户名密码
-			#或
-			proxy://host:port pattern
-			proxy://username:password@host:port pattern #需要用户名密码的情况
-			proxy://u1:p1|u2:p2|un|pn@host:port pattern #同时带上多个用户名密码
-
-			#设置socksv5代理
-			pattern socks://host:port
-			pattern socks://username:password@host:port  #需要用户名密码的情况
-			#或 
-			socks://host:port pattern
-			socks://username:password@host:port pattern #需要用户名密码的情况
-
-			#组合方式
-			proxy://host:port pattern1 pattern2 ... patternN
-			socks://host:port pattern1 pattern2 ... patternN
-
-		3) url替换： 
-			
-			pattern [http[s]://]path
-			#或
-			[http[s]://]path pattern #pattern必须为正则表达式
-
-			#不支持组合模式
-
-		4) 自定义规则： 如果上述规则无法满足需求，还可以自定义规则，详见：[https://github.com/avwo/whistle/wiki](https://github.com/avwo/whistle/wiki)。
-		
-		完整功能请参考：[功能列表](https://github.com/avwo/whistle/wiki/功能列表)，[配置模式](https://github.com/avwo/whistle/wiki/配置模式)
-		
-
-	5. 内置weinre： 利用pc浏览器调试手机页面
-
-			# `weinreId` 表示任意一个id，主要用于把请求按类型分组，方便调试
-			pattern weinre://weinreId 
-			#或
-			weinre://weinreId pattern
-
-			#组合模式
-			weinre://weinreId pattern1 pattern2 ... patternN
-		
-		完整功能请参考：[功能列表](https://github.com/avwo/whistle/wiki/功能列表)，[配置模式](https://github.com/avwo/whistle/wiki/配置模式)
-
-	6. 设置过滤： [拦截https请求](https://github.com/avwo/whistle/wiki/%E5%90%AF%E7%94%A8HTTPS)、隐藏抓包数据、禁用上述各种协议；可以用这个filter来做排除功能。
-
-		1) 拦截https请求：只有配置该过滤器，https及websocket的抓包，替换功能才能启用
-
-			# 建议使用页面的https菜单功能来全局启用https拦截
-			pattern filter://https
-			#或
-			filter://https pattern
-
-			#组合模式
-			filter://https pattern1 pattern2 ... patternN
-
-		2) 隐藏抓包数据：某些请求的数据不想在抓包列表展示出来，以免影响查看其它请求
-		
-			pattern filter://hide
-			#或
-			filter://hide pattern
-
-			#组合模式
-			filter://hide pattern1 pattern2 ... patternN
-
-		3) 禁用规则配置：可以把配置页面配置的各种规则禁用掉，包括：host、req、res、rule、prepend、body、append、weinre等，下面用 `rule` 代替上述名称
-
-			pattern filter://rule
-			#或
-			filter://rule pattern
-
-			#组合模式
-			filter://rule pattern1 pattern2 ... patternN						
-
-		4) 组合功能：
-			
-			pattern filter://https|hide|host|req|res|rule|prepend|body|append|weinre 
-			#或
-			filter://https|hide|host|req|res|rule|prepend|body|append|weinre pattern
-
-			#组合模式
-			filter://https|hide|host|...|weinre pattern1 pattern2 ... patternN
-			
-		5) 排除功能：
-			
-			#对url里面包含alibaba的请求禁用https拦截，这样whistle就不会拦截https请求
-			/alibaba/ filter://intercept
-			
-			# 如果采用filter://https方式开启的https拦截，可以采用下面的方式禁用一部分拦截
-			/alibaba/ filter://intercept
-			/./ filter://https
-
-
-
-*Note: `[]` 表示可选，前面带 `x` 的协议(如：`xfile`)，表示如果本地请求不到，会直接请求线上， 路径组合 `path1|...|pathN` 表示whistle会顺序在这些文件或目录里面找，找到为止。*
+		- 替换本地文件(支持替换jsonp请求)
+		- 设置代理(支持http、socks代理)
+		- 请求转发
+		- 通过插件扩展
+	
+	5. 内置weinre，通过weinre可以修改手机端或远程网页的DOM结构，调试页面等
+	6. 设置过滤，用于过滤一些已设置的规则([filter](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#filter)、[disable](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#disable))
+	7. 导出数据：[exports](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#exports)、[exportsUrl](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#exportsurl)、[reqWrite](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#reqwrite)、[resWrite](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#reswrite)、[reqRawWrite](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#reqrawwrite)、[resRawWrite](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#resrawwrite)
+	8. 自定义脚本修改url的请求参数，实现动态匹配规则的功能：[dispatch](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#dispatch)
+	
 
 更多功能请查看：[https://github.com/avwo/whistle/wiki](https://github.com/avwo/whistle/wiki)
 
