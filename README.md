@@ -47,8 +47,6 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 	8. 自定义脚本修改url的请求参数，实现动态匹配规则的功能：[dispatch](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#dispatch)
 	
 
-更多功能请查看：[https://github.com/avwo/whistle/wiki](https://github.com/avwo/whistle/wiki)
-
 - 友好的[配置页面](https://github.com/avwo/whistle/wiki/界面操作)，支持配置分组，高亮显示，可以把规则内容配置的ui的values系统里面，无需用本地文件承载，查看请求信息，重发请求，构造请求:
 
 	1. 配置页面：[http://local.whistlejs.com/](http://local.whistlejs.com/)
@@ -58,6 +56,9 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 	2. 请求列表：[http://local.whistlejs.com/index.html](http://local.whistlejs.com/index.html)
 
 		![Network](https://raw.githubusercontent.com/avwo/whistleui/master/img/network.png)
+		
+更多功能请查看：[https://github.com/avwo/whistle/wiki](https://github.com/avwo/whistle/wiki)
+
 
 下面先讲下如何安装启动whistle，然后再对上述功能给出一些例子。
 
