@@ -15,43 +15,44 @@
 
 whistle是用node实现的跨平台web调试代理工具，支持windows、mac、linux等操作系统，支持操作http、https、websocket请求，查看请求数据等，可以部署在本地电脑、虚拟机、或远程服务器，并通过本地浏览器访问whistle的配置页面，查看操作请求；内置 `weinre` 支持移动端页面调试，且通过log模块可以自动获取页面js错误、查看console打印出来的数据及注入自定义的js手动调试页面，有以下主要特点(详细内容请参考：[使用方法](https://github.com/avwo/whistle/wiki))：
 
-- 简单自然的配置方式，把每个规则抽象成一个uri，并通过配置请求url到规则uri，实现对请求的操作
-	1. 匹配方式 --> 操作规则
+1. 简单自然的配置方式，把每个规则抽象成一个uri，并通过配置请求url到规则uri，实现对请求的操作
+	
+	-  匹配方式 --> 操作规则
 
 			pattern   operator-uri 
 
-	2. 如果 `pattern` 和 `operator-uri` 其中有一个不是http[s]、ws[s]协议，则两个的位置可以调换
+	- 如果 `pattern` 和 `operator-uri` 其中有一个不是http[s]、ws[s]协议，则两个的位置可以调换
 		
 			operator-uri pattern
 
-- 灵活的匹配方式(**pattern**)，支持三种[匹配方式](https://github.com/avwo/whistle/wiki/%E5%8C%B9%E9%85%8D%E6%96%B9%E5%BC%8F)：
-	1. 域名匹配：把规则作用于所有该域名的请求
-	2. 路径匹配：把规则作用于该路径或该路径的子路径
-	3. 正则匹配：通过正则匹配规则，支持通过子匹配把请求url里面的参数带到新的url
+2. 灵活的匹配方式(**pattern**)，支持三种[匹配方式](https://github.com/avwo/whistle/wiki/%E5%8C%B9%E9%85%8D%E6%96%B9%E5%BC%8F)：
+	- 域名匹配：把规则作用于所有该域名的请求
+	- 路径匹配：把规则作用于该路径或该路径的子路径
+	-. 正则匹配：通过正则匹配规则，支持通过子匹配把请求url里面的参数带到新的url
 
-- 丰富的操作规则，通过简单类hosts的映射配置，可以实现如下功能(完整功能请参考：[功能列表](https://github.com/avwo/whistle/wiki/功能列表))：
+3. 丰富的操作规则，通过简单类hosts的映射配置，可以实现如下功能(完整功能请参考：[功能列表](https://github.com/avwo/whistle/wiki/功能列表))：
 
-	1. 配置host
-	2. 修改请求，包括： 请求方法、请求头、修改内容、延迟发送请求、限制请求速度，设置timeout
-	3. 修改响应，包括： 响应状态码、响应头、修改内容、 延迟响应、 限制响应速度
-	4. 替换请求： 
+	- 配置host
+	- 修改请求，包括： 请求方法、请求头、修改内容、延迟发送请求、限制请求速度，设置timeout
+	- 修改响应，包括： 响应状态码、响应头、修改内容、 延迟响应、 限制响应速度
+	-. 替换请求： 
 		- 替换本地文件(支持替换jsonp请求)
 		- 设置代理(支持http、socks代理)
 		- 请求转发
 		- 通过插件扩展
-	5. 内置weinre，通过weinre可以修改手机端或远程网页的DOM结构，调试页面等
-	6. 设置过滤，用于过滤一些已设置的规则([filter](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#filter)、[disable](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#disable))
-	7. 导出数据：[exports](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#exports)、[exportsUrl](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#exportsurl)、[reqWrite](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#reqwrite)、[resWrite](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#reswrite)、[reqRawWrite](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#reqrawwrite)、[resRawWrite](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#resrawwrite)
-	8. 自定义脚本修改url的请求参数，实现动态匹配规则的功能：[dispatch](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#dispatch)
+	- 内置weinre，通过weinre可以修改手机端或远程网页的DOM结构，调试页面等
+	- 设置过滤，用于过滤一些已设置的规则([filter](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#filter)、[disable](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#disable))
+	-. 导出数据：[exports](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#exports)、[exportsUrl](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#exportsurl)、[reqWrite](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#reqwrite)、[resWrite](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#reswrite)、[reqRawWrite](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#reqrawwrite)、[resRawWrite](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#resrawwrite)
+	-. 自定义脚本修改url的请求参数，实现动态匹配规则的功能：[dispatch](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#dispatch)
 	
 
-- 友好的[配置页面](https://github.com/avwo/whistle/wiki/界面操作)，支持配置分组，高亮显示，可以把规则内容配置的ui的values系统里面，无需用本地文件承载，查看请求信息，重发请求，构造请求:
+4. 友好的[配置页面](https://github.com/avwo/whistle/wiki/界面操作)，支持配置分组，高亮显示，可以把规则内容配置的ui的values系统里面，无需用本地文件承载，查看请求信息，重发请求，构造请求:
 
-	1. 配置页面：[http://local.whistlejs.com/](http://local.whistlejs.com/)
+	- 配置页面：[http://local.whistlejs.com/](http://local.whistlejs.com/)
 		
 		![Rules](https://raw.githubusercontent.com/avwo/whistleui/master/img/rules.png)
 
-	2. 请求列表：[http://local.whistlejs.com/index.html](http://local.whistlejs.com/index.html)
+	- 请求列表：[http://local.whistlejs.com/index.html](http://local.whistlejs.com/index.html)
 
 		![Network](https://raw.githubusercontent.com/avwo/whistleui/master/img/network.png)
 		
