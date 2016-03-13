@@ -29,6 +29,8 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 	- 域名匹配：把规则作用于所有该域名的请求
 	- 路径匹配：把规则作用于该路径或该路径的子路径
 	-. 正则匹配：通过正则匹配规则，支持通过子匹配把请求url里面的参数带到新的url
+	
+更多功能请参考：[https://github.com/avwo/whistle/wiki/匹配方式](https://github.com/avwo/whistle/wiki/匹配方式)
 
 3. 丰富的操作规则，通过简单类hosts的映射配置，可以实现如下功能(完整功能请参考：[功能列表](https://github.com/avwo/whistle/wiki/功能列表))：
 
@@ -45,6 +47,8 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 	- 导出数据：[exports](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#exports)、[exportsUrl](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#exportsurl)、[reqWrite](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#reqwrite)、[resWrite](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#reswrite)、[reqWriteRaw](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#reqwriteraw)、[resWriteRaw](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#reswriteraw)
 	- 自定义脚本修改url的请求参数，实现动态匹配规则的功能：[dispatch](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#dispatch)
 	- 支持自动捕获手机端或远程页面的js异常，且可以嵌入脚本打印console等：[log](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#log)、[界面操作](https://github.com/avwo/whistle/wiki/%E7%95%8C%E9%9D%A2%E6%93%8D%E4%BD%9C)
+	
+更多功能请参考：[https://github.com/avwo/whistle/wiki/功能列表](https://github.com/avwo/whistle/wiki/功能列表)
 	
 
 4. 友好的[配置页面](https://github.com/avwo/whistle/wiki/界面操作)，支持配置分组，高亮显示，可以把规则内容配置的ui的values系统里面，无需用本地文件承载，查看请求信息，重发请求，构造请求:
