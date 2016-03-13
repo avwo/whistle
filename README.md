@@ -28,7 +28,7 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 2. 灵活的匹配方式(**pattern**)，支持三种[匹配方式](https://github.com/avwo/whistle/wiki/%E5%8C%B9%E9%85%8D%E6%96%B9%E5%BC%8F)：
 	- 域名匹配：把规则作用于所有该域名的请求
 	- 路径匹配：把规则作用于该路径或该路径的子路径
-	-. 正则匹配：通过正则匹配规则，支持通过子匹配把请求url里面的参数带到新的url
+	- 正则匹配：通过正则匹配规则，支持通过子匹配把请求url里面的参数带到新的url
 	
 更多功能请参考：[https://github.com/avwo/whistle/wiki/匹配方式](https://github.com/avwo/whistle/wiki/匹配方式)
 
