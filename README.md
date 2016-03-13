@@ -35,15 +35,16 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 	- 配置host
 	- 修改请求，包括： 请求方法、请求头、修改内容、延迟发送请求、限制请求速度，设置timeout
 	- 修改响应，包括： 响应状态码、响应头、修改内容、 延迟响应、 限制响应速度
-	-. 替换请求： 
+	- 替换请求： 
 		- 替换本地文件(支持替换jsonp请求)
 		- 设置代理(支持http、socks代理)
 		- 请求转发
 		- 通过插件扩展
 	- 内置weinre，通过weinre可以修改手机端或远程网页的DOM结构，调试页面等
 	- 设置过滤，用于过滤一些已设置的规则([filter](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#filter)、[disable](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#disable))
-	-. 导出数据：[exports](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#exports)、[exportsUrl](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#exportsurl)、[reqWrite](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#reqwrite)、[resWrite](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#reswrite)、[reqRawWrite](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#reqrawwrite)、[resRawWrite](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#resrawwrite)
-	-. 自定义脚本修改url的请求参数，实现动态匹配规则的功能：[dispatch](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#dispatch)
+	- 导出数据：[exports](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#exports)、[exportsUrl](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#exportsurl)、[reqWrite](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#reqwrite)、[resWrite](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#reswrite)、[reqRawWrite](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#reqrawwrite)、[resRawWrite](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#resrawwrite)
+	- 自定义脚本修改url的请求参数，实现动态匹配规则的功能：[dispatch](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#dispatch)
+	- 支持自动捕获手机端或远程页面的js异常，且可以嵌入脚本打印console等：[log](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#log)、[界面操作](https://github.com/avwo/whistle/wiki/%E7%95%8C%E9%9D%A2%E6%93%8D%E4%BD%9C)
 	
 
 4. 友好的[配置页面](https://github.com/avwo/whistle/wiki/界面操作)，支持配置分组，高亮显示，可以把规则内容配置的ui的values系统里面，无需用本地文件承载，查看请求信息，重发请求，构造请求:
