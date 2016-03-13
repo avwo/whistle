@@ -35,12 +35,10 @@ whistle是用node实现的跨平台web调试代理工具，支持windows、mac�
 	2. 修改请求，包括： 请求方法、请求头、修改内容、延迟发送请求、限制请求速度，设置timeout
 	3. 修改响应，包括： 响应状态码、响应头、修改内容、 延迟响应、 限制响应速度
 	4. 替换请求： 
-		
 		- 替换本地文件(支持替换jsonp请求)
 		- 设置代理(支持http、socks代理)
 		- 请求转发
 		- 通过插件扩展
-	
 	5. 内置weinre，通过weinre可以修改手机端或远程网页的DOM结构，调试页面等
 	6. 设置过滤，用于过滤一些已设置的规则([filter](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#filter)、[disable](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#disable))
 	7. 导出数据：[exports](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#exports)、[exportsUrl](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#exportsurl)、[reqWrite](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#reqwrite)、[resWrite](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#reswrite)、[reqRawWrite](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#reqrawwrite)、[resRawWrite](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#resrawwrite)
