@@ -13,7 +13,7 @@
   ],
   "sockets": 8,
   "keepAlive": true,
-  "keepAliveMsecs": 3600,
+  "keepAliveMsecs": 10000,
   "timeout": 36000,
   "httpsProxyHost": "x-whistle-proxy-host",
   "author": "avenwu <avenwu@vip.qq.com>",
