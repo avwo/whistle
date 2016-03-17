@@ -14,7 +14,7 @@
   "sockets": 8,
   "keepAlive": true,
   "keepAliveMsecs": 10000,
-  "responseTimeout": 12000,
+  "responseTimeout": 8000,
   "timeout": 36000,
   "httpsProxyHost": "x-whistle-proxy-host",
   "author": "avenwu <avenwu@vip.qq.com>",
