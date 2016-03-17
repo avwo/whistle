@@ -54,8 +54,8 @@
     "weinre": "2.0.0-pre-I0Z7U9OV"
   },
   "scripts": {
-    "run": "node bin/whistle.js run -p 8888",
-    "start": "node bin/whistle.js start -p 8888",
+    "dev": "node bin/whistle.js run -p 8888",
+    "start": "node bin/whistle.js start",
     "restart": "node bin/whistle.js restart",
     "stop": "node bin/whistle.js stop"
   },
