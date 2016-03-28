@@ -1,7 +1,7 @@
 {
   "name": "whistle",
   "description": "HTTP, HTTPS, Websocket debugging proxy tool",
-  "version": "0.9.2",
+  "version": "0.9.3",
   "dataDirname": ".whistle",
   "localUIHost": "local.whistlejs.com",
   "whistleSsl": "whistle-ssl",
@@ -11,7 +11,7 @@
     "uidataport",
     "weinreport"
   ],
-  "sockets": 8,
+  "sockets": 12,
   "keepAlive": true,
   "keepAliveMsecs": 10000,
   "responseTimeout": 6000,
