@@ -184,9 +184,16 @@ bugfix：修改了路径匹配可能多加一个 `/` 的问题
 1. 新增[reqCharset](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#reqcharset)和[resCharset](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#rescharset)两个协议，分别用于快速修改请求、响应的编码
 2. bugfix：修复可能出现请求出错的情况，https://github.com/nodejs/node/pull/4482
 
-# v0.9.2
+### v0.9.2
 
 bugfix：修复keepAlive可能导致请求无法响应的问题
+
+### v0.9.3
+1. feature: 加入 `disable://ajax`，用于删除请求头 `x-requested-with`
+2. feature: 新增[accept](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#accept)用于修改请求头的accept字段 
+3. feature: 加入插件开发过程中输出详细日志，[https://github.com/avwo/whistle/issues/3](https://github.com/avwo/whistle/issues/3)
+4. refactor: 修改 `reqType`，`resType`的默认行为，如果没有 `;`，则自动保留原有的编码，如
+
 
 ### -
 具体参考：[功能列表](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#%E7%9B%AE%E5%BD%95)
