@@ -47,7 +47,7 @@ function showUsage(isRunning, options) {
 	}).join('\n'));
 	warn('    Note: If the following URLs are unable to access, check the server\'s firewall settings');
 	info('[i] Second, configure your device to use ' + config.name + ' as its HTTP and HTTPS proxy on `IP:' + port + '`');
-	info('[i] Last, use Chrome to visit http://' + config.localUIHost + '/ to get started');
+	console.log(colors.cyan('[i] Last, use'), colors.cyan(colors.bold('Chrome')), colors.cyan('to visit'), colors.cyan(colors.bold('http://' + config.localUIHost + '/')), colors.cyan('to get started'));
 }
 
 function showStartupInfo(err, options) {
