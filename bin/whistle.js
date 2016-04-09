@@ -41,7 +41,7 @@ function showUsage(isRunning, options) {
 		info('[i] ' + config.name + ' started');
 	}
 	
-	info('[i] First, please use your device to access the following URL list, gets the IP of the URL you can access:');
+	info('[i] First, use your device to access the following URL list, gets the IP of the URL you can access:');
 	info(getIpList().map(function(ip) {
 		return '    http://' + ip + (port ? ':' + port : '') + '/';
 	}).join('\n'));
