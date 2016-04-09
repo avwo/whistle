@@ -2,9 +2,24 @@
 
 var program = require('../../starting');
 var path = require('path');
+var os = require('os');
 var config = require('../lib/config');
 var util = require('../lib/util');
 var colors = require('colors/safe');
+
+function getIpList() {
+	var ipList = [];
+	var ifaces = os.networkInterfaces();
+	Object.keys(ifaces).forEach(function(ifname) {
+		 ifaces[ifname].forEach(function (iface) {
+			    if (iface.family == 'IPv4') {
+			    	ipList.push(iface.address);
+			    }
+			  });
+	});
+	
+	return ipList;
+}
 
 function error(msg) {
 	console.log(colors.red(msg));
@@ -18,7 +33,8 @@ function info(msg) {
 	console.log(colors.cyan(msg));
 }
 
-function showUsage(isRunning) {
+function showUsage(isRunning, options) {
+	var port = options.port || config.port;
 	if (isRunning) {
 		warn('[!] ' + config.name + ' is running');
 	} else {
@@ -29,7 +45,7 @@ function showUsage(isRunning) {
 
 function showStartupInfo(err, options) {
 	if (!err || err === true) {
-		return showUsage(err);
+		return showUsage(err, options);
 	}
 	options.port = options.port || config.port;
 	if (/listen EADDRINUSE :::(\d+)/.test(err) && RegExp.$1 == options.port) {
@@ -49,9 +65,9 @@ program.setConfig({
 	main: path.join(__dirname, '../index.js'),
 	name: config.name,
 	version: config.version,
-	runCallback: function() {
+	runCallback: function(options) {
 		console.log('Press [Ctrl+C] to stop ' + config.name + '...\n');
-		showUsage();
+		showUsage(false, options);
 	},
 	startCallback: showStartupInfo,
 	restartCallback: showStartupInfo,
