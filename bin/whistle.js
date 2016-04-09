@@ -30,7 +30,7 @@ function warn(msg) {
 }
 
 function info(msg) {
-	console.log(colors.cyan(msg));
+	console.log(colors.green(msg));
 }
 
 function showUsage(isRunning, options) {
@@ -41,15 +41,15 @@ function showUsage(isRunning, options) {
 		info('[i] ' + config.name + ' started');
 	}
 	
-	info('[i] First, use your device to visit the following URL list, gets the IP of the URL you can visit:');
+	info('[i] First, use your device to visit the following URL list, gets the ' + colors.bold('IP') + ' of the URL you can visit:');
 	info(getIpList().map(function(ip) {
-		return '    http://' + ip + (port ? ':' + port : '') + '/';
+		return '    http://' + colors.bold(ip) + (port ? ':' + port : '') + '/';
 	}).join('\n'));
 	
 	warn('    Note: If the following URLs are unable to access, check the server\'s firewall settings');
-	warn('          For more information, please visit https://github.com/avwo/whistle');
-	info('[i] Second, configure your device to use ' + config.name + ' as its HTTP and HTTPS proxy on `IP:' + port + '`');
-	console.log(colors.cyan('[i] Last, use'), colors.cyan(colors.bold('Chrome')), colors.cyan('to visit'), colors.cyan(colors.bold('http://' + config.localUIHost + '/')), colors.cyan('to get started'));
+	warn('          For more information, please visit ' + colors.bold('https://github.com/avwo/whistle'));
+	info('[i] Second, configure your device to use ' + config.name + ' as its HTTP and HTTPS proxy on ' + colors.bold('IP:') + port);
+	info('[i] Last, use ' + colors.bold('Chrome') + ' to visit ' + colors.bold('http://' + config.localUIHost + '/') + ' to get started');
 }
 
 function showStartupInfo(err, options) {
