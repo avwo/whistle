@@ -38,9 +38,16 @@ function showUsage(isRunning, options) {
 	if (isRunning) {
 		warn('[!] ' + config.name + ' is running');
 	} else {
-		info('[!] ' + config.name + ' started');
+		info('[i] ' + config.name + ' started');
 	}
-	info('[i] visit http://' + config.localUIHost + '/ to get started');
+	
+	info('[i] First, please use your device to access the following URL list, gets the IP of the URL you can access:');
+	info(getIpList().map(function(ip) {
+		return '    http://' + ip + (port ? ':' + port : '') + '/';
+	}).join('\n'));
+	warn('    Note: If the following URLs are unable to access, check the server\'s firewall settings');
+	info('[i] Second, configure your device to use ' + config.name + ' as its HTTP and HTTPS proxy on `IP:' + port + '`');
+	info('[i] Last, use Chrome to visit http://' + config.localUIHost + '/ to get started');
 }
 
 function showStartupInfo(err, options) {
