@@ -49,7 +49,10 @@ program.setConfig({
 	main: path.join(__dirname, '../index.js'),
 	name: config.name,
 	version: config.version,
-	runCallback: showUsage,
+	runCallback: function() {
+		console.log('Press [Ctrl+C] to stop ' + config.name + '...\n');
+		showUsage();
+	},
 	startCallback: showStartupInfo,
 	restartCallback: showStartupInfo,
 	stopCallback: function(err) {
