@@ -67,7 +67,7 @@ function showStartupInfo(err, options) {
 	}
 	
 	console.log('\n');
-	error(err.stack || err);
+	error(err.stack ? 'Date: ' + util.formatDate() + '\n' + err.stack : err);
 }
 
 program.setConfig({
