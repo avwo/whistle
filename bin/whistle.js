@@ -4,28 +4,45 @@ var program = require('../../starting');
 var path = require('path');
 var config = require('../lib/config');
 var util = require('../lib/util');
+var colors = require('colors/safe');
 
-function showUsage() {
-	console.log('[!] ' + config.name + ( err ? ' is running.' : ' started.'));
-	console.log('[i] visit http://' + config.localUIHost + '/ to get started');
+function error(msg) {
+	console.log(colors.red(msg));
+}
+
+function warn(msg) {
+	console.log(colors.yellow(msg));
+}
+
+function info(msg) {
+	console.log(colors.cyan(msg));
+}
+
+function showUsage(isRunning) {
+	if (isRunning) {
+		warn('[!] ' + config.name + ' is running');
+	} else {
+		info('[!] ' + config.name + ' started');
+	}
+	info('[i] visit http://' + config.localUIHost + '/ to get started');
 }
 
 function showStartupInfo(err, options) {
 	if (!err || err === true) {
-		return showUsage();
+		return showUsage(err);
 	}
 	options.port = options.port || config.port;
 	if (/listen EADDRINUSE :::(\d+)/.test(err) && RegExp.$1 == options.port) {
-		console.log('Failed to bind proxy port %s: The port is already in use', options.port);
-		console.log('Please check if %s is already running or if another application is using the port', config.name);
-		console.log('Or if another application is using the port, you can change the port with `w2 start -p newPort`');
+		error('[!] Failed to bind proxy port ' + options.port + ': The port is already in use');
+		info('[i] Please check if ' + config.name + ' is already running or if another application is using the port');
+		info('[i] Or if another application is using the port, you can change the port with `w2 start -p newPort`');
 	} else if (err.code == 'EACCES' || err.code == 'EPERM') {
-		console.log('[!] Cannot start %s owned by root.', config.name);
-		console.log('[i] Try to run command with `sudo`.')
+		warn('[!] Cannot start ' + config.name + ' owned by root');
+		info('[i] Try to run command with `sudo`')
 	}
 	
 	console.log('\n');
-	console.log(err.stack || err);
+	error(err.stack || err);
 }
 
 program.setConfig({
@@ -37,13 +54,16 @@ program.setConfig({
 	restartCallback: showStartupInfo,
 	stopCallback: function(err) {
 		if (err === true) {
-			console.log('[i] %s killed.', config.name);
+			info('[i] %s killed.', config.name);
 		} else if (err) {
-				err.code === 'EPERM' ? console.log('[!] Cannot kill %s owned by root.\n' +
-					'[i] Try to run command with `sudo`.', config.name)
-				: console.log('[!] %s', err.message);
+				if (err.code === 'EPERM') {
+					warn('[!] Cannot kill ' + config.name + ' owned by root');
+					info('[i] Try to run command with `sudo`');
+				} else {
+					error('[!] ' + err.message);
+				}
 		} else {
-			console.log('[!] No running %s.', config.name);
+			warn('[!] No running ' + config.name);
 		}
 	}
 });
