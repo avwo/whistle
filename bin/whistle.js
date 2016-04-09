@@ -45,6 +45,7 @@ function showUsage(isRunning, options) {
 	info(getIpList().map(function(ip) {
 		return '    http://' + ip + (port ? ':' + port : '') + '/';
 	}).join('\n'));
+	
 	warn('    Note: If the following URLs are unable to access, check the server\'s firewall settings');
 	warn('          For more information, please visit https://github.com/avwo/whistle');
 	info('[i] Second, configure your device to use ' + config.name + ' as its HTTP and HTTPS proxy on `IP:' + port + '`');
