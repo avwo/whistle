@@ -37,7 +37,7 @@ function showStartupInfo(err, options) {
 		info('[i] Please check if ' + config.name + ' is already running or if another application is using the port');
 		info('[i] Or if another application is using the port, you can change the port with `w2 start -p newPort`');
 	} else if (err.code == 'EACCES' || err.code == 'EPERM') {
-		warn('[!] Cannot start ' + config.name + ' owned by root');
+		error('[!] Cannot start ' + config.name + ' owned by root');
 		info('[i] Try to run command with `sudo`')
 	}
 	
@@ -57,7 +57,7 @@ program.setConfig({
 			info('[i] %s killed.', config.name);
 		} else if (err) {
 				if (err.code === 'EPERM') {
-					warn('[!] Cannot kill ' + config.name + ' owned by root');
+					error('[!] Cannot kill ' + config.name + ' owned by root');
 					info('[i] Try to run command with `sudo`');
 				} else {
 					error('[!] ' + err.message);
