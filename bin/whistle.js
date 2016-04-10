@@ -1,6 +1,6 @@
 #! /usr/bin/env node
 
-var program = require('starting');
+var program = require('../../starting');
 var path = require('path');
 var os = require('os');
 var config = require('../lib/config');
@@ -74,7 +74,17 @@ program.setConfig({
 	main: path.join(__dirname, '../index.js'),
 	name: config.name,
 	version: config.version,
-	runCallback: function(options) {
+	runCallback: function(err, options) {
+		if (err) {
+			options.port = options.port || config.port;
+			if (/listen EADDRINUSE :::(\d+)/.test(err) && RegExp.$1 == options.port) {
+				error('[!] Failed to bind proxy port ' + options.port + ': The port is already in use');
+				info('[i] Please check if ' + config.name + ' is already running, you can stop whistle with `w2 stop` first');
+				info('    or if another application is using the port, you can change the port with `w2 run -p newPort`\n');
+			}
+			error(err)
+			return;
+		}
 		console.log('Press [Ctrl+C] to stop ' + config.name + '...');
 		showUsage(false, options);
 	},
