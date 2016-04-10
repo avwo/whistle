@@ -59,13 +59,8 @@ function showStartupInfo(err, options, debugMode, restart) {
 	options.port = options.port || config.port;
 	if (/listen EADDRINUSE :::(\d+)/.test(err) && RegExp.$1 == options.port) {
 		error('[!] Failed to bind proxy port ' + options.port + ': The port is already in use');
-		if (debugMode) {
-			info('[i] Please check if ' + config.name + ' is already running, you can stop whistle with `w2 stop` first');
-			info('    or if another application is using the port, you can change the port with `w2 run -p newPort`\n');
-		} else {
-			info('[i] Please check if ' + config.name + ' is already running, you can restart whistle with `w2 restart`');
-			info('    or if another application is using the port, you can change the port with `w2 start -p newPort`\n');
-		}
+		info('[i] Please check if ' + config.name + ' is already running, you can restart whistle with ' + (debugMode ? '`w2 stop` first' : '`w2 restart`'));
+		info('    or if another application is using the port, you can change the port with ' + (debugMode ? '`w2 run -p newPort`\n' : '`w2 start -p newPort`\n'));
 	} else if (err.code == 'EACCES' || err.code == 'EPERM') {
 		error('[!] Cannot start ' + config.name + ' owned by root');
 		info('[i] Try to run command with `sudo`\n')
