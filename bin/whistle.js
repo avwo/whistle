@@ -33,12 +33,12 @@ function info(msg) {
 	console.log(colors.green(msg));
 }
 
-function showUsage(isRunning, options) {
+function showUsage(isRunning, options, restart) {
 	var port = options.port || config.port;
 	if (isRunning) {
 		warn('[!] ' + config.name + ' is running');
 	} else {
-		info('[i] ' + config.name + ' started');
+		info('[i] ' + config.name + (restart ? ' restarted' : ' started'));
 	}
 	
 	info('[i] First, use your device to visit the following URL list, gets the ' + colors.bold('IP') + ' of the URL you can visit:');
@@ -52,9 +52,9 @@ function showUsage(isRunning, options) {
 	info('[i] Last, use ' + colors.bold('Chrome') + ' to visit ' + colors.bold('http://' + config.localUIHost + '/') + ' to get started');
 }
 
-function showStartupInfo(err, options, debugMode) {
+function showStartupInfo(err, options, debugMode, restart) {
 	if (!err || err === true) {
-		return showUsage(err, options);
+		return showUsage(err, options, restart);
 	}
 	options.port = options.port || config.port;
 	if (/listen EADDRINUSE :::(\d+)/.test(err) && RegExp.$1 == options.port) {
@@ -87,7 +87,9 @@ program.setConfig({
 		console.log('Press [Ctrl+C] to stop ' + config.name + '...');
 	},
 	startCallback: showStartupInfo,
-	restartCallback: showStartupInfo,
+	restartCallback: function(err, options) {
+		showStartupInfo(err, options, false, true);
+	},
 	stopCallback: function(err) {
 		if (err === true) {
 			info('[i] ' + config.name + ' killed.');
