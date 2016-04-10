@@ -35,7 +35,7 @@ bugFix:
 
 ### v0.5.3
 
-微调parseInlineJSON的实现
+微调parseInlineJSON的实现 
   
 ### v0.5.4
 ### v0.5.5
