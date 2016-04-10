@@ -75,7 +75,7 @@ program.setConfig({
 	name: config.name,
 	version: config.version,
 	runCallback: function(options) {
-		console.log('Press [Ctrl+C] to stop ' + config.name + '...\n');
+		console.log('Press [Ctrl+C] to stop ' + config.name + '...');
 		showUsage(false, options);
 	},
 	startCallback: showStartupInfo,
