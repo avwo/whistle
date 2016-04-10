@@ -1,6 +1,6 @@
 #! /usr/bin/env node
 
-var program = require('../../starting');
+var program = require('starting');
 var path = require('path');
 var os = require('os');
 var config = require('../lib/config');
