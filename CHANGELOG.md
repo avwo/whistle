@@ -192,13 +192,17 @@ bugfix：修复keepAlive可能导致请求无法响应的问题
 
 refactor: 限制starting的版本为0.1.1，后面发布的starting版本和现有的不兼容
 
-# v0.9.4
+### v0.9.4
 1. feature: 加入 `disable://ajax`，用于删除请求头 `x-requested-with`
 2. feature: 新增[accept](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#accept)用于修改请求头的accept字段 
 3. feature: 加入插件开发过程中输出详细日志，[#3](https://github.com/avwo/whistle/issues/3)
 4. feature: 新增菜单栏 -> Rules -> Setting -> Disable all rules的选项，用于禁用所有规则
 5. refactor: 修改 `reqType`，`resType`的默认行为，如果`reqType`，`resType`没有带charset的时候，保留原有的charset
 6. refactor: 新增详细的启动提示信息
+
+# v0.9.5
+
+refactor: 详细的启动提示信息兼容node v0.10.x
 
 
 ### -
