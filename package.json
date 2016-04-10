@@ -1,7 +1,7 @@
 {
   "name": "whistle",
   "description": "HTTP, HTTPS, Websocket debugging proxy tool",
-  "version": "0.9.3",
+  "version": "0.9.4",
   "dataDirname": ".whistle",
   "localUIHost": "local.whistlejs.com",
   "whistleSsl": "whistle-ssl",
@@ -11,7 +11,7 @@
     "uidataport",
     "weinreport"
   ],
-  "sockets": 8,
+  "sockets": 12,
   "keepAlive": true,
   "keepAliveMsecs": 10000,
   "responseTimeout": 6000,
@@ -41,16 +41,17 @@
   "dependencies": {
     "basic-auth": "1.0.0",
     "body-parser": "1.12.0",
+    "colors": "1.1.2",
     "express": "4.12.3",
     "fs-extra": "0.22.1",
     "iconv-lite": "0.4.7",
     "mime": "1.3.4",
     "node-forge": "0.6.34",
-    "pfork": ">=0.1.3",
-    "pipestream": ">=0.0.31",
+    "pfork": "^0.1.3",
+    "pipestream": "^0.0.31",
     "q": "1.4.1",
     "socksv5": "0.0.6",
-    "starting": "0.1.1",
+    "starting": "^2.0.0",
     "weinre": "2.0.0-pre-I0Z7U9OV"
   },
   "scripts": {

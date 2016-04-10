@@ -9,7 +9,7 @@
 
 1. [概述](#概述)
 2. [安装](#安装)
-3. [使用方法](#使用方法)
+3. [使用方法](https://github.com/avwo/whistle/wiki)
 	- [**功能列表**](https://github.com/avwo/whistle/wiki/功能列表)
 	- [界面操作](https://github.com/avwo/whistle/wiki/界面操作)
 	- [配置模式](https://github.com/avwo/whistle/wiki/配置模式)
