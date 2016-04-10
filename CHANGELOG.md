@@ -184,9 +184,12 @@ bugfix：修改了路径匹配可能多加一个 `/` 的问题
 1. 新增[reqCharset](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#reqcharset)和[resCharset](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#rescharset)两个协议，分别用于快速修改请求、响应的编码
 2. bugfix：修复可能出现请求出错的情况，https://github.com/nodejs/node/pull/4482
 
-# v0.9.2
+### v0.9.2
 
 bugfix：修复keepAlive可能导致请求无法响应的问题
+
+# v0.9.3
+refactor: 限制starting的版本为0.1.1，后面发布的starting版本和现有的不兼容
 
 ### -
 具体参考：[功能列表](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#%E7%9B%AE%E5%BD%95)

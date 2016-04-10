@@ -50,7 +50,7 @@
     "pipestream": ">=0.0.31",
     "q": "1.4.1",
     "socksv5": "0.0.6",
-    "starting": ">=0.1.1",
+    "starting": "0.1.1",
     "weinre": "2.0.0-pre-I0Z7U9OV"
   },
   "scripts": {
