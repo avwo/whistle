@@ -85,8 +85,8 @@ program.setConfig({
 			error(err)
 			return;
 		}
-		console.log('Press [Ctrl+C] to stop ' + config.name + '...');
 		showUsage(false, options);
+		console.log('Press [Ctrl+C] to stop ' + config.name + '...');
 	},
 	startCallback: showStartupInfo,
 	restartCallback: showStartupInfo,
