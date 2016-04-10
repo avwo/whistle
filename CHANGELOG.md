@@ -188,7 +188,11 @@ bugfix：修改了路径匹配可能多加一个 `/` 的问题
 
 bugfix：修复keepAlive可能导致请求无法响应的问题
 
-# v0.9.3
+### v0.9.3
+
+refactor: 限制starting的版本为0.1.1，后面发布的starting版本和现有的不兼容
+
+# v0.9.4
 1. feature: 加入 `disable://ajax`，用于删除请求头 `x-requested-with`
 2. feature: 新增[accept](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#accept)用于修改请求头的accept字段 
 3. feature: 加入插件开发过程中输出详细日志，[#3](https://github.com/avwo/whistle/issues/3)
