@@ -52,21 +52,25 @@ function showUsage(isRunning, options) {
 	info('[i] Last, use ' + colors.bold('Chrome') + ' to visit ' + colors.bold('http://' + config.localUIHost + '/') + ' to get started');
 }
 
-function showStartupInfo(err, options) {
+function showStartupInfo(err, options, debugMode) {
 	if (!err || err === true) {
 		return showUsage(err, options);
 	}
 	options.port = options.port || config.port;
 	if (/listen EADDRINUSE :::(\d+)/.test(err) && RegExp.$1 == options.port) {
 		error('[!] Failed to bind proxy port ' + options.port + ': The port is already in use');
-		info('[i] Please check if ' + config.name + ' is already running, you can restart whistle with `w2 restart`');
-		info('    or if another application is using the port, you can change the port with `w2 start -p newPort`');
+		if (debugMode) {
+			info('[i] Please check if ' + config.name + ' is already running, you can stop whistle with `w2 stop` first');
+			info('    or if another application is using the port, you can change the port with `w2 run -p newPort`\n');
+		} else {
+			info('[i] Please check if ' + config.name + ' is already running, you can restart whistle with `w2 restart`');
+			info('    or if another application is using the port, you can change the port with `w2 start -p newPort`\n');
+		}
 	} else if (err.code == 'EACCES' || err.code == 'EPERM') {
 		error('[!] Cannot start ' + config.name + ' owned by root');
-		info('[i] Try to run command with `sudo`')
+		info('[i] Try to run command with `sudo`\n')
 	}
 	
-	console.log('\n');
 	error(err.stack ? 'Date: ' + util.formatDate() + '\n' + err.stack : err);
 }
 
@@ -76,13 +80,7 @@ program.setConfig({
 	version: config.version,
 	runCallback: function(err, options) {
 		if (err) {
-			options.port = options.port || config.port;
-			if (/listen EADDRINUSE :::(\d+)/.test(err) && RegExp.$1 == options.port) {
-				error('[!] Failed to bind proxy port ' + options.port + ': The port is already in use');
-				info('[i] Please check if ' + config.name + ' is already running, you can stop whistle with `w2 stop` first');
-				info('    or if another application is using the port, you can change the port with `w2 run -p newPort`\n');
-			}
-			error(err)
+			showStartupInfo(err, options, true);
 			return;
 		}
 		showUsage(false, options);
