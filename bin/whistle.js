@@ -82,7 +82,7 @@ program.setConfig({
 	restartCallback: showStartupInfo,
 	stopCallback: function(err) {
 		if (err === true) {
-			info('[i] %s killed.', config.name);
+			info('[i] ' + config.name + ' killed.');
 		} else if (err) {
 				if (err.code === 'EPERM') {
 					error('[!] Cannot kill ' + config.name + ' owned by root');
