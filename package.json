@@ -8,7 +8,6 @@
   "port": 8899,
   "ports": [
     "uiport",
-    "uidataport",
     "weinreport"
   ],
   "sockets": 12,
