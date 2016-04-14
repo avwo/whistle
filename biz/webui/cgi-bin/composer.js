@@ -12,16 +12,7 @@ function parseHeaders(headers) {
 		return util.lowerCaseify(JSON.parse(headers));
 	} catch(e) {}
 	
-	var _headers = {};
-	headers.split(/\n|\r\n|\r/g)
-		.forEach(function(line) {
-			line = line.trim().split(/\s*:\s*/);
-			if (line[0] && line[1]) {
-				_headers[line[0]] = line[1];
-			}
-		});
-	
-	return util.lowerCaseify(_headers);
+	return util.parseHeaders(headers);
 }
 
 module.exports = function(req, res) {
