@@ -1,2 +1,2 @@
 require('./index')();
-console.log(new Date().toLocaleString())
+console.log(new Date().toLocaleString());
