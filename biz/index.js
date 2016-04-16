@@ -1,6 +1,5 @@
 var url = require('url');
 var net = require('net');
-var https = require('https');
 var http = require('http');
 var util = require('../lib/util');
 
@@ -32,7 +31,7 @@ module.exports = function(req, res, next) {
 	var host = req.headers.host || '';
 	var config = this.config;
 	var hostname = host.split(':');
-	var port = hostname[1] || 80
+	var port = hostname[1] || 80;
 	hostname = hostname[0];
 	if (net.isIP(hostname) && util.isLocalAddress(hostname)) {
 		if (port == config.port || port == config.uiport) {
