@@ -18,6 +18,8 @@ module.exports = function(req, res) {
 		filterText: properties.get('filterText'),
 		plugins: pluginMgr.getPlugins(),
 		pluginsRules: pluginMgr.getRules(),
-		disabledAllRules: properties.get('disabledAllRules')
+		disabledAllRules: properties.get('disabledAllRules'),
+		disabledPlugins: properties.get('disabledPlugins') || {},
+		disabledPluginsRules: properties.get('disabledPluginsRules') || {}
 	});
 };
