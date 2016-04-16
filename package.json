@@ -57,9 +57,13 @@
     "dev": "node bin/whistle.js run -p 8888",
     "start": "node bin/whistle.js start",
     "restart": "node bin/whistle.js restart",
-    "stop": "node bin/whistle.js stop"
+    "stop": "node bin/whistle.js stop",
+    "lint": "eslint ./lib"
   },
   "engines": {
     "node": ">= 0.10.0"
+  },
+  "devDependencies": {
+    "eslint": "^2.8.0"
   }
 }
