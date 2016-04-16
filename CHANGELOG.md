@@ -206,9 +206,10 @@ refactor: 详细的启动提示信息兼容node v0.10.x
 
 # 0.10.0
 
-feat: 新增规则包，可以在插件加入全局及内部的规则包
-feat: 新增`rawfile`、 `xrawfile`的功能
-fix: 修复headers里面的set-cookie可能导致页面js出错的问题
+1. feat: 新增规则包，可以在插件加入全局及内部的规则包
+2. feat: 新增`rawfile`、 `xrawfile`的功能
+3. fix: 修复headers里面的set-cookie可能导致页面js出错的问题
+4. refactor: 更新页面用到的react到最新版本，提升前端性能
 
 
 ### -
