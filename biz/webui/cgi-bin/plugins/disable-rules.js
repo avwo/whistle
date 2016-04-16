@@ -9,5 +9,5 @@ module.exports = function(req, res) {
 		delete disabledPluginsRules[req.name];
 	}
 	properties.set('disabledPluginsRules', disabledPluginsRules);
-	res.json({ec: 0, em: 'success'});
+	res.json({ec: 0, data: disabledPluginsRules});
 };
