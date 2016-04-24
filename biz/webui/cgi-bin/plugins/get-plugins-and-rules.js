@@ -10,6 +10,7 @@ module.exports = function(req, res) {
 		plugins: pluginMgr.getPlugins(),
 		pluginsRules: pluginMgr.getRules(),
 		disabledPlugins: properties.get('disabledPlugins') || {},
-		disabledPluginsRules: properties.get('disabledPluginsRules') || {}
+		disabledPluginsRules: properties.get('disabledPluginsRules') || {}, 
+		disabledAllPlugins: properties.get('disabledAllPlugins')
 	});
 };

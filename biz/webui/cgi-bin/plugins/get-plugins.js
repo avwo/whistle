@@ -3,5 +3,7 @@ var pluginMgr = require('../../lib/proxy').pluginMgr;
 
 module.exports = function(req, res) {
 	
-	res.json({ec: 0, plugins: pluginMgr.getPlugins(), disabledPlugins: properties.get('disabledPlugins') || {}});
+	res.json({ec: 0, plugins: pluginMgr.getPlugins(), 
+		disabledPlugins: properties.get('disabledPlugins') || {}, 
+		disabledAllPlugins: properties.get('disabledAllPlugins')});
 };
