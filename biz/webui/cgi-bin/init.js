@@ -17,7 +17,6 @@ module.exports = function(req, res) {
 		interceptHttpsConnects: properties.get('interceptHttpsConnects'),
 		filterText: properties.get('filterText'),
 		plugins: pluginMgr.getPlugins(),
-		pluginsRules: pluginMgr.getRules(),
 		disabledAllRules: properties.get('disabledAllRules'),
 		disabledPlugins: properties.get('disabledPlugins') || {},
 		disabledPluginsRules: properties.get('disabledPluginsRules') || {}, 
