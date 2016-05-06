@@ -36,7 +36,7 @@ app.all('/cgi-bin/*', function(req, res) {
 			res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
 			res.setHeader('Access-Control-Allow-Credentials', true);
 		}
-		require(path.join(__dirname, '..' + req.url.replace(/\?.*$/, '')))(req, res);
+		require(path.join(__dirname, '..' + req.path))(req, res);
 	} catch(err) {
 		res.status(500).send(util.getErrorStack(err));
 	}
