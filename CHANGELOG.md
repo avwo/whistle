@@ -206,8 +206,8 @@ refactor: 详细的启动提示信息兼容node v0.10.x
 
 # 0.10.0
 
-1. feat: 新增规则包，可以在插件加入全局及内部的规则包
-2. feat: 新增`rawfile`、 `xrawfile`的功能
+1. feat: 新增规则包，可以在插件加入全局及内部的规则包，详见：[自定义插件](https://github.com/avwo/whistle/wiki/%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8F%92%E4%BB%B6)
+2. feat: 新增`rawfile`、 `xrawfile`的功能，详见：[rule](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#%E7%9B%AE%E5%BD%95)
 3. fix: 修复headers里面的set-cookie可能导致页面js出错的问题
 4. refactor: 更新页面用到的react到最新版本，提升前端性能
 5. fix: 如果插件的package.json格式有问题会导致无法自动加载插件
