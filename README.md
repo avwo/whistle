@@ -3,7 +3,7 @@
 [![NPM count](https://img.shields.io/npm/dt/whistle.svg?style=flat)](https://www.npmjs.com/package/whistle)
 [![License](https://img.shields.io/npm/l/whistle.svg?style=flat)](https://www.npmjs.com/package/whistle)
 
-> 安装最新beta版：`npm i -g whistle@beta` 或(mac, linux) `sudo npm i -g whistle@beta`
+> 如果你要使用最新版本，请安装beta版：`npm i -g whistle@beta` 或(mac, linux) `sudo npm i -g whistle@beta`
 
 # 目录
 
