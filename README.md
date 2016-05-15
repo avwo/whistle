@@ -3,7 +3,7 @@
 [![NPM count](https://img.shields.io/npm/dt/whistle.svg?style=flat)](https://www.npmjs.com/package/whistle)
 [![License](https://img.shields.io/npm/l/whistle.svg?style=flat)](https://www.npmjs.com/package/whistle)
 
-> whistle@0.9.0及以上版本修复了[启用HTTPS](https://github.com/avwo/whistle/wiki/启用HTTPS)后POST请求可能失败的问题，建议大家[更新到最新版本](https://github.com/avwo/whistle/wiki/更新whistle)，变更点请查看：[CHANGELOG](https://github.com/avwo/whistle/blob/master/CHANGELOG.md#-)
+> 安装最新beta版：`npm i -g whistle@beta` 或(mac, linux) `sudo npm i -g whistle@beta`
 
 # 目录
 
