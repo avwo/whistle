@@ -1,4 +1,5 @@
 var properties = require('../../lib/properties');
+var pluginMgr = require('../../lib/proxy').pluginMgr;
 
 module.exports = function(req, res) {
 	var disabledPlugins = properties.get('disabledPlugins') || {};
@@ -8,5 +9,6 @@ module.exports = function(req, res) {
 		delete disabledPlugins[req.body.name];
 	}
 	properties.set('disabledPlugins', disabledPlugins);
+	pluginMgr.updateRules();
 	res.json({ec: 0, data: disabledPlugins});
 };
