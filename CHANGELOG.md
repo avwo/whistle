@@ -211,6 +211,7 @@ refactor: 详细的启动提示信息兼容node v0.10.x
 3. fix: 修复headers里面的set-cookie可能导致页面js出错的问题
 4. refactor: 更新页面用到的react到最新版本，提升前端性能
 5. fix: 如果插件的package.json格式有问题会导致无法自动加载插件
+6. fix: 修复reqAppend、resAppend无效的问题
 
 
 ### -
