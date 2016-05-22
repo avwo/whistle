@@ -3,7 +3,7 @@
 [![NPM count](https://img.shields.io/npm/dt/whistle.svg?style=flat)](https://www.npmjs.com/package/whistle)
 [![License](https://img.shields.io/npm/l/whistle.svg?style=flat)](https://www.npmjs.com/package/whistle)
 
-> 如果你要使用最新版本，请安装beta版：`npm i -g whistle@beta` 或(mac, linux) `sudo npm i -g whistle@beta`
+> [whistle@0.10.0](https://github.com/avwo/whistle/wiki/更新whistle)正式发布，支持插件自带规则及通过rulesServer动态设置规则，具体参见：[自定义插件](https://github.com/avwo/whistle/wiki/自定义插件)
 
 # 目录
 
