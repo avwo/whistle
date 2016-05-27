@@ -8,5 +8,10 @@ module.exports = function(req, res) {
 	} else {
 		data.ids = null;
 	}
-	res.json({ec: 0, log: proxy.getLogs( data.startLogTime, data.count), data: getData(data)});
+	res.json({
+				ec: 0, 
+				log: proxy.getLogs(data.startLogTime, data.count),
+				sysLog: proxy.getLogs(data.startSysLogTime, data.count),
+				data: getData(data)
+			});
 };
