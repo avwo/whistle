@@ -12,7 +12,7 @@ module.exports = function(req, res) {
 	res.json({
 				ec: 0, 
 				log: proxy.getLogs(data.startLogTime, data.count),
-				sysLog: logger.getLogs(data.startSysLogTime, data.count),
+				svrLog: logger.getLogs(data.startSvrLogTime, data.count),
 				data: getData(data)
 			});
 };
