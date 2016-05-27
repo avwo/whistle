@@ -1,4 +1,5 @@
 var proxy = require('../lib/proxy');
+var logger = proxy.logger;
 var getData = require('../lib/data');
 
 module.exports = function(req, res) {
@@ -11,7 +12,7 @@ module.exports = function(req, res) {
 	res.json({
 				ec: 0, 
 				log: proxy.getLogs(data.startLogTime, data.count),
-				sysLog: proxy.getLogs(data.startSysLogTime, data.count),
+				sysLog: logger.getLogs(data.startSysLogTime, data.count),
 				data: getData(data)
 			});
 };
