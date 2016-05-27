@@ -213,6 +213,12 @@ refactor: 详细的启动提示信息兼容node v0.10.x
 5. fix: 如果插件的package.json格式有问题会导致无法自动加载插件
 6. fix: 修复reqAppend、resAppend无效的问题
 
+# 0.10.1
+1. feat:新增System Log，用于记录系统日志：Network -> Log -> System
+2. refactor: 调整log的加载逻辑，确保在打开Network -> Log前记录的log都能看到
+3. fix: 修复[log](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#log)协议出现请求被gc的情况
+
+
 
 ### -
 具体参考：[功能列表](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#%E7%9B%AE%E5%BD%95)
