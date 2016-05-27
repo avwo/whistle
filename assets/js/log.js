@@ -230,7 +230,14 @@
 	
 	function addLog(level, text) {
 		var img = new Image();
+		var timer;
 		img.src ='$LOG_CGI?level=' + level + '&text=' + encodeURIComponent(text); 
+		var preventGC = function() {
+			img.onload = null;
+			clearTimeout(timer);
+		};
+		img.onload = preventGC;
+		timer = setTimeout(preventGC, 1600);
 	}
 	
 	var levels = ['fatal', 'error', 'warn', 'info', 'debug', 'log'];
