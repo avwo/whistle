@@ -237,7 +237,7 @@
 			clearTimeout(timer);
 		};
 		img.onload = preventGC;
-		timer = setTimeout(preventGC, 1600);
+		timer = setTimeout(preventGC, 3000);
 	}
 	
 	var levels = ['fatal', 'error', 'warn', 'info', 'debug', 'log'];
