@@ -217,6 +217,7 @@ refactor: 详细的启动提示信息兼容node v0.10.x
 1. feat:新增Server Log，用于记录服务端的日志：Network -> Log -> Server
 2. refactor: 调整log的加载逻辑，确保在打开Network -> Log前记录的log都能看到
 3. fix: 修复[log](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#log)协议出现请求被gc的情况
+4. fix: [log](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#log)可能导致页面出现的样式问题
 
 
 
