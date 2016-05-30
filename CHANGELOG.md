@@ -204,7 +204,7 @@ refactor: 限制starting的版本为0.1.1，后面发布的starting版本和现�
 
 refactor: 详细的启动提示信息兼容node v0.10.x
 
-# 0.10.0
+### 0.10.0
 
 1. feat: 新增规则包，可以在插件加入全局及内部的规则包，详见：[自定义插件](https://github.com/avwo/whistle/wiki/%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8F%92%E4%BB%B6)
 2. feat: 新增`rawfile`、 `xrawfile`的功能，详见：[rule](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#%E7%9B%AE%E5%BD%95)
@@ -213,11 +213,14 @@ refactor: 详细的启动提示信息兼容node v0.10.x
 5. fix: 如果插件的package.json格式有问题会导致无法自动加载插件
 6. fix: 修复reqAppend、resAppend无效的问题
 
-# 0.10.1
+### 0.10.1
 1. feat:新增Server Log，用于记录服务端的日志：Network -> Log -> Server
 2. refactor: 调整log的加载逻辑，确保在打开Network -> Log前记录的log都能看到
 3. fix: 修复[log](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#log)协议出现请求被gc的情况
 4. fix: [log](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#log)可能导致页面出现的样式问题
+
+# 0.10.2
+1. refactor: v0.3.0版本开始把数据移动到homedir目录，程序自动做了数据同步，现在这部分代码已经没什么用了，从v0.10.2版本开始删掉这部分逻辑
 
 
 
