@@ -131,7 +131,6 @@ whistle安装完成后，执行命令 `whistle help` (`v0.7.0`及以上版本也
 	Options:
 	
 	    -h, --help                                      output usage information
-	    -r, --rules [rule file path]                    rules file
 	    -d, --debug [debug]                             debug mode
 	    -n, --username [username]                       login username
 	    -w, --password [password]                       login password
