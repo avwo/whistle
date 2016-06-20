@@ -220,8 +220,8 @@ refactor: 详细的启动提示信息兼容node v0.10.x
 4. fix: [log](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#log)可能导致页面出现的样式问题
 
 # 0.10.2
-1. refactor: v0.3.0版本开始把数据移动到homedir目录，程序自动做了数据同步，现在这部分代码已经没什么用了，从v0.10.2版本开始删掉这部分逻辑
-2. 修改logo
+1. refactor: 去除自动同步v0.3.0之前版本的数据(v0.3.0及以后版本的whistle数据做了一次调整)
+2. style: 替换全新的logo，感谢UED视觉设计同事**鬼刀**帮忙设计了新logo
 
 
 
