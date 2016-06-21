@@ -20,6 +20,9 @@ exports.getServerInfo = function getServerInfo() {
 			      return;
 			    }
 			    info[iface.family == 'IPv4' ? 'ipv4' : 'ipv6'].push(iface.address);
+			    if (!info.mac && iface.family == 'IPv4') {
+			    	info.mac = (iface.mac || '') + '';
+			    }
 			  });
 	});
 	
