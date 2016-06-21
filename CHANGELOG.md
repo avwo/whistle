@@ -227,6 +227,22 @@ refactor: 详细的启动提示信息兼容node v0.10.x
 1. feat: 检测并提示代理服务器被切换
 3. feat: 界面上同时展示的请求数，由360调整为560
 4. perf: 极大提升UI界面的性能
+5. fix: 可能出现的如下异常
+
+		Date: 2016-06-22 00:47:13.466
+		RangeError: out of range index
+		    at RangeError (native)
+		    at StringDecoder.fillLast (string_decoder.js:94:9)
+		    at StringDecoder.write (string_decoder.js:73:14)
+		    at PassThrough.<anonymous> (/Users/aven/avenwu/workspace/github/whistle/lib/util/index.js:931:33)
+		    at emitOne (events.js:96:13)
+		    at PassThrough.emit (events.js:188:7)
+		    at readableAddChunk (_stream_readable.js:172:18)
+		    at PassThrough.Readable.push (_stream_readable.js:130:10)
+		    at PassThrough.Transform.push (_stream_transform.js:128:32)
+		    at afterTransform (_stream_transform.js:77:12)
+		    at TransformState.afterTransform (_stream_transform.js:54:12)
+
 
 
 
