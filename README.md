@@ -3,7 +3,7 @@
 [![NPM count](https://img.shields.io/npm/dt/whistle.svg?style=flat)](https://www.npmjs.com/package/whistle)
 [![License](https://img.shields.io/npm/l/whistle.svg?style=flat)](https://www.npmjs.com/package/whistle)
 
-> [whistle@0.10.0+](https://github.com/avwo/whistle/wiki/更新whistle)支持插件自带规则及通过rulesServer动态设置规则，具体参见：[自定义插件](https://github.com/avwo/whistle/wiki/自定义插件)
+> [whistle@0.10.3+](https://github.com/avwo/whistle/blob/master/CHANGELOG.md#v0103)大幅度优化了界面性能，建议[更新到最新版本](https://github.com/avwo/whistle/wiki/更新whistle)
 
 # 目录
 
