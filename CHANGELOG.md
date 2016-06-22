@@ -223,7 +223,7 @@ refactor: 详细的启动提示信息兼容node v0.10.x
 1. refactor: 去除自动同步v0.3.0之前版本数据的逻辑(v0.3.0及以后版本的whistle数据存储目录做了一次修改)
 2. style: 替换全新的logo，感谢部门的视觉设计同事**[@wjdgh1031(鬼刀)](https://github.com/wjdgh1031)**帮忙设计了新logo
 
-# v0.10.3
+### v0.10.3
 1. feat: 检测并提示代理服务器被切换
 3. feat: 界面上同时展示的请求数，由360调整为560
 4. perf: 极大提升UI界面的性能
@@ -242,6 +242,10 @@ refactor: 详细的启动提示信息兼容node v0.10.x
 		    at PassThrough.Transform.push (_stream_transform.js:128:32)
 		    at afterTransform (_stream_transform.js:77:12)
 		    at TransformState.afterTransform (_stream_transform.js:54:12)
+		    
+# v0.10.4
+1. fix: 修复在调整窗口大小是没有重绘的问题
+2. 
 
 
 
