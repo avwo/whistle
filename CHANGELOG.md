@@ -245,7 +245,7 @@ refactor: 详细的启动提示信息兼容node v0.10.x
 		    
 # v0.10.4
 1. fix: 修复在调整窗口大小是没有重绘的问题
-2. 
+2. feat: 把官网网址改为：[http://wproxy.org](http://wproxy.org/)
 
 
 
