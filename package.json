@@ -30,7 +30,8 @@
   ],
   "bin": {
     "whistle": "./bin/whistle.js",
-    "w2": "./bin/whistle.js"
+    "w2": "./bin/whistle.js",
+    "wproxy": "./bin/whistle.js"
   },
   "registry": "http://registry.npmjs.org/whistle",
   "repository": {
