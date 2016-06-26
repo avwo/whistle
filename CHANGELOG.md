@@ -234,7 +234,7 @@ refactor: 详细的启动提示信息兼容node v0.10.x
 		    at RangeError (native)
 		    at StringDecoder.fillLast (string_decoder.js:94:9)
 		    at StringDecoder.write (string_decoder.js:73:14)
-		    at PassThrough.<anonymous> (/Users/aven/avenwu/workspace/github/whistle/lib/util/index.js:931:33)
+		    at PassThrough.<anonymous> (/Users/xxx/whistle/lib/util/index.js:931:33)
 		    at emitOne (events.js:96:13)
 		    at PassThrough.emit (events.js:188:7)
 		    at readableAddChunk (_stream_readable.js:172:18)
