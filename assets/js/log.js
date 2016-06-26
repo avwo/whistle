@@ -246,8 +246,12 @@
 		var level = levels[i];
 		var fn = console[level] || noop;
 		(function(level) {
-			console[level] = function(obj) {
-				addLog(level, stringify(obj));
+			console[level] = function() {
+				var result = [];
+				for (var i = 0, len = arguments.length; i < len; i++) {
+					result[i] = stringify(arguments[i]);
+				}
+				addLog(level, result.join(' '));
 				fn.apply(this, arguments);
 			};
 		})(level);
