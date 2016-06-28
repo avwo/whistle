@@ -10,7 +10,7 @@ module.exports = function(req, res) {
 	res.json({
 		version: config.version,
 		latestVersion: properties.get('latestVersion'),
-		server: util.getServerInfo(),
+		server: util.getServerInfo(req),
 		rules: getRules(),
 		values: getValues(),
 		hideHttpsConnects: properties.get('hideHttpsConnects'),
