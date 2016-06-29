@@ -257,6 +257,7 @@ refactor: 详细的启动提示信息兼容node v0.10.x
 4. feat: 加入快捷键 `Ctrl+D` 或 `Command+D`(Mac)，用于删除请求列表中选中的条目、选中的rule、选中的value
 5. feat: 加入快捷键 `Ctrl +向上箭头` 和 `Ctrl +向下箭头` (Mac用`Command+向上箭头` 和 `Command +向下箭头`) 用于调整Rules(Values)列表的顺序
 6. feat: 支持点击请求列表的表头重新对列表进行重新排序
+7. feat: 新增[resRules](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#resrules)用于在响应后动态修改一些规则
 
 
 
