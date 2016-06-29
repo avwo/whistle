@@ -221,7 +221,7 @@ refactor: 详细的启动提示信息兼容node v0.10.x
 
 ### v0.10.2
 1. refactor: 去除自动同步v0.3.0之前版本数据的逻辑(v0.3.0及以后版本的whistle数据存储目录做了一次修改)
-2. style: 替换全新的logo，感谢部门的视觉设计同事**[@wjdgh1031(鬼刀)](https://github.com/wjdgh1031)**帮忙设计了新logo
+2. style: 替换全新的logo，感谢部门的视觉设计同事**@wjdgh1031(鬼刀)**帮忙设计了新logo
 
 ### v0.10.3
 1. feat: 检测并提示代理服务器被切换
