@@ -16,6 +16,7 @@
 	- [匹配方式](https://github.com/avwo/whistle/wiki/匹配方式) 
 	- [启用HTTPS](https://github.com/avwo/whistle/wiki/启用HTTPS)
 	- [JSON格式](https://github.com/avwo/whistle/wiki/JSON格式)
+	- [快捷键](https://github.com/avwo/whistle/wiki/快捷键)
 	- [更新whistle](https://github.com/avwo/whistle/wiki/更新whistle)
 	- [CHANGELOG](https://github.com/avwo/whistle/blob/master/CHANGELOG.md)
 	- [自定义插件](https://github.com/avwo/whistle/wiki/自定义插件)
