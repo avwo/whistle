@@ -236,7 +236,7 @@
 			img.onload = null;
 			clearTimeout(timer);
 		};
-		img.onload = preventGC;
+		img.onload = img.onerror = preventGC;
 		timer = setTimeout(preventGC, 3000);
 	}
 	
