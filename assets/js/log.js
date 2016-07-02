@@ -233,7 +233,7 @@
 		var timer;
 		img.src ='$LOG_CGI?level=' + level + '&text=' + encodeURIComponent(text); 
 		var preventGC = function() {
-			img.onload = null;
+			img.onload = img.onerror = null;
 			clearTimeout(timer);
 		};
 		img.onload = img.onerror = preventGC;
