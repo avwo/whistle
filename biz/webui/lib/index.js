@@ -63,10 +63,8 @@ function checkLogin(req, res) {
 	var userInfo = auth(req);
 	if (userInfo && (userInfo.name || userInfo.pass)) {
 		if (username == userInfo.name && password == userInfo.pass) {
-			var host = req.headers.host;
-			host = host == config.localUIHost ? '; domain=' + host : '';
 			res.setHeader('set-cookie', '_lkey=' + getLoginKey(req) 
-					+ '; max-age=' + 60 * 60 * 24 * 1000 + '; path=/' + host);
+					+ '; max-age=' + 60 * 60 * 24 * 1000 + '; path=/');
 			return true;
 		}
 	} 
