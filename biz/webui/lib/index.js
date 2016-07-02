@@ -9,8 +9,7 @@ var DONT_CHECK_PATHS = ['/cgi-bin/server-info', '/cgi-bin/show-host-ip-in-res-he
 var util, username, password, config;
 
 function dontCheckPaths(req) {
-	var path = typeof req.path == 'string' ? req.path.replace(/[?#].*$/, '') : '';
-	return !!path && DONT_CHECK_PATHS.indexOf(path) != -1;
+	return DONT_CHECK_PATHS.indexOf(req.path) != -1;
 }
 
 app.use(function(req, res, next) {
