@@ -3,7 +3,7 @@
 [![NPM count](https://img.shields.io/npm/dt/whistle.svg?style=flat)](https://www.npmjs.com/package/whistle)
 [![License](https://img.shields.io/npm/l/whistle.svg?style=flat)](https://www.npmjs.com/package/whistle)
 
-> [whistle@0.11.1+](https://github.com/avwo/whistle/blob/master/CHANGELOG.md#-)开始支持点击列表头排序，删除选中的选中项，调整Rules、Values的顺序，具体变更点请参考[CHANGELOG.md](https://github.com/avwo/whistle/blob/master/CHANGELOG.md#-)，查看更多快捷键请[点这里](https://github.com/avwo/whistle/wiki/快捷键)，建议[更新到最新版本](https://github.com/avwo/whistle/wiki/更新whistle)
+> [whistle@0.11.1+](https://github.com/avwo/whistle/blob/master/CHANGELOG.md#-)开始支持点击列表头排序，新增部分快捷键支持删除选中的项，调整Rules、Values的顺序，具体变更点请参考[CHANGELOG.md](https://github.com/avwo/whistle/blob/master/CHANGELOG.md#-)和[快捷键](https://github.com/avwo/whistle/wiki/快捷键)，建议[更新到最新版本](https://github.com/avwo/whistle/wiki/更新whistle)
 
 # 目录
 
