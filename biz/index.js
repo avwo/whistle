@@ -22,7 +22,7 @@ function request(req, res, port, weinre) {
 		if (weinre && options.pathname == '/target/target-script-min.js') {
 			_res.headers['access-control-allow-origin'] = '*';
 		}
-		res.writeHead(_res.statusCode || 0, _res.headers);
+		res.writeHead(util.getStatusCode(_res.statusCode), _res.headers);
 		res.src(_res);
 	}));
 }
