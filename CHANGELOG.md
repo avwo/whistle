@@ -250,7 +250,7 @@ refactor: 详细的启动提示信息兼容node v0.10.x
 4. feat: 新增[location](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#location)用于修改或添加响应头的location字段，一般与[replaceStatus](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#replacestatus)的`replaceStatus://301`、`replaceStatus://302`配合使用
 
 
-# 0.11.1
+### v0.11.1
 1. fix: 修复在https请求中使用[log](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#log)可能出现`Mixed Content`警告的问题
 2. feat: [log](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#log)支持同时输出多个参数`console.log(location.href, a1, a2, ...)`的写法
 3. fix: 清空请求数据的快捷键为`Ctrl+X`(mac也可以用`Command+X`)，但原来在Clear按钮上的title提示错了
@@ -259,6 +259,13 @@ refactor: 详细的启动提示信息兼容node v0.10.x
 6. feat: 支持点击请求列表的表头重新对列表进行重新排序
 7. feat: 把下一个匹配到的Rule通过NEXT_RULE_HEADER(x-whistle-next-rule)的头字段传到rulesServer，这样可以判断是否执行下一个规则
 
+# v0.11.2
+
+fix: `statusCode < 100 || statusCode > 999` 会抛出异常导致程序crash
+
+     if (statusCode < 100 || statusCode > 999)
+        throw new RangeError(`Invalid status code: ${statusCode}`);
+ 
 
 
 
