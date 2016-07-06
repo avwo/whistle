@@ -25,6 +25,7 @@ function request(req, res, port, weinre) {
 		if (util.getStatusCode(_res.statusCode)) {
 			res.writeHead(_res.statusCode, _res.headers);
 			res.src(_res);
+			_res.trailers && res.addTrailers(_res.trailers);
 		} else {
 			util.sendStatusCodeError(res, _res);
 		}
