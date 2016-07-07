@@ -266,6 +266,7 @@ fix: `statusCode < 100 || statusCode > 999` 会抛出异常导致程序crash
      if (statusCode < 100 || statusCode > 999)
         throw new RangeError(`Invalid status code: ${statusCode}`);
  
+ PS：看了下提交记录，是2016年4月20号提交的代码：[eee69b81faf2df406ac3c571bee31ebd501cfd9d](https://github.com/mscdex/io.js/commit/eee69b81faf2df406ac3c571bee31ebd501cfd9d)
 
 
 
