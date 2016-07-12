@@ -259,7 +259,7 @@ refactor: 详细的启动提示信息兼容node v0.10.x
 6. feat: 支持点击请求列表的表头重新对列表进行重新排序
 7. feat: 把下一个匹配到的Rule通过NEXT_RULE_HEADER(x-whistle-next-rule)的头字段传到rulesServer，这样可以判断是否执行下一个规则
 
-# v0.11.2
+### v0.11.2
 
 fix: `statusCode < 100 || statusCode > 999` 会抛出异常导致程序crash
 
@@ -268,6 +268,11 @@ fix: `statusCode < 100 || statusCode > 999` 会抛出异常导致程序crash
  
  PS：看了下提交记录，是2016年4月20号提交的代码：[eee69b81faf2df406ac3c571bee31ebd501cfd9d](https://github.com/mscdex/io.js/commit/eee69b81faf2df406ac3c571bee31ebd501cfd9d)
 
+
+# v0.11.3
+1. feat: 新增[hostname](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#hostname)用于修改`req.headers.host`
+2. feat: 支持通过`WHISTLE_PLUGINS_PATH`配置插件路径，whistle会优先从`join(WHISTLE_PLUGINS_PATH, 'node_modules')`加载插件
+3. fix: 修复在overview中优先显示插件私有规则的问题(PS：在Rules中配置的规则优先级最高)
 
 
 ### -
