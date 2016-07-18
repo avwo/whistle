@@ -277,7 +277,7 @@ fix: `statusCode < 100 || statusCode > 999` 会抛出异常导致程序crash
 
 # v0.11.4
 1. fix: 修复在Values中按`Ctrl+S`会弹出修改名称输入框的问题
-2. refactor: 自动生成的根证书加上Mac地址，让一个机器可以安装多个whistle根证书
+2. refactor: 允许安装多个不同whistle服务的根证书
 
 
 ### -
