@@ -277,7 +277,7 @@ fix: `statusCode < 100 || statusCode > 999` 会抛出异常导致程序crash
 
 # v0.11.4
 1. fix: 修复在Values中按`Ctrl+S`会弹出修改名称输入框的问题
-2. refactor: 允许同时安装多个不同的whistle根证书
+2. refactor: 允许同时安装多个不同的whistle根证书，安装根证书请参考：[启用HTTPS](https://github.com/avwo/whistle/wiki/%E5%90%AF%E7%94%A8HTTPS)
 
 
 ### -
