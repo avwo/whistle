@@ -282,6 +282,7 @@ fix: `statusCode < 100 || statusCode > 999` 会抛出异常导致程序crash
 # v0.12.0
 1. feat: 支持配置配置ip:port，如：`pattern host://ip:port`(port可选)，这与`pattern ip:port`的区别是：后者会把请求头的`host`字段修改为`ip:port`(ip为IPv4或IPv6)
 2. docs: 修改页面中帮助文档的链接
+3. test: 加入单元测试及travis ci
 
 
 ### -
