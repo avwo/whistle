@@ -213,3 +213,5 @@ whistle安装完成后，执行命令 `whistle help` (`v0.7.0`及以上版本也
 	
 
 
+# License
+[MIT](https://github.com/avwo/whistle/blob/master/LICENSE)
