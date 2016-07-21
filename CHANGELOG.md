@@ -285,7 +285,6 @@ fix: `statusCode < 100 || statusCode > 999` 会抛出异常导致程序crash
 3. feat: 新增命令行参数`-v newValuesDir`，用于指定新values存放目录
 4. feat: 新增命令行参数`--copy xxx|yyy`，把rules的目录xxx(默认为rules)和values的目录yyy(默认为values)分别拷贝到`-r`和`-v`指定的目录
 5. docs: 修改页面中帮助文档的链接
-6. test: 加入单元测试及travis ci
 
 
 ### -
