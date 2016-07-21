@@ -281,8 +281,10 @@ fix: `statusCode < 100 || statusCode > 999` 会抛出异常导致程序crash
 
 # v0.12.0
 1. feat: 支持配置配置ip:port，如：`pattern host://ip:port`(port可选)，这与`pattern ip:port`的区别是：后者会把请求头的`host`字段修改为`ip:port`(ip为IPv4或IPv6)
-2. docs: 修改页面中帮助文档的链接
-3. test: 加入单元测试及travis ci
+2. feat: 新增命令行参数`--rules newRulesDir`，用于指定新rules存放目录，加上`-p newPort`可以让同一个用户启动多个whistle服务
+3. feat: 新增命令行参数`--copy xxx|yyy`，把xxx(默认为rules)里面的规则拷贝到yyy目录(默认为--rules指定的目录)
+4. docs: 修改页面中帮助文档的链接
+5. test: 加入单元测试及travis ci
 
 
 ### -
