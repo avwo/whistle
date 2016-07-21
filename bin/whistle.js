@@ -69,7 +69,10 @@ function showStartupInfo(err, options, debugMode, restart) {
 }
 
 program.setConfig({
-	main: path.join(__dirname, '../index.js'),
+	main: function(options) {
+		var hash = options && options.storage && encodeURIComponent(options.storage);
+		return path.join(__dirname, '../index.js') + (hash ? '#' + hash + '#' : '');
+	},
 	name: config.name,
 	version: config.version,
 	runCallback: function(err, options) {
