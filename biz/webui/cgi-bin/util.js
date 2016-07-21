@@ -12,7 +12,7 @@ exports.getServerInfo = function getServerInfo(req) {
 			weinrePort: config.weinreport,
 			ipv4: [],
 			ipv6: [],
-			mac: req.ip
+			mac: req.ip + (config.storage ? '\n' + config.storage : '')
 		};
 	var ifaces = os.networkInterfaces();
 	Object.keys(ifaces).forEach(function(ifname) {
