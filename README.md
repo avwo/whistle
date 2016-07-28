@@ -23,7 +23,3 @@ whistle继承了部分Fiddler的抓包界面的设计，抛弃Fiddler通过断�
 
 # License
 [MIT](https://github.com/avwo/whistle/blob/master/LICENSE)
-
-
-# License
-[MIT](https://github.com/avwo/whistle/blob/master/LICENSE)
