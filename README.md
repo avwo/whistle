@@ -5,7 +5,6 @@
 [![NPM count](https://img.shields.io/npm/dt/whistle.svg?style=flat)](https://www.npmjs.com/package/whistle)
 [![License](https://img.shields.io/npm/l/whistle.svg?style=flat)](https://www.npmjs.com/package/whistle)
 
-
 [travis-image]: https://img.shields.io/travis/avwo/whistle.svg?branch=travis&style=flat
 [travis-url]: https://travis-ci.org/avwo/whistle
 [codecov-image]: https://codecov.io/gh/avwo/whistle/branch/travis/graph/badge.svg
