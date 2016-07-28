@@ -3,8 +3,6 @@
 [![NPM count](https://img.shields.io/npm/dt/whistle.svg?style=flat)](https://www.npmjs.com/package/whistle)
 [![License](https://img.shields.io/npm/l/whistle.svg?style=flat)](https://www.npmjs.com/package/whistle)
 
-# whistle
-
 ![whistle logo](https://github.com/avwo/whistle/blob/avenwu/biz/webui/htdocs/img/whistle.png)
 
 whistle是Node实现的类似Fiddler的web调试代理工具，用于查看、修改及构造HTTP(S)、Websocket请求响应。
