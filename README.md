@@ -40,7 +40,7 @@ operator-uri有以下功能：
 - 自定义脚本修改url的请求参数，实现动态匹配规则的功能
 - 支持自动捕获手机端或远程页面的js异常，且可以嵌入脚本打印console等
 
-完整功能参见[协议列表](https://whistle.gitbooks.io/help/content/rules/)
+完整功能参见[协议列表](https://whistle.gitbooks.io/help/content/rules/)。
 
 ### Network
 
@@ -52,7 +52,7 @@ operator-uri有以下功能：
 ### Values
 ![Values](https://raw.githubusercontent.com/avwo/whistleui/master/img/values.gif)
 
-完整功能请参见[whistle帮助文档](https://whistle.gitbooks.io/help/content/)
+完整功能请参见[whistle帮助文档](https://whistle.gitbooks.io/help/content/)。
 
 # License
 [MIT](https://github.com/avwo/whistle/blob/master/LICENSE)
