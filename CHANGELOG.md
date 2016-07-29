@@ -286,7 +286,7 @@ fix: `statusCode < 100 || statusCode > 999` 会抛出异常导致程序crash
 
 
 ### -
-具体参考：[功能列表](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#%E7%9B%AE%E5%BD%95)
+完整功能请参见[whistle帮助文档](https://whistle.gitbooks.io/help/content/)。
 	
 
 
