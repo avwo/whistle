@@ -24,7 +24,23 @@ whistle是[Node](https://nodejs.org/)实现的类似[Fiddler](http://www.telerik
 
 更多详细内容请参见[配置模式](https://whistle.gitbooks.io/help/content/mode.html)、[匹配方式](https://whistle.gitbooks.io/help/content/pattern.html)。
 
-operator-uri可以为请求url、操作请求响应的各种功能，具体参见[协议列表](https://whistle.gitbooks.io/help/content/rules/)
+operator-uri有以下功能：
+
+- 配置host
+- 修改请求，包括： 请求方法、请求头、修改内容、延迟发送请求、限制请求速度，设置timeout
+- 修改响应，包括： 响应状态码、响应头、修改内容、 延迟响应、 限制响应速度
+- 替换请求： 
+	- 替换本地文件(支持替换jsonp请求)
+	- 设置代理(支持http、socks代理)
+	- 请求转发
+	- 通过插件扩展
+- 内置weinre，通过weinre可以修改手机端或远程网页的DOM结构，调试页面等
+- 设置过滤，用于过滤一些已设置的规则
+- 导出数据，请求响应的详细信息
+- 自定义脚本修改url的请求参数，实现动态匹配规则的功能
+- 支持自动捕获手机端或远程页面的js异常，且可以嵌入脚本打印console等
+
+完整功能参见[协议列表](https://whistle.gitbooks.io/help/content/rules/)
 
 ### Network
 
