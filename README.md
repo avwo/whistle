@@ -12,7 +12,7 @@ whistle是[Node](https://nodejs.org/)实现的类似[Fiddler](http://www.telerik
 
 whistle继承了Fiddler抓包界面的部分优秀设计，去掉Fiddler通过断点修改请求响应的方式，采用扩展Hosts配置的方式，从而实现通过配置操作请求响应，且提供了通过Node模块扩展功能的方式，具体参见[实现原理](https://whistle.gitbooks.io/help/content/)。
 
-如何安装使用whistle请参见：[whistle帮助文档](https://whistle.gitbooks.io/help/content/install.html);
+如何安装使用whistle请参见：[whistle帮助文档](https://whistle.gitbooks.io/help/content/install.html)。
 
 ### 配置模式
 
