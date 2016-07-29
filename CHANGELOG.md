@@ -283,6 +283,7 @@ fix: `statusCode < 100 || statusCode > 999` 会抛出异常导致程序crash
 1. feat: 支持配置配置ip:port，如：`pattern host://ip:port`(port可选)，这与`pattern ip:port`的区别是：后者会把请求头的`host`字段修改为`ip:port`(ip为IPv4或IPv6)
 2. feat: 支持同一个用户启动多个whistle服务`w2 start -S newStorageDir -p newPort`，具体参见[安装启动](https://whistle.gitbooks.io/help/content/install.html)
 3. docs: 修改页面中帮助文档的链接
+4. fix: 重写文档的过程中把所有功能都人肉跑了一遍，修复了一下问题，后续版本把持续集成的功能加上
 
 
 ### -
