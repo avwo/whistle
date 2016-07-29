@@ -11,6 +11,18 @@ whistle继承了部分Fiddler的抓包界面的设计，抛弃Fiddler通过断�
 
 如何安装使用whistle请参考：[whistle帮助文档](https://whistle.gitbooks.io/help/content/install.html);
 
+### 配置模式
+
+  pattern operator-uri
+  
+其中，pattern可以为：
+
+1. 域名：www.test.com(所有该域名下的请求都会执行operator-uri)
+2. 路径：http://www.test.com/xxx(可以不加协议，http://www.test.com/xxx路径及其子路径的请求都会执行operator-uri)
+3. 正则:/^https?:\/\/([^\/]+)\/xxx/(http(s)://host:port/xxx路径及其子路径的请求都会执行operator-uri，且在operator-uri中可以通过`$1, $2, ..., $N`获取url里面的子匹配)
+
+operator-uri参加[协议列表](https://whistle.gitbooks.io/help/content/rules/)
+
 ### Network
 
 ![Network](https://raw.githubusercontent.com/avwo/whistleui/master/img/network.gif)
