@@ -36,5 +36,7 @@ operator-uri可以为请求url、操作请求响应的各种功能，具体参�
 ### Values
 ![Values](https://raw.githubusercontent.com/avwo/whistleui/master/img/values.gif)
 
+完整功能请参见[whistle帮助文档](https://whistle.gitbooks.io/help/content/)
+
 # License
 [MIT](https://github.com/avwo/whistle/blob/master/LICENSE)
