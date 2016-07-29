@@ -14,7 +14,7 @@ whistle继承了Fiddler的抓包界面的部分优秀设计，去掉Fiddler通�
 
 ### 配置模式
 
-  pattern operator-uri
+  	pattern operator-uri
   
 其中，pattern可以为：
 
@@ -22,7 +22,9 @@ whistle继承了Fiddler的抓包界面的部分优秀设计，去掉Fiddler通�
 2. 路径：`http://www.test.com/xxx`(可以不加协议，`http://www.test.com/xx`·路径及其子路径的请求都会执行`operator-uri`)
 3. 正则:`/^https?:\/\/([^\/]+)\/xxx/`(`http(s)://host:port/xxx`路径及其子路径的请求都会执行`operator-uri`，且在`operator-uri`中可以通过`$1, $2, ..., $N`获取`url`里面的子匹配)
 
-operator-uri参见[协议列表](https://whistle.gitbooks.io/help/content/rules/)
+更多详细内容请参见[配置模式](https://whistle.gitbooks.io/help/content/mode.html)、[匹配方式](https://whistle.gitbooks.io/help/content/pattern.html)。
+
+operator-uri可以为请求url、操作请求响应的各种功能，具体参见[协议列表](https://whistle.gitbooks.io/help/content/rules/)
 
 ### Network
 
