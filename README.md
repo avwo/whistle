@@ -10,7 +10,7 @@ whistle是Node实现的类似Fiddler的web调试代理工具，用于查看、�
 
 whistle继承了Fiddler的抓包界面的部分优秀设计，去掉Fiddler通过断点修改请求响应的方式，采用扩展Hosts配置的方式，实现通过配置操作请求响应，且提供了通过Node模块扩展功能，具体参考[实现原理](https://whistle.gitbooks.io/help/content/)。
 
-如何安装使用whistle请参考：[whistle帮助文档](https://whistle.gitbooks.io/help/content/install.html);
+如何安装使用whistle请参见：[whistle帮助文档](https://whistle.gitbooks.io/help/content/install.html);
 
 ### 配置模式
 
@@ -22,7 +22,7 @@ whistle继承了Fiddler的抓包界面的部分优秀设计，去掉Fiddler通�
 2. 路径：`http://www.test.com/xxx`(可以不加协议，`http://www.test.com/xx`·路径及其子路径的请求都会执行`operator-uri`)
 3. 正则:`/^https?:\/\/([^\/]+)\/xxx/`(`http(s)://host:port/xxx`路径及其子路径的请求都会执行`operator-uri`，且在`operator-uri`中可以通过`$1, $2, ..., $N`获取`url`里面的子匹配)
 
-operator-uri参加[协议列表](https://whistle.gitbooks.io/help/content/rules/)
+operator-uri参见[协议列表](https://whistle.gitbooks.io/help/content/rules/)
 
 ### Network
 
