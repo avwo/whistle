@@ -1,6 +1,5 @@
 # whistle
 [![node version](https://img.shields.io/badge/node.js-%3E=_0.10-green.svg?style=flat)](http://nodejs.org/download/)
-
 [![build status](https://img.shields.io/travis/avwo/whistle.svg?branch=travis&style=flat)](https://travis-ci.org/avwo/whistle)
 [![Test coverage](https://codecov.io/gh/avwo/whistle/branch/travis/graph/badge.svg)](https://codecov.io/gh/avwo/whistle)
 [![npm download](https://img.shields.io/npm/dm/whistle.svg?style=flat)](https://npmjs.org/package/whistle)
