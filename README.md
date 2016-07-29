@@ -20,7 +20,7 @@ whistle继承了Fiddler的抓包界面的部分优秀设计，去掉Fiddler通�
 
 1. 域名：`www.test.com`(所有该域名下的请求都会执行`operator-uri`)
 2. 路径：`http://www.test.com/xxx`(可以不加协议，`http://www.test.com/xx`·路径及其子路径的请求都会执行`operator-uri`)
-3. 正则:`/^https?:\/\/([^\/]+)\/xxx/`(`http(s)://host:port/xxx`路径及其子路径的请求都会执行`operator-uri`，且在`operator-uri`中可以通过`$1, $2, ..., $N`获取`url`里面的子匹配)
+3. 正则:`/^https?:\/\/([^\/]+)\/xxx/`(`http(s)://host:port/xxx`路径及其子路径的请求都会执行`operator-uri`，且在`operator-uri`中可以通过`$1, $2, ..., $9`获取`url`里面的子匹配)
 
 更多详细内容请参见[配置模式](https://whistle.gitbooks.io/help/content/mode.html)、[匹配方式](https://whistle.gitbooks.io/help/content/pattern.html)。
 
