@@ -8,7 +8,7 @@
 
 whistle是Node实现的类似Fiddler的web调试代理工具，用于查看、修改及构造HTTP(S)、Websocket请求响应。
 
-whistle继承了部分Fiddler的抓包界面的设计，抛弃Fiddler通过断点修改请求响应的方式，采用扩展Hosts配置的方式，实现通过配置操作请求响应，且提供了通过Node模块扩展功能，具体参考[实现原理](https://whistle.gitbooks.io/help/content/)。
+whistle继承了Fiddler的抓包界面的部分优秀设计，去掉Fiddler通过断点修改请求响应的方式，采用扩展Hosts配置的方式，实现通过配置操作请求响应，且提供了通过Node模块扩展功能，具体参考[实现原理](https://whistle.gitbooks.io/help/content/)。
 
 如何安装使用whistle请参考：[whistle帮助文档](https://whistle.gitbooks.io/help/content/install.html);
 
