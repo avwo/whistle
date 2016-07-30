@@ -281,14 +281,13 @@ fix: `statusCode < 100 || statusCode > 999` 会抛出异常导致程序crash
 
 # v0.12.0
 1. feat: 支持配置配置ip:port，如：`pattern host://ip:port`(port可选)，这与`pattern ip:port`的区别是：后者会把请求头的`host`字段修改为`ip:port`(ip为IPv4或IPv6)
-2. feat: 新增命令行参数`-r newRulesDir`，用于指定新rules存放目录，加上`-p newPort`可以让同一个用户启动多个whistle服务
-3. feat: 新增命令行参数`-v newValuesDir`，用于指定新values存放目录
-4. feat: 新增命令行参数`--copy xxx|yyy`，把rules的目录xxx(默认为rules)和values的目录yyy(默认为values)分别拷贝到`-r`和`-v`指定的目录
-5. docs: 修改页面中帮助文档的链接
+2. feat: 支持同一个用户启动多个whistle服务`w2 start -S newStorageDir -p newPort`，具体参见[安装启动](https://whistle.gitbooks.io/help/content/install.html)
+3. docs: 修改页面中帮助文档的链接
+4. fix: 重写文档的过程中把所有功能都人肉跑了一遍，修复了一下问题，后续版本把自动化持续集成的功能加上
 
 
 ### -
-具体参考：[功能列表](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#%E7%9B%AE%E5%BD%95)
+完整功能请参见[whistle帮助文档](https://whistle.gitbooks.io/help/content/)。
 	
 
 

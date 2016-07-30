@@ -8,11 +8,11 @@
 
 [![whistle logo](https://github.com/avwo/whistle/blob/avenwu/biz/webui/htdocs/img/whistle.png)](https://whistle.gitbooks.io/help/content/)
 
-whistle是[Node](https://nodejs.org/)实现的类似[Fiddler](http://www.telerik.com/fiddler/)的跨平台web调试代理工具，可用于查看、修改及构造HTTP(S)、Websocket请求响应。
-
-whistle继承了Fiddler抓包界面的部分优秀设计，去掉Fiddler通过断点修改请求响应的方式，采用扩展Hosts配置的方式，实现通过配置操作请求响应，且提供了通过Node模块扩展功能的方式，具体参见[实现原理](https://whistle.gitbooks.io/help/content/)。
+whistle是[Node](https://nodejs.org/)实现的类似[Fiddler](http://www.telerik.com/fiddler/)的跨平台web调试代理工具，可用于查看、修改及构造HTTP(S)、Websocket请求响应，并继承了Fiddler抓包界面的部分优秀设计，去掉Fiddler通过断点修改请求响应的方式，采用扩展Hosts配置的方式，实现通过配置操作请求响应，且提供了通过Node模块扩展功能的方式，具体参见[实现原理](https://whistle.gitbooks.io/help/content/)。
 
 如何安装使用whistle请参见：[whistle帮助文档](https://whistle.gitbooks.io/help/content/install.html)。
+
+# 基本功能
 
 ### 配置模式
 
@@ -21,12 +21,28 @@ whistle继承了Fiddler抓包界面的部分优秀设计，去掉Fiddler通过�
 其中，pattern可以为：
 
 1. 域名：`www.test.com`(所有该域名下的请求都会执行`operator-uri`)
-2. 路径：`http://www.test.com/xxx`(可以不加协议，`http://www.test.com/xx`·路径及其子路径的请求都会执行`operator-uri`)
+2. 路径：`http://www.test.com/xxx`(可以不加协议`www.test.com/xxx`，`http://www.test.com/xx`·路径及其子路径的请求都会执行`operator-uri`)
 3. 正则:`/^https?:\/\/([^\/]+)\/xxx/`(`http(s)://host:port/xxx`路径及其子路径的请求都会执行`operator-uri`，且在`operator-uri`中可以通过`$1, $2, ..., $9`获取`url`里面的子匹配)
 
 更多详细内容请参见[配置模式](https://whistle.gitbooks.io/help/content/mode.html)、[匹配方式](https://whistle.gitbooks.io/help/content/pattern.html)。
 
-operator-uri可以为请求url、操作请求响应的各种功能，具体参见[协议列表](https://whistle.gitbooks.io/help/content/rules/)
+operator-uri有以下功能：
+
+- 配置host
+- 修改请求，包括： 请求方法、请求头、修改内容、延迟发送请求、限制请求速度，设置timeout
+- 修改响应，包括： 响应状态码、响应头、修改内容、 延迟响应、 限制响应速度
+- 替换请求： 
+	- 替换本地文件(支持替换jsonp请求)
+	- 设置代理(支持http、socks代理)
+	- 请求转发
+	- 通过插件扩展
+- 内置weinre，通过weinre可以修改手机端或远程网页的DOM结构，调试页面等
+- 设置过滤，用于过滤一些已设置的规则
+- 导出请求响应的详细信息
+- 自定义脚本修改url的请求参数，实现动态匹配规则的功能
+- 支持自动捕获手机端或远程页面的js异常，且可以嵌入脚本打印console等
+
+完整功能参见[协议列表](https://whistle.gitbooks.io/help/content/rules/)。
 
 ### Network
 
@@ -38,7 +54,7 @@ operator-uri可以为请求url、操作请求响应的各种功能，具体参�
 ### Values
 ![Values](https://raw.githubusercontent.com/avwo/whistleui/master/img/values.gif)
 
-完整功能请参见[whistle帮助文档](https://whistle.gitbooks.io/help/content/)
+完整功能请参见[whistle帮助文档](https://whistle.gitbooks.io/help/content/)。
 
 # License
 [MIT](https://github.com/avwo/whistle/blob/master/LICENSE)
