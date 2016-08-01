@@ -279,11 +279,14 @@ fix: `statusCode < 100 || statusCode > 999` 会抛出异常导致程序crash
 1. fix: 修复在[Values](https://github.com/avwo/whistle/wiki/%E7%95%8C%E9%9D%A2%E6%93%8D%E4%BD%9C)中按`Ctrl+S`会弹出修改名称输入框的问题
 2. refactor: 允许同时安装多个不同的whistle根证书，安装根证书请参考：[启用HTTPS](https://github.com/avwo/whistle/wiki/%E5%90%AF%E7%94%A8HTTPS)
 
-# v0.12.0
+### v0.12.0
 1. feat: 支持配置配置ip:port，如：`pattern host://ip:port`(port可选)，这与`pattern ip:port`的区别是：后者会把请求头的`host`字段修改为`ip:port`(ip为IPv4或IPv6)
 2. feat: 支持同一个用户启动多个whistle服务`w2 start -S newStorageDir -p newPort`，具体参见[安装启动](https://whistle.gitbooks.io/help/content/install.html)
 3. docs: 修改页面中帮助文档的链接
 4. fix: 重写文档的过程中把所有功能都人肉跑了一遍，修复了一下问题，后续版本把自动化持续集成的功能加上
+
+# v0.12.1
+fix: 修复请求头有非法字符导致程序奔溃的问题
 
 
 ### -
