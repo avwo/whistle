@@ -6,7 +6,10 @@ startWhistle({
 	port: config.port
 });
 
-util.request('http://test.whistlejs.com/', function(body) {
-	console.log(body);
+util.request({
+	url: 'http://test.whistlejs.com/',
+	body: 'test'
+}, function(data) {
+	console.log(data.body);
 });
 

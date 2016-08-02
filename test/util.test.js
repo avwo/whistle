@@ -23,11 +23,11 @@ exports.request = function(options, callback) {
 	++count;
 	request(options, function(err, res, body) {
 		if (err || res.statusCode != 200) {
-			process.exit(10);
+			process.exit(1);
 			return;
 		}
 		
-		callback && callback(body);
+		callback && callback(JSON.parse(body));
 		if (--count <= 0) {
 			process.exit(0);
 		}
