@@ -23,6 +23,7 @@ exports.request = function(options, callback) {
 	++count;
 	request(options, function(err, res, body) {
 		if (err || res.statusCode != 200) {
+			console.error(err, res && res.statusCode);
 			process.exit(1);
 			return;
 		}
