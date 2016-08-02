@@ -4,15 +4,6 @@ var request = require('request').defaults({
 });
 var count = 0;
 
-request({
-	rejectUnauthorized : false,
-	url : 'https://test.whistlejs.com/'
-}, function(error, response, body) {
-	if (!error && response.statusCode == 200) {
-		console.log(body) // Show the HTML for the Google homepage.
-	}
-});
-
 exports.request = function(options, callback) {
 	if (typeof options == 'string') {
 		options = {
@@ -22,13 +13,13 @@ exports.request = function(options, callback) {
 	}
 	++count;
 	request(options, function(err, res, body) {
-		if (err || res.statusCode != 200) {
-			console.error(err && err.stack, res && res.statusCode);
+		if (err) {
+			console.error(err.stack);
 			process.exit(1);
 			return;
 		}
 		
-		callback && callback(JSON.parse(body));
+		callback && callback(res, res.statusCode == 200 ? JSON.parse(body) : null);
 		if (--count <= 0) {
 			process.exit(0);
 		}
