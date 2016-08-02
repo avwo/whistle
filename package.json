@@ -70,6 +70,7 @@
     "eslint": "^2.8.0",
     "istanbul": "^0.4.4",
     "request": "^2.74.0",
-    "tape": "^4.6.0"
+    "tape": "^4.6.0",
+    "whistle.test": "0.0.1"
   }
 }
