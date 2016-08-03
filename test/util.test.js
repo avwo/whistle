@@ -25,3 +25,7 @@ exports.request = function(options, callback) {
 		}
 	});
 };
+
+function noop() {}
+
+exports.noop = noop;
