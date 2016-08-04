@@ -73,6 +73,6 @@
     "should": "^10.0.0",
     "should-http": "0.0.4",
     "tape": "^4.6.0",
-    "whistle.test": "0.0.1"
+    "whistle.test": "*"
   }
 }
