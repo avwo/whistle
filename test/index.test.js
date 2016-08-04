@@ -6,7 +6,7 @@ var startWhistle = require('../index');
 var util = require('./util.test');
 var config = require('./config.test');
 var testList = ['host', 'rule', 'reqSpeed', 'resSpeed', 'reqDelay', 'resDelay', 'file', 'xfile',
-                'referer', 'urlParams', 'params'].map(function(name) {
+                'referer', 'urlParams', 'params', 'ua'].map(function(name) {
 	return require('./' + name + '.test');
 });
 var count = 2;
