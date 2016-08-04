@@ -1,5 +1,7 @@
 var http = require('http');
 var StringDecoder = require('string_decoder').StringDecoder;
+var should = require('should');
+require('should-http');
 var startWhistle = require('../index');
 var util = require('./util.test');
 var config = require('./config.test');
@@ -24,6 +26,7 @@ http.createServer(function(req, res) {
 	req.on('end', function() {
 		body += decoder.end();
 		res.end(JSON.stringify({
+			type: 'server',
 			method: req.method,
 			headers: req.headers,
 			body: body
