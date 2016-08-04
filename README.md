@@ -1,10 +1,10 @@
 # whistle
-[![node version](https://img.shields.io/badge/node.js-%3E=_0.10-green.svg?style=flat)](http://nodejs.org/download/)
-[![build status](https://img.shields.io/travis/avwo/whistle.svg?branch=travis&style=flat)](https://travis-ci.org/avwo/whistle)
-[![Test coverage](https://codecov.io/gh/avwo/whistle/branch/travis/graph/badge.svg)](https://codecov.io/gh/avwo/whistle)
-[![npm download](https://img.shields.io/npm/dm/whistle.svg?style=flat)](https://npmjs.org/package/whistle)
-[![NPM count](https://img.shields.io/npm/dt/whistle.svg?style=flat)](https://www.npmjs.com/package/whistle)
-[![License](https://img.shields.io/npm/l/whistle.svg?style=flat)](https://www.npmjs.com/package/whistle)
+[![node version](https://img.shields.io/badge/node.js-%3E=_0.10-green.svg?style=flat-square)](http://nodejs.org/download/)
+[![build status](https://img.shields.io/travis/avwo/whistle.svg?branch=travis&style=flat-square)](https://travis-ci.org/avwo/whistle)
+[![Test coverage](https://codecov.io/gh/avwo/whistle/branch/travis/graph/badge.svg?style=flat-square)](https://codecov.io/gh/avwo/whistle)
+[![npm download](https://img.shields.io/npm/dm/whistle.svg?style=flat-square)](https://npmjs.org/package/whistle)
+[![NPM count](https://img.shields.io/npm/dt/whistle.svg?style=flat-square)](https://www.npmjs.com/package/whistle)
+[![License](https://img.shields.io/npm/l/whistle.svg?style=flat-square)](https://www.npmjs.com/package/whistle)
 
 [![whistle logo](https://github.com/avwo/whistle/blob/avenwu/biz/webui/htdocs/img/whistle.png)](https://whistle.gitbooks.io/help/content/)
 
