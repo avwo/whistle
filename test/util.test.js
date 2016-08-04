@@ -29,3 +29,10 @@ exports.request = function(options, callback) {
 function noop() {}
 
 exports.noop = noop;
+
+function getTextBySize(size) {
+	
+	return new Array(size + 1).join('1');
+}
+
+exports.getTextBySize = getTextBySize;
