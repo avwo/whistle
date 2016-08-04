@@ -5,7 +5,7 @@ require('should-http');
 var startWhistle = require('../index');
 var util = require('./util.test');
 var config = require('./config.test');
-var testList = ['host', 'rule', 'reqSpeed', 'resSpeed', 'reqDelay', 'resDelay', 'file'].map(function(name) {
+var testList = ['host', 'rule', 'reqSpeed', 'resSpeed', 'reqDelay', 'resDelay', 'file', 'xfile'].map(function(name) {
 	return require('./' + name + '.test');
 });
 var count = 2;
