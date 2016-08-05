@@ -1,12 +1,11 @@
 var util = require('./util.test');
 
 module.exports = function() {
+	var body = 'test__';
 	util.request({
 		url: 'http://test.whistlejs.com/',
-		body: 'test'
+		body: body
 	}, function(res, data) {
-		if (data) {
-			console.log(data.body);
-		}
+		data.body.should.be.equal(body);
 	});
 };

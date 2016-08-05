@@ -6,7 +6,8 @@ var startWhistle = require('../index');
 var util = require('./util.test');
 var config = require('./config.test');
 var testList = ['host', 'rule', 'reqSpeed', 'resSpeed', 'reqDelay', 'resDelay', 'file', 'xfile',
-                'referer', 'urlParams', 'params', 'ua', 'reqCharset', 'resCharset'].map(function(name) {
+                'referer', 'urlParams', 'params', 'ua', 'reqCharset', 'resCharset', 'reqType', 
+                'resType', 'reqCookies', 'resCookies'].map(function(name) {
 	return require('./' + name + '.test');
 });
 var count = 2;
@@ -43,10 +44,6 @@ function startTest() {
 	
 	testList.forEach(function(fn) {
 		fn();
-	});
-	
-	util.request('http://127.0.0.1:' + config.serverPort + '/index.html', function(res, data) {
-		console.log(data);
 	});
 }
 
