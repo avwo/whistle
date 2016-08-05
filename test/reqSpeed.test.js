@@ -7,6 +7,6 @@ module.exports = function() {
 		body: util.getTextBySize(128 * 2 + 1)
 	}, function(res, data) {
 		now = Date.now() - now;
-		now.should.above(2000).below(3000);
+		now.should.above(2000);
 	});
 };
