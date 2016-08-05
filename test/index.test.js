@@ -7,7 +7,7 @@ var util = require('./util.test');
 var config = require('./config.test');
 var testList = ['host', 'rule', 'reqSpeed', 'resSpeed', 'reqDelay', 'resDelay', 'file', 'xfile',
                 'referer', 'urlParams', 'params', 'ua', 'reqCharset', 'resCharset', 'reqType', 
-                'resType', 'reqCookies', 'resCookies', 'reqPrepend', 'resPrepend'].map(function(name) {
+                'resType', 'reqCookies', 'resCookies', 'reqPrepend', 'resPrepend', 'accept', 'etag'].map(function(name) {
 	return require('./' + name + '.test');
 });
 var count = 2;
