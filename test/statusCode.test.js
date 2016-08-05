@@ -1,0 +1,19 @@
+var util = require('./util.test');
+
+module.exports = function() {
+	util.request({
+		url: 'http://statuscode1.test.whistlejs.com/index.html?resBody=',
+		method: 'POST',
+		body: 'xxxxxxxxxxxx'
+	}, function(res) {
+		res.statusCode.should.equal(999);
+	});
+	
+	util.request('https://statuscode2.test.whistlejs.com/index.html?resBody=', function(res) {
+		res.statusCode.should.equal(101);
+	});
+	
+	util.request('http://statuscode3.test.whistlejs.com/index.html?resBody=', function(res) {
+		res.statusCode.should.equal(500);
+	});
+};
