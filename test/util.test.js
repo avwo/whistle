@@ -19,7 +19,7 @@ exports.request = function(options, callback) {
 			return;
 		}
 		
-		callback && callback(res, res.statusCode == 200 ? JSON.parse(body) : null);
+		callback && callback(res, res.statusCode == 200 ? (/\?resBody=/.test(options.url) ? body : JSON.parse(body)) : null);
 		if (--count <= 0) {
 			process.exit(0);
 		}
