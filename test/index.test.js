@@ -9,7 +9,8 @@ var testList = ['host', 'rule', 'reqSpeed', 'resSpeed', 'reqDelay', 'resDelay', 
                 'referer', 'urlParams', 'params', 'ua', 'reqCharset', 'resCharset', 'reqType', 
                 'resType', 'reqCookies', 'resCookies', 'reqPrepend', 'resPrepend', 'accept', 'etag',
                 'cache', 'statusCode', 'redirect', 'replaceStatus', 'reqBody', 'resBody', 'reqAppend', 'resAppend',
-                'reqReplace', 'resReplace', 'req.prepend.body.append', 'res.prepend.body.append', 'dispatch'].map(function(name) {
+                'reqReplace', 'resReplace', 'req.prepend.body.append', 'res.prepend.body.append', 'dispatch', 
+                'reqCors', 'resCors'].map(function(name) {
 	return require('./' + name + '.test');
 });
 var count = 2;
