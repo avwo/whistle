@@ -13,13 +13,8 @@ exports.request = function(options, callback) {
 	}
 	++count;
 	request(options, function(err, res, body) {
-		if (err) {
-			console.error(err.stack);
-			process.exit(1);
-			return;
-		}
-		
-		callback && callback(res, /\?resBody=/.test(options.url) ? body : JSON.parse(body));
+		err && console.error(options, err.stack);
+		callback && callback(res, /\?resBody=/.test(options.url) ? body : JSON.parse(body), err);
 		if (--count <= 0) {
 			process.exit(0);
 		}

@@ -16,4 +16,16 @@ module.exports = function() {
 	util.request('http://statuscode3.test.whistlejs.com/index.html?resBody=', function(res) {
 		res.statusCode.should.equal(500);
 	});
+	
+	util.request({
+		url: 'http://statuscode4.test.whistlejs.com/index.html?resBody=',
+		method: 'POST',
+		body: 'xxxxxxxxxxxx'
+	}, function(res, body, err) {
+		err.should.be.ok();
+	});
+	
+	util.request('https://statuscode5.test.whistlejs.com/index.html?resBody=', function(res, body, err) {
+		err.should.be.ok();
+	});
 };
