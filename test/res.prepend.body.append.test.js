@@ -8,7 +8,7 @@ module.exports = function() {
 		data.body.should.equal('prependbodyappend');
 	});
 	
-	util.request('http://resprepend.resbody.resappend.test.whistlejs.com/', function(res, data) {
+	util.request('http://resprepend.resbody.resappend.test.whistlejs.com/?resBody=', function(res, data) {
 		data.body.should.equal('prependbodyappend');
 	});
 };
