@@ -1,18 +1,14 @@
 var http = require('http');
+var path = require('path');
 var StringDecoder = require('string_decoder').StringDecoder;
 var should = require('should');
 require('should-http');
+var fs = require('fs');
 var startWhistle = require('../index');
 var util = require('./util.test');
 var config = require('./config.test');
-var testList = ['host', 'rule', 'reqSpeed', 'resSpeed', 'reqDelay', 'resDelay', 'file', 'xfile',
-                'referer', 'urlParams', 'params', 'ua', 'reqCharset', 'resCharset', 'reqType', 
-                'resType', 'reqCookies', 'resCookies', 'reqPrepend', 'resPrepend', 'accept', 'etag',
-                'cache', 'statusCode', 'redirect', 'replaceStatus', 'reqBody', 'resBody', 'reqAppend', 'resAppend',
-                'reqReplace', 'resReplace', 'req.prepend.body.append', 'res.prepend.body.append', 'dispatch', 
-                'reqCors', 'resCors', 'reqHeaders', 'resHeaders', 'js', 'css', 'html', 'forward', 'log', 'proxy',
-                'tpl', 'rawfile', 'write'].map(function(name) {
-	return require('./' + name + '.test');
+var testList = fs.readdirSync(path.join(__dirname, './units')).map(function(name) {
+	return require('./units/' + name);
 });
 var count = 2;
 
