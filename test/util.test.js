@@ -13,7 +13,7 @@ exports.request = function(options, callback) {
 	}
 	++count;
 	request(options, function(err, res, body) {
-		callback && callback(res, /\?resBody=/.test(options.url) ? body : JSON.parse(body), err);
+		callback && callback(res, /\?resBody=/.test(options.url) ? body : (/doNotParseJson/.test(options.url) ? body : JSON.parse(body)), err);
 		if (--count <= 0) {
 			process.exit(0);
 		}
