@@ -58,7 +58,12 @@ exports.request = function(options, callback) {
 			};
 		}
 		request(options, function(err, res, body) {
-			callback && callback(res, /\?resBody=/.test(options.url) ? body : (/doNotParseJson/.test(options.url) ? body : JSON.parse(body)), err);
+			try {
+				callback && callback(res, /\?resBody=/.test(options.url) ? body : (/doNotParseJson/.test(options.url) ? body : JSON.parse(body)), err);
+			} catch(e) {
+				console.log(options);
+				throw e;
+			}
 			if (--count <= 0) {
 				process.exit(0);
 			}
