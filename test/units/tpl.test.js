@@ -15,4 +15,8 @@ module.exports = function() {
 	}, function(res, body) {
 		body.should.equal('test({ec: 0})');
 	});
+	
+	util.request('http://xtpl.test.whistlejs.com/index2.html', function(res, data) {
+		data.should.have.property('type', 'server');
+	});
 };

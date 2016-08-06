@@ -16,4 +16,8 @@ module.exports = function() {
 		body.should.equal('test');
 		res.headers.should.have.property('content-type', 'text/plain');
 	});
+	
+	util.request('http://xraw.test.whistlejs.com/index2.html', function(res, data) {
+		data.should.have.property('type', 'server');
+	});
 };
