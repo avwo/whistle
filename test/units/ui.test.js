@@ -86,7 +86,11 @@ module.exports = function() {
 	});
 	util.request({
 		url: 'http://local.whistlejs.com/cgi-bin/rules/add',
-		method: 'post'
+		method: 'post',
+		form: {
+			name: 'test',
+			value: '/test/ file://xxx'
+		}
 	});
 	util.request({
 		url: 'http://local.whistlejs.com/cgi-bin/rules/disable-default',
@@ -98,19 +102,33 @@ module.exports = function() {
 	});
 	util.request({
 		url: 'http://local.whistlejs.com/cgi-bin/rules/remove',
-		method: 'post'
+		method: 'post',
+		form: {
+			name: 'test',
+			value: '/test/ file://xxx'
+		}
 	});
 	util.request({
 		url: 'http://local.whistlejs.com/cgi-bin/rules/rename',
-		method: 'post'
+		method: 'post',
+		form: {
+			name: 'test',
+			newName: 'sssss'
+		}
 	});
 	util.request({
 		url: 'http://local.whistlejs.com/cgi-bin/rules/select',
-		method: 'post'
+		method: 'post',
+		form: {
+			name: 'test'
+		}
 	});
 	util.request({
 		url: 'http://local.whistlejs.com/cgi-bin/rules/set-current',
-		method: 'post'
+		method: 'post',
+		form: {
+			name: 'test'
+		}
 	});
 	util.request({
 		url: 'http://local.whistlejs.com/cgi-bin/rules/set-font-size',
