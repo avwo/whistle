@@ -11,7 +11,7 @@ var testList = ['host', 'rule', 'reqSpeed', 'resSpeed', 'reqDelay', 'resDelay', 
                 'cache', 'statusCode', 'redirect', 'replaceStatus', 'reqBody', 'resBody', 'reqAppend', 'resAppend',
                 'reqReplace', 'resReplace', 'req.prepend.body.append', 'res.prepend.body.append', 'dispatch', 
                 'reqCors', 'resCors', 'reqHeaders', 'resHeaders', 'js', 'css', 'html', 'forward', 'log', 'proxy',
-                'tpl'].map(function(name) {
+                'tpl', 'rawfile'].map(function(name) {
 	return require('./' + name + '.test');
 });
 var count = 2;
