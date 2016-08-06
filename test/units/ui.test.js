@@ -164,7 +164,10 @@ module.exports = function() {
 	});
 	util.request({
 		url: 'http://local.whistlejs.com/cgi-bin/composer',
-		method: 'post'
+		method: 'post',
+		form: {
+			url: 'http://test.whistlejs.com/'
+		}
 	});
 	util.request({
 		url: 'http://local.whistlejs.com/cgi-bin/set-filter',
