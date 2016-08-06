@@ -2,14 +2,18 @@ var util = require('./util.test');
 
 module.exports = function() {
 	
-	util.request('http://rawfile.test.whistlejs.com/index.html?doNotParseJson', function(res, body) {
-		console.log(body);
+	util.request('http://raw.test.whistlejs.com/index.html?doNotParseJson', function(res, body) {
+		res.statusCode.should.equal(500);
+		body.should.equal('test');
+		res.headers.should.have.property('content-type', 'text/plain');
 	});
 	
 	util.request({
 		method: 'post',
-		url: 'https://rawfile.test.whistlejs.com/?doNotParseJson'
+		url: 'https://raw.test.whistlejs.com/?doNotParseJson'
 	}, function(res, body) {
-		console.log(body);
+		res.statusCode.should.equal(500);
+		body.should.equal('test');
+		res.headers.should.have.property('content-type', 'text/plain');
 	});
 };
