@@ -13,23 +13,42 @@ module.exports = function() {
 	
 	util.request({
 		url: 'http://local.whistlejs.com/cgi-bin/values/add',
-		method: 'post'
-	});
-	util.request({
-		url: 'http://local.whistlejs.com/cgi-bin/values/remove',
-		method: 'post'
-	});
-	util.request({
-		url: 'http://local.whistlejs.com/cgi-bin/values/rename',
-		method: 'post'
+		method: 'post',
+		form: {
+			name: 'test',
+			value: '123'
+		}
+	}, function() {
+		util.request({
+			url: 'http://local.whistlejs.com/cgi-bin/values/rename',
+			method: 'post',
+			form: {
+				name: 'test',
+				newName: '123'
+			}
+		}, function() {
+			util.request({
+				url: 'http://local.whistlejs.com/cgi-bin/values/remove',
+				method: 'post',
+				form: {
+					name: '123'
+				}
+			});
+		});
 	});
 	util.request({
 		url: 'http://local.whistlejs.com/cgi-bin/values/set-current',
-		method: 'post'
+		method: 'post',
+		form: {
+			name: 'test'
+		}
 	});
 	util.request({
 		url: 'http://local.whistlejs.com/cgi-bin/values/set-font-size',
-		method: 'post'
+		method: 'post',
+		form: {
+			valuesFontSize: '14px'
+		}
 	});
 	util.request({
 		url: 'http://local.whistlejs.com/cgi-bin/values/set-theme',
@@ -41,11 +60,17 @@ module.exports = function() {
 	});
 	util.request({
 		url: 'http://local.whistlejs.com/cgi-bin/values/move-up',
-		method: 'post'
+		method: 'post',
+		form: {
+			name: 'test'
+		}
 	});
 	util.request({
 		url: 'http://local.whistlejs.com/cgi-bin/values/move-down',
-		method: 'post'
+		method: 'post',
+		form: {
+			name: 'test'
+		}
 	});
 	util.request({
 		url: 'http://local.whistlejs.com/cgi-bin/plugins/disable-plugin',
