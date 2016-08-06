@@ -9,9 +9,9 @@ module.exports = function() {
 	util.request({
 		method: 'post',
 		url: 'https://log2.test.whistlejs.com/index.html?resBody=_'
-	}, function(res, body) {console.log(body)
-//		body.length.should.above(500);
-//		body.should.containEql('_\r\nlog');
+	}, function(res, body) {
+		body.length.should.above(500);
+		body.should.containEql('_\r\nlog');
 	});
 	
 	util.request({
