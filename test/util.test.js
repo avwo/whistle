@@ -44,7 +44,7 @@ exports.request = function(options, callback) {
 					return;
 				}
 				done = true;
-				callback && callback(data);
+				callback && callback(JSON.parse(data));
 				if (--count <= 0) {
 					process.exit(0);
 				}
