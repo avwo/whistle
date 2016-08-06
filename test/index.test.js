@@ -12,9 +12,20 @@ var testList = fs.readdirSync(path.join(__dirname, './units')).map(function(name
 });
 var count = 2;
 
-startWhistle({
-	port: config.port
-}, startTest);
+var WebSocketServer = require('ws').Server;
+var wss = new WebSocketServer({ port: config.wsPort });
+
+wss.on('connection', function connection(ws) {
+	var req = ws.upgradeReq;
+	ws.on('message', function(msg) {
+		ws.send(JSON.stringify({
+			type: 'server',
+			method: req.method,
+			headers: req.headers,
+			body: msg
+		}, null, '\t'));
+	});
+});
 
 http.createServer(function(req, res) {
 	req.on('error', util.noop);
@@ -36,6 +47,9 @@ http.createServer(function(req, res) {
 	});
 }).listen(config.serverPort, startTest);
 
+startWhistle({
+	port: config.port
+}, startTest);
 
 function startTest() {
 	if (--count > 0) {
