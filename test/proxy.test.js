@@ -2,7 +2,7 @@ var util = require('./util.test');
 
 module.exports = function() {
 	util.request('http://proxy.test.whistlejs.com/index.html', function(res, data) {
-		console.log(data);
+		data.should.have.property('type', 'server');
 	});
 	
 	util.request({
@@ -10,7 +10,7 @@ module.exports = function() {
 		url: 'http://proxy.test.whistlejs.com/index.html',
 		body: 'xxxxx'
 	}, function(res, data) {
-		console.log(data);
+		data.should.have.property('type', 'server');
 	});
 	
 };
