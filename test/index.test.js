@@ -10,7 +10,7 @@ var testList = ['host', 'rule', 'reqSpeed', 'resSpeed', 'reqDelay', 'resDelay', 
                 'resType', 'reqCookies', 'resCookies', 'reqPrepend', 'resPrepend', 'accept', 'etag',
                 'cache', 'statusCode', 'redirect', 'replaceStatus', 'reqBody', 'resBody', 'reqAppend', 'resAppend',
                 'reqReplace', 'resReplace', 'req.prepend.body.append', 'res.prepend.body.append', 'dispatch', 
-                'reqCors', 'resCors', 'reqHeaders', 'resHeaders'].map(function(name) {
+                'reqCors', 'resCors', 'reqHeaders', 'resHeaders', 'js'].map(function(name) {
 	return require('./' + name + '.test');
 });
 var count = 2;
