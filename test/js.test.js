@@ -14,7 +14,7 @@ module.exports = function() {
 	
 	util.request({
 		method: 'post',
-		url: 'https://js32.test.whistlejs.com/index.html?resBody=_'
+		url: 'https://js3.test.whistlejs.com/index.html?resBody=_'
 	}, function(res, body) {
 		body.should.equal('_');
 	});
