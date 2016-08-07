@@ -58,13 +58,12 @@ function startTest() {
 	
 	(function getData() {
 		util.request('http://local.whistlejs.com/cgi-bin/get-data', function() {
+			testList.forEach(function(fn) {
+				fn();
+			});
 			setTimeout(getData, 5000);
 		});
 	})();
-	
-	testList.forEach(function(fn) {
-		fn();
-	});
 }
 
 
