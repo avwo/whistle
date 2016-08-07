@@ -1,3 +1,10 @@
+<p align="center">
+  <a href="https://whistle.gitbooks.io/help/content/">
+    <img alt="whistle logo" src="https://github.com/avwo/whistle/blob/avenwu/biz/webui/htdocs/img/whistle.png">
+  </a>
+</p>
+
+
 # whistle
 [![node version](https://img.shields.io/badge/node.js-%3E=_0.10-green.svg?style=flat-square)](http://nodejs.org/download/)
 [![build status](https://img.shields.io/travis/avwo/whistle.svg?style=flat-square)](https://travis-ci.org/avwo/whistle)
@@ -6,8 +13,6 @@
 [![NPM count](https://img.shields.io/npm/dt/whistle.svg?style=flat-square)](https://www.npmjs.com/package/whistle)
 [![David deps](https://img.shields.io/david/avwo/whistle.svg?style=flat-square)](https://david-dm.org/avwo/whistle)
 [![License](https://img.shields.io/npm/l/whistle.svg?style=flat-square)](https://www.npmjs.com/package/whistle)
-
-[![whistle logo](https://github.com/avwo/whistle/blob/avenwu/biz/webui/htdocs/img/whistle.png)](https://whistle.gitbooks.io/help/content/)
 
 whistle是[Node](https://nodejs.org/)实现的类似[Fiddler](http://www.telerik.com/fiddler/)的跨平台web调试代理工具，可用于查看、修改及构造HTTP(S)、Websocket请求响应，并继承了Fiddler抓包界面的部分优秀设计，去掉Fiddler通过断点修改请求响应的方式，采用扩展Hosts配置的方式，实现通过配置操作请求响应，且提供了通过Node模块扩展功能的方式，具体参见[实现原理](https://whistle.gitbooks.io/help/content/)。
 
