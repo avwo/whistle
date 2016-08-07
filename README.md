@@ -4,6 +4,7 @@
 [![Test coverage](https://codecov.io/gh/avwo/whistle/branch/travis/graph/badge.svg?style=flat-square)](https://codecov.io/gh/avwo/whistle)
 [![npm download](https://img.shields.io/npm/dm/whistle.svg?style=flat-square)](https://npmjs.org/package/whistle)
 [![NPM count](https://img.shields.io/npm/dt/whistle.svg?style=flat-square)](https://www.npmjs.com/package/whistle)
+[![David deps](https://img.shields.io/david/avwo/whistle.svg?style=flat-square)](https://david-dm.org/avwo/whistle)
 [![License](https://img.shields.io/npm/l/whistle.svg?style=flat-square)](https://www.npmjs.com/package/whistle)
 
 [![whistle logo](https://github.com/avwo/whistle/blob/avenwu/biz/webui/htdocs/img/whistle.png)](https://whistle.gitbooks.io/help/content/)
