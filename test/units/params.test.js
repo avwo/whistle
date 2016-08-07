@@ -25,7 +25,7 @@ module.exports = function() {
 	}, function(res, data) {
 		var body = data.body;
 		data.body.should.containEql('filename=""');
-		data.body.should.containEql('filename="name2"');
+		data.body.should.containEql('name="name2"');
 		data.body.should.containEql('name="file2"');
 		data.body.should.containEql('filename="text.txt"');
 		data.body.should.containEql('1234567890');
