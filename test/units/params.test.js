@@ -28,6 +28,6 @@ module.exports = function() {
 	});
 	
 	util.request('http://params2.test.whistlejs.com/index.html?name=aven', function(res, data) {
-		console.log(data.url);
+		data.url.should.containEql('?name=aven&test=abc')
 	});
 };
