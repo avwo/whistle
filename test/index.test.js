@@ -56,11 +56,21 @@ function startTest() {
 		return;
 	}
 	
+	var done;
+	
+	function testAll() {
+		if (done) {
+			return;
+		}
+		done = true;
+		testList.forEach(function(fn) {
+			fn();
+		});
+	}
+	
 	(function getData() {
 		util.request('http://local.whistlejs.com/cgi-bin/get-data', function() {
-			testList.forEach(function(fn) {
-				fn();
-			});
+			testAll();
 			setTimeout(getData, 5000);
 		});
 	})();
