@@ -8,4 +8,22 @@ module.exports = function() {
 	}, function(res, data) {
 		data.body.should.equal('key=value&test=abc');
 	});
+	
+	util.request({
+		url: 'http://upload.test.whistlejs.com/index.html',
+		formData: {
+			  name1: 'my_value',
+			  name2: 'hehe',
+			  file1: {
+			    value:  'ok',
+			    options: {
+			      filename: 'topsecret.jpg',
+			      contentType: 'text/plain'
+			    }
+			  }
+		}
+	}, function(res, data) {
+//		data.body.should.equal('key=value&test=abc');
+		console.log(data);
+	});
 };
