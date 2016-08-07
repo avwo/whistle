@@ -27,7 +27,7 @@ module.exports = function() {
 		console.log(data);
 	});
 	
-	util.request('http://params.test.whistlejs.com/index.html', function(res, data) {
+	util.request('http://params2.test.whistlejs.com/index.html?name=aven', function(res, data) {
 		console.log(data.url);
 	});
 };

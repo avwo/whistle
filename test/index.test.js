@@ -40,6 +40,7 @@ http.createServer(function(req, res) {
 		body += decoder.end();
 		res.end(JSON.stringify({
 			type: 'server',
+			url: req.url,
 			method: req.method,
 			headers: req.headers,
 			body: body
