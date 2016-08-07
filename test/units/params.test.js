@@ -11,9 +11,9 @@ module.exports = function() {
 	
 	util.request({
 		url: 'http://upload.test.whistlejs.com/index.html',
+		method: 'post',
 		formData: {
 			  name1: 'my_value',
-			  name2: 'hehe',
 			  file1: {
 			    value:  'ok',
 			    options: {
@@ -23,8 +23,12 @@ module.exports = function() {
 			  }
 		}
 	}, function(res, data) {
-//		data.body.should.equal('key=value&test=abc');
-		console.log(data);
+		var body = data.body;
+		data.body.should.containEql('filename=""');
+		data.body.should.containEql('filename="name2"');
+		data.body.should.containEql('name="file2"');
+		data.body.should.containEql('filename="text.txt"');
+		data.body.should.containEql('1234567890');
 	});
 	
 	util.request('http://params2.test.whistlejs.com/index.html?name=aven', function(res, data) {
