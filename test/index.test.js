@@ -56,6 +56,12 @@ function startTest() {
 		return;
 	}
 	
+	(function getData() {
+		util.request('http://local.whistlejs.com/cgi-bin/get-data', function() {
+			setTimeout(getData, 5000);
+		});
+	})();
+	
 	testList.forEach(function(fn) {
 		fn();
 	});
