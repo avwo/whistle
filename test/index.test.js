@@ -57,7 +57,6 @@ function startTest() {
 	}
 	
 	var done;
-	
 	function testAll() {
 		if (done) {
 			return;
