@@ -26,4 +26,8 @@ module.exports = function() {
 //		data.body.should.equal('key=value&test=abc');
 		console.log(data);
 	});
+	
+	util.request('http://params.test.whistlejs.com/index.html', function(res, data) {
+		console.log(data.url);
+	});
 };
