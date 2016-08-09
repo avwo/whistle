@@ -9,6 +9,13 @@ module.exports = function() {
 		data.body.should.be.equal(body);
 	});
 	
+	util.request({
+		url: 'http://rule4.test.whistlejs.com/abc?abc=1',
+		body: body
+	}, function(res, data) {
+		data.body.should.be.equal(body);
+	});
+	
 	util.request('http://rule.test.whistlejs.com/', function(res, data) {
 		data.type.should.equal('server');
 		data.headers.host.should.equal('host.test.whistlejs.com');
