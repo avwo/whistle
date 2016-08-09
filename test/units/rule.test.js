@@ -65,15 +65,17 @@ module.exports = function() {
 		data.headers.host.should.not.equal('host.test.whistlejs.com');
 	});
 	
-	util.request('http://testrule5.test.whistlejs.com/abc?test=1#aaaa', function(res, data) {
+	var test = '9999999999';
+	
+	util.request('http://testrule5.test.whistlejs.com/abc?test=' + test + '#aaaa', function(res, data) {
 		data.type.should.equal('server');
 		data.headers.host.should.equal('host.test.whistlejs.com');
-		data.url.should.endWith('/abc?test=1');
+		data.url.should.endWith('/abc?test=' + test + '');
 	});
 	
-	util.request('http://testrule5.abc.test.whistlejs.com/?test=1#aaaa', function(res, data) {
+	util.request('http://testrule5.abc.test.whistlejs.com/?test=' + test + '#aaaa', function(res, data) {
 		data.type.should.equal('server');
 		data.headers.host.should.equal('host.abc.test.whistlejs.com');
-		data.url.should.endWith('/?test=1');
+		data.url.should.endWith('/?test=' + test + '');
 	});
 };
