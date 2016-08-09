@@ -21,7 +21,7 @@ module.exports = function() {
 		data.headers.host.should.equal('host.test.whistlejs.com');
 	});
 	
-	util.request('http://rule1.test.whistlejs.com/?abc=123', function(res, data) {
+	util.request('http://rule1.test.whistlejs.com/?abc=123#cdb', function(res, data) {
 		data.type.should.equal('server');
 		data.headers.host.should.equal('host.test.whistlejs.com');
 		data.url.should.endWith('/?test1abc=123');
@@ -38,7 +38,7 @@ module.exports = function() {
 		data.headers.host.should.equal('rule2.test.whistlejs.com');
 	});
 	
-	util.request('http://rule3.test.whistlejs.com/ab', function(res, data) {
+	util.request('http://rule3.test.whistlejs.com/abcd', function(res, data) {
 		data.should.not.have.property('type');
 		data.headers.host.should.not.equal('host.test.whistlejs.com');
 	});
@@ -58,5 +58,22 @@ module.exports = function() {
 		data.type.should.equal('server');
 		data.headers.host.should.equal('host.test.whistlejs.com');
 		data.url.should.endWith('/?test2');
+	});
+	
+	util.request('http://testrule5.test.whistlejs.com/abc?abc=1#aaaa', function(res, data) {
+		data.should.not.have.property('type');
+		data.headers.host.should.not.equal('host.test.whistlejs.com');
+	});
+	
+	util.request('http://testrule5.test.whistlejs.com/abc?test=1#aaaa', function(res, data) {
+		data.type.should.equal('server');
+		data.headers.host.should.equal('host.test.whistlejs.com');
+		data.url.should.endWith('/abc?test=1');
+	});
+	
+	util.request('http://testrule5.abc.test.whistlejs.com/?test=1#aaaa', function(res, data) {
+		data.type.should.equal('server');
+		data.headers.host.should.equal('host.abc.test.whistlejs.com');
+		data.url.should.endWith('/?test=1');
 	});
 };
