@@ -79,7 +79,7 @@ module.exports = function() {
 		data.url.should.endWith('/?test=' + test + '');
 	});
 	
-	util.request('http://testrule6.tt.abc.test.whistlejs.com/?test=' + test + '#aaaa', function(res, data) {console.log(data)
+	util.request('http://testrule6.tt.abc.test.whistlejs.com/?test=' + test + '#aaaa', function(res, data) {
 		data.type.should.equal('server');
 		data.headers.host.should.equal('tt.abc.test.whistlejs.com');
 		data.url.should.endWith('/?test=' + test + '');
