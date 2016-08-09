@@ -78,4 +78,16 @@ module.exports = function() {
 		data.headers.host.should.equal('host.abc.test.whistlejs.com');
 		data.url.should.endWith('/?test=' + test + '');
 	});
+	
+	util.request('http://testrule6.tt.abc.test.whistlejs.com/?test=' + test + '#aaaa', function(res, data) {console.log(data)
+		data.type.should.equal('server');
+		data.headers.host.should.equal('tt.abc.test.whistlejs.com');
+		data.url.should.endWith('/?test=' + test + '');
+	});
+	
+	util.request('http://testrule6.abc.test.whistlejs.com/?test=' + test + '#aaaa', function(res, data) {
+		data.type.should.equal('server');
+		data.headers.host.should.equal('abc.test.whistlejs.com');
+		data.url.should.endWith('/?test=' + test + '');
+	});
 };
