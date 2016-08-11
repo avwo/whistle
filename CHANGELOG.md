@@ -295,6 +295,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 
 # v0.12.3
 1. feat: 加入[urlReplace](https://whistle.gitbooks.io/help/content/rules/urlReplace.html)支持类似字符串的replace方法，替换请求url的路径内容
+2. style: 在Overview里面精确显示匹配`pattern matcher`，并在title里面显示配置规则的原始配置
 
 
 ### -
