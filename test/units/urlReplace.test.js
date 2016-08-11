@@ -1,16 +1,14 @@
 var util = require('../util.test');
 
 module.exports = function() {
-	util.request('http://urlreplace.urlparams.test.whistlejs.com/index.html?name=aven', function(res, data) {
-		//data.url.substring(data.url.indexOf('?') + 1).should.equal('test=abc');
-		console.log(data);
+	util.request('http://urlreplace.host.test.whistlejs.com/index.html?name=aven&test=abc', function(res, data) {
+		data.url.should.equal('/index.html?user=ttven&test=ttbc');
 	});
 	
 	util.request({
 		method: 'post',
-		url: 'http://urlreplace.urlparams.test.whistlejs.com/index.html?name=aven'
+		url: 'http://urlreplace.host.test.whistlejs.com/index.html?name=aven&test=abc'
 	}, function(res, data) {
-		//data.url.substring(data.url.indexOf('?') + 1).should.equal('test=abc');
-		console.log(data);
+		data.url.should.equal('/index.html?user=ttven&test=ttbc');
 	});
 };
