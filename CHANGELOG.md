@@ -289,9 +289,12 @@ fix: `statusCode < 100 || statusCode > 999` 会抛出异常导致程序crash
 fix: 修复请求头有非法字符导致程序奔溃的问题
 
 
-# v0.12.2
+### v0.12.2
 1. test: 加入自动化持续集成travis，并修复了一下bug
 2. fix: 响应有错误信息直接显示在抓包列表上
+
+# v0.12.3
+1. feat: 加入[urlReplace](https://whistle.gitbooks.io/help/content/rules/urlReplace.html)支持类似字符串的replace方法，替换请求url的路径内容
 
 
 ### -
