@@ -1,14 +1,14 @@
 <p align="center">
   <a href="https://whistle.gitbooks.io/help/content/">
-    <img alt="whistle logo" src="https://github.com/avwo/whistle/blob/avenwu/biz/webui/htdocs/img/whistle.png">
+    <img alt="whistle logo" src="https://github.com/avwo/whistle/blob/master/biz/webui/htdocs/img/whistle.png">
   </a>
 </p>
 
 
 # whistle
 [![node version](https://img.shields.io/badge/node.js-%3E=_0.10-green.svg?style=flat-square)](http://nodejs.org/download/)
-[![build status](https://img.shields.io/travis/avwo/whistle.svg?style=flat-square&branch=avenwu)](https://travis-ci.org/avwo/whistle)
-[![Test coverage](https://codecov.io/gh/avwo/whistle/branch/avenwu/graph/badge.svg?style=flat-square)](https://codecov.io/gh/avwo/whistle)
+[![build status](https://img.shields.io/travis/avwo/whistle.svg?style=flat-square)](https://travis-ci.org/avwo/whistle)
+[![Test coverage](https://codecov.io/gh/avwo/whistle/branch/master/graph/badge.svg?style=flat-square)](https://codecov.io/gh/avwo/whistle)
 [![npm download](https://img.shields.io/npm/dm/whistle.svg?style=flat-square)](https://npmjs.org/package/whistle)
 [![NPM count](https://img.shields.io/npm/dt/whistle.svg?style=flat-square)](https://www.npmjs.com/package/whistle)
 [![David deps](https://img.shields.io/david/avwo/whistle.svg?style=flat-square)](https://david-dm.org/avwo/whistle)
