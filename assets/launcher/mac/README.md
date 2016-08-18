@@ -1,1 +1,1 @@
-# Mac上的whistle启动器
+# Mac上配置开机重启whistle
