@@ -297,16 +297,10 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 1. feat: 加入[urlReplace](https://whistle.gitbooks.io/help/content/rules/urlReplace.html)支持类似字符串的replace方法，替换请求url的路径内容
 2. style: 在Overview里面精确显示匹配`pattern matcher`，并在title里面显示配置规则的原始配置
 
-# v1.0.0
+# v0.12.4
 1. fix: Linux设置开机启动无法找到homedir的问题
-2. feat: 新增[reqPrependBin](https://whistle.gitbooks.io/help/content/rules/reqPrependBin.html), 
-[resPrependBin](https://whistle.gitbooks.io/help/content/rules/resPrependBin.html), 
-[reqBodydBin](https://whistle.gitbooks.io/help/content/rules/reqBodyBin.html), 
-[resBodyBin](https://whistle.gitbooks.io/help/content/rules/resBodyBin.html), 
-[reqAppendBin](https://whistle.gitbooks.io/help/content/rules/reqAppendBin.html), 
-[resAppendBin](https://whistle.gitbooks.io/help/content/rules/resAppendBin.html)
-3. feat: 新增开机启动脚本，如何设置开机启动，请参考[开机启动](https://whistle.gitbooks.io/help/content/autoStart.html)
-4. feat: plugin中新增statusServer，用于获取请求的状态: 请求开始、请求结束或请求出错，具体参见[插件开发](https://whistle.gitbooks.io/help/content/plugins.html)
+2. feat: 新增开机启动脚本，如何设置开机启动，请参考[开机启动](https://whistle.gitbooks.io/help/content/autoStart.html)
+3. feat: plugin中新增statusServer，用于获取请求的状态: 请求开始、请求结束或请求出错，具体参见[插件开发](https://whistle.gitbooks.io/help/content/plugins.html)
 
 
 ### -
