@@ -8,8 +8,7 @@ module.exports = function() {
 	util.request({
 		url: 'http://prependbin.bodybin.appendbin.test.whistlejs.com/?doNotParseJson',
 		method: 'post'
-	}, function(res, data) {
-		console.log(data);
-		console.log(res.body);
+	}, function(res, body) {
+		body.should.be.equal(res.body);
 	});
 };
