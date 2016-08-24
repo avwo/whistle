@@ -1,7 +1,7 @@
 {
   "name": "whistle",
   "description": "HTTP, HTTPS, Websocket debugging proxy tool",
-  "version": "0.12.3",
+  "version": "1.0.0-beta",
   "dataDirname": ".whistle",
   "localUIHost": "local.whistlejs.com",
   "whistleSsl": "whistle-ssl",
@@ -51,7 +51,7 @@
     "pipestream": "^0.0.31",
     "q": "1.4.1",
     "socksv5": "0.0.6",
-    "starting": "^2.1.0",
+    "starting": "^2.1.1",
     "weinre": "2.0.0-pre-I0Z7U9OV"
   },
   "scripts": {
