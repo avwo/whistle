@@ -9,11 +9,11 @@ module.exports = function() {
 		data.should.have.property('type', 'server');
 	});
 	
-	util.request('wss://abc.whistlejs.com/index.html', function(data) {
-		data.ruleValue.should.equal('abc');
+	util.request('wss://321.whistlejs.com/index.html', function(data) {
+		data.ruleValue.should.equal('321');
 	});
 	
-	util.request('wss://abc.ws1.whistlejs.com:2222/index.html', function(data) {
+	util.request('wss://321.ws1.whistlejs.com:2222/index.html', function(data) {
 		data.host.should.equal('127.0.0.1');
 		data.port.should.equal('9999');
 	});
