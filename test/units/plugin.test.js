@@ -10,7 +10,7 @@ module.exports = function() {
 	});
 	
 	util.request('wss://321.whistlejs.com/index.html', function(data) {
-		data.ruleValue.should.equal('321');
+		data.ruleValue.should.equal('abc');
 	});
 	
 	util.request('wss://321.ws1.whistlejs.com:2222/index.html', function(data) {
