@@ -299,16 +299,10 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 
 # v1.0.0
 1. fix: Linux设置开机启动无法找到homedir的问题
-2. feat: 新增[reqPrependBin](https://whistle.gitbooks.io/help/content/rules/reqPrependBin.html), 
-[resPrependBin](https://whistle.gitbooks.io/help/content/rules/resPrependBin.html), 
-[reqBodydBin](https://whistle.gitbooks.io/help/content/rules/reqBodyBin.html), 
-[resBodyBin](https://whistle.gitbooks.io/help/content/rules/resBodyBin.html), 
-[reqAppendBin](https://whistle.gitbooks.io/help/content/rules/reqAppendBin.html), 
-[resAppendBin](https://whistle.gitbooks.io/help/content/rules/resAppendBin.html)
-3. feat: 新增开机启动脚本，如何设置开机启动，请参考[开机启动](https://whistle.gitbooks.io/help/content/autoStart.html)
-4. feat: plugin中新增statusServer，用于获取请求的状态: 请求开始、请求结束或请求出错，具体参见[插件开发](https://whistle.gitbooks.io/help/content/plugins.html)
-5. fix: 修复插件的plugin.rulesServer可能导致whistle crash的问题
-6. feat: 新增[plugin](https://whistle.gitbooks.io/help/content/rules/plugin.html)，用于实时通知指定插件请求状态的变化及动态修改rules，如果匹配了插件的协议，则会忽略plugin的配置
+2. feat: 新增开机启动脚本，如何设置开机启动，请参考[开机启动](https://whistle.gitbooks.io/help/content/autoStart.html)
+3. feat: plugin中新增statusServer，用于获取请求的状态: 请求开始、请求结束或请求出错，具体参见[插件开发](https://whistle.gitbooks.io/help/content/plugins.html)
+4. fix: 修复插件的plugin.rulesServer可能导致whistle crash的问题
+5. feat: 新增[plugin](https://whistle.gitbooks.io/help/content/rules/plugin.html)，用于实时通知指定插件请求状态的变化及动态修改rules，如果匹配了插件的协议，则会忽略plugin的配置
 
 
 ### -
