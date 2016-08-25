@@ -9,6 +9,7 @@ module.exports = function() {
 		method: 'post'
 	}, function(res, body) {
 		body.should.be.equal(res.body);
+		body.should.be.equal('我们是社会主义接班人!');
 	});
 	
 	util.request({
@@ -16,7 +17,6 @@ module.exports = function() {
 		method: 'post'
 	}, function(res, body) {
 		body.should.be.equal(res.body);
-		body.should.be.equal('我们是社会主义接班人!');
 	});
 	
 	util.request({
