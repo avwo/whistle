@@ -304,10 +304,12 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 4. fix: 修复插件的plugin.rulesServer可能导致whistle crash的问题
 5. feat: 新增[plugin](https://whistle.gitbooks.io/help/content/rules/plugin.html)，用于实时通知指定插件请求状态的变化及动态修改rules，如果匹配了插件的协议，则会忽略plugin的配置
 
-# v1.0.1
+# v1.1.0
 1. fix： https代理可能出现异常的问题
 2. feat: 新增[plugin.tunnelRulesServer](https://whistle.gitbooks.io/help/content/plugins.html)用于在插件上设置代理tcp请求的规则
-3. test: 新增对https代理的一些测试用例
+3. feat: 通过https代理过来的请求，没被拦截的请求都以tunnel为协议，如： tunnel://www.baidu.com:443
+4. feat: 代理请求新增`x-whistle-policy`用于设置whistle策略，目前只`tunnel`让whistle不要拦截https代理。
+5. test: 新增对https代理的一些测试用例
 
 
 ### -
