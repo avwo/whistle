@@ -1,3 +1,4 @@
+var http = require('http');
 var parseUrl = require('url').parse;
 var httpsAgent = require('https').Agent;
 var httpAgent = require('http').Agent;
@@ -81,3 +82,54 @@ function getTextBySize(size) {
 }
 
 exports.getTextBySize = getTextBySize;
+
+function connect(host, port, callback) {
+	var done;
+	var execCallback = function(err, socket) {
+		if (done) {
+			return;
+		}
+		done = true;
+		callback(err, socket);
+	};
+	var req = http.request({
+		method: 'CONNECT',
+		host: '127.0.0.1',
+		port: config.port,
+		agent: false,
+		headers: {
+			'user-agent': 'test/whistle',
+			'proxy-connection': 'keep-alive',
+			'x-whistle-policy': 'tunnel',
+			host: host +　(port ? ':' + port : '')
+		}
+	});
+	req.on('error', execCallback);
+	req.on('connect', function (res, socket, head) {
+		execCallback(null, socket);
+	});
+	req.end();
+}
+
+function proxy(url, callback) {
+	++count;
+	var options = parseUrl(url);
+	connect(options.hostname, options.port, function(err, socket) {
+		if (err) {
+			throw err;
+		}
+		
+		options.createConnection = function() {
+			return socket;
+		};
+		
+		http.request(options, function(res) {
+			callback && callback(res);
+			if (--count <= 0) {
+				process.exit(0);
+			}
+		}).end();
+	});
+}
+
+exports.proxy = proxy;
