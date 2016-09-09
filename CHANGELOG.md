@@ -297,12 +297,17 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 1. feat: 加入[urlReplace](https://whistle.gitbooks.io/help/content/rules/urlReplace.html)支持类似字符串的replace方法，替换请求url的路径内容
 2. style: 在Overview里面精确显示匹配`pattern matcher`，并在title里面显示配置规则的原始配置
 
-# v1.0.0
+### v1.0.0
 1. fix: Linux设置开机启动无法找到homedir的问题
 2. feat: 新增开机启动脚本，如何设置开机启动，请参考[开机启动](https://whistle.gitbooks.io/help/content/autoStart.html)
 3. feat: plugin中新增statusServer，用于获取请求的状态: 请求开始、请求结束或请求出错，具体参见[插件开发](https://whistle.gitbooks.io/help/content/plugins.html)
 4. fix: 修复插件的plugin.rulesServer可能导致whistle crash的问题
 5. feat: 新增[plugin](https://whistle.gitbooks.io/help/content/rules/plugin.html)，用于实时通知指定插件请求状态的变化及动态修改rules，如果匹配了插件的协议，则会忽略plugin的配置
+
+# v1.0.1
+1. fix： https代理可能出现异常的问题
+2. feat: 新增[plugin.tunnelRulesServer](https://whistle.gitbooks.io/help/content/plugins.html)用于在插件上设置代理tcp请求的规则
+3. test: 新增对https代理的一些测试用例
 
 
 ### -
