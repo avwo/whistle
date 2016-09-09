@@ -307,7 +307,8 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 # v1.0.1
 1. fix： https代理可能出现异常的问题
 2. feat: 新增[plugin.tunnelRulesServer](https://whistle.gitbooks.io/help/content/plugins.html)用于在插件上设置代理tcp请求的规则
-3. test: 新增对https代理的一些测试用例
+3. fix: 插件内置的私有host无法在界面正常显示的问题
+4. test: 新增对https代理的一些测试用例
 
 
 ### -
