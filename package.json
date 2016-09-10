@@ -1,7 +1,7 @@
 {
   "name": "whistle",
   "description": "HTTP, HTTPS, Websocket debugging proxy tool",
-  "version": "1.1.0",
+  "version": "1.1.0-beta",
   "dataDirname": ".whistle",
   "localUIHost": "local.whistlejs.com",
   "whistleSsl": "whistle-ssl",
