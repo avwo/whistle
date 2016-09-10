@@ -116,7 +116,15 @@ function proxy(url, callback) {
 	var options = parseUrl(url);
 	connect(options.hostname, options.port, function(err, socket) {
 		if (err) {
-			throw err;
+			if (callback) {
+				callback(err);
+			} else {
+				throw err;
+			}
+			if (--count <= 0) {
+				process.exit(0);
+			}
+			return;
 		}
 		
 		options.createConnection = function() {
@@ -124,9 +132,33 @@ function proxy(url, callback) {
 		};
 		
 		http.request(options, function(res) {
-			callback && callback(res);
-			if (--count <= 0) {
-				process.exit(0);
+			if (callback) {
+				res.on('data', noop);
+				var done;
+				res.on('error', function(err) {
+					if (done) {
+						return;
+					}
+					done = true;
+					callback(err, res);
+					if (--count <= 0) {
+						process.exit(0);
+					}
+				});
+				res.on('end', function() {
+					if (done) {
+						return;
+					}
+					done = true;
+					callback(err, res);
+					if (--count <= 0) {
+						process.exit(0);
+					}
+				});
+			} else {
+				if (--count <= 0) {
+					process.exit(0);
+				}
 			}
 		}).end();
 	});

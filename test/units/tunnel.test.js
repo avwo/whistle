@@ -12,4 +12,9 @@ module.exports = function() {
 	});
 	util.proxy('http://8080.tnl5.whistlejs.com');
 	util.proxy('http://8080.tnl6.whistlejs.com');
+	util.proxy('http://break.whistlejs.com', function(err) {
+		if (!err) {
+			throw Error('error');
+		}
+	});
 };
