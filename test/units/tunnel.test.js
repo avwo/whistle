@@ -10,4 +10,6 @@ module.exports = function() {
 		var data = JSON.parse(res.body);
 		data.type.should.equal('server');
 	});
+	util.proxy('http://8080.tnl5.whistlejs.com');
+	util.proxy('http://8080.tnl6.whistlejs.com');
 };
