@@ -312,7 +312,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 5. test: 新增对https代理的一些测试用例
 
 # v1.0.2
-1. fix：windows的默认换行符导致命令行在Mac会Linux上不可用
+1. fix：windows的默认换行符导致命令行在Mac会Linux上不可用，请更新到最新版本即可：[更新whistle](https://whistle.gitbooks.io/help/content/update.html)
 
 
 ### -
