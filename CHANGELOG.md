@@ -311,9 +311,12 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 4. feat: 代理请求新增`x-whistle-policy`用于设置whistle策略，目前只`tunnel`让whistle不要拦截https代理。
 5. test: 新增对https代理的一些测试用例
 
-# v1.0.2
+### v1.0.2
 1. fix：windows的默认换行符导致命令行在Mac会Linux上不可用，请更新到最新版本即可：[更新whistle](https://whistle.gitbooks.io/help/content/update.html)
 
+# v1.0.3
+1. 把ruleValue传给tunnelRulesServer
+2. 把cgi和正常请求的客户端ip透传给插件
 
 ### -
 完整功能请参见[whistle帮助文档](https://whistle.gitbooks.io/help/content/)。
