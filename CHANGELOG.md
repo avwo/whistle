@@ -318,6 +318,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 1. refactor: 把ruleValue传给tunnelRulesServer
 2. refactor: 把cgi和正常请求的客户端ip透传给插件
 3. feat: 支持local.whistlejs.com与xxx.local.whistlejs.com带端口访问
+4. feat: 支持plugin://name(ruleValue)或plugin://name://ruleValue的方式传值个插件的除server和uiServer以外的server
 
 ### -
 完整功能请参见[whistle帮助文档](https://whistle.gitbooks.io/help/content/)。
