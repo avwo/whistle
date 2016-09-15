@@ -315,8 +315,9 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 1. fix：windows的默认换行符导致命令行在Mac会Linux上不可用，请更新到最新版本即可：[更新whistle](https://whistle.gitbooks.io/help/content/update.html)
 
 # v1.0.3
-1. 把ruleValue传给tunnelRulesServer
-2. 把cgi和正常请求的客户端ip透传给插件
+1. refactor: 把ruleValue传给tunnelRulesServer
+2. refactor: 把cgi和正常请求的客户端ip透传给插件
+3. feat: 支持local.whistlejs.com与xxx.local.whistlejs.com带端口访问
 
 ### -
 完整功能请参见[whistle帮助文档](https://whistle.gitbooks.io/help/content/)。
