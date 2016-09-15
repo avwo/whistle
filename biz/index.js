@@ -33,12 +33,11 @@ function request(req, res, port, weinre) {
 }
 
 module.exports = function(req, res, next) {
-	var host = req.headers.host || '';
 	var config = this.config;
-	var hostname = host.split(':');
-	var port = hostname[1] || 80;
-	hostname = hostname[0];
-	if (net.isIP(hostname) && util.isLocalAddress(hostname)) {
+	var host = (req.headers.host || '').split(':');
+	var port = host[1] || 80;
+	host = host[0];
+	if (net.isIP(host) && util.isLocalAddress(host)) {
 		if (port == config.port || port == config.uiport) {
 			host = config.localUIHost;
 		} else if (port == config.weinreport) {
