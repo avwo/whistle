@@ -49,7 +49,7 @@ function showUsage(isRunning, options, restart) {
 	warn('    Note: If the following URLs are unable to access, check the server\'s firewall settings');
 	warn('          For more information, please visit ' + colors.bold('https://github.com/avwo/whistle'));
 	info('[i] Second, configure your device to use ' + config.name + ' as its HTTP and HTTPS proxy on ' + colors.bold('IP:') + port);
-	info('[i] Last, use ' + colors.bold('Chrome') + ' to visit ' + colors.bold('http://' + config.localUIHost + '/') + ' to get started');
+	info('[i] Last, use ' + colors.bold('Chrome') + ' to visit ' + colors.bold('http://' + (options.localUIHost || config.localUIHost) + '/') + ' to get started');
 }
 
 function showStartupInfo(err, options, debugMode, restart) {
@@ -105,6 +105,7 @@ program.setConfig({
 
 program
 	.option('-d, --debug', 'debug mode')
+	.option('-l, --localUIHost [hostname]', 'local ui host(' + config.localUIHost + ' by default)', String, undefined)
 	.option('-n, --username [username]', 'login username', String, undefined)
 	.option('-w, --password [password]', 'login password', String, undefined)
 	.option('-S, --storage [newStorageDir]', 'the new local storage directory', String, undefined)
