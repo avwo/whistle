@@ -14,7 +14,7 @@
 [![David deps](https://img.shields.io/david/avwo/whistle.svg?style=flat-square)](https://david-dm.org/avwo/whistle)
 [![License](https://img.shields.io/npm/l/whistle.svg?style=flat-square)](https://www.npmjs.com/package/whistle)
 
-> whistle v1.0.1由于用windows发布换行符有点问题，导致命令行在Mac和Linux无法使用，已经修复，请更新到最新版本即可：[更新whistle](https://whistle.gitbooks.io/help/content/update.html)
+> 当前whistle的最新版本为[v1.0.3](https://github.com/avwo/whistle/blob/master/CHANGELOG.md#-)，为确保能使用whistle的所有功能，请及时[更新whistle](https://whistle.gitbooks.io/help/content/update.html)
 
 whistle是[Node](https://nodejs.org/)实现的类似[Fiddler](http://www.telerik.com/fiddler/)的跨平台web调试代理工具，可用于查看、修改及构造HTTP(S)、Websocket请求响应，并继承了Fiddler抓包界面的部分优秀设计，去掉Fiddler通过断点修改请求响应的方式，采用扩展Hosts配置的方式，实现通过配置操作请求响应，且提供了通过Node模块扩展功能的方式，具体参见[实现原理](https://whistle.gitbooks.io/help/content/)。
 
