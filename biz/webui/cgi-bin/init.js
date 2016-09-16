@@ -20,6 +20,7 @@ module.exports = function(req, res) {
 		disabledAllRules: properties.get('disabledAllRules'),
 		disabledPlugins: properties.get('disabledPlugins') || {},
 		disabledPluginsRules: properties.get('disabledPluginsRules') || {}, 
-		disabledAllPlugins: properties.get('disabledAllPlugins')
+		disabledAllPlugins: properties.get('disabledAllPlugins'),
+		localUIHost: config.localUIHost
 	});
 };
