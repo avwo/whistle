@@ -113,6 +113,6 @@ program
 	.option('-p, --port [port]', config.name + ' port(' + config.port + ' by default)', parseInt, config.port)
 	.option('-m, --middlewares [script path or module name]', 'express middlewares path(as: xx,yy/zz.js)', String, '')
 	.option('-u, --uipath [script path]', 'web ui plugin path', String, '')
-	.option('-t, --timneout [ms]', 'request timeout(' + config.timeout + ' ms by default)', parseInt, config.port)
-	.option('-s, --sockets [number]', 'max sockets', parseInt, config.port)
+	.option('-t, --timneout [ms]', 'request timeout(' + config.timeout + ' ms by default)', parseInt, config.timeout)
+	.option('-s, --sockets [number]', 'max sockets(' + config.sockets + ' by default)', parseInt, config.sockets)
 	.parse(process.argv);
