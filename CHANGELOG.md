@@ -314,12 +314,17 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 ### v1.0.2
 1. fix：windows的默认换行符导致命令行在Mac会Linux上不可用，请更新到最新版本即可：[更新whistle](https://whistle.gitbooks.io/help/content/update.html)
 
-# v1.0.3
+### v1.0.3
 1. refactor: 把ruleValue传给tunnelRulesServer
 2. refactor: 把cgi和正常请求的客户端ip透传给插件
 3. feat: 支持local.whistlejs.com与xxx.local.whistlejs.com带端口访问
 4. feat: 支持plugin://name(ruleValue)或plugin://name://ruleValue的方式传值个插件的除server和uiServer以外的server
 5. feat: 新增命令行参数 `-l, --localUIHost`支持修改访问配置页面的域名，默认为`local.whistlejs.com`
+
+# v1.0.4
+1. feat: plugin新增tunnelServer，支持把tunnel请求转发到tunnelServer
+2. feat: 判断插件如果没有对应的server，不要把请求转发过去
+3. refactor：复用proxy协议的空闲socket。
 
 ### -
 完整功能请参见[whistle帮助文档](https://whistle.gitbooks.io/help/content/)。
