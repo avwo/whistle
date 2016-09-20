@@ -324,7 +324,6 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 # v1.0.4
 1. feat: plugin新增tunnelServer，支持把tunnel请求转发到tunnelServer,如果没有对应的tunnelServer，不要把请求转发过去
 2. feat:　新增协议[plugin.xxx、whistle.xxx](https://whistle.gitbooks.io/help/content/rules/plugin.html)，whistle.xxx://value <=> plugin.xxx://value <=> plugin://xxx://value 
-3. refactor：复用proxy协议的空闲socket
 
 ### -
 完整功能请参见[whistle帮助文档](https://whistle.gitbooks.io/help/content/)。
