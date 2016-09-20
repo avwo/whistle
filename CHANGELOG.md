@@ -322,9 +322,9 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 5. feat: 新增命令行参数 `-l, --localUIHost`支持修改访问配置页面的域名，默认为`local.whistlejs.com`
 
 # v1.0.4
-1. feat: plugin新增tunnelServer，支持把tunnel请求转发到tunnelServer
-2. feat: 判断插件如果没有对应的server，不要把请求转发过去
-3. refactor：复用proxy协议的空闲socket。
+1. feat: plugin新增tunnelServer，支持把tunnel请求转发到tunnelServer,如果没有对应的tunnelServer，不要把请求转发过去
+2. feat:　新增协议[plugin.xxx](https://whistle.gitbooks.io/help/content/rules/plugin.html)，plugin.xxx://value <=> plugin://xxx://value 
+3. refactor：复用proxy协议的空闲socket
 
 ### -
 完整功能请参见[whistle帮助文档](https://whistle.gitbooks.io/help/content/)。
