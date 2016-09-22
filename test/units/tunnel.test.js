@@ -17,4 +17,5 @@ module.exports = function() {
 			throw Error('error');
 		}
 	});
+	util.proxy('http://ts.whistlejs.com/');
 };
