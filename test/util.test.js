@@ -1,4 +1,5 @@
 var http = require('http');
+var tls = require('tls');
 var parseUrl = require('url').parse;
 var httpsAgent = require('https').Agent;
 var httpAgent = require('http').Agent;
@@ -13,21 +14,27 @@ exports.request = function(options, callback) {
 	++count;
 	
 	if (/^ws/.test(options)) {
+	  var opts = parseUrl(url);
 		var url = options;
 		var isSsl = /^wss:/.test(url);
-		require('../lib/util').connect({
-			host: '127.0.0.1',
-			port: config.port,
-			isHttps: isSsl,
+		require('../lib/config').connect({
+			proxyHost: '127.0.0.1',
+			proxyPort: config.port,
+			host: opts.hostname,
+			port: opts.port || (isSsl ? 443 : 80),
 			headers: {
-				host: parseUrl(url).host,
+				host: opts.host,
 				'proxy-connection': 'keep-alive'
 			}
-		}, function(err, socket) {
-			if (err) {
-				throw err;
-			}
+		}, function(socket) {
 			var agent = isSsl ? new httpsAgent() : httpAgent();
+			if (isSsl) {
+			  socket = tls.connect({
+          rejectUnauthorized: false,
+          socket: socket,
+          servername: opts.hostname
+			  });
+			}
 			agent.createConnection = function() {
 				return socket;
 			};
