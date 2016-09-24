@@ -14,8 +14,8 @@ exports.request = function(options, callback) {
 	++count;
 	
 	if (/^ws/.test(options)) {
-	  var opts = parseUrl(url);
 		var url = options;
+		var opts = parseUrl(url);
 		var isSsl = /^wss:/.test(url);
 		require('../lib/config').connect({
 			proxyHost: '127.0.0.1',
