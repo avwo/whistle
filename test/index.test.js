@@ -49,7 +49,8 @@ http.createServer(function(req, res) {
 }).listen(config.serverPort, startTest);
 
 startWhistle({
-	port: config.port
+	port: config.port,
+	storage: 'test_'
 }, startTest);
 
 function startTest() {
