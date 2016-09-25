@@ -12,6 +12,12 @@ module.exports = function() {
 	util.request('http://local.whistlejs.com/cgi-bin/values/list');
 	util.request('http://local.whistlejs.com/cgi-bin/plugins/get-plugins');
 	util.request('http://local.whistlejs.com/cgi-bin/rules/list');
+	util.request('ws://test.local.whistlejs.com/cgi-bin/rules/list', function(data) {
+	  data.headers.should.have.property('host', 'test.local.whistlejs.com');
+	});
+	util.request('wss://test.local.whistlejs.com/cgi-bin/rules/list', function(data) {
+    data.headers.should.have.property('host', 'test.local.whistlejs.com');
+  });
 	
 	util.request({
 		url: 'http://local.whistlejs.com/cgi-bin/values/add',
