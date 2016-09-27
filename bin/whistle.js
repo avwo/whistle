@@ -62,7 +62,7 @@ function showStartupInfo(err, options, debugMode, restart) {
 		info('    or if another application is using the port, you can change the port with ' + (debugMode ? '`w2 run -p newPort`\n' : '`w2 start -p newPort`\n'));
 	} else if (err.code == 'EACCES' || err.code == 'EPERM') {
 		error('[!] Cannot start ' + config.name + ' owned by root');
-		info('[i] Try to run command with `sudo`\n')
+		info('[i] Try to run command with `sudo`\n');
 	}
 	
 	error(err.stack ? 'Date: ' + util.formatDate() + '\n' + err.stack : err);
