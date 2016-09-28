@@ -321,10 +321,17 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 4. feat: 支持plugin://name(ruleValue)或plugin://name://ruleValue的方式传值个插件的除server和uiServer以外的server
 5. feat: 新增命令行参数 `-l, --localUIHost`支持修改访问配置页面的域名，默认为`local.whistlejs.com`
 
-# v1.0.4
+### v1.0.4
 1. feat: plugin新增tunnelServer，支持把tunnel请求转发到tunnelServer,如果没有对应的tunnelServer，不要把请求转发过去
 2. feat:　新增协议[plugin.xxx、whistle.xxx](https://whistle.gitbooks.io/help/content/rules/plugin.html)，whistle.xxx://value <=> plugin.xxx://value <=> plugin://xxx://value 
 3. refactor: 优化了`socks`和`proxy`的代理设置，新增socket复用及请求头的修改
+
+# v1.1.0
+1. feat:新增[pac](https://whistle.gitbooks.io/help/content/rules/pac.html)用于设置pac脚本
+2. fix: 修复了匹配顺序的bug，如下配置访问http://test.com:8080会匹配到下面的规则
+		
+		test.com operator-uri
+		/./ operator-uri
 
 ### -
 完整功能请参见[whistle帮助文档](https://whistle.gitbooks.io/help/content/)。
