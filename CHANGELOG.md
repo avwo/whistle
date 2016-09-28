@@ -328,10 +328,14 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 
 # v1.1.0
 1. feat:新增[pac](https://whistle.gitbooks.io/help/content/rules/pac.html)用于设置pac脚本
-2. fix: 修复了匹配顺序的bug，如下配置访问http://test.com:8080会匹配到下面的规则
+2. fix: 修复了匹配顺序的bug，如下配置访问http://test.com:8080会匹配到下面的规则：
 		
 		test.com operator-uri
 		/./ operator-uri
+
+3. feat: 新增条件匹配，可以设置多个条件同时匹配，具体参见：[匹配方式](https://whistle.gitbooks.io/help/content/pattern.html)
+4. feat: 新增[delete](https://whistle.gitbooks.io/help/content/rules/delete.html)可用于delete请求或响应的头字段，而通过[reqHeaders](https://whistle.gitbooks.io/help/content/rules/reqHeaders.html)或[resHeaders](https://whistle.gitbooks.io/help/content/rules/resHeaders.html)只能设置为空字符串
+5. style: 把删除选中或非选中的数据及清空整个列表的按钮放到Network按钮的菜单列表里面，并在Network下拉菜单里面新增`查看选中数据`，可以获取当前选中数据的json格式化数据。
 
 ### -
 完整功能请参见[whistle帮助文档](https://whistle.gitbooks.io/help/content/)。
