@@ -331,11 +331,11 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 		
 		test.com operator-uri
 		/./ operator-uri
-
-2. feat:新增[pac](https://whistle.gitbooks.io/help/content/rules/pac.html)用于设置pac脚本
-3. feat: 新增[delete](https://whistle.gitbooks.io/help/content/rules/delete.html)可用于delete请求或响应的头字段，而通过[reqHeaders](https://whistle.gitbooks.io/help/content/rules/reqHeaders.html)或[resHeaders](https://whistle.gitbooks.io/help/content/rules/resHeaders.html)只能设置为空字符串
-4. style: 把删除选中或非选中的数据及清空整个列表的按钮放到Network按钮的菜单列表里面
-5. style: 在Network下拉菜单里面新增`查看选中数据`，可以获取当前选中数据的json格式化数据。
+2. fix:　插件相关的一些绝对路径的问题，用到插件最好[升级到最新版本](https://whistle.gitbooks.io/help/content/update.html)
+3. feat:新增[pac](https://whistle.gitbooks.io/help/content/rules/pac.html)用于设置pac脚本
+4. feat: 新增[delete](https://whistle.gitbooks.io/help/content/rules/delete.html)可用于delete请求或响应的头字段，而通过[reqHeaders](https://whistle.gitbooks.io/help/content/rules/reqHeaders.html)或[resHeaders](https://whistle.gitbooks.io/help/content/rules/resHeaders.html)只能设置为空字符串
+5. style: 把删除选中或非选中的数据及清空整个列表的按钮放到Network按钮的菜单列表里面
+6. style: 在Network下拉菜单里面新增`查看选中数据`，可以获取当前选中数据的json格式化数据。
 
 ### -
 完整功能请参见[whistle帮助文档](https://whistle.gitbooks.io/help/content/)。
