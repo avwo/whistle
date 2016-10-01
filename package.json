@@ -1,7 +1,7 @@
 {
   "name": "whistle",
   "description": "HTTP, HTTPS, Websocket debugging proxy tool",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "dataDirname": ".whistle",
   "localUIHost": "local.whistlejs.com",
   "whistleSsl": "whistle-ssl",
@@ -47,6 +47,7 @@
     "iconv-lite": "0.4.7",
     "mime": "1.3.4",
     "node-forge": "0.6.34",
+    "node-pac": "^0.0.6",
     "pfork": "^0.1.3",
     "pipestream": "^0.0.31",
     "q": "1.4.1",

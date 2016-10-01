@@ -321,10 +321,21 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 4. feat: 支持plugin://name(ruleValue)或plugin://name://ruleValue的方式传值个插件的除server和uiServer以外的server
 5. feat: 新增命令行参数 `-l, --localUIHost`支持修改访问配置页面的域名，默认为`local.whistlejs.com`
 
-# v1.0.4
+### v1.0.4
 1. feat: plugin新增tunnelServer，支持把tunnel请求转发到tunnelServer,如果没有对应的tunnelServer，不要把请求转发过去
 2. feat:　新增协议[plugin.xxx、whistle.xxx](https://whistle.gitbooks.io/help/content/rules/plugin.html)，whistle.xxx://value <=> plugin.xxx://value <=> plugin://xxx://value 
 3. refactor: 优化了`socks`和`proxy`的代理设置，新增socket复用及请求头的修改
+
+# v1.1.0
+1. fix: 修复了匹配顺序的bug，如下配置访问http://test.com:8080会匹配到下面的规则：
+		
+		test.com operator-uri
+		/./ operator-uri
+2. fix:　插件相关的一些绝对路径的问题，用到插件最好[升级到最新版本](https://whistle.gitbooks.io/help/content/update.html)
+3. feat:新增[pac](https://whistle.gitbooks.io/help/content/rules/pac.html)用于设置pac脚本
+4. feat: 新增[delete](https://whistle.gitbooks.io/help/content/rules/delete.html)可用于delete请求或响应的头字段，而通过[reqHeaders](https://whistle.gitbooks.io/help/content/rules/reqHeaders.html)或[resHeaders](https://whistle.gitbooks.io/help/content/rules/resHeaders.html)只能设置为空字符串
+5. style: 把删除选中或非选中的数据及清空整个列表的按钮放到Network按钮的菜单列表里面
+6. style: 在Network下拉菜单里面新增`查看选中数据`，可以获取当前选中数据的json格式化数据。
 
 ### -
 完整功能请参见[whistle帮助文档](https://whistle.gitbooks.io/help/content/)。
