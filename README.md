@@ -16,50 +16,73 @@
 
 > 当前whistle的最新版本为[v1.1.0](https://github.com/avwo/whistle/blob/master/CHANGELOG.md#-)，为确保使用whistle所有功能，请及时[更新whistle](https://whistle.gitbooks.io/help/content/update.html)
 
-whistle是[Node](https://nodejs.org/)实现的类似[Fiddler](http://www.telerik.com/fiddler/)的跨平台web调试代理工具，可用于查看、修改及构造HTTP(S)、Websocket请求响应，并继承了Fiddler抓包界面的部分优秀设计，去掉Fiddler通过断点修改请求响应的方式，采用扩展Hosts配置的方式，实现通过配置操作请求响应，且提供了通过Node模块扩展功能的方式，具体参见[实现原理](https://whistle.gitbooks.io/help/content/)。
+[whistle](https://github.com/avwo/whistle)是跨平台的web调试代理工具，功能类似Windows平台上的[Fiddler](http://www.telerik.com/fiddler/)，主要用于查看或修改HTTP、HTTPS、Websocket的请求或响应，不同于Fiddler通过断点修改请求响应的方式，whistle采用的是类似配置系统hosts的方式，通过配置规则修改请求响应，并支持规则分组及通过域名、路径、正则三种匹配方式(系统的hosts配置只支持域名匹配)，特别针对终端调试提供了[weinre](https://whistle.gitbooks.io/help/content/rules/weinre.html)，[log](https://whistle.gitbooks.io/help/content/rules/log.html)等功能，且支持通过Node模块扩展功能，具体实现过程请参见[whistle帮助文档](https://whistle.gitbooks.io/help/content/)。
 
-如何安装使用whistle请参见：[whistle帮助文档](https://whistle.gitbooks.io/help/content/install.html)。
+安装使用whistle请参见[whistle帮助文档](https://whistle.gitbooks.io/help/content/install.html)。
 
 # 基本功能
+![基本功能](https://raw.githubusercontent.com/avwo/whistleui/master/assets/functions.png)
 
-### 配置模式
+完整功能请参见[whistle帮助文档](https://whistle.gitbooks.io/help/content/rules/)。
 
-  	pattern operator-uri
-  
+# 配置模式
+传统hosts的配置模式：
+
+	# 单个host
+	ip hostname
+
+	# 组合host
+	ip hostname1 hostname2 ... hostnameN
+
+	# 例如
+	127.0.0.1 www.example.com
+	127.0.0.1 a.example.com b.example.com c.example.com
+
+whistle的配置模式：
+
+	# 单个操作
+	pattern operator-uri
+	# 如果pattern和operator-uri不同时为域名或路径的一种组合，位置可以调换
+	operator-uri pattern
+
+	# 组合模式
+	pattern operator-uri1 operator-uri2 ... operator-uriN
+	# pattern1和operator-uri不同时为域名或路径的一种组合，可以如下配置
+	operator-uri pattern1 pattern2 ... patternN
+
 其中，pattern可以为：
 
-1. 域名：`www.test.com`(所有该域名下的请求都会执行`operator-uri`)
-2. 路径：`http://www.test.com/xxx`(可以不加协议`www.test.com/xxx`，`http://www.test.com/xx`·路径及其子路径的请求都会执行`operator-uri`)
-3. 正则:`/^https?:\/\/([^\/]+)\/xxx/`(`http(s)://host:port/xxx`路径及其子路径的请求都会执行`operator-uri`，且在`operator-uri`中可以通过`$1, $2, ..., $9`获取`url`里面的子匹配)
+1. 域名：`www.test.com`(所有该域名下的请求都会匹配`operator-uri`)
+2. 路径：`http://www.test.com/xxx`(`http://www.test.com/xxx`路径及其子路径的请求都会匹配`operator-uri`)，或不加协议`protocol://www.test.com/xxx`，protocol可以为http、https、ws、wss(`http://www.test.com/xxx`路径及其子路径的请求都会匹配`operator-uri`)
+3. 正则:`/^https?:\/\/([^\/]+)\/xxx/`(`http(s)://host:port/xxx`路径及其子路径的请求都会匹配`operator-uri`，且在`operator-uri`中可以通过`$1, $2, ..., $9`获取`url`里面的子匹配)
 
-更多详细内容请参见[配置模式](https://whistle.gitbooks.io/help/content/mode.html)、[匹配方式](https://whistle.gitbooks.io/help/content/pattern.html)。
+详细内容请参见[配置模式](https://whistle.gitbooks.io/help/content/mode.html)、[匹配方式](https://whistle.gitbooks.io/help/content/pattern.html)。
 
-operator-uri有以下功能：
+operator-uri由上述[基本功能](#基本功能)抽象成的形如`protocol://ruleValue`的URI，whistle会根据匹配到的operator-uri的`protocol`及`ruleValue`修改请求或响应，具体实现过程请参见[whistle帮助文档](https://whistle.gitbooks.io/help/content/)。
 
-- 配置host
-- 修改请求，包括： 请求方法、请求头、修改内容、延迟发送请求、限制请求速度，设置timeout
-- 修改响应，包括： 响应状态码、响应头、修改内容、 延迟响应、 限制响应速度
-- 替换请求： 
-	- 替换本地文件(支持替换jsonp请求)
-	- 设置代理(支持http、socks代理)
-	- 请求转发
-	- 通过插件扩展
-- 内置weinre，通过weinre可以修改手机端或远程网页的DOM结构，调试页面等
-- 设置过滤，用于过滤一些已设置的规则
-- 导出请求响应的详细信息
-- 自定义脚本修改url的请求参数，实现动态匹配规则的功能
-- 支持自动捕获手机端或远程页面的js异常，且可以嵌入脚本打印console等
+例如：
+	
+	# 修改www.example.com的响应cors
+	www.example.com resCors://*
+	# 或
+	resCors://* www.example.com
 
-完整功能参见[协议列表](https://whistle.gitbooks.io/help/content/rules/)。
+	# 同时修改多个自定域名或路径
+	resCors://* /example\.com/ a.test.com b.test.com
+	# 修改www.test.com的带端口host、referer和响应的cors
+	www.test.com 127.0.0.1:8080 referer://http://www.example.com resCors://*
 
-### Network
+
+完整功能参见[whistle帮助文档](https://whistle.gitbooks.io/help/content/)。
+
+# Network
 
 ![Network](https://raw.githubusercontent.com/avwo/whistleui/master/img/network.gif)
 
-### Rules
+# Rules
 ![Rules](https://raw.githubusercontent.com/avwo/whistleui/master/img/rules.gif)
 
-### Values
+# Values
 ![Values](https://raw.githubusercontent.com/avwo/whistleui/master/img/values.gif)
 
 完整功能请参见[whistle帮助文档](https://whistle.gitbooks.io/help/content/)。
