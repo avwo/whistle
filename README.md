@@ -53,8 +53,8 @@ whistle的配置模式：
 其中，pattern可以为：
 
 1. 域名：`www.test.com`(所有该域名下的请求都会匹配`operator-uri`)
-2. 路径：`http://www.test.com/xxx`(`http://www.test.com/xxx`路径及其子路径的请求都会匹配`operator-uri`)，或不加协议`protocol://www.test.com/xxx`，protocol可以为http、https、ws、wss(`http://www.test.com/xxx`路径及其子路径的请求都会匹配`operator-uri`)
-3. 正则:`/^https?:\/\/([^\/]+)\/xxx/`(`http(s)://host:port/xxx`路径及其子路径的请求都会匹配`operator-uri`，且在`operator-uri`中可以通过`$1, $2, ..., $9`获取`url`里面的子匹配)
+2. 路径：`http://www.test.com/xxx`(`http://www.test.com/xxx`及其子路径的请求都会匹配`operator-uri`)，或不加协议`protocol://www.test.com/xxx`，protocol可以为http、https、ws、wss(`http://www.test.com/xxx`及其子路径的请求都会匹配`operator-uri`)
+3. 正则:`/^https?:\/\/([^\/]+)\/xxx/`(`http(s)://host:port/xxx`及其子路径的请求都会匹配`operator-uri`，且在`operator-uri`中可以通过`$1, $2, ..., $9`获取`url`里面的子匹配)
 
 详细内容请参见[配置模式](https://whistle.gitbooks.io/help/content/mode.html)、[匹配方式](https://whistle.gitbooks.io/help/content/pattern.html)。
 
