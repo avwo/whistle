@@ -281,7 +281,7 @@ fix: `statusCode < 100 || statusCode > 999` 会抛出异常导致程序crash
 
 ### v0.12.0
 1. feat: 支持配置配置ip:port，如：`pattern host://ip:port`(port可选)，这与`pattern ip:port`的区别是：后者会把请求头的`host`字段修改为`ip:port`(ip为IPv4或IPv6)
-2. feat: 支持同一个用户启动多个whistle服务`w2 start -S newStorageDir -p newPort`，具体参见[安装启动](https://whistle.gitbooks.io/help/content/install.html)
+2. feat: 支持同一个用户启动多个whistle服务`w2 start -S newStorageDir -p newPort`，具体参见[安装启动](https://avwo.github.io/whistle/install.html)
 3. docs: 修改页面中帮助文档的链接
 4. fix: 重写文档的过程中把所有功能都人肉跑了一遍，修复了一下问题，后续版本把自动化持续集成的功能加上
 
@@ -294,25 +294,25 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 2. fix: 响应有错误信息直接显示在抓包列表上
 
 ### v0.12.3
-1. feat: 加入[urlReplace](https://whistle.gitbooks.io/help/content/rules/urlReplace.html)支持类似字符串的replace方法，替换请求url的路径内容
+1. feat: 加入[urlReplace](https://avwo.github.io/whistle/rules/urlReplace.html)支持类似字符串的replace方法，替换请求url的路径内容
 2. style: 在Overview里面精确显示匹配`pattern matcher`，并在title里面显示配置规则的原始配置
 
 ### v1.0.0
 1. fix: Linux设置开机启动无法找到homedir的问题
-2. feat: 新增开机启动脚本，如何设置开机启动，请参考[开机启动](https://whistle.gitbooks.io/help/content/autoStart.html)
-3. feat: plugin中新增statusServer，用于获取请求的状态: 请求开始、请求结束或请求出错，具体参见[插件开发](https://whistle.gitbooks.io/help/content/plugins.html)
+2. feat: 新增开机启动脚本，如何设置开机启动，请参考[开机启动](https://avwo.github.io/whistle/autoStart.html)
+3. feat: plugin中新增statusServer，用于获取请求的状态: 请求开始、请求结束或请求出错，具体参见[插件开发](https://avwo.github.io/whistle/plugins.html)
 4. fix: 修复插件的plugin.rulesServer可能导致whistle crash的问题
-5. feat: 新增[plugin](https://whistle.gitbooks.io/help/content/rules/plugin.html)，用于实时通知指定插件请求状态的变化及动态修改rules，如果匹配了插件的协议，则会忽略plugin的配置
+5. feat: 新增[plugin](https://avwo.github.io/whistle/rules/plugin.html)，用于实时通知指定插件请求状态的变化及动态修改rules，如果匹配了插件的协议，则会忽略plugin的配置
 
 ### v1.0.1
 1. fix： https代理可能出现异常的问题
-2. feat: 新增[plugin.tunnelRulesServer](https://whistle.gitbooks.io/help/content/plugins.html)用于在插件上设置代理tcp请求的规则
-3. feat: 通过https代理过来的请求，没被拦截的请求都认为tunnel协议，如： tunnel://www.baidu.com:443，具体参加：[注意事项](https://whistle.gitbooks.io/help/content/attention.html)
+2. feat: 新增[plugin.tunnelRulesServer](https://avwo.github.io/whistle/plugins.html)用于在插件上设置代理tcp请求的规则
+3. feat: 通过https代理过来的请求，没被拦截的请求都认为tunnel协议，如： tunnel://www.baidu.com:443，具体参加：[注意事项](https://avwo.github.io/whistle/attention.html)
 4. feat: 代理请求新增`x-whistle-policy`用于设置whistle策略，目前只`tunnel`让whistle不要拦截https代理。
 5. test: 新增对https代理的一些测试用例
 
 ### v1.0.2
-1. fix：windows的默认换行符导致命令行在Mac会Linux上不可用，请更新到最新版本即可：[更新whistle](https://whistle.gitbooks.io/help/content/update.html)
+1. fix：windows的默认换行符导致命令行在Mac会Linux上不可用，请更新到最新版本即可：[更新whistle](https://avwo.github.io/whistle/update.html)
 
 ### v1.0.3
 1. refactor: 把ruleValue传给tunnelRulesServer
@@ -323,7 +323,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 
 ### v1.0.4
 1. feat: plugin新增tunnelServer，支持把tunnel请求转发到tunnelServer,如果没有对应的tunnelServer，不要把请求转发过去
-2. feat:　新增协议[plugin.xxx、whistle.xxx](https://whistle.gitbooks.io/help/content/rules/plugin.html)，whistle.xxx://value <=> plugin.xxx://value <=> plugin://xxx://value 
+2. feat:　新增协议[plugin.xxx、whistle.xxx](https://avwo.github.io/whistle/rules/plugin.html)，whistle.xxx://value <=> plugin.xxx://value <=> plugin://xxx://value 
 3. refactor: 优化了`socks`和`proxy`的代理设置，新增socket复用及请求头的修改
 
 ### v1.1.0
@@ -331,9 +331,9 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 		
 		test.com operator-uri
 		/./ operator-uri
-2. fix:　插件相关的一些绝对路径的问题，用到插件最好[升级到最新版本](https://whistle.gitbooks.io/help/content/update.html)
-3. feat:新增[pac](https://whistle.gitbooks.io/help/content/rules/pac.html)用于设置pac脚本
-4. feat: 新增[delete](https://whistle.gitbooks.io/help/content/rules/delete.html)可用于delete请求或响应的头字段，而通过[reqHeaders](https://whistle.gitbooks.io/help/content/rules/reqHeaders.html)或[resHeaders](https://whistle.gitbooks.io/help/content/rules/resHeaders.html)只能设置为空字符串
+2. fix:　插件相关的一些绝对路径的问题，用到插件最好[升级到最新版本](https://avwo.github.io/whistle/update.html)
+3. feat:新增[pac](https://avwo.github.io/whistle/rules/pac.html)用于设置pac脚本
+4. feat: 新增[delete](https://avwo.github.io/whistle/rules/delete.html)可用于delete请求或响应的头字段，而通过[reqHeaders](https://avwo.github.io/whistle/rules/reqHeaders.html)或[resHeaders](https://avwo.github.io/whistle/rules/resHeaders.html)只能设置为空字符串
 5. style: 把删除选中或非选中的数据及清空整个列表的按钮放到Network按钮的菜单列表里面
 6. style: 在Network下拉菜单里面新增`查看选中数据`，可以获取当前选中数据的json格式化数据。
 
@@ -341,7 +341,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 1. 调整协议列表的顺序
 
 ### -
-完整功能请参见[whistle帮助文档](https://whistle.gitbooks.io/help/content/)。
+完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
 	
 
 
