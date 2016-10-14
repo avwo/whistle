@@ -338,7 +338,8 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 6. style: 在Network下拉菜单里面新增`查看选中数据`，可以获取当前选中数据的json格式化数据。
 
 # v1.1.1
-1. 调整协议列表的顺序
+1. chore: 调整协议列表的顺序
+2. docs: 修改帮助文档链接，提升访问速度： [https://avwo.github.io/whistle/](https://avwo.github.io/whistle/)
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
