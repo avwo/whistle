@@ -4,5 +4,3 @@
 1. [Windows](windows)
 2. [Mac](mac)
 3. [Linux](linux)
-
-PS: 后续whistle可能出客户端版本。
