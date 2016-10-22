@@ -16,7 +16,7 @@ function request(req, res, port, weinre) {
 	if (port) {
 		options.port = port;
 	}
-	req.headers['x-forwarded-for'] = util.getClientIp(req);
+	req.headers['x-forwarded-for'] = req.clientIp;
 	options.headers = req.headers;
 	req.pipe(http.request(options, function(_res) {
 		if (weinre && options.pathname == '/target/target-script-min.js') {
