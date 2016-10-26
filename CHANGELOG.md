@@ -342,9 +342,8 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 2. docs: 修改帮助文档链接，提升访问速度： [https://avwo.github.io/whistle/](https://avwo.github.io/whistle/)
 
 # v1.1.2
-1. style: UI调整，把About合并到Help按钮下面，新增Github入口
-2. feat: 新增精确匹配(原来也可以通过正则实现，只是对这种情形用这方式比较方便)，`$url operator-uri`详见[匹配方式](https://avwo.github.io/whistle/pattern.html)
-3. feat: 支持各个rules server(pluginRulesServer, rulesServer, tunnelRules, resRulesServer)传values过来，详见[插件开发](https://avwo.github.io/whistle/plugins.html)
+1. feat: 新增精确匹配(原来也可以通过正则实现，只是对这种情形用这方式比较方便)，`$url operator-uri`详见[匹配方式](https://avwo.github.io/whistle/pattern.html)
+2. feat: 支持各个rules server(pluginRulesServer, rulesServer, tunnelRules, resRulesServer)传values过来，详见[插件开发](https://avwo.github.io/whistle/plugins.html)
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
