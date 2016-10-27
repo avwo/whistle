@@ -322,7 +322,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 5. feat: 新增命令行参数 `-l, --localUIHost`支持修改访问配置页面的域名，默认为`local.whistlejs.com`
 
 ### v1.0.4
-1. feat: plugin新增tunnelServer，支持把tunnel请求转发到tunnelServer,如果没有对应的tunnelServer，不要把请求转发过去
+1. feat: plugin新增tunnelServer，支持把tunnel请求转发到tunnelServer
 2. feat:　新增协议[plugin.xxx、whistle.xxx](https://avwo.github.io/whistle/rules/plugin.html)，whistle.xxx://value <=> plugin.xxx://value <=> plugin://xxx://value 
 3. refactor: 优化了`socks`和`proxy`的代理设置，新增socket复用及请求头的修改
 
