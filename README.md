@@ -14,9 +14,11 @@
 [![David deps](https://img.shields.io/david/avwo/whistle.svg?style=flat-square)](https://david-dm.org/avwo/whistle)
 [![License](https://img.shields.io/npm/l/whistle.svg?style=flat-square)](https://www.npmjs.com/package/whistle)
 
-> 当前whistle的最新版本为[v1.1.1](https://github.com/avwo/whistle/blob/master/CHANGELOG.md#-)，为确保使用whistle所有功能，请及时[更新whistle](https://avwo.github.io/whistle/update.html)
+> 当前whistle的最新版本为[v1.1.2](https://github.com/avwo/whistle/blob/master/CHANGELOG.md#-)，为确保使用whistle所有功能，请及时[更新whistle](https://avwo.github.io/whistle/update.html)
 
-[whistle](https://github.com/avwo/whistle)是跨平台的web调试代理工具，功能类似Windows平台上的[Fiddler](http://www.telerik.com/fiddler/)，主要用于查看或修改HTTP、HTTPS、Websocket的请求或响应或作为HTTP代理服务器，不同于Fiddler通过断点修改请求响应的方式，whistle采用的是类似配置系统hosts的方式，通过配置规则修改请求响应，并支持规则分组及通过域名、路径、正则三种匹配方式(系统的hosts配置只支持域名匹配)，特别针对终端调试提供了[weinre](https://avwo.github.io/whistle/rules/weinre.html)，[log](https://avwo.github.io/whistle/rules/log.html)等功能，且支持通过Node模块扩展功能，具体实现过程请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
+> [v1.1.2](https://github.com/avwo/whistle/blob/master/CHANGELOG.md#v112)及以上版本支持精确匹配`$url operator-uri`
+
+[whistle](https://github.com/avwo/whistle)是跨平台的web调试代理工具，功能类似Windows平台上的[Fiddler](http://www.telerik.com/fiddler/)，主要用于查看或修改HTTP、HTTPS、Websocket的请求或响应或作为HTTP代理服务器，不同于Fiddler通过断点修改请求响应的方式，whistle采用的是类似配置系统hosts的方式，通过配置规则修改请求响应，并支持规则分组及通过域名、路径、正则、精确(精确匹配需[v1.1.2及以上版本](https://github.com/avwo/whistle/blob/master/CHANGELOG.md#v112)才支持)四种匹配方式(系统的hosts配置只支持域名匹配)，特别针对终端调试提供了[weinre](https://avwo.github.io/whistle/rules/weinre.html)，[log](https://avwo.github.io/whistle/rules/log.html)等功能，且支持通过Node模块扩展功能，具体实现过程请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
 
 安装使用whistle请参见[whistle帮助文档](https://avwo.github.io/whistle/install.html)。
 
@@ -55,6 +57,7 @@ whistle的配置模式：
 1. 域名：`www.test.com`(所有该域名下的请求都会匹配`operator-uri`)
 2. 路径：`http://www.test.com/xxx`(`http://www.test.com/xxx`及其子路径的请求都会匹配`operator-uri`)，或不加协议`protocol://www.test.com/xxx`，protocol可以为http、https、ws、wss(`http://www.test.com/xxx`及其子路径的请求都会匹配`operator-uri`)
 3. 正则:`/^https?:\/\/([^\/]+)\/xxx/`(`http(s)://host:port/xxx`及其子路径的请求都会匹配`operator-uri`，且在`operator-uri`中可以通过`$1, $2, ..., $9`获取`url`里面的子匹配)
+4. 精确：在原来路径前面加精确匹配符`$`，即：`$url`(可以带协议`$http://www.test.com/xxx`，也可以不带协议`$www.test.com`)
 
 详细内容请参见[配置模式](https://avwo.github.io/whistle/mode.html)、[匹配方式](https://avwo.github.io/whistle/pattern.html)。
 
