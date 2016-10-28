@@ -13,9 +13,9 @@ function getIpList() {
 	Object.keys(ifaces).forEach(function(ifname) {
 		 ifaces[ifname].forEach(function (iface) {
 			    if (iface.family == 'IPv4') {
-			    	ipList.push(iface.address);
+			    											ipList.push(iface.address);
 			    }
-			  });
+		});
 	});
 	
 	return ipList;
@@ -91,12 +91,12 @@ program.setConfig({
 		if (err === true) {
 			info('[i] ' + config.name + ' killed.');
 		} else if (err) {
-				if (err.code === 'EPERM') {
-					error('[!] Cannot kill ' + config.name + ' owned by root');
-					info('[i] Try to run command with `sudo`');
-				} else {
-					error('[!] ' + err.message);
-				}
+			if (err.code === 'EPERM') {
+				error('[!] Cannot kill ' + config.name + ' owned by root');
+				info('[i] Try to run command with `sudo`');
+			} else {
+				error('[!] ' + err.message);
+			}
 		} else {
 			warn('[!] No running ' + config.name);
 		}

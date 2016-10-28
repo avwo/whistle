@@ -10,9 +10,9 @@ module.exports = function(req, res) {
 		data.ids = null;
 	}
 	res.json({
-				ec: 0, 
-				log: proxy.getLogs(data.startLogTime, data.count),
-				svrLog: logger.getLogs(data.startSvrLogTime, data.count),
-				data: getData(data)
-			});
+		ec: 0, 
+		log: proxy.getLogs(data.startLogTime, data.count),
+		svrLog: logger.getLogs(data.startSvrLogTime, data.count),
+		data: getData(data)
+	});
 };
