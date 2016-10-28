@@ -1,4 +1,4 @@
 
 module.exports = function setConfig(util) {
-	                    module.exports = util;
+  module.exports = util;
 };
