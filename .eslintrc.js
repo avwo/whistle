@@ -22,6 +22,10 @@ module.exports = {
                "vars": "all", 
                "args": "none"
              }
+        ],
+        "no-empty": [
+             "error",
+             { "allowEmptyCatch": true }
         ]
     }
 };
