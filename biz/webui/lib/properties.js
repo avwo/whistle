@@ -1,3 +1,3 @@
 module.exports = function init(properties) {
-	module.exports = properties;
+	                    module.exports = properties;
 };
