@@ -30,7 +30,7 @@ app.use(function(req, res, next) {
     next();
     return;
   }
-  
+
   res.setHeader('WWW-Authenticate', ' Basic realm=User Login');
   res.status(401).end('Please enter your username and password.');
 });
@@ -57,15 +57,15 @@ function checkLogin(req, res) {
   if (!username && !password || dontCheckPaths(req)) {
     return true;
   }
-	
+
   var userInfo = auth(req);
   if (userInfo && (userInfo.name || userInfo.pass)) {
     if (username == userInfo.name && password == userInfo.pass) {
-      res.setHeader('set-cookie', '_lkey=' + getLoginKey(req) 
-          + '; max-age=' + 60 * 60 * 24 * 1000 + '; path=/');
+      res.setHeader('set-cookie', '_lkey=' + getLoginKey(req)
++ '; max-age=' + 60 * 60 * 24 * 1000 + '; path=/');
       return true;
     }
-  } 
+  }
 
   return checkCookie(req);
 }
@@ -86,8 +86,8 @@ function checkCookie(req) {
 }
 
 function getLoginKey(req) {
-  return shasum(username + '\n' + password 
-      + '\n' + util.getClientIp(req, true));
+  return shasum(username + '\n' + password
++ '\n' + util.getClientIp(req, true));
 }
 
 function shasum(str) {
@@ -101,7 +101,7 @@ module.exports = function(proxy) {
   var rulesUtil = proxy.rulesUtil;
   username = config.username || '';
   password = config.password || '';
-  
+
   require('./proxy')(proxy);
   require('./util')(util = proxy.util);
   require('./config')(config);

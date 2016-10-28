@@ -11,13 +11,13 @@ function parseHeaders(headers) {
   try {
     return util.lowerCaseify(JSON.parse(headers));
   } catch(e) {}
-	
+
   return util.parseHeaders(headers);
 }
 
 module.exports = function(req, res) {
   var _url = req.body.url;
-  
+
   if (_url && typeof _url == 'string') {
     _url = _url.replace(/#.*$/, '');
     var options = url.parse(util.setProtocol(_url));
@@ -25,7 +25,7 @@ module.exports = function(req, res) {
     if (!headers['user-agent']) {
       headers['user-agent'] = 'whistle/' + config.version;
     }
-    
+
     if (options.protocol == 'https:') {
       headers[config.HTTPS_FIELD] = 1;
       if (options.port == 443) {
@@ -34,7 +34,7 @@ module.exports = function(req, res) {
     } else if (options.port == 80) {
       options.port = '';
     }
-    
+
     headers.host = options.hostname;
     if (options.port) {
       headers.host += ':' + options.port;
@@ -49,16 +49,16 @@ module.exports = function(req, res) {
       req.body.body = new Buffer(req.body.body || '');
       headers['content-length'] = req.body.body.length;
     }
-    
+
     headers[config.CLIENT_IP_HEAD] = util.getClientIp(req);
-    
+
     http.request(options, function(res) {
       res.on('error', util.noop);
       util.drain(res);
     })
-      .on('error', util.noop)
-        .end(req.body.body);
+.on('error', util.noop)
+.end(req.body.body);
   }
-  
+
   res.json({ec: 0, em: 'success'});
 };

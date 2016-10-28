@@ -6,3 +6,4 @@ module.exports = function(req, res) {
   rules.parseRules();
   res.json({ec: 0, em: 'success'});
 };
+

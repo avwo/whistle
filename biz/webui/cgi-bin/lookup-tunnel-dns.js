@@ -11,7 +11,7 @@ module.exports = function(req, res) {
     tunnelUrl = url.parse(tunnelUrl);
     tunnelUrl = tunnelUrl.host ? 'https://' + tunnelUrl.host : null;
   }
-  
+
   if (!tunnelUrl) {
     return res.json({ec: 2, em: 'server busy'});
   }
@@ -25,7 +25,7 @@ module.exports = function(req, res) {
       tunnelUrl = _url;
     }
   }
-  
+
   rules.resolveHost(tunnelUrl, function(err, host) {
     if (err) {
       res.json({ec: 2, em: 'server busy'});

@@ -23,7 +23,8 @@ exports.getServerInfo = function getServerInfo(req) {
       info[iface.family == 'IPv4' ? 'ipv4' : 'ipv6'].push(iface.address);
     });
   });
-  
+
   return info;
 };
+
 

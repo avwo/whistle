@@ -40,7 +40,7 @@ function showUsage(isRunning, options, restart) {
   } else {
     info('[i] ' + config.name + (restart ? ' restarted' : ' started'));
   }
-  
+
   info('[i] First, use your device to visit the following URL list, gets the ' + colors.bold('IP') + ' of the URL you can visit:');
   info(getIpList().map(function(ip) {
     return '    http://' + colors.bold(ip) + (port ? ':' + port : '') + '/';
@@ -104,15 +104,15 @@ program.setConfig({
 });
 
 program
-	.option('-d, --debug', 'debug mode')
-	.option('-l, --localUIHost [hostname]', 'local ui host(' + config.localUIHost + ' by default)', String, '')
-	.option('-n, --username [username]', 'login username', String, '')
-	.option('-w, --password [password]', 'login password', String, '')
-	.option('-S, --storage [newStorageDir]', 'the new local storage directory', String, '')
-	.option('-C, --copy [storageDir]', 'copy storageDir to newStorageDir', String, '')
-	.option('-p, --port [port]', config.name + ' port(' + config.port + ' by default)', parseInt, '')
-	.option('-m, --middlewares [script path or module name]', 'express middlewares path(as: xx,yy/zz.js)', String, '')
-	.option('-u, --uipath [script path]', 'web ui plugin path', String, '')
-	.option('-t, --timeout [ms]', 'request timeout(' + config.timeout + ' ms by default)', parseInt, '')
-	.option('-s, --sockets [number]', 'max sockets(' + config.sockets + ' by default)', parseInt, '')
-	.parse(process.argv);
+.option('-d, --debug', 'debug mode')
+.option('-l, --localUIHost [hostname]', 'local ui host(' + config.localUIHost + ' by default)', String, '')
+.option('-n, --username [username]', 'login username', String, '')
+.option('-w, --password [password]', 'login password', String, '')
+.option('-S, --storage [newStorageDir]', 'the new local storage directory', String, '')
+.option('-C, --copy [storageDir]', 'copy storageDir to newStorageDir', String, '')
+.option('-p, --port [port]', config.name + ' port(' + config.port + ' by default)', parseInt, '')
+.option('-m, --middlewares [script path or module name]', 'express middlewares path(as: xx,yy/zz.js)', String, '')
+.option('-u, --uipath [script path]', 'web ui plugin path', String, '')
+.option('-t, --timeout [ms]', 'request timeout(' + config.timeout + ' ms by default)', parseInt, '')
+.option('-s, --sockets [number]', 'max sockets(' + config.sockets + ' by default)', parseInt, '')
+.parse(process.argv);

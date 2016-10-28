@@ -18,7 +18,7 @@ module.exports = function(req, res) {
     plugins: pluginMgr.getPlugins(),
     disabledAllRules: properties.get('disabledAllRules'),
     disabledPlugins: properties.get('disabledPlugins') || {},
-    disabledPluginsRules: properties.get('disabledPluginsRules') || {}, 
+    disabledPluginsRules: properties.get('disabledPluginsRules') || {},
     disabledAllPlugins: properties.get('disabledAllPlugins'),
     localUIHost: config.localUIHost
   });

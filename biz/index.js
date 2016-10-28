@@ -44,7 +44,7 @@ module.exports = function(req, res, next) {
       host = config.WEINRE_HOST;
     }
   }
-	
+
   var pluginMgr = this.pluginMgr;
   var pluginHomePage;
   if (host == config.localUIHost) {
@@ -69,3 +69,4 @@ module.exports = function(req, res, next) {
     next();
   }
 };
+
