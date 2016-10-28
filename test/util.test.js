@@ -69,6 +69,7 @@ exports.request = function(options, callback) {
       try {
         callback && callback(res, /\?resBody=/.test(options.url) ? body : (/doNotParseJson/.test(options.url) ? body : JSON.parse(body)), err);
       } catch(e) {
+        /*eslint no-console: "off"*/
         console.log(options);
         throw e;
       }

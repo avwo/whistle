@@ -1,5 +1,5 @@
 #! /usr/bin/env node
-
+/*eslint no-console: "off"*/
 var program = require('starting');
 var path = require('path');
 var os = require('os');

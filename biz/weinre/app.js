@@ -1,4 +1,4 @@
-
+/*eslint no-console: "off"*/
 module.exports = function init(config) {
 //weinre用到老版本的express，改版本会直接往下面原型对象设置__defineGetter__
 //会影响到同一进程的web应用，新版的express处理方式更加合理些
