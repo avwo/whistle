@@ -26,6 +26,7 @@ module.exports = {
         "no-empty": [
              "error",
              { "allowEmptyCatch": true }
-        ]
+        ],
+        "no-cond-assign": "off"
     }
 };
