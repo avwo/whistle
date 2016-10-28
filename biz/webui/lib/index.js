@@ -15,7 +15,7 @@ function dontCheckPaths(req) {
 app.use(function(req, res, next) {
 	req.on('error', abort).on('close', abort);
 	res.on('error', abort);
-	function abort(err) {
+	function abort() {
 		res.destroy();
 	}
 	next();
