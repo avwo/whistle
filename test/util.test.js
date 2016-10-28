@@ -109,7 +109,7 @@ function connect(host, port, callback) {
       'user-agent': 'test/whistle',
       'proxy-connection': 'keep-alive',
       'x-whistle-policy': 'tunnel',
-      host: host +　(port ? ':' + port : '')
+      host: host + (port ? ':' + port : '')
     }
   });
   req.on('error', execCallback);

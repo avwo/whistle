@@ -1,7 +1,7 @@
 var http = require('http');
 var path = require('path');
 var StringDecoder = require('string_decoder').StringDecoder;
-var should = require('should');
+require('should');
 require('should-http');
 var fs = require('fs');
 var startWhistle = require('../index');
