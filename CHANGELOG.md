@@ -346,6 +346,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 2. feat: 支持各个rules server(pluginRulesServer, rulesServer, tunnelRules, resRulesServer)传values过来，详见[插件开发](https://avwo.github.io/whistle/plugins.html)
 3. style: 添加双击`Network`按钮情况请求列表的快捷方式
 4. style: 添加输入系统或插件没有对应的协议时加中划线及字体颜色变红
+5. chore：处理了所有eslint错误
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
