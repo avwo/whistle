@@ -50,9 +50,11 @@ module.exports = function(req, res, next) {
   var pluginHomePage;
   if (host == config.localUIHost) {
     var path = url.parse(fullUrl).path;
-    if (/\/whistle\.([^\/\?]+)(.*)$/.test(path)) {
+    var isWhistlePlugin = /^\/whistle\.([^\/\?]+)(.*)$/.test(path);
+    if (isWhistlePlugin || /^\/plugin\.([^\/\?]+)(.*)$/.test(path)) {
       path = RegExp.$2;
-      pluginHomePage = pluginMgr.getPlugin(RegExp.$1 + ':');
+      pluginHomePage = isWhistlePlugin ? pluginMgr.getPlugin(RegExp.$1 + ':') 
+          : pluginMgr.getPluginByName(RegExp.$1);
       if (pluginHomePage) {
         req.url = path;
         host = '';
