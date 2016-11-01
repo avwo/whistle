@@ -52,7 +52,7 @@ module.exports = function(req, res, next) {
     var path = url.parse(fullUrl).path;
     if (/\/whistle\.([^\/\?]+)(.*)$/.test(path)) {
       path = RegExp.$2;
-      pluginHomePage = pluginMgr.getPluginByName(RegExp.$1);
+      pluginHomePage = pluginMgr.getPlugin(RegExp.$1 + ':');
       if (pluginHomePage) {
         req.url = path;
         host = '';
