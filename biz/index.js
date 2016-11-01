@@ -46,12 +46,25 @@ module.exports = function(req, res, next) {
   }
 
   var pluginMgr = this.pluginMgr;
+  var fullUrl = util.getFullUrl(req);
   var pluginHomePage;
+  if (host == config.localUIHost) {
+    var path = url.parse(fullUrl).path;
+    if (/\/whistle\.([^\/\?]+)(.*)$/.test(path)) {
+      path = RegExp.$2;
+      pluginHomePage = pluginMgr.getPluginByName(RegExp.$1);
+      if (pluginHomePage) {
+        req.url = path;
+        host = '';
+      }
+    }
+  }
+  
   if (host == config.localUIHost) {
     request(req, res, config.uiport);
   } else if (host == config.WEINRE_HOST) {
     request(req, res, config.weinreport, true);
-  } else if (pluginHomePage = pluginMgr.getPluginByHomePage(util.getFullUrl(req))) {
+  } else if (pluginHomePage || (pluginHomePage = pluginMgr.getPluginByHomePage(fullUrl))) {
     pluginMgr.loadPlugin(pluginHomePage, function(err, ports) {
       if (err || !ports.uiPort) {
         res.response(util.wrapResponse({
