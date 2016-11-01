@@ -49,7 +49,7 @@ app.all('/cgi-bin/*', function(req, res) {
 
 app.use(express.static(path.join(__dirname, '../htdocs'), {maxAge: 300000}));
 
-app.get('*', function(req, res) {
+app.get('/', function(req, res) {
   res.sendFile(htdocs.getHtmlFile('index.html'));
 });
 
