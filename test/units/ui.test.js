@@ -12,6 +12,21 @@ module.exports = function() {
   util.request('http://local.whistlejs.com/cgi-bin/values/list');
   util.request('http://local.whistlejs.com/cgi-bin/plugins/get-plugins');
   util.request('http://local.whistlejs.com/cgi-bin/rules/list');
+  
+  util.request('https://local.whistlejs.com/index.html?doNotParseJson');
+  util.request('https://local.whistlejs.com:1234/index.html?doNotParseJson');
+  util.request('https://local.whistlejs.com/cgi-bin/log/get');
+  util.request('https://local.whistlejs.com/cgi-bin/init');
+  util.request('https://local.whistlejs.com:2345/cgi-bin/init');
+  util.request('https://local.whistlejs.com/cgi-bin/get-data');
+  util.request('https://local.whistlejs.com/cgi-bin/server-info');
+  util.request('https://local.whistlejs.com/cgi-bin/values/list');
+  util.request('https://local.whistlejs.com/cgi-bin/plugins/get-plugins');
+  util.request('https://local.whistlejs.com/cgi-bin/rules/list');
+  util.request('https://local.whistlejs.com/whistle.test');
+  util.request('http://local.whistlejs.com/whistle.test');
+  util.request('https://local.whistlejs.com/plugin.test');
+  util.request('http://local.whistlejs.com/plugin.test');
 
   util.request({
     url: 'http://local.whistlejs.com/cgi-bin/values/add',
