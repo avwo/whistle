@@ -7,9 +7,16 @@ var fs = require('fs');
 var startWhistle = require('../index');
 var util = require('./util.test');
 var config = require('./config.test');
-var testList = fs.readdirSync(path.join(__dirname, './units')).map(function(name) {
-  return require('./units/' + name);
-});
+var testList = [];
+var ll = fs.readdirSync(path.join(__dirname, './units'));
+
+//for (var i = 0; i < ll.length / 2; i++) {
+//  testList.push(require('./units/' + ll[i]));
+//}
+testList.push(require('./units/plugin.test'));
+//.map(function(name) {
+//  return require('./units/' + name);
+//});
 var count = 2;
 
 var WebSocketServer = require('ws').Server;
