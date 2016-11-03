@@ -16,10 +16,7 @@ module.exports = function(req, res) {
     return res.json({ec: 2, em: 'server busy'});
   }
   var _rules = rules.resolveRules(tunnelUrl);
-  var proxyUrl = util.rule.getProxy(_rules.rule);
-  if (proxyUrl) {
-    tunnelUrl = 'https:' + util.removeProtocol(proxyUrl);
-  } else if (_rules.rule) {
+  if (_rules.rule) {
     var _url = util.setProtocol(util.rule.getMatcher(_rules.rule), true);
     if (/^https:/i.test(_url)) {
       tunnelUrl = _url;
