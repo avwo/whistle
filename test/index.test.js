@@ -1,4 +1,7 @@
 var http = require('http');
+var https = require('https');
+var socks = require('socksv5');
+var net = require('net');
 var path = require('path');
 var StringDecoder = require('string_decoder').StringDecoder;
 require('should');
@@ -10,7 +13,11 @@ var config = require('./config.test');
 var testList = fs.readdirSync(path.join(__dirname, './units')).map(function(name) {
   return require('./units/' + name);
 });
-var count = 2;
+var options = {
+    key: fs.readFileSync(path.join(__dirname, 'certs/root.key')),
+    cert: fs.readFileSync(path.join(__dirname, 'certs/root.crt'))
+};
+var count = 5;
 
 var WebSocketServer = require('ws').Server;
 var wss = new WebSocketServer({ port: config.wsPort });
@@ -48,10 +55,74 @@ http.createServer(function(req, res) {
   });
 }).listen(config.serverPort, startTest);
 
+https.createServer(options, function(req, res) {
+  res.end('test');
+}).listen(config.httpsPort, startTest);
+
 startWhistle({
   port: config.port,
   storage: 'test_'
 }, startTest);
+
+var socksServer = socks.createServer(function(info, accept, deny) {
+  var socket;
+  if (info.dstPort === 443) {
+    if (socket = accept(true)) {
+      var client = net.connect({
+        host: '127.0.0.1',
+        port: 5566
+      }, function() {
+        socket.pipe(client).pipe(socket);
+      });
+    }
+    return;
+  }
+  if (socket = accept(true)) {
+    var body = 'Hello ' + info.srcAddr + '!\n\nToday is: ' + (new Date());
+    socket.end([
+      'HTTP/1.1 200 OK',
+      'Connection: close',
+      'Content-Type: text/plain;charset=utf8',
+      'Content-Length: ' + Buffer.byteLength(body),
+      '',
+      body
+    ].join('\r\n'));
+  }
+});
+
+var authSocksServer = socks.createServer(function(info, accept, deny) {
+  var socket;
+  if (info.dstPort === 443) {
+    if (socket = accept(true)) {
+      var client = net.connect({
+        host: '127.0.0.1',
+        port: 5566
+      }, function() {
+        socket.pipe(client).pipe(socket);
+      });
+    }
+    return;
+  }
+  if (socket = accept(true)) {
+    var body = 'Hello 666 ' + info.srcAddr + '!\n\nToday is: ' + (new Date());
+    socket.end([
+      'HTTP/1.1 200 OK',
+      'Connection: close',
+      'Content-Type: text/plain;charset=utf8',
+      'Content-Length: ' + Buffer.byteLength(body),
+      '',
+      body
+    ].join('\r\n'));
+  }
+});
+
+socksServer.useAuth(socks.auth.None());
+authSocksServer.useAuth(socks.auth.UserPassword(function(user, password, cb) {
+  cb(user == 'test' && password == 'hello1234');
+}));
+
+socksServer.listen(config.socksPort, startTest);
+authSocksServer.listen(config.authSocksPort, startTest);
 
 function startTest() {
   if (--count > 0) {
