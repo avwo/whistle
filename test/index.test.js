@@ -56,7 +56,10 @@ http.createServer(function(req, res) {
 }).listen(config.serverPort, startTest);
 
 https.createServer(options, function(req, res) {
-  res.end('test');
+  res.end(JSON.stringify({
+    header: req.headers,
+    body: 'test'
+  }));
 }).listen(config.httpsPort, startTest);
 
 startWhistle({
@@ -78,7 +81,9 @@ var socksServer = socks.createServer(function(info, accept, deny) {
     return;
   }
   if (socket = accept(true)) {
-    var body = 'Hello ' + info.srcAddr + '!\n\nToday is: ' + (new Date());
+    var body = JSON.stringify({
+      port: config.socksPort
+    });
     socket.end([
       'HTTP/1.1 200 OK',
       'Connection: close',
@@ -104,7 +109,9 @@ var authSocksServer = socks.createServer(function(info, accept, deny) {
     return;
   }
   if (socket = accept(true)) {
-    var body = 'Hello 666 ' + info.srcAddr + '!\n\nToday is: ' + (new Date());
+    var body = JSON.stringify({
+      port: config.authSocksPort
+    });
     socket.end([
       'HTTP/1.1 200 OK',
       'Connection: close',
