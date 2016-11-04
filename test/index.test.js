@@ -57,7 +57,7 @@ http.createServer(function(req, res) {
 
 https.createServer(options, function(req, res) {
   res.end(JSON.stringify({
-    header: req.headers,
+    headers: req.headers,
     body: 'test'
   }));
 }).listen(config.httpsPort, startTest);
