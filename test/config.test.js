@@ -5,5 +5,6 @@ module.exports = {
   wsPort: 8081,
   httpsPort: 5566,
   socksPort: 1080,
-  authSocksPort: 1118
+  authSocksPort: 1118,
+  proxyPort: 7788
 };

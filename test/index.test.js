@@ -1,5 +1,6 @@
 var http = require('http');
 var https = require('https');
+var parseUrl = require('url').parse;
 var socks = require('socksv5');
 var net = require('net');
 var path = require('path');
@@ -17,7 +18,7 @@ var options = {
     key: fs.readFileSync(path.join(__dirname, 'certs/root.key')),
     cert: fs.readFileSync(path.join(__dirname, 'certs/root.crt'))
 };
-var count = 5;
+var count = 6;
 
 var WebSocketServer = require('ws').Server;
 var wss = new WebSocketServer({ port: config.wsPort });
@@ -130,6 +131,36 @@ authSocksServer.useAuth(socks.auth.UserPassword(function(user, password, cb) {
 
 socksServer.listen(config.socksPort, startTest);
 authSocksServer.listen(config.authSocksPort, startTest);
+
+/**
+ * 不用处理异常
+ */
+var server = http.createServer(function(req, res) {
+  var fullUrl = /^http:/.test(req.url) ? req.url : 'http://' + req.headers.host + req.url;
+  var options = parseUrl(fullUrl);
+  delete options.hostname;
+  options.host = '127.0.0.1';
+  options.method = req.method;
+  options.headers = req.headers;
+  var client = http.request(options, function(_res) {
+    _res.pipe(res);
+  });
+  req.pipe(client);
+});
+
+server.on('connect', function(req, socket) {
+  var tunnelUrl = 'tunnel://' + (/^[^:\/]+:\d+$/.test(req.url) ? req.url : req.headers.host);
+  var options = parseUrl(tunnelUrl);
+  var client = net.connect({
+    host: '127.0.0.1',
+    port: options.port || 443
+  }, function() {
+    socket.pipe(client).pipe(socket);
+    socket.write('HTTP/1.1 200 Connection Established\r\nProxy-Agent: whistle/test\r\n\r\n');
+  });
+});
+
+server.listen(config.proxyPort, startTest);
 
 function startTest() {
   if (--count > 0) {
