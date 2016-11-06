@@ -15,8 +15,8 @@ var testList = fs.readdirSync(path.join(__dirname, './units')).map(function(name
   return require('./units/' + name);
 });
 var options = {
-    key: fs.readFileSync(path.join(__dirname, 'certs/root.key')),
-    cert: fs.readFileSync(path.join(__dirname, 'certs/root.crt'))
+  key: fs.readFileSync(path.join(__dirname, 'certs/root.key')),
+  cert: fs.readFileSync(path.join(__dirname, 'certs/root.crt'))
 };
 var count = 6;
 
