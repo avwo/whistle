@@ -1,7 +1,6 @@
 var http = require('http');
 var https = require('https');
 var parseUrl = require('url').parse;
-var socks = require('socksv5');
 var net = require('net');
 var path = require('path');
 var StringDecoder = require('string_decoder').StringDecoder;
@@ -9,6 +8,7 @@ require('should');
 require('should-http');
 var fs = require('fs');
 var startWhistle = require('../index');
+var socks = require('socksv5');
 var util = require('./util.test');
 var config = require('./config.test');
 var testList = fs.readdirSync(path.join(__dirname, './units')).map(function(name) {
