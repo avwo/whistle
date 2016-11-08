@@ -65,7 +65,8 @@ https.createServer(options, function(req, res) {
 
 startWhistle({
   port: config.port,
-  storage: 'test_'
+  storage: 'test_',
+  rules: fs.readFileSync(path.join(__dirname, 'rules.txt'), {encoding: 'utf8'})
 }, startTest);
 
 var socksServer = socks.createServer(function(info, accept, deny) {
