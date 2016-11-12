@@ -11,16 +11,9 @@ var startWhistle = require('../index');
 var socks = require('socksv5');
 var util = require('./util.test');
 var config = require('./config.test');
-var testList = fs.readdirSync(path.join(__dirname, './units')).map(function(name, i) {
-  i === 59 && console.log(name)
+var testList = fs.readdirSync(path.join(__dirname, './units')).map(function(name) {
   return require('./units/' + name);
 });
-var len = testList.length;
-var _l = [];
-for (var i = 59; i < 60; i++) {
-  _l.push(testList[i]);
-}
-testList = _l;
 var options = {
   key: fs.readFileSync(path.join(__dirname, 'certs/root.key')),
   cert: fs.readFileSync(path.join(__dirname, 'certs/root.crt'))
