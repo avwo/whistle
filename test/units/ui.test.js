@@ -27,7 +27,8 @@ module.exports = function() {
   util.request('http://local.whistlejs.com/whistle.test');
   util.request('https://local.whistlejs.com/plugin.test');
   util.request('http://local.whistlejs.com/plugin.test');
-
+  util.request('http://weinre.local.whistlejs.com/client/#anonymous');
+  util.request('https://weinre.local.whistlejs.com/client/#anonymous');
   util.request({
     url: 'http://local.whistlejs.com/cgi-bin/values/add',
     method: 'post',
