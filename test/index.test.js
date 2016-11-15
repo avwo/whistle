@@ -66,6 +66,7 @@ https.createServer(options, function(req, res) {
 startWhistle({
   port: config.port,
   storage: 'test_',
+  localUIHost: 'local.whistle.com',
   rules: fs.readFileSync(path.join(__dirname, 'rules.txt'), {encoding: 'utf8'})
 }, startTest);
 
