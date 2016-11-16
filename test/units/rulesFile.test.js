@@ -1,6 +1,9 @@
 var util = require('../util.test');
 
 module.exports = function() {
+  if (/^v0\.10\./.test(process.version)) {
+    return;
+  }
   util.request('http://rf1.w2.org/index.html', function(res, data) {
     data.should.have.property('test', 'values');
   });
