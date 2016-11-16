@@ -5,7 +5,8 @@ var auth = require('basic-auth');
 var bodyParser = require('body-parser');
 var crypto = require('crypto');
 var htdocs = require('../htdocs');
-var DONT_CHECK_PATHS = ['/cgi-bin/server-info', '/cgi-bin/show-host-ip-in-res-headers', '/cgi-bin/lookup-tunnel-dns'];
+var DONT_CHECK_PATHS = ['/cgi-bin/server-info', '/cgi-bin/show-host-ip-in-res-headers', 
+                        '/cgi-bin/lookup-tunnel-dns', '/cgi-bin/rootca'];
 var util, username, password, config;
 
 function dontCheckPaths(req) {
