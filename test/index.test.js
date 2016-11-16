@@ -11,6 +11,7 @@ var startWhistle = require('../index');
 var socks = require('socksv5');
 var util = require('./util.test');
 var config = require('./config.test');
+var values = util.getValues();
 var testList = fs.readdirSync(path.join(__dirname, './units')).map(function(name) {
   return require('./units/' + name);
 });
@@ -67,7 +68,8 @@ startWhistle({
   port: config.port,
   storage: 'test_',
   localUIHost: 'local.whistle.com',
-  rules: fs.readFileSync(path.join(__dirname, 'rules.txt'), {encoding: 'utf8'})
+  rules: fs.readFileSync(path.join(__dirname, 'rules.txt'), {encoding: 'utf8'}),
+  values: values
 }, startTest);
 
 var socksServer = socks.createServer(function(info, accept, deny) {

@@ -1,4 +1,6 @@
 var http = require('http');
+var fs = require('fs');
+var path = require('path');
 var tls = require('tls');
 var parseUrl = require('url').parse;
 var httpsAgent = require('https').Agent;
@@ -174,3 +176,13 @@ function proxy(url, callback) {
 
 exports.proxy = proxy;
 
+function getValues() {
+  var values = {};
+  var dir = path.join(__dirname, 'assets/values');
+  fs.readdirSync(dir).map(function(name) {
+    values[name] = fs.readFileSync(path.join(dir, name), {encoding: 'utf8'});
+  });
+  return values;
+}
+
+exports.getValues = getValues;
