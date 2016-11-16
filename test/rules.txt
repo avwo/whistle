@@ -1,2 +1,2 @@
-rf1.w2.org rulesFile://{rulesFile.js}
-rf2.w2.org rulesFile://{rulesFile.txt}
+rf1.w2.org rulesFile://{rulesFile.js} file://{rulesFile.js}
+rf2.w2.org rulesFile://{rulesFile.txt} file://{rulesFile.txt}
