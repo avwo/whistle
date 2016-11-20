@@ -348,10 +348,13 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 4. style: 添加输入系统或插件没有对应的协议时加中划线及字体颜色变红
 5. chore：处理了所有eslint错误
 
-# v1.1.3
+# v1.2.0
 1. fix: #16
-2. refactor: 调整[pac](https://avwo.github.io/whistle/rules/pac.html)逻辑，使其更合理
-3. feat: 支持通过`Ctrl + Shift + /`切换Rules编辑框的注释状态，选中的行中如果注释将解除注释，如果没有注释，则会注释掉这行
+2. feat: 支持通过`Ctrl + Shift + /`切换Rules编辑框的注释状态，选中的行中如果注释将解除注释，如果没有注释，则会注释掉这行
+3. feat: 新增[rulesFile](https://avwo.github.io/whistle/rules/rulesFile.html)，可以批量设置规则或者通过脚本动态设置规则
+4. refactor: 支持同时匹配多个插件
+5. refactor: 调整[pac](https://avwo.github.io/whistle/rules/pac.html)逻辑，使其更合理
+6. refactor: 把socks、proxy协议作为一个独立的协议，使得给匹配的规则设置代理
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
