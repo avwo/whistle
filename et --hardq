@@ -1,0 +1,422 @@
+[1mdiff --git a/lib/index.js b/lib/index.js[m
+[1mindex 72754a4..af766a1 100644[m
+[1m--- a/lib/index.js[m
+[1m+++ b/lib/index.js[m
+[36m@@ -19,7 +19,7 @@[m [mvar pluginMgr = require('./plugins');[m
+ var config = require('./config');[m
+ var LOCALHOST = '127.0.0.1';[m
+ var WHISTLE_POLICY_HEADER = 'x-whistle-policy';[m
+[31m-var TUNNEL_HOST_RE = /^[^:\/]+\.[^:\/]+:\d+$/;[m
+[32m+[m[32mvar LOCAL_URL_RE = new RegExp(config.localUIHost.replace(/\./g, '\\.') + '$', 'i');[m
+ var index = 0;[m
+ [m
+ [m
+[36m@@ -39,208 +39,222 @@[m [mfunction tunnelProxy(server, proxy) {[m
+ [m
+   process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';[m
+   server.on('connect', function(req, reqSocket, head) {//ws, wss, https proxy[m
+[31m-    var tunnelUrl = req.fullUrl = util.setProtocol(TUNNEL_HOST_RE.test(req.url) ? req.url : req.headers.host, true);[m
+[31m-    var options;[m
+[31m-    var parseUrl = function (_url, port) {[m
+[31m-      _url = _url || tunnelUrl;[m
+[31m-      options = req.options = url.parse(_url);[m
+[31m-      options.port = options.port || port || 443;[m
+[31m-      return options;[m
+[31m-    };[m
+[31m-    parseUrl();[m
+[32m+[m[32m    var tunnelUrl = req.fullUrl = util.setProtocol(/^[^:\/]+:\d+$/.test(req.url) ? req.url : req.headers.host, true);[m
+[32m+[m[32m    var options = parseUrl();[m
+     tunnelUrl = req.fullUrl = 'tunnel://' + options.host;[m
+[31m-    var resSocket, proxySocket, responsed, reqEmitter, rulesMgr;[m
+[32m+[m[32m    var resSocket, proxySocket, responsed;[m
+     req.isTunnel = true;[m
+[31m-    req.clientIp = util.getClientIp(req) || LOCALHOST;[m
+[31m-    req.reqId = ++index;[m
+     var hostname = options.hostname;[m
+     var _rules = req.rules = rules.resolveRules(tunnelUrl);[m
+[31m-    rules.resolveFileRules(req, function() {[m
+[31m-      var plugin = pluginMgr.resolveWhistlePlugins(req);[m
+[31m-      pluginMgr.getTunnelRules(req, function(_rulesMgr) {[m
+[31m-        if (_rulesMgr) {[m
+[31m-          rulesMgr = _rulesMgr;[m
+[31m-          util.mergeRules(req, rulesMgr.resolveRules(tunnelUrl));[m
+[32m+[m[32m    var filter = rules.resolveFilter(tunnelUrl);[m
+[32m+[m[32m    var disable = rules.resolveDisable(tunnelUrl);[m
+[32m+[m[32m    var plugin = pluginMgr.getPluginByRuleUrl(util.rule.getUrl(_rules.rule));[m
+[32m+[m[32m    var rulesMgr = plugin && plugin.rulesMgr;[m
+[32m+[m[32m    util.handlePluginRules(req, rulesMgr);[m
+[32m+[m[32m    if (rulesMgr && !filter.rule) {[m
+[32m+[m[32m      extend(_rules, rulesMgr.resolveRules(req.fullUrl));[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    var useTunnelPolicy = req.headers[WHISTLE_POLICY_HEADER] == 'tunnel';[m
+[32m+[m[32m    if (!useTunnelPolicy && (LOCAL_URL_RE.test(hostname) || ((filter.https || filter.tunnel[m
+[32m+[m[32m        || rulesUtil.properties.get('interceptHttpsConnects')) && !filter.intercept && !disable.intercept))) {[m
+[32m+[m[32m      dispatch(reqSocket, hostname, proxy);[m
+[32m+[m[32m      sendEstablished();[m
+[32m+[m[32m      return;[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    var reqEmitter = new EventEmitter();[m
+[32m+[m[32m    var headers = req.headers;[m
+[32m+[m[32m    var reqData = {[m
+[32m+[m[32m      ip: util.getClientIp(req) || LOCALHOST,[m
+[32m+[m[32m      method: util.toUpperCase(req.method) || 'CONNECT',[m
+[32m+[m[32m      httpVersion: req.httpVersion || '1.1',[m
+[32m+[m[32m      headers: headers[m
+[32m+[m[32m    };[m
+[32m+[m[32m    var resData = {headers: {}};[m
+[32m+[m[32m    var data = reqEmitter.data = {[m
+[32m+[m[32m      url: options.host,[m
+[32m+[m[32m      startTime: Date.now(),[m
+[32m+[m[32m      rules: _rules,[m
+[32m+[m[32m      req: reqData,[m
+[32m+[m[32m      res: resData,[m
+[32m+[m[32m      isHttps: true[m
+[32m+[m[32m    };[m
+[32m+[m[32m    req.clientIp = reqData.ip;[m
+[32m+[m[32m    abortIfUnavailable(reqSocket);[m
+[32m+[m[32m    if (!rulesUtil.properties.get('hideHttpsConnects') && !filter.hide) {[m
+[32m+[m[32m      proxy.emit('request', reqEmitter);[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    if (disable.tunnel) {[m
+[32m+[m[32m      return reqSocket.destroy();[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    req.reqId = ++index;[m
+[32m+[m[32m    plugin = pluginMgr.resolvePluginRule(req);[m
+[32m+[m[32m    pluginMgr.getTunnelRules(req, function(_rulesMgr) {[m
+[32m+[m[32m      if (_rulesMgr) {[m
+[32m+[m[32m        rulesMgr = _rulesMgr;[m
+[32m+[m[32m        var pluginRules = rulesMgr.resolveRules(tunnelUrl);[m
+[32m+[m[32m        var _disable = rulesMgr.resolveDisable(tunnelUrl);[m
+[32m+[m[32m        if (pluginRules.rule) {[m
+[32m+[m[32m          _rules.rule = pluginRules.rule;[m
+           plugin = pluginMgr.getPluginByRuleUrl(util.rule.getUrl(_rules.rule));[m
+         }[m
+[31m-        var filter = req.filter;[m
+[31m-        var disable = req.disable;[m
+[31m-        reqEmitter = new EventEmitter();[m
+[31m-        var headers = req.headers;[m
+[31m-        var reqData = {[m
+[31m-          ip: req.clientIp,[m
+[31m-          method: util.toUpperCase(req.method) || 'CONNECT',[m
+[31m-          httpVersion: req.httpVersion || '1.1',[m
+[31m-          headers: headers[m
+[31m-        };[m
+[31m-        var resData = {headers: {}};[m
+[31m-        var data = reqEmitter.data = {[m
+[31m-          url: options.host,[m
+[31m-          startTime: Date.now(),[m
+[31m-          rules: _rules,[m
+[31m-          req: reqData,[m
+[31m-          res: resData,[m
+[31m-          isHttps: true[m
+[31m-        };[m
+[31m-        abortIfUnavailable(reqSocket);[m
+[31m-        if (!rulesUtil.properties.get('hideHttpsConnects') && !filter.hide) {[m
+[31m-          proxy.emit('request', reqEmitter);[m
+[31m-        }[m
+[31m-        if (disable.tunnel) {[m
+[32m+[m[32m        if (!disable.tunnel && _disable.tunnel) {[m
+[32m+[m[32m          _rules.disable = pluginRules.disable;[m
+           return reqSocket.destroy();[m
+         }[m
+[31m-        var useTunnelPolicy = req.headers[WHISTLE_POLICY_HEADER] == 'tunnel';[m
+[31m-        if (!useTunnelPolicy && (config.isLocalUIUrl(hostname) || config.isPluginUrl(hostname) || ((filter.https || filter.tunnel[m
+[31m-            || rulesUtil.properties.get('interceptHttpsConnects')) && !filter.intercept && !disable.intercept))) {[m
+[31m-          dispatch(reqSocket, hostname, proxy, data, function(_resSocket) {[m
+[31m-            resSocket = _resSocket;[m
+[31m-          });[m
+[31m-          sendEstablished(true);[m
+[31m-          return;[m
+[32m+[m[32m        if (pluginRules.host) {[m
+[32m+[m[32m          _rules.host = pluginRules.host;[m
+[32m+[m[32m        }[m
+[32m+[m[32m        var _filter = rulesMgr.resolveFilter(tunnelUrl);[m
+[32m+[m[32m        if ((!filter.rule && _filter.rule) || (!filter.pac && _filter.pac)) {[m
+[32m+[m[32m          _rules.filter = pluginRules.filter;[m
+[32m+[m[32m          filter.rule = true;[m
+         }[m
+[31m-  [m
+[32m+[m[32m        if (!_filter.pac && !filter.pac && pluginRules.pac) {[m
+[32m+[m[32m          _rules.rule = pluginRules.pac;[m
+[32m+[m[32m        }[m
+[32m+[m[32m      }[m
+[32m+[m
+[32m+[m[32m      rules.findProxyFromPac(req, function() {[m
+[32m+[m[32m        var tunnelPort;[m
+[32m+[m[32m        var proxyUrl = util.rule.getProxy(_rules.rule);[m
+         if (filter.rule) {[m
+           delete _rules.rule;[m
+           plugin = null;[m
+[31m-        }[m
+[31m-        [m
+[31m-        var tunnelPort, proxyUrl;[m
+[31m-        if(plugin) {[m
+[32m+[m[32m        } else if(!proxyUrl && plugin) {[m
+           tunnelPort = plugin.ports && plugin.ports.tunnelPort;[m
+           if (!tunnelPort) {[m
+             return emitError(new Error('No plugin.tunnelServer'));[m
+           }[m
+           proxyUrl = 'proxy://127.0.0.1:' + tunnelPort;[m
+         }[m
+[31m-        [m
+[31m-        var realUrl = _rules.rule && _rules.rule.url.replace('https:', 'tunnel:');[m
+[31m-        if (/^tunnel:\/\//.test(realUrl) && realUrl != tunnelUrl) {[m
+[31m-          tunnelUrl = realUrl;[m
+[31m-          data.realUrl = realUrl.replace('tunnel://', '');[m
+[31m-          parseUrl();[m
+[32m+[m
+[32m+[m[32m        if (!tunnelPort) {[m
+[32m+[m[32m          delete headers[pluginMgr.CLIENT_IP_HEADER];[m
+[32m+[m[32m          delete headers[pluginMgr.RULE_VALUE_HEADER];[m
+[32m+[m[32m          delete headers[pluginMgr.REQ_ID_HEADER];[m
+[32m+[m[32m          delete headers[pluginMgr.CUR_RULE_HEADER];[m
+[32m+[m[32m          delete headers[pluginMgr.LOCAL_HOST_HEADER];[m
+[32m+[m[32m          delete headers[pluginMgr.HOST_PORT_HEADER];[m
+         }[m
+[31m-        [m
+[31m-        rules.getProxy(tunnelUrl, tunnelPort || proxyUrl ? null : req, function() {[m
+[31m-          if (!proxyUrl) {[m
+[31m-            proxyUrl = !tunnelPort && _rules.proxy ? _rules.proxy.matcher : null;[m
+[31m-          }[m
+[31m-          [m
+[31m-          if (proxyUrl) {[m
+[31m-            var isSocks = /^socks:\/\//.test(proxyUrl);[m
+[31m-            var _url = 'http:' + util.removeProtocol(proxyUrl);[m
+[31m-            data.proxy = true;[m
+[31m-            resolveHost(_url, function(ip) {[m
+[31m-              options = parseUrl(_url, isSocks ? 1080 : 80);[m
+[31m-              if (options.port == config.port && util.isLocalAddress(ip)) {[m
+[31m-                return emitError(new Error('Can not proxy to itself'));[m
+[31m-              }[m
+[31m-              var onConnect = function(_proxySocket) {[m
+[31m-                proxySocket = _proxySocket;[m
+[31m-                abortIfUnavailable(proxySocket);[m
+[31m-                reqSocket.pipe(proxySocket).pipe(reqSocket);[m
+[31m-                sendEstablished();[m
+[31m-              };[m
+[31m-              var dstOptions = url.parse(tunnelUrl);[m
+[31m-              dstOptions.proxyHost = ip;[m
+[31m-              dstOptions.proxyPort = parseInt(options.port, 10);[m
+[31m-              dstOptions.port = dstOptions.port || 443;[m
+[31m-              dstOptions.host = dstOptions.hostname;[m
+[31m-              var _headers = extend({}, headers);[m
+[31m-              if (req.clientIp) {[m
+[31m-                _headers[pluginMgr.CLIENT_IP_HEADER] = req.clientIp;[m
+[31m-              }[m
+[31m-              var ruleValue = tunnelPort && util.getMatcherValue(_rules.rule);[m
+[31m-              if (ruleValue) {[m
+[31m-                _headers[pluginMgr.RULE_VALUE_HEADER] = encodeURIComponent(ruleValue);[m
+[31m-              }[m
+[31m-              _headers.host = dstOptions.hostname + ':' + (dstOptions.port || 443);[m
+[31m-              dstOptions.headers = _headers;[m
+[31m-              if (isSocks) {[m
+[31m-                dstOptions.proxyPort = options.port || 1080;[m
+[31m-                dstOptions.localDNS = false;[m
+[31m-                dstOptions.auths = config.getAuths(options);[m
+[31m-                socks.connect(dstOptions, onConnect).on('error', emitError);[m
+[31m-              } else {[m
+[31m-                dstOptions.proxyPort = options.port || 80;[m
+[31m-                dstOptions.proxyAuth = options.auth;[m
+[31m-                config.connect(dstOptions, onConnect).on('error', emitError);[m
+[31m-              }[m
+[31m-            });[m
+[31m-          } else {[m
+[31m-            tunnel();[m
+[31m-          }[m
+[31m-        });[m
+[31m-        [m
+[31m-        function tunnel() {[m
+[31m-          resolveHost(tunnelUrl, function(ip, port) {[m
+[31m-            resData.ip = port ? ip + ':' + port : ip;[m
+[31m-            resSocket = net.connect(port || options.port, ip, function() {[m
+[31m-              resSocket.pipe(reqSocket).pipe(resSocket);[m
+[32m+[m[32m        if (proxyUrl) {[m
+[32m+[m[32m          var isSocks = /^socks:\/\//.test(proxyUrl);[m
+[32m+[m[32m          data.realUrl = proxyUrl;[m
+[32m+[m[32m          var _url = 'https:' + util.removeProtocol(proxyUrl);[m
+[32m+[m[32m          data.proxy = true;[m
+[32m+[m[32m          resolveHost(_url, function(ip) {[m
+[32m+[m[32m            options = parseUrl(_url, isSocks ? 1080 : 8888);[m
+[32m+[m[32m            if (options.port == config.port && util.isLocalAddress(ip)) {[m
+[32m+[m[32m              return emitError(new Error('Can not proxy to itself'));[m
+[32m+[m[32m            }[m
+[32m+[m[32m            var opts = url.parse(tunnelUrl);[m
+[32m+[m[32m            headers.host = opts.hostname + ':' + (opts.port || 443);[m
+[32m+[m[32m            var onConnect = function(_proxySocket) {[m
+[32m+[m[32m              proxySocket = _proxySocket;[m
+[32m+[m[32m              abortIfUnavailable(proxySocket);[m
+[32m+[m[32m              reqSocket.pipe(proxySocket).pipe(reqSocket);[m
+               sendEstablished();[m
+[31m-            });[m
+[31m-            abortIfUnavailable(resSocket);[m
+[32m+[m[32m            };[m
+[32m+[m[32m            var dstOptions = url.parse(tunnelUrl);[m
+[32m+[m[32m            dstOptions.proxyHost = ip;[m
+[32m+[m[32m            dstOptions.proxyPort = parseInt(options.port, 10);[m
+[32m+[m[32m            dstOptions.port = dstOptions.port || 443;[m
+[32m+[m[32m            dstOptions.host = dstOptions.hostname;[m
+[32m+[m[32m            dstOptions.headers = headers;[m
+[32m+[m[32m            if (isSocks) {[m
+[32m+[m[32m              dstOptions.proxyPort = options.port || 1080;[m
+[32m+[m[32m              dstOptions.localDNS = false;[m
+[32m+[m[32m              dstOptions.auths = config.getAuths(options);[m
+[32m+[m[32m              socks.connect(dstOptions, onConnect).on('error', emitError);[m
+[32m+[m[32m            } else {[m
+[32m+[m[32m              dstOptions.proxyPort = options.port || 80;[m
+[32m+[m[32m              dstOptions.proxyAuth = options.auth;[m
+[32m+[m[32m              config.connect(dstOptions, onConnect).on('error', emitError);[m
+[32m+[m[32m            }[m
+           });[m
+[32m+[m[32m        } else {[m
+[32m+[m[32m          tunnel();[m
+         }[m
+[32m+[m[32m      });[m
+[32m+[m[32m    });[m
+ [m
+[31m-        function resolveHost(url, callback) {[m
+[31m-          rules.resolveHost(url, function(err, ip, port, host) {[m
+[31m-            if (host) {[m
+[31m-              _rules.host = host;[m
+[31m-            }[m
+[31m-            data.requestTime = data.dnsTime = Date.now();[m
+[31m-            resData.ip = ip || LOCALHOST;[m
+[31m-            reqEmitter.emit('send', data);[m
+[31m-            err ? emitError(err) : callback(ip, port);[m
+[31m-          }, rulesMgr);[m
+[31m-        }[m
+[32m+[m[32m    function tunnel() {[m
+[32m+[m[32m      resolveHost(tunnelUrl, function(ip, port) {[m
+[32m+[m[32m        resData.ip = port ? ip + ':' + port : ip;[m
+[32m+[m[32m        resSocket = net.connect(port || options.port, ip, function() {[m
+[32m+[m[32m          resSocket.pipe(reqSocket).pipe(resSocket);[m
+[32m+[m[32m          sendEstablished();[m
+[32m+[m[32m        });[m
+[32m+[m[32m        abortIfUnavailable(resSocket);[m
+[32m+[m[32m      });[m
+[32m+[m[32m    }[m
+ [m
+[31m-        function abortIfUnavailable(socket) {[m
+[31m-          socket.on('error', emitError).on('close', emitError);[m
+[31m-        }[m
+[32m+[m[32m    function parseUrl(_url, port) {[m
+[32m+[m[32m      _url = _url || tunnelUrl;[m
+[32m+[m[32m      options = req.options = url.parse(_url);[m
+[32m+[m[32m      options.port = options.port || port || 443;[m
+[32m+[m[32m      return options;[m
+[32m+[m[32m    }[m
+ [m
+[31m-        function sendEstablished(dispatch) {[m
+[31m-          reqSocket.write('HTTP/1.1 200 Connection Established\r\nProxy-Agent: ' + config.name + '\r\n\r\n');[m
+[31m-          if (!dispatch) {[m
+[31m-            responsed = true;[m
+[31m-            if (reqEmitter) {[m
+[31m-              data.responseTime = data.endTime = Date.now();[m
+[31m-              resData.statusCode = 200;[m
+[31m-              reqEmitter.emit('response', data);[m
+[31m-              reqEmitter.emit('end', data);[m
+[31m-            }[m
+[31m-          }[m
+[31m-          return reqSocket;[m
+[32m+[m[32m    function resolveHost(url, callback) {[m
+[32m+[m[32m      rules.resolveHost(url, function(err, ip, port, host) {[m
+[32m+[m[32m        if (host) {[m
+[32m+[m[32m          _rules.host = host;[m
+         }[m
+[32m+[m[32m        data.requestTime = data.dnsTime = Date.now();[m
+[32m+[m[32m        resData.ip = ip || LOCALHOST;[m
+[32m+[m[32m        reqEmitter.emit('send', data);[m
+[32m+[m[32m        err ? emitError(err) : callback(ip, port);[m
+[32m+[m[32m      }, rulesMgr);[m
+[32m+[m[32m    }[m
+ [m
+[31m-        function emitError(err) {[m
+[31m-          if (responsed) {[m
+[31m-            return;[m
+[31m-          }[m
+[31m-          responsed = true;[m
+[31m-          resSocket && resSocket.destroy();[m
+[31m-          proxySocket && proxySocket.destroy();[m
+[31m-          reqSocket.destroy();[m
+[31m-          data.responseTime = data.endTime = Date.now();[m
+[32m+[m[32m    function abortIfUnavailable(socket) {[m
+[32m+[m[32m      socket.on('error', emitError).on('close', emitError);[m
+[32m+[m[32m    }[m
+ [m
+[31m-          if (!resData.ip) {[m
+[31m-            resData.ip = LOCALHOST;[m
+[31m-          }[m
+[32m+[m[32m    function sendEstablished() {[m
+[32m+[m[32m      reqSocket.write('HTTP/1.1 200 Connection Established\r\nProxy-Agent: ' + config.name + '\r\n\r\n');[m
+[32m+[m[32m      responsed = true;[m
+[32m+[m[32m      if (reqEmitter) {[m
+[32m+[m[32m        data.responseTime = data.endTime = Date.now();[m
+[32m+[m[32m        resData.statusCode = 200;[m
+[32m+[m[32m        reqEmitter.emit('response', data);[m
+[32m+[m[32m        reqEmitter.emit('end', data);[m
+[32m+[m[32m      }[m
+ [m
+[31m-          if (err) {[m
+[31m-            err = new Error('Aborted');[m
+[31m-            data.reqError = true;[m
+[31m-            resData.statusCode ='aborted';[m
+[31m-            reqData.body = util.getErrorStack(err);[m
+[31m-            reqEmitter.emit('abort', data);[m
+[31m-          } else {[m
+[31m-            data.resError = true;[m
+[31m-            resData.statusCode = resData.statusCode || 502;[m
+[31m-            resData.body = util.getErrorStack(err);[m
+[31m-            util.emitError(reqEmitter, data);[m
+[31m-          }[m
+[31m-        }[m
+[31m-      });[m
+[31m-    });[m
+[32m+[m[32m      return reqSocket;[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    function emitError(err) {[m
+[32m+[m[32m      if (responsed) {[m
+[32m+[m[32m        return;[m
+[32m+[m[32m      }[m
+[32m+[m[32m      responsed = true;[m
+[32m+[m[32m      resSocket && resSocket.destroy();[m
+[32m+[m[32m      proxySocket && proxySocket.destroy();[m
+[32m+[m[32m      reqSocket.destroy();[m
+[32m+[m[32m      data.responseTime = data.endTime = Date.now();[m
+[32m+[m
+[32m+[m[32m      if (!resData.ip) {[m
+[32m+[m[32m        resData.ip = LOCALHOST;[m
+[32m+[m[32m      }[m
+[32m+[m
+[32m+[m[32m      if (err) {[m
+[32m+[m[32m        err = new Error('Aborted');[m
+[32m+[m[32m        data.reqError = true;[m
+[32m+[m[32m        resData.statusCode ='aborted';[m
+[32m+[m[32m        reqData.body = util.getErrorStack(err);[m
+[32m+[m[32m        reqEmitter.emit('abort', data);[m
+[32m+[m[32m      } else {[m
+[32m+[m[32m        data.resError = true;[m
+[32m+[m[32m        resData.statusCode = resData.statusCode || 502;[m
+[32m+[m[32m        resData.body = util.getErrorStack(err);[m
+[32m+[m[32m        util.emitError(reqEmitter, data);[m
+[32m+[m[32m      }[m
+[32m+[m[32m    }[m
+   });[m
+ [m
+   return server;[m
+[36m@@ -268,12 +282,6 @@[m [mfunction proxy(callback) {[m
+   initLogServer(proxyEvents);[m
+   require('../biz/init')(proxyEvents);[m
+   config.debug && rules.disableDnsCache();[m
+[31m-  config.rules && rulesUtil.parseRules(config.rules);[m
+[31m-  if (config.values) {[m
+[31m-    Object.keys(config.values).forEach(function(name) {[m
+[31m-      rulesUtil.values.add(name, config.values[name]);[m
+[31m-    });[m
+[31m-  }[m
+   return proxyEvents;[m
+ }[m
+ [m
