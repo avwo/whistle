@@ -1,7 +1,7 @@
 var util = require('../util.test');
 
 module.exports = function() {
-  util.request('http://t.tt.com/?doNotParseJson', function(res, body) {
-    console.log(body);
+  util.request('http://socks2.w2.org/index.html', function(res, body) {
+    res.headers['content-type'].should.be.equal('text/html;charset=utf8');
   });
 };
