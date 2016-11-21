@@ -7,6 +7,7 @@ var StringDecoder = require('string_decoder').StringDecoder;
 require('should');
 require('should-http');
 var fs = require('fs');
+var fse = require('fs-extra');
 var startWhistle = require('../index');
 var socks = require('socksv5');
 var util = require('./util.test');
@@ -15,6 +16,7 @@ var values = util.getValues();
 var testList = fs.readdirSync(path.join(__dirname, './units')).map(function(name) {
   return require('./units/' + name);
 });
+testList = [require('./units/plugins.test')];
 var options = {
   key: fs.readFileSync(path.join(__dirname, 'assets/certs/root.key')),
   cert: fs.readFileSync(path.join(__dirname, 'assets/certs/root.crt'))
@@ -23,6 +25,11 @@ var count = 6;
 
 var WebSocketServer = require('ws').Server;
 var wss = new WebSocketServer({ port: config.wsPort });
+var WHISTLE_PATH = process.env.WHISTLE_PATH = __dirname;
+var PLUGINS_PATH = path.join(WHISTLE_PATH, '.whistle/node_modules');
+
+fse.removeSync(path.join(WHISTLE_PATH, '.whistle'));
+fse.copySync(path.join(__dirname, 'plugins'), PLUGINS_PATH);
 
 wss.on('connection', function connection(ws) {
   var req = ws.upgradeReq;

@@ -55,3 +55,6 @@ node_modules
 
 # Coveralls
 coverage
+
+# test
+/test/.whistle
