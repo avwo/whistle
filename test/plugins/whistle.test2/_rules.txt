@@ -1,0 +1,1 @@
+socks2.w2.org/index.html resCharset://gbk
