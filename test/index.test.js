@@ -16,8 +16,6 @@ var values = util.getValues();
 var testList = fs.readdirSync(path.join(__dirname, './units')).map(function(name) {
   return require('./units/' + name);
 });
-//var start = 0;
-//testList = testList.slice(start, start + 20);
 var options = {
   key: fs.readFileSync(path.join(__dirname, 'assets/certs/root.key')),
   cert: fs.readFileSync(path.join(__dirname, 'assets/certs/root.crt'))
@@ -26,11 +24,11 @@ var count = 6;
 
 var WebSocketServer = require('ws').Server;
 var wss = new WebSocketServer({ port: config.wsPort });
-//var WHISTLE_PATH = process.env.WHISTLE_PATH = __dirname;
-//var PLUGINS_PATH = path.join(WHISTLE_PATH, '.whistle/node_modules');
-//
-//fse.removeSync(path.join(WHISTLE_PATH, '.whistle'));
-//fse.copySync(path.join(__dirname, 'plugins'), PLUGINS_PATH);
+var WHISTLE_PATH = process.env.WHISTLE_PATH = __dirname;
+var PLUGINS_PATH = path.join(WHISTLE_PATH, '.whistle/node_modules');
+
+fse.removeSync(path.join(WHISTLE_PATH, '.whistle'));
+fse.copySync(path.join(__dirname, 'plugins'), PLUGINS_PATH);
 
 wss.on('connection', function connection(ws) {
   var req = ws.upgradeReq;
