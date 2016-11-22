@@ -1,1 +1,1 @@
-socks2.w2.org/index.html resType://html
+mp1.w2.org/index.html resType://html
