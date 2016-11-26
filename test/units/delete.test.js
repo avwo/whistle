@@ -12,7 +12,7 @@ module.exports = function() {
     headers: {
       'x-delete-test': 123
     },
-    url: 'https://delete.test.whistlejs.com/index.html?post11'
+    url: 'http://delete.test.whistlejs.com/index.html?post11'
   }, function(res, data) {
     data.headers.should.have.property('x-delete-test');
     data.headers.should.not.have.property('x-delete-all');
@@ -31,7 +31,7 @@ module.exports = function() {
     headers: {
       'x-delete-test': 123
     },
-    url: 'https://delete1.test.whistlejs.com/index.html?post'
+    url: 'http://delete1.test.whistlejs.com/index.html?post'
   }, function(res, data) {
     data.headers.should.have.property('x-delete-test');
     data.headers.should.have.property('x-delete-all');
