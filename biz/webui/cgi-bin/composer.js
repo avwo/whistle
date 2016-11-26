@@ -46,7 +46,7 @@ module.exports = function(req, res) {
     options.port = config.port;
     options.headers = headers;
     if (headers['content-length'] != null) {
-      req.body.body = new Buffer(req.body.body || '');
+      req.body.body = util.toBuffer(req.body.body || '');
       headers['content-length'] = req.body.body.length;
     }
 
