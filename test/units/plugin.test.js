@@ -14,7 +14,6 @@ module.exports = function() {
   });
 
   util.request('wss://321.ws1.whistlejs.com:2222/index.html', function(data) {
-    data.host.should.equal('127.0.0.1');
-    data.port.should.equal('9999');
+    data.host.should.equal('127.0.0.1:9999');
   });
 };
