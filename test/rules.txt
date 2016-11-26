@@ -1,4 +1,4 @@
 rf1.w2.org rulesFile://{rulesFile.js} file://{rulesFile.js}
 rf2.w2.org rulesFile://{rulesFile.txt} file://{rulesFile.txt}
-delete.test.whistlejs.com reqHeaders://(x-delete-req=test-req&x-delete-all=all) resHeaders://(x-delete-res=test-res&x-delete-all=all)
+delete.test.whistlejs.com reqHeaders://(x-delete-req=test-req&x-delete-all=all) resHeaders://(x-delete-res=test-res&x-delete-all=all) filter://https
 delete1.test.whistlejs.com reqHeaders://(x-delete-req=test-req&x-delete-all=all) resHeaders://(x-delete-res=test-res&x-delete-all=all) filter://https
