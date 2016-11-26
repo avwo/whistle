@@ -5,11 +5,11 @@ module.exports = function() {
     data.ruleValue.should.be.equal('global');
   });
 
-  util.request({
-    method: 'post',
-    url: 'https://tp.w2.org/index.html',
-    isTunnel: true
-  }, function(res, data) {
-    data.body.should.be.equal('test');
-  });
+//  util.request({
+//    method: 'post',
+//    url: 'https://tp.w2.org/index.html',
+//    isTunnel: true
+//  }, function(res, data) {
+//    data.body.should.be.equal('test');
+//  });
 };
