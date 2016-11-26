@@ -2,6 +2,7 @@ var http = require('http');
 var fs = require('fs');
 var path = require('path');
 var tls = require('tls');
+var httpsOverHttp = require('tunnel-agent').httpsOverHttp;
 var parseUrl = require('url').parse;
 var httpsAgent = require('https').Agent;
 var httpAgent = require('http').Agent;
@@ -69,18 +70,20 @@ exports.request = function(options, callback) {
       };
     }
     if (options.isTunnel) {
-      var opts = {
+      options.agent = httpsOverHttp({
+        proxy: {
           host: '127.0.0.1',
           port: config.port,
           url: options.url,
           headers: {
-            host: options.hostname,
-            'proxy-connection': 'keep-alive',
-            'user-agent': headers['user-agent']
+            host: parseUrl(options.url).host,
+            'x-whistle-policy': 'tunnel'
           }
-        };
+        },
+        rejectUnauthorized: false
+      });
     }
-    requestProxy(options, function(err, res, body) {
+    (options.isTunnel ? request : requestProxy)(options, function(err, res, body) {
       try {
         callback && callback(res, /\?resBody=/.test(options.url) ? body : (/doNotParseJson/.test(options.url) ? body : JSON.parse(body)), err);
       } catch(e) {
