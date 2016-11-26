@@ -7,7 +7,8 @@ var httpsAgent = require('https').Agent;
 var httpAgent = require('http').Agent;
 var WebSocket = require('ws');
 var config = require('./config.test');
-var request = require('request').defaults({
+var request = require('request');
+var requestProxy = request.defaults({
   proxy : 'http://127.0.0.1:' + config.port
 });
 var count = 0;
@@ -67,7 +68,19 @@ exports.request = function(options, callback) {
         rejectUnauthorized : false
       };
     }
-    request(options, function(err, res, body) {
+    if (options.isTunnel) {
+      var opts = {
+          host: '127.0.0.1',
+          port: config.port,
+          url: options.url,
+          headers: {
+            host: options.hostname,
+            'proxy-connection': 'keep-alive',
+            'user-agent': headers['user-agent']
+          }
+        };
+    }
+    requestProxy(options, function(err, res, body) {
       try {
         callback && callback(res, /\?resBody=/.test(options.url) ? body : (/doNotParseJson/.test(options.url) ? body : JSON.parse(body)), err);
       } catch(e) {
