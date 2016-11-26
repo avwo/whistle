@@ -1,0 +1,1 @@
+delete.test.whistlejs.com delete://req.headers.x-delete-req|res.headers.x-delete-res|headers.x-delete-all
