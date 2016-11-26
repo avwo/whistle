@@ -24,7 +24,7 @@ module.exports = function() {
 //    data.headers.should.have.property('x-delete-all');
 //    data.headers.should.have.property('x-delete-req');
 //    res.headers.should.have.property('x-delete-res');
-    console.log(req.headers, data.headers);
+    console.log(res.headers, data.headers);
   });
 
   util.request({
@@ -38,6 +38,6 @@ module.exports = function() {
 //    data.headers.should.have.property('x-delete-all');
 //    data.headers.should.have.property('x-delete-req');
 //    res.headers.should.have.property('x-delete-res');
-    console.log(req.headers, data.headers);
+    console.log(res.headers, data.headers);
   });
 };
