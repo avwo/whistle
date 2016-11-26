@@ -31,7 +31,7 @@ module.exports = function() {
     headers: {
       'x-delete-test': 123
     },
-    url: 'https://delete1.test.whistlejs.com/index.html'
+    url: 'http://delete1.test.whistlejs.com/index.html'
   }, function(res, data) {
     data.headers.should.have.property('x-delete-test');
     data.headers.should.have.property('x-delete-all');
