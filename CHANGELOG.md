@@ -352,8 +352,8 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 1. fix: #16
 2. feat: 支持通过`Ctrl + Shift + /`切换Rules编辑框的注释状态，选中的行中如果注释将解除注释，如果没有注释，则会注释掉这行
 3. feat: 新增[rulesFile](https://avwo.github.io/whistle/rules/rulesFile.html)，可以批量设置规则或者通过脚本动态设置规则
-4. refactor: 支持同时匹配多个插件
-5. refactor: 调整[pac](https://avwo.github.io/whistle/rules/pac.html)逻辑，使其更合理
+4. refactor: 支持通过(`whistle.xxx://`、`whistle.yyy://`)同时匹配多个插件
+5. refactor: 调整[pac](https://avwo.github.io/whistle/rules/pac.html)逻辑，让替换后的请求也有作用
 6. refactor: 把socks、proxy协议作为一个独立的协议，使得给匹配的规则设置代理
 
 ### -
