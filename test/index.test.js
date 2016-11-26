@@ -16,6 +16,7 @@ var values = util.getValues();
 var testList = fs.readdirSync(path.join(__dirname, './units')).map(function(name) {
   return require('./units/' + name);
 });
+testList = [require('./units/tunnelPolicy.test')];
 var options = {
   key: fs.readFileSync(path.join(__dirname, 'assets/certs/root.key')),
   cert: fs.readFileSync(path.join(__dirname, 'assets/certs/root.crt'))
