@@ -1,5 +1,8 @@
 
 ;(function() {
+  if (typeof window === 'undefined' || typeof Image === 'undefined') {
+    return;
+  }
 	var console = window.console = window.console || {};
 	if (console._whistleConsole) {
 		return;
