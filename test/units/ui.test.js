@@ -178,7 +178,11 @@ module.exports = function() {
   });
   util.request({
     url: 'http://local.whistlejs.com/cgi-bin/log/set',
-    method: 'post'
+    method: 'get',
+    form: {
+      level: 'error',
+      text: 'teset error log'
+    }
   });
   util.request({
     url: 'http://local.whistlejs.com/cgi-bin/composer',
@@ -397,7 +401,11 @@ module.exports = function() {
   });
   util.request({
     url: 'http://local.wproxy.org:1234/cgi-bin/log/set',
-    method: 'post'
+    method: 'get',
+    form: {
+      level: 'warn',
+      text: 'teset warn log'
+    }
   });
   util.request({
     url: 'http://local.wproxy.org:1234/cgi-bin/composer',
