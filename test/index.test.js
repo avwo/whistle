@@ -16,6 +16,8 @@ var values = util.getValues();
 var testList = fs.readdirSync(path.join(__dirname, './units')).map(function(name) {
   return require('./units/' + name);
 });
+var defaultRules = fs.readFileSync(path.join(__dirname, 'rules.txt'), {encoding: 'utf8'});
+console.log(defaultRules);
 var options = {
   key: fs.readFileSync(path.join(__dirname, 'assets/certs/root.key')),
   cert: fs.readFileSync(path.join(__dirname, 'assets/certs/root.crt'))
@@ -75,7 +77,7 @@ startWhistle({
   storage: 'test_',
   debugMode: true,
   localUIHost: 'local.whistle.com',
-  rules: fs.readFileSync(path.join(__dirname, 'rules.txt'), {encoding: 'utf8'}),
+  rules: defaultRules,
   values: values
 }, startTest);
 
