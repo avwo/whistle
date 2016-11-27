@@ -83,18 +83,26 @@ exports.request = function(options, callback) {
         rejectUnauthorized: false
       });
     }
-    (options.isTunnel ? request : requestProxy)(options, function(err, res, body) {
-      try {
-        callback && callback(res, /\?resBody=/.test(options.url) ? body : (/doNotParseJson/.test(options.url) ? body : JSON.parse(body)), err);
-      } catch(e) {
-        /*eslint no-console: "off"*/
-        console.log(options);
-        throw e;
-      }
-      if (--count <= 0) {
-        process.exit(0);
-      }
-    });
+    var _request = function(retryCount) {
+      (options.isTunnel ? request : requestProxy)(options, function(err, res, body) {
+        if (err && retryCount < 5) {
+          return setTimeout(function() {
+            _request(++retryCount);
+          }, 100);
+        }
+        try {
+          callback && callback(res, /\?resBody=/.test(options.url) ? body : (/doNotParseJson/.test(options.url) ? body : JSON.parse(body)), err);
+        } catch(e) {
+          /*eslint no-console: "off"*/
+          console.log(options);
+          throw e;
+        }
+        if (--count <= 0) {
+          process.exit(0);
+        }
+      });
+    };
+    _request(0);
   }
 };
 
