@@ -21,4 +21,8 @@ module.exports = function() {
   util.request('http://https2.w2.org/index.html', function(res, data) {
     data.type.should.be.equal('server');
   });
+  
+  util.request('http://whistle-ssl.https.w2.org:' + config.httpsPort + '/index.html', function(res, data) {
+    data.body.should.be.equal('test');
+  });
 };
