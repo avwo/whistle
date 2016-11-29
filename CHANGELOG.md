@@ -356,6 +356,10 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 5. refactor: 调整[pac](https://avwo.github.io/whistle/rules/pac.html)逻辑，让替换后的请求也有作用
 6. refactor: 把socks、proxy协议作为一个独立的协议，使得给匹配的规则设置代理
 
+# v1.2.1
+1. fix： Buffer.from兼容性问题，在node v5上不支持字符串参数
+2. refactor: 去掉head这个老协议，可以使用跟方便的reqXxx，resXxx协议
+
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
 	
