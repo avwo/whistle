@@ -348,7 +348,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 4. style: 添加输入系统或插件没有对应的协议时加中划线及字体颜色变红
 5. chore：处理了所有eslint错误
 
-# v1.2.0
+### v1.2.0
 1. fix: #16
 2. feat: 支持通过`Ctrl + Shift + /`切换Rules编辑框的注释状态，选中的行中如果注释将解除注释，如果没有注释，则会注释掉这行
 3. feat: 新增[rulesFile](https://avwo.github.io/whistle/rules/rulesFile.html)，可以批量设置规则或者通过脚本动态设置规则
@@ -356,9 +356,12 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 5. refactor: 调整[pac](https://avwo.github.io/whistle/rules/pac.html)逻辑，让替换后的请求也有作用
 6. refactor: 把socks、proxy协议作为一个独立的协议，使得给匹配的规则设置代理
 
-# v1.2.1
+### v1.2.1
 1. fix： Buffer.from兼容性问题，在node v5上不支持字符串参数
 2. refactor: 去掉head这个老协议，可以使用跟方便的reqXxx，resXxx协议
+
+# v1.2.2
+1. feat: 支持自定义根证书及特定域名的证书、通配证书
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
