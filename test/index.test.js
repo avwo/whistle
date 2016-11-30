@@ -74,6 +74,7 @@ https.createServer(options, function(req, res) {
 startWhistle({
   port: config.port,
   storage: 'test_',
+  certDir: path.join(__dirname, 'assets/certs'),
   debugMode: true,
   localUIHost: 'local.whistle.com',
   rules: defaultRules,
