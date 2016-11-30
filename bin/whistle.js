@@ -105,7 +105,7 @@ program.setConfig({
 
 program
   .option('-d, --debug', 'debug mode')
-  .option('-z, --cert [directory]', 'custom certificate path', String, undefined)
+  .option('-z, --certDir [directory]', 'custom certificate path', String, undefined)
   .option('-l, --localUIHost [hostname]', 'local ui host(' + config.localUIHost + ' by default)', String, undefined)
   .option('-n, --username [username]', 'login username', String, undefined)
   .option('-w, --password [password]', 'login password', String, undefined)
