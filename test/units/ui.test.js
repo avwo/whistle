@@ -2,6 +2,7 @@
 var util = require('../util.test');
 
 module.exports = function() {
+  util.request('http://rd2webui.w2.org/index.html?doNotParseJson');
   util.request('http://local.whistlejs.com/index.html?doNotParseJson');
   util.request('http://local.whistlejs.com:1234/index.html?doNotParseJson');
   util.request('http://local.whistlejs.com/cgi-bin/log/get');
@@ -29,6 +30,7 @@ module.exports = function() {
   util.request('https://local.whistlejs.com/plugin.test');
   util.request('http://local.whistlejs.com/plugin.test');
   util.request('http://weinre.local.whistlejs.com/client/#anonymous');
+  util.request('http://weinre.local.whistlejs.com/target/target-script-min.js?doNotParseJson');
   util.request('https://weinre.local.whistlejs.com/client/#anonymous');
   util.request({
     url: 'http://local.whistlejs.com/cgi-bin/values/add',
