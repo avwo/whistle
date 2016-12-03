@@ -4,7 +4,10 @@ module.exports = function() {
   util.request('http://test.local.whistlejs.com/index.html?doNotParseJson', function(res, body) {
     body.should.equal('uiServer');
   });
-
+  util.request('http://test1.local.whistlejs.com/index.html?doNotParseJson', function(res, body) {
+    res.statusCode.should.equal(501);
+    body.should.equal('Not implemented');
+  });
   util.request('http://plugin.whistlejs.com:1234/index.html', function(res, data) {
     data.should.have.property('type', 'server');
   });
