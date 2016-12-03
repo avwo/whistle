@@ -12,6 +12,7 @@ module.exports = function() {
   util.request('http://local.whistlejs.com/cgi-bin/values/list');
   util.request('http://local.whistlejs.com/cgi-bin/plugins/get-plugins');
   util.request('http://local.whistlejs.com/cgi-bin/rules/list');
+  util.request('http://local.whistlejs.com/cgi-bin/rootca');
   
   util.request('https://local.whistlejs.com/index.html?doNotParseJson');
   util.request('https://local.whistlejs.com:1234/index.html?doNotParseJson');
