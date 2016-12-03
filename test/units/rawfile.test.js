@@ -20,4 +20,8 @@ module.exports = function() {
   util.request('http://xraw.test.whistlejs.com/index2.html', function(res, data) {
     data.should.have.property('type', 'server');
   });
+  util.request('http://rwf.w2.org/index.html?doNotParseJson', function(res, body) {
+    res.statusCode.should.equal(500);
+    body.should.equal('test2');
+  });
 };

@@ -7,3 +7,4 @@ delete1.test.whistlejs.com reqHeaders://(x-delete-req=test-req&x-delete-all=all)
 https://tp.w2.org/index.html test://global
 tp.w2.org 127.0.0.1:5566 filter://https|socks|proxy
 unknownprotocol.w2.org/index.html?doNotParseJson unknownprotocol://
+rwf.w2.org/index.html rawfile://{rawFile.html}
