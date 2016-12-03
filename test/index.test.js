@@ -19,7 +19,7 @@ var testList = fs.readdirSync(path.join(__dirname, './units')).map(function(name
 var defaultRules = fs.readFileSync(path.join(__dirname, 'rules.txt'), {encoding: 'utf8'});
 var options = {
   key: fs.readFileSync(path.join(__dirname, 'assets/certs/root.key')),
-  cert: fs.readFileSync(path.join(__dirname, 'assets/certs/root.crt'))
+  cert: fs.readFileSync(path.join(__dirname, 'assets/certs/_root.crt'))
 };
 var count = 6;
 
