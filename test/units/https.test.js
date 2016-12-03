@@ -22,6 +22,10 @@ module.exports = function() {
     data.type.should.be.equal('server');
   });
   
+  util.request('http://https3.w2.org:5566/index.html', function(res, data) {
+    data.body.should.be.equal('test');
+  });
+  
   util.request('http://whistle-ssl.https.w2.org:' + config.httpsPort + '/index.html', function(res, data) {
     data.body.should.be.equal('test');
   });
