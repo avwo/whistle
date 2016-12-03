@@ -78,7 +78,8 @@ startWhistle({
   debugMode: true,
   localUIHost: 'local.whistle.com',
   rules: defaultRules,
-  values: values
+  values: values,
+  copy: true
 }, startTest);
 
 var socksServer = socks.createServer(function(info, accept, deny) {
