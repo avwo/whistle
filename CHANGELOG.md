@@ -360,7 +360,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 1. fix： Buffer.from兼容性问题，在node v5上不支持字符串参数
 2. refactor: 去掉head这个老协议，可以使用跟方便的reqXxx，resXxx协议
 
-<del>### v1.2.2
+### <del>v1.2.2
 
 # v1.2.3
 1. feat: 支持自定义根证书及特定域名的证书、通配证书
