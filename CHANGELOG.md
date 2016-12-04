@@ -360,9 +360,13 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 1. fix： Buffer.from兼容性问题，在node v5上不支持字符串参数
 2. refactor: 去掉head这个老协议，可以使用跟方便的reqXxx，resXxx协议
 
-# v1.2.2
+### v1.2.2
 1. feat: 支持自定义根证书及特定域名的证书、通配证书
 2. feat: 插件新增statsServer，可以用于统计请求及获取所有请求的参见就头信息，详见[插件开发](https://avwo.github.io/whistle/plugins.html)
+
+# v1.2.3
+1. fix: 紧急修复bug
+
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
