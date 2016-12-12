@@ -369,6 +369,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 # v1.2.4
 1. fix: tunnel代理中通过插件设置tunnelProxy无效的问题
 2. fix: websocket映射没有同步修改请求path的问题
+3. fix: 兼容大量不规范的头部处理方式，将输出的响应头的字段名称的首字母及`-`后面的字母都转成大写
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
