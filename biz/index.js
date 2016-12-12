@@ -46,22 +46,12 @@ module.exports = function(req, res, next) {
   }
 
   var pluginMgr = this.pluginMgr;
-  var fullUrl = util.getFullUrl(req);
-  var pluginHomePage;
-  if (config.isLocalUIUrl(host)) {
-    var path = url.parse(fullUrl).path;
-    var isWhistlePlugin = /^\/whistle\.([^\/\?]+)(.*)$/.test(path);
-    if (isWhistlePlugin || /^\/plugin\.([^\/\?]+)(.*)$/.test(path)) {
-      path = RegExp.$2;
-      pluginHomePage = isWhistlePlugin ? pluginMgr.getPlugin(RegExp.$1 + ':') 
-          : pluginMgr.getPluginByName(RegExp.$1);
-      if (pluginHomePage) {
-        req.url = path;
-        host = '';
-      }
-    }
+  var fullUrl = req.fullUrl = util.getFullUrl(req);
+  var pluginHomePage = pluginMgr.getPluginByPath(req);
+  if (pluginHomePage) {
+    fullUrl = req.fullUrl;
+    host = '';
   }
-  
   if (config.isLocalUIUrl(host)) {
     request(req, res, config.uiport);
   } else if (config.isWeinreUrl(host)) {
