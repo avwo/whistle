@@ -362,11 +362,13 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 
 ### <del>v1.2.2
 
-# v1.2.3
+### v1.2.3
 1. feat: 支持自定义根证书及特定域名的证书、通配证书
 2. feat: 插件新增statsServer，可以用于统计请求及获取所有请求的参见就头信息，详见[插件开发](https://avwo.github.io/whistle/plugins.html)
 
-
+# v1.2.4
+1. fix: tunnel代理中通过插件设置tunnelProxy无效的问题
+2. fix: 直接通过路径访问插件的问题:localUIHost/whistle.xxx
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
