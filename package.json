@@ -63,6 +63,7 @@
     "stop": "node bin/whistle.js stop",
     "test": "node test/index.test.js",
     "lint": "eslint ./lib ./bin ./biz/index.js ./biz/init.js ./biz/webui/cgi-bin ./biz/webui/lib ./biz/weinre",
+    "lintfix": "eslint --fix ./lib ./bin ./biz/index.js ./biz/init.js ./biz/webui/cgi-bin ./biz/webui/lib ./biz/weinre",
     "cov": "node_modules/istanbul/lib/cli.js cover node_modules/.bin/tape -- test/index.test.js"
   },
   "engines": {
