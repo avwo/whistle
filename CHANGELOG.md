@@ -368,7 +368,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 
 # v1.2.4
 1. fix: tunnel代理中通过插件设置tunnelProxy无效的问题
-2. fix: 直接通过路径访问插件的问题:localUIHost/whistle.xxx
+2. fix: websocket映射没有同步修改请求path的问题
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
