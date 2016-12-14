@@ -366,10 +366,14 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 1. feat: 支持自定义根证书及特定域名的证书、通配证书
 2. feat: 插件新增statsServer，可以用于统计请求及获取所有请求的参见就头信息，详见[插件开发](https://avwo.github.io/whistle/plugins.html)
 
-# v1.2.4
+### v1.2.4
 1. fix: tunnel代理中通过插件设置tunnelProxy无效的问题
 2. fix: websocket映射没有同步修改请求path的问题
 3. fix: 兼容大量不规范的头部处理方式，将输出的响应头的字段名称的首字母及`-`后面的字母都转成大写
+
+# v1.2.5
+1. feat: 新增协议[ignore](https://avwo.github.io/whistle/rules/ignore.html)
+2. feat: 新增协议[enable](https://avwo.github.io/whistle/rules/enable.html)
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
