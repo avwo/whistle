@@ -4,6 +4,7 @@ var path = require('path');
 var auth = require('basic-auth');
 var bodyParser = require('body-parser');
 var crypto = require('crypto');
+var httpsUtil;
 var htdocs = require('../htdocs');
 var DONT_CHECK_PATHS = ['/cgi-bin/server-info', '/cgi-bin/show-host-ip-in-res-headers', 
                         '/cgi-bin/lookup-tunnel-dns', '/cgi-bin/rootca'];
@@ -20,6 +21,13 @@ app.use(function(req, res, next) {
     res.destroy();
   }
   next();
+});
+
+app.use(function(req, res, next) {
+  if (req.headers.host !== 'rootca.pro') {
+    return next();
+  }
+  res.download(httpsUtil.getRootCAFile(), 'rootCA.crt');
 });
 
 app.use(bodyParser.urlencoded({ extended: true, limit: '1mb'}));
@@ -110,7 +118,7 @@ module.exports = function(proxy) {
   require('./rules')(rulesUtil.rules);
   require('./properties')(rulesUtil.properties);
   require('./values')(rulesUtil.values);
-  require('./https-util')(proxy.httpsUtil);
+  require('./https-util')(httpsUtil = proxy.httpsUtil);
   require('./data')(proxy);
   app.listen(config.uiport);
 };
