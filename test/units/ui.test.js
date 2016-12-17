@@ -33,6 +33,12 @@ module.exports = function() {
   util.request('http://weinre.local.whistlejs.com/target/target-script-min.js?doNotParseJson');
   util.request('https://weinre.local.whistlejs.com/client/#anonymous');
   util.request({
+    url: 'http://local.whistlejs.com/cgi-bin/log/get',
+    headers: {
+      origin: 'http://wproxy.org'
+    }
+  });
+  util.request({
     url: 'http://local.whistlejs.com/cgi-bin/values/add',
     method: 'post',
     form: {
