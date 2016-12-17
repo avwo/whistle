@@ -15,3 +15,5 @@ ws2.w2.org proxy://127.0.0.1:7788 enable://intercept
 ws3.w2.org socks://127.0.0.1:1080 enable://intercept
 ws4.w2.org proxy://127.0.0.1:7788
 ws5.w2.org socks://127.0.0.1:1080
+
+/\d+\.server-agent\.com/ enable://intercept host://127.0.0.1:5566
