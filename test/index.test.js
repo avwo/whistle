@@ -16,7 +16,6 @@ var values = util.getValues();
 var testList = fs.readdirSync(path.join(__dirname, './units')).map(function(name) {
   return require('./units/' + name);
 });
-testList = [require('./units/ui.test.js')];
 var defaultRules = fs.readFileSync(path.join(__dirname, 'rules.txt'), {encoding: 'utf8'});
 var options = {
   key: fs.readFileSync(path.join(__dirname, 'assets/certs/root.key')),
