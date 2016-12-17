@@ -3,7 +3,9 @@ var util = require('../util.test');
 
 module.exports = function() {
   util.request('http://rd2webui.w2.org/index.html?doNotParseJson');
+  util.request('http://rd2webui.w2.org/?doNotParseJson');
   util.request('http://local.whistlejs.com/index.html?doNotParseJson');
+  util.request('http://local.whistlejs.com/?doNotParseJson');
   util.request('http://local.whistlejs.com:1234/index.html?doNotParseJson');
   util.request('http://local.whistlejs.com/cgi-bin/log/get');
   util.request('http://local.whistlejs.com/cgi-bin/init');
