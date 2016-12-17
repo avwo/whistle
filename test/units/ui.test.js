@@ -39,6 +39,12 @@ module.exports = function() {
     }
   });
   util.request({
+    url: 'http://local.whistlejs.com/cgi-bin/show-host-ip-in-res-headers',
+    headers: {
+      origin: 'http://wproxy.org'
+    }
+  });
+  util.request({
     url: 'http://local.whistlejs.com/cgi-bin/values/add',
     method: 'post',
     form: {
