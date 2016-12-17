@@ -13,3 +13,5 @@ https3.w2.org filter://https proxy://test:123@127.0.0.1:7788
 
 ws2.w2.org proxy://127.0.0.1:7788 enable://intercpet
 ws3.w2.org socks://127.0.0.1:1080 enable://intercpet
+ws4.w2.org proxy://127.0.0.1:7788
+ws5.w2.org socks://127.0.0.1:1080
