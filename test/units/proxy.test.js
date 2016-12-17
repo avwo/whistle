@@ -16,4 +16,7 @@ module.exports = function() {
   util.request('ws://ws2.w2.org:8081/index.html', function(res, data) {
     res.type.should.be.equal('server');
   });
+  util.request('ws://ws3.w2.org:8081/index.html', function(res, data) {
+    res.type.should.be.equal('server');
+  });
 };

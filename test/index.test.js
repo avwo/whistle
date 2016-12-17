@@ -95,6 +95,17 @@ var socksServer = socks.createServer(function(info, accept, deny) {
     }
     return;
   }
+  if (info.dstPort === 8081) {
+    if (socket = accept(true)) {
+      var client = net.connect({
+        host: '127.0.0.1',
+        port: 8081
+      }, function() {
+        socket.pipe(client).pipe(socket);
+      });
+    }
+    return;
+  }
   if (socket = accept(true)) {
     var body = JSON.stringify({
       port: config.socksPort
