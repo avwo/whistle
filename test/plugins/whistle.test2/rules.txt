@@ -7,3 +7,5 @@ enable3.w2.org enable://intercept proxy://test:123@127.0.0.1:7788 whistle.test2:
 enable4.w2.org enable://intercept proxy://test:123@127.0.0.1:7788 whistle.test2://
 
 enable4.w2.org ignore://whistle.test2
+
+var1.wproxy.org/index.html whistle.test1://
