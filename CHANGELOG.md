@@ -375,8 +375,13 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 1. feat: 新增协议[ignore](https://avwo.github.io/whistle/rules/ignore.html)
 2. feat: 新增协议[enable](https://avwo.github.io/whistle/rules/enable.html)
 
-# v1.2.6
+### v1.2.6
 1. refactor: 方便手动输入url，把安装根证书的url修改为http://rootca.pro/
+
+# 1.3.0
+1. feat: 支持在规则中设置局部变量，`pattern file:///User/xxx/${filename}`或直接拼接[Values]()的值 `pattern file://(${key1},${key2},${keyN})`，具体功能参考：[Values]()
+2. feat: 支持导入导出Fiddler2、Fiddler4的saz文件、及whistle自定义的纯文本文件，具体参见：[Network]()
+
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
