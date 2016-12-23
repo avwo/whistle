@@ -381,6 +381,8 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 # 1.3.0
 1. feat: 支持在规则中设置局部变量，`pattern file:///User/xxx/${filename}`或直接拼接[Values]()的值 `pattern file://(${key1},${key2},${keyN})`，具体功能参考：[Values]()
 2. feat: 支持导入导出Fiddler2、Fiddler4的saz文件，具体参见：[Network]()
+3. feat: 支持tunnel请求设置`statusCode://xxx`
+4. refactor: 新增`status://xxx`等价于`statusCode://xxx`
 
 
 ### -
