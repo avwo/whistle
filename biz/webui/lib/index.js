@@ -30,6 +30,20 @@ app.use(function(req, res, next) {
   res.download(httpsUtil.getRootCAFile(), 'rootCA.crt');
 });
 
+function cgiHandler(req, res) {
+  try {
+    if (req.headers.origin) {
+      res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
+      res.setHeader('Access-Control-Allow-Credentials', true);
+    }
+    require(path.join(__dirname, '..' + req.path))(req, res);
+  } catch(err) {
+    res.status(500).send(util.getErrorStack(err));
+  }
+};
+
+app.all('/cgi-bin/sessions/*', cgiHandler);
+
 app.use(bodyParser.urlencoded({ extended: true, limit: '1mb'}));
 app.use(bodyParser.json());
 
@@ -44,17 +58,7 @@ app.use(function(req, res, next) {
   res.status(401).end('Please enter your username and password.');
 });
 
-app.all('/cgi-bin/*', function(req, res) {
-  try {
-    if (req.headers.origin) {
-      res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
-      res.setHeader('Access-Control-Allow-Credentials', true);
-    }
-    require(path.join(__dirname, '..' + req.path))(req, res);
-  } catch(err) {
-    res.status(500).send(util.getErrorStack(err));
-  }
-});
+app.all('/cgi-bin/*', cgiHandler);
 
 app.use(express.static(path.join(__dirname, '../htdocs'), {maxAge: 300000}));
 
