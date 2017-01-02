@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Session SID="15">
+  <SessionTimers ClientConnected="2017-01-02T01:48:17.6694145+08:00"
+   ClientDoneRequest="2017-01-02T01:48:17.6694145+08:00"
+   GatewayTime="187" DNSTime="0" TCPConnectTime="93" 
+   ServerGotRequest="2017-01-02T01:48:17.9464303+08:00" 
+   ServerBeginResponse="2017-01-02T01:48:18.150442+08:00" 
+   ServerDoneResponse="2017-01-02T01:48:18.150442+08:00" 
+   ClientBeginResponse="2017-01-02T01:48:18.150442+08:00" 
+   ClientDoneResponse="2017-01-02T01:48:18.150442+08:00" />
+  <PipeInfo />
+  <SessionFlags>
+    <SessionFlag N="x-ttfb" V="203" />
+    <SessionFlag N="x-processinfo" V="chrome:10352" />
+    <SessionFlag N="x-transfer-size" V="4772" />
+    <SessionFlag N="x-clientip" V="127.0.0.1" />
+    <SessionFlag N="x-ttlb" V="203" />
+    <SessionFlag N="x-hostip" V="43.250.12.43" />
+    <SessionFlag N="x-clientport" V="60972" />
+  </SessionFlags>
+</Session>

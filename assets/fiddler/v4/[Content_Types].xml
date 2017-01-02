@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+<Default Extension="htm" ContentType="text/html" />
+<Default Extension="xml" ContentType="application/xml" />
+<Default Extension="txt" ContentType="text/plain" />
+</Types>
