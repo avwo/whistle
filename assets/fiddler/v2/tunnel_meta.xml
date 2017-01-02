@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Session SID="22">
-  <SessionTimers ClientConnected="2017-01-02T01:48:18.8084796+08:00"
-   ClientDoneRequest="2017-01-02T01:48:18.8084796+08:00" GatewayTime="593" 
-   DNSTime="15" TCPConnectTime="0" ServerGotRequest="0001-01-01T00:00:00" 
-   ServerBeginResponse="0001-01-01T00:00:00" ServerDoneResponse="0001-01-01T00:00:00" 
-   ClientBeginResponse="0001-01-01T00:00:00" ClientDoneResponse="0001-01-01T00:00:00" />
+<Session SID="${SID}">
+  <SessionTimers ClientConnected="${ClientConnected}"
+   ClientDoneRequest="${ClientDoneRequest}" GatewayTime="${GatewayTime}" 
+   DNSTime="${DNSTime}" TCPConnectTime="${TCPConnectTime}" ServerGotRequest="${ServerGotRequest}" 
+   ServerBeginResponse="${ServerBeginResponse}" ServerDoneResponse="${ServerDoneResponse}" 
+   ClientBeginResponse="${ClientBeginResponse}" ClientDoneResponse="${ClientDoneResponse}" />
   <PipeInfo />
   <SessionFlags>
-    <SessionFlag N="x-processinfo" V="chrome:10352" />
-    <SessionFlag N="x-clientip" V="127.0.0.1" />
-    <SessionFlag N="x-clientport" V="60990" />
+    <SessionFlag N="x-processinfo" V="${processinfo}" />
+    <SessionFlag N="x-clientip" V="${clientip}" />
+    <SessionFlag N="x-clientport" V="${clientport}" />
   </SessionFlags>
 </Session>

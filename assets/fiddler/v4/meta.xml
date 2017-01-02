@@ -1,27 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Session SID="1" BitFlags="881">
-  <SessionTimers ClientConnected="2016-12-19T10:24:36.7151002+08:00"
-   ClientBeginRequest="2016-12-19T10:24:36.7151002+08:00" 
-   GotRequestHeaders="2016-12-19T10:24:36.7151002+08:00" 
-   ClientDoneRequest="2016-12-19T10:24:36.7151002+08:00" 
-   GatewayTime="31" DNSTime="0" TCPConnectTime="0" HTTPSHandshakeTime="676" 
-   ServerConnected="2016-12-19T10:24:37.0981002+08:00" 
-   FiddlerBeginRequest="2016-12-19T10:24:37.7751002+08:00" 
-   ServerGotRequest="2016-12-19T10:24:37.7751002+08:00" 
-   ServerBeginResponse="2016-12-19T10:24:38.1301002+08:00" 
-   GotResponseHeaders="2016-12-19T10:24:38.1301002+08:00" 
-   ServerDoneResponse="2016-12-19T10:24:38.1301002+08:00" 
-   ClientBeginResponse="2016-12-19T10:24:38.1311002+08:00" 
-   ClientDoneResponse="2016-12-19T10:24:38.1311002+08:00" />
-  <PipeInfo Forwarded="true" />
+<Session SID="${SID}" BitFlags="${BitFlags}">
+  <SessionTimers ClientConnected="${ClientConnected}"
+   ClientBeginRequest="${ClientBeginRequest}" 
+   GotRequestHeaders="${GotRequestHeaders}" 
+   ClientDoneRequest="${ClientDoneRequest}" 
+   GatewayTime="${GatewayTime}" DNSTime="${DNSTime}" 
+   TCPConnectTime="${TCPConnectTime}" HTTPSHandshakeTime="${HTTPSHandshakeTime}" 
+   ServerConnected="${ServerConnected}" 
+   FiddlerBeginRequest="${FiddlerBeginRequest}" 
+   ServerGotRequest="${ServerGotRequest}" 
+   ServerBeginResponse="${ServerBeginResponse}" 
+   GotResponseHeaders="${GotResponseHeaders}" 
+   ServerDoneResponse="${ServerDoneResponse}" 
+   ClientBeginResponse="${ClientBeginResponse}" 
+   ClientDoneResponse="${ClientDoneResponse}" />
+  <PipeInfo Forwarded="${Forwarded}" />
   <SessionFlags>
-    <SessionFlag N="x-responsebodytransferlength" V="661" />
-    <SessionFlag N="x-egressport" V="53227" />
+    <SessionFlag N="x-responsebodytransferlength" V="${responsebodytransferlength}" />
+    <SessionFlag N="x-egressport" V="${egressport}" />
     <SessionFlag N="x-autoauth" V="(default)" />
-    <SessionFlag N="x-clientport" V="0" />
-    <SessionFlag N="ui-color" V="gray" />
-    <SessionFlag N="x-clientip" V="" />
-    <SessionFlag N="x-builder-maxredir" V="3" />
-    <SessionFlag N="x-createdtunnel" V="Fiddler-Created-A-CONNECT-Tunnel" />
+    <SessionFlag N="x-clientport" V="${clientport}" />
+    <SessionFlag N="ui-color" V="${ui-color}" />
+    <SessionFlag N="x-clientip" V="${clientip}" />
+    <SessionFlag N="x-builder-maxredir" V="${builder-maxredir}" />
+    <SessionFlag N="x-createdtunnel" V="${createdtunnel}" />
   </SessionFlags>
 </Session>
