@@ -40,7 +40,7 @@ function cgiHandler(req, res) {
   } catch(err) {
     res.status(500).send(util.getErrorStack(err));
   }
-};
+}
 
 app.all('/cgi-bin/sessions/*', cgiHandler);
 
