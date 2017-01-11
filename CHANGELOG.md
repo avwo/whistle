@@ -384,6 +384,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 3. feat: 支持tunnel请求设置`statusCode://xxx`
 4. refactor: 新增`status://xxx`等价于`statusCode://xxx`
 5. refactor: 支持ip:port映射到ip:port，即：`127.0.0.1:6001 127.0.0.1:7001`，访问`http://127.0.0.1:6001`会转发到`http://127.0.0.1:7001`
+6. refactor: 加入agent的连接池中空闲连接的超时机制，防止请求某些情况下无法触发`free`事件，导致连接无法释放
 
 
 ### -
