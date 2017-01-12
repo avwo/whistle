@@ -23,6 +23,6 @@
     <SessionFlag N="ui-color" V="${ui-color}" />
     <SessionFlag N="x-clientip" V="${clientip}" />
     <SessionFlag N="x-builder-maxredir" V="${builder-maxredir}" />
-    <SessionFlag N="x-createdtunnel" V="${createdtunnel}" />
+    <SessionFlag N="x-createdtunnel" V="Fiddler-Created-This-CONNECT-Tunnel" />
   </SessionFlags>
 </Session>
