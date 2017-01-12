@@ -14,7 +14,7 @@
    ServerDoneResponse="${ServerDoneResponse}" 
    ClientBeginResponse="${ClientBeginResponse}" 
    ClientDoneResponse="${ClientDoneResponse}" />
-  <PipeInfo Forwarded="${Forwarded}" />
+  <PipeInfo />
   <SessionFlags>
     <SessionFlag N="x-responsebodytransferlength" V="${responsebodytransferlength}" />
     <SessionFlag N="x-egressport" V="0" />
