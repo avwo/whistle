@@ -7,8 +7,8 @@
    ClientBeginResponse="${ClientBeginResponse}" ClientDoneResponse="${ClientDoneResponse}" />
   <PipeInfo />
   <SessionFlags>
-    <SessionFlag N="x-processinfo" V="${processinfo}" />
+    <SessionFlag N="x-processinfo" V="" />
     <SessionFlag N="x-clientip" V="${clientip}" />
-    <SessionFlag N="x-clientport" V="${clientport}" />
+    <SessionFlag N="x-clientport" V="0" />
   </SessionFlags>
 </Session>

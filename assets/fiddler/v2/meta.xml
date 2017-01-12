@@ -11,11 +11,11 @@
   <PipeInfo />
   <SessionFlags>
     <SessionFlag N="x-ttfb" V="${ttfb}" />
-    <SessionFlag N="x-processinfo" V="${processinfo}" />
+    <SessionFlag N="x-processinfo" V="" />
     <SessionFlag N="x-transfer-size" V="${transfer-size}" />
     <SessionFlag N="x-clientip" V="${clientip}" />
     <SessionFlag N="x-ttlb" V="${ttlb}" />
     <SessionFlag N="x-hostip" V="${hostip}" />
-    <SessionFlag N="x-clientport" V="${clientport}" />
+    <SessionFlag N="x-clientport" V="0" />
   </SessionFlags>
 </Session>

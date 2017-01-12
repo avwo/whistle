@@ -17,12 +17,12 @@
   <PipeInfo Forwarded="${Forwarded}" />
   <SessionFlags>
     <SessionFlag N="x-responsebodytransferlength" V="${responsebodytransferlength}" />
-    <SessionFlag N="x-egressport" V="${egressport}" />
+    <SessionFlag N="x-egressport" V="0" />
     <SessionFlag N="x-autoauth" V="(default)" />
-    <SessionFlag N="x-clientport" V="${clientport}" />
-    <SessionFlag N="ui-color" V="${ui-color}" />
+    <SessionFlag N="x-clientport" V="0" />
+    <SessionFlag N="ui-color" V="" />
     <SessionFlag N="x-clientip" V="${clientip}" />
-    <SessionFlag N="x-builder-maxredir" V="${builder-maxredir}" />
+    <SessionFlag N="x-builder-maxredir" V="0" />
     <SessionFlag N="x-createdtunnel" V="Fiddler-Created-This-CONNECT-Tunnel" />
   </SessionFlags>
 </Session>
