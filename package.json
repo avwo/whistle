@@ -57,7 +57,8 @@
     "socksv5": "0.0.6",
     "starting": "^2.1.1",
     "tunnel-agent": "^0.4.3",
-    "weinre": "2.0.0-pre-I0Z7U9OV"
+    "weinre": "2.0.0-pre-I0Z7U9OV",
+    "xml2js": "^0.4.17"
   },
   "scripts": {
     "dev": "node bin/whistle.js run -p 8888",
