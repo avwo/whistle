@@ -11,7 +11,7 @@
   <PipeInfo />
   <SessionFlags>
     <SessionFlag N="x-ttfb" V="${ttfb}" />
-    <SessionFlag N="x-processinfo" V="" />
+    <SessionFlag N="x-processinfo" V="whistle" />
     <SessionFlag N="x-transfer-size" V="${transfer-size}" />
     <SessionFlag N="x-clientip" V="${clientip}" />
     <SessionFlag N="x-ttlb" V="${ttlb}" />
