@@ -10,7 +10,7 @@
     "uiport",
     "weinreport"
   ],
-  "sockets": 16,
+  "sockets": 36,
   "keepAlive": true,
   "keepAliveMsecs": 25000,
   "responseTimeout": 30000,
