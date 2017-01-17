@@ -389,11 +389,8 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 ### 1.3.1
 1. fix: 导出非utf8编码的内容为saz文件时出现的的乱码问题
 
-### 1.3.2
+# 1.3.2
 1. fix: 导出saz文件时，如果res为空报错的问题
-
-# 1.3.3
-1. fix: v1.3.0添加的空闲超时销毁socks的_tlssock产生的异常无法捕获的问题，感谢 [@echopi](https://github.com/echopi) 的反馈问题
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
