@@ -394,7 +394,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 
 # 1.3.3
 1. refactor: 如果配了修改响应内容的规则(weinre, js, html, css, reqPrepend, resPrepend, reqBody, resBody, reqAppend, resAppend)、则会清空缓存头
-2. fix: v1.3.0添加的空闲超时导致socks连接的一些异常无法捕获的问题，感谢 [@echopi](https://github.com/echopi) 的反馈
+2. fix: v1.3.0添加的空闲超时销毁socks的_tlssock产生的异常无法捕获的问题，感谢 [@echopi](https://github.com/echopi) 的反馈问题
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
