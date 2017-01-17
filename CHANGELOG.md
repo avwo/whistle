@@ -390,7 +390,10 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 1. fix: 导出非utf8编码的内容为saz文件时出现的的乱码问题
 
 # 1.3.2
-2. fix: res为空出错的问题
+1. fix: 导出saz文件时，如果res为空报错的问题
+
+# 1.3.3
+2. refactor: 修改响应内容后，把响应头的缓存
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
 	
