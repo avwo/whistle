@@ -393,7 +393,9 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 1. fix: 导出saz文件时，如果res为空报错的问题
 
 # 1.3.3
-2. refactor: 修改响应内容后，把响应头的缓存
+1. refactor: 如果配了修改响应内容的规则(weinre, js, html, css, reqPrepend, resPrepend, reqBody, resBody, reqAppend, resAppend)、则会清空缓存头
+2. chore: 感谢[]()
+
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
 	
