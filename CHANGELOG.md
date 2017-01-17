@@ -378,7 +378,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 ### v1.2.6
 1. refactor: 方便手动输入url，把安装根证书的url修改为http://rootca.pro/
 
-# 1.3.0
+### 1.3.0
 1. feat: 支持在规则中设置局部变量，`pattern file:///User/xxx/${filename}`或直接拼接[Values]()的值 `pattern file://(${key1},${key2},${keyN})`，具体功能参考：[Values]()
 2. feat: 支持通过Network下拉菜单或者快捷键(`Ctrl[Command] + i`、`Ctrl[Command] + S`)、拖拽文件导入导出Fiddler2、Fiddler4的saz文件
 3. feat: 支持tunnel请求设置`statusCode://xxx`
@@ -386,6 +386,8 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 5. refactor: 支持ip:port映射到ip:port，即：`127.0.0.1:6001 127.0.0.1:7001`，访问`http://127.0.0.1:6001`会转发到`http://127.0.0.1:7001`
 6. refactor: 加入agent的连接池中空闲连接的超时机制，防止请求某些情况下无法触发`free`事件，导致连接无法释放
 
+# 1.3.1
+1. fix: 导出非utf8编码的内容为saz文件时出现的的乱码问题
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
