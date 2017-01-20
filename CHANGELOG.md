@@ -396,7 +396,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 1. fix: 去掉socksv5的空闲超时设置，感谢  [@echopi](https://github.com/echopi) 反馈
 
 # 1.3.4
-1. refactor: 完善导入导出saz文件
+1. fix: 导入导出saz文件的一些小问题
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
