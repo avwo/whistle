@@ -398,6 +398,10 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 # 1.3.4
 1. fix: 导入导出saz文件的一些小问题
 
+# 1.3.5
+1. feat: 支持iOS的ATS安全标准，把RS加密算法的密钥长度修改为2048
+2. fix: 把请求头`proxy-connection`转成`connection`
+
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
 	
