@@ -50,7 +50,7 @@
     "multer": "1.2.1",
     "node-forge": "0.6.34",
     "node-native-zip": "1.1.0",
-    "node-pac": "^0.1.0",
+    "node-pac": "^0.1.1",
     "pfork": "^0.1.3",
     "pipestream": "^0.0.31",
     "q": "1.4.1",
