@@ -404,6 +404,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 
 # v1.3.6
 1. fix: 无法修改 `connection` 请求头的问题
+2. fix：兼容Fiddler某些情况导出的请求url无法显示域名的问题
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
