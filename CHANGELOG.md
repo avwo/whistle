@@ -402,9 +402,12 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 1. feat: 支持iOS的ATS安全标准，把RSA加密算法的密钥长度修改为2048（安装运行的Node版本不能小于 `v6.0.0` ），参见：[关于iOS的ATS](https://avwo.github.io/whistle/ats.html)
 2. fix: 把请求头`proxy-connection`转成`connection`
 
-# v1.3.6
+### v1.3.6
 1. fix: 无法修改 `connection` 请求头的问题
 2. fix：兼容Fiddler某些情况导出的请求url无法显示域名的问题
+
+# v1.3.7
+1. fix: 某些服务器未按标准实现，导致无法识别纯小写的请求头，v1.3.7版本开始统一转成 `Xxx-Yxx` 的形式
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
