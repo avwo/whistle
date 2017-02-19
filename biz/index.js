@@ -60,11 +60,11 @@ module.exports = function(req, res, next) {
     pluginMgr.loadPlugin(pluginHomePage, function(err, ports) {
       if (err || !ports.uiPort) {
         res.response(util.wrapResponse({
-          statusCode: err ? 503 : 501,
+          statusCode: err ? 503 : 404,
           headers: {
             'content-type': 'text/plain; charset=utf-8'
           },
-          body: err || 'Not implemented'
+          body: err || 'Not found'
         }));
         return;
       }
