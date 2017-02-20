@@ -64,7 +64,7 @@ module.exports = function(req, res, next) {
           headers: {
             'content-type': 'text/plain; charset=utf-8'
           },
-          body: err || 'Not found'
+          body: err || 'Not Found'
         }));
         return;
       }
