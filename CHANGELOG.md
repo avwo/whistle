@@ -415,6 +415,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 
 # v1.3.9
 1. fix: 如果获取本地获取不到外网ip会导致`http://externalIP:whistlePort/`访问时无限循环的问题
+2. style: 给Network菜单加title `双击删除所有sessions`
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
