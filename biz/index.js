@@ -52,7 +52,7 @@ module.exports = function(req, res, next) {
     fullUrl = req.fullUrl;
     host = '';
   }
-  if (config.isLocalUIUrl(host)) {
+  if (req.headers[config.WEBUI_HEAD] || config.isLocalUIUrl(host)) {
     request(req, res, config.uiport);
   } else if (config.isWeinreUrl(host)) {
     request(req, res, config.weinreport, true);
