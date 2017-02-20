@@ -410,8 +410,11 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 1. fix: 某些服务器未按标准实现，导致无法识别纯小写的请求头，v1.3.7版本开始统一转成 `Xxx-Yxx` 的形式
 2. style: 把Rules里面的 `Edit` 菜单名称改成语义更明确的 `Rename` 
 
-# v1.3.8
+### v1.3.8
 1. feat: 支持设置没有schema的url，如 `//ke.qq.com/test file:///User/xxx/abc` 与原来的 `ke.qq.com/test file:///User/xxx/abc` 等价
+
+# v1.3.9
+1. fix: 如果获取本地获取不到外网ip会导致`http://externalIP:whistlePort/`访问时无限循环的问题
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
