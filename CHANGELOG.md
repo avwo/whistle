@@ -417,9 +417,13 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 1. fix: 如果获取本地获取不到外网ip会导致`http://externalIP:whistlePort/`访问时无限循环的问题
 2. style: 给Network菜单加title `双击删除所有sessions`
 
-# v1.3.10
+### v1.3.10
 1. refactor: 防止获取不到外网ip可能导致代理无限循环的问题
 2. feat: 支持自定义插件目录列表 `pluginPaths`，主要用于第三方模块使用，参见：[koa-whistle](https://github.com/avwo/koa-whistle)
+
+# v1.3.11
+1. fix: 导出Fiddler是saz文件时，cookie无法展开的问题
+2. refactor: 更新`tunnel-agent`
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
