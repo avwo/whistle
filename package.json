@@ -56,7 +56,7 @@
     "q": "1.4.1",
     "socksv5": "0.0.6",
     "starting": "^2.1.1",
-    "tunnel-agent": "^0.4.3",
+    "tunnel-agent": "^0.6.0",
     "weinre": "2.0.0-pre-I0Z7U9OV",
     "xml2js": "0.4.17"
   },
