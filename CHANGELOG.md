@@ -422,7 +422,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 2. feat: 支持自定义插件目录列表 `pluginPaths`，主要用于第三方模块使用，参见：[koa-whistle](https://github.com/avwo/koa-whistle)
 
 # v1.3.11
-1. fix: 导出Fiddler是saz文件时，cookie无法展开的问题
+1. fix: 导出Fiddler是saz文件时，响应cookie出现合并在一起的问题
 2. refactor: 更新`tunnel-agent`
 
 ### -
