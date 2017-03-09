@@ -428,6 +428,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 # v1.3.12
 1. feat: 支持根据请求头的 `content-encoding` 解压请求内容
 2. refactor: 支持在[rulesFile](https://avwo.github.io/whistle/rules/rulesFile.html)的脚本中执行 `console.log`，并可以在 `Network->Log->Server`里面显示
+3. fix: v7.7.0+引入的 `"listener" argument must be a function` 问题
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
