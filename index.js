@@ -5,7 +5,7 @@ var ver = process.version.substring(1).split('.');
 if (ver[0] >= 7 && ver[1] >= 7) {
   var connect = net.Socket.prototype.connect;
   if (typeof connect === 'function') {
-    //fix: v7.7.0+引入的 `"listener" argument must be a function` 问题
+    //fix: Node v7.7.0+引入的 `"listener" argument must be a function` 问题
     net.Socket.prototype.connect = function(options, cb) {
       if (options && typeof options === 'object' && typeof cb !== 'function') {
         return connect.call(this, options, null);
