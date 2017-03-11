@@ -425,10 +425,15 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 1. fix: 导出Fiddler是saz文件时，响应的cookie合并在一起的问题
 2. refactor: 更新`tunnel-agent`
 
-# v1.3.12
+### v1.3.12
 1. feat: 支持根据请求头的 `content-encoding` 解压请求内容
 2. refactor: 支持在[rulesFile](https://avwo.github.io/whistle/rules/rulesFile.html)的脚本中执行 `console.log`，并可以在 `Network->Log->Server`里面显示
 3. fix: Node v7.7.0+引入的 `"listener" argument must be a function` 问题
+
+# v1.3.13
+1. fix: 通过[rulesFile](https://avwo.github.io/whistle/rules/rulesFile.html)设置host或proxy无效的问题
+2. fix: Rules编辑器高亮显示的问题
+3. refactor: 提升https请求的响应速度
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
