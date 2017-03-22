@@ -3,16 +3,16 @@ var url = require('url');
 var config = require('../lib/config');
 var util = require('../lib/util');
 
-function parseHeaders(headers) {
+function parseHeaders(headers, rawHeaderNames) {
   if (!headers || typeof headers != 'string') {
     return {};
   }
 
   try {
-    return util.lowerCaseify(JSON.parse(headers));
+    return util.lowerCaseify(JSON.parse(headers), rawHeaderNames);
   } catch(e) {}
 
-  return util.parseHeaders(headers);
+  return util.parseHeaders(headers, rawHeaderNames);
 }
 
 module.exports = function(req, res) {
