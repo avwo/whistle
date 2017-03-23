@@ -21,7 +21,8 @@ module.exports = function(req, res) {
   if (_url && typeof _url == 'string') {
     _url = _url.replace(/#.*$/, '');
     var options = url.parse(util.setProtocol(_url));
-    var headers = parseHeaders(req.body.headers);
+    var rawHeaderNames = {};
+    var headers = parseHeaders(req.body.headers, rawHeaderNames);
     if (!headers['user-agent']) {
       headers['user-agent'] = 'whistle/' + config.version;
     }
@@ -44,14 +45,13 @@ module.exports = function(req, res) {
     options.method = req.body.method;
     options.host = '127.0.0.1';
     options.port = config.port;
-    options.headers = headers;
     if (headers['content-length'] != null) {
       req.body.body = util.toBuffer(req.body.body || '');
       headers['content-length'] = req.body.body.length;
     }
 
     headers[config.CLIENT_IP_HEAD] = util.getClientIp(req);
-
+    options.headers = util.formatHeaders(headers, rawHeaderNames);
     http.request(options, function(res) {
       res.on('error', util.noop);
       util.drain(res);
