@@ -442,6 +442,9 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 1. refactor: 
   - 请求和响应保留头部字段的大小
   - http和https请求保留头部字段的大小
+  - 修改Network中匹配到规则是的url字体颜色
+2. fix:
+  - rawfile头部存在 `content-encoding` 导致解析失败的问题 
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
