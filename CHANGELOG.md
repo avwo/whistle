@@ -438,12 +438,15 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
   - 提升https请求的响应速度
   - 优化了证书生成，防止后续Chrome版本无法识别，如果发现手机或Chrome浏览器无法识别证书，参见：[关于iOS的ATS](https://avwo.github.io/whistle/ats.html)，启动时带上参数 `w2 start -A`，重新生成根证书，再安装新的根证书即可
 
-# v1.3.14
+### v1.3.14
 1. refactor: 
   - 请求和响应保留原有头部字段的大小写
   - 修改Network中匹配到规则是的url字体颜色
 2. fix:
   - rawfile头部存在 `content-encoding` 导致解析失败的问题 
+
+# v1.3.15
+1. fix: 新安装的插件内置规则文件 `_rule.txt` 无法自动生效的问题
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
