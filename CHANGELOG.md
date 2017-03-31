@@ -442,11 +442,12 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 1. refactor: 
   - 请求和响应保留原有头部字段的大小写
   - 修改Network中匹配到规则是的url字体颜色
-2. fix:
-  - rawfile头部存在 `content-encoding` 导致解析失败的问题 
+2. fix: rawfile头部存在 `content-encoding` 导致解析失败的问题 
 
 # v1.3.15
 1. fix: 新安装的插件内置规则文件 `_rule.txt` 无法自动生效的问题
+2. refactor(#36): 打开多个窗口保存配置时，如果有对应的后台服务或文件已经修改给出提示
+ 
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
