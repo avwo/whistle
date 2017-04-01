@@ -448,9 +448,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 1. fix: 
   - 新安装的插件内置规则文件 `_rule.txt` 无法自动生效的问题
   - 注释快捷键(Ctrl + ? 或 Command + ?)与常用编辑对齐
-2. refactor: 
-  - 打开多个窗口保存配置时，如果有对应的后台服务或文件已经修改给出提示
-  - 支持切换properties到source模式，方便直接copy到Values里面使用
+2. refactor: 支持切换properties到source模式，方便直接copy到Values里面使用
  
 
 ### -
