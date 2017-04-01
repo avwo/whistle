@@ -448,8 +448,14 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 1. fix: 
   - 新安装的插件内置规则文件 `_rule.txt` 无法自动生效的问题
   - 注释快捷键(Ctrl + ? 或 Command + ?)与常用编辑对齐
-2. refactor: 支持切换properties到source模式，方便直接copy到Values里面使用
- 
+2. refactor: 
+  - 支持切换properties到source模式，方便直接copy到Values里面使用
+  - 支持如下json格式设置同名属性，whistle自动解析成数组
+
+			Set-Cookie: a=b
+			Set-Cookie: c=d
+			test: 123
+	 
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
