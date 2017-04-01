@@ -444,7 +444,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
   - 修改Network中匹配到规则是的url字体颜色
 2. fix: rawfile头部存在 `content-encoding` 导致解析失败的问题 
 
-# v1.3.15
+### v1.3.15
 1. fix: 
   - 新安装的插件内置规则文件 `_rule.txt` 无法自动生效的问题
   - 注释快捷键(Ctrl + ? 或 Command + ?)与常用编辑对齐
@@ -455,7 +455,10 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 			Set-Cookie: a=b
 			Set-Cookie: c=d
 			test: 123
-	 
+
+# v1.3.16
+1. fix: 设置 `proxy://` 第三方代理服务器返回的数据格式有问题会导致抛异常的问题
+
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
