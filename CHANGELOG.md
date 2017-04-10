@@ -471,6 +471,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 # v1.3.19
 1. refactor: 导入saz文件时，支持自动解码
 2. refactor: 打开多个页面时，修改配置同步更新到其它页面
+3. refactor: 非文本或文本太大无法显示时给出提示
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
