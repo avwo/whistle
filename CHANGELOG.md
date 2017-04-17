@@ -468,9 +468,13 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
   - 修改Network/Log下面的Conosle和Server背景颜色，让两者区分开来
   - 调整ATS参数的命令行提示
 
-# v1.3.19
+### v1.3.19
 1. refactor: 导入saz文件时，支持自动解码
 2. refactor: 非文本或文本太大无法显示时给出提示
+
+# v1.3.20
+1. fix: Fiddler的saz文件格式不兼容的问题
+2. refactor: cgi改用相对路径，方便集成到其它应用中
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
