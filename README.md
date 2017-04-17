@@ -20,6 +20,8 @@
 
 > 清空Network的两种方式：双击右上角的Network菜单按钮，或hover到Network菜单按钮点击下拉菜单的`Remove All Sessions`
 
+> 安装根证书或者iOS根证书的问题可以参考：[Https](https://avwo.github.io/whistle/webui/https.html)
+
 [whistle](https://github.com/avwo/whistle)是跨平台的web调试代理工具，功能类似Windows平台上的[Fiddler](http://www.telerik.com/fiddler/)，主要用于查看或修改HTTP、HTTPS、Websocket的请求或响应或作为HTTP代理服务器，不同于Fiddler通过断点修改请求响应的方式，whistle采用的是类似配置系统hosts的方式，通过配置规则修改请求响应，并支持规则分组及通过域名、路径、正则、精确匹配(精确匹配需[v1.1.2及以上版本](https://github.com/avwo/whistle/blob/master/CHANGELOG.md#v112)才支持，老版本可以用正则实现)四种匹配方式(系统的hosts配置只支持域名匹配)，特别针对终端调试提供了[weinre](https://avwo.github.io/whistle/rules/weinre.html)，[log](https://avwo.github.io/whistle/rules/log.html)等功能，且支持通过Node模块扩展功能，具体实现过程请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
 
 安装使用whistle请参见[whistle帮助文档](https://avwo.github.io/whistle/install.html)。
@@ -34,10 +36,10 @@
 
 	# 单个host
 	ip hostname
-
+	
 	# 组合host
 	ip hostname1 hostname2 ... hostnameN
-
+	
 	# 例如
 	127.0.0.1 www.example.com
 	127.0.0.1 a.example.com b.example.com c.example.com
@@ -48,7 +50,7 @@ whistle的配置模式：
 	pattern operator-uri
 	# 如果pattern和operator-uri不同时为域名或路径的一种组合，位置可以调换
 	operator-uri pattern
-
+	
 	# 组合模式
 	pattern operator-uri1 operator-uri2 ... operator-uriN
 	# pattern1和operator-uri不同时为域名或路径的一种组合，可以如下配置
@@ -66,12 +68,12 @@ whistle的配置模式：
 operator-uri由上述[基本功能](#基本功能)抽象成的形如`protocol://ruleValue`的URI，whistle会根据匹配到的operator-uri的`protocol`及`ruleValue`修改请求或响应，具体实现过程请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
 
 例如：
-	
+​	
 	# 修改www.example.com的响应cors
 	www.example.com resCors://*
 	# 或
 	resCors://* www.example.com
-
+	
 	# 同时修改多个自定域名或路径
 	resCors://* /example\.com/ a.test.com b.test.com
 	# 修改www.test.com的带端口host、referer和响应的cors
