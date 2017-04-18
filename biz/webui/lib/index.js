@@ -2,11 +2,12 @@ var express = require('express');
 var app = express();
 var path = require('path');
 var auth = require('basic-auth');
+var parseurl = require('parseurl');
 var bodyParser = require('body-parser');
 var crypto = require('crypto');
 var httpsUtil;
 var htdocs = require('../htdocs');
-var DONT_CHECK_PATHS = ['/cgi-bin/server-info', '/cgi-bin/show-host-ip-in-res-headers', 
+var DONT_CHECK_PATHS = ['/cgi-bin/server-info', '/cgi-bin/show-host-ip-in-res-headers',
                         '/cgi-bin/lookup-tunnel-dns', '/cgi-bin/rootca'];
 var util, username, password, config;
 
@@ -64,6 +65,12 @@ app.use(express.static(path.join(__dirname, '../htdocs'), {maxAge: 300000}));
 
 app.get('/', function(req, res) {
   res.sendFile(htdocs.getHtmlFile('index.html'));
+});
+
+app.all(/^\/weinre\/.*/, function(req, res) {
+  var options = parseurl(req);
+  req.url = options.path.replace('/weinre', '');
+  util.transformReq(req, res, config.weinreport, true);
 });
 
 function checkLogin(req, res) {
