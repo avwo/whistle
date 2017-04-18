@@ -21,10 +21,11 @@ module.exports = function(req, res, next) {
     fullUrl = req.fullUrl;
     host = '';
   }
+  var weinrePort;
   if (req.headers[config.WEBUI_HEAD] || config.isLocalUIUrl(host)) {
     util.transformReq(req, res, config.uiport);
-  } else if (config.isWeinreUrl(host)) {
-    util.transformReq(req, res, config.weinreport, true);
+  } else if (weinrePort = config.getWeinrePort(host)) {
+    util.transformReq(req, res, weinrePort, true);
   } else if (pluginHomePage || (pluginHomePage = pluginMgr.getPluginByHomePage(fullUrl))) {
     pluginMgr.loadPlugin(pluginHomePage, function(err, ports) {
       if (err || !ports.uiPort) {
