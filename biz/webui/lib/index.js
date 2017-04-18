@@ -44,7 +44,9 @@ function cgiHandler(req, res) {
 }
 
 app.all('/cgi-bin/sessions/*', cgiHandler);
-
+app.all('/favicon.ico', function(req, res) {
+  res.sendFile(htdocs.getImgFile('favicon.ico'));
+});
 app.use(bodyParser.urlencoded({ extended: true, limit: '1mb'}));
 app.use(bodyParser.json());
 
