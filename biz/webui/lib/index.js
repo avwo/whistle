@@ -71,6 +71,9 @@ app.get('/', function(req, res) {
 
 app.all(/^\/weinre\/.*/, function(req, res) {
   var options = parseurl(req);
+  if (options.pathname === '/weinre/client') {
+    return res.redirect('client/' + (options.search || ''));
+  }
   req.url = options.path.replace('/weinre', '');
   util.transformReq(req, res, config.weinreport, true);
 });
