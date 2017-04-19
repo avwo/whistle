@@ -2,7 +2,7 @@ var util = require('../util.test');
 
 module.exports = function() {
   util.request('http://weinre1.test.whistlejs.com/index.html?resBody=_', function(res, body) {
-    body.should.containEql('<script src="http://weinre.local.whistlejs.com/target/target-script-min.js#xxx"></script>');
+    body.should.containEql('<script src="http://6668.weinre.local.whistlejs.com/target/target-script-min.js#xxx"></script>');
   });
 
   util.request({
@@ -20,7 +20,7 @@ module.exports = function() {
   });
 
   util.request('http://weinre1.test.whistlejs.com:1234/index.html?resBody=_', function(res, body) {
-    body.should.containEql('<script src="http://weinre.local.whistlejs.com/target/target-script-min.js#xxx"></script>');
+    body.should.containEql('<script src="http://6668.weinre.local.whistlejs.com/target/target-script-min.js#xxx"></script>');
   });
 
   util.request({
