@@ -16,12 +16,7 @@ module.exports = function(req, res, next) {
 
   var pluginMgr = this.pluginMgr;
   var fullUrl = req.fullUrl = util.getFullUrl(req);
-  var pluginHomePage = pluginMgr.getPluginByPath(req);
-  if (pluginHomePage) {
-    fullUrl = req.fullUrl;
-    host = '';
-  }
-  var weinrePort;
+  var weinrePort, pluginHomePage;
   if (req.headers[config.WEBUI_HEAD] || config.isLocalUIUrl(host)) {
     util.transformReq(req, res, config.uiport);
   } else if (weinrePort = config.getWeinrePort(host)) {

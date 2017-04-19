@@ -1,6 +1,7 @@
 var express = require('express');
 var app = express();
 var path = require('path');
+var url = require('url');
 var auth = require('basic-auth');
 var parseurl = require('parseurl');
 var bodyParser = require('body-parser');
@@ -9,7 +10,8 @@ var httpsUtil;
 var htdocs = require('../htdocs');
 var DONT_CHECK_PATHS = ['/cgi-bin/server-info', '/cgi-bin/show-host-ip-in-res-headers',
                         '/cgi-bin/lookup-tunnel-dns', '/cgi-bin/rootca'];
-var util, username, password, config;
+var PLUGIN_PATH_RE = /^\/(whistle|plugin)\.([a-z\d_\-]+)(\/)?/;
+var util, username, password, config, pluginMgr;
 
 function dontCheckPaths(req) {
   return DONT_CHECK_PATHS.indexOf(req.path) != -1;
@@ -21,6 +23,16 @@ app.use(function(req, res, next) {
   function abort() {
     res.destroy();
   }
+  var referer = req.headers.referer;
+  var options = parseurl(req);
+  if (referer && !PLUGIN_PATH_RE.test(options.pathname)) {
+    var refOpts = url.parse(referer);
+    var pathname = refOpts.pathname;
+    if (PLUGIN_PATH_RE.test(pathname) && RegExp.$3) {
+      req.url = pathname.replace(/\/[^/]*$/, '') + options.path;
+    }
+  }
+
   next();
 });
 
@@ -46,6 +58,30 @@ function cgiHandler(req, res) {
 app.all('/cgi-bin/sessions/*', cgiHandler);
 app.all('/favicon.ico', function(req, res) {
   res.sendFile(htdocs.getImgFile('favicon.ico'));
+});
+app.all(PLUGIN_PATH_RE, function(req, res, next) {
+  var result = PLUGIN_PATH_RE.exec(req.url);
+  var type = result[1];
+  var name = result[2];
+  var slash = result[3];
+  var plugin = type === 'whistle' ? pluginMgr.getPlugin(name + ':')
+    : pluginMgr.getPluginByName(name);
+  if (!plugin) {
+    return res.status(404).send('Not Found');
+  }
+  if (!slash) {
+    slash = req.url.replace(result[0], result[0] + '/');
+    return res.redirect(slash);
+  }
+  pluginMgr.loadPlugin(plugin, function(err, ports) {
+    if (err || !ports.uiPort) {
+      res.status(err ? 500 : 404).send(err || 'Not Found');
+      return;
+    }
+    var options = parseurl(req);
+    req.url = options.path.replace(result[0].slice(0, -1), '');
+    util.transformReq(req, res, ports.uiPort);
+  });
 });
 app.use(bodyParser.urlencoded({ extended: true, limit: '1mb'}));
 app.use(bodyParser.json());
@@ -87,7 +123,7 @@ function checkLogin(req, res) {
   if (userInfo && (userInfo.name || userInfo.pass)) {
     if (username == userInfo.name && password == userInfo.pass) {
       res.setHeader('set-cookie', '_lkey=' + getLoginKey(req)
-+ '; max-age=' + 60 * 60 * 24 * 1000 + '; path=/');
+        + '; max-age=' + 60 * 60 * 24 * 1000 + '; path=/');
       return true;
     }
   }
@@ -123,6 +159,7 @@ function shasum(str) {
 
 module.exports = function(proxy) {
   config = proxy.config;
+  pluginMgr = proxy.pluginMgr;
   var rulesUtil = proxy.rulesUtil;
   username = config.username || '';
   password = config.password || '';
