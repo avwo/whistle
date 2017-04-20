@@ -11,13 +11,14 @@ var htdocs = require('../htdocs');
 var DONT_CHECK_PATHS = ['/cgi-bin/server-info', '/cgi-bin/show-host-ip-in-res-headers',
                         '/cgi-bin/lookup-tunnel-dns', '/cgi-bin/rootca'];
 var PLUGIN_PATH_RE = /^\/(whistle|plugin)\.([a-z\d_\-]+)(\/)?/;
-var util, username, password, config, pluginMgr;
+var proxyEvent, util, username, password, config, pluginMgr;
 
 function dontCheckPaths(req) {
   return DONT_CHECK_PATHS.indexOf(req.path) != -1;
 }
 
 app.use(function(req, res, next) {
+  proxyEvent.emit('_request', req.url);
   req.on('error', abort).on('close', abort);
   res.on('error', abort);
   function abort() {
@@ -158,6 +159,7 @@ function shasum(str) {
 }
 
 module.exports = function(proxy) {
+  proxyEvent = proxy;
   config = proxy.config;
   pluginMgr = proxy.pluginMgr;
   var rulesUtil = proxy.rulesUtil;
