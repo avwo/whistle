@@ -36,10 +36,10 @@ bugFix:
 ### v0.5.3
 
 微调parseInlineJSON的实现 
-  
+
 ### v0.5.4
 ### v0.5.5
- 
+
 新增支持配置模式：pattern operator-uri1 operator-uri2 ... operator-uriN （原来只支持operator-uri pattern1 pattern2 ... patternN）
 
 这种情况下 `pattern` 和 `operator-uri1` 不能同时为形如这种形式的uri：`[http[s]|ws[s]://]www.example.com/*`，否则会忽略后面的 `operator-uri2 ... operator-uriN`
@@ -63,17 +63,17 @@ bugfix：修改了路径匹配可能多加一个 `/` 的问题
 形如：
 
 	http://www.test.com/index.html http://www.test.com:8888/index.html
-	
+
 	# http://www.test.com/index.html?query --> http://www.test.com:8888/index.html/?query
-	
-	
+
+​	
 ### v0.6.1
 
 1. 新增了 `disable` 协议，用来禁用cache、cookie、referer、ua、timeout、csp，具体参考：[功能列表](https://github.com/avwo/whistle/wiki/%E5%8A%9F%E8%83%BD%E5%88%97%E8%A1%A8#%E7%9B%AE%E5%BD%95)
 2. 纠正了解析[配置操作符](https://github.com/avwo/whistle/wiki/%E9%85%8D%E7%BD%AE%E6%A8%A1%E5%BC%8F#%E4%B8%89%E4%B8%AA%E6%93%8D%E4%BD%9C%E7%AC%A6%E7%9A%84%E4%BD%9C%E7%94%A8)使用拼接后url的问题
 3. 原来通过filter启用HTTPS，推荐改用这种方式：[启用HTTPS](https://github.com/avwo/whistle/wiki/%E5%90%AF%E7%94%A8HTTPS)
-	
-	
+
+   ​
 ### v0.6.2
 
 1. 加入小版本更新时给出小提示
@@ -83,39 +83,39 @@ bugfix：修改了路径匹配可能多加一个 `/` 的问题
 
 ### v0.6.3
 
- 1. 新增`reqWriter`、`resWrite`分别用来把请求内容和响应内容写入到本地文件
- 2. 新增`reqWriterRaw`、`resWriteRaw`分别用来把请求完整信息和响应的完整信息写入到本地文件（包括路径、协议、方法、响应状态码、头部、内容等）
- 3. bugfix: 使用`reqReplace`改变了请求内容长度没有同步处理headers的content-length的问题
- 4. 支持通过 `params` 替换上传表单的字段
- 5. 对形如 `[a-z]:\*`、`[a-z]:/xxx`、`/xxx` 自动识别为 `file://...`
- 
- 	即：
- 	
- 		www.text.com/ /User/xxx # 或 www.text.com/ D:\workspace 
- 		# 等价于
- 		www.text.com/ file:///User/xxx # 或 www.text.com/ file://D:\workspace 
- 		
+1.  新增`reqWriter`、`resWrite`分别用来把请求内容和响应内容写入到本地文件
+2.  新增`reqWriterRaw`、`resWriteRaw`分别用来把请求完整信息和响应的完整信息写入到本地文件（包括路径、协议、方法、响应状态码、头部、内容等）
+3.  bugfix: 使用`reqReplace`改变了请求内容长度没有同步处理headers的content-length的问题
+4.  支持通过 `params` 替换上传表单的字段
+5.  对形如 `[a-z]:\*`、`[a-z]:/xxx`、`/xxx` 自动识别为 `file://...`
+
+   即：
+
+    	www.text.com/ /User/xxx # 或 www.text.com/ D:\workspace 
+    	# 等价于
+    	www.text.com/ file:///User/xxx # 或 www.text.com/ file://D:\workspace 
+    	
 ### 0.6.4
 
  1. 修复使用log的时候，多次注入脚本导致console的时候会重复打印多次
  2. 增加repReplace、resReplace的缓存字符串大小
- 
+
 ### 0.6.5
 
 1. bugfix:
-	
-	修复前：
-	
-		/(.*):8899(\/.*)/ $1$2 
-		
-	结果：
-		
-		http://xxx:8899 http://http://xxx
-		
-	修复后：
-	
-		/(.*):8899(\/.*)/ $1$2 --> http://xxx:8899 http://xxx
-		
+
+ 修复前：
+
+ 	/(.*):8899(\/.*)/ $1$2 
+
+ 结果：
+ ​	
+ 	http://xxx:8899 http://http://xxx
+
+ 修复后：
+
+ 	/(.*):8899(\/.*)/ $1$2 --> http://xxx:8899 http://xxx
+ ​	
 ### v0.6.6
 
 新增 `exports` 功能，用于把请求导出到指定文件（如果该文件不存在，则会自动创建），每一行都是如下json对象（第一行可能为空）：
@@ -143,7 +143,7 @@ bugfix：修改了路径匹配可能多加一个 `/` 的问题
 		resTrailers: '响应的trailers',
 		rules: '匹配到的规则'
 	}
-	
+
 ### v0.7.0
 1. 支持通过插件开启在网页的右下角显示访问的真实ip，需要安装最新版的Chrome插件：[https://github.com/avwo/whistle-for-chrome](https://github.com/avwo/whistle-for-chrome)
 2. 支持`exportsUrl`，可以把匹配到的请求url导出到指定的文件
@@ -225,24 +225,24 @@ refactor: 详细的启动提示信息兼容node v0.10.x
 
 ### v0.10.3
 1. feat: 检测并提示代理服务器被切换
-3. feat: 界面上同时展示的请求数，由360调整为560
-4. perf: 极大提升UI界面的性能
-5. fix: 可能出现的如下异常
+2. feat: 界面上同时展示的请求数，由360调整为560
+3. perf: 极大提升UI界面的性能
+4. fix: 可能出现的如下异常
 
-		Date: 2016-06-22 00:47:13.466
-		RangeError: out of range index
-		    at RangeError (native)
-		    at StringDecoder.fillLast (string_decoder.js:94:9)
-		    at StringDecoder.write (string_decoder.js:73:14)
-		    at PassThrough.<anonymous> (/Users/xxx/whistle/lib/util/index.js:931:33)
-		    at emitOne (events.js:96:13)
-		    at PassThrough.emit (events.js:188:7)
-		    at readableAddChunk (_stream_readable.js:172:18)
-		    at PassThrough.Readable.push (_stream_readable.js:130:10)
-		    at PassThrough.Transform.push (_stream_transform.js:128:32)
-		    at afterTransform (_stream_transform.js:77:12)
-		    at TransformState.afterTransform (_stream_transform.js:54:12)
-		    
+   Date: 2016-06-22 00:47:13.466
+   	RangeError: out of range index
+   	    at RangeError (native)
+   	    at StringDecoder.fillLast (string_decoder.js:94:9)
+   	    at StringDecoder.write (string_decoder.js:73:14)
+   	    at PassThrough.<anonymous> (/Users/xxx/whistle/lib/util/index.js:931:33)
+   	    at emitOne (events.js:96:13)
+   	    at PassThrough.emit (events.js:188:7)
+   	    at readableAddChunk (_stream_readable.js:172:18)
+   	    at PassThrough.Readable.push (_stream_readable.js:130:10)
+   	    at PassThrough.Transform.push (_stream_transform.js:128:32)
+   	    at afterTransform (_stream_transform.js:77:12)
+   	    at TransformState.afterTransform (_stream_transform.js:54:12)
+
 ### v0.11.0
 1. fix: 修复在调整窗口大小是没有重绘的问题
 2. feat: 把官网网址(官网还在开发中...)改为：[http://wproxy.org](http://wproxy.org/)
@@ -265,7 +265,7 @@ fix: `statusCode < 100 || statusCode > 999` 会抛出异常导致程序crash
 
      if (statusCode < 100 || statusCode > 999)
         throw new RangeError(`Invalid status code: ${statusCode}`);
- 
+
  PS：看了下提交记录，是2016年4月20号提交的代码：[eee69b81faf2df406ac3c571bee31ebd501cfd9d](https://github.com/mscdex/io.js/commit/eee69b81faf2df406ac3c571bee31ebd501cfd9d)
 
 
@@ -328,9 +328,9 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 
 ### v1.1.0
 1. fix: 修复了匹配顺序的bug，如下配置访问http://test.com:8080会匹配到下面的规则：
-		
-		test.com operator-uri
-		/./ operator-uri
+   ​	
+   test.com operator-uri
+   	/./ operator-uri
 2. fix:　插件相关的一些绝对路径的问题，用到插件最好[升级到最新版本](https://avwo.github.io/whistle/update.html)
 3. feat:新增[pac](https://avwo.github.io/whistle/rules/pac.html)用于设置pac脚本
 4. feat: 新增[delete](https://avwo.github.io/whistle/rules/delete.html)可用于delete请求或响应的头字段，而通过[reqHeaders](https://avwo.github.io/whistle/rules/reqHeaders.html)或[resHeaders](https://avwo.github.io/whistle/rules/resHeaders.html)只能设置为空字符串
@@ -433,7 +433,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 ### v1.3.13
 1. fix: 
   - 通过[rulesFile](https://avwo.github.io/whistle/rules/rulesFile.html)设置host或proxy无效的问题
-  -  Rules编辑器高亮显示的问题
+  - Rules编辑器高亮显示的问题
 2. refactor: 
   - 提升https请求的响应速度
   - 优化了证书生成，防止后续Chrome版本无法识别，如果发现手机或Chrome浏览器无法识别证书，参见：[关于iOS的ATS](https://avwo.github.io/whistle/ats.html)，启动时带上参数 `w2 start -A`，重新生成根证书，再安装新的根证书即可
@@ -452,9 +452,9 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
   - 支持切换properties到source模式，方便直接copy到Values里面使用
   - 支持如下json格式设置同名属性，whistle自动解析成数组
 
-			Set-Cookie: a=b
-			Set-Cookie: c=d
-			test: 123
+     Set-Cookie: a=b
+     	Set-Cookie: c=d
+     	test: 123
 
 ### v1.3.16
 1. fix: 设置 `proxy://` 第三方代理服务器返回的数据格式有问题会导致抛异常的问题
@@ -472,13 +472,22 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 1. refactor: 导入saz文件时，支持自动解码
 2. refactor: 非文本或文本太大无法显示时给出提示
 
-# v1.3.20
+### v1.3.20
+
 1. fix: Fiddler的saz文件格式不兼容的问题
 2. refactor: cgi改用相对路径，方便集成到其它应用中
 
+#  v1.4.0
+
+1. fix: 更新内部的一些随机端口机制，防止监听某些端口无法响应数据的问题
+2. feat: 把ui界面的所有链接都改成相对路径，方便使用ip或域名直接访问及集成到第三方应用
+3. feat:  同时配置 [host](https://avwo.github.io/whistle/rules/host.html)和 [proxy(socks)](https://avwo.github.io/whistle/rules/proxy.html)，host的优先级高于proxy(socks) 
+4. refactor: 响应cookie的显示
+5. refactor(#36): 添加同时打开多个界面操作时，提醒更改及自动更新的功能
+
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
-	
+​	
 
 
 
