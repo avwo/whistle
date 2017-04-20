@@ -71,8 +71,7 @@ app.all(PLUGIN_PATH_RE, function(req, res, next) {
     return res.status(404).send('Not Found');
   }
   if (!slash) {
-    slash = req.url.replace(result[0], result[0] + '/');
-    return res.redirect(slash);
+    return res.redirect(type + '.' + name + '/');
   }
   pluginMgr.loadPlugin(plugin, function(err, ports) {
     if (err || !ports.uiPort) {
