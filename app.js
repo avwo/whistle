@@ -1,3 +1,6 @@
+var colors = require('colors/safe');
+
 /*eslint no-console: "off"*/
-require('./index')();
-console.log(new Date().toLocaleString());
+require('./index')(function() {
+  console.log(colors.green('whistle is listening on ' + this.address().port + '.'));
+});

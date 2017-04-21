@@ -49,6 +49,10 @@ if (!net._normalizeConnectArgs) {
 }
 
 module.exports = function init(options, callback) {
-	require('./lib/config').extend(options);
-	return require('./lib')(callback);
+  if (typeof options === 'function') {
+    callback = options;
+    options = null;
+  }
+  require('./lib/config').extend(options);
+  return require('./lib')(callback);
 };
