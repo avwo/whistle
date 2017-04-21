@@ -174,5 +174,8 @@ module.exports = function(proxy) {
   require('./values')(rulesUtil.values);
   require('./https-util')(httpsUtil = proxy.httpsUtil);
   require('./data')(proxy);
-  app.listen(config.uiport);
+  util.getServer(function(server, port) {
+    config.uiport = port;
+    server.on('request', app);
+  }, config.uiport);
 };
