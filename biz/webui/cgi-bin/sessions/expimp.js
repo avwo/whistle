@@ -3,8 +3,8 @@ var transformReq = require('../../lib/util').transformReq;
 
 module.exports = function(req, res) {
   loadService(function(err, options) {
-    if (err || !options) {
-      res.type('text').status(500).send(err.stack || err || 'unknown');
+    if (err) {
+      res.type('text').status(500).send(err.stack || err);
     } else {
       transformReq(req, res, options.port);
     }
