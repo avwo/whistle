@@ -1,12 +1,12 @@
-var getImpExpService = require('../../lib/proxy').getImpExpService;
+var loadService = require('../../lib/proxy').loadService;
 var transformReq = require('../../lib/util').transformReq;
 
 module.exports = function(req, res) {
-  getImpExpService(function(err, port) {
-    if (err) {
-      res.type('text').status(500).send(err.stack || err);
+  loadService(function(err, options) {
+    if (err || !options) {
+      res.type('text').status(500).send(err.stack || err || 'unknown');
     } else {
-      transformReq(req, res, port);
+      transformReq(req, res, options.port);
     }
   });
 };
