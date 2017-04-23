@@ -61,3 +61,6 @@ assets/launcher
 
 # Coveralls
 coverage
+
+# gh page
+docs
