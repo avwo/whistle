@@ -473,12 +473,10 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 2. refactor: 非文本或文本太大无法显示时给出提示
 
 ### v1.3.20
-
 1. fix: Fiddler的saz文件格式不兼容的问题
 2. refactor: cgi改用相对路径，方便集成到其它应用中
 
-#  v1.4.0
-
+###  v1.4.0
 1. fix: 
   - 更新内部的一些随机端口机制，防止监听某些特殊端口导致无法响应的问题
   - 导出saz文件出现pending的问题
@@ -486,6 +484,9 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
   - 把ui界面的所有链接都改成相对路径，方便使用ip或域名直接访问及集成到第三方应用
   - 同时配置 [host](https://avwo.github.io/whistle/rules/host.html)和 [proxy(socks)](https://avwo.github.io/whistle/rules/proxy.html)，host的优先级高于proxy(socks) 
 3. refactor: 响应cookie的显示
+
+# v1.4.1
+1. fix: 在Network -> Overview中content-length显示为0的问题
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
