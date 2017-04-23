@@ -20,29 +20,16 @@
       maxAge: 86400000, // Expiration time, the default one day
       paths: [], // or 'auto'
       placeholder: 'Type to search',
-
-      // Localization
-      placeholder: {
-        '/zh-cn/': '搜索',
-        '/': 'Type to search'
-      },
-
-      noData: 'No Results!',
-
-      // Localization
-      noData: {
-        '/zh-cn/': '找不到结果',
-        '/': 'No Results'
-      }
+      noData: 'No Results!'
     }
-  }
+  };
 </script>
 <script src="//unpkg.com/docsify/lib/docsify.min.js"></script>
 <script src="//unpkg.com/docsify/lib/plugins/emoji.min.js"></script>
 <script src="//unpkg.com/prismjs/components/prism-bash.min.js"></script>
 <script>
   if (location.protocol === 'https:' && ('serviceWorker' in navigator)) {
-    navigator.serviceWorker.register('sw.js')
+    navigator.serviceWorker.register('./sw.js');
   }
 </script>
 </html>
