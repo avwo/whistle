@@ -492,7 +492,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 1. refactor: 
   - 不区分第三人称和单复数，ruleFile和rulesFile等价、export和exports等价、 exportUrl和exportsUrl等价
   - 多终端同时操作界面时同步更新为修改的配置及提醒更新界面已修改的配置
-  - 添加 `internal_proxy://` 用于whistle通过http传递https请求，主要用于whistle扩展，一般用户可以忽略
+  - 添加 `internal-proxy://` 用于whistle通过http传递https请求，主要用于whistle扩展，一般用户可以忽略
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
