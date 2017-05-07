@@ -489,9 +489,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 1. fix: 在Network -> Overview中content-length显示为0的问题
 
 # v1.4.2
-1. refactor: 
-  - 不区分第三人称和单复数，ruleFile和rulesFile等价、export和exports等价、 exportUrl和exportsUrl等价
-  - 多终端同时操作界面时同步更新为修改的配置及提醒更新界面已修改的配置
+1. refactor: 不区分第三人称和单复数，ruleFile和rulesFile等价、export和exports等价、 exportUrl和exportsUrl等价
 2. feat:
   - 添加 `https2http-proxy://`，whistle把该https转成http后发送到指定代理
   - 添加 `internal-proxy://`，功能和 `https2http-proxy://` 一样，只是如果代理对象是whistle的话，会把http又转成https，主要用于whistle的扩展使用，一般用户无需了解
