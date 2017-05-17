@@ -2,7 +2,6 @@ language: node_js
 node_js:
   - "0.10"
   - "0.12"
-  - "iojs"
   - "4"
   - "5.7.0"
   - "5"
@@ -11,7 +10,7 @@ node_js:
 
 install:
   - npm install
-  
+
 script:
   - npm run cov
 
