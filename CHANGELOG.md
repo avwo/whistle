@@ -495,10 +495,13 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
   - 添加 `internal-proxy://`，功能和 `https2http-proxy://` 一样，只是如果代理对象是whistle的话，会把http又转成https，主要用于whistle的扩展使用，一般用户无需了解
   - 添加 `http2https-proxy://`，whistle把该http转成https后发送到指定代理
 
-# v1.4.3
+### v1.4.3
 1. refactor: 
   - `Network -> Response -> TextView` 的Editor按钮打开的url改成相对路径
   - Network表格中的 `host IP` 改成 `serverIP`，语意更明确
+
+# v1.4.4
+1. fix: Header name must be a valid HTTP Token
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
