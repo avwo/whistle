@@ -117,4 +117,5 @@ program
   .option('-u, --uipath [script path]', 'web ui plugin path', String, undefined)
   .option('-t, --timeout [ms]', 'request timeout (' + config.timeout + ' ms by default)', parseInt, undefined)
   .option('-s, --sockets [number]', 'max sockets (' + config.sockets + ' by default)', parseInt, undefined)
+  .option('-e, --extra [extraData]', 'extra data for plugin', String, undefined)
   .parse(process.argv);

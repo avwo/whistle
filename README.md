@@ -14,13 +14,15 @@
 [![David deps](https://img.shields.io/david/avwo/whistle.svg?style=flat-square)](https://david-dm.org/avwo/whistle)
 [![License](https://img.shields.io/npm/l/whistle.svg?style=flat-square)](https://www.npmjs.com/package/whistle)
 
-> 当前whistle的最新版本为[v1.4.0](https://github.com/avwo/whistle/blob/master/CHANGELOG.md#-)，为确保使用whistle所有功能，请及时[更新whistle](https://avwo.github.io/whistle/update.html)
+> 当前whistle的最新版本为[v1.4.6](https://github.com/avwo/whistle/blob/master/CHANGELOG.md#-)，为确保使用whistle所有功能，请及时[更新whistle](https://avwo.github.io/whistle/update.html)
 
 > 基于性能及http请求稳定性考虑，建议安装[最新版的Node](https://nodejs.org/)
 
 > 清空Network的两种方式：双击右上角的Network菜单按钮，或hover到Network菜单按钮点击下拉菜单的`Remove All Sessions`
 
 > 安装根证书或者iOS根证书的问题可以参考：[Https](https://avwo.github.io/whistle/webui/https.html)
+
+> Node8用户需要将whistle升级到 `v1.4.6` 及以上版本，否则会出现崩溃的情形
 
 [whistle](https://github.com/avwo/whistle)是跨平台的web调试代理工具，功能类似Windows平台上的[Fiddler](http://www.telerik.com/fiddler/)，主要用于查看或修改HTTP、HTTPS、Websocket的请求或响应或作为HTTP代理服务器，不同于Fiddler通过断点修改请求响应的方式，whistle采用的是类似配置系统hosts的方式，通过配置规则修改请求响应，并支持规则分组及通过域名、路径、正则、精确匹配(精确匹配需[v1.1.2及以上版本](https://github.com/avwo/whistle/blob/master/CHANGELOG.md#v112)才支持，老版本可以用正则实现)四种匹配方式(系统的hosts配置只支持域名匹配)，特别针对终端调试提供了[weinre](https://avwo.github.io/whistle/rules/weinre.html)，[log](https://avwo.github.io/whistle/rules/log.html)等功能，且支持通过Node模块扩展功能，具体实现过程请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
 
