@@ -500,8 +500,11 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
   - `Network -> Response -> TextView` 的Editor按钮打开的url改成相对路径
   - Network表格中的 `host IP` 改成 `serverIP`，语意更明确
 
-# v1.4.4
+### v1.4.4
 1. fix: Header name must be a valid HTTP Token
+
+# v1.4.5
+1. fix: [log](https://avwo.github.io/whistle/webui/log.html)的缓存问题
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
