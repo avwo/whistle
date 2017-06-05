@@ -16,10 +16,18 @@ module.exports = function(req, res, next) {
 
   var pluginMgr = this.pluginMgr;
   var fullUrl = req.fullUrl = util.getFullUrl(req);
-  var weinrePort, pluginHomePage;
-  if (req.headers[config.WEBUI_HEAD] || config.isLocalUIUrl(host)) {
-    util.transformReq(req, res, config.uiport);
-  } else if (weinrePort = config.getWeinrePort(host)) {
+  var isWebUI = req.headers[config.WEBUI_HEAD] || config.isLocalUIUrl(host);
+  var weinrePort, pluginHomePage, logPort, options;
+  if (!isWebUI && (options = config.parseInternalUrl(host))) {
+    if (options.name === 'weinre') {
+      weinrePort = options.port;
+    } else if (/[^?]*\/cgi-bin\/log\/set$/.test(req.path) && options.name === 'log') {
+      logPort = options.port;
+    }
+  }
+  if (isWebUI || logPort) {
+    util.transformReq(req, res, logPort || config.uiport);
+  } else if (weinrePort) {
     util.transformReq(req, res, weinrePort, true);
   } else if (pluginHomePage || (pluginHomePage = pluginMgr.getPluginByHomePage(fullUrl))) {
     pluginMgr.loadPlugin(pluginHomePage, function(err, ports) {

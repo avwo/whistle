@@ -230,10 +230,12 @@
 		return JSON.stringify(obj, null, '\t');
 	}
 
+  var index = 0;
 	function addLog(level, text) {
 		var img = new Image();
 		var timer;
-		img.src ='$LOG_CGI?level=' + level + '&text=' + encodeURIComponent(text) + '&' + new Date().getTime();
+		img.src ='$LOG_CGI?level=' + level + '&text=' + encodeURIComponent(text)
+      + '&' + new Date().getTime() + '-' + ++index;
 		var preventGC = function() {
 			img.onload = img.onerror = null;
 			clearTimeout(timer);
