@@ -234,6 +234,9 @@
 	function addLog(level, text) {
 		var img = new Image();
 		var timer;
+    if (index >= 10000) {
+      index = 0;
+    }
 		img.src ='$LOG_CGI?level=' + level + '&text=' + encodeURIComponent(text)
       + '&' + new Date().getTime() + '-' + ++index;
 		var preventGC = function() {
