@@ -503,8 +503,11 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 ### v1.4.4
 1. fix: Header name must be a valid HTTP Token
 
-# v1.4.5
+### v1.4.5
 1. fix: [log](https://avwo.github.io/whistle/webui/log.html)的缓存问题
+
+# v1.4.6
+1. fix: 屏蔽Node8的bug可能导致的崩溃问题: [Assertion `(trigger_id) >= (0)' failed.](https://github.com/nodejs/node/issues/13325)
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
