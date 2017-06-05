@@ -18,11 +18,11 @@
 	        rx_dangerous = /[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g;
 
 	    function f(n) {
-	        return n < 10 
-	            ? '0' + n 
+	        return n < 10
+	            ? '0' + n
 	            : n;
 	    }
-	    
+
 	    function this_value() {
 	        return this.valueOf();
 	    }
@@ -55,22 +55,22 @@
 	    function quote(string) {
 
 	        rx_escapable.lastIndex = 0;
-	        return rx_escapable.test(string) 
+	        return rx_escapable.test(string)
 	            ? '"' + string.replace(rx_escapable, function (a) {
 	                var c = meta[a];
 	                return typeof c === 'string'
 	                    ? c
 	                    : '\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
-	            }) + '"' 
+	            }) + '"'
 	            : '"' + string + '"';
 	    }
 
 
 	    function str(key, holder) {
 
-	        var i,         
-	            k,        
-	            v,      
+	        var i,
+	            k,
+	            v,
 	            length,
 	            mind = gap,
 	            partial,
@@ -91,8 +91,8 @@
 
 	        case 'number':
 
-	            return isFinite(value) 
-	                ? String(value) 
+	            return isFinite(value)
+	                ? String(value)
 	                : 'null';
 
 	        case 'boolean':
@@ -133,8 +133,8 @@
 	                        v = str(k, value);
 	                        if (v) {
 	                            partial.push(quote(k) + (
-	                                gap 
-	                                    ? ': ' 
+	                                gap
+	                                    ? ': '
 	                                    : ':'
 	                            ) + v);
 	                        }
@@ -147,8 +147,8 @@
 	                        v = str(k, value);
 	                        if (v) {
 	                            partial.push(quote(k) + (
-	                                gap 
-	                                    ? ': ' 
+	                                gap
+	                                    ? ': '
 	                                    : ':'
 	                            ) + v);
 	                        }
@@ -167,7 +167,7 @@
 	    }
 
 	    if (typeof JSON.stringify !== 'function') {
-	        meta = { 
+	        meta = {
 	            '\b': '\\b',
 	            '\t': '\\t',
 	            '\n': '\\n',
@@ -202,15 +202,15 @@
 	            return str('', {'': value});
 	        };
 	    }
-	    
+
 	    return JSON;
 	}
-	
+
 	function stringify(obj) {
 		if (obj == null) {
 			return '';
 		}
-		
+
 		if (!obj) {
 			return obj + '';
 		}
@@ -218,22 +218,22 @@
 		if (type == 'string') {
 			return obj;
 		}
-		
+
 		if (obj instanceof Error) {
 			return obj.stack || obj.message;
 		}
-		
+
 		if (type == 'function') {
 			return obj.toString();
 		}
-		
+
 		return JSON.stringify(obj, null, '\t');
 	}
-	
+
 	function addLog(level, text) {
 		var img = new Image();
 		var timer;
-		img.src ='$LOG_CGI?level=' + level + '&text=' + encodeURIComponent(text); 
+		img.src ='$LOG_CGI?level=' + level + '&text=' + encodeURIComponent(text) + '&' + new Date().getTime();
 		var preventGC = function() {
 			img.onload = img.onerror = null;
 			clearTimeout(timer);
@@ -241,7 +241,7 @@
 		img.onload = img.onerror = preventGC;
 		timer = setTimeout(preventGC, 3000);
 	}
-	
+
 	var levels = ['fatal', 'error', 'warn', 'info', 'debug', 'log'];
 	var noop = function() {};
 	for (var i = 0, len = levels.length; i < len; i++) {
@@ -258,7 +258,7 @@
 			};
 		})(level);
 	}
-	
+
 	window.onerror = function(message, filename, lineno, colno, error) {
 		var pageInfo = '\r\nPage Url: ' + location.href + '\r\nUser Agent: ' + navigator.userAgent;
 		if (error) {
@@ -268,5 +268,5 @@
 					+ ':' + lineno + ':' + (colno || 0) + ')' + pageInfo);
 		}
 	};
-	
+
 })();
