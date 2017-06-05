@@ -97,8 +97,8 @@ bugfix：修改了路径匹配可能多加一个 `/` 的问题
     	
 ### 0.6.4
 
- 1. 修复使用log的时候，多次注入脚本导致console的时候会重复打印多次
- 2. 增加repReplace、resReplace的缓存字符串大小
+  1. 修复使用log的时候，多次注入脚本导致console的时候会重复打印多次
+  2. 增加repReplace、resReplace的缓存字符串大小
 
 ### 0.6.5
 
@@ -506,8 +506,12 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 ### v1.4.5
 1. fix: [log](https://avwo.github.io/whistle/webui/log.html)的缓存问题
 
-# v1.4.6
-1. fix: 屏蔽Node8的bug可能导致的崩溃问题: [Assertion `(trigger_id) >= (0)' failed.](https://github.com/nodejs/node/issues/13325)
+### v1.4.6
+
+1. fix: 屏蔽Node8自身bug导致崩溃的问题: [Assertion `(trigger_id) >= (0)' failed.](https://github.com/nodejs/node/issues/13325)
+
+#  v1.4.7
+1. refactor: 把tunnel请求转发给插件同时带上用户设置的host
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
