@@ -511,7 +511,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 1. fix: 屏蔽Node8自身bug导致崩溃的问题: [Assertion `(trigger_id) >= (0)' failed.](https://github.com/nodejs/node/issues/13325)
 
 #  v1.4.7
-1. refactor: 把tunnel请求转发给插件同时带上用户设置的host
+1. refactor: 确保转发到插件的请求可以把一些用户配置的Rule带过去
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
