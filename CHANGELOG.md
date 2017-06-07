@@ -97,8 +97,8 @@ bugfix：修改了路径匹配可能多加一个 `/` 的问题
     	
 ### 0.6.4
 
-  1. 修复使用log的时候，多次注入脚本导致console的时候会重复打印多次
-  2. 增加repReplace、resReplace的缓存字符串大小
+    1. 修复使用log的时候，多次注入脚本导致console的时候会重复打印多次
+    2. 增加repReplace、resReplace的缓存字符串大小
 
 ### 0.6.5
 
@@ -512,6 +512,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 
 #  v1.4.7
 1. refactor: 确保转发到插件的请求可以把一些用户配置的Rule带过去
+2. fix: 修复Mac上 `Chrome>=59` 出现的 `ERR_SSL_SERVER_CERT_BAD_FORMAT`的问题，需要启动时加 `w2 restart -A` 重新生成根证书，并安装，具体参见：[Https](https://avwo.github.io/whistle/webui/https.html)、[关于iOS的ATS](https://avwo.github.io/whistle/ats.html)
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
