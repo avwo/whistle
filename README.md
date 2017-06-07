@@ -16,7 +16,7 @@
 
 > 当前whistle的最新版本为[v1.4.7](https://github.com/avwo/whistle/blob/master/CHANGELOG.md#-)，为确保使用whistle所有功能，请及时[更新whistle](https://avwo.github.io/whistle/update.html)
 
-> 建议用户升级到最新版本，并启动时添加参数 `w2 restart -A` 重新生成根证书**并安装**，否则在Mac上最新版本的Chrome的Https拦截功能将无法使用
+> 建议用户升级到最新版本，并启动时添加参数 `w2 restart -A` 重新生成根证书并[安装](https://avwo.github.io/whistle/webui/https.html)，否则在Mac上最新版本的Chrome的Https拦截功能将无法使用
 
 [whistle](https://github.com/avwo/whistle)是跨平台的web调试代理工具，功能类似Windows平台上的[Fiddler](http://www.telerik.com/fiddler/)，主要用于查看或修改HTTP、HTTPS、Websocket的请求或响应或作为HTTP代理服务器，不同于Fiddler通过断点修改请求响应的方式，whistle采用的是类似配置系统hosts的方式，通过配置规则修改请求响应，并支持规则分组及通过域名、路径、正则、精确匹配(精确匹配需[v1.1.2及以上版本](https://github.com/avwo/whistle/blob/master/CHANGELOG.md#v112)才支持，老版本可以用正则实现)四种匹配方式(系统的hosts配置只支持域名匹配)，特别针对终端调试提供了[weinre](https://avwo.github.io/whistle/rules/weinre.html)，[log](https://avwo.github.io/whistle/rules/log.html)等功能，且支持通过Node模块扩展功能，具体实现过程请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
 
