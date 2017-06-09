@@ -14,7 +14,7 @@
 [![David deps](https://img.shields.io/david/avwo/whistle.svg?style=flat-square)](https://david-dm.org/avwo/whistle)
 [![License](https://img.shields.io/npm/l/whistle.svg?style=flat-square)](https://www.npmjs.com/package/whistle)
 
-> 当前whistle的最新版本为[v1.4.8](https://github.com/avwo/whistle/blob/master/CHANGELOG.md#-)，为确保使用whistle所有功能，请及时[更新whistle](https://avwo.github.io/whistle/update.html)
+> 当前whistle的最新版本为[v1.4.9](https://github.com/avwo/whistle/blob/master/CHANGELOG.md#-)，为确保使用whistle所有功能，请及时[更新whistle](https://avwo.github.io/whistle/update.html)
 
 > 老用户建议升级到最新版本，用 `w2 restart -A` 命令行启动重新生成根证书并[安装](https://avwo.github.io/whistle/webui/https.html)，否则在Mac上最新版本的Chrome的Https拦截功能将无法使用，更多内容参考: [#44](https://github.com/avwo/whistle/issues/44)
 
