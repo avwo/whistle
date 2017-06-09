@@ -510,9 +510,19 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 
 1. fix: 屏蔽Node8自身bug导致崩溃的问题: [Assertion `(trigger_id) >= (0)' failed.](https://github.com/nodejs/node/issues/13325)
 
-#  v1.4.7
+
+
+### v1.4.7
+
 1. refactor: 确保转发到插件的请求可以把一些用户配置的Rule带过去
 2. fix: 修复Mac上 `Chrome>=59` 出现的 `ERR_SSL_SERVER_CERT_BAD_FORMAT`的问题，需要启动时加 `w2 restart -A` 重新生成根证书，并安装，具体参见：[Https](https://avwo.github.io/whistle/webui/https.html)、[关于iOS的ATS](https://avwo.github.io/whistle/ats.html)
+
+# v1.4.8
+
+1. refactor: 
+   - 优化转发到插件的请求头，支持把proxy和pac配置规则带过去
+   - `host://:port` === `host://remoteServerIP:port`
+2. fix: 在Rules或Values按 `Ctrl + X` 清空Network的问题
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
