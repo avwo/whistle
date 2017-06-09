@@ -19,7 +19,7 @@ module.exports = function(req, res) {
   var _url = req.body.url;
 
   if (_url && typeof _url == 'string') {
-    _url = _url.replace(/#.*$/, '');
+    _url = util.encodeNonAsciiChar(_url.replace(/#.*$/, ''));
     var options = url.parse(util.setProtocol(_url));
     var rawHeaderNames = {};
     var headers = parseHeaders(req.body.headers, rawHeaderNames);
