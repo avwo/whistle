@@ -524,9 +524,44 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
    - `host://:port` === `host://remoteServerIP:port`
 2. fix: 在Rules或Values按 `Ctrl + X` 清空Network的问题
 
-# v1.4.9
+### v1.4.9
 1. fix: 解决Composer中url包含非ASCII字符时出现乱码的问题(如果请求头有非ASCII字符该字段将被忽略)
 2. refactor: 改善whistle的pac脚本解析，全面支持dnsResovler
+
+# v1.4.10
+1. feat: 支持通配符的匹配方式(配置两边位置可以调换)
+
+		# 匹配二级域名以 .com 结尾的所有url，如: test.com, abc.com，但不包含 *.xxx.com
+		*.com file:///User/xxx/test
+		//*.com file:///User/xxx/test
+
+		# 匹配 test.com 的子域名，不包括 test.com
+		# 也不包括诸如 *.xxx.test.com 的四级域名，只能包含: a.test.com，www.test.com 等test.com的三级域名
+		*.test.com file:///User/xxx/test
+		//*.test.com file:///User/xxx/test
+
+		# 如果要配置所有子域名生效，可以使用 **
+		**.com file:///User/xxx/test
+		**.test.com file:///User/xxx/test
+
+		# 限定协议，只对http生效
+		http://*.com file:///User/xxx/test
+		http://**.com file:///User/xxx/test
+		http://*.test.com file:///User/xxx/test
+		http://**.test.com file:///User/xxx/test
+
+		# 路径
+		*.com/abc/efg file:///User/xxx/test
+		**.com/abc/efg file:///User/xxx/test
+		*.test.com/abc/efg file:///User/xxx/test
+		**.test.com/abc/efg file:///User/xxx/test
+
+		http://*.com/abc/efg file:///User/xxx/test
+		http://**.com/abc/efg file:///User/xxx/test
+		http://*.test.com/abc/efg file:///User/xxx/test
+		http://**.test.com/abc/efg file:///User/xxx/test
+		
+2. fix(#47): 证书被吊销过可能出现无法打开的问题 
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
