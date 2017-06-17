@@ -17,3 +17,22 @@ ws4.w2.org proxy://127.0.0.1:7788
 ws5.w2.org socks://127.0.0.1:1080
 
 /\d+\.server-agent\.com/ enable://intercept host://127.0.0.1:5566
+
+# wildcard
+*.cn file://test enable://intercept
+**.wildcard.cn file://test/abc enable://intercept
+**.cn file://test/abc enable://intercept
+
+*.wildcard1.com file://test/abc enable://intercept
+**.wildcard1.com file://test enable://intercept
+
+http://*.wildcard2.com/1/2/3 file://test
+http://**.wildcard2.com/1/2/3 file://test
+
+http://*.wildcard2.com file://test
+http://**.wildcard2.com file://test
+https://*.wildcard2.com file://test/abc
+tunnel://*.wildcard2.com enable://intercept
+https://**.wildcard2.com file://test/abc
+tunnel://**.wildcard2.com enable://intercept
+
