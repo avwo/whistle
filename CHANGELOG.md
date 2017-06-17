@@ -561,7 +561,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 		http://*.test.com/abc/efg file:///User/xxx/test
 		http://**.test.com/abc/efg file:///User/xxx/test
 		
-2. fix(#47): 证书被吊销过可能出现无法打开的问题 
+2. fix([#47](https://github.com/avwo/whistle/issues/47)): 证书被吊销过可能出现无法打开的问题 
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
