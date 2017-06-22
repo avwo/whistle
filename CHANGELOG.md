@@ -569,7 +569,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 	- `disableAllPlugins`: 不设置表示使用默认设置或用户通过界面设置，如果设置为 `true` 表示禁用所有插件，如果设置为 `false` 表示启用所有插件，如果设置了true或false会覆盖通过页面的设置
 	- `allowMultipleChoice`: 不设置表示使用默认设置或用户通过界面设置，如果设置为 `true` 表示允许在Rules种同时启用多个规则，即允许多选，如果设置为 `false` 表示只能启用除Default以外的一个规则，如果设置了true或false会覆盖通过页面的设置
 	- `rules`: 通过参数设置规则列表
-		- 如果为string或数组，则表示设置 `Default` 的规则
+		- 如果为string或数组，则表示只设置 `Default` 的规则
 		- 如果为对象可以设置多个规则，及决定使用哪些规则(要同时启用多个规则，需要 `allowMultipleChoice` 设置为true)
 
 				{
