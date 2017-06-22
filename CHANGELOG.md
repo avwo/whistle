@@ -565,11 +565,26 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 
 # v1.4.11
 1. feat: 支持第三方应用在启动whistle时传人如下参数
-	- ``: 
-	- ``: 
-	- ``: 
-	- ``: 
-	- ``: 
+	- `disableAllRules`: 不设置表示使用默认设置或用户通过界面设置，如果设置为 `true` 表示禁用所有规则，包括插件，如果设置为 `false` 表示启用所有规则，如果设置了true或false会覆盖通过页面的设置
+	- `disableAllPlugins`: 不设置表示使用默认设置或用户通过界面设置，如果设置为 `true` 表示禁用所有插件，如果设置为 `false` 表示启用所有插件，如果设置了true或false会覆盖通过页面的设置
+	- `allowMultipleChoice`: 不设置表示使用默认设置或用户通过界面设置，如果设置为 `true` 表示允许在Rules种同时启用多个规则，即允许多选，如果设置为 `false` 表示只能启用除Default以外的一个规则，如果设置了true或false会覆盖通过页面的设置
+	- `rules`: 通过参数设置规则列表
+		- 如果为string或数组，则表示设置 `Default` 的规则
+		- 如果为对象可以设置多个规则，及决定使用哪些规则(要同时启用多个规则，需要 `allowMultipleChoice` 设置为true)
+
+				{
+					Default: {
+						rules: ['fffffffffffff', '000000000000'],
+						enable: false,
+					},
+					test1: 'abc\n123',
+					test2: {
+						rules: 'www.test.com 127.0.0.1'.
+						enable: true
+					}
+				}
+			
+	- `values`:  为对象，{ test: 'abc', json: JSON.stringify({abc: 123}, null, '  ') }
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
