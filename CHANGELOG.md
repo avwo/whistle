@@ -528,7 +528,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 1. fix: 解决Composer中url包含非ASCII字符时出现乱码的问题(如果请求头有非ASCII字符该字段将被忽略)
 2. refactor: 改善whistle的pac脚本解析，全面支持dnsResovler
 
-# v1.4.10
+### v1.4.10
 1. feat: 支持通配符的匹配方式(配置两边位置可以调换)
 
 		# 匹配二级域名以 .com 结尾的所有url，如: test.com, abc.com，但不包含 *.xxx.com
@@ -562,6 +562,14 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 		http://**.test.com/abc/efg file:///User/xxx/test
 		
 2. fix([#47](https://github.com/avwo/whistle/issues/47)): 证书被吊销过可能出现无法打开的问题 
+
+# v1.4.11
+1. feat: 支持第三方应用在启动whistle时传人如下参数
+	- ``: 
+	- ``: 
+	- ``: 
+	- ``: 
+	- ``: 
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
