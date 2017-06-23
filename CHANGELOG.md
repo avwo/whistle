@@ -584,7 +584,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 					}
 				}
 			
-	- `values`:  为对象，{ test: 'abc', json: JSON.stringify({abc: 123}, null, '  ') }
+	- `values`:  为对象，{ test: 'abc', testJson: {abc: 123} }
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
