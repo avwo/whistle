@@ -70,14 +70,22 @@ https.createServer(options, function(req, res) {
     body: 'test'
   }));
 }).listen(config.httpsPort, startTest);
-
+values['options.html'] = {
+  method: 'options'
+};
 startWhistle({
   port: config.port,
   storage: 'test_',
   certDir: path.join(__dirname, 'assets/certs'),
   debugMode: true,
   localUIHost: 'local.whistle.com',
-  rules: defaultRules,
+  rules: {
+    Default: defaultRules,
+    test: {
+      rules: 'test.options.com file://{options.html}',
+      enable: true
+    }
+  },
   values: values,
   copy: true
 }, startTest);
