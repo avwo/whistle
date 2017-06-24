@@ -576,6 +576,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 					Default: {
 						rules: ['fffffffffffff', '000000000000'],
 						enable: false,
+            replace: false
 					},
 					test1: 'abc\n123',
 					test2: {
