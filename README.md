@@ -20,6 +20,8 @@
 
 > 如果[安装好根证书](https://avwo.github.io/whistle/webui/https.html)后，在APP或某些版本的Chrome上无法访问(如出现： `ERR_SSL_SERVER_CERT_BAD_FORMAT`([#44](https://github.com/avwo/whistle/issues/44))  或 `ERR_CERT_COMMON_NAME_INVALID`)，确保本地安装的Node版本 `>=v6`，并[更新whistle](https://avwo.github.io/whistle/update.html)到最新版本，用 `w2 restart -A` 重启whistle，让whistle会生成新的根证书，用户再[安装下根证书](https://avwo.github.io/whistle/webui/https.html)即可
 
+> Node某些版本有bug(如：Node v7.10.0)，可能会导致whistle异常退出，出现这种情况可以更新下Node，详见: [#48](https://github.com/avwo/whistle/issues/48)
+
 [whistle](https://github.com/avwo/whistle)是跨平台的web调试代理工具，功能类似Windows平台上的[Fiddler](http://www.telerik.com/fiddler/)，主要用于查看或修改HTTP、HTTPS、Websocket的请求或响应或作为HTTP代理服务器，不同于Fiddler通过断点修改请求响应的方式，whistle采用的是类似配置系统hosts的方式，通过配置规则修改请求响应，并支持规则分组及通过域名、路径、正则、精确匹配(精确匹配需[v1.1.2及以上版本](https://github.com/avwo/whistle/blob/master/CHANGELOG.md#v112)才支持，老版本可以用正则实现)四种匹配方式(系统的hosts配置只支持域名匹配)，特别针对终端调试提供了[weinre](https://avwo.github.io/whistle/rules/weinre.html)，[log](https://avwo.github.io/whistle/rules/log.html)等功能，且支持通过Node模块扩展功能，具体实现过程请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
 
 安装使用whistle请参见[whistle帮助文档](https://avwo.github.io/whistle/install.html)。
