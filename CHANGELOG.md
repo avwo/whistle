@@ -588,7 +588,8 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 	- `values`:  为对象，{ test: 'abc', testJson: {abc: 123} }
 
 # v1.4.12
-1. fix: 通过 `pattern cache://ms` 设置max-age时单位出错的问题 
+1. fix: 通过 `pattern cache://seconds` 设置缓存时间单位出错的问题
+
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
