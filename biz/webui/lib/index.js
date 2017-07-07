@@ -94,7 +94,8 @@ app.use(function(req, res, next) {
   }
 
   res.setHeader('WWW-Authenticate', ' Basic realm=User Login');
-  res.status(401).end('Please enter your username and password.');
+  res.setHeader('Content-Type', 'text/html; charset=utf8');
+  res.status(401).end('Access denied, please <a href="javascript:;" onclick="location.reload()">try again</a>.');
 });
 
 app.all('/cgi-bin/*', cgiHandler);
