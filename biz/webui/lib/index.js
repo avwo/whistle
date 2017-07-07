@@ -9,7 +9,7 @@ var crypto = require('crypto');
 var httpsUtil;
 var htdocs = require('../htdocs');
 var DONT_CHECK_PATHS = ['/cgi-bin/server-info', '/cgi-bin/show-host-ip-in-res-headers',
-                        '/cgi-bin/lookup-tunnel-dns', '/cgi-bin/rootca'];
+                        '/cgi-bin/lookup-tunnel-dns', '/cgi-bin/rootca', '/cgi-bin/log/set'];
 var PLUGIN_PATH_RE = /^\/(whistle|plugin)\.([a-z\d_\-]+)(\/)?/;
 var proxyEvent, util, username, password, config, pluginMgr;
 
