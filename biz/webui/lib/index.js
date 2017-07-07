@@ -118,7 +118,9 @@ function checkLogin(req, res) {
   if (!username && !password || dontCheckPaths(req)) {
     return true;
   }
-
+  if (checkCookie(req)) {
+    return true;
+  }
   var userInfo = auth(req);
   if (userInfo && (userInfo.name || userInfo.pass)) {
     if (username == userInfo.name && password == userInfo.pass) {
@@ -128,7 +130,7 @@ function checkLogin(req, res) {
     }
   }
 
-  return checkCookie(req);
+  return false;
 }
 
 function checkCookie(req) {
