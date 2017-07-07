@@ -2,8 +2,8 @@ var proxy = require('../lib/proxy');
 var util = require('./util');
 var getData = require('../lib/data');
 var properties = require('../lib/properties');
-var pluginMgr = require('../lib/proxy').pluginMgr;
 
+var pluginMgr = proxy.pluginMgr;
 var logger = proxy.logger;
 
 module.exports = function(req, res) {
@@ -13,6 +13,7 @@ module.exports = function(req, res) {
   } else {
     data.ids = null;
   }
+
   res.json({
     ec: 0,
     server: util.getServerInfo(req),
