@@ -21,7 +21,12 @@ module.exports = function(req, res) {
     svrLog: logger.getLogs(data.startSvrLogTime, data.count),
     plugins: pluginMgr.getPlugins(),
     disabledPlugins: properties.get('disabledPlugins') || {},
+    disabledPluginsRules: properties.get('disabledPluginsRules') || {},
+    allowMultipleChoice: properties.get('allowMultipleChoice'),
     disabledAllPlugins: properties.get('disabledAllPlugins'),
+    disabledAllRules: properties.get('disabledAllRules'),
+    hideHttpsConnects: properties.get('hideHttpsConnects'),
+    interceptHttpsConnects: properties.get('interceptHttpsConnects'),
     data: getData(data)
   });
 };
