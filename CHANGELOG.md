@@ -587,8 +587,31 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 			
 	- `values`:  为对象，{ test: 'abc', testJson: {abc: 123} }
 
-# v1.4.12
+### v1.4.12
 1. fix: 通过 `pattern cache://seconds` 设置缓存时间单位出错的问题
+
+# v1.4.13
+1. fix: 加入用户名和密码时，[log](https://avwo.github.io/whistle/webui/log.html)无法使用的问题
+2. feat: 添加新的路径匹配方式：
+		
+		# 对所有域名对应的路径 protocol://a.b.c/xxx[/yyy]都生效
+		~/
+		~/xxx
+		tunnel://~/ # tunnel只支持根路径匹配
+		http://~/
+		https://~/xxx
+		ws://~/xxx
+		wss://~/xxx
+
+		# 也可以指定路径，不包含该路径的子路径
+		$~/
+		$~/xxx
+		$tunnel://~/ # tunnel只支持根路径匹配
+		$http://~/
+		$https://~/xxx
+		$ws://~/xxx
+		$wss://~/xxx
+		
 
 
 ### -
