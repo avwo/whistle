@@ -2,6 +2,7 @@ var proxy = require('../lib/proxy');
 var util = require('./util');
 var getData = require('../lib/data');
 var properties = require('../lib/properties');
+var rules = require('../lib/rules');
 
 var pluginMgr = proxy.pluginMgr;
 var logger = proxy.logger;
@@ -27,6 +28,8 @@ module.exports = function(req, res) {
     disabledAllRules: properties.get('disabledAllRules'),
     hideHttpsConnects: properties.get('hideHttpsConnects'),
     interceptHttpsConnects: properties.get('interceptHttpsConnects'),
+    defaultRulesIsDisabled: rules.defaultRulesIsDisabled(),
+    list: rules.getSelectedList(),
     data: getData(data)
   });
 };
