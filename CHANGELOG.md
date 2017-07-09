@@ -590,7 +590,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 ### v1.4.12
 1. fix: 通过 `pattern cache://seconds` 设置缓存时间单位出错的问题
 
-# v1.4.13
+### v1.4.13
 1. fix: 加入用户名和密码时，[log](https://avwo.github.io/whistle/webui/log.html)无法使用的问题
 2. feat: 添加新的路径匹配方式：
 		
@@ -612,6 +612,9 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 		$ws://~/xxx
 		$wss://~/xxx
 		
+# v1.4.14
+1. feat: Rules和Values列表支持拖拽排序
+2. refactor: 如果Rules和Values列表的顺序发生改变自动同步给各个页面，如果发送增删改弹框提示是否重新加载页面
 
 
 ### -
