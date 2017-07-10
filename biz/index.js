@@ -35,9 +35,9 @@ module.exports = function(req, res, next) {
         res.response(util.wrapResponse({
           statusCode: err ? 500 : 404,
           headers: {
-            'content-type': 'text/plain; charset=utf-8'
+            'content-type': 'text/html; charset=utf-8'
           },
-          body: err || 'Not Found'
+          body: '<pre>' + (err || 'Not Found') + '</pre>'
         }));
         return;
       }
