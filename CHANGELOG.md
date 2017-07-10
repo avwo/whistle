@@ -613,8 +613,10 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 		$wss://~/xxx
 		
 # v1.4.14
-1. feat: Rules和Values列表支持拖拽排序
-2. refactor: 如果Rules和Values列表的顺序发生改变自动同步给各个页面，如果发送增删改弹框提示是否重新加载页面
+1. refactor: Values支持rules的快捷键操作
+2. refactor: 错误页面的 text/plain 改成 text/html
+
+
 
 
 ### -
