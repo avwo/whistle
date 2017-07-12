@@ -1,4 +1,4 @@
-var os = require('os');
+var util = require('../lib/util');
 var config = require('../lib/config');
 var properties = require('../lib/properties');
 
@@ -7,14 +7,14 @@ exports.getServerInfo = function getServerInfo(req) {
     version: config.version,
     nodeVersion: process.version,
     latestVersion: properties.get('latestVersion'),
-    host: os.hostname(),
+    host: util.hostname(),
     port: config.port,
     weinrePort: config.weinreport,
     ipv4: [],
     ipv6: [],
     mac: req.ip + (config.storage ? '\n' + config.storage : '')
   };
-  var ifaces = os.networkInterfaces();
+  var ifaces = util.networkInterfaces();
   Object.keys(ifaces).forEach(function(ifname) {
     ifaces[ifname].forEach(function (iface) {
       if (iface.internal) {
