@@ -612,12 +612,14 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 		$ws://~/xxx
 		$wss://~/xxx
 		
-# v1.4.14
+### v1.4.14
 1. refactor: Values支持rules的快捷键操作
 2. refactor: 错误页面的 text/plain 改成 text/html
 3. feat: 在规则配置中如果单独一行 `{xxx}` 表示从Values对应的key(xxx)内联文本
 
-
+# v1.4.15
+1. perf: 优化 `os.networkInterfaces` 的性能
+2. fix: 支持注入的文本根据响应头进行编码
 
 
 ### -
