@@ -617,9 +617,13 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 2. refactor: 错误页面的 text/plain 改成 text/html
 3. feat: 在规则配置中如果单独一行 `{xxx}` 表示从Values对应的key(xxx)内联文本
 
-# v1.4.15
+### v1.4.15
 1. perf: 优化 `os.networkInterfaces` 的性能
 2. fix: 支持注入的文本根据响应头进行编码
+
+# v1.4.15
+1. refactor: 使用 delete:// 删除头部字段是忽略大小写
+2. style: 在Network下方过滤输入框输入内容高亮显示
 
 
 ### -
