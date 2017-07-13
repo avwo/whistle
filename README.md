@@ -14,9 +14,10 @@
 [![David deps](https://img.shields.io/david/avwo/whistle.svg?style=flat-square)](https://david-dm.org/avwo/whistle)
 [![License](https://img.shields.io/npm/l/whistle.svg?style=flat-square)](https://www.npmjs.com/package/whistle)
 
-> 当前whistle的最新版本为[v1.4.15](https://github.com/avwo/whistle/blob/master/CHANGELOG.md#-)，为确保使用whistle所有功能，请及时[更新whistle](https://avwo.github.io/whistle/update.html)
+> 当前whistle的最新版本为[v1.4.16](https://github.com/avwo/whistle/blob/master/CHANGELOG.md#-)，`v1.4.14` 及以下版本由于Node提供的一些API有性能问题会影响whistle的性能， 及为确保使用whistle所有功能，建议及时[更新whistle](https://avwo.github.io/whistle/update.html)和在 `Node >= v6` 上运行
 
->在iOS上安装根证书时，需要先关闭[https拦截](https://avwo.github.io/whistle/webui/https.html)，否则将显示安装失败
+> 在iOS上安装根证书时，需要先关闭[https拦截](https://avwo.github.io/whistle/webui/https.html)，否则将显示安装失败
+
 
 > 如果[安装好根证书](https://avwo.github.io/whistle/webui/https.html)后，在APP或某些版本的Chrome上无法访问(如出现： `ERR_SSL_SERVER_CERT_BAD_FORMAT`([#44](https://github.com/avwo/whistle/issues/44))  或 `ERR_CERT_COMMON_NAME_INVALID`)，确保本地安装的Node版本 `>=v6`，并[更新whistle](https://avwo.github.io/whistle/update.html)到最新版本，用 `w2 restart -A` 重启whistle，让whistle会生成新的根证书，用户再[安装下根证书](https://avwo.github.io/whistle/webui/https.html)即可
 
