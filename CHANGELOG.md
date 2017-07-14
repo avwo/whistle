@@ -621,9 +621,10 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 1. perf: 优化 `os.networkInterfaces` 的性能
 2. fix: 支持注入的文本根据响应头进行编码
 
-# v1.4.15
+### v1.4.16
 1. refactor: 使用 delete:// 删除头部字段是忽略大小写
 2. style: 在Network下方过滤输入框输入内容高亮显示
+
 
 
 ### -

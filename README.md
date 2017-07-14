@@ -14,7 +14,7 @@
 [![David deps](https://img.shields.io/david/avwo/whistle.svg?style=flat-square)](https://david-dm.org/avwo/whistle)
 [![License](https://img.shields.io/npm/l/whistle.svg?style=flat-square)](https://www.npmjs.com/package/whistle)
 
-> 当前whistle的最新版本为[v1.4.16](https://github.com/avwo/whistle/blob/master/CHANGELOG.md#-)，`v1.4.14` 及以下版本由于Node提供的一些API有性能问题会影响whistle的性能， 及为确保使用whistle所有功能，建议及时[更新whistle](https://avwo.github.io/whistle/update.html)和在 `Node >= v6` 上运行
+> 当前whistle的最新版本为[v1.4.16](https://github.com/avwo/whistle/blob/master/CHANGELOG.md#-)，`v1.4.14` 及以下版本由于Node提供的一些API有性能问题会影响whistle的性能， 确保能使用whistle所有功能，建议及时[更新whistle](https://avwo.github.io/whistle/update.html)和在 `Node >= v6` 上运行
 
 > 在iOS上安装根证书时，需要先关闭[https拦截](https://avwo.github.io/whistle/webui/https.html)，否则将显示安装失败
 
