@@ -16,11 +16,11 @@
 
 > 当前whistle的最新版本为[v1.4.16](https://github.com/avwo/whistle/blob/master/CHANGELOG.md#-)，确保能使用whistle的所有功能，尽量使用最新版本的whistle，虽然whistle基本上支持Node的所有版本，但建议使用使用 `v6` 及以上版本，否则性能及在Chrome或APP上[抓包HTTPS请求](https://avwo.github.io/whistle/webui/https.html)会有问题。
 
-> 如果出现HTTPS的问题，升级Node到 `v6` 及以上版本，[更新whistle](https://avwo.github.io/whistle/update.html)到最新版本，通过 `w2 restart -A` (注意后面加 `-A`)启动生成新的更证书，再[安装下根证书](https://avwo.github.io/whistle/webui/https.html)即可，注意：在iOS上安装根证书时，需要先关闭[https拦截](https://avwo.github.io/whistle/webui/https.html)，否则将显示安装失败.
+> 如果出现HTTPS的问题([#44](https://github.com/avwo/whistle/issues/44))，升级Node到 `v6` 及以上版本，[更新whistle](https://avwo.github.io/whistle/update.html)到最新版本，通过 `w2 restart -A` (注意后面加 `-A`)启动生成新的更证书，再[安装下根证书](https://avwo.github.io/whistle/webui/https.html)即可，注意：在iOS上安装根证书时，需要先关闭[https拦截](https://avwo.github.io/whistle/webui/https.html)，否则将显示安装失败.
  
-> 具体问题可以参考：[#44](https://github.com/avwo/whistle/issues/44)、[#48](https://github.com/avwo/whistle/issues/48)
+> 某些版本的Node有bug，遇到这种情况更新下Node即可：[#48](https://github.com/avwo/whistle/issues/48)
 
-> 有什么问题也可以加QQ群讨论: **462558941**
+> 其它问题也可以加QQ群讨论: **462558941**
 
 [whistle](https://github.com/avwo/whistle)基于Node实现的跨平台web调试代理工具，类似的工具有Windows平台上的[Fiddler](http://www.telerik.com/fiddler/)，主要用于查看、修改HTTP、HTTPS、Websocket的请求、响应，也可以作为HTTP代理服务器使用，不同于Fiddler通过断点修改请求响应的方式，whistle采用的是类似配置系统hosts的方式，一切操作都可以通过配置实现，支持域名、路径、正则表达式、通配符、通配路径等多种[匹配方式](https://avwo.github.io/whistle/pattern.html)，且可以通过Node模块[扩展功能](https://avwo.github.io/whistle/plugins.html)。
 
