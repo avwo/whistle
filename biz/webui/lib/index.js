@@ -30,7 +30,7 @@ app.use(function(req, res, next) {
     var refOpts = url.parse(referer);
     var pathname = refOpts.pathname;
     if (PLUGIN_PATH_RE.test(pathname) && RegExp.$3) {
-      req.url = pathname.replace(/\/[^/]*$/, '') + options.path;
+      req.url = '/' + RegExp.$1 + '.' + RegExp.$2 + options.path;
     }
   }
 
