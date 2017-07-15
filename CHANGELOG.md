@@ -625,8 +625,11 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 1. refactor: 使用 delete:// 删除头部字段是忽略大小写
 2. style: 在Network下方过滤输入框输入内容高亮显示
 
-# v1.4.17
+### v1.4.17
 1. fix: getPluginByPluginRule返回undefined的问题
+
+# v1.4.18
+1. fix: 新增setTimeout导致无法后台运行的问题
 
 
 ### -
