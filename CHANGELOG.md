@@ -628,8 +628,12 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 ### v1.4.17
 1. fix: getPluginByPluginRule返回undefined的问题
 
-# v1.4.18
+### v1.4.18
 1. fix: 新增setTimeout导致无法后台运行的问题
+
+# v1.4.19
+1. fix: 转发到插件请求头 `x-forwarded-for` 的问题
+2. refactor: 形如 `xxx.rules` 的Values的key作为正常的rules处理  
 
 
 ### -
