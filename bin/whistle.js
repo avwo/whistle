@@ -4,7 +4,6 @@ var program = require('starting');
 var path = require('path');
 var os = require('os');
 var config = require('../lib/config');
-var util = require('../lib/util');
 var colors = require('colors/safe');
 
 function getIpList() {
@@ -65,7 +64,7 @@ function showStartupInfo(err, options, debugMode, restart) {
     info('[i] Try to run command with `sudo`\n');
   }
 
-  error(err.stack ? 'Date: ' + util.formatDate() + '\n' + err.stack : err);
+  error(err.stack ? 'Date: ' + new Date().toLocaleString() + '\n' + err.stack : err);
 }
 
 program.setConfig({
