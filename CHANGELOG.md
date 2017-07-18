@@ -633,7 +633,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 
 # v1.4.19
 1. fix: 转发到插件请求头 `x-forwarded-for` 的问题
-2. refactor: 形如 `xxx.rules` 的Values的key作为正常的rules处理  
+2. refactor: Values中名称形如 `xxx.rules` 的key作为正常的rules文件处理  
 
 
 ### -
