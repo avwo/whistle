@@ -16,6 +16,7 @@
   "keepAliveMsecs": 25000,
   "responseTimeout": 30000,
   "timeout": 36000,
+  "cacheFiles": 100,
   "httpsProxyHost": "x-whistle-proxy-host",
   "author": "avenwu <avenwu@vip.qq.com>",
   "contributors": [],
@@ -58,7 +59,7 @@
     "q": "1.4.1",
     "safe-buffer": "^5.0.1",
     "socksv5": "0.0.6",
-    "starting": "^2.2.1",
+    "starting": "^3.0.0",
     "weinre": "2.0.0-pre-I0Z7U9OV",
     "xml2js": "0.4.17"
   },
