@@ -116,6 +116,6 @@ program
   .option('-u, --uipath [script path]', 'web ui plugin path', String, undefined)
   .option('-t, --timeout [ms]', 'request timeout (' + config.timeout + ' ms by default)', parseInt, undefined)
   .option('-s, --sockets [number]', 'max sockets (' + config.sockets + ' by default)', parseInt, undefined)
-  .option('-c, --cacheFiles [number]', 'number of files to cache sessions (' + config.cacheFiles + ' by default, and 100 sessions per file)', parseInt, undefined)
+  .option('-f, --cacheFiles [number]', 'number of files to cache sessions (' + config.cacheFiles + ' by default, and 100 sessions per file)', parseInt, undefined)
   .option('-e, --extra [extraData]', 'extra data for plugin', String, undefined)
   .parse(process.argv);
