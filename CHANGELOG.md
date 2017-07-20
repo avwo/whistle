@@ -631,10 +631,15 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 ### v1.4.18
 1. fix: 新增setTimeout导致无法后台运行的问题
 
-# v1.4.19
+### v1.4.19
 1. fix: 转发到插件请求头 `x-forwarded-for` 的问题
 2. refactor: Values中名称形如 `xxx.rules` 的key作为正常的rules文件处理
 3. style: Hover到顶部 `Help` 按钮显示帮助文档列表 
+
+# v1.4.20
+1. feat: 支持插件通过${ruleKey}内联规则
+2. feat: 支持设置缓存到硬盘的sessions的数量，及支持导入导出历史sessions
+3. refactor: 优化导入导出saz文件的性能
 
 
 ### -
