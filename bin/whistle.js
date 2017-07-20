@@ -104,6 +104,7 @@ program.setConfig({
 
 program
   .option('-d, --debug', 'debug mode')
+  .option('-D, --baseDir [baseDir]', 'the base dir of config data', String, undefined)
   .option('-A, --ATS', 'generate Root CA for iOS ATS (Node >= 6 is required)')
   .option('-z, --certDir [directory]', 'custom certificate path', String, undefined)
   .option('-l, --localUIHost [hostname]', 'local ui host (' + config.localUIHost + ' by default)', String, undefined)
