@@ -73,7 +73,7 @@ https.createServer(options, function(req, res) {
 values['options.html'] = {
   method: 'options'
 };
-startWhistle({
+var proxy = startWhistle({
   port: config.port,
   storage: 'test_',
   certDir: path.join(__dirname, 'assets/certs'),
@@ -90,6 +90,8 @@ startWhistle({
   copy: true
 }, startTest);
 
+proxy.on('tunnelRequest', util.noop);
+proxy.on('wsRequest', util.noop);
 var socksServer = socks.createServer(function(info, accept, deny) {
   var socket;
   if (info.dstPort === 443) {
