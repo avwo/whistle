@@ -56,7 +56,7 @@ if (!net._normalizeConnectArgs) {
   };
 }
 
-module.exports = function init(options, callback) {
+module.exports = function(options, callback) {
   if (typeof options === 'function') {
     callback = options;
     options = null;
