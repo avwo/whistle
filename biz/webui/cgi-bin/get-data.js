@@ -1,6 +1,7 @@
 var proxy = require('../lib/proxy');
 var util = require('./util');
 var getData = require('../lib/data');
+var config = require('../lib/config');
 var properties = require('../lib/properties');
 var rules = require('../lib/rules');
 
@@ -17,6 +18,8 @@ module.exports = function(req, res) {
 
   res.json({
     ec: 0,
+    version: config.version,
+    baseDir: config.baseDir,
     server: util.getServerInfo(req),
     log: proxy.getLogs(data.startLogTime, data.count),
     svrLog: logger.getLogs(data.startSvrLogTime, data.count),

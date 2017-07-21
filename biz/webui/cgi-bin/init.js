@@ -8,6 +8,7 @@ var pluginMgr = require('../lib/proxy').pluginMgr;
 module.exports = function(req, res) {
   res.json({
     version: config.version,
+    baseDir: config.baseDir,
     latestVersion: properties.get('latestVersion'),
     server: util.getServerInfo(req),
     rules: getRules(),
