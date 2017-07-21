@@ -2,19 +2,79 @@ var express = require('express');
 var app = express();
 var path = require('path');
 var url = require('url');
-var auth = require('basic-auth');
+var getAuth = require('basic-auth');
 var parseurl = require('parseurl');
 var bodyParser = require('body-parser');
 var crypto = require('crypto');
-var httpsUtil;
+var cookie = require('cookie');
 var htdocs = require('../htdocs');
+
 var DONT_CHECK_PATHS = ['/cgi-bin/server-info', '/cgi-bin/show-host-ip-in-res-headers',
                         '/cgi-bin/lookup-tunnel-dns', '/cgi-bin/rootca', '/cgi-bin/log/set'];
 var PLUGIN_PATH_RE = /^\/(whistle|plugin)\.([a-z\d_\-]+)(\/)?/;
-var proxyEvent, util, username, password, config, pluginMgr;
+var httpsUtil, proxyEvent, util, config, pluginMgr;
+var MAX_AGE = 60 * 60 * 24 * 3;
+var AUTH_CONFIG = {
+  nameKey: 'whistle_username',
+  authKey: 'whistle_lkey'
+};
 
 function dontCheckPaths(req) {
   return DONT_CHECK_PATHS.indexOf(req.path) != -1;
+}
+
+function getUsername() {
+  return config.username || '';
+}
+
+function getPassword() {
+  return config.password || '';
+}
+
+function shasum(str) {
+  var shasum = crypto.createHash('sha1');
+  shasum.update(str);
+  return shasum.digest('hex');
+}
+
+function getLoginKey (req, res, auth) {
+  var ip = util.getClientIp(req, true);
+  return shasum([auth.username, auth.password, ip].join('\n'));
+}
+
+function checkAuth(req, res, auth) {
+  var username = auth.username;
+  var password = auth.password;
+  var nameKey = auth.nameKey;
+  var authKey = auth.authKey;
+
+  if (!username && !password) {
+    return true;
+  }
+  var cookies = cookie.parse(req.headers.cookie || '');
+
+  var curName = cookies[nameKey];
+  var lkey = cookies[authKey];
+  var correctKey = getLoginKey(req, res, auth);
+  if (curName === username && correctKey === lkey) {
+    return true;
+  }
+  auth = getAuth(req) || {};
+  if (auth.name === username && auth.pass === password) {
+    var options = {
+      expires: new Date(Date.now() + (MAX_AGE * 1000)),
+      maxAge: MAX_AGE,
+      path: '/'
+    };
+    res.setHeader('Set-Cookie', cookie.serialize(nameKey, username, options));
+    res.setHeader('Set-Cookie', cookie.serialize(authKey, correctKey, options));
+    return true;
+  }
+
+  res.setHeader('WWW-Authenticate', ' Basic realm=User Login');
+  res.setHeader('Content-Type', 'text/html; charset=utf8');
+  res.status(401).end('Access denied, please <a href="javascript:;" onclick="location.reload()">try again</a>.');
+  return false;
 }
 
 app.use(function(req, res, next) {
@@ -88,14 +148,11 @@ app.use(bodyParser.json());
 
 
 app.use(function(req, res, next) {
-  if (checkLogin(req, res)) {
+  AUTH_CONFIG.username = getUsername();
+  AUTH_CONFIG.password = getPassword();
+  if (dontCheckPaths(req) || checkAuth(req, res, AUTH_CONFIG)) {
     next();
-    return;
   }
-
-  res.setHeader('WWW-Authenticate', ' Basic realm=User Login');
-  res.setHeader('Content-Type', 'text/html; charset=utf8');
-  res.status(401).end('Access denied, please <a href="javascript:;" onclick="location.reload()">try again</a>.');
 });
 
 app.all('/cgi-bin/*', cgiHandler);
@@ -115,58 +172,11 @@ app.all(/^\/weinre\/.*/, function(req, res) {
   util.transformReq(req, res, config.weinreport, true);
 });
 
-function checkLogin(req, res) {
-  if (!username && !password || dontCheckPaths(req)) {
-    return true;
-  }
-  if (checkCookie(req)) {
-    return true;
-  }
-  var userInfo = auth(req);
-  if (userInfo && (userInfo.name || userInfo.pass)) {
-    if (username == userInfo.name && password == userInfo.pass) {
-      res.setHeader('set-cookie', '_lkey=' + getLoginKey(req)
-        + '; max-age=' + 60 * 60 * 24 * 1000 + '; path=/');
-      return true;
-    }
-  }
-
-  return false;
-}
-
-function checkCookie(req) {
-  var cookies = req.headers.cookie;
-  if (cookies) {
-    cookies = cookies.split(/;\s*/g);
-    for (var i = 0, len = cookies.length; i < len; i++) {
-      var cookie = cookies[i].split('=');
-      if (cookie[0] == '_lkey') {
-        return cookie.slice(1).join('=') == getLoginKey(req);
-      }
-    }
-  }
-
-  return false;
-}
-
-function getLoginKey(req) {
-  return shasum(username + '\n' + password
-+ '\n' + util.getClientIp(req, true));
-}
-
-function shasum(str) {
-  var shasum = crypto.createHash('sha1');
-  shasum.update(str);
-  return shasum.digest('hex');
-}
-
 module.exports = function(proxy) {
   proxyEvent = proxy;
   config = proxy.config;
   pluginMgr = proxy.pluginMgr;
   var rulesUtil = proxy.rulesUtil;
-  username = config.username || '';
-  password = config.password || '';
 
   require('./proxy')(proxy);
   require('./util')(util = proxy.util);
