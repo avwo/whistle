@@ -639,7 +639,6 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 # v1.4.20
 1. feat: 
 	- 支持插件通过${ruleKey}内联规则
-	- 支持设置缓存到硬盘的sessions的数量，及支持导入导出历史sessions
 	- 命令行添加参数 `-D, -baseDir` 用于指定whistle的存储目录，默认为 `~/.WhistleAppData` 
 2. refactor: 优化导入导出saz文件的性能
 
