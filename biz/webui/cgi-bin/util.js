@@ -6,6 +6,7 @@ exports.getServerInfo = function getServerInfo(req) {
   var info = {
     version: config.version,
     baseDir: config.baseDir,
+    username: config.username,
     nodeVersion: process.version,
     latestVersion: properties.get('latestVersion'),
     host: util.hostname(),
