@@ -636,12 +636,15 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 2. refactor: Values中名称形如 `xxx.rules` 的key作为正常的rules文件处理
 3. style: Hover到顶部 `Help` 按钮显示帮助文档列表 
 
-# v1.4.20
+### v1.4.20
 1. feat: 
 	- 支持插件通过${ruleKey}内联规则
 	- 命令行添加参数 `-D, -baseDir` 用于指定whistle的存储目录，默认为 `~/.WhistleAppData` 
 2. refactor: 优化导入导出saz文件的性能
 
+# v1.5.0
+1. feat: 支持通过命令行参数 `-M, --serverMode [count]` 开启 `w2 start -M`服务器模式，可以同时运行多个whistle，主要用于在服务器上部署多个代理供团队共同使用，具体参见：[whistle](https://avwo.github.io/whistle/rules/whistle.html)协议
+2. feat: Network新增 `Settings` 选项，用于设置缓存请求的目录及缓存请求的规则、Filter等
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
