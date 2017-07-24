@@ -24,12 +24,14 @@
 
 [whistle](https://github.com/avwo/whistle)基于Node实现的跨平台web调试代理工具，类似的工具有Windows平台上的[Fiddler](http://www.telerik.com/fiddler/)，主要用于查看、修改HTTP、HTTPS、Websocket的请求、响应，也可以作为HTTP代理服务器使用，不同于Fiddler通过断点修改请求响应的方式，whistle采用的是类似配置系统hosts的方式，一切操作都可以通过配置实现，支持域名、路径、正则表达式、通配符、通配路径等多种[匹配方式](https://avwo.github.io/whistle/pattern.html)，且可以通过Node模块[扩展功能](https://avwo.github.io/whistle/plugins.html)。
 
-whistle的安装请参见[whistle帮助文档](https://avwo.github.io/whistle/install.html)。
+whistle的安装请参见: [whistle帮助文档](https://avwo.github.io/whistle/install.html)。
+
+快速入门推荐看这篇文章: [whistle工具全程入门](http://imweb.io/topic/596480af33d7f9a94951744c)。
 
 # 基本功能
 ![基本功能](https://raw.githubusercontent.com/avwo/whistleui/master/assets/functions.png)
 
-完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/rules/)。
+完整功能请参见: [whistle帮助文档](https://avwo.github.io/whistle/rules/)。
 
 # 配置模式
 传统hosts的配置模式：
@@ -65,7 +67,7 @@ whistle的配置模式：
 5. 通配符：`http://*.test.com`、`*.test.com`、`*.test/abc`、`$*.test.com`
 6. 通配路径: `~/abc`、`https://~/abc`、`$~/`、`$http://~/`
 
-详细内容请参见[配置模式](https://avwo.github.io/whistle/mode.html)、[匹配方式](https://avwo.github.io/whistle/pattern.html)。
+详细内容请参见: [配置模式](https://avwo.github.io/whistle/mode.html)、[匹配方式](https://avwo.github.io/whistle/pattern.html)。
 
 operator-uri由上述[基本功能](#基本功能)抽象成的形如`protocol://ruleValue`的URI，whistle会根据匹配到的operator-uri的`protocol`及`ruleValue`修改请求或响应，具体实现过程请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
 
@@ -82,7 +84,7 @@ operator-uri由上述[基本功能](#基本功能)抽象成的形如`protocol://
 	www.test.com 127.0.0.1:8080 referer://http://www.example.com resCors://*
 
 
-完整功能参见[whistle帮助文档](https://avwo.github.io/whistle/)。
+完整功能参见: [whistle帮助文档](https://avwo.github.io/whistle/)。
 
 # Network
 
@@ -94,7 +96,7 @@ operator-uri由上述[基本功能](#基本功能)抽象成的形如`protocol://
 # Values
 ![Values](https://raw.githubusercontent.com/avwo/whistleui/master/img/values.gif)
 
-完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
+完整功能请参见: [whistle帮助文档](https://avwo.github.io/whistle/)。
 
 # License
 [MIT](https://github.com/avwo/whistle/blob/master/LICENSE)
