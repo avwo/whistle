@@ -643,8 +643,8 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 2. refactor: 优化导入导出saz文件的性能
 
 # v1.5.0
-1. feat: 支持通过命令行参数 `-M, --serverMode [count]` 开启 `w2 start -M`服务器模式，可以同时运行多个whistle，主要用于在服务器上部署多个代理供团队共同使用，具体参见：[whistle](https://avwo.github.io/whistle/rules/whistle.html)协议
-2. feat: Network新增 `Settings` 选项，用于设置缓存请求的目录及缓存请求的规则、Filter等
+1. feat: 支持多用户模式，主要用于部署在服务器共团队多人使用，及配置好环境让产品或测试等直接使用，具体参见：[whistle](https://avwo.github.io/whistle/users.html)协议
+2. feat: Network新增 `Settings` 选项，用于设置请求存储目录及获取历史请求、设置Filter等
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
