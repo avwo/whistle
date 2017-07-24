@@ -26,6 +26,8 @@
 
 whistle的安装请参见[whistle帮助文档](https://avwo.github.io/whistle/install.html)。
 
+快速入门可以直接看这篇文章：[whistle工具全程入门](http://imweb.io/topic/596480af33d7f9a94951744c)
+
 # 基本功能
 ![基本功能](https://raw.githubusercontent.com/avwo/whistleui/master/assets/functions.png)
 
