@@ -61,6 +61,7 @@
     "socksv5": "0.0.6",
     "starting": "^3.0.0",
     "weinre": "2.0.0-pre-I0Z7U9OV",
+    "ws": "^1.1.4",
     "xml2js": "0.4.17"
   },
   "scripts": {
