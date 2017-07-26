@@ -15,8 +15,9 @@ var DONT_CHECK_PATHS = ['/cgi-bin/server-info', '/cgi-bin/show-host-ip-in-res-he
 var PLUGIN_PATH_RE = /^\/(whistle|plugin)\.([a-z\d_\-]+)(\/)?/;
 var httpsUtil, proxyEvent, util, config, pluginMgr;
 var MAX_AGE = 60 * 60 * 24 * 3;
+var NAME_KEY = 'whistle_username';
 var AUTH_CONFIG = {
-  nameKey: 'whistle_username',
+  nameKey: NAME_KEY,
   authKey: 'whistle_lkey'
 };
 
@@ -48,16 +49,27 @@ function getLoginKey (req, res, auth) {
   return shasum([auth.username, auth.password, ip].join('\n'));
 }
 
-function checkAuth(req, res, auth) {
+function requireLogin(res) {
+  res.setHeader('WWW-Authenticate', ' Basic realm=User Login');
+  res.setHeader('Content-Type', 'text/html; charset=utf8');
+  res.status(401).end('Access denied, please <a href="javascript:;" onclick="location.reload()">try again</a>.');
+}
+
+function checkAuth(req, res, auth, isUser) {
   var username = auth.username;
   var password = auth.password;
   var nameKey = auth.nameKey;
   var authKey = auth.authKey;
 
   if (!username && !password) {
+    if (isUser) {
+      requireLogin(res);
+      return false;
+    }
     return true;
   }
-  var cookies = cookie.parse(req.headers.cookie || '');
+  var cookies = req.cookies || cookie.parse(req.headers.cookie || '');
+  req.cookies = cookies;
 
   var curName = cookies[nameKey];
   var lkey = cookies[authKey];
@@ -76,10 +88,7 @@ function checkAuth(req, res, auth) {
     res.setHeader('Set-Cookie', cookie.serialize(authKey, correctKey, options));
     return true;
   }
-
-  res.setHeader('WWW-Authenticate', ' Basic realm=User Login');
-  res.setHeader('Content-Type', 'text/html; charset=utf8');
-  res.status(401).end('Access denied, please <a href="javascript:;" onclick="location.reload()">try again</a>.');
+  requireLogin(res);
   return false;
 }
 
@@ -159,7 +168,12 @@ app.use(function(req, res, next) {
   }
   // AUTH_CONFIG.username = getUsername();
   // AUTH_CONFIG.password = getPassword();
-  if (isUserPath(req) && checkAuth(req, res, AUTH_CONFIG)) {
+  var cookies = cookie.parse(req.headers.cookie || '');
+  req.cookies = cookies;
+  var name = cookies[NAME_KEY];
+  AUTH_CONFIG.username = name;
+  AUTH_CONFIG.password = 'TODO';
+  if (isUserPath(req) && checkAuth(req, res, AUTH_CONFIG, true)) {
     return next();
   }
   AUTH_CONFIG.username = getUsername();
