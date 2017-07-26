@@ -2,11 +2,12 @@
   if (typeof window === 'undefined' || typeof Image === 'undefined') {
     return;
   }
-	var console = window.console = window.console || {};
-	if (console._whistleConsole) {
+
+	if (window._whistleConsole) {
 		return;
-	}
-	console._whistleConsole = true;
+  }
+  var console = window.console = window.console || {};
+	window._whistleConsole = console;
 	var JSON = window.JSON || patchJSON();
 	function patchJSON() {
 	    var JSON = {};
@@ -262,16 +263,22 @@
 				fn.apply(this, arguments);
 			};
 		})(level);
-	}
+  }
 
-	window.onerror = function(message, filename, lineno, colno, error) {
+  var onerror = function(message, filename, lineno, colno, error) {
 		var pageInfo = '\r\nPage Url: ' + location.href + '\r\nUser Agent: ' + navigator.userAgent;
 		if (error) {
 			console.error((error.stack || error.message) + pageInfo);
 		} else {
 			console.error('Error: ' + message + '(' + filename
 					+ ':' + lineno + ':' + (colno || 0) + ')' + pageInfo);
-		}
-	};
-
+    }
+  };
+  var attachOnError = function() {
+    if (window.onerror !== onerror) {
+      window.onerror = onerror;
+    }
+    setTimeout(attachOnError, 600);
+  };
+  attachOnError();
 })();
