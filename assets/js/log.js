@@ -267,6 +267,12 @@
           return;
         }
         pending = true;
+        var weinreFn = console['_weinre_' + level];
+        if (typeof weinreFn === 'function') {
+          try {
+            weinreFn.apply(this, arguments);
+          } catch (e) {}
+        }
         wFn.apply(null, arguments);
         fn.apply(this, arguments);
         pending = false;
@@ -283,9 +289,29 @@
 					+ ':' + lineno + ':' + (colno || 0) + ')' + pageInfo);
     }
   };
+  var isWeinreConsole = function(curConsole) {
+    if (curConsole === console || typeof curConsole.log !== 'function') {
+      return;
+    }
+    return curConsole.log.toString().indexOf('this._generic(MessageLevel.Log,') !== -1;
+  };
   var attachOnError = function() {
     if (window.onerror !== onerror) {
       window.onerror = onerror;
+    }
+    var curConsole = window.console;
+    if (!curConsole) {
+      window.console = console;
+    } else if (isWeinreConsole(curConsole)) {
+      for (var i = 0, len = levels.length; i < len; i++) {
+        var level = levels[i];
+		    var fn = console[level];
+        var curFn = curConsole[level];
+        if (fn !== curFn) {
+          console['_weinre_' + level] = curFn;
+          curConsole[level] = fn;
+        }
+      }
     }
     setTimeout(attachOnError, 600);
   };
