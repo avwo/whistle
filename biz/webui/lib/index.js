@@ -9,8 +9,9 @@ var crypto = require('crypto');
 var cookie = require('cookie');
 var htdocs = require('../htdocs');
 
-var DONT_CHECK_PATHS = ['/cgi-bin/server-info', '/cgi-bin/show-host-ip-in-res-headers',
-                        '/cgi-bin/lookup-tunnel-dns', '/cgi-bin/rootca', '/cgi-bin/log/set'];
+var DONT_CHECK_PATHS = ['/cgi-bin/server-info', '/cgi-bin/show-host-ip-in-res-headers', '/js/inject.js',
+                        '/cgi-bin/lookup-tunnel-dns', '/cgi-bin/rootca', '/cgi-bin/log/set',
+                        '/cgi-bin/get-users', '/cgi-bin/get-user-envs', '/cgi-bin/select-user-env'];
 var PLUGIN_PATH_RE = /^\/(whistle|plugin)\.([a-z\d_\-]+)(\/)?/;
 var httpsUtil, proxyEvent, util, config, pluginMgr;
 var MAX_AGE = 60 * 60 * 24 * 3;
@@ -19,8 +20,13 @@ var AUTH_CONFIG = {
   authKey: 'whistle_lkey'
 };
 
-function dontCheckPaths(req) {
-  return DONT_CHECK_PATHS.indexOf(req.path) != -1;
+function isUserPath(req) {
+  var path = req.path;
+  return path.indexOf('/cgi-bin/user/') === 0 || path.indexOf('/whistle/user/') === 0;
+}
+
+function doNotCheckLogin(req) {
+  return DONT_CHECK_PATHS.indexOf(req.path) !== -1;
 }
 
 function getUsername() {
@@ -148,9 +154,17 @@ app.use(bodyParser.json());
 
 
 app.use(function(req, res, next) {
+  if (doNotCheckLogin(req)) {
+    return next();
+  }
+  // AUTH_CONFIG.username = getUsername();
+  // AUTH_CONFIG.password = getPassword();
+  if (isUserPath(req) && checkAuth(req, res, AUTH_CONFIG)) {
+    return next();
+  }
   AUTH_CONFIG.username = getUsername();
   AUTH_CONFIG.password = getPassword();
-  if (dontCheckPaths(req) || checkAuth(req, res, AUTH_CONFIG)) {
+  if (checkAuth(req, res, AUTH_CONFIG)) {
     next();
   }
 });
