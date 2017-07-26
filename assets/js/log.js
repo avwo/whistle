@@ -7,7 +7,7 @@
 		return;
   }
   var console = window.console = window.console || {};
-	window._whistleConsole = console;
+	var wConsole = window._whistleConsole = {};
 	var JSON = window.JSON || patchJSON();
 	function patchJSON() {
 	    var JSON = {};
@@ -254,12 +254,15 @@
 		var level = levels[i];
 		var fn = console[level] || noop;
 		(function(level) {
-			console[level] = function() {
-				var result = [];
+      var wFn = wConsole[level] = function() {
+        var result = [];
 				for (var i = 0, len = arguments.length; i < len; i++) {
 					result[i] = stringify(arguments[i]);
 				}
 				addLog(level, result.join(' '));
+      };
+			console[level] = function() {
+        wFn.apply(null, arguments);
 				fn.apply(this, arguments);
 			};
 		})(level);
