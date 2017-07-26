@@ -254,6 +254,7 @@
 		var level = levels[i];
 		var fn = console[level] || noop;
 		(function(level) {
+      var pending;
       var wFn = wConsole[level] = function() {
         var result = [];
 				for (var i = 0, len = arguments.length; i < len; i++) {
@@ -262,8 +263,13 @@
 				addLog(level, result.join(' '));
       };
 			console[level] = function() {
+        if (pending) {
+          return;
+        }
+        pending = true;
         wFn.apply(null, arguments);
-				fn.apply(this, arguments);
+        fn.apply(this, arguments);
+        pending = false;
 			};
 		})(level);
   }
