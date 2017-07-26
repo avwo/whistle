@@ -2,11 +2,12 @@
   if (typeof window === 'undefined' || typeof Image === 'undefined') {
     return;
   }
-	var console = window.console = window.console || {};
-	if (console._whistleConsole) {
+
+	if (window._whistleConsole) {
 		return;
-	}
-	console._whistleConsole = true;
+  }
+  var console = window.console = window.console || {};
+	window._whistleConsole = console;
 	var JSON = window.JSON || patchJSON();
 	function patchJSON() {
 	    var JSON = {};
