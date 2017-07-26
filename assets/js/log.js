@@ -273,11 +273,11 @@
 					+ ':' + lineno + ':' + (colno || 0) + ')' + pageInfo);
     }
   };
-
-  window.onerror = onerror;
-  setInterval(function() {
+  var attachOnError = function() {
     if (window.onerror !== onerror) {
       window.onerror = onerror;
     }
-  }, 1000);
+    setTimeout(attachOnError, 600);
+  };
+  attachOnError();
 })();
