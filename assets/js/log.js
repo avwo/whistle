@@ -271,9 +271,9 @@
   var onerror = function(message, filename, lineno, colno, error) {
 		var pageInfo = '\r\nPage Url: ' + location.href + '\r\nUser Agent: ' + navigator.userAgent;
 		if (error) {
-			console.error((error.stack || error.message) + pageInfo);
+			wConsole.error((error.stack || error.message) + pageInfo);
 		} else {
-			console.error('Error: ' + message + '(' + filename
+			wConsole.error('Error: ' + message + '(' + filename
 					+ ':' + lineno + ':' + (colno || 0) + ')' + pageInfo);
     }
   };
