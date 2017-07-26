@@ -27,7 +27,7 @@ function isUserPath(req) {
 }
 
 function doNotCheckLogin(req) {
-  return DONT_CHECK_PATHS.indexOf(req.path) !== -1;
+  return req.path.indexOf('/js/') === 0 || DONT_CHECK_PATHS.indexOf(req.path) !== -1;
 }
 
 function getUsername() {
