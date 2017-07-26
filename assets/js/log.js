@@ -263,15 +263,40 @@
 			};
 		})(level);
 	}
-
-	window.onerror = function(message, filename, lineno, colno, error) {
+  var origError;
+  var pending;
+  var onerror = function(message, filename, lineno, colno, error) {
+    if (pending) {
+      return;
+    }
 		var pageInfo = '\r\nPage Url: ' + location.href + '\r\nUser Agent: ' + navigator.userAgent;
 		if (error) {
 			console.error((error.stack || error.message) + pageInfo);
 		} else {
 			console.error('Error: ' + message + '(' + filename
 					+ ':' + lineno + ':' + (colno || 0) + ')' + pageInfo);
-		}
-	};
+    }
+    if (typeof origError === 'function') {
+      pending = true;
+      var result;
+      try {
+        result = originError.apply(this, arguments);
+      } catch (e) {}
+      pending = false;
+      return result;
+    }
+  };
 
+  var resetError = function() {
+     origError = window.onerror;
+     window.onerror = onerror;
+  };
+
+  resetError();
+  setInterval(function() {
+    if (window.onerror === onerror) {
+      return;
+    }
+    resetError();
+  }, 1000);
 })();
