@@ -9,7 +9,7 @@ var crypto = require('crypto');
 var cookie = require('cookie');
 var htdocs = require('../htdocs');
 
-var DONT_CHECK_PATHS = ['/cgi-bin/server-info', '/cgi-bin/show-host-ip-in-res-headers', '/js/inject.js',
+var DONT_CHECK_PATHS = ['/cgi-bin/server-info', '/cgi-bin/show-host-ip-in-res-headers', '/env.html',
                         '/cgi-bin/lookup-tunnel-dns', '/cgi-bin/rootca', '/cgi-bin/log/set',
                         '/cgi-bin/get-users', '/cgi-bin/get-user-envs', '/cgi-bin/select-user-env'];
 var PLUGIN_PATH_RE = /^\/(whistle|plugin)\.([a-z\d_\-]+)(\/)?/;
@@ -23,11 +23,16 @@ var AUTH_CONFIG = {
 
 function isUserPath(req) {
   var path = req.path;
-  return path.indexOf('/cgi-bin/user/') === 0 || path.indexOf('/whistle/user/') === 0;
+  return path === '/user.html' || path.indexOf('/cgi-bin/user/') === 0
+    || path.indexOf('/whistle/user/') === 0;
 }
 
 function doNotCheckLogin(req) {
-  return req.path.indexOf('/js/') === 0 || DONT_CHECK_PATHS.indexOf(req.path) !== -1;
+  var path = req.path;
+  if (path.indexOf('/img/') === 0 || path.indexOf('/js/') === 0) {
+    return true;
+  }
+  return DONT_CHECK_PATHS.indexOf(path) !== -1;
 }
 
 function getUsername() {
@@ -173,7 +178,10 @@ app.use(function(req, res, next) {
   var name = cookies[NAME_KEY];
   AUTH_CONFIG.username = name;
   AUTH_CONFIG.password = 'TODO';
-  if (isUserPath(req) && checkAuth(req, res, AUTH_CONFIG, true)) {
+  if (isUserPath(req)) {
+    if (!checkAuth(req, res, AUTH_CONFIG, true)) {
+      return;
+    }
     return next();
   }
   AUTH_CONFIG.username = getUsername();
