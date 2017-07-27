@@ -13,7 +13,7 @@ var DONT_CHECK_PATHS = ['/cgi-bin/server-info', '/cgi-bin/show-host-ip-in-res-he
                         '/cgi-bin/lookup-tunnel-dns', '/cgi-bin/rootca', '/cgi-bin/log/set',
                         '/cgi-bin/get-users', '/cgi-bin/get-user-envs', '/cgi-bin/select-user-env'];
 var PLUGIN_PATH_RE = /^\/(whistle|plugin)\.([a-z\d_\-]+)(\/)?/;
-var httpsUtil, proxyEvent, util, config, pluginMgr;
+var httpsUtil, proxyEvent, util, config, pluginMgr, userMgr;
 var MAX_AGE = 60 * 60 * 24 * 3;
 var NAME_KEY = 'whistle_username';
 var AUTH_CONFIG = {
@@ -170,17 +170,18 @@ app.use(function(req, res, next) {
   if (doNotCheckLogin(req)) {
     return next();
   }
-  // AUTH_CONFIG.username = getUsername();
-  // AUTH_CONFIG.password = getPassword();
   var cookies = cookie.parse(req.headers.cookie || '');
   req.cookies = cookies;
   var name = cookies[NAME_KEY];
-  if (name) {
-    AUTH_CONFIG.username = name;
-    AUTH_CONFIG.password = 'TODO';
+  var user;
+  if (name && (user = userMgr.getUser(name))) {
+    AUTH_CONFIG.username = user.name;
+    AUTH_CONFIG.password = user.password;
   }
-  AUTH_CONFIG.username = '';
-  AUTH_CONFIG.password = '';
+  if (!user) {
+    AUTH_CONFIG.username = '';
+    AUTH_CONFIG.password = '';
+  }
   if (isUserPath(req)) {
     if (!checkAuth(req, res, AUTH_CONFIG, true)) {
       return;
@@ -215,6 +216,7 @@ module.exports = function(proxy) {
   proxyEvent = proxy;
   config = proxy.config;
   pluginMgr = proxy.pluginMgr;
+  userMgr = proxy.userMgr;
   var rulesUtil = proxy.rulesUtil;
 
   require('./proxy')(proxy);
