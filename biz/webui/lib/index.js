@@ -23,8 +23,7 @@ var AUTH_CONFIG = {
 
 function isUserPath(req) {
   var path = req.path;
-  return path === '/user.html' || path.indexOf('/cgi-bin/user/') === 0
-    || path.indexOf('/whistle/user/') === 0;
+  return path.indexOf('/cgi-bin/user/') === 0 || path.indexOf('/user') === 0;
 }
 
 function doNotCheckLogin(req) {
@@ -176,8 +175,12 @@ app.use(function(req, res, next) {
   var cookies = cookie.parse(req.headers.cookie || '');
   req.cookies = cookies;
   var name = cookies[NAME_KEY];
-  AUTH_CONFIG.username = name;
-  AUTH_CONFIG.password = 'TODO';
+  if (name) {
+    AUTH_CONFIG.username = name;
+    AUTH_CONFIG.password = 'TODO';
+  }
+  AUTH_CONFIG.username = '';
+  AUTH_CONFIG.password = '';
   if (isUserPath(req)) {
     if (!checkAuth(req, res, AUTH_CONFIG, true)) {
       return;
