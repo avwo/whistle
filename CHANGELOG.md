@@ -644,6 +644,8 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 
 # v1.4.21
 1. feat: [ignore](https://avwo.github.io/whistle/rules/ignore.html)支持 `pattern ignore://http|https|tunnel|ws|wss` 等协议
+2. refactor: 支持同时设置 [log](https://avwo.github.io/whistle/webui/log.html) 和 [weinre](https://avwo.github.io/whistle/webui/weinre.html) 
+3. fix: [nodejs/node#13539](https://github.com/nodejs/node/issues/13539)
 
 
 ### -

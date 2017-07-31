@@ -16,9 +16,12 @@
 
 > 当前whistle的最新版本为[v1.4.21](https://github.com/avwo/whistle/blob/master/CHANGELOG.md#-)，确保能使用whistle的所有功能，尽量使用最新版本的whistle，且建议使用 `Node v6` 或以上版本，否则性能及在Chrome或APP上[抓包HTTPS请求](https://avwo.github.io/whistle/webui/https.html)会有问题。
 
-> 如果出现HTTPS的问题([#44](https://github.com/avwo/whistle/issues/44))，升级Node到 `v6` 及以上版本，[更新whistle](https://avwo.github.io/whistle/update.html)到最新版本，通过 `w2 restart -A` (注意后面加 `-A`)启动生成新的更证书，再[安装下根证书](https://avwo.github.io/whistle/webui/https.html)即可，注意：在iOS上安装根证书时，需要先关闭[https拦截](https://avwo.github.io/whistle/webui/https.html)，否则将显示安装失败.
+> 如果出现HTTPS的问题([#44](https://github.com/avwo/whistle/issues/44))，升级Node到 `v6` 及以上版本，[更新whistle](https://avwo.github.io/whistle/update.html)到最新版本，通过 `w2 restart -A` (注意后面加 `-A`)启动生成新的更证书，再[安装下根证书](https://avwo.github.io/whistle/webui/https.html)即可
+
+> **注意：在iOS上安装根证书时，需要先关闭[https拦截](https://avwo.github.io/whistle/webui/https.html)，否则将显示安装失败*
  
-> 某些版本的Node有bug，遇到这种情况更新下Node即可：[#48](https://github.com/avwo/whistle/issues/48)
+> 某些版本的Node有bug，遇到这种情况更新下Node即可：[#48](https://github.com/avwo/whistle/issues/48)，由于Node8的[bug](https://github.com/nodejs/node/issues/13539)
+可能导致whistle自动退出,Node8用户[请更新whistle到最新版本(>=v1.4.21)](https://avwo.github.io/whistle/update.html)
 
 > 其它问题也可以加QQ群讨论: **462558941**
 
