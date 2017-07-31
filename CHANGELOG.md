@@ -647,6 +647,10 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 2. refactor: 支持同时设置 [log](https://avwo.github.io/whistle/webui/log.html) 和 [weinre](https://avwo.github.io/whistle/webui/weinre.html) 
 3. fix: https://github.com/nodejs/node/issues/13539
 
+# v1.5.0
+1. feat: 支持多用户模式，主要用于部署在服务器共团队多人使用，及配置好环境让产品或测试等直接使用，具体参见：[users](https://avwo.github.io/whistle/users.html)协议
+2. feat: 去掉 `Filter` 菜单，改为 `Settings` 菜单，支持设置多种过滤条件及自定义表格字段
+3. feat: Network多选是在Overview里面显示统计信息
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
