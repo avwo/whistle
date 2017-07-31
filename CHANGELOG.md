@@ -636,11 +636,14 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 2. refactor: Values中名称形如 `xxx.rules` 的key作为正常的rules文件处理
 3. style: Hover到顶部 `Help` 按钮显示帮助文档列表 
 
-# v1.4.20
+### v1.4.20
 1. feat: 
 	- 支持插件通过${ruleKey}内联规则
 	- 命令行添加参数 `-D, -baseDir` 用于指定whistle的存储目录，默认为 `~/.WhistleAppData` 
 2. refactor: 优化导入导出saz文件的性能
+
+# v1.4.21
+1. feat: [ignore](https://avwo.github.io/whistle/rules/ignore.html)支持 `pattern ignore://http|https|tunnel|ws|wss` 等协议
 
 
 ### -
