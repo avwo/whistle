@@ -9,29 +9,18 @@ var crypto = require('crypto');
 var cookie = require('cookie');
 var htdocs = require('../htdocs');
 
-var DONT_CHECK_PATHS = ['/cgi-bin/server-info', '/cgi-bin/show-host-ip-in-res-headers', '/env.html',
-                        '/cgi-bin/lookup-tunnel-dns', '/cgi-bin/rootca', '/cgi-bin/log/set',
-                        '/cgi-bin/get-users', '/cgi-bin/get-user-envs', '/cgi-bin/select-user-env'];
+var DONT_CHECK_PATHS = ['/cgi-bin/server-info', '/cgi-bin/show-host-ip-in-res-headers',
+                        '/cgi-bin/lookup-tunnel-dns', '/cgi-bin/rootca', '/cgi-bin/log/set'];
 var PLUGIN_PATH_RE = /^\/(whistle|plugin)\.([a-z\d_\-]+)(\/)?/;
-var httpsUtil, proxyEvent, util, config, pluginMgr, userMgr;
+var httpsUtil, proxyEvent, util, config, pluginMgr;
 var MAX_AGE = 60 * 60 * 24 * 3;
-var NAME_KEY = 'whistle_username';
 var AUTH_CONFIG = {
-  nameKey: NAME_KEY,
+  nameKey: 'whistle_username',
   authKey: 'whistle_lkey'
 };
 
-function isUserPath(req) {
-  var path = req.path;
-  return path.indexOf('/cgi-bin/user/') === 0 || path.indexOf('/user') === 0;
-}
-
 function doNotCheckLogin(req) {
-  var path = req.path;
-  if (path.indexOf('/img/') === 0 || path.indexOf('/js/') === 0) {
-    return true;
-  }
-  return DONT_CHECK_PATHS.indexOf(path) !== -1;
+  return DONT_CHECK_PATHS.indexOf(req.path) !== -1;
 }
 
 function getUsername() {
@@ -59,22 +48,16 @@ function requireLogin(res) {
   res.status(401).end('Access denied, please <a href="javascript:;" onclick="location.reload()">try again</a>.');
 }
 
-function checkAuth(req, res, auth, isUser) {
+function checkAuth(req, res, auth) {
   var username = auth.username;
   var password = auth.password;
   var nameKey = auth.nameKey;
   var authKey = auth.authKey;
 
   if (!username && !password) {
-    if (isUser) {
-      requireLogin(res);
-      return false;
-    }
     return true;
   }
-  var cookies = req.cookies || cookie.parse(req.headers.cookie || '');
-  req.cookies = cookies;
-
+  var cookies = cookie.parse(req.headers.cookie || '');
   var curName = cookies[nameKey];
   var lkey = cookies[authKey];
   var correctKey = getLoginKey(req, res, auth);
@@ -170,24 +153,7 @@ app.use(function(req, res, next) {
   if (doNotCheckLogin(req)) {
     return next();
   }
-  var cookies = cookie.parse(req.headers.cookie || '');
-  req.cookies = cookies;
-  var name = cookies[NAME_KEY];
-  var user;
-  if (name && (user = userMgr.getUser(name))) {
-    AUTH_CONFIG.username = user.name;
-    AUTH_CONFIG.password = user.password;
-  }
-  if (!user) {
-    AUTH_CONFIG.username = '';
-    AUTH_CONFIG.password = '';
-  }
-  if (isUserPath(req)) {
-    if (!checkAuth(req, res, AUTH_CONFIG, true)) {
-      return;
-    }
-    return next();
-  }
+
   AUTH_CONFIG.username = getUsername();
   AUTH_CONFIG.password = getPassword();
   if (checkAuth(req, res, AUTH_CONFIG)) {
@@ -216,7 +182,6 @@ module.exports = function(proxy) {
   proxyEvent = proxy;
   config = proxy.config;
   pluginMgr = proxy.pluginMgr;
-  userMgr = proxy.userMgr;
   var rulesUtil = proxy.rulesUtil;
 
   require('./proxy')(proxy);
