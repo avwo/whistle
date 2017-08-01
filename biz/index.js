@@ -3,11 +3,6 @@ var util = require('../lib/util');
 
 module.exports = function(req, res, next) {
   var config = this.config;
-  if (req.path.indexOf(config.USER_PATH_PREFIX) === 0) {
-    req.url = req.url.replace(config.USER_PATH_PREFIX, '/');
-    util.transformReq(req, res, logPort || config.uiport);
-    return;
-  }
   var host = (req.headers.host || '').split(':');
   var port = host[1] || 80;
   host = host[0];
