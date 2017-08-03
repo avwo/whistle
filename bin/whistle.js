@@ -35,9 +35,9 @@ function info(msg) {
 function showUsage(isRunning, options, restart) {
   var port = options.port || config.port;
   if (isRunning) {
-    warn('[!] ' + config.name + ' is running');
+    warn('[!] ' + config.name + '@' + config.version + ' is running');
   } else {
-    info('[i] ' + config.name + (restart ? ' restarted' : ' started'));
+    info('[i] ' + config.name + '@' + config.version + (restart ? ' restarted' : ' started'));
   }
 
   info('[i] First, use your device to visit the following URL list, gets the ' + colors.bold('IP') + ' of the URL you can visit:');
