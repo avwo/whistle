@@ -19,7 +19,7 @@ module.exports = function() {
   util.request('http://local.whistlejs.com/cgi-bin/root?doNotParseJson', function(res) {
     res.statusCode.should.be.equal(500);
   });
- 
+
   util.request('https://local.whistlejs.com/index.html?doNotParseJson');
   util.request('https://local.whistlejs.com:1234/index.html?doNotParseJson');
   util.request('https://local.whistlejs.com/cgi-bin/log/get');
@@ -243,7 +243,7 @@ module.exports = function() {
     url: 'http://local.whistlejs.com/cgi-bin/rules/get-sys-hosts',
     method: 'post'
   });
-  
+
 
   util.request('http://local.wproxy.org:1234/index.html?doNotParseJson');
   util.request('http://local.wproxy.org:1234/index.html?doNotParseJson');
@@ -255,7 +255,7 @@ module.exports = function() {
   util.request('http://local.wproxy.org:1234/cgi-bin/values/list');
   util.request('http://local.wproxy.org:1234/cgi-bin/plugins/get-plugins');
   util.request('http://local.wproxy.org:1234/cgi-bin/rules/list');
-  
+
   util.request('https://local.wproxy.org:1234/index.html?doNotParseJson');
   util.request('https://local.wproxy.org:1234/index.html?doNotParseJson');
   util.request('https://local.wproxy.org:1234/cgi-bin/log/get');
@@ -478,7 +478,7 @@ module.exports = function() {
   util.request('http://local.whistle.com/cgi-bin/values/list');
   util.request('http://local.whistle.com/cgi-bin/plugins/get-plugins');
   util.request('http://local.whistle.com/cgi-bin/rules/list');
-  
+
   util.request('https://local.whistle.com/index.html?doNotParseJson');
   util.request('https://local.whistle.com:1234/index.html?doNotParseJson');
   util.request('https://local.whistle.com/cgi-bin/log/get');
