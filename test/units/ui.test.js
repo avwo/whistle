@@ -97,17 +97,11 @@ module.exports = function() {
     method: 'post'
   });
   util.request({
-    url: 'http://local.whistlejs.com/cgi-bin/values/move-up',
+    url: 'http://local.whistlejs.com/cgi-bin/values/move-to',
     method: 'post',
     form: {
-      name: 'test'
-    }
-  });
-  util.request({
-    url: 'http://local.whistlejs.com/cgi-bin/values/move-down',
-    method: 'post',
-    form: {
-      name: 'test'
+      to: 'test',
+      from: 'abc'
     }
   });
   util.request({
@@ -228,11 +222,7 @@ module.exports = function() {
     method: 'post'
   });
   util.request({
-    url: 'http://local.whistlejs.com/cgi-bin/rules/move-down',
-    method: 'post'
-  });
-  util.request({
-    url: 'http://local.whistlejs.com/cgi-bin/rules/move-up',
+    url: 'http://local.whistlejs.com/cgi-bin/rules/move-to',
     method: 'post'
   });
   util.request({
@@ -316,17 +306,11 @@ module.exports = function() {
     method: 'post'
   });
   util.request({
-    url: 'http://local.wproxy.org:1234/cgi-bin/values/move-up',
+    url: 'http://local.wproxy.org:1234/cgi-bin/values/move-to',
     method: 'post',
     form: {
-      name: 'test'
-    }
-  });
-  util.request({
-    url: 'http://local.wproxy.org:1234/cgi-bin/values/move-down',
-    method: 'post',
-    form: {
-      name: 'test'
+      to: 'test',
+      from: 'abc'
     }
   });
   util.request({
@@ -447,11 +431,7 @@ module.exports = function() {
     method: 'post'
   });
   util.request({
-    url: 'http://local.wproxy.org:1234/cgi-bin/rules/move-down',
-    method: 'post'
-  });
-  util.request({
-    url: 'http://local.wproxy.org:1234/cgi-bin/rules/move-up',
+    url: 'http://local.wproxy.org:1234/cgi-bin/rules/move-to',
     method: 'post'
   });
   util.request({
@@ -535,17 +515,11 @@ module.exports = function() {
     method: 'post'
   });
   util.request({
-    url: 'http://local.whistle.com/cgi-bin/values/move-up',
+    url: 'http://local.whistle.com/cgi-bin/values/move-to',
     method: 'post',
     form: {
-      name: 'test'
-    }
-  });
-  util.request({
-    url: 'http://local.whistle.com/cgi-bin/values/move-down',
-    method: 'post',
-    form: {
-      name: 'test'
+      to: 'test',
+      from: 'abc'
     }
   });
   util.request({
@@ -662,11 +636,7 @@ module.exports = function() {
     method: 'post'
   });
   util.request({
-    url: 'http://local.whistle.com/cgi-bin/rules/move-down',
-    method: 'post'
-  });
-  util.request({
-    url: 'http://local.whistle.com/cgi-bin/rules/move-up',
+    url: 'http://local.whistle.com/cgi-bin/rules/move-to',
     method: 'post'
   });
   util.request({

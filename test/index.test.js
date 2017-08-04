@@ -84,7 +84,8 @@ var proxy = startWhistle({
     test: {
       rules: 'test.options.com file://{options.html}',
       enable: true
-    }
+    },
+    abc: '123'
   },
   values: values,
   copy: true
