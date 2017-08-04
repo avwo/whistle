@@ -1,5 +1,6 @@
-// var rules = require('../../lib/rules');
+var rules = require('../../lib/rules');
 
 module.exports = function(req, res) {
-  res.json({ec: 0, em: 'success'});
+  var result = rules.moveTo(req.body.from, req.body.to);
+  res.json({ec: result ? 0 : 2, em: 'success'});
 };

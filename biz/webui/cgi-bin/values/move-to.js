@@ -1,5 +1,6 @@
-// var values = require('../../lib/values');
+var values = require('../../lib/values');
 
 module.exports = function(req, res) {
-  res.json({ec: 0, em: 'success'});
+  var result = values.moveTo(req.body.from, req.body.to);
+  res.json({ec: result ? 0 : 2, em: 'success'});
 };
