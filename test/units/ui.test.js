@@ -212,10 +212,6 @@ module.exports = function() {
     }
   });
   util.request({
-    url: 'http://local.whistlejs.com/cgi-bin/set-filter',
-    method: 'post'
-  });
-  util.request({
     url: 'http://local.whistlejs.com/cgi-bin/intercept-https-connects',
     method: 'post'
   });
@@ -435,10 +431,6 @@ module.exports = function() {
     }
   });
   util.request({
-    url: 'http://local.wproxy.org:1234/cgi-bin/set-filter',
-    method: 'post'
-  });
-  util.request({
     url: 'http://local.wproxy.org:1234/cgi-bin/intercept-https-connects',
     method: 'post'
   });
@@ -652,10 +644,6 @@ module.exports = function() {
     form: {
       url: 'http://test.whistlejs.com/'
     }
-  });
-  util.request({
-    url: 'http://local.whistle.com/cgi-bin/set-filter',
-    method: 'post'
   });
   util.request({
     url: 'http://local.whistle.com/cgi-bin/intercept-https-connects',
