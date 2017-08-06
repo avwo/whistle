@@ -650,7 +650,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 # v1.5.0
 1. feat: 支持Network的表头及Rules、Values列表拖拽排序
 2. feat: 去掉 `Filter` 菜单，改为 `Settings` 菜单，支持设置多种过滤条件及自定义表格字段，详见：[Settings](https://avwo.github.io/whistle/webui/settings.html)
-3. feat: Network多选是在Overview里面显示统计信息
+3. feat([#56](https://github.com/avwo/whistle/issues/56)): Network多选是在Overview里面显示统计信息
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
