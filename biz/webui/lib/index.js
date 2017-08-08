@@ -33,13 +33,17 @@ function getPassword() {
 
 function shasum(str) {
   var shasum = crypto.createHash('sha1');
-  shasum.update(str);
+  shasum.update(str || '');
   return shasum.digest('hex');
 }
 
 function getLoginKey (req, res, auth) {
   var ip = util.getClientIp(req, true);
-  return shasum([auth.username, auth.password, ip].join('\n'));
+  var password = auth.password;
+  if (config.encrypted) {
+    password = shasum(password);
+  }
+  return shasum([auth.username, password, ip].join('\n'));
 }
 
 function requireLogin(res) {
@@ -65,6 +69,9 @@ function checkAuth(req, res, auth) {
     return true;
   }
   auth = getAuth(req) || {};
+  if (config.encrypted) {
+    auth.pass = shasum(auth.pass);
+  }
   if (auth.name === username && auth.pass === password) {
     var options = {
       expires: new Date(Date.now() + (MAX_AGE * 1000)),
