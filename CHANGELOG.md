@@ -647,10 +647,14 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 2. refactor: 支持同时设置 [log](https://avwo.github.io/whistle/webui/log.html) 和 [weinre](https://avwo.github.io/whistle/webui/weinre.html) 
 3. fix: https://github.com/nodejs/node/issues/13539
 
-# v1.5.0
+### v1.5.0
 1. feat: 支持Network的表头及Rules、Values列表拖拽排序
 2. feat: 去掉 `Filter` 菜单，改为 `Settings` 菜单，支持设置多种过滤条件及自定义表格字段，详见：[Settings](https://avwo.github.io/whistle/webui/settings.html)
 3. feat([#56](https://github.com/avwo/whistle/issues/56)): Network多选是在Overview里面显示统计信息
+
+# v1.5.1
+1. fix([#58](https://github.com/avwo/whistle/issues/58)): `w2 restart -S xxx -C` 会导致文件被清空的问题
+2. fix: Settings的输入框按 `Ctrl+D` 清空后无法同步的本地存储的问题 
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
