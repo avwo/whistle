@@ -1,4 +1,4 @@
-var startWeinre = require('weinre').run;
+var startWeinre = require('weinre2').run;
 
 module.exports = function init(server) {
   startWeinre({
