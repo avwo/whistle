@@ -1,6 +1,7 @@
+var startWeinre = require('weinre').run;
 
 module.exports = function init(server) {
-  require('E:/workbench/workspace/github/weinre').run({
+  startWeinre({
     server: server,
     verbose: false,
     debug: false,
