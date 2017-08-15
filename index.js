@@ -1,4 +1,5 @@
 var net = require('net');
+var tls = require('tls');
 var res = require('http').OutgoingMessage.prototype;
 
 var ver = process.version.substring(1).split('.');
@@ -21,6 +22,19 @@ if (ver[0] >= 7 && ver[1] >= 7) {
       return connect.apply(this, arguments);
     };
   }
+}
+
+//see: https://github.com/joyent/node/issues/9272
+process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
+if (typeof tls.checkServerIdentity == 'function') {
+  var checkServerIdentity = tls.checkServerIdentity;
+  tls.checkServerIdentity = function() {
+    try {
+      return checkServerIdentity.apply(this, arguments);
+    } catch(err) {
+      return err;
+    }
+  };
 }
 
 function isPipeName(s) {
