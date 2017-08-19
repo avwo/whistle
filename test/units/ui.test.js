@@ -82,21 +82,6 @@ module.exports = function() {
     }
   });
   util.request({
-    url: 'http://local.whistlejs.com/cgi-bin/values/set-font-size',
-    method: 'post',
-    form: {
-      valuesFontSize: '14px'
-    }
-  });
-  util.request({
-    url: 'http://local.whistlejs.com/cgi-bin/values/set-theme',
-    method: 'post'
-  });
-  util.request({
-    url: 'http://local.whistlejs.com/cgi-bin/values/show-line-numbers',
-    method: 'post'
-  });
-  util.request({
     url: 'http://local.whistlejs.com/cgi-bin/values/move-to',
     method: 'post',
     form: {
@@ -161,18 +146,6 @@ module.exports = function() {
     form: {
       name: 'test'
     }
-  });
-  util.request({
-    url: 'http://local.whistlejs.com/cgi-bin/rules/set-font-size',
-    method: 'post'
-  });
-  util.request({
-    url: 'http://local.whistlejs.com/cgi-bin/rules/set-theme',
-    method: 'post'
-  });
-  util.request({
-    url: 'http://local.whistlejs.com/cgi-bin/rules/show-line-numbers',
-    method: 'post'
   });
   util.request({
     url: 'http://local.whistlejs.com/cgi-bin/rules/unselect',
@@ -291,21 +264,6 @@ module.exports = function() {
     }
   });
   util.request({
-    url: 'http://local.wproxy.org:1234/cgi-bin/values/set-font-size',
-    method: 'post',
-    form: {
-      valuesFontSize: '14px'
-    }
-  });
-  util.request({
-    url: 'http://local.wproxy.org:1234/cgi-bin/values/set-theme',
-    method: 'post'
-  });
-  util.request({
-    url: 'http://local.wproxy.org:1234/cgi-bin/values/show-line-numbers',
-    method: 'post'
-  });
-  util.request({
     url: 'http://local.wproxy.org:1234/cgi-bin/values/move-to',
     method: 'post',
     form: {
@@ -370,18 +328,6 @@ module.exports = function() {
     form: {
       name: 'test'
     }
-  });
-  util.request({
-    url: 'http://local.wproxy.org:1234/cgi-bin/rules/set-font-size',
-    method: 'post'
-  });
-  util.request({
-    url: 'http://local.wproxy.org:1234/cgi-bin/rules/set-theme',
-    method: 'post'
-  });
-  util.request({
-    url: 'http://local.wproxy.org:1234/cgi-bin/rules/show-line-numbers',
-    method: 'post'
   });
   util.request({
     url: 'http://local.wproxy.org:1234/cgi-bin/rules/unselect',
@@ -500,21 +446,6 @@ module.exports = function() {
     }
   });
   util.request({
-    url: 'http://local.whistle.com/cgi-bin/values/set-font-size',
-    method: 'post',
-    form: {
-      valuesFontSize: '14px'
-    }
-  });
-  util.request({
-    url: 'http://local.whistle.com/cgi-bin/values/set-theme',
-    method: 'post'
-  });
-  util.request({
-    url: 'http://local.whistle.com/cgi-bin/values/show-line-numbers',
-    method: 'post'
-  });
-  util.request({
     url: 'http://local.whistle.com/cgi-bin/values/move-to',
     method: 'post',
     form: {
@@ -579,18 +510,6 @@ module.exports = function() {
     form: {
       name: 'test'
     }
-  });
-  util.request({
-    url: 'http://local.whistle.com/cgi-bin/rules/set-font-size',
-    method: 'post'
-  });
-  util.request({
-    url: 'http://local.whistle.com/cgi-bin/rules/set-theme',
-    method: 'post'
-  });
-  util.request({
-    url: 'http://local.whistle.com/cgi-bin/rules/show-line-numbers',
-    method: 'post'
   });
   util.request({
     url: 'http://local.whistle.com/cgi-bin/rules/unselect',
