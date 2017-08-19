@@ -656,8 +656,11 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 1. fix([#58](https://github.com/avwo/whistle/issues/58)): `w2 restart -S xxx -C` 会导致文件被清空的问题
 2. fix: Settings的输入框按 `Ctrl+D` 清空后无法同步的本地存储的问题 
 
-# v1.5.2
+### v1.5.2
 1. fix: 更新weinre，解决安装whistle提示express@2.x及connect@2.x deprecated的提醒
+
+# v1.5.3
+1. refactor: 更改DNS的缓存策略，统一缓存30s
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
