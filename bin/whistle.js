@@ -112,6 +112,7 @@ program
   .option('-w, --password [password]', 'login password', String, undefined)
   .option('-S, --storage [newStorageDir]', 'the new local storage directory', String, undefined)
   .option('-C, --copy [storageDir]', 'copy storageDir to newStorageDir', String, undefined)
+  .option('-c, --dnsCache [time]', 'the cache time of dns', String, undefined)
   .option('-p, --port [port]', config.name + ' port (' + config.port + ' by default)', parseInt, undefined)
   .option('-m, --middlewares [script path or module name]', 'express middlewares path (as: xx,yy/zz.js)', String, undefined)
   .option('-u, --uipath [script path]', 'web ui plugin path', String, undefined)
