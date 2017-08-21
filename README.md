@@ -14,7 +14,7 @@
 [![David deps](https://img.shields.io/david/avwo/whistle.svg?style=flat-square)](https://david-dm.org/avwo/whistle)
 [![License](https://img.shields.io/npm/l/whistle.svg?style=flat-square)](https://www.npmjs.com/package/whistle)
 
-> 当前whistle的最新版本为[v1.5.3](https://github.com/avwo/whistle/blob/master/CHANGELOG.md#-)，确保能使用whistle的所有功能，尽量使用最新版本的whistle，且建议使用 `Node v6` 或以上版本，否则性能及在Chrome或APP上[抓包HTTPS请求](https://avwo.github.io/whistle/webui/https.html)会有问题。
+> 当前whistle的最新版本为[v1.5.4](https://github.com/avwo/whistle/blob/master/CHANGELOG.md#-)，确保能使用whistle的所有功能，尽量使用最新版本的whistle，且建议使用 `Node v6` 或以上版本，否则性能及在Chrome或APP上[抓包HTTPS请求](https://avwo.github.io/whistle/webui/https.html)会有问题。
 
 > 如果出现HTTPS的问题([#44](https://github.com/avwo/whistle/issues/44))，升级Node到 `v6` 及以上版本，[更新whistle](https://avwo.github.io/whistle/update.html)到最新版本，通过 `w2 restart -A` (注意后面加 `-A`)启动生成新的更证书，再[安装下根证书](https://avwo.github.io/whistle/webui/https.html)即可
 

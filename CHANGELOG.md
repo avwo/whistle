@@ -659,8 +659,11 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 ### v1.5.2
 1. fix: 更新weinre，解决安装whistle提示express@2.x及connect@2.x deprecated的提醒
 
-# v1.5.3
+### v1.5.3
 1. refactor: 更改DNS的缓存策略，默认缓存30000ms，可以通过启动参数 `-c 600000` 修改缓存时间，时间单位为ms
+
+# v1.5.4
+1. fix: 编辑器设置显示行数的问题
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
