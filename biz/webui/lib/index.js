@@ -88,10 +88,14 @@ function checkAuth(req, res, auth) {
 
 app.use(function(req, res, next) {
   proxyEvent.emit('_request', req.url);
+  var done;
   req.on('error', abort).on('close', abort);
   res.on('error', abort);
   function abort() {
-    res.destroy();
+    if (!done) {
+      done = true;
+      res.destroy();
+    }
   }
   var referer = req.headers.referer;
   var options = parseurl(req);
