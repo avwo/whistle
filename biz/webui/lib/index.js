@@ -88,12 +88,12 @@ function checkAuth(req, res, auth) {
 
 app.use(function(req, res, next) {
   proxyEvent.emit('_request', req.url);
-  var done;
+  var aborted;
   req.on('error', abort).on('close', abort);
   res.on('error', abort);
   function abort() {
-    if (!done) {
-      done = true;
+    if (!aborted) {
+      aborted = true;
       res.destroy();
     }
   }
