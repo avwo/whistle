@@ -1,6 +1,7 @@
 var rules = require('../../lib/rules');
 
 module.exports = function(req, res) {
-  rules.add(req.body.name, req.body.value);
+  var body = req.body;
+  rules.add(body.name, body.value, body.clientId);
   res.json({ec: 0, em: 'success'});
 };

@@ -19,6 +19,8 @@ module.exports = function(req, res) {
   res.json({
     ec: 0,
     version: config.version,
+    mclient: config.mclient,
+    mtime: config.mtime,
     server: util.getServerInfo(req),
     log: proxy.getLogs(data.startLogTime, data.count),
     svrLog: logger.getLogs(data.startSvrLogTime, data.count),

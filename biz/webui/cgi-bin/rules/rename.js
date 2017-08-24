@@ -1,6 +1,7 @@
 var rules = require('../../lib/rules');
 
 module.exports = function(req, res) {
-  rules.rename(req.body.name, req.body.newName);
+  var body = req.body;
+  rules.rename(body.name, body.newName, body.clientId);
   res.json({ec: 0, em: 'success'});
 };

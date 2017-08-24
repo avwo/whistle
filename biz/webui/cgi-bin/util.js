@@ -5,7 +5,7 @@ var properties = require('../lib/properties');
 var index = 0;
 
 exports.getClientId = function() {
-  if (index > 999) {
+  if (index > 9999) {
     index = 0;
   }
   return Date.now() + '-' + index++;
