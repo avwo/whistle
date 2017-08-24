@@ -8,7 +8,7 @@ exports.getClientId = function() {
   if (index > 999) {
     index = 0;
   }
-  return Date.now() + index++;
+  return Date.now() + '-' + index++;
 };
 
 exports.getServerInfo = function getServerInfo(req) {
