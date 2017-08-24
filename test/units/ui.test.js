@@ -75,13 +75,6 @@ module.exports = function() {
     });
   });
   util.request({
-    url: 'http://local.whistlejs.com/cgi-bin/values/set-current',
-    method: 'post',
-    form: {
-      name: 'test'
-    }
-  });
-  util.request({
     url: 'http://local.whistlejs.com/cgi-bin/values/move-to',
     method: 'post',
     form: {
@@ -135,13 +128,6 @@ module.exports = function() {
   });
   util.request({
     url: 'http://local.whistlejs.com/cgi-bin/rules/select',
-    method: 'post',
-    form: {
-      name: 'test'
-    }
-  });
-  util.request({
-    url: 'http://local.whistlejs.com/cgi-bin/rules/set-current',
     method: 'post',
     form: {
       name: 'test'
@@ -257,13 +243,6 @@ module.exports = function() {
     });
   });
   util.request({
-    url: 'http://local.wproxy.org:1234/cgi-bin/values/set-current',
-    method: 'post',
-    form: {
-      name: 'test'
-    }
-  });
-  util.request({
     url: 'http://local.wproxy.org:1234/cgi-bin/values/move-to',
     method: 'post',
     form: {
@@ -317,13 +296,6 @@ module.exports = function() {
   });
   util.request({
     url: 'http://local.wproxy.org:1234/cgi-bin/rules/select',
-    method: 'post',
-    form: {
-      name: 'test'
-    }
-  });
-  util.request({
-    url: 'http://local.wproxy.org:1234/cgi-bin/rules/set-current',
     method: 'post',
     form: {
       name: 'test'
@@ -439,13 +411,6 @@ module.exports = function() {
     });
   });
   util.request({
-    url: 'http://local.whistle.com/cgi-bin/values/set-current',
-    method: 'post',
-    form: {
-      name: 'test'
-    }
-  });
-  util.request({
     url: 'http://local.whistle.com/cgi-bin/values/move-to',
     method: 'post',
     form: {
@@ -499,13 +464,6 @@ module.exports = function() {
   });
   util.request({
     url: 'http://local.whistle.com/cgi-bin/rules/select',
-    method: 'post',
-    form: {
-      name: 'test'
-    }
-  });
-  util.request({
-    url: 'http://local.whistle.com/cgi-bin/rules/set-current',
     method: 'post',
     form: {
       name: 'test'
