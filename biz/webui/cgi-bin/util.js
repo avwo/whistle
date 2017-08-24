@@ -2,6 +2,15 @@ var util = require('../lib/util');
 var config = require('../lib/config');
 var properties = require('../lib/properties');
 
+var index = 0;
+
+exports.getClientId = function() {
+  if (index > 999) {
+    index = 0;
+  }
+  return Date.now() + index++;
+};
+
 exports.getServerInfo = function getServerInfo(req) {
   var info = {
     version: config.version,
