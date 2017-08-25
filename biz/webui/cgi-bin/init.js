@@ -9,8 +9,10 @@ module.exports = function(req, res) {
   res.json({
     version: config.version,
     clientId: util.getClientId(),
-    mclient: config.mclient,
-    mtime: config.mtime,
+    mrulesClientId: config.mrulesClientId,
+    mrulesTime: config.mrulesTime,
+    mvaluesClientId: config.mvaluesClientId,
+    mvaluesTime: config.mvaluesTime,
     latestVersion: properties.get('latestVersion'),
     server: util.getServerInfo(req),
     rules: getRules(),
