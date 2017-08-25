@@ -1,5 +1,5 @@
-var rules = require('../../lib/rules');
+var get = require('./index');
 
 module.exports = function(req, res) {
-  res.json({ ec: 0, list: rules.list() });
+  res.json(get());
 };

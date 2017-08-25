@@ -1,5 +1,5 @@
-var values = require('../../lib/values');
+var get = require('./index');
 
 module.exports = function(req, res) {
-  res.json({ ec: 0, list: values.list() });
+  res.json(get());
 };
