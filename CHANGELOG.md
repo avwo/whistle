@@ -671,6 +671,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 # v1.5.6
 1. refactor([issue#36](https://github.com/avwo/whistle/issues/36)): 打开多个页面时操作时，把修改信息实时同步给其它页面
 2. refactor: 把列表选择信息存储到localStorage
+3. feat: 显示客户端的端口号和服务器的端口号
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
