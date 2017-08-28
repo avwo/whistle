@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Session SID="${SID}">
   <SessionTimers ClientConnected="${ClientConnected}"
-   ClientDoneRequest="${ClientDoneRequest}" GatewayTime="${GatewayTime}" 
-   DNSTime="${DNSTime}" TCPConnectTime="${TCPConnectTime}" 
-   ServerGotRequest="${ServerGotRequest}" 
-   ServerBeginResponse="${ServerBeginResponse}" 
-   ServerDoneResponse="${ServerDoneResponse}" 
-   ClientBeginResponse="${ClientBeginResponse}" 
+   ClientDoneRequest="${ClientDoneRequest}" GatewayTime="${GatewayTime}"
+   DNSTime="${DNSTime}" TCPConnectTime="${TCPConnectTime}"
+   ServerGotRequest="${ServerGotRequest}"
+   ServerBeginResponse="${ServerBeginResponse}"
+   ServerDoneResponse="${ServerDoneResponse}"
+   ClientBeginResponse="${ClientBeginResponse}"
    ClientDoneResponse="${ClientDoneResponse}" />
   <PipeInfo />
   <SessionFlags>
@@ -16,6 +16,6 @@
     <SessionFlag N="x-clientip" V="${clientip}" />
     <SessionFlag N="x-ttlb" V="${ttlb}" />
     <SessionFlag N="x-hostip" V="${hostip}" />
-    <SessionFlag N="x-clientport" V="0" />
+    <SessionFlag N="x-clientport" V="${clientport}" />
   </SessionFlags>
 </Session>
