@@ -668,10 +668,14 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 ### v1.5.5
 1. fix([issue#60](https://github.com/avwo/whistle/issues/60)): 建议大家升级到最新版本 
 
-# v1.5.6
+### v1.5.6
 1. refactor([issue#36](https://github.com/avwo/whistle/issues/36)): 打开多个页面时操作时，把修改信息实时同步给其它页面
 2. refactor: 把列表选择信息存储到localStorage
-3. feat: 显示客户端的端口号和服务器的端口号
+
+# v1.5.7
+1. feat: 显示客户端的端口号和服务器的端口号
+2. feat: 支持预览图片(目前没做缓存，直接通过请求的url加载)
+3. refactor: 编辑器的字体使用默认字体，bootstrap的字体空格宽度太小
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
