@@ -228,7 +228,7 @@
 			return obj.toString();
 		}
 
-		return JSON.stringify(obj, null, '\t');
+		return JSON.stringify(obj, null, '  ');
 	}
 
   var index = 0;
