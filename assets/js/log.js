@@ -259,7 +259,10 @@
         var result = [];
 				for (var i = 0, len = arguments.length; i < len; i++) {
 					result[i] = stringify(arguments[i]);
-				}
+        }
+        if (!result.length) {
+          result = ['undefined'];
+        }
 				addLog(level, result.join(' '));
       };
 			console[level] = function() {
