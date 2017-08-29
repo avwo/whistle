@@ -673,9 +673,11 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 2. refactor: 把列表选择信息存储到localStorage
 
 # v1.5.7
-1. feat: 显示客户端的端口号和服务器的端口号
+1. feat: 显示请求客户端的端口号和服务器的端口号
 2. feat: 支持预览图片(目前没做缓存，直接通过请求的url加载)
-3. refactor: 编辑器的字体使用默认字体，bootstrap的字体空格宽度太小
+3. feat: Network->Log支持搜索过滤
+4. feat: 导入导出saz文件时，支持带上请求客户端的端口
+5. refactor: 编辑器的字体使用默认字体，bootstrap的字体空格宽度太小
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
