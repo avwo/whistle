@@ -5,7 +5,7 @@ module.exports = function init(server) {
     server: server,
     verbose: false,
     debug: false,
-    readTimeout: 6,
-    deathTimeout: 20
+    readTimeout: 5,
+    deathTimeout: 15
   });
 };
