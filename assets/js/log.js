@@ -208,9 +208,6 @@
 	}
 
 	function stringify(obj) {
-    if (obj === undefined) {
-      return 'undefined';
-    }
 		if (!obj) {
 			return obj + '';
 		}
