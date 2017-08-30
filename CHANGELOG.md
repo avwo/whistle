@@ -678,6 +678,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 3. feat: Network->Log支持搜索过滤
 4. feat: 导入导出saz文件时，支持带上请求客户端的端口
 5. refactor: 编辑器的字体使用默认字体，bootstrap的字体空格宽度太小
+6. fix: 微信开发者工具https请求被误认为http请求的问题
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
