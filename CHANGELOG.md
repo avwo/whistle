@@ -672,12 +672,15 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 1. refactor([issue#36](https://github.com/avwo/whistle/issues/36)): 打开多个页面时操作时，把修改信息实时同步给其它页面
 2. refactor: 把列表选择信息存储到localStorage
 
-# v1.5.7
+### v1.5.7
 1. feat: 显示请求客户端的端口号和服务器的端口号
 2. feat: 支持预览图片(目前没做缓存，直接通过请求的url加载)
 3. feat: Network->Log支持搜索过滤
 4. refactor: 编辑器的字体使用默认字体，bootstrap的字体空格宽度太小
 5. fix: 微信开发者工具https请求被误认为http请求的问题
+
+# v1.5.8
+1. fix: reload rule或values时，可能出现的脚本错误
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
