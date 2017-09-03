@@ -3,6 +3,7 @@ var properties = require('../../lib/properties');
 
 module.exports = function get() {
   return {
+    ec: 0,
     defaultRulesIsDisabled: rules.defaultRulesIsDisabled(),
     defaultRules: rules.getDefault(),
     current: properties.get('currentRulesFile'),
