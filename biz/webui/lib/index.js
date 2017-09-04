@@ -12,6 +12,7 @@ var htdocs = require('../htdocs');
 var DONT_CHECK_PATHS = ['/cgi-bin/server-info', '/cgi-bin/show-host-ip-in-res-headers',
                         '/cgi-bin/lookup-tunnel-dns', '/cgi-bin/rootca', '/cgi-bin/log/set'];
 var PLUGIN_PATH_RE = /^\/(whistle|plugin)\.([a-z\d_\-]+)(\/)?/;
+var STATIC_SRC_RE = /\.(?:ico|js|css|png)$/i;
 var httpsUtil, proxyEvent, util, config, pluginMgr;
 var MAX_AGE = 60 * 60 * 24 * 3;
 var AUTH_CONFIG = {
@@ -20,7 +21,8 @@ var AUTH_CONFIG = {
 };
 
 function doNotCheckLogin(req) {
-  return DONT_CHECK_PATHS.indexOf(req.path) !== -1;
+  var path = req.path;
+  return STATIC_SRC_RE.test(path) || DONT_CHECK_PATHS.indexOf(path) !== -1;
 }
 
 function getUsername() {
