@@ -679,8 +679,12 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 4. refactor: 编辑器的字体使用默认字体，bootstrap的字体空格宽度太小
 5. fix: 微信开发者工具https请求被误认为http请求的问题
 
-# v1.5.8
+### v1.5.8
 1. fix: reload rule或values时，可能出现的脚本错误
+
+# v1.5.9
+1. feat: 支持导入导出Rules和Values
+2. feat: 支持通过请求头 `x-whistle-rule-key` 或 `x-whistle-rule-value` 设置规则，其中 `x-whistle-rule-key` 将自动从Values里面加载规则
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
