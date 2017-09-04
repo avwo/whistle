@@ -1,4 +1,5 @@
 var values = require('../../lib/values');
+var util = require('../util');
 
 module.exports = function(req, res) {
   var exportValues = req.query.values;
@@ -13,5 +14,5 @@ module.exports = function(req, res) {
       result[file.name] = file.data;
     }
   });
-  res.attachment('values_' + Date.now() + '.txt').send(JSON.stringify(result, null, '  '));
+  res.attachment('values_' + util.formatDate() + '.txt').send(JSON.stringify(result, null, '  '));
 };

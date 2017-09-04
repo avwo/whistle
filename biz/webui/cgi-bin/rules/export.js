@@ -1,4 +1,5 @@
 var rules = require('../../lib/rules');
+var util = require('../util');
 
 module.exports = function(req, res) {
   var exportRules = req.query.rules;
@@ -17,5 +18,5 @@ module.exports = function(req, res) {
       result[file.name] = file.data;
     }
   });
-  res.attachment('rules_' + Date.now() + '.txt').send(JSON.stringify(result, null, '  '));
+  res.attachment('rules_' + util.formatDate() + '.txt').send(JSON.stringify(result, null, '  '));
 };
