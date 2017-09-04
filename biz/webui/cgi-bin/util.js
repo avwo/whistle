@@ -2,7 +2,7 @@ var util = require('../lib/util');
 var config = require('../lib/config');
 var properties = require('../lib/properties');
 
-var MAX_OBJECT_SIZE = 1024  * 1;
+var MAX_OBJECT_SIZE = 1024 * 1024 * 6;
 var index = 0;
 
 exports.getClientId = function() {
@@ -72,3 +72,32 @@ exports.getReqData = function(req, callback) {
     });
   });
 };
+
+function padding(num) {
+  return num < 10 ? '0' + num : num;
+}
+
+function paddingMS(ms) {
+  if (ms > 99) {
+    return ms;
+  }
+  if (ms > 9) {
+    return '0' + ms;
+  }
+  return '00' + ms;
+}
+
+function formatDate() {
+  var date = new Date();
+  var result = [];
+  result.push(date.getFullYear());
+  result.push(padding(date.getMonth() + 1));
+  result.push(padding(date.getDate()));
+  result.push(padding(date.getHours()));
+  result.push(padding(date.getMinutes()));
+  result.push(padding(date.getSeconds()));
+  result.push(paddingMS(date.getMilliseconds()));
+  return result.join('');
+}
+
+exports.formatDate = formatDate;
