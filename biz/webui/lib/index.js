@@ -101,16 +101,18 @@ app.use(function(req, res, next) {
   }
   var referer = req.headers.referer;
   var options = parseurl(req);
-  if (referer && !PLUGIN_PATH_RE.test(options.pathname)) {
-    var refOpts = url.parse(referer);
-    var pathname = refOpts.pathname;
-    if (PLUGIN_PATH_RE.test(pathname) && RegExp.$3) {
-      req.url = '/' + RegExp.$1 + '.' + RegExp.$2 + options.path;
-    }else if (config.isNohostUrl(refOpts.hostname) === 2) {
+  if (!PLUGIN_PATH_RE.test(options.pathname)) {
+    if (referer) {
+      var refOpts = url.parse(referer);
+      var pathname = refOpts.pathname;
+      if (PLUGIN_PATH_RE.test(pathname) && RegExp.$3) {
+        req.url = '/' + RegExp.$1 + '.' + RegExp.$2 + options.path;
+      }else if (config.isNohostUrl(refOpts.hostname) === 2) {
+        req.url = '/whistle.nohost' + options.path;
+      }
+    } else if (config.isNohostUrl(req.headers.host) === 2) {
       req.url = '/whistle.nohost' + options.path;
     }
-  } else if (config.isNohostUrl(req.headers.host) === 2) {
-    req.url = '/whistle.nohost' + options.path;
   }
 
   next();
