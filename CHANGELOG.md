@@ -687,8 +687,12 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 2. feat: 支持通过请求头 `x-whistle-rule-key` 或 `x-whistle-rule-value` 设置规则，且支持通过 `x-whistle-rule-host` 设置hosts，其中 `x-whistle-rule-key` 将自动从Values里面加载规则，在设置代理 `pattern proxy://host:port?proxyHosts` 时，后面新增的请求参数表示代理规则优先，且会通过 `x-whistle-rule-host` 自动带上设置的hosts
 3. feat: 界面支持切换到左侧菜单的简单模式，详见[issue#64](https://github.com/avwo/whistle/issues/64)
 
-# v1.5.10
+### v1.5.10
 1. 自动对请求头的 `x-whistle-rule-key` 进行转码
+
+# v1.5.11
+1. fix: [weinre](https://avwo.github.io/whistle/rules/weinre.html)不可用的问题[#65](https://github.com/avwo/whistle/issues/65)
+2. refactor: 去掉请求插件的连接池
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
