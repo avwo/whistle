@@ -55,9 +55,7 @@ module.exports = function(req, res) {
     http.request(options, function(res) {
       res.on('error', util.noop);
       util.drain(res);
-    })
-.on('error', util.noop)
-.end(req.body.body);
+    }).on('error', util.noop).end(req.body.body);
   }
 
   res.json({ec: 0, em: 'success'});

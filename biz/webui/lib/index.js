@@ -40,7 +40,7 @@ function shasum(str) {
 }
 
 function getLoginKey (req, res, auth) {
-  var ip = util.getClientIp(req, true);
+  var ip = util.getClientIp(req);
   var password = auth.password;
   if (config.encrypted) {
     password = shasum(password);
