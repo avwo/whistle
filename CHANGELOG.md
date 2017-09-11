@@ -690,9 +690,12 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 ### v1.5.10
 1. 自动对请求头的 `x-whistle-rule-key` 进行转码
 
-# v1.5.11
+### v1.5.11
 1. fix: [weinre](https://avwo.github.io/whistle/rules/weinre.html)不可用的问题[#65](https://github.com/avwo/whistle/issues/65)
-2. refactor: 去掉请求插件的连接池
+2. refactor: 去掉请求插件的连接池，提升请求速度
+
+# v1.5.12
+1. feat: 通过请求头 `x-forwarded-for` 带上真实的客户端ip
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
