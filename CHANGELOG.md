@@ -696,6 +696,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 
 # v1.5.12
 1. feat: 通过请求头 `x-forwarded-for` 带上真实的客户端ip
+2. feat: 支持通过插件的根目录文件 `_values.txt` 设置插件私有的Values(不支持 `values.txt`)，与私有规则 `_rules.txt` 配套使用
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
