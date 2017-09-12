@@ -49,6 +49,10 @@ function showUsage(isRunning, options, restart) {
   warn('          For more information, please visit ' + colors.bold('https://github.com/avwo/whistle'));
   info('[i] Second, configure your device to use ' + config.name + ' as its HTTP and HTTPS proxy on ' + colors.bold('IP:') + port);
   info('[i] Last, use ' + colors.bold('Chrome') + ' to visit ' + colors.bold('http://' + (options.localUIHost || config.localUIHost) + '/') + ' to get started');
+
+  if (parseInt(process.version.slice(1), 10) < 6) {
+    warn(colors.bold('\nWarning: The current Node version is too low, please upgrade to Node >= v6, or may not be able to intercept HTTPS CONNECTs\n'));
+  }
 }
 
 function showStartupInfo(err, options, debugMode, restart) {
