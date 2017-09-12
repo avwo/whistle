@@ -51,7 +51,7 @@ function showUsage(isRunning, options, restart) {
   info('[i] Last, use ' + colors.bold('Chrome') + ' to visit ' + colors.bold('http://' + (options.localUIHost || config.localUIHost) + '/') + ' to get started');
 
   if (parseInt(process.version.slice(1), 10) < 6) {
-    warn(colors.bold('\nWarning: The current Node version is too low, please upgrade to Node >= v6, or may not be able to intercept HTTPS CONNECTs\n'));
+    warn(colors.bold('\nWarning: The current Node version is too low, access https://nodejs.org to install the latest version, or may not be able to intercept HTTPS CONNECTs\n'));
   }
 }
 
