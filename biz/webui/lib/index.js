@@ -15,10 +15,6 @@ var PLUGIN_PATH_RE = /^\/(whistle|plugin)\.([a-z\d_\-]+)(\/)?/;
 var STATIC_SRC_RE = /\.(?:ico|js|css|png)$/i;
 var httpsUtil, proxyEvent, util, config, pluginMgr;
 var MAX_AGE = 60 * 60 * 24 * 3;
-var AUTH_CONFIG = {
-  nameKey: 'whistle_username',
-  authKey: 'whistle_lkey'
-};
 
 function doNotCheckLogin(req) {
   var path = req.path;
@@ -172,10 +168,16 @@ app.use(function(req, res, next) {
   if (doNotCheckLogin(req)) {
     return next();
   }
-
-  AUTH_CONFIG.username = getUsername();
-  AUTH_CONFIG.password = getPassword();
-  if (checkAuth(req, res, AUTH_CONFIG)) {
+  var username = getUsername();
+  var password = getPassword();
+  var suffix = encodeURIComponent(username);
+  var authConf = {
+    nameKey: 'whistle_u_' + suffix,
+    authKey: 'whistle_k_' + suffix,
+    username: username,
+    password: password
+  };
+  if (checkAuth(req, res, authConf)) {
     next();
   }
 });
