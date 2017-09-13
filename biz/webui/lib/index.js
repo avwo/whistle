@@ -53,17 +53,15 @@ function requireLogin(res) {
 function checkAuth(req, res, auth) {
   var username = auth.username;
   var password = auth.password;
-  var nameKey = auth.nameKey;
   var authKey = auth.authKey;
 
   if (!username && !password) {
     return true;
   }
   var cookies = cookie.parse(req.headers.cookie || '');
-  var curName = cookies[nameKey];
   var lkey = cookies[authKey];
   var correctKey = getLoginKey(req, res, auth);
-  if (curName === username && correctKey === lkey) {
+  if (correctKey === lkey) {
     return true;
   }
   auth = getAuth(req) || {};
@@ -76,7 +74,6 @@ function checkAuth(req, res, auth) {
       maxAge: MAX_AGE,
       path: '/'
     };
-    res.setHeader('Set-Cookie', cookie.serialize(nameKey, username, options));
     res.setHeader('Set-Cookie', cookie.serialize(authKey, correctKey, options));
     return true;
   }
@@ -170,10 +167,8 @@ app.use(function(req, res, next) {
   }
   var username = getUsername();
   var password = getPassword();
-  var suffix = encodeURIComponent(username);
   var authConf = {
-    nameKey: 'whistle_u_' + suffix,
-    authKey: 'whistle_k_' + suffix,
+    authKey: 'whistle_lk_' + encodeURIComponent(username),
     username: username,
     password: password
   };
