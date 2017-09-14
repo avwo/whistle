@@ -699,9 +699,13 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 2. feat: 支持通过插件的根目录文件 `_values.txt` 设置插件私有的Values(不支持 `values.txt`)，与私有规则 `_rules.txt` 配套使用
 3. feat: 自动判断根证书格式是否正确，如果不正确会自动更新，安装新版本的whistle后出现证书不可用的情况请[重新安装下根证书](https://avwo.github.io/whistle/webui/https.html)即可
 
-# v1.5.13
-1. refactor: 获取真实的本机ip，放在通过 `x-forwarded-for` 传 `127.0.0.1` 时访问某些服务会有问题。
+### v1.5.13
+1. refactor: 获取真实的本机ip，防止通过 `x-forwarded-for` 传 `127.0.0.1` 时访问某些服务会有问题。
 2. refactor: [issue#68](https://github.com/avwo/whistle/issues/68)
+
+# v1.5.14
+1. fix: 页面初始化是console的数据无法在[weinre](https://avwo.github.io/whistle/rules/weinre.html)显示的问题
+2. refactor: 本地请求去掉 `x-forwarded-for` 请求头，防止后台通过 `x-forwarded-for` 获取ip时不准确
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
