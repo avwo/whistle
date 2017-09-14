@@ -700,7 +700,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 3. feat: 自动判断根证书格式是否正确，如果不正确会自动更新，安装新版本的whistle后出现证书不可用的情况请[重新安装下根证书](https://avwo.github.io/whistle/webui/https.html)即可
 
 # v1.5.13
-1. refactor: `x-forwarded-for` 改为 `x-whistle-forwarded-for`，不然登录某些系统时会有问题
+1. refactor: 获取真实的本机ip，放在通过 `x-forwarded-for` 传 `127.0.0.1` 时访问某些服务会有问题。
 2. refactor: [issue#68](https://github.com/avwo/whistle/issues/68)
 
 ### -
