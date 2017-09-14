@@ -50,7 +50,7 @@ module.exports = function(req, res) {
       headers['content-length'] = req.body.body.length;
     }
 
-    headers[config.CLIENT_IP_HEAD] = util.getClientIp(req);
+    headers[config.CLIENT_IP_HEAD] = util.getClientIp(req, true);
     options.headers = util.formatHeaders(headers, rawHeaderNames);
     http.request(options, function(res) {
       res.on('error', util.noop);
