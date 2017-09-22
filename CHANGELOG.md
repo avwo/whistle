@@ -703,8 +703,12 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 1. refactor: 获取真实的本机ip，防止通过 `x-forwarded-for = 127.0.0.1` 时访问某些服务会有问题。
 2. refactor: [issue#68](https://github.com/avwo/whistle/issues/68)
 
-# v1.5.14
+### v1.5.14
 1. refactor: 本地请求去掉 `x-forwarded-for` 请求头，防止后台通过 `x-forwarded-for` 获取ip时不准确
+
+# v1.5.15
+1. refactor([#70](https://github.com/avwo/whistle/issues/70)): 默认超时时间改为 `1min`，与浏览器的默认超时时间一致，空闲超时调整为 `3min`
+2. feat: 添加 `reqHost` 用于修改请求头的host字段，等价于[hostname](https://avwo.github.io/whistle/rules/hostname.html)
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
