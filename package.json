@@ -79,7 +79,7 @@
   "devDependencies": {
     "coveralls": "^2.11.12",
     "eslint": "^2.8.0",
-    "istanbul": "0.4.4",
+    "istanbul": "^0.4.4",
     "request": "^2.74.0",
     "should": "^10.0.0",
     "should-http": "0.0.4",
