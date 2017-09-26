@@ -706,9 +706,13 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 ### v1.5.14
 1. refactor: 本地请求去掉 `x-forwarded-for` 请求头，防止后台通过 `x-forwarded-for` 获取ip时不准确
 
-# v1.5.15
+### v1.5.15
 1. refactor([#70](https://github.com/avwo/whistle/issues/70)): 默认超时时间改为 `1min`，与浏览器的默认超时时间一致，空闲超时调整为 `3min`
 2. feat: 添加 `reqHost` 用于修改请求头的host字段，等价于[hostname](https://avwo.github.io/whistle/rules/hostname.html)
+
+# v1.5.16
+1. fix: 选择导出抓包数据的默认文件类型错误的问题(第一次使用Ctrl[Command] + S的方式导出，且没有手动选择类型时时会有这个问题)
+2. feat: 插件数据返回数据支持通过 `options.ETAG_HEADER`、`options.MAX_AGE_HEADER` 两个字段设置etag或max-age，这样whistle会自动缓存数据，并判断过期时间，插件可以通过 请求头的`options.ETAG_HEADER=x-whistle-etag`的字段来判断是否有缓存及通过响应 `304` 来继续使用缓存的数据，具体参见[nohost](https://github.com/imweb/nohost)的用法。
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
