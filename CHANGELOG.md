@@ -712,7 +712,8 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 
 # v1.5.16
 1. fix: 选择导出抓包数据的默认文件类型错误的问题(第一次使用Ctrl[Command] + S的方式导出，且没有手动选择类型时时会有这个问题)
-2. feat: 插件数据返回数据支持通过 `options.ETAG_HEADER`、`options.MAX_AGE_HEADER` 两个字段设置etag或max-age，这样whistle会自动缓存数据，并判断过期时间，插件可以通过 请求头的`options.ETAG_HEADER=x-whistle-etag`的字段来判断是否有缓存及通过响应 `304` 来继续使用缓存的数据，具体参见[nohost](https://github.com/imweb/nohost)的用法。
+2. feat: 插件数据返回数据支持通过 `options.ETAG_HEADER`、`options.MAX_AGE_HEADER` 两个字段设置etag或max-age，这样whistle会自动缓存数据，并判断过期时间，插件可以通过 请求头的`options.ETAG_HEADER=x-whistle-etag`的字段来判断是否有缓存及通过响应 `304` 来继续使用缓存的数据，具体参见[nohost](https://github.com/imweb/nohost)的用法
+3. feat: 支持通过启动参数 `-P 80` 修改whistle操作界面的端口(其中 `P` 为大写)
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
