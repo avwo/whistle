@@ -118,6 +118,7 @@ program
   .option('-C, --copy [storageDir]', 'copy storageDir to newStorageDir', String, undefined)
   .option('-c, --dnsCache [time]', 'the cache time of DNS (30000ms by default)', String, undefined)
   .option('-p, --port [port]', config.name + ' port (' + config.port + ' by default)', parseInt, undefined)
+  .option('-P, --uiport [uiport]', config.name + ' ui port (' + (config.port + 1) + ' by default)', parseInt, undefined)
   .option('-m, --middlewares [script path or module name]', 'express middlewares path (as: xx,yy/zz.js)', String, undefined)
   .option('-u, --uipath [script path]', 'web ui plugin path', String, undefined)
   .option('-t, --timeout [ms]', 'request timeout (' + config.timeout + ' ms by default)', parseInt, undefined)
