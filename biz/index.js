@@ -1,4 +1,5 @@
 var net = require('net');
+var rules = require('../lib/rules');
 var util = require('../lib/util');
 
 module.exports = function(req, res, next) {
@@ -17,7 +18,7 @@ module.exports = function(req, res, next) {
   var pluginMgr = this.pluginMgr;
   var fullUrl = req.fullUrl = util.getFullUrl(req);
   var isWebUI = req.headers[config.WEBUI_HEAD] || config.isLocalUIUrl(host);
-  var weinrePort, pluginHomePage, logPort, options;
+  var weinrePort, pluginHomePage, logPort, options, localRule;
   if (!isWebUI && (options = config.parseInternalUrl(host))) {
     if (options.name === 'weinre') {
       weinrePort = options.port;
@@ -43,6 +44,9 @@ module.exports = function(req, res, next) {
       }
       util.transformReq(req, res, ports.uiPort);
     });
+  } else if (localRule = rules.resolveLocalRule(fullUrl)) {
+    req.url = localRule.url;
+    util.transformReq(req, res, config.uiport);
   } else {
     next();
   }
