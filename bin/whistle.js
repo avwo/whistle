@@ -107,7 +107,6 @@ program.setConfig({
 });
 
 program
-  .option('-d, --debug', 'debug mode')
   .option('-D, --baseDir [baseDir]', 'the base dir of config data', String, undefined)
   .option('-A, --ATS', 'generate Root CA for iOS ATS (Node >= 6 is required)')
   .option('-z, --certDir [directory]', 'custom certificate path', String, undefined)
@@ -120,6 +119,7 @@ program
   .option('-p, --port [port]', config.name + ' port (' + config.port + ' by default)', parseInt, undefined)
   .option('-P, --uiport [uiport]', config.name + ' ui port (' + (config.port + 1) + ' by default)', parseInt, undefined)
   .option('-m, --middlewares [script path or module name]', 'express middlewares path (as: xx,yy/zz.js)', String, undefined)
+  .option('-M, --mode [mode]', 'the whistle mode (as: pureProxy|debug)', String, undefined)
   .option('-u, --uipath [script path]', 'web ui plugin path', String, undefined)
   .option('-t, --timeout [ms]', 'request timeout (' + config.timeout + ' ms by default)', parseInt, undefined)
   .option('-s, --sockets [number]', 'max sockets (' + config.sockets + ' by default)', parseInt, undefined)
