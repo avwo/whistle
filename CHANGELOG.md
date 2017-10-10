@@ -718,7 +718,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 # v1.5.17
 1. feat: 兼容Chrome浏览器的本地路径 `file:///C:/Users/xxx/Downloads/jq221663.html` 等价于 `file://C:/Users/xxx/Downloads/jq221663.html` 
 2. feat: 支持通过启动参数 `-M pureProxy` 将whistle设置为纯http代理的模式，这种模式下只能通过 `http://local.wproxy.org` 访问配置界面
-3. refactor: 界面一些tips的优化
+3. feat: 支持通过 `pattern http://local.whistlejs.com/xxx` 或  `pattern http://local.wproxy.org/xxx` 的匹配方式，把请求转到whistle的配置界面
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
