@@ -723,7 +723,8 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 
 # v1.5.18
 1. feat: [rulesFile](https://avwo.github.io/whistle/rules/rulesFile.html)，支持通过body获取当前请求的内容(如果没有请求内容，则body=''，如果请求内容大于16k，body内容可能比请求内容小)
-2. refactor: `pattern enable://abort`是抓包界面显示502的问题，已改成 `aborted`
+2. refactor: `pattern enable://abort`是抓包界面显示502的问题，改成 `aborted`
+3. refactor: 在Values里面以js结尾的key的值支持通过快捷键 `Ctrs[Command]+?` 注释
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
