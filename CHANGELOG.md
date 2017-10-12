@@ -715,11 +715,15 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 2. feat: 插件数据返回数据支持通过 `options.ETAG_HEADER`、`options.MAX_AGE_HEADER` 两个字段设置etag或max-age，这样whistle会自动缓存数据，并判断过期时间，插件可以通过 请求头的`options.ETAG_HEADER=x-whistle-etag`的字段来判断是否有缓存及通过响应 `304` 来继续使用缓存的数据，具体参见[nohost](https://github.com/imweb/nohost)的用法
 3. feat([#72](https://github.com/avwo/whistle/issues/72)): 支持通过启动参数 `-P 80` 修改whistle操作界面的端口(其中 `P` 为大写)
 
-# v1.5.17
+### v1.5.17
 1. feat: 兼容Chrome浏览器的本地路径 `file:///C:/Users/xxx/Downloads/jq221663.html` 等价于 `file://C:/Users/xxx/Downloads/jq221663.html` 
 2. feat: 支持通过启动参数 `-M pureProxy` 将whistle设置为纯http代理的模式，这种模式下只能通过 `http://local.wproxy.org` 访问配置界面
 3. feat: 支持通过 `pattern http://local.whistlejs.com/xxx` 或  `pattern http://local.wproxy.org/xxx` 的匹配方式，把请求转到whistle的配置界面
 4. feat: 支持通过 `pattern enable://abort` 强制中断掉请求，如果你想延迟中断，可以通过 `pattern enable://abort reqDelay://3000` 实现
+
+# v1.5.18
+1. feat: [rulesFile](https://avwo.github.io/whistle/rules/rulesFile.html)，支持通过body获取当前请求的内容(如果没有请求内容，则body=''，如果请求内容大于16k，body内容可能比请求内容小)
+2. refactor: `pattern enable://abort`是抓包界面显示502的问题，已改成 `aborted`
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
