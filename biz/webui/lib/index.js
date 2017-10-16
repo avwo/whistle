@@ -7,7 +7,15 @@ var parseurl = require('parseurl');
 var bodyParser = require('body-parser');
 var crypto = require('crypto');
 var cookie = require('cookie');
+var multer  = require('multer');
 var htdocs = require('../htdocs');
+
+var LIMIT_SIZE = 1024 * 1024 * 17;
+var storage = multer.memoryStorage();
+var upload = multer({
+  storage: storage,
+  fieldSize: LIMIT_SIZE
+});
 
 var DONT_CHECK_PATHS = ['/cgi-bin/server-info', '/cgi-bin/show-host-ip-in-res-headers',
                         '/cgi-bin/lookup-tunnel-dns', '/cgi-bin/rootca', '/cgi-bin/log/set'];
@@ -157,9 +165,6 @@ app.all(PLUGIN_PATH_RE, function(req, res, next) {
     util.transformReq(req, res, ports.uiPort);
   });
 });
-app.use(bodyParser.urlencoded({ extended: true, limit: '1mb'}));
-app.use(bodyParser.json());
-
 
 app.use(function(req, res, next) {
   if (doNotCheckLogin(req)) {
@@ -176,6 +181,13 @@ app.use(function(req, res, next) {
     next();
   }
 });
+app.post('/cgi-bin/socket/upload', upload.single('data'), function(req, res) {
+  var file = req.file;
+  console.log(req.file)
+  res.json(req.body);
+});
+app.use(bodyParser.urlencoded({ extended: true, limit: '1mb'}));
+app.use(bodyParser.json());
 
 app.all('/cgi-bin/*', cgiHandler);
 
