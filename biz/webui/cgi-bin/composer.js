@@ -15,6 +15,13 @@ function parseHeaders(headers, rawHeaderNames) {
   return util.parseHeaders(headers, rawHeaderNames);
 }
 
+function getMethod(method) {
+  if (typeof method !== 'string') {
+    return 'GET';
+  }
+  return method.toUpperCase();
+}
+
 module.exports = function(req, res) {
   var fullUrl = req.body.url;
   if (!fullUrl || typeof fullUrl !== 'string') {
@@ -33,14 +40,10 @@ module.exports = function(req, res) {
     headers['user-agent'] = 'whistle/' + config.version;
   }
   headers.host = options.host;
+  options.method = getMethod(req.body.method);
 
-
-  if (options.port) {
-    headers.host += ':' + options.port;
-  }
   options.protocol = null;
   options.hostname = null;
-  options.method = req.body.method;
   options.host = '127.0.0.1';
   options.port = config.port;
   if (headers['content-length'] != null) {
