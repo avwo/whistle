@@ -22,6 +22,30 @@ function getMethod(method) {
   return method.toUpperCase();
 }
 
+function isWebSocket(options) {
+  var protocol = options.protocol;
+  if (protocol === 'ws:' || protocol === 'wss:') {
+    return true;
+  }
+  // TODO: 判断headers
+}
+
+function isConnect(options) {
+  if (options.method === 'CONNECT') {
+    return true;
+  }
+  var p = options.protocol;
+  return p === 'connect:' || p === 'socket:' || p === 'tunnel:';
+}
+
+function handleConnect(options) {
+
+}
+
+function handleWebSocket(options) {
+
+}
+
 function handleHttp(options) {
   if (options.protocol === 'https:') {
     options.headers[config.HTTPS_FIELD] = 1;
@@ -63,7 +87,13 @@ module.exports = function(req, res) {
   }
   options.headers = util.formatHeaders(headers, rawHeaderNames);
   options.body = req.body.body;
-  handleHttp(options);
+  if (isConnect(options)) {
+    handleConnect(options);
+  } else if (isWebSocket(options)) {
+    handleWebSocket(options);
+  } else {
+    handleHttp(options);
+  }
 
   res.json({ec: 0, em: 'success'});
 };
