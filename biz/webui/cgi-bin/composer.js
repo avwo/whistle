@@ -38,8 +38,20 @@ function isConnect(options) {
   return p === 'connect:' || p === 'socket:' || p === 'tunnel:';
 }
 
-function handleConnect(options) {
+function drain(socket) {
+  socket.on('error', util.noop);
+  socket.on('data', util.noop);
+}
 
+function handleConnect(options) {
+  options.headers['x-whistle-policy'] = 'tunnel';
+  config.connect({
+    host: options.hostname,
+    port: options.port,
+    proxyHost: '127.0.0.1',
+    proxyPort: config.port,
+    headers: options.headers
+  }, drain).on('error', util.noop);
 }
 
 function handleWebSocket(options) {
