@@ -40,6 +40,7 @@ module.exports = function(req, res) {
     headers['user-agent'] = 'whistle/' + config.version;
   }
   headers.host = options.host;
+  headers[config.CLIENT_IP_HEAD] = util.getClientIp(req);
   options.method = getMethod(req.body.method);
 
   options.protocol = null;
@@ -50,12 +51,12 @@ module.exports = function(req, res) {
     req.body.body = util.toBuffer(req.body.body || '');
     headers['content-length'] = req.body.body.length;
   }
-
-  headers[config.CLIENT_IP_HEAD] = util.getClientIp(req);
   options.headers = util.formatHeaders(headers, rawHeaderNames);
+  options.body = req.body.body;
+
   http.request(options, function(res) {
     res.on('error', util.noop);
     util.drain(res);
-  }).on('error', util.noop).end(req.body.body);
+  }).on('error', util.noop).end(options.body);
   res.json({ec: 0, em: 'success'});
 };
