@@ -22,6 +22,20 @@ function getMethod(method) {
   return method.toUpperCase();
 }
 
+function handleHttp(options) {
+  if (options.protocol === 'https:') {
+    options.headers[config.HTTPS_FIELD] = 1;
+  }
+  options.protocol = null;
+  options.hostname = null;
+  options.host = '127.0.0.1';
+  options.port = config.port;
+  http.request(options, function(res) {
+    res.on('error', util.noop);
+    util.drain(res);
+  }).on('error', util.noop).end(options.body);
+}
+
 module.exports = function(req, res) {
   var fullUrl = req.body.url;
   if (!fullUrl || typeof fullUrl !== 'string') {
@@ -43,20 +57,13 @@ module.exports = function(req, res) {
   headers[config.CLIENT_IP_HEAD] = util.getClientIp(req);
   options.method = getMethod(req.body.method);
 
-  options.protocol = null;
-  options.hostname = null;
-  options.host = '127.0.0.1';
-  options.port = config.port;
   if (headers['content-length'] != null) {
     req.body.body = util.toBuffer(req.body.body || '');
     headers['content-length'] = req.body.body.length;
   }
   options.headers = util.formatHeaders(headers, rawHeaderNames);
   options.body = req.body.body;
+  handleHttp(options);
 
-  http.request(options, function(res) {
-    res.on('error', util.noop);
-    util.drain(res);
-  }).on('error', util.noop).end(options.body);
   res.json({ec: 0, em: 'success'});
 };
