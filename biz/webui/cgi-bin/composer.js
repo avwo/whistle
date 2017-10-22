@@ -69,6 +69,9 @@ function getReqRaw(options) {
 }
 
 function handleWebSocket(options) {
+  if (options.protocol === 'https:' || options.protocol === 'wss:') {
+    options.headers[config.HTTPS_FIELD] = 1;
+  }
   var socket = net.connect(config.port, function() {
     socket.write(getReqRaw(options));
   });
