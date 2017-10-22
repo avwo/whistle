@@ -28,6 +28,7 @@ function isWebSocket(options) {
   return p === 'ws:' || p === 'wss:';
 }
 
+var crypto = require('crypto');
 function isConnect(options) {
   if (options.method === 'CONNECT') {
     return true;
@@ -123,6 +124,8 @@ module.exports = function(req, res) {
   if (isWs) {
     headers.connection = 'Upgrade';
     headers.upgrade = 'websocket';
+    headers['sec-websocket-version'] = 13;
+    headers['sec-websocket-key'] = crypto.randomBytes(16).toString('base64');
   } else {
     headers.connection = 'close';
     delete headers.upgrade;
