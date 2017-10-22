@@ -73,7 +73,7 @@ function handleWebSocket(options) {
   if (options.protocol === 'https:' || options.protocol === 'wss:') {
     options.headers[config.HTTPS_FIELD] = 1;
   }
-  var socket = net.connect(config.port, function() {
+  var socket = net.connect(config.port, '127.0.0.1', function() {
     socket.write(getReqRaw(options));
   });
   drain(socket);
