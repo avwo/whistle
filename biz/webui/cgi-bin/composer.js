@@ -55,17 +55,8 @@ function handleConnect(options) {
 
 function getReqRaw(options) {
   var headers = options.headers;
-  var raw = [options.method +' ' + (options.path || '/') +' ' + 'HTTP/1.1'];
-  Object.keys(headers).forEach(function(key) {
-    var value = headers[key];
-    if (Array.isArray(value)) {
-      value.forEach(function(val) {
-        raw.push(key + ': ' +  (val || ''));
-      });
-    } else {
-      raw.push(key + ': ' +  (value || ''));
-    }
-  });
+  var statusLine = options.method +' ' + (options.path || '/') +' ' + 'HTTP/1.1';
+  var raw = [statusLine, util.getRawHeaders(headers)];
   return raw.join('\r\n') + '\r\n\r\n';
 }
 
