@@ -1,4 +1,5 @@
 var http = require('http');
+var net = require('net');
 var url = require('url');
 var config = require('../lib/config');
 var util = require('../lib/util');
@@ -23,11 +24,8 @@ function getMethod(method) {
 }
 
 function isWebSocket(options) {
-  var protocol = options.protocol;
-  if (protocol === 'ws:' || protocol === 'wss:') {
-    return true;
-  }
-  // TODO: 判断headers
+  var p = options.protocol;
+  return p === 'ws:' || p === 'wss:';
 }
 
 function isConnect(options) {
@@ -54,8 +52,27 @@ function handleConnect(options) {
   }, drain).on('error', util.noop);
 }
 
-function handleWebSocket(options) {
+function getReqRaw(options) {
+  var headers = options.headers;
+  var raw = [options.method +' ' + (options.path || '/') +' ' + 'HTTP/1.1'];
+  Object.keys(headers).forEach(function(key) {
+    var value = headers[key];
+    if (Array.isArray(value)) {
+      value.forEach(function(val) {
+        raw.push(key + ': ' +  (val || ''));
+      });
+    } else {
+      raw.push(key + ': ' +  (value || ''));
+    }
+  });
+  return raw.join('\r\n') + '\r\n\r\n';
+}
 
+function handleWebSocket(options) {
+  var socket = net.connect(config.port, function() {
+    socket.write(getReqRaw(options));
+  });
+  drain(socket);
 }
 
 function handleHttp(options) {
@@ -97,13 +114,23 @@ module.exports = function(req, res) {
     req.body.body = util.toBuffer(req.body.body || '');
     headers['content-length'] = req.body.body.length;
   }
+
+  var isWs = isWebSocket(options)
+    || (/upgrade/i.test(headers.connection) && /websocket/i.test(headers.upgrade));
+  if (isWs) {
+    headers.connection = 'Upgrade';
+    headers.upgrade = 'websocket';
+  } else {
+    headers.connection = 'close';
+    delete headers.upgrade;
+  }
   options.headers = util.formatHeaders(headers, rawHeaderNames);
   options.body = req.body.body;
-  if (isConnect(options)) {
-    handleConnect(options);
-  } else if (isWebSocket(options)) {
+  if (isWs) {
     handleWebSocket(options);
-  } else {
+  } else if (isConnect(options)) {
+    handleConnect(options);
+  } else  {
     handleHttp(options);
   }
 
