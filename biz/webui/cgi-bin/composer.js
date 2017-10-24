@@ -71,9 +71,16 @@ function handleWebSocket(options) {
   }
   var socket = net.connect(config.port, '127.0.0.1', function() {
     socket.write(getReqRaw(options));
+    var str;
     var handleResponse = function(data) {
-      socket.removeListener('data', handleResponse);
-      socket.write(options.body);
+      str = data + '';
+      if (str.indexOf('\r\n\r\n') !== -1) {
+        socket.removeListener('data', handleResponse);
+        TODO: 构造websocket请求包
+        // socket.write(options.body);
+      } else {
+        str = str.slice(-3);
+      }
     };
     if (options.body) {
       socket.on('data', handleResponse);
