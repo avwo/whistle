@@ -92,7 +92,7 @@ function handleHttp(options) {
   options.port = config.port;
   http.request(options, function(res) {
     res.on('error', util.noop);
-    util.drain(res);
+    drain(res);
   }).on('error', util.noop).end(options.body);
 }
 
