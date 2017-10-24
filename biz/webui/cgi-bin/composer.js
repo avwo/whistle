@@ -50,7 +50,12 @@ function handleConnect(options) {
     proxyHost: '127.0.0.1',
     proxyPort: config.port,
     headers: options.headers
-  }, drain).on('error', util.noop);
+  }, function(socket) {
+    drain(socket);
+    if (options.body) {
+      socket.write(options.body);
+    }
+  }).on('error', util.noop);
 }
 
 function getReqRaw(options) {
@@ -66,6 +71,13 @@ function handleWebSocket(options) {
   }
   var socket = net.connect(config.port, '127.0.0.1', function() {
     socket.write(getReqRaw(options));
+    var handleResponse = function(data) {
+      socket.removeListener('data', handleResponse);
+      socket.write(options.body);
+    };
+    if (options.body) {
+      socket.on('data', handleResponse);
+    }
   });
   drain(socket);
 }
@@ -105,11 +117,6 @@ module.exports = function(req, res) {
   headers[config.CLIENT_IP_HEAD] = util.getClientIp(req);
   options.method = getMethod(req.body.method);
 
-  if (headers['content-length'] != null) {
-    req.body.body = util.toBuffer(req.body.body || '');
-    headers['content-length'] = req.body.body.length;
-  }
-
   var isWs = isWebSocket(options)
     || (/upgrade/i.test(headers.connection) && /websocket/i.test(headers.upgrade));
   if (isWs) {
@@ -121,11 +128,19 @@ module.exports = function(req, res) {
     headers.connection = 'close';
     delete headers.upgrade;
   }
+  var isConn = !isWs && isConnect(options);
+  var body = req.body.body;
+  if (body && (isWs || isConn || util.hasRequestBody(options))) {
+    body = options.body = util.toBuffer(body);
+  }
+  if ('content-length' in headers) {
+    headers['content-length'] = body ? body.length : 0;
+  }
   options.headers = util.formatHeaders(headers, rawHeaderNames);
-  options.body = req.body.body;
+
   if (isWs) {
     handleWebSocket(options);
-  } else if (isConnect(options)) {
+  } else if (isConn) {
     handleConnect(options);
   } else  {
     handleHttp(options);
