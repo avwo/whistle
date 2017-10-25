@@ -76,7 +76,7 @@ function handleWebSocket(options) {
       str = data + '';
       if (str.indexOf('\r\n\r\n') !== -1) {
         socket.removeListener('data', handleResponse);
-        TODO: 构造websocket请求包
+        TODO: 构造websocket请求包;
         // socket.write(options.body);
       } else {
         str = str.slice(-3);
