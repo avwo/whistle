@@ -182,9 +182,7 @@ app.use(function(req, res, next) {
   }
 });
 app.post('/cgi-bin/socket/upload', upload.single('data'), function(req, res) {
-  var file = req.file;
-  console.log(req.file);
-  res.json(req.body);
+  res.json({ec: 0});
 });
 app.use(bodyParser.urlencoded({ extended: true, limit: '1mb'}));
 app.use(bodyParser.json());
