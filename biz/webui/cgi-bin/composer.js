@@ -71,19 +71,6 @@ function handleWebSocket(options) {
   }
   var socket = net.connect(config.port, '127.0.0.1', function() {
     socket.write(getReqRaw(options));
-    var str;
-    var handleResponse = function(data) {
-      str = data + '';
-      if (str.indexOf('\r\n\r\n') !== -1) {
-        socket.removeListener('data', handleResponse);
-        socket.write(options.body);
-      } else {
-        str = str.slice(-3);
-      }
-    };
-    if (options.body) {
-      socket.on('data', handleResponse);
-    }
   });
   drain(socket);
 }
