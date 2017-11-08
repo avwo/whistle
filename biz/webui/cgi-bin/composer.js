@@ -70,6 +70,8 @@ function handleWebSocket(options) {
   if (options.protocol === 'https:' || options.protocol === 'wss:') {
     options.headers[config.HTTPS_FIELD] = 1;
   }
+  var binary = !!options.headers['x-whistle-frame-binary'];
+  delete options.headers['x-whistle-frame-binary'];
   var socket = net.connect(config.port, '127.0.0.1', function() {
     socket.write(getReqRaw(options));
     var str;
@@ -80,7 +82,7 @@ function handleWebSocket(options) {
         var sender = new Sender(socket);
         sender.send(options.body, {
           mask: true,
-          binary: !!options.headers['x-whistle-frame-binary']
+          binary: binary
         }, util.noop);
       } else {
         str = str.slice(-3);
