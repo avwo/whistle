@@ -78,10 +78,9 @@ function handleWebSocket(options) {
       if (str.indexOf('\r\n\r\n') !== -1) {
         socket.removeListener('data', handleResponse);
         var sender = new Sender(socket);
-        var type = options.headers['x-whistle-frame-type'];
         sender.send(options.body, {
           mask: true,
-          binary: type === 'binary' || type === 'bin'
+          binary: !!options.headers['x-whistle-frame-binary']
         }, util.noop);
       } else {
         str = str.slice(-3);
