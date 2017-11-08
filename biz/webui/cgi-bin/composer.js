@@ -43,8 +43,13 @@ function drain(socket) {
   socket.on('data', util.noop);
 }
 
+function setComposerId(headers) {
+  headers['x-whistle-composer-id'] = util.getReqId();
+}
+
 function handleConnect(options) {
   options.headers['x-whistle-policy'] = 'tunnel';
+  setComposerId(options.headers);
   config.connect({
     host: options.hostname,
     port: options.port,
@@ -72,6 +77,7 @@ function handleWebSocket(options) {
   }
   var binary = !!options.headers['x-whistle-frame-binary'];
   delete options.headers['x-whistle-frame-binary'];
+  setComposerId(options.headers);
   var socket = net.connect(config.port, '127.0.0.1', function() {
     socket.write(getReqRaw(options));
     var str;
