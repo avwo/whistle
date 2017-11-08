@@ -77,7 +77,7 @@ function handleWebSocket(options) {
       str = data + '';
       if (str.indexOf('\r\n\r\n') !== -1) {
         socket.removeListener('data', handleResponse);
-        socket.write(encodeFrame(options.body));
+        socket.write(encodeFrame(options.body, { mask: true }));
       } else {
         str = str.slice(-3);
       }
