@@ -3,7 +3,7 @@ var net = require('net');
 var url = require('url');
 var config = require('../lib/config');
 var util = require('../lib/util');
-var encodeFrame = require('../../../lib/socket-mgr/encode');
+var Sender = require('../../../lib/socket-mgr/sender');
 
 function parseHeaders(headers, rawHeaderNames) {
   if (!headers || typeof headers != 'string') {
@@ -77,7 +77,8 @@ function handleWebSocket(options) {
       str = data + '';
       if (str.indexOf('\r\n\r\n') !== -1) {
         socket.removeListener('data', handleResponse);
-        socket.write(encodeFrame(options.body, { mask: true }));
+        var sender = new Sender(socket);
+        sender.send(options.body, { mask: true }, util.noop);
       } else {
         str = str.slice(-3);
       }
