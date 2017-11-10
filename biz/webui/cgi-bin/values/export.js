@@ -14,5 +14,13 @@ module.exports = function(req, res) {
       result[file.name] = file.data;
     }
   });
-  res.attachment('values_' + util.formatDate() + '.txt').send(JSON.stringify(result, null, '  '));
+  var filename = req.query.filename;
+  if (filename && typeof filename === 'string') {
+    if (!/\.(txt|json)/i.test(filename)) {
+      filename += '.txt';
+    }
+  } else {
+    filename = 'values_' + util.formatDate() + '.txt';
+  }
+  res.attachment(filename).send(JSON.stringify(result, null, '  '));
 };
