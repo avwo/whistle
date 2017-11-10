@@ -4,6 +4,7 @@ var url = require('url');
 var config = require('../lib/config');
 var util = require('../lib/util');
 var Sender = require('../../../lib/socket-mgr/sender');
+var events = require('../lib/events');
 
 function parseHeaders(headers, rawHeaderNames) {
   if (!headers || typeof headers != 'string') {
@@ -43,13 +44,10 @@ function drain(socket) {
   socket.on('data', util.noop);
 }
 
-function setComposerId(headers) {
-  headers['x-whistle-composer-id'] = util.getReqId();
-}
-
 function handleConnect(options) {
   options.headers['x-whistle-policy'] = 'tunnel';
-  setComposerId(options.headers);
+  var id = util.getReqId();
+  options.headers['x-whistle-composer-id'] = id;
   config.connect({
     host: options.hostname,
     port: options.port,
@@ -61,6 +59,21 @@ function handleConnect(options) {
     if (options.body) {
       socket.write(options.body);
     }
+    var sendData = function(data, isBinary) {
+      data = util.toBuffer(data);
+      if (!data || !data.length) {
+        return;
+      }
+      socket.write(data);
+    };
+    id = 'composer-' + id;
+    sendData(options.body);
+    events.on(id, sendData);
+    var clearup = function() {
+      events.removeListener(id, sendData);
+    };
+    socket.on('error', clearup);
+    socket.on('close', clearup);
   }).on('error', util.noop);
 }
 
@@ -77,7 +90,8 @@ function handleWebSocket(options) {
   }
   var binary = !!options.headers['x-whistle-frame-binary'];
   delete options.headers['x-whistle-frame-binary'];
-  setComposerId(options.headers);
+  var id = util.getReqId();
+  options.headers['x-whistle-composer-id'] = id;
   var socket = net.connect(config.port, '127.0.0.1', function() {
     socket.write(getReqRaw(options));
     var str;
@@ -86,17 +100,29 @@ function handleWebSocket(options) {
       if (str.indexOf('\r\n\r\n') !== -1) {
         socket.removeListener('data', handleResponse);
         var sender = new Sender(socket);
-        sender.send(options.body, {
-          mask: true,
-          binary: binary
-        }, util.noop);
+        var sendData = function(data, isBinary) {
+          data = util.toBuffer(data);
+          if (!data || !data.length) {
+            return;
+          }
+          sender.send(data, {
+            mask: true,
+            binary: isBinary
+          }, util.noop);
+        };
+        id = 'composer-' + id;
+        sendData(options.body, binary);
+        events.on(id, sendData);
+        var clearup = function() {
+          events.removeListener(id, sendData);
+        };
+        socket.on('error', clearup);
+        socket.on('close', clearup);
       } else {
         str = str.slice(-3);
       }
     };
-    if (options.body) {
-      socket.on('data', handleResponse);
-    }
+    socket.on('data', handleResponse);
   });
   drain(socket);
 }
