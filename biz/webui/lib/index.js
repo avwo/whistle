@@ -9,6 +9,7 @@ var crypto = require('crypto');
 var cookie = require('cookie');
 var multer  = require('multer');
 var htdocs = require('../htdocs');
+var events = require('./events');
 
 var LIMIT_SIZE = 1024 * 1024 * 17;
 var storage = multer.memoryStorage();
@@ -181,7 +182,12 @@ app.use(function(req, res, next) {
     next();
   }
 });
-app.post('/cgi-bin/socket/upload', upload.single('data'), function(req, res) {
+app.use('/cgi-bin/socket/upload', upload.single('uploadData'), function(req, res) {
+  var cId = req.body.cId;
+  var data = req.file && req.file.buffer;
+  if (cId && data && data.length) {
+    events.emit('composer-' + cId, data);
+  }
   res.json({ec: 0});
 });
 app.use(bodyParser.urlencoded({ extended: true, limit: '1mb'}));
