@@ -11,7 +11,7 @@ var multer  = require('multer');
 var htdocs = require('../htdocs');
 var events = require('./events');
 
-var LIMIT_SIZE = 1024 * 1024 * 17;
+var LIMIT_SIZE = 1024 * (1024 + 5);
 var storage = multer.memoryStorage();
 var upload = multer({
   storage: storage,

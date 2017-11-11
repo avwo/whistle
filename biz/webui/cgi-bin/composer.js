@@ -36,7 +36,7 @@ function isConnect(options) {
     return true;
   }
   var p = options.protocol;
-  return p === 'connect:' || p === 'socket:' || p === 'tunnel:';
+  return p === 'connect:' || p === 'socket:' || p === 'tunnel:' || p === 'conn:';
 }
 
 function drain(socket) {
