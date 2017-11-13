@@ -189,7 +189,7 @@ app.use('/cgi-bin/socket/upload', upload.single('uploadData'), function(req, res
   var isBinary;
   var filename = req.file && req.file.originalname;
   if (typeof filename === 'string') {
-    filename = mime.lookup(filename);
+    filename = util.getContentType(mime.lookup(filename));
     isBinary = !filename || filename === 'IMG';
   }
   if (cId && data && data.length) {
