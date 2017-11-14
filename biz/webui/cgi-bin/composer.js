@@ -69,11 +69,9 @@ function handleConnect(options) {
     id = 'composer-' + id;
     sendData(options.body);
     events.on(id, sendData);
-    var clearup = function() {
+    util.onSocketEnd(socket, function() {
       events.removeListener(id, sendData);
-    };
-    socket.on('error', clearup);
-    socket.on('close', clearup);
+    });
   }).on('error', util.noop);
 }
 
