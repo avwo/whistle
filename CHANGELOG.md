@@ -730,10 +730,15 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 1. feat: 支持双击 `AutoRefresh` 停止滚动，或双击顶部菜单栏空白位置滚动到顶部
 2. refactor: 优化文本显示的性能
 
-# v1.5.20
+### v1.5.20
 1. fix([#87](https://github.com/avwo/whistle/issues/87)): Node9启动失败的问题及zlib的bug
 2. feat: 支持Composer构造ws和tcp请求
 3. feat: 支持Replay带头部规则的请求
+
+### v1.6.0
+1. feat: 支持WebSocket的抓包与构造，详情参见[WebSocket操作文档](https://avwo.github.io/whistle/webui/websocket.html)
+2. feat: 支持下载请求响应数据，hover到[Request|Response]/[TextView|JSONView]/ViewAll/Download
+3. feat: 导出的数据支持自定义文件名称
 
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
