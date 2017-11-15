@@ -3,7 +3,7 @@ var net = require('net');
 var url = require('url');
 var config = require('../lib/config');
 var util = require('../lib/util');
-var getSender = require('../../../lib/socket-mgr').getSender;
+var getSender = require('ws-parser').getSender;
 var events = require('../lib/events');
 
 function parseHeaders(headers, rawHeaderNames) {
