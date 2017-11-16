@@ -13,7 +13,7 @@ module.exports = function(req, res, next) {
   if (isLocalIp || isWebUI) {
     if (req.path.indexOf('/_/') === 0) {
       bypass = true;
-      req.url = req.url.replace('/_', '');
+      req.url = req.url.replace('/_/', '/');
     } else if (!isWebUI) {
       if (port == config.port || port == config.uiport) {
         host = config.localUIHost;
