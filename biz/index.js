@@ -8,14 +8,19 @@ module.exports = function(req, res, next) {
   var port = host[1] || 80;
   var bypass;
   host = host[0];
-  if (net.isIP(host) && util.isLocalAddress(host)) {
+  var isWebUI = req.headers[config.WEBUI_HEAD] || config.isLocalUIUrl(host);
+  var isLocalIp = !isWebUI && net.isIP(host) && util.isLocalAddress(host);
+  if (isLocalIp || isWebUI) {
     if (req.path.indexOf('/_/') === 0) {
       bypass = true;
       req.url = req.url.replace('/_', '');
-    } else if (port == config.port || port == config.uiport) {
-      host = config.localUIHost;
-    } else if (port == config.weinreport) {
-      host = config.WEINRE_HOST;
+    } else if (!isWebUI) {
+      if (port == config.port || port == config.uiport) {
+        host = config.localUIHost;
+        isWebUI = true;
+      } else if (port == config.weinreport) {
+        host = config.WEINRE_HOST;
+      }
     }
   }
   // 后续有用到
@@ -23,9 +28,7 @@ module.exports = function(req, res, next) {
   if (bypass) {
     return next();
   }
-
   var pluginMgr = this.pluginMgr;
-  var isWebUI = req.headers[config.WEBUI_HEAD] || config.isLocalUIUrl(host);
   var weinrePort, pluginHomePage, logPort, options, localRule;
   if (!isWebUI && (options = config.parseInternalUrl(host))) {
     if (options.name === 'weinre') {
