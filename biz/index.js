@@ -6,17 +6,25 @@ module.exports = function(req, res, next) {
   var config = this.config;
   var host = (req.headers.host || '').split(':');
   var port = host[1] || 80;
+  var bypass;
   host = host[0];
   if (net.isIP(host) && util.isLocalAddress(host)) {
-    if (port == config.port || port == config.uiport) {
+    if (req.path.indexOf('/_/') === 0) {
+      bypass = true;
+      req.url = req.url.replace('/_', '');
+    } else if (port == config.port || port == config.uiport) {
       host = config.localUIHost;
     } else if (port == config.weinreport) {
       host = config.WEINRE_HOST;
     }
   }
+  // 后续有用到
+  var fullUrl = req.fullUrl = util.getFullUrl(req);
+  if (bypass) {
+    return next();
+  }
 
   var pluginMgr = this.pluginMgr;
-  var fullUrl = req.fullUrl = util.getFullUrl(req);
   var isWebUI = req.headers[config.WEBUI_HEAD] || config.isLocalUIUrl(host);
   var weinrePort, pluginHomePage, logPort, options, localRule;
   if (!isWebUI && (options = config.parseInternalUrl(host))) {
