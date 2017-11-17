@@ -12,8 +12,12 @@ module.exports = function(req, res, next) {
   var isLocalIp = !isWebUI && net.isIP(host) && util.isLocalAddress(host);
   if (isLocalIp || isWebUI) {
     if (req.path.indexOf('/_/') === 0) {
-      bypass = true;
-      req.url = req.url.replace('/_/', '/');
+      bypass = '/_/';
+    } else if (req.path.indexOf('/-/') === 0) {
+      bypass = '/-/';
+    }
+    if (bypass) {
+      req.url = req.url.replace(bypass, '/');
     } else if (!isWebUI) {
       if (port == config.port || port == config.uiport) {
         host = config.localUIHost;
