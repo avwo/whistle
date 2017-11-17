@@ -739,7 +739,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 1. feat: 支持WebSocket的抓包与构造，详情参见[WebSocket操作文档](https://avwo.github.io/whistle/webui/websocket.html)
 2. feat: 支持下载请求响应数据，hover到[Request|Response]/[TextView|JSONView]/ViewAll/Download
 3. feat: 导出的数据支持自定义文件名称
-4. feat: 原来的版本，如果请求的路径的ip和端口与whistle的ip和端口一样，或请求域名为localUIHOst，则都会转到whistle的UI，`v1.6.0` 以后，如果路径为:`http://localIP:whistlePort/_/xxx`的请求会自动转成 :`http://localIP:whistlePort/xxx`，这样就可以通过在whistle上配置规则 `localIP:whistlePort/xxx 127.0.0.1:6001` 实现反向代理的功能。
+4. feat: 原来的版本，如果请求的路径的ip和端口与whistle的ip和端口一样，或请求域名为localUIHOst，则都会转到whistle的UI，`v1.6.0` 以后，如果路径为:`http://localIP:whistlePort/_/xxx`的请求会自动转成 :`http://localIP:whistlePort/xxx`，这样就可以通过在whistle上配置规则 `localIP:whistlePort/xxx 127.0.0.1:6001` 实现反向代理的功能(`_`也可以换成`-`)。
 5. feat: 原来默认uiport为 `port + 1`，且可以通过启动参数 `-P 9999` 更改，`v1.6.0` 以后如果这些自定义的uiport被占用会自动获取一个随机端口
 
 ### -
