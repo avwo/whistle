@@ -283,8 +283,11 @@
 		var pageInfo = '\r\nPage Url: ' + location.href + '\r\nUser Agent: ' + navigator.userAgent;
 		if (error) {
       var stack = (error.stack || error.message) + '';
-      if (stack.indexOf(message) === -1) {
-        stack = message + '\n' + stack;
+      if (typeof message === 'string') {
+        var msg = message.substring(message.indexOf(':') + 1);
+        if (stack.indexOf(msg) === -1) {
+          stack = message + '\n' + stack;
+        }
       }
 			wConsole.error(stack + pageInfo);
 		} else {
