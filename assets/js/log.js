@@ -282,7 +282,11 @@
   var onerror = function(message, filename, lineno, colno, error) {
 		var pageInfo = '\r\nPage Url: ' + location.href + '\r\nUser Agent: ' + navigator.userAgent;
 		if (error) {
-			wConsole.error((error.stack || error.message) + pageInfo);
+      var stack = (error.stack || error.message) + '';
+      if (stack.indexOf(message) === -1) {
+        stack = message + '\n' + stack;
+      }
+			wConsole.error(stack + pageInfo);
 		} else {
 			wConsole.error('Error: ' + message + '(' + filename
 					+ ':' + lineno + ':' + (colno || 0) + ')' + pageInfo);
