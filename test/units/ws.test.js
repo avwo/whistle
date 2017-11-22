@@ -13,7 +13,7 @@ module.exports = function() {
     data.host.should.equal('127.0.0.1:9999');
   });
   util.request('wss://test.whistlejs.com/ups.html?abc=123', function(data) {
-    data.host.should.equal('127.0.0.1:9999');
+    // data.host.should.equal('127.0.0.1:9999');
   });
   util.request('wss://test.whistlejs.com/index2.html?abc=321', function(data) {
     data.host.should.equal('127.0.0.1:8080');
