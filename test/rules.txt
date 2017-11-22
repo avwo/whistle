@@ -5,4 +5,5 @@ delete.test.whistlejs.com reqHeaders://(x-delete-req=test-req&x-delete-all=all) 
 delete1.test.whistlejs.com reqHeaders://(x-delete-req=test-req&x-delete-all=all) resHeaders://(x-delete-res=test-res&x-delete-all=all) filter://https
 https://tp.w2.org/index.html test://global
 tp.w2.org 127.0.0.1:5566 filter://https
-up.w2.test.org filter://https urlParams://(rule=ws1.test.whistlejs.com)
+test.whistlejs.com/urlParams.html filter://https urlParams://(rule=ws1.test.whistlejs.com)
+wss://test.whistlejs.com/index2.html?abc=321 filter://https params://(rule=ws1.test.whistlejs.com)

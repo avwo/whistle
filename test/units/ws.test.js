@@ -12,8 +12,10 @@ module.exports = function() {
   util.request('wss://ws1.test.whistlejs.com/index.html', function(data) {
     data.host.should.equal('127.0.0.1:9999');
   });
-  util.request('wss://up.w2.test.org/index.html?abc=123', function(data) {
-    console.log(data)
+  util.request('wss://test.whistlejs.com/urlParams.html?abc=123', function(data) {
     data.host.should.equal('127.0.0.1:9999');
+  });
+  util.request('wss://test.whistlejs.com/index2.html?abc=321', function(data) {
+    data.host.should.equal('127.0.0.1:8080');
   });
 };
