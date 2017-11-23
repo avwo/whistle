@@ -5,7 +5,10 @@ var config = require('../lib/config');
 var util = require('../lib/util');
 var getSender = require('ws-parser').getSender;
 var events = require('../lib/events');
-var formatHeaders = require('hparser').formatHeaders;
+var hparser = require('hparser');
+
+var formatHeaders = hparser.formatHeaders;
+var getRawHeaders = hparser.getRawHeaders;
 
 function parseHeaders(headers, rawHeaderNames) {
   if (!headers || typeof headers != 'string') {
@@ -79,7 +82,7 @@ function handleConnect(options) {
 function getReqRaw(options) {
   var headers = options.headers;
   var statusLine = options.method +' ' + (options.path || '/') +' ' + 'HTTP/1.1';
-  var raw = [statusLine, util.getRawHeaders(headers)];
+  var raw = [statusLine, getRawHeaders(headers)];
   return raw.join('\r\n') + '\r\n\r\n';
 }
 
