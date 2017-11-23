@@ -5,6 +5,7 @@ var config = require('../lib/config');
 var util = require('../lib/util');
 var getSender = require('ws-parser').getSender;
 var events = require('../lib/events');
+var formatHeaders = require('hparser').formatHeaders;
 
 function parseHeaders(headers, rawHeaderNames) {
   if (!headers || typeof headers != 'string') {
@@ -181,7 +182,7 @@ module.exports = function(req, res) {
   if ('content-length' in headers) {
     headers['content-length'] = body ? body.length : 0;
   }
-  options.headers = util.formatHeaders(headers, rawHeaderNames);
+  options.headers = formatHeaders(headers, rawHeaderNames);
 
   if (isWs) {
     handleWebSocket(options);
