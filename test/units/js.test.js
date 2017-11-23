@@ -2,14 +2,14 @@ var util = require('../util.test');
 
 module.exports = function() {
   util.request('http://js1.test.whistlejs.com/index.html?resBody=_', function(res, body) {
-    body.should.equal('_<script>js</script>');
+    body.should.equal('_\r\n<script>js</script>');
   });
 
   util.request({
     method: 'post',
     url: 'https://js2.test.whistlejs.com/index.html?resBody=_'
   }, function(res, body) {
-    body.should.equal('_js');
+    body.should.equal('_\r\njs');
   });
 
   util.request({

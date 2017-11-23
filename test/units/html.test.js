@@ -2,7 +2,7 @@ var util = require('../util.test');
 
 module.exports = function() {
   util.request('http://html1.test.whistlejs.com/index.html?resBody=_', function(res, body) {
-    body.should.equal('_html');
+    body.should.equal('_\r\nhtml');
   });
 
   util.request({
