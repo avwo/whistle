@@ -166,8 +166,9 @@ module.exports = function(req, res) {
   headers[config.CLIENT_IP_HEAD] = util.getClientIp(req);
   options.method = getMethod(req.body.method);
 
-  var isWs = isWebSocket(options)
-    || (/upgrade/i.test(headers.connection) && /websocket/i.test(headers.upgrade));
+  var isConn = isConnect(options);
+  var isWs = !isConn && (isWebSocket(options)
+    || (/upgrade/i.test(headers.connection) && /websocket/i.test(headers.upgrade)));
   if (isWs) {
     headers.connection = 'Upgrade';
     headers.upgrade = 'websocket';
@@ -177,7 +178,7 @@ module.exports = function(req, res) {
     headers.connection = 'close';
     delete headers.upgrade;
   }
-  var isConn = !isWs && isConnect(options);
+
   var body = req.body.body;
   if (body && (isWs || isConn || util.hasRequestBody(options))) {
     body = options.body = util.toBuffer(body);
