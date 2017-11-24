@@ -745,7 +745,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 # v1.6.1
 1. feat: 支持 `ws://www.test.com/xxx https://www.abc.com/a/b` 匹配，whistle会根据匹配url的协议 `http` 或 `https` 自动转成 `ws` 或 `wss`
 2. feat: `hosts://` <=> `host://`
-3. feat: 支持websocket(socket)请求设置[statusCode](https://avwo.github.io/whistle/rules/statusCode.html)、[reqDelay](https://avwo.github.io/whistle/rules/reqDelay.html)、[urlParams](https://avwo.github.io/whistle/rules/urlParams.html)、[params](https://avwo.github.io/whistle/rules/params.html)、[delete](https://avwo.github.io/whistle/rules/delete.html)、[reqHeaders](https://avwo.github.io/whistle/rules/reqHeaders.html)、[resHeaders](https://avwo.github.io/whistle/rules/resHeaders.html)、[referer](https://avwo.github.io/whistle/rules/referer.html)
+3. feat: 支持websocket(socket)请求设置[statusCode](https://avwo.github.io/whistle/rules/statusCode.html)、[reqDelay](https://avwo.github.io/whistle/rules/reqDelay.html)、[urlParams](https://avwo.github.io/whistle/rules/urlParams.html)、[params](https://avwo.github.io/whistle/rules/params.html)、[delete](https://avwo.github.io/whistle/rules/delete.html)、[reqHeaders](https://avwo.github.io/whistle/rules/reqHeaders.html)、[resHeaders](https://avwo.github.io/whistle/rules/resHeaders.html)、[referer](https://avwo.github.io/whistle/rules/referer.html)、[referer](https://avwo.github.io/whistle/rules/referer.html)、[disable](https://avwo.github.io/whistle/rules/disable.html)、[reqCookies](https://avwo.github.io/whistle/rules/reqCookies.html)、[reqCors](https://avwo.github.io/whistle/rules/reqCors.html)、[resCors](https://avwo.github.io/whistle/rules/resCors.html)
 4. refactor: Network -> Log -> Console支持JSONView的形式
 5. 
  
