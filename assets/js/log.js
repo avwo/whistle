@@ -216,7 +216,7 @@
 			return obj.stack || obj.message;
 		}
 
-		return obj;
+		return obj === undefined ? 'undefined' : obj;
 	}
 
   var index = 0;
