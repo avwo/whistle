@@ -208,23 +208,15 @@
 	}
 
 	function stringify(obj) {
-		if (!obj) {
-			return obj + '';
-		}
-		var type = typeof obj;
-		if (type == 'string') {
-			return obj;
+    if (typeof obj === 'function') {
+			return obj.toString();
 		}
 
 		if (obj instanceof Error) {
 			return obj.stack || obj.message;
 		}
 
-		if (type == 'function') {
-			return obj.toString();
-		}
-
-		return JSON.stringify(obj, null, '  ');
+		return obj;
 	}
 
   var index = 0;
@@ -259,7 +251,7 @@
         if (!result.length) {
           result = ['undefined'];
         }
-				addLog(level, result.join(' '));
+				addLog(level, JSON.stringify(result));
       };
 			console[level] = function() {
         if (pending) {
