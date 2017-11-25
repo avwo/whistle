@@ -747,7 +747,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 2. feat: `hosts://` <=> `host://`
 3. feat: 支持websocket(socket)请求设置[statusCode](https://avwo.github.io/whistle/rules/statusCode.html)、[reqDelay](https://avwo.github.io/whistle/rules/reqDelay.html)、[urlParams](https://avwo.github.io/whistle/rules/urlParams.html)、[params](https://avwo.github.io/whistle/rules/params.html)、[delete](https://avwo.github.io/whistle/rules/delete.html)、[reqHeaders](https://avwo.github.io/whistle/rules/reqHeaders.html)、[resHeaders](https://avwo.github.io/whistle/rules/resHeaders.html)、[referer](https://avwo.github.io/whistle/rules/referer.html)、[referer](https://avwo.github.io/whistle/rules/referer.html)、[disable](https://avwo.github.io/whistle/rules/disable.html)、[reqCookies](https://avwo.github.io/whistle/rules/reqCookies.html)、[reqCors](https://avwo.github.io/whistle/rules/reqCors.html)、[resCors](https://avwo.github.io/whistle/rules/resCors.html)
 4. refactor: Network -> Log -> Console支持JSONView的形式
-5. 
+![Log](http://7tszky.com1.z0.glb.clouddn.com/Fv7fZgpm2MWwuf8FYRuhN7jnjj7S)
  
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
