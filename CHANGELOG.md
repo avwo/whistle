@@ -742,12 +742,15 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 4. feat: 原来的版本，如果请求的路径的ip和端口与whistle的ip和端口一样，或请求域名为localUIHOst，则都会转到whistle的UI，`v1.6.0` 以后，如果路径为:`http://localIP:whistlePort/_/xxx`的请求会自动转成 :`http://localIP:whistlePort/xxx`，这样就可以通过在whistle上配置规则 `localIP:whistlePort/xxx 127.0.0.1:6001` 实现反向代理的功能(`_`也可以换成`-`)。
 5. feat: 原来默认uiport为 `port + 1`，且可以通过启动参数 `-P 9999` 更改，`v1.6.0` 以后如果非自定义的uiport被占用会自动获取一个随机端口
 
-# v1.6.1
+### v1.6.1
 1. feat: 支持 `ws://www.test.com/xxx https://www.abc.com/a/b` 匹配，whistle会根据匹配url的协议 `http` 或 `https` 自动转成 `ws` 或 `wss`
 2. feat: `hosts://` <=> `host://`
 3. feat: 支持websocket(socket)请求设置[statusCode](https://avwo.github.io/whistle/rules/statusCode.html)、[reqDelay](https://avwo.github.io/whistle/rules/reqDelay.html)、[urlParams](https://avwo.github.io/whistle/rules/urlParams.html)、[params](https://avwo.github.io/whistle/rules/params.html)、[delete](https://avwo.github.io/whistle/rules/delete.html)、[reqHeaders](https://avwo.github.io/whistle/rules/reqHeaders.html)、[resHeaders](https://avwo.github.io/whistle/rules/resHeaders.html)、[referer](https://avwo.github.io/whistle/rules/referer.html)、[referer](https://avwo.github.io/whistle/rules/referer.html)、[disable](https://avwo.github.io/whistle/rules/disable.html)、[reqCookies](https://avwo.github.io/whistle/rules/reqCookies.html)、[reqCors](https://avwo.github.io/whistle/rules/reqCors.html)、[resCors](https://avwo.github.io/whistle/rules/resCors.html)
 4. refactor: Network -> Log -> Console支持JSONView的形式
 ![Log](http://7tszky.com1.z0.glb.clouddn.com/Fv7fZgpm2MWwuf8FYRuhN7jnjj7S)
+
+# v1.6.2
+1. fix: 在Frames的列表没有加React的key导致性能比较差的问题
  
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
