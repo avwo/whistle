@@ -752,8 +752,11 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 ### v1.6.2
 1. fix: 在Frames的列表没有加React的key导致性能比较差的问题
 
-# v1.6.3
-1. fix: websocket设置代理后路径被改为更路径我呢天
+### v1.6.3
+1. fix: websocket设置代理后路径被改为根路径
+
+# v1.6.4
+1. feat: 在Network的列表及Overview里面支持显示Content-Encoding
  
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
