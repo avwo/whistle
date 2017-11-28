@@ -749,8 +749,11 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 4. refactor: Network -> Log -> Console支持JSONView的形式
 ![Log](http://7tszky.com1.z0.glb.clouddn.com/Fv7fZgpm2MWwuf8FYRuhN7jnjj7S)
 
-# v1.6.2
+### v1.6.2
 1. fix: 在Frames的列表没有加React的key导致性能比较差的问题
+
+# v1.6.3
+1. fix: websocket设置代理后路径被改为更路径我呢天
  
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
