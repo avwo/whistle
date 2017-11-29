@@ -162,6 +162,7 @@ module.exports = function(req, res) {
   if (!headers['user-agent']) {
     headers['user-agent'] = 'whistle/' + config.version;
   }
+  headers[util.WHISTLE_REQ_SRC_HEADER] = 'W2COMPOSER';
   headers.host = options.host;
   headers[config.CLIENT_IP_HEAD] = util.getClientIp(req);
   options.method = getMethod(req.body.method);
