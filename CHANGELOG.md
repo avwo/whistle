@@ -755,6 +755,8 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 
 # v1.6.4
 1. feat: 在Network的列表及Overview里面支持显示Content-Encoding
+2. feat: Rules里面支持Autocomplete，输入过程中如果有匹配的规则会自动显示，或者Windows按住 `Alt+/`，Mac按住 `Option+/` 可以手动调出可以选规则列表，且选择或hover到某个规则安装F1可以自动打开对应的帮助文档
+3. feat: 支持通过按`F1`打开对应的帮助文档
  
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
