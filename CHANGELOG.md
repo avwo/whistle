@@ -758,11 +758,32 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 2. feat: Rules里面支持Autocomplete，输入过程中如果有匹配的规则会自动显示，或者Windows按住 `Alt+/`，Mac按住 `Option+/` 可以手动调出可以选规则列表，且选择或hover到某个规则后按 `F1` (笔记本可能要按 `fn+F1`)可以自动打开对应的帮助文档
 3. feat: 支持通过按`F1`打开对应的帮助文档
 
-# v1.6.5
-# v1.6.6
+### v1.6.5
+### v1.6.6
 1. feat: [正则匹配和精确匹配](https://avwo.github.io/whistle/pattern.html)支持非操作，可以通过 `!/reg/i` 或 `!$www.test.com/xxx` 实现非匹配操作
 2. feat: 支持通过启动命令行参数选择监听的网卡 `-H 127.0.0.1` 或 `--host 192.168.0.100`
 3. fix: 获取通过代理转发过来请求的clientIp错误的问题
+
+# v1.6.7
+1. refactor: 调整证书策略，防止域名里面有不合规的字符，导致Chrome出现证书校验失败
+2. refactor: [rulesFile](https://avwo.github.io/whistle/rules/rulesFile.html)添加一些新的内置方法和对象:
+
+		var context = {
+          url: req.fullUrl,
+          method: util.toUpperCase(req.method) || 'GET',
+          httpVersion: req.httpVersion || '1.1',
+          isLocalAddress: function(_ip) {
+            return util.isLocalAddress(_ip || ip);
+          },
+          ip: ip,
+          headers: util.clone(req.headers),
+          body: body,
+          rules: [],
+          values: {},
+          getValue: values.get,
+          util: rulesFileUtil,
+          tpl: tpl
+        };  
  
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
