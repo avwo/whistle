@@ -759,6 +759,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 3. feat: 支持通过按`F1`打开对应的帮助文档
 
 # v1.6.5
+# v1.6.6
 1. feat: [正则匹配和精确匹配](https://avwo.github.io/whistle/pattern.html)支持非操作，可以通过 `!/reg/i` 或 `!$www.test.com/xxx` 实现非匹配操作
 2. feat: 支持通过启动命令行参数选择监听的网卡 `-H 127.0.0.1` 或 `--host 192.168.0.100`
 3. fix: 获取通过代理转发过来请求的clientIp错误的问题
