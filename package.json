@@ -16,7 +16,6 @@
   "keepAliveMsecs": 25000,
   "responseTimeout": 60000,
   "timeout": 66000,
-  "httpsProxyHost": "x-whistle-proxy-host",
   "author": "avenwu <avenwu@vip.qq.com>",
   "contributors": [],
   "license": "MIT",
