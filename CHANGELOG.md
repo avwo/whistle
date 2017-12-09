@@ -781,7 +781,8 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
           rules: [],
           values: {},
           getValue: values.get,
-          util: rulesFileUtil,
+          parseUrl: parseUrl,
+          parseQuery: parseQuery,
           tpl: tpl
         };  
  
