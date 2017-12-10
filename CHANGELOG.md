@@ -764,7 +764,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 2. feat: 支持通过启动命令行参数选择监听的网卡 `-H 127.0.0.1` 或 `--host 192.168.0.100`
 3. fix: 获取通过代理转发过来请求的clientIp错误的问题
 
-# v1.6.7
+### v1.6.7
 1. refactor: 调整证书策略，防止域名里面有不合规的字符，导致Chrome出现证书校验失败
 2. refactor: [rulesFile](https://avwo.github.io/whistle/rules/rulesFile.html)添加一些新的内置方法和对象:
 
@@ -785,6 +785,11 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
           parseQuery: parseQuery,
           tpl: tpl
         };  
+
+# v1.7.0
+1. feat: 将[rulesFile](https://avwo.github.io/whistle/rules/rulesFile.html) 改为 [reqScript](https://avwo.github.io/whistle/rules/reqScript.html)，原来的rulesFile还可以使用，功能与reqScript一样
+2. feat: 添加[resScript](https://avwo.github.io/whistle/rules/resScript.html)，支持在响应后修改通过脚本修改规则
+3. fix: 通过rulesFile设置proxy时会出错的问题
  
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
