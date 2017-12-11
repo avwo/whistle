@@ -19,6 +19,7 @@ module.exports = function(req, res) {
   res.json({
     ec: 0,
     version: config.version,
+    clientIp: util.getClientIp(req),
     mrulesClientId: config.mrulesClientId,
     mrulesTime: config.mrulesTime,
     mvaluesClientId: config.mvaluesClientId,

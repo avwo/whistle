@@ -101,3 +101,5 @@ function formatDate() {
 }
 
 exports.formatDate = formatDate;
+
+exports.getClientIp = util.getClientIp;
