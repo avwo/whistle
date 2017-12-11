@@ -12,6 +12,7 @@ var mime = require('mime');
 var htdocs = require('../htdocs');
 var events = require('./events');
 
+var GET_METHOD_RE = /^get$/i;
 var LIMIT_SIZE = 1024 * (1024 + 5);
 var storage = multer.memoryStorage();
 var upload = multer({
@@ -60,14 +61,21 @@ function requireLogin(res) {
   res.status(401).end('Access denied, please <a href="javascript:;" onclick="location.reload()">try again</a>.');
 }
 
-function checkAuth(req, res, auth) {
+function verifyLogin(req, res, auth) {
+  var isVisitor = !auth;
+  if (isVisitor) {
+    auth = config.visitor;
+  }
+  if (!auth) {
+    return;
+  }
   var username = auth.username;
   var password = auth.password;
-  var authKey = auth.authKey;
 
   if (!username && !password) {
     return true;
   }
+  var authKey = auth.authKey;
   var cookies = cookie.parse(req.headers.cookie || '');
   var lkey = cookies[authKey];
   var correctKey = getLoginKey(req, res, auth);
@@ -75,7 +83,7 @@ function checkAuth(req, res, auth) {
     return true;
   }
   auth = getAuth(req) || {};
-  if (config.encrypted) {
+  if (!isVisitor && config.encrypted) {
     auth.pass = shasum(auth.pass);
   }
   if (auth.name === username && auth.pass === password) {
@@ -85,6 +93,12 @@ function checkAuth(req, res, auth) {
       path: '/'
     };
     res.setHeader('Set-Cookie', cookie.serialize(authKey, correctKey, options));
+    return true;
+  }
+}
+
+function checkAuth(req, res, auth) {
+  if (verifyLogin(req, res, auth)) {
     return true;
   }
   requireLogin(res);
@@ -170,6 +184,9 @@ app.all(PLUGIN_PATH_RE, function(req, res, next) {
 
 app.use(function(req, res, next) {
   if (doNotCheckLogin(req)) {
+    return next();
+  }
+  if (verifyLogin(req, res) && (!req.method || GET_METHOD_RE.test(req.method))) {
     return next();
   }
   var username = getUsername();
