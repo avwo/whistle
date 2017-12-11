@@ -125,4 +125,5 @@ program
   .option('-t, --timeout [ms]', 'request timeout (' + config.timeout + ' ms by default)', parseInt, undefined)
   .option('-s, --sockets [number]', 'max sockets (' + config.sockets + ' by default)', parseInt, undefined)
   .option('-e, --extra [extraData]', 'extra data for plugin', String, undefined)
+  .option('-V, --visitor [name:pass]', 'the visitor account', String, undefined)
   .parse(process.argv);
