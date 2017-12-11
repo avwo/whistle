@@ -15,11 +15,11 @@ module.exports = function(req, res) {
   } else {
     data.ids = null;
   }
-
+  var clientIp = util.getClientIp(req);
   res.json({
     ec: 0,
     version: config.version,
-    clientIp: util.getClientIp(req),
+    clientIp: clientIp,
     mrulesClientId: config.mrulesClientId,
     mrulesTime: config.mrulesTime,
     mvaluesClientId: config.mvaluesClientId,
@@ -37,6 +37,6 @@ module.exports = function(req, res) {
     interceptHttpsConnects: properties.get('interceptHttpsConnects'),
     defaultRulesIsDisabled: rules.defaultRulesIsDisabled(),
     list: rules.getSelectedList(),
-    data: getData(data)
+    data: getData(data, clientIp)
   });
 };
