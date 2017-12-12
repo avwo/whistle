@@ -111,8 +111,10 @@ program
   .option('-A, --ATS', 'generate Root CA for iOS ATS (Node >= 6 is required)')
   .option('-z, --certDir [directory]', 'custom certificate path', String, undefined)
   .option('-l, --localUIHost [hostname]', 'local ui host (' + config.localUIHost + ' by default)', String, undefined)
-  .option('-n, --username [username]', 'login username', String, undefined)
-  .option('-w, --password [password]', 'login password', String, undefined)
+  .option('-n, --username [username]', 'the username of ' + config.name, String, undefined)
+  .option('-w, --password [password]', 'the password of ' + config.name, String, undefined)
+  .option('-N, --visitorName [username]', 'the visitor name', String, undefined)
+  .option('-W, --visitorPassword [password]', 'the visitor password', String, undefined)
   .option('-S, --storage [newStorageDir]', 'the new local storage directory', String, undefined)
   .option('-C, --copy [storageDir]', 'copy storageDir to newStorageDir', String, undefined)
   .option('-c, --dnsCache [time]', 'the cache time of DNS (30000ms by default)', String, undefined)
@@ -125,5 +127,4 @@ program
   .option('-t, --timeout [ms]', 'request timeout (' + config.timeout + ' ms by default)', parseInt, undefined)
   .option('-s, --sockets [number]', 'max sockets (' + config.sockets + ' by default)', parseInt, undefined)
   .option('-e, --extra [extraData]', 'extra data for plugin', String, undefined)
-  .option('-V, --visitor [name:pass]', 'the visitor account', String, undefined)
   .parse(process.argv);
