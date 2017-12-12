@@ -67,6 +67,12 @@ function verifyLogin(req, res, auth) {
   var isVisitor = !auth;
   if (isVisitor) {
     auth = config.visitor;
+    if (!auth) {
+      return;
+    }
+    if (!auth.authKey) {
+      auth.authKey = 'whistle_v_lk_' + encodeURIComponent(auth.username);
+    }
   }
   if (!auth) {
     return;
