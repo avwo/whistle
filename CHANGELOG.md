@@ -786,10 +786,15 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
           tpl: tpl
         };  
 
-# v1.7.0
+### v1.7.0
 1. feat: 将[rulesFile](https://avwo.github.io/whistle/rules/rulesFile.html) 改为 [reqScript](https://avwo.github.io/whistle/rules/reqScript.html)，原来的rulesFile还可以使用，功能与reqScript一样
 2. feat: 添加[resScript](https://avwo.github.io/whistle/rules/resScript.html)，支持在响应后修改通过脚本修改规则
 3. fix: 通过rulesFile设置proxy时会出错的问题
+
+# v1.7.1
+1. fix: [reqScript](https://avwo.github.io/whistle/rules/reqScript.html)的body为空的问题：[issue#74](https://github.com/avwo/whistle/issues/94)
+2. refactor: `visitorName` 改为 `guestName` 更符合一般的叫法
+
  
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
