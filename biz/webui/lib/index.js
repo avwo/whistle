@@ -64,9 +64,9 @@ function requireLogin(res) {
 }
 
 function verifyLogin(req, res, auth) {
-  var isVisitor = !auth;
-  if (isVisitor) {
-    auth = config.visitor;
+  var isGuest = !auth;
+  if (isGuest) {
+    auth = config.guest;
     if (!auth) {
       return;
     }
@@ -91,7 +91,7 @@ function verifyLogin(req, res, auth) {
     return true;
   }
   auth = getAuth(req) || {};
-  if (!isVisitor && config.encrypted) {
+  if (!isGuest && config.encrypted) {
     auth.pass = shasum(auth.pass);
   }
   if (auth.name === username && auth.pass === password) {
