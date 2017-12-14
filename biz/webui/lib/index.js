@@ -112,7 +112,12 @@ function checkAuth(req, res, auth) {
   requireLogin(res);
   return false;
 }
-
+function getNohostPath(path) {
+  if (path.indexOf('/whistle/') === 0) {
+    return path.replace('/whistle', '');
+  }
+  return '/whistle.nohost' + path;
+}
 app.use(function(req, res, next) {
   proxyEvent.emit('_request', req.url);
   var aborted;
@@ -133,10 +138,10 @@ app.use(function(req, res, next) {
       if (PLUGIN_PATH_RE.test(pathname) && RegExp.$3) {
         req.url = '/' + RegExp.$1 + '.' + RegExp.$2 + options.path;
       }else if (config.isNohostUrl(refOpts.hostname) === 2) {
-        req.url = '/whistle.nohost' + options.path;
+        req.url = getNohostPath(options.path);
       }
     } else if (config.isNohostUrl(req.headers.host) === 2) {
-      req.url = '/whistle.nohost' + options.path;
+      req.url = getNohostPath(options.path);
     }
   }
 
