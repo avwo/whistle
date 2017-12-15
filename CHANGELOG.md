@@ -791,10 +791,13 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 2. feat: 添加[resScript](https://avwo.github.io/whistle/rules/resScript.html)，支持在响应后修改通过脚本修改规则
 3. fix: 通过rulesFile设置proxy时会出错的问题
 
-# v1.7.1
+### v1.7.1
 1. fix: [reqScript](https://avwo.github.io/whistle/rules/reqScript.html)的body为空的问题：[issue#74](https://github.com/avwo/whistle/issues/94)，及render无法使用的问题，建议大家升级到最新版本
 2. refactor: `visitorName` 改为 `guestName`
 3. feat: 添加[responseFor](https://avwo.github.io/whistle/rules/responseFor.html)，功能与[forwardedFor](https://avwo.github.io/whistle/rules/responseFor.html)对应，用于在Network的severIp上显示真实的服务器环境
+
+# v1.7.2
+1. refactor: 数据备份优化，如果原文件没有数据，重新用备份文件写入
 
  
 ### -
