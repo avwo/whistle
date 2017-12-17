@@ -796,8 +796,12 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 2. refactor: `visitorName` 改为 `guestName`
 3. feat: 添加[responseFor](https://avwo.github.io/whistle/rules/responseFor.html)，功能与[forwardedFor](https://avwo.github.io/whistle/rules/responseFor.html)对应，用于在Network的severIp上显示真实的服务器环境
 
-# v1.7.2
+### v1.7.2
 1. refactor: 数据备份优化，如果原文件没有数据，重新用备份文件写入
+
+# v1.7.3
+1. feat: 支持通过 `@xxx` 设置变量值，插件(`options.GLOBAL_VALUE_HEADER`)或[reqScript](https://avwo.github.io/whistle/rules/reqScript.html)、[resScript](https://avwo.github.io/whistle/rules/resScript.html)(`value`)可以读取到该值
+2. refactor: 启动时的数据备份问题
 
  
 ### -
