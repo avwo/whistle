@@ -115,6 +115,7 @@ program
   .option('-w, --password [password]', 'the password of ' + config.name, String, undefined)
   .option('-N, --guestName [username]', 'the guest name', String, undefined)
   .option('-W, --guestPassword [password]', 'the guest password', String, undefined)
+  .option('-s, --sockets [number]', 'max sockets (' + config.sockets + ' by default)', parseInt, undefined)
   .option('-S, --storage [newStorageDir]', 'the new local storage directory', String, undefined)
   .option('-C, --copy [storageDir]', 'copy storageDir to newStorageDir', String, undefined)
   .option('-c, --dnsCache [time]', 'the cache time of DNS (30000ms by default)', String, undefined)
@@ -125,6 +126,5 @@ program
   .option('-M, --mode [mode]', 'the whistle mode (as: pureProxy|debug)', String, undefined)
   .option('-u, --uipath [script path]', 'web ui plugin path', String, undefined)
   .option('-t, --timeout [ms]', 'request timeout (' + config.timeout + ' ms by default)', parseInt, undefined)
-  .option('-s, --sockets [number]', 'max sockets (' + config.sockets + ' by default)', parseInt, undefined)
   .option('-e, --extra [extraData]', 'extra data for plugin', String, undefined)
   .parse(process.argv);
