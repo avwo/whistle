@@ -127,4 +127,6 @@ program
   .option('-u, --uipath [script path]', 'web ui plugin path', String, undefined)
   .option('-t, --timeout [ms]', 'request timeout (' + config.timeout + ' ms by default)', parseInt, undefined)
   .option('-e, --extra [extraData]', 'extra data for plugin', String, undefined)
+  .option('-R, --reqCacheSize [reqCacheSize]', 'the cache size of request data', String, undefined)
+  .option('-F, --frameCacheSize [frameCacheSize]', 'the cache size of socket frames', String, undefined)
   .parse(process.argv);
