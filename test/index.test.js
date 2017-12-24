@@ -13,7 +13,9 @@ var socks = require('socksv5');
 var util = require('./util.test');
 var config = require('./config.test');
 var values = util.getValues();
-var testList = [require('./units/wildcard.test')];
+var testList = fs.readdirSync(path.join(__dirname, './units')).map(function(name) {
+  return require('./units/' + name);
+});
 var defaultRules = fs.readFileSync(path.join(__dirname, 'rules.txt'), {encoding: 'utf8'});
 var options = {
   key: fs.readFileSync(path.join(__dirname, 'assets/certs/root.key')),
