@@ -18,4 +18,7 @@ module.exports = function() {
   util.request('wss://test.whistlejs.com/index2.html?abc=321', function(data) {
     data.host.should.equal('127.0.0.1:8080');
   });
+  util.requestWS('ws://test.whistlejs.com/index2.html?abc=321', function(data) {
+    data.host.should.equal('127.0.0.1:8080');
+  });
 };

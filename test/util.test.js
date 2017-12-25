@@ -14,6 +14,44 @@ var requestProxy = request.defaults({
 });
 var count = 0;
 
+function setHost(fullUrl, opts) {
+  var host = opts.host;
+  if (host || opts.port > 0) {
+    var urlOpts = parseUrl(fullUrl);
+    host = host || urlOpts.hostname;
+    var port = opts.port || urlOpts.port;
+    if (port) {
+      host = host + ':' + port;
+    }
+    fullUrl = fullUrl.replace(/\/\/[^/]+/, '//' + host);
+  }
+  return fullUrl.replace(/^ws/, 'http');
+}
+
+exports.requestWS = function(url, callback) {
+  ++count;
+  var options = parseUrl(url);
+  var ws = new WebSocket(setHost(url, { host: '127.0.0.1', port: config.port }), {
+    headers: { host: options.host },
+    rejectUnauthorized: true
+  });
+
+  ws.on('open', function open() {
+    ws.send('something');
+  });
+  var done;
+  ws.on('message', function(data) {
+    if (done) {
+      return;
+    }
+    done = true;
+    callback && callback(JSON.parse(data));
+    if (--count <= 0) {
+      process.exit(0);
+    }
+  });
+};
+
 exports.request = function(options, callback) {
   ++count;
 
