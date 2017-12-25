@@ -35,11 +35,21 @@ exports.requestWS = function(url, callback) {
     headers: { host: options.host },
     rejectUnauthorized: true
   });
-
-  ws.on('open', function open() {
-    ws.send('something');
-  });
   var done;
+  ws.on('open', function open() {
+    if (/checkStatusCode/.test(url)) {
+      if (done) {
+        return;
+      }
+      done = true;
+      callback && callback('checkStatusCode');
+      if (--count <= 0) {
+        process.exit(0);
+      }
+    } else {
+      ws.send('something');
+    }
+  });
   ws.on('message', function(data) {
     if (done) {
       return;

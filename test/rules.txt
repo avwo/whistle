@@ -9,3 +9,5 @@ test.whistlejs.com/ups.html filter://https urlParams://(rule=ws1.test.whistlejs.
 wss://test.whistlejs.com/index2.html?abc=321 filter://https params://(rule=ws1.test.whistlejs.com)
 
 reqscript.w2.org reqScript://{reqScript.js} resScript://{resScript.js}
+
+ws://status.whistlejs.com status://101
