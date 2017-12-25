@@ -26,6 +26,24 @@ module.exports = function() {
     data.name.should.be.equal('http');
   });
 
+  util.request({
+    url: 'http://www.qq.wildcard3.cn/abc/index.html',
+    method: 'post',
+    body: 'sssssss'
+  }, function(res, data) {
+    data.name.should.be.equal('https');
+  });
+  util.request('http://www.wildcard3.com/abc/index.html', function(res, data) {
+    data.name.should.be.equal('https');
+  });
+  util.request({
+    url: 'http://w2.w1.wildcard3.com/abc/index.html',
+    method: 'post',
+    body: 'sssssss'
+  }, function(res, data) {
+    data.name.should.be.equal('http');
+  });
+
 
   util.request('http://www.wildcard2.com/1/2/3/abc/index.html', function(res, data) {
     data.name.should.be.equal('http');

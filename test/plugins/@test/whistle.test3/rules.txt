@@ -26,6 +26,9 @@ ws5.w2.org socks://127.0.0.1:1080
 *.wildcard1.com file://test/abc enable://intercept
 **.wildcard1.com file://test enable://intercept
 
+^*.wildcard3.com/** file://test/abc/$2 enable://intercept
+^**.wildcard3.com/*** file://test/$2 enable://intercept
+
 http://*.wildcard2.com/1/2/3 file://test
 http://**.wildcard2.com/1/2/3 file://test
 
