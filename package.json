@@ -79,6 +79,7 @@
     "node": ">= 0.10.0"
   },
   "devDependencies": {
+    "clipboard": "^1.7.1",
     "coveralls": "^2.11.12",
     "eslint": "^2.8.0",
     "istanbul": "^0.4.4",
@@ -86,7 +87,7 @@
     "should": "^10.0.0",
     "should-http": "0.0.4",
     "tape": "^4.6.0",
-    "ws": "^1.1.4",
-    "whistle.test": "*"
+    "whistle.test": "*",
+    "ws": "^1.1.4"
   }
 }
