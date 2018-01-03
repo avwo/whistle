@@ -803,13 +803,15 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 1. feat: 支持通过 `@xxx` 设置变量值，插件(`options.GLOBAL_VALUE_HEADER`)或[reqScript](https://avwo.github.io/whistle/rules/reqScript.html)、[resScript](https://avwo.github.io/whistle/rules/resScript.html)(`value`)可以读取到该值
 2. refactor: 启动时的数据备份问题
 
-# v1.8.0
+### v1.8.0
 1. feat: tunnel请求支持[resScript](https://avwo.github.io/whistle/rules/resScript.html)、[responseFor](https://avwo.github.io/whistle/rules/responseFor.html)、[resHeaders](https://avwo.github.io/whistle/rules/resHeaders.html)
 2. feat: 添加新协议：[htmlPrepend](https://avwo.github.io/whistle/rules/htmlPrepend.html)、[htmlBody](https://avwo.github.io/whistle/rules/htmlBody.html)、[htmlAppend](https://avwo.github.io/whistle/rules/htmlAppend.html)、[cssPrepend](https://avwo.github.io/whistle/rules/cssPrepend.html)、[cssBody](https://avwo.github.io/whistle/rules/cssBody.html)、[cssAppend](https://avwo.github.io/whistle/rules/cssAppend.html)、[jsPrepend](https://avwo.github.io/whistle/rules/jsPrepend.html)、[jsBody](https://avwo.github.io/whistle/rules/jsBody.html)、[jsAppend](https://avwo.github.io/whistle/rules/jsAppend.html)、其中：[htmlAppend](https://avwo.github.io/whistle/rules/htmlAppend.html)、[cssAppend](https://avwo.github.io/whistle/rules/cssAppend.html)、[jsAppend](https://avwo.github.io/whistle/rules/jsAppend.html)分别等价于 [html](https://avwo.github.io/whistle/rules/html.html)、[css](https://avwo.github.io/whistle/rules/css.html)、[js](https://avwo.github.io/whistle/rules/js.html)
 3. feat: 支持匹配方式 `www.*.com operator-uri`、`www.**.com operator-uri`等: `www.**.com/test 1.1.1.1`
 4. feat: 支持匹配方式 `^www.**.com/** operator-uri`、`^www.**.com/** operator-uri`等: `^www.*.com/*** file://E:\test/$2`
 5. fix: 子匹配的一些问题
 
+# v1.8.1
+1. feat: Network、Rules、Values重新定义右键菜单
  
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
