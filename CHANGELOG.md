@@ -813,8 +813,12 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 ### v1.8.1
 1. feat: Network、Rules、Values重新定义右键菜单
 
-# v1.8.2
+### v1.8.2
 1. fix: 无法清楚[log](https://avwo.github.io/whistle/webui/log.html)的问题
+
+# v1.8.3
+1. fix: RegUrl后面请求参数匹配问题，`^ke.qq.com/?*` 与 `^ke.qq.com/?**`
+2. 
  
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
