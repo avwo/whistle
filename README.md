@@ -13,7 +13,7 @@
 [![NPM count](https://img.shields.io/npm/dt/whistle.svg?style=flat-square)](https://www.npmjs.com/package/whistle)
 [![License](https://img.shields.io/npm/l/whistle.svg?style=flat-square)](https://www.npmjs.com/package/whistle)
 
-> 建议尽量使用[最新版本](https://avwo.github.io/whistle/update.html)，如果出现HTTPS的问题([#44](https://github.com/avwo/whistle/issues/44))，升级Node到 `v6` 及以上版本，[更新whistle](https://avwo.github.io/whistle/update.html)到最新版本，再[安装下根证书](https://avwo.github.io/whistle/webui/https.html)即可
+> 建议使用[最新版本](https://avwo.github.io/whistle/update.html)，如果出现HTTPS的问题([#44](https://github.com/avwo/whistle/issues/44))，升级Node到 `v6` 及以上版本，并[更新whistle](https://avwo.github.io/whistle/update.html)到最新版本，再[安装下根证书](https://avwo.github.io/whistle/webui/https.html)即可
 
 > **注意：在iOS上安装根证书时，需要先关闭[https拦截](https://avwo.github.io/whistle/webui/https.html)，否则将显示安装失败**
 
