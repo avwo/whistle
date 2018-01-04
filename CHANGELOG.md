@@ -810,8 +810,11 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 4. feat: 支持匹配方式 `^www.**.com/** operator-uri`、`^www.**.com/** operator-uri`等: `^www.*.com/*** file://E:\test/$2`
 5. fix: 子匹配的一些问题
 
-# v1.8.1
+### v1.8.1
 1. feat: Network、Rules、Values重新定义右键菜单
+
+# v1.8.2
+1. fix: 无法清楚[log](https://avwo.github.io/whistle/webui/log.html)的问题
  
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
