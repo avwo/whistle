@@ -818,7 +818,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 
 # v1.8.3
 1. fix: RegUrl后面请求参数匹配问题，`^ke.qq.com/?*` 与 `^ke.qq.com/?**`
-2. 
+2. feat: 支持 `Copy As CURL`
  
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
