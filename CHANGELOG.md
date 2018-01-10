@@ -816,9 +816,14 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 ### v1.8.2
 1. fix: 无法清楚[log](https://avwo.github.io/whistle/webui/log.html)的问题
 
-# v1.8.3
+### v1.8.3
 1. fix: RegUrl后面请求参数匹配问题，`^ke.qq.com/?*` 与 `^ke.qq.com/?**`
 2. feat: 支持 `Copy As CURL`
+
+# v1.8.4
+1. feat: 添加命令行参数 `-f, --secureFilter` 用于过滤隐藏显示到界面的抓包数据，如cookie里面的登录态信息
+2. refactor: 支持同时根据多个ip过滤抓包数据
+3. perf: 大幅提升[pac](https://avwo.github.io/whistle/rules/pac.html)、[reqScript](https://avwo.github.io/whistle/rules/reqScript.html)、[resScript](https://avwo.github.io/whistle/rules/resScript.html)的性能
  
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
