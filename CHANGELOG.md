@@ -820,10 +820,15 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 1. fix: RegUrl后面请求参数匹配问题，`^ke.qq.com/?*` 与 `^ke.qq.com/?**`
 2. feat: 支持 `Copy As CURL`
 
-# v1.8.4
+### v1.8.4
 1. feat: 添加命令行参数 `-f, --secureFilter` 用于过滤隐藏显示到界面的抓包数据，如cookie里面的登录态信息
 2. refactor: 支持同时根据多个ip过滤抓包数据
 3. perf: 大幅提升[pac](https://avwo.github.io/whistle/rules/pac.html)、[reqScript](https://avwo.github.io/whistle/rules/reqScript.html)、[resScript](https://avwo.github.io/whistle/rules/resScript.html)的性能
+
+# v1.8.5
+1. feat: 支持导入har文件
+2. feat: 支持JSON数据直接添加到Values中
+3. refactor: 优化界面性能[#110](https://github.com/avwo/whistle/issues/110)
  
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
