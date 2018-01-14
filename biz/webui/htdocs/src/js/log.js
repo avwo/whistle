@@ -161,16 +161,17 @@ var Log = React.createClass({
   },
   toggleTabs: function(btn) {
     this.setState({}, function() {
+      var container, content;
       if (this.isPageLog()) {
         if (this.state.atPageLogBottom !== false) {
-          var container = ReactDOM.findDOMNode(this.refs.container);
-          var content = ReactDOM.findDOMNode(this.refs.content);
+          container = ReactDOM.findDOMNode(this.refs.container);
+          content = ReactDOM.findDOMNode(this.refs.content);
           container.scrollTop = content.offsetHeight;
         }
       } else {
         if (this.state.atSvrLogBottom !== false) {
-          var container = ReactDOM.findDOMNode(this.refs.svrContainer);
-          var content = ReactDOM.findDOMNode(this.refs.svrContent);
+          container = ReactDOM.findDOMNode(this.refs.svrContainer);
+          content = ReactDOM.findDOMNode(this.refs.svrContent);
           container.scrollTop = content.offsetHeight;
         }
       }

@@ -255,15 +255,16 @@ proto.prev = function() {
   }
   var activeItem = this.getActive();
   var index = activeItem ? list.indexOf(activeItem) : len - 1;
-  for (var i = index - 1; i >= 0; i--) {
-    var item = list[i];
+  var i, item;
+  for (i = index - 1; i >= 0; i--) {
+    item = list[i];
     if (!item.hide) {
       return item;
     }
   }
 
-  for (var i = len - 1; i > index; i--) {
-    var item = list[i];
+  for (i = len - 1; i > index; i--) {
+    item = list[i];
     if (!item.hide) {
       return item;
     }
@@ -278,15 +279,16 @@ proto.next = function() {
   }
   var activeItem = this.getActive();
   var index = activeItem ? list.indexOf(activeItem) : 0;
-  for (var i = index + 1; i < len; i++) {
-    var item = list[i];
+  var i, item;
+  for (i = index + 1; i < len; i++) {
+    item = list[i];
     if (!item.hide) {
       return item;
     }
   }
 
-  for (var i = 0; i < index; i++) {
-    var item = list[i];
+  for (i = 0; i < index; i++) {
+    item = list[i];
     if (!item.hide) {
       return item;
     }

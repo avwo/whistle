@@ -56,7 +56,7 @@ CodeMirror.registerHelper('hint', 'rulesHint', function(editor, options) {
   if (curWord && curWord.indexOf('//') !== -1) {
     return;
   }
-  var list = getHints(curWord);
+  list = getHints(curWord);
   if (!list.length) {
     return;
   }
