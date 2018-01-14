@@ -1,0 +1,136 @@
+.w-frames {
+  font-size: 12px;
+}
+.w-frames-action {
+  background: #f2f2f2;
+  position: relative;
+  border-bottom: 1px solid #ccc;
+}
+.w-frames-action label {
+  font-weight: normal;
+  margin-left: 10px;
+  color: #000;
+}
+.w-frames-action label input {
+  vertical-align: top;
+}
+
+.w-frames-action a {
+  margin-left: 10px;
+  text-decoration: none!important;
+  color: #000;
+  position: absolute;
+  right: 65px;
+  top: 7px;
+}
+.w-frames-action .w-connect-abort {
+  right: 157px;
+}
+.w-frames-action a:last-child {
+  right: 10px;
+}
+.w-frames-action a:hover,
+.w-frames-action label:hover {
+  color: #337ab7;
+}
+
+.w-frames-list {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.w-frames-list ul {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 5px;
+}
+
+.w-frames-list ul .glyphicon {
+  margin-right: 10px;
+}
+
+.w-frames-list li {
+  cursor: default;
+  margin: 0;
+  padding: 0 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  height: 24px;
+  line-height: 23px;
+  list-style: none;
+  border-bottom: 1px solid #ccc;
+  background: #fff;
+}
+
+.w-frames-action label:first-child {
+  background: #e2f7da;
+  display: inline-block;
+  padding: 0 5px;
+  margin-left: 5px;
+}
+
+.w-frames-action .w-filter-con {
+  margin-right: 160px;
+  border-right: 1px solid #ccc;
+}
+
+.w-frames-list .w-frames-send {
+  background: #e2f7da;
+}
+.w-frames-list .w-connection-error {
+  background: #f2dede;
+  color: red;
+}
+.w-frames-list .w-connection-closed {
+  background: #ccc;
+  color: red;
+}
+.w-connection-closed span {
+  color: red;
+}
+.w-frames-list .w-frames-selected {
+  background: #337ab7!important;
+  color: #fff!important;
+}
+
+.w-frames-list .glyphicon-send {
+  color: #0d8f0d;
+}
+
+.w-frames-list .glyphicon-flash {
+  color: #e75b0f;;
+}
+
+.w-frames-list .w-frames-selected .glyphicon {
+  color: #fff;
+}
+
+.w-frames-composer-action {
+  border-bottom: 1px solid #ccc;
+  position: relative;
+  text-indent: 10px;
+  line-height: 22px;
+  height: 23px;
+  background: #f2f2f2;
+}
+
+.w-frames-composer-action .btn-group {
+  position: absolute;
+  top: 1px;
+  right: 10px;
+}
+.w-frames-composer-action .btn {
+  padding: 0 5px!important;
+  height: 20px;
+  line-height: 19px;
+}
+.w-frames-composer-action .dropdown-menu {
+  min-width: 0;
+  padding: 2px 5px;
+  left: -96px;
+  font-size: 12px;
+}
+.w-frames-composer-action .dropdown-menu a {
+  padding: 0;
+}

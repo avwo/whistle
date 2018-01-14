@@ -1,0 +1,38 @@
+.w-detail-log {position: relative;}
+.w-detail-log ul, .w-detail-log li {list-style: none; padding: 0; margin: 0; display: block; width: 100%; font-size: 12px;}
+.w-detail-log li {width: 100%; padding: 1px 0; position: relative;}
+.w-detail-log pre {background: none; border: none; padding: 10px; margin: 0; font-size: 12px}
+
+.w-detail-page-log li.w-fatal {background: #bbb;}
+.w-detail-page-log li.w-error {background: #ffefef;}
+.w-detail-page-log li.w-warn {background: #fffbe6;}
+.w-detail-page-log li.w-info {background: #f5f5f5;}
+.w-detail-page-log li.w-debug {background: #fff;}
+.w-detail-page-log li.w-error pre {color: #c41a16;}
+.w-detail-page-log li.w-warn pre {color: #5c3b00;}
+
+.w-detail-page-log li>pre>ul {
+  display: inline-block; background: transparent!important;
+  margin: 0 0 0 10px!important; vertical-align: top;
+}
+.w-detail-page-log li>pre>span {vertical-align: top; line-height: 24px; margin-top: }
+.w-detail-page-log li>pre ul, .w-detail-page-log li>pre li { width: auto!important; }
+.w-detail-page-log>.w-detail-log-content>ul>li { border-bottom: 1px solid #ddd; }
+.w-detail-page-log li>pre>span { margin-left: 10px; }
+.w-detail-page-log li>pre>span:first-child, .w-detail-page-log li>pre>ul:first-child { margin-left: 0!important; }
+
+.w-detail-svr-log li.w-fatal pre { color: magenta; }
+.w-detail-svr-log li.w-error pre { color: red; }
+.w-detail-svr-log li.w-warn pre { color: yellow; }
+.w-detail-svr-log li.w-info pre { color: green; }
+.w-detail-svr-log li.w-debug pre { color: cyan; }
+.w-detail-svr-log li.w-trace pre { color: grey; }
+
+
+.w-detail-log-bar {position: fixed; z-index: 1; border-radius: 2px; right: 5px; font-size: 12px; top: 61px; white-space: nowrap; line-height: 1.5; background: #eee;}
+.w-detail-log-bar a {display: inline-block; text-decoration: none; color: #000; padding: 0 5px;}
+.w-detail-log-bar a:hover {color: #337ab7;}
+
+.w-detail-page-log, .w-detail-svr-log {overflow: auto;}
+.w-detail-svr-log .w-detail-log-content {background: #002240;}
+.w-detail-log-content { overflow: auto; }

@@ -56,8 +56,10 @@ node_modules
 .travis.yml
 .eslintrc.js
 .eslintignore
+.babelrc
 test
 assets/launcher
+/biz/webui/htdocs/src
 
 
 # Coveralls

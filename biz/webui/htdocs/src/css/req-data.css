@@ -1,0 +1,32 @@
+.w-req-data-con {overflow-x: auto;}
+.w-req-data-content {overflow-x: auto; overflow-y: hidden;}
+.w-req-data-content .order {width: 50px;}
+.w-req-data-content .result {width: 60px;}
+.w-req-data-content .protocol {width: 75px;} 
+.w-req-data-content .method {width: 72px;}
+.w-req-data-content .time, .w-req-data-content .dns
+.w-req-data-content .sent {width: 65px;}
+.w-req-data-content .dns {width: 65px;}
+.w-req-data-content .serverPort, .w-req-data-content .clientPort {width: 90px;}
+.w-req-data-content .type,
+.w-req-data-content .body, .w-req-data-content .clientIp {width: 100px;}
+.w-req-data-content .hostIp {width: 115px;}
+.w-req-data-content .hostname {width: 136px;}
+.w-req-data-content .request, .w-req-data-content .response, 
+.w-req-data-content .download, .w-req-data-content .contentEncoding { width: 85px; }
+
+.w-req-data-headers {height: 30px; border-top: 1px solid #ccc; border-bottom: 1px solid #ccc; overflow: hidden;}
+.w-req-data-headers .table {height: 30px;}
+.w-req-data-headers .table th {border: none!important; padding: 4px 0 4px 6px; -webkit-user-select: none; font-weight: normal; color: #000; position: relative; cursor: pointer;}
+.w-req-data-headers .table th:last-child { box-sizing: content-box; }
+.w-req-data-headers .table th:hover {background-color: #e6e6e6!important;}
+.w-req-data-list {overflow-y: auto; overflow-x: hidden; outline: none;}
+.w-req-data-list th, .w-req-data-list td {border-top: none!important; border-bottom: 1px solid #ddd; font-weight: normal; font-size: 12px; padding: 3px 0 3px 6px!important; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}
+.w-req-data-con .w-filter-con, .w-req-data-content {min-width: 770px;}
+.w-req-data-list .w-tunnel th, .w-req-data-list .w-tunnel td {color: #808080;}
+.w-req-data-list .w-has-rules th, .w-req-data-list .w-has-rules td {font-weight: bold; color: #000093;}
+.w-req-data-list .w-error-status th, .w-req-data-list .w-error-status td {color: #ff3a90;}
+.w-req-data-list .w-forbidden th, .w-req-data-list .w-forbidden td {color: #808000;}
+.w-req-data-list tr {cursor: default; background: #fff;}
+.w-req-data-list tr.w-selected th, .w-req-data-list tr.w-selected td {background-color: #337ab7!important; color: #fff;}
+

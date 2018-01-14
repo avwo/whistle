@@ -1,0 +1,10 @@
+.w-divider-left, .w-divider-right {overflow: hidden; position: relative;}
+.w-divider-con.box>.w-divider-right {min-width: 5px!important;}
+.w-divider-con.orient-vertical-box>.w-divider-right {min-height: 5px!important;}
+.w-divider {position: absolute; z-index: 1;}
+.w-divider-con.box>div>.w-divider {top: 0; width: 5px; height: 100%; cursor: ew-resize;}
+.w-divider-con.box>.w-divider-left>.w-divider {right: 0; border-right: 1px solid #ccc;}
+.w-divider-con.box>.w-divider-right >.w-divider {left: 0; border-left: 1px solid #ccc;}
+.w-divider-con.orient-vertical-box>div>.w-divider {left: 0; height: 5px; width: 100%; cursor: ns-resize;}
+.w-divider-con.orient-vertical-box>.w-divider-left>.w-divider {bottom: 0; border-bottom: 1px solid #ccc;}
+.w-divider-con.orient-vertical-box>.w-divider-right>.w-divider {top: 0; border-top: 1px solid #ccc;}

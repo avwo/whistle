@@ -1,0 +1,6 @@
+.w-editor-settings label, .w-editor-settings-box label {font-weight: normal; white-space: nowrap;}
+.w-editor-settings label .w-label {display: inline-block; width: 60px; text-align: right;}
+.w-editor-settings select {width: 186px;}
+.w-editor-settings-box {padding-left: 65px; margin: 5px;}
+.w-editor-settings .form-control {display: inline-block; margin-left: 5px;}
+.w-editor-settings p {margin: 5px;}

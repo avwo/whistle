@@ -1,0 +1,6 @@
+.w-detail-response textarea {padding: 5px; border: none;}
+.w-detail-response-headers, .w-detail-response-cookies {overflow: auto;}
+.w-detail-response-cookies table { table-layout: auto }
+.w-detail-response-cookies thead>th { white-space: nowrap; background: #fafafa; }
+.w-detail-response-cookies tbody>tr>td:nth-child(7),
+.w-detail-response-cookies tbody>tr>td:nth-child(8) { text-align: center; vertical-align: middle; }

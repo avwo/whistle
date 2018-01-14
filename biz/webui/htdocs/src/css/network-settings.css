@@ -1,0 +1,23 @@
+.w-network-settings-dialog fieldset { border: 1px solid #ddd; padding-bottom: 10px; }
+.w-network-settings-dialog legend { border: none;  margin: 0 10px; padding: 0 10px; width: auto; }
+.w-network-settings-dialog legend label { font-size: 13px; width: auto; padding: 0; }
+.w-network-settings-dialog label { 
+  font-size: 13px; font-weight: normal; line-height: 30px; height: 30px;
+  display: inline-block; width: 96px; margin-right: 10px; font-weight: bold; text-align: right;
+}
+.network-settings-columns { margin-top: 20px; }
+.network-settings-filter { border: none!important; }
+.network-settings-filter legend { margin: 0; padding: 0; }
+.network-settings-filter legend label { margin-right: 5px; }
+.network-settings-filter textarea[disabled] { background: #f5f5f5; }
+.network-settings-columns label { white-space: nowrap; padding-left: 10px; margin-left: 10px; text-align: left; width: 95px; }
+.network-settings-columns .btn { margin-right: 0; line-height: 20px; text-align: center; color: #666; width: 72px;}
+.network-settings-columns legend label { margin-left: 0; }
+.w-network-settings-dialog .modal-dialog {width: 600px;}
+.w-network-settings-dialog input[type=checkbox] { margin-right: 5px; }
+.w-network-settings-dialog textarea { width: 578px; height: 150px; border: 1px solid #ddd; overflow: auto; margin: 0; padding: 5px 10px; }
+.w-network-settings-dialog .w-help-menu { color: #000; }
+.w-network-settings-dialog .w-help-menu:hover { color: #337ab7 }
+.w-network-settings-dialog div input[type=text] { width: 436px; }
+.w-network-settings-dialog .w-help-menu { font-size: 14px; }
+.w-network-settings-own { width: auto!important; margin: 10px 0 0;}

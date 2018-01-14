@@ -1,0 +1,10 @@
+.w-image-view {
+  font-size: 0;
+  white-space: nowrap;
+  overflow: auto;
+  text-align: center;
+  padding-top: 60px;
+}
+.w-image-view img {
+  max-width: 100%;
+}

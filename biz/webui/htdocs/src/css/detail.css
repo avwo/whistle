@@ -1,0 +1,4 @@
+.w-detail {border-left: 1px solid #ccc; overflow-x: auto; overflow-y: hidden;}
+.w-detail-content {position: relative; overflow: auto;}
+.w-detail-divider {position: absolute; left: 0; top: 0; width: 5px; height: 100%; cursor: ew-resize;}
+.w-detail-content, .w-detail>.w-tabs-sm {min-width: 550px;}

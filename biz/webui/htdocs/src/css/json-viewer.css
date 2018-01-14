@@ -1,0 +1,5 @@
+.w-properties-wrap:hover .w-textarea-bar { display: inline-block; }
+.w-textarea-bar:hover .w-download {display: inline-block;}
+.w-textarea-bar .w-properties-btn { position: static; }
+.w-json-viewer-str, .w-json-viewer-tree { padding: 5px; overflow: auto; }
+.w-json-viewer-tree>ul { background: none!important; font-size: 12px; margin: 0!important; }

@@ -1,0 +1,6 @@
+.w-online-dialog .modal-dialog {width: 320px;}
+.w-online-dialog-ctn h5 {padding: 5px 0; margin: 0; text-overflow: ellipsis; max-width: 100%; white-space: nowrap; overflow: hidden;}
+.w-online-dialog-ctn p {margin: -23px 0 5px 36px}
+.w-confirm-reload-dialog .modal-dialog {width: 280px;}
+.w-confirm-reload-dialog .w-confirm-reload {font-weight: bold; line-height: 1.8; padding: 10px 20px;}
+.w-confim-reload-note { color: red; margin: 0; }

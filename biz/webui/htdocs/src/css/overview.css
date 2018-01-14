@@ -1,0 +1,4 @@
+.w-detail-overview>.w-properties-wrap:last-child {border-top: 1px solid #ccc;}
+.w-detail-overview-title {margin: 0; padding: 3px 5px;}
+.w-detail-overview-title a {text-decoration: none!important; color: #333;}
+.w-detail-overview-title a:hover {color: #337ab7;}

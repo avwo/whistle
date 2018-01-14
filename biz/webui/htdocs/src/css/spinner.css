@@ -1,0 +1,4 @@
+.w-spinner {position: absolute; top: 2px; right: 2px; font-size: 12px; -webkit-transform : scale(0.625,0.625); transform : scale(0.625,0.625); overflow: hidden;}
+.w-spinner span {display: block;}
+.w-spinner .glyphicon-triangle-top.spinner-desc {visibility: hidden;}
+.w-spinner .glyphicon-triangle-bottom.spinner-asc {visibility: hidden;}

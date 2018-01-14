@@ -1,0 +1,73 @@
+/* Context Menu Style by marvin1023 */
+.w-context-menu {
+  position: absolute;
+  z-index: 99999999;
+}
+
+.w-ctx-menu-list {
+  list-style: none outside none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, .5);
+  background: #fff;
+  min-width: 110px;
+}
+
+.w-ctx-menu-list .glyphicon-play {
+  line-height: 28px;
+  font-size: 10px;
+  margin-left: 10px;
+}
+
+.w-ctx-menu-list p {
+  margin: 0!important;
+}
+.w-ctx-menu-list .w-ctx-menu-list {
+  margin-left: 1.5px;
+  display: none;
+  top: -1px!important;
+}
+.w-ctx-menu-item:hover .w-ctx-menu-list {
+  display: block;
+}
+.w-ctx-menu-item {
+  display: flex;
+  line-height: 30px;
+  padding: 0 15px;
+  justify-content: space-between;
+  position: relative;
+  cursor: default;
+}
+.w-ctx-menu-item:hover {
+  background: #f2f2f2;
+}
+.w-ctx-menu-item.item-disabled .w-ctx-menu-item-tt {
+  color: #999;
+}
+.w-ctx-item-sep {
+  border-top: 1px solid #ccc;
+  margin-top: 5px;
+}
+
+.w-ctx-item-disabled {
+  color: #999;
+}
+.w-ctx-item-disabled:hover {
+  background: #fff!important;
+}
+
+.w-ctx-menu-item .w-ctx-menu-item-tt {
+  margin: 0;
+}
+.w-ctx-menu-item .w-ctx-menu-item-des {
+  color: #999;
+}
+
+.w-ctx-menu-item .w-ctx-menu-list {
+  position: absolute;
+  left: 100%;
+  top: 0;
+}
