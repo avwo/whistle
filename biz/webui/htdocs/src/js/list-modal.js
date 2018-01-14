@@ -295,15 +295,16 @@ proto.prev = function() {
   var activeItem = this.getActive();
   var index = activeItem ? list.indexOf(activeItem.name) : len - 1;
   var data = this.data;
-  for (var i = index - 1; i >= 0; i--) {
-    var item = data[list[i]];
+  var i, item;
+  for (i = index - 1; i >= 0; i--) {
+    item = data[list[i]];
     if (!item.hide) {
       return item;
     }
   }
 
-  for (var i = len - 1; i > index; i--) {
-    var item = data[list[i]];
+  for (i = len - 1; i > index; i--) {
+    item = data[list[i]];
     if (!item.hide) {
       return item;
     }
@@ -319,15 +320,16 @@ proto.next = function() {
   var activeItem = this.getActive();
   var index = activeItem ? list.indexOf(activeItem.name) : 0;
   var data = this.data;
-  for (var i = index + 1; i < len; i++) {
-    var item = data[list[i]];
+  var i, item;
+  for (i = index + 1; i < len; i++) {
+    item = data[list[i]];
     if (!item.hide) {
       return item;
     }
   }
 
-  for (var i = 0; i < index; i++) {
-    var item = data[list[i]];
+  for (i = 0; i < index; i++) {
+    item = data[list[i]];
     if (!item.hide) {
       return item;
     }

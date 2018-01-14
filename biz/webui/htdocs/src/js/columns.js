@@ -234,7 +234,6 @@ function getDragInfo(e) {
 }
 
 function getNameFromTypes(e) {
-  var types = e.dataTransfer.types;
   var type = util.findArray(e.dataTransfer.types, function(type) {
     if (type.indexOf(COLUMN_TYPE_PREFIX) === 0) {
       return true;
@@ -251,7 +250,7 @@ $(document).on('drop', function() {
 });
 
 exports.getDragger = function() {
-  
+
   return {
     onDragStart: function(e) {
       var target = getTarget(e);

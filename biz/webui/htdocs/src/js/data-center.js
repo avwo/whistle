@@ -180,28 +180,6 @@ function toLowerCase(str) {
   return String(str == null ? '' : str).trim().toLowerCase();
 }
 
-function decode(str) {
-  try {
-    return str && decodeURIComponent(str);
-  } catch (e) {}
-  return str;
-}
-
-function parseEnv(env) {
-  if (!env || typeof env !== 'string') {
-    return;
-  }
-  env = env.trim();
-  if (!env) {
-    return;
-  }
-  env = env.split(':');
-  return {
-    name: decode(env[0]),
-    env: decode(env[1])
-  };
-}
-
 exports.values = createCgi({
   moveTo: {
     mode: 'chain',
@@ -278,7 +256,7 @@ exports.getInitialData = function (callback) {
   if (!initialDataPromise) {
     initialDataPromise = $.Deferred();
 
-    function load() {
+    var load = function() {
       cgi.getInitaial(function (data) {
         if (data) {
           initialData = data;
@@ -302,7 +280,7 @@ exports.getInitialData = function (callback) {
           setTimeout(load, 1000);
         }
       });
-    }
+    };
     load();
   }
 
@@ -510,7 +488,7 @@ function startLoadData() {
       }
       var lastId = data.lastId;
       var ids = data.newIds;
-      var data = data.data;
+      data = data.data;
       dataList.forEach(function (item) {
         var newItem = data[item.id];
         if (newItem) {

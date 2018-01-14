@@ -120,7 +120,7 @@ var FrameList = React.createClass({
               }
             }
             var icon = 'flash';
-            if (item.closed)　{
+            if (item.closed) {
               icon = 'minus-sign';
             } else if (item.isClient) {
               icon = 'send';

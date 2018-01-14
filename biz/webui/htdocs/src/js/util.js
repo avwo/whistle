@@ -25,7 +25,7 @@ $(document).on('mousedown', function(e) {
     }
     stopDrag();
   });
-  
+
   if (!dragTarget || !dragCallback) {
     return;
   }
@@ -36,7 +36,7 @@ $(document).on('mousedown', function(e) {
     return;
   }
   dragCallback.forEach(function(callback) {
-    callback(dragTarget, e.clientX - dragOffset.clientX, 
+    callback(dragTarget, e.clientX - dragOffset.clientX,
         e.clientY - dragOffset.clientY, dragOffset.clientX, dragOffset.clientY);
   });
   dragOffset = e;
@@ -50,8 +50,8 @@ function stopDrag() {
 }
 
 function addDragEvent(selector, callback) {
-  if (!selector || typeof callback != 'function' 
-      || typeof selector != 'string' 
+  if (!selector || typeof callback != 'function'
+      || typeof selector != 'string'
           || !(selector = $.trim(selector))) {
     return;
   }
@@ -105,7 +105,7 @@ function getProperty(obj, name, defaultValue) {
       }
     }
   }
-  
+
   return defaultValue;
 }
 
@@ -134,7 +134,7 @@ function getServerIp(modal) {
 exports.getServerIp = getServerIp;
 
 function getBoolean(val) {
-  
+
   return !(!val || val === 'false');
 }
 
@@ -234,12 +234,12 @@ exports.ensureVisible = function(elem, container) {
   if (!top) {
     return;
   }
-  
+
   if (top < 0) {
     container.scrollTop(container.scrollTop() + top - 2);
     return;
   }
-  
+
   top += elem[0].offsetHeight - container[0].offsetHeight;
   if (top > 0) {
     container.scrollTop(container.scrollTop() + top + 2);
@@ -291,7 +291,6 @@ function objectToString(obj, rawNames) {
   if (!obj) {
     return '';
   }
-  var result = [];
   rawNames = rawNames || {};
   return Object.keys(obj).map(function(key) {
     var value = obj[key];
@@ -330,7 +329,7 @@ function parseJSON(str) {
   if (!str || !(str = str.trim()) || !/({[\w\W]*}|\[[\w\W]*\])/.test(str)) {
     return '';
   }
-  
+
   str = RegExp.$1;
   try {
     return JSON.parse(str);
@@ -363,7 +362,7 @@ exports.unique = function(arr, reverse) {
       }
     });
   }
-  
+
   return result;
 };
 
@@ -447,7 +446,7 @@ exports.getStatusMessage = function(res) {
 };
 
 function isUrlEncoded(req) {
-  
+
   return /^post$/i.test(req.method) && /urlencoded/i.test(req.headers && req.headers['content-type']);
 }
 
@@ -477,7 +476,7 @@ function compareReqId(prev, next) {
   if (prev >= next) {
     return true;
   }
-  
+
   prev = prev.split('-');
   next = next.split('-');
   return prev[0] == next[0] && prev[1] > next[1];
@@ -498,9 +497,9 @@ var rlf = /\r?\n/g;
 var rspace = /\s/g;
 
 function escapeFn(matched) {
-  return encodeEntities[matched];
+  return entities[matched];
 }
-  
+
 exports.escape = function(str) {
   if (str == null) {
     return str;
@@ -571,7 +570,7 @@ exports.asCURL = function(item) {
 };
 
 exports.parseHeadersFromHar = function(list) {
-  var headers = {};  
+  var headers = {};
   var rawHeaderNames = {};
   if (Array.isArray(list)) {
     list.forEach(function(header) {
