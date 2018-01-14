@@ -60,6 +60,7 @@ node_modules
 test
 assets/launcher
 /biz/webui/htdocs/src
+/docs
 
 
 # Coveralls
