@@ -1,6 +1,7 @@
 require('../css/json-viewer.css');
 var React = require('react');
 var ReactDOM = require('react-dom');
+/* eslint-disable no-unused-vars */
 var JSONTree = require('react-json-tree')['default'];
 var dataCenter = require('./data-center');
 var util = require('./util');
@@ -46,17 +47,17 @@ var JsonViewer = React.createClass({
       alert('Value name can not be empty.');
       return;
     }
-    
+
     if (/\s/.test(name)) {
       alert('Name can not have spaces.');
       return;
     }
-    
+
     if (modal.exists(name)) {
       alert('Value name \'' + name + '\' already exists.');
       return;
     }
-    
+
     var value = (this.state.lastData.str || '').replace(/\r\n|\r/g, '\n');
     dataCenter.values.add({name: name, value: value}, function(data) {
       if (data && data.ec === 0) {

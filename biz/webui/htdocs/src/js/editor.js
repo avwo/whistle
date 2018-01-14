@@ -22,6 +22,7 @@ var $ = require('jquery');
 var React = require('react');
 var ReactDOM = require('react-dom');
 var CodeMirror = require('codemirror');
+/* eslint-disable no-unused-vars */
 var javascript = require('codemirror/mode/javascript/javascript');
 var css = require('codemirror/mode/css/css');
 var xml = require('codemirror/mode/xml/xml');

@@ -1,12 +1,12 @@
 require('./base-css.js');
 require('../css/about.css');
+/* eslint-disable no-unused-vars */
 var $ = window.jQuery = require('jquery'); //for bootstrap
 require('bootstrap/dist/js/bootstrap.js');
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Dialog = require('./dialog');
 var dataCenter = require('./data-center');
-var util = require('./util');
 var storage = require('./storage');
 
 function compareVersion(v1, v2) {

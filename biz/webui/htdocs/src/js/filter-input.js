@@ -1,6 +1,5 @@
 require('./base-css.js');
 require('../css/filter-input.css');
-var $ = require('jquery');
 var util = require('./util');
 var React = require('react');
 

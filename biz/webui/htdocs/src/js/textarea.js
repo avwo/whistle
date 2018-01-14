@@ -4,7 +4,7 @@ var ReactDOM = require('react-dom');
 var util = require('./util');
 var dataCenter = require('./data-center');
 var MAX_LENGTH =1024 * 16;
-
+/* eslint-disable no-unused-vars */
 var Tips = React.createClass({
   render: function() {
     var data = this.props.data || { hide: true };
@@ -24,7 +24,7 @@ var Tips = React.createClass({
         {data.url ? <a href={data.url} target="_blank">Open the URL in a new window</a> : undefined}
       </div>
     );
-  } 
+  }
 });
 
 var Textarea = React.createClass({
@@ -88,17 +88,17 @@ var Textarea = React.createClass({
       alert('Value name can not be empty.');
       return;
     }
-    
+
     if (/\s/.test(name)) {
       alert('Name can not have spaces.');
       return;
     }
-    
+
     if (modal.exists(name)) {
       alert('Value name \'' + name + '\' already exists.');
       return;
     }
-    
+
     var value = (this.props.value || '').replace(/\r\n|\r/g, '\n');
     dataCenter.values.add({name: name, value: value}, function(data) {
       if (data && data.ec === 0) {
@@ -150,7 +150,7 @@ var Textarea = React.createClass({
       showAddToValuesBtn = false;
       value = value.substring(0, MAX_LENGTH) + '...\r\n\r\n(' + exceed + ' characters left, you can click on the Edit button in the upper right corner to view all)\r\n';
     }
-    
+
     this.state.value = value;
     return (
         <div className={'fill orient-vertical-box w-textarea' + (this.props.hide ? ' hide' : '')}>
@@ -158,7 +158,7 @@ var Textarea = React.createClass({
           <div className={'w-textarea-bar' + (value ? '' : ' hide')}>
             <a className="w-download" onDoubleClick={this.download}
               onClick={this.showNameInput} href="javascript:;" draggable="false">Download</a>
-            {showAddToValuesBtn ? <a className="w-add" onClick={this.showNameInput} href="javascript:;" draggable="false">AddToValues</a> : ''}  
+            {showAddToValuesBtn ? <a className="w-add" onClick={this.showNameInput} href="javascript:;" draggable="false">AddToValues</a> : ''}
             <a className="w-edit" onClick={this.edit} href="javascript:;" draggable="false">ViewAll</a>
             <div onMouseDown={this.preventBlur}
               style={{display: this.state.showNameInput ? 'block' : 'none'}}

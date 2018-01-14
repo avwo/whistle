@@ -5,6 +5,7 @@ var ReactDOM = require('react-dom');
 var dataCenter = require('./data-center');
 var util = require('./util');
 var events = require('./events');
+/* eslint-disable no-unused-vars */
 var Divider = require('./divider');
 
 var Composer = React.createClass({

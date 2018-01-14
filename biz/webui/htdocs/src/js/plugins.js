@@ -2,10 +2,8 @@ require('../css/plugins.css');
 var $ = require('jquery');
 var React = require('react');
 var ReactDOM = require('react-dom');
+/* eslint-disable no-unused-vars */
 var Dialog = require('./dialog');
-var dataCenter = require('./data-center');
-var util = require('./util');
-var events = require('./events');
 
 var Home = React.createClass({
   onOpen: function(e) {

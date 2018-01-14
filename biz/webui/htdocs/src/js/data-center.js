@@ -12,7 +12,6 @@ var dataCallbacks = [];
 var serverInfoCallbacks = [];
 var framesUpdateCallbacks = [];
 var logCallbacks = [];
-var svrLogCallbacks = [];
 var directCallbacks = [];
 var dataList = [];
 var logList = [];
@@ -394,7 +393,7 @@ function checkDataChanged(data, mclientName, mtimeName) {
   if (!data[mtimeName] || initialData.clientId === data[mclientName]) {
     return false;
   }
-  
+
   var mclient = data[mclientName];
   var mtime = data[mtimeName];
   if (initialData[mclientName] === mclient && initialData[mtimeName] === mtime) {
@@ -601,7 +600,7 @@ function setReqData(item) {
   }
   setRawHeaders(item.req);
   setRawHeaders(res);
-  
+
   if (!item.path) {
     item.protocol = item.isHttps ? 'HTTP' : util.getProtocol(url);
     item.hostname = item.isHttps ? 'Tunnel to' : util.getHost(url);
