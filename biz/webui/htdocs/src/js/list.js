@@ -73,7 +73,6 @@ function getDragInfo(e) {
 }
 
 function getNameFromTypes(e) {
-  var types = e.dataTransfer.types;
   var type = util.findArray(e.dataTransfer.types, function(type) {
     if (type.indexOf(NAME_PREFIX) === 0) {
       return true;
@@ -113,10 +112,8 @@ var List = React.createClass({
       self.onDoubleClick(item);
     }
     var modal = self.props.modal;
-    var isRules = self.props.name == 'rules';
-    var pending;
 
-    var listCon = $(ReactDOM.findDOMNode(self.refs.list)).focus().on('keydown', function(e) {
+    $(ReactDOM.findDOMNode(self.refs.list)).focus().on('keydown', function(e) {
       var item;
       if (e.keyCode == 38) { //up
         item =  modal.prev();
@@ -342,8 +339,7 @@ var List = React.createClass({
                               'w-active': item.active,
                               'w-changed': item.changed,
                               'w-selected': item.selected
-                            })}
-                            href="javascript:;">{name}<span className="glyphicon glyphicon-ok"></span></a>;
+                            })}>{name}<span className="glyphicon glyphicon-ok"></span></a>;
                 })
               }
             </div>

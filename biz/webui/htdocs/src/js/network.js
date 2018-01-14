@@ -7,7 +7,6 @@ var events = require('./events');
 var Divider = require('./divider');
 var ReqData = require('./req-data');
 var Detail = require('./detail');
-var dataCenter = require('./data-center');
 
 var Network = React.createClass({
   componentDidMount: function() {

@@ -119,7 +119,6 @@ var ReqData = React.createClass({
           headers: {}
         }
       };
-      var startTime;
       selectedList.forEach(function(item) {
         if (overview.startTime == null || overview.startTime > item.startTime) {
           overview.startTime = item.startTime;

@@ -23,17 +23,17 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var CodeMirror = require('codemirror');
 
-var javascript = require('codemirror/mode/javascript/javascript');
-var css = require('codemirror/mode/css/css');
-var xml = require('codemirror/mode/xml/xml');
-var htmlmixed = require('codemirror/mode/htmlmixed/htmlmixed');
-var markdown = require('codemirror/mode/markdown/markdown');
+require('codemirror/mode/javascript/javascript');
+require('codemirror/mode/css/css');
+require('codemirror/mode/xml/xml');
+require('codemirror/mode/htmlmixed/htmlmixed');
+require('codemirror/mode/markdown/markdown');
 var rulesHint = require('./rules-hint');
 
 var themes = ['default', 'neat', 'elegant', 'erlang-dark', 'night', 'monokai', 'cobalt', 'eclipse'
               , 'rubyblue', 'lesser-dark', 'xq-dark', 'xq-light', 'ambiance'
               , 'blackboard', 'vibrant-ink', 'solarized dark', 'solarized light', 'twilight', 'midnight'];
-var rulesMode = require('./rules-mode');
+require('./rules-mode');
 var DEFAULT_THEME = 'cobalt';
 var DEFAULT_FONT_SIZE = '16px';
 var RULES_COMMENT_RE = /^()\s*#\s*/;
@@ -113,7 +113,7 @@ var Editor = React.createClass({
       }
     });
     self._init();
-    var codeMirrorElem = $(elem).find('.CodeMirror').addClass('fill');
+    $(elem).find('.CodeMirror').addClass('fill');
     resize();
     $(window).on('resize', function() {
       timeout && clearTimeout(timeout);

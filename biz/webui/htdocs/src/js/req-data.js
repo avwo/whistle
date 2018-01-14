@@ -406,7 +406,6 @@ var ReqData = React.createClass({
       return;
     }
     var modal = this.props.modal;
-    var state = this.state;
     var name = target.className;
     var order;
     if (name == 'order') {

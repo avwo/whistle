@@ -1,8 +1,6 @@
 require('../css/spinner.css');
 var React = require('react');
 
-var ReactDOM = require('react-dom');
-
 var Spinner = React.createClass({
   render: function() {
     var order = this.props.order;

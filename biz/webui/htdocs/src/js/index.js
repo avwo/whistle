@@ -127,7 +127,6 @@ var Index = React.createClass({
     var modal = this.props.modal;
     var rules = modal.rules;
     var values = modal.values;
-    var plugins = modal.plugins;
     var state = {
       allowMultipleChoice: modal.rules.allowMultipleChoice,
       syncWithSysHosts: modal.rules.syncWithSysHosts
@@ -174,7 +173,7 @@ var Index = React.createClass({
         showRulesLineNumbers = rules.showLineNumbers ? 'true' : 'false';
       }
       rulesList.push(DEFAULT);
-      var item = rulesData.Default = {
+      rulesData.Default = {
         name: DEFAULT,
         fixed: true,
         value: rules.defaultRules,
@@ -475,7 +474,6 @@ var Index = React.createClass({
   showReloadDialog: function(msg, existsUnsaved) {
     var confirmReload = this.refs.confirmReload;
     confirmReload.show();
-    var dialog = $(ReactDOM.findDOMNode(confirmReload));
     if (existsUnsaved) {
       msg += '<p class="w-confim-reload-note">Note: There are unsaved changes.</p>';
     }
@@ -838,7 +836,6 @@ var Index = React.createClass({
     return text;
   },
   getValuesFromRules: function() {
-    var values = this.state.values;
     var text = ' ' + this.getAllRulesValue();
     if (text = text.match(/\s(?:[\w-]+:\/\/)?\{[^\s#]+\}/g)) {
       text = text.map(function(key) {
@@ -1219,7 +1216,6 @@ var Index = React.createClass({
   },
   showRulesOptions: function(e) {
     var self = this;
-    var target = $(e.target);
     var rules = self.state.rules;
     var data = rules.data;
     var rulesOptions;
@@ -1297,8 +1293,7 @@ var Index = React.createClass({
       }
     }
 
-    var plugin;
-    if (name && (plugin = this.state.plugins[name + ':'])) {
+    if (name &&  this.state.plugins[name + ':']) {
       if (tabs.length >= MAX_PLUGINS_TABS) {
         alert('You can only open ' + MAX_PLUGINS_TABS + ' tabs.');
         return this.showPlugins();
@@ -1350,7 +1345,6 @@ var Index = React.createClass({
   },
   showWeinreOptions: function(e) {
     var self = this;
-    var target = $(e.target);
     var list = self.state.weinreOptions = self.getWeinreFromRules() || [];
     self.state.weinreOptions = util.unique(list).map(function(name) {
       return {
@@ -2112,8 +2106,6 @@ var Index = React.createClass({
     var isPlugins = name == 'plugins';
     var disabledEditBtn = true;
     var disabledDeleteBtn = true;
-    var disabledPluginHomepageBtn = true;
-    var disabledOpenInNewWindowBtn = true;
     var rulesTheme = 'cobalt';
     var valuesTheme = 'cobalt';
     var rulesFontSize = '14px';
@@ -2483,10 +2475,10 @@ var Index = React.createClass({
         <input ref="importSessions" onChange={this.uploadSessions} type="file" name="importSessions" accept=".txt,.json,.saz,.har" />
       </form>
       <form ref="importRulesForm" encType="multipart/form-data" style={{display: 'none'}}>
-        <input ref="importRules" onChange={this.uploadRulesForm} name="rules" type="hidden" type="file" accept=".txt,.json" />
+        <input ref="importRules" onChange={this.uploadRulesForm} name="rules" type="file" accept=".txt,.json" />
       </form>
       <form ref="importValuesForm" encType="multipart/form-data" style={{display: 'none'}}>
-        <input ref="importValues" onChange={this.uploadValuesForm} name="values" type="hidden" type="file" accept=".txt,.json" />
+        <input ref="importValues" onChange={this.uploadValuesForm} name="values" type="file" accept=".txt,.json" />
       </form>
     </div>
     );
