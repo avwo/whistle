@@ -55,6 +55,7 @@ node_modules
 .npmignore
 .travis.yml
 .eslintrc.js
+.eslintignore
 test
 assets/launcher
 
