@@ -22,7 +22,7 @@ module.exports = function init(proxy, callback) {
   }
   util.getServer(function(server, port) {
     config.weinreport = port;
-    require('./weinre/app')(server);
+    require('./weinre')(server);
     execCallback();
   }, config.weinreport);
 };
