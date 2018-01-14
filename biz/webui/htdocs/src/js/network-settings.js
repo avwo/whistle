@@ -2,6 +2,7 @@ require('./base-css.js');
 require('../css/network-settings.css');
 var $ = require('jquery');
 var React = require('react');
+/* eslint-disable no-unused-vars */
 var Dialog = require('./dialog');
 var columns = require('./columns');
 var dataCenter = require('./data-center');
@@ -44,24 +45,24 @@ var Settings = React.createClass({
     var filterStateChanged;
     var columnsChanged;
     switch(name) {
-      case 'filter':
-        settings.disabledFilterText = !target.checked;
-        filterStateChanged = filterTextChanged = true;
-        break;
-      case 'filterText':
-        var value = target.value.trim();
-        filterTextChanged = true;
-        filterStateChanged = (!value && settings.filterText) || (value && !settings.filterText);
-        settings.filterText = target.value;
-        break;
-      case 'networkColumns':
-        settings.disabledColumns = !target.checked;
-        columns.disable(settings.disabledColumns);
-        columnsChanged = true;
-        break;
-      default:
-        columns.setselected(name, target.checked);
-        columnsChanged = true;
+    case 'filter':
+      settings.disabledFilterText = !target.checked;
+      filterStateChanged = filterTextChanged = true;
+      break;
+    case 'filterText':
+      var value = target.value.trim();
+      filterTextChanged = true;
+      filterStateChanged = (!value && settings.filterText) || (value && !settings.filterText);
+      settings.filterText = target.value;
+      break;
+    case 'networkColumns':
+      settings.disabledColumns = !target.checked;
+      columns.disable(settings.disabledColumns);
+      columnsChanged = true;
+      break;
+    default:
+      columns.setselected(name, target.checked);
+      columnsChanged = true;
     }
     if (filterTextChanged) {
       dataCenter.setFilterText(settings);

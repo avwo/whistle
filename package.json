@@ -78,6 +78,7 @@
   },
   "devDependencies": {
     "babel-core": "^6.7.6",
+    "babel-eslint": "^6.1.2",
     "babel-loader": "^6.2.4",
     "babel-preset-react": "^6.5.0",
     "bootstrap": "3.3.5",

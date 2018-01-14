@@ -4,6 +4,7 @@ var $ = require('jquery');
 var util = require('./util');
 var React = require('react');
 var ReactDOM = require('react-dom');
+/* eslint-disable no-unused-vars */
 var Divider = require('./divider');
 var Editor = require('./editor');
 var FilterInput = require('./filter-input');
@@ -107,14 +108,14 @@ var List = React.createClass({
         return false;
       }
     });
-    
+
     function trigger(item) {
       self.onDoubleClick(item);
     }
     var modal = self.props.modal;
     var isRules = self.props.name == 'rules';
     var pending;
-    
+
     var listCon = $(ReactDOM.findDOMNode(self.refs.list)).focus().on('keydown', function(e) {
       var item;
       if (e.keyCode == 38) { //up
@@ -122,7 +123,7 @@ var List = React.createClass({
       } else if (e.keyCode == 40) {//down
         item = modal.next();
       }
-      
+
       if (item) {
         e.shiftKey ? self.setState({}) : self.onClick(item);
         e.preventDefault();
@@ -233,27 +234,27 @@ var List = React.createClass({
   onClickContextMenu: function(action) {
     var name = this.props.name === 'rules' ? 'Rules' : 'Values';
     switch(action) {
-      case 'Save':
-        events.trigger('save' + name, this.currentFocusItem);
-        break;
-      case 'Rename':
-        events.trigger('rename' + name, this.currentFocusItem);
-        break;
-      case 'Delete':
-        events.trigger('delete' + name, this.currentFocusItem);
-        break;
-      case 'Create':
-        events.trigger('create' + name);
-        break;
-      case 'Export':
-        events.trigger('export' + name);
-        break;
-      case 'Import':
-        events.trigger('import' + name);
-        break;
-      case 'Help':
-        window.open('https://avwo.github.io/whistle/webui/' + (this.props.name || 'values') + '.html');
-        break;
+    case 'Save':
+      events.trigger('save' + name, this.currentFocusItem);
+      break;
+    case 'Rename':
+      events.trigger('rename' + name, this.currentFocusItem);
+      break;
+    case 'Delete':
+      events.trigger('delete' + name, this.currentFocusItem);
+      break;
+    case 'Create':
+      events.trigger('create' + name);
+      break;
+    case 'Export':
+      events.trigger('export' + name);
+      break;
+    case 'Import':
+      events.trigger('import' + name);
+      break;
+    case 'Help':
+      window.open('https://avwo.github.io/whistle/webui/' + (this.props.name || 'values') + '.html');
+      break;
     }
   },
   onContextMenu: function(e) {
@@ -302,7 +303,7 @@ var List = React.createClass({
     }
     var isRules = self.props.name == 'rules';
     var draggable = false;
-    
+
     if (isRules) {
       draggable = list.length > 2;
     } else if (list.length > 1) {
@@ -312,7 +313,7 @@ var List = React.createClass({
     //不设置height为0，滚动会有问题
     return (
         <Divider hide={this.props.hide} leftWidth="200">
-        <div className="fill orient-vertical-box w-list-left">  
+        <div className="fill orient-vertical-box w-list-left">
           <div ref="list" tabIndex="0" onContextMenu={this.onContextMenu}
             className={'fill orient-vertical-box w-list-data ' + (this.props.className || '') + (this.props.disabled ? ' w-disabled' : '')}
             >
@@ -320,7 +321,7 @@ var List = React.createClass({
                 list.map(function(name, i) {
                   var item = data[name];
                   var isDefaultRule = isRules && i === 0;
-                  
+
                   return <a tabIndex="0" ref={name}
                             data-name={i + '_' + name}
                             onDragStart={isDefaultRule ? undefined : self.onDragStart}
@@ -333,15 +334,15 @@ var List = React.createClass({
                             draggable={isDefaultRule ? false : draggable}
                             onClick={function() {
                               self.onClick(item);
-                            }} 
+                            }}
                             onDoubleClick={function() {
                               self.onDoubleClick(item);
-                            }} 
+                            }}
                             className={util.getClasses({
                               'w-active': item.active,
                               'w-changed': item.changed,
                               'w-selected': item.selected
-                            })} 
+                            })}
                             href="javascript:;">{name}<span className="glyphicon glyphicon-ok"></span></a>;
                 })
               }
@@ -349,7 +350,7 @@ var List = React.createClass({
             <FilterInput onChange={this.onFilterChange} />
             <ContextMenu onClick={this.onClickContextMenu} ref="contextMenu" />
           </div>
-          <Editor {...self.props} onChange={self.onChange} readOnly={!activeItem} value={activeItem ? activeItem.value : ''} 
+          <Editor {...self.props} onChange={self.onChange} readOnly={!activeItem} value={activeItem ? activeItem.value : ''}
           mode={isRules ? 'rules' : getSuffix(activeItem && activeItem.name)} />
         </Divider>
     );

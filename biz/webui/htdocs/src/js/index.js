@@ -3,6 +3,7 @@ var $ = require('jquery');
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Clipboard = require('clipboard');
+/* eslint-disable no-unused-vars */
 var List = require('./list');
 var ListModal = require('./list-modal');
 var Network = require('./network');
@@ -76,7 +77,7 @@ var REMOVE_OPTIONS = [
 function getPageName() {
   var hash = location.hash.substring(1);
   if (hash) {
-    hans = hash.replace(/[?#].*$/, '');
+    hash = hash.replace(/[?#].*$/, '');
   } else {
     hash = location.href.replace(/[?#].*$/, '').replace(/.*\//, '');
   }
@@ -128,8 +129,8 @@ var Index = React.createClass({
     var values = modal.values;
     var plugins = modal.plugins;
     var state = {
-        allowMultipleChoice: modal.rules.allowMultipleChoice,
-        syncWithSysHosts: modal.rules.syncWithSysHosts
+      allowMultipleChoice: modal.rules.allowMultipleChoice,
+      syncWithSysHosts: modal.rules.syncWithSysHosts
     };
     var pageName = getPageName();
     if (!pageName || pageName.indexOf('rules') != -1) {
@@ -158,9 +159,10 @@ var Index = React.createClass({
     var valuesFontSize = storage.get('valuesFontSize');
     var showRulesLineNumbers = storage.get('showRulesLineNumbers');
     var showValuesLineNumbers = storage.get('showValuesLineNumbers');
+    var selectedName;
 
     if (rules) {
-      var selectedName = storage.get('activeRules') || rules.current;
+      selectedName = storage.get('activeRules') || rules.current;
       var selected = !rules.defaultRulesIsDisabled;
       if (!rulesTheme) {
         rulesTheme = rules.theme;
@@ -173,12 +175,12 @@ var Index = React.createClass({
       }
       rulesList.push(DEFAULT);
       var item = rulesData.Default = {
-          name: DEFAULT,
-          fixed: true,
-          value: rules.defaultRules,
-          selected: selected,
-          isDefault: true,
-          active: selectedName === DEFAULT
+        name: DEFAULT,
+        fixed: true,
+        value: rules.defaultRules,
+        selected: selected,
+        isDefault: true,
+        active: selectedName === DEFAULT
       };
 
       rulesOptions.push(rulesData.Default);
@@ -196,7 +198,7 @@ var Index = React.createClass({
     }
 
     if (values) {
-      var selectedName = storage.get('activeValues') || values.current;
+      selectedName = storage.get('activeValues') || values.current;
       if (!valuesTheme) {
         valuesTheme = values.theme;
       }
@@ -238,115 +240,115 @@ var Index = React.createClass({
     dataCenter.valuesModal = state.values = new ListModal(valuesList, valuesData);
     state.valuesOptions = valuesOptions;
     state.networkOptions = [
-                            {
-                              name: 'Remove All Sessions',
-                              icon: 'remove',
-                              id: 'removeAll',
-                              disabled: true,
-                              title: 'Ctrl[Command] + X'
-                            },
-                            {
-                              name: 'Remove Selected Sessions',
-                              id: 'removeSelected',
-                              disabled: true,
-                              title: 'Ctrl[Command] + D'
-                            },
-                            {
-                              name: 'Remove Unselected Sessions',
-                              id: 'removeUnselected',
-                              disabled: true,
-                              title: 'Ctrl[Command] + Shift + D'
-                            },
-                            {
-                              name: 'Export Selected Sessions (*.txt)',
-                              icon: 'export',
-                              id: 'exportWhistleFile',
-                              disabled: true,
-                              title: 'Ctrl + S'
-                            },
-                            {
-                              name: 'Export Selected Sessions (*.saz)',
-                              id: 'exportSazFile',
-                              disabled: true,
-                              title: 'Ctrl + S'
-                            },
-                            {
-                              name: 'Import Sessions',
-                              icon: 'import',
-                              id: 'importSessions',
-                              title: 'Ctrl + I'
-                            }
-                            ];
+      {
+        name: 'Remove All Sessions',
+        icon: 'remove',
+        id: 'removeAll',
+        disabled: true,
+        title: 'Ctrl[Command] + X'
+      },
+      {
+        name: 'Remove Selected Sessions',
+        id: 'removeSelected',
+        disabled: true,
+        title: 'Ctrl[Command] + D'
+      },
+      {
+        name: 'Remove Unselected Sessions',
+        id: 'removeUnselected',
+        disabled: true,
+        title: 'Ctrl[Command] + Shift + D'
+      },
+      {
+        name: 'Export Selected Sessions (*.txt)',
+        icon: 'export',
+        id: 'exportWhistleFile',
+        disabled: true,
+        title: 'Ctrl + S'
+      },
+      {
+        name: 'Export Selected Sessions (*.saz)',
+        id: 'exportSazFile',
+        disabled: true,
+        title: 'Ctrl + S'
+      },
+      {
+        name: 'Import Sessions',
+        icon: 'import',
+        id: 'importSessions',
+        title: 'Ctrl + I'
+      }
+    ];
     state.helpOptions = [
       {
         name: 'Get Started',
         href: 'https://avwo.github.io/whistle/quickstart.html',
-        icon: false,
+        icon: false
       },
       {
         name: 'Github',
         href: 'https://github.com/avwo/whistle',
-        icon: false,
+        icon: false
       },
       {
         name: 'Docs',
         href: 'https://avwo.github.io/whistle/',
-        icon: false,
+        icon: false
       },
       {
         name: 'Network',
         href: 'https://avwo.github.io/whistle/webui/network.html',
-        icon: false,
+        icon: false
       },
       {
         name: 'Rules',
         href: 'https://avwo.github.io/whistle/webui/rules.html',
-        icon: false,
+        icon: false
       },
       {
         name: 'Values',
         href: 'https://avwo.github.io/whistle/webui/values.html',
-        icon: false,
+        icon: false
       },
       {
         name: 'Plugins',
         href: 'https://avwo.github.io/whistle/webui/plugins.html',
-        icon: false,
+        icon: false
       },
       {
         name: 'WebSocket',
         href: 'https://avwo.github.io/whistle/webui/websocket.html',
-        icon: false,
+        icon: false
       },
       {
         name: 'Composer',
         href: 'https://avwo.github.io/whistle/webui/composer.html',
-        icon: false,
+        icon: false
       },
       {
         name: 'Settings',
         href: 'https://avwo.github.io/whistle/webui/settings.html',
-        icon: false,
+        icon: false
       },
       {
         name: 'Weinre',
         href: 'https://avwo.github.io/whistle/webui/weinre.html',
-        icon: false,
+        icon: false
       },
       {
         name: 'Https',
         href: 'https://avwo.github.io/whistle/webui/https.html',
-        icon: false,
+        icon: false
       },
       {
         name: 'Online',
         href: 'https://avwo.github.io/whistle/webui/online.html',
-        icon: false,
+        icon: false
       },
       {
         name: 'Update',
         href: 'https://avwo.github.io/whistle/update.html',
-        icon: false,
+        icon: false
       }
     ];
     protocols.setPlugins(state);
@@ -395,12 +397,12 @@ var Index = React.createClass({
     var rulesData = {};
     rulesList.push(DEFAULT);
     rulesData.Default = {
-        name: DEFAULT,
-        fixed: true,
-        value: data.defaultRules,
-        selected: !data.defaultRulesIsDisabled,
-        isDefault: true,
-        active: selectedName === DEFAULT
+      name: DEFAULT,
+      fixed: true,
+      value: data.defaultRules,
+      selected: !data.defaultRulesIsDisabled,
+      isDefault: true,
+      active: selectedName === DEFAULT
     };
     data.list.forEach(function(item) {
       rulesList.push(item.name);
@@ -411,7 +413,7 @@ var Index = React.createClass({
         active: selectedName === item.name
       };
     });
-    self.state.rules.reset(rulesList, rulesData)
+    self.state.rules.reset(rulesList, rulesData);
     self.setState({});
   },
   reloadValues: function(data) {
@@ -427,7 +429,7 @@ var Index = React.createClass({
         active: selectedName === item.name
       };
     });
-    self.state.values.reset(valuesList, valuesData)
+    self.state.values.reset(valuesList, valuesData);
     self.setState({});
   },
   reloadData: function() {
@@ -506,19 +508,20 @@ var Index = React.createClass({
             || $(e.target).closest('.w-frames-composer').length) {
           return;
         }
+        var data;
         var name = self.state.name;
         if (name === 'network') {
-          var data = new FormData();
+          data = new FormData();
           data.append('importSessions', files[0]);
           self.uploadSessionsForm(data);
         } if ($(e.target).closest('.w-divider-left').length) {
           if (name === 'rules') {
-            var data = new FormData();
+            data = new FormData();
             data.append('rules', files[0]);
             self.rulesForm = data;
             self.refs.confirmImportRules.show();
           } else if (name === 'values') {
-            var data = new FormData();
+            data = new FormData();
             data.append('values', files[0]);
             self.valuesForm = data;
             self.refs.confirmImportValues.show();
@@ -770,7 +773,7 @@ var Index = React.createClass({
             latestVersion: data.latestVersion
           }, function() {
             $(ReactDOM.findDOMNode(self.refs.showUpdateTipsDialog)).modal('show');
-          })
+          });
         }
       });
     }, 10000);
@@ -796,10 +799,10 @@ var Index = React.createClass({
         }
       }
       var pluginsState = {
-          plugins: data.plugins,
-          disabledPlugins: data.disabledPlugins,
-          pluginsOptions: pluginsOptions
-        };
+        plugins: data.plugins,
+        disabledPlugins: data.disabledPlugins,
+        pluginsOptions: pluginsOptions
+      };
       protocols.setPlugins(pluginsState);
       self.setState(pluginsState);
     });
@@ -987,37 +990,37 @@ var Index = React.createClass({
   },
   importData: function() {
     switch(this.state.name) {
-      case 'network':
-        this.importSessions();
-        break;
-      case 'rules':
-        this.importRules();
-        break;
-      case 'values':
-        this.importValues();
-        break;
+    case 'network':
+      this.importSessions();
+      break;
+    case 'rules':
+      this.importRules();
+      break;
+    case 'values':
+      this.importValues();
+      break;
     }
   },
   exportData: function(e, curItem) {
     switch(this.state.name) {
-      case 'network':
-        var modal = this.state.network;
-        var hasSelected = Array.isArray(curItem) || (modal && modal.hasSelected());
-        this.currentFoucsItem = curItem;
-        if (hasSelected) {
-          $(ReactDOM.findDOMNode(this.refs.chooseFileType)).modal('show');
-          var self = this;
-          setTimeout(function() {
-            ReactDOM.findDOMNode(self.refs.sessionsName).focus();
-          }, 500);
-        }
-        break;
-      case 'rules':
-        this.showAndActiveRules({ id: 'exportRules' });
-        break;
-      case 'values':
-        this.showAndActiveValues({ id: 'exportValues' });
-        break;
+    case 'network':
+      var modal = this.state.network;
+      var hasSelected = Array.isArray(curItem) || (modal && modal.hasSelected());
+      this.currentFoucsItem = curItem;
+      if (hasSelected) {
+        $(ReactDOM.findDOMNode(this.refs.chooseFileType)).modal('show');
+        var self = this;
+        setTimeout(function() {
+          ReactDOM.findDOMNode(self.refs.sessionsName).focus();
+        }, 500);
+      }
+      break;
+    case 'rules':
+      this.showAndActiveRules({ id: 'exportRules' });
+      break;
+    case 'values':
+      this.showAndActiveValues({ id: 'exportValues' });
+      break;
     }
   },
   importSessions: function() {
@@ -1102,12 +1105,12 @@ var Index = React.createClass({
   showAndActiveRules: function(item) {
     if (this.state.name === 'rules') {
       switch(item.id) {
-        case 'exportRules':
-          this.refs.selectRulesDialog.show();
-          break;
-        case 'importRules':
-          this.importRules();
-          break;
+      case 'exportRules':
+        this.refs.selectRulesDialog.show();
+        break;
+      case 'importRules':
+        this.importRules();
+        break;
       }
     } else {
       this.setRulesActive(item.name);
@@ -1132,12 +1135,12 @@ var Index = React.createClass({
     var self = this;
     if (self.state.name === 'values') {
       switch(item.id) {
-        case 'exportValues':
-          self.refs.selectValuesDialog.show();
-          break;
-        case 'importValues':
-          this.importValues();
-          break;
+      case 'exportValues':
+        self.refs.selectValuesDialog.show();
+        break;
+      case 'importValues':
+        this.importValues();
+        break;
       }
     } else {
       var modal = self.state.values;
@@ -1259,9 +1262,9 @@ var Index = React.createClass({
       list.forEach(function(name) {
         var exists = valuesList.indexOf(name) != -1;
         var item = {
-            name: name,
-            icon: exists ? 'edit' : 'plus'
-          };
+          name: name,
+          icon: exists ? 'edit' : 'plus'
+        };
         exists ? valuesOptions.push(item) : newValues.push(item);
       });
       valuesOptions = newValues.concat(valuesOptions);
@@ -1369,10 +1372,10 @@ var Index = React.createClass({
   },
   setMenuOptionsState: function(name, callback) {
     var state = {
-        showCreateRules: false,
-        showCreateValues: false,
-        showEditRules: false,
-        showEditValues: false
+      showCreateRules: false,
+      showCreateValues: false,
+      showEditRules: false,
+      showEditValues: false
     };
     if (name) {
       state[name] = true;
@@ -1403,26 +1406,26 @@ var Index = React.createClass({
     var checked = e.target.checked;
     dataCenter.hideHttpsConnects({hideHttpsConnects: checked ? 1 : 0},
         function(data) {
-      if (data && data.ec === 0) {
-        self.state.hideHttpsConnects = checked;
-      } else {
-        util.showSystemError();
-      }
-      self.setState({});
-    });
+          if (data && data.ec === 0) {
+            self.state.hideHttpsConnects = checked;
+          } else {
+            util.showSystemError();
+          }
+          self.setState({});
+        });
   },
   interceptHttpsConnects: function(e) {
     var self = this;
     var checked = e.target.checked;
     dataCenter.interceptHttpsConnects({interceptHttpsConnects: checked ? 1 : 0},
         function(data) {
-      if (data && data.ec === 0) {
-        self.state.interceptHttpsConnects = checked;
-      } else {
-        util.showSystemError();
-      }
-      self.setState({});
-    });
+          if (data && data.ec === 0) {
+            self.state.interceptHttpsConnects = checked;
+          } else {
+            util.showSystemError();
+          }
+          self.setState({});
+        });
   },
   createRules: function(e) {
     if (e.keyCode != 13 && e.type != 'click') {
@@ -1688,7 +1691,7 @@ var Index = React.createClass({
   },
   replay: function(e, list) {
     var modal = this.state.network;
-    var list = Array.isArray(list) ? list : (modal && modal.getSelectedList());
+    list = Array.isArray(list) ? list : (modal && modal.getSelectedList());
     if (!list || !list.length) {
       return;
     }
@@ -1783,6 +1786,7 @@ var Index = React.createClass({
   onClickMenu: function(e) {
     var target = $(e.target).closest('a');
     var self = this;
+    var list;
     var isRules = self.state.name == 'rules';
     if (target.hasClass('w-create-menu')) {
       isRules ? self.showCreateRules() : self.showCreateValues();
@@ -1792,7 +1796,7 @@ var Index = React.createClass({
       isRules ? self.removeRules() : self.removeValues();
     } else if (target.hasClass('w-save-menu')) {
       if (isRules) {
-        var list = self.state.rules.getChangedList();
+        list = self.state.rules.getChangedList();
         if(list.length) {
           list.forEach(function(item) {
             self.selectRules(item);
@@ -1800,7 +1804,7 @@ var Index = React.createClass({
           self.setState({});
         }
       } else {
-        var list = self.state.values.getChangedList();
+        list = self.state.values.getChangedList();
         if (list.length) {
           list.forEach(function(item) {
             self.saveValues(item);
@@ -1813,7 +1817,7 @@ var Index = React.createClass({
   showSettings: function(e) {
     var pageName = this.state.name;
     if (pageName === 'rules') {
-      this.showRulesSettings()
+      this.showRulesSettings();
       return;
     }
     if (pageName === 'values') {
@@ -1877,35 +1881,35 @@ var Index = React.createClass({
     });
   },
   disableAllRules: function(e) {
-     var checked = e.target.checked;
-     var self = this;
-     dataCenter.rules.disableAllRules({disabledAllRules: checked ? 1 : 0}, function(data) {
-        if (data && data.ec === 0) {
-          self.setState({
-            disabledAllRules: checked
-          });
-        } else {
+    var checked = e.target.checked;
+    var self = this;
+    dataCenter.rules.disableAllRules({disabledAllRules: checked ? 1 : 0}, function(data) {
+      if (data && data.ec === 0) {
+        self.setState({
+          disabledAllRules: checked
+        });
+      } else {
         util.showSystemError();
-       }
-     });
-     e.preventDefault();
+      }
+    });
+    e.preventDefault();
   },
   disableAllPlugins: function(e) {
     var self = this;
-     var checked = e.target.checked;
-     if (e.target.nodeName !== 'INPUT') {
-       checked = !self.state.disabledAllPlugins;
-     }
-     dataCenter.plugins.disableAllPlugins({disabledAllPlugins: checked ? 1 : 0}, function(data) {
-        if (data && data.ec === 0) {
-          self.state.disabledAllPlugins = checked;
-          protocols.setPlugins(self.state);
-          self.setState({});
-        } else {
+    var checked = e.target.checked;
+    if (e.target.nodeName !== 'INPUT') {
+      checked = !self.state.disabledAllPlugins;
+    }
+    dataCenter.plugins.disableAllPlugins({disabledAllPlugins: checked ? 1 : 0}, function(data) {
+      if (data && data.ec === 0) {
+        self.state.disabledAllPlugins = checked;
+        protocols.setPlugins(self.state);
+        self.setState({});
+      } else {
         util.showSystemError();
-       }
-     });
-     e.preventDefault();
+      }
+    });
+    e.preventDefault();
   },
   disablePlugin: function(e) {
     var self = this;
@@ -2017,7 +2021,7 @@ var Index = React.createClass({
         url: rawReq.url,
         req: req,
         res: res,
-        rules: {},
+        rules: {}
       };
       var timings = entry.timings || {};
       var endTime = Math.round(startTime + util.getTimeFromHar(entry.time));
@@ -2094,7 +2098,7 @@ var Index = React.createClass({
       return;
     }
     var input = ReactDOM.findDOMNode(this.refs.sessionsName);
-    var name = input.value.trim()
+    var name = input.value.trim();
     input.value = '';
     this.exportSessions(this.state.exportFileType, name);
     $(ReactDOM.findDOMNode(this.refs.chooseFileType)).modal('hide');
@@ -2139,10 +2143,10 @@ var Index = React.createClass({
         }
       });
     }
-
+    var i, data;
     if (isRules) {
-      var data = state.rules.data;
-      for (var i in data) {
+      data = state.rules.data;
+      for (i in data) {
         if (data[i].active) {
           disabledEditBtn = disabledDeleteBtn = data[i].isDefault;
           break;
@@ -2161,8 +2165,8 @@ var Index = React.createClass({
       }
 
     } else if (isValues) {
-      var data = state.values.data;
-      for (var i in data) {
+      data = state.values.data;
+      for (i in data) {
         if (data[i].active) {
           disabledEditBtn = disabledDeleteBtn = false;
           break;
