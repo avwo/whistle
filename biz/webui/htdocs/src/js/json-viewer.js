@@ -1,7 +1,7 @@
 require('../css/json-viewer.css');
 var React = require('react');
 var ReactDOM = require('react-dom');
-/* eslint-disable no-unused-vars */
+
 var JSONTree = require('react-json-tree')['default'];
 var dataCenter = require('./data-center');
 var util = require('./util');

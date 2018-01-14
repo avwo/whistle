@@ -1,7 +1,7 @@
 require('../css/frames.css');
 var React = require('react');
 var util = require('./util');
-/* eslint-disable no-unused-vars */
+
 var Divider = require('./divider');
 var FrameList = require('./frame-list');
 var FrameData = require('./frame-data');

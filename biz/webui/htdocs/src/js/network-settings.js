@@ -2,7 +2,7 @@ require('./base-css.js');
 require('../css/network-settings.css');
 var $ = require('jquery');
 var React = require('react');
-/* eslint-disable no-unused-vars */
+
 var Dialog = require('./dialog');
 var columns = require('./columns');
 var dataCenter = require('./data-center');

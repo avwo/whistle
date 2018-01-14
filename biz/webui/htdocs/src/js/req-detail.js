@@ -1,7 +1,7 @@
 require('./base-css.js');
 require('../css/req-detail.css');
 var React = require('react');
-/* eslint-disable no-unused-vars */
+
 var Divider = require('./divider');
 var Properties = require('./properties');
 var util = require('./util');

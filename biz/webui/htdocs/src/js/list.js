@@ -4,7 +4,7 @@ var $ = require('jquery');
 var util = require('./util');
 var React = require('react');
 var ReactDOM = require('react-dom');
-/* eslint-disable no-unused-vars */
+
 var Divider = require('./divider');
 var Editor = require('./editor');
 var FilterInput = require('./filter-input');

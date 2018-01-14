@@ -2,7 +2,7 @@ require('./base-css.js');
 require('../css/res-detail.css');
 var $ = require('jquery');
 var React = require('react');
-/* eslint-disable no-unused-vars */
+
 var Table = require('./table');
 var Properties = require('./properties');
 var util = require('./util');

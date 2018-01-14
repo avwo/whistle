@@ -90,7 +90,7 @@ var FrameComposer = React.createClass({
           </div>
         </div>
         <textarea value={data} onChange={this.onTextareaChange} ref="textarea" placeholder={'Input the text to be sent to the server, and press Ctrl [Command] + Enter, or click the send button'} className="fill"></textarea>
-        <form ref="uploadDataForm" method="post" enctype="multipart/form-data" style={{display: 'none'}}> 
+        <form ref="uploadDataForm" method="post" encType="multipart/form-data" style={{display: 'none'}}> 
           <input name="cId" value={cId} type="hidden" /> 
           <input ref="uploadData" onChange={this.onFormChange} type="file" name="uploadData" />
         </form>

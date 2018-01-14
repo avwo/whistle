@@ -2,7 +2,7 @@ require('./base-css.js');
 require('../css/list-dialog.css');
 var React = require('react');
 var ReactDOM = require('react-dom');
-/* eslint-disable no-unused-vars */
+
 var Dialog = require('./dialog');
 
 var ListDialog = React.createClass({

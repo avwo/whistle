@@ -2,7 +2,7 @@ require('../css/plugins.css');
 var $ = require('jquery');
 var React = require('react');
 var ReactDOM = require('react-dom');
-/* eslint-disable no-unused-vars */
+
 var Dialog = require('./dialog');
 
 var Home = React.createClass({

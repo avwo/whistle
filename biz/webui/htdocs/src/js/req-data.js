@@ -5,7 +5,7 @@ var ReactDOM = require('react-dom');
 var $ = require('jquery');
 var util = require('./util');
 var columns = require('./columns');
-/* eslint-disable no-unused-vars */
+
 var FilterInput = require('./filter-input');
 var Spinner = require('./spinner');
 var ContextMenu = require('./context-menu');

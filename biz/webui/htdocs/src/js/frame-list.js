@@ -1,6 +1,6 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
-/* eslint-disable no-unused-vars */
+
 var FilterInput = require('./filter-input');
 
 var FrameList = React.createClass({

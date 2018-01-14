@@ -67,7 +67,6 @@ var About = React.createClass({
   },
   showAboutInfo: function(showTips) {
     var self = this;
-    var state = self.state || {};
     self.showDialog();
     var onClick = self.props.onClick;
     if (typeof onClick === 'function') {

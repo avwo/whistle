@@ -4,7 +4,7 @@ var ReactDOM = require('react-dom');
 var util = require('./util');
 var dataCenter = require('./data-center');
 var MAX_LENGTH =1024 * 16;
-/* eslint-disable no-unused-vars */
+
 var Tips = React.createClass({
   render: function() {
     var data = this.props.data || { hide: true };

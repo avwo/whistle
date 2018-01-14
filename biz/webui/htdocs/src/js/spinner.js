@@ -1,6 +1,6 @@
 require('../css/spinner.css');
 var React = require('react');
-/* eslint-disable no-unused-vars */
+
 var ReactDOM = require('react-dom');
 
 var Spinner = React.createClass({

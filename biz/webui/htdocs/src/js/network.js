@@ -3,7 +3,7 @@ var $ = require('jquery');
 var React = require('react');
 var util = require('./util');
 var events = require('./events');
-/* eslint-disable no-unused-vars */
+
 var Divider = require('./divider');
 var ReqData = require('./req-data');
 var Detail = require('./detail');

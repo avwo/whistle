@@ -1,8 +1,6 @@
 require('./base-css.js');
 require('../css/detail.css');
 var React = require('react');
-/* eslint-disable no-unused-vars */
-var util = require('./util');
 var events = require('./events');
 var BtnGroup = require('./btn-group');
 var Overview = require('./overview');

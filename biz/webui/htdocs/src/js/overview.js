@@ -4,7 +4,7 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var events = require('./events');
 var util = require('./util');
-/* eslint-disable no-unused-vars */
+
 var Properties = require('./properties');
 
 var OVERVIEW = ['Url', 'Real Url', 'Method', 'Http Version', 'Status Code', 'Status Message', 'Client IP', 'Server IP', 'Client Port', 'Server Port', 'Request Length', 'Content Length'

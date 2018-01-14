@@ -3,7 +3,7 @@ require('../css/online.css');
 var $ = window.jQuery = require('jquery'); //for bootstrap
 require('bootstrap/dist/js/bootstrap.js');
 var React = require('react');
-/* eslint-disable no-unused-vars */
+
 var Dialog = require('./dialog');
 var dataCenter = require('./data-center');
 var util = require('./util');

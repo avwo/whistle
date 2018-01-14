@@ -3,7 +3,7 @@ var $ = require('jquery');
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Clipboard = require('clipboard');
-/* eslint-disable no-unused-vars */
+
 var List = require('./list');
 var ListModal = require('./list-modal');
 var Network = require('./network');
@@ -2474,18 +2474,18 @@ var Index = React.createClass({
       <ListDialog ref="selectValuesDialog" url="cgi-bin/values/export?values=" list={state.values.list} />
       <iframe name="downloadTargetFrame" style={{display: 'none'}} />
       <form ref="exportSessionsForm" action="cgi-bin/sessions/export" style={{display: 'none'}}
-        method="post" enctype="multipart/form-data" target="downloadTargetFrame">
+        method="post" encType="multipart/form-data" target="downloadTargetFrame">
         <input ref="exportFilename" name="exportFilename" type="hidden" />
         <input ref="exportFileType" name="exportFileType" type="hidden" />
         <input ref="sessions" name="sessions" type="hidden" />
       </form>
-      <form ref="importSessionsForm" enctype="multipart/form-data" style={{display: 'none'}}>
+      <form ref="importSessionsForm" encType="multipart/form-data" style={{display: 'none'}}>
         <input ref="importSessions" onChange={this.uploadSessions} type="file" name="importSessions" accept=".txt,.json,.saz,.har" />
       </form>
-      <form ref="importRulesForm" enctype="multipart/form-data" style={{display: 'none'}}>
+      <form ref="importRulesForm" encType="multipart/form-data" style={{display: 'none'}}>
         <input ref="importRules" onChange={this.uploadRulesForm} name="rules" type="hidden" type="file" accept=".txt,.json" />
       </form>
-      <form ref="importValuesForm" enctype="multipart/form-data" style={{display: 'none'}}>
+      <form ref="importValuesForm" encType="multipart/form-data" style={{display: 'none'}}>
         <input ref="importValues" onChange={this.uploadValuesForm} name="values" type="hidden" type="file" accept=".txt,.json" />
       </form>
     </div>
