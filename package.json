@@ -71,8 +71,8 @@
     "restart": "node bin/whistle.js restart",
     "stop": "node bin/whistle.js stop",
     "test": "node test/index.test.js",
-    "lint": "eslint ./lib ./bin ./biz/index.js ./biz/init.js ./biz/webui/cgi-bin ./biz/webui/lib ./biz/weinre",
-    "lintfix": "eslint --fix ./lib ./bin ./biz/index.js ./biz/init.js ./biz/webui/cgi-bin ./biz/webui/lib ./biz/weinre",
+    "lint": "eslint *.js ./lib ./bin ./biz/index.js ./biz/init.js ./biz/webui/cgi-bin ./biz/webui/lib ./biz/weinre",
+    "lintfix": "eslint --fix *.js ./lib ./bin ./biz/index.js ./biz/init.js ./biz/webui/cgi-bin ./biz/webui/lib ./biz/weinre",
     "cov": "node_modules/istanbul/lib/cli.js cover node_modules/.bin/tape -- test/index.test.js"
   },
   "engines": {
@@ -82,6 +82,7 @@
     "clipboard": "^1.7.1",
     "coveralls": "^2.11.12",
     "eslint": "^2.8.0",
+    "eslint-plugin-react": "^4.3.0",
     "istanbul": "^0.4.4",
     "request": "^2.74.0",
     "should": "^10.0.0",
