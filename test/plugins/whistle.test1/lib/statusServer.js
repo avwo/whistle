@@ -9,7 +9,6 @@ module.exports = function(server, options) {
       body += data;
     });
     req.on('end', function() {
-      var data = JSON.parse(body);
       res.end();
     });
   });

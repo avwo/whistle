@@ -69,8 +69,8 @@
     "dev": "webpack --config ./biz/webui/htdocs/src/webpack.config -w",
     "start": "node bin/whistle.js run -p 8888",
     "test": "node test/index.test.js",
-    "lint": "eslint *.js ./lib ./bin ./biz",
-    "lintfix": "eslint --fix *.js ./lib ./bin ./biz",
+    "lint": "eslint *.js ./lib ./bin ./biz ./test",
+    "lintfix": "eslint --fix *.js ./lib ./bin ./biz ./test",
     "cov": "node_modules/istanbul/lib/cli.js cover node_modules/.bin/tape -- test/index.test.js"
   },
   "engines": {

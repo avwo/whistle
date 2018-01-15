@@ -95,10 +95,10 @@ proxy.on('tunnelRequest', util.noop);
 proxy.on('wsRequest', util.noop);
 proxy.on('_request', util.noop);
 var socksServer = socks.createServer(function(info, accept, deny) {
-  var socket;
+  var socket, client;
   if (info.dstPort === 443) {
     if (socket = accept(true)) {
-      var client = net.connect({
+      client = net.connect({
         host: '127.0.0.1',
         port: 5566
       }, function() {
@@ -109,7 +109,7 @@ var socksServer = socks.createServer(function(info, accept, deny) {
   }
   if (info.dstPort === 8081) {
     if (socket = accept(true)) {
-      var client = net.connect({
+      client = net.connect({
         host: '127.0.0.1',
         port: 8081
       }, function() {

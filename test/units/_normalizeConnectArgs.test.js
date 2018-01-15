@@ -8,7 +8,6 @@ module.exports = function() {
   var path1 = normalizeConnectArgs('test');
   var path2 = normalizeConnectArgs('test', util.noop);
   var port1 = normalizeConnectArgs('8899');
-  var port1 = normalizeConnectArgs('8899');
   var port2 = normalizeConnectArgs('8899', 'www.test.com');
   var port3 = normalizeConnectArgs('8899', 'www.test.com', util.noop);
   path1.length.should.be.equal(1);
