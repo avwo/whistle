@@ -1,5 +1,3 @@
-'use strict';
-
 const fs = require('fs');
 const path = require('path');
 
@@ -27,10 +25,10 @@ function combo() {
   result.sort((pre,next) =>{
     const preIndex = (pre.match(filenamePattern) || [])[1] || 0;
     const nextIndex = (next.match(filenamePattern) || [])[1] || 0;
-  
+
     return preIndex-nextIndex;
   });
-  
+
   result.forEach(file => {
     const content = fs.readFileSync(path.join(srcDir, file));
     if (content) {
@@ -46,6 +44,7 @@ if (watchMode) {
   fs.watch(srcDir, (eventType, filename) => {
     combo();
   });
+  /* eslint-disable no-console */
   console.info(`***** watching ${srcDir}/*.md *****`);
 }
 
