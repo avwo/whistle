@@ -74,7 +74,7 @@
     "cov": "node_modules/istanbul/lib/cli.js cover node_modules/.bin/tape -- test/index.test.js",
     "docs:watch": "node docs/script/combo.js -w",
     "docs": "node docs/script/combo.js",
-    "precommit": "npm run lintfix"
+    "precommit": "npm run lint"
   },
   "engines": {
     "node": ">= 0.10.0"
