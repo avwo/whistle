@@ -2466,7 +2466,7 @@ var Index = React.createClass({
       <ListDialog ref="selectValuesDialog" url="cgi-bin/values/export?values=" list={state.values.list} />
       <iframe name="downloadTargetFrame" style={{display: 'none'}} />
       <form ref="exportSessionsForm" action="cgi-bin/sessions/export" style={{display: 'none'}}
-        method="post" encType="multipart/form-data" target="downloadTargetFrame">
+        method="post" target="downloadTargetFrame">
         <input ref="exportFilename" name="exportFilename" type="hidden" />
         <input ref="exportFileType" name="exportFileType" type="hidden" />
         <input ref="sessions" name="sessions" type="hidden" />
