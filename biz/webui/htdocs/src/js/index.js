@@ -2462,8 +2462,8 @@ var Index = React.createClass({
             onClick={this.uploadValues} data-dismiss="modal">Reserve</button>
         </div>
       </Dialog>
-      <ListDialog ref="selectRulesDialog" url="cgi-bin/rules/export?rules=" list={state.rules.list} />
-      <ListDialog ref="selectValuesDialog" url="cgi-bin/values/export?values=" list={state.values.list} />
+      <ListDialog ref="selectRulesDialog" name="rules" list={state.rules.list} />
+      <ListDialog ref="selectValuesDialog" name="values" list={state.values.list} />
       <iframe name="downloadTargetFrame" style={{display: 'none'}} />
       <form ref="exportSessionsForm" action="cgi-bin/sessions/export" style={{display: 'none'}}
         method="post" target="downloadTargetFrame">

@@ -28,11 +28,11 @@ var ListDialog = React.createClass({
     }
     this.refs.dialog.hide();
     var input = ReactDOM.findDOMNode(this.refs.filename);
-    var filename = '&filename=' + encodeURIComponent(input.value.trim());
     var form = ReactDOM.findDOMNode(this.refs.exportData);
     var exportAll = e.target.className.indexOf('btn-warning') !== -1;
     var items = exportAll ? this.getAllItems() : this.state.checkedItems;
-    form.action = this.props.url + encodeURIComponent(JSON.stringify(items)) + filename;
+    ReactDOM.findDOMNode(this.refs.filename).value = input.value.trim();
+    ReactDOM.findDOMNode(this.refs.data).value = JSON.stringify(items);
     form.submit();
     input.value = '';
   },
@@ -58,6 +58,7 @@ var ListDialog = React.createClass({
     var self = this;
     var list = self.props.list || [];
     var checkedItems = self.state.checkedItems;
+    var pageName = this.props.name;
 
     return (
       <Dialog ref="dialog" wclassName=" w-list-dialog">
@@ -96,7 +97,10 @@ var ListDialog = React.createClass({
             onMouseDown={this.preventDefault}
             onClick={this.onConfirm}>Confirm</button>
         </div>
-        <form ref="exportData" style={{display: 'none'}} target="downloadTargetFrame" />
+        <form action={'cgi-bin/' + pageName + '/export'} ref="exportData" style={{display: 'none'}} target="downloadTargetFrame">
+          <input ref="filename" type="hidden" name="filename" />
+          <input ref="data" type="hidden" name={pageName} />
+        </form>
       </Dialog>
     );
   }
