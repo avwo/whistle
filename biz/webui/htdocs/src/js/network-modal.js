@@ -220,6 +220,18 @@ proto.remove = function(item) {
   }
 };
 
+proto.removeOthers = function(item) {
+  var list = this._list;
+  var index = list.indexOf(item);
+  if (index !== -1) {
+    list.splice(index + 1, list.length - index);
+    if (index !== 0) {
+      list.splice(0, index);
+    }
+    this.update(false, true);
+  }
+};
+
 proto.removeUnselectedItems = function() {
   var hasUnselectedItem;
   var endIndex = -1;

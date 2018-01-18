@@ -50,6 +50,7 @@ var contextMenuList = [
     list:  [
       { name: 'It' },
       { name: 'All' },
+      { name: 'Others' },
       { name: 'Selected' },
       { name: 'Unselected' }
     ]
@@ -301,6 +302,9 @@ var ReqData = React.createClass({
     case 'All':
       events.trigger('clearAll');
       break;
+    case 'Others':
+      events.trigger('removeOthers', this.currentFocusItem);
+      break;
     case 'Selected':
       events.trigger('removeSelected');
       break;
@@ -314,7 +318,8 @@ var ReqData = React.createClass({
   },
   onContextMenu: function(e) {
     var dataId = $(e.target).closest('.w-req-data-item').attr('data-id');
-    var item = this.props.modal.getItem(dataId);
+    var modal = this.props.modal;
+    var item = modal.getItem(dataId);
     e.preventDefault();
     this.currentFocusItem = item;
     contextMenuList[0].disabled = !item;
@@ -350,15 +355,17 @@ var ReqData = React.createClass({
     contextMenuList[1].list.forEach(function(menu) {
       menu.disabled = !item;
     });
-    var selectedList = this.props.modal.getSelectedList();
+    var selectedList = modal.getSelectedList();
     var selectedCount = selectedList.length;
-    var hasData = this.props.modal.list.length;
+    var hasData = modal.list.length;
     contextMenuList[2].disabled = !hasData;
     contextMenuList[2].list.forEach(function(menu) {
       menu.disabled = !hasData;
     });
     contextMenuList[2].list[0].disabled = !item;
-    contextMenuList[2].list[2].disabled = !selectedCount;
+    contextMenuList[2].list[3].disabled = hasData > 1;
+    contextMenuList[2].list[3].disabled = !selectedCount;
+    contextMenuList[2].list[4].disabled = selectedCount === hasData;
     contextMenuList[3].disabled = !item;
     if (item) {
       if (item.selected) {
