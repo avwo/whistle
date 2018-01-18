@@ -30,9 +30,19 @@ var ListDialog = React.createClass({
     var input = ReactDOM.findDOMNode(this.refs.filename);
     var filename = '&filename=' + encodeURIComponent(input.value.trim());
     var form = ReactDOM.findDOMNode(this.refs.exportData);
-    form.action = this.props.url + encodeURIComponent(JSON.stringify(this.state.checkedItems)) + filename;
+    var exportAll = e.target.className.indexOf('btn-warning') !== -1;
+    var items = exportAll ? this.getAllItems() : this.state.checkedItems;
+    form.action = this.props.url + encodeURIComponent(JSON.stringify(items)) + filename;
     form.submit();
     input.value = '';
+  },
+  getAllItems: function() {
+    var list = this.props.list || [];
+    var result = {};
+    list.forEach(function(name) {
+      result[name] = 1;
+    });
+    return result;
   },
   show: function() {
     var self = this;
@@ -40,6 +50,9 @@ var ListDialog = React.createClass({
     setTimeout(function() {
       ReactDOM.findDOMNode(self.refs.filename).focus();
     }, 500);
+  },
+  preventDefault: function(e) {
+    e.preventDefault();
   },
   render: function() {
     var self = this;
@@ -75,11 +88,12 @@ var ListDialog = React.createClass({
         </div>
         <div className="modal-footer">
           <button type="button" className="btn btn-default" data-dismiss="modal">Cancel</button>
+          <button type="button" className="btn btn-warning"
+            onMouseDown={this.preventDefault}
+            onClick={this.onConfirm}>Export All</button>
           <button type="button" className="btn btn-primary"
             disabled={!Object.keys(checkedItems).length}
-            onMouseDown={function(e) {
-              e.preventDefault();
-            }}
+            onMouseDown={this.preventDefault}
             onClick={this.onConfirm}>Confirm</button>
         </div>
         <form ref="exportData" style={{display: 'none'}} target="downloadTargetFrame" />
