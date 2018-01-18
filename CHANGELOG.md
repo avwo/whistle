@@ -825,10 +825,15 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 2. refactor: 支持同时根据多个ip过滤抓包数据
 3. perf: 大幅提升[pac](https://avwo.github.io/whistle/rules/pac.html)、[reqScript](https://avwo.github.io/whistle/rules/reqScript.html)、[resScript](https://avwo.github.io/whistle/rules/resScript.html)的性能
 
-# v1.8.5
+### v1.8.5
 1. feat: 支持导入har文件
 2. feat: 支持JSON数据直接添加到Values中
 3. refactor: 优化界面性能[#110](https://github.com/avwo/whistle/issues/110)
+
+# v1.8.6
+1. fix: 导出Rules或Values时，只能导出全部的问题
+2. feat: 选择导出Rules或Values对话框里面添加 `Export All` 按钮
+3. feat: 添加右键菜单按钮 `Remove -> Others`，删除其它抓包数据 
  
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
