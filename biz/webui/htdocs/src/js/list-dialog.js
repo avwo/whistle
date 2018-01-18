@@ -31,7 +31,7 @@ var ListDialog = React.createClass({
     var form = ReactDOM.findDOMNode(this.refs.exportData);
     var exportAll = e.target.className.indexOf('btn-warning') !== -1;
     var items = exportAll ? this.getAllItems() : this.state.checkedItems;
-    ReactDOM.findDOMNode(this.refs.filename).value = input.value.trim();
+    ReactDOM.findDOMNode(this.refs.exportName).value = input.value.trim();
     ReactDOM.findDOMNode(this.refs.data).value = JSON.stringify(items);
     form.submit();
     input.value = '';
@@ -98,7 +98,7 @@ var ListDialog = React.createClass({
             onClick={this.onConfirm}>Confirm</button>
         </div>
         <form action={'cgi-bin/' + pageName + '/export'} ref="exportData" style={{display: 'none'}} target="downloadTargetFrame">
-          <input ref="filename" type="hidden" name="filename" />
+          <input ref="exportName" type="hidden" name="filename" />
           <input ref="data" type="hidden" name={pageName} />
         </form>
       </Dialog>
