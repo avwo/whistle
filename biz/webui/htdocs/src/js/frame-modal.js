@@ -109,13 +109,13 @@ proto.update = function() {
         var item = list[i];
         if (!item.hide) {
           if (i > 0) {
-            updateList(0, i);
+            updateList(list, i);
           }
           break;
         }
       }
     } else {
-      updateList(0, len);
+      updateList(list, len);
     }
   }
 };
