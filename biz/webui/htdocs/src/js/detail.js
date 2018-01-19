@@ -145,6 +145,9 @@ var ReqData = React.createClass({
       });
     } else {
       overview = activeItem = modal && modal.getActive();
+      if (!activeItem || !activeItem.hide) {
+        activeItem = selectedList && selectedList[0];
+      }
     }
     var curTab = this.state.tab;
     if (!curTab && overview) {

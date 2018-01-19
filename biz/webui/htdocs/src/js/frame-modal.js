@@ -71,14 +71,25 @@ proto.setActive = function(item, active) {
   item.active = active !== false;
 };
 
-proto.getActive = function() {
-  var list = this.list;
+function getActive(list) {
   for (var i = 0, len = list.length; i < len; i++) {
     var item = list[i];
     if (item.active) {
       return item;
     }
   }
+}
+
+function updateList(list, len) {
+  var activeItem = getActive(list);
+  list.splice(0, len);
+  if (activeItem && list.indexOf(activeItem) === -1) {
+    list.unshift(activeItem);
+  }
+}
+
+proto.getActive = function() {
+  return getActive(this.list);
 };
 
 proto.getList = function() {
@@ -98,13 +109,13 @@ proto.update = function() {
         var item = list[i];
         if (!item.hide) {
           if (i > 0) {
-            list.splice(0, i);
+            updateList(0, i);
           }
           break;
         }
       }
     } else {
-      list.splice(0, len);
+      updateList(0, len);
     }
   }
 };

@@ -307,6 +307,16 @@ proto.next = function() {
   }
 };
 
+
+
+function updateList(list, len) {
+  var activeItem = getActive(list);
+  list.splice(0, len);
+  if (activeItem && list.indexOf(activeItem) === -1) {
+    list.unshift(activeItem);
+  }
+}
+
 proto.update = function(scrollAtBottom, force) {
   updateOrder(this._list, force);
   if (scrollAtBottom) {
@@ -316,13 +326,13 @@ proto.update = function(scrollAtBottom, force) {
         var item = this._list[i];
         if (!item.hide) {
           if (i > 0) {
-            this._list.splice(0, i);
+            updateList(this._list, i);
           }
           break;
         }
       }
     } if (exceed > 0) {
-      this._list.splice(0,exceed);
+      updateList(this._list, exceed);
     }
   }
 
@@ -358,19 +368,17 @@ proto.getSelected = function() {
   return this.getActive();
 };
 
-proto.getActive = function() {
-  var list = this.list;
+function getActive(list) {
   for (var i = 0, len = list.length; i < len; i++) {
     var item = list[i];
     if (item.active) {
-      if (!item.hide) {
-        return item;
-      }
-      break;
+      return item;
     }
   }
+}
 
-  return this.getSelectedList()[0];
+proto.getActive = function() {
+  return getActive(this.list) || this.getSelectedList()[0];
 };
 
 proto.getItem = function(id) {
