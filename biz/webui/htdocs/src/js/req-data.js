@@ -388,6 +388,10 @@ var ReqData = React.createClass({
     self.setState({filterText: keyword}, function() {
       autoRefresh && self.autoRefresh();
     });
+    clearTimeout(self.networkStateChangeTimer);
+    self.networkStateChangeTimer = setTimeout(function() {
+      events.trigger('networkStateChange');
+    }, 600);
   },
   autoRefresh: function() {
     if (this.container) {

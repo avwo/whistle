@@ -55,6 +55,8 @@ var ReqData = React.createClass({
     }).on('composer', function() {
       var modal = self.props.modal;
       self.showComposer(modal && modal.getActive());
+    }).on('networkStateChange', function() {
+      self.setState({});
     });
   },
   showComposer: function(item) {

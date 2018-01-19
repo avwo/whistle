@@ -363,7 +363,10 @@ proto.getActive = function() {
   for (var i = 0, len = list.length; i < len; i++) {
     var item = list[i];
     if (item.active) {
-      return item;
+      if (!item.hide) {
+        return item;
+      }
+      break;
     }
   }
 
