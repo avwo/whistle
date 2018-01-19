@@ -830,10 +830,14 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 2. feat: 支持JSON数据直接添加到Values中
 3. refactor: 优化界面性能[#110](https://github.com/avwo/whistle/issues/110)
 
-# v1.8.6
+### v1.8.6
 1. fix: 导出Rules或Values时，只能导出全部的问题
 2. feat: 选择导出Rules或Values对话框里面添加 `Export All` 按钮
 3. feat: 添加右键菜单按钮 `Remove -> Others`，删除其它抓包数据 
+
+# v1.8.7
+1. feat: 在Network中双击右侧的Tab按钮，可以将当前选择的行滚动到可视区域
+2. feat: 点击选中的请求数据不会因为请求列表的滚动导致被删除
  
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
