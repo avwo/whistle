@@ -84,7 +84,7 @@ function updateList(list, len) {
   var activeItem = getActive(list);
   list.splice(0, len);
   if (activeItem && list.indexOf(activeItem) === -1) {
-    list.unshift(activeItem);
+    list[0] = activeItem;
   }
 }
 
