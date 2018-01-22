@@ -1,6 +1,6 @@
-# 操作值 {#__anchor__}
+# 操作值
 
-whistle 的所有操作都可以通过配置实现，配置模式扩展于系统 hosts 配置模式 (`ip domain` 或组合模式 `ip domain1 domain2 domainN`)，具有更丰富的[匹配方式](pattern.html) 及更灵活的配置模式。whistle 的匹配顺序是从左到右，这与传统 hosts 从右到左的配置模式不同，但为了兼容传统 hosts 配置模式，除了 pattern 和 operator-uri 都可以为请求 url 外(这种情况 whistle 无法自动区分 pattern 和 operator-uri，只能按约定的顺序匹配)，其它情况 whistle 都支持配置两边的位置对调，即：`pattern operator-uri` 和 `operator-uri pattern` 等价。
+whistle 的所有操作都可以通过配置实现，配置模式扩展于系统 hosts 配置模式 (`ip domain` 或组合模式 `ip domain1 domain2 domainN`)，具有更丰富的[匹配方式](#pattern) 及更灵活的配置模式。whistle 的匹配顺序是从左到右，这与传统 hosts 从右到左的配置模式不同，但为了兼容传统 hosts 配置模式，除了 pattern 和 operator-uri 都可以为请求 url 外(这种情况 whistle 无法自动区分 pattern 和 operator-uri，只能按约定的顺序匹配)，其它情况 whistle 都支持配置两边的位置对调，即：`pattern operator-uri` 和 `operator-uri pattern` 等价。
 
 > whistle 跟传统 hosts 配置一样也采用 `#` 为注释符号
 
@@ -42,4 +42,4 @@ whistle 的所有操作都可以通过配置实现，配置模式扩展于系统
   # 这种情况下也支持一个操作对应多个 pattern
   operator-uri pattern1 pattern2 patternN
   ```
-其中，pattern 请参考：[匹配方式](pattern.html)
+其中，pattern 请参考：[匹配方式](#pattern)

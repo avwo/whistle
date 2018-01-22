@@ -1,10 +1,10 @@
-# 快速入门 {#__anchor__}
+# 快速入门
 
 > 推荐看这篇文章：[whistle 工具全程入门](http://imweb.io/topic/596480af33d7f9a94951744c)
 
-按 [上述方法](install.html) 安装好 whistle 后，用 Chrome 浏览器打开配置页面: [http://local.whistlejs.com](http://local.whistlejs.com/)
+按 [上述方法](#install) 安装好 whistle 后，用 Chrome 浏览器打开配置页面: [http://local.whistlejs.com](http://local.whistlejs.com/)
 
-如图[Rules](webui/rules.html)，whistle 的 Rules 配置页面有一个默认分组 `Default`，用户也可以通过上面的菜单栏按钮 `Create`、`Edit`、`Delete` 分别创建、重命名、删除自定义分组，whistle 先在选中的用户自定义分组中从上到下依次匹配，然后再到 `Default` 中匹配(如果 `Default` 分组被启用的情况下)。
+如图[Rules](#webui_rules)，whistle 的 Rules 配置页面有一个默认分组 `Default`，用户也可以通过上面的菜单栏按钮 `Create`、`Edit`、`Delete` 分别创建、重命名、删除自定义分组，whistle 先在选中的用户自定义分组中从上到下依次匹配，然后再到 `Default` 中匹配(如果 `Default` 分组被启用的情况下)。
 
 点击页面上方菜单栏的 `Create` 按钮，新建一个名为 `test` 的分组，并参照下面例子输入对应的规则配置。
 
@@ -33,7 +33,7 @@
   # or
   host://www.qq.com:8080 www.ifeng.com
 	```
- 更多匹配方式参考：[匹配方式](pattern.html)
+ 更多匹配方式参考：[匹配方式](#pattern)
 
 2. 本地替换
 
@@ -53,7 +53,7 @@
 
 	[http://www.ifeng.com/xxx](#)会先尝试加载 `/User/username/test/xxx` 这个文件，如果不存在，则会加载 `/User/username/test/xxx/index.html`，如果没有对应的文件则返回 404。
 
-	也可以替换 jsonp 请求，具体参见[tpl](rules/rule/tpl.html)
+	也可以替换 jsonp 请求，具体参见[tpl](#rules_rule_tpl)
 
 3. 请求转发
 
@@ -83,9 +83,9 @@
 
 5. 调试远程页面
 
-	利用 whistle 提供的 [weinre](rules/weinre.html) 和 [log](rules/log.html) 两个协议，可以实现修改远程页面 DOM 结构及自动捕获页面 js 错误及 console 打印的信息，还可以在页面顶部或 js 文件底部注入指定的脚步调试页面信息。
+	利用 whistle 提供的 [weinre](#rules_weinre) 和 [log](#rules_log) 两个协议，可以实现修改远程页面 DOM 结构及自动捕获页面 js 错误及 console 打印的信息，还可以在页面顶部或 js 文件底部注入指定的脚步调试页面信息。
 
-	使用 whistle 的功能前，先把要相应的系统代理或浏览器代理指向 whistle，如何设置可以参考：[安装启动](install.html)
+	使用 whistle 的功能前，先把要相应的系统代理或浏览器代理指向 whistle，如何设置可以参考：[安装启动](#install)
 
 	weinre：
 
@@ -119,4 +119,4 @@
 </div>
 
 
-更多功能请参考：[协议列表](rules/index.html)
+更多功能请参考：[协议列表](#rules)
