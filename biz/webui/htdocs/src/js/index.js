@@ -1901,7 +1901,7 @@ var Index = React.createClass({
     var checked = e.target.checked;
     if (e.target.nodeName !== 'INPUT') {
       if (state.disabledAllRules) {
-        alert('Please enable all rules first with:\nRules -> Settings -> Uncheck `Diable all rules`');
+        alert('Please enbale all rules by the following steps:\nRules -> Settings -> Uncheck `Diable all rules`');
         return;
       }
       checked = !state.disabledAllPlugins;
@@ -2223,6 +2223,7 @@ var Index = React.createClass({
       }
     }
     var showLeftMenu = state.showLeftMenu;
+    var disabledAllPlugins = state.disabledAllRules || state.disabledAllPlugins;
     return (
       <div className={'main orient-vertical-box' + (showLeftMenu ? ' w-show-left-menu' : '')}>
         <div className={'w-menu w-' + name + '-menu-list'}>
@@ -2248,9 +2249,15 @@ var Index = React.createClass({
           </div>
           <div ref="pluginsMenu" onMouseEnter={this.showPluginsOptions} onMouseLeave={this.hidePluginsOptions} className={'w-nav-menu w-menu-wrapper' + (showPluginsOptions ? ' w-menu-wrapper-show' : '')}>
             <a onClick={this.showPlugins} className="w-plugins-menu" style={{background: name == 'plugins' ? '#ddd' : null}} href="javascript:;" draggable="false"><span className="glyphicon glyphicon-list-alt"></span>Plugins</a>
-            <MenuItem ref="pluginsMenuItem" name={name == 'plugins' ? null : 'Open'} options={pluginsOptions} checkedOptions={state.disabledPlugins} disabled={state.disabledAllRules || state.disabledAllPlugins}
+            <MenuItem ref="pluginsMenuItem" name={name == 'plugins' ? null : 'Open'} options={pluginsOptions} checkedOptions={state.disabledPlugins} disabled={disabledAllPlugins}
               className="w-plugins-menu-item" onClick={this.showPlugins} onChange={this.disablePlugin} onClickOption={this.showAndActivePlugins} />
           </div>
+          <a onClick={this.disableAllPlugins} className="w-enable-plugin-menu"
+            style={{display: isPlugins ? '' : 'none'}} href="javascript:;"
+            draggable="false">
+            <span className={'glyphicon glyphicon-' + (disabledAllPlugins ? 'ok-circle' : 'ban-circle')}/>
+            {disabledAllPlugins ? 'EnableAll' : 'DisableAll'}
+          </a>
           <a onClick={this.importData} className="w-import-menu"
             style={{display: isPlugins ? 'none' : ''}} href="javascript:;"
             draggable="false">
