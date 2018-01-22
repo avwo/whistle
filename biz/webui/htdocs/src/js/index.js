@@ -1897,14 +1897,19 @@ var Index = React.createClass({
   },
   disableAllPlugins: function(e) {
     var self = this;
+    var state = self.state;
     var checked = e.target.checked;
     if (e.target.nodeName !== 'INPUT') {
-      checked = !self.state.disabledAllPlugins;
+      if (state.disabledAllRules) {
+        alert('Please enable all rules first with:\nRules -> Settings -> Uncheck `Diable all rules`');
+        return;
+      }
+      checked = !state.disabledAllPlugins;
     }
     dataCenter.plugins.disableAllPlugins({disabledAllPlugins: checked ? 1 : 0}, function(data) {
       if (data && data.ec === 0) {
-        self.state.disabledAllPlugins = checked;
-        protocols.setPlugins(self.state);
+        state.disabledAllPlugins = checked;
+        protocols.setPlugins(state);
         self.setState({});
       } else {
         util.showSystemError();
@@ -2319,7 +2324,7 @@ var Index = React.createClass({
             </a>
             <a onClick={this.showPlugins} className="w-plugins-menu"
               onDoubleClick={this.disableAllPlugins}
-              title={name == 'plugins' ? 'Double to ' + (state.disableAllPlugins ? 'enable' : 'disable') + ' all plugins': undefined}
+              title={name == 'plugins' ? 'Double to ' + (state.disabledAllPlugins ? 'enable' : 'disable') + ' all plugins': undefined}
               style={{background: name == 'plugins' ? '#ddd' : null}} href="javascript:;" draggable="false">
               <span className="glyphicon glyphicon-list-alt"></span>
               <span className="w-left-menu-tips" style={{display:  name == 'plugins' ? 'none' : undefined}}>Plugins</span>
