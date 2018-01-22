@@ -838,6 +838,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 # v1.8.7
 1. feat: 在Network中双击右侧的Tab按钮，可以将当前选择的行滚动到可视区域
 2. feat: 点击选中的请求数据不会因为请求列表的滚动导致被删除
+3. feat: 在 Plugins 里面新增 `EnableAll` 按钮
  
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
