@@ -72,8 +72,8 @@
     "lint": "eslint *.js ./lib ./bin ./biz ./test ./docs/script",
     "lintfix": "eslint --fix *.js ./lib ./bin ./biz ./test ./docs/script",
     "cov": "node_modules/istanbul/lib/cli.js cover node_modules/.bin/tape -- test/index.test.js",
-    "docs:watch": "node docs/script/combo.js -w",
-    "docs": "node docs/script/combo.js"
+    "docs:watch": "node docs/script/docify.js -w",
+    "docs": "node docs/script/docify.js"
   },
   "engines": {
     "node": ">= 0.10.0"
@@ -93,6 +93,7 @@
     "file-loader": "0.8.4",
     "istanbul": "^0.4.4",
     "jquery": "2.1.4",
+    "lodash.startcase": "^4.4.0",
     "react": "^15.6.2",
     "react-dom": "^15.6.2",
     "react-json-tree": "^0.10.7",
