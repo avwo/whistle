@@ -1,4 +1,4 @@
-# 安装证书 {#__anchor__}
+# 安装证书
 
 > 建议使用 `Node v6` 或以上版本，否则性能及在 Chrome 或 APP 上 [抓包 HTTPS 请求](https://avwo.github.io/whistle/webui/https.html) 会有问题。
 

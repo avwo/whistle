@@ -91,6 +91,7 @@
     "eslint": "^2.8.0",
     "eslint-plugin-react": "^4.3.0",
     "file-loader": "0.8.4",
+    "glob": "^7.1.2",
     "istanbul": "^0.4.4",
     "jquery": "2.1.4",
     "lodash.startcase": "^4.4.0",

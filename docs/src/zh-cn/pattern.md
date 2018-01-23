@@ -1,8 +1,8 @@
-# 匹配方式 {#__anchor__}
+# 匹配方式
 
-> HTTPS、Websocket 需要 [开启 HTTPS 拦截](webui/https.html)，whistle 才能获取完整的请求 url，对这部分请求只有域名匹配能完整支持 (路径匹配只支持 `tunnel://host 或 tunnel://host:port`)，为了让匹配方式对所有请求都生效请先 [开启 HTTPS 拦截](webui/https.html)
+> HTTPS、Websocket 需要 [开启 HTTPS 拦截](#webui_https)，whistle 才能获取完整的请求 url，对这部分请求只有域名匹配能完整支持 (路径匹配只支持 `tunnel://host 或 tunnel://host:port`)，为了让匹配方式对所有请求都生效请先 [开启 HTTPS 拦截](#webui_https)
 
-whistle 对所有操作支持 ** 域名、路径、正则、精确匹配、通配符匹配、通配路径匹配 ** 六种种匹配方式 ([安装最新版本](update.html) 才能确保这些匹配方式都支持才支持)。
+whistle 对所有操作支持 ** 域名、路径、正则、精确匹配、通配符匹配、通配路径匹配 ** 六种种匹配方式 ([安装最新版本](#update) 才能确保这些匹配方式都支持才支持)。
 
 ### 域名匹配
 域名匹配可以匹配整个域名、限定域名的端口号、限定域名的请求协议，如果 operator-uri 不为请求路径，pattern 和 operator-uri 位置可以调换。
