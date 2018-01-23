@@ -5,10 +5,11 @@
 const fs = require('fs');
 const path = require('path');
 const startCase = require('lodash.startcase');
+const config = require('./config');
 
-const config = require('../src/config.json');
+const langs = config.langs;
+const docConfig = require('../src/config.json');
 const srcDir = path.join(__dirname, '../src');
-const langs = ['zh-cn'];
 const watchMode = process.argv[2] === '-w';
 
 let cache = {};
@@ -30,7 +31,7 @@ if (watchMode) {
     });
     const isConfigFile = filename === 'config.json';
     if (isConfigFile) {
-      console.log('Please restart the docs:watch cmd!');
+      console.log('Please restart the docs:watch cmd !');
       return;
     }
     if (isTarget) {
@@ -86,7 +87,7 @@ function generateNavTitle({ parentPaths, item, sign, lang }) {
 }
 
 function replaceAnchor(content, anchor) {
-  return content.replace(/^(\#+.*)/, (match, p1) => {
+  return content.replace(/(\#+.*)/, (match, p1) => {
     return `${p1} {#${anchor}}`;
   });
 }
@@ -122,7 +123,7 @@ function sammary() {
     const targetFile = path.join(srcDir, `${dir}/${SUMMARY}`);
 
     const result = walk({
-      catalog: config.catalog,
+      catalog: docConfig.catalog,
       lang: dir,
       result: [],
       parentPaths: [],
@@ -137,10 +138,11 @@ function sammary() {
 }
 
 function combo() {
-  const nodeFn = function ({ parentPaths, lang, item, isDir, result }) {
+  const nodeFn = function ({ parentPaths, lang, item, result }) {
+    const isDir = typeof item === 'object' && item.catalog && item.catalog.length;    
     const slug = typeof item === 'string' ? item : typeof item === 'object' ? item.name : '';
     const filename = getFilename({
-      parentPaths, lang, slug, isDir: false
+      parentPaths, lang, slug, isDir
     });
     const fileId = getFileId(parentPaths.concat(slug));
 
@@ -157,7 +159,7 @@ function combo() {
     const targetFile = path.join(srcDir, `${dir}/${README}`);
 
     const result = walk({
-      catalog: config.catalog,
+      catalog: docConfig.catalog,
       lang: dir,
       result: [],
       parentPaths: [],

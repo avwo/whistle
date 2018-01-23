@@ -1,4 +1,4 @@
-# 用户反馈 {#__anchor__}
+# 用户反馈
 
 1. 有问题请直接提 issue: [New issue](https://github.com/avwo/whistle/issues/new)
 2. 欢迎提 PR: [Pull requests](https://github.com/avwo/whistle/compare)

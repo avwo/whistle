@@ -254,9 +254,9 @@ PS: 如果配置完代理，手机无法访问，可能是 whistle 所在的电�
 
 > 推荐看这篇文章：[whistle 工具全程入门](http://imweb.io/topic/596480af33d7f9a94951744c)
 
-按 [上述方法](install.html) 安装好 whistle 后，用 Chrome 浏览器打开配置页面: [http://local.whistlejs.com](http://local.whistlejs.com/)
+按 [上述方法](#install) 安装好 whistle 后，用 Chrome 浏览器打开配置页面: [http://local.whistlejs.com](http://local.whistlejs.com/)
 
-如图[Rules](webui/rules.html)，whistle 的 Rules 配置页面有一个默认分组 `Default`，用户也可以通过上面的菜单栏按钮 `Create`、`Edit`、`Delete` 分别创建、重命名、删除自定义分组，whistle 先在选中的用户自定义分组中从上到下依次匹配，然后再到 `Default` 中匹配(如果 `Default` 分组被启用的情况下)。
+如图[Rules](#webui_rules)，whistle 的 Rules 配置页面有一个默认分组 `Default`，用户也可以通过上面的菜单栏按钮 `Create`、`Edit`、`Delete` 分别创建、重命名、删除自定义分组，whistle 先在选中的用户自定义分组中从上到下依次匹配，然后再到 `Default` 中匹配(如果 `Default` 分组被启用的情况下)。
 
 点击页面上方菜单栏的 `Create` 按钮，新建一个名为 `test` 的分组，并参照下面例子输入对应的规则配置。
 
@@ -285,7 +285,7 @@ PS: 如果配置完代理，手机无法访问，可能是 whistle 所在的电�
   # or
   host://www.qq.com:8080 www.ifeng.com
 	```
- 更多匹配方式参考：[匹配方式](pattern.html)
+ 更多匹配方式参考：[匹配方式](#pattern)
 
 2. 本地替换
 
@@ -305,7 +305,7 @@ PS: 如果配置完代理，手机无法访问，可能是 whistle 所在的电�
 
 	[http://www.ifeng.com/xxx](#)会先尝试加载 `/User/username/test/xxx` 这个文件，如果不存在，则会加载 `/User/username/test/xxx/index.html`，如果没有对应的文件则返回 404。
 
-	也可以替换 jsonp 请求，具体参见[tpl](rules/rule/tpl.html)
+	也可以替换 jsonp 请求，具体参见[tpl](#rules_rule_tpl)
 
 3. 请求转发
 
@@ -335,9 +335,9 @@ PS: 如果配置完代理，手机无法访问，可能是 whistle 所在的电�
 
 5. 调试远程页面
 
-	利用 whistle 提供的 [weinre](rules/weinre.html) 和 [log](rules/log.html) 两个协议，可以实现修改远程页面 DOM 结构及自动捕获页面 js 错误及 console 打印的信息，还可以在页面顶部或 js 文件底部注入指定的脚步调试页面信息。
+	利用 whistle 提供的 [weinre](#rules_weinre) 和 [log](#rules_log) 两个协议，可以实现修改远程页面 DOM 结构及自动捕获页面 js 错误及 console 打印的信息，还可以在页面顶部或 js 文件底部注入指定的脚步调试页面信息。
 
-	使用 whistle 的功能前，先把要相应的系统代理或浏览器代理指向 whistle，如何设置可以参考：[安装启动](install.html)
+	使用 whistle 的功能前，先把要相应的系统代理或浏览器代理指向 whistle，如何设置可以参考：[安装启动](#install)
 
 	weinre：
 
@@ -371,7 +371,7 @@ PS: 如果配置完代理，手机无法访问，可能是 whistle 所在的电�
 </div>
 
 
-更多功能请参考：[协议列表](rules/index.html)
+更多功能请参考：[协议列表](#rules)
 
 # 常见问题 {#questions}
 
@@ -379,19 +379,19 @@ PS: 如果配置完代理，手机无法访问，可能是 whistle 所在的电�
 
 1. 为什么 [http://local.whistlejs.com](http://local.whistlejs.com/) 无法访问？
 
- 没有启动 whistle 或者配置代理，具体操作请参考 [安装启动](install.html)
+ 没有启动 whistle 或者配置代理，具体操作请参考 [安装启动](#install)
 
 2. 为什么 **Network** 上看不到请求？
 
- 没有用 Chrome 浏览器访问 [http://local.whistlejs.com](http://local.whistlejs.com/)，或者是请求没有代理到指定的 whistle，如何配置代理请参考 [安装启动](install.html)
+ 没有用 Chrome 浏览器访问 [http://local.whistlejs.com](http://local.whistlejs.com/)，或者是请求没有代理到指定的 whistle，如何配置代理请参考 [安装启动](#install)
 
 3. 手机或平板如何抓包请求？
 
- 需要配置代理，且可能要关闭防火墙或者设置运行远程访问本地指定端口，具体参考 [安装启动](install.html)
+ 需要配置代理，且可能要关闭防火墙或者设置运行远程访问本地指定端口，具体参考 [安装启动](#install)
 
 4. 为什么设置的规则对 https 请求不生效？
 
- 需要安装根证书及开启 https 拦截，具体参考 [https](webui/https.html)
+ 需要安装根证书及开启 https 拦截，具体参考 [https](#webui_https)
 
  PS: Firefox 自带根证书列表，系统根证书对 Firefox 不生效，需要对 Firefox 单独安装根证书。
 
@@ -401,7 +401,7 @@ PS: 如果配置完代理，手机无法访问，可能是 whistle 所在的电�
 
 6. 如何在一台机器同时启多个 whistle？
 
- 可以通过设置不同端口号及不同存储目录来启动不同 whistle 实例，具体参考 [安装启动](install.html)。
+ 可以通过设置不同端口号及不同存储目录来启动不同 whistle 实例，具体参考 [安装启动](#install)。
 
 7. 如何实现反向代理的功能？
 
@@ -424,18 +424,18 @@ PS：如果要用 IP 访问，可以采用 `http://127.0.0.1/-/xxx` 或 `http://
 
 8. 如何让 Rules 支持多选？
 
- 在 [Rules](webui/rules.html) 界面中打开 Settings 对话框，选中 `Allow multiple choice` 即可。
+ 在 [Rules](#webui_rules) 界面中打开 Settings 对话框，选中 `Allow multiple choice` 即可。
 
 9. 如何动态设置 Rules？
 
   whistle 支持以下两种方式动态设置：
 
-  - 通过 [dispatch](rules/dispatch.html) 根据请求信息修改请求 url 的参数改变 url，达到动态修改匹配规则的能力
-  - 通过 [插件方式](plugins/plugins.html) 的方式动态设置规则，这种方式更加直接，且功能更强大，基本上可以操作 whistle 的任何功能，且可以自定义协议功能
+  - 通过 [dispatch](#rules_dispatch) 根据请求信息修改请求 url 的参数改变 url，达到动态修改匹配规则的能力
+  - 通过 [插件方式](#plugins_plugins) 的方式动态设置规则，这种方式更加直接，且功能更强大，基本上可以操作 whistle 的任何功能，且可以自定义协议功能
 
 10. 如何过滤调部分规则？
 
- 某些情况下，需要把匹配到的某部分请求过滤掉，这个时候可以用 [filter](rules/filter.html) 来设置过滤 `pattern filter://xxx|yyy|zzz|...`，如果想过滤做本地替换时本地没有对应文件的请求可以用 [xfile](rules/rule/xfile.html)。
+ 某些情况下，需要把匹配到的某部分请求过滤掉，这个时候可以用 [filter](#rules_filter) 来设置过滤 `pattern filter://xxx|yyy|zzz|...`，如果想过滤做本地替换时本地没有对应文件的请求可以用 [xfile](#rules_rule_xfile)。
 
 11. 安装根证书时无法下载，检查下是否设置好代理。
 
@@ -450,9 +450,9 @@ PS：如果要用 IP 访问，可以采用 `http://127.0.0.1/-/xxx` 或 `http://
 
 # 匹配方式 {#pattern}
 
-> HTTPS、Websocket 需要 [开启 HTTPS 拦截](webui/https.html)，whistle 才能获取完整的请求 url，对这部分请求只有域名匹配能完整支持 (路径匹配只支持 `tunnel://host 或 tunnel://host:port`)，为了让匹配方式对所有请求都生效请先 [开启 HTTPS 拦截](webui/https.html)
+> HTTPS、Websocket 需要 [开启 HTTPS 拦截](#webui_https)，whistle 才能获取完整的请求 url，对这部分请求只有域名匹配能完整支持 (路径匹配只支持 `tunnel://host 或 tunnel://host:port`)，为了让匹配方式对所有请求都生效请先 [开启 HTTPS 拦截](#webui_https)
 
-whistle 对所有操作支持 ** 域名、路径、正则、精确匹配、通配符匹配、通配路径匹配 ** 六种种匹配方式 ([安装最新版本](update.html) 才能确保这些匹配方式都支持才支持)。
+whistle 对所有操作支持 ** 域名、路径、正则、精确匹配、通配符匹配、通配路径匹配 ** 六种种匹配方式 ([安装最新版本](#update) 才能确保这些匹配方式都支持才支持)。
 
 ### 域名匹配
 域名匹配可以匹配整个域名、限定域名的端口号、限定域名的请求协议，如果 operator-uri 不为请求路径，pattern 和 operator-uri 位置可以调换。
@@ -585,7 +585,7 @@ pattern 和 operator-uri 位置可以调换
 
 # 操作值 {#opvalue}
 
-whistle 的所有操作都可以通过配置实现，配置模式扩展于系统 hosts 配置模式 (`ip domain` 或组合模式 `ip domain1 domain2 domainN`)，具有更丰富的[匹配方式](pattern.html) 及更灵活的配置模式。whistle 的匹配顺序是从左到右，这与传统 hosts 从右到左的配置模式不同，但为了兼容传统 hosts 配置模式，除了 pattern 和 operator-uri 都可以为请求 url 外(这种情况 whistle 无法自动区分 pattern 和 operator-uri，只能按约定的顺序匹配)，其它情况 whistle 都支持配置两边的位置对调，即：`pattern operator-uri` 和 `operator-uri pattern` 等价。
+whistle 的所有操作都可以通过配置实现，配置模式扩展于系统 hosts 配置模式 (`ip domain` 或组合模式 `ip domain1 domain2 domainN`)，具有更丰富的[匹配方式](#pattern) 及更灵活的配置模式。whistle 的匹配顺序是从左到右，这与传统 hosts 从右到左的配置模式不同，但为了兼容传统 hosts 配置模式，除了 pattern 和 operator-uri 都可以为请求 url 外(这种情况 whistle 无法自动区分 pattern 和 operator-uri，只能按约定的顺序匹配)，其它情况 whistle 都支持配置两边的位置对调，即：`pattern operator-uri` 和 `operator-uri pattern` 等价。
 
 > whistle 跟传统 hosts 配置一样也采用 `#` 为注释符号
 
@@ -627,7 +627,7 @@ whistle 的所有操作都可以通过配置实现，配置模式扩展于系统
   # 这种情况下也支持一个操作对应多个 pattern
   operator-uri pattern1 pattern2 patternN
   ```
-其中，pattern 请参考：[匹配方式](pattern.html)
+其中，pattern 请参考：[匹配方式](#pattern)
 
 # 插件开发 {#plugins}
 
@@ -840,14 +840,126 @@ whistle 插件的每部分都可以独立存在，各个部分的关系及与 wh
 
 # 界面操作 {#webui}
 
+TODO
+# Network {#webui_network}
+
+TODO
+# Rules {#webui_rules}
+
+TODO
+# Values {#webui_values}
+
+TODO
+# Plugins {#webui_plugins}
+
+TODO
+# 常见应用 {#cases}
+
+
+TODO
+# mobile {#cases_mobile}
+
+TODO
+# WebSocket 代理 {#cases_websocket}
+
+TODO
+# Socket 调试 {#cases_socket}
+
+TODO
+# HTTP 代理 {#cases_http-proxy}
+
+TODO
+# 反向代理 {#cases_reverse-proxy}
+
+TODO
 # 用户反馈 {#feedback}
 
 1. 有问题请直接提 issue: [New issue](https://github.com/avwo/whistle/issues/new)
 2. 欢迎提 PR: [Pull requests](https://github.com/avwo/whistle/compare)
 3. 有什么问题也可以通过 QQ 群反馈: 462558941
 
+# 协议列表 {#rules}
 
-# host {#protocols_host}
+* [**host** (设置 host)](#rules_host)
+- [**rule** (设置响应规则)](#rules_rule)
+  * [** 请求替换 **](#rules_rule_replace)
+  * [**file** (替换本地文件)](#rules_rule_file)
+  * [**rawfile** (替换本地 http 响应内容格式的文件)](#rules_rule_rawfile)
+  * [**tpl** (替换本地目标文件，可用于模拟 jsonp 请求)](#rules_rule_tpl)
+  * [** 自定义 **](#rules_rule_custom)
+* [**weinre** (设置 weinre，调试手机页面)](#rules_weinre)
+* [**log** (打印网页 js 错误或者调试信息)](#rules_log)
+* [**proxy** (代理到其它 http 代理服务器)](#rules_proxy)
+* [**socks** (代理到其它 socks 代理服务器)](#rules_socks)
+* [**pac** (设置 pac 脚本)](#rules_pac)
+* [**filter** (过滤规则，隐藏请求等)](#rules_filter)
+* [**ignore** (忽略规则)](#rules_ignore)
+* [**enable** (设置 intercept，隐藏请求等)](#rules_enable)
+* [**disable** (禁用缓存、cookie 等)](#rules_disable)
+* [**delete** (删除指定的字段)](#rules_delete)
+* [**plugin** (通过插件获取请求状态及设置新规则)](#rules_plugin)
+* [**dispatch** (动态修改请求 url 的参数)](#rules_dispatch)
+* [**urlParams** (修改请求 url 的参数)](#rules_urlParams)
+* [**urlReplace** (通过正则或字符串替换请求 url，类似 str.replace)](#rules_urlReplace)
+* [**method** (修改请求方法)](#rules_method)
+* [**statusCode** (直接响应)](#rules_statusCode)
+* [**replaceStatus** (替换后台的响应状态码)](#rules_replaceStatus)
+* [**hostname** (修改请求头部的 host 字段)](#rules_hostname)
+* [**referer** (修改请求 referer)](#rules_referer)
+* [**accept** (修改请求头的 accept)](#rules_accept)
+* [**auth** (修改请求用户名密码)](#rules_auth)
+* [**etag** (修改请求头部的 etag)](#rules_etag)
+* [**ua** (修改请求 user-agent)](#rules_ua)
+* [**cache** (修改缓存策略)](#rules_cache)
+* [**redirect** (302 重定向)](#rules_redirect)
+* [**location** (设置响应头部的 location 字段)](#rules_location)
+* [**attachment** (设置下载头部)](#rules_attachment)
+* [**forwardedFor** (修改请求头 x-forwarded-for)](#rules_forwardedFor)
+* [**responseFor** (Network 上显示真实的服务器环境)](#rules_responseFor)
+* [**params** (修改请求参数)](#rules_params)
+* [**reqScript** (批量设置请求规则或通过脚本动态获取规则)](reqScript.md)
+* [**resScript** (批量设置响应规则或通过脚本动态获取规则)](resScript.md)
+* [**reqDelay** (延迟请求)](#rules_reqDelay)
+* [**resDelay** (延迟响应)](#rules_resDelay)
+* [**reqSpeed** (限制请求速度)](#rules_reqSpeed)
+* [**resSpeed** (限制响应速度)](#rules_resSpeed)
+* [**reqHeaders** (修改请求头)](#rules_reqHeaders)
+* [**resHeaders** (修改响应头)](#rules_resHeaders)
+* [**reqType** (修改请求类型)](#rules_reqType)
+* [**resType** (修改响应类型)](#rules_resType)
+* [**reqCharset** (修改请求的编码)](#rules_reqCharset)
+* [**resCharset** (修改响应的编码)](#rules_resCharset)
+* [**reqCookies** (修改请求 cookies)](#rules_reqCookies)
+* [**resCookies** (修改响应 cookies)](#rules_resCookies)
+* [**reqCors** (修改请求 cors)](#rules_reqCors)
+* [**resCors** (修改响应 cors)](#rules_resCors)
+* [**reqPrepend** (往请求内容前面添加数据)](#rules_reqPrepend)
+* [**resPrepend** (往响应内容前面添加数据)](#rules_resPrepend)
+* [**reqBody** (替换请求内容)](#rules_reqBody)
+* [**resBody** (替换响应内容)](#rules_resBody)
+* [**reqAppend** (往请求内容后面追加数据)](#rules_reqAppend)
+* [**resAppend** (往响应内容后面追加数据)](#rules_resAppend)
+* [**reqReplace** (通过正则或字符串替换请求文本内容，类似 str.replace)](#rules_reqReplace)
+* [**resReplace** (通过正则或字符串替换响应文本内容，类似 str.replace)](#rules_resReplace)
+* [**htmlPrepend**(往响应为 html 的内容前面添加数据)](htmlPrepend.md)
+* [**cssPrepend** (往响应为 html 或 css 的内容前面添加数据)](cssPrepend.md)
+* [**jsPrepend** (往响应为 html 或 js 的内容前面添加数据)](jsPrepend.md)
+* [**htmlBody**(替换响应为 html 的内容)](htmlBody.md)
+* [**cssBody** (替换响应为 html 或 css 的内容)](cssBody.md)
+* [**jsBody** (替换响应为 html 或 js 的内容)](jsBody.md)
+* [**htmlAppend**(往响应为 html 的内容前面数据)](htmlAppend.md)
+* [**cssAppend** (往响应为 html 或 css 的内容后面追加数据)](cssAppend.md)
+* [jsAppend** (往响应为 html 或 js 的内容后面追加数据)](jsAppend.md)
+* [**req** (修改请求属性)](#rules_req)
+* [**res** (修改响应属性)](#rules_res)
+* [**reqWrite** (将请求内容写入指定的文件)](#rules_reqWrite)
+* [**resWrite** (将响应内容写入指定的文件)](#rules_resWrite)
+* [**reqWriteRaw** (将请求的完整内容写入指定的文件)](#rules_reqWriteRaw)
+* [**resWriteRaw** (将响应的完整内容写入指定的文件)](#rules_resWriteRaw)
+* [**exportsUrl** (把请求的 url 列表按顺序导出到指定文件)](#rules_exportsUrl)
+* [**exports** (导出请求数据到指定文件)](#rules_exports)
+
+# host {#rules_host}
 
 whistle 不仅完全兼容操作系统的 hosts 配置模式，也支持域名、路径、正则三种匹配方式，而且支持配置端口号，配置模式：
 
@@ -858,7 +970,7 @@ whistle 不仅完全兼容操作系统的 hosts 配置模式，也支持域名�
 		# 组合模式
 		ip pattern1 pattern2 patternN
 
-	* 其中，pattern 可以为域名、路径、正则，具体参考 [匹配方式](../pattern.html)*
+	* 其中，pattern 可以为域名、路径、正则，具体参考 [匹配方式](#pattern)*
 
 2. whistle 还支持以下配置模式：
 
@@ -879,7 +991,7 @@ whistle 不仅完全兼容操作系统的 hosts 配置模式，也支持域名�
 		pattern ip1 operator-uri1 operator-uriN
 		host://ip:port pattern1 pattern2 patternN
 
-	* 其中，pattern 可以为域名、路径、正则，具体参考 [匹配方式](pattern.html)*
+	* 其中，pattern 可以为域名、路径、正则，具体参考 [匹配方式](#rules_pattern)*
 
 ### 例子：
 
@@ -907,13 +1019,22 @@ whistle 不仅完全兼容操作系统的 hosts 配置模式，也支持域名�
 	127.0.0.1:8080 $example.com/test # 等价于： $example.com/test 127.0.0.1：8080
 	127.0.0.1:8080 $http://example.com:5555/index.html $www.example.com:6666 $https://www.test.com/test
 
+# 响应规则列表 {#rules_rule}
 
+* [** 请求替换 **](#rules_rule_replace)
+* [**file** (替换本地文件)](#rules_rule_file)
+* [**xfile** (替换本地文件，如果本地文件不存在，则请求线上)](#rules_rule_xfile)
+* [**rawfile** (替换本地 http 响应内容格式的文件)](#rules_rule_rawfile)
+* [**xrawfile** (替换本地 http 响应内容格式的文件，如果本地文件不存在，则请求线上)](#rules_rule_rawfile)
+* [**tpl** (替换本地目标文件，可用于模拟 jsonp 请求)](#rules_rule_tpl)
+* [**xtpl** (同上，与 xfile 类似)](#rules_rule_xtpl)
+* [** 自定义 **](#rules_rule_custom)
 
-# 自定义规则 {#protocols_rule_custom}
+# 自定义规则 {#rules_rule_custom}
 
-whistle 提供了插件的方式扩展协议，具体参考：[插件开发](../../plugins.html)
+whistle 提供了插件的方式扩展协议，具体参考：[插件开发](#plugins)
 
-# file (xfile) {#protocols_rule_file}
+# file (xfile) {#rules_rule_file}
 
 __xfile 功能同 file 一样，xfile 和 file 的唯一区别是 file 找不到对应文件返回 404，而 xfile 则是继续请求线上资源。__
 
@@ -923,7 +1044,7 @@ __xfile 功能同 file 一样，xfile 和 file 的唯一区别是 file 找不到
 	# 也可以匹配一个文件或目录路径列表，whistle 会依次查找直到找到存在的文件
 	pattern file://path1|path2|pathN
 
-filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者本地文件，pattern 参见[匹配方式](../../pattern.html)，更多模式请参考[配置模式](../../mode.html)。
+filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者本地文件，pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)。
 
 如果 pattern 为域名或路径，whistle 会自动根据请求 url 后面剩余的路径跟 filepath 自动补全，即：
 
@@ -945,17 +1066,17 @@ filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者
 
 所有 www.ifeng.com 的请求都会先到目录或文件 `/User/xxx/test`，没有匹配的文件再到 `/User/xxx/test/index.html`
 
-# rawfile (xrawfile) {#protocols_rule_rawfile}
+# rawfile (xrawfile) {#rules_rule_rawfile}
 
 __xrawfile 功能同 rawfile 一样，和 rawfile 的唯一区别是 rawfile 找不到对应文件返回 404，而 xrawfile 则是继续请求线上资源。__
 
-替换本地 (目录下) 的 http 格式的文件 (可以与[resWriteRaw](resWriteRaw.html) 配合使用)，请求会自动补全路径，配置模式：
+替换本地 (目录下) 的 http 格式的文件 (可以与[resWriteRaw](#rules_rule_resWriteRaw) 配合使用)，请求会自动补全路径，配置模式：
 
 	pattern rawfile://filepath
 	# 也可以匹配一个文件或目录路径列表，whistle 会依次查找直到找到存在的文件
 	pattern rawfile://path1|path2|pathN
 
-filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者本地文件，pattern 参见[匹配方式](../../pattern.html)，更多模式请参考[配置模式](../../mode.html)。
+filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者本地文件，pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)。
 
 http 格式文件参考: [http 内容格式](http://www.cnblogs.com/kissdodog/archive/2013/01/11/2856335.html)
 
@@ -970,8 +1091,7 @@ http 格式文件参考: [http 内容格式](http://www.cnblogs.com/kissdodog/ar
 
 	test
 
-
-# 请求替换 {#protocols_rule_replace}
+# 请求替换 {#rules_rule_replace}
 
 把请求替换成请求其它 url，配置模式：
 
@@ -981,7 +1101,7 @@ http 格式文件参考: [http 内容格式](http://www.cnblogs.com/kissdodog/ar
 	# 自动补充协议(与请求的协议一样)
 	pattern host:port/xxx
 
-其中，pattern 参见[匹配方式](../../pattern.html)，更多模式请参考[配置模式](../../mode.html)。
+其中，pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)。
 
 例子：
 
@@ -993,12 +1113,12 @@ http 格式文件参考: [http 内容格式](http://www.cnblogs.com/kissdodog/ar
 
 		http://www.ifeng.com https://www.baidu.com
 
-# tpl (xtpl) {#protocols_rule_tpl}
+# tpl (xtpl) {#rules_rule_tpl}
 
 __xtpl 功能同 tpl 一样，和 tpl 的唯一区别是 tpl 找不到对应文件返回 404，而 xtpl 则是继续请求线上资源。__
 
 
-tpl 基本功能跟 [file](file.html) 一样可以做本地替换，但 tpl 内置了一个简单的模板引擎，可以把文件内容里面 `{name}` 替换请求参数对应的字段(如果不存在对应的自动则不会进行替换)，一般可用于 mock jsonp 的请求。
+tpl 基本功能跟 [file](#rules_rule_file) 一样可以做本地替换，但 tpl 内置了一个简单的模板引擎，可以把文件内容里面 `{name}` 替换请求参数对应的字段(如果不存在对应的自动则不会进行替换)，一般可用于 mock jsonp 的请求。
 
 配置模式：
 
@@ -1019,27 +1139,27 @@ test.json:
 
 请求 `http://www.test.com/test/xxx.jsonp?callback=imcallbackfn` 会返回 `imcallbackfn({ec: 0})`
 
-# xfile {#protocols_rule_xfile}
+# xfile {#rules_rule_xfile}
 
 __xfile 功能同 file 一样，xfile 和 file 的唯一区别是 file 找不到对应文件返回 404，而 xfile 则是继续请求线上资源。__
 
 
-用法参考 [file](file.html)
+用法参考 [file](#rules_rule_file)
 
-# xtpl {#protocols_rule_xtpl}
+# xtpl {#rules_rule_xtpl}
 
 __xtpl 功能同 tpl 一样，和 tpl 的唯一区别是 tpl 找不到对应文件返回 404，而 xtpl 则是继续请求线上资源。__
 
 
-用法参考 [tpl](tpl.html)
+用法参考 [tpl](#rules_rule_tpl)
 
-# accept {#protocols_accept}
+# accept {#rules_accept}
 
 修改请求头的 accept 字段，accept 字段主要告诉服务器该请求可以接受什么类型的数据，配置模式：
 
 	pattern accept://mime-type
 
-pattern 参见 [匹配方式](../pattern.html)，更多模式请参考 [配置模式](../mode.html)。
+pattern 参见 [匹配方式](#pattern)，更多模式请参考 [配置模式](#mode)。
 
 例子：
 
@@ -1047,8 +1167,7 @@ pattern 参见 [匹配方式](../pattern.html)，更多模式请参考 [配置�
 
 	www.test.com accept://image/*
 
-
-# attachment {#protocols_attachment}
+# attachment {#rules_attachment}
 
 设置响应头字段，让响应变成可以直接下载，配置模式：
 
@@ -1062,7 +1181,7 @@ filname 指定下载文件保存的名称，如果 filename 为空，则会自�
 
 访问 [www.ifeng.com](http://www.ifeng.com/) 时会自动下载该页面。
 
-# auth {#protocols_auth}
+# auth {#rules_auth}
 
 修改请求头的 `authorization` 字段，这个字段是网页 401 弹出的输入框中输入用户名和密码的 Base64 编码，配置模式:
 
@@ -1076,19 +1195,19 @@ filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者
 	username: xxx
 	password: ooo
 
-pattern 参见[匹配方式](../pattern.html)，更多模式请参考[配置模式](../mode.html)，json 格式参考[数据格式](../data.html)。
+pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)，json 格式参考[数据格式](#data)。
 
 例子：
 
 	www.ifeng.com auth://test:123
 
-# cache {#protocols_cache}
+# cache {#rules_cache}
 
 设置响应的缓存头，配置模式：
 
 	pattern cache://maxAge
 
-maxAge 为缓存的秒数，也可以代表一些关键字: `no`、`no-cache`、`no-store`，pattern 参见 [匹配方式](../pattern.html)，更多模式请参考 [配置模式](../mode.html)。
+maxAge 为缓存的秒数，也可以代表一些关键字: `no`、`no-cache`、`no-store`，pattern 参见 [匹配方式](#pattern)，更多模式请参考 [配置模式](#mode)。
 
 例子：
 
@@ -1099,17 +1218,16 @@ maxAge 为缓存的秒数，也可以代表一些关键字: `no`、`no-cache`、
 	www.ifeng.com cache://60
 
 
-如果如果后台返回 304 设置这个字段没有用，要防止后台返回 `304`，需要用 [disable](disable.html)://cache。
+如果如果后台返回 304 设置这个字段没有用，要防止后台返回 `304`，需要用 [disable](#rules_disable)://cache。
 
+# css {#rules_css}
+> `v1.8.0` 及以后的版本用 [cssAppend](#rules_cssAppend) 代替
 
-# css {#protocols_css}
-> `v1.8.0` 及以后的版本用 [cssAppend](./cssAppend.html) 代替
-
-往 content-type 为 html 或 css 的响应内容后面追加数据，如果是 html，则会自动加上 style 标签在追加到响应内容，如果是 css，则会自动追加到文本后面，这个与 [resAppend](resAppend.html) 的区别是 [resAppend](resAppend.html) 不区分类型，对所有匹配的响应都会追加指定的数据，配置模式：
+往 content-type 为 html 或 css 的响应内容后面追加数据，如果是 html，则会自动加上 style 标签在追加到响应内容，如果是 css，则会自动追加到文本后面，这个与 [resAppend](#rules_resAppend) 的区别是 [resAppend](#rules_resAppend) 不区分类型，对所有匹配的响应都会追加指定的数据，配置模式：
 
 	pattern css://filepath
 
-filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者本地文件(如：`e:\test\xxx`、`e:/test/xxx`、`/User/username/test/xxx` 等)，pattern 参见[匹配方式](../pattern.html)，更多模式请参考[配置模式](../mode.html)。
+filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者本地文件(如：`e:\test\xxx`、`e:/test/xxx`、`/User/username/test/xxx` 等)，pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)。
 
 例子：
 
@@ -1119,13 +1237,13 @@ test.css:
 
 	html, body {background: red!important;}
 
-# cssAppend {#protocols_cssAppend}
+# cssAppend {#rules_cssAppend}
 
-往 content-type 为 html 或 css 的响应内容后面追加数据，如果是 html，则会自动加上 style 标签在追加到响应内容，如果是 css，则会自动追加到文本后面，这个与 [resAppend](resAppend.html) 的区别是 [resAppend](resAppend.html) 不区分类型，对所有匹配的响应都会追加指定的数据，配置模式：
+往 content-type 为 html 或 css 的响应内容后面追加数据，如果是 html，则会自动加上 style 标签在追加到响应内容，如果是 css，则会自动追加到文本后面，这个与 [resAppend](#rules_resAppend) 的区别是 [resAppend](#rules_resAppend) 不区分类型，对所有匹配的响应都会追加指定的数据，配置模式：
 
 	pattern cssAppend://filepath
 
-filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者本地文件(如：`e:\test\xxx`、`e:/test/xxx`、`/User/username/test/xxx` 等)，pattern 参见[匹配方式](../pattern.html)，更多模式请参考[配置模式](../mode.html)。
+filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者本地文件(如：`e:\test\xxx`、`e:/test/xxx`、`/User/username/test/xxx` 等)，pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)。
 
 例子：
 
@@ -1135,13 +1253,13 @@ test.css:
 
 	html, body {background: red!important;}
 
-# cssBody {#protocols_cssBody}
+# cssBody {#rules_cssBody}
 
-替换 content-type 为 html 或 css 的响应内容，如果是 html，则会自动加上 style 标签在替换响应内容，如果是 css，则替换整个 css 文件，这个与 [resBody](resBody.html) 的区别是 [resBody](resBody.html) 不区分类型，对所有匹配的响应都会执行替换数据，配置模式：
+替换 content-type 为 html 或 css 的响应内容，如果是 html，则会自动加上 style 标签在替换响应内容，如果是 css，则替换整个 css 文件，这个与 [resBody](#rules_resBody) 的区别是 [resBody](#rules_resBody) 不区分类型，对所有匹配的响应都会执行替换数据，配置模式：
 
 	pattern cssBody://filepath
 
-filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者本地文件(如：`e:\test\xxx`、`e:/test/xxx`、`/User/username/test/xxx` 等)，pattern 参见[匹配方式](../pattern.html)，更多模式请参考[配置模式](../mode.html)。
+filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者本地文件(如：`e:\test\xxx`、`e:/test/xxx`、`/User/username/test/xxx` 等)，pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)。
 
 例子：
 
@@ -1151,13 +1269,13 @@ test.css:
 
 	html, body {background: red!important;}
 
-# cssPrepend {#protocols_cssPrepend}
+# cssPrepend {#rules_cssPrepend}
 
-往 content-type 为 html 或 css 的响应内容前面追加数据，如果是 html，则会自动加上 style 标签再追加到响应内容前面，如果是 css，则会自动追加到文本前面，这个与 [resPrepend](resPrepend.html) 的区别是 [resPrepend](resPrepend.html) 不区分类型，对所有匹配的响应都会追加指定的数据，配置模式：
+往 content-type 为 html 或 css 的响应内容前面追加数据，如果是 html，则会自动加上 style 标签再追加到响应内容前面，如果是 css，则会自动追加到文本前面，这个与 [resPrepend](#rules_resPrepend) 的区别是 [resPrepend](#rules_resPrepend) 不区分类型，对所有匹配的响应都会追加指定的数据，配置模式：
 
 	pattern cssPrepend://filepath
 
-filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者本地文件(如：`e:\test\xxx`、`e:/test/xxx`、`/User/username/test/xxx` 等)，pattern 参见[匹配方式](../pattern.html)，更多模式请参考[配置模式](../mode.html)。
+filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者本地文件(如：`e:\test\xxx`、`e:/test/xxx`、`/User/username/test/xxx` 等)，pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)。
 
 例子：
 
@@ -1167,13 +1285,13 @@ test.css:
 
 	html, body {background: red!important;}
 
-# delete {#protocols_delete}
+# delete {#rules_delete}
 
-删除指定的请求响应头字段，也可以通过 [reqHeaders](reqHeaders.html)、[resHeaders](resHeaders.html) 把字段设置为空字符串，配置模式：
+删除指定的请求响应头字段，也可以通过 [reqHeaders](#rules_reqHeaders)、[resHeaders](#rules_resHeaders) 把字段设置为空字符串，配置模式：
 
 	pattern delete://req.headers.xxx|req.headers.x22|res.headers.yyy|headers.zzz
 
-pattern 参见[匹配方式](../pattern.html)，更多模式请参考[配置模式](../mode.html)。
+pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)。
 
 其中：
 
@@ -1181,8 +1299,7 @@ pattern 参见[匹配方式](../pattern.html)，更多模式请参考[配置模�
 2. `res.headers.xxx`: 删除 res.headers 的 xxx 字段
 3. `headers.xxx`: 删除 res.headers&res.headers 的 xxx 字段
 
-
-# disable {#protocols_disable}
+# disable {#rules_disable}
 
 用来禁用 cache、cookie、ua、referer、csp、timeout、301、intercept、dnsCache、keepAlive 等 HTTP(s) 请求的一些基本功能，也可以用来阻止通过 HTTPS 代理的请求 `filter://tunnel`。
 
@@ -1190,7 +1307,7 @@ pattern 参见[匹配方式](../pattern.html)，更多模式请参考[配置模�
 
 	pattern disable://operator1|operator2|operatorN
 
-pattern 参见 [匹配方式](../pattern.html)，更多模式请参考 [配置模式](../mode.html)。
+pattern 参见 [匹配方式](#pattern)，更多模式请参考 [配置模式](#mode)。
 
 例子：
 
@@ -1238,7 +1355,7 @@ pattern 参见 [匹配方式](../pattern.html)，更多模式请参考 [配置�
 	# 也可以同时禁用多个
 	www.example.com disable://cache|cookie|ua|referer|csp|timeout|301|intercept|dnsCache|keepAlive
 
-# dispatch {#protocols_dispatch}
+# dispatch {#rules_dispatch}
 
 有时需要根据UA或其它请求头信息返回不同的数据，whistle用sandbox执行`dispatch`传人进来的脚本，`dispatch`关联的脚本在全局属性可以获取以下信息：
 
@@ -1264,7 +1381,7 @@ pattern 参见 [匹配方式](../pattern.html)，更多模式请参考 [配置�
 
 	pattern dispatch://filepath
 
-filepath为[Values](http://local.whistlejs.com/#values)里面的{key}或者本地js文件(如：`e:\test\xxx`、`e:/test/xxx`、`/User/username/test/xxx`等)，pattern参见[匹配方式](../pattern.html)，更多模式请参考[配置模式](../mode.html)。
+filepath为[Values](http://local.whistlejs.com/#values)里面的{key}或者本地js文件(如：`e:\test\xxx`、`e:/test/xxx`、`/User/username/test/xxx`等)，pattern参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)。
 
 例子：
 
@@ -1283,13 +1400,13 @@ dispatch.js:
 
 [www.ifeng.com](http://www.ifeng.com/)的请求都会在url加上请求参数`test=xxx`
 
-# enable {#protocols_enable}
+# enable {#rules_enable}
 
 通过配置开启指定的设置(https 拦截、隐藏请求)，配置模式(v1.2.5 及以上版本支持)：
 
 	pattern enable://https|intercept|hide|abort
 
-其中，`https` 或 `intercept` 表示拦截 pattern 匹配的 tunnel 请求 (如果是 https 或 wss 请求需要安装 whistle 的根证书：[点击这里](../webui/https.html)，拦截后可以查看 https 请求的具体内容)；`hide` 表示隐藏 pattern 匹配的所有请求，将不显示在[Network](../webui/network.html) 上；通过 `|` 可以同时设置多个操作。
+其中，`https` 或 `intercept` 表示拦截 pattern 匹配的 tunnel 请求 (如果是 https 或 wss 请求需要安装 whistle 的根证书：[点击这里](#webui_https)，拦截后可以查看 https 请求的具体内容)；`hide` 表示隐藏 pattern 匹配的所有请求，将不显示在[Network](#webui_network) 上；通过 `|` 可以同时设置多个操作。
 
 例子：
 
@@ -1302,13 +1419,13 @@ dispatch.js:
 	# abort 掉请求(v1.5.17+)
 	www.xiaoying.com enable://abort
 
-# etag {#protocols_etag}
+# etag {#rules_etag}
 
 修改请求头的 etag 字段，配置模式：
 
 	pattern etag://etagValue
 
-pattern 参见 [匹配方式](../pattern.html)，更多模式请参考 [配置模式](../mode.html)。
+pattern 参见 [匹配方式](#pattern)，更多模式请参考 [配置模式](#mode)。
 
 例子：
 
@@ -1318,8 +1435,7 @@ pattern 参见 [匹配方式](../pattern.html)，更多模式请参考 [配置�
 	# etag 修改为 xxx
 	www.ifeng.com etag://xxx
 
-
-# exports {#protocols_exports}
+# exports {#rules_exports}
 
 用于把请求的一些信息导出到指定文件 (如果该文件不存在，则会自动创建)，每个请会导出以下信息:
 
@@ -1351,7 +1467,7 @@ pattern 参见 [匹配方式](../pattern.html)，更多模式请参考 [配置�
 
 	pattern exports://filepath
 
-filepath 指本地文件路径，pattern 参见 [匹配方式](../pattern.html)，更多模式请参考 [配置模式](../mode.html)。
+filepath 指本地文件路径，pattern 参见 [匹配方式](#pattern)，更多模式请参考 [配置模式](#mode)。
 
 例子：
 
@@ -1359,14 +1475,13 @@ filepath 指本地文件路径，pattern 参见 [匹配方式](../pattern.html)�
 
 	/./ exports:///User/xxx/exports.txt
 
-
-# exportsUrl {#protocols_exportsUrl}
+# exportsUrl {#rules_exportsUrl}
 
 用于把请求的完整 url 列表按顺序导出到指定文件 (如果该文件不存在，则会自动创建)，配置模式：
 
 	pattern exportsUrl://filepath
 
-filepath 指本地文件路径，pattern 参见 [匹配方式](../pattern.html)，更多模式请参考 [配置模式](../mode.html)。
+filepath 指本地文件路径，pattern 参见 [匹配方式](#pattern)，更多模式请参考 [配置模式](#mode)。
 
 例子：
 
@@ -1374,7 +1489,7 @@ filepath 指本地文件路径，pattern 参见 [匹配方式](../pattern.html)�
 
 	/./ exportsUrl:///User/xxx/exports.txt
 
-# filter(=[ignore](ignore.html) + [enable](enable.html))  {#protocols_filter}
+# filter(=[ignore](#rules_ignore) + [enable](#rules_enable)) {#rules_filter}
 
 用于忽略指定配置的规则：
 
@@ -1394,41 +1509,39 @@ filepath 指本地文件路径，pattern 参见 [匹配方式](../pattern.html)�
 
 	pattern filetr://operator1|operator2|operatorN
 
-pattern 参见[匹配方式](../pattern.html)，更多模式请参考[配置模式](../mode.html)。
+pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)。
 
 例子：
 
-开启拦截 [www.baidu.com](http://www.baidu.com/) 的 HTTPS 及去除 [rule](rule.html) 配置
+开启拦截 [www.baidu.com](http://www.baidu.com/) 的 HTTPS 及去除 [rule](#rules_rule) 配置
 
 	www.baidu.com filter://https|rule
 	www.ifeng.com filter://hide|proxy|rule
 
 开启拦截 HTTPS 也可以通过界面上方的 Https 按钮来启用，filter 提供了一种可配置的方式，`filter://hide` 可以让 www.ifeng.com 的请求不在界面上显示，这个与界面上的 Filter 设置效果相反，可以配合使用。
 
-
-# forwardedFor {#protocols_forwardedFor}
+# forwardedFor {#rules_forwardedFor}
 
 修改请求头的 `x-forwarded-for` 字段 (`whistle >= v1.6.1`)，配置模式：
 
 	pattern forwardedFor://ip
 
-pattern 参见 [匹配方式](../pattern.html)，更多模式请参考 [配置模式](../mode.html)。
+pattern 参见 [匹配方式](#pattern)，更多模式请参考 [配置模式](#mode)。
 
 例子：
 
 	# 修改 www.ifeng.com 请求头的 `x-forwarded-for` 字段为 1.1.1.1
 	www.ifeng.com forwardedFor://1.1.1.1
 
+# hostname {#rules_hostname}
 
-# hostname {#protocols_hostname}
-
-修改请求头的 host 字段，后台 server 会根据请求头的 host 字段来判断请的域名，一般情况下无需修改采用默认的即可，但在调试阶段可能会涉及到 host 里面有端口的问题，则可以用 hostname 这个协议来去除端口 (最好的方式还是采用配置带端口号的 [host](host.html))。
+修改请求头的 host 字段，后台 server 会根据请求头的 host 字段来判断请的域名，一般情况下无需修改采用默认的即可，但在调试阶段可能会涉及到 host 里面有端口的问题，则可以用 hostname 这个协议来去除端口 (最好的方式还是采用配置带端口号的 [host](#rules_host))。
 
 配置模式:
 
 	pattern hostname://newHostname
 
-pattern 参见 [匹配方式](../pattern.html)，更多模式请参考 [配置模式](../mode.html)。
+pattern 参见 [匹配方式](#pattern)，更多模式请参考 [配置模式](#mode)。
 
 例子：
 
@@ -1436,15 +1549,15 @@ pattern 参见 [匹配方式](../pattern.html)，更多模式请参考 [配置�
 
 去掉 www.test.com:8888 所有请求头部 host 字段的端口号。
 
-# html {#protocols_html}
+# html {#rules_html}
 
-> `v1.8.0` 及以后使用 [jsAppend](./jsAppend.html) 代替
+> `v1.8.0` 及以后使用 [jsAppend](#rules_jsAppend) 代替
 
-往 content-type 为 html 的响应内容后面追加数据，这个与 [resAppend](resAppend.html) 的区别是 [resAppend](resAppend.html) 不区分类型，对所有匹配的响应都会追加指定的数据，配置模式：
+往 content-type 为 html 的响应内容后面追加数据，这个与 [resAppend](#rules_resAppend) 的区别是 [resAppend](#rules_resAppend) 不区分类型，对所有匹配的响应都会追加指定的数据，配置模式：
 
 	pattern html://filepath
 
-filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者本地文件(如：`e:\test\xxx`、`e:/test/xxx`、`/User/username/test/xxx` 等)，pattern 参见[匹配方式](../pattern.html)，更多模式请参考[配置模式](../mode.html)。
+filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者本地文件(如：`e:\test\xxx`、`e:/test/xxx`、`/User/username/test/xxx` 等)，pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)。
 
 例子：
 
@@ -1454,13 +1567,13 @@ test.html:
 
 	<iframe style="width: 100%; height: 600px;" src="http://www.aliexpress.com/"></iframe>
 
-# htmlAppend {#protocols_htmlAppend}
+# htmlAppend {#rules_htmlAppend}
 
-往 content-type 为 html 的响应内容后面追加数据，这个与 [resAppend](resAppend.html) 的区别是 [resAppend](resAppend.html) 不区分类型，对所有匹配的响应都会追加指定的数据，配置模式：
+往 content-type 为 html 的响应内容后面追加数据，这个与 [resAppend](#rules_resAppend) 的区别是 [resAppend](#rules_resAppend) 不区分类型，对所有匹配的响应都会追加指定的数据，配置模式：
 
 	pattern htmlAppend://filepath
 
-filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者本地文件(如：`e:\test\xxx`、`e:/test/xxx`、`/User/username/test/xxx` 等)，pattern 参见[匹配方式](../pattern.html)，更多模式请参考[配置模式](../mode.html)。
+filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者本地文件(如：`e:\test\xxx`、`e:/test/xxx`、`/User/username/test/xxx` 等)，pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)。
 
 例子：
 
@@ -1470,13 +1583,13 @@ test.html:
 
 	<iframe style="width: 100%; height: 600px;" src="http://www.aliexpress.com/"></iframe>
 
-# htmlBody {#protocols_htmlBody}
+# htmlBody {#rules_htmlBody}
 
-替换 content-type 为 html 的响应内容，这个与 [resBody](resBody.html) 的区别是 [resBody](resBody.html) 不区分类型，对所有匹配的响应都会替换，配置模式：
+替换 content-type 为 html 的响应内容，这个与 [resBody](#rules_resBody) 的区别是 [resBody](#rules_resBody) 不区分类型，对所有匹配的响应都会替换，配置模式：
 
 	pattern htmlBody://filepath
 
-filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者本地文件(如：`e:\test\xxx`、`e:/test/xxx`、`/User/username/test/xxx` 等)，pattern 参见[匹配方式](../pattern.html)，更多模式请参考[配置模式](../mode.html)。
+filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者本地文件(如：`e:\test\xxx`、`e:/test/xxx`、`/User/username/test/xxx` 等)，pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)。
 
 例子：
 
@@ -1486,13 +1599,13 @@ test.html:
 
 	<iframe style="width: 100%; height: 600px;" src="http://www.aliexpress.com/"></iframe>
 
-# htmlPrepend {#protocols_htmlPrepend}
+# htmlPrepend {#rules_htmlPrepend}
 
-往 content-type 为 html 的响应内容前面添加数据，这个与 [resPrepend](resPrepend.html) 的区别是 [resPrepend](resPrepend.html) 不区分类型，对所有匹配的响应都会在前面添加指定的数据，配置模式：
+往 content-type 为 html 的响应内容前面添加数据，这个与 [resPrepend](#rules_resPrepend) 的区别是 [resPrepend](#rules_resPrepend) 不区分类型，对所有匹配的响应都会在前面添加指定的数据，配置模式：
 
 	pattern htmlPrepend://filepath
 
-filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者本地文件(如：`e:\test\xxx`、`e:/test/xxx`、`/User/username/test/xxx` 等)，pattern 参见[匹配方式](../pattern.html)，更多模式请参考[配置模式](../mode.html)。
+filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者本地文件(如：`e:\test\xxx`、`e:/test/xxx`、`/User/username/test/xxx` 等)，pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)。
 
 例子：
 
@@ -1502,7 +1615,7 @@ test.html:
 
 	<iframe style="width: 100%; height: 600px;" src="http://www.aliexpress.com/"></iframe>
 
-# ignore {#protocols_ignore}
+# ignore {#rules_ignore}
 
 忽略 (过滤) 指定的规则设置，配置模式(v1.2.5 及以上版本支持)：
 
@@ -1525,15 +1638,15 @@ test.html:
 	www.qq.com 127.0.0.1
 	www.qq.com ignore://host
 
-# js {#protocols_js}
+# js {#rules_js}
 
-> `v1.8.0` 及以后的版本用 [jsAppend](./jsAppend.html) 代替
+> `v1.8.0` 及以后的版本用 [jsAppend](#rules_jsAppend) 代替
 
-往 content-type 为 html 或 js 的响应内容后面追加数据，如果是 html，则会自动加上 script 标签在追加到响应内容，如果是 js，则会自动追加到 js 文本后面，这个与 [resAppend](resAppend.html) 的区别是 [resAppend](resAppend.html) 不区分类型，对所有匹配的响应都会追加指定的数据，配置模式：
+往 content-type 为 html 或 js 的响应内容后面追加数据，如果是 html，则会自动加上 script 标签在追加到响应内容，如果是 js，则会自动追加到 js 文本后面，这个与 [resAppend](#rules_resAppend) 的区别是 [resAppend](#rules_resAppend) 不区分类型，对所有匹配的响应都会追加指定的数据，配置模式：
 
 	pattern js://filepath
 
-filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者本地文件(如：`e:\test\xxx`、`e:/test/xxx`、`/User/username/test/xxx` 等)，pattern 参见[匹配方式](../pattern.html)，更多模式请参考[配置模式](../mode.html)。
+filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者本地文件(如：`e:\test\xxx`、`e:/test/xxx`、`/User/username/test/xxx` 等)，pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)。
 
 例子：
 
@@ -1543,13 +1656,13 @@ test.js:
 
 	alert(2);
 
-# js {#protocols_jsAppend}
+# js {#rules_jsAppend}
 
-往 content-type 为 html 或 js 的响应内容后面追加数据，如果是 html，则会自动加上 script 标签在追加到响应内容，如果是 js，则会自动追加到 js 文本后面，这个与 [resAppend](resAppend.html) 的区别是 [resAppend](resAppend.html) 不区分类型，对所有匹配的响应都会追加指定的数据，配置模式：
+往 content-type 为 html 或 js 的响应内容后面追加数据，如果是 html，则会自动加上 script 标签在追加到响应内容，如果是 js，则会自动追加到 js 文本后面，这个与 [resAppend](#rules_resAppend) 的区别是 [resAppend](#rules_resAppend) 不区分类型，对所有匹配的响应都会追加指定的数据，配置模式：
 
 	pattern js://filepath
 
-filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者本地文件(如：`e:\test\xxx`、`e:/test/xxx`、`/User/username/test/xxx` 等)，pattern 参见[匹配方式](../pattern.html)，更多模式请参考[配置模式](../mode.html)。
+filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者本地文件(如：`e:\test\xxx`、`e:/test/xxx`、`/User/username/test/xxx` 等)，pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)。
 
 例子：
 
@@ -1559,13 +1672,13 @@ test.js:
 
 	alert(2);
 
-# jsBody {#protocols_jsBody}
+# jsBody {#rules_jsBody}
 
-替换往 content-type 为 html 或 js 的响应内容，如果是 html，则会自动加上 script 标签再替换响应内容，如果是 js，则会自动替换整个 js 文件，这个与 [resBody](resBody.html) 的区别是 [resAppend](resBody.html) 不区分类型，对所有匹配的响应都会追加指定的数据，配置模式：
+替换往 content-type 为 html 或 js 的响应内容，如果是 html，则会自动加上 script 标签再替换响应内容，如果是 js，则会自动替换整个 js 文件，这个与 [resBody](#rules_resBody) 的区别是 [resAppend](#rules_resBody) 不区分类型，对所有匹配的响应都会追加指定的数据，配置模式：
 
 	pattern jsBody://filepath
 
-filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者本地文件(如：`e:\test\xxx`、`e:/test/xxx`、`/User/username/test/xxx` 等)，pattern 参见[匹配方式](../pattern.html)，更多模式请参考[配置模式](../mode.html)。
+filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者本地文件(如：`e:\test\xxx`、`e:/test/xxx`、`/User/username/test/xxx` 等)，pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)。
 
 例子：
 
@@ -1575,13 +1688,13 @@ test.js:
 
 	alert(2);
 
-# jsPrepend {#protocols_jsPrepend}
+# jsPrepend {#rules_jsPrepend}
 
-往 content-type 为 html 或 js 的响应内容前面添加数据，如果是 html，则会自动加上 script 标签再添加到响应内容前面，如果是 js，则会自动添加到响应内容前面，这个与 [jsPrepend](jsPrepend.html) 的区别是 [jsPrepend](jsPrepend.html) 不区分类型，对所有匹配的响应都会追加指定的数据，配置模式：
+往 content-type 为 html 或 js 的响应内容前面添加数据，如果是 html，则会自动加上 script 标签再添加到响应内容前面，如果是 js，则会自动添加到响应内容前面，这个与 [jsPrepend](#rules_jsPrepend) 的区别是 [jsPrepend](#rules_jsPrepend) 不区分类型，对所有匹配的响应都会追加指定的数据，配置模式：
 
 	pattern jsPrepend://filepath
 
-filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者本地文件(如：`e:\test\xxx`、`e:/test/xxx`、`/User/username/test/xxx` 等)，pattern 参见[匹配方式](../pattern.html)，更多模式请参考[配置模式](../mode.html)。
+filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者本地文件(如：`e:\test\xxx`、`e:/test/xxx`、`/User/username/test/xxx` 等)，pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)。
 
 例子：
 
@@ -1591,7 +1704,7 @@ test.js:
 
 	alert(2);
 
-# log {#protocols_log}
+# log {#rules_log}
 
 可以用来自动监控 html 页面或 js 文件出现的错误及显示 console.xxx 打印出来的信息，这些错误及日志会自动打印在 whistle 界面的 log 平台，还可以自动嵌入自定义的脚本调试页面。
 
@@ -1601,7 +1714,7 @@ test.js:
 
 	pattern log://filepath
 
-filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者本地文件的 js 脚本(如：`e:\test\xxx`、`e:/test/xxx`、`/User/username/test/xxx` 等)，pattern 参见[匹配方式](../pattern.html)，更多模式请参考[配置模式](../mode.html)。
+filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者本地文件的 js 脚本(如：`e:\test\xxx`、`e:/test/xxx`、`/User/username/test/xxx` 等)，pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)。
 
 例子：
 
@@ -1611,31 +1724,31 @@ filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者
 
 	console.log(1, 2, 3, {abc: 123});
 
-# method {#protocols_method}
+# method {#rules_method}
 
 修改请求方法，配置模式：
 
 	pattern method://newMethod
 
-pattern 参见 [匹配方式](../pattern.html)，更多模式请参考 [配置模式](../mode.html)。
+pattern 参见 [匹配方式](#pattern)，更多模式请参考 [配置模式](#mode)。
 
 例子：
 
 	www.ifeng.com method://post
 
-# pac {#protocols_pac}
+# pac {#rules_pac}
 
 设置 pac 脚本，配置模式：
 
 	pattern pac://filepath
 
-filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者本地文件 (如：`e:\test\xxx`、`e:/test/xxx`、`/User/username/test/xxx` 等) 或 http(s)链接，pattern 参见[匹配方式](../pattern.html)，更多模式请参考[配置模式](../mode.html)。
+filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者本地文件 (如：`e:\test\xxx`、`e:/test/xxx`、`/User/username/test/xxx` 等) 或 http(s)链接，pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)。
 
 例子：
 
 	/./ pac://https://raw.githubusercontent.com/imweb/node-pac/master/test/scripts/normal.pac
 
-# params {#protocols_params}
+# params {#rules_params}
 
 修改请求参数或表单参数，配置模式：
 
@@ -1647,7 +1760,7 @@ filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者
 	field2: value2
 	filedN: valueN
 
-pattern 参见[匹配方式](../pattern.html)，更多模式请参考[配置模式](../mode.html)，json 格式参考[数据格式](../data.html)。
+pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)，json 格式参考[数据格式](#data)。
 
 params 的作用分三种情况：
 
@@ -1676,19 +1789,17 @@ params 的作用分三种情况：
 
 	www.ifeng.com params://(test=123)
 
-括号的写法见：[Rules 的特殊操作符({}、()、<>)](../webui/rules.html)
+括号的写法见：[Rules 的特殊操作符({}、()、<>)](#webui_rules)
 
+# plugin {#rules_plugin}
 
-
-# plugin {#protocols_plugin}
-
-从 [插件开发](../plugins.html) 里面可知，插件里面涉及 `uiServer`，`statusServer`，`rulesServer`，`server`，`resRulesServer` 共 5 个内部功能不同的 server，这几个 server 都是可选的；如果存在，插件会把匹配的请求按给定方式传给对应的 server，并根据 server 响应内容做相应的处理，如何把请求转发到插件的各个 server？一种方式是直接根据插件的名称设置匹配，比如插件 `whistle.abc`：
+从 [插件开发](#plugins) 里面可知，插件里面涉及 `uiServer`，`statusServer`，`rulesServer`，`server`，`resRulesServer` 共 5 个内部功能不同的 server，这几个 server 都是可选的；如果存在，插件会把匹配的请求按给定方式传给对应的 server，并根据 server 响应内容做相应的处理，如何把请求转发到插件的各个 server？一种方式是直接根据插件的名称设置匹配，比如插件 `whistle.abc`：
 
 	pattern abc://value
 
-这样所有匹配 `pattern` 的请求都会访问插件里面的内置 server，这种配置方式比较简单直接，且默认会把请求转发给其中 `server` 处理(除非在 `rulesServer` 里面设置了[filter://rule](filter.html))，这种设置方式只能满足要么插件做转发，要么通过 `rulesServer` 动态设置的规则来做处理。
+这样所有匹配 `pattern` 的请求都会访问插件里面的内置 server，这种配置方式比较简单直接，且默认会把请求转发给其中 `server` 处理(除非在 `rulesServer` 里面设置了[filter://rule](#rules_filter))，这种设置方式只能满足要么插件做转发，要么通过 `rulesServer` 动态设置的规则来做处理。
 
-有些情况，我们需要动态判断请求是否要有插件来做转发，还是直接根据用户设置的 [rule](rule/index.html) 来处理，这种情况需要用到 plugin 这个协议：
+有些情况，我们需要动态判断请求是否要有插件来做转发，还是直接根据用户设置的 [rule](#rules_rule) 来处理，这种情况需要用到 plugin 这个协议：
 
 	pattern plugin://name
 	pattern plugin://name(value)
@@ -1696,7 +1807,7 @@ params 的作用分三种情况：
 
 plugin 支持上述 3 种配置模式(位置可以调换)，匹配规则的请求默认只会请求 `statusServer`，`rulesServer`，`resRulesServer`，用户可以在这 3 个 server 里面获取请求响应信息或动态设置新规则等等。
 
-# proxy {#protocols_proxy}
+# proxy {#rules_proxy}
 
 设置 http 代理，配置模式：
 
@@ -1705,7 +1816,7 @@ plugin 支持上述 3 种配置模式(位置可以调换)，匹配规则的请�
 	# 加用户名密码
 	pattern proxy://username:password@ip:port
 
-pattern 参见 [匹配方式](../pattern.html)，更多模式请参考 [配置模式](../mode.html)。
+pattern 参见 [匹配方式](#pattern)，更多模式请参考 [配置模式](#mode)。
 
 
 例子：
@@ -1715,26 +1826,26 @@ pattern 参见 [匹配方式](../pattern.html)，更多模式请参考 [配置�
 	/./ proxy://127.0.0.1:8888
 	www.facebook.com proxy://test:123@127.0.0.1:8888
 
-# redirect {#protocols_redirect}
+# redirect {#rules_redirect}
 
 设置 302 调整，配置模式：
 
 	pattern redirect://jumpUrl
 
-jumpUrl 为请求要 302 跳转的目标 url，pattern 参见 [匹配方式](../pattern.html)，更多模式请参考 [配置模式](../mode.html)。
+jumpUrl 为请求要 302 跳转的目标 url，pattern 参见 [匹配方式](#pattern)，更多模式请参考 [配置模式](#mode)。
 
 
 例子：
 
 	www.ifeng.com redirect://http://www.aliexpress.com/
 
-# referer {#protocols_referer}
+# referer {#rules_referer}
 
 修改请求头的 referer 字段，有些服务器会校验请求头的 referer 字段，这个协议可以用来绕过这个检测或者测试后台的功能，配置模式：
 
 	pattern referer://url
 
-pattern 参见 [匹配方式](../pattern.html)，更多模式请参考 [配置模式](../mode.html)。
+pattern 参见 [匹配方式](#pattern)，更多模式请参考 [配置模式](#mode)。
 
 例子：
 
@@ -1744,20 +1855,20 @@ pattern 参见 [匹配方式](../pattern.html)，更多模式请参考 [配置�
 
 把 www.aliexpress.com 域名下的请求都加上 `http://www.aliexpress.com` 这个 referer。
 
-# replaceStatus {#protocols_replaceStatus}
+# replaceStatus {#rules_replaceStatus}
 
-替换响应的状态码 (状态码范围 100~999)，这个与[statusCode](statusCode.html) 的区别是，replaceStatus 是请求响应后再修改状态码，而后者的请求不会发出去，设置完状态码直接返回，配置模式：
+替换响应的状态码 (状态码范围 100~999)，这个与[statusCode](#rules_statusCode) 的区别是，replaceStatus 是请求响应后再修改状态码，而后者的请求不会发出去，设置完状态码直接返回，配置模式：
 
 	pattern replaceStatus://code
 
-其中：code >= 100 && code <= 999，pattern 参见[匹配方式](../pattern.html)，更多模式请参考[配置模式](../mode.html)。
+其中：code >= 100 && code <= 999，pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)。
 
 
 例子：
 
 	www.ifeng.com replaceStatus://500
 
-# req {#protocols_req}
+# req {#rules_req}
 
 > 不推荐使用该协议，为方便使用，whistle 已将此协议的功能拆分成多个协议，具体参见其它协议
 
@@ -1784,7 +1895,7 @@ params 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者�
 	    "charset": "utf8" // 请求内容编码
 	}
 
-pattern 参见[匹配方式](../pattern.html)，更多模式请参考[配置模式](../mode.html)。
+pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)。
 
 例子：
 
@@ -1801,8 +1912,7 @@ Values 的 `test-req`:
 	    }
     }
 
-
-# reqAppend {#protocols_reqAppend}
+# reqAppend {#rules_reqAppend}
 
 把指定的内容追加到请求内容后面(GET 等请求没有内容无法追加)，配置模式：
 
@@ -1812,7 +1922,7 @@ filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者
 
 	Append body
 
-pattern 参见[匹配方式](../pattern.html)，更多模式请参考[配置模式](../mode.html)。
+pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)。
 
 例子：
 
@@ -1823,7 +1933,7 @@ test-reqAppend.html:
 
 	Append body
 
-# reqBody {#protocols_reqBody}
+# reqBody {#rules_reqBody}
 
 把指定的内容替换请求内容(GET 等请求没有内容没有替换一说)，配置模式：
 
@@ -1833,7 +1943,7 @@ filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者
 
 	Body body
 
-pattern 参见[匹配方式](../pattern.html)，更多模式请参考[配置模式](../mode.html)。
+pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)。
 
 例子：
 
@@ -1844,19 +1954,19 @@ test-reqBody.html:
 
 	Body body
 
-# reqCharset {#protocols_reqCharset}
+# reqCharset {#rules_reqCharset}
 
 修改请求头 `content-type` 的 charset，配置模式：
 
 	pattern reqCharset://charset
 
-charset 可以为 `utf8`、`gbk` 等等字符编码，pattern 参见 [匹配方式](../pattern.html)，更多模式请参考 [配置模式](../mode.html)
+charset 可以为 `utf8`、`gbk` 等等字符编码，pattern 参见 [匹配方式](#pattern)，更多模式请参考 [配置模式](#mode)
 
 例子：
 
 	www.ifeng.com reqCharset://utf8
 
-# reqCookies {#protocols_reqCookies}
+# reqCookies {#rules_reqCookies}
 
 修改请求的 cookie，配置模式：
 
@@ -1868,7 +1978,7 @@ filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者
 	key2: value2
 	keyN: valueN
 
-pattern 参见[匹配方式](../pattern.html)，更多模式请参考[配置模式](../mode.html)，json 格式参考[数据格式](../data.html)。
+pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)，json 格式参考[数据格式](#data)。
 
 例子：
 
@@ -1880,8 +1990,7 @@ test-reqCookies.json:
 	test: 123
 	key: value
 
-
-# reqCors {#protocols_reqCors}
+# reqCors {#rules_reqCors}
 
 修改请求的[cors](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Access_control_CORS)，配置模式：
 
@@ -1893,7 +2002,7 @@ filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者
 	method: POST
 	headers: x-test
 
-pattern 参见[匹配方式](../pattern.html)，更多模式请参考[配置模式](../mode.html)，json 格式参考[数据格式](../data.html)。
+pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)，json 格式参考[数据格式](#data)。
 
 例子：
 
@@ -1906,19 +2015,19 @@ test-reqCors.json:
 	method: POST
 	headers: x-test
 
-# reqDelay {#protocols_reqDelay}
+# reqDelay {#rules_reqDelay}
 
 设置延迟请求的时间 (单位：毫秒)，配置模式：
 
 	pattern reqDelay://timeMS
 
-pattern 参见 [匹配方式](../pattern.html)，更多模式请参考 [配置模式](../mode.html)。
+pattern 参见 [匹配方式](#pattern)，更多模式请参考 [配置模式](#mode)。
 
 例子：
 
 	www.ifeng.com reqDelay://3000
 
-# reqHeaders {#protocols_reqHeaders}
+# reqHeaders {#rules_reqHeaders}
 
 修改请求头，配置模式：
 
@@ -1930,7 +2039,7 @@ filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者
 	x-test2: value2
 	x-testN: valueN
 
-pattern 参见[匹配方式](../pattern.html)，更多模式请参考[配置模式](../mode.html)，json 格式参考[数据格式](../data.html)。
+pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)，json 格式参考[数据格式](#data)。
 
 例子：
 
@@ -1943,7 +2052,7 @@ test-reqHeaders.json:
 	x-test2: value2
 	x-testN: valueN
 
-# reqPrepend {#protocols_reqPrepend}
+# reqPrepend {#rules_reqPrepend}
 
 把指定的内容添加到请求内容前面(GET 等请求没有内容无法添加)，配置模式：
 
@@ -1953,7 +2062,7 @@ filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者
 
 	Prepend body
 
-pattern 参见[匹配方式](../pattern.html)，更多模式请参考[配置模式](../mode.html)。
+pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)。
 
 例子：
 
@@ -1964,7 +2073,7 @@ test-reqPrepend.html:
 
 	Prepend body
 
-# reqReplace {#protocols_reqReplace}
+# reqReplace {#rules_reqReplace}
 
 类似 js 字符串的 replace 方法，利用正则或字符串来匹配替换请求文本内容请求的 content-type 必须为表单 (application/x-www-form-urlencoded) 或其它文本类型：urlencoded、html、json、xml、text 等)，配置模式：
 
@@ -1975,7 +2084,7 @@ filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者
 	/user=([^&])/ig: user=$1$1
 	str: replacement
 
-pattern 参见[匹配方式](../pattern.html)，更多模式请参考[配置模式](../mode.html)，json 格式参考[数据格式](../data.html)。
+pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)，json 格式参考[数据格式](#data)。
 
 例子：
 
@@ -1987,13 +2096,13 @@ test-reqReplace.json:
 	/user=([^&])/ig: user=$1$1
 	str: replacement
 
-# reqScript {#protocols_reqScript}
+# reqScript {#rules_reqScript}
 
 给匹配的请求批量设置规则，或者通过脚本动态设置规则，配置模式：
 
 	pattern reqScript://filepath
 
-filepath为[Values](http://local.whistlejs.com/#values)里面的{key}或者本地js文件(如：`e:\test\xxx`、`e:/test/xxx`、`/User/username/test/xxx`等)，pattern参见[匹配方式](../pattern.html)，更多模式请参考[配置模式](../mode.html)。
+filepath为[Values](http://local.whistlejs.com/#values)里面的{key}或者本地js文件(如：`e:\test\xxx`、`e:/test/xxx`、`/User/username/test/xxx`等)，pattern参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)。
 
 filepath指定的文本可以为一组规则列表，也可以一个js脚本通过判断url、method、clientIp、headers, body动态设置规则：
 
@@ -2059,25 +2168,25 @@ reqScript.js:
 		// rules.push('/./ ' + newUrl);
 	}
 
-# reqSpeed {#protocols_reqSpeed}
+# reqSpeed {#rules_reqSpeed}
 
 设置请求速度 (单位：kb/s，千比特 / 每秒)，配置模式：
 
 	pattern reqSpeed://kbs
 
-pattern 参见 [匹配方式](../pattern.html)，更多模式请参考 [配置模式](../mode.html)。
+pattern 参见 [匹配方式](#pattern)，更多模式请参考 [配置模式](#mode)。
 
 例子：
 
 	www.ifeng.com reqSpeed://3
 
-# reqType {#protocols_reqType}
+# reqType {#rules_reqType}
 
 修改请求头的 `content-type`，配置模式：
 
 	pattern reqType://mimeType
 
-pattern 参见 [匹配方式](../pattern.html)，更多模式请参考 [配置模式](../mode.html)，mimeType 为新的 `content-type`，如：`text/plain`、`text/html`、`image/png` 等等，还有一些关键字，whistle 会自动把它转成对应的 type：
+pattern 参见 [匹配方式](#pattern)，更多模式请参考 [配置模式](#mode)，mimeType 为新的 `content-type`，如：`text/plain`、`text/html`、`image/png` 等等，还有一些关键字，whistle 会自动把它转成对应的 type：
 
 	urlencoded: application/x-www-form-urlencoded
 	form: application/x-www-form-urlencoded
@@ -2092,14 +2201,13 @@ pattern 参见 [匹配方式](../pattern.html)，更多模式请参考 [配置�
 
 	www.ifeng.com reqType://text
 
-
-# reqWrite {#protocols_reqWrite}
+# reqWrite {#rules_reqWrite}
 
 将请求的内容 (如果请求方法允许携带内容) 写入的指定的文件夹或文件；whistle 会根据请求的 url 和配置自动拼接成路径，且 whistle 不会覆盖已存在的文件，配置模式：
 
 	pattern reqWrite://filepath
 
-filepath 为本地目录或文件，pattern 参见[匹配方式](../pattern.html)，更多模式请参考[配置模式](../mode.html)。
+filepath 为本地目录或文件，pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)。
 
 例子：
 
@@ -2107,14 +2215,13 @@ filepath 为本地目录或文件，pattern 参见[匹配方式](../pattern.html
 	/^http:\/\/www.ifeng.com\/$/ reqWrite:///User/test/index.html
 	www.ifeng.com reqWrite:///User/test
 
-
-# reqWriteRaw {#protocols_reqWriteRaw}
+# reqWriteRaw {#rules_reqWriteRaw}
 
 将请求的完整内容 (包括请求方法、路径、协议、请求头、内容) 写入的指定的文件夹或文件；whistle 会根据请求的 url 和配置自动拼接成路径，且 whistle 不会覆盖已存在的文件，配置模式：
 
 	pattern reqWriteRaw://filepath
 
-filepath 为本地目录或文件，pattern 参见[匹配方式](../pattern.html)，更多模式请参考[配置模式](../mode.html)。
+filepath 为本地目录或文件，pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)。
 
 例子：
 
@@ -2122,8 +2229,7 @@ filepath 为本地目录或文件，pattern 参见[匹配方式](../pattern.html
 	/^http:\/\/www.ifeng.com\/$/ reqWriteRaw:///User/test/index.html
 	www.ifeng.com reqWriteRaw:///User/test
 
-
-# res {#protocols_res}
+# res {#rules_res}
 
 > 不推荐使用该协议，为方便使用，whistle 已将此协议的功能拆分成多个协议，具体参见其它协议
 
@@ -2147,7 +2253,7 @@ params 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者�
 	    "speed": 20 // 设置响应速度(单位：kb/s，千比特 / 每秒)
 	}
 
-pattern 参见[匹配方式](../pattern.html)，更多模式请参考[配置模式](../mode.html)。
+pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)。
 
 例子：
 
@@ -2164,8 +2270,7 @@ Values 的 `test-res`:
 	    }
     }
 
-
-# resAppend {#protocols_resAppend}
+# resAppend {#rules_resAppend}
 
 把指定的内容追加到响应内容后面(304 等响应没有内容无法追加)，配置模式：
 
@@ -2175,7 +2280,7 @@ filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者
 
 	Append body
 
-pattern 参见[匹配方式](../pattern.html)，更多模式请参考[配置模式](../mode.html)。
+pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)。
 
 例子：
 
@@ -2186,7 +2291,7 @@ test-resAppend.html:
 
 	Append body
 
-# resBody {#protocols_resBody}
+# resBody {#rules_resBody}
 
 把指定的内容替换响应内容(304 等响应没有内容无法替换)，配置模式：
 
@@ -2196,7 +2301,7 @@ filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者
 
 	Body body
 
-pattern 参见[匹配方式](../pattern.html)，更多模式请参考[配置模式](../mode.html)。
+pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)。
 
 例子：
 
@@ -2207,19 +2312,19 @@ test-resBody.html:
 
 	Body body
 
-# resCharset {#protocols_resCharset}
+# resCharset {#rules_resCharset}
 
 修改响应头 `content-type` 的 charset，配置模式：
 
 	pattern resCharset://charset
 
-charset 可以为 `utf8`、`gbk` 等等字符编码，pattern 参见 [匹配方式](../pattern.html)，更多模式请参考 [配置模式](../mode.html)
+charset 可以为 `utf8`、`gbk` 等等字符编码，pattern 参见 [匹配方式](#pattern)，更多模式请参考 [配置模式](#mode)
 
 例子：
 
 	www.ifeng.com resCharset://utf8
 
-# resCookies {#protocols_resCookies}
+# resCookies {#rules_resCookies}
 
 修改请求的 cookie，配置模式：
 
@@ -2240,7 +2345,7 @@ filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者
         }
 	}
 
-pattern 参见[匹配方式](../pattern.html)，更多模式请参考[配置模式](../mode.html)，json 格式参考[数据格式](../data.html)。
+pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)，json 格式参考[数据格式](#data)。
 
 例子：
 
@@ -2262,8 +2367,7 @@ test-resCookies.json:
         }
 	}
 
-
-# resCors {#protocols_resCors}
+# resCors {#rules_resCors}
 
 修改响应的[cors](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Access_control_CORS)，配置模式：
 
@@ -2277,7 +2381,7 @@ filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者
 	credentials: true
 	maxAge: 300000
 
-pattern 参见[匹配方式](../pattern.html)，更多模式请参考[配置模式](../mode.html)，json 格式参考[数据格式](../data.html)。
+pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)，json 格式参考[数据格式](#data)。
 
 一些特性且常用的情形可以用这种方式配置：
 
@@ -2304,19 +2408,19 @@ test-resCors.json:
 	credentials: true
 	maxAge: 300000
 
-# resDelay {#protocols_resDelay}
+# resDelay {#rules_resDelay}
 
 设置延迟响应的时间 (单位：毫秒)，配置模式：
 
 	pattern resDelay://timeMS
 
-pattern 参见 [匹配方式](../pattern.html)，更多模式请参考 [配置模式](../mode.html)。
+pattern 参见 [匹配方式](#pattern)，更多模式请参考 [配置模式](#mode)。
 
 例子：
 
 	www.ifeng.com resDelay://3000
 
-# resHeaders {#protocols_resHeaders}
+# resHeaders {#rules_resHeaders}
 
 修改请求头，配置模式：
 
@@ -2328,7 +2432,7 @@ filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者
 	x-test2: value2
 	x-testN: valueN
 
-pattern 参见[匹配方式](../pattern.html)，更多模式请参考[配置模式](../mode.html)，json 格式参考[数据格式](../data.html)。
+pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)，json 格式参考[数据格式](#data)。
 
 例子：
 
@@ -2341,13 +2445,13 @@ test-resHeaders.json:
 	x-test2: value2
 	x-testN: valueN
 
-# responseFor {#protocols_responseFor}
+# responseFor {#rules_responseFor}
 
 设置响应头的 `x-whistle-response-for` 字段(`whistle >= v1.7.1`)，主要方便自定义 whistle 的 Network SeverIP 显示真实的服务器环境或 IP，配置模式：
 
 	pattern responseFor://env
 
-pattern 参见[匹配方式](../pattern.html)，更多模式请参考[配置模式](../mode.html)。
+pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)。
 
 例子：
 
@@ -2355,10 +2459,9 @@ pattern 参见[匹配方式](../pattern.html)，更多模式请参考[配置模�
 	www.ifeng.com responseFor://1.1.1.1
 
 
-PS：某些情况下需要通过 nigix 转发，可以结合 [resScript](./resScript.html) 把响应头的 `x-upstream` 字段设置到 `x-whistle-response-for`，这样就可以在 whistle 的 Network 上看到真实的 IP
+PS：某些情况下需要通过 nigix 转发，可以结合 [resScript](#rules_resScript) 把响应头的 `x-upstream` 字段设置到 `x-whistle-response-for`，这样就可以在 whistle 的 Network 上看到真实的 IP
 
-
-# resPrepend {#protocols_resPrepend}
+# resPrepend {#rules_resPrepend}
 
 把指定的内容添加到响应内容前面(304 等响应没有内容无法添加)，配置模式：
 
@@ -2368,7 +2471,7 @@ filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者
 
 	Prepend body
 
-pattern 参见[匹配方式](../pattern.html)，更多模式请参考[配置模式](../mode.html)。
+pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)。
 
 例子：
 
@@ -2379,7 +2482,7 @@ test-resPrepend.html:
 
 	Prepend body
 
-# resReplace {#protocols_resReplace}
+# resReplace {#rules_resReplace}
 
 类似 js 字符串的 replace 方法，利用正则或字符串来匹配替换响应文本内容(响应的 content-type 必须文本类型：html、json、xml、text 等)，配置模式：
 
@@ -2390,7 +2493,7 @@ filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者
 	/user=([^&])/ig: user=$1$1
 	str: replacement
 
-pattern 参见[匹配方式](../pattern.html)，更多模式请参考[配置模式](../mode.html)，json 格式参考[数据格式](../data.html)。
+pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)，json 格式参考[数据格式](#data)。
 
 例子：
 
@@ -2402,13 +2505,13 @@ test-resReplace.json:
 	/user=([^&])/ig: user=$1$1
 	<script: <script crossorigin
 
-# resScript {#protocols_resScript}
+# resScript {#rules_resScript}
 
 给匹配的响应批量设置规则，或者通过脚本动态设置规则，配置模式：
 
 	pattern resScript://filepath
 
-filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者本地 js 文件(如：`e:\test\xxx`、`e:/test/xxx`、`/User/username/test/xxx` 等)，pattern 参见[匹配方式](../pattern.html)，更多模式请参考[配置模式](../mode.html)。
+filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者本地 js 文件(如：`e:\test\xxx`、`e:/test/xxx`、`/User/username/test/xxx` 等)，pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)。
 
 filepath 指定的文本可以为一组规则列表，也可以一个 js 脚本通过判断 url、method、clientIp、headers, body 动态设置规则：
 
@@ -2427,7 +2530,7 @@ rulesFile 可以指定一个脚本，whistle 在执行脚本时会自动在全�
 2. `method`: 请求方法
 3. `ip(clientIp)`: 客户端 ip
 4. `headers`: 请求头部
-5. `body`: 请求内容 (只有匹配了[reqScript](./reqScript.html) 才会有该字段)，如果没有请求内容为空字符串(`''`)，如果请求内容大于 16k，可能只能获取请求前面 16k 长度的内容(whistle >= v1.5.18)
+5. `body`: 请求内容 (只有匹配了[reqScript](#rules_reqScript) 才会有该字段)，如果没有请求内容为空字符串(`''`)，如果请求内容大于 16k，可能只能获取请求前面 16k 长度的内容(whistle >= v1.5.18)
 6. `rules`: 存放新规则的数组
 7. `values`: 存放临时 values 的对象(v1.7.1 开始支持)
 8. `render(tplStr, data)`: 内置[microTemplate](https://johnresig.com/blog/javascript-micro-templating/)，方便通过模板渲染数据(v1.7.1 开始支持)
@@ -2468,25 +2571,25 @@ resScript.js:
 		from: 'resScript'
 	};
 
-# resSpeed {#protocols_resSpeed}
+# resSpeed {#rules_resSpeed}
 
 设置响应速度 (单位：kb/s，千比特 / 每秒)，配置模式：
 
 	pattern resSpeed://kbs
 
-pattern 参见 [匹配方式](../pattern.html)，更多模式请参考 [配置模式](../mode.html)。
+pattern 参见 [匹配方式](#pattern)，更多模式请参考 [配置模式](#mode)。
 
 例子：
 
 	www.ifeng.com resSpeed://3
 
-# resType {#protocols_resType}
+# resType {#rules_resType}
 
 修改请求头的 `content-type`，配置模式：
 
 	pattern resType://mimeType
 
-pattern 参见 [匹配方式](../pattern.html)，更多模式请参考 [配置模式](../mode.html)，mimeType 为新的 `content-type`，如：`text/plain`、`text/html`、`image/png` 等等，还有一些后缀关键字，whistle 会自动把它转成对应的 type：
+pattern 参见 [匹配方式](#pattern)，更多模式请参考 [配置模式](#mode)，mimeType 为新的 `content-type`，如：`text/plain`、`text/html`、`image/png` 等等，还有一些后缀关键字，whistle 会自动把它转成对应的 type：
 
 	json: application/json
 	xml: text/xml
@@ -2499,14 +2602,13 @@ pattern 参见 [匹配方式](../pattern.html)，更多模式请参考 [配置�
 
 	www.ifeng.com resType://text
 
-
-# resWrite {#protocols_resWrite}
+# resWrite {#rules_resWrite}
 
 将响应的内容 (如果有) 写入的指定的文件夹或文件；whistle 会根据请求的 url 和配置自动拼接成路径，且 whistle 不会覆盖已存在的文件，配置模式：
 
 	pattern resWrite://filepath
 
-filepath 为本地目录或文件，pattern 参见[匹配方式](../pattern.html)，更多模式请参考[配置模式](../mode.html)。
+filepath 为本地目录或文件，pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)。
 
 例子：
 
@@ -2514,14 +2616,13 @@ filepath 为本地目录或文件，pattern 参见[匹配方式](../pattern.html
 	/^http:\/\/www.ifeng.com\/$/ resWrite:///User/test/index.html
 	www.ifeng.com resWrite:///User/test
 
-
-# resWriteRaw {#protocols_resWriteRaw}
+# resWriteRaw {#rules_resWriteRaw}
 
 将响应的完整内容 (包括协议、状态码、状态信息、响应头、内容) 写入的指定的文件夹或文件；whistle 会根据请求的 url 和配置自动拼接成路径，且 whistle 不会覆盖已存在的文件，配置模式：
 
 	pattern resWriteRaw://filepath
 
-filepath 为本地目录或文件，pattern 参见[匹配方式](../pattern.html)，更多模式请参考[配置模式](../mode.html)。
+filepath 为本地目录或文件，pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)。
 
 例子：
 
@@ -2529,16 +2630,15 @@ filepath 为本地目录或文件，pattern 参见[匹配方式](../pattern.html
 	/^http:\/\/www.ifeng.com\/$/ resWriteRaw:///User/test/index.html
 	www.ifeng.com resWriteRaw:///User/test
 
+# rulesFile(ruleFile, rulesScript, ruleScript) {#rules_rulesFile}
 
-# rulesFile(ruleFile, rulesScript, ruleScript) {#protocols_rulesFile}
-
-> 该协议 `v1.7.0` 开始已经废弃，请使用 [reqScript](./reqScript.html) 代替
+> 该协议 `v1.7.0` 开始已经废弃，请使用 [reqScript](#rules_reqScript) 代替
 
 给匹配的请求批量设置规则，或者通过脚本动态设置规则，配置模式：
 
 	pattern rulesFile://filepath
 
-filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者本地 js 文件(如：`e:\test\xxx`、`e:/test/xxx`、`/User/username/test/xxx` 等)，pattern 参见[匹配方式](../pattern.html)，更多模式请参考[配置模式](../mode.html)。
+filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者本地 js 文件(如：`e:\test\xxx`、`e:/test/xxx`、`/User/username/test/xxx` 等)，pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)。
 
 filepath 指定的文本可以为一组规则列表，也可以一个 js 脚本通过判断 url、method、clientIp、headers, body 动态设置规则：
 
@@ -2604,7 +2704,7 @@ rulesFile.js:
 		// rules.push('/./' + newUrl);
 	}
 
-# socks {#protocols_socks}
+# socks {#rules_socks}
 
 设置 socks 代理，配置模式：
 
@@ -2613,7 +2713,7 @@ rulesFile.js:
 	# 加用户名密码
 	pattern socks://username:password@ip:port
 
-pattern 参见 [匹配方式](../pattern.html)，更多模式请参考 [配置模式](../mode.html)。
+pattern 参见 [匹配方式](#pattern)，更多模式请参考 [配置模式](#mode)。
 
 
 例子：
@@ -2623,20 +2723,20 @@ pattern 参见 [匹配方式](../pattern.html)，更多模式请参考 [配置�
 	/./ socks://127.0.0.1:1080
 	www.facebook.com socks://test:123@127.0.0.1:1080
 
-# statusCode {#protocols_statusCode}
+# statusCode {#rules_statusCode}
 
-设置响应状态码 (状态码范围 `100~999`)，请求会直接根据设置的状态码返回，不会请求到线上，这个与[replaceStatus](replaceStatus.html) 不同，后者是请求返回后再修改状态码，可以用于模拟各种状态码，配置模式：
+设置响应状态码 (状态码范围 `100~999`)，请求会直接根据设置的状态码返回，不会请求到线上，这个与[replaceStatus](#rules_replaceStatus) 不同，后者是请求返回后再修改状态码，可以用于模拟各种状态码，配置模式：
 
 	pattern statusCode://code
 
-其中：code >= 100 && code <= 999，pattern 参见[匹配方式](../pattern.html)，更多模式请参考[配置模式](../mode.html)。
+其中：code >= 100 && code <= 999，pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)。
 
 
 例子：
 
 	www.ifeng.com statusCode://500
 
-# ua {#protocols_ua}
+# ua {#rules_ua}
 
 修改请求头的 `user-agent` 字段，可用于模拟各种机器访问，配置模式：
 
@@ -2655,7 +2755,7 @@ test-ua:
 
 	Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.23 Mobile Safari/537.36
 
-# urlParams {#protocols_urlParams}
+# urlParams {#rules_urlParams}
 
 修改请求参数，配置模式：
 
@@ -2667,15 +2767,15 @@ filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者
 	field2: value2
 	filedN: valueN
 
-pattern 参见[匹配方式](../pattern.html)，更多模式请参考[匹配模式](../mode.html)，json 格式参考[数据格式](../data.html)。
+pattern 参见[匹配方式](#pattern)，更多模式请参考[匹配模式](#mode)，json 格式参考[数据格式](#data)。
 
 例子：
 
 	www.ifeng.com urlParams://(test=1)
 
-括号的写法见：[Rules 的特殊操作符({}、()、<>)](../webui/rules.html)
+括号的写法见：[Rules 的特殊操作符({}、()、<>)](#webui_rules)
 
-# urlReplace {#protocols_urlReplace}
+# urlReplace {#rules_urlReplace}
 
 类似 js 字符串的 replace 方法，利用正则或字符串来匹配替换请求 url 的 path 部分(如 `http://www.test.com/xxx?xxx`，只能替换 url 中 `xxx?xxx` 这部分的内容)，配置模式：
 
@@ -2686,7 +2786,7 @@ filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者
 	/user=([^&])/ig: user=$1$1
 	str: replacement
 
-pattern 参见[匹配方式](../pattern.html)，更多模式请参考[配置模式](../mode.html)，json 格式参考[数据格式](../data.html)。
+pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mode)，json 格式参考[数据格式](#data)。
 
 例子：
 
@@ -2698,13 +2798,13 @@ test-urlReplace.json:
 	/user=([^&])/ig: user=$1$1
 	index: news
 
-# weinre {#protocols_weinre}
+# weinre {#rules_weinre}
 
 weinre 可以用于调试远程页面特别是移动端的网页，配置模式：
 
 	pattern weinre://key
 
-key 为任意的字符串，主要用于区分页面，pattern 参见 [匹配方式](../pattern.html)，更多模式请参考 [配置模式](../mode.html)。
+key 为任意的字符串，主要用于区分页面，pattern 参见 [匹配方式](#pattern)，更多模式请参考 [配置模式](#mode)。
 
 如何使用 weinre：
 
@@ -2716,3 +2816,4 @@ key 为任意的字符串，主要用于区分页面，pattern 参见 [匹配方
 2. 手机打开配置的页面，然后点击 network 页面顶部操作栏的 Weinre 按钮，在下拉列表就可以找到设置的 weinre id 的，点击会新开一个 weinre 调试页面，可以开始使用 weinre
 
 3. 手机调试或者远程访问时，可能会因为 whistle 所在机器的防火墙设置，导致无法远程访问，可以通过设置白名单，或者关闭防火墙：[http://jingyan.baidu.com/article/870c6fc317cae7b03ee4be48.html](http://jingyan.baidu.com/article/870c6fc317cae7b03ee4be48.html)
+

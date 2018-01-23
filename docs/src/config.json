@@ -65,7 +65,7 @@
       ]
     },
     {
-      "name": "application",
+      "name": "cases",
       "i18n": {
         "zh-cn": "常见应用"
       },
@@ -80,7 +80,7 @@
         {
           "name": "websocket",
           "i18n": {
-            "zh-cn": "WebSocket 调试"
+            "zh-cn": "WebSocket 代理"
           }
         },
         {
@@ -92,7 +92,7 @@
         {
           "name": "http-proxy",
           "i18n": {
-            "zh-cn": "http 代理"
+            "zh-cn": "HTTP 代理"
           }
         },
         {
@@ -110,9 +110,10 @@
       }
     },
     {
-      "name": "protocols",
+      "name": "rules",
       "i18n": {
-        "zh-cn": "协议列表"
+        "zh-cn": "协议列表",
+        "en_us": "rules"
       },
       "catalog": [
         {
