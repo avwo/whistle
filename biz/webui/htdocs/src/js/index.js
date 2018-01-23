@@ -2109,6 +2109,11 @@ var Index = React.createClass({
     this.exportSessions(this.state.exportFileType, name);
     $(ReactDOM.findDOMNode(this.refs.chooseFileType)).modal('hide');
   },
+  showAboutDialog: function(e) {
+    if ($(e.target).closest('.w-menu-enable').length) {
+      this.refs.aboutDialog.showAboutInfo();
+    }
+  },
   render: function() {
     var state = this.state;
     var name = state.name;
@@ -2290,13 +2295,15 @@ var Index = React.createClass({
             <MenuItem ref="weinreMenuItem" name="Anonymous" options={state.weinreOptions} className="w-weinre-menu-item" onClick={this.showAnonymousWeinre} onClickOption={this.showWeinre} />
           </div>
           <a onClick={this.showHttpsSettingsDialog} className="w-https-menu" href="javascript:;" draggable="false"><span className="glyphicon glyphicon-lock"></span>Https</a>
-          <div onMouseEnter={this.showHelpOptions} onMouseLeave={this.hideHelpOptions} className={'w-menu-wrapper' + (showHelpOptions ? ' w-menu-wrapper-show' : '')}>
+          <div onMouseEnter={this.showHelpOptions} onMouseLeave={this.hideHelpOptions}
+            className={'w-menu-wrapper' + (showHelpOptions ? ' w-menu-wrapper-show' : '')}>
             <a className={'w-help-menu' + (state.hasNewVersion ? ' w-menu-enable'  : '')}
+              onClick={this.showAboutDialog}
               title={state.hasNewVersion ? 'There is a new version of whistle' : undefined}
-              href={state.hasNewVersion ? 'https://avwo.github.io/whistle/update.html' : 'https://github.com/avwo/whistle#whistle'}
+              href={state.hasNewVersion ? 'javascript:;' : 'https://github.com/avwo/whistle#whistle'}
               target="_blank"><span className="glyphicon glyphicon-question-sign"></span>Help</a>
             <MenuItem ref="helpMenuItem" options={state.helpOptions}
-              name={<About onClick={this.hideHelpOptions} onCheckUpdate={this.showHasNewVersion} />}
+              name={<About ref="aboutDialog" onClick={this.hideHelpOptions} onCheckUpdate={this.showHasNewVersion} />}
               className="w-help-menu-item" />
           </div>
           <Online name={name} />
