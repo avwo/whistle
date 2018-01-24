@@ -6,8 +6,8 @@ var zlib = require('../../lib/util/zlib');
 var delims = ['<', '>', '"', '`', ' '];
 var unwise = ['{', '}', '|', '\\', '^', '`'].concat(delims);
 var autoEscape = ['\''].concat(unwise).join('');
-var emptyGzipContent = fs.readFileSync(path.join(__dirname, '../empty.txt.gz'));
-var testGzipContent = fs.readFileSync(path.join(__dirname, '../test.txt.gz'));
+var emptyGzipContent = fs.readFileSync(path.join(__dirname, '../empty.txt'));
+var testGzipContent = fs.readFileSync(path.join(__dirname, '../test.txt'));
 
 
 module.exports = function() {
