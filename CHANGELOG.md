@@ -842,6 +842,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 
 # v1.8.8
 1. refactor: 避免url里面的参数自动转义，保留原有url的字符
+2. refactor: Offline状态下菜单栏灰显
  
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
