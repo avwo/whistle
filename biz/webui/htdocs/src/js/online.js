@@ -36,9 +36,20 @@ var Online = React.createClass({
   },
   componentWillMount: function() {
     var self = this;
+    var online = true;
+    var body = $(document.body);
     dataCenter.on('serverInfo', function(data) {
       self.updateServerInfo(data);
       data && self.checkServerChanged(data);
+      var curState = !!data;
+      if (curState !== online) {
+        online = curState;
+        if (online) {
+          body.removeClass('w-offline-status');
+        } else {
+          body.addClass('w-offline-status');
+        }
+      }
       self.setState({server: data});
     });
   },
