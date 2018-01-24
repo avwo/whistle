@@ -34,6 +34,3 @@ module.exports = function() {
   });
 };
 
-require('should');
-require('should-http');
-module.exports();
