@@ -1,6 +1,5 @@
 var http = require('http');
 var net = require('net');
-var url = require('url');
 var config = require('../lib/config');
 var util = require('../lib/util');
 var getSender = require('ws-parser').getSender;
