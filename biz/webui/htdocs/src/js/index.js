@@ -2294,7 +2294,7 @@ var Index = React.createClass({
             <a onClick={this.showAnonymousWeinre} className="w-weinre-menu" href="javascript:;" draggable="false"><span className="glyphicon glyphicon-globe"></span>Weinre</a>
             <MenuItem ref="weinreMenuItem" name="Anonymous" options={state.weinreOptions} className="w-weinre-menu-item" onClick={this.showAnonymousWeinre} onClickOption={this.showWeinre} />
           </div>
-          <a onClick={this.showHttpsSettingsDialog} className="w-https-menu" href="javascript:;" draggable="false"><span className="glyphicon glyphicon-lock"></span>Https</a>
+          <a onClick={this.showHttpsSettingsDialog} className="w-https-menu" href="javascript:;" draggable="false"><span className="glyphicon glyphicon-lock"></span>HTTPS</a>
           <div onMouseEnter={this.showHelpOptions} onMouseLeave={this.hideHelpOptions}
             className={'w-menu-wrapper' + (showHelpOptions ? ' w-menu-wrapper-show' : '')}>
             <a className={'w-help-menu' + (state.hasNewVersion ? ' w-menu-enable'  : '')}
