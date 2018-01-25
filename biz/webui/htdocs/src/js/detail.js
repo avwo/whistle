@@ -55,9 +55,9 @@ var ReqData = React.createClass({
       self.toggleTab(TABS[2]);
     }).on('showTimeline', function() {
       self.toggleTab(TABS[3]);
-    }).on('composer', function() {
+    }).on('composer', function(e, item) {
       var modal = self.props.modal;
-      self.showComposer(modal && modal.getActive());
+      self.showComposer(item || (modal && modal.getActive()));
     }).on('networkStateChange', function() {
       self.setState({});
     });
