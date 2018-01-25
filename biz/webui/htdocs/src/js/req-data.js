@@ -25,6 +25,9 @@ var NOT_BOLD_RULES = {
 };
 var contextMenuList = [
   {
+    name: 'Open'
+  },
+  {
     name: 'Copy',
     list: [
       { name: 'URL' },
@@ -268,6 +271,10 @@ var ReqData = React.createClass({
   },
   onClickContextMenu: function(action) {
     switch(action) {
+    case 'Open':
+      var item = this.currentFocusItem;
+      item && window.open(item.url);
+      break;
     case 'Overview':
       events.trigger('activeItem', this.currentFocusItem);
       events.trigger('showOverview');
@@ -322,8 +329,9 @@ var ReqData = React.createClass({
     var item = modal.getItem(dataId);
     e.preventDefault();
     this.currentFocusItem = item;
-    contextMenuList[0].disabled = !item;
-    contextMenuList[0].list.forEach(function(menu) {
+    contextMenuList[0].disabled = !item || !/^https?:\/\//.test(item.url);
+    contextMenuList[1].disabled = !item;
+    contextMenuList[1].list.forEach(function(menu) {
       menu.disabled = !item;
       switch(menu.name) {
       case 'URL':
@@ -351,33 +359,33 @@ var ReqData = React.createClass({
         break;
       }
     });
-    contextMenuList[1].disabled = !item;
-    contextMenuList[1].list.forEach(function(menu) {
+    contextMenuList[2].disabled = !item;
+    contextMenuList[2].list.forEach(function(menu) {
       menu.disabled = !item;
     });
     var selectedList = modal.getSelectedList();
     var selectedCount = selectedList.length;
     var hasData = modal.list.length;
-    contextMenuList[2].disabled = !hasData;
-    contextMenuList[2].list.forEach(function(menu) {
+    contextMenuList[3].disabled = !hasData;
+    contextMenuList[3].list.forEach(function(menu) {
       menu.disabled = !hasData;
     });
-    contextMenuList[2].list[0].disabled = !item;
-    contextMenuList[2].list[2].disabled = hasData <= 1;
-    contextMenuList[2].list[3].disabled = !selectedCount;
-    contextMenuList[2].list[4].disabled = selectedCount === hasData;
-    contextMenuList[3].disabled = !item;
+    contextMenuList[3].list[0].disabled = !item;
+    contextMenuList[3].list[2].disabled = hasData <= 1;
+    contextMenuList[3].list[3].disabled = !selectedCount;
+    contextMenuList[3].list[4].disabled = selectedCount === hasData;
+    contextMenuList[4].disabled = !item;
     if (item) {
       if (item.selected) {
-        contextMenuList[4].disabled = !selectedList.filter(util.canReplay).length;
+        contextMenuList[5].disabled = !selectedList.filter(util.canReplay).length;
       } else {
-        contextMenuList[4].disabled = !util.canReplay(item);
+        contextMenuList[5].disabled = !util.canReplay(item);
       }
     } else {
-      contextMenuList[4].disabled = true;
+      contextMenuList[5].disabled = true;
     }
-    contextMenuList[5].disabled = !item && !selectedCount;
-    var data = util.getMenuPosition(e, 110, 244);
+    contextMenuList[6].disabled = !item && !selectedCount;
+    var data = util.getMenuPosition(e, 110, 274);
     data.list = contextMenuList;
     this.refs.contextMenu.show(data);
   },
