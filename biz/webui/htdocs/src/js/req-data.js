@@ -338,7 +338,7 @@ var ReqData = React.createClass({
         menu.copyText = item && item.url.replace(/[?#].*$/, '');
         break;
       case 'Host':
-        menu.copyText = item && item.hostname;
+        menu.copyText = item && (item.isHttps ? item.path : item.hostname);
         break;
       case 'Path':
         menu.copyText = item && item.path;
