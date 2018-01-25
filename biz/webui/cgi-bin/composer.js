@@ -152,7 +152,7 @@ module.exports = function(req, res) {
   }
 
   fullUrl = util.encodeNonAsciiChar(fullUrl.replace(/#.*$/, ''));
-  var options = url.parse(util.setProtocol(fullUrl));
+  var options = util.parseUrl(util.setProtocol(fullUrl));
   if (!options.host) {
     return res.json({ec: 0});
   }
