@@ -158,6 +158,7 @@ module.exports = function(req, res) {
 
   var rawHeaderNames = {};
   var headers = parseHeaders(req.body.headers, rawHeaderNames);
+  delete headers[config.WEBUI_HEAD];
   if (!headers['user-agent']) {
     headers['user-agent'] = 'whistle/' + config.version;
   }
