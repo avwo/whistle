@@ -141,6 +141,7 @@ w2 start -S 7788 -C 8888
 
 *Note: 不同实例要配置不同的代理 *
 
+
 # 设置代理 {#settings}
 
 ### 配置信息
@@ -176,6 +177,7 @@ PS: 如果配置完代理，手机无法访问，可能是 whistle 所在的电�
 
 * 方式 1：域名访问 [http://local.whistlejs.com/](http://local.whistlejs.com/)
 * 方式 2：通过 ip + 端口来访问，形式如 `http://whistleServerIP:whistlePort+1/` e.g. [http://127.0.0.1:8900](http://127.0.0.1:8900)
+
 
 # 安装证书 {#https}
 
@@ -249,6 +251,7 @@ PS: 如果配置完代理，手机无法访问，可能是 whistle 所在的电�
   /baidu/ disable://intercept
   # 不支持通过路径的方式设置
   ```
+
 
 # 快速入门 {#quickstart}
 
@@ -373,6 +376,7 @@ PS: 如果配置完代理，手机无法访问，可能是 whistle 所在的电�
 
 更多功能请参考：[协议列表](#rules)
 
+
 # 常见问题 {#questions}
 
 > 有问题可以提 issue： [New issue](https://github.com/avwo/whistle/issues/new)
@@ -447,6 +451,7 @@ PS：如果要用 IP 访问，可以采用 `http://127.0.0.1/-/xxx` 或 `http://
   [具体可以看这里](http://www.neglectedpotential.com/2017/04/trusting-custom-root-certificates-on-ios-10-3/)
 
   <img src="https://avwo.github.io/whistle/img/ios10.3_ca.PNG" width="320">
+
 
 # 匹配方式 {#pattern}
 
@@ -583,6 +588,7 @@ pattern 和 operator-uri 位置可以调换
 
 如： `~/cgi-bin 10.10.1.1:9999`，表示所有 `xxx.xxx.xxx/cgi-bin/xxx` 的请求都会请求 `10.10.1.1:9999` 对应的服务器。
 
+
 # 操作值 {#opvalue}
 
 whistle 的所有操作都可以通过配置实现，配置模式扩展于系统 hosts 配置模式 (`ip domain` 或组合模式 `ip domain1 domain2 domainN`)，具有更丰富的[匹配方式](#pattern) 及更灵活的配置模式。whistle 的匹配顺序是从左到右，这与传统 hosts 从右到左的配置模式不同，但为了兼容传统 hosts 配置模式，除了 pattern 和 operator-uri 都可以为请求 url 外(这种情况 whistle 无法自动区分 pattern 和 operator-uri，只能按约定的顺序匹配)，其它情况 whistle 都支持配置两边的位置对调，即：`pattern operator-uri` 和 `operator-uri pattern` 等价。
@@ -628,6 +634,7 @@ whistle 的所有操作都可以通过配置实现，配置模式扩展于系统
   operator-uri pattern1 pattern2 patternN
   ```
 其中，pattern 请参考：[匹配方式](#pattern)
+
 
 # 插件开发 {#plugins}
 
@@ -838,45 +845,328 @@ whistle 插件的每部分都可以独立存在，各个部分的关系及与 wh
 1. [https://github.com/whistle-plugins/whistle.helloworld](https://github.com/whistle-plugins/whistle.helloworld)
 2. [https://github.com/whistle-plugins](https://github.com/whistle-plugins)
 
-# 界面操作 {#webui}
 
-TODO
+# 界面列表 {#webui}
+
+* [Network(请求列表页面)](#webui_network)
+* [Composer(构造请求)](#webui_composer)
+* [Log(日志平台)](#webui_log)
+* [Rules(操作规则配置界面)](#webui_rules)
+* [Values(存放 KeyValue 的系统)](#webui_values)
+* [Plugins(插件列表页面)](#webui_plugins)
+* [WebSocket(设置对话框)](#webui_websocket)
+* [Settings(设置对话框)](#webui_settings)
+* [Weinre(weinre 列表)](#webui_weinre)
+* [Https(设置 Https 及根证书)](#webui_https)
+* [Help(帮助文档)](#webui_help)
+* [About(whistle 版本信息)](#webui_about)
+* [Online(在线状态及服务器信息)](#webui_online)
+
 # Network {#webui_network}
 
-TODO
+查看请求响应的详细信息及请求列表的Timeline，还有请求匹配到的规则(见`Overview`)。
+
+![Network](https://avwo.github.io/whistle/img/network.gif)
+
+界面操作的一些快捷键：
+
+1. `Ctrl + X`(Mac用`Command + X`): 清空请求列
+2. `Ctrl + D`(Mac用`Command + D`): 
+	- 如果是焦点在下面的过滤输入框，可以清空输入框的内容
+	- 如果焦点在Network的其它地方，可以删除选中的请求项
+
+更多功能及快捷键参考下图：
+
+![Network](https://raw.githubusercontent.com/avwo/whistleui/master/img/network.png)
+
+# Componser {#webui_composer}
+
+用来重发请求、构造请求，可以自定义请求的 url、请求方法、请求头、请求内容。
+
+![Componser](https://avwo.github.io/whistle/img/composer.gif)
+
+# Log {#webui_log}
+
+用于调试远程页面特别是移动端页面，可以通过此功能把远程页面的 `console` 打印的信息展示出来，也可以在注入自定义的 js 脚本，使用方法参见 [log](#rules_log)。
+
+![Log](https://avwo.github.io/whistle/img/log.gif)
+
+其中：
+
+1. Page 显示页面抛出的异常或 `console` 打印的信息
+2. Server 为 whistle 内部发生的异常信息
+
 # Rules {#webui_rules}
 
-TODO
+> 所有规则参考：[规则列表](#rules)、[多种匹配方式](#pattern)
+
+规则配置界面：
+
+1. `Create`：创建规则分组
+2. `Delete`：删除分组
+3. `Edit`：重命名分组
+4. `Settings`：
+ - `Theme`：设置主题
+ - `Font size`：设置字体大小
+ - `Show line number`：是否显示行数
+ - `Allow multiple choice`：是否允许多选
+ - `Disable all rules`：是否禁用所有规则，包括插件的规则
+ - `Disable all plugins`：是否禁用插件规则
+ - `Synchronized with the system hosts`：是否把配置同步到本地的 hosts 文件 (需要 root 权限)
+ - `Import system hosts to Default`：导入本地的 hosts 配置到 Default 分组 (需要 root 权限，且会覆盖原来的配置)
+
+![Rules](https://avwo.github.io/whistle/img/rules.gif)
+
+界面操作的一些快捷键：
+
+1. `Ctrl + D`(Mac 用 `Command + D`): 
+	- 如果焦点在左侧的列表，可以删除列表项
+	- 如果焦点在右侧的编辑框，可以删除光标所在行
+2. `Ctrl + ?`(Mac 用 `Command + ?`): 注释编辑框中选中的行
+3. `Ctrl + S`(Mac 用 `Command + S`): 保存当前编辑的内容
+4. Ctrl + MouseDown`(Mac 用 `Command + MouseDown `): 可以让形如 xxx://{key} 快速定位到 values 中对应的 key (可以通过浏览器的前进回退按钮回退到跳转前的页面)
+
+
+
+## Rules 的特殊操作符 (`{}`、`()`、`<>`)
+
+
+### `{}` 操作符
+
+打开 [配置页面](http://local.whistlejs.com/) 右上角的 More --> Values 对话框，这是一个 key-value 配置系统，创建一个 key: index.html，并随便写上一段 html；
+
+配置规则：
+
+	www.example.com res://{index.html}
+
+*Note: windows 按住 Ctrl 键 (Mac 可以按住 Command 键)，点击配置框里面的 `res://{index.html}`，可以快速打开 Values 对话框并创建或定位到对应的 key*
+
+### `()` 操作符
+
+	可以通过 `()` 直接在 [配置页面](http://www.example.com/) 上设置 value	
+
+	www.example.com res://({"delay":6000,"body":"1234567890"}) # () 里面不能有空格
+
+### `<>` 操作符
+
+在做本地替换时，whistle 会自动进行路径拼接：	
+
+	www.example.com xfile://</Users/index.html>
+
+上述配置后请求 http://www.example.com/index.html 会直接加载本地的 /Users/index.html 文件，不会再自动做 url 拼接。
+
+
 # Values {#webui_values}
 
-TODO
+配置 `key-value` 的数据，在 Rules 里面配置可以通过 `{key}` 获取，如：`www.ifeng.com file://{key}`
+
+![Values](https://avwo.github.io/whistle/img/values.gif)
+
+界面操作的一些快捷键：
+
+1. `Ctrl + D`(Mac 用 `Command + D`): 
+	- 如果焦点在左侧的列表，可以删除列表项
+	- 如果焦点在右侧的编辑框，可以删除光标所在行
+2. `Ctrl + /`(Mac 用 `Command + /`): 注释编辑框中选中的行
+3. `Ctrl + S`(Mac 用 `Command + S`): 保存当前编辑的内容
+
 # Plugins {#webui_plugins}
 
-TODO
+> 如何开发插件参考：[插件开发](#plugins)
+
+显示所有已安装的插件列表，开启关闭插件功能，打开插件的管理页面等。
+
+![Plugins](https://avwo.github.io/whistle/img/plugins.gif)
+
+# websocket {#webui_websocket}
+
+whistle v1.6.0 开始支持 WebSocket 及一般 Socket 请求的抓包及构造请求，点击建立连接的 WebSocket(Socket) 请求，打开 右侧 `Response / Frames` 即可看到 WebSocket 的请求贞数据：
+
+![WebSocket](https://raw.githubusercontent.com/avwo/whistleui/master/img/socket/frames.gif)
+
+PS：如果是普通的 Socket 请求要通过 whistle 代理，要走 tunnel 代理，且代理的请求头要加个字段 `x-whistle-policy: tunnel`，这样 whistle 就会把这个请求当成一般的 socket 请求处理，且可以跟 WebSocket 一样进行抓包
+
+也支持构造 WebSocket 请求和一般的 Socket 请求，通过 whistle 的 Composer 构造的 WebSocket 和 Socket 请求，还也自定义请求数据：
+
+![Build WebSocket](https://raw.githubusercontent.com/avwo/whistleui/master/img/socket/composer.gif)
+
+
+![Build Socket](https://raw.githubusercontent.com/avwo/whistleui/master/img/socket/socket.gif)
+
+
+
+PS：通过 Composer 构造的请求 Frames 多了一个 Composer 选项，可以通过该模块发送数据到服务器，也可以通过拖拽文件到此把文件里面的数据发送到后台；构造 Socket 请求的 url 为 `CONNECT` 方法，或者 schema 为：`conn:`、`connect:`、`socket:`、`tunnel:`，如果 `conn://127.0.0.1:9999`，上述图中本地服务器代码为：
+
+	const net = require('net');
+
+	const port = 9999;
+	const server = net.createServer();
+	server.on('connection', (s) => {
+	  s.on('error', () => {});
+	  s.on('data', (data) => {
+	    s.write(`Response: ${data}`);
+	  })
+	});
+	server.listen(port);
+	
+
+
+
+如果对一般的请求也要像构造的请求一样可以自定义发送或接收数据，需要借助插件 [whistle.script](https://github.com/whistle-plugins/whistle.script)，具体参见文章：[利用 whistle 调试 WebSocket 和 Socket 请求](http://imweb.io/topic/5a11b1b8ef79bc941c30d91a)
+
+# Settings {#webui_settings}
+
+在 whistle 的界面中，分别有 **Network**、**Rules**、**Values** 三个页面有 **Settings** 菜单，其中，**Rules** 和 **Values** 的 **Settings** 主要用于设置编辑器样式及是否允许多选 Rules，具体分别参见：[Rules 界面说明](#webui_rules) 和 [Values 界面说明](#webui_values)。
+
+#### Network
+
+1. Filter：用来设置过滤请求的关键字，Networt 的 Settings 按钮上的 Filter 和请求列表下方的 Filter 的区别是，前者会把不匹配的请求直接过滤掉，无法再找回来，而后后者只是把列表中的 Dom 节点隐藏了，且 Settings 按钮上的 Filter 功能更强大，可以同时匹配 url、请求响应头、请求方法、响应状态码、ClientIP 及 ServerIP、请求响应内容 (以上匹配都不区分大小写)。
+
+	Filter:
+
+		test1 test2 test2
+		key1 key2 key3
+		h:head1 heade2 head3
+		h: h1 h2
+		s: 200
+		i: 100 88
+		i: 11 77
+		m: get
+		b: keyword1 keyword2
+		b: keyword3
+
+	`h:`、`s:`、`i:`、`m:`、`b:` 分别表示匹配请求响应头、请求方法、响应状态码、ClientIP 及 ServerIP、请求响应内容、其它表示匹配 url(以上匹配都不区分大小写)，同一行内容多个匹配用空格隔开，最多支持 3 个，表示对应的内容要同时匹配这三个关键字，不同行表示或的关系
+	
+2. Network Columns：主要用于设置 Network 表头，或者拖拽重排等
+
+![Network settings](https://avwo.github.io/whistle/img/settings.png)
+
+
+
+# Weinre {#webui_weinre}
+
+集成 [weinre](http://people.apache.org/~pmuellr/weinre/docs/latest/) 的功能，用户只需通过简单配置 (`pattern weinre://id`) 即可使用，具体参见[weinre](#rules_weinre)，更多移动端调试方法可以参考：[利用 whistle 调试移动端页面](http://imweb.io/topic/5981a34bf8b6c96352a59401)。
+
+![Weinre](https://avwo.github.io/whistle/img/weinre.gif)
+
+# Https {#webui_https}
+
+> 建议使用 `Node v6` 或以上版本，否则性能及在 Chrome 或 APP 上 [抓包 HTTPS 请求](https://avwo.github.io/whistle/webui/https.html) 会有问题。
+
+> 如果出现 HTTPS 的问题 ([#44](https://github.com/avwo/whistle/issues/44))，升级 Node 到 `v6` 及以上版本，[更新 whistle](https://avwo.github.io/whistle/update.html) 到最新版本，通过 `w2 restart -A` (注意后面加 `-A`)启动生成新的更证书，再 [安装下根证书](https://avwo.github.io/whistle/webui/https.html) 即可。
+
+> ** 在 iOS 上安装根证书时，需要先关闭[https 拦截](https://avwo.github.io/whistle/webui/https.html)，否则将显示安装失败。**
+
+用来下载根证书、隐藏 `connect` 类型的请求、开启 Https 拦截功能。
+
+![Https](https://avwo.github.io/whistle/img/https.gif)
+
+
+### 安装根证书
+
+如上图下载完根证书后点击 rootCA.crt 文件，弹出根证书安装对话框。
+
+1. Windows：[http://program.most.gov.cn/cert/ca.htm](http://program.most.gov.cn/cert/ca.htm)
+2. Mac：[mac 根证书怎么安装](http://zhidao.baidu.com/link?url=bQ8ZnDTxUIlqruQ56NYjBmwztWPlZtv9AIRazkoKeMsdpAq7mcwXOHQduRwmHV1M2hf143vqBxHzKb1tg0L03DJoj6XS109P8zBNF1E9uU_)
+
+  Mac 安装证书后，需要手动信任证书，步骤如下：
+
+  打开证书管理界面，找到带有 `whistle` 的字样的证书，如果有多个又不确定最新安装的是哪个，可以全部删除后重新安装
+
+  ![img](https://ae01.alicdn.com/kf/HTB1ZtoBdYsTMeJjSszh763GCFXai.png)
+
+  双击证书后，点击 `Trust` 左边展开选项，红色部分选择 `Always Trust` （总是信任），点击左上角关闭当前界面会要求输入密码；输入密码后可以看到证书上面红色的图标 `x` 不见了，到这一步说明完成证书安装。
+
+  ![img](https://ae01.alicdn.com/kf/HTB1UWItd8USMeJjy1zk761WmpXaT.png)
+
+3. **Firefox：菜单 > 首选项 > 高级 > 证书 > 证书机构 > 导入 -> 选中所有 checkbox -> 确定 **
+4. Linux Chrome(Chromium): 参照这个[教程](http://www.richud.com/wiki/Ubuntu_chrome_browser_import_self_signed_certificate)
+  * 地址栏输入 `chrome://chrome/settings/`
+  * Show advanced Settings > Manage certificates > Authorities > Import
+  * 选择证书后确认，重启浏览器
+  * done
+
+  ![ubuntu Chromium](https://cloud.githubusercontent.com/assets/16034964/20553721/9c3d1bda-b191-11e6-880f-9fd6976b95cc.png)
+5. 手机
+
+  **iOS** 
+  * 手机设置代理后，Safari 地址栏输入 `rootca.pro`，按提示安装证书（或者通过 `whistle` 控制台的二维码扫码安装，iOS 安装根证书需要到连接远程服务器进行验证，需要暂时把 **Https 拦截功能关掉 **）
+  * iOS 10.3 之后需要手动信任自定义根证书，设置路径：`Settings > General > About > Certificate Trust Testings`
+
+  [具体可以看这里](http://www.neglectedpotential.com/2017/04/trusting-custom-root-certificates-on-ios-10-3/)
+
+  <img src="https://avwo.github.io/whistle/img/ios10.3_ca.PNG" width="320">
+
+  **Android**
+  * `whistle` 控制台二维码扫码安装，或者浏览器地址栏 `rootca.pro` 按提示安装
+  * 部分浏览器不会自动识别 ca 证书，可以通过 Android Chrome 来完成安装
+
+### 开启拦截 Https
+
+图中的打开的对话框有两个 checkbox(** 在 iOS 安装根证书的时候，记得不要开启 ` Intercept HTTPS CONNECTs`，否则将无法安装成功 **)：
+
+1. ` Hide HTTPS CONNECTs`：隐藏 `connect` 类型的请求
+2. ` Intercept HTTPS CONNECTs`：开启 Https 拦截功能，只有勾上这个 checkbox 及装好根证书，whistle 才能看到 HTTPS、Websocket 的请求
+3. 也可以通过配置来开启对部分请求的 Https 拦截功能
+
+   www.test.com filter://intercept
+   	/alibaba-inc/ filter://intercept
+   ​	
+
+4. 如果想过滤部分请求不启用 Https 拦截功能
+
+   # 指定域名
+   	www.baidu.com  disable://intercept
+
+   	# 通过正则
+   	/baidu/ disable://intercept
+   	
+   	# 不支持通过路径的方式设置
+
+
+# Online {#webui_online}
+
+当前 whistle 是否在线及查看 whistle 服务的基本信息，包括：
+
+- 运行的 Node 版本
+- whistle 的端口号及 IP，方便移动端配置代理
+
+![Online](https://avwo.github.io/whistle/img/online.gif)
+
 # 常见应用 {#cases}
 
+* [Http Proxy](#cases_http-proxy)
+* [Mobile](#cases_mobile)
+* [Reverse Proxy](#cases_reverse-proxy)
+* [Socket](#cases_socket)
+* [Websocket](#cases_websocket)
+
+# 移动端调试 {#cases_mobile}
 
 TODO
-# mobile {#cases_mobile}
 
-TODO
 # WebSocket 代理 {#cases_websocket}
 
 TODO
+
 # Socket 调试 {#cases_socket}
 
 TODO
+
 # HTTP 代理 {#cases_http-proxy}
 
 TODO
+
 # 反向代理 {#cases_reverse-proxy}
 
 TODO
+
 # 用户反馈 {#feedback}
 
 1. 有问题请直接提 issue: [New issue](https://github.com/avwo/whistle/issues/new)
 2. 欢迎提 PR: [Pull requests](https://github.com/avwo/whistle/compare)
 3. 有什么问题也可以通过 QQ 群反馈: 462558941
+
 
 # 协议列表 {#rules}
 
@@ -959,6 +1249,7 @@ TODO
 * [**exportsUrl** (把请求的 url 列表按顺序导出到指定文件)](#rules_exportsUrl)
 * [**exports** (导出请求数据到指定文件)](#rules_exports)
 
+
 # host {#rules_host}
 
 whistle 不仅完全兼容操作系统的 hosts 配置模式，也支持域名、路径、正则三种匹配方式，而且支持配置端口号，配置模式：
@@ -1019,6 +1310,7 @@ whistle 不仅完全兼容操作系统的 hosts 配置模式，也支持域名�
 	127.0.0.1:8080 $example.com/test # 等价于： $example.com/test 127.0.0.1：8080
 	127.0.0.1:8080 $http://example.com:5555/index.html $www.example.com:6666 $https://www.test.com/test
 
+
 # 响应规则列表 {#rules_rule}
 
 * [** 请求替换 **](#rules_rule_replace)
@@ -1030,9 +1322,11 @@ whistle 不仅完全兼容操作系统的 hosts 配置模式，也支持域名�
 * [**xtpl** (同上，与 xfile 类似)](#rules_rule_xtpl)
 * [** 自定义 **](#rules_rule_custom)
 
+
 # 自定义规则 {#rules_rule_custom}
 
 whistle 提供了插件的方式扩展协议，具体参考：[插件开发](#plugins)
+
 
 # file (xfile) {#rules_rule_file}
 
@@ -1066,6 +1360,7 @@ filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者
 
 所有 www.ifeng.com 的请求都会先到目录或文件 `/User/xxx/test`，没有匹配的文件再到 `/User/xxx/test/index.html`
 
+
 # rawfile (xrawfile) {#rules_rule_rawfile}
 
 __xrawfile 功能同 rawfile 一样，和 rawfile 的唯一区别是 rawfile 找不到对应文件返回 404，而 xrawfile 则是继续请求线上资源。__
@@ -1091,6 +1386,7 @@ http 格式文件参考: [http 内容格式](http://www.cnblogs.com/kissdodog/ar
 
 	test
 
+
 # 请求替换 {#rules_rule_replace}
 
 把请求替换成请求其它 url，配置模式：
@@ -1112,6 +1408,7 @@ http 格式文件参考: [http 内容格式](http://www.cnblogs.com/kissdodog/ar
 用 [http://www.ifeng.com](http://www.ifeng.com/) 访问 HTTPS 的[https://www.baidu.com](https://www.baidu.com/)
 
 		http://www.ifeng.com https://www.baidu.com
+
 
 # tpl (xtpl) {#rules_rule_tpl}
 
@@ -1139,6 +1436,7 @@ test.json:
 
 请求 `http://www.test.com/test/xxx.jsonp?callback=imcallbackfn` 会返回 `imcallbackfn({ec: 0})`
 
+
 # xfile {#rules_rule_xfile}
 
 __xfile 功能同 file 一样，xfile 和 file 的唯一区别是 file 找不到对应文件返回 404，而 xfile 则是继续请求线上资源。__
@@ -1146,12 +1444,14 @@ __xfile 功能同 file 一样，xfile 和 file 的唯一区别是 file 找不到
 
 用法参考 [file](#rules_rule_file)
 
+
 # xtpl {#rules_rule_xtpl}
 
 __xtpl 功能同 tpl 一样，和 tpl 的唯一区别是 tpl 找不到对应文件返回 404，而 xtpl 则是继续请求线上资源。__
 
 
 用法参考 [tpl](#rules_rule_tpl)
+
 
 # accept {#rules_accept}
 
@@ -1167,6 +1467,7 @@ pattern 参见 [匹配方式](#pattern)，更多模式请参考 [配置模式](#
 
 	www.test.com accept://image/*
 
+
 # attachment {#rules_attachment}
 
 设置响应头字段，让响应变成可以直接下载，配置模式：
@@ -1180,6 +1481,7 @@ filname 指定下载文件保存的名称，如果 filename 为空，则会自�
 	www.ifeng.com attachment://ifeng.html
 
 访问 [www.ifeng.com](http://www.ifeng.com/) 时会自动下载该页面。
+
 
 # auth {#rules_auth}
 
@@ -1201,6 +1503,7 @@ pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mo
 
 	www.ifeng.com auth://test:123
 
+
 # cache {#rules_cache}
 
 设置响应的缓存头，配置模式：
@@ -1220,6 +1523,7 @@ maxAge 为缓存的秒数，也可以代表一些关键字: `no`、`no-cache`、
 
 如果如果后台返回 304 设置这个字段没有用，要防止后台返回 `304`，需要用 [disable](#rules_disable)://cache。
 
+
 # css {#rules_css}
 > `v1.8.0` 及以后的版本用 [cssAppend](#rules_cssAppend) 代替
 
@@ -1237,6 +1541,7 @@ test.css:
 
 	html, body {background: red!important;}
 
+
 # cssAppend {#rules_cssAppend}
 
 往 content-type 为 html 或 css 的响应内容后面追加数据，如果是 html，则会自动加上 style 标签在追加到响应内容，如果是 css，则会自动追加到文本后面，这个与 [resAppend](#rules_resAppend) 的区别是 [resAppend](#rules_resAppend) 不区分类型，对所有匹配的响应都会追加指定的数据，配置模式：
@@ -1252,6 +1557,7 @@ filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者
 test.css:
 
 	html, body {background: red!important;}
+
 
 # cssBody {#rules_cssBody}
 
@@ -1269,6 +1575,7 @@ test.css:
 
 	html, body {background: red!important;}
 
+
 # cssPrepend {#rules_cssPrepend}
 
 往 content-type 为 html 或 css 的响应内容前面追加数据，如果是 html，则会自动加上 style 标签再追加到响应内容前面，如果是 css，则会自动追加到文本前面，这个与 [resPrepend](#rules_resPrepend) 的区别是 [resPrepend](#rules_resPrepend) 不区分类型，对所有匹配的响应都会追加指定的数据，配置模式：
@@ -1285,6 +1592,7 @@ test.css:
 
 	html, body {background: red!important;}
 
+
 # delete {#rules_delete}
 
 删除指定的请求响应头字段，也可以通过 [reqHeaders](#rules_reqHeaders)、[resHeaders](#rules_resHeaders) 把字段设置为空字符串，配置模式：
@@ -1298,6 +1606,7 @@ pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mo
 1. `req.headers.xxx`: 删除 req.headers 的 xxx 字段
 2. `res.headers.xxx`: 删除 res.headers 的 xxx 字段
 3. `headers.xxx`: 删除 res.headers&res.headers 的 xxx 字段
+
 
 # disable {#rules_disable}
 
@@ -1355,6 +1664,7 @@ pattern 参见 [匹配方式](#pattern)，更多模式请参考 [配置模式](#
 	# 也可以同时禁用多个
 	www.example.com disable://cache|cookie|ua|referer|csp|timeout|301|intercept|dnsCache|keepAlive
 
+
 # dispatch {#rules_dispatch}
 
 有时需要根据UA或其它请求头信息返回不同的数据，whistle用sandbox执行`dispatch`传人进来的脚本，`dispatch`关联的脚本在全局属性可以获取以下信息：
@@ -1400,6 +1710,7 @@ dispatch.js:
 
 [www.ifeng.com](http://www.ifeng.com/)的请求都会在url加上请求参数`test=xxx`
 
+
 # enable {#rules_enable}
 
 通过配置开启指定的设置(https 拦截、隐藏请求)，配置模式(v1.2.5 及以上版本支持)：
@@ -1419,6 +1730,7 @@ dispatch.js:
 	# abort 掉请求(v1.5.17+)
 	www.xiaoying.com enable://abort
 
+
 # etag {#rules_etag}
 
 修改请求头的 etag 字段，配置模式：
@@ -1434,6 +1746,7 @@ pattern 参见 [匹配方式](#pattern)，更多模式请参考 [配置模式](#
 
 	# etag 修改为 xxx
 	www.ifeng.com etag://xxx
+
 
 # exports {#rules_exports}
 
@@ -1475,6 +1788,7 @@ filepath 指本地文件路径，pattern 参见 [匹配方式](#pattern)，更�
 
 	/./ exports:///User/xxx/exports.txt
 
+
 # exportsUrl {#rules_exportsUrl}
 
 用于把请求的完整 url 列表按顺序导出到指定文件 (如果该文件不存在，则会自动创建)，配置模式：
@@ -1488,6 +1802,7 @@ filepath 指本地文件路径，pattern 参见 [匹配方式](#pattern)，更�
 导出所有请求 url 到指定文件:
 
 	/./ exportsUrl:///User/xxx/exports.txt
+
 
 # filter(=[ignore](#rules_ignore) + [enable](#rules_enable)) {#rules_filter}
 
@@ -1520,6 +1835,7 @@ pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mo
 
 开启拦截 HTTPS 也可以通过界面上方的 Https 按钮来启用，filter 提供了一种可配置的方式，`filter://hide` 可以让 www.ifeng.com 的请求不在界面上显示，这个与界面上的 Filter 设置效果相反，可以配合使用。
 
+
 # forwardedFor {#rules_forwardedFor}
 
 修改请求头的 `x-forwarded-for` 字段 (`whistle >= v1.6.1`)，配置模式：
@@ -1532,6 +1848,7 @@ pattern 参见 [匹配方式](#pattern)，更多模式请参考 [配置模式](#
 
 	# 修改 www.ifeng.com 请求头的 `x-forwarded-for` 字段为 1.1.1.1
 	www.ifeng.com forwardedFor://1.1.1.1
+
 
 # hostname {#rules_hostname}
 
@@ -1548,6 +1865,7 @@ pattern 参见 [匹配方式](#pattern)，更多模式请参考 [配置模式](#
 	www.test.com:8888 hostname://www.test.com
 
 去掉 www.test.com:8888 所有请求头部 host 字段的端口号。
+
 
 # html {#rules_html}
 
@@ -1567,6 +1885,7 @@ test.html:
 
 	<iframe style="width: 100%; height: 600px;" src="http://www.aliexpress.com/"></iframe>
 
+
 # htmlAppend {#rules_htmlAppend}
 
 往 content-type 为 html 的响应内容后面追加数据，这个与 [resAppend](#rules_resAppend) 的区别是 [resAppend](#rules_resAppend) 不区分类型，对所有匹配的响应都会追加指定的数据，配置模式：
@@ -1582,6 +1901,7 @@ filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者
 test.html:
 
 	<iframe style="width: 100%; height: 600px;" src="http://www.aliexpress.com/"></iframe>
+
 
 # htmlBody {#rules_htmlBody}
 
@@ -1599,6 +1919,7 @@ test.html:
 
 	<iframe style="width: 100%; height: 600px;" src="http://www.aliexpress.com/"></iframe>
 
+
 # htmlPrepend {#rules_htmlPrepend}
 
 往 content-type 为 html 的响应内容前面添加数据，这个与 [resPrepend](#rules_resPrepend) 的区别是 [resPrepend](#rules_resPrepend) 不区分类型，对所有匹配的响应都会在前面添加指定的数据，配置模式：
@@ -1614,6 +1935,7 @@ filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者
 test.html:
 
 	<iframe style="width: 100%; height: 600px;" src="http://www.aliexpress.com/"></iframe>
+
 
 # ignore {#rules_ignore}
 
@@ -1638,6 +1960,7 @@ test.html:
 	www.qq.com 127.0.0.1
 	www.qq.com ignore://host
 
+
 # js {#rules_js}
 
 > `v1.8.0` 及以后的版本用 [jsAppend](#rules_jsAppend) 代替
@@ -1656,6 +1979,7 @@ test.js:
 
 	alert(2);
 
+
 # js {#rules_jsAppend}
 
 往 content-type 为 html 或 js 的响应内容后面追加数据，如果是 html，则会自动加上 script 标签在追加到响应内容，如果是 js，则会自动追加到 js 文本后面，这个与 [resAppend](#rules_resAppend) 的区别是 [resAppend](#rules_resAppend) 不区分类型，对所有匹配的响应都会追加指定的数据，配置模式：
@@ -1671,6 +1995,7 @@ filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者
 test.js:
 
 	alert(2);
+
 
 # jsBody {#rules_jsBody}
 
@@ -1688,6 +2013,7 @@ test.js:
 
 	alert(2);
 
+
 # jsPrepend {#rules_jsPrepend}
 
 往 content-type 为 html 或 js 的响应内容前面添加数据，如果是 html，则会自动加上 script 标签再添加到响应内容前面，如果是 js，则会自动添加到响应内容前面，这个与 [jsPrepend](#rules_jsPrepend) 的区别是 [jsPrepend](#rules_jsPrepend) 不区分类型，对所有匹配的响应都会追加指定的数据，配置模式：
@@ -1703,6 +2029,7 @@ filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者
 test.js:
 
 	alert(2);
+
 
 # log {#rules_log}
 
@@ -1724,6 +2051,7 @@ filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者
 
 	console.log(1, 2, 3, {abc: 123});
 
+
 # method {#rules_method}
 
 修改请求方法，配置模式：
@@ -1736,6 +2064,7 @@ pattern 参见 [匹配方式](#pattern)，更多模式请参考 [配置模式](#
 
 	www.ifeng.com method://post
 
+
 # pac {#rules_pac}
 
 设置 pac 脚本，配置模式：
@@ -1747,6 +2076,7 @@ filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者
 例子：
 
 	/./ pac://https://raw.githubusercontent.com/imweb/node-pac/master/test/scripts/normal.pac
+
 
 # params {#rules_params}
 
@@ -1791,6 +2121,7 @@ params 的作用分三种情况：
 
 括号的写法见：[Rules 的特殊操作符({}、()、<>)](#webui_rules)
 
+
 # plugin {#rules_plugin}
 
 从 [插件开发](#plugins) 里面可知，插件里面涉及 `uiServer`，`statusServer`，`rulesServer`，`server`，`resRulesServer` 共 5 个内部功能不同的 server，这几个 server 都是可选的；如果存在，插件会把匹配的请求按给定方式传给对应的 server，并根据 server 响应内容做相应的处理，如何把请求转发到插件的各个 server？一种方式是直接根据插件的名称设置匹配，比如插件 `whistle.abc`：
@@ -1806,6 +2137,7 @@ params 的作用分三种情况：
 	pattern plugin://name://value
 
 plugin 支持上述 3 种配置模式(位置可以调换)，匹配规则的请求默认只会请求 `statusServer`，`rulesServer`，`resRulesServer`，用户可以在这 3 个 server 里面获取请求响应信息或动态设置新规则等等。
+
 
 # proxy {#rules_proxy}
 
@@ -1826,6 +2158,7 @@ pattern 参见 [匹配方式](#pattern)，更多模式请参考 [配置模式](#
 	/./ proxy://127.0.0.1:8888
 	www.facebook.com proxy://test:123@127.0.0.1:8888
 
+
 # redirect {#rules_redirect}
 
 设置 302 调整，配置模式：
@@ -1838,6 +2171,7 @@ jumpUrl 为请求要 302 跳转的目标 url，pattern 参见 [匹配方式](#pa
 例子：
 
 	www.ifeng.com redirect://http://www.aliexpress.com/
+
 
 # referer {#rules_referer}
 
@@ -1855,6 +2189,7 @@ pattern 参见 [匹配方式](#pattern)，更多模式请参考 [配置模式](#
 
 把 www.aliexpress.com 域名下的请求都加上 `http://www.aliexpress.com` 这个 referer。
 
+
 # replaceStatus {#rules_replaceStatus}
 
 替换响应的状态码 (状态码范围 100~999)，这个与[statusCode](#rules_statusCode) 的区别是，replaceStatus 是请求响应后再修改状态码，而后者的请求不会发出去，设置完状态码直接返回，配置模式：
@@ -1867,6 +2202,7 @@ pattern 参见 [匹配方式](#pattern)，更多模式请参考 [配置模式](#
 例子：
 
 	www.ifeng.com replaceStatus://500
+
 
 # req {#rules_req}
 
@@ -1912,6 +2248,7 @@ Values 的 `test-req`:
 	    }
     }
 
+
 # reqAppend {#rules_reqAppend}
 
 把指定的内容追加到请求内容后面(GET 等请求没有内容无法追加)，配置模式：
@@ -1932,6 +2269,7 @@ pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mo
 test-reqAppend.html:
 
 	Append body
+
 
 # reqBody {#rules_reqBody}
 
@@ -1954,6 +2292,7 @@ test-reqBody.html:
 
 	Body body
 
+
 # reqCharset {#rules_reqCharset}
 
 修改请求头 `content-type` 的 charset，配置模式：
@@ -1965,6 +2304,7 @@ charset 可以为 `utf8`、`gbk` 等等字符编码，pattern 参见 [匹配方�
 例子：
 
 	www.ifeng.com reqCharset://utf8
+
 
 # reqCookies {#rules_reqCookies}
 
@@ -1989,6 +2329,7 @@ test-reqCookies.json:
 
 	test: 123
 	key: value
+
 
 # reqCors {#rules_reqCors}
 
@@ -2015,6 +2356,7 @@ test-reqCors.json:
 	method: POST
 	headers: x-test
 
+
 # reqDelay {#rules_reqDelay}
 
 设置延迟请求的时间 (单位：毫秒)，配置模式：
@@ -2026,6 +2368,7 @@ pattern 参见 [匹配方式](#pattern)，更多模式请参考 [配置模式](#
 例子：
 
 	www.ifeng.com reqDelay://3000
+
 
 # reqHeaders {#rules_reqHeaders}
 
@@ -2052,6 +2395,7 @@ test-reqHeaders.json:
 	x-test2: value2
 	x-testN: valueN
 
+
 # reqPrepend {#rules_reqPrepend}
 
 把指定的内容添加到请求内容前面(GET 等请求没有内容无法添加)，配置模式：
@@ -2072,6 +2416,7 @@ pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mo
 test-reqPrepend.html:
 
 	Prepend body
+
 
 # reqReplace {#rules_reqReplace}
 
@@ -2095,6 +2440,7 @@ test-reqReplace.json:
 
 	/user=([^&])/ig: user=$1$1
 	str: replacement
+
 
 # reqScript {#rules_reqScript}
 
@@ -2168,6 +2514,7 @@ reqScript.js:
 		// rules.push('/./ ' + newUrl);
 	}
 
+
 # reqSpeed {#rules_reqSpeed}
 
 设置请求速度 (单位：kb/s，千比特 / 每秒)，配置模式：
@@ -2179,6 +2526,7 @@ pattern 参见 [匹配方式](#pattern)，更多模式请参考 [配置模式](#
 例子：
 
 	www.ifeng.com reqSpeed://3
+
 
 # reqType {#rules_reqType}
 
@@ -2201,6 +2549,7 @@ pattern 参见 [匹配方式](#pattern)，更多模式请参考 [配置模式](#
 
 	www.ifeng.com reqType://text
 
+
 # reqWrite {#rules_reqWrite}
 
 将请求的内容 (如果请求方法允许携带内容) 写入的指定的文件夹或文件；whistle 会根据请求的 url 和配置自动拼接成路径，且 whistle 不会覆盖已存在的文件，配置模式：
@@ -2215,6 +2564,7 @@ filepath 为本地目录或文件，pattern 参见[匹配方式](#pattern)，更
 	/^http:\/\/www.ifeng.com\/$/ reqWrite:///User/test/index.html
 	www.ifeng.com reqWrite:///User/test
 
+
 # reqWriteRaw {#rules_reqWriteRaw}
 
 将请求的完整内容 (包括请求方法、路径、协议、请求头、内容) 写入的指定的文件夹或文件；whistle 会根据请求的 url 和配置自动拼接成路径，且 whistle 不会覆盖已存在的文件，配置模式：
@@ -2228,6 +2578,7 @@ filepath 为本地目录或文件，pattern 参见[匹配方式](#pattern)，更
 	# 匹配 http://www.ifeng.com/，指定特定的文件
 	/^http:\/\/www.ifeng.com\/$/ reqWriteRaw:///User/test/index.html
 	www.ifeng.com reqWriteRaw:///User/test
+
 
 # res {#rules_res}
 
@@ -2270,6 +2621,7 @@ Values 的 `test-res`:
 	    }
     }
 
+
 # resAppend {#rules_resAppend}
 
 把指定的内容追加到响应内容后面(304 等响应没有内容无法追加)，配置模式：
@@ -2290,6 +2642,7 @@ pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mo
 test-resAppend.html:
 
 	Append body
+
 
 # resBody {#rules_resBody}
 
@@ -2312,6 +2665,7 @@ test-resBody.html:
 
 	Body body
 
+
 # resCharset {#rules_resCharset}
 
 修改响应头 `content-type` 的 charset，配置模式：
@@ -2323,6 +2677,7 @@ charset 可以为 `utf8`、`gbk` 等等字符编码，pattern 参见 [匹配方�
 例子：
 
 	www.ifeng.com resCharset://utf8
+
 
 # resCookies {#rules_resCookies}
 
@@ -2367,6 +2722,7 @@ test-resCookies.json:
         }
 	}
 
+
 # resCors {#rules_resCors}
 
 修改响应的[cors](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Access_control_CORS)，配置模式：
@@ -2408,6 +2764,7 @@ test-resCors.json:
 	credentials: true
 	maxAge: 300000
 
+
 # resDelay {#rules_resDelay}
 
 设置延迟响应的时间 (单位：毫秒)，配置模式：
@@ -2419,6 +2776,7 @@ pattern 参见 [匹配方式](#pattern)，更多模式请参考 [配置模式](#
 例子：
 
 	www.ifeng.com resDelay://3000
+
 
 # resHeaders {#rules_resHeaders}
 
@@ -2445,6 +2803,7 @@ test-resHeaders.json:
 	x-test2: value2
 	x-testN: valueN
 
+
 # responseFor {#rules_responseFor}
 
 设置响应头的 `x-whistle-response-for` 字段(`whistle >= v1.7.1`)，主要方便自定义 whistle 的 Network SeverIP 显示真实的服务器环境或 IP，配置模式：
@@ -2460,6 +2819,7 @@ pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mo
 
 
 PS：某些情况下需要通过 nigix 转发，可以结合 [resScript](#rules_resScript) 把响应头的 `x-upstream` 字段设置到 `x-whistle-response-for`，这样就可以在 whistle 的 Network 上看到真实的 IP
+
 
 # resPrepend {#rules_resPrepend}
 
@@ -2481,6 +2841,7 @@ pattern 参见[匹配方式](#pattern)，更多模式请参考[配置模式](#mo
 test-resPrepend.html:
 
 	Prepend body
+
 
 # resReplace {#rules_resReplace}
 
@@ -2504,6 +2865,7 @@ test-resReplace.json:
 
 	/user=([^&])/ig: user=$1$1
 	<script: <script crossorigin
+
 
 # resScript {#rules_resScript}
 
@@ -2571,6 +2933,7 @@ resScript.js:
 		from: 'resScript'
 	};
 
+
 # resSpeed {#rules_resSpeed}
 
 设置响应速度 (单位：kb/s，千比特 / 每秒)，配置模式：
@@ -2582,6 +2945,7 @@ pattern 参见 [匹配方式](#pattern)，更多模式请参考 [配置模式](#
 例子：
 
 	www.ifeng.com resSpeed://3
+
 
 # resType {#rules_resType}
 
@@ -2602,6 +2966,7 @@ pattern 参见 [匹配方式](#pattern)，更多模式请参考 [配置模式](#
 
 	www.ifeng.com resType://text
 
+
 # resWrite {#rules_resWrite}
 
 将响应的内容 (如果有) 写入的指定的文件夹或文件；whistle 会根据请求的 url 和配置自动拼接成路径，且 whistle 不会覆盖已存在的文件，配置模式：
@@ -2616,6 +2981,7 @@ filepath 为本地目录或文件，pattern 参见[匹配方式](#pattern)，更
 	/^http:\/\/www.ifeng.com\/$/ resWrite:///User/test/index.html
 	www.ifeng.com resWrite:///User/test
 
+
 # resWriteRaw {#rules_resWriteRaw}
 
 将响应的完整内容 (包括协议、状态码、状态信息、响应头、内容) 写入的指定的文件夹或文件；whistle 会根据请求的 url 和配置自动拼接成路径，且 whistle 不会覆盖已存在的文件，配置模式：
@@ -2629,6 +2995,7 @@ filepath 为本地目录或文件，pattern 参见[匹配方式](#pattern)，更
 	# 匹配 http://www.ifeng.com/，指定特定的文件
 	/^http:\/\/www.ifeng.com\/$/ resWriteRaw:///User/test/index.html
 	www.ifeng.com resWriteRaw:///User/test
+
 
 # rulesFile(ruleFile, rulesScript, ruleScript) {#rules_rulesFile}
 
@@ -2704,6 +3071,7 @@ rulesFile.js:
 		// rules.push('/./' + newUrl);
 	}
 
+
 # socks {#rules_socks}
 
 设置 socks 代理，配置模式：
@@ -2723,6 +3091,7 @@ pattern 参见 [匹配方式](#pattern)，更多模式请参考 [配置模式](#
 	/./ socks://127.0.0.1:1080
 	www.facebook.com socks://test:123@127.0.0.1:1080
 
+
 # statusCode {#rules_statusCode}
 
 设置响应状态码 (状态码范围 `100~999`)，请求会直接根据设置的状态码返回，不会请求到线上，这个与[replaceStatus](#rules_replaceStatus) 不同，后者是请求返回后再修改状态码，可以用于模拟各种状态码，配置模式：
@@ -2735,6 +3104,7 @@ pattern 参见 [匹配方式](#pattern)，更多模式请参考 [配置模式](#
 例子：
 
 	www.ifeng.com statusCode://500
+
 
 # ua {#rules_ua}
 
@@ -2755,6 +3125,7 @@ test-ua:
 
 	Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.23 Mobile Safari/537.36
 
+
 # urlParams {#rules_urlParams}
 
 修改请求参数，配置模式：
@@ -2774,6 +3145,7 @@ pattern 参见[匹配方式](#pattern)，更多模式请参考[匹配模式](#mo
 	www.ifeng.com urlParams://(test=1)
 
 括号的写法见：[Rules 的特殊操作符({}、()、<>)](#webui_rules)
+
 
 # urlReplace {#rules_urlReplace}
 
@@ -2798,6 +3170,7 @@ test-urlReplace.json:
 	/user=([^&])/ig: user=$1$1
 	index: news
 
+
 # weinre {#rules_weinre}
 
 weinre 可以用于调试远程页面特别是移动端的网页，配置模式：
@@ -2816,4 +3189,5 @@ key 为任意的字符串，主要用于区分页面，pattern 参见 [匹配方
 2. 手机打开配置的页面，然后点击 network 页面顶部操作栏的 Weinre 按钮，在下拉列表就可以找到设置的 weinre id 的，点击会新开一个 weinre 调试页面，可以开始使用 weinre
 
 3. 手机调试或者远程访问时，可能会因为 whistle 所在机器的防火墙设置，导致无法远程访问，可以通过设置白名单，或者关闭防火墙：[http://jingyan.baidu.com/article/870c6fc317cae7b03ee4be48.html](http://jingyan.baidu.com/article/870c6fc317cae7b03ee4be48.html)
+
 
