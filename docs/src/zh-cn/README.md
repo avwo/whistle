@@ -1012,7 +1012,7 @@ PS：通过 Composer 构造的请求 Frames 多了一个 Composer 选项，可�
 
 
 
-如果对一般的请求也要像构造的请求一样可以自定义发送或接收数据，需要借助插件 [whistle.script](https://github.com/whistle-plugins/whistle.script)，具体参见文章：[利用 whistle 调试 WebSocket 和 Socket 请求](http://imweb.io/topic/5a11b1b8ef79bc941c30d91a)
+如果对一般的请求也要像构造请求一样可以自定义发送或接收数据，需要借助插件 [whistle.script](https://github.com/whistle-plugins/whistle.script)，具体参见文章：[利用 whistle 调试 WebSocket 和 Socket 请求](http://imweb.io/topic/5a11b1b8ef79bc941c30d91a)
 
 # Settings {#webui_settings}
 
@@ -1135,31 +1135,9 @@ PS：通过 Composer 构造的请求 Frames 多了一个 Composer 选项，可�
 
 # 常见应用 {#cases}
 
-* [Http Proxy](#cases_http-proxy)
-* [Mobile](#cases_mobile)
-* [Reverse Proxy](#cases_reverse-proxy)
-* [Socket](#cases_socket)
-* [Websocket](#cases_websocket)
+* [利用 whistle 调试移动端页面](http://imweb.io/topic/5981a34bf8b6c96352a59401)
+* [利用 whistle 调试 WebSocket 和 Socket 请求](http://imweb.io/topic/5a11b1b8ef79bc941c30d91a)
 
-# 移动端调试 {#cases_mobile}
-
-TODO
-
-# WebSocket 代理 {#cases_websocket}
-
-TODO
-
-# Socket 调试 {#cases_socket}
-
-TODO
-
-# HTTP 代理 {#cases_http-proxy}
-
-TODO
-
-# 反向代理 {#cases_reverse-proxy}
-
-TODO
 
 # 用户反馈 {#feedback}
 
