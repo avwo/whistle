@@ -59,9 +59,16 @@
       },
       "catalog": [
         "network",
+        "composer",
+        "log",
         "rules",
         "values",
-        "plugins"
+        "plugins",
+        "websocket",
+        "settings",
+        "weinre",
+        "https",
+        "online"
       ]
     },
     {

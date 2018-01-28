@@ -168,7 +168,7 @@ function combo() {
     if (result && result.length) {
       const content = result.reduce((pre, next) => {
         if (cache[next]) {
-          pre += cache[next] + '\n';
+          pre += cache[next] + '\n\n';
         }
         return pre;
       }, '');
