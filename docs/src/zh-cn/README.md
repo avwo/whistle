@@ -1014,6 +1014,7 @@ PS：通过 Composer 构造的请求 Frames 多了一个 Composer 选项，可�
 
 如果对一般的请求也要像构造请求一样可以自定义发送或接收数据，需要借助插件 [whistle.script](https://github.com/whistle-plugins/whistle.script)，具体参见文章：[利用 whistle 调试 WebSocket 和 Socket 请求](http://imweb.io/topic/5a11b1b8ef79bc941c30d91a)
 
+
 # Settings {#webui_settings}
 
 在 whistle 的界面中，分别有 **Network**、**Rules**、**Values** 三个页面有 **Settings** 菜单，其中，**Rules** 和 **Values** 的 **Settings** 主要用于设置编辑器样式及是否允许多选 Rules，具体分别参见：[Rules 界面说明](#webui_rules) 和 [Values 界面说明](#webui_values)。
