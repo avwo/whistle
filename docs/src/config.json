@@ -76,7 +76,7 @@
       "i18n": {
         "zh-cn": "常见应用"
       },
-      "catalog": [
+      "_catalog": [
         {
           "name": "mobile",
           "i18n": {
