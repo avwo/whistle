@@ -139,26 +139,27 @@ whistle安装完成后，执行命令 `whistle help` 或 `w2 help`，查看whist
 		-V, --version                                   output the version number
 
 #### 启动whistle
-启动whistle:
+启动:
 
 	w2 start
 
 *Note: 如果要防止其他人访问配置页面，可以在启动时加上登录用户名和密码 `-n yourusername -w yourpassword`。*
 
-重启whsitle:
+重启:
 
 	w2 restart
 
 
-停止whistle:
+停止:
 
 	w2 stop
 
-启动whistle调试模式:
+启动调试模式:
 
 	w2 run
 
 更多内容参考：[安装启动](https://avwo.github.io/whistle/install.html)
+
 # 设置代理
 ##### 配置信息
 1. 代理服务器：127.0.0.1(如果部署在远程服务器或虚拟机上，改成对应服务器或虚拟机的ip即可)
