@@ -83,12 +83,9 @@ Node安装完成后，在命令行执行 `node -v` 查看下对应的Node版本�
 	v8.9.4
 
 #### 安装whistle
-Node安装成功后，执行如下npm命令安装whistle：
+Node安装成功后，执行如下npm命令安装whistle （**Mac或Linux的非root用户需要在命令行前面加`sudo`，如：`sudo npm install -g whistle`**）
 
 	npm install -g whistle
-
-  # Mac或Linux上，如果上述命令安装失败，在命令行前面加 sudo
-  sudo npm install -g whistle
 
 npm默认镜像是在国外，有时候安装速度很慢或者出现安装不了的情况，如果无法安装或者安装很慢，可以使用taobao的镜像安装：
 
@@ -142,22 +139,22 @@ whistle安装完成后，执行命令 `whistle help` 或 `w2 help`，查看whist
 		-V, --version                                   output the version number
 
 #### 启动whistle
-启动:
+启动whistle:
 
 	w2 start
 
 *Note: 如果要防止其他人访问配置页面，可以在启动时加上登录用户名和密码 `-n yourusername -w yourpassword`。*
 
-重启:
+重启whsitle:
 
 	w2 restart
 
 
-停止:
+停止whistle:
 
 	w2 stop
 
-启动调试模式:
+启动whistle调试模式:
 
 	w2 run
 
@@ -208,76 +205,70 @@ PS: 如果配置完代理，手机无法访问，可能是whistle所在的电脑
 1. 设置hosts
 
 	指定[www.ifeng.com](http://www.ifeng.com/)的ip:
-	```
-  www.ifeng.com 127.0.0.1
-  # or
-  127.0.0.1 www.ifeng.com
-	```
-	
-  指定[www.ifeng.com](http://www.ifeng.com/)的ip和端口，把请求转发到本地8080端口，这个在平时开发中可以用来去掉url中的端口号:
 
-	```
-  # www.ifeng.com 127.0.0.1
-  www.ifeng.com 127.0.0.1:8080
-  # or
-  127.0.0.1:8080 www.ifeng.com
-  ```
+		www.ifeng.com 127.0.0.1
+		# or
+		127.0.0.1 www.ifeng.com
+
+	指定[www.ifeng.com](http://www.ifeng.com/)的ip和端口，把请求转发到本地8080端口，这个在平时开发中可以用来去掉url中的端口号:
+
+		# www.ifeng.com 127.0.0.1
+		www.ifeng.com 127.0.0.1:8080
+		# or
+		127.0.0.1:8080 www.ifeng.com
 
 	也可以用某个域名的ip设置hosts
 
-  ```
-  www.ifeng.com host://www.qq.com:8080
-  # or
-  host://www.qq.com:8080 www.ifeng.com
-	```	
- 更多匹配模式参考：[匹配模式](pattern.html)
+		www.ifeng.com host://www.qq.com:8080
+		# or
+		host://www.qq.com:8080 www.ifeng.com
+
+ 更多匹配模式参考：[匹配模式](https://avwo.github.io/whistle/pattern.html)
 
 2. 本地替换
 	
 	平时开发中经常会用到这个功能，把响应替换成本地文件内容。
 
-	```
-  # Mac、Linux
-  www.ifeng.com file:///User/username/test
-  # or www.ifeng.com file:///User/username/test/index.html
-
-  # Windows的路径分隔符可以用 \ 或者 /
-  www.ifeng.com file://E:\xx\test
-  # or www.ifeng.com file://E:\xx\test\index.html
-	```	
+		# Mac、Linux
+		www.ifeng.com file:///User/username/test
+		# or www.ifeng.com file:///User/username/test/index.html
+		
+		# Windows的路径分隔符可以用 \ 或者 /
+		www.ifeng.com file://E:\xx\test
+		# or www.ifeng.com file://E:\xx\test\index.html
 
 	[http://www.ifeng.com/](http://www.ifeng.com/)会先尝试加载`/User/username/test`这个文件，如果不存在，则会加载`/User/username/test/index.html`，如果没有对应的文件则返回404。
 	
 	[http://www.ifeng.com/xxx](#)会先尝试加载`/User/username/test/xxx`这个文件，如果不存在，则会加载`/User/username/test/xxx/index.html`，如果没有对应的文件则返回404。
 	
-	也可以替换jsonp请求，具体参见[tpl](rules/rule/tpl.html)
+	也可以替换jsonp请求，具体参见：[tpl](rules/rule/tpl.html)
+
+	更多匹配模式参考：[匹配模式](https://avwo.github.io/whistle/pattern.html)
 
 3. 请求转发	
 	
 	[www.ifeng.com](http://www.ifeng.com/)域名下的请求都替换成对应的www.aliexpress.com域名
 
-  ```
-	www.ifeng.com www.aliexpress.com
-	```	
-	
+		www.ifeng.com www.aliexpress.com
+
+	更多匹配模式参考：[匹配模式](https://avwo.github.io/whistle/pattern.html)
 4. 注入html、js、css
 	
 	whistle会自动根据响应内容的类型，判断是否注入相应的文本及如何注入(是否要用标签包裹起来)。
 	
-  ```
-  # Mac、Linux
-  www.ifeng.com html:///User/xxx/test/test.html
-  www.ifeng.com js:///User/xxx/test/test.js
-  www.ifeng.com css:///User/xxx/test/test.css
+		# Mac、Linux
+		www.ifeng.com html:///User/xxx/test/test.html
+		www.ifeng.com js:///User/xxx/test/test.js
+		www.ifeng.com css:///User/xxx/test/test.css
+		
+		# Windows的路径分隔符可以用`\`和`/`
+		www.ifeng.com html://E:\xx\test\test.html
+		www.ifeng.com js://E:\xx\test\test.js
+		www.ifeng.com css://E:\xx\test\test.css
 
-  # Windows的路径分隔符可以用`\`和`/`
-  www.ifeng.com html://E:\xx\test\test.html
-  www.ifeng.com js://E:\xx\test\test.js
-  www.ifeng.com css://E:\xx\test\test.css
-	```
+	所有www.ifeng.com域名下的请求，whistle都会根据响应类型，将处理好的文本注入到响应内容里面，如是html请求，js和css会分别自动加上`script`和`style`标签后追加到内容后面。
 
-  所有www.ifeng.com域名下的请求，whistle都会根据响应类型，将处理好的文本注入到响应内容里面，如是html请求，js和css会分别自动加上`script`和`style`标签后追加到内容后面。
-
+	更多匹配模式参考：[匹配模式](https://avwo.github.io/whistle/pattern.html)
 5. 调试远程页面
 
 	利用whistle提供的[weinre](rules/weinre.html)和[log](rules/log.html)两个协议，可以实现修改远程页面DOM结构及自动捕获页面js错误及console打印的信息，还可以在页面顶部或js文件底部注入指定的脚步调试页面信息。
@@ -286,21 +277,19 @@ PS: 如果配置完代理，手机无法访问，可能是whistle所在的电脑
 	
 	weinre：
 
-	```
-  www.ifeng.com weinre://test
-	```	
+		www.ifeng.com weinre://test
   
 	配置后保存，打开[www.ifeng.com](http://www.ifeng.com/)，鼠标放在菜单栏的weinre按钮上会显示一个列表，并点击其中的`test`项打开weinre的调试页面选择对应的url切换到Elements即可。
 	
 	log:
 
-	```
-	www.ifeng.com log://{test.js}
-	```	
+		www.ifeng.com log://{test.js}
 
 	配置后保存，鼠标放在菜单栏的weinre按钮上会显示一个列表，并点击其中的`test.js`项，whistle会自动在Values上建立一个test.js分组，在里面填入`console.log(1, 2, 3, {a: 123})`保存，打开Network -> 右侧Log -> Page，再打开[www.ifeng.com](http://www.ifeng.com/)，即可看到Log下面的Page输出的信息。
 
-更多内容参考：[快速上手](https://avwo.github.io/whistle/quickstart.html)
+	更多匹配模式参考：[匹配模式](https://avwo.github.io/whistle/pattern.html)
+	
+更多内容参考：[协议列表](https://avwo.github.io/whistle/rules/README.md)
 
 # 帮助文档
 1. [安装启动](https://avwo.github.io/whistle/install.md)
