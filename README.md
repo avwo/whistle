@@ -290,7 +290,7 @@ PS: 如果配置完代理，手机无法访问，可能是whistle所在的电脑
 
 	更多匹配模式参考：[匹配模式](https://avwo.github.io/whistle/pattern.html)
 	
-更多内容参考：[协议列表](https://avwo.github.io/whistle/rules/README.html)
+更多内容参考：[协议列表](https://avwo.github.io/whistle/rules/)
 
 # 帮助文档
 1. [安装启动](https://avwo.github.io/whistle/install.html)
@@ -304,8 +304,8 @@ PS: 如果配置完代理，手机无法访问，可能是whistle所在的电脑
 9. [注意事项](https://avwo.github.io/whistle/attention.html)
 10. [关于ATS](https://avwo.github.io/whistle/ats.html)
 11. [常见问题](https://avwo.github.io/whistle/questions.html)
-12. [界面功能](https://avwo.github.io/whistle/webui/README.html)
-13. [协议列表](https://avwo.github.io/whistle/rules/README.html)
+12. [界面功能](https://avwo.github.io/whistle/webui/)
+13. [协议列表](https://avwo.github.io/whistle/rules/)
 14. [用户反馈](https://avwo.github.io/whistle/feedback.html)
 
 # License
