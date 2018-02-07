@@ -290,23 +290,23 @@ PS: 如果配置完代理，手机无法访问，可能是whistle所在的电脑
 
 	更多匹配模式参考：[匹配模式](https://avwo.github.io/whistle/pattern.html)
 	
-更多内容参考：[协议列表](https://avwo.github.io/whistle/rules/README.md)
+更多内容参考：[协议列表](https://avwo.github.io/whistle/rules/README.html)
 
 # 帮助文档
-1. [安装启动](https://avwo.github.io/whistle/install.md)
-2. [手动更新](https://avwo.github.io/whistle/update.md)
-3. [快速上手](https://avwo.github.io/whistle/quickstart.md)
-4. [配置方式](https://avwo.github.io/whistle/mode.md)
-5. [匹配模式](https://avwo.github.io/whistle/pattern.md)
-6. [操作值](https://avwo.github.io/whistle/data.md)
-7. [常用功能](https://avwo.github.io/whistle/frequet.md)
-8. [插件开发](https://avwo.github.io/whistle/plugins.md)
-9. [注意事项](https://avwo.github.io/whistle/attention.md)
-10. [关于ATS](https://avwo.github.io/whistle/ats.md)
-11. [常见问题](https://avwo.github.io/whistle/questions.md)
-12. [界面功能](https://avwo.github.io/whistle/webui/README.md)
-13. [协议列表](https://avwo.github.io/whistle/rules/README.md)
-14. [用户反馈](https://avwo.github.io/whistle/feedback.md)
+1. [安装启动](https://avwo.github.io/whistle/install.html)
+2. [手动更新](https://avwo.github.io/whistle/update.html)
+3. [快速上手](https://avwo.github.io/whistle/quickstart.html)
+4. [配置方式](https://avwo.github.io/whistle/mode.html)
+5. [匹配模式](https://avwo.github.io/whistle/pattern.html)
+6. [操作值](https://avwo.github.io/whistle/data.html)
+7. [常用功能](https://avwo.github.io/whistle/frequet.html)
+8. [插件开发](https://avwo.github.io/whistle/plugins.html)
+9. [注意事项](https://avwo.github.io/whistle/attention.html)
+10. [关于ATS](https://avwo.github.io/whistle/ats.html)
+11. [常见问题](https://avwo.github.io/whistle/questions.html)
+12. [界面功能](https://avwo.github.io/whistle/webui/README.html)
+13. [协议列表](https://avwo.github.io/whistle/rules/README.html)
+14. [用户反馈](https://avwo.github.io/whistle/feedback.html)
 
 # License
 [MIT](https://github.com/avwo/whistle/blob/master/LICENSE)
