@@ -13,16 +13,17 @@
 [![NPM count](https://img.shields.io/npm/dt/whistle.svg?style=flat-square)](https://www.npmjs.com/package/whistle)
 [![License](https://img.shields.io/npm/l/whistle.svg?style=flat-square)](https://www.npmjs.com/package/whistle)
 
-whistle(读音`[ˈwɪsəl]`，拼音`[wēisǒu]`)是基于Node实现的跨平台调试代理工具，不仅可以作为普通的HTTP代理服务，其更重要的功能是用来抓包、重放或构造HTTP、HTTPS、WebSocket及普通的Socket(TCP)请求，并可以通过类似hosts的简单配置方式操作请求或响应，且支持域名、路径、正则表达式、通配符、通配路径等多种[匹配模式](https://avwo.github.io/whistle/pattern.html)，也可以通过插件的形式[扩展功能](https://avwo.github.io/whistle/plugins.html)，基本上可以满足你对调试代理的所有需求，具体功能如下：
+Whistle, pronunced `[ˈwɪsəl]`, is a cross-platform debugging and proxying tool based on Node.js. Besides offering HTTP proxying service，the more important function is to capture package, to replay request, to compose request for HTTP、HTTPS、WebSocket and normal Socket(TCP). To achieve these, you can freely and easily use plenty of [patterns](https://avwo.github.io/whistle/pattern.html), domain, path, regular expression, wildcard characters, wildcard path, etc., to operate Request or Response like hosts，and can also use [plugins](https://avwo.github.io/whistle/plugins.html) to meet nearly all the requirements for debugging and proxying. The specific functions are as follows：
 
-![基本功能](https://raw.githubusercontent.com/avwo/whistleui/master/assets/whistle.png)
+![Specific functions](https://processon.com/mindmap/5a796689e4b064e9ddba403e)
 
-whistle的所有操作都可以通过类似如下配置方式实现：
+
+All the operations of whistle will be achieved like the following configuration: 
 
 	pattern operatorURI
 
 
-其中：
+Description：
 
 1. **pattern** 为匹配请求url的表达式，可以为：域名，路径，正则及通配符等等多种匹配方式：
 
