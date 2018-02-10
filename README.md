@@ -13,11 +13,11 @@
 [![NPM count](https://img.shields.io/npm/dt/whistle.svg?style=flat-square)](https://www.npmjs.com/package/whistle)
 [![License](https://img.shields.io/npm/l/whistle.svg?style=flat-square)](https://www.npmjs.com/package/whistle)
 
-whistle(读音`[ˈwɪsəl]`，拼音`[wēisǒu]`)是基于Node实现的跨平台调试代理工具，不仅可以作为普通的HTTP代理服务，其更重要的功能是用来抓包、重放或构造HTTP、HTTPS、WebSocket及普通的Socket(TCP)请求，并可以通过类似hosts的简单配置方式操作请求或响应，且支持域名、路径、正则表达式、通配符、通配路径等多种[匹配模式](https://avwo.github.io/whistle/pattern.html)，也可以通过插件的形式[扩展功能](https://avwo.github.io/whistle/plugins.html)，基本上可以满足你对调试代理的所有需求，具体功能如下：
+whistle(读音`[ˈwɪsəl]`，拼音`[wēisǒu]`)是基于Node实现的跨平台抓包调试代理工具，支持抓包、重放、构造、篡改等方式调试HTTP、HTTPS、WebSocket及普通的Socket(TCP)请求，也可以作为普通的HTTP代理，其所有篡改操作都可以通过类似配置hosts的方式实现，且支持域名、路径、正则表达式、通配符、通配路径等多种[匹配模式](https://avwo.github.io/whistle/pattern.html)，内置了[移动端常用的调试方式](http://imweb.io/topic/5981a34bf8b6c96352a59401)，并支持以Node模块作为插件[扩展功能](https://avwo.github.io/whistle/plugins.html)，基本上可以满足你对抓包调试的所有需求，基本功能如下：
 
-![基本功能](https://raw.githubusercontent.com/avwo/whistleui/master/assets/whistle.png)
+![基本功能](https://raw.githubusercontent.com/avwo/whistleui/master/assets/whistle.png?v=1)
 
-whistle的所有操作都可以通过类似如下配置方式实现：
+whistle的所有篡改操作都可以通过类似如下配置方式实现：
 
 	pattern operatorURI
 
