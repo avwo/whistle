@@ -13,7 +13,9 @@
 [![NPM count](https://img.shields.io/npm/dt/whistle.svg?style=flat-square)](https://www.npmjs.com/package/whistle)
 [![License](https://img.shields.io/npm/l/whistle.svg?style=flat-square)](https://www.npmjs.com/package/whistle)
 
-Whistle, pronunced `[ˈwɪsəl]`, is a cross-platform debugging and proxying capture tool based on Node.js. Besides offering HTTP proxying service，the more important function is to capture package, to replay request, to compose request for HTTP、HTTPS、WebSocket and normal Socket(TCP). To achieve these, you can freely and easily use plenty of [patterns](https://avwo.github.io/whistle/pattern.html), domain, path, regular expression, wildcard characters, wildcard path, etc., to operate Request or Response like hosts，and can also use [plugins](https://avwo.github.io/whistle/plugins.html) to meet nearly all the requirements for debugging and proxying. The specific functions are as follows：
+Whistle, pronunced `[ˈwɪsəl]`, is a cross-platform debugging and proxying capture tool based on Node.js. Besides offering HTTP proxying service，the more important function is to capture package, to replay request, to compose request for HTTP、HTTPS、WebSocket and normal Socket(TCP).
+
+To achieve these, you can freely and easily use plenty of [patterns](https://avwo.github.io/whistle/pattern.html), domain, path, regular expression, wildcard characters, wildcard path, etc., to operate Request or Response like hosts，and can also use [plugins](https://avwo.github.io/whistle/plugins.html) to meet nearly all the requirements for debugging and proxying. The specific functions are as follows：
 
 [Specific functions](https://processon.com/mindmap/5a796689e4b064e9ddba403e)
 
@@ -67,37 +69,39 @@ Description：
 	For more details, please visit [operation value](https://avwo.github.io/whistle/data.html)
 3. The order of **pattern** and **operatorURI** can be exchanged in most situations while the combination mode is supported. For more details about this, please visit [configuration mode](https://avwo.github.io/whistle/mode.html)
 
-# 安装启动
+# Install and start
 
-#### 安装Node
-推荐安装最新的 `LTS` 版本Node，如果本地没有安装Node或安装了低版本的Node，可以按下面的指引安装最新版的Node：
+#### install Node
+The latest `LTS` version of Node.js is recommended to install. 
 
-1. **Windows系统**，访问[https://nodejs.org/](https://nodejs.org/)，下载最新的 `LTS` 版本Node，点击默认安装即可。
-2. **Mac系统**安装方式跟Windows一样。
-3. **Linux系统**，推荐使用源码安装方式，这样无需自己配置 `path`，如果无法用源码安装，也可以直接二进制版本的Node，解压后把里面的bin目录路径加到系统的 `PATH` 即可：
-	- **源码安装**：从[Node官网](https://nodejs.org/en/download/)下载最新版的**Source Code**(或者用`wget`命令下载)，解压文件(`tar -xzvf node-xxx.tar.gz`)，进入解压后的根目录(`node-xxx`)，依次执行`./configure`、`./make`和`./make install`。
-	- **直接用二进制版本**：从[Node官网](https://nodejs.org/en/download/)下载最新版的**Linux Binaries**(或者用`wget`命令下载)，解压文件(`tar -xzvf node-xxx.tar.gz`)，解压后将Node二进制文件的bin目录完整路径加到系统的 `PATH`。
+Only if none or low version of Node.js is installed, you need install the latest version of Node.js as following instructions：
 
-Node安装完成后，在命令行执行 `node -v` 查看下对应的Node版本是否安装成功：
+1. **For Windows**: please visit [https://nodejs.org/](https://nodejs.org/) to download the latest `LTS` version of Node.js. and then, install it using the default option.
+2. **For Mac**: the same as for Windows.
+3. **For Linux**: install with source code is recommended. In this way, you don't need to configure the `path`.  If failed to install with source code, you can also use the binary version of Node.js directly.
+	- **with source package**： visit [Official website of Node](https://nodejs.org/en/download/) to download the latest version of *Source Code**(or using `wget` in shell), unzip(`tar -xzvf node-xxx.tar.gz`), switch to the root directory(`cd node-xxx`), execute `./configure`, `./make` and `./make install` in order。
+	- **using binary version**：visit [Official website of Node](https://nodejs.org/en/download/) to download the latest **Linux Binaries**(或者用`wget`命令下载), unzip(`tar -xzvf node-xxx.tar.gz`), add the absolute path of bin directory to system `PATH` after extracting。
+
+You can execute `node -v` in shell to check if the corresponding version of Node.js is installed successfully：
 
 	$ node -v
 	v8.9.4
 
-#### 安装whistle
-Node安装成功后，执行如下npm命令安装whistle （**Mac或Linux的非root用户需要在命令行前面加`sudo`，如：`sudo npm install -g whistle`**）
+#### install whistle
+After the Node.js is installed successfully, you can execute the following npm command to install whistle（**In Mac or Linux, prefix `sudo` is needed if no root user, i.e. `sudo npm install -g whistle`**）
 
 	npm install -g whistle
 
-npm默认镜像是在国外，有时候安装速度很慢或者出现安装不了的情况，如果无法安装或者安装很慢，可以使用taobao的镜像安装：
+In china, you can install whistle using npm mirror of taobao to accelerate and to avoid fail：
 
 	npm install cnpm -g --registry=https://registry.npm.taobao.org
 	cnpm install -g whistle
 
-	或者直接指定镜像安装：
+	or specify mirror install directly：
 	npm install whistle -g --registry=https://registry.npm.taobao.org
 
 
-whistle安装完成后，执行命令 `whistle help` 或 `w2 help`，查看whistle的帮助信息：
+Execute `whistle help` or `w2 help` to view helps after installment:
 
 	$ w2 help
 	Usage: whistle <command> [options]
@@ -139,53 +143,53 @@ whistle安装完成后，执行命令 `whistle help` 或 `w2 help`，查看whist
 		-F, --frameCacheSize [frameCacheSize]           the cache size of socket frames (512 by default)
 		-V, --version                                   output the version number
 
-#### 启动whistle
-启动:
+#### Start whistle
+Start:
 
 	w2 start
 
-*Note: 如果要防止其他人访问配置页面，可以在启动时加上登录用户名和密码 `-n yourusername -w yourpassword`。*
+*Note: If you don't want others to visit the configuration page of whistle, just add username and password when start, i.e. `-n yourusername -w yourpassword`。*
 
-重启:
+Restart:
 
 	w2 restart
 
 
-停止:
+Stop:
 
 	w2 stop
 
-启动调试模式:
+Debugging mode:
 
 	w2 run
 
-更多内容参考：[安装启动](https://avwo.github.io/whistle/install.html)
+For more details, please visit [install and start](https://avwo.github.io/whistle/install.html)
 
-# 设置代理
-##### 配置信息
-1. 代理服务器：127.0.0.1(如果部署在远程服务器或虚拟机上，改成对应服务器或虚拟机的ip即可)
-2. 默认端口：8899(如果端口被占用，可以在启动是通过 `-p` 来指定新的端口，更多信息可以通过执行命令行 `w2 help` (`v0.7.0`及以上版本也可以使用`w2 help`) 查看)
+# Set proxying
+##### configuration
+1. proxying server：127.0.0.1(if whistle is deployed in remote server or virtual machine, corresponding IP is needed)
+2. default port：8899(if port 8899 is used already，you can specify new port when start. More details can be visited by execute `whistle help` while `w2 help` is supported in `v0.7.0` and higher version)
 
-> 勾选上 **对所有协议均使用相同的代理服务器**
+> Make sure **using the same proxying server for all protocol** in system proxying setting is checked.
 
-##### 代理配置方式(把上面配置信息配置上即可)
-1. 直接配置系统代理：　
+##### the way to configure proxy(configure the two items above)
+1. configure proxy directly in OS：　
   * [Windows](http://jingyan.baidu.com/article/0aa22375866c8988cc0d648c.html) 
   * [Mac](http://jingyan.baidu.com/article/a378c960849144b3282830dc.html)
 
-2. 安装浏览器代理插件 (**推荐**)
+2. using proxying plugin of browers (**recommended**)
 
-	* 安装Chrome代理插件： [whistle-for-chrome插件](https://github.com/avwo/whistle-for-chrome) 或者 [Proxy SwitchySharp](https://chrome.google.com/webstore/detail/proxy-switchysharp/dpplabbmogkhghncfbfdeeokoefdjegm)
+	* for Chrome： [whistle-for-chrome](https://github.com/avwo/whistle-for-chrome) or [Proxy SwitchySharp](https://chrome.google.com/webstore/detail/proxy-switchysharp/dpplabbmogkhghncfbfdeeokoefdjegm)
 
-	* 安装Firefox代理插件： [Proxy Selector](https://addons.mozilla.org/zh-cn/firefox/addon/proxy-selector/)
+	* for Firefox： [Proxy Selector](https://addons.mozilla.org/zh-cn/firefox/addon/proxy-selector/)
 	
-3. 移动端需要在`设置`中配置当前Wi-Fi的代理
+3. in mobiles, configure the proxy of current Wi-Fi in `Setting`
 
-PS: 如果配置完代理，手机无法访问，可能是whistle所在的电脑防火墙限制了远程访问whistle的端口，关闭防火墙或者设置白名单：[ http://jingyan.baidu.com/article/870c6fc317cae7b03ee4be48.html]( http://jingyan.baidu.com/article/870c6fc317cae7b03ee4be48.html)
+PS: If the mobile failed to use network after configuration, you can try to close the fireworks or congigure white list while the fireworks of the PC has forbidden remote visit to the port of whistle：[ http://jingyan.baidu.com/article/870c6fc317cae7b03ee4be48.html]( http://jingyan.baidu.com/article/870c6fc317cae7b03ee4be48.html)
 
-更多内容参考：[安装启动](https://avwo.github.io/whistle/install.html)
+For more details, please vsit [install and start](https://avwo.github.io/whistle/install.html)
 
-# 访问界面
+# Web UI
 
 上述操作完成后，打开whistle界面[http://local.whistlejs.com](http://local.whistlejs.com/)：
 
@@ -294,20 +298,20 @@ PS: 如果配置完代理，手机无法访问，可能是whistle所在的电脑
 更多内容参考：[协议列表](https://avwo.github.io/whistle/rules/)
 
 # 帮助文档
-1. [安装启动](https://avwo.github.io/whistle/install.html)
-2. [手动更新](https://avwo.github.io/whistle/update.html)
-3. [快速上手](https://avwo.github.io/whistle/quickstart.html)
-4. [配置方式](https://avwo.github.io/whistle/mode.html)
-5. [匹配模式](https://avwo.github.io/whistle/pattern.html)
-6. [操作值](https://avwo.github.io/whistle/data.html)
-7. [常用功能](https://avwo.github.io/whistle/frequet.html)
-8. [插件开发](https://avwo.github.io/whistle/plugins.html)
-9. [注意事项](https://avwo.github.io/whistle/attention.html)
-10. [关于ATS](https://avwo.github.io/whistle/ats.html)
-11. [常见问题](https://avwo.github.io/whistle/questions.html)
-12. [界面功能](https://avwo.github.io/whistle/webui/)
-13. [协议列表](https://avwo.github.io/whistle/rules/)
-14. [用户反馈](https://avwo.github.io/whistle/feedback.html)
+1. [Install and start](https://avwo.github.io/whistle/install.html)
+2. [How to update](https://avwo.github.io/whistle/update.html)
+3. [Quick to start](https://avwo.github.io/whistle/quickstart.html)
+4. [Configuration mode](https://avwo.github.io/whistle/mode.html)
+5. [Matching pattern](https://avwo.github.io/whistle/pattern.html)
+6. [Operation value](https://avwo.github.io/whistle/data.html)
+7. [Frequent functions](https://avwo.github.io/whistle/frequet.html)
+8. [How to develop plugins](https://avwo.github.io/whistle/plugins.html)
+9. [Attentions](https://avwo.github.io/whistle/attention.html)
+10. [About ATS](https://avwo.github.io/whistle/ats.html)
+11. [Common questions](https://avwo.github.io/whistle/questions.html)
+12. [Web UI](https://avwo.github.io/whistle/webui/)
+13. [Rules](https://avwo.github.io/whistle/rules/)
+14. [Feedback](https://avwo.github.io/whistle/feedback.html)
 
 # License
 [MIT](https://github.com/avwo/whistle/blob/master/LICENSE)
