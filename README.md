@@ -13,9 +13,9 @@
 [![NPM count](https://img.shields.io/npm/dt/whistle.svg?style=flat-square)](https://www.npmjs.com/package/whistle)
 [![License](https://img.shields.io/npm/l/whistle.svg?style=flat-square)](https://www.npmjs.com/package/whistle)
 
-Whistle, pronunced `[ˈwɪsəl]`, is a cross-platform debugging and proxying tool based on Node.js. Besides offering HTTP proxying service，the more important function is to capture package, to replay request, to compose request for HTTP、HTTPS、WebSocket and normal Socket(TCP). To achieve these, you can freely and easily use plenty of [patterns](https://avwo.github.io/whistle/pattern.html), domain, path, regular expression, wildcard characters, wildcard path, etc., to operate Request or Response like hosts，and can also use [plugins](https://avwo.github.io/whistle/plugins.html) to meet nearly all the requirements for debugging and proxying. The specific functions are as follows：
+Whistle, pronunced `[ˈwɪsəl]`, is a cross-platform debugging and proxying capture tool based on Node.js. Besides offering HTTP proxying service，the more important function is to capture package, to replay request, to compose request for HTTP、HTTPS、WebSocket and normal Socket(TCP). To achieve these, you can freely and easily use plenty of [patterns](https://avwo.github.io/whistle/pattern.html), domain, path, regular expression, wildcard characters, wildcard path, etc., to operate Request or Response like hosts，and can also use [plugins](https://avwo.github.io/whistle/plugins.html) to meet nearly all the requirements for debugging and proxying. The specific functions are as follows：
 
-![Specific functions](https://processon.com/mindmap/5a796689e4b064e9ddba403e)
+[Specific functions](https://processon.com/mindmap/5a796689e4b064e9ddba403e)
 
 
 All the operations of whistle will be achieved like the following configuration: 
@@ -25,47 +25,47 @@ All the operations of whistle will be achieved like the following configuration:
 
 Description：
 
-1. **pattern** 为匹配请求url的表达式，可以为：域名，路径，正则及通配符等等多种匹配方式：
+1. **pattern** is a expression to match url of request. It can be domain, path, reqular expression, wildcard, and so on：
 
-		# 域名匹配
+		# matching domain
 		www.example.com
-		# 带端口的域名
+		# domain with port
 		www.example.com:6666
-		# 带协议的域名，支持：http、https、ws、wss、tunnel
+		# domain with protocol, supporting http, https, ws, wss, tunnel
 		http://www.example.com
 
-		# 路径匹配，同样支持带协议、端口
+		# matching path, supporting protocol, port
 		www.example.com/test
 		https:/www.exapmle.com/test
 		https:/www.exapmle.com:6666/test
 
-		# 正则匹配
+		# matching regular expression
 		/^https?://www\.example\.com\/test/(.*)/ referer://http://www.test.com/$1
 
-		# 通配符匹配
+		# matching wildcard
 		^www.example.com/test/*** referer://http://www.test.com/$1
 
-	完整内容参见：[匹配模式](https://avwo.github.io/whistle/pattern.html)
-2. **operatorURI** 为对应的操作，由操作协议+操作值组成(`operatorURI = opProtocol://opValue`)：
-	**opProtocol**(操作协议) 对应某类操作，如：
+	For more details, please visit [matching pattern](https://avwo.github.io/whistle/pattern.html)
+2. **operatorURI** is the corresponding operation，made up of opProtocol and opValue：  
+	**opProtocol** represents the kind of operation, e.g.
 		
-			# host：设置请求服务器IP
+			# host：the IP of the server requested
 			pattern host://opValue	
 
-			# file协议：本地替换
+			# file：using the local file to replace
 			pattern file://opValue
 
-	**opValue**(操作值) 对应具体操作的参数值，如：
+	**opValue** represents the parameter of the specific operation, e.g.
 
-			# host协议：设置请求服务器IP
-			pattern host://127.0.0.1:6666 # 或 pattern 127.0.0.1:6666	
+			# host：the IP of the server requested
+			pattern host://127.0.0.1:6666 # or pattern 127.0.0.1:6666	
 
-			# file协议：本地替换
-			pattern file:///User/test/dirOrFile # 或 pattern /User/test/dirOrFile
-			pattern file://E:\test\dirOrFile # 或 pattern E:\test\dirOrFile
+			# file：using the local file to replace
+			pattern file:///User/test/dirOrFile # or pattern /User/test/dirOrFile
+			pattern file://E:\test\dirOrFile # or pattern E:\test\dirOrFile
 
-	完整内容参见：[操作值](https://avwo.github.io/whistle/data.html)
-3. **pattern** 和 **operatorURI** 在多数情况下位置可以调换，且支持组合模式，具体参见：[配置方式](https://avwo.github.io/whistle/mode.html)
+	For more details, please visit [operation value](https://avwo.github.io/whistle/data.html)
+3. The order of **pattern** and **operatorURI** can be exchanged in most situations while the combination mode is supported. For more details about this, please visit [configuration mode](https://avwo.github.io/whistle/mode.html)
 
 # 安装启动
 
