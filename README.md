@@ -174,7 +174,7 @@ whistle安装完成后，执行命令 `whistle help` 或 `w2 help`，查看whist
 
 2. 安装浏览器代理插件 (**推荐**)
 
-	* 安装Chrome代理插件： [whistle-for-chrome插件](https://github.com/avwo/whistle-for-chrome) 或者 [Proxy SwitchySharp](https://chrome.google.com/webstore/detail/proxy-switchysharp/dpplabbmogkhghncfbfdeeokoefdjegm)
+	* 安装Chrome代理插件： 推荐安装[SwitchyOmega](https://chrome.google.com/webstore/detail/padekgcemlokbadohgkifijomclgjgif)
 
 	* 安装Firefox代理插件： [Proxy Selector](https://addons.mozilla.org/zh-cn/firefox/addon/proxy-selector/)
 	
