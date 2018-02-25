@@ -80,7 +80,7 @@ Only if none or low version of Node.js is installed, you need install the latest
 2. **For Mac**: the same as for Windows.
 3. **For Linux**: install with source code is recommended. In this way, you don't need to configure the `path`.  If failed to install with source code, you can also use the binary version of Node.js directly.
 	- **with source package**： visit [Official website of Node](https://nodejs.org/en/download/) to download the latest version of *Source Code**(or using `wget` in shell), unzip(`tar -xzvf node-xxx.tar.gz`), switch to the root directory(`cd node-xxx`), execute `./configure`, `./make` and `./make install` in order。
-	- **using binary version**：visit [Official website of Node](https://nodejs.org/en/download/) to download the latest **Linux Binaries**(或者用`wget`命令下载), unzip(`tar -xzvf node-xxx.tar.gz`), add the absolute path of bin directory to system `PATH` after extracting。
+	- **using binary version**：visit [Official website of Node](https://nodejs.org/en/download/) to download the latest **Linux Binaries**(or using command `wget` to download), unzip(`tar -xzvf node-xxx.tar.gz`), add the absolute path of bin directory to system `PATH` after extracting。
 
 You can execute `node -v` in shell to check if the corresponding version of Node.js is installed successfully：
 
@@ -191,45 +191,47 @@ For more details, please vsit [install and start](https://avwo.github.io/whistle
 
 # Web UI
 
-上述操作完成后，打开whistle界面[http://local.whistlejs.com](http://local.whistlejs.com/)：
+After above operations are completed，open the whistle page in browser[http://local.whistlejs.com](http://local.whistlejs.com/)：
 
 ![whistle webui](https://raw.githubusercontent.com/avwo/whistleui/master/assets/whistle.gif)
 
-1. Network：主要用来查看请求信息，构造请求，页面 `console` 打印的日志及抛出的js错误等
-2. Rules：配置操作规则
-3. Plugins：安装的插件信息，及启用或禁用插件
-4. Weinre：设置的weinre列表
-5. HTTPS：设置是否拦截HTTPS请求，及下载whistle根证书
+1. Network：mainly to check the request, to compose the request, to show the console print and javascript errors thrown in page 
+2. Rules：to configure operation rules for proxying and capturing
+3. Plugins：installed plugins which can be enabled and disabled there
+4. Weinre：configured Weinre list
+5. HTTPS：to configure whether to intercept the HTTPS, and to download the root certificate for whistle
 
-# 安装证书
-安装根证书及开启https拦截后才可以正常操作或抓取https及websocket请求，具体参见：[安装根证书](https://avwo.github.io/whistle/webui/https.html)
+# Certificate Installment
 
-# 快速上手
+Only after installing root certificate and enable HTTPS intercepting can the request for HTTPS and websocket can be intercepted.
+For more details, please vsit [Certificate Installment](https://avwo.github.io/whistle/webui/https.html)
 
-打开[Rules](http://local.whistlejs.com/)，通过右键菜单或页面上方菜单栏的 `Create` 按钮创建一个分组 `test`，按照下方的例子输入规则并保存：
+# Quickly start
 
-1. 设置hosts
+Switch  to [Rules](http://local.whistlejs.com/) tab in whistle，and create a grouping named `test` by context menu or `Create` button in menu bar. In the editor of newly created grouping, input rules as following and save：
 
-	指定[www.ifeng.com](http://www.ifeng.com/)的ip:
+1. cofigure hosts
+
+	Specify the ip of [www.ifeng.com](http://www.ifeng.com/):
 
 		www.ifeng.com 127.0.0.1
 		# or
 		127.0.0.1 www.ifeng.com
 
-	指定[www.ifeng.com](http://www.ifeng.com/)的ip和端口，把请求转发到本地8080端口，这个在平时开发中可以用来去掉url中的端口号:
+	Specify the ip and port of [www.ifeng.com](http://www.ifeng.com/) to forward request to local port 8080. In this way, we can visit the local website just as online when the developing port is not 80:
 
 		# www.ifeng.com 127.0.0.1
 		www.ifeng.com 127.0.0.1:8080
 		# or
 		127.0.0.1:8080 www.ifeng.com
 
-	也可以用某个域名的ip设置hosts
+	 We can also replace the real IP (or domain) and port with any domain without port:
 
 		www.ifeng.com host://www.qq.com:8080
 		# or
 		host://www.qq.com:8080 www.ifeng.com
 
- 更多匹配模式参考：[匹配模式](https://avwo.github.io/whistle/pattern.html)
+ For more details, please vsit [Matching pattern](https://avwo.github.io/whistle/pattern.html)
 
 2. 本地替换
 	
@@ -300,7 +302,7 @@ For more details, please vsit [install and start](https://avwo.github.io/whistle
 # 帮助文档
 1. [Install and start](https://avwo.github.io/whistle/install.html)
 2. [How to update](https://avwo.github.io/whistle/update.html)
-3. [Quick to start](https://avwo.github.io/whistle/quickstart.html)
+3. [Quickly start](https://avwo.github.io/whistle/quickstart.html)
 4. [Configuration mode](https://avwo.github.io/whistle/mode.html)
 5. [Matching pattern](https://avwo.github.io/whistle/pattern.html)
 6. [Operation value](https://avwo.github.io/whistle/data.html)
