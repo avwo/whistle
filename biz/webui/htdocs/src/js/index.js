@@ -280,11 +280,6 @@ var Index = React.createClass({
     ];
     state.helpOptions = [
       {
-        name: 'Get Started',
-        href: 'https://avwo.github.io/whistle/quickstart.html',
-        icon: false
-      },
-      {
         name: 'Github',
         href: 'https://github.com/avwo/whistle',
         icon: false
@@ -295,53 +290,8 @@ var Index = React.createClass({
         icon: false
       },
       {
-        name: 'Network',
-        href: 'https://avwo.github.io/whistle/webui/network.html',
-        icon: false
-      },
-      {
-        name: 'Rules',
-        href: 'https://avwo.github.io/whistle/webui/rules.html',
-        icon: false
-      },
-      {
-        name: 'Values',
-        href: 'https://avwo.github.io/whistle/webui/values.html',
-        icon: false
-      },
-      {
-        name: 'Plugins',
-        href: 'https://avwo.github.io/whistle/webui/plugins.html',
-        icon: false
-      },
-      {
-        name: 'WebSocket',
-        href: 'https://avwo.github.io/whistle/webui/websocket.html',
-        icon: false
-      },
-      {
-        name: 'Composer',
-        href: 'https://avwo.github.io/whistle/webui/composer.html',
-        icon: false
-      },
-      {
-        name: 'Settings',
-        href: 'https://avwo.github.io/whistle/webui/settings.html',
-        icon: false
-      },
-      {
-        name: 'Weinre',
-        href: 'https://avwo.github.io/whistle/webui/weinre.html',
-        icon: false
-      },
-      {
-        name: 'Https',
-        href: 'https://avwo.github.io/whistle/webui/https.html',
-        icon: false
-      },
-      {
-        name: 'Online',
-        href: 'https://avwo.github.io/whistle/webui/online.html',
+        name: 'WebUI',
+        href: 'https://avwo.github.io/whistle/webui/',
         icon: false
       },
       {
