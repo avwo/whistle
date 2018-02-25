@@ -241,7 +241,7 @@ Switch  to [Rules](http://local.whistlejs.com/) tab in whistle，and create a gr
 		www.ifeng.com file:///User/username/test
 		# or www.ifeng.com file:///User/username/test/index.html
 		
-		# Both '\' and '/' can be used for path separator in Widows
+		# Both '\' and '/' can be used as path separator for Widows
 		www.ifeng.com file://E:\xx\test
 		# or www.ifeng.com file://E:\xx\test\index.html
 
@@ -268,7 +268,7 @@ Switch  to [Rules](http://local.whistlejs.com/) tab in whistle，and create a gr
 		www.ifeng.com js:///User/xxx/test/test.js
 		www.ifeng.com css:///User/xxx/test/test.css
 		
-		# Both '\' and '/' can be used for path separator in Widows
+		# Both '\' and '/' can be used as path separator for Widows
 		www.ifeng.com html://E:\xx\test\test.html
 		www.ifeng.com js://E:\xx\test\test.js
 		www.ifeng.com css://E:\xx\test\test.css
