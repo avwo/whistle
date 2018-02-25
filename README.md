@@ -231,73 +231,71 @@ Switch  to [Rules](http://local.whistlejs.com/) tab in whistle，and create a gr
 		# or
 		host://www.qq.com:8080 www.ifeng.com
 
- For more details, please vsit [Matching pattern](https://avwo.github.io/whistle/pattern.html)
+   For more details, please vsit [Matching pattern](https://avwo.github.io/whistle/pattern.html)
 
-2. 本地替换
+2. local replacement
 	
-	平时开发中经常会用到这个功能，把响应替换成本地文件内容。
+  Replace the response with content in local file, which is normally used in development.
 
 		# Mac、Linux
 		www.ifeng.com file:///User/username/test
 		# or www.ifeng.com file:///User/username/test/index.html
 		
-		# Windows的路径分隔符可以用 \ 或者 /
+		# Both '\' and '/' can be used for path separator in Widows
 		www.ifeng.com file://E:\xx\test
 		# or www.ifeng.com file://E:\xx\test\index.html
 
-	[http://www.ifeng.com/](http://www.ifeng.com/)会先尝试加载`/User/username/test`这个文件，如果不存在，则会加载`/User/username/test/index.html`，如果没有对应的文件则返回404。
+   [http://www.ifeng.com/](http://www.ifeng.com/) will try to load `/User/username/test` firstly. If the former dosen't exist，the file `/User/username/test/index.html` will be loaded. For neither exists，it returns 404.
 	
-	[http://www.ifeng.com/xxx](#)会先尝试加载`/User/username/test/xxx`这个文件，如果不存在，则会加载`/User/username/test/xxx/index.html`，如果没有对应的文件则返回404。
-	
-	也可以替换jsonp请求，具体参见：[tpl](rules/rule/tpl.html)
+   To replace jsonp request, you can refer the [tpl](rules/rule/tpl.html)
 
-	更多匹配模式参考：[匹配模式](https://avwo.github.io/whistle/pattern.html)
+   For more details, please vsit [Matching pattern](https://avwo.github.io/whistle/pattern.html)
 
-3. 请求转发	
+3. Request Forward	
 	
-	[www.ifeng.com](http://www.ifeng.com/)域名下的请求都替换成对应的www.aliexpress.com域名
+	To forward all the requests from domain `www.ifeng.com` to domain `www.aliexpress.com`
 
 		www.ifeng.com www.aliexpress.com
 
-	更多匹配模式参考：[匹配模式](https://avwo.github.io/whistle/pattern.html)
-4. 注入html、js、css
+	For more details, [Matching pattern](https://avwo.github.io/whistle/pattern.html)
+  
+4. Inject html、js、css
 	
-	whistle会自动根据响应内容的类型，判断是否注入相应的文本及如何注入(是否要用标签包裹起来)。
+	whistle will judge whether to inject corresponding text and how to inject, like whether to wrap the text with HTML label, automatically according to response type.
 	
 		# Mac、Linux
 		www.ifeng.com html:///User/xxx/test/test.html
 		www.ifeng.com js:///User/xxx/test/test.js
 		www.ifeng.com css:///User/xxx/test/test.css
 		
-		# Windows的路径分隔符可以用`\`和`/`
+		# Both '\' and '/' can be used for path separator in Widows
 		www.ifeng.com html://E:\xx\test\test.html
 		www.ifeng.com js://E:\xx\test\test.js
 		www.ifeng.com css://E:\xx\test\test.css
 
-	所有www.ifeng.com域名下的请求，whistle都会根据响应类型，将处理好的文本注入到响应内容里面，如是html请求，js和css会分别自动加上`script`和`style`标签后追加到内容后面。
+	For all the requests for domain `www.ifeng.com`，whistle will inject processed text to response body according to response type. If the type is HTML, the js content will be wraped with `script`, and the css content be wraped with `style` to inject to response body。
 
-	更多匹配模式参考：[匹配模式](https://avwo.github.io/whistle/pattern.html)
-5. 调试远程页面
+	For more details, [Matching pattern](https://avwo.github.io/whistle/pattern.html)
+  
+5. Debug for remote page
 
-	利用whistle提供的[weinre](rules/weinre.html)和[log](rules/log.html)两个协议，可以实现修改远程页面DOM结构及自动捕获页面js错误及console打印的信息，还可以在页面顶部或js文件底部注入指定的脚步调试页面信息。
+	With the protocol [weinre](https://avwo.github.io/whistle/rules/weinre.html) and protocol [log](https://avwo.github.io/whistle/rules/log.html) provided by whistle，you can modify the DOM structure, capture the javascript errors and view the console print easily. Moreover, you can inject specified script to debug the remote page. 
 	
-	使用whistle的功能前，先把要相应的系统代理或浏览器代理指向whistle，如何设置可以参考：[安装启动](install.html)
+	Before using whistle to debug remote page，you need to set the proxy for OS or browser to whistle. Please refers [Install and start](https://avwo.github.io/whistle/install.html) to know how to set the proxy.
 	
-	weinre：
+	For weinre：
 
 		www.ifeng.com weinre://test
   
-	配置后保存，打开[www.ifeng.com](http://www.ifeng.com/)，鼠标放在菜单栏的weinre按钮上会显示一个列表，并点击其中的`test`项打开weinre的调试页面选择对应的url切换到Elements即可。
+	Add the following rule in group named `test` and save，open the [www.ifeng.com](http://www.ifeng.com/) with a new tab in browser. Then you can see a list when you hover in the button `weinre`，click the item `test` to open a weinre debug page. For example, you can see the DOM structure when swich to `Elements` tab after selected a target.
 	
-	log:
+	For log:
 
 		www.ifeng.com log://{test.js}
 
-	配置后保存，鼠标放在菜单栏的weinre按钮上会显示一个列表，并点击其中的`test.js`项，whistle会自动在Values上建立一个test.js分组，在里面填入`console.log(1, 2, 3, {a: 123})`保存，打开Network -> 右侧Log -> Page，再打开[www.ifeng.com](http://www.ifeng.com/)，即可看到Log下面的Page输出的信息。
+	Add the following rule in group named `test` and save. Then you can see a list when you hover in the button `Values`，whistle will create a group named `test.js` in Values when you click it. Input the text `console.log(1, 2, 3, {a: 123})` in the group editor，open the Network -> Log -> Console，open the [www.ifeng.com](http://www.ifeng.com/), you can see the output '1, 2, 3, {a: 123}' in Console panel。
 
-	更多匹配模式参考：[匹配模式](https://avwo.github.io/whistle/pattern.html)
-	
-更多内容参考：[协议列表](https://avwo.github.io/whistle/rules/)
+	For more details, [Matching pattern](https://avwo.github.io/whistle/pattern.html) and [Rules](https://avwo.github.io/whistle/rules/)
 
 # 帮助文档
 1. [Install and start](https://avwo.github.io/whistle/install.html)
