@@ -295,6 +295,11 @@ var Index = React.createClass({
         icon: false
       },
       {
+        name: 'HTTPS',
+        href: 'https://avwo.github.io/whistle/webui/https.html',
+        icon: false
+      },
+      {
         name: 'Update',
         href: 'https://avwo.github.io/whistle/update.html',
         icon: false
