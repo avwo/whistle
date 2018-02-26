@@ -286,7 +286,7 @@ PS: 如果配置完代理，手机无法访问，可能是whistle所在的电脑
 
 		www.ifeng.com log://{test.js}
 
-	配置后保存，鼠标放在菜单栏的weinre按钮上会显示一个列表，并点击其中的`test.js`项，whistle会自动在Values上建立一个test.js分组，在里面填入`console.log(1, 2, 3, {a: 123})`保存，打开Network -> 右侧Log -> Page，再打开[www.ifeng.com](http://www.ifeng.com/)，即可看到Log下面的Page输出的信息。
+	配置后保存，鼠标放在菜单栏的Values按钮上会显示一个列表，并点击其中的`test.js`项，whistle会自动在Values上建立一个test.js分组，在里面填入`console.log(1, 2, 3, {a: 123})`保存，打开Network -> 右侧Log -> Console，再打开[www.ifeng.com](http://www.ifeng.com/)，即可看到Log下面的Page输出的信息。
 
 	更多匹配模式参考：[匹配模式](https://avwo.github.io/whistle/pattern.html)
 	
