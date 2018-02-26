@@ -174,10 +174,10 @@ function getFocusRuleName(editor) {
       var start = end;
       while(--start >= 0) {
         if (/\s/.test(curLine[start])) {
-          ++start;
           break;
         }
       }
+      ++start;
       while(++end <= len) {
         if (/\s/.test(curLine[end])) {
           break;
