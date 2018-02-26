@@ -2348,8 +2348,12 @@ var Index = React.createClass({
               <div className="modal-body">
                 <button type="button" className="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <div>
+                  <a className="w-help-menu"
+                    title="Click here to learn how to install root ca"
+                    href="https://avwo.github.io/whistle/webui/https.html" target="_blank">
+                    <span className="glyphicon glyphicon-question-sign"></span>
+                  </a>
                   <a className="w-download-rootca" title="http://rootca.pro/" href="cgi-bin/rootca" target="downloadTargetFrame">Download RootCA</a>
-                  <a className="w-https-help" href="https://avwo.github.io/whistle/webui/https.html" target="_blank" title="How to intercept HTTPS CONNECTs">Help</a>
                 </div>
                 <a title="http://rootca.pro/" href="cgi-bin/rootca" target="downloadTargetFrame"><img src="img/rootca.png" /></a>
                 <div className="w-https-settings">
