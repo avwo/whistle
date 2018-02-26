@@ -62,7 +62,7 @@ function getAtHelpUrl(name) {
       return;
     }
     var url = getAtHelpUrl(name);
-    if (typeof url === 'string') {
+    if (url === false || typeof url === 'string') {
       return url;
     }
   } catch (e) {}
@@ -202,6 +202,9 @@ exports.getHelpUrl = function(editor) {
   var name = getFocusRuleName(editor);
   if (AT_RE.test(name) && (name = getAtHelpUrl(name.substring(1)))) {
     return name;
+  }
+  if (name === false) {
+    return false;
   }
   return protocols.getHelpUrl(name);
 };

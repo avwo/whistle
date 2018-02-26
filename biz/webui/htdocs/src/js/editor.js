@@ -133,7 +133,10 @@ var Editor = React.createClass({
       var isRules = self.isRulesEditor();
       var isJS = self._mode == 'javascript';
       if (isRules && !e.ctrlKey && !e.metaKey && e.keyCode === 112) {
-        window.open(rulesHint.getHelpUrl(self._editor));
+        var helpUrl = rulesHint.getHelpUrl(self._editor);
+        helpUrl && window.open(helpUrl);
+        e.stopPropagation();
+        e.preventDefault();
         return true;
       }
       if ((!isRules && !isJS) || !(e.ctrlKey || e.metaKey) || e.keyCode != 191) {
