@@ -848,6 +848,7 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 # v1.8.9
 1. fix: 点击Network的Time表头时响应时间没有按数值大小排序的问题
 2. feat: Rules里面的`@`符号支持扩展
+3. feat: 支持通过设置 `ignore://allRules` 忽略掉所有配置的规则
  
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
