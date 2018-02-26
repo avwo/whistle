@@ -840,10 +840,14 @@ fix: 修复请求头有非法字符导致程序奔溃的问题
 2. feat: 点击选中的请求数据不会因为请求列表的滚动导致被删除
 3. feat: 在 Plugins 里面新增 `EnableAll` 按钮
 
-# v1.8.8
+### v1.8.8
 1. refactor: 避免url里面的参数自动转义，保留原有url的字符
 2. refactor: Offline状态下菜单栏灰显
 3. fix: 作为代理转发时，客户端ip可能传递出错的问题
+
+# v1.8.9
+1. fix: 点击Network的Time表头时响应时间没有按数值大小排序的问题
+2. feat: Rules里面的`@`符号支持扩展
  
 ### -
 完整功能请参见[whistle帮助文档](https://avwo.github.io/whistle/)。
