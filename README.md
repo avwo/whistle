@@ -181,7 +181,7 @@ For more details, please visit [install and start](https://avwo.github.io/whistl
 
 	* for Chrome：intall [whistle-for-chrome](https://github.com/avwo/whistle-for-chrome) or [Proxy SwitchySharp](https://chrome.google.com/webstore/detail/proxy-switchysharp/dpplabbmogkhghncfbfdeeokoefdjegm)
 
-	* for Firefox： Open [about:preferences](about:preferences) in Firefox, and switch to `General` -> `Network Proxy`, then set `Manual proxy configuration` to whistle.
+	* for Firefox： Open `Options` page in Firefox, and switch to `General` -> `Network Proxy`, then set `Manual proxy configuration` to whistle.
   ![](http://7tszky.com1.z0.glb.clouddn.com/FpazQgJ6eDC0cYNkjqlOJGWe7XVv)
 	
 3. in mobiles, configure the proxy of current Wi-Fi in `Setting`
