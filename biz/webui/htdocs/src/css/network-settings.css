@@ -5,7 +5,7 @@
   font-size: 13px; font-weight: normal; line-height: 30px; height: 30px;
   display: inline-block; width: 96px; margin-right: 10px; font-weight: bold; text-align: right;
 }
-.network-settings-columns { margin-top: 20px; }
+.network-settings-columns { margin-top: 10px; }
 .network-settings-filter { border: none!important; }
 .network-settings-filter legend { margin: 0; padding: 0; }
 .network-settings-filter legend label { margin-right: 5px; }
