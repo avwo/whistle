@@ -17,7 +17,7 @@ Whistle, pronunced `[ˈwɪsəl]`, is a cross-platform debugging and proxying cap
 
 To achieve these, you can freely and easily use plenty of [patterns](https://avwo.github.io/whistle/pattern.html), domain, path, regular expression, wildcard characters, wildcard path, etc., to operate Request or Response like hosts，and can also use [plugins](https://avwo.github.io/whistle/plugins.html) to meet nearly all the requirements for debugging and proxying. The specific functions are as follows：
 
-[Specific functions](https://processon.com/mindmap/5a796689e4b064e9ddba403e)
+[![](http://7tszky.com1.z0.glb.clouddn.com/FvORH0R4X8gofgnCeOR9OXJqm0mn)](https://processon.com/mindmap/5a796689e4b064e9ddba403e)
 
 
 All the operations of whistle will be achieved like the following configuration: 
@@ -182,7 +182,7 @@ For more details, please visit [install and start](https://avwo.github.io/whistl
 	* for Chrome：intall [whistle-for-chrome](https://github.com/avwo/whistle-for-chrome) or [Proxy SwitchySharp](https://chrome.google.com/webstore/detail/proxy-switchysharp/dpplabbmogkhghncfbfdeeokoefdjegm)
 
 	* for Firefox： Open [about:preferences](about:preferences) in Firefox, and switch to `General` -> `Network Proxy`, then set `Manual proxy configuration` to whistle.
-  ![](https://note.youdao.com/yws/public/resource/645b60cec987da04d9679a02da20acfc/xmlnote/E443B9BFB0F1498BBA6CF0A9A41A1F42/1314)
+  ![](http://7tszky.com1.z0.glb.clouddn.com/FpazQgJ6eDC0cYNkjqlOJGWe7XVv)
 	
 3. in mobiles, configure the proxy of current Wi-Fi in `Setting`
 
