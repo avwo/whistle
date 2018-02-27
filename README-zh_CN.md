@@ -177,7 +177,7 @@ whistle安装完成后，执行命令 `whistle help` 或 `w2 help`，查看whist
 	* 安装Chrome代理插件： [whistle-for-chrome插件](https://github.com/avwo/whistle-for-chrome) 或者 [Proxy SwitchySharp](https://chrome.google.com/webstore/detail/proxy-switchysharp/dpplabbmogkhghncfbfdeeokoefdjegm)
 
 	* Firefox设置代理： 在Firefox浏览器的`选项` -> `常规` -> `网络代理`中直接设置手动代理为whistle
-  ![](https://note.youdao.com/yws/public/resource/645b60cec987da04d9679a02da20acfc/xmlnote/77CC40CB5C7248CF88BD9D5BDD094EBC/1310)
+  ![](http://7tszky.com1.z0.glb.clouddn.com/FoMjvBC9svsUyfKFkYENq18zGOT8)
 	
 3. 移动端需要在`设置`中配置当前Wi-Fi的代理
 
