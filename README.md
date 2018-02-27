@@ -177,11 +177,12 @@ For more details, please visit [install and start](https://avwo.github.io/whistl
   * [Windows](http://jingyan.baidu.com/article/0aa22375866c8988cc0d648c.html) 
   * [Mac](http://jingyan.baidu.com/article/a378c960849144b3282830dc.html)
 
-2. using proxying plugin of browers (**recommended**)
+2. configure proxy for browers (**recommended**)
 
-	* for Chrome： [whistle-for-chrome](https://github.com/avwo/whistle-for-chrome) or [Proxy SwitchySharp](https://chrome.google.com/webstore/detail/proxy-switchysharp/dpplabbmogkhghncfbfdeeokoefdjegm)
+	* for Chrome：intall [whistle-for-chrome](https://github.com/avwo/whistle-for-chrome) or [Proxy SwitchySharp](https://chrome.google.com/webstore/detail/proxy-switchysharp/dpplabbmogkhghncfbfdeeokoefdjegm)
 
-	* for Firefox： [Proxy Selector](https://addons.mozilla.org/zh-cn/firefox/addon/proxy-selector/)
+	* for Firefox： Open [about:preferences](about:preferences) in Firefox, and switch to `General` -> `Network Proxy`, then set `Manual proxy configuration` to whistle.
+  ![](https://note.youdao.com/yws/public/resource/645b60cec987da04d9679a02da20acfc/xmlnote/E443B9BFB0F1498BBA6CF0A9A41A1F42/1314)
 	
 3. in mobiles, configure the proxy of current Wi-Fi in `Setting`
 
