@@ -5,7 +5,6 @@ var ReactDOM = require('react-dom');
 var dataCenter = require('./data-center');
 var util = require('./util');
 var events = require('./events');
-
 var Divider = require('./divider');
 
 var Composer = React.createClass({
@@ -92,9 +91,15 @@ var Composer = React.createClass({
                 </select>
           <button onClick={this.execute} className="btn btn-primary w-composer-execute">Go</button>
         </div>
-        <Divider vertical="true">
-          <textarea onKeyDown={this.onKeyDown} ref="headers" className="fill w-composer-headers" placeholder="headers"></textarea>
-          <textarea onKeyDown={this.onKeyDown} ref="body" className="fill w-composer-body" placeholder="body"></textarea>
+        <Divider vertical="true" rightWidth="140">
+          <Divider vertical="true">
+            <textarea onKeyDown={this.onKeyDown} ref="headers" className="fill orient-vertical-box w-composer-headers" placeholder="headers"></textarea>
+            <textarea onKeyDown={this.onKeyDown} ref="body" className="fill orient-vertical-box w-composer-body" placeholder="body"></textarea>
+          </Divider>
+          <div ref="rulesCon" className="orient-vertical-box fill">
+            <div className="w-detail-request-webforms-title">Rules</div>
+            <textarea className="fill orient-vertical-box w-composer-rules" placeholder="Input the rules of this request"></textarea>
+          </div>
         </Divider>
       </div>
     );
