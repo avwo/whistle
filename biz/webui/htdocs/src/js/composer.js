@@ -42,10 +42,40 @@ var Composer = React.createClass({
     if (!url) {
       return;
     }
-
+    var rules = storage.get('composerRules');
+    var headers = ReactDOM.findDOMNode(refs.headers).value;
+    if (typeof rules === 'string' && (rules = rules.trim())) {
+      var obj = util.parseJSON(headers);
+      if (obj) {
+        obj['x-whistle-rule-value'] = encodeURIComponent(rules);
+        headers = JSON.stringify(obj);
+      } else {
+        var result = [];
+        rules = [rules];
+        headers.split(/\r\n|\r|\n/).forEach(function(line) {
+          var index = line.indexOf(': ');
+          if (index === -1) {
+            index = line.indexOf(':');
+          }
+          var key = index === -1 ? line : line.substring(0, index);
+          key = key.toLowerCase();
+          if (key === 'x-whistle-rule-value') {
+            var value = line.substring(index + 1).trim();
+            try {
+              value = decodeURIComponent(value);
+            } catch(e) {}
+            rules.push(value)
+          } else {
+            result.push(line);
+          }
+        });
+        result.push('x-whistle-rule-value: ' + encodeURIComponent(rules.join('\n')));
+        headers = result.join('\n');
+      }
+    }
     dataCenter.composer({
       url: url,
-      headers: ReactDOM.findDOMNode(refs.headers).value,
+      headers: headers,
       method: ReactDOM.findDOMNode(refs.method).value || 'GET',
       body: ReactDOM.findDOMNode(refs.body).value.replace(/\r\n|\r|\n/g, '\r\n')
     });
