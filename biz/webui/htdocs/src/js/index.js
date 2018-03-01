@@ -766,6 +766,12 @@ var Index = React.createClass({
       protocols.setPlugins(pluginsState);
       self.setState(pluginsState);
     });
+    try {
+      var onReady = window.parent.onWhistleReady;
+      if (typeof onReady === 'function') {
+        onReady(location.href);
+      }
+    } catch(e) {}
   },
   donotShowAgain: function() {
     dataCenter.donotShowAgain();
