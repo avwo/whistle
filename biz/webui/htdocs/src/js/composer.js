@@ -5,6 +5,7 @@ var ReactDOM = require('react-dom');
 var dataCenter = require('./data-center');
 var util = require('./util');
 var events = require('./events');
+var storage = require('./storage');
 var Divider = require('./divider');
 
 var Composer = React.createClass({
@@ -53,6 +54,9 @@ var Composer = React.createClass({
   selectAll: function(e) {
     e.target.select();
   },
+  onRulesChange: function(e) {
+    storage.set('composerRules', e.target.value);
+  },
   onKeyDown: function(e) {
     if ((e.ctrlKey || e.metaKey)) {
       if (e.keyCode == 68) {
@@ -98,7 +102,12 @@ var Composer = React.createClass({
           </Divider>
           <div ref="rulesCon" className="orient-vertical-box fill">
             <div className="w-detail-request-webforms-title">Rules</div>
-            <textarea className="fill orient-vertical-box w-composer-rules" placeholder="Input the rules of this request"></textarea>
+            <textarea
+              defaultValue={storage.get('composerRules')}
+              onChange={this.onRulesChange}
+              maxLength="8192"
+              className="fill orient-vertical-box w-composer-rules"
+              placeholder="Input the rules of this request" />
           </div>
         </Divider>
       </div>
