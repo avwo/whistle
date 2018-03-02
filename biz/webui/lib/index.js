@@ -140,7 +140,8 @@ app.use(function(req, res, next) {
       pluginName = config.getPluginNameByHost(req.headers.host);
     }
     if (pluginName) {
-      req.url = '/whistle.' + pluginName + options.path;
+      var path = options.path;
+      req.url = path.indexOf('/whistle/') === 0 ? path.substring(8)  : '/whistle.' + pluginName + path;
     }
   }
 
