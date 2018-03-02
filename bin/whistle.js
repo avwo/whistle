@@ -111,7 +111,7 @@ program
   .option('-A, --ATS', 'generate Root CA for iOS ATS (Node >= 6 is required)')
   .option('-z, --certDir [directory]', 'custom certificate path', String, undefined)
   .option('-l, --localUIHost [hostname]', 'local ui host (' + config.localUIHost + ' by default)', String, undefined)
-  .option('-L, --pluginHost [hostname]', 'plugin ui host (as: script=a.b.com&vase=x.y.com)', String, undefined)
+  .option('-L, --pluginHost [hostname]', 'plugin ui host (as: "script=a.b.com&vase=x.y.com")', String, undefined)
   .option('-n, --username [username]', 'the username of ' + config.name, String, undefined)
   .option('-w, --password [password]', 'the password of ' + config.name, String, undefined)
   .option('-N, --guestName [username]', 'the guest name', String, undefined)
