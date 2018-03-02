@@ -126,7 +126,6 @@ program
   .option('-m, --middlewares [script path or module name]', 'express middlewares path (as: xx,yy/zz.js)', String, undefined)
   .option('-M, --mode [mode]', 'the whistle mode (as: pureProxy|debug|multiEnv)', String, undefined)
   .option('-u, --uipath [script path]', 'web ui plugin path', String, undefined)
-  .option('-U, --uploadUrl [url]', 'the url use to upload sessions', String, undefined)
   .option('-t, --timeout [ms]', 'request timeout (' + config.timeout + ' ms by default)', parseInt, undefined)
   .option('-e, --extra [extraData]', 'extra data for plugin', String, undefined)
   .option('-f, --secureFilter [secureFilter]', 'the script path of secure filter', String, undefined)
