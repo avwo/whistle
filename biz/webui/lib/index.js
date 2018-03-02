@@ -112,12 +112,7 @@ function checkAuth(req, res, auth) {
   requireLogin(res);
   return false;
 }
-function getNohostPath(path) {
-  if (path.indexOf('/whistle/') === 0) {
-    return path.replace('/whistle', '');
-  }
-  return '/whistle.nohost' + path;
-}
+
 app.use(function(req, res, next) {
   proxyEvent.emit('_request', req.url);
   var aborted;
@@ -132,16 +127,20 @@ app.use(function(req, res, next) {
   var referer = req.headers.referer;
   var options = parseurl(req);
   if (!PLUGIN_PATH_RE.test(options.pathname)) {
+    var pluginName;
     if (referer) {
       var refOpts = url.parse(referer);
       var pathname = refOpts.pathname;
       if (PLUGIN_PATH_RE.test(pathname) && RegExp.$3) {
         req.url = '/' + RegExp.$1 + '.' + RegExp.$2 + options.path;
-      }else if (config.isNohostUrl(refOpts.hostname) === 2) {
-        req.url = getNohostPath(options.path);
+      } else {
+        pluginName = config.getPluginNameByHost(refOpts.hostname);
       }
-    } else if (config.isNohostUrl(req.headers.host) === 2) {
-      req.url = getNohostPath(options.path);
+    } else {
+      pluginName = config.getPluginNameByHost(req.headers.host);
+    }
+    if (pluginName) {
+      req.url = '/whistle.' + pluginName + options.path;
     }
   }
 
