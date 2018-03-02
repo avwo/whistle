@@ -61,9 +61,17 @@ var contextMenuList = [
   { name: 'Composer' },
   { name: 'Replay' },
   { name: 'Export' },
+  { name: 'Upload' },
   { name: 'Import' },
   { name: 'Help', sep: true }
 ];
+
+function getUploadSessionsFn() {
+  try {
+    var uploadSessions = window.parent.uploadWhistleSessions;
+    return typeof uploadSessions === 'function' ? uploadSessions : null;
+  } catch(e) {}
+}
 
 function getClassName(data) {
   return getStatusClass(data) + ' w-req-data-item'
@@ -300,6 +308,12 @@ var ReqData = React.createClass({
     case 'Export':
       events.trigger('exportSessions', this.currentFocusItem);
       break;
+    case 'Upload':
+      events.trigger('uploadSessions', {
+        curItem: this.currentFocusItem,
+        upload: getUploadSessionsFn()
+      });
+      break;
     case 'Import':
       events.trigger('importSessions');
       break;
@@ -384,8 +398,10 @@ var ReqData = React.createClass({
     } else {
       contextMenuList[5].disabled = true;
     }
-    contextMenuList[6].disabled = !item && !selectedCount;
-    var data = util.getMenuPosition(e, 110, 274);
+    var uploadItem = contextMenuList[7];
+    uploadItem.hide = !getUploadSessionsFn();
+    contextMenuList[6].disabled = uploadItem.disabled = !item && !selectedCount;
+    var data = util.getMenuPosition(e, 110, uploadItem.hide ? 274 : 304);
     data.list = contextMenuList;
     this.refs.contextMenu.show(data);
   },

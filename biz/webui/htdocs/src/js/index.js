@@ -651,6 +651,20 @@ var Index = React.createClass({
     events.on('exportSessions', function(e, curItem) {
       self.exportData(e, getFocusItemList(curItem));
     });
+    events.on('uploadSessions', function(e, data) {
+      var sessions = getFocusItemList(data && data.curItem);
+      var upload = data && data.upload;
+      if (typeof upload === 'function') {
+        if (!sessions) {
+          var modal = self.state.network;
+          sessions = modal && modal.getSelectedList();
+          if (sessions && sessions.length) {
+            sessions = $.extend(true, [], sessions);
+          }
+        }
+        sessions && upload(sessions);
+      }
+    });
     events.on('removeIt', function(e, item) {
       var modal = self.state.network;
       if (item && modal) {

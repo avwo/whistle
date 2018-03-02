@@ -66,6 +66,7 @@ var ContextMenu = React.createClass({
                 + (item.disabled ? ' w-ctx-item-disabled' : '') + (subList ? ' w-ctx-sub-menu-list' : '')
                 + (item.copyText ? ' w-copy-text' : '')}
                 data-clipboard-text={item.copyText}
+                style={{display: item.hide ? 'none' : undefined}}
               >
                 <p className="w-ctx-item-tt">{item.name}</p>
                 {subList ? <span className="glyphicon glyphicon-play"></span> : undefined}
