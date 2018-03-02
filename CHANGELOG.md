@@ -2,6 +2,7 @@
 1. feat: 界面Network右侧的Composer支持设置临时的Rules
 2. feat: 支持通过命令行 `-M network` 设置为抓包模式，该模式只能查看抓包不能设置规则及加载插件
 3. feat: 界面暴露了一些接口供第三方扩展，具体用法参见后续的插件[nohost](https://github.com/imweb/nohost)
+4. feat: 支持通过命令行 `-L "script=a.b.com&vase=x.y.com&nohost=imweb.nohost.pro"` 自定义访问插件的域名
 
 ### v1.8.9
 1. fix: 点击Network的Time表头时响应时间没有按数值大小排序的问题
