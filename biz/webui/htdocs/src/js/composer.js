@@ -9,6 +9,12 @@ var storage = require('./storage');
 var Divider = require('./divider');
 
 var Composer = React.createClass({
+  getInitialState: function() {
+    var rules = storage.get('composerRules');
+    return {
+      rules: typeof rules === 'string' ? rules : ''
+    };
+  },
   componentDidMount: function() {
     var self = this;
     self.update(self.props.modal);
@@ -42,16 +48,26 @@ var Composer = React.createClass({
     if (!url) {
       return;
     }
-    var rules = storage.get('composerRules');
+    var rules = this.state.rules;
     var headers = ReactDOM.findDOMNode(refs.headers).value;
     if (typeof rules === 'string' && (rules = rules.trim())) {
       var obj = util.parseJSON(headers);
+      var result = [];
+      rules = [rules];
       if (obj) {
-        obj['x-whistle-rule-value'] = encodeURIComponent(rules);
+        Object.keys(obj).forEach(function(key) {
+          if (key.toLowerCase() === 'x-whistle-rule-value') {
+            var value = obj[key];
+            try {
+              value = typeof value === 'string' ? decodeURIComponent(value) : '';
+            } catch(e) {}
+            value && rules.push(value);
+            delete obj[key];
+          }
+        });
+        obj['x-whistle-rule-value'] = encodeURIComponent(rules.join('\n'));
         headers = JSON.stringify(obj);
       } else {
-        var result = [];
-        rules = [rules];
         headers.split(/\r\n|\r|\n/).forEach(function(line) {
           var index = line.indexOf(': ');
           if (index === -1) {
@@ -64,11 +80,11 @@ var Composer = React.createClass({
             try {
               value = decodeURIComponent(value);
             } catch(e) {}
-            rules.push(value)
+            rules.push(value);
           } else {
             result.push(line);
           }
-        });
+        });rules.join('\n');
         result.push('x-whistle-rule-value: ' + encodeURIComponent(rules.join('\n')));
         headers = result.join('\n');
       }
@@ -85,7 +101,9 @@ var Composer = React.createClass({
     e.target.select();
   },
   onRulesChange: function(e) {
-    storage.set('composerRules', e.target.value);
+    var rules = e.target.value;
+    this.state.rules = rules;
+    storage.set('composerRules', rules);
   },
   onKeyDown: function(e) {
     if ((e.ctrlKey || e.metaKey)) {
@@ -100,7 +118,7 @@ var Composer = React.createClass({
 
   },
   render: function() {
-
+    var rules = this.state.rules;
     return (
       <div className={'fill orient-vertical-box w-detail-content w-detail-composer' + (util.getBoolean(this.props.hide) ? ' hide' : '')}>
         <div className="w-composer-url box">
@@ -133,8 +151,9 @@ var Composer = React.createClass({
           <div ref="rulesCon" className="orient-vertical-box fill">
             <div className="w-detail-request-webforms-title">Rules</div>
             <textarea
-              defaultValue={storage.get('composerRules')}
+              defaultValue={rules}
               onChange={this.onRulesChange}
+              style={{background: rules ? 'lightyellow' : undefined }}
               maxLength="8192"
               className="fill orient-vertical-box w-composer-rules"
               placeholder="Input the rules of this request" />
