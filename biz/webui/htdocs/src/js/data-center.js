@@ -662,6 +662,7 @@ function updateServerInfo(data) {
   }
 
   if (curServerInfo && curServerInfo.version == data.version &&
+    curServerInfo.networkMode === data.networkMode &&
     curServerInfo.baseDir == data.baseDir && curServerInfo.username == data.username &&
     curServerInfo.port == data.port && curServerInfo.host == data.host &&
     curServerInfo.ipv4.sort().join() == data.ipv4.sort().join() &&

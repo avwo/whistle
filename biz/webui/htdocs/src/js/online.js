@@ -60,8 +60,9 @@ var Online = React.createClass({
       this.serverPort = data.port;
       this.version = data.version;
       this.baseDir = data.baseDir;
+      this.networkMode = data.networkMode;
     } else if (this.macAddr !== data.mac || this.version !== data.version
-      || this.baseDir !== data.baseDir) {
+      || this.baseDir !== data.baseDir || this.networkMode !== data.networkMode) {
       this.refs.confirmReload.show();
     } else {
       this.refs.confirmReload.hide();
