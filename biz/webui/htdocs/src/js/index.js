@@ -770,7 +770,11 @@ var Index = React.createClass({
     try {
       var onReady = window.parent.onWhistleReady;
       if (typeof onReady === 'function') {
-        onReady(location.href);
+        onReady({
+          url: location.href,
+          importSessions: dataCenter.addNetworkList,
+          importHarSessions: self.importHarSessions
+        });
       }
     } catch(e) {}
   },
@@ -1942,7 +1946,7 @@ var Index = React.createClass({
     this.uploadSessionsForm(new FormData(ReactDOM.findDOMNode(this.refs.importSessionsForm)));
     ReactDOM.findDOMNode(this.refs.importSessions).value = '';
   },
-  importSessionsByHar: function(result) {
+  importHarSessions: function(result) {
     if (!result || typeof result !== 'object') {
       return;
     }
@@ -2026,7 +2030,7 @@ var Index = React.createClass({
           if (isText) {
             dataCenter.addNetworkList(result);
           } else {
-            self.importSessionsByHar(result);
+            self.importHarSessions(result);
           }
         } catch (e) {
           alert('Incorrect file format.');
