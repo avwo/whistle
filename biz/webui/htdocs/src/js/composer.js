@@ -145,8 +145,8 @@ var Composer = React.createClass({
         </div>
         <Divider vertical="true" rightWidth="140">
           <Divider vertical="true">
-            <textarea onKeyDown={this.onKeyDown} ref="headers" className="fill orient-vertical-box w-composer-headers" placeholder="headers"></textarea>
-            <textarea onKeyDown={this.onKeyDown} ref="body" className="fill orient-vertical-box w-composer-body" placeholder="body"></textarea>
+            <textarea onKeyDown={this.onKeyDown} ref="headers" className="fill orient-vertical-box w-composer-headers" placeholder="Input the headers"></textarea>
+            <textarea onKeyDown={this.onKeyDown} ref="body" className="fill orient-vertical-box w-composer-body" placeholder="Input the body"></textarea>
           </Divider>
           <div ref="rulesCon" className="orient-vertical-box fill">
             <div className="w-detail-request-webforms-title">Rules</div>
@@ -156,7 +156,7 @@ var Composer = React.createClass({
               style={{background: rules ? 'lightyellow' : undefined }}
               maxLength="8192"
               className="fill orient-vertical-box w-composer-rules"
-              placeholder="Input the rules of this request" />
+              placeholder="Input the rules" />
           </div>
         </Divider>
       </div>
