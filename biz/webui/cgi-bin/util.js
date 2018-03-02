@@ -15,6 +15,7 @@ exports.getClientId = function() {
 exports.getServerInfo = function getServerInfo(req) {
   var info = {
     version: config.version,
+    networkMode: config.networkMode,
     baseDir: config.baseDirHash,
     username: config.username,
     nodeVersion: process.version,

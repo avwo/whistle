@@ -129,9 +129,10 @@ var Index = React.createClass({
     var values = modal.values;
     var state = {
       allowMultipleChoice: modal.rules.allowMultipleChoice,
-      syncWithSysHosts: modal.rules.syncWithSysHosts
+      syncWithSysHosts: modal.rules.syncWithSysHosts,
+      networkMode: modal.server.networkMode
     };
-    var pageName = getPageName();
+    var pageName = state.networkMode ? 'network' : getPageName();
     if (!pageName || pageName.indexOf('rules') != -1) {
       state.hasRules = true;
       state.name = 'rules';
@@ -482,7 +483,7 @@ var Index = React.createClass({
         }
       });
     $(window).on('hashchange', function() {
-      var pageName = getPageName();
+      var pageName = self.state.networkMode ? 'network' : getPageName();
       if (!pageName || pageName.indexOf('rules') != -1) {
         self.showRules();
       } else if (pageName.indexOf('values') != -1) {
@@ -2077,7 +2078,8 @@ var Index = React.createClass({
   },
   render: function() {
     var state = this.state;
-    var name = state.name;
+    var networkMode = state.networkMode;
+    var name = networkMode ? 'network' : state.name;
     var isNetwork = name === undefined || name == 'network';
     var isRules = name == 'rules';
     var isValues = name == 'values';
@@ -2188,13 +2190,14 @@ var Index = React.createClass({
         });
       }
     }
-    var showLeftMenu = state.showLeftMenu;
+
+    var showLeftMenu = networkMode || state.showLeftMenu;
     var disabledAllPlugins = state.disabledAllRules || state.disabledAllPlugins;
     return (
       <div className={'main orient-vertical-box' + (showLeftMenu ? ' w-show-left-menu' : '')}>
         <div className={'w-menu w-' + name + '-menu-list'}>
           <a onClick={this.toggleLeftMenu} href="javascript:;" draggable="false" className="w-show-left-menu-btn"
-            style={{background: showLeftMenu ? '#ddd' : undefined}} title="Ctrl[Command] + M">
+            style={{background: showLeftMenu ? '#ddd' : undefined, display: networkMode ? 'none' : undefined}} title="Ctrl[Command] + M">
             <span className={'glyphicon glyphicon-chevron-' + (showLeftMenu ? 'down' : 'right')}></span>
           </a>
           <div onMouseEnter={this.showNetworkOptions} onMouseLeave={this.hideNetworkOptions} className={'w-nav-menu w-menu-wrapper' + (showNetworkOptions ? ' w-menu-wrapper-show' : '')}>
@@ -2274,7 +2277,7 @@ var Index = React.createClass({
           <div onMouseDown={this.preventBlur} style={{display: state.showEditValues ? 'block' : 'none'}} className="shadow w-input-menu-item w-edit-values-input"><input ref="editValuesInput" onKeyDown={this.editValues} onBlur={this.hideOptions} type="text" maxLength="64" /><button type="button" onClick={this.editValues} className="btn btn-primary">OK</button></div>
         </div>
         <div className="w-container box fill">
-          <div className="w-left-menu">
+          <div className="w-left-menu" style={{display: networkMode ? 'none' : undefined}}>
             <a onClick={this.showNetwork} onDoubleClick={this.clearNetwork}
               title={name == 'network' ? 'Double click to remove all sessions' : undefined}
               className="w-network-menu"
