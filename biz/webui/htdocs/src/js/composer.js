@@ -17,7 +17,7 @@ function removeDuplicateRules(rules) {
       return false;
     }
     map[line] = 1;
-    return false;
+    return true;
   }).join('\n');
   return encodeURIComponent(rules);
 }
