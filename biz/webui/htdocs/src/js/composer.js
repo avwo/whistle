@@ -13,11 +13,8 @@ function removeDuplicateRules(rules) {
   var map = {};
   rules = rules.filter(function(line) {
     line = line.replace(/#.*$/, '').trim();
-    if (!line) {
+    if (!line || map[line]) {
       return false;
-    }
-    if (!map[line]) {
-      return true;
     }
     map[line] = 1;
     return false;
