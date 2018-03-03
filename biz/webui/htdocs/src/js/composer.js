@@ -8,6 +8,23 @@ var events = require('./events');
 var storage = require('./storage');
 var Divider = require('./divider');
 
+function removeDuplicateRules(rules) {
+  rules = rules.join('\n').split(/\r\n|\r|\n/g);
+  var map = {};
+  rules = rules.filter(function(line) {
+    line = line.replace(/#.*$/, '').trim();
+    if (!line) {
+      return false;
+    }
+    if (!map[line]) {
+      return true;
+    }
+    map[line] = 1;
+    return false;
+  }).join('\n');
+  return encodeURIComponent(rules);
+}
+
 var Composer = React.createClass({
   getInitialState: function() {
     var rules = storage.get('composerRules');
@@ -65,7 +82,7 @@ var Composer = React.createClass({
             delete obj[key];
           }
         });
-        obj['x-whistle-rule-value'] = encodeURIComponent(rules.join('\n'));
+        obj['x-whistle-rule-value'] = removeDuplicateRules(rules);
         headers = JSON.stringify(obj);
       } else {
         headers.split(/\r\n|\r|\n/).forEach(function(line) {
@@ -85,7 +102,7 @@ var Composer = React.createClass({
             result.push(line);
           }
         });rules.join('\n');
-        result.push('x-whistle-rule-value: ' + encodeURIComponent(rules.join('\n')));
+        result.push('x-whistle-rule-value: ' + removeDuplicateRules(rules));
         headers = result.join('\n');
       }
     }
