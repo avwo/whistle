@@ -13,9 +13,14 @@
 [![NPM count](https://img.shields.io/npm/dt/whistle.svg?style=flat-square)](https://www.npmjs.com/package/whistle)
 [![License](https://img.shields.io/npm/l/whistle.svg?style=flat-square)](https://www.npmjs.com/package/whistle)
 
-Whistle, pronunced `[ˈwɪsəl]`, is a cross-platform debugging and proxying capture tool based on Node.js. Besides offering HTTP proxying service，the more important function is to capture package, to replay request, to compose request for HTTP、HTTPS、WebSocket and normal Socket(TCP).
+whistle is an cross-platform http debugging proxy server application based on Node.js. It can provides these basic functions:
+1. offer HTTP proxying service
+2. capture package, replay requests, and simulate requests for HTTP、HTTPS、WebSocket and normal Socket(TCP).
+3. operate http request and response by hosts, or  [patterns](https://avwo.github.io/whistle/pattern.html) like domain, path, regular expression, wildcard characters, wildcard path, etc.\
 
-To achieve these, you can freely and easily use plenty of [patterns](https://avwo.github.io/whistle/pattern.html), domain, path, regular expression, wildcard characters, wildcard path, etc., to operate Request or Response like hosts，and can also use [plugins](https://avwo.github.io/whistle/plugins.html) to meet nearly all the requirements for debugging and proxying. The specific functions are as follows：
+If these functions can't meet your requriment, you can also use [plugins](https://avwo.github.io/whistle/plugins.html) to extend its capabilities.
+
+The specific functions are as follows：
 
 [![](http://7tszky.com1.z0.glb.clouddn.com/FvORH0R4X8gofgnCeOR9OXJqm0mn)](https://processon.com/mindmap/5a796689e4b064e9ddba403e)
 
