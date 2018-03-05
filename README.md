@@ -15,8 +15,8 @@
 
 whistle is an cross-platform http debugging proxy server application based on Node.js. It can provides these basic functions:
 1. offer HTTP proxying service
-2. capture package, replay requests, and simulate requests for HTTP、HTTPS、WebSocket and normal Socket(TCP).
-3. operate http request and response by hosts, or  [patterns](https://avwo.github.io/whistle/pattern.html) like domain, path, regular expression, wildcard characters, wildcard path, etc.\
+2. capture package, replay and simulate requests for HTTP、HTTPS、WebSocket and normal Socket(TCP).
+3. operate http request and response by hosts, or  [patterns](https://avwo.github.io/whistle/pattern.html) like domain, path, regular expression, wildcard characters, wildcard path, etc.
 
 If these functions can't meet your requriment, you can also use [plugins](https://avwo.github.io/whistle/plugins.html) to extend its capabilities.
 
