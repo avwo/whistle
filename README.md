@@ -16,7 +16,8 @@
 whistle is an cross-platform http debugging proxy server application based on Node.js. It can provides these basic functions:
 1. offer HTTP proxying service
 2. capture package, replay and simulate requests for HTTP、HTTPS、WebSocket and normal Socket(TCP).
-3. operate http request and response by hosts, or  [patterns](https://avwo.github.io/whistle/pattern.html) like domain, path, regular expression, wildcard characters, wildcard path, etc.
+3. operate http request and response by configing hosts, or [patterns](https://avwo.github.io/whistle/pattern.html) like domain, path, regular expression, wildcard characters, wildcard path, etc.
+4. offer build-in mobile debugging mode
 
 If these functions can't meet your requriment, you can also use [plugins](https://avwo.github.io/whistle/plugins.html) to extend its capabilities.
 
@@ -25,14 +26,14 @@ The specific functions are as follows：
 [![](http://7tszky.com1.z0.glb.clouddn.com/FvORH0R4X8gofgnCeOR9OXJqm0mn)](https://processon.com/mindmap/5a796689e4b064e9ddba403e)
 
 
-All the operations of whistle will be achieved like the following configuration: 
+All the operations of whistle can be achieved by the following configuration: 
 
 	pattern operatorURI
 
 
 Description：
 
-1. **pattern** is a expression to match url of request. It can be domain, path, reqular expression, wildcard, and so on：
+1. **pattern** is an expression to match url of request. You can write patterns in different forms like domain, path, reqular expression, wildcard, and so on.
 
 		# matching domain
 		www.example.com
@@ -54,17 +55,17 @@ Description：
 
 	For more details, please visit [matching pattern](https://avwo.github.io/whistle/pattern.html)
 2. **operatorURI** is the corresponding operation，made up of opProtocol and opValue：  
-	**opProtocol** represents the kind of operation, e.g.
+	**opProtocol** represents this kind of operation, e.g.
 		
-			# host：the IP of the server requested
+			# host：setting requested server IP
 			pattern host://opValue	
 
 			# file：using the local file to replace
 			pattern file://opValue
 
-	**opValue** represents the parameter of the specific operation, e.g.
+	**opValue** represents the parameters of the specific operation, e.g.
 
-			# host：the IP of the server requested
+			# host：setting requested server IP
 			pattern host://127.0.0.1:6666 # or pattern 127.0.0.1:6666	
 
 			# file：using the local file to replace
@@ -72,18 +73,19 @@ Description：
 			pattern file://E:\test\dirOrFile # or pattern E:\test\dirOrFile
 
 	For more details, please visit [operation value](https://avwo.github.io/whistle/data.html)
-3. The order of **pattern** and **operatorURI** can be exchanged in most situations while the combination mode is supported. For more details about this, please visit [configuration mode](https://avwo.github.io/whistle/mode.html)
+3. The order of **pattern** and **operatorURI** can be exchanged in most situations while the combination mode is also supported. For more details ,please visit [configuration mode](https://avwo.github.io/whistle/mode.html)
 
 # Install and start
 
 #### install Node
 The latest `LTS` version of Node.js is recommended to install. 
 
-Only if none or low version of Node.js is installed, you need install the latest version of Node.js as following instructions：
+If none or low version of Node.js is installed, you need install the latest version of Node.js as following instructions：
 
 1. **For Windows**: please visit [https://nodejs.org/](https://nodejs.org/) to download the latest `LTS` version of Node.js. and then, install it using the default option.
-2. **For Mac**: the same as for Windows.
-3. **For Linux**: install with source code is recommended. In this way, you don't need to configure the `path`.  If failed to install with source code, you can also use the binary version of Node.js directly.
+2. **For Mac**: the same as Windows.
+3. **For Linux**: using source code to install is recommended, because in this way, you don't need to configure the `path`.  If you fail to install with source code, you can also use the binary version of Node.js directly.
+
 	- **with source package**： visit [Official website of Node](https://nodejs.org/en/download/) to download the latest version of *Source Code**(or using `wget` in shell), unzip(`tar -xzvf node-xxx.tar.gz`), switch to the root directory(`cd node-xxx`), execute `./configure`, `./make` and `./make install` in order。
 	- **using binary version**：visit [Official website of Node](https://nodejs.org/en/download/) to download the latest **Linux Binaries**(or using command `wget` to download), unzip(`tar -xzvf node-xxx.tar.gz`), add the absolute path of bin directory to system `PATH` after extracting。
 
@@ -93,11 +95,12 @@ You can execute `node -v` in shell to check if the corresponding version of Node
 	v8.9.4
 
 #### install whistle
-After the Node.js is installed successfully, you can execute the following npm command to install whistle（**In Mac or Linux, prefix `sudo` is needed if no root user, i.e. `sudo npm install -g whistle`**）
+After the Node.js is installed successfully, you can execute the following npm command to install whistle（**In Mac or Linux, prefix `sudo` is needed if you are not root user, i.e. `sudo npm install -g whistle`**）
 
 	npm install -g whistle
 
-In china, you can install whistle using npm mirror of taobao to accelerate and to avoid fail：
+In china, you can install whistle using npm mirror of taobao to speed up install and avoid failure：
+
 
 	npm install cnpm -g --registry=https://registry.npm.taobao.org
 	cnpm install -g whistle
@@ -106,7 +109,7 @@ In china, you can install whistle using npm mirror of taobao to accelerate and t
 	npm install whistle -g --registry=https://registry.npm.taobao.org
 
 
-Execute `whistle help` or `w2 help` to view helps after installment:
+After installation, execute `whistle help` or `w2 help` to view help information:
 
 	$ w2 help
 	Usage: whistle <command> [options]
