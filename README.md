@@ -75,7 +75,7 @@ Description：
 	For more details, please visit [operation value](https://avwo.github.io/whistle/data.html)
 3. The order of **pattern** and **operatorURI** can be exchanged in most situations while the combination mode is also supported. For more details ,please visit [configuration mode](https://avwo.github.io/whistle/mode.html)
 
-# Install and start
+# Install & Setup
 
 #### install Node
 The latest `LTS` version of Node.js is recommended to install. 
@@ -151,7 +151,7 @@ After installation, execute `whistle help` or `w2 help` to view help information
 		-F, --frameCacheSize [frameCacheSize]           the cache size of socket frames (512 by default)
 		-V, --version                                   output the version number
 
-#### Start whistle
+#### Setup whistle
 Start:
 
 	w2 start
@@ -173,23 +173,23 @@ Debugging mode:
 
 For more details, please visit [install and start](https://avwo.github.io/whistle/install.html)
 
-# Set proxying
-##### configuration
-1. proxying server：127.0.0.1(if whistle is deployed in remote server or virtual machine, corresponding IP is needed)
-2. default port：8899(if port 8899 is used already，you can specify new port when start. More details can be visited by execute `whistle help` while `w2 help` is supported in `v0.7.0` and higher version)
+# Setting proxying
+##### configuration basic infomation
+1. proxying server：127.0.0.1(if whistle is deployed in remote server or virtual machine, change this address to corresponding IP )
+2. default port：8899(if port 8899 is used already，you can specify new port using `-p` when start. More details can be visited by executing `whistle help` or `w2 help` (only supported in `v0.7.0` and higher version)
 
 > Make sure **using the same proxying server for all protocol** in system proxying setting is checked.
 
-##### the way to configure proxy(configure the two items above)
-1. configure proxy directly in OS：　
+##### Browser & System configuration 
+1. proxy setting in OS：　
   * [Windows](http://jingyan.baidu.com/article/0aa22375866c8988cc0d648c.html) 
   * [Mac](http://jingyan.baidu.com/article/a378c960849144b3282830dc.html)
 
-2. configure proxy for browers (**recommended**)
+2. proxy setting in browser(**recommended**)
 
-	* for Chrome：intall [whistle-for-chrome](https://github.com/avwo/whistle-for-chrome) or [Proxy SwitchySharp](https://chrome.google.com/webstore/detail/proxy-switchysharp/dpplabbmogkhghncfbfdeeokoefdjegm)
+	* for Chrome：intall chrome plugin [whistle-for-chrome](https://github.com/avwo/whistle-for-chrome) or [Proxy SwitchySharp](https://chrome.google.com/webstore/detail/proxy-switchysharp/dpplabbmogkhghncfbfdeeokoefdjegm)
 
-	* for Firefox： Open `Options` page in Firefox, and switch to `General` -> `Network Proxy`, then set `Manual proxy configuration` to whistle.
+	* for Firefox： Open `Options` page in Firefox, then switch to `General` -> `Network Proxy`, then set `Manual proxy configuration` to whistle.
   ![](http://7tszky.com1.z0.glb.clouddn.com/FpazQgJ6eDC0cYNkjqlOJGWe7XVv)
 	
 3. in mobiles, configure the proxy of current Wi-Fi in `Setting`
