@@ -1,10 +1,12 @@
 require('../css/json-viewer.css');
 var React = require('react');
 var ReactDOM = require('react-dom');
+var TextView = require('./textview');
 
 var JSONTree = require('react-json-tree')['default'];
 var dataCenter = require('./data-center');
 var util = require('./util');
+var MAX_LENGTH =1024 * 16;
 
 var JsonViewer = React.createClass({
   getInitialState: function() {
@@ -16,6 +18,13 @@ var JsonViewer = React.createClass({
   },
   preventBlur: function(e) {
     e.target.nodeName != 'INPUT' && e.preventDefault();
+  },
+  edit: function() {
+    var data = this.props.data;
+    var str = data && data.str;
+    if (str) {
+      util.openEditor(str);
+    }
   },
   showNameInput: function(e) {
     var self = this;
@@ -88,9 +97,16 @@ var JsonViewer = React.createClass({
     var data = props.data;
     var noData = !data;
     if (!data) {
-      data = state.lastData;
+      data = state.lastData || {};
     } else {
       state.lastData = data;
+    }
+    var value = data.str || '';
+    if (value && viewSource) {
+      var exceed = value.length - MAX_LENGTH;
+      if (exceed > 512) {
+        value = value.substring(0, MAX_LENGTH) + '...\r\n\r\n(' + exceed + ' characters left, you can click on the Edit button in the upper right corner to view all)\r\n';
+      }
     }
     return (
         <div className={'fill orient-vertical-box w-properties-wrap w-json-viewer' + ((noData || props.hide) ? ' hide' : '')}>
@@ -99,6 +115,7 @@ var JsonViewer = React.createClass({
               onClick={this.showNameInput} href="javascript:;" draggable="false">Download</a>
               <a className="w-add" onClick={this.showNameInput}
                 href="javascript:;" draggable="false">AddToValues</a>
+              {viewSource ? <a className="w-edit" onClick={this.edit} href="javascript:;" draggable="false">ViewAll</a> : undefined}
             <a onClick={this.toggle} className="w-properties-btn">{ viewSource ? 'ViewParsed' : 'ViewSource' }</a>
             <div onMouseDown={this.preventBlur}
               style={{display: state.showNameInput ? 'block' : 'none'}}
@@ -115,7 +132,7 @@ var JsonViewer = React.createClass({
               <input ref="content" name="content" type="hidden" />
             </form>
           </div>
-          <pre className={'fill w-json-viewer-str' + (viewSource ? '' : ' hide')}>{data.str}</pre>
+          <TextView className={'fill w-json-viewer-str' + (viewSource ? '' : ' hide')} value={value} />
           <div className={'fill w-json-viewer-tree' + (viewSource ? ' hide' : '')}>
             <JSONTree data={data.json} />
           </div>

@@ -304,6 +304,11 @@ var Index = React.createClass({
         name: 'Update',
         href: 'https://avwo.github.io/whistle/update.html',
         icon: false
+      },
+      {
+        name: 'Feedback',
+        href: 'https://github.com/avwo/whistle/issues/new',
+        icon: false
       }
     ];
     protocols.setPlugins(state);

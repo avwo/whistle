@@ -1,6 +1,7 @@
 require('../css/textarea.css');
 var React = require('react');
 var ReactDOM = require('react-dom');
+var TextView = require('./textview');
 var util = require('./util');
 var dataCenter = require('./data-center');
 var MAX_LENGTH =1024 * 16;
@@ -31,9 +32,6 @@ var Textarea = React.createClass({
   getInitialState: function() {
     return {};
   },
-  componentDidMount: function() {
-    this.updateValue();
-  },
   shouldComponentUpdate: function(nextProps) {
     var hide = util.getBoolean(this.props.hide);
     var nextHide = util.getBoolean(nextProps.hide);
@@ -44,9 +42,6 @@ var Textarea = React.createClass({
       return false;
     }
     return this.props.value !== nextProps.value;
-  },
-  componentDidUpdate: function() {
-    this.updateValue();
   },
   preventBlur: function(e) {
     e.target.nodeName != 'INPUT' && e.preventDefault();
@@ -114,34 +109,6 @@ var Textarea = React.createClass({
     this.state.showNameInput = false;
     this.forceUpdate();
   },
-  updateValue: function() {
-    var self = this;
-    var value = self.state.value || '';
-    var textarea = ReactDOM.findDOMNode(self.refs.textarea);
-    if (self.props.hide) {
-      textarea.value = '';
-      self.curValue = '';
-      clearTimeout(self._timeout);
-      return;
-    }
-    if (value === self.curValue) {
-      return;
-    }
-    clearTimeout(self._timeout);
-    if (textarea.value === value) {
-      return;
-    }
-    if (value.length < 10240) {
-      textarea.value = value;
-      self.curValue = value;
-      return;
-    }
-    self.curValue = value;
-    textarea.value = '';
-    self._timeout = setTimeout(function() {
-      textarea.value = value;
-    }, 120);
-  },
   render: function() {
     var value = this.props.value || '';
     var exceed = value.length - MAX_LENGTH;
@@ -170,7 +137,7 @@ var Textarea = React.createClass({
               placeholder={this.state.showDownloadInput ? 'Input the filename' : 'Input the key'}
             /><button type="button" onClick={this.submit} className="btn btn-primary">OK</button></div>
           </div>
-          <textarea ref="textarea" onKeyDown={util.preventDefault} readOnly="readonly" className={this.props.className || ''}></textarea>
+          <TextView className={this.props.className || ''} value={value} />
           <form ref="downloadForm" action="cgi-bin/download" style={{display: 'none'}}
             method="post" target="downloadTargetFrame">
             <input ref="filename" name="filename" type="hidden" />
