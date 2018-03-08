@@ -70,7 +70,7 @@
 .w-show-left-menu .w-import-menu, .w-show-left-menu .w-export-menu,
   .w-show-left-menu .w-remove-menu-list { display: inline-block; }
 
-.w-changed {
+.w-menu-changed {
   position: absolute;
   top: 2px;
   right: 10px;
