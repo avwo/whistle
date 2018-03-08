@@ -3,9 +3,10 @@
 .w-menu .glyphicon, .w-detail .glyphicon {margin-right: 3px;}
 .w-menu .glyphicon-folder-open {margin-right: 6px;}
 .w-menu .w-online {position: absolute; right: 0;}
-.w-menu .w-online, .w-menu a:hover {color: #337ab7;}
+.w-menu .w-online, .w-menu a:hover, .w-left-menu a:hover, .w-left-menu a:hover .w-disabled {color: #337ab7;}
 .w-menu .w-offline {color: #ccc!important; cursor: default;}
 .w-menu .w-disabled {color: #888!important; cursor: default!important;}
+.w-left-menu .w-disabled { color: #888; }
 .w-menu .w-menu-enable {color: #ff6666!important;}
 .w-menu .w-menu-wrapper {display: inline-block; position: relative; height: 30px;}
 
@@ -58,7 +59,6 @@
 .w-show-left-menu .w-left-menu { display: block; }
 .w-show-left-menu .w-nav-menu { display: none; }
 .w-left-menu a { display: block; position: relative; padding: 10px; text-decoration: none!important; color: #000; }
-.w-left-menu a:hover { color: #337ab7; }
 .w-left-menu a span { margin-right: 5px; }
 .w-left-menu-tips {
   border: 1px solid #ccc; padding: 6px 10px; background: #fff; display: none;
@@ -69,3 +69,10 @@
 .w-menu .w-import-menu, .w-menu .w-export-menu, .w-menu .w-remove-menu-list { display: none; }
 .w-show-left-menu .w-import-menu, .w-show-left-menu .w-export-menu,
   .w-show-left-menu .w-remove-menu-list { display: inline-block; }
+
+.w-changed {
+  position: absolute;
+  top: 2px;
+  right: 10px;
+  color: red;
+}

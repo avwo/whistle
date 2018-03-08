@@ -2313,7 +2313,7 @@ var Index = React.createClass({
               onDoubleClick={this.onClickMenu}
               title={name == 'rules' ? 'Double click to save all changed' : undefined}
               style={{background: name == 'rules' ? '#ddd' : null}} href="javascript:;" draggable="false">
-              <span className="glyphicon glyphicon-list"></span>
+              <span className={'glyphicon glyphicon-list' + (state.disabledAllRules ? ' w-disabled' : '')} ></span>
               <span className="w-left-menu-tips" style={{display:  name == 'rules' ? 'none' : undefined}}>Rules</span>
             </a>
             <a onClick={this.showValues} className="w-save-menu w-values-menu"
@@ -2327,7 +2327,7 @@ var Index = React.createClass({
               onDoubleClick={this.disableAllPlugins}
               title={name == 'plugins' ? 'Double to ' + (state.disabledAllPlugins ? 'enable' : 'disable') + ' all plugins': undefined}
               style={{background: name == 'plugins' ? '#ddd' : null}} href="javascript:;" draggable="false">
-              <span className="glyphicon glyphicon-list-alt"></span>
+              <span className={'glyphicon glyphicon-list-alt' + (disabledAllPlugins ? ' w-disabled' : '')}></span>
               <span className="w-left-menu-tips" style={{display:  name == 'plugins' ? 'none' : undefined}}>Plugins</span>
             </a>
           </div>
