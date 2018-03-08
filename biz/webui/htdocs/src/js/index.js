@@ -450,6 +450,9 @@ var Index = React.createClass({
       self.rulesChanged = true;
       self.showReloadRules();
     });
+    events.on('updateGlobal', function() {
+      self.setState({});
+    });
     events.on('valuesChanged', function() {
       self.valuesChanged = true;
       self.showReloadValues();

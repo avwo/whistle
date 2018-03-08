@@ -163,18 +163,23 @@ var List = React.createClass({
     typeof onUnselect == 'function' && onUnselect(data);
   },
   onChange: function(e) {
-    var item = this.props.modal.getActive();
+    var modal = this.props.modal;
+    var item = modal.getActive();
     if (!item) {
       return;
     }
     var oldValue = item.value || '';
     var value = e.getValue() || '';
     if (value != oldValue) {
+      var hasChanged = modal.hasChanged();
       item.changed = true;
       item.value = value;
       this.setState({
         selectedItem: item
       });
+      if (!hasChanged) {
+        events.trigger('updateGlobal');
+      }
     }
   },
   onFilterChange: function(keyword) {
