@@ -1,3 +1,8 @@
+### 1.9.2
+1. feat: 增强[v1.8.9](v189)版本的 `ignore://allRules`功能，支持双ignore的规则，即：`ignore://allRules|ignore.host|ignore.whistle.script` 或 `ignore://allRules|ignore:host|ignore:whistle.script` 这个时候whistle会忽略 `host` 和 `whistle.script` 以外的所有规则
+2. perf: 优化了JSONView里面切换到Source模式时可能出现的卡顿问题
+3. style: 禁用所有Rules或Plugins时左侧按钮会自动变灰，修改Rules或Values时左侧按钮会加 `*`
+
 ### v1.9.0
 1. feat: 界面Network右侧的Composer支持设置临时的Rules
 2. feat: 支持通过命令行 `-M network` 设置为抓包模式，该模式只能查看抓包不能设置规则及加载插件
