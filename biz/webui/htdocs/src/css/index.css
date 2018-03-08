@@ -73,6 +73,6 @@
 .w-menu-changed {
   position: absolute;
   top: 2px;
-  right: 10px;
+  left: 2px;
   color: red;
 }
