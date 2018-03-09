@@ -2,6 +2,7 @@ require('../css/json-viewer.css');
 var React = require('react');
 var ReactDOM = require('react-dom');
 var TextView = require('./textview');
+var CopyBtn = require('./copy-btn');
 
 var JSONTree = require('react-json-tree')['default'];
 var dataCenter = require('./data-center');
@@ -111,6 +112,7 @@ var JsonViewer = React.createClass({
     return (
         <div className={'fill orient-vertical-box w-properties-wrap w-json-viewer' + ((noData || props.hide) ? ' hide' : '')}>
           <div className="w-textarea-bar">
+            <CopyBtn value={data.str} />
             <a className="w-download" onDoubleClick={this.download}
               onClick={this.showNameInput} href="javascript:;" draggable="false">Download</a>
               <a className="w-add" onClick={this.showNameInput}

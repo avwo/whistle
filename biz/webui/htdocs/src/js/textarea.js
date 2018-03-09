@@ -2,6 +2,7 @@ require('../css/textarea.css');
 var React = require('react');
 var ReactDOM = require('react-dom');
 var TextView = require('./textview');
+var CopyBtn = require('./copy-btn');
 var util = require('./util');
 var dataCenter = require('./data-center');
 var MAX_LENGTH =1024 * 16;
@@ -123,6 +124,7 @@ var Textarea = React.createClass({
         <div className={'fill orient-vertical-box w-textarea' + (this.props.hide ? ' hide' : '')}>
           <Tips data={this.props.tips} />
           <div className={'w-textarea-bar' + (value ? '' : ' hide')}>
+            <CopyBtn value={this.props.value} />
             <a className="w-download" onDoubleClick={this.download}
               onClick={this.showNameInput} href="javascript:;" draggable="false">Download</a>
             {showAddToValuesBtn ? <a className="w-add" onClick={this.showNameInput} href="javascript:;" draggable="false">AddToValues</a> : ''}
