@@ -442,7 +442,10 @@ var Index = React.createClass({
   },
   componentDidMount: function() {
     var self = this;
-    new Clipboard('.w-copy-text');
+    var clipboard = new Clipboard('.w-copy-text');
+    clipboard.on('error', function(e) {
+      alert('Copy failed.');
+    });
     var preventDefault = function(e) {
       e.preventDefault();
     };
