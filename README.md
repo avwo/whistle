@@ -194,30 +194,39 @@ For more details, please visit [install and start](https://avwo.github.io/whistl
 	
 3. in mobiles, configure the proxy of current Wi-Fi in `Setting`
 
-PS: If the mobile failed to use network after configuration, you can try to close the fireworks or congigure white list while the fireworks of the PC has forbidden remote visit to the port of whistle：[ http://jingyan.baidu.com/article/870c6fc317cae7b03ee4be48.html]( http://jingyan.baidu.com/article/870c6fc317cae7b03ee4be48.html)
+PS: The mobile may failed to use network after configuration because the fireworks of the PC has forbidden remote visit to the whistle's port. you can try to close the fireworks or configure white list ：[ http://jingyan.baidu.com/article/870c6fc317cae7b03ee4be48.html]( http://jingyan.baidu.com/article/870c6fc317cae7b03ee4be48.html)
 
 For more details, please vsit [install and start](https://avwo.github.io/whistle/install.html)
 
-# Web UI
+# Visit whistle's operation page
 
 After above operations are completed，open the whistle page in browser[http://local.whistlejs.com](http://local.whistlejs.com/)：
 
 ![whistle webui](https://raw.githubusercontent.com/avwo/whistleui/master/assets/whistle.gif)
 
-1. Network：mainly to check the request, to compose the request, to show the console print and javascript errors thrown in page 
-2. Rules：to configure operation rules for proxying and capturing
-3. Plugins：installed plugins which can be enabled and disabled there
-4. Weinre：configured Weinre list
-5. HTTPS：to configure whether to intercept the HTTPS, and to download the root certificate for whistle
+
+There are five main blocks in navigation bar:
+1. Network
+  - check and compose the http request
+  - show the console print and javascript errors thrown in page 
+2. Rules：configure operation rules for proxing
+3. Plugins
+  - show the list of installed plugins
+  - enable or disable installed plugins
+4. Weinre：configure Weinre list
+5. HTTPS：
+   - configure whether to intercept the HTTPS and download the root certificate for whistle and or not 
+
 
 # Certificate Installment
 
-Only after installing root certificate and enable HTTPS intercepting can the request for HTTPS and websocket can be intercepted.
+Please install root certificate and enable HTTPS interception before using whislte.
+
 For more details, please vsit [Certificate Installment](https://avwo.github.io/whistle/webui/https.html)
 
-# Quickly start
+# Quick start
 
-Switch  to [Rules](http://local.whistlejs.com/) tab in whistle，and create a grouping named `test` by context menu or `Create` button in menu bar. In the editor of newly created grouping, input rules as following and save：
+Open [Rules](http://local.whistlejs.com/) tab in whistle，and create a grouping named `test` by context menu or `Create` button in menu bar. In the editor of newly created grouping, input rules as following and save：
 
 1. cofigure hosts
 
