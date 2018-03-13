@@ -125,8 +125,8 @@ function getServerIp(modal) {
       } else {
         ip = realEnv;
       }
+      modal.serverIp = ip;
     }
-    modal.serverIp = ip;
   }
   return modal.serverIp || ip;
 }
