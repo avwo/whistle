@@ -123,7 +123,7 @@ var Console = React.createClass({
     var name = target.value.trim();
     target.value = '';
     ReactDOM.findDOMNode(this.refs.filename).value = name;
-    ReactDOM.findDOMNode(this.refs.content).value = this.props.value || '';
+    ReactDOM.findDOMNode(this.refs.content).value = JSON.stringify($.extend(true, {}, this.state.logs), null, '  ');
     ReactDOM.findDOMNode(this.refs.downloadForm).submit();
   },
   submit: function(e) {
