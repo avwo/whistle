@@ -87,14 +87,14 @@ var Console = React.createClass({
     var toggleHide = hide != util.getBoolean(nextProps.hide);
     if (toggleHide || !hide) {
       if (!toggleHide && !hide) {
-        this.scrollToBottom = util.scrollAtBottom(this.container, this.content);
+        this.state.scrollToBottom = util.scrollAtBottom(this.container, this.content);
       }
       return true;
     }
     return false;
   },
   componentDidUpdate: function() {
-    if (!this.props.hide && this.scrollToBottom) {
+    if (!this.props.hide && this.state.scrollToBottom) {
       this.container.scrollTop = 10000000;
     }
   },
