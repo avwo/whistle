@@ -84,24 +84,24 @@ var Log = React.createClass({
     var svrContent = ReactDOM.findDOMNode(self.refs.svrContent);
     document.cookie = '_logComponentDidMount=1';
     dataCenter.on('log', function(logs, svrLogs) {
-      var isPageLog = self.isPageLog();
-      var atBottom = isPageLog ? scrollAtBottom() : scrollAtBottom(svrContainer, svrContent);
-      var data = isPageLog ? logs : svrLogs;
+      var isConsole = self.isConsole();
+      var atBottom = isConsole ? scrollAtBottom() : scrollAtBottom(svrContainer, svrContent);
+      var data = isConsole ? logs : svrLogs;
       if (atBottom) {
-        var len = data.length - 119;
-        if (len > 0) {
+        var len = data.length - 110;
+        if (len > 10) {
           data.splice(0, len);
         }
       }
       var state = {logs: logs, svrLogs: svrLogs};
-      if (isPageLog) {
+      if (isConsole) {
         state.atPageLogBottom = atBottom;
       } else {
         state.atSvrLogBottom = atBottom;
       }
       self.setState(state, function() {
         if (atBottom) {
-          if (isPageLog) {
+          if (isConsole) {
             container.scrollTop = content.offsetHeight;
           } else {
             svrContainer.scrollTop = svrContent.offsetHeight;
@@ -115,8 +115,8 @@ var Log = React.createClass({
       timeout && clearTimeout(timeout);
       if (data && (self.state.atPageLogBottom = scrollAtBottom())) {
         timeout = setTimeout(function() {
-          var len = data.length - 110;
-          if (len > 0) {
+          var len = data.length - 80;
+          if (len > 10) {
             data.splice(0, len);
             self.setState({logs: data});
           }
@@ -129,8 +129,8 @@ var Log = React.createClass({
       svrTimeout && clearTimeout(svrTimeout);
       if (data && (self.state.atSvrLogBottom = scrollAtBottom(svrContainer, svrContent))) {
         svrTimeout = setTimeout(function() {
-          var len = data.length - 110;
-          if (len > 0) {
+          var len = data.length - 80;
+          if (len > 10) {
             data.splice(0, len);
             self.setState({});
           }
@@ -145,14 +145,14 @@ var Log = React.createClass({
     }
   },
   clearLogs: function() {
-    var data = this.isPageLog() ? this.state.logs : this.state.svrLogs;
+    var data = this.isConsole() ? this.state.logs : this.state.svrLogs;
     data && data.splice(0, data.length);
     this.setState({});
   },
   autoRefresh: function() {
     var self = this;
-    var container = ReactDOM.findDOMNode(self.isPageLog() ? self.refs.container : self.refs.svrContainer);
-    var content = ReactDOM.findDOMNode(self.isPageLog() ? self.refs.content : self.refs.svrContent);
+    var container = ReactDOM.findDOMNode(self.isConsole() ? self.refs.container : self.refs.svrContainer);
+    var content = ReactDOM.findDOMNode(self.isConsole() ? self.refs.content : self.refs.svrContent);
     container.scrollTop = content.offsetHeight;
   },
   shouldComponentUpdate: function(nextProps) {
@@ -162,7 +162,7 @@ var Log = React.createClass({
   toggleTabs: function(btn) {
     this.setState({}, function() {
       var container, content;
-      if (this.isPageLog()) {
+      if (this.isConsole()) {
         if (this.state.atPageLogBottom !== false) {
           container = ReactDOM.findDOMNode(this.refs.container);
           content = ReactDOM.findDOMNode(this.refs.content);
@@ -177,7 +177,7 @@ var Log = React.createClass({
       }
     });
   },
-  isPageLog: function() {
+  isConsole: function() {
     return BTNS[0].active;
   },
   onConsoleFilterChange: function(keyword) {
@@ -194,8 +194,8 @@ var Log = React.createClass({
     var state = this.state || {};
     var logs = state.logs || [];
     var svrLogs = state.svrLogs || [];
-    var isPageLog = this.isPageLog();
-    var hasLogs = isPageLog ? logs.length : svrLogs.length;
+    var isConsole = this.isConsole();
+    var hasLogs = isConsole ? logs.length : svrLogs.length;
     var consoleKeyword = state.consoleKeyword;
     var serverKeyword = state.serverKeyword;
 
@@ -206,7 +206,7 @@ var Log = React.createClass({
             <a className="w-clear-log" href="javascript:;" draggable="false" onClick={this.clearLogs}>Clear</a>
           </div>
           <BtnGroup onClick={this.toggleTabs}  onDoubleClick={this.clearLogs} btns={BTNS} />
-          <div className={'fill orient-vertical-box w-detail-page-log' + (isPageLog ? '' : ' hide')}>
+          <div className={'fill orient-vertical-box w-detail-page-log' + (isConsole ? '' : ' hide')}>
             <div ref="container" className="fill w-detail-log-content">
               <ul ref="content">
                 {logs.map(function(log) {
@@ -233,7 +233,7 @@ var Log = React.createClass({
             </div>
             <FilterInput onChange={this.onConsoleFilterChange} />
           </div>
-          <div className={'fill orient-vertical-box w-detail-svr-log' + (!isPageLog ? '' : ' hide')}>
+          <div className={'fill orient-vertical-box w-detail-svr-log' + (!isConsole ? '' : ' hide')}>
             <div ref="svrContainer" className="fill w-detail-log-content">
               <ul ref="svrContent">
                 {svrLogs.map(function(log) {
