@@ -234,7 +234,6 @@ var Index = React.createClass({
     state.disabledPlugins = modal.disabledPlugins;
     state.disabledAllRules = modal.disabledAllRules;
     state.disabledAllPlugins = modal.disabledAllPlugins;
-    state.hideHttpsConnects = modal.hideHttpsConnects;
     state.interceptHttpsConnects = modal.interceptHttpsConnects;
     state.rules = new ListModal(rulesList, rulesData);
     state.rulesOptions = rulesOptions;
@@ -614,13 +613,11 @@ var Index = React.createClass({
     }
     dataCenter.on('settings', function(data) {
       var state = self.state;
-      if (state.hideHttpsConnects !== data.hideHttpsConnects
-        || state.interceptHttpsConnects !== data.interceptHttpsConnects
+      if (state.interceptHttpsConnects !== data.interceptHttpsConnects
         || state.disabledAllRules !== data.disabledAllRules
         || state.allowMultipleChoice !== data.allowMultipleChoice
         || state.disabledAllPlugins !== data.disabledAllPlugins) {
         self.setState({
-          hideHttpsConnects: data.hideHttpsConnects,
           interceptHttpsConnects: data.interceptHttpsConnects,
           disabledAllRules: data.disabledAllRules,
           allowMultipleChoice: data.allowMultipleChoice,
@@ -1394,19 +1391,6 @@ var Index = React.createClass({
   },
   showHttpsSettingsDialog: function() {
     $(ReactDOM.findDOMNode(this.refs.rootCADialog)).modal('show');
-  },
-  hideHttpsConnects: function(e) {
-    var self = this;
-    var checked = e.target.checked;
-    dataCenter.hideHttpsConnects({hideHttpsConnects: checked ? 1 : 0},
-        function(data) {
-          if (data && data.ec === 0) {
-            self.state.hideHttpsConnects = checked;
-          } else {
-            util.showSystemError();
-          }
-          self.setState({});
-        });
   },
   interceptHttpsConnects: function(e) {
     var self = this;
@@ -2402,8 +2386,7 @@ var Index = React.createClass({
                 </div>
                 <a title="http://rootca.pro/" href="cgi-bin/rootca" target="downloadTargetFrame"><img src="img/rootca.png" /></a>
                 <div className="w-https-settings">
-                  <p><label><input checked={state.hideHttpsConnects} onChange={this.hideHttpsConnects} type="checkbox" /> Hide TUNNEL CONNECTs</label></p>
-                  <p><label><input checked={state.interceptHttpsConnects} onChange={this.interceptHttpsConnects} type="checkbox" /> Intercept HTTPS CONNECTs</label></p>
+                  <p><label><input checked={state.interceptHttpsConnects} onChange={this.interceptHttpsConnects} type="checkbox" /> Capture HTTPS CONNECTs</label></p>
                 </div>
               </div>
               <div className="modal-footer">
