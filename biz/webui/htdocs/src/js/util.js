@@ -593,3 +593,41 @@ exports.parseHeadersFromHar = function(list) {
 exports.getTimeFromHar = function(time) {
   return time > 0 ? time : 0;
 };
+
+exports.parseKeyword = function parseKeyword(keyword) {
+  keyword = keyword.trim().toLowerCase().split(/\s+/g);
+  var result = {};
+  var index = 0;
+  for (var i = 0; i <= 3; i++) {
+    var key = keyword[i];
+    if (key && key.indexOf('level:') === 0) {
+      result.level = key.substring(6);
+    } else if (index < 3) {
+      ++index;
+      result['key' + index] = key;
+    }
+  }
+  return result;
+};
+
+exports.checkLogText = function(text, keyword) {
+  if (!keyword.key1) {
+    return '';
+  }
+  text = text.toLowerCase();
+  if (text.indexOf(keyword.key1) === -1) {
+    return ' hide';
+  }
+  if (keyword.key2 && text.indexOf(keyword.key2) === -1) {
+    return ' hide';
+  }
+  if (keyword.key3 && text.indexOf(keyword.key3) === -1) {
+    return ' hide';
+  }
+  return '';
+};
+
+exports.scrollAtBottom = function(con, ctn) {
+  return con.scrollTop + con.offsetHeight + 5 > ctn.offsetHeight;
+};
+
