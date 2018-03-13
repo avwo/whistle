@@ -76,7 +76,12 @@ var Console = React.createClass({
     this.setState({});
   },
   autoRefresh: function() {
-    this.container.scrollTop = 1000000;
+    this.container.scrollTop = 10000000;
+  },
+  stopAutoRefresh: function() {
+    if (util.scrollAtBottom(this.container, this.content)) {
+      this.container.scrollTop = this.container.scrollTop - 10;
+    }
   },
   shouldComponentUpdate: function(nextProps) {
     var hide = util.getBoolean(this.props.hide);
@@ -91,7 +96,7 @@ var Console = React.createClass({
   },
   componentDidUpdate: function() {
     if (!this.props.hide && this.scrollToBottom) {
-      this.container.scrollTop = 1000000;
+      this.container.scrollTop = 10000000;
     }
   },
   toggleTabs: function(btn) {
@@ -149,7 +154,8 @@ var Console = React.createClass({
       <div className={'w-textarea-bar' + (logs.length ? '' : ' hide')}>
         <a className="w-download" onDoubleClick={this.download}
           onClick={this.showNameInput} href="javascript:;" draggable="false">Download</a>
-        <a className="w-auto-refresh" onClick={this.autoRefresh} href="javascript:;" draggable="false">AutoRefresh</a>
+        <a className="w-auto-refresh" onDoubleClick={this.stopAutoRefresh}
+          onClick={this.autoRefresh} href="javascript:;" draggable="false">AutoRefresh</a>
         <a className="w-clear" onClick={this.clearLogs} href="javascript:;" draggable="false">Clear</a>
         <div onMouseDown={this.preventBlur}
           style={{display: this.state.showNameInput ? 'block' : 'none'}}
