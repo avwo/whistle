@@ -5,19 +5,9 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 
 var JSONTree = require('react-json-tree')['default'];
-var BtnGroup = require('./btn-group');
 var util = require('./util');
 var dataCenter = require('./data-center');
 var FilterInput = require('./filter-input');
-
-var BTNS = [{
-  name: 'Console',
-  icon: 'file',
-  active: true
-}, {
-  name: 'Server',
-  icon: 'exclamation-sign'
-}];
 
 function parseLog(log) {
   if (log.view) {
@@ -48,8 +38,8 @@ var Console = React.createClass({
   },
   componentDidMount: function() {
     var self = this;
-    var container = ReactDOM.findDOMNode(self.refs.container);
-    var content = ReactDOM.findDOMNode(self.refs.content);
+    var container = this.container = ReactDOM.findDOMNode(self.refs.container);
+    var content = this.content = ReactDOM.findDOMNode(self.refs.content);
     document.cookie = '_logComponentDidMount=1';
     dataCenter.on('log', function(logs) {
       self.state.logs = logs;
@@ -98,7 +88,16 @@ var Console = React.createClass({
   },
   shouldComponentUpdate: function(nextProps) {
     var hide = util.getBoolean(this.props.hide);
-    return hide != util.getBoolean(nextProps.hide) || !hide;
+    if (hide != util.getBoolean(nextProps.hide) || !hide) {
+      this.scrollToBottom = util.scrollAtBottom(this.container, this.content);
+      return true;
+    }
+    return false;
+  },
+  componentDidUpdate: function() {
+    if (this.scrollToBottom) {
+      this.container.scrollTop = 1000000;
+    }
   },
   toggleTabs: function(btn) {
     this.setState({}, function() {

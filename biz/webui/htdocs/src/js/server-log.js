@@ -14,8 +14,8 @@ var ServerLog = React.createClass({
   },
   componentDidMount: function() {
     var self = this;
-    var svrContainer = ReactDOM.findDOMNode(self.refs.svrContainer);
-    var svrContent = ReactDOM.findDOMNode(self.refs.svrContent);
+    var svrContainer = this.container = ReactDOM.findDOMNode(self.refs.svrContainer);
+    var svrContent = this.content = ReactDOM.findDOMNode(self.refs.svrContent);
     document.cookie = '_logComponentDidMount=1';
     dataCenter.on('log', function(logs, svrLogs) {
       self.state.svrLogs = svrLogs;
@@ -65,7 +65,16 @@ var ServerLog = React.createClass({
   },
   shouldComponentUpdate: function(nextProps) {
     var hide = util.getBoolean(this.props.hide);
-    return hide != util.getBoolean(nextProps.hide) || !hide;
+    if (hide != util.getBoolean(nextProps.hide) || !hide) {
+      this.scrollToBottom = util.scrollAtBottom(this.container, this.content);
+      return true;
+    }
+    return false;
+  },
+  componentDidUpdate: function() {
+    if (this.scrollToBottom) {
+      this.container.scrollTop = 1000000;
+    }
   },
   toggleTabs: function(btn) {
     this.setState({}, function() {

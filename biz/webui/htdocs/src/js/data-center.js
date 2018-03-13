@@ -409,13 +409,13 @@ function startLoadData() {
 
     if (!len) {
       startLogTime = lastPageLogTime;
-    } else if (len < 120) {
+    } else if (len < 100) {
       startLogTime = logList[len - 1].id;
     }
 
     if (!svrLen) {
       startSvrLogTime = lastSvrLogTime;
-    } else if (svrLen < 120) {
+    } else if (svrLen < 70) {
       startSvrLogTime = svrLogList[svrLen - 1].id;
     }
 
