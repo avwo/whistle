@@ -2313,14 +2313,14 @@ var Index = React.createClass({
               style={{background: name == 'network' ? '#ddd' : null}}
               href="javascript:;"  draggable="false">
                 <span className="glyphicon glyphicon-globe"></span>
-                <span className="w-left-menu-tips" style={{display:  name == 'network' ? 'none' : undefined}}>Network</span>
+                <span className="w-left-menu-tips">Network</span>
             </a>
             <a onClick={this.showRules} className="w-save-menu w-rules-menu"
               onDoubleClick={this.onClickMenu}
               title={name == 'rules' ? 'Double click to save all changed' : undefined}
               style={{background: name == 'rules' ? '#ddd' : null}} href="javascript:;" draggable="false">
               <span className={'glyphicon glyphicon-list' + (state.disabledAllRules ? ' w-disabled' : '')} ></span>
-              <span className="w-left-menu-tips" style={{display:  name == 'rules' ? 'none' : undefined}}>Rules</span>
+              <span className="w-left-menu-tips">Rules</span>
               <i className="w-menu-changed" style={{display: state.rules.hasChanged() ? undefined : 'none'}}>*</i>
             </a>
             <a onClick={this.showValues} className="w-save-menu w-values-menu"
@@ -2328,7 +2328,7 @@ var Index = React.createClass({
               title={name == 'values' ? 'Double click to save all changed' : undefined}
               style={{background: name == 'values' ? '#ddd' : null}} href="javascript:;" draggable="false">
               <span className="glyphicon glyphicon-folder-open"></span>
-              <span className="w-left-menu-tips" style={{display:  name == 'values' ? 'none' : undefined}}>Values</span>
+              <span className="w-left-menu-tips">Values</span>
               <i className="w-menu-changed" style={{display: state.values.hasChanged() ? undefined : 'none'}}>*</i>
             </a>
             <a onClick={this.showPlugins} className="w-plugins-menu"
@@ -2336,7 +2336,7 @@ var Index = React.createClass({
               title={name == 'plugins' ? 'Double to ' + (state.disabledAllPlugins ? 'enable' : 'disable') + ' all plugins': undefined}
               style={{background: name == 'plugins' ? '#ddd' : null}} href="javascript:;" draggable="false">
               <span className={'glyphicon glyphicon-list-alt' + (disabledAllPlugins ? ' w-disabled' : '')}></span>
-              <span className="w-left-menu-tips" style={{display:  name == 'plugins' ? 'none' : undefined}}>Plugins</span>
+              <span className="w-left-menu-tips">Plugins</span>
             </a>
           </div>
           {state.hasRules ? <List ref="rules" disabled={state.disabledAllRules} theme={rulesTheme} fontSize={rulesFontSize} lineNumbers={showRulesLineNumbers} onSelect={this.selectRules} onUnselect={this.unselectRules} onActive={this.activeRules} modal={state.rules} hide={name == 'rules' ? false : true} name="rules" /> : undefined}
