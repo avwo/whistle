@@ -111,6 +111,10 @@ function getProperty(obj, name, defaultValue) {
 
 exports.getProperty = getProperty;
 
+var filterEmptyStr = function(item) {
+  return item.trim();
+};
+
 function getServerIp(modal) {
   var ip = modal.hostIp;
   if (!modal.serverIp && ip) {
@@ -125,7 +129,7 @@ function getServerIp(modal) {
       } else {
         ip = realEnv;
       }
-      modal.serverIp = ip;
+      modal.serverIp = ip.split(',').filter(filterEmptyStr).join(', ');
     }
   }
   return modal.serverIp || ip;
