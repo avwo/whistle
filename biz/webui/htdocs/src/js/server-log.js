@@ -24,7 +24,7 @@ var ServerLog = React.createClass({
       }
       var atBottom = util.scrollAtBottom(svrContainer, svrContent);
       if (atBottom) {
-        var len = svrLogs.length - 110;
+        var len = svrLogs.length - 50;
         if (len > 9) {
           svrLogs.splice(0, len);
         }
@@ -32,7 +32,7 @@ var ServerLog = React.createClass({
       self.state.atSvrLogBottom = atBottom;
       self.setState({}, function() {
         if (atBottom) {
-          svrContainer.scrollTop = svrContent.offsetHeight;
+          svrContainer.scrollTop = 10000000;
         }
       });
     });
@@ -58,10 +58,7 @@ var ServerLog = React.createClass({
     this.setState({});
   },
   autoRefresh: function() {
-    var self = this;
-    var container = ReactDOM.findDOMNode(self.refs.svrContainer);
-    var content = ReactDOM.findDOMNode(self.refs.svrContent);
-    container.scrollTop = content.offsetHeight;
+    this.container.scrollTop = 10000000;
   },
   shouldComponentUpdate: function(nextProps) {
     var hide = util.getBoolean(this.props.hide);
@@ -97,7 +94,7 @@ var ServerLog = React.createClass({
     var serverKeyword = state.serverKeyword;
 
     return (
-      <div className={'fill orient-vertical-box w-detail-svr-log' + (this.props.hide ? ' hide' : '')}>
+      <div className={'fill orient-vertical-boxw-textarea w-detail-svr-log' + (this.props.hide ? ' hide' : '')}>
         <div ref="svrContainer" className="fill w-detail-log-content">
           <ul ref="svrContent">
             {svrLogs.map(function(log) {

@@ -48,7 +48,7 @@ var Console = React.createClass({
       }
       var atBottom = util.scrollAtBottom(container, content);
       if (atBottom) {
-        var len = logs.length - 110;
+        var len = logs.length - 80;
         if (len > 9) {
           logs.splice(0, len);
         }
@@ -56,7 +56,7 @@ var Console = React.createClass({
       self.state.atConsoleBottom = atBottom;
       self.setState({}, function() {
         if (atBottom) {
-          container.scrollTop = content.offsetHeight;
+          container.scrollTop = 10000000;
         }
       });
     });
@@ -81,10 +81,7 @@ var Console = React.createClass({
     this.setState({});
   },
   autoRefresh: function() {
-    var self = this;
-    var container = ReactDOM.findDOMNode(self.refs.container);
-    var content = ReactDOM.findDOMNode(self.refs.content);
-    container.scrollTop = content.offsetHeight;
+    this.container.scrollTop = 1000000;
   },
   shouldComponentUpdate: function(nextProps) {
     var hide = util.getBoolean(this.props.hide);
@@ -114,13 +111,53 @@ var Console = React.createClass({
       consoleKeyword: util.parseKeyword(keyword)
     });
   },
+  showNameInput: function(e) {
+    var self = this;
+    self.state.showNameInput = true;
+    self.forceUpdate(function() {
+      ReactDOM.findDOMNode(self.refs.nameInput).focus();
+    });
+  },
+  download: function() {
+    var target = ReactDOM.findDOMNode(this.refs.nameInput);
+    var name = target.value.trim();
+    target.value = '';
+    ReactDOM.findDOMNode(this.refs.filename).value = name;
+    ReactDOM.findDOMNode(this.refs.content).value = this.props.value || '';
+    ReactDOM.findDOMNode(this.refs.downloadForm).submit();
+  },
+  submit: function(e) {
+    if (e.keyCode != 13 && e.type != 'click') {
+      return;
+    }
+    this.download();
+  },
+  hideNameInput: function() {
+    this.state.showNameInput = false;
+    this.forceUpdate();
+  },
   render: function() {
     var state = this.state;
     var logs = state.logs || [];
     var consoleKeyword = state.consoleKeyword;
 
     return (
-      <div className={'fill orient-vertical-box w-detail-page-log' + (this.props.hide ? ' hide' : '')}>
+      <div className={'fill orient-vertical-box w-textarea w-detail-page-log' + (this.props.hide ? ' hide' : '')}>
+      <div className={'w-textarea-bar' + (logs.length ? '' : ' hide')}>
+        <a className="w-download" onDoubleClick={this.download}
+          onClick={this.showNameInput} href="javascript:;" draggable="false">Download</a>
+        <a className="w-auto-refresh" onClick={this.autoRefresh} href="javascript:;" draggable="false">AutoRefresh</a>
+        <a className="w-clear" onClick={this.clearLogs} href="javascript:;" draggable="false">Clear</a>
+        <div onMouseDown={this.preventBlur}
+          style={{display: this.state.showNameInput ? 'block' : 'none'}}
+          className="shadow w-textarea-input"><input ref="nameInput"
+          onKeyDown={this.submit}
+          onBlur={this.hideNameInput}
+          type="text"
+          maxLength="64"
+          placeholder="Input the filename"
+        /><button type="button" onClick={this.submit} className="btn btn-primary">OK</button></div>
+      </div>
         <div ref="container" className="fill w-detail-log-content">
           <ul ref="content">
             {logs.map(function(log) {
@@ -146,6 +183,11 @@ var Console = React.createClass({
           </ul>
         </div>
         <FilterInput onChange={this.onConsoleFilterChange} />
+        <form ref="downloadForm" action="cgi-bin/download" style={{display: 'none'}}
+          method="post" target="downloadTargetFrame">
+          <input ref="filename" name="filename" type="hidden" />
+          <input ref="content" name="content" type="hidden" />
+        </form>
       </div>
     );
   }

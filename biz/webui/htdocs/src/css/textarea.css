@@ -1,5 +1,5 @@
 .w-textarea {position: relative;}
-.w-textarea-bar { display: none; position: absolute; z-index: 1; border-radius: 2px; top: 2px; right: 5px; font-size: 12px;
+.w-textarea-bar { display: none; position: absolute; z-index: 1; border-radius: 2px; top: 2px; right: 12px; font-size: 12px;
  white-space: nowrap; line-height: 1.5; background: #eee;}
 .w-textarea:hover .w-textarea-bar { display: block; }
 .w-textarea-bar a {display: inline-block; text-decoration: none; color: #747474; padding: 0 5px;}
@@ -12,7 +12,7 @@
 
 .w-textview-tips {  color: #888; text-align: center; width: 520px; height: 70px;
    position: absolute; left: 50%; top: 50%; margin: -50px 0 0 -260px; }
-.w-textview-tips p { font-size: 14px; line-height: 36px; margin: 0; 
+.w-textview-tips p { font-size: 14px; line-height: 36px; margin: 0;
    white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
 .w-textview-tips a { font-size: 12px; color: #aaa; text-decoration: none; }
 .w-textview-tips a:hover { text-decoration: underline; }
