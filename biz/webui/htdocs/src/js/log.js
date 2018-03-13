@@ -95,7 +95,7 @@ var Log = React.createClass({
       }
       var state = {logs: logs, svrLogs: svrLogs};
       if (isConsole) {
-        state.atPageLogBottom = atBottom;
+        state.atConsoleBottom = atBottom;
       } else {
         state.atSvrLogBottom = atBottom;
       }
@@ -113,7 +113,7 @@ var Log = React.createClass({
     $(container).on('scroll', function() {
       var data = self.state.logs;
       timeout && clearTimeout(timeout);
-      if (data && (self.state.atPageLogBottom = scrollAtBottom())) {
+      if (data && (self.state.atConsoleBottom = scrollAtBottom())) {
         timeout = setTimeout(function() {
           var len = data.length - 80;
           if (len > 10) {
@@ -129,7 +129,7 @@ var Log = React.createClass({
       svrTimeout && clearTimeout(svrTimeout);
       if (data && (self.state.atSvrLogBottom = scrollAtBottom(svrContainer, svrContent))) {
         svrTimeout = setTimeout(function() {
-          var len = data.length - 80;
+          var len = data.length - 50;
           if (len > 10) {
             data.splice(0, len);
             self.setState({});
@@ -163,7 +163,7 @@ var Log = React.createClass({
     this.setState({}, function() {
       var container, content;
       if (this.isConsole()) {
-        if (this.state.atPageLogBottom !== false) {
+        if (this.state.atConsoleBottom !== false) {
           container = ReactDOM.findDOMNode(this.refs.container);
           content = ReactDOM.findDOMNode(this.refs.content);
           container.scrollTop = content.offsetHeight;
