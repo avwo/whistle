@@ -10,15 +10,14 @@ var FilterInput = require('./filter-input');
 
 var ServerLog = React.createClass({
   getInitialState: function() {
-    return {};
+    return { scrollToBottom: true };
   },
   componentDidMount: function() {
     var self = this;
     var svrContainer = this.container = ReactDOM.findDOMNode(self.refs.svrContainer);
     var svrContent = this.content = ReactDOM.findDOMNode(self.refs.svrContent);
-    document.cookie = '_logComponentDidMount=1';
     dataCenter.on('log', function(logs, svrLogs) {
-      self.state.svrLogs = svrLogs;
+      self.state.logs = svrLogs;
       if (self.props.hide) {
         return;
       }
@@ -29,19 +28,14 @@ var ServerLog = React.createClass({
           svrLogs.splice(0, len);
         }
       }
-      self.state.atSvrLogBottom = atBottom;
-      self.setState({}, function() {
-        if (atBottom) {
-          svrContainer.scrollTop = 10000000;
-        }
-      });
+      self.setState({});
     });
 
     var svrTimeout;
     $(svrContainer).on('scroll', function() {
-      var data = self.state.svrLogs;
+      var data = self.state.logs;
       svrTimeout && clearTimeout(svrTimeout);
-      if (data && (self.state.atSvrLogBottom = util.scrollAtBottom(svrContainer, svrContent))) {
+      if (data && (self.state.scrollToBottom = util.scrollAtBottom(svrContainer, svrContent))) {
         svrTimeout = setTimeout(function() {
           var len = data.length - 50;
           if (len > 9) {
@@ -53,51 +47,109 @@ var ServerLog = React.createClass({
     });
   },
   clearLogs: function() {
-    var data = this.state.svrLogs;
+    var data = this.state.logs;
     data && data.splice(0, data.length);
     this.setState({});
+  },
+  stopAutoRefresh: function() {
+    if (util.scrollAtBottom(this.container, this.content)) {
+      this.container.scrollTop = this.container.scrollTop - 10;
+    }
   },
   autoRefresh: function() {
     this.container.scrollTop = 10000000;
   },
   shouldComponentUpdate: function(nextProps) {
     var hide = util.getBoolean(this.props.hide);
-    if (hide != util.getBoolean(nextProps.hide) || !hide) {
-      this.scrollToBottom = util.scrollAtBottom(this.container, this.content);
+    var toggleHide = hide != util.getBoolean(nextProps.hide);
+    if (toggleHide || !hide) {
+      if (!toggleHide && !hide) {
+        this.scrollToBottom = util.scrollAtBottom(this.container, this.content);
+      }
       return true;
     }
     return false;
   },
   componentDidUpdate: function() {
-    if (this.scrollToBottom) {
-      this.container.scrollTop = 1000000;
+    if (!this.props.hide && this.scrollToBottom) {
+      this.container.scrollTop = 10000000;
     }
-  },
-  toggleTabs: function(btn) {
-    this.setState({}, function() {
-      var container, content;
-      if (this.state.atSvrLogBottom !== false) {
-        container = ReactDOM.findDOMNode(this.refs.svrContainer);
-        content = ReactDOM.findDOMNode(this.refs.svrContent);
-        container.scrollTop = content.offsetHeight;
-      }
-    });
   },
   onServerFilterChange: function(keyword) {
     this.setState({
       serverKeyword: util.parseKeyword(keyword)
     });
   },
+  showNameInput: function(e) {
+    var self = this;
+    self.setState({
+      showNameInput: true
+    }, function() {
+      ReactDOM.findDOMNode(self.refs.nameInput).focus();
+    });
+  },
+  download: function() {
+    var target = ReactDOM.findDOMNode(this.refs.nameInput);
+    var name = target.value.trim();
+    var logs = this.state.logs.map(function(log) {
+      return {
+        id: log.id,
+        text: log.text,
+        level: log.level,
+        date: log.date
+      };
+    });
+    target.value = '';
+    ReactDOM.findDOMNode(this.refs.filename).value = name;
+    ReactDOM.findDOMNode(this.refs.content).value = JSON.stringify(logs, null, '  ');
+    ReactDOM.findDOMNode(this.refs.downloadForm).submit();
+    this.hideNameInput();
+  },
+  submit: function(e) {
+    if (e.keyCode !== 13 && e.type != 'click') {
+      return;
+    }
+    this.download();
+  },
+  preventBlur: function(e) {
+    e.target.nodeName != 'INPUT' && e.preventDefault();
+  },
+  hideNameInput: function() {
+    this.setState({ showNameInput: false });
+  },
   render: function() {
     var state = this.state;
-    var svrLogs = state.svrLogs || [];
+    var logs = state.logs || [];
     var serverKeyword = state.serverKeyword;
 
     return (
-      <div className={'fill orient-vertical-boxw-textarea w-detail-svr-log' + (this.props.hide ? ' hide' : '')}>
+      <div className={'fill orient-vertical-box w-textarea w-detail-svr-log' + (this.props.hide ? ' hide' : '')}>
+        <div className={'w-textarea-bar' + (logs.length ? '' : ' hide')}>
+          <a className="w-download" onDoubleClick={this.download}
+            onClick={this.showNameInput} href="javascript:;" draggable="false">Download</a>
+          <a className="w-auto-refresh" onDoubleClick={this.stopAutoRefresh}
+            onClick={this.autoRefresh} href="javascript:;" draggable="false">AutoRefresh</a>
+          <a className="w-clear" onClick={this.clearLogs} href="javascript:;" draggable="false">Clear</a>
+          <div onMouseDown={this.preventBlur}
+            style={{display: this.state.showNameInput ? 'block' : 'none'}}
+            className="shadow w-textarea-input"><input ref="nameInput"
+            onKeyDown={this.submit}
+            onBlur={this.hideNameInput}
+            type="text"
+            maxLength="64"
+            placeholder="Input the filename"
+          />
+            <button type="button" onClick={this.submit} className="btn btn-primary">OK</button>
+          </div>
+          <form ref="downloadForm" action="cgi-bin/download" style={{display: 'none'}}
+            method="post" target="downloadTargetFrame">
+            <input ref="filename" name="filename" type="hidden" />
+            <input ref="content" name="content" type="hidden" />
+          </form>
+        </div>
         <div ref="svrContainer" className="fill w-detail-log-content">
           <ul ref="svrContent">
-            {svrLogs.map(function(log) {
+            {logs.map(function(log) {
               var text = 'Date: ' + (new Date(log.date)).toLocaleString() + '\r\n' + log.text;
               var hide = '';
               if (serverKeyword) {

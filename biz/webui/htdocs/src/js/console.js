@@ -34,13 +34,12 @@ function parseLog(log) {
 
 var Console = React.createClass({
   getInitialState: function() {
-    return {};
+    return { scrollToBottom: true };
   },
   componentDidMount: function() {
     var self = this;
     var container = this.container = ReactDOM.findDOMNode(self.refs.container);
     var content = this.content = ReactDOM.findDOMNode(self.refs.logContent);
-    document.cookie = '_logComponentDidMount=1';
     dataCenter.on('log', function(logs) {
       self.state.logs = logs;
       if (self.props.hide) {
@@ -99,9 +98,6 @@ var Console = React.createClass({
       this.container.scrollTop = 10000000;
     }
   },
-  toggleTabs: function(btn) {
-    this.setState({});
-  },
   onConsoleFilterChange: function(keyword) {
     this.setState({
       consoleKeyword: util.parseKeyword(keyword)
@@ -151,22 +147,29 @@ var Console = React.createClass({
 
     return (
       <div className={'fill orient-vertical-box w-textarea w-detail-page-log' + (this.props.hide ? ' hide' : '')}>
-      <div className={'w-textarea-bar' + (logs.length ? '' : ' hide')}>
-        <a className="w-download" onDoubleClick={this.download}
-          onClick={this.showNameInput} href="javascript:;" draggable="false">Download</a>
-        <a className="w-auto-refresh" onDoubleClick={this.stopAutoRefresh}
-          onClick={this.autoRefresh} href="javascript:;" draggable="false">AutoRefresh</a>
-        <a className="w-clear" onClick={this.clearLogs} href="javascript:;" draggable="false">Clear</a>
-        <div onMouseDown={this.preventBlur}
-          style={{display: this.state.showNameInput ? 'block' : 'none'}}
-          className="shadow w-textarea-input"><input ref="nameInput"
-          onKeyDown={this.submit}
-          onBlur={this.hideNameInput}
-          type="text"
-          maxLength="64"
-          placeholder="Input the filename"
-        /><button type="button" onClick={this.submit} className="btn btn-primary">OK</button></div>
-      </div>
+        <div className={'w-textarea-bar' + (logs.length ? '' : ' hide')}>
+          <a className="w-download" onDoubleClick={this.download}
+            onClick={this.showNameInput} href="javascript:;" draggable="false">Download</a>
+          <a className="w-auto-refresh" onDoubleClick={this.stopAutoRefresh}
+            onClick={this.autoRefresh} href="javascript:;" draggable="false">AutoRefresh</a>
+          <a className="w-clear" onClick={this.clearLogs} href="javascript:;" draggable="false">Clear</a>
+          <div onMouseDown={this.preventBlur}
+            style={{display: this.state.showNameInput ? 'block' : 'none'}}
+            className="shadow w-textarea-input"><input ref="nameInput"
+            onKeyDown={this.submit}
+            onBlur={this.hideNameInput}
+            type="text"
+            maxLength="64"
+            placeholder="Input the filename"
+          />
+            <button type="button" onClick={this.submit} className="btn btn-primary">OK</button>
+          </div>
+          <form ref="downloadForm" action="cgi-bin/download" style={{display: 'none'}}
+            method="post" target="downloadTargetFrame">
+            <input ref="filename" name="filename" type="hidden" />
+            <input ref="content" name="content" type="hidden" />
+          </form>
+        </div>
         <div ref="container" className="fill w-detail-log-content">
           <ul ref="logContent">
             {logs.map(function(log) {
@@ -192,11 +195,6 @@ var Console = React.createClass({
           </ul>
         </div>
         <FilterInput onChange={this.onConsoleFilterChange} />
-        <form ref="downloadForm" action="cgi-bin/download" style={{display: 'none'}}
-          method="post" target="downloadTargetFrame">
-          <input ref="filename" name="filename" type="hidden" />
-          <input ref="content" name="content" type="hidden" />
-        </form>
       </div>
     );
   }
