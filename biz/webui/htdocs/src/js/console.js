@@ -53,18 +53,13 @@ var Console = React.createClass({
           logs.splice(0, len);
         }
       }
-      self.state.atConsoleBottom = atBottom;
-      self.setState({}, function() {
-        if (atBottom) {
-          container.scrollTop = 10000000;
-        }
-      });
+      self.setState({});
     });
     var timeout;
     $(container).on('scroll', function() {
       var data = self.state.logs;
       timeout && clearTimeout(timeout);
-      if (data && (self.state.atConsoleBottom = util.scrollAtBottom(container, content))) {
+      if (data && (self.state.scrollToBottom = util.scrollAtBottom(container, content))) {
         timeout = setTimeout(function() {
           var len = data.length - 80;
           if (len > 9) {
@@ -85,27 +80,22 @@ var Console = React.createClass({
   },
   shouldComponentUpdate: function(nextProps) {
     var hide = util.getBoolean(this.props.hide);
-    if (hide != util.getBoolean(nextProps.hide) || !hide) {
-      var logs = this.state.logs;
-      this.scrollToBottom = !logs || !logs.length;
+    var toggleHide = hide != util.getBoolean(nextProps.hide);
+    if (toggleHide || !hide) {
+      if (!toggleHide && !hide) {
+        this.scrollToBottom = util.scrollAtBottom(this.container, this.content);
+      }
       return true;
     }
     return false;
   },
   componentDidUpdate: function() {
-    if (this.scrollToBottom) {
+    if (!this.props.hide && this.scrollToBottom) {
       this.container.scrollTop = 1000000;
     }
   },
   toggleTabs: function(btn) {
-    this.setState({}, function() {
-      var container, content;
-      if (this.state.atConsoleBottom !== false) {
-        container = ReactDOM.findDOMNode(this.refs.container);
-        content = ReactDOM.findDOMNode(this.refs.logContent);
-        container.scrollTop = content.offsetHeight;
-      }
-    });
+    this.setState({});
   },
   onConsoleFilterChange: function(keyword) {
     this.setState({
