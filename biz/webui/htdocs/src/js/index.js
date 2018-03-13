@@ -1347,7 +1347,7 @@ var Index = React.createClass({
     self.state.weinreOptions = util.unique(list).map(function(name) {
       return {
         name: name,
-        icon: 'globe'
+        icon: 'wrench'
       };
     });
     self.setState({
@@ -2231,7 +2231,7 @@ var Index = React.createClass({
           </a>
           <div onMouseEnter={this.showNetworkOptions} onMouseLeave={this.hideNetworkOptions} className={'w-nav-menu w-menu-wrapper' + (showNetworkOptions ? ' w-menu-wrapper-show' : '')}>
             <a onClick={this.showNetwork} onDoubleClick={this.clearNetwork} className="w-network-menu" title="Double click to remove all sessions" style={{background: name == 'network' ? '#ddd' : null}}
-          href="javascript:;"  draggable="false"><span className="glyphicon glyphicon-align-justify"></span>Network</a>
+          href="javascript:;"  draggable="false"><span className="glyphicon glyphicon-globe"></span>Network</a>
             <MenuItem ref="networkMenuItem" options={state.networkOptions} className="w-network-menu-item" onClickOption={this.handleNetwork} />
           </div>
           <div onMouseEnter={this.showRulesOptions} onMouseLeave={this.hideRulesOptions}
@@ -2284,7 +2284,7 @@ var Index = React.createClass({
           <a onClick={this.onClickMenu} className={'w-delete-menu' + (disabledDeleteBtn ? ' w-disabled' : '')} style={{display: (isNetwork || isPlugins) ? 'none' : ''}} href="javascript:;" draggable="false"><span className="glyphicon glyphicon-trash"></span>Delete</a>
           <a onClick={this.showSettings} className={'w-settings-menu' + (hasFilterText ? ' w-menu-enable'  : '')} style={{display: (isPlugins) ? 'none' : ''}} href="javascript:;" draggable="false"><span className="glyphicon glyphicon-cog"></span>Settings</a>
           <div onMouseEnter={this.showWeinreOptions} onMouseLeave={this.hideWeinreOptions} className={'w-menu-wrapper' + (showWeinreOptions ? ' w-menu-wrapper-show' : '')}>
-            <a onClick={this.showAnonymousWeinre} className="w-weinre-menu" href="javascript:;" draggable="false"><span className="glyphicon glyphicon-globe"></span>Weinre</a>
+            <a onClick={this.showAnonymousWeinre} className="w-weinre-menu" href="javascript:;" draggable="false"><span className="glyphicon glyphicon-wrench"></span>Weinre</a>
             <MenuItem ref="weinreMenuItem" name="Anonymous" options={state.weinreOptions} className="w-weinre-menu-item" onClick={this.showAnonymousWeinre} onClickOption={this.showWeinre} />
           </div>
           <a onClick={this.showHttpsSettingsDialog} className="w-https-menu" href="javascript:;" draggable="false"><span className="glyphicon glyphicon-lock"></span>HTTPS</a>
@@ -2312,7 +2312,7 @@ var Index = React.createClass({
               className="w-network-menu"
               style={{background: name == 'network' ? '#ddd' : null}}
               href="javascript:;"  draggable="false">
-                <span className="glyphicon glyphicon-align-justify"></span>
+                <span className="glyphicon glyphicon-globe"></span>
                 <span className="w-left-menu-tips" style={{display:  name == 'network' ? 'none' : undefined}}>Network</span>
             </a>
             <a onClick={this.showRules} className="w-save-menu w-rules-menu"
