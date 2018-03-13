@@ -39,7 +39,7 @@ var Console = React.createClass({
   componentDidMount: function() {
     var self = this;
     var container = this.container = ReactDOM.findDOMNode(self.refs.container);
-    var content = this.content = ReactDOM.findDOMNode(self.refs.content);
+    var content = this.content = ReactDOM.findDOMNode(self.refs.logContent);
     document.cookie = '_logComponentDidMount=1';
     dataCenter.on('log', function(logs) {
       self.state.logs = logs;
@@ -86,7 +86,8 @@ var Console = React.createClass({
   shouldComponentUpdate: function(nextProps) {
     var hide = util.getBoolean(this.props.hide);
     if (hide != util.getBoolean(nextProps.hide) || !hide) {
-      this.scrollToBottom = util.scrollAtBottom(this.container, this.content);
+      var logs = this.state.logs;
+      this.scrollToBottom = !logs || !logs.length;
       return true;
     }
     return false;
@@ -101,7 +102,7 @@ var Console = React.createClass({
       var container, content;
       if (this.state.atConsoleBottom !== false) {
         container = ReactDOM.findDOMNode(this.refs.container);
-        content = ReactDOM.findDOMNode(this.refs.content);
+        content = ReactDOM.findDOMNode(this.refs.logContent);
         container.scrollTop = content.offsetHeight;
       }
     });
@@ -113,28 +114,40 @@ var Console = React.createClass({
   },
   showNameInput: function(e) {
     var self = this;
-    self.state.showNameInput = true;
-    self.forceUpdate(function() {
+    self.setState({
+      showNameInput: true
+    }, function() {
       ReactDOM.findDOMNode(self.refs.nameInput).focus();
     });
   },
   download: function() {
     var target = ReactDOM.findDOMNode(this.refs.nameInput);
     var name = target.value.trim();
+    var logs = this.state.logs.map(function(log) {
+      return {
+        id: log.id,
+        text: log.text,
+        level: log.level,
+        date: log.date
+      };
+    });
     target.value = '';
     ReactDOM.findDOMNode(this.refs.filename).value = name;
-    ReactDOM.findDOMNode(this.refs.content).value = JSON.stringify($.extend(true, {}, this.state.logs), null, '  ');
+    ReactDOM.findDOMNode(this.refs.content).value = JSON.stringify(logs, null, '  ');
     ReactDOM.findDOMNode(this.refs.downloadForm).submit();
+    this.hideNameInput();
   },
   submit: function(e) {
-    if (e.keyCode != 13 && e.type != 'click') {
+    if (e.keyCode !== 13 && e.type != 'click') {
       return;
     }
     this.download();
   },
+  preventBlur: function(e) {
+    e.target.nodeName != 'INPUT' && e.preventDefault();
+  },
   hideNameInput: function() {
-    this.state.showNameInput = false;
-    this.forceUpdate();
+    this.setState({ showNameInput: false });
   },
   render: function() {
     var state = this.state;
@@ -159,7 +172,7 @@ var Console = React.createClass({
         /><button type="button" onClick={this.submit} className="btn btn-primary">OK</button></div>
       </div>
         <div ref="container" className="fill w-detail-log-content">
-          <ul ref="content">
+          <ul ref="logContent">
             {logs.map(function(log) {
               var date = 'Date: ' + (new Date(log.date)).toLocaleString() + '\r\n';
               var hide = '';
