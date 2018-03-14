@@ -226,8 +226,7 @@ For more details, please vsit [Certificate Installment](https://avwo.github.io/w
 
 # Quick start
 
-Open [Rules](http://local.whistlejs.com/) tab in whistle，and create a grouping named `test` by context menu or `Create` button in menu bar. In the editor of newly created grouping, input rules as following and save：
-
+Open [Rules](http://local.whistlejs.com/) tab in whistle，and create a group named `test` by context menu or `Create` button in menu bar. Then follow the next steps to input rules and save.
 1. cofigure hosts
 
 	Specify the ip of [www.ifeng.com](http://www.ifeng.com/):
@@ -236,7 +235,7 @@ Open [Rules](http://local.whistlejs.com/) tab in whistle，and create a grouping
 		# or
 		127.0.0.1 www.ifeng.com
 
-	Specify the ip and port of [www.ifeng.com](http://www.ifeng.com/) to forward request to local port 8080. In this way, we can visit the local website just as online when the developing port is not 80:
+	Specify the ip and port of [www.ifeng.com](http://www.ifeng.com/) to forward http request to local port 8080. In this way, we can visit the local website just as online when the developing port is not 80:
 
 		# www.ifeng.com 127.0.0.1
 		www.ifeng.com 127.0.0.1:8080
