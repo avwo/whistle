@@ -61,8 +61,10 @@ var Online = React.createClass({
       this.version = data.version;
       this.baseDir = data.baseDir;
       this.networkMode = data.networkMode;
+      this.multiEnv = data.multiEnv;
     } else if (this.macAddr !== data.mac || this.version !== data.version
-      || this.baseDir !== data.baseDir || this.networkMode !== data.networkMode) {
+      || this.baseDir !== data.baseDir || this.networkMode !== data.networkMode
+      || this.multiEnv !== data.multiEnv) {
       this.refs.confirmReload.show();
     } else {
       this.refs.confirmReload.hide();

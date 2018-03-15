@@ -132,7 +132,8 @@ var Index = React.createClass({
     var state = {
       allowMultipleChoice: modal.rules.allowMultipleChoice,
       syncWithSysHosts: modal.rules.syncWithSysHosts,
-      networkMode: modal.server.networkMode
+      networkMode: modal.server.networkMode,
+      multiEnv: modal.server.multiEnv
     };
     var pageName = state.networkMode ? 'network' : getPageName();
     if (!pageName || pageName.indexOf('rules') != -1) {
@@ -2124,7 +2125,7 @@ var Index = React.createClass({
 
     if (rulesOptions[0].name === DEFAULT) {
       rulesOptions.forEach(function(item, i) {
-        item.icon = (!i || !networkMode) ? 'checkbox' : 'edit';
+        item.icon = (!i || !state.multiEnv) ? 'checkbox' : 'edit';
         if (!item.selected) {
           uncheckedRules[item.name] = 1;
         }
