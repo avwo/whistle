@@ -320,13 +320,15 @@ var Index = React.createClass({
   },
   getListByName: function(name, type) {
     var list = this.state[name].list;
+    var data = this.state[name].data;
     return {
       type: type,
       url: location.href,
-      list: list.map(function(item) {
+      list: list.map(function(name) {
+        var item = data[name];
         return {
-          name: item.name,
-          value: item.value
+          name: name,
+          value: item && item.value || ''
         };
       })
     };

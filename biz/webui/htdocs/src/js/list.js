@@ -261,10 +261,12 @@ var List = React.createClass({
     }
   },
   triggerChange: function(type) {
-    var list = this.props.modal.list.map(function(item) {
+    var data = this.props.modal.data;
+    var list = this.props.modal.list.map(function(name) {
+      var item = data[name];
       return {
-        name: item.name,
-        vlaue: item.value
+        name: name,
+        value: item && item.value || ''
       };
     });
     util.triggerListChange(this.props.name || 'values', {
