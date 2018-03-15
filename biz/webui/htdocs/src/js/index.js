@@ -318,20 +318,24 @@ var Index = React.createClass({
     state.showLeftMenu = storage.get('showLeftMenu');
     return state;
   },
-  getListByName: function(name) {
+  getListByName: function(name, type) {
     var list = this.state[name].list;
-    return list.map(function(item) {
-      return {
-        name: item.name,
-        value: item.value
-      };
-    });
+    return {
+      type: type,
+      url: location.href,
+      list: list.map(function(item) {
+        return {
+          name: item.name,
+          value: item.value
+        };
+      })
+    };
   },
-  triggerRulesChange: function() {
-    util.triggerListChange('rules', this.getListByName('rules'));
+  triggerRulesChange: function(type) {
+    util.triggerListChange('rules', this.getListByName('rules', type));
   },
-  triggerValuesChange: function() {
-    util.triggerListChange('values', this.getListByName('values'));
+  triggerValuesChange: function(type) {
+    util.triggerListChange('values', this.getListByName('values', type));
   },
   createPluginsOptions: function(plugins) {
     plugins = plugins || {};
@@ -1448,7 +1452,7 @@ var Index = React.createClass({
         self.setState({
           activeRules: item
         });
-        self.triggerRulesChange();
+        self.triggerRulesChange('create');
       } else {
         util.showSystemError();
       }
@@ -1491,7 +1495,7 @@ var Index = React.createClass({
         self.setState({
           activeValues: item
         });
-        self.triggerValuesChange();
+        self.triggerValuesChange('create');
       } else {
         util.showSystemError();
       }
@@ -1568,7 +1572,7 @@ var Index = React.createClass({
         self.setState(self.currentFoucsRules ? {} : {
           activeValues: activeItem
         });
-        self.triggerRulesChange();
+        self.triggerRulesChange('rename');
       } else {
         util.showSystemError();
       }
@@ -1607,7 +1611,7 @@ var Index = React.createClass({
         self.setState(self.currentFoucsValues ? {} : {
           activeValues: activeItem
         });
-        self.triggerValuesChange();
+        self.triggerValuesChange('rename');
       } else {
         util.showSystemError();
       }
@@ -1635,7 +1639,7 @@ var Index = React.createClass({
         self.reselectRules(data);
         self.state.rules.setChanged(item.name, false);
         self.setState({});
-        self.triggerRulesChange();
+        self.triggerRulesChange('save');
       } else {
         util.showSystemError();
       }
@@ -1674,7 +1678,7 @@ var Index = React.createClass({
     dataCenter.values.add(item, function(data) {
       if (data && data.ec === 0) {
         self.setSelected(self.state.values, item.name);
-        self.triggerValuesChange();
+        self.triggerValuesChange('save');
       } else {
         util.showSystemError();
       }
@@ -1733,7 +1737,7 @@ var Index = React.createClass({
             self.setState(item ? {} : {
               activeRules: nextItem
             });
-            self.triggerRulesChange();
+            self.triggerRulesChange('remove');
           } else {
             util.showSystemError();
           }
@@ -1756,7 +1760,7 @@ var Index = React.createClass({
             self.setState(item ? {} : {
               activeValues: nextItem
             });
-            self.triggerValuesChange();
+            self.triggerValuesChange('remove');
           } else {
             util.showSystemError();
           }

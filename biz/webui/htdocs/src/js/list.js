@@ -230,7 +230,7 @@ var List = React.createClass({
           }
         });
         this.setState({});
-        this.triggerChange();
+        this.triggerChange('move');
       }
     }
   },
@@ -260,7 +260,7 @@ var List = React.createClass({
       break;
     }
   },
-  triggerChange: function() {
+  triggerChange: function(type) {
     var list = this.props.modal.list.map(function(item) {
       return {
         name: item.name,
@@ -268,6 +268,7 @@ var List = React.createClass({
       };
     });
     util.triggerListChange(this.props.name || 'values', {
+      type: type,
       url: location.href,
       list: list
     });
