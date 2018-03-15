@@ -230,6 +230,7 @@ var List = React.createClass({
           }
         });
         this.setState({});
+        this.triggerChange();
       }
     }
   },
@@ -258,6 +259,18 @@ var List = React.createClass({
       window.open('https://avwo.github.io/whistle/webui/' + (this.props.name || 'values') + '.html');
       break;
     }
+  },
+  triggerChange: function() {
+    var list = this.props.modal.list.map(function(item) {
+      return {
+        name: item.name,
+        vlaue: item.value
+      };
+    });
+    util.triggerListChange(this.props.name || 'values', {
+      url: location.href,
+      list: list
+    });
   },
   onContextMenu: function(e) {
     var name = $(e.target).closest('a').attr('data-name');

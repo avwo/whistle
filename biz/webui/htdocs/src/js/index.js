@@ -318,6 +318,21 @@ var Index = React.createClass({
     state.showLeftMenu = storage.get('showLeftMenu');
     return state;
   },
+  getListByName: function(name) {
+    var list = this.state[name].list;
+    return list.map(function(item) {
+      return {
+        name: item.name,
+        value: item.value
+      };
+    });
+  },
+  triggerRulesChange: function() {
+    util.triggerListChange('rules', this.getListByName('rules'));
+  },
+  triggerValuesChange: function() {
+    util.triggerListChange('values', this.getListByName('values'));
+  },
   createPluginsOptions: function(plugins) {
     plugins = plugins || {};
     var pluginsOptions = [{
@@ -1433,6 +1448,7 @@ var Index = React.createClass({
         self.setState({
           activeRules: item
         });
+        self.triggerRulesChange();
       } else {
         util.showSystemError();
       }
@@ -1475,6 +1491,7 @@ var Index = React.createClass({
         self.setState({
           activeValues: item
         });
+        self.triggerValuesChange();
       } else {
         util.showSystemError();
       }
@@ -1551,6 +1568,7 @@ var Index = React.createClass({
         self.setState(self.currentFoucsRules ? {} : {
           activeValues: activeItem
         });
+        self.triggerRulesChange();
       } else {
         util.showSystemError();
       }
@@ -1589,6 +1607,7 @@ var Index = React.createClass({
         self.setState(self.currentFoucsValues ? {} : {
           activeValues: activeItem
         });
+        self.triggerValuesChange();
       } else {
         util.showSystemError();
       }
@@ -1616,6 +1635,7 @@ var Index = React.createClass({
         self.reselectRules(data);
         self.state.rules.setChanged(item.name, false);
         self.setState({});
+        self.triggerRulesChange();
       } else {
         util.showSystemError();
       }
@@ -1654,6 +1674,7 @@ var Index = React.createClass({
     dataCenter.values.add(item, function(data) {
       if (data && data.ec === 0) {
         self.setSelected(self.state.values, item.name);
+        self.triggerValuesChange();
       } else {
         util.showSystemError();
       }
@@ -1712,6 +1733,7 @@ var Index = React.createClass({
             self.setState(item ? {} : {
               activeRules: nextItem
             });
+            self.triggerRulesChange();
           } else {
             util.showSystemError();
           }
@@ -1734,6 +1756,7 @@ var Index = React.createClass({
             self.setState(item ? {} : {
               activeValues: nextItem
             });
+            self.triggerValuesChange();
           } else {
             util.showSystemError();
           }

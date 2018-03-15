@@ -631,3 +631,14 @@ exports.scrollAtBottom = function(con, ctn) {
   return con.scrollTop + con.offsetHeight + 5 > ctn.offsetHeight;
 };
 
+exports.triggerListChange = function(name, list) {
+  try {
+    var onChange = window.parent[name === 'rules' ? 'onWhistleRulesChange' : 'onWhistleValuesChange'];
+    if (typeof onChange === 'function') {
+      onChange({
+        url: location.href,
+        list: list
+      });
+    }
+  } catch(e) {}
+};
