@@ -1,4 +1,8 @@
-### 1.9.2
+### v1.9.2
+1. refactor: 界面微调，及Log界面的性能优化
+2. refactor: 去掉HTTPS里面 `Hide TUNNEL CONNECTs` 选项 
+
+### v1.9.1
 1. feat: 增强[v1.8.9](v189)版本的 `ignore://allRules`功能，支持双ignore的规则，即：`ignore://allRules|ignore.host|ignore.whistle.script` 或 `ignore://allRules|ignore:host|ignore:whistle.script` 这个时候whistle会忽略 `host` 和 `whistle.script` 以外的所有规则
 2. perf: 优化了JSONView里面切换到Source模式时可能出现的卡顿问题
 3. style: 禁用所有Rules或Plugins时左侧按钮会自动变灰，修改Rules或Values时左侧按钮会加 `*`
