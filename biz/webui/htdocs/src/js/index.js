@@ -2123,8 +2123,8 @@ var Index = React.createClass({
     }
 
     if (rulesOptions[0].name === DEFAULT) {
-      rulesOptions.forEach(function(item) {
-        item.icon = 'checkbox';
+      rulesOptions.forEach(function(item, i) {
+        item.icon = (!i || !networkMode) ? 'checkbox' : 'edit';
         if (!item.selected) {
           uncheckedRules[item.name] = 1;
         }
@@ -2227,7 +2227,10 @@ var Index = React.createClass({
             className={'w-nav-menu w-menu-wrapper' + (showRulesOptions ? ' w-menu-wrapper-show' : '') + (isRules ? ' w-menu-auto' : '')}>
             <a onClick={this.showRules} className="w-rules-menu" style={{background: name == 'rules' ? '#ddd' : null}} href="javascript:;" draggable="false"><span className="glyphicon glyphicon-list"></span>Rules</a>
             <MenuItem ref="rulesMenuItem"  name={name == 'rules' ? null : 'Open'} options={rulesOptions} checkedOptions={uncheckedRules} disabled={state.disabledAllRules}
-            className="w-rules-menu-item" onClick={this.showRules} onClickOption={this.showAndActiveRules}  onChange={this.selectRulesByOptions} />
+              className="w-rules-menu-item"
+              onClick={this.showRules}
+              onClickOption={this.showAndActiveRules}
+              onChange={this.selectRulesByOptions} />
           </div>
           <div onMouseEnter={this.showValuesOptions} onMouseLeave={this.hideValuesOptions}
             className={'w-nav-menu w-menu-wrapper' + (showValuesOptions ? ' w-menu-wrapper-show' : '') + (isValues ? ' w-menu-auto' : '')}>
