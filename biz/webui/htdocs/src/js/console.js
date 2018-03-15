@@ -74,6 +74,9 @@ var Console = React.createClass({
     data && data.splice(0, data.length);
     this.setState({});
   },
+  scrollTop: function() {
+    this.container.scrollTop = 0;
+  },
   autoRefresh: function() {
     this.container.scrollTop = 10000000;
   },

@@ -1,6 +1,7 @@
 require('./base-css.js');
 require('../css/log.css');
 var React = require('react');
+var ReactDOM = require('react-dom');
 var Console = require('./console');
 var ServerLog = require('./server-log');
 
@@ -33,6 +34,12 @@ var Log = React.createClass({
     this.changeTab = true;
     this.setState({});
   },
+  clearLogs: function(btn) {
+    this.refs[this.isConsole() ? 'console' : 'serverLog'].clearLogs();
+  },
+  onDoubleClickBar: function() {
+    this.refs[this.isConsole() ? 'console' : 'serverLog'].scrollTop();
+  },
   isConsole: function() {
     return BTNS[0].active;
   },
@@ -40,9 +47,9 @@ var Log = React.createClass({
     var isConsole = this.isConsole();
     return (
         <div className={'fill orient-vertical-box w-detail-log' + (util.getBoolean(this.props.hide) ? ' hide' : '')}>
-          <BtnGroup onClick={this.toggleTabs}  onDoubleClick={this.clearLogs} btns={BTNS} />
-          <Console hide={!isConsole} />
-          <ServerLog hide={isConsole} />
+          <BtnGroup onDoubleClickBar={this.onDoubleClickBar} onClick={this.toggleTabs} onDoubleClick={this.clearLogs} btns={BTNS} />
+          <Console ref="console" hide={!isConsole} />
+          <ServerLog ref="serverLog" hide={isConsole} />
       </div>
     );
   }

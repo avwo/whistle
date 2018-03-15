@@ -56,6 +56,9 @@ var ServerLog = React.createClass({
       this.container.scrollTop = this.container.scrollTop - 10;
     }
   },
+  scrollTop: function() {
+    this.container.scrollTop = 0;
+  },
   autoRefresh: function() {
     this.container.scrollTop = 10000000;
   },

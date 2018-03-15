@@ -19,6 +19,12 @@ var BtnGroup = React.createClass({
       });
     }
   },
+  onDoubleClick: function(e) {
+    if (this.props.onDoubleClick) {
+      this.props.onDoubleClick(e);
+    }
+    e.stopPropagation();
+  },
   render: function() {
     var self = this;
     var tabs = self.props.tabs;
@@ -27,7 +33,8 @@ var BtnGroup = React.createClass({
     var disabled = util.getBoolean(self.props.disabled);
 
     return (
-        <div className={'btn-group btn-group-sm ' + (tabs ? 'w-tabs-sm' : 'w-btn-group-sm') + (isSmall ? ' small' : '')}>
+        <div onDoubleClick={self.props.onDoubleClickBar}
+          className={'btn-group btn-group-sm ' + (tabs ? 'w-tabs-sm' : 'w-btn-group-sm') + (isSmall ? ' small' : '')}>
           {list.map(function(btn, i) {
             btn.disabled = disabled;
             var icon = btn.icon ? <span className={'glyphicon glyphicon-' + btn.icon}></span> : '';
@@ -35,7 +42,7 @@ var BtnGroup = React.createClass({
 
             return <button onClick={function() {
               self.handleClick(btn);
-            }} onDoubleClick={self.props.onDoubleClick} key={btn.key} type="button"
+            }} onDoubleClick={self.onDoubleClick} key={btn.key} type="button"
                  className={'btn btn-default' + (btn.active && !disabled ? ' active' : '')}>
                  {icon}{btn.name}
                 </button>;
