@@ -23,8 +23,7 @@ If these functions can't meet your requriment, you can also use [plugins](https:
 
 The specific functions are as follows：
 
-[![](http://7tszky.com1.z0.glb.clouddn.com/FvORH0R4X8gofgnCeOR9OXJqm0mn)](https://processon.com/mindmap/5a796689e4b064e9ddba403e)
-
+![specific functions](https://raw.githubusercontent.com/Red626/whistle/master/assets/whistle-en_US.png)
 
 All the operations of whistle can be achieved by the following configuration: 
 
