@@ -13,7 +13,11 @@
 [![NPM count](https://img.shields.io/npm/dt/whistle.svg?style=flat-square)](https://www.npmjs.com/package/whistle)
 [![License](https://img.shields.io/npm/l/whistle.svg?style=flat-square)](https://www.npmjs.com/package/whistle)
 
-whistle is an cross-platform http debugging proxy server application based on Node.js. It can provides these basic functions:
+whistle is an cross-platform http debugging proxy server application based on Node.js. 
+
+[中文 README](README-zh_CN.md)
+
+It can provides these basic functions:
 1. offer HTTP proxying service
 2. capture package, replay and simulate requests for HTTP、HTTPS、WebSocket and normal Socket(TCP).
 3. operate http request and response by configing hosts, or [patterns](https://avwo.github.io/whistle/pattern.html) like domain, path, regular expression, wildcard characters, wildcard path, etc.
