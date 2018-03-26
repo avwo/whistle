@@ -13,90 +13,106 @@
 [![NPM count](https://img.shields.io/npm/dt/whistle.svg?style=flat-square)](https://www.npmjs.com/package/whistle)
 [![License](https://img.shields.io/npm/l/whistle.svg?style=flat-square)](https://www.npmjs.com/package/whistle)
 
-whistle(读音`[ˈwɪsəl]`，拼音`[wēisǒu]`)是基于Node实现的跨平台抓包调试代理工具，支持抓包、重放、构造、篡改等方式调试HTTP、HTTPS、WebSocket及普通的Socket(TCP)请求，也可以作为普通的HTTP代理，其所有篡改操作都可以通过类似配置hosts的方式实现，且支持域名、路径、正则表达式、通配符、通配路径等多种[匹配模式](https://avwo.github.io/whistle/pattern.html)，内置了[移动端常用的调试方式](http://imweb.io/topic/5981a34bf8b6c96352a59401)，并支持以Node模块作为插件[扩展功能](https://avwo.github.io/whistle/plugins.html)，基本上可以满足你对抓包调试的所有需求，基本功能如下：
+whistle is an cross-platform http debugging proxy server application based on Node.js. 
 
-![基本功能](https://raw.githubusercontent.com/avwo/whistleui/master/assets/whistle.png?v=1)
+[中文 README](README-zh_CN.md)
 
-whistle的所有篡改操作都可以通过类似如下配置方式实现：
+It can provides these basic functions:
+1. offer HTTP proxying service
+2. capture package, replay and simulate requests for HTTP、HTTPS、WebSocket and normal Socket(TCP).
+3. operate http request and response by configing hosts, or [patterns](https://avwo.github.io/whistle/pattern.html) like domain, path, regular expression, wildcard characters, wildcard path, etc.
+4. offer build-in mobile debugging mode
+
+If these functions can't meet your requriment, you can also use [plugins](https://avwo.github.io/whistle/plugins.html) to extend its capabilities.
+
+The specific functions are as follows：
+
+![specific functions](https://raw.githubusercontent.com/Red626/whistle/master/assets/whistle-en_US.png)
+
+All the operations of whistle can be achieved by the following configuration: 
 
 	pattern operatorURI
 
 
-其中：
+Description：
 
-1. **pattern** 为匹配请求url的表达式，可以为：域名，路径，正则及通配符等等多种匹配方式：
+1. **pattern** is an expression to match url of request. You can write patterns in different forms like domain, path, reqular expression, wildcard, and so on.
 
-		# 域名匹配
+		# matching domain
 		www.example.com
-		# 带端口的域名
+		# domain with port
 		www.example.com:6666
-		# 带协议的域名，支持：http、https、ws、wss、tunnel
+		# domain with protocol, supporting http, https, ws, wss, tunnel
 		http://www.example.com
 
-		# 路径匹配，同样支持带协议、端口
+		# matching path, supporting protocol, port
 		www.example.com/test
 		https:/www.exapmle.com/test
 		https:/www.exapmle.com:6666/test
 
-		# 正则匹配
+		# matching regular expression
 		/^https?://www\.example\.com\/test/(.*)/ referer://http://www.test.com/$1
 
-		# 通配符匹配
+		# matching wildcard
 		^www.example.com/test/*** referer://http://www.test.com/$1
 
-	完整内容参见：[匹配模式](https://avwo.github.io/whistle/pattern.html)
-2. **operatorURI** 为对应的操作，由操作协议+操作值组成(`operatorURI = opProtocol://opValue`)：
-	**opProtocol**(操作协议) 对应某类操作，如：
+	For more details, please visit [matching pattern](https://avwo.github.io/whistle/pattern.html)
+2. **operatorURI** is the corresponding operation，made up of opProtocol and opValue：  
+	**opProtocol** represents this kind of operation, e.g.
 		
-			# host：设置请求服务器IP
+			# host：setting requested server IP
 			pattern host://opValue	
 
-			# file协议：本地替换
+			# file：using the local file to replace
 			pattern file://opValue
 
-	**opValue**(操作值) 对应具体操作的参数值，如：
+	**opValue** represents the parameters of the specific operation, e.g.
 
-			# host协议：设置请求服务器IP
-			pattern host://127.0.0.1:6666 # 或 pattern 127.0.0.1:6666	
+			# host：setting requested server IP
+			pattern host://127.0.0.1:6666 # or pattern 127.0.0.1:6666	
 
-			# file协议：本地替换
-			pattern file:///User/test/dirOrFile # 或 pattern /User/test/dirOrFile
-			pattern file://E:\test\dirOrFile # 或 pattern E:\test\dirOrFile
+			# file：using the local file to replace
+			pattern file:///User/test/dirOrFile # or pattern /User/test/dirOrFile
+			pattern file://E:\test\dirOrFile # or pattern E:\test\dirOrFile
 
-	完整内容参见：[操作值](https://avwo.github.io/whistle/data.html)
-3. **pattern** 和 **operatorURI** 在多数情况下位置可以调换，且支持组合模式，具体参见：[配置方式](https://avwo.github.io/whistle/mode.html)
+	For more details, please visit [operation value](https://avwo.github.io/whistle/data.html)
+3. The order of **pattern** and **operatorURI** can be exchanged in most situations while the combination mode is also supported. For more details ,please visit [configuration mode](https://avwo.github.io/whistle/mode.html)
 
-# 安装启动
+# Install & Setup
 
-#### 安装Node
-推荐安装最新的 `LTS` 版本Node，如果本地没有安装Node或安装了低版本的Node，可以按下面的指引安装最新版的Node：
+#### install Node
+The latest `LTS` version of Node.js is recommended to install. 
 
-1. **Windows系统**，访问[https://nodejs.org/](https://nodejs.org/)，下载最新的 `LTS` 版本Node，点击默认安装即可。
-2. **Mac系统**安装方式跟Windows一样。
-3. **Linux系统**，推荐使用源码安装方式，这样无需自己配置 `path`，如果无法用源码安装，也可以直接二进制版本的Node，解压后把里面的bin目录路径加到系统的 `PATH` 即可：
-	- **源码安装**：从[Node官网](https://nodejs.org/en/download/)下载最新版的**Source Code**(或者用`wget`命令下载)，解压文件(`tar -xzvf node-xxx.tar.gz`)，进入解压后的根目录(`node-xxx`)，依次执行`./configure`、`./make`和`./make install`。
-	- **直接用二进制版本**：从[Node官网](https://nodejs.org/en/download/)下载最新版的**Linux Binaries**(或者用`wget`命令下载)，解压文件(`tar -xzvf node-xxx.tar.gz`)，解压后将Node二进制文件的bin目录完整路径加到系统的 `PATH`。
+If none or low version of Node.js is installed, you need install the latest version of Node.js as following instructions：
 
-Node安装完成后，在命令行执行 `node -v` 查看下对应的Node版本是否安装成功：
+1. **For Windows**: please visit [https://nodejs.org/](https://nodejs.org/) to download the latest `LTS` version of Node.js. and then, install it using the default option.
+2. **For Mac**: the same as Windows.
+3. **For Linux**: using source code to install is recommended, because in this way, you don't need to configure the `path`.  If you fail to install with source code, you can also use the binary version of Node.js directly.
+
+	- **with source package**： visit [Official website of Node](https://nodejs.org/en/download/) to download the latest version of *Source Code**(or using `wget` in shell), unzip(`tar -xzvf node-xxx.tar.gz`), switch to the root directory(`cd node-xxx`), execute `./configure`, `./make` and `./make install` in order。
+	- **using binary version**：visit [Official website of Node](https://nodejs.org/en/download/) to download the latest **Linux Binaries**(or using command `wget` to download), unzip(`tar -xzvf node-xxx.tar.gz`), add the absolute path of bin directory to system `PATH` after extracting。
+
+You can execute `node -v` in shell to check if the corresponding version of Node.js is installed successfully：
 
 	$ node -v
 	v8.9.4
 
-#### 安装whistle
-Node安装成功后，执行如下npm命令安装whistle （**Mac或Linux的非root用户需要在命令行前面加`sudo`，如：`sudo npm install -g whistle`**）
+#### install whistle
+After the Node.js is installed successfully, you can execute the following npm command to install whistle（**In Mac or Linux, prefix `sudo` is needed if you are not root user, i.e. `sudo npm install -g whistle`**）
 
 	npm install -g whistle
 
-npm默认镜像是在国外，有时候安装速度很慢或者出现安装不了的情况，如果无法安装或者安装很慢，可以使用taobao的镜像安装：
+In china, you can install whistle using npm mirror of taobao to speed up install and avoid failure：
+
 
 	npm install cnpm -g --registry=https://registry.npm.taobao.org
 	cnpm install -g whistle
 
-	或者直接指定镜像安装：
+	or specify mirror install directly：
 	npm install whistle -g --registry=https://registry.npm.taobao.org
 
 
-whistle安装完成后，执行命令 `whistle help` 或 `w2 help`，查看whistle的帮助信息：
+After installation, execute `whistle help` or `w2 help` to view help information:
 
 	$ w2 help
 	Usage: whistle <command> [options]
@@ -138,175 +154,184 @@ whistle安装完成后，执行命令 `whistle help` 或 `w2 help`，查看whist
 		-F, --frameCacheSize [frameCacheSize]           the cache size of socket frames (512 by default)
 		-V, --version                                   output the version number
 
-#### 启动whistle
-启动:
+#### Setup whistle
+Start:
 
 	w2 start
 
-*Note: 如果要防止其他人访问配置页面，可以在启动时加上登录用户名和密码 `-n yourusername -w yourpassword`。*
+*Note: If you don't want others to visit the configuration page of whistle, just add username and password when start, i.e. `-n yourusername -w yourpassword`。*
 
-重启:
+Restart:
 
 	w2 restart
 
 
-停止:
+Stop:
 
 	w2 stop
 
-启动调试模式:
+Debugging mode:
 
 	w2 run
 
-更多内容参考：[安装启动](https://avwo.github.io/whistle/install.html)
+For more details, please visit [install and start](https://avwo.github.io/whistle/install.html)
 
-# 设置代理
-##### 配置信息
-1. 代理服务器：127.0.0.1(如果部署在远程服务器或虚拟机上，改成对应服务器或虚拟机的ip即可)
-2. 默认端口：8899(如果端口被占用，可以在启动是通过 `-p` 来指定新的端口，更多信息可以通过执行命令行 `w2 help` (`v0.7.0`及以上版本也可以使用`w2 help`) 查看)
+# Proxing Settings
+##### configuring server & port
+1. proxying server：127.0.0.1(if whistle is deployed in remote server or virtual machine, change this address to corresponding IP )
+2. default port：8899(if port 8899 is used already，you can specify new port using `-p` when start. More details can be visited by executing `whistle help` or `w2 help` (only supported in `v0.7.0` and higher version)
 
-> 勾选上 **对所有协议均使用相同的代理服务器**
+> Make sure **using the same proxying server for all protocol** in system proxying setting is checked.
 
-##### 代理配置方式(把上面配置信息配置上即可)
-1. 直接配置系统代理：　
+##### Browser & System configuration 
+1. proxy setting in OS：　
   * [Windows](http://jingyan.baidu.com/article/0aa22375866c8988cc0d648c.html) 
   * [Mac](http://jingyan.baidu.com/article/a378c960849144b3282830dc.html)
 
-2. 安装浏览器代理插件 (**推荐**)
+2. proxy setting in browser(**recommended**)
 
-	* 安装Chrome代理插件： 推荐安装[SwitchyOmega](https://chrome.google.com/webstore/detail/padekgcemlokbadohgkifijomclgjgif)
+	* for Chrome：intall chrome plugin [whistle-for-chrome](https://github.com/avwo/whistle-for-chrome) or [Proxy SwitchySharp](https://chrome.google.com/webstore/detail/proxy-switchysharp/dpplabbmogkhghncfbfdeeokoefdjegm)
 
-	* 安装Firefox代理插件： [Proxy Selector](https://addons.mozilla.org/zh-cn/firefox/addon/proxy-selector/)
+	* for Firefox： Open `Options` page in Firefox, then switch to `General` -> `Network Proxy`, then set `Manual proxy configuration` to whistle.
+  ![](http://7tszky.com1.z0.glb.clouddn.com/FpazQgJ6eDC0cYNkjqlOJGWe7XVv)
 	
-3. 移动端需要在`设置`中配置当前Wi-Fi的代理
+3. in mobiles, configure the proxy of current Wi-Fi in `Setting`
 
-PS: 如果配置完代理，手机无法访问，可能是whistle所在的电脑防火墙限制了远程访问whistle的端口，关闭防火墙或者设置白名单：[ http://jingyan.baidu.com/article/870c6fc317cae7b03ee4be48.html]( http://jingyan.baidu.com/article/870c6fc317cae7b03ee4be48.html)
+PS: The mobile may failed to use network after configuration because the fireworks of the PC has forbidden remote visit to the whistle's port. you can try to close the fireworks or configure white list ：[ http://jingyan.baidu.com/article/870c6fc317cae7b03ee4be48.html]( http://jingyan.baidu.com/article/870c6fc317cae7b03ee4be48.html)
 
-更多内容参考：[安装启动](https://avwo.github.io/whistle/install.html)
+For more details, please vsit [install and start](https://avwo.github.io/whistle/install.html)
 
-# 访问界面
+# Visit whistle's operation page
 
-上述操作完成后，打开whistle界面[http://local.whistlejs.com](http://local.whistlejs.com/)：
+After above operations are completed，open the whistle page in browser[http://local.whistlejs.com](http://local.whistlejs.com/)：
 
 ![whistle webui](https://raw.githubusercontent.com/avwo/whistleui/master/assets/whistle.gif)
 
-1. Network：主要用来查看请求信息，构造请求，页面 `console` 打印的日志及抛出的js错误等
-2. Rules：配置操作规则
-3. Plugins：安装的插件信息，及启用或禁用插件
-4. Weinre：设置的weinre列表
-5. HTTPS：设置是否拦截HTTPS请求，及下载whistle根证书
 
-# 安装证书
-安装根证书及开启https拦截后才可以正常操作或抓取https及websocket请求，具体参见：[安装根证书](https://avwo.github.io/whistle/webui/https.html)
+There are five main blocks in navigation bar:
+1. Network
+  - check and compose the http request
+  - show the console print and javascript errors thrown in page 
+2. Rules：configure operation rules for proxing
+3. Plugins
+  - show the list of installed plugins
+  - enable or disable installed plugins
+4. Weinre：configure Weinre list
+5. HTTPS：
+   - configure whether to intercept the HTTPS and download the root certificate for whistle and or not 
 
-# 快速上手
 
-打开[Rules](http://local.whistlejs.com/)，通过右键菜单或页面上方菜单栏的 `Create` 按钮创建一个分组 `test`，按照下方的例子输入规则并保存：
+# Certificate Installment
 
-1. 设置hosts
+Please install root certificate and enable HTTPS interception before using whislte.
 
-	指定[www.ifeng.com](http://www.ifeng.com/)的ip:
+For more details, please vsit [Certificate Installment](https://avwo.github.io/whistle/webui/https.html)
+
+# Quick start
+
+Open [Rules](http://local.whistlejs.com/) tab in whistle，and create a group named `test` by context menu or `Create` button in menu bar. Then follow the next steps to input rules and save.
+1. cofigure hosts
+
+	Specify the ip of [www.ifeng.com](http://www.ifeng.com/):
 
 		www.ifeng.com 127.0.0.1
 		# or
 		127.0.0.1 www.ifeng.com
 
-	指定[www.ifeng.com](http://www.ifeng.com/)的ip和端口，把请求转发到本地8080端口，这个在平时开发中可以用来去掉url中的端口号:
+	Specify the ip and port of [www.ifeng.com](http://www.ifeng.com/) to forward http request to local port 8080. In this way, we can visit the local website just as online when the developing port is not 80:
 
 		# www.ifeng.com 127.0.0.1
 		www.ifeng.com 127.0.0.1:8080
 		# or
 		127.0.0.1:8080 www.ifeng.com
 
-	也可以用某个域名的ip设置hosts
+	 We can also replace the real IP (or domain) and port with any domain without port:
 
 		www.ifeng.com host://www.qq.com:8080
 		# or
 		host://www.qq.com:8080 www.ifeng.com
 
- 更多匹配模式参考：[匹配模式](https://avwo.github.io/whistle/pattern.html)
+   For more details, please vsit [Matching pattern](https://avwo.github.io/whistle/pattern.html)
 
-2. 本地替换
+2. local replacement
 	
-	平时开发中经常会用到这个功能，把响应替换成本地文件内容。
+  Replace the response with content in local file, which is normally used in development.
 
 		# Mac、Linux
 		www.ifeng.com file:///User/username/test
 		# or www.ifeng.com file:///User/username/test/index.html
 		
-		# Windows的路径分隔符可以用 \ 或者 /
+		# Both '\' and '/' can be used as path separator for Widows
 		www.ifeng.com file://E:\xx\test
 		# or www.ifeng.com file://E:\xx\test\index.html
 
-	[http://www.ifeng.com/](http://www.ifeng.com/)会先尝试加载`/User/username/test`这个文件，如果不存在，则会加载`/User/username/test/index.html`，如果没有对应的文件则返回404。
+   [http://www.ifeng.com/](http://www.ifeng.com/) will try to load `/User/username/test` firstly. If the former dosen't exist，the file `/User/username/test/index.html` will be loaded. For neither exists，it returns 404.
 	
-	[http://www.ifeng.com/xxx](#)会先尝试加载`/User/username/test/xxx`这个文件，如果不存在，则会加载`/User/username/test/xxx/index.html`，如果没有对应的文件则返回404。
-	
-	也可以替换jsonp请求，具体参见：[tpl](rules/rule/tpl.html)
+   To replace jsonp request, you can refer the [tpl](rules/rule/tpl.html)
 
-	更多匹配模式参考：[匹配模式](https://avwo.github.io/whistle/pattern.html)
+   For more details, please vsit [Matching pattern](https://avwo.github.io/whistle/pattern.html)
 
-3. 请求转发	
+3. Request Forward	
 	
-	[www.ifeng.com](http://www.ifeng.com/)域名下的请求都替换成对应的www.aliexpress.com域名
+	To forward all the requests from domain `www.ifeng.com` to domain `www.aliexpress.com`
 
 		www.ifeng.com www.aliexpress.com
 
-	更多匹配模式参考：[匹配模式](https://avwo.github.io/whistle/pattern.html)
-4. 注入html、js、css
+	For more details, [Matching pattern](https://avwo.github.io/whistle/pattern.html)
+  
+4. Inject html、js、css
 	
-	whistle会自动根据响应内容的类型，判断是否注入相应的文本及如何注入(是否要用标签包裹起来)。
+	whistle will judge whether to inject corresponding text and how to inject, like whether to wrap the text with HTML label, automatically according to response type.
 	
 		# Mac、Linux
 		www.ifeng.com html:///User/xxx/test/test.html
 		www.ifeng.com js:///User/xxx/test/test.js
 		www.ifeng.com css:///User/xxx/test/test.css
 		
-		# Windows的路径分隔符可以用`\`和`/`
+		# Both '\' and '/' can be used as path separator for Widows
 		www.ifeng.com html://E:\xx\test\test.html
 		www.ifeng.com js://E:\xx\test\test.js
 		www.ifeng.com css://E:\xx\test\test.css
 
-	所有www.ifeng.com域名下的请求，whistle都会根据响应类型，将处理好的文本注入到响应内容里面，如是html请求，js和css会分别自动加上`script`和`style`标签后追加到内容后面。
+	For all the requests for domain `www.ifeng.com`，whistle will inject processed text to response body according to response type. If the type is HTML, the js content will be wraped with `script`, and the css content be wraped with `style` to inject to response body。
 
-	更多匹配模式参考：[匹配模式](https://avwo.github.io/whistle/pattern.html)
-5. 调试远程页面
+	For more details, [Matching pattern](https://avwo.github.io/whistle/pattern.html)
+  
+5. Debug for remote page
 
-	利用whistle提供的[weinre](rules/weinre.html)和[log](rules/log.html)两个协议，可以实现修改远程页面DOM结构及自动捕获页面js错误及console打印的信息，还可以在页面顶部或js文件底部注入指定的脚步调试页面信息。
+	With the protocol [weinre](https://avwo.github.io/whistle/rules/weinre.html) and protocol [log](https://avwo.github.io/whistle/rules/log.html) provided by whistle，you can modify the DOM structure, capture the javascript errors and view the console print easily. Moreover, you can inject specified script to debug the remote page. 
 	
-	使用whistle的功能前，先把要相应的系统代理或浏览器代理指向whistle，如何设置可以参考：[安装启动](install.html)
+	Before using whistle to debug remote page，you need to set the proxy for OS or browser to whistle. Please refers [Install and start](https://avwo.github.io/whistle/install.html) to know how to set the proxy.
 	
-	weinre：
+	For weinre：
 
 		www.ifeng.com weinre://test
   
-	配置后保存，打开[www.ifeng.com](http://www.ifeng.com/)，鼠标放在菜单栏的weinre按钮上会显示一个列表，并点击其中的`test`项打开weinre的调试页面选择对应的url切换到Elements即可。
+	Add the following rule in group named `test` and save，open the [www.ifeng.com](http://www.ifeng.com/) with a new tab in browser. Then you can see a list when you hover in the button `weinre`，click the item `test` to open a weinre debug page. For example, you can see the DOM structure when swich to `Elements` tab after selected a target.
 	
-	log:
+	For log:
 
 		www.ifeng.com log://{test.js}
 
-	配置后保存，鼠标放在菜单栏的weinre按钮上会显示一个列表，并点击其中的`test.js`项，whistle会自动在Values上建立一个test.js分组，在里面填入`console.log(1, 2, 3, {a: 123})`保存，打开Network -> 右侧Log -> Page，再打开[www.ifeng.com](http://www.ifeng.com/)，即可看到Log下面的Page输出的信息。
+	Add the following rule in group named `test` and save. Then you can see a list when you hover in the button `Values`，whistle will create a group named `test.js` in Values when you click it. Input the text `console.log(1, 2, 3, {a: 123})` in the group editor，open the Network -> Log -> Console，open the [www.ifeng.com](http://www.ifeng.com/), you can see the output '1, 2, 3, {a: 123}' in Console panel。
 
-	更多匹配模式参考：[匹配模式](https://avwo.github.io/whistle/pattern.html)
-	
-更多内容参考：[协议列表](https://avwo.github.io/whistle/rules/)
+	For more details, [Matching pattern](https://avwo.github.io/whistle/pattern.html) and [Rules](https://avwo.github.io/whistle/rules/)
 
-# 帮助文档
-1. [安装启动](https://avwo.github.io/whistle/install.html)
-2. [手动更新](https://avwo.github.io/whistle/update.html)
-3. [快速上手](https://avwo.github.io/whistle/quickstart.html)
-4. [配置方式](https://avwo.github.io/whistle/mode.html)
-5. [匹配模式](https://avwo.github.io/whistle/pattern.html)
-6. [操作值](https://avwo.github.io/whistle/data.html)
-7. [常用功能](https://avwo.github.io/whistle/frequet.html)
-8. [插件开发](https://avwo.github.io/whistle/plugins.html)
-9. [注意事项](https://avwo.github.io/whistle/attention.html)
-10. [关于ATS](https://avwo.github.io/whistle/ats.html)
-11. [常见问题](https://avwo.github.io/whistle/questions.html)
-12. [界面功能](https://avwo.github.io/whistle/webui/)
-13. [协议列表](https://avwo.github.io/whistle/rules/)
-14. [用户反馈](https://avwo.github.io/whistle/feedback.html)
+# Help
+1. [Install and start](https://avwo.github.io/whistle/install.html)
+2. [How to update](https://avwo.github.io/whistle/update.html)
+3. [Quickly start](https://avwo.github.io/whistle/quickstart.html)
+4. [Configuration mode](https://avwo.github.io/whistle/mode.html)
+5. [Matching pattern](https://avwo.github.io/whistle/pattern.html)
+6. [Operation value](https://avwo.github.io/whistle/data.html)
+7. [Frequent functions](https://avwo.github.io/whistle/frequet.html)
+8. [How to develop plugins](https://avwo.github.io/whistle/plugins.html)
+9. [Attentions](https://avwo.github.io/whistle/attention.html)
+10. [About ATS](https://avwo.github.io/whistle/ats.html)
+11. [Common questions](https://avwo.github.io/whistle/questions.html)
+12. [Web UI](https://avwo.github.io/whistle/webui/)
+13. [Rules](https://avwo.github.io/whistle/rules/)
+14. [Feedback](https://avwo.github.io/whistle/feedback.html)
 
 # License
 [MIT](https://github.com/avwo/whistle/blob/master/LICENSE)
