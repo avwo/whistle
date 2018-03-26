@@ -8,15 +8,19 @@
 
 例子：
 
-	#　忽略 socks 协议及指定插件
+	# 忽略 socks 协议及指定插件
 	www.baidu.com socks://127.0.0.1:1080 whistle.test://xxx
 	www.baidu.com ignore://socks|whistle.test
 
-	#　忽略 proxy 协议及指定插件
+	# 忽略 proxy 协议及指定插件
 	/google/ proxy://127.0.0.1:8888 implugin://xxx
 	www.google.com enable://intercept
 	www.google.com ignore://proxy|implugin|enable
 
-	#　忽略配置的 host
+	# 忽略配置的 host
 	www.qq.com 127.0.0.1
 	www.qq.com ignore://host
+  
+  # 忽略子路径的 host
+  www.xxx.com 127.0.0.1
+  www.xxx.com/api ignore://host   # www.xxx.com/api 将不走 127.0.0.1

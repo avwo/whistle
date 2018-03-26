@@ -18,7 +18,6 @@ module.exports = function(req, res) {
     server: util.getServerInfo(req),
     rules: getRules(),
     values: getValues(),
-    hideHttpsConnects: properties.get('hideHttpsConnects'),
     interceptHttpsConnects: properties.get('interceptHttpsConnects'),
     plugins: pluginMgr.getPlugins(),
     disabledAllRules: properties.get('disabledAllRules'),

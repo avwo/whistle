@@ -28,7 +28,11 @@ var Divider = React.createClass({
 
     var rightWidth = parseInt(this.props.rightWidth, 10);
     if (!(rightWidth > 0)) {
-      rightWidth = (vertical ? divider.offsetHeight : divider.offsetWidth) / 2;
+      setTimeout(function() {
+        rightWidth = (vertical ? divider.offsetHeight : divider.offsetWidth) / 2;
+        $(divider).children('.w-divider-right')[prop](Math.max(rightWidth, 5));
+      }, 10);
+      return;
     }
 
     $(divider).children('.w-divider-right')[prop](Math.max(rightWidth, 5));

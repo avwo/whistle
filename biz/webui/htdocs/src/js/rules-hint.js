@@ -4,10 +4,10 @@ var $ = require('jquery');
 var CodeMirror = require('codemirror');
 var protocols = require('./protocols');
 
+var AT_RE = /^@/;
 var PROTOCOL_RE = /^([^\s:]+):\/\//;
-var SPACE_RE = /(\s+)/;
 var extraKeys = {'Alt-/': 'autocomplete'};
-var CHARS = ['"-"', '"_"'];
+var CHARS = ['"-"', '"_"', 'Shift-2'];
 for (var i = 0; i < 10; i++) {
   CHARS.push('\'' + i + '\'');
 }
@@ -40,8 +40,38 @@ function getHints(keyword) {
   return list;
 }
 
+function getAtValueList(keyword) {
+  try {
+    var getAtValueList = window.parent.getAtValueListForWhistle;
+    if (typeof getAtValueList !== 'function') {
+      return;
+    }
+    var list = getAtValueList(keyword);
+    if (Array.isArray(list)) {
+      return list.filter(function(item) {
+        return item && typeof item === 'string';
+      }).slice(0, 60);
+    }
+  } catch (e) {}
+}
+
+function getAtHelpUrl(name) {
+  try {
+    var getAtHelpUrl = window.parent.getAtHelpUrlForWhistle;
+    if (typeof getAtHelpUrl !== 'function') {
+      return;
+    }
+    var url = getAtHelpUrl(name);
+    if (url === false || typeof url === 'string') {
+      return url;
+    }
+  } catch (e) {}
+}
+
 var WORD = /[^\s]+/;
+var showAtHint;
 CodeMirror.registerHelper('hint', 'rulesHint', function(editor, options) {
+  showAtHint = false;
   var cur = editor.getCursor();
   var curLine = editor.getLine(cur.line);
   var end = cur.ch, start = end, list;
@@ -53,6 +83,14 @@ CodeMirror.registerHelper('hint', 'rulesHint', function(editor, options) {
     --start;
   }
   var curWord = start != end && curLine.substring(start, end);
+  if (AT_RE.test(curWord)) {
+    list = getAtValueList(curWord.substring(1));
+    if (!list || !list.length) {
+      return;
+    }
+    showAtHint = true;
+    return { list: list, from: CodeMirror.Pos(cur.line, start + 1), to: CodeMirror.Pos(cur.line, end) };
+  }
   if (curWord && curWord.indexOf('//') !== -1) {
     return;
   }
@@ -119,18 +157,36 @@ function getFocusRuleName(editor) {
   var activeHint = $('li.CodeMirror-hint-active');
   if (activeHint.is(':visible')) {
     name = activeHint.text();
-    var index = name.indexOf(':');
-    if (index !== -1) {
-      name = name.substring(0, index);
+    if (showAtHint) {
+      name = '@' + name;
+    } else {
+      var index = name.indexOf(':');
+      if (index !== -1) {
+        name = name.substring(0, index);
+      }
     }
   } else {
     var cur = editor.getCursor();
-    var curLine = editor.getLine(cur.line).replace(/#/, ' ');
     var end = cur.ch;
-    if (end > 0) {
-      var start = SPACE_RE.test(curLine) ? curLine.indexOf(RegExp.$1) + 1 : 0;
-      curLine = curLine.slice(start > end ? 0 :start);
-      if (PROTOCOL_RE.test(curLine)) {
+    var curLine = editor.getLine(cur.line).replace(/(#.*|\s+)$/, '');
+    var len = curLine.length;
+    if (end <= len) {
+      var start = end;
+      while(--start >= 0) {
+        if (/\s/.test(curLine[start])) {
+          break;
+        }
+      }
+      ++start;
+      while(++end <= len) {
+        if (/\s/.test(curLine[end])) {
+          break;
+        }
+      }
+      curLine = curLine.slice(start, end);
+      if (AT_RE.test(curLine)) {
+        name = curLine;
+      } else if (PROTOCOL_RE.test(curLine)) {
         name = RegExp.$1;
       }
     }
@@ -143,5 +199,12 @@ exports.getExtraKeys = function() {
 };
 
 exports.getHelpUrl = function(editor) {
-  return protocols.getHelpUrl(getFocusRuleName(editor));
+  var name = getFocusRuleName(editor);
+  if (AT_RE.test(name) && (name = getAtHelpUrl(name.substring(1)))) {
+    return name;
+  }
+  if (name === false) {
+    return false;
+  }
+  return protocols.getHelpUrl(name);
 };

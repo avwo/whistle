@@ -73,6 +73,8 @@ var REMOVE_OPTIONS = [
     title: 'Ctrl[Command] + Shift + D'
   }
 ];
+var query = location.search.substring(1).replace(/#.*$/, '');
+query = util.parseQueryString(query, null, null, decodeURIComponent);
 
 function getPageName() {
   var hash = location.hash.substring(1);
@@ -129,9 +131,11 @@ var Index = React.createClass({
     var values = modal.values;
     var state = {
       allowMultipleChoice: modal.rules.allowMultipleChoice,
-      syncWithSysHosts: modal.rules.syncWithSysHosts
+      syncWithSysHosts: modal.rules.syncWithSysHosts,
+      networkMode: modal.server.networkMode,
+      multiEnv: modal.server.multiEnv
     };
-    var pageName = getPageName();
+    var pageName = state.networkMode ? 'network' : getPageName();
     if (!pageName || pageName.indexOf('rules') != -1) {
       state.hasRules = true;
       state.name = 'rules';
@@ -231,7 +235,6 @@ var Index = React.createClass({
     state.disabledPlugins = modal.disabledPlugins;
     state.disabledAllRules = modal.disabledAllRules;
     state.disabledAllPlugins = modal.disabledAllPlugins;
-    state.hideHttpsConnects = modal.hideHttpsConnects;
     state.interceptHttpsConnects = modal.interceptHttpsConnects;
     state.rules = new ListModal(rulesList, rulesData);
     state.rulesOptions = rulesOptions;
@@ -280,11 +283,6 @@ var Index = React.createClass({
     ];
     state.helpOptions = [
       {
-        name: 'Get Started',
-        href: 'https://avwo.github.io/whistle/quickstart.html',
-        icon: false
-      },
-      {
         name: 'Github',
         href: 'https://github.com/avwo/whistle',
         icon: false
@@ -295,58 +293,23 @@ var Index = React.createClass({
         icon: false
       },
       {
-        name: 'Network',
-        href: 'https://avwo.github.io/whistle/webui/network.html',
+        name: 'WebUI',
+        href: 'https://avwo.github.io/whistle/webui/',
         icon: false
       },
       {
-        name: 'Rules',
-        href: 'https://avwo.github.io/whistle/webui/rules.html',
-        icon: false
-      },
-      {
-        name: 'Values',
-        href: 'https://avwo.github.io/whistle/webui/values.html',
-        icon: false
-      },
-      {
-        name: 'Plugins',
-        href: 'https://avwo.github.io/whistle/webui/plugins.html',
-        icon: false
-      },
-      {
-        name: 'WebSocket',
-        href: 'https://avwo.github.io/whistle/webui/websocket.html',
-        icon: false
-      },
-      {
-        name: 'Composer',
-        href: 'https://avwo.github.io/whistle/webui/composer.html',
-        icon: false
-      },
-      {
-        name: 'Settings',
-        href: 'https://avwo.github.io/whistle/webui/settings.html',
-        icon: false
-      },
-      {
-        name: 'Weinre',
-        href: 'https://avwo.github.io/whistle/webui/weinre.html',
-        icon: false
-      },
-      {
-        name: 'Https',
+        name: 'HTTPS',
         href: 'https://avwo.github.io/whistle/webui/https.html',
-        icon: false
-      },
-      {
-        name: 'Online',
-        href: 'https://avwo.github.io/whistle/webui/online.html',
         icon: false
       },
       {
         name: 'Update',
         href: 'https://avwo.github.io/whistle/update.html',
+        icon: false
+      },
+      {
+        name: 'Feedback',
+        href: 'https://github.com/avwo/whistle/issues/new',
         icon: false
       }
     ];
@@ -354,6 +317,27 @@ var Index = React.createClass({
     state.exportFileType = storage.get('exportFileType');
     state.showLeftMenu = storage.get('showLeftMenu');
     return state;
+  },
+  getListByName: function(name, type) {
+    var list = this.state[name].list;
+    var data = this.state[name].data;
+    return {
+      type: type,
+      url: location.href,
+      list: list.map(function(name) {
+        var item = data[name];
+        return {
+          name: name,
+          value: item && item.value || ''
+        };
+      })
+    };
+  },
+  triggerRulesChange: function(type) {
+    util.triggerListChange('rules', this.getListByName('rules', type));
+  },
+  triggerValuesChange: function(type) {
+    util.triggerListChange('values', this.getListByName('values', type));
   },
   createPluginsOptions: function(plugins) {
     plugins = plugins || {};
@@ -481,13 +465,19 @@ var Index = React.createClass({
   },
   componentDidMount: function() {
     var self = this;
-    new Clipboard('.w-copy-text');
+    var clipboard = new Clipboard('.w-copy-text');
+    clipboard.on('error', function(e) {
+      alert('Copy failed.');
+    });
     var preventDefault = function(e) {
       e.preventDefault();
     };
     events.on('rulesChanged', function() {
       self.rulesChanged = true;
       self.showReloadRules();
+    });
+    events.on('updateGlobal', function() {
+      self.setState({});
     });
     events.on('valuesChanged', function() {
       self.valuesChanged = true;
@@ -527,7 +517,7 @@ var Index = React.createClass({
         }
       });
     $(window).on('hashchange', function() {
-      var pageName = getPageName();
+      var pageName = self.state.networkMode ? 'network' : getPageName();
       if (!pageName || pageName.indexOf('rules') != -1) {
         self.showRules();
       } else if (pageName.indexOf('values') != -1) {
@@ -645,13 +635,11 @@ var Index = React.createClass({
     }
     dataCenter.on('settings', function(data) {
       var state = self.state;
-      if (state.hideHttpsConnects !== data.hideHttpsConnects
-        || state.interceptHttpsConnects !== data.interceptHttpsConnects
+      if (state.interceptHttpsConnects !== data.interceptHttpsConnects
         || state.disabledAllRules !== data.disabledAllRules
         || state.allowMultipleChoice !== data.allowMultipleChoice
         || state.disabledAllPlugins !== data.disabledAllPlugins) {
         self.setState({
-          hideHttpsConnects: data.hideHttpsConnects,
           interceptHttpsConnects: data.interceptHttpsConnects,
           disabledAllRules: data.disabledAllRules,
           allowMultipleChoice: data.allowMultipleChoice,
@@ -694,6 +682,20 @@ var Index = React.createClass({
     events.on('importSessions', self.importSessions);
     events.on('exportSessions', function(e, curItem) {
       self.exportData(e, getFocusItemList(curItem));
+    });
+    events.on('uploadSessions', function(e, data) {
+      var sessions = getFocusItemList(data && data.curItem);
+      var upload = data && data.upload;
+      if (typeof upload === 'function') {
+        if (!sessions) {
+          var modal = self.state.network;
+          sessions = modal && modal.getSelectedList();
+          if (sessions && sessions.length) {
+            sessions = $.extend(true, [], sessions);
+          }
+        }
+        sessions && upload(sessions);
+      }
     });
     events.on('removeIt', function(e, item) {
       var modal = self.state.network;
@@ -811,6 +813,16 @@ var Index = React.createClass({
       protocols.setPlugins(pluginsState);
       self.setState(pluginsState);
     });
+    try {
+      var onReady = window.parent.onWhistleReady;
+      if (typeof onReady === 'function') {
+        onReady({
+          url: location.href,
+          importSessions: dataCenter.addNetworkList,
+          importHarSessions: self.importHarSessions
+        });
+      }
+    } catch(e) {}
   },
   donotShowAgain: function() {
     dataCenter.donotShowAgain();
@@ -1356,7 +1368,7 @@ var Index = React.createClass({
     self.state.weinreOptions = util.unique(list).map(function(name) {
       return {
         name: name,
-        icon: 'globe'
+        icon: 'wrench'
       };
     });
     self.setState({
@@ -1402,19 +1414,6 @@ var Index = React.createClass({
   showHttpsSettingsDialog: function() {
     $(ReactDOM.findDOMNode(this.refs.rootCADialog)).modal('show');
   },
-  hideHttpsConnects: function(e) {
-    var self = this;
-    var checked = e.target.checked;
-    dataCenter.hideHttpsConnects({hideHttpsConnects: checked ? 1 : 0},
-        function(data) {
-          if (data && data.ec === 0) {
-            self.state.hideHttpsConnects = checked;
-          } else {
-            util.showSystemError();
-          }
-          self.setState({});
-        });
-  },
   interceptHttpsConnects: function(e) {
     var self = this;
     var checked = e.target.checked;
@@ -1455,6 +1454,7 @@ var Index = React.createClass({
         self.setState({
           activeRules: item
         });
+        self.triggerRulesChange('create');
       } else {
         util.showSystemError();
       }
@@ -1497,6 +1497,7 @@ var Index = React.createClass({
         self.setState({
           activeValues: item
         });
+        self.triggerValuesChange('create');
       } else {
         util.showSystemError();
       }
@@ -1573,6 +1574,7 @@ var Index = React.createClass({
         self.setState(self.currentFoucsRules ? {} : {
           activeValues: activeItem
         });
+        self.triggerRulesChange('rename');
       } else {
         util.showSystemError();
       }
@@ -1611,6 +1613,7 @@ var Index = React.createClass({
         self.setState(self.currentFoucsValues ? {} : {
           activeValues: activeItem
         });
+        self.triggerValuesChange('rename');
       } else {
         util.showSystemError();
       }
@@ -1638,6 +1641,7 @@ var Index = React.createClass({
         self.reselectRules(data);
         self.state.rules.setChanged(item.name, false);
         self.setState({});
+        self.triggerRulesChange('save');
       } else {
         util.showSystemError();
       }
@@ -1676,6 +1680,7 @@ var Index = React.createClass({
     dataCenter.values.add(item, function(data) {
       if (data && data.ec === 0) {
         self.setSelected(self.state.values, item.name);
+        self.triggerValuesChange('save');
       } else {
         util.showSystemError();
       }
@@ -1734,6 +1739,7 @@ var Index = React.createClass({
             self.setState(item ? {} : {
               activeRules: nextItem
             });
+            self.triggerRulesChange('remove');
           } else {
             util.showSystemError();
           }
@@ -1756,6 +1762,7 @@ var Index = React.createClass({
             self.setState(item ? {} : {
               activeValues: nextItem
             });
+            self.triggerValuesChange('remove');
           } else {
             util.showSystemError();
           }
@@ -1980,7 +1987,7 @@ var Index = React.createClass({
     this.uploadSessionsForm(new FormData(ReactDOM.findDOMNode(this.refs.importSessionsForm)));
     ReactDOM.findDOMNode(this.refs.importSessions).value = '';
   },
-  importSessionsByHar: function(result) {
+  importHarSessions: function(result) {
     if (!result || typeof result !== 'object') {
       return;
     }
@@ -2064,7 +2071,7 @@ var Index = React.createClass({
           if (isText) {
             dataCenter.addNetworkList(result);
           } else {
-            self.importSessionsByHar(result);
+            self.importHarSessions(result);
           }
         } catch (e) {
           alert('Incorrect file format.');
@@ -2116,7 +2123,8 @@ var Index = React.createClass({
   },
   render: function() {
     var state = this.state;
-    var name = state.name;
+    var networkMode = state.networkMode;
+    var name = networkMode ? 'network' : state.name;
     var isNetwork = name === undefined || name == 'network';
     var isRules = name == 'rules';
     var isValues = name == 'values';
@@ -2145,8 +2153,8 @@ var Index = React.createClass({
     }
 
     if (rulesOptions[0].name === DEFAULT) {
-      rulesOptions.forEach(function(item) {
-        item.icon = 'checkbox';
+      rulesOptions.forEach(function(item, i) {
+        item.icon = (!i || !state.multiEnv) ? 'checkbox' : 'edit';
         if (!item.selected) {
           uncheckedRules[item.name] = 1;
         }
@@ -2227,25 +2235,32 @@ var Index = React.createClass({
         });
       }
     }
-    var showLeftMenu = state.showLeftMenu;
+
+    var showLeftMenu = networkMode || state.showLeftMenu;
     var disabledAllPlugins = state.disabledAllRules || state.disabledAllPlugins;
+    if (showLeftMenu == null) {
+      showLeftMenu = query.showLeftMenu;
+    }
     return (
       <div className={'main orient-vertical-box' + (showLeftMenu ? ' w-show-left-menu' : '')}>
         <div className={'w-menu w-' + name + '-menu-list'}>
           <a onClick={this.toggleLeftMenu} href="javascript:;" draggable="false" className="w-show-left-menu-btn"
-            style={{background: showLeftMenu ? '#ddd' : undefined}} title="Ctrl[Command] + M">
+            style={{background: showLeftMenu ? '#ddd' : undefined, display: networkMode ? 'none' : undefined}} title="Ctrl[Command] + M">
             <span className={'glyphicon glyphicon-chevron-' + (showLeftMenu ? 'down' : 'right')}></span>
           </a>
           <div onMouseEnter={this.showNetworkOptions} onMouseLeave={this.hideNetworkOptions} className={'w-nav-menu w-menu-wrapper' + (showNetworkOptions ? ' w-menu-wrapper-show' : '')}>
             <a onClick={this.showNetwork} onDoubleClick={this.clearNetwork} className="w-network-menu" title="Double click to remove all sessions" style={{background: name == 'network' ? '#ddd' : null}}
-          href="javascript:;"  draggable="false"><span className="glyphicon glyphicon-align-justify"></span>Network</a>
+          href="javascript:;"  draggable="false"><span className="glyphicon glyphicon-globe"></span>Network</a>
             <MenuItem ref="networkMenuItem" options={state.networkOptions} className="w-network-menu-item" onClickOption={this.handleNetwork} />
           </div>
           <div onMouseEnter={this.showRulesOptions} onMouseLeave={this.hideRulesOptions}
             className={'w-nav-menu w-menu-wrapper' + (showRulesOptions ? ' w-menu-wrapper-show' : '') + (isRules ? ' w-menu-auto' : '')}>
             <a onClick={this.showRules} className="w-rules-menu" style={{background: name == 'rules' ? '#ddd' : null}} href="javascript:;" draggable="false"><span className="glyphicon glyphicon-list"></span>Rules</a>
             <MenuItem ref="rulesMenuItem"  name={name == 'rules' ? null : 'Open'} options={rulesOptions} checkedOptions={uncheckedRules} disabled={state.disabledAllRules}
-            className="w-rules-menu-item" onClick={this.showRules} onClickOption={this.showAndActiveRules}  onChange={this.selectRulesByOptions} />
+              className="w-rules-menu-item"
+              onClick={this.showRules}
+              onClickOption={this.showAndActiveRules}
+              onChange={this.selectRulesByOptions} />
           </div>
           <div onMouseEnter={this.showValuesOptions} onMouseLeave={this.hideValuesOptions}
             className={'w-nav-menu w-menu-wrapper' + (showValuesOptions ? ' w-menu-wrapper-show' : '') + (isValues ? ' w-menu-auto' : '')}>
@@ -2291,7 +2306,7 @@ var Index = React.createClass({
           <a onClick={this.onClickMenu} className={'w-delete-menu' + (disabledDeleteBtn ? ' w-disabled' : '')} style={{display: (isNetwork || isPlugins) ? 'none' : ''}} href="javascript:;" draggable="false"><span className="glyphicon glyphicon-trash"></span>Delete</a>
           <a onClick={this.showSettings} className={'w-settings-menu' + (hasFilterText ? ' w-menu-enable'  : '')} style={{display: (isPlugins) ? 'none' : ''}} href="javascript:;" draggable="false"><span className="glyphicon glyphicon-cog"></span>Settings</a>
           <div onMouseEnter={this.showWeinreOptions} onMouseLeave={this.hideWeinreOptions} className={'w-menu-wrapper' + (showWeinreOptions ? ' w-menu-wrapper-show' : '')}>
-            <a onClick={this.showAnonymousWeinre} className="w-weinre-menu" href="javascript:;" draggable="false"><span className="glyphicon glyphicon-globe"></span>Weinre</a>
+            <a onClick={this.showAnonymousWeinre} className="w-weinre-menu" href="javascript:;" draggable="false"><span className="glyphicon glyphicon-wrench"></span>Weinre</a>
             <MenuItem ref="weinreMenuItem" name="Anonymous" options={state.weinreOptions} className="w-weinre-menu-item" onClick={this.showAnonymousWeinre} onClickOption={this.showWeinre} />
           </div>
           <a onClick={this.showHttpsSettingsDialog} className="w-https-menu" href="javascript:;" draggable="false"><span className="glyphicon glyphicon-lock"></span>HTTPS</a>
@@ -2313,35 +2328,37 @@ var Index = React.createClass({
           <div onMouseDown={this.preventBlur} style={{display: state.showEditValues ? 'block' : 'none'}} className="shadow w-input-menu-item w-edit-values-input"><input ref="editValuesInput" onKeyDown={this.editValues} onBlur={this.hideOptions} type="text" maxLength="64" /><button type="button" onClick={this.editValues} className="btn btn-primary">OK</button></div>
         </div>
         <div className="w-container box fill">
-          <div className="w-left-menu">
+          <div className="w-left-menu" style={{display: networkMode ? 'none' : undefined}}>
             <a onClick={this.showNetwork} onDoubleClick={this.clearNetwork}
               title={name == 'network' ? 'Double click to remove all sessions' : undefined}
               className="w-network-menu"
               style={{background: name == 'network' ? '#ddd' : null}}
               href="javascript:;"  draggable="false">
-                <span className="glyphicon glyphicon-align-justify"></span>
-                <span className="w-left-menu-tips" style={{display:  name == 'network' ? 'none' : undefined}}>Network</span>
+                <span className="glyphicon glyphicon-globe"></span>
+                <span className="w-left-menu-tips">Network</span>
             </a>
             <a onClick={this.showRules} className="w-save-menu w-rules-menu"
               onDoubleClick={this.onClickMenu}
               title={name == 'rules' ? 'Double click to save all changed' : undefined}
               style={{background: name == 'rules' ? '#ddd' : null}} href="javascript:;" draggable="false">
-              <span className="glyphicon glyphicon-list"></span>
-              <span className="w-left-menu-tips" style={{display:  name == 'rules' ? 'none' : undefined}}>Rules</span>
+              <span className={'glyphicon glyphicon-list' + (state.disabledAllRules ? ' w-disabled' : '')} ></span>
+              <span className="w-left-menu-tips">Rules</span>
+              <i className="w-menu-changed" style={{display: state.rules.hasChanged() ? undefined : 'none'}}>*</i>
             </a>
             <a onClick={this.showValues} className="w-save-menu w-values-menu"
               onDoubleClick={this.onClickMenu}
               title={name == 'values' ? 'Double click to save all changed' : undefined}
               style={{background: name == 'values' ? '#ddd' : null}} href="javascript:;" draggable="false">
               <span className="glyphicon glyphicon-folder-open"></span>
-              <span className="w-left-menu-tips" style={{display:  name == 'values' ? 'none' : undefined}}>Values</span>
+              <span className="w-left-menu-tips">Values</span>
+              <i className="w-menu-changed" style={{display: state.values.hasChanged() ? undefined : 'none'}}>*</i>
             </a>
             <a onClick={this.showPlugins} className="w-plugins-menu"
               onDoubleClick={this.disableAllPlugins}
               title={name == 'plugins' ? 'Double to ' + (state.disabledAllPlugins ? 'enable' : 'disable') + ' all plugins': undefined}
               style={{background: name == 'plugins' ? '#ddd' : null}} href="javascript:;" draggable="false">
-              <span className="glyphicon glyphicon-list-alt"></span>
-              <span className="w-left-menu-tips" style={{display:  name == 'plugins' ? 'none' : undefined}}>Plugins</span>
+              <span className={'glyphicon glyphicon-list-alt' + (disabledAllPlugins ? ' w-disabled' : '')}></span>
+              <span className="w-left-menu-tips">Plugins</span>
             </a>
           </div>
           {state.hasRules ? <List ref="rules" disabled={state.disabledAllRules} theme={rulesTheme} fontSize={rulesFontSize} lineNumbers={showRulesLineNumbers} onSelect={this.selectRules} onUnselect={this.unselectRules} onActive={this.activeRules} modal={state.rules} hide={name == 'rules' ? false : true} name="rules" /> : undefined}
@@ -2393,13 +2410,16 @@ var Index = React.createClass({
               <div className="modal-body">
                 <button type="button" className="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <div>
+                  <a className="w-help-menu"
+                    title="Click here to learn how to install root ca"
+                    href="https://avwo.github.io/whistle/webui/https.html" target="_blank">
+                    <span className="glyphicon glyphicon-question-sign"></span>
+                  </a>
                   <a className="w-download-rootca" title="http://rootca.pro/" href="cgi-bin/rootca" target="downloadTargetFrame">Download RootCA</a>
-                  <a className="w-https-help" href="https://avwo.github.io/whistle/webui/https.html" target="_blank" title="How to intercept HTTPS CONNECTs">Help</a>
                 </div>
                 <a title="http://rootca.pro/" href="cgi-bin/rootca" target="downloadTargetFrame"><img src="img/rootca.png" /></a>
                 <div className="w-https-settings">
-                  <p><label><input checked={state.hideHttpsConnects} onChange={this.hideHttpsConnects} type="checkbox" /> Hide TUNNEL CONNECTs</label></p>
-                  <p><label><input checked={state.interceptHttpsConnects} onChange={this.interceptHttpsConnects} type="checkbox" /> Intercept HTTPS CONNECTs</label></p>
+                  <p><label><input checked={state.interceptHttpsConnects} onChange={this.interceptHttpsConnects} type="checkbox" /> Capture HTTPS CONNECTs</label></p>
                 </div>
               </div>
               <div className="modal-footer">

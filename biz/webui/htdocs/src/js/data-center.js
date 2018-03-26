@@ -232,8 +232,7 @@ exports.log = createCgi({
 
 $.extend(exports, createCgi({
   composer: 'cgi-bin/composer',
-  interceptHttpsConnects: 'cgi-bin/intercept-https-connects',
-  hideHttpsConnects: 'cgi-bin/hide-https-connects'
+  interceptHttpsConnects: 'cgi-bin/intercept-https-connects'
 }, POST_CONF));
 $.extend(exports, createCgi({
   donotShowAgain: 'cgi-bin/do-not-show-again',
@@ -409,13 +408,13 @@ function startLoadData() {
 
     if (!len) {
       startLogTime = lastPageLogTime;
-    } else if (len < 120) {
+    } else if (len < 100) {
       startLogTime = logList[len - 1].id;
     }
 
     if (!svrLen) {
       startSvrLogTime = lastSvrLogTime;
-    } else if (svrLen < 120) {
+    } else if (svrLen < 70) {
       startSvrLogTime = svrLogList[svrLen - 1].id;
     }
 
@@ -662,6 +661,7 @@ function updateServerInfo(data) {
   }
 
   if (curServerInfo && curServerInfo.version == data.version &&
+    curServerInfo.networkMode === data.networkMode && curServerInfo.multiEnv === data.multiEnv &&
     curServerInfo.baseDir == data.baseDir && curServerInfo.username == data.username &&
     curServerInfo.port == data.port && curServerInfo.host == data.host &&
     curServerInfo.ipv4.sort().join() == data.ipv4.sort().join() &&

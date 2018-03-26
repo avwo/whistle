@@ -1,11 +1,11 @@
 .CodeMirror-hints li.CodeMirror-hint-active:after {
   content: 'F1';
-    position: absolute;
-    right: 0;
-    font-size: 12px;
-    
+  position: absolute;
+  right: 0;
+  font-size: 12px;
+
 }
 .CodeMirror-hints li {
   position: relative;
-    padding-right: 20px;
+  padding-right: 20px;
 }

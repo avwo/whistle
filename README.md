@@ -317,7 +317,7 @@ Open [Rules](http://local.whistlejs.com/) tab in whistle，and create a group na
 
 	For more details, [Matching pattern](https://avwo.github.io/whistle/pattern.html) and [Rules](https://avwo.github.io/whistle/rules/)
 
-# 帮助文档
+# Help
 1. [Install and start](https://avwo.github.io/whistle/install.html)
 2. [How to update](https://avwo.github.io/whistle/update.html)
 3. [Quickly start](https://avwo.github.io/whistle/quickstart.html)

@@ -33,7 +33,6 @@ module.exports = function(req, res) {
     allowMultipleChoice: properties.get('allowMultipleChoice'),
     disabledAllPlugins: properties.get('disabledAllPlugins'),
     disabledAllRules: properties.get('disabledAllRules'),
-    hideHttpsConnects: properties.get('hideHttpsConnects'),
     interceptHttpsConnects: properties.get('interceptHttpsConnects'),
     defaultRulesIsDisabled: rules.defaultRulesIsDisabled(),
     list: rules.getSelectedList(),

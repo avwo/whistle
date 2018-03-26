@@ -1,28 +1,8 @@
-var url = require('url');
 var properties = require('../lib/properties');
 var rules = require('../lib/proxy').rules;
-var util = require('../lib/util');
 
 module.exports = function(req, res) {
   var tunnelUrl = properties.get('showHostIpInResHeaders') ? req.query.url : null;
-  if (typeof tunnelUrl != 'string') {
-    tunnelUrl = null;
-  } else if (tunnelUrl) {
-    tunnelUrl = url.parse(tunnelUrl);
-    tunnelUrl = tunnelUrl.host ? 'https://' + tunnelUrl.host : null;
-  }
-
-  if (!tunnelUrl) {
-    return res.json({ec: 2, em: 'server busy'});
-  }
-  var rule = rules.resolveRule(tunnelUrl);
-  if (rule) {
-    var _url = util.setProtocol(util.rule.getMatcher(rule), true);
-    if (/^https:/i.test(_url)) {
-      tunnelUrl = _url;
-    }
-  }
-
   rules.resolveHost(tunnelUrl, function(err, host) {
     if (err) {
       res.json({ec: 2, em: 'server busy'});

@@ -127,9 +127,6 @@ var Settings = React.createClass({
               value={state.filterText} data-name="filterText"
               placeholder="type filter text" maxLength={300} />
           </fieldset>
-          <label className="w-network-settings-own">
-            <input checked={dataCenter.isOnlyViewOwnData()} data-name="viewOwn" type="checkbox" />Only view own request data (IP: {dataCenter.clientIp})
-          </label>
           <fieldset className="network-settings-columns">
             <legend>
               <label>
@@ -149,6 +146,9 @@ var Settings = React.createClass({
               );
             })}
           </fieldset>
+          <label className="w-network-settings-own">
+            <input checked={dataCenter.isOnlyViewOwnData()} data-name="viewOwn" type="checkbox" />Only take this machine's request into consideration (IP: {dataCenter.clientIp})
+          </label>
         </div>
         <div className="modal-footer">
           <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>

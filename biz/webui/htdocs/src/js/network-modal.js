@@ -115,7 +115,7 @@ proto.filter = function(newList) {
         var column = columns[i];
         var prevVal = prev[column.name];
         var nextVal = next[column.name];
-        var result = compare(prevVal, nextVal, column.order);
+        var result = compare(prevVal, nextVal, column.order, column.name);
         if (result) {
           return result;
         }
@@ -131,7 +131,7 @@ proto.filter = function(newList) {
 };
 
 
-function compare(prev, next, order) {
+function compare(prev, next, order, name) {
   if (prev == next) {
     return 0;
   }
@@ -141,21 +141,25 @@ function compare(prev, next, order) {
   if (next == '-') {
     return -1;
   }
-  return order == 'asc' ? -_compare(prev, next) : _compare(prev, next);
+  return order == 'asc' ? -_compare(prev, next, name) : _compare(prev, next, name);
 }
 
-function _compare(prev, next) {
+function _compare(prev, next, name) {
   if (prev == null || prev == '') {
     return -1;
   }
   if (next == null || next == '') {
     return 1;
   }
-  if (prev > next) {
+  var isTime = 'dns,request,response,download,time'.indexOf(name) !== -1;
+  if (!isTime && prev > next) {
     return 1;
   }
   var prevType = typeof prev;
   var nextType = typeof next;
+  if (isTime && prevType === 'string' && nextType === 'string') {
+    return prev.replace('ms', '') - next.replace('ms', '') > 0 ? 1 : -1;
+  }
   if (prevType != nextType && prevType == 'number') {
     return 1;
   }

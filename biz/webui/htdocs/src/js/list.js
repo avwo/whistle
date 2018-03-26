@@ -163,18 +163,23 @@ var List = React.createClass({
     typeof onUnselect == 'function' && onUnselect(data);
   },
   onChange: function(e) {
-    var item = this.props.modal.getActive();
+    var modal = this.props.modal;
+    var item = modal.getActive();
     if (!item) {
       return;
     }
     var oldValue = item.value || '';
     var value = e.getValue() || '';
     if (value != oldValue) {
+      var hasChanged = modal.hasChanged();
       item.changed = true;
       item.value = value;
       this.setState({
         selectedItem: item
       });
+      if (!hasChanged) {
+        events.trigger('updateGlobal');
+      }
     }
   },
   onFilterChange: function(keyword) {
@@ -225,6 +230,7 @@ var List = React.createClass({
           }
         });
         this.setState({});
+        this.triggerChange('move');
       }
     }
   },
@@ -253,6 +259,21 @@ var List = React.createClass({
       window.open('https://avwo.github.io/whistle/webui/' + (this.props.name || 'values') + '.html');
       break;
     }
+  },
+  triggerChange: function(type) {
+    var data = this.props.modal.data;
+    var list = this.props.modal.list.map(function(name) {
+      var item = data[name];
+      return {
+        name: name,
+        value: item && item.value || ''
+      };
+    });
+    util.triggerListChange(this.props.name || 'values', {
+      type: type,
+      url: location.href,
+      list: list
+    });
   },
   onContextMenu: function(e) {
     var name = $(e.target).closest('a').attr('data-name');
