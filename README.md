@@ -60,20 +60,20 @@ Description：
 2. **operatorURI** is the corresponding operation，made up of opProtocol and opValue：  
 	**opProtocol** represents this kind of operation, e.g.
 		
-			# host：setting requested server IP
-			pattern host://opValue	
+		# host：setting requested server IP
+		pattern host://opValue	
 
-			# file：using the local file to replace
-			pattern file://opValue
+		# file：using the local file to replace
+		pattern file://opValue
 
 	**opValue** represents the parameters of the specific operation, e.g.
 
-			# host：setting requested server IP
-			pattern host://127.0.0.1:6666 # or pattern 127.0.0.1:6666	
+		# host：setting requested server IP
+		pattern host://127.0.0.1:6666 # or pattern 127.0.0.1:6666	
 
-			# file：using the local file to replace
-			pattern file:///User/test/dirOrFile # or pattern /User/test/dirOrFile
-			pattern file://E:\test\dirOrFile # or pattern E:\test\dirOrFile
+		# file：using the local file to replace
+		pattern file:///User/test/dirOrFile # or pattern /User/test/dirOrFile
+		pattern file://E:\test\dirOrFile # or pattern E:\test\dirOrFile
 
 	For more details, please visit [operation value](https://avwo.github.io/whistle/data.html)
 3. The order of **pattern** and **operatorURI** can be exchanged in most situations while the combination mode is also supported. For more details ,please visit [configuration mode](https://avwo.github.io/whistle/mode.html)
@@ -257,13 +257,13 @@ Open [Rules](http://local.whistlejs.com/) tab in whistle，and create a group na
 	
   Replace the response with content in local file, which is normally used in development.
 
-		# Mac、Linux
-		www.ifeng.com file:///User/username/test
-		# or www.ifeng.com file:///User/username/test/index.html
+	# Mac、Linux
+	www.ifeng.com file:///User/username/test
+	# or www.ifeng.com file:///User/username/test/index.html
 		
-		# Both '\' and '/' can be used as path separator for Widows
-		www.ifeng.com file://E:\xx\test
-		# or www.ifeng.com file://E:\xx\test\index.html
+	# Both '\' and '/' can be used as path separator for Widows
+	www.ifeng.com file://E:\xx\test
+	# or www.ifeng.com file://E:\xx\test\index.html
 
    [http://www.ifeng.com/](http://www.ifeng.com/) will try to load `/User/username/test` firstly. If the former dosen't exist，the file `/User/username/test/index.html` will be loaded. For neither exists，it returns 404.
 	
@@ -317,7 +317,7 @@ Open [Rules](http://local.whistlejs.com/) tab in whistle，and create a group na
 
 	For more details, [Matching pattern](https://avwo.github.io/whistle/pattern.html) and [Rules](https://avwo.github.io/whistle/rules/)
 
-# Help
+# Documentation
 1. [Install and start](https://avwo.github.io/whistle/install.html)
 2. [How to update](https://avwo.github.io/whistle/update.html)
 3. [Quickly start](https://avwo.github.io/whistle/quickstart.html)
