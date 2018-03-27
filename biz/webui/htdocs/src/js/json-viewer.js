@@ -99,6 +99,7 @@ var JsonViewer = React.createClass({
     ReactDOM.findDOMNode(this.refs.filename).value = name;
     ReactDOM.findDOMNode(this.refs.content).value = data.str || '';
     ReactDOM.findDOMNode(this.refs.downloadForm).submit();
+    this.hideNameInput();
   },
   toggle: function() {
     this.setState({ viewSource: !this.state.viewSource });

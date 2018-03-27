@@ -71,6 +71,7 @@ var Textarea = React.createClass({
     ReactDOM.findDOMNode(this.refs.filename).value = name;
     ReactDOM.findDOMNode(this.refs.content).value = this.props.value || '';
     ReactDOM.findDOMNode(this.refs.downloadForm).submit();
+    this.hideNameInput();
   },
   submit: function(e) {
     if (e.keyCode != 13 && e.type != 'click') {
