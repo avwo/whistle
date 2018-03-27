@@ -74,9 +74,8 @@ var JsonViewer = React.createClass({
       alert('Name can not have spaces.');
       return;
     }
-
-    if (modal.exists(name)) {
-      alert('Value name \'' + name + '\' already exists.');
+    if (modal.exists(name) &&
+      !confirm('The name \'' + name + '\' already exists.\nDo you want to override it.')) {
       return;
     }
 
@@ -140,7 +139,7 @@ var JsonViewer = React.createClass({
               type="text"
               maxLength="64"
               placeholder={state.showDownloadInput ? 'Input the filename' : 'Input the key'}
-            /><button type="button" onClick={this.download} className="btn btn-primary">OK</button></div>
+            /><button type="button" onClick={this.submit} className="btn btn-primary">OK</button></div>
             <form ref="downloadForm" action="cgi-bin/download" style={{display: 'none'}}
               method="post" target="downloadTargetFrame">
               <input ref="filename" name="filename" type="hidden" />

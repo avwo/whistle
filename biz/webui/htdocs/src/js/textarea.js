@@ -97,8 +97,8 @@ var Textarea = React.createClass({
       return;
     }
 
-    if (modal.exists(name)) {
-      alert('Value name \'' + name + '\' already exists.');
+    if (modal.exists(name) &&
+      !confirm('The name \'' + name + '\' already exists.\nDo you want to override it.')) {
       return;
     }
 
