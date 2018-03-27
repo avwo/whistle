@@ -55,7 +55,13 @@ var Textarea = React.createClass({
     self.state.showDownloadInput = /w-download/.test(e.target.className);
     self.state.showNameInput = true;
     self.forceUpdate(function() {
-      ReactDOM.findDOMNode(self.refs.nameInput).focus();
+      var nameInput = ReactDOM.findDOMNode(self.refs.nameInput);
+      var defaultName = !nameInput.value && self.props.defaultName;
+      if (defaultName) {
+        nameInput.value = defaultName;
+        nameInput.select();
+      }
+      nameInput.focus();
     });
   },
   download: function() {
@@ -108,7 +114,13 @@ var Textarea = React.createClass({
   },
   hideNameInput: function() {
     this.state.showNameInput = false;
-    this.forceUpdate();
+    this.forceUpdate(function() {
+      var nameInput = ReactDOM.findDOMNode(this.refs.nameInput);
+      var defaultName = this.props.defaultName;
+      if (defaultName === nameInput.value) {
+        nameInput.value = '';
+      }
+    });
   },
   render: function() {
     var value = this.props.value || '';

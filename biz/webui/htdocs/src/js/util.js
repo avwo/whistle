@@ -370,14 +370,36 @@ exports.unique = function(arr, reverse) {
   return result;
 };
 
-exports.getFilename = function(item) {
+exports.getFilename = function(item, notEmpty) {
   var url = item.url;
   if (item.isHttps) {
     return url;
   }
+  if (notEmpty && item.vName) {
+    return item.vName;
+  }
+  if (item.tName) {
+    return item.tName;
+  }
+
   url = removeProtocol(url.replace(/[?#].*/, ''));
   var index = url.lastIndexOf('/');
-  return index != -1 && url.substring(index + 1) || '/';
+  var name = index != -1 && url.substring(index + 1);
+  if (!name) {
+    if (notEmpty) {
+      url = url.substring(0, index);
+      index = url.lastIndexOf('/');
+      if (index === -1) {
+        name = url;
+      } else {
+        name = url.substring(index + 1);
+      }
+    } else {
+      name = '/';
+    }
+  }
+  item[notEmpty ? 'vNanme' : 'tName'] = name;
+  return name;
 };
 
 var STATUS_CODES = {
