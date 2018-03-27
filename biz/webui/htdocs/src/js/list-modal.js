@@ -70,14 +70,20 @@ proto.exists = function(name) {
 };
 
 proto.add = function(name, value) {
-  if (!name || this.get(name)) {
+  if (!name) {
     return false;
+  }
+  var data = this.get(name);
+  value = value || '';
+  if (data) {
+    data.value = value;
+    return;
   }
   this.list.push(name);
   var item = this.data[name] = {
     key: util.getKey(),
     name: name,
-    value: value || ''
+    value: value
   };
   this.filter();
   return item;
