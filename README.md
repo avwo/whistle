@@ -13,30 +13,30 @@
 [![NPM count](https://img.shields.io/npm/dt/whistle.svg?style=flat-square)](https://www.npmjs.com/package/whistle)
 [![License](https://img.shields.io/npm/l/whistle.svg?style=flat-square)](https://www.npmjs.com/package/whistle)
 
-whistle is an cross-platform http debugging proxy server application based on Node.js. 
+**whistle** is a cross-platform web debugging tool based on Node.js.
 
 [中文 README](README-zh_CN.md)
 
-It can provides these basic functions:
-1. offer HTTP proxying service
-2. capture package, replay and simulate requests for HTTP、HTTPS、WebSocket and normal Socket(TCP).
-3. operate http request and response by configing hosts, or [patterns](https://avwo.github.io/whistle/pattern.html) like domain, path, regular expression, wildcard characters, wildcard path, etc.
+It features the following:
+
+1. offer HTTP proxying
+2. capture, replay or compose requests of HTTP, HTTPS, WebSocket and TCP.
+3. manipulate http request and response by configing hosts, or [patterns](https://avwo.github.io/whistle/pattern.html) like domain, path, regular expression, wildcard characters, wildcard path, etc.
 4. offer build-in mobile debugging mode
 
-If these functions can't meet your requriment, you can also use [plugins](https://avwo.github.io/whistle/plugins.html) to extend its capabilities.
+If the aboves can't satisfy your requirements, you can also use [plugins](https://avwo.github.io/whistle/plugins.html) to extend its capabilities.
 
 The specific functions are as follows：
 
 ![specific functions](https://raw.githubusercontent.com/Red626/whistle/master/assets/whistle-en_US.png)
 
-All the operations of whistle can be achieved by the following configuration: 
+Manipulations to http request and response in whistle can be achieved as a **Rule** looks like:
 
-	pattern operatorURI
-
+    pattern operatorURI
 
 Description：
 
-1. **pattern** is an expression to match url of request. You can write patterns in different forms like domain, path, reqular expression, wildcard, and so on.
+1. **pattern** is an expression to match the target request url. You can write patterns in different forms including domain, path, reqular expression, wildcard, and so on.
 
 		# matching domain
 		www.example.com
@@ -56,12 +56,12 @@ Description：
 		# matching wildcard
 		^www.example.com/test/*** referer://http://www.test.com/$1
 
-	For more details, please visit [matching pattern](https://avwo.github.io/whistle/pattern.html)
-2. **operatorURI** is the corresponding operation，made up of opProtocol and opValue：  
-	**opProtocol** represents this kind of operation, e.g.
+	For more details, please visit [Pattern Matching](https://avwo.github.io/whistle/pattern.html)
+2. **operatorURI** is the corresponding operation, made up of opProtocol and opValue：  
+	**opProtocol** represents the kind of operation, e.g.
 		
 		# host：setting requested server IP
-		pattern host://opValue	
+		pattern host://opValue
 
 		# file：using the local file to replace
 		pattern file://opValue
@@ -76,23 +76,23 @@ Description：
 		pattern file://E:\test\dirOrFile # or pattern E:\test\dirOrFile
 
 	For more details, please visit [operation value](https://avwo.github.io/whistle/data.html)
-3. The order of **pattern** and **operatorURI** can be exchanged in most situations while the combination mode is also supported. For more details ,please visit [configuration mode](https://avwo.github.io/whistle/mode.html)
+3. The position of **pattern** and **operatorURI** can be swapped in most situations while the combination mode is also supported. For more details, please visit [configuration mode](https://avwo.github.io/whistle/mode.html)
 
 # Install & Setup
 
 #### install Node
-The latest `LTS` version of Node.js is recommended to install. 
+The latest `LTS` version of Node.js is recommended. 
 
-If none or low version of Node.js is installed, you need install the latest version of Node.js as following instructions：
+If none or low version of Node.js is installed, you need install the latest version of Node.js according to the following instructions：
 
-1. **For Windows**: please visit [https://nodejs.org/](https://nodejs.org/) to download the latest `LTS` version of Node.js. and then, install it using the default option.
+1. **For Windows**: please visit [https://nodejs.org/](https://nodejs.org/) to download the latest `LTS` version of Node.js and then, install it using the default options.
 2. **For Mac**: the same as Windows.
 3. **For Linux**: using source code to install is recommended, because in this way, you don't need to configure the `path`.  If you fail to install with source code, you can also use the binary version of Node.js directly.
 
 	- **with source package**： visit [Official website of Node](https://nodejs.org/en/download/) to download the latest version of *Source Code**(or using `wget` in shell), unzip(`tar -xzvf node-xxx.tar.gz`), switch to the root directory(`cd node-xxx`), execute `./configure`, `./make` and `./make install` in order。
 	- **using binary version**：visit [Official website of Node](https://nodejs.org/en/download/) to download the latest **Linux Binaries**(or using command `wget` to download), unzip(`tar -xzvf node-xxx.tar.gz`), add the absolute path of bin directory to system `PATH` after extracting。
 
-You can execute `node -v` in shell to check if the corresponding version of Node.js is installed successfully：
+You can execute `node -v` in shell to check if the expected version of Node.js is installed successfully：
 
 	$ node -v
 	v8.9.4
@@ -102,8 +102,7 @@ After the Node.js is installed successfully, you can execute the following npm c
 
 	npm install -g whistle
 
-In china, you can install whistle using npm mirror of taobao to speed up install and avoid failure：
-
+In China, you can install whistle using npm mirror of taobao to speed up installing progress and avoid failure：
 
 	npm install cnpm -g --registry=https://registry.npm.taobao.org
 	cnpm install -g whistle
@@ -178,8 +177,8 @@ For more details, please visit [install and start](https://avwo.github.io/whistl
 
 # Proxing Settings
 ##### configuring server & port
-1. proxying server：127.0.0.1(if whistle is deployed in remote server or virtual machine, change this address to corresponding IP )
-2. default port：8899(if port 8899 is used already，you can specify new port using `-p` when start. More details can be visited by executing `whistle help` or `w2 help` (only supported in `v0.7.0` and higher version)
+1. proxying server：127.0.0.1(if whistle is deployed in remote server or virtual machine, change this address to corresponding IP address)
+2. default port：8899(if port 8899 is used already, you can specify new port using `-p` when start. More details can be visited by executing `whistle help` or `w2 help` (only supported in `v0.7.0` and higher version)
 
 > Make sure **using the same proxying server for all protocol** in system proxying setting is checked.
 
@@ -203,22 +202,22 @@ For more details, please vsit [install and start](https://avwo.github.io/whistle
 
 # Visit whistle's operation page
 
-After above operations are completed，open the whistle page in browser[http://local.whistlejs.com](http://local.whistlejs.com/)：
+After the above steps are completed, open the whistle page in browser[http://local.whistlejs.com](http://local.whistlejs.com/)：
 
 ![whistle webui](https://raw.githubusercontent.com/avwo/whistleui/master/assets/whistle.gif)
 
 
-There are five main blocks in navigation bar:
+There are five main tabs in the navigation bar:
 1. Network
   - check and compose the http request
-  - show the console print and javascript errors thrown in page 
-2. Rules：configure operation rules for proxing
+  - show the console print and javascript errors thrown in pages
+2. Rules：configure rules for manipulating
 3. Plugins
   - show the list of installed plugins
   - enable or disable installed plugins
 4. Weinre：configure Weinre list
 5. HTTPS：
-   - configure whether to intercept the HTTPS and download the root certificate for whistle and or not 
+   - configure whether or not to intercept the HTTPS and download the root certificate for whistle
 
 
 # Certificate Installment
@@ -229,7 +228,7 @@ For more details, please vsit [Certificate Installment](https://avwo.github.io/w
 
 # Quick start
 
-Open [Rules](http://local.whistlejs.com/) tab in whistle，and create a group named `test` by context menu or `Create` button in menu bar. Then follow the next steps to input rules and save.
+Open [Rules](http://local.whistlejs.com/) tab in whistle, and create a group named `test` by context menu or `Create` button in menu bar. Then follow the next steps to write rules and save.
 1. cofigure hosts
 
 	Specify the ip of [www.ifeng.com](http://www.ifeng.com/):
@@ -251,13 +250,13 @@ Open [Rules](http://local.whistlejs.com/) tab in whistle，and create a group na
 		# or
 		host://www.qq.com:8080 www.ifeng.com
 
-   For more details, please vsit [Matching pattern](https://avwo.github.io/whistle/pattern.html)
+   For more details, please visit [Pattern Matching](https://avwo.github.io/whistle/pattern.html)
 
-2. local replacement
+2. local files replacing
 	
-  Replace the response with content in local file, which is normally used in development.
+  Replace the response with content in local file system, which is frequently used during web developing.
 
-	# Mac、Linux
+	# Mac or Linux
 	www.ifeng.com file:///User/username/test
 	# or www.ifeng.com file:///User/username/test/index.html
 		
@@ -265,11 +264,11 @@ Open [Rules](http://local.whistlejs.com/) tab in whistle，and create a group na
 	www.ifeng.com file://E:\xx\test
 	# or www.ifeng.com file://E:\xx\test\index.html
 
-   [http://www.ifeng.com/](http://www.ifeng.com/) will try to load `/User/username/test` firstly. If the former dosen't exist，the file `/User/username/test/index.html` will be loaded. For neither exists，it returns 404.
+   [http://www.ifeng.com/](http://www.ifeng.com/) will try to load `/User/username/test` first. If the former dosen't exist, the file `/User/username/test/index.html` will be loaded. For neither exists, it returns 404.
 	
-   To replace jsonp request, you can refer the [tpl](rules/rule/tpl.html)
+   To replace jsonp request, you can refer to [tpl](rules/rule/tpl.html)
 
-   For more details, please vsit [Matching pattern](https://avwo.github.io/whistle/pattern.html)
+   For more details, please vsit [Pattern Matching](https://avwo.github.io/whistle/pattern.html)
 
 3. Request Forward	
 	
@@ -277,11 +276,11 @@ Open [Rules](http://local.whistlejs.com/) tab in whistle，and create a group na
 
 		www.ifeng.com www.aliexpress.com
 
-	For more details, [Matching pattern](https://avwo.github.io/whistle/pattern.html)
+	For more details, [Pattern Matching](https://avwo.github.io/whistle/pattern.html)
   
 4. Inject html、js、css
 	
-	whistle will judge whether to inject corresponding text and how to inject, like whether to wrap the text with HTML label, automatically according to response type.
+	whistle will decide whether injecting corresponding text and how to inject, like whether wrapping the text with HTML label, automatically according to response type.
 	
 		# Mac、Linux
 		www.ifeng.com html:///User/xxx/test/test.html
@@ -293,36 +292,36 @@ Open [Rules](http://local.whistlejs.com/) tab in whistle，and create a group na
 		www.ifeng.com js://E:\xx\test\test.js
 		www.ifeng.com css://E:\xx\test\test.css
 
-	For all the requests for domain `www.ifeng.com`，whistle will inject processed text to response body according to response type. If the type is HTML, the js content will be wraped with `script`, and the css content be wraped with `style` to inject to response body。
+	For all the requests for domain `www.ifeng.com`, whistle will inject the processed text to response body according to response type. If the type is HTML, the js content will be wrapped within `script`, and the css content be wrapped within `style` to be injected to response body。
 
-	For more details, [Matching pattern](https://avwo.github.io/whistle/pattern.html)
+	For more details, [Pattern Matching](https://avwo.github.io/whistle/pattern.html)
   
 5. Debug for remote page
 
-	With the protocol [weinre](https://avwo.github.io/whistle/rules/weinre.html) and protocol [log](https://avwo.github.io/whistle/rules/log.html) provided by whistle，you can modify the DOM structure, capture the javascript errors and view the console print easily. Moreover, you can inject specified script to debug the remote page. 
+	With the protocol [weinre](https://avwo.github.io/whistle/rules/weinre.html) and protocol [log](https://avwo.github.io/whistle/rules/log.html) provided by whistle, you can modify the DOM structure, capture the javascript errors and view the console print easily. Moreover, you can inject specified script to debug the remote page.
 	
-	Before using whistle to debug remote page，you need to set the proxy for OS or browser to whistle. Please refers [Install and start](https://avwo.github.io/whistle/install.html) to know how to set the proxy.
+	Before using whistle to debug remote page, you need to set the proxy for OS or browser to whistle. Please refers [Install and start](https://avwo.github.io/whistle/install.html) to know how to set the proxy.
 	
 	For weinre：
 
 		www.ifeng.com weinre://test
   
-	Add the following rule in group named `test` and save，open the [www.ifeng.com](http://www.ifeng.com/) with a new tab in browser. Then you can see a list when you hover in the button `weinre`，click the item `test` to open a weinre debug page. For example, you can see the DOM structure when swich to `Elements` tab after selected a target.
+	Add the following rule in group named `test` and save, open the [www.ifeng.com](http://www.ifeng.com/) with a new tab in browser. Then you can see a list when you hover over the button `weinre`, click the item `test` to open a weinre debug page. For example, you can see the DOM structure when swich to `Elements` tab after selected a target.
 	
 	For log:
 
 		www.ifeng.com log://{test.js}
 
-	Add the following rule in group named `test` and save. Then you can see a list when you hover in the button `Values`，whistle will create a group named `test.js` in Values when you click it. Input the text `console.log(1, 2, 3, {a: 123})` in the group editor，open the Network -> Log -> Console，open the [www.ifeng.com](http://www.ifeng.com/), you can see the output '1, 2, 3, {a: 123}' in Console panel。
+	Add the following rule in group named `test` and save. Then you can see a list when you hover over the button `Values`, whistle will create a group named `test.js` in Values when you click it. Input the text `console.log(1, 2, 3, {a: 123})` in the group editor, open the Network -> Log -> Console, open the [www.ifeng.com](http://www.ifeng.com/), you can see the output '1, 2, 3, {a: 123}' in Console panel.
 
-	For more details, [Matching pattern](https://avwo.github.io/whistle/pattern.html) and [Rules](https://avwo.github.io/whistle/rules/)
+	For more details, [Pattern Matching](https://avwo.github.io/whistle/pattern.html) and [Rules](https://avwo.github.io/whistle/rules/)
 
 # Documentation
 1. [Install and start](https://avwo.github.io/whistle/install.html)
 2. [How to update](https://avwo.github.io/whistle/update.html)
 3. [Quickly start](https://avwo.github.io/whistle/quickstart.html)
 4. [Configuration mode](https://avwo.github.io/whistle/mode.html)
-5. [Matching pattern](https://avwo.github.io/whistle/pattern.html)
+5. [Pattern Matching](https://avwo.github.io/whistle/pattern.html)
 6. [Operation value](https://avwo.github.io/whistle/data.html)
 7. [Frequent functions](https://avwo.github.io/whistle/frequet.html)
 8. [How to develop plugins](https://avwo.github.io/whistle/plugins.html)
