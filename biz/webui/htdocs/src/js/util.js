@@ -375,11 +375,11 @@ exports.getFilename = function(item, notEmpty) {
   if (item.isHttps) {
     return url;
   }
-  if (notEmpty && item.vName) {
-    return item.vName;
+  if (notEmpty && item.filename) {
+    return item.filename;
   }
-  if (item.tName) {
-    return item.tName;
+  if (item.simplePath) {
+    return item.simplePath;
   }
 
   url = removeProtocol(url.replace(/[?#].*/, ''));
@@ -398,7 +398,7 @@ exports.getFilename = function(item, notEmpty) {
       name = '/';
     }
   }
-  item[notEmpty ? 'vNanme' : 'tName'] = name;
+  item[notEmpty ? 'filename' : 'simplePath'] = name;
   return name;
 };
 
