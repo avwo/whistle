@@ -2,7 +2,8 @@
 1. fix: JSONView里面点击AddToValues下载文件的问题
 2. refactor: 支持点击AddToValues或Download按钮时，根据当前url自动填写默认名称
 3. refactor: 去掉插件中没什么用处的statusServer，避免与statsServer混淆
-4. feat: 支持设置 `disable://capture` 及 `enable://capture`，这两个等价于原来的 `disable://intercept` 及 `enable://intercept`
+4. style: 界面修改为默认显示左侧菜单模式
+5. feat: 支持设置 `disable://capture` 及 `enable://capture`，这两个等价于原来的 `disable://intercept` 及 `enable://intercept`
 
 ### v1.9.2
 1. refactor: 界面微调，及Log界面的性能优化
