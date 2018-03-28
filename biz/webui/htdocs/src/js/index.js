@@ -73,8 +73,6 @@ var REMOVE_OPTIONS = [
     title: 'Ctrl[Command] + Shift + D'
   }
 ];
-var query = location.search.substring(1).replace(/#.*$/, '');
-query = util.parseQueryString(query, null, null, decodeURIComponent);
 
 function getPageName() {
   var hash = location.hash.substring(1);
@@ -315,7 +313,8 @@ var Index = React.createClass({
     ];
     protocols.setPlugins(state);
     state.exportFileType = storage.get('exportFileType');
-    state.showLeftMenu = storage.get('showLeftMenu');
+    var showLeftMenu = storage.get('showLeftMenu');
+    state.showLeftMenu = showLeftMenu == null ? true : showLeftMenu;
     return state;
   },
   getListByName: function(name, type) {
@@ -2238,9 +2237,6 @@ var Index = React.createClass({
 
     var showLeftMenu = networkMode || state.showLeftMenu;
     var disabledAllPlugins = state.disabledAllRules || state.disabledAllPlugins;
-    if (showLeftMenu == null) {
-      showLeftMenu = query.showLeftMenu;
-    }
     return (
       <div className={'main orient-vertical-box' + (showLeftMenu ? ' w-show-left-menu' : '')}>
         <div className={'w-menu w-' + name + '-menu-list'}>
