@@ -308,7 +308,7 @@ var Index = React.createClass({
         icon: false
       },
       {
-        name: 'Feedback',
+        name: 'Issue',
         href: 'https://github.com/avwo/whistle/issues/new',
         icon: false
       }
