@@ -1,7 +1,6 @@
 require('./base-css.js');
 require('../css/log.css');
 var React = require('react');
-var ReactDOM = require('react-dom');
 var Console = require('./console');
 var ServerLog = require('./server-log');
 
