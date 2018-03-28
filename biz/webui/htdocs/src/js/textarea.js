@@ -59,8 +59,8 @@ var Textarea = React.createClass({
       var defaultName = !nameInput.value && self.props.defaultName;
       if (defaultName) {
         nameInput.value = defaultName;
-        nameInput.select();
       }
+      nameInput.select();
       nameInput.focus();
     });
   },
