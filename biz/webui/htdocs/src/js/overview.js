@@ -18,7 +18,7 @@ var OVERVIEW_PROPS = ['url', 'realUrl', 'req.method', 'req.httpVersion', 'res.st
 var PROTOCOLS = require('./protocols').PROTOCOLS;
 var DEFAULT_OVERVIEW_MODAL = {};
 var DEFAULT_RULES_MODAL = {};
-var PROXY_PROTOCOLS = ['socks'];
+var PROXY_PROTOCOLS = ['socks', 'http-proxy'];
 
 OVERVIEW.forEach(function(name) {
   DEFAULT_OVERVIEW_MODAL[name] = '';
