@@ -18,16 +18,14 @@ var OVERVIEW_PROPS = ['url', 'realUrl', 'req.method', 'req.httpVersion', 'res.st
 var PROTOCOLS = require('./protocols').PROTOCOLS;
 var DEFAULT_OVERVIEW_MODAL = {};
 var DEFAULT_RULES_MODAL = {};
+var PROXY_PROTOCOLS = ['socks'];
 
 OVERVIEW.forEach(function(name) {
   DEFAULT_OVERVIEW_MODAL[name] = '';
 });
 PROTOCOLS.forEach(function(name) {
-  if (name == 'socks') {
+  if (PROXY_PROTOCOLS.indexOf(name) !== -1) {
     return;
-  }
-  if (name == 'proxy' || name == 'socks') {
-    name = 'proxy/socks';
   }
   DEFAULT_RULES_MODAL[name] = '';
 });
@@ -106,13 +104,10 @@ var Overview = React.createClass({
       if (rules) {
         rulesModal = {};
         PROTOCOLS.forEach(function(name) {
-          if (name == 'socks') {
+          if (PROXY_PROTOCOLS.indexOf(name) !== -1) {
             return;
           }
           var rule = rules[name === 'reqScript' ? 'rulesFile' : name];
-          if (name == 'proxy') {
-            name = 'proxy/socks';
-          }
           if (rule && rule.list) {
             rulesModal[name] = rule.list.map(function(rule) {
               return rule.rawPattern + ' ' + rule.matcher;
