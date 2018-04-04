@@ -165,6 +165,7 @@ module.exports = function(req, res) {
   headers[config.WHISTLE_REQ_FROM_HEADER] = 'W2COMPOSER';
   headers.host = options.host;
   headers[config.CLIENT_IP_HEAD] = util.getClientIp(req);
+  headers[config.CLIENT_PORT_HEAD] = util.getClientPort(req);
   options.method = getMethod(req.body.method);
 
   var isConn = isConnect(options);
