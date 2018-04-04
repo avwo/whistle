@@ -1,3 +1,6 @@
+### v1.9.5
+1. fix: 通过Composer构造的WebSocket请求是Client IP显示错误的问题
+
 ### v1.9.4
 1. fix: 修改请求头可能导致 `content-length` 被自动删除的问题
 2. fix: `ignore://socks`、`ignore://http-proxy` 失效问题
