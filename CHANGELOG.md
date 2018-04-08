@@ -1,6 +1,7 @@
 ### v1.9.5
 1. fix: 通过Composer构造的WebSocket请求是Client IP显示错误的问题
 2. feat: 支持 `ignore://*|-yyy` 等价与 `ignore://*|ignore.yyy`
+2. feat: 添加钩子 `plugin.resStatsServer` 用于插件统计响应状态
 
 ### v1.9.4
 1. fix: 修改请求头可能导致 `content-length` 被自动删除的问题
