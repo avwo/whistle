@@ -269,7 +269,7 @@
 				try {
           addLog(level, JSON.stringify(result));
         } catch(e) {
-          addLog('error', 'WhistleError: Can\`t stringify the object.');
+          addLog('error', 'WhistleError: Can\`t stringify the object, cause by:\n' + getErrorStack(e));
         }
       };
 			console[level] = function() {
