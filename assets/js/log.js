@@ -234,7 +234,22 @@
 		};
 		img.onload = img.onerror = preventGC;
 		timer = setTimeout(preventGC, 3000);
-	}
+  }
+
+  function getPageInfo() {
+    return '\r\nPage Url: ' + location.href + '\r\nUser Agent: ' + navigator.userAgent;
+  }
+
+  function getErrorStack(error) {
+    var stack = (error.stack || error.message) + '';
+    if (typeof message === 'string') {
+      var msg = message.substring(message.indexOf(':') + 1);
+      if (stack.indexOf(msg) === -1) {
+        stack = message + '\n' + stack;
+      }
+    }
+    return stack + getPageInfo();
+  }
 
 	var levels = ['fatal', 'error', 'warn', 'info', 'debug', 'log'];
 	var noop = function() {};
@@ -251,7 +266,11 @@
         if (!result.length) {
           result = ['undefined'];
         }
-				addLog(level, JSON.stringify(result));
+				try {
+          addLog(level, JSON.stringify(result));
+        } catch(e) {
+          addLog('error', 'WhistleError: Can\`t stringify the object.');
+        }
       };
 			console[level] = function() {
         if (pending) {
@@ -272,19 +291,11 @@
   }
 
   var onerror = function(message, filename, lineno, colno, error) {
-		var pageInfo = '\r\nPage Url: ' + location.href + '\r\nUser Agent: ' + navigator.userAgent;
 		if (error) {
-      var stack = (error.stack || error.message) + '';
-      if (typeof message === 'string') {
-        var msg = message.substring(message.indexOf(':') + 1);
-        if (stack.indexOf(msg) === -1) {
-          stack = message + '\n' + stack;
-        }
-      }
-			wConsole.error(stack + pageInfo);
+			wConsole.error(getErrorStack(error));
 		} else {
 			wConsole.error('Error: ' + message + '(' + filename
-					+ ':' + lineno + ':' + (colno || 0) + ')' + pageInfo);
+					+ ':' + lineno + ':' + (colno || 0) + ')' + getPageInfo());
     }
   };
   var isWeinreConsole = function(curConsole) {
