@@ -3,7 +3,6 @@
 2. fix: 设置[log](http://wproxy.org/whistle/webui/log.html)时可以出现的`Converting circular structure to JSON`异常
 3. feat: 支持 `ignore://*|-yyy` 等价与 `ignore://*|ignore.yyy`
 4. feat: 添加钩子 `plugin.resStatsServer` 用于插件统计响应状态
-5. feat: 支持任意域名的请求 `schema://host/...whistle.5b6af7b9884e1165.../` 访问whistle内部接口
 
 ### v1.9.4
 1. fix: 修改请求头可能导致 `content-length` 被自动删除的问题
