@@ -11,21 +11,15 @@ module.exports = function(req, res, next) {
   var port = host[1] || 80;
   var bypass;
   host = host[0];
-  var weinrePort, logPort;
+  var transformPort;
   var isWebUI = req.path.indexOf(WEBUI_PATH) === 0;
   if (isWebUI) {
     isWebUI = !config.pureProxy;
     if (isWebUI) {
       req.url = req.url.replace(WEBUI_PATH, '/');
       if (INTERNAL_APP.test(req.path)) {
-        isWebUI = RegExp.$1 !== 'weinre';
         req.url = req.url.replace(RegExp['$&'], '/');
-        if (isWebUI) {
-          logPort = RegExp.$2;
-        } else {
-          isWebUI = false;
-          weinrePort = RegExp.$2;
-        }
+        transformPort = RegExp.$2;
       }
     }
   } else {
@@ -55,15 +49,12 @@ module.exports = function(req, res, next) {
   }
   var pluginMgr = this.pluginMgr;
   var pluginHomePage, options, localRule;
-  if (!logPort && !weinrePort && !isWebUI && (options = config.parseInternalUrl(host))) {
-    if (options.name === 'weinre') {
-      weinrePort = options.port;
-    } else if (/[^?]*\/cgi-bin\/log\/set$/.test(req.path) && options.name === 'log') {
-      logPort = options.port;
-    }
+  if (!isWebUI && (options = config.parseInternalUrl(host))) {
+    isWebUI = true;
+    transformPort = options.port;
   }
-  if (isWebUI || weinrePort || logPort) {
-    util.transformReq(req, res, weinrePort || logPort || config.uiport);
+  if (isWebUI) {
+    util.transformReq(req, res, transformPort || config.uiport);
   } else if (pluginHomePage || (pluginHomePage = pluginMgr.getPluginByHomePage(fullUrl))) {
     pluginMgr.loadPlugin(pluginHomePage, function(err, ports) {
       if (err || !ports.uiPort) {
