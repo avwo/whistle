@@ -14,7 +14,8 @@ module.exports = function(req, res, next) {
   var weinrePort, logPort;
   var isWebUI = req.path.indexOf(WEBUI_PATH) === 0;
   if (isWebUI) {
-    if (!config.pureProxy) {
+    isWebUI = !config.pureProxy;
+    if (isWebUI) {
       req.url = req.url.replace(WEBUI_PATH, '/');
       if (INTERNAL_APP.test(req.path)) {
         isWebUI = RegExp.$1 !== 'weinre';
