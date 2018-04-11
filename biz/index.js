@@ -19,18 +19,19 @@ module.exports = function(req, res, next) {
   var port = host[1] || 80;
   var bypass;
   host = host[0];
-  var transformPort, isWebUI;
-  var proxyUrl = req.path.indexOf(WEBUI_PATH) === 0;
-  if (proxyUrl) {
-    proxyUrl = !config.pureProxy;
-    if (proxyUrl) {
+  var transformPort, proxyUrl;
+  var isWebUI = req.path.indexOf(WEBUI_PATH) === 0;
+  if (isWebUI) {
+    isWebUI = !config.pureProxy;
+    if (isWebUI) {
       if (INTERNAL_APP.test(req.path)) {
         transformPort = RegExp.$2;
         proxyUrl = transformPort === (RegExp.$1 === 'weinre' ? config.weinreport : config.uiport);
       } else if (PLUGIN_RE.test(req.path)) {
         proxyUrl = !pluginMgr.getPlugin(RegExp.$1 + ':');
+      } else {
+        isWebUI = false;
       }
-
       if (proxyUrl) {
         proxyUrl = rules.resolveProxy(util.getFullUrl(req));
         proxyUrl = proxyUrl && proxyUrl.matcher;
