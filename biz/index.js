@@ -12,17 +12,19 @@ module.exports = function(req, res, next) {
   var bypass;
   host = host[0];
   var weinrePort, logPort;
-  var isWebUI = !config.pureProxy && req.path.indexOf(WEBUI_PATH) === 0;
+  var isWebUI = req.path.indexOf(WEBUI_PATH) === 0;
   if (isWebUI) {
-    req.url = req.url.replace(WEBUI_PATH, '/');
-    if (INTERNAL_APP.test(req.path)) {
-      isWebUI = RegExp.$1 !== 'weinre';
-      req.url = req.url.replace(RegExp['$&'], '/');
-      if (isWebUI) {
-        logPort = RegExp.$2;
-      } else {
-        isWebUI = false;
-        weinrePort = RegExp.$2;
+    if (!config.pureProxy) {
+      req.url = req.url.replace(WEBUI_PATH, '/');
+      if (INTERNAL_APP.test(req.path)) {
+        isWebUI = RegExp.$1 !== 'weinre';
+        req.url = req.url.replace(RegExp['$&'], '/');
+        if (isWebUI) {
+          logPort = RegExp.$2;
+        } else {
+          isWebUI = false;
+          weinrePort = RegExp.$2;
+        }
       }
     }
   } else {
