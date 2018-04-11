@@ -5,7 +5,6 @@ var util = require('../lib/util');
 var HTTP_PROXY_RE = /^(?:proxy|http-proxy|http2https-proxy|https2http-proxy|internal-proxy):\/\//;
 var INTERNAL_APP = /^\/(log|weinre)\.(\d{1,5})\//;
 var PLUGIN_RE = /^\/whistle\.([a-z\d_\-]+)\//;
-var PROXY_PATH = '/.proxy/';
 
 module.exports = function(req, res, next) {
   var config = this.config;
@@ -21,10 +20,6 @@ module.exports = function(req, res, next) {
     isWebUI = !config.pureProxy;
     if (isWebUI) {
       req.url = req.url.replace(WEBUI_PATH, '/');
-      proxyUrl =req.path.indexOf(PROXY_PATH) === 0;
-      if (proxyUrl) {
-        req.url = req.url.replace(PROXY_PATH, '/');
-      }
       if (INTERNAL_APP.test(req.path)) {
         transformPort = RegExp.$2;
         proxyUrl = transformPort === (RegExp.$1 === 'weinre' ? config.weinreport : config.uiport);
