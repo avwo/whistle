@@ -16,7 +16,7 @@ module.exports = function(req, res, next) {
   if (isWebUI) {
     req.url = req.url.replace(WEBUI_PATH, '/');
     if (INTERNAL_APP.test(req.path)) {
-      isWebUI = !RegExp.$1 === 'weinre';
+      isWebUI = RegExp.$1 !== 'weinre';
       req.url = req.url.replace(RegExp['$&'], '/');
       if (isWebUI) {
         logPort = RegExp.$2;
