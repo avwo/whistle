@@ -12,7 +12,7 @@ module.exports = function(req, res, next) {
   var bypass;
   host = host[0];
   var weinrePort, logPort;
-  var isWebUI = req.path.indexOf(WEBUI_PATH) === 0;
+  var isWebUI = !config.pureProxy && req.path.indexOf(WEBUI_PATH) === 0;
   if (isWebUI) {
     req.url = req.url.replace(WEBUI_PATH, '/');
     if (INTERNAL_APP.test(req.path)) {
