@@ -62,9 +62,7 @@ module.exports = function(req, res, next) {
     }
   }
   if (isWebUI || logPort) {
-    util.transformReq(req, res, logPort || config.uiport);
-  } else if (weinrePort) {
-    util.transformReq(req, res, weinrePort, true);
+    util.transformReq(req, res, weinrePort || logPort || config.uiport);
   } else if (pluginHomePage || (pluginHomePage = pluginMgr.getPluginByHomePage(fullUrl))) {
     pluginMgr.loadPlugin(pluginHomePage, function(err, ports) {
       if (err || !ports.uiPort) {

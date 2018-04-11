@@ -244,7 +244,7 @@ app.all(/^\/weinre\/.*/, function(req, res) {
     return res.redirect('client/' + (options.search || ''));
   }
   req.url = options.path.replace('/weinre', '');
-  util.transformReq(req, res, config.weinreport, true);
+  util.transformReq(req, res, config.weinreport);
 });
 
 module.exports = function(server, proxy) {
