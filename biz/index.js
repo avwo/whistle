@@ -40,6 +40,9 @@ module.exports = function(req, res, next) {
         } else {
           proxyUrl = null;
         }
+        if (!proxyUrl) {
+          isWebUI = false;
+        }
       }
     }
   } else {
