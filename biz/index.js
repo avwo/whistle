@@ -19,19 +19,18 @@ module.exports = function(req, res, next) {
   var port = host[1] || 80;
   var bypass;
   host = host[0];
-  var transformPort, proxyUrl;
-  var isWebUI = req.path.indexOf(WEBUI_PATH) === 0;
-  if (isWebUI) {
-    isWebUI = !config.pureProxy;
-    if (isWebUI) {
+  var transformPort, isWebUI;
+  var proxyUrl = req.path.indexOf(WEBUI_PATH) === 0;
+  if (proxyUrl) {
+    proxyUrl = !config.pureProxy;
+    if (proxyUrl) {
       if (INTERNAL_APP.test(req.path)) {
         transformPort = RegExp.$2;
         proxyUrl = transformPort === (RegExp.$1 === 'weinre' ? config.weinreport : config.uiport);
       } else if (PLUGIN_RE.test(req.path)) {
         proxyUrl = !pluginMgr.getPlugin(RegExp.$1 + ':');
-      } else {
-        isWebUI = false;
       }
+
       if (proxyUrl) {
         proxyUrl = rules.resolveProxy(util.getFullUrl(req));
         proxyUrl = proxyUrl && proxyUrl.matcher;
@@ -68,20 +67,18 @@ module.exports = function(req, res, next) {
     return next();
   }
   var pluginHomePage, localRule;
-  if (isWebUI) {
-    if (proxyUrl) {
-      rules.resolveHost('http://' + proxyUrl, function(err, ip) {
-        if (err) {
-          return next(err);
-        }
-        var colon = proxyUrl.indexOf(':');
-        var proxyPort = colon === -1 ? 80 : proxyUrl.substring(colon + 1);
-        util.transformReq(req, res, proxyPort > 0 ? proxyPort : 80, ip);
-      });
-    } else {
-      req.url = req.url.replace(transformPort ? INTERNAL_APP : WEBUI_PATH, '/');
-      util.transformReq(req, res, transformPort || config.uiport);
-    }
+  if (proxyUrl) {
+    rules.resolveHost('http://' + proxyUrl, function(err, ip) {
+      if (err) {
+        return next(err);
+      }
+      var colon = proxyUrl.indexOf(':');
+      var proxyPort = colon === -1 ? 80 : proxyUrl.substring(colon + 1);
+      util.transformReq(req, res, proxyPort > 0 ? proxyPort : 80, ip);
+    });
+  } else if (isWebUI) {
+    req.url = req.url.replace(transformPort ? INTERNAL_APP : WEBUI_PATH, '/');
+    util.transformReq(req, res, transformPort || config.uiport);
   } else if (pluginHomePage || (pluginHomePage = pluginMgr.getPluginByHomePage(fullUrl))) {
     pluginMgr.loadPlugin(pluginHomePage, function(err, ports) {
       if (err || !ports.uiPort) {
