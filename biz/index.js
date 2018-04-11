@@ -3,13 +3,18 @@ var rules = require('../lib/rules');
 var util = require('../lib/util');
 
 var HTTP_PROXY_RE = /^(?:proxy|http-proxy|http2https-proxy|https2http-proxy|internal-proxy):\/\//;
-var INTERNAL_APP = /^\/(log|weinre)\.(\d{1,5})\//;
-var PLUGIN_RE = /^\/whistle\.([a-z\d_\-]+)\//;
+var INTERNAL_APP;
+var PLUGIN_RE;
 
 module.exports = function(req, res, next) {
   var config = this.config;
   var pluginMgr = this.pluginMgr;
   var WEBUI_PATH = config.WEBUI_PATH;
+  if (!INTERNAL_APP) {
+    var webuiPathRe = util.escapeRegExp(WEBUI_PATH);
+    INTERNAL_APP = new RegExp('^' + webuiPathRe + '(log|weinre)\\.(\\d{1,5})/');
+    PLUGIN_RE = new RegExp('^' + webuiPathRe + 'whistle\\.([a-z\\d_-]+)/');
+  }
   var host = (req.headers.host || '').split(':');
   var port = host[1] || 80;
   var bypass;
@@ -19,15 +24,13 @@ module.exports = function(req, res, next) {
   if (isWebUI) {
     isWebUI = !config.pureProxy;
     if (isWebUI) {
-      req.url = req.url.replace(WEBUI_PATH, '/');
       if (INTERNAL_APP.test(req.path)) {
         transformPort = RegExp.$2;
         proxyUrl = transformPort === (RegExp.$1 === 'weinre' ? config.weinreport : config.uiport);
-        if (!proxyUrl) {
-          req.url = req.url.replace(RegExp['$&'], '/');
-        }
       } else if (PLUGIN_RE.test(req.path)) {
         proxyUrl = !pluginMgr.getPlugin(RegExp.$1 + ':');
+      } else {
+        isWebUI = false;
       }
       if (proxyUrl) {
         proxyUrl = rules.resolveProxy(util.getFullUrl(req));
@@ -64,23 +67,19 @@ module.exports = function(req, res, next) {
   if (bypass) {
     return next();
   }
-  var pluginHomePage, options, localRule;
-  if (!isWebUI && (options = config.parseInternalUrl(host))) {
-    isWebUI = true;
-    transformPort = options.port;
-  }
+  var pluginHomePage, localRule;
   if (isWebUI) {
     if (proxyUrl) {
       rules.resolveHost('http://' + proxyUrl, function(err, ip) {
         if (err) {
           return next(err);
         }
-        req.url = WEBUI_PATH + req.url.substring(1);
         var colon = proxyUrl.indexOf(':');
         var proxyPort = colon === -1 ? 80 : proxyUrl.substring(colon + 1);
         util.transformReq(req, res, proxyPort > 0 ? proxyPort : 80, ip);
       });
     } else {
+      req.url = req.url.replace(transformPort ? INTERNAL_APP : WEBUI_PATH, '/');
       util.transformReq(req, res, transformPort || config.uiport);
     }
   } else if (pluginHomePage || (pluginHomePage = pluginMgr.getPluginByHomePage(fullUrl))) {
