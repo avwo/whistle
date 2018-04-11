@@ -2,7 +2,7 @@ var util = require('../util.test');
 
 module.exports = function() {
   util.request('http://weinre1.test.whistlejs.com/index.html?resBody=_', function(res, body) {
-    body.should.containEql('<script>window.WeinreServerURL="/...whistle.5b6af7b9884e1165...///weinre.6668";</script>\r\n<script src="/...whistle.5b6af7b9884e1165...///weinre.6668/target/target-script-min.js#xxx"></script>');
+    body.should.containEql('<script>window.WeinreServerURL="/...whistle-path.5b6af7b9884e1165...///weinre.6668";</script>\r\n<script src="/...whistle-path.5b6af7b9884e1165...///weinre.6668/target/target-script-min.js#xxx"></script>');
   });
 
   util.request({
@@ -20,7 +20,7 @@ module.exports = function() {
   });
 
   util.request('http://weinre1.test.whistlejs.com:1234/index.html?resBody=_', function(res, body) {
-    body.should.containEql('<script>window.WeinreServerURL="/...whistle.5b6af7b9884e1165...///weinre.6668";</script>\r\n<script src="/...whistle.5b6af7b9884e1165...///weinre.6668/target/target-script-min.js#xxx"></script>');
+    body.should.containEql('<script>window.WeinreServerURL="/...whistle-path.5b6af7b9884e1165...///weinre.6668";</script>\r\n<script src="/...whistle-path.5b6af7b9884e1165...///weinre.6668/target/target-script-min.js#xxx"></script>');
   });
 
   util.request({
