@@ -61,7 +61,7 @@ module.exports = function(req, res, next) {
       logPort = options.port;
     }
   }
-  if (isWebUI || logPort) {
+  if (isWebUI || weinrePort || logPort) {
     util.transformReq(req, res, weinrePort || logPort || config.uiport);
   } else if (pluginHomePage || (pluginHomePage = pluginMgr.getPluginByHomePage(fullUrl))) {
     pluginMgr.loadPlugin(pluginHomePage, function(err, ports) {
