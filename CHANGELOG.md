@@ -1,3 +1,7 @@
+### v1.9.6
+1. refactor: 如果tunnel请求被拦截，则不请求 `plugins.tunnelRulesServer` 
+2. fix: Composer构造get请求时，如果出现 `Content-Length` 及请求内容导致请求无法正常响应的问题
+
 ### v1.9.5
 1. fix: 通过Composer构造的WebSocket请求是Client IP显示错误的问题
 2. fix: 设置[log](http://wproxy.org/whistle/webui/log.html)时可以出现的`Converting circular structure to JSON`异常
