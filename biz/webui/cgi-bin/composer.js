@@ -184,11 +184,15 @@ module.exports = function(req, res) {
   var body = req.body.body;
   if (body && (isWs || isConn || util.hasRequestBody(options))) {
     body = options.body = util.toBuffer(body);
+    if ('content-length' in headers) {
+      if (isWs || isConn) {
+        delete headers['content-length'];
+      } else {
+        headers['content-length'] = body ? body.length : 0;
+      }
+    }
   } else {
     delete headers['content-length'];
-  }
-  if ('content-length' in headers) {
-    headers['content-length'] = body ? body.length : 0;
   }
   options.headers = formatHeaders(headers, rawHeaderNames);
 
