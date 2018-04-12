@@ -184,6 +184,8 @@ module.exports = function(req, res) {
   var body = req.body.body;
   if (body && (isWs || isConn || util.hasRequestBody(options))) {
     body = options.body = util.toBuffer(body);
+  } else {
+    delete headers['content-length'];
   }
   if ('content-length' in headers) {
     headers['content-length'] = body ? body.length : 0;
