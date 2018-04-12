@@ -31,9 +31,9 @@ var contextMenuList = [
   {
     name: 'Copy',
     list: [
-      { name: 'URL' },
       { name: 'Host' },
       { name: 'Path' },
+      { name: 'URL' },
       { name: 'Full URL' },
       { name: 'As CURL' },
       { name: 'Client IP' },
