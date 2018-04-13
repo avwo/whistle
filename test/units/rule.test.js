@@ -4,14 +4,16 @@ module.exports = function() {
   var body = 'test__';
   util.request({
     url: 'http://test.whistlejs.com/',
-    body: body
+    body: body,
+    method: 'post'
   }, function(res, data) {
     data.body.should.be.equal(body);
   });
 
   util.request({
     url: 'http://rule4.test.whistlejs.com/abc?abc=1',
-    body: body
+    body: body,
+    method: 'post'
   }, function(res, data) {
     data.body.should.be.equal(body);
   });
