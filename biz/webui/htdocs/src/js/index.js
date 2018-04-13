@@ -572,6 +572,10 @@ var Index = React.createClass({
           }
           return;
         }
+        var nodeName = e.target.nodeName;
+        if (nodeName === 'INPUT' || nodeName === 'TEXTAREA') {
+          return;
+        }
         var hasSelected = modal && modal.hasSelected();
         if (hasSelected) {
           $(ReactDOM.findDOMNode(self.refs.chooseFileType)).modal('show');
@@ -579,6 +583,7 @@ var Index = React.createClass({
             ReactDOM.findDOMNode(self.refs.sessionsName).focus();
           }, 500);
         }
+        return;
       }
 
       if (isNetwork && e.keyCode === 73) {
