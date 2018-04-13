@@ -1,6 +1,7 @@
 ### v1.9.6
 1. refactor: 如果tunnel请求被拦截，则不请求 `plugins.tunnelRulesServer` 
 2. fix: Composer构造get请求时，如果出现 `Content-Length` 及请求内容导致请求无法正常响应的问题
+3. feat: 插件新增构造服务 `plugin.initial(options)` 用于初始化插件
 
 ### v1.9.5
 1. fix: 通过Composer构造的WebSocket请求是Client IP显示错误的问题
