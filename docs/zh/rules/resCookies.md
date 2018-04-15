@@ -1,10 +1,9 @@
 # resCookies
-
-修改请求的 cookie，配置模式：
+修改请求的cookie，配置方式：
 
 	pattern resCookies://filepath
 
-filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者本地文件(如：`e:\test\xxx`、`e:/test/xxx`、`/User/username/test/xxx` 等):
+filepath为[Values](http://local.whistlejs.com/#values)里面的{key}或者本地文件(如：`e:\test\xxx`、`e:/test/xxx`、`/User/username/test/xxx`等):
 
 	{
 		"key1": "value1",
@@ -19,7 +18,7 @@ filepath 为 [Values](http://local.whistlejs.com/#values) 里面的 {key} 或者
         }
 	}
 
-pattern 参见[匹配方式](pattern.md)，更多模式请参考[配置模式](mode.md)，json 格式参考[数据格式](data.md)。
+pattern参见[匹配模式](../pattern.html)，更多模式请参考[配置方式](../mode.html)，json格式参考[操作值](../data.html)。
 
 例子：
 

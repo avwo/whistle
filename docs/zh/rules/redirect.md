@@ -1,10 +1,10 @@
 # redirect
 
-设置 302 调整，配置模式：
+设置302调整，配置方式：
 
 	pattern redirect://jumpUrl
 
-jumpUrl 为请求要 302 跳转的目标 url，pattern 参见 [匹配方式](pattern.md)，更多模式请参考 [配置模式](mode.md)。
+jumpUrl为请求要302跳转的目标url，pattern参见[匹配模式](../pattern.html)，更多模式请参考[配置方式](../mode.html)。
 
 
 例子：

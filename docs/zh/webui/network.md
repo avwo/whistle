@@ -2,7 +2,7 @@
 
 查看请求响应的详细信息及请求列表的Timeline，还有请求匹配到的规则(见`Overview`)。
 
-![Network](https://avwo.github.io/whistle/img/network.gif)
+![Network](../img/network.gif)
 
 界面操作的一些快捷键：
 

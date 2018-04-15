@@ -25,4 +25,4 @@
 
 2. Network Columns：主要用于设置 Network 表头，或者拖拽重排等
 
-![Network settings](https://avwo.github.io/whistle/img/settings.png)
+![Network settings](../img/settings.png)
