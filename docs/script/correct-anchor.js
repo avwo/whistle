@@ -2,53 +2,30 @@
 
 const fs = require('fs');
 const path = require('path');
-const glob = require('glob');
-const config = require('./config');
 
-const langs = config.langs;
-
-function correct(root) {
-  const rootPath = path.join(__dirname, '../src/', root);
-
-  glob('**/*.md', {
-    root: rootPath,
-    cwd: rootPath,
-    ignore: ['_book/*/**', 'README.md', 'SUMMARY.md']
-  }, (er, files) => {
-    if(er){
-      return;
+module.exports = function ({ rootPath, absFilename, content }) {
+  let result = content || fs.readFileSync(absFilename).toString();
+  result = result.replace(/(\[[^\[\]]+\])\(([^\)]+\.(html|md))\)/g, (match, p1, p2) => {
+    if (/https?:\/\/.*$/.test(p2)) {
+      return match;
     }
-    files.forEach(file => {
-      const fullFile = path.join(rootPath, file);
-      let content = fs.readFileSync(fullFile).toString();
-      
-      content = content.replace(/(\[[^\[\]]+\])\(([^\)]+\.html)\)/g, (match, p1, p2) =>{
-        if(/https?:\/\/.*$/.test(p2)){
-          return match;
-        }
-        let targetFile = path.join(path.dirname(fullFile), p2);
-        const basename = path.posix.basename(targetFile, '.html');
-        targetFile = path.join(path.dirname(targetFile), basename);
-        let fileId = getFileId(rootPath, targetFile);
+    let targetFile = path.join(path.dirname(absFilename), p2.replace(/\.(html|md)/, ''));
+    const basename = path.posix.basename(targetFile);
+    targetFile = path.join(path.dirname(targetFile), basename);
+    let fileId = getFileId(rootPath, targetFile);
 
-        if(fileId){
-          fileId = fileId.replace(/_readme/i, '');
-          return `${p1}(#${fileId})`;
-        }
-        return match;
-      });
-      fs.writeFileSync(fullFile, content);
-    });
+    if (fileId) {
+      fileId = fileId.replace(/_readme/i, '');
+      return `${p1}(#${fileId})`;
+    }
+    return match;
   });
+  return result;
 }
 
-function getFileId(absRoot, absFilename){
-  if(absFilename.indexOf(absRoot) === 0){
+function getFileId(absRoot, absFilename) {
+  if (absFilename.indexOf(absRoot) === 0) {
     return absFilename.substring(absRoot.length + 1, absFilename.length).replace(new RegExp(path.sep, 'g'), '_');
   }
   return '';
 }
-
-langs.forEach(lang => {
-  correct(lang);
-});
