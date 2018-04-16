@@ -71,9 +71,7 @@
     "test": "node test/index.test.js",
     "lint": "eslint *.js ./lib ./bin ./biz ./test ./docs/script",
     "lintfix": "eslint --fix *.js ./lib ./bin ./biz ./test ./docs/script",
-    "cov": "node_modules/istanbul/lib/cli.js cover node_modules/.bin/tape -- test/index.test.js",
-    "docs:watch": "node docs/script/docify.js -w",
-    "docs": "node docs/script/docify.js"
+    "cov": "node_modules/istanbul/lib/cli.js cover node_modules/.bin/tape -- test/index.test.js"
   },
   "engines": {
     "node": ">= 0.10.0"

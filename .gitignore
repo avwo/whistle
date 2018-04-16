@@ -61,4 +61,4 @@ coverage
 /test/.whistle
 
 # docs
-/docs/_book
+_book

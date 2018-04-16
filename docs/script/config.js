@@ -1,3 +1,3 @@
 module.exports = {
-  langs: ['zh-cn']
+  langs: ['zh']
 };
