@@ -5,7 +5,7 @@
 
 ![](../../assets/host01.png)
 
-> **操作指引：**[启动whistle并设置好代理](../install.html)后，在浏览器中打开whisle页面，在Rules中添加一个新的配置项并勾选启用，在对应的配置编辑器中输入host规则即可。如图，访问`www.example.com`域名即会转发到本地80端口。
+> **操作指引：**[启动whistle并设置好代理](../install.html)后，在浏览器中打开whistle页面，在Rules中添加一个新的配置项并勾选启用，在对应的配置编辑器中输入host规则即可。如图，访问`www.example.com`域名即会转发到本地80端口。
 
 ----
 
