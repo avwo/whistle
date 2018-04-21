@@ -1,4 +1,6 @@
 # host
+> whistle的host转发功能，在保留传统hosts语法规则的同时，提供了更加灵活强大的匹配模式来满足不同场景的开发、调试需要。
+
 ### 保留传统的hosts语法规则
 
 如果你习惯了通过修改操作系统hosts文件 (windows下为C:Windows\System32\drivers\etc\hosts，mac下为/etc/hosts) 的方式来修改域名解析，那么使用whistle时也可以采用同样的方法，并且不再需要使用管理员身份进行操作，切换起来也更加简洁。
