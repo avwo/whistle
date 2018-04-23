@@ -15,7 +15,7 @@
 
 ![](../../assets/host02.png)
 
-除了保留hosts文件单一的语法规则，whistle还提供给开发者更加灵活强大的端口匹配、别名匹配、路径匹配、精确匹配、正则表达式、组合等host匹配模式。语法规则的一般描述如下：
+除了保留hosts文件单一的语法规则来支持域名匹配外，whistle还提供给开发者更加灵活强大的端口映射、别名匹配、路径匹配、精确匹配、正则表达式、组合等host匹配模式。语法规则的一般描述如下：
 
 ```
 host pattern1 pattern2 patternN
@@ -25,7 +25,7 @@ host pattern1 pattern2 patternN
 
 下面将为大家一一举例说明。
 
-- **端口匹配**
+- **端口映射**
 
   ```
   127.0.0.1:8080 www.example.com # 等价于： www.example.com  127.0.0.1:8080
