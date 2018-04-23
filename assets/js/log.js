@@ -237,7 +237,7 @@
 
   function getErrorStack(error, message) {
     var stack = (error.stack || error.message) + '';
-    message = error.message || message;
+    message = message || error.message;
     if (typeof message === 'string') {
       var msg = message.substring(message.indexOf(':') + 1);
       if (stack.indexOf(msg) === -1) {
