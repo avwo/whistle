@@ -7,7 +7,7 @@
 
 ![Demo1](../../assets/host01.png)
 
-> **操作指引：**[启动whistle并设置好代理](../install.html)后，在浏览器中打开whistle页面，在Rules中添加一个新的配置项并勾选启用，在对应的配置编辑器中输入host规则即可。如图，访问`www.example.com`域名即会转发到本地80端口。
+> **操作指引：**[启动whistle并设置好代理](../install.html)后，在浏览器中打开whistle页面，在Rules中添加一个新的配置项并勾选启用，在对应的配置编辑器中输入host规则即可。如图，访问`www.example.com`域名即会转发到本地80(或https：443)端口。
 
 ----
 
@@ -15,7 +15,7 @@
 
 ![Demo2](../../assets/host02.png)
 
-除了保留hosts文件单一的语法规则来支持域名匹配外，whistle还提供给开发者更加灵活强大的端口映射、CNAME、路径匹配、精确匹配、正则表达式、组合等host匹配模式。语法规则的一般描述如下：
+除了保留hosts文件单一的语法规则来支持域名匹配外，whistle还提供给开发者更加灵活强大的端口映射(支持ip带端口)、CNAME、路径匹配、精确匹配、正则表达式、组合等host匹配模式。语法规则的一般描述如下：
 
 ```
 host pattern1 pattern2 patternN
