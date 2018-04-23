@@ -127,7 +127,6 @@ whistle安装完成后，执行命令 `whistle help` 或 `w2 help`，查看whist
 
 		-h, --help                                      output usage information
 		-D, --baseDir [baseDir]                         the base dir of config data
-		-A, --ATS                                       generate Root CA for iOS ATS (Node >= 6 is required)
 		-z, --certDir [directory]                       custom certificate path
 		-l, --localUIHost [hostname]                    local ui host (local.whistlejs.com by default)
 		-n, --username [username]                       the username of whistle
@@ -316,7 +315,6 @@ PS: 如果配置完代理，手机无法访问，可能是whistle所在的电脑
 7. [常用功能](https://avwo.github.io/whistle/frequet.html)
 8. [插件开发](https://avwo.github.io/whistle/plugins.html)
 9. [注意事项](https://avwo.github.io/whistle/attention.html)
-10. [关于ATS](https://avwo.github.io/whistle/ats.html)
 11. [常见问题](https://avwo.github.io/whistle/questions.html)
 12. [界面功能](https://avwo.github.io/whistle/webui/)
 13. [协议列表](https://avwo.github.io/whistle/rules/)
