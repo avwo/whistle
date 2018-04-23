@@ -15,13 +15,13 @@
 
 ![Demo2](../../assets/host02.png)
 
-除了保留hosts文件单一的语法规则来支持域名匹配外，whistle还提供给开发者更加灵活强大的端口映射、别名匹配、路径匹配、精确匹配、正则表达式、组合等host匹配模式。语法规则的一般描述如下：
+除了保留hosts文件单一的语法规则来支持域名匹配外，whistle还提供给开发者更加灵活强大的端口映射、CNAME、路径匹配、精确匹配、正则表达式、组合等host匹配模式。语法规则的一般描述如下：
 
 ```
 host pattern1 pattern2 patternN
 ```
 
-> host为计划转发到的域名`IP:port`，pattern1-N为匹配请求url的表达式。当pattern只有一个时，host和pattern的顺序往往可以互换，具体可参考[匹配模式](../pattern.html)。
+> host为计划转发到`ip:port`，pattern1-N为匹配请求url的表达式。当pattern只有一个时，host和pattern的顺序往往可以互换，具体可参考[匹配模式](../pattern.html)。
 
 下面将为大家一一举例说明。
 
@@ -35,7 +35,7 @@ host pattern1 pattern2 patternN
 
   > 对于本地开发调试，往往无法只在80端口提供Web服务。如果使用传统的hosts文件方式，我们只能通过`www.example.com:8080`访问到本地的8080端口，使用whistle提供的端口映射功能即可很好解决这一问题。
 
-- **别名匹配**
+- **CNAME**
 
   ```
    host://www.qq.com www.example.com 
@@ -43,7 +43,7 @@ host pattern1 pattern2 patternN
    # www.example.com  host://www.qq.com
   ```
 
-  > 通过关键字`host`可以实现类似DNS的cname别名的功能，即通过域名`www.example.com`访问时，先访问的地址是通过解析域名`www.qq.com`得到的，但请求头中的host仍为`www.example.com`（这和修改传统hosts的方式不同），相当于后者成为前者的一个别名。注意，这种请求不一定会得到响应。
+  > 通过关键字`host`可以实现类似DNS的cname别名的功能，即通过域名`www.example.com`访问时，先访问的地址是通过解析域名`www.qq.com`得到的，与请求转发 `www.example.com www.qq.com` 不同，上面的配置不会后台收到的还是 `www.example.com` 的请求，而请求转发收到的是转发后url的请求。
 
 - **路径匹配**
 
