@@ -23,7 +23,7 @@ host pattern1 pattern2 patternN
 
 > host为计划转发到`ip:port`，pattern1-N为匹配请求url的表达式。当pattern只有一个时，host和pattern的顺序往往可以互换，具体可参考[匹配模式](../pattern.html)。
 
-下面将为大家一一举例说明。
+### 例子
 
 - **端口映射**
 
