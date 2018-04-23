@@ -25,6 +25,7 @@ var dataIndex = 10000;
 var MAX_PATH_LENGTH = 1024;
 var lastRowId;
 var hashFilterObj;
+var inited;
 var onlyViewOwnData = storage.get('onlyViewOwnData') == 1;
 var DEFAULT_CONF = {
   timeout: TIMEOUT,
@@ -433,14 +434,16 @@ function startLoadData() {
       lastRowId: lastRowId,
       curReqId: curReqId,
       lastFrameId: lastFrameId,
-      count: 60
+      count: inited ? 20 : 60
     };
+    inited = true;
     $.extend(options, hashFilterObj);
     if (onlyViewOwnData) {
       options.ip = 'self';
     }
     cgi.getData(options, function (data) {
-      setTimeout(load, 900);
+      var newIds = data && data.data && data.data.newIds || [];
+      setTimeout(load, newIds.length >= 30 ? 30 : 900);
       updateServerInfo(data);
       if (!data || data.ec !== 0) {
         return;
