@@ -107,28 +107,50 @@ program.setConfig({
 });
 
 program
+  // 设置配置的存储根路径
   .option('-D, --baseDir [baseDir]', 'the base dir of config data', String, undefined)
-  .option('-A, --ATS', 'generate Root CA for iOS ATS (Node >= 6 is required)')
+  // 设置自定义证书存储目录
   .option('-z, --certDir [directory]', 'custom certificate path', String, undefined)
+  // 设置访问抓包配置界面的域名(默认为local.whistlejs.com)
   .option('-l, --localUIHost [hostname]', 'local ui host (' + config.localUIHost + ' by default)', String, undefined)
+  // 设置访问插件的域名(如："script=a.b.com&vase=x.y.com")
   .option('-L, --pluginHost [hostname]', 'plugin ui host (as: "script=a.b.com&vase=x.y.com")', String, undefined)
+  // 设置访问抓包配置界面的用户名和密码
   .option('-n, --username [username]', 'the username of ' + config.name, String, undefined)
+  // 设置访问抓包配置界面的密码
   .option('-w, --password [password]', 'the password of ' + config.name, String, undefined)
+  // 设置访问抓包配置界面的访客名(该账号只能查看抓包不能配置规则)
   .option('-N, --guestName [username]', 'the guest name', String, undefined)
+  // 设置访问抓包配置界面的访客码(该账号只能查看抓包不能配置规则)
   .option('-W, --guestPassword [password]', 'the guest password', String, undefined)
+  // 设置每个域名缓存长连接数量(默认为60)
   .option('-s, --sockets [number]', 'max sockets (' + config.sockets + ' by default)', parseInt, undefined)
+  // 设置配置的存储目录(每个目录只能启动一个实例)
   .option('-S, --storage [newStorageDir]', 'the new local storage directory', String, undefined)
+  // 拷贝指定目录的配置到新目录
   .option('-C, --copy [storageDir]', 'copy storageDir to newStorageDir', String, undefined)
+  // dns缓存时间(默认为30000ms)
   .option('-c, --dnsCache [time]', 'the cache time of DNS (30000ms by default)', String, undefined)
+  // 设置启动监听的网卡(默认为所有网卡)
   .option('-H, --host [host]', config.name + ' listening host(:: or 0.0.0.0 by default)', String, undefined)
+  // 设置启动监听的端口(默认为8899)
   .option('-p, --port [port]', config.name + ' listening port (' + config.port + ' by default)', parseInt, undefined)
+  // 设置抓包配置界面监听的端口(默认为8900)
   .option('-P, --uiport [uiport]', config.name + ' ui port (' + (config.port + 1) + ' by default)', parseInt, undefined)
+  // 设置启动时加载的express中间件
   .option('-m, --middlewares [script path or module name]', 'express middlewares path (as: xx,yy/zz.js)', String, undefined)
+  // 设置启动模式(供扩展使用，如：pureProxy|debug|multiEnv)
   .option('-M, --mode [mode]', 'the whistle mode (as: pureProxy|debug|multiEnv)', String, undefined)
+  // 设置自定义ui界面的路径
   .option('-u, --uipath [script path]', 'web ui plugin path', String, undefined)
+  // 设置超时时间(默认为60000ms)
   .option('-t, --timeout [ms]', 'request timeout (' + config.timeout + ' ms by default)', parseInt, undefined)
+  // 设置传给各个插件的参数
   .option('-e, --extra [extraData]', 'extra data for plugin', String, undefined)
+  // 设置安全过滤器
   .option('-f, --secureFilter [secureFilter]', 'the script path of secure filter', String, undefined)
+  // 设置服务端缓存请求数据的条数(默认为512)
   .option('-R, --reqCacheSize [reqCacheSize]', 'the cache size of request data (512 by default)', String, undefined)
+  // 设置服务端缓存所有WebSocket和Socket请求的帧数(默认为512)
   .option('-F, --frameCacheSize [frameCacheSize]', 'the cache size of socket frames (512 by default)', String, undefined)
   .parse(process.argv);
