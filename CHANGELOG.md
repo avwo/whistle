@@ -1,3 +1,17 @@
+### v1.9.7
+1. fix: `node v9.11.1` 带来的bug
+  ```
+Node: v9.11.1
+Date: 2018-4-23 19:22:33
+TypeError: Cannot read property 'res' of null
+    at Socket.socketCloseListener (_http_client.js:355:11)
+    at Socket.emit (events.js:180:13)
+    at TCP._handle.close [as _onclose] (net.js:541:12)
+  ```
+2. refactor: 去掉命令行里面 `-A, --ATS`，whistle会默认自动检测
+3. refactor: 重新翻译命令行参数
+4. refactor: 优化[log](http://wproxy.org/whistle/rules/log.html)捕获错误的堆栈信息
+
 ### v1.9.6
 1. refactor: 如果tunnel请求被拦截，则不请求 `plugins.tunnelRulesServer` 
 2. fix: Composer构造get请求时，如果出现 `Content-Length` 及请求内容导致请求无法正常响应的问题
