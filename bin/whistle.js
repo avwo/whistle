@@ -119,7 +119,7 @@ program
   .option('-S, --storage [newStorageDir]', 'set the configured storage directory', String, undefined)
   .option('-C, --copy [storageDir]', 'copy the configuration of the specified directory to a new directory', String, undefined)
   .option('-c, --dnsCache [time]', 'set the cache time of DNS (30000ms by default)', String, undefined)
-  .option('-H, --host [host]', 'set the listening network interface (INADDR_ANY by default)', String, undefined)
+  .option('-H, --host [host]', 'set the listening host (INADDR_ANY by default)', String, undefined)
   .option('-p, --port [port]', 'set the listening port (' + config.port + ' by default)', parseInt, undefined)
   .option('-P, --uiport [uiport]', 'set the listening port of whistle (' + (config.port + 1) + ' by default)', parseInt, undefined)
   .option('-m, --middlewares [script path or module name]', 'set the express middlewares loaded at startup (as: xx,yy/zz.js)', String, undefined)
