@@ -11,6 +11,7 @@ TypeError: Cannot read property 'res' of null
 2. refactor: 去掉命令行里面 `-A, --ATS`，whistle会默认自动检测
 3. refactor: 重新翻译命令行参数
 4. refactor: 优化[log](http://wproxy.org/whistle/rules/log.html)捕获错误的堆栈信息
+5. refactor: 调整界面轮询频率
 
 ### v1.9.6
 1. refactor: 如果tunnel请求被拦截，则不请求 `plugins.tunnelRulesServer` 
