@@ -116,7 +116,7 @@ program
   .option('-N, --guestName [username]', 'set the the guest name to access the web ui of whistle (can only view the data)', String, undefined)
   .option('-W, --guestPassword [password]', 'set the guest password to access the web ui of whistle (can only view the data)', String, undefined)
   .option('-s, --sockets [number]', 'set the max number of cached long connection on each domain (' + config.sockets + ' by default)', parseInt, undefined)
-  .option('-S, --storage [newStorageDir]', 'Set the configured storage directory', String, undefined)
+  .option('-S, --storage [newStorageDir]', 'set the configured storage directory', String, undefined)
   .option('-C, --copy [storageDir]', 'copy the configuration of the specified directory to a new directory', String, undefined)
   .option('-c, --dnsCache [time]', 'set the cache time of DNS (30000ms by default)', String, undefined)
   .option('-H, --host [host]', 'set the listening network card (INADDR_ANY by default)', String, undefined)
