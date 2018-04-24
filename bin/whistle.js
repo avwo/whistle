@@ -107,28 +107,50 @@ program.setConfig({
 });
 
 program
-  .option('-D, --baseDir [baseDir]', 'the base dir of config data', String, undefined)
-  .option('-A, --ATS', 'generate Root CA for iOS ATS (Node >= 6 is required)')
-  .option('-z, --certDir [directory]', 'custom certificate path', String, undefined)
-  .option('-l, --localUIHost [hostname]', 'local ui host (' + config.localUIHost + ' by default)', String, undefined)
-  .option('-L, --pluginHost [hostname]', 'plugin ui host (as: "script=a.b.com&vase=x.y.com")', String, undefined)
-  .option('-n, --username [username]', 'the username of ' + config.name, String, undefined)
-  .option('-w, --password [password]', 'the password of ' + config.name, String, undefined)
-  .option('-N, --guestName [username]', 'the guest name', String, undefined)
-  .option('-W, --guestPassword [password]', 'the guest password', String, undefined)
-  .option('-s, --sockets [number]', 'max sockets (' + config.sockets + ' by default)', parseInt, undefined)
-  .option('-S, --storage [newStorageDir]', 'the new local storage directory', String, undefined)
-  .option('-C, --copy [storageDir]', 'copy storageDir to newStorageDir', String, undefined)
-  .option('-c, --dnsCache [time]', 'the cache time of DNS (30000ms by default)', String, undefined)
-  .option('-H, --host [host]', config.name + ' listening host(:: or 0.0.0.0 by default)', String, undefined)
-  .option('-p, --port [port]', config.name + ' listening port (' + config.port + ' by default)', parseInt, undefined)
-  .option('-P, --uiport [uiport]', config.name + ' ui port (' + (config.port + 1) + ' by default)', parseInt, undefined)
-  .option('-m, --middlewares [script path or module name]', 'express middlewares path (as: xx,yy/zz.js)', String, undefined)
-  .option('-M, --mode [mode]', 'the whistle mode (as: pureProxy|debug|multiEnv)', String, undefined)
-  .option('-u, --uipath [script path]', 'web ui plugin path', String, undefined)
-  .option('-t, --timeout [ms]', 'request timeout (' + config.timeout + ' ms by default)', parseInt, undefined)
-  .option('-e, --extra [extraData]', 'extra data for plugin', String, undefined)
-  .option('-f, --secureFilter [secureFilter]', 'the script path of secure filter', String, undefined)
-  .option('-R, --reqCacheSize [reqCacheSize]', 'the cache size of request data (512 by default)', String, undefined)
-  .option('-F, --frameCacheSize [frameCacheSize]', 'the cache size of socket frames (512 by default)', String, undefined)
-  .parse(process.argv);
+  // 设置配置的存储根路径
+  .option('-D, --baseDir [baseDir]', 'set the configured storage root path', String, undefined)
+  // 设置自定义证书存储目录
+  .option('-z, --certDir [directory]', 'set custom certificate store directory', String, undefined)
+  // 设置访问抓包配置界面的域名(默认为local.whistlejs.com)
+  .option('-l, --localUIHost [hostname]', 'Set the domain for the whistle configuration web page (default is local.whistlejs.com) (' + config.localUIHost + ' by default)', String, undefined)
+  // 设置访问插件的域名(如："script=a.b.com&vase=x.y.com")
+  .option('-L, --pluginHost [hostname]', 'set the domain for accessing plugin  (as: "script=a.b.com&vase=x.y.com")', String, undefined)
+  // 设置访问抓包配置界面的用户名和密码
+  .option('-n, --username [username]', 'set the username of whistle configuration web page ' + config.name, String, undefined)
+  // 设置访问抓包配置界面的密码
+  .option('-w, --password [password]', 'set the password of whistle configuration web page' + config.name, String, undefined)
+  // 设置访问抓包配置界面的访客名(该账号只能查看抓包不能配置规则)
+  .option('-N, --guestName [username]', 'set the the visitor name to access whistle configuration web page'(this account can only view the capture packet, but cannot configure the rule), String, undefined)
+  // 设置访问抓包配置界面的访客码(该账号只能查看抓包不能配置规则)
+  .option('-W, --guestPassword [password]', 'set the visitor password to access whistle configuration web page'(this account can only view the capture packet, but cannot configure the rule), String, undefined)
+  // 设置每个域名缓存长连接数量(默认为60)
+  .option('-s, --sockets [number]', 'set the max number of cached long connection on each domain (' + config.sockets + ' by default)', parseInt, undefined)
+  // 设置配置的存储目录(每个目录只能启动一个实例)
+  .option('-S, --storage [newStorageDir]', 'Set the configured storage directory (only one instance can be started per directory)', String, undefined)
+  // 拷贝指定目录的配置到新目录
+  .option('-C, --copy [storageDir]', 'copy the configuration of the specified directory to a new directory', String, undefined)
+  // dns缓存时间(默认为30000ms)
+  .option('-c, --dnsCache [time]', 'set the cache time of DNS (30000ms by default)', String, undefined)
+  // 设置启动监听的网卡(默认为所有网卡)
+  .option('-H, --host [host]', 'set the listening network card (default is all network cards)', String, undefined)
+  // 设置启动监听的端口(默认为8899)
+  .option('-p, --port [port]', 'set the listening port(default is 8899)', parseInt, undefined)
+  // 设置抓包配置界面监听的端口(默认为8900)
+  .option('-P, --uiport [uiport]', 'set the listening port of whistle configuration web page', parseInt, undefined)
+  // 设置启动时加载的express中间件
+  .option('-m, --middlewares [script path or module name]', 'set the express middlewares loaded at startup (as: xx,yy/zz.js)', String, undefined)
+  // 设置启动模式(供扩展使用，如：pureProxy|debug|multiEnv)
+  .option('-M, --mode [mode]', 'set the way of starting the whistle mode (as: pureProxy|debug|multiEnv)', String, undefined)
+  // 设置自定义ui界面的路径
+  .option('-u, --uipath [script path]', 'set the path of custom web page', String, undefined)
+  // 设置超时时间(默认为60000ms)
+  .option('-t, --timeout [ms]', 'set the request timeout (' + config.timeout + ' ms by default)', parseInt, undefined)
+  // 设置传给各个插件的参数
+  .option('-e, --extra [extraData]', 'set the extra parameters for plugin', String, undefined)
+  // 设置安全过滤器
+  .option('-f, --secureFilter [secureFilter]', 'set the path of secure filter', String, undefined)
+  // 设置服务端缓存请求数据的条数(默认为512)
+  .option('-R, --reqCacheSize [reqCacheSize]', 'set the cache size of request data (512 by default)', String, undefined)
+  // 设置服务端缓存所有WebSocket和Socket请求的帧数(默认为512)
+  .option('-F, --frameCacheSize [frameCacheSize]', 'set the cache size of webSocket and socket's frames(512 by default )', String, undefined)
+    .parse(process.argv);
