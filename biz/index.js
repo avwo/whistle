@@ -26,7 +26,7 @@ module.exports = function(req, res, next) {
     if (isWebUI) {
       if (INTERNAL_APP.test(req.path)) {
         transformPort = RegExp.$2;
-        proxyUrl = transformPort === (RegExp.$1 === 'weinre' ? config.weinreport : config.uiport);
+        proxyUrl = transformPort != (RegExp.$1 === 'weinre' ? config.weinreport : config.uiport);
       } else if (PLUGIN_RE.test(req.path)) {
         proxyUrl = !pluginMgr.getPlugin(RegExp.$1 + ':');
       } else {
