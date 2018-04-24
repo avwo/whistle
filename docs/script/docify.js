@@ -170,7 +170,7 @@ function combo() {
     if (filename) {
       let content = fs.readFileSync(filename).toString();
       content = appendTitleAnchor(content, fileId);
-      content = correctAnchor({rootPath: path.join(docsDir, lang) , absFilename: filename, content})
+      content = correctAnchor({rootPath: path.join(docsDir, lang) , absFilename: filename, content});
 
       cache[fileId] = content;
       result.push(fileId);

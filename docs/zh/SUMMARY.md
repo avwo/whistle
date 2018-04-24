@@ -10,7 +10,6 @@
 * [常用功能](frequet.md)
 * [插件开发](plugins.md)
 * [注意事项](attention.md)
-* [关于ATS](ats.md)
 * [常见问题](questions.md)
 * [界面功能](webui/README.md)
   * [Network](webui/network.md)

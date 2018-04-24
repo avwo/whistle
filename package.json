@@ -1,7 +1,7 @@
 {
   "name": "whistle",
   "description": "HTTP, HTTPS, Websocket debugging proxy",
-  "version": "1.9.6",
+  "version": "1.9.7",
   "dataDirname": ".whistle",
   "localUIHost": "local.whistlejs.com",
   "whistleSsl": "whistle-ssl",
@@ -69,8 +69,8 @@
     "dev": "webpack --config ./biz/webui/htdocs/src/webpack.config -w",
     "start": "node bin/whistle.js run -p 8888",
     "test": "node test/index.test.js",
-    "lint": "eslint *.js ./lib ./bin ./biz ./test ./docs/script",
-    "lintfix": "eslint --fix *.js ./lib ./bin ./biz ./test ./docs/script",
+    "lint": "eslint *.js ./lib ./bin ./biz ./test ./docs/script ./assets/js",
+    "lintfix": "eslint --fix *.js ./lib ./bin ./biz ./test ./docs/script ./assets/js",
     "cov": "node_modules/istanbul/lib/cli.js cover node_modules/.bin/tape -- test/index.test.js"
   },
   "engines": {

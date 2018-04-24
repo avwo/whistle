@@ -21,7 +21,7 @@ module.exports = function ({ rootPath, absFilename, content }) {
     return match;
   });
   return result;
-}
+};
 
 function getFileId(absRoot, absFilename) {
   if (absFilename.indexOf(absRoot) === 0) {

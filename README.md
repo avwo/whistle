@@ -129,7 +129,6 @@ After installation, execute `whistle help` or `w2 help` to view help information
 
 		-h, --help                                      output usage information
 		-D, --baseDir [baseDir]                         the base dir of config data
-		-A, --ATS                                       generate Root CA for iOS ATS (Node >= 6 is required)
 		-z, --certDir [directory]                       custom certificate path
 		-l, --localUIHost [hostname]                    local ui host (local.whistlejs.com by default)
 		-n, --username [username]                       the username of whistle
@@ -326,7 +325,6 @@ Open [Rules](http://local.whistlejs.com/) tab in whistle, and create a group nam
 7. [Frequent functions](https://avwo.github.io/whistle/frequet.html)
 8. [How to develop plugins](https://avwo.github.io/whistle/plugins.html)
 9. [Attentions](https://avwo.github.io/whistle/attention.html)
-10. [About ATS](https://avwo.github.io/whistle/ats.html)
 11. [Common questions](https://avwo.github.io/whistle/questions.html)
 12. [Web UI](https://avwo.github.io/whistle/webui/)
 13. [Rules](https://avwo.github.io/whistle/rules/)
