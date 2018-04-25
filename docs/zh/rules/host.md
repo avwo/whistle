@@ -5,7 +5,7 @@
 
 如果你习惯了通过修改操作系统hosts文件 (windows下为`C:Windows\System32\drivers\etc\hosts`，mac下为`/etc/hosts`) 的方式来修改域名解析，那么使用whistle时也可以采用同样的方法，并且不再需要使用管理员身份进行操作，切换起来也更加简洁。
 
-![Demo1](../../assets/host01.png)
+![Demo1](../img/host01.png)
 
 > **操作指引：**[启动whistle并设置好代理](../install.html)后，在浏览器中打开whistle页面，在Rules中添加一个新的配置项并勾选启用，在对应的配置编辑器中输入host规则即可。如图，访问`www.example.com`域名即会转发到本地80(或https：443)端口。
 
@@ -13,7 +13,7 @@
 
 ### 灵活强大的whistle匹配模式
 
-![Demo2](../../assets/host02.png)
+![Demo2](../img/host02.png)
 
 除了保留hosts文件单一的语法规则来支持域名匹配外，whistle还提供给开发者更加灵活强大的端口映射(即支持ip带端口)、CNAME、路径匹配、精确匹配、正则表达式、组合等host匹配模式。语法规则的一般描述如下：
 
