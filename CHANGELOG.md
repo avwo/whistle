@@ -1,3 +1,6 @@
+### v1.9.9
+1. fix: Node10更新openssl带来的问题：[error:0D0E20DD:asn1 encoding routines:c2i_ibuf:illegal ](http://openssl.6102.n7.nabble.com/openssl-org-4301-BUG-OpenSSL-1-1-0-pre2-fails-to-parse-x509-certificate-in-DER-format-td63467.html)
+
 ### v1.9.8
 1. fix: 启动时卡住命令行
 
