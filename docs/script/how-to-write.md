@@ -8,7 +8,7 @@
   ```
 2. 启动 gitbook 本地服务器
   ```sh
-  cd docs/src/
+  cd docs/
   gitbook serve [zh-cn|en-us]
   ```
 3. 打开页面，本地预览 gitbook 生成的文档

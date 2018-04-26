@@ -18,7 +18,7 @@ pattern ignore://*|-protocol1|-protocol2|-protocolN
 ```
 > 表示保留协议为`protocol1`，...，`protocolN`的规则。
 
-例子：
+### 例子：
 
 **配置规则：**
 ```
