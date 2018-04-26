@@ -75,7 +75,7 @@ host pattern1 pattern2 patternN
 
   > 通过配置上述规则，符合正则表达式`/example\.com/i`的请求，将转发到本地的8080端口进行处理，如请求`example.com/index.html`、`www.example.com/index.html`都将进行转发处理。
 
-  - **通配符匹配**
+- **通配符匹配**
 
   ```
   127.0.0.1:8080 */cgi-bin/test
