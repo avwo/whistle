@@ -2319,7 +2319,7 @@ var Index = React.createClass({
               onDoubleClick={this.showAnonymousWeinre}
               className="w-weinre-menu" href="javascript:;"
               draggable="false"><span className="glyphicon glyphicon-wrench"></span>Weinre</a>
-            <MenuItem ref="weinreMenuItem" name="Anonymous" options={state.weinreOptions} className="w-weinre-menu-item" onClick={this.showAnonymousWeinre} onClickOption={this.showWeinre} />
+            <MenuItem ref="weinreMenuItem" name="anonymous" options={state.weinreOptions} className="w-weinre-menu-item" onClick={this.showAnonymousWeinre} onClickOption={this.showWeinre} />
           </div>
           <a onClick={this.showHttpsSettingsDialog} className="w-https-menu" href="javascript:;" draggable="false"><span className={'glyphicon glyphicon-' + (state.interceptHttpsConnects ? 'ok' : 'lock')}></span>HTTPS</a>
           <div onMouseEnter={this.showHelpOptions} onMouseLeave={this.hideHelpOptions}
