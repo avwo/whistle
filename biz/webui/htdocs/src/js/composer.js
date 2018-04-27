@@ -25,7 +25,12 @@ function removeDuplicateRules(rules) {
 var Composer = React.createClass({
   getInitialState: function() {
     var rules = storage.get('composerRules');
+    var data = util.parseJSON(storage.get('composerData')) || {};
     return {
+      url: data.url,
+      method: data.method,
+      headers: data.headers,
+      body: data.body,
       rules: typeof rules === 'string' ? rules : ''
     };
   },
@@ -38,6 +43,7 @@ var Composer = React.createClass({
         data: activeItem
       }, function() {
         self.update(activeItem);
+        self.onComposerChange();
       });
     });
   },
@@ -56,9 +62,25 @@ var Composer = React.createClass({
     var hide = util.getBoolean(this.props.hide);
     return hide != util.getBoolean(nextProps.hide) || !hide;
   },
+  storageComposer: function() {
+    var refs = this.refs;
+    var params = {
+      url: ReactDOM.findDOMNode(refs.url).value.trim(),
+      headers: ReactDOM.findDOMNode(refs.headers).value,
+      method: ReactDOM.findDOMNode(refs.method).value || 'GET',
+      body: ReactDOM.findDOMNode(refs.body).value.replace(/\r\n|\r|\n/g, '\r\n')
+    };
+    storage.set('composerData', JSON.stringify(params));
+    return params;
+  },
+  onComposerChange: function() {
+    clearTimeout(this.composerTimer);
+    this.composerTimer = setTimeout(this.storageComposer, 1000);
+  },
   execute: function() {
     var refs = this.refs;
     var url = ReactDOM.findDOMNode(refs.url).value.trim();
+    this.onComposerChange();
     if (!url) {
       return;
     }
@@ -114,10 +136,14 @@ var Composer = React.createClass({
   selectAll: function(e) {
     e.target.select();
   },
-  onRulesChange: function(e) {
-    var rules = e.target.value;
+  storageRules: function() {
+    var rules = ReactDOM.findDOMNode(this.refs.composerRules).value;
     this.state.rules = rules;
     storage.set('composerRules', rules);
+  },
+  onRulesChange: function() {
+    clearTimeout(this.rulesTimer);
+    this.rulesTimer = setTimeout(this.storageRules, 600);
   },
   onKeyDown: function(e) {
     if ((e.ctrlKey || e.metaKey)) {
@@ -132,12 +158,13 @@ var Composer = React.createClass({
 
   },
   render: function() {
-    var rules = this.state.rules;
+    var state = this.state;
+    var rules = state.rules;
     return (
       <div className={'fill orient-vertical-box w-detail-content w-detail-composer' + (util.getBoolean(this.props.hide) ? ' hide' : '')}>
         <div className="w-composer-url box">
-          <input onKeyDown={this.onKeyDown} onFocus={this.selectAll} ref="url" type="text" maxLength="8192" placeholder="url" className="fill w-composer-input" />
-          <select ref="method" className="form-control w-composer-method">
+          <input defaultValue={state.url} onChange={this.onComposerChange} onKeyDown={this.onKeyDown} onFocus={this.selectAll} ref="url" type="text" maxLength="8192" placeholder="url" className="fill w-composer-input" />
+          <select defaultValue={state.method} onChange={this.onComposerChange} ref="method" className="form-control w-composer-method">
                   <option value="GET">GET</option>
                   <option value="POST">POST</option>
                   <option value="PUT">PUT</option>
@@ -159,13 +186,14 @@ var Composer = React.createClass({
         </div>
         <Divider vertical="true" rightWidth="140">
           <Divider vertical="true">
-            <textarea onKeyDown={this.onKeyDown} ref="headers" className="fill orient-vertical-box w-composer-headers" placeholder="Input the headers"></textarea>
-            <textarea onKeyDown={this.onKeyDown} ref="body" className="fill orient-vertical-box w-composer-body" placeholder="Input the body"></textarea>
+            <textarea defaultValue={state.headers} onChange={this.onComposerChange} onKeyDown={this.onKeyDown} ref="headers" className="fill orient-vertical-box w-composer-headers" placeholder="Input the headers"></textarea>
+            <textarea defaultValue={state.body} onChange={this.onComposerChange} onKeyDown={this.onKeyDown} ref="body" className="fill orient-vertical-box w-composer-body" placeholder="Input the body"></textarea>
           </Divider>
           <div ref="rulesCon" className="orient-vertical-box fill">
             <div className="w-detail-request-webforms-title">Rules</div>
             <textarea
               defaultValue={rules}
+              ref='composerRules'
               onChange={this.onRulesChange}
               style={{background: rules ? 'lightyellow' : undefined }}
               maxLength="8192"
