@@ -61,8 +61,8 @@ var contextMenuList = [
   },
   { name: 'Composer' },
   { name: 'Replay' },
-  { name: 'Export' },
   { name: 'Upload' },
+  { name: 'Export' },
   { name: 'Import' },
   { name: 'Help', sep: true }
 ];
@@ -399,9 +399,9 @@ var ReqData = React.createClass({
     } else {
       contextMenuList[5].disabled = true;
     }
-    var uploadItem = contextMenuList[7];
+    var uploadItem = contextMenuList[6];
     uploadItem.hide = !getUploadSessionsFn();
-    contextMenuList[6].disabled = uploadItem.disabled = !item && !selectedCount;
+    contextMenuList[7].disabled = uploadItem.disabled = !item && !selectedCount;
     var data = util.getMenuPosition(e, 110, uploadItem.hide ? 274 : 304);
     data.list = contextMenuList;
     this.refs.contextMenu.show(data);
