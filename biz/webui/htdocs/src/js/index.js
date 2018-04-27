@@ -1366,6 +1366,14 @@ var Index = React.createClass({
       showPluginsOptions: false
     });
   },
+  showWeinreOptionsQuick: function(e) {
+    var list = this.getWeinreFromRules();
+    if (!list || !list.length) {
+      this.showAnonymousWeinre();
+      return;
+    }
+    $(e.target).closest('div').addClass('w-menu-wrapper-show');
+  },
   showWeinreOptions: function(e) {
     var self = this;
     var list = self.state.weinreOptions = self.getWeinreFromRules() || [];
@@ -2307,7 +2315,7 @@ var Index = React.createClass({
           <a onClick={this.onClickMenu} className={'w-delete-menu' + (disabledDeleteBtn ? ' w-disabled' : '')} style={{display: (isNetwork || isPlugins) ? 'none' : ''}} href="javascript:;" draggable="false"><span className="glyphicon glyphicon-trash"></span>Delete</a>
           <a onClick={this.showSettings} className={'w-settings-menu' + (hasFilterText ? ' w-menu-enable'  : '')} style={{display: (isPlugins) ? 'none' : ''}} href="javascript:;" draggable="false"><span className="glyphicon glyphicon-cog"></span>Settings</a>
           <div onMouseEnter={this.showWeinreOptions} onMouseLeave={this.hideWeinreOptions} className={'w-menu-wrapper' + (showWeinreOptions ? ' w-menu-wrapper-show' : '')}>
-            <a onClick={this.showAnonymousWeinre} className="w-weinre-menu" href="javascript:;" draggable="false"><span className="glyphicon glyphicon-wrench"></span>Weinre</a>
+            <a onClick={this.showWeinreOptionsQuick} className="w-weinre-menu" href="javascript:;" draggable="false"><span className="glyphicon glyphicon-wrench"></span>Weinre</a>
             <MenuItem ref="weinreMenuItem" name="Anonymous" options={state.weinreOptions} className="w-weinre-menu-item" onClick={this.showAnonymousWeinre} onClickOption={this.showWeinre} />
           </div>
           <a onClick={this.showHttpsSettingsDialog} className="w-https-menu" href="javascript:;" draggable="false"><span className={'glyphicon glyphicon-' + (state.interceptHttpsConnects ? 'ok' : 'lock')}></span>HTTPS</a>
