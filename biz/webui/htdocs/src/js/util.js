@@ -329,24 +329,30 @@ exports.getPath = function(url) {
   return index == -1 ? '/' : url.substring(index);
 };
 
-function parseJSON(str) {
-  if (!str || !(str = str.trim()) || !/({[\w\W]*}|\[[\w\W]*\])/.test(str)) {
+function parseJSON(str, resolve) {
+  if (!str || !(str = str.trim())) {
     return '';
   }
-
-  str = RegExp.$1;
+  if (resolve) {
+    if (!/({[\w\W]*}|\[[\w\W]*\])/.test(str)) {
+      return;
+    }
+    str = RegExp.$1;
+  }
   try {
     return JSON.parse(str);
   } catch(e) {}
 }
 
-exports.parseJSON = function(str, decode) {
-  var result = parseJSON(str);
+exports.parseJSON = parseJSON;
+
+exports.resolveJSON = function(str, decode) {
+  var result = parseJSON(str, true);
   if (result || !str || !decode) {
     return result;
   }
   try {
-    return parseJSON(decode(str));
+    return parseJSON(decode(str), true);
   } catch(e) {}
 };
 

@@ -54,7 +54,7 @@ var FrameClient = React.createClass({
       bin = data.bin;
       if (data.json) {
         json = data.json;
-      } else if (json = util.parseJSON(text)) {
+      } else if (json = util.resolveJSON(text)) {
         json = data.json = {
           json: json,
           str: JSON.stringify(json, null, '    ')

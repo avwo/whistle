@@ -70,7 +70,7 @@ var ResDetail = React.createClass({
       headers = res.headers;
       if (res.json) {
         json = res.json;
-      } else if (json = util.parseJSON(body)) {
+      } else if (json = util.resolveJSON(body)) {
         json = res.json = {
           json: json,
           str: JSON.stringify(json, null, '    ')
