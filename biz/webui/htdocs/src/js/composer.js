@@ -120,7 +120,7 @@ var Composer = React.createClass({
           } else {
             result.push(line);
           }
-        });rules.join('\n');
+        });
         result.push('x-whistle-rule-value: ' + removeDuplicateRules(rules));
         headers = result.join('\n');
       }
