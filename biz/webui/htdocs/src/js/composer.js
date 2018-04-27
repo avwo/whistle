@@ -62,7 +62,7 @@ var Composer = React.createClass({
     var hide = util.getBoolean(this.props.hide);
     return hide != util.getBoolean(nextProps.hide) || !hide;
   },
-  storageComposer: function() {
+  saveComposer: function() {
     var refs = this.refs;
     var params = {
       url: ReactDOM.findDOMNode(refs.url).value.trim(),
@@ -75,7 +75,7 @@ var Composer = React.createClass({
   },
   onComposerChange: function() {
     clearTimeout(this.composerTimer);
-    this.composerTimer = setTimeout(this.storageComposer, 1000);
+    this.composerTimer = setTimeout(this.saveComposer, 1000);
   },
   execute: function() {
     var refs = this.refs;
@@ -136,14 +136,14 @@ var Composer = React.createClass({
   selectAll: function(e) {
     e.target.select();
   },
-  storageRules: function() {
+  saveRules: function() {
     var rules = ReactDOM.findDOMNode(this.refs.composerRules).value;
     this.state.rules = rules;
     storage.set('composerRules', rules);
   },
   onRulesChange: function() {
     clearTimeout(this.rulesTimer);
-    this.rulesTimer = setTimeout(this.storageRules, 600);
+    this.rulesTimer = setTimeout(this.saveRules, 600);
   },
   onKeyDown: function(e) {
     if ((e.ctrlKey || e.metaKey)) {
