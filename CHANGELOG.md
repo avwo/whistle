@@ -1,3 +1,7 @@
+### v1.9.10
+1. feat: Composer自动保存已填写的数据
+2. fix: Composer里面如果头部出现JSON字符串可能导致无法解析请求头的问题
+
 ### v1.9.9
 1. fix: Node 10更新openssl带来的问题：error:0D0E20DD:asn1 encoding routines:c2i_ibuf:illegal
 
