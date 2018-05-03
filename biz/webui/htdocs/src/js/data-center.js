@@ -25,6 +25,7 @@ var dataIndex = 10000;
 var MAX_PATH_LENGTH = 1024;
 var lastRowId;
 var hashFilterObj;
+var clearNetwork;
 var inited;
 var onlyViewOwnData = storage.get('onlyViewOwnData') == 1;
 var DEFAULT_CONF = {
@@ -75,6 +76,9 @@ function handleHashFilterChanged(e) {
     if (obj.ip) {
       filter = filter || {};
       filter.ip = obj.ip;
+    }
+    if (!inited && obj.clearNetwork === 'true') {
+      clearNetwork = true;
     }
   }
   exports.hashFilterObj = filter;
@@ -480,6 +484,10 @@ function startLoadData() {
         curActiveItem.lastFrameId = data.frames[framesLen - 1].frameId;
         curFrames.push.apply(curFrames, data.frames);
       }
+      var lastId = data.lastId;
+      if (lastId && (!lastRowId || util.compareReqId(lastId, lastRowId))) {
+        lastRowId = lastId;
+      }
       if (!data.ids.length && !data.newIds.length) {
         if (framesLen) {
           framesUpdateCallbacks.forEach(function(cb) {
@@ -488,7 +496,6 @@ function startLoadData() {
         }
         return;
       }
-      var lastId = data.lastId;
       var ids = data.newIds;
       data = data.data;
       dataList.forEach(function (item) {
@@ -500,9 +507,6 @@ function startLoadData() {
           item.lost = true;
         }
       });
-      if (lastId && (!lastRowId || util.compareReqId(lastId, lastRowId))) {
-        lastRowId = lastId;
-      }
       if (ids.length) {
         var filterObj = parseFilterText();
         ids.forEach(function (id) {
@@ -638,6 +642,9 @@ function getPendingIds() {
 }
 
 function getStartTime() {
+  if (!inited && clearNetwork) {
+    return -1;
+  }
   var len = dataList.length - 1;
   if (len > MAX_COUNT) {
     return -1;
