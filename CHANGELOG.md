@@ -1,3 +1,6 @@
+### v1.9.11
+1. fix: 如果请求的域名为IP，则默认不进行解包，需要解包可以通过设置规则 `tunnel://x.x.x.x enable://capture` 实现
+
 ### v1.9.10
 1. feat: Composer自动保存已填写的数据
 2. fix: Composer里面如果头部出现JSON字符串可能导致无法解析请求头的问题
