@@ -504,19 +504,6 @@ function openEditor(value) {
 
 exports.openEditor = openEditor;
 
-
-function compareReqId(prev, next) {
-  if (prev >= next) {
-    return true;
-  }
-
-  prev = prev.split('-');
-  next = next.split('-');
-  return prev[0] == next[0] && prev[1] > next[1];
-}
-
-exports.compareReqId = compareReqId;
-
 var rentity = /['<> "&]/g;
 var entities = {
   '"': '&quot;',

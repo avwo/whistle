@@ -485,7 +485,7 @@ function startLoadData() {
         curFrames.push.apply(curFrames, data.frames);
       }
       var lastId = data.lastId;
-      if (lastId && (!lastRowId || util.compareReqId(lastId, lastRowId))) {
+      if (lastId) {
         lastRowId = lastId;
       }
       if (!data.ids.length && !data.newIds.length) {
@@ -643,18 +643,12 @@ function getPendingIds() {
 
 function getStartTime() {
   if (!inited && clearNetwork) {
+    return -2;
+  }
+  if (dataList.length - 1 > MAX_COUNT) {
     return -1;
   }
-  var len = dataList.length - 1;
-  if (len > MAX_COUNT) {
-    return -1;
-  }
-  var item = dataList[len];
-  if (!item) {
-    return '';
-  }
-
-  return (!lastRowId || util.compareReqId(item.id, lastRowId)) ? item.id : lastRowId;
+  return lastRowId || 0;
 }
 
 function updateServerInfo(data) {
