@@ -331,7 +331,7 @@ exports.getPath = function(url) {
 
 function parseJSON(str, resolve) {
   if (!str || !(str = str.trim())) {
-    return '';
+    return;
   }
   if (resolve) {
     if (!/({[\w\W]*}|\[[\w\W]*\])/.test(str)) {
@@ -340,7 +340,8 @@ function parseJSON(str, resolve) {
     str = RegExp.$1;
   }
   try {
-    return JSON.parse(str);
+    var result = JSON.parse(str);
+    return typeof result === 'object' ? result : null;
   } catch(e) {}
 }
 
