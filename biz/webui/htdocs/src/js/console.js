@@ -8,6 +8,7 @@ var JSONTree = require('react-json-tree')['default'];
 var util = require('./util');
 var dataCenter = require('./data-center');
 var FilterInput = require('./filter-input');
+var DropDown = require('./dropdown');
 
 function parseLog(log) {
   if (log.view) {
@@ -151,27 +152,27 @@ var Console = React.createClass({
     return (
       <div className={'fill orient-vertical-box w-textarea w-detail-page-log' + (this.props.hide ? ' hide' : '')}>
         <div className={'w-log-action-bar' + (logs.length ? '' : ' hide')}>
-        <div className="dropdown w-dropdown">
-          <div className="dropdown-toggle w-dropdown-text">
-            All Logs
-            <span className="caret"></span>
-          </div>
-          <ul onClick={this.changeLogId} className="dropdown-menu">
-            <li>All Logs</li>
-            <li>Action</li>
-            <li>ActionActionActionAction</li>
-            <li>Action</li>
-            <li role="separator" className="divider"></li>
-            <li>
-              <a
-                href="https://avwo.github.io/whistle/webui/log.html"
-                target="_blank"
-              >
-                Help
-              </a>
-            </li>
-          </ul>
-        </div>
+          <DropDown
+            help="https://avwo.github.io/whistle/webui/log.html"
+            options={[
+              {
+                value: '',
+                text: 'All Logs'
+              },
+              {
+                value: 'a',
+                text: 'a'
+              },
+              {
+                value: 'WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW',
+                text: 'WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW'
+              },
+              {
+                value: '222a',
+                text: 'a222222222222222222222222222222'
+              }
+            ]}
+          />
           <div className="w-textarea-bar">
             <a className="w-download" onDoubleClick={this.download}
               onClick={this.showNameInput} href="javascript:;" draggable="false">Download</a>
