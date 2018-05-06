@@ -38,7 +38,8 @@
 .w-detail-log-content { overflow: auto; }
 .w-log-action-bar {
   background: #f2f2f2;
-  height: 22px;
+  line-height: 20px;
+  height: 21px;
   border-bottom: 1px solid #ccc;
   position: relative;
 }
@@ -47,6 +48,7 @@
   display: block!important;
   background: transparent;
   position: absolute!important;
+  top: 1px!important;
 }
 .w-log-action-bar .w-textarea-bar a {
   color: #000;
