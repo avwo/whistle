@@ -151,6 +151,27 @@ var Console = React.createClass({
     return (
       <div className={'fill orient-vertical-box w-textarea w-detail-page-log' + (this.props.hide ? ' hide' : '')}>
         <div className={'w-log-action-bar' + (logs.length ? '' : ' hide')}>
+        <div className="dropdown w-dropdown">
+          <div className="dropdown-toggle w-dropdown-text">
+            All Logs
+            <span className="caret"></span>
+          </div>
+          <ul onClick={this.changeLogId} className="dropdown-menu">
+            <li>All Logs</li>
+            <li>Action</li>
+            <li>ActionActionActionAction</li>
+            <li>Action</li>
+            <li role="separator" className="divider"></li>
+            <li>
+              <a
+                href="https://avwo.github.io/whistle/webui/log.html"
+                target="_blank"
+              >
+                Help
+              </a>
+            </li>
+          </ul>
+        </div>
           <div className="w-textarea-bar">
             <a className="w-download" onDoubleClick={this.download}
               onClick={this.showNameInput} href="javascript:;" draggable="false">Download</a>
