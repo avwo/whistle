@@ -789,6 +789,8 @@ var Index = React.createClass({
       });
     }, 10000);
 
+    dataCenter.getLogIdList = this.getLogIdListFromRules;
+
     dataCenter.on('plugins', function(data) {
       var pluginsOptions = self.createPluginsOptions(data.plugins);
       var oldPluginsOptions = self.state.pluginsOptions;
@@ -834,12 +836,36 @@ var Index = React.createClass({
   hideUpdateTipsDialog: function() {
     $(ReactDOM.findDOMNode(this.refs.showUpdateTipsDialog)).modal('hide');
   },
+  getAllRulesText: function() {
+    var text = ' ' + this.getAllRulesValue();
+    return text.replace(/#[^\r\n]*[\r\n]/g, '\n');
+  },
+  getLogIdListFromRules: function() {
+    var text = this.getAllRulesText();
+    if (text = text.match(/\slog:\/\/[\w-]{1,36}\s/g)) {
+      var flags = {};
+      text = text.map(function(logId) {
+        return util.removeProtocol(logId.trim());
+      }).filter(function(logId) {
+        if (!logId) {
+          return false;
+        }
+        if (!flags[logId]) {
+          flags[logId] = 1;
+          return true;
+        }
+        return false;
+      });
+    }
+    return text;
+  },
   getWeinreFromRules: function() {
     var values = this.state.values;
-    var text = ' ' + this.getAllRulesValue();
-    if (text = text.match(/\s?weinre:\/\/[^\s#]+/g)) {
+    var text = this.getAllRulesText();
+    if (text = text.match(/\sweinre:\/\/[^\s#]+\s/g)) {
+      var flags = {};
       text = text.map(function(weinre) {
-        weinre = util.removeProtocol(weinre);
+        weinre = util.removeProtocol(weinre.trim());
         var value = getValue(weinre);
         if (value !== false) {
           return value;
@@ -852,7 +878,14 @@ var Index = React.createClass({
 
         return weinre;
       }).filter(function(weinre) {
-        return !!weinre;
+        if (!weinre) {
+          return false;
+        }
+        if (!flags[weinre]) {
+          flags[weinre] = 1;
+          return true;
+        }
+        return false;
       });
     }
 

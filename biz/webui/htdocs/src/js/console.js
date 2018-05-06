@@ -10,6 +10,11 @@ var dataCenter = require('./data-center');
 var FilterInput = require('./filter-input');
 var DropDown = require('./dropdown');
 
+var allLogs = {
+  value: '',
+  text: 'All Logs'
+};
+
 function parseLog(log) {
   if (log.view) {
     return log.view;
@@ -35,7 +40,7 @@ function parseLog(log) {
 
 var Console = React.createClass({
   getInitialState: function() {
-    return { scrollToBottom: true };
+    return { scrollToBottom: true, logIdList: [allLogs] };
   },
   componentDidMount: function() {
     var self = this;
@@ -147,35 +152,33 @@ var Console = React.createClass({
   hideNameInput: function() {
     this.setState({ showNameInput: false });
   },
+  onBeforeShow: function() {
+    var list = dataCenter.getLogIdList() || [];
+    list = list.map(function(id) {
+      return {
+        value: id,
+        text: id
+      };
+    });
+    list.unshift(allLogs);
+    this.setState({
+      logIdList: list
+    });
+  },
   render: function() {
     var state = this.state;
     var logs = state.logs || [];
     var consoleKeyword = state.consoleKeyword;
+    var logIdList = state.logIdList;
 
     return (
       <div className={'fill orient-vertical-box w-textarea w-detail-page-log' + (this.props.hide ? ' hide' : '')}>
         <div className={'w-log-action-bar' + (logs.length ? '' : ' hide')}>
           <DropDown
+            onBeforeShow={this.onBeforeShow}
             help="https://avwo.github.io/whistle/webui/log.html"
             onChange={this.changeLogId}
-            options={[
-              {
-                value: '',
-                text: 'All Logs'
-              },
-              {
-                value: 'a',
-                text: 'a'
-              },
-              {
-                value: 'WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW',
-                text: 'WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW'
-              },
-              {
-                value: '222a',
-                text: 'a222222222222222222222222222222'
-              }
-            ]}
+            options={logIdList}
           />
           <div className="w-textarea-bar">
             <a className="w-download" onDoubleClick={this.download}

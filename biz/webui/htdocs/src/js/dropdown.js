@@ -15,6 +15,10 @@ var DropDown = React.createClass({
     });
   },
   onMouseEnter: function() {
+    var onBeforeShow = this.props.onBeforeShow;
+    if (onBeforeShow) {
+      onBeforeShow();
+    }
     this.setState({ hover: true });
   },
   onMouseLeave: function() {
