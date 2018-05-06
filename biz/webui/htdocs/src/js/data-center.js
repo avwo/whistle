@@ -176,7 +176,6 @@ var GET_CONF = $.extend({
   cache: false
 }, DEFAULT_CONF);
 var cgi = createCgi({
-  getLog: 'cgi-bin/log/get',
   getData: 'cgi-bin/get-data',
   getInitaial: 'cgi-bin/init'
 }, GET_CONF);
