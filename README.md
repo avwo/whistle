@@ -15,7 +15,7 @@
 
 **whistle** is a cross-platform web debugging tool based on Node.js.
 
-[中文 README](README-zh_CN.md)
+[中文 README](https://github.com/avwo/whistle/blob/master/README-zh_CN.md)
 
 It features the following:
 
