@@ -1,4 +1,4 @@
-.w-detail-log {position: relative;}
+.w-detail-log {position: relative; min-width: 550px;}
 .w-detail-log ul, .w-detail-log li {list-style: none; padding: 0; margin: 0; display: block; width: 100%; font-size: 12px;}
 .w-detail-log li {width: 100%; padding: 1px 0; position: relative;}
 .w-detail-log pre {background: none; border: none; padding: 10px; margin: 0; font-size: 12px}
@@ -6,8 +6,8 @@
 .w-detail-page-log li.w-fatal {background: #bbb;}
 .w-detail-page-log li.w-error {background: #ffefef;}
 .w-detail-page-log li.w-warn {background: #fffbe6;}
-.w-detail-page-log li.w-info {background: #f5f5f5;}
-.w-detail-page-log li.w-debug {background: #fff;}
+.w-detail-page-log li.w-info {background: #fff;}
+.w-detail-page-log li.w-debug {background: #f5f5f5;}
 .w-detail-page-log li.w-error pre {color: #c41a16;}
 .w-detail-page-log li.w-warn pre {color: #5c3b00;}
 
@@ -36,3 +36,21 @@
 .w-detail-page-log, .w-detail-svr-log {overflow: auto;}
 .w-detail-svr-log .w-detail-log-content {background: #002240;}
 .w-detail-log-content { overflow: auto; }
+.w-log-action-bar {
+  background: #f2f2f2;
+  height: 22px;
+  border-bottom: 1px solid #ccc;
+  position: relative;
+}
+.w-log-action-bar .w-textarea-bar {
+  right: 5px!important;
+  display: block!important;
+  background: transparent;
+  position: absolute!important;
+}
+.w-log-action-bar .w-textarea-bar a {
+  color: #000;
+}
+.w-log-action-bar .w-textarea-bar a:hover {
+  color: #337ab7;
+}
