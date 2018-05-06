@@ -221,7 +221,7 @@
     if (index > 9999) {
       index = 0;
     }
-    img.src ='$LOG_CGI?level=' + level + '&text=' + encodeURIComponent(text)
+    img.src ='$LOG_CGI?id=$LOG_ID&level=' + level + '&text=' + encodeURIComponent(text)
       + '&' + new Date().getTime() + '-' + ++index;
     var preventGC = function() {
       img.onload = img.onerror = null;
