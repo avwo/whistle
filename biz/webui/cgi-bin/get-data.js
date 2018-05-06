@@ -25,7 +25,7 @@ module.exports = function(req, res) {
     mvaluesClientId: config.mvaluesClientId,
     mvaluesTime: config.mvaluesTime,
     server: util.getServerInfo(req),
-    log: proxy.getLogs(data.startLogTime, data.logId, data.count),
+    log: proxy.getLogs(data.startLogTime, data.count, data.logId),
     svrLog: logger.getLogs(data.startSvrLogTime, data.count),
     plugins: pluginMgr.getPlugins(),
     disabledPlugins: properties.get('disabledPlugins') || {},
