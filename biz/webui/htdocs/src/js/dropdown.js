@@ -46,15 +46,13 @@ var DropDown = React.createClass({
           >
             {
               options.map(function(option) {
-                var selected = option === selectedOption;
                 return (
                   <li
-                    style={{background: selected ? '#f2f2f2' : undefined}}
                     key={option.value}
                     data-value={option.value}
                     onClick={function() {
                       self.onMouseLeave();
-                      if (selected) {
+                      if (option === selectedOption) {
                         return;
                       }
                       self.onChange(option);
