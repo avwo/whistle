@@ -27,6 +27,7 @@ var lastRowId;
 var hashFilterObj;
 var clearNetwork;
 var inited;
+var logId;
 var onlyViewOwnData = storage.get('onlyViewOwnData') == 1;
 var DEFAULT_CONF = {
   timeout: TIMEOUT,
@@ -36,6 +37,10 @@ var DEFAULT_CONF = {
   data: {}
 };
 exports.clientIp = '127.0.0.1';
+
+exports.changeLogId = function(id) {
+  logId = id;
+};
 
 exports.setOnlyViewOwnData = function(enable) {
   onlyViewOwnData = enable !== false;
@@ -437,6 +442,7 @@ function startLoadData() {
       lastRowId: lastRowId,
       curReqId: curReqId,
       lastFrameId: lastFrameId,
+      logId: logId || '',
       count: inited ? 20 : 60
     };
     inited = true;

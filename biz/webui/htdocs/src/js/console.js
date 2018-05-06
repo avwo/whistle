@@ -70,6 +70,9 @@ var Console = React.createClass({
       }
     });
   },
+  changeLogId: function(option) {
+    dataCenter.changeLogId(option.value);
+  },
   clearLogs: function() {
     var data = this.state.logs;
     data && data.splice(0, data.length);
@@ -154,6 +157,7 @@ var Console = React.createClass({
         <div className={'w-log-action-bar' + (logs.length ? '' : ' hide')}>
           <DropDown
             help="https://avwo.github.io/whistle/webui/log.html"
+            onChange={this.changeLogId}
             options={[
               {
                 value: '',
