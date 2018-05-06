@@ -28,7 +28,7 @@ If the aboves can't satisfy your requirements, you can also use [plugins](https:
 
 The specific functions are as follows：
 
-![specific functions](https://raw.githubusercontent.com/Red626/whistle/master/assets/whistle-en_US.png)
+![specific functions](https://raw.githubusercontent.com/avwo/whistle/master/docs/assets/whistle-en_US.png)
 
 Manipulations to http request and response in whistle can be achieved as a **Rule** looks like:
 
