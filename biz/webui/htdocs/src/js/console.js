@@ -173,14 +173,14 @@ var Console = React.createClass({
 
     return (
       <div className={'fill orient-vertical-box w-textarea w-detail-page-log' + (this.props.hide ? ' hide' : '')}>
-        <div className={'w-log-action-bar' + (logs.length ? '' : ' hide')}>
+        <div className="w-log-action-bar">
           <DropDown
             onBeforeShow={this.onBeforeShow}
             help="https://avwo.github.io/whistle/webui/log.html"
             onChange={this.changeLogId}
             options={logIdList}
           />
-          <div className="w-textarea-bar">
+          <div className={'w-textarea-bar' + (logs.length ? '' : ' hide')}>
             <a className="w-download" onDoubleClick={this.download}
               onClick={this.showNameInput} href="javascript:;" draggable="false">Download</a>
             <a className="w-auto-refresh" onDoubleClick={this.stopAutoRefresh}
