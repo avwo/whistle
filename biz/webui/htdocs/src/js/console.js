@@ -207,7 +207,9 @@ var Console = React.createClass({
         <div ref="container" className="fill w-detail-log-content">
           <ul ref="logContent">
             {logs.map(function(log) {
-              var date = 'Date: ' + (new Date(log.date)).toLocaleString() + '\r\n';
+              var logId = log.logId;
+              logId = logId ? ' (LogID: ' + logId + ')' : '';
+              var date = 'Date: ' + (new Date(log.date)).toLocaleString() + logId + '\r\n';
               var hide = '';
               if (consoleKeyword) {
                 var level = consoleKeyword.level;
