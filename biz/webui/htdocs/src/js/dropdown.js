@@ -28,7 +28,8 @@ var DropDown = React.createClass({
     var self = this;
     var help = self.props.help;
     var options = self.props.options || [];
-    var selectedOption = self.state.selectedOption || options[0] || {};
+    var firstOption = options[0] || {}
+    var selectedOption = self.state.selectedOption || firstOption;
 
     return (
       <div
@@ -36,7 +37,11 @@ var DropDown = React.createClass({
         onMouseEnter={self.onMouseEnter}
         onMouseLeave={self.onMouseLeave}
       >
-          <div title={selectedOption.text} className="dropdown-toggle w-dropdown-text">
+          <div
+            style={{color: selectedOption === firstOption ? undefined : 'red' }}
+            title={selectedOption.text}
+            className="dropdown-toggle w-dropdown-text"
+          >
             {selectedOption.text}
             <span className="caret"></span>
           </div>
