@@ -653,7 +653,7 @@ function getStartTime() {
   if (dataList.length - 1 > MAX_COUNT) {
     return -1;
   }
-  return lastRowId || 0;
+  return lastRowId || '0';
 }
 
 function updateServerInfo(data) {
