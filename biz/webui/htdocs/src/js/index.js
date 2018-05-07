@@ -842,7 +842,7 @@ var Index = React.createClass({
   },
   getLogIdListFromRules: function() {
     var text = this.getAllRulesText();
-    if (text = text.match(/\slog:\/\/[\w-]{1,36}\s/g)) {
+    if (text = text.match(/\slog:\/\/[^/\\{}()<>\s]{1,36}\s/g)) {
       var flags = {};
       text = text.map(function(logId) {
         return util.removeProtocol(logId.trim());
