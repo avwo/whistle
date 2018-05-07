@@ -647,8 +647,8 @@ function getPendingIds() {
 }
 
 function getStartTime() {
-  if (!inited && clearNetwork) {
-    return -2;
+  if (!inited) {
+    return clearNetwork ? -2 : '';
   }
   if (dataList.length - 1 > MAX_COUNT) {
     return -1;
