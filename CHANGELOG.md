@@ -1,6 +1,9 @@
 ### v1.9.11
 1. fix: 如果请求的域名为IP，则默认不进行解包，需要解包可以通过设置规则 `tunnel://x.x.x.x enable://capture` 实现
-2. feat: 支持设置log id：`pattern log://xxx`(logId长度不能超过36，且不能包含`/`、`\`、`(`、`)`、`{`、`}`、`<`、`>`)，并通过log id过来日志
+2. fix: Node 10无法导入导出saz文档的问题
+3. fix: 某些包含 `\x3f` 等16进制转义字符无法解析成JSON对象的问题
+4. refactor: 支持通过url的hash请求参数设置 `clearNetwork=true` 让network不要加载缓存抓包数据 
+5. feat: 支持设置log id：`pattern log://xxx`(logId长度不能超过36，且不能包含`/`、`\`、`(`、`)`、`{`、`}`、`<`、`>`)，并通过log id过来日志
 ![log id](https://user-images.githubusercontent.com/11450939/39676336-74797444-519b-11e8-85f0-935f9d692240.png)
 
 ### v1.9.10
