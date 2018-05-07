@@ -54,6 +54,7 @@ var DropDown = React.createClass({
                 return (
                   <li
                     key={option.value}
+                    title={option.text}
                     data-value={option.value}
                     onClick={function() {
                       self.onMouseLeave();
