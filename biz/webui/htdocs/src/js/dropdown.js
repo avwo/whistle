@@ -28,7 +28,7 @@ var DropDown = React.createClass({
     var self = this;
     var help = self.props.help;
     var options = self.props.options || [];
-    var firstOption = options[0] || {}
+    var firstOption = options[0] || {};
     var selectedOption = self.state.selectedOption || firstOption;
 
     return (
