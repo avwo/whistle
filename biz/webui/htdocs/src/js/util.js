@@ -329,6 +329,19 @@ exports.getPath = function(url) {
   return index == -1 ? '/' : url.substring(index);
 };
 
+var HEX_CHAR_RE = /\\x([\da-f]{2})/ig;
+var unescapeHexChar = function(all, $1) {
+  try {
+    return String.fromCharCode('0x' + $1);
+  } catch(e) {}
+  return all;
+};
+
+var parseJ = function (str) {
+  var result = JSON.parse(str);
+  return typeof result === 'object' ? result : null;
+};
+
 function parseJSON(str, resolve) {
   if (!str || !(str = str.trim())) {
     return;
@@ -340,9 +353,12 @@ function parseJSON(str, resolve) {
     str = RegExp.$1;
   }
   try {
-    var result = JSON.parse(str);
-    return typeof result === 'object' ? result : null;
-  } catch(e) {}
+    return parseJ(str);
+  } catch(e) {
+    try {
+      return parseJ(str.replace(HEX_CHAR_RE, unescapeHexChar));
+    } catch(e) {}
+  }
 }
 
 exports.parseJSON = parseJSON;
