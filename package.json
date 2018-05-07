@@ -59,6 +59,7 @@
     "pfork": "^0.1.6",
     "pipestream": "^0.1.0",
     "q": "1.4.1",
+    "safe-buffer": "^5.1.2",
     "socksv5": "0.0.6",
     "starting": "^3.0.0",
     "weinre2": "^1.1.0",
