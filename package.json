@@ -45,7 +45,7 @@
     "colors": "1.1.2",
     "cookie": "^0.3.1",
     "express": "4.12.3",
-    "fs-extra": "0.22.1",
+    "fs-extra": "0.24.0",
     "hagent": "^0.1.0",
     "hparser": "^0.1.2",
     "iconv-lite": "0.4.7",
