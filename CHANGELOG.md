@@ -1,3 +1,6 @@
+### v1.9.12
+1. fix: The fs.promises API is experimental (Node.js 10.1.0)
+2. refactor: 支持非过滤(https://github.com/avwo/whistle/issues/155)
 ### v1.9.11
 1. fix: 如果请求的域名为IP，则默认不进行解包，需要解包可以通过设置规则 `tunnel://x.x.x.x enable://capture` 实现
 2. fix: Node 10无法导入导出saz文档的问题
