@@ -26,6 +26,9 @@ proto.search = function(keyword) {
     this._type = RegExp.$1;
     this._keyword = RegExp.$2.trim();
   }
+  if (this._not = this._keyword[0] === '!') {
+    this._keyword = this._keyword.substring(1);
+  }
   this.filter();
   return keyword;
 };
@@ -38,16 +41,19 @@ proto.setSortColumns = function(columns) {
   this._columns = columns;
   this.filter();
 };
-
+proto.checkNot = function(flag) {
+  return this._not ? !flag : flag;
+};
 proto.filter = function(newList) {
-  var keyword = this._keyword;
-  var list = this.list;
+  var self = this;
+  var keyword = self._keyword;
+  var list = self.list;
   if (!keyword) {
     list.forEach(function(item) {
       item.hide = false;
     });
   } else {
-    switch(this._type) {
+    switch(self._type) {
     case 'c':
     case 'content':
     case 'b':
@@ -55,15 +61,15 @@ proto.filter = function(newList) {
       list.forEach(function(item) {
         var reqBody = item.req.body;
         var resBody = item.res.body;
-        item.hide = (!reqBody || reqBody.indexOf(keyword) == -1) &&
-                 (!resBody || resBody.indexOf(keyword) == -1);
+        item.hide = self.checkNot((!reqBody || reqBody.indexOf(keyword) == -1) &&
+                 (!resBody || resBody.indexOf(keyword) == -1));
       });
       break;
     case 'headers':
     case 'h':
       list.forEach(function(item) {
-        item.hide = !inObject(item.req.headers, keyword)
-                && !inObject(item.res.headers, keyword);
+        item.hide = self.checkNot(!inObject(item.req.headers, keyword)
+                && !inObject(item.res.headers, keyword));
       });
       break;
     case 'type':
@@ -71,7 +77,7 @@ proto.filter = function(newList) {
       list.forEach(function(item) {
         var type = item.res.headers;
         type = type && type['content-type'];
-        item.hide = !(typeof type == 'string' && type.indexOf(keyword) != -1);
+        item.hide = self.checkNot(!(typeof type == 'string' && type.indexOf(keyword) != -1));
       });
       break;
     case 'ip':
@@ -79,8 +85,8 @@ proto.filter = function(newList) {
       list.forEach(function(item) {
         var ip = item.req.ip || '';
         var host = item.res.ip || '';
-        item.hide = ip.indexOf(keyword) == -1
-                && host.indexOf(keyword) == -1;
+        item.hide = self.checkNot(ip.indexOf(keyword) == -1
+                && host.indexOf(keyword) == -1);
       });
       break;
     case 'status':
@@ -88,29 +94,29 @@ proto.filter = function(newList) {
     case 'result':
     case 'r':
       list.forEach(function(item) {
-        item.hide = item.res.statusCode == null ? true :
-            (item.res.statusCode + '').indexOf(keyword) == -1;
+        item.hide = self.checkNot(item.res.statusCode == null ? true :
+            (item.res.statusCode + '').indexOf(keyword) == -1);
       });
       break;
     case 'method':
     case 'm':
       keyword = keyword.toUpperCase();
       list.forEach(function(item) {
-        item.hide = (item.req.method || '').indexOf(keyword) == -1;
+        item.hide = self.checkNot((item.req.method || '').indexOf(keyword) == -1);
       });
       break;
     default:
       keyword = keyword.toLowerCase();
       list.forEach(function(item) {
-        item.hide = item.url.toLowerCase().indexOf(keyword) == -1;
+        item.hide = self.checkNot(item.url.toLowerCase().indexOf(keyword) == -1);
       });
     }
   }
 
-  var columns = this._columns;
+  var columns = self._columns;
   if (columns && columns.length) {
     var len = columns.length;
-    this.list.sort(function(prev, next) {
+    self.list.sort(function(prev, next) {
       for (var i = 0; i < len; i++) {
         var column = columns[i];
         var prevVal = prev[column.name];
@@ -124,7 +130,7 @@ proto.filter = function(newList) {
       return prev.order > next.order ? 1 : -1;
     });
   } else if (!newList) {
-    this.list = this._list.slice(0, MAX_LENGTH);
+    self.list = self._list.slice(0, MAX_LENGTH);
   }
 
   return list;
