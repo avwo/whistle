@@ -7,7 +7,7 @@ var StringDecoder = require('string_decoder').StringDecoder;
 require('should');
 require('should-http');
 var fs = require('fs');
-var fse = require('fs-extra');
+var fse = require('fs-extra2');
 var startWhistle = require('../index');
 var socks = require('socksv5');
 var util = require('./util.test');
