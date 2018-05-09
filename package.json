@@ -61,7 +61,7 @@
     "q": "1.4.1",
     "safe-buffer": "^5.1.2",
     "socksv5": "0.0.6",
-    "starting": "^3.0.0",
+    "starting": "^4.0.1",
     "weinre2": "^1.1.0",
     "ws-parser": "^0.1.1",
     "xml2js": "0.4.17"
