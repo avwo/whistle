@@ -76,3 +76,16 @@
   left: 2px;
   color: red;
 }
+.w-replay-count-dialog .modal-content {
+  width: 236px;
+  white-space: nowrap;
+}
+.w-replay-count-dialog .modal-content label {
+  width: auto;
+}
+.w-replay-count-dialog input {
+  display: inline-block;
+  width: 80px;
+  text-align: center;
+  margin: 0 10px;
+}

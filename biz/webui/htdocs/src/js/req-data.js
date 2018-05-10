@@ -278,7 +278,7 @@ var ReqData = React.createClass({
     var modal = this.props.modal;
     modal && modal.clearSelection();
   },
-  onClickContextMenu: function(action) {
+  onClickContextMenu: function(action, e) {
     switch(action) {
     case 'Open':
       var item = this.currentFocusItem;
@@ -304,7 +304,7 @@ var ReqData = React.createClass({
       events.trigger('composer', this.currentFocusItem);
       break;
     case 'Replay':
-      events.trigger('replaySessions', this.currentFocusItem);
+      events.trigger('replaySessions', [this.currentFocusItem, e.shiftKey]);
       break;
     case 'Export':
       events.trigger('exportSessions', this.currentFocusItem);

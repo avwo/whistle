@@ -45,7 +45,7 @@ var ContextMenu = React.createClass({
     }
     this.hide();
     if (this.props.onClick) {
-      this.props.onClick(target.attr('data-menu-action'));
+      this.props.onClick(target.attr('data-menu-action'), e);
     }
   },
   getDialogElement: function() {
