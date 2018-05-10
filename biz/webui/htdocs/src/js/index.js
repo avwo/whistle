@@ -25,6 +25,7 @@ var DEFAULT = 'Default';
 var MAX_PLUGINS_TABS = 7;
 var MAX_FILE_SIZE = 1024 * 1024 * 64;
 var MAX_OBJECT_SIZE = 1024 * 1024 * 6;
+var MAX_REPLAY_COUNT = 30;
 var OPTIONS_WITH_SELECTED = ['removeSelected', 'exportWhistleFile', 'exportSazFile'];
 var RULES_ACTIONS = [
   {
@@ -1758,7 +1759,8 @@ var Index = React.createClass({
   },
   replayCountChange: function(e) {
     var count = e.target.value.replace(/^\s*0*|[^\d]+/, '');
-    this.setState({ replayCount: count.slice(0, 2) || 1 });
+    var replayCount = Math.min(count.slice(0, 2) || 1, MAX_REPLAY_COUNT);
+    this.setState({ replayCount: replayCount });
   },
   replay: function(e, list, count) {
     var modal = this.state.network;
@@ -1778,7 +1780,7 @@ var Index = React.createClass({
       }
     };
     if (count > 1) {
-      count = Math.min(count, 99);
+      count = Math.min(count, MAX_REPLAY_COUNT);
       var reqItem = list[0];
       if (util.canReplay(reqItem)) {
         for(var i = 0; i < count; i++) {
