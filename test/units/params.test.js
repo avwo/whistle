@@ -10,6 +10,18 @@ module.exports = function() {
   });
 
   util.request({
+    url: 'http://params.test.whistlejs.com/index.html',
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json'
+    },
+    body: JSON.stringify({key: 'value'})
+  }, function(res, data) {
+    data.body.should.containEql('"test":"abc"');
+    data.resParams.should.equal('test');
+  });
+
+  util.request({
     url: 'http://upload.test.whistlejs.com/index.html',
     method: 'post',
     formData: {

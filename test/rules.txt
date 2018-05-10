@@ -11,3 +11,5 @@ wss://test.whistlejs.com/index2.html?abc=321 filter://https params://(rule=ws1.t
 reqscript.w2.org reqScript://{reqScript.js} resScript://{resScript.js}
 
 ws://status.whistlejs.com status://101
+
+params.test.whistlejs.com/index.html resParams://(resParams=test) resType://js
