@@ -63,13 +63,17 @@ var ReqDetail = React.createClass({
       delete headers.Host;
       cookies = util.parseQueryString(headers.cookie, /;\s*/g, null, decodeURIComponent);
       var url = modal.url;
-      var index = modal.url.indexOf('?');
-      query = util.parseQueryString(index == -1 ? '' : url.substring(index + 1), null, null, decodeURIComponent);
+      var realUrl = modal.realUrl;
+      if (!realUrl || !/^(?:http|wss)s?:\/\//.test(realUrl)) {
+        realUrl = url;
+      }
+      var index = realUrl.indexOf('?');
+      query = util.parseQueryString(index == -1 ? '' : realUrl.substring(index + 1), null, null, decodeURIComponent);
       if (util.isUrlEncoded(req)) {
         form = util.parseQueryString(req.body, null, null, decodeURIComponent);
       }
 
-      raw = [req.method, req.method == 'CONNECT' ? headers.host : util.getPath(modal.url), 'HTTP/' + (req.httpVersion || '1.1')].join(' ')
+      raw = [req.method, req.method == 'CONNECT' ? headers.host : util.getPath(realUrl), 'HTTP/' + (req.httpVersion || '1.1')].join(' ')
           + '\r\n' + util.objectToString(headers, req.rawHeaderNames) + '\r\n\r\n' + body;
       if (modal.isHttps) {
         tips = { isHttps: true };
