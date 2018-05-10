@@ -1759,7 +1759,10 @@ var Index = React.createClass({
   },
   replayCountChange: function(e) {
     var count = e.target.value.replace(/^\s*0*|[^\d]+/, '');
-    var replayCount = Math.min(count.slice(0, 2) || 1, MAX_REPLAY_COUNT);
+    var replayCount = count.slice(0, 2);
+    if (replayCount > MAX_REPLAY_COUNT) {
+      replayCount = MAX_REPLAY_COUNT;
+    }
     this.setState({ replayCount: replayCount });
   },
   replay: function(e, list, count) {
