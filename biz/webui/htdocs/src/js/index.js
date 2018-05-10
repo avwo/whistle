@@ -684,9 +684,6 @@ var Index = React.createClass({
     events.on('replaySessions', function(e, curItem, shiftKey) {
       var list = getFocusItemList(curItem);
       var len = list && list.length;
-      if (!len) {
-        return;
-      }
       if (shiftKey && len === 1) {
         self.replayList = list;
         self.refs.setReplayCount.show();
