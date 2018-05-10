@@ -697,7 +697,7 @@ var Index = React.createClass({
         }, 600);
         return;
       }
-      self.replay(e, getFocusItemList(curItem));
+      self.replay(e, list);
     });
 
     events.on('importSessions', self.importSessions);
