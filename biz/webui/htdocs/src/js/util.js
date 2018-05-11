@@ -344,7 +344,7 @@ var parseJ = function (str, resolve) {
   var result;
   if (resolve && BIG_NUM_RE.test(str)) {
     window._$hasBigNumberJson = true;
-    json2.parse(str);
+    result = json2.parse(str);
   } else {
     result = JSON.parse(str);
   }
