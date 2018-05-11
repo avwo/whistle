@@ -51,7 +51,10 @@ var JSONNode = function JSONNode(_ref) {
       rest = (0, _objectWithoutProperties3['default'])(_ref, ['getItemString', 'keyPath', 'labelRenderer', 'styling', 'value', 'valueRenderer', 'isCustomNode']);
 
   var nodeType = isCustomNode(value) ? 'Custom' : (0, _objType2['default'])(value);
-
+  if (nodeType === 'BigNumber') {
+    nodeType = 'Number';
+    value = value.toString();
+  }
   var simpleNodeProps = {
     getItemString: getItemString,
     key: keyPath[0],
@@ -62,10 +65,7 @@ var JSONNode = function JSONNode(_ref) {
     value: value,
     valueRenderer: valueRenderer
   };
-  if (nodeType === 'BigNumber') {
-    nodeType = 'Number';
-    value = value.toString();
-  }
+
   var nestedNodeProps = (0, _extends3['default'])({}, rest, simpleNodeProps, {
     data: value,
     isCustomNode: isCustomNode
