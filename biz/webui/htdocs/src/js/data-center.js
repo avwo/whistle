@@ -623,6 +623,16 @@ exports.addNetworkList = function (list) {
     delete data.selected;
     delete data.hide;
     delete data.order;
+    delete data.req.json;
+    delete data.res.json;
+    if (Array.isArray(data.frames)) {
+      data.frames = data.frames.filter(function(frame) {
+        if (frame) {
+          delete frame.json;
+        }
+        return frame;
+      });
+    }
     data.lost = true;
     data.id = data.startTime + '-' + ++dataIndex;
     setReqData(data);
