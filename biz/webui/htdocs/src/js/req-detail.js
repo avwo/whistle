@@ -2,6 +2,7 @@ require('./base-css.js');
 require('../css/req-detail.css');
 var React = require('react');
 
+var json2 = require('./components/json');
 var Divider = require('./divider');
 var Properties = require('./properties');
 var util = require('./util');
@@ -57,7 +58,7 @@ var ReqDetail = React.createClass({
       } else if (json = util.resolveJSON(body, decodeURIComponent)) {
         json = req.json = {
           json: json,
-          str: JSON.stringify(json, null, '    ')
+          str: (window._$hasBigNumberJson ? json2 : JSON).stringify(json, null, '    ')
         };
       }
       delete headers.Host;

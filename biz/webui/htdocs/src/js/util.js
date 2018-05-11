@@ -1,4 +1,7 @@
 var $ = require('jquery');
+var json2 = require('./components/json');
+
+var BIG_NUM_RE = /[:\[]][\s\n\r]*\d{15,}[\s\n\r]*[,\}\]]/;
 var dragCallbacks = {};
 var dragTarget, dragOffset, dragCallback;
 
@@ -337,8 +340,14 @@ var unescapeHexChar = function(all, $1) {
   return all;
 };
 
-var parseJ = function (str) {
-  var result = JSON.parse(str);
+var parseJ = function (str, resolve) {
+  var result;
+  if (resolve && BIG_NUM_RE.test(str)) {
+    window._$hasBigNumberJson = true;
+    json2.parse(str);
+  } else {
+    result = JSON.parse(str);
+  }
   return typeof result === 'object' ? result : null;
 };
 
@@ -353,10 +362,10 @@ function parseJSON(str, resolve) {
     str = RegExp.$1;
   }
   try {
-    return parseJ(str);
+    return parseJ(str, resolve);
   } catch(e) {
     try {
-      return parseJ(str.replace(HEX_CHAR_RE, unescapeHexChar));
+      return parseJ(str.replace(HEX_CHAR_RE, unescapeHexChar), resolve);
     } catch(e) {}
   }
 }
@@ -364,6 +373,7 @@ function parseJSON(str, resolve) {
 exports.parseJSON = parseJSON;
 
 exports.resolveJSON = function(str, decode) {
+  window._$hasBigNumberJson = false;
   var result = parseJSON(str, true);
   if (result || !str || !decode) {
     return result;

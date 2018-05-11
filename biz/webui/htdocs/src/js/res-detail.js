@@ -3,6 +3,7 @@ require('../css/res-detail.css');
 var $ = require('jquery');
 var React = require('react');
 
+var json2 = require('./components/json');
 var Table = require('./table');
 var Properties = require('./properties');
 var util = require('./util');
@@ -73,7 +74,7 @@ var ResDetail = React.createClass({
       } else if (json = util.resolveJSON(body)) {
         json = res.json = {
           json: json,
-          str: JSON.stringify(json, null, '    ')
+          str: (window._$hasBigNumberJson ? json2 : JSON).stringify(json, null, '    ')
         };
       }
       if (headers && headers['set-cookie']) {

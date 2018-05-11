@@ -1,5 +1,6 @@
 var React = require('react');
 
+var json2 = require('./components/json');
 var BtnGroup = require('./btn-group');
 var JSONViewer = require('./json-viewer');
 var Textarea = require('./textarea');
@@ -57,7 +58,7 @@ var FrameClient = React.createClass({
       } else if (json = util.resolveJSON(text)) {
         json = data.json = {
           json: json,
-          str: JSON.stringify(json, null, '    ')
+          str: (window._$hasBigNumberJson ? json2 : JSON).stringify(json, null, '    ')
         };
       }
     }
