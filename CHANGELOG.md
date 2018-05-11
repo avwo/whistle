@@ -8,6 +8,8 @@
   > 其中 `reg1~reg4` 为形如 `/xxx/` 或 `/xxx/i` 的正则表达式，`!reg` 表示 `reg` 取非， 该配置表示请求要匹配`pattern`，但要过滤掉匹配 `reg1` 或 `reg4`，或不匹配`reg2` 或 `reg3`
 
 3. feat: [params](http://wproxy.org/whistle/rules/params.html)改成[reqParams](http://wproxy.org/whistle/rules/reqParams.html)，并支持修改请求类型为json的数据，新增[resParams](http://wproxy.org/whistle/rules/resParams.html)用于修改返回类型为json或jsonp请求的数据，直接可以通过设置json对象覆盖返回的json对象对应字段(深度合并)。
+4. fix: JSONView里面如果数值位数太大显示出现偏差的问题
+
 ### v1.9.12
 1. fix: The fs.promises API is experimental (Node.js 10.1.0)
 2. refactor: 支持非过滤(https://github.com/avwo/whistle/issues/155)
