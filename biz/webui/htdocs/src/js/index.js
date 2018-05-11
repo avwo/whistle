@@ -3,7 +3,7 @@ var $ = require('jquery');
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Clipboard = require('clipboard');
-
+window.json2 = require('./components/json');
 var List = require('./list');
 var ListModal = require('./list-modal');
 var Network = require('./network');

@@ -319,6 +319,10 @@
         return v;
       }
 
+      if (value._$isNumber) {
+        return value.toString();
+      }
+
 // If the replacer is an array, use it to select the members to be stringified.
 
       if (rep && typeof rep === 'object') {

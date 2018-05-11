@@ -15,8 +15,8 @@ function objType(obj) {
   if (type === 'Object' && typeof obj[_iterator2['default']] === 'function') {
     return 'Iterable';
   }
-  if (obj && type === 'Object' && obj._$isNumber) {
-    return 'Number';
+  if ( type === 'String' && obj._$isNumber) {
+    return 'BigNumber';
   }
   return type;
 }

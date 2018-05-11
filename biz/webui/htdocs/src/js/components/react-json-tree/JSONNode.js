@@ -62,7 +62,10 @@ var JSONNode = function JSONNode(_ref) {
     value: value,
     valueRenderer: valueRenderer
   };
-
+  if (nodeType === 'BigNumber') {
+    nodeType = 'Number';
+    value = value.toString();
+  }
   var nestedNodeProps = (0, _extends3['default'])({}, rest, simpleNodeProps, {
     data: value,
     isCustomNode: isCustomNode

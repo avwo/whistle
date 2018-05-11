@@ -138,6 +138,11 @@ module.exports = (function () {
         next();
       }
     }
+    if (string.length > 15) {
+      value = new String(string);
+      value._$isNumber = true;
+      return value;
+    }
     value = +string;
     if (!isFinite(value)) {
       error('Bad number');
