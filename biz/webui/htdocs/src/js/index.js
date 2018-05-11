@@ -691,7 +691,7 @@ var Index = React.createClass({
           var input = ReactDOM.findDOMNode(self.refs.replayCount);
           input.select();
           input.focus();
-        }, 600);
+        }, 300);
         return;
       }
       self.replay(e, list);
