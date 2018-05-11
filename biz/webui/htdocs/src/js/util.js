@@ -1,7 +1,7 @@
 var $ = require('jquery');
 var json2 = require('./components/json');
 
-var BIG_NUM_RE = /[:\[][\s\n\r]*-?\d{15,}(?:\.\d*)?[\s\n\r]*[,\}\]]/;
+var BIG_NUM_RE = /[:\[][\s\n\r]*-?[\d.]{16,}[\s\n\r]*[,\}\]]/;
 var dragCallbacks = {};
 var dragTarget, dragOffset, dragCallback;
 
