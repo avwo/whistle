@@ -4,7 +4,7 @@ var $ = require('jquery');
 var React = require('react');
 var ReactDOM = require('react-dom');
 
-var JSONTree = require('react-json-tree')['default'];
+var JSONTree = require('./components/react-json-tree')['default'];
 var util = require('./util');
 var dataCenter = require('./data-center');
 var FilterInput = require('./filter-input');

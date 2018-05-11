@@ -1,3 +1,4 @@
 node_modules
 /biz/webui/htdocs/js
+/biz/webui/htdocs/src/js/components
 /test/assets/values

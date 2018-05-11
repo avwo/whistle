@@ -4,7 +4,7 @@ var ReactDOM = require('react-dom');
 var TextView = require('./textview');
 var CopyBtn = require('./copy-btn');
 
-var JSONTree = require('react-json-tree')['default'];
+var JSONTree = require('./components/react-json-tree')['default'];
 var dataCenter = require('./data-center');
 var util = require('./util');
 var MAX_LENGTH =1024 * 16;
