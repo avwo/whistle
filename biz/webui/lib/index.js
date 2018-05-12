@@ -126,13 +126,24 @@ app.use(function(req, res, next) {
   }
   var referer = req.headers.referer;
   var options = parseurl(req);
-  if (!PLUGIN_PATH_RE.test(options.pathname)) {
-    var pluginName;
+  var path = options.path;
+  var index = path.indexOf('/whistle/');
+  if (index === 0) {
+    delete req.headers.referer;
+    req.url = path.substring(8);
+  } else if (PLUGIN_PATH_RE.test(options.pathname)) {
+    var pluginName = RegExp['$&'];
+    var len = pluginName.length - 1;
+    if (len === index) {
+      delete req.headers.referer;
+      req.url = path.substring(len + 8);
+    }
+  } else {
     if (referer) {
       var refOpts = url.parse(referer);
       var pathname = refOpts.pathname;
       if (PLUGIN_PATH_RE.test(pathname) && RegExp.$3) {
-        req.url = '/' + RegExp.$1 + '.' + RegExp.$2 + options.path;
+        req.url = '/' + RegExp.$1 + '.' + RegExp.$2 + path;
       } else {
         pluginName = config.getPluginNameByHost(refOpts.hostname);
       }
@@ -140,8 +151,7 @@ app.use(function(req, res, next) {
       pluginName = config.getPluginNameByHost(req.headers.host);
     }
     if (pluginName) {
-      var path = options.path;
-      req.url = path.indexOf('/whistle/') === 0 ? path.substring(8)  : '/whistle.' + pluginName + path;
+      req.url = '/whistle.' + pluginName + path;
     }
   }
 
