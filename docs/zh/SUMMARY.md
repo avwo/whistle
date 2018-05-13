@@ -62,7 +62,7 @@
   * [attachment](rules/attachment.md)
   * [forwardedFor](rules/forwardedFor.md)
   * [responseFor](rules/responseFor.md)
-  * [reqParams](rules/reqParams.md)
+  * [reqMerge](rules/reqMerge.md)
   * [resParams](rules/resParams.md)
   * [reqScript](rules/reqScript.md)
   * [resScript](rules/resScript.md)
