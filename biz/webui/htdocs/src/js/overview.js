@@ -110,7 +110,7 @@ var Overview = React.createClass({
           var key = name;
           if (name === 'reqScript') {
             key = 'rulesFile';
-          } else if (name === 'reqParams') {
+          } else if (name === 'reqMerge') {
             key = 'params';
           }
           var rule = rules[key];

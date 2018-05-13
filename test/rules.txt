@@ -12,4 +12,4 @@ reqscript.w2.org reqScript://{reqScript.js} resScript://{resScript.js}
 
 ws://status.whistlejs.com status://101
 
-params.test.whistlejs.com/index.html resParams://(resParams=test) resType://js
+params.test.whistlejs.com/index.html resMerge://(resMerge=test) resType://js

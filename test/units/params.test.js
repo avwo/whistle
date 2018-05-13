@@ -18,7 +18,7 @@ module.exports = function() {
     body: JSON.stringify({key: 'value'})
   }, function(res, data) {
     data.body.should.containEql('"test":"abc"');
-    data.resParams.should.equal('test');
+    data.resMerge.should.equal('test');
   });
 
   util.request({
