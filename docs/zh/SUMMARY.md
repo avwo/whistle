@@ -63,7 +63,7 @@
   * [forwardedFor](rules/forwardedFor.md)
   * [responseFor](rules/responseFor.md)
   * [reqMerge](rules/reqMerge.md)
-  * [resParams](rules/resParams.md)
+  * [resMerge](rules/resMerge.md)
   * [reqScript](rules/reqScript.md)
   * [resScript](rules/resScript.md)
   * [reqDelay](rules/reqDelay.md)
