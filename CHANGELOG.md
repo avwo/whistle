@@ -10,6 +10,7 @@
 
 3. feat: [params](http://wproxy.org/whistle/rules/params.html)改成[reqMerge](http://wproxy.org/whistle/rules/reqMerge.html)，并支持修改请求类型为json的数据，新增[resMerge](http://wproxy.org/whistle/rules/resMerge.html)用于修改返回类型为json或jsonp请求的数据，直接可以通过设置json对象覆盖返回的json对象对应字段(深度合并)。
 4. fix: JSONView里面如果数值位数太大显示出现偏差的问题
+5. refactor: Network下方的搜索框支持正则过滤 `/xxx/i`
 
 ### v1.9.12
 1. fix: The fs.promises API is experimental (Node.js 10.1.0)
