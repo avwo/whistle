@@ -1,11 +1,12 @@
 ### v1.10.0
 > 该版本新增了一些比较有用的功能，建议大家[及时更新](http://wproxy.org/whistle/update.html)
+
 1. feat: 右键 -> 按住 `Shift` -> 点击Replay，可以输入Replay当前请求的次数(只支持Replay单个请求的情况)
 2. feat: [ignore](http://wproxy.org/whistle/rules/ignore.html)和[filter](http://wproxy.org/whistle/rules/filter.html)支持忽略(过滤) `pattern`
   ```
-  pattern operator1 operator2 ignore://reg1 ignore://!reg2 ignore://!reg3 ignore://reg4
+  pattern operator1 operator2 filter://reg1 filter://!reg2 ignore://!reg3 ignore://reg4
   ```  
-  > 其中 `reg1~reg4` 为形如 `/xxx/` 或 `/xxx/i` 的正则表达式，`!reg` 表示 `reg` 取非， 该配置表示请求要匹配`pattern`，但要过滤掉匹配 `reg1` 或 `reg4`，或不匹配`reg2` 或 `reg3`
+  	> 其中 `reg1~reg4` 为形如 `/xxx/` 或 `/xxx/i` 的正则表达式，`!reg` 表示 `reg` 取非， 该配置表示请求要匹配`pattern`，但要过滤掉匹配 `reg1` 或 `reg4`，或不匹配`reg2` 或 `reg3`
 
 3. feat: [params](http://wproxy.org/whistle/rules/params.html)改成[reqMerge](http://wproxy.org/whistle/rules/reqMerge.html)，并支持修改请求类型为json的数据，新增[resMerge](http://wproxy.org/whistle/rules/resMerge.html)用于修改返回类型为json或jsonp请求的数据，直接可以通过设置json对象覆盖返回的json对象对应字段(深度合并)。
 4. fix: JSONView里面如果数值位数太大显示出现偏差的问题
