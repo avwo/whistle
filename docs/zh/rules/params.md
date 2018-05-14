@@ -1,2 +1,2 @@
 # params
-> 同[reqParams](reqParams.html)
+> 同[reqMerge](reqMerge.html)

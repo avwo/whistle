@@ -132,12 +132,26 @@ var Editor = React.createClass({
     $(elem).on('keydown', function(e) {
       var isRules = self.isRulesEditor();
       var isJS = self._mode == 'javascript';
-      if (isRules && !e.ctrlKey && !e.metaKey && e.keyCode === 112) {
-        var helpUrl = rulesHint.getHelpUrl(self._editor);
-        helpUrl && window.open(helpUrl);
-        e.stopPropagation();
-        e.preventDefault();
-        return true;
+      if (isRules) {
+        var options = {
+          name: self.props.name,
+          url: location.href
+        };
+        if (!e.ctrlKey && !e.metaKey && e.keyCode === 112) {
+          var helpUrl = rulesHint.getHelpUrl(self._editor, options);
+          helpUrl && window.open(helpUrl);
+          e.stopPropagation();
+          e.preventDefault();
+          return true;
+        }
+        try {
+          var onKeyDown = window.parent.onWhistleRulesEditorKeyDown;
+          if (typeof onKeyDown === 'function' && onKeyDown(e, options) === false) {
+            e.stopPropagation();
+            e.preventDefault();
+            return true;
+          }
+        } catch(e) {}
       }
       if ((!isRules && !isJS) || !(e.ctrlKey || e.metaKey) || e.keyCode != 191) {
         return;
