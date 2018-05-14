@@ -681,3 +681,17 @@ exports.triggerListChange = function(name, data) {
     }
   } catch(e) {}
 };
+
+var REG_EXP = /^\/(.+)\/(i?m?|m?i)$/;
+exports.toRegExp = function(regExp) {
+  if (!regExp) {
+    return;
+  }
+  regExp = REG_EXP.test(regExp);
+  try {
+    regExp = regExp && new RegExp(RegExp.$1, RegExp.$2);
+  } catch(e) {
+    return;
+  }
+  return regExp;
+};
