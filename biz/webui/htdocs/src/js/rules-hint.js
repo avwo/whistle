@@ -55,13 +55,13 @@ function getAtValueList(keyword) {
   } catch (e) {}
 }
 
-function getAtHelpUrl(name) {
+function getAtHelpUrl(name, options) {
   try {
     var getAtHelpUrl = window.parent.getAtHelpUrlForWhistle;
     if (typeof getAtHelpUrl !== 'function') {
       return;
     }
-    var url = getAtHelpUrl(name);
+    var url = getAtHelpUrl(name, options);
     if (url === false || typeof url === 'string') {
       return url;
     }
@@ -198,9 +198,9 @@ exports.getExtraKeys = function() {
   return extraKeys;
 };
 
-exports.getHelpUrl = function(editor) {
+exports.getHelpUrl = function(editor, options) {
   var name = getFocusRuleName(editor);
-  if (AT_RE.test(name) && (name = getAtHelpUrl(name.substring(1)))) {
+  if (AT_RE.test(name) && (name = getAtHelpUrl(name.substring(1), options))) {
     return name;
   }
   if (name === false) {

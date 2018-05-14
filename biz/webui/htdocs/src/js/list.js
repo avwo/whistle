@@ -315,7 +315,7 @@ var List = React.createClass({
     var modal = self.props.modal;
     var list = modal.list;
     var data = modal.data;
-    var activeItem = modal.getActive();
+    var activeItem = modal.getActive() || '';
     if (!activeItem && list[0] && (activeItem = data[list[0]])) {
       activeItem.active = true;
     }
@@ -367,8 +367,9 @@ var List = React.createClass({
             <FilterInput onChange={this.onFilterChange} />
             <ContextMenu onClick={this.onClickContextMenu} ref="contextMenu" />
           </div>
-          <Editor {...self.props} onChange={self.onChange} readOnly={!activeItem} value={activeItem ? activeItem.value : ''}
-          mode={isRules ? 'rules' : getSuffix(activeItem && activeItem.name)} />
+          <Editor {...self.props} onChange={self.onChange} readOnly={!activeItem}
+            name={activeItem.name} value={activeItem.value}
+          mode={isRules ? 'rules' : getSuffix(activeItem.name)} />
         </Divider>
     );
   }
