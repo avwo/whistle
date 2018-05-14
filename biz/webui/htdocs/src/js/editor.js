@@ -132,12 +132,12 @@ var Editor = React.createClass({
     $(elem).on('keydown', function(e) {
       var isRules = self.isRulesEditor();
       var isJS = self._mode == 'javascript';
-      if (isRules && e.keyCode === 112) {
+      if (isRules) {
         var options = {
           name: self.props.name,
           url: location.href
         };
-        if (!e.ctrlKey && !e.metaKey) {
+        if (!e.ctrlKey && !e.metaKey && e.keyCode === 112) {
           var helpUrl = rulesHint.getHelpUrl(self._editor, options);
           helpUrl && window.open(helpUrl);
           e.stopPropagation();
@@ -145,9 +145,8 @@ var Editor = React.createClass({
           return true;
         }
         try {
-          var showDetail = window.parent.showWhistleRulesDetail;
-          if (typeof showDetail === 'function') {
-            showDetail(options);
+          var onKeyDown = window.parent.onWhistleRulesEditorKeyDown;
+          if (typeof onKeyDown === 'function' && onKeyDown(e, options) === false) {
             e.stopPropagation();
             e.preventDefault();
             return true;
