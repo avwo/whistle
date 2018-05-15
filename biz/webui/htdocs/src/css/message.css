@@ -1,0 +1,8 @@
+.w-message {
+  position: fixed;
+  top: 30px;
+  left: 50%;
+  z-index: 10;
+  padding: 8px 20px!important;
+  max-width: 500px;
+}
