@@ -2,7 +2,7 @@ var util = require('./util');
 
 var MAX_LENGTH = 560;
 var MAX_COUNT = 720;
-var WIN_NAME_PRE = '__whistleNetworkReqCount__';
+var WIN_NAME_PRE = '__whistle_' + location.href.replace(/\/[^/]*([#?].*)?$/, '/') + '__';
 
 function NetworkModal(list) {
   this._list = updateOrder(list);
