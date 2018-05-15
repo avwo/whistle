@@ -682,7 +682,8 @@ var Index = React.createClass({
     };
 
     events.on('replaySessions', function(e, curItem, shiftKey) {
-      var list = getFocusItemList(curItem);
+      var modal = self.state.network;
+      var list = getFocusItemList(curItem) || (modal && modal.getSelectedList());
       var len = list && list.length;
       if (shiftKey && len === 1) {
         self.replayList = list;
