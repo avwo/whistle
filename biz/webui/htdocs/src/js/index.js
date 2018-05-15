@@ -1789,7 +1789,7 @@ var Index = React.createClass({
         }
       }
     } else {
-      list.forEach(replayReq);
+      list.slice(0, MAX_REPLAY_COUNT).forEach(replayReq);
     }
     this.autoRefresh && this.autoRefresh();
   },
