@@ -443,7 +443,7 @@ function startLoadData() {
       curReqId: curReqId,
       lastFrameId: lastFrameId,
       logId: logId || '',
-      count: inited ? 20 : 60
+      count: inited ? 20 : networkModal.getDisplayCount()
     };
     inited = true;
     $.extend(options, hashFilterObj);

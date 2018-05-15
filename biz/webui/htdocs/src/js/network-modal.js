@@ -2,6 +2,7 @@ var util = require('./util');
 
 var MAX_LENGTH = 560;
 var MAX_COUNT = 720;
+var WIN_NAME_PRE = '__whistleNetworkReqCount__';
 
 function NetworkModal(list) {
   this._list = updateOrder(list);
@@ -140,7 +141,7 @@ proto.filter = function(newList) {
   } else if (!newList) {
     self.list = self._list.slice(0, MAX_LENGTH);
   }
-
+  this.updateDisplayCount();
   return list;
 };
 
@@ -196,9 +197,24 @@ proto.inObject = function(obj) {
   return false;
 };
 
+var MAX_FS_COUNT = 60;
+
+proto.updateDisplayCount = function() {
+  window.name = WIN_NAME_PRE + this._list.length;
+};
+proto.getDisplayCount = function() {
+  var winName = window.name;
+  if (typeof winName !== 'string' || winName.indexOf(WIN_NAME_PRE) !== 0) {
+    return MAX_FS_COUNT;
+  }
+  var count = parseInt(winName.substring(WIN_NAME_PRE.length));
+  return count >= 0 && count <= MAX_FS_COUNT ? count : MAX_FS_COUNT;
+};
+
 proto.clear = function clear() {
   this._list.splice(0, this._list.length);
   this.list = [];
+  this.updateDisplayCount();
   return this;
 };
 
