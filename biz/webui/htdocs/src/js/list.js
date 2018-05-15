@@ -63,9 +63,9 @@ function parseJson(str) {
     if (json && typeof json === 'object') {
       return json;
     }
-    message.error('Not a json object.');
+    message.error('Error: not a json object.');
   } catch (e) {
-    message.error(e.message);
+    message.error('Error: ' + e.message);
   }
 }
 
