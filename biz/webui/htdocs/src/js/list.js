@@ -28,6 +28,13 @@ var valuesCtxMenuList = [
   { name: 'Rename' },
   { name: 'Delete' },
   { name: 'Create' },
+  {
+    name: 'JSON',
+    list: [
+      { name: 'Validate' },
+      { name: 'Format' }
+    ]
+  },
   { name: 'Export' },
   { name: 'Import' },
   { name: 'Help', sep: true }
@@ -47,6 +54,24 @@ function getTarget(e) {
     if (nodeName === 'A') {
       return target;
     }
+  }
+}
+
+function asyncAlert(msg) {
+  setTimeout(function() {
+    alert(msg);
+  }, 0);
+}
+
+function parseJson(str) {
+  try {
+    var json = JSON.parse(str);
+    if (json && typeof json === 'object') {
+      return json;
+    }
+    asyncAlert('Not a json object.');
+  } catch (e) {
+    asyncAlert(e.message);
   }
 }
 
@@ -255,6 +280,29 @@ var List = React.createClass({
     case 'Import':
       events.trigger('import' + name);
       break;
+    case 'Validate':
+      var item = this.currentFocusItem;
+      if (item) {
+        if (parseJson(item.value)) {
+          // tips
+        }
+      }
+      break;
+    case 'Format':
+      var curItem = this.currentFocusItem;
+      var value = curItem && curItem.value || '';
+      if (/[^\s]/.test(value)) {
+        var json = parseJson(value);
+        if (json) {
+          json = JSON.stringify(json, null, '  ');
+          if (value !== json) {
+            curItem.changed = true;
+            curItem.value = json;
+            events.trigger('updateGlobal');
+          }
+        }
+      }
+      break;
     case 'Help':
       window.open('https://avwo.github.io/whistle/webui/' + (this.props.name || 'values') + '.html');
       break;
@@ -298,15 +346,17 @@ var List = React.createClass({
       if (item && item.isDefault) {
         isDefault = true;
       }
+      data.list[5].disabled = !modal.list.length;
     } else {
       data.list = valuesCtxMenuList;
       data.list[1].disabled = !item || !item.changed;
+      data.list[5].disabled = disabled;
+      data.list[6].disabled = !modal.list.length;
     }
     data.list[0].copyText = name;
     data.list[0].disabled = disabled;
     data.list[2].disabled = isDefault || disabled;
     data.list[3].disabled = isDefault || disabled;
-    data.list[5].disabled = !modal.list.length;
     this.refs.contextMenu.show(data);
     e.preventDefault();
   },
