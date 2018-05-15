@@ -4,7 +4,7 @@ var $ = require('jquery');
 var util = require('./util');
 var React = require('react');
 var ReactDOM = require('react-dom');
-
+var message = require('./message');
 var Divider = require('./divider');
 var Editor = require('./editor');
 var FilterInput = require('./filter-input');
@@ -57,21 +57,15 @@ function getTarget(e) {
   }
 }
 
-function asyncAlert(msg) {
-  setTimeout(function() {
-    alert(msg);
-  }, 0);
-}
-
 function parseJson(str) {
   try {
     var json = JSON.parse(str);
     if (json && typeof json === 'object') {
       return json;
     }
-    asyncAlert('Not a json object.');
+    message.error('Not a json object.');
   } catch (e) {
-    asyncAlert(e.message);
+    message.error(e.message);
   }
 }
 
@@ -284,7 +278,7 @@ var List = React.createClass({
       var item = this.currentFocusItem;
       if (item) {
         if (parseJson(item.value)) {
-          // tips
+          message.success('OK');
         }
       }
       break;
