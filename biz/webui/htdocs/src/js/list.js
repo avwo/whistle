@@ -278,7 +278,7 @@ var List = React.createClass({
       var item = this.currentFocusItem;
       if (item) {
         if (parseJson(item.value)) {
-          message.success('OK');
+          message.success('Good.');
         }
       }
       break;
