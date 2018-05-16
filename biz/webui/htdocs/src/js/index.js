@@ -440,8 +440,10 @@ var Index = React.createClass({
       }
       if (isRules) {
         self.reloadRules(data);
+        self.triggerRulesChange('reload');
       } else {
         self.reloadValues(data);
+        self.triggerValuesChange('reload');
       }
     };
     if (isRules) {
