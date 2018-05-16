@@ -22,7 +22,7 @@ var Dialog = require('./dialog');
 var ListDialog = require('./list-dialog');
 var message = require('./message');
 
-var JSON_RE = /^\s*(?:\{[\w\W]+\}|\[[\w\W]+\])\s*$/;
+var JSON_RE = /^\s*(?:[\{｛][\w\W]+[\}｝]|\[[\w\W]+\])\s*$/;
 var DEFAULT = 'Default';
 var MAX_PLUGINS_TABS = 7;
 var MAX_FILE_SIZE = 1024 * 1024 * 64;
