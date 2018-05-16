@@ -82,7 +82,7 @@ function checkJson(item) {
     try {
       JSON.parse(item.value);
     } catch(e) {
-      message.warn('Warning: ' + e.message);
+      message.warn('Warning: the value of ' + item.name + ' can\`t be parsed into json. ' + e.message);
     }
   }
 }
