@@ -20,7 +20,9 @@ var events = require('./events');
 var storage = require('./storage');
 var Dialog = require('./dialog');
 var ListDialog = require('./list-dialog');
+var message = require('./message');
 
+var JSON_RE = /^\s*(?:\{[\w\W]+\}|\[[\w\W]+\])\s*$/;
 var DEFAULT = 'Default';
 var MAX_PLUGINS_TABS = 7;
 var MAX_FILE_SIZE = 1024 * 1024 * 64;
@@ -74,6 +76,16 @@ var REMOVE_OPTIONS = [
     title: 'Ctrl[Command] + Shift + D'
   }
 ];
+
+function checkJson(item) {
+  if (/\.json$/i.test(item.name) && JSON_RE.test(item.value)) {
+    try {
+      JSON.parse(item.value);
+    } catch(e) {
+      message.warn('Warning: ' + e.message);
+    }
+  }
+}
 
 function getPageName() {
   var hash = location.hash.substring(1);
@@ -1674,6 +1686,7 @@ var Index = React.createClass({
           activeValues: activeItem
         });
         self.triggerValuesChange('rename');
+        checkJson(activeItem);
       } else {
         util.showSystemError();
       }
@@ -1741,6 +1754,7 @@ var Index = React.createClass({
       if (data && data.ec === 0) {
         self.setSelected(self.state.values, item.name);
         self.triggerValuesChange('save');
+        checkJson(item);
       } else {
         util.showSystemError();
       }
