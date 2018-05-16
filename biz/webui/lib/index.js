@@ -206,7 +206,8 @@ app.all(PLUGIN_PATH_RE, function(req, res, next) {
 });
 
 app.use(function(req, res, next) {
-  if (doNotCheckLogin(req)) {
+  if ((config.authKey && config.authKey === req.headers['x-whistle-auth-key'])
+    || doNotCheckLogin(req)) {
     return next();
   }
   if (verifyLogin(req, res) && (!req.method || GET_METHOD_RE.test(req.method))) {
