@@ -328,8 +328,9 @@ var List = React.createClass({
     this.currentFocusItem = item;
     var disabled = !name;
     var isDefault;
-    var data = util.getMenuPosition(e, 110, 214);
-    if (this.props.name == 'rules') {
+    var isRules = this.props.name == 'rules';
+    var data = util.getMenuPosition(e, 110, isRules ? 220 : 250);
+    if (isRules) {
       data.list = rulesCtxMenuList;
       data.list[1].disabled = disabled;
       if (item && !item.changed) {
