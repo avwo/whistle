@@ -212,7 +212,7 @@ app.use(function(req, res, next) {
     return next();
   }
   var guestAuthKey = config.guestAuthKey;
-  if (((guestAuthKey && guestAuthKey === req.headers['x-whistle-geust-auth-key'])
+  if (((guestAuthKey && guestAuthKey === req.headers['x-whistle-guest-auth-key'])
     || verifyLogin(req, res)) && (!req.method || GET_METHOD_RE.test(req.method))) {
     return next();
   }
