@@ -206,11 +206,14 @@ app.all(PLUGIN_PATH_RE, function(req, res, next) {
 });
 
 app.use(function(req, res, next) {
-  if ((config.authKey && config.authKey === req.headers['x-whistle-auth-key'])
+  var authKey = config.authKey;
+  if ((authKey && authKey === req.headers['x-whistle-auth-key'])
     || doNotCheckLogin(req)) {
     return next();
   }
-  if (verifyLogin(req, res) && (!req.method || GET_METHOD_RE.test(req.method))) {
+  var guestAuthKey = config.guestAuthKey;
+  if (((guestAuthKey && guestAuthKey === req.headers['x-whistle-geust-auth-key'])
+    || verifyLogin(req, res)) && (!req.method || GET_METHOD_RE.test(req.method))) {
     return next();
   }
   var username = getUsername();
