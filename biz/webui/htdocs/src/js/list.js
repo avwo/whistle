@@ -120,10 +120,15 @@ var List = React.createClass({
     var self = this;
     var visible = !self.props.hide;
     $(window).keydown(function(e) {
-      if (visible && (e.ctrlKey || e.metaKey) && e.keyCode == 83) {
+      if (visible && (e.ctrlKey || e.metaKey)) {
         var modal = self.props.modal;
-        modal.getChangedList().forEach(trigger);
-        return false;
+        if (e.keyCode == 70) {
+          self.formatJson(modal.getActive());
+          return false;
+        } else if (e.keyCode === 83) {
+          modal.getChangedList().forEach(trigger);
+          return false;
+        }
       }
     });
 
@@ -253,6 +258,20 @@ var List = React.createClass({
       }
     }
   },
+  formatJson: function(item) {
+    var value = item && item.value || '';
+    if (/[^\s]/.test(value)) {
+      var json = parseJson(value);
+      if (json) {
+        json = JSON.stringify(json, null, '  ');
+        if (value !== json) {
+          item.changed = true;
+          item.value = json;
+          events.trigger('updateGlobal');
+        }
+      }
+    }
+  },
   onClickContextMenu: function(action) {
     var name = this.props.name === 'rules' ? 'Rules' : 'Values';
     switch(action) {
@@ -283,19 +302,7 @@ var List = React.createClass({
       }
       break;
     case 'Format':
-      var curItem = this.currentFocusItem;
-      var value = curItem && curItem.value || '';
-      if (/[^\s]/.test(value)) {
-        var json = parseJson(value);
-        if (json) {
-          json = JSON.stringify(json, null, '  ');
-          if (value !== json) {
-            curItem.changed = true;
-            curItem.value = json;
-            events.trigger('updateGlobal');
-          }
-        }
-      }
+      this.formatJson(this.currentFocusItem);
       break;
     case 'Help':
       window.open('https://avwo.github.io/whistle/webui/' + (this.props.name || 'values') + '.html');
