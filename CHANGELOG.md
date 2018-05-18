@@ -1,6 +1,11 @@
 ### v1.10.1
 1. fix: Network中如果请求被选中右键菜单中 `按住Shift + 点击Replay` 无法弹出设置次数对话框的问题
-2. feat: Values里面的右键菜单加入 JSON > Validate + Format 功能
+2. fix: 不支持多个[filter](http://wproxy.org/whistle/rules/filter.html)的问题
+3. feat: [ignore](http://wproxy.org/whistle/rules/ignore.html)和[filter](http://wproxy.org/whistle/rules/filter.html)支持忽略(过滤) `pattern`
+  ```
+   operator pattern1 pattern2 filter://reg1 filter://!reg2 ignore://!reg3 ignore://reg4
+  ``` 
+4. feat: Values里面的右键菜单加入 JSON > Validate + Format 功能
 
 ### v1.10.0
 > 该版本新增了一些比较有用的功能，建议大家[及时更新](http://wproxy.org/whistle/update.html)
