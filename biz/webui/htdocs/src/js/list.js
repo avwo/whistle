@@ -122,11 +122,11 @@ var List = React.createClass({
     $(window).keydown(function(e) {
       if (visible && (e.ctrlKey || e.metaKey)) {
         var modal = self.props.modal;
-        if (e.keyCode == 70) {
-          self.formatJson(modal.getActive());
-          return false;
-        } else if (e.keyCode === 83) {
+        if (e.keyCode === 83) {
           modal.getChangedList().forEach(trigger);
+          return false;
+        } else if (self.props.name == 'rules' && e.keyCode == 70 && e.shiftKey) {
+          self.formatJson(modal.getActive());
           return false;
         }
       }
