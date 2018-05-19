@@ -175,7 +175,6 @@ var ReqData = React.createClass({
   componentDidMount: function() {
     var self = this;
     var timer;
-    self.canvas = ReactDOM.findDOMNode(self.refs.qrcodeCanvas);
     events.on('hashFilterChange', function() {
       self.setState({});
     });
@@ -294,14 +293,15 @@ var ReqData = React.createClass({
       break;
     case 'QR Code':
       if (item) {
-        QRCode.toCanvas(self.canvas, item.url, {
+        QRCode.toCanvas(ReactDOM.findDOMNode(self.refs.qrcodeCanvas), item.url, {
           width: 320,
           height: 320,
-          margin: 1
+          margin: 0
         }, function (err) {
           if (err) {
             return alert(err.message);
           }
+          ReactDOM.findDOMNode(self.refs.qrcodeUrl).value = item.url;
           self.refs.qrcodeDialog.show();
         });
       }
@@ -587,6 +587,7 @@ var ReqData = React.createClass({
               <button type="button" className="close" data-dismiss="modal">
                 <span aria-hidden="true">&times;</span>
               </button>
+              <input readOnly ref="qrcodeUrl" />
               <canvas ref="qrcodeCanvas" />
             </div>
             <div className="modal-footer">

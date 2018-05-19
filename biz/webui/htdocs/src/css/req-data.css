@@ -31,10 +31,24 @@
 .w-req-data-list tr.w-selected th, .w-req-data-list tr.w-selected td {background-color: #337ab7!important; color: #fff;}
 
 .w-qrcode-dialog .modal-dialog {
-  width: 340px;
+  width: 350px;
 }
 
 .w-qrcode-dialog canvas {
   width: 320px;
   height: 320px;
+}
+
+.w-qrcode-dialog input {
+  border: 1px solid #ddd;
+  padding: 3px 5px;
+  display: block;
+  width: 320px;
+  overflow: hidde;
+  margin: 15px 0 5px;
+}
+
+.w-qrcode-dialog .modal-dialog .modal-body,
+.w-qrcode-dialog .modal-dialog .modal-footer {
+  padding: 10px 15px;
 }
