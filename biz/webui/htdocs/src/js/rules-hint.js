@@ -26,6 +26,9 @@ function getHints(keyword) {
   if (keyword === 'csp') {
     return ['disable://csp'];
   }
+  if ('extend'.indexOf(keyword) === 0) {
+    return ['reqMerge://', 'resMerge://'];
+  }
   var list = allRules.filter(function(name) {
     return name.toLowerCase().indexOf(keyword) !== -1;
   });
