@@ -3,8 +3,10 @@ require('../css/req-data.css');
 var React = require('react');
 var ReactDOM = require('react-dom');
 var $ = require('jquery');
+var QRCode = require('qrcode');
 var util = require('./util');
 var columns = require('./columns');
+var Dialog = require('./dialog');
 
 var FilterInput = require('./filter-input');
 var Spinner = require('./spinner');
@@ -173,6 +175,7 @@ var ReqData = React.createClass({
   componentDidMount: function() {
     var self = this;
     var timer;
+    self.canvas = ReactDOM.findDOMNode(self.refs.qrcodeCanvas);
     events.on('hashFilterChange', function() {
       self.setState({});
     });
@@ -283,13 +286,25 @@ var ReqData = React.createClass({
     modal && modal.clearSelection();
   },
   onClickContextMenu: function(action, e) {
-    var item = this.currentFocusItem;
+    var self = this;
+    var item = self.currentFocusItem;
     switch(action) {
     case 'New Tab':
       item && window.open(item.url);
       break;
     case 'QR Code':
-      item && alert(item.url);
+      if (item) {
+        QRCode.toCanvas(self.canvas, item.url, {
+          width: 320,
+          height: 320,
+          margin: 1
+        }, function (err) {
+          if (err) {
+            return alert(err.message);
+          }
+          self.refs.qrcodeDialog.show();
+        });
+      }
       break;
     case 'Overview':
       events.trigger('activeItem', item);
@@ -351,7 +366,8 @@ var ReqData = React.createClass({
     var item = modal.getItem(dataId);
     e.preventDefault();
     this.currentFocusItem = item;
-    contextMenuList[0].disabled = !item || !/^https?:\/\//.test(item.url);
+    contextMenuList[0].disabled = !item;
+    contextMenuList[0].list[0].disabled = !/^https?:\/\//.test(item.url);
     contextMenuList[1].disabled = !item;
     contextMenuList[1].list.forEach(function(menu) {
       menu.disabled = !item;
@@ -566,6 +582,17 @@ var ReqData = React.createClass({
           </div>
           <FilterInput onChange={this.onFilterChange} wStyle={minWidth} />
           <ContextMenu onClick={this.onClickContextMenu} ref="contextMenu" />
+          <Dialog ref="qrcodeDialog" wstyle="w-qrcode-dialog">
+            <div className="modal-body">
+              <button type="button" className="close" data-dismiss="modal">
+                <span aria-hidden="true">&times;</span>
+              </button>
+              <canvas ref="qrcodeCanvas" />
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          </Dialog>
       </div>
     );
   }

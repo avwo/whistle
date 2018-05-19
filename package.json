@@ -97,6 +97,7 @@
     "jquery": "^3.3.1",
     "lodash.startcase": "^4.4.0",
     "prop-types": "^15.5.8",
+    "qrcode": "^1.2.0",
     "react": "^15.6.2",
     "react-base16-styling": "^0.5.1",
     "react-dom": "^15.6.2",
