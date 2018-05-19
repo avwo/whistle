@@ -41,11 +41,11 @@
 
 .w-qrcode-dialog input {
   border: 1px solid #ddd;
-  padding: 3px 5px;
+  padding: 3px;
   display: block;
   width: 320px;
   overflow: hidde;
-  margin: 15px 0 5px;
+  margin: 15px 0 10px;
 }
 
 .w-qrcode-dialog .modal-dialog .modal-body,

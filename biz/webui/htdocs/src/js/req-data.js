@@ -293,7 +293,9 @@ var ReqData = React.createClass({
       break;
     case 'QR Code':
       if (item) {
-        QRCode.toCanvas(ReactDOM.findDOMNode(self.refs.qrcodeCanvas), item.url, {
+        var canvas = ReactDOM.findDOMNode(self.refs.qrcodeCanvas);
+        canvas.title = item.url;
+        QRCode.toCanvas(canvas, item.url, {
           width: 320,
           height: 320,
           margin: 0
