@@ -1,3 +1,6 @@
+### v1.10.2
+1. feat: Network的右键菜单新增 `QR Code` 用于生成指定URL的二维码
+
 ### v1.10.1
 1. fix: Network中如果请求被选中右键菜单中 `按住Shift + 点击Replay` 无法弹出设置次数对话框的问题
 2. fix: 不支持多个[filter](http://wproxy.org/whistle/rules/filter.html)的问题
