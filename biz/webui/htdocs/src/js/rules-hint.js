@@ -26,7 +26,7 @@ function getHints(keyword) {
   if (keyword === 'csp') {
     return ['disable://csp'];
   }
-  if ('extend'.indexOf(keyword) === 0) {
+  if (keyword.length > 2 && 'extend'.indexOf(keyword) === 0) {
     return ['reqMerge://', 'resMerge://'];
   }
   var list = allRules.filter(function(name) {
