@@ -26,7 +26,11 @@ var NOT_BOLD_RULES = {
 };
 var contextMenuList = [
   {
-    name: 'Open'
+    name: 'Open',
+    list: [
+      { name: 'New Tab'},
+      { name: 'QR Code' }
+    ]
   },
   {
     name: 'Copy',
@@ -279,39 +283,42 @@ var ReqData = React.createClass({
     modal && modal.clearSelection();
   },
   onClickContextMenu: function(action, e) {
+    var item = this.currentFocusItem;
     switch(action) {
-    case 'Open':
-      var item = this.currentFocusItem;
+    case 'New Tab':
       item && window.open(item.url);
       break;
+    case 'QR Code':
+      item && alert(item.url);
+      break;
     case 'Overview':
-      events.trigger('activeItem', this.currentFocusItem);
+      events.trigger('activeItem', item);
       events.trigger('showOverview');
       break;
     case 'Request':
-      events.trigger('activeItem', this.currentFocusItem);
+      events.trigger('activeItem', item);
       events.trigger('showRequest');
       break;
     case 'Response':
-      events.trigger('activeItem', this.currentFocusItem);
+      events.trigger('activeItem', item);
       events.trigger('showResponse');
       break;
     case 'Timeline':
-      events.trigger('activeItem', this.currentFocusItem);
+      events.trigger('activeItem', item);
       events.trigger('showTimeline');
       break;
     case 'Composer':
-      events.trigger('composer', this.currentFocusItem);
+      events.trigger('composer', item);
       break;
     case 'Replay':
-      events.trigger('replaySessions', [this.currentFocusItem, e.shiftKey]);
+      events.trigger('replaySessions', [item, e.shiftKey]);
       break;
     case 'Export':
-      events.trigger('exportSessions', this.currentFocusItem);
+      events.trigger('exportSessions', item);
       break;
     case 'Upload':
       events.trigger('uploadSessions', {
-        curItem: this.currentFocusItem,
+        curItem: item,
         upload: getUploadSessionsFn()
       });
       break;
@@ -319,13 +326,13 @@ var ReqData = React.createClass({
       events.trigger('importSessions');
       break;
     case 'It':
-      events.trigger('removeIt', this.currentFocusItem);
+      events.trigger('removeIt', item);
       break;
     case 'All':
       events.trigger('clearAll');
       break;
     case 'Others':
-      events.trigger('removeOthers', this.currentFocusItem);
+      events.trigger('removeOthers', item);
       break;
     case 'Selected':
       events.trigger('removeSelected');

@@ -1095,6 +1095,8 @@ var Index = React.createClass({
         setTimeout(function() {
           ReactDOM.findDOMNode(self.refs.sessionsName).focus();
         }, 500);
+      } else {
+        message.info('Please select the sessions first.');
       }
       break;
     case 'rules':
