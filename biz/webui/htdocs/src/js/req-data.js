@@ -366,13 +366,14 @@ var ReqData = React.createClass({
     var dataId = $(e.target).closest('.w-req-data-item').attr('data-id');
     var modal = this.props.modal;
     var item = modal.getItem(dataId);
+    var disabled = !item;
     e.preventDefault();
     this.currentFocusItem = item;
-    contextMenuList[0].disabled = !item;
-    contextMenuList[0].list[0].disabled = !/^https?:\/\//.test(item.url);
-    contextMenuList[1].disabled = !item;
+    contextMenuList[0].disabled = disabled;
+    contextMenuList[0].list[0].disabled = disabled || !/^https?:\/\//.test(item.url);
+    contextMenuList[1].disabled = disabled;
     contextMenuList[1].list.forEach(function(menu) {
-      menu.disabled = !item;
+      menu.disabled = disabled;
       switch(menu.name) {
       case 'URL':
         menu.copyText = item && item.url.replace(/[?#].*$/, '');
@@ -399,9 +400,9 @@ var ReqData = React.createClass({
         break;
       }
     });
-    contextMenuList[2].disabled = !item;
+    contextMenuList[2].disabled = disabled;
     contextMenuList[2].list.forEach(function(menu) {
-      menu.disabled = !item;
+      menu.disabled = disabled;
     });
     var selectedList = modal.getSelectedList();
     var selectedCount = selectedList.length;
@@ -410,11 +411,11 @@ var ReqData = React.createClass({
     contextMenuList[3].list.forEach(function(menu) {
       menu.disabled = !hasData;
     });
-    contextMenuList[3].list[0].disabled = !item;
+    contextMenuList[3].list[0].disabled = disabled;
     contextMenuList[3].list[2].disabled = hasData <= 1;
     contextMenuList[3].list[3].disabled = !selectedCount;
     contextMenuList[3].list[4].disabled = selectedCount === hasData;
-    contextMenuList[4].disabled = !item;
+    contextMenuList[4].disabled = disabled;
     if (item) {
       if (item.selected) {
         contextMenuList[5].disabled = !selectedList.filter(util.canReplay).length;
@@ -426,7 +427,7 @@ var ReqData = React.createClass({
     }
     var uploadItem = contextMenuList[6];
     uploadItem.hide = !getUploadSessionsFn();
-    contextMenuList[7].disabled = uploadItem.disabled = !item && !selectedCount;
+    contextMenuList[7].disabled = uploadItem.disabled = disabled && !selectedCount;
     var data = util.getMenuPosition(e, 110, uploadItem.hide ? 274 : 304);
     data.list = contextMenuList;
     this.refs.contextMenu.show(data);
