@@ -205,7 +205,7 @@ proto.updateDisplayCount = function() {
 proto.getDisplayCount = function() {
   var winName = window.name;
   if (typeof winName !== 'string' || winName.indexOf(WIN_NAME_PRE) !== 0) {
-    return MAX_FS_COUNT;
+    return 0;
   }
   var count = parseInt(winName.substring(WIN_NAME_PRE.length));
   return count >= 0 && count <= MAX_FS_COUNT ? count : MAX_FS_COUNT;
