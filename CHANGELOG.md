@@ -1,5 +1,7 @@
 ### v1.10.2
 1. feat: Network的右键菜单新增 `QR Code` 用于生成指定URL的二维码
+2. fix: saz文件导入如果不存在host无法显示的问题
+3. fix: 使用[xxxPrepend](http://wproxy.org/whistle/rules/jsPrepend.html)注入html、js、css到页面是可能出现非严格模式的问题
 
 ### v1.10.1
 1. fix: Network中如果请求被选中右键菜单中 `按住Shift + 点击Replay` 无法弹出设置次数对话框的问题
