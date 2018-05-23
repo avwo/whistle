@@ -1,6 +1,5 @@
 var proxy = require('../lib/proxy');
 var util = require('./util');
-var getData = require('../lib/data');
 var config = require('../lib/config');
 var properties = require('../lib/properties');
 var rules = require('../lib/rules');
@@ -36,6 +35,6 @@ module.exports = function(req, res) {
     interceptHttpsConnects: properties.get('interceptHttpsConnects'),
     defaultRulesIsDisabled: rules.defaultRulesIsDisabled(),
     list: rules.getSelectedList(),
-    data: getData(data, clientIp)
+    data: proxy.getData(data, clientIp)
   });
 };
