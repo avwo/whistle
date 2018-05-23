@@ -266,26 +266,34 @@ exports.getInitialData = function (callback) {
 
     var load = function() {
       cgi.getInitaial(function (data) {
-        if (data) {
-          initialData = data;
-          DEFAULT_CONF.data.clientId = data.clientId;
-          exports.upload = createCgi({
-            importSessions: 'cgi-bin/sessions/import?clientId=' + data.clientId,
-            importRules: 'cgi-bin/rules/import?clientId=' + data.clientId,
-            importValues: 'cgi-bin/values/import?clientId=' + data.clientId
-          }, $.extend({
-            type: 'post'
-          }, DEFAULT_CONF, {
-            contentType: false,
-            processData: false,
-            timeout: 36000
-          }));
-          initialDataPromise.resolve(data);
-          if (data.clientIp) {
-            exports.clientIp = data.clientIp;
-          }
-        } else {
-          setTimeout(load, 1000);
+        if (!data) {
+          return setTimeout(load, 1000);
+        }
+        initialData = data;
+        DEFAULT_CONF.data.clientId = data.clientId;
+        if (data.lastLogId) {
+          lastPageLogTime = data.lastLogId;
+        }
+        if (data.lastSvrLogId) {
+          lastSvrLogTime = data.lastSvrLogId;
+        }
+        if (data.lastDataId) {
+          lastRowId = data.lastDataId;
+        }
+        exports.upload = createCgi({
+          importSessions: 'cgi-bin/sessions/import?clientId=' + data.clientId,
+          importRules: 'cgi-bin/rules/import?clientId=' + data.clientId,
+          importValues: 'cgi-bin/values/import?clientId=' + data.clientId
+        }, $.extend({
+          type: 'post'
+        }, DEFAULT_CONF, {
+          contentType: false,
+          processData: false,
+          timeout: 36000
+        }));
+        initialDataPromise.resolve(data);
+        if (data.clientIp) {
+          exports.clientIp = data.clientIp;
         }
       });
     };

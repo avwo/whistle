@@ -3,11 +3,19 @@ var getValues = require('./values');
 var util = require('./util');
 var config = require('../lib/config');
 var properties = require('../lib/properties');
-var pluginMgr = require('../lib/proxy').pluginMgr;
+var proxy = require('../lib/proxy');
+
+var logger = proxy.logger;
+var pluginMgr = proxy.pluginMgr;
 
 module.exports = function(req, res) {
+  var lastLog = proxy.getLogs(-2, 1)[0];
+  var lastSvrLog = logger.getLogs(-2, 1)[0];
+
   res.json({
     version: config.version,
+    lastLogId: lastLog && lastLog.id,
+    lastSvrLogId: lastSvrLog && lastSvrLog.id,
     clientId: util.getClientId(),
     clientIp: util.getClientIp(req),
     mrulesClientId: config.mrulesClientId,
