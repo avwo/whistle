@@ -7,7 +7,7 @@ var protocols = require('./protocols');
 var AT_RE = /^@/;
 var PROTOCOL_RE = /^([^\s:]+):\/\//;
 var extraKeys = {'Alt-/': 'autocomplete'};
-var CHARS = ['"-"', '"_"', 'Shift-2'];
+var CHARS = ['"-"', '"_"', 'Shift-2', '@'];
 for (var i = 0; i < 10; i++) {
   CHARS.push('\'' + i + '\'');
 }
