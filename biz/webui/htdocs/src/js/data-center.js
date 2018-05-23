@@ -442,16 +442,17 @@ function startLoadData() {
       curReqId = curActiveItem.id;
       lastFrameId = curActiveItem.lastFrameId;
     }
+    var count = inited ? 20 : networkModal.getDisplayCount();
     var options = {
       startLogTime: startLogTime,
       startSvrLogTime: startSvrLogTime,
       ids: pendingIds.join(),
       startTime: startTime,
-      lastRowId: lastRowId,
+      lastRowId: (inited || !count)  ? lastRowId : undefined,
       curReqId: curReqId,
       lastFrameId: lastFrameId,
       logId: logId || '',
-      count: inited ? 20 : networkModal.getDisplayCount()
+      count: count || 20
     };
     inited = true;
     $.extend(options, hashFilterObj);

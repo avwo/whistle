@@ -16,6 +16,7 @@ module.exports = function(req, res) {
     version: config.version,
     lastLogId: lastLog && lastLog.id,
     lastSvrLogId: lastSvrLog && lastSvrLog.id,
+    lastDataId: proxy.getLastDataId(),
     clientId: util.getClientId(),
     clientIp: util.getClientIp(req),
     mrulesClientId: config.mrulesClientId,
