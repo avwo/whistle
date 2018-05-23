@@ -9,8 +9,8 @@ var logger = proxy.logger;
 var pluginMgr = proxy.pluginMgr;
 
 module.exports = function(req, res) {
-  var lastLog = proxy.getLogs(-2, 1)[0];
-  var lastSvrLog = logger.getLogs(-2, 1)[0];
+  var lastLog = proxy.getLogs(0, 1)[0];
+  var lastSvrLog = logger.getLogs(0, 1)[0];
 
   res.json({
     version: config.version,
