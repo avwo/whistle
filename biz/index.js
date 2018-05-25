@@ -4,18 +4,12 @@ var util = require('../lib/util');
 
 var HTTP_PROXY_RE = /^(?:proxy|http-proxy|http2https-proxy|https2http-proxy|internal-proxy):\/\//;
 var INTERNAL_APP;
-var WEBUI_PATH;
 var PLUGIN_RE;
-
-function convertToLocalUIHost(req, isInternal) {
-  req.url = req.url.replace(isInternal ? INTERNAL_APP : WEBUI_PATH, '/');
-  req.headers.host = 'local.whistlejs.com';
-}
 
 module.exports = function(req, res, next) {
   var config = this.config;
   var pluginMgr = this.pluginMgr;
-  WEBUI_PATH = config.WEBUI_PATH;
+  var WEBUI_PATH = config.WEBUI_PATH;
   if (!INTERNAL_APP) {
     var webuiPathRe = util.escapeRegExp(WEBUI_PATH);
     INTERNAL_APP = new RegExp('^' + webuiPathRe + '(log|weinre)\\.(\\d{1,5})/');
@@ -81,11 +75,10 @@ module.exports = function(req, res, next) {
       }
       var colon = proxyUrl.indexOf(':');
       var proxyPort = colon === -1 ? 80 : proxyUrl.substring(colon + 1);
-      convertToLocalUIHost(req, transformPort);
       util.transformReq(req, res, proxyPort > 0 ? proxyPort : 80, ip);
     });
   } else if (isWebUI) {
-    convertToLocalUIHost(req, transformPort);
+    req.url = req.url.replace(transformPort ? INTERNAL_APP : WEBUI_PATH, '/');
     util.transformReq(req, res, transformPort || config.uiport);
   } else if (pluginHomePage || (pluginHomePage = pluginMgr.getPluginByHomePage(fullUrl))) {
     pluginMgr.loadPlugin(pluginHomePage, function(err, ports) {
