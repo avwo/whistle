@@ -4,13 +4,14 @@ var util = require('../lib/util');
 
 var HTTP_PROXY_RE = /^(?:proxy|http-proxy|http2https-proxy|https2http-proxy|internal-proxy):\/\//;
 var INTERNAL_APP;
+var WEBUI_PATH;
 var PLUGIN_RE;
 
 module.exports = function(req, res, next) {
   var config = this.config;
   var pluginMgr = this.pluginMgr;
-  var WEBUI_PATH = config.WEBUI_PATH;
   if (!INTERNAL_APP) {
+    WEBUI_PATH = config.WEBUI_PATH;
     var webuiPathRe = util.escapeRegExp(WEBUI_PATH);
     INTERNAL_APP = new RegExp('^' + webuiPathRe + '(log|weinre)\\.(\\d{1,5})/');
     PLUGIN_RE = new RegExp('^' + webuiPathRe + 'whistle\\.([a-z\\d_-]+)/');
