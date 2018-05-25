@@ -4,6 +4,7 @@ var util = require('../lib/util');
 
 var HTTP_PROXY_RE = /^(?:proxy|http-proxy|http2https-proxy|https2http-proxy|internal-proxy):\/\//;
 var INTERNAL_APP;
+var WEBUI_PATH;
 var PLUGIN_RE;
 
 function convertToLocalUIHost(req, isInternal) {
@@ -14,7 +15,7 @@ function convertToLocalUIHost(req, isInternal) {
 module.exports = function(req, res, next) {
   var config = this.config;
   var pluginMgr = this.pluginMgr;
-  var WEBUI_PATH = config.WEBUI_PATH;
+  WEBUI_PATH = config.WEBUI_PATH;
   if (!INTERNAL_APP) {
     var webuiPathRe = util.escapeRegExp(WEBUI_PATH);
     INTERNAL_APP = new RegExp('^' + webuiPathRe + '(log|weinre)\\.(\\d{1,5})/');
