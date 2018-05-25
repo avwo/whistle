@@ -6,6 +6,11 @@ var HTTP_PROXY_RE = /^(?:proxy|http-proxy|http2https-proxy|https2http-proxy|inte
 var INTERNAL_APP;
 var PLUGIN_RE;
 
+function convertToLocalUIHost(req, isInternal) {
+  req.url = req.url.replace(isInternal ? INTERNAL_APP : WEBUI_PATH, '/');
+  req.headers.host = 'local.whistlejs.com';
+}
+
 module.exports = function(req, res, next) {
   var config = this.config;
   var pluginMgr = this.pluginMgr;
@@ -75,11 +80,11 @@ module.exports = function(req, res, next) {
       }
       var colon = proxyUrl.indexOf(':');
       var proxyPort = colon === -1 ? 80 : proxyUrl.substring(colon + 1);
+      convertToLocalUIHost(req, transformPort);
       util.transformReq(req, res, proxyPort > 0 ? proxyPort : 80, ip);
     });
   } else if (isWebUI) {
-    req.url = req.url.replace(transformPort ? INTERNAL_APP : WEBUI_PATH, '/');
-    req.headers.host = 'local.whistlejs.com';
+    convertToLocalUIHost(req, transformPort);
     util.transformReq(req, res, transformPort || config.uiport);
   } else if (pluginHomePage || (pluginHomePage = pluginMgr.getPluginByHomePage(fullUrl))) {
     pluginMgr.loadPlugin(pluginHomePage, function(err, ports) {
