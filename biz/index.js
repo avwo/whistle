@@ -40,9 +40,6 @@ module.exports = function(req, res, next) {
         } else {
           proxyUrl = null;
         }
-        if (!proxyUrl) {
-          isWebUI = false;
-        }
       }
     }
   } else {
@@ -82,6 +79,7 @@ module.exports = function(req, res, next) {
     });
   } else if (isWebUI) {
     req.url = req.url.replace(transformPort ? INTERNAL_APP : WEBUI_PATH, '/');
+    req.headers.host = 'local.whistlejs.com';
     util.transformReq(req, res, transformPort || config.uiport);
   } else if (pluginHomePage || (pluginHomePage = pluginMgr.getPluginByHomePage(fullUrl))) {
     pluginMgr.loadPlugin(pluginHomePage, function(err, ports) {
