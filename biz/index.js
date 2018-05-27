@@ -16,8 +16,8 @@ module.exports = function(req, res, next) {
     INTERNAL_APP = new RegExp('^' + webuiPathRe + '(log|weinre)\\.(\\d{1,5})/');
     PLUGIN_RE = new RegExp('^' + webuiPathRe + 'whistle\\.([a-z\\d_-]+)/');
   }
-  var origHost = String(req.headers.host || '');
-  var host = origHost.split(':');
+  var fullUrl = util.getFullUrl(req);
+  var host = req.headers.host.split(':');
   var port = host[1] || 80;
   var bypass;
   host = host[0];
@@ -35,7 +35,7 @@ module.exports = function(req, res, next) {
         isWebUI = false;
       }
       if (proxyUrl) {
-        proxyUrl = rules.resolveProxy(util.getFullUrl(req));
+        proxyUrl = rules.resolveProxy(fullUrl);
         proxyUrl = proxyUrl && proxyUrl.matcher;
         if (proxyUrl && HTTP_PROXY_RE.test(proxyUrl)) {
           proxyUrl = proxyUrl.replace(HTTP_PROXY_RE, '');
@@ -43,7 +43,7 @@ module.exports = function(req, res, next) {
           proxyUrl = null;
         }
         if (!proxyUrl && !config.isLocalUIUrl(host)) {
-          proxyUrl = origHost;
+          proxyUrl = req.headers.host;
         }
       }
     }
@@ -68,7 +68,7 @@ module.exports = function(req, res, next) {
     }
   }
   // 后续有用到
-  var fullUrl = req.fullUrl = util.getFullUrl(req);
+  fullUrl = req.fullUrl = util.getFullUrl(req);
   if (bypass) {
     return next();
   }
