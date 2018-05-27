@@ -102,6 +102,7 @@ function changePageName(name) {
   var index = hash.indexOf('?');
   hash = index === -1 ? '' : hash.substring(index);
   location.hash = name + hash;
+  triggerPageChange(name);
 }
 
 function compareSelectedNames(src, target) {
@@ -135,6 +136,15 @@ function getValue(url) {
   return false;
 }
 
+function triggerPageChange(name) {
+  try {
+    var onPageChange = window.parent.onWhistlePageChange;
+    if (typeof onPageChange === 'function') {
+      onPageChange(name, location.href);
+    }
+  } catch (e) {}
+}
+
 var Index = React.createClass({
   getInitialState: function() {
     var modal = this.props.modal;
@@ -161,6 +171,7 @@ var Index = React.createClass({
       state.hasNetwork = true;
       state.name = 'network';
     }
+    
     var rulesList = [];
     var rulesOptions = [];
     var rulesData = {};
@@ -329,6 +340,7 @@ var Index = React.createClass({
     state.exportFileType = storage.get('exportFileType');
     var showLeftMenu = storage.get('showLeftMenu');
     state.showLeftMenu = showLeftMenu == null ? true : showLeftMenu;
+    triggerPageChange(state.name);
     return state;
   },
   getListByName: function(name, type) {
