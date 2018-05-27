@@ -16,7 +16,10 @@ module.exports = function(req, res, next) {
     INTERNAL_APP = new RegExp('^' + webuiPathRe + '(log|weinre)\\.(\\d{1,5})/');
     PLUGIN_RE = new RegExp('^' + webuiPathRe + 'whistle\\.([a-z\\d_-]+)/');
   }
-  var origHost = req.headers.host || '';
+  var origHost = req.headers.host;
+  if (typeof origHost !== 'string') {
+    origHost = '';
+  }
   var host = origHost.split(':');
   var port = host[1] || 80;
   var bypass;
