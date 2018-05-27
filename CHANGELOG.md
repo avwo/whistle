@@ -1,3 +1,8 @@
+### v1.10.3
+1. feat: 通过命令行参数 `-z 证书目录` 设置自定义证书对应的域名将自动启用拦截https请求
+2. feat: [weinre](http://wproxy.org/whistle/rules/weinre.html)支持通过js文件注入
+3. refactor: 调整的[weinre](http://wproxy.org/whistle/rules/weinre.html)和[log](http://wproxy.org/whistle/rules/log.html)请求路径及禁用缓存
+
 ### v1.10.2
 1. feat: Network的右键菜单新增 `QR Code` 用于生成指定URL的二维码
 2. fix: saz文件导入如果不存在host无法显示的问题
