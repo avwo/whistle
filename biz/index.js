@@ -16,7 +16,8 @@ module.exports = function(req, res, next) {
     INTERNAL_APP = new RegExp('^' + webuiPathRe + '(log|weinre)\\.(\\d{1,5})/');
     PLUGIN_RE = new RegExp('^' + webuiPathRe + 'whistle\\.([a-z\\d_-]+)/');
   }
-  var host = (req.headers.host || '').split(':');
+  var origHost = req.headers.host || '';
+  var host = origHost.split(':');
   var port = host[1] || 80;
   var bypass;
   host = host[0];
@@ -40,6 +41,9 @@ module.exports = function(req, res, next) {
           proxyUrl = proxyUrl.replace(HTTP_PROXY_RE, '');
         } else {
           proxyUrl = null;
+        }
+        if (!proxyUrl && !config.isLocalUIUrl(host)) {
+          proxyUrl = origHost;
         }
       }
     }
