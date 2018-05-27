@@ -13,5 +13,5 @@ reqscript.w2.org reqScript://{reqScript.js} resScript://{resScript.js}
 ws://status.whistlejs.com status://101
 
 params.test.whistlejs.com/index.html resMerge://(resMerge=test) resType://js
-weinre1.test2.whistlejs.com:1234 weinre://xxx file://(hello) log://test resType://html enable://capture
-weinre1.test2.whistlejs.com weinre://xxx file://(hello) log://test resType://js enable://capture
+xxx.avenwu.com:1234 weinre://xxx file://(hello) log://test resType://html enable://capture
+xxx.avenwu.com weinre://xxx file://(hello) log://test resType://js enable://capture
