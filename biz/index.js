@@ -42,9 +42,6 @@ module.exports = function(req, res, next) {
         } else {
           proxyUrl = null;
         }
-        if (!proxyUrl && !config.isLocalUIUrl(host)) {
-          proxyUrl = req.headers.host;
-        }
       }
     }
   } else {
