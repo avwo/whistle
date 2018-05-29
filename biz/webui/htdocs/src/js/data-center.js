@@ -560,7 +560,7 @@ function isSocket(item) {
   if (!item || !item.endTime || item.reqError || item.resError) {
     return false;
   }
-  if (/^wss?:\/\//.test(item.url)) {
+  if (/^wss?:\/\//.test(item.url) || item.inspect) {
     return true;
   }
   return item.isHttps && item.req.headers['x-whistle-policy'] === 'tunnel';
