@@ -25,28 +25,26 @@ git clean -df
 git checkout master
 git pull origin master
 
-docs_changed_cnt=$(git --no-pager diff --name-only FETCH_HEAD $(git merge-base FETCH_HEAD master) | grep "$BOOK_DIR" |wc -l)
+# docs_changed_cnt=$(git --no-pager diff --name-only FETCH_HEAD $(git merge-base FETCH_HEAD master) | grep "$BOOK_DIR" |wc -l)
 
-if [[ $docs_changed_cnt>0 ]];then
-  # gitbook build
-  echo "building book: gitbook build $BOOK_DIR"
-  gitbook build "$BOOK_DIR" "$BOOK_DIR/_book"
+# gitbook build
+echo "building book: gitbook build $BOOK_DIR"
+gitbook build "$BOOK_DIR" "$BOOK_DIR/_book"
 
-  git branch -D gh-pages
-  git checkout --orphan gh-pages
-  git rm --cached -r .
-  git clean -df
-  rm -rf *~
-  echo "*~" > .gitignore
-  echo "_book" >> .gitignore
-  echo "node_modules" >> .gitignore
-  git add .gitignore
-  git commit -m "feat: ignore some files"
-  cp -r $BOOK_DIR/_book/* .
-  git add .
-  git commit -m "feat: publish book"
-  git push -u origin gh-pages --force-with-lease
-  git checkout master
-fi
+git branch -D gh-pages
+git checkout --orphan gh-pages
+git rm --cached -r .
+git clean -df
+rm -rf *~
+echo "*~" > .gitignore
+echo "_book" >> .gitignore
+echo "node_modules" >> .gitignore
+git add .gitignore
+git commit -m "feat: ignore some files"
+cp -r $BOOK_DIR/_book/* .
+git add .
+git commit -m "feat: publish book"
+git push -u origin gh-pages --force-with-lease
+git checkout master
 
 echo 'Done! 💦'

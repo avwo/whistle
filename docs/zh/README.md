@@ -1,4 +1,4 @@
-# whistle (book build test)
+# whistle
 
 > Github(欢迎+Star): [https://github.com/avwo/whistle](https://github.com/avwo/whistle)
 
