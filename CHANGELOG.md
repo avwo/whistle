@@ -1,6 +1,7 @@
 ### v1.10.4
 1. feat: 支持tunnel代理http请求
 2. feat: 支持通过设置 `tunnel://host enable://inspect` 后在 `Network -> Response -> Frames` 查看tunnel请求的内容
+3. feat: 过滤pattern支持简单的通配符 `filter://*/xxx`
 
 ### v1.10.3
 1. feat: 通过命令行参数 `-z 证书目录` 设置自定义证书对应的域名将自动启用拦截https请求
