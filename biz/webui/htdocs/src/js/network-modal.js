@@ -212,6 +212,7 @@ proto.getDisplayCount = function() {
 };
 
 proto.clear = function clear() {
+  this.clearNetwork = true;
   this._list.splice(0, this._list.length);
   this.list = [];
   this.updateDisplayCount();

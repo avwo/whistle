@@ -24,6 +24,7 @@ var lastSvrLogTime = -2;
 var dataIndex = 10000;
 var MAX_PATH_LENGTH = 1024;
 var lastRowId;
+var endId;
 var hashFilterObj;
 var clearNetwork;
 var inited;
@@ -416,6 +417,10 @@ function startLoadData() {
   }
   startedLoad = true;
   function load() {
+    if (networkModal.clearNetwork) {
+      lastRowId = endId || lastRowId;
+      networkModal.clearNetwork = false;
+    }
     var pendingIds = getPendingIds();
     var startTime = getStartTime();
     var len = logList.length;
@@ -423,6 +428,7 @@ function startLoadData() {
     var startLogTime = -1;
     var startSvrLogTime = -1;
 
+    networkModal.clearNetwork = false;
     if (!len) {
       startLogTime = lastPageLogTime;
     } else if (len < 100) {
@@ -498,9 +504,16 @@ function startLoadData() {
         curActiveItem.lastFrameId = data.frames[framesLen - 1].frameId;
         curFrames.push.apply(curFrames, data.frames);
       }
-      var lastId = data.lastId;
-      if (lastId) {
-        lastRowId = lastId;
+      if (data.lastId) {
+        lastRowId = data.lastId;
+      }
+      if (data.endId) {
+        endId = data.endId;
+      }
+      if (networkModal.clearNetwork) {
+        networkModal.clearNetwork = false;
+        data.ids = [];
+        data.newIds = [];
       }
       if (!data.ids.length && !data.newIds.length) {
         if (framesLen) {
