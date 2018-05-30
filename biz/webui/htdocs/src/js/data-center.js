@@ -428,7 +428,6 @@ function startLoadData() {
     var startLogTime = -1;
     var startSvrLogTime = -1;
 
-    networkModal.clearNetwork = false;
     if (!len) {
       startLogTime = lastPageLogTime;
     } else if (len < 100) {
@@ -510,12 +509,7 @@ function startLoadData() {
       if (data.endId) {
         endId = data.endId;
       }
-      if (networkModal.clearNetwork) {
-        networkModal.clearNetwork = false;
-        data.ids = [];
-        data.newIds = [];
-      }
-      if (!data.ids.length && !data.newIds.length) {
+      if ((!data.ids.length && !data.newIds.length) || networkModal.clearNetwork) {
         if (framesLen) {
           framesUpdateCallbacks.forEach(function(cb) {
             cb();
