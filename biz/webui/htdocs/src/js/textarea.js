@@ -103,13 +103,13 @@ var Textarea = React.createClass({
     }
 
     var value = (this.props.value || '').replace(/\r\n|\r/g, '\n');
-    dataCenter.values.add({name: name, value: value}, function(data) {
+    dataCenter.values.add({name: name, value: value}, function(data, xhr) {
       if (data && data.ec === 0) {
         modal.add(name, value);
         target.value = '';
         target.blur();
       } else {
-        util.showSystemError();
+        util.showSystemError(xhr);
       }
     });
   },

@@ -244,9 +244,9 @@ var List = React.createClass({
         dataCenter[name].moveTo({
           from: fromName,
           to: info.toName
-        }, function(data) {
+        }, function(data, xhr) {
           if (!data) {
-            util.showSystemError();
+            util.showSystemError(xhr);
             return;
           }
           if (data.ec === 2) {

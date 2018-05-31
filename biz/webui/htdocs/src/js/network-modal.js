@@ -33,6 +33,7 @@ proto.search = function(keyword) {
     this._keyword = this._keyword.substring(1);
   }
   this._keywordRE = util.toRegExp(this._keyword);
+  this._keyword = this._keyword.toLowerCase();
   this.filter();
   return keyword;
 };
@@ -44,7 +45,7 @@ proto.checkKeywork = function(str) {
   if (!this._keyword) {
     return true;
   }
-  return this._keywordRE ? this._keywordRE.test(str) : str.indexOf(this._keyword) !== -1;
+  return this._keywordRE ? this._keywordRE.test(str) : str.toLowerCase().indexOf(this._keyword) !== -1;
 };
 
 proto.hasKeyword = function() {
@@ -109,13 +110,11 @@ proto.filter = function(newList) {
       break;
     case 'method':
     case 'm':
-      keyword = keyword.toUpperCase();
       list.forEach(function(item) {
         item.hide = self.checkNot(!self.checkKeywork(item.req.method));
       });
       break;
     default:
-      keyword = keyword.toLowerCase();
       list.forEach(function(item) {
         item.hide = self.checkNot(!self.checkKeywork(item.url.toLowerCase()));
       });

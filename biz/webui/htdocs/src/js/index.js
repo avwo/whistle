@@ -445,9 +445,9 @@ var Index = React.createClass({
     var dialog = $('.w-reload-data-tips').closest('.w-confirm-reload-dialog');
     var name = dialog.find('.w-reload-data-tips').attr('data-name');
     var isRules = name === 'rules';
-    var handleResponse = function(data) {
+    var handleResponse = function(data, xhr) {
       if (!data) {
-        util.showSystemError();
+        util.showSystemError(xhr);
         return;
       }
       if (isRules) {
@@ -1146,9 +1146,9 @@ var Index = React.createClass({
       data.append('replaceAll', '1');
     }
     var self = this;
-    dataCenter.upload.importRules(data, function(data) {
+    dataCenter.upload.importRules(data, function(data, xhr) {
       if (!data) {
-        util.showSystemError();
+        util.showSystemError(xhr);
       } else if (data.ec === 0) {
         self.reloadRules(data);
       } else  {
@@ -1175,9 +1175,9 @@ var Index = React.createClass({
       data.append('replaceAll', '1');
     }
     var self = this;
-    dataCenter.upload.importValues(data, function(data) {
+    dataCenter.upload.importValues(data, function(data, xhr) {
       if (!data) {
-        util.showSystemError();
+        util.showSystemError(xhr);
       } if (data.ec === 0) {
         self.reloadValues(data);
       } else {
@@ -1243,7 +1243,7 @@ var Index = React.createClass({
       var name = item.name;
 
       if (!modal.exists(name)) {
-        dataCenter.values.add({name: name}, function(data) {
+        dataCenter.values.add({name: name}, function(data, xhr) {
           if (data && data.ec === 0) {
             var item = modal.add(name);
             self.setValuesActive(name);
@@ -1251,7 +1251,7 @@ var Index = React.createClass({
               activeValues: item
             });
           } else {
-            util.showSystemError();
+            util.showSystemError(xhr);
           }
         });
       } else {
@@ -1506,11 +1506,11 @@ var Index = React.createClass({
     var self = this;
     var checked = e.target.checked;
     dataCenter.interceptHttpsConnects({interceptHttpsConnects: checked ? 1 : 0},
-        function(data) {
+        function(data, xhr) {
           if (data && data.ec === 0) {
             self.state.interceptHttpsConnects = checked;
           } else {
-            util.showSystemError();
+            util.showSystemError(xhr);
           }
           self.setState({});
         });
@@ -1533,7 +1533,7 @@ var Index = React.createClass({
       return;
     }
 
-    dataCenter.rules.add({name: name}, function(data) {
+    dataCenter.rules.add({name: name}, function(data, xhr) {
       if (data && data.ec === 0) {
         var item = modal.add(name);
         self.setRulesActive(name);
@@ -1544,7 +1544,7 @@ var Index = React.createClass({
         });
         self.triggerRulesChange('create');
       } else {
-        util.showSystemError();
+        util.showSystemError(xhr);
       }
     });
   },
@@ -1576,7 +1576,7 @@ var Index = React.createClass({
       return;
     }
 
-    dataCenter.values.add({name: name}, function(data) {
+    dataCenter.values.add({name: name}, function(data, xhr) {
       if (data && data.ec === 0) {
         var item = modal.add(name);
         self.setValuesActive(name);
@@ -1587,7 +1587,7 @@ var Index = React.createClass({
         });
         self.triggerValuesChange('create');
       } else {
-        util.showSystemError();
+        util.showSystemError(xhr);
       }
     });
   },
@@ -1651,7 +1651,7 @@ var Index = React.createClass({
       return;
     }
 
-    dataCenter.rules.rename({name: activeItem.name, newName: name}, function(data) {
+    dataCenter.rules.rename({name: activeItem.name, newName: name}, function(data, xhr) {
       if (data && data.ec === 0) {
         modal.rename(activeItem.name, name);
         if (!self.currentFoucsRules) {
@@ -1664,7 +1664,7 @@ var Index = React.createClass({
         });
         self.triggerRulesChange('rename');
       } else {
-        util.showSystemError();
+        util.showSystemError(xhr);
       }
     });
   },
@@ -1690,7 +1690,7 @@ var Index = React.createClass({
       return;
     }
 
-    dataCenter.values.rename({name: activeItem.name, newName: name}, function(data) {
+    dataCenter.values.rename({name: activeItem.name, newName: name}, function(data, xhr) {
       if (data && data.ec === 0) {
         modal.rename(activeItem.name, name);
         if (!self.currentFoucsValues) {
@@ -1704,7 +1704,7 @@ var Index = React.createClass({
         self.triggerValuesChange('rename');
         checkJson(activeItem);
       } else {
-        util.showSystemError();
+        util.showSystemError(xhr);
       }
     });
   },
@@ -1725,14 +1725,14 @@ var Index = React.createClass({
   },
   selectRules: function(item) {
     var self = this;
-    dataCenter.rules[item.isDefault ? 'enableDefault' : 'select'](item, function(data) {
+    dataCenter.rules[item.isDefault ? 'enableDefault' : 'select'](item, function(data, xhr) {
       if (data && data.ec === 0) {
         self.reselectRules(data);
         self.state.rules.setChanged(item.name, false);
         self.setState({});
         self.triggerRulesChange('save');
       } else {
-        util.showSystemError();
+        util.showSystemError(xhr);
       }
     });
     return false;
@@ -1743,12 +1743,12 @@ var Index = React.createClass({
   },
   unselectRules: function(item) {
     var self = this;
-    dataCenter.rules[item.isDefault ? 'disableDefault' : 'unselect'](item, function(data) {
+    dataCenter.rules[item.isDefault ? 'disableDefault' : 'unselect'](item, function(data, xhr) {
       if (data && data.ec === 0) {
         self.reselectRules(data);
         self.setState({});
       } else {
-        util.showSystemError();
+        util.showSystemError(xhr);
       }
     });
     return false;
@@ -1766,13 +1766,13 @@ var Index = React.createClass({
       return;
     }
     var self = this;
-    dataCenter.values.add(item, function(data) {
+    dataCenter.values.add(item, function(data, xhr) {
       if (data && data.ec === 0) {
         self.setSelected(self.state.values, item.name);
         self.triggerValuesChange('save');
         checkJson(item);
       } else {
-        util.showSystemError();
+        util.showSystemError(xhr);
       }
     });
     return false;
@@ -1839,7 +1839,7 @@ var Index = React.createClass({
     if (activeItem && !activeItem.isDefault) {
       var name = activeItem.name;
       if (confirm('Confirm delete this Rule \'' + name + '\'.')) {
-        dataCenter.rules.remove({name: name}, function(data) {
+        dataCenter.rules.remove({name: name}, function(data, xhr) {
           if (data && data.ec === 0) {
             var nextItem = item && !item.active ? null : modal.getSibling(name);
             nextItem && self.setRulesActive(nextItem.name);
@@ -1849,7 +1849,7 @@ var Index = React.createClass({
             });
             self.triggerRulesChange('remove');
           } else {
-            util.showSystemError();
+            util.showSystemError(xhr);
           }
         });
       }
@@ -1862,7 +1862,7 @@ var Index = React.createClass({
     if (activeItem && !activeItem.isDefault) {
       var name = activeItem.name;
       if (confirm('Confirm delete this Value \'' + name + '\'.')) {
-        dataCenter.values.remove({name: name}, function(data) {
+        dataCenter.values.remove({name: name}, function(data, xhr) {
           if (data && data.ec === 0) {
             var nextItem = item && !item.active ? null : modal.getSibling(name);
             nextItem && self.setValuesActive(nextItem.name);
@@ -1872,7 +1872,7 @@ var Index = React.createClass({
             });
             self.triggerValuesChange('remove');
           } else {
-            util.showSystemError();
+            util.showSystemError(xhr);
           }
         });
       }
@@ -1999,13 +1999,13 @@ var Index = React.createClass({
   disableAllRules: function(e) {
     var checked = e.target.checked;
     var self = this;
-    dataCenter.rules.disableAllRules({disabledAllRules: checked ? 1 : 0}, function(data) {
+    dataCenter.rules.disableAllRules({disabledAllRules: checked ? 1 : 0}, function(data, xhr) {
       if (data && data.ec === 0) {
         self.setState({
           disabledAllRules: checked
         });
       } else {
-        util.showSystemError();
+        util.showSystemError(xhr);
       }
     });
     e.preventDefault();
@@ -2021,13 +2021,13 @@ var Index = React.createClass({
       }
       checked = !state.disabledAllPlugins;
     }
-    dataCenter.plugins.disableAllPlugins({disabledAllPlugins: checked ? 1 : 0}, function(data) {
+    dataCenter.plugins.disableAllPlugins({disabledAllPlugins: checked ? 1 : 0}, function(data, xhr) {
       if (data && data.ec === 0) {
         state.disabledAllPlugins = checked;
         protocols.setPlugins(state);
         self.setState({});
       } else {
-        util.showSystemError();
+        util.showSystemError(xhr);
       }
     });
     e.preventDefault();
@@ -2038,13 +2038,13 @@ var Index = React.createClass({
     dataCenter.plugins.disablePlugin({
       name: $(target).attr('data-name'),
       disabled: target.checked ? 0 : 1
-    }, function(data) {
+    }, function(data, xhr) {
       if (data && data.ec === 0) {
         self.state.disabledPlugins = data.data;
         protocols.setPlugins(self.state);
         self.setState({});
       } else {
-        util.showSystemError();
+        util.showSystemError(xhr);
       }
     });
   },

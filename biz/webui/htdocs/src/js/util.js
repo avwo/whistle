@@ -147,8 +147,19 @@ function getBoolean(val) {
 
 exports.getBoolean = getBoolean;
 
-exports.showSystemError = function showSystemError() {
-  alert('Please check if the whistle server is started.\nOr you do not have permission to operate.');
+exports.showSystemError = function(xhr) {
+  xhr = xhr || {};
+  var status = xhr.status;
+  if (!status) {
+    return alert('Please check if the whistle server is started.');
+  }
+  if (status == 401) {
+    return alert('You do not have permission to operate.');
+  }
+  if (status == 413) {
+    return alert('The content is too large.');
+  }
+  alert('System error, try again later.');
 };
 
 exports.getClasses = function getClasses(obj) {
