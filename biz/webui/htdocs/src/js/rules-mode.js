@@ -119,6 +119,10 @@ CodeMirror.defineMode('rules', function() {
     return /^[a-z]:(?:\\|\/(?!\/))/i.test(str) || /^\/[^/]/.test(str);
   }
 
+  function isPortPattern(str) {
+    return /^:\d{1,5}$/.test(str);
+  }
+
   function isWildcard(str) {
     if (!/^(?:\$?(?:https?:|wss?:|tunnel:)?\/\/)?([^/]+)/.test(str)) {
       return false;
@@ -208,7 +212,7 @@ CodeMirror.defineMode('rules', function() {
         return true;
       });
       if (!type) {
-        if (isRegExp(str) || isRegUrl(str)) {
+        if (isRegExp(str) || isRegUrl(str) || isPortPattern(str)) {
           return 'attribute js-attribute';
         }
         if (/^@/.test(str)) {
