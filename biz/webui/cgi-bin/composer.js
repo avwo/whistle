@@ -160,7 +160,7 @@ module.exports = function(req, res) {
   var headers = parseHeaders(req.body.headers, rawHeaderNames);
   delete headers[config.WEBUI_HEAD];
   if (!headers['user-agent']) {
-    headers['user-agent'] = 'whistle/' + config.version;
+    headers['user-agent'] = config.PROXY_UA;
   }
   headers[config.WHISTLE_REQ_FROM_HEADER] = 'W2COMPOSER';
   headers.host = options.host;
