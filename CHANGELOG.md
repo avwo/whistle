@@ -1,3 +1,7 @@
+### v1.10.5
+1. refactor: 全面改用SNI技术，Windows XP用户可以更新到 `v1.10.4`
+2. feat: 支持端口匹配 `:12345 operatorURI`
+
 ### v1.10.4
 1. feat: 支持tunnel代理http请求
 2. feat: 支持通过设置 `tunnel://host enable://inspect` 后在 `Network -> Response -> Frames` 查看tunnel请求的内容
