@@ -1,11 +1,9 @@
-### v1.10.5
-1. refactor: 全面改用SNI技术，Windows XP用户可以更新到 `v1.10.4`
-2. feat: 支持端口匹配 `:12345 operatorURI`
-
 ### v1.10.4
 1. feat: 支持tunnel代理http请求
 2. feat: 支持通过设置 `tunnel://host enable://inspect` 后在 `Network -> Response -> Frames` 查看tunnel请求的内容
 3. feat: 过滤pattern支持简单的通配符 `filter://*/xxx`
+4. feat: 支持端口匹配 `:12345 operatorURI`
+5. refactor: IE9+及WebKit、Gecho默认支持SNI技术
 
 ### v1.10.3
 1. feat: 通过命令行参数 `-z 证书目录` 设置自定义证书对应的域名将自动启用拦截https请求
