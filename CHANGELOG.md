@@ -1,5 +1,5 @@
 ### v1.10.5
-1. refactor: 自动检测是否支持sni
+1. refactor: 自动检测是否支持sni及普通的socket请求和web请求
 2. fix: reqScript和resScript里面换行自动变成空格问题
 3. feat: 支持域名为ip的https请求
 
