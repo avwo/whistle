@@ -1,3 +1,7 @@
+### v1.10.5
+1. refactor: 自动检测是否支持sni
+2. fix: reqScript和resScript里面换行自动变成空格问题
+
 ### v1.10.4
 1. feat: 支持tunnel代理http请求
 2. feat: 支持通过设置 `tunnel://host enable://inspect` 后在 `Network -> Response -> Frames` 查看tunnel请求的内容
