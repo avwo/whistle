@@ -1,7 +1,9 @@
 ### v1.10.5
-1. refactor: 自动检测是否支持sni及普通的socket请求和web请求
+1. refactor: 自动检测是否支持sni
 2. fix: reqScript和resScript里面换行自动变成空格问题
 3. feat: 支持域名为ip的https请求
+4. feat: 全面支持proxifier代理请求
+5. feat: 自动切换web请求和普通的socket请求
 
 ### v1.10.4
 1. feat: 支持tunnel代理http请求
