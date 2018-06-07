@@ -1,3 +1,6 @@
+### v1.10.6
+1. fix: 用proxifier代理http post请求可能会卡住的问题
+
 ### v1.10.5
 1. refactor: 自动检测是否支持sni
 2. fix: reqScript和resScript里面换行自动变成空格问题
