@@ -128,6 +128,6 @@ program
   .option('-t, --timeout [ms]', 'set the request timeout (' + config.timeout + 'ms by default)', parseInt, undefined)
   .option('-e, --extra [extraData]', 'set the extra parameters for plugin', String, undefined)
   .option('-f, --secureFilter [secureFilter]', 'set the path of secure filter', String, undefined)
-  .option('-R, --reqCacheSize [reqCacheSize]', 'set the cache size of request data (512 by default)', String, undefined)
+  .option('-R, --reqCacheSize [reqCacheSize]', 'set the cache size of request data (600 by default)', String, undefined)
   .option('-F, --frameCacheSize [frameCacheSize]', 'set the cache size of webSocket and socket\'s frames (512 by default)', String, undefined)
   .parse(process.argv);
