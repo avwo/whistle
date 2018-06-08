@@ -16,8 +16,11 @@ require('codemirror/theme/vibrant-ink.css');
 require('codemirror/theme/solarized.css');
 require('codemirror/theme/twilight.css');
 require('codemirror/theme/midnight.css');
+require('codemirror/addon/dialog/dialog.css');
+require('codemirror/addon/search/matchesonscrollbar.css');
 require('../css/list.css');
 require('../css/editor.css');
+
 var $ = require('jquery');
 var React = require('react');
 var ReactDOM = require('react-dom');
@@ -28,6 +31,12 @@ require('codemirror/mode/css/css');
 require('codemirror/mode/xml/xml');
 require('codemirror/mode/htmlmixed/htmlmixed');
 require('codemirror/mode/markdown/markdown');
+require('codemirror/addon/dialog/dialog');
+require('codemirror/addon/search/searchcursor');
+require('codemirror/addon/search/search');
+require('codemirror/addon/scroll/annotatescrollbar');
+require('codemirror/addon/search/matchesonscrollbar');
+
 var rulesHint = require('./rules-hint');
 
 var themes = ['default', 'neat', 'elegant', 'erlang-dark', 'night', 'monokai', 'cobalt', 'eclipse'
