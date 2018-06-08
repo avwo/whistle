@@ -27,6 +27,12 @@ var WebSocketServer = require('ws').Server;
 var wss = new WebSocketServer({ port: config.wsPort });
 var WHISTLE_PATH = process.env.WHISTLE_PATH = __dirname;
 var PLUGINS_PATH = path.join(WHISTLE_PATH, '.whistle/node_modules');
+//Node7及以下使用非SNI Server
+if (process.versions.modules <= 51) {
+  require('hagent').serverAgent.existsServer = function() {
+    return true;
+  };
+}
 
 fse.removeSync(path.join(WHISTLE_PATH, '.whistle'));
 fse.copySync(path.join(__dirname, 'plugins'), PLUGINS_PATH);
