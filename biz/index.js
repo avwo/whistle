@@ -55,12 +55,7 @@ module.exports = function(req, res, next) {
       if (bypass) {
         req.url = req.url.replace(bypass, '/');
       } else if (!isWebUI) {
-        if (port == config.port || port == config.uiport) {
-          host = config.localUIHost;
-          isWebUI = true;
-        } else if (port == config.weinreport) {
-          host = config.WEINRE_HOST;
-        }
+        isWebUI = config.port || port == config.uiport;
       }
     }
   }
