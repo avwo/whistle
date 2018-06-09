@@ -1,7 +1,7 @@
 {
   "name": "whistle",
   "description": "HTTP, HTTPS, Websocket debugging proxy",
-  "version": "1.10.6",
+  "version": "1.10.7",
   "dataDirname": ".whistle",
   "localUIHost": "local.whistlejs.com",
   "whistleSsl": "whistle-ssl",
@@ -26,7 +26,9 @@
   "keywords": [
     "proxy",
     "fiddler",
-    "charles"
+    "charles",
+    "websocket",
+    "hosts"
   ],
   "bin": {
     "whistle": "./bin/whistle.js",
