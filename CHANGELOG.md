@@ -1,6 +1,7 @@
 ### v1.10.7
 1. chore: 修复README没发布出去的问题
 2. fix: 编辑器搜索问题
+3. feat: 支持设置多个访问webui的域名 `-l "webui1.example.com|webui2.example.com"`
 
 ### v1.10.6
 1. fix: 用proxifier代理http post请求可能会卡住的问题
