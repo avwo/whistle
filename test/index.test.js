@@ -84,8 +84,8 @@ var proxy = startWhistle({
   storage: 'test_',
   certDir: path.join(__dirname, 'assets/certs'),
   debugMode: true,
-  localUIHost: 'local.whistle.com|local2.whistle.com|localn.whistle.com',
-  pluginHost: 'test=test.local.whistle.com|b.test.local.whistle.com',
+  localUIHost: 'local.whistle.com|local2.whistle.com&localn.whistle.com',
+  pluginHost: 'test=test.local.whistle.com|b.test.local.whistle.com&test3.local.whistle.com,',
   rules: {
     Default: defaultRules,
     test: {
