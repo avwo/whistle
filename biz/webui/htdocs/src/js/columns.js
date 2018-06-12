@@ -8,6 +8,12 @@ function getDefaultColumns() {
 
   return [
     {
+      title: 'Date',
+      name: 'date',
+      className: 'date',
+      showTitle: true
+    },
+    {
       title: 'Result',
       name: 'result',
       className: 'result',

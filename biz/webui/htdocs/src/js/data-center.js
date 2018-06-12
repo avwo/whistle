@@ -582,6 +582,7 @@ function setReqData(item) {
   var resHeaders = res.headers || '';
   item.hostIp = res.ip || defaultValue;
   item.clientIp = item.req.ip || '127.0.0.1';
+  item.date = item.date || new Date(item.startTime).toLocaleString();
   item.clientPort = item.req.port;
   item.serverPort = item.res.port;
   item.contentEncoding = resHeaders['content-encoding'];
