@@ -1,3 +1,7 @@
+### v1.10.8
+1. refactor: 放宽对json格式的要求
+2. refactor: resMerge支持返回类型为html的请求
+
 ### v1.10.7
 1. chore: 修复README没发布出去的问题
 2. fix: 编辑器搜索问题
