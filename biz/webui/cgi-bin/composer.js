@@ -14,9 +14,10 @@ function parseHeaders(headers, rawHeaderNames) {
     return {};
   }
 
-  try {
-    return util.lowerCaseify(JSON.parse(headers), rawHeaderNames);
-  } catch(e) {}
+  var reqHeaders = util.parseRawJson(headers);
+  if (reqHeaders) {
+    return util.lowerCaseify(reqHeaders, rawHeaderNames);
+  }
 
   return util.parseHeaders(headers, rawHeaderNames);
 }
