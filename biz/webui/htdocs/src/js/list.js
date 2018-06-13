@@ -65,6 +65,9 @@ function parseJson(str) {
     }
     message.error('Error: not a json object.');
   } catch (e) {
+    if (json = util.evalJson(str)) {
+      return json;
+    }
     message.error('Error: ' + e.message);
   }
 }
@@ -297,7 +300,7 @@ var List = React.createClass({
       var item = this.currentFocusItem;
       if (item) {
         if (parseJson(item.value)) {
-          message.success('Good');
+          message.success('Good JSON Object.');
         }
       }
       break;

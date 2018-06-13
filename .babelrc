@@ -1,5 +1,8 @@
 {
     "presets": [
       "react"
+    ],
+    "ignore": [
+      "./biz/webui/htdocs/src/js/components/json/eval.js"
     ]
   }

@@ -1,5 +1,6 @@
 var $ = require('jquery');
 var json2 = require('./components/json');
+var evalJson = require('./components/json/eval');
 
 var BIG_NUM_RE = /[:\[][\s\n\r]*-?[\d.]{16,}[\s\n\r]*[,\}\]]/;
 var dragCallbacks = {};
@@ -343,14 +344,6 @@ exports.getPath = function(url) {
   return index == -1 ? '/' : url.substring(index);
 };
 
-var HEX_CHAR_RE = /\\x([\da-f]{2})/ig;
-var unescapeHexChar = function(all, $1) {
-  try {
-    return String.fromCharCode('0x' + $1);
-  } catch(e) {}
-  return all;
-};
-
 var parseJ = function (str, resolve) {
   var result;
   if (resolve && BIG_NUM_RE.test(str)) {
@@ -361,6 +354,8 @@ var parseJ = function (str, resolve) {
   }
   return typeof result === 'object' ? result : null;
 };
+
+exports.evalJson = evalJson;
 
 function parseJSON(str, resolve) {
   if (!str || !(str = str.trim())) {
@@ -375,9 +370,7 @@ function parseJSON(str, resolve) {
   try {
     return parseJ(str, resolve);
   } catch(e) {
-    try {
-      return parseJ(str.replace(HEX_CHAR_RE, unescapeHexChar), resolve);
-    } catch(e) {}
+    return evalJson(str);
   }
 }
 
