@@ -55,7 +55,7 @@ module.exports = function(req, res, next) {
       if (bypass) {
         req.url = req.url.replace(bypass, '/');
       } else if (!isWebUI) {
-        isWebUI = config.port || port == config.uiport;
+        isWebUI = port == config.port || port == config.uiport;
       }
     }
   }
