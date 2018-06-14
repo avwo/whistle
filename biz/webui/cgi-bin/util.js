@@ -22,6 +22,7 @@ exports.getServerInfo = function getServerInfo(req) {
     nodeVersion: process.version,
     latestVersion: properties.get('latestVersion'),
     host: util.hostname(),
+    isWin: util.isWin,
     port: config.port,
     weinrePort: config.weinreport,
     ipv4: [],

@@ -157,7 +157,8 @@ var Index = React.createClass({
       allowMultipleChoice: modal.rules.allowMultipleChoice,
       syncWithSysHosts: modal.rules.syncWithSysHosts,
       networkMode: modal.server.networkMode,
-      multiEnv: modal.server.multiEnv
+      multiEnv: modal.server.multiEnv,
+      isWin: modal.server.isWin
     };
     var pageName = state.networkMode ? 'network' : getPageName();
     if (!pageName || pageName.indexOf('rules') != -1) {
@@ -497,6 +498,13 @@ var Index = React.createClass({
     var clipboard = new Clipboard('.w-copy-text');
     clipboard.on('error', function(e) {
       alert('Copy failed.');
+    });
+    clipboard = new Clipboard('.w-copy-text-with-tips');
+    clipboard.on('error', function(e) {
+      message.error('Copy failed.');
+    });
+    clipboard.on('success', function(e) {
+      message.success('Copied clipboard.');
     });
     var preventDefault = function(e) {
       e.preventDefault();

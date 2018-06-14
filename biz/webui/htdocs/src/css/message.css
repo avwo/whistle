@@ -2,7 +2,7 @@
   position: fixed;
   top: 30px;
   left: 50%;
-  z-index: 10;
+  z-index: 999999999;
   padding: 8px 20px!important;
   max-width: 410px;
 }

@@ -18,9 +18,9 @@ padding: 5px 6px!important; overflow: hidden; text-overflow: ellipsis; white-spa
 .w-plugins-active {width: 60px;}
 .w-plugins-list td.w-plugins-active input {margin-left: 12px;}
 .w-plugins-name {width: 120px;}
-.w-plugins-version {width: 100px;}
+.w-plugins-version {width: 90px;}
 .w-plugins-date {width: 180px;}
-.w-plugins-operation { width: 200px; }
+.w-plugins-operation { width: 256px; }
 .w-plugins-operation a, .w-plugins-operation span.disabled  {margin-right: 30px;}
 .w-plugins-operation a:last-child, .w-plugins-operation span.disabled:last-child {margin-right: 0;}
 .w-plugins-operation span.disabled {color: #ccc;}
@@ -32,3 +32,11 @@ padding: 5px 6px!important; overflow: hidden; text-overflow: ellipsis; white-spa
 .w-plugin-rules-dialog fieldset:nth-child(2) {margin-top: 15px;}
 .w-plugin-rules-dialog .modal-header h4 {margin: 0;}
 .w-plugin-rules-dialog .modal-header .close { position: absolute; right: 10px; top: 16px;}
+
+.w-plugin-update-dialog .modal-dialog {width: 600px;}
+.w-plugin-update-cmd {
+  background: #002240;
+  color: #ddd;
+  padding: 15px;
+  margin-top: 10px;
+}

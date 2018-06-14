@@ -24,11 +24,25 @@ var Home = React.createClass({
       plugin: plugin
     }, this.showDialog);
   },
+  showUpdateDialog: function() {
+    this.refs.updatePluginDialog.show();
+  },
+  showUpdate: function(e) {
+    var name = $(e.target).attr('data-name');
+    var plugin = this.props.data.plugins[name + ':'];
+    var registry = plugin.registry ? ' --registry=' + plugin.registry : '';
+    var sudo = this.props.data.isWin ? '' : 'sudo ';
+    this.setState({
+      updateCmd: sudo + 'npm i -g ' + plugin.moduleName + registry
+    }, this.showUpdateDialog);
+  },
   render: function() {
     var self = this;
     var data = self.props.data || {};
     var plugins = data.plugins || [];
-    var plugin = self.state && self.state.plugin || {};
+    var state = self.state || {};
+    var plugin = state.plugin || {};
+    var updateCmd = state.updateCmd;
     var list = Object.keys(plugins);
     var disabledPlugins = data.disabledPlugins || {};
     return (
@@ -74,7 +88,10 @@ var Home = React.createClass({
                       <td className="w-plugins-operation">
                         <a href={url} target="_blank" data-name={name} onClick={self.onOpen}>Option</a>
                         {(plugin.rules || plugin._rules) ? <a href="javascript:;" draggable="false" data-name={name} onClick={self.showRules}>Rules</a> : <span className="disabled">Rules</span>}
-                        {plugin.homepage ? <a href={plugin.homepage} target="_blank">Help</a> : <span className="disabled">Help</span>}
+                        <a href="javascript:;" draggable="false" style={{color: '#337ab7'}}
+                          data-name={name} onClick={self.showUpdate}>Update</a>
+                        {plugin.homepage ? <a href={plugin.homepage} style={{color: '#337ab7'}}
+                          target="_blank">Help</a> : <span className="disabled">Help</span>}
                       </td>
                       <td className="w-plugins-desc" title={plugin.description}>{plugin.description}</td>
                     </tr>
@@ -103,6 +120,26 @@ var Home = React.createClass({
               </div>
             </div>
             <div className="modal-footer">
+              <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          </Dialog>
+          <Dialog ref="updatePluginDialog" wstyle="w-plugin-update-dialog">
+            <div className="modal-body">
+              <h5>
+                <a
+                  href="javascript:;"
+                  className="w-copy-text-with-tips"
+                  data-clipboard-text={updateCmd}
+                >
+                  Copy the following command
+                </a> to the CLI to execute:
+              </h5>
+              <div className="w-plugin-update-cmd">
+                  {updateCmd}
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-primary w-copy-text-with-tips" data-clipboard-text={updateCmd}>Copy</button>
               <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
             </div>
           </Dialog>
