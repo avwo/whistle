@@ -1,3 +1,6 @@
+### v1.10.9
+1. feat: 添加更新插件的按钮，点击该按钮弹出更新命令
+
 ### v1.10.8
 1. refactor: 放宽对json格式的要求
 2. refactor: resMerge支持返回类型为html的请求
