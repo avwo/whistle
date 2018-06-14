@@ -69,7 +69,7 @@ var Home = React.createClass({
                           data-name={name} checked={checked} disabled={disabled} onChange={self.props.onChange} />
                       </td>
                       <td className="w-plugins-date">{new Date(plugin.mtime).toLocaleString()}</td>
-                      <td className="w-plugins-name" title={name}><a href={url} target="_blank" data-name={name} onClick={self.onOpen}>{name}</a></td>
+                      <td className="w-plugins-name" title={plugin.moduleName}><a href={url} target="_blank" data-name={name} onClick={self.onOpen}>{name}</a></td>
                       <td className="w-plugins-version">{plugin.homepage ? <a href={plugin.homepage} target="_blank">{plugin.version}</a> : plugin.version}</td>
                       <td className="w-plugins-operation">
                         <a href={url} target="_blank" data-name={name} onClick={self.onOpen}>Option</a>
