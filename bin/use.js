@@ -72,6 +72,7 @@ function request(body, callback) {
     if (options.username || options.password) {
       var auth = [options.username || '', options.password || ''].join(':');
       reqOptions.headers = {
+        'content-type': 'application/x-www-form-urlencoded',
         authorization: 'Basic ' + new Buffer(auth).toString('base64')
       };
     }
@@ -86,7 +87,7 @@ function request(body, callback) {
       if (res.statusCode != 200) {
         throw resBody || 'response ' + res.statusCode + ' error';
       }
-      callback(resBody);
+      callback(JSON.parse(resBody));
     });
   });
   // 不处理错误，直接抛出终止进程
@@ -102,7 +103,9 @@ module.exports = function(filepath, storage, force) {
   var pid;
   try {
     var config = fse.readJsonSync(configFile);
-    options = config.options;
+    options = config.options; 
+    // TODO: xxx
+    options.port = 8899;
     pid = options && config.pid;
   } catch(e) {}
   isRunning(pid, function(running) {
@@ -132,15 +135,16 @@ module.exports = function(filepath, storage, force) {
           'rules=' + encodeURIComponent(rules)
         ].join('&');
         request(body, function() {
-          console.log(colors.green('[127.0.0.1:' + port + '] setting successful.'));
+          console.log(colors.green('setting whistle[127.0.0.1:' + port + '] rules successful.'));
         });
       };
       if (force) {
         return setRules();
       }
-      request('name=' + encodeURIComponent(name), function(text) {
-        if (text) {
-          console.log(colors.yellow('xxx环境配置不为空，如果需要覆盖当前环境命令行添加参数：--force.'));
+      request('name=' + encodeURIComponent(name), function(data) {
+        if (data.rules) {
+          // TODO: 
+          console.log(colors.yellow('xxx环境配置不为空，如果需要覆盖当前环境命令行添加参数：--force'));
           return;
         }
         setRules();
