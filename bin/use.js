@@ -132,7 +132,7 @@ module.exports = function(filepath, storage, force) {
           'rules=' + encodeURIComponent(rules)
         ].join('&');
         request(body, function() {
-          console.log(colors.green('[127.0.0.1:' + port + '] Setting successful.'));
+          console.log(colors.green('[127.0.0.1:' + port + '] setting successful.'));
         });
       };
       if (force) {
