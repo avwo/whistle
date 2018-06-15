@@ -1,5 +1,6 @@
 ### v1.10.9
 1. feat: 添加更新插件的按钮，点击该按钮弹出更新命令
+2. feat: 支持通过命令行 `w2 use` 或 `w2 enable` 获取当前目录 `.whistle.js` 输出的规则配置，具体参见：[命令行参数](http://wproxy.org/whistle/cli.html)
 
 ### v1.10.8
 1. refactor: 放宽对json格式的要求
