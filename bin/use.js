@@ -25,9 +25,9 @@ function isRunning(pid, callback) {
     }) : callback(false);
 }
 
-function showStartWhistleTips() {
-  // TODO: xxx
-  console.log(colors.red('请先执行 `w2 start` 启动whistle.'));
+function showStartWhistleTips(storage) {
+  console.log(colors.red('Please execute `w2 start' + (storage ? ' -S ' + storage : '')
+    + '` to start whistle first.'));
 }
 
 function handleRules(options, filepath, callback) {
@@ -46,7 +46,7 @@ module.exports = function(filepath, storage) {
   var dataDir = path.resolve(getHomedir(), '.startingAppData');
   var configFile = path.join(dataDir, encodeURIComponent('#' + (storage ? storage + '#' : '')));
   if (!fs.existsSync(configFile)) {
-    return showStartWhistleTips();
+    return showStartWhistleTips(storage);
   }
   var pid, options;
   try {
@@ -56,7 +56,7 @@ module.exports = function(filepath, storage) {
   } catch(e) {}
   isRunning(pid, function(running) {
     if (!running) {
-      return showStartWhistleTips();
+      return showStartWhistleTips(storage);
     }
     filepath = path.resolve(filepath || '.whistle.js');
     var port = options.port > 0 ? options.port : 8899;
@@ -65,22 +65,20 @@ module.exports = function(filepath, storage) {
       port: port
     }, filepath, function(result) {
       if (!result) {
-        console.log(colors.red('规则名称及内容不能为空.'));
+        console.log(colors.red('name and rules cannot be empty.'));
         return;
       }
       var name = getString(result.name);
       if (!name || name.length > 64) {
-        // TODO: xxx
-        console.log(colors.red('规则名称不能为空且长度不能超过64个字符.'));
+        console.log(colors.red('name cannot be empty and the length cannot exceed 64 characters.'));
         return;
       }
       var rules = getString(result.rules);
       if (rules.length > MAX_RULES_LEN) {
-        // TODO: xxx
-        console.log(colors.red('规则内容不能为空且长度不能超过16k.'));
+        console.log(colors.red('rules cannot be empty and the size cannot exceed 16k.'));
         return;
       }
-      console.log(colors.green('规则已成功设置到whistle(127.0.0.1:' + port + ').'));
+      console.log(colors.green('[127.0.0.1:' + port + '] Setting successful.'));
     });
   });
 };
