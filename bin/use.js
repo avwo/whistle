@@ -7,6 +7,7 @@ var colors = require('colors/safe');
 var fse = require('fs-extra2');
 var http = require('http');
 var url = require('url');
+var pkg = require('../package.json');
 var getPluginPaths = require('../lib/plugins/module-paths').getPaths;
 
 /*eslint no-console: "off"*/
@@ -111,7 +112,7 @@ module.exports = function(filepath, storage, force) {
       return showStartWhistleTips(storage);
     }
     filepath = path.resolve(filepath || '.whistle.js');
-    var port = options.port = options.port > 0 ? options.port : 8899;
+    var port = options.port = options.port > 0 ? options.port : pkg.port;
     handleRules(filepath, function(result) {
       if (!result) {
         console.log(colors.red('The name and rules cannot be empty.'));
