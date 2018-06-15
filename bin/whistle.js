@@ -136,8 +136,8 @@ program
   .option('-R, --reqCacheSize [reqCacheSize]', 'set the cache size of request data (600 by default)', String, undefined)
   .option('-F, --frameCacheSize [frameCacheSize]', 'set the cache size of webSocket and socket\'s frames (512 by default)', String, undefined);
 
-if (process.argv[2] === 'use' || process.argv[2] === 'enable') {
-  var argv = [].slice.apply(process.argv);
+var argv = process.argv;
+if (argv[2] === 'use' || argv[2] === 'enable') {
   var index = argv.indexOf('--force');
   var force = index !== -1;
   if (force) {
@@ -156,5 +156,5 @@ if (process.argv[2] === 'use' || process.argv[2] === 'enable') {
   }
   useRules(filepath, storage, force);
 } else {
-  program.parse(process.argv);
+  program.parse(argv);
 }

@@ -5,6 +5,8 @@ var cp = require('child_process');
 var fs = require('fs');
 var colors = require('colors/safe');
 var fse = require('fs-extra2');
+var http = require('http');
+var url = require('url');
 var getPluginPaths = require('../lib/plugins/module-paths').getPaths;
 
 /*eslint no-console: "off"*/
@@ -13,6 +15,7 @@ var MAX_RULES_LEN = 1024 * 16;
 var CHECK_RUNNING_CMD = process.platform === 'win32' ? 
   'tasklist /fi "PID eq %s" | findstr /i "node.exe"'
   : 'ps -f -p %s | grep "node"';
+var options;
 
 function getHomedir() {
   //默认设置为`~`，防止Linux在开机启动时Node无法获取homedir
@@ -61,13 +64,42 @@ function existsPlugin(name) {
   return false;
 }
 
+var reqOptions;
+function request(body, callback) {
+  if (!reqOptions) {
+    reqOptions = url.parse('http://127.0.0.1:' + options.port + '/cgi-bin/rules/project');
+    reqOptions.method = 'POST';
+    if (options.username || options.password) {
+      var auth = [options.username || '', options.password || ''].join(':');
+      reqOptions.headers = {
+        authorization: 'Basic ' + new Buffer(auth).toString('base64')
+      };
+    }
+  }
+  var req = http.request(reqOptions, function(res) {
+    res.setEncoding('utf8');
+    var resBody = '';
+    res.on('data', function(data) {
+      resBody += data;
+    });
+    res.on('end', function() {
+      if (res.statusCode != 200) {
+        throw resBody || 'response ' + res.statusCode + ' error';
+      }
+      callback(resBody);
+    });
+  });
+  // 不处理错误，直接抛出终止进程
+  req.end(body);
+}
+
 module.exports = function(filepath, storage, force) {
   var dataDir = path.resolve(getHomedir(), '.startingAppData');
   var configFile = path.join(dataDir, encodeURIComponent('#' + (storage ? storage + '#' : '')));
   if (!fs.existsSync(configFile)) {
     return showStartWhistleTips(storage);
   }
-  var pid, options;
+  var pid;
   try {
     var config = fse.readJsonSync(configFile);
     options = config.options;
@@ -94,7 +126,25 @@ module.exports = function(filepath, storage, force) {
         console.log(colors.red('rules cannot be empty and the size cannot exceed 16k.'));
         return;
       }
-      console.log(colors.green('[127.0.0.1:' + port + '] Setting successful.'));
+      var setRules = function() {
+        var body = [
+          'name=' + encodeURIComponent(name),
+          'rules=' + encodeURIComponent(rules)
+        ].join('&');
+        request(body, function() {
+          console.log(colors.green('[127.0.0.1:' + port + '] Setting successful.'));
+        });
+      };
+      if (force) {
+        return setRules();
+      }
+      request('name=' + encodeURIComponent(name), function(text) {
+        if (text) {
+          console.log(colors.yellow('xxx环境配置不为空，如果需要覆盖当前环境命令行添加参数：--force.'));
+          return;
+        }
+        setRules();
+      });
     }, port);
   });
 };
