@@ -104,8 +104,6 @@ module.exports = function(filepath, storage, force) {
   try {
     var config = fse.readJsonSync(configFile);
     options = config.options; 
-    // TODO: xxx
-    options.port = 8899;
     pid = options && config.pid;
   } catch(e) {}
   isRunning(pid, function(running) {
@@ -116,17 +114,17 @@ module.exports = function(filepath, storage, force) {
     var port = options.port > 0 ? options.port : 8899;
     handleRules(filepath, function(result) {
       if (!result) {
-        console.log(colors.red('name and rules cannot be empty.'));
+        console.log(colors.red('The name and rules cannot be empty.'));
         return;
       }
       var name = getString(result.name);
       if (!name || name.length > 64) {
-        console.log(colors.red('name cannot be empty and the length cannot exceed 64 characters.'));
+        console.log(colors.red('The name cannot be empty and the length cannot exceed 64 characters.'));
         return;
       }
       var rules = getString(result.rules);
       if (rules.length > MAX_RULES_LEN) {
-        console.log(colors.red('rules cannot be empty and the size cannot exceed 16k.'));
+        console.log(colors.red('The rules cannot be empty and the size cannot exceed 16k.'));
         return;
       }
       var setRules = function() {
@@ -135,7 +133,7 @@ module.exports = function(filepath, storage, force) {
           'rules=' + encodeURIComponent(rules)
         ].join('&');
         request(body, function() {
-          console.log(colors.green('setting whistle[127.0.0.1:' + port + '] rules successful.'));
+          console.log(colors.green('Setting whistle[127.0.0.1:' + port + '] rules successful.'));
         });
       };
       if (force) {
@@ -143,8 +141,7 @@ module.exports = function(filepath, storage, force) {
       }
       request('name=' + encodeURIComponent(name), function(data) {
         if (data.rules) {
-          // TODO: 
-          console.log(colors.yellow('xxx环境配置不为空，如果需要覆盖当前环境命令行添加参数：--force'));
+          console.log(colors.yellow('The rule already exists, to override it, add CLI option --force.'));
           return;
         }
         setRules();
