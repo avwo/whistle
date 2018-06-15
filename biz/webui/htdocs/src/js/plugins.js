@@ -88,9 +88,9 @@ var Home = React.createClass({
                       <td className="w-plugins-operation">
                         <a href={url} target="_blank" data-name={name} onClick={self.onOpen}>Option</a>
                         {(plugin.rules || plugin._rules) ? <a href="javascript:;" draggable="false" data-name={name} onClick={self.showRules}>Rules</a> : <span className="disabled">Rules</span>}
-                        <a href="javascript:;" draggable="false" style={{color: '#337ab7'}}
+                        <a href="javascript:;" draggable="false" className="w-plugin-btn"
                           data-name={name} onClick={self.showUpdate}>Update</a>
-                        {plugin.homepage ? <a href={plugin.homepage} style={{color: '#337ab7'}}
+                        {plugin.homepage ? <a href={plugin.homepage} className="w-plugin-btn"
                           target="_blank">Help</a> : <span className="disabled">Help</span>}
                       </td>
                       <td className="w-plugins-desc" title={plugin.description}>{plugin.description}</td>

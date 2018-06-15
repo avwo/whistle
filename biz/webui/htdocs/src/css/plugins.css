@@ -40,3 +40,9 @@ padding: 5px 6px!important; overflow: hidden; text-overflow: ellipsis; white-spa
   padding: 15px;
   margin-top: 10px;
 }
+.w-plugin-btn {
+  color: #337ab7!important;
+}
+.w-plugin-btn:hover {
+  color: #23527c!important;
+}
