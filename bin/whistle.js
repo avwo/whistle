@@ -108,7 +108,7 @@ program.setConfig({
 });
 
 program
-  .command('use(enable) [filepath]')
+  .command('use/enable [filepath]')
   .description('Set rules from a specified js file (.whistle.js by default)');
   
 program
