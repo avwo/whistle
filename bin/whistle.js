@@ -5,6 +5,7 @@ var path = require('path');
 var os = require('os');
 var config = require('../lib/config');
 var colors = require('colors/safe');
+var useRules = require('./use');
 
 function getIpList() {
   var ipList = [];
@@ -107,6 +108,10 @@ program.setConfig({
 });
 
 program
+  .command('use(enable) [filepath]')
+  .description('Set rules from a specified js file (.whistle.js by default)');
+  
+program
   .option('-D, --baseDir [baseDir]', 'set the configured storage root path', String, undefined)
   .option('-z, --certDir [directory]', 'set custom certificate store directory', String, undefined)
   .option('-l, --localUIHost [hostname]', 'set the domain for the web ui of whistle (' + config.localUIHost + ' by default)', String, undefined)
@@ -129,5 +134,21 @@ program
   .option('-e, --extra [extraData]', 'set the extra parameters for plugin', String, undefined)
   .option('-f, --secureFilter [secureFilter]', 'set the path of secure filter', String, undefined)
   .option('-R, --reqCacheSize [reqCacheSize]', 'set the cache size of request data (600 by default)', String, undefined)
-  .option('-F, --frameCacheSize [frameCacheSize]', 'set the cache size of webSocket and socket\'s frames (512 by default)', String, undefined)
-  .parse(process.argv);
+  .option('-F, --frameCacheSize [frameCacheSize]', 'set the cache size of webSocket and socket\'s frames (512 by default)', String, undefined);
+
+if (process.argv[2] === 'use' || process.argv[2] === 'enable') {
+  var filepath = process.argv[3];
+  var storage;
+  if (filepath === '-S') {
+    filepath = null;
+    storage = process.argv[4];
+  } else if (process.argv[4] === '-S') {
+    storage = process.argv[5];
+  }
+  if (filepath && /^-/.test(filepath)) {
+    filepath = null;
+  }
+  useRules(filepath, storage);
+} else {
+  program.parse(process.argv);
+}
