@@ -7,6 +7,7 @@ var colors = require('colors/safe');
 var fse = require('fs-extra2');
 var getPluginPaths = require('../lib/plugins/module-paths').getPaths;
 
+var MAX_RULES_LEN = 1024 * 16;
 var CHECK_RUNNING_CMD = process.platform === 'win32' ? 
   'tasklist /fi "PID eq %s" | findstr /i "node.exe"'
   : 'ps -f -p %s | grep "node"';
@@ -62,20 +63,24 @@ module.exports = function(filepath, storage) {
     handleRules({
       pluginPaths: getPluginPaths(),
       port: port
-    }, filepath, function(rules) {
-      if (!rules) {
-        // TODO: xxx
+    }, filepath, function(result) {
+      if (!result) {
+        console.log(colors.red('规则名称及内容不能为空.'));
         return;
       }
-      var name = getString(rules.name);
-      if (!name) {
+      var name = getString(result.name);
+      if (!name || name.length > 64) {
         // TODO: xxx
+        console.log(colors.red('规则名称不能为空且长度不能超过64个字符.'));
         return;
       }
-      if (name.length > 64) {
+      var rules = getString(result.rules);
+      if (rules.length > MAX_RULES_LEN) {
         // TODO: xxx
+        console.log(colors.red('规则内容不能为空且长度不能超过16k.'));
         return;
       }
+      console.log(colors.green('规则已成功设置到whistle(127.0.0.1:' + port + ').'));
     });
   });
 };
