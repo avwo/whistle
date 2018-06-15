@@ -137,18 +137,24 @@ program
   .option('-F, --frameCacheSize [frameCacheSize]', 'set the cache size of webSocket and socket\'s frames (512 by default)', String, undefined);
 
 if (process.argv[2] === 'use' || process.argv[2] === 'enable') {
-  var filepath = process.argv[3];
+  var argv = [].slice.apply(process.argv);
+  var index = argv.indexOf('--force');
+  var force = index !== -1;
+  if (force) {
+    argv.splice(index, 1);
+  }
+  var filepath = argv[3];
   var storage;
   if (filepath === '-S') {
     filepath = null;
-    storage = process.argv[4];
-  } else if (process.argv[4] === '-S') {
-    storage = process.argv[5];
+    storage = argv[4];
+  } else if (argv[4] === '-S') {
+    storage = argv[5];
   }
   if (filepath && /^-/.test(filepath)) {
     filepath = null;
   }
-  useRules(filepath, storage);
+  useRules(filepath, storage, force);
 } else {
   program.parse(process.argv);
 }

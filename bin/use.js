@@ -61,7 +61,7 @@ function existsPlugin(name) {
   return false;
 }
 
-module.exports = function(filepath, storage) {
+module.exports = function(filepath, storage, force) {
   var dataDir = path.resolve(getHomedir(), '.startingAppData');
   var configFile = path.join(dataDir, encodeURIComponent('#' + (storage ? storage + '#' : '')));
   if (!fs.existsSync(configFile)) {
