@@ -142,7 +142,7 @@ module.exports = function(filepath, storage, force) {
       }
       request('name=' + encodeURIComponent(name), function(data) {
         if (data.rules) {
-          console.log(colors.yellow('The rule already exists, to override it, add CLI option --force.'));
+          console.log(colors.yellow('The rule already exists, to override it, you must add CLI option --force.'));
           return;
         }
         setRules();
