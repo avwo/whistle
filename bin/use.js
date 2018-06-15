@@ -39,7 +39,7 @@ function handleRules(filepath, callback, port) {
   }
   getRules(callback, {
     port: port,
-    checkPlugin: checkPlugin
+    existsPlugin: existsPlugin
   });
 }
 
@@ -47,19 +47,20 @@ function getString(str) {
   return typeof str !== 'string' ? '' : str.trim();
 }
 
-function checkPlugin(name) {
+function existsPlugin(name) {
   if (!name || typeof name !== 'string') {
     return false;
   }
-  for (var i, len = pluginPaths.length; i < len; i++) {
+  for (var i = 0, len = pluginPaths.length; i < len; i++) {
     try {
       if (fs.statSync(path.join(pluginPaths[i], name)).isDirectory()) {
         return true;
       }
     } catch(e) {}
   }
+  return false;
 }
-   
+
 module.exports = function(filepath, storage) {
   var dataDir = path.resolve(getHomedir(), '.startingAppData');
   var configFile = path.join(dataDir, encodeURIComponent('#' + (storage ? storage + '#' : '')));
