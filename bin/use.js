@@ -7,6 +7,8 @@ var colors = require('colors/safe');
 var fse = require('fs-extra2');
 var getPluginPaths = require('../lib/plugins/module-paths').getPaths;
 
+/*eslint no-console: "off"*/
+var pluginPaths = getPluginPaths();
 var MAX_RULES_LEN = 1024 * 16;
 var CHECK_RUNNING_CMD = process.platform === 'win32' ? 
   'tasklist /fi "PID eq %s" | findstr /i "node.exe"'
@@ -30,16 +32,32 @@ function showStartWhistleTips(storage) {
     + '` to start whistle first.'));
 }
 
-function handleRules(options, filepath, callback) {
+function handleRules(filepath, callback, port) {
   var getRules = require(filepath);
   if (typeof getRules !== 'function') {
     return callback(getRules);
   }
-  getRules(options, callback);
+  getRules(callback, {
+    port: port,
+    checkPlugin: checkPlugin
+  });
 }
 
 function getString(str) {
   return typeof str !== 'string' ? '' : str.trim();
+}
+
+function checkPlugin(name) {
+  if (!name || typeof name !== 'string') {
+    return false;
+  }
+  for (var i, len = pluginPaths.length; i < len; i++) {
+    try {
+      if (fs.statSync(path.join(pluginPaths[i], name)).isDirectory()) {
+        return true;
+      }
+    } catch(e) {}
+  }
 }
    
 module.exports = function(filepath, storage) {
@@ -60,10 +78,7 @@ module.exports = function(filepath, storage) {
     }
     filepath = path.resolve(filepath || '.whistle.js');
     var port = options.port > 0 ? options.port : 8899;
-    handleRules({
-      pluginPaths: getPluginPaths(),
-      port: port
-    }, filepath, function(result) {
+    handleRules(filepath, function(result) {
       if (!result) {
         console.log(colors.red('name and rules cannot be empty.'));
         return;
@@ -79,6 +94,6 @@ module.exports = function(filepath, storage) {
         return;
       }
       console.log(colors.green('[127.0.0.1:' + port + '] Setting successful.'));
-    });
+    }, port);
   });
 };
