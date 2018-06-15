@@ -111,7 +111,7 @@ module.exports = function(filepath, storage, force) {
       return showStartWhistleTips(storage);
     }
     filepath = path.resolve(filepath || '.whistle.js');
-    var port = options.port > 0 ? options.port : 8899;
+    var port = options.port = options.port > 0 ? options.port : 8899;
     handleRules(filepath, function(result) {
       if (!result) {
         console.log(colors.red('The name and rules cannot be empty.'));
