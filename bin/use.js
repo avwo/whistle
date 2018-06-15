@@ -28,7 +28,7 @@ function isRunning(pid, callback) {
   pid ? cp.exec(util.format(CHECK_RUNNING_CMD, pid), 
     function (err, stdout, stderr) {
       callback(!err && !!stdout.toString().trim());
-    }) : callback(false);
+    }) : callback();
 }
 
 function showStartWhistleTips(storage) {
@@ -69,13 +69,13 @@ var reqOptions;
 function request(body, callback) {
   if (!reqOptions) {
     reqOptions = url.parse('http://127.0.0.1:' + options.port + '/cgi-bin/rules/project');
+    reqOptions.headers = {
+      'content-type': 'application/x-www-form-urlencoded'
+    };
     reqOptions.method = 'POST';
     if (options.username || options.password) {
       var auth = [options.username || '', options.password || ''].join(':');
-      reqOptions.headers = {
-        'content-type': 'application/x-www-form-urlencoded',
-        authorization: 'Basic ' + new Buffer(auth).toString('base64')
-      };
+      reqOptions.headers.authorization = 'Basic ' + new Buffer(auth).toString('base64');
     }
   }
   var req = http.request(reqOptions, function(res) {
