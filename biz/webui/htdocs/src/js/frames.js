@@ -8,7 +8,7 @@ var FrameData = require('./frame-data');
 var FrameModal = require('./frame-modal');
 var dataCenter = require('./data-center');
 
-var ImageView = React.createClass({
+var Frames = React.createClass({
   getInitialState: function() {
     return {
       modal: new FrameModal()
@@ -53,4 +53,4 @@ var ImageView = React.createClass({
   }
 });
 
-module.exports = ImageView;
+module.exports = Frames;
