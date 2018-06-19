@@ -94,8 +94,13 @@ program
 
 var argv = process.argv;
 var cmd = argv[2];
+var storage;
 if (cmd === 'status') {
-  showStatus.apply(null, [].slice.apply(argv).slice(3));
+  var all = argv[3] === '--all';
+  if (argv[3] === '-S') {
+    storage = argv[4];
+  }
+  showStatus(all, storage);
 } else if (cmd === 'use' || cmd === 'enable') {
   var index = argv.indexOf('--force');
   var force = index !== -1;
@@ -103,7 +108,6 @@ if (cmd === 'status') {
     argv.splice(index, 1);
   }
   var filepath = argv[3];
-  var storage;
   if (filepath === '-S') {
     filepath = null;
     storage = argv[4];
