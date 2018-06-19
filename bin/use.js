@@ -1,7 +1,5 @@
 var path = require('path');
-var os = require('os');
 var fs = require('fs');
-var fse = require('fs-extra2');
 var http = require('http');
 var url = require('url');
 var util = require('./util');
@@ -12,15 +10,10 @@ var isRunning = util.isRunning;
 var error = util.error;
 var warn = util.warn;
 var info = util.info;
+var readConfig = util.readConfig;
 var pluginPaths = getPluginPaths();
 var MAX_RULES_LEN = 1024 * 16;
 var options;
-
-function getHomedir() {
-  //默认设置为`~`，防止Linux在开机启动时Node无法获取homedir
-  return (typeof os.homedir == 'function' ? os.homedir() :
-    process.env[process.platform == 'win32' ? 'USERPROFILE' : 'HOME']) || '~';
-}
 
 function showStartWhistleTips(storage) {
   error('No running whistle, execute `w2 start' + (storage ? ' -S ' + storage : '')
@@ -87,17 +80,9 @@ function request(body, callback) {
 }
 
 module.exports = function(filepath, storage, force) {
-  var dataDir = path.resolve(getHomedir(), '.startingAppData');
-  var configFile = path.join(dataDir, encodeURIComponent('#' + (storage ? storage + '#' : '')));
-  if (!fs.existsSync(configFile)) {
-    return showStartWhistleTips(storage);
-  }
-  var pid;
-  try {
-    var config = fse.readJsonSync(configFile);
-    options = config.options; 
-    pid = options && config.pid;
-  } catch(e) {}
+  var config = readConfig(storage) || '';
+  options = config.options; 
+  var pid = options && config.pid;
   isRunning(pid, function(running) {
     if (!running) {
       return showStartWhistleTips(storage);
