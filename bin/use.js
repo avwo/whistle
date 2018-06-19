@@ -21,8 +21,8 @@ function getHomedir() {
 }
 
 function showStartWhistleTips(storage) {
-  console.log(colors.red('Please execute `w2 start' + (storage ? ' -S ' + storage : '')
-    + '` to start whistle first.'));
+  console.log(colors.red('No running whistle, execute `w2 start' + (storage ? ' -S ' + storage : '')
+    + '` to start whistle on the cli.'));
 }
 
 function handleRules(filepath, callback, port) {
