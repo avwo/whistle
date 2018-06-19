@@ -1,4 +1,5 @@
 var $ = require('jquery');
+var toByteArray = require('base64-js').toByteArray;
 var json2 = require('./components/json');
 var evalJson = require('./components/json/eval');
 
@@ -699,3 +700,45 @@ exports.toRegExp = function(regExp) {
   }
   return regExp;
 };
+
+function getPadding(len) {
+  return len > 0 ? new Array(len + 1).join('0') : '';
+}
+
+function padLeftZero(n, len) {
+  n = n.toString('16');
+  return getPadding(len - n.length) + n;
+}
+
+function getHexString(base64) {
+  try {
+    base64 = toByteArray(base64);
+  } catch(e) {
+    base64 = [];
+  }
+  var len = base64.length;
+  var offsetLen = Math.max(6, len.toString(16).length);
+  var str = 'Offset';
+  str = str + getPadding(offsetLen - str.length) + '  ';
+  var i, ch;
+  for (i = 0; i < 16; i++) {
+    str += ' ' + padLeftZero(i, 2);
+  }
+  var result = [str];
+  var rowsCount = Math.ceil(len / 16);
+  for (i = 0; i < rowsCount; i++) {
+    var j = i * 16;
+    var rowLen = Math.min(16 + j, len);
+    str = padLeftZero(rowLen, offsetLen) + '  ';
+    var char = '';
+    for (; j < rowLen; j++) {
+      ch = base64[j];
+      str += ' ' + padLeftZero(j, 2);
+      char += (ch > 31 && ch < 127) || ch > 159 ? String.fromCharCode(ch) : '.';
+    }
+    result.push(str + new Array((17 - char.length) * 3).join(' ') + char);
+  }
+  return result.join('\n');
+}
+
+exports.getHexString = getHexString;

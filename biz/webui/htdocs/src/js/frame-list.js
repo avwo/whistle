@@ -1,5 +1,7 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
+var decodeBase64 = require('js-base64').Base64.decode;
+var util = require('./util');
 
 var FilterInput = require('./filter-input');
 
@@ -88,12 +90,11 @@ var FrameList = React.createClass({
               }
             }
             if (item.data == null) {
-              item.data = item.text || '';
-              var bin = [];
-              for (var i = 0, len = item.bin.length; i < len; i += 2) {
-                bin.push(item.bin[i] + item.bin[i + 1]);
-              }
-              item.bin = bin.join(' ');
+              item.data = item.text = item.base64 || '';
+              try {
+                item.data = item.text = decodeBase64(item.base64);
+              } catch(e) {}
+              item.bin = util.getHexString(item.base64);
               if (item.data.length > 500) {
                 item.data = item.data.substring(0, 500) + '...';
               }
