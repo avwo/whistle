@@ -729,11 +729,11 @@ function getHexString(base64) {
   for (i = 0; i < rowsCount; i++) {
     var j = i * 16;
     var rowLen = Math.min(16 + j, len);
-    str = padLeftZero(rowLen, offsetLen) + '  ';
+    str = padLeftZero(Math.max(rowLen - 16, 0), offsetLen) + '  ';
     var char = '';
     for (; j < rowLen; j++) {
       ch = base64[j];
-      str += ' ' + padLeftZero(j, 2);
+      str += ' ' + padLeftZero(ch, 2);
       char += (ch > 31 && ch < 127) || ch > 159 ? String.fromCharCode(ch) : '.';
     }
     result.push(str + new Array((17 - char.length) * 3).join(' ') + char);
