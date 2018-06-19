@@ -1,3 +1,8 @@
+### v1.10.10
+1. feat: 支持显示图片
+2. feat: 通过 `w2 status [-S storage]` 或 `w2 --all` 显示当前whistle运行状态
+3. refactor: WebSocket请求贞数据二进制显示格式
+
 ### v1.10.9
 1. feat: 添加更新插件的按钮，点击该按钮弹出更新命令
 2. feat: 支持通过命令行 `w2 use` 或 `w2 enable` 获取当前目录 `.whistle.js` 输出的规则配置，具体参见：[命令行参数](http://wproxy.org/whistle/cli.html)
