@@ -1,34 +1,23 @@
 var path = require('path');
 var os = require('os');
-var util = require('util');
-var cp = require('child_process');
 var fs = require('fs');
 var colors = require('colors/safe');
 var fse = require('fs-extra2');
 var http = require('http');
 var url = require('url');
+var isRunning = require('./util').isRunning;
 var pkg = require('../package.json');
 var getPluginPaths = require('../lib/plugins/module-paths').getPaths;
 
 /*eslint no-console: "off"*/
 var pluginPaths = getPluginPaths();
 var MAX_RULES_LEN = 1024 * 16;
-var CHECK_RUNNING_CMD = process.platform === 'win32' ? 
-  'tasklist /fi "PID eq %s" | findstr /i "node.exe"'
-  : 'ps -f -p %s | grep "node"';
 var options;
 
 function getHomedir() {
   //默认设置为`~`，防止Linux在开机启动时Node无法获取homedir
   return (typeof os.homedir == 'function' ? os.homedir() :
     process.env[process.platform == 'win32' ? 'USERPROFILE' : 'HOME']) || '~';
-}
-
-function isRunning(pid, callback) {
-  pid ? cp.exec(util.format(CHECK_RUNNING_CMD, pid), 
-    function (err, stdout, stderr) {
-      callback(!err && !!stdout.toString().trim());
-    }) : callback();
 }
 
 function showStartWhistleTips(storage) {

@@ -6,6 +6,7 @@ var os = require('os');
 var config = require('../lib/config');
 var colors = require('colors/safe');
 var useRules = require('./use');
+var showStatus = require('./status');
 
 function getIpList() {
   var ipList = [];
@@ -137,7 +138,10 @@ program
   .option('-F, --frameCacheSize [frameCacheSize]', 'set the cache size of webSocket and socket\'s frames (512 by default)', String, undefined);
 
 var argv = process.argv;
-if (argv[2] === 'use' || argv[2] === 'enable') {
+var cmd = argv[2];
+if (cmd === 'status') {
+  showStatus.apply(null, [].slice.apply(argv).slice(3));
+} else if (cmd === 'use' || cmd === 'enable') {
   var index = argv.indexOf('--force');
   var force = index !== -1;
   if (force) {
