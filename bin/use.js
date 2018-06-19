@@ -1,15 +1,18 @@
 var path = require('path');
 var os = require('os');
 var fs = require('fs');
-var colors = require('colors/safe');
 var fse = require('fs-extra2');
 var http = require('http');
 var url = require('url');
-var isRunning = require('./util').isRunning;
+var util = require('./util');
 var pkg = require('../package.json');
 var getPluginPaths = require('../lib/plugins/module-paths').getPaths;
 
 /*eslint no-console: "off"*/
+var isRunning = util.isRunning;
+var error = util.error;
+var warn = util.warn;
+var info = util.info;
 var pluginPaths = getPluginPaths();
 var MAX_RULES_LEN = 1024 * 16;
 var options;
@@ -21,7 +24,7 @@ function getHomedir() {
 }
 
 function showStartWhistleTips(storage) {
-  console.log(colors.red('No running whistle, execute `w2 start' + (storage ? ' -S ' + storage : '')
+  console.log(error('No running whistle, execute `w2 start' + (storage ? ' -S ' + storage : '')
     + '` to start whistle on the cli.'));
 }
 
@@ -104,17 +107,17 @@ module.exports = function(filepath, storage, force) {
     var port = options.port = options.port > 0 ? options.port : pkg.port;
     handleRules(filepath, function(result) {
       if (!result) {
-        console.log(colors.red('The name and rules cannot be empty.'));
+        console.log(error('The name and rules cannot be empty.'));
         return;
       }
       var name = getString(result.name);
       if (!name || name.length > 64) {
-        console.log(colors.red('The name cannot be empty and the length cannot exceed 64 characters.'));
+        console.log(error('The name cannot be empty and the length cannot exceed 64 characters.'));
         return;
       }
       var rules = getString(result.rules);
       if (rules.length > MAX_RULES_LEN) {
-        console.log(colors.red('The rules cannot be empty and the size cannot exceed 16k.'));
+        console.log(error('The rules cannot be empty and the size cannot exceed 16k.'));
         return;
       }
       var setRules = function() {
@@ -123,7 +126,7 @@ module.exports = function(filepath, storage, force) {
           'rules=' + encodeURIComponent(rules)
         ].join('&');
         request(body, function() {
-          console.log(colors.green('Setting whistle[127.0.0.1:' + port + '] rules successful.'));
+          console.log(info('Setting whistle[127.0.0.1:' + port + '] rules successful.'));
         });
       };
       if (force) {
@@ -131,7 +134,7 @@ module.exports = function(filepath, storage, force) {
       }
       request('name=' + encodeURIComponent(name), function(data) {
         if (data.rules) {
-          console.log(colors.yellow('The rule already exists, to override it, you must add CLI option --force.'));
+          console.log(warn('The rule already exists, to override it, you must add CLI option --force.'));
           return;
         }
         setRules();
