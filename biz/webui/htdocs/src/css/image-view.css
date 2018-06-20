@@ -3,7 +3,8 @@
   white-space: nowrap;
   overflow: auto;
   text-align: center;
-  padding-top: 60px;
+  padding-top: 50px;
+  padding-bottom: 10px;
 }
 .w-image-view img {
   max-width: 100%;
