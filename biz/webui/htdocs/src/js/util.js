@@ -706,7 +706,7 @@ function getPadding(len) {
 }
 
 function padLeftZero(n, len) {
-  n = n.toString('16');
+  n = n.toString('16').toUpperCase();
   return getPadding(len - n.length) + n;
 }
 
