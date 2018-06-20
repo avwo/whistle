@@ -64,6 +64,9 @@ program.setConfig({
 });
 
 program
+  .command('status')
+  .description('Show the running status of whistle');
+program
   .command('use/enable [filepath]')
   .description('Set rules from a specified js file (.whistle.js by default)');
   
