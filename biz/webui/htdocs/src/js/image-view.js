@@ -11,7 +11,7 @@ var ImageView = React.createClass({
     var props = this.props;
     return (
       <div className={'fill w-image-view' + (props.hide ? ' hide' : '')}>
-        <img src={props.imgSrc} />
+        <img src={props.imgSrc || undefined} />
       </div>
     );
   }
