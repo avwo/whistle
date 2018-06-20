@@ -82,7 +82,7 @@ var ReqDetail = React.createClass({
         if (req.size < 5120) {
           tips = { message: 'No Content' };
         }  else {
-          tips = { message: 'Request data too large to display' };
+          tips = { message: 'Request data too large to show' };
         }
       }
     }
