@@ -1,4 +1,5 @@
 var $ = require('jquery');
+var decodeBase64 = require('js-base64').Base64.decode;
 var createCgi = require('./cgi');
 var util = require('./util');
 var NetworkModal = require('./network-modal');
@@ -575,15 +576,16 @@ function isSocket(item) {
 
 function setReqData(item) {
   var url = item.url;
-  item.method = item.req.method;
+  var req = item.req;
+  var res = item.res;
+  item.method = req.method;
   var end = item.endTime;
   var defaultValue = end ? '' : '-';
-  var res = item.res;
   var resHeaders = res.headers || '';
   item.hostIp = res.ip || defaultValue;
-  item.clientIp = item.req.ip || '127.0.0.1';
+  item.clientIp = req.ip || '127.0.0.1';
   item.date = item.date || new Date(item.startTime).toLocaleString();
-  item.clientPort = item.req.port;
+  item.clientPort = req.port;
   item.serverPort = item.res.port;
   item.contentEncoding = resHeaders['content-encoding'];
   item.body = res.size == null ? defaultValue : res.size;
@@ -604,7 +606,8 @@ function setReqData(item) {
       }
     }
   }
-  setRawHeaders(item.req);
+  
+  setRawHeaders(req);
   setRawHeaders(res);
 
   if (!item.path) {
