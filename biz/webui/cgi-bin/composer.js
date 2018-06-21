@@ -187,7 +187,7 @@ module.exports = function(req, res) {
 
   var body = req.body.body;
   if (body && (isWs || isConn || util.hasRequestBody(options))) {
-    body = options.body = util.toBuffer(body);
+    body = options.body = util.toBuffer(body, util.getCharset(headers['content-type']));
     if ('content-length' in headers) {
       if (isWs || isConn) {
         delete headers['content-length'];
