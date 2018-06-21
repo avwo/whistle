@@ -1,5 +1,4 @@
 var $ = require('jquery');
-var decodeBase64 = require('js-base64').Base64.decode;
 var createCgi = require('./cgi');
 var util = require('./util');
 var NetworkModal = require('./network-modal');
@@ -606,7 +605,7 @@ function setReqData(item) {
       }
     }
   }
-  
+
   setRawHeaders(req);
   setRawHeaders(res);
 
