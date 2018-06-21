@@ -63,8 +63,8 @@ function handleConnect(options) {
     if (options.body) {
       socket.write(options.body);
     }
-    var sendData = function(data, isBinary) {
-      data = util.toBuffer(data);
+    var sendData = function(data) {
+      data = util.toBuffer(data, getCharset(options.headers));
       if (!data || !data.length) {
         return;
       }
@@ -105,7 +105,7 @@ function handleWebSocket(options) {
         socket.headers = parseHeaders(str.slice(0, index));
         var sender = getSender(socket);
         var sendData = function(data, isBinary) {
-          data = util.toBuffer(data);
+          data = util.toBuffer(data, getCharset(socket.headers) || getCharset(options.headers));
           if (!data || !data.length) {
             return;
           }
@@ -143,6 +143,10 @@ function handleHttp(options) {
     res.on('error', util.noop);
     drain(res);
   }).on('error', util.noop).end(options.body);
+}
+
+function getCharset(headers) {
+  return util.getCharset(headers['content-type']);
 }
 
 module.exports = function(req, res) {
@@ -187,7 +191,7 @@ module.exports = function(req, res) {
 
   var body = req.body.body;
   if (body && (isWs || isConn || util.hasRequestBody(options))) {
-    body = options.body = util.toBuffer(body, util.getCharset(headers['content-type']));
+    body = options.body = util.toBuffer(body, getCharset(headers));
     if ('content-length' in headers) {
       if (isWs || isConn) {
         delete headers['content-length'];
