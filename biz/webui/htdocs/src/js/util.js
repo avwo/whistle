@@ -738,7 +738,12 @@ function getHexString(base64) {
 
 var COMP_RE = /%[a-f\d]{2}|./ig;
 var SPACE_RE = /\+/g;
-var gbkDecoder = window.TextDecoder ? new TextDecoder('gbk') : null;
+var gbkDecoder;
+if (window.TextDecoder) {
+  try {
+    gbkDecoder = new TextDecoder('GB18030');
+  } catch(e) {}
+}
 
 function decodeURIComponentSafe(str) {
   if (!str || str !== 'string') {
