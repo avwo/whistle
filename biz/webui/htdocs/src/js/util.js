@@ -736,8 +736,6 @@ function getHexString(base64) {
   return result.join('\n');
 }
 
-exports.getHexString = getHexString;
-
 var COMP_RE = /%[a-f\d]{2}|./ig;
 var SPACE_RE = /\+/g;
 var gbkDecoder = window.TextDecoder ? new TextDecoder('gbk') : null;
