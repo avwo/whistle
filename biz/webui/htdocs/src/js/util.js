@@ -1,7 +1,9 @@
 var $ = require('jquery');
 var toByteArray = require('base64-js').toByteArray;
+var decodeBase64 = require('js-base64').Base64.decode;
 var json2 = require('./components/json');
 var evalJson = require('./components/json/eval');
+var isUtf8 = require('./is-utf8');
 
 var BIG_NUM_RE = /[:\[][\s\n\r]*-?[\d.]{16,}[\s\n\r]*[,\}\]]/;
 var dragCallbacks = {};
@@ -742,3 +744,49 @@ function getHexString(base64) {
 }
 
 exports.getHexString = getHexString;
+
+var COMP_RE = /%[a-f\d]{2}|./ig;
+var SPACE_RE = /\+/g;
+var gbkDecoder = window.TextDecoder ? new TextDecoder('gbk') : null;
+
+function decodeURIComponent(str) {
+  var result = str.replace(SPACE_RE, ' ');
+  try {
+    return decodeURIComponent(result);
+  } catch(e) {}
+  if (gbkDecoder) {
+    try {
+      var arr = [];
+      result.replace(COMP_RE, function(code) {
+        if (code.length > 1) {
+          arr.push(parseInt(code.substring(1), 16));
+        } else {
+          arr.push(String.fromCharCode(code));
+        }
+      });
+      return gbkDecoder.decode(new window.Uint8Array(arr));
+    } catch(e) {}
+  }
+  return str;
+}
+
+exports.decodeURIComponent = decodeURIComponent;
+
+exports.decodeBase64 = function(base64) {
+  var arr = [];
+  try {
+    arr = toByteArray(base64);
+  } catch(e) {}
+  var result = {
+    hex: getHexString(arr),
+    text: base64
+  };
+  if (!isUtf8(arr)) {
+    try {
+      result.text = gbkDecoder.decode(arr);
+    } catch(e) {}
+  }
+  try {
+    result.text = decodeBase64(base64);
+  } catch(e) {}
+};

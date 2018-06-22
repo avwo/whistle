@@ -1,4 +1,7 @@
 module.exports = function(buffer, isFrame) {
+  if (!window.TextDecoder) {
+    return true;
+  }
   for (var i = 0, len = buffer.length; i < len; i++) {
     var byte = buffer[i];
     if (byte == 0x09 || byte == 0x0A || byte == 0x0D ||
