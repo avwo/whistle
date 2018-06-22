@@ -89,7 +89,7 @@ var FrameList = React.createClass({
               }
             }
             if (item.data == null) {
-              var result = util.decodeBase64(item.base64);
+              var result = util.decodeBase64(item.base64, true);
               item.data = item.text = result.text;
               item.bin = result.hex;
               if (item.data.length > 500) {

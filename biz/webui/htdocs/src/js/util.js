@@ -766,7 +766,7 @@ function decodeURIComponentSafe(str) {
 
 exports.decodeURIComponentSafe = decodeURIComponentSafe;
 
-exports.decodeBase64 = function(base64) {
+exports.decodeBase64 = function(base64, isFrame) {
   var arr = [];
   try {
     arr = toByteArray(base64);
@@ -775,7 +775,7 @@ exports.decodeBase64 = function(base64) {
     hex: getHexString(arr),
     text: base64
   };
-  if (!isUtf8(arr)) {
+  if (!isUtf8(arr, isFrame)) {
     try {
       result.text = gbkDecoder.decode(arr);
     } catch(e) {}
