@@ -125,12 +125,8 @@ var filterEmptyStr = function(item) {
 function getServerIp(modal) {
   var ip = modal.hostIp;
   if (!modal.serverIp && ip) {
-    var realEnv = getProperty(modal, 'res.headers.x-whistle-response-for');
+    var realEnv = decodeURIComponentSafe(getProperty(modal, 'res.headers.x-whistle-response-for'));
     if (realEnv) {
-      realEnv += '';
-      try {
-        realEnv = decodeURIComponent(realEnv);
-      } catch(e) {}
       if (realEnv !== ip && realEnv.trim().split(/\s*,\s*/).indexOf(ip) === -1) {
         ip = realEnv + ',' + ip;
       } else {
@@ -280,19 +276,16 @@ exports.parseQueryString = function(str, delimiter, seperator, decode, donotAllo
     var key = pair[0];
     var value = pair.slice(1).join('=');
     if (key || value) {
+      var val = value;
+      var k = key;
+      if (decode == decodeURIComponent) {
+        decode = decodeURIComponentSafe;
+      }
       try {
-        var val = value;
-        var k = key;
-        if (decode == decodeURIComponent) {
-          val = value.replace(/\+/g, ' ');
-          k = k.replace(/\+/g, ' ');
-        }
-        try {
-          value = decode ? decode(val) : value;
-        } catch(e) {}
-        try {
-          key = decode ? decode(k) : key;
-        } catch(e) {}
+        value = decode ? decode(val) : value;
+      } catch(e) {}
+      try {
+        key = decode ? decode(k) : key;
       } catch(e) {}
       if (!donotAllowRepeat && (key in result)) {
         var curVal = result[key];
@@ -749,7 +742,10 @@ var COMP_RE = /%[a-f\d]{2}|./ig;
 var SPACE_RE = /\+/g;
 var gbkDecoder = window.TextDecoder ? new TextDecoder('gbk') : null;
 
-function decodeURIComponent(str) {
+function decodeURIComponentSafe(str) {
+  if (!str || str !== 'string') {
+    return '';
+  }
   var result = str.replace(SPACE_RE, ' ');
   try {
     return decodeURIComponent(result);
@@ -770,7 +766,7 @@ function decodeURIComponent(str) {
   return str;
 }
 
-exports.decodeURIComponent = decodeURIComponent;
+exports.decodeURIComponentSafe = decodeURIComponentSafe;
 
 exports.decodeBase64 = function(base64) {
   var arr = [];
