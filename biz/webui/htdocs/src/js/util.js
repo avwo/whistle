@@ -788,4 +788,5 @@ exports.decodeBase64 = function(base64, isFrame) {
   try {
     result.text = decodeBase64(base64);
   } catch(e) {}
+  return result;
 };
