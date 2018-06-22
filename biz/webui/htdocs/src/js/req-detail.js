@@ -47,13 +47,14 @@ var ReqDetail = React.createClass({
     }
     var name = btn && btn.name;
     var modal = this.props.modal;
-    var req, headers, rawHeaders, cookies, body, raw, query, form, tips, json, defaultName;
+    var req, headers, rawHeaders, cookies, body, raw, query, form, tips, json, defaultName, bin;
     body = raw = '';
     if (modal) {
       req = modal.req;
       rawHeaders = req.rawHeaders;
       defaultName = util.getFilename(modal, true);
       body = req.body || '';
+      bin = req.bin || '';
       headers = req.headers;
       if (req.json) {
         json = req.json;
@@ -115,7 +116,7 @@ var ReqDetail = React.createClass({
             </div>
           </div>
         </Divider> : ''}
-        {state.initedHexView ? <Textarea defaultName={defaultName} value={raw} className="fill n-monospace w-detail-request-hex" hide={name != BTNS[4].name} /> : ''}
+        {state.initedHexView ? <Textarea defaultName={defaultName} value={bin} className="fill n-monospace w-detail-request-hex" hide={name != BTNS[4].name} /> : ''}
         {state.initedCookies ? <div className={'fill w-detail-request-cookies' + (name == BTNS[5].name ? '' : ' hide')}><Properties modal={cookies} enableViewSource="1" /></div> : ''}
         {state.initedRaw ? <Textarea defaultName={defaultName} value={raw} className="fill w-detail-request-raw" hide={name != BTNS[6].name} /> : ''}
       </div>

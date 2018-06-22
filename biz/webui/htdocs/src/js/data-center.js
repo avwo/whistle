@@ -605,7 +605,17 @@ function setReqData(item) {
       }
     }
   }
-
+  var result;
+  if (!req.body && req.base64) {
+    result = util.decodeBase64(req.base64);
+    req.body = result.text;
+    req.bin = result.hex;
+  }
+  if (!res.body && res.base64) {
+    result = util.decodeBase64(res.base64);
+    res.body = result.text;
+    res.bin = result.hex;
+  }
   setRawHeaders(req);
   setRawHeaders(res);
 
