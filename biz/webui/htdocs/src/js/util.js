@@ -705,13 +705,8 @@ function padLeftZero(n, len) {
   return getPadding(len - n.length) + n;
 }
 
-function getHexString(base64) {
-  try {
-    base64 = toByteArray(base64);
-  } catch(e) {
-    base64 = [];
-  }
-  var len = base64.length;
+function getHexString(arr) {
+  var len = arr.length;
   var offsetLen = Math.max(6, len.toString(16).length);
   var str = 'Offset';
   str = str + getPadding(offsetLen - str.length) + '  ';
@@ -727,7 +722,7 @@ function getHexString(base64) {
     str = padLeftZero(Math.max(rowLen - 16, 0), offsetLen) + '  ';
     var char = '';
     for (; j < rowLen; j++) {
-      ch = base64[j];
+      ch = arr[j];
       str += ' ' + padLeftZero(ch, 2);
       char += (ch > 31 && ch < 127) || ch > 159 ? String.fromCharCode(ch) : '.';
     }
