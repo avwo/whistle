@@ -76,6 +76,8 @@ proto.filter = function(newList) {
       list.forEach(function(item) {
         var reqBody = item.req.body;
         var resBody = item.res.body;
+        util.initReqData(item.req);
+        util.initResData(item.res);
         item.hide = self.checkNot(!self.checkKeywork(reqBody) && !self.checkKeywork(resBody));
       });
       break;

@@ -66,6 +66,7 @@ var ResDetail = React.createClass({
       cId = modal.cId;
       defaultName = util.getFilename(modal, true);
       rawHeaders = res.rawHeaders;
+      util.initResData(res);
       body = res.body || '';
       bin = res.bin || '';
       if (!modal.reqError && !modal.resError) {

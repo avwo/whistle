@@ -1,6 +1,6 @@
 var $ = require('jquery');
 var toByteArray = require('base64-js').toByteArray;
-var decodeBase64 = require('js-base64').Base64.decode;
+var base64Decode = require('js-base64').Base64.decode;
 var json2 = require('./components/json');
 var evalJson = require('./components/json/eval');
 var isUtf8 = require('./is-utf8');
@@ -741,7 +741,7 @@ if (window.TextDecoder) {
 }
 
 function decodeURIComponentSafe(str) {
-  if (!str || str !== 'string') {
+  if (!str || typeof str !== 'string') {
     return '';
   }
   var result = str.replace(SPACE_RE, ' ');
@@ -766,22 +766,53 @@ function decodeURIComponentSafe(str) {
 
 exports.decodeURIComponentSafe = decodeURIComponentSafe;
 
-exports.decodeBase64 = function(base64, isFrame) {
+function decodeBase64(base64, isFrame) {
   var arr = [];
   try {
     arr = toByteArray(base64);
   } catch(e) {}
   var result = {
-    hex: getHexString(arr),
-    text: base64
+    hex: getHexString(arr)
   };
   if (!isUtf8(arr, isFrame)) {
     try {
       result.text = gbkDecoder.decode(arr);
     } catch(e) {}
   }
-  try {
-    result.text = decodeBase64(base64);
-  } catch(e) {}
+  if (!result.text) {
+    try {
+      result.text = base64Decode(base64);
+    } catch(e) {
+      result.text = base64;
+    }
+  }
   return result;
+}
+exports.decodeBase64 = decodeBase64;
+
+exports.initReqData = function(req) {
+  if (req.body || !req.base64) {
+    return;
+  }
+  var result = decodeBase64(req.base64);
+  req.body = result.text;
+  req.bin = result.hex;
+};
+
+exports.initResData = function(res) {
+  if (res.body) {
+    if (res.isImage) {
+      var arr = [];
+      try {
+        arr = toByteArray(res.body.substring(res.body.indexOf(';base64,') + 8));
+      } catch(e) {}
+      res.bin = getHexString(arr);
+    }
+    return;
+  }
+  if (res.base64) {
+    var result = decodeBase64(res.base64);
+    res.body = result.text;
+    res.bin = result.hex;
+  } 
 };
