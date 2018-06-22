@@ -18,6 +18,7 @@ var BTNS = [
   {name: 'JSON'},
   {name: 'Frames'},
   {name: 'ImageView'},
+  {name: 'HexView'},
   {name: 'Cookies'},
   {name: 'Raw'}
 ];
@@ -32,6 +33,7 @@ var ResDetail = React.createClass({
       initedImageView: false,
       initedCookies: false,
       initedJSON: false,
+      initedHexView: false,
       initedRaw: false
     };
   },
@@ -149,8 +151,9 @@ var ResDetail = React.createClass({
         {state.initedJSON ? <JSONViewer defaultName={defaultName} data={json} hide={name != BTNS[2].name} /> : undefined}
         {state.initedFrames ? <Frames data={modal} cId={cId} frames={frames} hide={name != BTNS[3].name} /> : undefined}
         {state.initedImageView ? <ImageView imgSrc={imgSrc} hide={name != BTNS[4].name} /> : undefined}
-        {state.initedCookies ? <div className={'fill w-detail-response-cookies' + (name == BTNS[5].name ? '' : ' hide')}>{cookies && cookies.length ? <Table head={COOKIE_HEADERS} modal={cookies} /> : undefined}</div> : undefined}
-        {state.initedRaw ? <Textarea defaultName={defaultName} value={raw} className="fill w-detail-response-raw" hide={name != BTNS[6].name} /> : undefined}
+        {state.initedHexView ? <Textarea defaultName={defaultName} value={raw} className="fill w-detail-response-hex" hide={name != BTNS[5].name} /> : undefined}
+        {state.initedCookies ? <div className={'fill w-detail-response-cookies' + (name == BTNS[6].name ? '' : ' hide')}>{cookies && cookies.length ? <Table head={COOKIE_HEADERS} modal={cookies} /> : undefined}</div> : undefined}
+        {state.initedRaw ? <Textarea defaultName={defaultName} value={raw} className="fill w-detail-response-raw" hide={name != BTNS[7].name} /> : undefined}
       </div>
     );
   }

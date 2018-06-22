@@ -10,7 +10,8 @@ var BtnGroup = require('./btn-group');
 var JSONViewer = require('./json-viewer');
 var Textarea = require('./textarea');
 
-var BTNS = [{name: 'Headers'}, {name: 'TextView'}, {name: 'JSON'}, {name: 'WebForms'}, {name: 'Cookies'}, {name: 'Raw'}];
+var BTNS = [{name: 'Headers'}, {name: 'TextView'}, {name: 'JSON'},
+  {name: 'WebForms'}, {name: 'HexView'}, {name: 'Cookies'}, {name: 'Raw'}];
 
 var ReqDetail = React.createClass({
   getInitialState: function() {
@@ -20,6 +21,7 @@ var ReqDetail = React.createClass({
       initedCookies: false,
       initedWebForms: false,
       initedJSON: false,
+      initedHexView: false,
       initedRaw: false
     };
   },
@@ -113,8 +115,9 @@ var ReqDetail = React.createClass({
             </div>
           </div>
         </Divider> : ''}
-        {state.initedCookies ? <div className={'fill w-detail-request-cookies' + (name == BTNS[4].name ? '' : ' hide')}><Properties modal={cookies} enableViewSource="1" /></div> : ''}
-        {state.initedRaw ? <Textarea defaultName={defaultName} value={raw} className="fill w-detail-request-raw" hide={name != BTNS[5].name} /> : ''}
+        {state.initedHexView ? <Textarea defaultName={defaultName} value={raw} className="fill n-monospace w-detail-request-hex" hide={name != BTNS[4].name} /> : ''}
+        {state.initedCookies ? <div className={'fill w-detail-request-cookies' + (name == BTNS[5].name ? '' : ' hide')}><Properties modal={cookies} enableViewSource="1" /></div> : ''}
+        {state.initedRaw ? <Textarea defaultName={defaultName} value={raw} className="fill w-detail-request-raw" hide={name != BTNS[6].name} /> : ''}
       </div>
     );
   }
