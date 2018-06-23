@@ -354,7 +354,7 @@ var parseJ = function (str, resolve) {
 exports.evalJson = evalJson;
 
 function parseJSON(str, resolve) {
-  if (!str || !(str = str.trim())) {
+  if (typeof str !== 'string' || !(str = str.trim())) {
     return;
   }
   if (resolve) {
