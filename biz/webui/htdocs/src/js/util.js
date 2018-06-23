@@ -171,37 +171,37 @@ exports.getClasses = function getClasses(obj) {
 };
 
 function getRawType(type) {
+  if (type && typeof type != 'string') {
+    type = type['content-type'] || type.contentType;
+  }
   return typeof type === 'string' ? type.split(';')[0].toLowerCase() : '';
 }
 
-function getContentType(contentType) {
-  if (contentType && typeof contentType != 'string') {
-    contentType = contentType['content-type'] || contentType.contentType;
-  }
-  contentType = getRawType(contentType);
-  if (contentType) {
-    if (contentType.indexOf('javascript') != -1) {
+function getContentType(type) {
+  type = getRawType(type);
+  if (type) {
+    if (type.indexOf('javascript') != -1) {
       return 'JS';
     }
-    if (contentType.indexOf('css') != -1) {
+    if (type.indexOf('css') != -1) {
       return 'CSS';
     }
-    if (contentType.indexOf('html') != -1) {
+    if (type.indexOf('html') != -1) {
       return 'HTML';
     }
-    if (contentType.indexOf('json') != -1) {
+    if (type.indexOf('json') != -1) {
       return 'JSON';
     }
-    if (contentType.indexOf('xml') != -1) {
+    if (type.indexOf('xml') != -1) {
       return 'XML';
     }
-    if (contentType.indexOf('text/') != -1) {
+    if (type.indexOf('text/') != -1) {
       return 'TEXT';
     }
-    if (contentType.index('application/x-www-form-urlencoded') !== -1) {
+    if (type.indexOf('application/x-www-form-urlencoded') !== -1) {
       return 'FORM';
     }
-    if (contentType.indexOf('image') != -1) {
+    if (type.indexOf('image') != -1) {
       return 'IMG';
     }
   }
@@ -799,20 +799,25 @@ exports.initReqData = function(req) {
   req.bin = result.hex;
 };
 
-exports.initResData = function(res) {
-  if (res.body) {
-    if (res.isImage) {
-      var arr = [];
-      try {
-        arr = toByteArray(res.body.substring(res.body.indexOf(';base64,') + 8));
-      } catch(e) {}
-      res.bin = getHexString(arr);
-    }
-    return;
+function getMediaType(res) {
+  var type = getRawType(res.headers);
+  if (!type || getContentType(type) !== 'IMG') {
+    return '';
   }
-  if (res.base64) {
+  return 'data:' + type + ';base64,';
+}
+
+exports.initResData = function(res) {
+  if (res.body || !res.base64) {
+    return;
+  } 
+  var type = getMediaType(res);
+  if (type) {
+    res.body = type + res.base64;
+    res.bin = getHexString(res.base64);
+  } else {
     var result = decodeBase64(res.base64);
     res.body = result.text;
     res.bin = result.hex;
-  } 
+  }
 };

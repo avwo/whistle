@@ -151,7 +151,8 @@ var FILTER_TYPES = {
   s: 'statusCode',
   i: 'ip',
   h: 'headers',
-  b: 'body'
+  b: 'body',
+  c: 'body'
 };
 function parseFilterText() {
   var filterText = hasFilterText();
