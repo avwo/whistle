@@ -198,6 +198,9 @@ function getContentType(contentType) {
     if (contentType.indexOf('text/') != -1) {
       return 'TEXT';
     }
+    if (contentType.index('application/x-www-form-urlencoded') !== -1) {
+      return 'FORM';
+    }
     if (contentType.indexOf('image') != -1) {
       return 'IMG';
     }
