@@ -806,8 +806,8 @@ exports.initReqData = function(req, requiredText) {
   if (req.body || !req.base64) {
     return;
   }
-  var type = getMediaType(req);
-  if (type && requiredText) {
+  var type = requiredText && getMediaType(req);
+  if (type) {
     return;
   }
   var result = decodeBase64(req.base64);
