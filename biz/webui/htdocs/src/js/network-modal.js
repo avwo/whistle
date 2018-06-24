@@ -74,10 +74,10 @@ proto.filter = function(newList) {
     case 'b':
     case 'body':
       list.forEach(function(item) {
-        var reqBody = item.req.body;
-        var resBody = item.res.body;
         util.initReqData(item.req, true);
         util.initResData(item.res, true);
+        var reqBody = item.req.body;
+        var resBody = item.res.body;
         item.hide = self.checkNot(!self.checkKeywork(reqBody) && !self.checkKeywork(resBody));
       });
       break;
