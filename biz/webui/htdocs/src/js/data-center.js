@@ -145,7 +145,7 @@ function getNetworkColumns() {
 
 exports.getNetworkColumns = getNetworkColumns;
 
-var FILTER_TYPES_RE = /^(m|s|i|h|b):/;
+var FILTER_TYPES_RE = /^(m|s|i|h|b|c):/;
 var FILTER_TYPES = {
   m: 'method',
   s: 'statusCode',
@@ -373,6 +373,10 @@ function filterData(obj, item) {
   }
   if (!checkFiled(obj.ip, joinString(item.req.ip, item.res.ip))) {
     return false;
+  }
+  if (obj.body) {
+    util.initReqData(item.req, true);
+    util.initResData(item.res, true);
   }
   if (!checkFiled(obj.body, joinString(item.req.body, item.res.body))) {
     return false;

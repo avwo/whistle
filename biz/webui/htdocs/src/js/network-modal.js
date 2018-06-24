@@ -25,7 +25,7 @@ var proto = NetworkModal.prototype;
 proto.search = function(keyword) {
   this._type = 'url';
   this._keyword = typeof keyword != 'string' ? '' : keyword.trim();
-  if (this._keyword && /^(url|u|content|c|headers|h|ip|i|status|result|s|r|method|m|type|t):(.*)$/.test(keyword)) {
+  if (this._keyword && /^(url|u|content|c|b|body|headers|h|ip|i|status|result|s|r|method|m|type|t):(.*)$/.test(keyword)) {
     this._type = RegExp.$1;
     this._keyword = RegExp.$2.trim();
   }
@@ -76,8 +76,8 @@ proto.filter = function(newList) {
       list.forEach(function(item) {
         var reqBody = item.req.body;
         var resBody = item.res.body;
-        util.initReqData(item.req);
-        util.initResData(item.res);
+        util.initReqData(item.req, true);
+        util.initResData(item.res, true);
         item.hide = self.checkNot(!self.checkKeywork(reqBody) && !self.checkKeywork(resBody));
       });
       break;

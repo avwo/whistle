@@ -198,7 +198,8 @@ function getContentType(type) {
     if (type.indexOf('text/') != -1) {
       return 'TEXT';
     }
-    if (type.indexOf('application/x-www-form-urlencoded') !== -1) {
+    if (type.indexOf('application/x-www-form-urlencoded') !== -1
+      || type.indexOf('multipart/form-data') !== -1) {
       return 'FORM';
     }
     if (type.indexOf('image') != -1) {
@@ -210,13 +211,16 @@ function getContentType(type) {
 }
 
 exports.getContentType = getContentType;
-exports.isText = function(contentType) {
+
+function isText(contentType) {
   if (!contentType) {
     return true;
   }
   contentType = getContentType(contentType);
   return contentType && contentType !== 'IMG';
-};
+}
+
+exports.isText = isText;
 
 function getHost(url) {
   var start = url.indexOf(':\/\/');
@@ -790,8 +794,20 @@ function decodeBase64(base64, isFrame) {
 }
 exports.decodeBase64 = decodeBase64;
 
-exports.initReqData = function(req) {
+function getMediaType(res) {
+  var type = getRawType(res.headers);
+  if (!type || getContentType(type) !== 'IMG') {
+    return '';
+  }
+  return type;
+}
+
+exports.initReqData = function(req, requiredText) {
   if (req.body || !req.base64) {
+    return;
+  }
+  var type = getMediaType(req);
+  if (type && requiredText) {
     return;
   }
   var result = decodeBase64(req.base64);
@@ -799,22 +815,16 @@ exports.initReqData = function(req) {
   req.bin = result.hex;
 };
 
-function getMediaType(res) {
-  var type = getRawType(res.headers);
-  if (!type || getContentType(type) !== 'IMG') {
-    return '';
-  }
-  return 'data:' + type + ';base64,';
-}
-
-exports.initResData = function(res) {
+exports.initResData = function(res, requiredText) {
   if (res.body || !res.base64) {
     return;
   } 
   var type = getMediaType(res);
   if (type) {
-    res.body = type + res.base64;
-    res.bin = getHexString(res.base64);
+    if (!requiredText) {
+      res.body = 'data:' + type + ';base64,' + res.base64;
+      res.bin = getHexString(res.base64);
+    }
   } else {
     var result = decodeBase64(res.base64);
     res.body = result.text;
