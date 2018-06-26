@@ -705,7 +705,7 @@ function getPadding(len) {
 }
 
 function padLeftZero(n, len) {
-  n = n.toString('16').toUpperCase();
+  n = n.toString(16).toUpperCase();
   return getPadding(len - n.length) + n;
 }
 
@@ -770,11 +770,15 @@ function decodeURIComponentSafe(str) {
 
 exports.decodeURIComponentSafe = decodeURIComponentSafe;
 
-function decodeBase64(base64, isFrame) {
-  var arr = [];
+function base64toBytes(base64) {
   try {
-    arr = toByteArray(base64);
+    return toByteArray(base64);
   } catch(e) {}
+  return [];
+}
+
+function decodeBase64(base64, isFrame) {
+  var arr = base64toBytes(base64);
   var result = {
     hex: getHexString(arr)
   };
@@ -809,7 +813,7 @@ function initData(data, isReq) {
   var type = !isReq && getMediaType(data);
   if (type) {
     data.body = 'data:' + type + ';base64,' + data.base64;
-    data.hex = getHexString(data.base64);
+    data.hex = getHexString(base64toBytes(data.base64));
   } else {
     var result = decodeBase64(data.base64);
     data.body = result.text;
