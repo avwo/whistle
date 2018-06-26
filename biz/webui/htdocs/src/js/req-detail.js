@@ -53,9 +53,8 @@ var ReqDetail = React.createClass({
       req = modal.req;
       rawHeaders = req.rawHeaders;
       defaultName = util.getFilename(modal, true);
-      util.initReqData(req);
-      body = req.body || '';
-      bin = req.bin || '';
+      body = util.getBody(req, true);
+      bin = util.getHex(req);
       headers = req.headers;
       if (req.json) {
         json = req.json;

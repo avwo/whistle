@@ -802,32 +802,30 @@ function getMediaType(res) {
   return type;
 }
 
-exports.initReqData = function(req, requiredText) {
-  if (req.body || !req.base64) {
+function initData(data, isReq) {
+  if ((data.body && data.hex) || !data.base64) {
     return;
   }
-  var type = requiredText && getMediaType(req);
+  var type = !isReq && getMediaType(data);
   if (type) {
-    return;
+    data.body = 'data:' + type + ';base64,' + data.base64;
+    data.hex = getHexString(data.base64);
+  } else {
+    var result = decodeBase64(data.base64);
+    data.body = result.text;
+    data.hex = result.hex;
   }
-  var result = decodeBase64(req.base64);
-  req.body = result.text;
-  req.bin = result.hex;
+}
+
+exports.getJson = function(data) {
+
+};
+exports.getBody = function(data, isReq) {
+  initData(data, isReq);
+  return data.body || '';
 };
 
-exports.initResData = function(res, requiredText) {
-  if (res.body || !res.base64) {
-    return;
-  } 
-  var type = getMediaType(res);
-  if (type) {
-    if (!requiredText) {
-      res.body = 'data:' + type + ';base64,' + res.base64;
-      res.bin = getHexString(res.base64);
-    }
-  } else {
-    var result = decodeBase64(res.base64);
-    res.body = result.text;
-    res.bin = result.hex;
-  }
+exports.getHex = function(data) {
+  initData(data);
+  return data.hex || '';
 };

@@ -118,7 +118,7 @@ var JsonViewer = React.createClass({
     if (value && viewSource) {
       var exceed = value.length - MAX_LENGTH;
       if (exceed > 512) {
-        value = value.substring(0, MAX_LENGTH) + '...\r\n\r\n(' + exceed + ' characters left, you can click on the Edit button in the upper right corner to view all)\r\n';
+        value = value.substring(0, MAX_LENGTH) + '...\r\n\r\n(' + exceed + ' characters left, you can click on the ViewAll button in the upper right corner to view all)\r\n';
       }
     }
     return (

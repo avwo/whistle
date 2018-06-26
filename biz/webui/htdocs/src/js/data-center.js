@@ -371,20 +371,21 @@ function filterData(obj, item) {
   if (!checkFiled(obj.method, item.req.method)) {
     return false;
   }
-  if (!checkFiled(obj.ip, joinString(item.req.ip, item.res.ip))) {
-    return false;
+  if (obj.ip) {
+    if (!checkFiled(obj.ip, joinString(item.req.ip, item.res.ip))) {
+      return false;
+    }
   }
   if (obj.body) {
-    util.initReqData(item.req, true);
-    util.initResData(item.res, true);
+    if (!checkFiled(obj.body, joinString(util.getBody(item.req, true), util.getBody(item.res)))) {
+      return false;
+    }
   }
-  if (!checkFiled(obj.body, joinString(item.req.body, item.res.body))) {
-    return false;
-  }
-
-  if (!checkFiled(obj.headers, joinString(util.objectToString(item.req.headers),
-    util.objectToString(item.res.headers)), true)) {
-    return false;
+  if (obj.headers) {
+    if (!checkFiled(obj.headers, joinString(util.objectToString(item.req.headers),
+      util.objectToString(item.res.headers)), true)) {
+      return false;
+    }
   }
   return true;
 }
