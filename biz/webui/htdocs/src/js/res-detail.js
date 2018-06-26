@@ -14,11 +14,11 @@ var ImageView = require('./image-view');
 var JSONViewer = require('./json-viewer');
 var BTNS = [
   {name: 'Headers'},
+  {name: 'Frames'},
   {name: 'TextView'},
   {name: 'JSONView'},
-  {name: 'Frames'},
-  {name: 'ImageView'},
   {name: 'HexView'},
+  {name: 'ImageView'},
   {name: 'Cookies'},
   {name: 'Raw'}
 ];
@@ -148,11 +148,11 @@ var ResDetail = React.createClass({
         + (util.getBoolean(this.props.hide) ? ' hide' : '')}>
         <BtnGroup onClick={this.onClickBtn} btns={BTNS} />
         {state.initedHeaders ? <div className={'fill w-detail-response-headers' + (name == BTNS[0].name ? '' : ' hide')}><Properties modal={rawHeaders || headers} enableViewSource="1" /></div> : undefined}
-        {state.initedTextView ? <Textarea defaultName={defaultName} tips={tips} value={body} className="fill w-detail-response-textview" hide={name != BTNS[1].name} /> : undefined}
-        {state.initedJSONView ? <JSONViewer defaultName={defaultName} data={json} hide={name != BTNS[2].name} /> : undefined}
-        {state.initedFrames ? <Frames data={modal} cId={cId} frames={frames} hide={name != BTNS[3].name} /> : undefined}
-        {state.initedImageView ? <ImageView imgSrc={imgSrc} hide={name != BTNS[4].name} /> : undefined}
-        {state.initedHexView ? <Textarea defaultName={defaultName} value={bin} className="fill n-monospace w-detail-response-hex" hide={name != BTNS[5].name} /> : undefined}
+        {state.initedFrames ? <Frames data={modal} cId={cId} frames={frames} hide={name != BTNS[1].name} /> : undefined}
+        {state.initedTextView ? <Textarea defaultName={defaultName} tips={tips} value={body} className="fill w-detail-response-textview" hide={name != BTNS[2].name} /> : undefined}
+        {state.initedJSONView ? <JSONViewer defaultName={defaultName} data={json} hide={name != BTNS[3].name} /> : undefined}
+        {state.initedHexView ? <Textarea defaultName={defaultName} value={bin} className="fill n-monospace w-detail-response-hex" hide={name != BTNS[4].name} /> : undefined}
+        {state.initedImageView ? <ImageView imgSrc={imgSrc} hide={name != BTNS[5].name} /> : undefined}
         {state.initedCookies ? <div className={'fill w-detail-response-cookies' + (name == BTNS[6].name ? '' : ' hide')}>{cookies && cookies.length ? <Table head={COOKIE_HEADERS} modal={cookies} /> : undefined}</div> : undefined}
         {state.initedRaw ? <Textarea defaultName={defaultName} value={raw} className="fill w-detail-response-raw" hide={name != BTNS[7].name} /> : undefined}
       </div>

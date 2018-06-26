@@ -10,8 +10,8 @@ var BtnGroup = require('./btn-group');
 var JSONViewer = require('./json-viewer');
 var Textarea = require('./textarea');
 
-var BTNS = [{name: 'Headers'}, {name: 'TextView'}, {name: 'JSONView'},
-  {name: 'WebForms'}, {name: 'HexView'}, {name: 'Cookies'}, {name: 'Raw'}];
+var BTNS = [{name: 'Headers'}, {name: 'WebForms'}, {name: 'TextView'}, {name: 'JSONView'},
+  {name: 'HexView'}, {name: 'Cookies'}, {name: 'Raw'}];
 
 var ReqDetail = React.createClass({
   getInitialState: function() {
@@ -96,9 +96,7 @@ var ReqDetail = React.createClass({
       <div className={'fill orient-vertical-box w-detail-content w-detail-request' + (util.getBoolean(this.props.hide) ? ' hide' : '')}>
         <BtnGroup onClick={this.onClickBtn} btns={BTNS} />
         {state.initedHeaders ? <div className={'fill w-detail-request-headers' + (name == BTNS[0].name ? '' : ' hide')}><Properties modal={rawHeaders || headers} enableViewSource="1" /></div> : ''}
-        {state.initedTextView ? <Textarea defaultName={defaultName} tips={tips} value={body} className="fill w-detail-request-textview" hide={name != BTNS[1].name} /> : ''}
-        {state.initedJSONView ? <JSONViewer defaultName={defaultName} data={json} hide={name != BTNS[2].name} /> : undefined}
-        {state.initedWebForms ? <Divider vertical="true" className={'w-detail-request-webforms' + (name == BTNS[3].name ? '' : ' hide')}>
+        {state.initedWebForms ? <Divider vertical="true" className={'w-detail-request-webforms' + (name == BTNS[1].name ? '' : ' hide')}>
           <div className="fill orient-vertical-box">
             <div className="w-detail-request-webforms-title">
               Query
@@ -116,6 +114,8 @@ var ReqDetail = React.createClass({
             </div>
           </div>
         </Divider> : ''}
+        {state.initedTextView ? <Textarea defaultName={defaultName} tips={tips} value={body} className="fill w-detail-request-textview" hide={name != BTNS[2].name} /> : ''}
+        {state.initedJSONView ? <JSONViewer defaultName={defaultName} data={json} hide={name != BTNS[3].name} /> : undefined}
         {state.initedHexView ? <Textarea defaultName={defaultName} value={bin} className="fill n-monospace w-detail-request-hex" hide={name != BTNS[4].name} /> : ''}
         {state.initedCookies ? <div className={'fill w-detail-request-cookies' + (name == BTNS[5].name ? '' : ' hide')}><Properties modal={cookies} enableViewSource="1" /></div> : ''}
         {state.initedRaw ? <Textarea defaultName={defaultName} value={raw} className="fill w-detail-request-raw" hide={name != BTNS[6].name} /> : ''}
