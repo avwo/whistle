@@ -1,6 +1,5 @@
 var http = require('http');
 var net = require('net');
-var Buffer = require('safe-buffer').Buffer;
 var config = require('../lib/config');
 var util = require('../lib/util');
 var getSender = require('ws-parser').getSender;
@@ -147,14 +146,8 @@ function handleHttp(options) {
 }
 
 function getCharset(headers) {
-  return util.getCharset(headers['content-type']);
-}
-
-function base64ToBuffer(base64) {
-  try {
-    return Buffer.from(base64, 'base64');
-  } catch(e) {}
-  return '';
+  var charset = headers && headers['x-whistle-charset'];
+  return charset || util.getCharset(headers['content-type']);
 }
 
 module.exports = function(req, res) {
@@ -200,11 +193,7 @@ module.exports = function(req, res) {
   var base64 = req.body.base64;
   var body = base64 || req.body.body;
   if (body && (isWs || isConn || util.hasRequestBody(options))) {
-    if (base64) {
-      body = base64ToBuffer(body);
-    } else {
-      body = util.toBuffer(body, getCharset(headers));
-    }
+    body = util.toBuffer(body, base64 ? 'base64' : getCharset(headers));
     options.body = body;
     if ('content-length' in headers) {
       if (isWs || isConn) {
