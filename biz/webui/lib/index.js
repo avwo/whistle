@@ -173,7 +173,7 @@ function cgiHandler(req, res) {
     }
     require(path.join(__dirname, '..' + req.path))(req, res);
   } catch(err) {
-    res.status(500).send('Internal Server Error');
+    res.status(500).send(config.debugMode ? util.getErrorStack(err) : 'Internal Server Error');
   }
 }
 

@@ -1,5 +1,6 @@
 var http = require('http');
 var net = require('net');
+var Buffer = require('safe-buffer').Buffer;
 var config = require('../lib/config');
 var util = require('../lib/util');
 var getSender = require('ws-parser').getSender;
@@ -149,6 +150,13 @@ function getCharset(headers) {
   return util.getCharset(headers['content-type']);
 }
 
+function base64ToBuffer(base64) {
+  try {
+    return Buffer.from(base64, 'base64');
+  } catch(e) {}
+  return '';
+}
+
 module.exports = function(req, res) {
   var fullUrl = req.body.url;
   if (!fullUrl || typeof fullUrl !== 'string') {
@@ -189,9 +197,15 @@ module.exports = function(req, res) {
     delete headers.upgrade;
   }
 
-  var body = req.body.body;
+  var base64 = req.body.base64;
+  var body = base64 || req.body.body;
   if (body && (isWs || isConn || util.hasRequestBody(options))) {
-    body = options.body = util.toBuffer(body, getCharset(headers));
+    if (base64) {
+      body = base64ToBuffer(body);
+    } else {
+      body = util.toBuffer(body, getCharset(headers));
+    }
+    options.body = body;
     if ('content-length' in headers) {
       if (isWs || isConn) {
         delete headers['content-length'];
@@ -202,6 +216,7 @@ module.exports = function(req, res) {
   } else {
     delete headers['content-length'];
   }
+  delete headers['content-encoding'];
   options.headers = formatHeaders(headers, rawHeaderNames);
 
   if (isWs) {

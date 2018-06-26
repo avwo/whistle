@@ -1816,7 +1816,7 @@ var Index = React.createClass({
           url: item.url,
           headers:   util.getOriginalReqHeaders(item),
           method: req.method,
-          body: item.reqError ? '' : item.req.body
+          base64: req.base64
         });
       }
     };
