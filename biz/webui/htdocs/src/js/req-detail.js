@@ -74,7 +74,7 @@ var ReqDetail = React.createClass({
       var index = realUrl.indexOf('?');
       query = util.parseQueryString(index == -1 ? '' : realUrl.substring(index + 1), null, null, decodeURIComponent);
       if (util.isUrlEncoded(req)) {
-        form = util.parseQueryString(req.body, null, null, decodeURIComponent);
+        form = util.parseQueryString(util.getBody(req, true), null, null, decodeURIComponent);
       }
 
       raw = [req.method, req.method == 'CONNECT' ? headers.host : util.getPath(realUrl), 'HTTP/' + (req.httpVersion || '1.1')].join(' ')

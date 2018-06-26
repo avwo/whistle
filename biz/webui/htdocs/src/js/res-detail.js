@@ -125,7 +125,7 @@ var ResDetail = React.createClass({
         raw = ['HTTP/' + (modal.req.httpVersion || '1.1'), status, util.getStatusMessage(res)].join(' ')
             + '\r\n' + util.objectToString(headers, res.rawHeaderNames) + '\r\n\r\n' + body;
         if ((status == 200 || status == 304) && util.getContentType(headers) === 'IMG') {
-          imgSrc = modal.res.body || (res.size ? modal.url : undefined);
+          imgSrc = body || (res.size ? modal.url : undefined);
         }
       }
       if (modal.isHttps) {

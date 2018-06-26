@@ -613,8 +613,9 @@ exports.asCURL = function(item) {
     }
     result.push('-H', JSON.stringify((rawHeaderNames[key] || key) + ': ' + headers[key]));
   });
-  if (req.body) {
-    result.push('-d', JSON.stringify(req.body));
+  var body = getBody(req, true);
+  if (body) {
+    result.push('-d', JSON.stringify(body));
   }
   return result.join(' ');
 };
@@ -806,30 +807,39 @@ function getMediaType(res) {
   return type;
 }
 
+var BODY_KEY = 'body';
+var HEX_KEY = 'hex';
+if (window.Symbol) {
+  BODY_KEY = Symbol.for('body');
+  HEX_KEY = Symbol.for('hex');
+}
+
 function initData(data, isReq) {
-  if ((data.body && data.hex) || !data.base64) {
+  if ((data[BODY_KEY] && data[HEX_KEY]) || !data.base64) {
     return;
   }
   var type = !isReq && getMediaType(data);
   if (type) {
-    data.body = 'data:' + type + ';base64,' + data.base64;
-    data.hex = getHexString(base64toBytes(data.base64));
+    data[BODY_KEY] = 'data:' + type + ';base64,' + data.base64;
+    data[HEX_KEY] = getHexString(base64toBytes(data.base64));
   } else {
     var result = decodeBase64(data.base64);
-    data.body = result.text;
-    data.hex = result.hex;
+    data[BODY_KEY] = result.text;
+    data[HEX_KEY] = result.hex;
   }
 }
 
 exports.getJson = function(data) {
 
 };
-exports.getBody = function(data, isReq) {
+
+function getBody(data, isReq) {
   initData(data, isReq);
-  return data.body || '';
-};
+  return data[BODY_KEY] || '';
+}
+exports.getBody = getBody;
 
 exports.getHex = function(data) {
   initData(data);
-  return data.hex || '';
+  return data[HEX_KEY] || '';
 };
