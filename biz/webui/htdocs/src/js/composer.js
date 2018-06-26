@@ -56,7 +56,7 @@ var Composer = React.createClass({
     ReactDOM.findDOMNode(refs.url).value = item.url;
     ReactDOM.findDOMNode(refs.method).value = req.method;
     ReactDOM.findDOMNode(refs.headers).value =   util.getOriginalReqHeaders(item);
-    ReactDOM.findDOMNode(refs.body).value = req.body || '';
+    ReactDOM.findDOMNode(refs.body).value = util.getBody(req);
   },
   shouldComponentUpdate: function(nextProps) {
     var hide = util.getBoolean(this.props.hide);
