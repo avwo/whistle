@@ -10,7 +10,7 @@ var BtnGroup = require('./btn-group');
 var JSONViewer = require('./json-viewer');
 var Textarea = require('./textarea');
 
-var BTNS = [{name: 'Headers'}, {name: 'TextView'}, {name: 'JSON'},
+var BTNS = [{name: 'Headers'}, {name: 'TextView'}, {name: 'JSONView'},
   {name: 'WebForms'}, {name: 'HexView'}, {name: 'Cookies'}, {name: 'Raw'}];
 
 var ReqDetail = React.createClass({
@@ -20,7 +20,7 @@ var ReqDetail = React.createClass({
       initedTextView: false,
       initedCookies: false,
       initedWebForms: false,
-      initedJSON: false,
+      initedJSONView: false,
       initedHexView: false,
       initedRaw: false
     };
@@ -97,7 +97,7 @@ var ReqDetail = React.createClass({
         <BtnGroup onClick={this.onClickBtn} btns={BTNS} />
         {state.initedHeaders ? <div className={'fill w-detail-request-headers' + (name == BTNS[0].name ? '' : ' hide')}><Properties modal={rawHeaders || headers} enableViewSource="1" /></div> : ''}
         {state.initedTextView ? <Textarea defaultName={defaultName} tips={tips} value={body} className="fill w-detail-request-textview" hide={name != BTNS[1].name} /> : ''}
-        {state.initedJSON ? <JSONViewer defaultName={defaultName} data={json} hide={name != BTNS[2].name} /> : undefined}
+        {state.initedJSONView ? <JSONViewer defaultName={defaultName} data={json} hide={name != BTNS[2].name} /> : undefined}
         {state.initedWebForms ? <Divider vertical="true" className={'w-detail-request-webforms' + (name == BTNS[3].name ? '' : ' hide')}>
           <div className="fill orient-vertical-box">
             <div className="w-detail-request-webforms-title">

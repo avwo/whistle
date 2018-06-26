@@ -15,7 +15,7 @@ var JSONViewer = require('./json-viewer');
 var BTNS = [
   {name: 'Headers'},
   {name: 'TextView'},
-  {name: 'JSON'},
+  {name: 'JSONView'},
   {name: 'Frames'},
   {name: 'ImageView'},
   {name: 'HexView'},
@@ -32,7 +32,7 @@ var ResDetail = React.createClass({
       initedFrames: false,
       initedImageView: false,
       initedCookies: false,
-      initedJSON: false,
+      initedJSONView: false,
       initedHexView: false,
       initedRaw: false
     };
@@ -149,7 +149,7 @@ var ResDetail = React.createClass({
         <BtnGroup onClick={this.onClickBtn} btns={BTNS} />
         {state.initedHeaders ? <div className={'fill w-detail-response-headers' + (name == BTNS[0].name ? '' : ' hide')}><Properties modal={rawHeaders || headers} enableViewSource="1" /></div> : undefined}
         {state.initedTextView ? <Textarea defaultName={defaultName} tips={tips} value={body} className="fill w-detail-response-textview" hide={name != BTNS[1].name} /> : undefined}
-        {state.initedJSON ? <JSONViewer defaultName={defaultName} data={json} hide={name != BTNS[2].name} /> : undefined}
+        {state.initedJSONView ? <JSONViewer defaultName={defaultName} data={json} hide={name != BTNS[2].name} /> : undefined}
         {state.initedFrames ? <Frames data={modal} cId={cId} frames={frames} hide={name != BTNS[3].name} /> : undefined}
         {state.initedImageView ? <ImageView imgSrc={imgSrc} hide={name != BTNS[4].name} /> : undefined}
         {state.initedHexView ? <Textarea defaultName={defaultName} value={bin} className="fill n-monospace w-detail-response-hex" hide={name != BTNS[5].name} /> : undefined}

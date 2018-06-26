@@ -810,8 +810,8 @@ function getMediaType(res) {
 var BODY_KEY = 'body';
 var HEX_KEY = 'hex';
 if (window.Symbol) {
-  BODY_KEY = Symbol.for('body');
-  HEX_KEY = Symbol.for('hex');
+  BODY_KEY = window.Symbol.for('body');
+  HEX_KEY = window.Symbol.for('hex');
 }
 
 function initData(data, isReq) {
