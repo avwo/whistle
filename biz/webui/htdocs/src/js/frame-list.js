@@ -81,7 +81,6 @@ var FrameList = React.createClass({
             if (item.closed || item.err) {
               reqData.closed = item.closed;
               reqData.err = item.err;
-              item.text = item.err || 'Closed';
               if (item.closed) {
                 statusClass = ' w-connection-closed';
               } else {
@@ -89,9 +88,7 @@ var FrameList = React.createClass({
               }
             }
             if (item.data == null) {
-              var result = util.decodeBase64(item.base64, true);
-              item.data = item.text = result.text;
-              item.bin = result.hex;
+              item.data = util.getBody(item, true);
               if (item.data.length > 500) {
                 item.data = item.data.substring(0, 500) + '...';
               }

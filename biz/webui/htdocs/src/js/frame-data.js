@@ -51,8 +51,8 @@ var FrameClient = React.createClass({
     var data = this.props.data;
     var text, json, bin;
     if (data) {
-      text = data.text || '';
-      bin = data.bin;
+      text = util.getBody(data, true);
+      bin = util.getHex(data);
       if (data.json) {
         json = data.json;
       } else if (json = util.resolveJSON(text)) {

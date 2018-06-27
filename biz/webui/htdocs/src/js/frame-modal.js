@@ -1,11 +1,11 @@
+var util = require('./util');
 var MAX_FRAMES_LENGTH = require('./data-center').MAX_FRAMES_LENGTH;
 
 var filterItem = function(keyword, item) {
-  var text = item.text || item.bin;
   if (!keyword) {
     return true;
   }
-  return text.indexOf(keyword) !== -1;
+  return util.getBody(item, true).indexOf(keyword) !== -1;
 };
 
 function FramesModal(list) {

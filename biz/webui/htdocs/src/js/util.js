@@ -1,6 +1,8 @@
 var $ = require('jquery');
 var toByteArray = require('base64-js').toByteArray;
-var base64Decode = require('js-base64').Base64.decode;
+var jsBase64 = require('js-base64').Base64;
+var base64Decode = jsBase64.decode;
+var base64Encode = jsBase64.encode;
 var json2 = require('./components/json');
 var evalJson = require('./components/json/eval');
 var isUtf8 = require('./is-utf8');
@@ -797,7 +799,6 @@ function decodeBase64(base64, isFrame) {
   }
   return result;
 }
-exports.decodeBase64 = decodeBase64;
 
 function getMediaType(res) {
   var type = getRawType(res.headers);
@@ -807,16 +808,37 @@ function getMediaType(res) {
   return type;
 }
 
-var BODY_KEY = 'body';
-var HEX_KEY = 'hex';
+var BODY_KEY = '$body';
+var HEX_KEY = '$hex';
 if (window.Symbol) {
   BODY_KEY = window.Symbol.for('body');
   HEX_KEY = window.Symbol.for('hex');
 }
 
 function initData(data, isReq) {
-  if ((data[BODY_KEY] && data[HEX_KEY]) || !data.base64) {
+  if ((data[BODY_KEY] && data[HEX_KEY])) {
     return;
+  }
+  if (!data.base64) {
+    var body = data.body || data.text;
+    if (data.closed || data.err) {
+      body = String(data.err || 'Closed');
+    }
+    if (body) {
+      try {
+        body = String(body);
+        data.base64 = base64Encode(body);
+        data[BODY_KEY] = body;
+        data[HEX_KEY] = getHexString(base64toBytes(data.base64));
+      } catch(e) {} finally {
+        delete data.body;
+        delete data.bin;
+        delete data.text;
+      }
+    }
+    if (!data.base64) {
+      return;
+    }
   }
   var type = !isReq && getMediaType(data);
   if (type) {
