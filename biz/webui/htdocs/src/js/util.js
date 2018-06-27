@@ -200,10 +200,6 @@ function getContentType(type) {
     if (type.indexOf('text/') != -1) {
       return 'TEXT';
     }
-    if (type.indexOf('application/x-www-form-urlencoded') !== -1
-      || type.indexOf('multipart/form-data') !== -1) {
-      return 'FORM';
-    }
     if (type.indexOf('image') != -1) {
       return 'IMG';
     }
@@ -615,7 +611,7 @@ exports.asCURL = function(item) {
     }
     result.push('-H', JSON.stringify((rawHeaderNames[key] || key) + ': ' + headers[key]));
   });
-  var body = getBody(req, true);
+  var body = (isText(req.headers) || isUrlEncoded(req)) ? getBody(req, true) : '';
   if (body) {
     result.push('-d', JSON.stringify(body));
   }
