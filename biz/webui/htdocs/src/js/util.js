@@ -378,7 +378,7 @@ function parseJSON(str, resolve) {
 
 exports.parseJSON = parseJSON;
 
-exports.resolveJSON = function(str, decode) {
+function resolveJSON(str, decode) {
   window._$hasBigNumberJson = false;
   var result = parseJSON(str, true);
   if (result || !str || !decode) {
@@ -387,7 +387,7 @@ exports.resolveJSON = function(str, decode) {
   try {
     return parseJSON(decode(str), true);
   } catch(e) {}
-};
+}
 
 exports.unique = function(arr, reverse) {
   var result = [];
@@ -810,9 +810,11 @@ function getMediaType(res) {
 
 var BODY_KEY = '$body';
 var HEX_KEY = '$hex';
+var JSON_KEY = '$json';
 if (window.Symbol) {
-  BODY_KEY = window.Symbol.for('body');
-  HEX_KEY = window.Symbol.for('hex');
+  BODY_KEY = window.Symbol.for(BODY_KEY);
+  HEX_KEY = window.Symbol.for(HEX_KEY);
+  JSON_KEY = window.Symbol.for(JSON_KEY);
 }
 
 function initData(data, isReq) {
@@ -851,8 +853,16 @@ function initData(data, isReq) {
   }
 }
 
-exports.getJson = function(data) {
-
+exports.getJson = function(data, isReq, decode) {
+  if (!data[JSON_KEY]) {
+    var body = getBody(data, isReq);
+    body = body && resolveJSON(body, decode);
+    data[JSON_KEY] = {
+      json: body,
+      str: body ? (window._$hasBigNumberJson ? json2 : JSON).stringify(body, null, '    ') : ''
+    };
+  }
+  return data[JSON_KEY];
 };
 
 function getBody(data, isReq) {

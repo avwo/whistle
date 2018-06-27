@@ -1,6 +1,4 @@
 var React = require('react');
-
-var json2 = require('./components/json');
 var BtnGroup = require('./btn-group');
 var JSONViewer = require('./json-viewer');
 var Textarea = require('./textarea');
@@ -53,14 +51,7 @@ var FrameClient = React.createClass({
     if (data) {
       text = util.getBody(data, true);
       bin = util.getHex(data);
-      if (data.json) {
-        json = data.json;
-      } else if (json = util.resolveJSON(text)) {
-        json = data.json = {
-          json: json,
-          str: (window._$hasBigNumberJson ? json2 : JSON).stringify(json, null, '    ')
-        };
-      }
+      json = util.getJson(data, true);
     }
     return (
       <div className={'fill orient-vertical-box w-frames-data' + (this.props.hide ? ' hide' : '')}>

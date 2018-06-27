@@ -1,8 +1,6 @@
 require('./base-css.js');
 require('../css/req-detail.css');
 var React = require('react');
-
-var json2 = require('./components/json');
 var Divider = require('./divider');
 var Properties = require('./properties');
 var util = require('./util');
@@ -56,14 +54,7 @@ var ReqDetail = React.createClass({
       body = util.getBody(req, true);
       bin = util.getHex(req);
       headers = req.headers;
-      if (req.json) {
-        json = req.json;
-      } else if (json = util.resolveJSON(body, decodeURIComponent)) {
-        json = req.json = {
-          json: json,
-          str: (window._$hasBigNumberJson ? json2 : JSON).stringify(json, null, '    ')
-        };
-      }
+      json = util.getJson(req, true, decodeURIComponent);
       delete headers.Host;
       cookies = util.parseQueryString(headers.cookie, /;\s*/g, null, decodeURIComponent);
       var url = modal.url;

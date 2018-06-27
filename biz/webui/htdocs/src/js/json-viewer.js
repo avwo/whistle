@@ -108,8 +108,8 @@ var JsonViewer = React.createClass({
     var viewSource = state.viewSource;
     var props = this.props;
     var data = props.data;
-    var noData = !data;
-    if (!data) {
+    var noData = !data || !data.json;
+    if (noData) {
       data = state.lastData || {};
     } else {
       state.lastData = data;
