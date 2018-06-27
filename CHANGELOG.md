@@ -1,3 +1,8 @@
+### v1.10.11
+1. feat: [https://github.com/avwo/whistle/issues/176](https://github.com/avwo/whistle/issues/176)
+2. feat: 支持显示HexView
+3. fix: 导入saz文件时把https请求自动转成http请求的问题
+
 ### v1.10.10
 1. feat: 支持显示图片
 2. feat: 通过 `w2 status [-S storage]` 或 `w2 --all` 显示当前whistle运行状态
