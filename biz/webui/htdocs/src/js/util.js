@@ -854,13 +854,13 @@ function initData(data, isReq) {
 }
 
 exports.getJson = function(data, isReq, decode) {
-  if (!data[JSON_KEY]) {
+  if (data[JSON_KEY] == null) {
     var body = getBody(data, isReq);
     body = body && resolveJSON(body, decode);
-    data[JSON_KEY] = {
+    data[JSON_KEY] = body ? {
       json: body,
-      str: body ? (window._$hasBigNumberJson ? json2 : JSON).stringify(body, null, '    ') : ''
-    };
+      str: (window._$hasBigNumberJson ? json2 : JSON).stringify(body, null, '    ')
+    } : '';
   }
   return data[JSON_KEY];
 };
