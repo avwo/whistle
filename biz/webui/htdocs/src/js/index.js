@@ -2144,9 +2144,17 @@ var Index = React.createClass({
         headers: resHeaders.headers,
         rawHeaderNames: resHeaders.rawHeaderNames,
         ip: serverIp,
-        body: rawRes.content && rawRes.content.text || '',
+        body: '',
         trailers: {}
       };
+      var resCtn = rawRes.content;
+      if (resCtn) {
+        if (String(resCtn.mimeType).toLowerCase().indexOf('image/') !== -1) {
+          res.base64 = resCtn.text;
+        } else {
+          res.body = resCtn.text;
+        }
+      }
       var session = {
         startTime: startTime,
         url: rawReq.url,
