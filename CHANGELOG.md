@@ -1,7 +1,9 @@
-### v1.10.11
+### v1.11.0
 1. feat: [https://github.com/avwo/whistle/issues/176](https://github.com/avwo/whistle/issues/176)
 2. feat: 支持显示HexView
-3. fix: 导入saz文件时把https请求自动转成http请求的问题
+3. feat: 支持远程导入导出，通过 `Shirt + (Export|Import按钮)`
+4. fix: 导入saz文件时把https请求自动转成http请求的问题
+5. refactor: 导致saz文件时也会保留whislte的一些特有信息 
 
 ### v1.10.10
 1. feat: 支持显示图片
