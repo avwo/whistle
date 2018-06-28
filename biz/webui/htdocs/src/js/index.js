@@ -2217,15 +2217,6 @@ var Index = React.createClass({
     if (!sessions || !sessions.length) {
       return;
     }
-    if (type === 'Fiddler') {
-      sessions = sessions.map(function(item) {
-        if (item.frames) {
-          item = $.extend({}, item);
-          delete item.frames;
-        }
-        return item;
-      });
-    }
     var form = ReactDOM.findDOMNode(this.refs.exportSessionsForm);
     ReactDOM.findDOMNode(this.refs.exportFilename).value = name || '';
     ReactDOM.findDOMNode(this.refs.exportFileType).value = type;
