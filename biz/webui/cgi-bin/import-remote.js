@@ -9,8 +9,9 @@ module.exports = function(req, res) {
       if (err) {
         return res.json({ec: 2, msg: err.message});
       }
-      if (!response || response.statusCode !== 200) {
-        return res.json({ec: 2, msg: 'Request failed'});
+      var status = response && response.statusCode;
+      if (status !== 200) {
+        return res.json({ec: 2, msg: 'Request failed (Status: ' + status + ')'});
       }
       return res.json({ec: 0, msg: body});
     });
