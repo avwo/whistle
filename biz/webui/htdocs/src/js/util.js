@@ -200,7 +200,7 @@ function getContentType(type) {
     if (type.indexOf('text/') != -1) {
       return 'TEXT';
     }
-    if (type.indexOf('image') != -1) {
+    if (type.indexOf('image/') != -1) {
       return 'IMG';
     }
   }
