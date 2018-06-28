@@ -2149,7 +2149,7 @@ var Index = React.createClass({
       };
       var resCtn = rawRes.content;
       if (resCtn) {
-        if (String(resCtn.mimeType).toLowerCase().indexOf('image/') !== -1) {
+        if (util.getContentType(resCtn.mimeType) === 'IMG') {
           res.base64 = resCtn.text;
         } else {
           res.body = resCtn.text;
