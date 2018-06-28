@@ -14,7 +14,6 @@
   "sockets": 60,
   "keepAlive": true,
   "keepAliveMsecs": 25000,
-  "responseTimeout": 60000,
   "timeout": 66000,
   "author": "avenwu <avenwu@vip.qq.com>",
   "contributors": [],
