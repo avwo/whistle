@@ -247,7 +247,8 @@ $.extend(exports, createCgi({
 }, POST_CONF));
 $.extend(exports, createCgi({
   donotShowAgain: 'cgi-bin/do-not-show-again',
-  checkUpdate: 'cgi-bin/check-update'
+  checkUpdate: 'cgi-bin/check-update',
+  importRemote: 'cgi-bin/import-remote'
 }, GET_CONF));
 
 exports.socket = $.extend(createCgi({

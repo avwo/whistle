@@ -340,7 +340,7 @@ var ReqData = React.createClass({
       });
       break;
     case 'Import':
-      events.trigger('importSessions');
+      events.trigger('importSessions', e);
       break;
     case 'It':
       events.trigger('removeIt', item);

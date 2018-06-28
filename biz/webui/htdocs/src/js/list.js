@@ -275,7 +275,7 @@ var List = React.createClass({
       }
     }
   },
-  onClickContextMenu: function(action) {
+  onClickContextMenu: function(action, e) {
     var name = this.props.name === 'rules' ? 'Rules' : 'Values';
     switch(action) {
     case 'Save':
@@ -294,7 +294,7 @@ var List = React.createClass({
       events.trigger('export' + name);
       break;
     case 'Import':
-      events.trigger('import' + name);
+      events.trigger('import' + name, e);
       break;
     case 'Validate':
       var item = this.currentFocusItem;

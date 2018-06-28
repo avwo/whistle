@@ -29,11 +29,12 @@ var MenuItem = React.createClass({
           options ? <div className="w-menu-options" style={{border: name ? null : 'none'}}>{options.map(function(option) {
 
             return (
-                <a key={option.name} className={option.disabled ? 'w-disabled' : undefined} title={option.title} onClick={function() {
+                <a key={option.name} className={option.disabled ? 'w-disabled' : undefined} title={option.title}
+                onClick={function(e) {
                   if (option.disabled) {
                     return;
                   }
-                  onClickOption(option);
+                  onClickOption(option, e);
                 }}  onDoubleClick={function() {
                   onDoubleClickOption(option);
                 }} href={option.href || 'javascript:;'}

@@ -625,7 +625,7 @@ var Index = React.createClass({
       }
 
       if (isNetwork && e.keyCode === 73) {
-        self.importSessions();
+        self.importSessions(e);
         e.preventDefault();
       }
     });
@@ -1075,7 +1075,7 @@ var Index = React.createClass({
     });
     changePageName('network');
   },
-  handleNetwork: function(item) {
+  handleNetwork: function(item, e) {
     var modal = this.state.network;
     if (item.id == 'removeAll') {
       this.clear();
@@ -1088,20 +1088,20 @@ var Index = React.createClass({
     } else if (item.id == 'exportSazFile') {
       this.exportSessions('Fiddler');
     } else if (item.id == 'importSessions') {
-      this.importSessions();
+      this.importSessions(e);
     }
     this.hideNetworkOptions();
   },
-  importData: function() {
+  importData: function(e) {
     switch(this.state.name) {
     case 'network':
-      this.importSessions();
+      this.importSessions(e);
       break;
     case 'rules':
-      this.importRules();
+      this.importRules(e);
       break;
     case 'values':
-      this.importValues();
+      this.importValues(e);
       break;
     }
   },
@@ -1129,13 +1129,19 @@ var Index = React.createClass({
       break;
     }
   },
-  importSessions: function() {
+  importSessions: function(e, data) {
+    var shiftKey = (e && e.shiftKey) || (data && data.shiftKey);
+    console.log('importSessions', shiftKey);
     ReactDOM.findDOMNode(this.refs.importSessions).click();
   },
-  importRules: function() {
+  importRules: function(e, data) {
+    var shiftKey = (e && e.shiftKey) || (data && data.shiftKey);
+    console.log('importRules', shiftKey);
     ReactDOM.findDOMNode(this.refs.importRules).click();
   },
-  importValues: function() {
+  importValues: function(e, data) {
+    var shiftKey = (e && e.shiftKey) || (data && data.shiftKey);
+    console.log('importValues', shiftKey);
     ReactDOM.findDOMNode(this.refs.importValues).click();
   },
   uploadRules: function(e) {
@@ -1208,14 +1214,14 @@ var Index = React.createClass({
     this.clear();
     this.hideNetworkOptions();
   },
-  showAndActiveRules: function(item) {
+  showAndActiveRules: function(item, e) {
     if (this.state.name === 'rules') {
       switch(item.id) {
       case 'exportRules':
         this.refs.selectRulesDialog.show();
         break;
       case 'importRules':
-        this.importRules();
+        this.importRules(e);
         break;
       }
     } else {
@@ -1237,7 +1243,7 @@ var Index = React.createClass({
     });
     changePageName('rules');
   },
-  showAndActiveValues: function(item) {
+  showAndActiveValues: function(item, e) {
     var self = this;
     if (self.state.name === 'values') {
       switch(item.id) {
@@ -1245,7 +1251,7 @@ var Index = React.createClass({
         self.refs.selectValuesDialog.show();
         break;
       case 'importValues':
-        this.importValues();
+        this.importValues(e);
         break;
       }
     } else {
