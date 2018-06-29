@@ -11,7 +11,8 @@ module.exports = function(req, res) {
       }
       var status = response && response.statusCode;
       if (status !== 200) {
-        return res.json({ec: 2, msg: 'Request failed (Status: ' + status + ')'});
+        var msg = status > 200 && status < 400 ? 'No body data' : 'Request failed';
+        return res.json({ec: 2, msg: msg + ' (Status: ' + status + ')'});
       }
       return res.json({ec: 0, msg: body});
     });
