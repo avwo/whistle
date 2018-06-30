@@ -89,11 +89,11 @@ function checkJson(item) {
   }
 }
 
-function getJsonForm(data) {
+function getJsonForm(data, name) {
   data = JSON.stringify(data);
   var form = new FormData();
-  var file = new File([data], 'rules.json', { type: 'application/json'});
-  form.append('rules', file);
+  var file = new File([data], 'data.json', { type: 'application/json'});
+  form.append(name || 'rules', file);
   return form;
 }
 
@@ -1218,9 +1218,42 @@ var Index = React.createClass({
     }));
   },
   importValues: function(e, data) {
+    var self = this;
     var shiftKey = (e && e.shiftKey) || (data && data.shiftKey);
-    console.log('importValues', shiftKey);
-    ReactDOM.findDOMNode(this.refs.importValues).click();
+    if (shiftKey) {
+      self.refs.importRemoteValues.show();
+      setTimeout(function() {
+        var input = ReactDOM.findDOMNode(self.refs.valuesRemoteUrl);
+        input.focus();
+        input.select();
+      }, 500);
+      return;
+    }
+    ReactDOM.findDOMNode(self.refs.importValues).click();
+  },
+  importRemoteValues: function(e) {
+    if (e && e.type !== 'click' && e.keyCode !== 13) {
+      return;
+    }
+    var self = this;
+    var input = ReactDOM.findDOMNode(self.refs.valuesRemoteUrl);
+    var url = checkUrl(input.value);
+    if (!url) {
+      return;
+    }
+    self.setState({ pendingValues: true });
+    dataCenter.importRemote({ url: url },  getRemoteDataHandler(function(err, data) {
+      self.setState({ pendingValues: false });
+      if (err) {
+        return;
+      }
+      self.refs.importRemoteValues.hide();
+      input.value = '';
+      if (data) {
+        self.valuesForm = getJsonForm(data, 'values');
+        self.refs.confirmImportValues.show();
+      }
+    }));
   },
   uploadRules: function(e) {
     var data = this.rulesForm;
@@ -2686,6 +2719,18 @@ var Index = React.createClass({
         <div className="modal-footer">
           <button type="button" className="btn btn-primary" disabled={pendingRules} onMouseDown={this.preventBlur}
             onClick={this.importRemoteRules}>{pendingRules ? 'Importing rules' : 'Import rules'}</button>
+          <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </Dialog>
+      <Dialog ref="importRemoteValues" wstyle="w-import-remote-dialog">
+        <div className="modal-body">
+          <input readOnly={pendingValues} ref="valuesRemoteUrl" maxLength="256"
+            onKeyDown={this.importRemoteValues}
+            placeholder="Input the url" style={{ 'ime-mode': 'disabled' }} />
+        </div>
+        <div className="modal-footer">
+          <button type="button" className="btn btn-primary" disabled={pendingValues} onMouseDown={this.preventBlur}
+            onClick={this.importRemoteValues}>{pendingValues ? 'Importing values' : 'Import values'}</button>
           <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
         </div>
       </Dialog>
