@@ -1208,7 +1208,7 @@ var Index = React.createClass({
       input.value = '';
       if (data) {
         if (Array.isArray(data)) {
-          self.addNetworkList(data);
+          dataCenter.addNetworkList(data);
         } else {
           self.importHarSessions(data);
         }
