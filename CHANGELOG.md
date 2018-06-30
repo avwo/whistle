@@ -1,7 +1,7 @@
 ### v1.11.0
-1. feat: [https://github.com/avwo/whistle/issues/176](https://github.com/avwo/whistle/issues/176)
+1. feat: https请求自动降级([https://github.com/avwo/whistle/issues/176](https://github.com/avwo/whistle/issues/176))
 2. feat: 支持显示HexView（二进制）
-3. feat: 支持远程导入，通过 `Shirt + Export按钮`
+3. feat: 支持远程导入Sessions/Rules/Values，通过 `Shirt + Export按钮`
 4. fix: 导入saz文件时把https请求自动转成http请求的问题
 5. refactor: 导致saz文件时也会保留whislte的一些特有信息 
 
