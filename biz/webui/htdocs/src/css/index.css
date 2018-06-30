@@ -89,3 +89,12 @@
   text-align: center;
   margin: 0 10px;
 }
+.w-import-remote-dialog .modal-content {
+  width: 525px;
+}
+.w-import-remote-dialog input {
+  width: 500px;
+  height: 30px;
+  line-height: 30px;
+  padding: 5px;
+}

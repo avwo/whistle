@@ -89,6 +89,43 @@ function checkJson(item) {
   }
 }
 
+function checkUrl(url) {
+  url = url.trim();
+  if (!url) {
+    message.error('The url cannot be empty.');
+    return;
+  }
+  if (!/^https?:\/\/[^/]/i.test(url)) {
+    message.error('Please input the correct url.');
+    return;
+  }
+  return url;
+}
+
+function getRemoteDataHandler(callback) {
+  return function(data, xhr) {
+    if (!data) {
+      util.showSystemError(xhr);
+      return callback(true);
+    }
+    if (data.ec !== 0) {
+      message.error(data.em);
+      return callback(true);
+    }
+    try {
+      data = data.body && JSON.parse(data.body);
+      if (!data || !Object.keys(data).length) {
+        message.info('No body data.');
+      } else {
+        return callback(false, data);
+      }
+    } catch(e) {
+      message.error(e.message);
+    }
+    callback(true);
+  };
+}
+
 function getPageName() {
   var hash = location.hash.substring(1);
   if (hash) {
@@ -1135,9 +1172,46 @@ var Index = React.createClass({
     ReactDOM.findDOMNode(this.refs.importSessions).click();
   },
   importRules: function(e, data) {
+    var self = this;
     var shiftKey = (e && e.shiftKey) || (data && data.shiftKey);
-    console.log('importRules', shiftKey);
-    ReactDOM.findDOMNode(this.refs.importRules).click();
+    if (shiftKey) {
+      self.refs.importRemoteRules.show();
+      setTimeout(function() {
+        var input = ReactDOM.findDOMNode(self.refs.rulesRemoteUrl);
+        input.focus();
+        input.select();
+      }, 500);
+      return;
+    }
+    ReactDOM.findDOMNode(self.refs.importRules).click();
+  },
+  importRemoteRules: function(e) {
+    if (e && e.type !== 'click' && e.keyCode !== 13) {
+      return;
+    }
+    var self = this;
+    var input = ReactDOM.findDOMNode(self.refs.rulesRemoteUrl);
+    var url = checkUrl(input.value);
+    if (!url) {
+      return;
+    }
+    self.setState({ pendingRules: true });
+    dataCenter.importRemote({ url: url },  getRemoteDataHandler(function(err, data) {
+      self.setState({ pendingRules: false });
+      if (err) {
+        return;
+      }
+      self.refs.importRemoteRules.hide();
+      input.value = '';
+      if (data) {
+        data = JSON.stringify(data);
+        var form = new FormData();
+        var file = new File([data], 'rules.json', { type: 'application/json'});
+        form.append('rules', file);
+        self.rulesForm = form;
+        self.refs.confirmImportRules.show();
+      }
+    }));
   },
   importValues: function(e, data) {
     var shiftKey = (e && e.shiftKey) || (data && data.shiftKey);
@@ -2365,7 +2439,9 @@ var Index = React.createClass({
         });
       }
     }
-
+    var pendingSessions = state.pendingSessions;
+    var pendingRules = state.pendingRules;
+    var pendingValues = state.pendingValues;
     var showLeftMenu = networkMode || state.showLeftMenu;
     var disabledAllPlugins = state.disabledAllRules || state.disabledAllPlugins;
     return (
@@ -2595,6 +2671,18 @@ var Index = React.createClass({
             onKeyDown={this.replayRepeat}
             tabIndex="0" onMouseDown={this.preventBlur}
             className="btn btn-primary" onClick={this.replayRepeat}>Replay</a>
+        </div>
+      </Dialog>
+      <Dialog ref="importRemoteRules" wstyle="w-import-remote-dialog">
+        <div className="modal-body">
+          <input readOnly={pendingRules} ref="rulesRemoteUrl" maxLength="256"
+            onKeyDown={this.importRemoteRules}
+            placeholder="Input the url" style={{ 'ime-mode': 'disabled' }} />
+        </div>
+        <div className="modal-footer">
+          <button type="button" className="btn btn-primary" disabled={pendingRules} onMouseDown={this.preventBlur}
+            onClick={this.importRemoteRules}>{pendingRules ? 'Importing rules' : 'Import rules'}</button>
+          <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
         </div>
       </Dialog>
       <div ref="showUpdateTipsDialog" className="modal fade w-show-update-tips-dialog">

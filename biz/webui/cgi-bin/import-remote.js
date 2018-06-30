@@ -7,16 +7,16 @@ module.exports = function(req, res) {
   if (HTTP_RE.test(url)) {
     util.getResponseBody(parseUrl(url), function(err, body, response) {
       if (err) {
-        return res.json({ec: 2, msg: err.message});
+        return res.json({ec: 2, em: err.message});
       }
       var status = response && response.statusCode;
       if (status !== 200) {
-        var msg = status > 200 && status < 400 ? 'No body data' : 'Request failed';
-        return res.json({ec: 2, msg: msg + ' (statusCode: ' + status + ')'});
+        var em = status > 200 && status < 400 ? 'No body data' : 'Request failed';
+        return res.json({ec: 2, em: em + ' (statusCode: ' + status + ')'});
       }
-      return res.json({ec: 0, msg: body});
+      return res.json({ec: 0, body: body});
     });
   } else {
-    res.json({ec: 400, msg: 'Bad url'});
+    res.json({ec: 400, em: 'Bad url'});
   }
 };
