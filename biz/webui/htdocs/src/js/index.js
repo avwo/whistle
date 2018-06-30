@@ -89,6 +89,14 @@ function checkJson(item) {
   }
 }
 
+function getJsonForm(data) {
+  data = JSON.stringify(data);
+  var form = new FormData();
+  var file = new File([data], 'rules.json', { type: 'application/json'});
+  form.append('rules', file);
+  return form;
+}
+
 function checkUrl(url) {
   url = url.trim();
   if (!url) {
@@ -1204,11 +1212,7 @@ var Index = React.createClass({
       self.refs.importRemoteRules.hide();
       input.value = '';
       if (data) {
-        data = JSON.stringify(data);
-        var form = new FormData();
-        var file = new File([data], 'rules.json', { type: 'application/json'});
-        form.append('rules', file);
-        self.rulesForm = form;
+        self.rulesForm = getJsonForm(data);
         self.refs.confirmImportRules.show();
       }
     }));
