@@ -1175,9 +1175,45 @@ var Index = React.createClass({
     }
   },
   importSessions: function(e, data) {
+    var self = this;
     var shiftKey = (e && e.shiftKey) || (data && data.shiftKey);
-    console.log('importSessions', shiftKey);
-    ReactDOM.findDOMNode(this.refs.importSessions).click();
+    if (shiftKey) {
+      self.refs.importRemoteSessions.show();
+      setTimeout(function() {
+        var input = ReactDOM.findDOMNode(self.refs.sessionsRemoteUrl);
+        input.focus();
+        input.select();
+      }, 500);
+      return;
+    }
+    ReactDOM.findDOMNode(self.refs.importSessions).click();
+  },
+  importRemoteSessions: function(e) {
+    if (e && e.type !== 'click' && e.keyCode !== 13) {
+      return;
+    }
+    var self = this;
+    var input = ReactDOM.findDOMNode(self.refs.sessionsRemoteUrl);
+    var url = checkUrl(input.value);
+    if (!url) {
+      return;
+    }
+    self.setState({ pendingSessions: true });
+    dataCenter.importRemote({ url: url },  getRemoteDataHandler(function(err, data) {
+      self.setState({ pendingSessions: false });
+      if (err) {
+        return;
+      }
+      self.refs.importRemoteSessions.hide();
+      input.value = '';
+      if (data) {
+        if (Array.isArray(data)) {
+          self.addNetworkList(data);
+        } else {
+          self.importHarSessions(data);
+        }
+      }
+    }));
   },
   importRules: function(e, data) {
     var self = this;
@@ -2712,7 +2748,7 @@ var Index = React.createClass({
       </Dialog>
       <Dialog ref="importRemoteRules" wstyle="w-import-remote-dialog">
         <div className="modal-body">
-          <input readOnly={pendingRules} ref="rulesRemoteUrl" maxLength="256"
+          <input readOnly={pendingRules} ref="rulesRemoteUrl" maxLength="2048"
             onKeyDown={this.importRemoteRules}
             placeholder="Input the url" style={{ 'ime-mode': 'disabled' }} />
         </div>
@@ -2722,9 +2758,21 @@ var Index = React.createClass({
           <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
         </div>
       </Dialog>
+      <Dialog ref="importRemoteSessions" wstyle="w-import-remote-dialog">
+        <div className="modal-body">
+          <input readOnly={pendingSessions} ref="sessionsRemoteUrl" maxLength="2048"
+            onKeyDown={this.importRemoteSessions}
+            placeholder="Input the url" style={{ 'ime-mode': 'disabled' }} />
+        </div>
+        <div className="modal-footer">
+          <button type="button" className="btn btn-primary" disabled={pendingSessions} onMouseDown={this.preventBlur}
+            onClick={this.importRemoteSessions}>{pendingSessions ? 'Importing sessions' : 'Import sessions'}</button>
+          <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </Dialog>
       <Dialog ref="importRemoteValues" wstyle="w-import-remote-dialog">
         <div className="modal-body">
-          <input readOnly={pendingValues} ref="valuesRemoteUrl" maxLength="256"
+          <input readOnly={pendingValues} ref="valuesRemoteUrl" maxLength="2048"
             onKeyDown={this.importRemoteValues}
             placeholder="Input the url" style={{ 'ime-mode': 'disabled' }} />
         </div>
