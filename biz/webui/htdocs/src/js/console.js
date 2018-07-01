@@ -12,7 +12,7 @@ var DropDown = require('./dropdown');
 
 var allLogs = {
   value: '',
-  text: 'All Logs'
+  text: 'All logs'
 };
 
 function parseLog(log) {
