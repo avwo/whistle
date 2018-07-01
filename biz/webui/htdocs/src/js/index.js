@@ -915,23 +915,25 @@ var Index = React.createClass({
       protocols.setPlugins(pluginsState);
       self.setState(pluginsState);
     });
-    var importSessions = function(data) {
-      if (Array.isArray(data)) {
-        dataCenter.addNetworkList(data);
-      } else {
-        self.importHarSessions(data);
-      }
-    };
     try {
       var onReady = window.parent.onWhistleReady;
       if (typeof onReady === 'function') {
         onReady({
           url: location.href,
-          importSessions: importSessions,
+          importSessions: self.importAnySessions,
           importHarSessions: self.importHarSessions
         });
       }
     } catch(e) {}
+  },
+  importAnySessions: function(data) {
+    if (data) {
+      if (Array.isArray(data)) {
+        dataCenter.addNetworkList(data);
+      } else {
+        self.importHarSessions(data);
+      }
+    }
   },
   donotShowAgain: function() {
     dataCenter.donotShowAgain();
@@ -1213,13 +1215,7 @@ var Index = React.createClass({
       }
       self.refs.importRemoteSessions.hide();
       input.value = '';
-      if (data) {
-        if (Array.isArray(data)) {
-          dataCenter.addNetworkList(data);
-        } else {
-          self.importHarSessions(data);
-        }
-      }
+      self.importAnySessions(data);
     }));
   },
   importRules: function(e, data) {
