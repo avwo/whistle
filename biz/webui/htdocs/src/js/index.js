@@ -915,12 +915,19 @@ var Index = React.createClass({
       protocols.setPlugins(pluginsState);
       self.setState(pluginsState);
     });
+    var importSessions = function(data) {
+      if (Array.isArray(data)) {
+        dataCenter.addNetworkList(data);
+      } else {
+        self.importHarSessions(data);
+      }
+    };
     try {
       var onReady = window.parent.onWhistleReady;
       if (typeof onReady === 'function') {
         onReady({
           url: location.href,
-          importSessions: dataCenter.addNetworkList,
+          importSessions: importSessions,
           importHarSessions: self.importHarSessions
         });
       }
