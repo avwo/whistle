@@ -209,6 +209,7 @@ module.exports = function(req, res) {
   options.headers = formatHeaders(headers, rawHeaderNames);
 
   if (isWs) {
+    options.method = 'GET';
     handleWebSocket(options);
   } else if (isConn) {
     handleConnect(options);
