@@ -16,13 +16,13 @@ var Inspector = React.createClass({
       <Divider vertical="true" className={'w-detail-inspectors' + (props.hide ? ' hide' : '')}>
         <div className="fill orient-vertical-box">
           <div className="w-detail-inspectors-title">
-            Request
+            <span className="glyphicon glyphicon-arrow-right"></span>Request
           </div>
           <ReqDetail modal={props.modal} />
         </div>
         <div className="fill orient-vertical-box">
           <div className="w-detail-inspectors-title">
-            Response
+          <span className="glyphicon glyphicon-arrow-left"></span>Response
           </div>
           <ResDetail modal={props.modal} />
         </div>

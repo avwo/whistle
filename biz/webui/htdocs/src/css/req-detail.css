@@ -12,11 +12,14 @@
 }
 
 .w-detail-inspectors-title, .w-detail-webforms-title {
-  line-height: 20px;
+  line-height: 18px;
   background: #f2f2f2;
   font-size: 12px;
   padding: 0 10px;
   border-bottom: 1px solid #ccc;
+}
+.w-detail-inspectors-title {
+  padding: 0 5px!important;
 }
 .w-detail-inspectors-title {
   font-weight: bold;
