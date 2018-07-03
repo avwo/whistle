@@ -108,7 +108,7 @@ CodeMirror.defineMode('rules', function() {
   }
 
   function isSocks(str) {
-    return /^socks:\/\//.test(str);
+    return /^x?socks:\/\//.test(str);
   }
 
   function isPac(str) {
