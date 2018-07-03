@@ -26,6 +26,12 @@ function getHints(keyword) {
   if (keyword === 'csp') {
     return ['disable://csp'];
   }
+  if (keyword.indexOf('up') === 0) {
+    return ['proxy://'];
+  }
+  if (keyword.indexOf('xup') === 0) {
+    return ['xproxy://'];
+  }
   if (keyword.length > 2 && 'extend'.indexOf(keyword) === 0) {
     return ['reqMerge://', 'resMerge://'];
   }

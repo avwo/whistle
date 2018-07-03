@@ -24,7 +24,7 @@ OVERVIEW.forEach(function(name) {
   DEFAULT_OVERVIEW_MODAL[name] = '';
 });
 PROTOCOLS.forEach(function(name) {
-  if (PROXY_PROTOCOLS.indexOf(name) !== -1) {
+  if (PROXY_PROTOCOLS.indexOf(name) !== -1 || /^x/.test(name)) {
     return;
   }
   DEFAULT_RULES_MODAL[name] = '';
@@ -104,7 +104,7 @@ var Overview = React.createClass({
       if (rules) {
         rulesModal = {};
         PROTOCOLS.forEach(function(name) {
-          if (PROXY_PROTOCOLS.indexOf(name) !== -1) {
+          if (PROXY_PROTOCOLS.indexOf(name) !== -1 || /^x/.test(name)) {
             return;
           }
           var key = name;
