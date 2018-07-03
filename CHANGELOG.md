@@ -4,6 +4,7 @@
 3. feat: 支持远程导入Sessions/Rules/Values，通过 `Shirt + Export按钮`
 4. fix: 导入saz文件时把https请求自动转成http请求的问题
 5. refactor: 导致saz文件时也会保留whislte的一些特有信息 
+6. style: `Request` 和 `Response` 统一放到 `Inspectors` 显示，详见：https://github.com/avwo/whistle/issues/180
 
 ### v1.10.10
 1. feat: 支持显示图片
