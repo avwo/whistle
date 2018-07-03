@@ -139,7 +139,8 @@ app.use(function(req, res, next) {
       req.url = path.substring(len + 8);
     }
   } else {
-    if (referer) {
+    pluginName = config.getPluginNameByHost(req.headers.host);
+    if (!pluginName && referer) {
       var refOpts = url.parse(referer);
       var pathname = refOpts.pathname;
       if (PLUGIN_PATH_RE.test(pathname) && RegExp.$3) {
@@ -147,8 +148,6 @@ app.use(function(req, res, next) {
       } else {
         pluginName = config.getPluginNameByHost(refOpts.hostname);
       }
-    } else {
-      pluginName = config.getPluginNameByHost(req.headers.host);
     }
     if (pluginName) {
       req.url = '/whistle.' + pluginName + path;
