@@ -14,7 +14,9 @@ var Network = React.createClass({
     events.on('activeItem', function(e, item) {
       if (item && !item.selected) {
         self.props.modal.clearSelection();
+        self.props.modal.clearActive();
         item.selected = true;
+        item.active = true;
         self.onClick(item);
       }
     });
