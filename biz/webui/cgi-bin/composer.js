@@ -60,9 +60,6 @@ function handleConnect(options) {
     headers: options.headers
   }, function(socket) {
     drain(socket);
-    if (options.body) {
-      socket.write(options.body);
-    }
     var sendData = function(data) {
       data = util.toBuffer(data, getCharset(options.headers));
       if (!data || !data.length) {
