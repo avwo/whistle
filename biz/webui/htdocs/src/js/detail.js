@@ -5,8 +5,8 @@ var React = require('react');
 var events = require('./events');
 var BtnGroup = require('./btn-group');
 var Overview = require('./overview');
-var ReqDetail = require('./req-detail');
-var ResDetail = require('./res-detail');
+var Inspectors = require('./inspectors');
+var Frames = require('./frames');
 var Timeline = require('./timeline');
 var Composer = require('./composer');
 var Log = require('./log');
@@ -14,16 +14,16 @@ var util = require('./util');
 
 var TABS = [{
   name: 'Overview',
+  icon: 'stats'
+}, {
+  name: 'Inspectors',
   icon: 'eye-open'
 }, {
-  name: 'Request',
-  icon: 'send'
-}, {
-  name: 'Response',
-  icon: 'flash'
+  name: 'Frames',
+  icon: 'menu-hamburger'
 }, {
   name: 'Timeline',
-  icon: 'align-justify'
+  icon: 'calendar'
 }, {
   name: 'Composer',
   icon: 'edit'
@@ -37,8 +37,8 @@ var ReqData = React.createClass({
 
     return {
       initedOverview: false,
-      initedRequest: false,
-      initedResponse: false,
+      initedInspectors: false,
+      initedFrames: false,
       initedTimeline: false,
       initedComposer: false,
       initedLog: false
@@ -49,9 +49,9 @@ var ReqData = React.createClass({
     events.on('showOverview', function() {
       events.trigger('overviewScrollTop');
       self.toggleTab(TABS[0]);
-    }).on('showRequest', function() {
+    }).on('showInspectors', function() {
       self.toggleTab(TABS[1]);
-    }).on('showResponse', function() {
+    }).on('showFrames', function() {
       self.toggleTab(TABS[2]);
     }).on('showTimeline', function() {
       self.toggleTab(TABS[3]);
@@ -159,12 +159,20 @@ var ReqData = React.createClass({
     }
     var name = curTab && curTab.name;
 
+    var frames, cId;
+    if (activeItem) {
+      cId = activeItem.cId;
+      if (!activeItem.reqError && !activeItem.resError) {
+        frames = activeItem.frames;
+      }
+    }
+
     return (
         <div className="fill orient-vertical-box w-detail" onDragEnter={this.onDragEnter} onDrop={this.onDrop}>
         <BtnGroup onDoubleClick={this.onDoubleClick} onClick={this.toggleTab} tabs={TABS} />
         {this.state.initedOverview ? <Overview modal={overview} hide={name != TABS[0].name} /> : ''}
-        {this.state.initedRequest ? <ReqDetail modal={activeItem} hide={name != TABS[1].name} /> : ''}
-        {this.state.initedResponse ? <ResDetail modal={activeItem} hide={name != TABS[2].name} /> : ''}
+        {this.state.initedInspectors ? <Inspectors modal={activeItem} hide={name != TABS[1].name} /> : ''}
+        {this.state.initedFrames ? <Frames data={activeItem} cId={cId} frames={frames} hide={name != TABS[2].name} /> : ''}
         {this.state.initedTimeline ? <Timeline modal={modal} hide={name != TABS[3].name} /> : ''}
         {this.state.initedComposer ? <Composer modal={this.state.activeItem} hide={name != TABS[4].name} /> : ''}
         {this.state.initedLog ? <Log hide={name != TABS[5].name} /> : ''}

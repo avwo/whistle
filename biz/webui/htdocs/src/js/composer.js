@@ -190,7 +190,7 @@ var Composer = React.createClass({
             <textarea defaultValue={state.body} onChange={this.onComposerChange} onKeyDown={this.onKeyDown} ref="body" className="fill orient-vertical-box w-composer-body" placeholder="Input the body"></textarea>
           </Divider>
           <div ref="rulesCon" className="orient-vertical-box fill">
-            <div className="w-detail-request-webforms-title">Rules</div>
+            <div className="w-detail-inspectors-title">Rules</div>
             <textarea
               defaultValue={rules}
               ref='composerRules'

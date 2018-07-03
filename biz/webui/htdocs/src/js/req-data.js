@@ -50,8 +50,8 @@ var contextMenuList = [
     name: 'Show',
     list:  [
       { name: 'Overview' },
-      { name: 'Request' },
-      { name: 'Response' },
+      { name: 'Inspectors' },
+      { name: 'Frames' },
       { name: 'Timeline' }
     ]
   },
@@ -312,13 +312,13 @@ var ReqData = React.createClass({
       events.trigger('activeItem', item);
       events.trigger('showOverview');
       break;
-    case 'Request':
+    case 'Inspectors':
       events.trigger('activeItem', item);
-      events.trigger('showRequest');
+      events.trigger('showInspectors');
       break;
-    case 'Response':
+    case 'Frames':
       events.trigger('activeItem', item);
-      events.trigger('showResponse');
+      events.trigger('showFrames');
       break;
     case 'Timeline':
       events.trigger('activeItem', item);
@@ -404,6 +404,7 @@ var ReqData = React.createClass({
     contextMenuList[2].list.forEach(function(menu) {
       menu.disabled = disabled;
     });
+    contextMenuList[2].list[2].disabled = !item.frames
     var selectedList = modal.getSelectedList();
     var selectedCount = selectedList.length;
     var hasData = modal.list.length;

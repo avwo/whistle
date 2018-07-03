@@ -1,5 +1,26 @@
-.w-detail-request textarea {padding: 5px; border: none;}
-.w-detail-request-headers, .w-detail-request-cookies, .w-detail-request-query, .w-detail-request-form, .w-detail-request-form {overflow: auto;}
-.w-detail-request-webforms-title {
-  line-height: 20px; background: #f2f2f2; font-size: 12px; padding: 0 10px; border-bottom: 1px solid #ccc;
+.w-detail-request textarea {
+  padding: 5px;
+  border: none;
+}
+
+.w-detail-request-headers,
+.w-detail-request-cookies,
+.w-detail-request-query,
+.w-detail-request-form,
+.w-detail-request-form {
+  overflow: auto;
+}
+
+.w-detail-inspectors-title, .w-detail-webforms-title {
+  line-height: 20px;
+  background: #f2f2f2;
+  font-size: 12px;
+  padding: 0 10px;
+  border-bottom: 1px solid #ccc;
+}
+.w-detail-inspectors-title {
+  font-weight: bold;
+}
+.w-detail-webforms-title {
+  line-height: 16px!important;
 }

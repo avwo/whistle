@@ -114,11 +114,11 @@ var FrameList = React.createClass({
                 item.title += '\nLength: ' + length;
               }
             }
-            var icon = 'flash';
+            var icon = 'arrow-left';
             if (item.closed) {
               icon = 'minus-sign';
             } else if (item.isClient) {
-              icon = 'send';
+              icon = 'arrow-right';
             }
             return (
               <li

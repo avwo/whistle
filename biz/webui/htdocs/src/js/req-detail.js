@@ -89,15 +89,15 @@ var ReqDetail = React.createClass({
         {state.initedHeaders ? <div className={'fill w-detail-request-headers' + (name == BTNS[0].name ? '' : ' hide')}><Properties modal={rawHeaders || headers} enableViewSource="1" /></div> : ''}
         {state.initedWebForms ? <Divider vertical="true" className={'w-detail-request-webforms' + (name == BTNS[1].name ? '' : ' hide')}>
           <div className="fill orient-vertical-box">
-            <div className="w-detail-request-webforms-title">
+            <div className="w-detail-webforms-title">
               Query
             </div>
-            <div className="fill w-detail-request-query">
+            <div className="fill orient-vertical-box w-detail-request-query">
               <Properties modal={query} enableViewSource="1" />
             </div>
           </div>
           <div className="fill orient-vertical-box">
-            <div className="w-detail-request-webforms-title">
+            <div className="w-detail-webforms-title">
               Body
             </div>
             <div className="fill orient-vertical-box w-detail-request-form">
