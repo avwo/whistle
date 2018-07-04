@@ -244,7 +244,14 @@ app.use(bodyParser.urlencoded({ extended: true, limit: '1mb'}));
 app.use(bodyParser.json());
 
 app.all('/cgi-bin/*', cgiHandler);
-
+app.use('/preview.html', function(req, res, next) {
+  next();
+  var index = req.path.indexOf('=') + 1;
+  if (index) {
+    var charset = req.path.substring(index);
+    res.set('content-type', 'text/html;charset=' + charset);
+  }
+});
 app.use(express.static(path.join(__dirname, '../htdocs'), {maxAge: 300000}));
 
 app.get('/', function(req, res) {

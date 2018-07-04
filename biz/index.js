@@ -4,14 +4,14 @@ var util = require('../lib/util');
 
 var HTTP_PROXY_RE = /^(?:proxy|http-proxy|http2https-proxy|https2http-proxy|internal-proxy):\/\//;
 var INTERNAL_APP;
-var WEBUI_PATH;
-var PLUGIN_RE;
+var WEBUI_PATH, PLUGIN_RE, PREVIEW_PATH_RE;
 
 module.exports = function(req, res, next) {
   var config = this.config;
   var pluginMgr = this.pluginMgr;
   if (!INTERNAL_APP) {
     WEBUI_PATH = config.WEBUI_PATH;
+    PREVIEW_PATH_RE = config.PREVIEW_PATH_RE;
     var webuiPathRe = util.escapeRegExp(WEBUI_PATH);
     INTERNAL_APP = new RegExp('^' + webuiPathRe + '(log|weinre)\\.(\\d{1,5})/');
     PLUGIN_RE = new RegExp('^' + webuiPathRe + 'whistle\\.([a-z\\d_-]+)/');
@@ -58,6 +58,9 @@ module.exports = function(req, res, next) {
       if (bypass) {
         req.url = req.url.replace(bypass, '/');
       }
+    } else if (PREVIEW_PATH_RE.test(req.url)) {
+      req.url = '/preview.html?charset=' + RegExp.$1;
+      isWebUI = true;
     }
   }
   // 后续有用到
