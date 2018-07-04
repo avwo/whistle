@@ -112,6 +112,7 @@ var ResDetail = React.createClass({
         if (type === 'IMG') {
           imgSrc = body || (res.size ? modal.url : undefined);
         } else if (type === 'HTML') {
+          // Click here to preview page in new window
           html = res.base64;
         }
       }

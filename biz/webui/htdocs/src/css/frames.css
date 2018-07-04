@@ -144,3 +144,6 @@
 .w-frames-list .glyphicon-arrow-left {
   color: #e75b0f;
 }
+.w-frames-data textarea {
+  border: none;
+}
