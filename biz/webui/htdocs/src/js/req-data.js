@@ -31,7 +31,8 @@ var contextMenuList = [
     name: 'Open',
     list: [
       { name: 'New Tab'},
-      { name: 'QR Code' }
+      { name: 'QR Code' },
+      { name: 'Preview' }
     ]
   },
   {
@@ -371,6 +372,12 @@ var ReqData = React.createClass({
     this.currentFocusItem = item;
     contextMenuList[0].disabled = disabled;
     contextMenuList[0].list[0].disabled = disabled || !/^https?:\/\//.test(item.url);
+    if (disabled) {
+      contextMenuList[0].list[2].disabled = true;
+    } else {
+      var type = util.getContentType(item.res.headers);
+      contextMenuList[0].list[2].disabled = !item.res.base64 || (type !== 'HTML' && type !== 'IMG');
+    }
     contextMenuList[1].disabled = disabled;
     contextMenuList[1].list.forEach(function(menu) {
       menu.disabled = disabled;

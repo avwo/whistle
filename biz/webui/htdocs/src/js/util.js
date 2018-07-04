@@ -875,10 +875,25 @@ exports.getHex = function(data) {
 var CHARSET_RE = /charset=([\w-]+)/i;
 var META_CHARSET_RE = /<meta\s[^>]*\bcharset=(?:'|")?([\w-]+)[^>]*>/i;
 
-exports.getCharset = function(res) {
+function getCharset(res) {
   var type = res.headers && res.headers['content-type'];
   if (CHARSET_RE.test(type) || META_CHARSET_RE.test(getBody(res))) {
     return RegExp.$1.toUpperCase();
   }
   return 'UTF8';
+}
+
+exports.openPreview = function(data) {
+  if (!data) {
+    return;
+  }
+  var res = data.res;
+  var type = getContentType(res.headers);
+  var url = data.url;
+  if (type === 'HTML') {
+    url += (url.indexOf('?') === -1 ? '' : '&') + '???WHISTLE_PREVIEW_CHARSET=' + getCharset(res);
+    window.open(url + '???#' + res.base64);
+  } else if (type === 'IMG') {
+    window.open(getBody(res));
+  }
 };

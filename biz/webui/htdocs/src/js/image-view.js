@@ -8,14 +8,7 @@ var ImageView = React.createClass({
     return hide != util.getBoolean(nextProps.hide) || !hide;
   },
   preview: function() {
-    var data = this.props.data;
-    if (!data) {
-      return;
-    }
-    var res = data.res;
-    var url = data.url;
-    url += (url.indexOf('?') === -1 ? '' : '&') + '???WHISTLE_PREVIEW_CHARSET=' + util.getCharset(res);
-    window.open(url + '???#' + res.base64);
+    util.openPreview(this.props.data);
   },
   render: function() {
     var props = this.props;
