@@ -2,9 +2,10 @@
 1. feat: https请求自动降级([https://github.com/avwo/whistle/issues/176](https://github.com/avwo/whistle/issues/176))
 2. feat: 支持显示HexView（二进制）
 3. feat: 支持远程导入Sessions/Rules/Values，通过 `Shirt + Export按钮`
-4. fix: 导入saz文件时把https请求自动转成http请求的问题
-5. refactor: 导致saz文件时也会保留whislte的一些特有信息 
-6. style: `Request` 和 `Response` 统一放到 `Inspectors` 显示，详见：https://github.com/avwo/whistle/issues/180
+4. feat: 支持预览HTML页面
+5. fix: 导入saz文件时把https请求自动转成http请求的问题
+6. refactor: 导致saz文件时也会保留whislte的一些特有信息 
+7. style: `Request` 和 `Response` 统一放到 `Inspectors` 显示，详见：https://github.com/avwo/whistle/issues/180
 
 ### v1.10.10
 1. feat: 支持显示图片
