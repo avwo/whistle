@@ -7,12 +7,21 @@ var ImageView = React.createClass({
     var hide = util.getBoolean(this.props.hide);
     return hide != util.getBoolean(nextProps.hide) || !hide;
   },
+  preview: function() {
+    var data = this.props.data;
+    if (!data) {
+      return;
+    }
+    var res = data.res;
+    var url = data.url + '???WHISTLE_PREVIEW_CHARSET=' + util.getCharset(res) + '???#' + res.base64;
+    window.open(url);
+  },
   render: function() {
     var props = this.props;
     return (
       <div className={'fill w-image-view' + (props.hide ? ' hide' : '')}>
         <img src={props.imgSrc || undefined} />
-        {props.previewUrl ? <a href={props.previewUrl} target="_blank">
+        {props.data ? <a href="javascript:;" onClick={this.preview}>
           Click here to preview page in new window
         </a> : undefined }
       </div>

@@ -103,7 +103,7 @@ var ResDetail = React.createClass({
           return row;
         });
       }
-      var imgSrc, previewUrl;
+      var imgSrc, data;
       var status = res.statusCode;
       var showImg = name === BTNS[1].name;
       if (status != null) {
@@ -112,8 +112,8 @@ var ResDetail = React.createClass({
         var type = util.getContentType(headers);
         if (type === 'IMG') {
           imgSrc = body || (res.size ? modal.url : undefined);
-        } else if (showImg && type === 'HTML') {
-          previewUrl = modal.url + '???WHISTLE_PREVIEW_CHARSET=' + util.getCharset(res) + '???#' + res.base64;
+        } else if (showImg && res.base64 && type === 'HTML') {
+          data = modal;
         }
       }
       if (modal.isHttps) {
@@ -136,7 +136,7 @@ var ResDetail = React.createClass({
         + (util.getBoolean(this.props.hide) ? ' hide' : '')}>
         <BtnGroup onClick={this.onClickBtn} btns={BTNS} />
         {state.initedHeaders ? <div className={'fill w-detail-response-headers' + (name == BTNS[0].name ? '' : ' hide')}><Properties modal={rawHeaders || headers} enableViewSource="1" /></div> : undefined}
-        {state.initedPreview ? <ImageView imgSrc={imgSrc} previewUrl={previewUrl} hide={!showImg} /> : undefined}
+        {state.initedPreview ? <ImageView imgSrc={imgSrc} data={data} hide={!showImg} /> : undefined}
         {state.initedTextView ? <Textarea defaultName={defaultName} tips={tips} value={body} className="fill w-detail-response-textview" hide={name != BTNS[2].name} /> : undefined}
         {state.initedJSONView ? <JSONViewer defaultName={defaultName} data={json} hide={name != BTNS[3].name} /> : undefined}
         {state.initedHexView ? <Textarea defaultName={defaultName} value={bin} className="fill n-monospace w-detail-response-hex" hide={name != BTNS[4].name} /> : undefined}
