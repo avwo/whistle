@@ -13,8 +13,9 @@ var ImageView = React.createClass({
       return;
     }
     var res = data.res;
-    var url = data.url + '???WHISTLE_PREVIEW_CHARSET=' + util.getCharset(res) + '???#' + res.base64;
-    window.open(url);
+    var url = data.url;
+    url += (url.indexOf('?') === -1 ? '' : '&') + '???WHISTLE_PREVIEW_CHARSET=' + util.getCharset(res);
+    window.open(url + '???#' + res.base64);
   },
   render: function() {
     var props = this.props;
