@@ -14,16 +14,16 @@ var util = require('./util');
 
 var TABS = [{
   name: 'Overview',
-  icon: 'stats'
+  icon: 'eye-open'
 }, {
   name: 'Inspectors',
-  icon: 'eye-open'
+  icon: 'search'
 }, {
   name: 'Frames',
   icon: 'menu-hamburger'
 }, {
   name: 'Timeline',
-  icon: 'calendar'
+  icon: 'time'
 }, {
   name: 'Composer',
   icon: 'edit'
