@@ -20,6 +20,19 @@
       if (!charset) {
         return;
       }
+      var pushState = history.pushState;
+      var replaceState = history.replaceState;
+      if (typeof pushState === 'function') {
+        try {
+          history.pushState = history.replaceState = function() {};
+        } catch(e) {}
+      }
+      setTimeout(function() {
+        try {
+          history.pushState = pushState;
+          history.replaceState = replaceState;
+        } catch(e) {}
+      }, 6000);
       try {
         if (charset.replace('-', '') === 'UTF8') {
           document.write(Base64.decode(base64Text));
