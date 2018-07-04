@@ -23,14 +23,14 @@
       try {
         if (charset.replace('-', '') === 'UTF8') {
           document.write(Base64.decode(base64Text));
-          window.Base64 = null;
-          window.base64js = null;
-          return;
+          charset = null;
         }
       } catch(e) {}
-      var decoder = new TextDecoder(charset);
-      var bytes = base64js.toByteArray(base64Text);
-      document.write(decoder.decode(new window.Uint8Array(bytes)));
+      if (charset) {
+        var decoder = new TextDecoder(charset);
+        var bytes = base64js.toByteArray(base64Text);
+        document.write(decoder.decode(new window.Uint8Array(bytes)));
+      }
       window.Base64 = null;
       window.base64js = null;
     };
