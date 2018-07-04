@@ -54,7 +54,7 @@ var ResDetail = React.createClass({
     }
     var name = btn && btn.name;
     var modal = this.props.modal;
-    var res, rawHeaders, headers, cookies, body, raw, json, tips, defaultName, bin, html;
+    var res, rawHeaders, headers, cookies, body, raw, json, tips, defaultName, bin;
     body = raw = '';
     if (modal) {
       res = modal.res;
@@ -103,17 +103,17 @@ var ResDetail = React.createClass({
           return row;
         });
       }
-      var imgSrc;
+      var imgSrc, previewUrl;
       var status = res.statusCode;
+      var showImg = name === BTNS[1].name;
       if (status != null) {
         raw = ['HTTP/' + (modal.req.httpVersion || '1.1'), status, util.getStatusMessage(res)].join(' ')
             + '\r\n' + util.objectToString(headers, res.rawHeaderNames) + '\r\n\r\n' + body;
         var type = util.getContentType(headers);
         if (type === 'IMG') {
           imgSrc = body || (res.size ? modal.url : undefined);
-        } else if (type === 'HTML') {
-          // Click here to preview page in new window
-          html = res.base64;
+        } else if (showImg && type === 'HTML') {
+          previewUrl = modal.url + '???WHISTLE_PREVIEW_CHARSET=' + util.getCharset(res) + '???#' + res.base64;
         }
       }
       if (modal.isHttps) {
@@ -136,7 +136,7 @@ var ResDetail = React.createClass({
         + (util.getBoolean(this.props.hide) ? ' hide' : '')}>
         <BtnGroup onClick={this.onClickBtn} btns={BTNS} />
         {state.initedHeaders ? <div className={'fill w-detail-response-headers' + (name == BTNS[0].name ? '' : ' hide')}><Properties modal={rawHeaders || headers} enableViewSource="1" /></div> : undefined}
-        {state.initedPreview ? <ImageView imgSrc={imgSrc} hide={name != BTNS[1].name} /> : undefined}
+        {state.initedPreview ? <ImageView imgSrc={imgSrc} previewUrl={previewUrl} hide={!showImg} /> : undefined}
         {state.initedTextView ? <Textarea defaultName={defaultName} tips={tips} value={body} className="fill w-detail-response-textview" hide={name != BTNS[2].name} /> : undefined}
         {state.initedJSONView ? <JSONViewer defaultName={defaultName} data={json} hide={name != BTNS[3].name} /> : undefined}
         {state.initedHexView ? <Textarea defaultName={defaultName} value={bin} className="fill n-monospace w-detail-response-hex" hide={name != BTNS[4].name} /> : undefined}

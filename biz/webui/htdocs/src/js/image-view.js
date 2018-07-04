@@ -12,6 +12,9 @@ var ImageView = React.createClass({
     return (
       <div className={'fill w-image-view' + (props.hide ? ' hide' : '')}>
         <img src={props.imgSrc || undefined} />
+        {props.previewUrl ? <a href={props.previewUrl} target="_blank">
+          Click here to preview page in new window
+        </a> : undefined }
       </div>
     );
   }
