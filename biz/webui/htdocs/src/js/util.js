@@ -871,3 +871,14 @@ exports.getHex = function(data) {
   initData(data);
   return data[HEX_KEY] || '';
 };
+
+var CHARSET_RE = /charset=([\w-]+)/i;
+var META_CHARSET_RE = /<meta\s[^>]*\bcharset=(?:'|")?([\w-]+)[^>]*>/i;
+
+exports.getCharset = function(res) {
+  var type = res.headers && res.headers['content-type'];
+  if (CHARSET_RE.test(type) || META_CHARSET_RE.test(getBody(res))) {
+    return RegExp.$1;
+  }
+  return 'utf8';
+};
