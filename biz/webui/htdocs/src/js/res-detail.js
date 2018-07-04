@@ -11,10 +11,10 @@ var ImageView = require('./image-view');
 var JSONViewer = require('./json-viewer');
 var BTNS = [
   {name: 'Headers'},
+  {name: 'Preview'},
   {name: 'TextView'},
   {name: 'JSONView'},
   {name: 'HexView'},
-  {name: 'ImageView'},
   {name: 'Cookies'},
   {name: 'Raw'}
 ];
@@ -25,7 +25,7 @@ var ResDetail = React.createClass({
     return {
       initedHeaders: false,
       initedTextView: false,
-      initedImageView: false,
+      initedPreview: false,
       initedCookies: false,
       initedJSONView: false,
       initedHexView: false,
@@ -54,7 +54,7 @@ var ResDetail = React.createClass({
     }
     var name = btn && btn.name;
     var modal = this.props.modal;
-    var res, rawHeaders, headers, cookies, body, raw, json, tips, defaultName, bin;
+    var res, rawHeaders, headers, cookies, body, raw, json, tips, defaultName, bin, html;
     body = raw = '';
     if (modal) {
       res = modal.res;
@@ -108,8 +108,11 @@ var ResDetail = React.createClass({
       if (status != null) {
         raw = ['HTTP/' + (modal.req.httpVersion || '1.1'), status, util.getStatusMessage(res)].join(' ')
             + '\r\n' + util.objectToString(headers, res.rawHeaderNames) + '\r\n\r\n' + body;
-        if ((status == 200 || status == 304) && util.getContentType(headers) === 'IMG') {
+        var type = util.getContentType(headers);
+        if (type === 'IMG') {
           imgSrc = body || (res.size ? modal.url : undefined);
+        } else if (type === 'HTML') {
+          html = res.base64;
         }
       }
       if (modal.isHttps) {
@@ -132,10 +135,10 @@ var ResDetail = React.createClass({
         + (util.getBoolean(this.props.hide) ? ' hide' : '')}>
         <BtnGroup onClick={this.onClickBtn} btns={BTNS} />
         {state.initedHeaders ? <div className={'fill w-detail-response-headers' + (name == BTNS[0].name ? '' : ' hide')}><Properties modal={rawHeaders || headers} enableViewSource="1" /></div> : undefined}
-        {state.initedTextView ? <Textarea defaultName={defaultName} tips={tips} value={body} className="fill w-detail-response-textview" hide={name != BTNS[1].name} /> : undefined}
-        {state.initedJSONView ? <JSONViewer defaultName={defaultName} data={json} hide={name != BTNS[2].name} /> : undefined}
-        {state.initedHexView ? <Textarea defaultName={defaultName} value={bin} className="fill n-monospace w-detail-response-hex" hide={name != BTNS[3].name} /> : undefined}
-        {state.initedImageView ? <ImageView imgSrc={imgSrc} hide={name != BTNS[4].name} /> : undefined}
+        {state.initedPreview ? <ImageView imgSrc={imgSrc} hide={name != BTNS[1].name} /> : undefined}
+        {state.initedTextView ? <Textarea defaultName={defaultName} tips={tips} value={body} className="fill w-detail-response-textview" hide={name != BTNS[2].name} /> : undefined}
+        {state.initedJSONView ? <JSONViewer defaultName={defaultName} data={json} hide={name != BTNS[3].name} /> : undefined}
+        {state.initedHexView ? <Textarea defaultName={defaultName} value={bin} className="fill n-monospace w-detail-response-hex" hide={name != BTNS[4].name} /> : undefined}
         {state.initedCookies ? <div className={'fill w-detail-response-cookies' + (name == BTNS[5].name ? '' : ' hide')}>{cookies && cookies.length ? <Table head={COOKIE_HEADERS} modal={cookies} /> : undefined}</div> : undefined}
         {state.initedRaw ? <Textarea defaultName={defaultName} value={raw} className="fill w-detail-response-raw" hide={name != BTNS[6].name} /> : undefined}
       </div>
