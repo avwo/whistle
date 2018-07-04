@@ -309,6 +309,9 @@ var ReqData = React.createClass({
         });
       }
       break;
+    case 'Preview':
+      util.openPreview(item);
+      break;
     case 'Overview':
       events.trigger('activeItem', item);
       events.trigger('showOverview');
