@@ -25,7 +25,7 @@ var Inspector = React.createClass({
   render: function() {
     var props = this.props;
     var modal = props.modal;
-    this.endTime = modal && modal.endTime;
+    this.endTime = modal && (modal.endTime || modal.lost);
     return (
       <Divider vertical="true" className={'w-detail-inspectors' + (props.hide ? ' hide' : '')}>
         <div className="fill orient-vertical-box">
