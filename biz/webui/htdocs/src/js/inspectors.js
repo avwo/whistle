@@ -8,23 +8,37 @@ var util = require('./util');
 var Inspector = React.createClass({
   shouldComponentUpdate: function(nextProps) {
     var hide = util.getBoolean(this.props.hide);
-    return hide != util.getBoolean(nextProps.hide) || !hide;
+    if (hide != util.getBoolean(nextProps.hide)) {
+      return true;
+    }
+    if (hide) {
+      return false;
+    }
+    var modal = this.props.modal;
+    var newModal = nextProps.modal;
+    if (!modal || modal !== newModal) {
+      return true;
+    }
+    
+    return !this.endTime;
   },
   render: function() {
     var props = this.props;
+    var modal = props.modal;
+    this.endTime = modal && modal.endTime;
     return (
       <Divider vertical="true" className={'w-detail-inspectors' + (props.hide ? ' hide' : '')}>
         <div className="fill orient-vertical-box">
           <div className="w-detail-inspectors-title">
             <span className="glyphicon glyphicon-arrow-right"></span>Request
           </div>
-          <ReqDetail modal={props.modal} />
+          <ReqDetail modal={modal} />
         </div>
         <div className="fill orient-vertical-box">
           <div className="w-detail-inspectors-title">
           <span className="glyphicon glyphicon-arrow-left"></span>Response
           </div>
-          <ResDetail modal={props.modal} />
+          <ResDetail modal={modal} />
         </div>
       </Divider>
     );
