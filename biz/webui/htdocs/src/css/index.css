@@ -98,7 +98,3 @@
   line-height: 30px;
   padding: 5px;
 }
-.w-detail-inspectors, .w-req-data-con {
-  -webkit-transform: rotateZ(0);
-  transform: rotateZ(0);
-}
