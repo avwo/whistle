@@ -28,6 +28,9 @@ var FrameClient = React.createClass({
   getInitialState: function() {
     return {};
   },
+  shouldComponentUpdate: function(nextProps) {
+    return this.props.reqData !== nextProps.reqData;
+  },
   onClickBtn: function(btn) {
     this.selectBtn(btn);
     this.setState({});
