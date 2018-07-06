@@ -379,7 +379,7 @@ var ReqData = React.createClass({
       contextMenuList[0].list[2].disabled = true;
     } else {
       var type = util.getContentType(item.res.headers);
-      contextMenuList[0].list[2].disabled = !item.res.base64 || type !== 'HTML';
+      contextMenuList[0].list[2].disabled = !item.res.base64 || (type !== 'HTML' && type !== 'IMG');
     }
     contextMenuList[1].disabled = disabled;
     contextMenuList[1].list.forEach(function(menu) {

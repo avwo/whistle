@@ -20,6 +20,13 @@
       if (!charset) {
         return;
       }
+      if (base64Text.indexOf('data:') === 0) {
+        var style = 'display: -webkit-box; -webkit-box-align: center; -webkit-align-items: center;'
+          + '-webkit-box-pack: center; -webkit-justify-content: center; margin: 0px; background: #0e0e0e;';
+        document.write('<html><head></head><body style="' + style + '">'
+          + '<img src="' + base64Text + '"></body></html>');
+        return;
+      }
       var pushState = history.pushState;
       var replaceState = history.replaceState;
       if (typeof pushState === 'function') {

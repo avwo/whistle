@@ -890,10 +890,10 @@ exports.openPreview = function(data) {
   var res = data.res;
   var type = getContentType(res.headers);
   var url = data.url;
-  if (type === 'HTML') {
-    url += (url.indexOf('?') === -1 ? '' : '&') + '???WHISTLE_PREVIEW_CHARSET=' + getCharset(res);
-    window.open(url + '???#' + res.base64);
-  } else if (type === 'IMG') {
-    window.open(getBody(res));
+  var isImg = type === 'IMG';
+  if (isImg || type === 'HTML') {
+    var charset = isImg ? 'UTF8' : getCharset(res);
+    url += (url.indexOf('?') === -1 ? '' : '&') + '???WHISTLE_PREVIEW_CHARSET=' + charset;
+    window.open(url + '???#' + (isImg ? getBody(res) : res.base64));
   }
 };
