@@ -5,20 +5,12 @@ var Textarea = require('./textarea');
 var FrameComposer = require('./frame-composer');
 var util = require('./util');
 
-var BTNS = getBtns();
-var COMPOSER_BTNS = getBtns(true);
-
-function getBtns(composer) {
-  var btns = [
-    {name: 'TextView'},
-    {name: 'JSONView'},
-    {name: 'HexView'}
-  ];
-  if (composer) {
-    btns.push({name: 'Composer'});
-  }
-  return btns;
-}
+var BTNS = [
+  {name: 'TextView'},
+  {name: 'JSONView'},
+  {name: 'HexView'},
+  {name: 'Composer'}
+];
 
 function findActive(btn) {
   return btn.active;
@@ -39,10 +31,8 @@ var FrameClient = React.createClass({
   render: function() {
     var state = this.state;
     var btn = state.btn;
-    var cId = this.props.cId;
-    var btns = cId ? COMPOSER_BTNS : BTNS;
-    if (btns.indexOf(btn) === -1) {
-      btn = util.findArray(btns, findActive) || btns[0];
+    if (BTNS.indexOf(btn) === -1) {
+      btn = util.findArray(BTNS, findActive) || BTNS[0];
       this.selectBtn(btn);
     }
     var reqData = this.props.reqData;
@@ -55,11 +45,11 @@ var FrameClient = React.createClass({
     }
     return (
       <div className={'fill orient-vertical-box w-frames-data' + (this.props.hide ? ' hide' : '')}>
-        <BtnGroup onClick={this.onClickBtn} btns={btns} />
+        <BtnGroup onClick={this.onClickBtn} btns={BTNS} />
         <Textarea className="fill" value={text} hide={btn.name !== 'TextView'} />
         <JSONViewer data={json} hide={btn.name !== 'JSONView'} />
         <Textarea className="fill n-monospace" value={bin} hide={btn.name !== 'HexView'} />
-        <FrameComposer closed={reqData && reqData.closed} cId={cId} hide={btn.name !== 'Composer'} />
+        <FrameComposer closed={reqData && reqData.closed} hide={btn.name !== 'Composer'} />
       </div>
     );
   }

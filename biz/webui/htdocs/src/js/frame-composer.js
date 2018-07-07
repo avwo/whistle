@@ -85,7 +85,7 @@ var FrameComposer = React.createClass({
               <span className="caret"></span>
             </button>
             <ul className="dropdown-menu">
-              <li><a onClick={this.onSend} href="javascript:;">Send to server with binary</a></li>
+              <li><a onClick={this.onSend} href="javascript:;">Send with binary</a></li>
             </ul>
           </div>
         </div>
