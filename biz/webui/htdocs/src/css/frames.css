@@ -5,6 +5,8 @@
   background: #f2f2f2;
   position: relative;
   border-bottom: 1px solid #ccc;
+  height: 22px;
+  line-height: 20px;
 }
 .w-frames-action label {
   font-weight: normal;
@@ -19,9 +21,6 @@
   margin-left: 10px;
   text-decoration: none!important;
   color: #000;
-  position: absolute;
-  right: 65px;
-  top: 7px;
 }
 .w-frames-action .w-connect-abort {
   right: 157px;

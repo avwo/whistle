@@ -59,15 +59,27 @@ var FrameList = React.createClass({
     var modal = self.props.modal;
     var keyword = this.state && this.state.keyword;
     return (<div className="fill orient-vertical-box w-frames-list">
+      <FilterInput onChange={self.onFilterChange} />
       <div className="w-frames-action">
-        <FilterInput onChange={self.onFilterChange} />
+        <a onClick={self.clear} className="w-remove-menu"
+          href="javascript:;" draggable="false">
+          <span className="glyphicon glyphicon-remove"></span>Clear
+        </a>
         <a onClick={self.autoRefresh} onDoubleClick={self.stopRefresh} className="w-remove-menu"
           href="javascript:;" draggable="false">
           <span className="glyphicon glyphicon-play"></span>AutoRefresh
         </a>
-        <a onClick={self.clear} className="w-remove-menu"
+        <a onClick={self.replay} className="w-remove-menu"
           href="javascript:;" draggable="false">
-          <span className="glyphicon glyphicon-remove"></span>Clear
+          <span className="glyphicon glyphicon-repeat"></span>Replay
+        </a>
+        <a onClick={self.composer} className="w-remove-menu"
+          href="javascript:;" draggable="false">
+          <span className="glyphicon glyphicon-edit"></span>Composer
+        </a>
+        <a onClick={self.abort} className="w-remove-menu"
+          href="javascript:;" draggable="false">
+          <span className="glyphicon glyphicon-ban-circle"></span>Abort
         </a>
       </div>
       <div
