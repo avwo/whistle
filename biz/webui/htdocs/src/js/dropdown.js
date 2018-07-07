@@ -64,6 +64,7 @@ var DropDown = React.createClass({
                       self.onChange(option);
                     }}
                   >
+                    {option.icon ? <span className={'glyphicon glyphicon-' + option.icon} /> : undefined}
                     {option.text}
                   </li>
                 );
