@@ -1,5 +1,6 @@
 .w-frames {
   font-size: 12px;
+  min-width: 550px;
 }
 .w-frames-action {
   background: #f2f2f2;
@@ -18,9 +19,10 @@
 }
 
 .w-frames-action a {
-  margin-left: 10px;
+  margin-left: 15px;
   text-decoration: none!important;
   color: #000;
+  vertical-align: super;
 }
 .w-frames-action .w-connect-abort {
   right: 157px;
@@ -67,6 +69,10 @@
   display: inline-block;
   padding: 0 5px;
   margin-left: 5px;
+}
+
+.w-frames-action .w-dropdown {
+  margin-left: 15px
 }
 
 .w-frames-action .w-filter-con {

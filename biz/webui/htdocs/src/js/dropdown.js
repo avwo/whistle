@@ -42,6 +42,7 @@ var DropDown = React.createClass({
             title={selectedOption.text}
             className="dropdown-toggle w-dropdown-text"
           >
+            {selectedOption.icon ? <span className={'glyphicon glyphicon-' + selectedOption.icon} /> : undefined}
             {selectedOption.text}
             <span className="caret"></span>
           </div>

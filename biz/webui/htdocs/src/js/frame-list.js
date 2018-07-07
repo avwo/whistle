@@ -1,8 +1,43 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 var util = require('./util');
-
 var FilterInput = require('./filter-input');
+var DropDown = require('./dropdown');
+
+var SEND_PERATORS = [
+  {
+    value: 0,
+    icon: 'arrow-right',
+    text: 'Send'
+  },
+  {
+    value: 1,
+    icon: 'arrow-right',
+    text: 'Pause'
+  },
+  {
+    value: 2,
+    icon: 'arrow-right',
+    text: 'Ignore'
+  }
+];
+var RECEIVE_PERATORS = [
+  {
+    value: 0,
+    icon: 'arrow-left',
+    text: 'Receive'
+  },
+  {
+    value: 1,
+    icon: 'arrow-left',
+    text: 'Pause'
+  },
+  {
+    value: 2,
+    icon: 'arrow-left',
+    text: 'Ignore'
+  }
+];
 
 var FrameList = React.createClass({
   onFilterChange: function(keyword) {
@@ -81,6 +116,14 @@ var FrameList = React.createClass({
           href="javascript:;" draggable="false">
           <span className="glyphicon glyphicon-ban-circle"></span>Abort
         </a>
+        <DropDown
+          onChange={self.onSendTypeChange}
+          options={SEND_PERATORS}
+        />
+        <DropDown
+          onChange={self.onReceiveTypeChange}
+          options={RECEIVE_PERATORS}
+        />
       </div>
       <div
         tabIndex="0"
