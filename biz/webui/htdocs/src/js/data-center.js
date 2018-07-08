@@ -513,6 +513,7 @@ function startLoadData() {
       }
 
       data = data.data;
+      var hasChhanged;
       var framesLen = data.frames && data.frames.length;
       if (framesLen) {
         curActiveItem.lastFrameId = data.frames[framesLen - 1].frameId;
@@ -522,13 +523,18 @@ function startLoadData() {
         var status = data.socketStatus;
         if (status) {
           if (status.sendStatus > -1) {
+            hasChhanged = curActiveItem.sendStatus !== status.sendStatus;
             curActiveItem.sendStatus = status.sendStatus;
           }
           if (status.receiveStatus > -1) {
+            hasChhanged = hasChhanged || curActiveItem.receiveStatus !== status.receiveStatus;
             curActiveItem.receiveStatus = status.receiveStatus;
           }
         } else {
-          curActiveItem.closed = true;
+          if (!curActiveItem.closed) {
+            hasChhanged = true;
+            curActiveItem.closed = true;
+          }
         }
       }
       if (data.lastId) {
@@ -538,7 +544,7 @@ function startLoadData() {
         endId = data.endId;
       }
       if ((!data.ids.length && !data.newIds.length) || networkModal.clearNetwork) {
-        if (framesLen) {
+        if (hasChhanged || framesLen) {
           framesUpdateCallbacks.forEach(function(cb) {
             cb();
           });
