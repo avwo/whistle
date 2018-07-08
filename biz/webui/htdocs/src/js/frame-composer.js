@@ -32,7 +32,7 @@ var FrameComposer = React.createClass({
     dataCenter.socket.upload(form);
   },
   onSend: function(e) {
-    var value = this.state.data;
+    var value = this.state.text;
     if (!value) {
       return;
     }
@@ -42,23 +42,20 @@ var FrameComposer = React.createClass({
       type: e.target.nodeName === 'A' ? 'bin' : 'text/plain',
       data: value.replace(/\r\n|\r|\n/g, '\r\n')
     }, function(data) {
-      self.setState({ data: '' });
+      self.setState({ text: '' });
     });
   },
   onTextareaChange: function(e) {
     this.setState({
-      data: e.target.value
+      text: e.target.value
     });
   },
   preventDefault: function(e) {
     e.preventDefault();
   },
   render: function() {
-    var data = this.props.data;
-    if (!data) {
-      return null;
-    }
-    var text = this.state.data;
+    var data = this.props.data || '';
+    var text = this.state.text;
     var closed = data.closed;
     var disabled = closed || data.hasPendingData;
     var tips = data.closed ? 'The connection is closed' : undefined;
