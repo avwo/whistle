@@ -35,7 +35,6 @@ var FrameClient = React.createClass({
       btn = util.findArray(BTNS, findActive) || BTNS[0];
       this.selectBtn(btn);
     }
-    var reqData = this.props.reqData;
     var data = this.props.data;
     var text, json, bin;
     if (data) {
@@ -49,7 +48,7 @@ var FrameClient = React.createClass({
         <Textarea className="fill" value={text} hide={btn.name !== 'TextView'} />
         <JSONViewer data={json} hide={btn.name !== 'JSONView'} />
         <Textarea className="fill n-monospace" value={bin} hide={btn.name !== 'HexView'} />
-        <FrameComposer closed={reqData && reqData.closed} hide={btn.name !== 'Composer'} />
+        <FrameComposer data={data} hide={btn.name !== 'Composer'} />
       </div>
     );
   }

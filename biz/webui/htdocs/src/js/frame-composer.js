@@ -17,21 +17,6 @@ var FrameComposer = React.createClass({
     var hide = util.getBoolean(this.props.hide);
     return hide != util.getBoolean(nextProps.hide) || !hide;
   },
-  onDrop: function(e) {
-    e.stopPropagation();
-    e.preventDefault();
-    if (this.props.closed) {
-      return;
-    }
-    var files = e.dataTransfer.files;
-    if (!files || !files.length) {
-      return;
-    }
-    var form = new FormData();
-    form.append('uploadData', files[0]);
-    form.append('cId', this.props.cId);
-    this.uploadForm(form);
-  },
   selectFile: function() {
     this.dataField.click();
   },
@@ -68,30 +53,46 @@ var FrameComposer = React.createClass({
     e.preventDefault();
   },
   render: function() {
-    var state = this.state;
-    var data = state.data;
-    var noData = !data;
-    var cId = this.props.cId;
-    var closed = this.props.closed;
-    var disabled = closed || noData;
-    var tips = disabled ? 'The connection is closed' : undefined;
+    var data = this.props.data;
+    if (!data) {
+      return null;
+    }
+    var text = this.state.data;
+    var closed = data.closed;
+    var disabled = closed || data.hasPendingData;
+    var tips = data.closed ? 'The connection is closed' : undefined;
     return (
       <div onDrop={this.onDrop} className={'fill orient-vertical-box w-frames-composer' + (this.props.hide ? ' hide' : '')}>
         <div className="w-frames-composer-action">
-          {closed ? 'Click here' : <a href="javascript:;" onClick={this.selectFile}>Click here</a>} or drag a file to here to send to the server
           <div className="btn-group">
-            <button title={tips} disabled={disabled} onMouseDown={this.preventDefault} onClick={this.onSend} type="button" className="btn btn-primary btn-sm">Send</button>
-            <button title={tips} disabled={disabled} type="button" className="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button disabled={disabled} title={tips} onMouseDown={this.preventDefault} onClick={this.onSend} type="button" className="btn btn-primary btn-sm">Receive</button>
+            <button disabled={disabled} title={tips} type="button" className="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <span className="caret"></span>
             </button>
-            <ul className="dropdown-menu">
-              <li><a onClick={this.onSend} href="javascript:;">Send with binary</a></li>
+            <ul className={'dropdown-menu w-receive-btns' + (disabled ? ' hide' : '')}>
+              <li><a onClick={this.onSend} href="javascript:;">Receive binary data</a></li>
+              <li><a onClick={this.selectFile} href="javascript:;">Upload text data</a></li>
+              <li><a onClick={this.selectFile} href="javascript:;">Upload binary data</a></li>
             </ul>
           </div>
+          <div className="btn-group">
+            <button disabled={disabled} title={tips} onMouseDown={this.preventDefault} onClick={this.onSend} type="button" className="btn btn-primary btn-sm">Send</button>
+            <button disabled={disabled} title={tips} type="button" className="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <span className="caret"></span>
+            </button>
+            <ul className={'dropdown-menu' + (disabled ? ' hide' : '')}>
+              <li><a onClick={this.onSend} href="javascript:;">Send binary data</a></li>
+              <li><a onClick={this.selectFile} href="javascript:;">Upload text data</a></li>
+              <li><a onClick={this.selectFile} href="javascript:;">Upload binary data</a></li>
+            </ul>
+          </div>
+          <button type="button" title="Format JSON" className="btn btn-primary w-format-json-btn">Format</button>
         </div>
-        <textarea value={data} onChange={this.onTextareaChange} ref="textarea" placeholder={'Input the text to be sent to the server, and press Ctrl [Command] + Enter, or click the send button'} className="fill"></textarea>
+        <textarea value={text} onChange={this.onTextareaChange} placeholder={'Input the text'} className="fill"></textarea>
         <form ref="uploadDataForm" method="post" encType="multipart/form-data" style={{display: 'none'}}> 
-          <input name="cId" value={cId} type="hidden" /> 
+          <input name="reqId" type="hidden" />
+          <input name="dataType" type="hidden" />
+          <input name="sendTo" type="hidden" />
           <input ref="uploadData" onChange={this.onFormChange} type="file" name="uploadData" />
         </form>
       </div>

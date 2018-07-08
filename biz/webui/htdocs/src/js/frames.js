@@ -37,16 +37,16 @@ var Frames = React.createClass({
     var modal = this.state.modal;
     var frames = props.frames;
     var reqData = props.data || '';
-    var activeItem = modal.getActive();
-    if (activeItem && activeItem.hide) {
-      activeItem = null;
+    if (reqData.hide) {
+      reqData = null;
     }
     modal.reset(frames);
     return (
       <div className={'fill orient-vertical-box w-frames' + ((frames && !props.hide) ? '' : ' hide')}>
         <Divider vertical="true" rightWidth="250">
-          <FrameList reqData={reqData} modal={modal} onUpdate={this.onUpdate} onClickFrame={this.onClickFrame} />
-          <FrameData reqData={reqData} cId={props.cId} data={activeItem} />
+          <FrameList reqData={reqData} modal={modal}
+            onUpdate={this.onUpdate} onClickFrame={this.onClickFrame} />
+          <FrameData data={reqData} />
         </Divider>
       </div>
     );

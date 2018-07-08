@@ -72,7 +72,7 @@
 }
 
 .w-frames-action .w-dropdown {
-  margin-left: 15px
+  margin-left: 15px;
 }
 
 .w-frames-action .w-filter-con {
@@ -120,10 +120,10 @@
   background: #f2f2f2;
 }
 
-.w-frames-composer-action .btn-group {
-  position: absolute;
-  top: 1px;
-  right: 10px;
+.w-frames-composer-action .btn-group, .w-frames-composer-action .w-format-json-btn {
+  margin: 1px 15px 1px 0;
+  float: right;
+  font-size: 12px!important;
 }
 .w-frames-composer-action .btn {
   padding: 0 5px!important;
@@ -133,8 +133,11 @@
 .w-frames-composer-action .dropdown-menu {
   min-width: 0;
   padding: 2px 5px;
-  left: -96px;
+  left: -62px;
   font-size: 12px;
+}
+.w-frames-composer-action .w-receive-btns {
+  left: -52px!important;
 }
 .w-frames-composer-action .dropdown-menu a {
   padding: 0;
