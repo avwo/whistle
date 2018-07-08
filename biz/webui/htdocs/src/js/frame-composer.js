@@ -4,6 +4,7 @@ var dataCenter = require('./data-center');
 var util = require('./util');
 
 var MAX_FILE_SIZE = 1024 * 1025;
+var MAX_LENGTH = 1024 * 64;
 
 var FrameComposer = React.createClass({
   getInitialState: function() {
@@ -65,18 +66,20 @@ var FrameComposer = React.createClass({
       <div onDrop={this.onDrop} className={'fill orient-vertical-box w-frames-composer' + (this.props.hide ? ' hide' : '')}>
         <div className="w-frames-composer-action">
           <div className="btn-group">
-            <button disabled={disabled} title={tips} onMouseDown={this.preventDefault} onClick={this.onSend} type="button" className="btn btn-primary btn-sm">Receive</button>
+            <button disabled={disabled} title={tips} onMouseDown={this.preventDefault} onClick={this.onSend}
+              type="button" className="btn btn-primary btn-sm">Send to client</button>
             <button disabled={disabled} title={tips} type="button" className="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <span className="caret"></span>
             </button>
-            <ul className={'dropdown-menu w-receive-btns' + (disabled ? ' hide' : '')}>
-              <li><a onClick={this.onSend} href="javascript:;">Receive binary data</a></li>
+            <ul className={'dropdown-menu' + (disabled ? ' hide' : '')}>
+              <li><a onClick={this.onSend} href="javascript:;">Send binary data</a></li>
               <li><a onClick={this.selectFile} href="javascript:;">Upload text data</a></li>
               <li><a onClick={this.selectFile} href="javascript:;">Upload binary data</a></li>
             </ul>
           </div>
           <div className="btn-group">
-            <button disabled={disabled} title={tips} onMouseDown={this.preventDefault} onClick={this.onSend} type="button" className="btn btn-primary btn-sm">Send</button>
+            <button disabled={disabled} title={tips} onMouseDown={this.preventDefault}
+              onClick={this.onSend} type="button" className="btn btn-primary btn-sm">Send to server</button>
             <button disabled={disabled} title={tips} type="button" className="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <span className="caret"></span>
             </button>
@@ -88,7 +91,7 @@ var FrameComposer = React.createClass({
           </div>
           <button type="button" title="Format JSON" className="btn btn-primary w-format-json-btn">Format</button>
         </div>
-        <textarea value={text} onChange={this.onTextareaChange} placeholder={'Input the text'} className="fill"></textarea>
+        <textarea maxLength={MAX_LENGTH} value={text} onChange={this.onTextareaChange} placeholder={'Input the text'} className="fill"></textarea>
         <form ref="uploadDataForm" method="post" encType="multipart/form-data" style={{display: 'none'}}> 
           <input name="reqId" type="hidden" />
           <input name="dataType" type="hidden" />

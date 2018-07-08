@@ -133,11 +133,8 @@
 .w-frames-composer-action .dropdown-menu {
   min-width: 0;
   padding: 2px 5px;
-  left: -62px;
+  left: -13px;
   font-size: 12px;
-}
-.w-frames-composer-action .w-receive-btns {
-  left: -52px!important;
 }
 .w-frames-composer-action .dropdown-menu a {
   padding: 0;
