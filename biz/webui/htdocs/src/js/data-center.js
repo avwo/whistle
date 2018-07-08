@@ -261,6 +261,10 @@ exports.socket = $.extend(createCgi({
   timeout: 36000
 })), createCgi({
   send: 'cgi-bin/socket/data',
+  changeStatus: {
+    mode: 'cancel',
+    url: 'cgi-bin/socket/change-status'
+  },
   abort: {
     mode: 'ignore',
     url: 'cgi-bin/socket/abort'
@@ -513,6 +517,18 @@ function startLoadData() {
       if (framesLen) {
         curActiveItem.lastFrameId = data.frames[framesLen - 1].frameId;
         curFrames.push.apply(curFrames, data.frames);
+      } else if (curReqId) {
+        var status = data.socketStatus;
+        if (status) {
+          if (status.sendStatus > -1) {
+            curActiveItem.sendStatus = status.sendStatus;
+          }
+          if (status.receiveStatus > -1) {
+            curActiveItem.receiveStatus = status.receiveStatus;
+          }
+        } else {
+          curActiveItem.closed = true;
+        }
       }
       if (data.lastId) {
         lastRowId = data.lastId;

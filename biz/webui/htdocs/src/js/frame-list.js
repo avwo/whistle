@@ -42,10 +42,7 @@ var RECEIVE_PERATORS = [
 
 var FrameList = React.createClass({
   getInitialState: function() {
-    return {
-      sendType: 0,
-      receiveType: 0
-    };
+    return {};
   },
   onFilterChange: function(keyword) {
     this.props.modal.search(keyword);
@@ -72,18 +69,18 @@ var FrameList = React.createClass({
       this.props.onUpdate();
     }
   },
-  getReqData: function() {
+  checkActive: function() {
     var reqData = this.props.reqData;
     if (!reqData || reqData.closed || reqData.err) {
+      self.autoRefresh();
       return;
     }
     return reqData;
   },
   abort: function() {
     var self = this;
-    var reqData = this.getReqData();
+    var reqData = this.checkActive();
     if (!reqData) {
-      self.autoRefresh();
       return;
     }
     dataCenter.socket.abort({
@@ -92,9 +89,40 @@ var FrameList = React.createClass({
       if (!data) {
         util.showSystemError(xhr);
       } else {
+        reqData.closed = true;
         self.autoRefresh();
       }
     });
+  },
+  changeStatus: function(reqData, option, isSend) {
+    var params = {};
+    if (isSend) {
+      params.sendStatus = option.value;
+    } else {
+      params.receiveStatus = option.value;
+    }
+    dataCenter.changeStatus(params, function(data, xhr) {
+      if (!data) {
+        util.showSystemError(xhr);
+      } else {
+        reqData.sendStatus = option.value;
+        self.setState({});
+      }
+    });
+  },
+  onSendStatusChange: function(option) {
+    var reqData = this.checkActive();
+    if (!reqData) {
+      return;
+    }
+    this.changeStatus(reqData, option, true);
+  },
+  onReceiveStatusChange: function(option) {
+    var reqData = this.checkActive();
+    if (!reqData) {
+      return;
+    }
+    this.changeStatus(reqData, option);
   },
   onClear: function(e) {
     if ((e.ctrlKey || !e.metaKey) && e.keyCode === 88) {
@@ -149,13 +177,13 @@ var FrameList = React.createClass({
           <span className="glyphicon glyphicon-ban-circle"></span>Abort
         </a>
         <DropDown
-          value={state.sendType}
-          onChange={self.onSendTypeChange}
+          value={reqData.sendStatus || 0}
+          onChange={self.onSendStatusChange}
           options={SEND_PERATORS}
         />
         <DropDown
-          value={state.receiveType}
-          onChange={self.onReceiveTypeChange}
+          value={reqData.receiveStatus || 0}
+          onChange={self.onReceiveStatusChange}
           options={RECEIVE_PERATORS}
         />
       </div>
