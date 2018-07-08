@@ -72,7 +72,7 @@ var FrameList = React.createClass({
   checkActive: function() {
     var reqData = this.props.reqData;
     if (!reqData || reqData.closed || reqData.err) {
-      self.autoRefresh();
+      this.autoRefresh();
       return;
     }
     return reqData;
