@@ -37,8 +37,9 @@ var Frames = React.createClass({
     var modal = this.state.modal;
     var frames = props.frames;
     var reqData = props.data || '';
-    if (reqData.hide) {
-      reqData = null;
+    var curFrame = modal.getActive();
+    if (curFrame && curFrame.hide) {
+      curFrame = null;
     }
     modal.reset(frames);
     return (
@@ -46,7 +47,7 @@ var Frames = React.createClass({
         <Divider vertical="true" rightWidth="250">
           <FrameList reqData={reqData} modal={modal}
             onUpdate={this.onUpdate} onClickFrame={this.onClickFrame} />
-          <FrameData data={reqData} />
+          <FrameData data={reqData} frame={curFrame} />
         </Divider>
       </div>
     );

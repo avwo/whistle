@@ -35,12 +35,12 @@ var FrameClient = React.createClass({
       btn = util.findArray(BTNS, findActive) || BTNS[0];
       this.selectBtn(btn);
     }
-    var data = this.props.data;
+    var frame = this.props.frame;
     var text, json, bin;
-    if (data) {
-      text = util.getBody(data, true);
-      bin = util.getHex(data);
-      json = util.getJson(data, true);
+    if (frame) {
+      text = util.getBody(frame, true);
+      bin = util.getHex(frame);
+      json = util.getJson(frame, true);
     }
     return (
       <div className={'fill orient-vertical-box w-frames-data' + (this.props.hide ? ' hide' : '')}>
@@ -48,7 +48,7 @@ var FrameClient = React.createClass({
         <Textarea className="fill" value={text} hide={btn.name !== 'TextView'} />
         <JSONViewer data={json} hide={btn.name !== 'JSONView'} />
         <Textarea className="fill n-monospace" value={bin} hide={btn.name !== 'HexView'} />
-        <FrameComposer data={data} hide={btn.name !== 'Composer'} />
+        <FrameComposer data={this.props.data} hide={btn.name !== 'Composer'} />
       </div>
     );
   }
