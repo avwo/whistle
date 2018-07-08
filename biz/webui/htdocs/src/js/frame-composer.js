@@ -64,8 +64,8 @@ var FrameComposer = React.createClass({
         <div className="w-frames-composer-action">
           <div className="btn-group">
             <button disabled={disabled} title={tips} onMouseDown={this.preventDefault} onClick={this.onSend}
-              type="button" className="btn btn-primary btn-sm">Send to client</button>
-            <button disabled={disabled} title={tips} type="button" className="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              type="button" className="btn btn-default btn-sm">Send to client</button>
+            <button disabled={disabled} title={tips} type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <span className="caret"></span>
             </button>
             <ul className={'dropdown-menu' + (disabled ? ' hide' : '')}>
@@ -86,7 +86,7 @@ var FrameComposer = React.createClass({
               <li><a onClick={this.selectFile} href="javascript:;">Upload binary data</a></li>
             </ul>
           </div>
-          <button type="button" title="Format JSON" className="btn btn-primary w-format-json-btn">Format</button>
+          <button type="button" title="Format JSON" className="btn btn-default w-format-json-btn">Format</button>
         </div>
         <textarea maxLength={MAX_LENGTH} value={text} onChange={this.onTextareaChange} placeholder={'Input the text'} className="fill"></textarea>
         <form ref="uploadDataForm" method="post" encType="multipart/form-data" style={{display: 'none'}}> 
