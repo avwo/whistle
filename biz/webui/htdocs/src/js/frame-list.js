@@ -72,12 +72,27 @@ var FrameList = React.createClass({
       this.props.onUpdate();
     }
   },
+  getReqData: function() {
+    var reqData = this.props.reqData;
+    if (!reqData || reqData.closed || reqData.err) {
+      return;
+    }
+    return reqData;
+  },
   abort: function() {
+    var self = this;
+    var reqData = this.getReqData();
+    if (!reqData) {
+      self.autoRefresh();
+      return;
+    }
     dataCenter.socket.abort({
-      reqId: this.props.reqData.id
+      reqId: reqData.id
     }, function(data, xhr) {
       if (!data) {
         util.showSystemError(xhr);
+      } else {
+        self.autoRefresh();
       }
     });
   },

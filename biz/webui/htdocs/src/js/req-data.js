@@ -414,7 +414,7 @@ var ReqData = React.createClass({
     contextMenuList[2].list.forEach(function(menu) {
       menu.disabled = disabled;
     });
-    contextMenuList[2].list[2].disabled = !item.frames;
+    contextMenuList[2].list[2].disabled = (disabled || !item.frames);
     var selectedList = modal.getSelectedList();
     var selectedCount = selectedList.length;
     var hasData = modal.list.length;
