@@ -517,7 +517,8 @@ function startLoadData() {
       if (framesLen) {
         curActiveItem.lastFrameId = data.frames[framesLen - 1].frameId;
         curFrames.push.apply(curFrames, data.frames);
-      } else if (curReqId) {
+      }
+      if (curReqId) {
         var status = data.socketStatus;
         if (status) {
           if (status.sendStatus > -1) {

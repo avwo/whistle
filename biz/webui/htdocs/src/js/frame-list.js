@@ -95,17 +95,24 @@ var FrameList = React.createClass({
     });
   },
   changeStatus: function(reqData, option, isSend) {
-    var params = {};
+    var self = this;
+    var params = {
+      reqId: reqData.id
+    };
     if (isSend) {
       params.sendStatus = option.value;
     } else {
       params.receiveStatus = option.value;
     }
-    dataCenter.changeStatus(params, function(data, xhr) {
+    dataCenter.socket.changeStatus(params, function(data, xhr) {
       if (!data) {
         util.showSystemError(xhr);
       } else {
-        reqData.sendStatus = option.value;
+        if (isSend) {
+          reqData.sendStatus = option.value;
+        } else {
+          reqData.receiveStatus = option.value;
+        }
         self.setState({});
       }
     });
