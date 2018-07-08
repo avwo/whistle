@@ -1,5 +1,6 @@
 require('../css/dropdown.css');
 var React = require('react');
+var util = require('./util');
 
 var DropDown = React.createClass({
   getInitialState: function() {
@@ -10,9 +11,11 @@ var DropDown = React.createClass({
     if (onChange) {
       onChange(option);
     }
-    this.setState({
-      selectedOption: option
-    });
+    if (this.props.value == null) {
+      this.setState({
+        selectedOption: option
+      });
+    }
   },
   onMouseEnter: function() {
     var onBeforeShow = this.props.onBeforeShow;
@@ -24,12 +27,22 @@ var DropDown = React.createClass({
   onMouseLeave: function() {
     this.setState({ hover: false });
   },
+  getSelectedOption: function() {
+    var props = this.props;
+    var value = props.value;
+    if (value == null) {
+      return;
+    }
+    return util.findArray(props.options, function(item) {
+      return item === value || item.value === value;
+    });
+  },
   render: function() {
     var self = this;
     var help = self.props.help;
     var options = self.props.options || [];
     var firstOption = options[0] || {};
-    var selectedOption = self.state.selectedOption || firstOption;
+    var selectedOption = this.getSelectedOption() || self.state.selectedOption || firstOption;
 
     return (
       <div

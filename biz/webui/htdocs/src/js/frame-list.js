@@ -3,6 +3,7 @@ var ReactDOM = require('react-dom');
 var util = require('./util');
 var FilterInput = require('./filter-input');
 var DropDown = require('./dropdown');
+var dataCenter = require('./data-center');
 
 var SEND_PERATORS = [
   {
@@ -40,6 +41,12 @@ var RECEIVE_PERATORS = [
 ];
 
 var FrameList = React.createClass({
+  getInitialState: function() {
+    return {
+      sendType: 0,
+      receiveType: 0
+    };
+  },
   onFilterChange: function(keyword) {
     this.props.modal.search(keyword);
     this.setState({ keyword: keyword.trim() });
@@ -65,6 +72,15 @@ var FrameList = React.createClass({
       this.props.onUpdate();
     }
   },
+  abort: function() {
+    dataCenter.socket.abort({
+      reqId: this.props.reqData.id
+    }, function(data, xhr) {
+      if (!data) {
+        util.showSystemError(xhr);
+      }
+    });
+  },
   onClear: function(e) {
     if ((e.ctrlKey || !e.metaKey) && e.keyCode === 88) {
       this.clear();
@@ -89,10 +105,11 @@ var FrameList = React.createClass({
   render: function() {
     var self = this;
     var props = self.props;
+    var state = this.state;
     var reqData = props.reqData;
     var onClickFrame = props.onClickFrame;
     var modal = self.props.modal;
-    var keyword = this.state && this.state.keyword;
+    var keyword = state.keyword;
     return (<div className="fill orient-vertical-box w-frames-list">
       <FilterInput onChange={self.onFilterChange} />
       <div className="w-frames-action">
@@ -117,10 +134,12 @@ var FrameList = React.createClass({
           <span className="glyphicon glyphicon-ban-circle"></span>Abort
         </a>
         <DropDown
+          value={state.sendType}
           onChange={self.onSendTypeChange}
           options={SEND_PERATORS}
         />
         <DropDown
+          value={state.receiveType}
           onChange={self.onReceiveTypeChange}
           options={RECEIVE_PERATORS}
         />

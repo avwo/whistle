@@ -260,7 +260,11 @@ exports.socket = $.extend(createCgi({
   processData: false,
   timeout: 36000
 })), createCgi({
-  send: 'cgi-bin/socket/data'
+  send: 'cgi-bin/socket/data',
+  abort: {
+    mode: 'ignore',
+    url: 'cgi-bin/socket/abort'
+  }
 }, POST_CONF));
 
 exports.getInitialData = function (callback) {
