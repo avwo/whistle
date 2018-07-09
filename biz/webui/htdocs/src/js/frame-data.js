@@ -4,6 +4,7 @@ var JSONViewer = require('./json-viewer');
 var Textarea = require('./textarea');
 var FrameComposer = require('./frame-composer');
 var util = require('./util');
+var events = require('./events');
 
 var BTNS = [
   {name: 'TextView'},
@@ -19,6 +20,18 @@ function findActive(btn) {
 var FrameClient = React.createClass({
   getInitialState: function() {
     return {};
+  },
+  componentDidMount: function() {
+    var self = this;
+    events.on('composeFrame', function(e, frame) {
+      if (frame) {
+        BTNS.forEach(function(btn) {
+          btn.active = false;
+        });
+        self.selectBtn(BTNS[3]);
+        this.setState({});
+      }
+    });
   },
   onClickBtn: function(btn) {
     this.selectBtn(btn);

@@ -2,17 +2,25 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var dataCenter = require('./data-center');
 var util = require('./util');
+var events = require('./events');
 
 var MAX_FILE_SIZE = 1024 * 1025;
 var MAX_LENGTH = 1024 * 64;
+var JSON_RE = /^\s*(?:[\{｛][\w\W]+[\}｝]|\[[\w\W]+\])\s*$/;
 
 var FrameComposer = React.createClass({
   getInitialState: function() {
     return {};
   },
   componentDidMount: function() {
-    this.dataField = ReactDOM.findDOMNode(this.refs.uploadData);
-    this.dataForm = ReactDOM.findDOMNode(this.refs.uploadDataForm);
+    var self = this;
+    self.dataField = ReactDOM.findDOMNode(self.refs.uploadData);
+    self.dataForm = ReactDOM.findDOMNode(self.refs.uploadDataForm);
+    events.on('composeFrame', function(e, frame) {
+      if (frame) {
+        self.setTextarea(util.getBody(frame, true));
+      }
+    });
   },
   shouldComponentUpdate: function(nextProps) {
     var hide = util.getBoolean(this.props.hide);
@@ -45,16 +53,21 @@ var FrameComposer = React.createClass({
       self.setState({ text: '' });
     });
   },
-  onTextareaChange: function(e) {
+  setTextarea: function(text) {
     this.setState({
-      text: e.target.value
+      text: text,
+      isJSON: JSON_RE.test(text)
     });
+  },
+  onTextareaChange: function(e) {
+    this.setTextarea(e.target.value);
   },
   preventDefault: function(e) {
     e.preventDefault();
   },
   render: function() {
     var data = this.props.data || '';
+    var isJSON = this.state.isJSON;
     var text = this.state.text;
     var closed = data.closed;
     var disabled = closed || data.hasPendingData;
@@ -86,7 +99,7 @@ var FrameComposer = React.createClass({
               <li><a onClick={this.selectFile} href="javascript:;">Upload binary data</a></li>
             </ul>
           </div>
-          <button type="button" title="Format JSON" className="btn btn-default w-format-json-btn">Format</button>
+          <button disabled={!isJSON} type="button" title="Format JSON" className="btn btn-default w-format-json-btn">Format</button>
         </div>
         <textarea maxLength={MAX_LENGTH} value={text} onChange={this.onTextareaChange} placeholder={'Input the text'} className="fill"></textarea>
         <form ref="uploadDataForm" method="post" encType="multipart/form-data" style={{display: 'none'}}> 

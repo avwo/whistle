@@ -4,6 +4,7 @@ var util = require('./util');
 var FilterInput = require('./filter-input');
 var DropDown = require('./dropdown');
 var dataCenter = require('./data-center');
+var events = require('./events');
 
 var SEND_PERATORS = [
   {
@@ -68,6 +69,9 @@ var FrameList = React.createClass({
     if (this.props.onUpdate) {
       this.props.onUpdate();
     }
+  },
+  compose: function() {
+    events.trigger('composeFrame', this.props.modal.getActive());
   },
   checkActive: function() {
     var reqData = this.props.reqData;
@@ -175,7 +179,7 @@ var FrameList = React.createClass({
           href="javascript:;" draggable="false">
           <span className="glyphicon glyphicon-repeat"></span>Replay
         </a>
-        <a onClick={self.composer} className="w-remove-menu"
+        <a onClick={self.compose} className="w-remove-menu"
           href="javascript:;" draggable="false">
           <span className="glyphicon glyphicon-edit"></span>Composer
         </a>
