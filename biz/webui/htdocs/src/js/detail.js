@@ -159,12 +159,9 @@ var ReqData = React.createClass({
     }
     var name = curTab && curTab.name;
 
-    var frames, cId;
-    if (activeItem) {
-      cId = activeItem.cId;
-      if (!activeItem.reqError && !activeItem.resError) {
-        frames = activeItem.frames;
-      }
+    var frames;
+    if (activeItem && !activeItem.reqError && !activeItem.resError) {
+      frames = activeItem.frames;
     }
 
     return (
@@ -172,7 +169,7 @@ var ReqData = React.createClass({
         <BtnGroup onDoubleClick={this.onDoubleClick} onClick={this.toggleTab} tabs={TABS} />
         {this.state.initedOverview ? <Overview modal={overview} hide={name != TABS[0].name} /> : ''}
         {this.state.initedInspectors ? <Inspectors modal={activeItem} hide={name != TABS[1].name} /> : ''}
-        {this.state.initedFrames ? <Frames data={activeItem} cId={cId} frames={frames} hide={name != TABS[2].name} /> : ''}
+        {this.state.initedFrames ? <Frames data={activeItem} frames={frames} hide={name != TABS[2].name} /> : ''}
         {this.state.initedTimeline ? <Timeline modal={modal} hide={name != TABS[3].name} /> : ''}
         {this.state.initedComposer ? <Composer modal={this.state.activeItem} hide={name != TABS[4].name} /> : ''}
         {this.state.initedLog ? <Log hide={name != TABS[5].name} /> : ''}
