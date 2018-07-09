@@ -6,6 +6,7 @@ var base64Encode = jsBase64.encode;
 var json2 = require('./components/json');
 var evalJson = require('./components/json/eval');
 var isUtf8 = require('./is-utf8');
+var message = require('./message');
 
 var BIG_NUM_RE = /[:\[][\s\n\r]*-?[\d.]{16,}[\s\n\r]*[,\}\]]/;
 var dragCallbacks = {};
@@ -895,5 +896,20 @@ exports.openPreview = function(data) {
     var charset = isImg ? 'UTF8' : getCharset(res);
     url += (url.indexOf('?') === -1 ? '' : '&') + '???WHISTLE_PREVIEW_CHARSET=' + charset;
     window.open(url + '???#' + (isImg ? getBody(res) : res.base64));
+  }
+};
+
+exports.parseRawJson = function(str) {
+  try {
+    var json = JSON.parse(str);
+    if (json && typeof json === 'object') {
+      return json;
+    }
+    message.error('Error: not a json object.');
+  } catch (e) {
+    if (json = evalJson(str)) {
+      return json;
+    }
+    message.error('Error: ' + e.message);
   }
 };

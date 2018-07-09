@@ -99,6 +99,15 @@ var FrameComposer = React.createClass({
       textarea.value = '';
     });
   },
+  format: function() {
+    var data = util.parseRawJson(this.state.text);
+    if (data) {
+      this.setState({
+        isJSON: true,
+        text: JSON.stringify(data, null, '  ')
+      });
+    }
+  },
   setTextarea: function(text) {
     this.setState({
       text: text,
@@ -144,7 +153,8 @@ var FrameComposer = React.createClass({
               <li><a onClick={this.uploadBinToServer} href="javascript:;">Upload binary data</a></li>
             </ul>
           </div>
-          <button disabled={!isJSON} type="button" title="Format JSON" className="btn btn-default w-format-json-btn">Format</button>
+          <button disabled={!isJSON} type="button" title="Format JSON" onClick={this.format}
+            className="btn btn-default w-format-json-btn">Format</button>
         </div>
         <textarea ref="textarea" maxLength={MAX_LENGTH} value={text} onChange={this.onTextareaChange} placeholder={'Input the text'} className="fill"></textarea>
         <form ref="uploadDataForm" method="post" encType="multipart/form-data" style={{display: 'none'}}> 

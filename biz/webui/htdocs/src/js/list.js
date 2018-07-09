@@ -57,21 +57,6 @@ function getTarget(e) {
   }
 }
 
-function parseJson(str) {
-  try {
-    var json = JSON.parse(str);
-    if (json && typeof json === 'object') {
-      return json;
-    }
-    message.error('Error: not a json object.');
-  } catch (e) {
-    if (json = util.evalJson(str)) {
-      return json;
-    }
-    message.error('Error: ' + e.message);
-  }
-}
-
 function getName(name) {
   if (typeof name !== 'string') {
     return '';
@@ -264,7 +249,7 @@ var List = React.createClass({
   formatJson: function(item) {
     var value = item && item.value || '';
     if (/[^\s]/.test(value)) {
-      var json = parseJson(value);
+      var json = util.parseRawJson(value);
       if (json) {
         json = JSON.stringify(json, null, '  ');
         if (value !== json) {
@@ -299,7 +284,7 @@ var List = React.createClass({
     case 'Validate':
       var item = this.currentFocusItem;
       if (item) {
-        if (parseJson(item.value)) {
+        if (util.parseRawJson(item.value)) {
           message.success('Good JSON Object.');
         }
       }
