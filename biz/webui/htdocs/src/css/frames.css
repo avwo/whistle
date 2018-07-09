@@ -152,3 +152,8 @@
 .w-frames-data textarea {
   border: none;
 }
+
+.w-frames-list .w-frames-ignore, .w-frames-list .w-frames-ignore .glyphicon {
+  color: #ccc!important;
+  font-style: italic!important;
+}

@@ -17,11 +17,22 @@ var FrameComposer = React.createClass({
     var self = this;
     self.dataField = ReactDOM.findDOMNode(self.refs.uploadData);
     self.dataForm = ReactDOM.findDOMNode(self.refs.uploadDataForm);
-    self.textarea = ReactDOM.findDOMNode(self.refs.textarea);
     events.on('composeFrame', function(e, frame) {
       if (frame) {
         self.setTextarea(util.getBody(frame, true));
       }
+    });
+    events.on('replayFrame', function(e, frame) {
+      if (!frame) {
+        return;
+      }
+      self.send({
+        target: frame.isClient ? 'server' : 'client',
+        type: frame.opcode == 1 ? 'text' : 'bin',
+        base64: frame.base64
+      }, function() {
+        events.trigger('autoRefreshFrames');
+      });
     });
   },
   shouldComponentUpdate: function(nextProps) {
@@ -88,15 +99,15 @@ var FrameComposer = React.createClass({
     if (!value) {
       return;
     }
+    var self = this;
     var target = e.target;
     var params = {
       type: target.nodeName === 'A' ? 'bin' : 'text',
-      target: target.getAttribute('data-type') ? 'server' : 'client',
+      target: target.getAttribute('data-target') ? 'server' : 'client',
       text: value.replace(/\r\n|\r|\n/g, '\r\n')
     };
-    var textarea = this.textarea;
-    this.send(params, function() {
-      textarea.value = '';
+    self.send(params, function() {
+      self.setTextarea('');
     });
   },
   format: function() {
@@ -156,7 +167,7 @@ var FrameComposer = React.createClass({
           <button disabled={!isJSON} type="button" title="Format JSON" onClick={this.format}
             className="btn btn-default w-format-json-btn">Format</button>
         </div>
-        <textarea ref="textarea" maxLength={MAX_LENGTH} value={text} onChange={this.onTextareaChange} placeholder={'Input the text'} className="fill"></textarea>
+        <textarea maxLength={MAX_LENGTH} value={text} onChange={this.onTextareaChange} placeholder={'Input the text'} className="fill" />
         <form ref="uploadDataForm" method="post" encType="multipart/form-data" style={{display: 'none'}}> 
           <input ref="uploadData" onChange={this.onFormChange} type="file" name="uploadData" />
         </form>

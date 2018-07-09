@@ -49,6 +49,9 @@ var FrameList = React.createClass({
     this.props.modal.search(keyword);
     this.setState({ keyword: keyword.trim() });
   },
+  componentDidMount: function() {
+    events.on('autoRefreshFrames', this.autoRefresh);
+  },
   componentWillUpdate: function() {
     this.atBottom = this.shouldScrollToBottom();
   },
@@ -56,6 +59,14 @@ var FrameList = React.createClass({
     if (this.atBottom) {
       this.autoRefresh();
     }
+  },
+  replay: function() {
+    var reqData = this.props.reqData;
+    if (!reqData || reqData.closed || reqData.err) {
+      this.autoRefresh();
+      return;
+    }
+    events.trigger('replayFrame', this.props.modal.getActive());
   },
   stopRefresh: function() {
     this.container.scrollTop = this.container.scrollTop - 10;
@@ -255,7 +266,7 @@ var FrameList = React.createClass({
                 style={{display: item.hide ? 'none' : undefined}}
                 onClick={function() {
                   onClickFrame && onClickFrame(item);
-                }} className={(item.isClient ? 'w-frames-send' : '')
+                }} className={(item.isClient ? 'w-frames-send' : '') + (item.ignore ? ' w-frames-ignore' : '')
                   + (item.active ? '  w-frames-selected' : '') + statusClass}>
                 <span className={'glyphicon glyphicon-' + icon}></span>
                 {item.data}
