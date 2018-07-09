@@ -3,7 +3,6 @@ var net = require('net');
 var config = require('../lib/config');
 var util = require('../lib/util');
 var getSender = require('ws-parser').getSender;
-var events = require('../lib/events');
 var hparser = require('hparser');
 
 var formatHeaders = hparser.formatHeaders;
@@ -50,8 +49,6 @@ function drain(socket) {
 
 function handleConnect(options) {
   options.headers['x-whistle-policy'] = 'tunnel';
-  var id = util.getReqId();
-  options.headers['x-whistle-composer-id'] = id;
   config.connect({
     host: options.hostname,
     port: options.port,
@@ -60,19 +57,10 @@ function handleConnect(options) {
     headers: options.headers
   }, function(socket) {
     drain(socket);
-    var sendData = function(data) {
-      data = util.toBuffer(data, getCharset(options.headers));
-      if (!data || !data.length) {
-        return;
-      }
+    var data = util.toBuffer(options.body, getCharset(options.headers));
+    if (data && data.length) {
       socket.write(data);
-    };
-    id = 'composer-' + id;
-    sendData(options.body);
-    events.on(id, sendData);
-    util.onSocketEnd(socket, function() {
-      events.removeListener(id, sendData);
-    });
+    }
   }).on('error', util.noop);
 }
 
@@ -89,38 +77,24 @@ function handleWebSocket(options) {
   }
   var binary = !!options.headers['x-whistle-frame-binary'];
   delete options.headers['x-whistle-frame-binary'];
-  var id = util.getReqId();
-  options.headers['x-whistle-composer-id'] = id;
   var socket = net.connect(config.port, '127.0.0.1', function() {
     socket.write(getReqRaw(options));
-    var str;
-    var handleResponse = function(data) {
-      str = data + '';
-      var index = str.indexOf('\r\n\r\n') !== -1;
+    var handleResponse = function(resData) {
+      resData = resData + '';
+      var index = resData.indexOf('\r\n\r\n') !== -1;
       if (index !== -1) {
         socket.removeListener('data', handleResponse);
-        socket.headers = parseHeaders(str.slice(0, index));
+        socket.headers = parseHeaders(resData.slice(0, index));
         var sender = getSender(socket);
-        var sendData = function(data, isBinary) {
-          data = util.toBuffer(data, getCharset(socket.headers) || getCharset(options.headers));
-          if (!data || !data.length) {
-            return;
-          }
+        var data = util.toBuffer(options.body, getCharset(socket.headers) || getCharset(options.headers));
+        if (data && data.length) {
           sender.send(data, {
             mask: true,
-            binary: isBinary
+            binary: binary
           }, util.noop);
-        };
-        id = 'composer-' + id;
-        sendData(options.body, binary);
-        events.on(id, sendData);
-        var clearup = function() {
-          events.removeListener(id, sendData);
-        };
-        socket.on('error', clearup);
-        socket.on('close', clearup);
+        }
       } else {
-        str = str.slice(-3);
+        resData = resData.slice(-3);
       }
     };
     socket.on('data', handleResponse);

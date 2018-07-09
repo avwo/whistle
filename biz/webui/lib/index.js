@@ -7,18 +7,9 @@ var parseurl = require('parseurl');
 var bodyParser = require('body-parser');
 var crypto = require('crypto');
 var cookie = require('cookie');
-var multer  = require('multer');
-var mime = require('mime');
 var htdocs = require('../htdocs');
-var events = require('./events');
 
 var GET_METHOD_RE = /^get$/i;
-var LIMIT_SIZE = 1024 * (1024 + 5);
-var storage = multer.memoryStorage();
-var upload = multer({
-  storage: storage,
-  fieldSize: LIMIT_SIZE
-});
 
 var DONT_CHECK_PATHS = ['/cgi-bin/server-info', '/cgi-bin/show-host-ip-in-res-headers',
                         '/cgi-bin/composer', '/cgi-bin/socket/data',
@@ -226,20 +217,7 @@ app.use(function(req, res, next) {
     next();
   }
 });
-app.use('/cgi-bin/socket/upload', upload.single('uploadData'), function(req, res) {
-  var cId = req.body.cId;
-  var data = req.file && req.file.buffer;
-  var isBinary;
-  var filename = req.file && req.file.originalname;
-  if (typeof filename === 'string') {
-    filename = util.getContentType(mime.lookup(filename));
-    isBinary = !filename || filename === 'IMG';
-  }
-  if (cId && data && data.length) {
-    events.emit('composer-' + cId, data, isBinary);
-  }
-  res.json({ec: 0});
-});
+
 app.use(bodyParser.urlencoded({ extended: true, limit: '1mb'}));
 app.use(bodyParser.json());
 

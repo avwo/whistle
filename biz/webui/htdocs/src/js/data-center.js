@@ -252,15 +252,6 @@ $.extend(exports, createCgi({
 }, GET_CONF));
 
 exports.socket = $.extend(createCgi({
-  upload: 'cgi-bin/socket/upload'
-},$.extend({
-  type: 'post'
-}, DEFAULT_CONF, {
-  contentType: false,
-  processData: false,
-  timeout: 36000
-})), createCgi({
-  send: 'cgi-bin/socket/data',
   changeStatus: {
     mode: 'cancel',
     url: 'cgi-bin/socket/change-status'
@@ -268,6 +259,10 @@ exports.socket = $.extend(createCgi({
   abort: {
     mode: 'ignore',
     url: 'cgi-bin/socket/abort'
+  },
+  send: {
+    mode: 'ignore',
+    url: 'cgi-bin/socket/data'
   }
 }, POST_CONF));
 
