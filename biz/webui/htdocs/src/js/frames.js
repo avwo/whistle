@@ -35,13 +35,12 @@ var Frames = React.createClass({
   render: function() {
     var props = this.props;
     var modal = this.state.modal;
-    var frames = props.frames;
+    var frames = modal.reset(props.frames);
     var reqData = props.data || '';
     var curFrame = modal.getActive();
     if (curFrame && curFrame.hide) {
       curFrame = null;
     }
-    modal.reset(frames);
     return (
       <div className={'fill orient-vertical-box w-frames' + ((frames && !props.hide) ? '' : ' hide')}>
         <Divider vertical="true" rightWidth="250">

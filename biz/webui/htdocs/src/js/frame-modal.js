@@ -127,7 +127,7 @@ proto.clear = function() {
 
 proto.reset = function(list) {
   if (!list || this.list === list) {
-    return;
+    return list;
   }
   var len = this.list.length - 20;
   if (len > 0) {
@@ -135,6 +135,7 @@ proto.reset = function(list) {
   }
   this.list = list || [];
   this.filter();
+  return list;
 };
 
 module.exports = FramesModal;
