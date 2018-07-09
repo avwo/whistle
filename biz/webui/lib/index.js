@@ -218,7 +218,7 @@ app.use(function(req, res, next) {
   }
 });
 
-app.use(bodyParser.urlencoded({ extended: true, limit: '1mb'}));
+app.use(bodyParser.urlencoded({ extended: true, limit: '2mb'}));
 app.use(bodyParser.json());
 
 app.all('/cgi-bin/*', cgiHandler);

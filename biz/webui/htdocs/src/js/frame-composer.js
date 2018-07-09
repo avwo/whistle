@@ -17,6 +17,7 @@ var FrameComposer = React.createClass({
     var self = this;
     self.dataField = ReactDOM.findDOMNode(self.refs.uploadData);
     self.dataForm = ReactDOM.findDOMNode(self.refs.uploadDataForm);
+    self.textarea = ReactDOM.findDOMNode(self.refs.textarea);
     events.on('composeFrame', function(e, frame) {
       if (frame) {
         self.setTextarea(util.getBody(frame, true));
@@ -75,6 +76,12 @@ var FrameComposer = React.createClass({
       return;
     }
     params.reqId = data.id;
+    dataCenter.socket.send(params, function(data, xhr) {
+      if (!data) {
+        return util.showSystemError(xhr);
+      }
+      cb && cb();
+    });
   },
   onSend: function(e) {
     var value = this.state.text;
@@ -87,8 +94,9 @@ var FrameComposer = React.createClass({
       target: target.getAttribute('data-type') ? 'server' : 'client',
       text: value.replace(/\r\n|\r|\n/g, '\r\n')
     };
+    var textarea = this.textarea;
     this.send(params, function() {
-      
+      textarea.value = '';
     });
   },
   setTextarea: function(text) {
@@ -138,7 +146,7 @@ var FrameComposer = React.createClass({
           </div>
           <button disabled={!isJSON} type="button" title="Format JSON" className="btn btn-default w-format-json-btn">Format</button>
         </div>
-        <textarea maxLength={MAX_LENGTH} value={text} onChange={this.onTextareaChange} placeholder={'Input the text'} className="fill"></textarea>
+        <textarea ref="textarea" maxLength={MAX_LENGTH} value={text} onChange={this.onTextareaChange} placeholder={'Input the text'} className="fill"></textarea>
         <form ref="uploadDataForm" method="post" encType="multipart/form-data" style={{display: 'none'}}> 
           <input ref="uploadData" onChange={this.onFormChange} type="file" name="uploadData" />
         </form>
