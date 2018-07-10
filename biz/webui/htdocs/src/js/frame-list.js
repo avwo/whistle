@@ -171,10 +171,17 @@ var FrameList = React.createClass({
     var self = this;
     var props = self.props;
     var state = this.state;
-    var reqData = props.reqData;
+    var reqData = props.reqData || '';
     var onClickFrame = props.onClickFrame;
     var modal = self.props.modal;
     var keyword = state.keyword;
+    var list = modal.getList();
+    if (!reqData.closed) {
+      var lastItem = list[list.length - 1];
+      if (lastItem && (lastItem.closed || lastItem.err)) {
+        reqData.closed = true;
+      }
+    }
     return (<div className="fill orient-vertical-box w-frames-list">
       <FilterInput onChange={self.onFilterChange} />
       <div className="w-frames-action">
@@ -186,7 +193,7 @@ var FrameList = React.createClass({
           href="javascript:;" draggable="false">
           <span className="glyphicon glyphicon-play"></span>AutoRefresh
         </a>
-        <a onClick={self.replay} className="w-remove-menu"
+        <a onClick={self.replay} className={'w-remove-menu' + (reqData.closed ? ' w-disabled' : '')}
           href="javascript:;" draggable="false">
           <span className="glyphicon glyphicon-repeat"></span>Replay
         </a>
@@ -194,16 +201,18 @@ var FrameList = React.createClass({
           href="javascript:;" draggable="false">
           <span className="glyphicon glyphicon-edit"></span>Composer
         </a>
-        <a onClick={self.abort} className="w-remove-menu"
+        <a onClick={self.abort} className={'w-remove-menu' + (reqData.closed ? ' w-disabled' : '')}
           href="javascript:;" draggable="false">
           <span className="glyphicon glyphicon-ban-circle"></span>Abort
         </a>
         <DropDown
+          disabled={reqData.closed}
           value={reqData.sendStatus || 0}
           onChange={self.onSendStatusChange}
           options={SEND_PERATORS}
         />
         <DropDown
+          disabled={reqData.closed}
           value={reqData.receiveStatus || 0}
           onChange={self.onReceiveStatusChange}
           options={RECEIVE_PERATORS}
@@ -215,7 +224,7 @@ var FrameList = React.createClass({
         style={{background: keyword ? '#ffffe0' : undefined}}
         onScroll={self.shouldScrollToBottom} ref={self.setContainer} className="fill w-frames-list">
         <ul ref={self.setContent}>
-          {modal.getList().map(function(item) {
+          {list.map(function(item) {
             var statusClass = '';
             if (item.closed || item.err) {
               reqData.closed = item.closed;

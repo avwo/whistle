@@ -42,6 +42,7 @@ var DropDown = React.createClass({
     var help = self.props.help;
     var options = self.props.options || [];
     var firstOption = options[0] || {};
+    var disabled = self.props.disabled;
     var selectedOption = this.getSelectedOption() || self.state.selectedOption || firstOption;
 
     return (
@@ -53,14 +54,14 @@ var DropDown = React.createClass({
           <div
             style={{color: selectedOption === firstOption ? undefined : 'red' }}
             title={selectedOption.text}
-            className="dropdown-toggle w-dropdown-text"
+            className={'dropdown-toggle w-dropdown-text' + (disabled ? ' w-disabled' : '')}
           >
             {selectedOption.icon ? <span className={'glyphicon glyphicon-' + selectedOption.icon} /> : undefined}
             {selectedOption.text}
             <span className="caret"></span>
           </div>
           <ul
-            style={{display: self.state.hover ? 'block' : 'none'}}
+            style={{display: (!disabled && self.state.hover) ? 'block' : 'none'}}
             className="dropdown-menu"
           >
             {

@@ -141,18 +141,6 @@ var FrameComposer = React.createClass({
       <div onDrop={this.onDrop} className={'fill orient-vertical-box w-frames-composer' + (this.props.hide ? ' hide' : '')}>
         <div className="w-frames-composer-action">
           <div className="btn-group">
-            <button disabled={closed} title={tips} onMouseDown={this.preventDefault} onClick={this.onSend}
-              type="button" className="btn btn-default btn-sm">Send to client</button>
-            <button disabled={closed} title={tips} type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <span className="caret"></span>
-            </button>
-            <ul className={'dropdown-menu' + (closed ? ' hide' : '')}>
-              <li><a onClick={this.onSend} href="javascript:;">Send binary data</a></li>
-              <li><a onClick={this.uploadTextToClient} href="javascript:;">Upload text data</a></li>
-              <li><a onClick={this.uploadBinToClient} href="javascript:;">Upload binary data</a></li>
-            </ul>
-          </div>
-          <div className="btn-group">
             <button disabled={closed} title={tips} onMouseDown={this.preventDefault} data-target="server"
               onClick={this.onSend} type="button" className="btn btn-primary btn-sm">Send to server</button>
             <button disabled={closed} title={tips} type="button" className="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -162,6 +150,18 @@ var FrameComposer = React.createClass({
               <li><a data-target="server" onClick={this.onSend} href="javascript:;">Send binary data</a></li>
               <li><a onClick={this.uploadTextToServer} href="javascript:;">Upload text data</a></li>
               <li><a onClick={this.uploadBinToServer} href="javascript:;">Upload binary data</a></li>
+            </ul>
+          </div>
+          <div className="btn-group">
+            <button disabled={closed} title={tips} onMouseDown={this.preventDefault} onClick={this.onSend}
+              type="button" className="btn btn-default btn-sm">Send to client</button>
+            <button disabled={closed} title={tips} type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <span className="caret"></span>
+            </button>
+            <ul className={'dropdown-menu' + (closed ? ' hide' : '')}>
+              <li><a onClick={this.onSend} href="javascript:;">Send binary data</a></li>
+              <li><a onClick={this.uploadTextToClient} href="javascript:;">Upload text data</a></li>
+              <li><a onClick={this.uploadBinToClient} href="javascript:;">Upload binary data</a></li>
             </ul>
           </div>
           <button disabled={!isJSON} type="button" title="Format JSON" onClick={this.format}
