@@ -1,3 +1,9 @@
+### v1.11.1
+1. fix: 精确匹配无法带上请求参数的问题
+2. fix: Network空白处无法弹出右键菜单问题
+3. feat: 支持右键菜单打开预览图片
+4. feat: websocket和socket请求支持Pause、Ignore、Composer、Replay, Abort操作
+
 ### v1.11.0
 1. feat: https请求自动降级([https://github.com/avwo/whistle/issues/176](https://github.com/avwo/whistle/issues/176))
 2. feat: 支持显示HexView（二进制）
