@@ -197,7 +197,7 @@ var FrameList = React.createClass({
           href="javascript:;" draggable="false">
           <span className="glyphicon glyphicon-repeat"></span>Replay
         </a>
-        <a onClick={self.compose} className="w-remove-menu"
+        <a onClick={self.compose} className={'w-remove-menu' + (modal.getActive() ? '' : ' w-disabled')}
           href="javascript:;" draggable="false">
           <span className="glyphicon glyphicon-edit"></span>Composer
         </a>

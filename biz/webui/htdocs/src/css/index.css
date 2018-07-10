@@ -5,7 +5,7 @@
 .w-menu .w-online {position: absolute; right: 0;}
 .w-menu .w-online, .w-menu a:hover, .w-left-menu a:hover, .w-left-menu a:hover .w-disabled {color: #337ab7;}
 .w-menu .w-offline {color: #ccc!important; cursor: default;}
-.w-menu .w-disabled, .w-frames-action .w-disabled {color: #888!important; cursor: default!important;}
+.w-menu .w-disabled, .w-frames-action .w-disabled {color: #888!important; cursor: not-allowed!important;}
 .w-left-menu .w-disabled { color: #888; }
 .w-menu .w-menu-enable {color: #ff6666!important;}
 .w-menu .w-menu-wrapper {display: inline-block; position: relative; height: 30px;}
