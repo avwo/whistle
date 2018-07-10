@@ -29,7 +29,7 @@ var FrameClient = React.createClass({
           btn.active = false;
         });
         self.selectBtn(BTNS[3]);
-        this.setState({});
+        self.setState({});
       }
     });
   },
