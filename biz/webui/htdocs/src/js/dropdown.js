@@ -61,7 +61,7 @@ var DropDown = React.createClass({
             <span className="caret"></span>
           </div>
           <ul
-            style={{display: (!disabled && self.state.hover) ? 'block' : 'none'}}
+            style={{display: (!disabled && self.state.hover) ? 'block' : 'none', padding: help ? undefined : 0}}
             className="dropdown-menu"
           >
             {
