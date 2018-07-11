@@ -157,3 +157,7 @@
   color: #666!important;
   font-style: italic!important;
 }
+
+.w-frames-list .w-frames-ignore.w-frames-selected, .w-frames-list .w-frames-ignore.w-frames-selected {
+  color: #fff!important;
+}
