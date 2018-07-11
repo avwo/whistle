@@ -136,6 +136,9 @@ var FrameComposer = React.createClass({
     var isJSON = this.state.isJSON;
     var text = this.state.text;
     var closed = data.closed;
+    var isHttps = data.isHttps;
+    var leftStyle = isHttps ? {left: 0} : undefined;
+    var displayStyle = isHttps ? {display: 'none'} : undefined;
     var tips = data.closed ? 'The connection is closed' : undefined;
     return (
       <div onDrop={this.onDrop} className={'fill orient-vertical-box w-frames-composer' + (this.props.hide ? ' hide' : '')}>
@@ -146,10 +149,10 @@ var FrameComposer = React.createClass({
             <button disabled={closed} title={tips} type="button" className="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <span className="caret"></span>
             </button>
-            <ul className={'dropdown-menu' + (closed ? ' hide' : '')}>
-              <li><a data-target="server" onClick={this.onSend} href="javascript:;">Send binary data</a></li>
-              <li><a onClick={this.uploadTextToServer} href="javascript:;">Upload text data</a></li>
-              <li><a onClick={this.uploadBinToServer} href="javascript:;">Upload binary data</a></li>
+            <ul style={leftStyle} className={'dropdown-menu' + (closed ? ' hide' : '')}>
+              <li style={displayStyle}><a data-target="server" onClick={this.onSend} href="javascript:;">Send binary data</a></li>
+              <li><a onClick={this.uploadTextToServer} href="javascript:;">{isHttps ? 'Upload to client' : 'Upload text data'}</a></li>
+              <li style={displayStyle}><a onClick={this.uploadBinToServer} href="javascript:;">Upload binary data</a></li>
             </ul>
           </div>
           <div className="btn-group">
@@ -158,10 +161,10 @@ var FrameComposer = React.createClass({
             <button disabled={closed} title={tips} type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <span className="caret"></span>
             </button>
-            <ul className={'dropdown-menu' + (closed ? ' hide' : '')}>
-              <li><a onClick={this.onSend} href="javascript:;">Send binary data</a></li>
-              <li><a onClick={this.uploadTextToClient} href="javascript:;">Upload text data</a></li>
-              <li><a onClick={this.uploadBinToClient} href="javascript:;">Upload binary data</a></li>
+            <ul style={leftStyle} className={'dropdown-menu' + (closed ? ' hide' : '')}>
+              <li style={displayStyle}><a onClick={this.onSend} href="javascript:;">Send binary data</a></li>
+              <li><a onClick={this.uploadTextToClient} href="javascript:;">{isHttps ? 'Upload to client' : 'Upload text data'}</a></li>
+              <li style={displayStyle}><a onClick={this.uploadBinToClient} href="javascript:;">Upload binary data</a></li>
             </ul>
           </div>
           <button disabled={!isJSON} type="button" title="Format JSON" onClick={this.format}
