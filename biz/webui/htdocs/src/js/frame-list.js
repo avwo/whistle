@@ -234,6 +234,7 @@ var FrameList = React.createClass({
               } else {
                 statusClass = ' w-connection-error';
               }
+              item.title = item.title || 'Date: ' + new Date(parseInt(item.frameId, 10)).toLocaleString();
             }
             if (item.data == null) {
               item.data = util.getBody(item, true);
