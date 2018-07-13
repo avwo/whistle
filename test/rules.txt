@@ -11,7 +11,7 @@ wss://test.whistlejs.com/index2.html?abc=321 filter://https params://(rule=ws1.t
 reqscript.w2.org reqScript://{reqScript.js} resScript://{resScript.js}
 
 ws://status.whistlejs.com status://101
-tunnel://127.0.0.1:8080 filter://https
+tunnel://127.0.0.1:8080 filter://https xproxy://127.0.0.1:6666
 
 params.test.whistlejs.com/index.html resMerge://(resMerge=test) resType://js
 weinre1.test2.whistlejs.com:1234 weinre://xxx file://(hello) log://test resType://html enable://capture ignore://plugin
