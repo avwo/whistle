@@ -154,7 +154,7 @@ exports.showSystemError = function(xhr) {
   xhr = xhr || {};
   var status = xhr.status;
   if (!status) {
-    return alert('Please check if the whistle server is started.');
+    return alert('Please check the proxy settings or whether whistle has been started.');
   }
   if (status == 401) {
     return alert('You do not have permission to operate.');
