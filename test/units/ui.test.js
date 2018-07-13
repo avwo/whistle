@@ -2,6 +2,8 @@
 var util = require('../util.test');
 
 module.exports = function() {
+  util.request('https://local.whistlejs.com/favicon.ico?doNotParseJson');
+  util.request('https://local.whistlejs.com/?doNotParseJson');
   util.request('http://rd2webui.w2.org/index.html?doNotParseJson');
   util.request('http://rd2webui.w2.org/?doNotParseJson');
   util.request('http://local.whistlejs.com/index.html?doNotParseJson');
