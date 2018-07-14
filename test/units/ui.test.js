@@ -2,6 +2,38 @@
 var util = require('../util.test');
 
 module.exports = function() {
+  util.request({
+    uri: 'https://local.whistlejs.com/cgi-bin/rules/import',
+    method: 'post',
+    form: {
+      key:'value',
+      "test": 'abc'
+    }
+  });
+  util.request({
+    uri: 'https://local.whistlejs.com/cgi-bin/rules/import',
+    method: 'post',
+    form: {
+      key:'value',
+      "test": '{"abc": 123}'
+    }
+  });
+  util.request({
+    uri: 'https://local.whistlejs.com/cgi-bin/values/import',
+    method: 'post',
+    form: {
+      key:'value',
+      "test": 'abc'
+    }
+  });
+  util.request({
+    uri: 'https://local.whistlejs.com/cgi-bin/values/import',
+    method: 'post',
+    form: {
+      key:'value',
+      "test": '{"abc": 123}'
+    }
+  });
   util.request('https://local.whistlejs.com/favicon.ico?doNotParseJson');
   util.request('https://local.whistlejs.com/?doNotParseJson');
   util.request('http://rd2webui.w2.org/index.html?doNotParseJson');
