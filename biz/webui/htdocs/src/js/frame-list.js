@@ -52,6 +52,9 @@ var FrameList = React.createClass({
   componentDidMount: function() {
     events.on('autoRefreshFrames', this.autoRefresh);
   },
+  onDoubleClick: function() {
+    events.trigger('showFrameTextView');
+  },
   componentWillUpdate: function() {
     this.atBottom = this.shouldScrollToBottom();
   },
@@ -276,7 +279,9 @@ var FrameList = React.createClass({
                 style={{display: item.hide ? 'none' : undefined}}
                 onClick={function() {
                   onClickFrame && onClickFrame(item);
-                }} className={(item.isClient ? 'w-frames-send' : '') + (item.ignore ? ' w-frames-ignore' : '')
+                }}
+                onDoubleClick={self.onDoubleClick}
+                className={(item.isClient ? 'w-frames-send' : '') + (item.ignore ? ' w-frames-ignore' : '')
                   + (item.active ? '  w-frames-selected' : '') + statusClass}>
                 <span className={'glyphicon glyphicon-' + icon}></span>
                 {item.data}

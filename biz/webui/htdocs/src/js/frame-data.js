@@ -21,16 +21,22 @@ var FrameClient = React.createClass({
   getInitialState: function() {
     return {};
   },
+  showTab: function(i) {
+    BTNS.forEach(function(btn) {
+      btn.active = false;
+    });
+    this.selectBtn(BTNS[i]);
+    this.setState({});
+  },
   componentDidMount: function() {
     var self = this;
     events.on('composeFrame', function(e, frame) {
       if (frame) {
-        BTNS.forEach(function(btn) {
-          btn.active = false;
-        });
-        self.selectBtn(BTNS[3]);
-        self.setState({});
+        self.showTab(3);
       }
+    });
+    events.on('showFrameTextView', function() {
+      self.showTab(0);
     });
   },
   onClickBtn: function(btn) {
