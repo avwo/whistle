@@ -13,6 +13,7 @@ reqscript.w2.org reqScript://{reqScript.js} resScript://{resScript.js}
 ws://status.whistlejs.com status://101
 tunnel://127.0.0.1:8080 filter://https xproxy://127.0.0.1:19999
 http://127.0.0.1:6666/abc.htm 127.0.0.1:8080
+test.internal.path.com proxy://127.0.0.1:8080
 
 params.test.whistlejs.com/index.html resMerge://(resMerge=test) resType://js
 weinre1.test2.whistlejs.com:1234 weinre://xxx file://(hello) log://test resType://html enable://capture ignore://plugin

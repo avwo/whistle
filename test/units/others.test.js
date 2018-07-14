@@ -8,4 +8,7 @@ module.exports = function() {
   util.request('http://127.0.0.1:6666/_/-/abc.htm', function(res, data) {
     data.url.should.be.equal('/abc.htm');
   });
+  util.request('http://test.internal.path.com/...whistle-path.5b6af7b9884e1165...///index.html', function(res, data) {
+    data.url.should.be.equal('http://test.internal.path.com/...whistle-path.5b6af7b9884e1165...///index.html');
+  });
 };
