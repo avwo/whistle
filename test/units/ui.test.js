@@ -7,7 +7,7 @@ module.exports = function() {
     method: 'post',
     form: {
       key:'value',
-      "test": 'abc'
+      'test': 'abc'
     }
   });
   util.request({
@@ -15,7 +15,7 @@ module.exports = function() {
     method: 'post',
     form: {
       key:'value',
-      "test": '{"abc": 123}'
+      'test': '{"abc": 123}'
     }
   });
   util.request({
@@ -23,7 +23,7 @@ module.exports = function() {
     method: 'post',
     form: {
       key:'value',
-      "test": 'abc'
+      'test': 'abc'
     }
   });
   util.request({
@@ -31,7 +31,7 @@ module.exports = function() {
     method: 'post',
     form: {
       key:'value',
-      "test": '{"abc": 123}'
+      'test': '{"abc": 123}'
     }
   });
   util.request('https://local.whistlejs.com/favicon.ico?doNotParseJson');

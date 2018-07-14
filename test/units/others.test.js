@@ -5,4 +5,7 @@ module.exports = function() {
     res.statusCode.should.be.equal(502);
   });
   require('../../biz/webui/cgi-bin/util').formatDate();
+  util.request('http://127.0.0.1:6666/_/-/abc.htm', function(res, data) {
+    data.url.should.be.equal('/abc.htm');
+  });
 };
