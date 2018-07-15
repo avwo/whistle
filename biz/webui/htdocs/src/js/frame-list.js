@@ -178,6 +178,7 @@ var FrameList = React.createClass({
     var onClickFrame = props.onClickFrame;
     var modal = self.props.modal;
     var keyword = state.keyword;
+    var activeItem = modal.getActive();
     var list = modal.getList();
     if (!reqData.closed) {
       var lastItem = list[list.length - 1];
@@ -196,11 +197,11 @@ var FrameList = React.createClass({
           href="javascript:;" draggable="false">
           <span className="glyphicon glyphicon-play"></span>AutoRefresh
         </a>
-        <a onClick={self.replay} className={'w-remove-menu' + (reqData.closed ? ' w-disabled' : '')}
+        <a onClick={self.replay} className={'w-remove-menu' + ((!activeItem || reqData.closed) ? ' w-disabled' : '')}
           href="javascript:;" draggable="false">
           <span className="glyphicon glyphicon-repeat"></span>Replay
         </a>
-        <a onClick={self.compose} className={'w-remove-menu' + (modal.getActive() ? '' : ' w-disabled')}
+        <a onClick={self.compose} className={'w-remove-menu' + (activeItem ? '' : ' w-disabled')}
           href="javascript:;" draggable="false">
           <span className="glyphicon glyphicon-edit"></span>Composer
         </a>
