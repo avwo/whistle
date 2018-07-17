@@ -15,7 +15,7 @@ CodeMirror.defineMode('rules', function() {
     return /^(?:\/\/)?(?:(?:25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)\.){3}(?:25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)(?:\:\d+)?$/.test(str);
   }
   function isHost(str) {
-    return /^[xp]?hosts?:\/\//.test(str);
+    return /^x?hosts?:\/\//.test(str);
   }
   function isHead(str) {
     return /^head:\/\//.test(str);
