@@ -714,19 +714,25 @@ function getStartTime() {
   return lastRowId || '0';
 }
 
+var updateCount = 0;
+
 function updateServerInfo(data) {
   if (!serverInfoCallbacks.length) {
+    updateCount = 0;
     return;
   }
 
   if (!(data = data && data.server)) {
-    curServerInfo = data;
-    serverInfoCallbacks.forEach(function (cb) {
-      cb(false);
-    });
+    ++updateCount;
+    if (updateCount > 3) {
+      curServerInfo = data;
+      serverInfoCallbacks.forEach(function (cb) {
+        cb(false);
+      });
+    }
     return;
   }
-
+  updateCount = 0;
   if (curServerInfo && curServerInfo.version == data.version &&
     curServerInfo.networkMode === data.networkMode && curServerInfo.multiEnv === data.multiEnv &&
     curServerInfo.baseDir == data.baseDir && curServerInfo.username == data.username &&
