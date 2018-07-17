@@ -2,11 +2,14 @@ var http = require('http');
 var net = require('net');
 var config = require('../lib/config');
 var util = require('../lib/util');
+var zlib = require('../../../lib/util/zlib');
 var getSender = require('ws-parser').getSender;
 var hparser = require('hparser');
 
 var formatHeaders = hparser.formatHeaders;
 var getRawHeaders = hparser.getRawHeaders;
+var STATUS_CODE_RE = /^[^\s]+\s+(\d+)/i;
+var MAX_LENGTH = 1024 * 512;
 
 function parseHeaders(headers, rawHeaderNames) {
   if (!headers || typeof headers != 'string') {
@@ -47,7 +50,7 @@ function drain(socket) {
   socket.on('data', util.noop);
 }
 
-function handleConnect(options) {
+function handleConnect(options, cb) {
   options.headers['x-whistle-policy'] = 'tunnel';
   config.connect({
     host: options.hostname,
@@ -61,7 +64,8 @@ function handleConnect(options) {
     if (data && data.length) {
       socket.write(data);
     }
-  }).on('error', util.noop);
+    cb && cb();
+  }).on('error', cb || util.noop);
 }
 
 function getReqRaw(options) {
@@ -71,7 +75,7 @@ function getReqRaw(options) {
   return raw.join('\r\n') + '\r\n\r\n';
 }
 
-function handleWebSocket(options) {
+function handleWebSocket(options, cb) {
   if (options.protocol === 'https:' || options.protocol === 'wss:') {
     options.headers[config.HTTPS_FIELD] = 1;
   }
@@ -93,16 +97,29 @@ function handleWebSocket(options) {
             binary: binary
           }, util.noop);
         }
-      } else {
-        resData = resData.slice(-3);
+      }
+      if (cb) {
+        var statusCode = 0;
+        if (STATUS_CODE_RE.test(resData)) {
+          statusCode = RegExp.$1;
+        }
+        cb(null, {
+          statusCode: statusCode,
+          headers: socket.headers || {},
+          body: ''
+        });
       }
     };
     socket.on('data', handleResponse);
   });
-  drain(socket);
+  if (cb) {
+    socket.on('error', cb);
+  } else {
+    drain(socket);
+  }
 }
 
-function handleHttp(options) {
+function handleHttp(options, cb) {
   if (options.protocol === 'https:') {
     options.headers[config.HTTPS_FIELD] = 1;
   }
@@ -111,9 +128,30 @@ function handleHttp(options) {
   options.host = '127.0.0.1';
   options.port = config.port;
   http.request(options, function(res) {
-    res.on('error', util.noop);
-    drain(res);
-  }).on('error', util.noop).end(options.body);
+    if (cb) {
+      res.on('error', cb);
+      var buffer;
+      res.on('data', function(data) {
+        if (buffer !== null) {
+          buffer = buffer ? Buffer.concat([buffer, data]) : data;
+          if (buffer.length > MAX_LENGTH) {
+            buffer = null;
+          }
+        }
+      });
+      res.on('end', function() {
+        zlib.unzip(res.headers['content-encoding'], buffer, function(err, body) {
+          cb(null, {
+            statusCode: res.statusCode,
+            headers: res.headers,
+            body: err ? err.stack : util.decodeBuffer(body)
+          });
+        });
+      });
+    } else {
+      drain(res);
+    }
+  }).on('error', cb || util.noop).end(options.body);
 }
 
 function getCharset(headers) {
@@ -178,13 +216,33 @@ module.exports = function(req, res) {
   }
   delete headers['content-encoding'];
   options.headers = formatHeaders(headers, rawHeaderNames);
-
+  var done;
+  var handleResponse = req.query.needResponse ? function(err, data) {
+    if (done) {
+      return;
+    }
+    done = true;
+    if (err) {
+      res.json({ec: 2, em: err.stack});
+      return;
+    }
+    res.json({ec: 0, em: 'success', res: data});
+  } : null;
   if (isWs) {
     options.method = 'GET';
+    if (handleResponse) {
+      return handleWebSocket(options, handleResponse);
+    }
     handleWebSocket(options);
   } else if (isConn) {
+    if (handleResponse) {
+      return handleConnect(options, handleResponse);
+    }
     handleConnect(options);
   } else  {
+    if (handleResponse) {
+      return handleHttp(options, handleResponse);
+    }
     handleHttp(options);
   }
 
