@@ -24,7 +24,7 @@ OVERVIEW.forEach(function(name) {
   DEFAULT_OVERVIEW_MODAL[name] = '';
 });
 PROTOCOLS.forEach(function(name) {
-  if (PROXY_PROTOCOLS.indexOf(name) !== -1 || name === 'phost' || /^x/.test(name)) {
+  if (PROXY_PROTOCOLS.indexOf(name) !== -1 || /^x/.test(name)) {
     return;
   }
   DEFAULT_RULES_MODAL[name] = '';

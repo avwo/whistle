@@ -1,5 +1,5 @@
 var events = require('./events');
-var PROTOCOLS = ['host', 'xhost', 'phost', 'rule', 'weinre', 'log', 'proxy', 'xproxy', 'http-proxy', 'xhttp-proxy',
+var PROTOCOLS = ['host', 'xhost', 'rule', 'weinre', 'log', 'proxy', 'xproxy', 'http-proxy', 'xhttp-proxy',
                 'socks', 'xsocks', 'pac', 'filter', 'ignore', 'enable', 'disable', 'delete',
                  'plugin', 'dispatch', 'urlParams', 'urlReplace', 'method', 'statusCode',
                  'replaceStatus', 'hostname', 'referer', 'accept', 'auth', 'etag', 'ua',
@@ -17,7 +17,7 @@ var innerRules = ['file', 'xfile', 'tpl', 'xtpl', 'rawfile', 'xrawfile'];
 var pluginRules = [];
 var forwardRules = innerRules.slice();
 var webProtocols = ['http', 'https', 'ws', 'wss', 'tunnel'];
-var allInnerRules = PROTOCOLS.slice(0, 3).concat(webProtocols).concat(innerRules).concat(PROTOCOLS.slice(4));
+var allInnerRules = PROTOCOLS.slice(0, 2).concat(webProtocols).concat(innerRules).concat(PROTOCOLS.slice(3));
 allInnerRules.splice(allInnerRules.indexOf('plugin'), 1);
 var allRules = allInnerRules = allInnerRules.map(function(name) {
   return name + '://';
