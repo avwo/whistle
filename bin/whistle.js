@@ -67,7 +67,7 @@ program
   .command('status')
   .description('Show the running status of whistle');
 program
-  .command('use/enable [filepath]')
+  .command('use/add [filepath]')
   .description('Set rules from a specified js file (.whistle.js by default)');
   
 program
@@ -104,7 +104,7 @@ if (cmd === 'status') {
     storage = argv[4];
   }
   showStatus(all, storage);
-} else if (cmd === 'use' || cmd === 'enable') {
+} else if (cmd === 'use' || cmd === 'enable' || cmd === 'add') {
   var index = argv.indexOf('--force');
   var force = index !== -1;
   if (force) {
