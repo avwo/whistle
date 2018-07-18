@@ -890,9 +890,9 @@ exports.openPreview = function(data) {
   }
   var res = data.res;
   var type = getContentType(res.headers);
-  var url = data.url;
   var isImg = type === 'IMG';
   if (isImg || type === 'HTML') {
+    var url = data.url.replace(/^ws/, 'http');
     var charset = isImg ? 'UTF8' : getCharset(res);
     url += (url.indexOf('?') === -1 ? '' : '&') + '???WHISTLE_PREVIEW_CHARSET=' + charset;
     window.open(url + '???#' + (isImg ? getBody(res) : res.base64));
