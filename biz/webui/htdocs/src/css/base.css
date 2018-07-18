@@ -71,3 +71,7 @@ textarea {resize: none; display: block; font-size: 12px;}
 .cm-s-xq-dark ::-webkit-scrollbar-track:hover {background-color:rgba(255,255,255,.15);}
 
 .w-offline-status .w-menu a, .w-offline-status .w-left-menu a { color: #ccc!important; }
+
+body .cm-s-cobalt span.cm-number {
+  color: #ea4335;
+}
