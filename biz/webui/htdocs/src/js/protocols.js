@@ -69,13 +69,13 @@ exports.getHelpUrl = function(rule) {
     return ROOT_HELP_URL;
   }
   if (innerRules.indexOf(rule) !== -1) {
-    return ROOT_HELP_URL + 'rule/' + rule + '.html';
+    return ROOT_HELP_URL + 'rule/' + rule.replace(/^x/, '') + '.html';
   }
   if (webProtocols.indexOf(rule) !== -1) {
     return ROOT_HELP_URL + 'rule/replace.html';
   }
   if (PROTOCOLS.indexOf(rule) !== -1) {
-    return ROOT_HELP_URL + rule + '.html';
+    return ROOT_HELP_URL + rule.replace(/^x/, '') + '.html';
   }
   if (pluginRules.indexOf(rule) !== -1) {
     rule = rule.substring(rule.indexOf('.') + 1);

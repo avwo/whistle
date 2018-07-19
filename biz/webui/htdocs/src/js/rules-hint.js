@@ -66,11 +66,11 @@ function getAtValueList(keyword) {
 
 function getAtHelpUrl(name, options) {
   try {
-    var getAtHelpUrl = window.parent.getAtHelpUrlForWhistle;
-    if (typeof getAtHelpUrl !== 'function') {
+    var _getAtHelpUrl = window.parent.getAtHelpUrlForWhistle;
+    if (typeof _getAtHelpUrl !== 'function') {
       return;
     }
-    var url = getAtHelpUrl(name, options);
+    var url = _getAtHelpUrl(name, options);
     if (url === false || typeof url === 'string') {
       return url;
     }
