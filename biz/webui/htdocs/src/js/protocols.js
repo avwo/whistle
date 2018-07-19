@@ -12,12 +12,19 @@ var PROTOCOLS = ['host', 'xhost', 'rule', 'weinre', 'log', 'proxy', 'xproxy', 'h
                   'htmlPrepend', 'cssPrepend', 'jsPrepend', 'htmlBody', 'cssBody', 'jsBody',
                   'htmlAppend', 'cssAppend', 'jsAppend', 'req', 'res', 'reqWrite',  'resWrite',
                   'reqWriteRaw', 'resWriteRaw', 'exportsUrl', 'exports'];
+var xProtocols = ['xignore', 'xdelete', 'xenable', 'xdisable', 'xurlParams',
+                  'xreqMerge', 'xresMerge', 'xreqCookies', 'xresCookies', 'xreqCors',
+                  'xresCors', 'xreqHeaders', 'xresHeaders', 'xreqPrepend', 'xresPrepend',
+                  'xreqBody', 'xresBody', 'xreqAppend', 'xresAppend', 'xurlReplace',
+                  'xreqReplace', 'xresReplace', 'xcssAppend', 'xhtmlAppend',
+                  'xjsAppend', 'xcssBody', 'xhtmlBody', 'xjsBody', 'xcssPrepend',
+                  'xhtmlPrepend', 'xjsPrepend'];
 
 var innerRules = ['file', 'xfile', 'tpl', 'xtpl', 'rawfile', 'xrawfile'];
 var pluginRules = [];
 var forwardRules = innerRules.slice();
 var webProtocols = ['http', 'https', 'ws', 'wss', 'tunnel'];
-var allInnerRules = PROTOCOLS.slice(0, 2).concat(webProtocols).concat(innerRules).concat(PROTOCOLS.slice(3));
+var allInnerRules = PROTOCOLS.slice(0, 2).concat(webProtocols).concat(innerRules).concat(PROTOCOLS.slice(3)).concat(xProtocols);
 allInnerRules.splice(allInnerRules.indexOf('plugin'), 1);
 var allRules = allInnerRules = allInnerRules.map(function(name) {
   return name + '://';
