@@ -163,7 +163,6 @@ var Composer = React.createClass({
     return (
       <div className={'fill orient-vertical-box w-detail-content w-detail-composer' + (util.getBoolean(this.props.hide) ? ' hide' : '')}>
         <div className="w-composer-url box">
-          <input defaultValue={state.url} onChange={this.onComposerChange} onKeyDown={this.onKeyDown} onFocus={this.selectAll} ref="url" type="text" maxLength="8192" placeholder="url" className="fill w-composer-input" />
           <select defaultValue={state.method} onChange={this.onComposerChange} ref="method" className="form-control w-composer-method">
                   <option value="GET">GET</option>
                   <option value="POST">POST</option>
@@ -182,6 +181,7 @@ var Composer = React.createClass({
                   <option value="UNLOCK">UNLOCK</option>
                   <option value="OPTIONS">OPTIONS</option>
                 </select>
+                <input defaultValue={state.url} onChange={this.onComposerChange} onKeyDown={this.onKeyDown} onFocus={this.selectAll} ref="url" type="text" maxLength="8192" placeholder="url" className="fill w-composer-input" />
           <button onClick={this.execute} className="btn btn-primary w-composer-execute">Go</button>
         </div>
         <Divider vertical="true" rightWidth="140">
