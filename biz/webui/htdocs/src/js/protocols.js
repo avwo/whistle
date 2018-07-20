@@ -81,7 +81,7 @@ exports.getHelpUrl = function(rule) {
   if (webProtocols.indexOf(rule) !== -1) {
     return ROOT_HELP_URL + 'rule/replace.html';
   }
-  if (PROTOCOLS.indexOf(rule) !== -1) {
+  if (PROTOCOLS.indexOf(rule) !== -1 || xProtocols.indexOf(rule) !== -1) {
     return ROOT_HELP_URL + rule.replace(/^x/, '') + '.html';
   }
   if (pluginRules.indexOf(rule) !== -1) {

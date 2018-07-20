@@ -209,10 +209,11 @@ exports.getExtraKeys = function() {
 
 exports.getHelpUrl = function(editor, options) {
   var name = getFocusRuleName(editor);
-  if (AT_RE.test(name) && (name = getAtHelpUrl(name.substring(1), options))) {
-    return name;
+  var url;
+  if (AT_RE.test(name) && (url = getAtHelpUrl(name.substring(1), options))) {
+    return url;
   }
-  if (name === false) {
+  if (url === false) {
     return false;
   }
   return protocols.getHelpUrl(name);
