@@ -255,15 +255,21 @@ exports.ensureVisible = function(elem, container) {
   if (!top) {
     return;
   }
-
+  var conHeight = container[0].offsetHeight;
+  var elemHeight = elem[0].offsetHeight;
+  var scrollTop;
   if (top < 0) {
-    container.scrollTop(container.scrollTop() + top - 2);
+    scrollTop = Math.ceil((conHeight - elemHeight) / 2);
+    scrollTop = Math.max(0, container.scrollTop() + top - scrollTop);
+    container.scrollTop(scrollTop);
     return;
   }
 
-  top += elem[0].offsetHeight - container[0].offsetHeight;
+  top += elemHeight - conHeight;
   if (top > 0) {
-    container.scrollTop(container.scrollTop() + top + 2);
+    scrollTop = Math.ceil(conHeight / 2);
+    scrollTop = Math.max(0, container.scrollTop() + top + scrollTop);
+    container.scrollTop(scrollTop);
   }
 };
 
