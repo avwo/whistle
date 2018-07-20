@@ -77,7 +77,10 @@ var Composer = React.createClass({
     clearTimeout(this.composerTimer);
     this.composerTimer = setTimeout(this.saveComposer, 1000);
   },
-  execute: function() {
+  execute: function(e) {
+    if (e.target.nodeName === 'INPUT' && e.keyCode !== 13) {
+      return;
+    }
     var refs = this.refs;
     var url = ReactDOM.findDOMNode(refs.url).value.trim();
     this.onComposerChange();
@@ -181,7 +184,7 @@ var Composer = React.createClass({
                   <option value="UNLOCK">UNLOCK</option>
                   <option value="OPTIONS">OPTIONS</option>
                 </select>
-                <input defaultValue={state.url} onChange={this.onComposerChange} onKeyDown={this.onKeyDown} onFocus={this.selectAll} ref="url" type="text" maxLength="8192" placeholder="url" className="fill w-composer-input" />
+                <input defaultValue={state.url} onKeyUp={this.execute} onChange={this.onComposerChange} onKeyDown={this.onKeyDown} onFocus={this.selectAll} ref="url" type="text" maxLength="8192" placeholder="url" className="fill w-composer-input" />
           <button onClick={this.execute} className="btn btn-primary w-composer-execute">Go</button>
         </div>
         <Divider vertical="true" rightWidth="140">
