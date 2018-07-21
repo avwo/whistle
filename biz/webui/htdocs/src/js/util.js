@@ -783,12 +783,12 @@ function base64toBytes(base64) {
   return [];
 }
 
-function decodeBase64(base64, isFrame) {
+function decodeBase64(base64) {
   var arr = base64toBytes(base64);
   var result = {
     hex: getHexString(arr)
   };
-  if (!isUtf8(arr, isFrame)) {
+  if (!isUtf8(arr)) {
     try {
       result.text = gbkDecoder.decode(arr);
     } catch(e) {}
