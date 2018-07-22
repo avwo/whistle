@@ -226,7 +226,7 @@ module.exports = function(req, res) {
       res.json({ec: 2, em: err.stack});
       return;
     }
-    res.json({ec: 0, em: 'success', res: data});
+    res.json({ec: 0, em: 'success', res: data || ''});
   } : null;
   if (isWs) {
     options.method = 'GET';
