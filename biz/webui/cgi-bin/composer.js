@@ -101,7 +101,7 @@ function handleWebSocket(options, cb) {
       if (cb) {
         var statusCode = 0;
         if (STATUS_CODE_RE.test(resData)) {
-          statusCode = RegExp.$1;
+          statusCode = parseInt(RegExp.$1, 10);
         }
         cb(null, {
           statusCode: statusCode,
