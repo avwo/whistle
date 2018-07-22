@@ -85,7 +85,7 @@ function handleWebSocket(options, cb) {
     socket.write(getReqRaw(options));
     var handleResponse = function(resData) {
       resData = resData + '';
-      var index = resData.indexOf('\r\n\r\n') !== -1;
+      var index = resData.indexOf('\r\n\r\n');
       if (index !== -1) {
         socket.removeListener('data', handleResponse);
         socket.headers = parseHeaders(resData.slice(0, index));
