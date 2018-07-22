@@ -1,3 +1,7 @@
+### v1.11.2
+1. feat: 支持给上游代理转发的请求设置hosts：`pattern proxy://ip:port?proxyHost` 或 `pattern enable://proxyHost` 或 `pattern proxy://ip:port?host=ip:port`
+2. refactor(UI): 默认主题的host高亮显示，判断离线机制等，WebSocket返回失败预览等。 
+
 ### v1.11.1
 1. fix: 精确匹配无法带上请求参数的问题
 2. fix: Network空白处无法弹出右键菜单问题
