@@ -26,11 +26,11 @@ CodeMirror.defineMode('rules', function() {
   }
 
   function isReq(str) {
-    return /^(?:req|hostname|reqHost|accept|etag|referer|auth|ua|forwardedFor|x?reqCookies|reqDelay|reqSpeed|x?reqCors|x?reqHeaders|method|reqType|reqCharset|x?reqBody|x?reqPrepend|x?reqAppend|x?reqReplace|reqWrite|reqWriteRaw):\/\//.test(str);
+    return /^(?:req|hostname|reqHost|accept|etag|referer|auth|ua|forwardedFor|reqCookies|reqDelay|reqSpeed|reqCors|reqHeaders|method|reqType|reqCharset|reqBody|reqPrepend|reqAppend|reqReplace|reqWrite|reqWriteRaw):\/\//.test(str);
   }
 
   function isRes(str) {
-    return /^(?:resScript|responseFor|res|x?resCookies|x?resHeaders|statusCode|status|replaceStatus|redirect|resDelay|resSpeed|x?resCors|resType|resCharset|cache|attachment|download|location|x?resBody|x?resPrepend|x?resAppend|x?css(?:Append|Prepend|Body)?|x?html(?:Append|Prepend|Body)?|x?js(?:Append|Prepend|Body)?|x?resReplace|x?resMerge|resWrite|resWriteRaw):\/\//.test(str);
+    return /^(?:resScript|responseFor|res|resCookies|resHeaders|statusCode|status|replaceStatus|redirect|resDelay|resSpeed|resCors|resType|resCharset|cache|attachment|download|location|resBody|resPrepend|resAppend|css(?:Append|Prepend|Body)?|html(?:Append|Prepend|Body)?|js(?:Append|Prepend|Body)?|resReplace|resMerge|resWrite|resWriteRaw):\/\//.test(str);
   }
 
   function isUrl(str) {
@@ -56,7 +56,7 @@ CodeMirror.defineMode('rules', function() {
   }
 
   function isParams(str) {
-    return /^(?:x?urlParams|params|x?reqMerge|x?urlReplace):\/\//.test(str);
+    return /^(?:urlParams|params|reqMerge|urlReplace):\/\//.test(str);
   }
 
   function isLog(str) {
@@ -76,19 +76,19 @@ CodeMirror.defineMode('rules', function() {
   }
 
   function isDisable(str) {
-    return /^x?disable:\/\//.test(str);
+    return /^disable:\/\//.test(str);
   }
 
   function isIgnore(str) {
-    return /^x?ignore:\/\//.test(str);
+    return /^ignore:\/\//.test(str);
   }
 
   function isEnable(str) {
-    return /^x?enable:\/\//.test(str);
+    return /^enable:\/\//.test(str);
   }
 
   function isDelete(str) {
-    return /^x?delete:\/\//.test(str);
+    return /^delete:\/\//.test(str);
   }
 
   function isExports(str) {
