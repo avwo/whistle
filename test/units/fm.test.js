@@ -21,10 +21,16 @@ module.exports = function() {
   fm.readFileList([null, null, null], function(result) {
     assert(result.length === 3, 'Error');
   });
+  fm.readFileList([], function(result) {
+    assert(!result, 'Error');
+  });
   fm.readFilesText([null, null, path1, path2, null], function(result) {
     assert(result[2] === '1\r\n2', 'Error');
   });
   fm.readFilesText(null, function(result) {
+    assert(!result, 'Error');
+  });
+  fm.readFilesText([], function(result) {
     assert(!result, 'Error');
   });
   fm.readFilesText([null, null, null], function(result) {
