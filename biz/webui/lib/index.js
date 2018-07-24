@@ -10,7 +10,7 @@ var cookie = require('cookie');
 var htdocs = require('../htdocs');
 
 var GET_METHOD_RE = /^get$/i;
-
+var WEINRE_RE = /^\/weinre\/.*/;
 var DONT_CHECK_PATHS = ['/cgi-bin/server-info', '/cgi-bin/show-host-ip-in-res-headers',
                         '/cgi-bin/composer', '/cgi-bin/socket/data', '/preview.html',
                         '/cgi-bin/socket/abort', '/cgi-bin/socket/change-status',
@@ -204,7 +204,7 @@ app.use(function(req, res, next) {
   }
   var guestAuthKey = config.guestAuthKey;
   if (((guestAuthKey && guestAuthKey === req.headers['x-whistle-guest-auth-key'])
-    || verifyLogin(req, res)) && (!req.method || GET_METHOD_RE.test(req.method))) {
+    || verifyLogin(req, res)) && (!req.method || GET_METHOD_RE.test(req.method) || WEINRE_RE.test(req.path))) {
     return next();
   }
   var username = getUsername();
@@ -237,7 +237,7 @@ app.get('/', function(req, res) {
   res.sendFile(htdocs.getHtmlFile('index.html'));
 });
 
-app.all(/^\/weinre\/.*/, function(req, res) {
+app.all(WEINRE_RE, function(req, res) {
   var options = parseurl(req);
   if (options.pathname === '/weinre/client') {
     return res.redirect('client/' + (options.search || ''));
