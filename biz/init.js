@@ -12,11 +12,7 @@ module.exports = function init(proxy, callback) {
   if (config.customUIPort) {
     var server = http.createServer();
     require(config.uipath)(server, proxy);
-    if (config.host) {
-      server.listen(config.uiport, '127.0.0.1', execCallback);
-    } else {
-      server.listen(config.uiport, execCallback);
-    }
+    server.listen(config.uiport, execCallback);
   } else {
     util.getServer(function(server, port) {
       config.uiport = port;
