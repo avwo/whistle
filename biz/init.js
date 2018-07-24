@@ -13,7 +13,7 @@ module.exports = function init(proxy, callback) {
     var server = http.createServer();
     require(config.uipath)(server, proxy);
     if (config.host) {
-      server.listen(config.uiport, config.host, execCallback);
+      server.listen(config.uiport, '127.0.0.1', execCallback);
     } else {
       server.listen(config.uiport, execCallback);
     }
