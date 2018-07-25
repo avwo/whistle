@@ -104,7 +104,7 @@ var ResDetail = React.createClass({
         });
       }
       var imgSrc, data, isJson;
-      var showOthers = true;
+      var isText = true;
       var status = res.statusCode;
       var showImg = name === BTNS[1].name;
       if (status != null) {
@@ -114,10 +114,10 @@ var ResDetail = React.createClass({
         isJson = type === 'JSON';
         if (type === 'IMG') {
           imgSrc = body || (res.size ? modal.url : undefined);
-          showOthers = false;
+          isText = false;
         } else if (showImg && res.base64 && type === 'HTML') {
           data = modal;
-          showOthers = false;
+          isText = false;
         }
       }
       if (modal.isHttps) {
@@ -134,7 +134,7 @@ var ResDetail = React.createClass({
 
     state.raw = raw;
     state.body = body;
-    if (showOthers && name === 'Preview') {
+    if (isText && name === 'Preview') {
       showImg = false;
       if (isJson) {
         name = 'JSONView';
