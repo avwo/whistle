@@ -1,3 +1,6 @@
+### v1.11.3
+1. feat: 调整规则匹配机制，一些协议支持同时匹配多个：ignore, enable, filter, disable, plugin, delete, urlParams, params, reqHeaders, resHeaders, reqCors, resCors, reqCookies, resCookies, reqReplace, urlReplace, resReplace, resMerge, reqBody, reqPrepend, resPrepend, reqAppend, resAppend, resBody, htmlAppend, jsAppend, cssAppend, htmlBody, jsBody, cssBody, htmlPrepend, jsPrepend, cssPrepend
+
 ### v1.11.2
 1. feat: 支持给上游代理转发的请求设置hosts：`pattern proxy://ip:port?proxyHost` 或 `pattern enable://proxyHost` 或 `pattern proxy://ip:port?host=ip:port`
 2. feat: 添加 `xhost://...` 功能同 `host://...`，前者如果发现服务没起来，会自动请求现网
