@@ -104,6 +104,7 @@ var ResDetail = React.createClass({
         });
       }
       var imgSrc, data, isJson;
+      var showOthers = true;
       var status = res.statusCode;
       var showImg = name === BTNS[1].name;
       if (status != null) {
@@ -113,8 +114,10 @@ var ResDetail = React.createClass({
         isJson = type === 'JSON';
         if (type === 'IMG') {
           imgSrc = body || (res.size ? modal.url : undefined);
+          showOthers = false;
         } else if (showImg && res.base64 && type === 'HTML') {
           data = modal;
+          showOthers = false;
         }
       }
       if (modal.isHttps) {
@@ -131,10 +134,15 @@ var ResDetail = React.createClass({
 
     state.raw = raw;
     state.body = body;
-    if (isJson && name === 'Preview') {
-      name = 'JSONView';
-      state.initedJSONView = true;
+    if (showOthers && name === 'Preview') {
       showImg = false;
+      if (isJson) {
+        name = 'JSONView';
+        state.initedJSONView = true;
+      } else {
+        name = 'TextView';
+        state.initedTextView = true;
+      }
     }
     return (
       <div className={'fill orient-vertical-box w-detail-content w-detail-response'
