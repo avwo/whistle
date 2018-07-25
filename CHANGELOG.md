@@ -1,5 +1,5 @@
 ### v1.11.3
-1. feat: 调整规则匹配机制，一些协议支持同时匹配多个：ignore, enable, filter, disable, plugin, delete, urlParams, params, reqHeaders, resHeaders, reqCors, resCors, reqCookies, resCookies, reqReplace, urlReplace, resReplace, resMerge, reqBody, reqPrepend, resPrepend, reqAppend, resAppend, resBody, htmlAppend, jsAppend, cssAppend, htmlBody, jsBody, cssBody, htmlPrepend, jsPrepend, cssPrepend
+1. feat: 调整规则匹配机制，一些协议支持同时匹配多个：ignore, enable, filter, disable, plugin, delete, urlParams, params, reqHeaders, resHeaders, reqCors, resCors, reqCookies, resCookies, reqReplace, urlReplace, resReplace, resMerge, reqBody, reqPrepend, resPrepend, reqAppend, resAppend, resBody, htmlAppend, jsAppend, cssAppend, htmlBody, jsBody, cssBody, htmlPrepend, jsPrepend, cssPrepend，更多协议参见：[协议列表](https://avwo.github.io/whistle/rules)
 
 ### v1.11.2
 1. feat: 支持给上游代理转发的请求设置hosts：`pattern proxy://ip:port?proxyHost` 或 `pattern enable://proxyHost` 或 `pattern proxy://ip:port?host=ip:port`
