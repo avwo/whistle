@@ -1,4 +1,4 @@
-# reqMerge
+# resMerge
 > 修改响应类型为`application/json`或`text/javascript`的响应内容，其功能是通过`resMerge://jsonData`指定的JSON对象覆盖响应内容里面的JSON对象，请个文本响应类型的修改可以参考：[resReplace](resReplace.html)
 
 配置方式：
