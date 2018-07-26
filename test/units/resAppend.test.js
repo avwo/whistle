@@ -5,10 +5,10 @@ module.exports = function() {
     url: 'https://resappend.test.whistlejs.com/?resBody=',
     method: 'post'
   }, function(res, body) {
-    body.should.equal('append');
+    body.should.equal('append\r\nappend');
   });
 
   util.request('http://resappend.test.whistlejs.com/?resBody=', function(res, body) {
-    body.should.equal('append');
+    body.should.equal('append\r\nappend');
   });
 };

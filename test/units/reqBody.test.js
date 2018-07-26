@@ -5,13 +5,13 @@ module.exports = function() {
     url: 'https://reqbody.test.whistlejs.com/',
     method: 'post'
   }, function(res, data) {
-    data.body.should.equal('body');
+    data.body.should.equal('body\r\nbody');
   });
 
   util.request({
     url: 'http://reqbody.test.whistlejs.com/',
     method: 'post'
   }, function(res, data) {
-    data.body.should.equal('body');
+    data.body.should.equal('body\r\nbody');
   });
 };
