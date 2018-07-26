@@ -248,7 +248,7 @@ exports.getProtocol = function getProtocol(url) {
   return index == -1 ? 'TUNNEL' : url.substring(0, index).toUpperCase();
 };
 
-exports.ensureVisible = function(elem, container) {
+exports.ensureVisible = function(elem, container, init) {
   elem = $(elem);
   container = $(container);
   var top = elem.offset().top - container.offset().top;
@@ -259,17 +259,25 @@ exports.ensureVisible = function(elem, container) {
   var elemHeight = elem[0].offsetHeight;
   var scrollTop;
   if (top < 0) {
-    scrollTop = Math.ceil((conHeight - elemHeight) / 2);
-    scrollTop = Math.max(0, container.scrollTop() + top - scrollTop);
-    container.scrollTop(scrollTop);
+    if (init) {
+      scrollTop = Math.ceil((conHeight - elemHeight) / 2);
+      scrollTop = Math.max(0, container.scrollTop() + top - scrollTop);
+      container.scrollTop(scrollTop);
+    } else {
+      container.scrollTop(container.scrollTop() + top - 2);
+    }
     return;
   }
 
   top += elemHeight - conHeight;
   if (top > 0) {
-    scrollTop = Math.ceil(conHeight / 2);
-    scrollTop = Math.max(0, container.scrollTop() + top + scrollTop);
-    container.scrollTop(scrollTop);
+    if (init) {
+      scrollTop = Math.ceil(conHeight / 2);
+      scrollTop = Math.max(0, container.scrollTop() + top + scrollTop);
+      container.scrollTop(scrollTop);
+    } else {
+      container.scrollTop(container.scrollTop() + top + 2);
+    }
   }
 };
 
