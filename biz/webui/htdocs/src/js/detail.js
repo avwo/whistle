@@ -98,7 +98,7 @@ var ReqData = React.createClass({
     var container = $('.w-req-data-list');
     var elem = container.find('.w-req-data-item.w-selected:visible:first');
     if (elem.length) {
-      util.ensureVisible(elem,container);
+      util.ensureVisible(elem, container, true);
     }
   },
   toggleTab: function(tab, callback) {

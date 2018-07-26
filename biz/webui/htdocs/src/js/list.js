@@ -138,7 +138,7 @@ var List = React.createClass({
         e.preventDefault();
       }
     });
-    this.ensureVisible();
+    this.ensureVisible(true);
   },
   shouldComponentUpdate: function(nextProps) {
     var hide = util.getBoolean(this.props.hide);
@@ -147,10 +147,12 @@ var List = React.createClass({
   componentDidUpdate: function() {
     this.ensureVisible();
   },
-  ensureVisible: function() {
+  ensureVisible: function(init) {
     var activeItem = this.props.modal.getActive();
     if (activeItem) {
-      util.ensureVisible(ReactDOM.findDOMNode(this.refs[activeItem.name]), ReactDOM.findDOMNode(this.refs.list));
+      var elem = ReactDOM.findDOMNode(this.refs[activeItem.name]);
+      var con = ReactDOM.findDOMNode(this.refs.list);
+      util.ensureVisible(elem, con, init);
     }
   },
   onClick: function(item) {
