@@ -106,7 +106,10 @@ var Editor = React.createClass({
   },
   setAutoComplete: function(enable) {
     var option = this.isRulesEditor() ? rulesHint.getExtraKeys() : {};
-    option['Ctrl-F'] = option['Cmd-F'] = 'findPersistent';
+    if (!/\(Macintosh;/i.test(window.navigator.userAgent)) {
+      option['Ctrl-F'] = 'findPersistent';
+    }
+    option['Cmd-F'] = 'findPersistent';
     this._editor.setOption('extraKeys', option);
   },
   isRulesEditor: function() {
