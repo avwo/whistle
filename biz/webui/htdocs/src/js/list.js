@@ -330,10 +330,13 @@ var List = React.createClass({
     if (isRules) {
       data.list = rulesCtxMenuList;
       data.list[1].disabled = disabled;
+      data.list[1].name = 'Save';
       if (item && !item.changed) {
-        data.list[1].name = item.selected ? 'Disable' : 'Enable';
-      } else {
-        data.list[1].name = 'Save';
+        if (dataCenter.isMutilEnv()) {
+          data.list[1].disabled = true;
+        } else {
+          data.list[1].name = item.selected ? 'Disable' : 'Enable';
+        }
       }
       if (item && item.isDefault) {
         isDefault = true;

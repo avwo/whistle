@@ -748,6 +748,10 @@ function updateServerInfo(data) {
 
 }
 
+exports.isMutilEnv = function() {
+  return curServerInfo && curServerInfo.multiEnv;
+};
+
 exports.on = function (type, callback) {
   startLoadData();
   if (type == 'data') {
