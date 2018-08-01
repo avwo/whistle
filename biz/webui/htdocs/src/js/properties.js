@@ -11,13 +11,14 @@ var Properties = React.createClass({
     this.setState({ viewSource: !this.state.viewSource });
   },
   render: function() {
-    var enableViewSource = this.props.enableViewSource;
+    var props = this.props;
+    var enableViewSource = props.enableViewSource;
     var viewSource = this.state.viewSource;
-    var modal = this.props.modal || {};
-    var title = this.props.title || {};
+    var modal = props.modal || {};
+    var title = props.title || {};
     var keys = Object.keys(modal);
     return (
-      <div className={ 'w-properties-wrap ' + (viewSource ? 'w-properties-view-source' : 'w-properties-view-parsed') }>
+      <div className={ 'w-properties-wrap ' + (viewSource ? 'w-properties-view-source ' : 'w-properties-view-parsed ') }>
         { enableViewSource ? <a onClick={this.toggle} className="w-properties-btn">{ viewSource ? 'view parsed' : 'view source' }</a> : undefined }
         { enableViewSource ? (<pre className="w-properties-source">
           { keys.map(function(name) {
@@ -30,26 +31,30 @@ var Properties = React.createClass({
             );
           }).join('\n') }
         </pre>) : undefined }
-        <table className="table w-properties w-properties-parsed">
+        <table className={'table w-properties w-properties-parsed ' + (props.className || '')}>
           <tbody>
             {
               keys.map(function(name) {
                 var value = modal[name];
-
-                return (Array.isArray(value) ?
+                if (Array.isArray(value)) {
+                  return (
                     value.map(function(val, i) {
+                      val = util.toString(val);
                       return (
-                        <tr key={i}>
+                        <tr key={i} className={val ? undefined : 'w-no-value'}>
                           <th>{name}</th>
-                          <td><pre>{util.toString(val)}</pre></td>
+                          <td><pre>{val}</pre></td>
                         </tr>
                       );
                     })
-                    :
-                    <tr key={name} title={title[name]}>
-                      <th>{name}</th>
-                      <td><pre>{util.toString(value)}</pre></td>
-                    </tr>
+                  );
+                }
+                value = util.toString(value);
+                return (
+                  <tr key={name} title={title[name]} className={value ? undefined : 'w-no-value'}>
+                    <th>{name}</th>
+                    <td><pre>{value}</pre></td>
+                  </tr>
                 );
               })
             }

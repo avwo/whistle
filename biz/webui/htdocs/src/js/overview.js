@@ -4,7 +4,7 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var events = require('./events');
 var util = require('./util');
-
+var storage = require('./storage');
 var Properties = require('./properties');
 
 var OVERVIEW = ['Url', 'Real Url', 'Method', 'Http Version', 'Status Code', 'Status Message', 'Client IP', 'Server IP', 'Client Port', 'Server Port', 'Request Length', 'Content Length'
@@ -31,6 +31,11 @@ PROTOCOLS.forEach(function(name) {
 });
 
 var Overview = React.createClass({
+  getInitialState: function() {
+    return {
+      showOnlyMatchRules: storage.get('showOnlyMatchRules') == 1
+    };
+  },
   shouldComponentUpdate: function(nextProps) {
     var hide = util.getBoolean(this.props.hide);
     return hide != util.getBoolean(nextProps.hide) || !hide;
@@ -44,10 +49,18 @@ var Overview = React.createClass({
       }
     });
   },
+  showOnlyMatchRules: function(e) {
+    var showOnlyMatchRules = e.target.checked;
+    storage.set('showOnlyMatchRules', showOnlyMatchRules ? 1 : 0);
+    this.setState({
+      showOnlyMatchRules: showOnlyMatchRules
+    });
+  },
   render: function() {
     var overviewModal = DEFAULT_OVERVIEW_MODAL;
     var rulesModal = DEFAULT_RULES_MODAL;
     var modal = this.props.modal;
+    var showOnlyMatchRules = this.state.showOnlyMatchRules;
 
     if (modal) {
       overviewModal = {};
@@ -132,8 +145,11 @@ var Overview = React.createClass({
     return (
       <div ref="container" className={'fill orient-vertical-box w-detail-content w-detail-overview' + (util.getBoolean(this.props.hide) ? ' hide' : '')}>
         <Properties modal={overviewModal} />
-        <p className="w-detail-overview-title"><a href="https://avwo.github.io/whistle/rules/" target="_blank"><span className="glyphicon glyphicon-question-sign"></span></a>All Rules:</p>
-        <Properties modal={rulesModal} title={titleModal} />
+        <p className="w-detail-overview-title" style={{ background: showOnlyMatchRules ? 'lightyellow' : undefined }}>
+          <a href="https://avwo.github.io/whistle/rules/" target="_blank"><span className="glyphicon glyphicon-question-sign"></span></a>All Rules:
+          <label><input checked={showOnlyMatchRules} onChange={this.showOnlyMatchRules} type="checkbox" />Show only matching rules</label>
+        </p>
+        <Properties className={showOnlyMatchRules ? 'w-hide-no-value' : undefined} modal={rulesModal} title={titleModal} />
       </div>
     );
   }

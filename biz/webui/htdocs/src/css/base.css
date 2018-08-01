@@ -75,3 +75,6 @@ textarea {resize: none; display: block; font-size: 12px;}
 body .cm-s-cobalt span.cm-number {
   color: #ff1605;
 }
+.w-hide-no-value .w-no-value {
+  display: none!important;
+}
