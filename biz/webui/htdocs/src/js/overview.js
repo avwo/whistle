@@ -147,7 +147,7 @@ var Overview = React.createClass({
         <Properties modal={overviewModal} />
         <p className="w-detail-overview-title" style={{ background: showOnlyMatchRules ? 'lightyellow' : undefined }}>
           <a href="https://avwo.github.io/whistle/rules/" target="_blank"><span className="glyphicon glyphicon-question-sign"></span></a>All Rules:
-          <label><input checked={showOnlyMatchRules} onChange={this.showOnlyMatchRules} type="checkbox" />Show only matching rules</label>
+          <label><input checked={showOnlyMatchRules} onChange={this.showOnlyMatchRules} type="checkbox" />Only show matching rules</label>
         </p>
         <Properties className={showOnlyMatchRules ? 'w-hide-no-value' : undefined} modal={rulesModal} title={titleModal} />
       </div>
