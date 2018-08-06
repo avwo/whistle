@@ -1,7 +1,106 @@
 # 插件开发
-为了满足一些特定业务场景的需求，whistle提供了插件扩展能力，通过插件可以扩展whistle的协议功能实现更复杂的操作，监控指定请求，集成业务本地调试环境等等，可以做任何你想做的事情，且开发、发布及安装whistle插件也都很简单。
+为了满足一些特定业务场景自定义规则的需求，whistle提供了插件扩展能力，通过插件可以扩展whistle的协议实现更复杂的操作、上报监控指定请求、集成业务本地调试环境等等，基本上可以做任何你想做的事情，且开发、发布及安装whistle插件也都很简单。
+
+
+先简单了解下如何安装使用插件：
+
+#### 安装插件
+whistle的插件就是一个Node模块，名字必须为 `whistle.your-plugin-name` 或 `@org/whistle.your-plugin-name`，其中 `your-plugin-name` 为插件名称，只能包含小写字母、数字、_、-四种字符，安装插件直接全局npm安装即可：
+
+```
+npm i -g whistle.your-plugin-name
+# 或
+npm i -g @org/whistle.your-plugin-name
+```
+> Mac或Linux安装时如果报权限错误，则需要加上 `sudo`，如：`sudo npm i -g whistle.your-plugin-name`
+> 国内可以用[cnpm](https://github.com/cnpm/cnpm)或公司自己大家的镜像安装
+
+全局安装后，可以在whistle的界面上看到所有已安装的插件列表(whistle定时搜索npm的全局目录，并自动加载或卸载插件，无需重启whistle)。
+
+![插件列表](img/plugin-list.png)
+
+#### 使用插件
+插件安装后，whistle会新增两个协议，分别为 `whistle.your-plugin-name` 和 `your-pluign-name`，用户通过配置：
+```
+pattern whistle.your-plugin-name://xxx
+# 或
+pattern your-plugin-name://xxx
+```
+配置后即可使用插件集成的功能，whistle会根据不同的配置把请求或响应的信息及配置的值(如：`xxx`)，转发到插件里面不同的服务，并根据某些服务响应设置新的规则，或直接把请求转个插件处理，插件如何实现这些配置的具体功能及其应用，我们先了解下如何创建及发布一个whistle插件的项目。
+
+# 实现原理
+whistle的插件是一个独立运行的进程，这样是为了确保插件不会影响到whistle主进程的稳定性，并通过暴露一些http server的方式实现与whistle的交互，whistle会在特定阶段请求特定的server，具体看下面的原理图：
+
+![http请求](img/http-request.png)
+![http请求插件过程](img/plugin1.png)
+> 图一：表示正常的http(s)、WebSocket请求可能触发的插件内置的server
+
+![tunnel请求](img/tunnel-request.png)
+![tunnel请求插件过程](img/plugin2.png)
+
+> 图二：表示tunnel请求可能触发的插件内置的server，tunnel请求如上图指没有开启https捕获，或一般的TCP请求
+
+从上面几个图可以知，whistle插件会设计以下几种server：
+
+1. statsServer：统计请求信息的服务
+2. resStatsServer：统计响应信息的服务
+3. rulesServer：设置请求规则的服务(支持http/https/websocket请求)
+4. resRulesServer：设置响应规则的服务(支持http/https/websocket请求)
+5. tunnelRulesServer：设置tunnel请求规则的服务
+6. server：whistle会把指定请求转发到该server
+
+以上这些server都是可选的，根据需要实现对应的server即可，比如：
+
+1. 统计请求信息，可以用 `statsServer` (统计响应信息可以用 `resStatsServer`)；
+2. 设置请求规则可以用 `rulesServer` (如果是tunnel请求用 `tunnelRulesServer`，如果这两种请求的规则都一样，可以用 `pluginRulesServer`)；
+3. 设置响应规则可以用 `resRulesServer`；
+4. 如果想独占操作请求，可以用 `server`，whistle会把指定请求转发到该server
+
+上面各个server的用法参考下面的例子：
+
+# 快速上手
+
+
+
+
+下面我们来实现如下功能的插件：
+
+1. 根据请求url里面的形如 `req.headers.x-key1-name=value1&res.headrs.x-key2-name=value2&host=127.0.0.1` 参数设置请求及响应头、服务器IP
+2. 把服务器IP设置到响应头字段 `x-server-ip`
+3. 把抓包数据保存到通过UI配置的数据库
+4. 支持mock数据
 
 #### 创建项目
+创建一个名为[whistle.hellworld](https://github.com/whistle-plugins/whistle.helloworld)的项目:
+
+```txt
+whistle.helloworld
+  |__ package.json
+  |__ index.js
+  |__ lib
+      |__ uiServer.js
+      |__ data.js
+      |__ rulesServer.js
+      |__ server.js
+      |__ resRulesServer.js
+```
+具体项目代码请访问Github：[https://github.com/whistle-plugins/whistle.helloworld](https://github.com/whistle-plugins/whistle.helloworld)。
+
+
+#### 调试项目
+
+
+#### 发布项目
+
+
+#### 使用
+
+
+如上说，whistle的项目欣慰
+
+whistle的每个插件就是一个Node模块，名字必须为 `whistle.your-plugin-name` 或 `@org/whistle.your-plugin-name`，其中 `your-plugin-name` 为插件名称，且只能包含小写字母、数字、_、-四种字符。
+
+每个插件运行在一个独立的进程里面，并暴露一些server让whistle调用，whistle会根据规则配置及插件实现的server自动把请求转发到对应的server，及根据响应设置新规则等，
 
 #### 服务钩子
 
