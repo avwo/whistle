@@ -1075,6 +1075,16 @@ var Index = React.createClass({
       if (document.hidden) {
         return;
       }
+
+      // filter by query
+      var queryIndex = location.href.indexOf('?');
+      var query = util.parseQueryString(location.href.substring(queryIndex + 1), null, null, decodeURIComponent);
+      var filterFromUrl = query.filter;
+
+      if(modal && filterFromUrl) {
+        modal.search(filterFromUrl);
+      }
+
       self.setState({
         network: modal
       }, function() {
