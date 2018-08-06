@@ -2,6 +2,7 @@
 1. style: 解决Mac下 `Ctrl+F` 冲突问题
 2. feat: Overview支持只显示匹配的规则
 3. feat: 支持在插件获取请求数据，具体参见：[插件开发](http://wproxy.org/whistle/plugins.html)
+4. fix: 处理 `socket hand up` 错误
 
 ### v1.11.3
 1. feat: 调整规则匹配机制，一些协议支持同时匹配多个：ignore, enable, filter, disable, plugin, delete, urlParams, params, reqHeaders, resHeaders, reqCors, resCors, reqCookies, resCookies, reqReplace, urlReplace, resReplace, resMerge, reqBody, reqPrepend, resPrepend, reqAppend, resAppend, resBody, htmlAppend, jsAppend, cssAppend, htmlBody, jsBody, cssBody, htmlPrepend, jsPrepend, cssPrepend，更多协议参见：[协议列表](https://avwo.github.io/whistle/rules)
