@@ -79,7 +79,6 @@ whistle.helloworld
   |__ index.js
   |__ lib
       |__ uiServer.js
-      |__ data.js
       |__ rulesServer.js
       |__ server.js
       |__ resRulesServer.js
@@ -141,13 +140,14 @@ ke.qq.com/mock helloworld://test
 #### API文档
 1. `initial.js`：
 2. `rules.txt`:
-3. `_values.txt`:
-4. `rulesServer`:
-5. `tunnelRulesServer`:
-6. `statsServer`:
-7. `server`:
-8. `resRulesServer`:
-9. `resStatsServer`:
+3. `_rules.txt`:
+4. `_values.txt`:
+5. `rulesServer`:
+6. `tunnelRulesServer`:
+7. `statsServer`:
+8. `server`:
+9. `resRulesServer`:
+10. `resStatsServer`:
 
 
 更多例子参考：
