@@ -1,6 +1,7 @@
 ### v1.12.0
 1. feat: 删除协议 `exports://` 和 `exportsUrl://`，请用更灵活方便的插件获取：[插件开发](http://wproxy.org/whistle/plugins.html)
 2. feat: 支持插件里面获取WebSocket和socket请求的帧数据，详见：[插件开发](http://wproxy.org/whistle/plugins.html)
+3. feat: 支持插件获取及CRUD `Rules` 和 `Values`
 
 ### v1.11.4
 1. style: 解决Mac下 `Ctrl+F` 冲突问题
