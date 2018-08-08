@@ -1,8 +1,8 @@
 # 插件开发
-为了满足一些特定业务场景自定义规则的需求，whistle提供了插件扩展能力，通过插件可以扩展whistle的协议实现更复杂的操作、上报监控指定请求、集成业务本地调试环境等等，基本上可以做任何你想做的事情，且开发、发布及安装whistle插件也都很简单。
+为了满足一些特定业务场景自定义规则的需求，whistle提供了插件扩展能力，通过插件可以扩展whistle的协议实现更复杂的操作、保存或监控指定请求、集成业务本地开发调试环境等等，基本上可以做任何你想做的事情，且开发、发布及安装whistle插件也都很简单。
 
 
-先简单了解下如何安装使用插件：
+先了解下如何安装使用插件：
 
 #### 安装插件
 whistle的插件就是一个Node模块，名字必须为 `whistle.your-plugin-name` 或 `@org/whistle.your-plugin-name`，其中 `your-plugin-name` 为插件名称，只能包含小写字母、数字、_、-四种字符，安装插件直接全局npm安装即可：
@@ -12,8 +12,8 @@ npm i -g whistle.your-plugin-name
 # 或
 npm i -g @org/whistle.your-plugin-name
 ```
-> Mac或Linux安装时如果报权限错误，则需要加上 `sudo`，如：`sudo npm i -g whistle.your-plugin-name`
-> 国内可以用[cnpm](https://github.com/cnpm/cnpm)或公司自己大家的镜像安装
+> Mac或Linux安装时如果报权限错误，则需要加上sudo，如：sudo npm i -g whistle.your-plugin-name
+> 国内可以用[cnpm](https://github.com/cnpm/cnpm)或公司内部自己的镜像安装
 
 全局安装后，可以在whistle的界面上看到所有已安装的插件列表(whistle定时搜索npm的全局目录，并自动加载或卸载插件，无需重启whistle)。
 
@@ -28,7 +28,7 @@ pattern whistle.your-plugin-name://xxx
 # 或
 pattern your-plugin-name://xxx
 ```
-配置后即可使用插件集成的功能，whistle会根据不同的配置把请求或响应的信息及配置的值(如：`xxx`)，转发到插件里面不同的服务，并根据某些服务响应设置新的规则，或直接把请求转个插件处理，插件如何实现这些配置的具体功能及其应用？我们先了解下基本原理后，再创建及发布一个whistle插件的项目。
+匹配到上述规则的请求会自动请求插件相应的server，上述两种配置有些差异，后面再详细说下，下面我们先了解下插件基本原理，再快速开发一个whistle插件的项目。
 
 # 实现原理
 whistle的插件是一个独立运行的进程，这样是为了确保插件不会影响到whistle主进程的稳定性，并通过暴露一些http server的方式实现与whistle的交互，whistle会在特定阶段请求特定的server，具体看下面的原理图：
@@ -58,10 +58,10 @@ whistle的插件是一个独立运行的进程，这样是为了确保插件不�
 3. 设置响应规则可以用 `resRulesServer`；
 4. 如果想独占操作请求，可以用 `server`，whistle会把指定请求转发到该server
 
-上面各个server的如何实现参考下面的例子：
+除了上面几种功能性server外，whistle插件提供了 `uiServer` 用于显示插件的配置管理界面，用户可以在whitle界面的 `Plugins` 列表里点击Option或右键新窗口打开对应插件的界面，或直接访问 `http://local.whistlejs.com/whistle.helloworld/`，如果没有实现`uiServer`，whistle会自动返回404，也可以给插件自定义域名，这样就可以通过独立域名访问插件的管理界面，只需在启动参数里面加 `-L "helloworld=hello.oa.com"` (`helloworld` 为插件名称)，然后把 `hello.oa.com` 的dns指向whistle所在机器的IP即可，这样可以通过 `http://hello.oa.com:8899/` (`8899`表示whistle监听的端口)访问 `whistle.helloworld` 的界面。
 
 # 快速上手
-> whistle的规则和API都会兼容老版本，但建议大家及时更新whistle到最新版本，下面得例子要求whistle的版本号`>=v1.11.4`
+> whistle的规则和API都会兼容老版本，但建议大家及时更新whistle到最新版本，以便体验更多的功能，下面的例子要求whistle的版本号`>=v1.11.4`，更新whistle请参考[帮助文档](update.html)
 
 下面我们来实现如下功能的插件：
 
