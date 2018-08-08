@@ -86,6 +86,4 @@
   * [resWrite](rules/resWrite.md)
   * [reqWriteRaw](rules/reqWriteRaw.md)
   * [resWriteRaw](rules/resWriteRaw.md)
-  * [exportsUrl](rules/exportsUrl.md)
-  * [exports](rules/exports.md)
 * [Feedback](feedback.md)

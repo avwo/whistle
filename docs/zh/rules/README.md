@@ -80,5 +80,3 @@
 55. [**resWrite** (将响应内容写入指定的文件)](resWrite.html)
 56. [**reqWriteRaw** (将请求的完整内容写入指定的文件)](reqWriteRaw.html)
 57. [**resWriteRaw** (将响应的完整内容写入指定的文件)](resWriteRaw.html)
-58. [**exportsUrl** (把请求的url列表按顺序导出到指定文件)](exportsUrl.html)
-59. [**exports** (导出请求数据到指定文件)](exports.html)

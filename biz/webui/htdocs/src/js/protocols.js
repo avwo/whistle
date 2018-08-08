@@ -11,7 +11,7 @@ var PROTOCOLS = ['host', 'xhost', 'rule', 'weinre', 'log', 'proxy', 'xproxy', 'h
                   'reqBody', 'resBody', 'reqAppend', 'resAppend', 'reqReplace', 'resReplace',
                   'htmlPrepend', 'cssPrepend', 'jsPrepend', 'htmlBody', 'cssBody', 'jsBody',
                   'htmlAppend', 'cssAppend', 'jsAppend', 'req', 'res', 'reqWrite',  'resWrite',
-                  'reqWriteRaw', 'resWriteRaw', 'exportsUrl', 'exports'];
+                  'reqWriteRaw', 'resWriteRaw'];
 
 var innerRules = ['file', 'xfile', 'tpl', 'xtpl', 'rawfile', 'xrawfile'];
 var pluginRules = [];

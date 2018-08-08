@@ -103,6 +103,4 @@
   * [resWrite](rules/resWrite.md)
   * [reqWriteRaw](rules/reqWriteRaw.md)
   * [resWriteRaw](rules/resWriteRaw.md)
-  * [exportsUrl](rules/exportsUrl.md)
-  * [exports](rules/exports.md)
 * [用户反馈](feedback.md)

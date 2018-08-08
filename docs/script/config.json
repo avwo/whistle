@@ -280,20 +280,6 @@
           }
         },
         {
-          "name": "exports",
-          "i18n": {
-            "zh": "exports",
-            "en": "exports"
-          }
-        },
-        {
-          "name": "exportsUrl",
-          "i18n": {
-            "zh": "exportsUrl",
-            "en": "exportsUrl"
-          }
-        },
-        {
           "name": "filter",
           "i18n": {
             "zh": "filter",

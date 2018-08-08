@@ -91,14 +91,6 @@ CodeMirror.defineMode('rules', function() {
     return /^delete:\/\//.test(str);
   }
 
-  function isExports(str) {
-    return /^exports?:\/\//.test(str);
-  }
-
-  function isExportsUrl(str) {
-    return /^exports?Url:\/\//.test(str);
-  }
-
   function isDispatch(str) {
     return /^dispatch:\/\//.test(str);
   }
@@ -186,10 +178,6 @@ CodeMirror.defineMode('rules', function() {
             type = 'negative js-disable js-type';
           } else if (isDelete(str)) {
             type = 'negative js-delete js-type';
-          } else if (isExports(str)) {
-            type = 'atom js-exports js-type';
-          } else if (isExportsUrl(str)) {
-            type = 'atom js-exportsUrl js-type';
           } else if (isDispatch(str)) {
             type = 'variable-2 js-dispatch js-type';
           } else if (isProxy(str)) {
