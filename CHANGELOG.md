@@ -1,3 +1,6 @@
+### v1.12.0
+1. feat: 删除协议 `exports://` 和 `exportsUrl://`，请用更灵活方便的插件获取：[插件开发](http://wproxy.org/whistle/plugins.html)
+
 ### v1.11.4
 1. style: 解决Mac下 `Ctrl+F` 冲突问题
 2. feat: Overview支持只显示匹配的规则
