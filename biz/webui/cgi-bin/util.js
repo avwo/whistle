@@ -1,20 +1,9 @@
 var util = require('../lib/util');
 var config = require('../lib/config');
 var properties = require('../lib/properties');
-var pluginMgr = require('../lib/proxy').pluginMgr;
 
 var MAX_OBJECT_SIZE = 1024 * 1024 * 6;
 var index = 0;
-
-exports.checkPluginForbidden = function(req, res) {
-  var pluginName = req.headers['x-whistle-plugin-name'];
-  if (pluginName && pluginMgr.isDisabled(pluginName)) {
-    res.writeHead(403);
-    res.end();
-    return;
-  }
-  return true;
-};
 
 exports.getClientId = function() {
   if (index > 9999) {
