@@ -437,7 +437,7 @@ var ReqData = React.createClass({
     var uploadItem = contextMenuList[6];
     uploadItem.hide = !getUploadSessionsFn();
     contextMenuList[7].disabled = uploadItem.disabled = disabled && !selectedCount;
-    var data = util.getMenuPosition(e, 110, uploadItem.hide ? 274 : 304);
+    var data = util.getMenuPosition(e, 110, uploadItem.hide ? 280 : 310);
     data.list = contextMenuList;
     this.refs.contextMenu.show(data);
   },
