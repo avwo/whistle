@@ -14,9 +14,10 @@
 [![NPM count](https://img.shields.io/npm/dt/whistle.svg?style=flat-square)](https://www.npmjs.com/package/whistle)
 [![License](https://img.shields.io/npm/l/whistle.svg?style=flat-square)](https://www.npmjs.com/package/whistle)
 
+[中文 README](README-zh_CN.md)
+
 **whistle** is a cross-platform web debugging tool based on Node.js.
 
-[中文 README](README-zh_CN.md)
 
 It features the following:
 
