@@ -133,6 +133,10 @@ var Composer = React.createClass({
       headers: headers,
       method: ReactDOM.findDOMNode(refs.method).value || 'GET',
       body: ReactDOM.findDOMNode(refs.body).value.replace(/\r\n|\r|\n/g, '\r\n')
+    }, function(data, xhr) {
+      if (!data || data.ec !== 0) {
+        util.showSystemError(xhr);
+      }
     });
     events.trigger('executeComposer');
   },
