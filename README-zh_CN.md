@@ -16,202 +16,93 @@
 
 [README in English](README.md)
 
-whistle(读音`[ˈwɪsəl]`，拼音`[wēisǒu]`)是基于Node实现的跨平台调试代理工具。
+whistle(读音`[ˈwɪsəl]`，拼音`[wēisǒu]`)是基于Node实现的跨平台抓包调试代理工具，有以下基本功能：
 
-它提供了如下基本功能：
-
-1. 提供HTTP代理服务
-2. 抓包、重放或构造HTTP、HTTPS、WebSocket及普通的Socket(TCP)请求
-3. 通过类似hosts的简单配置方式操作请求或响应，且支持域名、路径、正则表达式、通配符、通配路径等多种[匹配模式](https://avwo.github.io/whistle/pattern.html)
-4. 内置移动调试功能
-
-如果以上功能仍无法满足你对调试代理的需求，你可以通过[插件](https://avwo.github.io/whistle/plugins.html)进行扩展。
+1. 查看HTTP、HTTPS请求响应内容
+2. 查看WebSocket、Socket收发的帧数据
+3. 设置请求hosts、上游http/socks代理
+4. 修改请求url、方法、头部、内容
+5. 修改响应状态码、头部、内容，并支持本地替换
+6. 修改WebSocket或Socket收发的帧数据
+7. 内置调试移动端页面的weinre和log
+8. 作为HTTP代理或反向代理
+9. 支持用Node编写插件扩展功能
 
 具体功能如下：
 
 ![基本功能](https://raw.githubusercontent.com/avwo/whistleui/master/assets/whistle.png)
 
-whistle的所有操作都可以通过类似如下配置方式实现：
+whistle基本上覆盖了所有抓包调试代理可以实现的功能，且所有操作都可以通过类似配置hosts的方式实现。
 
-	pattern operatorURI
+传统hosts的配置方式：
+```
+# 普通模式
+127.0.0.1 www.example.com
 
+# 组合模式
+127.0.0.1 www.example1.com www.example2.com www.example3.com 
+```
+
+> 传统hosts配置方式为 `ip pattern ... patternN`，其中pattern只能为域名，ip为纯ip不能带端口
+
+whistle的配置方式不仅兼容上述传统hosts的配置方式，也支持丰富的匹配模式及操作功能，具体如下：
+```
+# 默认模式
+pattern operatorURI
+
+# 组合模式
+pattern operatorURI operatorURI2 operatorURIN
+
+# 如果pattern和operatorURI不同时为普通url，两种位置可以调换
+operatorURI pattern
+
+# 组合模式
+operatorURI pattern pattern2 patternN
+
+```
 
 其中：
 
-1. **pattern** 为匹配请求url的表达式，可以为：域名，路径，正则及通配符等等多种匹配方式：
+1. **pattern** 为匹配请求url的表达式，可以为：域名，路径，正则及通配符等等多种匹配方式，具体内容参见：[匹配模式](https://avwo.github.io/whistle/pattern.html)
+2. **operatorURI** 为对应的操作，由操作协议+操作值组成：
 
-		# 域名匹配
-		www.example.com
-		# 带端口的域名
-		www.example.com:6666
-		# 带协议的域名，支持：http、https、ws、wss、tunnel
-		http://www.example.com
+	```
+	operatorURI = opProtocol://opValue
+	```
+	**opProtocol**(操作协议) 对应某类操作，具体内容参见：[协议列表](https://avwo.github.io/whistle/rules/)
 
-		# 路径匹配，同样支持带协议、端口
-		www.example.com/test
-		https:/www.exapmle.com/test
-		https:/www.exapmle.com:6666/test
-
-		# 正则匹配
-		/^https?://www\.example\.com\/test/(.*)/ referer://http://www.test.com/$1
-
-		# 通配符匹配
-		^www.example.com/test/*** referer://http://www.test.com/$1
-
-	完整内容参见：[匹配模式](https://avwo.github.io/whistle/pattern.html)
-2. **operatorURI** 为对应的操作，由操作协议+操作值组成(`operatorURI = opProtocol://opValue`)：
-	**opProtocol**(操作协议) 对应某类操作，如：
-		
-			# host：设置请求服务器IP
-			pattern host://opValue	
-
-			# file协议：本地替换
-			pattern file://opValue
-
-	**opValue**(操作值) 对应具体操作的参数值，如：
-
-			# host协议：设置请求服务器IP
-			pattern host://127.0.0.1:6666 # 或 pattern 127.0.0.1:6666	
-
-			# file协议：本地替换
-			pattern file:///User/test/dirOrFile # 或 pattern /User/test/dirOrFile
-			pattern file://E:\test\dirOrFile # 或 pattern E:\test\dirOrFile
-
-	完整内容参见：[操作值](https://avwo.github.io/whistle/data.html)
-3. **pattern** 和 **operatorURI** 在多数情况下位置可以调换，且支持组合模式，具体参见：[配置方式](https://avwo.github.io/whistle/mode.html)
+	**opValue**(操作值) 对应具体操作的参数值，具体内容参见：[操作值](https://avwo.github.io/whistle/data.html)
+3. **pattern** 和 **operatorURI** 不同时为普通url时位置可以调换，且支持组合模式，具体内容参见：[配置方式](https://avwo.github.io/whistle/mode.html)
 
 # 安装启动
 
-#### 安装Node
-推荐安装最新的 `LTS` 版本Node，如果本地没有安装Node或安装了低版本的Node，可以按下面的指引安装最新版的Node：
+whistle安装过程需要以下步骤（**缺一不可**）：
+1. 安装Node
+2. 安装whistle
+3. 启动whistle
+4. 配置代理
+5. 安装根证书
 
-1. **Windows系统**，访问[https://nodejs.org/](https://nodejs.org/)，下载最新的 `LTS` 版本Node，点击默认安装即可。
-2. **Mac系统**安装方式跟Windows一样。
-3. **Linux系统**，推荐使用源码安装方式，这样无需自己配置 `path`，如果无法用源码安装，也可以直接二进制版本的Node，解压后把里面的bin目录路径加到系统的 `PATH` 即可：
-	- **源码安装**：从[Node官网](https://nodejs.org/en/download/)下载最新版的**Source Code**(或者用`wget`命令下载)，解压文件(`tar -xzvf node-xxx.tar.gz`)，进入解压后的根目录(`node-xxx`)，依次执行`./configure`、`./make`和`./make install`。
-	- **直接用二进制版本**：从[Node官网](https://nodejs.org/en/download/)下载最新版的**Linux Binaries**(或者用`wget`命令下载)，解压文件(`tar -xzvf node-xxx.tar.gz`)，解压后将Node二进制文件的bin目录完整路径加到系统的 `PATH`。
+上述步骤的详细操作分别参见如下文档：
+1. [安装启动whistle](http://wproxy.org/whistle/install.html)
+2. [安装whistle根证书](http://wproxy.org/whistle/webui/https.html)
 
-Node安装完成后，在命令行执行 `node -v` 查看下对应的Node版本是否安装成功：
+安装成功后，可以通过如下命令查看whistle的所有命令行操作:
+```
+w2 --help
+```
 
-	$ node -v
-	v8.9.4
+启动、停止、重启whistle的命令行命令如下：
+```
+w2 start
+w2 stop
+w2 restart
+```
 
-#### 安装whistle
-Node安装成功后，执行如下npm命令安装whistle （**Mac或Linux的非root用户需要在命令行前面加`sudo`，如：`sudo npm install -g whistle`**）
+更新whistle只需重新安装下whistle即可，具体参见：[更新whistle帮助文档](http://wproxy.org/whistle/update.html)
 
-	npm install -g whistle
+> whistle有新版时，会自动推送提示升级，建议大家及时更新新版本。
 
-npm默认镜像是在国外，有时候安装速度很慢或者出现安装不了的情况，如果无法安装或者安装很慢，可以使用taobao的镜像安装：
-
-	npm install cnpm -g --registry=https://registry.npm.taobao.org
-	cnpm install -g whistle
-
-	或者直接指定镜像安装：
-	npm install whistle -g --registry=https://registry.npm.taobao.org
-
-
-whistle安装完成后，执行命令 `whistle help` 或 `w2 help`，查看whistle的帮助信息：
-
-	$ w2 help
-	Usage: whistle <command> [options]
-
-
-	Commands:
-
-		run       Start a front service
-		start     Start a background service
-		stop      Stop current background service
-		restart   Restart current background service
-		help      Display help information
-
-	Options:
-
-		-h, --help                                      output usage information
-		-D, --baseDir [baseDir]                         the base dir of config data
-		-z, --certDir [directory]                       custom certificate path
-		-l, --localUIHost [hostname]                    local ui host (local.whistlejs.com by default)
-		-n, --username [username]                       the username of whistle
-		-w, --password [password]                       the password of whistle
-		-N, --guestName [username]                      the guest name
-		-W, --guestPassword [password]                  the guest password
-		-s, --sockets [number]                          max sockets (60 by default)
-		-S, --storage [newStorageDir]                   the new local storage directory
-		-C, --copy [storageDir]                         copy storageDir to newStorageDir
-		-c, --dnsCache [time]                           the cache time of DNS (30000ms by default)
-		-H, --host [host]                               whistle listening host(:: or 0.0.0.0 by default)
-		-p, --port [port]                               whistle listening port (8899 by default)
-		-P, --uiport [uiport]                           whistle ui port (8900 by default)
-		-m, --middlewares [script path or module name]  express middlewares path (as: xx,yy/zz.js)
-		-M, --mode [mode]                               the whistle mode (as: pureProxy|debug|multiEnv)
-		-u, --uipath [script path]                      web ui plugin path
-		-t, --timeout [ms]                              request timeout (66000 ms by default)
-		-e, --extra [extraData]                         extra data for plugin
-		-f, --secureFilter [secureFilter]               the script path of secure filter
-		-R, --reqCacheSize [reqCacheSize]               the cache size of request data (512 by default)
-		-F, --frameCacheSize [frameCacheSize]           the cache size of socket frames (512 by default)
-		-V, --version                                   output the version number
-
-#### 启动whistle
-启动:
-
-	w2 start
-
-*Note: 如果要防止其他人访问配置页面，可以在启动时加上登录用户名和密码 `-n yourusername -w yourpassword`。*
-
-重启:
-
-	w2 restart
-
-
-停止:
-
-	w2 stop
-
-启动调试模式:
-
-	w2 run
-
-更多内容参考：[安装启动](https://avwo.github.io/whistle/install.html)
-
-# 设置代理
-##### 配置信息
-1. 代理服务器：127.0.0.1(如果部署在远程服务器或虚拟机上，改成对应服务器或虚拟机的ip即可)
-2. 默认端口：8899(如果端口被占用，可以在启动是通过 `-p` 来指定新的端口，更多信息可以通过执行命令行 `w2 help` (`v0.7.0`及以上版本也可以使用`w2 help`) 查看)
-
-> 勾选上 **对所有协议均使用相同的代理服务器**
-
-##### 代理配置方式(把上面配置信息配置上即可)
-1. 直接配置系统代理：　
-  * [Windows](http://jingyan.baidu.com/article/0aa22375866c8988cc0d648c.html) 
-  * [Mac](http://jingyan.baidu.com/article/a378c960849144b3282830dc.html)
-
-2. 设置浏览器代理 (**推荐**)
-
-	* 安装Chrome代理插件： [whistle-for-chrome插件](https://github.com/avwo/whistle-for-chrome) 或者 [Proxy SwitchySharp](https://chrome.google.com/webstore/detail/proxy-switchysharp/dpplabbmogkhghncfbfdeeokoefdjegm)
-
-	* Firefox设置代理： 在Firefox浏览器的`选项` -> `常规` -> `网络代理`中直接设置手动代理为whistle
-  ![](http://7tszky.com1.z0.glb.clouddn.com/FoMjvBC9svsUyfKFkYENq18zGOT8)
-	
-3. 移动端需要在`设置`中配置当前Wi-Fi的代理
-
-PS: 如果配置完代理，手机无法访问，可能是whistle所在的电脑防火墙限制了远程访问whistle的端口，关闭防火墙或者设置白名单：[ http://jingyan.baidu.com/article/870c6fc317cae7b03ee4be48.html]( http://jingyan.baidu.com/article/870c6fc317cae7b03ee4be48.html)
-
-更多内容参考：[安装启动](https://avwo.github.io/whistle/install.html)
-
-# 访问界面
-
-上述操作完成后，打开whistle界面[http://local.whistlejs.com](http://local.whistlejs.com/)：
-
-![whistle webui](https://raw.githubusercontent.com/avwo/whistleui/master/assets/whistle.gif)
-
-1. Network：主要用来查看请求信息，构造请求，页面 `console` 打印的日志及抛出的js错误等
-2. Rules：配置操作规则
-3. Plugins：安装的插件信息，及启用或禁用插件
-4. Weinre：设置的weinre列表
-5. HTTPS：设置是否拦截HTTPS请求，及下载whistle根证书
-
-# 安装证书
-安装根证书及开启https拦截后才可以正常操作或抓取https及websocket请求，具体参见：[安装根证书](https://avwo.github.io/whistle/webui/https.html)
 
 # 快速上手
 
