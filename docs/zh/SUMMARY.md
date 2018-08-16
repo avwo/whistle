@@ -2,6 +2,7 @@
 
 * [关于whistle](README.md)
 * [安装启动](install.md)
+* [命令行操作](cli.md)
 * [手动更新](update.md)
 * [快速上手](quickstart.md)
 * [配置方式](mode.md)
