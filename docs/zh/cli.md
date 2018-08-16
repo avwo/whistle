@@ -1,5 +1,5 @@
-### `w2 use [filepath]`
-也可以用 `w2 enable [filepath]`，通过filepath对应的js文件获取规则配置，filepath可选，默认为当前目录的 `.whistle.js`。
+### `w2 add [filepath]`
+也可以用 `w2 use [filepath]`，通过filepath对应的js文件获取规则配置，filepath可选，默认为当前目录的 `.whistle.js`。
 
 如项目根目录文件 `.whistle.js`：
 
@@ -14,12 +14,12 @@ test.example.com/cgi-bin ignore://http
 `;
 ```
 
-在该目录下支持 `w2 use` (或 `w2 enable`)，这时如果本地whistle里面没有同名的规则且不为空，则会自动创建一个并自动启用，如果存在则会提醒：
+在该目录下支持 `w2 add` (或 `w2 use`)，这时如果本地whistle里面没有同名的规则且不为空，则会自动创建一个并自动启用，如果存在则会提醒：
 ```
 The rule already exists, to override it, you must add CLI option --force.
 ```
 
-可以通过 `w2 use --force` 强制覆盖当前同名规则。
+可以通过 `w2 add --force` 强制覆盖当前同名规则。
 
 也可以异步获取规则 `.whistle.js`：
 
