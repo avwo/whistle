@@ -1,6 +1,6 @@
 ### v1.12.x
 1. style: Composer失败时会弹框提醒
-2. feat: 支持在 `Rules > Settings > ` 调整规则的优先顺序，默认从上到下，其中Default里面的规则优先级最低
+2. feat: 支持在 `Rules > Settings > Back rules first` 调整规则的优先顺序，默认从上到下，其中Default里面的规则优先级最低，这个设置只对在Rules配置的规则生效，对reqScript和插件设置的规则不生效
 
 ### v1.12.0
 1. feat: 删除协议 `exports://` 和 `exportsUrl://`，请用更灵活方便的插件获取：[插件开发](http://wproxy.org/whistle/plugins.html)
