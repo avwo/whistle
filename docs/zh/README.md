@@ -58,6 +58,7 @@ whistle的所有操作都可以通过类似如下配置方式实现：
 # 帮助文档
 
 1. [安装启动](install.md)
+* [命令行操作](cli.md)
 * [手动更新](update.md)
 * [快速上手](quickstart.md)
 * [配置方式](mode.md)
