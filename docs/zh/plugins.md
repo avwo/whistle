@@ -77,7 +77,12 @@ www.test.com/cgi-bin whistle.your-plugin-name://xxx
 1. `_rules.txt`：whistle规则，相当于 `rulesServer` 返回的规则
 2. `_values.txt`：json对象，相当于 `rulesServer` 返回的Values
 
-为了方便各个server直接的通讯及初始化插件配置，可以在插件根目录创建一个 `initial.js` 的文件，插件首先加载该文件，另外还可以通过插件直接获取抓包数据等，具体插件API及如何开发插件参见：[插件开发Demo]](https://github.com/whistle-plugins/demos)
+为了方便各个server直接的通讯及初始化插件配置，可以在插件根目录创建一个 `initial.js` 的文件，插件首先加载该文件，另外还可以通过插件直接获取抓包数据等，具体插件API及如何开发插件参见：[插件开发Demo](https://github.com/whistle-plugins)
+
+> 完整API先看下源码：
+> 1. [req.originalReq&req.originalRes](https://github.com/avwo/whistle/blob/master/lib/plugins/load-plugin.js#L46)
+> 2. [getReqSessions&getSessions&getFrames](https://github.com/avwo/whistle/blob/master/lib/plugins/load-plugin.js#L258)
+> 3. [getReqSessions&unsafe_getSessions&unsafe_getFrames](https://github.com/avwo/whistle/blob/master/lib/plugins/load-plugin.js#L269)
 
 
 更多例子参考：
