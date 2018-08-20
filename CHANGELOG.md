@@ -1,3 +1,7 @@
+### v1.12.x
+1. style: Composer失败时会弹框提醒
+2. feat: 支持在 `Rules > Settings > ` 调整规则的优先顺序，默认从上到下，其中Default里面的规则优先级最低
+
 ### v1.12.0
 1. feat: 删除协议 `exports://` 和 `exportsUrl://`，请用更灵活方便的插件获取：[插件开发](http://wproxy.org/whistle/plugins.html)
 2. feat: 支持插件里面获取WebSocket和socket请求的帧数据，详见：[插件开发](http://wproxy.org/whistle/plugins.html)
