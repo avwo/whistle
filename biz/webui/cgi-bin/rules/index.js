@@ -12,6 +12,7 @@ module.exports = function get() {
     theme: properties.get('theme'),
     syncWithSysHosts: properties.get('syncWithSysHosts'),
     allowMultipleChoice: properties.get('allowMultipleChoice'),
+    backRulesFirst: properties.get('backRulesFirst'),
     list: rules.list()
   };
 };

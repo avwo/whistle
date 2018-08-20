@@ -200,6 +200,7 @@ var Index = React.createClass({
     var state = {
       replayCount: 1,
       allowMultipleChoice: modal.rules.allowMultipleChoice,
+      backRulesFirst: modal.rules.backRulesFirst,
       syncWithSysHosts: modal.rules.syncWithSysHosts,
       networkMode: modal.server.networkMode,
       multiEnv: modal.server.multiEnv,
