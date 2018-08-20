@@ -231,7 +231,14 @@ exports.rules = createCgi({
   rename: 'cgi-bin/rules/rename',
   select: 'cgi-bin/rules/select',
   unselect: 'cgi-bin/rules/unselect',
-  allowMultipleChoice: 'cgi-bin/rules/allow-multiple-choice',
+  allowMultipleChoice: {
+    mode: 'ignore',
+    url: 'cgi-bin/rules/allow-multiple-choice'
+  },
+  enableBackRulesFirst: {
+    mode: 'ignore',
+    url: 'cgi-bin/rules/enable-back-rules-first'
+  },
   syncWithSysHosts: 'cgi-bin/rules/sync-with-sys-hosts',
   setSysHosts: 'cgi-bin/rules/set-sys-hosts',
   getSysHosts: 'cgi-bin/rules/get-sys-hosts'

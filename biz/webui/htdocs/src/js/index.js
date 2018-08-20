@@ -2218,10 +2218,29 @@ var Index = React.createClass({
     });
   },
   allowMultipleChoice: function(e) {
+    var self = this;
     var checked = e.target.checked;
-    dataCenter.rules.allowMultipleChoice({allowMultipleChoice: checked ? 1 : 0});
-    this.setState({
-      allowMultipleChoice: checked
+    dataCenter.rules.allowMultipleChoice({allowMultipleChoice: checked ? 1 : 0}, function(data, xhr) {
+      if (data && data.ec === 0) {
+        self.setState({
+          allowMultipleChoice: checked
+        });
+      } else {
+        util.showSystemError(xhr);
+      }
+    });
+  },
+  enableBackRulesFirst: function(e) {
+    var self = this;
+    var checked = e.target.checked;
+    dataCenter.rules.enableBackRulesFirst({backRulesFirst: checked ? 1 : 0}, function(data, xhr) {
+      if (data && data.ec === 0) {
+        self.setState({
+          backRulesFirst: checked
+        });
+      } else {
+        util.showSystemError(xhr);
+      }
     });
   },
   syncWithSysHosts: function(e) {
@@ -2660,6 +2679,7 @@ var Index = React.createClass({
                     onThemeChange={this.onRulesThemeChange}
                     onFontSizeChange={this.onRulesFontSizeChange}
                     onLineNumberChange={this.onRulesLineNumberChange} />
+                    <p className="w-editor-settings-box"><label><input type="checkbox" checked={state.backRulesFirst} onChange={this.enableBackRulesFirst} /> Back rules first</label></p>
                   <p className="w-editor-settings-box"><label><input type="checkbox" checked={state.allowMultipleChoice} onChange={this.allowMultipleChoice} /> Use multiple rules</label></p>
                   <p className="w-editor-settings-box"><label><input type="checkbox" checked={state.disabledAllRules} onChange={this.disableAllRules} /> Disable all rules</label></p>
                   <p className="w-editor-settings-box"><label><input type="checkbox" checked={state.disabledAllPlugins} onChange={this.disableAllPlugins} /> Disable all plugins</label></p>
