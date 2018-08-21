@@ -23,6 +23,12 @@
   
 	**也支持取反操作，即 `!host1` 、 `m:!host1` 会保留请求url中不包含host1的请求。**
 
+	例如：
+	```
+	!https://clients4.google.com
+	h: !test
+	```
+	表示**不显示**url里面包含 `https://clients4.google.com` 或 头部里面包含 `test` 的请求 (忽略大小写)
 
 2. Network Columns：主要用于设置 Network 表头，或者拖拽重排等
 
