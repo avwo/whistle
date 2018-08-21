@@ -96,10 +96,16 @@ whistle的匹配模式(`pattern`)大体可以分成 **域名、路径、正则�
     protocol://domain/path?query
 
   完整通配符匹配：
+	```
+  ^*://*.test.**.com:*/**?a=*&**  opProtocol://opValue($0, $1, ..., $9)
+	```
 
-    ^*://*.test.**.com:*/**?a=*&**  opProtocol://opValue($0, $1, ..., $9)
+  其中：\$0表示整个请求url，$1...9分别表示从左到右的通配符串，也可以不指定协议：
 
-  其中：$0表示整个请求url，$1...9分别表示从左到右的通配符串
+	```
+	^*/cgi-* operatorURI # 相当于 /^\w+:\/\/([^./]*)\/cgi-(.*)/i  operatorURI
+	^**/cgi-* operatorURI # 相当于 /^\w+:\/\/([^/]*)\/cgi-(.*)/i  operatorURI
+	```
 
   - 如果通配符串在请求url的protocol里面，不管是一个还是多个 `*` 都只能匹配 `[a-z\d]*`
   - 如果通配符串在domain里面，一个 `*` 表示匹配 `[^/.]`，两个及以上的 `*` 表示匹配 `[^/]*`
@@ -108,35 +114,35 @@ whistle的匹配模式(`pattern`)大体可以分成 **域名、路径、正则�
 
 **通配域名匹配**：
 
-		# 匹配二级域名以 .com 结尾的所有url，如: test.com, abc.com，但不包含 *.xxx.com
-		*.com file:///User/xxx/test
-		//*.com file:///User/xxx/test
+	# 匹配二级域名以 .com 结尾的所有url，如: test.com, abc.com，但不包含 *.xxx.com
+	*.com file:///User/xxx/test
+	//*.com file:///User/xxx/test
 
-		# 匹配 test.com 的子域名，不包括 test.com
-		# 也不包括诸如 *.xxx.test.com 的四级域名，只能包含: a.test.com，www.test.com 等test.com的三级域名
-		*.test.com file:///User/xxx/test
-		//*.test.com file:///User/xxx/test
+	# 匹配 test.com 的子域名，不包括 test.com
+	# 也不包括诸如 *.xxx.test.com 的四级域名，只能包含: a.test.com，www.test.com 等test.com的三级域名
+	*.test.com file:///User/xxx/test
+	//*.test.com file:///User/xxx/test
 
-		# 如果要配置所有子域名生效，可以使用 **
-		**.com file:///User/xxx/test
-		**.test.com file:///User/xxx/test
+	# 如果要配置所有子域名生效，可以使用 **
+	**.com file:///User/xxx/test
+	**.test.com file:///User/xxx/test
 
-		# 限定协议，只对http生效
-		http://*.com file:///User/xxx/test
-		http://**.com file:///User/xxx/test
-		http://*.test.com file:///User/xxx/test
-		http://**.test.com file:///User/xxx/test
+	# 限定协议，只对http生效
+	http://*.com file:///User/xxx/test
+	http://**.com file:///User/xxx/test
+	http://*.test.com file:///User/xxx/test
+	http://**.test.com file:///User/xxx/test
 
-		# 路径
-		*.com/abc/efg file:///User/xxx/test
-		**.com/abc/efg file:///User/xxx/test
-		*.test.com/abc/efg file:///User/xxx/test
-		**.test.com/abc/efg file:///User/xxx/test
+	# 路径
+	*.com/abc/efg file:///User/xxx/test
+	**.com/abc/efg file:///User/xxx/test
+	*.test.com/abc/efg file:///User/xxx/test
+	**.test.com/abc/efg file:///User/xxx/test
 
-		http://*.com/abc/efg file:///User/xxx/test
-		http://**.com/abc/efg file:///User/xxx/test
-		http://*.test.com/abc/efg file:///User/xxx/test
-		http://**.test.com/abc/efg file:///User/xxx/test
+	http://*.com/abc/efg file:///User/xxx/test
+	http://**.com/abc/efg file:///User/xxx/test
+	http://*.test.com/abc/efg file:///User/xxx/test
+	http://**.test.com/abc/efg file:///User/xxx/test
 
 **通配路径匹配**：
 
