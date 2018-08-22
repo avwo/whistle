@@ -748,7 +748,7 @@ var Index = React.createClass({
       if (compareSelectedNames(selectedNames, newSelectedNames)) {
         return;
       }
-      self.reselectRules(data);
+      self.reselectRules(data, true);
       self.setState({});
     });
     dataCenter.on('serverInfo', function(data) {
@@ -1923,12 +1923,12 @@ var Index = React.createClass({
     });
     return false;
   },
-  reselectRules: function(data) {
+  reselectRules: function(data, autoUpdate) {
     var self = this;
     self.state.rules.clearAllSelected();
-    self.setSelected(self.state.rules, 'Default', !data.defaultRulesIsDisabled);
+    self.setSelected(self.state.rules, 'Default', !data.defaultRulesIsDisabled, autoUpdate);
     data.list.forEach(function(name) {
-      self.setSelected(self.state.rules, name);
+      self.setSelected(self.state.rules, name, true, autoUpdate);
     });
   },
   saveValues: function(item) {
@@ -1947,9 +1947,11 @@ var Index = React.createClass({
     });
     return false;
   },
-  setSelected: function(modal, name, selected) {
+  setSelected: function(modal, name, selected, autoUpdate) {
     if (modal.setSelected(name, selected)) {
-      modal.setChanged(name, false);
+      if (!autoUpdate) {
+        modal.setChanged(name, false);
+      }
       this.setState({
         curSelectedName: name
       });
