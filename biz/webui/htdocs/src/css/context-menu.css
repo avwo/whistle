@@ -42,7 +42,7 @@
   cursor: default;
 }
 .w-ctx-menu-item:hover {
-  background: #f2f2f2;
+  background: #f1f3f4;
 }
 .w-ctx-menu-item.item-disabled .w-ctx-menu-item-tt {
   color: #999;
