@@ -80,13 +80,13 @@ www.test.com/cgi-bin whistle.your-plugin-name://xxx
 为了方便各个server直接的通讯及初始化插件配置，可以在插件根目录创建一个 `initial.js` 的文件，插件首先加载该文件，另外还可以通过插件直接获取抓包数据等，具体插件API及如何开发插件参见：[插件开发Demo](https://github.com/whistle-plugins)
 
 #### 调试插件
-1. 开启whistle的调试模式，这样可以在控制台看到插件console输出的日志及错误：
+1. 开启whistle的调试模式：
     ```
     w2 stop
     w2 run
     ```
+    > 这样可以在控制台看到插件console输出的日志及错误
 2. 修改插件代码后，需要触发插件项目的 `package.json` 修改才会重新加载该插件，比如添加或删除一个空格。
-
 3. 完整API先看下源码：
   - [req.originalReq & req.originalRes](https://github.com/avwo/whistle/blob/master/lib/plugins/load-plugin.js#L46)
   - [getReqSessions & getSessions & getFrames](https://github.com/avwo/whistle/blob/master/lib/plugins/load-plugin.js#L258)
