@@ -154,12 +154,18 @@ function changePageName(name) {
 
 function compareSelectedNames(src, target) {
   var srcLen = src.length;
-  if (srcLen !== target.length) {
-    return false;
-  }
-  for (var i = 0; i < srcLen; i++) {
+  var i;
+  for (i = 0; i < srcLen; i++) {
     if ($.inArray(src[i], target) === -1) {
       return false;
+    }
+  }
+  var targetLen = target.length;
+  if (srcLen !== targetLen) {
+    for (i = 0; i < targetLen; i++) {
+      if ($.inArray(target[i], src) === -1) {
+        return false;
+      }
     }
   }
   return true;
