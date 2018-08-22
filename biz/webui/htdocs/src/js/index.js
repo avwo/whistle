@@ -741,7 +741,7 @@ var Index = React.createClass({
     dataCenter.on('rules', function(data) {
       var modal = self.state.rules;
       var newSelectedNames = data.list;
-      if (!data.defaultRulesIsDisabled) {
+      if (!data.defaultRulesIsDisabled && newSelectedNames.indexOf('Default') === -1) {
         newSelectedNames.unshift('Default');
       }
       var selectedNames = modal.getSelectedNames();
