@@ -1,6 +1,7 @@
 ### v1.12.2
 1. fix: 选中状态自动更新可能会自动切换Changed状态
 2. style: 微调背景色，保持与 `Chrome 69+` 主色调一致
+3. refactor: `^/cgi-` 等价于 `^**/cgi-`
 
 ### v1.12.1
 1. style: Composer失败时会弹框提醒
