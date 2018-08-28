@@ -103,6 +103,7 @@ w2 restart
 
 > whistle有新版时，会自动推送提示升级，建议大家及时更新新版本。
 
+![whistle webui](https://raw.githubusercontent.com/avwo/whistleui/master/assets/whistle.gif)
 
 # 快速上手
 
