@@ -11,6 +11,8 @@ $ npm install -g whistle
 $ npm install -g whistle --registry=https://registry.npm.taobao.org
 ```
 
+> 如果更新过程中出现某些文件无法删除的问题导致更新失败，可以手动删除对应文件或目录再安装。
+
 更新成功后，重启 `whistle` ：
 
 ```sh

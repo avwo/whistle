@@ -54,3 +54,5 @@
   [具体可以看这里](http://www.neglectedpotential.com/2017/04/trusting-custom-root-certificates-on-ios-10-3/)
 
   <img src="img/ios10.3_ca.PNG" width="320">
+
+15. [更新whistle](./update.html)时出现失败或更新后 `w2 -V` 指向老的版本，可以参考：[更新文档](./update.html)
