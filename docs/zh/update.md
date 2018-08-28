@@ -16,4 +16,4 @@ $ npm install -g whistle --registry=https://registry.npm.taobao.org
 ```sh
 $ w2 restart
 ```
-> 重启后看下命令行输出的版本是不是当前安装的版本，如果不是可能是更新了Node导致PATH路径更改，`which w2`(windows可以用git bash查看)路径，把该路径的 `w2` 文件删除
+> 重启后看下命令行输出的版本是不是当前安装的版本，如果不是可能是更新了Node导致PATH路径更改，`which w2`(windows可以用git bash查看)路径，把该路径的 `w2` 文件删除，如果删除后找不到命令 `w2`，可以手动配下新PATH或者重新安装Node。
