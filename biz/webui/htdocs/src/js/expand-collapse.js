@@ -1,7 +1,9 @@
 var React = require('react');
+var util = require('./util');
 
 var MIN_LENGTH = 1024 * 2;
 var EXPAND_LENGTH = 1024 * 32;
+var MAX_LENGTH = EXPAND_LENGTH * 3;
 
 var ExpandCollapse = React.createClass({
   getInitialState: function() {
@@ -13,11 +15,14 @@ var ExpandCollapse = React.createClass({
       this.state.expandLength = MIN_LENGTH;
     }
   },
+  onCollapse: function() {
+    this.setState({ expandLength: MIN_LENGTH });
+  },
   onExpand: function() {
-    var text = this.props.text;
-    var len = text && text.length || 0;
-    var expLen = this.state.expandLength;
-    this.setState({ expandLength: expLen >= len ? MIN_LENGTH : expLen + EXPAND_LENGTH });
+    this.setState({ expandLength: this.state.expandLength + EXPAND_LENGTH });
+  },
+  viewAll: function() {
+    util.openEditor(this.props.text);
   },
   render: function() {
     var text = this.props.text;
@@ -27,12 +32,26 @@ var ExpandCollapse = React.createClass({
     }
     var expandLength = this.state.expandLength;
     var isCollapse = expandLength >= len;
+    var viewAll = !isCollapse && expandLength > MAX_LENGTH;
     return (
       <span style={this.wStyle}>
         {isCollapse ? text : text.substring(0, expandLength) + '...'}
-        <button onClick={this.onExpand} className="w-expand-collapse">
-          {isCollapse ? 'Collapse' : 'Expand'}
-        </button>
+        {
+          viewAll ? (
+            <button onClick={this.viewAll} className="w-expand-collapse">
+              ViewAll
+            </button>
+          ) : (<button onClick={this.onExpand} className="w-expand-collapse">
+            Expand
+          </button>)
+        }
+        {
+          expandLength > MIN_LENGTH ? (
+            <button onClick={this.onCollapse} className="w-expand-collapse">
+              Collapse
+            </button>
+          ) : undefined
+        }
       </span>
     );
   }
