@@ -41,7 +41,7 @@ var ExpandCollapse = React.createClass({
             <button onClick={this.viewAll} className="w-expand-collapse">
               ViewAll
             </button>
-          ) : (<button onClick={this.onExpand} className="w-expand-collapse">
+          ) : (isCollapse ? undefined : <button onClick={this.onExpand} className="w-expand-collapse">
             Expand
           </button>)
         }
