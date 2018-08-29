@@ -3,7 +3,7 @@ require('../css/log.css');
 var $ = require('jquery');
 var React = require('react');
 var ReactDOM = require('react-dom');
-
+var ExpandCollapse = require('./expand-collapse');
 var util = require('./util');
 var dataCenter = require('./data-center');
 var FilterInput = require('./filter-input');
@@ -168,7 +168,7 @@ var ServerLog = React.createClass({
               return (
                 <li key={log.id} title={log.level.toUpperCase()} className={'w-' + log.level + hide}>
                   <pre>
-                    {text}
+                    {text && text.length >= 2100 ? <ExpandCollapse text={text} /> : text}
                   </pre>
                 </li>
               );

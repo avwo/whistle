@@ -26,6 +26,13 @@ textarea {resize: none; display: block; font-size: 12px;}
 .orient-vertical-box>.fill {height: 0;} /**不加这个滚动会有问题**/
 .table {table-layout: fixed; margin: 0!important;}
 .table .w-empty {text-align: center; font-style: italic; color: #ccc;}
+.w-expand-collapse {
+  margin-left: 5px;
+  height: 20px;
+  line-height: 16px;
+  font-size: 12px;
+  color: #000;
+}
 
 .modal-dialog .modal-body, .modal-dialog .modal-footer {padding: 10px;}
 .modal-dialog .btn {padding: 5px 10px;}

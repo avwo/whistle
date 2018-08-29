@@ -5,6 +5,7 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 
 var JSONTree = require('./components/react-json-tree')['default'];
+var ExpandCollapse = require('./expand-collapse');
 var util = require('./util');
 var dataCenter = require('./data-center');
 var FilterInput = require('./filter-input');
@@ -26,16 +27,16 @@ function parseLog(log) {
     });
     log.view = data.map(function(data) {
       if (typeof data === 'string' && data !== 'undefined') {
-        return <span>{hasNonStr ? '"' + data + '"' : data}</span>;
+        return <ExpandCollapse text={hasNonStr ? '"' + data + '"' : data} />;
       }
       if (!data || typeof data !== 'object') {
-        return <span style={{color: 'rgb(203, 75, 22)'}}>{data + ''}</span>;
+        return <ExpandCollapse wStyle={{color: 'rgb(203, 75, 22)'}} text={data + ''} />;
       }
       return <JSONTree data={data} />;
     });
     return log.view;
   } catch(e) {}
-  return log.text;
+  return <ExpandCollapse text={log.text} />;
 }
 
 var Console = React.createClass({
