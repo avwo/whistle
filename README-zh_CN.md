@@ -200,6 +200,7 @@ w2 restart
 
 # 帮助文档
 1. [安装启动](https://avwo.github.io/whistle/install.html)
+2. [命令行操作](https://avwo.github.io/whistle/cli.html)
 2. [手动更新](https://avwo.github.io/whistle/update.html)
 3. [快速上手](https://avwo.github.io/whistle/quickstart.html)
 4. [配置方式](https://avwo.github.io/whistle/mode.html)

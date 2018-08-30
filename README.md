@@ -319,6 +319,7 @@ Open [Rules](http://local.whistlejs.com/) tab in whistle, and create a group nam
 
 # Documentation
 1. [Install and start](https://avwo.github.io/whistle/install.html)
+2. [CLI operation](https://avwo.github.io/whistle/cli.html)
 2. [How to update](https://avwo.github.io/whistle/update.html)
 3. [Quickly start](https://avwo.github.io/whistle/quickstart.html)
 4. [Configuration mode](https://avwo.github.io/whistle/mode.html)
