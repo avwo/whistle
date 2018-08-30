@@ -96,7 +96,7 @@ CodeMirror.defineMode('rules', function() {
   }
 
   function isProxy(str) {
-    return /^x?(?:proxy|http-proxy|http2https-proxy|https2http-proxy|internal-proxy):\/\//.test(str);
+    return /^x?(?:proxy|https?-proxy|http2https-proxy|https2http-proxy|internal-proxy):\/\//.test(str);
   }
 
   function isSocks(str) {
