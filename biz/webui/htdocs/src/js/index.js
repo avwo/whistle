@@ -302,7 +302,8 @@ var Index = React.createClass({
         });
       });
     }
-
+    var rulesModal = new ListModal(rulesList, rulesData);
+    var valuesModal = new ListModal(valuesList, valuesData);
     state.rulesTheme = rulesTheme;
     state.valuesTheme = valuesTheme;
     state.rulesFontSize = rulesFontSize;
@@ -314,11 +315,19 @@ var Index = React.createClass({
     state.disabledAllRules = modal.disabledAllRules;
     state.disabledAllPlugins = modal.disabledAllPlugins;
     state.interceptHttpsConnects = modal.interceptHttpsConnects;
-    state.rules = new ListModal(rulesList, rulesData);
+    state.rules = rulesModal;
     state.rulesOptions = rulesOptions;
     state.pluginsOptions = this.createPluginsOptions(modal.plugins);
-    dataCenter.valuesModal = state.values = new ListModal(valuesList, valuesData);
+    dataCenter.valuesModal = state.values = valuesModal;
     state.valuesOptions = valuesOptions;
+
+    if (rulesModal.exists(dataCenter.activeRulesName)) {
+      this.setRulesActive(dataCenter.activeRulesName, rulesModal);
+    }
+    if (valuesModal.exists(dataCenter.activeValuesName)) {
+      this.setRulesActive(dataCenter.activeValuesName, valuesModal);
+    }
+
     state.networkOptions = [
       {
         name: 'Remove All Sessions',
@@ -2056,13 +2065,15 @@ var Index = React.createClass({
       }
     }
   },
-  setRulesActive: function(name) {
+  setRulesActive: function(name, modal) {
+    modal = modal || this.state.rules;
     storage.set('activeRules', name);
-    this.state.rules.setActive(name);
+    modal.setActive(name);
   },
-  setValuesActive: function(name) {
+  setValuesActive: function(name, modal) {
+    modal = modal || this.state.values;
     storage.set('activeValues', name);
-    this.state.values.setActive(name);
+    modal.setActive(name);
   },
   showRulesSettings: function() {
     $(ReactDOM.findDOMNode(this.refs.rulesSettingsDialog)).modal('show');
