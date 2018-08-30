@@ -1,5 +1,6 @@
 ### v1.12.3
 1. perf: 优化显示大文本的性能
+2. feat: 添加[https-proxy](http://wproxy.org/whistle/rules/https-proxy.html)协议，支持设置请求转发到上游https代理服务器
 
 ### v1.12.2
 1. fix: 选中状态自动更新可能会自动切换Changed状态
