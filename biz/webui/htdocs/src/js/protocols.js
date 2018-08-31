@@ -3,7 +3,7 @@ var PROTOCOLS = ['host', 'xhost', 'rule', 'weinre', 'log', 'proxy', 'xproxy', 'h
                 'xhttp-proxy', 'https-proxy', 'xhttps-proxy',
                 'socks', 'xsocks', 'pac', 'filter', 'ignore', 'enable', 'disable', 'delete',
                  'plugin', 'dispatch', 'urlParams', 'urlReplace', 'method', 'statusCode',
-                 'replaceStatus', 'hostname', 'referer', 'accept', 'auth', 'etag', 'ua',
+                 'replaceStatus', 'referer', 'accept', 'auth', 'etag', 'ua',
                   'cache', 'redirect', 'location', 'attachment', 'forwardedFor', 'responseFor',
                   'reqMerge', 'resMerge',
                   'reqScript', 'resScript', 'reqDelay', 'resDelay', 'reqSpeed', 'resSpeed',

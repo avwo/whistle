@@ -26,7 +26,7 @@ CodeMirror.defineMode('rules', function() {
   }
 
   function isReq(str) {
-    return /^(?:req|hostname|reqHost|accept|etag|referer|auth|ua|forwardedFor|reqCookies|reqDelay|reqSpeed|reqCors|reqHeaders|method|reqType|reqCharset|reqBody|reqPrepend|reqAppend|reqReplace|reqWrite|reqWriteRaw):\/\//.test(str);
+    return /^(?:req|accept|etag|referer|auth|ua|forwardedFor|reqCookies|reqDelay|reqSpeed|reqCors|reqHeaders|method|reqType|reqCharset|reqBody|reqPrepend|reqAppend|reqReplace|reqWrite|reqWriteRaw):\/\//.test(str);
   }
 
   function isRes(str) {
