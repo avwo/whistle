@@ -5,6 +5,7 @@
 	- [hostname](http://wproxy.org/whistle/rules/hostname.html)
 	- [etag](http://wproxy.org/whistle/rules/etag.html)
 	- [accept](http://wproxy.org/whistle/rules/accept.html)
+	- [location](http://wproxy.org/whistle/rules/location.html)
 	- [req](http://wproxy.org/whistle/rules/req.html)
 	- [res](http://wproxy.org/whistle/rules/res.html)
 
