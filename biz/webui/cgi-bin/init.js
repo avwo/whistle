@@ -27,7 +27,7 @@ module.exports = function(req, res) {
     server: util.getServerInfo(req),
     rules: getRules(),
     values: getValues(),
-    interceptHttpsConnects: properties.get('interceptHttpsConnects'),
+    interceptHttpsConnects: !config.multiEnv && properties.get('interceptHttpsConnects'),
     plugins: pluginMgr.getPlugins(),
     disabledAllRules: properties.get('disabledAllRules'),
     disabledPlugins: properties.get('disabledPlugins') || {},

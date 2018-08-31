@@ -32,7 +32,7 @@ module.exports = function(req, res) {
     allowMultipleChoice: properties.get('allowMultipleChoice'),
     disabledAllPlugins: properties.get('disabledAllPlugins'),
     disabledAllRules: properties.get('disabledAllRules'),
-    interceptHttpsConnects: properties.get('interceptHttpsConnects'),
+    interceptHttpsConnects: !config.multiEnv && properties.get('interceptHttpsConnects'),
     defaultRulesIsDisabled: rules.defaultRulesIsDisabled(),
     list: rules.getSelectedList(),
     data: proxy.getData(data, clientIp)

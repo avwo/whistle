@@ -203,16 +203,18 @@ var Index = React.createClass({
     var modal = this.props.modal;
     var rules = modal.rules;
     var values = modal.values;
+    var networkMode = !!modal.server.networkMode;
+    var multiEnv = !!modal.server.multiEnv;
     var state = {
       replayCount: 1,
       allowMultipleChoice: modal.rules.allowMultipleChoice,
       backRulesFirst: modal.rules.backRulesFirst,
       syncWithSysHosts: modal.rules.syncWithSysHosts,
-      networkMode: modal.server.networkMode,
+      networkMode: networkMode,
       multiEnv: modal.server.multiEnv,
       isWin: modal.server.isWin
     };
-    var pageName = state.networkMode ? 'network' : getPageName();
+    var pageName = networkMode ? 'network' : getPageName();
     if (!pageName || pageName.indexOf('rules') != -1) {
       state.hasRules = true;
       state.name = 'rules';
@@ -314,7 +316,7 @@ var Index = React.createClass({
     state.disabledPlugins = modal.disabledPlugins;
     state.disabledAllRules = modal.disabledAllRules;
     state.disabledAllPlugins = modal.disabledAllPlugins;
-    state.interceptHttpsConnects = modal.interceptHttpsConnects;
+    state.interceptHttpsConnects = !multiEnv && modal.interceptHttpsConnects;
     state.rules = rulesModal;
     state.rulesOptions = rulesOptions;
     state.pluginsOptions = this.createPluginsOptions(modal.plugins);
@@ -2446,6 +2448,7 @@ var Index = React.createClass({
   render: function() {
     var state = this.state;
     var networkMode = state.networkMode;
+    var multiEnv = state.multiEnv;
     var name = networkMode ? 'network' : state.name;
     var isNetwork = name === undefined || name == 'network';
     var isRules = name == 'rules';
@@ -2744,7 +2747,11 @@ var Index = React.createClass({
                 </div>
                 <a title="http://rootca.pro/" href="cgi-bin/rootca" target="downloadTargetFrame"><img src="img/rootca.png" /></a>
                 <div className="w-https-settings">
-                  <p><label><input checked={state.interceptHttpsConnects} onChange={this.interceptHttpsConnects} type="checkbox" /> Capture HTTPS CONNECTs</label></p>
+                  <p><label title={multiEnv ? 'Use `pattern enable://capture` in rules to replace global configuration' : undefined}><input
+                    disabled={multiEnv}
+                    checked={state.interceptHttpsConnects}
+                    onChange={this.interceptHttpsConnects}
+                    type="checkbox" /> Capture HTTPS CONNECTs</label></p>
                 </div>
               </div>
               <div className="modal-footer">
