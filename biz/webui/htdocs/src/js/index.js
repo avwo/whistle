@@ -2843,7 +2843,7 @@ var Index = React.createClass({
                 <p className="w-show-update-tips">whistle has important updates, it is recommended that you update to the latest version.</p>
                 <p>Current version: {state.version}</p>
                 <p>The latest stable version: {state.latestVersion}</p>
-                <p>View change: <a title="Change log" href={'https://github.com/avwo/whistle/blob/master/CHANGELOG.md#v' + (state.latestVersion || '-').replace(/\./g, '')} target="_blank">CHANGELOG.md</a></p>
+                <p>View change: <a title="Change log" href="https://github.com/avwo/whistle/blob/master/CHANGELOG.md" target="_blank">CHANGELOG.md</a></p>
               </div>
               <div className="modal-footer">
                 <button type="button" className="btn btn-default" onClick={this.donotShowAgain} data-dismiss="modal">Don't show again</button>
