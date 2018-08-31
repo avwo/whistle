@@ -1,30 +1,34 @@
 var events = require('./events');
-var PROTOCOLS = ['host', 'xhost', 'rule', 'weinre', 'log', 'proxy', 'xproxy', 'http-proxy',
-                'xhttp-proxy', 'https-proxy', 'xhttps-proxy',
-                'socks', 'xsocks', 'pac', 'filter', 'ignore', 'enable', 'disable', 'delete',
-                 'plugin', 'dispatch', 'urlParams', 'urlReplace', 'method', 'statusCode',
-                 'replaceStatus', 'referer', 'auth', 'ua', 'cache', 'redirect',
-                 'attachment', 'forwardedFor', 'responseFor', 'reqMerge', 'resMerge',
-                  'reqScript', 'resScript', 'reqDelay', 'resDelay', 'reqSpeed', 'resSpeed',
-                  'reqHeaders', 'resHeaders', 'reqType', 'resType', 'reqCharset', 'resCharset',
-                  'reqCookies', 'resCookies', 'reqCors', 'resCors', 'reqPrepend', 'resPrepend',
-                  'reqBody', 'resBody', 'reqAppend', 'resAppend', 'reqReplace', 'resReplace',
-                  'htmlPrepend',  'htmlBody', 'htmlAppend', 'cssPrepend', 'cssBody', 'cssAppend', 
-                  'jsPrepend', 'jsBody', 'jsAppend', 'reqWrite',  'resWrite',
-                  'reqWriteRaw', 'resWriteRaw'];
+var PROTOCOLS = ['rule', 'plugin', 'host', 'xhost', 'proxy', 'xproxy', 'http-proxy',
+  'xhttp-proxy', 'https-proxy', 'xhttps-proxy', 'socks', 'xsocks',
+  'pac', 'weinre', 'log', 'filter', 'ignore', 'enable', 'disable', 'delete',
+  'dispatch', 'urlParams', 'urlReplace', 'method', 'statusCode',
+  'replaceStatus', 'referer', 'auth', 'ua', 'cache', 'redirect',
+  'attachment', 'forwardedFor', 'responseFor', 'reqMerge', 'resMerge',
+  'reqScript', 'resScript', 'reqDelay', 'resDelay', 'reqSpeed', 'resSpeed',
+  'reqHeaders', 'resHeaders', 'reqType', 'resType', 'reqCharset',
+  'resCharset',
+  'reqCookies', 'resCookies', 'reqCors', 'resCors', 'reqPrepend',
+  'resPrepend',
+  'reqBody', 'resBody', 'reqAppend', 'resAppend', 'reqReplace', 'resReplace',
+  'htmlPrepend', 'htmlBody', 'htmlAppend', 'cssPrepend', 'cssBody',
+  'cssAppend',
+  'jsPrepend', 'jsBody', 'jsAppend', 'reqWrite', 'resWrite',
+  'reqWriteRaw', 'resWriteRaw'
+];
 
 var innerRules = ['file', 'xfile', 'tpl', 'xtpl', 'rawfile', 'xrawfile'];
 var pluginRules = [];
 var forwardRules = innerRules.slice();
 var webProtocols = ['http', 'https', 'ws', 'wss', 'tunnel'];
-var allInnerRules = PROTOCOLS.slice(0, 2).concat(webProtocols).concat(innerRules).concat(PROTOCOLS.slice(3));
+var allInnerRules = webProtocols.concat(innerRules).concat(PROTOCOLS.slice(1));
 allInnerRules.splice(allInnerRules.indexOf('plugin'), 1);
-var allRules = allInnerRules = allInnerRules.map(function(name) {
+var allRules = allInnerRules = allInnerRules.map(function (name) {
   return name + '://';
 });
 var plugins = {};
 
-exports.setPlugins = function(pluginsState) {
+exports.setPlugins = function (pluginsState) {
   var pluginsOptions = pluginsState.pluginsOptions;
   var disabledPlugins = pluginsState.disabledPlugins;
   plugins = {};
@@ -32,7 +36,7 @@ exports.setPlugins = function(pluginsState) {
   forwardRules = innerRules.slice();
   allRules = allInnerRules.slice();
   if (!pluginsState.disabledAllPlugins) {
-    pluginsOptions.forEach(function(plugin, i) {
+    pluginsOptions.forEach(function (plugin, i) {
       if (!i) {
         return;
       }
@@ -51,20 +55,20 @@ exports.setPlugins = function(pluginsState) {
 
 exports.PROTOCOLS = PROTOCOLS;
 
-exports.getForwardRules = function() {
+exports.getForwardRules = function () {
   return forwardRules;
 };
 
-exports.getPluginRules = function() {
+exports.getPluginRules = function () {
   return pluginRules;
 };
 
-exports.getAllRules = function() {
+exports.getAllRules = function () {
   return allRules;
 };
 
 var ROOT_HELP_URL = 'https://avwo.github.io/whistle/rules/';
-exports.getHelpUrl = function(rule) {
+exports.getHelpUrl = function (rule) {
   if (!rule || rule === 'rule') {
     return ROOT_HELP_URL;
   }
