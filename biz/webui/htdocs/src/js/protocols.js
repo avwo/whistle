@@ -9,8 +9,8 @@ var PROTOCOLS = ['host', 'xhost', 'rule', 'weinre', 'log', 'proxy', 'xproxy', 'h
                   'reqHeaders', 'resHeaders', 'reqType', 'resType', 'reqCharset', 'resCharset',
                   'reqCookies', 'resCookies', 'reqCors', 'resCors', 'reqPrepend', 'resPrepend',
                   'reqBody', 'resBody', 'reqAppend', 'resAppend', 'reqReplace', 'resReplace',
-                  'htmlPrepend', 'cssPrepend', 'jsPrepend', 'htmlBody', 'cssBody', 'jsBody',
-                  'htmlAppend', 'cssAppend', 'jsAppend', 'req', 'res', 'reqWrite',  'resWrite',
+                  'htmlPrepend',  'htmlBody', 'htmlAppend', 'cssPrepend', 'cssBody', 'cssAppend', 
+                  'jsPrepend', 'jsBody', 'jsAppend', 'reqWrite',  'resWrite',
                   'reqWriteRaw', 'resWriteRaw'];
 
 var innerRules = ['file', 'xfile', 'tpl', 'xtpl', 'rawfile', 'xrawfile'];
