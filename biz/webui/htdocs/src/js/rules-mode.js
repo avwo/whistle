@@ -91,10 +91,6 @@ CodeMirror.defineMode('rules', function() {
     return /^delete:\/\//.test(str);
   }
 
-  function isDispatch(str) {
-    return /^dispatch:\/\//.test(str);
-  }
-
   function isProxy(str) {
     return /^x?(?:proxy|https?-proxy|http2https-proxy|https2http-proxy|internal-proxy):\/\//.test(str);
   }
@@ -178,8 +174,6 @@ CodeMirror.defineMode('rules', function() {
             type = 'negative js-disable js-type';
           } else if (isDelete(str)) {
             type = 'negative js-delete js-type';
-          } else if (isDispatch(str)) {
-            type = 'variable-2 js-dispatch js-type';
           } else if (isProxy(str)) {
             type = 'variable-2 js-proxy js-type';
           } else if (isSocks(str)) {

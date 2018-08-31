@@ -2,6 +2,7 @@
 1. perf: 优化显示大文本的性能
 2. feat: 添加[https-proxy](http://wproxy.org/whistle/rules/https-proxy.html)协议，支持设置请求转发到上游https代理服务器
 3. feat: 为简化whistle的规则配置，该版本会删除以下使用比较少或配置比较复杂，且可以用其它方案替代的协议，点击链接可以查看替代方案：
+	- [dispatch](http://wproxy.org/whistle/rules/dispatch.html)
 	- [hostname](http://wproxy.org/whistle/rules/hostname.html)
 	- [etag](http://wproxy.org/whistle/rules/etag.html)
 	- [accept](http://wproxy.org/whistle/rules/accept.html)
