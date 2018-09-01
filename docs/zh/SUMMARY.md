@@ -48,7 +48,7 @@
   * [disable](rules/disable.md)
   * [delete](rules/delete.md)
   * [urlParams](rules/urlParams.md)
-  * [urlReplace](rules/urlReplace.md)
+  * [pathReplace](rules/pathReplace.md)
   * [method](rules/method.md)
   * [statusCode](rules/statusCode.md)
   * [replaceStatus](rules/replaceStatus.md)

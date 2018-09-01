@@ -125,6 +125,8 @@ var Overview = React.createClass({
             key = 'rulesFile';
           } else if (name === 'reqMerge') {
             key = 'params';
+          } else if (name === 'pathReplace') {
+            key = 'urlReplace';
           }
           var rule = rules[key];
           if (rule && rule.list) {

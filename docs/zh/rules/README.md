@@ -23,7 +23,7 @@
 7. [**disable** (禁用缓存、cookie等)](disable.html)
 8. [**delete** (删除指定的字段)](delete.html)
 11. [**urlParams** (修改请求url的参数)](urlParams.html)
-12. [**urlReplace** (通过正则或字符串替换请求url，类似str.replace)](urlReplace.html)
+12. [**pathReplace** (通过正则或字符串替换请求url，类似str.replace)](pathReplace.html)
 13. [**method** (修改请求方法)](method.html)
 14. [**statusCode** (直接响应)](statusCode.html)
 15. [**replaceStatus** (替换后台的响应状态码)](replaceStatus.html)

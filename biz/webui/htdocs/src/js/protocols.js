@@ -2,7 +2,7 @@ var events = require('./events');
 var PROTOCOLS = ['rule', 'plugin', 'host', 'xhost', 'proxy', 'xproxy', 'http-proxy',
   'xhttp-proxy', 'https-proxy', 'xhttps-proxy', 'socks', 'xsocks',
   'pac', 'weinre', 'log', 'filter', 'ignore', 'enable', 'disable', 'delete',
-  'urlParams', 'urlReplace', 'method', 'statusCode',
+  'urlParams', 'pathReplace', 'method', 'statusCode',
   'replaceStatus', 'referer', 'auth', 'ua', 'cache', 'redirect',
   'attachment', 'forwardedFor', 'responseFor', 'reqMerge', 'resMerge',
   'reqScript', 'resScript', 'reqDelay', 'resDelay', 'reqSpeed', 'resSpeed',
