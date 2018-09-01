@@ -18,7 +18,8 @@
 
 #### 修改响应内容
 whistle可以修改任意响应内容，同时也对一些特殊的响应类型提供了简便的配置方式：
-1. 响应类型为`json`或`html`、`js`，且内容为json或jsonp对象：[resMerge](./resMerge.html)
+1. 本地替换：[file](./rule/file.html)
+2. 响应类型为`json`或`html`、`js`，且内容为json或jsonp对象：[resMerge](./resMerge.html)
 2. 响应类型为文本：[resReplace](./resReplace.html)
 3. 替换html类型的内容：[htmlBody](./htmlBody.html)
 4. 在html类型的内容前面注入html：[htmlPrepend](./htmlPrepend.html)
