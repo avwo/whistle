@@ -2,8 +2,6 @@
 
 > 建议使用 `Node v6` 或以上版本，否则会存在性能问题，及在Chrome或APP上抓包HTTPS请求会有问题。
 
-> 如果出现HTTPS的问题([#44](https://github.com/avwo/whistle/issues/44))，升级Node到 `v6` 及以上版本，[更新whistle](https://avwo.github.io/whistle/update.html)到最新版本，通过 `w2 restart -A` (注意后面加 `-A`)启动生成新的更证书，再安装下根证书即可。
-
 > **在iOS上安装根证书时，需要先关闭`HTTPS拦截`，否则将显示安装失败。**
 
 用来下载根证书、隐藏`connect`类型的请求、开启HTTPS拦截功能。
@@ -11,6 +9,7 @@
 ![Https](../img/https.gif)
 
 ## 安装根证书
+> 证书按下面步骤安装后，如果还出现安全提醒，这个主要原因是之前你访问过该页面，导致长连接已建立，可以等段时间再访问、或重新打开浏览器，或重启下whistle： `w2 restart`
 
 如上图下载完根证书后点击rootCA.crt文件，弹出根证书安装对话框。
 
