@@ -1,3 +1,6 @@
+### v1.12.4
+1. fix: [proxy](http://wproxy.org/whistle/rules/proxy.html)设置的用户名和密码无法生效的问题
+
 ### v1.12.3
 1. perf: 优化显示大文本的性能
 2. feat: 添加[https-proxy](http://wproxy.org/whistle/rules/https-proxy.html)协议，支持设置请求转发到上游https代理服务器
