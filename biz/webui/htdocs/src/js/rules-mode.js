@@ -12,7 +12,8 @@ events.on('updatePlugins', function() {
 
 CodeMirror.defineMode('rules', function() {
   function isIP(str) {
-    return /^(?:(?:25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)\.){3}(?:25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)(?:\:\d+)?$/.test(str) || /^[:\da-f]*::[\da-f]+(?::\d+)?$/i.test(str);
+    return /^(?:(?:25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)\.){3}(?:25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)(?:\:\d+)?$/.test(str)
+      || /^[:\da-f]*:[\da-f]+$/i.test(str) || /^\[[:\da-f]*:[\da-f]+\](?::\d+)?$/i.test(str);
   }
   function isHost(str) {
     return /^x?hosts?:\/\//.test(str);
