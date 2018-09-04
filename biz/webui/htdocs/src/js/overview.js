@@ -18,7 +18,22 @@ var OVERVIEW_PROPS = ['url', 'realUrl', 'req.method', 'req.httpVersion', 'res.st
 var PROTOCOLS = require('./protocols').PROTOCOLS;
 var DEFAULT_OVERVIEW_MODAL = {};
 var DEFAULT_RULES_MODAL = {};
+var IPV6_RE = /^host:\/\/[:\da-f]+:[\da-f]+$/i;
 var PROXY_PROTOCOLS = ['socks', 'http-proxy', 'https-proxy'];
+
+function getRuleStr(rule) {
+  if (!rule) {
+    return;
+  }
+  var matcher = rule.matcher;
+  if (rule.port) {
+    if (IPV6_RE.test(matcher)) {
+      matcher = '[' + matcher + ']';
+    }
+    matcher = matcher + ':' + rule.port;
+  }
+  return rule.rawPattern + ' ' +  matcher;
+}
 
 OVERVIEW.forEach(function(name) {
   DEFAULT_OVERVIEW_MODAL[name] = '';
@@ -137,7 +152,7 @@ var Overview = React.createClass({
               return rule.raw;
             }).join('\n');
           } else {
-            rulesModal[name] = rule ? rule.rawPattern + ' ' + rule.matcher + (rule.port ? ':' + rule.port : '') : undefined;
+            rulesModal[name] = getRuleStr(rule);
             titleModal[name] = rule ? rule.raw : undefined;
           }
         });
