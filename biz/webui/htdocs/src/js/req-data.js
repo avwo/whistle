@@ -64,7 +64,7 @@ var contextMenuList = [
       { name: 'Unselected' }
     ]
   },
-  { name: 'Composer' },
+  { name: 'Compose' },
   { name: 'Replay' },
   { name: 'Upload' },
   { name: 'Export' },
@@ -326,7 +326,7 @@ var ReqData = React.createClass({
       events.trigger('activeItem', item);
       events.trigger('showTimeline');
       break;
-    case 'Composer':
+    case 'Compose':
       events.trigger('composer', item);
       break;
     case 'Replay':
