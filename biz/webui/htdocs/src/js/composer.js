@@ -42,7 +42,8 @@ var Composer = React.createClass({
     events.on('setComposer', function() {
       var activeItem = self.props.modal;
       activeItem && self.setState({
-        data: activeItem
+        data: activeItem,
+        result: activeItem
       }, function() {
         self.update(activeItem);
         self.onComposerChange();
@@ -220,7 +221,8 @@ var Composer = React.createClass({
         <div className="w-detail-inspectors-title w-composer-tabs">
           <button onClick={this.onTabChange} name="Raw" className={showRaw ? 'w-active' : undefined}>Raw</button>
           <button onClick={this.onTabChange} name="Pretty" className={showPretty ? 'w-active' : undefined}>Pretty</button>
-          <button onClick={this.onTabChange} name="Result"  className={showResult ? 'w-active' : undefined} disabled={!state.result}>Result</button>
+          <button title={state.result && state.result.url}
+            onClick={this.onTabChange} name="Result"  className={showResult ? 'w-active' : undefined} disabled={!state.result}>Result</button>
         </div>
         <Divider vertical="true" rightWidth="140">
           <div className="orient-vertical-box fill">
