@@ -29,7 +29,7 @@ var Inspector = React.createClass({
     return (
       <Divider vertical="true" className={'w-detail-inspectors' + (props.hide ? ' hide' : '')}>
         <div className="fill orient-vertical-box">
-          <div className="w-detail-inspectors-title">
+          <div className="w-detail-inspectors-title" title={modal && modal.url}>
             <span className="glyphicon glyphicon-arrow-right"></span>Request
           </div>
           <ReqDetail modal={modal} />
