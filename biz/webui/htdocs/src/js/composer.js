@@ -7,6 +7,7 @@ var util = require('./util');
 var events = require('./events');
 var storage = require('./storage');
 var Divider = require('./divider');
+var ResDetail = require('./res-detail');
 
 function removeDuplicateRules(rules) {
   rules = rules.join('\n').split(/\r\n|\r|\n/g);
@@ -31,6 +32,7 @@ var Composer = React.createClass({
       method: data.method,
       headers: data.headers,
       body: data.body,
+      tabName: 'Raw',
       rules: typeof rules === 'string' ? rules : ''
     };
   },
@@ -76,6 +78,16 @@ var Composer = React.createClass({
   onComposerChange: function() {
     clearTimeout(this.composerTimer);
     this.composerTimer = setTimeout(this.saveComposer, 1000);
+  },
+  clearResult: function() {
+    if (!this.state.result) {
+      return;
+    }
+    var tabName = this.state.tabName;
+    this.setState({
+      result: '',
+      tabName: tabName === 'Result' ? 'Raw' : tabName
+    });
   },
   execute: function(e) {
     if (e.target.nodeName === 'INPUT' && e.keyCode !== 13) {
@@ -139,6 +151,7 @@ var Composer = React.createClass({
       }
     });
     events.trigger('executeComposer');
+    this.clearResult();
   },
   selectAll: function(e) {
     e.target.select();
@@ -164,9 +177,22 @@ var Composer = React.createClass({
     }
 
   },
+  onTabChange: function(e) {
+    var tabName = e.target.name;
+    if (tabName === 'Pretty') {
+      this.state.initedPretty = true;
+    } else if (tabName === 'Result') {
+      this.state.initedResult = true;
+    }
+    this.setState({ tabName: tabName });
+  },
   render: function() {
     var state = this.state;
     var rules = state.rules;
+    var tabName = state.tabName;
+    var showRaw = tabName === 'Raw';
+    var showPretty = tabName === 'Pretty';
+    var showResult = tabName === 'Result';
     return (
       <div className={'fill orient-vertical-box w-detail-content w-detail-composer' + (util.getBoolean(this.props.hide) ? ' hide' : '')}>
         <div className="w-composer-url box">
@@ -191,11 +217,27 @@ var Composer = React.createClass({
                 <input defaultValue={state.url} onKeyUp={this.execute} onChange={this.onComposerChange} onKeyDown={this.onKeyDown} onFocus={this.selectAll} ref="url" type="text" maxLength="8192" placeholder="url" className="fill w-composer-input" />
           <button onClick={this.execute} className="btn btn-primary w-composer-execute">Go</button>
         </div>
+        <div className="w-detail-inspectors-title w-composer-tabs">
+          <button onClick={this.onTabChange} name="Raw" className={showRaw ? 'w-active' : undefined}>Raw</button>
+          <button onClick={this.onTabChange} name="Pretty" className={showPretty ? 'w-active' : undefined}>Pretty</button>
+          <button onClick={this.onTabChange} name="Result"  className={showResult ? 'w-active' : undefined} disabled={!state.result}>Result</button>
+        </div>
         <Divider vertical="true" rightWidth="140">
-          <Divider vertical="true">
-            <textarea defaultValue={state.headers} onChange={this.onComposerChange} onKeyDown={this.onKeyDown} ref="headers" className="fill orient-vertical-box w-composer-headers" placeholder="Input the headers"></textarea>
-            <textarea defaultValue={state.body} onChange={this.onComposerChange} onKeyDown={this.onKeyDown} ref="body" className="fill orient-vertical-box w-composer-body" placeholder="Input the body"></textarea>
-          </Divider>
+          <div className="orient-vertical-box fill">
+            <Divider hide={!showRaw} vertical="true">
+              <textarea defaultValue={state.headers} onChange={this.onComposerChange} onKeyDown={this.onKeyDown} ref="headers" className="fill orient-vertical-box w-composer-headers" placeholder="Input the headers"></textarea>
+              <textarea defaultValue={state.body} onChange={this.onComposerChange} onKeyDown={this.onKeyDown} ref="body" className="fill orient-vertical-box w-composer-body" placeholder="Input the body"></textarea>
+            </Divider>
+            {
+              state.initedPretty ? (
+                <Divider hide={!showPretty} vertical="true">
+                  <div>1</div>
+                  <div>2</div>
+                </Divider>
+              ) : undefined
+            }
+            {state.initedResult ? <ResDetail modal={state.result} hide={!showResult} /> : undefined}
+          </div>
           <div ref="rulesCon" className="orient-vertical-box fill">
             <div className="w-detail-inspectors-title">Rules</div>
             <textarea

@@ -22,11 +22,11 @@ var TABS = [{
   name: 'Frames',
   icon: 'menu-hamburger'
 }, {
-  name: 'Timeline',
-  icon: 'time'
-}, {
   name: 'Composer',
   icon: 'edit'
+}, {
+  name: 'Timeline',
+  icon: 'time'
 }, {
   name: 'Log',
   icon: 'file'
@@ -54,7 +54,7 @@ var ReqData = React.createClass({
     }).on('showFrames', function() {
       self.toggleTab(TABS[2]);
     }).on('showTimeline', function() {
-      self.toggleTab(TABS[3]);
+      self.toggleTab(TABS[4]);
     }).on('composer', function(e, item) {
       var modal = self.props.modal;
       self.showComposer(item || (modal && modal.getActive()));
@@ -66,7 +66,7 @@ var ReqData = React.createClass({
     if (item) {
       this.state.activeItem = item;
     }
-    this.toggleTab(TABS[4], function() {
+    this.toggleTab(TABS[3], function() {
       events.trigger('setComposer');
     });
   },
@@ -170,8 +170,8 @@ var ReqData = React.createClass({
         {this.state.initedOverview ? <Overview modal={overview} hide={name != TABS[0].name} /> : ''}
         {this.state.initedInspectors ? <Inspectors modal={activeItem} hide={name != TABS[1].name} /> : ''}
         {this.state.initedFrames ? <Frames data={activeItem} frames={frames} hide={name != TABS[2].name} /> : ''}
-        {this.state.initedTimeline ? <Timeline modal={modal} hide={name != TABS[3].name} /> : ''}
-        {this.state.initedComposer ? <Composer modal={this.state.activeItem} hide={name != TABS[4].name} /> : ''}
+        {this.state.initedTimeline ? <Timeline modal={modal} hide={name != TABS[4].name} /> : ''}
+        {this.state.initedComposer ? <Composer modal={this.state.activeItem} hide={name != TABS[3].name} /> : ''}
         {this.state.initedLog ? <Log hide={name != TABS[5].name} /> : ''}
       </div>
     );

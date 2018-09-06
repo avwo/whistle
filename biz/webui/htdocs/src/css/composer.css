@@ -5,3 +5,20 @@
 .w-composer-input {padding: 0 5px; display: block; border: 1px solid #ccc; margin-left: 2px;}
 .w-composer-method {display: block; width: 100px; margin: 0 2px; padding: 0;}
 .w-composer-execute {padding: 0 8px; line-height: 24px; margin-left: 4px;}
+.w-composer-tabs button {
+  outline: none;
+  border: none;
+  background: transparent;
+  line-height: 16px;
+  margin-right: 10px;
+}
+.w-composer-tabs button:hover {
+  color: #337ab7;
+}
+.w-composer-tabs button.w-active {
+  background: #ddd;
+}
+.w-composer-tabs button:disabled {
+  color: #aaa!important;
+  cursor: not-allowed;
+}
