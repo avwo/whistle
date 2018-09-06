@@ -1,3 +1,6 @@
+### v1.12.6
+1. style: 优化Composer，支持展示 `Pretty` 及 `Result`
+
 ### v1.12.5
 1. refactor: 支持 `delete` 请求传递请求body
 2. feat: 支持配置IPv6的host，如：`pattern [fe80::2c6a:87c9:2ceb:d047]:8099` 或 `pattern fe80::2c6a:87c9:2ceb:d047`
