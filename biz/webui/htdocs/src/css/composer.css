@@ -22,3 +22,6 @@
   color: #aaa!important;
   cursor: not-allowed;
 }
+.w-composer-tabs .w-properties-wrap pre {
+  max-height: 90px;
+}

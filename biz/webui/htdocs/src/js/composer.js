@@ -8,6 +8,7 @@ var events = require('./events');
 var storage = require('./storage');
 var Divider = require('./divider');
 var ResDetail = require('./res-detail');
+var Properties = require('./properties');
 
 function removeDuplicateRules(rules) {
   rules = rules.join('\n').split(/\r\n|\r|\n/g);
@@ -192,10 +193,12 @@ var Composer = React.createClass({
     var state = this.state;
     var rules = state.rules;
     var pending = state.pending;
+    var result = state.result || '';
     var tabName = state.tabName;
     var showRaw = tabName === 'Raw';
     var showPretty = tabName === 'Pretty';
     var showResult = tabName === 'Result';
+    var statusCode = result.res && result.res.statusCode;
     return (
       <div className={'fill orient-vertical-box w-detail-content w-detail-composer' + (util.getBoolean(this.props.hide) ? ' hide' : '')}>
         <div className="w-composer-url box">
@@ -223,8 +226,7 @@ var Composer = React.createClass({
         <div className="w-detail-inspectors-title w-composer-tabs">
           <button onClick={this.onTabChange} name="Raw" className={showRaw ? 'w-active' : undefined}>Raw</button>
           <button onClick={this.onTabChange} name="Pretty" className={showPretty ? 'w-active' : undefined}>Pretty</button>
-          <button title={state.result && state.result.url}
-            onClick={this.onTabChange} name="Result"  className={showResult ? 'w-active' : undefined}>Result</button>
+          <button onClick={this.onTabChange} name="Result"  className={showResult ? 'w-active' : undefined}>Result</button>
         </div>
         <Divider vertical="true" rightWidth="140">
           <div className="orient-vertical-box fill">
@@ -240,7 +242,11 @@ var Composer = React.createClass({
                 </Divider>
               ) : undefined
             }
-            {state.initedResult ? <ResDetail modal={state.result} hide={!showResult} /> : undefined}
+            {state.initedResult ? <Properties modal={{
+              url: result.url,
+              statusCode: statusCode == null ? '' : statusCode
+            }} /> : undefined}
+            {state.initedResult ? <ResDetail modal={result} hide={!showResult} /> : undefined}
           </div>
           <div ref="rulesCon" className="orient-vertical-box fill">
             <div className="w-detail-inspectors-title">Rules</div>
