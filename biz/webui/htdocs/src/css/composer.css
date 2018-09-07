@@ -10,7 +10,7 @@
   border: none;
   background: transparent;
   line-height: 16px;
-  margin-right: 10px;
+  margin-left: 10px;
 }
 .w-composer-tabs button:hover {
   color: #337ab7;

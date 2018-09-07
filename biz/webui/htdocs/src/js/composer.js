@@ -33,7 +33,7 @@ var Composer = React.createClass({
       method: data.method,
       headers: data.headers,
       body: data.body,
-      tabName: 'Raw',
+      tabName: 'Request',
       rules: typeof rules === 'string' ? rules : ''
     };
   },
@@ -41,6 +41,9 @@ var Composer = React.createClass({
     var self = this;
     self.update(self.props.modal);
     events.on('setComposer', function() {
+      if (self.state.pending) {
+        return;
+      }
       var activeItem = self.props.modal;
       activeItem && self.setState({
         data: activeItem,
@@ -149,8 +152,8 @@ var Composer = React.createClass({
         data.url = url;
         data.req = '';
         state.result = data;
-        state.tabName = 'Result';
-        state.initedResult = true;
+        state.tabName = 'Response';
+        state.initedResponse = true;
       }
       self.setState(state);
     });
@@ -183,11 +186,10 @@ var Composer = React.createClass({
   },
   onTabChange: function(e) {
     var tabName = e.target.name;
-    if (tabName === 'Pretty') {
-      this.state.initedPretty = true;
-    } else if (tabName === 'Result') {
-      this.state.initedResult = true;
+    if (tabName === this.state.tabName) {
+      return;
     }
+    this.state.initedResponse = true;
     this.setState({ tabName: tabName });
   },
   render: function() {
@@ -196,9 +198,8 @@ var Composer = React.createClass({
     var pending = state.pending;
     var result = state.result || '';
     var tabName = state.tabName;
-    var showRaw = tabName === 'Raw';
-    var showPretty = tabName === 'Pretty';
-    var showResult = tabName === 'Result';
+    var showRequest = tabName === 'Request';
+    var showResponse = tabName === 'Response';
     var statusCode = result ? (result.res && result.res.statusCode) : '';
     
     return (
@@ -226,29 +227,20 @@ var Composer = React.createClass({
           <button disabled={pending} onClick={this.execute} className="btn btn-primary w-composer-execute">Go</button>
         </div>
         <div className="w-detail-inspectors-title w-composer-tabs">
-          <button onClick={this.onTabChange} name="Raw" className={showRaw ? 'w-active' : undefined}>Raw</button>
-          <button onClick={this.onTabChange} name="Pretty" className={showPretty ? 'w-active' : undefined}>Pretty</button>
-          <button onClick={this.onTabChange} name="Result"  className={showResult ? 'w-active' : undefined}>Result</button>
+          <button onClick={this.onTabChange} name="Request" className={showRequest ? 'w-active' : undefined}>Request</button>
+          <button onClick={this.onTabChange} name="Response"  className={showResponse ? 'w-active' : undefined}>Response</button>
         </div>
         <Divider vertical="true" rightWidth="140">
           <div className="orient-vertical-box fill">
-            <Divider hide={!showRaw} vertical="true">
+            <Divider hide={!showRequest} vertical="true">
               <textarea disabled={pending} defaultValue={state.headers} onChange={this.onComposerChange} onKeyDown={this.onKeyDown} ref="headers" className="fill orient-vertical-box w-composer-headers" placeholder="Input the headers"></textarea>
               <textarea disabled={pending} defaultValue={state.body} onChange={this.onComposerChange} onKeyDown={this.onKeyDown} ref="body" className="fill orient-vertical-box w-composer-body" placeholder="Input the body"></textarea>
             </Divider>
-            {
-              state.initedPretty ? (
-                <Divider hide={!showPretty} vertical="true">
-                  <div>1</div>
-                  <div>2</div>
-                </Divider>
-              ) : undefined
-            }
-            {state.initedResult ? <Properties modal={{
+            {state.initedResponse ? <Properties modal={{
               url: result.url,
               statusCode: statusCode == null ? 'aborted' : statusCode
-            }}  hide={!showResult} /> : undefined}
-            {state.initedResult ? <ResDetail modal={result} hide={!showResult} /> : undefined}
+            }}  hide={!showResponse} /> : undefined}
+            {state.initedResponse ? <ResDetail modal={result} hide={!showResponse} /> : undefined}
           </div>
           <div ref="rulesCon" className="orient-vertical-box fill">
             <div className="w-detail-inspectors-title">Rules</div>
