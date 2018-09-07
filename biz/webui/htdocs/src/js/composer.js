@@ -80,16 +80,6 @@ var Composer = React.createClass({
     clearTimeout(this.composerTimer);
     this.composerTimer = setTimeout(this.saveComposer, 1000);
   },
-  clearResult: function() {
-    if (!this.state.result) {
-      return;
-    }
-    var tabName = this.state.tabName;
-    this.setState({
-      result: '',
-      tabName: tabName === 'Result' ? 'Raw' : tabName
-    });
-  },
   execute: function(e) {
     if (e.target.nodeName === 'INPUT' && e.keyCode !== 13) {
       return;
@@ -141,18 +131,29 @@ var Composer = React.createClass({
         headers = result.join('\n');
       }
     }
+    var self = this;
     dataCenter.composer({
+      needResponse: true,
       url: url,
       headers: headers,
       method: ReactDOM.findDOMNode(refs.method).value || 'GET',
       body: ReactDOM.findDOMNode(refs.body).value.replace(/\r\n|\r|\n/g, '\r\n')
     }, function(data, xhr) {
       if (!data || data.ec !== 0) {
-        util.showSystemError(xhr);
+        return util.showSystemError(xhr);
       }
+      data.res = data.res || {};
+      data.url = url;
+      data.req = '';
+      self.setState({
+        result: data,
+        pending: false,
+        tabName: 'Result',
+        initedResult: true
+      });
     });
     events.trigger('executeComposer');
-    this.clearResult();
+    self.setState({ result: '', pending: true });
   },
   selectAll: function(e) {
     e.target.select();
@@ -190,6 +191,7 @@ var Composer = React.createClass({
   render: function() {
     var state = this.state;
     var rules = state.rules;
+    var pending = state.pending;
     var tabName = state.tabName;
     var showRaw = tabName === 'Raw';
     var showPretty = tabName === 'Pretty';
@@ -197,7 +199,7 @@ var Composer = React.createClass({
     return (
       <div className={'fill orient-vertical-box w-detail-content w-detail-composer' + (util.getBoolean(this.props.hide) ? ' hide' : '')}>
         <div className="w-composer-url box">
-          <select defaultValue={state.method} onChange={this.onComposerChange} ref="method" className="form-control w-composer-method">
+          <select disabled={pending} defaultValue={state.method} onChange={this.onComposerChange} ref="method" className="form-control w-composer-method">
                   <option value="GET">GET</option>
                   <option value="POST">POST</option>
                   <option value="PUT">PUT</option>
@@ -215,20 +217,20 @@ var Composer = React.createClass({
                   <option value="UNLOCK">UNLOCK</option>
                   <option value="OPTIONS">OPTIONS</option>
                 </select>
-                <input defaultValue={state.url} onKeyUp={this.execute} onChange={this.onComposerChange} onKeyDown={this.onKeyDown} onFocus={this.selectAll} ref="url" type="text" maxLength="8192" placeholder="url" className="fill w-composer-input" />
-          <button onClick={this.execute} className="btn btn-primary w-composer-execute">Go</button>
+                <input disabled={pending} defaultValue={state.url} onKeyUp={this.execute} onChange={this.onComposerChange} onKeyDown={this.onKeyDown} onFocus={this.selectAll} ref="url" type="text" maxLength="8192" placeholder="url" className="fill w-composer-input" />
+          <button disabled={pending} onClick={this.execute} className="btn btn-primary w-composer-execute">Go</button>
         </div>
         <div className="w-detail-inspectors-title w-composer-tabs">
           <button onClick={this.onTabChange} name="Raw" className={showRaw ? 'w-active' : undefined}>Raw</button>
           <button onClick={this.onTabChange} name="Pretty" className={showPretty ? 'w-active' : undefined}>Pretty</button>
           <button title={state.result && state.result.url}
-            onClick={this.onTabChange} name="Result"  className={showResult ? 'w-active' : undefined} disabled={!state.result}>Result</button>
+            onClick={this.onTabChange} name="Result"  className={showResult ? 'w-active' : undefined}>Result</button>
         </div>
         <Divider vertical="true" rightWidth="140">
           <div className="orient-vertical-box fill">
             <Divider hide={!showRaw} vertical="true">
-              <textarea defaultValue={state.headers} onChange={this.onComposerChange} onKeyDown={this.onKeyDown} ref="headers" className="fill orient-vertical-box w-composer-headers" placeholder="Input the headers"></textarea>
-              <textarea defaultValue={state.body} onChange={this.onComposerChange} onKeyDown={this.onKeyDown} ref="body" className="fill orient-vertical-box w-composer-body" placeholder="Input the body"></textarea>
+              <textarea disabled={pending} defaultValue={state.headers} onChange={this.onComposerChange} onKeyDown={this.onKeyDown} ref="headers" className="fill orient-vertical-box w-composer-headers" placeholder="Input the headers"></textarea>
+              <textarea disabled={pending} defaultValue={state.body} onChange={this.onComposerChange} onKeyDown={this.onKeyDown} ref="body" className="fill orient-vertical-box w-composer-body" placeholder="Input the body"></textarea>
             </Divider>
             {
               state.initedPretty ? (
@@ -243,6 +245,7 @@ var Composer = React.createClass({
           <div ref="rulesCon" className="orient-vertical-box fill">
             <div className="w-detail-inspectors-title">Rules</div>
             <textarea
+              disabled={pending}
               defaultValue={rules}
               ref='composerRules'
               onChange={this.onRulesChange}

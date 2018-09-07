@@ -217,7 +217,8 @@ module.exports = function(req, res) {
   delete headers['content-encoding'];
   options.headers = formatHeaders(headers, rawHeaderNames);
   var done;
-  var handleResponse = req.query.needResponse ? function(err, data) {
+  var needResponse = req.query.needResponse || req.body.needResponse;
+  var handleResponse = needResponse ? function(err, data) {
     if (done) {
       return;
     }
