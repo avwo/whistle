@@ -24,6 +24,16 @@ function removeDuplicateRules(rules) {
   return encodeURIComponent(rules);
 }
 
+function getStatus(statusCode) {
+  if (statusCode == 403) {
+    return 'forbidden';
+  }
+  if (statusCode && (!/^\d+$/.test(statusCode) || statusCode >= 400)) {
+    return 'error';
+  }
+  return '';
+}
+
 var Composer = React.createClass({
   getInitialState: function() {
     var rules = storage.get('composerRules');
@@ -236,7 +246,7 @@ var Composer = React.createClass({
               <textarea disabled={pending} defaultValue={state.headers} onChange={this.onComposerChange} onKeyDown={this.onKeyDown} ref="headers" className="fill orient-vertical-box w-composer-headers" placeholder="Input the headers"></textarea>
               <textarea disabled={pending} defaultValue={state.body} onChange={this.onComposerChange} onKeyDown={this.onKeyDown} ref="body" className="fill orient-vertical-box w-composer-body" placeholder="Input the body"></textarea>
             </Divider>
-            {state.initedResponse ? <Properties modal={{ statusCode: statusCode == null ? 'aborted' : statusCode }} hide={!showResponse} /> : undefined}
+            {state.initedResponse ? <Properties className={'w-composer-res-' + getStatus(statusCode)} modal={{ statusCode: statusCode == null ? 'aborted' : statusCode }} hide={!showResponse} /> : undefined}
             {state.initedResponse ? <ResDetail modal={result} hide={!showResponse} /> : undefined}
           </div>
           <div ref="rulesCon" className="orient-vertical-box fill">

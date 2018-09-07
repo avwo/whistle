@@ -25,3 +25,11 @@
 .w-detail-composer .w-properties pre {
   max-height: 90px;
 }
+
+.w-composer-res-forbidden pre {
+  color: #808000!important;
+}
+
+.w-composer-res-error pre {
+  color: #ff3a90!important;
+}
