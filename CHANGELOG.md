@@ -1,5 +1,5 @@
 ### v1.12.6
-1. style: 优化Composer，支持展示 `Pretty` 及 `Result`
+1. style: 优化Composer，支持展示 `Response` 数据
 
 ### v1.12.5
 1. refactor: 支持 `delete` 请求传递请求body
