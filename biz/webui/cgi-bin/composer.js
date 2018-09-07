@@ -10,7 +10,6 @@ var formatHeaders = hparser.formatHeaders;
 var getRawHeaders = hparser.getRawHeaders;
 var STATUS_CODE_RE = /^[^\s]+\s+(\d+)/i;
 var MAX_LENGTH = 1024 * 512;
-var PROXY_CODE_RE = /statucode=(\d+)/i;
 
 function parseHeaders(headers, rawHeaderNames) {
   if (!headers || typeof headers != 'string') {
@@ -59,19 +58,13 @@ function handleConnect(options, cb) {
     proxyHost: '127.0.0.1',
     proxyPort: config.port,
     headers: options.headers
-  }, function(socket) {
+  }, function(socket, res, err) {
     drain(socket);
     var data = util.toBuffer(options.body, getCharset(options.headers));
     if (data && data.length) {
       socket.write(data);
     }
-    if (cb) {
-      var timer = setTimeout(cb, 600);
-      socket.on('error', function(err) {
-        clearTimeout(timer);
-        cb(err);
-      });
-    }
+    cb && cb(err);
   }).on('error', cb || util.noop);
 }
 
@@ -235,7 +228,7 @@ module.exports = function(req, res) {
     if (err) {
       var msg = err.message;
       res.json({ec: 0, res: {
-        statusCode: msg === 'aborted' ? msg : (PROXY_CODE_RE.test(msg) ? parseInt(RegExp.$1, 10) : 502),
+        statusCode: msg === 'aborted' ? msg : (err.statusCode ? parseInt(err.statusCode, 10) : 502),
         headers: '',
         body: err.stack
       }});
