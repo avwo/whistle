@@ -26,10 +26,10 @@
   max-height: 90px;
 }
 
-.w-composer-res-forbidden pre {
+.w-composer-res-forbidden th, .w-composer-res-forbidden pre {
   color: #808000!important;
 }
 
-.w-composer-res-error pre {
+.w-composer-res-error th, .w-composer-res-error pre {
   color: #ff3a90!important;
 }
