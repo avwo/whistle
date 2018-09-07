@@ -228,7 +228,7 @@ var Composer = React.createClass({
         </div>
         <div className="w-detail-inspectors-title w-composer-tabs">
           <button onClick={this.onTabChange} name="Request" className={showRequest ? 'w-active' : undefined}>Request</button>
-          <button onClick={this.onTabChange} name="Response"  className={showResponse ? 'w-active' : undefined}>Response</button>
+          <button title={result.url} onClick={this.onTabChange} name="Response"  className={showResponse ? 'w-active' : undefined}>Response</button>
         </div>
         <Divider vertical="true" rightWidth="140">
           <div className="orient-vertical-box fill">
@@ -236,10 +236,7 @@ var Composer = React.createClass({
               <textarea disabled={pending} defaultValue={state.headers} onChange={this.onComposerChange} onKeyDown={this.onKeyDown} ref="headers" className="fill orient-vertical-box w-composer-headers" placeholder="Input the headers"></textarea>
               <textarea disabled={pending} defaultValue={state.body} onChange={this.onComposerChange} onKeyDown={this.onKeyDown} ref="body" className="fill orient-vertical-box w-composer-body" placeholder="Input the body"></textarea>
             </Divider>
-            {state.initedResponse ? <Properties modal={{
-              url: result.url,
-              statusCode: statusCode == null ? 'aborted' : statusCode
-            }}  hide={!showResponse} /> : undefined}
+            {state.initedResponse ? <Properties modal={{ statusCode: statusCode == null ? 'aborted' : statusCode }} hide={!showResponse} /> : undefined}
             {state.initedResponse ? <ResDetail modal={result} hide={!showResponse} /> : undefined}
           </div>
           <div ref="rulesCon" className="orient-vertical-box fill">
