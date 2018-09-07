@@ -114,7 +114,7 @@ function handleWebSocket(options, cb) {
   });
   if (cb) {
     socket.on('error', cb).on('close', function() {
-      cb(new Error('aborted'));
+      cb(new Error('closed'));
     });
   } else {
     drain(socket);
@@ -226,9 +226,8 @@ module.exports = function(req, res) {
     }
     done = true;
     if (err) {
-      var msg = err.message;
       res.json({ec: 0, res: {
-        statusCode: msg === 'aborted' ? msg : (err.statusCode ? parseInt(err.statusCode, 10) : 502),
+        statusCode:  err.statusCode ? parseInt(err.statusCode, 10) : 502,
         headers: '',
         body: err.stack
       }});
