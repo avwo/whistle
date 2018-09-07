@@ -10,6 +10,7 @@ var formatHeaders = hparser.formatHeaders;
 var getRawHeaders = hparser.getRawHeaders;
 var STATUS_CODE_RE = /^[^\s]+\s+(\d+)/i;
 var MAX_LENGTH = 1024 * 512;
+var PROXY_CODE_RE = /statucode=(\d+)/i;
 
 function parseHeaders(headers, rawHeaderNames) {
   if (!headers || typeof headers != 'string') {
@@ -64,7 +65,13 @@ function handleConnect(options, cb) {
     if (data && data.length) {
       socket.write(data);
     }
-    cb && cb();
+    if (cb) {
+      var timer = setTimeout(cb, 600);
+      socket.on('error', function(err) {
+        clearTimeout(timer);
+        cb(err);
+      });
+    }
   }).on('error', cb || util.noop);
 }
 
@@ -113,7 +120,9 @@ function handleWebSocket(options, cb) {
     socket.on('data', handleResponse);
   });
   if (cb) {
-    socket.on('error', cb);
+    socket.on('error', cb).on('close', function() {
+      cb(new Error('aborted'));
+    });
   } else {
     drain(socket);
   }
@@ -224,7 +233,12 @@ module.exports = function(req, res) {
     }
     done = true;
     if (err) {
-      res.json({ec: 2, em: err.stack});
+      var msg = err.message;
+      res.json({ec: 0, res: {
+        statusCode: msg === 'aborted' ? msg : (PROXY_CODE_RE.test(msg) ? parseInt(RegExp.$1, 10) : 502),
+        headers: '',
+        body: err.stack
+      }});
       return;
     }
     res.json({ec: 0, em: 'success', res: data || ''});

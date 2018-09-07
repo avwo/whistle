@@ -28,7 +28,7 @@ var Properties = React.createClass({
       );
     }).join('\n');
     return (
-      <div className={ 'w-properties-wrap ' + (viewSource ? 'w-properties-view-source ' : 'w-properties-view-parsed ') }>
+      <div className={ 'w-properties-wrap ' + (viewSource ? 'w-properties-view-source ' : 'w-properties-view-parsed ') + (props.hide ? 'hide' : '') }>
         { enableViewSource ? <a onClick={this.toggle} className="w-properties-btn">{ viewSource ? 'view parsed' : 'view source' }</a> : undefined }
         { enableViewSource ? (<pre className="w-properties-source">
           {sourceText && sourceText.length >= 2100 ? <ExpandCollapse text={sourceText} /> : sourceText}

@@ -140,18 +140,19 @@ var Composer = React.createClass({
       method: ReactDOM.findDOMNode(refs.method).value || 'GET',
       body: ReactDOM.findDOMNode(refs.body).value.replace(/\r\n|\r|\n/g, '\r\n')
     }, function(data, xhr) {
+      var state = { pending: false };
       if (!data || data.ec !== 0) {
-        return util.showSystemError(xhr);
+        util.showSystemError(xhr);
+        state.data = { url: url };
+      } else {
+        data.res = data.res || { statusCode: 200 };
+        data.url = url;
+        data.req = '';
+        state.result = data;
+        state.tabName = 'Result';
+        state.initedResult = true;
       }
-      data.res = data.res || {};
-      data.url = url;
-      data.req = '';
-      self.setState({
-        result: data,
-        pending: false,
-        tabName: 'Result',
-        initedResult: true
-      });
+      self.setState(state);
     });
     events.trigger('executeComposer');
     self.setState({ result: '', pending: true });
@@ -198,7 +199,8 @@ var Composer = React.createClass({
     var showRaw = tabName === 'Raw';
     var showPretty = tabName === 'Pretty';
     var showResult = tabName === 'Result';
-    var statusCode = result.res && result.res.statusCode;
+    var statusCode = result ? (result.res && result.res.statusCode) : '';
+    
     return (
       <div className={'fill orient-vertical-box w-detail-content w-detail-composer' + (util.getBoolean(this.props.hide) ? ' hide' : '')}>
         <div className="w-composer-url box">
@@ -244,8 +246,8 @@ var Composer = React.createClass({
             }
             {state.initedResult ? <Properties modal={{
               url: result.url,
-              statusCode: statusCode == null ? '' : statusCode
-            }} /> : undefined}
+              statusCode: statusCode == null ? 'aborted' : statusCode
+            }}  hide={!showResult} /> : undefined}
             {state.initedResult ? <ResDetail modal={result} hide={!showResult} /> : undefined}
           </div>
           <div ref="rulesCon" className="orient-vertical-box fill">
