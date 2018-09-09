@@ -283,7 +283,7 @@ var Composer = React.createClass({
               </div>
               <div className="fill orient-vertical-box w-composer-body">
                 <div className="w-composer-bar">
-                  <button className="btn btn-default">Format</button>
+                  <button className="btn btn-default">Format JSON</button>
                   <button className="btn btn-primary">Add field</button>
                 </div>
                 <textarea disabled={pending} defaultValue={state.body} onChange={this.onComposerChange} onKeyDown={this.onKeyDown} ref="body" className="fill orient-vertical-box" placeholder="Input the body" />
