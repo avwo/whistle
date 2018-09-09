@@ -297,7 +297,7 @@ var Composer = React.createClass({
                 </div>
                 <textarea disabled={pending} defaultValue={state.body} onChange={this.onComposerChange}
                   onKeyDown={this.onKeyDown} ref="body" placeholder="Input the body"
-                  className={'fill orient-vertical-box' + (showPretty && !isForm ? ' hide' : '')} />
+                  className={'fill orient-vertical-box' + (showPretty && isForm ? ' hide' : '')} />
                 <PropsEditor hide={!showPretty || !isForm} />
               </div>
             </Divider>
