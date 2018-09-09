@@ -9,6 +9,7 @@ var storage = require('./storage');
 var Divider = require('./divider');
 var ResDetail = require('./res-detail');
 var Properties = require('./properties');
+var PropsEditor = require('./props-editor');
 
 function removeDuplicateRules(rules) {
   rules = rules.join('\n').split(/\r\n|\r|\n/g);
@@ -46,7 +47,8 @@ var Composer = React.createClass({
       body: data.body,
       tabName: 'Request',
       showPretty: showPretty,
-      rules: typeof rules === 'string' ? rules : ''
+      rules: typeof rules === 'string' ? rules : '',
+      type: 'Custom'
     };
   },
   componentDidMount: function() {
@@ -211,7 +213,9 @@ var Composer = React.createClass({
   },
   render: function() {
     var state = this.state;
+    var type = state.type;
     var rules = state.rules;
+    var showPretty = state.showPretty;
     var pending = state.pending;
     var result = state.result || '';
     var tabName = state.tabName;
@@ -253,7 +257,7 @@ var Composer = React.createClass({
               <div className="fill orient-vertical-box w-composer-headers">
                 <div className="w-composer-bar">
                   <label>
-                    <input onChange={this.onShowPretty} type="checkbox" checked={state.showPretty} />
+                    <input onChange={this.onShowPretty} type="checkbox" checked={showPretty} />
                     Pretty
                   </label>
                   <label className="w-composer-label">Type:</label>
@@ -277,16 +281,22 @@ var Composer = React.createClass({
                     <input name="type" type="radio" checked />
                     Custom
                   </label>
-                  <button className="btn btn-primary">Add header</button>
+                  <button className={'btn btn-primary' + (showPretty ? '' : ' hide')}>Add header</button>
                 </div>
-                <textarea disabled={pending} defaultValue={state.headers} onChange={this.onComposerChange} onKeyDown={this.onKeyDown} ref="headers" className="fill orient-vertical-box" placeholder="Input the headers" />
+                <textarea disabled={pending} defaultValue={state.headers} onChange={this.onComposerChange}
+                  onKeyDown={this.onKeyDown} ref="headers" placeholder="Input the headers"
+                  className={'fill orient-vertical-box' + (showPretty ? ' hide' : '')} />
+                <PropsEditor hide={!showPretty} />
               </div>
               <div className="fill orient-vertical-box w-composer-body">
                 <div className="w-composer-bar">
                   <button className="btn btn-default">Format JSON</button>
-                  <button className="btn btn-primary">Add field</button>
+                  <button className={'btn btn-primary' + (showPretty && type === 'Form' ? '' : ' hide')}>Add field</button>
                 </div>
-                <textarea disabled={pending} defaultValue={state.body} onChange={this.onComposerChange} onKeyDown={this.onKeyDown} ref="body" className="fill orient-vertical-box" placeholder="Input the body" />
+                <textarea disabled={pending} defaultValue={state.body} onChange={this.onComposerChange}
+                  onKeyDown={this.onKeyDown} ref="body" placeholder="Input the body"
+                  className={'fill orient-vertical-box' + (showPretty ? ' hide' : '')} />
+                <PropsEditor hide={!showPretty} />
               </div>
             </Divider>
             {state.initedResponse ? <Properties className={'w-composer-res-' + getStatus(statusCode)} modal={{ statusCode: statusCode == null ? 'aborted' : statusCode }} hide={!showResponse} /> : undefined}
