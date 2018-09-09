@@ -24,8 +24,8 @@ var PropsEditor = React.createClass({
                 </pre>
               </td>
               <td className="w-props-ops">
-                <a className="glyphicon glyphicon-remove" href="javascript:;"></a>
-                <a className="glyphicon glyphicon-edit" href="javascript:;"></a>
+                <a className="glyphicon glyphicon-remove" href="javascript:;" title="Delete"></a>
+                <a className="glyphicon glyphicon-edit" href="javascript:;" title="Edit"></a>
               </td>
             </tr>
             <tr>
