@@ -33,3 +33,38 @@
 .w-composer-res-error th, .w-composer-res-error pre {
   color: #ff3a90!important;
 }
+.w-composer-bar {
+  border-bottom: 1px solid #ddd;
+  line-height: 16px;
+  height: 16px;
+  overflow: hidden;
+  background-color: #fafafa;
+}
+
+.w-composer-bar, .w-composer-bar label {
+  font-size: 12px;
+  font-weight: normal;
+}
+.w-composer-bar label {
+  margin-left: 10px;
+  cursor: pointer;
+  vertical-align: middle;
+}
+.w-composer-bar input {
+  margin: 0 3px 0 0;
+  padding: 0;
+  vertical-align: text-bottom;
+}
+.w-composer-bar label:first-child {
+  font-weight: bold;
+}
+.w-composer-bar label:hover {
+  color: #337ab7;
+}
+.w-composer-bar .w-composer-label {
+  font-weight: bold;
+  display: inline-block;
+  padding: 0 5px 0 10px;
+  border-left: 1px solid #ddd;
+  cursor: text;
+}

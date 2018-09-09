@@ -243,8 +243,40 @@ var Composer = React.createClass({
         <Divider vertical="true" rightWidth="140">
           <div className="orient-vertical-box fill">
             <Divider hide={!showRequest} vertical="true">
-              <textarea disabled={pending} defaultValue={state.headers} onChange={this.onComposerChange} onKeyDown={this.onKeyDown} ref="headers" className="fill orient-vertical-box w-composer-headers" placeholder="Input the headers"></textarea>
-              <textarea disabled={pending} defaultValue={state.body} onChange={this.onComposerChange} onKeyDown={this.onKeyDown} ref="body" className="fill orient-vertical-box w-composer-body" placeholder="Input the body"></textarea>
+              <div className="fill orient-vertical-box w-composer-headers">
+                <div className="w-composer-bar">
+                  <label>
+                    <input type="checkbox" />
+                    Pretty
+                  </label>
+                  <label className="w-composer-label">Type:</label>
+                  <label>
+                    <input name="type" type="radio" />
+                    Form
+                  </label>
+                  <label>
+                    <input name="type" type="radio" />
+                    Upload
+                  </label>
+                  <label>
+                    <input name="type" type="radio" />
+                    JSON
+                  </label>
+                  <label>
+                    <input name="type" type="radio" />
+                    Text
+                  </label>
+                  <label>
+                    <input name="type" type="radio" />
+                    Custom
+                  </label>
+                </div>
+                <textarea disabled={pending} defaultValue={state.headers} onChange={this.onComposerChange} onKeyDown={this.onKeyDown} ref="headers" className="fill orient-vertical-box" placeholder="Input the headers" />
+              </div>
+              <div className="fill orient-vertical-box w-composer-body">
+                <div className="w-composer-bar"></div>
+                <textarea disabled={pending} defaultValue={state.body} onChange={this.onComposerChange} onKeyDown={this.onKeyDown} ref="body" className="fill orient-vertical-box" placeholder="Input the body" />
+              </div>
             </Divider>
             {state.initedResponse ? <Properties className={'w-composer-res-' + getStatus(statusCode)} modal={{ statusCode: statusCode == null ? 'aborted' : statusCode }} hide={!showResponse} /> : undefined}
             {state.initedResponse ? <ResDetail modal={result} hide={!showResponse} /> : undefined}
