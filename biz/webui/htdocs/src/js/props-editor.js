@@ -7,28 +7,174 @@ var PropsEditor = React.createClass({
   render: function() {
     var props = this.props;
     return (
-      <ul className={'fill orient-vertical-box w-props-editor' + (props.hide ? ' hide' : '')}>
-        <li>Hello</li>
-        <li>Hello</li>
-        <li>Hello</li>
-        <li>Hello</li>
-        <li>Hello</li>
-        <li>Hello</li>
-        <li>Hello</li>
-        <li>Hello</li>
-        <li>Hello</li>
-        <li>Hello</li>
-        <li>Hello</li>
-        <li>Hello</li>
-        <li>Hello</li>
-        <li>Hello</li>
-        <li>Hello</li>
-        <li>Hello</li>
-        <li>Hello</li>
-        <li>Hello</li>
-        <li>Hello</li>
-        <li>Hello</li>
-      </ul>
+      <div className={'fill orient-vertical-box w-props-editor' + (props.hide ? ' hide' : '')}>
+        <table className="table" cellPadding="0" cellSpacing="0">
+          <tbody>
+            <tr>
+              <th>Hello</th>
+              <td>
+                <pre>
+                  WorldWorld World World World World World World World World World World 
+                  World World World World World World World World World World World World 
+                  World World World World World World World World World World World World 
+                  World World World World World World World World World World World World 
+                  World World World World World World World World World World World World 
+                  World World World World World World World World World World World World 
+                  World World World World World World World World World World World World 
+                </pre>
+              </td>
+              <td className="w-props-ops">
+                <a className="glyphicon glyphicon-remove" href="javascript:;"></a>
+                <a className="glyphicon glyphicon-edit" href="javascript:;"></a>
+              </td>
+            </tr>
+            <tr>
+              <th>Hello</th>
+              <td>
+                <pre>
+                  World
+                </pre>
+              </td>
+              <td className="w-props-ops">
+                <a className="glyphicon glyphicon-remove" href="javascript:;"></a>
+                <a className="glyphicon glyphicon-edit" href="javascript:;"></a>
+              </td>
+            </tr>
+            <tr>
+              <th>Hello</th>
+              <td>
+                <pre>
+                  World
+                </pre>
+              </td>
+              <td className="w-props-ops">
+                <a className="glyphicon glyphicon-remove" href="javascript:;"></a>
+                <a className="glyphicon glyphicon-edit" href="javascript:;"></a>
+              </td>
+            </tr>
+            <tr>
+              <th>Hello</th>
+              <td>
+                <pre>
+                  World
+                </pre>
+              </td>
+              <td className="w-props-ops">
+                <a className="glyphicon glyphicon-remove" href="javascript:;"></a>
+                <a className="glyphicon glyphicon-edit" href="javascript:;"></a>
+              </td>
+            </tr>
+            <tr>
+              <th>Hello</th>
+              <td>
+                <pre>
+                  World
+                </pre>
+              </td>
+              <td className="w-props-ops">
+                <a className="glyphicon glyphicon-remove" href="javascript:;"></a>
+                <a className="glyphicon glyphicon-edit" href="javascript:;"></a>
+              </td>
+            </tr>
+            <tr>
+              <th>Hello</th>
+              <td>
+                <pre>
+                  World
+                </pre>
+              </td>
+              <td className="w-props-ops">
+                <a className="glyphicon glyphicon-remove" href="javascript:;"></a>
+                <a className="glyphicon glyphicon-edit" href="javascript:;"></a>
+              </td>
+            </tr>
+            <tr>
+              <th>Hello</th>
+              <td>
+                <pre>
+                  World
+                </pre>
+              </td>
+              <td className="w-props-ops">
+                <a className="glyphicon glyphicon-remove" href="javascript:;"></a>
+                <a className="glyphicon glyphicon-edit" href="javascript:;"></a>
+              </td>
+            </tr>
+            <tr>
+              <th>Hello</th>
+              <td>
+                <pre>
+                  World
+                </pre>
+              </td>
+              <td className="w-props-ops">
+                <a className="glyphicon glyphicon-remove" href="javascript:;"></a>
+                <a className="glyphicon glyphicon-edit" href="javascript:;"></a>
+              </td>
+            </tr>
+            <tr>
+              <th>Hello</th>
+              <td>
+                <pre>
+                  World
+                </pre>
+              </td>
+              <td className="w-props-ops">
+                <a className="glyphicon glyphicon-remove" href="javascript:;"></a>
+                <a className="glyphicon glyphicon-edit" href="javascript:;"></a>
+              </td>
+            </tr>
+            <tr>
+              <th>Hello</th>
+              <td>
+                <pre>
+                  World
+                </pre>
+              </td>
+              <td className="w-props-ops">
+                <a className="glyphicon glyphicon-remove" href="javascript:;"></a>
+                <a className="glyphicon glyphicon-edit" href="javascript:;"></a>
+              </td>
+            </tr>
+            <tr>
+              <th>Hello</th>
+              <td>
+                <pre>
+                  World
+                </pre>
+              </td>
+              <td className="w-props-ops">
+                <a className="glyphicon glyphicon-remove" href="javascript:;"></a>
+                <a className="glyphicon glyphicon-edit" href="javascript:;"></a>
+              </td>
+            </tr>
+            <tr>
+              <th>Hello</th>
+              <td>
+                <pre>
+                  World
+                </pre>
+              </td>
+              <td className="w-props-ops">
+                <a className="glyphicon glyphicon-remove" href="javascript:;"></a>
+                <a className="glyphicon glyphicon-edit" href="javascript:;"></a>
+              </td>
+            </tr>
+            <tr>
+              <th>Hello</th>
+              <td>
+                <pre>
+                  World
+                </pre>
+              </td>
+              <td className="w-props-ops">
+                <a className="glyphicon glyphicon-remove" href="javascript:;"></a>
+                <a className="glyphicon glyphicon-edit" href="javascript:;"></a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     );
   }
 });

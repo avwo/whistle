@@ -2,11 +2,39 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
-.w-props-editor li {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+.w-props-editor th {
+  display: inline-block;
+  width: 233px;
+  height: 23px;
+  line-height: 23px;
+  background: #e1e3e6;
+}
+.w-props-editor th, .w-props-editor td {
+  border: none;
+  border-bottom: 1px solid #ddd;
+  padding: 0 8px!important;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 23px;
+}
+
+.w-props-editor .w-props-ops {
+  width: 82px;
+  padding-top: 4px!important;
+}
+.w-props-editor .w-props-ops a {
+  margin-right: 15px!important;
+  color: #333;
+  text-decoration: none!important;
+}
+.w-props-ops a:hover {
+  color: #337ab7;
+}
+.w-props-editor pre {
+  overflow: hidden;
+  max-height: 120px;
 }
