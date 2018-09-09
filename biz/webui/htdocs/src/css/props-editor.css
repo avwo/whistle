@@ -8,7 +8,7 @@
 
 .w-props-editor th {
   width: 220px;
-  line-height: 22px;
+  line-height: 22px!important;
   background: #e1e3e6;
 }
 .w-props-editor th, .w-props-editor td {
@@ -34,5 +34,6 @@
 }
 .w-props-editor pre {
   overflow: auto;
+  line-height: 22px!important;
   max-height: 120px;
 }
