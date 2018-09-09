@@ -7,8 +7,7 @@
 }
 
 .w-props-editor th {
-  display: inline-block;
-  width: 233px;
+  width: 220px;
   line-height: 22px;
   background: #e1e3e6;
 }
@@ -21,8 +20,9 @@
 }
 
 .w-props-editor .w-props-ops {
-  width: 82px;
+  width: 75px;
   padding-top: 4px!important;
+  padding-left: 0!important;
 }
 .w-props-editor .w-props-ops a {
   margin-right: 15px!important;

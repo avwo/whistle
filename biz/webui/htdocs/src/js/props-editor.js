@@ -8,7 +8,7 @@ var PropsEditor = React.createClass({
     var props = this.props;
     return (
       <div className={'fill orient-vertical-box w-props-editor' + (props.hide ? ' hide' : '')}>
-        <table className="table" cellPadding="0" cellSpacing="0">
+        <table className="table">
           <tbody>
             <tr>
               <th>Hello</th>
