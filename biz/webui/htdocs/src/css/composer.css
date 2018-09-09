@@ -39,8 +39,26 @@
   height: 16px;
   overflow: hidden;
   background-color: #fafafa;
+  position: relative;
 }
 
+.w-composer-bar .btn {
+  line-height: 15px;
+  height: 15px;
+  padding: 0 5px;
+  font-weight: normal;
+  font-size: 12px;
+  border-radius: 3px;
+  position: absolute;
+  right: 10px;
+}
+.w-composer-body .btn {
+  position: static;
+  margin-right: 10px;
+}
+.w-composer-body .w-composer-bar {
+  text-align: right;
+}
 .w-composer-bar, .w-composer-bar label {
   font-size: 12px;
   font-weight: normal;
@@ -64,7 +82,7 @@
 .w-composer-bar .w-composer-label {
   font-weight: bold;
   display: inline-block;
-  padding: 0 5px 0 10px;
+  padding: 0 0 0 15px;
   border-left: 1px solid #ddd;
   cursor: text;
 }

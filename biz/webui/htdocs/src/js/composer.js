@@ -38,12 +38,14 @@ var Composer = React.createClass({
   getInitialState: function() {
     var rules = storage.get('composerRules');
     var data = util.parseJSON(storage.get('composerData')) || {};
+    var showPretty = storage.get('showPretty') == '1';
     return {
       url: data.url,
       method: data.method,
       headers: data.headers,
       body: data.body,
       tabName: 'Request',
+      showPretty: showPretty,
       rules: typeof rules === 'string' ? rules : ''
     };
   },
@@ -93,6 +95,11 @@ var Composer = React.createClass({
   onComposerChange: function() {
     clearTimeout(this.composerTimer);
     this.composerTimer = setTimeout(this.saveComposer, 1000);
+  },
+  onShowPretty: function(e) {
+    var show = e.target.checked;
+    storage.set('showPretty', show ? 1 : 0);
+    this.setState({ showPretty: show });
   },
   execute: function(e) {
     if (e.target.nodeName === 'INPUT' && e.keyCode !== 13) {
@@ -246,7 +253,7 @@ var Composer = React.createClass({
               <div className="fill orient-vertical-box w-composer-headers">
                 <div className="w-composer-bar">
                   <label>
-                    <input type="checkbox" />
+                    <input onChange={this.onShowPretty} type="checkbox" checked={state.showPretty} />
                     Pretty
                   </label>
                   <label className="w-composer-label">Type:</label>
@@ -267,14 +274,18 @@ var Composer = React.createClass({
                     Text
                   </label>
                   <label>
-                    <input name="type" type="radio" />
+                    <input name="type" type="radio" checked />
                     Custom
                   </label>
+                  <button className="btn btn-primary">Add header</button>
                 </div>
                 <textarea disabled={pending} defaultValue={state.headers} onChange={this.onComposerChange} onKeyDown={this.onKeyDown} ref="headers" className="fill orient-vertical-box" placeholder="Input the headers" />
               </div>
               <div className="fill orient-vertical-box w-composer-body">
-                <div className="w-composer-bar"></div>
+                <div className="w-composer-bar">
+                  <button className="btn btn-default">Format</button>
+                  <button className="btn btn-primary">Add field</button>
+                </div>
                 <textarea disabled={pending} defaultValue={state.body} onChange={this.onComposerChange} onKeyDown={this.onKeyDown} ref="body" className="fill orient-vertical-box" placeholder="Input the body" />
               </div>
             </Divider>
