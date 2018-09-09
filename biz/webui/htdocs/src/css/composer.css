@@ -35,8 +35,8 @@
 }
 .w-composer-bar {
   border-bottom: 1px solid #ddd;
-  line-height: 16px;
-  height: 16px;
+  line-height: 18px;
+  height: 18px;
   overflow: hidden;
   background-color: #fafafa;
   position: relative;
@@ -50,7 +50,9 @@
   font-size: 12px;
   border-radius: 3px;
   position: absolute;
+  top: 1px;
   right: 10px;
+  overflow: hidden;
 }
 .w-composer-body .btn {
   position: static;
@@ -58,6 +60,7 @@
 }
 .w-composer-body .w-composer-bar {
   text-align: right;
+  height: 19px;
 }
 .w-composer-bar, .w-composer-bar label {
   font-size: 12px;
@@ -85,4 +88,14 @@
   padding: 0 0 0 15px;
   border-left: 1px solid #ddd;
   cursor: text;
+  color: #000!important;
+}
+.w-composer-body .w-composer-bar label {
+  position: absolute;
+  left: 5px;
+  top: 1px;
+  font-weight: bold;
+  border: none;
+  padding: 0;
+  margin: 0;
 }

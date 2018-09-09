@@ -222,6 +222,7 @@ var Composer = React.createClass({
     var showRequest = tabName === 'Request';
     var showResponse = tabName === 'Response';
     var statusCode = result ? (result.res && result.res.statusCode) : '';
+    var isForm = type === 'Form';
     
     return (
       <div className={'fill orient-vertical-box w-detail-content w-detail-composer' + (util.getBoolean(this.props.hide) ? ' hide' : '')}>
@@ -290,13 +291,14 @@ var Composer = React.createClass({
               </div>
               <div className="fill orient-vertical-box w-composer-body">
                 <div className="w-composer-bar">
+                  <label className="w-composer-label">Body</label>
                   <button className="btn btn-default">Format JSON</button>
-                  <button className={'btn btn-primary' + (showPretty && type === 'Form' ? '' : ' hide')}>Add field</button>
+                  <button className={'btn btn-primary' + (showPretty && isForm ? '' : ' hide')}>Add field</button>
                 </div>
                 <textarea disabled={pending} defaultValue={state.body} onChange={this.onComposerChange}
                   onKeyDown={this.onKeyDown} ref="body" placeholder="Input the body"
-                  className={'fill orient-vertical-box' + (showPretty ? ' hide' : '')} />
-                <PropsEditor hide={!showPretty} />
+                  className={'fill orient-vertical-box' + (showPretty && !isForm ? ' hide' : '')} />
+                <PropsEditor hide={!showPretty || !isForm} />
               </div>
             </Divider>
             {state.initedResponse ? <Properties className={'w-composer-res-' + getStatus(statusCode)} modal={{ statusCode: statusCode == null ? 'aborted' : statusCode }} hide={!showResponse} /> : undefined}
