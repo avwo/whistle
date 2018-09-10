@@ -17,6 +17,7 @@
   padding: 0 8px!important;
   font-weight: normal;
   font-size: 12px;
+  word-break: break-word;
 }
 
 .w-props-editor .w-props-ops {
