@@ -11,6 +11,14 @@ var ResDetail = require('./res-detail');
 var Properties = require('./properties');
 var PropsEditor = require('./props-editor');
 
+var TYPES = {
+  form: 'application/x-www-form-urlencoded',
+  upload: 'multipart/form-data',
+  text: 'text/plain',
+  json: 'application/json',
+  custom: ''
+};
+
 function removeDuplicateRules(rules) {
   rules = rules.join('\n').split(/\r\n|\r|\n/g);
   var map = {};
@@ -48,7 +56,7 @@ var Composer = React.createClass({
       tabName: 'Request',
       showPretty: showPretty,
       rules: typeof rules === 'string' ? rules : '',
-      type: 'Custom'
+      type: 'custom'
     };
   },
   componentDidMount: function() {
@@ -222,7 +230,7 @@ var Composer = React.createClass({
     var showRequest = tabName === 'Request';
     var showResponse = tabName === 'Response';
     var statusCode = result ? (result.res && result.res.statusCode) : '';
-    var isForm = type === 'Form';
+    var isForm = type === 'form';
     
     return (
       <div className={'fill orient-vertical-box w-detail-content w-detail-composer' + (util.getBoolean(this.props.hide) ? ' hide' : '')}>
