@@ -6,31 +6,29 @@
   overflow-x: hidden;
 }
 
-.w-props-editor th {
-  width: 220px;
-  line-height: 22px!important;
-  background: #e1e3e6;
-  text-align: right;
-}
 .w-props-editor th, .w-props-editor td {
   border: none;
   border-bottom: 1px solid #ddd;
-  padding: 0 8px!important;
+  padding: 0!important;
   font-weight: normal;
   font-size: 12px;
   word-break: break-word;
 }
-.w-props-editor tr:hover, .w-props-editor tr:hover pre {
-  color: #337ab7;
+.w-props-editor th {
+  width: 200px;
+  line-height: 22px!important;
+  background: #e1e3e6;
+  text-align: right;
+  padding: 0 8px!important;
 }
-
 .w-props-editor .w-props-ops {
   width: 75px;
-  padding-top: 4px!important;
+  padding: 4px 0 0 8px!important;
   padding-left: 0!important;
+  background: #fafafa;
 }
 .w-props-editor .w-props-ops a {
-  margin-right: 15px!important;
+  margin-left: 15px!important;
   color: #333;
   text-decoration: none!important;
 }
@@ -41,6 +39,7 @@
   overflow: auto;
   line-height: 22px!important;
   max-height: 220px;
+  padding: 0 8px!important;
 }
 
 .w-props-editor .w-props-ops .glyphicon-remove {

@@ -3,7 +3,12 @@ require('../css/props-editor.css');
 var React = require('react');
 
 var PropsEditor = React.createClass({
-
+  getInitialState: function() {
+    return {};
+  },
+  clear: function() {
+    
+  },
   render: function() {
     var props = this.props;
     return (
@@ -11,7 +16,13 @@ var PropsEditor = React.createClass({
         <table className="table">
           <tbody>
             <tr>
-              <th>Hello</th>
+              <th>WorldWorld World World World World World World World World World World 
+              World World World World World World World World World World World World 
+              World World World World World World World World World World World World 
+              World World World World World World World World World World World World 
+              World World World World World World World World World World World World 
+              World World World World World World World World World World World World 
+              World World World World World World World World World World World World</th>
               <td>
                 <pre>
                   WorldWorld World World World World World World World World World World 
