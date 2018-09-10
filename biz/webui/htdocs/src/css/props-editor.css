@@ -10,6 +10,7 @@
   width: 220px;
   line-height: 22px!important;
   background: #e1e3e6;
+  text-align: right;
 }
 .w-props-editor th, .w-props-editor td {
   border: none;
