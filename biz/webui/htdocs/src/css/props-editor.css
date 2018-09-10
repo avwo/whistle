@@ -20,6 +20,9 @@
   font-size: 12px;
   word-break: break-word;
 }
+.w-props-editor tr:hover, .w-props-editor tr:hover pre {
+  color: #337ab7;
+}
 
 .w-props-editor .w-props-ops {
   width: 75px;
