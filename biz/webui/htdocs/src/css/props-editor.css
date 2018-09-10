@@ -37,3 +37,11 @@
   line-height: 22px!important;
   max-height: 120px;
 }
+
+.w-props-editor .w-props-ops .glyphicon-remove {
+  color: #f5222d;
+}
+.w-props-editor .w-props-ops .glyphicon-remove:hover {
+  color: #ff0000;
+}
+
