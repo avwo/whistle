@@ -36,7 +36,7 @@
 .w-props-editor pre {
   overflow: auto;
   line-height: 22px!important;
-  max-height: 120px;
+  max-height: 220px;
 }
 
 .w-props-editor .w-props-ops .glyphicon-remove {
