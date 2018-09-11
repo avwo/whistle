@@ -371,7 +371,7 @@ var Composer = React.createClass({
                       GBK
                     </label>
                   </div>
-                  <button disabled={isForm} className="btn btn-default" onClick={this.formatJSON}>Format JSON</button>
+                  <button className={'btn btn-default' + (isForm ? ' hide' : '')} onClick={this.formatJSON}>Format JSON</button>
                   <button className={'btn btn-primary' + (showPretty && isForm ? '' : ' hide')}>Add field</button>
                 </div>
                 <textarea disabled={pending} defaultValue={state.body} onChange={this.onComposerChange}
