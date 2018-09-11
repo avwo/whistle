@@ -92,7 +92,8 @@ var Composer = React.createClass({
       var activeItem = self.props.modal;
       activeItem && self.setState({
         data: activeItem,
-        result: activeItem
+        result: activeItem,
+        encoding: 'UTF8'
       }, function() {
         self.update(activeItem);
         self.onComposerChange();
