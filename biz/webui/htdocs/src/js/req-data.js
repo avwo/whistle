@@ -15,6 +15,7 @@ var events = require('./events');
 var dataCenter = require('./data-center');
 var HEIGHT = 24; //每条数据的高度
 var columnState = {};
+var CMD_RE = /^:dump\s+(\d{1,15})\s*$/;
 var NOT_BOLD_RULES = {
   plugin: 1,
   pac: 1,
@@ -453,6 +454,15 @@ var ReqData = React.createClass({
       events.trigger('networkStateChange');
     }, 600);
   },
+  onFilterKeyDown: function(e) {
+    if (e.keyCode !== 13 || !CMD_RE.test(e.target.value)) {
+      return;
+    }
+    dataCenter.setDumpCount(parseInt(RegExp.$1, 10));
+    var modal = this.props.modal;
+    modal && modal.clear();
+    this.refs.filterInput.clearFilterText();
+  },
   autoRefresh: function() {
     if (this.container) {
       this.container.scrollTop = this.content.offsetHeight;
@@ -592,7 +602,8 @@ var ReqData = React.createClass({
                 </table>
             </div>
           </div>
-          <FilterInput onChange={this.onFilterChange} wStyle={minWidth} />
+          <FilterInput ref="filterInput" onKeyDown={this.onFilterKeyDown}
+            onChange={this.onFilterChange} wStyle={minWidth} />
           <ContextMenu onClick={this.onClickContextMenu} ref="contextMenu" />
           <Dialog ref="qrcodeDialog" wstyle="w-qrcode-dialog">
             <div className="modal-body">

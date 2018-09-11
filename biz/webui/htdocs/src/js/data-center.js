@@ -29,6 +29,7 @@ var hashFilterObj;
 var clearNetwork;
 var inited;
 var logId;
+var dumpCount = 0;
 var onlyViewOwnData = storage.get('onlyViewOwnData') == 1;
 var DEFAULT_CONF = {
   timeout: TIMEOUT,
@@ -41,6 +42,10 @@ exports.clientIp = '127.0.0.1';
 
 exports.changeLogId = function(id) {
   logId = id;
+};
+
+exports.setDumpCount = function(count) {
+  dumpCount = count > 0 ? count : 0;
 };
 
 exports.setOnlyViewOwnData = function(enable) {
@@ -472,6 +477,7 @@ function startLoadData() {
       startSvrLogTime: startSvrLogTime,
       ids: pendingIds.join(),
       startTime: startTime,
+      dumpCount: dumpCount,
       lastRowId: (inited || !count)  ? lastRowId : undefined,
       curReqId: curReqId,
       lastFrameId: lastFrameId,
@@ -489,6 +495,9 @@ function startLoadData() {
       updateServerInfo(data);
       if (!data || data.ec !== 0) {
         return;
+      }
+      if (options.dumpCount > 0) {
+        dumpCount = 0;
       }
       if (data.clientIp) {
         exports.clientIp = data.clientIp;

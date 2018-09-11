@@ -22,6 +22,9 @@ var FilterInput = React.createClass({
         e.stopPropagation();
       }
     }
+    if (typeof this.props.onKeyDown === 'function') {
+      this.props.onKeyDown(e);
+    }
 
   },
   clearFilterText: function() {
