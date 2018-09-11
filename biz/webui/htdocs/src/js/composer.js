@@ -114,8 +114,8 @@ var Composer = React.createClass({
     this.setState({ showPretty: show });
   },
   onDisableChange: function(e) {
-    var disableComposerRules = e.target.checked;
-    storage.set('disableComposerRules', disableComposerRules ? 0 : 1);
+    var disableComposerRules = !e.target.checked;
+    storage.set('disableComposerRules', disableComposerRules ? 1 : 0);
     this.setState({ disableComposerRules: disableComposerRules });
   },
   execute: function(e) {
@@ -343,7 +343,7 @@ var Composer = React.createClass({
               defaultValue={rules}
               ref='composerRules'
               onChange={this.onRulesChange}
-              style={{background: rules ? 'lightyellow' : undefined }}
+              style={{background: !disableComposerRules && rules ? 'lightyellow' : undefined }}
               maxLength="8192"
               className="fill orient-vertical-box w-composer-rules"
               placeholder="Input the rules" />
