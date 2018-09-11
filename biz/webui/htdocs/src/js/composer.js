@@ -78,6 +78,7 @@ var Composer = React.createClass({
       showPretty: showPretty,
       rules: typeof rules === 'string' ? rules : '',
       type: 'custom',
+      encoding: 'UTF8',
       disableComposerRules: disableComposerRules
     };
   },
@@ -142,6 +143,10 @@ var Composer = React.createClass({
     var show = e.target.checked;
     storage.set('showPretty', show ? 1 : 0);
     this.setState({ showPretty: show }, this.updatePrettyData);
+  },
+  onEncodingChange: function(e) {
+    var encoding = e.target.getAttribute('data-encoding');
+    this.setState({ encoding: encoding });
   },
   onDisableChange: function(e) {
     var disableComposerRules = !e.target.checked;
@@ -232,6 +237,14 @@ var Composer = React.createClass({
     this.state.rules = rules;
     storage.set('composerRules', rules);
   },
+  formatJSON: function() {
+    var body = ReactDOM.findDOMNode(this.refs.body);
+    var data = util.parseRawJson(body.value);
+    if (data) {
+      body.value = JSON.stringify(data, null, '  ');
+      this.saveComposer();
+    }
+  },
   onRulesChange: function() {
     clearTimeout(this.rulesTimer);
     this.rulesTimer = setTimeout(this.saveRules, 600);
@@ -274,6 +287,7 @@ var Composer = React.createClass({
     var showResponse = tabName === 'Response';
     var statusCode = result ? (result.res && result.res.statusCode) : '';
     var isForm = type === 'form';
+    var isGBK = state.encoding === 'GBK';
     
     return (
       <div className={'fill orient-vertical-box w-detail-content w-detail-composer' + (util.getBoolean(this.props.hide) ? ' hide' : '')}>
@@ -346,15 +360,17 @@ var Composer = React.createClass({
                   <div className="w-composer-encoding">
                     <label className="w-composer-label">Encoding:</label>
                     <label>
-                      <input name="encoding" type="radio" checked />
+                      <input onChange={this.onEncodingChange} data-encoding="UTF8"
+                        name="encoding" type="radio" checked={state.encoding === 'UTF8'} />
                       UTF8
                     </label>
-                    <label>
-                      <input name="encoding" type="radio" />
+                    <label style={{ color: isGBK ? 'red' : undefined }}>
+                      <input onChange={this.onEncodingChange} data-encoding="GBK"
+                        name="encoding" type="radio" checked={isGBK} />
                       GBK
                     </label>
                   </div>
-                  <button className="btn btn-default">Format JSON</button>
+                  <button disabled={isForm} className="btn btn-default" onClick={this.formatJSON}>Format JSON</button>
                   <button className={'btn btn-primary' + (showPretty && isForm ? '' : ' hide')}>Add field</button>
                 </div>
                 <textarea disabled={pending} defaultValue={state.body} onChange={this.onComposerChange}
