@@ -286,7 +286,7 @@ var Composer = React.createClass({
                     <input name="type" type="radio" />
                     Text
                   </label>
-                  <label>
+                  <label className="w-custom-type">
                     <input name="type" type="radio" checked disabled />
                     Custom
                   </label>
