@@ -12,17 +12,31 @@ var Properties = require('./properties');
 var PropsEditor = require('./props-editor');
 
 var TYPES = {
-  form: 'application/x-www-form-urlencoded',
-  upload: 'multipart/form-data',
-  text: 'text/plain',
-  json: 'application/json',
-  custom: ''
+  Form: 'application/x-www-form-urlencoded',
+  Upload: 'multipart/form-data',
+  Text: 'text/plain',
+  JSON: 'application/json',
+  Custom: ''
 };
 
 function getType(headers) {
   var keys = Object.keys(headers);
-  var type = 'Custom';
-  
+  var type;
+  for (var i = 0, len = keys.length; i < len; i++) {
+    var name = keys[i].toLowerCase();
+    if (name === 'content-type') {
+      if (type) {
+        return 'Custom';
+      }
+      var value = headers[name];
+      if (!value || typeof value !== 'string') {
+        return 'Custom';
+      }
+      value = value.split(';')[0].trim().toLowerCase();
+      type = TYPES[value] || 'Custom';
+    }
+  }
+  return type || 'Custom';
 }
 
 function removeDuplicateRules(rules) {
@@ -86,13 +100,11 @@ var Composer = React.createClass({
     this.updatePrettyData();
   },
   updatePrettyData: function() {
-    var state = this.state;
-    var showPretty = state.showPretty;
-    if (!showPretty) {
+    if (!this.state.showPretty) {
       return;
     }
-    state.prettyHeaders = util.parseHeaders(ReactDOM.findDOMNode(this.refs.headers).value);
-    this.refs.prettyHeaders.update(state.prettyHeaders);
+    var prettyHeaders = util.parseHeaders(ReactDOM.findDOMNode(this.refs.headers).value);
+    this.refs.prettyHeaders.update(prettyHeaders);
     // TODO: ReactDOM.findDOMNode(this.refs.body).value
   },
   update: function(item) {
