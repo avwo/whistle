@@ -8,6 +8,7 @@ var evalJson = require('./components/json/eval');
 var isUtf8 = require('./is-utf8');
 var message = require('./message');
 
+var CRLF_RE = /\r\n|\r|\n/g;
 var BIG_NUM_RE = /[:\[][\s\n\r]*-?[\d.]{16,}[\s\n\r]*[,\}\]]/;
 var dragCallbacks = {};
 var dragTarget, dragOffset, dragCallback;
@@ -913,17 +914,50 @@ exports.openPreview = function(data) {
   }
 };
 
-exports.parseRawJson = function(str) {
+function parseRawJson(str, quite) {
   try {
     var json = JSON.parse(str);
     if (json && typeof json === 'object') {
       return json;
     }
-    message.error('Error: not a json object.');
+    !quite && message.error('Error: not a json object.');
   } catch (e) {
     if (json = evalJson(str)) {
       return json;
     }
-    message.error('Error: ' + e.message);
+    !quite && message.error('Error: ' + e.message);
   }
+}
+
+exports.parseRawJson = parseRawJson;
+
+function parseHeaders(str) {
+  var headers = {};
+  str = str.split(CRLF_RE);
+  str.forEach(function(line) {
+    var index = line.indexOf(':');
+    var value = '';
+    if (index != -1) {
+      value = line.substring(index + 1).trim();
+      var name = line.substring(0, index).trim();
+      var list = headers[name];
+      if (list) {
+        if (!Array.isArray(list)) {
+          headers[name] = list = [list];
+        }
+        list.push(value);
+      } else {
+        headers[name] = value;
+      }
+    }
+  });
+  return headers;
+}
+
+exports.parseHeaders = function(str) {
+  str = typeof str === 'string' ? str.trim() : null;
+  if (!str) {
+    return {};
+  }
+  return parseRawJson(str, true) || parseHeaders(str);
 };

@@ -19,6 +19,12 @@ var TYPES = {
   custom: ''
 };
 
+function getType(headers) {
+  var keys = Object.keys(headers);
+  var type = 'Custom';
+  
+}
+
 function removeDuplicateRules(rules) {
   rules = rules.join('\n').split(/\r\n|\r|\n/g);
   var map = {};
@@ -77,6 +83,17 @@ var Composer = React.createClass({
         self.onComposerChange();
       });
     });
+    this.updatePrettyData();
+  },
+  updatePrettyData: function() {
+    var state = this.state;
+    var showPretty = state.showPretty;
+    if (!showPretty) {
+      return;
+    }
+    state.prettyHeaders = util.parseHeaders(ReactDOM.findDOMNode(this.refs.headers).value);
+    this.refs.prettyHeaders.update(state.prettyHeaders);
+    // TODO: ReactDOM.findDOMNode(this.refs.body).value
   },
   update: function(item) {
     if (!item) {
@@ -88,6 +105,7 @@ var Composer = React.createClass({
     ReactDOM.findDOMNode(refs.method).value = req.method;
     ReactDOM.findDOMNode(refs.headers).value =   util.getOriginalReqHeaders(item);
     ReactDOM.findDOMNode(refs.body).value = util.getBody(req);
+    this.updatePrettyData();
   },
   shouldComponentUpdate: function(nextProps) {
     var hide = util.getBoolean(this.props.hide);
@@ -111,7 +129,7 @@ var Composer = React.createClass({
   onShowPretty: function(e) {
     var show = e.target.checked;
     storage.set('showPretty', show ? 1 : 0);
-    this.setState({ showPretty: show });
+    this.setState({ showPretty: show }, this.updatePrettyData);
   },
   onDisableChange: function(e) {
     var disableComposerRules = !e.target.checked;
@@ -224,7 +242,12 @@ var Composer = React.createClass({
       return;
     }
     this.state.initedResponse = true;
-    this.setState({ tabName: tabName });
+    var state = { tabName: tabName };
+    if (tabName === 'Request') {
+      state.prettyHeaders = null;
+      state.prettyBody = null;
+    }
+    this.setState(state);
   },
   render: function() {
     var state = this.state;
@@ -303,7 +326,7 @@ var Composer = React.createClass({
                 <textarea disabled={pending} defaultValue={state.headers} onChange={this.onComposerChange}
                   onKeyDown={this.onKeyDown} ref="headers" placeholder="Input the headers"
                   className={'fill orient-vertical-box' + (showPretty ? ' hide' : '')} />
-                <PropsEditor isHeader="1" hide={!showPretty} />
+                <PropsEditor ref="prettyHeaders" isHeader="1" hide={!showPretty} />
               </div>
               <div className="fill orient-vertical-box w-composer-body">
                 <div className="w-composer-bar">
@@ -325,7 +348,7 @@ var Composer = React.createClass({
                 <textarea disabled={pending} defaultValue={state.body} onChange={this.onComposerChange}
                   onKeyDown={this.onKeyDown} ref="body" placeholder="Input the body"
                   className={'fill orient-vertical-box' + (showPretty && isForm ? ' hide' : '')} />
-                <PropsEditor hide={!showPretty || !isForm} />
+                <PropsEditor ref="prettyBody" hide={!showPretty || !isForm} />
               </div>
             </Divider>
             {state.initedResponse ? <Properties className={'w-composer-res-' + getStatus(statusCode)} modal={{ statusCode: statusCode == null ? 'aborted' : statusCode }} hide={!showResponse} /> : undefined}

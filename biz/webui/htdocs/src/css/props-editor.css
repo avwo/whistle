@@ -9,6 +9,7 @@
 .w-props-editor th, .w-props-editor td {
   border: none;
   border-bottom: 1px solid #ddd;
+  border-top: none!important;
   padding: 0!important;
   font-weight: normal;
   font-size: 12px;
