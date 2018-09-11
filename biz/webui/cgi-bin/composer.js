@@ -24,13 +24,6 @@ function parseHeaders(headers, rawHeaderNames) {
   return util.parseHeaders(headers, rawHeaderNames);
 }
 
-function getMethod(method) {
-  if (typeof method !== 'string') {
-    return 'GET';
-  }
-  return method.toUpperCase();
-}
-
 function isWebSocket(options) {
   var p = options.protocol;
   return p === 'ws:' || p === 'wss:';
@@ -186,7 +179,7 @@ module.exports = function(req, res) {
     headers[config.CLIENT_IP_HEAD] = clientIp;
   }
   headers[config.CLIENT_PORT_HEAD] = util.getClientPort(req);
-  options.method = getMethod(req.body.method);
+  options.method = util.getMethod(req.body.method);
 
   var isConn = isConnect(options);
   var isWs = !isConn && (isWebSocket(options)
