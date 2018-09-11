@@ -48,6 +48,7 @@ var Composer = React.createClass({
     var rules = storage.get('composerRules');
     var data = util.parseJSON(storage.get('composerData')) || {};
     var showPretty = storage.get('showPretty') == '1';
+    var disableComposerRules = storage.get('disableComposerRules') == '1';
     return {
       url: data.url,
       method: data.method,
@@ -56,7 +57,8 @@ var Composer = React.createClass({
       tabName: 'Request',
       showPretty: showPretty,
       rules: typeof rules === 'string' ? rules : '',
-      type: 'custom'
+      type: 'custom',
+      disableComposerRules: disableComposerRules
     };
   },
   componentDidMount: function() {
@@ -111,6 +113,11 @@ var Composer = React.createClass({
     storage.set('showPretty', show ? 1 : 0);
     this.setState({ showPretty: show });
   },
+  onDisableChange: function(e) {
+    var disableComposerRules = e.target.checked;
+    storage.set('disableComposerRules', disableComposerRules ? 0 : 1);
+    this.setState({ disableComposerRules: disableComposerRules });
+  },
   execute: function(e) {
     if (e.target.nodeName === 'INPUT' && e.keyCode !== 13) {
       return;
@@ -121,7 +128,7 @@ var Composer = React.createClass({
     if (!url) {
       return;
     }
-    var rules = this.state.rules;
+    var rules = this.state.disableComposerRules ? null : this.state.rules;
     var headers = ReactDOM.findDOMNode(refs.headers).value;
     if (typeof rules === 'string' && (rules = rules.trim())) {
       var obj = util.parseJSON(headers);
@@ -224,6 +231,7 @@ var Composer = React.createClass({
     var type = state.type;
     var rules = state.rules;
     var showPretty = state.showPretty;
+    var disableComposerRules = state.disableComposerRules;
     var pending = state.pending;
     var result = state.result || '';
     var tabName = state.tabName;
@@ -324,9 +332,14 @@ var Composer = React.createClass({
             {state.initedResponse ? <ResDetail modal={result} hide={!showResponse} /> : undefined}
           </div>
           <div ref="rulesCon" className="orient-vertical-box fill w-composer-rules">
-            <div className="w-detail-inspectors-title">Rules</div>
+            <div className="w-detail-inspectors-title">
+              <label>
+                <input onChange={this.onDisableChange} checked={!disableComposerRules} type="checkbox" />
+                Rules
+              </label>
+            </div>
             <textarea
-              disabled={pending}
+              disabled={disableComposerRules || pending}
               defaultValue={rules}
               ref='composerRules'
               onChange={this.onRulesChange}

@@ -71,7 +71,7 @@
   cursor: pointer;
   vertical-align: middle;
 }
-.w-composer-bar input {
+.w-composer-bar input, .w-composer-rules .w-detail-inspectors-title input {
   margin: 0 3px 0 0;
   padding: 0;
   vertical-align: text-bottom;
@@ -107,6 +107,9 @@
 }
 .w-composer-rules .w-detail-inspectors-title {
   padding-left: 10px!important;
+}
+.w-composer-rules .w-detail-inspectors-title label {
+  margin: 0;
 }
 .w-custom-type {
   cursor: not-allowed!important;
