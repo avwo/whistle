@@ -116,7 +116,7 @@ var Composer = React.createClass({
     ReactDOM.findDOMNode(refs.url).value = item.url;
     ReactDOM.findDOMNode(refs.method).value = req.method;
     ReactDOM.findDOMNode(refs.headers).value =   util.getOriginalReqHeaders(item);
-    ReactDOM.findDOMNode(refs.body).value = util.getBody(req);
+    ReactDOM.findDOMNode(refs.body).value = req.method === 'GET' ? '' : util.getBody(req);
     this.updatePrettyData();
   },
   shouldComponentUpdate: function(nextProps) {
