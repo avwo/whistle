@@ -287,7 +287,7 @@ var Composer = React.createClass({
                     Text
                   </label>
                   <label>
-                    <input name="type" type="radio" checked />
+                    <input name="type" type="radio" checked disabled />
                     Custom
                   </label>
                   <button className={'btn btn-primary' + (showPretty ? '' : ' hide')}>Add header</button>
@@ -295,11 +295,22 @@ var Composer = React.createClass({
                 <textarea disabled={pending} defaultValue={state.headers} onChange={this.onComposerChange}
                   onKeyDown={this.onKeyDown} ref="headers" placeholder="Input the headers"
                   className={'fill orient-vertical-box' + (showPretty ? ' hide' : '')} />
-                <PropsEditor hide={!showPretty} />
+                <PropsEditor isHeader="1" hide={!showPretty} />
               </div>
               <div className="fill orient-vertical-box w-composer-body">
                 <div className="w-composer-bar">
                   <label className="w-composer-label">Body</label>
+                  <div className="w-composer-encoding">
+                    <label className="w-composer-label">Encoding:</label>
+                    <label>
+                      <input name="encoding" type="radio" checked />
+                      UTF8
+                    </label>
+                    <label>
+                      <input name="encoding" type="radio" />
+                      GBK
+                    </label>
+                  </div>
                   <button className="btn btn-default">Format JSON</button>
                   <button className={'btn btn-primary' + (showPretty && isForm ? '' : ' hide')}>Add field</button>
                 </div>
@@ -312,7 +323,7 @@ var Composer = React.createClass({
             {state.initedResponse ? <Properties className={'w-composer-res-' + getStatus(statusCode)} modal={{ statusCode: statusCode == null ? 'aborted' : statusCode }} hide={!showResponse} /> : undefined}
             {state.initedResponse ? <ResDetail modal={result} hide={!showResponse} /> : undefined}
           </div>
-          <div ref="rulesCon" className="orient-vertical-box fill">
+          <div ref="rulesCon" className="orient-vertical-box fill w-composer-rules">
             <div className="w-detail-inspectors-title">Rules</div>
             <textarea
               disabled={pending}

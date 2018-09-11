@@ -90,7 +90,13 @@
   cursor: text;
   color: #000!important;
 }
-.w-composer-body .w-composer-bar label {
+.w-composer-body .w-composer-encoding {
+  position: absolute;
+  top: 1px;
+  left: 60px;
+}
+.w-composer-body>.w-composer-bar>.w-composer-label {
+  padding: 0 25px 0 10px!important;
   position: absolute;
   left: 5px;
   top: 1px;
@@ -98,4 +104,7 @@
   border: none;
   padding: 0;
   margin: 0;
+}
+.w-composer-rules .w-detail-inspectors-title {
+  padding-left: 10px!important;
 }
