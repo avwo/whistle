@@ -399,7 +399,7 @@ var Composer = React.createClass({
                   <button className={'btn btn-primary' + (showPrettyBody ? '' : ' hide')}>Add field</button>
                 </div>
                 <textarea readOnly={pending || !hasBody} defaultValue={state.body} onChange={this.onComposerChange}
-                  onKeyDown={this.onKeyDown} ref="body" placeholder="Input the body"
+                  onKeyDown={this.onKeyDown} ref="body" placeholder={hasBody ? 'Input the body' : method + ' operations cannot have a request body'}
                   title={hasBody ? undefined : method + ' operations cannot have a request body'}
                   className={'fill orient-vertical-box' + (showPrettyBody ? ' hide' : '')} />
                 <PropsEditor ref="prettyBody" hide={!showPrettyBody} />
