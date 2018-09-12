@@ -157,7 +157,7 @@ var Composer = React.createClass({
       return;
     }
     var type = target.getAttribute('data-type');
-    this.setState({ type: type });
+    type && this.setState({ type: type });
   },
   onShowPretty: function(e) {
     var show = e.target.checked;
@@ -305,13 +305,14 @@ var Composer = React.createClass({
     var statusCode = result ? (result.res && result.res.statusCode) : '';
     var isForm = type === 'form';
     var isGBK = state.encoding === 'GBK';
-    var hasBody = util.hasRequestBody(state.method);
+    var method = state.method;
+    var hasBody = util.hasRequestBody(method);
     var showPrettyBody = hasBody && showPretty && isForm;
     
     return (
       <div className={'fill orient-vertical-box w-detail-content w-detail-composer' + (util.getBoolean(this.props.hide) ? ' hide' : '')}>
         <div className="w-composer-url box">
-          <select disabled={pending} defaultValue={state.method} onChange={this.onComposerChange} ref="method" className="form-control w-composer-method">
+          <select disabled={pending} defaultValue={method} onChange={this.onComposerChange} ref="method" className="form-control w-composer-method">
                   <option value="GET">GET</option>
                   <option value="POST">POST</option>
                   <option value="PUT">PUT</option>
@@ -394,6 +395,7 @@ var Composer = React.createClass({
                 </div>
                 <textarea readOnly={pending || !hasBody} defaultValue={state.body} onChange={this.onComposerChange}
                   onKeyDown={this.onKeyDown} ref="body" placeholder="Input the body"
+                  title={hasBody ? undefined : method + ' operations cannot have a request body'}
                   className={'fill orient-vertical-box' + (showPrettyBody ? ' hide' : '')} />
                 <PropsEditor ref="prettyBody" hide={!showPrettyBody} />
               </div>

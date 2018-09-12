@@ -20,6 +20,7 @@ var PropsEditor = React.createClass({
     if (keys.length > MAX_COUNT) {
       keys = keys.slice(0, MAX_COUNT);
     }
+    // TODO: 处理pending状态
     return (
       <div className={'fill orient-vertical-box w-props-editor' + (this.props.hide ? ' hide' : '')}>
         {keys.length ? (<table className="table">
