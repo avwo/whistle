@@ -115,3 +115,7 @@
   cursor: not-allowed!important;
   color: #333!important;
 }
+
+.w-detail-composer textarea:read-only, .w-detail-composer input:read-only {
+  background-color: #eee!important;
+}

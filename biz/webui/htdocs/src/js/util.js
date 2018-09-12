@@ -961,3 +961,14 @@ exports.parseHeaders = function(str) {
   }
   return parseRawJson(str, true) || parseHeaders(str);
 };
+
+function hasRequestBody(method) {
+  if (typeof method != 'string') {
+    return false;
+  }
+  method = method.toUpperCase();
+  return !(method === 'GET' || method === 'HEAD' ||
+  method === 'OPTIONS' || method === 'CONNECT');
+}
+
+exports.hasRequestBody = hasRequestBody;

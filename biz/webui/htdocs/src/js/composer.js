@@ -99,7 +99,7 @@ var Composer = React.createClass({
         self.onComposerChange();
       });
     });
-    this.updatePrettyData();
+    self.updatePrettyData();
   },
   updatePrettyData: function() {
     if (!this.state.showPretty) {
@@ -107,8 +107,12 @@ var Composer = React.createClass({
     }
     var prettyHeaders = util.parseHeaders(ReactDOM.findDOMNode(this.refs.headers).value);
     this.refs.prettyHeaders.update(prettyHeaders);
-    var body = ReactDOM.findDOMNode(this.refs.body).value;
-    body = util.parseQueryString(body, null, null, decodeURIComponent);
+    var method = ReactDOM.findDOMNode(this.refs.method).value || 'GET';
+    var body;
+    if (util.hasRequestBody(method)) {
+      body = ReactDOM.findDOMNode(this.refs.body).value;
+      body = util.parseQueryString(body, null, null, decodeURIComponent);
+    }
     this.refs.prettyBody.update(body);
   },
   update: function(item) {
@@ -138,9 +142,14 @@ var Composer = React.createClass({
     storage.set('composerData', JSON.stringify(params));
     return params;
   },
-  onComposerChange: function() {
+  onComposerChange: function(e) {
     clearTimeout(this.composerTimer);
     this.composerTimer = setTimeout(this.saveComposer, 1000);
+    var target = e && e.target;
+    if (target && target.nodeName === 'SELECT') {
+      this.setState({ method: ReactDOM.findDOMNode(this.refs.method).value });
+      this.updatePrettyData();
+    }
   },
   onTypeChange: function(e) {
     var target = e.target;
@@ -216,12 +225,15 @@ var Composer = React.createClass({
       }
     }
     var self = this;
+    var method = ReactDOM.findDOMNode(refs.method).value || 'GET';
+    var body = util.hasRequestBody(method)
+      ? ReactDOM.findDOMNode(refs.body).value.replace(/\r\n|\r|\n/g, '\r\n') : '';
     dataCenter.composer({
       needResponse: true,
       url: url,
       headers: headers,
-      method: ReactDOM.findDOMNode(refs.method).value || 'GET',
-      body: ReactDOM.findDOMNode(refs.body).value.replace(/\r\n|\r|\n/g, '\r\n')
+      method: method,
+      body: body
     }, function(data, xhr) {
       var state = { pending: false };
       if (!data || data.ec !== 0) {
@@ -293,6 +305,8 @@ var Composer = React.createClass({
     var statusCode = result ? (result.res && result.res.statusCode) : '';
     var isForm = type === 'form';
     var isGBK = state.encoding === 'GBK';
+    var hasBody = util.hasRequestBody(state.method);
+    var showPrettyBody = hasBody && showPretty && isForm;
     
     return (
       <div className={'fill orient-vertical-box w-detail-content w-detail-composer' + (util.getBoolean(this.props.hide) ? ' hide' : '')}>
@@ -315,7 +329,7 @@ var Composer = React.createClass({
                   <option value="UNLOCK">UNLOCK</option>
                   <option value="OPTIONS">OPTIONS</option>
                 </select>
-                <input disabled={pending} defaultValue={state.url} onKeyUp={this.execute} onChange={this.onComposerChange} onKeyDown={this.onKeyDown} onFocus={this.selectAll} ref="url" type="text" maxLength="8192" placeholder="url" className="fill w-composer-input" />
+                <input readOnly={pending} defaultValue={state.url} onKeyUp={this.execute} onChange={this.onComposerChange} onKeyDown={this.onKeyDown} onFocus={this.selectAll} ref="url" type="text" maxLength="8192" placeholder="url" className="fill w-composer-input" />
           <button disabled={pending} onClick={this.execute} className="btn btn-primary w-composer-execute">Go</button>
         </div>
         <div className="w-detail-inspectors-title w-composer-tabs">
@@ -354,7 +368,7 @@ var Composer = React.createClass({
                   </label>
                   <button className={'btn btn-primary' + (showPretty ? '' : ' hide')}>Add header</button>
                 </div>
-                <textarea disabled={pending} defaultValue={state.headers} onChange={this.onComposerChange}
+                <textarea readOnly={pending} defaultValue={state.headers} onChange={this.onComposerChange}
                   onKeyDown={this.onKeyDown} ref="headers" placeholder="Input the headers"
                   className={'fill orient-vertical-box' + (showPretty ? ' hide' : '')} />
                 <PropsEditor ref="prettyHeaders" isHeader="1" hide={!showPretty} />
@@ -375,13 +389,13 @@ var Composer = React.createClass({
                       GBK
                     </label>
                   </div>
-                  <button className={'btn btn-default' + (isForm ? ' hide' : '')} onClick={this.formatJSON}>Format JSON</button>
-                  <button className={'btn btn-primary' + (showPretty && isForm ? '' : ' hide')}>Add field</button>
+                  <button className={'btn btn-default' + (showPrettyBody ? ' hide' : '')} onClick={this.formatJSON}>Format JSON</button>
+                  <button className={'btn btn-primary' + (showPrettyBody ? '' : ' hide')}>Add field</button>
                 </div>
-                <textarea disabled={pending} defaultValue={state.body} onChange={this.onComposerChange}
+                <textarea readOnly={pending || !hasBody} defaultValue={state.body} onChange={this.onComposerChange}
                   onKeyDown={this.onKeyDown} ref="body" placeholder="Input the body"
-                  className={'fill orient-vertical-box' + (showPretty && isForm ? ' hide' : '')} />
-                <PropsEditor ref="prettyBody" hide={!showPretty || !isForm} />
+                  className={'fill orient-vertical-box' + (showPrettyBody ? ' hide' : '')} />
+                <PropsEditor ref="prettyBody" hide={!showPrettyBody} />
               </div>
             </Divider>
             {state.initedResponse ? <Properties className={'w-composer-res-' + getStatus(statusCode)} modal={{ statusCode: statusCode == null ? 'aborted' : statusCode }} hide={!showResponse} /> : undefined}
@@ -395,7 +409,7 @@ var Composer = React.createClass({
               </label>
             </div>
             <textarea
-              disabled={disableComposerRules || pending}
+              readOnly={disableComposerRules || pending}
               defaultValue={rules}
               ref='composerRules'
               onChange={this.onRulesChange}
