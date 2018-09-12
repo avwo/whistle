@@ -264,6 +264,9 @@ var Composer = React.createClass({
   },
   formatJSON: function() {
     var body = ReactDOM.findDOMNode(this.refs.body);
+    if (!body.value.trim()) {
+      return;
+    }
     var data = util.parseRawJson(body.value);
     if (data) {
       body.value = JSON.stringify(data, null, '  ');
@@ -365,7 +368,7 @@ var Composer = React.createClass({
                     <input data-type="text" name="type" type="radio" checked={type === 'text'} />
                     Text
                   </label>
-                  <label className="w-custom-type" title="Please directly modify Content-Type in the headers">
+                  <label className="w-custom-type" title="Directly modify Content-Type in the headers">
                     <input data-type="custom" name="type" type="radio" checked={type === 'custom'} disabled />
                     Custom
                   </label>
