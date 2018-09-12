@@ -43,7 +43,8 @@ var contextMenuList = [
       { name: 'Full URL' },
       { name: 'As CURL' },
       { name: 'Client IP' },
-      { name: 'Server IP' }
+      { name: 'Server IP' },
+      { name: 'Cookie' }
     ]
   },
   {
@@ -406,6 +407,11 @@ var ReqData = React.createClass({
         var serverIp = item && util.getServerIp(item);
         menu.disabled = !serverIp;
         menu.copyText = serverIp;
+        break;
+      case 'Cookie':
+        var cookie = item && item.req.headers.cookie;
+        menu.disabled = !cookie;
+        menu.copyText = cookie;
         break;
       }
     });
