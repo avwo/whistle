@@ -93,6 +93,7 @@ var Composer = React.createClass({
       activeItem && self.setState({
         data: activeItem,
         result: activeItem,
+        method: activeItem.req.method,
         encoding: 'UTF8'
       }, function() {
         self.update(activeItem);
