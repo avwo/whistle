@@ -14,31 +14,49 @@ var PropsEditor = React.createClass({
   update: function(data) {
     this.setState({ data: data });
   },
+  onEditor: function() {
+    if (this.props.disabled) {
+      return;
+    }
+    
+  },
+  onRemove: function() {
+    if (this.props.disabled) {
+      return;
+    }
+
+  },
   render: function() {
     var data = this.state.data || '';
     var keys = Object.keys(data);
     if (keys.length > MAX_COUNT) {
       keys = keys.slice(0, MAX_COUNT);
     }
-    // TODO: 处理pending状态
     return (
       <div className={'fill orient-vertical-box w-props-editor' + (this.props.hide ? ' hide' : '')}>
         {keys.length ? (<table className="table">
           <tbody>
             {
               keys.map(function(name) {
-                return (
-                  <tr>
-                    <th>{name.substring(0, MAX_NAME_LEN)}</th>
-                    <td>
-                      <pre>{util.toString(data[name]).substring(0, MAX_VALUE_LEN)}</pre>
-                    </td>
-                    <td className="w-props-ops">
-                      <a className="glyphicon glyphicon-remove" href="javascript:;" title="Delete"></a>
-                      <a className="glyphicon glyphicon-edit" href="javascript:;" title="Edit"></a>
-                    </td>
-                  </tr>
-                );
+                var value = data[name];
+                if (!Array.isArray(value)) {
+                  value = [value];
+                }
+                name = name.substring(0, MAX_NAME_LEN);
+                return value.map(function(val) {
+                  return (
+                    <tr>
+                      <th>{name}</th>
+                      <td>
+                        <pre>{util.toString(val).substring(0, MAX_VALUE_LEN)}</pre>
+                      </td>
+                      <td className="w-props-ops">
+                        <a className="glyphicon glyphicon-remove" href="javascript:;" title="Delete"></a>
+                        <a className="glyphicon glyphicon-edit" href="javascript:;" title="Edit"></a>
+                      </td>
+                    </tr>
+                  );
+                });
               })
             }
           </tbody>

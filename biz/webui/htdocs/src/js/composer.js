@@ -416,7 +416,7 @@ var Composer = React.createClass({
                 <textarea readOnly={pending} defaultValue={state.headers} onChange={this.onComposerChange}
                   onKeyDown={this.onKeyDown} ref="headers" placeholder="Input the headers" name="headers"
                   className={'fill orient-vertical-box' + (showPretty ? ' hide' : '')} />
-                <PropsEditor ref="prettyHeaders" isHeader="1" hide={!showPretty} />
+                <PropsEditor disabled={pending} ref="prettyHeaders" isHeader="1" hide={!showPretty} />
               </div>
               <div className="fill orient-vertical-box w-composer-body">
                 <div className="w-composer-bar">
@@ -441,7 +441,7 @@ var Composer = React.createClass({
                   onKeyDown={this.onKeyDown} ref="body" placeholder={hasBody ? 'Input the body' : method + ' operations cannot have a request body'}
                   title={hasBody ? undefined : method + ' operations cannot have a request body'}
                   className={'fill orient-vertical-box' + (showPrettyBody ? ' hide' : '')} />
-                <PropsEditor ref="prettyBody" hide={!showPrettyBody} />
+                <PropsEditor disabled={pending} ref="prettyBody" hide={!showPrettyBody} />
               </div>
             </Divider>
             {state.initedResponse ? <Properties className={'w-composer-res-' + getStatus(statusCode)} modal={{ statusCode: statusCode == null ? 'aborted' : statusCode }} hide={!showResponse} /> : undefined}
