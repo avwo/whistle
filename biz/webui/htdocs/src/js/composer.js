@@ -107,7 +107,9 @@ var Composer = React.createClass({
     }
     var prettyHeaders = util.parseHeaders(ReactDOM.findDOMNode(this.refs.headers).value);
     this.refs.prettyHeaders.update(prettyHeaders);
-    // TODO: ReactDOM.findDOMNode(this.refs.body).value
+    var body = ReactDOM.findDOMNode(this.refs.body).value;
+    body = util.parseQueryString(body, null, null, decodeURIComponent);
+    this.refs.prettyBody.update(body);
   },
   update: function(item) {
     if (!item) {
@@ -275,13 +277,7 @@ var Composer = React.createClass({
     if (tabName === this.state.tabName) {
       return;
     }
-    this.state.initedResponse = true;
-    var state = { tabName: tabName };
-    if (tabName === 'Request') {
-      state.prettyHeaders = null;
-      state.prettyBody = null;
-    }
-    this.setState(state);
+    this.setState({ tabName: tabName, initedResponse: true });
   },
   render: function() {
     var state = this.state;
