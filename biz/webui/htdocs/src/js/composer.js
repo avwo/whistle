@@ -93,6 +93,7 @@ var Composer = React.createClass({
       activeItem && self.setState({
         data: activeItem,
         result: activeItem,
+        type: 'custom',
         method: activeItem.req.method,
         encoding: 'UTF8'
       }, function() {
@@ -364,7 +365,7 @@ var Composer = React.createClass({
                     <input data-type="text" name="type" type="radio" checked={type === 'text'} />
                     Text
                   </label>
-                  <label className="w-custom-type">
+                  <label className="w-custom-type" title="Please directly modify Content-Type in the headers">
                     <input data-type="custom" name="type" type="radio" checked={type === 'custom'} disabled />
                     Custom
                   </label>
