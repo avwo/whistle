@@ -42,7 +42,7 @@ var PropsEditor = React.createClass({
             }
           </tbody>
         </table>) : (
-          <button className="btn btn-primary btn-sm w-add-field">{this.props.isHeader ? 'Add header' : 'Add field'}</button>
+          <button className={'btn btn-primary btn-sm w-add-field' + (this.props.isHeader ? ' w-add-header' : '')}>{this.props.isHeader ? 'Add header' : 'Add field'}</button>
         )}
       </div>
     );

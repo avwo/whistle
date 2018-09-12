@@ -12,11 +12,11 @@ var Properties = require('./properties');
 var PropsEditor = require('./props-editor');
 
 var TYPES = {
-  Form: 'application/x-www-form-urlencoded',
-  Upload: 'multipart/form-data',
-  Text: 'text/plain',
-  JSON: 'application/json',
-  Custom: ''
+  form: 'application/x-www-form-urlencoded',
+  upload: 'multipart/form-data',
+  text: 'text/plain',
+  json: 'application/json',
+  custom: ''
 };
 
 function getType(headers) {
@@ -26,17 +26,17 @@ function getType(headers) {
     var name = keys[i].toLowerCase();
     if (name === 'content-type') {
       if (type) {
-        return 'Custom';
+        return 'custom';
       }
       var value = headers[name];
       if (!value || typeof value !== 'string') {
-        return 'Custom';
+        return 'custom';
       }
       value = value.split(';')[0].trim().toLowerCase();
-      type = TYPES[value] || 'Custom';
+      type = TYPES[value] || 'custom';
     }
   }
-  return type || 'Custom';
+  return type || 'custom';
 }
 
 function removeDuplicateRules(rules) {
@@ -139,6 +139,14 @@ var Composer = React.createClass({
   onComposerChange: function() {
     clearTimeout(this.composerTimer);
     this.composerTimer = setTimeout(this.saveComposer, 1000);
+  },
+  onTypeChange: function(e) {
+    var target = e.target;
+    if (target.nodeName !== 'INPUT') {
+      return;
+    }
+    var type = target.getAttribute('data-type');
+    this.setState({ type: type });
   },
   onShowPretty: function(e) {
     var show = e.target.checked;
@@ -322,30 +330,30 @@ var Composer = React.createClass({
           <div className="orient-vertical-box fill">
             <Divider hide={!showRequest} vertical="true">
               <div className="fill orient-vertical-box w-composer-headers">
-                <div className="w-composer-bar">
+                <div className="w-composer-bar" onChange={this.onTypeChange}>
                   <label>
                     <input onChange={this.onShowPretty} type="checkbox" checked={showPretty} />
                     Pretty
                   </label>
                   <label className="w-composer-label">Type:</label>
                   <label>
-                    <input name="type" type="radio" />
+                    <input data-type="form" name="type" type="radio" checked={isForm} />
                     Form
                   </label>
                   <label>
-                    <input name="type" type="radio" />
+                    <input data-type="upload" name="type" type="radio" checked={type === 'upload'} />
                     Upload
                   </label>
                   <label>
-                    <input name="type" type="radio" />
+                    <input data-type="json" name="type" type="radio" checked={type === 'json'} />
                     JSON
                   </label>
                   <label>
-                    <input name="type" type="radio" />
+                    <input data-type="text" name="type" type="radio" checked={type === 'text'} />
                     Text
                   </label>
                   <label className="w-custom-type">
-                    <input name="type" type="radio" checked disabled />
+                    <input data-type="custom" name="type" type="radio" checked={type === 'custom'} disabled />
                     Custom
                   </label>
                   <button className={'btn btn-primary' + (showPretty ? '' : ' hide')}>Add header</button>

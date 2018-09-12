@@ -55,5 +55,9 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  margin: -20px 0 0 -48px;
+  margin: -20px 0 0 -38px;
+}
+
+.w-add-field.w-add-header {
+  margin-left: -48px;
 }

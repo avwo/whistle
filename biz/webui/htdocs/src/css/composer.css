@@ -54,7 +54,7 @@
   right: 10px;
   overflow: hidden;
 }
-.w-composer-body .btn {
+.w-composer-body .w-composer-bar .btn {
   position: static;
   margin-right: 10px;
 }
