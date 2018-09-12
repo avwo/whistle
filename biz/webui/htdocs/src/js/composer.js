@@ -18,13 +18,18 @@ var TYPES = {
   json: 'application/json',
   custom: ''
 };
+var CHARSET_RE = /;\s*(charset=[\w-]+)\s*$/;
+var REV_TYPES = {};
+Object.keys(TYPES).forEach(function(name) {
+  REV_TYPES[TYPES[name]] = name;
+});
 
 function getType(headers) {
   var keys = Object.keys(headers);
   var type;
   for (var i = 0, len = keys.length; i < len; i++) {
-    var name = keys[i].toLowerCase();
-    if (name === 'content-type') {
+    var name = keys[i];
+    if (name.toLowerCase() === 'content-type') {
       if (type) {
         return 'custom';
       }
@@ -33,7 +38,7 @@ function getType(headers) {
         return 'custom';
       }
       value = value.split(';')[0].trim().toLowerCase();
-      type = TYPES[value] || 'custom';
+      type = REV_TYPES[value] || 'custom';
     }
   }
   return type || 'custom';
@@ -77,7 +82,7 @@ var Composer = React.createClass({
       tabName: 'Request',
       showPretty: showPretty,
       rules: typeof rules === 'string' ? rules : '',
-      type: 'custom',
+      type: getType(util.parseHeaders(data.headers)),
       encoding: 'UTF8',
       disableComposerRules: disableComposerRules
     };
@@ -93,7 +98,7 @@ var Composer = React.createClass({
       activeItem && self.setState({
         data: activeItem,
         result: activeItem,
-        type: 'custom',
+        type: getType(activeItem.req.headers),
         method: activeItem.req.method,
         encoding: 'UTF8'
       }, function() {
@@ -125,7 +130,7 @@ var Composer = React.createClass({
     var req = item.req;
     ReactDOM.findDOMNode(refs.url).value = item.url;
     ReactDOM.findDOMNode(refs.method).value = req.method;
-    ReactDOM.findDOMNode(refs.headers).value =   util.getOriginalReqHeaders(item);
+    ReactDOM.findDOMNode(refs.headers).value =  util.getOriginalReqHeaders(item);
     ReactDOM.findDOMNode(refs.body).value = req.method === 'GET' ? '' : util.getBody(req);
     this.updatePrettyData();
   },
@@ -148,9 +153,20 @@ var Composer = React.createClass({
     clearTimeout(this.composerTimer);
     this.composerTimer = setTimeout(this.saveComposer, 1000);
     var target = e && e.target;
-    if (target && target.nodeName === 'SELECT') {
-      this.setState({ method: ReactDOM.findDOMNode(this.refs.method).value });
-      this.updatePrettyData();
+    if (target) {
+      if (target.nodeName === 'SELECT') {
+        this.setState({ method: ReactDOM.findDOMNode(this.refs.method).value });
+        this.updatePrettyData();
+      } else if (target.name === 'headers') {
+        clearTimeout(this.typeTimer);
+        var self = this;
+        this.typeTimer = setTimeout(function() {
+          var headers = ReactDOM.findDOMNode(self.refs.headers).value;
+          self.setState({
+            type: getType(util.parseHeaders(headers))
+          });
+        }, 1000);
+      }
     }
   },
   onTypeChange: function(e) {
@@ -159,7 +175,30 @@ var Composer = React.createClass({
       return;
     }
     var type = target.getAttribute('data-type');
-    type && this.setState({ type: type });
+    if (type) {
+      this.setState({ type: type });
+      if (type = TYPES[type]) {
+        var elem = ReactDOM.findDOMNode(this.refs.headers);
+        var headers = util.parseHeaders(elem.value);
+        Object.keys(headers).forEach(function(name) {
+          if (name.toLowerCase() === 'content-type') {
+            if (type) {
+              var charset = CHARSET_RE.test(headers[name]) ? ';' + RegExp.$1 : '';
+              headers[name] = type + charset;
+              type = null;
+            } else {
+              delete headers[name];
+            }
+          }
+        });
+        if (type) {
+          headers['Content-Type'] = type;
+        }
+        elem.value = util.objectToString(headers);
+        this.updatePrettyData();
+        this.saveComposer();
+      }
+    }
   },
   onShowPretty: function(e) {
     var show = e.target.checked;
@@ -375,7 +414,7 @@ var Composer = React.createClass({
                   <button className={'btn btn-primary' + (showPretty ? '' : ' hide')}>Add header</button>
                 </div>
                 <textarea readOnly={pending} defaultValue={state.headers} onChange={this.onComposerChange}
-                  onKeyDown={this.onKeyDown} ref="headers" placeholder="Input the headers"
+                  onKeyDown={this.onKeyDown} ref="headers" placeholder="Input the headers" name="headers"
                   className={'fill orient-vertical-box' + (showPretty ? ' hide' : '')} />
                 <PropsEditor ref="prettyHeaders" isHeader="1" hide={!showPretty} />
               </div>
