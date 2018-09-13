@@ -1,7 +1,9 @@
 require('./base-css.js');
 require('../css/props-editor.css');
 var React = require('react');
+var Dialog = require('./dialog');
 var util = require('./util');
+var message = require('./message');
 
 var MAX_NAME_LEN = 128;
 var MAX_VALUE_LEN = 36 * 1024;
@@ -42,13 +44,22 @@ var PropsEditor = React.createClass({
     return overflow;
   },
   onAdd: function() {
-
-  },
-  onEdit: function() {
     if (this.props.disabled) {
       return;
     }
-    alert('remove');
+    if (Object.keys(this.state.modal || '').length >= MAX_COUNT) {
+      return message.error('The number cannot exceed ' + MAX_COUNT + '.');
+    }
+    this.refs.composerDialog.show();
+    this.setState({ data: '' });
+  },
+  onEdit: function(e) {
+    if (this.props.disabled) {
+      return;
+    }
+    var name = e.target.getAttribute('data-name');
+    this.refs.composerDialog.show();
+    this.setState({ data: this.state.modal[name] });
   },
   onRemove: function(e) {
     if (this.props.disabled) {
@@ -81,6 +92,9 @@ var PropsEditor = React.createClass({
     var self = this;
     var modal = this.state.modal || '';
     var keys = Object.keys(modal);
+    var isHeader = this.props.isHeader;
+    var data = this.state.data || '';
+    var btnText = (data ? 'Modify' : 'Add') + (isHeader ? ' header' : ' field');
     
     return (
       <div className={'fill orient-vertical-box w-props-editor' + (this.props.hide ? ' hide' : '')}>
@@ -105,8 +119,23 @@ var PropsEditor = React.createClass({
             }
           </tbody>
         </table>) : (
-          <button className={'btn btn-primary btn-sm w-add-field' + (this.props.isHeader ? ' w-add-header' : '')}>{this.props.isHeader ? 'Add header' : 'Add field'}</button>
+          <button onClick={this.onAdd} className={'btn btn-primary btn-sm w-add-field' + (this.props.isHeader ? ' w-add-header' : '')}>{this.props.isHeader ? 'Add header' : 'Add field'}</button>
         )}
+        <Dialog ref="composerDialog" wstyle="w-composer-dialog">
+            <div className="modal-body">
+              <button type="button" className="close" data-dismiss="modal">
+                <span aria-hidden="true">&times;</span>
+              </button>
+              Key:
+              <input maxLength="128" />
+              Value:
+              { isHeader ? <input /> : <textarea />}
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-primary" data-dismiss="modal">{ btnText }</button>
+              <button type="button" className="btn btn-default" data-dismiss="modal">Cancel</button>
+            </div>
+          </Dialog>
       </div>
     );
   }
