@@ -95,16 +95,17 @@ var Composer = React.createClass({
         return;
       }
       var activeItem = self.props.modal;
-      activeItem && self.setState({
-        data: activeItem,
-        result: activeItem,
-        type: getType(activeItem.req.headers),
-        method: activeItem.req.method,
-        encoding: 'UTF8'
-      }, function() {
-        self.update(activeItem);
-        self.onComposerChange();
-      });
+      if (activeItem) {
+        self.setState({
+          result: activeItem,
+          type: getType(activeItem.req.headers),
+          method: activeItem.req.method,
+          encoding: 'UTF8'
+        }, function() {
+          self.update(activeItem);
+          self.onComposerChange();
+        });
+      }
     });
     self.updatePrettyData();
   },
@@ -200,6 +201,18 @@ var Composer = React.createClass({
       }
     }
   },
+  addHeader: function() {
+    this.refs.prettyHeaders.onAdd();
+  },
+  addField: function() {
+    this.refs.prettyBody.onAdd();
+  },
+  onHeaderChange: function() {
+
+  },
+  onFieldChange: function() {
+
+  },
   onShowPretty: function(e) {
     var show = e.target.checked;
     storage.set('showPretty', show ? 1 : 0);
@@ -279,7 +292,7 @@ var Composer = React.createClass({
       var state = { pending: false };
       if (!data || data.ec !== 0) {
         util.showSystemError(xhr);
-        state.data = { url: url };
+        state.result = { url: url, req: '', res: { statusCode: 'error' } };
       } else {
         data.res = data.res || { statusCode: 200 };
         data.url = url;
@@ -411,12 +424,12 @@ var Composer = React.createClass({
                     <input data-type="custom" name="type" type="radio" checked={type === 'custom'} disabled />
                     Custom
                   </label>
-                  <button className={'btn btn-primary' + (showPretty ? '' : ' hide')}>Add header</button>
+                  <button className={'btn btn-primary' + (showPretty ? '' : ' hide')} onClick={this.addHeader}>Add header</button>
                 </div>
                 <textarea readOnly={pending} defaultValue={state.headers} onChange={this.onComposerChange}
                   onKeyDown={this.onKeyDown} ref="headers" placeholder="Input the headers" name="headers"
                   className={'fill orient-vertical-box' + (showPretty ? ' hide' : '')} />
-                <PropsEditor disabled={pending} ref="prettyHeaders" isHeader="1" hide={!showPretty} />
+                <PropsEditor disabled={pending} ref="prettyHeaders" isHeader="1" hide={!showPretty} onChange={this.onHeaderChange} />
               </div>
               <div className="fill orient-vertical-box w-composer-body">
                 <div className="w-composer-bar">
@@ -435,13 +448,13 @@ var Composer = React.createClass({
                     </label>
                   </div>
                   <button className={'btn btn-default' + (showPrettyBody ? ' hide' : '')} onClick={this.formatJSON}>Format JSON</button>
-                  <button className={'btn btn-primary' + (showPrettyBody ? '' : ' hide')}>Add field</button>
+                  <button className={'btn btn-primary' + (showPrettyBody ? '' : ' hide')} onClick={this.addField}>Add field</button>
                 </div>
                 <textarea readOnly={pending || !hasBody} defaultValue={state.body} onChange={this.onComposerChange}
                   onKeyDown={this.onKeyDown} ref="body" placeholder={hasBody ? 'Input the body' : method + ' operations cannot have a request body'}
                   title={hasBody ? undefined : method + ' operations cannot have a request body'}
                   className={'fill orient-vertical-box' + (showPrettyBody ? ' hide' : '')} />
-                <PropsEditor disabled={pending} ref="prettyBody" hide={!showPrettyBody} />
+                <PropsEditor disabled={pending} ref="prettyBody" hide={!showPrettyBody} onChange={this.onFieldChange} />
               </div>
             </Divider>
             {state.initedResponse ? <Properties className={'w-composer-res-' + getStatus(statusCode)} modal={{ statusCode: statusCode == null ? 'aborted' : statusCode }} hide={!showResponse} /> : undefined}

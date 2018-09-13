@@ -41,19 +41,23 @@ var PropsEditor = React.createClass({
     this.setState({ modal: modal });
     return overflow;
   },
-  onEditor: function() {
+  onAdd: function() {
+
+  },
+  onEdit: function() {
     if (this.props.disabled) {
       return;
     }
-    
+    alert('remove');
   },
   onRemove: function() {
     if (this.props.disabled) {
       return;
     }
-
+    alert('Edit');
   },
   render: function() {
+    var self = this;
     var modal = this.state.modal || '';
     var keys = Object.keys(modal);
     
@@ -71,8 +75,8 @@ var PropsEditor = React.createClass({
                       <pre>{item.value}</pre>
                     </td>
                     <td className="w-props-ops">
-                      <a className="glyphicon glyphicon-remove" href="javascript:;" title="Delete"></a>
-                      <a className="glyphicon glyphicon-edit" href="javascript:;" title="Edit"></a>
+                      <a onClick={self.onRemove} className="glyphicon glyphicon-remove" href="javascript:;" title="Delete"></a>
+                      <a onClick={self.onEdit} className="glyphicon glyphicon-edit" href="javascript:;" title="Edit"></a>
                     </td>
                   </tr>
                 );
