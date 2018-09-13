@@ -18,7 +18,7 @@ var TYPES = {
   json: 'application/json',
   custom: ''
 };
-var CHARSET_RE = /;\s*(charset=[\w-]+)\s*$/;
+var TYPE_CONF_RE = /;.+$/;
 var REV_TYPES = {};
 Object.keys(TYPES).forEach(function(name) {
   REV_TYPES[TYPES[name]] = name;
@@ -184,8 +184,8 @@ var Composer = React.createClass({
         Object.keys(headers).forEach(function(name) {
           if (name.toLowerCase() === 'content-type') {
             if (type) {
-              var charset = CHARSET_RE.test(headers[name]) ? ';' + RegExp.$1 : '';
-              headers[name] = type + charset;
+              var addon = TYPE_CONF_RE.test(headers[name]) ? RegExp['$&'] : '';
+              headers[name] = type + addon;
               type = null;
             } else {
               delete headers[name];
