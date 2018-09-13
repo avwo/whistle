@@ -784,6 +784,12 @@ function decodeURIComponentSafe(str) {
 }
 
 exports.decodeURIComponentSafe = decodeURIComponentSafe;
+exports.encodeURIComponent = function(str) {
+  try {
+    return encodeURIComponent(str);
+  } catch(e) {}
+  return str;
+}
 
 function base64toBytes(base64) {
   try {

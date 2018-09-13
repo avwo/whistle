@@ -50,11 +50,32 @@ var PropsEditor = React.createClass({
     }
     alert('remove');
   },
-  onRemove: function() {
+  onRemove: function(e) {
     if (this.props.disabled) {
       return;
     }
-    alert('Edit');
+    var name = e.target.getAttribute('data-name');
+    var opName = this.props.isHeader ? 'header' : 'field';
+    var item = this.state.modal[name];
+    if (confirm('Confirm delete this ' + opName + ' \'' + item.name + '\'.')) {
+      delete this.state.modal[name];
+      this.props.onChange(item.name);
+      this.setState({});
+    }
+  },
+  toString: function() {
+    var modal = this.state.modal;
+    var keys = Object.keys(modal || '');
+    if (this.props.isHeader) {
+      return keys.map(function(key) {
+        var obj = modal[key];
+        return obj.name + ': ' + obj.value;
+      }).join('\r\n');
+    }
+    return keys.map(function(key) {
+      var obj = modal[key];
+      return util.encodeURIComponent(obj.name) + '=' + util.encodeURIComponent(obj.value);
+    }).join('&');
   },
   render: function() {
     var self = this;
@@ -75,8 +96,8 @@ var PropsEditor = React.createClass({
                       <pre>{item.value}</pre>
                     </td>
                     <td className="w-props-ops">
-                      <a onClick={self.onRemove} className="glyphicon glyphicon-remove" href="javascript:;" title="Delete"></a>
-                      <a onClick={self.onEdit} className="glyphicon glyphicon-edit" href="javascript:;" title="Edit"></a>
+                      <a data-name={name} onClick={self.onRemove} className="glyphicon glyphicon-remove" href="javascript:;" title="Delete"></a>
+                      <a data-name={name} onClick={self.onEdit} className="glyphicon glyphicon-edit" href="javascript:;" title="Edit"></a>
                     </td>
                   </tr>
                 );

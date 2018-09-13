@@ -207,11 +207,21 @@ var Composer = React.createClass({
   addField: function() {
     this.refs.prettyBody.onAdd();
   },
-  onHeaderChange: function() {
-
+  onHeaderChange: function(key) {
+    var refs = this.refs;
+    var headers = refs.prettyHeaders.toString();
+    ReactDOM.findDOMNode(refs.headers).value = headers;
+    this.saveComposer();
+    if (key.toLowerCase() === 'content-type') {
+      this.setState({
+        type: getType(util.parseHeaders(headers))
+      });
+    }
   },
   onFieldChange: function() {
-
+    var refs = this.refs;
+    ReactDOM.findDOMNode(refs.body).value = refs.prettyBody.toString();
+    this.saveComposer();
   },
   onShowPretty: function(e) {
     var show = e.target.checked;
