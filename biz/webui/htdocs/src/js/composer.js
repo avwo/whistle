@@ -468,7 +468,7 @@ var Composer = React.createClass({
               </label>
             </div>
             <textarea
-              readOnly={disableComposerRules || pending}
+              readOnly={disableComposerRules}
               defaultValue={rules}
               ref='composerRules'
               onChange={this.onRulesChange}
