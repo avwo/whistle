@@ -16,7 +16,7 @@
   word-break: break-word;
 }
 .w-props-editor th {
-  width: 200px;
+  width: 125px;
   line-height: 22px!important;
   background: #e1e3e6;
   text-align: right;
@@ -39,7 +39,7 @@
 .w-props-editor pre {
   overflow: auto;
   line-height: 22px!important;
-  max-height: 220px;
+  max-height: 350px;
   padding: 0 8px!important;
 }
 
