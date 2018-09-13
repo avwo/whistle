@@ -61,3 +61,16 @@
 .w-add-field.w-add-header {
   margin-left: -48px;
 }
+.w-composer-dialog .modal-content {
+  width: 600px;
+}
+.w-composer-dialog label {
+  display: block;
+  padding: 10px 0;
+}
+.w-composer-dialog label textarea {
+  height: 120px;
+}
+.w-composer-dialog label input, .w-composer-dialog label textarea {
+  font-weight: normal;
+}

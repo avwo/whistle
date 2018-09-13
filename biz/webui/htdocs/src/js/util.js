@@ -789,7 +789,7 @@ exports.encodeURIComponent = function(str) {
     return encodeURIComponent(str);
   } catch(e) {}
   return str;
-}
+};
 
 function base64toBytes(base64) {
   try {

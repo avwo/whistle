@@ -1,6 +1,7 @@
 require('./base-css.js');
 require('../css/props-editor.css');
 var React = require('react');
+var ReactDOM = require('react-dom');
 var Dialog = require('./dialog');
 var util = require('./util');
 var message = require('./message');
@@ -50,16 +51,30 @@ var PropsEditor = React.createClass({
     if (Object.keys(this.state.modal || '').length >= MAX_COUNT) {
       return message.error('The number cannot exceed ' + MAX_COUNT + '.');
     }
-    this.refs.composerDialog.show();
     this.setState({ data: '' });
+    this.showDialog();
   },
   onEdit: function(e) {
     if (this.props.disabled) {
       return;
     }
     var name = e.target.getAttribute('data-name');
+    var data = this.state.modal[name];
+    this.setState({ data: data });
+    this.showDialog(data);
+  },
+  showDialog: function(data) {
     this.refs.composerDialog.show();
-    this.setState({ data: this.state.modal[name] });
+    var nameInput = ReactDOM.findDOMNode(this.refs.name);
+    var valueInput = ReactDOM.findDOMNode(this.refs.valueInput);
+    if (data) {
+      nameInput.value = data.name || '';
+      valueInput.value = data.value || '';
+    }
+    setTimeout(function() {
+      nameInput.select();
+      nameInput.focus();
+    }, 600);
   },
   onRemove: function(e) {
     if (this.props.disabled) {
@@ -110,8 +125,8 @@ var PropsEditor = React.createClass({
                       <pre>{item.value}</pre>
                     </td>
                     <td className="w-props-ops">
-                      <a data-name={name} onClick={self.onRemove} className="glyphicon glyphicon-remove" href="javascript:;" title="Delete"></a>
                       <a data-name={name} onClick={self.onEdit} className="glyphicon glyphicon-edit" href="javascript:;" title="Edit"></a>
+                      <a data-name={name} onClick={self.onRemove} className="glyphicon glyphicon-remove" href="javascript:;" title="Delete"></a>
                     </td>
                   </tr>
                 );
@@ -126,10 +141,15 @@ var PropsEditor = React.createClass({
               <button type="button" className="close" data-dismiss="modal">
                 <span aria-hidden="true">&times;</span>
               </button>
-              Key:
-              <input maxLength="128" />
-              Value:
-              { isHeader ? <input /> : <textarea />}
+              <label>
+                Name:
+                <input ref="name" placeholder="Input the name" className="form-control" maxLength="128" />
+              </label>
+              <label>
+                Value:
+                { isHeader ? <input ref="valueInput" maxLength={MAX_VALUE_LEN} placeholder="Input the value" className="form-control" />
+                  : <textarea ref="valueInput" maxLength={MAX_VALUE_LEN} placeholder="Input the value" className="form-control" />}
+              </label>
             </div>
             <div className="modal-footer">
               <button type="button" className="btn btn-primary" data-dismiss="modal">{ btnText }</button>
