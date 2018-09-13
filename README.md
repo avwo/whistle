@@ -1,3 +1,5 @@
+English | [简体中文](./README_zh-CN.md)
+
 <p align="center">
   <a href="https://avwo.github.io/whistle/">
     <img alt="whistle logo" src="https://raw.githubusercontent.com/avwo/whistle/master/biz/webui/htdocs/img/whistle.png">
@@ -14,10 +16,7 @@
 [![NPM count](https://img.shields.io/npm/dt/whistle.svg?style=flat-square)](https://www.npmjs.com/package/whistle)
 [![License](https://img.shields.io/npm/l/whistle.svg?style=flat-square)](https://www.npmjs.com/package/whistle)
 
-[中文 README](README-zh_CN.md)
-
 **whistle** is a cross-platform web debugging tool based on Node.js.
-
 
 It features the following:
 

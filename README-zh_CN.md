@@ -1,3 +1,5 @@
+[English](./README.md) | 简体中文
+
 <p align="center">
   <a href="https://avwo.github.io/whistle/">
     <img alt="whistle logo" src="https://raw.githubusercontent.com/avwo/whistle/master/biz/webui/htdocs/img/whistle.png">
