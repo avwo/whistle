@@ -79,6 +79,7 @@ var PropsEditor = React.createClass({
     data.value = value;
     this.props.onChange(origName, name);
     this.setState({});
+    this.hideDialog();
   },
   add: function() {
     var name = ReactDOM.findDOMNode(this.refs.name).value.trim();
@@ -93,6 +94,10 @@ var PropsEditor = React.createClass({
     };
     this.props.onChange(name);
     this.setState({});
+    this.hideDialog();
+  },
+  hideDialog: function() {
+    this.refs.composerDialog.hide();
   },
   showDialog: function(data) {
     this.refs.composerDialog.show();
@@ -182,7 +187,7 @@ var PropsEditor = React.createClass({
               </label>
             </div>
             <div className="modal-footer">
-              <button type="button" className="btn btn-primary" data-dismiss="modal"
+              <button type="button" className="btn btn-primary"
                 onClick={data ? self.edit : self.add}>{ btnText }</button>
               <button type="button" className="btn btn-default" data-dismiss="modal">Cancel</button>
             </div>
