@@ -70,7 +70,8 @@ module.exports = function(req, res, next) {
   }
   var pluginHomePage, localRule;
   if (proxyUrl) {
-    rules.resolveHost('http://' + proxyUrl, function(err, ip) {
+    req.curUrl = 'http://' + proxyUrl;
+    rules.resolveHost(req, function(err, ip) {
       if (err) {
         return next(err);
       }
