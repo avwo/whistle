@@ -83,7 +83,6 @@ var Composer = React.createClass({
       showPretty: showPretty,
       rules: typeof rules === 'string' ? rules : '',
       type: getType(util.parseHeaders(data.headers)),
-      encoding: 'UTF8',
       disableComposerRules: disableComposerRules
     };
   },
@@ -99,8 +98,7 @@ var Composer = React.createClass({
         self.setState({
           result: activeItem,
           type: getType(activeItem.req.headers),
-          method: activeItem.req.method,
-          encoding: 'UTF8'
+          method: activeItem.req.method
         }, function() {
           self.update(activeItem);
           self.onComposerChange();
@@ -228,10 +226,6 @@ var Composer = React.createClass({
     var show = e.target.checked;
     storage.set('showPretty', show ? 1 : 0);
     this.setState({ showPretty: show }, this.updatePrettyData);
-  },
-  onEncodingChange: function(e) {
-    var encoding = e.target.getAttribute('data-encoding');
-    this.setState({ encoding: encoding });
   },
   onDisableChange: function(e) {
     var disableComposerRules = !e.target.checked;
@@ -372,8 +366,6 @@ var Composer = React.createClass({
     var showResponse = tabName === 'Response';
     var statusCode = result ? (result.res && result.res.statusCode) : '';
     var isForm = type === 'form';
-    var encoding = state.encoding;
-    var isGBK = encoding === 'GBK';
     var method = state.method;
     var hasBody = util.hasRequestBody(method);
     var showPrettyBody = hasBody && showPretty && isForm;
@@ -446,19 +438,6 @@ var Composer = React.createClass({
               <div className="fill orient-vertical-box w-composer-body">
                 <div className="w-composer-bar">
                   <label className="w-composer-label">Body</label>
-                  <div className={'w-composer-encoding' + (showPrettyBody ? '' : ' hide')}>
-                    <label className="w-composer-label">Encoding:</label>
-                    <label>
-                      <input onChange={this.onEncodingChange} data-encoding="UTF8"
-                        name="encoding" type="radio" checked={encoding === 'UTF8'} />
-                      UTF8
-                    </label>
-                    <label style={{ color: isGBK ? 'red' : undefined }}>
-                      <input onChange={this.onEncodingChange} data-encoding="GBK"
-                        name="encoding" type="radio" checked={isGBK} />
-                      GBK
-                    </label>
-                  </div>
                   <button className={'btn btn-default' + (showPrettyBody ? ' hide' : '')} onClick={this.formatJSON}>Format JSON</button>
                   <button className={'btn btn-primary' + (showPrettyBody ? '' : ' hide')} onClick={this.addField}>Add field</button>
                 </div>
@@ -466,7 +445,7 @@ var Composer = React.createClass({
                   onKeyDown={this.onKeyDown} ref="body" placeholder={hasBody ? 'Input the body' : method + ' operations cannot have a request body'}
                   title={hasBody ? undefined : method + ' operations cannot have a request body'}
                   className={'fill orient-vertical-box' + (showPrettyBody ? ' hide' : '')} />
-                <PropsEditor encoding={encoding} disabled={pending} ref="prettyBody" hide={!showPrettyBody} onChange={this.onFieldChange} />
+                <PropsEditor disabled={pending} ref="prettyBody" hide={!showPrettyBody} onChange={this.onFieldChange} />
               </div>
             </Divider>
             {state.initedResponse ? <Properties className={'w-composer-res-' + getStatus(statusCode)} modal={{ statusCode: statusCode == null ? 'aborted' : statusCode }} hide={!showResponse} /> : undefined}
