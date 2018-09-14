@@ -6,9 +6,11 @@ var Dialog = require('./dialog');
 var util = require('./util');
 var message = require('./message');
 
+var CRLF_RE = /[\r\n]+/g;
 var MAX_NAME_LEN = 128;
 var MAX_VALUE_LEN = 36 * 1024;
 var MAX_COUNT = 160;
+var index = MAX_COUNT;
 
 var PropsEditor = React.createClass({
   getInitialState: function() {
@@ -63,6 +65,33 @@ var PropsEditor = React.createClass({
     this.setState({ data: data });
     this.showDialog(data);
   },
+  edit: function() {
+    var name = ReactDOM.findDOMNode(this.refs.name).value.trim();
+    if (!name) {
+      return message.error('The name cannot be empty.');
+    }
+    var value = ReactDOM.findDOMNode(this.refs.valueInput).value.trim();
+    var data = this.state.data;
+    var origName = data.name;
+    data.name = name;
+    data.value = value;
+    this.props.onChange(origName, name);
+    this.setState({});
+  },
+  add: function() {
+    var name = ReactDOM.findDOMNode(this.refs.name).value.trim();
+    if (!name) {
+      return message.error('The name cannot be empty.');
+    }
+    var value = ReactDOM.findDOMNode(this.refs.valueInput).value.trim();
+    var modal = this.state.modal;
+    modal[name + '_' + ++index] = {
+      name: name,
+      value: value
+    };
+    this.props.onChange(name);
+    this.setState({});
+  },
   showDialog: function(data) {
     this.refs.composerDialog.show();
     var nameInput = ReactDOM.findDOMNode(this.refs.name);
@@ -95,7 +124,7 @@ var PropsEditor = React.createClass({
     if (this.props.isHeader) {
       return keys.map(function(key) {
         var obj = modal[key];
-        return obj.name + ': ' + obj.value;
+        return obj.name + ': ' + obj.value.replace(CRLF_RE, ' ');
       }).join('\r\n');
     }
     return keys.map(function(key) {
@@ -147,12 +176,12 @@ var PropsEditor = React.createClass({
               </label>
               <label>
                 Value:
-                { isHeader ? <input ref="valueInput" maxLength={MAX_VALUE_LEN} placeholder="Input the value" className="form-control" />
-                  : <textarea ref="valueInput" maxLength={MAX_VALUE_LEN} placeholder="Input the value" className="form-control" />}
+                <textarea ref="valueInput" maxLength={MAX_VALUE_LEN} placeholder="Input the value" className="form-control" />
               </label>
             </div>
             <div className="modal-footer">
-              <button type="button" className="btn btn-primary" data-dismiss="modal">{ btnText }</button>
+              <button type="button" className="btn btn-primary" data-dismiss="modal"
+                onClick={data ? self.edit : self.add}>{ btnText }</button>
               <button type="button" className="btn btn-default" data-dismiss="modal">Cancel</button>
             </div>
           </Dialog>

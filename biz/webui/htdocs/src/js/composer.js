@@ -207,12 +207,13 @@ var Composer = React.createClass({
   addField: function() {
     this.refs.prettyBody.onAdd();
   },
-  onHeaderChange: function(key) {
+  onHeaderChange: function(key, newKey) {
     var refs = this.refs;
     var headers = refs.prettyHeaders.toString();
     ReactDOM.findDOMNode(refs.headers).value = headers;
     this.saveComposer();
-    if (key.toLowerCase() === 'content-type') {
+    if (key.toLowerCase() === 'content-type' ||
+      (newKey && newKey.toLowerCase() === 'content-type')) {
       this.setState({
         type: getType(util.parseHeaders(headers))
       });
