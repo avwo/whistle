@@ -366,7 +366,7 @@ var Composer = React.createClass({
     var showResponse = tabName === 'Response';
     var statusCode = result ? (result.res && result.res.statusCode) : '';
     var isForm = type === 'form';
-    var method = state.method;
+    var method = state.method || 'GET';
     var hasBody = util.hasRequestBody(method);
     var showPrettyBody = hasBody && showPretty && isForm;
     
