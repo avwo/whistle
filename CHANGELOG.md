@@ -1,6 +1,8 @@
 ### v1.12.6
 1. style: 优化Composer，支持展示 `Response` 数据
-2. feat: 支持通过 `filter://m:methodName`、`filter://i:clientIp`、`filter://h:key=subValue` 过滤规则
+2. feat: 支持通过 `filter://m:methodName`、`filter://i:clientIp`、`filter://h:key=subValue` 过滤规则，及支持取非 `filter://m:!methodName`、`filter://i:!clientIp`、`filter://h:key!=subValue`，`value` 也可以用正则 `/xxx/` 或 `/xxx/i` 替代
+3. feat: 删除对 `whistle-ssl` 特性的支持
+
 
 ### v1.12.5
 1. refactor: 支持 `delete` 请求传递请求body
