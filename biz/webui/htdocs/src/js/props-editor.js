@@ -68,11 +68,13 @@ var PropsEditor = React.createClass({
     this.showDialog(data);
   },
   edit: function() {
-    var name = ReactDOM.findDOMNode(this.refs.name).value.trim();
+    var nameInput = ReactDOM.findDOMNode(this.refs.name);
+    var name = nameInput.value.trim();
     if (!name) {
       return message.error('The name cannot be empty.');
     }
-    var value = ReactDOM.findDOMNode(this.refs.valueInput).value.trim();
+    var valueInput = ReactDOM.findDOMNode(this.refs.valueInput);
+    var value = valueInput.value.trim();
     var data = this.state.data;
     var origName = data.name;
     data.name = name;
@@ -80,13 +82,16 @@ var PropsEditor = React.createClass({
     this.props.onChange(origName, name);
     this.setState({});
     this.hideDialog();
+    nameInput.value = valueInput.value = '';
   },
   add: function() {
-    var name = ReactDOM.findDOMNode(this.refs.name).value.trim();
+    var nameInput = ReactDOM.findDOMNode(this.refs.name);
+    var name = nameInput.value.trim();
     if (!name) {
       return message.error('The name cannot be empty.');
     }
-    var value = ReactDOM.findDOMNode(this.refs.valueInput).value.trim();
+    var valueInput = ReactDOM.findDOMNode(this.refs.valueInput);
+    var value = valueInput.value.trim();
     var modal = this.state.modal;
     modal[name + '_' + ++index] = {
       name: name,
@@ -95,6 +100,7 @@ var PropsEditor = React.createClass({
     this.props.onChange(name);
     this.setState({});
     this.hideDialog();
+    nameInput.value = valueInput.value = '';
   },
   hideDialog: function() {
     this.refs.composerDialog.hide();
