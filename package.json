@@ -4,7 +4,6 @@
   "version": "1.12.6",
   "dataDirname": ".whistle",
   "localUIHost": "local.whistlejs.com",
-  "whistleSsl": "whistle-ssl",
   "port": 8899,
   "ports": [
     "uiport",
