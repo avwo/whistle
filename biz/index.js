@@ -70,6 +70,7 @@ module.exports = function(req, res, next) {
     return next();
   }
   var pluginHomePage, localRule;
+  req.curUrl = fullUrl;
   if (proxyUrl) {
     req.curUrl = 'http://' + proxyUrl;
     rules.resolveHost(req, function(err, ip) {
@@ -98,7 +99,7 @@ module.exports = function(req, res, next) {
       }
       util.transformReq(req, res, ports.uiPort);
     });
-  } else if (localRule = rules.resolveLocalRule(fullUrl)) {
+  } else if (localRule = rules.resolveLocalRule(req)) {
     req.url = localRule.url;
     util.transformReq(req, res, config.uiport);
   } else {
