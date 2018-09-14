@@ -209,7 +209,7 @@ var Composer = React.createClass({
   },
   onHeaderChange: function(key, newKey) {
     var refs = this.refs;
-    var headers = refs.prettyHeaders.toString();
+    var headers = util.encodeNonAsciiChar(refs.prettyHeaders.toString());
     ReactDOM.findDOMNode(refs.headers).value = headers;
     this.saveComposer();
     if (key.toLowerCase() === 'content-type' ||

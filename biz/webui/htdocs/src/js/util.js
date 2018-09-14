@@ -13,7 +13,9 @@ var BIG_NUM_RE = /[:\[][\s\n\r]*-?[\d.]{16,}[\s\n\r]*[,\}\]]/;
 var dragCallbacks = {};
 var dragTarget, dragOffset, dragCallback;
 
-function noop() {}
+function noop(_) {
+  return _;
+}
 
 exports.noop = noop;
 
@@ -784,12 +786,14 @@ function decodeURIComponentSafe(str) {
 }
 
 exports.decodeURIComponentSafe = decodeURIComponentSafe;
-exports.encodeURIComponent = function(str) {
+
+function safeEncodeURIComponent(str) {
   try {
     return encodeURIComponent(str);
   } catch(e) {}
   return str;
-};
+}
+exports.encodeURIComponent = safeEncodeURIComponent;
 
 function base64toBytes(base64) {
   try {
@@ -978,3 +982,12 @@ function hasRequestBody(method) {
 }
 
 exports.hasRequestBody = hasRequestBody;
+
+var NON_ASCII_RE = /[^\x00-\x7F]/g;
+exports.encodeNonAsciiChar = function(str) {
+  if (!str || typeof str != 'string') {
+    return '';
+  }
+  /*eslint no-control-regex: "off"*/
+  return  str && str.replace(NON_ASCII_RE, safeEncodeURIComponent);
+};
