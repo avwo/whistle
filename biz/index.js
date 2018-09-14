@@ -35,7 +35,8 @@ module.exports = function(req, res, next) {
         isWebUI = false;
       }
       if (proxyUrl) {
-        proxyUrl = rules.resolveProxy(fullUrl);
+        req.curUrl = fullUrl;
+        proxyUrl = rules.resolveProxy(req);
         proxyUrl = proxyUrl && proxyUrl.matcher;
         if (proxyUrl && HTTP_PROXY_RE.test(proxyUrl)) {
           proxyUrl = proxyUrl.replace(HTTP_PROXY_RE, '');
