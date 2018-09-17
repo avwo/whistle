@@ -1,8 +1,7 @@
 # ignore
-
-用于忽略已设置的规则，其配置方式为：
+用于忽略指定协议的匹配规则，也可以忽略当前配置的匹配规则，其配置方式为：
 ```
-pattern ignore://protocol1|protocol2|protocolN
+pattern ignore://protocol1|protocol2|protocolN 
 ```
 
 其中，`pattern`参见[匹配模式](../pattern.html)，`protocol1`，...，`protocolN` 对应 [协议列表](../rules/.md) 里面的协议，`|` 为分隔符用于同时设置忽略 (过滤) 多个规则。
