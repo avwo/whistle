@@ -1,5 +1,5 @@
 # filter
-功能与[ignore](./ignore.html)类似，主要用于过滤当前行配置的规则，也可以根据请求头、请求方法、请求IP过滤规则(后面这个要[最新版本的whistle](../update.html)才能支持)
+功能与[ignore](./ignore.html)类似，主要用于过滤当前行配置的规则，也可以根据请求头、请求方法、请求IP过滤规则(后面这个要[最新版本的whistle >= v1.12.6](../update.html)才能支持)
 
 配置方式：
 ```
