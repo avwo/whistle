@@ -1,4 +1,63 @@
 # 协议列表
+以下对所有协议按功能做分类
+
+#### 设置hosts
+1. [**host** (设置host)](host.html)
+
+#### 设代理
+1. [**proxy(http-proxy)** (代理到其它http代理服务器)](proxy.html)
+2. [**https-proxy** (代理到其它https代理服务器)](https-proxy.html)
+3. [**socks** (代理到其它socks代理服务器)](socks.html)
+4. [**pac** (设置pac脚本)](pac.md)
+
+#### 延迟请求
+1. [**reqDelay** (延迟请求)](reqDelay.html)
+2. [**reqSpeed** (限制请求速度)](reqSpeed.html)
+
+#### 修改请求URL
+1. [**urlParams** (修改请求url的参数)](urlParams.html)
+2. [**reqMerge** (修改请求参数)](reqMerge.html)
+3. [**pathReplace** (通过正则或字符串替换请求url，类似str.replace)](pathReplace.html)
+#### 修改请求方法
+1. . [**method** (修改请求方法)](method.html)
+
+#### 修改请求头
+1. . [**referer** (修改请求referer)](referer.html)
+2. [**auth** (修改请求用户名密码)](auth.html)
+3. [**ua** (修改请求user-agent)](ua.html)
+4. [**forwardedFor** (修改请求头x-forwarded-for)](forwardedFor.html)
+5. [**reqHeaders** (修改请求头)](reqHeaders.html)
+6. [**reqType** (修改请求类型)](reqType.html)
+7. [**reqCharset** (修改请求的编码)](reqCharset.html)
+8. [**reqCookies** (修改请求cookies)](reqCookies.html)
+9. [**reqCors** (修改请求cors)](reqCors.html)
+
+#### 延迟响应
+1. [**resDelay** (延迟响应)](resDelay.html)
+2. [**resSpeed** (限制响应速度)](resSpeed.html)
+
+#### 修改请求内容
+> 根据不同的数据类型采用不同的协议
+1. [**reqPrepend** (往请求内容前面添加数据)](reqPrepend.html)
+2. [**reqBody** (替换请求内容)](reqBody.html)
+3. [**reqAppend** (往请求内容后面追加数据)](reqAppend.html)
+4. [**reqReplace** (通过正则或字符串替换请求文本内容，类似str.replace)](reqReplace.html)
+
+#### 修改响应状态码
+1. [**statusCode** (直接响应)](statusCode.html)
+2. [**replaceStatus** (替换后台的响应状态码)](replaceStatus.html)
+
+#### 修改响应头
+1. [**resHeaders** (修改响应头)](resHeaders.html)
+2. [**resType** (修改响应类型)](resType.html)
+3. [**resCharset** (修改响应的编码)](resCharset.html)
+4. [**resCookies** (修改响应cookies)](resCookies.html)
+5. [**resCors** (修改响应cors)](resCors.html)
+6. [**attachment** (设置下载头部)](attachment.html)
+7. [**redirect** (302重定向)](redirect.html)
+
+#### 修改响应内容
+> 根据不同的数据类型采用不同的协议
 1. [**rule** (设置响应规则)](rule/index.html)
     * [**请求替换**](rule/replace.html)
     * [**file** (替换本地文件)](rule/file.html)
@@ -8,69 +67,42 @@
     * [**rawfile** (替换本地http响应内容格式的文件)](rule/rawfile.html)
     * [**xrawfile** (替换本地http响应内容格式的文件，如果本地文件找不到会继续请求线上)](rule/xrawfile.html)
     * [**自定义**](rule/custom.html)
-2. [**host** (设置host)](host.html)
-3. [**plugin** (通过插件获取请求状态及设置新规则)](plugin.html)
+2. [**resMerge** (修改响应参数)](resMerge.html)
+3. [**resPrepend** (往响应内容前面添加数据)](resPrepend.html)
+4. [**resBody** (替换响应内容)](resBody.html)
+5. [**resAppend** (往响应内容后面追加数据)](resAppend.html)
+6. [**resReplace** (通过正则或字符串替换响应文本内容，类似str.replace)](resReplace.html)
+7. [**htmlPrepend**(往响应为html的内容前面添加数据)](htmlPrepend.md)
+8. [**cssPrepend** (往响应为html或css的内容前面添加数据)](cssPrepend.md)
+9. [**jsPrepend** (往响应为html或js的内容前面添加数据)](jsPrepend.md)
+10. [**htmlBody**(替换响应为html的内容)](htmlBody.md)
+11. [**cssBody** (替换响应为html或css的内容)](cssBody.md)
+12. [**jsBody** (替换响应为html或js的内容)](jsBody.md)
+13. [**htmlAppend**(往响应为html的内容前面数据)](htmlAppend.md)
+14. [**cssAppend** (往响应为html或css的内容后面追加数据)](cssAppend.md)
+15. [**jsAppend** (往响应为html或js的内容后面追加数据)](jsAppend.md)
+
+#### 过滤配置
+1. [**filter** (过滤规则，隐藏请求等)](filter.html)
+2. [**ignore** (忽略规则)](ignore.html)
+
+#### 启用或禁用一些配置
+1. [**enable** (设置capture HTTPs，隐藏请求等)](enable.html)
+2. [**disable** (禁用缓存、cookie等)](disable.html)
+3. [**delete** (删除指定的字段)](delete.html)
+
+#### 获取抓包数据
+1. [**reqWrite** (将请求内容写入指定的文件)](reqWrite.html)
+2. [**resWrite** (将响应内容写入指定的文件)](resWrite.html)
+3. [**reqWriteRaw** (将请求的完整内容写入指定的文件)](reqWriteRaw.html)
+4. [**resWriteRaw** (将响应的完整内容写入指定的文件)](resWriteRaw.html)
+推荐通过插件获取，具体参考：[插件开发](../plugins.html)
+
+#### 动态设置规则
+1. [**reqScript** (批量设置请求规则或通过脚本动态获取规则)](reqScript.md)
+2. [**resScript** (批量设置响应规则或通过脚本动态获取规则)](resScript.md)
+
+#### 开发调试工具
+1. [**plugin** (通过插件获取请求状态及设置新规则)](plugin.html)
 3. [**weinre** (设置weinre，调试手机页面)](weinre.html)
 4. [**log** (打印网页js错误或者调试信息)](log.html)
-5. [**proxy(http-proxy)** (代理到其它http代理服务器)](proxy.html)
-5. [**https-proxy** (代理到其它https代理服务器)](https-proxy.html)
-5. [**socks** (代理到其它socks代理服务器)](socks.html)
-5. [**pac** (设置pac脚本)](pac.md)
-6. [**filter** (过滤规则，隐藏请求等)](filter.html)
-6. [**ignore** (忽略规则)](ignore.html)
-6. [**enable** (设置intercept，隐藏请求等)](enable.html)
-7. [**disable** (禁用缓存、cookie等)](disable.html)
-8. [**delete** (删除指定的字段)](delete.html)
-11. [**urlParams** (修改请求url的参数)](urlParams.html)
-12. [**pathReplace** (通过正则或字符串替换请求url，类似str.replace)](pathReplace.html)
-13. [**method** (修改请求方法)](method.html)
-14. [**statusCode** (直接响应)](statusCode.html)
-15. [**replaceStatus** (替换后台的响应状态码)](replaceStatus.html)
-16. [**hostname** (修改请求头部的host字段)](hostname.html)
-17. [**referer** (修改请求referer)](referer.html)
-19. [**auth** (修改请求用户名密码)](auth.html)
-21. [**ua** (修改请求user-agent)](ua.html)
-22. [**cache** (修改缓存策略)](cache.html)
-23. [**redirect** (302重定向)](redirect.html)
-25. [**attachment** (设置下载头部)](attachment.html)
-26. [**forwardedFor** (修改请求头x-forwarded-for)](forwardedFor.html)
-27. [**responseFor** (Network上显示真实的服务器环境)](responseFor.html)
-26. [**reqMerge** (修改请求参数)](reqMerge.html)
-26. [**resMerge** (修改响应参数)](resMerge.html)
-30. [**reqScript** (批量设置请求规则或通过脚本动态获取规则)](reqScript.md)
-31. [**resScript** (批量设置响应规则或通过脚本动态获取规则)](resScript.md)
-32. [**reqDelay** (延迟请求)](reqDelay.html)
-33. [**resDelay** (延迟响应)](resDelay.html)
-34. [**reqSpeed** (限制请求速度)](reqSpeed.html)
-35. [**resSpeed** (限制响应速度)](resSpeed.html)
-36. [**reqHeaders** (修改请求头)](reqHeaders.html)
-37. [**resHeaders** (修改响应头)](resHeaders.html)
-38. [**reqType** (修改请求类型)](reqType.html)
-39. [**resType** (修改响应类型)](resType.html)
-40. [**reqCharset** (修改请求的编码)](reqCharset.html)
-41. [**resCharset** (修改响应的编码)](resCharset.html)
-42. [**reqCookies** (修改请求cookies)](reqCookies.html)
-43. [**resCookies** (修改响应cookies)](resCookies.html)
-44. [**reqCors** (修改请求cors)](reqCors.html)
-45. [**resCors** (修改响应cors)](resCors.html)
-46. [**reqPrepend** (往请求内容前面添加数据)](reqPrepend.html)
-47. [**resPrepend** (往响应内容前面添加数据)](resPrepend.html)
-48. [**reqBody** (替换请求内容)](reqBody.html)
-49. [**resBody** (替换响应内容)](resBody.html)
-50. [**reqAppend** (往请求内容后面追加数据)](reqAppend.html)
-51. [**resAppend** (往响应内容后面追加数据)](resAppend.html)
-52. [**reqReplace** (通过正则或字符串替换请求文本内容，类似str.replace)](reqReplace.html)
-53. [**resReplace** (通过正则或字符串替换响应文本内容，类似str.replace)](resReplace.html)
-54. [**htmlPrepend**(往响应为html的内容前面添加数据)](htmlPrepend.md)
-55. [**cssPrepend** (往响应为html或css的内容前面添加数据)](cssPrepend.md)
-56. [**jsPrepend** (往响应为html或js的内容前面添加数据)](jsPrepend.md)
-57. [**htmlBody**(替换响应为html的内容)](htmlBody.md)
-58. [**cssBody** (替换响应为html或css的内容)](cssBody.md)
-59. [**jsBody** (替换响应为html或js的内容)](jsBody.md)
-60. [**htmlAppend**(往响应为html的内容前面数据)](htmlAppend.md)
-61. [**cssAppend** (往响应为html或css的内容后面追加数据)](cssAppend.md)
-62. [**jsAppend** (往响应为html或js的内容后面追加数据)](jsAppend.md)
-54. [**reqWrite** (将请求内容写入指定的文件)](reqWrite.html)
-55. [**resWrite** (将响应内容写入指定的文件)](resWrite.html)
-56. [**reqWriteRaw** (将请求的完整内容写入指定的文件)](reqWriteRaw.html)
-57. [**resWriteRaw** (将响应的完整内容写入指定的文件)](resWriteRaw.html)
