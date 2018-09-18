@@ -24,15 +24,15 @@ module.exports = function() {
     data.should.have.property('ec', 2);
   });
 
-  util.request({
-    url: 'https://filter.com/index.html',
-    method: 'delete',
-    body: 'test',
-    headers: {
-      'test': 'abc',
-      'x-test': '123'
-    }
-  }, function(res, data) {
-    data.should.have.property('ec', 3);
-  });
+  // util.request({
+  //   url: 'https://filter.com/index.html',
+  //   method: 'delete',
+  //   body: 'test',
+  //   headers: {
+  //     'test': 'abc',
+  //     'x-test': '123'
+  //   }
+  // }, function(res, data) {
+  //   data.should.have.property('ec', 3);
+  // });
 };
