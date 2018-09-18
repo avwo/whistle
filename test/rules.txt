@@ -18,3 +18,9 @@ test.internal.path.com proxy://127.0.0.1:8080
 params.test.whistlejs.com/index.html resMerge://(resMerge=test) resType://js
 weinre1.test2.whistlejs.com:1234 weinre://xxx file://(hello) log://test resType://html enable://capture ignore://plugin
 weinre1.test2.whistlejs.com weinre://xxx file://(hello) log://test resType://js enable://capture ignore://plugin
+
+filter.com enable://capture
+filter.com/index.html file://({"ec":0}) filter://m:post filter://m:/delete/
+filter.com/index.html file://({"ec":1}) filter://m:!post filter://h:test=abc
+filter.com/index.html file://({"ec":2}) filter://h:x-test=/\d+/
+filter.com/index.html file://({"ec":3})
