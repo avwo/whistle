@@ -761,7 +761,7 @@ if (window.TextDecoder) {
   } catch(e) {}
 }
 
-function decodeURIComponentSafe(str) {
+function decodeURIComponentSafe(str, isUtf8) {
   if (!str || typeof str !== 'string') {
     return '';
   }
@@ -769,7 +769,7 @@ function decodeURIComponentSafe(str) {
   try {
     return decodeURIComponent(result);
   } catch(e) {}
-  if (gbkDecoder) {
+  if (!isUtf8 && gbkDecoder) {
     try {
       var arr = [];
       result.replace(COMP_RE, function(code) {

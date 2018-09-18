@@ -29,11 +29,11 @@ var PropsEditor = React.createClass({
       var decode = isHeader ? util.decodeURIComponentSafe : util.noop;
       keys.forEach(function(name) {
         var value = data[name];
-        var shortName = decode(name.substring(0, MAX_NAME_LEN));
+        var shortName = decode(name.substring(0, MAX_NAME_LEN), true);
         if (!Array.isArray(value)) {
           modal[name + '_0'] =  {
             name: shortName,
-            value: decode(util.toString(value).substring(0, MAX_VALUE_LEN))
+            value: decode(util.toString(value).substring(0, MAX_VALUE_LEN), true)
           };
           return;
         }
