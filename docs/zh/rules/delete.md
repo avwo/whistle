@@ -13,7 +13,7 @@ pattern参见[匹配模式](../pattern.html)，更多模式请参考[配置方�
 3. `headers.xxx`: 删除res.headers&res.headers的xxx字段
 
 #### 过滤规则
-> 需要确保whistle是最新版本：[更新whistle](../update.html)
+需要确保whistle是最新版本：[更新whistle](../update.html)
 如果要过滤指定请求或指定协议的规则匹配，可以用如下协议：
 1. [ignore](./ignore.html)：忽略指定规则
 2. [filter](./filter.html)：过滤指定pattern，支持根据请求方法、请求头、请求客户端IP过滤

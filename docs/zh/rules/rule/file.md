@@ -32,7 +32,7 @@ filepath为[Values](http://local.whistlejs.com/#values)里面的{key}或者本�
 所有www.ifeng.com的请求都会先到目录或文件`/User/xxx/test`，没有匹配的文件再到`/User/xxx/test/index.html`
 
 #### 过滤规则
-> 需要确保whistle是最新版本：[更新whistle](../../update.html)
+需要确保whistle是最新版本：[更新whistle](../../update.html)
 如果要过滤指定请求或指定协议的规则匹配，可以用如下协议：
 1. [ignore](../ignore.html)：忽略指定规则
 2. [filter](../filter.html)：过滤指定pattern，支持根据请求方法、请求头、请求客户端IP过滤
