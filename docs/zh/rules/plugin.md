@@ -15,7 +15,9 @@ plugin支持上述3种配置方式(位置可以调换)，匹配规则的请求�
 
 #### 过滤规则
 需要确保whistle是最新版本：[更新whistle](../update.html)
+
 如果要过滤指定请求或指定协议的规则匹配，可以用如下协议：
+
 1. [ignore](./ignore.html)：忽略指定规则
 2. [filter](./filter.html)：过滤指定pattern，支持根据请求方法、请求头、请求客户端IP过滤
 
