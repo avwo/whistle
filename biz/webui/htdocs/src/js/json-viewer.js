@@ -1,5 +1,6 @@
 require('../css/json-viewer.css');
 var React = require('react');
+var $ = require('jquery');
 var ReactDOM = require('react-dom');
 var TextView = require('./textview');
 var CopyBtn = require('./copy-btn');
@@ -8,6 +9,8 @@ var JSONTree = require('./components/react-json-tree')['default'];
 var dataCenter = require('./data-center');
 var util = require('./util');
 var MAX_LENGTH =1024 * 16;
+var STR_SELECTOR = 'span[style="color: rgb(133, 153, 0);"]';
+var LINK_RE = /^"(https?:)?(\/\/[^/][^\s]+)"$/i;
 
 var JsonViewer = React.createClass({
   getInitialState: function() {
@@ -103,6 +106,28 @@ var JsonViewer = React.createClass({
   toggle: function() {
     this.setState({ viewSource: !this.state.viewSource });
   },
+  componentDidMount: function() {
+    var viewer = $(ReactDOM.findDOMNode(this.refs.jsonViewer));
+    viewer.on('mouseenter', STR_SELECTOR, function(e) {
+      if (!(e.ctrlKey || e.metaKey)) {
+        return;
+      }
+      var elem = $(this);
+      if (LINK_RE.test(elem.text())) {
+        elem.addClass('w-is-link');
+      }
+    }).on('mouseleave', STR_SELECTOR, function() {
+      $(this).removeClass('w-is-link');
+    }).on('mousedown', '.w-is-link', function(e) {
+      if (!(e.ctrlKey || e.metaKey)) {
+        return;
+      }
+      var elem = $(this);
+      if (LINK_RE.test(elem.text())) {
+        window.open((RegExp.$1 || 'http:') + RegExp.$2);
+      }
+    });
+  },
   render: function() {
     var state = this.state;
     var viewSource = state.viewSource;
@@ -147,7 +172,7 @@ var JsonViewer = React.createClass({
             </form>
           </div>
           <TextView className={'fill w-json-viewer-str' + (viewSource ? '' : ' hide')} value={value} />
-          <div className={'fill w-json-viewer-tree' + (viewSource ? ' hide' : '')}>
+          <div ref="jsonViewer" className={'fill w-json-viewer-tree' + (viewSource ? ' hide' : '')}>
             <JSONTree data={data.json} />
           </div>
         </div>
