@@ -118,12 +118,12 @@ var JsonViewer = React.createClass({
       }
     }).on('mouseleave', STR_SELECTOR, function() {
       $(this).removeClass('w-is-link');
-    }).on('mousedown', '.w-is-link', function(e) {
+    }).on('mousedown', STR_SELECTOR, function(e) {
       if (!(e.ctrlKey || e.metaKey)) {
         return;
       }
       var elem = $(this);
-      if (LINK_RE.test(elem.text())) {
+      if (elem.hasClass('w-is-link') && LINK_RE.test(elem.text())) {
         window.open((RegExp.$1 || 'http:') + RegExp.$2);
       }
     });
