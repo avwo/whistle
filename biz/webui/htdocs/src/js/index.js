@@ -721,25 +721,27 @@ var Index = React.createClass({
         return;
       }
       var elem = $(this);
-      if (getKey(elem.text())) {
-        elem.addClass('w-has-key');
+      if (elem.hasClass('cm-js-http-url') || getKey(elem.text())) {
+        elem.addClass('w-is-url');
       }
     }).on('mouseleave', '.cm-js-type, .cm-js-http-url', function(e) {
       if (isEditor()) {
-        $(this).removeClass('w-has-key');
+        $(this).removeClass('w-is-url');
       }
     }).on('mousedown', '.cm-js-type, .cm-js-http-url', function(e) {
       if (!isEditor() || !(e.ctrlKey || e.metaKey)) {
         return;
       }
       var elem = $(this);
-      if (!elem.hasClass('w-has-key')) {
+      var text = elem.text();
+      if (elem.hasClass('cm-js-http-url')) {
+        window.open(text);
         return;
       }
-      var name = getKey(elem.text());
+      var name = getKey(text);
       if (name) {
         self.showAndActiveValues({name: name});
-        return false;
+        return;
       }
     });
 
