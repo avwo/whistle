@@ -45,7 +45,7 @@
 .w-https-settings label {font-weight: normal;}
 .w-https-settings p {margin: 10px 0;}
 
-.w-is-url {cursor: pointer; text-decoration: underline;}
+.w-is-link {cursor: pointer; text-decoration: underline;}
 
 .w-choose-filte-type .modal-dialog {width: 456px}
 .w-choose-filte-type-label {white-space: nowrap;}

@@ -722,11 +722,11 @@ var Index = React.createClass({
       }
       var elem = $(this);
       if (elem.hasClass('cm-js-http-url') || getKey(elem.text())) {
-        elem.addClass('w-is-url');
+        elem.addClass('w-is-link');
       }
     }).on('mouseleave', '.cm-js-type, .cm-js-http-url', function(e) {
       if (isEditor()) {
-        $(this).removeClass('w-is-url');
+        $(this).removeClass('w-is-link');
       }
     }).on('mousedown', '.cm-js-type, .cm-js-http-url', function(e) {
       if (!isEditor() || !(e.ctrlKey || e.metaKey)) {

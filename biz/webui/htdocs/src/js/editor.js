@@ -125,6 +125,15 @@ var Editor = React.createClass({
         self.props.onChange.call(self, e);
       }
     });
+    editor.on('mousedown', function(_, e) {
+      if (!(e.ctrlKey || e.metaKey)) {
+        return;
+      }
+      var target = $(e.target);
+      if (target.hasClass('cm-js-type') || target.hasClass('cm-js-http-url')) {
+        e.preventDefault();
+      }
+    });
     self._init();
     $(elem).find('.CodeMirror').addClass('fill');
     resize();
