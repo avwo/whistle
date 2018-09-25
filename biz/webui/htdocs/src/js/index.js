@@ -711,24 +711,29 @@ var Index = React.createClass({
       return index > 1 ? url.substring(1, index) : null;
     }
 
-    $(document.body).on('mouseenter', '.cm-js-type', function(e) {
-      if (self.state.name !== 'rules' || !(e.ctrlKey || e.metaKey)) {
+    var isEditor = function() {
+      var name = self.state.name;
+      return name === 'rules' || name === 'values';
+    };
+
+    $(document.body).on('mouseenter', '.cm-js-type, .cm-js-http-url', function(e) {
+      if (!isEditor() || !(e.ctrlKey || e.metaKey)) {
         return;
       }
       var elem = $(this);
       if (getKey(elem.text())) {
         elem.addClass('w-has-key');
       }
-    }).on('mouseleave', '.cm-js-type', function(e) {
-      if (self.state.name === 'rules') {
+    }).on('mouseleave', '.cm-js-type, .cm-js-http-url', function(e) {
+      if (isEditor()) {
         $(this).removeClass('w-has-key');
       }
-    }).on('mousedown', '.cm-js-type', function(e) {
-      if (self.state.name !== 'rules') {
+    }).on('mousedown', '.cm-js-type, .cm-js-http-url', function(e) {
+      if (!isEditor() || !(e.ctrlKey || e.metaKey)) {
         return;
       }
       var elem = $(this);
-      if (!e.ctrlKey && !e.metaKey && !elem.hasClass('w-has-key')) {
+      if (!elem.hasClass('w-has-key')) {
         return;
       }
       var name = getKey(elem.text());
@@ -1416,7 +1421,7 @@ var Index = React.createClass({
   },
   showAndActiveValues: function(item, e) {
     var self = this;
-    if (self.state.name === 'values') {
+    if (self.state.name === 'values' && item.id) {
       switch(item.id) {
       case 'exportValues':
         self.refs.selectValuesDialog.show();

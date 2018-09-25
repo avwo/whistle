@@ -184,7 +184,7 @@ CodeMirror.defineMode('rules', function() {
           } else if (isRulesFile(str)) {
             type = 'variable-2 js-rulesFile js-type';
           } else if (isUrl(str)) {
-            type = 'string-2 js-url js-type';
+            type = 'string-2 js-url js-type' + (str[0] === 'h' ? ' js-http-url' : '');
           } else if (isWildcard(str)) {
             type = 'attribute js-attribute';
           } else if (isRule(str)) {
@@ -210,7 +210,7 @@ CodeMirror.defineMode('rules', function() {
           type = 'builtin js-rule js-type';
         }
       }
-      return not ? type + ' error-rule' : type;
+      return not ? type + ' error-rule' : (type || 'js-http-url');
     }
   };
 });
