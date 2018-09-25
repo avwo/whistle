@@ -28,6 +28,8 @@ var MAX_PLUGINS_TABS = 7;
 var MAX_FILE_SIZE = 1024 * 1024 * 64;
 var MAX_OBJECT_SIZE = 1024 * 1024 * 6;
 var MAX_REPLAY_COUNT = 30;
+var LINK_SELECTOR = '.cm-js-type, .cm-js-http-url, .cm-string';
+var LINK_RE = /^"(https?:)?(\/\/[^/][^\s]+)"$/i;
 var OPTIONS_WITH_SELECTED = ['removeSelected', 'exportWhistleFile', 'exportSazFile'];
 var RULES_ACTIONS = [
   {
@@ -716,24 +718,28 @@ var Index = React.createClass({
       return name === 'rules' || name === 'values';
     };
 
-    $(document.body).on('mouseenter', '.cm-js-type, .cm-js-http-url', function(e) {
+    $(document.body).on('mouseenter', LINK_SELECTOR, function(e) {
       if (!isEditor() || !(e.ctrlKey || e.metaKey)) {
         return;
       }
       var elem = $(this);
-      if (elem.hasClass('cm-js-http-url') || getKey(elem.text())) {
+      if (elem.hasClass('cm-js-http-url') || elem.hasClass('cm-string') || getKey(elem.text())) {
         elem.addClass('w-is-link');
       }
-    }).on('mouseleave', '.cm-js-type, .cm-js-http-url', function(e) {
-      if (isEditor()) {
-        $(this).removeClass('w-is-link');
-      }
-    }).on('mousedown', '.cm-js-type, .cm-js-http-url', function(e) {
+    }).on('mouseleave', LINK_SELECTOR, function(e) {
+      $(this).removeClass('w-is-link');
+    }).on('mousedown', LINK_SELECTOR, function(e) {
       if (!isEditor() || !(e.ctrlKey || e.metaKey)) {
         return;
       }
       var elem = $(this);
       var text = elem.text();
+      if (elem.hasClass('cm-string')) {
+        if (LINK_RE.test(text)) {
+          window.open((RegExp.$1 || 'http:') + RegExp.$2);
+        }
+        return;
+      }
       if (elem.hasClass('cm-js-http-url')) {
         if (!/^https?:\/\//i.test(text)) {
           text = 'http:' + (text[0] === '/' ? '' : '//') + text;

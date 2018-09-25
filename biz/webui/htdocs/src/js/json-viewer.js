@@ -123,7 +123,7 @@ var JsonViewer = React.createClass({
         return;
       }
       var elem = $(this);
-      if (elem.hasClass('w-is-link') && LINK_RE.test(elem.text())) {
+      if (LINK_RE.test(elem.text())) {
         window.open((RegExp.$1 || 'http:') + RegExp.$2);
       }
     });
