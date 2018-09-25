@@ -735,6 +735,9 @@ var Index = React.createClass({
       var elem = $(this);
       var text = elem.text();
       if (elem.hasClass('cm-js-http-url')) {
+        if (!/^https?:\/\//i.test(text)) {
+          text = 'http:' + (text[0] === '/' ? '' : '//') + text;
+        }
         window.open(text);
         return;
       }
