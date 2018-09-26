@@ -9,3 +9,13 @@ text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ell
 .w-list-data .w-active {background: #337AB7; color: #fff!important;}
 .w-list-data .w-selected {font-weight: bold;}
 .w-list-data .w-selected .glyphicon-ok {display: inline-block;}
+.w-list-data span.w-whistle-tpl {
+  display: block;
+  width: 10px;
+  height: 10px;
+  position: absolute;
+  right: 2px;
+  top: 2px;
+  background: center center no-repeat;
+  background-size: 100%;
+}
