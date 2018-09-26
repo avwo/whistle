@@ -1,3 +1,7 @@
+### v1.12.7
+1. refactor: 优化抓包数据缓存策略
+2. feat: 支持在Rules、Values、JSONView里面按住 `Ctrl[Command]+鼠标点击` 在新窗口打开链接
+
 ### v1.12.6
 1. style: 优化Composer，支持展示 `Response` 数据
 2. feat: 支持通过 `filter://m:methodName`、`filter://i:clientIp`、`filter://h:key=subValue` 过滤规则，及支持取非 `filter://m:!methodName`、`filter://i:!clientIp`、`filter://h:key!=subValue`，`value` 也可以用正则 `/xxx/` 或 `/xxx/i` 替代
