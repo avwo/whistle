@@ -41,6 +41,7 @@ var valuesCtxMenuList = [
 ];
 var NAME_PREFIX = 'listmodal$';
 var W2_TPL_RE = /^(?:w2|whistle)\//;
+var TPL_BG = {backgroundImage: 'url(../img/whistle.png?v=2016)'};
 var curTarget;
 
 function getTarget(e) {
@@ -409,7 +410,7 @@ var List = React.createClass({
                             })}>
                             {name}<span className="glyphicon glyphicon-ok"></span>
                             {!isRules && W2_TPL_RE.test(name) ? <span className="w-whistle-tpl"
-                              style={{backgroundImage: 'url(../img/whistle.png?v=2016)'}} /> : undefined}
+                              style={TPL_BG} /> : undefined}
                             </a>;
                 })
               }
