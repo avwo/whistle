@@ -1,6 +1,6 @@
 # jsBody
 
-替换往content-type为html或js的响应内容，如果是html，则会自动加上 script 标签再替换响应内容，如果是js，则会自动替换整个js文件，这个与[resBody](resBody.html)的区别是[resAppend](resBody.html)不区分类型，对所有匹配的响应都会追加指定的数据，配置方式：
+替换往content-type为html或js的响应内容，如果是html，则会自动加上 script 标签再替换响应内容，如果是js，则会自动替换整个js文件，这个与[resBody](resBody.html)的区别是[resBody](resBody.html)不区分类型，对所有匹配的响应都会追加指定的数据，配置方式：
 
 	pattern jsBody://filepath
 

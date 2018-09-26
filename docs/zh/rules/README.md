@@ -38,6 +38,7 @@
 
 #### 修改请求内容
 > 根据不同的数据类型采用不同的协议
+
 1. [**reqPrepend** (往请求内容前面添加数据)](reqPrepend.html)
 2. [**reqBody** (替换请求内容)](reqBody.html)
 3. [**reqAppend** (往请求内容后面追加数据)](reqAppend.html)
@@ -78,7 +79,7 @@
 10. [**htmlBody**(替换响应为html的内容)](htmlBody.md)
 11. [**cssBody** (替换响应为html或css的内容)](cssBody.md)
 12. [**jsBody** (替换响应为html或js的内容)](jsBody.md)
-13. [**htmlAppend**(往响应为html的内容前面数据)](htmlAppend.md)
+13. [**htmlAppend**(往响应为html的内容后面追加数据)](htmlAppend.md)
 14. [**cssAppend** (往响应为html或css的内容后面追加数据)](cssAppend.md)
 15. [**jsAppend** (往响应为html或js的内容后面追加数据)](jsAppend.md)
 
