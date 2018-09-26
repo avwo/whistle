@@ -98,7 +98,8 @@ var Composer = React.createClass({
         self.setState({
           result: activeItem,
           type: getType(activeItem.req.headers),
-          method: activeItem.req.method
+          method: activeItem.req.method,
+          tabName: 'Request'
         }, function() {
           self.update(activeItem);
           self.onComposerChange();
