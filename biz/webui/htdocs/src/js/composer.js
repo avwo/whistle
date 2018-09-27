@@ -295,18 +295,17 @@ var Composer = React.createClass({
       method: method,
       body: body
     }, function(data, xhr, em) {
-      var state = { pending: false };
+      var state = { pending: false, tabName: 'Response' };
       if (!data || data.ec !== 0) {
-        em !== 'timeout' && util.showSystemError(xhr);
-        state.result = { url: url, req: '', res: {
-          statusCode: em === 'timeout' ? em : 'error'
-        } };
+        if (!em || typeof em !== 'string') {
+          em = 'error';
+        }
+        state.result = { url: url, req: '', res: { statusCode: em } };
       } else {
         data.res = data.res || { statusCode: 200 };
         data.url = url;
         data.req = '';
         state.result = data;
-        state.tabName = 'Response';
         state.initedResponse = true;
       }
       self.setState(state);
