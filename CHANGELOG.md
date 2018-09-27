@@ -1,6 +1,7 @@
 ### v1.12.7
-1. refactor: 优化抓包数据缓存策略
+1. refactor: 调整抓包数据缓存策略，优化内存占用
 2. feat: 支持在Rules、Values、JSONView里面按住 `Ctrl[Command]+鼠标点击` 在新窗口打开链接
+3. feat: [resScript](http://wproxy.org/whistle/rules/resScript.html)协议支持 `filter://s:404`、`filter://resHeader:key=value`、`filter://serverIp:ip`
 
 ### v1.12.6
 1. style: 优化Composer，支持展示 `Response` 数据
