@@ -294,11 +294,13 @@ var Composer = React.createClass({
       headers: headers,
       method: method,
       body: body
-    }, function(data, xhr) {
+    }, function(data, xhr, em) {
       var state = { pending: false };
       if (!data || data.ec !== 0) {
-        util.showSystemError(xhr);
-        state.result = { url: url, req: '', res: { statusCode: 'error' } };
+        em !== 'timeout' && util.showSystemError(xhr);
+        state.result = { url: url, req: '', res: {
+          statusCode: em === 'timeout' ? em : 'error'
+        } };
       } else {
         data.res = data.res || { statusCode: 200 };
         data.url = url;

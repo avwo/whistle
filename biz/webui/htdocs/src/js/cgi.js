@@ -42,8 +42,8 @@ function createCgi(url, settings) {
     options.success = function(data, statusText, xhr) {
       execCallback.call(this, data, xhr);
     };
-    options.error = function(xhr) {
-      execCallback.call(this, false, xhr);
+    options.error = function(xhr, em) {
+      execCallback.call(this, false, xhr, em);
     };
 
     return (jqXhr = $.ajax(options));
