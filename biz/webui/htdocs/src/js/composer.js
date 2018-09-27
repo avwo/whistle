@@ -295,7 +295,11 @@ var Composer = React.createClass({
       method: method,
       body: body
     }, function(data, xhr, em) {
-      var state = { pending: false, tabName: 'Response' };
+      var state = {
+        pending: false,
+        tabName: 'Response',
+        initedResponse: true
+      };
       if (!data || data.ec !== 0) {
         if (!em || typeof em !== 'string') {
           em = 'error';
@@ -306,7 +310,6 @@ var Composer = React.createClass({
         data.url = url;
         data.req = '';
         state.result = data;
-        state.initedResponse = true;
       }
       self.setState(state);
     });
