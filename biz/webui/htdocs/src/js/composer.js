@@ -302,7 +302,7 @@ var Composer = React.createClass({
       };
       if (!data || data.ec !== 0) {
         if (!em || typeof em !== 'string') {
-          em = 'error';
+          em = 'Please check the proxy settings or whether whistle has been started.';
         }
         state.result = { url: url, req: '', res: { statusCode: em } };
       } else {
