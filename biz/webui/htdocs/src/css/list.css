@@ -14,8 +14,8 @@ text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ell
   width: 8px;
   height: 8px;
   position: absolute;
-  left: 1px;
-  top: 1px;
+  right: 3px;
+  top: 2px;
   background: center center no-repeat;
   background-size: 100%;
 }
