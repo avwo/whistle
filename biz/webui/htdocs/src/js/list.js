@@ -40,7 +40,7 @@ var valuesCtxMenuList = [
   { name: 'Help', sep: true }
 ];
 var NAME_PREFIX = 'listmodal$';
-var W2_TPL_RE = /^(?:w2|whistle)\//;
+var W2_TPL_RE = /^(?:w2|whistle)[/\\.]/;
 var TPL_BG = {backgroundImage: 'url(../img/whistle.png?v=2016)'};
 var curTarget;
 
