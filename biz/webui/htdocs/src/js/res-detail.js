@@ -19,6 +19,7 @@ var BTNS = [
   {name: 'Raw'}
 ];
 var COOKIE_HEADERS = ['Name', 'Value', 'Domain', 'Path', 'Expires', 'Max-Age', 'HttpOnly', 'Secure'];
+var SS_COOKIE_HEADERS = COOKIE_HEADERS.concat(['SameSite']);
 
 var ResDetail = React.createClass({
   getInitialState: function() {
@@ -54,7 +55,7 @@ var ResDetail = React.createClass({
     }
     var name = btn && btn.name;
     var modal = this.props.modal;
-    var res, rawHeaders, headers, cookies, body, raw, json, tips, defaultName, bin;
+    var res, rawHeaders, headers, cookies, body, raw, json, tips, defaultName, bin, hasSameSite;
     body = raw = '';
     if (modal) {
       res = modal.res;
@@ -91,6 +92,10 @@ var ResDetail = React.createClass({
               break;
             case 'secure':
               row[7] = '√';
+              break;
+            case 'samesite':
+              row[8] = cookie[i];
+              hasSameSite = true;
               break;
             default:
               if (!row[0]) {
@@ -153,7 +158,7 @@ var ResDetail = React.createClass({
         {state.initedTextView ? <Textarea defaultName={defaultName} tips={tips} value={body} className="fill w-detail-response-textview" hide={name != BTNS[2].name} /> : undefined}
         {state.initedJSONView ? <JSONViewer defaultName={defaultName} data={json} hide={name != BTNS[3].name} /> : undefined}
         {state.initedHexView ? <Textarea defaultName={defaultName} value={bin} className="fill n-monospace w-detail-response-hex" hide={name != BTNS[4].name} /> : undefined}
-        {state.initedCookies ? <div className={'fill w-detail-response-cookies' + (name == BTNS[5].name ? '' : ' hide')}>{cookies && cookies.length ? <Table head={COOKIE_HEADERS} modal={cookies} /> : undefined}</div> : undefined}
+        {state.initedCookies ? <div className={'fill w-detail-response-cookies' + (name == BTNS[5].name ? '' : ' hide')}>{cookies && cookies.length ? <Table head={hasSameSite ? SS_COOKIE_HEADERS : COOKIE_HEADERS} modal={cookies} /> : undefined}</div> : undefined}
         {state.initedRaw ? <Textarea defaultName={defaultName} value={raw} className="fill w-detail-response-raw" hide={name != BTNS[6].name} /> : undefined}
       </div>
     );
