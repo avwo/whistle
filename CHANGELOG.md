@@ -1,3 +1,7 @@
+### v1.12.8
+1. fix: Composer和Inspectors里面的Response可能出现联动的问题
+2. feat: [resCookies](http://wproxy.org/whistle/rules/resCookies.html)支持设置SameSite
+
 ### v1.12.7
 1. refactor: 调整抓包数据缓存策略，优化内存占用
 2. feat: 支持在Rules、Values、JSONView里面按住 `Ctrl[Command]+鼠标点击` 在新窗口打开链接
