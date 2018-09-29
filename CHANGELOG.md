@@ -1,3 +1,6 @@
+### v1.12.9
+1. feat: 支持在规则里面用模板字符串，具体内容参见：[操作值](http://wproxy.org/whistle/data.html)
+
 ### v1.12.8
 1. fix: Composer和Inspectors里面的Response可能出现联动的问题
 2. feat: [resCookies](http://wproxy.org/whistle/rules/resCookies.html)支持设置SameSite
