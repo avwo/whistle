@@ -53,4 +53,79 @@ whistle的操作值可以分两类，字符串和JSON对象。
 注意：最后一种内联格式可以把JSON对象直接转化为字符串，这样可以用第一种方式直接写到配置里面，如果key或value里面出现 `空格`、`&`、`%` 或 `=`，则需要把它们 `encodeURIComponent`，whistle会对每个key和value尝试 `decodeURIComponent`。
 
 #### 模板字符串
-> `v1.12.9` 版本开始，whistle支持类似es6的模板字符串，通过模板字符串的方式可以
+`v1.12.9` 版本开始，whistle支持类似es6的模板字符串，通过模板字符串可以读取请求的一些信息并设置到规则中：
+
+```
+pattern1 protocol://`xxx${reqCookie.cookieName}yyy`
+www.test.com/api http://`${clientIp}:8080`
+pattern3 protocol://`{test.json}`
+```
+test.json:
+```
+{
+	"url": "${url}",
+	"search": "${url.search}",
+	"query": "${url.query}",
+	"queryValue": "${url.queryName}",
+	"host": "${url.host}",
+	"hostname": "${url.hostname}",
+	"path": "${url.path}",
+	"pathname": "${url.pathname}",
+	"reqId": "${reqId}",
+	"now": ${now},
+	"method": "${method}",
+	"xff": "${reqHeaders.x-forwarded-for}",
+	"other": "${reqHeaders.other}",
+	"cookie": "${reqCookie}",
+	"cookieValue": "${reqCookie.cookieName}",
+	"clientIp": "${clientIp}"
+}
+```
+这里 `test.json` 在规则中一定要用模板字符串引入：
+```
+ protocol://`{test.json}`
+ ```
+
+ 如下配置：
+ ```
+www.test.com/api http://`${clientIp}:8080`
+ ```
+ `10.12.2.1` 的请求  `https://www.test.com/api/test` 会转成 `http://10.12.2.1:8080/test`
+
+ 如果想获取响应阶段的状态码、服务端IP、响应头、响应cookie，可以通过以下两种方式设置规则：
+
+ 1. [resScript](./rules/resScript.html)
+ 2. [插件的resRulesServer](./plugins.html)
+
+ 通过这两种方式设置的响应规则，除了可以设置上述请求信息，还可以设置如下响应信息：
+ ```
+pattern3 protocol://`{test2.json}`
+```
+test2.json:
+```
+{
+	"url": "${url}",
+	"search": "${url.search}",
+	"query": "${url.query}",
+	"queryValue": "${url.queryName}",
+	"host": "${url.host}",
+	"hostname": "${url.hostname}",
+	"path": "${url.path}",
+	"pathname": "${url.pathname}",
+	"reqId": "${reqId}",
+	"now": ${now},
+	"method": "${method}",
+	"xff": "${reqHeaders.x-forwarded-for}",
+	"other": "${reqHeaders.other}",
+	"cookie": "${reqCookie}",
+	"cookieValue": "${reqCookie.cookieName}",
+	"clientIp": "${clientIp}",
+	"statusCode": "${statusCode}",
+	"serverIp": "${serverIp}",
+	"resHeaderValue": "resHeaders.x-res-header-name",
+	"resCookieValue": "resCookie.res_cookie_name"
+}
+```
+
+`${xxx}` 里面如果涉及到 query、cookie会自动 `decode`，如果你不想自动对 `key` 和 `value` 做 `decode`，可以加多一个 `$${xxx}`。
+ 
