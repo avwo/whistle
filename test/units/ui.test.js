@@ -117,28 +117,12 @@ module.exports = function() {
     }
   });
   util.request({
-    url: 'http://local.whistlejs.com/cgi-bin/plugins/disable-plugin',
-    method: 'post'
-  });
-  util.request({
-    url: 'http://local.whistlejs.com/cgi-bin/plugins/disable-all-plugins',
-    method: 'post'
-  });
-  util.request({
-    url: 'http://local.whistlejs.com/cgi-bin/rules/disable-all-rules',
-    method: 'post'
-  });
-  util.request({
     url: 'http://local.whistlejs.com/cgi-bin/rules/add',
     method: 'post',
     form: {
       name: 'test',
       value: '/test/ file://xxx'
     }
-  });
-  util.request({
-    url: 'http://local.whistlejs.com/cgi-bin/rules/disable-default',
-    method: 'post'
   });
   util.request({
     url: 'http://local.whistlejs.com/cgi-bin/rules/enable-default',
@@ -285,28 +269,12 @@ module.exports = function() {
     }
   });
   util.request({
-    url: 'http://local.wproxy.org:1234/cgi-bin/plugins/disable-plugin',
-    method: 'post'
-  });
-  util.request({
-    url: 'http://local.wproxy.org:1234/cgi-bin/plugins/disable-all-plugins',
-    method: 'post'
-  });
-  util.request({
-    url: 'http://local.wproxy.org:1234/cgi-bin/rules/disable-all-rules',
-    method: 'post'
-  });
-  util.request({
     url: 'http://local.wproxy.org:1234/cgi-bin/rules/add',
     method: 'post',
     form: {
       name: 'test',
       value: '/test/ file://xxx'
     }
-  });
-  util.request({
-    url: 'http://local.wproxy.org:1234/cgi-bin/rules/disable-default',
-    method: 'post'
   });
   util.request({
     url: 'http://local.wproxy.org:1234/cgi-bin/rules/enable-default',
@@ -453,28 +421,12 @@ module.exports = function() {
     }
   });
   util.request({
-    url: 'http://local.whistle.com/cgi-bin/plugins/disable-plugin',
-    method: 'post'
-  });
-  util.request({
-    url: 'http://local.whistle.com/cgi-bin/plugins/disable-all-plugins',
-    method: 'post'
-  });
-  util.request({
-    url: 'http://local.whistle.com/cgi-bin/rules/disable-all-rules',
-    method: 'post'
-  });
-  util.request({
     url: 'http://local.whistle.com/cgi-bin/rules/add',
     method: 'post',
     form: {
       name: 'test',
       value: '/test/ file://xxx'
     }
-  });
-  util.request({
-    url: 'http://local.whistle.com/cgi-bin/rules/disable-default',
-    method: 'post'
   });
   util.request({
     url: 'http://local.whistle.com/cgi-bin/rules/enable-default',
