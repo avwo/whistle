@@ -1,0 +1,18 @@
+{
+	"url": "${url}",
+	"search": "${url.search}",
+	"query": "${url.query}",
+	"queryValue": "${url.query.name}",
+	"host": "${url.host}",
+	"hostname": "${url.hostname}",
+	"path": "${url.path}",
+	"pathname": "${url.pathname}",
+	"reqId": "${reqId}",
+	"now": ${now},
+	"method": "${method}",
+	"xff": "${reqHeaders.x-test}",
+	"other": "${reqHeaders.other}",
+	"cookie": "${reqCookie}",
+	"cookieValue": "${reqCookie.cookieName}",
+	"clientIp": "${clientIp}"
+}
