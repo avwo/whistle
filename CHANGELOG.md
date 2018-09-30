@@ -1,9 +1,10 @@
 ### v1.12.9
 1. feat: 支持在规则里面用模板字符串，具体内容参见：[操作值](http://wproxy.org/whistle/data.html)
+2. style: 修改编辑器的字体，以便更好显示模板字符串
 
 ### v1.12.8
 1. fix: Composer和Inspectors里面的Response可能出现联动的问题
-2. feat: [resCookies](http://wproxy.org/whistle/rules/resCookies.html)支持设置SameSite
+2. feat: [resCookies](http://wproxy.org/whistle/rules/resCookies.html)支持设置[SameSite](https://www.owasp.org/index.php/SameSite)
 
 ### v1.12.7
 1. refactor: 调整抓包数据缓存策略，优化内存占用
