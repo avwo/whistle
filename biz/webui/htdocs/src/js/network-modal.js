@@ -105,7 +105,8 @@ proto.filter = function(newList) {
     case 'result':
     case 'r':
       list.forEach(function(item) {
-        item.hide = self.checkNot(item.res.statusCode == null || !self.checkKeywork(item.res.statusCode + ''));
+        var status = item.res.statusCode;
+        item.hide = self.checkNot(!self.checkKeywork(status == null ? '-' : String(status)));
       });
       break;
     case 'method':
