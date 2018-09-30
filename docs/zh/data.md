@@ -122,8 +122,8 @@ test2.json:
 	"clientIp": "${clientIp}",
 	"statusCode": "${statusCode}",
 	"serverIp": "${serverIp}",
-	"resHeaderValue": "resHeaders.x-res-header-name",
-	"resCookieValue": "resCookie.res_cookie_name"
+	"resHeaderValue": "${resHeaders.x-res-header-name}",
+	"resCookieValue": "${resCookie.res_cookie_name}"
 }
 ```
 
