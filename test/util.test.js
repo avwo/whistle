@@ -7,6 +7,7 @@ var parseUrl = require('url').parse;
 var httpsAgent = require('https').Agent;
 var httpAgent = require('http').Agent;
 var WebSocket = require('ws');
+var events = require('./events');
 var config = require('./config.test');
 var request = require('request');
 var requestProxy = request.defaults({
@@ -19,8 +20,12 @@ exports.setEnd = function() {
 };
 
 function exit() {
-  if (--count <= 0 && end) {
-    process.exit(0);
+  if (--count <= 0) {
+    if (end) {
+      process.exit(0);
+    } else {
+      events.emit('next');
+    }
   }
 }
 
