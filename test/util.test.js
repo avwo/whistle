@@ -13,6 +13,16 @@ var requestProxy = request.defaults({
   proxy : 'http://127.0.0.1:' + config.port
 });
 var count = 0;
+var end;
+exports.setEnd = function() {
+  end = true;
+};
+
+function exit() {
+  if (--count <= 0 && end) {
+    process.exit(0);
+  }
+}
 
 function setHost(fullUrl, opts) {
   var host = opts.host;
@@ -43,9 +53,7 @@ exports.requestWS = function(url, callback) {
       }
       done = true;
       callback && callback('checkStatusCode');
-      if (--count <= 0) {
-        process.exit(0);
-      }
+      exit();
     } else {
       ws.send('something');
     }
@@ -56,9 +64,7 @@ exports.requestWS = function(url, callback) {
     }
     done = true;
     callback && callback(JSON.parse(data));
-    if (--count <= 0) {
-      process.exit(0);
-    }
+    exit();
   });
 };
 
@@ -105,9 +111,7 @@ exports.request = function(options, callback) {
         }
         done = true;
         callback && callback(JSON.parse(data));
-        if (--count <= 0) {
-          process.exit(0);
-        }
+        exit();
       });
     });
   } else {
@@ -139,9 +143,7 @@ exports.request = function(options, callback) {
         console.log(options);
         throw e;
       }
-      if (--count <= 0) {
-        process.exit(0);
-      }
+      exit();
     });
   }
 };
@@ -195,9 +197,7 @@ function proxy(url, callback) {
       } else {
         throw err;
       }
-      if (--count <= 0) {
-        process.exit(0);
-      }
+      exit();
       return;
     }
 
@@ -215,9 +215,7 @@ function proxy(url, callback) {
           }
           done = true;
           callback(err, res);
-          if (--count <= 0) {
-            process.exit(0);
-          }
+          exit();
         });
         res.on('end', function() {
           if (done) {
@@ -225,14 +223,10 @@ function proxy(url, callback) {
           }
           done = true;
           callback(err, res);
-          if (--count <= 0) {
-            process.exit(0);
-          }
+          exit();
         });
       } else {
-        if (--count <= 0) {
-          process.exit(0);
-        }
+        exit();
       }
     }).end();
   });
