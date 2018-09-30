@@ -12,10 +12,9 @@ var startWhistle = require('../index');
 var socks = require('socksv5');
 var util = require('./util.test');
 var config = require('./config.test');
+var events = require('./events');
 var values = util.getValues();
-var testList = fs.readdirSync(path.join(__dirname, './units')).map(function(name) {
-  return require('./units/' + name);
-});
+var testList = fs.readdirSync(path.join(__dirname, './units'));
 var defaultRules = fs.readFileSync(path.join(__dirname, 'rules.txt'), {encoding: 'utf8'});
 var options = {
   key: fs.readFileSync(path.join(__dirname, 'assets/certs/root.key')),
@@ -217,15 +216,33 @@ function startTest() {
       return;
     }
     done = true;
-    testList.forEach(function(fn) {
-      fn();
+    var lastUnit = 'ui.test.js';
+    testList.splice(testList.indexOf(lastUnit), 1);
+    testList = testList.map(function(name) {
+      return require('./units/' + name);
     });
+    lastUnit = require('./units/' + lastUnit);
+    var stride = 30;
+    var execUnit = function() {
+      var list = testList.slice(0, stride);
+      if (!list.length) {
+        util.setEnd();
+        lastUnit();
+        return true;
+      }
+      testList = testList.slice(stride);
+      list.forEach(function(fn) {
+        fn();
+      });
+    };
+    execUnit();
+    events.on('next', execUnit);
   }
 
   (function getData() {
     util.request('http://local.whistlejs.com/cgi-bin/get-data', function() {
       testAll();
-      setTimeout(getData, 5000);
+      setTimeout(getData, 10000);
     });
   })();
 }
