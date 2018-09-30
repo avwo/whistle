@@ -51,3 +51,6 @@ whistle的操作值可以分两类，字符串和JSON对象。
 
 
 注意：最后一种内联格式可以把JSON对象直接转化为字符串，这样可以用第一种方式直接写到配置里面，如果key或value里面出现 `空格`、`&`、`%` 或 `=`，则需要把它们 `encodeURIComponent`，whistle会对每个key和value尝试 `decodeURIComponent`。
+
+#### 模板字符串
+> `v1.12.9` 版本开始，whistle支持类似es6的模板字符串，通过模板字符串的方式可以
