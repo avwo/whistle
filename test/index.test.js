@@ -240,14 +240,14 @@ function startTest() {
   }
   var index = 0;
   (function getData() {
-    var dataUrl = 'http://local.whistlejs.com/cgi-bin/get-data?name=host&value=test&url=123';
+    var query = '?name=host&value=com&url=com';
+    var dataUrl = 'http://local.whistlejs.com/cgi-bin/get-data';
     if (++index > 2) {
       index = 0;
-      dataUrl += 'ip=self,1.1.1.1';
-    } else {
-      dataUrl += 'ip=self';
+      dataUrl += query + 'ip=self,1.1.1.1';
+    } else if (index === 1) {
+      dataUrl += query + 'ip=self';
     }
-
     util.request(dataUrl, function() {
       testAll();
       setTimeout(getData, 10000);
