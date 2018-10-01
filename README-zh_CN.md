@@ -16,6 +16,8 @@
 [![NPM count](https://img.shields.io/npm/dt/whistle.svg?style=flat-square)](https://www.npmjs.com/package/whistle)
 [![License](https://img.shields.io/npm/l/whistle.svg?style=flat-square)](https://www.npmjs.com/package/whistle)
 
+[README in English](README.md)
+
 whistle(读音`[ˈwɪsəl]`，拼音`[wēisǒu]`)是基于Node实现的跨平台抓包调试代理工具，有以下基本功能：
 
 1. 查看HTTP、HTTPS请求响应内容
