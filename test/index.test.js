@@ -238,9 +238,17 @@ function startTest() {
     execUnit();
     events.on('next', execUnit);
   }
-
+  var index = 0;
   (function getData() {
-    util.request('http://local.whistlejs.com/cgi-bin/get-data', function() {
+    var dataUrl = 'http://local.whistlejs.com/cgi-bin/get-data?name=host&value=test&url=123';
+    if (++index > 2) {
+      index = 0;
+      dataUrl += 'ip=self,1.1.1.1';
+    } else {
+      dataUrl += 'ip=self';
+    }
+
+    util.request(dataUrl, function() {
       testAll();
       setTimeout(getData, 10000);
     });
