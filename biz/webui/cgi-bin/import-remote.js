@@ -14,7 +14,7 @@ module.exports = function(req, res) {
         var msg = err.code === 'EEXCEED'  ? 'The size of response body exceeds 6m' : err.message;
         return res.json({ec: 2, em: msg});
       }
-      var status = r && r.statusCode;
+      var status = r.statusCode;
       if (status !== 200) {
         var em = status > 200 && status < 400 ? 'No body data' : 'Request failed';
         return res.json({ec: 2, em: em + ' (statusCode: ' + status + ')'});
