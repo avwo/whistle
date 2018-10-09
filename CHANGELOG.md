@@ -1,3 +1,7 @@
+### v1.12.10
+1. feat: 支持通过在Rules配置中 `@https://rules.host.com/xxx` 的方式远程自动加载规则（支持http和https请求，直接返回规则配置）
+2. feat: 支持启动参数设置 `shadowRules`（只支持作为第三方模块传入，不支持命令行方式传入）
+
 ### v1.12.9
 1. feat: 支持在规则里面用模板字符串，具体内容参见：[操作值](http://wproxy.org/whistle/data.html)
 2. style: 修改编辑器的字体，以便更好显示模板字符串
