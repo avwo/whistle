@@ -18,6 +18,7 @@
 1. [**urlParams** (修改请求url的参数)](urlParams.html)
 2. [**reqMerge** (修改请求参数)](reqMerge.html)
 3. [**pathReplace** (通过正则或字符串替换请求url，类似str.replace)](pathReplace.html)
+
 #### 修改请求方法
 1. . [**method** (修改请求方法)](method.html)
 
@@ -43,6 +44,7 @@
 2. [**reqBody** (替换请求内容)](reqBody.html)
 3. [**reqAppend** (往请求内容后面追加数据)](reqAppend.html)
 4. [**reqReplace** (通过正则或字符串替换请求文本内容，类似str.replace)](reqReplace.html)
+5. [**reqMerge** (修改请求参数或请求内容)](reqMerge.html)
 
 #### 修改响应状态码
 1. [**statusCode** (直接响应)](statusCode.html)
@@ -59,6 +61,7 @@
 
 #### 修改响应内容
 > 根据不同的数据类型采用不同的协议
+
 1. [**rule** (设置响应规则)](rule/index.html)
     * [**请求替换**](rule/replace.html)
     * [**file** (替换本地文件)](rule/file.html)
