@@ -12,6 +12,10 @@ var MAX_LENGTH =1024 * 16;
 var STR_SELECTOR = 'span[style="color: rgb(133, 153, 0);"]';
 var LINK_RE = /^"(https?:)?(\/\/[^/][^\s]+)"$/i;
 
+function compare(a, b) {
+  return a > b ? 1 : -1;
+}
+
 var JsonViewer = React.createClass({
   getInitialState: function() {
     return { lastData: {} };
@@ -173,7 +177,7 @@ var JsonViewer = React.createClass({
           </div>
           <TextView className={'fill w-json-viewer-str' + (viewSource ? '' : ' hide')} value={value} />
           <div ref="jsonViewer" className={'fill w-json-viewer-tree' + (viewSource ? ' hide' : '')}>
-            <JSONTree data={data.json} />
+            <JSONTree data={data.json} sortObjectKeys={compare} />
           </div>
         </div>
     );
