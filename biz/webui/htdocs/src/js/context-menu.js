@@ -70,6 +70,7 @@ var ContextMenu = React.createClass({
               >
                 <p className="w-ctx-item-tt">{item.name}</p>
                 {subList ? <span className="glyphicon glyphicon-play"></span> : undefined}
+                {subList ? <div className="w-ctx-menu-gap"></div> : undefined}
                 {
                   subList ? (
                     <ul className="w-ctx-menu-list">

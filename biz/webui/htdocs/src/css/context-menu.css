@@ -26,11 +26,22 @@
   margin: 0!important;
 }
 .w-ctx-menu-list .w-ctx-menu-list {
-  margin-left: 1.5px;
+  margin-left: 3px;
   display: none;
   top: -1px!important;
+  z-index: 100000001;
 }
-.w-ctx-menu-item:hover .w-ctx-menu-list {
+.w-ctx-menu-list .w-ctx-menu-gap {
+  position: absolute;
+  margin-left: -2px;
+  height: 35px;
+  top: -1px!important;
+  left: 100%;
+  width: 6px;
+  display: none;
+  z-index: 100000000;
+}
+.w-ctx-menu-item:hover .w-ctx-menu-list, .w-ctx-menu-item:hover .w-ctx-menu-gap {
   display: block;
 }
 .w-ctx-menu-item {
