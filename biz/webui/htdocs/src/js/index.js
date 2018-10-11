@@ -28,8 +28,9 @@ var MAX_PLUGINS_TABS = 7;
 var MAX_FILE_SIZE = 1024 * 1024 * 64;
 var MAX_OBJECT_SIZE = 1024 * 1024 * 6;
 var MAX_REPLAY_COUNT = 30;
-var LINK_SELECTOR = '.cm-js-type, .cm-js-http-url, .cm-string';
+var LINK_SELECTOR = '.cm-js-type, .cm-js-http-url, .cm-string, .cm-js-at';
 var LINK_RE = /^"(https?:)?(\/\/[^/][^\s]+)"$/i;
+var AT_LINK_RE = /^@(https?:)?(\/\/[^/][^\s]+)$/i;
 var OPTIONS_WITH_SELECTED = ['removeSelected', 'exportWhistleFile', 'exportSazFile'];
 var RULES_ACTIONS = [
   {
@@ -723,7 +724,8 @@ var Index = React.createClass({
         return;
       }
       var elem = $(this);
-      if (elem.hasClass('cm-js-http-url') || elem.hasClass('cm-string') || getKey(elem.text())) {
+      if (elem.hasClass('cm-js-http-url') || elem.hasClass('cm-string')
+        || elem.hasClass('cm-js-at') || getKey(elem.text())) {
         elem.addClass('w-is-link');
       }
     }).on('mouseleave', LINK_SELECTOR, function(e) {
@@ -734,6 +736,12 @@ var Index = React.createClass({
       }
       var elem = $(this);
       var text = elem.text();
+      if (elem.hasClass('cm-js-at')) {
+        if (AT_LINK_RE.test(text)) {
+          window.open((RegExp.$1 || 'http:') + RegExp.$2);
+        }
+        return;
+      }
       if (elem.hasClass('cm-string')) {
         if (LINK_RE.test(text)) {
           window.open((RegExp.$1 || 'http:') + RegExp.$2);

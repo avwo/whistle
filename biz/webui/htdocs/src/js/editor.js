@@ -130,7 +130,7 @@ var Editor = React.createClass({
         return;
       }
       var target = $(e.target);
-      if (target.hasClass('cm-js-type') || target.hasClass('cm-js-http-url')) {
+      if (target.hasClass('cm-js-type') || target.hasClass('cm-js-at') || target.hasClass('cm-js-http-url')) {
         e.preventDefault();
       }
     });
