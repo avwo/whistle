@@ -753,6 +753,7 @@ function getHexString(arr) {
 }
 
 var COMP_RE = /%[a-f\d]{2}|./ig;
+var CHECK_COMP_RE = /%[a-f\d]{2}/i;
 var SPACE_RE = /\+/g;
 var gbkDecoder;
 if (window.TextDecoder) {
@@ -769,7 +770,7 @@ function decodeURIComponentSafe(str, isUtf8) {
   try {
     return decodeURIComponent(result);
   } catch(e) {}
-  if (!isUtf8 && gbkDecoder) {
+  if (!isUtf8 && gbkDecoder && CHECK_COMP_RE.test(result)) {
     try {
       var arr = [];
       result.replace(COMP_RE, function(code) {
