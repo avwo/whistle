@@ -780,7 +780,9 @@ function decodeURIComponentSafe(str, isUtf8) {
           arr.push(String.fromCharCode(code));
         }
       });
-      return gbkDecoder.decode(new window.Uint8Array(arr));
+      if (!isUtf8(arr)) {
+        return gbkDecoder.decode(new window.Uint8Array(arr));
+      }
     } catch(e) {}
   }
   return str;
