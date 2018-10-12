@@ -303,7 +303,7 @@ TypeError: Cannot read property 'res' of null
             return util.isLocalAddress(_ip || ip);
           },
           ip: ip,
-          headers: util.clone(req.headers),
+          headers: extend(true, {}, req.headers),
           body: body,
           rules: [],
           values: {},
