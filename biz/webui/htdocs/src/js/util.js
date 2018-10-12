@@ -986,11 +986,11 @@ function hasRequestBody(method) {
 
 exports.hasRequestBody = hasRequestBody;
 
-var NON_ASCII_RE = /[^\x00-\x7F]/g;
-exports.encodeNonAsciiChar = function(str) {
+var NON_LATIN1_RE = /[^\x00-\xFF]/g;
+exports.encodeNonLatin1Char = function(str) {
   if (!str || typeof str != 'string') {
     return '';
   }
   /*eslint no-control-regex: "off"*/
-  return  str && str.replace(NON_ASCII_RE, safeEncodeURIComponent);
+  return  str && str.replace(NON_LATIN1_RE, safeEncodeURIComponent);
 };
