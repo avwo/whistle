@@ -2042,7 +2042,8 @@ var Index = React.createClass({
   clear: function() {
     var modal = this.state.network;
     modal && this.setState({
-      network: modal.clear()
+      network: modal.clear(),
+      showRemoveOptions: false
     });
   },
   removeRules: function(item) {
