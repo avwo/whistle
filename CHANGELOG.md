@@ -1,3 +1,6 @@
+### v1.12.11
+1. refactor: [reqCookies](http://wproxy.org/whistle/rules/reqCookies.html)、[resCookies](http://wproxy.org/whistle/rules/resCookies.html)里面的Value如果都为latin1字符则不进行encodeURIComponen
+
 ### v1.12.10
 1. feat: 支持通过在Rules配置中 `@https://rules.host.com/xxx` 的方式远程自动加载规则（支持http和https请求，直接返回规则配置）
 2. feat: 支持启动参数设置 `shadowRules`（只支持作为第三方模块传入，不支持命令行方式传入）
