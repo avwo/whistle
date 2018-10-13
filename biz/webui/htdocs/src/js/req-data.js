@@ -59,8 +59,8 @@ var contextMenuList = [
   {
     name: 'Remove',
     list:  [
-      { name: 'It' },
       { name: 'All' },
+      { name: 'One' },
       { name: 'Others' },
       { name: 'Selected' },
       { name: 'Unselected' }
@@ -346,7 +346,7 @@ var ReqData = React.createClass({
     case 'Import':
       events.trigger('importSessions', e);
       break;
-    case 'It':
+    case 'One':
       events.trigger('removeIt', item);
       break;
     case 'All':
