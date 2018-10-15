@@ -1,3 +1,14 @@
+### v1.12.12
+1. feat: 支持在Rules里面通过以下方式内联多行的Value:
+		
+		``` test.js
+		alert(1);
+		console.log(2);
+		// do sth
+		```
+
+2. 
+
 ### v1.12.11
 1. refactor: [reqCookies](http://wproxy.org/whistle/rules/reqCookies.html)、[resCookies](http://wproxy.org/whistle/rules/resCookies.html)里面的Value如果都为latin1字符则不进行encodeURIComponent
 2. refactor: debug状态下插件支持输出异步错误
