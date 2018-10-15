@@ -10,7 +10,7 @@ var dataCenter = require('./data-center');
 var util = require('./util');
 var MAX_LENGTH =1024 * 16;
 var STR_SELECTOR = 'span[style="color: rgb(133, 153, 0);"]';
-var LINK_RE = /^"(https?:)?(\/\/[^/][^\s]+)"$/i;
+var LINK_RE = /^"(https?:)?(\/\/[^/]\S+)"$/i;
 
 function compare(a, b) {
   return a > b ? 1 : -1;

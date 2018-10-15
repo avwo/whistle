@@ -254,7 +254,7 @@ var List = React.createClass({
   },
   formatJson: function(item) {
     var value = item && item.value || '';
-    if (/[^\s]/.test(value)) {
+    if (/\S/.test(value)) {
       var json = util.parseRawJson(value);
       if (json) {
         json = JSON.stringify(json, null, '  ');

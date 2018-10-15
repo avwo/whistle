@@ -8,7 +8,7 @@ var hparser = require('hparser');
 
 var formatHeaders = hparser.formatHeaders;
 var getRawHeaders = hparser.getRawHeaders;
-var STATUS_CODE_RE = /^[^\s]+\s+(\d+)/i;
+var STATUS_CODE_RE = /^\S+\s+(\d+)/i;
 var MAX_LENGTH = 1024 * 512;
 
 function parseHeaders(headers, rawHeaderNames) {

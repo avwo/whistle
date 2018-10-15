@@ -47,7 +47,7 @@ var DEFAULT_THEME = 'cobalt';
 var DEFAULT_FONT_SIZE = '16px';
 var RULES_COMMENT_RE = /^()\s*#\s*/;
 var JS_COMMENT_RE = /^(\s*)\/\/+\s?/;
-var NO_SPACE_RE = /[^\s]/;
+var NO_SPACE_RE = /\S/;
 
 var Editor = React.createClass({
   getThemes: function() {

@@ -77,7 +77,7 @@ function getAtHelpUrl(name, options) {
   } catch (e) {}
 }
 
-var WORD = /[^\s]+/;
+var WORD = /\S+/;
 var showAtHint;
 CodeMirror.registerHelper('hint', 'rulesHint', function(editor, options) {
   showAtHint = false;

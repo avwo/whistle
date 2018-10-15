@@ -29,8 +29,8 @@ var MAX_FILE_SIZE = 1024 * 1024 * 64;
 var MAX_OBJECT_SIZE = 1024 * 1024 * 6;
 var MAX_REPLAY_COUNT = 30;
 var LINK_SELECTOR = '.cm-js-type, .cm-js-http-url, .cm-string, .cm-js-at';
-var LINK_RE = /^"(https?:)?(\/\/[^/][^\s]+)"$/i;
-var AT_LINK_RE = /^@(https?:)?(\/\/[^/][^\s]+)$/i;
+var LINK_RE = /^"(https?:)?(\/\/[^/]\S+)"$/i;
+var AT_LINK_RE = /^@(https?:)?(\/\/[^/]\S+)$/i;
 var OPTIONS_WITH_SELECTED = ['removeSelected', 'exportWhistleFile', 'exportSazFile'];
 var RULES_ACTIONS = [
   {
