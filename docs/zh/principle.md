@@ -8,7 +8,7 @@ whistle的协议比较多，具体参见：[协议列表](./rules/rules)，这�
     ```
     请求 `https://www.test.com/xxx/index.html` 按从上到下的匹配顺序，只会匹配 `www.test.com 127.0.0.1:9999`，这个与传统的hosts配置后面优先的顺序相反。
     
-    > 如果想跟系统hosts匹配顺序一致，可以在界面通过 `Rules -> Settings -> Back rules first` 修改，但这个规则只对在页面里面配置的规则生效，对[插件](../plugins.html)里面自带的规则及通过[@](./rules/@.html)方式内联的远程规则不生效。
+    > 如果想跟系统hosts匹配顺序一致，可以在界面通过 `Rules -> Settings -> Back rules first` 修改，但这个规则只对在页面里面配置的规则生效，对[插件](./plugins.html)里面自带的规则及通过[@](./rules/@.html)方式内联的远程规则不生效。
 2. 除[rule](./rules/rule/)及[proxy](./rules/proxy.html)对应规则除外，可以同时匹配不同协议的规则
     ```
     www.test.com 127.0.0.1:9999
