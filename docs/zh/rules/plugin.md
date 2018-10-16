@@ -13,6 +13,8 @@ pattern whistle.abc://value
 ```
 这种配置默认只会访问插件里面的 `statsServer`，`rulesServer`，`resRulesServer`，`resStatsServer`中实现的server，这类配置才属于 `plugin` 协议类型。
 
+> 具体参见：[插件开发](../plugins.html)
+
 #### 过滤规则
 需要确保whistle是最新版本：[更新whistle](../update.html)
 
