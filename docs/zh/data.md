@@ -52,7 +52,7 @@ whistle的操作值可以分两类，字符串和JSON对象。
 
 注意：最后一种内联格式可以把JSON对象直接转化为字符串，这样可以用第一种方式直接写到配置里面，如果key或value里面出现 `空格`、`&`、`%` 或 `=`，则需要把它们 `encodeURIComponent`，whistle会对每个key和value尝试 `decodeURIComponent`。
 
-#### 内联操作值
+#### 内联多行操作值
 在[v1.12.12](./update.html)之前的版本，操作值有三种存储方式：
 
 1. 内联到规则里面(`pattern protocol://(value)`)，`value` 不能有空格
