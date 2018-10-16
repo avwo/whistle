@@ -52,6 +52,46 @@ whistle的操作值可以分两类，字符串和JSON对象。
 
 注意：最后一种内联格式可以把JSON对象直接转化为字符串，这样可以用第一种方式直接写到配置里面，如果key或value里面出现 `空格`、`&`、`%` 或 `=`，则需要把它们 `encodeURIComponent`，whistle会对每个key和value尝试 `decodeURIComponent`。
 
+#### 内联操作值
+在[v1.12.12](./update.html)之前的版本，操作值有三种存储方式：
+
+1. 内联到规则里面(`pattern protocol://(value)`)，`value` 不能有空格
+2. 直接存放到 [Values](./webui/values.html)(`pattern protocol://{key}`)
+3. 存放到本地文件或目录(`pattern protocol:///User/xxx`)
+
+whistle [v1.12.12](./update.html)开始支持在Rules内联多行的Value，如：
+
+````
+www.test.com/index.html file://{test.html}
+``` test.html
+Hello world.
+Hello world1.
+Hello world2.
+```
+````
+这种内联值位置可以在Rules里面任意放置，格式如下：
+````
+``` keyName
+content
+```
+````
+
+这样可以在Rules里面的任意位置引用该内容：
+```
+pattern protocol://{keyName}
+```
+
+这种方式设置的Value是全局的，优先级高于[Values](./webui/values.html)设置的Key-Value，所以如果是插件里面的规则最好能加个前缀如：
+````
+```whistle.helloworld/test.html
+Hello world.
+Hello world1.
+Hello world2.
+```
+www.test.com/index.html file://{whistle.helloworld/test.html}
+````
+
+
 #### 模板字符串
 `v1.12.9` 版本开始，whistle支持类似es6的模板字符串，通过模板字符串可以读取请求的一些信息并设置到规则中：
 
@@ -128,4 +168,3 @@ test2.json:
 ```
 
 `${xxx}` 里面如果对应的值不存在则返回空字符串；如果涉及到 query、cookie 会自动 `decode`，如果你不想自动对 `key` 和 `value` 做 `decode`，可以加多一个 `$${xxx}`。
- 
