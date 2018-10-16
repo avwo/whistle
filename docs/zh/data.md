@@ -81,7 +81,7 @@ content
 pattern protocol://{keyName}
 ```
 
-这种方式设置的Value是全局的，优先级高于[Values](./webui/values.html)设置的Key-Value，所以如果是插件里面的规则最好能加个前缀如：
+这种方式设置的Value只对当前阶段的规则生效，且优先级高于[Values](./webui/values.html)设置的Key-Value，所以如果是插件里面的规则最好能加个前缀如：
 ````
 ```whistle.helloworld/test.html
 Hello world.
