@@ -1,5 +1,111 @@
 # 协议列表
-以下对所有协议按功能做分类
+为了尽可能满足web开发中方方面面的需要，whistle提供基本上覆盖抓包调试工具可以做的所有事情的对应协议，可以大家会对规则匹配优先级、同时匹配的个数及每个协议的功能都会有一些疑问，下面先了解下匹配的优先级及同时可以匹配的个数，后面再对协议按功能划分，这样方便大家按需选择需要用到的协议。
+
+### 规则匹配原则
+whistle的规则匹配原则大致可以分成以下四点：
+
+1. 相同协议规则的默认优先级从上到下，即前面的规则优先级匹配高于后面，如：
+    ```
+    www.test.com 127.0.0.1:9999
+    www.test.com/xxx 127.0.0.1:8080
+    ```
+    请求 `https://www.test.com/xxx/index.html` 按从上到下的匹配顺序，只会匹配 `www.test.com 127.0.0.1:9999`，这个与传统的hosts配置后面优先的顺序相反。
+    
+    > 如果想跟系统hosts匹配顺序一致，可以在界面通过 `Rules -> Settings -> Back rules first` 修改，但这个规则只对在页面里面配置的规则生效，对[插件](../plugins.html)里面自带的规则及通过[@](./@.html)方式内联的远程规则不生效。
+2. 除[rule](./rule.html)及[proxy](./proxy.html)对应规则除外，可以同时匹配不同协议的规则
+    ```
+    www.test.com 127.0.0.1:9999
+    www.test.com/xxx 127.0.0.1:8080
+    www.test.com proxy://127.0.0.1:8888
+    www.test.com/xxx socks://127.0.0.1:1080
+    www.test.com pac://http://www.pac-server.com/test.pac
+    www.test.com/xxx http://www.abc.com
+    www.test.com file:///User/xxx/test
+    ```
+    请求 `https://www.test.com/xxx/index.html` 按从上到下的匹配顺序，及第二点原则，会匹配以下规则：
+    ```
+    www.test.com 127.0.0.1:9999
+    www.test.com proxy://127.0.0.1:8888
+    www.test.com pac://http://www.pac-server.com/test.pac
+    www.test.com/xxx http://www.abc.com
+    ```
+    > [proxy](./proxy.html)、[http-proxy](./socks.html)、[https-proxy](./socks.html)、[socks](./socks.html)都属于[proxy](./proxy.html)，[html](./rule/replace.html)、[file](./rule/file.html)等都属于[rule](./rule.html)，所以这两个对应的协议只能各种匹配其中优先级最高的一个。
+3. 如果不同协议之间存在功能互斥，则以模板服务器由近及远的原则，如：
+    ```
+    www.test.com 127.0.0.1:9999
+    www.test.com/xxx 127.0.0.1:8080
+    www.test.com proxy://127.0.0.1:8888
+    www.test.com/xxx socks://127.0.0.1:1080
+    www.test.com pac://http://www.pac-server.com/test.pac
+    www.test.com file:///User/xxx/test
+    www.test.com/xxx http://www.abc.com
+    ```
+    上述同时匹配[file](file.html)、[host](host.html)、[proxy](proxy.html)，按由近及远，优先级 `file > host > proxy`，即 `rule > host > proxy`
+4. 部分相同协议会匹配及合并所有可以匹配的规则，如：
+    ```
+    www.test.com 127.0.0.1:9999
+    www.test.com/xxx 127.0.0.1:8080
+    www.test.com proxy://127.0.0.1:8888
+    www.test.com/xxx socks://127.0.0.1:1080
+    www.test.com pac://http://www.pac-server.com/test.pac
+    www.test.com/xxx http://www.abc.com
+    www.test.com file:///User/xxx/test
+    www.test.com/xxx reqHeaders://{test.json}
+    www.test.com reqHeaders:///User/xxx/test.json
+    www.test.com/xxx htmlAppend:///User/xxx/test.html
+    www.test.com htmlAppend://{test.html}
+    www.test.com/xxx reqHeaders:///User/xxx/test2.json
+    www.test.com htmlAppend://{test2.html}
+    ```
+    请求 `https://www.test.com/xxx/index.html` 会匹配以下规则：
+    ```
+    www.test.com 127.0.0.1:9999
+    www.test.com proxy://127.0.0.1:8888
+    www.test.com pac://http://www.pac-server.com/test.pac
+    www.test.com/xxx http://www.abc.com
+    www.test.com/xxx reqHeaders://{test.json}
+    www.test.com reqHeaders:///User/xxx/test.json
+    www.test.com/xxx htmlAppend:///User/xxx/test.html
+    www.test.com htmlAppend://{test.html}
+    www.test.com/xxx reqHeaders:///User/xxx/test2.json
+    www.test.com htmlAppend://{test2.html}
+    ```
+    其中，所有匹配的[reqHeaders](./reqHeaders.html)协议的规则会将其对应的json合并后再合并到请求headers里，而所有匹配[htmlAppend](./htmlAppend.html)的html内容会通过换行符 `\n` 合并并追加到响应的html内容里面，其它可以合并的协议如下（主要涉及json、注入内容、属性设置对应的协议）：
+    - [ignore](./ignore.html)
+    - [enable](./enable.html)
+    - [filter](./filter.html)
+    - [disable](./disable.html)
+    - [plugin](./plugin.html)
+    - [delete](./delete.html)
+    - [urlParams](./urlParams.html)
+    - [params](./params.html)
+    - [reqHeaders](./reqHeaders.html)
+    - [resHeaders](./resHeaders.html)
+    - [reqCors](./reqCors.html)
+    - [resCors](./resCors.html)
+    - [reqCookies](./reqCookies.html)
+    - [resCookies](./resCookies.html)
+    - [reqReplace](./reqReplace.html)
+    - [urlReplace](./urlReplace.html)
+    - [resReplace](./resReplace.html)
+    - [resMerge](./resMerge.html)
+    - [reqBody](./reqBody.html)
+    - [reqPrepend](./reqPrepend.html)
+    - [resPrepend](./resPrepend.html)
+    - [reqAppend](./reqAppend.html)
+    - [resAppend](./resAppend.html)
+    - [resBody](./resBody.html)
+    - [htmlAppend](./htmlAppend.html)
+    - [jsAppend](./jsAppend.html)
+    - [cssAppend](./cssAppend.html)
+    - [htmlBody](./htmlBody.html)
+    - [jsBody](./jsBody.html)
+    - [cssBody](./cssBody.html)
+    - [htmlPrepend](./htmlPrepend.html)
+    - [jsPrepend](./jsPrepend.html)
+    - [cssPrepend](./cssPrepend.html)
+
+### 协议功能分类
 
 #### @ 功能
 1. [**@** (用于功能扩展及引入远程规则)](@.html)
