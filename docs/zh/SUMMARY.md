@@ -8,6 +8,7 @@
 * [配置方式](mode.md)
 * [匹配模式](pattern.md)
 * [操作值](data.md)
+* [匹配原则](principle.md)
 * [常用功能](frequet.md)
 * [插件开发](plugins.md)
 * [注意事项](attention.md)
