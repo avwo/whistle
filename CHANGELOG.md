@@ -6,7 +6,16 @@
 		console.log(2);
 		// do sth
 		```
-
+	上述配置表示key为 `test.js`，value为:
+	```
+	alert(1);
+		console.log(2);
+		// do sth
+	```
+	这样可以通过类似以下方式引用该Value：
+	```
+	pattern protocol://{test.js}
+	```
 2. 
 
 ### v1.12.11
