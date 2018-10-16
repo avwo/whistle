@@ -30,7 +30,7 @@ whistle的规则匹配原则大致可以分成以下四点：
     www.test.com/xxx http://www.abc.com
     ```
     > [proxy](./proxy.html)、[http-proxy](./socks.html)、[https-proxy](./socks.html)、[socks](./socks.html)都属于[proxy](./proxy.html)，[html](./rule/replace.html)、[file](./rule/file.html)等都属于[rule](./rule.html)，所以这两个对应的协议只能各种匹配其中优先级最高的一个。
-3. 一些属于不同协议，但只能执行其中一个功能的协议，如 [rule](rule.html)、[host](host.html)、[proxy](proxy.html)，按常用优先级为 `rule > host > proxy`，如：
+3. 一些属于不同协议，但功能有冲突的规则，如 [rule](rule.html)、[host](host.html)、[proxy](proxy.html)，按常用优先级为 `rule > host > proxy`，如：
     ```
     www.test.com 127.0.0.1:9999
     www.test.com/xxx 127.0.0.1:8080
