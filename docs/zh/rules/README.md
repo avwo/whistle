@@ -30,17 +30,16 @@ whistle的规则匹配原则大致可以分成以下四点：
     www.test.com/xxx http://www.abc.com
     ```
     > [proxy](./proxy.html)、[http-proxy](./socks.html)、[https-proxy](./socks.html)、[socks](./socks.html)都属于[proxy](./proxy.html)，[html](./rule/replace.html)、[file](./rule/file.html)等都属于[rule](./rule.html)，所以这两个对应的协议只能各种匹配其中优先级最高的一个。
-3. 如果不同协议之间存在功能互斥，则以模板服务器由近及远的原则，如：
+3. [rule](rule.html)、[host](host.html)、[proxy](proxy.html)优先级为 `rule > host > proxy`，如：
     ```
     www.test.com 127.0.0.1:9999
     www.test.com/xxx 127.0.0.1:8080
     www.test.com proxy://127.0.0.1:8888
     www.test.com/xxx socks://127.0.0.1:1080
-    www.test.com pac://http://www.pac-server.com/test.pac
     www.test.com file:///User/xxx/test
     www.test.com/xxx http://www.abc.com
     ```
-    上述同时匹配[file](file.html)、[host](host.html)、[proxy](proxy.html)，按由近及远，优先级 `file > host > proxy`，即 `rule > host > proxy`
+    上述同时匹配[file](file.html)、[host](host.html)、[proxy](proxy.html)，但只会执行本地替换[file](file.html)。
 4. 部分相同协议会匹配及合并所有可以匹配的规则，如：
     ```
     www.test.com 127.0.0.1:9999
