@@ -16,7 +16,21 @@
 	```
 	pattern protocol://{test.js}
 	```
-2. 
+2. [reqScript](http://wproxy.org/whistle/rules/reqScript.html)和[resScript](http://wproxy.org/whistle/rules/resScript.html)支持只设置操作(`operator`)：
+	```
+	pattern reqScript://{test.rules}
+	```
+	test.rules
+	```
+	# operator
+	file:///User/xxx/test.html
+	reqHeaders://(x-whistle-test=reqScript)
+	```
+	上述 `test.rules`里面第一行注释必须为 `# operator`，这样whistle会自动根据配置的pattern填充成：
+	```
+	pattern file:///User/xxx/test.html
+	pattern reqHeaders://(x-whistle-test=reqScript)
+	```
 
 ### v1.12.11
 1. refactor: [reqCookies](http://wproxy.org/whistle/rules/reqCookies.html)、[resCookies](http://wproxy.org/whistle/rules/resCookies.html)里面的Value如果都为latin1字符则不进行encodeURIComponent
