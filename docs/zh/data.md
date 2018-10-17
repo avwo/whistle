@@ -61,14 +61,22 @@ whistle的操作值可以分两类，字符串和JSON对象。
 
 whistle [v1.12.12](./update.html)开始支持在Rules内联多行的Value，如：
 
-````
+`````
 www.test.com/index.html file://{test.html}
 ``` test.html
 Hello world.
 Hello world1.
 Hello world2.
 ```
+www.test.com/index2.html reqScript://{test.rules}
+```` test.rules
+* file://{test.html} # 表示下面的test.html，无法获取上面的test.html
+``` test.html
+reqScrip,
+reqScript,
+```
 ````
+`````
 这种内联值位置可以在Rules里面任意放置，格式如下：
 ````
 ``` keyName
