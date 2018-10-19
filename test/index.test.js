@@ -70,6 +70,9 @@ http.createServer(function(req, res) {
 }).listen(config.serverPort, startTest);
 
 https.createServer(options, function(req, res) {
+  if (req.url.indexOf('test-remote.rules') !== -1) {
+    return res.end('str2.w2.org/index.html file://`(${search.replace(a,b)})`\nstr2.w2.org/index2.html file://`(${query.replace(/a/g,b)})`');
+  }
   res.end(JSON.stringify({
     headers: req.headers,
     body: 'test'
@@ -88,7 +91,9 @@ var proxy = startWhistle({
   rules: {
     Default: defaultRules,
     test: {
-      rules: 'test.options.com file://{options.html}\n@' + path.join(__dirname, 'assets/files/rules.txt'),
+      rules: 'test.options.com file://{options.html}\n@'
+        + path.join(__dirname, 'assets/files/rules.txt')
+        + '\n@https://127.0.0.1:' + config.httpsPort + '/test-remote.rules',
       enable: true
     },
     abc: '123'
