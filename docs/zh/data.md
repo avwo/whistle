@@ -176,3 +176,9 @@ test2.json:
 ```
 
 `${xxx}` 里面如果对应的值不存在则返回空字符串；如果涉及到 query、cookie 会自动 `decode`，如果你不想自动对 `key` 和 `value` 做 `decode`，可以加多一个 `$${xxx}`。
+
+`v1.12.13` 版本开始支持 `replace(pattern,replacement)`功能，如：
+```
+protocol://`${search.replace(/course=([^&]+)/ig,name=$1)}`
+protocol://`${search.replace(a,b)}`
+```
