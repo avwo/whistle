@@ -4,7 +4,9 @@
 3. feat: [模板字符串](http://wproxy.org/whistle/data.html)支持`replace`，且支持子匹配
 	```
 	pattern protocol://`${search.replace(pattern1,replacment)}`
+	www.test.com file://`${search.replace(/Course_(id)\,?/ig,$1cid)}${test.html}`
 	```
+	`pattern1` 为正则或普通字符串(不需要加引号)
 
 > 其它功能参见：[@](http://wproxy.org/whistle/rules/@.html)
 
