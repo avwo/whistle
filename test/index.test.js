@@ -88,7 +88,7 @@ var proxy = startWhistle({
   rules: {
     Default: defaultRules,
     test: {
-      rules: 'test.options.com file://{options.html}',
+      rules: 'test.options.com file://{options.html}\n@' + path.join(__dirname, 'assets/files/rules.txt'),
       enable: true
     },
     abc: '123'
@@ -218,6 +218,8 @@ function startTest() {
     done = true;
     var lastUnit = 'ui.test.js';
     testList.splice(testList.indexOf(lastUnit), 1);
+    testList.splice(testList.indexOf('tplStr.test.js'), 1);
+    testList.push('tplStr.test.js');
     testList = testList.map(function(name) {
       return require('./units/' + name);
     });
