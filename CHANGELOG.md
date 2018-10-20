@@ -1,7 +1,8 @@
 ### v1.12.13
 1. feat: 支持从本地路径自动加载规则 `@~/xxx/test.txt`
 2. feat: 支持从插件接口加载规则：` @whistle.nohost/cgi-bin/global-rules`
-3. feat: [模板字符串](http://wproxy.org/whistle/data.html)支持`replace`，且支持子匹配
+3. feat: 支持禁用响应内容压缩 `pattern disable://gzip`
+4. feat: [模板字符串](http://wproxy.org/whistle/data.html)支持`replace`，且支持子匹配
 	```
 	pattern protocol://`${search.replace(pattern1,replacment)}`
 	www.test.com file://`${search.replace(/Course_(id)\,?/ig,$1cid)}${test.html}`
