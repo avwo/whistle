@@ -1,3 +1,4 @@
+### v1.12.16
 ### v1.12.15
 1. fix: `www.test.com file:///User/xxx/test/` 配置 `http://www.test.com/?id=xxx` 无法匹配 `/User/xxx/test/index.html` 问题
 
