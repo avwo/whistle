@@ -1,5 +1,6 @@
 ### v1.12.14
 1. fix: `ignore://host|xxx` 用 `|` 同时配置多个忽略属性失效的问题
+2. fix: 启用 `Back rules first` 且规则配置为空导致启动失败的问题[https://github.com/avwo/whistle/issues/230](https://github.com/avwo/whistle/issues/230))
 
 ### v1.12.13
 1. feat: 支持从本地路径自动加载规则 `@~/xxx/test.txt`
