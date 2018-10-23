@@ -1,3 +1,6 @@
+### v1.12.15
+1. fix: `www.test.com file:///User/xxx/test/` 配置 `http://www.test.com/?id=xxx` 无法匹配 `/User/xxx/test/index.html` 问题
+
 ### v1.12.14
 1. fix: `ignore://host|xxx` 用 `|` 同时配置多个忽略属性失效的问题
 2. fix: 启用 `Back rules first` 且规则配置为空导致启动失败的问题[https://github.com/avwo/whistle/issues/230](https://github.com/avwo/whistle/issues/230))
