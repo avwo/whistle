@@ -1,3 +1,6 @@
+### v1.12.14
+1. fix: `ignore://host|xxx` 用 `|` 同时配置多个忽略属性失效的问题
+
 ### v1.12.13
 1. feat: 支持从本地路径自动加载规则 `@~/xxx/test.txt`
 2. feat: 支持从插件接口加载规则：` @whistle.nohost/cgi-bin/global-rules`
