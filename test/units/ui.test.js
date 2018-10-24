@@ -212,7 +212,6 @@ module.exports = function() {
   util.request('http://local.wproxy.org:1234/index.html?doNotParseJson');
   util.request('http://local.wproxy.org:1234/cgi-bin/log/get');
   util.request('http://local.wproxy.org:1234/cgi-bin/init');
-  util.request('http://local.wproxy.org:1234/cgi-bin/init');
   util.request('http://local.wproxy.org:1234/cgi-bin/get-data');
   util.request('http://local.wproxy.org:1234/cgi-bin/server-info');
   util.request('http://local.wproxy.org:1234/cgi-bin/values/list');
@@ -222,8 +221,7 @@ module.exports = function() {
   util.request('https://local.wproxy.org:1234/index.html?doNotParseJson');
   util.request('https://local.wproxy.org:1234/index.html?doNotParseJson');
   util.request('https://local.wproxy.org:1234/cgi-bin/log/get');
-  util.request('https://local.wproxy.org:1234/cgi-bin/init');
-  util.request('https://local.wproxy.org:1234/cgi-bin/init');
+  util.request('http://local.wproxy.org:1234/cgi-bin/init');
   util.request('https://local.wproxy.org:1234/cgi-bin/get-data');
   util.request('https://local.wproxy.org:1234/cgi-bin/server-info');
   util.request('https://local.wproxy.org:1234/cgi-bin/values/list');
