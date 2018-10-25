@@ -89,8 +89,8 @@ www.test.com/cgi-bin whistle.your-plugin-name://xxx
 2. 修改插件代码后，需要触发插件项目的 `package.json` 修改才会重新加载该插件，比如添加或删除一个空格。
 3. 完整API先看下源码：
   - [req.originalReq & req.originalRes](https://github.com/avwo/whistle/blob/master/lib/plugins/load-plugin.js#L46)
-  - [getReqSessions & getSessions & getFrames](https://github.com/avwo/whistle/blob/master/lib/plugins/load-plugin.js#L258)
-  - [getReqSessions & unsafe_getSessions & unsafe_getFrames](https://github.com/avwo/whistle/blob/master/lib/plugins/load-plugin.js#L269)
+  - [getReqSessions & getSession & getFrames](https://github.com/avwo/whistle/blob/master/lib/plugins/load-plugin.js#L258)
+  - [getReqSessions & unsafe_getSession & unsafe_getFrames](https://github.com/avwo/whistle/blob/master/lib/plugins/load-plugin.js#L269)
 
 
 更多例子参考：
