@@ -155,7 +155,7 @@ var Home = React.createClass({
               </div>
               <div style={{
                 margin: '8px 0 0',
-                color: '#666',
+                color: 'red',
                 'word-break': 'break-all',
                 display: state.uninstall ? '' : 'none'
               }}>
