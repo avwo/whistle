@@ -1160,6 +1160,13 @@ var Index = React.createClass({
     });
     changePageName('plugins');
   },
+  onClickAutoRefresh: function() {
+    var modal = this.state.network;
+    if (modal && modal.hasKeyword()) {
+      return message.warn('Please clear the filter input box at the bottom.');
+    }
+    this.autoRefresh && this.autoRefresh();
+  },
   showNetwork: function(e) {
     if (this.state.name == 'network') {
       e  && !this.state.showLeftMenu && this.showNetworkOptions();
