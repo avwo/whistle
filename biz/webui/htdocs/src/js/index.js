@@ -1163,7 +1163,7 @@ var Index = React.createClass({
   onClickAutoRefresh: function() {
     var modal = this.state.network;
     if (modal && modal.hasKeyword()) {
-      return message.warn('Please clear the filter input box at the bottom.');
+      message.warn('Please clear the filter input box at the bottom.');
     }
     this.autoRefresh && this.autoRefresh();
   },
@@ -2655,7 +2655,7 @@ var Index = React.createClass({
           <a onClick={this.onClickMenu} className="w-save-menu" style={{display: (isNetwork || isPlugins) ? 'none' : ''}} href="javascript:;" draggable="false" title="Ctrl[Command] + S"><span className="glyphicon glyphicon-save-file"></span>Save</a>
           <a onClick={this.onClickMenu} className="w-create-menu" style={{display: (isNetwork || isPlugins) ? 'none' : ''}} href="javascript:;" draggable="false"><span className="glyphicon glyphicon-plus"></span>Create</a>
           <a onClick={this.onClickMenu} className={'w-edit-menu' + (disabledEditBtn ? ' w-disabled' : '')} style={{display: (isNetwork || isPlugins) ? 'none' : ''}} href="javascript:;" draggable="false"><span className="glyphicon glyphicon-edit"></span>Rename</a>
-          <a onClick={this.autoRefresh} onDoubleClick={this.stopAutoRefresh} title={'Click to scroll to the bottom\nDouble click to stop scroll'}
+          <a onClick={this.onClickAutoRefresh} onDoubleClick={this.stopAutoRefresh} title={'Click to scroll to the bottom\nDouble click to stop scroll'}
             className="w-scroll-menu" style={{display: isNetwork ? '' : 'none'}} href="javascript:;" draggable="false"><span className="glyphicon glyphicon-play"></span>AutoRefresh</a>
           <a onClick={this.replay} className="w-replay-menu" style={{display: isNetwork ? '' : 'none'}} href="javascript:;" draggable="false"><span className="glyphicon glyphicon-repeat"></span>Replay</a>
           <a onClick={this.composer} className="w-composer-menu" style={{display: isNetwork ? '' : 'none'}} href="javascript:;" draggable="false"><span className="glyphicon glyphicon-edit"></span>Compose</a>
