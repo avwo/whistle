@@ -354,7 +354,7 @@ function updateList(list, len) {
 
 proto.update = function(scrollAtBottom, force) {
   updateOrder(this._list, force);
-  if (scrollAtBottom && !this.hasHidden()) {
+  if (scrollAtBottom && !this.hasKeyword()) {
     var exceed = Math.min(this._list.length - MAX_LENGTH, 100);
     if (this.hasKeyword()) {
       for (var i = 0; i < exceed; i++) {
@@ -374,16 +374,6 @@ proto.update = function(scrollAtBottom, force) {
   this.list = this._list.slice(0, MAX_LENGTH);
   this.filter(true);
   return this._list.length > MAX_LENGTH;
-};
-
-proto.hasHidden = function() {
-  var list = this.list;
-  for (var i = 0, len = list.length; i < len; i++) {
-    if (list[i].hided) {
-      return true;
-    }
-  }
-  return false;
 };
 
 proto.hasSelected = function() {
