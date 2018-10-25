@@ -163,7 +163,7 @@ var Home = React.createClass({
                 <a
                   className="w-copy-text-with-tips"
                   data-clipboard-text={state.pluginPath}
-                  style={{ marginLeft: 10, cursor: 'pointer' }}>{state.pluginPath}</a>
+                  style={{ marginLeft: 5, cursor: 'pointer' }}>{state.pluginPath}</a>
               </div>
             </div>
             <div className="modal-footer">
