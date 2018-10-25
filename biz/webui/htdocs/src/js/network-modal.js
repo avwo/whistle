@@ -345,6 +345,9 @@ proto.next = function() {
 
 
 function updateList(list, len) {
+  if (!(len > 0)) {
+    return;
+  }
   var activeItem = getActive(list);
   list.splice(0, len);
   if (activeItem && list.indexOf(activeItem) === -1) {
@@ -356,19 +359,7 @@ proto.update = function(scrollAtBottom, force) {
   updateOrder(this._list, force);
   if (scrollAtBottom && !this.hasKeyword()) {
     var exceed = Math.min(this._list.length - MAX_LENGTH, 100);
-    if (this.hasKeyword()) {
-      for (var i = 0; i < exceed; i++) {
-        var item = this._list[i];
-        if (!item.hide) {
-          if (i > 0) {
-            updateList(this._list, i);
-          }
-          break;
-        }
-      }
-    } if (exceed > 0) {
-      updateList(this._list, exceed);
-    }
+    updateList(this._list, exceed);
   }
 
   this.list = this._list.slice(0, MAX_LENGTH);
