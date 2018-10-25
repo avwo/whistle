@@ -159,7 +159,7 @@ var Home = React.createClass({
                 'word-break': 'break-all',
                 display: state.uninstall ? '' : 'none'
               }}>
-                If uninstall failed, you can delete the following directory instead:
+                If uninstall failed, delete the following directory instead:
                 <a
                   className="w-copy-text-with-tips"
                   data-clipboard-text={state.pluginPath}
