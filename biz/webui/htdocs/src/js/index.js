@@ -1163,7 +1163,7 @@ var Index = React.createClass({
   onClickAutoRefresh: function() {
     var modal = this.state.network;
     if (modal && modal.hasKeyword()) {
-      message.warn('Please clear the filter input box at the bottom.');
+      message.warn('The filter input at the bottom must be empty first.');
     }
     this.autoRefresh && this.autoRefresh();
   },
