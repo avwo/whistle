@@ -20,8 +20,8 @@ padding: 5px 6px!important; overflow: hidden; text-overflow: ellipsis; white-spa
 .w-plugins-name {width: 120px;}
 .w-plugins-version {width: 90px;}
 .w-plugins-date {width: 180px;}
-.w-plugins-operation { width: 256px; }
-.w-plugins-operation a, .w-plugins-operation span.disabled  {margin-right: 30px;}
+.w-plugins-operation { width: 300px; }
+.w-plugins-operation a, .w-plugins-operation span.disabled  {margin-right: 20px;}
 .w-plugins-operation a:last-child, .w-plugins-operation span.disabled:last-child {margin-right: 0;}
 .w-plugins-operation span.disabled {color: #ccc;}
 

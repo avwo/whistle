@@ -24,8 +24,8 @@ var Home = React.createClass({
       plugin: plugin
     }, this.showDialog);
   },
-  showUpdateDialog: function() {
-    this.refs.updatePluginDialog.show();
+  showMsgDialog: function() {
+    this.refs.operatePluginDialog.show();
   },
   showUpdate: function(e) {
     var name = $(e.target).attr('data-name');
@@ -33,8 +33,19 @@ var Home = React.createClass({
     var registry = plugin.registry ? ' --registry=' + plugin.registry : '';
     var sudo = this.props.data.isWin ? '' : 'sudo ';
     this.setState({
-      updateCmd: sudo + 'npm i -g ' + plugin.moduleName + registry
-    }, this.showUpdateDialog);
+      cmdMsg: sudo + 'npm i -g ' + plugin.moduleName + registry,
+      uninstall: false
+    }, this.showMsgDialog);
+  },
+  showUninstall: function(e) {
+    var name = $(e.target).attr('data-name');
+    var plugin = this.props.data.plugins[name + ':'];
+    var sudo = this.props.data.isWin ? '' : 'sudo ';
+    this.setState({
+      cmdMsg: sudo + 'npm uninstall -g ' + plugin.moduleName,
+      uninstall: true,
+      pluginPath: plugin.path
+    }, this.showMsgDialog);
   },
   render: function() {
     var self = this;
@@ -42,7 +53,7 @@ var Home = React.createClass({
     var plugins = data.plugins || [];
     var state = self.state || {};
     var plugin = state.plugin || {};
-    var updateCmd = state.updateCmd;
+    var cmdMsg = state.cmdMsg;
     var list = Object.keys(plugins);
     var disabledPlugins = data.disabledPlugins || {};
     return (
@@ -93,6 +104,8 @@ var Home = React.createClass({
                         {(plugin.rules || plugin._rules) ? <a href="javascript:;" draggable="false" data-name={name} onClick={self.showRules}>Rules</a> : <span className="disabled">Rules</span>}
                         <a href="javascript:;" draggable="false" className="w-plugin-btn"
                           data-name={name} onClick={self.showUpdate}>Update</a>
+                        <a href="javascript:;" draggable="false" className="w-plugin-btn"
+                          data-name={name} onClick={self.showUninstall}>Uninstall</a>
                         {plugin.homepage ? <a href={plugin.homepage} className="w-plugin-btn"
                           target="_blank">Help</a> : <span className="disabled">Help</span>}
                       </td>
@@ -126,23 +139,35 @@ var Home = React.createClass({
               <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
             </div>
           </Dialog>
-          <Dialog ref="updatePluginDialog" wstyle="w-plugin-update-dialog">
+          <Dialog ref="operatePluginDialog" wstyle="w-plugin-update-dialog">
             <div className="modal-body">
               <h5>
                 <a
                   href="javascript:;"
                   className="w-copy-text-with-tips"
-                  data-clipboard-text={updateCmd}
+                  data-clipboard-text={cmdMsg}
                 >
                   Copy the following command
                 </a> to the CLI to execute:
               </h5>
               <div className="w-plugin-update-cmd">
-                  {updateCmd}
+                  {cmdMsg}
+              </div>
+              <div style={{
+                margin: '8px 0 0',
+                color: '#666',
+                'word-break': 'break-all',
+                display: state.uninstall ? '' : 'none'
+              }}>
+                If uninstall failed, you can delete the following directory instead:
+                <a
+                  className="w-copy-text-with-tips"
+                  data-clipboard-text={state.pluginPath}
+                  style={{ marginLeft: 10, cursor: 'pointer' }}>{state.pluginPath}</a>
               </div>
             </div>
             <div className="modal-footer">
-              <button type="button" className="btn btn-primary w-copy-text-with-tips" data-clipboard-text={updateCmd}>Copy</button>
+              <button type="button" className="btn btn-primary w-copy-text-with-tips" data-clipboard-text={cmdMsg}>Copy</button>
               <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
             </div>
           </Dialog>
