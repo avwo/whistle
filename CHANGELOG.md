@@ -2,6 +2,7 @@
 1. feat: 插件列表添加 `Uninstall` 按钮，用于展示协助插件的方法
 2. refactor: 搜索列表时暂停自动滚动
 3. fix: `reqHeaders://Host=xxx.com` 的 `Host` 不支持忽略大小写的问题 
+4. fix: 内联 `Value` 可能被清空的问题
 
 ### v1.12.16
 ### v1.12.15
