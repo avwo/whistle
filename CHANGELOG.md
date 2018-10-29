@@ -1,5 +1,5 @@
 # v1.13.0
-1. feat: 支持通过插件的 `tunnelServer` 及设置 `enable://customInspect` 对tunnel请求(即：tpc请求或未拦截的https、websocket请求)自定义解包组包
+1. feat: 支持通过插件的 `tunnelServer` 及设置 `enable://customParser` 对tunnel请求(即：tpc请求或未拦截的https、websocket请求)自定义解包组包
 
 ### v1.12.17
 1. feat: 插件列表添加 `Uninstall` 按钮，用于展示协助插件的方法
