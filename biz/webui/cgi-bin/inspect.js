@@ -1,6 +1,6 @@
-// var proxy = require('../lib/proxy');
+var socketMgr = require('../../lib/proxy').socketMgr;
 
 module.exports = function(req, res) {
-  // console.log(req.body)
+  console.log(req.body);
   res.json({ ec: 0 });
 };
