@@ -93,7 +93,7 @@ var FrameComposer = React.createClass({
         return util.showSystemError(xhr);
       }
       if (data.ec !== 0) {
-        return message.info('Server busy, try again later.');
+        return message.error('Server busy, try again later.');
       }
       cb && cb();
     });
