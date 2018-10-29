@@ -3,6 +3,7 @@ var ReactDOM = require('react-dom');
 var dataCenter = require('./data-center');
 var util = require('./util');
 var events = require('./events');
+var message = require('./message');
 var fromByteArray  = require('base64-js').fromByteArray ;
 
 var MAX_FILE_SIZE = 1024 * 1025;
@@ -90,6 +91,9 @@ var FrameComposer = React.createClass({
     dataCenter.socket.send(params, function(data, xhr) {
       if (!data) {
         return util.showSystemError(xhr);
+      }
+      if (data.ec !== 0) {
+        return message.info('Server busy, try again later.');
       }
       cb && cb();
     });
