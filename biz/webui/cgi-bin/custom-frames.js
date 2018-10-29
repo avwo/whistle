@@ -1,4 +1,4 @@
-var socketMgr = require('../../lib/proxy').socketMgr;
+var socketMgr = require('../lib/proxy').socketMgr;
 
 module.exports = function(req, res) {
   console.log(req.body);
