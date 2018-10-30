@@ -119,6 +119,12 @@
   height: 23px;
   background: #f1f3f4;
 }
+.w-frames-composer-action .glyphicon-arrow-left {
+  color: #e75b0f;
+}
+.w-frames-composer-action .glyphicon-arrow-right {
+  color: #0d8f0d;
+}
 
 .w-frames-composer-action .btn-group, .w-frames-composer-action .w-format-json-btn {
   margin: 1px 15px 1px 0;
