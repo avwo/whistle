@@ -5,6 +5,7 @@ var util = require('./util');
 var events = require('./events');
 var message = require('./message');
 var fromByteArray  = require('base64-js').fromByteArray ;
+var storage = require('./storage');
 
 var MAX_FILE_SIZE = 1024 * 1025;
 var MAX_LENGTH = 1024 * 64;
@@ -35,6 +36,8 @@ var FrameComposer = React.createClass({
         events.trigger('autoRefreshFrames');
       });
     });
+    var text = storage.get('composeFrameData');
+    this.setTextarea(String(text || ''));
   },
   shouldComponentUpdate: function(nextProps) {
     var hide = util.getBoolean(this.props.hide);
@@ -128,6 +131,10 @@ var FrameComposer = React.createClass({
       text: text,
       isJSON: JSON_RE.test(text)
     });
+    clearTimeout(this.timer);
+    this.timer = setTimeout(function() {
+      storage.set('composeFrameData', text);
+    }, 600);
   },
   onTextareaChange: function(e) {
     this.setTextarea(e.target.value);
