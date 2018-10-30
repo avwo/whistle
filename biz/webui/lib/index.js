@@ -9,7 +9,7 @@ var crypto = require('crypto');
 var cookie = require('cookie');
 var htdocs = require('../htdocs');
 
-var PARSE_CONF = { extended: true, limit: '2mb'};
+var PARSE_CONF = { extended: true, limit: '3mb'};
 var GET_METHOD_RE = /^get$/i;
 var WEINRE_RE = /^\/weinre\/.*/;
 var DONT_CHECK_PATHS = ['/cgi-bin/server-info', '/cgi-bin/show-host-ip-in-res-headers',
