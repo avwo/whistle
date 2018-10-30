@@ -24,9 +24,6 @@ var FrameComposer = React.createClass({
         self.setTextarea(util.getBody(frame, true));
       }
     });
-    events.on('updateFrameComposer', function() {
-      self.setState({});
-    });
     events.on('replayFrame', function(e, frame) {
       if (!frame) {
         return;
@@ -154,36 +151,34 @@ var FrameComposer = React.createClass({
     var leftStyle = isHttps ? {left: 0} : undefined;
     var displayStyle = isHttps ? {display: 'none'} : undefined;
     var tips = data.closed ? 'The connection is closed' : undefined;
-    var disabledReceive = !!data.receiveStatus || closed;
-    var disabledSend = !!data.sendStatus || closed;
     return (
       <div onDrop={this.onDrop} className={'fill orient-vertical-box w-frames-composer' + (this.props.hide ? ' hide' : '')}>
         <div className="w-frames-composer-action">
           <div className="btn-group">
-            <button disabled={disabledReceive} title={tips} onMouseDown={this.preventDefault} onClick={this.onSend}
+            <button disabled={closed} title={tips} onMouseDown={this.preventDefault} onClick={this.onSend}
               type="button" className="btn btn-default btn-sm">
               <span className="glyphicon glyphicon-arrow-left"></span>
               Send to client
             </button>
-            <button disabled={disabledReceive} title={tips} type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button disabled={closed} title={tips} type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <span className="caret"></span>
             </button>
-            <ul style={leftStyle} className={'dropdown-menu' + (disabledReceive ? ' hide' : '')}>
+            <ul style={leftStyle} className={'dropdown-menu' + (closed ? ' hide' : '')}>
               <li style={displayStyle}><a onClick={this.onSend} href="javascript:;">Send binary data</a></li>
               <li><a onClick={this.uploadTextToClient} href="javascript:;">{isHttps ? 'Upload to client' : 'Upload text data'}</a></li>
               <li style={displayStyle}><a onClick={this.uploadBinToClient} href="javascript:;">Upload binary data</a></li>
             </ul>
           </div>
           <div className="btn-group">
-            <button disabled={disabledSend} title={tips} onMouseDown={this.preventDefault} data-target="server"
+            <button disabled={closed} title={tips} onMouseDown={this.preventDefault} data-target="server"
               onClick={this.onSend} type="button" className="btn btn-default btn-sm">
               <span className="glyphicon glyphicon-arrow-right"></span>
               Send to server
             </button>
-            <button disabled={disabledSend} title={tips} type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button disabled={closed} title={tips} type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <span className="caret"></span>
             </button>
-            <ul style={leftStyle} className={'dropdown-menu' + (disabledSend ? ' hide' : '')}>
+            <ul style={leftStyle} className={'dropdown-menu' + (closed ? ' hide' : '')}>
               <li style={displayStyle}><a data-target="server" onClick={this.onSend} href="javascript:;">Send binary data</a></li>
               <li><a onClick={this.uploadTextToServer} href="javascript:;">{isHttps ? 'Upload to server' : 'Upload text data'}</a></li>
               <li style={displayStyle}><a onClick={this.uploadBinToServer} href="javascript:;">Upload binary data</a></li>

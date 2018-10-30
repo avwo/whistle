@@ -132,7 +132,6 @@ var FrameList = React.createClass({
           reqData.receiveStatus = option.value;
         }
         self.setState({});
-        events.trigger('updateFrameComposer');
       }
     });
   },
