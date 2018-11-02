@@ -230,7 +230,7 @@ var FrameList = React.createClass({
         <ul ref={self.setContent}>
           {list.map(function(item) {
             var statusClass = '';
-            if (item.closed || item.err) {
+            if (item.closed || item.err || item.isError) {
               reqData.closed = item.closed;
               reqData.err = item.err;
               if (item.closed) {
