@@ -92,6 +92,9 @@ www.test.com/cgi-bin whistle.your-plugin-name://xxx
   - [getReqSessions & getSession & getFrames](https://github.com/avwo/whistle/blob/master/lib/plugins/load-plugin.js#L258)
   - [getReqSessions & unsafe_getSession & unsafe_getFrames](https://github.com/avwo/whistle/blob/master/lib/plugins/load-plugin.js#L269)
 
+#### 抓包调试protobuf等自定义协议
+whistle v1.13.0版本开始支持通过插件自定义长连接数据的解析器，并通过 `Network/Frames` 进行显示发送接收数据，及监听状态变化、获取构造请求数据等，具体参考：[https://github.com/whistle-plugins/whistle.custom-parser](https://github.com/whistle-plugins/whistle.custom-parser)
+
 
 更多例子参考：
 
