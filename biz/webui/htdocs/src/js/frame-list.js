@@ -232,7 +232,7 @@ var FrameList = React.createClass({
             var statusClass = '';
             if (item.closed || item.err || item.isError) {
               reqData.closed = item.closed;
-              reqData.err = item.err;
+              reqData.err = item.err || item.data;
               if (item.closed) {
                 statusClass = ' w-connection-closed';
               } else {
