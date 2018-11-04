@@ -1,5 +1,5 @@
 # v1.13.0
-1. feat: 支持通过插件的 `tunnelServer` 及设置 `enable://customParser` 对tunnel请求(即：tpc请求或未拦截的https、websocket请求)自定义解包组包
+1. feat: 支持通过插件的 `tunnelServer` 及设置 `enable://customParser` 对tunnel请求(即：tpc请求或未拦截的https、websocket请求)自定义解包组包，参见：[whistle.custom-parser](https://github.com/whistle-plugins/whistle.custom-parser)
 2. feat: 支持在插件里面添加 `resRules.txt` 文件，用于设置静态规则，功能相当于 `resRulesServer` 吐出的规则
 3. feat: 支持在模板字符串里面获取插件规则的值 `pattern whistle.xxx://ruleValue` ，可以在插件的 `_rules.txt` 的模板字符串里面 `${whistle.xxx}` 获取 `ruleValue`，具体参见：[whistle.inspect](https://github.com/whistle-plugins/whistle.inspect/) 
 
