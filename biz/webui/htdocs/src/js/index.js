@@ -2629,7 +2629,7 @@ var Index = React.createClass({
               className="w-plugins-menu-item" onClick={this.showPlugins} onChange={this.disablePlugin} onClickOption={this.showAndActivePlugins} />
           </div>
           <a onClick={this.disableAllPlugins} className="w-enable-plugin-menu"
-            style={{display: isPlugins ? '' : 'none'}} href="javascript:;"
+            style={{display: isPlugins ? '' : 'none', color: disabledAllPlugins ? '#f66' : undefined}} href="javascript:;"
             draggable="false">
             <span className={'glyphicon glyphicon-' + (disabledAllPlugins ? 'ok-circle' : 'ban-circle')}/>
             {disabledAllPlugins ? 'EnableAll' : 'DisableAll'}
@@ -2714,7 +2714,7 @@ var Index = React.createClass({
             </a>
             <a onClick={this.showPlugins} className="w-plugins-menu"
               onDoubleClick={this.disableAllPlugins}
-              title={name == 'plugins' ? 'Double to ' + (state.disabledAllPlugins ? 'enable' : 'disable') + ' all plugins': undefined}
+              title={name == 'plugins' ? 'Double click to ' + (state.disabledAllPlugins ? 'enable' : 'disable') + ' all plugins': undefined}
               style={{background: name == 'plugins' ? '#ddd' : null}} href="javascript:;" draggable="false">
               <span className={'glyphicon glyphicon-list-alt' + (disabledAllPlugins ? ' w-disabled' : '')}></span>
               <span className="w-left-menu-tips">Plugins</span>
