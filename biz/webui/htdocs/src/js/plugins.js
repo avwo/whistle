@@ -2,7 +2,7 @@ require('../css/plugins.css');
 var $ = require('jquery');
 var React = require('react');
 var ReactDOM = require('react-dom');
-
+var events = require('./events');
 var Dialog = require('./dialog');
 
 var Home = React.createClass({
@@ -47,6 +47,14 @@ var Home = React.createClass({
       pluginPath: plugin.path
     }, this.showMsgDialog);
   },
+  enableAllPlugins: function(e) {
+    var data = this.props.data || {};
+    if ((!data.disabledAllRules && !data.disabledAllPlugins)
+        || !confirm('Do you enable all plugins?')) {
+      return;
+    }
+    events.trigger('disableAllPlugins', e);
+  },
   render: function() {
     var self = this;
     var data = self.props.data || {};
@@ -56,6 +64,8 @@ var Home = React.createClass({
     var cmdMsg = state.cmdMsg;
     var list = Object.keys(plugins);
     var disabledPlugins = data.disabledPlugins || {};
+    var disabled = data.disabledAllRules || data.disabledAllPlugins;
+
     return (
         <div className="fill orient-vertical-box w-plugins" style={{display: self.props.hide ? 'none' : ''}}>
           <div className="w-plugins-headers">
@@ -87,13 +97,12 @@ var Home = React.createClass({
                   var plugin = plugins[name];
                   name = name.slice(0, -1);
                   var checked = !disabledPlugins[name];
-                  var disabled = data.disabledAllRules || data.disabledAllPlugins;
                   var url = 'plugin.' + name + '/';
                   return (
                     <tr key={name} className={(!disabled && checked) ? '' : 'w-plugins-disable'}>
-                      <th className="w-plugins-order">{i + 1}</th>
-                      <td className="w-plugins-active">
-                        <input type="checkbox"  title={disabled ? 'Disabled' : (checked ? 'Disable ' : 'Enable ') + name}
+                      <th className="w-plugins-order" onDoubleClick={self.enableAllPlugins}>{i + 1}</th>
+                      <td className="w-plugins-active" onDoubleClick={self.enableAllPlugins}>
+                        <input type="checkbox" title={disabled ? 'Disabled' : (checked ? 'Disable ' : 'Enable ') + name}
                           data-name={name} checked={checked} disabled={disabled} onChange={self.props.onChange} />
                       </td>
                       <td className="w-plugins-date">{new Date(plugin.mtime).toLocaleString()}</td>

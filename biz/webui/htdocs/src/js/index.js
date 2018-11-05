@@ -589,6 +589,9 @@ var Index = React.createClass({
       self.valuesChanged = true;
       self.showReloadValues();
     });
+    events.on('disableAllPlugins', function(e) {
+      self.disableAllPlugins(e);
+    });
     this.setFilterTextState();
     setInterval(this.setFilterTextState, 5000);
     $(document)
