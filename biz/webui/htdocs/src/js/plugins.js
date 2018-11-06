@@ -50,7 +50,7 @@ var Home = React.createClass({
   enableAllPlugins: function(e) {
     var data = this.props.data || {};
     if ((!data.disabledAllRules && !data.disabledAllPlugins)
-        || !confirm('Do you enable all plugins?')) {
+        || !confirm('Do you want to enable all plugins?')) {
       return;
     }
     events.trigger('disableAllPlugins', e);
