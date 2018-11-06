@@ -1,3 +1,7 @@
+# v1.13.1
+1. fix: 启用 `customParser` 且延迟延迟响应可能导致连接自动断开的问题
+2. style: 高亮显示插件的 `EnableAll` 按钮
+
 # v1.13.0
 1. feat: 支持通过插件的 `tunnelServer` 及设置 `enable://customParser` 对tunnel请求(即：tpc请求或未拦截的https、websocket请求)自定义解包组包，参见：[whistle.custom-parser](https://github.com/whistle-plugins/whistle.custom-parser)
 2. feat: 支持在插件里面添加 `resRules.txt` 文件，用于设置静态规则，功能相当于 `resRulesServer` 吐出的规则
