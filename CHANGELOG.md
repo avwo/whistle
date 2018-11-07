@@ -1,5 +1,7 @@
 # v1.13.2
-1. feat: 在顶部菜单栏的 `Replay` 按钮下拉菜单添加 `Abort` 按钮，支持Abort掉处于pending状态的请求
+1. style: 调整 `AutoRefresh` 的位置， `Abort` 按钮图标加警告色 
+2. feat: 在顶部菜单栏的 `Replay` 按钮下拉菜单添加 `Abort` 按钮，支持Abort掉处于pending状态的请求
+	![Abort](https://user-images.githubusercontent.com/11450939/48121171-30c26300-e2af-11e8-842c-7b3c7c7e6067.png)
 
 # v1.13.1
 1. fix: 启用 `customParser` 且延迟延迟响应可能导致连接自动断开的问题
