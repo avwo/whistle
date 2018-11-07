@@ -79,6 +79,13 @@ var REMOVE_OPTIONS = [
     title: 'Ctrl[Command] + Shift + D'
   }
 ];
+var ABORT_OPTIONS = [
+  {
+    name: 'Abort',
+    icon: 'ban-circle',
+    id: 'abort'
+  }
+];
 
 function checkJson(item) {
   if (/\.json$/i.test(item.name) && JSON_RE.test(item.value)) {
@@ -1506,6 +1513,7 @@ var Index = React.createClass({
   hideNetworkOptions: function() {
     this.setState({
       showRemoveOptions: false,
+      showAbortOptions: false,
       showNetworkOptions: false
     });
   },
@@ -1514,9 +1522,19 @@ var Index = React.createClass({
       showRemoveOptions: true
     });
   },
+  showAbortOptions: function() {
+    this.setState({
+      showAbortOptions: true
+    });
+  },
   hideRemoveOptions: function() {
     this.setState({
       showRemoveOptions: false
+    });
+  },
+  hideAbortOptions: function() {
+    this.setState({
+      showAbortOptions: false
     });
   },
   showHelpOptions: function() {
@@ -2274,6 +2292,9 @@ var Index = React.createClass({
       }
     });
   },
+  abort: function() {
+    alert(2);
+  },
   allowMultipleChoice: function(e) {
     var self = this;
     var checked = e.target.checked;
@@ -2660,7 +2681,16 @@ var Index = React.createClass({
           <a onClick={this.onClickMenu} className={'w-edit-menu' + (disabledEditBtn ? ' w-disabled' : '')} style={{display: (isNetwork || isPlugins) ? 'none' : ''}} href="javascript:;" draggable="false"><span className="glyphicon glyphicon-edit"></span>Rename</a>
           <a onClick={this.onClickAutoRefresh} onDoubleClick={this.stopAutoRefresh} title={'Click to scroll to the bottom\nDouble click to stop scroll'}
             className="w-scroll-menu" style={{display: isNetwork ? '' : 'none'}} href="javascript:;" draggable="false"><span className="glyphicon glyphicon-play"></span>AutoRefresh</a>
-          <a onClick={this.replay} className="w-replay-menu" style={{display: isNetwork ? '' : 'none'}} href="javascript:;" draggable="false"><span className="glyphicon glyphicon-repeat"></span>Replay</a>
+          <div onMouseEnter={this.showAbortOptions} onMouseLeave={this.hideAbortOptions}
+            style={{display: isNetwork ? '' : 'none'}}
+            className={'w-menu-wrapper w-abort-menu-list w-menu-auto' + (state.showAbortOptions ? ' w-menu-wrapper-show' : '')}>
+            <a onClick={this.replay} className="w-replay-menu"
+              style={{display: isNetwork ? '' : 'none'}} href="javascript:;"
+              draggable="false">
+              <span className="glyphicon glyphicon-repeat"></span>Replay
+            </a>
+            <MenuItem options={ABORT_OPTIONS} className="w-remove-menu-item" onClickOption={this.abort} />
+          </div>
           <a onClick={this.composer} className="w-composer-menu" style={{display: isNetwork ? '' : 'none'}} href="javascript:;" draggable="false"><span className="glyphicon glyphicon-edit"></span>Compose</a>
           <a onClick={this.onClickMenu} className={'w-delete-menu' + (disabledDeleteBtn ? ' w-disabled' : '')} style={{display: (isNetwork || isPlugins) ? 'none' : ''}} href="javascript:;" draggable="false"><span className="glyphicon glyphicon-trash"></span>Delete</a>
           <a onClick={this.showSettings} className={'w-settings-menu' + (hasFilterText ? ' w-menu-enable'  : '')} style={{display: (isPlugins) ? 'none' : ''}} href="javascript:;" draggable="false"><span className="glyphicon glyphicon-cog"></span>Settings</a>
