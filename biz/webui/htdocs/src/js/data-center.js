@@ -257,7 +257,8 @@ exports.log = createCgi({
 
 $.extend(exports, createCgi({
   composer: 'cgi-bin/composer',
-  interceptHttpsConnects: 'cgi-bin/intercept-https-connects'
+  interceptHttpsConnects: 'cgi-bin/intercept-https-connects',
+  abort: 'cgi-bin/abort'
 }, POST_CONF));
 $.extend(exports, createCgi({
   donotShowAgain: 'cgi-bin/do-not-show-again',

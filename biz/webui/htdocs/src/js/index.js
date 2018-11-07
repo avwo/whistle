@@ -2293,7 +2293,21 @@ var Index = React.createClass({
     });
   },
   abort: function() {
-    alert(2);
+    var modal = this.state.network;
+    var list = modal && modal.getSelectedList();
+    if (list) {
+      var result;
+      list.filter(function(item) {
+        if (!item.lost && !item.endTime) {
+          result = result || [];
+          result.push(item.id);
+        }
+      });
+      if (result) {
+        dataCenter.abort({ list: result.join() });
+      }
+    }
+    this.hideAbortOptions();
   },
   allowMultipleChoice: function(e) {
     var self = this;
