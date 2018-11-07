@@ -439,10 +439,11 @@ var ReqData = React.createClass({
     if (item) {
       if (item.selected) {
         contextMenuList[5].disabled = !selectedList.filter(util.canReplay).length;
+        contextMenuList[6].disabled = !selectedList.filter(util.canAbort).length;
       } else {
         contextMenuList[5].disabled = !util.canReplay(item);
+        contextMenuList[6].disabled = !util.canAbort(item);
       }
-      contextMenuList[6].disabled = !!(item.lost || item.endTime);
     } else {
       contextMenuList[5].disabled = true;
       contextMenuList[6].disabled = true;

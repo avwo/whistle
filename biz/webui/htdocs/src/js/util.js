@@ -612,6 +612,9 @@ exports.getMenuPosition = function(e, menuWidth, menuHeight) {
 exports.canReplay = function(item) {
   return !item.isHttps || item.req.headers['x-whistle-policy'] === 'tunnel' || /^wss?:/.test(item.url);
 };
+exports.canAbort = function(item) {
+  return !item.lost && !item.endTime;
+};
 
 exports.asCURL = function(item) {
   if (!item) {
