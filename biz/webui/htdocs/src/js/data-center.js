@@ -612,10 +612,10 @@ function isSocket(item) {
   if (!item || !item.endTime || item.reqError || item.resError) {
     return false;
   }
-  if (/^wss?:\/\//.test(item.url) || item.inspect) {
-    return true;
+  if (/^wss?:\/\//.test(item.url)) {
+    return item.res.statusCode == 101;
   }
-  return item.isHttps && item.req.headers['x-whistle-policy'] === 'tunnel';
+  return item.inspect || (item.isHttps && item.req.headers['x-whistle-policy'] === 'tunnel');
 }
 
 function setReqData(item) {
