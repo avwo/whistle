@@ -68,6 +68,7 @@ var contextMenuList = [
   },
   { name: 'Compose' },
   { name: 'Replay' },
+  { name: 'Abort' },
   { name: 'Upload' },
   { name: 'Export' },
   { name: 'Import' },
@@ -337,6 +338,9 @@ var ReqData = React.createClass({
     case 'Export':
       events.trigger('exportSessions', item);
       break;
+    case 'Abort':
+      events.trigger('abortRequest', item);
+      break;
     case 'Upload':
       events.trigger('uploadSessions', {
         curItem: item,
@@ -438,13 +442,15 @@ var ReqData = React.createClass({
       } else {
         contextMenuList[5].disabled = !util.canReplay(item);
       }
+      contextMenuList[6].disabled = !!(item.lost || item.endTime);
     } else {
       contextMenuList[5].disabled = true;
+      contextMenuList[6].disabled = true;
     }
-    var uploadItem = contextMenuList[6];
+    var uploadItem = contextMenuList[7];
     uploadItem.hide = !getUploadSessionsFn();
-    contextMenuList[7].disabled = uploadItem.disabled = disabled && !selectedCount;
-    var data = util.getMenuPosition(e, 110, uploadItem.hide ? 280 : 310);
+    contextMenuList[8].disabled = uploadItem.disabled = disabled && !selectedCount;
+    var data = util.getMenuPosition(e, 110, uploadItem.hide ? 310 : 340);
     data.list = contextMenuList;
     this.refs.contextMenu.show(data);
   },
