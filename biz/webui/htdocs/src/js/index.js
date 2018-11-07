@@ -839,7 +839,7 @@ var Index = React.createClass({
       self.exportData(e, getFocusItemList(curItem));
     });
     events.on('abortRequest', function(e, curItem) {
-      self.abort(e, getFocusItemList(curItem));
+      self.abort(getFocusItemList(curItem));
     });
     events.on('uploadSessions', function(e, data) {
       var sessions = getFocusItemList(data && data.curItem);
@@ -1526,6 +1526,9 @@ var Index = React.createClass({
     });
   },
   showAbortOptions: function() {
+    var modal = this.state.network;
+    var list = modal && modal.getSelectedList();
+    ABORT_OPTIONS[0].disabled = !list || !list.filter(util.canAbort).length;
     this.setState({
       showAbortOptions: true
     });
@@ -2295,8 +2298,8 @@ var Index = React.createClass({
       }
     });
   },
-  abort: function(e, list) {
-    if (!list) {
+  abort: function(list) {
+    if (!Array.isArray(list)) {
       var modal = this.state.network;
       list = modal && modal.getSelectedList();
     }
