@@ -1,3 +1,6 @@
+# v1.13.2
+1. feat: 在顶部菜单栏的 `Replay` 按钮下拉菜单添加 `Abort` 按钮，支持Abort掉处于pending状态的请求
+
 # v1.13.1
 1. fix: 启用 `customParser` 且延迟延迟响应可能导致连接自动断开的问题
 2. style: 高亮显示插件的 `EnableAll` 按钮
