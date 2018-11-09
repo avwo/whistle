@@ -64,7 +64,7 @@ Usage: w2 <command> [options]
     -p, --port [port]                               whistle port(8899 by default)
     -m, --middlewares [script path or module name]  express middlewares path(as: xx,yy/zz.js)
     -u, --uipath [script path]                      web ui plugin path
-    -t, --timeout [ms]                              request timeout(36000 ms by default)
+    -t, --timeout [ms]                              request timeout(66000 ms by default)
     -s, --sockets [number]                          max sockets(12 by default)
     -V, --version                                   output the version number
     -c, --command <command>                         command parameters ("node --harmony")
