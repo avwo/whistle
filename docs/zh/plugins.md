@@ -93,368 +93,368 @@ www.test.com/cgi-bin whistle.your-plugin-name://xxx
 插件的上述各个server里面每个请求的 `(req, res)` 对象内置了一些属性及方法，用来获取请求配置信息，以及抓包数据。
 
 1. initial.js: 项目根目录文件，可选，插件在加载所有server之前加载
-  ```js
-  module.exports = (options) => {
-    // options里有storage对象及Storage类，以及一些自定义请求头字段的名称
-    options = {
-    name: plugin.moduleName,
-    script: PLUGIN_MAIN,
-    value: plugin.path,
-    REQ_FROM_HEADER: REQ_FROM_HEADER,
-    RULE_VALUE_HEADER: RULE_VALUE_HEADER,
-    MAX_AGE_HEADER: MAX_AGE_HEADER,
-    ETAG_HEADER: ETAG_HEADER,
-    FULL_URL_HEADER: FULL_URL_HEADER,
-    REAL_URL_HEADER: REAL_URL_HEADER,
-    REQ_ID_HEADER: REQ_ID_HEADER,
-    CUSTOM_PARSER_HEADER: CUSTOM_PARSER_HEADER,
-    STATUS_CODE_HEADER: STATUS_CODE_HEADER,
-    LOCAL_HOST_HEADER: LOCAL_HOST_HEADER,
-    HOST_VALUE_HEADER: LOCAL_HOST_HEADER,
-    PROXY_VALUE_HEADER: PROXY_VALUE_HEADER,
-    PAC_VALUE_HEADER: PAC_VALUE_HEADER,
-    METHOD_HEADER: METHOD_HEADER,
-    CLIENT_IP_HEADER: config.CLIENT_IP_HEAD,
-    CLIENT_PORT_HEAD: CLIENT_PORT_HEAD,
-    GLOBAL_VALUE_HEAD: GLOBAL_VALUE_HEAD,
-    HOST_IP_HEADER: HOST_IP_HEADER,
-    debugMode: config.debugMode,
-    config: conf
-  }
-  };
-  ```
-1. statsServer：统计请求信息的服务
-  ```js
-  exports.statsServer = (server, options) => {
-    // options 同上，initial.js的options是同一个对象
-    server.on('request', (req, res) => {
-      const oReq = req.originalReq;
-      const oRes = req.originalRes;
+    ```js
+    module.exports = (options) => {
+      // options里有storage对象及Storage类，以及一些自定义请求头字段的名称
+      options = {
+      name: plugin.moduleName,
+      script: PLUGIN_MAIN,
+      value: plugin.path,
+      REQ_FROM_HEADER: REQ_FROM_HEADER,
+      RULE_VALUE_HEADER: RULE_VALUE_HEADER,
+      MAX_AGE_HEADER: MAX_AGE_HEADER,
+      ETAG_HEADER: ETAG_HEADER,
+      FULL_URL_HEADER: FULL_URL_HEADER,
+      REAL_URL_HEADER: REAL_URL_HEADER,
+      REQ_ID_HEADER: REQ_ID_HEADER,
+      CUSTOM_PARSER_HEADER: CUSTOM_PARSER_HEADER,
+      STATUS_CODE_HEADER: STATUS_CODE_HEADER,
+      LOCAL_HOST_HEADER: LOCAL_HOST_HEADER,
+      HOST_VALUE_HEADER: LOCAL_HOST_HEADER,
+      PROXY_VALUE_HEADER: PROXY_VALUE_HEADER,
+      PAC_VALUE_HEADER: PAC_VALUE_HEADER,
+      METHOD_HEADER: METHOD_HEADER,
+      CLIENT_IP_HEADER: config.CLIENT_IP_HEAD,
+      CLIENT_PORT_HEAD: CLIENT_PORT_HEAD,
+      GLOBAL_VALUE_HEAD: GLOBAL_VALUE_HEAD,
+      HOST_IP_HEADER: HOST_IP_HEADER,
+      debugMode: config.debugMode,
+      config: conf
+    }
+    };
+    ```
+2. statsServer：统计请求信息的服务
+    ```js
+    exports.statsServer = (server, options) => {
+      // options 同上，initial.js的options是同一个对象
+      server.on('request', (req, res) => {
+        const oReq = req.originalReq;
+        const oRes = req.originalRes;
 
-      req.clientIp: 请求的客户端IP，注意：挂在req里面
+        req.clientIp: 请求的客户端IP，注意：挂在req里面
 
-      oReq.id: 请求的ID，每个请求对应一个唯一的ID
-      oReq.headers: 请求的原始headers，而req.headers包含了一些插件自定义字段
-      oReq.ruleValue: 配置的规则值， 如：whistle.xxx://ruleValue
-      oReq.url: 请求的完整url
-      oReq.realUrl: 请求的真实url，一般为空
-      oReq.method: 请求方法
-      oReq.clientPort: 请求的客户端端口
-      oReq.globalValue: pattern @globalValue
-      oReq.proxyValue: 配置的代理规则，一般为空
-      oReq.pacValue: 配置的pac规则，一般为空
+        oReq.id: 请求的ID，每个请求对应一个唯一的ID
+        oReq.headers: 请求的原始headers，而req.headers包含了一些插件自定义字段
+        oReq.ruleValue: 配置的规则值， 如：whistle.xxx://ruleValue
+        oReq.url: 请求的完整url
+        oReq.realUrl: 请求的真实url，一般为空
+        oReq.method: 请求方法
+        oReq.clientPort: 请求的客户端端口
+        oReq.globalValue: pattern @globalValue
+        oReq.proxyValue: 配置的代理规则，一般为空
+        oReq.pacValue: 配置的pac规则，一般为空
 
-      oRes.serverIp: 服务端IP，只有在server或resServer、resStatsServer才能获取到
-      oRes.statusCode: 响应状态码，同 oRes.serverIp
+        oRes.serverIp: 服务端IP，只有在server或resServer、resStatsServer才能获取到
+        oRes.statusCode: 响应状态码，同 oRes.serverIp
 
-      // 获取抓包数据，不需要等待响应完成
-      req.getReqSession((s) => {
-        // 如果设置了 enable://hide 会获取到空数据
-        if (!s) {
-          return;
-        }
-        // do sth
-      }):
-      // 获取完整的抓包数据，要等待响应完成
-      req.getSession((s) => {
-        // 如果设置了 enable://hide 会获取到空数据
-        if (!s) {
-          return;
-        }
-        // do sth
-      }):
-      // 获取WebSocket或Socket请求的帧数据列表
-      // 返回 1~16 个帧数据
-      req.getFrames((list) => {
-        // 如果为空表示该长连接已断开
-        if (!list) {
-          return;
-        }
-        // do sth
-      }):
-    });
-  };
-  ```
+        // 获取抓包数据，不需要等待响应完成
+        req.getReqSession((s) => {
+          // 如果设置了 enable://hide 会获取到空数据
+          if (!s) {
+            return;
+          }
+          // do sth
+        }):
+        // 获取完整的抓包数据，要等待响应完成
+        req.getSession((s) => {
+          // 如果设置了 enable://hide 会获取到空数据
+          if (!s) {
+            return;
+          }
+          // do sth
+        }):
+        // 获取WebSocket或Socket请求的帧数据列表
+        // 返回 1~16 个帧数据
+        req.getFrames((list) => {
+          // 如果为空表示该长连接已断开
+          if (!list) {
+            return;
+          }
+          // do sth
+        }):
+      });
+    };
+    ```
 2. resStatsServer：统计响应信息的服务
-  ```js
-  exports.resStatsServer = (server, options) => {
-    // options 同上，initial.js的options是同一个对象
-    server.on('request', (req, res) => {
-      const oReq = req.originalReq;
-      const oRes = req.originalRes;
+    ```js
+    exports.resStatsServer = (server, options) => {
+      // options 同上，initial.js的options是同一个对象
+      server.on('request', (req, res) => {
+        const oReq = req.originalReq;
+        const oRes = req.originalRes;
 
-      req.clientIp: 请求的客户端IP，注意：挂在req里面
+        req.clientIp: 请求的客户端IP，注意：挂在req里面
 
-      oReq.id: 请求的ID，每个请求对应一个唯一的ID
-      oReq.headers: 请求的原始headers，而req.headers包含了一些插件自定义字段
-      oReq.ruleValue: 配置的规则值， 如：whistle.xxx://ruleValue
-      oReq.url: 请求的完整url
-      oReq.realUrl: 请求的真实url，一般为空
-      oReq.method: 请求方法
-      oReq.clientPort: 请求的客户端端口
-      oReq.globalValue: pattern @globalValue
-      oReq.proxyValue: 配置的代理规则，一般为空
-      oReq.pacValue: 配置的pac规则，一般为空
+        oReq.id: 请求的ID，每个请求对应一个唯一的ID
+        oReq.headers: 请求的原始headers，而req.headers包含了一些插件自定义字段
+        oReq.ruleValue: 配置的规则值， 如：whistle.xxx://ruleValue
+        oReq.url: 请求的完整url
+        oReq.realUrl: 请求的真实url，一般为空
+        oReq.method: 请求方法
+        oReq.clientPort: 请求的客户端端口
+        oReq.globalValue: pattern @globalValue
+        oReq.proxyValue: 配置的代理规则，一般为空
+        oReq.pacValue: 配置的pac规则，一般为空
 
-      oRes.serverIp: 服务端IP，只有在server或resServer、resStatsServer才能获取到
-      oRes.statusCode: 响应状态码，同 oRes.serverIp
+        oRes.serverIp: 服务端IP，只有在server或resServer、resStatsServer才能获取到
+        oRes.statusCode: 响应状态码，同 oRes.serverIp
 
-      // 获取抓包数据，不需要等待响应完成
-      req.getReqSession((s) => {
-        // 如果设置了 enable://hide 会获取到空数据
-        if (!s) {
-          return;
-        }
-        // do sth
-      }):
-      // 获取完整的抓包数据，要等待响应完成
-      req.getSession((s) => {
-        // 如果设置了 enable://hide 会获取到空数据
-        if (!s) {
-          return;
-        }
-        // do sth
-      }):
-      // 获取WebSocket或Socket请求的帧数据列表
-      // 返回 1~16 个帧数据
-      req.getFrames((list) => {
-        // 如果为空表示该长连接已断开
-        if (!list) {
-          return;
-        }
-        // do sth
-      }):
-    });
-  };
-  ```
+        // 获取抓包数据，不需要等待响应完成
+        req.getReqSession((s) => {
+          // 如果设置了 enable://hide 会获取到空数据
+          if (!s) {
+            return;
+          }
+          // do sth
+        }):
+        // 获取完整的抓包数据，要等待响应完成
+        req.getSession((s) => {
+          // 如果设置了 enable://hide 会获取到空数据
+          if (!s) {
+            return;
+          }
+          // do sth
+        }):
+        // 获取WebSocket或Socket请求的帧数据列表
+        // 返回 1~16 个帧数据
+        req.getFrames((list) => {
+          // 如果为空表示该长连接已断开
+          if (!list) {
+            return;
+          }
+          // do sth
+        }):
+      });
+    };
+    ```
 3. rulesServer：设置请求规则的服务(支持http/https/websocket请求)
-```js
-  exports.rulesServer = (server, options) => {
-    // options 同上，initial.js的options是同一个对象
-    server.on('request', (req, res) => {
-      const oReq = req.originalReq;
-      const oRes = req.originalRes;
+    ```js
+    exports.rulesServer = (server, options) => {
+      // options 同上，initial.js的options是同一个对象
+      server.on('request', (req, res) => {
+        const oReq = req.originalReq;
+        const oRes = req.originalRes;
 
-      req.clientIp: 请求的客户端IP，注意：挂在req里面
+        req.clientIp: 请求的客户端IP，注意：挂在req里面
 
-      oReq.id: 请求的ID，每个请求对应一个唯一的ID
-      oReq.headers: 请求的原始headers，而req.headers包含了一些插件自定义字段
-      oReq.ruleValue: 配置的规则值， 如：whistle.xxx://ruleValue
-      oReq.url: 请求的完整url
-      oReq.realUrl: 请求的真实url，一般为空
-      oReq.method: 请求方法
-      oReq.clientPort: 请求的客户端端口
-      oReq.globalValue: pattern @globalValue
-      oReq.proxyValue: 配置的代理规则，一般为空
-      oReq.pacValue: 配置的pac规则，一般为空
+        oReq.id: 请求的ID，每个请求对应一个唯一的ID
+        oReq.headers: 请求的原始headers，而req.headers包含了一些插件自定义字段
+        oReq.ruleValue: 配置的规则值， 如：whistle.xxx://ruleValue
+        oReq.url: 请求的完整url
+        oReq.realUrl: 请求的真实url，一般为空
+        oReq.method: 请求方法
+        oReq.clientPort: 请求的客户端端口
+        oReq.globalValue: pattern @globalValue
+        oReq.proxyValue: 配置的代理规则，一般为空
+        oReq.pacValue: 配置的pac规则，一般为空
 
-      oRes.serverIp: 服务端IP，只有在server或resServer、resStatsServer才能获取到
-      oRes.statusCode: 响应状态码，同 oRes.serverIp
+        oRes.serverIp: 服务端IP，只有在server或resServer、resStatsServer才能获取到
+        oRes.statusCode: 响应状态码，同 oRes.serverIp
 
-      // 获取抓包数据，不需要等待响应完成
-      // 这里unsafe主要是提醒不要在回调里面返回规则
-      // 如果这样不会触发响应
-      req.unsafe_getReqSession((s) => {
-        // 如果设置了 enable://hide 会获取到空数据
-        if (!s) {
-          return;
-        }
-        // do sth
-      }):
-      // 获取完整的抓包数据，要等待响应完成
-      // 这里unsafe主要是提醒不要在回调里面返回规则
-      // 如果这样不会触发响应
-      req.unsafe_getSession((s) => {
-        // 如果设置了 enable://hide 会获取到空数据
-        if (!s) {
-          return;
-        }
-        // do sth
-      }):
-      // 获取WebSocket或Socket请求的帧数据列表
-      // 返回 1~16 个帧数据
-      // 这里unsafe主要是提醒不要在回调里面返回规则
-      // 如果这样不会触发响应
-      req.unsafe_getFrames((list) => {
-        // 如果为空表示该长连接已断开
-        if (!list) {
-          return;
-        }
-        // do sth
-      }):
-    });
-  };
-  ```
+        // 获取抓包数据，不需要等待响应完成
+        // 这里unsafe主要是提醒不要在回调里面返回规则
+        // 如果这样不会触发响应
+        req.unsafe_getReqSession((s) => {
+          // 如果设置了 enable://hide 会获取到空数据
+          if (!s) {
+            return;
+          }
+          // do sth
+        }):
+        // 获取完整的抓包数据，要等待响应完成
+        // 这里unsafe主要是提醒不要在回调里面返回规则
+        // 如果这样不会触发响应
+        req.unsafe_getSession((s) => {
+          // 如果设置了 enable://hide 会获取到空数据
+          if (!s) {
+            return;
+          }
+          // do sth
+        }):
+        // 获取WebSocket或Socket请求的帧数据列表
+        // 返回 1~16 个帧数据
+        // 这里unsafe主要是提醒不要在回调里面返回规则
+        // 如果这样不会触发响应
+        req.unsafe_getFrames((list) => {
+          // 如果为空表示该长连接已断开
+          if (!list) {
+            return;
+          }
+          // do sth
+        }):
+      });
+    };
+    ```
 4. resRulesServer：设置响应规则的服务(支持http/https/websocket请求)
-  ```js
-  exports.resRulesServer = (server, options) => {
-    // options 同上，initial.js的options是同一个对象
-    server.on('request', (req, res) => {
-      const oReq = req.originalReq;
-      const oRes = req.originalRes;
+    ```js
+    exports.resRulesServer = (server, options) => {
+      // options 同上，initial.js的options是同一个对象
+      server.on('request', (req, res) => {
+        const oReq = req.originalReq;
+        const oRes = req.originalRes;
 
-      req.clientIp: 请求的客户端IP，注意：挂在req里面
+        req.clientIp: 请求的客户端IP，注意：挂在req里面
 
-      oReq.id: 请求的ID，每个请求对应一个唯一的ID
-      oReq.headers: 请求的原始headers，而req.headers包含了一些插件自定义字段
-      oReq.ruleValue: 配置的规则值， 如：whistle.xxx://ruleValue
-      oReq.url: 请求的完整url
-      oReq.realUrl: 请求的真实url，一般为空
-      oReq.method: 请求方法
-      oReq.clientPort: 请求的客户端端口
-      oReq.globalValue: pattern @globalValue
-      oReq.proxyValue: 配置的代理规则，一般为空
-      oReq.pacValue: 配置的pac规则，一般为空
+        oReq.id: 请求的ID，每个请求对应一个唯一的ID
+        oReq.headers: 请求的原始headers，而req.headers包含了一些插件自定义字段
+        oReq.ruleValue: 配置的规则值， 如：whistle.xxx://ruleValue
+        oReq.url: 请求的完整url
+        oReq.realUrl: 请求的真实url，一般为空
+        oReq.method: 请求方法
+        oReq.clientPort: 请求的客户端端口
+        oReq.globalValue: pattern @globalValue
+        oReq.proxyValue: 配置的代理规则，一般为空
+        oReq.pacValue: 配置的pac规则，一般为空
 
-      oRes.serverIp: 服务端IP，只有在server或resServer、resStatsServer才能获取到
-      oRes.statusCode: 响应状态码，同 oRes.serverIp
+        oRes.serverIp: 服务端IP，只有在server或resServer、resStatsServer才能获取到
+        oRes.statusCode: 响应状态码，同 oRes.serverIp
 
-      // 获取抓包数据，不需要等待响应完成
-      req.getReqSession((s) => {
-        // 如果设置了 enable://hide 会获取到空数据
-        if (!s) {
-          return;
-        }
-        // do sth
-      }):
-      // 获取完整的抓包数据，要等待响应完成
-      // 这里unsafe主要是提醒不要在回调里面返回规则
-      // 如果这样不会触发响应
-      req.unsafe_getSession((s) => {
-        // 如果设置了 enable://hide 会获取到空数据
-        if (!s) {
-          return;
-        }
-        // do sth
-      }):
-      // 获取WebSocket或Socket请求的帧数据列表
-      // 返回 1~16 个帧数据
-      // 这里unsafe主要是提醒不要在回调里面返回规则
-      // 如果这样不会触发响应
-      req.unsafe_getFrames((list) => {
-        // 如果为空表示该长连接已断开
-        if (!list) {
-          return;
-        }
-        // do sth
-      }):
-    });
-  };
-  ```
+        // 获取抓包数据，不需要等待响应完成
+        req.getReqSession((s) => {
+          // 如果设置了 enable://hide 会获取到空数据
+          if (!s) {
+            return;
+          }
+          // do sth
+        }):
+        // 获取完整的抓包数据，要等待响应完成
+        // 这里unsafe主要是提醒不要在回调里面返回规则
+        // 如果这样不会触发响应
+        req.unsafe_getSession((s) => {
+          // 如果设置了 enable://hide 会获取到空数据
+          if (!s) {
+            return;
+          }
+          // do sth
+        }):
+        // 获取WebSocket或Socket请求的帧数据列表
+        // 返回 1~16 个帧数据
+        // 这里unsafe主要是提醒不要在回调里面返回规则
+        // 如果这样不会触发响应
+        req.unsafe_getFrames((list) => {
+          // 如果为空表示该长连接已断开
+          if (!list) {
+            return;
+          }
+          // do sth
+        }):
+      });
+    };
+    ```
 5. tunnelRulesServer：设置tunnel请求规则的服务
-  ```js
-  exports.tunnelRulesServer = (server, options) => {
-    // options 同上，initial.js的options是同一个对象
-    server.on('request', (req, res) => {
-      const oReq = req.originalReq;
-      const oRes = req.originalRes;
+    ```js
+    exports.tunnelRulesServer = (server, options) => {
+      // options 同上，initial.js的options是同一个对象
+      server.on('request', (req, res) => {
+        const oReq = req.originalReq;
+        const oRes = req.originalRes;
 
-      req.clientIp: 请求的客户端IP，注意：挂在req里面
+        req.clientIp: 请求的客户端IP，注意：挂在req里面
 
-      oReq.id: 请求的ID，每个请求对应一个唯一的ID
-      oReq.headers: 请求的原始headers，而req.headers包含了一些插件自定义字段
-      oReq.ruleValue: 配置的规则值， 如：whistle.xxx://ruleValue
-      oReq.url: 请求的完整url
-      oReq.realUrl: 请求的真实url，一般为空
-      oReq.method: 请求方法
-      oReq.clientPort: 请求的客户端端口
-      oReq.globalValue: pattern @globalValue
-      oReq.proxyValue: 配置的代理规则，一般为空
-      oReq.pacValue: 配置的pac规则，一般为空
+        oReq.id: 请求的ID，每个请求对应一个唯一的ID
+        oReq.headers: 请求的原始headers，而req.headers包含了一些插件自定义字段
+        oReq.ruleValue: 配置的规则值， 如：whistle.xxx://ruleValue
+        oReq.url: 请求的完整url
+        oReq.realUrl: 请求的真实url，一般为空
+        oReq.method: 请求方法
+        oReq.clientPort: 请求的客户端端口
+        oReq.globalValue: pattern @globalValue
+        oReq.proxyValue: 配置的代理规则，一般为空
+        oReq.pacValue: 配置的pac规则，一般为空
 
-      oRes.serverIp: 服务端IP，只有在server或resServer、resStatsServer才能获取到
-      oRes.statusCode: 响应状态码，同 oRes.serverIp
+        oRes.serverIp: 服务端IP，只有在server或resServer、resStatsServer才能获取到
+        oRes.statusCode: 响应状态码，同 oRes.serverIp
 
-      // 获取抓包数据，不需要等待响应完成
-      // 这里unsafe主要是提醒不要在回调里面返回规则
-      // 如果这样不会触发响应
-      req.unsafe_getReqSession((s) => {
-        // 如果设置了 enable://hide 会获取到空数据
-        if (!s) {
-          return;
-        }
-        // do sth
-      }):
-      // 获取完整的抓包数据，要等待响应完成
-      // 这里unsafe主要是提醒不要在回调里面返回规则
-      // 如果这样不会触发响应
-      req.unsafe_getSession((s) => {
-        // 如果设置了 enable://hide 会获取到空数据
-        if (!s) {
-          return;
-        }
-        // do sth
-      }):
-      // 获取WebSocket或Socket请求的帧数据列表
-      // 返回 1~16 个帧数据
-      // 这里unsafe主要是提醒不要在回调里面返回规则
-      // 如果这样不会触发响应
-      req.unsafe_getFrames((list) => {
-        // 如果为空表示该长连接已断开
-        if (!list) {
-          return;
-        }
-        // do sth
-      }):
-    });
-  };
-  ```
+        // 获取抓包数据，不需要等待响应完成
+        // 这里unsafe主要是提醒不要在回调里面返回规则
+        // 如果这样不会触发响应
+        req.unsafe_getReqSession((s) => {
+          // 如果设置了 enable://hide 会获取到空数据
+          if (!s) {
+            return;
+          }
+          // do sth
+        }):
+        // 获取完整的抓包数据，要等待响应完成
+        // 这里unsafe主要是提醒不要在回调里面返回规则
+        // 如果这样不会触发响应
+        req.unsafe_getSession((s) => {
+          // 如果设置了 enable://hide 会获取到空数据
+          if (!s) {
+            return;
+          }
+          // do sth
+        }):
+        // 获取WebSocket或Socket请求的帧数据列表
+        // 返回 1~16 个帧数据
+        // 这里unsafe主要是提醒不要在回调里面返回规则
+        // 如果这样不会触发响应
+        req.unsafe_getFrames((list) => {
+          // 如果为空表示该长连接已断开
+          if (!list) {
+            return;
+          }
+          // do sth
+        }):
+      });
+    };
+    ```
 6. server：whistle会把指定请求转发到该server
-  ```js
-  exports.statsServer = (server, options) => {
-    // options 同上，initial.js的options是同一个对象
-    server.on('request', (req, res) => {
-      const oReq = req.originalReq;
-      const oRes = req.originalRes;
+    ```js
+    exports.statsServer = (server, options) => {
+      // options 同上，initial.js的options是同一个对象
+      server.on('request', (req, res) => {
+        const oReq = req.originalReq;
+        const oRes = req.originalRes;
 
-      req.clientIp: 请求的客户端IP，注意：挂在req里面
+        req.clientIp: 请求的客户端IP，注意：挂在req里面
 
-      oReq.id: 请求的ID，每个请求对应一个唯一的ID
-      oReq.headers: 请求的原始headers，而req.headers包含了一些插件自定义字段
-      oReq.ruleValue: 配置的规则值， 如：whistle.xxx://ruleValue
-      oReq.url: 请求的完整url
-      oReq.realUrl: 请求的真实url，一般为空
-      oReq.method: 请求方法
-      oReq.clientPort: 请求的客户端端口
-      oReq.globalValue: pattern @globalValue
-      oReq.proxyValue: 配置的代理规则，一般为空
-      oReq.pacValue: 配置的pac规则，一般为空
+        oReq.id: 请求的ID，每个请求对应一个唯一的ID
+        oReq.headers: 请求的原始headers，而req.headers包含了一些插件自定义字段
+        oReq.ruleValue: 配置的规则值， 如：whistle.xxx://ruleValue
+        oReq.url: 请求的完整url
+        oReq.realUrl: 请求的真实url，一般为空
+        oReq.method: 请求方法
+        oReq.clientPort: 请求的客户端端口
+        oReq.globalValue: pattern @globalValue
+        oReq.proxyValue: 配置的代理规则，一般为空
+        oReq.pacValue: 配置的pac规则，一般为空
 
-      oRes.serverIp: 服务端IP，只有在server或resServer、resStatsServer才能获取到
-      oRes.statusCode: 响应状态码，同 oRes.serverIp
+        oRes.serverIp: 服务端IP，只有在server或resServer、resStatsServer才能获取到
+        oRes.statusCode: 响应状态码，同 oRes.serverIp
 
-      // 获取抓包数据，不需要等待响应完成
-      req.getReqSession((s) => {
-        // 如果设置了 enable://hide 会获取到空数据
-        if (!s) {
-          return;
-        }
-        // do sth
-      }):
-      // 获取完整的抓包数据，要等待响应完成
-      // 这里unsafe主要是提醒不要在回调里面返回规则
-      // 如果这样不会触发响应
-      req.unsafe_getSession((s) => {
-        // 如果设置了 enable://hide 会获取到空数据
-        if (!s) {
-          return;
-        }
-        // do sth
-      }):
-      // 获取WebSocket或Socket请求的帧数据列表
-      // 返回 1~16 个帧数据
-      // 这里unsafe主要是提醒不要在回调里面返回规则
-      // 如果这样不会触发响应
-      req.unsafe_getFrames((list) => {
-        // 如果为空表示该长连接已断开
-        if (!list) {
-          return;
-        }
-        // do sth
-      }):
-    });
-  };
-  ```
+        // 获取抓包数据，不需要等待响应完成
+        req.getReqSession((s) => {
+          // 如果设置了 enable://hide 会获取到空数据
+          if (!s) {
+            return;
+          }
+          // do sth
+        }):
+        // 获取完整的抓包数据，要等待响应完成
+        // 这里unsafe主要是提醒不要在回调里面返回规则
+        // 如果这样不会触发响应
+        req.unsafe_getSession((s) => {
+          // 如果设置了 enable://hide 会获取到空数据
+          if (!s) {
+            return;
+          }
+          // do sth
+        }):
+        // 获取WebSocket或Socket请求的帧数据列表
+        // 返回 1~16 个帧数据
+        // 这里unsafe主要是提醒不要在回调里面返回规则
+        // 如果这样不会触发响应
+        req.unsafe_getFrames((list) => {
+          // 如果为空表示该长连接已断开
+          if (!list) {
+            return;
+          }
+          // do sth
+        }):
+      });
+    };
+    ```
 
 #### 调试插件
 1. 开启whistle的调试模式：
