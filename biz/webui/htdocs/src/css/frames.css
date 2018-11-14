@@ -8,6 +8,7 @@
   border-bottom: 1px solid #ccc;
   height: 22px;
   line-height: 20px;
+  min-width: 550px;
 }
 .w-frames-action label {
   font-weight: normal;
