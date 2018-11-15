@@ -61,15 +61,15 @@ function showUsage(isRunning, options, restart) {
     info('[i] ' + config.name + '@' + config.version + (restart ? ' restarted' : ' started'));
   }
 
-  info('[i] First, use your device to visit the following URL list, gets the ' + colors.bold('IP') + ' of the URL you can visit:');
+  info('[i] 1. use your device to visit the following URL list, gets the ' + colors.bold('IP') + ' of the URL you can visit:');
   info(getIpList().map(function(ip) {
     return '    http://' + colors.bold(ip) + (port ? ':' + port : '') + '/';
   }).join('\n'));
 
   warn('    Note: If all the above URLs are unable to access, check the server\'s firewall settings');
   warn('          For help see ' + colors.bold('https://github.com/avwo/whistle'));
-  info('[i] Second, configure your device to use ' + config.name + ' as its HTTP and HTTPS proxy on ' + colors.bold('IP:') + port);
-  info('[i] Last, use ' + colors.bold('Chrome') + ' to visit ' + colors.bold('http://' + (options.localUIHost || config.localUIHost) + '/') + ' to get started');
+  info('[i] 2. configure your device to use ' + config.name + ' as its HTTP and HTTPS proxy on ' + colors.bold('IP:') + port);
+  info('[i] 3. use ' + colors.bold('Chrome') + ' to visit ' + colors.bold('http://' + (options.localUIHost || config.localUIHost) + '/') + ' to get started');
 
   if (parseInt(process.version.slice(1), 10) < 6) {
     warn(colors.bold('\nWarning: The current Node version is too low, access https://nodejs.org to install the latest version, or may not be able to intercept HTTPS CONNECTs\n'));
