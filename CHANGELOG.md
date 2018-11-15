@@ -1,6 +1,7 @@
 # v1.13.3
 1. feat: `***.xxx.com` (3个 `*` 及以上功能相同) 等价于 `**.xxx.com` + `xxx.com`，`^***.xxx.com` 同理
 2. feat: 模板字符串支持通过 `${xxx.replace(,defaultValue)}` 设置默认值
+3. perf: 缓解页面切换Inspectors时卡顿问题
 
 # v1.13.2
 1. style: 调整 `AutoRefresh` 的位置， `Abort` 按钮图标加警告色 
