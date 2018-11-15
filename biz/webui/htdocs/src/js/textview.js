@@ -35,10 +35,9 @@ var TextView = React.createClass({
       return;
     }
     self.curValue = value;
-    textarea.value = '';
     self._timeout = setTimeout(function() {
       textarea.value = value;
-    }, 120);
+    }, 360);
   },
   render: function() {
     return (
