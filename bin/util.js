@@ -66,7 +66,7 @@ function showUsage(isRunning, options, restart) {
     return '    http://' + colors.bold(ip) + (port ? ':' + port : '') + '/';
   }).join('\n'));
 
-  warn('    Note: If all the above URLs are unable to access, check the server\'s firewall settings');
+  warn('    Note: If all the above URLs are unable to access, check the firewall settings');
   warn('          For help see ' + colors.bold('https://github.com/avwo/whistle'));
   info('[i] 2. configure your device to use ' + config.name + ' as its HTTP and HTTPS proxy on ' + colors.bold('IP:') + port);
   info('[i] 3. use ' + colors.bold('Chrome') + ' to visit ' + colors.bold('http://' + (options.localUIHost || config.localUIHost) + '/') + ' to get started');
