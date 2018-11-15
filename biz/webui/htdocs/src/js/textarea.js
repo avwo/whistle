@@ -5,7 +5,7 @@ var TextView = require('./textview');
 var CopyBtn = require('./copy-btn');
 var util = require('./util');
 var dataCenter = require('./data-center');
-var MAX_LENGTH =1024 * 12;
+var MAX_LENGTH = 1024 * 8;
 
 var Tips = React.createClass({
   render: function() {
