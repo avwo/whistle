@@ -102,11 +102,15 @@ var ReqData = React.createClass({
     }
   },
   toggleTab: function(tab, callback) {
-    if (tab.name === 'Inspectors') {
+    if (tab.name === 'Inspectors' && this.state.initedInspectors) {
       var inspectors = $('.w-detail-inspectors');
       if (inspectors.length) {
-        $('.w-detail>.fill').addClass('hide');
+        var detail = $('.w-detail');
+        detail.find('>.fill').addClass('hide');
         inspectors.removeClass('hide');
+        var btnGroup = detail.find('>.w-tabs-sm>button');
+        btnGroup.removeClass('active');
+        btnGroup.eq(1).addClass('active');
       }
     }
     this.selectTab(tab);
