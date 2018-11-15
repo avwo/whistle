@@ -102,6 +102,13 @@ var ReqData = React.createClass({
     }
   },
   toggleTab: function(tab, callback) {
+    if (tab.name === 'Inspectors') {
+      var inspectors = $('.w-detail-inspectors');
+      if (inspectors.length) {
+        $('.w-detail>.fill').addClass('hide');
+        inspectors.removeClass('hide');
+      }
+    }
     this.selectTab(tab);
     this.setState({tab: tab}, callback);
   },
