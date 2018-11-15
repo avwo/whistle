@@ -31,10 +31,10 @@ function getIpList() {
     });
   });
   var index = ipList.indexOf('127.0.0.1');
-  if (index > 0) {
+  if (index !== -1) {
     ipList.splice(index, 1);
-    ipList.unshift('127.0.0.1');
   }
+  ipList.unshift('127.0.0.1');
   return ipList;
 }
 
