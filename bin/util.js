@@ -61,7 +61,7 @@ function showUsage(isRunning, options, restart) {
     info('[i] ' + config.name + '@' + config.version + (restart ? ' restarted' : ' started'));
   }
 
-  info('[i] 1. use your device to visit the following URL list, gets the ' + colors.bold('IP') + ' of the URL you can visit:');
+  info('[i] 1. use your device to visit the following URL list, gets the ' + colors.bold('IP') + ' of the URL you can access:');
   info(getIpList().map(function(ip) {
     return '       http://' + colors.bold(ip) + (port ? ':' + port : '') + '/';
   }).join('\n'));
