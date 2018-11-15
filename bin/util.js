@@ -30,7 +30,11 @@ function getIpList() {
       }
     });
   });
-
+  var index = ipList.indexOf('127.0.0.1');
+  if (index > 0) {
+    ipList.splice(index, 1);
+    ipList.unshift('127.0.0.1');
+  }
   return ipList;
 }
 
@@ -62,7 +66,7 @@ function showUsage(isRunning, options, restart) {
     return '    http://' + colors.bold(ip) + (port ? ':' + port : '') + '/';
   }).join('\n'));
 
-  warn('    Note: If the following URLs are unable to access, check the server\'s firewall settings');
+  warn('    Note: If all the above URLs are unable to access, check the server\'s firewall settings');
   warn('          For more information, please visit ' + colors.bold('https://github.com/avwo/whistle'));
   info('[i] Second, configure your device to use ' + config.name + ' as its HTTP and HTTPS proxy on ' + colors.bold('IP:') + port);
   info('[i] Last, use ' + colors.bold('Chrome') + ' to visit ' + colors.bold('http://' + (options.localUIHost || config.localUIHost) + '/') + ' to get started');
