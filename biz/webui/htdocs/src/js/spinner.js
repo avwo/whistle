@@ -1,13 +1,19 @@
 require('../css/spinner.css');
+var $ = require('jquery');
 var React = require('react');
+var util = require('./util');
+
+util.addDragEvent('.w-spinner', function(target, x, y) {
+  console.log(x, y);
+});
 
 var Spinner = React.createClass({
-  onDragStart: function(e) {
+  stopPropagation: function(e) {
+    if (!$(e.target).closest('th').next('th').length) {
+      return;
+    }
     e.stopPropagation();
     e.preventDefault();
-  },
-  onClick: function(e) {
-    e.stopPropagation();
   },
   render: function() {
     var order = this.props.order;
@@ -16,7 +22,8 @@ var Spinner = React.createClass({
       order = null;
     }
     return (
-      <div onClick={this.onClick} onDragStart={this.onDragStart} draggable={true} className="w-spinner">
+      <div onClick={this.stopPropagation} onDragStart={this.stopPropagation}
+        draggable={true} className="w-spinner">
         <span className={'glyphicon glyphicon-triangle-top' + (order ? ' spinner-' + order : '')}></span>
         <span className={'glyphicon glyphicon-triangle-bottom' + (order ? ' spinner-' + order : '')}></span>
       </div>
