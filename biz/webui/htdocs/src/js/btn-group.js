@@ -47,6 +47,7 @@ var BtnGroup = React.createClass({
                  {icon}{btn.name}
                 </button>;
           })}
+          {self.props.dockBtn}
         </div>
     );
   }

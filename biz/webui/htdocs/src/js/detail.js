@@ -34,7 +34,6 @@ var TABS = [{
 
 var ReqData = React.createClass({
   getInitialState: function() {
-
     return {
       initedOverview: false,
       initedInspectors: false,
@@ -174,10 +173,16 @@ var ReqData = React.createClass({
     if (activeItem && !activeItem.reqError && !activeItem.resError) {
       frames = activeItem.frames;
     }
-
+    var dockToBottom = this.props.dockToBottom;
     return (
         <div className="fill orient-vertical-box w-detail" onDragEnter={this.onDragEnter} onDrop={this.onDrop}>
-        <BtnGroup onDoubleClick={this.onDoubleClick} onClick={this.toggleTab} tabs={TABS} />
+        <BtnGroup dockBtn={
+          <button
+            onClick={this.props.onDockChange}
+            className="w-dock-btn" title={'Dock to ' + (dockToBottom ? 'right' : 'bottom')}>
+            <span className={'glyphicon glyphicon-menu-' + (dockToBottom ? 'right' : 'down')}></span>
+          </button>
+        } onDoubleClick={this.onDoubleClick} onClick={this.toggleTab} tabs={TABS} />
         {this.state.initedOverview ? <Overview modal={overview} hide={name != TABS[0].name} /> : ''}
         {this.state.initedInspectors ? <Inspectors modal={activeItem} hide={name != TABS[1].name} /> : ''}
         {this.state.initedFrames ? <Frames data={activeItem} frames={frames} hide={name != TABS[2].name} /> : ''}

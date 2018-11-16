@@ -3,12 +3,28 @@ var $ = require('jquery');
 var React = require('react');
 var util = require('./util');
 var events = require('./events');
+var storage = require('./storage');
 
 var Divider = require('./divider');
 var ReqData = require('./req-data');
 var Detail = require('./detail');
 
+var getWidth = function(vertical) {
+  var docElem = document.documentElement;
+  if (vertical) {
+    return Math.max(Math.floor(docElem.clientHeight / 2), 360);
+  }
+  return Math.max(Math.floor(docElem.clientWidth / 3), 562);
+};
+
 var Network = React.createClass({
+  getInitialState: function() {
+    var dockToBottom = storage.get('dockToBottom');
+    return {
+      dockToBottom: dockToBottom,
+      rightWidth: getWidth(dockToBottom)
+    };
+  },
   componentDidMount: function() {
     var self = this;
     events.on('activeItem', function(e, item) {
@@ -44,6 +60,17 @@ var Network = React.createClass({
     var hide = util.getBoolean(this.props.hide);
     return hide != util.getBoolean(nextProps.hide) || !hide;
   },
+  onDockChange: function() {
+    var self = this;
+    var dockToBottom = !self.state.dockToBottom;
+    storage.set('dockToBottom', dockToBottom ? 1 : '');
+    self.setState({
+      dockToBottom: dockToBottom,
+      rightWidth: getWidth(dockToBottom)
+    }, function() {
+      self.refs.divider.reset();
+    });
+  },
   onClick: function(item) {
     this.setState({activeItem: item});
   },
@@ -52,11 +79,11 @@ var Network = React.createClass({
   },
   render: function() {
     var modal = this.props.modal;
-
+    var dockToBottom = this.state.dockToBottom;
     return (
-      <Divider hide={this.props.hide} rightWidth="560">
+      <Divider ref="divider" hide={this.props.hide} vertical={dockToBottom} rightWidth={this.state.rightWidth}>
         <ReqData modal={modal} onClick={this.onClick} onDoubleClick={this.onDoubleClick} />
-        <Detail modal={modal} />
+        <Detail dockToBottom={dockToBottom} onDockChange={this.onDockChange} modal={modal} />
       </Divider>
     );
   }
