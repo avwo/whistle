@@ -1,6 +1,6 @@
 .w-frames {
   font-size: 12px;
-  min-width: 550px;
+  min-width: 560px;
 }
 .w-frames-action {
   background: #f1f3f4;
@@ -8,7 +8,7 @@
   border-bottom: 1px solid #ccc;
   height: 22px;
   line-height: 20px;
-  min-width: 550px;
+  min-width: 560px;
 }
 .w-frames-action label {
   font-weight: normal;

@@ -90,3 +90,18 @@ body .cm-s-cobalt span.cm-number {
 .w-hide-no-value .w-no-value {
   display: none!important;
 }
+
+.w-detail .w-dock-btn {
+  border: none;
+  background: transparent;
+  padding: 4px 0;
+  width: 20px;
+  text-align: center;
+  position: absolute;
+  right: 0;
+  top: 0;
+  outline: none;
+}
+.w-detail .w-dock-btn .glyphicon {
+  margin: 0!important;
+}
