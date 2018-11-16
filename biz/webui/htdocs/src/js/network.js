@@ -54,6 +54,11 @@ var Network = React.createClass({
           }
         }
       }
+    }).on('keydown', function(e) {
+      if (e.keyCode === 123) {
+        self.onDockChange();
+        e.preventDefault();
+      }
     });
   },
   shouldComponentUpdate: function(nextProps) {

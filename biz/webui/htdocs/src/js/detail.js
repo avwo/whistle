@@ -179,7 +179,7 @@ var ReqData = React.createClass({
         <BtnGroup dockBtn={
           <button
             onClick={this.props.onDockChange}
-            className="w-dock-btn" title={'Dock to ' + (dockToBottom ? 'right' : 'bottom')}>
+            className="w-dock-btn" title={'Dock to ' + (dockToBottom ? 'right' : 'bottom') + ' (F12)'}>
             <span className={'glyphicon glyphicon-menu-' + (dockToBottom ? 'right' : 'down')}></span>
           </button>
         } onDoubleClick={this.onDoubleClick} onClick={this.toggleTab} tabs={TABS} />
