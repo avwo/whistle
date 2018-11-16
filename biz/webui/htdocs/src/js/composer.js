@@ -403,7 +403,7 @@ var Composer = React.createClass({
           <button onClick={this.onTabChange} name="Request" className={showRequest ? 'w-active' : undefined}>Request</button>
           <button title={result.url} onClick={this.onTabChange} name="Response"  className={showResponse ? 'w-active' : undefined}>Response</button>
         </div>
-        <Divider vertical="true" rightWidth="140">
+        <Divider vertical="true" rightWidth="120">
           <div className="orient-vertical-box fill">
             <Divider hide={!showRequest} vertical="true">
               <div className="fill orient-vertical-box w-composer-headers">
