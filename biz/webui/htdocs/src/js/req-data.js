@@ -564,7 +564,7 @@ var ReqData = React.createClass({
       endIndex = list.length;
     }
     var filterText = (state.filterText || '').trim();
-    var minWidth = {'min-width': columnList.length * 90 + 120 + 'px'};
+    var minWidth = {'min-width': Math.max(columnList.length * 90 + 150, 900) + 'px'};
 
     return (
         <div className="fill w-req-data-con orient-vertical-box">
