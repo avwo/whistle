@@ -350,7 +350,8 @@ function checkFiled(keyword, text, needDecode) {
     return checkKeyword(text, kw[0]) && checkKeyword(text, kw[1]) && checkKeyword(text, kw[2]);
   };
 
-  return check(keyword[0]) || check(keyword[1]) || check(keyword[2]);
+  return check(keyword[0]) || check(keyword[1]) || check(keyword[2])
+  || check(keyword[3]) || check(keyword[4])|| check(keyword[5]);
 }
 
 function checkKeyword(text, kw) {
