@@ -11,104 +11,122 @@ function getDefaultColumns() {
       title: 'Date',
       name: 'date',
       className: 'date',
-      showTitle: true
+      showTitle: true,
+      minWidth: 150
     },
     {
       title: 'Result',
       name: 'result',
       className: 'result',
-      selected: true
+      selected: true,
+      minWidth: 65
     },
     {
       title: 'Method',
       name: 'method',
       className: 'method',
-      selected: true
+      selected: true,
+      minWidth: 75
     },
     {
       title: 'Protocol',
       name: 'protocol',
       className: 'protocol',
-      selected: true
+      selected: true,
+      minWidth: 75
     },
     {
       title: 'ClientIP',
       name: 'clientIp',
       className: 'clientIp',
-      showTitle: true
+      showTitle: true,
+      minWidth: 110
     },
     {
       title: 'ServerIP',
       name: 'hostIp',
       className: 'hostIp',
       selected: true,
-      showTitle: true
+      showTitle: true,
+      minWidth: 110
     },
     {
       title: 'ClientPort',
       name: 'clientPort',
-      className: 'clientPort'
+      className: 'clientPort',
+      minWidth: 90
     },
     {
       title: 'ServerPort',
       name: 'serverPort',
-      className: 'serverPort'
+      className: 'serverPort',
+      minWidth: 90
     },
     {
       title: 'Host',
       name: 'hostname',
       className: 'hostname',
       selected: true,
-      showTitle: true
+      showTitle: true,
+      minWidth: 150
     },
     {
       title: 'URL',
       name: 'path',
       className: 'path',
-      selected: true
+      selected: true,
+      minWidth: 60
     },
     {
       title: 'Type',
       name: 'type',
       className: 'type',
       selected: true,
-      showTitle: true
+      showTitle: true,
+      minWidth: 125
     },
     {
       title: 'Body',
       name: 'body',
-      className: 'body'
+      className: 'body',
+      minWidth: 90
     },
     {
       title: 'Encoding',
       name: 'contentEncoding',
-      className: 'contentEncoding'
+      className: 'contentEncoding',
+      minWidth: 90
     },
     {
       title: 'DNS',
       name: 'dns',
-      className: 'dns'
+      className: 'dns',
+      minWidth: 70
     },
     {
       title: 'Request',
       name: 'request',
-      className: 'request'
+      className: 'request',
+      minWidth: 90
     },
     {
       title: 'Response',
       name: 'response',
-      className: 'response'
+      className: 'response',
+      minWidth: 90
     },
     {
       title: 'Download',
       name: 'download',
-      className: 'download'
+      className: 'download',
+      minWidth: 90
     },
     {
       title: 'Time',
       name: 'time',
       className: 'time',
-      selected: true
+      selected: true,
+      minWidth: 70
     }
   ];
 }

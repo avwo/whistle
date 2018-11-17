@@ -2,17 +2,17 @@
 .w-req-data-content {overflow-x: auto; overflow-y: hidden;}
 .w-req-data-content .order {width: 50px;}
 .w-req-data-content .date {width: 150px;}
-.w-req-data-content .result {width: 63px;}
+.w-req-data-content .result {width: 65px;}
 .w-req-data-content .protocol {width: 75px;}
-.w-req-data-content .method {width: 72px;}
-.w-req-data-content .time, .w-req-data-content .dns {width: 65px;}
+.w-req-data-content .method {width: 75px;}
+.w-req-data-content .time, .w-req-data-content .dns {width: 70px;}
 .w-req-data-content .serverPort, .w-req-data-content .clientPort {width: 90px;}
-.w-req-data-content .type,
-.w-req-data-content .body, .w-req-data-content .clientIp {width: 100px;}
-.w-req-data-content .hostIp {width: 110px;}
-.w-req-data-content .hostname {width: 140px;}
+.w-req-data-content .type {width: 125px;}
+.w-req-data-content .clientIp, .w-req-data-content .hostIp {width: 110px;}
+.w-req-data-content .hostname {width: 150px;}
 .w-req-data-content .request, .w-req-data-content .response,
-.w-req-data-content .download, .w-req-data-content .contentEncoding { width: 90px; }
+.w-req-data-content .download, .w-req-data-content .contentEncoding,
+.w-req-data-content .body { width: 90px; }
 
 .w-req-data-headers {height: 30px; border-top: 1px solid #ccc; border-bottom: 1px solid #ccc; overflow: hidden;}
 .w-req-data-headers .table {height: 30px;}
