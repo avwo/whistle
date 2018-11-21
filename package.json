@@ -61,6 +61,7 @@
     "pipestream": "^0.1.0",
     "q": "1.4.1",
     "safe-buffer": "^5.1.2",
+    "semver": "5.6.0",
     "sni": "1.0.0",
     "socksv5": "0.0.6",
     "starting": "^4.0.1",
