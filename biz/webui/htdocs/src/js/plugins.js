@@ -4,6 +4,7 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var events = require('./events');
 var Dialog = require('./dialog');
+var util = require('./util');
 
 var Home = React.createClass({
   onOpen: function(e) {
@@ -98,8 +99,12 @@ var Home = React.createClass({
                   name = name.slice(0, -1);
                   var checked = !disabledPlugins[name];
                   var url = 'plugin.' + name + '/';
+                  var hasNew = util.compareVersion(plugin.latest, plugin.version);
+                  if (hasNew) {
+                    hasNew = '(New: ' + plugin.latest + ')';
+                  }
                   return (
-                    <tr key={name} className={(!disabled && checked) ? '' : 'w-plugins-disable'}>
+                    <tr key={name} className={((!disabled && checked) ? '' : 'w-plugins-disable') + (hasNew ? ' w-has-new-version' : '')}>
                       <th className="w-plugins-order" onDoubleClick={self.enableAllPlugins}>{i + 1}</th>
                       <td className="w-plugins-active" onDoubleClick={self.enableAllPlugins}>
                         <input type="checkbox" title={disabled ? 'Disabled' : (checked ? 'Disable ' : 'Enable ') + name}
@@ -107,7 +112,10 @@ var Home = React.createClass({
                       </td>
                       <td className="w-plugins-date">{new Date(plugin.mtime).toLocaleString()}</td>
                       <td className="w-plugins-name" title={plugin.moduleName}><a href={url} target="_blank" data-name={name} onClick={self.onOpen}>{name}</a></td>
-                      <td className="w-plugins-version">{plugin.homepage ? <a href={plugin.homepage} target="_blank">{plugin.version}</a> : plugin.version}</td>
+                      <td className="w-plugins-version">
+                        {plugin.homepage ? <a href={plugin.homepage} target="_blank">{plugin.version}</a> : plugin.version}
+                        {hasNew ? (plugin.homepage ? <a href={plugin.homepage}>{hasNew}</a> : <span>{hasNew}</span>) : undefined}
+                      </td>
                       <td className="w-plugins-operation">
                         <a href={url} target="_blank" data-name={name} onClick={self.onOpen}>Option</a>
                         {(plugin.rules || plugin._rules) ? <a href="javascript:;" draggable="false" data-name={name} onClick={self.showRules}>Rules</a> : <span className="disabled">Rules</span>}

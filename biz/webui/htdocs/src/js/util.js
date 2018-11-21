@@ -997,3 +997,36 @@ exports.encodeNonLatin1Char = function(str) {
   /*eslint no-control-regex: "off"*/
   return  str && str.replace(NON_LATIN1_RE, safeEncodeURIComponent);
 };
+
+function formatSemer(ver) {
+  return ver ? ver.split('.').map(function(v) {
+    v = parseInt(v, 10) || 0;
+    return v > 9 ? v : '0' + v;
+  }).join('.') : '';
+}
+
+function compareVersion(v1, v2) {
+  var test1 = '';
+  var test2 = '';
+  var index = v1 && v1.indexOf('-');
+  if (index > -1) {
+    test1 = v1.slice(index + 1);
+    v1 = v1.slice(0, index);
+  }
+  index = v2 && v2.indexOf('-');
+  if (index > -1) {
+    test2 = v2.slice(index + 1);
+    v2 = v2.slice(0, index);
+  }
+  v1 = formatSemer(v1);
+  v2 = formatSemer(v2);
+  if (v1 > v2) {
+    return true;
+  }
+  if (v2 > v1) {
+    return false;
+  }
+
+  return test1 < test2;
+}
+exports.compareVersion = compareVersion;

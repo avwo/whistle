@@ -4,45 +4,13 @@ require('../css/about.css');
 var $ = window.jQuery = require('jquery'); //for bootstrap
 require('bootstrap/dist/js/bootstrap.js');
 var React = require('react');
-var ReactDOM = require('react-dom');
 var Dialog = require('./dialog');
 var dataCenter = require('./data-center');
 var storage = require('./storage');
-
-function compareVersion(v1, v2) {
-  var test1 = '';
-  var test2 = '';
-  var index = v1 && v1.indexOf('-');
-  if (index > -1) {
-    test1 = v1.slice(index + 1);
-    v1 = v1.slice(0, index);
-  }
-  index = v2 && v2.indexOf('-');
-  if (index > -1) {
-    test2 = v2.slice(index + 1);
-    v2 = v2.slice(0, index);
-  }
-  v1 = formatSemer(v1);
-  v2 = formatSemer(v2);
-  if (v1 > v2) {
-    return true;
-  }
-  if (v2 > v1) {
-    return false;
-  }
-
-  return test1 < test2;
-}
-
-function formatSemer(ver) {
-  return ver ? ver.split('.').map(function(v) {
-    v = parseInt(v, 10) || 0;
-    return v > 9 ? v : '0' + v;
-  }).join('.') : '';
-}
+var util = require('./util');
 
 function hasNewVersion(data) {
-  return compareVersion(data.latestVersion, data.version) && compareVersion(data.latestVersion, storage.get('latestVersion'));
+  return util.compareVersion(data.latestVersion, data.version) && util.compareVersion(data.latestVersion, storage.get('latestVersion'));
 }
 
 var About = React.createClass({
@@ -110,7 +78,7 @@ var About = React.createClass({
               <span className="w-about-dialog-ctn">
                 <span className="w-about-dialog-title">Whistle for Web Developers.</span>
                 Version: <span className="w-about-version">{version}</span><br/>
-                {compareVersion(latest, version) ? (<span className="w-about-latest-version">
+                {util.compareVersion(latest, version) ? (<span className="w-about-latest-version">
                   Latest version: <a className="w-about-github" title="How to update whistle" href="https://avwo.github.io/whistle/update.html" target="_blank">{latest}</a><br/>
                 </span>) : ''}
                 Visit <a className="w-about-url" href={'http://wproxy.org/?type=nodejs&version=' + version} target="_blank">http://wproxy.org</a>
