@@ -20,12 +20,12 @@ padding: 5px 6px!important; overflow: hidden; text-overflow: ellipsis; white-spa
 .w-plugins-name {width: 120px;}
 .w-plugins-version {width: 140px;}
 .w-plugins-list .w-has-new-version .w-plugins-version a:nth-child(2),
-.w-plugins-list .w-has-new-version .w-plugins-update-btn {
+.w-plugins-list .w-has-new-version .w-plugin-update-btn {
   color: #f66!important;
 }
 .w-plugins-list .w-has-new-version .w-plugins-version a:nth-child(2):hover,
-.w-plugins-list .w-has-new-version .w-plugins-update-btn:hover {
-  color: #fee!important;
+.w-plugins-list .w-has-new-version .w-plugin-update-btn:hover {
+  color: #f33!important;
 }
 .w-plugins-date {width: 180px;}
 .w-plugins-operation { width: 300px; }
