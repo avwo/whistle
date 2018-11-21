@@ -33,7 +33,7 @@
     "w2": "./bin/whistle.js",
     "wproxy": "./bin/whistle.js"
   },
-  "registry": "http://registry.npmjs.org/whistle",
+  "registry": "https://registry.npmjs.org/whistle",
   "repository": {
     "type": "git",
     "url": "https://github.com/avwo/whistle.git"
