@@ -18,7 +18,15 @@ padding: 5px 6px!important; overflow: hidden; text-overflow: ellipsis; white-spa
 .w-plugins-active {width: 60px;}
 .w-plugins-list td.w-plugins-active input {margin-left: 12px;}
 .w-plugins-name {width: 120px;}
-.w-plugins-version {width: 90px;}
+.w-plugins-version {width: 140px;}
+.w-plugins-list .w-has-new-version .w-plugins-version a:nth-child(2),
+.w-plugins-list .w-has-new-version .w-plugins-update-btn {
+  color: #f66!important;
+}
+.w-plugins-list .w-has-new-version .w-plugins-version a:nth-child(2):hover,
+.w-plugins-list .w-has-new-version .w-plugins-update-btn:hover {
+  color: #fee!important;
+}
 .w-plugins-date {width: 180px;}
 .w-plugins-operation { width: 300px; }
 .w-plugins-operation a, .w-plugins-operation span.disabled  {margin-right: 20px;}
