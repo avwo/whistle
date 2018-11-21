@@ -1,3 +1,22 @@
+# v1.13.4
+1. fix: Network隐藏是按F12切换详情面板时高度可能变成0
+2. refactor: 支持插件更新提醒
+3. feat: 避免一行配置过程，该版本引入换行功能
+	```
+	www.test.com file://(test) filter://*/cgi-bin
+	# 等价于
+	``
+	www.test.com file://(test)
+	filter://*/cgi-bin
+	``
+	# 或
+	``
+	www.test.com
+	file://(test)
+	filter://*/cgi-bin
+	``
+	```
+
 # v1.13.3
 1. feat: `***.xxx.com` (3个 `*` 及以上功能相同) 等价于 `**.xxx.com` + `xxx.com`，`^***.xxx.com` 同理
 2. feat: 模板字符串支持通过 `${xxx.replace(,defaultValue)}` 设置默认值
