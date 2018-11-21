@@ -459,7 +459,8 @@ var Index = React.createClass({
         name: name.slice(0, -1),
         icon: 'checkbox',
         mtime: plugin.mtime,
-        homepage: plugin.homepage
+        homepage: plugin.homepage,
+        latest: plugin.latest
       });
     });
     return pluginsOptions;
@@ -955,8 +956,9 @@ var Index = React.createClass({
         for (var i = 0, len = pluginsOptions.length; i < len; i++) {
           var plugin = pluginsOptions[i];
           var oldPlugin = oldPluginsOptions[i];
-          if (plugin.name != oldPlugin.name || plugin.mtime != oldPlugin.mtime
-          || (oldDisabledPlugins[plugin.name] != disabledPlugins[plugin.name])) {
+          if (plugin.name != oldPlugin.name
+            || plugin.latest !== oldPlugin.latest || plugin.mtime != oldPlugin.mtime
+            || (oldDisabledPlugins[plugin.name] != disabledPlugins[plugin.name])) {
             hasUpdate = true;
             break;
           }
