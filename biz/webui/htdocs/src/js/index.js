@@ -2721,7 +2721,7 @@ var Index = React.createClass({
             <span className="glyphicon glyphicon-play"></span>AutoRefresh
           </a>
           <a onClick={this.onClickMenu} className={'w-delete-menu' + (disabledDeleteBtn ? ' w-disabled' : '')} style={{display: (isNetwork || isPlugins) ? 'none' : ''}} href="javascript:;" draggable="false"><span className="glyphicon glyphicon-trash"></span>Delete</a>
-          <a onClick={this.showSettings} className={'w-settings-menu' + (hasFilterText ? ' w-menu-enable'  : '')} style={{display: (isPlugins) ? 'none' : ''}} href="javascript:;" draggable="false"><span className="glyphicon glyphicon-cog"></span>Settings</a>
+          <a onClick={this.showSettings} className={'w-settings-menu' + (hasFilterText ? ' w-menu-enable'  : '')} style={{display: (isPlugins) ? 'none' : ''}} href="javascript:;" draggable="false"><span className={'glyphicon glyphicon-' + (isNetwork ? 'filter' : 'cog')}></span>{isNetwork ? 'Filter' : 'Settings'}</a>
           <div onMouseEnter={this.showWeinreOptions} onMouseLeave={this.hideWeinreOptions} className={'w-menu-wrapper' + (showWeinreOptions ? ' w-menu-wrapper-show' : '')}>
             <a onClick={this.showWeinreOptionsQuick}
               onDoubleClick={this.showAnonymousWeinre}
