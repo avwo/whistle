@@ -52,15 +52,6 @@ var contextMenuList = [
     ]
   },
   {
-    name: 'Show',
-    list:  [
-      { name: 'Overview' },
-      { name: 'Inspectors' },
-      { name: 'Frames' },
-      { name: 'Timeline' }
-    ]
-  },
-  {
     name: 'Remove',
     list:  [
       { name: 'All' },
@@ -382,14 +373,15 @@ var ReqData = React.createClass({
     e.preventDefault();
     this.currentFocusItem = item;
     contextMenuList[0].disabled = disabled;
-    contextMenuList[0].list[4].disabled = disabled || !/^https?:\/\//.test(item.url);
+    var list0 = contextMenuList[0].list;
+    list0[4].disabled = disabled || !/^https?:\/\//.test(item.url);
     if (disabled) {
-      contextMenuList[0].list[6].disabled = true;
+      list0[6].disabled = true;
     } else {
       var type = util.getContentType(item.res.headers);
-      contextMenuList[0].list[6].disabled = !item.res.base64 || (type !== 'HTML' && type !== 'IMG');
+      list0[6].disabled = !item.res.base64 || (type !== 'HTML' && type !== 'IMG');
     }
-    contextMenuList[0].list[2].disabled = (disabled || !item.frames);
+    list0[2].disabled = (disabled || !item.frames);
 
     contextMenuList[1].disabled = disabled;
     contextMenuList[1].list.forEach(function(menu) {
@@ -425,35 +417,34 @@ var ReqData = React.createClass({
         break;
       }
     });
-    contextMenuList[2].disabled = disabled;
-    contextMenuList[2].list[2].disabled = (disabled || !item.frames);
 
     var selectedList = modal.getSelectedList();
     var selectedCount = selectedList.length;
     var hasData = modal.list.length;
-    contextMenuList[3].disabled = !hasData;
-    contextMenuList[3].list[0].disabled = !hasData;
-    contextMenuList[3].list[1].disabled = disabled;
-    contextMenuList[3].list[2].disabled = hasData <= 1;
-    contextMenuList[3].list[3].disabled = !selectedCount;
-    contextMenuList[3].list[4].disabled = selectedCount === hasData;
+    var list2 = contextMenuList[2].list;
+    contextMenuList[2].disabled = !hasData;
+    list2[0].disabled = !hasData;
+    list2[1].disabled = disabled;
+    list2[2].disabled = hasData <= 1;
+    list2[3].disabled = !selectedCount;
+    list2[4].disabled = selectedCount === hasData;
     
-    contextMenuList[4].disabled = disabled;
+    contextMenuList[3].disabled = disabled;
     if (item) {
       if (item.selected) {
-        contextMenuList[5].disabled = !selectedList.filter(util.canReplay).length;
-        contextMenuList[6].disabled = !selectedList.filter(util.canAbort).length;
+        contextMenuList[4].disabled = !selectedList.filter(util.canReplay).length;
+        contextMenuList[5].disabled = !selectedList.filter(util.canAbort).length;
       } else {
-        contextMenuList[5].disabled = !util.canReplay(item);
-        contextMenuList[6].disabled = !util.canAbort(item);
+        contextMenuList[4].disabled = !util.canReplay(item);
+        contextMenuList[5].disabled = !util.canAbort(item);
       }
     } else {
+      contextMenuList[4].disabled = true;
       contextMenuList[5].disabled = true;
-      contextMenuList[6].disabled = true;
     }
-    var uploadItem = contextMenuList[7];
+    var uploadItem = contextMenuList[6];
     uploadItem.hide = !getUploadSessionsFn();
-    contextMenuList[8].disabled = uploadItem.disabled = disabled && !selectedCount;
+    contextMenuList[7].disabled = uploadItem.disabled = disabled && !selectedCount;
     var data = util.getMenuPosition(e, 110, uploadItem.hide ? 310 : 340);
     data.list = contextMenuList;
     this.refs.contextMenu.show(data);
