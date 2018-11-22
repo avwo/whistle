@@ -400,8 +400,9 @@ var Composer = React.createClass({
           <button disabled={pending} onClick={this.execute} className="btn btn-primary w-composer-execute">Go</button>
         </div>
         <div className="w-detail-inspectors-title w-composer-tabs">
-          <button onClick={this.onTabChange} name="Request" className={showRequest ? 'w-active' : undefined}>Request</button>
-          <button title={result.url} onClick={this.onTabChange} name="Response"  className={showResponse ? 'w-active' : undefined}>Response</button>
+          <button onClick={this.onTabChange} name="Request" className={showRequest ? 'w-tab-btn w-active' : 'w-tab-btn'}>Request</button>
+          <button title={result.url} onClick={this.onTabChange} name="Response"  className={showResponse ? 'w-tab-btn w-active' : 'w-tab-btn'}>Response</button>
+          <button className="btn btn-default">History</button>
         </div>
         <Divider vertical="true" rightWidth="120">
           <div className="orient-vertical-box fill">

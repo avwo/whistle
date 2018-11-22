@@ -5,20 +5,32 @@
 .w-composer-input {padding: 0 5px; display: block; border: 1px solid #ccc; margin-left: 2px;}
 .w-composer-method {display: block; width: 100px; margin: 0 2px; padding: 0;}
 .w-composer-execute {padding: 0 8px; line-height: 24px; margin-left: 4px;}
+.w-composer-tabs {
+  position: relative;
+}
+.w-composer-tabs .btn {
+  position: absolute;
+  top: 1px;
+  right: 10px;
+  font-size: 13px;
+  line-height: 14px;
+}
 .w-composer-tabs button {
-  outline: none;
-  border: none;
-  background: transparent;
   line-height: 16px;
   padding: 0 10px;
 }
-.w-composer-tabs button:hover {
+.w-composer-tabs .w-tab-btn {
+  outline: none;
+  border: none;
+  background: transparent;
+}
+.w-composer-tabs .w-tab-btn:hover {
   color: #337ab7;
 }
-.w-composer-tabs button.w-active {
+.w-composer-tabs .w-tab-btn.w-active {
   background: #ddd;
 }
-.w-composer-tabs button:disabled {
+.w-composer-tabs .w-tab-btn:disabled {
   color: #aaa!important;
   cursor: not-allowed;
 }
