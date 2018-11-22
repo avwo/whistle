@@ -420,17 +420,11 @@ var ReqData = React.createClass({
       }
     });
     contextMenuList[2].disabled = disabled;
-    contextMenuList[2].list.forEach(function(menu) {
-      menu.disabled = disabled;
-    });
     contextMenuList[2].list[2].disabled = (disabled || !item.frames);
     var selectedList = modal.getSelectedList();
     var selectedCount = selectedList.length;
     var hasData = modal.list.length;
     contextMenuList[3].disabled = !hasData;
-    contextMenuList[3].list.forEach(function(menu) {
-      menu.disabled = !hasData;
-    });
     contextMenuList[3].list[0].disabled = disabled;
     contextMenuList[3].list[2].disabled = hasData <= 1;
     contextMenuList[3].list[3].disabled = !selectedCount;
