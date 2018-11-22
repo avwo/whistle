@@ -29,6 +29,10 @@ var contextMenuList = [
   {
     name: 'Open',
     list: [
+      { name: 'Overview' },
+      { name: 'Inspectors' },
+      { name: 'Frames' },
+      { name: 'Timeline' },
       { name: 'New Tab'},
       { name: 'QR Code' },
       { name: 'Preview' }
@@ -378,13 +382,15 @@ var ReqData = React.createClass({
     e.preventDefault();
     this.currentFocusItem = item;
     contextMenuList[0].disabled = disabled;
-    contextMenuList[0].list[0].disabled = disabled || !/^https?:\/\//.test(item.url);
+    contextMenuList[0].list[4].disabled = disabled || !/^https?:\/\//.test(item.url);
     if (disabled) {
-      contextMenuList[0].list[2].disabled = true;
+      contextMenuList[0].list[6].disabled = true;
     } else {
       var type = util.getContentType(item.res.headers);
-      contextMenuList[0].list[2].disabled = !item.res.base64 || (type !== 'HTML' && type !== 'IMG');
+      contextMenuList[0].list[6].disabled = !item.res.base64 || (type !== 'HTML' && type !== 'IMG');
     }
+    contextMenuList[0].list[2].disabled = (disabled || !item.frames);
+
     contextMenuList[1].disabled = disabled;
     contextMenuList[1].list.forEach(function(menu) {
       menu.disabled = disabled;
@@ -421,6 +427,7 @@ var ReqData = React.createClass({
     });
     contextMenuList[2].disabled = disabled;
     contextMenuList[2].list[2].disabled = (disabled || !item.frames);
+
     var selectedList = modal.getSelectedList();
     var selectedCount = selectedList.length;
     var hasData = modal.list.length;
