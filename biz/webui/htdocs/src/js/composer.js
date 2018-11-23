@@ -402,7 +402,8 @@ var Composer = React.createClass({
         <div className="w-detail-inspectors-title w-composer-tabs">
           <button onClick={this.onTabChange} name="Request" className={showRequest ? 'w-tab-btn w-active' : 'w-tab-btn'}>Request</button>
           <button title={result.url} onClick={this.onTabChange} name="Response"  className={showResponse ? 'w-tab-btn w-active' : 'w-tab-btn'}>Response</button>
-          <button className="btn btn-default">History</button>
+          <button className="btn btn-default" title={state.hasHistory ? undefined : 'No history'}
+            disabled={!state.hasHistory}>History</button>
         </div>
         <Divider vertical="true" rightWidth="120">
           <div className="orient-vertical-box fill">
