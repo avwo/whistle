@@ -1,7 +1,8 @@
 # v1.13.4
 1. fix: Network隐藏是按F12切换详情面板时高度可能变成0
 2. refactor: 支持插件更新提醒
-3. feat: 避免一行配置过程，该版本引入换行功能
+3. feat: Composer新增历史记录按钮，可以查看在Composer里请求过的记录
+4. feat: 避免一行配置过程，该版本引入换行功能
 	```
 	www.test.com file://(test) filter://*/cgi-bin
 	# 等价于
