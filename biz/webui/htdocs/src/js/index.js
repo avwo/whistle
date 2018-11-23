@@ -836,6 +836,7 @@ var Index = React.createClass({
     });
 
     events.on('importSessions', self.importSessions);
+    events.on('filterSessions', self.showSettings);
     events.on('exportSessions', function(e, curItem) {
       self.exportData(e, getFocusItemList(curItem));
     });

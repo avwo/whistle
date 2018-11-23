@@ -65,6 +65,7 @@ var contextMenuList = [
   { name: 'Replay' },
   { name: 'Abort' },
   { name: 'Upload' },
+  { name: 'Filter' },
   { name: 'Export' },
   { name: 'Import' },
   { name: 'Help', sep: true }
@@ -345,6 +346,9 @@ var ReqData = React.createClass({
     case 'Import':
       events.trigger('importSessions', e);
       break;
+    case 'Filter':
+      events.trigger('filterSessions', e);
+      break;
     case 'One':
       events.trigger('removeIt', item);
       break;
@@ -444,8 +448,8 @@ var ReqData = React.createClass({
     }
     var uploadItem = contextMenuList[6];
     uploadItem.hide = !getUploadSessionsFn();
-    contextMenuList[7].disabled = uploadItem.disabled = disabled && !selectedCount;
-    var data = util.getMenuPosition(e, 110, uploadItem.hide ? 280 : 310);
+    contextMenuList[8].disabled = uploadItem.disabled = disabled && !selectedCount;
+    var data = util.getMenuPosition(e, 110, uploadItem.hide ? 310 : 340);
     data.list = contextMenuList;
     this.refs.contextMenu.show(data);
   },
