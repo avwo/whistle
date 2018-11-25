@@ -2775,7 +2775,6 @@ var Index = React.createClass({
               <i className="w-menu-changed" style={{display: state.values.hasChanged() ? undefined : 'none'}}>*</i>
             </a>
             <a onClick={this.showPlugins} className="w-plugins-menu"
-              onDoubleClick={this.disableAllPlugins}
               title={name == 'plugins' ? 'Double click to ' + (state.disabledAllPlugins ? 'enable' : 'disable') + ' all plugins': undefined}
               style={{background: name == 'plugins' ? '#ddd' : null}} href="javascript:;" draggable="false">
               <span className={'glyphicon glyphicon-list-alt' + (disabledAllPlugins ? ' w-disabled' : '')}></span>
