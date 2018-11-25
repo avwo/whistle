@@ -10,7 +10,9 @@ var Divider = require('./divider');
 var ResDetail = require('./res-detail');
 var Properties = require('./properties');
 var PropsEditor = require('./props-editor');
+var HistoryData = require('./history-data');
 
+// var DB_NAME = 'whistle' + location.pathname.replace(/\/index.html$/i, '/');
 var TYPES = {
   form: 'application/x-www-form-urlencoded',
   upload: 'multipart/form-data',
@@ -75,6 +77,7 @@ var Composer = React.createClass({
     var showPretty = storage.get('showPretty') == '1';
     var disableComposerRules = storage.get('disableComposerRules') == '1';
     return {
+      historyData: [],
       url: data.url,
       method: data.method,
       headers: data.headers,
@@ -148,6 +151,16 @@ var Composer = React.createClass({
     };
     storage.set('composerData', JSON.stringify(params));
     return params;
+  },
+  showHistory: function() {
+    this.refs.historyDialog.show();
+  },
+  compose: function() {
+    this.refs.historyDialog.hide();
+  },
+  replay: function() {
+    this.compose();
+    this.execute();
   },
   onComposerChange: function(e) {
     clearTimeout(this.composerTimer);
@@ -234,7 +247,7 @@ var Composer = React.createClass({
     this.setState({ disableComposerRules: disableComposerRules });
   },
   execute: function(e) {
-    if (e.target.nodeName === 'INPUT' && e.keyCode !== 13) {
+    if (e && e.target.nodeName === 'INPUT' && e.keyCode !== 13) {
       return;
     }
     var refs = this.refs;
@@ -288,13 +301,14 @@ var Composer = React.createClass({
     var method = ReactDOM.findDOMNode(refs.method).value || 'GET';
     var body = util.hasRequestBody(method)
       ? ReactDOM.findDOMNode(refs.body).value.replace(/\r\n|\r|\n/g, '\r\n') : '';
-    dataCenter.composer({
+    var params = {
       needResponse: true,
       url: url,
       headers: headers,
       method: method,
       body: body
-    }, function(data, xhr, em) {
+    };
+    dataCenter.composer(params, function(data, xhr, em) {
       var state = {
         pending: false,
         tabName: 'Response',
@@ -313,6 +327,8 @@ var Composer = React.createClass({
       }
       self.setState(state);
     });
+    params.date = Date.now();
+    this.state.historyData.unshift(params);
     events.trigger('executeComposer');
     self.setState({ result: '', pending: true });
   },
@@ -373,6 +389,8 @@ var Composer = React.createClass({
     var isForm = type === 'form';
     var method = state.method || 'GET';
     var hasBody = util.hasRequestBody(method);
+    var historyData = state.historyData;
+    var disableHistory = !historyData.length || pending;
     var showPrettyBody = hasBody && showPretty && isForm;
     
     return (
@@ -402,8 +420,8 @@ var Composer = React.createClass({
         <div className="w-detail-inspectors-title w-composer-tabs">
           <button onClick={this.onTabChange} name="Request" className={showRequest ? 'w-tab-btn w-active' : 'w-tab-btn'}>Request</button>
           <button title={result.url} onClick={this.onTabChange} name="Response"  className={showResponse ? 'w-tab-btn w-active' : 'w-tab-btn'}>Response</button>
-          <button className="btn btn-default" title={state.hasHistory ? undefined : 'No history'}
-            disabled={!state.hasHistory}>History</button>
+          <button onClick={this.showHistory} className="btn btn-default" title={historyData.length ? 'No history' : undefined}
+            disabled={disableHistory}>History</button>
         </div>
         <Divider vertical="true" rightWidth="120">
           <div className="orient-vertical-box fill">
@@ -476,6 +494,7 @@ var Composer = React.createClass({
               placeholder="Input the rules" />
           </div>
         </Divider>
+        <HistoryData ref="historyDialog" data={historyData} />
       </div>
     );
   }

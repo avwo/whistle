@@ -132,3 +132,31 @@
 .w-detail-composer input:read-only {
   background-color: #eee!important;
 }
+
+.w-composer-history td {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.w-composer-history th {
+  padding: 8px!important;
+}
+.w-composer-history-order {
+  width: 60px;
+}
+.w-composer-history-date {
+  width: 200px;
+}
+.w-composer-history-method {
+  width: 100px;
+}
+.w-composer-history-operation {
+  width: 180px;
+}
+.w-composer-history-operation .btn {
+  padding: 2px 10px!important;
+  margin-right: 10px;
+}
+.w-composer-history-dialog .modal-dialog {
+  width: 900px;
+}

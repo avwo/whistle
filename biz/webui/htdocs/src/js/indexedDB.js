@@ -1,1 +1,0 @@
-var DB_NAME = location.pathname.replace(/\/index.html$/i, '/');
