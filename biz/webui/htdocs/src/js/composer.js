@@ -13,6 +13,7 @@ var PropsEditor = require('./props-editor');
 var HistoryData = require('./history-data');
 
 // var DB_NAME = 'whistle' + location.pathname.replace(/\/index.html$/i, '/');
+var METHODS = 'GET,POST,PUT,HEAD,TRACE,DELETE,SEARCH,CONNECT,PROPFIND,PROPPATCH,MKCOL,COPY,MOVE,LOCK,UNLOCK,OPTIONS'.split(',');
 var TYPES = {
   form: 'application/x-www-form-urlencoded',
   upload: 'multipart/form-data',
@@ -420,25 +421,14 @@ var Composer = React.createClass({
     return (
       <div className={'fill orient-vertical-box w-detail-content w-detail-composer' + (util.getBoolean(this.props.hide) ? ' hide' : '')}>
         <div className="w-composer-url box">
-          <select disabled={pending} defaultValue={method} onChange={this.onComposerChange} ref="method" className="form-control w-composer-method">
-                  <option value="GET">GET</option>
-                  <option value="POST">POST</option>
-                  <option value="PUT">PUT</option>
-                  <option value="HEAD">HEAD</option>
-                  <option value="TRACE">TRACE</option>
-                  <option value="DELETE">DELETE</option>
-                  <option value="SEARCH">SEARCH</option>
-                  <option value="CONNECT">CONNECT</option>
-                  <option value="PROPFIND">PROPFIND</option>
-                  <option value="PROPPATCH">PROPPATCH</option>
-                  <option value="MKCOL">MKCOL</option>
-                  <option value="COPY">COPY</option>
-                  <option value="MOVE">MOVE</option>
-                  <option value="LOCK">LOCK</option>
-                  <option value="UNLOCK">UNLOCK</option>
-                  <option value="OPTIONS">OPTIONS</option>
-                </select>
-                <input readOnly={pending} defaultValue={state.url} onKeyUp={this.execute} onChange={this.onComposerChange} onKeyDown={this.onKeyDown} onFocus={this.selectAll} ref="url" type="text" maxLength="8192" placeholder="url" className="fill w-composer-input" />
+          <select disabled={pending} defaultValue={method}
+            onChange={this.onComposerChange} ref="method"
+            className="form-control w-composer-method">
+            {METHODS.map(function(m) {
+              return <option value={m}>{m}</option>;
+            })}
+          </select>
+          <input readOnly={pending} defaultValue={state.url} onKeyUp={this.execute} onChange={this.onComposerChange} onKeyDown={this.onKeyDown} onFocus={this.selectAll} ref="url" type="text" maxLength="8192" placeholder="url" className="fill w-composer-input" />
           <button disabled={pending} onClick={this.execute} className="btn btn-primary w-composer-execute">Go</button>
         </div>
         <div className="w-detail-inspectors-title w-composer-tabs">
