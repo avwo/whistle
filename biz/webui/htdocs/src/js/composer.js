@@ -186,8 +186,15 @@ var Composer = React.createClass({
       tabName: 'Request',
       result: ''
     });
+    var historyData = this.state.historyData;
     clearTimeout(this.composerTimer);
     this.composerTimer = setTimeout(this.saveComposer, 1000);
+    var index = historyData.indexOf(item);
+    item.date = Date.now();
+    if (index > 0) {
+      historyData.splice(index, 1);
+      historyData.push(item);
+    }
   },
   onReplay: function(item) {
     this.onCompose(item);
