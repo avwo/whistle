@@ -37,7 +37,7 @@ var HistoryData = React.createClass({
             </button>
              <table className="table">
               <thead>
-                <th className="w-composer-history-order">Order</th>
+                <th className="w-composer-history-order">#</th>
                 <th className="w-composer-history-date">Date</th>
                 <th className="w-composer-history-method">Method</th>
                 <th className="w-composer-history-url">URL</th>
@@ -51,7 +51,7 @@ var HistoryData = React.createClass({
                       <tr>
                         <th className="w-composer-history-order">{i + 1}</th>
                         <td className="w-composer-history-date" title={date}>{date}</td>
-                        <td className="w-composer-history-method">{item.method}</td>
+                        <td className="w-composer-history-method" title={item.method}>{item.method}</td>
                         <td className="w-composer-history-url" title={item.url}>{item.url}</td>
                         <td className="w-composer-history-operation">
                           <button data-index={i} onClick={self.onReplay} className="btn btn-primary">Replay</button>
