@@ -13,7 +13,7 @@ var PropsEditor = require('./props-editor');
 var HistoryData = require('./history-data');
 
 var DB_NAME = 'whistle_composer_history';
-var DB_KEY = 'whistle' + location.pathname.replace(/\/index.html$/i, '/');
+var DB_KEY = location.pathname.replace(/\/index.html$/i, '/');
 var METHODS = 'GET,POST,PUT,HEAD,TRACE,DELETE,SEARCH,CONNECT,PROPFIND,PROPPATCH,MKCOL,COPY,MOVE,LOCK,UNLOCK,OPTIONS'.split(',');
 var TYPES = {
   form: 'application/x-www-form-urlencoded',
