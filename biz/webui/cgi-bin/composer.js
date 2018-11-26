@@ -166,7 +166,7 @@ module.exports = function(req, res) {
   if (!options.host) {
     return res.json({ec: 0});
   }
-
+  properties.addHistory(req.body);
   var rawHeaderNames = {};
   var headers = parseHeaders(req.body.headers, rawHeaderNames);
   delete headers[config.WEBUI_HEAD];
@@ -246,6 +246,5 @@ module.exports = function(req, res) {
     }
     handleHttp(options);
   }
-  properties.addHistory(req.body);
   res.json({ec: 0, em: 'success'});
 };
