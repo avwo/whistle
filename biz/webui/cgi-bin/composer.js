@@ -47,7 +47,7 @@ function handleConnect(options, cb) {
   options.headers['x-whistle-policy'] = 'tunnel';
   config.connect({
     host: options.hostname,
-    port: options.port,
+    port: options.port || 443,
     proxyHost: '127.0.0.1',
     proxyPort: config.port,
     headers: options.headers
