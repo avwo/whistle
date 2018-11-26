@@ -7,12 +7,13 @@ var HistoryData = React.createClass({
   show: function() {
     this.refs.historyDialog.show();
     this._hideDialog = false;
+    this.setState({});
   },
   hide: function() {
     this.refs.historyDialog.hide();
     this._hideDialog = true;
   },
-  shouldComponentUpdate: function(nextProps) {
+  shouldComponentUpdate: function() {
     return this._hideDialog === false;
   },
   render: function() {

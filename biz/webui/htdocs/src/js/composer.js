@@ -155,6 +155,33 @@ var Composer = React.createClass({
   showHistory: function() {
     this.refs.historyDialog.show();
   },
+  addHistory: function(params) {
+    var historyData = this.state.historyData;
+    var len = historyData.length;
+    var exists;
+    for (var i = 0; i < len; i++) {
+      var item = historyData[i];
+      if (item.url === params.url && item.method === params.method
+        && item.headers === params.headers && item.body === params.body) {
+        exists = true;
+        item.date = Date.now();
+        break;
+      }
+    }
+
+    if (!exists) {
+      params.now = Date.now();
+      historyData.unshift(params);
+    }
+    var overflow = len - 30;
+    if (overflow > 0) {
+      historyData.splice(30, overflow);
+    }
+
+    if (!len) {
+      this.setState({});
+    }
+  },
   compose: function() {
     this.refs.historyDialog.hide();
   },
@@ -328,7 +355,7 @@ var Composer = React.createClass({
       self.setState(state);
     });
     params.date = Date.now();
-    this.state.historyData.unshift(params);
+    this.addHistory(params);
     events.trigger('executeComposer');
     self.setState({ result: '', pending: true });
   },
