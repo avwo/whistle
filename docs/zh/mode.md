@@ -47,16 +47,16 @@ whistle的所有操作都可以通过配置实现，配置方式扩展于系统h
 ```
 www.test.com file://(test) filter://*/cgi-bin
 # 等价于
-``
+line`
 www.test.com file://(test)
 filter://*/cgi-bin
-``
+`
 # 或
-``
+line`
 www.test.com
 file://(test)
 filter://*/cgi-bin
-``
+`
 ```
 
 其中，pattern请参考：[匹配模式](pattern.html)
