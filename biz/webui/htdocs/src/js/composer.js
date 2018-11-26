@@ -182,6 +182,12 @@ var Composer = React.createClass({
     ReactDOM.findDOMNode(refs.method).value = item.method;
     ReactDOM.findDOMNode(refs.headers).value = item.headers;
     ReactDOM.findDOMNode(refs.body).value = item.body;
+    this.setState({
+      tabName: 'Request',
+      result: ''
+    });
+    clearTimeout(this.composerTimer);
+    this.composerTimer = setTimeout(this.saveComposer, 1000);
   },
   onReplay: function(item) {
     this.onCompose(item);
