@@ -158,29 +158,21 @@ var Composer = React.createClass({
   addHistory: function(params) {
     var historyData = this.state.historyData;
     var len = historyData.length;
-    var exists;
+    params.now = Date.now();
     for (var i = 0; i < len; i++) {
       var item = historyData[i];
       if (item.url === params.url && item.method === params.method
         && item.headers === params.headers && item.body === params.body) {
-        exists = true;
-        item.date = Date.now();
+        historyData.splice(i, 1);
         break;
       }
     }
-
-    if (!exists) {
-      params.now = Date.now();
-      historyData.unshift(params);
-    }
-    var overflow = len - 30;
+    historyData.unshift(params);
+    var overflow = len + 1 - 30;
     if (overflow > 0) {
       historyData.splice(30, overflow);
     }
-
-    if (!len) {
-      this.setState({});
-    }
+    this.setState({});
   },
   compose: function() {
     this.refs.historyDialog.hide();
