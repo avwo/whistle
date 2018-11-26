@@ -174,11 +174,16 @@ var Composer = React.createClass({
     }
     this.setState({});
   },
-  compose: function() {
+  onCompose: function(item) {
     this.refs.historyDialog.hide();
+    var refs = this.refs;
+    ReactDOM.findDOMNode(refs.url).value = item.url;
+    ReactDOM.findDOMNode(refs.method).value = item.method;
+    ReactDOM.findDOMNode(refs.headers).value = item.headers;
+    ReactDOM.findDOMNode(refs.body).value = item.body;
   },
-  replay: function() {
-    this.compose();
+  onReplay: function(item) {
+    this.onCompose(item);
     this.execute();
   },
   onComposerChange: function(e) {
@@ -513,7 +518,7 @@ var Composer = React.createClass({
               placeholder="Input the rules" />
           </div>
         </Divider>
-        <HistoryData ref="historyDialog" data={historyData} />
+        <HistoryData ref="historyDialog" onReplay={this.onReplay} onCompose={this.onCompose} data={historyData} />
       </div>
     );
   }

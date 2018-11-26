@@ -16,6 +16,16 @@ var HistoryData = React.createClass({
   shouldComponentUpdate: function() {
     return this._hideDialog === false;
   },
+  getItem: function(e) {
+    var i = e.target.getAttribute('data-index');
+    return this.props.data[i];
+  },
+  onCompose: function(e) {
+    this.props.onCompose(this.getItem(e));
+  },
+  onReplay: function(e) {
+    this.props.onReplay(this.getItem(e));
+  },
   render: function() {
     var self = this;
     var data = self.props.data;
@@ -44,8 +54,8 @@ var HistoryData = React.createClass({
                         <td className="w-composer-history-method">{item.method}</td>
                         <td className="w-composer-history-url" title={item.url}>{item.url}</td>
                         <td className="w-composer-history-operation">
-                          <button onClick={self.replay} className="btn btn-primary">Replay</button>
-                          <button onClick={self.compose} className="btn btn-default">Compose</button>
+                          <button data-index={i} onClick={self.onReplay} className="btn btn-primary">Replay</button>
+                          <button data-index={i} onClick={self.onCompose} className="btn btn-default">Compose</button>
                         </td>
                       </tr>
                     );
