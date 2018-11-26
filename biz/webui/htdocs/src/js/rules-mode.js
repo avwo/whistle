@@ -145,6 +145,10 @@ CodeMirror.defineMode('rules', function() {
         if (/\s/.test(ch) || ch == '#') {
           return false;
         }
+        if (str === 'line' && ch === '`') {
+          type = 'keyword js-keyword';
+          return false;
+        }
         str += ch;
         if (!type && ch == '/' && pre == '/') {
           if (isHost(str)) {
