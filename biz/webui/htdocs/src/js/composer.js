@@ -110,6 +110,7 @@ var Composer = React.createClass({
       }
     });
     self.updatePrettyData();
+    self.loadHistory();
   },
   loadHistory: function() {
     var self = this;

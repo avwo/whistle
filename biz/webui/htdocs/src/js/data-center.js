@@ -191,8 +191,7 @@ var GET_CONF = $.extend({
 }, DEFAULT_CONF);
 var cgi = createCgi({
   getData: 'cgi-bin/get-data',
-  getInitaial: 'cgi-bin/init',
-  getHistory: 'cgi-bin/history'
+  getInitaial: 'cgi-bin/init'
 }, GET_CONF);
 
 function toLowerCase(str) {
@@ -264,7 +263,8 @@ $.extend(exports, createCgi({
 $.extend(exports, createCgi({
   donotShowAgain: 'cgi-bin/do-not-show-again',
   checkUpdate: 'cgi-bin/check-update',
-  importRemote: 'cgi-bin/import-remote'
+  importRemote: 'cgi-bin/import-remote',
+  getHistory: 'cgi-bin/history'
 }, GET_CONF));
 
 exports.socket = $.extend(createCgi({
