@@ -182,19 +182,16 @@ var Composer = React.createClass({
     ReactDOM.findDOMNode(refs.method).value = item.method;
     ReactDOM.findDOMNode(refs.headers).value = item.headers;
     ReactDOM.findDOMNode(refs.body).value = item.body;
-    this.setState({
-      tabName: 'Request',
-      result: ''
-    });
     var historyData = this.state.historyData;
-    clearTimeout(this.composerTimer);
-    this.composerTimer = setTimeout(this.saveComposer, 1000);
     var index = historyData.indexOf(item);
     item.date = Date.now();
     if (index > 0) {
       historyData.splice(index, 1);
       historyData.push(item);
     }
+    this.state.tabName = 'Request';
+    this.state.result = '';
+    this.onComposerChange(true);
   },
   onReplay: function(item) {
     this.onCompose(item);
@@ -203,12 +200,13 @@ var Composer = React.createClass({
   onComposerChange: function(e) {
     clearTimeout(this.composerTimer);
     this.composerTimer = setTimeout(this.saveComposer, 1000);
-    var target = e && e.target;
+    var target = e === true ? e : (e && e.target);
     if (target) {
-      if (target.nodeName === 'SELECT') {
+      if (target === true || target.nodeName === 'SELECT') {
         this.setState({ method: ReactDOM.findDOMNode(this.refs.method).value });
         this.updatePrettyData();
-      } else if (target.name === 'headers') {
+      }
+      if (target === true || target.name === 'headers') {
         clearTimeout(this.typeTimer);
         var self = this;
         this.typeTimer = setTimeout(function() {
