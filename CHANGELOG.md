@@ -6,16 +6,16 @@
 	```
 	www.test.com file://(test) filter://*/cgi-bin
 	# 等价于
-	``
+	line`
 	www.test.com file://(test)
 	filter://*/cgi-bin
-	``
+	`
 	# 或
-	``
+	line`
 	www.test.com
 	file://(test)
 	filter://*/cgi-bin
-	``
+	`
 	```
 
 # v1.13.3
