@@ -923,7 +923,16 @@ exports.openPreview = function(data) {
   var type = getContentType(res.headers);
   var isImg = type === 'IMG';
   if (isImg || type === 'HTML') {
-    var url = data.url.replace(/^ws/, 'http');
+    var url = data.url;
+    if (/^((?:http|ws)s?:)?\/\//i.test(url)) {
+      if (RegExp.$1) {
+        url = url.replace(/^ws/, 'http');
+      } else {
+        url = 'http:' + url;
+      }
+    } else {
+      url = 'http://' + url;
+    }
     var charset = isImg ? 'UTF8' : getCharset(res);
     url += (url.indexOf('?') === -1 ? '' : '&') + '???WHISTLE_PREVIEW_CHARSET=' + charset;
     window.open(url + '???#' + (isImg ? getBody(res) : res.base64));

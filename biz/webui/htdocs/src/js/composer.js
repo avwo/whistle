@@ -351,7 +351,7 @@ var Composer = React.createClass({
       ? ReactDOM.findDOMNode(refs.body).value.replace(/\r\n|\r|\n/g, '\r\n') : '';
     var params = {
       needResponse: true,
-      url: url,
+      url: url.replace(/^\/\//, ''),
       headers: headers,
       method: method,
       body: body
