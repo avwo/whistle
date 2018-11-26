@@ -387,6 +387,7 @@ var Composer = React.createClass({
     var rules = ReactDOM.findDOMNode(this.refs.composerRules).value;
     this.state.rules = rules;
     storage.set('composerRules', rules);
+    this.setState({});
   },
   formatJSON: function() {
     var body = ReactDOM.findDOMNode(this.refs.body);
