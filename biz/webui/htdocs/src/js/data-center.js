@@ -191,7 +191,8 @@ var GET_CONF = $.extend({
 }, DEFAULT_CONF);
 var cgi = createCgi({
   getData: 'cgi-bin/get-data',
-  getInitaial: 'cgi-bin/init'
+  getInitaial: 'cgi-bin/init',
+  getHistory: 'cgi-bin/history'
 }, GET_CONF);
 
 function toLowerCase(str) {

@@ -12,8 +12,6 @@ var Properties = require('./properties');
 var PropsEditor = require('./props-editor');
 var HistoryData = require('./history-data');
 
-var DB_NAME = 'whistle_composer_history';
-var DB_KEY = location.pathname.replace(/\/index.html$/i, '/');
 var METHODS = 'GET,POST,PUT,HEAD,TRACE,DELETE,SEARCH,CONNECT,PROPFIND,PROPPATCH,MKCOL,COPY,MOVE,LOCK,UNLOCK,OPTIONS'.split(',');
 var TYPES = {
   form: 'application/x-www-form-urlencoded',
@@ -72,17 +70,6 @@ function getStatus(statusCode) {
   return '';
 }
 
-function loadHistoryData(cb) {
-  if (!window.indexedDB) {
-    return cb();
-  }
-
-}
-
-function saveHistoryData() {
-  
-}
-
 var Composer = React.createClass({
   getInitialState: function() {
     var rules = storage.get('composerRules');
@@ -123,6 +110,18 @@ var Composer = React.createClass({
       }
     });
     self.updatePrettyData();
+  },
+  loadHistory: function() {
+    var self = this;
+    dataCenter.getHistory(function(data) {
+      if (Array.isArray(data)) {
+        self.setState({
+          historyData: data
+        });
+        return;
+      }
+      setTimeout(this.loadHistory, 6000);
+    });
   },
   updatePrettyData: function() {
     if (!this.state.showPretty) {

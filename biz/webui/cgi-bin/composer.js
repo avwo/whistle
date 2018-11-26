@@ -3,6 +3,7 @@ var net = require('net');
 var config = require('../lib/config');
 var util = require('../lib/util');
 var zlib = require('../../../lib/util/zlib');
+var properties = require('../lib/properties');
 var getSender = require('ws-parser').getSender;
 var hparser = require('hparser');
 
@@ -245,6 +246,6 @@ module.exports = function(req, res) {
     }
     handleHttp(options);
   }
-
+  properties.addHistory(req.body);
   res.json({ec: 0, em: 'success'});
 };
