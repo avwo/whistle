@@ -54,8 +54,12 @@ var HistoryData = React.createClass({
                         <td className="w-composer-history-method" title={item.method}>{item.method}</td>
                         <td className="w-composer-history-url" title={item.url}>{item.url}</td>
                         <td className="w-composer-history-operation">
-                          <button data-index={i} onClick={self.onReplay} className="btn btn-primary">Replay</button>
-                          <button data-index={i} onClick={self.onCompose} className="btn btn-default">Compose</button>
+                          <button title="Replay" data-index={i} onClick={self.onReplay} className="btn btn-primary">
+                            <span data-index={i} className="glyphicon glyphicon-repeat"></span>
+                          </button>
+                          <button title="Compose" data-index={i} onClick={self.onCompose} className="btn btn-default">
+                            <span data-index={i} className="glyphicon glyphicon-edit"></span>
+                          </button>
                         </td>
                       </tr>
                     );
