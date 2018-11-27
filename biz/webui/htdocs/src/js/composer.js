@@ -170,9 +170,8 @@ var Composer = React.createClass({
   },
   addHistory: function(params) {
     var historyData = this.state.historyData;
-    var len = historyData.length;
     params.now = Date.now();
-    for (var i = 0; i < len; i++) {
+    for (var i = 0, len = historyData.length; i < len; i++) {
       var item = historyData[i];
       if (item.url === params.url && item.method === params.method
         && item.headers === params.headers && item.body === params.body) {
@@ -181,9 +180,9 @@ var Composer = React.createClass({
       }
     }
     historyData.unshift(params);
-    var overflow = len + 1 - 30;
+    var overflow = historyData.length - 36;
     if (overflow > 0) {
-      historyData.splice(30, overflow);
+      historyData.splice(36, overflow);
     }
     this.setState({});
   },
