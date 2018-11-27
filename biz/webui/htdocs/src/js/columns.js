@@ -25,6 +25,7 @@ function getDefaultColumns() {
       title: 'Method',
       name: 'method',
       className: 'method',
+      showTitle: true,
       selected: true,
       minWidth: 75
     },
