@@ -193,13 +193,6 @@ var Composer = React.createClass({
     ReactDOM.findDOMNode(refs.method).value = item.method;
     ReactDOM.findDOMNode(refs.headers).value = item.headers;
     ReactDOM.findDOMNode(refs.body).value = item.body;
-    var historyData = this.state.historyData;
-    var index = historyData.indexOf(item);
-    item.date = Date.now();
-    if (index > 0) {
-      historyData.splice(index, 1);
-      historyData.push(item);
-    }
     this.state.tabName = 'Request';
     this.state.result = '';
     this.onComposerChange(true);
