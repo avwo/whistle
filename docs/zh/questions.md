@@ -66,3 +66,6 @@
 </base-config>
 ```
   这主要是因为android 6.0之后的版本默认配置发生了变化，[更多请看Android开发文档](https://developer.android.com/training/articles/security-config#base-config)。
+  17. 如何修改whistle本地存储目录
+    - 启动命令行指定 `-D baseDir`
+    - 配置环境变量 `WHISTLE_PATH=baseDir`
