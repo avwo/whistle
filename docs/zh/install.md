@@ -39,36 +39,49 @@ $ npm install whistle -g --registry=https://registry.npm.taobao.org
 
 whistle安装完成后，执行命令 `whistle help` 或 `w2 help`，查看whistle的帮助信息
 
-```sh
+```
 $ w2 help
 
-Usage: w2 <command> [options]
+ Usage: whistle <command> [options]
+
 
   Commands:
 
-    run       Start a front service
-    start     Start a background service
-    stop      Stop current background service
-    restart   Restart current background service
-    help      Display help information
+    status              Show the running status of whistle
+    use/add [filepath]  Set rules from a specified js file (.whistle.js by default)
+    run                 Start a front service
+    start               Start a background service
+    stop                Stop current background service
+    restart             Restart current background service
+    help                Display help information
 
   Options:
 
     -h, --help                                      output usage information
-    -d, --debug                                     debug mode
-    -l, --localUIHost [hostname]                    local ui host(local.whistlejs.com by default)
-    -n, --username [username]                       login username
-    -w, --password [password]                       login password
-    -S, --storage [newStorageDir]                   the new local storage directory
-    -C, --copy [storageDir]                         copy storageDir to newStorageDir
-    -p, --port [port]                               whistle port(8899 by default)
-    -m, --middlewares [script path or module name]  express middlewares path(as: xx,yy/zz.js)
-    -u, --uipath [script path]                      web ui plugin path
-    -t, --timeout [ms]                              request timeout(66000 ms by default)
-    -s, --sockets [number]                          max sockets(12 by default)
+    -D, --baseDir [baseDir]                         set the configured storage root path
+    -z, --certDir [directory]                       set custom certificate store directory
+    -l, --localUIHost [hostname]                    set the domain for the web ui of whistle (local.whistlejs.com by default)
+    -L, --pluginHost [hostname]                     set the domain for the web ui of plugin  (as: "script=a.b.com&vase=x.y.com")
+    -n, --username [username]                       set the username to access the web ui of whistle
+    -w, --password [password]                       set the password to access the web ui of whistle
+    -N, --guestName [username]                      set the the guest name to access the web ui of whistle (can only view the data)
+    -W, --guestPassword [password]                  set the guest password to access the web ui of whistle (can only view the data)
+    -s, --sockets [number]                          set the max number of cached long connection on each domain (60 by default)
+    -S, --storage [newStorageDir]                   set the configured storage directory
+    -C, --copy [storageDir]                         copy the configuration of the specified directory to a new directory
+    -c, --dnsCache [time]                           set the cache time of DNS (30000ms by default)
+    -H, --host [host]                               set the listening host (INADDR_ANY by default)
+    -p, --port [port]                               set the listening port (8899 by default)
+    -P, --uiport [uiport]                           set the listening port of whistle (8900 by default)
+    -m, --middlewares [script path or module name]  set the express middlewares loaded at startup (as: xx,yy/zz.js)
+    -M, --mode [mode]                               set the way of starting the whistle mode (as: pureProxy|debug|multiEnv)
+    -u, --uipath [script path]                      set the path of custom web ui
+    -t, --timeout [ms]                              set the request timeout (66000ms by default)
+    -e, --extra [extraData]                         set the extra parameters for plugin
+    -f, --secureFilter [secureFilter]               set the path of secure filter
+    -R, --reqCacheSize [reqCacheSize]               set the cache size of request data (600 by default)
+    -F, --frameCacheSize [frameCacheSize]           set the cache size of webSocket and socket's frames (512 by default)
     -V, --version                                   output the version number
-    -c, --command <command>                         command parameters ("node --harmony")
-
 ```
 
 如果能正常输出whistle的帮助信息，表示whistle已安装成功。
