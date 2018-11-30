@@ -127,10 +127,12 @@ var ServerLog = React.createClass({
 
     return (
       <div className={'fill orient-vertical-box w-textarea w-detail-svr-log' + (this.props.hide ? ' hide' : '')}>
-        <div className={'w-log-action-bar' + (logs.length ? '' : ' hide')}>
+        <div className="w-log-action-bar">
           <div className="w-textarea-bar">
+            <a className="w-import" onClick={this.importLog}
+              href="javascript:;" draggable="false">Import</a>
             <a className="w-download" onDoubleClick={this.download}
-              onClick={this.showNameInput} href="javascript:;" draggable="false">Download</a>
+              onClick={this.showNameInput} href="javascript:;" draggable="false">Export</a>
             <a className="w-auto-refresh" onDoubleClick={this.stopAutoRefresh}
               onClick={this.autoRefresh} href="javascript:;" draggable="false">AutoRefresh</a>
             <a className="w-clear" onClick={this.clearLogs} href="javascript:;" draggable="false">Clear</a>
