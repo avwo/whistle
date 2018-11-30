@@ -429,7 +429,7 @@ var ReqData = React.createClass({
     contextMenuList[2].disabled = !hasData;
     list2[0].disabled = !hasData;
     list2[1].disabled = disabled;
-    list2[2].disabled = hasData <= 1;
+    list2[2].disabled = disabled;
     list2[3].disabled = !selectedCount;
     list2[4].disabled = selectedCount === hasData;
     

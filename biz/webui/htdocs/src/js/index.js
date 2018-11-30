@@ -867,7 +867,11 @@ var Index = React.createClass({
     events.on('removeOthers', function(e, item) {
       var modal = self.state.network;
       if (item && modal) {
-        modal.removeOthers(item);
+        if (item.selected) {
+          modal.removeUnselectedItems();
+        } else {
+          modal.removeOthers(item);
+        }
         self.setState({});
       }
     });
