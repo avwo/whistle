@@ -49,7 +49,7 @@ exports.parseLogs = function(str) {
         item.level = 'info';
       }
       result.push(item);
-      if (++count >= 0) {
+      if (++count >= 100) {
         return result;
       }
     }
