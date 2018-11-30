@@ -12,6 +12,8 @@ var FilterInput = require('./filter-input');
 var DropDown = require('./dropdown');
 var events = require('./events');
 
+var MAX_FILE_SIZE = 1024 * 1024 * 2;
+
 var allLogs = {
   value: '',
   text: 'All logs'
@@ -106,6 +108,26 @@ var Console = React.createClass({
   },
   selectFile: function() {
     ReactDOM.findDOMNode(this.refs.importData).click();
+  },
+  importData: function() {
+    var form = new FormData(ReactDOM.findDOMNode(this.refs.importDataForm));
+    var file = form.get('importData');
+    if (!file || !/\.log$/i.test(file.name)) {
+      return alert('Only supports .log file.');
+    }
+    if (file.size > MAX_FILE_SIZE) {
+      return alert('The file size can not exceed 2m.');
+    }
+    var reader = new FileReader();
+    reader.readAsText(file);
+    reader.onload = function(){
+      var logs = util.parseLogs(this.result);
+      if (!logs) {
+        return;
+      }
+      events.trigger('uploadLogs', {logs: logs});
+    };
+    ReactDOM.findDOMNode(this.refs.importData).value = '';
   },
   changeLogId: function(option) {
     dataCenter.changeLogId(option.value);
