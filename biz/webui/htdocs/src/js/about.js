@@ -77,7 +77,7 @@ var About = React.createClass({
               <img alt="logo" src="img/whistle.png?v=2016" />
               <span className="w-about-dialog-ctn">
                 <span className="w-about-dialog-title">Whistle for Web Developers.</span>
-                Version: <span className="w-about-version">{version}</span><br/>
+                Version: <a className="w-about-version" href="https://github.com/avwo/whistle/blob/master/CHANGELOG.md" target="_blank">{version}</a><br/>
                 {util.compareVersion(latest, version) ? (<span className="w-about-latest-version">
                   Latest version: <a className="w-about-github" title="How to update whistle" href="https://avwo.github.io/whistle/update.html" target="_blank">{latest}</a><br/>
                 </span>) : ''}
