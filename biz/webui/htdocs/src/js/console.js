@@ -76,6 +76,9 @@ var Console = React.createClass({
       }
     });
   },
+  selectFile: function() {
+    ReactDOM.findDOMNode(this.refs.importData).click();
+  },
   changeLogId: function(option) {
     dataCenter.changeLogId(option.value);
   },
@@ -183,7 +186,7 @@ var Console = React.createClass({
             options={logIdList}
           />
           <div className="w-textarea-bar">
-            <a className="w-import" onClick={this.import}
+            <a className="w-import" onClick={this.selectFile}
               href="javascript:;" draggable="false">Import</a>
             <a className={'w-download' + (disabled ? ' w-disabled' : '')} onDoubleClick={disabled ? undefined : this.download}
               onClick={disabled ? undefined : this.showNameInput} href="javascript:;" draggable="false">Export</a>
@@ -208,6 +211,9 @@ var Console = React.createClass({
             </form>
           </div>
         </div>
+        <form ref="importDataForm" encType="multipart/form-data" style={{display: 'none'}}>
+          <input ref="importData" onChange={this.importData} type="file" name="importData" accept=".txt,.json" />
+        </form>
         <div ref="container" className="fill w-detail-log-content">
           <ul ref="logContent">
             {logs.map(function(log) {

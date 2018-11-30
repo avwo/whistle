@@ -114,6 +114,9 @@ var ServerLog = React.createClass({
     }
     this.download();
   },
+  selectFile: function() {
+    ReactDOM.findDOMNode(this.refs.importData).click();
+  },
   preventBlur: function(e) {
     e.target.nodeName != 'INPUT' && e.preventDefault();
   },
@@ -130,7 +133,7 @@ var ServerLog = React.createClass({
       <div className={'fill orient-vertical-box w-textarea w-detail-svr-log' + (this.props.hide ? ' hide' : '')}>
         <div className="w-log-action-bar">
           <div className="w-textarea-bar">
-            <a className="w-import" onClick={this.importLog}
+            <a className="w-import" onClick={this.selectFile}
               href="javascript:;" draggable="false">Import</a>
             <a className={'w-download' + (disabled ? ' w-disabled' : '')} onDoubleClick={disabled ? undefined : this.download}
               onClick={disabled ? undefined : this.showNameInput} href="javascript:;" draggable="false">Export</a>
@@ -155,6 +158,9 @@ var ServerLog = React.createClass({
             </form>
           </div>
         </div>
+        <form ref="importDataForm" encType="multipart/form-data" style={{display: 'none'}}>
+          <input ref="importData" onChange={this.importData} type="file" name="importData" accept=".txt,.json" />
+        </form>
         <div ref="svrContainer" className="fill w-detail-log-content">
           <ul ref="svrContent">
             {logs.map(function(log) {
