@@ -21,7 +21,7 @@ var ActionBtn = React.createClass({
   },
   onClick: function() {
     var isStop = this.isStop();
-    dataCenter.stopRefresh = !dataCenter.stopRefresh;
+    dataCenter.stopRecord(!dataCenter.stopRefresh);
     this.props.onClick(isStop ? 'refresh' : 'stop');
     this.setState({});
   },

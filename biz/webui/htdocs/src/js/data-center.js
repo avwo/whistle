@@ -793,3 +793,8 @@ exports.on = function (type, callback) {
     }
   }
 };
+
+exports.stopRecord = function(stop) {
+  networkModal.clearNetwork = !stop;
+  exports.stopRefresh = stop;
+};
