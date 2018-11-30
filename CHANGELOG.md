@@ -1,3 +1,6 @@
+# v1.13.5
+1. fix: 导入saz文件 `Set-Cookie` 等重名头部覆盖问题
+
 # v1.13.4
 1. fix: Network隐藏是按F12切换详情面板时高度可能变成0
 2. refactor: 支持插件更新提醒
