@@ -17,7 +17,7 @@ body .CodeMirror pre {
   font-family: consolas, monospace;
 }
 
-.glyphicon-ban-circle, .glyphicon-stop { color: #f66; }
+.glyphicon-ban-circle { color: #f66; }
 
 .w-filter-input {width: 100%; background: rgba(0, 0, 0, 0.8); height: 30px; color: #fff; padding: 2px 5px; border: none; border-top: 1px solid #ccc; border-bottom: 1px solid #ccc;}
 .shadow {border: 1px solid rgba(0,0,0,.15)!important; -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175)!important; box-shadow: 0 6px 12px rgba(0,0,0,.175)!important;}

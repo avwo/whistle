@@ -45,7 +45,7 @@ var ActionBtn = React.createClass({
   render: function() {
     var state = this.state;
     var hide = this.props.hide;
-    var showPlay = this.isStop();
+    var isStop = this.isStop();
 
     return (
       <div onMouseEnter={this.showActionOptions} onMouseLeave={this.hideActionOptions}
@@ -54,11 +54,8 @@ var ActionBtn = React.createClass({
           + (hide ? ' hide' : '')}
       >
         <a onClick={this.onClick} href="javascript:;" draggable="false"
-          className={'w-scroll-menu' + (showPlay ? ' w-menu-enable' : '')}
-          title={'Click to ' + (showPlay ? 'auto' : 'stop') + ' refresh'}
-        >
-          <span className={'glyphicon glyphicon-' + (showPlay ? 'play' : 'stop')}></span>
-          {showPlay ? 'AutoRefresh' : 'StopRefresh'}
+          className="w-scroll-menu">
+          <span style={{color: isStop ? '#aaa' : '#f66'}} className="glyphicon glyphicon-stop"></span>Record
         </a>
         <MenuItem options={ACTION_OPTIONS} className="w-remove-menu-item" onClickOption={this.onClickOption} />
       </div>
