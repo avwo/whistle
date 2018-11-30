@@ -610,17 +610,37 @@ var Index = React.createClass({
       .on('drop', function(e) {
         e.preventDefault();
         var files = e.originalEvent.dataTransfer.files;
-        if (!files || !files.length
-            || $(e.target).closest('.w-frames-composer').length) {
+        var file = files && files[0];
+        if (!file) {
           return;
         }
         var data;
         var name = self.state.name;
+        var target = $(e.target);
         if (name === 'network') {
+          if (target.closest('.w-frames-composer').length) {
+            return;
+          }
+          if (/\.log$/i.test(file.name)) {
+            var reader = new FileReader();
+            reader.readAsText(file);
+            reader.onload = function(){
+              var result = this.result;
+              if (!result) {
+                return;
+              }
+              if (dataCenter.uploadLogs !== null) {
+                dataCenter.uploadLogs = result;
+              }
+              events.trigger('showLog');
+              events.trigger('uploadLogs', result);
+            };
+            return;
+          }
           data = new FormData();
           data.append('importSessions', files[0]);
           self.uploadSessionsForm(data);
-        } if ($(e.target).closest('.w-divider-left').length) {
+        } if (target.closest('.w-divider-left').length) {
           if (name === 'rules') {
             data = new FormData();
             data.append('rules', files[0]);

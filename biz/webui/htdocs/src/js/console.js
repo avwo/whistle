@@ -206,13 +206,14 @@ var Console = React.createClass({
             </div>
             <form ref="downloadForm" action="cgi-bin/download" style={{display: 'none'}}
               method="post" target="downloadTargetFrame">
+              <input ref="type" name="type" value="log" type="hidden" />
               <input ref="filename" name="filename" type="hidden" />
               <input ref="content" name="content" type="hidden" />
             </form>
           </div>
         </div>
         <form ref="importDataForm" encType="multipart/form-data" style={{display: 'none'}}>
-          <input ref="importData" onChange={this.importData} type="file" name="importData" accept=".txt,.json" />
+          <input ref="importData" onChange={this.importData} type="file" name="importData" accept=".log" />
         </form>
         <div ref="container" className="fill w-detail-log-content">
           <ul ref="logContent">

@@ -55,7 +55,7 @@ var ActionBtn = React.createClass({
       >
         <a onClick={this.onClick} href="javascript:;" draggable="false"
           className="w-scroll-menu">
-          <span style={{color: isStop ? '#aaa' : '#f66'}} className="glyphicon glyphicon-stop"></span>Record
+          <span style={{color: isStop ? '#ccc' : '#f66'}} className="glyphicon glyphicon-stop"></span>Record
         </a>
         <MenuItem options={ACTION_OPTIONS} className="w-remove-menu-item" onClickOption={this.onClickOption} />
       </div>

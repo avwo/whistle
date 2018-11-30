@@ -54,6 +54,8 @@ var ReqData = React.createClass({
       self.toggleTab(TABS[2]);
     }).on('showTimeline', function() {
       self.toggleTab(TABS[4]);
+    }).on('showLog', function() {
+      self.toggleTab(TABS[5]);
     }).on('composer', function(e, item) {
       var modal = self.props.modal;
       self.showComposer(item || (modal && modal.getActive()));
