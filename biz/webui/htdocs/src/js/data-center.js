@@ -455,16 +455,12 @@ function startLoadData() {
     var startLogTime = -1;
     var startSvrLogTime = -1;
 
-    if (!len) {
+    if (len < 100) {
       startLogTime = lastPageLogTime;
-    } else if (len < 100) {
-      startLogTime = logList[len - 1].id;
     }
 
-    if (!svrLen) {
+    if (svrLen < 70) {
       startSvrLogTime = lastSvrLogTime;
-    } else if (svrLen < 70) {
-      startSvrLogTime = svrLogList[svrLen - 1].id;
     }
 
     var curActiveItem = networkModal.getActive();
