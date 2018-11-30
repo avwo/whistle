@@ -60,3 +60,7 @@
 .w-log-action-bar .w-textarea-bar a:hover {
   color: #337ab7;
 }
+.w-textarea-bar .w-disabled {
+  cursor: not-allowed;
+  color: #888!important;
+}

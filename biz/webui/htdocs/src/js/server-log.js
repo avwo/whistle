@@ -124,6 +124,7 @@ var ServerLog = React.createClass({
     var state = this.state;
     var logs = state.logs || [];
     var serverKeyword = state.serverKeyword;
+    var disabled = !logs.length;
 
     return (
       <div className={'fill orient-vertical-box w-textarea w-detail-svr-log' + (this.props.hide ? ' hide' : '')}>
@@ -131,11 +132,11 @@ var ServerLog = React.createClass({
           <div className="w-textarea-bar">
             <a className="w-import" onClick={this.importLog}
               href="javascript:;" draggable="false">Import</a>
-            <a className="w-download" onDoubleClick={this.download}
-              onClick={this.showNameInput} href="javascript:;" draggable="false">Export</a>
-            <a className="w-auto-refresh" onDoubleClick={this.stopAutoRefresh}
-              onClick={this.autoRefresh} href="javascript:;" draggable="false">AutoRefresh</a>
-            <a className="w-clear" onClick={this.clearLogs} href="javascript:;" draggable="false">Clear</a>
+            <a className={'w-download' + (disabled ? ' w-disabled' : '')} onDoubleClick={disabled ? undefined : this.download}
+              onClick={disabled ? undefined : this.showNameInput} href="javascript:;" draggable="false">Export</a>
+            <a className={'w-auto-refresh' + (disabled ? ' w-disabled' : '')} onDoubleClick={disabled ? undefined : this.stopAutoRefresh}
+              onClick={disabled ? undefined : this.autoRefresh} href="javascript:;" draggable="false">AutoRefresh</a>
+            <a className={'w-clear' + (disabled ? ' w-disabled' : '')} onClick={disabled ? undefined : this.clearLogs} href="javascript:;" draggable="false">Clear</a>
             <div onMouseDown={this.preventBlur}
               style={{display: this.state.showNameInput ? 'block' : 'none'}}
               className="shadow w-textarea-input"><input ref="nameInput"
