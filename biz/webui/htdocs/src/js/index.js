@@ -10,6 +10,7 @@ var Network = require('./network');
 var About = require('./about');
 var Online = require('./online');
 var MenuItem = require('./menu-item');
+var ActionBtn = require('./action-btn');
 var EditorSettings = require('./editor-settings');
 var NetworkSettings = require('./network-settings');
 var Plugins = require('./plugins');
@@ -1156,11 +1157,6 @@ var Index = React.createClass({
 
     self._updateNetwork = update;
     self.autoRefresh = scrollToBottom;
-    self.stopAutoRefresh = function() {
-      if (atBottom()) {
-        con.scrollTop = con.scrollTop - 10;
-      }
-    };
     self.scrollerAtBottom = atBottom;
 
     function atBottom() {
@@ -1180,12 +1176,23 @@ var Index = React.createClass({
     });
     changePageName('plugins');
   },
-  onClickAutoRefresh: function() {
-    var modal = this.state.network;
-    if (modal && modal.hasKeyword()) {
-      message.warn('The filter input at the bottom must be empty first.');
+  handleAction: function(type) {
+    if (type === 'top') {
+      $(ReactDOM.findDOMNode(this.refs.network))
+        .find('.w-req-data-list')[0].scrollTop = 0;
+      return;
     }
-    this.autoRefresh && this.autoRefresh();
+    if (type === 'bottom') {
+      return this.autoRefresh();
+    }
+    if (type === 'refresh') {
+      var modal = this.state.network;
+      if (modal && modal.hasKeyword()) {
+        message.warn('The filter input at the bottom must be empty first.');
+      }
+      this.autoRefresh && this.autoRefresh();
+      return;
+    }
   },
   showNetwork: function(e) {
     if (this.state.name == 'network') {
@@ -2719,12 +2726,7 @@ var Index = React.createClass({
             <MenuItem options={ABORT_OPTIONS} className="w-remove-menu-item" onClickOption={this.abort} />
           </div>
           <a onClick={this.composer} className="w-composer-menu" style={{display: isNetwork ? '' : 'none'}} href="javascript:;" draggable="false"><span className="glyphicon glyphicon-edit"></span>Compose</a>
-          <a onClick={this.onClickAutoRefresh} onDoubleClick={this.stopAutoRefresh}
-            title={'Click to scroll to the bottom\nDouble click to stop scroll'}
-            className="w-scroll-menu" style={{display: isNetwork ? '' : 'none'}}
-            href="javascript:;" draggable="false">
-            <span className="glyphicon glyphicon-play"></span>AutoRefresh
-          </a>
+          <ActionBtn hide={!isNetwork} onClick={this.handleAction} />
           <a onClick={this.onClickMenu} className={'w-delete-menu' + (disabledDeleteBtn ? ' w-disabled' : '')} style={{display: (isNetwork || isPlugins) ? 'none' : ''}} href="javascript:;" draggable="false"><span className="glyphicon glyphicon-trash"></span>Delete</a>
           <a onClick={this.showSettings} className={'w-settings-menu' + (hasFilterText ? ' w-menu-enable'  : '')} style={{display: (isPlugins) ? 'none' : ''}} href="javascript:;" draggable="false"><span className={'glyphicon glyphicon-' + (isNetwork ? 'filter' : 'cog')}></span>{isNetwork ? 'Filter' : 'Settings'}</a>
           <div onMouseEnter={this.showWeinreOptions} onMouseLeave={this.hideWeinreOptions} className={'w-menu-wrapper' + (showWeinreOptions ? ' w-menu-wrapper-show' : '')}>

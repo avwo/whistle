@@ -727,7 +727,7 @@ function getStartTime() {
   if (!inited) {
     return clearNetwork ? -2 : '';
   }
-  if (dataList.length - 1 > MAX_COUNT) {
+  if (dataList.length - 1 > MAX_COUNT || exports.stopRefresh) {
     return -1;
   }
   return lastRowId || '0';
