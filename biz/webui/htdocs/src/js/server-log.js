@@ -7,6 +7,7 @@ var ExpandCollapse = require('./expand-collapse');
 var util = require('./util');
 var dataCenter = require('./data-center');
 var FilterInput = require('./filter-input');
+var events = require('./events');
 
 var ServerLog = React.createClass({
   getInitialState: function() {
@@ -16,7 +17,12 @@ var ServerLog = React.createClass({
     var self = this;
     var svrContainer = this.container = ReactDOM.findDOMNode(self.refs.svrContainer);
     var svrContent = this.content = ReactDOM.findDOMNode(self.refs.svrContent);
-    dataCenter.on('log', function(logs, svrLogs) {
+
+    var updateLogs = function(_, svrLogs) {
+      var curLogs = self.state.logs;
+      if (curLogs !== svrLogs && Array.isArray(curLogs)) {
+        svrLogs.push.apply(svrLogs, curLogs);
+      }
       self.state.logs = svrLogs;
       if (self.props.hide) {
         return;
@@ -29,7 +35,29 @@ var ServerLog = React.createClass({
         }
       }
       self.setState({});
+    };
+    if (dataCenter.uploadLogs) {
+      updateLogs(null, dataCenter.uploadLogs);
+      dataCenter.uploadLogs = null;
+    }
+    events.on('uploadLogs', function(_, result) {
+      if (self.props.hide) {
+        return;
+      }
+      var logs = result.logs;
+      var curLogs = self.state.logs;
+      if (curLogs) {
+        curLogs.push.apply(curLogs, logs);
+        var overflow = curLogs.length - 100;
+        if (overflow > 0) {
+          curLogs.splice(100, overflow);
+        }
+      } else {
+        curLogs = logs;
+      }
+      updateLogs(null, curLogs);
     });
+    dataCenter.on('log', updateLogs);
 
     var svrTimeout;
     $(svrContainer).on('scroll', function() {

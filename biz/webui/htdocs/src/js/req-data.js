@@ -66,8 +66,8 @@ var contextMenuList = [
   { name: 'Abort' },
   { name: 'Upload' },
   { name: 'Filter' },
-  { name: 'Export' },
   { name: 'Import' },
+  { name: 'Export' },
   { name: 'Help', sep: true }
 ];
 
@@ -448,7 +448,7 @@ var ReqData = React.createClass({
     }
     var uploadItem = contextMenuList[6];
     uploadItem.hide = !getUploadSessionsFn();
-    contextMenuList[8].disabled = uploadItem.disabled = disabled && !selectedCount;
+    contextMenuList[9].disabled = uploadItem.disabled = disabled && !selectedCount;
     var data = util.getMenuPosition(e, 110, uploadItem.hide ? 310 : 340);
     data.list = contextMenuList;
     this.refs.contextMenu.show(data);

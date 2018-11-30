@@ -28,6 +28,7 @@ var DEFAULT = 'Default';
 var MAX_PLUGINS_TABS = 7;
 var MAX_FILE_SIZE = 1024 * 1024 * 64;
 var MAX_OBJECT_SIZE = 1024 * 1024 * 6;
+var MAX_LOG_SIZE = 1024 * 1024 * 2;
 var MAX_REPLAY_COUNT = 30;
 var LINK_SELECTOR = '.cm-js-type, .cm-js-http-url, .cm-string, .cm-js-at';
 var LINK_RE = /^"(https?:)?(\/\/[^/]\S+)"$/i;
@@ -622,18 +623,21 @@ var Index = React.createClass({
             return;
           }
           if (/\.log$/i.test(file.name)) {
+            if (file.size > MAX_LOG_SIZE) {
+              return alert('The file size can not exceed 2m.');
+            }
             var reader = new FileReader();
             reader.readAsText(file);
             reader.onload = function(){
-              var result = this.result;
-              if (!result) {
+              var logs = util.parseLogs(this.result);
+              if (!logs) {
                 return;
               }
               if (dataCenter.uploadLogs !== null) {
-                dataCenter.uploadLogs = result;
+                dataCenter.uploadLogs = logs;
               }
               events.trigger('showLog');
-              events.trigger('uploadLogs', result);
+              events.trigger('uploadLogs', {logs: logs});
             };
             return;
           }

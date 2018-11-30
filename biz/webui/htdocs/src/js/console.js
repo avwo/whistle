@@ -10,6 +10,7 @@ var util = require('./util');
 var dataCenter = require('./data-center');
 var FilterInput = require('./filter-input');
 var DropDown = require('./dropdown');
+var events = require('./events');
 
 var allLogs = {
   value: '',
@@ -47,7 +48,11 @@ var Console = React.createClass({
     var self = this;
     var container = this.container = ReactDOM.findDOMNode(self.refs.container);
     var content = this.content = ReactDOM.findDOMNode(self.refs.logContent);
-    dataCenter.on('log', function(logs) {
+    var updateLogs = function(logs) {
+      var curLogs = self.state.logs;
+      if (curLogs !== logs && Array.isArray(curLogs)) {
+        logs.push.apply(logs, curLogs);
+      }
       self.state.logs = logs;
       if (self.props.hide) {
         return;
@@ -60,7 +65,30 @@ var Console = React.createClass({
         }
       }
       self.setState({});
+    };
+
+    if (dataCenter.uploadLogs) {
+      updateLogs(dataCenter.uploadLogs);
+      dataCenter.uploadLogs = null;
+    }
+    events.on('uploadLogs', function(_, result) {
+      if (self.props.hide) {
+        return;
+      }
+      var logs = result.logs;
+      var curLogs = self.state.logs;
+      if (curLogs) {
+        curLogs.push.apply(curLogs, logs);
+        var overflow = curLogs.length - 80;
+        if (overflow > 0) {
+          curLogs.splice(80, overflow);
+        }
+      } else {
+        curLogs = logs;
+      }
+      updateLogs(curLogs);
     });
+    dataCenter.on('log', updateLogs);
     var timeout;
     $(container).on('scroll', function() {
       var data = self.state.logs;

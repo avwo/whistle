@@ -12,12 +12,50 @@ var CRLF_RE = /\r\n|\r|\n/g;
 var BIG_NUM_RE = /[:\[][\s\n\r]*-?[\d.]{16,}[\s\n\r]*[,\}\]]/;
 var dragCallbacks = {};
 var dragTarget, dragOffset, dragCallback;
+var logTempId = 0;
+var LEVELS = ['fatal', 'error', 'warn', 'info', 'debug'];
 
 function noop(_) {
   return _;
 }
 
 exports.noop = noop;
+
+function notEStr(str) {
+  return str && typeof str === 'string';
+}
+
+exports.parseLogs = function(str) {
+  try {
+    str = JSON.parse(str);
+  } catch(e) {}
+  if (!Array.isArray(str)) {
+    return;
+  }
+  var result;
+  var count = 0;
+  for (var i = 0, len = str.length; i < len; i++) {
+    var item = str[i];
+    if (item && item.text !== undefined) {
+      result = result || [];
+      item.id = ++logTempId;
+      item.date = item.date > 0 ? item.date : 0;
+      if (notEStr(item.level)) {
+        item.level = item.level.toLowerCase();
+        if (LEVELS.indexOf(item.level) === -1) {
+          item.level = 'info';
+        }
+      } else {
+        item.level = 'info';
+      }
+      result.push(item);
+      if (++count >= 0) {
+        return result;
+      }
+    }
+  }
+  return result;
+};
 
 exports.preventDefault = function preventDefault(e) {
   e.keyCode == 8 && e.preventDefault();
