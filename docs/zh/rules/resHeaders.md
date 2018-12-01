@@ -1,6 +1,6 @@
 # resHeaders
 
-修改请求头，配置方式：
+修改响应头，配置方式：
 
 	pattern resHeaders://filepath
 
