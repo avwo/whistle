@@ -81,9 +81,9 @@ var Console = React.createClass({
       var curLogs = self.state.logs;
       if (curLogs) {
         curLogs.push.apply(curLogs, logs);
-        var overflow = curLogs.length - 80;
+        var overflow = curLogs.length - 100;
         if (overflow > 0) {
-          curLogs.splice(80, overflow);
+          curLogs.splice(0, overflow);
         }
       } else {
         curLogs = logs;

@@ -52,7 +52,7 @@ var ServerLog = React.createClass({
         curLogs.push.apply(curLogs, logs);
         var overflow = curLogs.length - 100;
         if (overflow > 0) {
-          curLogs.splice(100, overflow);
+          curLogs.splice(0, overflow);
         }
       } else {
         curLogs = logs;
