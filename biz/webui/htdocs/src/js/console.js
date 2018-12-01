@@ -61,7 +61,7 @@ var Console = React.createClass({
       }
       var atBottom = util.scrollAtBottom(container, content);
       if (atBottom) {
-        var len = logs.length - 80;
+        var len = logs.length - 100;
         if (len > 9) {
           logs.splice(0, len);
         }
