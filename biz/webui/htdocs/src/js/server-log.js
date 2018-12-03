@@ -32,7 +32,7 @@ var ServerLog = React.createClass({
       }
       var atBottom = util.scrollAtBottom(svrContainer, svrContent);
       if (atBottom) {
-        var len = svrLogs.length - 50;
+        var len = svrLogs.length - 60;
         if (len > 9) {
           svrLogs.splice(0, len);
         }
@@ -68,7 +68,7 @@ var ServerLog = React.createClass({
       svrTimeout && clearTimeout(svrTimeout);
       if (data && (self.state.scrollToBottom = util.scrollAtBottom(svrContainer, svrContent))) {
         svrTimeout = setTimeout(function() {
-          var len = data.length - 50;
+          var len = data.length - 60;
           if (len > 9) {
             data.splice(0, len);
             self.setState({});

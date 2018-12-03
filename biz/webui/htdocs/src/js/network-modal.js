@@ -349,7 +349,20 @@ function updateList(list, len) {
     return;
   }
   var activeItem = getActive(list);
-  list.splice(0, len);
+  if (this._keyword) {
+    var i = 0;
+    var length = list.length;
+    while(len > 0 && i < length) {
+      if (list[i].hide) {
+        --length;
+        --len;
+        list.splice(i, 1);
+      } else {
+        ++i;
+      }
+    }
+  }
+  len > 0 && list.splice(0, len);
   if (activeItem && list.indexOf(activeItem) === -1) {
     list[0] = activeItem;
   }
