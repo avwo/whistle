@@ -9,7 +9,6 @@ var dataCenter = require('./data-center');
 var FilterInput = require('./filter-input');
 var RecordBtn = require('./record-btn');
 var events = require('./events');
-var message = require('./message');
 
 var MAX_FILE_SIZE = 1024 * 1024 * 2;
 
@@ -185,10 +184,6 @@ var ServerLog = React.createClass({
     var refresh = type === 'refresh';
     dataCenter.stopServerLogRecord(!refresh);
     if (refresh) {
-      // var modal = this.state.network;
-      // if (modal && modal.hasKeyword()) {
-      //   message.warn('The filter input at the bottom must be empty first.');
-      // }
       return this.autoRefresh();
     }
   },

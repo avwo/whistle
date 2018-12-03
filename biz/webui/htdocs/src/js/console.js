@@ -12,7 +12,6 @@ var FilterInput = require('./filter-input');
 var DropDown = require('./dropdown');
 var RecordBtn = require('./record-btn');
 var events = require('./events');
-var message = require('./message');
 
 var MAX_FILE_SIZE = 1024 * 1024 * 2;
 
@@ -218,10 +217,6 @@ var Console = React.createClass({
     var refresh = type === 'refresh';
     dataCenter.stopConsoleRecord(!refresh);
     if (refresh) {
-      // var modal = this.state.network;
-      // if (modal && modal.hasKeyword()) {
-      //   message.warn('The filter input at the bottom must be empty first.');
-      // }
       return this.autoRefresh();
     }
   },

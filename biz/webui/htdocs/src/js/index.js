@@ -1212,10 +1212,6 @@ var Index = React.createClass({
     var refresh = type === 'refresh';
     dataCenter.stopNetworkRecord(!refresh);
     if (refresh) {
-      var modal = this.state.network;
-      if (modal && modal.hasKeyword()) {
-        message.warn('The filter input at the bottom must be empty first.');
-      }
       return this.autoRefresh();
     }
   },

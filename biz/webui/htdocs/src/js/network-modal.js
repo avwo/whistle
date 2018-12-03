@@ -357,7 +357,7 @@ function updateList(list, len) {
 
 proto.update = function(scrollAtBottom, force) {
   updateOrder(this._list, force);
-  if (scrollAtBottom && !this.hasKeyword()) {
+  if (scrollAtBottom) {
     var exceed = Math.min(this._list.length - MAX_LENGTH, 100);
     updateList(this._list, exceed);
   }
