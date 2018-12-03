@@ -1,3 +1,6 @@
+# v1.13.6
+1. style: Log里面的 `AutoRefresh` 改为 `Record`
+
 # v1.13.5
 1. fix: 导入saz文件 `Set-Cookie` 等重名头部覆盖问题
 2. feat: 支持导入导出日志文件
