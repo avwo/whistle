@@ -7,6 +7,7 @@ var ExpandCollapse = require('./expand-collapse');
 var util = require('./util');
 var dataCenter = require('./data-center');
 var FilterInput = require('./filter-input');
+var RecordBtn = require('./record-btn');
 var events = require('./events');
 
 var MAX_FILE_SIZE = 1024 * 1024 * 2;
@@ -173,6 +174,9 @@ var ServerLog = React.createClass({
   hideNameInput: function() {
     this.setState({ showNameInput: false });
   },
+  handleAction: function() {
+
+  },
   render: function() {
     var state = this.state;
     var logs = state.logs || [];
@@ -183,12 +187,11 @@ var ServerLog = React.createClass({
       <div className={'fill orient-vertical-box w-textarea w-detail-svr-log' + (this.props.hide ? ' hide' : '')}>
         <div className="w-log-action-bar">
           <div className="w-textarea-bar">
+            <RecordBtn onClick={this.handleAction} />
             <a className="w-import" onClick={this.selectFile}
               href="javascript:;" draggable="false">Import</a>
             <a className={'w-download' + (disabled ? ' w-disabled' : '')} onDoubleClick={disabled ? undefined : this.download}
               onClick={disabled ? undefined : this.showNameInput} href="javascript:;" draggable="false">Export</a>
-            <a className={'w-auto-refresh' + (disabled ? ' w-disabled' : '')} onDoubleClick={disabled ? undefined : this.stopAutoRefresh}
-              onClick={disabled ? undefined : this.autoRefresh} href="javascript:;" draggable="false">AutoRefresh</a>
             <a className={'w-clear' + (disabled ? ' w-disabled' : '')} onClick={disabled ? undefined : this.clearLogs} href="javascript:;" draggable="false">Clear</a>
             <div onMouseDown={this.preventBlur}
               style={{display: this.state.showNameInput ? 'block' : 'none'}}

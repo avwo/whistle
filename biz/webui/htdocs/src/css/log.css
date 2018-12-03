@@ -64,3 +64,6 @@
   cursor: not-allowed;
   color: #888!important;
 }
+.w-textarea-bar .w-refresh-menu-list {
+  display: inline-block;
+}

@@ -207,6 +207,9 @@ var Console = React.createClass({
   hideNameInput: function() {
     this.setState({ showNameInput: false });
   },
+  handleAction: function() {
+
+  },
   onBeforeShow: function() {
     var list = dataCenter.getLogIdList() || [];
     list = list.map(function(id) {
@@ -237,12 +240,11 @@ var Console = React.createClass({
             options={logIdList}
           />
           <div className="w-textarea-bar">
+            <RecordBtn onClick={this.handleAction} />
             <a className="w-import" onClick={this.selectFile}
               href="javascript:;" draggable="false">Import</a>
             <a className={'w-download' + (disabled ? ' w-disabled' : '')} onDoubleClick={disabled ? undefined : this.download}
               onClick={disabled ? undefined : this.showNameInput} href="javascript:;" draggable="false">Export</a>
-            <a className={'w-auto-refresh' + (disabled ? ' w-disabled' : '')} onDoubleClick={disabled ? undefined : this.stopAutoRefresh}
-              onClick={disabled ? undefined : this.autoRefresh} href="javascript:;" draggable="false">AutoRefresh</a>
             <a className={'w-clear' + (disabled ? ' w-disabled' : '')} onClick={disabled ? undefined : this.clearLogs} href="javascript:;" draggable="false">Clear</a>
             <div onMouseDown={this.preventBlur}
               style={{display: this.state.showNameInput ? 'block' : 'none'}}

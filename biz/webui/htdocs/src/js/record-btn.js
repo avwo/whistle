@@ -1,5 +1,4 @@
 var React = require('react');
-var dataCenter = require('./data-center');
 var MenuItem = require('./menu-item');
 
 var ACTION_OPTIONS = [
@@ -20,10 +19,9 @@ var RecordBtn = React.createClass({
     return {};
   },
   onClick: function() {
-    var isStop = this.isStop();
-    dataCenter.stopRecord(!dataCenter.stopRefresh);
-    this.props.onClick(isStop ? 'refresh' : 'stop');
-    this.setState({});
+    var stop = !this.state.stop;
+    this.props.onClick(stop ? 'stop' : 'refresh');
+    this.setState({ stop: stop });
   },
   showActionOptions: function() {
     this.setState({
@@ -39,13 +37,9 @@ var RecordBtn = React.createClass({
     this.props.onClick(option.id);
     this.hideActionOptions();
   },
-  isStop: function() {
-    return dataCenter.stopRefresh || this.stopRefresh;
-  },
   render: function() {
     var state = this.state;
     var hide = this.props.hide;
-    var isStop = this.isStop();
 
     return (
       <div onMouseEnter={this.showActionOptions} onMouseLeave={this.hideActionOptions}
@@ -55,7 +49,7 @@ var RecordBtn = React.createClass({
       >
         <a onClick={this.onClick} href="javascript:;" draggable="false"
           className="w-scroll-menu">
-          <span style={{color: isStop ? '#ccc' : '#f66'}} className="glyphicon glyphicon-stop"></span>Record
+          <span style={{color: state.stop ? '#ccc' : '#f66'}} className="glyphicon glyphicon-stop"></span>Record
         </a>
         <MenuItem options={ACTION_OPTIONS} className="w-remove-menu-item" onClickOption={this.onClickOption} />
       </div>
