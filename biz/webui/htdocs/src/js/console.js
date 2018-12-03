@@ -10,6 +10,7 @@ var util = require('./util');
 var dataCenter = require('./data-center');
 var FilterInput = require('./filter-input');
 var DropDown = require('./dropdown');
+var RecordBtn = require('./record-btn');
 var events = require('./events');
 
 var MAX_FILE_SIZE = 1024 * 1024 * 2;

@@ -10,7 +10,7 @@ var Network = require('./network');
 var About = require('./about');
 var Online = require('./online');
 var MenuItem = require('./menu-item');
-var ActionBtn = require('./action-btn');
+var RecordBtn = require('./record-btn');
 var EditorSettings = require('./editor-settings');
 var NetworkSettings = require('./network-settings');
 var Plugins = require('./plugins');
@@ -2750,7 +2750,7 @@ var Index = React.createClass({
             <MenuItem options={ABORT_OPTIONS} className="w-remove-menu-item" onClickOption={this.abort} />
           </div>
           <a onClick={this.composer} className="w-composer-menu" style={{display: isNetwork ? '' : 'none'}} href="javascript:;" draggable="false"><span className="glyphicon glyphicon-edit"></span>Compose</a>
-          <ActionBtn hide={!isNetwork} onClick={this.handleAction} />
+          <RecordBtn hide={!isNetwork} onClick={this.handleAction} />
           <a onClick={this.onClickMenu} className={'w-delete-menu' + (disabledDeleteBtn ? ' w-disabled' : '')} style={{display: (isNetwork || isPlugins) ? 'none' : ''}} href="javascript:;" draggable="false"><span className="glyphicon glyphicon-trash"></span>Delete</a>
           <a onClick={this.showSettings} className={'w-settings-menu' + (hasFilterText ? ' w-menu-enable'  : '')} style={{display: (isPlugins) ? 'none' : ''}} href="javascript:;" draggable="false"><span className={'glyphicon glyphicon-' + (isNetwork ? 'filter' : 'cog')}></span>{isNetwork ? 'Filter' : 'Settings'}</a>
           <div onMouseEnter={this.showWeinreOptions} onMouseLeave={this.hideWeinreOptions} className={'w-menu-wrapper' + (showWeinreOptions ? ' w-menu-wrapper-show' : '')}>

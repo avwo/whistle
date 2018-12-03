@@ -15,7 +15,7 @@ var ACTION_OPTIONS = [
   }
 ];
 
-var ActionBtn = React.createClass({
+var RecordBtn = React.createClass({
   getInitialState: function() {
     return {};
   },
@@ -63,4 +63,4 @@ var ActionBtn = React.createClass({
   }
 });
 
-module.exports = ActionBtn;
+module.exports = RecordBtn;
