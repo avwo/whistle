@@ -472,8 +472,8 @@ function startLoadData() {
     }
     var count = inited ? 20 : networkModal.getDisplayCount();
     var options = {
-      startLogTime: startLogTime,
-      startSvrLogTime: startSvrLogTime,
+      startLogTime: exports.stopConsoleRefresh ? -3 : startLogTime,
+      startSvrLogTime: exports.stopServerLogRefresh ? -3 : startSvrLogTime,
       ids: pendingIds.join(),
       startTime: startTime,
       dumpCount: dumpCount,
@@ -522,6 +522,12 @@ function startLoadData() {
         logCallbacks.forEach(function (cb) {
           cb(logList, svrLogList);
         });
+      }
+      if (data.lastLogId) {
+        lastPageLogTime = data.lastLogId;
+      }
+      if (data.lastSvrLogId) {
+        lastSvrLogTime = data.lastSvrLogId;
       }
 
       data = data.data;
@@ -794,7 +800,15 @@ exports.on = function (type, callback) {
   }
 };
 
-exports.stopRecord = function(stop) {
+exports.stopNetworkRecord = function(stop) {
   networkModal.clearNetwork = !stop;
   exports.stopRefresh = stop;
+};
+
+exports.stopConsoleRecord = function(stop) {
+  exports.stopConsoleRefresh = stop;
+};
+
+exports.stopServerLogRecord = function(stop) {
+  exports.stopServerLogRefresh = stop;
 };

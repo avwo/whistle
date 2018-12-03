@@ -15,6 +15,8 @@ module.exports = function(req, res) {
     data.ids = null;
   }
   var clientIp = util.getClientIp(req);
+  var stopRecordConsole = data.startLogTime == -3;
+  var stopRecordSvrLog = data.startSvrLogTime == -3;
   res.json({
     ec: 0,
     version: config.version,
@@ -24,8 +26,10 @@ module.exports = function(req, res) {
     mvaluesClientId: config.mvaluesClientId,
     mvaluesTime: config.mvaluesTime,
     server: util.getServerInfo(req),
-    log: proxy.getLogs(data.startLogTime, data.count, data.logId),
-    svrLog: logger.getLogs(data.startSvrLogTime, data.count),
+    lastLogId: stopRecordConsole ? proxy.getLatestId() : undefined,
+    lastSvrLogId: stopRecordSvrLog ? logger.getLatestId() : undefined,
+    log: stopRecordConsole ? [] : proxy.getLogs(data.startLogTime, data.count, data.logId),
+    svrLog: stopRecordSvrLog ? [] : logger.getLogs(data.startSvrLogTime, data.count),
     plugins: pluginMgr.getPlugins(),
     disabledPlugins: properties.get('disabledPlugins') || {},
     disabledPluginsRules: properties.get('disabledPluginsRules') || {},

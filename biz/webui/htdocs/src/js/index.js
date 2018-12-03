@@ -1210,7 +1210,7 @@ var Index = React.createClass({
       return this.autoRefresh();
     }
     var refresh = type === 'refresh';
-    dataCenter.stopRecord(!refresh);
+    dataCenter.stopNetworkRecord(!refresh);
     if (refresh) {
       var modal = this.state.network;
       if (modal && modal.hasKeyword()) {

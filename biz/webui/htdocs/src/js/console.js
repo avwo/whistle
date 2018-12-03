@@ -215,11 +215,13 @@ var Console = React.createClass({
     if (type === 'bottom') {
       return this.autoRefresh();
     }
-    if (type === 'refresh') {
-      var modal = this.state.network;
-      if (modal && modal.hasKeyword()) {
-        message.warn('The filter input at the bottom must be empty first.');
-      }
+    var refresh = type === 'refresh';
+    dataCenter.stopConsoleRecord(!refresh);
+    if (refresh) {
+      // var modal = this.state.network;
+      // if (modal && modal.hasKeyword()) {
+      //   message.warn('The filter input at the bottom must be empty first.');
+      // }
       return this.autoRefresh();
     }
   },
