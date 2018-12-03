@@ -35,9 +35,7 @@ var ServerLog = React.createClass({
       var atBottom = util.scrollAtBottom(svrContainer, svrContent);
       if (atBottom) {
         var len = svrLogs.length - 60;
-        if (len > 9) {
-          svrLogs.splice(0, len);
-        }
+        len > 9 && util.trimLogList(svrLogs, len);
       }
       self.setState({});
     };
@@ -54,9 +52,7 @@ var ServerLog = React.createClass({
       if (curLogs) {
         curLogs.push.apply(curLogs, logs);
         var overflow = curLogs.length - 100;
-        if (overflow > 0) {
-          curLogs.splice(0, overflow);
-        }
+        overflow > 0 && util.trimLogList(curLogs, overflow);
       } else {
         curLogs = logs;
       }
@@ -72,7 +68,7 @@ var ServerLog = React.createClass({
         svrTimeout = setTimeout(function() {
           var len = data.length - 60;
           if (len > 9) {
-            data.splice(0, len);
+            util.trimLogList(data, len);
             self.setState({});
           }
         }, 2000);

@@ -746,6 +746,21 @@ exports.hasVisibleLog = function(list) {
     }
   }
 };
+exports.trimLogList = function(list, overflow) {
+  var len = list.length;
+  var i = 0;
+  while(overflow > 0 && i < len) {
+    if (list[i].hide) {
+      --len;
+      --overflow;
+      list.splice(i, 1);
+    } else {
+      ++i;
+    }
+  }
+  overflow > 0 && list.splice(0, overflow);
+  return list;
+};
 exports.filterLogList = function(list, keyword) {
   if (!list) {
     return;

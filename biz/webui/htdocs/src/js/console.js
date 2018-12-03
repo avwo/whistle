@@ -65,9 +65,7 @@ var Console = React.createClass({
       var atBottom = util.scrollAtBottom(container, content);
       if (atBottom) {
         var len = logs.length - 100;
-        if (len > 9) {
-          logs.splice(0, len);
-        }
+        len > 9 && util.trimLogList(logs, len);
       }
       self.setState({});
     };
@@ -85,9 +83,7 @@ var Console = React.createClass({
       if (curLogs) {
         curLogs.push.apply(curLogs, logs);
         var overflow = curLogs.length - 100;
-        if (overflow > 0) {
-          curLogs.splice(0, overflow);
-        }
+        overflow > 0 && util.trimLogList(curLogs, overflow);
       } else {
         curLogs = logs;
       }
@@ -102,7 +98,7 @@ var Console = React.createClass({
         timeout = setTimeout(function() {
           var len = data.length - 80;
           if (len > 9) {
-            data.splice(0, len);
+            util.trimLogList(data, len);
             self.setState({logs: data});
           }
         }, 2000);
