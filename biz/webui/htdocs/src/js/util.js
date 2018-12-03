@@ -714,7 +714,7 @@ exports.parseKeyword = function parseKeyword(keyword) {
   return result;
 };
 
-exports.checkLogText = function(text, keyword) {
+function checkLogText(text, keyword) {
   if (!keyword.key1) {
     return '';
   }
@@ -729,7 +729,43 @@ exports.checkLogText = function(text, keyword) {
     return ' hide';
   }
   return '';
+}
+
+function showLog(item) {
+  item.hide = false;
+}
+
+exports.hasVisibleLog = function(list) {
+  var len = list.length;
+  if (!len) {
+    return false;
+  }
+  for (var i = 0; i < len; i++) {
+    if (!list[i].hide) {
+      return true;
+    }
+  }
 };
+exports.filterLogList = function(list, keyword) {
+  if (!list) {
+    return;
+  }
+  if (!keyword) {
+    list.forEach(showLog);
+    return;
+  }
+  list.forEach(function(log) {
+    var level = keyword.level;
+    if (level && log.level !== level) {
+      log.hide = true;
+    } else {
+      var text = 'Date: ' + (new Date(log.date)).toLocaleString() + log.logId + '\r\n' + log.text;
+      log.hide = checkLogText(text, keyword);
+    }
+  });
+};
+
+exports.checkLogText = checkLogText;
 
 exports.scrollAtBottom = function(con, ctn) {
   return con.scrollTop + con.offsetHeight + 5 > ctn.offsetHeight;

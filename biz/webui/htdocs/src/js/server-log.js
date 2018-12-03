@@ -22,11 +22,13 @@ var ServerLog = React.createClass({
     var svrContent = this.content = ReactDOM.findDOMNode(self.refs.svrContent);
 
     var updateLogs = function(_, svrLogs) {
-      var curLogs = self.state.logs;
+      var state = self.state;
+      var curLogs = state.logs;
       if (curLogs !== svrLogs && Array.isArray(curLogs)) {
         svrLogs.push.apply(svrLogs, curLogs);
       }
-      self.state.logs = svrLogs;
+      state.logs = svrLogs;
+      util.filterLogList(state.logs, state.serverKeyword);
       if (self.props.hide) {
         return;
       }
@@ -110,8 +112,10 @@ var ServerLog = React.createClass({
     }
   },
   onServerFilterChange: function(keyword) {
+    var serverKeyword = util.parseKeyword(keyword);
+    util.filterLogList(this.state.logs, serverKeyword);
     this.setState({
-      serverKeyword: util.parseKeyword(keyword)
+      serverKeyword: serverKeyword
     });
   },
   showNameInput: function(e) {
@@ -125,13 +129,16 @@ var ServerLog = React.createClass({
   download: function() {
     var target = ReactDOM.findDOMNode(this.refs.nameInput);
     var name = target.value.trim();
-    var logs = this.state.logs.map(function(log) {
-      return {
-        id: log.id,
-        text: log.text,
-        level: log.level,
-        date: log.date
-      };
+    var logs = [];
+    this.state.logs.forEach(function(log) {
+      if (!log.hide) {
+        logs.push({
+          id: log.id,
+          text: log.text,
+          level: log.level,
+          date: log.date
+        });
+      }
     });
     target.value = '';
     ReactDOM.findDOMNode(this.refs.filename).value = name;
@@ -190,8 +197,7 @@ var ServerLog = React.createClass({
   render: function() {
     var state = this.state;
     var logs = state.logs || [];
-    var serverKeyword = state.serverKeyword;
-    var disabled = !logs.length;
+    var disabled = !util.hasVisibleLog(logs);
 
     return (
       <div className={'fill orient-vertical-box w-textarea w-detail-svr-log' + (this.props.hide ? ' hide' : '')}>
@@ -229,15 +235,7 @@ var ServerLog = React.createClass({
           <ul ref="svrContent">
             {logs.map(function(log) {
               var text = 'Date: ' + (new Date(log.date)).toLocaleString() + '\r\n' + log.text;
-              var hide = '';
-              if (serverKeyword) {
-                var level = serverKeyword.level;
-                if (level && log.level !== level) {
-                  hide = ' hide';
-                } else {
-                  hide = util.checkLogText(text, serverKeyword);
-                }
-              }
+              var hide = log.hide ? ' hide' : '';
               return (
                 <li key={log.id} title={log.level.toUpperCase()} className={'w-' + log.level + hide}>
                   <pre>

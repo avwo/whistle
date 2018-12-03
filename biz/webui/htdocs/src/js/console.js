@@ -52,11 +52,13 @@ var Console = React.createClass({
     var container = this.container = ReactDOM.findDOMNode(self.refs.container);
     var content = this.content = ReactDOM.findDOMNode(self.refs.logContent);
     var updateLogs = function(logs) {
-      var curLogs = self.state.logs;
+      var state = self.state;
+      var curLogs = state.logs;
       if (curLogs !== logs && Array.isArray(curLogs)) {
         logs.push.apply(logs, curLogs);
       }
-      self.state.logs = logs;
+      state.logs = logs;
+      util.filterLogList(state.logs, state.consoleKeyword);
       if (self.props.hide) {
         return;
       }
@@ -166,8 +168,10 @@ var Console = React.createClass({
     }
   },
   onConsoleFilterChange: function(keyword) {
+    var consoleKeyword = util.parseKeyword(keyword);
+    util.filterLogList(this.state.logs, consoleKeyword);
     this.setState({
-      consoleKeyword: util.parseKeyword(keyword)
+      consoleKeyword: consoleKeyword
     });
   },
   showNameInput: function(e) {
@@ -181,13 +185,16 @@ var Console = React.createClass({
   download: function() {
     var target = ReactDOM.findDOMNode(this.refs.nameInput);
     var name = target.value.trim();
-    var logs = this.state.logs.map(function(log) {
-      return {
-        id: log.id,
-        text: log.text,
-        level: log.level,
-        date: log.date
-      };
+    var logs = [];
+    this.state.logs.forEach(function(log) {
+      if (!log.hide) {
+        logs.push({
+          id: log.id,
+          text: log.text,
+          level: log.level,
+          date: log.date
+        });
+      }
     });
     target.value = '';
     ReactDOM.findDOMNode(this.refs.filename).value = name;
@@ -236,9 +243,8 @@ var Console = React.createClass({
   render: function() {
     var state = this.state;
     var logs = state.logs || [];
-    var consoleKeyword = state.consoleKeyword;
     var logIdList = state.logIdList;
-    var disabled = !logs.length;
+    var disabled = !util.hasVisibleLog(logs);
 
     return (
       <div className={'fill orient-vertical-box w-textarea w-detail-page-log' + (this.props.hide ? ' hide' : '')}>
@@ -284,15 +290,7 @@ var Console = React.createClass({
               var logId = log.logId;
               logId = logId ? ' (LogID: ' + logId + ')' : '';
               var date = 'Date: ' + (new Date(log.date)).toLocaleString() + logId + '\r\n';
-              var hide = '';
-              if (consoleKeyword) {
-                var level = consoleKeyword.level;
-                if (level && log.level !== level) {
-                  hide = ' hide';
-                } else {
-                  hide = util.checkLogText(date + log.text, consoleKeyword);
-                }
-              }
+              var hide = log.hide ? ' hide' : '';
               return (
                 <li key={log.id} title={log.level.toUpperCase()} className={'w-' + log.level + hide}>
                   <pre>
