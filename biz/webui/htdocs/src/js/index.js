@@ -1216,8 +1216,7 @@ var Index = React.createClass({
       if (modal && modal.hasKeyword()) {
         message.warn('The filter input at the bottom must be empty first.');
       }
-      this.autoRefresh && this.autoRefresh();
-      return;
+      return this.autoRefresh();
     }
   },
   showNetwork: function(e) {
