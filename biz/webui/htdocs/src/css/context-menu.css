@@ -82,3 +82,11 @@
   left: 100%;
   top: 0;
 }
+
+.w-ctx-menu-left .w-ctx-menu-item  .w-ctx-menu-list {
+  left: -107%;
+}
+
+.w-ctx-menu-left .w-ctx-menu-list .w-ctx-menu-gap {
+  left: -3px;
+}

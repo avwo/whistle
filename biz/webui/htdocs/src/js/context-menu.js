@@ -54,7 +54,7 @@ var ContextMenu = React.createClass({
     return (
         <div
           onClick={this.onClick}
-          className="w-context-menu"
+          className={'w-context-menu ' + (data.className || '')}
           onContextMenu={this.preventDefault}
           style={{left: data.left, top: data.top, display: data.visible ? '' : 'none'}}
         >

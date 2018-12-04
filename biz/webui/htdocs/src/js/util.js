@@ -638,13 +638,14 @@ exports.getMenuPosition = function(e, menuWidth, menuHeight) {
   var left = e.pageX;
   var top = e.pageY;
   var docElem = document.documentElement;
-  if (left + menuWidth - window.scrollX >= docElem.clientWidth) {
+  var clientWidth = docElem.clientWidth;
+  if (left + menuWidth - window.scrollX >= clientWidth) {
     left = Math.max(left - menuWidth, window.scrollX + 1);
   }
   if (top + menuHeight - window.scrollY >= docElem.clientHeight) {
     top = Math.max(top - menuHeight, window.scrollY + 1);
   }
-  return { top: top, left: left };
+  return { top: top, left: left, marginRight: clientWidth - left };
 };
 
 exports.canReplay = function(item) {

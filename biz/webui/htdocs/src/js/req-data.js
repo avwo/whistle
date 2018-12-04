@@ -451,6 +451,7 @@ var ReqData = React.createClass({
     contextMenuList[9].disabled = uploadItem.disabled = disabled && !selectedCount;
     var data = util.getMenuPosition(e, 110, uploadItem.hide ? 310 : 340);
     data.list = contextMenuList;
+    data.className = data.marginRight < 230 ? 'w-ctx-menu-left' : '';
     this.refs.contextMenu.show(data);
   },
   onFilterChange: function(keyword) {
