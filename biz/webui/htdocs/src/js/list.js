@@ -117,9 +117,6 @@ var List = React.createClass({
         if (e.keyCode === 83) {
           modal.getChangedList().forEach(trigger);
           return false;
-        } else if (self.props.name == 'rules' && e.keyCode == 70 && e.shiftKey) {
-          self.formatJson(modal.getActive());
-          return false;
         }
       }
     });
