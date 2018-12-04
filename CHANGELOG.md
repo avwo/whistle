@@ -1,6 +1,7 @@
 # v1.13.6
 1. style: Log里面的 `AutoRefresh` 改为 `Record`
 2. refactor: 不导出被过滤掉的日志
+3. refactor: `reqCors://*` 等价于 `reqCors://origin=*`
 
 # v1.13.5
 1. fix: 导入saz文件 `Set-Cookie` 等重名头部覆盖问题
