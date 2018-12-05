@@ -361,7 +361,6 @@ function updateList(list, len) {
         ++i;
       }
     }
-    len = list.length - MAX_COUNT;
   }
   len > 0 && list.splice(0, len);
   if (activeItem && list.indexOf(activeItem) === -1) {

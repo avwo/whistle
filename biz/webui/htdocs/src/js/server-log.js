@@ -110,9 +110,11 @@ var ServerLog = React.createClass({
   },
   onServerFilterChange: function(keyword) {
     keyword = keyword.trim();
-    util.filterLogList(this.state.logs, keyword);
+    this.keyword = keyword;
+    var serverKeyword = util.parseKeyword(keyword);
+    util.filterLogList(this.state.logs, serverKeyword);
     this.setState({
-      serverKeyword: util.parseKeyword(keyword)
+      serverKeyword: serverKeyword
     });
   },
   showNameInput: function(e) {
