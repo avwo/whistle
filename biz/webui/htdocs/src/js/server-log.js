@@ -10,6 +10,7 @@ var FilterInput = require('./filter-input');
 var RecordBtn = require('./record-btn');
 var events = require('./events');
 
+var MAX_COUNT = 60;
 var MAX_FILE_SIZE = 1024 * 1024 * 2;
 
 var ServerLog = React.createClass({
@@ -34,7 +35,7 @@ var ServerLog = React.createClass({
       }
       var atBottom = util.scrollAtBottom(svrContainer, svrContent);
       if (atBottom) {
-        var len = svrLogs.length - 60;
+        var len = svrLogs.length - MAX_COUNT;
         len > 9 && util.trimLogList(svrLogs, len);
       }
       self.setState({});
@@ -51,8 +52,8 @@ var ServerLog = React.createClass({
       var curLogs = self.state.logs;
       if (curLogs) {
         curLogs.push.apply(curLogs, logs);
-        var overflow = curLogs.length - 100;
-        overflow > 0 && util.trimLogList(curLogs, overflow);
+        var overflow = curLogs.length - MAX_COUNT;
+        overflow > 19 && util.trimLogList(curLogs, overflow);
       } else {
         curLogs = logs;
       }
@@ -66,7 +67,7 @@ var ServerLog = React.createClass({
       svrTimeout && clearTimeout(svrTimeout);
       if (data && (self.state.scrollToBottom = util.scrollAtBottom(svrContainer, svrContent))) {
         svrTimeout = setTimeout(function() {
-          var len = data.length - 60;
+          var len = data.length - MAX_COUNT;
           if (len > 9) {
             util.trimLogList(data, len);
             self.setState({});

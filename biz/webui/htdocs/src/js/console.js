@@ -13,6 +13,7 @@ var DropDown = require('./dropdown');
 var RecordBtn = require('./record-btn');
 var events = require('./events');
 
+var MAX_COUNT = 90;
 var MAX_FILE_SIZE = 1024 * 1024 * 2;
 
 var allLogs = {
@@ -64,7 +65,7 @@ var Console = React.createClass({
       }
       var atBottom = util.scrollAtBottom(container, content);
       if (atBottom) {
-        var len = logs.length - 100;
+        var len = logs.length - MAX_COUNT;
         len > 9 && util.trimLogList(logs, len);
       }
       self.setState({});
@@ -82,8 +83,8 @@ var Console = React.createClass({
       var curLogs = self.state.logs;
       if (curLogs) {
         curLogs.push.apply(curLogs, logs);
-        var overflow = curLogs.length - 100;
-        overflow > 0 && util.trimLogList(curLogs, overflow);
+        var overflow = curLogs.length - MAX_COUNT;
+        overflow > 19 && util.trimLogList(curLogs, overflow);
       } else {
         curLogs = logs;
       }
@@ -96,7 +97,7 @@ var Console = React.createClass({
       timeout && clearTimeout(timeout);
       if (data && (self.state.scrollToBottom = util.scrollAtBottom(container, content))) {
         timeout = setTimeout(function() {
-          var len = data.length - 80;
+          var len = data.length - MAX_COUNT;
           if (len > 9) {
             util.trimLogList(data, len);
             self.setState({logs: data});
