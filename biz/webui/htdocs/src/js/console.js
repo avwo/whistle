@@ -59,14 +59,14 @@ var Console = React.createClass({
         logs.push.apply(logs, curLogs);
       }
       state.logs = logs;
-      util.filterLogList(state.logs, state.consoleKeyword);
+      util.filterLogList(state.logs, self.keyword);
       if (self.props.hide) {
         return;
       }
       var atBottom = util.scrollAtBottom(container, content);
       if (atBottom) {
         var len = logs.length - MAX_COUNT;
-        len > 9 && util.trimLogList(logs, len);
+        len > 9 && util.trimLogList(logs, len, self.keyword);
       }
       self.setState({});
     };
@@ -84,7 +84,7 @@ var Console = React.createClass({
       if (curLogs) {
         curLogs.push.apply(curLogs, logs);
         var overflow = curLogs.length - MAX_COUNT;
-        overflow > 19 && util.trimLogList(curLogs, overflow);
+        overflow > 19 && util.trimLogList(curLogs, overflow, self.keyword);
       } else {
         curLogs = logs;
       }
@@ -99,7 +99,7 @@ var Console = React.createClass({
         timeout = setTimeout(function() {
           var len = data.length - MAX_COUNT;
           if (len > 9) {
-            util.trimLogList(data, len);
+            util.trimLogList(data, len, self.keyword);
             self.setState({logs: data});
           }
         }, 2000);
@@ -165,10 +165,11 @@ var Console = React.createClass({
     }
   },
   onConsoleFilterChange: function(keyword) {
-    var consoleKeyword = util.parseKeyword(keyword);
-    util.filterLogList(this.state.logs, consoleKeyword);
+    keyword = keyword.trim();
+    this.keyword = keyword;
+    util.filterLogList(this.state.logs, keyword);
     this.setState({
-      consoleKeyword: consoleKeyword
+      consoleKeyword: util.parseKeyword(keyword)
     });
   },
   showNameInput: function(e) {

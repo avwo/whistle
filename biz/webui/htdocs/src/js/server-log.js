@@ -29,14 +29,14 @@ var ServerLog = React.createClass({
         svrLogs.push.apply(svrLogs, curLogs);
       }
       state.logs = svrLogs;
-      util.filterLogList(state.logs, state.serverKeyword);
+      util.filterLogList(state.logs, self.keyword);
       if (self.props.hide) {
         return;
       }
       var atBottom = util.scrollAtBottom(svrContainer, svrContent);
       if (atBottom) {
         var len = svrLogs.length - MAX_COUNT;
-        len > 9 && util.trimLogList(svrLogs, len);
+        len > 9 && util.trimLogList(svrLogs, len, self.keyword);
       }
       self.setState({});
     };
@@ -53,7 +53,7 @@ var ServerLog = React.createClass({
       if (curLogs) {
         curLogs.push.apply(curLogs, logs);
         var overflow = curLogs.length - MAX_COUNT;
-        overflow > 19 && util.trimLogList(curLogs, overflow);
+        overflow > 19 && util.trimLogList(curLogs, overflow, self.keyword);
       } else {
         curLogs = logs;
       }
@@ -69,7 +69,7 @@ var ServerLog = React.createClass({
         svrTimeout = setTimeout(function() {
           var len = data.length - MAX_COUNT;
           if (len > 9) {
-            util.trimLogList(data, len);
+            util.trimLogList(data, len, self.keyword);
             self.setState({});
           }
         }, 2000);
@@ -109,10 +109,10 @@ var ServerLog = React.createClass({
     }
   },
   onServerFilterChange: function(keyword) {
-    var serverKeyword = util.parseKeyword(keyword);
-    util.filterLogList(this.state.logs, serverKeyword);
+    keyword = keyword.trim();
+    util.filterLogList(this.state.logs, keyword);
     this.setState({
-      serverKeyword: serverKeyword
+      serverKeyword: util.parseKeyword(keyword)
     });
   },
   showNameInput: function(e) {

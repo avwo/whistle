@@ -699,8 +699,8 @@ exports.getTimeFromHar = function(time) {
   return time > 0 ? time : 0;
 };
 
-exports.parseKeyword = function parseKeyword(keyword) {
-  keyword = keyword.trim().toLowerCase().split(/\s+/g);
+exports.parseKeyword = function(keyword) {
+  keyword = keyword.toLowerCase().split(/\s+/g);
   var result = {};
   var index = 0;
   for (var i = 0; i <= 3; i++) {
@@ -747,17 +747,20 @@ exports.hasVisibleLog = function(list) {
     }
   }
 };
-exports.trimLogList = function(list, overflow) {
+exports.trimLogList = function(list, overflow, hasKeyword) {
   var len = list.length;
-  var i = 0;
-  while(overflow > 0 && i < len) {
-    if (list[i].hide) {
-      --len;
-      --overflow;
-      list.splice(i, 1);
-    } else {
-      ++i;
+  if (hasKeyword) {
+    var i = 0;
+    while(overflow > 0 && i < len) {
+      if (list[i].hide) {
+        --len;
+        --overflow;
+        list.splice(i, 1);
+      } else {
+        ++i;
+      }
     }
+    overflow = list.length - 100;
   }
   overflow > 0 && list.splice(0, overflow);
   return list;
