@@ -348,12 +348,12 @@ proto.next = function() {
 
 
 
-function updateList(list, len) {
+function updateList(list, len, keyword) {
   if (!(len > 0)) {
     return;
   }
   var activeItem = getActive(list);
-  if (this._keyword) {
+  if (keyword) {
     var i = 0;
     var length = list.length;
     while(len > 0 && i < length) {
@@ -377,7 +377,7 @@ proto.update = function(scrollAtBottom, force) {
   updateOrder(this._list, force);
   if (scrollAtBottom) {
     var exceed = Math.min(this._list.length - MAX_LENGTH, 100);
-    updateList(this._list, exceed);
+    updateList(this._list, exceed, this._keyword);
   }
 
   this.list = this._list.slice(0, MAX_LENGTH);
