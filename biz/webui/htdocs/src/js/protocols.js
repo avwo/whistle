@@ -23,6 +23,7 @@ allInnerRules.splice(allInnerRules.indexOf('plugin'), 1);
 var allRules = allInnerRules = allInnerRules.map(function (name) {
   return name + '://';
 });
+allRules.splice(allRules.indexOf('filter://'), 1, 'includeFilter://', 'excludeFilter://');
 var plugins = {};
 
 exports.setPlugins = function (pluginsState) {

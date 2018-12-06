@@ -65,7 +65,7 @@ CodeMirror.defineMode('rules', function() {
   }
 
   function isFilter(str) {
-    return /^filter:\/\//.test(str);
+    return /^(?:excludeFilter|filter):\/\//.test(str);
   }
 
   function isPlugin(str) {
@@ -85,7 +85,7 @@ CodeMirror.defineMode('rules', function() {
   }
 
   function isEnable(str) {
-    return /^enable:\/\//.test(str);
+    return /^(?:includeFilter|enable):\/\//.test(str);
   }
 
   function isDelete(str) {
