@@ -6,7 +6,7 @@ var WIN_NAME_PRE = '__whistle_' + location.href.replace(/\/[^/]*([#?].*)?$/, '/'
 
 function NetworkModal(list) {
   this._list = updateOrder(list);
-  this.list =list.slice(0, MAX_LENGTH);
+  this.list = list.slice(0, MAX_LENGTH);
 }
 
 NetworkModal.MAX_COUNT = MAX_COUNT;
@@ -36,7 +36,7 @@ proto.search = function(keyword) {
   this._keyword = this._keyword.toLowerCase();
   this.filter();
   if (!this._keyword) {
-    var overflow = this._list.length - MAX_COUNT + 1;
+    var overflow = this._list.length - MAX_COUNT;
     overflow > 0 && this._list.splice(0, overflow);
   }
   return keyword;
@@ -365,7 +365,7 @@ function updateList(list, len, keyword) {
         ++i;
       }
     }
-    len = list.length - MAX_COUNT;
+    len = list.length - MAX_COUNT - 2;
   }
   len > 0 && list.splice(0, len);
   if (activeItem && list.indexOf(activeItem) === -1) {
