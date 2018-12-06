@@ -114,7 +114,7 @@ var Settings = React.createClass({
           <fieldset className="network-settings-filter">
             <legend>
               <label>
-                <input checked={!state.disabledFilterText} data-name="filter" type="checkbox" />Filter
+                <input checked={!state.disabledFilterText} data-name="filter" type="checkbox" />Include Filter
               </label>
               <a className="w-help-menu"
                 title="Click here to learn how to use the filter"
@@ -125,7 +125,23 @@ var Settings = React.createClass({
             <textarea disabled={state.disabledFilterText}
               onKeyDown={this.onFilterKeyDown}
               value={state.filterText} data-name="filterText"
-              placeholder="type filter text" maxLength={300} />
+              placeholder="type filter text" maxLength="3072" />
+          </fieldset>
+          <fieldset className="network-settings-filter">
+            <legend>
+              <label>
+                <input checked={!state.disabledFilterText} data-name="filter" type="checkbox" />Exclude Filter
+              </label>
+              <a className="w-help-menu"
+                title="Click here to learn how to use the filter"
+                href="https://avwo.github.io/whistle/webui/settings.html" target="_blank">
+                <span className="glyphicon glyphicon-question-sign"></span>
+              </a>
+            </legend>
+            <textarea disabled={state.disabledFilterText}
+              onKeyDown={this.onFilterKeyDown}
+              value={state.filterText} data-name="filterText"
+              placeholder="type filter text" maxLength="3072" />
           </fieldset>
           <fieldset className="network-settings-columns">
             <legend>
