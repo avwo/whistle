@@ -14,7 +14,7 @@
 .network-settings-columns .btn { margin-right: 0; line-height: 20px; text-align: center; color: #666; width: 72px;}
 .network-settings-columns legend label { margin-left: 0; }
 .w-network-settings-dialog .modal-dialog {width: 600px;}
-.w-network-settings-dialog input[type=checkbox] { margin-right: 5px; }
+.w-network-settings-dialog input[type=checkbox] { margin-right: 5px; vertical-align: sub; }
 .w-network-settings-dialog textarea { width: 578px; height: 90px; border: 1px solid #ddd; overflow: auto; margin: 0; padding: 5px 10px; }
 .w-network-settings-dialog .w-help-menu, .w-https-dialog .w-help-menu { color: #000; font-size: 14px; }
 .w-network-settings-dialog .w-help-menu:hover, .w-https-dialog .w-help-menu:hover { color: #337ab7 }
