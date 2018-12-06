@@ -35,6 +35,10 @@ proto.search = function(keyword) {
   this._keywordRE = util.toRegExp(this._keyword);
   this._keyword = this._keyword.toLowerCase();
   this.filter();
+  if (!this._keyword) {
+    var overflow = this._list.length - MAX_COUNT + 1;
+    overflow > 0 && this._list.splice(0, overflow);
+  }
   return keyword;
 };
 
@@ -361,6 +365,7 @@ function updateList(list, len) {
         ++i;
       }
     }
+    len = list.length - MAX_COUNT;
   }
   len > 0 && list.splice(0, len);
   if (activeItem && list.indexOf(activeItem) === -1) {

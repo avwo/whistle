@@ -167,9 +167,15 @@ var Console = React.createClass({
   onConsoleFilterChange: function(keyword) {
     keyword = keyword.trim();
     this.keyword = keyword;
-    util.filterLogList(this.state.logs, keyword);
+    var logs = this.state.logs;
+    var consoleKeyword = util.parseKeyword(keyword);
+    util.filterLogList(logs, consoleKeyword);
+    if (!keyword) {
+      var len = logs && (logs.length - MAX_COUNT);
+      len > 9 && logs.splice(0, len);
+    }
     this.setState({
-      consoleKeyword: util.parseKeyword(keyword)
+      consoleKeyword: consoleKeyword
     });
   },
   showNameInput: function(e) {

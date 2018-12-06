@@ -112,7 +112,12 @@ var ServerLog = React.createClass({
     keyword = keyword.trim();
     this.keyword = keyword;
     var serverKeyword = util.parseKeyword(keyword);
-    util.filterLogList(this.state.logs, serverKeyword);
+    var logs = this.state.logs;
+    util.filterLogList(logs, serverKeyword);
+    if (!keyword) {
+      var len = logs && (logs.length - MAX_COUNT);
+      len > 9 && logs.splice(0, len);
+    }
     this.setState({
       serverKeyword: serverKeyword
     });

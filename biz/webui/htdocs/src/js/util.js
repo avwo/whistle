@@ -760,6 +760,7 @@ exports.trimLogList = function(list, overflow, hasKeyword) {
         ++i;
       }
     }
+    overflow = list.length - 100;
   }
   overflow > 0 && list.splice(0, overflow);
   return list;
