@@ -21,6 +21,7 @@ var events = require('./events');
 var storage = require('./storage');
 var Dialog = require('./dialog');
 var ListDialog = require('./list-dialog');
+var FilterBtn = require('./filter-btn');
 var message = require('./message');
 
 var JSON_RE = /^\s*(?:[\{｛][\w\W]+[\}｝]|\[[\w\W]+\])\s*$/;
@@ -467,19 +468,6 @@ var Index = React.createClass({
     });
     return pluginsOptions;
   },
-  setFilterTextState: function(changed) {
-    if (this.state.name === 'network') {
-      if (!changed) {
-        var hasFilterText = dataCenter.hasFilterText();
-        changed = hasFilterText !== this.state.hasFilterText;
-      }
-      if (changed) {
-        this.setState({
-          hasFilterText: hasFilterText
-        });
-      }
-    }
-  },
   reloadRules: function(data) {
     var self = this;
     var selectedName = storage.get('activeRules', true) || data.current;
@@ -602,8 +590,7 @@ var Index = React.createClass({
     events.on('disableAllPlugins', function(e) {
       self.disableAllPlugins(e);
     });
-    this.setFilterTextState();
-    setInterval(this.setFilterTextState, 5000);
+
     $(document)
       .on( 'dragleave', preventDefault)
       .on( 'dragenter', preventDefault)
@@ -2584,11 +2571,6 @@ var Index = React.createClass({
     var showPluginsOptions = state.showPluginsOptions;
     var showWeinreOptions = state.showWeinreOptions;
     var showHelpOptions = state.showHelpOptions;
-    var hasFilterText;
-
-    if (isNetwork) {
-      hasFilterText = dataCenter.isOnlyViewOwnData() || state.hasFilterText;
-    }
 
     if (rulesOptions[0].name === DEFAULT) {
       rulesOptions.forEach(function(item, i) {
@@ -2749,7 +2731,7 @@ var Index = React.createClass({
           <a onClick={this.composer} className="w-composer-menu" style={{display: isNetwork ? '' : 'none'}} href="javascript:;" draggable="false"><span className="glyphicon glyphicon-edit"></span>Compose</a>
           <RecordBtn hide={!isNetwork} onClick={this.handleAction} />
           <a onClick={this.onClickMenu} className={'w-delete-menu' + (disabledDeleteBtn ? ' w-disabled' : '')} style={{display: (isNetwork || isPlugins) ? 'none' : ''}} href="javascript:;" draggable="false"><span className="glyphicon glyphicon-trash"></span>Delete</a>
-          <a onClick={this.showSettings} className={'w-settings-menu' + (hasFilterText ? ' w-menu-enable'  : '')} style={{display: (isPlugins) ? 'none' : ''}} href="javascript:;" draggable="false"><span className={'glyphicon glyphicon-' + (isNetwork ? 'filter' : 'cog')}></span>{isNetwork ? 'Filter' : 'Settings'}</a>
+          <FilterBtn onClick={this.showSettings} isNetwork={isNetwork} hide={isPlugins} />
           <div onMouseEnter={this.showWeinreOptions} onMouseLeave={this.hideWeinreOptions} className={'w-menu-wrapper' + (showWeinreOptions ? ' w-menu-wrapper-show' : '')}>
             <a onClick={this.showWeinreOptionsQuick}
               onDoubleClick={this.showAnonymousWeinre}
@@ -2851,7 +2833,7 @@ var Index = React.createClass({
               </div>
             </div>
         </div>
-        <NetworkSettings ref="networkSettings" onFilterTextChanged={this.setFilterTextState} />
+        <NetworkSettings ref="networkSettings" />
         <div ref="rootCADialog" className="modal fade w-https-dialog">
         <div className="modal-dialog">
             <div className="modal-content">

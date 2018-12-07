@@ -37,7 +37,7 @@ var Settings = React.createClass({
     if (name === 'viewOwn') {
       dataCenter.setOnlyViewOwnData(target.checked);
       this.setState({});
-      this.props.onFilterTextChanged(true);
+      events.trigger('filterChanged');
       return;
     }
     var settings = this.state;
@@ -76,33 +76,16 @@ var Settings = React.createClass({
     }
     if (filterTextChanged) {
       dataCenter.setFilterText(settings);
-      if (filterStateChanged && typeof this.props.onFilterTextChanged === 'function') {
-        this.props.onFilterTextChanged();
-      }
+      filterStateChanged && events.trigger('filterChanged');
     } else if (columnsChanged) {
       events.trigger('onColumnsChanged');
     }
     this.setState(settings);
   },
   onFilterKeyDown: function(e) {
-    if ((e.ctrlKey || e.metaKey)) {
-      if (e.keyCode == 68) {
-        var settings = this.state;
-        if (settings.filterText) {
-          settings.filterText = '';
-          dataCenter.setFilterText(settings);
-          if (typeof this.props.onFilterTextChanged === 'function') {
-            this.props.onFilterTextChanged();
-          }
-        }
-        this.setState({ filterText: '' });
-        e.preventDefault();
-        e.stopPropagation();
-      } else if (e.keyCode == 88) {
-        e.stopPropagation();
-      }
+    if ((e.ctrlKey || e.metaKey) && e.keyCode == 88) {
+      e.stopPropagation();
     }
-
   },
   showDialog: function() {
     var settings = this.getNetworkSettings();

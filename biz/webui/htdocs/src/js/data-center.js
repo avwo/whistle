@@ -59,6 +59,18 @@ exports.isOnlyViewOwnData = function() {
   return onlyViewOwnData;
 };
 
+exports.filterIsEnabled = function() {
+  if (onlyViewOwnData) {
+    return true;
+  }
+  var settings = getFilterText();
+  if (!settings || (settings.disabledFilterText && settings.disabledExcludeText)) {
+    return;
+  }
+  var text = !settings.disabledFilterText && settings.filterText.trim();
+  return text || (!settings.disabledExcludeText && settings.excludeText.trim());
+};
+
 function compareFilter(filter) {
   if (filter !== hashFilterObj) {
     return false;
@@ -121,27 +133,12 @@ function getFilterText() {
   var settings = util.parseJSON(storage.get('filterText'));
   return settings ? {
     disabledFilterText: settings.disabledFilterText,
-    filterText: settings.filterText,
+    filterText: util.toString(settings.filterText).substring(0, MAX_INCLUDE_LEN),
     disabledExcludeText: settings.disabledExcludeText,
-    excludeText: settings.excludeText
+    excludeText: util.toString(settings.excludeText).substring(0, MAX_EXCLUDE_LEN)
   } : {};
 }
 exports.getFilterText = getFilterText;
-
-function hasFilterText() {
-  var settings = getFilterText();
-  if (!settings || settings.disabledFilterText) {
-    return;
-  }
-  var filterText = settings.filterText;
-  if (typeof filterText !== 'string') {
-    return '';
-  }
-  filterText = filterText.trim();
-  return filterText;
-}
-
-exports.hasFilterText = hasFilterText;
 
 function setNetworkColumns(settings) {
   settings = settings || {};
@@ -168,8 +165,7 @@ var FILTER_TYPES = {
   b: 'body',
   c: 'body'
 };
-function parseFilterText() {
-  var filterText = hasFilterText();
+function parseFilterText(filterText) {
   if (!filterText) {
     return;
   }
@@ -386,10 +382,7 @@ function joinString(str1, str2) {
   return result.join('\n');
 }
 
-function filterData(obj, item) {
-  if (!obj) {
-    return true;
-  }
+function matchFilter(obj, item) {
   if (!checkFiled(obj.url, item.url)) {
     return false;
   }
@@ -588,11 +581,14 @@ function startLoadData() {
         }
       });
       if (ids.length) {
-        var filterObj = parseFilterText();
+        var filter = getFilterText();
+        var excludeFilter = filter.disabledExcludeText ? null : parseFilterText(filter.excludeText);
+        var filterObj = filter.disabledFilterText ? null : parseFilterText(filter.filterText);
         ids.forEach(function (id) {
           var item = data[id];
           if (item) {
-            if (filterData(filterObj, item)) {
+            if ((!excludeFilter || !matchFilter(excludeFilter, item))
+              && (!filterObj || matchFilter(filterObj, item))) {
               setReqData(item);
               dataList.push(item);
             }
