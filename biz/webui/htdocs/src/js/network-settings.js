@@ -49,6 +49,10 @@ var Settings = React.createClass({
       settings.disabledFilterText = !target.checked;
       filterStateChanged = filterTextChanged = true;
       break;
+    case 'excludeFilter':
+      settings.disabledExcludeText = !target.checked;
+      filterStateChanged = filterTextChanged = true;
+      break;
     case 'filterText':
       var value = target.value.trim();
       filterTextChanged = true;
@@ -114,7 +118,7 @@ var Settings = React.createClass({
           <fieldset className="network-settings-filter">
             <legend>
               <label>
-                <input checked={!state.disabledFilterText} data-name="filter" type="checkbox" />Include Filter
+                <input checked={!state.disabledExcludeText} data-name="excludeFilter" type="checkbox" />Exclude Filter
               </label>
               <a className="w-help-menu"
                 title="Click here to learn how to use the filter"
@@ -122,15 +126,15 @@ var Settings = React.createClass({
                 <span className="glyphicon glyphicon-question-sign"></span>
               </a>
             </legend>
-            <textarea disabled={state.disabledFilterText}
+            <textarea disabled={state.disabledExcludeText}
               onKeyDown={this.onFilterKeyDown}
-              value={state.filterText} data-name="filterText"
+              value={state.excludeText} data-name="filterText"
               placeholder="type filter text" maxLength="3072" />
           </fieldset>
           <fieldset className="network-settings-filter">
             <legend>
               <label>
-                <input checked={!state.disabledFilterText} data-name="filter" type="checkbox" />Exclude Filter
+                <input checked={!state.disabledFilterText} data-name="filter" type="checkbox" />Include Filter
               </label>
               <a className="w-help-menu"
                 title="Click here to learn how to use the filter"
