@@ -43,7 +43,7 @@ var Settings = React.createClass({
     var settings = this.state;
     var filterTextChanged;
     var filterStateChanged;
-    var columnsChanged;
+    var columnsChanged, value;
     switch(name) {
     case 'filter':
       settings.disabledFilterText = !target.checked;
@@ -54,10 +54,16 @@ var Settings = React.createClass({
       filterStateChanged = filterTextChanged = true;
       break;
     case 'filterText':
-      var value = target.value.trim();
+      value = target.value.trim();
       filterTextChanged = true;
       filterStateChanged = (!value && settings.filterText) || (value && !settings.filterText);
       settings.filterText = target.value;
+      break;
+    case 'excludeText':
+      value = target.value.trim();
+      filterTextChanged = true;
+      filterStateChanged = (!value && settings.excludeText) || (value && !settings.excludeText);
+      settings.excludeText = target.value;
       break;
     case 'networkColumns':
       settings.disabledColumns = !target.checked;
@@ -128,8 +134,8 @@ var Settings = React.createClass({
             </legend>
             <textarea disabled={state.disabledExcludeText}
               onKeyDown={this.onFilterKeyDown}
-              value={state.excludeText} data-name="filterText"
-              placeholder="type filter text" maxLength="3072" />
+              value={state.excludeText} data-name="excludeText"
+              placeholder="type filter text" maxLength={dataCenter.MAX_EXCLUDE_LEN} />
           </fieldset>
           <fieldset className="network-settings-filter">
             <legend>
@@ -145,7 +151,7 @@ var Settings = React.createClass({
             <textarea disabled={state.disabledFilterText}
               onKeyDown={this.onFilterKeyDown}
               value={state.filterText} data-name="filterText"
-              placeholder="type filter text" maxLength="3072" />
+              placeholder="type filter text" maxLength={dataCenter.MAX_INCLUDE_LEN} />
           </fieldset>
           <fieldset className="network-settings-columns">
             <legend>

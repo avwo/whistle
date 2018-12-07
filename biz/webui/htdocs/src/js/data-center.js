@@ -5,8 +5,8 @@ var NetworkModal = require('./network-modal');
 var storage = require('./storage');
 var events = require('./events');
 
-var MAX_INCLUDE_TEXT_LEN = 3072;
-var MAX_EXCLUDE_TEXT_LEN = 3072;
+var MAX_INCLUDE_LEN = 3072;
+var MAX_EXCLUDE_LEN = 3072;
 var MAX_FRAMES_LENGTH = exports.MAX_FRAMES_LENGTH = 80;
 var MAX_COUNT = NetworkModal.MAX_COUNT;
 var TIMEOUT = 20000;
@@ -41,7 +41,8 @@ var DEFAULT_CONF = {
   data: {}
 };
 exports.clientIp = '127.0.0.1';
-
+exports.MAX_INCLUDE_LEN = MAX_INCLUDE_LEN;
+exports.MAX_EXCLUDE_LEN = MAX_EXCLUDE_LEN;
 exports.changeLogId = function(id) {
   logId = id;
 };
@@ -109,7 +110,9 @@ function setFilterText(settings) {
   settings = settings || {};
   storage.set('filterText', JSON.stringify({
     disabledFilterText: settings.disabledFilterText,
-    filterText: settings.filterText
+    filterText: settings.filterText,
+    disabledExcludeText: settings.disabledExcludeText,
+    excludeText: settings.excludeText
   }));
 }
 exports.setFilterText = setFilterText;
@@ -118,7 +121,9 @@ function getFilterText() {
   var settings = util.parseJSON(storage.get('filterText'));
   return settings ? {
     disabledFilterText: settings.disabledFilterText,
-    filterText: settings.filterText
+    filterText: settings.filterText,
+    disabledExcludeText: settings.disabledExcludeText,
+    excludeText: settings.excludeText
   } : {};
 }
 exports.getFilterText = getFilterText;
