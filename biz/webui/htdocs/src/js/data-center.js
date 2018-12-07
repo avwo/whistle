@@ -166,6 +166,7 @@ var FILTER_TYPES = {
   c: 'body'
 };
 function parseFilterText(filterText) {
+  filterText = filterText && filterText.trim();
   if (!filterText) {
     return;
   }
