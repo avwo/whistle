@@ -61,11 +61,18 @@ var contextMenuList = [
       { name: 'Unselected' }
     ]
   },
+  {
+    name: 'Filter',
+    list:  [
+      { name: 'This Host' },
+      { name: 'This URL' },
+      { name: 'Edit' }
+    ]
+  },
   { name: 'Compose' },
   { name: 'Replay' },
   { name: 'Abort' },
   { name: 'Upload' },
-  { name: 'Filter' },
   { name: 'Import' },
   { name: 'Export' },
   { name: 'Help', sep: true }
@@ -346,8 +353,14 @@ var ReqData = React.createClass({
     case 'Import':
       events.trigger('importSessions', e);
       break;
-    case 'Filter':
+    case 'Edit':
       events.trigger('filterSessions', e);
+      break;
+    case 'This Host':
+      alert(2);
+      break;
+    case 'This URL':
+      alert(3)
       break;
     case 'One':
       events.trigger('removeIt', item);
@@ -433,20 +446,24 @@ var ReqData = React.createClass({
     list2[3].disabled = !selectedCount;
     list2[4].disabled = selectedCount === hasData;
     
-    contextMenuList[3].disabled = disabled;
+    var list3 = contextMenuList[3].list;
+    list3[0].disabled = disabled;
+    list3[1].disabled = disabled;
+
+    contextMenuList[4].disabled = disabled;
     if (item) {
       if (item.selected) {
-        contextMenuList[4].disabled = !selectedList.filter(util.canReplay).length;
-        contextMenuList[5].disabled = !selectedList.filter(util.canAbort).length;
+        contextMenuList[5].disabled = !selectedList.filter(util.canReplay).length;
+        contextMenuList[6].disabled = !selectedList.filter(util.canAbort).length;
       } else {
-        contextMenuList[4].disabled = !util.canReplay(item);
-        contextMenuList[5].disabled = !util.canAbort(item);
+        contextMenuList[5].disabled = !util.canReplay(item);
+        contextMenuList[6].disabled = !util.canAbort(item);
       }
     } else {
-      contextMenuList[4].disabled = true;
       contextMenuList[5].disabled = true;
+      contextMenuList[6].disabled = true;
     }
-    var uploadItem = contextMenuList[6];
+    var uploadItem = contextMenuList[7];
     uploadItem.hide = !getUploadSessionsFn();
     contextMenuList[9].disabled = uploadItem.disabled = disabled && !selectedCount;
     var data = util.getMenuPosition(e, 110, uploadItem.hide ? 310 : 340);
