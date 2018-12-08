@@ -289,6 +289,18 @@ var ReqData = React.createClass({
     var modal = this.props.modal;
     modal && modal.clearSelection();
   },
+  removeThisHost: function(item) {
+    const host = item.isHttps ? item.path : item.hostname;
+    var modal = this.props.modal;
+    modal && modal.removeByHost(host);
+    this.setState({});
+  },
+  removeThisURL: function(item) {
+    const url = item.isHttps ? item.path : item.url.replace(/\?.*$/, '').substring(0, 1024);
+    var modal = this.props.modal;
+    modal && modal.removeByURL(url);
+    this.setState({});
+  },
   onClickContextMenu: function(action, e) {
     var self = this;
     var item = self.currentFocusItem;
@@ -357,10 +369,10 @@ var ReqData = React.createClass({
       events.trigger('filterSessions', e);
       break;
     case 'This Host':
-      alert(2);
+      item && self.removeThisHost(item);
       break;
     case 'This URL':
-      alert(3)
+      item && self.removeThisURL(item);
       break;
     case 'One':
       events.trigger('removeIt', item);

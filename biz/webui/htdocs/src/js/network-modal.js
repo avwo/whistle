@@ -223,6 +223,30 @@ proto.clear = function clear() {
   return this;
 };
 
+proto.removeByHost = function(host) {
+  var list = this._list;
+  for (var i = list.length - 1; i >= 0; --i) {
+    var item = list[i];
+    if (item.isHttps ? host === item.path : item.hostname === host) {
+      list.splice(i, 1);
+    }
+  }
+  this.update();
+  this.updateDisplayCount();
+};
+
+proto.removeByURL = function(url) {
+  var list = this._list;
+  for (var i = list.length - 1; i >= 0; --i) {
+    var item = list[i];
+    if (item.isHttps ? url === item.path : item.url.indexOf(url) === 0) {
+      list.splice(i, 1);
+    }
+  }
+  this.update();
+  this.updateDisplayCount();
+};
+
 proto.removeSelectedItems = function() {
   var hasSelectedItem;
   var endIndex = -1;
