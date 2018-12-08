@@ -293,13 +293,13 @@ var ReqData = React.createClass({
     const host = item.isHttps ? item.path : item.hostname;
     var modal = this.props.modal;
     modal && modal.removeByHost(host);
-    this.setState({});
+    events.trigger('updateGlobal');
   },
   removeThisURL: function(item) {
     const url = item.isHttps ? item.path : item.url.replace(/\?.*$/, '').substring(0, 1024);
     var modal = this.props.modal;
     modal && modal.removeByURL(url);
-    this.setState({});
+    events.trigger('updateGlobal');
   },
   onClickContextMenu: function(action, e) {
     var self = this;

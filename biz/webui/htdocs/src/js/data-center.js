@@ -163,7 +163,9 @@ var FILTER_TYPES = {
   i: 'ip',
   h: 'headers',
   b: 'body',
-  c: 'body'
+  c: 'body',
+  d: 'host',
+  H: 'host'
 };
 function parseFilterText(filterText) {
   filterText = filterText && filterText.trim();
