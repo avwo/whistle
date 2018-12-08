@@ -5,6 +5,7 @@ var res = require('http').OutgoingMessage.prototype;
 var ver = process.version.substring(1).split('.');
 var setHeader = res.setHeader;
 
+process.emitWarning = function() {};
 res.setHeader = function(field, val){
   try {
     return setHeader.call(this, field, val);
