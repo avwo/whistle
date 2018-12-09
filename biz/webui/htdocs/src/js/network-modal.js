@@ -238,8 +238,7 @@ proto.removeByHost = function(host) {
 proto.removeByURL = function(url) {
   var list = this._list;
   for (var i = list.length - 1; i >= 0; --i) {
-    var item = list[i];
-    if (item.isHttps ? url === item.path : item.url.indexOf(url) === 0) {
+    if (list[i].url.indexOf(url) === 0) {
       list.splice(i, 1);
     }
   }

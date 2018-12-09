@@ -156,10 +156,9 @@ function getNetworkColumns() {
 
 exports.getNetworkColumns = getNetworkColumns;
 
-var FILTER_TYPES_RE = /^(m|s|i|h|b|c|d|H):/;
+var FILTER_TYPES_RE = /^(m|i|h|b|c|d|H):/;
 var FILTER_TYPES = {
   m: 'method',
-  s: 'statusCode',
   i: 'ip',
   h: 'headers',
   b: 'body',
@@ -206,7 +205,7 @@ function resolveFilterText(text) {
           type: type,
           not: not,
           pattern: pattern,
-          keyword: pattern ? null : line
+          keyword: pattern ? null : line.toLowerCase()
         });
       }
     } else if (line) {
@@ -214,7 +213,7 @@ function resolveFilterText(text) {
       pattern = util.toRegExp(line);
       result.push({
         pattern: pattern,
-        keyword: pattern ? null : line
+        keyword: pattern ? null : line.toLowerCase()
       });
     }
   });
@@ -227,14 +226,48 @@ function resolveFilterText(text) {
   return result;
 }
 
-function checkFilter(item, text, exclude) {
+function checktFilterField(str, filter, needDecode) {
+  if (!str) {
+    return false;
+  }
+  if (filter.pattern) {
+    return filter.pattern.test(str);
+  }
+  if (needDecode) {
+    try {
+      var text = decodeURIComponent(str);
+      if (text !== str) {
+        str += '\n' + text;
+      }
+    } catch(e) {}
+  }
+  return toLowerCase(str).indexOf(filter.keyword) !== -1;
+}
+
+function checkFilter(item, text) {
   var list = resolveFilterText(text);
   if (!list) {
     return true;
   }
-  return util.findArray(list, function(filter) {
-    
-  });
+  for (var i = 0, len = list.length; i < len; i++) {
+    var filter = list[i];
+    switch (filter.type) {
+    case 'method':
+      return checktFilterField(item.method, filter);
+    case 'ip':
+      return checktFilterField(item.req.ip, filter);
+    case 'headers':
+      return checktFilterField(util.objectToString(item.req.headers), filter, true);
+    case 'host':
+      var host = item.isHttps ? item.path : item.hostname;
+      return checktFilterField(host, filter);
+    case 'body':
+      return checktFilterField(util.getBody(item.req, true), filter);
+    default:
+      return checktFilterField(item.url, filter);
+    }
+  }
+  return false;
 }
 
 function parseFilterText(filterText) {
