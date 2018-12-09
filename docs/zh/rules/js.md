@@ -28,10 +28,10 @@ test.js:
 ```
 # 下面表示匹配pattern的同时不能为post请求且请求头里面的cookie字段必须包含test(忽略大小写)、url里面必须包含 cgi-bin 的请求
 # 即：过滤掉匹配filter里面的请求
-pattern operator1 operator2 filter://m:post filter://h:cookie!=test filter://!/cgi-bin/i
+pattern operator1 operator2 excludeFilter://m:post includeFilter://h:cookie=test includeFilter:///cgi-bin/i
 
 # 下面表示匹配pattern1、pattern2的同时必须为post请求且请求头里面的cookie字段不能包含类似 `uin=123123`、且url里面不能包含 cgi-bin 的请求
-operator pattern1 pattern2 filter://m:!post filter://h:cookie=/uin=o\d+/i filter:///cgi-bin/i
+operator pattern1 pattern2 includeFilter://m:post excludeFilter://h:cookie=/uin=o\d+/i excludeFilter:///cgi-bin/i
 
 # 下面表示匹配pattern的请求忽略除了host以外的所有规则
 pattern ignore://*|!host
