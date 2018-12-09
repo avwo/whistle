@@ -289,16 +289,33 @@ var ReqData = React.createClass({
     var modal = this.props.modal;
     modal && modal.clearSelection();
   },
+  updateFilter: function(str) {
+    var settings = dataCenter.getFilterText();
+    if (settings.disabledExcludeText || !settings.excludeText) {
+      settings.excludeText = str;
+      settings.disabledExcludeText = false;
+    } else if (settings.excludeText.split(/\s+/).indexOf(str) === -1) {
+      settings.excludeText = str + '\n' + settings.excludeText;
+    } else {
+      settings = null;
+    }
+    if (settings) {
+      dataCenter.setFilterText(settings);
+      events.trigger('filterChanged');
+    }
+  },
   removeThisHost: function(item) {
     const host = item.isHttps ? item.path : item.hostname;
     var modal = this.props.modal;
     modal && modal.removeByHost(host);
+    this.updateFilter('H:' + host);
     events.trigger('updateGlobal');
   },
   removeThisURL: function(item) {
     const url = item.isHttps ? item.path : item.url.replace(/\?.*$/, '').substring(0, 1024);
     var modal = this.props.modal;
     modal && modal.removeByURL(url);
+    this.updateFilter(url);
     events.trigger('updateGlobal');
   },
   onClickContextMenu: function(action, e) {

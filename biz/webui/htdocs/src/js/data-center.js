@@ -230,18 +230,21 @@ function checktFilterField(str, filter, needDecode) {
   if (!str) {
     return false;
   }
+  var result;
   if (filter.pattern) {
-    return filter.pattern.test(str);
+    result = filter.pattern.test(str);
+  } else {
+    if (needDecode) {
+      try {
+        var text = decodeURIComponent(str);
+        if (text !== str) {
+          str += '\n' + text;
+        }
+      } catch(e) {}
+    }
+    result = toLowerCase(str).indexOf(filter.keyword) !== -1;
   }
-  if (needDecode) {
-    try {
-      var text = decodeURIComponent(str);
-      if (text !== str) {
-        str += '\n' + text;
-      }
-    } catch(e) {}
-  }
-  return toLowerCase(str).indexOf(filter.keyword) !== -1;
+  return filter.not ? !result : result;;
 }
 
 function checkFilter(item, list) {
@@ -249,18 +252,35 @@ function checkFilter(item, list) {
     var filter = list[i];
     switch (filter.type) {
     case 'method':
-      return checktFilterField(item.method, filter);
+      if (checktFilterField(item.method, filter)) {
+        return true;
+      }
+      break;
     case 'ip':
-      return checktFilterField(item.req.ip, filter);
+      if (checktFilterField(item.req.ip, filter)) {
+        return;
+      }
+      break;
     case 'headers':
-      return checktFilterField(util.objectToString(item.req.headers), filter, true);
+      if (checktFilterField(util.objectToString(item.req.headers), filter, true)) {
+        return true;
+      }
+      break;
     case 'host':
       var host = item.isHttps ? item.path : item.hostname;
-      return checktFilterField(host, filter);
+      if (checktFilterField(host, filter)) {
+        return true;
+      }
+      break;
     case 'body':
-      return checktFilterField(util.getBody(item.req, true), filter);
+      if (checktFilterField(util.getBody(item.req, true), filter)) {
+        return true;
+      }
+      break;
     default:
-      return checktFilterField(item.url, filter);
+      if (checktFilterField(item.url, filter)) {
+        return true;
+      }
     }
   }
   return false;
