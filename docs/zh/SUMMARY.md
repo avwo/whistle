@@ -21,6 +21,7 @@
   * [Values](webui/values.md)
   * [Plugins](webui/plugins.md)
   * [WebSocket](webui/websocket.md)
+  * [Filter](webui/filter.md)
   * [Settings](webui/settings.md)
   * [Weinre](webui/weinre.md)
   * [Https](webui/https.md)

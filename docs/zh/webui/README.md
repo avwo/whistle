@@ -7,6 +7,7 @@
 1. [Values(存放KeyValue的系统)](values.md)
 1. [Plugins(插件列表页面)](plugins.md)
 1. [WebSocket(WebSocket抓包功能)](websocket.md)
+1. [Filter(设置Network请求列表的过滤条件)](filter.md)
 1. [Settings(设置对话框)](settings.md)
 1. [Weinre(weinre列表)](weinre.md)
 1. [HTTPS(设置HTTPS拦截及根证书)](https.md)
