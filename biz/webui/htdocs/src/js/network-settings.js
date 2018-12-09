@@ -111,7 +111,7 @@ var Settings = React.createClass({
               </label>
               <a className="w-help-menu"
                 title="Click here to learn how to use the filter"
-                href="https://avwo.github.io/whistle/webui/settings.html" target="_blank">
+                href="https://avwo.github.io/whistle/webui/filter.html" target="_blank">
                 <span className="glyphicon glyphicon-question-sign"></span>
               </a>
             </legend>
@@ -127,7 +127,7 @@ var Settings = React.createClass({
               </label>
               <a className="w-help-menu"
                 title="Click here to learn how to use the filter"
-                href="https://avwo.github.io/whistle/webui/settings.html" target="_blank">
+                href="https://avwo.github.io/whistle/webui/filter.html" target="_blank">
                 <span className="glyphicon glyphicon-question-sign"></span>
               </a>
             </legend>
