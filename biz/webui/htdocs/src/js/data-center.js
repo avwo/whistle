@@ -156,7 +156,7 @@ function getNetworkColumns() {
 
 exports.getNetworkColumns = getNetworkColumns;
 
-var FILTER_TYPES_RE = /^(m|s|i|h|b|c):/;
+var FILTER_TYPES_RE = /^(m|s|i|h|b|c|d|H):/;
 var FILTER_TYPES = {
   m: 'method',
   s: 'statusCode',
@@ -167,6 +167,76 @@ var FILTER_TYPES = {
   d: 'host',
   H: 'host'
 };
+var filterCache = [];
+
+function getFilterCache(text) {
+  var len = filterCache.length;
+  var result = len ? util.findArray(filterCache, function(item) {
+    return item.text === text;
+  }) : null;
+  len -= 10;
+  if (len > 2) {
+    filterCache = filterCache.slice(len);
+    if (result && filterCache.indexOf(result) === -1) {
+      filterCache.push(result);
+    }
+  }
+  return result && result.filter;
+}
+
+function resolveFilterText(text) {
+  text = text && text.trim();
+  if (!text) {
+    return;
+  }
+  var result = getFilterCache(text);
+  if (result) {
+    return result;
+  }
+  var pattern;
+  text.split(/\s+/).forEach(function(line) {
+    if (FILTER_TYPES_RE.test(line)) {
+      var type = FILTER_TYPES[RegExp.$1];
+      var not = line[2];
+      line = line.substring(not ? 3 : 2);
+      if (line) {
+        result = result || [];
+        pattern = util.toRegExp(line);
+        result.push({
+          type: type,
+          not: not,
+          pattern: pattern,
+          keyword: pattern ? null : line
+        });
+      }
+    } else if (line) {
+      result = result || [];
+      pattern = util.toRegExp(line);
+      result.push({
+        pattern: pattern,
+        keyword: pattern ? null : line
+      });
+    }
+  });
+  if (result) {
+    filterCache.push({
+      text: text,
+      filter: result
+    });
+  }
+  return result;
+}
+
+function checkFilter(item, text, exclude) {
+  var list = resolveFilterText(text);
+  if (!list) {
+    return true;
+  }
+  return util.findArray(list, function(filter) {
+    
+  });
+}
+
 function parseFilterText(filterText) {
   filterText = filterText && filterText.trim();
   if (!filterText) {
