@@ -196,7 +196,7 @@ function resolveFilterText(text) {
   text.split(/\s+/).forEach(function(line) {
     if (FILTER_TYPES_RE.test(line)) {
       var type = FILTER_TYPES[RegExp.$1];
-      var not = line[2];
+      var not = line[2] === '!';
       line = line.substring(not ? 3 : 2);
       if (line) {
         result = result || [];
@@ -226,7 +226,7 @@ function resolveFilterText(text) {
   return result;
 }
 
-function checktFilterField(str, filter, needDecode) {
+function checkFilterField(str, filter, needDecode) {
   if (!str) {
     return false;
   }
@@ -244,7 +244,7 @@ function checktFilterField(str, filter, needDecode) {
     }
     result = toLowerCase(str).indexOf(filter.keyword) !== -1;
   }
-  return filter.not ? !result : result;;
+  return filter.not ? !result : result;
 }
 
 function checkFilter(item, list) {
@@ -252,33 +252,32 @@ function checkFilter(item, list) {
     var filter = list[i];
     switch (filter.type) {
     case 'method':
-      if (checktFilterField(item.method, filter)) {
+      if (checkFilterField(item.method, filter)) {
         return true;
       }
       break;
     case 'ip':
-      if (checktFilterField(item.req.ip, filter)) {
-        return;
+      if (checkFilterField(item.req.ip || '127.0.0.1', filter)) {
+        return true;
       }
       break;
     case 'headers':
-      if (checktFilterField(util.objectToString(item.req.headers), filter, true)) {
+      if (checkFilterField(util.objectToString(item.req.headers), filter, true)) {
         return true;
       }
       break;
     case 'host':
-      var host = item.isHttps ? item.path : item.hostname;
-      if (checktFilterField(host, filter)) {
+      if (checkFilterField(item.isHttps ? item.path : util.getHost(item.url), filter)) {
         return true;
       }
       break;
     case 'body':
-      if (checktFilterField(util.getBody(item.req, true), filter)) {
+      if (checkFilterField(util.getBody(item.req, true), filter)) {
         return true;
       }
       break;
     default:
-      if (checktFilterField(item.url, filter)) {
+      if (checkFilterField(item.url, filter)) {
         return true;
       }
     }
