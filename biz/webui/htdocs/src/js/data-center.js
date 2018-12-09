@@ -136,7 +136,10 @@ function getFilterText() {
     filterText: util.toString(settings.filterText).substring(0, MAX_INCLUDE_LEN),
     disabledExcludeText: settings.disabledExcludeText,
     excludeText: util.toString(settings.excludeText).substring(0, MAX_EXCLUDE_LEN)
-  } : {};
+  } : {
+    filterText: '',
+    excludeText: ''
+  };
 }
 exports.getFilterText = getFilterText;
 
