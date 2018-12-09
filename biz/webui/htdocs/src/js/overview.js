@@ -89,8 +89,14 @@ var Overview = React.createClass({
           if (value) {
             if ((prop == 'req.size' || prop == 'res.size') && value >= 1024) {
               value += '(' + Number(value / 1024).toFixed(2) + 'k)';
-            } else if (prop == 'realUrl' && value == modal.url) {
-              value = '';
+            } else if (prop == 'realUrl') {
+              if (value == modal.url) {
+                value = '';
+              } else if (modal.isHttps) {
+                value = 'tunnel://' + value;
+              }
+            } else if (modal.isHttps && prop === 'url') {
+              value = 'tunnel://' + value;
             }
           } else if (prop == 'res.statusMessage') {
             value = util.getStatusMessage(modal.res);
