@@ -244,11 +244,7 @@ function checktFilterField(str, filter, needDecode) {
   return toLowerCase(str).indexOf(filter.keyword) !== -1;
 }
 
-function checkFilter(item, text) {
-  var list = resolveFilterText(text);
-  if (!list) {
-    return true;
-  }
+function checkFilter(item, list) {
   for (var i = 0, len = list.length; i < len; i++) {
     var filter = list[i];
     switch (filter.type) {
@@ -268,28 +264,6 @@ function checkFilter(item, text) {
     }
   }
   return false;
-}
-
-function parseFilterText(filterText) {
-  filterText = filterText && filterText.trim();
-  if (!filterText) {
-    return;
-  }
-  filterText = filterText.split(/\r|\n/g);
-  var result = {};
-  filterText.forEach(function(line) {
-    line = line.trim();
-    if (FILTER_TYPES_RE.test(line)) {
-      var name = FILTER_TYPES[RegExp.$1];
-      line = line.substring(2);
-      if (line) {
-        result[name] = result[name] ? result[name] + '\n' + line : line;
-      }
-    } else if (line) {
-      result.url = result.url ? result.url + '\n' + line : line;
-    }
-  });
-  return result;
 }
 
 var POST_CONF = $.extend({
@@ -433,89 +407,6 @@ exports.getInitialData = function (callback) {
 
   initialDataPromise.done(callback);
 };
-
-function checkFiled(keyword, text, needDecode) {
-  if (!keyword) {
-    return true;
-  }
-  if (!text) {
-    return false;
-  }
-  keyword = toLowerCase(keyword);
-  keyword = keyword.split(/\n/g);
-  if (needDecode) {
-    try {
-      var dtext = decodeURIComponent(text);
-      if (dtext !== text) {
-        text += '\n' + dtext;
-      }
-    } catch(e) {}
-  }
-  text = toLowerCase(text);
-  var check = function(kw) {
-    if (!kw) {
-      return false;
-    }
-    kw = kw.split(/\s+/g);
-    return checkKeyword(text, kw[0]) && checkKeyword(text, kw[1]) && checkKeyword(text, kw[2]);
-  };
-
-  return check(keyword[0]) || check(keyword[1]) || check(keyword[2])
-  || check(keyword[3]) || check(keyword[4])|| check(keyword[5]);
-}
-
-function checkKeyword(text, kw) {
-  if (!kw || kw === '!') {
-    return true;
-  }
-  var not;
-  if (kw[0] === '!') {
-    not = true;
-    kw = kw.substring(1);
-  }
-  kw = text.indexOf(kw);
-  return not ? kw === -1 : kw !== -1;
-}
-
-function joinString(str1, str2) {
-  var result = [];
-  if (str1 != null || str1) {
-    result.push(str1);
-  }
-  if (str2 == null || str2) {
-    result.push(str2);
-  }
-  return result.join('\n');
-}
-
-function matchFilter(obj, item) {
-  if (!checkFiled(obj.url, item.url)) {
-    return false;
-  }
-  if (!checkFiled(obj.statusCode, item.res.statusCode)) {
-    return false;
-  }
-  if (!checkFiled(obj.method, item.req.method)) {
-    return false;
-  }
-  if (obj.ip) {
-    if (!checkFiled(obj.ip, joinString(item.req.ip, item.res.ip))) {
-      return false;
-    }
-  }
-  if (obj.body) {
-    if (!checkFiled(obj.body, joinString(util.getBody(item.req, true), util.getBody(item.res)))) {
-      return false;
-    }
-  }
-  if (obj.headers) {
-    if (!checkFiled(obj.headers, joinString(util.objectToString(item.req.headers),
-      util.objectToString(item.res.headers)), true)) {
-      return false;
-    }
-  }
-  return true;
-}
 
 function checkDataChanged(data, mclientName, mtimeName) {
   if (!data[mtimeName] || initialData.clientId === data[mclientName]) {
@@ -688,13 +579,13 @@ function startLoadData() {
       });
       if (ids.length) {
         var filter = getFilterText();
-        var excludeFilter = filter.disabledExcludeText ? null : parseFilterText(filter.excludeText);
-        var filterObj = filter.disabledFilterText ? null : parseFilterText(filter.filterText);
+        var excludeFilter = filter.disabledExcludeText ? null : resolveFilterText(filter.excludeText);
+        var includeFilter = filter.disabledFilterText ? null : resolveFilterText(filter.filterText);
         ids.forEach(function (id) {
           var item = data[id];
           if (item) {
-            if ((!excludeFilter || !matchFilter(excludeFilter, item))
-              && (!filterObj || matchFilter(filterObj, item))) {
+            if ((!excludeFilter || !checkFilter(item, excludeFilter))
+              && (!includeFilter || checkFilter(item, includeFilter))) {
               setReqData(item);
               dataList.push(item);
             }
