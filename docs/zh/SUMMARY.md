@@ -45,7 +45,7 @@
   * [https-proxy](rules/https-proxy.md)
   * [socks](rules/socks.md)
   * [pac](rules/pac.md)
-  * [filter](rules/filter.md)
+  * [filter(excludeFilter|includeFilter)](rules/filter.md)
   * [ignore](rules/ignore.md)
   * [enable](rules/enable.md)
   * [disable](rules/disable.md)
