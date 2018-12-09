@@ -20,7 +20,7 @@ var FilterBtn = React.createClass({
     var hide = this.props.hide;
     var isNetwork = this.props.isNetwork;
     var hasFilterText = this.state.hasFilterText;
-    var className = hasFilterText ? ' w-menu-enable'  : '';
+    var className = isNetwork && hasFilterText ? ' w-menu-enable'  : '';
     return (
       <a
         onClick={this.props.onClick}
