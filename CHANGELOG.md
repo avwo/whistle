@@ -2,6 +2,9 @@
 1. style: Log里面的 `AutoRefresh` 改为 `Record`
 2. refactor: 不导出被过滤掉的日志
 3. refactor: `reqCors://*` 等价于 `reqCors://origin=*`
+4. feat: Network里面的右键菜单添加过滤快捷键，可以快速过滤指定域名或url
+5. feat: Network里面的Filter拆分成 `Exclude Filter` 和 `Include Filter`，分别用于设置不显示的抓包数据和要显示的抓包数据
+6. feat: [filter](http://wproxy.org/whistle/rules/filter.html) 分拆成语义更明确的 [excludeFilter](http://wproxy.org/whistle/rules/filter.html) 和 [includeFilter](http://wproxy.org/whistle/rules/filter.html)，且新增了通配符匹配
 
 # v1.13.5
 1. fix: 导入saz文件 `Set-Cookie` 等重名头部覆盖问题
