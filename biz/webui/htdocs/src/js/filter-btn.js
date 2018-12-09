@@ -5,15 +5,18 @@ var events = require('./events');
 var FilterBtn = React.createClass({
   getInitialState: function() {
     return {
-      hasFilterText: dataCenter.filterIsEnabled()
+      hasFilterText: !!dataCenter.filterIsEnabled()
     };
   },
   componentDidMount: function() {
     var self = this;
     events.on('filterChanged', function() {
-      self.setState({
-        hasFilterText: dataCenter.filterIsEnabled()
-      });
+      var hasFilterText = !!dataCenter.filterIsEnabled();
+      if (hasFilterText !== self.state.hasFilterText) {
+        self.setState({
+          hasFilterText: !!dataCenter.filterIsEnabled()
+        });
+      }
     });
   },
   render: function() {

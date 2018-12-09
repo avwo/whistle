@@ -295,7 +295,8 @@ var ReqData = React.createClass({
       settings.excludeText = str;
       settings.disabledExcludeText = false;
     } else if (settings.excludeText.split(/\s+/).indexOf(str) === -1) {
-      settings.excludeText = str + '\n' + settings.excludeText;
+      settings.excludeText = (str + '\n' + settings.excludeText)
+        .substring(0, dataCenter.MAX_EXCLUDE_LEN).trim();
     } else {
       settings = null;
     }

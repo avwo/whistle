@@ -42,7 +42,7 @@ var Settings = React.createClass({
     }
     var settings = this.state;
     var filterTextChanged;
-    var columnsChanged, value;
+    var columnsChanged;
     switch(name) {
     case 'filter':
       settings.disabledFilterText = !target.checked;
@@ -53,12 +53,10 @@ var Settings = React.createClass({
       filterTextChanged = true;
       break;
     case 'filterText':
-      value = target.value.trim();
       filterTextChanged = true;
       settings.filterText = target.value;
       break;
     case 'excludeText':
-      value = target.value.trim();
       filterTextChanged = true;
       settings.excludeText = target.value;
       break;
