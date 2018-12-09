@@ -41,6 +41,20 @@ if (pattern.test(req.url) && (
 }
 ```
 
+完整匹配条：
+1. `m:name`：name为方法名称或正则表达式，表示匹配对应方法
+2. `i:ip`：ip表示具体客户(服务)端ip或匹配ip的正则表达式
+3. `clientIp:ip`：ip表示具体客户端ip或匹配ip的正则表达式
+4. `serverIp:ip`：ip表示具体服务端ip或匹配ip的正则表达式
+5. `s:code`：code表示响应状态码，或正则表达式
+6. `h:name=pattern`：匹配请求或响应头字段 `name`，pattern为该字段对应值里面的关键字或正则表示
+7. `reqH:name=pattern`：同上，但只会匹配请求头
+8. `resH:name=pattern`：同上，但只会匹配响应头
+9. `*/cgi-*`：表示匹配 `xxx://x.y.z/cgi-.../...`，具体可以参见[pattern](../pattern.html)里面的通配路径
+9. `其它字符串`：表示[pattern](../pattern.html)里面的通配符匹配
+
+
+
 #### 下面的功能在最新版本(>= v1.13.6)里面已不建议使用
 <del>
 功能与[ignore](./ignore.html)类似，主要用于过滤当前行配置的规则，也可以根据请求头、请求方法、请求IP过滤规则(后面这个要[最新版本的whistle >= v1.12.6](../update.html)才能支持)
