@@ -42,27 +42,24 @@ var Settings = React.createClass({
     }
     var settings = this.state;
     var filterTextChanged;
-    var filterStateChanged;
     var columnsChanged, value;
     switch(name) {
     case 'filter':
       settings.disabledFilterText = !target.checked;
-      filterStateChanged = filterTextChanged = true;
+      filterTextChanged = true;
       break;
     case 'excludeFilter':
       settings.disabledExcludeText = !target.checked;
-      filterStateChanged = filterTextChanged = true;
+      filterTextChanged = true;
       break;
     case 'filterText':
       value = target.value.trim();
       filterTextChanged = true;
-      filterStateChanged = (!value && settings.filterText) || (value && !settings.filterText);
       settings.filterText = target.value;
       break;
     case 'excludeText':
       value = target.value.trim();
       filterTextChanged = true;
-      filterStateChanged = (!value && settings.excludeText) || (value && !settings.excludeText);
       settings.excludeText = target.value;
       break;
     case 'networkColumns':
@@ -76,7 +73,7 @@ var Settings = React.createClass({
     }
     if (filterTextChanged) {
       dataCenter.setFilterText(settings);
-      filterStateChanged && events.trigger('filterChanged');
+      events.trigger('filterChanged');
     } else if (columnsChanged) {
       events.trigger('onColumnsChanged');
     }
