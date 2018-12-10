@@ -5,8 +5,8 @@ var NetworkModal = require('./network-modal');
 var storage = require('./storage');
 var events = require('./events');
 
-var MAX_INCLUDE_LEN = 3072;
-var MAX_EXCLUDE_LEN = 3072;
+var MAX_INCLUDE_LEN = 5120;
+var MAX_EXCLUDE_LEN = 5120;
 var MAX_FRAMES_LENGTH = exports.MAX_FRAMES_LENGTH = 80;
 var MAX_COUNT = NetworkModal.MAX_COUNT;
 var TIMEOUT = 20000;
