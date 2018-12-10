@@ -67,8 +67,8 @@ var contextMenuList = [
     name: 'Filter',
     list:  [
       { name: 'Edit' },
-      { name: 'Exclude All Such Host', action: 'excludeHost' },
-      { name: 'Exclude All Such URL', action: 'excludeUrl' }
+      { name: 'Exclude This Host', action: 'excludeHost' },
+      { name: 'Exclude This URL', action: 'excludeUrl' }
     ]
   },
   { name: 'Compose' },
