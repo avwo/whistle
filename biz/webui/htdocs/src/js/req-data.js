@@ -66,9 +66,9 @@ var contextMenuList = [
   {
     name: 'Filter',
     list:  [
-      { name: 'All Such Host' },
-      { name: 'All Such URL' },
-      { name: 'Edit' }
+      { name: 'Edit' },
+      { name: 'Exclude All Such Host', action: 'excludeHost' },
+      { name: 'Exclude All Such URL', action: 'excludeUrl' }
     ]
   },
   { name: 'Compose' },
@@ -394,10 +394,10 @@ var ReqData = React.createClass({
     case 'removeAllSuchURL':
       item && self.removeThisURL(item, true);
       break;
-    case 'All Such Host':
+    case 'excludeHost':
       item && self.removeThisHost(item);
       break;
-    case 'All Such URL':
+    case 'excludeUrl':
       item && self.removeThisURL(item);
       break;
     case 'One':
@@ -487,8 +487,8 @@ var ReqData = React.createClass({
     list2[6].disabled = disabled;
     
     var list3 = contextMenuList[3].list;
-    list3[0].disabled = disabled;
     list3[1].disabled = disabled;
+    list3[2].disabled = disabled;
 
     contextMenuList[4].disabled = disabled;
     if (item) {
@@ -508,7 +508,7 @@ var ReqData = React.createClass({
     contextMenuList[9].disabled = uploadItem.disabled = disabled && !selectedCount;
     var data = util.getMenuPosition(e, 110, uploadItem.hide ? 310 : 340);
     data.list = contextMenuList;
-    data.className = data.marginRight < 230 ? 'w-ctx-menu-left' : '';
+    data.className = data.marginRight < 260 ? 'w-ctx-menu-left' : '';
     this.refs.contextMenu.show(data);
   },
   onFilterChange: function(keyword) {

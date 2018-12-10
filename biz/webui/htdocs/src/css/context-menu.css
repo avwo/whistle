@@ -44,6 +44,9 @@
 .w-ctx-menu-item:hover .w-ctx-menu-list, .w-ctx-menu-item:hover .w-ctx-menu-gap {
   display: block;
 }
+.w-ctx-menu-item:hover .w-ctx-menu-list {
+  width: auto;
+}
 .w-ctx-menu-item {
   display: flex;
   line-height: 30px;
@@ -85,7 +88,8 @@
 }
 
 .w-ctx-menu-left .w-ctx-menu-item  .w-ctx-menu-list {
-  left: -107%;
+  right: 102%;
+  left: unset;
 }
 
 .w-ctx-menu-left .w-ctx-menu-list .w-ctx-menu-gap {
