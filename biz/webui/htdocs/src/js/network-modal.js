@@ -238,7 +238,7 @@ proto.removeByHostList = function(hostList) {
 proto.removeByUrlList = function(urlList) {
   var list = this._list;
   for (var i = list.length - 1; i >= 0; --i) {
-    if (urlList.indexOf(list[i].url) === 0) {
+    if (urlList.indexOf(list[i].url.replace(/\?.*$/, '').substring(0, 1024)) !== -1) {
       list.splice(i, 1);
     }
   }
