@@ -58,14 +58,16 @@ var contextMenuList = [
       { name: 'One' },
       { name: 'Others' },
       { name: 'Selected' },
-      { name: 'Unselected' }
+      { name: 'Unselected' },
+      { name: 'All Such Host', action: 'removeAllSuchHost' },
+      { name: 'All Such URL', action: 'removeAllSuchURL' }
     ]
   },
   {
     name: 'Filter',
     list:  [
-      { name: 'This Host' },
-      { name: 'This URL' },
+      { name: 'All Such Host' },
+      { name: 'All Such URL' },
       { name: 'Edit' }
     ]
   },
@@ -305,18 +307,18 @@ var ReqData = React.createClass({
       events.trigger('filterChanged');
     }
   },
-  removeThisHost: function(item) {
+  removeThisHost: function(item, justRemove) {
     const host = item.isHttps ? item.path : item.hostname;
     var modal = this.props.modal;
     modal && modal.removeByHost(host);
-    this.updateFilter('H:' + host);
+    !justRemove && this.updateFilter('H:' + host);
     events.trigger('updateGlobal');
   },
-  removeThisURL: function(item) {
+  removeThisURL: function(item, justRemove) {
     const url = item.isHttps ? item.path : item.url.replace(/\?.*$/, '').substring(0, 1024);
     var modal = this.props.modal;
     modal && modal.removeByURL(url);
-    this.updateFilter(url);
+    !justRemove && this.updateFilter(url);
     events.trigger('updateGlobal');
   },
   onClickContextMenu: function(action, e) {
@@ -386,10 +388,16 @@ var ReqData = React.createClass({
     case 'Edit':
       events.trigger('filterSessions', e);
       break;
-    case 'This Host':
+    case 'removeAllSuchHost':
+      item && self.removeThisHost(item, true);
+      break;
+    case 'removeAllSuchURL':
+      item && self.removeThisURL(item, true);
+      break;
+    case 'All Such Host':
       item && self.removeThisHost(item);
       break;
-    case 'This URL':
+    case 'All Such URL':
       item && self.removeThisURL(item);
       break;
     case 'One':
@@ -475,6 +483,8 @@ var ReqData = React.createClass({
     list2[2].disabled = disabled || selectedCount === hasData;
     list2[3].disabled = !selectedCount;
     list2[4].disabled = selectedCount === hasData;
+    list2[5].disabled = disabled;
+    list2[6].disabled = disabled;
     
     var list3 = contextMenuList[3].list;
     list3[0].disabled = disabled;

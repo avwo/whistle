@@ -51,6 +51,7 @@
   justify-content: space-between;
   position: relative;
   cursor: default;
+  white-space: nowrap;
 }
 .w-ctx-menu-item:hover {
   background: #f1f3f4;
