@@ -67,8 +67,8 @@ var contextMenuList = [
     name: 'Filter',
     list:  [
       { name: 'Edit' },
-      { name: 'Exclude This Host', action: 'excludeHost' },
-      { name: 'Exclude This URL', action: 'excludeUrl' }
+      { name: 'Exclude All Such Host', action: 'excludeHost' },
+      { name: 'Exclude All Such URL', action: 'excludeUrl' }
     ]
   },
   { name: 'Compose' },
@@ -291,34 +291,70 @@ var ReqData = React.createClass({
     var modal = this.props.modal;
     modal && modal.clearSelection();
   },
+  getFilterList: function() {
+    var settings = dataCenter.getFilterText();
+    if (settings.disabledExcludeText) {
+      return [];
+    }
+    return settings.excludeText.trim().split(/\s+/g);
+  },
   updateFilter: function(str) {
     var settings = dataCenter.getFilterText();
-    if (settings.disabledExcludeText || !settings.excludeText) {
-      settings.excludeText = str;
-      settings.disabledExcludeText = false;
-    } else if (settings.excludeText.split(/\s+/).indexOf(str) === -1) {
-      settings.excludeText = (str + '\n' + settings.excludeText)
-        .substring(0, dataCenter.MAX_EXCLUDE_LEN).trim();
-    } else {
-      settings = null;
-    }
-    if (settings) {
-      dataCenter.setFilterText(settings);
-      events.trigger('filterChanged');
-    }
+    settings.excludeText = str;
+    settings.disabledExcludeText = false;
+    dataCenter.setFilterText(settings);
+    events.trigger('filterChanged');
   },
-  removeThisHost: function(item, justRemove) {
-    const host = item.isHttps ? item.path : item.hostname;
+  getActiveList: function(curItem) {
     var modal = this.props.modal;
-    modal && modal.removeByHost(host);
-    !justRemove && this.updateFilter('H:' + host);
+    if (!modal || !curItem.selected) {
+      return [curItem];
+    }
+    return modal.getSelectedList();
+  },
+  removeAllSuchHost: function(item, justRemove) {
+    var hostList = [];
+    var list = this.getActiveList(item);
+    list.forEach(function(item) {
+      var host = item.isHttps ? item.path : item.hostname;
+      if (hostList.indexOf(host) === -1) {
+        hostList.push(host);
+      }
+    });
+    var modal = this.props.modal;
+    modal && modal.removeByHostList(hostList);
+    if (!justRemove) {
+      var filterList = this.getFilterList();
+      hostList.forEach(function(host) {
+        host = 'H:' + host;
+        if (filterList.indexOf(host) === -1) {
+          filterList.unshift(host);
+        }
+      });
+      this.updateFilter(filterList.join('\n'));
+    }
     events.trigger('updateGlobal');
   },
-  removeThisURL: function(item, justRemove) {
-    const url = item.isHttps ? item.path : item.url.replace(/\?.*$/, '').substring(0, 1024);
+  removeAllSuchURL: function(item, justRemove) {
+    var urlList = [];
+    var list = this.getActiveList(item);
+    list.forEach(function(item) {
+      var url = item.isHttps ? item.path : item.url.replace(/\?.*$/, '').substring(0, 1024);
+      if (urlList.indexOf(url) === -1) {
+        urlList.push(url);
+      }
+    });
     var modal = this.props.modal;
-    modal && modal.removeByURL(url);
-    !justRemove && this.updateFilter(url);
+    modal && modal.removeByUrlList(urlList);
+    if (!justRemove) {
+      var filterList = this.getFilterList();
+      urlList.forEach(function(url) {
+        if (filterList.indexOf(url) === -1) {
+          filterList.unshift(url);
+        }
+      });
+      this.updateFilter(filterList.join('\n'));
+    }
     events.trigger('updateGlobal');
   },
   onClickContextMenu: function(action, e) {
@@ -389,16 +425,16 @@ var ReqData = React.createClass({
       events.trigger('filterSessions', e);
       break;
     case 'removeAllSuchHost':
-      item && self.removeThisHost(item, true);
+      item && self.removeAllSuchHost(item, true);
       break;
     case 'removeAllSuchURL':
-      item && self.removeThisURL(item, true);
+      item && self.removeAllSuchURL(item, true);
       break;
     case 'excludeHost':
-      item && self.removeThisHost(item);
+      item && self.removeAllSuchHost(item);
       break;
     case 'excludeUrl':
-      item && self.removeThisURL(item);
+      item && self.removeAllSuchURL(item);
       break;
     case 'One':
       events.trigger('removeIt', item);
