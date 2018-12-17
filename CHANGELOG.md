@@ -1,3 +1,6 @@
+# v1.13.7
+1. perf: 优化界面性能
+
 # v1.13.6
 1. style: Log里面的 `AutoRefresh` 改为 `Record`
 2. refactor: 不导出被过滤掉的日志
