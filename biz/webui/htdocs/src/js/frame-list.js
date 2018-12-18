@@ -5,6 +5,7 @@ var FilterInput = require('./filter-input');
 var DropDown = require('./dropdown');
 var dataCenter = require('./data-center');
 var events = require('./events');
+var RecordBtn = require('./record-btn');
 
 var SEND_PERATORS = [
   {
@@ -170,6 +171,20 @@ var FrameList = React.createClass({
   setContent: function(content) {
     this.content = ReactDOM.findDOMNode(content);
   },
+  handleAction: function(type) {
+    if (type === 'top') {
+      this.container.scrollTop = 0;
+      return;
+    }
+    if (type === 'bottom') {
+      return this.autoRefresh();
+    }
+    var refresh = type === 'refresh';
+    // dataCenter.stopFramesRecord(!refresh);
+    if (refresh) {
+      return this.autoRefresh();
+    }
+  },
   render: function() {
     var self = this;
     var props = self.props;
@@ -189,13 +204,10 @@ var FrameList = React.createClass({
     return (<div className="fill orient-vertical-box w-frames-list">
       <FilterInput onChange={self.onFilterChange} />
       <div className="w-frames-action">
+        <RecordBtn onClick={this.handleAction} />
         <a onClick={self.clear} className="w-remove-menu"
           href="javascript:;" draggable="false">
           <span className="glyphicon glyphicon-remove"></span>Clear
-        </a>
-        <a onClick={self.autoRefresh} onDoubleClick={self.stopRefresh} className="w-remove-menu"
-          href="javascript:;" draggable="false">
-          <span className="glyphicon glyphicon-play"></span>AutoRefresh
         </a>
         <a onClick={self.replay} className={'w-remove-menu' + ((!activeItem || reqData.closed) ? ' w-disabled' : '')}
           href="javascript:;" draggable="false">
