@@ -185,7 +185,6 @@ var FrameList = React.createClass({
     var reqData = this.props.reqData;
     if (reqData) {
       reqData.stopRecordFrames = !refresh;
-      this.refs.recordBtn.enable(refresh);
     }
     if (refresh) {
       return this.autoRefresh();

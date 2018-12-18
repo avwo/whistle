@@ -28,7 +28,7 @@ var RecordBtn = React.createClass({
     if (stop === this.state.stop) {
       return;
     }
-    this.state.stop = flag;
+    this.state.stop = stop;
     this.setState({});
   },
   showActionOptions: function() {
