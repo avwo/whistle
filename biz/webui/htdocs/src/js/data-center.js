@@ -485,12 +485,14 @@ function startLoadData() {
     var curActiveItem = networkModal.getActive();
     var curFrames = curActiveItem && curActiveItem.frames;
     var lastFrameId, curReqId;
-    if (curActiveItem.stopRecordFrames) {
-      curReqId = curActiveItem.id;
-      lastFrameId = -3;
-    } else if (curFrames && curFrames.length <= MAX_FRAMES_LENGTH) {
-      curReqId = curActiveItem.id;
-      lastFrameId = curActiveItem.lastFrameId;
+    if (curFrames) {
+      if (curActiveItem.stopRecordFrames) {
+        curReqId = curActiveItem.id;
+        lastFrameId = -3;
+      } else if (curFrames.length <= MAX_FRAMES_LENGTH) {
+        curReqId = curActiveItem.id;
+        lastFrameId = curActiveItem.lastFrameId;
+      }
     }
     var count = inited ? 20 : networkModal.getDisplayCount();
     var options = {
@@ -559,7 +561,7 @@ function startLoadData() {
       if (framesLen) {
         curActiveItem.lastFrameId = data.frames[framesLen - 1].frameId;
         curFrames.push.apply(curFrames, data.frames);
-      } else {
+      } else if (data.lastFrameId) {
         curActiveItem.lastFrameId = data.lastFrameId;
       }
       if (curReqId) {
