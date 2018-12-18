@@ -63,6 +63,8 @@ var FrameList = React.createClass({
     if (this.atBottom) {
       this.autoRefresh();
     }
+    var reqData = this.props.reqData;
+    reqData && this.refs.recordBtn.enable(!reqData.stopRecordFrames);
   },
   replay: function() {
     var reqData = this.props.reqData;
@@ -180,7 +182,11 @@ var FrameList = React.createClass({
       return this.autoRefresh();
     }
     var refresh = type === 'refresh';
-    // dataCenter.stopFramesRecord(!refresh);
+    var reqData = this.props.reqData;
+    if (reqData) {
+      reqData.stopRecordFrames = !refresh;
+      this.refs.recordBtn.enable(refresh);
+    }
     if (refresh) {
       return this.autoRefresh();
     }
@@ -204,7 +210,7 @@ var FrameList = React.createClass({
     return (<div className="fill orient-vertical-box w-frames-list">
       <FilterInput onChange={self.onFilterChange} />
       <div className="w-frames-action">
-        <RecordBtn onClick={this.handleAction} />
+        <RecordBtn ref="recordBtn" onClick={this.handleAction} />
         <a onClick={self.clear} className="w-remove-menu"
           href="javascript:;" draggable="false">
           <span className="glyphicon glyphicon-remove"></span>Clear

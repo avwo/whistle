@@ -485,7 +485,10 @@ function startLoadData() {
     var curActiveItem = networkModal.getActive();
     var curFrames = curActiveItem && curActiveItem.frames;
     var lastFrameId, curReqId;
-    if (curFrames && curFrames.length <= MAX_FRAMES_LENGTH) {
+    if (curActiveItem.stopRecordFrames) {
+      curReqId = curActiveItem.id;
+      lastFrameId = -3;
+    } else if (curFrames && curFrames.length <= MAX_FRAMES_LENGTH) {
       curReqId = curActiveItem.id;
       lastFrameId = curActiveItem.lastFrameId;
     }
@@ -552,9 +555,12 @@ function startLoadData() {
       data = data.data;
       var hasChhanged;
       var framesLen = data.frames && data.frames.length;
+
       if (framesLen) {
         curActiveItem.lastFrameId = data.frames[framesLen - 1].frameId;
         curFrames.push.apply(curFrames, data.frames);
+      } else {
+        curActiveItem.lastFrameId = data.lastFrameId;
       }
       if (curReqId) {
         var status = data.socketStatus;

@@ -16,12 +16,20 @@ var ACTION_OPTIONS = [
 
 var RecordBtn = React.createClass({
   getInitialState: function() {
-    return {};
+    return { stop: false };
   },
   onClick: function() {
     var stop = !this.state.stop;
     this.props.onClick(stop ? 'stop' : 'refresh');
     this.setState({ stop: stop });
+  },
+  enable: function(flag) {
+    var stop = flag === false;
+    if (stop === this.state.stop) {
+      return;
+    }
+    this.state.stop = flag;
+    this.setState({});
   },
   showActionOptions: function() {
     this.setState({
