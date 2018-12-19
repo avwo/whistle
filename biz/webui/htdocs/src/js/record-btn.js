@@ -56,7 +56,7 @@ var RecordBtn = React.createClass({
           + (hide ? ' hide' : '')}
       >
         <a onClick={this.onClick} href="javascript:;" draggable="false"
-          className="w-scroll-menu">
+          className={'w-scroll-menu' + (this.props.disabledRecord ? ' w-disabled' : '')}>
           <span style={{color: state.stop ? '#ccc' : '#f66'}} className="glyphicon glyphicon-stop"></span>Record
         </a>
         <MenuItem options={ACTION_OPTIONS} className="w-remove-menu-item" onClickOption={this.onClickOption} />

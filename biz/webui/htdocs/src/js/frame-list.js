@@ -209,7 +209,7 @@ var FrameList = React.createClass({
     return (<div className="fill orient-vertical-box w-frames-list">
       <FilterInput onChange={self.onFilterChange} />
       <div className="w-frames-action">
-        <RecordBtn ref="recordBtn" onClick={this.handleAction} />
+        <RecordBtn ref="recordBtn" onClick={this.handleAction} disabledRecord={reqData.closed} />
         <a onClick={self.clear} className="w-remove-menu"
           href="javascript:;" draggable="false">
           <span className="glyphicon glyphicon-remove"></span>Clear
