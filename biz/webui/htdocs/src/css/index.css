@@ -31,7 +31,7 @@
 
 .w-values-list .glyphicon {display: none!important;}
 .w-values-list a {font-weight: normal!important;}
-.w-disabled .glyphicon-ok {color: #ccc!important;}
+.w-disabled .glyphicon-ok, .w-disabled .glyphicon-stop {color: #ccc!important;}
 
 .w-rules-settings-dialog .modal-dialog {width: 336px;}
 .w-values-settings-dialog .modal-dialog {width: 282px;}
