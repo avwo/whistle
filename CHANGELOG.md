@@ -1,6 +1,7 @@
 # v1.13.7
 1. perf: 优化界面性能
 2. style: Frames里面的 `AutoRefresh` 改为 `Record`
+3. fix: 页面Frames里面数据帧可能丢失的问题
 
 # v1.13.6
 1. style: Log里面的 `AutoRefresh` 改为 `Record`
