@@ -13,7 +13,7 @@ module.exports = function(req, res, next) {
     WEBUI_PATH = config.WEBUI_PATH;
     PREVIEW_PATH_RE = config.PREVIEW_PATH_RE;
     var webuiPathRe = util.escapeRegExp(WEBUI_PATH);
-    INTERNAL_APP = new RegExp('^' + webuiPathRe + '(log|weinre)\\.(\\d{1,5})/');
+    INTERNAL_APP = new RegExp('^' + webuiPathRe + '(log|weinre)(?:\\.(\\d{1,5}))?/');
     PLUGIN_RE = new RegExp('^' + webuiPathRe + 'whistle\\.([a-z\\d_-]+)/');
   }
   var fullUrl = util.getFullUrl(req);
@@ -28,7 +28,13 @@ module.exports = function(req, res, next) {
     if (isWebUI) {
       if (INTERNAL_APP.test(req.path)) {
         transformPort = RegExp.$2;
-        proxyUrl = transformPort != (RegExp.$1 === 'weinre' ? config.weinreport : config.uiport);
+        var name = RegExp.$1;
+        if (transformPort) {
+          proxyUrl = transformPort != (name === 'weinre' ? config.weinreport : config.uiport);
+        } else {
+          proxyUrl = false;
+          transformPort = name === 'weinre' ? config.weinreport : config.uiport;
+        }
       } else if (PLUGIN_RE.test(req.path)) {
         proxyUrl = !pluginMgr.getPlugin(RegExp.$1 + ':');
       } else {
