@@ -129,11 +129,7 @@ proto.reset = function(list) {
   if (!list || this.list === list) {
     return list;
   }
-  var len = this.list.length - 20;
-  if (len > 0) {
-    this.list.splice(0, len);
-  }
-  this.list = list || [];
+  this.list = list;
   this.filter();
   return list;
 };
