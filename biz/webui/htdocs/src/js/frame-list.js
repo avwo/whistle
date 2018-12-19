@@ -220,7 +220,7 @@ var FrameList = React.createClass({
         </a>
         <a onClick={self.compose} className={'w-remove-menu' + (activeItem ? '' : ' w-disabled')}
           href="javascript:;" draggable="false">
-          <span className="glyphicon glyphicon-edit"></span>Composer
+          <span className="glyphicon glyphicon-edit"></span>Compose
         </a>
         <a onClick={self.abort} className={'w-remove-menu' + (reqData.closed ? ' w-disabled' : '')}
           href="javascript:;" draggable="false">
