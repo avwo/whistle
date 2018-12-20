@@ -1,3 +1,6 @@
+# v1.13.8
+1. fix: [includeFilter](http://wproxy.org/whistle/rules/filter.html)、[excludeFilter](http://wproxy.org/whistle/rules/filter.html)无法匹配请求头问题，已经里面正则导致子匹配失效问题
+
 # v1.13.7
 1. perf: 优化界面性能
 2. style: Frames里面的 `AutoRefresh` 改为 `Record`
