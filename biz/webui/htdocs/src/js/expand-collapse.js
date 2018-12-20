@@ -1,7 +1,7 @@
 var React = require('react');
 var util = require('./util');
 
-var MIN_LENGTH = 1024 * 2;
+var MIN_LENGTH = 1024;
 var EXPAND_LENGTH = 1024 * 32;
 var MAX_LENGTH = EXPAND_LENGTH * 3;
 
