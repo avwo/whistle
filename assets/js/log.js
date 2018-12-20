@@ -248,6 +248,39 @@
     return stack + getPageInfo();
   }
 
+  function arrayIndexOf(arr, value) {
+    if (arr.indexOf) {
+      return arr.indexOf(value);
+    }
+    for (var i = 0, len = arr.length; i < len; i++) {
+      if (arr[i] === value) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  function stringifyObj(obj) {
+    try {
+      return JSON.stringify(obj);
+    } catch(e) {}
+    try {
+      var keyList = [];
+      var valList = [];
+      return JSON.stringify(obj, function(key, value) {
+        if (value && typeof value === 'object') {
+          var index = arrayIndexOf(valList, value);
+          valList.push(value);
+          keyList.push(key);
+          if (index !== -1) {
+            return '[Circular ' + keyList[index] + ']';
+          }
+        }
+        return value;
+      });
+    } catch(e) {}
+  }
+
   var levels = ['fatal', 'error', 'warn', 'info', 'debug', 'log'];
   var noop = function() {};
   for (var i = 0, len = levels.length; i < len; i++) {
@@ -263,11 +296,8 @@
         if (!result.length) {
           result = ['undefined'];
         }
-        try {
-          addLog(level, JSON.stringify(result));
-        } catch(e) {
-          addLog('error', 'WhistleLogError: Can\`t stringify the object cause by:\n' + getErrorStack(e));
-        }
+        result = stringifyObj(result);
+        result && addLog(level, result);
       };
       console[level] = function() {
         if (pending) {
