@@ -70,4 +70,5 @@
   - 启动命令行指定 `-D baseDir`
   - 配置环境变量 `WHISTLE_PATH=baseDir`
 18. 如何加载自定义证书
+
 新建一个目录(`/xxx/ssl`)，把自定义证书放到此目录，证书必须后缀为`.crt`格式，每个证书的key和crt文件名称必须一致(如：`test.key`、`test.crt`，支持多域名证书，如果是根证书名字必须为 `root.key`、`root.crt`)，启动是时加启动参数 `w2 start -z /xxx/ssl` 即可
