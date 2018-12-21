@@ -1,5 +1,8 @@
+# v1.13.10
+1. refactor: 解决[log](http://wproxy.org/whistle/rules/log.html)里面显示循环引用对象的问题
+
 # v1.13.9
-# v1.13.8
+# <del>v1.13.8</del>
 1. fix: [includeFilter](http://wproxy.org/whistle/rules/filter.html)、[excludeFilter](http://wproxy.org/whistle/rules/filter.html)无法匹配请求头问题，已经里面正则导致子匹配失效问题
 
 # v1.13.7
