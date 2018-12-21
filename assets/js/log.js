@@ -216,13 +216,15 @@
   }
 
   var index = 0;
+  var MAX_LEN = 1024 * 56;
   function addLog(level, text) {
     var img = new Image();
     var timer;
     if (index > 9999) {
       index = 0;
     }
-    img.src ='$LOG_CGI?id=$LOG_ID&level=' + level + '&text=' + encodeURIComponent(text)
+    text = '&text=' + encodeURIComponent(text && (text + '').substring(0, MAX_LEN));
+    img.src ='$LOG_CGI?id=$LOG_ID&level=' + level + text
       + '&' + new Date().getTime() + '-' + ++index;
     var preventGC = function() {
       img.onload = img.onerror = null;
@@ -311,8 +313,13 @@
           } catch (e) {}
         }
         wFn.apply(null, arguments);
-        fn.apply(this, arguments);
-        pending = false;
+        try {
+          fn.apply(this, arguments);
+        } catch(e) {
+          fn(arguments.length < 2 ? arguments[0] : Array.prototype.slice.apply(arguments));
+        } finally {
+          pending = false;
+        }
       };
     })(level);
   }
