@@ -70,8 +70,8 @@
   border-bottom: 1px solid #ccc;
   background: #fff;
 }
-.w-frames-action .w-frames-action .w-menu-item {
-  left: 10px;
+.w-frames-action .w-refresh-menu-list .w-menu-item {
+  right: unset;
 }
 .w-frames-action label:first-child {
   background: #e2f7da;
