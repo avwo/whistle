@@ -184,6 +184,12 @@ var FrameList = React.createClass({
     var refresh = type === 'refresh';
     var reqData = this.props.reqData;
     if (reqData) {
+      if (type === 'pause') {
+        reqData.stopRecordFrames = true;
+        reqData.pauseRecordFrames = true;
+        return;
+      }
+      reqData.pauseRecordFrames = false;
       reqData.stopRecordFrames = !refresh;
     }
     if (refresh) {

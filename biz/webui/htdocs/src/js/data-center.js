@@ -474,18 +474,18 @@ function startLoadData() {
     var startLogTime = -1;
     var startSvrLogTime = -1;
 
-    if (len < 100) {
+    if (!exports.pauseConsoleRefresh && len < 100) {
       startLogTime = lastPageLogTime;
     }
 
-    if (svrLen < 70) {
+    if (!exports.pauseServerLogRefresh && svrLen < 70) {
       startSvrLogTime = lastSvrLogTime;
     }
 
     var curActiveItem = networkModal.getActive();
     var curFrames = curActiveItem && curActiveItem.frames;
     var lastFrameId, curReqId;
-    if (curFrames) {
+    if (curFrames && !curActiveItem.pauseRecordFrames) {
       if (curActiveItem.stopRecordFrames) {
         curReqId = curActiveItem.id;
         lastFrameId = -3;
@@ -831,14 +831,36 @@ exports.on = function (type, callback) {
 };
 
 exports.stopNetworkRecord = function(stop) {
-  networkModal.clearNetwork = !stop;
+  if (!stop && exports.pauseRefresh) {
+    networkModal.clearNetwork = false;
+  } else {
+    networkModal.clearNetwork = !stop;
+  }
+  exports.pauseRefresh = false;
   exports.stopRefresh = stop;
+};
+exports.pauseNetworkRecord = function() {
+  networkModal.clearNetwork = false;
+  exports.pauseRefresh = true;
+  exports.stopRefresh = true;
+};
+
+exports.pauseConsoleRecord = function() {
+  exports.stopConsoleRefresh = false;
+  exports.pauseConsoleRefresh = true;
 };
 
 exports.stopConsoleRecord = function(stop) {
+  exports.pauseConsoleRefresh = false;
   exports.stopConsoleRefresh = stop;
 };
 
+exports.pauseServerLogRecord = function() {
+  exports.stopServerLogRefresh = false;
+  exports.pauseServerLogRefresh = true;
+};
+
 exports.stopServerLogRecord = function(stop) {
+  exports.pauseServerLogRefresh = false;
   exports.stopServerLogRefresh = stop;
 };

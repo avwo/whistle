@@ -70,7 +70,9 @@
   border-bottom: 1px solid #ccc;
   background: #fff;
 }
-
+.w-frames-action .w-frames-action .w-menu-item {
+  left: 10px;
+}
 .w-frames-action label:first-child {
   background: #e2f7da;
   display: inline-block;

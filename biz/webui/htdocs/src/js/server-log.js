@@ -192,6 +192,10 @@ var ServerLog = React.createClass({
     if (type === 'bottom') {
       return this.autoRefresh();
     }
+    if (type === 'bottom') {
+      dataCenter.pauseServerLogRecord();
+      return;
+    }
     var refresh = type === 'refresh';
     dataCenter.stopServerLogRecord(!refresh);
     if (refresh) {

@@ -1,7 +1,18 @@
 var React = require('react');
 var MenuItem = require('./menu-item');
-
+require('../css/record-btn.css');
+var PAUSE_OPTION = {
+  name: 'Pause Record',
+  icon: 'minus-sign',
+  id: 'pause'
+};
+var STOP_OPTION = {
+  name: 'Stop Record',
+  icon: 'stop',
+  id: 'stop'
+};
 var ACTION_OPTIONS = [
+  PAUSE_OPTION,
   {
     name: 'Scroll To Top',
     icon: 'arrow-up',
@@ -20,8 +31,11 @@ var RecordBtn = React.createClass({
   },
   onClick: function() {
     var stop = !this.state.stop;
+    this.state.pause = false;
+    this.state.stop = stop;
+    ACTION_OPTIONS[0] = PAUSE_OPTION;
     this.props.onClick(stop ? 'stop' : 'refresh');
-    this.setState({ stop: stop });
+    this.setState({});
   },
   enable: function(flag) {
     var stop = flag === false;
@@ -42,12 +56,24 @@ var RecordBtn = React.createClass({
     });
   },
   onClickOption: function(option) {
+    if (option.id === 'pause') {
+      ACTION_OPTIONS[0] = STOP_OPTION;
+      this.state.pause = true;
+      this.state.stop = true;
+    } else if (option.id === 'stop') {
+      ACTION_OPTIONS[0] = PAUSE_OPTION;
+      this.state.pause = false;
+      this.state.stop = true;
+    }
     this.props.onClick(option.id);
     this.hideActionOptions();
   },
   render: function() {
     var state = this.state;
     var hide = this.props.hide;
+    var pause = state.pause;
+    var stop = state.stop;
+    var title = 'Click to ' + ((stop || pause) ? 'start' : 'stop') + ' record';
 
     return (
       <div onMouseEnter={this.showActionOptions} onMouseLeave={this.hideActionOptions}
@@ -56,8 +82,11 @@ var RecordBtn = React.createClass({
           + (hide ? ' hide' : '')}
       >
         <a onClick={this.onClick} href="javascript:;" draggable="false"
-          className={'w-scroll-menu' + (this.props.disabledRecord ? ' w-disabled' : '')}>
-          <span style={{color: state.stop ? '#ccc' : '#f66'}} className="glyphicon glyphicon-stop"></span>Record
+          className={'w-scroll-menu' + (this.props.disabledRecord ? ' w-disabled' : '')}
+          title={title}
+        >
+          <span style={{color: (!pause && stop) ? '#ccc' : '#f66'}}
+            className={'glyphicon glyphicon-' + (pause ? 'minus-sign' : 'stop')}></span>Record
         </a>
         <MenuItem options={ACTION_OPTIONS} className="w-remove-menu-item" onClickOption={this.onClickOption} />
       </div>

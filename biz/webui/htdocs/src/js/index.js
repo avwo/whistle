@@ -1196,6 +1196,9 @@ var Index = React.createClass({
     if (type === 'bottom') {
       return this.autoRefresh();
     }
+    if (type === 'pause') {
+      return dataCenter.pauseNetworkRecord();
+    }
     var refresh = type === 'refresh';
     dataCenter.stopNetworkRecord(!refresh);
     if (refresh) {
