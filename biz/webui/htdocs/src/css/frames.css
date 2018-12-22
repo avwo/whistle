@@ -71,7 +71,7 @@
   background: #fff;
 }
 .w-frames-action .w-refresh-menu-list .w-menu-item {
-  right: unset;
+  left: 10px;
 }
 .w-frames-action label:first-child {
   background: #e2f7da;
