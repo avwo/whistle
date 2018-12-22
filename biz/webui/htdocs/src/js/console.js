@@ -225,7 +225,7 @@ var Console = React.createClass({
     if (type === 'bottom') {
       return this.autoRefresh();
     }
-    if (type === 'bottom') {
+    if (type === 'pause') {
       dataCenter.pauseConsoleRecord();
       return;
     }
