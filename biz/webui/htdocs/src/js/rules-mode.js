@@ -152,7 +152,7 @@ CodeMirror.defineMode('rules', function() {
         str += ch;
         if (!type && ch == '/' && pre == '/') {
           if (isHost(str)) {
-            type = 'number js-number';
+            type = 'number js-number js-type';
           } else if (isHead(str)) {
             type = 'header js-head js-type';
           } else if (isWeinre(str)) {
