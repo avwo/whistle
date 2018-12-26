@@ -1,3 +1,6 @@
+# v1.13.11
+1. fix: `pattern host://{key1}` 和 `pattern proxy://{key2}` 失效问题
+
 # v1.13.10
 1. refactor: 解决[log](http://wproxy.org/whistle/rules/log.html)里面显示循环引用对象的问题
 2. feat: 支持 `Stop Record`（默认）与 `Pause Record`，前者已存在，会忽略后续的抓包数据，后者只是暂停
