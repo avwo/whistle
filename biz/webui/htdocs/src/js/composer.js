@@ -85,7 +85,7 @@ var Composer = React.createClass({
       body: data.body,
       tabName: 'Request',
       showPretty: showPretty,
-      rules: !dataCenter.isStrictMode() && typeof rules === 'string' ? rules : '',
+      rules: typeof rules === 'string' ? rules : '',
       type: getType(util.parseHeaders(data.headers)),
       disableComposerRules: disableComposerRules
     };
@@ -300,7 +300,8 @@ var Composer = React.createClass({
     if (!url) {
       return;
     }
-    var rules = this.state.disableComposerRules ? null : this.state.rules;
+    var disableComposerRules = dataCenter.isStrictMode() || this.state.disableComposerRules;
+    var rules = disableComposerRules ? null : this.state.rules;
     var headers = ReactDOM.findDOMNode(refs.headers).value;
     if (typeof rules === 'string' && (rules = rules.trim())) {
       var obj = util.parseJSON(headers);
@@ -424,7 +425,6 @@ var Composer = React.createClass({
     var type = state.type;
     var rules = state.rules;
     var showPretty = state.showPretty;
-    var disableComposerRules = state.disableComposerRules;
     var pending = state.pending;
     var result = state.result || '';
     var tabName = state.tabName;
@@ -438,7 +438,7 @@ var Composer = React.createClass({
     var disableHistory = !historyData.length || pending;
     var showPrettyBody = hasBody && showPretty && isForm;
     var isStrictMode = dataCenter.isStrictMode();
-    
+    var disableComposerRules = isStrictMode || state.disableComposerRules;
     return (
       <div className={'fill orient-vertical-box w-detail-content w-detail-composer' + (util.getBoolean(this.props.hide) ? ' hide' : '')}>
         <div className="w-composer-url box">
@@ -511,18 +511,17 @@ var Composer = React.createClass({
             {state.initedResponse ? <Properties className={'w-composer-res-' + getStatus(statusCode)} modal={{ statusCode: statusCode == null ? 'aborted' : statusCode }} hide={!showResponse} /> : undefined}
             {state.initedResponse ? <ResDetail modal={result} hide={!showResponse} /> : undefined}
           </div>
-          <div ref="rulesCon" className="orient-vertical-box fill w-composer-rules">
+          <div ref="rulesCon" title={isStrictMode ? TIPS : undefined} className="orient-vertical-box fill w-composer-rules">
             <div className="w-detail-inspectors-title">
               <label>
-                <input title={isStrictMode ? TIPS : undefined} disabled={isStrictMode} onChange={this.onDisableChange} checked={!disableComposerRules} type="checkbox" />
+                <input disabled={isStrictMode} onChange={this.onDisableChange} checked={!disableComposerRules} type="checkbox" />
                 Rules
               </label>
             </div>
             <textarea
-              disabled={isStrictMode || disableComposerRules}
+              disabled={disableComposerRules}
               defaultValue={rules}
               ref='composerRules'
-              title={isStrictMode ? TIPS : undefined}
               onChange={this.onRulesChange}
               style={{background: !disableComposerRules && rules ? 'lightyellow' : undefined }}
               maxLength="8192"
