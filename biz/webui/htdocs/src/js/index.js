@@ -645,6 +645,14 @@ var Index = React.createClass({
           }
         }
       });
+    var removeItem = function(e) {
+      var target = e.target;
+      if ( target.nodeName == 'A'
+          && $(target).parent().hasClass('w-list-data')) {
+        self.state.name == 'rules' ? self.removeRules() : self.removeValues();
+      }
+      e.preventDefault();
+    };
     $(window).on('hashchange', function() {
       var pageName = self.state.networkMode ? 'network' : getPageName();
       if (!pageName || pageName.indexOf('rules') != -1) {
@@ -665,6 +673,7 @@ var Index = React.createClass({
         }
       }
     }).on('keydown', function(e) {
+      e.keyCode == 46 && removeItem(e);
       if (!e.ctrlKey && !e.metaKey) {
         if (e.keyCode === 112) {
           e.preventDefault();
@@ -683,16 +692,7 @@ var Index = React.createClass({
           self.clear();
         }
       }
-
-      if (e.keyCode == 68) {
-        var target = e.target;
-        if ( target.nodeName == 'A'
-            && $(target).parent().hasClass('w-list-data')) {
-          self.state.name == 'rules' ? self.removeRules() : self.removeValues();
-        }
-        e.preventDefault();
-      }
-
+      e.keyCode == 68 && removeItem(e);
       var modal = self.state.network;
       if (isNetwork && e.keyCode === 83) {
         e.preventDefault();
