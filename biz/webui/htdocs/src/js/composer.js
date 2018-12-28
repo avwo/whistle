@@ -20,7 +20,7 @@ var TYPES = {
   json: 'application/json',
   custom: ''
 };
-var TIPS = 'Requests can\'t bring rules in strict mode';
+var TIPS = 'Requests cannot bring rules in strict mode';
 var TYPE_CONF_RE = /;.+$/;
 var REV_TYPES = {};
 Object.keys(TYPES).forEach(function(name) {
