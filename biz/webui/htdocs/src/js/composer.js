@@ -20,6 +20,7 @@ var TYPES = {
   json: 'application/json',
   custom: ''
 };
+var TIPS = 'Requests can\'t bring rules in strict mode';
 var TYPE_CONF_RE = /;.+$/;
 var REV_TYPES = {};
 Object.keys(TYPES).forEach(function(name) {
@@ -84,7 +85,7 @@ var Composer = React.createClass({
       body: data.body,
       tabName: 'Request',
       showPretty: showPretty,
-      rules: typeof rules === 'string' ? rules : '',
+      rules: !dataCenter.isStrictMode() && typeof rules === 'string' ? rules : '',
       type: getType(util.parseHeaders(data.headers)),
       disableComposerRules: disableComposerRules
     };
@@ -108,6 +109,9 @@ var Composer = React.createClass({
           self.onComposerChange();
         });
       }
+    });
+    events.on('updateStrictMode', function() {
+      self.setState({});
     });
     self.updatePrettyData();
     self.loadHistory();
@@ -433,6 +437,7 @@ var Composer = React.createClass({
     var historyData = state.historyData;
     var disableHistory = !historyData.length || pending;
     var showPrettyBody = hasBody && showPretty && isForm;
+    var isStrictMode = dataCenter.isStrictMode();
     
     return (
       <div className={'fill orient-vertical-box w-detail-content w-detail-composer' + (util.getBoolean(this.props.hide) ? ' hide' : '')}>
@@ -509,14 +514,15 @@ var Composer = React.createClass({
           <div ref="rulesCon" className="orient-vertical-box fill w-composer-rules">
             <div className="w-detail-inspectors-title">
               <label>
-                <input onChange={this.onDisableChange} checked={!disableComposerRules} type="checkbox" />
+                <input title={isStrictMode ? TIPS : undefined} disabled={isStrictMode} onChange={this.onDisableChange} checked={!disableComposerRules} type="checkbox" />
                 Rules
               </label>
             </div>
             <textarea
-              disabled={disableComposerRules}
+              disabled={isStrictMode || disableComposerRules}
               defaultValue={rules}
               ref='composerRules'
+              title={isStrictMode ? TIPS : undefined}
               onChange={this.onRulesChange}
               style={{background: !disableComposerRules && rules ? 'lightyellow' : undefined }}
               maxLength="8192"

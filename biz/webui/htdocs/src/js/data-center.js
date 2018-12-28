@@ -784,6 +784,10 @@ function updateServerInfo(data) {
     return;
   }
   updateCount = 0;
+  if (curServerInfo && curServerInfo.strictMode != data.strictMode) {
+    curServerInfo.strictMode = data.strictMode;
+    events.trigger('updateStrictMode');
+  }
   if (curServerInfo && curServerInfo.version == data.version &&
     curServerInfo.networkMode === data.networkMode && curServerInfo.multiEnv === data.multiEnv &&
     curServerInfo.baseDir == data.baseDir && curServerInfo.username == data.username &&
@@ -801,6 +805,9 @@ function updateServerInfo(data) {
 
 exports.isMutilEnv = function() {
   return curServerInfo && curServerInfo.multiEnv;
+};
+exports.isStrictMode = function() {
+  return (curServerInfo && curServerInfo.strictMode) || false;
 };
 
 exports.on = function (type, callback) {

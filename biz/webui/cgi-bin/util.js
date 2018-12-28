@@ -16,6 +16,7 @@ exports.getServerInfo = function getServerInfo(req) {
   var info = {
     version: config.version,
     networkMode: config.networkMode,
+    strictMode: config.strict,
     multiEnv: config.multiEnv,
     baseDir: config.baseDirHash,
     username: config.username,
