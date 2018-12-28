@@ -514,7 +514,7 @@ var Composer = React.createClass({
           <div ref="rulesCon" title={isStrictMode ? TIPS : undefined} className="orient-vertical-box fill w-composer-rules">
             <div className="w-detail-inspectors-title">
               <label>
-                <input disabled={disableComposerRules} onChange={this.onDisableChange} checked={!disableComposerRules} type="checkbox" />
+                <input disabled={disableComposerRules} onChange={this.onDisableChange} checked={!state.disableComposerRules} type="checkbox" />
                 Rules
               </label>
             </div>
