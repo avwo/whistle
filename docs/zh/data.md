@@ -112,6 +112,8 @@ test.json:
 ```
 {
 	"url": "${url}",
+	"port": "${port}",
+	"version": "${version}",
 	"search": "${url.search}",
 	"query": "${url.query}",
 	"queryValue": "${url.query.name}",
