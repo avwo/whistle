@@ -8,17 +8,17 @@
 
 ## 安装根证书
 
-### windows
+#### Windows
 
-### Mac
+#### Mac
 
-### Android
+#### Android
 
-### iOS
+#### iOS
 
-### Linux
+#### Linux
 
-### 其它
+#### 可能遇到的问题
 
 
 ## 更新whistle

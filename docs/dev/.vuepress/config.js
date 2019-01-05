@@ -23,6 +23,9 @@ module.exports = {
       { text: '官方插件', link: 'https://github.com/whistle-plugins' },
     ],
     sidebar: {
+      '/examples/': [
+        ''
+      ],
       '/protocols/': [
         '',
         'host',
@@ -38,6 +41,11 @@ module.exports = {
         '',
         'installation',
         'getting-started',
+        'rule-introduction',
+        'ui-operation',
+        'cli',
+        'custom',
+        '/examples/',
         'faq',
         '/protocols/'
       ],
