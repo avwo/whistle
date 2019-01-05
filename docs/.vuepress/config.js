@@ -1,4 +1,20 @@
 
+
+const getMenuList = (dir) => {
+  return [
+    'introduction',
+    'installation',
+    'getting-started',
+    'rule-introduction',
+    'ui-operation',
+    'cli',
+    'custom',
+    'examples/',
+    'faq',
+    'protocols/'
+  ].map(name => `${dir}${name}`);
+};
+
 module.exports = {
   title: 'whistle帮助文档',
   description: 'whistle帮助文档',
@@ -37,18 +53,8 @@ module.exports = {
           ]
         }
       ],
-      '/': [
-        '/zh/introduction',
-        '/zh/installation',
-        '/zh/getting-started',
-        '/zh/rule-introduction',
-        '/zh/ui-operation',
-        '/zh/cli',
-        '/zh/custom',
-        '/zh/examples/',
-        '/zh/faq',
-        '/zh/protocols/'
-      ],
+      '/zh/': getMenuList('/zh/'),
+      '/en/': getMenuList('/en/'),
     }
   },
   footer: 'MIT Licensed | Copyright © 2019-present avenwu'

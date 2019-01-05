@@ -2,7 +2,7 @@
 home: true
 heroImage: /hero.png
 actionText: 起步 →
-actionLink: /zh/introduction.html
+actionLink: /en/introduction.html
 footer: MIT Licensed | Copyright © 2019-present avenwu
 ---
 
