@@ -13,6 +13,9 @@
  .docs-en {
    margin-top: 120px;
  }
+ .nav-links > .nav-item:nth-child(3) {
+   display: none;
+ }
 </style>
 <a class="docs-en" href="en/">English Documentation</a>
-<a class="docs-zh" href="en/">中文文档</a>
+<a class="docs-zh" href="zh/">中文文档</a>

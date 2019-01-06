@@ -32,6 +32,8 @@ const getSildebarConfig = (dir) => {
 };
 
 module.exports = {
+  title: 'Whistle Documentation',
+  description: 'Whistle Documentation',
   locales: {
     '/en/': {
       lang: 'English',
