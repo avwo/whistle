@@ -13,7 +13,7 @@
  .docs-en {
    margin-top: 120px;
  }
- .nav-links > .nav-item:nth-child(3) {
+ .search-box, .nav-links > .nav-item:nth-child(3) {
    display: none;
  }
 </style>
