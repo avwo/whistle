@@ -1,18 +1,34 @@
 
 
-const getMenuList = (dir) => {
-  return [
-    'introduction',
-    'installation',
-    'getting-started',
-    'rule-introduction',
-    'ui-operation',
-    'cli',
-    'custom',
-    'examples/',
-    'faq',
-    'protocols/'
-  ].map(name => `${dir}${name}`);
+const getSildebarConfig = (dir) => {
+  return {
+    [`${dir}examples/`]: [
+      ''
+    ],
+    [`${dir}protocols/`]: [
+      '',
+      'host',
+      {
+        title: 'rule',
+        collapsable: false,
+        children: [
+          'rule/file'
+        ]
+      }
+    ],
+    [dir]: [
+      'introduction',
+      'installation',
+      'getting-started',
+      'rule-introduction',
+      'ui-operation',
+      'cli',
+      'custom',
+      'examples/',
+      'faq',
+      'protocols/'
+    ].map(name => `${dir}${name}`),
+  };
 };
 
 module.exports = {
@@ -63,22 +79,8 @@ module.exports = {
       },
     },
     sidebar: {
-      '/examples/': [
-        ''
-      ],
-      '/protocols/': [
-        '',
-        'host',
-        {
-          title: 'rule',
-          collapsable: false,
-          children: [
-            'rule/file'
-          ]
-        }
-      ],
-      '/zh/': getMenuList('/zh/'),
-      '/en/': getMenuList('/en/'),
+      ...getSildebarConfig('/zh/'),
+      ...getSildebarConfig('/en/'),
     }
   },
   footer: 'MIT Licensed | Copyright © 2019-present avenwu'
