@@ -20,10 +20,11 @@ weinre1.test2.whistlejs.com:1234 weinre://xxx file://(hello) log://test resType:
 weinre1.test2.whistlejs.com weinre://xxx file://(hello) log://test resType://js enable://capture ignore://plugin
 
 filter.com enable://capture
-filter.com/index.html file://({"ec":0}) filter://m:post filter://m:/delete/
-filter.com/index.html file://({"ec":1}) filter://m:!post filter://h:test=abc
-filter.com/index.html file://({"ec":2}) filter://h:x-test=/\d+/
-filter.com/index.html file://({"ec":3})
+filter.com/index.html file://({"ec":0}) excludeFilter://m:post excludeFilter://m:/delete/
+filter.com/index.html file://({"ec":1}) includeFilter://m:delete includeFilter://b:test
+filter.com/index.html file://({"ec":2}) includeFilter://b:test excludeFilter://h:x-test=/\d+/
+filter.com/index.html file://({"ec":3}) excludeFilter://h:x-test=/\d+/
+filter.com/index.html file://({"ec":4}) 
 
 1.tps.whistlejs.com file://() enable://capture resAppend://`{${url.query.name}}`
 2.tps.whistlejs.com resScript://{tps.rules} rawfile://{rawFile2.js} enable://capture
