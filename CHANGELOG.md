@@ -1,3 +1,7 @@
+# v1.13.12
+1. feat: 支持通过请求内容过滤 `pattern operation filter://b:pattern` 
+2. perf: 去掉本地请求的连接缓存，优化本地请求速度
+
 # v1.13.11
 1. fix: `pattern host://{key1}` 和 `pattern proxy://{key2}` 失效问题
 
