@@ -36,7 +36,11 @@ function getHints(keyword) {
     return ['reqMerge://', 'resMerge://'];
   }
   var list = allRules.filter(function(name) {
-    return name.toLowerCase().indexOf(keyword) !== -1;
+    if (name === 'socks://' && 'proxy'.indexOf(keyword) !== -1) {
+      return true;
+    }
+    name = name.toLowerCase();
+    return name.indexOf(keyword) !== -1;
   });
   list.sort(function(cur, next) {
     var curIndex = cur.toLowerCase().indexOf(keyword);
@@ -44,7 +48,7 @@ function getHints(keyword) {
     if (curIndex === nextIndex) {
       return 0;
     }
-    return curIndex > nextIndex ? 1 : -1;
+    return curIndex < 0 || (curIndex > nextIndex && nextIndex >= 0) ? 1 : -1;
   });
   return list;
 }
