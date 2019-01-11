@@ -376,7 +376,7 @@ var List = React.createClass({
 
     //不设置height为0，滚动会有问题
     return (
-        <Divider hide={this.props.hide} leftWidth="200">
+        <Divider hide={this.props.hide} leftWidth="220">
         <div className="fill orient-vertical-box w-list-left">
           <div ref="list" tabIndex="0" onContextMenu={this.onContextMenu}
             className={'fill orient-vertical-box w-list-data ' + (this.props.className || '') + (this.props.disabled ? ' w-disabled' : '')}
