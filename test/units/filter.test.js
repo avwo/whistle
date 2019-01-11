@@ -8,7 +8,7 @@ module.exports = function() {
   util.request({
     url: 'https://filter.com/index.html',
     method: 'delete',
-    body: 'test'
+    body: '1'.repeat(1024 * 250) + 'test'
   }, function(res, data) {
     data.should.have.property('ec', 1);
   });
