@@ -15,9 +15,9 @@ var events = require('./events');
 var rulesCtxMenuList = [
   { name: 'Copy' },
   { name: 'Enable', action: 'Save' },
+  { name: 'Create' },
   { name: 'Rename' },
   { name: 'Delete' },
-  { name: 'Create' },
   { name: 'Export' },
   { name: 'Import' },
   { name: 'Help', sep: true }
@@ -25,9 +25,9 @@ var rulesCtxMenuList = [
 var valuesCtxMenuList = [
   { name: 'Copy' },
   { name: 'Save' },
+  { name: 'Create' },
   { name: 'Rename' },
   { name: 'Delete' },
-  { name: 'Create' },
   {
     name: 'JSON',
     list: [
@@ -351,8 +351,8 @@ var List = React.createClass({
     }
     data.list[0].copyText = name;
     data.list[0].disabled = disabled;
-    data.list[2].disabled = isDefault || disabled;
     data.list[3].disabled = isDefault || disabled;
+    data.list[4].disabled = isDefault || disabled;
     this.refs.contextMenu.show(data);
     e.preventDefault();
   },
