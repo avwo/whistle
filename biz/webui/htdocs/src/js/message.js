@@ -19,10 +19,11 @@ function showMessage(msg, level) {
   elem.stop(true, true).show();
   elem.css('marginLeft', -elem[0].offsetWidth / 2);
   elem.delay(2000).fadeOut(1600);
+  return elem;
 }
 
 ['error', 'warn', 'info', 'success'].forEach(function(level) {
   exports[level] = function(msg) {
-    showMessage(msg, level);
+    return showMessage(msg, level);
   };
 });
