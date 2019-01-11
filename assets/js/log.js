@@ -223,8 +223,8 @@
     if (index > 9999) {
       index = 0;
     }
-    text = '&text=' + encodeURIComponent(text && (text + '').substring(0, MAX_LEN));
-    img.src ='$LOG_CGI?id=$LOG_ID&level=' + level + text
+    var logStr = '&text=' + encodeURIComponent(text && (text + '').substring(0, MAX_LEN));
+    img.src ='$LOG_CGI?id=$LOG_ID&level=' + level + logStr
       + '&' + new Date().getTime() + '-' + ++index;
     var preventGC = function() {
       img.onload = img.onerror = null;
@@ -232,6 +232,9 @@
     };
     img.onload = img.onerror = preventGC;
     timer = setTimeout(preventGC, 3000);
+    if (typeof window.onWhistleLogSend === 'function') {
+      window.onWhistleLogSend(level, text);
+    }
   }
 
   function getPageInfo() {
