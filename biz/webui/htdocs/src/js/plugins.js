@@ -98,7 +98,7 @@ var Home = React.createClass({
                   var plugin = plugins[name];
                   name = name.slice(0, -1);
                   var checked = !disabledPlugins[name];
-                  var url = 'plugin.' + name + '/';
+                  var url = plugin.pluginHomepage || 'plugin.' + name + '/';
                   var hasNew = util.compareVersion(plugin.latest, plugin.version);
                   if (hasNew) {
                     hasNew = '(New: ' + plugin.latest + ')';
@@ -111,13 +111,13 @@ var Home = React.createClass({
                           data-name={name} checked={checked} disabled={disabled} onChange={self.props.onChange} />
                       </td>
                       <td className="w-plugins-date">{new Date(plugin.mtime).toLocaleString()}</td>
-                      <td className="w-plugins-name" title={plugin.moduleName}><a href={url} target="_blank" data-name={name} onClick={self.onOpen}>{name}</a></td>
+                      <td className="w-plugins-name" title={plugin.moduleName}><a href={url} target="_blank" data-name={name} onClick={plugin.pluginHomepage ? null : self.onOpen}>{name}</a></td>
                       <td className="w-plugins-version">
                         {plugin.homepage ? <a href={plugin.homepage} target="_blank">{plugin.version}</a> : plugin.version}
                         {hasNew ? (plugin.homepage ? <a href={plugin.homepage} target="_blank">{hasNew}</a> : <span>{hasNew}</span>) : undefined}
                       </td>
                       <td className="w-plugins-operation">
-                        <a href={url} target="_blank" data-name={name} onClick={self.onOpen}>Option</a>
+                        <a href={url} target="_blank" data-name={name} onClick={plugin.pluginHomepage ? null : self.onOpen}>Option</a>
                         {(plugin.rules || plugin._rules) ? <a href="javascript:;" draggable="false" data-name={name} onClick={self.showRules}>Rules</a> : <span className="disabled">Rules</span>}
                         <a href="javascript:;" draggable="false" className="w-plugin-btn w-plugin-update-btn"
                           data-name={name} onClick={self.showUpdate}>Update</a>
