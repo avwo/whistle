@@ -1,5 +1,6 @@
 # v1.13.13
 1. feat: 插件支持通过package.json配置 `"pluginHomepage": "http://xxx.xxx.com/"` 自定义UI URL
+2. fix: 在iOS12里面log无法显示 `error.message` 的问题，参见：https://github.com/avwo/whistle/issues/257
 
 # v1.13.12
 1. feat: 支持通过请求内容过滤 `pattern operation filter://b:pattern`
