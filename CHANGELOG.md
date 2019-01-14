@@ -1,3 +1,6 @@
+# v1.13.13
+1. feat: 插件支持通过package.json配置 `"pluginHomepage": "http://xxx.xxx.com/"` 自定义UI URL
+
 # v1.13.12
 1. feat: 支持通过请求内容过滤 `pattern operation filter://b:pattern`
 2. feat: [log](http://wproxy.org/whistle/rules/log.html)支持注入 `whistle.onWhistleLogSend(level, logStr)` 获取页面日志信息自己做上报
