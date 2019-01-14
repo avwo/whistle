@@ -209,7 +209,13 @@
     }
 
     if (obj instanceof Error) {
-      return obj.stack || obj.message;
+      var stack = obj.stack;
+      if (stack && typeof stack === 'string') {
+        if (obj.message && stack.indexOf(obj.message) === -1) {
+          return 'Error: ' + obj.message + '\n' + stack;
+        }
+      }
+      return 'Error: ' + obj.message;
     }
 
     return obj === undefined ? 'undefined' : obj;
