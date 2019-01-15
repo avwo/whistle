@@ -56,7 +56,7 @@ var ResDetail = React.createClass({
     }
     var name = btn && btn.name;
     var modal = this.props.modal;
-    var res, rawHeaders, headers, cookies, body, raw, json, tips, defaultName, bin, hasSameSite;
+    var res, rawHeaders, headers, cookies, body, raw, json, tips, defaultName, base64, bin, hasSameSite;
     body = raw = '';
     if (modal) {
       res = modal.res;
@@ -64,6 +64,7 @@ var ResDetail = React.createClass({
       rawHeaders = res.rawHeaders;
       body = util.getBody(res);
       bin = util.getHex(res);
+      base64 = res.base64;
       headers = res.headers;
       json = util.getJson(res);
       if (headers && headers['set-cookie']) {
@@ -158,7 +159,7 @@ var ResDetail = React.createClass({
         {state.initedPreview ? <ImageView imgSrc={imgSrc} data={data} hide={!showImg} /> : undefined}
         {state.initedTextView ? <Textarea defaultName={defaultName} tips={tips} value={body} className="fill w-detail-response-textview" hide={name != btns[2].name} /> : undefined}
         {state.initedJSONView ? <JSONViewer defaultName={defaultName} data={json} hide={name != btns[3].name} /> : undefined}
-        {state.initedHexView ? <Textarea defaultName={defaultName} value={bin} className="fill n-monospace w-detail-response-hex" hide={name != btns[4].name} /> : undefined}
+        {state.initedHexView ? <Textarea defaultName={defaultName} base64={base64} value={bin} className="fill n-monospace w-detail-response-hex" hide={name != btns[4].name} /> : undefined}
         {state.initedCookies ? <div className={'fill w-detail-response-cookies' + (name == btns[5].name ? '' : ' hide')}>{cookies && cookies.length ? <Table head={hasSameSite ? SS_COOKIE_HEADERS : COOKIE_HEADERS} modal={cookies} /> : undefined}</div> : undefined}
         {state.initedRaw ? <Textarea defaultName={defaultName} value={raw} className="fill w-detail-response-raw" hide={name != btns[6].name} /> : undefined}
       </div>

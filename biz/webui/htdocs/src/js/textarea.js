@@ -68,8 +68,10 @@ var Textarea = React.createClass({
     var target = ReactDOM.findDOMNode(this.refs.nameInput);
     var name = target.value.trim();
     target.value = '';
+    var base64 = this.props.base64;
     ReactDOM.findDOMNode(this.refs.filename).value = name;
-    ReactDOM.findDOMNode(this.refs.content).value = this.props.value || '';
+    ReactDOM.findDOMNode(this.refs.type).value = base64 ? 'base64' : '';
+    ReactDOM.findDOMNode(this.refs.content).value = base64 || this.props.value || '';
     ReactDOM.findDOMNode(this.refs.downloadForm).submit();
     this.hideNameInput();
   },
@@ -156,6 +158,7 @@ var Textarea = React.createClass({
           <form ref="downloadForm" action="cgi-bin/download" style={{display: 'none'}}
             method="post" target="downloadTargetFrame">
             <input ref="filename" name="filename" type="hidden" />
+            <input ref="type" name="type" type="hidden" />
             <input ref="content" name="content" type="hidden" />
           </form>
         </div>
