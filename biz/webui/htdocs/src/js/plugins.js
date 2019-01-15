@@ -161,6 +161,7 @@ var Home = React.createClass({
               <h5>
                 <a
                   href="javascript:;"
+                  data-dismiss="modal"
                   className="w-copy-text-with-tips"
                   data-clipboard-text={cmdMsg}
                 >
@@ -179,12 +180,13 @@ var Home = React.createClass({
                 If uninstall failed, delete the following directory instead:
                 <a
                   className="w-copy-text-with-tips"
+                  data-dismiss="modal"
                   data-clipboard-text={state.pluginPath}
                   style={{ marginLeft: 5, cursor: 'pointer' }}>{state.pluginPath}</a>
               </div>
             </div>
             <div className="modal-footer">
-              <button type="button" className="btn btn-primary w-copy-text-with-tips" data-clipboard-text={cmdMsg}>Copy</button>
+              <button type="button" data-dismiss="modal" className="btn btn-primary w-copy-text-with-tips" data-clipboard-text={cmdMsg}>Copy</button>
               <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
             </div>
           </Dialog>
