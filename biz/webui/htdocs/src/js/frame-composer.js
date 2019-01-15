@@ -111,7 +111,7 @@ var FrameComposer = React.createClass({
     var params = {
       type: target.nodeName === 'A' ? 'bin' : 'text',
       target: target.getAttribute('data-target') ? 'server' : 'client',
-      text: value.replace(/\r\n|\r|\n/g, '\r\n')
+      text: value
     };
     self.send(params, function() {
       self.setTextarea('');
