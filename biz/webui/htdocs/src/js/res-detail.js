@@ -157,7 +157,7 @@ var ResDetail = React.createClass({
         <BtnGroup onClick={this.onClickBtn} btns={btns} />
         {state.initedHeaders ? <div className={'fill w-detail-response-headers' + (name == btns[0].name ? '' : ' hide')}><Properties modal={rawHeaders || headers} enableViewSource="1" /></div> : undefined}
         {state.initedPreview ? <ImageView imgSrc={imgSrc} data={data} hide={!showImg} /> : undefined}
-        {state.initedTextView ? <Textarea defaultName={defaultName} tips={tips} value={body} className="fill w-detail-response-textview" hide={name != btns[2].name} /> : undefined}
+        {state.initedTextView ? <Textarea defaultName={defaultName} tips={tips} base64={base64} value={body} className="fill w-detail-response-textview" hide={name != btns[2].name} /> : undefined}
         {state.initedJSONView ? <JSONViewer defaultName={defaultName} data={json} hide={name != btns[3].name} /> : undefined}
         {state.initedHexView ? <Textarea defaultName={defaultName} base64={base64} value={bin} className="fill n-monospace w-detail-response-hex" hide={name != btns[4].name} /> : undefined}
         {state.initedCookies ? <div className={'fill w-detail-response-cookies' + (name == btns[5].name ? '' : ' hide')}>{cookies && cookies.length ? <Table head={hasSameSite ? SS_COOKIE_HEADERS : COOKIE_HEADERS} modal={cookies} /> : undefined}</div> : undefined}
