@@ -1,3 +1,6 @@
+# v1.13.14
+1. style: HexView添加 `CopyHex` 按钮，支持Copy纯二进制
+
 # v1.13.13
 1. feat: 插件支持通过package.json配置 `"pluginHomepage": "http://xxx.xxx.com/"` 自定义UI URL
 2. fix: 在iOS12里面log无法显示 `error.message` 的问题，参见：https://github.com/avwo/whistle/issues/257
