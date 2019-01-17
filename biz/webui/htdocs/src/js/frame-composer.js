@@ -11,9 +11,32 @@ var MAX_FILE_SIZE = 1024 * 1025;
 var MAX_LENGTH = 1024 * 64;
 var JSON_RE = /^\s*(?:[\{｛][\w\W]+[\}｝]|\[[\w\W]+\])\s*$/;
 
+function hexTextToBase64(str) {
+  if (!str) {
+    return '';
+  }
+  if (/[^\da-f\s]/i.test(str)) {
+    return false;
+  }
+  str = str.replace(/\s+/g, '');
+  var len = str.length;
+  if (len % 2 === 1) {
+    return false;
+  }
+  str = str.match(/../g).map(function(char) {
+    return parseInt(char, 16);
+  });
+  try {
+    return fromByteArray(str);
+  } catch (e) {}
+  return false;
+}
+
 var FrameComposer = React.createClass({
   getInitialState: function() {
-    return {};
+    return {
+      isHexText: !!storage.get('isHexText')
+    };
   },
   componentDidMount: function() {
     var self = this;
@@ -108,10 +131,20 @@ var FrameComposer = React.createClass({
     }
     var self = this;
     var target = e.target;
+    var base64;
+    if (this.state.isHexText) {
+      base64 = hexTextToBase64(value);
+      if (base64 === false) {
+        alert('The hex text cannot be converted to binary data.\nPlease check the hex text or switch to plain text.');
+        return;
+      }
+      value = undefined;
+    }
     var params = {
       type: target.nodeName === 'A' ? 'bin' : 'text',
       target: target.getAttribute('data-target') ? 'server' : 'client',
-      text: value
+      text: value,
+      base64: base64
     };
     self.send(params, function() {
       self.setTextarea('');
@@ -142,10 +175,20 @@ var FrameComposer = React.createClass({
   preventDefault: function(e) {
     e.preventDefault();
   },
+  onTypeChange: function(e) {
+    var isHexText = e.target.checked;
+    storage.set('isHexText', isHexText ? 1 : '');
+    this.setState({ isHexText: isHexText });
+    if (isHexText && hexTextToBase64(this.state.text) === false) {
+      message.error('The hex text cannot be converted to binary data.');
+    }
+  },
   render: function() {
     var data = this.props.data || '';
-    var isJSON = this.state.isJSON;
-    var text = this.state.text;
+    var state = this.state;
+    var isJSON = state.isJSON;
+    var text = state.text;
+    var isHexText = state.isHexText;
     var closed = data.closed;
     var isHttps = data.isHttps;
     var leftStyle = isHttps ? {left: 0} : undefined;
@@ -154,6 +197,10 @@ var FrameComposer = React.createClass({
     return (
       <div onDrop={this.onDrop} className={'fill orient-vertical-box w-frames-composer' + (this.props.hide ? ' hide' : '')}>
         <div className="w-frames-composer-action">
+          <label className={'w-frames-hex-data' + (isHexText ? ' w-frames-checked' : '')}>
+            <input checked={isHexText} onChange={this.onTypeChange} type="checkbox" />
+            HexText
+          </label>
           <div className="btn-group">
             <button disabled={closed} title={tips} onMouseDown={this.preventDefault} onClick={this.onSend}
               type="button" className="btn btn-default btn-sm">
@@ -187,7 +234,8 @@ var FrameComposer = React.createClass({
           <button disabled={!isJSON} type="button" title="Format JSON" onClick={this.format}
             className="btn btn-default w-format-json-btn">Format</button>
         </div>
-        <textarea maxLength={MAX_LENGTH} value={text} onChange={this.onTextareaChange} placeholder={'Input the text'} className="fill" />
+        <textarea style={{ fontFamily: isHexText ? 'monospace' : undefined }} maxLength={MAX_LENGTH}
+          value={text} onChange={this.onTextareaChange} placeholder={'Input the ' + (isHexText ? 'hex ' : '') + 'text'} className="fill" />
         <form ref="uploadDataForm" method="post" encType="multipart/form-data" style={{display: 'none'}}> 
           <input ref="uploadData" onChange={this.onFormChange} type="file" name="uploadData" />
         </form>

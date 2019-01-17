@@ -177,3 +177,18 @@
 .w-frames-list .w-frames-ignore.w-frames-selected .glyphicon {
   color: #fff!important;
 }
+.w-frames-composer-action .w-frames-hex-data {
+  margin-left: -10px;
+  font-weight: normal;
+}
+.w-frames-composer-action .w-frames-hex-data.w-frames-checked {
+  font-weight: bold;
+}
+.w-frames-composer-action input[type=checkbox] {
+  vertical-align: sub;
+  margin-right: 5px;
+}
+
+.w-frames-composer textarea {
+  padding: 5px;
+}
