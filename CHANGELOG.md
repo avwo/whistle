@@ -1,5 +1,6 @@
 # v1.13.14
 1. style: HexView添加 `CopyHex` 按钮，支持Copy纯二进制
+2. feat: Frames/Composer支持输入HexText
 
 # v1.13.13
 1. feat: 插件支持通过package.json配置 `"pluginHomepage": "http://xxx.xxx.com/"` 自定义UI URL
