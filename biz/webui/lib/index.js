@@ -165,7 +165,8 @@ function cgiHandler(req, res) {
     }
     require(path.join(__dirname, '..' + req.path))(req, res);
   } catch(err) {
-    res.status(500).send(config.debugMode ? util.getErrorStack(err) : 'Internal Server Error');
+    res.status(500).send(config.debugMode ?
+        '<pre>' + util.getErrorStack(err) + '</pre>' : 'Internal Server Error');
   }
 }
 
@@ -188,7 +189,11 @@ app.all(PLUGIN_PATH_RE, function(req, res, next) {
   }
   pluginMgr.loadPlugin(plugin, function(err, ports) {
     if (err || !ports.uiPort) {
-      res.status(err ? 500 : 404).send(err || 'Not Found');
+      if (err) {
+        res.status(500).send('<pre>' + err + '</pre>');
+      } else {
+        res.status(404).send('Not Found');
+      }
       return;
     }
     var options = parseurl(req);
