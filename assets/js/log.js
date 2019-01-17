@@ -229,8 +229,15 @@
     if (index > 9999) {
       index = 0;
     }
-    var logStr = '&text=' + encodeURIComponent(text && (text + '').substring(0, MAX_LEN));
-    img.src ='$LOG_CGI?id=$LOG_ID&level=' + level + logStr
+    var logStr = encodeURIComponent(text && (text + ''));
+    if (logStr.length > MAX_LEN) {
+      logStr = logStr.substring(0, MAX_LEN);
+      var percIndex = logStr.indexOf('%', MAX_LEN - 3);
+      if (percIndex !== -1) {
+        logStr = logStr.substring(0, percIndex);
+      }
+    }
+    img.src ='$LOG_CGI?id=$LOG_ID&level=' + level + '&text=' + logStr
       + '&' + new Date().getTime() + '-' + ++index;
     var preventGC = function() {
       img.onload = img.onerror = null;
