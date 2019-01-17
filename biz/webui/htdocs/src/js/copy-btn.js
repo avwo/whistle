@@ -18,7 +18,7 @@ var CopyBtn = React.createClass({
             style={copied ? {color: '#ccc', cursor: 'not-allowed'} : undefined}
             className={copied ? undefined : 'w-copy-text'} href="javascript:;"
             draggable="false" data-clipboard-text={this.props.value || ''}>
-        {copied ? 'Copied' : 'Copy'}
+        {(copied ? 'Copied' : 'Copy') + (this.props.name || '')}
       </a>
     );
   }

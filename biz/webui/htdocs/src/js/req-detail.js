@@ -108,7 +108,7 @@ var ReqDetail = React.createClass({
         </Divider> : ''}
         {state.initedTextView ? <Textarea defaultName={defaultName} tips={tips} base64={base64} value={body} className="fill w-detail-request-textview" hide={name != BTNS[2].name} /> : ''}
         {state.initedJSONView ? <JSONViewer defaultName={defaultName} data={json} hide={name != BTNS[3].name} /> : undefined}
-        {state.initedHexView ? <Textarea defaultName={defaultName} base64={base64} value={bin} className="fill n-monospace w-detail-request-hex" hide={name != BTNS[4].name} /> : ''}
+        {state.initedHexView ? <Textarea defaultName={defaultName} isHexView="1" base64={base64} value={bin} className="fill n-monospace w-detail-request-hex" hide={name != BTNS[4].name} /> : ''}
         {state.initedCookies ? <div className={'fill w-detail-request-cookies' + (name == BTNS[5].name ? '' : ' hide')}><Properties modal={cookies} enableViewSource="1" /></div> : ''}
         {state.initedRaw ? <Textarea defaultName={defaultName} value={raw} className="fill w-detail-request-raw" hide={name != BTNS[6].name} /> : ''}
       </div>

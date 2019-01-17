@@ -67,7 +67,7 @@ var FrameClient = React.createClass({
         <BtnGroup onClick={this.onClickBtn} btns={BTNS} />
         <Textarea className="fill" base64={base64} value={text} hide={btn.name !== 'TextView'} />
         <JSONViewer data={json} hide={btn.name !== 'JSONView'} />
-        <Textarea className="fill n-monospace" base64={base64} value={bin} hide={btn.name !== 'HexView'} />
+        <Textarea className="fill n-monospace" isHexView="1" base64={base64} value={bin} hide={btn.name !== 'HexView'} />
         <FrameComposer data={this.props.data} hide={btn.name !== 'Composer'} />
       </div>
     );

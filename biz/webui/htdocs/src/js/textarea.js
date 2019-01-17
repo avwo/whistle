@@ -29,6 +29,16 @@ var Tips = React.createClass({
   }
 });
 
+function getHexLine(line) {
+  var index = line.indexOf('  ') + 2;
+  return line.substring(index, line.indexOf('  ', index)).trim();
+}
+
+function getHexText(text) {
+  text = text.split('\n').slice(1);
+  return text.map(getHexLine).join('\n');
+}
+
 var Textarea = React.createClass({
   getInitialState: function() {
     return {};
@@ -133,13 +143,14 @@ var Textarea = React.createClass({
       showAddToValuesBtn = false;
       value = value.substring(0, MAX_LENGTH) + '...\r\n\r\n(' + exceed + ' characters left, you can click on the ViewAll button in the upper right corner to view all)\r\n';
     }
-
+    var isHexView = this.props.isHexView;
     this.state.value = value;
     return (
         <div className={'fill orient-vertical-box w-textarea' + (this.props.hide ? ' hide' : '')}>
           <Tips data={this.props.tips} />
           <div className={'w-textarea-bar' + (value ? '' : ' hide')}>
-            <CopyBtn value={this.props.value} />
+            <CopyBtn name={isHexView ? 'All' : ''} value={this.props.value} />
+            {isHexView ? <CopyBtn name={isHexView ? 'Hex' : ''} value={getHexText(this.props.value)} /> : undefined}
             <a className="w-download" onDoubleClick={this.download}
               onClick={this.showNameInput} href="javascript:;" draggable="false">Download</a>
             {showAddToValuesBtn ? <a className="w-add" onClick={this.showNameInput} href="javascript:;" draggable="false">AddToValues</a> : ''}
