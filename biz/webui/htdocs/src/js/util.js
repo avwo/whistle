@@ -651,8 +651,27 @@ exports.getMenuPosition = function(e, menuWidth, menuHeight) {
 exports.canReplay = function(item) {
   return !item.isHttps || item.req.headers['x-whistle-policy'] === 'tunnel' || /^wss?:/.test(item.url);
 };
+
+function socketIsClosed(reqData) {
+  if (!reqData.closed && reqData.frames) {
+    var lastItem = reqData.frames[reqData.frames.length - 1];
+    if (lastItem && (lastItem.closed || lastItem.err)) {
+      reqData.closed = true;
+    }
+  }
+  return reqData.closed;
+}
+
+exports.socketIsClosed = socketIsClosed;
+
 exports.canAbort = function(item) {
-  return !item.lost && !item.endTime;
+  if (!item.lost && !item.endTime) {
+    return true;
+  }
+  if (item.reqError || item.resError) {
+    return false;
+  }
+  return !socketIsClosed(item);
 };
 
 exports.asCURL = function(item) {

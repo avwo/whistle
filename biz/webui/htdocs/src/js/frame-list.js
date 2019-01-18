@@ -206,12 +206,7 @@ var FrameList = React.createClass({
     var keyword = state.keyword;
     var activeItem = modal.getActive();
     var list = modal.getList();
-    if (!reqData.closed) {
-      var lastItem = list[list.length - 1];
-      if (lastItem && (lastItem.closed || lastItem.err)) {
-        reqData.closed = true;
-      }
-    }
+    util.socketIsClosed(reqData);
     return (<div className="fill orient-vertical-box w-frames-list">
       <FilterInput onChange={self.onFilterChange} />
       <div className="w-frames-action">

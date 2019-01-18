@@ -31,7 +31,7 @@ proto.search = function(keyword) {
   }
 };
 
-proto.filter = function(newList) {
+proto.filter = function() {
   var keyword = this._keyword;
   var list = this.list;
   if (!keyword) {

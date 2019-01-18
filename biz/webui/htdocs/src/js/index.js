@@ -2329,15 +2329,13 @@ var Index = React.createClass({
       list = modal && modal.getSelectedList();
     }
     if (list) {
-      var result;
-      list.filter(function(item) {
-        if (!item.lost && !item.endTime) {
-          result = result || [];
-          result.push(item.id);
+      list = list.map(function(item) {
+        if (util.canAbort(item)) {
+          return item.id;
         }
       });
-      if (result) {
-        dataCenter.abort({ list: result.join() });
+      if (list.length) {
+        dataCenter.abort({ list: list.join() });
       }
     }
     this.hideAbortOptions();
