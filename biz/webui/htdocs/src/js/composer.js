@@ -101,11 +101,13 @@ var Composer = React.createClass({
       }
       var activeItem = self.props.modal;
       if (activeItem) {
+        storage.set('showHexTextBody', '');
         self.setState({
           result: activeItem,
           type: getType(activeItem.req.headers),
           method: activeItem.req.method,
-          tabName: 'Request'
+          tabName: 'Request',
+          isHexText: false
         }, function() {
           self.update(activeItem);
           self.onComposerChange();
@@ -210,6 +212,7 @@ var Composer = React.createClass({
     ReactDOM.findDOMNode(refs.body).value = item.body;
     this.state.tabName = 'Request';
     this.state.result = '';
+    this.state.isHexText = !!item.isHexText;
     this.onComposerChange(true);
   },
   onReplay: function(item) {
@@ -357,15 +360,14 @@ var Composer = React.createClass({
     var method = ReactDOM.findDOMNode(refs.method).value || 'GET';
     var body = ReactDOM.findDOMNode(refs.body).value;
     var base64;
-    if (util.hasRequestBody(method)) {
-      if (this.state.isHexText) {
-        base64 = util.getBase64FromHexText(body);
-        if (base64 === false) {
-          alert('The hex text cannot be converted to binary data.\nPlease check the hex text or switch to plain text.');
-          return;
-        }
-        body = undefined;
+    var isHexText = this.state.isHexText;
+    if (isHexText && util.hasRequestBody(method)) {
+      base64 = util.getBase64FromHexText(body);
+      if (base64 === false) {
+        alert('The hex text cannot be converted to binary data.\nPlease check the hex text or switch to plain text.');
+        return;
       }
+      body = undefined;
     }
     var params = {
       needResponse: true,
@@ -373,7 +375,8 @@ var Composer = React.createClass({
       headers: headers,
       method: method,
       body: body,
-      base64: base64
+      base64: base64,
+      isHexText: isHexText
     };
     dataCenter.composer(params, function(data, xhr, em) {
       var state = {
