@@ -76,8 +76,7 @@
     "lintfix": "eslint --fix *.js ./lib ./bin ./biz ./test ./docs/script ./assets/js",
     "cov": "node_modules/istanbul/lib/cli.js cover node_modules/.bin/tape -- test/index.test.js",
     "docs:build": "vuepress build docs",
-    "docs:dev": "vuepress dev docs",
-    "docs": "gitbook build docs/zh ../avwo.github.io/whistle"
+    "docs:dev": "vuepress dev docs"
   },
   "engines": {
     "node": ">= 0.10.0"
