@@ -1,5 +1,6 @@
 var $ = require('jquery');
 var toByteArray = require('base64-js').toByteArray;
+var fromByteArray  = require('base64-js').fromByteArray;
 var jsBase64 = require('js-base64').Base64;
 var base64Decode = jsBase64.decode;
 var base64Encode = jsBase64.encode;
@@ -63,6 +64,30 @@ exports.preventDefault = function preventDefault(e) {
 
 exports.preventBlur = function preventDefault(e) {
   e.preventDefault();
+};
+
+exports.getBase64FromHexText = function (str, check) {
+  if (!str) {
+    return '';
+  }
+  if (/[^\da-f\s]/i.test(str)) {
+    return false;
+  }
+  str = str.replace(/\s+/g, '');
+  var len = str.length;
+  if (len % 2 === 1) {
+    return false;
+  }
+  if (check) {
+    return true;
+  }
+  str = str.match(/../g).map(function(char) {
+    return parseInt(char, 16);
+  });
+  try {
+    return fromByteArray(str);
+  } catch (e) {}
+  return false;
 };
 
 $(document).on('mousedown', function(e) {

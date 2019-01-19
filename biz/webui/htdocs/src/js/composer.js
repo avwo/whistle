@@ -11,6 +11,7 @@ var ResDetail = require('./res-detail');
 var Properties = require('./properties');
 var PropsEditor = require('./props-editor');
 var HistoryData = require('./history-data');
+var message = require('./message');
 
 var METHODS = 'GET,POST,PUT,HEAD,TRACE,DELETE,SEARCH,CONNECT,PROPFIND,PROPPATCH,MKCOL,COPY,MOVE,LOCK,UNLOCK,OPTIONS'.split(',');
 var TYPES = {
@@ -87,7 +88,8 @@ var Composer = React.createClass({
       showPretty: showPretty,
       rules: typeof rules === 'string' ? rules : '',
       type: getType(util.parseHeaders(data.headers)),
-      disableComposerRules: disableComposerRules
+      disableComposerRules: disableComposerRules,
+      isHexText: storage.get('showHexTextBody')
     };
   },
   componentDidMount: function() {
@@ -189,6 +191,14 @@ var Composer = React.createClass({
       historyData.splice(36, overflow);
     }
     this.setState({});
+  },
+  onHexTextChange: function(e) {
+    var isHexText = e.target.checked;
+    storage.set('showHexTextBody', isHexText ? 1 : '');
+    this.setState({ isHexText: isHexText });
+    if (isHexText && util.getBase64FromHexText(this.state.text, true) === false) {
+      message.error('The hex text cannot be converted to binary data.');
+    }
   },
   onCompose: function(item) {
     this.refs.historyDialog.hide();
@@ -344,14 +354,25 @@ var Composer = React.createClass({
     }
     var self = this;
     var method = ReactDOM.findDOMNode(refs.method).value || 'GET';
-    var body = util.hasRequestBody(method)
-      ? ReactDOM.findDOMNode(refs.body).value.replace(/\r\n|\r|\n/g, '\r\n') : '';
+    var body = ReactDOM.findDOMNode(refs.body).value;
+    var base64;
+    if (util.hasRequestBody(method)) {
+      if (this.state.isHexText) {
+        base64 = util.getBase64FromHexText(body);
+        if (base64 === false) {
+          alert('The hex text cannot be converted to binary data.\nPlease check the hex text or switch to plain text.');
+          return;
+        }
+        body = undefined;
+      }
+    }
     var params = {
       needResponse: true,
       url: url.replace(/^\/\//, ''),
       headers: headers,
       method: method,
-      body: body
+      body: body,
+      base64: base64
     };
     dataCenter.composer(params, function(data, xhr, em) {
       var state = {
@@ -439,6 +460,8 @@ var Composer = React.createClass({
     var showPrettyBody = hasBody && showPretty && isForm;
     var isStrictMode = dataCenter.isStrictMode();
     var disableComposerRules = isStrictMode || state.disableComposerRules;
+    var isHexText = state.isHexText;
+    
     return (
       <div className={'fill orient-vertical-box w-detail-content w-detail-composer' + (util.getBoolean(this.props.hide) ? ' hide' : '')}>
         <div className="w-composer-url box">
@@ -498,14 +521,18 @@ var Composer = React.createClass({
               <div className="fill orient-vertical-box w-composer-body">
                 <div className="w-composer-bar">
                   <label className="w-composer-label">Body</label>
-                  <button className={'btn btn-default' + (showPrettyBody ? ' hide' : '')} onClick={this.formatJSON}>Format JSON</button>
-                  <button className={'btn btn-primary' + (showPrettyBody ? '' : ' hide')} onClick={this.addField}>Add field</button>
+                  <label className={'w-composer-hex-text' + (isHexText ? ' w-checked' : '')}>
+                    <input checked={isHexText} type="checkbox" onChange={this.onHexTextChange} />HexText
+                  </label>
+                  <button className={'btn btn-default' + (showPrettyBody || isHexText ? ' hide' : '')} onClick={this.formatJSON}>Format JSON</button>
+                  <button className={'btn btn-primary' + (showPrettyBody && !isHexText ? '' : ' hide')} onClick={this.addField}>Add field</button>
                 </div>
                 <textarea readOnly={pending || !hasBody} defaultValue={state.body} onChange={this.onComposerChange}
                   onKeyDown={this.onKeyDown} ref="body" placeholder={hasBody ? 'Input the body' : method + ' operations cannot have a request body'}
                   title={hasBody ? undefined : method + ' operations cannot have a request body'}
-                  className={'fill orient-vertical-box' + (showPrettyBody ? ' hide' : '')} />
-                <PropsEditor disabled={pending} ref="prettyBody" hide={!showPrettyBody} onChange={this.onFieldChange} />
+                  style={{ fontFamily: isHexText ? 'monospace' : undefined }}
+                  className={'fill orient-vertical-box' + (showPrettyBody && !isHexText ? ' hide' : '')} />
+                <PropsEditor disabled={pending} ref="prettyBody" hide={!showPrettyBody || isHexText} onChange={this.onFieldChange} />
               </div>
             </Divider>
             {state.initedResponse ? <Properties className={'w-composer-res-' + getStatus(statusCode)} modal={{ statusCode: statusCode == null ? 'aborted' : statusCode }} hide={!showResponse} /> : undefined}

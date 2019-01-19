@@ -4,38 +4,17 @@ var dataCenter = require('./data-center');
 var util = require('./util');
 var events = require('./events');
 var message = require('./message');
-var fromByteArray  = require('base64-js').fromByteArray ;
+var fromByteArray  = require('base64-js').fromByteArray;
 var storage = require('./storage');
 
 var MAX_FILE_SIZE = 1024 * 1025;
 var MAX_LENGTH = 1024 * 64;
 var JSON_RE = /^\s*(?:[\{｛][\w\W]+[\}｝]|\[[\w\W]+\])\s*$/;
 
-function hexTextToBase64(str) {
-  if (!str) {
-    return '';
-  }
-  if (/[^\da-f\s]/i.test(str)) {
-    return false;
-  }
-  str = str.replace(/\s+/g, '');
-  var len = str.length;
-  if (len % 2 === 1) {
-    return false;
-  }
-  str = str.match(/../g).map(function(char) {
-    return parseInt(char, 16);
-  });
-  try {
-    return fromByteArray(str);
-  } catch (e) {}
-  return false;
-}
-
 var FrameComposer = React.createClass({
   getInitialState: function() {
     return {
-      isHexText: !!storage.get('isHexText')
+      isHexText: !!storage.get('showHexTextFrame')
     };
   },
   componentDidMount: function() {
@@ -133,7 +112,7 @@ var FrameComposer = React.createClass({
     var target = e.target;
     var base64;
     if (this.state.isHexText) {
-      base64 = hexTextToBase64(value);
+      base64 = util.getBase64FromHexText(value);
       if (base64 === false) {
         alert('The hex text cannot be converted to binary data.\nPlease check the hex text or switch to plain text.');
         return;
@@ -177,9 +156,9 @@ var FrameComposer = React.createClass({
   },
   onTypeChange: function(e) {
     var isHexText = e.target.checked;
-    storage.set('isHexText', isHexText ? 1 : '');
+    storage.set('showHexTextFrame', isHexText ? 1 : '');
     this.setState({ isHexText: isHexText });
-    if (isHexText && hexTextToBase64(this.state.text) === false) {
+    if (isHexText && util.getBase64FromHexText(this.state.text, true) === false) {
       message.error('The hex text cannot be converted to binary data.');
     }
   },

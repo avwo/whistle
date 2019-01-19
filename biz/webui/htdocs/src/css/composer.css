@@ -116,6 +116,7 @@
   border: none;
   padding: 0;
   margin: 0;
+  border-right: 1px solid #ddd;
 }
 .w-composer-rules .w-detail-inspectors-title {
   padding-left: 10px!important;
@@ -159,4 +160,14 @@
 }
 .w-composer-history-dialog .modal-dialog {
   width: 900px;
+}
+
+.w-composer-bar .w-composer-hex-text {
+  position: absolute;
+  left: 75px;
+  top: 0px;
+}
+
+.w-composer-bar .w-composer-hex-text.w-checked {
+  font-weight: bold;
 }
