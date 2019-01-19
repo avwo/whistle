@@ -38,8 +38,7 @@ function getHexText(text) {
   if (!text) {
     return '';
   }
-  text = text.split('\n').slice(1);
-  return text.map(getHexLine).join('\n');
+  return text.split('\n').map(getHexLine).join('\n');
 }
 
 var Textarea = React.createClass({

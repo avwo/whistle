@@ -23,6 +23,8 @@ var FrameComposer = React.createClass({
     self.dataForm = ReactDOM.findDOMNode(self.refs.uploadDataForm);
     events.on('composeFrame', function(e, frame) {
       if (frame) {
+        self.state.isHexText = false;
+        storage.set('showHexTextFrame', '');
         self.setTextarea(util.getBody(frame, true));
       }
     });

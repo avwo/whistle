@@ -869,15 +869,10 @@ function padLeftZero(n, len) {
 function getHexString(arr) {
   var len = arr.length;
   var offsetLen = Math.max(6, len.toString(16).length);
-  var str = 'Offset';
-  str = str + getPadding(offsetLen - str.length) + '  ';
-  var i, ch;
-  for (i = 0; i < 16; i++) {
-    str += ' ' + padLeftZero(i, 2);
-  }
-  var result = [str];
+  var str, ch;
+  var result = [];
   var rowsCount = Math.ceil(len / 16);
-  for (i = 0; i < rowsCount; i++) {
+  for (var i = 0; i < rowsCount; i++) {
     var j = i * 16;
     var rowLen = Math.min(16 + j, len);
     str = padLeftZero(Math.max(rowLen - 16, 0), offsetLen) + '  ';
