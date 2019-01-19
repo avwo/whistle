@@ -977,6 +977,17 @@ if (window.Symbol) {
   JSON_KEY = window.Symbol.for(JSON_KEY);
 }
 
+function getHexFromBase64(base64) {
+  if (base64) {
+    try {
+      return getHexString(base64toBytes(base64));
+    } catch (e) {}
+  }
+  return base64;
+}
+
+exports.getHexFromBase64 = getHexFromBase64;
+
 function initData(data, isReq) {
   if ((data[BODY_KEY] && data[HEX_KEY])) {
     return;
@@ -991,7 +1002,7 @@ function initData(data, isReq) {
         body = String(body);
         data.base64 = base64Encode(body);
         data[BODY_KEY] = body;
-        data[HEX_KEY] = getHexString(base64toBytes(data.base64));
+        data[HEX_KEY] = getHexFromBase64(data.base64);
       } catch(e) {} finally {
         delete data.body;
         delete data.bin;
@@ -1005,7 +1016,7 @@ function initData(data, isReq) {
   var type = !isReq && getMediaType(data);
   if (type) {
     data[BODY_KEY] = 'data:' + type + ';base64,' + data.base64;
-    data[HEX_KEY] = getHexString(base64toBytes(data.base64));
+    data[HEX_KEY] = getHexFromBase64(data.base64);
   } else {
     var result = decodeBase64(data.base64);
     data[BODY_KEY] = result.text;
@@ -1171,3 +1182,15 @@ function compareVersion(v1, v2) {
   return test1 < test2;
 }
 exports.compareVersion = compareVersion;
+
+function getHexLine(line) {
+  var index = line.indexOf('  ') + 2;
+  return line.substring(index, line.indexOf('  ', index)).trim();
+}
+
+exports.getHexText = function (text) {
+  if (!text) {
+    return '';
+  }
+  return text.split('\n').map(getHexLine).join('\n');
+};

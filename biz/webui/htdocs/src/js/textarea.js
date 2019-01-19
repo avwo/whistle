@@ -29,18 +29,6 @@ var Tips = React.createClass({
   }
 });
 
-function getHexLine(line) {
-  var index = line.indexOf('  ') + 2;
-  return line.substring(index, line.indexOf('  ', index)).trim();
-}
-
-function getHexText(text) {
-  if (!text) {
-    return '';
-  }
-  return text.split('\n').map(getHexLine).join('\n');
-}
-
 var Textarea = React.createClass({
   getInitialState: function() {
     return {};
@@ -152,7 +140,7 @@ var Textarea = React.createClass({
           <Tips data={this.props.tips} />
           <div className={'w-textarea-bar' + (value ? '' : ' hide')}>
             <CopyBtn name={isHexView ? 'All' : ''} value={this.props.value} />
-            {isHexView ? <CopyBtn name={isHexView ? 'Hex' : ''} value={getHexText(this.props.value)} /> : undefined}
+            {isHexView ? <CopyBtn name={isHexView ? 'Hex' : ''} value={util.getHexText(this.props.value)} /> : undefined}
             <a className="w-download" onDoubleClick={this.download}
               onClick={this.showNameInput} href="javascript:;" draggable="false">Download</a>
             {showAddToValuesBtn ? <a className="w-add" onClick={this.showNameInput} href="javascript:;" draggable="false">AddToValues</a> : ''}

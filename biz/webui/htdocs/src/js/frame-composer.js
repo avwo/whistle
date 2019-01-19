@@ -23,9 +23,13 @@ var FrameComposer = React.createClass({
     self.dataForm = ReactDOM.findDOMNode(self.refs.uploadDataForm);
     events.on('composeFrame', function(e, frame) {
       if (frame) {
-        self.state.isHexText = false;
-        storage.set('showHexTextFrame', '');
-        self.setTextarea(util.getBody(frame, true));
+        var body;
+        if (self.state.isHexText) {
+          body = util.getHexText(util.getHex(frame));
+        } else {
+          body = util.getBody(frame, true);
+        }
+        self.setTextarea(body);
       }
     });
     events.on('replayFrame', function(e, frame) {
@@ -168,7 +172,7 @@ var FrameComposer = React.createClass({
     var data = this.props.data || '';
     var state = this.state;
     var isJSON = state.isJSON;
-    var text = state.text;
+    var text = state.text || '';
     var isHexText = state.isHexText;
     var closed = data.closed;
     var isHttps = data.isHttps;

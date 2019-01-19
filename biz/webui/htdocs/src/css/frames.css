@@ -185,7 +185,7 @@
   font-weight: bold;
 }
 .w-frames-composer-action input[type=checkbox] {
-  vertical-align: sub;
+  vertical-align: text-bottom;
   margin-right: 5px;
 }
 

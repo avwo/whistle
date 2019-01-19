@@ -101,13 +101,11 @@ var Composer = React.createClass({
       }
       var activeItem = self.props.modal;
       if (activeItem) {
-        storage.set('showHexTextBody', '');
         self.setState({
           result: activeItem,
           type: getType(activeItem.req.headers),
           method: activeItem.req.method,
-          tabName: 'Request',
-          isHexText: false
+          tabName: 'Request'
         }, function() {
           self.update(activeItem);
           self.onComposerChange();
@@ -155,7 +153,12 @@ var Composer = React.createClass({
     ReactDOM.findDOMNode(refs.url).value = item.url;
     ReactDOM.findDOMNode(refs.method).value = req.method;
     ReactDOM.findDOMNode(refs.headers).value =  util.getOriginalReqHeaders(item);
-    ReactDOM.findDOMNode(refs.body).value = req.method === 'GET' ? '' : util.getBody(req);
+    var bodyElem = ReactDOM.findDOMNode(refs.body);
+    if (req.method === 'GET') {
+      bodyElem.value = '';
+    } else {
+      bodyElem.value = this.state.isHexText ? util.getHexText(util.getHex(req)) : util.getBody(req);
+    }
     this.updatePrettyData();
   },
   shouldComponentUpdate: function(nextProps) {
@@ -206,13 +209,14 @@ var Composer = React.createClass({
   onCompose: function(item) {
     this.refs.historyDialog.hide();
     var refs = this.refs;
+    var isHexText = !!item.isHexText;
     ReactDOM.findDOMNode(refs.url).value = item.url;
     ReactDOM.findDOMNode(refs.method).value = item.method;
     ReactDOM.findDOMNode(refs.headers).value = item.headers;
-    ReactDOM.findDOMNode(refs.body).value = item.body;
+    ReactDOM.findDOMNode(refs.body).value = isHexText ? util.getHexFromBase64(item.base64) : (item.body || '');
     this.state.tabName = 'Request';
     this.state.result = '';
-    this.state.isHexText = !!item.isHexText;
+    this.state.isHexText = isHexText;
     this.onComposerChange(true);
   },
   onReplay: function(item) {
