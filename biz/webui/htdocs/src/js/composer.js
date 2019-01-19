@@ -532,7 +532,7 @@ var Composer = React.createClass({
                   <button className={'btn btn-primary' + (showPrettyBody && !isHexText ? '' : ' hide')} onClick={this.addField}>Add field</button>
                 </div>
                 <textarea readOnly={pending || !hasBody} defaultValue={state.body} onChange={this.onComposerChange}
-                  onKeyDown={this.onKeyDown} ref="body" placeholder={hasBody ? 'Input the body' : method + ' operations cannot have a request body'}
+                  onKeyDown={this.onKeyDown} ref="body" placeholder={hasBody ? 'Input the ' + (isHexText ? 'hex text' : 'body') : method + ' operations cannot have a request body'}
                   title={hasBody ? undefined : method + ' operations cannot have a request body'}
                   style={{ fontFamily: isHexText ? 'monospace' : undefined }}
                   className={'fill orient-vertical-box' + (showPrettyBody && !isHexText ? ' hide' : '')} />
