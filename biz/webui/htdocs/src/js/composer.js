@@ -196,7 +196,8 @@ var Composer = React.createClass({
     var isHexText = e.target.checked;
     storage.set('showHexTextBody', isHexText ? 1 : '');
     this.setState({ isHexText: isHexText });
-    if (isHexText && util.getBase64FromHexText(this.state.text, true) === false) {
+    var body = ReactDOM.findDOMNode(this.refs.body).value;
+    if (isHexText && util.getBase64FromHexText(body, true) === false) {
       message.error('The hex text cannot be converted to binary data.');
     }
   },
