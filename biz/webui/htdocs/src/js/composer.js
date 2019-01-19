@@ -531,7 +531,7 @@ var Composer = React.createClass({
                   <button className={'btn btn-default' + (showPrettyBody || isHexText ? ' hide' : '')} onClick={this.formatJSON}>Format JSON</button>
                   <button className={'btn btn-primary' + (showPrettyBody && !isHexText ? '' : ' hide')} onClick={this.addField}>Add field</button>
                 </div>
-                <textarea readOnly={pending || !hasBody} defaultValue={state.body} onChange={this.onComposerChange}
+                <textarea readOnly={pending || !hasBody} defaultValue={state.body || ''} onChange={this.onComposerChange}
                   onKeyDown={this.onKeyDown} ref="body" placeholder={hasBody ? 'Input the ' + (isHexText ? 'hex text' : 'body') : method + ' operations cannot have a request body'}
                   title={hasBody ? undefined : method + ' operations cannot have a request body'}
                   style={{ fontFamily: isHexText ? 'monospace' : undefined }}
