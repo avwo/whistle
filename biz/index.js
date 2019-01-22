@@ -3,8 +3,7 @@ var rules = require('../lib/rules');
 var util = require('../lib/util');
 
 var HTTP_PROXY_RE = /^x?(?:proxy|http-proxy|http2https-proxy|https2http-proxy|internal-proxy):\/\//;
-var INTERNAL_APP;
-var WEBUI_PATH, PLUGIN_RE, PREVIEW_PATH_RE;
+var INTERNAL_APP, WEBUI_PATH, PLUGIN_RE, PREVIEW_PATH_RE;
 
 module.exports = function(req, res, next) {
   var config = this.config;
