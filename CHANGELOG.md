@@ -1,5 +1,6 @@
 # v1.13.15
 1. fix: 页面设置 `<meta http-equiv="Content-Security-Policy" content="script-src *.qq.com *.gtimg.cn *.gtimg.com 'unsafe-inline' 'unsafe-eval';"/>` ，导致 [log](http://wproxy.org/whistle/rules/log.html) 和 [weinre](http://wproxy.org/whistle/rules/weinre.html) 失效
+2. fix: `ServerPort` 显示问题及设置 `proxy://host:port?host=ip:port2 pattern` 时带上默认端口号问题（https: 443，http: 80）
 
 # v1.13.14
 1. style: HexView添加 `CopyHex` 按钮，支持Copy纯二进制
