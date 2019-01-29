@@ -551,7 +551,7 @@ var ReqData = React.createClass({
     var uploadItem = contextMenuList[5];
     uploadItem.hide = !getUploadSessionsFn();
     contextMenuList[7].disabled = uploadItem.disabled = disabled && !selectedCount;
-    var data = util.getMenuPosition(e, 110, uploadItem.hide ? 310 : 340);
+    var data = util.getMenuPosition(e, 110, uploadItem.hide ? 280 : 310);
     data.list = contextMenuList;
     data.className = data.marginRight < 260 ? 'w-ctx-menu-left' : '';
     this.refs.contextMenu.show(data);
