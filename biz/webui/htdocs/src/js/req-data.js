@@ -71,12 +71,18 @@ var contextMenuList = [
       { name: 'Exclude All Such URL', action: 'excludeUrl' }
     ]
   },
-  { name: 'Compose' },
-  { name: 'Replay' },
-  { name: 'Abort' },
+  {
+    name: 'Actions',
+    list: [
+      { name: 'Compose' },
+      { name: 'Replay' },
+      { name: 'Abort' }
+    ]
+  },
   { name: 'Upload' },
   { name: 'Import' },
   { name: 'Export' },
+  { name: 'Add Rule' },
   { name: 'Help', sep: true }
 ];
 
@@ -527,21 +533,24 @@ var ReqData = React.createClass({
     list3[2].disabled = disabled;
 
     contextMenuList[4].disabled = disabled;
+    var list4 = contextMenuList[4].list;
     if (item) {
+      list4[0].disabled = false;
       if (item.selected) {
-        contextMenuList[5].disabled = !selectedList.filter(util.canReplay).length;
-        contextMenuList[6].disabled = !selectedList.filter(util.canAbort).length;
+        list4[1].disabled = !selectedList.filter(util.canReplay).length;
+        list4[2].disabled = !selectedList.filter(util.canAbort).length;
       } else {
-        contextMenuList[5].disabled = !util.canReplay(item);
-        contextMenuList[6].disabled = !util.canAbort(item);
+        list4[1].disabled = !util.canReplay(item);
+        list4[2].disabled = !util.canAbort(item);
       }
     } else {
-      contextMenuList[5].disabled = true;
-      contextMenuList[6].disabled = true;
+      list4[0].disabled = true;
+      list4[1].disabled = true;
+      list4[2].disabled = true;
     }
-    var uploadItem = contextMenuList[7];
+    var uploadItem = contextMenuList[5];
     uploadItem.hide = !getUploadSessionsFn();
-    contextMenuList[9].disabled = uploadItem.disabled = disabled && !selectedCount;
+    contextMenuList[7].disabled = uploadItem.disabled = disabled && !selectedCount;
     var data = util.getMenuPosition(e, 110, uploadItem.hide ? 310 : 340);
     data.list = contextMenuList;
     data.className = data.marginRight < 260 ? 'w-ctx-menu-left' : '';
