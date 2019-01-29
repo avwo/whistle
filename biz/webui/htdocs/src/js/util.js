@@ -696,7 +696,7 @@ exports.canAbort = function(item) {
   if (item.reqError || item.resError) {
     return false;
   }
-  return !socketIsClosed(item);
+  return !!item.frames && !socketIsClosed(item);
 };
 
 exports.asCURL = function(item) {
