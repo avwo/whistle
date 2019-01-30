@@ -45,7 +45,7 @@ var ReqDetail = React.createClass({
     }
     var name = btn && btn.name;
     var modal = this.props.modal;
-    var req, headers, rawHeaders, cookies, body, raw, query, form, tips, json, defaultName, bin, base64;
+    var req, headers, headersStr, rawHeaders, cookies, body, raw, query, form, tips, json, defaultName, bin, base64;
     body = raw = '';
     if (modal) {
       req = modal.req;
@@ -68,9 +68,9 @@ var ReqDetail = React.createClass({
       if (util.isUrlEncoded(req)) {
         form = util.parseQueryString(util.getBody(req, true), null, null, decodeURIComponent);
       }
-
+      headersStr = util.objectToString(headers, req.rawHeaderNames);
       raw = [req.method, req.method == 'CONNECT' ? headers.host : util.getPath(realUrl), 'HTTP/' + (req.httpVersion || '1.1')].join(' ')
-          + '\r\n' + util.objectToString(headers, req.rawHeaderNames) + '\r\n\r\n' + body;
+          + '\r\n' + headersStr + '\r\n\r\n' + body;
       if (modal.isHttps) {
         tips = { isHttps: true };
       } else if (modal.requestTime && !body && !/^ws/.test(modal.url)) {
@@ -110,7 +110,8 @@ var ReqDetail = React.createClass({
         {state.initedJSONView ? <JSONViewer defaultName={defaultName} data={json} hide={name != BTNS[3].name} /> : undefined}
         {state.initedHexView ? <Textarea defaultName={defaultName} isHexView="1" base64={base64} value={bin} className="fill n-monospace w-detail-request-hex" hide={name != BTNS[4].name} /> : ''}
         {state.initedCookies ? <div className={'fill w-detail-request-cookies' + (name == BTNS[5].name ? '' : ' hide')}><Properties modal={cookies} enableViewSource="1" /></div> : ''}
-        {state.initedRaw ? <Textarea defaultName={defaultName} value={raw} className="fill w-detail-request-raw" hide={name != BTNS[6].name} /> : ''}
+        {state.initedRaw ? <Textarea defaultName={defaultName} value={raw} headers={headersStr}
+          base64={base64} className="fill w-detail-request-raw" hide={name != BTNS[6].name} /> : ''}
       </div>
     );
   }

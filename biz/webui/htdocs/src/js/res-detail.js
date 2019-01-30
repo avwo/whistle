@@ -56,7 +56,7 @@ var ResDetail = React.createClass({
     }
     var name = btn && btn.name;
     var modal = this.props.modal;
-    var res, rawHeaders, headers, cookies, body, raw, json, tips, defaultName, base64, bin, hasSameSite;
+    var res, rawHeaders, headersStr, headers, cookies, body, raw, json, tips, defaultName, base64, bin, hasSameSite;
     body = raw = '';
     if (modal) {
       res = modal.res;
@@ -115,8 +115,9 @@ var ResDetail = React.createClass({
       var status = res.statusCode;
       var showImg = name === btns[1].name;
       if (status != null) {
+        headersStr = util.objectToString(headers, res.rawHeaderNames);
         raw = ['HTTP/' + (modal.req.httpVersion || '1.1'), status, util.getStatusMessage(res)].join(' ')
-            + '\r\n' + util.objectToString(headers, res.rawHeaderNames) + '\r\n\r\n' + body;
+            + '\r\n' + headersStr + '\r\n\r\n' + body;
         var type = util.getContentType(headers);
         isJson = type === 'JSON';
         if (type === 'IMG') {
@@ -161,7 +162,8 @@ var ResDetail = React.createClass({
         {state.initedJSONView ? <JSONViewer defaultName={defaultName} data={json} hide={name != btns[3].name} /> : undefined}
         {state.initedHexView ? <Textarea defaultName={defaultName} isHexView="1" base64={base64} value={bin} className="fill n-monospace w-detail-response-hex" hide={name != btns[4].name} /> : undefined}
         {state.initedCookies ? <div className={'fill w-detail-response-cookies' + (name == btns[5].name ? '' : ' hide')}>{cookies && cookies.length ? <Table head={hasSameSite ? SS_COOKIE_HEADERS : COOKIE_HEADERS} modal={cookies} /> : undefined}</div> : undefined}
-        {state.initedRaw ? <Textarea defaultName={defaultName} value={raw} className="fill w-detail-response-raw" hide={name != btns[6].name} /> : undefined}
+        {state.initedRaw ? <Textarea defaultName={defaultName} value={raw} headers={headersStr}
+          base64={base64} className="fill w-detail-response-raw" hide={name != btns[6].name} /> : undefined}
       </div>
     );
   }
