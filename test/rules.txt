@@ -35,4 +35,4 @@ file://(0)
 `
 jsbody2.whistlejs.com resType://html jsPrepend://http://1 jsAppend://https://2 file://(0) disable://keepAlive
 http://127.0.0.1:8080/xhost.html xhost://127.0.0.1:37621
-http://127.0.0.1:8080/xproxy.html xproxy://127.0.0.1:37621
+http://127.0.0.1:8080/xproxy.html xproxy://127.0.0.1:37621 enable://showHost
