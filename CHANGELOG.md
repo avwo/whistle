@@ -1,6 +1,6 @@
-# v1.14.0
+# v1.13.16
 1. fix: [jsBody](http://wproxy.org/whistle/rules/jsBody.html)失效问题
-2. feat: Network及Rules添加右键菜单 `Add Rule` 方便快速创建自定规则
+2. style: 精简Network的右键菜单
 
 # v1.13.15
 1. fix: 页面设置 `<meta http-equiv="Content-Security-Policy" content="script-src *.qq.com *.gtimg.cn *.gtimg.com 'unsafe-inline' 'unsafe-eval';"/>` ，导致 [log](http://wproxy.org/whistle/rules/log.html) 和 [weinre](http://wproxy.org/whistle/rules/weinre.html) 失效
