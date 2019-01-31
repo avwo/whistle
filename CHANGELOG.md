@@ -1,3 +1,7 @@
+# v1.14.0
+1. fix: [jsBody](http://wproxy.org/whistle/rules/jsBody.html)失效问题
+2. feat: Network及Rules添加右键菜单 `Add Rule` 方便快速创建自定规则
+
 # v1.13.15
 1. fix: 页面设置 `<meta http-equiv="Content-Security-Policy" content="script-src *.qq.com *.gtimg.cn *.gtimg.com 'unsafe-inline' 'unsafe-eval';"/>` ，导致 [log](http://wproxy.org/whistle/rules/log.html) 和 [weinre](http://wproxy.org/whistle/rules/weinre.html) 失效
 2. fix: `ServerPort` 显示问题及设置 `proxy://host:port?host=ip:port2 pattern` 时带上默认端口号问题（https: 443，http: 80）
