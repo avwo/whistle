@@ -24,4 +24,7 @@ module.exports = function() {
   util.request('ws://ws5.w2.org:8081/index.html', function(res, data) {
     res.type.should.be.equal('server');
   });
+  util.request('http://127.0.0.1:8080/xproxy.html', function(res, data) {
+    data.type.should.be.equal('server');
+  });
 };
