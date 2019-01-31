@@ -1,0 +1,41 @@
+.w-add-rule-dialog .modal-content {
+  width: 666px;
+}
+
+.w-add-rule-dialog .modal-body>div:nth-child(2) {
+  margin-top: 30px;
+}
+
+.w-add-rule-dialog .modal-body>div {
+  margin-bottom: 5px;
+}
+
+.w-add-rule-dialog label {
+  display: inline-block;
+  width: 80px;
+  line-height: 32px;
+}
+
+.w-add-rule-dialog select {
+  width: 150px;
+  margin-right: 10px;
+  height: 32px;
+}
+
+.w-add-rule-dialog input {
+  width: 400px;
+  height: 32px;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  padding: 5px;
+}
+
+.w-add-rule-dialog textarea {
+  vertical-align: text-top;
+  display: inline-block;
+  width: 560px;
+  height: 130px;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  padding: 5px;
+}

@@ -7,6 +7,7 @@ var QRCode = require('qrcode');
 var util = require('./util');
 var columns = require('./columns');
 var Dialog = require('./dialog');
+var AddRuleDialog = require('./add-rule-dialog');
 
 var FilterInput = require('./filter-input');
 var Spinner = require('./spinner');
@@ -457,6 +458,9 @@ var ReqData = React.createClass({
     case 'Unselected':
       events.trigger('removeUnselected');
       break;
+    case 'Add Rule':
+      this.refs.addRuleDialog.show();
+      break;
     case 'Help':
       window.open('https://avwo.github.io/whistle/webui/network.html');
       break;
@@ -736,6 +740,7 @@ var ReqData = React.createClass({
               <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
             </div>
           </Dialog>
+          <AddRuleDialog ref="addRuleDialog" />
       </div>
     );
   }
