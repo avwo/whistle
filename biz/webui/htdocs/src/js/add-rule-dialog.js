@@ -3,7 +3,7 @@ require('../css/add-rule.css');
 var React = require('react');
 var Dialog = require('./dialog');
 
-var PATTERN_TYPES = 'Select Pattern,http://,https://,ws://,wss://,tunnel://,RegExp,UrlExp'.split(',');
+var PATTERN_TYPES = 'Auto,http://,https://,ws://,wss://,tunnel://,RegExp,UrlExp'.split(',');
 var PROTOCOLS = ['Set Hosts', 'Set Proxy', 'Map Local', 'Map Remote', 'Modify URL',
   'Modify Method', 'Modify StatusCode', 'Modify Headers', 'Modify Body', 'Inject Body', 'Settings',
   'Throttle', 'Script', 'Tools', 'Plugin']; // use optGroup
