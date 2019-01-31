@@ -4,7 +4,7 @@ var React = require('react');
 var Dialog = require('./dialog');
 
 var PATTERN_TYPES = 'Select Pattern,http://,https://,ws://,wss://,tunnel://,RegExp,UrlExp'.split(',');
-var PROTOCOLS = ['Select Operation', 'Set Hosts', 'Set Proxy', 'Map Local', 'Map Remote',
+var PROTOCOLS = ['Set Hosts', 'Set Proxy', 'Map Local', 'Map Remote', 'Modify URL',
   'Modify Method', 'Modify StatusCode', 'Modify Headers', 'Modify Body', 'Inject Body', 'Settings',
   'Throttle', 'Script', 'Tools', 'Plugin']; // use optGroup
 
@@ -32,7 +32,7 @@ var AddRuleDialog = React.createClass({
           </button>
           <div>
             <label>Pattern:</label>
-            <select>
+            <select className="w-add-rule-pattern">
               {createOptions(PATTERN_TYPES)}
             </select>
             <input />
@@ -50,6 +50,13 @@ var AddRuleDialog = React.createClass({
           <div>
             <label>Filter:</label>
             <textarea />
+          </div>
+          <div>
+            <label>Save in:</label>
+            <select className="w-add-rule-editor">
+              <option>Default</option>
+            </select>
+            <a href="javascript:;">Preview</a>
           </div>
         </div>
         <div className="modal-footer">

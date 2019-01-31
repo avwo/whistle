@@ -75,9 +75,9 @@ var contextMenuList = [
   {
     name: 'Actions',
     list: [
-      { name: 'Compose' },
+      { name: 'Abort' },
       { name: 'Replay' },
-      { name: 'Abort' }
+      { name: 'Compose' }
     ]
   },
   { name: 'Upload' },
@@ -539,13 +539,13 @@ var ReqData = React.createClass({
     contextMenuList[4].disabled = disabled;
     var list4 = contextMenuList[4].list;
     if (item) {
-      list4[0].disabled = false;
+      list4[2].disabled = false;
       if (item.selected) {
         list4[1].disabled = !selectedList.filter(util.canReplay).length;
-        list4[2].disabled = !selectedList.filter(util.canAbort).length;
+        list4[0].disabled = !selectedList.filter(util.canAbort).length;
       } else {
         list4[1].disabled = !util.canReplay(item);
-        list4[2].disabled = !util.canAbort(item);
+        list4[0].disabled = !util.canAbort(item);
       }
     } else {
       list4[0].disabled = true;

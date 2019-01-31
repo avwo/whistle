@@ -8,6 +8,7 @@
 
 .w-add-rule-dialog .modal-body>div {
   margin-bottom: 5px;
+  white-space: nowrap;
 }
 
 .w-add-rule-dialog label {
@@ -17,13 +18,24 @@
 }
 
 .w-add-rule-dialog select {
-  width: 150px;
-  margin-right: 10px;
+  width:560px;
   height: 32px;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+}
+
+.w-add-rule-dialog .w-add-rule-pattern {
+  width: 120px;
+  margin-right: 10px;
+}
+
+.w-add-rule-dialog .w-add-rule-editor {
+  width: 480px;
+  margin-right: 20px;
 }
 
 .w-add-rule-dialog input {
-  width: 400px;
+  width: 430px;
   height: 32px;
   border: 1px solid #ccc;
   border-radius: 2px;
