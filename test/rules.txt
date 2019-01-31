@@ -28,3 +28,4 @@ filter.com/index.html file://({"ec":4})
 
 1.tps.whistlejs.com file://() enable://capture resAppend://`{${url.query.name}}`
 2.tps.whistlejs.com resScript://{tps.rules} rawfile://{rawFile2.js} enable://capture
+jsbody.whistlejs.com resType://js jsBody://(1) jsBody://(2) jsPrepend://(-1) jsPrepend://(-2) jsAppend://(3) jsAppend://(4) file://(0)

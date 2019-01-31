@@ -18,4 +18,7 @@ module.exports = function() {
   }, function(res, body) {
     body.should.equal('_');
   });
+  util.request('http://jsbody.whistlejs.com/index.html?resBody=_', function(res, body) {
+    body.should.equal([-1, -2, 1, 2, 3, 4].join('\r\n'));
+  });
 };
