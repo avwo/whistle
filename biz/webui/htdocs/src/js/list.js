@@ -20,7 +20,6 @@ var rulesCtxMenuList = [
   { name: 'Delete' },
   { name: 'Export' },
   { name: 'Import' },
-  { name: 'Add Rule' },
   { name: 'Help', sep: true }
 ];
 var valuesCtxMenuList = [
@@ -328,7 +327,7 @@ var List = React.createClass({
     var disabled = !name;
     var isDefault;
     var isRules = this.props.name == 'rules';
-    var data = util.getMenuPosition(e, 110, 250);
+    var data = util.getMenuPosition(e, 110, isRules ? 220 : 250);
     if (isRules) {
       data.list = rulesCtxMenuList;
       data.list[1].disabled = disabled;
