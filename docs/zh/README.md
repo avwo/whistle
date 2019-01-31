@@ -1,46 +1,77 @@
----
-home: true
-heroImage: /hero.png
-actionText: 起步 →
-actionLink: /zh/introduction.html
-footer: MIT Licensed | Copyright © 2019-present avenwu
----
+# whistle
 
-<div style="text-align: center">
-  <Bit/>
-</div>
+> Github(欢迎+Star): [https://github.com/avwo/whistle](https://github.com/avwo/whistle)
 
-<div class="features">
-  <div class="feature">
-    <h2>简明优先</h2>
-    <p>对以 markdown 为中心的项目结构，做最简化的配置，帮助你专注于创作。</p>
-  </div>
-  <div class="feature">
-    <h2>Vue 驱动</h2>
-    <p>享用 Vue + webpack 开发环境，在 markdown 中使用 Vue 组件，并通过 Vue 开发自定义主题。</p>
-  </div>
-  <div class="feature">
-    <h2>性能高效</h2>
-    <p>VuePress 将每个页面生成为预渲染的静态 HTML，每个页面加载之后，然后作为单页面应用程序(SPA)运行。</p>
-  </div>
-</div>
+[whistle](https://github.com/avwo/whistle)(读音[ˈwɪsəl]，拼音[wēisǒu])基于Node实现的跨平台web调试代理工具，类似的工具有Windows平台上的[Fiddler](http://www.telerik.com/fiddler/)，主要用于查看、修改HTTP、HTTPS、Websocket的请求、响应，也可以作为HTTP代理服务器使用，不同于Fiddler通过断点修改请求响应的方式，whistle采用的是类似配置系统hosts的方式，一切操作都可以通过配置实现，支持域名、路径、正则表达式、通配符、通配路径等多种[匹配方式](./pattern.html)，且可以通过Node模块[扩展功能](./plugins.html)：
 
-### 起步就像数 1, 2, 3 一样容易
+![基本功能](https://raw.githubusercontent.com/avwo/whistleui/master/assets/whistle.png)
 
-``` bash
-# 安装
-yarn global add vuepress # 或 npm install -g vuepress
+whistle的所有操作都可以通过类似如下配置方式实现：
 
-# 创建一个 markdown 文件
-echo '# Hello VuePress' > README.md
+	pattern operatorURI
 
-# 开始编写
-vuepress dev
+其中：
 
-# 构建为静态文件
-vuepress build
-```
+1. **pattern** 为匹配请求url的表达式，可以为：域名，路径，正则及通配符等等多种匹配方式：
 
-::: warning 兼容性注意事项
-VuePress 要求 Node.js >= 8。
-:::
+		# 域名匹配
+		www.example.com
+		# 带端口的域名
+		www.example.com:6666
+		# 带协议的域名，支持：http、https、ws、wss、tunnel
+		http://www.example.com
+
+		# 路径匹配，同样支持带协议、端口
+		www.example.com/test
+		https:/www.exapmle.com/test
+		https:/www.exapmle.com:6666/test
+
+		# 正则匹配
+		/^https?://www\.example\.com\/test/(.*)/ referer://http://www.test.com/$1
+
+		# 通配符匹配
+		^www.example.com/test/*** referer://http://www.test.com/$1
+
+	完整内容参见：[匹配模式](./pattern.html)
+2. **operatorURI** 为对应的操作，由操作协议+操作值组成(`operatorURI = opProtocol://opValue`)：
+
+	**opProtocol**(操作协议)， 对应某类操作，如：
+
+			# 设置请求服务器IP--host
+			pattern host://opValue
+
+			# 本地替换--file协议
+			pattern file://opValue
+
+	**opValue**(操作值)， 对应具体操作的参数值，如：
+
+			# 设置请求服务器IP--host协议
+			pattern host://127.0.0.1:6666 # 或 pattern 127.0.0.1:6666
+
+			# 本地替换--file协议
+			pattern file:///User/test/dirOrFile # 或 pattern /User/test/dirOrFile
+			pattern file://E:\test\dirOrFile # 或 pattern E:\test\dirOrFile
+
+	完整内容参见：[操作值](./data.html)
+3. **pattern** 和 **operatorURI** 在多数情况下位置可以调换，且支持组合模式，具体参见：[配置方式](./mode.html)
+
+# 帮助文档
+
+1. [安装启动](install.md)
+* [命令行操作](cli.md)
+* [手动更新](update.md)
+* [快速上手](quickstart.md)
+* [配置方式](mode.md)
+* [匹配模式](pattern.md)
+* [操作值](data.md)
+* [常用功能](frequet.md)
+* [插件开发](plugins.md)
+* [注意事项](attention.md)
+* [常见问题](questions.md)
+* [界面功能](webui/README.md)
+* [协议列表](rules/README.md)
+* [用户反馈](feedback.md)
+
+# License
+
+[MIT](https://github.com/avwo/whistle/blob/master/LICENSE)
