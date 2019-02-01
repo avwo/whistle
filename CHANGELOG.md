@@ -1,3 +1,6 @@
+# v1.13.17
+1. feat: 本地替换新增响应206功能，支持iOS播放本地替换的视频文件
+
 # v1.13.16
 1. fix: [jsBody](http://wproxy.org/whistle/rules/jsBody.html)失效问题
 2. style: 精简Network的右键菜单
