@@ -42,3 +42,9 @@ prependhtml.whistlejs.com resType://html htmlBody://(1) htmlBody://(2)
 htmlPrepend://(-1) htmlPrepend://(-2) htmlAppend://(3) htmlAppend://(4)
 file://(0)
 `
+
+``` range.txt
+0123456789
+```
+range1.whistlejs.com file://{range.txt}
+range2.whistlejs.com whistle.test2://
