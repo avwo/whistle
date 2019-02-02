@@ -1,53 +1,63 @@
 .w-add-rule-dialog .modal-content {
-  width: 666px;
-}
-
-.w-add-rule-dialog .modal-body>div:nth-child(2) {
-  margin-top: 30px;
+  width: 630px;
 }
 
 .w-add-rule-dialog .modal-body>div {
-  margin-bottom: 5px;
+  margin-bottom: 10px;
   white-space: nowrap;
+}
+
+.w-add-rule-dialog .modal-body>div:nth-child(2) {
+  margin-top: 25px;
+}
+
+.w-add-rule-dialog .modal-body>div:nth-child(3) {
+  margin-bottom: 15px;
+}
+
+.w-add-rule-dialog .glyphicon {
+  margin-right: 5px;
 }
 
 .w-add-rule-dialog label {
   display: inline-block;
-  width: 80px;
+  width: 90px;
+  margin-right: 15px;
   line-height: 32px;
-}
-
-.w-add-rule-dialog select {
-  width:560px;
-  height: 32px;
-  border: 1px solid #ccc;
-  border-radius: 2px;
+  text-align: right;
 }
 
 .w-add-rule-dialog .w-add-rule-pattern {
-  width: 120px;
-  margin-right: 10px;
-}
-
-.w-add-rule-dialog .w-add-rule-editor {
   width: 480px;
-  margin-right: 20px;
-}
-
-.w-add-rule-dialog input {
-  width: 430px;
   height: 32px;
   border: 1px solid #ccc;
   border-radius: 2px;
   padding: 5px;
 }
 
-.w-add-rule-dialog textarea {
-  vertical-align: text-top;
-  display: inline-block;
-  width: 560px;
-  height: 130px;
+.w-add-rule-dialog select {
+  width: 480px;
+  height: 32px;
   border: 1px solid #ccc;
   border-radius: 2px;
+}
+
+.w-add-rule-dialog .w-add-rule-protocols {
+  width: 120px;
+  height: 120px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-right: none;
+}
+
+.w-add-rule-dialog textarea {
+  vertical-align: top;
+  display: inline-block;
+  width: 360px;
+  height: 120px;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
   padding: 5px;
 }

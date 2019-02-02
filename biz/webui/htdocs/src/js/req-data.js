@@ -7,7 +7,7 @@ var QRCode = require('qrcode');
 var util = require('./util');
 var columns = require('./columns');
 var Dialog = require('./dialog');
-
+var AddRuleDialog = require('./add-rule-dialog');
 var FilterInput = require('./filter-input');
 var Spinner = require('./spinner');
 var ContextMenu = require('./context-menu');
@@ -82,6 +82,7 @@ var contextMenuList = [
   { name: 'Upload' },
   { name: 'Import' },
   { name: 'Export' },
+  { name: 'Add Rule' },
   { name: 'Help', sep: true }
 ];
 
@@ -414,6 +415,9 @@ var ReqData = React.createClass({
     case 'Export':
       events.trigger('exportSessions', item);
       break;
+    case 'Add Rule':
+      this.refs.addRuleDialog.show();
+      break;
     case 'Abort':
       events.trigger('abortRequest', item);
       break;
@@ -735,6 +739,7 @@ var ReqData = React.createClass({
               <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
             </div>
           </Dialog>
+          <AddRuleDialog ref="addRuleDialog" />
       </div>
     );
   }

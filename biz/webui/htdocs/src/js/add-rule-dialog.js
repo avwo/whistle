@@ -3,10 +3,9 @@ require('../css/add-rule.css');
 var React = require('react');
 var Dialog = require('./dialog');
 
-var PATTERN_TYPES = 'Auto,http://,https://,ws://,wss://,tunnel://,RegExp,UrlExp'.split(',');
 var PROTOCOLS = ['Set Hosts', 'Set Proxy', 'Map Local', 'Map Remote', 'Modify URL',
   'Modify Method', 'Modify StatusCode', 'Modify Headers', 'Modify Body', 'Inject Body', 'Settings',
-  'Throttle', 'Script', 'Tools', 'Plugin']; // use optGroup
+  'Throttle', 'Script', 'Tools', 'Filter', 'Plugin']; // use optGroup
 
 var createOptions = function(list) {
   return list.map(function(item) {
@@ -31,35 +30,35 @@ var AddRuleDialog = React.createClass({
             <span aria-hidden="true">&times;</span>
           </button>
           <div>
-            <label>Pattern:</label>
-            <select className="w-add-rule-pattern">
-              {createOptions(PATTERN_TYPES)}
-            </select>
-            <input />
+            <label htmlFor="___add-rule-pattern">
+              <span className="glyphicon glyphicon-question-sign" />
+              Pattern:
+            </label>
+            <input id="___add-rule-pattern" className="w-add-rule-pattern"
+              maxLength="1024" placeholder="Input the pattern to match request URL" />
           </div>
           <div>
-            <label>Protocol:</label>
-            <select>
+            <label htmlFor="___add-rule-text">
+              <span className="glyphicon glyphicon-question-sign" />
+              Operation:
+            </label>
+            <select id="___add-rule-text" className="w-add-rule-protocols">
               {createOptions(PROTOCOLS)}
-            </select>
+            </select><textarea maxLength="3072"
+              placeholder={'Input the operation value, the length can\'t exceed 3kb.\nFor help, press F1 or click the help icon on the left.'} />
           </div>
           <div>
-            <label>Value:</label>
-            <textarea />
-          </div>
-          <div>
-            <label>Filter:</label>
-            <textarea />
-          </div>
-          <div>
-            <label>Save in:</label>
-            <select className="w-add-rule-editor">
+            <label htmlFor="___add-rule-file">
+              <span className="glyphicon glyphicon-question-sign" />
+              Save in:
+            </label>
+            <select id="___add-rule-file">
               <option>Default</option>
             </select>
-            <a href="javascript:;">Preview</a>
           </div>
         </div>
         <div className="modal-footer">
+          <button type="button" className="btn btn-info" data-dismiss="modal">Preview & Edit</button>
           <button type="button" className="btn btn-primary" data-dismiss="modal">Confirm</button>
           <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
         </div>
