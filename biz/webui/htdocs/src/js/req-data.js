@@ -7,7 +7,6 @@ var QRCode = require('qrcode');
 var util = require('./util');
 var columns = require('./columns');
 var Dialog = require('./dialog');
-var AddRuleDialog = require('./add-rule-dialog');
 var FilterInput = require('./filter-input');
 var Spinner = require('./spinner');
 var ContextMenu = require('./context-menu');
@@ -83,7 +82,7 @@ var contextMenuList = [
   { name: 'Upload' },
   { name: 'Import' },
   { name: 'Export' },
-  { name: 'Add Rule' },
+  // { name: 'Add Rule' },
   { name: 'Help', sep: true }
 ];
 
@@ -416,10 +415,6 @@ var ReqData = React.createClass({
     case 'Export':
       events.trigger('exportSessions', item);
       break;
-    case 'Add Rule':
-      this.refs.addRuleDialog.show();
-      this.refs.addRuleDialog.setData(item);
-      break;
     case 'Abort':
       events.trigger('abortRequest', item);
       break;
@@ -556,7 +551,7 @@ var ReqData = React.createClass({
     var uploadItem = contextMenuList[5];
     uploadItem.hide = !getUploadSessionsFn();
     contextMenuList[7].disabled = uploadItem.disabled = disabled && !selectedCount;
-    var data = util.getMenuPosition(e, 110, uploadItem.hide ? 280 : 310);
+    var data = util.getMenuPosition(e, 110, uploadItem.hide ? 250 : 280);
     data.list = contextMenuList;
     data.className = data.marginRight < 260 ? 'w-ctx-menu-left' : '';
     this.refs.contextMenu.show(data);
@@ -656,7 +651,6 @@ var ReqData = React.createClass({
     var modal = self.props.modal;
     var list = modal ? modal.list : [];
     var hasKeyword = modal && modal.hasKeyword();
-    var rulesModal = modal && modal.rulesModal;
     var index = 0;
     var indeies = self.getVisibleIndex();
     var draggable = state.draggable;
@@ -742,7 +736,6 @@ var ReqData = React.createClass({
               <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
             </div>
           </Dialog>
-          <AddRuleDialog rulesModal={rulesModal} ref="addRuleDialog" />
       </div>
     );
   }
