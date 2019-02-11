@@ -2623,6 +2623,7 @@ var Index = React.createClass({
       }
     }
     if (state.network) {
+      state.network.rulesModal = state.rules;
       var networkOptions = state.networkOptions;
       var hasUnselected = state.network.hasUnselected();
       if (state.network.hasSelected()) {

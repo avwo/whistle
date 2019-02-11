@@ -2,15 +2,25 @@ require('./base-css.js');
 require('../css/add-rule.css');
 var React = require('react');
 var Dialog = require('./dialog');
+var protocolGroups = require('./protocols').groups;
 
-var PROTOCOLS = ['Set Hosts', 'Set Proxy', 'Map Local', 'Map Remote', 'Modify URL',
-  'Modify Method', 'Modify StatusCode', 'Modify Headers', 'Modify Body', 'Inject Body', 'Settings',
-  'Throttle', 'Script', 'Tools', 'Filter', 'Plugin']; // use optGroup
-
-var createOptions = function(list) {
+var _createOptions = function(list) {
   return list.map(function(item) {
     return (
       <option value={item}>{item}</option>
+    );
+  });
+};
+
+var createOptions = function(list) {
+  if (Array.isArray(list)) {
+    return _createOptions(list);
+  }
+  return Object.keys(list).map(function(label) {
+    return (
+      <optgroup label={label}>
+        {_createOptions(list[label])}
+      </optgroup>
     );
   });
 };
@@ -22,7 +32,16 @@ var AddRuleDialog = React.createClass({
   hide: function() {
     this.refs.addRuleDialog.hide();
   },
+  shouldComponentUpdate: function() {
+    return !this.refs.addRuleDialog || this.refs.addRuleDialog.isVisible();
+  },
   render: function() {
+    var rulesModal = this.props.rulesModal;
+    if (!rulesModal) {
+      return null;
+    }
+    var rulesList = rulesModal.list.slice();
+    rulesList.push('+Create');
     return (
       <Dialog ref="addRuleDialog" wstyle="w-add-rule-dialog">
         <div className="modal-body">
@@ -43,7 +62,7 @@ var AddRuleDialog = React.createClass({
               Operation:
             </label>
             <select id="___add-rule-text" className="w-add-rule-protocols">
-              {createOptions(PROTOCOLS)}
+              {createOptions(protocolGroups)}
             </select><textarea maxLength="3072"
               placeholder={'Input the operation value, the length can\'t exceed 3kb.\nFor help, press F1 or click the help icon on the left.'} />
           </div>
@@ -53,7 +72,7 @@ var AddRuleDialog = React.createClass({
               Save in:
             </label>
             <select id="___add-rule-file">
-              <option>Default</option>
+            {createOptions(rulesList)}
             </select>
           </div>
         </div>

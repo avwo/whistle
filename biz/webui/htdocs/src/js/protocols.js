@@ -14,6 +14,34 @@ var PROTOCOLS = ['rule', 'plugin', 'host', 'xhost', 'proxy', 'xproxy', 'http-pro
   'reqWriteRaw', 'resWriteRaw'
 ];
 
+var groups = {
+  'Set Hosts': ['host://', 'xhost://'],
+  'Set Proxy': ['pac://', 'http-proxy://', 'xhttp-proxy://', 'https-proxy://', 'xhttps-proxy://',
+    'socks://', 'xsocks://'],
+  'Map Local': ['file://', 'xfile://', 'tpl://', 'xtpl://', 'rawfile://', 'xrawfile://'],
+  'Map Remote': ['auto', 'http://', 'https://', 'ws://', 'wss://', 'tunnel://'],
+  'Modify URL': ['urlParams://', 'pathReplace://', 'redirect://'],
+  'Modify Method': ['method://'],
+  'Modify StatusCode': ['statusCode://', 'replaceStatus://'],
+  'Modify Cors': ['reqCors://', 'resCors://'],
+  'Modify Type': ['reqType://', 'resType://', 'attachment://'],
+  'Modify Cookies': ['reqCookies://', 'resCookies://'],
+  'Modify IP': ['forwardedFor://', 'responseFor://'],
+  'Modify Headers': ['delete://', 'ua://', 'auth://', 'referer://', 'reqHeaders://', 'resHeaders://'],
+  'Modify Body': ['reqMerge://', 'resMerge://', 'reqReplace://', 'resReplace://'],
+  'Inject Html': ['htmlPrepend://', 'htmlBody://', 'htmlAppend://'],
+  'Inject Js': ['jsPrepend://', 'jsBody://', 'jsAppend://'],
+  'Inject Css': ['cssPrepend://', 'cssBody://', 'cssAppend://'],
+  'Inject Body': ['reqPrepend://', 'resPrepend://', 'reqBody://', 'resBody://', 'reqAppend://',
+    'resAppend://', 'reqReplace://', 'resReplace://'],
+  Tools: ['log://', 'weinre://', 'cache://'],
+  Throttle: ['reqDelay://', 'resDelay://', 'reqSpeed://', 'resSpeed://'],
+  Settings: ['enable://', 'disable://'],
+  Script: ['reqScript://', 'resScript://'],
+  Filter: ['ignore://', 'excludeFilter://', 'includeFilter://'],
+  Plugin: []
+};
+
 var innerRules = ['file', 'xfile', 'tpl', 'xtpl', 'rawfile', 'xrawfile'];
 var pluginRules = [];
 var forwardRules = innerRules.slice();
@@ -26,6 +54,7 @@ var allRules = allInnerRules = allInnerRules.map(function (name) {
 allRules.splice(allRules.indexOf('filter://'), 1, 'excludeFilter://', 'includeFilter://');
 var plugins = {};
 
+exports.groups = groups;
 exports.setPlugins = function (pluginsState) {
   var pluginsOptions = pluginsState.pluginsOptions;
   var disabledPlugins = pluginsState.disabledPlugins;
@@ -33,6 +62,7 @@ exports.setPlugins = function (pluginsState) {
   pluginRules = [];
   forwardRules = innerRules.slice();
   allRules = allInnerRules.slice();
+  groups.Plugin = [];
   if (!pluginsState.disabledAllPlugins) {
     pluginsOptions.forEach(function (plugin, i) {
       if (!i) {
@@ -45,9 +75,11 @@ exports.setPlugins = function (pluginsState) {
         pluginRules.push('whistle.' + name, 'plugin.' + name);
         name += '://';
         allRules.push(name, 'whistle.' + name);
+        groups.Plugin.push(name, 'whistle.' + name);
       }
     });
   }
+  groups.Plugin.push('+Custom');
   events.trigger('updatePlugins');
 };
 

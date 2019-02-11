@@ -13,6 +13,7 @@ var Spinner = require('./spinner');
 var ContextMenu = require('./context-menu');
 var events = require('./events');
 var dataCenter = require('./data-center');
+
 var HEIGHT = 24; //每条数据的高度
 var columnState = {};
 var CMD_RE = /^:dump\s+(\d{1,15})\s*$/;
@@ -654,6 +655,7 @@ var ReqData = React.createClass({
     var modal = self.props.modal;
     var list = modal ? modal.list : [];
     var hasKeyword = modal && modal.hasKeyword();
+    var rulesModal = modal && modal.rulesModal;
     var index = 0;
     var indeies = self.getVisibleIndex();
     var draggable = state.draggable;
@@ -739,7 +741,7 @@ var ReqData = React.createClass({
               <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
             </div>
           </Dialog>
-          <AddRuleDialog ref="addRuleDialog" />
+          <AddRuleDialog rulesModal={rulesModal} ref="addRuleDialog" />
       </div>
     );
   }

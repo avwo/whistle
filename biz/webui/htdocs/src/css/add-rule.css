@@ -43,17 +43,18 @@
 }
 
 .w-add-rule-dialog .w-add-rule-protocols {
-  width: 120px;
+  width: 130px;
   height: 120px;
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
   border-right: none;
+  font-weight: bold;
 }
 
 .w-add-rule-dialog textarea {
   vertical-align: top;
   display: inline-block;
-  width: 360px;
+  width: 350px;
   height: 120px;
   border: 1px solid #ccc;
   border-radius: 2px;

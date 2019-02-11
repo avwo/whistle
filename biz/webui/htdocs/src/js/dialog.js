@@ -31,10 +31,13 @@ var Dialog = React.createClass({
     document.body.removeChild(this.container[0]);
   },
   show: function() {
-    if (this.container.is(':visible')) {
+    if (this.isVisible()) {
       return;
     }
     this.container.modal('show');
+  },
+  isVisible: function() {
+    return this.container.is(':visible');
   },
   hide: function() {
     this.container.modal('hide');
