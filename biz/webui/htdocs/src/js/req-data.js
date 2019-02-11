@@ -418,6 +418,7 @@ var ReqData = React.createClass({
       break;
     case 'Add Rule':
       this.refs.addRuleDialog.show();
+      this.refs.addRuleDialog.setData(item);
       break;
     case 'Abort':
       events.trigger('abortRequest', item);
@@ -555,7 +556,7 @@ var ReqData = React.createClass({
     var uploadItem = contextMenuList[5];
     uploadItem.hide = !getUploadSessionsFn();
     contextMenuList[7].disabled = uploadItem.disabled = disabled && !selectedCount;
-    var data = util.getMenuPosition(e, 110, uploadItem.hide ? 250 : 280);
+    var data = util.getMenuPosition(e, 110, uploadItem.hide ? 280 : 310);
     data.list = contextMenuList;
     data.className = data.marginRight < 260 ? 'w-ctx-menu-left' : '';
     this.refs.contextMenu.show(data);

@@ -1,8 +1,10 @@
 require('./base-css.js');
 require('../css/add-rule.css');
+var $ = require('jquery');
 var React = require('react');
 var Dialog = require('./dialog');
 var protocolGroups = require('./protocols').groups;
+var util = require('./util');
 
 var _createOptions = function(list) {
   return list.map(function(item) {
@@ -31,6 +33,16 @@ var AddRuleDialog = React.createClass({
   },
   hide: function() {
     this.refs.addRuleDialog.hide();
+  },
+  setData: function(data) {
+    var input = $('#___add-rule-pattern');
+    if (data) {
+      input.val(util.removeProtocol(data.url.replace(/[?#].*$/, '')));
+    }
+    setTimeout(function() {
+      input[0].select();
+      input[0].focus();
+    }, 500);
   },
   shouldComponentUpdate: function() {
     return !this.refs.addRuleDialog || this.refs.addRuleDialog.isVisible();
@@ -64,7 +76,7 @@ var AddRuleDialog = React.createClass({
             <select id="___add-rule-text" className="w-add-rule-protocols">
               {createOptions(protocolGroups)}
             </select><textarea maxLength="3072"
-              placeholder={'Input the operation value, the length can\'t exceed 3kb.\nFor help, press F1 or click the help icon on the left.'} />
+              placeholder={'Input the operation value (<= 3k), such as:\n'} />
           </div>
           <div>
             <label htmlFor="___add-rule-file">
@@ -77,7 +89,7 @@ var AddRuleDialog = React.createClass({
           </div>
         </div>
         <div className="modal-footer">
-          <button type="button" className="btn btn-info" data-dismiss="modal">Preview & Edit</button>
+          <button type="button" className="btn btn-info" data-dismiss="modal">Edit in Rules</button>
           <button type="button" className="btn btn-primary" data-dismiss="modal">Confirm</button>
           <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
         </div>

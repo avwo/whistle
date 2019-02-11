@@ -19,7 +19,7 @@ var groups = {
   'Set Proxy': ['pac://', 'http-proxy://', 'xhttp-proxy://', 'https-proxy://', 'xhttps-proxy://',
     'socks://', 'xsocks://'],
   'Map Local': ['file://', 'xfile://', 'tpl://', 'xtpl://', 'rawfile://', 'xrawfile://'],
-  'Map Remote': ['auto', 'http://', 'https://', 'ws://', 'wss://', 'tunnel://'],
+  'Map Remote': ['http://', 'https://', 'ws://', 'wss://', 'tunnel://', 'auto'],
   'Modify URL': ['urlParams://', 'pathReplace://', 'redirect://'],
   'Modify Method': ['method://'],
   'Modify StatusCode': ['statusCode://', 'replaceStatus://'],
