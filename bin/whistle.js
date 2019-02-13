@@ -94,7 +94,7 @@ program
   .option('-f, --secureFilter [secureFilter]', 'set the path of secure filter', String, undefined)
   .option('-R, --reqCacheSize [reqCacheSize]', 'set the cache size of request data (600 by default)', String, undefined)
   .option('-F, --frameCacheSize [frameCacheSize]', 'set the cache size of webSocket and socket\'s frames (512 by default)', String, undefined)
-  .option('--no-prev-options', 'donot reuse the previous options when restarting');
+  .option('--no-prev-options', 'do not reuse the previous options when restarting');
 
 var argv = process.argv;
 var cmd = argv[2];
