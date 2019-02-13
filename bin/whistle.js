@@ -93,7 +93,8 @@ program
   .option('-e, --extra [extraData]', 'set the extra parameters for plugin', String, undefined)
   .option('-f, --secureFilter [secureFilter]', 'set the path of secure filter', String, undefined)
   .option('-R, --reqCacheSize [reqCacheSize]', 'set the cache size of request data (600 by default)', String, undefined)
-  .option('-F, --frameCacheSize [frameCacheSize]', 'set the cache size of webSocket and socket\'s frames (512 by default)', String, undefined);
+  .option('-F, --frameCacheSize [frameCacheSize]', 'set the cache size of webSocket and socket\'s frames (512 by default)', String, undefined)
+  .option('--no-prev-options', 'no use the previous options when restarting');
 
 var argv = process.argv;
 var cmd = argv[2];
