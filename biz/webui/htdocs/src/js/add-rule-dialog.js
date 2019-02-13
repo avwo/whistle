@@ -83,7 +83,7 @@ var AddRuleDialog = React.createClass({
               <span className="glyphicon glyphicon-question-sign" />
               Save in:
             </label>
-            <select id="___add-rule-file">
+            <select id="___add-rule-file" style={{verticalAlign: 'middle'}}>
             {createOptions(rulesList)}
             </select>
           </div>
