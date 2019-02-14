@@ -4,14 +4,12 @@ var http = require('http');
 var url = require('url');
 var util = require('./util');
 var pkg = require('../package.json');
-var getPluginPaths = require('../lib/plugins/module-paths').getPaths;
 
 var isRunning = util.isRunning;
 var error = util.error;
 var warn = util.warn;
 var info = util.info;
 var readConfig = util.readConfig;
-var pluginPaths = getPluginPaths();
 var MAX_RULES_LEN = 1024 * 16;
 var options;
 
@@ -39,6 +37,7 @@ function existsPlugin(name) {
   if (!name || typeof name !== 'string') {
     return false;
   }
+  var pluginPaths = require('../lib/plugins/module-paths').getPaths();
   for (var i = 0, len = pluginPaths.length; i < len; i++) {
     try {
       if (fs.statSync(path.join(pluginPaths[i], name)).isDirectory()) {
@@ -83,6 +82,10 @@ module.exports = function(filepath, storage, force) {
   var config = readConfig(storage) || '';
   options = config.options; 
   var pid = options && config.pid;
+  var addon = options && options.addon;
+  var conf = require('../lib/config');
+  conf.addon = addon && typeof addon === 'string' ? addon.split(/[|,]/) : null;
+  conf.noGlobalPlugins = options && options.noGlobalPlugins;
   isRunning(pid, function(running) {
     if (!running) {
       return showStartWhistleTips(storage);
