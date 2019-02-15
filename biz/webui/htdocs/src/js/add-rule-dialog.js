@@ -85,7 +85,9 @@ var AddRuleDialog = React.createClass({
       storage.set('protocolInDialog', protocol);
       this.setState({ protocol: protocol });
     }
-    ReactDOM.findDOMNode(this.refs.ruleValue).focus();
+    var box = ReactDOM.findDOMNode(this.refs.ruleValue);
+    box.select();
+    box.focus();
   },
   onRuleNameChange: function(e) {
     var ruleName = e.target.value;
