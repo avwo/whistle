@@ -109,3 +109,7 @@ body .cm-s-cobalt span.cm-number {
 .btn.active, .btn:active {
   box-shadow: none!important;
 }
+
+.CodeMirror-hints {
+  z-index: 999999!important;
+}
