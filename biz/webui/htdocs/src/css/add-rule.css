@@ -39,7 +39,7 @@
   padding: 5px;
 }
 
-.w-add-rule-dialog select {
+.w-add-rule-dialog select, .w-add-rule-preview select {
   width: 480px;
   height: 32px;
   border: 1px solid #ccc;
@@ -71,4 +71,10 @@
   width: 480px;
   height: 63px;
   margin-bottom: 5px;
+}
+
+.w-add-rule-preview-name {
+  width: auto!important;
+  margin: 0 5px;
+  vertical-align: middle;
 }

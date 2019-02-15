@@ -163,7 +163,12 @@ var AddRuleDialog = React.createClass({
             <button type="button" className="close" data-dismiss="modal">
               <span aria-hidden="true">&times;</span>
             </button>
-            Hello.
+            Preview in
+            <select className="w-add-rule-preview-name" value={state.ruleName}
+              onChange={this.onRuleNameChange}>
+            {createOptions(rulesList)}
+            </select>:
+            
           </div>
           <div className="modal-footer">
             <button type="button" className="btn btn-info" onClick={this.jumpToRules}>Jump To Rules</button>
