@@ -55,6 +55,21 @@ allRules.splice(allRules.indexOf('filter://'), 1, 'excludeFilter://', 'includeFi
 var plugins = {};
 
 exports.groups = groups;
+exports.existsProtocol = function(protocol) {
+  if (!protocol) {
+    return false;
+  }
+  var keys = Object.keys(groups);
+  for (var i = 0, len = keys.length; i < len; i++) {
+    var list = groups[keys[i]];
+    for (var j = 0, len2 = list.length; j < len2; j++) {
+      var p = list[j];
+      if (p === protocol || p.value === protocol) {
+        return true;
+      }
+    }
+  }
+};
 exports.setPlugins = function (pluginsState) {
   var pluginsOptions = pluginsState.pluginsOptions;
   var disabledPlugins = pluginsState.disabledPlugins;

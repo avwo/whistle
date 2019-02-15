@@ -3,12 +3,13 @@ require('../css/add-rule.css');
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Dialog = require('./dialog');
-var protocolGroups = require('./protocols').groups;
+var protocolMgr = require('./protocols');
 var util = require('./util');
 var Editor = require('./editor');
 var events = require('./events');
 var storage = require('./storage');
 
+var protocolGroups = protocolMgr.groups;
 var CREATE_OPTION = {
   value: '',
   text: '+Create'
@@ -78,6 +79,7 @@ var AddRuleDialog = React.createClass({
       window.open('https://avwo.github.io/whistle/plugins.html');
       this.setState({});
     } else {
+      storage.set('protocolInDialog', protocol);
       this.setState({ protocol: protocol });
     }
     ReactDOM.findDOMNode(this.refs.ruleValue).focus();
@@ -110,6 +112,7 @@ var AddRuleDialog = React.createClass({
     }
     var state = this.state;
     var ruleName = state.ruleName;
+    var protocol = state.protocol;
     var rulesList = rulesModal.list.slice();
     rulesList.push(CREATE_OPTION);
 
@@ -117,6 +120,11 @@ var AddRuleDialog = React.createClass({
       ruleName = storage.get('ruleNameInDialog');
       if (rulesList.indexOf(ruleName) === -1) {
         ruleName = 'Default';
+      }
+      var p = storage.get('protocolInDialog');
+      if (protocolMgr.existsProtocol(p)) {
+        protocol = p;
+        state.protocol = protocol;
       }
       state.ruleName = ruleName;
     }
@@ -140,7 +148,7 @@ var AddRuleDialog = React.createClass({
               <span className="glyphicon glyphicon-question-sign" />
               Operation:
             </label>
-            <select className="w-add-rule-protocols" value={state.protocol}
+            <select className="w-add-rule-protocols" value={protocol}
               onChange={this.onProtocolChange}>
               {createOptions(protocolGroups)}
             </select><textarea maxLength="3072" ref="ruleValue"
