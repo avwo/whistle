@@ -53,22 +53,21 @@ var allRules = allInnerRules = allInnerRules.map(function (name) {
 });
 allRules.splice(allRules.indexOf('filter://'), 1, 'excludeFilter://', 'includeFilter://');
 var plugins = {};
+var allGroupProtocols = [];
+
+Object.keys(groups).forEach(function(key) {
+  var list = groups[key];
+  list.forEach(function(item) {
+    allGroupProtocols.push(item.value || item);
+  });
+});
 
 exports.groups = groups;
 exports.existsProtocol = function(protocol) {
   if (!protocol) {
     return false;
   }
-  var keys = Object.keys(groups);
-  for (var i = 0, len = keys.length; i < len; i++) {
-    var list = groups[keys[i]];
-    for (var j = 0, len2 = list.length; j < len2; j++) {
-      var p = list[j];
-      if (p === protocol || p.value === protocol) {
-        return true;
-      }
-    }
-  }
+  return allGroupProtocols.indexOf(protocol) !== -1 || groups.Plugin.indexOf(protocol) !== -1;
 };
 exports.setPlugins = function (pluginsState) {
   var pluginsOptions = pluginsState.pluginsOptions;

@@ -52,6 +52,9 @@ var AddRuleDialog = React.createClass({
   componentDidMount: function() {
     var self = this;
     events.on('updatePlugins', function() {
+      if (!protocolMgr.existsProtocol(self.state.protocol)) {
+        self.state.protocol = 'host://';
+      }
       self.setState({});
     });
   },
