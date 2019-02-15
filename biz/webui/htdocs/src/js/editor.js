@@ -106,7 +106,7 @@ var Editor = React.createClass({
       this._editor.setOption('readOnly', readOnly);
     }
   },
-  setAutoComplete: function(enable) {
+  setAutoComplete: function() {
     var option = this.isRulesEditor() ? rulesHint.getExtraKeys() : {};
     if (!/\(Macintosh;/i.test(window.navigator.userAgent)) {
       option['Ctrl-F'] = 'findPersistent';
