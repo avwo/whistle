@@ -164,7 +164,7 @@ var AddRuleDialog = React.createClass({
               {createOptions(rulesList)}
               </select>:
             </h5>
-            <Editor {...rulesModal.editorTheme} mode="rules" value={'activeItem.value'} />
+            <Editor {...rulesModal.editorTheme} mode="rules" name={ruleName} value={'activeItem.value'} />
           </div>
           <div className="modal-footer">
             <button type="button" className="btn btn-primary" data-dismiss="modal">Confirm</button>
