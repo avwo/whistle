@@ -76,6 +76,9 @@ var AddRuleDialog = React.createClass({
       input.focus();
     }, 500);
   },
+  onRuleTextChange: function(e) {
+    this.state.ruleText = e.getValue();
+  },
   onProtocolChange: function(e) {
     var protocol = e.target.value;
     if (protocol === '+Custom') {
@@ -91,6 +94,16 @@ var AddRuleDialog = React.createClass({
   },
   onRuleNameChange: function(e) {
     var ruleName = e.target.value;
+    var data = this.props.rulesModal.get(ruleName);
+    var ruleText = this.state.ruleText;
+    var hasChanged = ruleText != null;
+    if (hasChanged && data) {
+      // TODO: 拼接后对比
+      hasChanged = ruleText.trim() !== data.value.trim();
+    }
+    if (hasChanged && !window.confirm('The content has changed and the switch rule will lose the changed data.')) {
+      return;
+    }
     if (!ruleName) {
       while(!ruleName) {
         ruleName = window.prompt('Please input the new Rule name:');
@@ -105,7 +118,7 @@ var AddRuleDialog = React.createClass({
   },
   updateRuleName: function(ruleName) {
     storage.set('ruleNameInDialog', ruleName);
-    this.setState({ ruleName: ruleName });
+    this.setState({ ruleName: ruleName, ruleText: null });
   },
   preview: function() {
     this.refs.preview.show();
@@ -133,8 +146,11 @@ var AddRuleDialog = React.createClass({
       }
       state.ruleName = ruleName;
     }
-    var rule = rulesModal.get(ruleName);
-    var ruleText = rule && rule.value || '';
+    var ruleText = state.ruleText;
+    if (ruleText == null) {
+      var rule = rulesModal.get(ruleName);
+      ruleText = rule && rule.value || '';
+    }
 
     return (
       <Dialog ref="addRuleDialog" wstyle="w-add-rule-dialog">
@@ -196,7 +212,8 @@ var AddRuleDialog = React.createClass({
               {createOptions(rulesList)}
               </select>:
             </h5>
-            <Editor {...rulesModal.editorTheme} mode="rules" name={ruleName} value={ruleText} />
+            <Editor {...rulesModal.editorTheme} onChange={this.onRuleTextChange} mode="rules"
+              name={ruleName} value={ruleText} />
           </div>
           <div className="modal-footer">
             <button type="button" className="btn btn-primary" data-dismiss="modal">Confirm</button>
