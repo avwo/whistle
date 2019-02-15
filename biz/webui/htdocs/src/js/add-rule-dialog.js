@@ -133,6 +133,8 @@ var AddRuleDialog = React.createClass({
       }
       state.ruleName = ruleName;
     }
+    var rule = rulesModal.get(ruleName);
+    var ruleText = rule && rule.value || '';
 
     return (
       <Dialog ref="addRuleDialog" wstyle="w-add-rule-dialog">
@@ -194,7 +196,7 @@ var AddRuleDialog = React.createClass({
               {createOptions(rulesList)}
               </select>:
             </h5>
-            <Editor {...rulesModal.editorTheme} mode="rules" name={ruleName} value={'activeItem.value'} />
+            <Editor {...rulesModal.editorTheme} mode="rules" name={ruleName} value={ruleText} />
           </div>
           <div className="modal-footer">
             <button type="button" className="btn btn-primary" data-dismiss="modal">Confirm</button>
