@@ -777,12 +777,12 @@ var Index = React.createClass({
         || state.disabledAllRules !== data.disabledAllRules
         || state.allowMultipleChoice !== data.allowMultipleChoice
         || state.disabledAllPlugins !== data.disabledAllPlugins) {
-        self.setState({
-          interceptHttpsConnects: data.interceptHttpsConnects,
-          disabledAllRules: data.disabledAllRules,
-          allowMultipleChoice: data.allowMultipleChoice,
-          disabledAllPlugins: data.disabledAllPlugins
-        });
+        state.interceptHttpsConnects = data.interceptHttpsConnects;
+        state.disabledAllRules = data.disabledAllRules;
+        state.allowMultipleChoice = data.allowMultipleChoice;
+        state.disabledAllPlugins = data.disabledAllPlugins;
+        protocols.setPlugins(state);
+        self.setState({});
       }
     });
     dataCenter.on('rules', function(data) {
@@ -2257,11 +2257,13 @@ var Index = React.createClass({
   disableAllRules: function(e) {
     var checked = e.target.checked;
     var self = this;
+    
     dataCenter.rules.disableAllRules({disabledAllRules: checked ? 1 : 0}, function(data, xhr) {
       if (data && data.ec === 0) {
-        self.setState({
-          disabledAllRules: checked
-        });
+        var state = self.state;
+        state.disableAllRules = checked;
+        protocols.setPlugins(state);
+        self.setState({});
       } else {
         util.showSystemError(xhr);
       }

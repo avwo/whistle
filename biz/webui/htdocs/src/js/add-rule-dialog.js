@@ -6,6 +6,7 @@ var Dialog = require('./dialog');
 var protocolGroups = require('./protocols').groups;
 var util = require('./util');
 var Editor = require('./editor');
+var events = require('./events');
 
 var CREATE_OPTION = {
   value: '',
@@ -46,6 +47,12 @@ var AddRuleDialog = React.createClass({
       ruleName: 'Default'
     };
   },
+  componentDidMount: function() {
+    var self = this;
+    events.on('updatePlugins', function() {
+      self.setState({});
+    });
+  },
   show: function() {
     this.refs.addRuleDialog.show();
     this.setState({});
@@ -63,9 +70,6 @@ var AddRuleDialog = React.createClass({
       input.select();
       input.focus();
     }, 500);
-  },
-  shouldComponentUpdate: function() {
-    return !this.refs.addRuleDialog || this.refs.addRuleDialog.isVisible();
   },
   onProtocolChange: function(e) {
     var protocol = e.target.value;
@@ -177,4 +181,22 @@ var AddRuleDialog = React.createClass({
   }
 });
 
-module.exports = AddRuleDialog;
+var AddRuleDialogWrap = React.createClass({
+  show: function() {
+    this.refs.addRuleDialog.show();
+  },
+  hide: function() {
+    this.refs.addRuleDialog.hide();
+  },
+  setData: function(data) {
+    this.refs.addRuleDialog.setData(data);
+  },
+  shouldComponentUpdate: function() {
+    return !this.props.rulesModal;
+  },
+  render: function() {
+    return <AddRuleDialog rulesModal={this.props.rulesModal} ref="addRuleDialog" />;
+  }
+});
+
+module.exports = AddRuleDialogWrap;

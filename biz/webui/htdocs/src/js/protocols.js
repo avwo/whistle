@@ -63,7 +63,8 @@ exports.setPlugins = function (pluginsState) {
   forwardRules = innerRules.slice();
   allRules = allInnerRules.slice();
   groups.Plugin = [];
-  if (!pluginsState.disabledAllPlugins) {
+
+  if (!pluginsState.disabledAllPlugins && !pluginsState.disabledAllRules) {
     pluginsOptions.forEach(function (plugin, i) {
       if (!i) {
         return;
