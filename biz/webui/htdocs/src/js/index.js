@@ -2540,12 +2540,12 @@ var Index = React.createClass({
     var isPlugins = name == 'plugins';
     var disabledEditBtn = true;
     var disabledDeleteBtn = true;
-    var rulesTheme = 'cobalt';
-    var valuesTheme = 'cobalt';
-    var rulesFontSize = '14px';
-    var valuesFontSize = '14px';
-    var showRulesLineNumbers = false;
-    var showValuesLineNumbers = false;
+    var rulesTheme = state.rulesTheme || 'cobalt';
+    var valuesTheme = state.valuesTheme || 'cobalt';
+    var rulesFontSize = state.rulesFontSize || '14px';
+    var valuesFontSize = state.valuesFontSize || '14px';
+    var showRulesLineNumbers = state.showRulesLineNumbers || false;
+    var showValuesLineNumbers = state.showValuesLineNumbers || false;
     var rulesOptions = state.rulesOptions;
     var pluginsOptions = state.pluginsOptions;
     var uncheckedRules = {};
@@ -2564,6 +2564,7 @@ var Index = React.createClass({
         }
       });
     }
+
     var i, data;
     if (isRules) {
       data = state.rules.data;
@@ -2573,18 +2574,6 @@ var Index = React.createClass({
           break;
         }
       }
-      if (state.rulesTheme) {
-        rulesTheme = state.rulesTheme;
-      }
-
-      if (state.rulesFontSize) {
-        rulesFontSize = state.rulesFontSize;
-      }
-
-      if (state.showRulesLineNumbers) {
-        showRulesLineNumbers = state.showRulesLineNumbers;
-      }
-
     } else if (isValues) {
       data = state.values.data;
       for (i in data) {
@@ -2593,20 +2582,14 @@ var Index = React.createClass({
           break;
         }
       }
-      if (state.valuesTheme) {
-        valuesTheme = state.valuesTheme;
-      }
-
-      if (state.valuesFontSize) {
-        valuesFontSize = state.valuesFontSize;
-      }
-
-      if (state.showValuesLineNumbers) {
-        showValuesLineNumbers = state.showValuesLineNumbers;
-      }
     }
     if (state.network) {
       state.network.rulesModal = state.rules;
+      state.rules.editorTheme = {
+        theme: rulesTheme,
+        fontSize: rulesFontSize,
+        lineNumbers: showRulesLineNumbers
+      };
       var networkOptions = state.networkOptions;
       var hasUnselected = state.network.hasUnselected();
       if (state.network.hasSelected()) {

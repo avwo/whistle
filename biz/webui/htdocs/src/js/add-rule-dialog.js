@@ -5,7 +5,7 @@ var ReactDOM = require('react-dom');
 var Dialog = require('./dialog');
 var protocolGroups = require('./protocols').groups;
 var util = require('./util');
-var storage = require('./storage');
+var Editor = require('./editor');
 
 var CREATE_OPTION = {
   value: '',
@@ -48,6 +48,7 @@ var AddRuleDialog = React.createClass({
   },
   show: function() {
     this.refs.addRuleDialog.show();
+    this.setState({});
   },
   hide: function() {
     this.refs.addRuleDialog.hide();
@@ -93,23 +94,16 @@ var AddRuleDialog = React.createClass({
   preview: function() {
     this.refs.preview.show();
   },
-  jumpToRules: function() {
-    var name = this.state.ruleName;
-    var modal = this.props.rulesModal;
-    storage.set('activeRules', name);
-    modal.setActive(name);
-    util.changePageName('rules');
-    this.refs.addRuleDialog.hide();
-    this.refs.preview.hide();
-  },
   render: function() {
     var rulesModal = this.props.rulesModal;
     if (!rulesModal) {
       return null;
     }
     var state = this.state;
+    var ruleName = state.ruleName;
     var rulesList = rulesModal.list.slice();
     rulesList.push(CREATE_OPTION);
+
     return (
       <Dialog ref="addRuleDialog" wstyle="w-add-rule-dialog">
         <div className="modal-body">
@@ -147,7 +141,7 @@ var AddRuleDialog = React.createClass({
               <span className="glyphicon glyphicon-question-sign" />
               Save in:
             </label>
-            <select style={{verticalAlign: 'middle'}} value={state.ruleName}
+            <select style={{verticalAlign: 'middle'}} value={ruleName}
               onChange={this.onRuleNameChange}>
             {createOptions(rulesList)}
             </select>
@@ -163,15 +157,16 @@ var AddRuleDialog = React.createClass({
             <button type="button" className="close" data-dismiss="modal">
               <span aria-hidden="true">&times;</span>
             </button>
-            Preview in
-            <select className="w-add-rule-preview-name" value={state.ruleName}
-              onChange={this.onRuleNameChange}>
-            {createOptions(rulesList)}
-            </select>:
-            
+            <h5 className="w-add-preview-title">
+              Save in
+              <select className="w-add-rule-preview-name" value={ruleName}
+                onChange={this.onRuleNameChange}>
+              {createOptions(rulesList)}
+              </select>:
+            </h5>
+            <Editor {...rulesModal.editorTheme} mode="rules" value={'activeItem.value'} />
           </div>
           <div className="modal-footer">
-            <button type="button" className="btn btn-info" onClick={this.jumpToRules}>Jump To Rules</button>
             <button type="button" className="btn btn-primary" data-dismiss="modal">Confirm</button>
             <button type="button" className="btn btn-default" data-dismiss="modal">Back</button>
           </div>
