@@ -64,7 +64,7 @@ var AddRuleDialog = React.createClass({
   },
   hide: function() {
     this.refs.addRuleDialog.hide();
-    this.refs.preview.hide();
+    this.closePreview();
   },
   setData: function(data) {
     var input = ReactDOM.findDOMNode(this.refs.pattern);
@@ -93,17 +93,11 @@ var AddRuleDialog = React.createClass({
     box.focus();
   },
   onRuleNameChange: function(e) {
-    var ruleName = e.target.value;
-    var data = this.props.rulesModal.get(ruleName);
-    var ruleText = this.state.ruleText;
-    var hasChanged = ruleText != null;
-    if (hasChanged && data) {
-      // TODO: 拼接后对比
-      hasChanged = ruleText.trim() !== data.value.trim();
-    }
-    if (hasChanged && !window.confirm('The content has changed and the switch rule will lose the changed data.')) {
+    var target = e.target;
+    if (target.name !== 'ruleNameList' && this.checkPreviewChanged()) {
       return;
     }
+    var ruleName = target.value;
     if (!ruleName) {
       while(!ruleName) {
         ruleName = window.prompt('Please input the new Rule name:');
@@ -118,10 +112,37 @@ var AddRuleDialog = React.createClass({
   },
   updateRuleName: function(ruleName) {
     storage.set('ruleNameInDialog', ruleName);
-    this.setState({ ruleName: ruleName, ruleText: null });
+    this.clearPreview();
+    this.setState({ ruleName: ruleName });
+  },
+  checkPreviewChanged: function() {
+    var state = this.state;
+    var ruleText = state.ruleText;
+    if (ruleText == null) {
+      return;
+    }
+    if (ruleText.trim() !== state.oldRuleText.trim()) {
+      return !window.confirm('The content has changed and the switch rule will lose the changed data.');
+    }
+  },
+  checkAndClosePreview: function() {
+    this.closePreview();
+  },
+  closePreview: function() {
+    this.refs.preview.hide();
+  },
+  clearPreview: function() {
+    this.state.ruleText = null;
+    this.state.oldRuleText = null;
   },
   preview: function() {
+    this.clearPreview();
     this.refs.preview.show();
+    this.setState({});
+    var self = this;
+    setTimeout(function() {
+      self.setState({});
+    }, 500);
   },
   render: function() {
     var rulesModal = this.props.rulesModal;
@@ -148,10 +169,13 @@ var AddRuleDialog = React.createClass({
     }
     var ruleText = state.ruleText;
     if (ruleText == null) {
-      var rule = rulesModal.get(ruleName);
-      ruleText = rule && rule.value || '';
+      ruleText = state.oldRuleText;
+      if (ruleText == null) {
+        var rule = rulesModal.get(ruleName);
+        ruleText = rule && rule.value || '';
+        state.oldRuleText = ruleText;
+      }
     }
-
     return (
       <Dialog ref="addRuleDialog" wstyle="w-add-rule-dialog">
         <div className="modal-body">
@@ -189,8 +213,8 @@ var AddRuleDialog = React.createClass({
               <span className="glyphicon glyphicon-question-sign" />
               Save in:
             </label>
-            <select style={{verticalAlign: 'middle'}} value={ruleName}
-              onChange={this.onRuleNameChange}>
+            <select name="ruleNameList" style={{verticalAlign: 'middle'}}
+             value={ruleName} onChange={this.onRuleNameChange}>
             {createOptions(rulesList)}
             </select>
           </div>
@@ -202,7 +226,7 @@ var AddRuleDialog = React.createClass({
         </div>
         <Dialog ref="preview" wstyle="w-add-rule-preview">
           <div className="modal-body">
-            <button type="button" className="close" data-dismiss="modal">
+            <button type="button" className="close" onClick={this.closePreview}>
               <span aria-hidden="true">&times;</span>
             </button>
             <h5 className="w-add-preview-title">
@@ -216,8 +240,8 @@ var AddRuleDialog = React.createClass({
               name={ruleName} value={ruleText} />
           </div>
           <div className="modal-footer">
-            <button type="button" className="btn btn-primary" data-dismiss="modal">Confirm</button>
-            <button type="button" className="btn btn-default" data-dismiss="modal">Back</button>
+            <button type="button" className="btn btn-primary"  onClick={this.closePreview}>Confirm</button>
+            <button type="button" className="btn btn-default"  onClick={this.closePreview}>Back</button>
           </div>
         </Dialog>
       </Dialog>
