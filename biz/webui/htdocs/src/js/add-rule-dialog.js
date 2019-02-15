@@ -52,6 +52,7 @@ var AddRuleDialog = React.createClass({
   },
   hide: function() {
     this.refs.addRuleDialog.hide();
+    this.refs.preview.hide();
   },
   setData: function(data) {
     var input = ReactDOM.findDOMNode(this.refs.pattern);
