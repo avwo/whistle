@@ -7,6 +7,7 @@ var protocolGroups = require('./protocols').groups;
 var util = require('./util');
 var Editor = require('./editor');
 var events = require('./events');
+var storage = require('./storage');
 
 var CREATE_OPTION = {
   value: '',
@@ -44,7 +45,7 @@ var AddRuleDialog = React.createClass({
   getInitialState: function() {
     return {
       protocol: 'host://',
-      ruleName: 'Default'
+      ruleName: ''
     };
   },
   componentDidMount: function() {
@@ -83,18 +84,21 @@ var AddRuleDialog = React.createClass({
   },
   onRuleNameChange: function(e) {
     var ruleName = e.target.value;
-    if (ruleName) {
-      return this.setState({ ruleName: ruleName });
-    }
-    while(!ruleName) {
-      ruleName = window.prompt('Please input the new Rule name:');
-      ruleName = ruleName && ruleName.trim();
-      if (!ruleName) {
-        return;
+    if (!ruleName) {
+      while(!ruleName) {
+        ruleName = window.prompt('Please input the new Rule name:');
+        ruleName = ruleName && ruleName.trim();
+        if (!ruleName) {
+          return;
+        }
+        
       }
-      
     }
-    return this.setState({ ruleName: ruleName });
+    this.updateRuleName(ruleName);
+  },
+  updateRuleName: function(ruleName) {
+    storage.set('ruleNameInDialog', ruleName);
+    this.setState({ ruleName: ruleName });
   },
   preview: function() {
     this.refs.preview.show();
@@ -108,6 +112,14 @@ var AddRuleDialog = React.createClass({
     var ruleName = state.ruleName;
     var rulesList = rulesModal.list.slice();
     rulesList.push(CREATE_OPTION);
+
+    if (!ruleName) {
+      ruleName = storage.get('ruleNameInDialog');
+      if (rulesList.indexOf(ruleName) === -1) {
+        ruleName = 'Default';
+      }
+      state.ruleName = ruleName;
+    }
 
     return (
       <Dialog ref="addRuleDialog" wstyle="w-add-rule-dialog">
