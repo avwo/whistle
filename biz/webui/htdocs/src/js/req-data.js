@@ -342,6 +342,27 @@ var ReqData = React.createClass({
     }
     events.trigger('updateGlobal');
   },
+  reselectRules: function(data, autoUpdate) {
+    var self = this;
+    self.state.rules.clearAllSelected();
+    self.setSelected(self.state.rules, 'Default', !data.defaultRulesIsDisabled, autoUpdate);
+    data.list.forEach(function(name) {
+      self.setSelected(self.state.rules, name, true, autoUpdate);
+    });
+  },
+  selectRules: function(item) {
+    var self = this;
+    dataCenter.rules[item.isDefault ? 'enableDefault' : 'select'](item, function(data, xhr) {
+      if (data && data.ec === 0) {
+        self.reselectRules(data);
+        // TODO: 更新内容
+        self.refs.addRuleDialog.hide();
+        // 清空对话框
+      } else {
+        util.showSystemError(xhr);
+      }
+    });
+  },
   removeAllSuchURL: function(item, justRemove) {
     var urlList = [];
     var list = this.getActiveList(item);

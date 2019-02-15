@@ -1194,3 +1194,24 @@ exports.getHexText = function (text) {
   }
   return text.split('\n').map(getHexLine).join('\n');
 };
+
+function triggerPageChange(name) {
+  try {
+    var onPageChange = window.parent.onWhistlePageChange;
+    if (typeof onPageChange === 'function') {
+      onPageChange(name, location.href);
+    }
+  } catch (e) {}
+}
+
+exports.triggerPageChange = triggerPageChange;
+
+function changePageName(name) {
+  var hash = location.hash.substring(1);
+  var index = hash.indexOf('?');
+  hash = index === -1 ? '' : hash.substring(index);
+  location.hash = name + hash;
+  triggerPageChange(name);
+}
+
+exports.changePageName = changePageName;

@@ -2,6 +2,10 @@
   width: 630px;
 }
 
+.w-add-rule-preview .modal-dialog, .w-add-rule-preview .modal-content {
+  width: 880px;
+}
+
 .w-add-rule-dialog .modal-body>div {
   margin-bottom: 10px;
   white-space: nowrap;
@@ -61,4 +65,10 @@
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
   padding: 5px;
+}
+
+.w-add-rule-dialog .w-add-rule-filter {
+  width: 480px;
+  height: 63px;
+  margin-bottom: 5px;
 }

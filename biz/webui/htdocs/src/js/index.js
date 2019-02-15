@@ -157,14 +157,6 @@ function getPageName() {
   return hash;
 }
 
-function changePageName(name) {
-  var hash = location.hash.substring(1);
-  var index = hash.indexOf('?');
-  hash = index === -1 ? '' : hash.substring(index);
-  location.hash = name + hash;
-  triggerPageChange(name);
-}
-
 function compareSelectedNames(src, target) {
   var srcLen = src.length;
   var i;
@@ -200,15 +192,6 @@ function getValue(url) {
   }
 
   return false;
-}
-
-function triggerPageChange(name) {
-  try {
-    var onPageChange = window.parent.onWhistlePageChange;
-    if (typeof onPageChange === 'function') {
-      onPageChange(name, location.href);
-    }
-  } catch (e) {}
 }
 
 var Index = React.createClass({
@@ -419,7 +402,7 @@ var Index = React.createClass({
     state.exportFileType = storage.get('exportFileType');
     var showLeftMenu = storage.get('showLeftMenu');
     state.showLeftMenu = showLeftMenu == null ? true : showLeftMenu;
-    triggerPageChange(state.name);
+    util.triggerPageChange(state.name);
     return state;
   },
   getListByName: function(name, type) {
@@ -1185,7 +1168,7 @@ var Index = React.createClass({
       hasPlugins: true,
       name: 'plugins'
     });
-    changePageName('plugins');
+    util.changePageName('plugins');
   },
   handleAction: function(type) {
     if (type === 'top') {
@@ -1217,7 +1200,7 @@ var Index = React.createClass({
     }, function() {
       this.startLoadData();
     });
-    changePageName('network');
+    util.changePageName('network');
   },
   handleNetwork: function(item, e) {
     var modal = this.state.network;
@@ -1481,7 +1464,7 @@ var Index = React.createClass({
       hasRules: true,
       name: 'rules'
     });
-    changePageName('rules');
+    util.changePageName('rules');
   },
   showAndActiveValues: function(item, e) {
     var self = this;
@@ -1529,7 +1512,7 @@ var Index = React.createClass({
       hasValues: true,
       name: 'values'
     });
-    changePageName('values');
+    util.changePageName('values');
   },
   showNetworkOptions: function() {
     if (this.state.name == 'network') {

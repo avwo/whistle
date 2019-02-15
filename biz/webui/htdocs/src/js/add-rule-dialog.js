@@ -1,15 +1,27 @@
 require('./base-css.js');
 require('../css/add-rule.css');
-var $ = require('jquery');
 var React = require('react');
+var ReactDOM = require('react-dom');
 var Dialog = require('./dialog');
 var protocolGroups = require('./protocols').groups;
 var util = require('./util');
+var storage = require('./storage');
+
+var CREATE_OPTION = {
+  value: '',
+  text: '+Create'
+};
 
 var _createOptions = function(list) {
   return list.map(function(item) {
+    var value = item;
+    var text = item;
+    if (item && typeof item === 'object') {
+      value = item.value == null ? item.text : item.value;
+      text = item.text;
+    }
     return (
-      <option value={item}>{item}</option>
+      <option value={value}>{text}</option>
     );
   });
 };
@@ -28,6 +40,12 @@ var createOptions = function(list) {
 };
 
 var AddRuleDialog = React.createClass({
+  getInitialState: function() {
+    return {
+      protocol: 'host://',
+      ruleName: 'Default'
+    };
+  },
   show: function() {
     this.refs.addRuleDialog.show();
   },
@@ -35,25 +53,63 @@ var AddRuleDialog = React.createClass({
     this.refs.addRuleDialog.hide();
   },
   setData: function(data) {
-    var input = $('#___add-rule-pattern');
+    var input = ReactDOM.findDOMNode(this.refs.pattern);
     if (data) {
-      input.val(util.removeProtocol(data.url.replace(/[?#].*$/, '')));
+      input.value = util.removeProtocol(data.url.replace(/[?#].*$/, ''));
     }
     setTimeout(function() {
-      input[0].select();
-      input[0].focus();
+      input.select();
+      input.focus();
     }, 500);
   },
   shouldComponentUpdate: function() {
     return !this.refs.addRuleDialog || this.refs.addRuleDialog.isVisible();
+  },
+  onProtocolChange: function(e) {
+    var protocol = e.target.value;
+    if (protocol === '+Custom') {
+      window.open('https://avwo.github.io/whistle/plugins.html');
+      this.setState({});
+    } else {
+      this.setState({ protocol: protocol });
+    }
+    ReactDOM.findDOMNode(this.refs.ruleValue).focus();
+  },
+  onRuleNameChange: function(e) {
+    var ruleName = e.target.value;
+    if (ruleName) {
+      return this.setState({ ruleName: ruleName });
+    }
+    while(!ruleName) {
+      ruleName = window.prompt('Please input the new Rule name:');
+      ruleName = ruleName && ruleName.trim();
+      if (!ruleName) {
+        return;
+      }
+      
+    }
+    return this.setState({ ruleName: ruleName });
+  },
+  preview: function() {
+    this.refs.preview.show();
+  },
+  jumpToRules: function() {
+    var name = this.state.ruleName;
+    var modal = this.props.rulesModal;
+    storage.set('activeRules', name);
+    modal.setActive(name);
+    util.changePageName('rules');
+    this.refs.addRuleDialog.hide();
+    this.refs.preview.hide();
   },
   render: function() {
     var rulesModal = this.props.rulesModal;
     if (!rulesModal) {
       return null;
     }
+    var state = this.state;
     var rulesList = rulesModal.list.slice();
-    rulesList.push('+Create');
+    rulesList.push(CREATE_OPTION);
     return (
       <Dialog ref="addRuleDialog" wstyle="w-add-rule-dialog">
         <div className="modal-body">
@@ -61,38 +117,60 @@ var AddRuleDialog = React.createClass({
             <span aria-hidden="true">&times;</span>
           </button>
           <div>
-            <label htmlFor="___add-rule-pattern">
+            <label>
               <span className="glyphicon glyphicon-question-sign" />
               Pattern:
             </label>
-            <input id="___add-rule-pattern" className="w-add-rule-pattern"
+            <input ref="pattern" className="w-add-rule-pattern"
               maxLength="1024" placeholder="Input the pattern to match request URL" />
           </div>
           <div>
-            <label htmlFor="___add-rule-text">
+            <label>
               <span className="glyphicon glyphicon-question-sign" />
               Operation:
             </label>
-            <select id="___add-rule-text" className="w-add-rule-protocols">
+            <select className="w-add-rule-protocols" value={state.protocol}
+              onChange={this.onProtocolChange}>
               {createOptions(protocolGroups)}
-            </select><textarea maxLength="3072"
+            </select><textarea maxLength="3072" ref="ruleValue"
               placeholder={'Input the operation value (<= 3k), such as:\n'} />
           </div>
           <div>
-            <label htmlFor="___add-rule-file">
+            <label>
+              <span className="glyphicon glyphicon-question-sign" />
+              Filter:
+            </label>
+            <textarea maxLength="256" placeholder="Filter" className="w-add-rule-filter" />
+          </div>
+          <div>
+            <label>
               <span className="glyphicon glyphicon-question-sign" />
               Save in:
             </label>
-            <select id="___add-rule-file" style={{verticalAlign: 'middle'}}>
+            <select style={{verticalAlign: 'middle'}} value={state.ruleName}
+              onChange={this.onRuleNameChange}>
             {createOptions(rulesList)}
             </select>
           </div>
         </div>
         <div className="modal-footer">
-          <button type="button" className="btn btn-info" data-dismiss="modal">Edit in Rules</button>
+          <button type="button" className="btn btn-info" onClick={this.preview}>Preview</button>
           <button type="button" className="btn btn-primary" data-dismiss="modal">Confirm</button>
           <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
         </div>
+        <Dialog ref="preview" wstyle="w-add-rule-preview">
+          <div className="modal-body">
+            <button type="button" className="close" data-dismiss="modal">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            Hello.
+          </div>
+          <div className="modal-footer">
+            <button type="button" className="btn btn-info" onClick={this.jumpToRules}>Jump To Rules</button>
+            <button type="button" className="btn btn-primary" data-dismiss="modal">Confirm</button>
+            <button type="button" className="btn btn-default" data-dismiss="modal">Back</button>
+          </div>
+        </Dialog>
       </Dialog>
     );
   }
