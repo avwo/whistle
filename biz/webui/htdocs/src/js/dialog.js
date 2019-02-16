@@ -34,7 +34,10 @@ var Dialog = React.createClass({
     if (this.isVisible()) {
       return;
     }
-    this.container.modal('show');
+    this.container.modal(this.props.disableBackdrop ? {
+      show: true,
+      backdrop: false
+    } : 'show');
   },
   isVisible: function() {
     return this.container.is(':visible');

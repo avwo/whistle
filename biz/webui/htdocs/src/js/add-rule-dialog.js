@@ -122,11 +122,13 @@ var AddRuleDialog = React.createClass({
       return;
     }
     if (ruleText.trim() !== state.oldRuleText.trim()) {
-      return !window.confirm('The content has changed, continue to cause the changed data loss.');
+      return !window.confirm('The content has changed and this operation will cause changed data loss.');
     }
   },
   checkAndClosePreview: function() {
-    this.closePreview();
+    if (!this.checkPreviewChanged()) {
+      this.closePreview();
+    }
   },
   closePreview: function() {
     this.refs.preview.hide();
@@ -224,9 +226,9 @@ var AddRuleDialog = React.createClass({
           <button type="button" className="btn btn-primary" data-dismiss="modal">Confirm</button>
           <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
         </div>
-        <Dialog ref="preview" wstyle="w-add-rule-preview">
+        <Dialog ref="preview" wstyle="w-add-rule-preview" disableBackdrop="1">
           <div className="modal-body">
-            <button type="button" className="close" onClick={this.closePreview}>
+            <button type="button" className="close" onClick={this.checkAndClosePreview}>
               <span aria-hidden="true">&times;</span>
             </button>
             <h5 className="w-add-preview-title">
@@ -241,7 +243,7 @@ var AddRuleDialog = React.createClass({
           </div>
           <div className="modal-footer">
             <button type="button" className="btn btn-primary"  onClick={this.closePreview}>Confirm</button>
-            <button type="button" className="btn btn-default"  onClick={this.closePreview}>Back</button>
+            <button type="button" className="btn btn-default"  onClick={this.checkAndClosePreview}>Back</button>
           </div>
         </Dialog>
       </Dialog>
