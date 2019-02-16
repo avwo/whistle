@@ -122,7 +122,7 @@ var AddRuleDialog = React.createClass({
       return;
     }
     if (ruleText.trim() !== state.oldRuleText.trim()) {
-      return !window.confirm('The content has changed and the switch rule will lose the changed data.');
+      return !window.confirm('The content has changed, continue to cause the changed data loss.');
     }
   },
   checkAndClosePreview: function() {
