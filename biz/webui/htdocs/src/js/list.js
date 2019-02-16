@@ -284,7 +284,7 @@ var List = React.createClass({
       break;
     case 'Add Rule':
       this.refs.addRuleDialog.show();
-      this.refs.addRuleDialog.setData();
+      this.refs.addRuleDialog.setRuleName(this.currentFocusItem && this.currentFocusItem.name);
       break;
     case 'Validate':
       var item = this.currentFocusItem;
@@ -357,6 +357,10 @@ var List = React.createClass({
     this.refs.contextMenu.show(data);
     e.preventDefault();
   },
+  onAddRule: function(name) {
+    this.props.modal.setActive(name);
+    this.setState({});
+  },
   render: function() {
     var self = this;
     var modal = self.props.modal;
@@ -415,7 +419,7 @@ var List = React.createClass({
             </div>
             <FilterInput onChange={this.onFilterChange} />
             <ContextMenu onClick={this.onClickContextMenu} ref="contextMenu" />
-            {isRules ? <AddRuleDialog rulesModal={modal} ref="addRuleDialog" /> : undefined}
+            {isRules ? <AddRuleDialog onConfirm={this.onAddRule} rulesModal={modal} ref="addRuleDialog" /> : undefined}
           </div>
           <Editor {...self.props} onChange={self.onChange} readOnly={!activeItem}
             name={activeItem.name} value={activeItem.value}

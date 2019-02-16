@@ -152,6 +152,13 @@ var AddRuleDialog = React.createClass({
       self.setState({});
     }, 500);
   },
+  onConfirm: function() {
+    this.hide();
+    var onConfirm = this.props.onConfirm;
+    if (onConfirm) {
+      onConfirm(this.state.ruleName);
+    }
+  },
   render: function() {
     var rulesModal = this.props.rulesModal;
     if (!rulesModal) {
@@ -229,7 +236,7 @@ var AddRuleDialog = React.createClass({
         </div>
         <div className="modal-footer">
           <button type="button" className="btn btn-info" onClick={this.preview}>Preview</button>
-          <button type="button" className="btn btn-primary" data-dismiss="modal">Confirm</button>
+          <button type="button" className="btn btn-primary" onClick={this.onConfirm}>Confirm</button>
           <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
         </div>
         <Dialog ref="preview" wstyle="w-add-rule-preview" disableBackdrop="1">
@@ -248,8 +255,8 @@ var AddRuleDialog = React.createClass({
               name={ruleName} value={ruleText} />
           </div>
           <div className="modal-footer">
-            <button type="button" className="btn btn-primary"  onClick={this.closePreview}>Confirm</button>
-            <button type="button" className="btn btn-default"  onClick={this.checkAndClosePreview}>Back</button>
+            <button type="button" className="btn btn-primary" onClick={this.onConfirm}>Confirm</button>
+            <button type="button" className="btn btn-default" onClick={this.checkAndClosePreview}>Back</button>
           </div>
         </Dialog>
       </Dialog>
@@ -267,11 +274,14 @@ var AddRuleDialogWrap = React.createClass({
   setData: function(data) {
     this.refs.addRuleDialog.setData(data);
   },
+  setRuleName: function(name) {
+    name && this.refs.addRuleDialog.updateRuleName(name);
+  },
   shouldComponentUpdate: function() {
     return !this.props.rulesModal;
   },
   render: function() {
-    return <AddRuleDialog rulesModal={this.props.rulesModal} ref="addRuleDialog" />;
+    return <AddRuleDialog onConfirm={this.props.onConfirm} rulesModal={this.props.rulesModal} ref="addRuleDialog" />;
   }
 });
 
