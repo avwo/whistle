@@ -38,6 +38,29 @@ textarea {resize: none; display: block; font-size: 12px;}
   font-size: 12px;
   color: #000;
 }
+.w-arrow {
+  position: absolute;
+  display: block;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+}
+.w-arrow-left {
+  top: 50%;
+  left: -6px;
+  margin-top: -6px;
+  border-width: 6px 6px 6px 0;
+  border-right-color: #f1f3f4;
+}
+
+.w-arrow-right {
+  top: 50%;
+  right: -6px;
+  margin-top: -6px;
+  border-width: 6px 0 6px 6px;
+  border-right-color: #000;
+}
 
 .modal-dialog .modal-body, .modal-dialog .modal-footer {padding: 10px;}
 .modal-dialog .btn {padding: 5px 10px;}
