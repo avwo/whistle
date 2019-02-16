@@ -186,7 +186,6 @@ var AddRuleDialog = React.createClass({
     };
     dataCenter.rules[name === 'Default' ? 'enableDefault' : 'select'](data, function(data, xhr) {
       if (data && data.ec === 0) {
-        self.reselectRules(data);
         self.hide();
         var item = modal.get(name);
         if (!item) {
@@ -197,6 +196,7 @@ var AddRuleDialog = React.createClass({
         } else {
           item.value = value;
         }
+        self.reselectRules(data);
         var onConfirm = self.props.onConfirm;
         onConfirm && onConfirm(self.state.ruleName);
       } else {
