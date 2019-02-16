@@ -283,8 +283,10 @@ var List = React.createClass({
       events.trigger('import' + name, e);
       break;
     case 'Add Rule':
-      this.refs.addRuleDialog.show();
-      this.refs.addRuleDialog.setRuleName(this.currentFocusItem && this.currentFocusItem.name);
+      var dialog = this.refs.addRuleDialog;
+      dialog.show();
+      dialog.setData();
+      dialog.setRuleName(this.currentFocusItem && this.currentFocusItem.name);
       break;
     case 'Validate':
       var item = this.currentFocusItem;
