@@ -1,5 +1,6 @@
 require('./base-css.js');
 require('../css/add-rule.css');
+var $ = require('jquery');
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Dialog = require('./dialog');
@@ -56,6 +57,11 @@ var AddRuleDialog = React.createClass({
         self.state.protocol = 'host://';
       }
       self.setState({});
+    });
+    $(document.body).on('click', '.w-add-rule-preview', function(e) {
+      if ($(e.target).hasClass('w-add-rule-preview')) {
+        self.checkAndClosePreview();
+      }
     });
   },
   show: function() {
