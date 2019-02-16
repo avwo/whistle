@@ -61,9 +61,11 @@
 .w-left-menu a { display: block; position: relative; padding: 10px; text-decoration: none!important; color: #000; }
 .w-left-menu a span { margin-right: 5px; }
 .w-left-menu-tips {
-  padding: 6px 10px; display: none; left: 47px; top: 3px; position: absolute; z-index: 1; border-radius: 4px;
+  padding: 6px 10px; display: none; left: 47px; top: 3px; position: absolute;
+  z-index: 1; border-radius: 4px;
 }
-.w-left-menu a:hover .w-left-menu-tips { display: block; color: #000; background-color: #f1f3f4; font-weight: bold;}
+.w-left-menu a:hover .w-left-menu-tips { display: block; color: #000; background-color: #f1f3f4;
+  font-weight: bold;  border: 1px solid #ccc;}
 .w-left-menu a .w-left-menu-tips:hover { display: none; }
 .w-menu .w-import-menu, .w-menu .w-export-menu, .w-menu .w-remove-menu-list { display: none; }
 .w-show-left-menu .w-import-menu, .w-show-left-menu .w-export-menu,
