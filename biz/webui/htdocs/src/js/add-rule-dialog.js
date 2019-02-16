@@ -9,6 +9,7 @@ var util = require('./util');
 var Editor = require('./editor');
 var events = require('./events');
 var storage = require('./storage');
+var dataCenter = require('./data-center');
 
 var protocolGroups = protocolMgr.groups;
 var CREATE_OPTION = {
@@ -152,12 +153,56 @@ var AddRuleDialog = React.createClass({
       self.setState({});
     }, 500);
   },
-  onConfirm: function() {
-    this.hide();
-    var onConfirm = this.props.onConfirm;
-    if (onConfirm) {
-      onConfirm(this.state.ruleName);
+  setSelected: function(modal, name, selected, autoUpdate) {
+    if (modal.setSelected(name, selected)) {
+      if (!autoUpdate) {
+        modal.setChanged(name, false);
+      }
+      this.setState({
+        curSelectedName: name
+      });
     }
+  },
+  reselectRules: function(data) {
+    var modal = this.props.rulesModal;
+    modal.clearAllSelected();
+    modal.setSelected('Default', !data.defaultRulesIsDisabled);
+    data.list.forEach(function(name) {
+      modal.setSelected(name, true);
+    });
+  },
+  onConfirm: function() {
+    var self = this;
+    var state = self.state;
+    var name = state.ruleName;
+    var value = state.ruleText;
+    if (value == null) {
+      // TODO: xxx
+    }
+    var modal = self.props.rulesModal;
+    var data = {
+      name: name,
+      value: value
+    };
+    dataCenter.rules[name === 'Default' ? 'enableDefault' : 'select'](data, function(data, xhr) {
+      if (data && data.ec === 0) {
+        self.reselectRules(data);
+        self.hide();
+        var item = modal.get(name);
+        if (!item) {
+          item = data;
+          modal.list.push(name);
+          modal.data[name] = item;
+          modal.reset(modal.list, modal.data);
+        } else {
+          item.value = value;
+        }
+        var onConfirm = self.props.onConfirm;
+        onConfirm && onConfirm(self.state.ruleName);
+      } else {
+        util.showSystemError(xhr);
+      }
+    });
   },
   render: function() {
     var rulesModal = this.props.rulesModal;
@@ -252,7 +297,7 @@ var AddRuleDialog = React.createClass({
               </select>:
             </h5>
             <Editor {...rulesModal.editorTheme} onChange={this.onRuleTextChange} mode="rules"
-              name={ruleName} value={ruleText} />
+              name={ruleName} value={ruleText} ref="editor" />
           </div>
           <div className="modal-footer">
             <button type="button" className="btn btn-primary" onClick={this.onConfirm}>Confirm</button>
