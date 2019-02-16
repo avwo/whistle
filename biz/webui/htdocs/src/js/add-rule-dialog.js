@@ -135,6 +135,7 @@ var AddRuleDialog = React.createClass({
   checkAndClosePreview: function() {
     if (!this.checkPreviewChanged()) {
       this.closePreview();
+      this.setData();
     }
   },
   closePreview: function() {
