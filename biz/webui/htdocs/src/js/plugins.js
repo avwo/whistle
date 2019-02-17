@@ -118,7 +118,7 @@ var Home = React.createClass({
                       </td>
                       <td className="w-plugins-operation">
                         <a href={url} target="_blank" data-name={name} onClick={plugin.pluginHomepage ? null : self.onOpen}>Option</a>
-                        {(plugin.rules || plugin._rules) ? <a href="javascript:;" draggable="false" data-name={name} onClick={self.showRules}>Rules</a> : <span className="disabled">Rules</span>}
+                        {(plugin.rules || plugin._rules || plugin.resRules) ? <a href="javascript:;" draggable="false" data-name={name} onClick={self.showRules}>Rules</a> : <span className="disabled">Rules</span>}
                         <a href="javascript:;" draggable="false" className="w-plugin-btn w-plugin-update-btn"
                           data-name={name} onClick={self.showUpdate}>Update</a>
                         <a href="javascript:;" draggable="false" className="w-plugin-btn"
@@ -149,6 +149,10 @@ var Home = React.createClass({
                 {plugin._rules ? (<fieldset>
                   <legend>_rules.txt</legend>
                   <pre>{plugin._rules}</pre>
+                </fieldset>) : null}
+                {plugin.resRules ? (<fieldset>
+                  <legend>resRules.txt</legend>
+                  <pre>{plugin.resRules}</pre>
                 </fieldset>) : null}
               </div>
             </div>
