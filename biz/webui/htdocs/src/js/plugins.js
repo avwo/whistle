@@ -147,7 +147,7 @@ var Home = React.createClass({
                   <pre>{plugin.rules}</pre>
                 </fieldset>) : null}
                 {plugin._rules ? (<fieldset>
-                  <legend>reqRules.txt</legend>
+                  <legend>reqRules.txt (_rules.txt)</legend>
                   <pre>{plugin._rules}</pre>
                 </fieldset>) : null}
                 {plugin.resRules ? (<fieldset>
