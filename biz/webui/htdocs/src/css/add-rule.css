@@ -21,6 +21,7 @@
 
 .w-add-rule-dialog .glyphicon {
   margin-right: 5px;
+  position: relative;
 }
 
 .w-add-rule-dialog label {
@@ -28,11 +29,30 @@
   width: 90px;
   margin-right: 15px;
   line-height: 32px;
-  text-align: right;
+  padding-left: 10px;
+}
+
+.w-add-rule-dialog-tips {
+  display: block;
+  position: absolute;;
+  left: -208px;
+  width: 200px;
+  background: lightyellow;
+  border: 1px solid #ccc;
+  padding: 5px;
+  border-radius: 5px;
+  white-space: normal;
+  word-break: break-all;
+  top: -5px;
+  /* display: none; */
+}
+
+.w-add-rule-dialog .modal-body {
+  padding-left: 0px;
 }
 
 .w-add-rule-dialog .w-add-rule-pattern {
-  width: 480px;
+  width: 510px;
   height: 32px;
   border: 1px solid #ccc;
   border-radius: 2px;
@@ -40,7 +60,7 @@
 }
 
 .w-add-rule-dialog select, .w-add-rule-preview select {
-  width: 480px;
+  width: 510px;
   height: 32px;
   border: 1px solid #ccc;
   border-radius: 2px;
@@ -58,7 +78,7 @@
 .w-add-rule-dialog textarea {
   vertical-align: top;
   display: inline-block;
-  width: 350px;
+  width: 380px;
   height: 120px;
   border: 1px solid #ccc;
   border-radius: 2px;
@@ -68,7 +88,7 @@
 }
 
 .w-add-rule-dialog .w-add-rule-filter {
-  width: 480px;
+  width: 510px;
   height: 63px;
   margin-bottom: 5px;
 }
@@ -80,7 +100,7 @@
 }
 
 .w-add-rule-preview .CodeMirror {
-  height: 480px;
+  height: 510px;
 }
 
 .w-add-preview-title {

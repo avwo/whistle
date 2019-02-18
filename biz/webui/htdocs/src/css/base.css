@@ -80,7 +80,7 @@ textarea {resize: none; display: block; font-size: 12px;}
 .w-arrow-right::after {
   bottom: -6px;
   right: 1px;
-  border-left-color: #f1f3f4;
+  border-left-color: lightyellow;
   border-right-width: 0;
 }
 

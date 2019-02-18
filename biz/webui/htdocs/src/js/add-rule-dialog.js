@@ -44,6 +44,15 @@ var createOptions = function(list) {
   });
 };
 
+var Tips = function(props) {
+  return (
+    <span className="w-add-rule-dialog-tips">
+      {props.text}
+      <i className="w-arrow w-arrow-right" />
+    </span>
+  );
+};
+
 var AddRuleDialog = React.createClass({
   getInitialState: function() {
     return {
@@ -255,7 +264,9 @@ var AddRuleDialog = React.createClass({
           </button>
           <div>
             <label>
-              <span className="glyphicon glyphicon-question-sign" />
+              <span className="glyphicon glyphicon-question-sign">
+                <Tips text="test1" />
+              </span>
               Pattern:
             </label>
             <input ref="pattern" className="w-add-rule-pattern"
@@ -263,7 +274,9 @@ var AddRuleDialog = React.createClass({
           </div>
           <div>
             <label>
-              <span className="glyphicon glyphicon-question-sign" />
+              <span className="glyphicon glyphicon-question-sign">
+                <Tips text="test1" />
+              </span>
               Operation:
             </label>
             <select className="w-add-rule-protocols" value={protocol}
@@ -274,14 +287,18 @@ var AddRuleDialog = React.createClass({
           </div>
           <div>
             <label>
-              <span className="glyphicon glyphicon-question-sign" />
+              <span className="glyphicon glyphicon-question-sign">
+                <Tips text="test1" />
+              </span>
               Filter:
             </label>
             <textarea maxLength="256" placeholder="Filter" className="w-add-rule-filter" />
           </div>
           <div>
             <label>
-              <span className="glyphicon glyphicon-question-sign" />
+            <span className="glyphicon glyphicon-question-sign">
+              <Tips text="test1" />
+            </span>
               Save in:
             </label>
             <select name="ruleNameList" style={{verticalAlign: 'middle'}}
