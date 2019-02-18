@@ -172,13 +172,23 @@ var AddRuleDialog = React.createClass({
       modal.setSelected(name, true);
     });
   },
+  getCurRuleText: function() {
+    var ruleName = this.state.ruleName;
+    var rule = this.props.rulesModal.get(ruleName);
+    var curRuleText = ''; // TODO: 组装规则
+    
+    if (!rule || !rule.value) {
+      return curRuleText;
+    }
+    return curRuleText + '\n' + rule.value;
+  },
   onConfirm: function() {
     var self = this;
     var state = self.state;
     var name = state.ruleName;
     var value = state.ruleText;
     if (value == null) {
-      // TODO: xxx
+      value = this.getCurRuleText();
     }
     var modal = self.props.rulesModal;
     var data = {
