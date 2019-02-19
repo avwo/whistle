@@ -10,7 +10,6 @@ var Editor = require('./editor');
 var FilterInput = require('./filter-input');
 var ContextMenu = require('./context-menu');
 var dataCenter = require('./data-center');
-var AddRuleDialog = require('./add-rule-dialog');
 var events = require('./events');
 
 var rulesCtxMenuList = [
@@ -21,7 +20,6 @@ var rulesCtxMenuList = [
   { name: 'Delete' },
   { name: 'Export' },
   { name: 'Import' },
-  { name: 'Add Rule' },
   { name: 'Help', sep: true }
 ];
 var valuesCtxMenuList = [
@@ -282,12 +280,6 @@ var List = React.createClass({
     case 'Import':
       events.trigger('import' + name, e);
       break;
-    case 'Add Rule':
-      var dialog = this.refs.addRuleDialog;
-      dialog.show();
-      dialog.setData();
-      dialog.setRuleName(this.currentFocusItem && this.currentFocusItem.name);
-      break;
     case 'Validate':
       var item = this.currentFocusItem;
       if (item) {
@@ -330,8 +322,9 @@ var List = React.createClass({
     this.currentFocusItem = item;
     var disabled = !name;
     var isDefault;
-    var data = util.getMenuPosition(e, 110, 250);
-    if (this.props.name == 'rules') {
+    var isRules = this.props.name == 'rules';
+    var data = util.getMenuPosition(e, 110, isRules ? 220 : 250);
+    if (isRules) {
       data.list = rulesCtxMenuList;
       data.list[1].disabled = disabled;
       data.list[1].name = 'Save';
@@ -421,7 +414,6 @@ var List = React.createClass({
             </div>
             <FilterInput onChange={this.onFilterChange} />
             <ContextMenu onClick={this.onClickContextMenu} ref="contextMenu" />
-            {isRules ? <AddRuleDialog onConfirm={this.onAddRule} rulesModal={modal} ref="addRuleDialog" /> : undefined}
           </div>
           <Editor {...self.props} onChange={self.onChange} readOnly={!activeItem}
             name={activeItem.name} value={activeItem.value}

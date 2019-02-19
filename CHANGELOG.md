@@ -1,8 +1,8 @@
-# v1.14.0
+# v1.13.18
 1. feat: Network里面的添加右键菜单项 `Add Rule`，可以快速创建当前请求的操作规则
 2. feat: 命令行添加 `--no-prev-options` 启动选项，支持通过 `w2 restart` 时不复用先前设置的选项
 3. refactor: 插件的内部规则 `_rules.txt` 改成 `reqRules.txt`
-4. docs: 更新文档内容及地址
+4. fix: `www.test.com http://127.0.0.1:3000 log://` log不生效问题
 
 # v1.13.17
 1. feat: 本地替换新增响应206功能，支持iOS播放本地替换的视频文件
