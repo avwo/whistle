@@ -2,6 +2,10 @@
 1. docs: 更新文档及其链接
 2. feat: Network和Rules添加右键菜单 `Add Rule` 方便快速创建规则
 
+# v1.13.20
+1. fix: 替换带端口的url后 `req.headers.host` 的显示问题
+
+# v1.13.19
 # v1.13.18
 1. feat: 命令行添加 `--no-prev-options` 启动选项，支持通过 `w2 restart` 时不复用先前设置的选项
 2. refactor: 插件的内部规则 `_rules.txt` 改成 `reqRules.txt`
