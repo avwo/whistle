@@ -1,5 +1,5 @@
 # v1.13.18
-1. 命令行添加 `--no-prev-options` 启动选项，支持通过 `w2 restart` 时不复用先前设置的选项
+1. feat: 命令行添加 `--no-prev-options` 启动选项，支持通过 `w2 restart` 时不复用先前设置的选项
 2. refactor: 插件的内部规则 `_rules.txt` 改成 `reqRules.txt`
 3. fix: `www.test.com http://127.0.0.1:3000 log://` log不生效问题
 
