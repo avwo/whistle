@@ -17,7 +17,7 @@
 }
 .w-composer-tabs button {
   line-height: 16px;
-  padding: 0 10px;
+  padding: 0 10px!important;
 }
 .w-composer-tabs .w-tab-btn {
   outline: none;
