@@ -87,7 +87,7 @@ var AddRuleDialog = React.createClass({
     var input = ReactDOM.findDOMNode(this.refs.pattern);
     this.curReq = data;
     if (data) {
-      input.value = util.removeProtocol(data.url.replace(/[?#].*$/, ''));
+      input.value = data.url.replace(/[?#].*$/, '');
     }
     setTimeout(function() {
       input.select();
