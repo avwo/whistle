@@ -2,3 +2,20 @@
 .w-detail-content {position: relative; overflow: auto;}
 .w-detail-divider {position: absolute; left: 0; top: 0; width: 5px; height: 100%; cursor: ew-resize;}
 .w-detail-content, .w-detail>.w-tabs-sm {min-width: 560px;}
+
+.w-detail-dialog .modal-dialog, .w-detail-dialog .modal-content {
+  width: 900px;
+}
+.w-detail-dialog .modal-body {
+  padding: 0!important;
+  position: relative;
+}
+.w-detail-dialog .close {
+  position: absolute;
+  right: 10px;
+  top: 4px;
+  z-index: 1;
+}
+.w-detail-dialog .w-detail {
+  border-radius: 6px;
+}

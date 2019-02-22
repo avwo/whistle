@@ -12,29 +12,28 @@ var Composer = require('./composer');
 var Log = require('./log');
 var util = require('./util');
 
-var TABS = [{
-  name: 'Overview',
-  icon: 'eye-open'
-}, {
-  name: 'Inspectors',
-  icon: 'search'
-}, {
-  name: 'Frames',
-  icon: 'menu-hamburger'
-}, {
-  name: 'Composer',
-  icon: 'edit'
-}, {
-  name: 'Timeline',
-  icon: 'time'
-}, {
-  name: 'Log',
-  icon: 'file'
-}];
-
 var ReqData = React.createClass({
   getInitialState: function() {
     return {
+      tabs: [{
+        name: 'Overview',
+        icon: 'eye-open'
+      }, {
+        name: 'Inspectors',
+        icon: 'search'
+      }, {
+        name: 'Frames',
+        icon: 'menu-hamburger'
+      }, {
+        name: 'Composer',
+        icon: 'edit'
+      }, {
+        name: 'Timeline',
+        icon: 'time'
+      }, {
+        name: 'Log',
+        icon: 'file'
+      }],
       initedOverview: false,
       initedInspectors: false,
       initedFrames: false,
@@ -45,29 +44,32 @@ var ReqData = React.createClass({
   },
   componentDidMount: function() {
     var self = this;
-    events.on('showOverview', function() {
-      events.trigger('overviewScrollTop');
-      self.toggleTab(TABS[0]);
-    }).on('showInspectors', function() {
-      self.toggleTab(TABS[1]);
-    }).on('showFrames', function() {
-      self.toggleTab(TABS[2]);
-    }).on('showTimeline', function() {
-      self.toggleTab(TABS[4]);
-    }).on('showLog', function() {
-      self.toggleTab(TABS[5]);
-    }).on('composer', function(e, item) {
-      var modal = self.props.modal;
-      self.showComposer(item || (modal && modal.getActive()));
-    }).on('networkStateChange', function() {
-      self.setState({});
-    });
+    var tabs = self.state.tabs;
+    if (!this.props.data) {
+      events.on('showOverview', function() {
+        events.trigger('overviewScrollTop');
+        self.toggleTab(tabs[0]);
+      }).on('showInspectors', function() {
+        self.toggleTab(tabs[1]);
+      }).on('showFrames', function() {
+        self.toggleTab(tabs[2]);
+      }).on('showTimeline', function() {
+        self.toggleTab(tabs[4]);
+      }).on('showLog', function() {
+        self.toggleTab(tabs[5]);
+      }).on('composer', function(e, item) {
+        var modal = self.props.modal;
+        self.showComposer(item || (modal && modal.getActive()));
+      }).on('networkStateChange', function() {
+        self.setState({});
+      });
+    }
   },
   showComposer: function(item) {
     if (item) {
       this.state.activeItem = item;
     }
-    this.toggleTab(TABS[3], function() {
+    this.toggleTab(this.state.tabs[3], function() {
       events.trigger('setComposer');
     });
   },
@@ -118,7 +120,7 @@ var ReqData = React.createClass({
     this.setState({tab: tab}, callback);
   },
   selectTab: function(tab) {
-    TABS.forEach(function(tab) {
+    this.state.tabs.forEach(function(tab) {
       tab.active = false;
     });
     tab.active = true;
@@ -127,7 +129,9 @@ var ReqData = React.createClass({
   },
   render: function() {
     var modal = this.props.modal;
-    var selectedList = modal && modal.getSelectedList();
+    var data = this.props.data;
+    var tabs = this.state.tabs;
+    var selectedList = !data && modal && modal.getSelectedList();
     var activeItem;
     var overview;
     if (selectedList && selectedList.length > 1) {
@@ -155,6 +159,8 @@ var ReqData = React.createClass({
           overview.res.size += item.res.size;
         }
       });
+    } else if (data) {
+      overview = activeItem = data;
     } else {
       overview = activeItem = modal && modal.getActive();
       if (!activeItem || activeItem.hide) {
@@ -163,8 +169,8 @@ var ReqData = React.createClass({
     }
     var curTab = this.state.tab;
     if (!curTab && overview) {
-      curTab = TABS[0];
-      TABS.forEach(function(tab) {
+      curTab = tabs[0];
+      tabs.forEach(function(tab) {
         tab.active = false;
       });
       this.selectTab(curTab);
@@ -182,15 +188,15 @@ var ReqData = React.createClass({
           <button
             onClick={this.props.onDockChange}
             className="w-dock-btn" title={'Dock to ' + (dockToBottom ? 'right' : 'bottom') + ' (F12)'}>
-            <span className={'glyphicon glyphicon-menu-' + (dockToBottom ? 'right' : 'down')}></span>
+            <span className={'glyphicon glyphicon-menu-' + (dockToBottom ? 'right' : 'down') + (data ? ' hide' : '')}></span>
           </button>
-        } onDoubleClick={this.onDoubleClick} onClick={this.toggleTab} tabs={TABS} />
-        {this.state.initedOverview ? <Overview modal={overview} hide={name != TABS[0].name} /> : ''}
-        {this.state.initedInspectors ? <Inspectors modal={activeItem} hide={name != TABS[1].name} /> : ''}
-        {this.state.initedFrames ? <Frames data={activeItem} frames={frames} hide={name != TABS[2].name} /> : ''}
-        {this.state.initedTimeline ? <Timeline modal={modal} hide={name != TABS[4].name} /> : ''}
-        {this.state.initedComposer ? <Composer modal={this.state.activeItem} hide={name != TABS[3].name} /> : ''}
-        {this.state.initedLog ? <Log hide={name != TABS[5].name} /> : ''}
+        } onDoubleClick={this.onDoubleClick} onClick={this.toggleTab} tabs={tabs} />
+        {this.state.initedOverview ? <Overview modal={overview} hide={name != tabs[0].name} /> : ''}
+        {this.state.initedInspectors ? <Inspectors modal={activeItem} hide={name != tabs[1].name} /> : ''}
+        {this.state.initedFrames ? <Frames data={activeItem} frames={frames} hide={name != tabs[2].name} /> : ''}
+        {this.state.initedTimeline ? <Timeline data={data} modal={modal} hide={name != tabs[4].name} /> : ''}
+        {this.state.initedComposer ? <Composer modal={this.state.activeItem} hide={name != tabs[3].name} /> : ''}
+        {this.state.initedLog ? <Log hide={name != tabs[5].name} /> : ''}
       </div>
     );
   }

@@ -2,6 +2,12 @@
   width: 630px;
 }
 
+.w-add-rule-req-detail {
+  display: block;
+  margin-left: 104px;
+  width: 136px;
+}
+
 .w-add-rule-preview .modal-dialog, .w-add-rule-preview .modal-content {
   width: 900px;
 }

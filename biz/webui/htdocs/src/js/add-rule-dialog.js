@@ -9,6 +9,7 @@ var util = require('./util');
 var Editor = require('./editor');
 var events = require('./events');
 var storage = require('./storage');
+var DetailDialog = require('./detail-dialog');
 var dataCenter = require('./data-center');
 
 var protocolGroups = protocolMgr.groups;
@@ -84,6 +85,7 @@ var AddRuleDialog = React.createClass({
   },
   setData: function(data) {
     var input = ReactDOM.findDOMNode(this.refs.pattern);
+    this.curReq = data;
     if (data) {
       input.value = util.removeProtocol(data.url.replace(/[?#].*$/, ''));
     }
@@ -224,6 +226,9 @@ var AddRuleDialog = React.createClass({
       }
     });
   },
+  showDetailDialog: function() {
+    this.refs.detailDialog.show(this.curReq);
+  },
   render: function() {
     var rulesModal = this.props.rulesModal;
     if (!rulesModal) {
@@ -271,6 +276,12 @@ var AddRuleDialog = React.createClass({
             </label>
             <input ref="pattern" className="w-add-rule-pattern"
               maxLength="1024" placeholder="Input the pattern to match request URL" />
+            <a href="javascript:;"
+              onClick={this.showDetailDialog}
+              className={'w-add-rule-req-detail' + (this.curReq ? '' : ' hide')}
+            >
+              Show Request Detail
+            </a>
           </div>
           <div>
             <label>
@@ -332,6 +343,7 @@ var AddRuleDialog = React.createClass({
             <button type="button" className="btn btn-default" onClick={this.checkAndClosePreview}>Back</button>
           </div>
         </Dialog>
+        <DetailDialog ref="detailDialog" />
       </Dialog>
     );
   }

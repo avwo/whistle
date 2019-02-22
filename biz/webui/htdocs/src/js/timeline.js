@@ -11,7 +11,8 @@ var Timeline = React.createClass({
   },
   render: function() {
     var modal = this.props.modal;
-    var list = modal && modal.getSelectedList() || [];
+    var data = this.props.data;
+    var list = data ? [data] : (modal ? modal.getSelectedList() : []);
     var maxTotal = 1;
     var startTime;
 
