@@ -13,7 +13,7 @@
 }
 
 .w-add-rule-dialog .modal-body>div {
-  margin-bottom: 10px;
+  padding-bottom: 10px;
   white-space: nowrap;
 }
 
@@ -22,7 +22,7 @@
 }
 
 .w-add-rule-dialog .modal-body>div:nth-child(3) {
-  margin-bottom: 15px;
+  padding-bottom: 15px;
 }
 
 .w-add-rule-dialog .glyphicon {
@@ -39,7 +39,7 @@
 }
 
 .w-add-rule-dialog-tips {
-  display: block;
+  display: none;
   position: absolute;;
   left: -208px;
   width: 200px;
@@ -96,7 +96,7 @@
 .w-add-rule-dialog .w-add-rule-filter {
   width: 510px;
   height: 63px;
-  margin-bottom: 5px;
+  padding-bottom: 5px;
 }
 
 .w-add-rule-preview-name {

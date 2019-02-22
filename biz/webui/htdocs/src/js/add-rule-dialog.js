@@ -47,7 +47,8 @@ var createOptions = function(list) {
 
 var Tips = function(props) {
   return (
-    <span className="w-add-rule-dialog-tips">
+    <span className="w-add-rule-dialog-tips"
+      style={{ display: props.show ? 'block' : 'none' }}>
       {props.text}
       <i className="w-arrow w-arrow-right" />
     </span>
@@ -193,6 +194,24 @@ var AddRuleDialog = React.createClass({
     }
     return curRuleText + '\n' + rule.value;
   },
+  getName: function(e) {
+    return $(e.target).closest('div').attr('name');
+  },
+  onFocus: function(e) {
+    var name = this.getName(e);
+    if (name) {
+      this.setState({ focusName: name });
+    }
+  },
+  onBlur: function() {
+    this.setState({ focusName: null });
+  },
+  showTips: function(e) {
+    this.setState({ hoverName: this.getName(e) });
+  },
+  hideTips: function() {
+    this.setState({ hoverName: null });
+  },
   onConfirm: function() {
     var self = this;
     var state = self.state;
@@ -261,26 +280,39 @@ var AddRuleDialog = React.createClass({
         state.oldRuleText = ruleText;
       }
     }
+    var name = state.hoverName || state.focusName;
     return (
       <Dialog ref="addRuleDialog" wstyle="w-add-rule-dialog">
-        <div className="modal-body">
+        <div className="modal-body" ref="container">
           <button type="button" className="close" data-dismiss="modal">
             <span aria-hidden="true">&times;</span>
           </button>
-          <div>
-            <label>
+          <div name="pattern"
+            onFocus={this.onFocus}
+            onBlur={this.onBlur}
+          >
+            <label
+              onMouseEnter={this.showTips}
+              onMouseLeave={this.hideTips}
+            >
               <span className="glyphicon glyphicon-question-sign">
-                <Tips text="test1" />
+                <Tips text="test1" show={name === 'pattern'} />
               </span>
               Pattern:
             </label>
             <input ref="pattern" className="w-add-rule-pattern"
               maxLength="1024" placeholder="Input the pattern to match request URL" />
           </div>
-          <div>
-            <label>
+          <div name="rule"
+            onFocus={this.onFocus}
+            onBlur={this.onBlur}
+          >
+            <label
+              onMouseEnter={this.showTips}
+              onMouseLeave={this.hideTips}
+            >
               <span className="glyphicon glyphicon-question-sign">
-                <Tips text="test1" />
+                <Tips text="test1" show={name === 'rule'} />
               </span>
               Operation:
             </label>
@@ -290,19 +322,31 @@ var AddRuleDialog = React.createClass({
             </select><textarea maxLength="3072" ref="ruleValue"
               placeholder={'Input the operation value (<= 3k), such as:\n'} />
           </div>
-          <div>
-            <label>
+          <div name="filter"
+            onFocus={this.onFocus}
+            onBlur={this.onBlur}
+          >
+            <label
+              onMouseEnter={this.showTips}
+              onMouseLeave={this.hideTips}
+            >
               <span className="glyphicon glyphicon-question-sign">
-                <Tips text="test1" />
+                <Tips text="test1" show={name === 'filter'} />
               </span>
               Filter:
             </label>
             <textarea maxLength="256" placeholder="Filter" className="w-add-rule-filter" />
           </div>
-          <div>
-            <label>
+          <div name="ruleName"
+            onFocus={this.onFocus}
+            onBlur={this.onBlur}
+          >
+            <label
+              onMouseEnter={this.showTips}
+              onMouseLeave={this.hideTips}
+            >
             <span className="glyphicon glyphicon-question-sign">
-              <Tips text="test1" />
+              <Tips text="test1" show={name === 'ruleName'} />
             </span>
               Save in:
             </label>
