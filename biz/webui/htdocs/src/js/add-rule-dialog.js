@@ -276,12 +276,6 @@ var AddRuleDialog = React.createClass({
             </label>
             <input ref="pattern" className="w-add-rule-pattern"
               maxLength="1024" placeholder="Input the pattern to match request URL" />
-            <a href="javascript:;"
-              onClick={this.showDetailDialog}
-              className={'w-add-rule-req-detail' + (this.curReq ? '' : ' hide')}
-            >
-              Show Request Detail
-            </a>
           </div>
           <div>
             <label>
@@ -319,6 +313,10 @@ var AddRuleDialog = React.createClass({
           </div>
         </div>
         <div className="modal-footer">
+          <button type="button" className={'btn btn-default' + (this.curReq ? '' : ' hide')}
+            onClick={this.showDetailDialog}>
+            Show Request Detail
+          </button>
           <button type="button" className="btn btn-info" onClick={this.preview}>Preview</button>
           <button type="button" className="btn btn-primary" onClick={this.onConfirm}>Confirm</button>
           <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
