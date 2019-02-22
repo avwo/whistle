@@ -313,7 +313,7 @@ var AddRuleDialog = React.createClass({
           </div>
         </div>
         <div className="modal-footer">
-          <button type="button" className={'btn btn-default' + (this.curReq ? '' : ' hide')}
+          <button type="button" className={'btn btn-warning' + (this.curReq ? '' : ' hide')}
             onClick={this.showDetailDialog}>
             Show Request Detail
           </button>
