@@ -62,6 +62,10 @@
   top: -18px;
 }
 
+.w-add-rule-dialog div[name=filter] .w-add-rule-dialog-tips {
+  top: -103px;
+}
+
 .w-add-rule-dialog-tips pre {
   font-family: consolas, monospace;
   margin-top: 3px;

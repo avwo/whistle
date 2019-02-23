@@ -125,7 +125,7 @@ var PropsEditor = React.createClass({
     var name = e.target.getAttribute('data-name');
     var opName = this.props.isHeader ? 'header' : 'field';
     var item = this.state.modal[name];
-    if (confirm('Confirm delete this ' + opName + ' \'' + item.name + '\'.')) {
+    if (confirm('Are you sure to delete this ' + opName + ' \'' + item.name + '\'.')) {
       delete this.state.modal[name];
       this.props.onChange(item.name);
       this.setState({});

@@ -2094,7 +2094,7 @@ var Index = React.createClass({
     var activeItem = item || modal.getActive();
     if (activeItem && !activeItem.isDefault) {
       var name = activeItem.name;
-      if (confirm('Confirm delete this rule group \'' + name + '\'.')) {
+      if (confirm('Are you sure to delete this rule group \'' + name + '\'.')) {
         dataCenter.rules.remove({name: name}, function(data, xhr) {
           if (data && data.ec === 0) {
             var nextItem = item && !item.active ? null : modal.getSibling(name);
@@ -2117,7 +2117,7 @@ var Index = React.createClass({
     var activeItem = item || modal.getActive();
     if (activeItem && !activeItem.isDefault) {
       var name = activeItem.name;
-      if (confirm('Confirm delete this Value \'' + name + '\'.')) {
+      if (confirm('Are you sure to delete this Value \'' + name + '\'.')) {
         dataCenter.values.remove({name: name}, function(data, xhr) {
           if (data && data.ec === 0) {
             var nextItem = item && !item.active ? null : modal.getSibling(name);
@@ -2362,7 +2362,7 @@ var Index = React.createClass({
     var self = this;
     var modal = self.state.rules;
     var defaultRules = modal.data['Default'];
-    if (!(defaultRules.value || '').trim() || confirm('Confirm overwrite the original Default data?')) {
+    if (!(defaultRules.value || '').trim() || confirm('Are you sure to overwrite the original Default data?')) {
       dataCenter.rules.getSysHosts(function(data) {
         if (data.ec !== 0) {
           alert(data.em);

@@ -21,6 +21,18 @@ var PATTERN_TIPS = [
   '*.test.com',
   '**.test.com'
 ].join('\n');
+var FILTER_TIPS = [
+  'i:ip|RegExp   (exclude)',
+  '!i:ip|RegExp  (include)',
+  'RegExp|Wildcard',
+  '!RegExp|Wildcard',
+  'm:method|RegExp',
+  '!m:method|RegExp',
+  'h:key=subValue|RegExp',
+  '!h:key=subValue|RegExp',
+  'b:subVal|RegExp',
+  '!b:subVal|RegExp'
+].join('\n');
 
 var protocolGroups = protocolMgr.groups;
 var CREATE_OPTION = {
@@ -350,11 +362,16 @@ var AddRuleDialog = React.createClass({
               onMouseLeave={this.hideTips}
             >
               <span className="glyphicon glyphicon-question-sign">
-                <Tips text="test1" show={name === 'filter'} />
+                <Tips
+                text={FILTER_TIPS}
+                show={name === 'filter'}
+                help="https://avwo.github.io/whistle/rules/filter.html"
+                title="Input the filter to exclude (!include) the request, such as:"
+              />
               </span>
               Filter:
             </label>
-            <textarea maxLength="256" placeholder="Filter" className="w-add-rule-filter" />
+            <textarea maxLength="256" placeholder="Input the filter to exclude (!include) the request" className="w-add-rule-filter" />
           </div>
           <div name="ruleName"
             onFocus={this.onFocus}
