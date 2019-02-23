@@ -504,7 +504,10 @@ var ReqData = React.createClass({
       var type = util.getContentType(item.res.headers);
       list0[6].disabled = !item.res.base64 || (type !== 'HTML' && type !== 'IMG');
     }
+    list0[0].disabled = disabled;
+    list0[1].disabled = disabled;
     list0[2].disabled = (disabled || !item.frames);
+    list0[3].disabled = disabled;
 
     contextMenuList[1].disabled = disabled;
     contextMenuList[1].list.forEach(function(menu) {
