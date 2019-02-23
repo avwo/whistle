@@ -48,8 +48,8 @@
   padding: 5px;
   border-radius: 5px;
   white-space: normal;
-  word-wrap: break-world;
-  word-break: break-world;
+  word-wrap: break-word;
+  word-break: break-word;
   top: -5px;
   font-size: 12px;
   font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
@@ -65,8 +65,8 @@
 .w-add-rule-dialog-tips pre {
   font-family: consolas, monospace;
   margin-top: 3px;
-  word-wrap: break-world;
-  word-break: break-world;
+  word-wrap: break-word;
+  word-break: break-word;
 }
 .w-add-rule-dialog-tips pre, .w-add-rule-dialog-tips a {
   margin-left: 10px;
