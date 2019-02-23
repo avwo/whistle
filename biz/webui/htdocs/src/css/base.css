@@ -85,7 +85,7 @@ textarea {resize: none; display: block; font-size: 12px;}
 }
 
 .modal-dialog .modal-body, .modal-dialog .modal-footer {padding: 10px;}
-.modal-dialog .btn {padding: 5px 10px;}
+.modal-footer .btn {padding: 5px 10px;}
 
 .cm-header {text-decoration: line-through;}
 .cm-s-ambiance ::-webkit-scrollbar-thumb,
