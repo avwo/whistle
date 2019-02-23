@@ -48,9 +48,28 @@
   padding: 5px;
   border-radius: 5px;
   white-space: normal;
-  word-break: break-all;
+  word-wrap: break-world;
+  word-break: break-world;
   top: -5px;
-  /* display: none; */
+  font-size: 12px;
+  font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+}
+
+.w-add-rule-dialog div[name=pattern] .w-add-rule-dialog-tips {
+  top: -76px;
+}
+.w-add-rule-dialog div[name=ruleName] .w-add-rule-dialog-tips {
+  top: -18px;
+}
+
+.w-add-rule-dialog-tips pre {
+  font-family: consolas, monospace;
+  margin-top: 3px;
+  word-wrap: break-world;
+  word-break: break-world;
+}
+.w-add-rule-dialog-tips pre, .w-add-rule-dialog-tips a {
+  margin-left: 10px;
 }
 
 .w-add-rule-dialog .modal-body {

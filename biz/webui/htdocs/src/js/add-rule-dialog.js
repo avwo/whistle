@@ -12,6 +12,16 @@ var storage = require('./storage');
 var DetailDialog = require('./detail-dialog');
 var dataCenter = require('./data-center');
 
+var PATTERN_TIPS = [
+  'a.b.com',
+  'a.b.com/path/to',
+  '$a.b.com',
+  '/path\/to/(\d+)/i',
+  '*/path/to',
+  '*.test.com',
+  '**.test.com'
+].join('\n');
+
 var protocolGroups = protocolMgr.groups;
 var CREATE_OPTION = {
   value: '',
@@ -49,8 +59,12 @@ var Tips = function(props) {
   return (
     <span className="w-add-rule-dialog-tips"
       style={{ display: props.show ? 'block' : 'none' }}>
-      {props.text}
       <i className="w-arrow w-arrow-right" />
+      <strong>{props.title}</strong>
+      <pre>
+        {props.text}
+      </pre>
+      {props.help ? <a href={props.help} target="_blank">and more...</a> : undefined}
     </span>
   );
 };
@@ -113,13 +127,13 @@ var AddRuleDialog = React.createClass({
   },
   onRuleNameChange: function(e) {
     var target = e.target;
-    if (target.name !== 'ruleNameList' && this.checkPreviewChanged()) {
+    if (target.name !== 'ruleGroupList' && this.checkPreviewChanged()) {
       return;
     }
     var ruleName = target.value;
     if (!ruleName) {
       while(!ruleName) {
-        ruleName = window.prompt('Please input the new Rule name:');
+        ruleName = window.prompt('Please input the new rule group name:');
         ruleName = ruleName && ruleName.trim();
         if (!ruleName) {
           return;
@@ -296,12 +310,17 @@ var AddRuleDialog = React.createClass({
               onMouseLeave={this.hideTips}
             >
               <span className="glyphicon glyphicon-question-sign">
-                <Tips text="test1" show={name === 'pattern'} />
+                <Tips
+                  text={PATTERN_TIPS}
+                  title="Input the pattern to match the request URL, such as:"
+                  show={name === 'pattern'}
+                  help="https://avwo.github.io/whistle/pattern.html"
+                />
               </span>
               Pattern:
             </label>
             <input ref="pattern" className="w-add-rule-pattern"
-              maxLength="1024" placeholder="Input the pattern to match request URL" />
+              maxLength="1024" placeholder="Input the pattern to match the request URL" />
           </div>
           <div name="rule"
             onFocus={this.onFocus}
@@ -346,11 +365,12 @@ var AddRuleDialog = React.createClass({
               onMouseLeave={this.hideTips}
             >
             <span className="glyphicon glyphicon-question-sign">
-              <Tips text="test1" show={name === 'ruleName'} />
+              <Tips text="Select the group name to save the rule"
+                show={name === 'ruleName'} />
             </span>
               Save in:
             </label>
-            <select name="ruleNameList" style={{verticalAlign: 'middle'}}
+            <select name="ruleGroupList" style={{verticalAlign: 'middle'}}
              value={ruleName} onChange={this.onRuleNameChange}>
             {createOptions(rulesList)}
             </select>

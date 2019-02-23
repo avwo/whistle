@@ -1895,12 +1895,12 @@ var Index = React.createClass({
     var target = ReactDOM.findDOMNode(self.refs.editRulesInput);
     var name = $.trim(target.value);
     if (!name) {
-      alert('Rule name can not be empty.');
+      alert('The rule group name can not be empty.');
       return;
     }
 
     if (modal.exists(name)) {
-      alert('Rule name \'' + name + '\' already exists.');
+      alert('The rule group name \'' + name + '\' already exists.');
       return;
     }
 
@@ -1934,12 +1934,12 @@ var Index = React.createClass({
     var target = ReactDOM.findDOMNode(self.refs.editValuesInput);
     var name = $.trim(target.value);
     if (!name) {
-      alert('Rule name can not be empty.');
+      alert('The rule group name can not be empty.');
       return;
     }
 
     if (modal.exists(name)) {
-      alert('Rule name \'' + name + '\' already exists.');
+      alert('The rule group name \'' + name + '\' already exists.');
       return;
     }
 
@@ -2094,7 +2094,7 @@ var Index = React.createClass({
     var activeItem = item || modal.getActive();
     if (activeItem && !activeItem.isDefault) {
       var name = activeItem.name;
-      if (confirm('Confirm delete this Rule \'' + name + '\'.')) {
+      if (confirm('Confirm delete this rule group \'' + name + '\'.')) {
         dataCenter.rules.remove({name: name}, function(data, xhr) {
           if (data && data.ec === 0) {
             var nextItem = item && !item.active ? null : modal.getSibling(name);
