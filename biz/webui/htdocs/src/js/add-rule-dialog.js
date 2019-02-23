@@ -237,6 +237,12 @@ var AddRuleDialog = React.createClass({
   hideTips: function() {
     this.setState({ hoverName: null });
   },
+  showTips2: function(e) {
+    this.setState({ hoverName2: this.getName(e) });
+  },
+  hideTips2: function() {
+    this.setState({ hoverName2: null });
+  },
   onConfirm: function() {
     var self = this;
     var state = self.state;
@@ -305,7 +311,7 @@ var AddRuleDialog = React.createClass({
         state.oldRuleText = ruleText;
       }
     }
-    var name = state.hoverName || state.focusName;
+    var name = state.hoverName || state.focusName || state.hoverName2;
     return (
       <Dialog ref="addRuleDialog" wstyle="w-add-rule-dialog">
         <div className="modal-body" ref="container">
@@ -315,6 +321,8 @@ var AddRuleDialog = React.createClass({
           <div name="pattern"
             onFocus={this.onFocus}
             onBlur={this.onBlur}
+            onMouseEnter={this.showTips2}
+            onMouseLeave={this.hideTips2}
           >
             <label
               onMouseEnter={this.showTips}
@@ -336,6 +344,8 @@ var AddRuleDialog = React.createClass({
           <div name="rule"
             onFocus={this.onFocus}
             onBlur={this.onBlur}
+            onMouseEnter={this.showTips2}
+            onMouseLeave={this.hideTips2}
           >
             <label
               onMouseEnter={this.showTips}
@@ -355,6 +365,8 @@ var AddRuleDialog = React.createClass({
           <div name="filter"
             onFocus={this.onFocus}
             onBlur={this.onBlur}
+            onMouseEnter={this.showTips2}
+            onMouseLeave={this.hideTips2}
           >
             <label
               onMouseEnter={this.showTips}
@@ -375,6 +387,8 @@ var AddRuleDialog = React.createClass({
           <div name="ruleName"
             onFocus={this.onFocus}
             onBlur={this.onBlur}
+            onMouseEnter={this.showTips2}
+            onMouseLeave={this.hideTips2}
           >
             <label
               onMouseEnter={this.showTips}
