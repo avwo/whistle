@@ -76,7 +76,7 @@ var Tips = function(props) {
       <pre>
         {props.text}
       </pre>
-      {props.help ? <a href={props.help} target="_blank">and more...</a> : undefined}
+      {props.help ? <a href={props.help} target="_blank">Show more...</a> : undefined}
     </span>
   );
 };
