@@ -30,5 +30,5 @@ module.exports = function init(proxy, callback) {
     config.weinreport = port;
     require('./weinre')(server);
     execCallback();
-  }, config.weinreport);
+  });
 };
