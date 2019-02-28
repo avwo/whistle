@@ -147,7 +147,6 @@ After installation, execute `whistle help` or `w2 help` to view help information
 		-P, --uiport [uiport]                           whistle ui port (8900 by default)
 		-m, --middlewares [script path or module name]  express middlewares path (as: xx,yy/zz.js)
 		-M, --mode [mode]                               the whistle mode (as: pureProxy|debug|multiEnv)
-		-u, --uipath [script path]                      web ui plugin path
 		-t, --timeout [ms]                              request timeout (66000 ms by default)
 		-e, --extra [extraData]                         extra data for plugin
 		-f, --secureFilter [secureFilter]               the script path of secure filter

@@ -252,7 +252,10 @@ app.all(WEINRE_RE, function(req, res) {
   util.transformReq(req, res, config.weinreport);
 });
 
-module.exports = function(server, proxy) {
+function init(proxy) {
+  if (proxyEvent) {
+    return;
+  }
   proxyEvent = proxy;
   config = proxy.config;
   pluginMgr = proxy.pluginMgr;
@@ -267,5 +270,10 @@ module.exports = function(server, proxy) {
   require('./values')(rulesUtil.values);
   require('./https-util')(httpsUtil = proxy.httpsUtil);
   require('./data')(proxy);
+}
+
+exports.init = init;
+exports.setupServer = function(server) {
   server.on('request', app);
 };
+module.exports.handleRequest = app;

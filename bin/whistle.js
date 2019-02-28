@@ -88,7 +88,6 @@ program
   .option('-P, --uiport [uiport]', 'set the listening port of whistle webui (' + (config.port + 1) + ' by default)', parseInt, undefined)
   .option('-m, --middlewares [script path or module name]', 'set the express middlewares loaded at startup (as: xx,yy/zz.js)', String, undefined)
   .option('-M, --mode [mode]', 'set the way of starting the whistle mode (as: pureProxy|debug|multiEnv)', String, undefined)
-  .option('-u, --uipath [script path]', 'set the path of custom web ui', String, undefined)
   .option('-t, --timeout [ms]', 'set the request timeout (' + config.timeout + 'ms by default)', parseInt, undefined)
   .option('-e, --extra [extraData]', 'set the extra parameters for plugin', String, undefined)
   .option('-f, --secureFilter [secureFilter]', 'set the path of secure filter', String, undefined)

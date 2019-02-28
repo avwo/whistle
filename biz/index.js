@@ -1,6 +1,7 @@
 var net = require('net');
 var rules = require('../lib/rules');
 var util = require('../lib/util');
+var handleUIRequest = require('./webui/lib').handleRequest;
 
 var HTTP_PROXY_RE = /^x?(?:proxy|http-proxy|http2https-proxy|https2http-proxy|internal-proxy):\/\//;
 var INTERNAL_APP, WEBUI_PATH, PLUGIN_RE, PREVIEW_PATH_RE;
@@ -20,19 +21,19 @@ module.exports = function(req, res, next) {
   var port = host[1] || 80;
   var bypass;
   host = host[0];
-  var transformPort, proxyUrl;
+  var transformPort, proxyUrl, isWeinre;
   var isWebUI = req.path.indexOf(WEBUI_PATH) === 0;
   if (isWebUI) {
     isWebUI = !config.pureProxy;
     if (isWebUI) {
       if (INTERNAL_APP.test(req.path)) {
         transformPort = RegExp.$2;
-        var name = RegExp.$1;
+        isWeinre = RegExp.$1 === 'weinre';
         if (transformPort) {
-          proxyUrl = transformPort != (name === 'weinre' ? config.weinreport : config.uiport);
+          proxyUrl = transformPort != (isWeinre ? config.weinreport : config.uiport);
         } else {
           proxyUrl = false;
-          transformPort = name === 'weinre' ? config.weinreport : config.uiport;
+          transformPort = isWeinre ? config.weinreport : config.uiport;
         }
       } else if (PLUGIN_RE.test(req.path)) {
         proxyUrl = !pluginMgr.getPlugin(RegExp.$1 + ':');
@@ -89,7 +90,11 @@ module.exports = function(req, res, next) {
     });
   } else if (isWebUI) {
     req.url = req.url.replace(transformPort ? INTERNAL_APP : WEBUI_PATH, '/');
-    util.transformReq(req, res, transformPort || config.uiport);
+    if (isWeinre) {
+      util.transformReq(req, res);
+    } else {
+      handleUIRequest(req, res);
+    }
   } else if (pluginHomePage || (pluginHomePage = pluginMgr.getPluginByHomePage(fullUrl))) {
     pluginMgr.loadPlugin(pluginHomePage, function(err, ports) {
       if (err || !ports.uiPort) {
@@ -106,7 +111,7 @@ module.exports = function(req, res, next) {
     });
   } else if (localRule = rules.resolveLocalRule(req)) {
     req.url = localRule.url;
-    util.transformReq(req, res, config.uiport);
+    handleUIRequest(req, res);
   } else {
     next();
   }

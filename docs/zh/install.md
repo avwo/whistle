@@ -75,7 +75,6 @@ $ w2 help
     -P, --uiport [uiport]                           set the listening port of whistle (8900 by default)
     -m, --middlewares [script path or module name]  set the express middlewares loaded at startup (as: xx,yy/zz.js)
     -M, --mode [mode]                               set the way of starting the whistle mode (as: pureProxy|debug|multiEnv)
-    -u, --uipath [script path]                      set the path of custom web ui
     -t, --timeout [ms]                              set the request timeout (66000ms by default)
     -e, --extra [extraData]                         set the extra parameters for plugin
     -f, --secureFilter [secureFilter]               set the path of secure filter
