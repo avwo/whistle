@@ -24,7 +24,7 @@ module.exports = function init(proxy, callback) {
       config.uiport = port;
       require(config.uipath)(server, proxy);
       execCallback();
-    }, config.uiport);
+    });
   }
   util.getServer(function(server, port) {
     config.weinreport = port;
