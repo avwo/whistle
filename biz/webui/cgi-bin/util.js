@@ -25,7 +25,6 @@ exports.getServerInfo = function getServerInfo(req) {
     host: util.hostname(),
     isWin: util.isWin,
     port: config.port,
-    weinrePort: config.weinreport,
     ipv4: [],
     ipv6: [],
     mac: req.ip + (config.storage ? '\n' + config.storage : '')

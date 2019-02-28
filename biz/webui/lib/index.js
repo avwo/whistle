@@ -8,6 +8,7 @@ var bodyParser = require('body-parser');
 var crypto = require('crypto');
 var cookie = require('cookie');
 var htdocs = require('../htdocs');
+var handleWeinreReq = require('../../weinre');
 
 var PARSE_CONF = { extended: true, limit: '3mb'};
 var GET_METHOD_RE = /^get$/i;
@@ -249,7 +250,7 @@ app.all(WEINRE_RE, function(req, res) {
     return res.redirect('client/' + (options.search || ''));
   }
   req.url = options.path.replace('/weinre', '');
-  util.transformReq(req, res, config.weinreport);
+  handleWeinreReq(req, res);
 });
 
 function init(proxy) {

@@ -1,7 +1,8 @@
 var net = require('net');
 var rules = require('../lib/rules');
 var util = require('../lib/util');
-var handleUIRequest = require('./webui/lib').handleRequest;
+var handleUIReq = require('./webui/lib').handleRequest;
+var handleWeinreReq = require('./weinre');
 
 var HTTP_PROXY_RE = /^x?(?:proxy|http-proxy|http2https-proxy|https2http-proxy|internal-proxy):\/\//;
 var INTERNAL_APP, WEBUI_PATH, PLUGIN_RE, PREVIEW_PATH_RE;
@@ -30,10 +31,10 @@ module.exports = function(req, res, next) {
         transformPort = RegExp.$2;
         isWeinre = RegExp.$1 === 'weinre';
         if (transformPort) {
-          proxyUrl = transformPort != (isWeinre ? config.weinreport : config.uiport);
+          proxyUrl = transformPort != (isWeinre ? config.port : config.uiport);
         } else {
           proxyUrl = false;
-          transformPort = isWeinre ? config.weinreport : config.uiport;
+          transformPort = isWeinre ? config.port : config.uiport;
         }
       } else if (PLUGIN_RE.test(req.path)) {
         proxyUrl = !pluginMgr.getPlugin(RegExp.$1 + ':');
@@ -91,9 +92,9 @@ module.exports = function(req, res, next) {
   } else if (isWebUI) {
     req.url = req.url.replace(transformPort ? INTERNAL_APP : WEBUI_PATH, '/');
     if (isWeinre) {
-      util.transformReq(req, res);
+      handleWeinreReq(req, res);
     } else {
-      handleUIRequest(req, res);
+      handleUIReq(req, res);
     }
   } else if (pluginHomePage || (pluginHomePage = pluginMgr.getPluginByHomePage(fullUrl))) {
     pluginMgr.loadPlugin(pluginHomePage, function(err, ports) {
@@ -111,7 +112,7 @@ module.exports = function(req, res, next) {
     });
   } else if (localRule = rules.resolveLocalRule(req)) {
     req.url = localRule.url;
-    handleUIRequest(req, res);
+    handleUIReq(req, res);
   } else {
     next();
   }
