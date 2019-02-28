@@ -5,11 +5,6 @@
   "dataDirname": ".whistle",
   "localUIHost": "local.whistlejs.com",
   "port": 8899,
-  "ports": [
-    "uiport",
-    "weinreport",
-    "serviceport"
-  ],
   "sockets": 60,
   "keepAlive": true,
   "keepAliveMsecs": 25000,
