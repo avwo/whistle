@@ -122,6 +122,7 @@ app.use(function(req, res, next) {
   var options = parseurl(req);
   var path = options.path;
   var index = path.indexOf('/whistle/');
+  req.url = path;
   if (index === 0) {
     delete req.headers.referer;
     req.url = path.substring(8);
