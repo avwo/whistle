@@ -226,10 +226,10 @@ app.use(function(req, res, next) {
   }
 });
 
-app.use(bodyParser.urlencoded(PARSE_CONF));
-app.use(bodyParser.json(PARSE_CONF));
-
+app.all('/cgi-bin/*', bodyParser.urlencoded(PARSE_CONF));
+app.all('/cgi-bin/*', bodyParser.json(PARSE_CONF));
 app.all('/cgi-bin/*', cgiHandler);
+
 app.use('/preview.html', function(req, res, next) {
   next();
   var index = req.path.indexOf('=') + 1;
