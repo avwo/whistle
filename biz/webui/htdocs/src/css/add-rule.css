@@ -56,8 +56,13 @@
 }
 
 .w-add-rule-dialog div[name=pattern] .w-add-rule-dialog-tips {
-  top: -76px;
+  top: -45px;
 }
+
+.w-add-rule-dialog div[name=pattern] .w-arrow-right {
+  top: -39px;
+}
+
 .w-add-rule-dialog div[name=ruleName] .w-add-rule-dialog-tips {
   top: -18px;
 }
