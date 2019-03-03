@@ -1,4 +1,4 @@
-var properties = require('../../lib/properties');
+var properties = require('../../../../lib/rules/util').properties;
 
 module.exports = function(req, res) {
   properties.set('allowMultipleChoice', req.body.allowMultipleChoice == 1);

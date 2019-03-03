@@ -1,3 +1,3 @@
-module.exports = function init(proxy) {
+module.exports = function(proxy) {
   module.exports = proxy;
 };

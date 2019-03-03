@@ -1,4 +1,4 @@
-var util = require('../lib/util');
+var util = require('../../../lib/util');
 
 var MAX_LEN = 1024 * 1024 * 6;
 var HTTP_RE = /https?:\/\//i;

@@ -1,9 +1,10 @@
 var proxy = require('../lib/proxy');
 var util = require('./util');
-var config = require('../lib/config');
-var properties = require('../lib/properties');
-var rules = require('../lib/rules');
+var config = require('../../../lib/config');
+var rulesUtil = require('../../../lib/rules/util');
 
+var properties = rulesUtil.properties;
+var rules = rulesUtil.rules;
 var pluginMgr = proxy.pluginMgr;
 var logger = proxy.logger;
 

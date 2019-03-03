@@ -1,4 +1,4 @@
-var rules = require('../../lib/rules');
+var rules = require('../../../../lib/rules/util').rules;
 
 module.exports = function(req, res) {
   rules.getSysHosts(function(err, hosts) {

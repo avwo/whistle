@@ -9,6 +9,8 @@ var crypto = require('crypto');
 var cookie = require('cookie');
 var htdocs = require('../htdocs');
 var handleWeinreReq = require('../../weinre');
+var setProxy = require('./proxy');
+var getRootCAFile = require('../../../lib/https/ca').getRootCAFile;
 
 var PARSE_CONF = { extended: true, limit: '3mb'};
 var GET_METHOD_RE = /^get$/i;
@@ -20,7 +22,7 @@ var DONT_CHECK_PATHS = ['/cgi-bin/server-info', '/cgi-bin/show-host-ip-in-res-he
                         '/cgi-bin/lookup-tunnel-dns', '/cgi-bin/rootca', '/cgi-bin/log/set'];
 var PLUGIN_PATH_RE = /^\/(whistle|plugin)\.([a-z\d_\-]+)(\/)?/;
 var STATIC_SRC_RE = /\.(?:ico|js|css|png)$/i;
-var httpsUtil, proxyEvent, util, config, pluginMgr;
+var proxyEvent, util, config, pluginMgr;
 var MAX_AGE = 60 * 60 * 24 * 3;
 
 function doNotCheckLogin(req) {
@@ -156,7 +158,7 @@ app.use(function(req, res, next) {
   if (req.headers.host !== 'rootca.pro') {
     return next();
   }
-  res.download(httpsUtil.getRootCAFile(), 'rootCA.crt');
+  res.download(getRootCAFile(), 'rootCA.crt');
 });
 
 function cgiHandler(req, res) {
@@ -261,17 +263,8 @@ function init(proxy) {
   proxyEvent = proxy;
   config = proxy.config;
   pluginMgr = proxy.pluginMgr;
-  var rulesUtil = proxy.rulesUtil;
-
-  require('./proxy')(proxy);
-  require('./util')(util = proxy.util);
-  require('./config')(config);
-  require('./rules-util')(rulesUtil);
-  require('./rules')(rulesUtil.rules);
-  require('./properties')(rulesUtil.properties);
-  require('./values')(rulesUtil.values);
-  require('./https-util')(httpsUtil = proxy.httpsUtil);
-  require('./data')(proxy);
+  util = proxy.util;
+  setProxy(proxy);
 }
 
 exports.init = init;

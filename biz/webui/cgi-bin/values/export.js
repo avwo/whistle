@@ -1,4 +1,4 @@
-var values = require('../../lib/values');
+var values = require('../../../../lib/rules/util').values;
 var util = require('../util');
 
 module.exports = function(req, res) {

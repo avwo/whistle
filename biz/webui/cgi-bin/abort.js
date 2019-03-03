@@ -1,5 +1,5 @@
 var proxy = require('../lib/proxy');
-var socketMgr = require('../lib/proxy').socketMgr;
+var socketMgr = proxy.socketMgr;
 
 function abort(reqId) {
   proxy.abortRequest(reqId);

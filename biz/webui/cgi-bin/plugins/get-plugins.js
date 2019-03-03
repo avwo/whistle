@@ -1,4 +1,4 @@
-var properties = require('../../lib/properties');
+var properties = require('../../../../lib/rules/util').properties;
 var pluginMgr = require('../../lib/proxy').pluginMgr;
 
 module.exports = function(req, res) {

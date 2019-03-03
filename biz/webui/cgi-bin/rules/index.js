@@ -1,5 +1,5 @@
-var rules = require('../../lib/rules');
-var properties = require('../../lib/properties');
+var rules = require('../../../../lib/rules/util').rules;
+var properties = require('../../../../lib/rules/util').properties;
 
 module.exports = function get() {
   return {

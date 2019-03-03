@@ -1,4 +1,4 @@
-var rules = require('../../lib/rules');
+var rules = require('../../../../lib/rules/util').rules;
 var util = require('../util');
 
 module.exports = function(req, res) {

@@ -1,6 +1,6 @@
-var util = require('../lib/util');
-var config = require('../lib/config');
-var properties = require('../lib/properties');
+var util = require('../../../lib/util');
+var config = require('../../../lib/config');
+var properties = require('../../../lib/rules/util').properties;
 
 var MAX_OBJECT_SIZE = 1024 * 1024 * 6;
 var index = 0;

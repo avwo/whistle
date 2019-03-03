@@ -1,5 +1,5 @@
 var loadService = require('../../lib/proxy').loadService;
-var transformReq = require('../../lib/util').transformReq;
+var transformReq = require('../../../../lib/util').transformReq;
 
 module.exports = function(req, res) {
   loadService(function(err, options) {

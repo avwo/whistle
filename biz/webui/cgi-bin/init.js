@@ -1,8 +1,8 @@
 var getRules = require('./rules');
 var getValues = require('./values');
 var util = require('./util');
-var config = require('../lib/config');
-var properties = require('../lib/properties');
+var config = require('../../../lib/config');
+var properties = require('../../../lib/rules/util').properties;
 var proxy = require('../lib/proxy');
 
 var logger = proxy.logger;

@@ -1,5 +1,5 @@
-var properties = require('../lib/properties');
-var config = require('../lib/config');
+var properties = require('../../../lib/rules/util').properties;
+var config = require('../../../lib/config');
 
 function compare(v1, v2) {
   if (typeof v1 != 'string') {

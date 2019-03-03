@@ -1,9 +1,9 @@
 var http = require('http');
 var net = require('net');
-var config = require('../lib/config');
-var util = require('../lib/util');
+var config = require('../../../lib/config');
+var util = require('../../../lib/util');
 var zlib = require('../../../lib/util/zlib');
-var properties = require('../lib/properties');
+var properties = require('../../../lib/rules/util').properties;
 var getSender = require('ws-parser').getSender;
 var hparser = require('hparser');
 

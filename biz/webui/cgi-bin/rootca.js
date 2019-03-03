@@ -1,5 +1,5 @@
-var httpsUtil = require('../lib/https-util');
+var getRootCAFile = require('../../../lib/https/ca').getRootCAFile;
 
 module.exports = function(req, res) {
-  res.download(httpsUtil.getRootCAFile(), 'rootCA.crt');
+  res.download(getRootCAFile(), 'rootCA.crt');
 };

@@ -1,4 +1,4 @@
-var values = require('../../lib/values');
+var values = require('../../../../lib/rules/util').values;
 
 module.exports = function(req, res) {
   values.remove(req.body.name, req.body.clientId);

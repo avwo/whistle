@@ -1,5 +1,6 @@
-var values = require('../../lib/values');
-var properties = require('../../lib/properties');
+var rulesUtil = require('../../../../lib/rules/util');
+var values = rulesUtil.values;
+var properties = rulesUtil.properties;
 
 module.exports = function get() {
   return {
