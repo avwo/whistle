@@ -10,7 +10,6 @@ var Dialog = require('./dialog');
 var FilterInput = require('./filter-input');
 var Spinner = require('./spinner');
 var ContextMenu = require('./context-menu');
-var AddRuleDialog = require('./add-rule-dialog');
 var events = require('./events');
 var dataCenter = require('./data-center');
 
@@ -83,7 +82,6 @@ var contextMenuList = [
   { name: 'Upload' },
   { name: 'Import' },
   { name: 'Export' },
-  { name: 'Add Rule' },
   { name: 'Help', sep: true }
 ];
 
@@ -350,19 +348,6 @@ var ReqData = React.createClass({
       self.setSelected(self.state.rules, name, true, autoUpdate);
     });
   },
-  selectRules: function(item) {
-    var self = this;
-    dataCenter.rules[item.isDefault ? 'enableDefault' : 'select'](item, function(data, xhr) {
-      if (data && data.ec === 0) {
-        self.reselectRules(data);
-        // TODO: 更新内容
-        self.refs.addRuleDialog.hide();
-        // 清空对话框
-      } else {
-        util.showSystemError(xhr);
-      }
-    });
-  },
   removeAllSuchURL: function(item, justRemove) {
     var urlList = [];
     var list = this.getActiveList(item);
@@ -436,10 +421,6 @@ var ReqData = React.createClass({
       break;
     case 'Export':
       events.trigger('exportSessions', item);
-      break;
-    case 'Add Rule':
-      this.refs.addRuleDialog.show();
-      this.refs.addRuleDialog.setData(item);
       break;
     case 'Abort':
       events.trigger('abortRequest', item);
@@ -580,7 +561,7 @@ var ReqData = React.createClass({
     var uploadItem = contextMenuList[5];
     uploadItem.hide = !getUploadSessionsFn();
     contextMenuList[7].disabled = uploadItem.disabled = disabled && !selectedCount;
-    var data = util.getMenuPosition(e, 110, uploadItem.hide ? 280 : 310);
+    var data = util.getMenuPosition(e, 110, uploadItem.hide ? 250 : 280);
     data.list = contextMenuList;
     data.className = data.marginRight < 260 ? 'w-ctx-menu-left' : '';
     this.refs.contextMenu.show(data);
@@ -765,7 +746,6 @@ var ReqData = React.createClass({
               <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
             </div>
           </Dialog>
-          <AddRuleDialog rulesModal={modal && modal.rulesModal} ref="addRuleDialog" />
       </div>
     );
   }
