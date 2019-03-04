@@ -165,4 +165,5 @@ PS: 如果配置完代理，手机无法访问，可能是whistle所在的电脑
 
 可以通过以下两种方式来访问配置页面：
 * 方式1：域名访问 [http://local.whistlejs.com/](http://local.whistlejs.com/)
-* 方式2：通过ip+端口来访问，形式如 `http://whistleServerIP:whistlePort+1/` e.g. [http://127.0.0.1:8900](http://127.0.0.1:8900)
+* 方式2：通过ip+端口来访问，形式如 `http://whistleServerIP:whistlePort/` e.g. [http://127.0.0.1:8899](http://127.0.0.1:8899)
+* 方式2：通过命令行参数 `-P xxxx` 自定义webui的端口(`xxxx`表示要设置的端口号)，自定义端口支持上述两种方式访问，也支持 [http://127.0.0.1:xxxx](http://127.0.0.1:xxxx)
