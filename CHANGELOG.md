@@ -1,6 +1,12 @@
 # v1.13.21
 1. feat: 去掉UI的端口占用，自己使用whistle的端口，如果ui需要单独起服务，可以通过命令行 `-P 1234`
-2. perf: 减少内部请求转发提升性能
+2. feat: 直接通过whislte模块起服务时，支持获取server对象
+	```
+	const startWhistle = require('whistle');
+	const proxy = startWhistle({...});
+	console.log(proxy.server)
+	```
+3. perf: 减少内部请求转发提升性能
 
 # v1.13.20
 1. fix: 替换带端口的url后 `req.headers.host` 的显示问题
