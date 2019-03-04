@@ -1,12 +1,12 @@
 # v1.13.21
-1. feat: 去掉UI的端口占用，自己使用whistle的端口，如果ui需要单独起服务，可以通过命令行 `-P 1234`
+1. feat: webui直接复用whistle的端口，不再独占一个端口，所以默认不再支持通过类似 `http://127.0.0.1:8900` 的方式访问ui，只能通过类似 `http://127.0.0.1:8899` 的方式访问(其中 `8899` 为代理端口)，如果需要ui另起一个端口，可以通过启动命令行参数 `-P xxxx` 设置
 2. feat: 直接通过whislte模块起服务时，支持获取server对象
 	```
 	const startWhistle = require('whistle');
 	const proxy = startWhistle({...});
 	console.log(proxy.server)
 	```
-3. perf: 减少内部请求转发提升性能
+3. perf: 优化内部请求解析流程，提升whistle处理性能
 
 # v1.13.20
 1. fix: 替换带端口的url后 `req.headers.host` 的显示问题
