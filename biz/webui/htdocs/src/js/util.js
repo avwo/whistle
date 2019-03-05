@@ -584,7 +584,10 @@ exports.getStatusMessage = function(res) {
   if (!res.statusCode) {
     return '';
   }
-  return res.statusMessage || STATUS_CODES[res.statusCode] || 'unknown';
+  if (typeof res.statusMessage == 'string') {
+    return res.statusMessage;
+  }
+  return STATUS_CODES[res.statusCode] || 'unknown';
 };
 
 function isUrlEncoded(req) {
