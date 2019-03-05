@@ -6,7 +6,8 @@
 	const proxy = startWhistle({...});
 	console.log(proxy.server)
 	```
-3. perf: 优化内部请求解析流程，提升whistle处理性能
+3. feat: 显示所有响应内容(之前版本对二进制内容默认不显示)
+4. perf: 优化内部请求解析流程，提升whistle处理性能
 
 # v1.13.20
 1. fix: 替换带端口的url后 `req.headers.host` 的显示问题
