@@ -1,5 +1,4 @@
 var http = require('http');
-var net = require('net');
 var config = require('../../../lib/config');
 var util = require('../../../lib/util');
 var zlib = require('../../../lib/util/zlib');
@@ -75,44 +74,42 @@ function handleWebSocket(options, cb) {
   }
   var binary = !!options.headers['x-whistle-frame-binary'];
   delete options.headers['x-whistle-frame-binary'];
-  var socket = net.connect(config.port, function() {
-    socket.write(getReqRaw(options));
-    var handleResponse = function(resData) {
-      resData = resData + '';
-      var index = resData.indexOf('\r\n\r\n');
-      if (index !== -1) {
-        socket.removeListener('data', handleResponse);
-        socket.headers = parseHeaders(resData.slice(0, index));
-        var sender = getSender(socket);
-        var data = util.toBuffer(options.body, getCharset(socket.headers) || getCharset(options.headers));
-        if (data && data.length) {
-          sender.send(data, {
-            mask: true,
-            binary: binary
-          }, util.noop);
+  util.connect(config.port, function(err, socket) {
+    if (err) {
+      cb && cb(err);
+    } else {
+      socket.write(getReqRaw(options));
+      var handleResponse = function(resData) {
+        resData = resData + '';
+        var index = resData.indexOf('\r\n\r\n');
+        if (index !== -1) {
+          socket.removeListener('data', handleResponse);
+          socket.headers = parseHeaders(resData.slice(0, index));
+          var sender = getSender(socket);
+          var data = util.toBuffer(options.body, getCharset(socket.headers) || getCharset(options.headers));
+          if (data && data.length) {
+            sender.send(data, {
+              mask: true,
+              binary: binary
+            }, util.noop);
+          }
         }
-      }
-      if (cb) {
-        var statusCode = 0;
-        if (STATUS_CODE_RE.test(resData)) {
-          statusCode = parseInt(RegExp.$1, 10);
+        if (cb) {
+          var statusCode = 0;
+          if (STATUS_CODE_RE.test(resData)) {
+            statusCode = parseInt(RegExp.$1, 10);
+          }
+          cb(null, {
+            statusCode: statusCode,
+            headers: socket.headers || {},
+            body: ''
+          });
         }
-        cb(null, {
-          statusCode: statusCode,
-          headers: socket.headers || {},
-          body: ''
-        });
-      }
-    };
-    socket.on('data', handleResponse);
+      };
+      socket.on('data', handleResponse);
+      drain(socket);
+    }
   });
-  if (cb) {
-    socket.on('error', cb).on('close', function() {
-      cb(new Error('closed'));
-    });
-  } else {
-    drain(socket);
-  }
 }
 
 function handleHttp(options, cb) {
