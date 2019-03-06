@@ -76,6 +76,7 @@ var Overview = React.createClass({
     var rulesModal = DEFAULT_RULES_MODAL;
     var modal = this.props.modal;
     var showOnlyMatchRules = this.state.showOnlyMatchRules;
+    var realUrl;
 
     if (modal) {
       overviewModal = {};
@@ -95,6 +96,7 @@ var Overview = React.createClass({
               } else if (modal.isHttps) {
                 value = 'tunnel://' + value;
               }
+              realUrl = value;
             } else if (modal.isHttps && prop === 'url') {
               value = 'tunnel://' + value;
             }
@@ -159,7 +161,12 @@ var Overview = React.createClass({
             }).join('\n');
           } else {
             rulesModal[name] = getRuleStr(rule);
-            titleModal[name] = rule ? rule.raw : undefined;
+            if (rule) {
+              titleModal[name] = realUrl && (name === 'proxy' || name === 'host') ? 'Raw Rule: '
+                + rule.raw + '\nReal Url: ' + realUrl : rule.raw;
+            } else {
+              titleModal[name] = rule ? rule.raw : undefined;
+            }
           }
         });
       }
