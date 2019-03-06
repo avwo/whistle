@@ -75,7 +75,7 @@ function handleWebSocket(options, cb) {
   }
   var binary = !!options.headers['x-whistle-frame-binary'];
   delete options.headers['x-whistle-frame-binary'];
-  var socket = net.connect(config.port, '127.0.0.1', function() {
+  var socket = net.connect(config.port, function() {
     socket.write(getReqRaw(options));
     var handleResponse = function(resData) {
       resData = resData + '';
