@@ -31,9 +31,6 @@
   top: -1px!important;
   z-index: 100000001;
 }
-.w-ctx-menu-list li[data-menu-action=Modify] .w-ctx-menu-list {
-  top: -115px!important;
-}
 .w-ctx-menu-list .w-ctx-menu-gap {
   position: absolute;
   margin-left: -2px;
