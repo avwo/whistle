@@ -79,6 +79,19 @@ var contextMenuList = [
       { name: 'Compose' }
     ]
   },
+  {
+    name: 'Modify',
+    list: [
+      { name: 'Method' },
+      { name: 'Status Code' },
+      { name: 'Map Local' },
+      { name: 'Req Headers' },
+      { name: 'Res Headers' },
+      { name: 'Req Body' },
+      { name: 'Res Body' },
+      { name: 'More...' }
+    ]
+  },
   { name: 'Upload' },
   { name: 'Import' },
   { name: 'Export' },
@@ -558,10 +571,14 @@ var ReqData = React.createClass({
       list4[1].disabled = true;
       list4[2].disabled = true;
     }
-    var uploadItem = contextMenuList[5];
+    var list5 = contextMenuList[5].list;
+    for (var i = 0; i < 7; i++) {
+      list5[i].disabled = disabled;
+    }
+    var uploadItem = contextMenuList[6];
     uploadItem.hide = !getUploadSessionsFn();
-    contextMenuList[7].disabled = uploadItem.disabled = disabled && !selectedCount;
-    var data = util.getMenuPosition(e, 110, uploadItem.hide ? 250 : 280);
+    contextMenuList[8].disabled = uploadItem.disabled = disabled && !selectedCount;
+    var data = util.getMenuPosition(e, 110, uploadItem.hide ? 280 : 310);
     data.list = contextMenuList;
     data.className = data.marginRight < 260 ? 'w-ctx-menu-left' : '';
     this.refs.contextMenu.show(data);
