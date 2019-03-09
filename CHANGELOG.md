@@ -1,3 +1,6 @@
+# v1.13.23
+1. fix: https://github.com/avwo/whistle/issues/271
+
 # v1.13.22
 1. fix: http协议的websocket请求无法获取真实clientIp问题
 
