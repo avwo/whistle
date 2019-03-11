@@ -53,9 +53,9 @@ var contextMenuList = [
   },
   {
     name: 'Modify',
-    hide: true,
     list: [
       { name: 'Method' },
+      { name: 'Rewrite' },
       { name: 'Status Code' },
       { name: 'Req Headers' },
       { name: 'Res Headers' },
@@ -580,7 +580,7 @@ var ReqData = React.createClass({
     var uploadItem = contextMenuList[6];
     uploadItem.hide = !getUploadSessionsFn();
     contextMenuList[8].disabled = uploadItem.disabled = disabled && !selectedCount;
-    var data = util.getMenuPosition(e, 110, uploadItem.hide ? 250 : 280);
+    var data = util.getMenuPosition(e, 110, uploadItem.hide ? 280 : 310);
     data.list = contextMenuList;
     data.className = data.marginRight < 260 ? 'w-ctx-menu-left' : '';
     this.refs.contextMenu.show(data);
