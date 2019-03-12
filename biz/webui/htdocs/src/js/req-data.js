@@ -53,7 +53,6 @@ var contextMenuList = [
   },
   {
     name: 'Modify',
-    hide: true,
     list: [
       { name: 'Method' },
       { name: 'Rewrite' },
@@ -540,7 +539,8 @@ var ReqData = React.createClass({
     });
 
     var list2 = contextMenuList[2].list;
-    for (var i = 0; i < 7; i++) {
+    contextMenuList[2].disabled = disabled;
+    for (var i = 0; i < 8; i++) {
       list2[i].disabled = disabled;
     }
 
@@ -548,7 +548,7 @@ var ReqData = React.createClass({
     var selectedCount = selectedList.length;
     var hasData = modal.list.length;
     var list3 = contextMenuList[3].list;
-    contextMenuList[2].disabled = !hasData;
+    contextMenuList[3].disabled = !hasData;
     list3[0].disabled = !hasData;
     list3[1].disabled = disabled;
     list3[2].disabled = disabled || selectedCount === hasData;
@@ -581,7 +581,7 @@ var ReqData = React.createClass({
     var uploadItem = contextMenuList[6];
     uploadItem.hide = !getUploadSessionsFn();
     contextMenuList[8].disabled = uploadItem.disabled = disabled && !selectedCount;
-    var data = util.getMenuPosition(e, 110, uploadItem.hide ? 250 : 280);
+    var data = util.getMenuPosition(e, 110, uploadItem.hide ? 280 : 310);
     data.list = contextMenuList;
     data.className = data.marginRight < 260 ? 'w-ctx-menu-left' : '';
     this.refs.contextMenu.show(data);
