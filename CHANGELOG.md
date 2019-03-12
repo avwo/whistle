@@ -1,6 +1,5 @@
 # v1.13.24
 1. fix: 重新设置port可能导致插件里面的 `req.getSession(cb)` 无法执行回调问题
-2. feat: 支持通过右键菜单 `Modify` 快速设置修改请求的规则
 
 # v1.13.23
 1. fix: https://github.com/avwo/whistle/issues/271
