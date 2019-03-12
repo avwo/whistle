@@ -67,8 +67,8 @@
     "dev": "webpack --config ./biz/webui/htdocs/src/webpack.config -w",
     "start": "node bin/whistle.js run -p 8888",
     "test": "node test/index.test.js",
-    "lint": "eslint *.js ./lib ./bin ./biz ./test ./docs/script ./assets/js",
-    "lintfix": "eslint --fix *.js ./lib ./bin ./biz ./test ./docs/script ./assets/js",
+    "lint": "eslint *.js ./lib ./bin ./biz ./test ./docs/script",
+    "lintfix": "eslint --fix *.js ./lib ./bin ./biz ./test ./docs/script",
     "cov": "node_modules/istanbul/lib/cli.js cover node_modules/.bin/tape -- test/index.test.js",
     "docs:build": "vuepress build docs",
     "docs:dev": "vuepress dev docs"
