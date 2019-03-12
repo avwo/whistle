@@ -1,5 +1,5 @@
 
-(function() {
+;(function() {
   if (typeof window === 'undefined' || window.WeinreServerURL) {
     return;
   }
