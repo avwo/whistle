@@ -137,14 +137,13 @@ var AddRuleDialog = React.createClass({
     }
     var input = ReactDOM.findDOMNode(this.refs.pattern);
     this.curReq = data;
-    this.action = action;
     input.value = data.url.replace(/[?#].*$/, '');
     setTimeout(function() {
       input.select();
       input.focus();
     }, 600);
     this.refs.addRuleDialog.show();
-    this.setState({});
+    this.setState({ action: action });
   },
   hide: function() {
     this.refs.addRuleDialog.hide();
@@ -344,7 +343,7 @@ var AddRuleDialog = React.createClass({
     return (
       <Dialog ref="addRuleDialog" wstyle="w-add-rule-dialog">
         <div className="modal-header">
-          <select>
+          <select value={state.action}>
             {createOptions(TYPES)}
           </select>
           <button type="button" className="close" data-dismiss="modal">
