@@ -345,7 +345,7 @@ var AddRuleDialog = React.createClass({
           <select>
             {createOptions(TYPES)}
           </select>
-          <button type="button" className="close" onClick={this.checkAndClosePreview}>
+          <button type="button" className="close" data-dismiss="modal">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>

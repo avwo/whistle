@@ -18,10 +18,6 @@
 }
 
 .w-add-rule-dialog .modal-body>div:nth-child(2) {
-  margin-top: 25px;
-}
-
-.w-add-rule-dialog .modal-body>div:nth-child(3) {
   padding-bottom: 15px;
 }
 
