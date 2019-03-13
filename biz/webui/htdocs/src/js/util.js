@@ -1218,3 +1218,7 @@ function changePageName(name) {
 }
 
 exports.changePageName = changePageName;
+
+exports.getTempName = function() {
+  return Date.now() + '' + Math.floor(Math.random() * 10000);
+};
