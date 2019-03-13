@@ -11,6 +11,7 @@ var FilterInput = require('./filter-input');
 var Spinner = require('./spinner');
 var ContextMenu = require('./context-menu');
 var events = require('./events');
+var AddRuleDialog = require('./add-rule-dialog');
 var dataCenter = require('./data-center');
 
 var HEIGHT = 24; //每条数据的高度
@@ -426,6 +427,16 @@ var ReqData = React.createClass({
       events.trigger('activeItem', item);
       events.trigger('showTimeline');
       break;
+    case 'Throttle':
+    case 'Rewrite':
+    case 'Method/Status':
+    case 'Req Headers':
+    case 'Res Headers':
+    case 'Req Body':
+    case 'Res Body':
+    case 'More...':
+      this.refs.addRuleDialog.show(item, action);
+      break;
     case 'Compose':
       events.trigger('composer', item);
       break;
@@ -681,6 +692,7 @@ var ReqData = React.createClass({
     var modal = self.props.modal;
     var list = modal ? modal.list : [];
     var hasKeyword = modal && modal.hasKeyword();
+    var rulesModal = modal && modal.rulesModal;
     var index = 0;
     var indeies = self.getVisibleIndex();
     var draggable = state.draggable;
@@ -766,6 +778,7 @@ var ReqData = React.createClass({
               <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
             </div>
           </Dialog>
+          <AddRuleDialog ref="addRuleDialog" rulesModal={rulesModal} />
       </div>
     );
   }

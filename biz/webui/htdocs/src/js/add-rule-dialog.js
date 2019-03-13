@@ -34,6 +34,35 @@ var FILTER_TIPS = [
   '!b:subVal|RegExp'
 ].join('\n');
 
+var TYPES = [
+  'Throttle',
+  'Rewrite',
+  {
+    value: 'Method/Status',
+    text: 'Modify Method Or StatusCode'
+  },
+  {
+    value: 'Req Headers',
+    text: 'Modify Request Headers'
+  },
+  {
+    value: 'Res Headers',
+    text: 'Modify Response Headers'
+  },
+  {
+    value: 'Req Body',
+    text: 'Modify Request Body'
+  },
+  {
+    value: 'Res Body',
+    text: 'Modify Response Body'
+  },
+  {
+    value: 'More...',
+    text: 'Others'
+  }
+];
+
 var protocolGroups = protocolMgr.groups;
 var CREATE_OPTION = {
   value: '',
@@ -102,15 +131,7 @@ var AddRuleDialog = React.createClass({
       }
     });
   },
-  show: function() {
-    this.refs.addRuleDialog.show();
-    this.setState({});
-  },
-  hide: function() {
-    this.refs.addRuleDialog.hide();
-    this.closePreview();
-  },
-  setData: function(data) {
+  show: function(data, action) {
     var input = ReactDOM.findDOMNode(this.refs.pattern);
     this.curReq = data;
     if (data) {
@@ -119,7 +140,13 @@ var AddRuleDialog = React.createClass({
     setTimeout(function() {
       input.select();
       input.focus();
-    }, 500);
+    }, 600);
+    this.refs.addRuleDialog.show();
+    this.setState({});
+  },
+  hide: function() {
+    this.refs.addRuleDialog.hide();
+    this.closePreview();
   },
   onRuleTextChange: function(e) {
     this.state.ruleText = e.getValue();
@@ -182,7 +209,7 @@ var AddRuleDialog = React.createClass({
     this.state.ruleText = null;
     this.state.oldRuleText = null;
   },
-  preview: function() {
+  saveAs: function() {
     this.clearPreview();
     this.refs.preview.show();
     this.setState({});
@@ -314,10 +341,15 @@ var AddRuleDialog = React.createClass({
     var name = state.hoverName || state.focusName || state.hoverName2;
     return (
       <Dialog ref="addRuleDialog" wstyle="w-add-rule-dialog">
-        <div className="modal-body" ref="container">
-          <button type="button" className="close" data-dismiss="modal">
+        <div className="modal-header">
+          <select>
+            {createOptions(TYPES)}
+          </select>
+          <button type="button" className="close" onClick={this.checkAndClosePreview}>
             <span aria-hidden="true">&times;</span>
           </button>
+        </div>
+        <div className="modal-body" ref="container">
           <div name="pattern"
             onFocus={this.onFocus}
             onBlur={this.onBlur}
@@ -384,35 +416,13 @@ var AddRuleDialog = React.createClass({
             </label>
             <textarea maxLength="256" placeholder="Input the filter to exclude (!include) the request" className="w-add-rule-filter" />
           </div>
-          <div name="ruleName"
-            onFocus={this.onFocus}
-            onBlur={this.onBlur}
-            onMouseEnter={this.showTips2}
-            onMouseLeave={this.hideTips2}
-          >
-            <label
-              onMouseEnter={this.showTips}
-              onMouseLeave={this.hideTips}
-            >
-            <span className="glyphicon glyphicon-question-sign">
-              <Tips text="Select the group name to save the rule"
-                show={name === 'ruleName'} />
-            </span>
-              Save in:
-            </label>
-            <select name="ruleGroupList" style={{verticalAlign: 'middle'}}
-             value={ruleName} onChange={this.onRuleNameChange}>
-            {createOptions(rulesList)}
-            </select>
-          </div>
         </div>
         <div className="modal-footer">
           <button type="button" className={'btn btn-warning' + (this.curReq ? '' : ' hide')}
             onClick={this.showDetailDialog}>
-            Show Request Detail
+            View Request Detail
           </button>
-          <button type="button" className="btn btn-info" onClick={this.preview}>Preview</button>
-          <button type="button" className="btn btn-primary" onClick={this.onConfirm}>Confirm</button>
+          <button type="button" className="btn btn-primary" onClick={this.saveAs}>Save As</button>
           <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
         </div>
         <Dialog ref="preview" wstyle="w-add-rule-preview" disableBackdrop="1">
@@ -442,14 +452,11 @@ var AddRuleDialog = React.createClass({
 });
 
 var AddRuleDialogWrap = React.createClass({
-  show: function() {
-    this.refs.addRuleDialog.show();
+  show: function(data, action) {
+    this.refs.addRuleDialog.show(data, action);
   },
   hide: function() {
     this.refs.addRuleDialog.hide();
-  },
-  setData: function(data) {
-    this.refs.addRuleDialog.setData(data);
   },
   setRuleName: function(name) {
     name && this.refs.addRuleDialog.updateRuleName(name);

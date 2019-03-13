@@ -56,15 +56,15 @@
 }
 
 .w-add-rule-dialog div[name=pattern] .w-add-rule-dialog-tips {
-  top: -45px;
+  top: -63px;
 }
 
 .w-add-rule-dialog div[name=pattern] .w-arrow-right {
-  top: -39px;
+  top: 69px;
 }
 
-.w-add-rule-dialog div[name=ruleName] .w-add-rule-dialog-tips {
-  top: -18px;
+.w-add-rule-dialog div[name=rule] .w-add-rule-dialog-tips {
+  top: -9px;
 }
 
 .w-add-rule-dialog div[name=filter] .w-add-rule-dialog-tips {
@@ -102,7 +102,7 @@
 
 .w-add-rule-dialog .w-add-rule-protocols {
   width: 130px;
-  height: 120px;
+  height: 160px;
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
   border-right: none;
@@ -113,12 +113,19 @@
   vertical-align: top;
   display: inline-block;
   width: 380px;
-  height: 120px;
+  height: 160px;
   border: 1px solid #ccc;
   border-radius: 2px;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
   padding: 5px;
+}
+.w-add-rule-dialog .modal-header {
+  padding: 6px;
+}
+.w-add-rule-dialog .modal-header select {
+  width: auto!important;
+  font-weight: bold;
 }
 
 .w-add-rule-dialog .w-add-rule-filter {
