@@ -132,11 +132,13 @@ var AddRuleDialog = React.createClass({
     });
   },
   show: function(data, action) {
+    if (!data || !action) {
+      return;
+    }
     var input = ReactDOM.findDOMNode(this.refs.pattern);
     this.curReq = data;
-    if (data) {
-      input.value = data.url.replace(/[?#].*$/, '');
-    }
+    this.action = action;
+    input.value = data.url.replace(/[?#].*$/, '');
     setTimeout(function() {
       input.select();
       input.focus();

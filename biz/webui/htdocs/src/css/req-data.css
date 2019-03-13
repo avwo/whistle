@@ -51,3 +51,7 @@
 .w-qrcode-dialog .modal-dialog .modal-footer {
   padding: 10px 15px;
 }
+
+.w-context-menu  li[data-menu-action=Remove] ul {
+  top: -30px!important;
+}
