@@ -54,9 +54,9 @@ var contextMenuList = [
   {
     name: 'Modify',
     list: [
-      { name: 'Method' },
+      { name: 'Throttle' },
       { name: 'Rewrite' },
-      { name: 'Status Code' },
+      { name: 'Method/Status' },
       { name: 'Req Headers' },
       { name: 'Res Headers' },
       { name: 'Req Body' },
