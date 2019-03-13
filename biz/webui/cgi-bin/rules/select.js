@@ -4,13 +4,14 @@ var rules = require('../../../../lib/rules/util').rules;
 
 var TEMP_VALUES_DIR = config.TEMP_VALUES_DIR;
 var TEMP_NAME_RE = /^\d{1,30}$/;
+var MAX_LENGTH = 1024 * 1024 * 5;
 
 function writeTempValue(data, callback) {
-  if (!TEMP_NAME_RE.test(data.key) || typeof data.value !== 'string') {
+  if (!TEMP_NAME_RE.test(data.key) || !data.value || typeof data.value !== 'string') {
     return callback();
   }
   var filepath = TEMP_VALUES_DIR + '/' + data.key;
-  fs.writeFile(filepath, data.value, callback);
+  fs.writeFile(filepath, data.value.substring(0, MAX_LENGTH), callback);
 }
 
 module.exports = function(req, res) {
