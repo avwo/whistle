@@ -17,10 +17,10 @@ var PROTOCOLS = ['rule', 'plugin', 'host', 'xhost', 'proxy', 'xproxy', 'http-pro
 var groups = {
   status: ['method://', 'statusCode://', 'replaceStatus://'],
   throttle: ['reqDelay://', 'resDelay://', 'reqSpeed://', 'resSpeed://'],
-  rewrite: ['file://', 'xfile://', 'tpl://', 'xtpl://', 'rawfile://', 'xrawfile://',
-    'urlParams://', 'pathReplace://', 'redirect://', 'host://', 'xhost://',
-    'http://', 'https://', 'ws://', 'wss://', 'tunnel://', 'Auto', 'pac://', 'http-proxy://',
-    'xhttp-proxy://', 'https-proxy://', 'xhttps-proxy://', 'socks://', 'xsocks://'],
+  rewrite: ['file://', 'tpl://', 'rawfile://', 'urlParams://', 'pathReplace://', 'redirect://',
+    'host://', 'xhost://', 'http://', 'https://', 'ws://', 'wss://', 'tunnel://', 'Auto',
+    'pac://', 'http-proxy://', 'xhttp-proxy://', 'https-proxy://', 'xhttps-proxy://',
+    'socks://', 'xsocks://'],
   reqHeaders: ['reqHeaders://', 'reqCookies://', 'reqType://', 'reqCors://',
     'ua://', 'auth://', 'referer://', 'forwardedFor://', 'delete://'],
   resHeaders: ['resHeaders://', 'resCookies://', 'resType://', 'resCors://',
@@ -29,7 +29,8 @@ var groups = {
   resBody: ['resMerge://', 'resReplace://', 'htmlPrepend://', 'htmlBody://', 'htmlAppend://',
     'jsPrepend://', 'jsBody://', 'jsAppend://', 'cssPrepend://', 'cssBody://', 'cssAppend://',
     'resPrepend://', 'resBody://', 'resAppend://'],
-  others: ['ignore://', 'log://', 'weinre://', 'enable://', 'disable://', 'reqScript://', 'resScript://'],
+  others: ['ignore://', 'log://', 'weinre://', 'enable://', 'disable://', 'reqScript://',
+    'resScript://', 'xfile://', 'xtpl://', 'xrawfile://'],
   Plugin: []
 };
 
