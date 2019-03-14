@@ -76,7 +76,7 @@ module.exports = function(req, res, next) {
   if (bypass) {
     return next();
   }
-  var pluginHomePage, localRule;
+  var localRule;
   req.curUrl = fullUrl;
   if (proxyUrl) {
     req.curUrl = 'http://' + proxyUrl;
@@ -96,20 +96,6 @@ module.exports = function(req, res, next) {
     } else {
       handleUIReq(req, res);
     }
-  } else if (pluginHomePage || (pluginHomePage = pluginMgr.getPluginByHomePage(fullUrl))) {
-    pluginMgr.loadPlugin(pluginHomePage, function(err, ports) {
-      if (err || !ports.uiPort) {
-        res.response(util.wrapResponse({
-          statusCode: err ? 500 : 404,
-          headers: {
-            'content-type': 'text/html; charset=utf-8'
-          },
-          body: '<pre>' + (err || 'Not Found') + '</pre>'
-        }));
-        return;
-      }
-      util.transformReq(req, res, ports.uiPort);
-    });
   } else if (localRule = rules.resolveLocalRule(req)) {
     req.url = localRule.url;
     handleUIReq(req, res);
