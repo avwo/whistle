@@ -10,6 +10,10 @@ var formatHeaders = hparser.formatHeaders;
 var getRawHeaders = hparser.getRawHeaders;
 var STATUS_CODE_RE = /^\S+\s+(\d+)/i;
 var MAX_LENGTH = 1024 * 512;
+var PROXY_OPTS = {
+  host: '127.0.0.1',
+  port: config.port
+};
 
 function parseHeaders(headers, rawHeaderNames) {
   if (!headers || typeof headers != 'string') {
@@ -74,7 +78,7 @@ function handleWebSocket(options, cb) {
   }
   var binary = !!options.headers['x-whistle-frame-binary'];
   delete options.headers['x-whistle-frame-binary'];
-  util.connect(config.port, function(err, socket) {
+  util.connect(PROXY_OPTS, function(err, socket) {
     if (err) {
       cb && cb(err);
     } else {
