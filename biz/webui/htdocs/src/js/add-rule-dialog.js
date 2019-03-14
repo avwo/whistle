@@ -59,7 +59,7 @@ var TYPES = [
   },
   {
     value: 'More...',
-    text: 'Others'
+    text: 'Other Operations'
   }
 ];
 
