@@ -1,13 +1,6 @@
 var util = require('../util.test');
 
 module.exports = function() {
-  util.request('http://test.local.whistlejs.com/index.html?doNotParseJson', function(res, body) {
-    body.should.equal('uiServer');
-  });
-  util.request('http://test1.local.whistlejs.com/index.html?doNotParseJson', function(res, body) {
-    res.statusCode.should.equal(404);
-    body.should.equal('<pre>Not Found</pre>');
-  });
   util.request('http://plugin.whistlejs.com:1234/index.html', function(res, data) {
     data.should.have.property('type', 'server');
   });

@@ -68,9 +68,6 @@ module.exports = function() {
   util.request('http://local.whistlejs.com/whistle.test');
   util.request('https://local.whistlejs.com/plugin.test');
   util.request('http://local.whistlejs.com/plugin.test');
-  util.request('http://weinre.local.whistlejs.com/client/#anonymous');
-  util.request('http://weinre.local.whistlejs.com/target/target-script-min.js?doNotParseJson');
-  util.request('https://weinre.local.whistlejs.com/client/#anonymous');
   util.request({
     url: 'http://local.whistlejs.com/cgi-bin/log/get',
     headers: {
@@ -231,8 +228,6 @@ module.exports = function() {
   util.request('http://local.wproxy.org:1234/whistle.test');
   util.request('https://local.wproxy.org:1234/plugin.test');
   util.request('http://local.wproxy.org:1234/plugin.test');
-  util.request('http://weinre.local.wproxy.org:1234/client/#anonymous');
-  util.request('https://weinre.local.wproxy.org:1234/client/#anonymous');
   util.request({
     url: 'http://local.wproxy.org:1234/cgi-bin/values/add',
     method: 'post',
@@ -383,8 +378,6 @@ module.exports = function() {
   util.request('http://local.whistle.com/whistle.test');
   util.request('https://local.whistle.com/plugin.test');
   util.request('http://local.whistle.com/plugin.test');
-  util.request('http://weinre.local.whistle.com/client/#anonymous');
-  util.request('https://weinre.local.whistle.com/client/#anonymous');
   util.request({
     url: 'http://local.whistle.com/cgi-bin/values/add',
     method: 'post',
