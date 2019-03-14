@@ -2835,7 +2835,7 @@ var Index = React.createClass({
                     disabled={multiEnv}
                     checked={state.interceptHttpsConnects}
                     onChange={this.interceptHttpsConnects}
-                    type="checkbox" /> Capture HTTPS CONNECTs</label></p>
+                    type="checkbox" /> Capture TUNNEL CONNECTs</label></p>
                 </div>
               </div>
               <div className="modal-footer">
