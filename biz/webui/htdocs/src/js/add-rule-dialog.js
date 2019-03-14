@@ -69,7 +69,7 @@ var CREATE_OPTION = {
   text: '+Create'
 };
 
-var _createOptions = function(list) {
+var createOptions = function(list) {
   return list.map(function(item) {
     var value = item;
     var text = item;
@@ -79,19 +79,6 @@ var _createOptions = function(list) {
     }
     return (
       <option value={value}>{text}</option>
-    );
-  });
-};
-
-var createOptions = function(list) {
-  if (Array.isArray(list)) {
-    return _createOptions(list);
-  }
-  return Object.keys(list).map(function(label) {
-    return (
-      <optgroup label={label}>
-        {_createOptions(list[label])}
-      </optgroup>
     );
   });
 };
@@ -135,15 +122,16 @@ var AddRuleDialog = React.createClass({
     if (!data || !action) {
       return;
     }
-    var input = ReactDOM.findDOMNode(this.refs.pattern);
-    this.curReq = data;
-    input.value = data.url.replace(/[?#].*$/, '');
+    var self = this;
+    self.curReq = data;
+    ReactDOM.findDOMNode(self.refs.pattern).value = data.url.replace(/[?#].*$/, '');
     setTimeout(function() {
-      input.select();
-      input.focus();
+      var box = ReactDOM.findDOMNode(self.refs.ruleValue);
+      box.select();
+      box.focus();
     }, 600);
-    this.refs.addRuleDialog.show();
-    this.setState({ action: action });
+    self.refs.addRuleDialog.show();
+    self.setState({ action: action });
   },
   hide: function() {
     this.refs.addRuleDialog.hide();
@@ -236,6 +224,9 @@ var AddRuleDialog = React.createClass({
     data.list.forEach(function(name) {
       modal.setSelected(name, true);
     });
+  },
+  onTypeChange: function(e) {
+    this.setState({ action: e.target.value });
   },
   getCurRuleText: function() {
     var ruleName = this.state.ruleName;
@@ -339,11 +330,15 @@ var AddRuleDialog = React.createClass({
         state.oldRuleText = ruleText;
       }
     }
+    var opList = protocolGroups[state.action];
+    if (!opList) {
+      opList = protocolGroups.others.concat(protocolGroups.plugins);
+    }
     var name = state.hoverName || state.focusName || state.hoverName2;
     return (
       <Dialog ref="addRuleDialog" wstyle="w-add-rule-dialog">
         <div className="modal-header">
-          <select value={state.action}>
+          <select value={state.action} onChange={this.onTypeChange}>
             {createOptions(TYPES)}
           </select>
           <button type="button" className="close" data-dismiss="modal">
@@ -391,7 +386,7 @@ var AddRuleDialog = React.createClass({
             </label>
             <select className="w-add-rule-protocols" value={protocol}
               onChange={this.onProtocolChange}>
-              {createOptions(protocolGroups)}
+              {createOptions(opList)}
             </select><textarea maxLength="3072" ref="ruleValue"
               placeholder={'Input the operation value (<= 3k), such as:\n'} />
           </div>
