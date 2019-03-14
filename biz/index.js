@@ -19,7 +19,7 @@ module.exports = function(req, res, next) {
   }
   var fullUrl = util.getFullUrl(req);
   var host = req.headers.host.split(':');
-  var port = host[1] || 80;
+  var port = host[1] || (req.isHttps ? 443 : 80);
   var bypass;
   host = host[0];
   var transformPort, proxyUrl, isWeinre;
