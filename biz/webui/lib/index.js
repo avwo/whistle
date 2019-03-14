@@ -158,7 +158,7 @@ app.use(function(req, res, next) {
   if (req.headers.host !== 'rootca.pro') {
     return next();
   }
-  res.download(getRootCAFile(), 'rootCA.crt');
+  res.download(getRootCAFile(), 'rootCA.' + (req.path.indexOf('/cer') ? 'crt' : 'cer'));
 });
 
 function cgiHandler(req, res) {
