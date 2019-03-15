@@ -205,7 +205,7 @@ module.exports = function(req, res) {
       if (isWs || isConn) {
         delete headers['content-length'];
       } else {
-        headers['content-length'] = body ? body.length : 0;
+        headers['content-length'] = body ? body.length : '0';
       }
     }
   } else {
