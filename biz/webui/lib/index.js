@@ -201,6 +201,7 @@ app.all(PLUGIN_PATH_RE, function(req, res, next) {
       return;
     }
     var options = parseurl(req);
+    req.headers[config.PLUGIN_HOOK_NAME_HEADER] = config.PLUGIN_HOOKS.UI;
     req.url = options.path.replace(result[0].slice(0, -1), '');
     util.transformReq(req, res, ports.uiPort);
   });
