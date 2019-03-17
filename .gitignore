@@ -63,3 +63,4 @@ coverage
 # docs
 _book
 dist
+/.history

@@ -61,6 +61,7 @@ test
 assets/launcher
 /biz/webui/htdocs/src
 /docs
+/.history
 
 
 # Coveralls
