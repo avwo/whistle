@@ -1,3 +1,8 @@
+# v1.13.25
+1. refactor: 优化插件配置 `whistle.xxx://value` 与 `xxx://value` 在没有实现 `server` 钩子时的等价
+2. refactor: 插件里面每个钩子占用一个随机端口改成整个插件最多只占用一个
+3. fix: 将weinre或log注入到缺少分号的js文件中出现的脚本错误问题
+
 # v1.13.24
 1. fix: 重新设置port可能导致插件里面的 `req.getSession(cb)` 的回调无法执行问题
 
