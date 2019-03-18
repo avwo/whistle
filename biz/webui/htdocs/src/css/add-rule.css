@@ -116,6 +116,12 @@
   border-bottom-left-radius: 0;
   padding: 5px;
 }
+.w-add-rule-dialog a {
+  color: #000;
+}
+.w-add-rule-dialog a:hover {
+  color: #23527c;
+}
 .w-add-rule-dialog .modal-header {
   padding: 6px;
 }

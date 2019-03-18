@@ -12,27 +12,6 @@ var storage = require('./storage');
 var DetailDialog = require('./detail-dialog');
 var dataCenter = require('./data-center');
 
-var PATTERN_TIPS = [
-  'a.b.com',
-  'a.b.com/path/to',
-  '$a.b.com',
-  '/path\/to/(\d+)/i',
-  '*/path/to',
-  '*.test.com',
-  '**.test.com'
-].join('\n');
-var FILTER_TIPS = [
-  'i:ip|RegExp   (exclude)',
-  '!i:ip|RegExp  (include)',
-  'RegExp|Wildcard',
-  '!RegExp|Wildcard',
-  'm:method|RegExp',
-  '!m:method|RegExp',
-  'h:key=subValue|RegExp',
-  '!h:key=subValue|RegExp',
-  'b:subVal|RegExp',
-  '!b:subVal|RegExp'
-].join('\n');
 
 var TYPES = [
   'Throttle',
@@ -81,20 +60,6 @@ var createOptions = function(list) {
       <option value={value}>{text}</option>
     );
   });
-};
-
-var Tips = function(props) {
-  return (
-    <span className="w-add-rule-dialog-tips"
-      style={{ display: props.show ? 'block' : 'none' }}>
-      <i className="w-arrow w-arrow-right" />
-      <strong>{props.title}</strong>
-      <pre>
-        {props.text}
-      </pre>
-      {props.help ? <a href={props.help} target="_blank">Show more...</a> : undefined}
-    </span>
-  );
 };
 
 var AddRuleDialog = React.createClass({
@@ -334,7 +299,7 @@ var AddRuleDialog = React.createClass({
     if (!opList) {
       opList = protocolGroups.others.concat(protocolGroups.plugins);
     }
-    var name = state.hoverName || state.focusName || state.hoverName2;
+
     return (
       <Dialog ref="addRuleDialog" wstyle="w-add-rule-dialog">
         <div className="modal-header">
@@ -356,14 +321,13 @@ var AddRuleDialog = React.createClass({
               onMouseEnter={this.showTips}
               onMouseLeave={this.hideTips}
             >
-              <span className="glyphicon glyphicon-question-sign">
-                <Tips
-                  text={PATTERN_TIPS}
-                  title="Input the pattern to match the request URL, such as:"
-                  show={name === 'pattern'}
-                  help="https://avwo.github.io/whistle/pattern.html"
-                />
-              </span>
+              <a
+                href="https://avwo.github.io/whistle/pattern.html"
+                title="Click to open the help document"
+                target="_blank"
+              >
+                <span className="glyphicon glyphicon-question-sign" />
+              </a>
               Pattern:
             </label>
             <input ref="pattern" className="w-add-rule-pattern"
@@ -379,9 +343,13 @@ var AddRuleDialog = React.createClass({
               onMouseEnter={this.showTips}
               onMouseLeave={this.hideTips}
             >
-              <span className="glyphicon glyphicon-question-sign">
-                <Tips text="test1" show={name === 'rule'} />
-              </span>
+            <a
+              href="https://avwo.github.io/whistle/rules/"
+              title="Click to open the help document"
+              target="_blank"
+            >
+              <span className="glyphicon glyphicon-question-sign" />
+            </a>
               Operation:
             </label>
             <select className="w-add-rule-protocols" value={protocol}
@@ -389,28 +357,6 @@ var AddRuleDialog = React.createClass({
               {createOptions(opList)}
             </select><textarea maxLength="3072" ref="ruleValue"
               placeholder={'Input the operation value (<= 3k), such as:\n'} />
-          </div>
-          <div name="filter"
-            onFocus={this.onFocus}
-            onBlur={this.onBlur}
-            onMouseEnter={this.showTips2}
-            onMouseLeave={this.hideTips2}
-          >
-            <label
-              onMouseEnter={this.showTips}
-              onMouseLeave={this.hideTips}
-            >
-              <span className="glyphicon glyphicon-question-sign">
-                <Tips
-                text={FILTER_TIPS}
-                show={name === 'filter'}
-                help="https://avwo.github.io/whistle/rules/filter.html"
-                title="Input the filter to exclude (!include) the request, such as:"
-              />
-              </span>
-              Filter:
-            </label>
-            <textarea maxLength="256" placeholder="Input the filter to exclude (!include) the request" className="w-add-rule-filter" />
           </div>
         </div>
         <div className="modal-footer">
