@@ -46,7 +46,7 @@ var TYPES = [
   },
   {
     value: 'all',
-    text: 'All Operations'
+    text: 'View All Operations'
   }
 ];
 
