@@ -116,10 +116,10 @@
   border-bottom-left-radius: 0;
   padding: 5px;
 }
-.w-add-rule-dialog a {
+.w-add-rule-dialog a, .w-add-rule-preview a {
   color: #000;
 }
-.w-add-rule-dialog a:hover {
+.w-add-rule-dialog a:hover, .w-add-rule-preview a:hover {
   color: #23527c;
 }
 .w-add-rule-dialog .modal-header {

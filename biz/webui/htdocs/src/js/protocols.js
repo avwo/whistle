@@ -15,12 +15,12 @@ var PROTOCOLS = ['rule', 'plugin', 'host', 'xhost', 'proxy', 'xproxy', 'http-pro
 ];
 
 var groups = {
-  'Method/Status': ['method://', 'statusCode://', 'replaceStatus://'],
+  URL: ['urlParams://', 'pathReplace://'],
   Throttle: ['reqDelay://', 'resDelay://', 'reqSpeed://', 'resSpeed://'],
-  Rewrite: ['file://', 'tpl://', 'rawfile://', 'urlParams://', 'pathReplace://', 'redirect://',
-    'host://', 'xhost://', 'http://', 'https://', 'ws://', 'wss://', 'tunnel://', '//',
-    'pac://', 'http-proxy://', 'https-proxy://', 'socks://', 'xhttp-proxy://',
-    'xhttps-proxy://', 'xsocks://'],
+  'Host/Proxy': ['host://', 'pac://', 'http-proxy://', 'https-proxy://', 'socks://'],
+  'Method/Status': ['method://', 'statusCode://', 'replaceStatus://'],
+  'Map Local': ['file://', 'tpl://', 'rawfile://'],
+  'Map Remote': ['//', 'http://', 'https://', 'ws://', 'wss://', 'tunnel://', 'redirect://'],
   'Req Headers': ['reqHeaders://', 'reqCookies://', 'reqType://', 'reqCors://',
     'ua://', 'auth://', 'referer://', 'forwardedFor://', 'delete://'],
   'Res Headers': ['resHeaders://', 'resCookies://', 'resType://', 'resCors://',
@@ -28,10 +28,7 @@ var groups = {
   'Req Body': ['reqMerge://', 'reqReplace://', 'reqPrepend://', 'reqBody://', 'reqAppend://'],
   'Res Body': ['resMerge://', 'resReplace://', 'htmlPrepend://', 'htmlBody://', 'htmlAppend://',
     'jsPrepend://', 'jsBody://', 'jsAppend://', 'cssPrepend://', 'cssBody://', 'cssAppend://',
-    'resPrepend://', 'resBody://', 'resAppend://'],
-  others: ['ignore://', 'log://', 'weinre://', 'enable://', 'disable://', 'reqScript://',
-    'resScript://', 'xfile://', 'xtpl://', 'xrawfile://'],
-  plugins: []
+    'resPrepend://', 'resBody://', 'resAppend://']
 };
 
 var innerRules = ['file', 'xfile', 'tpl', 'xtpl', 'rawfile', 'xrawfile'];
@@ -45,22 +42,8 @@ var allRules = allInnerRules = allInnerRules.map(function (name) {
 });
 allRules.splice(allRules.indexOf('filter://'), 1, 'excludeFilter://', 'includeFilter://');
 var plugins = {};
-var allGroupProtocols = [];
-
-Object.keys(groups).forEach(function(key) {
-  var list = groups[key];
-  list.forEach(function(item) {
-    allGroupProtocols.push(item.value || item);
-  });
-});
 
 exports.groups = groups;
-exports.existsProtocol = function(protocol) {
-  if (!protocol) {
-    return false;
-  }
-  return allGroupProtocols.indexOf(protocol) !== -1 || groups.plugins.indexOf(protocol) !== -1;
-};
 exports.setPlugins = function (pluginsState) {
   var pluginsOptions = pluginsState.pluginsOptions;
   var disabledPlugins = pluginsState.disabledPlugins;
@@ -68,7 +51,6 @@ exports.setPlugins = function (pluginsState) {
   pluginRules = [];
   forwardRules = innerRules.slice();
   allRules = allInnerRules.slice();
-  groups.plugins = [];
 
   if (!pluginsState.disabledAllPlugins && !pluginsState.disabledAllRules) {
     pluginsOptions.forEach(function (plugin, i) {
@@ -82,11 +64,9 @@ exports.setPlugins = function (pluginsState) {
         pluginRules.push('whistle.' + name, 'plugin.' + name);
         name += '://';
         allRules.push(name, 'whistle.' + name);
-        groups.plugins.push(name, 'whistle.' + name);
       }
     });
   }
-  groups.plugins.push('+Custom');
   events.trigger('updatePlugins');
 };
 

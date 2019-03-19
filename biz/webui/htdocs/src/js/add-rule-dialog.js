@@ -7,18 +7,26 @@ var Dialog = require('./dialog');
 var protocolMgr = require('./protocols');
 var util = require('./util');
 var Editor = require('./editor');
-var events = require('./events');
 var storage = require('./storage');
 var DetailDialog = require('./detail-dialog');
 var dataCenter = require('./data-center');
 
 
 var TYPES = [
+  {
+    value: 'URL',
+    text: 'Modify URL'
+  },
   'Throttle',
-  'Rewrite',
+  'Map Local',
+  'Map Remote',
+  {
+    value: 'Host/Proxy',
+    text: 'Set Host/Proxy'
+  },
   {
     value: 'Method/Status',
-    text: 'Modify Method Or StatusCode'
+    text: 'Modify Method/StatusCode'
   },
   {
     value: 'Req Headers',
@@ -37,8 +45,8 @@ var TYPES = [
     text: 'Modify Response Body'
   },
   {
-    value: 'More...',
-    text: 'Other Operations'
+    value: 'all',
+    text: 'All Operations'
   }
 ];
 
@@ -69,20 +77,6 @@ var AddRuleDialog = React.createClass({
       ruleName: ''
     };
   },
-  componentDidMount: function() {
-    var self = this;
-    events.on('updatePlugins', function() {
-      if (!protocolMgr.existsProtocol(self.state.protocol)) {
-        self.state.protocol = 'host://';
-      }
-      self.setState({});
-    });
-    $(document.body).on('click', '.w-add-rule-preview', function(e) {
-      if ($(e.target).hasClass('w-add-rule-preview')) {
-        self.checkAndClosePreview();
-      }
-    });
-  },
   show: function(data, action) {
     if (!data || !action) {
       return;
@@ -106,17 +100,7 @@ var AddRuleDialog = React.createClass({
     this.state.ruleText = e.getValue();
   },
   onProtocolChange: function(e) {
-    var protocol = e.target.value;
-    if (protocol === '+Custom') {
-      window.open('https://avwo.github.io/whistle/plugins.html');
-      this.setState({});
-    } else {
-      storage.set('protocolInDialog', protocol);
-      this.setState({ protocol: protocol });
-    }
-    var box = ReactDOM.findDOMNode(this.refs.ruleValue);
-    box.select();
-    box.focus();
+    
   },
   onRuleNameChange: function(e) {
     var target = e.target;
@@ -191,7 +175,12 @@ var AddRuleDialog = React.createClass({
     });
   },
   onTypeChange: function(e) {
-    this.setState({ action: e.target.value });
+    var action = e.target.value;
+    if (action === 'all') {
+      window.open('https://avwo.github.io/whistle/rules/');
+      return;
+    }
+    this.setState({ action: action });
   },
   getCurRuleText: function() {
     var ruleName = this.state.ruleName;
@@ -279,11 +268,6 @@ var AddRuleDialog = React.createClass({
       if (rulesList.indexOf(ruleName) === -1) {
         ruleName = 'Default';
       }
-      var p = storage.get('protocolInDialog');
-      if (protocolMgr.existsProtocol(p)) {
-        protocol = p;
-        state.protocol = protocol;
-      }
       state.ruleName = ruleName;
     }
     var ruleText = state.ruleText;
@@ -295,10 +279,7 @@ var AddRuleDialog = React.createClass({
         state.oldRuleText = ruleText;
       }
     }
-    var opList = protocolGroups[state.action];
-    if (!opList) {
-      opList = protocolGroups.others.concat(protocolGroups.plugins);
-    }
+    var opList = protocolGroups[state.action] || [];
 
     return (
       <Dialog ref="addRuleDialog" wstyle="w-add-rule-dialog">
@@ -373,6 +354,13 @@ var AddRuleDialog = React.createClass({
               <span aria-hidden="true">&times;</span>
             </button>
             <h5 className="w-add-preview-title">
+            <a
+              href="https://avwo.github.io/whistle/rules/"
+              title="Click to open the help document"
+              target="_blank"
+            >
+              <span className="glyphicon glyphicon-question-sign" />
+            </a>
               Save in
               <select className="w-add-rule-preview-name" value={ruleName}
                 onChange={this.onRuleNameChange}>

@@ -55,14 +55,16 @@ var contextMenuList = [
   {
     name: 'Modify',
     list: [
+      { name: 'URL' },
       { name: 'Throttle' },
-      { name: 'Rewrite' },
+      { name: 'Map Local' },
+      { name: 'Map Remote' },
+      { name: 'Host/Proxy' },
       { name: 'Method/Status' },
       { name: 'Req Headers' },
       { name: 'Res Headers' },
       { name: 'Req Body' },
-      { name: 'Res Body' },
-      { name: 'More...' }
+      { name: 'Res Body' }
     ]
   },
   {
@@ -428,13 +430,15 @@ var ReqData = React.createClass({
       events.trigger('showTimeline');
       break;
     case 'Throttle':
-    case 'Rewrite':
+    case 'URL':
+    case 'Host/Proxy':
+    case 'Map Local':
+    case 'Map Remote':
     case 'Method/Status':
     case 'Req Headers':
     case 'Res Headers':
     case 'Req Body':
     case 'Res Body':
-    case 'More...':
       this.refs.addRuleDialog.show(item, action);
       break;
     case 'Compose':
@@ -551,7 +555,7 @@ var ReqData = React.createClass({
 
     var list2 = contextMenuList[2].list;
     contextMenuList[2].disabled = disabled;
-    for (var i = 0; i < 8; i++) {
+    for (var i = 0; i < 10; i++) {
       list2[i].disabled = disabled;
     }
 
