@@ -61,7 +61,12 @@ function handleConnect(options, cb) {
     if (data && data.length) {
       socket.write(data);
     }
-    cb && cb(err);
+    if (cb) {
+      cb(err);
+      util.onSocketEnd(socket, function(err) {
+        cb(err || new Error('Closed'));
+      });
+    }
   }).on('error', cb || util.noop);
 }
 
@@ -111,7 +116,11 @@ function handleWebSocket(options, cb) {
         }
       };
       socket.on('data', handleResponse);
-      cb && socket.on('error', cb);
+      if (cb) {
+        util.onSocketEnd(socket, function(err) {
+          cb(err || new Error('Closed'));
+        });
+      }
       drain(socket);
     }
   });
