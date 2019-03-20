@@ -111,6 +111,7 @@ function handleWebSocket(options, cb) {
         }
       };
       socket.on('data', handleResponse);
+      cb && socket.on('error', cb);
       drain(socket);
     }
   });
