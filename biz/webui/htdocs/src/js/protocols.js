@@ -14,22 +14,6 @@ var PROTOCOLS = ['rule', 'plugin', 'host', 'xhost', 'proxy', 'xproxy', 'http-pro
   'reqWriteRaw', 'resWriteRaw'
 ];
 
-var groups = {
-  URL: ['urlParams://', 'pathReplace://'],
-  Throttle: ['reqDelay://', 'resDelay://', 'reqSpeed://', 'resSpeed://'],
-  'Host/Proxy': ['host://', 'pac://', 'http-proxy://', 'https-proxy://', 'socks://'],
-  'Method/Status': ['method://', 'statusCode://', 'replaceStatus://'],
-  'Map Local': ['file://', 'tpl://', 'rawfile://'],
-  'Map Remote': ['//', 'http://', 'https://', 'ws://', 'wss://', 'tunnel://', 'redirect://'],
-  'Req Headers': ['reqHeaders://', 'reqCookies://', 'reqType://', 'reqCors://',
-    'ua://', 'auth://', 'referer://', 'forwardedFor://', 'delete://'],
-  'Res Headers': ['resHeaders://', 'resCookies://', 'resType://', 'resCors://',
-    'attachment://', 'cache://', 'responseFor://', 'delete://'],
-  'Req Body': ['reqMerge://', 'reqReplace://', 'reqPrepend://', 'reqBody://', 'reqAppend://'],
-  'Res Body': ['resMerge://', 'resReplace://', 'htmlPrepend://', 'htmlBody://', 'htmlAppend://',
-    'jsPrepend://', 'jsBody://', 'jsAppend://', 'cssPrepend://', 'cssBody://', 'cssAppend://',
-    'resPrepend://', 'resBody://', 'resAppend://']
-};
 
 var innerRules = ['file', 'xfile', 'tpl', 'xtpl', 'rawfile', 'xrawfile'];
 var pluginRules = [];
@@ -43,7 +27,6 @@ var allRules = allInnerRules = allInnerRules.map(function (name) {
 allRules.splice(allRules.indexOf('filter://'), 1, 'excludeFilter://', 'includeFilter://');
 var plugins = {};
 
-exports.groups = groups;
 exports.setPlugins = function (pluginsState) {
   var pluginsOptions = pluginsState.pluginsOptions;
   var disabledPlugins = pluginsState.disabledPlugins;

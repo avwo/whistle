@@ -4,7 +4,6 @@ var $ = require('jquery');
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Dialog = require('./dialog');
-var protocolMgr = require('./protocols');
 var util = require('./util');
 var Editor = require('./editor');
 var storage = require('./storage');
@@ -50,7 +49,22 @@ var TYPES = [
   }
 ];
 
-var protocolGroups = protocolMgr.groups;
+var protocolGroups = {
+  URL: ['urlParams://', 'pathReplace://'],
+  Throttle: ['reqDelay://', 'resDelay://', 'reqSpeed://', 'resSpeed://'],
+  'Host/Proxy': ['host://', 'pac://', 'http-proxy://', 'https-proxy://', 'socks://'],
+  'Method/Status': ['method://', 'statusCode://', 'replaceStatus://'],
+  'Map Local': ['file://', 'tpl://', 'rawfile://'],
+  'Map Remote': ['//', 'http://', 'https://', 'ws://', 'wss://', 'tunnel://', 'redirect://'],
+  'Req Headers': ['reqHeaders://', 'reqCookies://', 'reqType://', 'reqCors://',
+    'ua://', 'auth://', 'referer://', 'forwardedFor://', 'delete://'],
+  'Res Headers': ['resHeaders://', 'resCookies://', 'resType://', 'resCors://',
+    'attachment://', 'cache://', 'responseFor://', 'delete://'],
+  'Req Body': ['reqMerge://', 'reqReplace://', 'reqPrepend://', 'reqBody://', 'reqAppend://'],
+  'Res Body': ['resMerge://', 'resReplace://', 'htmlPrepend://', 'htmlBody://', 'htmlAppend://',
+    'jsPrepend://', 'jsBody://', 'jsAppend://', 'cssPrepend://', 'cssBody://', 'cssAppend://',
+    'resPrepend://', 'resBody://', 'resAppend://']
+};
 var CREATE_OPTION = {
   value: '',
   text: '+Create'
