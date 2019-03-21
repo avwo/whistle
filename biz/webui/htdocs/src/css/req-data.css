@@ -56,6 +56,6 @@
   top: -61px!important;
 }
 
-.w-context-menu  li[data-menu-action=Remove] ul {
+.w-context-menu  li[data-menu-action=Remove] ul, .w-context-menu  li[data-menu-action="+Value"] ul {
   top: -30px!important;
 }
