@@ -92,7 +92,7 @@ var contextMenuList = [
       { name: 'Compose' }
     ]
   },
-  { name: 'Upload' },
+  { name: 'Share' },
   { name: 'Import' },
   { name: 'Export' },
   { name: 'Help', sep: true }
@@ -438,7 +438,7 @@ var ReqData = React.createClass({
     case 'Abort':
       events.trigger('abortRequest', item);
       break;
-    case 'Upload':
+    case 'Share':
       events.trigger('uploadSessions', {
         curItem: item,
         upload: getUploadSessionsFn()
