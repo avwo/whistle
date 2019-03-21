@@ -52,8 +52,17 @@ var contextMenuList = [
     ]
   },
   {
-    name: 'Modify',
-    hide: true
+    name: '+Value',
+    list: [
+      { name: 'Req Headers' },
+      { name: 'Res Headers' },
+      { name: 'Req Cookies' },
+      { name: 'Res Cookies' },
+      { name: 'Req Body' },
+      { name: 'Res Body' },
+      { name: 'Req Raw' },
+      { name: 'Res Raw' }
+    ]
   },
   {
     name: 'Remove',
@@ -529,11 +538,11 @@ var ReqData = React.createClass({
       }
     });
 
-    // var list2 = contextMenuList[2].list;
-    // contextMenuList[2].disabled = disabled;
-    // for (var i = 0; i < 10; i++) {
-    //   list2[i].disabled = disabled;
-    // }
+    var list2 = contextMenuList[2].list;
+    contextMenuList[2].disabled = disabled;
+    for (var i = 0; i < 8; i++) {
+      list2[i].disabled = disabled;
+    }
 
     var selectedList = modal.getSelectedList();
     var selectedCount = selectedList.length;
@@ -572,7 +581,7 @@ var ReqData = React.createClass({
     var uploadItem = contextMenuList[6];
     uploadItem.hide = !getUploadSessionsFn();
     contextMenuList[8].disabled = uploadItem.disabled = disabled && !selectedCount;
-    var data = util.getMenuPosition(e, 110, uploadItem.hide ? 250 : 280);
+    var data = util.getMenuPosition(e, 110, uploadItem.hide ? 280 : 310);
     data.list = contextMenuList;
     data.className = data.marginRight < 260 ? 'w-ctx-menu-left' : '';
     this.refs.contextMenu.show(data);

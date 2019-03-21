@@ -144,7 +144,7 @@ var Textarea = React.createClass({
             {isHexView ? <CopyBtn name={isHexView ? 'Hex' : ''} value={util.getHexText(this.props.value)} /> : undefined}
             <a className="w-download" onDoubleClick={this.download}
               onClick={this.showNameInput} href="javascript:;" draggable="false">Download</a>
-            {showAddToValuesBtn ? <a className="w-add" onClick={this.showNameInput} href="javascript:;" draggable="false">AddToValues</a> : ''}
+            {showAddToValuesBtn ? <a className="w-add" onClick={this.showNameInput} href="javascript:;" draggable="false">+Value</a> : ''}
             <a className="w-edit" onClick={this.edit} href="javascript:;" draggable="false">ViewAll</a>
             <div onMouseDown={this.preventBlur}
               style={{display: this.state.showNameInput ? 'block' : 'none'}}

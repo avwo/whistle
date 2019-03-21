@@ -157,7 +157,7 @@ var JsonViewer = React.createClass({
             <a className="w-download" onDoubleClick={this.download}
               onClick={this.showNameInput} href="javascript:;" draggable="false">Download</a>
               <a className="w-add" onClick={this.showNameInput}
-                href="javascript:;" draggable="false">AddToValues</a>
+                href="javascript:;" draggable="false">+Value</a>
               {viewSource ? <a className="w-edit" onClick={this.edit} href="javascript:;" draggable="false">ViewAll</a> : undefined}
             <a onClick={this.toggle} className="w-properties-btn">{ viewSource ? 'ViewParsed' : 'ViewSource' }</a>
             <div onMouseDown={this.preventBlur}

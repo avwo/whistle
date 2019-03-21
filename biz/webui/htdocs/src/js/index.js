@@ -2702,6 +2702,7 @@ var Index = React.createClass({
           <RecordBtn hide={!isNetwork} onClick={this.handleAction} />
           <a onClick={this.onClickMenu} className={'w-delete-menu' + (disabledDeleteBtn ? ' w-disabled' : '')} style={{display: (isNetwork || isPlugins) ? 'none' : ''}} href="javascript:;" draggable="false"><span className="glyphicon glyphicon-trash"></span>Delete</a>
           <FilterBtn onClick={this.showSettings} isNetwork={isNetwork} hide={isPlugins} />
+          <a onClick={this.showFiles} className="w-files-menu" href="javascript:;" draggable="false"><span className="glyphicon glyphicon-upload"></span>Files</a>
           <div onMouseEnter={this.showWeinreOptions} onMouseLeave={this.hideWeinreOptions} className={'w-menu-wrapper' + (showWeinreOptions ? ' w-menu-wrapper-show' : '')}>
             <a onClick={this.showWeinreOptionsQuick}
               onDoubleClick={this.showAnonymousWeinre}
