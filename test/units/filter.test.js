@@ -20,7 +20,7 @@ module.exports = function() {
       'test': 'abc'
     }
   }, function(res, data) {
-    data.should.have.property('ec', 2);
+    data.should.have.property('ec', 1);
   });
 
   util.request({
