@@ -22,6 +22,7 @@ var storage = require('./storage');
 var Dialog = require('./dialog');
 var ListDialog = require('./list-dialog');
 var FilterBtn = require('./filter-btn');
+var FilesDialog = require('./files-dialog');
 var message = require('./message');
 
 var JSON_RE = /^\s*(?:[\{｛][\w\W]+[\}｝]|\[[\w\W]+\])\s*$/;
@@ -572,6 +573,10 @@ var Index = React.createClass({
     });
     events.on('disableAllPlugins', function(e) {
       self.disableAllPlugins(e);
+    });
+    events.on('showFiles', function(_, data) {
+      self.files = self.files || data;
+      self.showFiles();
     });
 
     $(document)
@@ -2081,6 +2086,9 @@ var Index = React.createClass({
   composer: function() {
     events.trigger('composer');
   },
+  showFiles: function() {
+    this.refs.filesDialog.show(this.files);
+  },
   clear: function() {
     var modal = this.state.network;
     modal && this.setState({
@@ -2977,6 +2985,7 @@ var Index = React.createClass({
             onClick={this.uploadValues} data-dismiss="modal">Reserve</button>
         </div>
       </Dialog>
+      <FilesDialog ref="filesDialog" />
       <ListDialog ref="selectRulesDialog" name="rules" list={state.rules.list} />
       <ListDialog ref="selectValuesDialog" name="values" list={state.values.list} />
       <iframe name="downloadTargetFrame" style={{display: 'none'}} />

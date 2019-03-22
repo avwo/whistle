@@ -1,0 +1,64 @@
+.w-files-dialog .modal-dialog {
+  width: 600px;
+}
+
+.w-files-dialog h4  {
+  margin-top: 20px;
+}
+.w-files-dialog h4 span {
+  margin-left: 5px;
+  font-size: 14px;
+  color: #aaa;
+}
+
+.w-files-upload-btn {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  display: block;
+  background: #fff;
+  line-height: 60px;
+  text-align: center;
+  margin-top: 20px;
+  color: #aaa;
+  font-size: 16px;
+  width: 576px;
+  font-weight: normal;
+}
+.w-files-upload-btn:hover {
+  color: #888;
+}
+
+.w-files-upload-btn span {
+  font-size: 42px;
+  vertical-align: middle;
+  margin-right: 10px;
+}
+
+.w-files-order {
+  width: 36px;
+}
+.w-files-path {
+  word-break: break-all;
+  word-wrap: break-word;
+}
+.w-files-operation {
+  width: 180px;
+}
+
+.w-files-operation a {
+  margin-right: 20px;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.w-files-operation a:nth-child(3), .w-files-operation a:nth-child(4) {
+  margin-top: 5px;
+}
+
+.w-files-operation a:nth-child(4) {
+  color: #f66;
+}
+
+.w-files-operation a:nth-child(4):hover {
+  color: #f00;
+}
