@@ -5,7 +5,7 @@ var ReaceDOM = require('react-dom');
 var Dialog = require('./dialog');
 var fromByteArray  = require('base64-js').fromByteArray;
 
-var MAX_FILE_SIZE = 1024 * 1024 * 16;
+var MAX_FILE_SIZE = 1024 * 1024 * 20;
 
 var FilesDialog = React.createClass({
   show: function(data) {
@@ -23,7 +23,7 @@ var FilesDialog = React.createClass({
       return alert('The file size can not be empty.');
     }
     if (file.size > MAX_FILE_SIZE) {
-      return alert('The file size can not exceed 16m.');
+      return alert('The file size can not exceed 20m.');
     }
     var reader = new FileReader();
     reader.readAsArrayBuffer(file);
@@ -53,7 +53,7 @@ var FilesDialog = React.createClass({
             </button>
             <button className="w-files-upload-btn" onClick={this.selectFile}>
               <span className="glyphicon-plus"></span>
-              Click here or drag the file to the page to upload (Size &lt;= 16m)
+              Click here or drag the file to the page to upload (size &lt;= 20m)
             </button>
             <h4>System Files</h4>
             <table className="table">
