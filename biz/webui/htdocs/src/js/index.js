@@ -601,10 +601,8 @@ var Index = React.createClass({
             if (file.size > MAX_LOG_SIZE) {
               return alert('The file size can not exceed 2m.');
             }
-            var reader = new FileReader();
-            reader.readAsText(file);
-            reader.onload = function(){
-              var logs = util.parseLogs(this.result);
+            util.readFileAsText(file, function(logs) {
+              logs = util.parseLogs(this.result);
               if (!logs) {
                 return;
               }
@@ -613,7 +611,7 @@ var Index = React.createClass({
               }
               events.trigger('showLog');
               events.trigger('uploadLogs', {logs: logs});
-            };
+            });
             return;
           }
           data = new FormData();
@@ -2483,11 +2481,9 @@ var Index = React.createClass({
     var isText = /\.txt$/i.test(file.name);
     if (isText || /\.har$/i.test(file.name)) {
       var self = this;
-      var reader = new FileReader();
-      reader.readAsText(file);
-      reader.onload = function(){
+      util.readFileAsText(file, function(result) {
         try {
-          var result = JSON.parse(this.result);
+          result = JSON.parse(result);
           if (isText) {
             dataCenter.addNetworkList(result);
           } else {
@@ -2496,7 +2492,7 @@ var Index = React.createClass({
         } catch (e) {
           alert('Incorrect file format.');
         }
-      };
+      });
       return;
     }
     dataCenter.upload.importSessions(data, dataCenter.addNetworkList);

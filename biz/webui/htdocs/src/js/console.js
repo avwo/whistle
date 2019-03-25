@@ -118,15 +118,10 @@ var Console = React.createClass({
     if (file.size > MAX_FILE_SIZE) {
       return alert('The file size can not exceed 2m.');
     }
-    var reader = new FileReader();
-    reader.readAsText(file);
-    reader.onload = function(){
-      var logs = util.parseLogs(this.result);
-      if (!logs) {
-        return;
-      }
-      events.trigger('uploadLogs', {logs: logs});
-    };
+    util.readFileAsText(file, function(logs) {
+      logs = util.parseLogs(logs);
+      logs && events.trigger('uploadLogs', {logs: logs});
+    });
     ReactDOM.findDOMNode(this.refs.importData).value = '';
   },
   changeLogId: function(option) {

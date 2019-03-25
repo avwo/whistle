@@ -1222,3 +1222,42 @@ exports.changePageName = changePageName;
 exports.getTempName = function() {
   return Date.now() + '' + Math.floor(Math.random() * 10000);
 };
+
+function readFile(file, callback, type) {
+  var reader = new FileReader();
+  var done;
+  var execCallback = function(err, result) {
+    if (done) {
+      return;
+    }
+    done = true;
+    if (err) {
+      reader.abort();
+      return alert(err.message);
+    }
+    callback(result);
+  };
+  var isText = type === 'text';
+  reader[isText ? 'readAsText' : 'readAsArrayBuffer'](file);
+  reader.onerror = execCallback;
+  reader.onabort = function() {
+    execCallback(new Error('Aborted'));
+  };
+  reader.onload = function () {
+    var result = reader.result;
+    try {
+      execCallback(null, isText ? result : fromByteArray(new window.Uint8Array(result)));
+    } catch(e) {
+      execCallback(e);
+    }
+  };
+  return reader;
+}
+
+exports.readFileAsBase64 = function(file, callback) {
+  return readFile(file, callback);
+};
+
+exports.readFileAsText = function(file, callback) {
+  return readFile(file, callback, 'text');
+};

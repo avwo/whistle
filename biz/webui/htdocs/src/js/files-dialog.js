@@ -3,7 +3,7 @@ require('../css/files-dialog.css');
 var React = require('react');
 var ReaceDOM = require('react-dom');
 var Dialog = require('./dialog');
-var fromByteArray  = require('base64-js').fromByteArray;
+var util = require('./util');
 
 var MAX_FILE_SIZE = 1024 * 1024 * 20;
 
@@ -25,16 +25,14 @@ var FilesDialog = React.createClass({
     if (file.size > MAX_FILE_SIZE) {
       return alert('The file size can not exceed 20m.');
     }
-    var reader = new FileReader();
-    reader.readAsArrayBuffer(file);
     var self = this;
     var params = { name: 'test' };
-    reader.onload = function () {
-      params.base64 = fromByteArray(new window.Uint8Array(reader.result));
+    util.readFileAsBase64(file, function(base64) {
+      params.base64 = base64;
       // send
       console.log(params);
       ReaceDOM.findDOMNode(self.refs.file).value = '';
-    };
+    });
   },
   uploadFile: function() {
     var form = ReaceDOM.findDOMNode(this.refs.uploadFileForm);

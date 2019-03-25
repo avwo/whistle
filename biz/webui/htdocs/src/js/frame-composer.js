@@ -4,7 +4,6 @@ var dataCenter = require('./data-center');
 var util = require('./util');
 var events = require('./events');
 var message = require('./message');
-var fromByteArray  = require('base64-js').fromByteArray;
 var storage = require('./storage');
 
 var MAX_FILE_SIZE = 1024 * 1025;
@@ -80,18 +79,16 @@ var FrameComposer = React.createClass({
     if (file.size > MAX_FILE_SIZE) {
       return alert('The file size can not exceed 1m.');
     }
-    var reader = new FileReader();
-    reader.readAsArrayBuffer(file);
     var self = this;
     var params = {
       target: self.target,
       type: self.dataType
     };
-    reader.onload = function () {
-      params.base64 = fromByteArray(new window.Uint8Array(reader.result));
+    util.readFileAsBase64(file, function(base64) {
+      params.base64 = base64;
       self.send(params);
       self.dataField.value = '';
-    };
+    });
   },
   send: function(params, cb) {
     var data = this.props.data;
