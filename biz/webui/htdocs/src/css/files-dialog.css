@@ -1,5 +1,5 @@
 .w-files-dialog .modal-dialog {
-  width: 600px;
+  width: 640px;
 }
 
 .w-files-dialog h4  {
@@ -21,7 +21,7 @@
   margin-top: 20px;
   color: #aaa;
   font-size: 16px;
-  width: 576px;
+  width: 616px;
   font-weight: normal;
 }
 .w-files-upload-btn:hover {
@@ -42,23 +42,19 @@
   word-wrap: break-word;
 }
 .w-files-operation {
-  width: 180px;
+  width: 240px;
 }
 
 .w-files-operation a {
-  margin-right: 20px;
+  margin-right: 15px;
   display: inline-block;
   white-space: nowrap;
 }
 
-.w-files-operation a:nth-child(3), .w-files-operation a:nth-child(4) {
-  margin-top: 5px;
-}
-
-.w-files-operation a:nth-child(4) {
+.w-files-operation a:last-child {
   color: #f66;
 }
 
-.w-files-operation a:nth-child(4):hover {
+.w-files-operation a:last-child:hover {
   color: #f00;
 }

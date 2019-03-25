@@ -15,7 +15,7 @@ var FilesDialog = React.createClass({
     this.refs.filesDialog.hide();
   },
   showNameInput: function() {
-
+    this.refs.filename.show();
   },
   submit: function() {
     var file = this.formData.get('file');
@@ -29,9 +29,8 @@ var FilesDialog = React.createClass({
     var params = { name: 'test' };
     util.readFileAsBase64(file, function(base64) {
       params.base64 = base64;
-      // send
-      console.log(params);
       ReaceDOM.findDOMNode(self.refs.file).value = '';
+      self.showNameInput();
     });
   },
   uploadFile: function() {
@@ -66,7 +65,6 @@ var FilesDialog = React.createClass({
                   <td className="w-files-path">$whistle/xxxx.txt</td>
                   <td className="w-files-operation">
                     <a href="javascript:;">Copy path</a>
-                    <a href="javascript:;">Replace</a>
                     <a href="javascript:;">Download</a>
                     <a href="javascript:;">Delete</a>
                   </td>
@@ -80,6 +78,28 @@ var FilesDialog = React.createClass({
           <form ref="uploadFileForm" encType="multipart/form-data" style={{display: 'none'}}>
             <input ref="file" onChange={this.uploadFile} name="file" type="file" />
           </form>
+          <Dialog ref="filename">
+            <div className="modal-body">
+              <button type="button" className="close" data-dismiss="modal">
+                <span aria-hidden="true">&times;</span>
+              </button>
+              <div>
+                <label>
+                  Name:
+                  <input type="text" />
+                </label>
+                <label>Save in:</label>
+                <label>
+                  <input type="radio" name="saveTarget" />
+                  Values
+                </label>
+                <label>
+                  <input type="radio" name="saveTarget" />
+                  System file
+                </label>
+              </div>
+            </div>
+          </Dialog>
         </Dialog>
     );
   }
