@@ -602,7 +602,7 @@ var Index = React.createClass({
               return alert('The file size can not exceed 2m.');
             }
             util.readFileAsText(file, function(logs) {
-              logs = util.parseLogs(this.result);
+              logs = util.parseLogs(logs);
               if (!logs) {
                 return;
               }
