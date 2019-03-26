@@ -76,3 +76,18 @@
 .w-detail-log .w-textarea-bar a {
   padding-bottom: 2px;
 }
+
+.w-log-expand-root {
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 20px;
+  display: inline-block;
+  height: 20px;
+  vertical-align: top;
+  margin-left: 30px;
+}
+
+.w-log-expand-root input {
+  margin-right: 5px;
+  vertical-align: sub;
+}

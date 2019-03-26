@@ -12,6 +12,7 @@ var FilterInput = require('./filter-input');
 var DropDown = require('./dropdown');
 var RecordBtn = require('./record-btn');
 var events = require('./events');
+var storage = require('./storage');
 
 var MAX_COUNT = 90;
 var MAX_FILE_SIZE = 1024 * 1024 * 2;
@@ -21,7 +22,7 @@ var allLogs = {
   text: 'All logs'
 };
 
-function parseLog(log) {
+function parseLog(log, expandRoot) {
   if (log.view) {
     return log.view;
   }
@@ -37,7 +38,7 @@ function parseLog(log) {
       if (!data || typeof data !== 'object') {
         return <ExpandCollapse wStyle={{color: 'rgb(203, 75, 22)'}} text={data + ''} />;
       }
-      return <JSONTree data={data} />;
+      return <JSONTree data={data} shouldExpandNode={expandRoot ? undefined : false} />;
     });
     return log.view;
   } catch(e) {}
@@ -46,7 +47,11 @@ function parseLog(log) {
 
 var Console = React.createClass({
   getInitialState: function() {
-    return { scrollToBottom: true, logIdList: [allLogs] };
+    return {
+      scrollToBottom: true,
+      logIdList: [allLogs],
+      expandRoot: storage.get('expandJsonRoot') != 1
+    };
   },
   componentDidMount: function() {
     var self = this;
@@ -243,10 +248,14 @@ var Console = React.createClass({
       logIdList: list
     });
   },
+  changeExpandRoot: function(e) {
+    this.state.expandRoot = e.target.checked;
+  },
   render: function() {
     var state = this.state;
     var logs = state.logs || [];
     var logIdList = state.logIdList;
+    var expandRoot = state.expandRoot;
     var disabled = !util.hasVisibleLog(logs);
 
     return (
@@ -258,6 +267,10 @@ var Console = React.createClass({
             onChange={this.changeLogId}
             options={logIdList}
           />
+          <label className="w-log-expand-root">
+            <input type="checkbox" defaultChecked={expandRoot} onChange={this.changeExpandRoot} />
+            Expand JSON Root 
+          </label>
           <div className="w-textarea-bar">
             <a className="w-import" onClick={this.selectFile}
               href="javascript:;" draggable="false">Import</a>
@@ -298,7 +311,7 @@ var Console = React.createClass({
                 <li key={log.id} title={log.level.toUpperCase()} className={'w-' + log.level + hide}>
                   <pre>
                     {date}
-                    {parseLog(log)}
+                    {parseLog(log, expandRoot)}
                   </pre>
                 </li>
               );
