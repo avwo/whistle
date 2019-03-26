@@ -4,6 +4,7 @@ var React = require('react');
 var ReaceDOM = require('react-dom');
 var Dialog = require('./dialog');
 var util = require('./util');
+var events = require('./events');
 
 var MAX_FILE_SIZE = 1024 * 1024 * 20;
 
@@ -17,8 +18,13 @@ var FilesDialog = React.createClass({
   showNameInput: function() {
     this.refs.filename.show();
   },
-  submit: function() {
-    var file = this.formData.get('file');
+  componentDidMount: function() {
+    var self = this;
+    events.on('uploadFile', function(e, file) {
+      self.submit(file);
+    });
+  },
+  submit: function(file) {
     if (!file.size) {
       return alert('The file size can not be empty.');
     }
@@ -35,8 +41,7 @@ var FilesDialog = React.createClass({
   },
   uploadFile: function() {
     var form = ReaceDOM.findDOMNode(this.refs.uploadFileForm);
-    this.formData = new FormData(form);
-    this.submit();
+    this.submit(new FormData(form).get('file'));
   },
   selectFile: function() {
     ReaceDOM.findDOMNode(this.refs.file).click();
@@ -88,14 +93,16 @@ var FilesDialog = React.createClass({
                   Name:
                   <input type="text" />
                 </label>
+              </div>
+              <div>
                 <label>Save in:</label>
                 <label>
                   <input type="radio" name="saveTarget" />
-                  Values
+                  System file
                 </label>
                 <label>
                   <input type="radio" name="saveTarget" />
-                  System file
+                  Values
                 </label>
               </div>
             </div>

@@ -590,6 +590,9 @@ var Index = React.createClass({
         if (!file) {
           return;
         }
+        if ($('.w-files-dialog.in').length) {
+          return events.trigger('uploadFile', file);
+        }
         var data;
         var name = self.state.name;
         var target = $(e.target);
