@@ -29,7 +29,7 @@
 }
 
 .w-files-upload-btn span {
-  font-size: 26px;
+  font-size: 24px;
   vertical-align: sub;
   margin-right: 10px;
 }
@@ -88,7 +88,7 @@
   margin-right: 5px;
 }
 .w-files-save-in label:last-child {
-  margin-left: 30px;
+  margin-left: 20px;
 }
 .w-files-info-dialog .modal-body {
   padding-bottom: 0!important;
