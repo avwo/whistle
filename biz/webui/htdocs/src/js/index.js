@@ -1782,13 +1782,13 @@ var Index = React.createClass({
     var target = ReactDOM.findDOMNode(self.refs.createRulesInput);
     var name = $.trim(target.value);
     if (!name) {
-      alert('The name can not be empty.');
+      message.error('The name can not be empty.');
       return;
     }
 
     var modal = self.state.rules;
     if (modal.exists(name)) {
-      alert('The name \'' + name + '\' already exists.');
+      message.error('The name \'' + name + '\' already exists.');
       return;
     }
 
@@ -1815,23 +1815,23 @@ var Index = React.createClass({
     var target = ReactDOM.findDOMNode(self.refs.createValuesInput);
     var name = $.trim(target.value);
     if (!name) {
-      alert('The name can not be empty.');
+      message.error('The name can not be empty.');
       return;
     }
 
     if (/\s/.test(name)) {
-      alert('The name can not contain spaces.');
+      message.error('The name can not contain spaces.');
       return;
     }
 
     if (/#/.test(name)) {
-      alert('The name can not contain #.');
+      message.error('The name can not contain #.');
       return;
     }
 
     var modal = self.state.values;
     if (modal.exists(name)) {
-      alert('The name \'' + name + '\' already exists.');
+      message.error('The name \'' + name + '\' already exists.');
       return;
     }
 
@@ -1901,12 +1901,12 @@ var Index = React.createClass({
     var target = ReactDOM.findDOMNode(self.refs.editRulesInput);
     var name = $.trim(target.value);
     if (!name) {
-      alert('The rule group name can not be empty.');
+      message.error('The rule group name can not be empty.');
       return;
     }
 
     if (modal.exists(name)) {
-      alert('The rule group name \'' + name + '\' already exists.');
+      message.error('The rule group name \'' + name + '\' already exists.');
       return;
     }
 
@@ -1940,12 +1940,12 @@ var Index = React.createClass({
     var target = ReactDOM.findDOMNode(self.refs.editValuesInput);
     var name = $.trim(target.value);
     if (!name) {
-      alert('The rule group name can not be empty.');
+      message.error('The rule group name can not be empty.');
       return;
     }
 
     if (modal.exists(name)) {
-      alert('The rule group name \'' + name + '\' already exists.');
+      message.error('The rule group name \'' + name + '\' already exists.');
       return;
     }
 

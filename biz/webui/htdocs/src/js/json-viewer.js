@@ -4,6 +4,7 @@ var $ = require('jquery');
 var ReactDOM = require('react-dom');
 var TextView = require('./textview');
 var CopyBtn = require('./copy-btn');
+var message = require('./message');
 
 var JSONTree = require('./components/react-json-tree')['default'];
 var dataCenter = require('./data-center');
@@ -73,12 +74,12 @@ var JsonViewer = React.createClass({
       return;
     }
     if (!name) {
-      alert('Value name can not be empty.');
+      message.error('Value name can not be empty.');
       return;
     }
 
     if (/\s/.test(name)) {
-      alert('Name can not have spaces.');
+      message.error('Name can not have spaces.');
       return;
     }
     if (modal.exists(name) &&

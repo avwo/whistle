@@ -5,8 +5,14 @@ var ReaceDOM = require('react-dom');
 var Dialog = require('./dialog');
 var util = require('./util');
 var events = require('./events');
+var message = require('./message');
 
 var MAX_FILE_SIZE = 1024 * 1024 * 20;
+
+function focus(input) {
+  input.select();
+  input.focus();
+}
 
 var FilesDialog = React.createClass({
   show: function(data) {
@@ -19,9 +25,7 @@ var FilesDialog = React.createClass({
     var refs = this.refs;
     refs.filenameDialog.show();
     setTimeout(function() {
-      var input = ReaceDOM.findDOMNode(refs.filename);
-      input.select();
-      input.focus();
+      focus(ReaceDOM.findDOMNode(refs.filename));
     }, 500);
   },
   componentDidMount: function() {
@@ -32,6 +36,25 @@ var FilesDialog = React.createClass({
     events.on('showFilenameInput', function(e, params) {
       self.showNameInput();
     });
+  },
+  onConfirm: function() {
+    var input = ReaceDOM.findDOMNode(this.refs.filename);
+    var name = input.value.trim();
+    if (!name) {
+      focus(input);
+      return message.error('The name can not be empty.');
+    }
+
+    if (/\s/.test(name)) {
+      focus(input);
+      return message.error('The name can not contain spaces.');
+    }
+
+    if (/[\\/:*?"<>|\w]/.test(name)) {
+      focus(input);
+      return message.error('The name can not contain \\/:*?"<>| and spaces.');
+    }
+    
   },
   submit: function(file) {
     if (!file.size) {
@@ -116,7 +139,7 @@ var FilesDialog = React.createClass({
             </div>
             <div className="modal-footer">
               <button type="button" className="btn btn-default">Download</button>
-              <button type="button" className="btn btn-primary">Confirm</button>
+              <button type="button" className="btn btn-primary" onClick={this.onConfirm}>Confirm</button>
               <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
             </div>
           </Dialog>

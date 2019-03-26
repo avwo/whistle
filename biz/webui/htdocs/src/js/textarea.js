@@ -5,6 +5,8 @@ var TextView = require('./textview');
 var CopyBtn = require('./copy-btn');
 var util = require('./util');
 var dataCenter = require('./data-center');
+var message = require('./message');
+
 var MAX_LENGTH = 1024 * 6;
 
 var Tips = React.createClass({
@@ -91,12 +93,12 @@ var Textarea = React.createClass({
       return;
     }
     if (!name) {
-      alert('Value name can not be empty.');
+      message.error('Value name can not be empty.');
       return;
     }
 
     if (/\s/.test(name)) {
-      alert('Name can not have spaces.');
+      message.error('Name can not have spaces.');
       return;
     }
 
