@@ -16,7 +16,13 @@ var FilesDialog = React.createClass({
     this.refs.filesDialog.hide();
   },
   showNameInput: function() {
-    this.refs.filename.show();
+    var refs = this.refs;
+    refs.filenameDialog.show();
+    setTimeout(function() {
+      var input = ReaceDOM.findDOMNode(refs.filename);
+      input.select();
+      input.focus();
+    }, 500);
   },
   componentDidMount: function() {
     var self = this;
@@ -83,7 +89,7 @@ var FilesDialog = React.createClass({
           <form ref="uploadFileForm" encType="multipart/form-data" style={{display: 'none'}}>
             <input ref="file" onChange={this.uploadFile} name="file" type="file" />
           </form>
-          <Dialog ref="filename">
+          <Dialog ref="filenameDialog">
             <div className="modal-body">
               <button type="button" className="close" data-dismiss="modal">
                 <span aria-hidden="true">&times;</span>
@@ -91,7 +97,7 @@ var FilesDialog = React.createClass({
               <div>
                 <label>
                   Name:
-                  <input type="text" />
+                  <input ref="filename" maxLength="36" type="text" />
                 </label>
               </div>
               <div>
