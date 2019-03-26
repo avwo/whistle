@@ -29,6 +29,9 @@ var FilesDialog = React.createClass({
     events.on('uploadFile', function(e, file) {
       self.submit(file);
     });
+    events.on('showFilenameInput', function(e, params) {
+      self.showNameInput();
+    });
   },
   submit: function(file) {
     if (!file.size) {

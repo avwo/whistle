@@ -438,6 +438,16 @@ var ReqData = React.createClass({
     case 'Abort':
       events.trigger('abortRequest', item);
       break;
+    case 'Req Headers':
+    case 'Res Headers':
+    case 'Req Cookies':
+    case 'Res Cookies':
+    case 'Req Body':
+    case 'Res Body':
+    case 'Req Raw':
+    case 'Res Raw':
+      events.trigger('showFilenameInput');
+      break;
     case 'Share':
       events.trigger('uploadSessions', {
         curItem: item,
