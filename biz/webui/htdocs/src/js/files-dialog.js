@@ -55,7 +55,7 @@ var FilesDialog = React.createClass({
             </button>
             <button className="w-files-upload-btn" onClick={this.selectFile}>
               <span className="glyphicon-plus"></span>
-              Click here or drag the file to the page to upload (size &lt;= 20m)
+              Drop file here or click here to browse (size &lt;= 20m)
             </button>
             <h4>System Files</h4>
             <table className="table">
