@@ -89,27 +89,30 @@ var FilesDialog = React.createClass({
           <form ref="uploadFileForm" encType="multipart/form-data" style={{display: 'none'}}>
             <input ref="file" onChange={this.uploadFile} name="file" type="file" />
           </form>
-          <Dialog ref="filenameDialog">
+          <Dialog ref="filenameDialog" wstyle="w-files-info-dialog">
             <div className="modal-body">
               <button type="button" className="close" data-dismiss="modal">
                 <span aria-hidden="true">&times;</span>
               </button>
-              <div>
-                <label>
-                  Name:
-                  <input ref="filename" maxLength="36" type="text" />
-                </label>
-              </div>
-              <div>
+              <label className="w-files-name">
+                Name:
+                <input ref="filename" maxLength="36" placeholder="Input the name"
+                  type="text" className="form-control" />
+              </label>
+              <div className="w-files-save-in">
                 <label>Save in:</label>
                 <label>
-                  <input type="radio" name="saveTarget" />
+                  <input type="radio" name="saveTarget" defaultChecked={true} />
                   System file
                 </label>
                 <label>
                   <input type="radio" name="saveTarget" />
                   Values
                 </label>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-primary">Confirm</button>
+                <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
               </div>
             </div>
           </Dialog>

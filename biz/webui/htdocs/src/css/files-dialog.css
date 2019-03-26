@@ -58,3 +58,38 @@
 .w-files-operation a:last-child:hover {
   color: #f00;
 }
+
+.w-files-name {
+  display: block;
+  margin: 20px 0; 
+}
+
+.w-files-info-dialog .modal-dialog {
+  width: 640px;
+}
+
+.w-files-name input {
+  display: inline-block;
+  width: 540px;
+  margin-left: 20px;
+  font-weight: normal;
+}
+.w-files-save-in {
+  padding-bottom: 20px;
+}
+.w-files-save-in label {
+  margin-right: 20px;
+  font-weight: normal;
+}
+ label:first-child {
+  font-weight: bold;
+}
+.w-files-save-in input {
+  margin-right: 5px;
+}
+.w-files-save-in label:last-child {
+  margin-left: 30px;
+}
+.w-files-info-dialog .modal-body {
+  padding-bottom: 0!important;
+}
