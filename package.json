@@ -60,7 +60,7 @@
     "socksv5": "0.0.6",
     "starting": "^5.0.0",
     "weinre2": "^1.2.0",
-    "ws-parser": "^0.2.0",
+    "ws-parser": "^0.3.0",
     "xml2js": "0.4.17"
   },
   "scripts": {
