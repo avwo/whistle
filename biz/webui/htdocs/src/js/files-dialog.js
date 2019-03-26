@@ -110,10 +110,11 @@ var FilesDialog = React.createClass({
                   Values
                 </label>
               </div>
-              <div className="modal-footer">
-                <button type="button" className="btn btn-primary">Confirm</button>
-                <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
-              </div>
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-default">Download</button>
+              <button type="button" className="btn btn-primary">Confirm</button>
+              <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
             </div>
           </Dialog>
         </Dialog>
