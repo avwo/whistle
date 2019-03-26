@@ -1,7 +1,7 @@
 require('./base-css.js');
 require('../css/files-dialog.css');
 var React = require('react');
-var ReaceDOM = require('react-dom');
+var ReactDOM = require('react-dom');
 var Dialog = require('./dialog');
 var util = require('./util');
 var events = require('./events');
@@ -10,6 +10,12 @@ var message = require('./message');
 var MAX_FILE_SIZE = 1024 * 1024 * 20;
 
 function focus(input) {
+  input.select();
+  input.focus();
+}
+
+function showError(msg, input) {
+  message.error(msg);
   input.select();
   input.focus();
 }
@@ -25,7 +31,7 @@ var FilesDialog = React.createClass({
     var refs = this.refs;
     refs.filenameDialog.show();
     setTimeout(function() {
-      focus(ReaceDOM.findDOMNode(refs.filename));
+      focus(ReactDOM.findDOMNode(refs.filename));
     }, 500);
   },
   componentDidMount: function() {
@@ -38,23 +44,30 @@ var FilesDialog = React.createClass({
     });
   },
   onConfirm: function() {
-    var input = ReaceDOM.findDOMNode(this.refs.filename);
+    var input = ReactDOM.findDOMNode(this.refs.filename);
     var name = input.value.trim();
     if (!name) {
-      focus(input);
-      return message.error('The name can not be empty.');
+      showError('The name can not be empty.', input);
+      return;
     }
-
     if (/\s/.test(name)) {
-      focus(input);
-      return message.error('The name can not contain spaces.');
+      showError('The name can not contain \\/:*?"<>| and spaces.', input);
+      return;
     }
-
-    if (/[\\/:*?"<>|\w]/.test(name)) {
-      focus(input);
-      return message.error('The name can not contain \\/:*?"<>| and spaces.');
+    this.params.name = name;
+    return true;
+  },
+  download: function() {
+    if (!this.onConfirm) {
+      return;
     }
-    
+    var params = this.params;
+    var base64 = params.base64;
+    ReactDOM.findDOMNode(this.refs.filename).value = name;
+    ReactDOM.findDOMNode(this.refs.type).value = 'base64';
+    ReactDOM.findDOMNode(this.refs.headers).value = params.headers || '';
+    ReactDOM.findDOMNode(this.refs.content).value = base64 || '';
+    ReactDOM.findDOMNode(this.refs.downloadForm).submit();
   },
   submit: function(file) {
     if (!file.size) {
@@ -64,19 +77,20 @@ var FilesDialog = React.createClass({
       return alert('The file size can not exceed 20m.');
     }
     var self = this;
-    var params = { name: 'test' };
+    var params = {};
     util.readFileAsBase64(file, function(base64) {
       params.base64 = base64;
-      ReaceDOM.findDOMNode(self.refs.file).value = '';
+      ReactDOM.findDOMNode(self.refs.file).value = '';
+      self.params = params;
       self.showNameInput();
     });
   },
   uploadFile: function() {
-    var form = ReaceDOM.findDOMNode(this.refs.uploadFileForm);
+    var form = ReactDOM.findDOMNode(this.refs.uploadFileForm);
     this.submit(new FormData(form).get('file'));
   },
   selectFile: function() {
-    ReaceDOM.findDOMNode(this.refs.file).click();
+    ReactDOM.findDOMNode(this.refs.file).click();
   },
   render: function() {
     return (
@@ -138,11 +152,18 @@ var FilesDialog = React.createClass({
               </div>
             </div>
             <div className="modal-footer">
-              <button type="button" className="btn btn-default">Download</button>
+              <button type="button" className="btn btn-default" onClick={this.download}>Download</button>
               <button type="button" className="btn btn-primary" onClick={this.onConfirm}>Confirm</button>
               <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
             </div>
           </Dialog>
+          <form ref="downloadForm" action="cgi-bin/download" style={{display: 'none'}}
+            method="post" target="downloadTargetFrame">
+            <input ref="filename" name="filename" type="hidden" />
+            <input ref="type" name="type" type="hidden" />
+            <input ref="headers" name="headers" type="hidden" />
+            <input ref="content" name="content" type="hidden" />
+          </form>
         </Dialog>
     );
   }
