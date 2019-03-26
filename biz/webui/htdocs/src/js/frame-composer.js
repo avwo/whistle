@@ -167,6 +167,7 @@ var FrameComposer = React.createClass({
   },
   render: function() {
     var data = this.props.data || '';
+    util.socketIsClosed(data);
     var state = this.state;
     var isJSON = state.isJSON;
     var text = state.text || '';
