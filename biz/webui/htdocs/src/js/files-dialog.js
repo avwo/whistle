@@ -67,9 +67,8 @@ var FilesDialog = React.createClass({
     }
     var params = this.params;
     ReactDOM.findDOMNode(this.refs.name).value = params.name;
-    ReactDOM.findDOMNode(this.refs.type).value = params.text ? 'rawText' : 'rawBase64';
     ReactDOM.findDOMNode(this.refs.headers).value = params.headers || '';
-    ReactDOM.findDOMNode(this.refs.content).value = params.text || params.base64 || '';
+    ReactDOM.findDOMNode(this.refs.content).value = params.base64 || '';
     ReactDOM.findDOMNode(this.refs.downloadForm).submit();
   },
   submit: function(file) {

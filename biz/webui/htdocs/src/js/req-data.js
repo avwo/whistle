@@ -435,10 +435,26 @@ var ReqData = React.createClass({
       events.trigger('abortRequest', item);
       break;
     case 'Req Body':
+      events.trigger('showFilenameInput', {
+        base64: item.req.base64
+      });
+      break;
     case 'Res Body':
+      events.trigger('showFilenameInput', {
+        base64: item.req.base64
+      });
+      break;
     case 'Req Raw':
+      events.trigger('showFilenameInput', {
+        headers: util.objectToString(item.req.headers),
+        base64: item.req.base64
+      });
+      break;
     case 'Res Raw':
-      events.trigger('showFilenameInput', {});
+      events.trigger('showFilenameInput', {
+        headers: util.objectToString(item.ress.headers),
+        base64: item.res.base64
+      });
       break;
     case 'Share':
       events.trigger('uploadSessions', {
