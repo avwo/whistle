@@ -52,7 +52,7 @@ var contextMenuList = [
     ]
   },
   {
-    name: '+Value',
+    name: 'Save',
     list: [
       { name: 'Req Headers' },
       { name: 'Res Headers' },
@@ -446,7 +446,7 @@ var ReqData = React.createClass({
     case 'Res Body':
     case 'Req Raw':
     case 'Res Raw':
-      events.trigger('showFilenameInput');
+      events.trigger('showFilenameInput', {});
       break;
     case 'Share':
       events.trigger('uploadSessions', {
@@ -552,6 +552,11 @@ var ReqData = React.createClass({
     contextMenuList[2].disabled = disabled;
     for (var i = 0; i < 8; i++) {
       list2[i].disabled = disabled;
+    }
+    if (!disabled) {
+      list2[1].disabled = list2[3].disabled = !item.res.headers;
+      list2[7].disabled = !item.endTime;
+      list2[5].disabled = !item.endTime || !!item.res.base64;
     }
 
     var selectedList = modal.getSelectedList();

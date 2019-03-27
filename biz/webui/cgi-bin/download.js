@@ -10,8 +10,8 @@ module.exports = function(req, res) {
   var suffix = '.txt';
   if (type === 'log') {
     suffix = '.log';
-  } else if (type === 'rawBase64') {
-    type = 'base64';
+  } else if (type === 'rawBase64' || type === 'rawText') {
+    type = type === 'rawText' ? '' : 'base64';
     suffix = '';
   }
 
@@ -21,7 +21,7 @@ module.exports = function(req, res) {
     filename += suffix;
   }
 
-  if (body.type === 'base64') {
+  if (type === 'base64') {
     try {
       content = Buffer.from(content, 'base64');
     } catch (e) {}

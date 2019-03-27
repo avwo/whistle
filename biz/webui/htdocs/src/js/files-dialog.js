@@ -28,10 +28,13 @@ var FilesDialog = React.createClass({
     this.refs.filesDialog.hide();
   },
   showNameInput: function() {
-    var refs = this.refs;
+    var self = this;
+    var refs = self.refs;
     refs.filenameDialog.show();
     setTimeout(function() {
-      focus(ReactDOM.findDOMNode(refs.filename));
+      var input = ReactDOM.findDOMNode(refs.filename);
+      input.value = self.params.name || '';
+      focus(input);
     }, 500);
   },
   componentDidMount: function() {
@@ -40,6 +43,7 @@ var FilesDialog = React.createClass({
       self.submit(file);
     });
     events.on('showFilenameInput', function(e, params) {
+      self.params = params;
       self.showNameInput();
     });
   },
@@ -63,8 +67,9 @@ var FilesDialog = React.createClass({
     }
     var params = this.params;
     ReactDOM.findDOMNode(this.refs.name).value = params.name;
+    ReactDOM.findDOMNode(this.refs.type).value = params.text ? 'rawText' : 'rawBase64';
     ReactDOM.findDOMNode(this.refs.headers).value = params.headers || '';
-    ReactDOM.findDOMNode(this.refs.content).value = params.base64 || '';
+    ReactDOM.findDOMNode(this.refs.content).value = params.text || params.base64 || '';
     ReactDOM.findDOMNode(this.refs.downloadForm).submit();
   },
   submit: function(file) {
@@ -91,6 +96,7 @@ var FilesDialog = React.createClass({
     ReactDOM.findDOMNode(this.refs.file).click();
   },
   render: function() {
+    var title = (this.params || '').title;
     return (
       <Dialog wstyle="w-files-dialog" ref="filesDialog">
           <div className="modal-body">
@@ -128,26 +134,18 @@ var FilesDialog = React.createClass({
             <input ref="file" onChange={this.uploadFile} name="file" type="file" />
           </form>
           <Dialog ref="filenameDialog" wstyle="w-files-info-dialog">
-            <div className="modal-body">
+            <div className="modal-header">
+              {title || 'Modify the filename'}
               <button type="button" className="close" data-dismiss="modal">
                 <span aria-hidden="true">&times;</span>
               </button>
+            </div>  
+            <div className="modal-body">
               <label className="w-files-name">
                 Name:
-                <input ref="filename" maxLength="36" placeholder="Input the name"
+                <input ref="filename" maxLength="36" placeholder="Input the filename"
                   type="text" className="form-control" />
               </label>
-              <div className="w-files-save-in">
-                <label>Save in:</label>
-                <label>
-                  <input type="radio" name="saveTarget" defaultChecked={true} />
-                  System file
-                </label>
-                <label>
-                  <input type="radio" name="saveTarget" />
-                  Values
-                </label>
-              </div>
             </div>
             <div className="modal-footer">
               <button type="button" className="btn btn-default" onClick={this.download}>Download</button>

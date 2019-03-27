@@ -61,7 +61,8 @@
 
 .w-files-name {
   display: block;
-  margin: 20px 0; 
+  margin: 20px 0;
+  white-space: nowrap;
 }
 
 .w-files-info-dialog .modal-dialog {
