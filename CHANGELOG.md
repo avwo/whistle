@@ -1,5 +1,5 @@
 # v1.14.0
-1. feat: 支持上传文件作为规则配置
+1. feat: 支持上传文件作为规则配置，解决远程部署是无法在Values设置大块内容的问题，详见：http://wproxy.org/whistle/webui/files.html
 2. feat: 支持显示包含WebSocket帧数据的saz文件
 3. feat: Log里面支持设置是否展开json对象的根节点
 
