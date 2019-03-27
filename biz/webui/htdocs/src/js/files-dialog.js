@@ -50,7 +50,7 @@ var FilesDialog = React.createClass({
       showError('The name can not be empty.', input);
       return;
     }
-    if (/\s/.test(name)) {
+    if (/[\\/:*?"<>|\s]/.test(name)) {
       showError('The name can not contain \\/:*?"<>| and spaces.', input);
       return;
     }
