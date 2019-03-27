@@ -83,6 +83,7 @@ var FilesDialog = React.createClass({
     util.readFileAsBase64(file, function(base64) {
       params.base64 = base64;
       ReactDOM.findDOMNode(self.refs.file).value = '';
+      params.name = file.name;
       self.params = params;
       self.showNameInput();
     });
