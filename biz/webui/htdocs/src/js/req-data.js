@@ -441,7 +441,7 @@ var ReqData = React.createClass({
       break;
     case 'Res Body':
       events.trigger('showFilenameInput', {
-        base64: item.req.base64
+        base64: item.res.base64
       });
       break;
     case 'Req Raw':
@@ -452,7 +452,7 @@ var ReqData = React.createClass({
       break;
     case 'Res Raw':
       events.trigger('showFilenameInput', {
-        headers: util.objectToString(item.ress.headers),
+        headers: util.objectToString(item.res.headers),
         base64: item.res.base64
       });
       break;
