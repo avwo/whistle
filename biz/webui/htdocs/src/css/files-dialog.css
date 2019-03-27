@@ -3,12 +3,7 @@
 }
 
 .w-files-dialog h4  {
-  margin-top: 20px;
-}
-.w-files-dialog h4 span {
-  margin-left: 5px;
-  font-size: 14px;
-  color: #aaa;
+  margin-top: 10px;
 }
 
 .w-files-upload-btn {
@@ -18,7 +13,7 @@
   background: #fff;
   line-height: 60px;
   text-align: center;
-  margin-top: 20px;
+  margin: 20px 0;
   color: #aaa;
   font-size: 16px;
   width: 616px;

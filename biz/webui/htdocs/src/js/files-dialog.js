@@ -103,11 +103,17 @@ var FilesDialog = React.createClass({
             <button type="button" className="close" data-dismiss="modal">
               <span aria-hidden="true">&times;</span>
             </button>
+            <h4>
+              <a className="w-help-menu" title="Click here to see help"
+                href="https://avwo.github.io/whistle/webui/files.html" target="_blank">
+              <span className="glyphicon glyphicon-question-sign"></span>
+              </a>
+              System Files
+            </h4>
             <button className="w-files-upload-btn" onClick={this.selectFile}>
               <span className="glyphicon glyphicon-arrow-up"></span>
               Drop file here or click to browse (size &lt;= 20m)
             </button>
-            <h4>System Files</h4>
             <table className="table">
               <thead>
                 <th className="w-files-order">#</th>
