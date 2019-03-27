@@ -54,10 +54,6 @@ var contextMenuList = [
   {
     name: '+File',
     list: [
-      { name: 'Req Headers' },
-      { name: 'Res Headers' },
-      { name: 'Req Cookies' },
-      { name: 'Res Cookies' },
       { name: 'Req Body' },
       { name: 'Res Body' },
       { name: 'Req Raw' },
@@ -438,10 +434,6 @@ var ReqData = React.createClass({
     case 'Abort':
       events.trigger('abortRequest', item);
       break;
-    case 'Req Headers':
-    case 'Res Headers':
-    case 'Req Cookies':
-    case 'Res Cookies':
     case 'Req Body':
     case 'Res Body':
     case 'Req Raw':
@@ -550,13 +542,14 @@ var ReqData = React.createClass({
 
     var list2 = contextMenuList[2].list;
     contextMenuList[2].disabled = disabled;
-    for (var i = 0; i < 8; i++) {
+    for (var i = 0; i < 4; i++) {
       list2[i].disabled = disabled;
     }
     if (!disabled) {
-      list2[1].disabled = list2[3].disabled = !item.res.headers;
-      list2[7].disabled = !item.endTime;
-      list2[5].disabled = !item.endTime || !!item.res.base64;
+      list2[0].disabled = !item.requestTime || !item.req.base64;
+      list2[1].disabled = !item.endTime || !!item.res.base64;
+      list2[2].disabled = !item.requestTime;
+      list2[3].disabled = !item.endTime;
     }
 
     var selectedList = modal.getSelectedList();
