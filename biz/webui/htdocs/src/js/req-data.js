@@ -52,7 +52,7 @@ var contextMenuList = [
     ]
   },
   {
-    name: 'Save',
+    name: '+File',
     list: [
       { name: 'Req Headers' },
       { name: 'Res Headers' },
