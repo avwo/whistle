@@ -6,7 +6,14 @@ module.exports = function(req, res) {
   var filename = body.filename;
   var headers = body.headers;
   var content = body.content;
-  var suffix = body.type === 'log' ? '.log' : '.txt';
+  var type = body.type;
+  var suffix = '.txt';
+  if (type === 'log') {
+    suffix = '.log';
+  } else if (type === 'rawBase64') {
+    type = 'base64';
+    suffix = '';
+  }
 
   if (!filename || typeof filename !== 'string') {
     filename = 'text_' + util.formatDate() + suffix;

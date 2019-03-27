@@ -57,16 +57,14 @@ var FilesDialog = React.createClass({
     this.params.name = name;
     return true;
   },
-  download: function() {
-    if (!this.onConfirm) {
+  download: function(e) {
+    if (!this.onConfirm()) {
       return;
     }
     var params = this.params;
-    var base64 = params.base64;
-    ReactDOM.findDOMNode(this.refs.filename).value = name;
-    ReactDOM.findDOMNode(this.refs.type).value = 'base64';
+    ReactDOM.findDOMNode(this.refs.name).value = params.name;
     ReactDOM.findDOMNode(this.refs.headers).value = params.headers || '';
-    ReactDOM.findDOMNode(this.refs.content).value = base64 || '';
+    ReactDOM.findDOMNode(this.refs.content).value = params.base64 || '';
     ReactDOM.findDOMNode(this.refs.downloadForm).submit();
   },
   submit: function(file) {
@@ -159,8 +157,8 @@ var FilesDialog = React.createClass({
           </Dialog>
           <form ref="downloadForm" action="cgi-bin/download" style={{display: 'none'}}
             method="post" target="downloadTargetFrame">
-            <input ref="filename" name="filename" type="hidden" />
-            <input ref="type" name="type" type="hidden" />
+            <input ref="name" name="filename" type="hidden" />
+            <input ref="type" name="type" type="hidden" value="rawBase64" />
             <input ref="headers" name="headers" type="hidden" />
             <input ref="content" name="content" type="hidden" />
           </form>
