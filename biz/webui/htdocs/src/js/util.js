@@ -246,6 +246,16 @@ function getRawType(type) {
   return typeof type === 'string' ? type.split(';')[0].toLowerCase() : '';
 }
 
+exports.getExtension = function(headers) {
+  var type = getRawType(type);
+  var suffix = getContentType(headers);
+  if (suffix !== 'IMG') {
+    return suffix ? '.' + (suffix === 'TEXT' ? 'txt' : suffix.toLowerCase()) : '';
+  }
+  type = type.substring(type.indexOf('/') + 1).toLowerCase();
+  return '.' + type; 
+};
+
 function getContentType(type) {
   type = getRawType(type);
   if (type) {

@@ -183,6 +183,21 @@ function getSelection() {
   return document.getSelection();
 }
 
+function getFilename(item, type) {
+  var url = util.removeProtocol(item.url.replace(/[?#].*/, ''));
+  var index = url.lastIndexOf('/');
+  var name = index != -1 && url.substring(index + 1);
+  if (name) {
+    index = name.lastIndexOf('.');
+    if (index !== -1 && index < name.length - 1) {
+      return name.substring(0, index) + '_' + type + '.' + name.substring(index + 1);
+    }
+  } else {
+    name = url.substring(0, url.indexOf('.'));
+  }
+  return name + '_' + type + util.getExtension(item.res.headers);
+}
+
 var ReqData = React.createClass({
   getInitialState: function() {
     var dragger = columns.getDragger();
@@ -437,27 +452,31 @@ var ReqData = React.createClass({
     case 'Req Body':
       events.trigger('showFilenameInput', {
         title: 'Set the filename of request body',
-        base64: item.req.base64
+        base64: item.req.base64,
+        name: getFilename(item, 'req_body')
       });
       break;
     case 'Res Body':
       events.trigger('showFilenameInput', {
         title: 'Set the filename of response body',
-        base64: item.res.base64
+        base64: item.res.base64,
+        name: getFilename(item, 'res_body')
       });
       break;
     case 'Req Raw':
       events.trigger('showFilenameInput', {
         title: 'Set the filename of request raw data',
         headers: util.objectToString(item.req.headers),
-        base64: item.req.base64
+        base64: item.req.base64,
+        name: getFilename(item, 'req_raw')
       });
       break;
     case 'Res Raw':
       events.trigger('showFilenameInput', {
         title: 'Set the filename of response raw data',
         headers: util.objectToString(item.res.headers),
-        base64: item.res.base64
+        base64: item.res.base64,
+        name: getFilename(item, 'res_raw')
       });
       break;
     case 'Share':
@@ -567,7 +586,7 @@ var ReqData = React.createClass({
     }
     if (!disabled) {
       list2[0].disabled = !item.requestTime || !item.req.base64;
-      list2[1].disabled = !item.endTime || !!item.res.base64;
+      list2[1].disabled = !item.endTime || !item.res.base64;
       list2[2].disabled = !item.requestTime;
       list2[3].disabled = !item.endTime;
     }
