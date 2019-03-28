@@ -52,11 +52,11 @@ var FilesDialog = React.createClass({
     var input = ReactDOM.findDOMNode(this.refs.filename);
     var name = input.value.trim();
     if (!name) {
-      showError('the filename can not be empty.', input);
+      showError('The filename can not be empty.', input);
       return;
     }
     if (/[\\/:*?"<>|\s]/.test(name)) {
-      showError('the filename can not contain \\/:*?"<>| and spaces.', input);
+      showError('The filename can not contain \\/:*?"<>| and spaces.', input);
       return;
     }
     this.params.name = name;
@@ -150,7 +150,7 @@ var FilesDialog = React.createClass({
             <div className="modal-body">
               <label className="w-files-name">
                 Name:
-                <input ref="filename" maxLength="36" placeholder="Input the filename"
+                <input ref="filename" maxLength="60" placeholder="Input the filename"
                   type="text" className="form-control" />
               </label>
             </div>
