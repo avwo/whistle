@@ -436,26 +436,26 @@ var ReqData = React.createClass({
       break;
     case 'Req Body':
       events.trigger('showFilenameInput', {
-        title: 'Upload request body',
+        title: 'Set the filename of request body',
         base64: item.req.base64
       });
       break;
     case 'Res Body':
       events.trigger('showFilenameInput', {
-        title: 'Upload response body',
+        title: 'Set the filename of response body',
         base64: item.res.base64
       });
       break;
     case 'Req Raw':
       events.trigger('showFilenameInput', {
-        title: 'Upload request raw data',
+        title: 'Set the filename of request raw data',
         headers: util.objectToString(item.req.headers),
         base64: item.req.base64
       });
       break;
     case 'Res Raw':
       events.trigger('showFilenameInput', {
-        title: 'Upload response raw data',
+        title: 'Set the filename of response raw data',
         headers: util.objectToString(item.res.headers),
         base64: item.res.base64
       });

@@ -36,6 +36,7 @@ var FilesDialog = React.createClass({
       input.value = self.params.name || '';
       focus(input);
     }, 500);
+    this.setState({});
   },
   componentDidMount: function() {
     var self = this;
