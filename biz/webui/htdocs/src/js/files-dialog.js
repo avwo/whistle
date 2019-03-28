@@ -28,12 +28,11 @@ var FilesDialog = React.createClass({
     this.refs.filesDialog.hide();
   },
   showNameInput: function() {
-    var self = this;
-    var refs = self.refs;
+    var refs = this.refs;
     refs.filenameDialog.show();
+    var input = ReactDOM.findDOMNode(refs.filename);
+    input.value = this.params.name || '';
     setTimeout(function() {
-      var input = ReactDOM.findDOMNode(refs.filename);
-      input.value = self.params.name || '';
       focus(input);
     }, 500);
     this.setState({});
