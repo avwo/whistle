@@ -86,3 +86,7 @@
 .w-files-save-in label:last-child {
   margin-left: 20px;
 }
+
+.w-files-info-dialog .modal-header {
+  font-weight: bold;
+}

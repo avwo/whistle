@@ -52,11 +52,11 @@ var FilesDialog = React.createClass({
     var input = ReactDOM.findDOMNode(this.refs.filename);
     var name = input.value.trim();
     if (!name) {
-      showError('The name can not be empty.', input);
+      showError('the filename can not be empty.', input);
       return;
     }
     if (/[\\/:*?"<>|\s]/.test(name)) {
-      showError('The name can not contain \\/:*?"<>| and spaces.', input);
+      showError('the filename can not contain \\/:*?"<>| and spaces.', input);
       return;
     }
     this.params.name = name;
