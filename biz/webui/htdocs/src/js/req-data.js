@@ -193,7 +193,7 @@ function getFilename(item, type) {
       return name.substring(0, index) + '_' + type + '.' + name.substring(index + 1);
     }
   } else {
-    name = url.substring(0, url.indexOf('.'));
+    name = url.substring(0, url.indexOf('/'));
   }
   return name + '_' + type + util.getExtension(item.res.headers);
 }
