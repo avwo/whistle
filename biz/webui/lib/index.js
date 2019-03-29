@@ -13,6 +13,11 @@ var setProxy = require('./proxy');
 var getRootCAFile = require('../../../lib/https/ca').getRootCAFile;
 
 var PARSE_CONF = { extended: true, limit: '3mb'};
+var UPLOAD_PARSE_CONF = { extended: true, limit: '30mb'};
+var urlencodedParser = bodyParser.urlencoded(PARSE_CONF);
+var jsonParser = bodyParser.json(PARSE_CONF);
+var uploadUrlencodedParser = bodyParser.urlencoded(UPLOAD_PARSE_CONF);
+var uploadJsonParser = bodyParser.json(UPLOAD_PARSE_CONF);
 var GET_METHOD_RE = /^get$/i;
 var WEINRE_RE = /^\/weinre\/.*/;
 var DONT_CHECK_PATHS = ['/cgi-bin/server-info', '/cgi-bin/show-host-ip-in-res-headers',
@@ -230,8 +235,14 @@ app.use(function(req, res, next) {
   }
 });
 
-app.all('/cgi-bin/*', bodyParser.urlencoded(PARSE_CONF));
-app.all('/cgi-bin/*', bodyParser.json(PARSE_CONF));
+app.all('/cgi-bin/*', function(req, res, next) {
+  return req.path === '/cgi-bin/values/upload' ?
+    uploadUrlencodedParser(req, res, next) : urlencodedParser(req, res, next);
+});
+app.all('/cgi-bin/*', function(req, res, next) {
+  return req.path === '/cgi-bin/values/upload' ?
+    uploadJsonParser(req, res, next) : jsonParser(req, res, next);
+});
 app.all('/cgi-bin/*', cgiHandler);
 
 app.use('/preview.html', function(req, res, next) {
