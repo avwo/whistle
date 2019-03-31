@@ -314,7 +314,8 @@ exports.values = createCgi({
   },
   add: 'cgi-bin/values/add',
   remove: 'cgi-bin/values/remove',
-  rename: 'cgi-bin/values/rename'
+  rename: 'cgi-bin/values/rename',
+  upload: 'cgi-bin/values/upload'
 }, POST_CONF);
 
 exports.plugins = createCgi({

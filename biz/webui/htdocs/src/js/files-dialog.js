@@ -6,8 +6,10 @@ var Dialog = require('./dialog');
 var util = require('./util');
 var events = require('./events');
 var message = require('./message');
+var dataCenter = require('./data-center');
 
 var MAX_FILE_SIZE = 1024 * 1024 * 20;
+var MAX_FILES_COUNT = 60;
 
 function focus(input) {
   input.select();
@@ -21,6 +23,9 @@ function showError(msg, input) {
 }
 
 var FilesDialog = React.createClass({
+  getInitialState: function() {
+    return { files: [] };
+  },
   show: function(data) {
     this.refs.filesDialog.show();
   },
@@ -28,6 +33,9 @@ var FilesDialog = React.createClass({
     this.refs.filesDialog.hide();
   },
   showNameInput: function() {
+    if (!this.checkCount()) {
+      return;
+    }
     var refs = this.refs;
     refs.filenameDialog.show();
     var input = ReactDOM.findDOMNode(refs.filename);
@@ -47,7 +55,7 @@ var FilesDialog = React.createClass({
       self.showNameInput();
     });
   },
-  onConfirm: function() {
+  checkParams: function() {
     var input = ReactDOM.findDOMNode(this.refs.filename);
     var name = input.value.trim();
     if (!name) {
@@ -61,8 +69,31 @@ var FilesDialog = React.createClass({
     this.params.name = name;
     return true;
   },
+  checkCount: function() {
+    var files = this.state.files;
+    if (files.length >= MAX_FILES_COUNT) {
+      alert('The number of uploaded files cannot exceed 60,\ndelete unnecessary files first.');
+      return false;
+    }
+    return true;
+  },
+  onConfirm: function() {
+    if (!this.checkParams() || !this.checkCount()) {
+      return;
+    }
+    dataCenter.values.upload(this.params, function(data, xhr) {
+      if (data) {
+        if (data.ec !== 0) {
+          return alert(data.em);
+        }
+        // TODO: 
+      } else {
+        util.showSystemError(xhr);
+      }
+    });
+  },
   download: function(e) {
-    if (!this.onConfirm()) {
+    if (!this.checkParams()) {
       return;
     }
     var params = this.params;
@@ -93,6 +124,9 @@ var FilesDialog = React.createClass({
     this.submit(new FormData(form).get('file'));
   },
   selectFile: function() {
+    if (!this.checkCount()) {
+      return;
+    }
     ReactDOM.findDOMNode(this.refs.file).click();
   },
   render: function() {
