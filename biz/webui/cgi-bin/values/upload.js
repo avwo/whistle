@@ -1,7 +1,6 @@
-var values = require('../../../../lib/rules/util').values;
 
 module.exports = function(req, res) {
   var body = req.body;
-  values.add(body.name, body.value, body.clientId);
+  console.log(body);
   res.json({ec: 0, em: 'success'});
 };

@@ -81,15 +81,15 @@ var FilesDialog = React.createClass({
     if (!this.checkParams() || !this.checkCount()) {
       return;
     }
+    var self = this;
     dataCenter.values.upload(this.params, function(data, xhr) {
-      if (data) {
-        if (data.ec !== 0) {
-          return alert(data.em);
-        }
-        // TODO: 
-      } else {
-        util.showSystemError(xhr);
+      if (!data) {
+        return util.showSystemError(xhr);
       }
+      if (data.ec !== 0) {
+        return alert(data.em);
+      }
+      self.hide();
     });
   },
   download: function(e) {
@@ -114,7 +114,7 @@ var FilesDialog = React.createClass({
     util.readFileAsBase64(file, function(base64) {
       params.base64 = base64;
       ReactDOM.findDOMNode(self.refs.file).value = '';
-      params.name = file.name;
+      params.name = (file.name || '').replace(/[\\/:*?"<>|\s]/g, '');
       self.params = params;
       self.showNameInput();
     });
