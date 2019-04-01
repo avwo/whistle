@@ -78,11 +78,13 @@ var FilesDialog = React.createClass({
     return true;
   },
   onConfirm: function() {
-    if (!this.checkParams() || !this.checkCount()) {
+    if (this.pending || !this.checkParams() || !this.checkCount()) {
       return;
     }
     var self = this;
+    self.pending = true;
     dataCenter.values.upload(this.params, function(data, xhr) {
+      self.pending = false;
       if (!data) {
         return util.showSystemError(xhr);
       }
