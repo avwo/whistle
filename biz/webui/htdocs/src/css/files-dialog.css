@@ -90,3 +90,7 @@
 .w-files-info-dialog .modal-header {
   font-weight: bold;
 }
+
+.w-files-dialog thead th {
+  padding: 8px;
+}
