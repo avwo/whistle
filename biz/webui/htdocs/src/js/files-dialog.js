@@ -89,7 +89,7 @@ var FilesDialog = React.createClass({
       if (data.ec !== 0) {
         return alert(data.em);
       }
-      self.hide();
+      self.refs.filenameDialog.hide();
     });
   },
   download: function(e) {
