@@ -104,6 +104,7 @@ var FilesDialog = React.createClass({
       self.params = '';
       self.refs.filenameDialog.hide();
       self.updateFiles(data.files);
+      self.show();
     });
   },
   download: function(e) {
@@ -142,6 +143,16 @@ var FilesDialog = React.createClass({
       return;
     }
     ReactDOM.findDOMNode(this.refs.file).click();
+  },
+  remove: function(e) {
+    var name = e.target.getAttribute('data-name');
+    if (!confirm('Are you sure to delete this file \'' + name + '\'.')) {
+      return;
+    }
+  },
+  downloadFile: function(e) {
+    var name = e.target.getAttribute('data-name');
+    window.open('cgi-bin/values/download?name=' + encodeURIComponent(name));
   },
   render: function() {
     var self = this;
@@ -183,7 +194,7 @@ var FilesDialog = React.createClass({
                         <td className="w-files-operation">
                           <a href="javascript:;" className="w-copy-text-with-tips"
                             data-clipboard-text={filePath}>Copy path</a>
-                          <a href="javascript:;" data-name={file.name} onClick={self.download}>Download</a>
+                          <a href="javascript:;" data-name={file.name} onClick={self.downloadFile}>Download</a>
                           <a href="javascript:;" data-name={file.name} onClick={self.remove}>Delete</a>
                         </td>
                       </tr>
