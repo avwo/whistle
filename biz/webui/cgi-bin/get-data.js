@@ -3,7 +3,6 @@ var util = require('./util');
 var config = require('../../../lib/config');
 var rulesUtil = require('../../../lib/rules/util');
 
-var getUploadFiles = rulesUtil.values.getUploadFiles;
 var properties = rulesUtil.properties;
 var rules = rulesUtil.rules;
 var pluginMgr = proxy.pluginMgr;
@@ -28,7 +27,6 @@ module.exports = function(req, res) {
     mvaluesClientId: config.mvaluesClientId,
     mvaluesTime: config.mvaluesTime,
     server: util.getServerInfo(req),
-    uploadFiles: getUploadFiles(),
     lastLogId: stopRecordConsole ? proxy.getLatestId() : undefined,
     lastSvrLogId: stopRecordSvrLog ? logger.getLatestId() : undefined,
     log: stopRecordConsole ? [] : proxy.getLogs(data.startLogTime, data.count, data.logId),
