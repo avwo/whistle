@@ -31,6 +31,7 @@ var hashFilterObj;
 var clearNetwork;
 var inited;
 var logId;
+var uploadFiles;
 var dumpCount = 0;
 var onlyViewOwnData = storage.get('onlyViewOwnData') == 1;
 var DEFAULT_CONF = {
@@ -45,6 +46,10 @@ exports.MAX_INCLUDE_LEN = MAX_INCLUDE_LEN;
 exports.MAX_EXCLUDE_LEN = MAX_EXCLUDE_LEN;
 exports.changeLogId = function(id) {
   logId = id;
+};
+
+exports.getUploadFiles = function() {
+  return uploadFiles;
 };
 
 exports.setDumpCount = function(count) {
@@ -397,6 +402,7 @@ exports.getInitialData = function (callback) {
         if (!data) {
           return setTimeout(load, 1000);
         }
+        uploadFiles = data.uploadFiles;
         initialData = data;
         DEFAULT_CONF.data.clientId = data.clientId;
         if (data.lastLogId) {

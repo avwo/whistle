@@ -22,9 +22,19 @@ function showError(msg, input) {
   input.focus();
 }
 
+function fomatFiles(files) {
+  return files.map(function(file) {
+    file.date = new Date(file.date).toLocaleString();
+    return file;
+  });
+}
+
 var FilesDialog = React.createClass({
   getInitialState: function() {
-    return { files: [] };
+    return { files: fomatFiles(dataCenter.getUploadFiles()) };
+  },
+  updateFiles: function(files) {
+    this.setState({ files: fomatFiles(files) });
   },
   show: function(data) {
     this.refs.filesDialog.show();
@@ -83,7 +93,7 @@ var FilesDialog = React.createClass({
     }
     var self = this;
     self.pending = true;
-    dataCenter.values.upload(this.params, function(data, xhr) {
+    dataCenter.values.upload(self.params, function(data, xhr) {
       self.pending = false;
       if (!data) {
         return util.showSystemError(xhr);
@@ -93,6 +103,7 @@ var FilesDialog = React.createClass({
       }
       self.params = '';
       self.refs.filenameDialog.hide();
+      self.updateFiles(data.files);
     });
   },
   download: function(e) {
@@ -133,7 +144,9 @@ var FilesDialog = React.createClass({
     ReactDOM.findDOMNode(this.refs.file).click();
   },
   render: function() {
-    var title = (this.params || '').title;
+    var self = this;
+    var title = (self.params || '').title;
+    var files = self.state.files;
     return (
       <Dialog wstyle="w-files-dialog" ref="filesDialog">
           <div className="modal-body">
@@ -147,26 +160,36 @@ var FilesDialog = React.createClass({
               </a>
               System Files
             </h4>
-            <button className="w-files-upload-btn" onClick={this.selectFile}>
+            <button className="w-files-upload-btn" onClick={self.selectFile}>
               <span className="glyphicon glyphicon-arrow-up"></span>
               Drop file here or click to browse (size &lt;= 20m)
             </button>
-            <table className="table">
+            <table className="table" style={{ display: files.length ? undefined : 'none' }}>
               <thead>
                 <th className="w-files-order">#</th>
+                <th className="w-files-date">Date</th>
                 <th className="w-files-path">Path</th>
                 <th className="w-files-operation">Operation</th>
               </thead>
               <tbody>
-                <tr>
-                  <th className="w-files-order">1</th>
-                  <td className="w-files-path">$whistle/xxxx.txt</td>
-                  <td className="w-files-operation">
-                    <a href="javascript:;">Copy path</a>
-                    <a href="javascript:;">Download</a>
-                    <a href="javascript:;">Delete</a>
-                  </td>
-                </tr>
+                {
+                  files.map(function(file, i) {
+                    var filePath = '$whistle/' + file.name;
+                    return (
+                      <tr>
+                        <th className="w-files-order">{ i + 1 }</th>
+                        <td className="w-files-date">{file.date}</td>
+                        <td className="w-files-path">{filePath}</td>
+                        <td className="w-files-operation">
+                          <a href="javascript:;" className="w-copy-text-with-tips"
+                            data-clipboard-text={filePath}>Copy path</a>
+                          <a href="javascript:;" data-name={file.name} onClick={self.download}>Download</a>
+                          <a href="javascript:;" data-name={file.name} onClick={self.remove}>Delete</a>
+                        </td>
+                      </tr>
+                    );
+                  })
+                }
               </tbody>
              </table>
           </div>
