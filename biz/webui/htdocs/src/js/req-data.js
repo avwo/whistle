@@ -187,15 +187,17 @@ function getFilename(item, type) {
   var url = util.removeProtocol(item.url.replace(/[?#].*/, ''));
   var index = url.lastIndexOf('/');
   var name = index != -1 && url.substring(index + 1);
+  var isRaw = type[4] === 'r';
   if (name) {
     index = name.lastIndexOf('.');
     if (index !== -1 && index < name.length - 1) {
-      return name.substring(0, index) + '_' + type + '.' + name.substring(index + 1);
+      return name.substring(0, index) + '_' + type + (isRaw ? '' : '.' + name.substring(index + 1));
     }
   } else {
     name = url.substring(0, url.indexOf('/'));
   }
-  return name + '_' + type + util.getExtension(item.res.headers);
+  var suffix = isRaw ? '' : util.getExtension(type[2] === 'q' ? item.req.headers : item.res.headers);
+  return name + '_' + type + suffix;
 }
 
 var ReqData = React.createClass({
@@ -464,17 +466,26 @@ var ReqData = React.createClass({
       });
       break;
     case 'Req Raw':
+      var req = item.req;
+      var realUrl = item.realUrl;
+      if (!realUrl || !/^(?:http|wss)s?:\/\//.test(realUrl)) {
+        realUrl = item.url;
+      }
+      var reqLine = [req.method, req.method == 'CONNECT' ? req.headers.host : util.getPath(realUrl),
+        'HTTP/' + (req.httpVersion || '1.1')].join(' ');
       events.trigger('showFilenameInput', {
         title: 'Set the filename of request raw data',
-        headers: util.objectToString(item.req.headers),
-        base64: item.req.base64,
+        headers: reqLine + '\r\n' + util.objectToString(req.headers),
+        base64: req.base64,
         name: getFilename(item, 'req_raw')
       });
       break;
     case 'Res Raw':
+      var statusLine = ['HTTP/' + (item.req.httpVersion || '1.1'), item.res.statusCode,
+        util.getStatusMessage(item.res)].join(' ');
       events.trigger('showFilenameInput', {
         title: 'Set the filename of response raw data',
-        headers: util.objectToString(item.res.headers),
+        headers: statusLine + '\r\n' + util.objectToString(item.res.headers),
         base64: item.res.base64,
         name: getFilename(item, 'res_raw')
       });
