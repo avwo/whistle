@@ -82,7 +82,10 @@ var FilesDialog = React.createClass({
   checkCount: function() {
     var files = this.state.files;
     if (files.length >= MAX_FILES_COUNT) {
-      alert('The number of uploaded files cannot exceed 60,\ndelete the unnecessary files first.');
+      this.show();
+      setTimeout(function() {
+        alert('The number of uploaded files cannot exceed 60,\ndelete the unnecessary files first.');
+      }, 10);
       return false;
     }
     return true;
