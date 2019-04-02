@@ -34,9 +34,9 @@ var FilesDialog = React.createClass({
     return { files: fomatFiles(dataCenter.getUploadFiles()) };
   },
   updateFiles: function(files) {
-    this.setState({ files: fomatFiles(files) });
+    files && this.setState({ files: fomatFiles(files) });
   },
-  show: function(data) {
+  show: function() {
     this.refs.filesDialog.show();
   },
   hide: function() {
@@ -96,18 +96,37 @@ var FilesDialog = React.createClass({
     }
     var self = this;
     self.pending = true;
-    dataCenter.values.upload(self.params, function(data, xhr) {
+    var name = self.params.name;
+    dataCenter.values.checkFile({
+      name: name,
+      count: self.state.files
+    }, function(data, xhr) {
       self.pending = false;
       if (!data) {
         return util.showSystemError(xhr);
       }
-      if (data.ec !== 0) {
-        return alert(data.em);
-      }
-      self.params = '';
-      self.refs.filenameDialog.hide();
       self.updateFiles(data.files);
-      self.show();
+      if (data.isMax) {
+        return alert('The number of uploaded files cannot exceed 60,\ndelete the unnecessary files first.');
+      }
+      if (data.exists &&
+          !confirm('The name `' + name + '`  already exists, whether to overwrite it?')) {
+        return;
+      }
+      self.pending = true;
+      dataCenter.values.upload(self.params, function(data, xhr) {
+        self.pending = false;
+        if (!data) {
+          return util.showSystemError(xhr);
+        }
+        if (data.ec !== 0) {
+          return alert(data.em);
+        }
+        self.params = '';
+        self.refs.filenameDialog.hide();
+        self.updateFiles(data.files);
+        self.show();
+      });
     });
   },
   download: function(e) {
@@ -152,6 +171,16 @@ var FilesDialog = React.createClass({
     if (!confirm('Are you sure to delete this file \'' + name + '\'.')) {
       return;
     }
+    var self = this;
+    dataCenter.values.removeFile({ name: name }, function(data, xhr) {
+      if (!data) {
+        return util.showSystemError(xhr);
+      }
+      if (data.ec !== 0) {
+        return alert(data.em);
+      }
+      self.updateFiles(data.files);
+    });
   },
   downloadFile: function(e) {
     var name = e.target.getAttribute('data-name');
