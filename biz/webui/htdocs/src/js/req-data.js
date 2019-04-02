@@ -191,13 +191,13 @@ function getFilename(item, type) {
   if (name) {
     index = name.lastIndexOf('.');
     if (index !== -1 && index < name.length - 1) {
-      return name.substring(0, index) + '_' + type + (isRaw ? '' : '.' + name.substring(index + 1));
+      return name.substring(0, index) + '_' + type + (isRaw ? '.txt' : '.' + name.substring(index + 1));
     }
   } else {
     name = url.substring(0, url.indexOf('/'));
   }
   var suffix = isRaw ? '' : util.getExtension(type[2] === 'q' ? item.req.headers : item.res.headers);
-  return name + '_' + type + suffix;
+  return name + '_' + type + (suffix || '.txt');
 }
 
 var ReqData = React.createClass({
