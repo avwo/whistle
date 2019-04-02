@@ -320,7 +320,9 @@ exports.values = createCgi({
   add: 'cgi-bin/values/add',
   remove: 'cgi-bin/values/remove',
   rename: 'cgi-bin/values/rename',
-  upload: 'cgi-bin/values/upload'
+  upload: 'cgi-bin/values/upload',
+  checkFile: 'cgi-bin/values/check-file',
+  removeFile: 'cgi-bin/values/remove-file'
 }, POST_CONF);
 
 exports.plugins = createCgi({
