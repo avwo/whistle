@@ -99,7 +99,7 @@ var FilesDialog = React.createClass({
     var name = self.params.name;
     dataCenter.values.checkFile({
       name: name,
-      count: self.state.files
+      count: self.state.files.length
     }, function(data, xhr) {
       self.pending = false;
       if (!data) {

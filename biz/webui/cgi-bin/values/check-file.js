@@ -8,7 +8,7 @@ module.exports = function (req, res) {
   var count = parseInt(req.body.count, 10) || 0;
   var len = files.length;
   var isMax = len >= LIMIMT_FILES_COUNT && count < LIMIMT_FILES_COUNT;
-  var exists = name && files.indexOf(name) === -1;
+  var exists = name && files.indexOf(name) !== -1;
   res.json({
     ec: 0,
     em: 'success',
