@@ -185,7 +185,7 @@ var FilesDialog = React.createClass({
               <tbody>
                 {
                   files.map(function(file, i) {
-                    var filePath = '$whistle/' + file.name;
+                    var filePath = '/$whistle/' + file.name;
                     return (
                       <tr>
                         <th className="w-files-order">{ i + 1 }</th>
