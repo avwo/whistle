@@ -52,6 +52,10 @@
   padding: 10px 15px;
 }
 
+.w-context-menu  li[data-menu-action=Copy] ul {
+  top: -31px!important;
+}
+
 .w-context-menu  li[data-menu-action=Modify] ul {
   top: -61px!important;
 }
