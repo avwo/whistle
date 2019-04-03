@@ -1,5 +1,5 @@
 .w-files-dialog .modal-dialog {
-  width: 820px;
+  width: 900px;
 }
 
 .w-files-dialog h4  {
@@ -16,7 +16,7 @@
   margin: 20px 0;
   color: #aaa;
   font-size: 16px;
-  width: 796px;
+  width: 880px;
   font-weight: normal;
 }
 .w-files-upload-btn:hover {
@@ -64,12 +64,12 @@
 }
 
 .w-files-info-dialog .modal-dialog {
-  width: 640px;
+  width: 720px;
 }
 
 .w-files-name input {
   display: inline-block;
-  width: 540px;
+  width: 620px;
   margin-left: 20px;
   font-weight: normal;
 }
