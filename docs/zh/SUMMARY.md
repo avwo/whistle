@@ -23,6 +23,7 @@
   * [WebSocket](webui/websocket.md)
   * [Filter](webui/filter.md)
   * [Settings](webui/settings.md)
+  * [Files](webui/files.md)
   * [Weinre](webui/weinre.md)
   * [Https](webui/https.md)
   * [Online](webui/online.md)
