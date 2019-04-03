@@ -247,11 +247,11 @@ function getRawType(type) {
 }
 
 exports.getExtension = function(headers) {
-  var type = getRawType(type);
   var suffix = getContentType(headers);
   if (suffix !== 'IMG') {
     return suffix ? '.' + (suffix === 'TEXT' ? 'txt' : suffix.toLowerCase()) : '';
   }
+  var type = getRawType(headers);
   type = type.substring(type.indexOf('/') + 1).toLowerCase();
   return '.' + type; 
 };
