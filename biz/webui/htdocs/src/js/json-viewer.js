@@ -74,12 +74,12 @@ var JsonViewer = React.createClass({
       return;
     }
     if (!name) {
-      message.error('Value name can not be empty.');
+      message.error('Value name cannot be empty.');
       return;
     }
 
     if (/\s/.test(name)) {
-      message.error('Name can not have spaces.');
+      message.error('Name cannot have spaces.');
       return;
     }
     if (modal.exists(name) &&

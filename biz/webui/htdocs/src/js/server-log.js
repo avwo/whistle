@@ -166,7 +166,7 @@ var ServerLog = React.createClass({
       return alert('Only supports .log file.');
     }
     if (file.size > MAX_FILE_SIZE) {
-      return alert('The file size can not exceed 2m.');
+      return alert('The file size cannot exceed 2m.');
     }
     util.readFileAsText(file, function(logs) {
       logs = util.parseLogs(logs);

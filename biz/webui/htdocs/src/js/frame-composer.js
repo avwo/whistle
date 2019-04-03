@@ -77,7 +77,7 @@ var FrameComposer = React.createClass({
   uploadForm: function(form) {
     var file = form.get('uploadData');
     if (file.size > MAX_FILE_SIZE) {
-      return alert('The file size can not exceed 1m.');
+      return alert('The file size cannot exceed 1m.');
     }
     var self = this;
     var params = {

@@ -69,11 +69,11 @@ var FilesDialog = React.createClass({
     var input = ReactDOM.findDOMNode(this.refs.filename);
     var name = input.value.trim();
     if (!name) {
-      showError('The filename can not be empty.', input);
+      showError('The filename cannot be empty.', input);
       return;
     }
     if (/[\\/:*?"<>|\s]/.test(name)) {
-      showError('The filename can not contain \\/:*?"<>| and spaces.', input);
+      showError('The filename cannot contain \\/:*?"<>| and spaces.', input);
       return;
     }
     this.params.name = name;
@@ -141,10 +141,10 @@ var FilesDialog = React.createClass({
   },
   submit: function(file) {
     if (!file.size) {
-      return alert('The file size can not be empty.');
+      return alert('The file size cannot be empty.');
     }
     if (file.size > MAX_FILE_SIZE) {
-      return alert('The file size can not exceed 20m.');
+      return alert('The file size cannot exceed 20m.');
     }
     var self = this;
     var params = {};

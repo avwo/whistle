@@ -602,7 +602,7 @@ var Index = React.createClass({
           }
           if (/\.log$/i.test(file.name)) {
             if (file.size > MAX_LOG_SIZE) {
-              return alert('The file size can not exceed 2m.');
+              return alert('The file size cannot exceed 2m.');
             }
             util.readFileAsText(file, function(logs) {
               logs = util.parseLogs(logs);
@@ -1385,7 +1385,7 @@ var Index = React.createClass({
     }
 
     if (file.size > MAX_OBJECT_SIZE) {
-      return alert('The file size can not exceed 6m.');
+      return alert('The file size cannot exceed 6m.');
     }
     if ($(e.target).hasClass('btn-danger')) {
       data.append('replaceAll', '1');
@@ -1414,7 +1414,7 @@ var Index = React.createClass({
     }
 
     if (file.size > MAX_OBJECT_SIZE) {
-      return alert('The file size can not exceed 6m.');
+      return alert('The file size cannot exceed 6m.');
     }
     if ($(e.target).hasClass('btn-danger')) {
       data.append('replaceAll', '1');
@@ -1782,7 +1782,7 @@ var Index = React.createClass({
     var target = ReactDOM.findDOMNode(self.refs.createRulesInput);
     var name = $.trim(target.value);
     if (!name) {
-      message.error('The name can not be empty.');
+      message.error('The name cannot be empty.');
       return;
     }
 
@@ -1815,17 +1815,17 @@ var Index = React.createClass({
     var target = ReactDOM.findDOMNode(self.refs.createValuesInput);
     var name = $.trim(target.value);
     if (!name) {
-      message.error('The name can not be empty.');
+      message.error('The name cannot be empty.');
       return;
     }
 
     if (/\s/.test(name)) {
-      message.error('The name can not contain spaces.');
+      message.error('The name cannot contain spaces.');
       return;
     }
 
     if (/#/.test(name)) {
-      message.error('The name can not contain #.');
+      message.error('The name cannot contain #.');
       return;
     }
 
@@ -1901,7 +1901,7 @@ var Index = React.createClass({
     var target = ReactDOM.findDOMNode(self.refs.editRulesInput);
     var name = $.trim(target.value);
     if (!name) {
-      message.error('The rule group name can not be empty.');
+      message.error('The rule group name cannot be empty.');
       return;
     }
 
@@ -1940,7 +1940,7 @@ var Index = React.createClass({
     var target = ReactDOM.findDOMNode(self.refs.editValuesInput);
     var name = $.trim(target.value);
     if (!name) {
-      message.error('The rule group name can not be empty.');
+      message.error('The rule group name cannot be empty.');
       return;
     }
 
@@ -2479,7 +2479,7 @@ var Index = React.createClass({
     }
 
     if (file.size > MAX_FILE_SIZE) {
-      return alert('The file size can not exceed 64m.');
+      return alert('The file size cannot exceed 64m.');
     }
     var isText = /\.txt$/i.test(file.name);
     if (isText || /\.har$/i.test(file.name)) {
