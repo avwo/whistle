@@ -611,6 +611,9 @@ function startLoadData() {
         var newItem = data[item.id];
         if (newItem) {
           $.extend(item, newItem);
+          if (item.rules && item.codec) {
+            item.rules.codec = item.codec;
+          }
           setReqData(item);
         } else {
           item.lost = true;
