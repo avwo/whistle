@@ -1,7 +1,7 @@
 {
   "name": "whistle",
   "description": "HTTP, HTTPS, Websocket debugging proxy",
-  "version": "1.13.25",
+  "version": "1.13.26",
   "dataDirname": ".whistle",
   "localUIHost": "local.whistlejs.com",
   "port": 8899,
@@ -53,7 +53,7 @@
     "node-pac": "^0.4.0",
     "parseurl": "^1.3.1",
     "pfork": "^0.2.1",
-    "pipestream": "^0.3.0",
+    "pipestream": "^0.2.0",
     "q": "1.4.1",
     "safe-buffer": "^5.1.2",
     "sni": "1.0.0",
