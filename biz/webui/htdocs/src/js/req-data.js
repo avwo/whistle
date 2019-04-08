@@ -477,17 +477,18 @@ var ReqData = React.createClass({
         'HTTP/' + (req.httpVersion || '1.1')].join(' ');
       events.trigger('showFilenameInput', {
         title: 'Set the filename of request raw data',
-        headers: reqLine + '\r\n' + util.objectToString(req.headers),
+        headers: reqLine + '\r\n' + util.objectToString(req.headers, req.rawHeaderNames, true),
         base64: req.base64,
         name: getFilename(item, 'req_raw')
       });
       break;
     case 'Res Raw':
-      var statusLine = ['HTTP/' + (item.req.httpVersion || '1.1'), item.res.statusCode,
-        util.getStatusMessage(item.res)].join(' ');
+      var res = item.res;
+      var statusLine = ['HTTP/' + (item.req.httpVersion || '1.1'), res.statusCode,
+        util.getStatusMessage(res)].join(' ');
       events.trigger('showFilenameInput', {
         title: 'Set the filename of response raw data',
-        headers: statusLine + '\r\n' + util.objectToString(item.res.headers),
+        headers: statusLine + '\r\n' + util.objectToString(res.headers, res.rawHeaderNames, true),
         base64: item.res.base64,
         name: getFilename(item, 'res_raw')
       });

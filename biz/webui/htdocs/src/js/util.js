@@ -395,14 +395,16 @@ exports.parseQueryString = function(str, delimiter, seperator, decode, donotAllo
   return result;
 };
 
-function objectToString(obj, rawNames) {
+function objectToString(obj, rawNames, noEncoding) {
   if (!obj) {
     return '';
   }
-  rawNames = rawNames || {};
-  return Object.keys(obj).map(function(key) {
+  var keys = Object.keys(obj);
+  var index = noEncoding ? keys.indexOf('content-encoding') : -1;
+  index !== -1 && keys.splice(index, 1);
+  return keys.map(function(key) {
     var value = obj[key];
-    key = rawNames[key] || key;
+    key = rawNames && rawNames[key] || key;
     if (!Array.isArray(value)) {
       return key + ': ' + value;
     }
@@ -416,7 +418,7 @@ exports.objectToString = objectToString;
 
 exports.getOriginalReqHeaders = function(item) {
   var req = item.req;
-  var headers = $.extend({}, req.headers, item.rulesHeaders);
+  var headers = $.extend({}, req.headers, item.rulesHeaders, true);
   return objectToString(headers, req.rawHeaderNames);
 };
 
