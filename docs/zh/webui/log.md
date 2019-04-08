@@ -8,4 +8,4 @@
 
 1. `Console` 显示页面抛出的异常或通过 `console` 打印的信息
 2. `Server` 显示 whistle 内部发生的异常信息
-3. `All Logs` 用于切换不同页面的 log 显示，这个功能详见 [log 高级使用]()
+3. `All Logs` 用于切换不同页面的 log 显示，这个功能详见 [log 高级使用](../rules/log.html)
