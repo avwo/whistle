@@ -243,17 +243,24 @@ function getRawType(type) {
   if (type && typeof type != 'string') {
     type = type['content-type'] || type.contentType;
   }
-  return typeof type === 'string' ? type.split(';')[0].toLowerCase() : '';
+  return typeof type === 'string' ? type.split(';')[0].trim().toLowerCase() : '';
 }
 
 exports.getExtension = function(headers) {
   var suffix = getContentType(headers);
+  var type;
+  if (suffix === 'XML') {
+    type = getRawType(headers);
+    if (type.indexOf('image/') === 0) {
+      suffix = 'IMG';
+    }
+  }
   if (suffix !== 'IMG') {
     return suffix ? '.' + (suffix === 'TEXT' ? 'txt' : suffix.toLowerCase()) : '';
   }
-  var type = getRawType(headers);
+  type = type || getRawType(headers);
   type = type.substring(type.indexOf('/') + 1).toLowerCase();
-  return '.' + type; 
+  return /\w+/.test(type) ? '.' + RegExp['$&'] : ''; 
 };
 
 function getContentType(type) {

@@ -72,6 +72,10 @@ var FilesDialog = React.createClass({
       showError('The filename cannot be empty.', input);
       return;
     }
+    if (name.length > MAX_FILES_COUNT) {
+      showError('The filename length cannot exceed 60.', input);
+      return;
+    }
     if (/[\\/:*?"<>|\s]/.test(name)) {
       showError('The filename cannot contain \\/:*?"<>| and spaces.', input);
       return;
