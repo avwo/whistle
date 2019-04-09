@@ -199,7 +199,7 @@ function getFilename(item, type) {
     name = url.substring(0, url.indexOf('/'));
   }
   var suffix = isRaw ? '' : util.getExtension(type[2] === 'q' ? item.req.headers : item.res.headers);
-  return name + '_' + type + (suffix || '.txt');
+  return name + '_' + type + suffix;
 }
 
 var ReqData = React.createClass({
