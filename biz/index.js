@@ -78,6 +78,9 @@ module.exports = function(req, res, next) {
   }
   var localRule;
   req.curUrl = fullUrl;
+  if (transformPort || proxyUrl) {
+    util.setClientId(req.headers, rules.resolveEnable(req));
+  }
   if (proxyUrl) {
     req.curUrl = 'http://' + proxyUrl;
     rules.resolveHost(req, function(err, ip) {
