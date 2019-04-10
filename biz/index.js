@@ -54,9 +54,12 @@ module.exports = function(req, res, next) {
       }
     }
   } else {
-    isWebUI = req.headers[config.WEBUI_HEAD] || config.isLocalUIUrl(host);
-    if (!isWebUI && net.isIP(host) && util.isLocalAddress(host)) {
-      isWebUI = port == config.port || port == config.uiport;
+    isWebUI = req.headers[config.WEBUI_HEAD];
+    if (!isWebUI) {
+      isWebUI = config.isLocalUIUrl(host);
+      if (isWebUI ? net.isIP(host) : util.isLocalAddress(host)) {
+        isWebUI = port == config.port || port == config.uiport;
+      }
     }
     if (isWebUI) {
       if (req.path.indexOf('/_/') === 0) {
