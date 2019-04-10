@@ -5,13 +5,14 @@ var handleUIReq = require('./webui/lib').handleRequest;
 var handleWeinreReq = require('./weinre');
 
 var HTTP_PROXY_RE = /^x?(?:proxy|http-proxy|http2https-proxy|https2http-proxy|internal-proxy):\/\//;
-var INTERNAL_APP, WEBUI_PATH, PLUGIN_RE, PREVIEW_PATH_RE;
+var INTERNAL_APP, WEBUI_PATH, PLUGIN_RE, PREVIEW_PATH_RE, WEBUI_CGI_PATH;
 
 module.exports = function(req, res, next) {
   var config = this.config;
   var pluginMgr = this.pluginMgr;
   if (!INTERNAL_APP) {
     WEBUI_PATH = config.WEBUI_PATH;
+    WEBUI_CGI_PATH = WEBUI_PATH + 'cgi-bin/';
     PREVIEW_PATH_RE = config.PREVIEW_PATH_RE;
     var webuiPathRe = util.escapeRegExp(WEBUI_PATH);
     INTERNAL_APP = new RegExp('^' + webuiPathRe + '(log|weinre)(?:\\.(\\d{1,5}))?/');
@@ -39,7 +40,7 @@ module.exports = function(req, res, next) {
       } else if (PLUGIN_RE.test(req.path)) {
         proxyUrl = !pluginMgr.getPlugin(RegExp.$1 + ':');
       } else {
-        isWebUI = false;
+        isWebUI = !req.path.indexOf(WEBUI_CGI_PATH);
       }
       if (proxyUrl) {
         req.curUrl = fullUrl;

@@ -218,6 +218,9 @@ app.use(function(req, res, next) {
     || doNotCheckLogin(req)) {
     return next();
   }
+  if (req.headers[config.WEBUI_HEAD] && (req.path === '/' || req.path === '/index.html')) {
+    res.setHeader('Set-Cookie', '_whistleuipath_=1');
+  }
   var guestAuthKey = config.guestAuthKey;
   if (((guestAuthKey && guestAuthKey === req.headers['x-whistle-guest-auth-key'])
     || verifyLogin(req, res)) && (!req.method || GET_METHOD_RE.test(req.method) || WEINRE_RE.test(req.path))) {
