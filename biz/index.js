@@ -78,9 +78,6 @@ module.exports = function(req, res, next) {
   }
   var localRule;
   req.curUrl = fullUrl;
-  if (transformPort || proxyUrl) {
-    util.setClientId(req.headers, rules.resolveEnable(req));
-  }
   if (proxyUrl) {
     req.curUrl = 'http://' + proxyUrl;
     rules.resolveHost(req, function(err, ip) {
@@ -90,6 +87,7 @@ module.exports = function(req, res, next) {
       var colon = proxyUrl.indexOf(':');
       var proxyPort = colon === -1 ? 80 : proxyUrl.substring(colon + 1);
       req.headers.host = 'local.whistlejs.com';
+      util.setClientId(req.headers, rules.resolveEnable(req));
       util.transformReq(req, res, proxyPort > 0 ? proxyPort : 80, ip);
     });
   } else if (isWebUI) {
