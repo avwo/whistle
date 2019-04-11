@@ -48,7 +48,7 @@ if (whistlePort) {
     whistlePort = null;
   }
 }
-var BASE_URI = whistlePort ? '...whistle-path.5b6af7b9884e1165...///cgi.' + whistlePort : '';
+var BASE_URI = whistlePort ? '...whistle-path.5b6af7b9884e1165...///cgi.' + whistlePort + '/' : '';
 exports.clientIp = '127.0.0.1';
 exports.MAX_INCLUDE_LEN = MAX_INCLUDE_LEN;
 exports.MAX_EXCLUDE_LEN = MAX_EXCLUDE_LEN;
