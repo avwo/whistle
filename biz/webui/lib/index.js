@@ -218,7 +218,7 @@ app.use(function(req, res, next) {
     || doNotCheckLogin(req)) {
     return next();
   }
-  if (req.headers[config.WEBUI_HEAD] && (req.path === '/' || req.path === '/index.html')) {
+  if ((req.path === '/' || req.path === '/index.html')) {
     res.setHeader('Set-Cookie', uiPortCookie);
   }
   var guestAuthKey = config.guestAuthKey;
