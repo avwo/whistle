@@ -280,7 +280,7 @@ function init(proxy) {
   pluginMgr = proxy.pluginMgr;
   util = proxy.util;
   uiPortCookie = cookie.serialize('_whistleuipath_', config.port, {
-    expires: new Date(Date.now() + (10000)),
+    expires: new Date(Date.now() + 10000),
     maxAge: 10
   });
   setProxy(proxy);
