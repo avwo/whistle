@@ -27,7 +27,7 @@ var DONT_CHECK_PATHS = ['/cgi-bin/server-info', '/cgi-bin/show-host-ip-in-res-he
                         '/cgi-bin/lookup-tunnel-dns', '/cgi-bin/rootca', '/cgi-bin/log/set'];
 var PLUGIN_PATH_RE = /^\/(whistle|plugin)\.([^/?#]+)(\/)?/;
 var STATIC_SRC_RE = /\.(?:ico|js|css|png)$/i;
-var proxyEvent, util, config, pluginMgr;
+var proxyEvent, util, config, pluginMgr, uiPortCookie;
 var MAX_AGE = 60 * 60 * 24 * 3;
 
 function doNotCheckLogin(req) {
@@ -219,7 +219,7 @@ app.use(function(req, res, next) {
     return next();
   }
   if (req.headers[config.WEBUI_HEAD] && (req.path === '/' || req.path === '/index.html')) {
-    res.setHeader('Set-Cookie', '_whistleuipath_=1');
+    res.setHeader('Set-Cookie', uiPortCookie);
   }
   var guestAuthKey = config.guestAuthKey;
   if (((guestAuthKey && guestAuthKey === req.headers['x-whistle-guest-auth-key'])
@@ -279,6 +279,7 @@ function init(proxy) {
   config = proxy.config;
   pluginMgr = proxy.pluginMgr;
   util = proxy.util;
+  uiPortCookie = '_whistleuipath_=' + config.port;
   setProxy(proxy);
 }
 

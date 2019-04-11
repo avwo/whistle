@@ -34,8 +34,6 @@ var logId;
 var uploadFiles;
 var dumpCount = 0;
 var onlyViewOwnData = storage.get('onlyViewOwnData') == 1;
-var cookie = typeof document.cookie === 'string' ? document.cookie : '';
-var BASE_URI = cookie.indexOf('_whistleuipath_=1') !== -1 ? '...whistle-path.5b6af7b9884e1165...///' : '';
 var DEFAULT_CONF = {
   timeout: TIMEOUT,
   xhrFields: {
@@ -43,6 +41,14 @@ var DEFAULT_CONF = {
   },
   data: {}
 };
+var whistlePort = /_whistleuipath_=(\d+)/.test(document.cookie);
+if (whistlePort) {
+  whistlePort = RegExp.$1;
+  if (!(whistlePort > 0 && whistlePort <= 65535)) {
+    whistlePort = null;
+  }
+}
+var BASE_URI = whistlePort ? '...whistle-path.5b6af7b9884e1165...///cgi.' + whistlePort : '';
 exports.clientIp = '127.0.0.1';
 exports.MAX_INCLUDE_LEN = MAX_INCLUDE_LEN;
 exports.MAX_EXCLUDE_LEN = MAX_EXCLUDE_LEN;

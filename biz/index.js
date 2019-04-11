@@ -5,17 +5,16 @@ var handleUIReq = require('./webui/lib').handleRequest;
 var handleWeinreReq = require('./weinre');
 
 var HTTP_PROXY_RE = /^x?(?:proxy|http-proxy|http2https-proxy|https2http-proxy|internal-proxy):\/\//;
-var INTERNAL_APP, WEBUI_PATH, PLUGIN_RE, PREVIEW_PATH_RE, WEBUI_CGI_PATH;
+var INTERNAL_APP, WEBUI_PATH, PLUGIN_RE, PREVIEW_PATH_RE;
 
 module.exports = function(req, res, next) {
   var config = this.config;
   var pluginMgr = this.pluginMgr;
   if (!INTERNAL_APP) {
     WEBUI_PATH = config.WEBUI_PATH;
-    WEBUI_CGI_PATH = WEBUI_PATH + 'cgi-bin/';
     PREVIEW_PATH_RE = config.PREVIEW_PATH_RE;
     var webuiPathRe = util.escapeRegExp(WEBUI_PATH);
-    INTERNAL_APP = new RegExp('^' + webuiPathRe + '(log|weinre)(?:\\.(\\d{1,5}))?/');
+    INTERNAL_APP = new RegExp('^' + webuiPathRe + '(log|weinre|cgi)(?:\\.(\\d{1,5}))?/');
     PLUGIN_RE = new RegExp('^' + webuiPathRe + 'whistle\\.([a-z\\d_-]+)/');
   }
   var fullUrl = util.getFullUrl(req);
@@ -30,7 +29,7 @@ module.exports = function(req, res, next) {
     if (isWebUI) {
       if (INTERNAL_APP.test(req.path)) {
         transformPort = RegExp.$2;
-        isWeinre = RegExp.$1 === 'weinre';
+        isWeinre = RegExp.$1 === 'weinre' || RegExp.$1 === 'cgi';
         if (transformPort) {
           proxyUrl = transformPort != (isWeinre ? config.port : config.uiport);
         } else {
@@ -39,8 +38,8 @@ module.exports = function(req, res, next) {
         }
       } else if (PLUGIN_RE.test(req.path)) {
         proxyUrl = !pluginMgr.getPlugin(RegExp.$1 + ':');
-      } else {
-        isWebUI = !req.path.indexOf(WEBUI_CGI_PATH);
+      } else if (!req.headers[config.WEBUI_HEAD]) {
+        isWebUI = false;
       }
       if (proxyUrl) {
         req.curUrl = fullUrl;
