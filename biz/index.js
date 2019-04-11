@@ -29,9 +29,10 @@ module.exports = function(req, res, next) {
     if (isWebUI) {
       if (INTERNAL_APP.test(req.path)) {
         transformPort = RegExp.$2;
-        isWeinre = RegExp.$1 === 'weinre' || RegExp.$1 === 'cgi';
+        isWeinre = RegExp.$1 === 'weinre';
+        var isUI = RegExp.$1 === 'cgi';
         if (transformPort) {
-          proxyUrl = transformPort != (isWeinre ? config.port : config.uiport);
+          proxyUrl = transformPort != ((isWeinre || isUI) ? config.port : config.uiport);
         } else {
           proxyUrl = false;
           transformPort = isWeinre ? config.port : config.uiport;
