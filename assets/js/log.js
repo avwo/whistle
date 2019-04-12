@@ -301,15 +301,26 @@
 
   var levels = ['fatal', 'error', 'warn', 'info', 'debug', 'log'];
   var noop = function() {};
+  var slice = Array.prototype.slice;
   for (var i = 0, len = levels.length; i < len; i++) {
     var level = levels[i];
     var fn = console[level] || noop;
     (function(level) {
       var pending;
       var wFn = wConsole[level] = function() {
-        var result = [];
-        for (var i = 0, len = arguments.length; i < len; i++) {
-          result[i] = stringify(arguments[i]);
+        var result = slice.call(arguments);
+        if (typeof window.onBeforeWhistleLogSend === 'function') {
+          pending = true;
+          try {
+            window.onBeforeWhistleLogSend(result, level);
+          } catch(e) {
+            result.push('onBeforeWhistleLogSend' + stringify(e));
+          } finally {
+            pending = false;
+          }
+        }
+        for (var i = 0, len = result.length; i < len; i++) {
+          result[i] = stringify(result[i]);
         }
         if (!result.length) {
           result = ['undefined'];
@@ -332,7 +343,7 @@
         try {
           fn.apply(this, arguments);
         } catch(e) {
-          fn(arguments.length < 2 ? arguments[0] : Array.prototype.slice.apply(arguments));
+          fn(arguments.length < 2 ? arguments[0] : slice.apply(arguments));
         } finally {
           pending = false;
         }
