@@ -9,13 +9,42 @@ var dataCenter = require('./data-center');
 var FilterInput = require('./filter-input');
 var RecordBtn = require('./record-btn');
 var events = require('./events');
+var DropDown = require('./dropdown');
 
 var MAX_COUNT = 60;
 var MAX_FILE_SIZE = 1024 * 1024 * 2;
 
 var ServerLog = React.createClass({
   getInitialState: function() {
-    return { scrollToBottom: true };
+    return {
+      scrollToBottom: true,
+      levels: [
+        {
+          value: '',
+          text: 'All levels'
+        },
+        {
+          value: 'debug',
+          text: 'Debug'
+        },
+        {
+          value: 'info',
+          text: 'Info/Log'
+        },
+        {
+          value: 'warn',
+          text: 'Warn'
+        },
+        {
+          value: 'error',
+          text: 'Error'
+        },
+        {
+          value: 'fatal',
+          text: 'Fatal'
+        }
+      ]
+    };
   },
   componentDidMount: function() {
     var self = this;
@@ -159,6 +188,9 @@ var ServerLog = React.createClass({
   selectFile: function() {
     ReactDOM.findDOMNode(this.refs.importData).click();
   },
+  changeLevel: function(option) {
+    this.setState({ level: option.value });
+  },
   importData: function() {
     var form = new FormData(ReactDOM.findDOMNode(this.refs.importDataForm));
     var file = form.get('importData');
@@ -200,11 +232,16 @@ var ServerLog = React.createClass({
   render: function() {
     var state = this.state;
     var logs = state.logs || [];
+    var level = state.level;
     var disabled = !util.hasVisibleLog(logs);
 
     return (
       <div className={'fill orient-vertical-box w-textarea w-detail-svr-log' + (this.props.hide ? ' hide' : '')}>
         <div className="w-log-action-bar">
+          <DropDown
+            onChange={this.changeLevel}
+            options={state.levels}
+          />
           <div className="w-textarea-bar">
             <a className="w-import" onClick={this.selectFile}
               href="javascript:;" draggable="false">Import</a>
@@ -238,7 +275,7 @@ var ServerLog = React.createClass({
           <ul ref="svrContent">
             {logs.map(function(log) {
               var text = 'Date: ' + (new Date(log.date)).toLocaleString() + '\r\n' + log.text;
-              var hide = log.hide ? ' hide' : '';
+              var hide = (log.hide || (level && !hide && log.level !== level)) ? ' hide' : '';
               return (
                 <li key={log.id} title={log.level.toUpperCase()} className={'w-' + log.level + hide}>
                   <pre>
