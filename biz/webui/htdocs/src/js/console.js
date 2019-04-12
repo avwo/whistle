@@ -50,6 +50,32 @@ var Console = React.createClass({
     return {
       scrollToBottom: true,
       logIdList: [allLogs],
+      levels: [
+        {
+          value: '',
+          text: 'All levels'
+        },
+        {
+          value: 'debug',
+          text: 'Debug'
+        },
+        {
+          value: 'info',
+          text: 'Info/Log'
+        },
+        {
+          value: 'warn',
+          text: 'Warn'
+        },
+        {
+          value: 'error',
+          text: 'Error'
+        },
+        {
+          value: 'fatal',
+          text: 'Fatal'
+        }
+      ],
       expandRoot: storage.get('expandJsonRoot') != 1
     };
   },
@@ -131,6 +157,9 @@ var Console = React.createClass({
   },
   changeLogId: function(option) {
     dataCenter.changeLogId(option.value);
+  },
+  changeLevel: function(option) {
+    this.setState({ level: option.value });
   },
   clearLogs: function() {
     var data = this.state.logs;
@@ -255,6 +284,7 @@ var Console = React.createClass({
     var state = this.state;
     var logs = state.logs || [];
     var logIdList = state.logIdList;
+    var level = state.level;
     var expandRoot = state.expandRoot;
     var disabled = !util.hasVisibleLog(logs);
 
@@ -266,6 +296,10 @@ var Console = React.createClass({
             help="https://avwo.github.io/whistle/webui/log.html"
             onChange={this.changeLogId}
             options={logIdList}
+          />
+          <DropDown
+            onChange={this.changeLevel}
+            options={state.levels}
           />
           <label className="w-log-expand-root">
             <input type="checkbox" defaultChecked={expandRoot} onChange={this.changeExpandRoot} />
@@ -306,7 +340,7 @@ var Console = React.createClass({
               var logId = log.logId;
               logId = logId ? ' (LogID: ' + logId + ')' : '';
               var date = 'Date: ' + (new Date(log.date)).toLocaleString() + logId + '\r\n';
-              var hide = log.hide ? ' hide' : '';
+              var hide = (log.hide || (level && !hide && log.level !== level)) ? ' hide' : '';
               return (
                 <li key={log.id} title={log.level.toUpperCase()} className={'w-' + log.level + hide}>
                   <pre>

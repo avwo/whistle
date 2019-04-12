@@ -52,7 +52,7 @@ var DropDown = React.createClass({
         onMouseLeave={self.onMouseLeave}
       >
           <div
-            style={{color: selectedOption === firstOption ? undefined : 'red' }}
+            style={{color: selectedOption === firstOption ? undefined : (selectedOption.color || 'red') }}
             title={selectedOption.text}
             className={'dropdown-toggle w-dropdown-text' + (disabled ? ' w-disabled' : '')}
           >
