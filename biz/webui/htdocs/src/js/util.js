@@ -423,9 +423,21 @@ function objectToString(obj, rawNames, noEncoding) {
 
 exports.objectToString = objectToString;
 
+function toLowerCase(str) {
+  return typeof str == 'string' ?  str.trim().toLowerCase() : str;
+}
+
+function getContentEncoding(headers) {
+  var encoding = toLowerCase(headers && headers['content-encoding'] || headers);
+  return encoding === 'gzip' || encoding === 'deflate' ? encoding : null;
+}
+
 exports.getOriginalReqHeaders = function(item) {
   var req = item.req;
   var headers = $.extend({}, req.headers, item.rulesHeaders, true);
+  if (getContentEncoding(headers)) {
+    delete headers['content-encoding'];
+  }
   return objectToString(headers, req.rawHeaderNames);
 };
 
