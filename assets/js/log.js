@@ -303,9 +303,8 @@
   var noop = function() {};
   var slice = Array.prototype.slice;
   for (var i = 0, len = levels.length; i < len; i++) {
-    var level = levels[i];
-    var fn = console[level] || noop;
     (function(level) {
+      var fn = console[level] || noop;
       var pending;
       var wFn = wConsole[level] = function() {
         var result = slice.call(arguments);
@@ -348,7 +347,7 @@
           pending = false;
         }
       };
-    })(level);
+    })(levels[i]);
   }
   /*eslint no-console: "off"*/
   var onerror = function(message, filename, lineno, colno, error) {
