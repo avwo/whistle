@@ -62,6 +62,7 @@ var FrameClient = React.createClass({
       json = util.getJson(frame, true);
       base64 = frame.base64;
     }
+    base64 = base64 || '';
     return (
       <div className={'fill orient-vertical-box w-frames-data' + (this.props.hide ? ' hide' : '')}>
         <BtnGroup onClick={this.onClickBtn} btns={BTNS} />

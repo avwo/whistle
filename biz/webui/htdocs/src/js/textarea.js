@@ -74,7 +74,7 @@ var Textarea = React.createClass({
     ReactDOM.findDOMNode(this.refs.filename).value = name;
     ReactDOM.findDOMNode(this.refs.type).value = base64 ? 'base64' : '';
     ReactDOM.findDOMNode(this.refs.headers).value = this.props.headers || '';
-    ReactDOM.findDOMNode(this.refs.content).value = base64 || this.props.value || '';
+    ReactDOM.findDOMNode(this.refs.content).value = base64 != null ? base64 : (this.props.value || '');
     ReactDOM.findDOMNode(this.refs.downloadForm).submit();
     this.hideNameInput();
   },

@@ -69,8 +69,9 @@ var ReqDetail = React.createClass({
         form = util.parseQueryString(util.getBody(req, true), null, null, decodeURIComponent);
       }
       headersStr = util.objectToString(headers, req.rawHeaderNames);
-      raw = [req.method, req.method == 'CONNECT' ? headers.host : util.getPath(realUrl), 'HTTP/' + (req.httpVersion || '1.1')].join(' ')
-          + '\r\n' + headersStr + '\r\n\r\n' + body;
+      headersStr = [req.method, req.method == 'CONNECT' ? headers.host : util.getPath(realUrl), 'HTTP/' + (req.httpVersion || '1.1')].join(' ')
+      + '\r\n' + headersStr;
+      raw = headersStr + '\r\n\r\n' + body;
       if (modal.isHttps) {
         tips = { isHttps: true };
       } else if (modal.requestTime && !body && !/^ws/.test(modal.url)) {
@@ -83,7 +84,8 @@ var ReqDetail = React.createClass({
     }
     state.raw = raw;
     state.body = body;
-
+    base64 = base64 || '';
+  
     return (
       <div className={'fill orient-vertical-box w-detail-content w-detail-request' + (util.getBoolean(this.props.hide) ? ' hide' : '')}>
         <BtnGroup onClick={this.onClickBtn} btns={BTNS} />

@@ -116,8 +116,9 @@ var ResDetail = React.createClass({
       var showImg = name === btns[1].name;
       if (status != null) {
         headersStr = util.objectToString(headers, res.rawHeaderNames);
-        raw = ['HTTP/' + (modal.req.httpVersion || '1.1'), status, util.getStatusMessage(res)].join(' ')
-            + '\r\n' + headersStr + '\r\n\r\n' + body;
+        headersStr = ['HTTP/' + (modal.req.httpVersion || '1.1'), status, util.getStatusMessage(res)].join(' ')
+        + '\r\n' + headersStr;
+        raw = headersStr + '\r\n\r\n' + body;
         var type = util.getContentType(headers);
         isJson = type === 'JSON';
         if (type === 'IMG') {
@@ -148,6 +149,7 @@ var ResDetail = React.createClass({
         state.initedTextView = true;
       }
     }
+    base64 = base64 || '';
     return (
       <div className={'fill orient-vertical-box w-detail-content w-detail-response'
         + (util.getBoolean(this.props.hide) ? ' hide' : '')}>

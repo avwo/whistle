@@ -28,6 +28,10 @@ Object.keys(TYPES).forEach(function(name) {
   REV_TYPES[TYPES[name]] = name;
 });
 
+function hasReqBody(method) {
+  return method === 'CONNECT' || util.hasRequestBody(method);
+}
+
 function getType(headers) {
   var keys = Object.keys(headers);
   var type;
@@ -138,7 +142,7 @@ var Composer = React.createClass({
     this.refs.prettyHeaders.update(prettyHeaders);
     var method = ReactDOM.findDOMNode(this.refs.method).value || 'GET';
     var body;
-    if (util.hasRequestBody(method)) {
+    if (hasReqBody(method)) {
       body = ReactDOM.findDOMNode(this.refs.body).value;
       body = util.parseQueryString(body, null, null, decodeURIComponent);
     }
@@ -366,7 +370,7 @@ var Composer = React.createClass({
     var body = ReactDOM.findDOMNode(refs.body).value;
     var base64;
     var isHexText = this.state.isHexText;
-    if (isHexText && util.hasRequestBody(method)) {
+    if (isHexText && hasReqBody(method)) {
       base64 = util.getBase64FromHexText(body);
       if (base64 === false) {
         alert('The hex text cannot be converted to binary data.\nPlease check the hex text or switch to plain text.');
@@ -463,7 +467,7 @@ var Composer = React.createClass({
     var statusCode = result ? (result.res && result.res.statusCode) : '';
     var isForm = type === 'form';
     var method = state.method || 'GET';
-    var hasBody = util.hasRequestBody(method);
+    var hasBody = hasReqBody(method);
     var historyData = state.historyData;
     var disableHistory = !historyData.length || pending;
     var showPrettyBody = hasBody && showPretty && isForm;
