@@ -1,6 +1,11 @@
 var React = require('react');
 var events = require('./events');
 
+var DISABLED = {
+  color: '#888',
+  cursor: 'not-allowed'
+};
+
 var UpdateAllBtn = React.createClass({
   getInitialState: function() {
     return { disabled: true };
@@ -12,14 +17,15 @@ var UpdateAllBtn = React.createClass({
     });
   },
   updateAllPlugins: function() {
-    events.trigger('updateAllPlugins');
+    !this.state.disabled && events.trigger('updateAllPlugins');
   },
   render: function() {
     return (
-      <a onClick={this.updateAllPlugins} className={'w-plugins-menu' +
-        (this.state.disabled ? '' : ' w-disabed')} href="javascript:;" draggable="false">
+      <a style={this.state.disabled ? DISABLED : undefined}
+        onClick={this.updateAllPlugins} className={'w-plugins-menu' +
+        (this.props.hide ? ' hide' : '')} href="javascript:;" draggable="false">
         <span className="glyphicon glyphicon-refresh" />
-        UploadAll
+        UpdateAll
       </a>
     );
   }

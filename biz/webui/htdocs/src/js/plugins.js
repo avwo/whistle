@@ -41,7 +41,7 @@ var Home = React.createClass({
         var list = newPlugins[registry].join(' ');
         return sudo + 'npm i -g ' + list + registry;
       }).join('\n\n');
-      self.setState({
+      cmdMsg && self.setState({
         cmdMsg: cmdMsg,
         uninstall: false
       }, self.showMsgDialog);

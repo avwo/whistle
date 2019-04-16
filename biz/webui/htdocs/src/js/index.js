@@ -2679,7 +2679,7 @@ var Index = React.createClass({
             <span className={'glyphicon glyphicon-' + (disabledAllPlugins ? 'ok-circle' : 'ban-circle')}/>
             {disabledAllPlugins ? 'EnableAll' : 'DisableAll'}
           </a>
-          <UpdateAllBtn />
+          <UpdateAllBtn hide={!isPlugins} />
           <a onClick={this.importData} className="w-import-menu"
             style={{display: isPlugins ? 'none' : ''}} href="javascript:;"
             draggable="false">
