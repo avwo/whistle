@@ -1,8 +1,12 @@
+# v1.13.28
+1. style: Plugins添加 `UpdateAll` 按钮，方便获取更新所有有新版本插件的命令
+2. fix: whistle集群内部路径跳转问题
+
 # v1.13.27
-	1. feat: 支持通过日志级别过滤日志内容
-	2. style: 支持设置 `pattern enable://clientId|mutilClient` 启用请求带上clientId
-	3. style: [log](http://wproxy.org/whistle/rules/log.html) 添加钩子 `window. onBeforeWhistleLogSend(result, level)` 用于自定义显示的日志内容，可以用来添加一些自定义详细日志信息
-	4. feat: 支持通过 `pattern enable://gzip` 强制开启 `gzip` 模式
+1. feat: 支持通过日志级别过滤日志内容
+2. style: 支持设置 `pattern enable://clientId|mutilClient` 启用请求带上clientId
+3. style: [log](http://wproxy.org/whistle/rules/log.html) 添加钩子 `window. onBeforeWhistleLogSend(result, level)` 用于自定义显示的日志内容，可以用来添加一些自定义详细日志信息
+4. feat: 支持通过 `pattern enable://gzip` 强制开启 `gzip` 模式
 
 # v1.13.26
 1. feat: 支持上传文件作为规则配置，解决远程部署是无法在Values设置大块内容的问题，详见：http://wproxy.org/whistle/webui/files.html
