@@ -22,7 +22,7 @@ module.exports = function(req, res, next) {
   var port = host[1] || (req.isHttps ? 443 : 80);
   var bypass;
   host = host[0];
-  var transformPort, proxyUrl, isWeinre;
+  var transformPort, proxyUrl, isWeinre, isOthers;
   var isWebUI = req.path.indexOf(WEBUI_PATH) === 0;
   if (isWebUI) {
     isWebUI = !config.pureProxy;
@@ -30,12 +30,11 @@ module.exports = function(req, res, next) {
       if (INTERNAL_APP.test(req.path)) {
         transformPort = RegExp.$2;
         isWeinre = RegExp.$1 === 'weinre';
-        var isUI = RegExp.$1 === 'cgi';
         if (transformPort) {
-          proxyUrl = transformPort != ((isWeinre || isUI) ? config.port : config.uiport);
+          isOthers = proxyUrl = transformPort != config.port;
         } else {
           proxyUrl = false;
-          transformPort = isWeinre ? config.port : config.uiport;
+          transformPort = config.port;
         }
       } else if (PLUGIN_RE.test(req.path)) {
         proxyUrl = !pluginMgr.getPlugin(RegExp.$1 + ':');
@@ -95,11 +94,15 @@ module.exports = function(req, res, next) {
       util.transformReq(req, res, proxyPort > 0 ? proxyPort : 80, ip);
     });
   } else if (isWebUI) {
-    req.url = req.url.replace(transformPort ? INTERNAL_APP : WEBUI_PATH, '/');
-    if (isWeinre) {
-      handleWeinreReq(req, res);
+    if (isOthers) {
+      util.transformReq(req, res, transformPort);
     } else {
-      handleUIReq(req, res);
+      req.url = req.url.replace(transformPort ? INTERNAL_APP : WEBUI_PATH, '/');
+      if (isWeinre) {
+        handleWeinreReq(req, res);
+      } else {
+        handleUIReq(req, res);
+      }
     }
   } else if (localRule = rules.resolveLocalRule(req)) {
     req.url = localRule.url;
