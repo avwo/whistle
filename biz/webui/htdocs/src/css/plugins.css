@@ -50,6 +50,7 @@ padding: 5px 6px!important; overflow: hidden; text-overflow: ellipsis; white-spa
   color: #ddd;
   padding: 15px;
   margin-top: 10px;
+  font-size: 14px;
 }
 .w-plugin-btn {
   color: #337ab7!important;

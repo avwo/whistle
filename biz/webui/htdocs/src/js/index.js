@@ -24,6 +24,7 @@ var ListDialog = require('./list-dialog');
 var FilterBtn = require('./filter-btn');
 var FilesDialog = require('./files-dialog');
 var message = require('./message');
+var UpdateAllBtn = require('./update-all-btn');
 
 var JSON_RE = /^\s*(?:[\{｛][\w\W]+[\}｝]|\[[\w\W]+\])\s*$/;
 var DEFAULT = 'Default';
@@ -2678,6 +2679,7 @@ var Index = React.createClass({
             <span className={'glyphicon glyphicon-' + (disabledAllPlugins ? 'ok-circle' : 'ban-circle')}/>
             {disabledAllPlugins ? 'EnableAll' : 'DisableAll'}
           </a>
+          <UpdateAllBtn />
           <a onClick={this.importData} className="w-import-menu"
             style={{display: isPlugins ? 'none' : ''}} href="javascript:;"
             draggable="false">

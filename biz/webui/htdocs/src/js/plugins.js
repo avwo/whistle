@@ -6,7 +6,54 @@ var events = require('./events');
 var Dialog = require('./dialog');
 var util = require('./util');
 
+function getPluginComparator(plugins) {
+  return function(a, b) {
+    var p1 = plugins[a];
+    var p2 = plugins[b];
+    if (p1.priority || p2.priority) {
+      return p1.priority > p2.priority ? -1 : 1;
+    }
+    return (p1.mtime > p2.mtime) ? 1 : -1;
+  };
+}
+
 var Home = React.createClass({
+  componentDidMount: function() {
+    var self = this;
+    self.setUpdateAllBtnState();
+    events.on('updateAllPlugins', function() {
+      var data = self.props.data || {};
+      var plugins = data.plugins || {};
+      var sudo = data.isWin ? '' : 'sudo ';
+      var newPlugins = {};
+      Object.keys(plugins).sort(getPluginComparator(plugins))
+      .map(function(name) {
+        var plugin = plugins[name];
+        if (!util.compareVersion(plugin.latest, plugin.version)) {
+          return;
+        }
+        var registry = plugin.registry ? ' --registry=' + plugin.registry : '';
+        var list = newPlugins[registry] || [];
+        list.push(plugin.moduleName);
+        newPlugins[registry] = list;
+      });
+      var cmdMsg = Object.keys(newPlugins).map(function(registry) {
+        var list = newPlugins[registry].join(' ');
+        return sudo + 'npm i -g ' + list + registry;
+      }).join('\n\n');
+      self.setState({
+        cmdMsg: cmdMsg,
+        uninstall: false
+      }, self.showMsgDialog);
+    });
+  },
+  componentDidUpdate: function() {
+    this.setUpdateAllBtnState();
+  },
+  shouldComponentUpdate: function(nextProps) {
+    var hide = util.getBoolean(this.props.hide);
+    return hide != util.getBoolean(nextProps.hide) || !hide;
+  },
   onOpen: function(e) {
     this.props.onOpen && this.props.onOpen(e);
     e.preventDefault();
@@ -56,6 +103,9 @@ var Home = React.createClass({
     }
     events.trigger('disableAllPlugins', e);
   },
+  setUpdateAllBtnState: function() {
+    events.trigger('setUpdateAllBtnState', this.hasNewPlugin);
+  },
   render: function() {
     var self = this;
     var data = self.props.data || {};
@@ -66,6 +116,7 @@ var Home = React.createClass({
     var list = Object.keys(plugins);
     var disabledPlugins = data.disabledPlugins || {};
     var disabled = data.disabledAllRules || data.disabledAllPlugins;
+    self.hasNewPlugin = false;
 
     return (
         <div className="fill orient-vertical-box w-plugins" style={{display: self.props.hide ? 'none' : ''}}>
@@ -87,14 +138,8 @@ var Home = React.createClass({
           <div className="fill w-plugins-list">
             <table className="table table-hover">
               <tbody>
-                {list.length ? list.sort(function(a, b) {
-                  var p1 = plugins[a];
-                  var p2 = plugins[b];
-                  if (p1.priority || p2.priority) {
-                    return p1.priority > p2.priority ? -1 : 1;
-                  }
-                  return (p1.mtime > p2.mtime) ? 1 : -1;
-                }).map(function(name, i) {
+                {list.length ? list.sort(getPluginComparator(plugins))
+                .map(function(name, i) {
                   var plugin = plugins[name];
                   name = name.slice(0, -1);
                   var checked = !disabledPlugins[name];
@@ -102,6 +147,7 @@ var Home = React.createClass({
                   var hasNew = util.compareVersion(plugin.latest, plugin.version);
                   if (hasNew) {
                     hasNew = '(New: ' + plugin.latest + ')';
+                    self.hasNewPlugin = true;
                   }
                   return (
                     <tr key={name} className={((!disabled && checked) ? '' : 'w-plugins-disable') + (hasNew ? ' w-has-new-version' : '')}>
@@ -172,9 +218,9 @@ var Home = React.createClass({
                   Copy the following command
                 </a> to the CLI to execute:
               </h5>
-              <div className="w-plugin-update-cmd">
+              <pre className="w-plugin-update-cmd">
                   {cmdMsg}
-              </div>
+              </pre>
               <div style={{
                 margin: '8px 0 0',
                 color: 'red',
