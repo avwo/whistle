@@ -1,6 +1,7 @@
 # v1.13.28
 1. style: Plugins添加 `UpdateAll` 按钮，方便获取更新所有有新版本插件的命令
 2. fix: whistle集群内部路径跳转问题
+3. fix: 设置代理时SNI出错问题
 
 # v1.13.27
 1. feat: 支持通过日志级别过滤日志内容
