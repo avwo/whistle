@@ -14,7 +14,7 @@ var getWidth = function(vertical) {
   if (vertical) {
     return Math.max(Math.floor(docElem.clientHeight / 2), 360);
   }
-  return Math.max(Math.floor(docElem.clientWidth / 3), 562);
+  return Math.max(Math.floor(docElem.clientWidth / 3), 572);
 };
 
 var Network = React.createClass({

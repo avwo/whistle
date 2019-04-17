@@ -9,7 +9,7 @@ var Inspectors = require('./inspectors');
 var Frames = require('./frames');
 var Timeline = require('./timeline');
 var Composer = require('./composer');
-var Log = require('./log');
+var Tools = require('./tools');
 var util = require('./util');
 
 var ReqData = React.createClass({
@@ -31,15 +31,15 @@ var ReqData = React.createClass({
         name: 'Timeline',
         icon: 'time'
       }, {
-        name: 'Log',
-        icon: 'file'
+        name: 'Tools',
+        icon: 'wrench'
       }],
       initedOverview: false,
       initedInspectors: false,
       initedFrames: false,
       initedTimeline: false,
       initedComposer: false,
-      initedLog: false
+      initedTools: false
     };
   },
   componentDidMount: function() {
@@ -196,7 +196,7 @@ var ReqData = React.createClass({
         {this.state.initedFrames ? <Frames data={activeItem} frames={frames} hide={name != tabs[2].name} /> : ''}
         {this.state.initedTimeline ? <Timeline data={data} modal={modal} hide={name != tabs[4].name} /> : ''}
         {this.state.initedComposer ? <Composer modal={this.state.activeItem} hide={name != tabs[3].name} /> : ''}
-        {this.state.initedLog ? <Log hide={name != tabs[5].name} /> : ''}
+        {this.state.initedTools ? <Tools hide={name != tabs[5].name} /> : ''}
       </div>
     );
   }

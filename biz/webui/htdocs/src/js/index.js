@@ -1720,7 +1720,7 @@ var Index = React.createClass({
     self.state.weinreOptions = util.unique(list).map(function(name) {
       return {
         name: name,
-        icon: 'wrench'
+        icon: 'console'
       };
     });
     self.setState({
@@ -2720,7 +2720,7 @@ var Index = React.createClass({
             <a onClick={this.showWeinreOptionsQuick}
               onDoubleClick={this.showAnonymousWeinre}
               className="w-weinre-menu" href="javascript:;"
-              draggable="false"><span className="glyphicon glyphicon-wrench"></span>Weinre</a>
+              draggable="false"><span className="glyphicon glyphicon-console"></span>Weinre</a>
             <MenuItem ref="weinreMenuItem" name="anonymous" options={state.weinreOptions} className="w-weinre-menu-item" onClick={this.showAnonymousWeinre} onClickOption={this.showWeinre} />
           </div>
           <a onClick={this.showHttpsSettingsDialog} className="w-https-menu" href="javascript:;" draggable="false"><span className={'glyphicon glyphicon-' + (state.interceptHttpsConnects ? 'ok' : 'lock')}></span>HTTPS</a>

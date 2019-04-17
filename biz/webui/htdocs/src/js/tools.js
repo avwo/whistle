@@ -16,7 +16,7 @@ var BTNS = [{
   icon: 'exclamation-sign'
 }];
 
-var Log = React.createClass({
+var Tools = React.createClass({
   shouldComponentUpdate: function(nextProps) {
     var hide = util.getBoolean(this.props.hide);
     if (hide != util.getBoolean(nextProps.hide)) {
@@ -54,4 +54,4 @@ var Log = React.createClass({
   }
 });
 
-module.exports = Log;
+module.exports = Tools;
