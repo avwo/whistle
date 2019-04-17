@@ -1,8 +1,10 @@
 .w-properties-wrap { position: relative; }
 .w-properties-wrap:hover .w-properties-btn { display: inline-block; }
 .w-properties-source { padding: 5px 10px; }
-.w-properties-view-source .w-properties-parsed { display: none; };
-.w-properties-view-parsed .w-properties-source { display: none; };
+.w-properties-view-source .w-properties-parsed { display: none; }
+.w-properties-view-parsed .w-properties-source { display: none; }
+.w-properties-view-source .w-textarea-bar,
+.w-properties-view-parsed .w-textarea-bar { right: 5px!important; }
 .w-properties th , .w-properties td {border: none!important; font-size: 12px; padding-top: 3px!important; padding-bottom: 3px!important;}
 .w-properties tr {border-bottom: 1px solid #ccc;}
 .w-properties th {width: 124px; text-align: right; font-weight: normal; background: #e1e3e6; padding-right: 3px; word-break: break-word;}
