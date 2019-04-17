@@ -90,7 +90,7 @@ module.exports = function(req, res, next) {
       var colon = proxyUrl.indexOf(':');
       var proxyPort = colon === -1 ? 80 : proxyUrl.substring(colon + 1);
       req.headers.host = 'local.whistlejs.com';
-      util.setClientId(req.headers, rules.resolveEnable(req), req.clientIp);
+      util.setClientId(req.headers, rules.resolveEnable(req), rules.resolveDisable(req), req.clientIp);
       util.transformReq(req, res, proxyPort > 0 ? proxyPort : 80, ip);
     });
   } else if (isWebUI) {
