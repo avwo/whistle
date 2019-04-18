@@ -3,6 +3,9 @@ require('../css/log.css');
 var React = require('react');
 var Console = require('./console');
 var ServerLog = require('./server-log');
+var JSONTool = require('./json-tool');
+var QRCodeTool = require('./qrcode-tool');
+var Favorites = require('./favorites');
 
 var BtnGroup = require('./btn-group');
 var util = require('./util');
@@ -18,8 +21,12 @@ var BTNS = [
     icon: 'exclamation-sign'
   },
   {
-    name: 'JSONTools',
+    name: 'JSON',
     icon: 'pencil'
+  },
+  {
+    name: 'QRCode',
+    icon: 'qrcode'
   },
   {
     name: 'Favorites',
@@ -28,6 +35,9 @@ var BTNS = [
 ];
 
 var Tools = React.createClass({
+  getInitialState: function() {
+    return { initedConsole: true, name: Console };
+  },
   shouldComponentUpdate: function(nextProps) {
     var hide = util.getBoolean(this.props.hide);
     if (hide != util.getBoolean(nextProps.hide)) {
@@ -42,7 +52,8 @@ var Tools = React.createClass({
   },
   toggleTabs: function(btn) {
     this.changeTab = true;
-    this.setState({});
+    this.state['inited' + btn.name] = true;
+    this.setState({ name: btn.name });
   },
   clearLogs: function(btn) {
     this.refs[this.isConsole() ? 'console' : 'serverLog'].clearLogs();
@@ -54,12 +65,15 @@ var Tools = React.createClass({
     return BTNS[0].active;
   },
   render: function() {
-    var isConsole = this.isConsole();
+    var state = this.state;
     return (
         <div className={'fill orient-vertical-box w-detail-log' + (util.getBoolean(this.props.hide) ? ' hide' : '')}>
           <BtnGroup onDoubleClickBar={this.onDoubleClickBar} onClick={this.toggleTabs} onDoubleClick={this.clearLogs} btns={BTNS} />
-          <Console ref="console" hide={!isConsole} />
-          <ServerLog ref="serverLog" hide={isConsole} />
+          {state.initedConsole ? <Console ref="console" hide={!BTNS[0].active} /> : undefined}
+          {state.initedServer ? <ServerLog ref="serverLog" hide={!BTNS[1].active} /> : undefined}
+          {state.initedJSON ? <JSONTool hide={!BTNS[2].active} /> : undefined}
+          {state.initedQRCode? <QRCodeTool hide={!BTNS[3].active} /> : undefined}
+          {state.initedFavorites ? <Favorites hide={!BTNS[4].active} /> : undefined}
       </div>
     );
   }
