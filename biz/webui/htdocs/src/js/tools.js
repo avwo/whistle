@@ -22,7 +22,7 @@ var BTNS = [
     icon: 'pencil'
   },
   {
-    name: 'Links',
+    name: 'Favorites',
     icon: 'heart'
   }
 ];
