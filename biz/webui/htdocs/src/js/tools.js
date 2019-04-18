@@ -7,14 +7,25 @@ var ServerLog = require('./server-log');
 var BtnGroup = require('./btn-group');
 var util = require('./util');
 
-var BTNS = [{
-  name: 'Console',
-  icon: 'file',
-  active: true
-}, {
-  name: 'Server',
-  icon: 'exclamation-sign'
-}];
+var BTNS = [
+  {
+    name: 'Console',
+    icon: 'file',
+    active: true
+  },
+  {
+    name: 'Server',
+    icon: 'exclamation-sign'
+  },
+  {
+    name: 'JSONTools',
+    icon: 'pencil'
+  },
+  {
+    name: 'Links',
+    icon: 'heart'
+  }
+];
 
 var Tools = React.createClass({
   shouldComponentUpdate: function(nextProps) {
