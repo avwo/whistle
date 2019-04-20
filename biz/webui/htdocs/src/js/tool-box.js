@@ -3,6 +3,7 @@ var ReactDOM = require('react-dom');
 var util = require('./util');
 var QRCodeDialog = require('./qrcode-dialog');
 var TextDialog = require('./text-dialog');
+var JSONDialog = require('./json-dialog');
 var storage = require('./storage');
 
 var NOT_EMPTY_RE = /[^\s]/;
@@ -44,7 +45,7 @@ var ToolBox = React.createClass({
     this.refs.qrcodeDialog.show(this.state.qrcodeValue);
   },
   parseJSON: function() {
-    alert(this.state.jsonValue);
+    this.refs.jsonDialog.show(this.state.jsonValue);
   },
   uploadImg: function() {
     ReactDOM.findDOMNode(this.refs.uploadImg).click();
@@ -100,6 +101,7 @@ var ToolBox = React.createClass({
         </button>
         <QRCodeDialog ref="qrcodeDialog" />
         <TextDialog ref="textDialog" />
+        <JSONDialog ref="jsonDialog" />
         <form ref="uploadImgForm" encType="multipart/form-data" style={{display: 'none'}}>
           <input ref="uploadImg" onChange={this.readImg} name="image" type="file" accept="image/*" />
         </form>
