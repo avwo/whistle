@@ -43,6 +43,9 @@ var ToolBox = React.createClass({
   parseJSON: function() {
     alert(this.state.jsonValue);
   },
+  uploadImg: function() {
+    alert('upload');
+  },
   onQRCodeChange: function(e) {
     this.setState({
       qrcodeValue: e.target.value
@@ -74,8 +77,9 @@ var ToolBox = React.createClass({
           maxLength={MAX_JSON_LEN} placeholder="Input the JSON text" />
         <div className="w-detail-inspectors-title">
           Base64
+          <button className="btn btn-primary" onClick={this.uploadImg}>Upload</button>
         </div>
-        <button className="w-tool-box-ctn w-tool-box-base64">
+        <button className="w-tool-box-ctn w-tool-box-base64" onClick={this.uploadImg}>
           <span className="glyphicon glyphicon-arrow-up"></span>
           Click here to upload image (size &lt;= 1m)
         </button>
