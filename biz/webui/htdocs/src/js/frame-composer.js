@@ -13,7 +13,8 @@ var JSON_RE = /^\s*(?:[\{｛][\w\W]+[\}｝]|\[[\w\W]+\])\s*$/;
 var FrameComposer = React.createClass({
   getInitialState: function() {
     return {
-      isHexText: !!storage.get('showHexTextFrame')
+      isHexText: !!storage.get('showHexTextFrame'),
+      isCRLF: !!storage.get('useCRLFrame')
     };
   },
   componentDidMount: function() {
@@ -121,6 +122,8 @@ var FrameComposer = React.createClass({
         return;
       }
       value = undefined;
+    } else if (this.state.isCRLF) {
+      value = value.replace(/\r\n|\r|\n/g, '\r\n');
     }
     var params = {
       type: target.nodeName === 'A' ? 'bin' : 'text',
@@ -165,6 +168,11 @@ var FrameComposer = React.createClass({
       message.error('The hex text cannot be converted to binary data.');
     }
   },
+  onCRLFChange: function(e) {
+    var isCRLF = e.target.checked;
+    storage.set('useCRLFrame', isCRLF ? 1 : '');
+    this.setState({ isCRLF: isCRLF });
+  },
   render: function() {
     var data = this.props.data || '';
     util.socketIsClosed(data);
@@ -172,6 +180,7 @@ var FrameComposer = React.createClass({
     var isJSON = state.isJSON;
     var text = state.text || '';
     var isHexText = state.isHexText;
+    var isCRLF = state.isCRLF;
     var closed = data.closed;
     var isHttps = data.isHttps;
     var leftStyle = isHttps ? {left: 0} : undefined;
@@ -181,8 +190,11 @@ var FrameComposer = React.createClass({
       <div onDrop={this.onDrop} className={'fill orient-vertical-box w-frames-composer' + (this.props.hide ? ' hide' : '')}>
         <div className="w-frames-composer-action">
           <label className={'w-frames-hex-data' + (isHexText ? ' w-frames-checked' : '')}>
-            <input checked={isHexText} onChange={this.onTypeChange} type="checkbox" />
-            HexText
+            <input checked={isHexText} onChange={this.onTypeChange} type="checkbox" />HexText
+          </label>
+          <label className={'w-frames-crlf' + (isHexText ? ' hide' : '')
+            + (isCRLF ? ' w-frames-checked' : '')}>
+            <input checked={isCRLF} onChangeCapture={this.onCRLFChange} type="checkbox" />\r\n
           </label>
           <div className="btn-group">
             <button disabled={closed} title={tips} onMouseDown={this.preventDefault} onClick={this.onSend}

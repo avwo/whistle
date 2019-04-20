@@ -93,7 +93,8 @@ var Composer = React.createClass({
       rules: typeof rules === 'string' ? rules : '',
       type: getType(util.parseHeaders(data.headers)),
       disableComposerRules: disableComposerRules,
-      isHexText: storage.get('showHexTextBody')
+      isHexText: storage.get('showHexTextBody'),
+      isCRLF: !!storage.get('useCRLBody')
     };
   },
   componentDidMount: function() {
@@ -209,6 +210,11 @@ var Composer = React.createClass({
     if (isHexText && util.getBase64FromHexText(body, true) === false) {
       message.error('The hex text cannot be converted to binary data.');
     }
+  },
+  onCRLFChange: function(e) {
+    var isCRLF = e.target.checked;
+    storage.set('useCRLBody', isCRLF ? 1 : '');
+    this.setState({ isCRLF: isCRLF });
   },
   onCompose: function(item) {
     this.refs.historyDialog.hide();
@@ -377,6 +383,8 @@ var Composer = React.createClass({
         return;
       }
       body = undefined;
+    } else if (this.state.isCRLF) {
+      body = body.replace(/\r\n|\r|\n/g, '\r\n');
     }
     var params = {
       needResponse: true,
@@ -474,6 +482,7 @@ var Composer = React.createClass({
     var isStrictMode = dataCenter.isStrictMode();
     var disableComposerRules = isStrictMode || state.disableComposerRules;
     var isHexText = state.isHexText;
+    var isCRLF = state.isCRLF;
     
     return (
       <div className={'fill orient-vertical-box w-detail-content w-detail-composer' + (util.getBoolean(this.props.hide) ? ' hide' : '')}>
@@ -536,6 +545,10 @@ var Composer = React.createClass({
                   <label className="w-composer-label">Body</label>
                   <label className={'w-composer-hex-text' + (isHexText ? ' w-checked' : '')}>
                     <input checked={isHexText} type="checkbox" onChange={this.onHexTextChange} />HexText
+                  </label>
+                  <label className={'w-composer-crlf' + (isHexText ? ' hide' : '')
+                    + (isCRLF ? ' w-checked' : '')}>
+                    <input checked={isCRLF} onChangeCapture={this.onCRLFChange} type="checkbox" />\r\n
                   </label>
                   <button className={'btn btn-default' + (showPrettyBody || isHexText ? ' hide' : '')} onClick={this.formatJSON}>Format JSON</button>
                   <button className={'btn btn-primary' + (showPrettyBody && !isHexText ? '' : ' hide')} onClick={this.addField}>Add field</button>

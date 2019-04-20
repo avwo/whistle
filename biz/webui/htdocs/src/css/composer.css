@@ -168,6 +168,13 @@
   top: 0px;
 }
 
-.w-composer-bar .w-composer-hex-text.w-checked {
+.w-composer-bar .w-composer-crlf {
+  top: 0;
+  left: 146px;
+  position: absolute;
+}
+
+.w-composer-bar .w-composer-hex-text.w-checked,
+.w-composer-bar .w-composer-crlf.w-checked {
   font-weight: bold;
 }
