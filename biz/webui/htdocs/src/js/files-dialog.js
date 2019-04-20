@@ -64,6 +64,9 @@ var FilesDialog = React.createClass({
       self.params = params;
       self.showNameInput();
     });
+    events.on('download', function(_, params) {
+      self.startDownload(params);
+    });
   },
   checkParams: function() {
     var input = ReactDOM.findDOMNode(this.refs.filename);
@@ -133,15 +136,17 @@ var FilesDialog = React.createClass({
       });
     });
   },
-  download: function(e) {
-    if (!this.checkParams()) {
-      return;
-    }
-    var params = this.params;
+  startDownload: function(params) {
     ReactDOM.findDOMNode(this.refs.name).value = params.name;
     ReactDOM.findDOMNode(this.refs.headers).value = params.headers || '';
     ReactDOM.findDOMNode(this.refs.content).value = params.base64 || '';
     ReactDOM.findDOMNode(this.refs.downloadForm).submit();
+  },
+  download: function(e) {
+    if (this.checkParams()) {
+      this.startDownload(this.params);
+    }
+    
   },
   submit: function(file) {
     if (!file.size) {

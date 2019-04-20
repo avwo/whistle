@@ -2,6 +2,7 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var Dialog = require('./dialog');
 var QRCode = require('qrcode');
+var events = require('./events');
 
 var QRCodeDialog = React.createClass({
   shouldComponentUpdate: function() {
@@ -12,18 +13,26 @@ var QRCodeDialog = React.createClass({
       return;
     }
     var self = this;
-    var canvas = ReactDOM.findDOMNode(self.refs.qrcodeCanvas);
-    canvas.title = url;
-    QRCode.toCanvas(canvas, url, {
+    QRCode.toDataURL(url, {
       width: 320,
       height: 320,
       margin: 0
-    }, function (err) {
+    }, function(err, result) {
       if (err) {
         return alert(err.message);
       }
+      var img = ReactDOM.findDOMNode(self.refs.qrcodeImg);
+      img.title = url;
+      img.src = result;
       ReactDOM.findDOMNode(self.refs.qrcodeUrl).value = url;
       self.refs.qrcodeDialog.show();
+      self.result = result.substring(result.indexOf(',') + 1);
+    });
+  },
+  download: function() {
+    events.trigger('download', {
+      base64: this.result,
+      name: 'qrcode.png'
     });
   },
   render: function() {
@@ -34,10 +43,10 @@ var QRCodeDialog = React.createClass({
             <span aria-hidden="true">&times;</span>
           </button>
           <input readOnly ref="qrcodeUrl" />
-          <canvas ref="qrcodeCanvas" />
+          <img ref="qrcodeImg" onDoubleClick={this.download} style={{width: 320, height: 320}} />
         </div>
         <div className="modal-footer">
-          <button type="button" className="btn btn-primary">Download</button>
+          <button type="button" className="btn btn-primary" onClick={this.download}>Download</button>
           <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
         </div>
       </Dialog>
