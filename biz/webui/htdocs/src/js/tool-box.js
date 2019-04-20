@@ -38,19 +38,19 @@ var ToolBox = React.createClass({
     return (
       <div className={'fill orient-vertical-box w-tool-box ' + (this.props.hide ? 'hide' : '')}>
         <div className="w-detail-inspectors-title">
-          QRCode
+          QR Code
           <button className="btn btn-primary" disabled={!NOT_EMPTY_RE.test(qrcodeValue)}
           onClick={this.generageQRCode}>Generate</button>
         </div>
         <textarea onChange={this.onQRCodeChange} value={qrcodeValue} className="w-tool-box-ctn"
           maxLength={MAX_QRCODE_LEN} placeholder="Input the URL" />
         <div className="w-detail-inspectors-title">
-          JSONView
+          JSON View
           <button className="btn btn-primary">Parse</button>
         </div>
         <textarea className="w-tool-box-ctn" maxLength={MAX_JSON_LEN} placeholder="Input the JSON text" />
         <div className="w-detail-inspectors-title">
-          URLData
+          URL Data
         </div>
         <button className="w-tool-box-ctn w-tool-box-base64">
           <span className="glyphicon glyphicon-arrow-up"></span>
