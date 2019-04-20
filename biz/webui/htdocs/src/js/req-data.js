@@ -3,10 +3,9 @@ require('../css/req-data.css');
 var React = require('react');
 var ReactDOM = require('react-dom');
 var $ = require('jquery');
-var QRCode = require('qrcode');
+var QRCodeDialog = require('./qrcode');
 var util = require('./util');
 var columns = require('./columns');
-var Dialog = require('./dialog');
 var FilterInput = require('./filter-input');
 var Spinner = require('./spinner');
 var ContextMenu = require('./context-menu');
@@ -406,21 +405,7 @@ var ReqData = React.createClass({
       item && window.open(item.url);
       break;
     case 'QR Code':
-      if (item) {
-        var canvas = ReactDOM.findDOMNode(self.refs.qrcodeCanvas);
-        canvas.title = item.url;
-        QRCode.toCanvas(canvas, item.url, {
-          width: 320,
-          height: 320,
-          margin: 0
-        }, function (err) {
-          if (err) {
-            return alert(err.message);
-          }
-          ReactDOM.findDOMNode(self.refs.qrcodeUrl).value = item.url;
-          self.refs.qrcodeDialog.show();
-        });
-      }
+      self.refs.qrcodeDialog.show(item && item.url);
       break;
     case 'Preview':
       util.openPreview(item);
@@ -823,18 +808,7 @@ var ReqData = React.createClass({
           <FilterInput ref="filterInput" onKeyDown={this.onFilterKeyDown}
             onChange={this.onFilterChange} wStyle={minWidth} />
           <ContextMenu onClick={this.onClickContextMenu} ref="contextMenu" />
-          <Dialog ref="qrcodeDialog" wstyle="w-qrcode-dialog">
-            <div className="modal-body">
-              <button type="button" className="close" data-dismiss="modal">
-                <span aria-hidden="true">&times;</span>
-              </button>
-              <input readOnly ref="qrcodeUrl" />
-              <canvas ref="qrcodeCanvas" />
-            </div>
-            <div className="modal-footer">
-              <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
-          </Dialog>
+          <QRCodeDialog ref="qrcodeDialog" />
       </div>
     );
   }
