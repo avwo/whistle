@@ -136,3 +136,7 @@
 .w-text-dialog .modal-dialog {
   width: 900px;
 }
+
+.w-json-dialog .modal-dialog {
+  width: 750px;
+}
