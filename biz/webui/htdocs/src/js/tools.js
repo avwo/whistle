@@ -1,9 +1,9 @@
 require('./base-css.js');
-require('../css/log.css');
+require('../css/tools.css');
 var React = require('react');
 var Console = require('./console');
 var ServerLog = require('./server-log');
-var DevTools = require('./dev-tools');
+var ToolBox = require('./tool-box');
 var Favorites = require('./favorites');
 
 var BtnGroup = require('./btn-group');
@@ -20,7 +20,7 @@ var BTNS = [
     icon: 'exclamation-sign'
   },
   {
-    name: 'DevTools',
+    name: 'ToolBox',
     icon: 'wrench'
   },
   {
@@ -66,7 +66,7 @@ var Tools = React.createClass({
           <BtnGroup onDoubleClickBar={this.onDoubleClickBar} onClick={this.toggleTabs} onDoubleClick={this.clearLogs} btns={BTNS} />
           {state.initedConsole ? <Console ref="console" hide={!BTNS[0].active} /> : undefined}
           {state.initedServer ? <ServerLog ref="serverLog" hide={!BTNS[1].active} /> : undefined}
-          {state.initedDevTools ? <DevTools hide={!BTNS[2].active} /> : undefined}
+          {state.initedToolBox ? <ToolBox hide={!BTNS[2].active} /> : undefined}
           {state.initedFavorites ? <Favorites hide={!BTNS[3].active} /> : undefined}
       </div>
     );

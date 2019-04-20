@@ -95,3 +95,42 @@
   margin-right: 5px;
   vertical-align: sub;
 }
+
+.w-tool-box-ctn {
+  display: block;
+  width: 100%;
+  height: 200px;
+  border: 1px solid #ccc;
+  margin-bottom: 20px;
+  padding: 5px;
+}
+.w-tool-box {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.w-tool-box .w-detail-inspectors-title {
+  border-bottom: none;
+  border-top: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  line-height: 20px;
+}
+
+.w-tool-box .w-detail-inspectors-title button {
+  height: 18px;
+  line-height: 16px;
+  font-size: 12px;
+  float: right;
+  padding: 0 10px;
+  margin-top: 1px;
+}
+
+.w-tool-box-base64 {
+  height: 120px;
+  line-height: 112px;
+  text-align: center;
+  border: 1px solid #ccc;
+  color: #aaa;
+  font-size: 16px;
+  background: #fff;
+  font-weight: 400;
+}
