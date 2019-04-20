@@ -3,7 +3,7 @@ require('../css/req-data.css');
 var React = require('react');
 var ReactDOM = require('react-dom');
 var $ = require('jquery');
-var QRCodeDialog = require('./qrcode');
+var QRCodeDialog = require('./qrcode-dialog');
 var util = require('./util');
 var columns = require('./columns');
 var FilterInput = require('./filter-input');
