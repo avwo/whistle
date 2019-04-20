@@ -22,11 +22,11 @@ var BTNS = [
   {
     name: 'ToolBox',
     icon: 'wrench'
-  },
+  }/* ,
   {
     name: 'Favorites',
     icon: 'heart'
-  }
+  } */
 ];
 
 var Tools = React.createClass({

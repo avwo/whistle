@@ -1,12 +1,15 @@
 var React = require('react');
+var ReactDOM = require('react-dom');
 var util = require('./util');
 var QRCodeDialog = require('./qrcode-dialog');
+var TextDialog = require('./text-dialog');
 var storage = require('./storage');
 
 var NOT_EMPTY_RE = /[^\s]/;
 var MAX_QRCODE_LEN = 2048;
 var MAX_JSON_LEN = 32768;
 var MAX_SAVE_LEN = 5120;
+var MAX_IMAGE_SIZE = 1024 * 1024;
 
 var ToolBox = React.createClass({
   getInitialState: function() {
@@ -44,7 +47,19 @@ var ToolBox = React.createClass({
     alert(this.state.jsonValue);
   },
   uploadImg: function() {
-    alert('upload');
+    ReactDOM.findDOMNode(this.refs.uploadImg).click();
+  },
+  readImg: function() {
+    var self = this;
+    var image = new FormData(ReactDOM.findDOMNode(this.refs.uploadImgForm)).get('image');
+    if (!(image.size <= MAX_IMAGE_SIZE)) {
+      return alert('The file size cannot exceed 1m.');
+    }
+    var type = 'data:' + image.type + ';base64,';
+    util.readFileAsBase64(image, function(base64) {
+      ReactDOM.findDOMNode(self.refs.uploadImg).value = '';
+      self.refs.textDialog.show(type + base64, base64, image.name);
+    });
   },
   onQRCodeChange: function(e) {
     this.setState({
@@ -84,6 +99,10 @@ var ToolBox = React.createClass({
           Click here to upload image (size &lt;= 1m)
         </button>
         <QRCodeDialog ref="qrcodeDialog" />
+        <TextDialog ref="textDialog" />
+        <form ref="uploadImgForm" encType="multipart/form-data" style={{display: 'none'}}>
+          <input ref="uploadImg" onChange={this.readImg} name="image" type="file" accept="image/*" />
+        </form>
       </div>
     );
   }

@@ -132,3 +132,7 @@
   background: #fff;
   font-weight: 400;
 }
+
+.w-text-dialog .modal-dialog {
+  width: 900px;
+}
