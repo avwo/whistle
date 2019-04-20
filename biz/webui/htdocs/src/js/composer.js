@@ -383,7 +383,7 @@ var Composer = React.createClass({
         return;
       }
       body = undefined;
-    } else if (this.state.isCRLF) {
+    } else if (body && this.state.isCRLF) {
       body = body.replace(/\r\n|\r|\n/g, '\r\n');
     }
     var params = {
