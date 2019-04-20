@@ -5,7 +5,7 @@ var ToolBox = React.createClass({
   render: function() {
     return (
       <div className={'fill orient-vertical-box w-tool-box ' + (this.props.hide ? 'hide' : '')}>
-        <div className="w-detail-inspectors-title" style={{borderTop: 'none'}}>
+        <div className="w-detail-inspectors-title">
           QRCode
           <button className="btn btn-primary">Generate</button>
         </div>
