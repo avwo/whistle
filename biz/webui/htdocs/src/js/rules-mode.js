@@ -69,7 +69,7 @@ CodeMirror.defineMode('rules', function() {
   }
 
   function isPlugin(str) {
-    return /^(?:plugin|whistle)\.[a-z\d_\-]+:\/\//.test(str) && !notExistPlugin(str);
+    return /^codec:\/\//.test(str) || (/^(?:plugin|whistle)\.[a-z\d_\-]+:\/\//.test(str) && !notExistPlugin(str));
   }
 
   function isRulesFile(str) {
