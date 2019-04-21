@@ -1,6 +1,7 @@
 var React = require('react');
 var Dialog = require('./dialog');
 var JSONView = require('./json-viewer');
+var util = require('./util');
 
 var JSONDialog = React.createClass({
   getInitialState: function() {
@@ -11,7 +12,28 @@ var JSONDialog = React.createClass({
       return;
     }
     var self = this;
-    this.setState({data: {str: text, json: {a: 123}}}, function() {
+    var data = this.state.data;
+    if (data && data.text === text) {
+      return self.refs.jsonDialog.show();
+    }
+    var json = util.parseJSON(text);
+    if (!json && !/[\r\n]/.test(text)) {
+      if (!/\s/.test(text) && text.indexOf('&') !== -1) {
+        json = util.parseQueryString(text, null, null, decodeURIComponent);
+      } else if (text.indexOf(';') !== -1 || text.indexOf('=') !== -1) {
+        json = util.parseQueryString(text, ';', null, decodeURIComponent);
+      }
+    }
+    if (json) {
+      data = {
+        json: json,
+        text: text,
+        str: JSON.stringify(json, null, '  ')
+      };
+    } else {
+      return util.parseRawJson(text);
+    }
+    this.setState({data: data}, function() {
       self.refs.jsonDialog.show();
     });
   },
