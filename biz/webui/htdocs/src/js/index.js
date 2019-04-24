@@ -2275,7 +2275,7 @@ var Index = React.createClass({
     dataCenter.rules.disableAllRules({disabledAllRules: checked ? 1 : 0}, function(data, xhr) {
       if (data && data.ec === 0) {
         var state = self.state;
-        state.disableAllRules = checked;
+        state.disabledAllRules = checked;
         protocols.setPlugins(state);
         self.setState({});
       } else {
@@ -2642,6 +2642,8 @@ var Index = React.createClass({
     var pendingValues = state.pendingValues;
     var showLeftMenu = networkMode || state.showLeftMenu;
     var disabledAllPlugins = state.disabledAllRules || state.disabledAllPlugins;
+    var disabledRules = isRules && disabledAllPlugins;
+
     return (
       <div className={'main orient-vertical-box' + (showLeftMenu ? ' w-show-left-menu' : '')}>
         <div className={'w-menu w-' + name + '-menu-list'}>
@@ -2714,7 +2716,7 @@ var Index = React.createClass({
           <a onClick={this.composer} className="w-composer-menu" style={{display: isNetwork ? '' : 'none'}} href="javascript:;" draggable="false"><span className="glyphicon glyphicon-edit"></span>Compose</a>
           <RecordBtn hide={!isNetwork} onClick={this.handleAction} />
           <a onClick={this.onClickMenu} className={'w-delete-menu' + (disabledDeleteBtn ? ' w-disabled' : '')} style={{display: (isNetwork || isPlugins) ? 'none' : ''}} href="javascript:;" draggable="false"><span className="glyphicon glyphicon-trash"></span>Delete</a>
-          <FilterBtn onClick={this.showSettings} isNetwork={isNetwork} hide={isPlugins} />
+          <FilterBtn onClick={this.showSettings} disabledRules={disabledRules}  isNetwork={isNetwork} hide={isPlugins} />
           <a onClick={this.showFiles} className="w-files-menu" href="javascript:;" draggable="false"><span className="glyphicon glyphicon-upload"></span>Files</a>
           <div onMouseEnter={this.showWeinreOptions} onMouseLeave={this.hideWeinreOptions} className={'w-menu-wrapper' + (showWeinreOptions ? ' w-menu-wrapper-show' : '')}>
             <a onClick={this.showWeinreOptionsQuick}
