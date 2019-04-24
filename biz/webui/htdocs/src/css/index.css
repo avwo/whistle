@@ -33,8 +33,8 @@
 .w-values-list a {font-weight: normal!important;}
 .w-disabled .glyphicon-ok, .w-disabled .glyphicon-stop {color: #ccc!important;}
 
-.w-rules-settings-dialog .modal-dialog {width: 336px;}
-.w-values-settings-dialog .modal-dialog {width: 282px;}
+.w-rules-settings-dialog .modal-dialog {width: 400px;}
+.w-values-settings-dialog .modal-dialog {width: 300px;}
 .w-show-update-tips-dialog .modal-dialog {width: 336px;}
 .w-show-update-tips-dialog .modal-body p {margin-bottom: 5px;}
 .w-https-dialog .modal-dialog {width: 340px;}
