@@ -1995,6 +1995,18 @@ var Index = React.createClass({
         self.state.rules.setChanged(item.name, false);
         self.setState({});
         self.triggerRulesChange('save');
+        if (self.state.disabledAllRules &&
+          confirm('All rules are disabled, do you want to enable them?')) {
+          dataCenter.rules.disableAllRules({disabledAllRules: 0}, function(data, xhr) {
+            if (data && data.ec === 0) {
+              self.state.disabledAllRules = false;
+              protocols.setPlugins(self.state);
+              self.setState({});
+            } else {
+              util.showSystemError(xhr);
+            }
+          });
+        }
       } else {
         util.showSystemError(xhr);
       }
