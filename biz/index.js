@@ -56,7 +56,7 @@ module.exports = function(req, res, next) {
     isWebUI = req.headers[config.WEBUI_HEAD];
     if (!isWebUI) {
       isWebUI = config.isLocalUIUrl(host);
-      if (isWebUI ? net.isIP(host) : util.isLocalAddress(host)) {
+      if (isWebUI ? net.isIP(host) : util.isLocalHost(host)) {
         isWebUI = port == config.port || port == config.uiport;
       }
     }
