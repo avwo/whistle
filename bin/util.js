@@ -54,15 +54,15 @@ exports.warn = warn;
 exports.info = info;
 
 function showUsage(isRunning, options, restart) {
-  var port = options.port || config.port;
   if (isRunning) {
     warn('[!] ' + config.name + '@' + config.version + ' is running');
   } else {
     info('[i] ' + config.name + '@' + config.version + (restart ? ' restarted' : ' started'));
   }
-
+  var port = /^\d+$/.test(options.port) && options.port > 0 ?  options.port : config.port;
+  var list = options.host ? [options.host] : getIpList();
   info('[i] 1. use your device to visit the following URL list, gets the ' + colors.bold('IP') + ' of the URL you can access:');
-  info(getIpList().map(function(ip) {
+  info(list.map(function(ip) {
     return '       http://' + colors.bold(ip) + (port ? ':' + port : '') + '/';
   }).join('\n'));
 
