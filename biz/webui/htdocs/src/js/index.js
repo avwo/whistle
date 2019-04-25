@@ -2654,7 +2654,7 @@ var Index = React.createClass({
     var pendingValues = state.pendingValues;
     var showLeftMenu = networkMode || state.showLeftMenu;
     var disabledAllPlugins = state.disabledAllRules || state.disabledAllPlugins;
-    var disabledRules = isRules && disabledAllPlugins;
+    var disabledRules = isRules && state.disabledAllRules;
 
     return (
       <div className={'main orient-vertical-box' + (showLeftMenu ? ' w-show-left-menu' : '')}>
