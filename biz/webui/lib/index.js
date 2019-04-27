@@ -7,8 +7,6 @@ var parseurl = require('parseurl');
 var bodyParser = require('body-parser');
 var crypto = require('crypto');
 var cookie = require('cookie');
-var zlib = require('zlib');
-var fs = require('fs');
 var htdocs = require('../htdocs');
 var handleWeinreReq = require('../../weinre');
 var setProxy = require('./proxy');
@@ -31,9 +29,6 @@ var PLUGIN_PATH_RE = /^\/(whistle|plugin)\.([^/?#]+)(\/)?/;
 var STATIC_SRC_RE = /\.(?:ico|js|css|png)$/i;
 var proxyEvent, util, config, pluginMgr, uiPortCookie;
 var MAX_AGE = 60 * 60 * 24 * 3;
-var JS_FILE_PATH = path.join(__dirname, '../htdocs/js/index.js');
-var JS_CONTENT = zlib.gzipSync(fs.readFileSync(JS_FILE_PATH));
-var GZIP_RE = /\bgzip\b/i;
 
 function doNotCheckLogin(req) {
   var path = req.path;
@@ -260,14 +255,6 @@ app.use('/preview.html', function(req, res, next) {
     var charset = req.path.substring(index);
     res.set('content-type', 'text/html;charset=' + charset);
   }
-});
-app.use('/js/index.js', function(req, res, next) {
-  if (config.debugMode || !GZIP_RE.test(req.headers['accept-encoding'])) {
-    return next();
-  }
-  res.setHeader('Content-Type', 'application/javascript; charset=UTF-8');
-  res.setHeader('Content-Encoding', 'gzip');
-  res.end(JS_CONTENT);
 });
 app.use(express.static(path.join(__dirname, '../htdocs'), {maxAge: 300000}));
 
