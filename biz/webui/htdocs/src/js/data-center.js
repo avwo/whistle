@@ -619,9 +619,6 @@ function startLoadData() {
         var newItem = data[item.id];
         if (newItem) {
           $.extend(item, newItem);
-          if (item.rules && item.pipe) {
-            item.rules.pipe = item.pipe;
-          }
           setReqData(item);
         } else {
           item.lost = true;
@@ -708,7 +705,9 @@ function setReqData(item) {
   
   setRawHeaders(req);
   setRawHeaders(res);
-
+  if (item.rules && item.pipe) {
+    item.rules.pipe = item.pipe;
+  }
   if (!item.path) {
     item.protocol = item.isHttps ? 'HTTP' : util.getProtocol(url);
     item.hostname = item.isHttps ? 'Tunnel to' : util.getHost(url);
