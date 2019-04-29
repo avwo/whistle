@@ -1,3 +1,7 @@
+# v1.14.0
+1. feat: `Log` 改成 `Tools`，并新增 `ToolBox` 里面集成：生成二维码、查看JSON对象、生成图片生成Base64的工具
+2. feat: 新增 [pipe](http://wproxy.org/whistle/rules/pipe.html) 功能，可以把http[s]、websocket、tunnel请求数据流pipe到插件，插件可以自定义对数据流的解包及组包，具体参见：http://wproxy.org/whistle/rules/pipe.html
+
 # v1.13.28
 1. style: Plugins添加 `UpdateAll` 按钮，方便获取更新所有有新版本插件的命令
 2. fix: whistle集群内部路径跳转问题
