@@ -112,6 +112,7 @@
 2. [**resScript** (批量设置响应规则或通过脚本动态获取规则)](resScript.md)
 
 #### 开发调试工具
-1. [**plugin** (通过插件获取请求状态及设置新规则)](plugin.html)
+1. [**plugin** (配置匹配的插件)](plugin.html)
 3. [**weinre** (设置weinre，调试手机页面)](weinre.html)
 4. [**log** (打印网页js错误或者调试信息)](log.html)
+5. [**pipe** 把数据流转到插件](rules/pipe.html)

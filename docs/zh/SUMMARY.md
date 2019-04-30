@@ -39,6 +39,7 @@
     * [rawfile](rules/rule/rawfile.md)
     * [xrawfile](rules/rule/xrawfile.md)
     * [自定义](rules/rule/custom.md)
+  * [pipe](rules/pipe.md)
   * [plugin](rules/plugin.md)
   * [weinre](rules/weinre.md)
   * [log](rules/log.md)
