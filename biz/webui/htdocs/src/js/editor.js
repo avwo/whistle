@@ -100,6 +100,12 @@ var Editor = React.createClass({
       this._editor.setOption('lineNumbers', show);
     }
   },
+  showLineWrapping: function(show) {
+    show = this._showLineNumber = show === false ? false : true;
+    if (this._editor) {
+      this._editor.setOption('lineWrapping', show);
+    }
+  },
   setReadOnly: function(readOnly) {
     readOnly = this._readOnly = readOnly === false || readOnly === 'false' ? false : true;
     if (this._editor) {
@@ -279,6 +285,7 @@ var Editor = React.createClass({
     self.setFontSize(self.props.fontSize);
     self.setTheme(self.props.theme);
     self.showLineNumber(self.props.lineNumbers || false);
+    self.showLineWrapping(self.props.lineWrapping || false);
     self.setReadOnly(self.props.readOnly || false);
     self.setAutoComplete();
   },

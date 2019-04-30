@@ -240,6 +240,8 @@ var Index = React.createClass({
     var valuesFontSize = storage.get('valuesFontSize');
     var showRulesLineNumbers = storage.get('showRulesLineNumbers');
     var showValuesLineNumbers = storage.get('showValuesLineNumbers');
+    var autoRulesLineWrapping = storage.get('autoRulesLineWrapping');
+    var autoValuesLineWrapping = storage.get('autoValuesLineWrapping');
     var selectedName;
 
     if (rules) {
@@ -310,6 +312,8 @@ var Index = React.createClass({
     state.valuesFontSize = valuesFontSize;
     state.showRulesLineNumbers = showRulesLineNumbers === 'true';
     state.showValuesLineNumbers = showValuesLineNumbers === 'true';
+    state.autoRulesLineWrapping = !!autoRulesLineWrapping;
+    state.autoValuesLineWrapping = !!autoValuesLineWrapping;
     state.plugins = modal.plugins;
     state.disabledPlugins = modal.disabledPlugins;
     state.disabledAllRules = modal.disabledAllRules;
@@ -2280,6 +2284,20 @@ var Index = React.createClass({
       showValuesLineNumbers: checked
     });
   },
+  onRulesLineWrappingChange: function(e) {
+    var checked = e.target.checked;
+    storage.set('autoRulesLineWrapping', checked ? 1 : '');
+    this.setState({
+      autoRulesLineWrapping: checked
+    });
+  },
+  onValuesLineWrappingChange: function(e) {
+    var checked = e.target.checked;
+    storage.set('autoValuesLineWrapping', checked ? 1 : '');
+    this.setState({
+      autoValuesLineWrapping: checked
+    });
+  },
   disableAllRules: function(e) {
     var checked = e.target.checked;
     var self = this;
@@ -2572,6 +2590,8 @@ var Index = React.createClass({
     var valuesFontSize = state.valuesFontSize || '14px';
     var showRulesLineNumbers = state.showRulesLineNumbers || false;
     var showValuesLineNumbers = state.showValuesLineNumbers || false;
+    var autoRulesLineWrapping = state.autoRulesLineWrapping;
+    var autoValuesLineWrapping = state.autoValuesLineWrapping;
     var rulesOptions = state.rulesOptions;
     var pluginsOptions = state.pluginsOptions;
     var uncheckedRules = {};
@@ -2800,8 +2820,13 @@ var Index = React.createClass({
               </span>
             </a>
           </div>
-          {state.hasRules ? <List ref="rules" disabled={state.disabledAllRules} theme={rulesTheme} fontSize={rulesFontSize} lineNumbers={showRulesLineNumbers} onSelect={this.selectRules} onUnselect={this.unselectRules} onActive={this.activeRules} modal={state.rules} hide={name == 'rules' ? false : true} name="rules" /> : undefined}
-          {state.hasValues ? <List theme={valuesTheme} onDoubleClick={this.showEditValuesByDBClick} fontSize={valuesFontSize} lineNumbers={showValuesLineNumbers} onSelect={this.saveValues} onActive={this.activeValues} modal={state.values} hide={name == 'values' ? false : true} className="w-values-list" /> : undefined}
+          {state.hasRules ? <List ref="rules" disabled={state.disabledAllRules} theme={rulesTheme}
+            lineWrapping={autoRulesLineWrapping} fontSize={rulesFontSize} lineNumbers={showRulesLineNumbers} onSelect={this.selectRules}
+            onUnselect={this.unselectRules} onActive={this.activeRules} modal={state.rules}
+            hide={name == 'rules' ? false : true} name="rules" /> : undefined}
+          {state.hasValues ? <List theme={valuesTheme} onDoubleClick={this.showEditValuesByDBClick} fontSize={valuesFontSize}
+            lineWrapping={autoValuesLineWrapping} lineNumbers={showValuesLineNumbers} onSelect={this.saveValues} onActive={this.activeValues}
+            modal={state.values} hide={name == 'values' ? false : true} className="w-values-list" /> : undefined}
           {state.hasNetwork ? <Network ref="network" hide={name === 'rules' || name === 'values' || name === 'plugins'} modal={state.network} /> : undefined}
           {state.hasPlugins ? <Plugins {...state} onOpen={this.activePluginTab} onClose={this.closePluginTab} onActive={this.activePluginTab} onChange={this.disablePlugin} ref="plugins" hide={name == 'plugins' ? false : true} /> : undefined}
         </div>
@@ -2811,6 +2836,8 @@ var Index = React.createClass({
                 <div className="modal-body">
                   <button type="button" className="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                   <EditorSettings theme={rulesTheme} fontSize={rulesFontSize} lineNumbers={showRulesLineNumbers}
+                    lineWrapping={autoRulesLineWrapping}
+                    onLineWrappingChange={this.onRulesLineWrappingChange}
                     onThemeChange={this.onRulesThemeChange}
                     onFontSizeChange={this.onRulesFontSizeChange}
                     onLineNumberChange={this.onRulesLineNumberChange} />
@@ -2833,6 +2860,8 @@ var Index = React.createClass({
                 <div className="modal-body">
                   <button type="button" className="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                   <EditorSettings theme={valuesTheme} fontSize={valuesFontSize} lineNumbers={showValuesLineNumbers}
+                    lineWrapping={autoValuesLineWrapping}
+                    onLineWrappingChange={this.onValuesLineWrappingChange}
                     onThemeChange={this.onValuesThemeChange}
                     onFontSizeChange={this.onValuesFontSizeChange}
                     onLineNumberChange={this.onValuesLineNumberChange} />

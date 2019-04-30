@@ -52,7 +52,18 @@ var EditorSettings = React.createClass({
               </select>
             </label>
           </p>
-          <p className="w-editor-settings-box"><label><input checked={this.props.lineNumbers}  onChange={this.props.onLineNumberChange} type="checkbox" /> Show line number</label></p>
+          <p className="w-editor-settings-box">
+            <label>
+              <input checked={this.props.lineNumbers}
+                onChange={this.props.onLineNumberChange} type="checkbox" /> Show line number
+            </label>
+          </p>
+          <p className="w-editor-settings-box">
+            <label>
+              <input checked={this.props.lineWrapping}
+                onChange={this.props.onLineWrappingChange} type="checkbox" /> Auto line wrapping
+            </label>
+          </p>
          </div>
     );
   }
