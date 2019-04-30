@@ -1,0 +1,1 @@
+ws://* pipe://pipe-ws
