@@ -121,7 +121,9 @@ var Editor = React.createClass({
     var timeout;
     var self = this;
     var elem = ReactDOM.findDOMNode(self.refs.editor);
-    var editor = self._editor = CodeMirror(elem);
+    var editor = self._editor = CodeMirror(elem, {
+      lineWrapping: true
+    });
     editor.on('change', function(e) {
       if (typeof self.props.onChange == 'function' && editor.getValue() !== (self.props.value || '')) {
         self.props.onChange.call(self, e);
