@@ -584,6 +584,7 @@ function startLoadData() {
       if (curReqId) {
         var status = data.socketStatus;
         if (status) {
+          curActiveItem.closed = undefined;
           if (status.sendStatus > -1) {
             hasChhanged = curActiveItem.sendStatus !== status.sendStatus;
             curActiveItem.sendStatus = status.sendStatus;
