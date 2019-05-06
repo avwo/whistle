@@ -1,6 +1,6 @@
 var get = require('./index');
 var getReqData = require('../util').getReqData;
-var addValues = require('../../../lib/rules-util').addValues;
+var addValues = require('../../../../lib/rules/util').addValues;
 
 module.exports = function(req, res) {
   getReqData(req, function(err, result) {
