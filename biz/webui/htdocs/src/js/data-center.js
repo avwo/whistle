@@ -283,7 +283,7 @@ function checkFilter(item, list) {
       }
       break;
     case 'host':
-      if (checkFilterField(item.isHttps ? item.path : util.getHost(item.url), filter)) {
+      if (checkFilterField(item.isHttps ? item.url : util.getHost(item.url), filter)) {
         return true;
       }
       break;
