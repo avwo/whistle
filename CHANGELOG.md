@@ -1,3 +1,7 @@
+# v1.14.2
+1. refactor: 请求上游代理的 `UA` 默认使用当前请求的 `UA`
+2. refactor: 命令行新增 `-M cluster` 模式，用于优化内部抓包数据缓存
+
 # v1.14.1
 1. fix: https://github.com/avwo/whistle/issues/285
 
