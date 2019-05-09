@@ -1,5 +1,6 @@
 # v1.14.2
 1. refactor: 请求上游代理的 `UA` 默认使用当前请求的 `UA`
+2. refactor: 通过命令行 `-M strict` 设置的严格模式下，限制每个包的缓存大小
 
 # v1.14.1
 1. fix: https://github.com/avwo/whistle/issues/285
