@@ -181,9 +181,6 @@ module.exports = function(req, res) {
   var rawHeaderNames = {};
   var headers = parseHeaders(req.body.headers, rawHeaderNames);
   delete headers[config.WEBUI_HEAD];
-  if (!headers['user-agent']) {
-    headers['user-agent'] = config.PROXY_UA;
-  }
   headers[config.WHISTLE_REQ_FROM_HEADER] = 'W2COMPOSER';
   headers.host = options.host;
   var clientIp = util.getClientIp(req);
