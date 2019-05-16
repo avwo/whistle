@@ -84,6 +84,7 @@ values['options.html'] = {
 var proxy = startWhistle({
   port: config.port,
   storage: 'test_',
+  mode: 'strict',
   certDir: path.join(__dirname, 'assets/certs'),
   debugMode: true,
   localUIHost: 'local.whistle.com|local2.whistle.com&localn.whistle.com',
