@@ -17,7 +17,7 @@ whistle判断如果文件的第一行为规则的注释，即`#`开头，则任�
 	patternN operatorURIN
 
 ### 通过脚本动态设置规则
-rulesFile可以指定一个脚本，whistle在执行脚本时会自动在全局传人：
+rulesFile可以指定一个脚本，whistle在执行脚本时会自动在全局传入：
 
 1. `url`: 请求的完整路径
 2. `method`: 请求方法
