@@ -1,5 +1,6 @@
 # v1.14.5
 1. fix: `jsPrepend://url`、`cssPrepend://url` 无法同时设置多个的问题
+2. feat: 支持通过设置 `pattern disable://hide` 禁用 `pattern enable://hide`
 
 # v1.14.4
 1. perf: 固定的缓存长连接数，减少大规模访问是连接数缓存太多导致的内存占用过多问题
