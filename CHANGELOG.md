@@ -1,6 +1,8 @@
 # v1.14.5
 1. fix: `jsPrepend://url`、`cssPrepend://url` 无法同时设置多个的问题
 2. feat: 支持通过设置 `pattern disable://hide` 禁用 `pattern enable://hide`
+3. feat: 新增 `headerReplace://` 协议，用来通过字符串或正在替换指定关键字，详见：[headerReplace](https://avwo.github.io/whistle/rules/headerReplace.html)
+4. perf: 优化内存占用
 
 # v1.14.4
 1. perf: 固定的缓存长连接数，减少大规模访问是连接数缓存太多导致的内存占用过多问题
