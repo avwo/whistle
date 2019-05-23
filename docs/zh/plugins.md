@@ -1,4 +1,6 @@
 # 插件开发
+> 插件脚手架及辅助工具：https://github.com/avwo/lack
+
 为了满足一些特定业务场景的需要，whistle提供了插件扩展能力，通过插件可以新增whistle的协议实现更复杂的操作、也可以用来存储或监控指定请求、集成业务本地开发调试环境等等，基本上可以做任何你想做的事情，且开发、发布及安装whistle插件也都很简单。
 
 先了解下如何安装使用插件：
@@ -91,6 +93,8 @@ www.test.com/cgi-bin whistle.your-plugin-name://xxx
 
 
 #### 调试插件
+> 插件脚手架及辅助工具：https://github.com/avwo/lack
+
 1. 开启whistle的调试模式：
     ```
     w2 stop
