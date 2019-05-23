@@ -52,6 +52,6 @@ pattern operatorURI1  operatorURIx excludeFilter://*/cgi-bin includeFilter:///te
 
 ### 例子
 ``` txt
-www.test.com/path/to file:///Usr/test/ excludeFilter://*/path/to/cgi-bin
+www.test.com/path/to file:///Usr/test/ excludeFilter://*/path/to/abc/cgi-bin includeFilter://*/path/to/abc/
 ```
 
