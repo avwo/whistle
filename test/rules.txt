@@ -48,3 +48,4 @@ file://(0)
 ```
 range1.whistlejs.com file://{range.txt}
 range2.whistlejs.com whistle.test2://
+headerreplace.plugin.whistlejs.com headerReplace://req.host:headerreplace.=&/Plugin/i=test headerReplace://res.set-cookie:test=abc resHeaders://(set-cookie=test&set-cookie=test222)

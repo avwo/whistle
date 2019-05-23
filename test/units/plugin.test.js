@@ -1,6 +1,14 @@
 var util = require('../util.test');
 
 module.exports = function() {
+  util.request({
+    url: 'http://headerreplace.plugin.whistlejs.com:1234/index.html',
+    headers: { test: 'abc' }
+  }, function(res, data) {
+    data.headers.host.should.equal('test.whistlejs.com:1234');
+    res.headers['set-cookie'].join().should.equal('abc,abc222');
+  });
+
   util.request('http://plugin.whistlejs.com:1234/index.html', function(res, data) {
     data.should.have.property('type', 'server');
   });
