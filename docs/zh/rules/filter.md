@@ -1,7 +1,8 @@
 # filter (excludeFilter|includeFilter)
 > 以下功能需要把whistle(`>= v1.13.25`)[升级到最新版本](../update.html)
 
-excludeFilter和includeFilter是作为二级条件，用来过滤匹配已匹配的规则,：
+excludeFilter和includeFilter是作为二级条件，用来过滤匹配已匹配的规则：
+
 1. `excludeFilter`：表示排除匹配的请求
 2. `includeFilter`：只保留匹配的请求
 
@@ -48,4 +49,9 @@ pattern operatorURI1  operatorURIx excludeFilter://*/cgi-bin includeFilter:///te
 8. `resH:name=pattern`：同上，但只会匹配响应头
 9. `*/cgi-*`：表示匹配 `xxx://x.y.z/cgi-.../...`，具体可以参见[pattern](../pattern.html)里面的通配路径
 9. `其它字符串`：表示[pattern](../pattern.html)里面的通配符匹配
+
+### 例子
+``` txt
+www.test.com/path/to file:///Usr/test/ excludeFilter://*/path/to/cgi-bin
+```
 
