@@ -37,6 +37,7 @@
 7. [**reqCharset** (修改请求的编码)](reqCharset.html)
 8. [**reqCookies** (修改请求cookies)](reqCookies.html)
 9. [**reqCors** (修改请求cors)](reqCors.html)
+10. [**headerReplace** (通过str.replace的方式修改请求响应头)](headerReplace.html)
 
 #### 延迟响应
 1. [**resDelay** (延迟响应)](resDelay.html)

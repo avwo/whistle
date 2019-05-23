@@ -89,6 +89,7 @@
   * [resBody](rules/resBody.md)
   * [reqAppend](rules/reqAppend.md)
   * [resAppend](rules/resAppend.md)
+  * [headerReplace](rules/headerReplace.md)
   * [reqReplace](rules/reqReplace.md)
   * [resReplace](rules/resReplace.md)
   * [htmlPrepend](rules/htmlPrepend.md)
