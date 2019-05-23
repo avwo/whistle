@@ -92,6 +92,10 @@ CodeMirror.defineMode('rules', function() {
     return /^delete:\/\//.test(str);
   }
 
+  function isHeaderReplace(str) {
+    return /^headerReplace:\/\//.test(str);
+  }
+
   function isProxy(str) {
     return /^x?(?:proxy|https?-proxy|http2https-proxy|https2http-proxy|internal-proxy):\/\//.test(str);
   }
@@ -169,6 +173,8 @@ CodeMirror.defineMode('rules', function() {
             type = 'atom js-log js-type';
           } else if (isPlugin(str)) {
             type = 'variable-2 js-plugin js-type';
+          } else if (isHeaderReplace(str)) {
+            type = 'variable-2 js-headerReplace js-type';
           } else if (isFilter(str)) {
             type = 'negative js-filter js-type';
           } else if (isIgnore(str)) {
