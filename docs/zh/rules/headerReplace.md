@@ -10,10 +10,11 @@ pattern参见[匹配模式](../pattern.html)，更多模式请参考[配置方�
 
 例子：
 
-	www.test.com headerReplace://req.cookie:/a(.)/=$1&test=a%20bc headerReplace://res.set-cookie:/\bdomain=[^;]+(;|\s*$)/=
+	www.test.com headerReplace://req.cookie:/a(.)/=$1&test=a%20bc headerReplace://res.set-cookie:/\bdomain=[^;]%2b(;|\s*$)/=
 
 > 上述是将所有 `www.test.com` 的请求头cookie字段里面的值的 ax 替换成 x 、test替换成 a bc
 > 注意：同时多个 str.replace(p1, r1).replace(p2, r2) 通过 `&` 分开，whistle会通过 querystring.parse的方式转成相应的对象 (会对 `%xx` 进行转义)
+> 正则里面的 + 号要用 `%2b` 代替
 
 #### 过滤规则
 需要确保whistle是最新版本：[更新whistle](../update.html)
