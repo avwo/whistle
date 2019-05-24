@@ -1,3 +1,8 @@
+# v1.14.6
+1. fix: `querystring.parse('+')` 自动转转成空格 ' ' 或 %2B 问题
+2. refactor: `w2 add` 如果当前规则已存在，则选中该规则
+3. feat: 支持通过请求头 `x-forwarded-proto` 设置 `http` 或 `https` 请求
+
 # v1.14.5
 1. fix: `jsPrepend://url`、`cssPrepend://url` 无法同时设置多个的问题
 2. feat: 支持通过设置 `pattern disable://hide` 禁用 `pattern enable://hide`
