@@ -119,9 +119,9 @@ module.exports = function(filepath, storage, force) {
       if (force) {
         return setRules();
       }
-      request('name=' + encodeURIComponent(name), function(data) {
+      request('name=' + encodeURIComponent(name) + '&enable=1&top=1', function(data) {
         if (data.rules) {
-          warn('The rule already exists, to override it, you must add CLI option --force.');
+          warn('The rule already exists, to override the content, add CLI option --force.');
           return;
         }
         setRules();
