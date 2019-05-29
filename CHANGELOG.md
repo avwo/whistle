@@ -1,3 +1,6 @@
+# v1.14.7
+1. refactor: 优化启动参数 [--max-http-header-size=size](https://nodejs.org/dist/latest-v10.x/docs/api/cli.html#cli_max_http_header_size_size) 
+
 # v1.14.6
 1. fix: `querystring.parse('+')` 自动转转成空格 ' ' 或 %2B 问题
 2. refactor: `w2 add` 如果当前规则已存在，则选中该规则
