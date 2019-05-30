@@ -195,7 +195,7 @@ module.exports = function(req, res) {
 
   var isConn = isConnect(options);
   var isWs = !isConn && (isWebSocket(options)
-    || (/upgrade/i.test(headers.connection) && /websocket/i.test(headers.upgrade)));
+    || (/^\s*upgrade\s*$/i.test(headers.connection) && /^\s*websocket\s*$/i.test(headers.upgrade)));
   if (isWs) {
     headers.connection = 'Upgrade';
     headers.upgrade = 'websocket';

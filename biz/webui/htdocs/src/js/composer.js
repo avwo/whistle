@@ -23,13 +23,19 @@ var TYPES = {
 };
 var TIPS = 'Requests cannot bring rules in strict mode';
 var TYPE_CONF_RE = /;.+$/;
+var WS_RE = /^wss?:\/\//i;
+var WS_CONNNECT_RE = /^\s*connection\s*:\s*upgrade\s*$/im;
+var WS_UPGRADE_RE = /^\s*upgrade\s*:\s*websocket\s*$/im;
 var REV_TYPES = {};
 Object.keys(TYPES).forEach(function(name) {
   REV_TYPES[TYPES[name]] = name;
 });
 
-function hasReqBody(method) {
-  return method === 'CONNECT' || util.hasRequestBody(method);
+function hasReqBody(method, url, headers) {
+  if (method === 'CONNECT' || util.hasRequestBody(method) || WS_RE.test(url)) {
+    return true;
+  }
+  return headers && WS_CONNNECT_RE.test(headers) && WS_UPGRADE_RE.test(headers);
 }
 
 function getType(headers) {
@@ -139,11 +145,13 @@ var Composer = React.createClass({
     if (!this.state.showPretty) {
       return;
     }
-    var prettyHeaders = util.parseHeaders(ReactDOM.findDOMNode(this.refs.headers).value);
+    var url = ReactDOM.findDOMNode(this.refs.url).value;
+    var headers = ReactDOM.findDOMNode(this.refs.headers).value;
+    var prettyHeaders = util.parseHeaders(headers);
     this.refs.prettyHeaders.update(prettyHeaders);
     var method = ReactDOM.findDOMNode(this.refs.method).value || 'GET';
     var body;
-    if (hasReqBody(method)) {
+    if (hasReqBody(method, url, headers)) {
       body = ReactDOM.findDOMNode(this.refs.body).value;
       body = util.parseQueryString(body, null, null, decodeURIComponent);
     }
@@ -376,7 +384,7 @@ var Composer = React.createClass({
     var body = ReactDOM.findDOMNode(refs.body).value;
     var base64;
     var isHexText = this.state.isHexText;
-    if (isHexText && hasReqBody(method)) {
+    if (isHexText && hasReqBody(method, ReactDOM.findDOMNode(this.refs.url).value, ReactDOM.findDOMNode(this.refs.headers).value)) {
       base64 = util.getBase64FromHexText(body);
       if (base64 === false) {
         alert('The hex text cannot be converted to binary data.\nPlease check the hex text or switch to plain text.');
@@ -475,7 +483,7 @@ var Composer = React.createClass({
     var statusCode = result ? (result.res && result.res.statusCode) : '';
     var isForm = type === 'form';
     var method = state.method || 'GET';
-    var hasBody = hasReqBody(method);
+    var hasBody = hasReqBody(method, state.url, state.headers);
     var historyData = state.historyData;
     var disableHistory = !historyData.length || pending;
     var showPrettyBody = hasBody && showPretty && isForm;
