@@ -113,6 +113,8 @@ var Composer = React.createClass({
       var activeItem = self.props.modal;
       if (activeItem) {
         self.setState({
+          url: activeItem.url,
+          headers: activeItem.headers,
           result: activeItem,
           type: getType(activeItem.req.headers),
           method: activeItem.req.method,
@@ -145,7 +147,7 @@ var Composer = React.createClass({
     if (!this.state.showPretty) {
       return;
     }
-    var url = ReactDOM.findDOMNode(this.refs.url).value;
+    var url = ReactDOM.findDOMNode(this.refs.url).value.trim();
     var headers = ReactDOM.findDOMNode(this.refs.headers).value;
     var prettyHeaders = util.parseHeaders(headers);
     this.refs.prettyHeaders.update(prettyHeaders);
@@ -180,13 +182,21 @@ var Composer = React.createClass({
   },
   saveComposer: function() {
     var refs = this.refs;
+    var method = ReactDOM.findDOMNode(refs.method).value || 'GET';
+    var url = ReactDOM.findDOMNode(this.refs.url).value.trim();
+    var headers = ReactDOM.findDOMNode(this.refs.headers).value;
+    this.state.url = url;
+    this.state.headers = headers;
     var params = {
-      url: ReactDOM.findDOMNode(refs.url).value.trim(),
-      headers: ReactDOM.findDOMNode(refs.headers).value,
-      method: ReactDOM.findDOMNode(refs.method).value || 'GET',
+      url: url,
+      headers: headers,
+      method: method,
       body: ReactDOM.findDOMNode(refs.body).value.replace(/\r\n|\r|\n/g, '\r\n')
     };
     storage.set('composerData', JSON.stringify(params));
+    if (this.hasBody != hasReqBody(method, url, headers)) {
+      this.setState({});
+    }
     return params;
   },
   showHistory: function() {
@@ -236,6 +246,8 @@ var Composer = React.createClass({
     this.state.tabName = 'Request';
     this.state.result = '';
     this.state.isHexText = isHexText;
+    this.state.url = item.url;
+    this.state.headers = item.headers;
     this.onComposerChange(true);
   },
   onReplay: function(item) {
@@ -384,7 +396,7 @@ var Composer = React.createClass({
     var body = ReactDOM.findDOMNode(refs.body).value;
     var base64;
     var isHexText = this.state.isHexText;
-    if (isHexText && hasReqBody(method, ReactDOM.findDOMNode(this.refs.url).value, ReactDOM.findDOMNode(this.refs.headers).value)) {
+    if (isHexText && hasReqBody(method, ReactDOM.findDOMNode(this.refs.url).value.trim(), ReactDOM.findDOMNode(this.refs.headers).value)) {
       base64 = util.getBase64FromHexText(body);
       if (base64 === false) {
         alert('The hex text cannot be converted to binary data.\nPlease check the hex text or switch to plain text.');
@@ -491,6 +503,7 @@ var Composer = React.createClass({
     var disableComposerRules = isStrictMode || state.disableComposerRules;
     var isHexText = state.isHexText;
     var isCRLF = state.isCRLF;
+    self.hasBody = hasBody;
     
     return (
       <div className={'fill orient-vertical-box w-detail-content w-detail-composer' + (util.getBoolean(this.props.hide) ? ' hide' : '')}>
