@@ -1,5 +1,6 @@
 # v1.14.8
 1. feat: 新增命令行参数 `--httpPort` 和 `--httpsPort`，分别用于启动普通的 http 和 https server，方便做反向代理，且可用于再启动一个 `http proxy` （跟默认的 http 代理功能一致）和 `https proxy` （可作为https代理服务器） 功能
+	> 应用实例：`w2 restart --httpPort 80 --httpsPort 443`，这样通过配系统host就可以抓包到无法设置系统代理的app的请求包 
 
 # v1.14.7
 1. refactor: 优化启动参数 [--max-http-header-size=size](https://nodejs.org/dist/latest-v10.x/docs/api/cli.html#cli_max_http_header_size_size) 
