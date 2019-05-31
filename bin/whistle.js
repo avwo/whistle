@@ -85,7 +85,6 @@ program
   .option('-c, --dnsCache [time]', 'set the cache time of DNS (30000ms by default)', String, undefined)
   .option('-H, --host [boundHost]', 'set the bound host of whistle (INADDR_ANY by default)', String, undefined)
   .option('-p, --port [proxyPort]', 'set the proxy port of whistle (' + config.port + ' by default)', parseInt, undefined)
-  .option('-r, --sslport [sslPort]', 'set the https server port of whistle', parseInt, undefined)
   .option('-P, --uiport [uiport]', 'set the listening port of whistle webui', parseInt, undefined)
   .option('-m, --middlewares [script path or module name]', 'set the express middlewares loaded at startup (as: xx,yy/zz.js)', String, undefined)
   .option('-M, --mode [mode]', 'set the way of starting the whistle mode (as: pureProxy|debug|multiEnv)', String, undefined)
@@ -95,6 +94,8 @@ program
   .option('-R, --reqCacheSize [reqCacheSize]', 'set the cache size of request data (600 by default)', String, undefined)
   .option('-F, --frameCacheSize [frameCacheSize]', 'set the cache size of webSocket and socket\'s frames (512 by default)', String, undefined)
   .option('-A, --addon [pluginPaths]', 'add custom plugin paths', String, undefined)
+  .option('--httpPort [httpPort]', 'set the http server port of whistle', parseInt, undefined)
+  .option('--httpsPort [httpsPort]', 'set the https server port of whistle', parseInt, undefined)
   .option('--no-global-plugins', 'do not load any globally installed plugins')
   .option('--no-prev-options', 'do not reuse the previous options when restarting');
 
