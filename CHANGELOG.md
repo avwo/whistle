@@ -1,7 +1,9 @@
 # v1.14.8
 1. feat: 新增命令行参数 `--httpPort` 和 `--httpsPort`，分别用于启动普通的 http 和 https server，方便做反向代理，且可用于再启动一个 `http proxy` （跟默认的 http 代理功能一致）和 `https proxy` （可作为https代理服务器） 功能
-	> 应用实例：`w2 restart --httpPort 80 --httpsPort 443`，这样通过配系统host就可以抓包到无法设置代理的 app 请求包 
-2. fix: https://github.com/avwo/whistle/issues/292
+	> 应用实例：`w2 restart --httpPort 80 --httpsPort 443`，这样通过配系统host就可以抓包到无法设置代理的 app 请求包
+2. feat: 支持将自定义证书或根证书(`root.crt` & `root.key`) 存在 `~/.WhistleAppData/custom_certs` 目录里面，whistle会优先使用该目录的证书
+	> 也可以通过命令行参数 `-z /custom/certs/dir/xxx` 指定自定义证书的目录
+3. fix: https://github.com/avwo/whistle/issues/292
 
 # v1.14.7
 1. refactor: 优化启动参数 [--max-http-header-size=size](https://nodejs.org/dist/latest-v10.x/docs/api/cli.html#cli_max_http_header_size_size) 
