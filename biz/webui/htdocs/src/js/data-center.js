@@ -268,7 +268,7 @@ function checkFilter(item, list) {
     var filter = list[i];
     switch (filter.type) {
     case 'method':
-      if (checkFilterField(item.method, filter)) {
+      if (checkFilterField(item.req.method, filter)) {
         return true;
       }
       break;
