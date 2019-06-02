@@ -68,16 +68,16 @@
 
 ## 开启拦截HTTPS
 
-图中的打开的对话框有两个checkbox(**在iOS安装根证书的时候，记得不要开启 ~~`Intercept HTTPS CONNECTs`~~ `Capture HTTPS CONNECTs`，否则将无法安装成功**)：
+图中的打开的对话框有个checkbox：
 
-1. ~~`Hide HTTPS CONNECTs`~~：隐藏`connect`类型的请求
-2. ~~`Intercept HTTPS CONNECTs`~~ `Capture HTTPS CONNECTs`：开启Https拦截功能，只有勾上这个checkbox及装好根证书，whistle才能看到HTTPS、Websocket的请求
-3. 也可以通过配置来开启对部分请求的Https拦截功能
+1.`Capture HTTPS CONNECTs`：开启Https拦截功能，只有勾上这个checkbox及装好根证书，whistle才能看到HTTPS、Websocket的请求
+2. 也可以通过配置来开启对部分请求的Https拦截功能
   ```plain
-  www.test.com filter://intercept
-  /alibaba-inc/ filter://intercept
+  www.test.com enable://intercept
+  /alibaba-inc/ enable://intercept
   ```
-4. 如果想过滤部分请求不启用Https拦截功能
+  > 也可以用过 enable://capture
+3. 如果想过滤部分请求不启用Https拦截功能
   ```plain
   # 指定域名
   www.baidu.com  disable://intercept
@@ -87,3 +87,9 @@
 
   # 不支持通过路径的方式设置
   ```
+
+  ### 自定义请求证书或根证书
+  whistle会自动生成根证书，并根据根证书对每个请求动态生成https证书，如果需要用自定义的证书，甚至根证书，可以有两种方式(只支持 `.crt` 格式的证书)：
+
+  1. 把普通证书对 (如：`test.crt` 和 `test.key`、`test2.crt` 和 `test2.key` 等等) 或根证书 (名字必须为 `root.crt` 和 `root.key`)，放在系统的某个目录，如 `/data/ssl`，并在启动时添加启动参数 `w2 start -z /data/ssl` ，whistle会自动加里面的证书
+  2. (v1.14.8及以上版本支持) 把上述证书或根证书放在固定目录 `~/.WhistleAppData/custom_certs/`里面，whistle会自动加里面的证书
