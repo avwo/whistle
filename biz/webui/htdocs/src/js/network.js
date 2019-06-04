@@ -27,15 +27,6 @@ var Network = React.createClass({
   },
   componentDidMount: function() {
     var self = this;
-    events.on('activeItem', function(e, item) {
-      if (item && !item.selected) {
-        self.props.modal.clearSelection();
-        self.props.modal.clearActive();
-        item.selected = true;
-        item.active = true;
-        self.onClick(item);
-      }
-    });
     $(window).on('keydown', function(e) {
       if (self.props.hide) {
         return;
