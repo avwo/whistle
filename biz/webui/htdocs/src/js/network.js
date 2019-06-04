@@ -78,18 +78,12 @@ var Network = React.createClass({
       self.refs.divider.reset();
     });
   },
-  onClick: function(item) {
-    this.setState({activeItem: item});
-  },
-  onDoubleClick: function() {
-    events.trigger('showOverview');
-  },
   render: function() {
     var modal = this.props.modal;
     var dockToBottom = this.state.dockToBottom;
     return (
       <Divider ref="divider" hide={this.props.hide} vertical={dockToBottom} rightWidth={this.state.rightWidth}>
-        <ReqData modal={modal} onClick={this.onClick} onDoubleClick={this.onDoubleClick} />
+        <ReqData modal={modal} />
         <Detail dockToBottom={dockToBottom} onDockChange={this.onDockChange} modal={modal} />
       </Divider>
     );

@@ -231,6 +231,13 @@ var ReqData = React.createClass({
     };
     self.container = ReactDOM.findDOMNode(self.refs.container);
     self.content = ReactDOM.findDOMNode(self.refs.content);
+    self.$content = $(self.content).on('dblclick', 'tr', function() {
+      events.trigger('showOverview');
+    }).on('click', 'tr', function(e) {
+      var modal = self.props.modal;
+      var item = modal.getItem(this.getAttribute('data-id'));
+      self.onClick(e, item);
+    });
     var toggoleDraggable = function(e) {
       var draggable = !e.shiftKey;
       if (self.state.draggable === draggable) {
@@ -298,26 +305,30 @@ var ReqData = React.createClass({
     if (hm || !allowMultiSelect) {
       self.clearSelection();
     }
+    self.$content.find('tr.w-selected').removeClass('w-selected');
     if (hm) {
       item.selected = true;
+      self.setSelected(item);
     } else {
       rows;
       if (e.shiftKey && (rows = getSelectedRows())) {
         modal.setSelectedList(rows[0].attr('data-id'),
-            rows[1].attr('data-id'));
+            rows[1].attr('data-id'), self.setSelected.bind(self));
       } else {
         item.selected = !allowMultiSelect || !item.selected;
+        self.setSelected(item);
       }
     }
 
     modal.clearActive();
     item.active = true;
-    if (self.props.onClick && self.props.onClick(item)) {
-      self.setState({
-        activeItem: item
-      });
-    }
     hm && util.ensureVisible(ReactDOM.findDOMNode(self.refs[item.id]), self.container);
+    events.trigger('networkStateChange');
+  },
+  setSelected: function(item) {
+    if (item.selected) {
+      this.$content.find('tr[data-id=' + item.id + ']').addClass('w-selected');
+    }
   },
   clearSelection: function() {
     var modal = this.props.modal;
@@ -366,14 +377,6 @@ var ReqData = React.createClass({
       this.updateFilter(filterList.join('\n'));
     }
     events.trigger('updateGlobal');
-  },
-  reselectRules: function(data, autoUpdate) {
-    var self = this;
-    self.state.rules.clearAllSelected();
-    self.setSelected(self.state.rules, 'Default', !data.defaultRulesIsDisabled, autoUpdate);
-    data.list.forEach(function(name) {
-      self.setSelected(self.state.rules, name, true, autoUpdate);
-    });
   },
   removeAllSuchURL: function(item, justRemove) {
     var urlList = [];
@@ -779,9 +782,7 @@ var ReqData = React.createClass({
                       i = hasKeyword ? index : i;
 
                       return (<tr tabIndex="-1" draggable={draggable} ref={item.id} data-id={item.id} key={item.id} style={{display: item.hide ? 'none' : ''}}
-                              className={getClassName(item)}
-                              onClick={function(e) {self.onClick(e, item);}}
-                              onDoubleClick={self.props.onDoubleClick}>
+                              className={getClassName(item)}>
                               <th className="order" scope="row">{hasKeyword && !item.hide ? ++index : item.order}</th>
                               {columnList.map(function(col) {
                                 var name = col.name;

@@ -472,7 +472,7 @@ proto.getSelectedList = function() {
   });
 };
 
-proto.setSelectedList = function(startId, endId) {
+proto.setSelectedList = function(startId, endId, selectElem) {
   if (!startId || !endId) {
     return;
   }
@@ -490,6 +490,7 @@ proto.setSelectedList = function(startId, endId) {
     if (item.id == endId) {
       selected = !selected;
     }
+    selectElem(item);
   }
 };
 
