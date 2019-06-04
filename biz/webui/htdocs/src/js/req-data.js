@@ -322,7 +322,7 @@ var ReqData = React.createClass({
 
     modal.clearActive();
     item.active = true;
-    hm && util.ensureVisible(ReactDOM.findDOMNode(self.refs[item.id]), self.container);
+    hm && util.ensureVisible(this.$content.find('tr[data-id=' + item.id + ']'), self.container);
     events.trigger('networkStateChange');
   },
   setSelected: function(item) {
@@ -781,7 +781,7 @@ var ReqData = React.createClass({
                     list.map(function(item, i) {
                       i = hasKeyword ? index : i;
 
-                      return (<tr tabIndex="-1" draggable={draggable} ref={item.id} data-id={item.id} key={item.id} style={{display: item.hide ? 'none' : ''}}
+                      return (<tr tabIndex="-1" draggable={draggable} data-id={item.id} key={item.id} style={{display: item.hide ? 'none' : ''}}
                               className={getClassName(item)}>
                               <th className="order" scope="row">{hasKeyword && !item.hide ? ++index : item.order}</th>
                               {columnList.map(function(col) {
