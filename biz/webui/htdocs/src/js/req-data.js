@@ -12,7 +12,6 @@ var ContextMenu = require('./context-menu');
 var events = require('./events');
 var dataCenter = require('./data-center');
 
-var HEIGHT = 24; //每条数据的高度
 var columnState = {};
 var CMD_RE = /^:dump\s+(\d{1,15})\s*$/;
 var NOT_BOLD_RULES = {
@@ -200,6 +199,40 @@ function getFilename(item, type) {
   var suffix = isRaw ? '' : util.getExtension(type[2] === 'q' ? item.req.headers : item.res.headers);
   return name + '_' + type + suffix;
 }
+
+var Row = React.createClass({
+  shouldComponentUpdate: function(nextProps) {
+    var p = this.props;
+    var order = p.order;
+    var draggable = p.draggable;
+    var columnList = p.columnList;
+    return order != nextProps.order || this.req != p.item.req || this.hide != p.item.hide ||
+      draggable != nextProps.draggable || columnList != nextProps.columnList;
+  },
+  render: function() {
+    var p = this.props;
+    var order = p.order;
+    var draggable = p.draggable;
+    var columnList = p.columnList;
+    var item = p.item;
+    this.req = item.req;
+    this.hide = item.hide;
+    return (<tr tabIndex="-1" draggable={draggable} data-id={item.id} key={item.id} style={{display: item.hide ? 'none' : ''}}
+              className={getClassName(item)}>
+              <th className="order" scope="row">{order}</th>
+              {columnList.map(function(col) {
+                var name = col.name;
+                var className = col.className;
+                if (name === 'path') {
+                  return <td key={name} className="path" title={item.url}>{item.path}</td>;
+                }
+                var value = name === 'hostIp' ? util.getServerIp(item) : item[name];
+                return (<td key={name} className={className}
+                  title={col.showTitle ? value : undefined}>{value}</td>);
+              })}
+            </tr>);
+  }
+});
 
 var ReqData = React.createClass({
   getInitialState: function() {
@@ -669,19 +702,6 @@ var ReqData = React.createClass({
       this.container.scrollTop = this.content.offsetHeight;
     }
   },
-  getVisibleIndex: function() {
-    var container = this.container;
-    var len = container && this.props.modal && this.props.modal.list.length;
-    var height = len && container.offsetHeight;
-    if (height) {
-      var scrollTop = container.scrollTop;
-      var startIndex = Math.floor(Math.max(scrollTop - 240, 0) / HEIGHT);
-      var endIndex = Math.floor(Math.max(scrollTop + height + 240, 0) / HEIGHT);
-      this.indeies = [startIndex, endIndex];
-    }
-
-    return this.indeies;
-  },
   orderBy: function(e) {
     var target = $(e.target).closest('th')[0];
     if (!target) {
@@ -739,18 +759,8 @@ var ReqData = React.createClass({
     var list = modal ? modal.list : [];
     var hasKeyword = modal && modal.hasKeyword();
     var index = 0;
-    var indeies = self.getVisibleIndex();
     var draggable = state.draggable;
     var columnList = state.columns;
-    var startIndex, endIndex;
-
-    if (indeies) {
-      startIndex = indeies[0];
-      endIndex = indeies[1];
-    } else {
-      startIndex = 0;
-      endIndex = list.length;
-    }
     var filterText = (state.filterText || '').trim();
     var minWidth = 50;
     // reduce
@@ -780,26 +790,8 @@ var ReqData = React.createClass({
                   {
                     list.map(function(item, i) {
                       i = hasKeyword ? index : i;
-
-                      return (<tr tabIndex="-1" draggable={draggable} data-id={item.id} key={item.id} style={{display: item.hide ? 'none' : ''}}
-                              className={getClassName(item)}>
-                              <th className="order" scope="row">{hasKeyword && !item.hide ? ++index : item.order}</th>
-                              {columnList.map(function(col) {
-                                var name = col.name;
-                                var className = col.className;
-                                if (name === 'path') {
-                                  var url, path;
-                                  if (!item.hide && i >= startIndex && i <= endIndex) {
-                                    url = item.url;
-                                    path = item.path;
-                                  }
-                                  return <td key={name} className="path" title={url}>{path}</td>;
-                                }
-                                var value = name === 'hostIp' ? util.getServerIp(item) : item[name];
-                                return (<td key={name} className={className}
-                                  title={col.showTitle ? value : undefined}>{value}</td>);
-                              })}
-                            </tr>);
+                      var order = hasKeyword && !item.hide ? ++index : item.order;
+                      return <Row order={order} columnList={columnList} draggable={draggable} item={item} />;
                     })
                   }
                   </tbody>
