@@ -200,6 +200,16 @@ function getFilename(item, type) {
   return name + '_' + type + suffix;
 }
 
+var Col = React.createClass({
+  shouldComponentUpdate: function(nextProps) {
+    return false;
+  },
+  render: function() {
+    var p = this.props;
+    return <td key={name} className={p.className} title={p.title}>{p.value}</td>;
+  }
+});
+
 var Row = React.createClass({
   shouldComponentUpdate: function(nextProps) {
     var p = this.props;
@@ -224,7 +234,10 @@ var Row = React.createClass({
                 var name = col.name;
                 var className = col.className;
                 if (name === 'path') {
-                  return <td key={name} className="path" title={item.url}>{item.path}</td>;
+                  return <Col key={name} className="path" title={item.url} value={item.path} />;
+                }
+                if (name === 'hostname') {
+                  return <Col key={name} className={className} title={item.hostname} value={item.hostname} />;
                 }
                 var value = name === 'hostIp' ? util.getServerIp(item) : item[name];
                 return (<td key={name} className={className}
