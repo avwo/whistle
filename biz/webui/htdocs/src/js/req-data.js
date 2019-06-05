@@ -446,6 +446,10 @@ var ReqData = React.createClass({
     }
     events.trigger('updateGlobal');
   },
+  triggerActiveItem: function(item) {
+    this.onClick('', item, true);
+    events.trigger('activeItem', item);
+  },
   onClickContextMenu: function(action, e) {
     var self = this;
     var item = self.currentFocusItem;
@@ -460,19 +464,19 @@ var ReqData = React.createClass({
       util.openPreview(item);
       break;
     case 'Overview':
-      events.trigger('activeItem', item);
+      self.triggerActiveItem(item);
       events.trigger('showOverview');
       break;
     case 'Inspectors':
-      events.trigger('activeItem', item);
+      self.triggerActiveItem(item);
       events.trigger('showInspectors');
       break;
     case 'Frames':
-      events.trigger('activeItem', item);
+      self.triggerActiveItem(item);
       events.trigger('showFrames');
       break;
     case 'Timeline':
-      events.trigger('activeItem', item);
+      self.triggerActiveItem(item);
       events.trigger('showTimeline');
       break;
     case 'Compose':
