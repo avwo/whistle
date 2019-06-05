@@ -231,8 +231,6 @@ var Row = React.createClass({
                     if (name === 'path') {
                       title = item.url;
                       text = item.path;
-                    } else if (name === 'hostIp') {
-                      title = text = util.getServerIp(item);
                     } else {
                       text = item[name];
                       title = col.showTitle ? text : undefined;
@@ -240,7 +238,7 @@ var Row = React.createClass({
                   }
                   return <td key={name} className={className} title={title}>{text}</td>;
                 }
-                var value = item[name];
+                var value = name === 'hostIp' ? util.getServerIp(item) : item[name];
                 return (<td key={name} className={className} title={col.showTitle ? value : undefined}>{value}</td>);
               })}
             </tr>);

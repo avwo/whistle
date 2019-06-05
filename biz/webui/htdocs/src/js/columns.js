@@ -49,8 +49,7 @@ function getDefaultColumns() {
       className: 'hostIp',
       selected: true,
       showTitle: true,
-      minWidth: 110,
-      lazy: true
+      minWidth: 110
     },
     {
       title: 'ClientPort',
