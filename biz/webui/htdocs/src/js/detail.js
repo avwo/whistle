@@ -64,9 +64,14 @@ var ReqData = React.createClass({
         self.setState({});
       });
     }
+    var timer;
+    var update = function() {
+      self.setState({});
+    };
     events.on('activeItem', function(_, item) {
       if (item && item.selected) {
-        self.setState({});
+        clearTimeout(timer);
+        timer = setTimeout(update, 30);
       }
     });
   },
