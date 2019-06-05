@@ -43,36 +43,32 @@ var ReqData = React.createClass({
     };
   },
   componentDidMount: function() {
+    if (this.props.data) {
+      return;
+    }
     var self = this;
     var tabs = self.state.tabs;
-    if (!this.props.data) {
-      events.on('showOverview', function() {
-        events.trigger('overviewScrollTop');
-        self.toggleTab(tabs[0]);
-      }).on('showInspectors', function() {
-        self.toggleTab(tabs[1]);
-      }).on('showFrames', function() {
-        self.toggleTab(tabs[2]);
-      }).on('showTimeline', function() {
-        self.toggleTab(tabs[4]);
-      }).on('showLog', function() {
-        self.toggleTab(tabs[5]);
-      }).on('composer', function(e, item) {
-        var modal = self.props.modal;
-        self.showComposer(item || (modal && modal.getActive()));
-      }).on('networkStateChange', function() {
-        self.setState({});
-      });
-    }
     var timer;
     var update = function() {
       self.setState({});
     };
-    events.on('activeItem', function(_, item) {
-      if (item && item.selected) {
-        clearTimeout(timer);
-        timer = setTimeout(update, 30);
-      }
+    events.on('showOverview', function() {
+      events.trigger('overviewScrollTop');
+      self.toggleTab(tabs[0]);
+    }).on('showInspectors', function() {
+      self.toggleTab(tabs[1]);
+    }).on('showFrames', function() {
+      self.toggleTab(tabs[2]);
+    }).on('showTimeline', function() {
+      self.toggleTab(tabs[4]);
+    }).on('showLog', function() {
+      self.toggleTab(tabs[5]);
+    }).on('composer', function(e, item) {
+      var modal = self.props.modal;
+      self.showComposer(item || (modal && modal.getActive()));
+    }).on('networkStateChange', function() {
+      clearTimeout(timer);
+      timer = setTimeout(update, 60);
     });
   },
   showComposer: function(item) {

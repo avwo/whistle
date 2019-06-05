@@ -448,7 +448,7 @@ var ReqData = React.createClass({
   },
   triggerActiveItem: function(item) {
     this.onClick('', item, true);
-    events.trigger('activeItem', item);
+    events.trigger('networkStateChange');
   },
   onClickContextMenu: function(action, e) {
     var self = this;
