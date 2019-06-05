@@ -2,7 +2,6 @@ require('./base-css.js');
 var $ = require('jquery');
 var React = require('react');
 var util = require('./util');
-var events = require('./events');
 var storage = require('./storage');
 
 var Divider = require('./divider');

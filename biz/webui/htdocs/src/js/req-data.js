@@ -12,6 +12,7 @@ var ContextMenu = require('./context-menu');
 var events = require('./events');
 var dataCenter = require('./data-center');
 
+var HEIGHT = 24;
 var columnState = {};
 var CMD_RE = /^:dump\s+(\d{1,15})\s*$/;
 var NOT_BOLD_RULES = {
@@ -200,30 +201,21 @@ function getFilename(item, type) {
   return name + '_' + type + suffix;
 }
 
-var Col = React.createClass({
-  shouldComponentUpdate: function(nextProps) {
-    return false;
-  },
-  render: function() {
-    var p = this.props;
-    return <td key={name} className={p.className} title={p.title}>{p.value}</td>;
-  }
-});
-
 var Row = React.createClass({
   shouldComponentUpdate: function(nextProps) {
     var p = this.props;
-    var order = p.order;
-    var draggable = p.draggable;
-    var columnList = p.columnList;
-    return order != nextProps.order || this.req != p.item.req || this.hide != p.item.hide ||
-      draggable != nextProps.draggable || columnList != nextProps.columnList;
+    return p.order != nextProps.order || this.req != p.item.req || this.hide != p.item.hide ||
+    p.draggable != nextProps.draggable || p.columnList != nextProps.columnList
+    || p.startIndex != nextProps.startIndex || p.endIndex != nextProps.endIndex;
   },
   render: function() {
     var p = this.props;
     var order = p.order;
     var draggable = p.draggable;
     var columnList = p.columnList;
+    var index = p.index;
+    var startIndex = p.startIndex;
+    var endIndex = p.endIndex;
     var item = p.item;
     this.req = item.req;
     this.hide = item.hide;
@@ -233,15 +225,20 @@ var Row = React.createClass({
               {columnList.map(function(col) {
                 var name = col.name;
                 var className = col.className;
-                if (name === 'path') {
-                  return <Col key={name} className="path" title={item.url} value={item.path} />;
+                if (col.lazy && !item.hide) {
+                  var title, text;
+                  if (index >= startIndex && index <= endIndex) {
+                    if (name === 'path') {
+                      title = item.url;
+                      text = item.path;
+                    } else {
+                      title = text = util.getServerIp(item);
+                    }
+                  }
+                  return <td key={name} className={className} title={title}>{text}</td>;
                 }
-                if (name === 'hostname') {
-                  return <Col key={name} className={className} title={item.hostname} value={item.hostname} />;
-                }
-                var value = name === 'hostIp' ? util.getServerIp(item) : item[name];
-                return (<td key={name} className={className}
-                  title={col.showTitle ? value : undefined}>{value}</td>);
+                var value = item[name];
+                return (<td key={name} className={className} title={col.showTitle ? value : undefined}>{value}</td>);
               })}
             </tr>);
   }
@@ -757,6 +754,19 @@ var ReqData = React.createClass({
   onColumnsResort: function() {
     this.setState({ columns: columns.getSelectedColumns() });
   },
+  getVisibleIndex: function() {
+    var container = this.container;
+    var len = container && this.props.modal && this.props.modal.list.length;
+    var height = len && container.offsetHeight;
+    if (height) {
+      var scrollTop = container.scrollTop;
+      var startIndex = Math.floor(Math.max(scrollTop - 240, 0) / HEIGHT);
+      var endIndex = Math.floor(Math.max(scrollTop + height + 240, 0) / HEIGHT);
+      this.indeies = [startIndex, endIndex];
+    }
+
+    return this.indeies;
+  },
   renderColumn: function(col) {
     var name = col.name;
     var disabledColumns = columns.isDisabled();
@@ -776,10 +786,21 @@ var ReqData = React.createClass({
     var list = modal ? modal.list : [];
     var hasKeyword = modal && modal.hasKeyword();
     var index = 0;
+    var indeies = self.getVisibleIndex();
     var draggable = state.draggable;
     var columnList = state.columns;
     var filterText = (state.filterText || '').trim();
     var minWidth = 50;
+    var startIndex, endIndex;
+
+    if (indeies) {
+      startIndex = indeies[0];
+      endIndex = indeies[1];
+    } else {
+      startIndex = 0;
+      endIndex = list.length;
+    }
+
     // reduce
     for (var i = 0, len = columnList.length; i < len; i++) {
       minWidth += columnList[i].minWidth;
@@ -808,7 +829,8 @@ var ReqData = React.createClass({
                     list.map(function(item, i) {
                       i = hasKeyword ? index : i;
                       var order = hasKeyword && !item.hide ? ++index : item.order;
-                      return <Row order={order} columnList={columnList} draggable={draggable} item={item} />;
+                      return <Row order={order} startIndex={startIndex} endIndex={endIndex} index={i}
+                        columnList={columnList} draggable={draggable} item={item} />;
                     })
                   }
                   </tbody>
