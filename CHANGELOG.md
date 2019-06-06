@@ -1,3 +1,6 @@
+# v1.14.10
+1. refactor: 调整 `pipe://plugin` 的实现，支持通过pipe获取请求或响应内容，再传给 `rulesServer` 或 `resRulesServer` 
+
 # v1.14.9
 1. perf: 优化 Network 列表的性能
 
