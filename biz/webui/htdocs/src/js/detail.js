@@ -68,7 +68,7 @@ var ReqData = React.createClass({
       self.showComposer(item || (modal && modal.getActive()));
     }).on('networkStateChange', function() {
       clearTimeout(timer);
-      timer = setTimeout(update, 80);
+      timer = setTimeout(update, 100);
     });
   },
   showComposer: function(item) {
