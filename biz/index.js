@@ -18,7 +18,7 @@ module.exports = function(req, res, next) {
     PLUGIN_RE = new RegExp('^' + webuiPathRe + 'whistle\\.([a-z\\d_-]+)/');
   }
   var fullUrl = util.getFullUrl(req);
-  var host = req.headers.host.split(':');
+  var host = util.parseHost(req.headers.host);
   var port = host[1] || (req.isHttps ? 443 : 80);
   var bypass;
   host = host[0];
