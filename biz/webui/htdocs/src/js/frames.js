@@ -32,6 +32,9 @@ var Frames = React.createClass({
   onUpdate: function() {
     this.setState({});
   },
+  onDOMReady: function() {
+    this.refs.frameList.autoRefresh();
+  },
   render: function() {
     var props = this.props;
     var modal = this.state.modal;
@@ -43,8 +46,8 @@ var Frames = React.createClass({
     }
     return (
       <div className={'fill orient-vertical-box w-frames' + ((frames && !props.hide) ? '' : ' hide')}>
-        <Divider vertical="true" rightWidth="250">
-          <FrameList reqData={reqData} modal={modal}
+        <Divider vertical="true" rightWidth="250" onDOMReady={this.onDOMReady}>
+          <FrameList ref="frameList" reqData={reqData} modal={modal}
             onUpdate={this.onUpdate} onClickFrame={this.onClickFrame} />
           <FrameData data={reqData} frame={curFrame} />
         </Divider>

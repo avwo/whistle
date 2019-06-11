@@ -20,6 +20,13 @@ var Divider = React.createClass({
   componentDidMount: function() {
     this.reset();
   },
+  triggerDOMReady: function() {
+    if (this.__inited) {
+      return;
+    }
+    this.__inited = true;
+    this.props.onDOMReady && this.props.onDOMReady();
+  },
   reset: function() {
     var divider = ReactDOM.findDOMNode(this.refs.divider);
     var vertical = util.getBoolean(this.props.vertical);
@@ -33,6 +40,7 @@ var Divider = React.createClass({
     });
     if (this._leftWidth > 0) {
       leftElem[prop](this._leftWidth);
+      this.triggerDOMReady();
       return;
     }
 
@@ -41,11 +49,13 @@ var Divider = React.createClass({
       setTimeout(function() {
         rightWidth = (vertical ? divider.offsetHeight : divider.offsetWidth) / 2;
         rightElem[prop](Math.max(rightWidth, 5));
+        this.triggerDOMReady();
       }, 10);
       return;
     }
 
     rightElem[prop](Math.max(rightWidth, 5));
+    this.triggerDOMReady();
   },
   render: function() {
     var vertical = util.getBoolean(this.props.vertical);
