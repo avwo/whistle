@@ -93,6 +93,7 @@ program
   .option('-R, --reqCacheSize [reqCacheSize]', 'set the cache size of request data (600 by default)', String, undefined)
   .option('-F, --frameCacheSize [frameCacheSize]', 'set the cache size of webSocket and socket\'s frames (512 by default)', String, undefined)
   .option('-A, --addon [pluginPaths]', 'add custom plugin paths', String, undefined)
+  .option('--socksPort [socksPort]', 'set the socksv5 server port of whistle', parseInt, undefined)
   .option('--httpPort [httpPort]', 'set the http server port of whistle', parseInt, undefined)
   .option('--httpsPort [httpsPort]', 'set the https server port of whistle', parseInt, undefined)
   .option('--no-global-plugins', 'do not load any globally installed plugins')
