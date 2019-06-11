@@ -7,6 +7,7 @@ var useRules = require('./use');
 var showStatus = require('./status');
 var util = require('./util');
 
+var isWin = process.platform === 'win32';
 var showUsage = util.showUsage;
 var error = util.error;
 var warn = util.warn;
@@ -53,7 +54,7 @@ program.setConfig({
     } else if (err) {
       if (err.code === 'EPERM') {
         error('[!] Cannot kill ' + config.name + ' owned by root');
-        info('[i] Try to run command with `sudo`');
+        info('[i] Try to run command ' + (isWin ? 'as an administrator' : 'with `sudo`'));
       } else {
         error('[!] ' + err.message);
       }
