@@ -9,7 +9,7 @@ require('should-http');
 var fs = require('fs');
 var fse = require('fs-extra2');
 var startWhistle = require('../index');
-var socks = require('socksv5');
+var socks = require('sockx');
 var util = require('./util.test');
 var config = require('./config.test');
 var events = require('./events');
