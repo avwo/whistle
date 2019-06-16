@@ -1,3 +1,7 @@
+# v1.15.0
+1. feat: 支持通过命令行参数 `--socksPort 1080` 启动指定监听端口的socks v5服务（目前只支持普通tcp请求，udp请求还有ftp请求的带来暂不支持）
+2. feat: 插件server添加了 `req.passThrough()`，`req.request(url/options, cb)`，	`req.writeHead(code, message, headers)` 等方法用于将插件里面的请求转发到指定服务
+
 # v1.14.10
 1. refactor: 调整 `pipe://plugin` 的实现，支持通过pipe获取请求或响应内容，再传给 `rulesServer` 或 `resRulesServer` 
 
