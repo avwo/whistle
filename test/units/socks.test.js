@@ -1,10 +1,6 @@
 var util = require('../util.test');
 
 module.exports = function() {
-  // socks5模块的server在Node10上无法启动
-  if (process.versions.modules >= 64) {
-    return;
-  }
   util.request('http://socks1.w2.org/index.html', function(res, data) {
     data.port.should.be.equal(1080);
   });
