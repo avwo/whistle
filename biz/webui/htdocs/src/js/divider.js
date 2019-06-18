@@ -28,8 +28,9 @@ var Divider = React.createClass({
     this.props.onDOMReady && this.props.onDOMReady();
   },
   reset: function() {
-    var divider = ReactDOM.findDOMNode(this.refs.divider);
-    var vertical = util.getBoolean(this.props.vertical);
+    var self = this;
+    var divider = ReactDOM.findDOMNode(self.refs.divider);
+    var vertical = util.getBoolean(self.props.vertical);
     var prop = vertical ? 'height' : 'width';
     var con = $(divider);
     var leftElem = con.children('.w-divider-left');
@@ -38,24 +39,24 @@ var Divider = React.createClass({
       height: 'auto',
       width: 'auto'
     });
-    if (this._leftWidth > 0) {
-      leftElem[prop](this._leftWidth);
-      this.triggerDOMReady();
+    if (self._leftWidth > 0) {
+      leftElem[prop](self._leftWidth);
+      self.triggerDOMReady();
       return;
     }
 
-    var rightWidth = parseInt(this.props.rightWidth, 10);
+    var rightWidth = parseInt(self.props.rightWidth, 10);
     if (!(rightWidth > 0)) {
       setTimeout(function() {
         rightWidth = (vertical ? divider.offsetHeight : divider.offsetWidth) / 2;
         rightElem[prop](Math.max(rightWidth, 5));
-        this.triggerDOMReady();
+        self.triggerDOMReady();
       }, 10);
       return;
     }
 
     rightElem[prop](Math.max(rightWidth, 5));
-    this.triggerDOMReady();
+    self.triggerDOMReady();
   },
   render: function() {
     var vertical = util.getBoolean(this.props.vertical);
