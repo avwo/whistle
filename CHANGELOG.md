@@ -1,3 +1,8 @@
+# v1.15.1
+1. fix: 页面脚本错误（该错误不影响使用）
+2. refactor: Node 11及以上版本禁用请求连接复用，这些版本在复用请求连接时会导致复用的连接意外断开
+3. refactor: 优化搜索whistle插件的路径，增加搜索目录，减少插件搜索不到的问题
+
 # v1.15.0
 1. feat: 支持通过命令行参数 `--socksPort 1080` 启动指定监听端口的socks v5服务（目前只支持普通tcp请求，udp请求还有ftp请求的带来暂不支持）
 2. feat: 插件server添加了 `req.passThrough()`，`req.request(url/options, cb)`，	`req.writeHead(code, message, headers)` 等方法用于将插件里面的请求转发到指定服务
