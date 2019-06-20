@@ -12,7 +12,7 @@ exports.getClientId = function() {
   return Date.now() + '-' + index++;
 };
 
-exports.getServerInfo = function getServerInfo(req) {
+exports.getServerInfo = function(req) {
   var info = {
     version: config.version,
     networkMode: config.networkMode,
@@ -25,6 +25,9 @@ exports.getServerInfo = function getServerInfo(req) {
     host: util.hostname(),
     isWin: util.isWin,
     port: config.port,
+    socksPort: config.socksPort,
+    httpPort: config.httpPort,
+    httpsPort: config.httpsPort,
     ipv4: [],
     ipv6: [],
     mac: req.ip + (config.storage ? '\n' + config.storage : '')

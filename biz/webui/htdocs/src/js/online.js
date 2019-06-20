@@ -30,6 +30,12 @@ function createDialog() {
   return dialog;
 }
 
+function addIndent(list) {
+  return list.map(function(ip) {
+    return '  ' + ip;
+  });
+}
+
 var Online = React.createClass({
   getInitialState: function() {
     return {};
@@ -99,6 +105,15 @@ var Online = React.createClass({
     if (server.port) {
       info.push('<h5><strong>Port:</strong> ' + server.port + '</h5>');
     }
+    if (server.socksPort) {
+      info.push('<h5><strong>SOCKS Port:</strong> ' + server.socksPort + '</h5>');
+    }
+    if (server.httpPort) {
+      info.push('<h5><strong>HTTP Port:</strong> ' + server.httpPort + '</h5>');
+    }
+    if (server.httpsPort) {
+      info.push('<h5><strong>HTTPS Port:</strong> ' + server.httpsPort + '</h5>');
+    }
     if (server.ipv4.length) {
       info.push('<h5><strong>IPv4:</strong></h5>');
       info.push('<p>' + server.ipv4.join('<br/>') + '</p>');
@@ -124,18 +139,27 @@ var Online = React.createClass({
       if (server.port) {
         info.push('Port: ' + server.port);
       }
+      if (server.socksPort) {
+        info.push('SOCKS Port: ' + server.socksPort);
+      }
+      if (server.httpPort) {
+        info.push('HTTP Port: ' + server.httpPort);
+      }
+      if (server.httpsPort) {
+        info.push('HTTPS Port: ' + server.httpsPort);
+      }
 
       if (server.ipv4.length) {
         info.push('IPv4:');
-        info.push.apply(info, server.ipv4);
+        info.push.apply(info, addIndent(server.ipv4));
       }
       if (server.ipv4.length) {
         info.push('IPv6:');
-        info.push.apply(info, server.ipv6);
+        info.push.apply(info, addIndent(server.ipv6));
       }
     }
     return (
-        <a itle={info.join('\n')} href="javascript:;" draggable="false"
+        <a title={info.join('\n')} href="javascript:;" draggable="false"
           className={'w-online-menu w-online' + (server ? '' : ' w-offline')} onClick={this.showServerInfo}>
           <span className="glyphicon glyphicon-stats"></span>{server ? 'Online' : 'Offline'}
           <Dialog ref="confirmReload" wstyle="w-confirm-reload-dialog">
