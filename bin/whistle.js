@@ -66,13 +66,15 @@ program.setConfig({
 program
   .command('status')
   .description('Show the running status of whistle');
+program
+  .command('add [filepath]')
+  .description('Add rules from local js file (.whistle.js by default)');
 program.command('install')
   .description('Install a whistle plugin');
 program.command('uninstall')
   .description('Uninstall a whistle plugin');
-program
-  .command('add [filepath]')
-  .description('Add rules from local js file (.whistle.js by default)');
+program.command('exec')
+  .description('Exec whistle plugin command');
   
 program
   .option('-D, --baseDir [baseDir]', 'set the configured storage root path', String, undefined)
@@ -144,7 +146,7 @@ if (cmd === 'status') {
     filepath = null;
   }
   useRules(filepath, storage, force);
-} else if (cmd === 'run' && argv[3] && /^[^-]/.test(argv[3])) {
+} else if ((cmd === 'run' || cmd === 'exec') && argv[3] && /^[^-]/.test(argv[3])) {
   cmd = argv[3];
   argv = Array.prototype.slice.call(argv, 4);
   plugin.run(cmd, argv);
