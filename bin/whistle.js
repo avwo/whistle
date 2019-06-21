@@ -6,6 +6,7 @@ var config = require('../lib/config');
 var useRules = require('./use');
 var showStatus = require('./status');
 var util = require('./util');
+var install = require('./install');
 
 var showUsage = util.showUsage;
 var error = util.error;
@@ -64,10 +65,12 @@ program.setConfig({
 
 program
   .command('status')
-  .description('Show the running status of whistle');
+  .description('show the running status of whistle');
+program.command('install')
+  .description('install a whistle plugin');
 program
-  .command('use/add [filepath]')
-  .description('Set rules from a specified js file (.whistle.js by default)');
+  .command('add [filepath]')
+  .description('set rules from a specified js file (.whistle.js by default)');
   
 program
   .option('-D, --baseDir [baseDir]', 'set the configured storage root path', String, undefined)
@@ -102,12 +105,23 @@ program
 var argv = process.argv;
 var cmd = argv[2];
 var storage;
+var removeItem = function(list, name) {
+  var i = list.indexOf(name);
+  i !== -1 && list.splice(i, 1);
+};
 if (cmd === 'status') {
   var all = argv[3] === '--all';
   if (argv[3] === '-S') {
     storage = argv[4];
   }
   showStatus(all, storage);
+} else if (/^([a-z]{1,2})?i(nstall)?$/.test(cmd)) {
+  cmd = (RegExp.$1 || '') + 'npm';
+  argv = Array.prototype.slice.call(argv, 3);
+  argv.unshift('install');
+  removeItem(argv, '-g');
+  removeItem(argv, '--global');
+  install(cmd, argv);
 } else if (cmd === 'use' || cmd === 'enable' || cmd === 'add') {
   var index = argv.indexOf('--force');
   var force = index !== -1;
