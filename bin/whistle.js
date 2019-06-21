@@ -65,14 +65,14 @@ program.setConfig({
 
 program
   .command('status')
-  .description('show the running status of whistle');
+  .description('Show the running status of whistle');
 program.command('install')
-  .description('install a whistle plugin');
+  .description('Install a whistle plugin');
 program.command('uninstall')
-  .description('uninstall a whistle plugin');
+  .description('Uninstall a whistle plugin');
 program
   .command('add [filepath]')
-  .description('set rules from a specified js file (.whistle.js by default)');
+  .description('Add rules from local js file (.whistle.js by default)');
   
 program
   .option('-D, --baseDir [baseDir]', 'set the configured storage root path', String, undefined)
