@@ -144,6 +144,10 @@ if (cmd === 'status') {
     filepath = null;
   }
   useRules(filepath, storage, force);
+} else if (cmd === 'run' && argv[3] && /^[^-]/.test(argv[3])) {
+  cmd = argv[3];
+  argv = Array.prototype.slice.call(argv, 4);
+  plugin.run(cmd, argv);
 } else {
   program.parse(argv);
 }

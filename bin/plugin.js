@@ -48,3 +48,14 @@ exports.uninstall = function(plugins) {
     fse.removeSync(path.join(PLUGIN_PATH, 'node_modules', name));
   });
 };
+
+exports.run = function(cmd, argv) {
+  var newPath = [path.join(PLUGIN_PATH, 'node_modules/.bin')];
+  process.env.PATH && newPath.push(process.env.PATH);
+  newPath = newPath.join(os.platform() === 'win32' ? ';' : ':');
+  process.env.PATH = newPath;
+  cp.spawn(cmd, argv, {
+    stdio: 'inherit',
+    env: process.env
+  });
+};
