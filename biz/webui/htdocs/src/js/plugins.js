@@ -24,7 +24,6 @@ var Home = React.createClass({
     events.on('updateAllPlugins', function() {
       var data = self.props.data || {};
       var plugins = data.plugins || {};
-      var sudo = data.isWin ? '' : 'sudo ';
       var newPlugins = {};
       Object.keys(plugins).sort(getPluginComparator(plugins))
       .map(function(name) {
@@ -39,7 +38,7 @@ var Home = React.createClass({
       });
       var cmdMsg = Object.keys(newPlugins).map(function(registry) {
         var list = newPlugins[registry].join(' ');
-        return sudo + 'npm i -g ' + list + registry;
+        return 'w2 install ' + list + registry;
       }).join('\n\n');
       cmdMsg && self.setState({
         cmdMsg: cmdMsg,
@@ -79,9 +78,8 @@ var Home = React.createClass({
     var name = $(e.target).attr('data-name');
     var plugin = this.props.data.plugins[name + ':'];
     var registry = plugin.registry ? ' --registry=' + plugin.registry : '';
-    var sudo = this.props.data.isWin ? '' : 'sudo ';
     this.setState({
-      cmdMsg: sudo + 'npm i -g ' + plugin.moduleName + registry,
+      cmdMsg: 'w2 install ' + plugin.moduleName + registry,
       uninstall: false
     }, this.showMsgDialog);
   },
@@ -89,8 +87,9 @@ var Home = React.createClass({
     var name = $(e.target).attr('data-name');
     var plugin = this.props.data.plugins[name + ':'];
     var sudo = this.props.data.isWin ? '' : 'sudo ';
+    var cmdMsg = plugin.isSys ? 'w2 uninstall ' : sudo + 'npm uninstall -g ';
     this.setState({
-      cmdMsg: sudo + 'npm uninstall -g ' + plugin.moduleName,
+      cmdMsg: cmdMsg + plugin.moduleName,
       uninstall: true,
       pluginPath: plugin.path
     }, this.showMsgDialog);
