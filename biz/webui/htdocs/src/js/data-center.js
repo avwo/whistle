@@ -808,7 +808,7 @@ function updateServerInfo(data) {
     curServerInfo.strictMode = data.strictMode;
     events.trigger('updateStrictMode');
   }
-  if (curServerInfo && curServerInfo.version == data.version &&
+  if (curServerInfo && curServerInfo.version == data.version && curServerInfo.rulesMode === data.rulesMode &&
     curServerInfo.networkMode === data.networkMode && curServerInfo.multiEnv === data.multiEnv &&
     curServerInfo.baseDir == data.baseDir && curServerInfo.username == data.username &&
     curServerInfo.port == data.port && curServerInfo.host == data.host &&

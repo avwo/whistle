@@ -149,14 +149,18 @@ function getRemoteDataHandler(callback) {
   };
 }
 
-function getPageName() {
+function getPageName(options) {
+  if (options.networkMode) {
+    return 'network';
+  }
   var hash = location.hash.substring(1);
   if (hash) {
     hash = hash.replace(/[?#].*$/, '');
   } else {
     hash = location.href.replace(/[?#].*$/, '').replace(/.*\//, '');
   }
-  return hash;
+
+  return options.rulesMode && hash === 'network' ? 'rules' : hash;
 }
 
 function compareSelectedNames(src, target) {
@@ -201,18 +205,18 @@ var Index = React.createClass({
     var modal = this.props.modal;
     var rules = modal.rules;
     var values = modal.values;
-    var networkMode = !!modal.server.networkMode;
     var multiEnv = !!modal.server.multiEnv;
     var state = {
       replayCount: 1,
       allowMultipleChoice: modal.rules.allowMultipleChoice,
       backRulesFirst: modal.rules.backRulesFirst,
       syncWithSysHosts: modal.rules.syncWithSysHosts,
-      networkMode: networkMode,
+      networkMode: !!modal.server.networkMode,
+      rulesMode: !!modal.server.rulesMode,
       multiEnv: modal.server.multiEnv,
       isWin: modal.server.isWin
     };
-    var pageName = networkMode ? 'network' : getPageName();
+    var pageName = getPageName(state);
     if (!pageName || pageName.indexOf('rules') != -1) {
       state.hasRules = true;
       state.name = 'rules';
@@ -648,7 +652,7 @@ var Index = React.createClass({
       e.preventDefault();
     };
     $(window).on('hashchange', function() {
-      var pageName = self.state.networkMode ? 'network' : getPageName();
+      var pageName = getPageName(self.state);
       if (!pageName || pageName.indexOf('rules') != -1) {
         self.showRules();
       } else if (pageName.indexOf('values') != -1) {
@@ -2683,7 +2687,7 @@ var Index = React.createClass({
             style={{display: networkMode ? 'none' : undefined}} title={'Dock to ' + (showLeftMenu ? 'top' : 'left') + ' (Ctrl[Command] + M)'}>
             <span className={'glyphicon glyphicon-chevron-' + (showLeftMenu ? 'up' : 'left')}></span>
           </a>
-          <div onMouseEnter={this.showNetworkOptions} onMouseLeave={this.hideNetworkOptions} className={'w-nav-menu w-menu-wrapper' + (showNetworkOptions ? ' w-menu-wrapper-show' : '')}>
+          <div style={{display: state.rulesMode ? 'none' : undefined}} onMouseEnter={this.showNetworkOptions} onMouseLeave={this.hideNetworkOptions} className={'w-nav-menu w-menu-wrapper' + (showNetworkOptions ? ' w-menu-wrapper-show' : '')}>
             <a onClick={this.showNetwork} onDoubleClick={this.clearNetwork} className="w-network-menu" title="Double click to remove all sessions" style={{background: name == 'network' ? '#ddd' : null}}
           href="javascript:;"  draggable="false"><span className="glyphicon glyphicon-globe"></span>Network</a>
             <MenuItem ref="networkMenuItem" options={state.networkOptions} className="w-network-menu-item" onClickOption={this.handleNetwork} />
@@ -2780,7 +2784,10 @@ var Index = React.createClass({
             <a onClick={this.showNetwork} onDoubleClick={this.clearNetwork}
               title={name == 'network' ? 'Double click to remove all sessions' : undefined}
               className="w-network-menu"
-              style={{background: name == 'network' ? '#ddd' : null}}
+              style={{
+                background: name == 'network' ? '#ddd' : null,
+                display: state.rulesMode ? 'none' : undefined
+              }}
               href="javascript:;"  draggable="false">
                 <span className="glyphicon glyphicon-globe"></span>
                 <span className="w-left-menu-tips">
