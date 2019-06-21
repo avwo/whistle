@@ -1,6 +1,7 @@
 # v1.15.2
 1. refactor: 启动时如果不设置 `-H boundHost`，默认检测在 `127.0.0.1` 的端口是否被占用，如果被占用会报错（可以通过启动参数 `-M INADRR_ANY` 禁掉）
 2. feat: 支持通过命令行参数 `-M rules` 启动无抓包页面模式，这种模式下UI将看不到Network，无法抓包且插件无法通过 `req.getSession(cb)` 获取抓包数据
+3. feat: 支持通过 `w2 install xxx` 或 `w2 i xxx` 的方式安装插件，如果用 cnpm 或 tnpm 安装可以采用 `w2 ti xxx` 或 `w2 ci xxx`，也可以指定 registry：`w2 i xxx --registry=https://r.npm.taobao.org`
 
 # v1.15.1
 1. fix: 页面脚本错误（该错误不影响使用）
