@@ -5,6 +5,7 @@ var path = require('path');
 var fse = require('fs-extra2');
 
 var WHISLTE_PLUGIN_RE = /^(@[\w\-]+\/)?whistle\.[a-z\d_\-]+$/;
+var PLUGIN_PATH = path.join(getWhistlePath(), 'plugins');
 
 function getHomedir() {
   //默认设置为`~`，防止Linux在开机启动时Node无法获取homedir
@@ -16,31 +17,34 @@ function getWhistlePath() {
   return process.env.WHISTLE_PATH || path.join(getHomedir(), '.WhistleAppData');
 }
 
-function checkPlugins(argv) {
-  for (var i = 0, len = argv.length; i < len; i++) {
-    if (WHISLTE_PLUGIN_RE.test(argv[i])) {
-      return true;
-    }
-  }
-  return false;
+function getPlugins(argv) {
+  return argv.filter(function(name) {
+    return WHISLTE_PLUGIN_RE.test(name);
+  });
 }
 
-module.exports = function(cmd, argv) {
-  if (!checkPlugins(argv)) {
+exports.install = function(cmd, argv) {
+  if (!getPlugins(argv).length) {
     return;
   }
-  var pluginPath = path.join(getWhistlePath(), 'plugins');
-  fse.ensureDirSync(pluginPath);
-  var files = fs.readdirSync(pluginPath);
+  fse.ensureDirSync(PLUGIN_PATH);
+  var files = fs.readdirSync(PLUGIN_PATH);
   files && files.forEach(function(name) {
     if (name !== 'node_modules') {
       try {
-        fse.removeSync(path.join(pluginPath, name));
+        fse.removeSync(path.join(PLUGIN_PATH, name));
       } catch(e) {}
     }
   });
   cp.spawn(cmd, argv, {
     stdio: 'inherit',
-    cwd: pluginPath
+    cwd: PLUGIN_PATH
+  });
+};
+
+exports.uninstall = function(plugins) {
+  plugins = getPlugins(plugins);
+  plugins.forEach(function(name) {
+    fse.removeSync(path.join(PLUGIN_PATH, 'node_modules', name));
   });
 };
