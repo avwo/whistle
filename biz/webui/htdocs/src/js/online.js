@@ -154,7 +154,7 @@ var Online = React.createClass({
         info.push('IPv4:');
         info.push.apply(info, addIndent(server.ipv4));
       }
-      if (server.ipv4.length) {
+      if (server.ipv6.length) {
         info.push('IPv6:');
         info.push.apply(info, addIndent(server.ipv6));
       }
