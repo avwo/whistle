@@ -23,19 +23,25 @@ function getPlugins(argv) {
   });
 }
 
+function ensureExists() {
+  fse.ensureDirSync(PLUGIN_PATH);
+  fs.writeFileSync(path.join(PLUGIN_PATH, 'package.json'), '{}');
+}
+
 exports.install = function(cmd, argv) {
   if (!getPlugins(argv).length) {
     return;
   }
-  fse.ensureDirSync(PLUGIN_PATH);
+  ensureExists();
   var files = fs.readdirSync(PLUGIN_PATH);
   files && files.forEach(function(name) {
-    if (name !== 'node_modules') {
+    if (name !== 'node_modules' && name !== 'package.json') {
       try {
         fse.removeSync(path.join(PLUGIN_PATH, name));
       } catch(e) {}
     }
   });
+  
   cp.spawn(cmd, argv, {
     stdio: 'inherit',
     cwd: PLUGIN_PATH
@@ -43,9 +49,13 @@ exports.install = function(cmd, argv) {
 };
 
 exports.uninstall = function(plugins) {
+  ensureExists();
   plugins = getPlugins(plugins);
   plugins.forEach(function(name) {
-    fse.removeSync(path.join(PLUGIN_PATH, 'node_modules', name));
+    cp.spawn('npm', ['uninstall', name], {
+      stdio: 'inherit',
+      cwd: PLUGIN_PATH
+    });
   });
 };
 
