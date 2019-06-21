@@ -12,6 +12,10 @@ function getHomedir() {
   process.env[process.platform == 'win32' ? 'USERPROFILE' : 'HOME']) || '~';
 }
 
+function getWhistlePath() {
+  return process.env.WHISTLE_PATH || path.join(getHomedir(), '.WhistleAppData');
+}
+
 function checkPlugins(argv) {
   for (var i = 0, len = argv.length; i < len; i++) {
     if (WHISLTE_PLUGIN_RE.test(argv[i])) {
@@ -25,7 +29,7 @@ module.exports = function(cmd, argv) {
   if (!checkPlugins(argv)) {
     return;
   }
-  var pluginPath = path.join(getHomedir(), '.WhistleAppData/plugins');
+  var pluginPath = path.join(getWhistlePath(), 'plugins');
   fse.ensureDirSync(pluginPath);
   var files = fs.readdirSync(pluginPath);
   files && files.forEach(function(name) {
