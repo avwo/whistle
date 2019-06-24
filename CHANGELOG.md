@@ -1,3 +1,6 @@
+# v1.15.5
+1. fix: `w2 uninstall` 在windows里面无法执行的问题
+
 # v1.15.4
 1. fix: 修复 `w2 install` 会删除其它已存在插件的问题
 
