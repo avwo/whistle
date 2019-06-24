@@ -47,8 +47,9 @@ exports.install = function(cmd, argv) {
 exports.uninstall = function(plugins) {
   fse.ensureDirSync(PLUGIN_PATH);
   plugins = getPlugins(plugins);
+  var npm = 'npm' + CMD_SUFFIX;
   plugins.forEach(function(name) {
-    cp.spawn('npm', ['uninstall', name], {
+    cp.spawn(npm, ['uninstall', name], {
       stdio: 'inherit',
       cwd: PLUGIN_PATH
     });
