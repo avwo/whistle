@@ -1,11 +1,16 @@
 var util = require('./util');
 var MAX_FRAMES_LENGTH = require('./data-center').MAX_FRAMES_LENGTH;
 
+var lowerBody;
+
 var filterItem = function(keyword, item) {
   if (!keyword) {
     return true;
   }
-  return util.getBody(item, true).indexOf(keyword) !== -1;
+  if (lowerBody == null) {
+    lowerBody = util.getBody(item, true).toLowerCase();
+  }
+  return lowerBody.indexOf(keyword) !== -1;
 };
 
 function FramesModal(list) {
@@ -15,7 +20,7 @@ function FramesModal(list) {
 var proto = FramesModal.prototype;
 
 proto.search = function(keyword) {
-  keyword = typeof keyword !== 'string' ? '' : keyword.trim();
+  keyword = typeof keyword !== 'string' ? '' : keyword.trim().toLowerCase();
   if (keyword) {
     var k = this._keyword = {};
     var i = 0;
@@ -40,8 +45,10 @@ proto.filter = function() {
     });
     return;
   }
+
   list.forEach(function(item) {
     item.hide = false;
+    lowerBody = null;
     if (!filterItem(keyword.k0, item) || !filterItem(keyword.k1, item)
       || !filterItem(keyword.k2, item)) {
       item.hide = true;
