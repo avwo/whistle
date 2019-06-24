@@ -44,12 +44,12 @@ exports.install = function(cmd, argv) {
   });
 };
 
-exports.uninstall = function(plugins) {
+exports.uninstall = function(cmd, plugins) {
   fse.ensureDirSync(PLUGIN_PATH);
   plugins = getPlugins(plugins);
-  var npm = 'npm' + CMD_SUFFIX;
+  cmd = cmd + CMD_SUFFIX;
   plugins.forEach(function(name) {
-    cp.spawn(npm, ['uninstall', name], {
+    cp.spawn(cmd, ['uninstall', name], {
       stdio: 'inherit',
       cwd: PLUGIN_PATH
     });
