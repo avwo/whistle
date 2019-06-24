@@ -4,6 +4,7 @@ var fs = require('fs');
 var path = require('path');
 var fse = require('fs-extra2');
 
+var CMD_SUFFIX = process.platform === 'win32' ? '.cmd' : '';
 var WHISLTE_PLUGIN_RE = /^(@[\w\-]+\/)?whistle\.[a-z\d_\-]+$/;
 var PLUGIN_PATH = path.join(getWhistlePath(), 'plugins');
 
@@ -23,37 +24,28 @@ function getPlugins(argv) {
   });
 }
 
-function ensureExists() {
-  fse.ensureDirSync(PLUGIN_PATH);
-  fs.writeFileSync(path.join(PLUGIN_PATH, 'package.json'), '{"repository":"https://github.com/avwo/whistle","license":"MIT"}');
-  fs.writeFileSync(path.join(PLUGIN_PATH, 'LICENSE'), 'Copyright (c) 2019 avwo');
-  fs.writeFileSync(path.join(PLUGIN_PATH, 'README.md'), 'https://github.com/avwo/whistle');
-}
-
-var RESOLVED_FILES = ['node_modules', 'package.json', 'LICENSE', 'README.md'];
-
 exports.install = function(cmd, argv) {
   if (!getPlugins(argv).length) {
     return;
   }
-  ensureExists();
+  fse.ensureDirSync(PLUGIN_PATH);
   var files = fs.readdirSync(PLUGIN_PATH);
   files && files.forEach(function(name) {
-    if (RESOLVED_FILES.indexOf(name) === -1) {
+    if (name !==  'node_modules') {
       try {
         fse.removeSync(path.join(PLUGIN_PATH, name));
       } catch(e) {}
     }
   });
   argv.push('--no-package-lock');
-  cp.spawn(cmd, argv, {
+  cp.spawn(cmd + CMD_SUFFIX, argv, {
     stdio: 'inherit',
     cwd: PLUGIN_PATH
   });
 };
 
 exports.uninstall = function(plugins) {
-  ensureExists();
+  fse.ensureDirSync(PLUGIN_PATH);
   plugins = getPlugins(plugins);
   plugins.forEach(function(name) {
     cp.spawn('npm', ['uninstall', name], {
@@ -68,7 +60,7 @@ exports.run = function(cmd, argv) {
   process.env.PATH && newPath.push(process.env.PATH);
   newPath = newPath.join(os.platform() === 'win32' ? ';' : ':');
   process.env.PATH = newPath;
-  cp.spawn(cmd, argv, {
+  cp.spawn(cmd + CMD_SUFFIX, argv, {
     stdio: 'inherit',
     env: process.env
   });
