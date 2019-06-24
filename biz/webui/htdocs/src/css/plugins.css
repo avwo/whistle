@@ -19,7 +19,7 @@ padding: 5px 6px!important; overflow: hidden; text-overflow: ellipsis; white-spa
 .w-plugins-list td.w-plugins-active input {margin-left: 12px;}
 .w-plugins-name {width: 120px;}
 .w-plugins-version {width: 140px;}
-.w-plugins-list .w-has-new-version .w-plugins-version span,
+.w-plugins-list .w-has-new-version .w-plugins-version .w-new-version,
 .w-plugins-list .w-has-new-version .w-plugin-update-btn {
   color: #f66!important;
 }

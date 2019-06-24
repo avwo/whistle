@@ -159,7 +159,8 @@ var Home = React.createClass({
                       <td className="w-plugins-name" title={plugin.moduleName}><a href={url} target="_blank" data-name={name} onClick={plugin.pluginHomepage ? null : self.onOpen}>{name}</a></td>
                       <td className="w-plugins-version">
                         {plugin.homepage ? <a href={plugin.homepage} target="_blank">{plugin.version}</a> : plugin.version}
-                        {hasNew ? (plugin.homepage ? <a href={plugin.homepage} target="_blank">{hasNew}</a> : <span>{hasNew}</span>) : undefined}
+                        {hasNew ? (plugin.homepage ? <a className="w-new-version" href={plugin.homepage} target="_blank">{hasNew}</a>
+                        : <span className="w-new-version">{hasNew}</span>) : undefined}
                       </td>
                       <td className="w-plugins-operation">
                         <a href={url} target="_blank" data-name={name} onClick={plugin.pluginHomepage ? null : self.onOpen}>Option</a>
