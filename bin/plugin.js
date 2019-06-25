@@ -53,6 +53,8 @@ function install(cmd, name, argv) {
   cp.spawn(cmd, argv, {
     stdio: 'inherit',
     cwd: installPath
+  }).on('exit', function(code) {
+    code && fse.removeSync(installPath);
   });
 }
 
