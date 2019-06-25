@@ -1,3 +1,7 @@
+# v1.15.6
+1. perf: 优化搜索框的性能
+2. refactor: 优化 `w2 install` 和 `w2 uninstall`，避免卸载失败
+
 # v1.15.5
 1. fix: `w2 uninstall` 在windows里面无法执行的问题
 
