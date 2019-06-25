@@ -44,8 +44,9 @@ function removeOldPlugin(name) {
 
 function install(cmd, name, argv) {
   argv = argv.slice();
-  var installPath = getInstallPath(name);
+  var installPath = getInstallPath('.' + name);
   fse.ensureDirSync(installPath);
+  fse.emptyDirSync(installPath);
   fs.writeFileSync(path.join(installPath, 'package.json'), PACKAGE_JSON);
   fs.writeFileSync(path.join(installPath, 'LICENSE'), LICENSE);
   fs.writeFileSync(path.join(installPath, 'README.md'), RESP_URL);
@@ -54,7 +55,13 @@ function install(cmd, name, argv) {
     stdio: 'inherit',
     cwd: installPath
   }).on('exit', function(code) {
-    code && fse.removeSync(installPath);
+    if (code) {
+      removeDir(installPath);
+    } else {
+      var realPath = getInstallPath(name);
+      removeDir(realPath);
+      fs.renameSync(installPath, realPath);
+    }
   });
 }
 
