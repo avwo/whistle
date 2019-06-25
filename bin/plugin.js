@@ -8,6 +8,21 @@ var CMD_SUFFIX = process.platform === 'win32' ? '.cmd' : '';
 var WHISLTE_PLUGIN_RE = /^(@[\w\-]+\/)?whistle\.[a-z\d_\-]+$/;
 var PLUGIN_PATH = path.join(getWhistlePath(), 'plugins');
 
+function ensureExists(installPath) {
+  fse.ensureDirSync(installPath);
+  fs.writeFileSync(path.join(installPath, 'package.json'), '{"repository":"https://github.com/avwo/whistle","license":"MIT"}');
+  fs.writeFileSync(path.join(installPath, 'LICENSE'), 'Copyright (c) 2019 avwo');
+  fs.writeFileSync(path.join(installPath, 'README.md'), 'https://github.com/avwo/whistle');
+}
+
+function getInstallPath(name) {
+  var index = name.indexOf('/');
+  if (index !== -1) {
+    name = name.substring(index + 1);
+  }
+  return path.join(PLUGIN_PATH, '~' + name);
+}
+
 function getHomedir() {
   //默认设置为`~`，防止Linux在开机启动时Node无法获取homedir
   return (typeof os.homedir == 'function' ? os.homedir() :
@@ -24,40 +39,59 @@ function getPlugins(argv) {
   });
 }
 
+function removeDir(installPath) {
+  if (fs.existsSync(installPath))  {
+    fse.removeSync(installPath);
+  }
+}
+
+function removeOldPlugin(name) {
+  removeDir(path.join(PLUGIN_PATH, 'node_modules', name));
+}
+
+function install(cmd, name, argv) {
+  var installPath = getInstallPath(name);
+  fse.emptyDirSync(installPath);
+  ensureExists(installPath);
+  argv.unshift('install', name);
+  cp.spawn(cmd, argv, {
+    stdio: 'inherit',
+    cwd: installPath
+  });
+}
+
 exports.install = function(cmd, argv) {
-  if (!getPlugins(argv).length) {
+  var plugins = getPlugins(argv);
+  if (!plugins.length) {
     return;
   }
-  fse.ensureDirSync(PLUGIN_PATH);
-  var files = fs.readdirSync(PLUGIN_PATH);
-  files && files.forEach(function(name) {
-    if (name !==  'node_modules') {
-      try {
-        fse.removeSync(path.join(PLUGIN_PATH, name));
-      } catch(e) {}
-    }
+  argv = argv.filter(function(name) {
+    return plugins.indexOf(name) === -1;
   });
+  
+  cmd += CMD_SUFFIX;
   argv.push('--no-package-lock');
-  cp.spawn(cmd + CMD_SUFFIX, argv, {
-    stdio: 'inherit',
-    cwd: PLUGIN_PATH
+  plugins.forEach(function(name) {
+    removeOldPlugin(name);
+    install(cmd, name, argv.slice());
   });
 };
 
-exports.uninstall = function(cmd, plugins) {
-  fse.ensureDirSync(PLUGIN_PATH);
-  plugins = getPlugins(plugins);
-  cmd = cmd + CMD_SUFFIX;
-  plugins.forEach(function(name) {
-    cp.spawn(cmd, ['uninstall', name], {
-      stdio: 'inherit',
-      cwd: PLUGIN_PATH
-    });
+exports.uninstall = function(plugins) {
+  getPlugins(plugins).forEach(function(name) {
+    removeOldPlugin(name);
+    removeDir(getInstallPath(name));
   });
 };
 
 exports.run = function(cmd, argv) {
-  var newPath = [path.join(PLUGIN_PATH, 'node_modules/.bin')];
+  var newPath = [];
+  fse.ensureDirSync(PLUGIN_PATH);
+  fs.readdirSync(PLUGIN_PATH).forEach(function(name) {
+    if (name[0] === '～') {
+      newPath.push(path.join(PLUGIN_PATH, name, 'node_modules/.bin'));
+    }
+  });
   process.env.PATH && newPath.push(process.env.PATH);
   newPath = newPath.join(os.platform() === 'win32' ? ';' : ':');
   process.env.PATH = newPath;

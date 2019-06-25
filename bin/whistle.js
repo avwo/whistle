@@ -120,12 +120,10 @@ if (cmd === 'status') {
   }
   showStatus(all, storage);
 } else if (/^([a-z]{1,2})?uni(nstall)?$/.test(cmd)) {
-  cmd = (RegExp.$1 || '') + 'npm';
-  plugin.uninstall(cmd, Array.prototype.slice.call(argv, 3));
+  plugin.uninstall(Array.prototype.slice.call(argv, 3));
 } else if (/^([a-z]{1,2})?i(nstall)?$/.test(cmd)) {
   cmd = (RegExp.$1 || '') + 'npm';
   argv = Array.prototype.slice.call(argv, 3);
-  argv.unshift('install');
   removeItem(argv, '-g');
   removeItem(argv, '--global');
   plugin.install(cmd, argv);
