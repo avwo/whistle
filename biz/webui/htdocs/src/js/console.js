@@ -194,18 +194,20 @@ var Console = React.createClass({
     }
   },
   onConsoleFilterChange: function(keyword) {
+    var self = this;
     keyword = keyword.trim();
-    this.keyword = keyword;
-    var logs = this.state.logs;
+    self.keyword = keyword;
+    var logs = self.state.logs;
     var consoleKeyword = util.parseKeyword(keyword);
     util.filterLogList(logs, consoleKeyword);
     if (!keyword) {
       var len = logs && (logs.length - MAX_COUNT);
       len > 9 && logs.splice(0, len);
     }
-    this.setState({
-      consoleKeyword: consoleKeyword
-    });
+    clearTimeout(self.filterTimer);
+    self.filterTimer = setTimeout(function() {
+      self.setState({ consoleKeyword: consoleKeyword });
+    }, 600);
   },
   showNameInput: function(e) {
     var self = this;

@@ -138,18 +138,20 @@ var ServerLog = React.createClass({
     }
   },
   onServerFilterChange: function(keyword) {
+    var self = this;
     keyword = keyword.trim();
-    this.keyword = keyword;
+    self.keyword = keyword;
     var serverKeyword = util.parseKeyword(keyword);
-    var logs = this.state.logs;
+    var logs = self.state.logs;
     util.filterLogList(logs, serverKeyword);
     if (!keyword) {
       var len = logs && (logs.length - MAX_COUNT);
       len > 9 && logs.splice(0, len);
     }
-    this.setState({
-      serverKeyword: serverKeyword
-    });
+    clearTimeout(self.filterTimer);
+    self.filterTimer = setTimeout(function() {
+      self.setState({ serverKeyword: serverKeyword });
+    }, 600);
   },
   showNameInput: function(e) {
     var self = this;

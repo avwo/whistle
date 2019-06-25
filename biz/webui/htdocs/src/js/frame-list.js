@@ -47,8 +47,12 @@ var FrameList = React.createClass({
     return {};
   },
   onFilterChange: function(keyword) {
-    this.props.modal.search(keyword);
-    this.setState({ keyword: keyword.trim() });
+    var self = this;
+    self.props.modal.search(keyword);
+    clearTimeout(self.filterTimer);
+    self.filterTimer = setTimeout(function() {
+      self.setState({ keyword: keyword.trim() });
+    }, 600);
   },
   componentDidMount: function() {
     events.on('autoRefreshFrames', this.autoRefresh);
