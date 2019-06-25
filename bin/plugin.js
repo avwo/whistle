@@ -7,20 +7,13 @@ var fse = require('fs-extra2');
 var CMD_SUFFIX = process.platform === 'win32' ? '.cmd' : '';
 var WHISLTE_PLUGIN_RE = /^(@[\w\-]+\/)?whistle\.[a-z\d_\-]+$/;
 var PLUGIN_PATH = path.join(getWhistlePath(), 'plugins');
-
-function ensureExists(installPath) {
-  fse.ensureDirSync(installPath);
-  fs.writeFileSync(path.join(installPath, 'package.json'), '{"repository":"https://github.com/avwo/whistle","license":"MIT"}');
-  fs.writeFileSync(path.join(installPath, 'LICENSE'), 'Copyright (c) 2019 avwo');
-  fs.writeFileSync(path.join(installPath, 'README.md'), 'https://github.com/avwo/whistle');
-}
+var CUSTOM_PLUGIN_PATH = path.join(getWhistlePath(), 'custom_plugins');
+var PACKAGE_JSON = '{"repository":"https://github.com/avwo/whistle","license":"MIT"}';
+var LICENSE = 'Copyright (c) 2019 avwo';
+var RESP_URL = 'https://github.com/avwo/whistle';
 
 function getInstallPath(name) {
-  var index = name.indexOf('/');
-  if (index !== -1) {
-    name = name.substring(index + 1);
-  }
-  return path.join(PLUGIN_PATH, '~' + name);
+  return path.join(CUSTOM_PLUGIN_PATH, name);
 }
 
 function getHomedir() {
@@ -50,9 +43,12 @@ function removeOldPlugin(name) {
 }
 
 function install(cmd, name, argv) {
+  argv = argv.slice();
   var installPath = getInstallPath(name);
-  fse.emptyDirSync(installPath);
-  ensureExists(installPath);
+  fse.ensureDirSync(installPath);
+  fs.writeFileSync(path.join(installPath, 'package.json'), PACKAGE_JSON);
+  fs.writeFileSync(path.join(installPath, 'LICENSE'), LICENSE);
+  fs.writeFileSync(path.join(installPath, 'README.md'), RESP_URL);
   argv.unshift('install', name);
   cp.spawn(cmd, argv, {
     stdio: 'inherit',
@@ -73,7 +69,7 @@ exports.install = function(cmd, argv) {
   argv.push('--no-package-lock');
   plugins.forEach(function(name) {
     removeOldPlugin(name);
-    install(cmd, name, argv.slice());
+    install(cmd, name, argv);
   });
 };
 
@@ -86,10 +82,10 @@ exports.uninstall = function(plugins) {
 
 exports.run = function(cmd, argv) {
   var newPath = [];
-  fse.ensureDirSync(PLUGIN_PATH);
-  fs.readdirSync(PLUGIN_PATH).forEach(function(name) {
-    if (name[0] === '～') {
-      newPath.push(path.join(PLUGIN_PATH, name, 'node_modules/.bin'));
+  fse.ensureDirSync(CUSTOM_PLUGIN_PATH);
+  fs.readdirSync(CUSTOM_PLUGIN_PATH).forEach(function(name) {
+    if (!name.indexOf('whistle.')) {
+      newPath.push(path.join(CUSTOM_PLUGIN_PATH, name, 'node_modules/.bin'));
     }
   });
   process.env.PATH && newPath.push(process.env.PATH);
