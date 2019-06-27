@@ -33,6 +33,8 @@ var inited;
 var logId;
 var uploadFiles;
 var dumpCount = 0;
+var updateCount = 0;
+var MAX_UPDATE_COUNT = 4;
 var onlyViewOwnData = storage.get('onlyViewOwnData') == 1;
 var DEFAULT_CONF = {
   timeout: TIMEOUT,
@@ -480,7 +482,7 @@ function startLoadData() {
   }
   startedLoad = true;
   function load() {
-    if (document.hidden) {
+    if (document.hidden && (!updateCount || updateCount >= MAX_UPDATE_COUNT)) {
       return setTimeout(load, 100);
     }
     if (networkModal.clearNetwork) {
@@ -788,8 +790,6 @@ function getStartTime() {
   return lastRowId || '0';
 }
 
-var updateCount = 0;
-
 function updateServerInfo(data) {
   if (!serverInfoCallbacks.length) {
     updateCount = 0;
@@ -798,7 +798,7 @@ function updateServerInfo(data) {
 
   if (!(data = data && data.server)) {
     ++updateCount;
-    if (updateCount > 3) {
+    if (updateCount >= MAX_UPDATE_COUNT) {
       curServerInfo = data;
       serverInfoCallbacks.forEach(function (cb) {
         cb(false);
