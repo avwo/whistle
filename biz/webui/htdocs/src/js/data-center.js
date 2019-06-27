@@ -480,6 +480,9 @@ function startLoadData() {
   }
   startedLoad = true;
   function load() {
+    if (document.hidden) {
+      return setTimeout(load, 100);
+    }
     if (networkModal.clearNetwork) {
       lastRowId = endId || lastRowId;
       networkModal.clearNetwork = false;
