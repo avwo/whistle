@@ -35,6 +35,7 @@ var uploadFiles;
 var dumpCount = 0;
 var updateCount = 0;
 var MAX_UPDATE_COUNT = 4;
+var MAX_WAIT_TIME = 1000 * 60 * 3;
 var onlyViewOwnData = storage.get('onlyViewOwnData') == 1;
 var DEFAULT_CONF = {
   timeout: TIMEOUT,
@@ -475,16 +476,21 @@ function emitValuesChanged(data) {
     events.trigger('valuesChanged');
   }
 }
-
+var hiddenTime = Date.now();
 function startLoadData() {
   if (startedLoad) {
     return;
   }
   startedLoad = true;
   function load() {
-    if (document.hidden && (!updateCount || updateCount >= MAX_UPDATE_COUNT)) {
-      return setTimeout(load, 100);
+    if (document.hidden) {
+      if (Date.now() - hiddenTime > MAX_WAIT_TIME) {
+        return setTimeout(load, 100);
+      }
+    } else {
+      hiddenTime = Date.now();
     }
+
     if (networkModal.clearNetwork) {
       lastRowId = endId || lastRowId;
       networkModal.clearNetwork = false;
@@ -535,8 +541,8 @@ function startLoadData() {
       options.ip = 'self';
     }
     cgi.getData(options, function (data) {
-      var newIds = data && data.data && data.data.newIds || [];
-      setTimeout(load, newIds.length >= 30 ? 30 : 900);
+      var hasNewData = data && data.data && data.data.hasNew;
+      setTimeout(load, hasNewData ? 100 : 900);
       updateServerInfo(data);
       if (!data || data.ec !== 0) {
         return;
