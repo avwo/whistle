@@ -122,13 +122,13 @@ var Console = React.createClass({
       updateLogs(curLogs);
     });
     dataCenter.on('log', updateLogs);
-    var timeout;
     $(container).on('scroll', function() {
       var data = self.state.logs;
-      timeout && clearTimeout(timeout);
+      clearTimeout(self.scrollTimer);
       if (data && (self.state.scrollToBottom = util.scrollAtBottom(container, content))) {
-        timeout = setTimeout(function() {
+        self.scrollTimer = setTimeout(function() {
           var len = data.length - MAX_COUNT;
+          self.scrollTimer = null;
           if (len > 9) {
             util.trimLogList(data, len, self.keyword);
             self.setState({logs: data});
@@ -184,6 +184,8 @@ var Console = React.createClass({
       if (!toggleHide && !hide) {
         this.state.scrollToBottom = util.scrollAtBottom(this.container, this.content);
       }
+      clearTimeout(this.filterTimer);
+      clearTimeout(this.scrollTimer);
       return true;
     }
     return false;
@@ -206,6 +208,7 @@ var Console = React.createClass({
     }
     clearTimeout(self.filterTimer);
     self.filterTimer = setTimeout(function() {
+      self.filterTimer = null;
       self.setState({ consoleKeyword: consoleKeyword });
     }, 600);
   },

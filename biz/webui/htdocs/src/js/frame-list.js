@@ -51,11 +51,16 @@ var FrameList = React.createClass({
     self.props.modal.search(keyword);
     clearTimeout(self.filterTimer);
     self.filterTimer = setTimeout(function() {
+      self.filterTimer = null;
       self.setState({ keyword: keyword.trim() });
     }, 600);
   },
   componentDidMount: function() {
     events.on('autoRefreshFrames', this.autoRefresh);
+  },
+  shouldComponentUpdate: function() {
+    clearTimeout(this.filterTimer);
+    return true;
   },
   onDoubleClick: function() {
     events.trigger('showFrameTextView');

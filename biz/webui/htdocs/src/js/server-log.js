@@ -128,6 +128,7 @@ var ServerLog = React.createClass({
       if (!toggleHide && !hide) {
         this.state.scrollToBottom = util.scrollAtBottom(this.container, this.content);
       }
+      clearTimeout(this.filterTimer);
       return true;
     }
     return false;
@@ -150,6 +151,7 @@ var ServerLog = React.createClass({
     }
     clearTimeout(self.filterTimer);
     self.filterTimer = setTimeout(function() {
+      self.filterTimer = null;
       self.setState({ serverKeyword: serverKeyword });
     }, 600);
   },
