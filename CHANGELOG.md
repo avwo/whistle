@@ -1,3 +1,7 @@
+# v1.15.7
+1. perf: 优化监听连接的关闭事件，减少内存占用
+2. refactor: 使用Values设置rawfile时，自动删除 `content-encoding` 响应头
+
 # v1.15.6
 1. perf: 优化搜索框的性能
 2. refactor: 优化 `w2 install` 和 `w2 uninstall`，避免卸载失败
