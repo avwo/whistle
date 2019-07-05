@@ -40,11 +40,22 @@ function removeDir(installPath) {
 
 function removeOldPlugin(name) {
   removeDir(path.join(PLUGIN_PATH, 'node_modules', name));
+  removeDir(path.join(PLUGIN_PATH, 'node_modules', getTempName(name)));
+}
+
+function getTempName(name) {
+  if (name.indexOf('/') === -1) {
+    return '.' + name;
+  }
+  name = name.split('/');
+  var lastIndex = name.length - 1;
+  name[lastIndex] = '.' + name[lastIndex];
+  return name.join('/');
 }
 
 function install(cmd, name, argv) {
   argv = argv.slice();
-  var installPath = getInstallPath('.' + name);
+  var installPath = getInstallPath(getTempName(name));
   fse.ensureDirSync(installPath);
   fse.emptyDirSync(installPath);
   fs.writeFileSync(path.join(installPath, 'package.json'), PACKAGE_JSON);
@@ -60,7 +71,6 @@ function install(cmd, name, argv) {
     } else {
       var realPath = getInstallPath(name);
       removeDir(realPath);
-      fse.ensureDirSync(realPath);
       fs.renameSync(installPath, realPath);
     }
   });
