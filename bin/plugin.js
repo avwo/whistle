@@ -60,6 +60,7 @@ function install(cmd, name, argv) {
     } else {
       var realPath = getInstallPath(name);
       removeDir(realPath);
+      fse.ensureDirSync(realPath);
       fs.renameSync(installPath, realPath);
     }
   });
