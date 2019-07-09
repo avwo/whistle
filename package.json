@@ -5,7 +5,7 @@
   "dataDirname": ".whistle",
   "localUIHost": "local.whistlejs.com",
   "port": 8899,
-  "sockets": 60,
+  "sockets": 256,
   "timeout": 3600000,
   "author": "avenwu <avenwu@vip.qq.com>",
   "contributors": [],
