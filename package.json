@@ -6,8 +6,6 @@
   "localUIHost": "local.whistlejs.com",
   "port": 8899,
   "sockets": 60,
-  "keepAlive": true,
-  "keepAliveMsecs": 25000,
   "timeout": 3600000,
   "author": "avenwu <avenwu@vip.qq.com>",
   "contributors": [],
