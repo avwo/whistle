@@ -1,3 +1,7 @@
+# v1.15.8
+1. refactor: 优化默认超时时间（3m -> 1h）
+
+
 # v1.15.7
 1. perf: 优化监听连接的关闭事件，减少内存占用
 2. refactor: 使用Values设置rawfile时，自动删除 `content-encoding` 响应头
