@@ -84,9 +84,8 @@
   vertical-align: middle;
 }
 .w-composer-bar input, .w-composer-rules .w-detail-inspectors-title input {
-  margin: 0 3px 0 0;
+  margin: 0 5px 0 0;
   padding: 0;
-  vertical-align: text-bottom;
 }
 .w-composer-bar label:first-child {
   font-weight: bold;
