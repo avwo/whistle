@@ -71,7 +71,10 @@ function install(cmd, name, argv) {
     } else {
       var realPath = getInstallPath(name);
       removeDir(realPath);
-      fs.renameSync(installPath, realPath);
+      fse.copySync(installPath, realPath);
+      try {
+        removeDir(installPath);
+      } catch (e) {}
     }
   });
 }
