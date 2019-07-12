@@ -1,3 +1,6 @@
+# v1.15.10
+1. fix: 解决在Windows系统里面无法用 `w2 install whistle.xxx` 安装插件的问题，以及异步加载插件顺序问题
+
 # v1.15.9
 1. refactor: 支持通过自定义相对路径加载插件，`w2 start -A ./plugins`
 2. style: 修复界面checkbox对齐问题
