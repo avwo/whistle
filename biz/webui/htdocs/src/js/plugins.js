@@ -80,6 +80,7 @@ var Home = React.createClass({
     var registry = plugin.registry ? ' --registry=' + plugin.registry : '';
     this.setState({
       cmdMsg: 'w2 install ' + plugin.moduleName + registry,
+      isSys: plugin.isSys,
       uninstall: false
     }, this.showMsgDialog);
   },
@@ -87,9 +88,12 @@ var Home = React.createClass({
     var name = $(e.target).attr('data-name');
     var plugin = this.props.data.plugins[name + ':'];
     var sudo = this.props.data.isWin ? '' : 'sudo ';
-    var cmdMsg = plugin.isSys ? 'w2 uninstall ' : sudo + 'npm uninstall -g ';
+    var isSys = plugin.isSys;
+    var cmdMsg = isSys ? 'w2 uninstall ' : sudo + 'npm uninstall -g ';
+    var registry = !isSys && plugin.registry ? ' --registry=' + plugin.registry : '';
     this.setState({
-      cmdMsg: cmdMsg + plugin.moduleName,
+      cmdMsg: cmdMsg + plugin.moduleName + registry,
+      isSys: isSys,
       uninstall: true,
       pluginPath: plugin.path
     }, this.showMsgDialog);
@@ -225,7 +229,7 @@ var Home = React.createClass({
                 margin: '8px 0 0',
                 color: 'red',
                 'word-break': 'break-all',
-                display: state.uninstall ? '' : 'none'
+                display: !state.isSys && state.uninstall ? '' : 'none'
               }}>
                 If uninstall failed, delete the following directory instead:
                 <a
