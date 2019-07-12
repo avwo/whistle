@@ -1,3 +1,7 @@
+# v1.15.9
+1. refactor: 支持通过自定义相对路径加载插件，`w2 start -A ./plugins`
+2. style: 修复界面checkbox对齐问题
+
 # v1.15.8
 1. refactor: 优化默认超时时间 3m -> 1h
 2. refactor: 调整最大连接数 60 -> 256
