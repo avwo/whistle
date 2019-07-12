@@ -12,8 +12,8 @@ var PACKAGE_JSON = '{"repository":"https://github.com/avwo/whistle","license":"M
 var LICENSE = 'Copyright (c) 2019 avwo';
 var RESP_URL = 'https://github.com/avwo/whistle';
 
-function getInstallPath(name) {
-  return path.join(CUSTOM_PLUGIN_PATH, name);
+function getInstallPath(name, dir) {
+  return path.join(dir || CUSTOM_PLUGIN_PATH, name);
 }
 
 function getHomedir() {
@@ -53,9 +53,25 @@ function getTempName(name) {
   return name.join('/');
 }
 
+function getInstallDir(argv) {
+  var result = { argv: argv };
+  for (var i = 0, len = argv.length; i < len; i++) {
+    var option = argv[i];
+    if (option && option.indexOf('--dir=') === 0) {
+      var dir = option.substring(option.indexOf('=') + 1);
+      result.dir = dir && path.resolve(dir);
+      argv.splice(i, 1);
+      return result;
+    }
+  }
+  return result;
+}
+
 function install(cmd, name, argv) {
   argv = argv.slice();
-  var installPath = getInstallPath(getTempName(name));
+  var result = getInstallDir(argv);
+  argv = result.argv;
+  var installPath = getInstallPath(getTempName(name), result.dir);
   fse.ensureDirSync(installPath);
   fse.emptyDirSync(installPath);
   fs.writeFileSync(path.join(installPath, 'package.json'), PACKAGE_JSON);
@@ -69,7 +85,7 @@ function install(cmd, name, argv) {
     if (code) {
       removeDir(installPath);
     } else {
-      var realPath = getInstallPath(name);
+      var realPath = getInstallPath(name, result.dir);
       removeDir(realPath);
       try {
         fs.renameSync(installPath, realPath);
@@ -101,9 +117,11 @@ exports.install = function(cmd, argv) {
 };
 
 exports.uninstall = function(plugins) {
+  var result = getInstallDir(plugins);
+  plugins = result.argv;
   getPlugins(plugins).forEach(function(name) {
-    removeOldPlugin(name);
-    removeDir(getInstallPath(name));
+    !result.dir && removeOldPlugin(name);
+    removeDir(getInstallPath(name, result.dir));
   });
 };
 
