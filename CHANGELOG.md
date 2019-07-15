@@ -1,3 +1,22 @@
+# v1.15.11
+1. refactor: 支持捕获插件的 `unhandledRejection` 异常
+2. refactor: 调整url匹配的请求参数追加方式：
+	``` txt
+	# 配置
+	www.test.com?2 www.abc.com?abc
+	www.test.com www.abc.com?abc
+
+	# 原来的效果
+	www.test.com?123 -> www.test.com?abc123
+	www.test.com?234 -> www.test.com?abc34
+	# v 1.15.11+ 的效果
+	www.test.com?123 -> www.test.com?abc&123
+	www.test.com?234 -> www.test.com?abc&34
+	```
+3. feat: 支持通过 `style://color=!xxx&style=xxxxx&bgColor=red` 设置请求的字体颜色/样式/背景颜色
+4. style: Frames 支持通过 `Ctrl[Command] + X` 清空列表
+
+
 # v1.15.10
 1. fix: 解决在Windows系统里面无法用 `w2 install whistle.xxx` 安装插件的问题，以及异步加载插件顺序问题
 

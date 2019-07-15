@@ -162,7 +162,7 @@ var FrameList = React.createClass({
     this.changeStatus(reqData, option);
   },
   onClear: function(e) {
-    if ((e.ctrlKey || !e.metaKey) && e.keyCode === 88) {
+    if ((e.ctrlKey || e.metaKey) && e.keyCode === 88) {
       this.clear();
     }
   },
