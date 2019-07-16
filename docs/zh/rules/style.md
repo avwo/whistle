@@ -18,6 +18,8 @@ www.test.com style://color=@fff&fontStyle=italic&bgColor=red
 
 ![效果](https://user-images.githubusercontent.com/11450939/61267997-a8e11100-a7cc-11e9-9c24-fbbba591ae9b.png)
 
+可以同时设置多个 `style` ，后面的会覆盖前面，如果先把前面的属性覆盖掉，可以用 `style://color=`。
+
 #### 过滤规则
 需要确保whistle是最新版本：[更新whistle](../update.html)
 
