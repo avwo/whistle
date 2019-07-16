@@ -22,7 +22,8 @@ var NOT_BOLD_RULES = {
   resWrite: 1,
   reqWriteRaw: 1,
   resWriteRaw: 1,
-  responseFor: 1
+  responseFor: 1,
+  style: 1
 };
 var contextMenuList = [
   {
@@ -217,11 +218,12 @@ var Row = React.createClass({
     var startIndex = p.startIndex;
     var endIndex = p.endIndex;
     var item = p.item;
+    var style = item.style;
     this.req = item.req;
     this.hide = item.hide;
     return (<tr tabIndex="-1" draggable={draggable} data-id={item.id} key={item.id} style={{display: item.hide ? 'none' : ''}}
               className={getClassName(item)}>
-              <th className="order" scope="row">{order}</th>
+              <th className="order" scope="row" style={style}>{order}</th>
               {columnList.map(function(col) {
                 var name = col.name;
                 var className = col.className;
@@ -236,10 +238,10 @@ var Row = React.createClass({
                       title = col.showTitle ? text : undefined;
                     }
                   }
-                  return <td key={name} className={className} title={title}>{text}</td>;
+                  return <td key={name} className={className} style={style} title={title}>{text}</td>;
                 }
                 var value = name === 'hostIp' ? util.getServerIp(item) : item[name];
-                return (<td key={name} className={className} title={col.showTitle ? value : undefined}>{value}</td>);
+                return (<td key={name} className={className} style={style} title={col.showTitle ? value : undefined}>{value}</td>);
               })}
             </tr>);
   }

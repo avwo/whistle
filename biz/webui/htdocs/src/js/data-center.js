@@ -682,6 +682,54 @@ function isSocket(item) {
   return item.inspect || (item.isHttps && item.req.headers['x-whistle-policy'] === 'tunnel');
 }
 
+function getStyleValue(style) {
+  var index = style.indexOf('&');
+  if (index !== -1) {
+    style = style.substring(0, index);
+  }
+  index = style.indexOf('!');
+  if (index !== -1) {
+    style = style.substring(0, index);
+  }
+  if (style[0] === '@') {
+    style = '#' + style.substring(1);
+  }
+  return style.length > 32 ? undefined : style;
+}
+
+function setStyle(item) {
+  item.style = undefined;
+  var style = item.rules && item.rules.style;
+  style = style && style.list;
+  if (!style) {
+    return;
+  }
+  style = '&' + style.map(function(rule) {
+    rule = rule.value || rule.matcher;
+    return rule.substring(rule.indexOf('://') + 3);
+  }).join('&');
+  var color, fontStyle, bgColor;
+  var colorIndex = style.lastIndexOf('&color=');
+  if (colorIndex !== -1) {
+    color = getStyleValue(style.substring(colorIndex + 7));
+  }
+  var styleIndex = style.lastIndexOf('&fontStyle=');
+  if (styleIndex !== -1) {
+    fontStyle = getStyleValue(style.substring(styleIndex + 11));
+  }
+  var bgIndex = style.lastIndexOf('&bgColor=');
+  if (bgIndex !== -1) {
+    bgColor = getStyleValue(style.substring(bgIndex + 9));
+  }
+  if (color || fontStyle || bgColor) {
+    item.style = {
+      color: color,
+      fontStyle: fontStyle,
+      backgroundColor: bgColor
+    };
+  }
+}
+
 function setReqData(item) {
   var url = item.url;
   var req = item.req;
@@ -717,6 +765,7 @@ function setReqData(item) {
   
   setRawHeaders(req);
   setRawHeaders(res);
+  setStyle(item);
   if (item.rules && item.pipe) {
     item.rules.pipe = item.pipe;
   }

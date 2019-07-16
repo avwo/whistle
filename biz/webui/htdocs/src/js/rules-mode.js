@@ -64,6 +64,10 @@ CodeMirror.defineMode('rules', function() {
     return /^log:\/\//.test(str);
   }
 
+  function isStyle(str) {
+    return /^style:\/\//.test(str);
+  }
+
   function isFilter(str) {
     return /^(?:excludeFilter|filter):\/\//.test(str);
   }
@@ -171,6 +175,8 @@ CodeMirror.defineMode('rules', function() {
             type = 'meta js-params js-type';
           } else if (isLog(str)) {
             type = 'atom js-log js-type';
+          } else if (isStyle(str)) {
+            type = 'atom js-style js-type';
           } else if (isPlugin(str)) {
             type = 'variable-2 js-plugin js-type';
           } else if (isHeaderReplace(str)) {

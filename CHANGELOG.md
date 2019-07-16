@@ -13,7 +13,7 @@
 	www.test.com?123 -> www.test.com?abc&123
 	www.test.com?234 -> www.test.com?abc&34
 	```
-3. feat: 支持通过 `style://color=!xxx&style=xxxxx&bgColor=red` 设置请求的字体颜色/样式/背景颜色
+3. feat: 支持通过 `style://color=!xxx&fontStyle=xxxxx&bgColor=red` 设置请求的字体颜色/样式/背景颜色
 4. style: Frames 支持通过 `Ctrl[Command] + X` 清空列表
 
 
