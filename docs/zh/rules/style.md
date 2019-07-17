@@ -1,7 +1,7 @@
 # style
 > 该协议 v1.15.11 及以上版本才支持
 
-设置Network：
+设置Network列表行样式：
 
 	pattern style://color=@fff&fontStyle=italic&bgColor=red
 
