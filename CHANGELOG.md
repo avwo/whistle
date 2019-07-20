@@ -1,3 +1,7 @@
+# v1.15.12
+1. perf: 优化请求失败重试机制
+2. fix: 解决插件里面调用 `req.request(options)` 时再次触发 `statsServer` 等问题 
+
 # v1.15.11
 1. refactor: 支持捕获插件的 `unhandledRejection` 异常
 2. refactor: 调整url匹配的请求参数追加方式：
