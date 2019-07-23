@@ -30,7 +30,7 @@ function parseHeaders(headers, rawHeaderNames) {
 
 function isWebSocket(options) {
   var p = options.protocol;
-  return p === 'ws:' || p === 'wss:';
+  return p === 'ws:' || p === 'wss:' || options.method === 'UPGRADE';
 }
 
 var crypto = require('crypto');
