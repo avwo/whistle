@@ -1,3 +1,6 @@
+# v1.15.13
+1. feat: 支持通过 `x-forwarded-host` 或 `x-whistle-real-host` 自定义请求的host，方便通过Nginx的反向代理到whistle
+
 # v1.15.12
 1. perf: 优化请求失败重试机制
 2. fix: 解决插件里面调用 `req.request(options)` 时再次触发 `statsServer` 等问题 
