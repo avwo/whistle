@@ -378,7 +378,7 @@ var Index = React.createClass({
     ];
     state.helpOptions = [
       {
-        name: 'Github',
+        name: 'GitHub',
         href: 'https://github.com/avwo/whistle',
         icon: false
       },
