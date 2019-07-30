@@ -24,6 +24,8 @@
 
   Mac 安装证书后，需要手动信任证书，步骤如下：
 
+ ![选择系统钥匙串](https://user-images.githubusercontent.com/11450939/62097992-3b001380-b2bb-11e9-878b-f19b8f38d176.png)
+
   打开证书管理界面，找到带有 `whistle` 的字样的证书，如果有多个又不确定最新安装的是哪个，可以全部删除后重新安装
 
   ![img](https://ae01.alicdn.com/kf/HTB1ZtoBdYsTMeJjSszh763GCFXai.png)
