@@ -1,5 +1,6 @@
 # v1.15.13
 1. feat: 支持通过 `x-forwarded-host` 或 `x-whistle-real-host` 自定义请求的host，方便通过Nginx的反向代理到whistle
+2. feat: 支持通过 `enable://proxyFirst` 调整 proxy 配置的优先级高于 host （默认：host > proxy）
 
 # v1.15.12
 1. perf: 优化请求失败重试机制
