@@ -1,3 +1,7 @@
+# v1.15.14
+1. feat: 支持 `^***/path/to` 及 `***/path/to` 匹配所有类似 `https://www.test.com/xxx/.../path/to` 的url
+2. fix: 使用代理及 `x-whistle-real-host` 穿透nginx时出现的nginx可能读取原始host的问题
+
 # v1.15.13
 1. feat: 支持通过 `x-forwarded-host` 或 `x-whistle-real-host` 自定义请求的host，方便通过Nginx的反向代理到whistle
 2. feat: 支持通过 `enable://proxyFirst` 调整 proxy 配置的优先级高于 host （默认：host > proxy）
