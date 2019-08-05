@@ -1,3 +1,7 @@
+# v1.15.15
+1. fix: https://github.com/avwo/whistle/issues/310
+2. feat: 插件新增 `req.originalReq.relativeUrl` 获取匹配后拼接的url
+
 # v1.15.14
 1. feat: 支持 `^***/path/to` 及 `***/path/to` 匹配所有类似 `https://www.test.com/xxx/.../path/to` 的url
 2. fix: 使用代理及 `x-whistle-real-host` 穿透nginx时出现的nginx可能读取原始host的问题
