@@ -112,14 +112,17 @@ function handleHashFilterChanged(e) {
       filter = {};
       filter.url = obj.url;
     }
-    if (obj.name && obj.value) {
+    if (obj.name) {
       filter = filter || {};
       filter.name = obj.name;
-      filter.value = obj.value;
+      filter.value = obj.value || '';
     }
     if (obj.ip) {
       filter = filter || {};
       filter.ip = obj.ip;
+    }
+    if (filter && filter.name && obj.mtype === 'exact') {
+      filter.mtype = 1;
     }
     if (!inited && obj.clearNetwork === 'true') {
       clearNetwork = true;
