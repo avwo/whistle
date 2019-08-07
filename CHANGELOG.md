@@ -1,3 +1,6 @@
+# v1.15.16
+1. fix: http请求访问某些上游代理服务器返回400问题
+
 # v1.15.15
 1. fix: https://github.com/avwo/whistle/issues/310
 2. feat: 插件新增 `req.originalReq.relativeUrl` 获取匹配后拼接的url
