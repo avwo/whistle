@@ -20,7 +20,7 @@ var uploadUrlencodedParser = bodyParser.urlencoded(UPLOAD_PARSE_CONF);
 var uploadJsonParser = bodyParser.json(UPLOAD_PARSE_CONF);
 var GET_METHOD_RE = /^get$/i;
 var WEINRE_RE = /^\/weinre\/.*/;
-var ALLOW_PLUGIN_PATHS = ['/cgi-bin/rules/list', '/cgi-bin/values/list', '/cgi-bin/get-custom-certs-info'];
+var ALLOW_PLUGIN_PATHS = ['/cgi-bin/rules/list2', '/cgi-bin/values/list2', '/cgi-bin/get-custom-certs-info'];
 var DONT_CHECK_PATHS = ['/cgi-bin/server-info', '/cgi-bin/show-host-ip-in-res-headers',
                         '/cgi-bin/composer', '/cgi-bin/socket/data', '/preview.html',
                         '/cgi-bin/socket/abort', '/cgi-bin/socket/change-status',
@@ -33,13 +33,7 @@ var MAX_AGE = 60 * 60 * 24 * 3;
 
 function doNotCheckLogin(req) {
   var path = req.path;
-  if (STATIC_SRC_RE.test(path) || DONT_CHECK_PATHS.indexOf(path) !== -1) {
-    return true;
-  }
-  if (ALLOW_PLUGIN_PATHS.indexOf(path) === -1) {
-    return false;
-  }
-  return req.headers[config.PROXY_ID_HEADER];
+  return STATIC_SRC_RE.test(path) || DONT_CHECK_PATHS.indexOf(path) !== -1;
 }
 
 function getUsername() {
@@ -220,6 +214,12 @@ app.all(PLUGIN_PATH_RE, function(req, res, next) {
 });
 
 app.use(function(req, res, next) {
+  if (ALLOW_PLUGIN_PATHS.indexOf(req.path) !== -1) {
+    var name = req.headers[config.PROXY_ID_HEADER];
+    if (name) {
+      return pluginMgr.getPlugin(name + ':') ? next() : res.sendStatus(403);
+    }
+  }
   var authKey = config.authKey;
   if ((authKey && authKey === req.headers['x-whistle-auth-key'])
     || doNotCheckLogin(req)) {
