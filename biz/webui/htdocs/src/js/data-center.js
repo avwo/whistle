@@ -322,6 +322,10 @@ function toLowerCase(str) {
   return String(str == null ? '' : str).trim().toLowerCase();
 }
 
+exports.getCustomCertsInfo = createCgi({
+  getCustomCertsInfo: BASE_URI + 'cgi-bin/get-custom-certs-info'
+}, GET_CONF).getCustomCertsInfo;
+
 exports.values = createCgi({
   moveTo: {
     mode: 'chain',

@@ -25,6 +25,7 @@ var FilterBtn = require('./filter-btn');
 var FilesDialog = require('./files-dialog');
 var message = require('./message');
 var UpdateAllBtn = require('./update-all-btn');
+var CertsInfoDialog = require('./certs-info-dialog');
 
 var JSON_RE = /^\s*(?:[\{｛][\w\W]+[\}｝]|\[[\w\W]+\])\s*$/;
 var DEFAULT = 'Default';
@@ -2577,6 +2578,21 @@ var Index = React.createClass({
       this.refs.aboutDialog.showAboutInfo();
     }
   },
+  showCustomCertsInfo: function() {
+    var self = this;
+    if (self.loadingCerts) {
+      return;
+    }
+    self.loadingCerts = true;
+    dataCenter.getCustomCertsInfo(function(data, xhr) {
+      self.loadingCerts = false;
+      if (!data) {
+        util.showSystemError(xhr);
+        return;
+      }
+      self.refs.certsInfoDialog.show();
+    });
+  },
   render: function() {
     var state = this.state;
     var networkMode = state.networkMode;
@@ -2900,7 +2916,8 @@ var Index = React.createClass({
                     checked={state.interceptHttpsConnects}
                     onChange={this.interceptHttpsConnects}
                     type="checkbox" /> Capture TUNNEL CONNECTs</label></p>
-                    <a href="javascript:;" draggable="false">View custom certs info</a>
+                    <a href="javascript:;" draggable="false" onClick={this.showCustomCertsInfo}>View custom certs info</a>
+                    <CertsInfoDialog ref="certsInfoDialog" />
                 </div>
               </div>
               <div className="modal-footer">
