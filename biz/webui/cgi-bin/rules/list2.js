@@ -1,12 +1,12 @@
 var get = require('./index');
 
 module.exports = function(req, res) {
-  var data = get();
-  var list = data.list;
-  list.unshift({
-    name: 'Default',
-    data: data.defaultRules,
-    selected: !data.defaultRulesIsDisabled
+  var rules = get();
+  var data = {
+    Default: rules.defaultRules
+  };
+  rules.list.forEach(function(item) {
+    data[item.name] = item.data;
   });
-  res.json(list);
+  res.json(data);
 };

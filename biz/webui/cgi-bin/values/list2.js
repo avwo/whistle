@@ -1,5 +1,9 @@
 var get = require('./index');
 
 module.exports = function(req, res) {
-  res.json(get().list);
+  var data = {};
+  get().list.forEach(function(item) {
+    data[item.name] = item.data;
+  });
+  res.json(data);
 };
