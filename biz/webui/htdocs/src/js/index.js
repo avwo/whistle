@@ -2900,6 +2900,7 @@ var Index = React.createClass({
                     checked={state.interceptHttpsConnects}
                     onChange={this.interceptHttpsConnects}
                     type="checkbox" /> Capture TUNNEL CONNECTs</label></p>
+                    <a href="javascript:;" draggable="false">View custom certs info</a>
                 </div>
               </div>
               <div className="modal-footer">
