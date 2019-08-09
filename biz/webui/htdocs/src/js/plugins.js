@@ -4,6 +4,7 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var events = require('./events');
 var Dialog = require('./dialog');
+var SyncDialog = require('./sync-dialog');
 var util = require('./util');
 
 function getPluginComparator(plugins) {
@@ -60,6 +61,9 @@ var Home = React.createClass({
   onOpen: function(e) {
     this.props.onOpen && this.props.onOpen(e);
     e.preventDefault();
+  },
+  syncData: function() {
+    this.refs.syncDialog.show({});
   },
   showDialog: function() {
     this.refs.pluginRulesDialog.show();
@@ -178,7 +182,7 @@ var Home = React.createClass({
                         <a href="javascript:;" draggable="false" className="w-plugin-btn"
                           data-name={name} onClick={self.showUninstall}>Uninstall</a>
                         {(isString(plugin.rulesUrl) || isString(plugin.valuesUrl)) ? <a href="javascript:;" className="w-plugin-btn"
-                          target="_blank">Sync</a> : undefined}
+                          target="_blank" onClick={self.syncData}>Sync</a> : undefined}
                         {plugin.homepage ? <a href={plugin.homepage} className="w-plugin-btn"
                           target="_blank">Help</a> : <span className="disabled">Help</span>}
                       </td>
@@ -189,6 +193,7 @@ var Home = React.createClass({
               </tbody>
             </table>
           </div>
+          <SyncDialog ref="syncDialog" />
           <Dialog ref="pluginRulesDialog" wstyle="w-plugin-rules-dialog">
             <div className="modal-header">
             <h4>{plugin.name}</h4>

@@ -1,0 +1,15 @@
+.w-sync-dialog .modal-dialog {
+  width: 420px;
+}
+
+.w-sync-dialog .modal-body .btn {
+  display: block;
+  width: 398px;
+  line-height: 40px;
+  font-size: 18px;
+  margin: 10px 0;
+}
+
+.w-sync-dialog .modal-body .btn span {
+  margin-right: 10px;
+}
