@@ -2590,7 +2590,7 @@ var Index = React.createClass({
         util.showSystemError(xhr);
         return;
       }
-      self.refs.certsInfoDialog.show();
+      self.refs.certsInfoDialog.show(data);
     });
   },
   render: function() {

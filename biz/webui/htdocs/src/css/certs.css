@@ -1,0 +1,21 @@
+.w-certs-info-dialog .modal-dialog {
+  width: 960px;
+}
+
+.w-certs-info-order {
+  width: 50px;
+}
+.w-certs-info-validity {
+  width: 400px;
+}
+.w-certs-info-status {
+  width: 100px;
+}
+.w-cert-invalid th, .w-cert-invalid td {
+  color: red;
+}
+
+.w-certs-info-dialog td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
