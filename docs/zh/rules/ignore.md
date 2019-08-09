@@ -1,7 +1,7 @@
 # ignore
 用于忽略指定协议的匹配规则，也可以忽略当前配置的匹配规则，其配置方式为：
 ```
-pattern ignore://protocol1|protocol2|protocolN 
+pattern ignore://protocol1|protocol2|protocolN
 ```
 
 其中，`pattern`参见[匹配模式](../pattern.html)，`protocol1`，...，`protocolN` 对应 [协议列表](../rules/.md) 里面的协议，`|` 为分隔符用于同时设置忽略 (过滤) 多个规则。
@@ -38,7 +38,7 @@ www.example.com/test-hosts/xxx ignore://host
 # 表示www.example.com/test-hosts/yyy及其路径忽略host和socks规则
 www.example.com/test-hosts/yyy ignore://host|socks
 # 表示wwww.example.com/test/abc及其路径最多只保留socks规则
-www.example.com/test/abc igore://*|-socks
+www.example.com/test/abc ignore://*|-socks
 # www.test.com/direct及其子路径不要转发到www.qq.com对应路径
 www.test.com ignore://http
 ```
