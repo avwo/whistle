@@ -18,10 +18,6 @@ function getPluginComparator(plugins) {
   };
 }
 
-function isString(str) {
-  return typeof str === 'string';
-}
-
 var Home = React.createClass({
   componentDidMount: function() {
     var self = this;
@@ -62,8 +58,8 @@ var Home = React.createClass({
     this.props.onOpen && this.props.onOpen(e);
     e.preventDefault();
   },
-  syncData: function() {
-    this.refs.syncDialog.show({});
+  syncData: function(plugin) {
+    this.refs.syncDialog.show(plugin);
   },
   showDialog: function() {
     this.refs.pluginRulesDialog.show();
@@ -181,8 +177,10 @@ var Home = React.createClass({
                           data-name={name} onClick={self.showUpdate}>Update</a>
                         <a href="javascript:;" draggable="false" className="w-plugin-btn"
                           data-name={name} onClick={self.showUninstall}>Uninstall</a>
-                        {(isString(plugin.rulesUrl) || isString(plugin.valuesUrl)) ? <a href="javascript:;" className="w-plugin-btn"
-                          target="_blank" onClick={self.syncData}>Sync</a> : undefined}
+                        {(util.isString(plugin.rulesUrl) || util.isString(plugin.valuesUrl)) ? <a href="javascript:;" className="w-plugin-btn"
+                          target="_blank" onClick={function() {
+                            self.syncData(plugin);
+                          }}>Sync</a> : undefined}
                         {plugin.homepage ? <a href={plugin.homepage} className="w-plugin-btn"
                           target="_blank">Help</a> : <span className="disabled">Help</span>}
                       </td>

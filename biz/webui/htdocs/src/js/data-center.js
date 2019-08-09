@@ -318,6 +318,12 @@ var cgi = createCgi({
   getInitaial: BASE_URI + 'cgi-bin/init'
 }, GET_CONF);
 
+exports.createCgi = function(url) {
+  return createCgi($.extend({
+    _______: BASE_URI + url
+  }, GET_CONF))._______;
+};
+
 function toLowerCase(str) {
   return String(str == null ? '' : str).trim().toLowerCase();
 }

@@ -22,6 +22,10 @@ function noop(_) {
 
 exports.noop = noop;
 
+exports.isString = function(str) {
+  return typeof str === 'string';
+};
+
 function notEStr(str) {
   return str && typeof str === 'string';
 }
