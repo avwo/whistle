@@ -34,12 +34,12 @@ var HistoryData = React.createClass({
     list.sort(function(a, b) {
       return a.filename > b.filename ? 1 : -1;
     });
-    this.refs.historyDialog.show();
+    this.refs.certsInfoDialog.show();
     this._hideDialog = false;
     this.setState({ list: list });
   },
   hide: function() {
-    this.refs.historyDialog.hide();
+    this.refs.certsInfoDialog.hide();
     this._hideDialog = true;
   },
   shouldComponentUpdate: function() {
@@ -49,7 +49,7 @@ var HistoryData = React.createClass({
     var self = this;
     var list = self.state.list || [];
     return (
-      <Dialog ref="historyDialog" wstyle="w-certs-info-dialog">
+      <Dialog ref="certsInfoDialog" wstyle="w-certs-info-dialog">
           <div className="modal-body">
             <button type="button" className="close" onClick={self.hide}>
               <span aria-hidden="true">&times;</span>

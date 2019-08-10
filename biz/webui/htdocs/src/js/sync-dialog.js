@@ -1,15 +1,18 @@
+require('../css/sync-dialog.css');
 var React = require('react');
 var Dialog = require('./dialog');
 var util = require('./util');
 var dataCenter = require('./data-center');
-require('../css/sync-dialog.css');
+var KVDialog = require('./kv-dialog');
 
 var SyncDialog = React.createClass({
   getInitialState: function() {
     return {};
   },
-  show: function(options) {
+  show: function(options, rulesModal, valuesModal) {
     var self = this;
+    self.rulesModal = rulesModal;
+    self.valuesModal = valuesModal;
     self.setState(options, function() {
       self.refs.syncDialog.show();
     });
@@ -28,6 +31,7 @@ var SyncDialog = React.createClass({
       if (!data) {
         return util.showSystemError(xhr);
       }
+      self.refs.kvDialog.show(data, self.rulesModal, self.valuesModal);
     });
     self.setState({});
   },
@@ -45,6 +49,7 @@ var SyncDialog = React.createClass({
       if (!data) {
         return util.showSystemError(xhr);
       }
+      self.refs.kvDialog.show(data, self.rulesModal, self.valuesModal, true);
     });
     self.setState({});
   },
@@ -63,6 +68,7 @@ var SyncDialog = React.createClass({
         <div className="modal-footer">
           <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
         </div>
+        <KVDialog ref="kvDialog" />
       </Dialog>
     );
   }
@@ -72,8 +78,8 @@ var SyncDialogWrap = React.createClass({
   shouldComponentUpdate: function() {
     return false;
   },
-  show: function(options) {
-    this.refs.syncDialog.show(options);
+  show: function(options, rulesModal, valuesModal) {
+    this.refs.syncDialog.show(options, rulesModal, valuesModal);
   },
   render: function() {
     return <SyncDialog ref="syncDialog" />;

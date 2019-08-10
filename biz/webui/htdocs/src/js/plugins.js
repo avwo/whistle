@@ -59,7 +59,8 @@ var Home = React.createClass({
     e.preventDefault();
   },
   syncData: function(plugin) {
-    this.refs.syncDialog.show(plugin);
+    var data = this.props.data || '';
+    this.refs.syncDialog.show(plugin, data.rules, data.values);
   },
   showDialog: function() {
     this.refs.pluginRulesDialog.show();

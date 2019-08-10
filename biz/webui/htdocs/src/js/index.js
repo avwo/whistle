@@ -933,6 +933,16 @@ var Index = React.createClass({
     events.on('exportValues', self.exportData);
     events.on('importRules', self.importRules);
     events.on('importValues', self.importValues);
+    events.on('uploadRules', function(e, data) {
+      var form = getJsonForm(data);
+      form.append('replaceAll', '1');
+      self._uploadRules(form, true);
+    });
+    events.on('uploadValues', function(e, data) {
+      var form = getJsonForm(data, 'values');
+      form.append('replaceAll', '1');
+      self._uploadValues(form, true);
+    });
     var timeout;
     $(document).on('visibilitychange', function() {
       clearTimeout(timeout);
@@ -1387,6 +1397,32 @@ var Index = React.createClass({
       }
     }));
   },
+  _uploadRules: function(data, showResult) {
+    var self = this;
+    dataCenter.upload.importRules(data, function(data, xhr) {
+      if (!data) {
+        util.showSystemError(xhr);
+      } else if (data.ec === 0) {
+        self.reloadRules(data);
+        showResult && message.success('Successful synchronization Rules.');
+      } else  {
+        alert(data.em);
+      }
+    });
+  },
+  _uploadValues: function(data, showResult) {
+    var self = this;
+    dataCenter.upload.importValues(data, function(data, xhr) {
+      if (!data) {
+        util.showSystemError(xhr);
+      } if (data.ec === 0) {
+        self.reloadValues(data);
+        showResult && message.success('Successful synchronization Values.');
+      } else {
+        alert(data.em);
+      }
+    });
+  },
   uploadRules: function(e) {
     var data = this.rulesForm;
     this.rulesForm = null;
@@ -1404,16 +1440,7 @@ var Index = React.createClass({
     if ($(e.target).hasClass('btn-danger')) {
       data.append('replaceAll', '1');
     }
-    var self = this;
-    dataCenter.upload.importRules(data, function(data, xhr) {
-      if (!data) {
-        util.showSystemError(xhr);
-      } else if (data.ec === 0) {
-        self.reloadRules(data);
-      } else  {
-        alert(data.em);
-      }
-    });
+    this._uploadRules(data);
     ReactDOM.findDOMNode(this.refs.importRules).value = '';
   },
   uploadValues: function(e) {
@@ -1433,16 +1460,7 @@ var Index = React.createClass({
     if ($(e.target).hasClass('btn-danger')) {
       data.append('replaceAll', '1');
     }
-    var self = this;
-    dataCenter.upload.importValues(data, function(data, xhr) {
-      if (!data) {
-        util.showSystemError(xhr);
-      } if (data.ec === 0) {
-        self.reloadValues(data);
-      } else {
-        alert(data.em);
-      }
-    });
+    this._uploadValues(data);
     ReactDOM.findDOMNode(this.refs.importValues).value = '';
   },
   uploadRulesForm: function() {
