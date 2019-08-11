@@ -4,7 +4,7 @@ var util = require('../lib/util');
 var handleUIReq = require('./webui/lib').handleRequest;
 var handleWeinreReq = require('./weinre');
 
-var HTTP_PROXY_RE = /^x?(?:proxy|http-proxy|http2https-proxy|https2http-proxy|internal-proxy):\/\//;
+var HTTP_PROXY_RE = /^x?(?:proxy|http-proxy|http2https-proxy|https2http-proxy|internal-proxy|internal-https-proxy):\/\//;
 var INTERNAL_APP, WEBUI_PATH, PLUGIN_RE, PREVIEW_PATH_RE;
 
 module.exports = function(req, res, next) {
