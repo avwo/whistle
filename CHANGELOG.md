@@ -1,3 +1,7 @@
+# v1.16.1
+1. feat: 支持通过 uiurl#network?name=h&value=v&name1=h1&value1=v1&...&name5=h5&value5=v5 根据多个请求头过滤抓包数据
+2. refactor: 支持 `pattern host proxy://xxx enable://proxyHost` 如果出现tls错误自动降级到http请求
+
 # v1.16.0
 1. feat: 支持插件通过 `options.getRules(cb), options.getValues(cb), options.getCustomCertsInfo(cb)`，分别获取插件Rules、Values、自定义证书信息
 2. feat: 插件列表添加 `Sync` 按钮可用于获取插件的规则或值并设置到界面的Rules或Values
