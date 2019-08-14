@@ -112,10 +112,15 @@ function handleHashFilterChanged(e) {
       filter = {};
       filter.url = obj.url;
     }
-    if (obj.name) {
-      filter = filter || {};
-      filter.name = obj.name;
-      filter.value = obj.value || '';
+    for (var i = 0; i < 6; i++) {
+      var key = 'name' + (i || '');
+      var header = obj[key];
+      if (header) {
+        filter = filter || {};
+        filter[key] = header;
+        var value = 'value' + (i || '');
+        filter[value] = obj[value] || '';
+      }
     }
     if (obj.ip) {
       filter = filter || {};
