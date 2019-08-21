@@ -31,6 +31,13 @@ function showStartupInfo(err, options, debugMode, restart) {
 
 program.setConfig({
   main: function(options) {
+    var cmd = process.argv[2];
+    if ((cmd === 'start' || cmd === 'restart') && (options.inspect || options.inspectBrk)) {
+      error('[!] Only support running command `w2 run` to activate inspector on whistle.');
+      var argv = Array.prototype.slice.call(process.argv, 3);
+      info('[i] Try to run command `w2 run' + (argv.length ? ' ' + argv.join(' ') : '') + '` instead of.');
+      return process.exit(1);
+    }
     var hash = options && options.storage && encodeURIComponent(options.storage);
     return path.join(__dirname, '../index.js') + (hash ? '#' + hash + '#' : '');
   },
@@ -104,7 +111,9 @@ program
   .option('--httpPort [httpPort]', 'set the http server port of whistle', parseInt, undefined)
   .option('--httpsPort [httpsPort]', 'set the https server port of whistle', parseInt, undefined)
   .option('--no-global-plugins', 'do not load any globally installed plugins')
-  .option('--no-prev-options', 'do not reuse the previous options when restarting');
+  .option('--no-prev-options', 'do not reuse the previous options when restarting')
+  .option('--inspect [[host:]port]', 'activate inspector on host:port (127.0.0.1:9229 by default)')
+  .option('--inspectBrk [[host:]port]', 'activate inspector on host:port and break at start of user script (127.0.0.1:9229 by default)');
 
 var argv = process.argv;
 var cmd = argv[2];
