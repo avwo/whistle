@@ -1,3 +1,7 @@
+# v1.16.2
+1. fix: `Composer` 面板里面的 `Rules` 禁用后无法开启的问题
+2. feat: 支持通过 `w2 run --inspect` 或 `w2 run --inspectBrk` 开启调试模式
+
 # v1.16.1
 1. feat: 支持通过 uiurl#network?name=h&value=v&name1=h1&value1=v1&...&name5=h5&value5=v5 根据多个请求头过滤抓包数据
 2. refactor: 支持 `pattern host proxy://xxx enable://proxyHost` 如果出现tls错误自动降级到http请求
