@@ -1,3 +1,6 @@
+# v1.16.4
+1. fix: 继续修复 https://github.com/avwo/whistle/issues/316
+
 # v1.16.3
 1. fix: https://github.com/avwo/whistle/issues/316
 2. fix: 通过 `w2 i @org/whistle.xxx` 安装的插件无法执行 `w2 run xxx` 的问题
