@@ -131,6 +131,12 @@ exports.run = function(cmd, argv) {
   fs.readdirSync(CUSTOM_PLUGIN_PATH).forEach(function(name) {
     if (!name.indexOf('whistle.')) {
       newPath.push(path.join(CUSTOM_PLUGIN_PATH, name, 'node_modules/.bin'));
+    } else if (name[0] === '@') {
+      try {
+        fs.readdirSync(path.join(CUSTOM_PLUGIN_PATH, name)).forEach(function(modName) {
+          newPath.push(path.join(CUSTOM_PLUGIN_PATH, name, modName, 'node_modules/.bin'));
+        });
+      } catch (e) {}
     }
   });
   process.env.PATH && newPath.push(process.env.PATH);
