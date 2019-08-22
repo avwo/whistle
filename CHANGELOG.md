@@ -1,3 +1,8 @@
+# v1.16.3
+1. fix: https://github.com/avwo/whistle/issues/316
+2. fix: 通过 `w2 i @org/whistle.xxx` 安装的插件无法执行 `w2 run xxx` 的问题
+3. fix: 安装插件可能导致whistle crash问题
+
 # v1.16.2
 1. fix: `Composer` 面板里面的 `Rules` 禁用后无法开启的问题
 2. feat: 支持通过 `w2 run --inspect` 或 `w2 run --inspectBrk` 开启调试模式

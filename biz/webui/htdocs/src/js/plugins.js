@@ -179,7 +179,7 @@ var Home = React.createClass({
                         <a href="javascript:;" draggable="false" className="w-plugin-btn"
                           data-name={name} onClick={self.showUninstall}>Uninstall</a>
                         {(util.isString(plugin.rulesUrl) || util.isString(plugin.valuesUrl)) ? <a href="javascript:;" className="w-plugin-btn"
-                          target="_blank" onClick={function() {
+                          onClick={function() {
                             self.syncData(plugin);
                           }}>Sync</a> : undefined}
                         {plugin.homepage ? <a href={plugin.homepage} className="w-plugin-btn"
