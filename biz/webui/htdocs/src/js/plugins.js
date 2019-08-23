@@ -172,7 +172,7 @@ var Home = React.createClass({
                         : <span className="w-new-version">{hasNew}</span>) : undefined}
                       </td>
                       <td className="w-plugins-operation">
-                        <a href={url} target="_blank" data-name={name} onClick={plugin.pluginHomepage ? null : self.onOpen}>Option</a>
+                        <a href={url} target="_blank" data-name={name} className="w-plugin-btn" onClick={plugin.pluginHomepage ? null : self.onOpen}>Option</a>
                         {(plugin.rules || plugin._rules || plugin.resRules) ? <a href="javascript:;" draggable="false" data-name={name} onClick={self.showRules}>Rules</a> : <span className="disabled">Rules</span>}
                         <a href="javascript:;" draggable="false" className="w-plugin-btn w-plugin-update-btn"
                           data-name={name} onClick={self.showUpdate}>Update</a>
