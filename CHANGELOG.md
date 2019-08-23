@@ -1,5 +1,8 @@
+# v1.16.5
+1. feat: 插件列表添加 `Sync` 按钮可用于获取插件的规则或值并设置到界面的Rules或Values
+
 # v1.16.4
-1. fix: 继续修复 https://github.com/avwo/whistle/issues/316
+1. fix: https://github.com/avwo/whistle/issues/316
 
 # v1.16.3
 1. fix: https://github.com/avwo/whistle/issues/316
@@ -16,9 +19,8 @@
 
 # v1.16.0
 1. feat: 支持插件通过 `options.getRules(cb), options.getValues(cb), options.getCustomCertsInfo(cb)`，分别获取插件Rules、Values、自定义证书信息
-2. feat: 插件列表添加 `Sync` 按钮可用于获取插件的规则或值并设置到界面的Rules或Values
-3. style: HTTPS菜单的对话框添加 `View custom certs info` 按钮，用于查看自定义证书状态（是否过期等）
-4. fix: WebSocket请求无法设置 `reqDelay://msNum` 的问题
+2. style: HTTPS菜单的对话框添加 `View custom certs info` 按钮，用于查看自定义证书状态（是否过期等）
+3. fix: WebSocket请求无法设置 `reqDelay://msNum` 的问题
 
 # v1.15.16
 1. fix: http请求访问某些上游代理服务器返回400问题
