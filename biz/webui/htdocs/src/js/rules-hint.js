@@ -4,10 +4,11 @@ var $ = require('jquery');
 var CodeMirror = require('codemirror');
 var protocols = require('./protocols');
 
+var NON_SPECAIL_RE = /[^:/]/;
 var AT_RE = /^@/;
 var PROTOCOL_RE = /^([^\s:]+):\/\//;
 var extraKeys = {'Alt-/': 'autocomplete'};
-var CHARS = ['"-"', '"_"', 'Shift-2', '@'];
+var CHARS = ['"-"', '"_"', 'Shift-2', '.', '@', 'Shift-;', '/'];
 for (var i = 0; i < 10; i++) {
   CHARS.push('\'' + i + '\'');
 }
@@ -104,7 +105,7 @@ CodeMirror.registerHelper('hint', 'rulesHint', function(editor, options) {
     showAtHint = true;
     return { list: list, from: CodeMirror.Pos(cur.line, start + 1), to: CodeMirror.Pos(cur.line, end) };
   }
-  if (curWord && curWord.indexOf('//') !== -1) {
+  if (curWord && (curWord.indexOf('//') !== -1 || !NON_SPECAIL_RE.test(curWord))) {
     return;
   }
   list = getHints(curWord);
