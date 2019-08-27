@@ -885,7 +885,7 @@ function updateServerInfo(data) {
     events.trigger('updateStrictMode');
   }
   if (curServerInfo && curServerInfo.version == data.version && curServerInfo.rulesMode === data.rulesMode &&
-    curServerInfo.networkMode === data.networkMode && curServerInfo.multiEnv === data.multiEnv &&
+    curServerInfo.networkMode === data.networkMode && curServerInfo.pluginsMode === data.pluginsMode && curServerInfo.multiEnv === data.multiEnv &&
     curServerInfo.baseDir == data.baseDir && curServerInfo.username == data.username &&
     curServerInfo.port == data.port && curServerInfo.host == data.host &&
     curServerInfo.ipv4.sort().join() == data.ipv4.sort().join() &&

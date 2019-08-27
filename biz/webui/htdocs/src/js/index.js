@@ -161,7 +161,15 @@ function getPageName(options) {
     hash = location.href.replace(/[?#].*$/, '').replace(/.*\//, '');
   }
 
-  return options.rulesMode && hash === 'network' ? 'rules' : hash;
+  if (options.rulesMode) {
+    return hash === 'network' ? 'rules' : hash;
+  }
+
+  if (options.pluginsMode) {
+    return hash !== 'plugins' ? 'network' : hash;
+  }
+
+  return hash;
 }
 
 function compareSelectedNames(src, target) {
@@ -214,6 +222,7 @@ var Index = React.createClass({
       syncWithSysHosts: modal.rules.syncWithSysHosts,
       networkMode: !!modal.server.networkMode,
       rulesMode: !!modal.server.rulesMode,
+      pluginsMode: !!modal.server.pluginsMode,
       multiEnv: modal.server.multiEnv,
       isWin: modal.server.isWin
     };
@@ -2614,8 +2623,17 @@ var Index = React.createClass({
   render: function() {
     var state = this.state;
     var networkMode = state.networkMode;
+    var rulesMode = state.rulesMode;
+    var pluginsMode = state.pluginsMode;
     var multiEnv = state.multiEnv;
-    var name = networkMode ? 'network' : state.name;
+    var name = state.name;
+    if (networkMode) {
+      name = 'network';
+    } else if (rulesMode) {
+      name = name === 'network' ? 'rules' : name;
+    } else if (pluginsMode) {
+      name = name !== 'plugins' ? 'network' : name;
+    }
     var isNetwork = name === undefined || name == 'network';
     var isRules = name == 'rules';
     var isValues = name == 'values';
@@ -2721,12 +2739,12 @@ var Index = React.createClass({
             style={{display: networkMode ? 'none' : undefined}} title={'Dock to ' + (showLeftMenu ? 'top' : 'left') + ' (Ctrl[Command] + M)'}>
             <span className={'glyphicon glyphicon-chevron-' + (showLeftMenu ? 'up' : 'left')}></span>
           </a>
-          <div style={{display: state.rulesMode ? 'none' : undefined}} onMouseEnter={this.showNetworkOptions} onMouseLeave={this.hideNetworkOptions} className={'w-nav-menu w-menu-wrapper' + (showNetworkOptions ? ' w-menu-wrapper-show' : '')}>
+          <div style={{display: rulesMode ? 'none' : undefined}} onMouseEnter={this.showNetworkOptions} onMouseLeave={this.hideNetworkOptions} className={'w-nav-menu w-menu-wrapper' + (showNetworkOptions ? ' w-menu-wrapper-show' : '')}>
             <a onClick={this.showNetwork} onDoubleClick={this.clearNetwork} className="w-network-menu" title="Double click to remove all sessions" style={{background: name == 'network' ? '#ddd' : null}}
           href="javascript:;"  draggable="false"><span className="glyphicon glyphicon-globe"></span>Network</a>
             <MenuItem ref="networkMenuItem" options={state.networkOptions} className="w-network-menu-item" onClickOption={this.handleNetwork} />
           </div>
-          <div onMouseEnter={this.showRulesOptions} onMouseLeave={this.hideRulesOptions}
+          <div style={{display: pluginsMode ? 'none' : undefined}} onMouseEnter={this.showRulesOptions} onMouseLeave={this.hideRulesOptions}
             className={'w-nav-menu w-menu-wrapper' + (showRulesOptions ? ' w-menu-wrapper-show' : '') + (isRules ? ' w-menu-auto' : '')}>
             <a onClick={this.showRules} className="w-rules-menu" style={{background: name == 'rules' ? '#ddd' : null}} href="javascript:;" draggable="false"><span className="glyphicon glyphicon-list"></span>Rules</a>
             <MenuItem ref="rulesMenuItem"  name={name == 'rules' ? null : 'Open'} options={rulesOptions} checkedOptions={uncheckedRules} disabled={state.disabledAllRules}
@@ -2735,7 +2753,7 @@ var Index = React.createClass({
               onClickOption={this.showAndActiveRules}
               onChange={this.selectRulesByOptions} />
           </div>
-          <div onMouseEnter={this.showValuesOptions} onMouseLeave={this.hideValuesOptions}
+          <div style={{display: pluginsMode ? 'none' : undefined}} onMouseEnter={this.showValuesOptions} onMouseLeave={this.hideValuesOptions}
             className={'w-nav-menu w-menu-wrapper' + (showValuesOptions ? ' w-menu-wrapper-show' : '') + (isValues ? ' w-menu-auto' : '')}>
             <a onClick={this.showValues} className="w-values-menu" style={{background: name == 'values' ? '#ddd' : null}} href="javascript:;" draggable="false"><span className="glyphicon glyphicon-folder-open"></span>Values</a>
             <MenuItem ref="valuesMenuItem" name={name == 'values' ? null : 'Open'} options={state.valuesOptions} className="w-values-menu-item" onClick={this.showValues} onClickOption={this.showAndActiveValues} />
@@ -2820,7 +2838,7 @@ var Index = React.createClass({
               className="w-network-menu"
               style={{
                 background: name == 'network' ? '#ddd' : null,
-                display: state.rulesMode ? 'none' : undefined
+                display: rulesMode ? 'none' : undefined
               }}
               href="javascript:;"  draggable="false">
                 <span className="glyphicon glyphicon-globe"></span>
@@ -2832,7 +2850,10 @@ var Index = React.createClass({
             <a onClick={this.showRules} className="w-save-menu w-rules-menu"
               onDoubleClick={this.onClickMenu}
               title={name == 'rules' ? 'Double click to save all changed' : undefined}
-              style={{background: name == 'rules' ? '#ddd' : null}} href="javascript:;" draggable="false">
+              style={{
+                background: name == 'rules' ? '#ddd' : null,
+                display: pluginsMode ? 'none' : undefined
+              }} href="javascript:;" draggable="false">
               <span className={'glyphicon glyphicon-list' + (state.disabledAllRules ? ' w-disabled' : '')} ></span>
               <span className="w-left-menu-tips">
                 <i className="w-arrow w-arrow-left"></i>
@@ -2843,7 +2864,10 @@ var Index = React.createClass({
             <a onClick={this.showValues} className="w-save-menu w-values-menu"
               onDoubleClick={this.onClickMenu}
               title={name == 'values' ? 'Double click to save all changed' : undefined}
-              style={{background: name == 'values' ? '#ddd' : null}} href="javascript:;" draggable="false">
+              style={{
+                background: name == 'values' ? '#ddd' : null,
+                display: pluginsMode ? 'none' : undefined
+              }} href="javascript:;" draggable="false">
               <span className="glyphicon glyphicon-folder-open"></span>
               <span className="w-left-menu-tips">
                 <i className="w-arrow w-arrow-left"></i>
