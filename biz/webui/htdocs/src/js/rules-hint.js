@@ -119,24 +119,24 @@ function getRuleHelp(plugin, helpUrl) {
 }
 
 function handleRemoteHints(data, editor, plugin, protoName, value, cgi) {
+  curHintList = [];
+  curHintMap = {};
   if (!data || cgi.hasDestroyed || !Array.isArray(data)) {
     curHintValue = curHintProto = null;
     return;
   }
   curHintValue = value;
   curHintProto = protoName;
-  curHintList = [];
-  curHintMap = {};
   data.forEach(function(item) {
     if (typeof item === 'string') {
       item = item.replace(/\s+/g, '');
-      if (!curHintMap[item]) {
+      if (item.length < MAX_HINT_LEN && !curHintMap[item]) {
         curHintList.push(protoName + '://' + item);
         curHintMap[item] = getRuleHelp(plugin);
       }
     } else if (item && typeof item.value === 'string') {
       var value = item.value.replace(/\s+/g, '');
-      if (!curHintMap[value]) {
+      if (value.length < MAX_HINT_LEN && !curHintMap[value]) {
         curHintList.push(protoName + '://' + value);
         curHintMap[value] = getRuleHelp(plugin, item.help);
       }
