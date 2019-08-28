@@ -91,9 +91,33 @@ function getAtValueList(keyword) {
     }
     var list = getAtValueList(keyword);
     if (Array.isArray(list)) {
-      return list.filter(function(item) {
-        return item && typeof item === 'string';
-      }).slice(0, 60);
+      var result = [];
+      var len = 60;
+      list.forEach(function(item) {
+        if (!item || len < 1) {
+          return;
+        }
+        if (typeof item === 'string') {
+          --len;
+          result.push(item);
+          return;
+        }
+        var value = item.value;
+        if (!value || typeof value !== 'string') {
+          return;
+        }
+        --len;
+        var label = item.label;
+        if (!label || typeof label !== 'string') {
+          result.push(value);
+        } else {
+          result.push({
+            text: value,
+            displayText: label
+          });
+        }
+      });
+      return result;
     }
   } catch (e) {}
 }
