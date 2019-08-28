@@ -1,5 +1,6 @@
 # v1.16.5
 1. feat: 插件列表添加 `Sync` 按钮可用于获取插件的规则或值并设置到界面的Rules或Values
+2. feat: 支持通过插件 package.json 配置 `"whistleConfig: { "hintUrl": "/cgi-xxx/xxx" }"`  等方式自定义自动补全列表功能
 
 # v1.16.4
 1. fix: https://github.com/avwo/whistle/issues/316
