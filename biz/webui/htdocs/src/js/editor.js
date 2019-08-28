@@ -113,12 +113,26 @@ var Editor = React.createClass({
     }
   },
   setAutoComplete: function() {
-    var option = this.isRulesEditor() ? rulesHint.getExtraKeys() : {};
+    var isRules = this.isRulesEditor();
+    var option = isRules ? rulesHint.getExtraKeys() : {};
     if (!/\(Macintosh;/i.test(window.navigator.userAgent)) {
       option['Ctrl-F'] = 'findPersistent';
     }
     option['Cmd-F'] = 'findPersistent';
-    this._editor.setOption('extraKeys', option);
+    var editor = this._editor;
+    editor.setOption('extraKeys', option);
+    var timer;
+    if (isRules) {
+      editor.on('keyup', function(_, e) {
+        clearTimeout(timer);
+        if (e.keyCode === 8) {
+          timer = setTimeout(function() {
+            editor._byDelete = true;
+            editor.execCommand('autocomplete');
+          }, 300);
+        }
+      });
+    }
   },
   isRulesEditor: function() {
     return this.props.name === 'rules' || this._mode === 'rules';

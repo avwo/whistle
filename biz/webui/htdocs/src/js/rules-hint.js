@@ -152,6 +152,8 @@ var showAtHint;
 CodeMirror.registerHelper('hint', 'rulesHint', function(editor, options) {
   showAtHint = false;
   waitingRemoteHints = false;
+  var byDelete = editor._byDelete;
+  editor._byDelete = false;
   var cur = editor.getCursor();
   var curLine = editor.getLine(cur.line);
   var end = cur.ch, start = end, list;
@@ -200,9 +202,11 @@ CodeMirror.registerHelper('hint', 'rulesHint', function(editor, options) {
         }, HINT_TIMEOUT);
       }
     }
-    if (curWord.indexOf('//') !== -1 || !NON_SPECAIL_RE.test(curWord)) {
+    if (curWord.indexOf('//') !== -1 || byDelete || !NON_SPECAIL_RE.test(curWord)) {
       return;
     }
+  } else if (byDelete) {
+    return;
   }
   list = getHints(curWord);
   if (!list.length) {
