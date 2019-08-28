@@ -5,7 +5,11 @@
   font-size: 12px;
 
 }
-.CodeMirror-hints li {
+
+.CodeMirror-hints .CodeMirror-hint {
+  max-width: unset;
   position: relative;
   padding-right: 20px;
+  font-family: consolas, monospace;
+  font-size: 14px;
 }
