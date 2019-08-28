@@ -139,6 +139,9 @@ function handleRemoteHints(data, editor, plugin, protoName, value, cgi) {
       if (typeof item.label === 'string') {
         label = item.label.trim();
       }
+      if (!label && typeof item.display === 'string') {
+        label = item.display.trim();
+      }
       if (typeof item.value === 'string') {
         value = protoName + '://' + item.value.replace(/\s+/g, '');
       }
