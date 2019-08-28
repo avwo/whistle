@@ -153,7 +153,7 @@ function handleRemoteHints(data, editor, plugin, protoName, value, cgi) {
   curHintProto = protoName;
   data.forEach(function(item) {
     if (typeof item === 'string') {
-      item = protoName + '://' + item.replace(/\s+/g, '');
+      item = protoName + '://' + item.trim();
       if (item.length < MAX_HINT_LEN && !curHintMap[item]) {
         curHintList.push(item);
         curHintMap[item] = getRuleHelp(plugin);
@@ -167,7 +167,7 @@ function handleRemoteHints(data, editor, plugin, protoName, value, cgi) {
         label = item.display.trim();
       }
       if (typeof item.value === 'string') {
-        value = protoName + '://' + item.value.replace(/\s+/g, '');
+        value = protoName + '://' + item.value.trim();
       }
       if (value && value.length < MAX_HINT_LEN && !curHintMap[label || value]) {
         curHintList.push(label ? {
@@ -226,6 +226,7 @@ CodeMirror.registerHelper('hint', 'rulesHint', function(editor, options) {
           if (commentIndex !== -1) {
             curLine = curLine.substring(0, commentIndex);
           }
+          curLine = curLine.substring(start).split(/\s/, 1)[0];
           curFocusProto = protoName;
           return { list: curHintList, from: CodeMirror.Pos(cur.line, start), to: CodeMirror.Pos(cur.line, start + curLine.trim().length) };
         }
