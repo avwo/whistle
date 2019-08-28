@@ -152,6 +152,7 @@ function handleRemoteHints(data, editor, plugin, protoName, value, cgi) {
     }
   });
   if (waitingRemoteHints && curHintList.length) {
+    editor._byPlugin = true;
     editor.execCommand('autocomplete');
   }
 }
@@ -162,8 +163,8 @@ CodeMirror.registerHelper('hint', 'rulesHint', function(editor, options) {
   showAtHint = false;
   waitingRemoteHints = false;
   curFocusProto = null;
-  var byDelete = editor._byDelete;
-  editor._byDelete = false;
+  var byDelete = editor._byDelete || editor._byPlugin;
+  editor._byDelete = editor._byPlugin = false;
   var cur = editor.getCursor();
   var curLine = editor.getLine(cur.line);
   var end = cur.ch, start = end, list;
