@@ -10,11 +10,16 @@ var PLUGIN_NAME_RE = /^((?:whistle\.)?([a-z\d_\-]+:))(\/?$|\/\/)/;
 var MAX_HINT_LEN = 512;
 var AT_RE = /^@/;
 var PROTOCOL_RE = /^([^\s:]+):\/\//;
-var HINT_TIMEOUT = 160;
+var HINT_TIMEOUT = 120;
+var curHintMap = {};
 var curHintProto, curHintValue, curHintList, hintTimer;
-var hintUrl, hintCgi;
+var hintUrl, hintCgi, waitingRemoteHints;
 var extraKeys = {'Alt-/': 'autocomplete'};
-var CHARS = ['"-"', '"_"', 'Shift-2', '.', '@', 'Shift-;', '/'];
+var CHARS = [
+  '-', '"_"', 'Shift-2', '.', 'Shift-;', '/', 'Shift-/',
+  'Shift-1', 'Shift-4', 'Shift-5', 'Shift-6', 'Shift-7', 'Shift-8',
+  '=', 'Shift-=', '\'', 'Shift-\'', ';', 'Shift-;', '\\', 'Shift-\\', 'Shift-`'
+];
 for (var i = 0; i < 10; i++) {
   CHARS.push('\'' + i + '\'');
 }
@@ -105,20 +110,47 @@ function getAtHelpUrl(name, options) {
   } catch (e) {}
 }
 
-function handleRemoteHints(data, plugin, protoName, value, cgi) {
+function getRuleHelp(plugin, helpUrl) {
+  if (typeof helpUrl !== 'string') {
+    helpUrl = '';
+  }
+  return helpUrl || plugin.homepage || 'https://avwo.github.io/whistle/plugins.html';
+}
+
+function handleRemoteHints(data, editor, plugin, protoName, value, cgi) {
   if (!data || cgi.hasDestroyed || !Array.isArray(data)) {
     curHintValue = curHintProto = null;
     return;
   }
   curHintValue = value;
   curHintProto = protoName;
-
+  curHintList = [];
+  curHintMap = {};
+  data.forEach(function(item) {
+    if (typeof item === 'string') {
+      item = item.replace(/\s+/g, '');
+      if (!curHintMap[item]) {
+        curHintList.push(protoName + '://' + item);
+        curHintMap[item] = getRuleHelp(plugin);
+      }
+    } else if (item && typeof item.value === 'string') {
+      var value = item.value.replace(/\s+/g, '');
+      if (!curHintMap[value]) {
+        curHintList.push(protoName + '://' + value);
+        curHintMap[value] = getRuleHelp(plugin, item.help);
+      }
+    }
+  });
+  if (waitingRemoteHints && curHintList.length) {
+    editor.execCommand('autocomplete');
+  }
 }
 
 var WORD = /\S+/;
 var showAtHint;
 CodeMirror.registerHelper('hint', 'rulesHint', function(editor, options) {
   showAtHint = false;
+  waitingRemoteHints = false;
   var cur = editor.getCursor();
   var curLine = editor.getLine(cur.line);
   var end = cur.ch, start = end, list;
@@ -147,20 +179,22 @@ CodeMirror.registerHelper('hint', 'rulesHint', function(editor, options) {
         if (value.length > MAX_HINT_LEN) {
           return;
         }
-        var protoName = RegExp.$1.slice(0, -1);
-        if (curHintProto === protoName && value === curHintValue) {
-          // 
-          return;
-        }
         clearTimeout(hintTimer);
+        var protoName = RegExp.$1.slice(0, -1);
+        if (curHintList && curHintList.length && curHintProto === protoName && value === curHintValue) {
+          if (commentIndex !== -1) {
+            curLine = curLine.substring(0, commentIndex);
+          }
+          return { list: curHintList, from: CodeMirror.Pos(cur.line, start), to: CodeMirror.Pos(cur.line, start + curLine.trim().length) };
+        }
+        waitingRemoteHints = true;
         hintTimer = setTimeout(function() {
-          curHintValue = curHintList = null;
           var getRemoteHints = getHintCgi(plugin);
           getRemoteHints({
             protocol: protoName,
             value: value
           }, function(data) {
-            handleRemoteHints(data, plugin, protoName, value, getRemoteHints);
+            handleRemoteHints(data, editor, plugin, protoName, value, getRemoteHints);
           });
         }, HINT_TIMEOUT);
       }
@@ -226,8 +260,9 @@ function completeAfter(cm, pred) {
 CHARS.forEach(function(ch) {
   extraKeys[ch] = completeAfter;
 });
-
+var curValue;
 function getFocusRuleName(editor) {
+  curValue = null;
   var name;
   var activeHint = $('li.CodeMirror-hint-active');
   if (activeHint.is(':visible')) {
@@ -237,6 +272,7 @@ function getFocusRuleName(editor) {
     } else {
       var index = name.indexOf(':');
       if (index !== -1) {
+        curValue = name.substring(index + 3);
         name = name.substring(0, index);
       }
     }
@@ -281,6 +317,9 @@ exports.getHelpUrl = function(editor, options) {
   }
   if (url === false) {
     return false;
+  }
+  if (name === curHintProto && (url = curHintMap[curValue])) {
+    return url;
   }
   return protocols.getHelpUrl(name);
 };

@@ -38,6 +38,8 @@ var MAX_UPDATE_COUNT = 4;
 var MAX_WAIT_TIME = 1000 * 60 * 3;
 var onlyViewOwnData = storage.get('onlyViewOwnData') == 1;
 var pluginsMap = {};
+var disabledPlugins = {};
+var disabledAllPlugins, disabledAllRules;
 var DEFAULT_CONF = {
   timeout: TIMEOUT,
   xhrFields: {
@@ -581,6 +583,9 @@ function startLoadData() {
       var len = data.log.length;
       var svrLen = data.svrLog.length;
       pluginsMap = data.plugins || {};
+      disabledPlugins = data.disabledPlugins || {};
+      disabledAllPlugins = data.disabledAllPlugins;
+      disabledAllRules = data.disabledAllRules;
       if (len || svrLen) {
         if (len) {
           logList.push.apply(logList, data.log);
@@ -971,5 +976,8 @@ exports.stopServerLogRecord = function(stop) {
 };
 
 exports.getPlugin = function(name) {
+  if (disabledAllPlugins || disabledAllRules || disabledPlugins[name.slice(0, -1)]) {
+    return;
+  }
   return pluginsMap[name];
 };
