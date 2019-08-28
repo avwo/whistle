@@ -37,6 +37,7 @@ var updateCount = 0;
 var MAX_UPDATE_COUNT = 4;
 var MAX_WAIT_TIME = 1000 * 60 * 3;
 var onlyViewOwnData = storage.get('onlyViewOwnData') == 1;
+var pluginsMap = {};
 var DEFAULT_CONF = {
   timeout: TIMEOUT,
   xhrFields: {
@@ -323,9 +324,10 @@ var cgi = createCgi({
   getInitaial: BASE_URI + 'cgi-bin/init'
 }, GET_CONF);
 
-exports.createCgi = function(url) {
+exports.createCgi = function(url, cancel) {
   return createCgi($.extend({
-    _______: BASE_URI + url
+    _______: BASE_URI + url,
+    mode: cancel ? 'cancel' : null
   }, GET_CONF))._______;
 };
 
@@ -578,6 +580,7 @@ function startLoadData() {
       });
       var len = data.log.length;
       var svrLen = data.svrLog.length;
+      pluginsMap = data.plugins || {};
       if (len || svrLen) {
         if (len) {
           logList.push.apply(logList, data.log);
@@ -599,7 +602,6 @@ function startLoadData() {
       if (data.lastSvrLogId) {
         lastSvrLogTime = data.lastSvrLogId;
       }
-
       data = data.data;
       var hasChhanged;
       var framesLen = data.frames && data.frames.length;
@@ -966,4 +968,8 @@ exports.pauseServerLogRecord = function() {
 exports.stopServerLogRecord = function(stop) {
   exports.pauseServerLogRefresh = false;
   exports.stopServerLogRefresh = stop;
+};
+
+exports.getPlugin = function(name) {
+  return pluginsMap[name];
 };

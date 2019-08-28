@@ -3,10 +3,16 @@ require('codemirror/addon/hint/show-hint.js');
 var $ = require('jquery');
 var CodeMirror = require('codemirror');
 var protocols = require('./protocols');
+var dataCenter = require('./data-center');
 
 var NON_SPECAIL_RE = /[^:/]/;
+var PLUGIN_NAME_RE = /^((?:whistle\.)?([a-z\d_\-]+:))(\/?$|\/\/)/;
+var MAX_HINT_LEN = 512;
 var AT_RE = /^@/;
 var PROTOCOL_RE = /^([^\s:]+):\/\//;
+var HINT_TIMEOUT = 160;
+var curHintProto, curHintValue, curHintList, hintTimer;
+var hintUrl, hintCgi;
 var extraKeys = {'Alt-/': 'autocomplete'};
 var CHARS = ['"-"', '"_"', 'Shift-2', '.', '@', 'Shift-;', '/'];
 for (var i = 0; i < 10; i++) {
@@ -16,6 +22,23 @@ for (var a = 'a'.charCodeAt(), z = 'z'.charCodeAt(); a <= z; a++) {
   var ch = String.fromCharCode(a);
   CHARS.push('\'' + ch.toUpperCase() + '\'');
   CHARS.push('\'' + ch + '\'');
+}
+
+function getHintCgi(plugin) {
+  var moduleName = plugin.moduleName;
+  var url = plugin.hintUrl;
+  var pluginName = 'plugin.' + moduleName.substring(8);
+  if (url.indexOf(moduleName) !== 0 && url.indexOf(pluginName) !== 0) {
+    url = pluginName + '/' + url;
+  }
+  if (hintUrl !== url) {
+    if (hintCgi) {
+      hintCgi.hasDestroyed = true;
+    }
+    hintUrl = url;
+    hintCgi = dataCenter.createCgi(url, true);
+  }
+  return hintCgi;
 }
 
 function getHints(keyword) {
@@ -82,6 +105,16 @@ function getAtHelpUrl(name, options) {
   } catch (e) {}
 }
 
+function handleRemoteHints(data, plugin, protoName, value, cgi) {
+  if (!data || cgi.hasDestroyed || !Array.isArray(data)) {
+    curHintValue = curHintProto = null;
+    return;
+  }
+  curHintValue = value;
+  curHintProto = protoName;
+
+}
+
 var WORD = /\S+/;
 var showAtHint;
 CodeMirror.registerHelper('hint', 'rulesHint', function(editor, options) {
@@ -105,8 +138,36 @@ CodeMirror.registerHelper('hint', 'rulesHint', function(editor, options) {
     showAtHint = true;
     return { list: list, from: CodeMirror.Pos(cur.line, start + 1), to: CodeMirror.Pos(cur.line, end) };
   }
-  if (curWord && (curWord.indexOf('//') !== -1 || !NON_SPECAIL_RE.test(curWord))) {
-    return;
+  if (curWord) {
+    if (PLUGIN_NAME_RE.test(curWord)) {
+      var plugin = dataCenter.getPlugin(RegExp.$2);
+      if (plugin && typeof plugin.hintUrl === 'string') {
+        var value = RegExp.$3 || '';
+        value = value.length === 2 ?  curWord.substring(curWord.indexOf('//') + 2) : '';
+        if (value.length > MAX_HINT_LEN) {
+          return;
+        }
+        var protoName = RegExp.$1.slice(0, -1);
+        if (curHintProto === protoName && value === curHintValue) {
+          // 
+          return;
+        }
+        clearTimeout(hintTimer);
+        hintTimer = setTimeout(function() {
+          curHintValue = curHintList = null;
+          var getRemoteHints = getHintCgi(plugin);
+          getRemoteHints({
+            protocol: protoName,
+            value: value
+          }, function(data) {
+            handleRemoteHints(data, plugin, protoName, value, getRemoteHints);
+          });
+        }, HINT_TIMEOUT);
+      }
+    }
+    if (curWord.indexOf('//') !== -1 || !NON_SPECAIL_RE.test(curWord)) {
+      return;
+    }
   }
   list = getHints(curWord);
   if (!list.length) {
