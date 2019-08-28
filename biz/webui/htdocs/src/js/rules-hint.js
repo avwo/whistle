@@ -16,9 +16,10 @@ var curHintProto, curHintValue, curHintList, hintTimer;
 var hintUrl, hintCgi, waitingRemoteHints;
 var extraKeys = {'Alt-/': 'autocomplete'};
 var CHARS = [
-  '-', '"_"', 'Shift-2', '.', 'Shift-;', '/', 'Shift-/',
+  '-', '"_"', 'Shift-2', '.', ',', 'Shift-,', 'Shift-.', 'Shift-;', '/', 'Shift-/',
   'Shift-1', 'Shift-4', 'Shift-5', 'Shift-6', 'Shift-7', 'Shift-8',
-  '=', 'Shift-=', '\'', 'Shift-\'', ';', 'Shift-;', '\\', 'Shift-\\', 'Shift-`'
+  '=', 'Shift-=', '\'', 'Shift-\'', ';', 'Shift-;', '\\', 'Shift-\\', 'Shift-`',
+  '[', ']', 'Shift-[', 'Shift-]', 'Shift-9', 'Shift-0'
 ];
 for (var i = 0; i < 10; i++) {
   CHARS.push('\'' + i + '\'');
