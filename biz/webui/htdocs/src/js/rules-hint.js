@@ -248,15 +248,18 @@ CodeMirror.registerHelper('hint', 'rulesHint', function(editor, options) {
             to = temp;
           } else if (curHintPos === 'cursor') {
             hintList = hintList.map(function(item) {
+              var hint = {
+                from: from,
+                to: to
+              };
               if (typeof item === 'string') {
-                item = {
-                  text: item,
-                  displayText: item
-                };
+                hint.text = item;
+                hint.displayText = item;
+              } else {
+                hint.text = item.text;
+                hint.displayText = item.displayText;
               }
-              item.from = from;
-              item.to = to;
-              return item;
+              return hint;
             });
             from = cur;
           }
