@@ -12,3 +12,9 @@ function getImgFile(file) {
 }
 
 exports.getImgFile = getImgFile;
+
+function getJsFile(file) {
+  return path.join(ROOT, 'js', file || '');
+}
+
+exports.getJsFile = getJsFile;

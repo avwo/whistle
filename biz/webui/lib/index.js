@@ -7,10 +7,13 @@ var parseurl = require('parseurl');
 var bodyParser = require('body-parser');
 var crypto = require('crypto');
 var cookie = require('cookie');
+var fs = require('fs');
+var zlib = require('zlib');
 var htdocs = require('../htdocs');
 var handleWeinreReq = require('../../weinre');
 var setProxy = require('./proxy');
 var getRootCAFile = require('../../../lib/https/ca').getRootCAFile;
+var config = require('../../../lib/config');
 
 var PARSE_CONF = { extended: true, limit: '3mb'};
 var UPLOAD_PARSE_CONF = { extended: true, limit: '30mb'};
@@ -28,7 +31,7 @@ var DONT_CHECK_PATHS = ['/cgi-bin/server-info', '/cgi-bin/show-host-ip-in-res-he
                         '/cgi-bin/lookup-tunnel-dns', '/cgi-bin/rootca', '/cgi-bin/log/set'];
 var PLUGIN_PATH_RE = /^\/(whistle|plugin)\.([^/?#]+)(\/)?/;
 var STATIC_SRC_RE = /\.(?:ico|js|css|png)$/i;
-var proxyEvent, util, config, pluginMgr, uiPortCookie;
+var proxyEvent, util, pluginMgr, uiPortCookie;
 var MAX_AGE = 60 * 60 * 24 * 3;
 
 function doNotCheckLogin(req) {
@@ -263,6 +266,25 @@ app.use('/preview.html', function(req, res, next) {
     res.set('content-type', 'text/html;charset=' + charset);
   }
 });
+if (!config.debugMode) {
+  var indexJs = fs.readFileSync(htdocs.getJsFile('index.js'), { encoding: 'utf8'});
+  var gzipIndexJs = zlib.gzipSync(indexJs);
+  var GZIP_RE = /\bgzip\b/i;
+  app.use('/js/index.js', function(req, res) {
+    if (GZIP_RE.test(req.headers['accept-encoding'])) {
+      res.writeHead(200, {
+        'Content-Type': 'application/javascript; charset=utf-8',
+        'Content-Encoding': 'gzip'
+      });
+      res.end(gzipIndexJs);
+    } else {
+      res.writeHead(200, {
+        'Content-Type': 'application/javascript; charset=utf-8'
+      });
+      res.end(indexJs);
+    }
+  });
+}
 app.use(express.static(path.join(__dirname, '../htdocs'), {maxAge: 300000}));
 
 app.get('/', function(req, res) {
@@ -283,7 +305,6 @@ function init(proxy) {
     return;
   }
   proxyEvent = proxy;
-  config = proxy.config;
   pluginMgr = proxy.pluginMgr;
   util = proxy.util;
   uiPortCookie = cookie.serialize('_whistleuipath_', config.port, {
