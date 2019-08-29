@@ -12,7 +12,7 @@ var AT_RE = /^@/;
 var PROTOCOL_RE = /^([^\s:]+):\/\//;
 var HINT_TIMEOUT = 120;
 var curHintMap = {};
-var curHintProto, curFocusProto, curHintValue, curHintList, hintTimer;
+var curHintProto, curFocusProto, curHintValue, curHintList, hintTimer, curHintPos;
 var hintUrl, hintCgi, waitingRemoteHints;
 var extraKeys = {'Alt-/': 'autocomplete'};
 var CHARS = [
@@ -145,16 +145,26 @@ function getRuleHelp(plugin, helpUrl) {
 function handleRemoteHints(data, editor, plugin, protoName, value, cgi) {
   curHintList = [];
   curHintMap = {};
-  if (!data || cgi.hasDestroyed || !Array.isArray(data)) {
+  curHintPos = null;
+  if (!data || cgi.hasDestroyed || (!Array.isArray(data) && !Array.isArray(data.list))) {
     curHintValue = curHintProto = null;
     return;
   }
   curHintValue = value;
   curHintProto = protoName;
+  var len = 0;
+  if (!Array.isArray(data)) {
+    curHintPos = data.position;
+    data = data.list;
+  }
   data.forEach(function(item) {
+    if (len >= 60) {
+      return;
+    }
     if (typeof item === 'string') {
       item = protoName + '://' + item.trim();
       if (item.length < MAX_HINT_LEN && !curHintMap[item]) {
+        ++len;
         curHintList.push(item);
         curHintMap[item] = getRuleHelp(plugin);
       }
@@ -170,6 +180,7 @@ function handleRemoteHints(data, editor, plugin, protoName, value, cgi) {
         value = protoName + '://' + item.value.trim();
       }
       if (value && value.length < MAX_HINT_LEN && !curHintMap[label || value]) {
+        ++len;
         curHintList.push(label ? {
           displayText: label,
           text: value
@@ -178,7 +189,7 @@ function handleRemoteHints(data, editor, plugin, protoName, value, cgi) {
       }
     }
   });
-  if (waitingRemoteHints && curHintList.length) {
+  if (waitingRemoteHints && len) {
     editor._byPlugin = true;
     editor.execCommand('autocomplete');
   }
@@ -228,7 +239,28 @@ CodeMirror.registerHelper('hint', 'rulesHint', function(editor, options) {
           }
           curLine = curLine.substring(start).split(/\s/, 1)[0];
           curFocusProto = protoName;
-          return { list: curHintList, from: CodeMirror.Pos(cur.line, start), to: CodeMirror.Pos(cur.line, start + curLine.trim().length) };
+          var from = CodeMirror.Pos(cur.line, start);
+          var to = CodeMirror.Pos(cur.line, start + curLine.trim().length);
+          var hintList = curHintList;
+          if (curHintPos === 'tail') {
+            var temp = from;
+            from = to;
+            to = temp;
+          } else if (curHintPos === 'cursor') {
+            hintList = hintList.map(function(item) {
+              if (typeof item === 'string') {
+                item = {
+                  text: item,
+                  displayText: item
+                };
+              }
+              item.from = from;
+              item.to = to;
+              return item;
+            });
+            from = cur;
+          }
+          return { list: hintList, from: from, to: to };
         }
         waitingRemoteHints = true;
         hintTimer = setTimeout(function() {
