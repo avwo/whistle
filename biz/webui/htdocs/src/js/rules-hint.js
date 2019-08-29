@@ -12,7 +12,7 @@ var AT_RE = /^@/;
 var PROTOCOL_RE = /^([^\s:]+):\/\//;
 var HINT_TIMEOUT = 120;
 var curHintMap = {};
-var curHintProto, curFocusProto, curHintValue, curHintList, hintTimer, curHintPos;
+var curHintProto, curFocusProto, curHintValue, curHintList, hintTimer, curHintPos, curHintOffset;
 var hintUrl, hintCgi, waitingRemoteHints;
 var extraKeys = {'Alt-/': 'autocomplete'};
 var CHARS = [
@@ -146,6 +146,7 @@ function handleRemoteHints(data, editor, plugin, protoName, value, cgi) {
   curHintList = [];
   curHintMap = {};
   curHintPos = null;
+  curHintOffset = 0;
   if (!data || cgi.hasDestroyed || (!Array.isArray(data) && !Array.isArray(data.list))) {
     curHintValue = curHintProto = null;
     return;
@@ -155,6 +156,7 @@ function handleRemoteHints(data, editor, plugin, protoName, value, cgi) {
   var len = 0;
   if (!Array.isArray(data)) {
     curHintPos = data.position;
+    curHintOffset = parseInt(data.offset, 10) || 0;
     data = data.list;
   }
   data.forEach(function(item) {
@@ -239,14 +241,12 @@ CodeMirror.registerHelper('hint', 'rulesHint', function(editor, options) {
           }
           curLine = curLine.substring(start).split(/\s/, 1)[0];
           curFocusProto = protoName;
+          end = start + curLine.trim().length;
           var from = CodeMirror.Pos(cur.line, start);
-          var to = CodeMirror.Pos(cur.line, start + curLine.trim().length);
+          var to = CodeMirror.Pos(cur.line, end);
           var hintList = curHintList;
-          if (curHintPos === 'tail') {
-            var temp = from;
-            from = to;
-            to = temp;
-          } else if (curHintPos === 'cursor') {
+          var isCursorPos = curHintPos === 'cursor';
+          if (curHintOffset || isCursorPos) {
             hintList = hintList.map(function(item) {
               var hint = {
                 from: from,
@@ -261,7 +261,21 @@ CodeMirror.registerHelper('hint', 'rulesHint', function(editor, options) {
               }
               return hint;
             });
-            from = cur;
+            if (isCursorPos) {
+              from = cur;
+            }
+          }
+          if (curHintPos === 'tail') {
+            var temp = from;
+            from = to;
+            to = temp;
+          }
+          if (curHintOffset) {
+            start = Math.max(start, from.ch + curHintOffset);
+            if (start > end) {
+              start = end;
+            }
+            from = CodeMirror.Pos(cur.line, start);
           }
           return { list: hintList, from: from, to: to };
         }
