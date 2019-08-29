@@ -233,6 +233,12 @@ CodeMirror.registerHelper('hint', 'rulesHint', function(editor, options) {
         waitingRemoteHints = true;
         hintTimer = setTimeout(function() {
           var getRemoteHints = getHintCgi(plugin);
+          if (!editor._bindedHintEvents) {
+            editor._bindedHintEvents = true;
+            editor.on('blur', function() {
+              waitingRemoteHints = false;
+            });
+          }
           getRemoteHints({
             protocol: protoName,
             value: value
