@@ -1,3 +1,7 @@
+# v1.16.6
+1. feat: 支持在插件到 `server` hooks 到 `req.request([uri, ]cb[, opts={host, port, rules}])` 到方式自定义请求目标及设置响应rules
+2. perf: WebUI到js文件开启gzip压缩，减少传输的文件大小，提升页面打开速度
+
 # v1.16.5
 1. feat: 插件列表添加 `Sync` 按钮可用于获取插件的规则或值并设置到界面的Rules或Values
 2. feat: 支持通过插件 package.json 配置 `"whistleConfig: { "hintUrl": "/cgi-xxx/xxx" }"`  等方式自定义自动补全列表功能
