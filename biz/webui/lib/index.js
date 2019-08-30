@@ -269,19 +269,24 @@ app.use('/preview.html', function(req, res, next) {
 if (!config.debugMode) {
   var indexHtml = fs.readFileSync(htdocs.getHtmlFile('index.html'));
   var indexJs = fs.readFileSync(htdocs.getJsFile('index.js'));
+  var jsETag = shasum(indexJs);
   var gzipIndexJs = zlib.gzipSync(indexJs);
   var GZIP_RE = /\bgzip\b/i;
   app.use('/js/index.js', function(req, res) {
+    if (req.headers['if-none-match'] === jsETag) {
+      return res.sendStatus(304);
+    }
+    var headers = {
+      'Content-Type': 'application/javascript; charset=utf-8',
+      'Cache-Control': 'public, max-age=300',
+      ETag: jsETag
+    };
     if (GZIP_RE.test(req.headers['accept-encoding'])) {
-      res.writeHead(200, {
-        'Content-Type': 'application/javascript; charset=utf-8',
-        'Content-Encoding': 'gzip'
-      });
+      headers['Content-Encoding'] = 'gzip';
+      res.writeHead(200, headers);
       res.end(gzipIndexJs);
     } else {
-      res.writeHead(200, {
-        'Content-Type': 'application/javascript; charset=utf-8'
-      });
+      res.writeHead(200, headers);
       res.end(indexJs);
     }
   });
