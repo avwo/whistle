@@ -267,7 +267,8 @@ app.use('/preview.html', function(req, res, next) {
   }
 });
 if (!config.debugMode) {
-  var indexJs = fs.readFileSync(htdocs.getJsFile('index.js'), { encoding: 'utf8'});
+  var indexHtml = fs.readFileSync(htdocs.getHtmlFile('index.html'));
+  var indexJs = fs.readFileSync(htdocs.getJsFile('index.js'));
   var gzipIndexJs = zlib.gzipSync(indexJs);
   var GZIP_RE = /\bgzip\b/i;
   app.use('/js/index.js', function(req, res) {
@@ -284,6 +285,14 @@ if (!config.debugMode) {
       res.end(indexJs);
     }
   });
+  var sendIndex = function(req, res) {
+    res.writeHead(200, {
+      'Content-Type': 'text/html; charset=utf-8'
+    });
+    res.end(indexHtml);
+  };
+  app.get('/', sendIndex);
+  app.get('/index.html', sendIndex);
 }
 app.use(express.static(path.join(__dirname, '../htdocs'), {maxAge: 300000}));
 
