@@ -11,6 +11,7 @@ var htdocs = require('../htdocs');
 var handleWeinreReq = require('../../weinre');
 var setProxy = require('./proxy');
 var getRootCAFile = require('../../../lib/https/ca').getRootCAFile;
+var compression = require('compression');
 
 var PARSE_CONF = { extended: true, limit: '3mb'};
 var UPLOAD_PARSE_CONF = { extended: true, limit: '30mb'};
@@ -30,6 +31,8 @@ var PLUGIN_PATH_RE = /^\/(whistle|plugin)\.([^/?#]+)(\/)?/;
 var STATIC_SRC_RE = /\.(?:ico|js|css|png)$/i;
 var proxyEvent, util, config, pluginMgr, uiPortCookie;
 var MAX_AGE = 60 * 60 * 24 * 3;
+var STATIC_MAX_AGE = 365*24*60*60*1000;
+
 
 function doNotCheckLogin(req) {
   var path = req.path;
@@ -114,6 +117,8 @@ function checkAuth(req, res, auth) {
   requireLogin(res);
   return false;
 }
+
+app.use(compression());
 
 app.use(function(req, res, next) {
   proxyEvent.emit('_request', req.url);
@@ -263,7 +268,7 @@ app.use('/preview.html', function(req, res, next) {
     res.set('content-type', 'text/html;charset=' + charset);
   }
 });
-app.use(express.static(path.join(__dirname, '../htdocs'), {maxAge: 300000}));
+app.use(express.static(path.join(__dirname, '../htdocs'), {maxAge: STATIC_MAX_AGE}));
 
 app.get('/', function(req, res) {
   res.sendFile(htdocs.getHtmlFile('index.html'));
