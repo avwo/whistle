@@ -108,6 +108,10 @@ var proxy = startWhistle({
 proxy.on('tunnelRequest', util.noop);
 proxy.on('wsRequest', util.noop);
 proxy.on('_request', util.noop);
+proxy.setUIHost('_');
+proxy.setUIHost();
+proxy.setPluginUIHost('test', '_');
+proxy.setPluginUIHost('whistle.test', '');
 var socksServer = socks.createServer(function(info, accept, deny) {
   var socket, client;
   if (info.dstPort === 443) {
