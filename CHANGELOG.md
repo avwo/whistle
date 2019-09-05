@@ -1,3 +1,7 @@
+# v1.16.7
+1. feat: 插件新增 `options.updateRules()` 用于立即更新通过 `@whistle.xxx/path/to` 引入的规则
+2. feat: 新增方法 `proxy.setUIHost(host)`、`proxy.setPluginUIHost(name, host)` 方便第三方动态设置whistle或其插件ui的域名
+
 # v1.16.6
 1. feat: 支持在插件到 `server` hooks 到 `req.request([uri, ]cb[, opts={host, port, rules}])` 到方式自定义请求目标及设置响应rules
 2. perf: WebUI到js文件开启gzip压缩，减少传输的文件大小，提升页面打开速度
