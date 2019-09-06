@@ -472,7 +472,7 @@ proto.getSelectedList = function() {
   });
 };
 
-proto.setSelectedList = function(startId, endId, selectElem) {
+proto.setSelectedList = function(startId, endId, selectElem, allowMultiSelect) {
   if (!startId || !endId) {
     return;
   }
@@ -483,14 +483,16 @@ proto.setSelectedList = function(startId, endId, selectElem) {
     if (item.id == startId) {
       selected = !selected;
       item.selected = true;
-    } else {
+    } else if (selected || !allowMultiSelect) {
       item.selected = selected;
     }
-
+    selectElem(item, true);
     if (item.id == endId) {
+      if (allowMultiSelect) {
+        return;
+      }
       selected = !selected;
     }
-    selectElem(item);
   }
 };
 

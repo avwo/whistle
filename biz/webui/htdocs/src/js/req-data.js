@@ -322,7 +322,7 @@ var ReqData = React.createClass({
     var self = this;
     var modal = self.props.modal;
     var resetRange = function() {
-      var range = window.getSelection();
+      var range = getSelection();
       if (range) {
         range.removeAllRanges();
         var target = e.target;
@@ -349,31 +349,30 @@ var ReqData = React.createClass({
     }
     var allowMultiSelect = e.ctrlKey || e.metaKey;
     if (hm || !allowMultiSelect) {
+      self.$content.find('tr.w-selected').removeClass('w-selected');
       self.clearSelection();
     }
-    self.$content.find('tr.w-selected').removeClass('w-selected');
     if (hm) {
       item.selected = true;
       self.setSelected(item);
+    } else if (e.shiftKey && (rows = getSelectedRows())) {
+      modal.setSelectedList(rows[0].attr('data-id'),
+          rows[1].attr('data-id'), self.setSelected.bind(self), allowMultiSelect);
     } else {
-      rows;
-      if (e.shiftKey && (rows = getSelectedRows())) {
-        modal.setSelectedList(rows[0].attr('data-id'),
-            rows[1].attr('data-id'), self.setSelected.bind(self));
-      } else {
-        item.selected = !allowMultiSelect || !item.selected;
-        self.setSelected(item);
-      }
+      item.selected = !allowMultiSelect || !item.selected;
+      self.setSelected(item, true);
     }
 
     modal.clearActive();
-    item.active = true;
+    item.active = item.selected;
     hm && util.ensureVisible(this.$content.find('tr[data-id=' + item.id + ']'), self.container);
     events.trigger('networkStateChange');
   },
-  setSelected: function(item) {
+  setSelected: function(item, unselect) {
     if (item.selected) {
       this.$content.find('tr[data-id=' + item.id + ']').addClass('w-selected');
+    } else if (unselect) {
+      this.$content.find('tr[data-id=' + item.id + ']').removeClass('w-selected');
     }
   },
   clearSelection: function() {
