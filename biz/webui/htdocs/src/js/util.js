@@ -370,6 +370,7 @@ exports.ensureVisible = function(elem, container, init) {
 
 exports.parseQueryString = function(str, delimiter, seperator, decode, donotAllowRepeat) {
   var result = {};
+  window.___hasFormData = false;
   if (!str || !(str = (str + '').trim())) {
     return result;
   }
@@ -401,6 +402,7 @@ exports.parseQueryString = function(str, delimiter, seperator, decode, donotAllo
       } else {
         result[key] = value;
       }
+      window.___hasFormData = true;
     }
   });
   return result;

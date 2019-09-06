@@ -6,6 +6,8 @@ var ReactDOM = require('react-dom');
 
 var util = require('./util');
 
+var HIDE = { display: 'none' };
+
 util.addDragEvent('.w-divider', function(target, x, y) {
   target = target.parent();
   var con = target.parent();
@@ -75,7 +77,7 @@ var Divider = React.createClass({
             {leftWidth ? divider : ''}
             {this.props.children[0]}
           </div>
-          <div className={(leftWidth ? 'fill ' : '') + 'w-divider-right orient-vertical-box ' + (this.props.rightClassName || '')}>
+          <div style={this.props.hideRight ? HIDE : undefined} className={(leftWidth ? 'fill ' : '') + 'w-divider-right orient-vertical-box ' + (this.props.rightClassName || '')}>
             {leftWidth ? '' : divider}
             {this.props.children[1]}
           </div>
