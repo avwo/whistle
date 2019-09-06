@@ -266,39 +266,39 @@ app.use('/preview.html', function(req, res, next) {
     res.set('content-type', 'text/html;charset=' + charset);
   }
 });
-if (!config.debugMode) {
-  var indexHtml = fs.readFileSync(htdocs.getHtmlFile('index.html'));
-  var indexJs = fs.readFileSync(htdocs.getJsFile('index.js'));
-  var jsETag = shasum(indexJs);
-  var gzipIndexJs = zlib.gzipSync(indexJs);
-  var GZIP_RE = /\bgzip\b/i;
-  app.use('/js/index.js', function(req, res) {
-    if (req.headers['if-none-match'] === jsETag) {
-      return res.sendStatus(304);
-    }
-    var headers = {
-      'Content-Type': 'application/javascript; charset=utf-8',
-      'Cache-Control': 'public, max-age=300',
-      ETag: jsETag
-    };
-    if (GZIP_RE.test(req.headers['accept-encoding'])) {
-      headers['Content-Encoding'] = 'gzip';
-      res.writeHead(200, headers);
-      res.end(gzipIndexJs);
-    } else {
-      res.writeHead(200, headers);
-      res.end(indexJs);
-    }
-  });
-  var sendIndex = function(req, res) {
-    res.writeHead(200, {
-      'Content-Type': 'text/html; charset=utf-8'
-    });
-    res.end(indexHtml);
+
+var indexHtml = fs.readFileSync(htdocs.getHtmlFile('index.html'));
+var indexJs = fs.readFileSync(htdocs.getJsFile('index.js'));
+var jsETag = shasum(indexJs);
+var gzipIndexJs = zlib.gzipSync(indexJs);
+var GZIP_RE = /\bgzip\b/i;
+app.use('/js/index.js', function(req, res) {
+  if (req.headers['if-none-match'] === jsETag) {
+    return res.sendStatus(304);
+  }
+  var headers = {
+    'Content-Type': 'application/javascript; charset=utf-8',
+    'Cache-Control': 'public, max-age=300',
+    ETag: jsETag
   };
-  app.get('/', sendIndex);
-  app.get('/index.html', sendIndex);
-}
+  if (GZIP_RE.test(req.headers['accept-encoding'])) {
+    headers['Content-Encoding'] = 'gzip';
+    res.writeHead(200, headers);
+    res.end(gzipIndexJs);
+  } else {
+    res.writeHead(200, headers);
+    res.end(indexJs);
+  }
+});
+var sendIndex = function(req, res) {
+  res.writeHead(200, {
+    'Content-Type': 'text/html; charset=utf-8'
+  });
+  res.end(indexHtml);
+};
+app.get('/', sendIndex);
+app.get('/index.html', sendIndex);
+
 app.use(express.static(path.join(__dirname, '../htdocs'), {maxAge: 300000}));
 
 app.get('/', function(req, res) {
