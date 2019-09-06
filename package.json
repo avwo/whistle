@@ -1,5 +1,5 @@
 {
-  "name": "whistle",
+  "name": "whistle2",
   "description": "HTTP, HTTPS, Websocket debugging proxy",
   "version": "1.16.6",
   "dataDirname": ".whistle",
