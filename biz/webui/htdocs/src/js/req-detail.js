@@ -8,7 +8,7 @@ var BtnGroup = require('./btn-group');
 var JSONViewer = require('./json-viewer');
 var Textarea = require('./textarea');
 
-var BTNS = [{name: 'Headers'}, {name: 'WebForms'}, {name: 'TextView'}, {name: 'JSONView'},
+var BTNS = [{name: 'Headers'}, {name: 'WebForms'}, {name: 'TextView', display: 'Body'}, {name: 'JSONView'},
   {name: 'HexView'}, {name: 'Cookies'}, {name: 'Raw'}];
 
 var ReqDetail = React.createClass({

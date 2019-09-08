@@ -25,7 +25,7 @@ var ResDetail = React.createClass({
       btns: [
         {name: 'Headers'},
         {name: 'Preview'},
-        {name: 'TextView'},
+        {name: 'TextView', display: 'Body'},
         {name: 'JSONView'},
         {name: 'HexView'},
         {name: 'Cookies'},
