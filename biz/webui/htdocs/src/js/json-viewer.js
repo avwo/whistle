@@ -160,7 +160,7 @@ var JsonViewer = React.createClass({
               <a className="w-add" onClick={this.showNameInput}
                 href="javascript:;" draggable="false">+Value</a>
               {viewSource ? <a className="w-edit" onClick={this.edit} href="javascript:;" draggable="false">ViewAll</a> : undefined}
-            <a onClick={this.toggle} className="w-properties-btn">{ viewSource ? 'ViewParsed' : 'ViewSource' }</a>
+            <a onClick={this.toggle} className="w-properties-btn">{ viewSource ? 'JSON' : 'Text' }</a>
             <div onMouseDown={this.preventBlur}
               style={{display: state.showNameInput ? 'block' : 'none'}}
               className="shadow w-textarea-input"><input ref="nameInput"
