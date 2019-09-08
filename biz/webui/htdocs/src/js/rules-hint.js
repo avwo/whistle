@@ -32,7 +32,7 @@ for (var a = 'a'.charCodeAt(), z = 'z'.charCodeAt(); a <= z; a++) {
 
 function getHintCgi(plugin) {
   var moduleName = plugin.moduleName;
-  var url = plugin.hintUrl;
+  var url = plugin.hintUrl || '';
   var pluginName = 'plugin.' + moduleName.substring(8);
   if (url.indexOf(moduleName) !== 0 && url.indexOf(pluginName) !== 0) {
     url = pluginName + '/' + url;
@@ -227,7 +227,7 @@ CodeMirror.registerHelper('hint', 'rulesHint', function(editor, options) {
   if (curWord) {
     if (PLUGIN_NAME_RE.test(curWord)) {
       var plugin = dataCenter.getPlugin(RegExp.$2);
-      if (plugin && typeof plugin.hintUrl === 'string') {
+      if (plugin && (typeof plugin.hintUrl === 'string' || plugin.hintList)) {
         var value = RegExp.$3 || '';
         value = value.length === 2 ?  curWord.substring(curWord.indexOf('//') + 2) : '';
         if (value.length > MAX_HINT_LEN) {
@@ -235,6 +235,41 @@ CodeMirror.registerHelper('hint', 'rulesHint', function(editor, options) {
         }
         clearTimeout(hintTimer);
         var protoName = RegExp.$1.slice(0, -1);
+        if (plugin.hintList) {
+          if (value) {
+            value = value.toLowerCase();
+            curHintList = plugin.hintList.filter(function(item) {
+              if (typeof item === 'string') {
+                return item.toLowerCase().indexOf(value) !== -1;
+              }
+              return item.text.toLowerCase().indexOf(value) !== -1 || item.displayText.toLowerCase().indexOf(value) !== -1;
+            });
+          } else {
+            curHintList = plugin.hintList;
+          }
+          if (!curHintList.length) {
+            return;
+          }
+          curHintMap = {};
+          curHintList = curHintList.map(function(item) {
+            var text, displayText;
+            if (typeof item === 'string') {
+              text = protoName + '://' + item;
+            } else {
+              text = protoName + '://' + item.text;
+              displayText = item.displayText;
+            }
+            curHintMap[displayText || text] = getRuleHelp(plugin, item.help);
+            return displayText ? {
+              text: text,
+              displayText: displayText
+            } : text;
+          });
+          curHintPos = plugin.hintPosition;
+          curHintOffset = plugin.hintOffset;
+          curHintProto = protoName;
+          value = curHintValue;
+        }
         if (curHintList && curHintList.length && curHintProto === protoName && value === curHintValue) {
           if (commentIndex !== -1) {
             curLine = curLine.substring(0, commentIndex);
