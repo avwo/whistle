@@ -242,7 +242,7 @@ CodeMirror.registerHelper('hint', 'rulesHint', function(editor, options) {
               if (typeof item === 'string') {
                 return item.toLowerCase().indexOf(value) !== -1;
               }
-              return item.text.toLowerCase().indexOf(value) !== -1 || item.displayText.toLowerCase().indexOf(value) !== -1;
+              return item.text.toLowerCase().indexOf(value) !== -1;
             });
           } else {
             curHintList = plugin.hintList;
@@ -252,21 +252,17 @@ CodeMirror.registerHelper('hint', 'rulesHint', function(editor, options) {
           }
           curHintMap = {};
           curHintList = curHintList.map(function(item) {
-            var text, displayText;
+            var text;
             if (typeof item === 'string') {
               text = protoName + '://' + item;
             } else {
               text = protoName + '://' + item.text;
-              displayText = item.displayText;
             }
-            curHintMap[displayText || text] = getRuleHelp(plugin, item.help);
-            return displayText ? {
-              text: text,
-              displayText: displayText
-            } : text;
+            curHintMap[text] = getRuleHelp(plugin, item.help);
+            return text;
           });
-          curHintPos = plugin.hintPosition;
-          curHintOffset = plugin.hintOffset;
+          curHintPos = '';
+          curHintOffset = 0;
           curHintProto = protoName;
           value = curHintValue;
         }
