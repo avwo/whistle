@@ -43,10 +43,14 @@ exports.setPlugins = function (pluginsState) {
       var name = plugin.name;
       plugins[name] = plugin;
       if (!disabledPlugins[name]) {
-        forwardRules.push(name);
-        pluginRules.push('whistle.' + name, 'plugin.' + name);
-        name += '://';
-        allRules.push(name, 'whistle.' + name);
+        if (!plugin.hideShortProtocol) {
+          forwardRules.push(name);
+          allRules.push(name+ '://');
+        }
+        if (!plugin.hideLongProtocol) {
+          pluginRules.push('whistle.' + name, 'plugin.' + name);
+          allRules.push('whistle.' + name+ '://');
+        }
       }
     });
   }

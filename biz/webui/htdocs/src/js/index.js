@@ -466,7 +466,9 @@ var Index = React.createClass({
         icon: 'checkbox',
         mtime: plugin.mtime,
         homepage: plugin.homepage,
-        latest: plugin.latest
+        latest: plugin.latest,
+        hideLongProtocol: plugin.hideLongProtocol,
+        hideShortProtocol: plugin.hideShortProtocol
       });
     });
     return pluginsOptions;
@@ -993,7 +995,9 @@ var Index = React.createClass({
           var oldPlugin = oldPluginsOptions[i];
           if (plugin.name != oldPlugin.name
             || plugin.latest !== oldPlugin.latest || plugin.mtime != oldPlugin.mtime
-            || (oldDisabledPlugins[plugin.name] != disabledPlugins[plugin.name])) {
+            || (oldDisabledPlugins[plugin.name] != disabledPlugins[plugin.name])
+            || plugin.hideLongProtocol != oldPlugin.hideLongProtocol
+            || plugin.hideShortProtocol != oldPlugin.hideShortProtocol) {
             hasUpdate = true;
             break;
           }

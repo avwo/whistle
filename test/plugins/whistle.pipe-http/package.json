@@ -10,6 +10,8 @@
       },
       "sdfasfasfd"
     ],
+    "hideShortProtocol": true,
+    "hideLongProtocol": true,
     "hintUrl": "/",
     "rulesUrl": "/",
     "valuesUrl": "/"
