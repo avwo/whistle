@@ -125,9 +125,11 @@ var Editor = React.createClass({
     if (isRules) {
       editor.on('keyup', function(_, e) {
         clearTimeout(timer);
-        if (e.keyCode === 8) {
+        var _byDelete = e.keyCode === 8;
+        if (_byDelete || e.keyCode === 13) {
           timer = setTimeout(function() {
             editor._byDelete = true;
+            editor._byEnter = !_byDelete;
             editor.execCommand('autocomplete');
           }, 300);
         }

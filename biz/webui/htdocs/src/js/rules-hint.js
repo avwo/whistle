@@ -159,12 +159,13 @@ function handleRemoteHints(data, editor, plugin, protoName, value, cgi) {
     curHintOffset = parseInt(data.offset, 10) || 0;
     data = data.list;
   }
+  protoName += '://';
   data.forEach(function(item) {
     if (len >= 60) {
       return;
     }
     if (typeof item === 'string') {
-      item = protoName + '://' + item.trim();
+      item = protoName + item.trim();
       if (item.length < MAX_HINT_LEN && !curHintMap[item]) {
         ++len;
         curHintList.push(item);
@@ -179,11 +180,11 @@ function handleRemoteHints(data, editor, plugin, protoName, value, cgi) {
         label = item.display.trim();
       }
       if (typeof item.value === 'string') {
-        value = protoName + '://' + item.value.trim();
+        value = protoName + item.value.trim();
       }
       if (value && value.length < MAX_HINT_LEN && !curHintMap[label || value]) {
         ++len;
-        curHintList.push(label ? {
+        curHintList.push(label && label !== value ? {
           displayText: label,
           text: value
         } : value);
@@ -191,7 +192,9 @@ function handleRemoteHints(data, editor, plugin, protoName, value, cgi) {
       }
     }
   });
-  if (waitingRemoteHints && len) {
+  if (len === 1 && curHintList[0] !== protoName) {
+    curHintList = [];
+  } else if (waitingRemoteHints && len) {
     editor._byPlugin = true;
     editor.execCommand('autocomplete');
   }
@@ -204,7 +207,8 @@ CodeMirror.registerHelper('hint', 'rulesHint', function(editor, options) {
   waitingRemoteHints = false;
   curFocusProto = null;
   var byDelete = editor._byDelete || editor._byPlugin;
-  editor._byDelete = editor._byPlugin = false;
+  var byEnter = editor._byEnter;
+  editor._byDelete = editor._byPlugin = editor._byEnter = false;
   var cur = editor.getCursor();
   var curLine = editor.getLine(cur.line);
   var end = cur.ch, start = end, list;
@@ -230,7 +234,7 @@ CodeMirror.registerHelper('hint', 'rulesHint', function(editor, options) {
       if (plugin && (typeof plugin.hintUrl === 'string' || plugin.hintList)) {
         var value = RegExp.$3 || '';
         value = value.length === 2 ?  curWord.substring(curWord.indexOf('//') + 2) : '';
-        if (value.length > MAX_HINT_LEN) {
+        if (value && (value.length > MAX_HINT_LEN || byEnter)) {
           return;
         }
         clearTimeout(hintTimer);
