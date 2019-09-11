@@ -3,20 +3,18 @@ var rules = require('../lib/rules');
 var util = require('../lib/util');
 var handleUIReq = require('./webui/lib').handleRequest;
 var handleWeinreReq = require('./weinre');
+var config = require('../lib/config');
 
 var HTTP_PROXY_RE = /^x?(?:proxy|http-proxy|http2https-proxy|https2http-proxy|internal-proxy|internal-https-proxy):\/\//;
-var INTERNAL_APP, WEBUI_PATH, PLUGIN_RE, PREVIEW_PATH_RE;
+var WEBUI_PATH = config.WEBUI_PATH;
+var PREVIEW_PATH_RE = config.PREVIEW_PATH_RE;
+var webuiPathRe = util.escapeRegExp(WEBUI_PATH);
+var INTERNAL_APP = new RegExp('^' + webuiPathRe + '(log|weinre|cgi)(?:\\.(\\d{1,5}))?/');
+var PLUGIN_RE = new RegExp('^' + webuiPathRe + 'whistle\\.([a-z\\d_-]+)/');
 
 module.exports = function(req, res, next) {
   var config = this.config;
   var pluginMgr = this.pluginMgr;
-  if (!INTERNAL_APP) {
-    WEBUI_PATH = config.WEBUI_PATH;
-    PREVIEW_PATH_RE = config.PREVIEW_PATH_RE;
-    var webuiPathRe = util.escapeRegExp(WEBUI_PATH);
-    INTERNAL_APP = new RegExp('^' + webuiPathRe + '(log|weinre|cgi)(?:\\.(\\d{1,5}))?/');
-    PLUGIN_RE = new RegExp('^' + webuiPathRe + 'whistle\\.([a-z\\d_-]+)/');
-  }
   var fullUrl = util.getFullUrl(req);
   var host = util.parseHost(req.headers.host);
   var port = host[1] || (req.isHttps ? 443 : 80);
