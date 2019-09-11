@@ -1,3 +1,7 @@
+# v1.16.8
+1. fix: 无法用 `/...whistle-path.5b6af7b9884e1165...///` 内部路径访问插件的 WebSocket 服务问题
+2. perf: 减少轮询接口输出的无用内容
+
 # v1.16.7
 1. feat: 插件新增 `options.updateRules()` 用于立即更新通过 `@whistle.xxx/path/to` 引入的规则
 2. feat: 新增方法 `proxy.setUIHost(host)`、`proxy.setPluginUIHost(name, host)` 方便第三方动态设置whistle或其插件ui的域名
