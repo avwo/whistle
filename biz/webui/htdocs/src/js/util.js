@@ -316,7 +316,11 @@ function getHost(url) {
   return url;
 }
 
-exports.hasBody = function hasBody(res) {
+var HEAD_RE = /^head$/i;
+exports.hasBody = function hasBody(res, req) {
+  if (req && HEAD_RE.test(req.method)) {
+    return false;
+  }
   var statusCode = res.statusCode;
   return !(statusCode == 204 || (statusCode >= 300 && statusCode < 400) ||
     (100 <= statusCode && statusCode <= 199));
