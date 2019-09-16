@@ -1,3 +1,6 @@
+# v1.16.10
+1. refactor: 优化后缀匹配规则 `^.js`，避免匹配域名
+
 # v1.16.9
 1. fix: `head` 请求按规范不允许注入及返回响应内容，详见： https://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.4
 2. feat: 模板字符串支持通过 `${{key}}` 的方式自动 `encodeURIComponent` 内容
