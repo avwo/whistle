@@ -1,6 +1,7 @@
 # v1.16.9
 1. fix: `head` 请求按规范不允许注入及返回响应内容，详见： https://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.4
-2. feat: 模板字符串支持通过 `${{key}}` 的方式自动 `encodeURIComponent` 内容 
+2. feat: 模板字符串支持通过 `${{key}}` 的方式自动 `encodeURIComponent` 内容
+3. feat: 支持通过 `^.xxx` 匹配url文件后缀为 `xxx` 的请求
 
 # v1.16.8
 1. fix: 无法用 `/...whistle-path.5b6af7b9884e1165...///` 内部路径访问插件的 WebSocket 服务问题
