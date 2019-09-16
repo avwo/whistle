@@ -40,6 +40,7 @@ var valuesCtxMenuList = [
   { name: 'Help', sep: true }
 ];
 var NAME_PREFIX = 'listmodal$';
+var JSON_RE = /^\s*(?:[\{｛][\w\W]+[\}｝]|\[[\w\W]+\])\s*$/;
 var curTarget;
 
 function getTarget(e) {
@@ -283,8 +284,15 @@ var List = React.createClass({
     case 'Validate':
       var item = this.currentFocusItem;
       if (item) {
-        if (util.parseRawJson(item.value)) {
-          message.success('Good JSON Object.');
+        if (JSON_RE.test(item.value)) {
+          try {
+            JSON.parse(item.value);
+            message.success('Good JSON Object.');
+          } catch(e) {
+            message.error('Warning: the value of ' + item.name + ' can\`t be parsed into json. ' + e.message);
+          }
+        } else {
+          message.error('Bad JSON Object.');
         }
       }
       break;
