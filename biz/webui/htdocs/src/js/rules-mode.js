@@ -3,6 +3,7 @@ var events = require('./events');
 var protocols = require('./protocols');
 var forwardRules = protocols.getForwardRules();
 var pluginRules = protocols.getPluginRules();
+var DOT_PATTERN_RE = /^\.[\w-]+(?:[?$]|$)/;
 
 events.on('updatePlugins', function() {
   forwardRules = protocols.getForwardRules();
@@ -128,7 +129,7 @@ CodeMirror.defineMode('rules', function() {
   }
 
   function isRegUrl(url) {
-    return /^\^/.test(url);
+    return /^\^/.test(url) || DOT_PATTERN_RE.test(url);
   }
 
   return {
