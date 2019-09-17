@@ -25,17 +25,17 @@
 .w-ctx-menu-list p {
   margin: 0!important;
 }
-.w-ctx-menu-list .w-ctx-menu-list {
+body .w-ctx-menu-list .w-ctx-menu-list {
   margin-left: 3px;
   display: none;
-  top: -1px!important;
+  top: -1px;
   z-index: 100000001;
 }
-.w-ctx-menu-list .w-ctx-menu-gap {
+body .w-ctx-menu-list .w-ctx-menu-gap {
   position: absolute;
   margin-left: -2px;
   height: 35px;
-  top: -1px!important;
+  top: -1px;
   left: 100%;
   width: 6px;
   display: none;

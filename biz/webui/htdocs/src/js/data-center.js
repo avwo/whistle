@@ -360,11 +360,7 @@ exports.values = createCgi({
 
 exports.plugins = createCgi({
   disablePlugin: BASE_URI + 'cgi-bin/plugins/disable-plugin',
-  disableAllPlugins: BASE_URI + 'cgi-bin/plugins/disable-all-plugins',
-  getPlugins: {
-    type: 'get',
-    url: BASE_URI + 'cgi-bin/plugins/get-plugins'
-  }
+  disableAllPlugins: BASE_URI + 'cgi-bin/plugins/disable-all-plugins'
 }, POST_CONF);
 
 exports.rules = createCgi({
@@ -980,4 +976,27 @@ exports.getPlugin = function(name) {
     return;
   }
   return pluginsMap[name];
+};
+
+exports.getPluginsMenu = function() {
+  var list = [];
+  if (disabledAllPlugins || disabledAllRules) {
+    return list;
+  }
+  Object.keys(pluginsMap).forEach(function(name) {
+    var menu = pluginsMap[name].menu;
+    if (!menu) {
+      return;
+    }
+    name = name.slice(0, -1);
+    if (!disabledPlugins[name]) {
+      menu.name = menu.name || name;
+      var action = menu.action;
+      if (action.indexOf('whistle.' + name) && action.indexOf('plugin.' + name )) {
+        menu.action = 'plugin.' + name + '/' + action;
+      }
+      list.push(menu);
+    }
+  });
+  return list;
 };

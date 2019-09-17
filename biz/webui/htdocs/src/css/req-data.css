@@ -56,6 +56,12 @@
   top: -31px!important;
 }
 
+.w-context-menu  li[data-menu-action=Plugins] ul {
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-height: 310px;
+}
+
 .w-context-menu  li[data-menu-action=Modify] ul {
   top: -61px!important;
 }

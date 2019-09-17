@@ -90,6 +90,11 @@ var contextMenuList = [
       { name: 'Compose' }
     ]
   },
+  {
+    name: 'Plugins',
+    globalAction: 'Plugins',
+    list: []
+  },
   { name: 'Share' },
   { name: 'Import' },
   { name: 'Export' },
@@ -449,10 +454,10 @@ var ReqData = React.createClass({
     this.onClick('', item, true);
     events.trigger('networkStateChange');
   },
-  onClickContextMenu: function(action, e) {
+  onClickContextMenu: function(action, e, globalAction) {
     var self = this;
     var item = self.currentFocusItem;
-    switch(action) {
+    switch(globalAction || action) {
     case 'New Tab':
       item && window.open(item.url);
       break;
@@ -572,6 +577,9 @@ var ReqData = React.createClass({
     case 'Help':
       window.open('https://avwo.github.io/whistle/webui/network.html');
       break;
+    case 'Plugins':
+      alert(action);
+      break;
     }
   },
   onContextMenu: function(e) {
@@ -683,13 +691,21 @@ var ReqData = React.createClass({
       list5[1].disabled = true;
       list5[2].disabled = true;
     }
-    
-    var uploadItem = contextMenuList[6];
+    var pluginsItem = contextMenuList[6];
+    var pluginsList = pluginsItem.list = dataCenter.getPluginsMenu();
+    var pluginsCount = pluginsList.length;
+    if (pluginsCount) {
+      var top = pluginsCount - 4;
+      pluginsItem.top = top > 0 ? Math.min(6, top) : undefined;
+    } else {
+      pluginsItem.hide = true;
+    }
+    var uploadItem = contextMenuList[7];
     uploadItem.hide = !getUploadSessionsFn();
-    contextMenuList[8].disabled = uploadItem.disabled = disabled && !selectedCount;
-    var data = util.getMenuPosition(e, 110, uploadItem.hide ? 280 : 310);
+    contextMenuList[9].disabled = uploadItem.disabled = disabled && !selectedCount;
+    var data = util.getMenuPosition(e, 110, (uploadItem.hide ? 310 : 340) - (pluginsCount ? 0 : 30));
     data.list = contextMenuList;
-    data.className = data.marginRight < 260 ? 'w-ctx-menu-left' : '';
+    data.className = data.marginRight < 360 ? 'w-ctx-menu-left' : '';
     this.refs.contextMenu.show(data);
   },
   onFilterChange: function(keyword) {
