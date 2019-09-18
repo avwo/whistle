@@ -984,19 +984,23 @@ exports.getPluginsMenu = function() {
     return list;
   }
   Object.keys(pluginsMap).forEach(function(name) {
-    var menu = pluginsMap[name].menu;
-    if (!menu) {
-      return;
-    }
-    name = name.slice(0, -1);
-    if (!disabledPlugins[name]) {
-      menu.name = menu.name || name;
-      var action = menu.action;
-      if (action.indexOf('whistle.' + name) && action.indexOf('plugin.' + name )) {
-        menu.action = 'plugin.' + name + '/' + action;
+    var plugin = pluginsMap[name];
+    var menus = plugin.menus;
+    if (menus) {
+      name = name.slice(0, -1);
+      if (!disabledPlugins[name]) {
+        menus.forEach(function(menu) {
+          menu.title = name + ' extension menu';
+          menu.mtime = plugin.mtime;
+          list.push(menu);
+        });
       }
-      list.push(menu);
     }
   });
-  return list;
+  return list.length > 1 ? list.sort(function(prev, next) {
+    if (prev.mtime === next.mtime) {
+      return 0;
+    }
+    return prev.mtime > next.mtime ? 1 : -1;
+  }) : list;
 };

@@ -91,8 +91,8 @@ var contextMenuList = [
     ]
   },
   {
-    name: 'Plugins',
-    globalAction: 'Plugins',
+    name: 'Others',
+    action: 'Plugins',
     list: []
   },
   { name: 'Share' },
@@ -454,10 +454,10 @@ var ReqData = React.createClass({
     this.onClick('', item, true);
     events.trigger('networkStateChange');
   },
-  onClickContextMenu: function(action, e, globalAction) {
+  onClickContextMenu: function(action, e, parentAction) {
     var self = this;
     var item = self.currentFocusItem;
-    switch(globalAction || action) {
+    switch(parentAction || action) {
     case 'New Tab':
       item && window.open(item.url);
       break;
@@ -695,6 +695,7 @@ var ReqData = React.createClass({
     var pluginsList = pluginsItem.list = dataCenter.getPluginsMenu();
     var pluginsCount = pluginsList.length;
     if (pluginsCount) {
+      pluginsItem.hide = false;
       var top = pluginsCount - 4;
       pluginsItem.top = top > 0 ? Math.min(6, top) : undefined;
     } else {

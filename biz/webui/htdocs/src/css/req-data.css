@@ -62,6 +62,12 @@
   max-height: 310px;
 }
 
+.w-context-menu  li[data-menu-action=Plugins] li {
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .w-context-menu  li[data-menu-action=Modify] ul {
   top: -61px!important;
 }

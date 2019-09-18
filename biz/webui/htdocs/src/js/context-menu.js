@@ -45,7 +45,7 @@ var ContextMenu = React.createClass({
     }
     this.hide();
     if (this.props.onClick) {
-      this.props.onClick(target.attr('data-menu-action'), e, target.attr('data-global-action'));
+      this.props.onClick(target.attr('data-menu-action'), e, target.attr('data-parent-action'));
     }
   },
   getDialogElement: function() {
@@ -76,7 +76,7 @@ var ContextMenu = React.createClass({
                     <ul className="w-ctx-menu-list" style={{ top: item.top > 0 ? -item.top * 30 - 1 : undefined }}>
                       {subList.map(function(subItem, i) {
                         return (
-                          <li data-global-action={item.globalAction} data-menu-action={subItem.action || subItem.name} key={i}
+                          <li title={subItem.title} data-parent-action={item.action} data-menu-action={subItem.action || subItem.name} key={i}
                             className={'w-ctx-menu-item ' + (subItem.sep ? 'w-ctx-item-sep' : '')
                             + (subItem.disabled ? ' w-ctx-item-disabled' : '')
                             + (subItem.copyText ? ' w-copy-text' : '')}
