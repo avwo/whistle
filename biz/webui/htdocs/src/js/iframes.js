@@ -89,6 +89,7 @@ exports.fork = function(page, options) {
   var iframe = document.createElement('iframe');
   iframe.style.display = 'none';
   cache[page] = item = {
+    page: page,
     list: [options],
     mtime: Date.now(),
     iframe: iframe
