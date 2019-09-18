@@ -10,6 +10,7 @@ var FilterInput = require('./filter-input');
 var Spinner = require('./spinner');
 var ContextMenu = require('./context-menu');
 var events = require('./events');
+var iframes = require('./iframes');
 var dataCenter = require('./data-center');
 
 var HEIGHT = 24;
@@ -454,7 +455,7 @@ var ReqData = React.createClass({
     this.onClick('', item, true);
     events.trigger('networkStateChange');
   },
-  onClickContextMenu: function(action, e, parentAction) {
+  onClickContextMenu: function(action, e, parentAction, name) {
     var self = this;
     var item = self.currentFocusItem;
     switch(parentAction || action) {
@@ -578,7 +579,11 @@ var ReqData = React.createClass({
       window.open('https://avwo.github.io/whistle/webui/network.html');
       break;
     case 'Plugins':
-      alert(action);
+      iframes.fork(action, {
+        name: name,
+        active: item,
+        selectedList: self.props.modal.getSelectedList()
+      });
       break;
     }
   },

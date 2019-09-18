@@ -33,6 +33,8 @@ var PLUGIN_PATH_RE = /^\/(whistle|plugin)\.([^/?#]+)(\/)?/;
 var STATIC_SRC_RE = /\.(?:ico|js|css|png)$/i;
 var proxyEvent, util, pluginMgr, uiPortCookie;
 var MAX_AGE = 60 * 60 * 24 * 3;
+var MENU_HTML = fs.readFileSync(path.join(__dirname, '../../../assets/menu.html'));
+var MENU_URL = '???_WHISTLE_PLUGIN_EXT_CONTEXT_MENU_???';
 
 function doNotCheckLogin(req) {
   var path = req.path;
@@ -196,6 +198,24 @@ app.all(PLUGIN_PATH_RE, function(req, res, next) {
     : pluginMgr.getPluginByName(name);
   if (!plugin) {
     return res.status(404).send('Not Found');
+  }
+  if (req.url.indexOf(MENU_URL) !== -1) {
+    res.write(MENU_HTML);
+    var index = req.path.indexOf('/', 1);
+    if (index === -1) {
+      res.end();
+    } else {
+      var filepath = req.path.substring(index + 1);
+      var reader = fs.createReadStream(path.join(plugin.path, filepath));
+      reader.on('error', function() {
+        if (reader) {
+          reader = null;
+          res.end();
+        }
+      });
+      reader.pipe(res);
+    }
+    return;
   }
   if (!slash) {
     return res.redirect(type + '.' + name + '/');

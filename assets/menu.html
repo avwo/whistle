@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<script>
+  ;(function() {
+    var list = [];
+    var callbacks = [];
+    var handleOnLoad = function() {
+      timer = null;
+      list.forEach(emit);
+      list = null;
+    };
+    var timer = setTimeout(handleOnLoad, 12000);
+
+    function emit(options) {
+      callbacks.forEach(function(fn) {
+        try {
+          fn(options)
+        } catch (e) {}
+      });
+    }
+    window.onWhistleContextMenuClick = function(options) {
+      if (list) {
+        list.push(options);
+      } else {
+        emit();
+      }
+    };
+    var delayOnLoad = function() {
+      if (timer) {
+        setTimeout(handleOnLoad, 100);
+        clearTimeout(timer);
+        timer = null;
+      }
+    };
+    window.onload = delayOnLoad;
+    try {
+      window.addEventListener('load', delayOnLoad);
+    } catch (e) {}
+    window.addWhistleContextMenuClickListener = function(l) {
+      if (typeof l === 'function' && callbacks.indexOf(l) === -1) {
+        callbacks.push(l);
+      }
+    };
+    window.removeWhistleContextMenuClickListener = function(l) {
+      l = callbacks.indexOf(l);
+      if (l !== -1) {
+        callbacks.splice(l, 1);
+      }
+    };
+    window.removeAllWhistleContextMenuClickListeners = function() {
+      callbacks = [];
+    };
+    try {
+      window.parent.onPluginContextMenuReady(window);
+    } catch (e) {}
+  })();
+</script>
