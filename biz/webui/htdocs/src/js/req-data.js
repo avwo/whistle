@@ -696,8 +696,21 @@ var ReqData = React.createClass({
     var pluginsCount = pluginsList.length;
     if (pluginsCount) {
       pluginsItem.hide = false;
+      var disabledOthers = disabled;
+      for (var j = 0; j < pluginsCount; j++) {
+        var plugin = pluginsList[j];
+        if (plugin.required) {
+          plugin.disabled = disabled;
+          if (!disabled) {
+            disabledOthers = false;
+          }
+        } else {
+          disabledOthers =  plugin.disabled = false;
+        }
+      }
       var top = pluginsCount - 4;
       pluginsItem.top = top > 0 ? Math.min(6, top) : undefined;
+      pluginsItem.disabled = disabledOthers;
     } else {
       pluginsItem.hide = true;
     }
