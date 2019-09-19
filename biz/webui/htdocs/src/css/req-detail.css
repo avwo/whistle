@@ -27,3 +27,28 @@
 .w-detail-webforms-title {
   line-height: 16px!important;
 }
+.w-detail-inspectors-url {
+  white-space: nowrap;
+  border-bottom: 1px solid #ccc;
+  height: 24px;
+  font-size: 12px;
+  overflow: hidden;
+}
+.w-detail-inspectors-url label {
+  line-height: 18px;
+  padding: 3px 8px;
+  font-weight: normal!important;
+  width: 68px;
+  background: #e1e3e6;
+  display: inline-block;
+  text-align: right;
+}
+.w-detail-inspectors-url div {
+  padding: 3px 8px;
+  line-height: 18px;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.w-detail-inspectors-url div::-webkit-scrollbar{ width:1px; height:1px; }
+.w-detail-inspectors-url div::-webkit-scrollbar-button{ width:1px;height:1px; }

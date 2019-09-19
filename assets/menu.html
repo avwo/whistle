@@ -1,7 +1,7 @@
 <script>
   ;(function() {
     var list = [];
-    var callbacks = [];
+    var listeners = [];
     var handleOnLoad = function() {
       timer = null;
       list.forEach(emit);
@@ -10,7 +10,7 @@
     var timer = setTimeout(handleOnLoad, 12000);
 
     function emit(options) {
-      callbacks.forEach(function(fn) {
+      listeners.forEach(function(fn) {
         try {
           fn(options)
         } catch (e) {
@@ -42,18 +42,18 @@
       modal: modal,
       toast: toast,
       addNetworkListener: function(l) {
-        if (typeof l === 'function' && callbacks.indexOf(l) === -1) {
-          callbacks.push(l);
+        if (typeof l === 'function' && listeners.indexOf(l) === -1) {
+          listeners.push(l);
         }
       },
       removeNetworkListener: function(l) {
-        l = callbacks.indexOf(l);
+        l = listeners.indexOf(l);
         if (l !== -1) {
-          callbacks.splice(l, 1);
+          listeners.splice(l, 1);
         }
       },
       removeAllNetworkListeners: function() {
-        callbacks = [];
+        listeners = [];
       },
       request: function() {
 
