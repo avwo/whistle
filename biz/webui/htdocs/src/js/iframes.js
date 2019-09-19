@@ -5,6 +5,7 @@ var cache = {};
 var message = require('./message');
 var createCgi = require('./cgi').createCgi;
 var util = require('./util');
+var modal = require('./modal');
 
 function destroy(item) {
   try {
@@ -61,7 +62,9 @@ function onPluginContextMenuReady(win) {
       },
       createRequest: function(options) {
         return createCgi(compatAjax(options));
-      }
+      },
+      showModal: modal.show,
+      createModal: modal.create
     });
   } catch (e) {}
   item.list.forEach(emit);
