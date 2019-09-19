@@ -14,7 +14,7 @@ var Dialog = React.createClass({
     if (typeof this.props.customRef === 'function') {
       this.props.customRef(this);
     }
-    if (typeof this.props.onDialogClose === 'function') {
+    if (typeof this.props.onClose === 'function') {
       this.container.on('hidden.bs.modal', this.props.onClose);
     }
   },

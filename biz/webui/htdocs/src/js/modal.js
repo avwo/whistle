@@ -65,11 +65,11 @@ exports.create = function(options) {
       dialog && dialog.destroy();
       dialog = null;
     }
-    if (typeof onClose === 'function') {
-      onClose.call(options);
-    }
     if (typeof __onClose === 'function') {
       __onClose();
+    }
+    if (typeof onClose === 'function') {
+      onClose.call(options);
     }
   };
   createModal(options, function(d) {
@@ -87,7 +87,13 @@ exports.create = function(options) {
     },
     hide: function(destroy) {
       destroyed = destroy;
-      dialog && dialog.hide();
+      if (dialog) {
+        if (dialog.container.is(':visible')) {
+          dialog.hide();
+        } else if (destroyed) {
+          dialog.destroy();
+        }
+      }
     },
     destroy: function() {
       dialog && dialog.destroy();
