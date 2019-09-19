@@ -1,10 +1,11 @@
 var $ = require('jquery');
-var createCgi = require('./cgi');
+var createCgiObj = require('./cgi');
 var util = require('./util');
 var NetworkModal = require('./network-modal');
 var storage = require('./storage');
 var events = require('./events');
 
+var createCgi = createCgiObj.createCgi;
 var MAX_INCLUDE_LEN = 5120;
 var MAX_EXCLUDE_LEN = 5120;
 var MAX_FRAMES_LENGTH = exports.MAX_FRAMES_LENGTH = 80;
@@ -321,27 +322,27 @@ var POST_CONF = $.extend({
 var GET_CONF = $.extend({
   cache: false
 }, DEFAULT_CONF);
-var cgi = createCgi({
+var cgi = createCgiObj({
   getData: BASE_URI + 'cgi-bin/get-data',
   getInitaial: BASE_URI + 'cgi-bin/init'
 }, GET_CONF);
 
 exports.createCgi = function(url, cancel) {
-  return createCgi($.extend({
-    _______: BASE_URI + url,
+  return createCgi({
+    url: BASE_URI + url,
     mode: cancel ? 'cancel' : null
-  }, GET_CONF))._______;
+  }, GET_CONF);
 };
 
 function toLowerCase(str) {
   return String(str == null ? '' : str).trim().toLowerCase();
 }
 
-exports.getCustomCertsInfo = createCgi({
+exports.getCustomCertsInfo = createCgiObj({
   getCustomCertsInfo: BASE_URI + 'cgi-bin/get-custom-certs-info'
 }, GET_CONF).getCustomCertsInfo;
 
-exports.values = createCgi({
+exports.values = createCgiObj({
   moveTo: {
     mode: 'chain',
     url: BASE_URI + 'cgi-bin/values/move-to'
@@ -358,12 +359,12 @@ exports.values = createCgi({
   removeFile: BASE_URI + 'cgi-bin/values/remove-file'
 }, POST_CONF);
 
-exports.plugins = createCgi({
+exports.plugins = createCgiObj({
   disablePlugin: BASE_URI + 'cgi-bin/plugins/disable-plugin',
   disableAllPlugins: BASE_URI + 'cgi-bin/plugins/disable-all-plugins'
 }, POST_CONF);
 
-exports.rules = createCgi({
+exports.rules = createCgiObj({
   disableAllRules: BASE_URI + 'cgi-bin/rules/disable-all-rules',
   moveTo: {
     mode: 'chain',
@@ -393,23 +394,23 @@ exports.rules = createCgi({
   getSysHosts: BASE_URI + 'cgi-bin/rules/get-sys-hosts'
 }, POST_CONF);
 
-exports.log = createCgi({
+exports.log = createCgiObj({
   set: BASE_URI + 'cgi-bin/log/set'
 }, POST_CONF);
 
-$.extend(exports, createCgi({
+$.extend(exports, createCgiObj({
   composer: BASE_URI + 'cgi-bin/composer',
   interceptHttpsConnects: BASE_URI + 'cgi-bin/intercept-https-connects',
   abort: BASE_URI + 'cgi-bin/abort'
 }, POST_CONF));
-$.extend(exports, createCgi({
+$.extend(exports, createCgiObj({
   donotShowAgain: BASE_URI + 'cgi-bin/do-not-show-again',
   checkUpdate: BASE_URI + 'cgi-bin/check-update',
   importRemote: BASE_URI + 'cgi-bin/import-remote',
   getHistory: BASE_URI + 'cgi-bin/history'
 }, GET_CONF));
 
-exports.socket = $.extend(createCgi({
+exports.socket = $.extend(createCgiObj({
   changeStatus: {
     mode: 'cancel',
     url: BASE_URI + 'cgi-bin/socket/change-status'
@@ -445,7 +446,7 @@ exports.getInitialData = function (callback) {
         if (data.lastDataId) {
           lastRowId = data.lastDataId;
         }
-        exports.upload = createCgi({
+        exports.upload = createCgiObj({
           importSessions: BASE_URI + 'cgi-bin/sessions/import?clientId=' + data.clientId,
           importRules: BASE_URI + 'cgi-bin/rules/import?clientId=' + data.clientId,
           importValues: BASE_URI + 'cgi-bin/values/import?clientId=' + data.clientId

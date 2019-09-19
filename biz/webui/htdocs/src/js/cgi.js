@@ -61,3 +61,4 @@ function create(obj, settings) {
 }
 
 module.exports = create;
+module.exports.createCgi = createCgi;
