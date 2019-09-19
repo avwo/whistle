@@ -54,12 +54,6 @@
       },
       removeAllNetworkListeners: function() {
         listeners = [];
-      },
-      request: function() {
-
-      },
-      createRequest: function() {
-
       }
     };
     try {
@@ -68,6 +62,8 @@
         Object.keys(options.msgBox).forEach(function(name) {
           toast[name] = options.msgBox[name];
         });
+        window.whistleBridge.request = options.request;
+        window.whistleBridge.createRequest = options.createRequest;
       };
       window.parent.onPluginContextMenuReady(window);
     } catch (e) {}

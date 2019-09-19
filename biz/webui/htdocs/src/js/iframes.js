@@ -3,6 +3,7 @@ var MAX_CACHE_TIME = 1000 * 60 * 3;
 var TIMEOUT = 1000 * 60;
 var cache = {};
 var message = require('./message');
+var createCgi = require('./cgi').createCgi;
 var util = require('./util');
 
 function destroy(item) {
@@ -32,6 +33,13 @@ function getItem(win) {
   } catch (e) {}
 }
 
+function compatAjax(options) {
+  if (typeof options !== 'string') {
+    options.type = options.type || options.method;
+  }
+  return options;
+}
+
 function onPluginContextMenuReady(win) {
   var item = getItem(win);
   if (!item || item.emit) {
@@ -46,7 +54,14 @@ function onPluginContextMenuReady(win) {
   }
   try {
     win.initWhistleBridge({
-      msgBox: message
+      msgBox: message,
+      request: function(options, cb) {
+        var request = createCgi(compatAjax(options));
+        return request(options.data, cb);
+      },
+      createRequest: function(options) {
+        return createCgi(compatAjax(options));
+      }
     });
   } catch (e) {}
   item.list.forEach(emit);
