@@ -4,6 +4,7 @@ var TIMEOUT = 1000 * 60;
 var cache = {};
 var message = require('./message');
 var createCgi = require('./cgi').createCgi;
+var dataCenter = require('./data-center');
 var util = require('./util');
 var modal = require('./modal');
 
@@ -63,6 +64,7 @@ function onPluginContextMenuReady(win) {
   }
   try {
     win.initWhistleBridge({
+      importSessions: dataCenter.importAnySessions,
       msgBox: message,
       request: function(options, cb) {
         var request = createCgi(compatAjax(options));

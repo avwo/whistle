@@ -980,7 +980,7 @@ var Index = React.createClass({
     }, 10000);
 
     dataCenter.getLogIdList = this.getLogIdListFromRules;
-
+    dataCenter.importAnySessions = self.importAnySessions;
     dataCenter.on('plugins', function(data) {
       var pluginsOptions = self.createPluginsOptions(data.plugins);
       var oldPluginsOptions = self.state.pluginsOptions;
