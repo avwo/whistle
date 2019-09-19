@@ -21,6 +21,12 @@ var SyncDialog = React.createClass({
     var self = this;
     self.rulesModal = rulesModal;
     self.valuesModal = valuesModal;
+    if (!util.isString(options.rulesUrl)) {
+      options.rulesUrl = null;
+    }
+    if (!util.isString(options.valuesUrl)) {
+      options.valuesUrl = null;
+    }
     self.setState(options, function() {
       self.refs.syncDialog.show();
     });
