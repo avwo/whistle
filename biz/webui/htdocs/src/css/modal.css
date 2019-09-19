@@ -6,6 +6,7 @@
 .w-dialog-for-plguin .modal-header {
   padding: 5px 10px;
   position: relative;
+  display: none;
 }
 
 .w-dialog-for-plguin .modal-header button {

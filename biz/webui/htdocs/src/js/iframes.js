@@ -8,17 +8,19 @@ var dataCenter = require('./data-center');
 var util = require('./util');
 var modal = require('./modal');
 
+var latestItem;
+
 function destroy(item) {
+  if (item === latestItem) {
+    return;
+  }
   try {
     document.body.removeChild(item.iframe);
     item.destroyed = true;
     item.dialogs.forEach(function(dialog) {
-      if (!item.shownDialog || item.shownDialog !== dialog) {
-        dialog.destroy();
-      }
+      dialog.hide(true);
     });
     item.dialogs = [];
-    item.shownDialog = null;
     delete cache[item.page];
   } catch(e) {}
 }
@@ -75,20 +77,8 @@ function onPluginContextMenuReady(win) {
       },
       showModal: modal.show,
       createModal: function(options) {
-        options.__onClose = function() {
-          if (item.shownDialog === dialog) {
-            item.shownDialog = null;
-          }
-          item.destroyed && dialog.destroy();
-        };
         var dialog = modal.create(options);
-        var show = dialog.show;
         var hide = dialog.hide;
-        dialog.show = function(options) {
-          item.shownDialog = dialog;
-          show(options);
-        };
-
         dialog.hide = function(_destroy) {
           if (_destroy) {
             var index = item.dialogs.indexOf(dialog);
@@ -128,7 +118,7 @@ exports.fork = function(page, options) {
     options = JSON.parse(JSON.stringify(options));
   } catch (e) {}
   page += '???_WHISTLE_PLUGIN_EXT_CONTEXT_MENU_???';
-  var item = cache[page];
+  var item = latestItem = cache[page];
   if (item) {
     item.mtime = Date.now();
     if (item.emit) {
@@ -146,7 +136,7 @@ exports.fork = function(page, options) {
   window.onPluginContextMenuReady = onPluginContextMenuReady;
   var iframe = document.createElement('iframe');
   iframe.style.display = 'none';
-  cache[page] = item = {
+  cache[page] = latestItem = item = {
     page: page,
     list: [options],
     mtime: Date.now(),

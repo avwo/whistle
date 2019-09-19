@@ -59,14 +59,10 @@ exports.show = function(options) {
 exports.create = function(options) {
   var destroyed, dialog;
   var onClose = options.onClose;
-  var __onClose = options.__onClose;
   options.onClose = function() {
     if (destroyed) {
       dialog && dialog.destroy();
       dialog = null;
-    }
-    if (typeof __onClose === 'function') {
-      __onClose();
     }
     if (typeof onClose === 'function') {
       onClose.call(options);
@@ -94,9 +90,6 @@ exports.create = function(options) {
           dialog.destroy();
         }
       }
-    },
-    destroy: function() {
-      dialog && dialog.destroy();
     }
   };
 };
