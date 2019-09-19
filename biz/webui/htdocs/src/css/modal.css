@@ -1,0 +1,15 @@
+.w-dialog-for-plguin .modal-header h4 {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.w-dialog-for-plguin .modal-header {
+  padding: 5px 10px;
+  position: relative;
+}
+
+.w-dialog-for-plguin .modal-header button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}

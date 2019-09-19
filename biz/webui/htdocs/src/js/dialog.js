@@ -30,10 +30,6 @@ var Dialog = React.createClass({
       style = style || {};
       style.width = props.width;
     }
-    if (props.height > 0) {
-      style = style || {};
-      style.height = props.height;
-    }
     return (
         <div style={style} className={'modal-dialog' + (className ? ' ' + className : '')}>
             <div className="modal-content">

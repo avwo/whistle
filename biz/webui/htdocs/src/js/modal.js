@@ -1,17 +1,20 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Dialog = require('./dialog');
+require('../css/modal.css');
 
 function createModal(options, callback) {
   var container = document.createElement('div');
   document.body.appendChild(container);
-  ReactDOM.render((<Dialog customRef={function(d) {
-    document.body.removeChild(container);
-    callback(d);
-  }} onClose={options.onClose}>
+  ReactDOM.render((<Dialog width={options.width} height={options.height}
+    wclassName="w-dialog-for-plguin"
+    customRef={function(d) {
+      document.body.removeChild(container);
+      callback(d);
+    }} onClose={options.onClose}>
     <div className="modal-header">
-    <h4>asfasfsadf</h4>
-    <button type="button" className="close" data-dismiss="modal">
+      <h4>asfasfsadf</h4>
+      <button type="button" className="close" data-dismiss="modal">
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
