@@ -2,6 +2,7 @@ var MAX_COUNT = 5;
 var MAX_CACHE_TIME = 1000 * 60 * 3;
 var TIMEOUT = 1000 * 60;
 var cache = {};
+var message = require('./message');
 var util = require('./util');
 
 function destroy(item) {
@@ -43,6 +44,11 @@ function onPluginContextMenuReady(win) {
       }
     } catch (e) {}
   }
+  try {
+    win.initWhistleBridge({
+      msgBox: message
+    });
+  } catch (e) {}
   item.list.forEach(emit);
   item.emit = emit;
   item.list = null;

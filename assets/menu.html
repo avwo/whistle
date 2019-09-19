@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <script>
   ;(function() {
     var list = [];
@@ -14,7 +13,9 @@
       callbacks.forEach(function(fn) {
         try {
           fn(options)
-        } catch (e) {}
+        } catch (e) {
+          console.error(e);
+        }
       });
     }
     window.onWhistleContextMenuClick = function(options) {
@@ -35,21 +36,39 @@
     try {
       window.addEventListener('load', delayOnLoad);
     } catch (e) {}
-    window.addWhistleContextMenuClickListener = function(l) {
-      if (typeof l === 'function' && callbacks.indexOf(l) === -1) {
-        callbacks.push(l);
+    var toast = {};
+    var modal = {};
+    window.whistleBridge = {
+      modal: modal,
+      toast: toast,
+      addNetworkListener: function(l) {
+        if (typeof l === 'function' && callbacks.indexOf(l) === -1) {
+          callbacks.push(l);
+        }
+      },
+      removeNetworkListener: function(l) {
+        l = callbacks.indexOf(l);
+        if (l !== -1) {
+          callbacks.splice(l, 1);
+        }
+      },
+      removeAllNetworkListeners: function() {
+        callbacks = [];
+      },
+      request: function() {
+
+      },
+      createRequest: function() {
+
       }
-    };
-    window.removeWhistleContextMenuClickListener = function(l) {
-      l = callbacks.indexOf(l);
-      if (l !== -1) {
-        callbacks.splice(l, 1);
-      }
-    };
-    window.removeAllWhistleContextMenuClickListeners = function() {
-      callbacks = [];
     };
     try {
+      window.initWhistleBridge = function(options) {
+        window.initWhistleBridge = function() {};
+        Object.keys(options.msgBox).forEach(function(name) {
+          toast[name] = options.msgBox[name];
+        });
+      };
       window.parent.onPluginContextMenuReady(window);
     } catch (e) {}
   })();
