@@ -10,6 +10,14 @@ var modal = require('./modal');
 function destroy(item) {
   try {
     document.body.removeChild(item.iframe);
+    item.destroyed = true;
+    item.dialogs.forEach(function(dialog) {
+      if (!item.shownDialog || item.shownDialog !== dialog) {
+        dialog.destroy();
+      }
+    });
+    item.dialogs = [];
+    item.shownDialog = null;
     delete cache[item.page];
   } catch(e) {}
 }
@@ -64,7 +72,31 @@ function onPluginContextMenuReady(win) {
         return createCgi(compatAjax(options));
       },
       showModal: modal.show,
-      createModal: modal.create
+      createModal: function(options) {
+        options.__onClose = function() {
+          if (item.shownDialog === dialog) {
+            item.shownDialog = null;
+          }
+          item.destroyed && dialog.destroy();
+        };
+        var dialog = modal.create(options);
+        var show = dialog.show;
+        var hide = dialog.hide;
+        dialog.show = function(options) {
+          item.shownDialog = dialog;
+          show(options);
+        };
+
+        dialog.hide = function(_destroy) {
+          if (_destroy) {
+            var index = item.dialogs.indexOf(dialog);
+            index !== -1 && item.dialogs.splice(index, 1);
+          }
+          hide(_destroy);
+        };
+        item.dialogs.push(dialog);
+        return dialog;
+      }
     });
   } catch (e) {}
   item.list.forEach(emit);
@@ -116,7 +148,8 @@ exports.fork = function(page, options) {
     page: page,
     list: [options],
     mtime: Date.now(),
-    iframe: iframe
+    iframe: iframe,
+    dialogs: []
   };
   document.body.appendChild(iframe);
   iframe.src = page;

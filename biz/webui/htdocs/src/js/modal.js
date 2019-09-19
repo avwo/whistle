@@ -10,10 +10,11 @@ function createModal(options, callback) {
     wclassName="w-dialog-for-plguin"
     customRef={function(d) {
       document.body.removeChild(container);
+      initModal(d, options);
       callback(d);
     }} onClose={options.onClose}>
     <div className="modal-header">
-      <h4>asfasfsadf</h4>
+      <h4></h4>
       <button type="button" className="close" data-dismiss="modal">
         <span aria-hidden="true">&times;</span>
       </button>
@@ -23,6 +24,10 @@ function createModal(options, callback) {
       <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
     </div>
   </Dialog>), container);
+}
+
+function initModal(dialog, options) {
+
 }
 
 exports.show = function(options) {
@@ -54,6 +59,7 @@ exports.show = function(options) {
 exports.create = function(options) {
   var destroyed, dialog;
   var onClose = options.onClose;
+  var __onClose = options.__onClose;
   options.onClose = function() {
     if (destroyed) {
       dialog && dialog.destroy();
@@ -61,6 +67,9 @@ exports.create = function(options) {
     }
     if (typeof onClose === 'function') {
       onClose.call(options);
+    }
+    if (typeof __onClose === 'function') {
+      __onClose();
     }
   };
   createModal(options, function(d) {
@@ -70,15 +79,18 @@ exports.create = function(options) {
     }
   });
   return {
-    show: function(html) {
-      if (!dialog) {
-        return;
+    show: function(options) {
+      if (dialog) {
+        dialog.show();
+        initModal(dialog, options);
       }
-      dialog.show();
     },
     hide: function(destroy) {
       destroyed = destroy;
       dialog && dialog.hide();
+    },
+    destroy: function() {
+      dialog && dialog.destroy();
     }
   };
 };
