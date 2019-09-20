@@ -234,7 +234,8 @@ var Row = React.createClass({
                 var name = col.name;
                 var className = col.className;
                 if (col.lazy && !item.hide) {
-                  var title, text;
+                  var title = '-';
+                  var text = '-';
                   if (index >= startIndex && index <= endIndex) {
                     if (name === 'path') {
                       title = item.url;
