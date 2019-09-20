@@ -11,6 +11,7 @@ var FilterInput = require('./filter-input');
 var ContextMenu = require('./context-menu');
 var dataCenter = require('./data-center');
 var events = require('./events');
+var iframes = require('./iframes');
 
 var rulesCtxMenuList = [
   { name: 'Copy' },
@@ -20,6 +21,11 @@ var rulesCtxMenuList = [
   { name: 'Delete' },
   { name: 'Export' },
   { name: 'Import' },
+  {
+    name: 'Others',
+    action: 'Plugins',
+    list: []
+  },
   { name: 'Help', sep: true }
 ];
 var valuesCtxMenuList = [
@@ -37,6 +43,11 @@ var valuesCtxMenuList = [
   },
   { name: 'Export' },
   { name: 'Import' },
+  {
+    name: 'Others',
+    action: 'Plugins',
+    list: []
+  },
   { name: 'Help', sep: true }
 ];
 var NAME_PREFIX = 'listmodal$';
@@ -260,9 +271,9 @@ var List = React.createClass({
       }
     }
   },
-  onClickContextMenu: function(action, e) {
+  onClickContextMenu: function(action, e, parentAction, menuName) {
     var name = this.props.name === 'rules' ? 'Rules' : 'Values';
-    switch(action) {
+    switch(parentAction || action) {
     case 'Save':
       events.trigger('save' + name, this.currentFocusItem);
       break;
@@ -302,6 +313,16 @@ var List = React.createClass({
     case 'Help':
       window.open('https://avwo.github.io/whistle/webui/' + (this.props.name || 'values') + '.html');
       break;
+    case 'Plugins':
+      var modal = this.props.modal;
+      iframes.fork(action, {
+        type: this.props.name === 'rules' ? 'rules' : 'values',
+        name: menuName,
+        active: this.currentFocusItem,
+        selected: modal && modal.getActive(),
+        selectedList: []
+      });
+      break;
     }
   },
   triggerChange: function(type) {
@@ -331,7 +352,9 @@ var List = React.createClass({
     var disabled = !name;
     var isDefault;
     var isRules = this.props.name == 'rules';
-    var data = util.getMenuPosition(e, 110, isRules ? 220 : 250);
+    var pluginItem = isRules ? rulesCtxMenuList[7] : valuesCtxMenuList[8];
+    util.addPluginMenus(pluginItem, dataCenter[isRules ? 'getRulesMenus' : 'getValuesMenus']());
+    var data = util.getMenuPosition(e, 110, (isRules ? 250 : 280) - (pluginItem.hide ? 30 : 0));
     if (isRules) {
       data.list = rulesCtxMenuList;
       data.list[1].disabled = disabled;

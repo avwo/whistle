@@ -91,14 +91,14 @@ var contextMenuList = [
       { name: 'Compose' }
     ]
   },
+  { name: 'Share' },
+  { name: 'Import' },
+  { name: 'Export' },
   {
     name: 'Others',
     action: 'Plugins',
     list: []
   },
-  { name: 'Share' },
-  { name: 'Import' },
-  { name: 'Export' },
   { name: 'Help', sep: true }
 ];
 
@@ -580,6 +580,7 @@ var ReqData = React.createClass({
       break;
     case 'Plugins':
       iframes.fork(action, {
+        type: 'network',
         name: name,
         active: item,
         selectedList: self.props.modal.getSelectedList()
@@ -696,33 +697,12 @@ var ReqData = React.createClass({
       list5[1].disabled = true;
       list5[2].disabled = true;
     }
-    var pluginsItem = contextMenuList[6];
-    var pluginsList = pluginsItem.list = dataCenter.getPluginsMenu();
-    var pluginsCount = pluginsList.length;
-    if (pluginsCount) {
-      pluginsItem.hide = false;
-      var disabledOthers = disabled;
-      for (var j = 0; j < pluginsCount; j++) {
-        var plugin = pluginsList[j];
-        if (plugin.required) {
-          plugin.disabled = disabled;
-          if (!disabled) {
-            disabledOthers = false;
-          }
-        } else {
-          disabledOthers =  plugin.disabled = false;
-        }
-      }
-      var top = pluginsCount - 4;
-      pluginsItem.top = top > 0 ? Math.min(6, top) : undefined;
-      pluginsItem.disabled = disabledOthers;
-    } else {
-      pluginsItem.hide = true;
-    }
-    var uploadItem = contextMenuList[7];
+    var uploadItem = contextMenuList[6];
     uploadItem.hide = !getUploadSessionsFn();
     contextMenuList[9].disabled = uploadItem.disabled = disabled && !selectedCount;
-    var data = util.getMenuPosition(e, 110, (uploadItem.hide ? 310 : 340) - (pluginsCount ? 0 : 30));
+    var pluginItem = contextMenuList[9];
+    util.addPluginMenus(pluginItem, dataCenter.getNetworkMenus(), disabled);
+    var data = util.getMenuPosition(e, 110, (uploadItem.hide ? 310 : 340) - (pluginItem.hide ? 30 : 0));
     data.list = contextMenuList;
     data.className = data.marginRight < 360 ? 'w-ctx-menu-left' : '';
     this.refs.contextMenu.show(data);

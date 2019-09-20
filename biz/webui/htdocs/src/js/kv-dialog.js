@@ -10,42 +10,10 @@ var KVDialog = React.createClass({
     return { list: [] };
   },
   show: function(data, rulesModal, valuesModal, isValues) {
-    data = data || '';
-    var list = [];
     this.isValues = isValues;
-    Object.keys(data).forEach(function(name) {
-      var value = data[name];
-      if (value == null) {
-        return;
-      }
-      if (isValues) {
-        if (typeof value === 'object') {
-          try {
-            value = JSON.stringify(value, null, '  ');
-          } catch(e) {
-            return;
-          }
-        } else {
-          value = value + '';
-        }
-      }if (typeof value !== 'string') {
-        return;
-      }
-      var modal = isValues ? valuesModal : rulesModal;
-      var isConfict;
-      var item = modal.get(name);
-      if (item) {
-        isConfict = item.value && item.value != value;
-      }
-      list.push({
-        name: name,
-        value: value,
-        isConfict: isConfict
-      });
-    });
     this.refs.kvDialog.show();
     this._hideDialog = false;
-    this.setState({ list: list });
+    this.setState({ list: util.parseImportData(data || '', isValues ? valuesModal : rulesModal, isValues) });
   },
   hide: function() {
     this.refs.kvDialog.hide();
@@ -59,12 +27,12 @@ var KVDialog = React.createClass({
   },
   confirm: function() {
     var data = {};
-    var hasConfict;
+    var hasConflict;
     this.state.list.forEach(function(item) {
-      hasConfict = hasConfict || item.isConfict;
+      hasConflict = hasConflict || item.isConflict;
       data[item.name] = item.value;
     });
-    if (!hasConfict || confirm('Conflict with existing content, whether to continue to overwrite them?')) {
+    if (!hasConflict || confirm('Conflict with existing content, whether to continue to overwrite them?')) {
       events.trigger(this.isValues ? 'uploadValues' : 'uploadRules', data);
     }
   },
@@ -101,7 +69,7 @@ var KVDialog = React.createClass({
                     </tr>
                   ) : list.map(function(item, i) {
                     return (
-                      <tr className={item.isConfict ? 'w-kv-conflict' : undefined}>
+                      <tr className={item.isConflict ? 'w-kv-conflict' : undefined}>
                         <th title={item.name}
                           className="w-kv-name">{item.name}</th>
                         <td className="w-kv-operation">
@@ -109,7 +77,7 @@ var KVDialog = React.createClass({
                           <a href="javascript:;" data-name={item.name} onClick={function() {
                             self.remove(item);
                           }}>Delete</a>
-                          <strong>{item.isConfict ? '[Conflict]' : ''}</strong>
+                          <strong>{item.isConflict ? '[Conflict]' : ''}</strong>
                         </td>
                       </tr>
                     );

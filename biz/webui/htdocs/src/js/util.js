@@ -1302,3 +1302,65 @@ exports.readFileAsBase64 = function(file, callback) {
 exports.readFileAsText = function(file, callback) {
   return readFile(file, callback, 'text');
 };
+
+exports.addPluginMenus = function(item, list, disabled) {
+  var pluginsList = item.list = list;
+  var count = pluginsList.length;
+  if (count) {
+    item.hide = false;
+    var disabledOthers = disabled;
+    for (var j = 0; j < count; j++) {
+      var plugin = pluginsList[j];
+      if (plugin.required) {
+        plugin.disabled = disabled;
+        if (!disabled) {
+          disabledOthers = false;
+        }
+      } else {
+        disabledOthers =  plugin.disabled = false;
+      }
+    }
+    var top = count - 2;
+    item.top = top > 0 ? Math.min(6, top) : undefined;
+    item.disabled = disabledOthers;
+  } else {
+    item.hide = true;
+  }
+};
+
+exports.parseImportData = function(data, modal, isValues) {
+  var list = [];
+  var hasConflict;
+  Object.keys(data).forEach(function(name) {
+    var value = data[name];
+    if (value == null) {
+      return;
+    }
+    if (isValues) {
+      if (typeof value === 'object') {
+        try {
+          value = JSON.stringify(value, null, '  ');
+        } catch(e) {
+          return;
+        }
+      } else {
+        value = value + '';
+      }
+    }if (typeof value !== 'string') {
+      return;
+    }
+    var isConflict;
+    var item = modal && modal.get(name);
+    if (item) {
+      isConflict = item.value && item.value != value;
+      hasConflict = hasConflict || isConflict;
+    }
+    list.push({
+      name: name,
+      value: value,
+      isConflict: isConflict
+    });
+  });
+  list.hasConflict = hasConflict;
+  return list;
+};

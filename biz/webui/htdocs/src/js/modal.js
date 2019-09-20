@@ -47,6 +47,15 @@ function addEvents(html) {
   });
 }
 
+function updateCtn(con, html, name) {
+  var elem = con.find('.modal-content>.modal-' + name + ':first');
+  if (html != null) {
+    elem.html(html);
+  } else if (html === false || html === null) {
+    elem.hide();
+  }
+}
+
 function initModal(dialog, options) {
   options = options || '';
   var title = options.title;
@@ -61,12 +70,8 @@ function initModal(dialog, options) {
   } else {
     headerElem.show().find('h4').html(title);
   }
-  if (body != null) {
-    con.find('.modal-content>.modal-body:first').html(body);
-  }
-  if (footer != null) {
-    con.find('.modal-content>.modal-footer:first').html(footer);
-  }
+  updateCtn(con, body, 'body');
+  updateCtn(con, footer, 'footer');
 }
 
 exports.show = function(options) {
@@ -118,7 +123,7 @@ exports.create = function(options) {
   return {
     show: function(options) {
       if (dialog) {
-        if (options && options.methods !== undefined) {
+        if (options && options.methods) {
           window[GLOBAL_VAR] = options.methods;
         }
         dialog.show();

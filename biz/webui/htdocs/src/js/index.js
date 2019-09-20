@@ -318,6 +318,7 @@ var Index = React.createClass({
     }
     var rulesModal = new ListModal(rulesList, rulesData);
     var valuesModal = new ListModal(valuesList, valuesData);
+    dataCenter.rulesModal = rulesModal;
     state.rulesTheme = rulesTheme;
     state.valuesTheme = valuesTheme;
     state.rulesFontSize = rulesFontSize;

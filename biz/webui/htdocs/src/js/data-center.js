@@ -979,14 +979,14 @@ exports.getPlugin = function(name) {
   return pluginsMap[name];
 };
 
-exports.getPluginsMenu = function() {
+function getMenus(menuName) {
   var list = [];
   if (disabledAllPlugins || disabledAllRules) {
     return list;
   }
   Object.keys(pluginsMap).forEach(function(name) {
     var plugin = pluginsMap[name];
-    var menus = plugin.menus;
+    var menus = plugin[menuName];
     if (menus) {
       name = name.slice(0, -1);
       if (!disabledPlugins[name]) {
@@ -1004,4 +1004,16 @@ exports.getPluginsMenu = function() {
     }
     return prev.mtime > next.mtime ? 1 : -1;
   }) : list;
+}
+
+exports.getNetworkMenus = function() {
+  return getMenus('networkMenus');
+};
+
+exports.getRulesMenus = function() {
+  return getMenus('rulesMenus');
+};
+
+exports.getValuesMenus = function() {
+  return getMenus('valuesMenus');
 };

@@ -1,4 +1,4 @@
-var MAX_COUNT = 5;
+var MAX_COUNT = 6;
 var MAX_CACHE_TIME = 1000 * 60 * 3;
 var TIMEOUT = 1000 * 60;
 var cache = {};
@@ -7,6 +7,7 @@ var createCgi = require('./cgi').createCgi;
 var dataCenter = require('./data-center');
 var util = require('./util');
 var modal = require('./modal');
+var events = require('./events');
 
 var latestItem;
 
@@ -88,6 +89,32 @@ function onPluginContextMenuReady(win) {
         };
         item.dialogs.push(dialog);
         return dialog;
+      },
+      importRules: function(data) {
+        if (!data) {
+          return;
+        }
+        var list = util.parseImportData(data, dataCenter.rulesModal);
+        if (!list.hasConflict || confirm('Conflict with existing content, whether to continue to overwrite them?')) {
+          data = {};
+          list.forEach(function(item) {
+            data[item.name] = item.value;
+          });
+          events.trigger('uploadRules', data);
+        }
+      },
+      importValues: function(data) {
+        if (!data) {
+          return;
+        }
+        var list = util.parseImportData(data, dataCenter.valuesModal, true);
+        if (!list.hasConflict || confirm('Conflict with existing content, whether to continue to overwrite them?')) {
+          data = {};
+          list.forEach(function(item) {
+            data[item.name] = item.value;
+          });
+          events.trigger('uploadValues', data);
+        }
       }
     });
   } catch (e) {}
