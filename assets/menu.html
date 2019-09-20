@@ -1,7 +1,9 @@
 <script>
   ;(function() {
     var list = [];
-    var listeners = [];
+    var networkListeners = [];
+    var rulesListeners = [];
+    var valuesListeners = [];
     var handleOnLoad = function() {
       timer = null;
       list.forEach(emit);
@@ -9,7 +11,7 @@
     };
     var timer = setTimeout(handleOnLoad, 12000);
 
-    function emit(options) {
+    function execListeners(listeners, options) {
       listeners.forEach(function(fn) {
         try {
           fn(options)
@@ -17,6 +19,19 @@
           console.error(e);
         }
       });
+    }
+
+    function emit(options) {
+      switch(options.type) {
+        case 'rules':
+          execListeners(rulesListeners, options);
+          break;
+        case 'values':
+          execListeners(valuesListeners, options);
+          break;
+        default:
+          execListeners(networkListeners, options);
+      }
     }
     window.onWhistleContextMenuClick = function(options) {
       if (list) {
@@ -42,18 +57,46 @@
       modal: modal,
       toast: toast,
       addNetworkListener: function(l) {
-        if (typeof l === 'function' && listeners.indexOf(l) === -1) {
-          listeners.push(l);
+        if (typeof l === 'function' && networkListeners.indexOf(l) === -1) {
+          networkListeners.push(l);
         }
       },
       removeNetworkListener: function(l) {
-        l = listeners.indexOf(l);
+        l = networkListeners.indexOf(l);
         if (l !== -1) {
-          listeners.splice(l, 1);
+          networkListeners.splice(l, 1);
         }
       },
       removeAllNetworkListeners: function() {
-        listeners = [];
+        networkListeners = [];
+      },
+      addRulesListener: function(l) {
+        if (typeof l === 'function' && rulesListeners.indexOf(l) === -1) {
+          rulesListeners.push(l);
+        }
+      },
+      removeRulesListener: function(l) {
+        l = rulesListeners.indexOf(l);
+        if (l !== -1) {
+          rulesListeners.splice(l, 1);
+        }
+      },
+      removeAllRulesListeners: function() {
+        rulesListeners = [];
+      },
+      addValuesListener: function(l) {
+        if (typeof l === 'function' && valuesListeners.indexOf(l) === -1) {
+          valuesListeners.push(l);
+        }
+      },
+      removeValuesListener: function(l) {
+        l = valuesListeners.indexOf(l);
+        if (l !== -1) {
+          valuesListeners.splice(l, 1);
+        }
+      },
+      removeAllValuesListeners: function() {
+        valuesListeners = [];
       }
     };
     try {

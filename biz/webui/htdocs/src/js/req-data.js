@@ -583,7 +583,7 @@ var ReqData = React.createClass({
       iframes.fork(action, {
         type: 'network',
         name: name,
-        active: item,
+        activeItem: item,
         selectedList: self.props.modal.getSelectedList()
       });
       break;

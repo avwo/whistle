@@ -318,9 +318,8 @@ var List = React.createClass({
       iframes.fork(action, {
         type: this.props.name === 'rules' ? 'rules' : 'values',
         name: menuName,
-        active: this.currentFocusItem,
-        selected: modal && modal.getActive(),
-        selectedList: []
+        activeItem: this.currentFocusItem,
+        selectedItem: modal && modal.getActive()
       });
       break;
     }
