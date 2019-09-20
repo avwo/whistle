@@ -1303,7 +1303,7 @@ exports.readFileAsText = function(file, callback) {
   return readFile(file, callback, 'text');
 };
 
-exports.addPluginMenus = function(item, list, disabled) {
+exports.addPluginMenus = function(item, list, maxTop, disabled) {
   var pluginsList = item.list = list;
   var count = pluginsList.length;
   if (count) {
@@ -1321,7 +1321,7 @@ exports.addPluginMenus = function(item, list, disabled) {
       }
     }
     var top = count - 2;
-    item.top = top > 0 ? Math.min(6, top) : undefined;
+    item.top = top > 0 ? Math.min(maxTop, top) : undefined;
     item.disabled = disabledOthers;
   } else {
     item.hide = true;

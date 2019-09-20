@@ -353,7 +353,7 @@ var List = React.createClass({
     var isDefault;
     var isRules = this.props.name == 'rules';
     var pluginItem = isRules ? rulesCtxMenuList[7] : valuesCtxMenuList[8];
-    util.addPluginMenus(pluginItem, dataCenter[isRules ? 'getRulesMenus' : 'getValuesMenus']());
+    util.addPluginMenus(pluginItem, dataCenter[isRules ? 'getRulesMenus' : 'getValuesMenus'](), isRules ? 7 : 8);
     var data = util.getMenuPosition(e, 110, (isRules ? 250 : 280) - (pluginItem.hide ? 30 : 0));
     if (isRules) {
       data.list = rulesCtxMenuList;
