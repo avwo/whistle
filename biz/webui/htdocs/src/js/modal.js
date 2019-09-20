@@ -3,9 +3,12 @@ var ReactDOM = require('react-dom');
 var Dialog = require('./dialog');
 require('../css/modal.css');
 
+var GLOBAL_VAR = '__WHISTLE_MODAL_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+
 function createModal(options, callback) {
   var container = document.createElement('div');
   document.body.appendChild(container);
+  window[GLOBAL_VAR] = options.methods || {};
   ReactDOM.render((<Dialog width={options.width} height={options.height}
     wclassName="w-dialog-for-plguin"
     customRef={function(d) {
@@ -26,14 +29,51 @@ function createModal(options, callback) {
   </Dialog>), container);
 }
 
-function initModal(dialog, options) {
+function addEvents(html) {
+  if (!html || typeof html !== 'string') {
+    return html;
+  }
+  return html.replace(/\s(on[a-z]+=)"([^"]+)"/g, function(all, name, handle) {
+    var index = handle.indexOf('(');
+    var args;
+    if (index === -1) {
+      args = '(event)';
+    } else {
+      args = handle.substring(index);
+      handle = handle.substring(0, index);
+    }
+    handle = GLOBAL_VAR + '[\'' + handle + '\']' + args;
+    return ' ' + name + '"' + handle + '"';
+  });
+}
 
+function initModal(dialog, options) {
+  options = options || '';
+  var title = options.title;
+  var body = addEvents(options.body);
+  var footer = addEvents(options.footer);
+  var con = dialog.container;
+  var headerElem = con.find('.modal-content>.modal-header:first');
+  if (!title || typeof title !== 'string') {
+    if (title === false || title === '') {
+      headerElem.hide();
+    }
+  } else {
+    headerElem.show().find('h4').html(title);
+  }
+  if (body != null) {
+    con.find('.modal-content>.modal-body:first').html(body);
+  }
+  if (footer != null) {
+    con.find('.modal-content>.modal-footer:first').html(footer);
+  }
 }
 
 exports.show = function(options) {
   var destroyed, dialog;
   var onClose = options.onClose;
   options.onClose = function() {
+    window[GLOBAL_VAR] = undefined;
     dialog && dialog.destroy();
     dialog = null;
     if (typeof onClose === 'function') {
@@ -60,6 +100,7 @@ exports.create = function(options) {
   var destroyed, dialog;
   var onClose = options.onClose;
   options.onClose = function() {
+    window[GLOBAL_VAR] = undefined;
     if (destroyed) {
       dialog && dialog.destroy();
       dialog = null;
@@ -77,6 +118,9 @@ exports.create = function(options) {
   return {
     show: function(options) {
       if (dialog) {
+        if (options && options.methods !== undefined) {
+          window[GLOBAL_VAR] = options.methods;
+        }
         dialog.show();
         initModal(dialog, options);
       }
