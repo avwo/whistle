@@ -73,7 +73,7 @@ var ContextMenu = React.createClass({
                 {subList ? <div className="w-ctx-menu-gap"></div> : undefined}
                 {
                   subList ? (
-                    <ul className="w-ctx-menu-list" style={{ top: item.top > 0 ? -item.top * 30 - 1 : undefined }}>
+                    <ul className="w-ctx-menu-list" style={item.top > 0 ? { top: -item.top * 30 - 1, maxHeight: item.maxHeight } : undefined}>
                       {subList.map(function(subItem, i) {
                         return (
                           <li title={subItem.title} data-parent-action={item.action} data-name={subItem.name}

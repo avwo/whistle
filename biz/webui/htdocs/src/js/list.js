@@ -354,7 +354,9 @@ var List = React.createClass({
     var isRules = this.props.name == 'rules';
     var pluginItem = isRules ? rulesCtxMenuList[7] : valuesCtxMenuList[8];
     util.addPluginMenus(pluginItem, dataCenter[isRules ? 'getRulesMenus' : 'getValuesMenus'](), isRules ? 7 : 8);
-    var data = util.getMenuPosition(e, 110, (isRules ? 250 : 280) - (pluginItem.hide ? 30 : 0));
+    var height = (isRules ? 250 : 280) - (pluginItem.hide ? 30 : 0);
+    pluginItem.maxHeight = height + 30;
+    var data = util.getMenuPosition(e, 110, height);
     if (isRules) {
       data.list = rulesCtxMenuList;
       data.list[1].disabled = disabled;

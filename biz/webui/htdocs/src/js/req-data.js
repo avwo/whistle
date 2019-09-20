@@ -702,7 +702,9 @@ var ReqData = React.createClass({
     contextMenuList[9].disabled = uploadItem.disabled = disabled && !selectedCount;
     var pluginItem = contextMenuList[9];
     util.addPluginMenus(pluginItem, dataCenter.getNetworkMenus(), uploadItem.hide ? 8 : 9, disabled);
-    var data = util.getMenuPosition(e, 110, (uploadItem.hide ? 310 : 340) - (pluginItem.hide ? 30 : 0));
+    var height = (uploadItem.hide ? 310 : 340) - (pluginItem.hide ? 30 : 0);
+    pluginItem.maxHeight = height;
+    var data = util.getMenuPosition(e, 110, height);
     data.list = contextMenuList;
     data.className = data.marginRight < 360 ? 'w-ctx-menu-left' : '';
     this.refs.contextMenu.show(data);
