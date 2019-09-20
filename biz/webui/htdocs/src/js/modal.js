@@ -3,17 +3,35 @@ var ReactDOM = require('react-dom');
 var Dialog = require('./dialog');
 require('../css/modal.css');
 
-var GLOBAL_VAR = '__WHISTLE_MODAL_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+var GLOBAL_VAR = '__WHISTLE_MODAL_' + Date.now() + '_' + Math.floor(Math.random() * 1000) + '_';
+var flag = 0;
 
-function createModal(options, callback) {
+function getFlag() {
+  if (++flag > 100) {
+    flag = 0;
+  }
+  return flag;
+}
+
+function removeWinField(name) {
+  try {
+    delete window[name];
+  } catch (e) {
+    window[name] = undefined;
+  }
+}
+
+function createModal(options, callback, gVarName) {
   var container = document.createElement('div');
   document.body.appendChild(container);
-  window[GLOBAL_VAR] = options.methods || {};
+  if (options.methods) {
+    window[gVarName] = options.methods;
+  }
   ReactDOM.render((<Dialog width={options.width} height={options.height}
     wclassName="w-dialog-for-plguin"
     customRef={function(d) {
       document.body.removeChild(container);
-      initModal(d, options);
+      initModal(d, options, gVarName);
       callback(d);
     }} onClose={options.onClose}>
     <div className="modal-header">
@@ -29,7 +47,7 @@ function createModal(options, callback) {
   </Dialog>), container);
 }
 
-function addEvents(html) {
+function addEvents(html, gVarName) {
   if (!html || typeof html !== 'string') {
     return html;
   }
@@ -42,7 +60,7 @@ function addEvents(html) {
       args = handle.substring(index);
       handle = handle.substring(0, index);
     }
-    handle = GLOBAL_VAR + '[\'' + handle + '\']' + args;
+    handle = gVarName + '[\'' + handle + '\']' + args;
     return ' ' + name + '"' + handle + '"';
   });
 }
@@ -56,11 +74,11 @@ function updateCtn(con, html, name) {
   }
 }
 
-function initModal(dialog, options) {
+function initModal(dialog, options, gVarName) {
   options = options || '';
   var title = options.title;
-  var body = addEvents(options.body);
-  var footer = addEvents(options.footer);
+  var body = addEvents(options.body, gVarName);
+  var footer = addEvents(options.footer, gVarName);
   var con = dialog.container;
   var headerElem = con.find('.modal-content>.modal-header:first');
   if (!title || typeof title !== 'string') {
@@ -77,8 +95,9 @@ function initModal(dialog, options) {
 exports.show = function(options) {
   var destroyed, dialog;
   var onClose = options.onClose;
+  var gVarName = GLOBAL_VAR + getFlag();
   options.onClose = function() {
-    window[GLOBAL_VAR] = undefined;
+    removeWinField(gVarName);
     dialog && dialog.destroy();
     dialog = null;
     if (typeof onClose === 'function') {
@@ -92,7 +111,7 @@ exports.show = function(options) {
     } else {
       d.show();
     }
-  });
+  }, gVarName);
   return function() {
     if (!destroyed && dialog) {
       destroyed = true;
@@ -104,8 +123,9 @@ exports.show = function(options) {
 exports.create = function(options) {
   var destroyed, dialog;
   var onClose = options.onClose;
+  var gVarName = GLOBAL_VAR + getFlag();
   options.onClose = function() {
-    window[GLOBAL_VAR] = undefined;
+    removeWinField(gVarName);
     if (destroyed) {
       dialog && dialog.destroy();
       dialog = null;
@@ -119,15 +139,15 @@ exports.create = function(options) {
     if (destroyed) {
       d.destroy();
     }
-  });
+  }, gVarName);
   return {
     show: function(options) {
       if (dialog) {
         if (options && options.methods) {
-          window[GLOBAL_VAR] = options.methods;
+          window[gVarName] = options.methods;
         }
         dialog.show();
-        initModal(dialog, options);
+        initModal(dialog, options, gVarName);
       }
     },
     hide: function(destroy) {
