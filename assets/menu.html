@@ -1,5 +1,6 @@
 <script>
   ;(function() {
+    var config = window.whistleMenuConfig;
     var list = [];
     var networkListeners = [];
     var rulesListeners = [];
@@ -54,6 +55,7 @@
     var toast = {};
     var modal = {};
     window.whistleBridge = {
+      config: config,
       modal: modal,
       toast: toast,
       addNetworkListener: function(l) {
