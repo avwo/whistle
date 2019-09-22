@@ -1,3 +1,6 @@
+# v1.16.11
+1. fix: https://github.com/avwo/whistle/issues/329
+
 # v1.16.10
 1. refactor: 优化后缀匹配规则 `^.js`，避免匹配域名，且支持直接配置 `.js`
 2. feat: 支持扩展Network的右键菜单，具体参见：[插件开发](http://wproxy.org/whistle/plugins.html)
