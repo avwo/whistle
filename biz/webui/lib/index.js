@@ -120,6 +120,10 @@ function checkAuth(req, res, auth) {
   return false;
 }
 
+if (typeof config.uiMiddleware === 'function') {
+  app.use(config.uiMiddleware);
+}
+
 app.use(function(req, res, next) {
   proxyEvent.emit('_request', req.url);
   var aborted;
