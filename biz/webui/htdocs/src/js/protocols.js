@@ -21,6 +21,8 @@ var forwardRules = innerRules.slice();
 var webProtocols = ['http', 'https', 'ws', 'wss', 'tunnel'];
 var allInnerRules = webProtocols.concat(innerRules).concat(PROTOCOLS.slice(1));
 allInnerRules.splice(allInnerRules.indexOf('plugin'), 1);
+allInnerRules.splice(allInnerRules.indexOf('reqScript') + 1, 0, 'reqRules');
+allInnerRules.splice(allInnerRules.indexOf('resScript') + 1, 0, 'resRules');
 var allRules = allInnerRules = allInnerRules.map(function (name) {
   return name + '://';
 });
