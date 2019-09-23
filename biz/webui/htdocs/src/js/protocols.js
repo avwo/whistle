@@ -81,6 +81,12 @@ exports.getHelpUrl = function (rule) {
   if (rule === 'includeFilter' || rule === 'excludeFilter') {
     return ROOT_HELP_URL + 'filter.html';
   }
+  if (rule === 'reqRules') {
+    return ROOT_HELP_URL + 'reqScript.html';
+  }
+  if (rule === 'resRules') {
+    return ROOT_HELP_URL + 'resScript.html';
+  }
   if (innerRules.indexOf(rule) !== -1) {
     return ROOT_HELP_URL + 'rule/' + rule.replace(/^x/, '') + '.html';
   }
