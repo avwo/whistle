@@ -1,3 +1,4 @@
+require('./lib/util/patch');
 var net = require('net');
 var tls = require('tls');
 var res = require('http').OutgoingMessage.prototype;
