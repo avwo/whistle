@@ -1,3 +1,7 @@
+# v1.16.12
+1. feat: 支持通过 `reqRules://file|values|inlineValues` 及 `resRules://file|values|inlineValues`  批量设置规则
+2. fix: Composer切换到 pretty 模式时无法设置换行符问题
+
 # v1.16.11
 1. fix: https://github.com/avwo/whistle/issues/329
 
