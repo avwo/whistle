@@ -6,7 +6,6 @@ var Dialog = require('./dialog');
 var util = require('./util');
 var message = require('./message');
 
-var CRLF_RE = /[\r\n]+/g;
 var MAX_NAME_LEN = 128;
 var MAX_VALUE_LEN = 36 * 1024;
 var MAX_COUNT = 160;
@@ -137,7 +136,7 @@ var PropsEditor = React.createClass({
     if (this.props.isHeader) {
       return keys.map(function(key) {
         var obj = modal[key];
-        return obj.name + ': ' + obj.value.replace(CRLF_RE, ' ');
+        return obj.name + ': ' + util.encodeNonLatin1Char(obj.value);
       }).join('\r\n');
     }
     return keys.map(function(key) {

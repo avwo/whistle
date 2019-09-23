@@ -314,7 +314,7 @@ var Composer = React.createClass({
   },
   onHeaderChange: function(key, newKey) {
     var refs = this.refs;
-    var headers = util.encodeNonLatin1Char(refs.prettyHeaders.toString());
+    var headers = refs.prettyHeaders.toString();
     ReactDOM.findDOMNode(refs.headers).value = headers;
     this.saveComposer();
     if (key.toLowerCase() === 'content-type' ||

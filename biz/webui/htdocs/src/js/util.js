@@ -1185,7 +1185,7 @@ function hasRequestBody(method) {
 
 exports.hasRequestBody = hasRequestBody;
 
-var NON_LATIN1_RE = /[^\x00-\xFF]/g;
+var NON_LATIN1_RE = /([^\x00-\xFF]|[\r\n%])/g;
 exports.encodeNonLatin1Char = function(str) {
   /*eslint no-control-regex: "off"*/
   return str && typeof str === 'string' ? str.replace(NON_LATIN1_RE, safeEncodeURIComponent) : '';
