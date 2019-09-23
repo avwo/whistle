@@ -1187,11 +1187,8 @@ exports.hasRequestBody = hasRequestBody;
 
 var NON_LATIN1_RE = /[^\x00-\xFF]/g;
 exports.encodeNonLatin1Char = function(str) {
-  if (!str || typeof str != 'string') {
-    return '';
-  }
   /*eslint no-control-regex: "off"*/
-  return  str && str.replace(NON_LATIN1_RE, safeEncodeURIComponent);
+  return str && typeof str === 'string' ? str.replace(NON_LATIN1_RE, safeEncodeURIComponent) : '';
 };
 
 function formatSemer(ver) {
