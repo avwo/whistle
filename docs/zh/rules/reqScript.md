@@ -1,10 +1,12 @@
-# reqScript
+# reqScript (reqRules)
 
 给匹配的请求批量设置规则，或者通过脚本动态设置规则，配置方式：
 
-	pattern reqScript://filepath
+	pattern reqScript://filepath reqRules://filepath1 reqRules://filepath2 reqRules://filepath3
 
 filepath为[Values](http://local.whistlejs.com/#values)里面的{key}或者本地js文件(如：`e:\test\xxx`、`e:/test/xxx`、`/User/username/test/xxx`等)，pattern参见[匹配模式](../pattern.html)，更多模式请参考[配置方式](../mode.html)。
+
+> `reqScript` 可以设置规则或者脚本，但只能设置一个，`reqRules` 可以同时设置多个，但只能设置规则，不能设置脚本
 
 filepath指定的文本可以为一组规则列表，也可以一个js脚本通过判断url、method、clientIp、headers, body动态设置规则：
 

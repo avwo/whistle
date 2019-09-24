@@ -96,7 +96,7 @@
 15. [**jsAppend** (往响应为html或js的内容后面追加数据)](jsAppend.md)
 
 #### 过滤配置
-1. [**filter(excludeFilter|includeFilter)** (过滤规则，隐藏请求等)](filter.html)
+1. [**filter (excludeFilter|includeFilter)** (过滤规则，隐藏请求等)](filter.html)
 2. [**ignore** (忽略规则)](ignore.html)
 
 #### 启用或禁用一些配置
@@ -112,8 +112,8 @@
 推荐通过插件获取，具体参考：[插件开发](../plugins.html)
 
 #### 动态设置规则
-1. [**reqScript** (批量设置请求规则或通过脚本动态获取规则)](reqScript.md)
-2. [**resScript** (批量设置响应规则或通过脚本动态获取规则)](resScript.md)
+1. [**reqScript (reqRules)** (批量设置请求规则或通过脚本动态获取规则)](reqScript.md)
+2. [**resScript (resRules)** (批量设置响应规则或通过脚本动态获取规则)](resScript.md)
 
 #### 开发调试工具
 1. [**plugin** (配置匹配的插件)](plugin.html)
