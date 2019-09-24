@@ -1,6 +1,7 @@
 # v1.16.12
 1. feat: 支持通过 `reqRules://file|values|inlineValues` 及 `resRules://file|values|inlineValues`  批量设置规则
 2. fix: Composer切换到 pretty 模式时无法设置换行符问题
+3. fix: 某些Node版本（如：`v10.16.2` 在部分Mac机型上）可能存在bug，会出现一些异常无法让程序捕获捕获导致程序crash问题
 
 # v1.16.11
 1. fix: https://github.com/avwo/whistle/issues/329
