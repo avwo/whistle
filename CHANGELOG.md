@@ -1,3 +1,6 @@
+# v1.16.13
+1. fix: 模板字符串 `${whistle.xx.repalce(p,v)}` 失效问题
+
 # v1.16.12
 1. feat: 支持通过 `reqRules://file|values|inlineValues` 及 `resRules://file|values|inlineValues`  批量设置规则
 2. fix: Composer切换到 pretty 模式时无法设置换行符问题
