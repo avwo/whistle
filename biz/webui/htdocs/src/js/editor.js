@@ -51,6 +51,10 @@ var RULES_COMMENT_RE = /^()\s*#\s*/;
 var JS_COMMENT_RE = /^(\s*)\/\/+\s?/;
 var NO_SPACE_RE = /\S/;
 
+function hasSelector(selector) {
+  return document.querySelector ? document.querySelector(selector) : $(selector).length;
+}
+
 var Editor = React.createClass({
   getThemes: function() {
     return themes;
@@ -128,9 +132,11 @@ var Editor = React.createClass({
         var _byDelete = e.keyCode === 8;
         if (_byDelete || e.keyCode === 13) {
           timer = setTimeout(function() {
-            editor._byDelete = true;
-            editor._byEnter = !_byDelete;
-            editor.execCommand('autocomplete');
+            if (!hasSelector('.CodeMirror-hints')) {
+              editor._byDelete = true;
+              editor._byEnter = !_byDelete;
+              editor.execCommand('autocomplete');
+            }
           }, 300);
         }
       });

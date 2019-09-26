@@ -332,7 +332,7 @@ CodeMirror.registerHelper('hint', 'rulesHint', function(editor, options) {
         }, HINT_TIMEOUT);
       }
     }
-    if (curWord.indexOf('//') !== -1 || byDelete || !NON_SPECAIL_RE.test(curWord)) {
+    if (curWord.indexOf('//') !== -1 || !NON_SPECAIL_RE.test(curWord)) {
       return;
     }
   } else if (byDelete) {
