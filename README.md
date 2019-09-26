@@ -6,6 +6,8 @@ English | [简体中文](./README-zh_CN.md)
   </a>
 </p>
 
+> We recommend updating [whistle](https://wproxy.org/whistle/update.html) and [Node](https://nodejs.org/) to ensure that you receive important features, bugfixes and performance improvements.
+> Some versions of Node have bugs that may cause whistle to not work properly, for detail see the issue: [#231](https://github.com/avwo/whistle/issues/231)
 
 # whistle
 [![NPM version](https://img.shields.io/npm/v/whistle.svg?style=flat-square)](https://npmjs.org/package/whistle)

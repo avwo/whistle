@@ -6,6 +6,8 @@
   </a>
 </p>
 
+> 建议及时[更新 whistle](https://wproxy.org/whistle/update.html) 和 [Node](https://nodejs.org/) 以确保获取最新特性、bug修复及性能优化。
+> 某些版本的 Node 存在 bug 可能导致 whistle 无法正常运行，具体版本参见issue：[#231](https://github.com/avwo/whistle/issues/231)
 
 # whistle
 [![NPM version](https://img.shields.io/npm/v/whistle.svg?style=flat-square)](https://npmjs.org/package/whistle)
