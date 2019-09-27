@@ -1,3 +1,6 @@
+# v1.17.0
+1. feat: 浏览器和 whistle 之间支持通过 HTTP2 建立连接，（whislte 和 目标服务器之间还不支持HTTP2）
+
 # v1.16.13
 1. fix: 模板字符串 `${whistle.xx.repalce(p,v)}` 失效问题
 
