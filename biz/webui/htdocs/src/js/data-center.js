@@ -792,7 +792,7 @@ function setReqData(item) {
     item.rules.pipe = item.pipe;
   }
   if (!item.path) {
-    item.protocol = item.isHttps ? 'HTTP' : util.getProtocol(url);
+    item.protocol = item.isHttps ? 'HTTP' : (item.useH2 ? 'H2' : util.getProtocol(url));
     item.hostname = item.isHttps ? 'Tunnel to' : util.getHost(url);
     var pathIndex = url.indexOf('://');
     if (pathIndex !== -1) {
