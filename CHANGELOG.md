@@ -1,6 +1,7 @@
 # v1.17.0
 1. feat: 浏览器和 whistle 之间支持通过 HTTP2 建立连接，（**需要把 [Node](https://nodejs.org) 更新到 `v10.16.0` 及以上版本**）
 2. refactor: 调整连接缓存策略，任何连接不做长缓存，减少内存占用
+3. fix: 长连接获取clientIp失败问题
 
 # v1.16.13
 1. fix: 模板字符串 `${whistle.xx.repalce(p,v)}` 失效问题
