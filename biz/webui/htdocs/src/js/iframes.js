@@ -1,7 +1,4 @@
-var MAX_COUNT = 6;
-var MAX_CACHE_TIME = 1000 * 60 * 3;
-var TIMEOUT = 1000 * 60;
-var cache = {};
+var qrCode = require('qrcode');
 var message = require('./message');
 var createCgi = require('./cgi').createCgi;
 var dataCenter = require('./data-center');
@@ -9,6 +6,10 @@ var util = require('./util');
 var modal = require('./modal');
 var events = require('./events');
 
+var MAX_COUNT = 6;
+var MAX_CACHE_TIME = 1000 * 60 * 3;
+var TIMEOUT = 1000 * 60;
+var cache = {};
 var latestItem;
 
 function destroy(item) {
@@ -69,6 +70,8 @@ function onPluginContextMenuReady(win) {
     win.initWhistleBridge({
       importSessions: dataCenter.importAnySessions,
       msgBox: message,
+      qrCode: qrCode,
+      qrcode: qrCode,
       request: function(options, cb) {
         var request = createCgi(compatAjax(options));
         return request(options.data, cb);
