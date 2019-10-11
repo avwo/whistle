@@ -1,3 +1,7 @@
+# v1.17.1
+1. fix: 引入Http2导致请求abort后浏览器无法收到断开的指令
+2. refactor: `enable://proxyHost` 支持显示真实的请求ip
+
 # v1.17.0
 1. feat: 浏览器和 whistle 之间支持通过 HTTP2 建立连接，（**需要把 [Node](https://nodejs.org) 更新到 `v10.16.0` 及以上版本**）
 2. refactor: 调整连接缓存策略，任何连接不做长缓存，减少内存占用
