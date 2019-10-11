@@ -200,12 +200,12 @@ function getServerIp(modal) {
   if (!modal.serverIp && ip) {
     var res = modal.res || '';
     if (res.phost) {
-      ip = res.phost + ',' + ip;
+      ip = res.phost + ', ' + ip;
     }
     var realEnv = decodeURIComponentSafe(getProperty(res, 'headers.x-whistle-response-for'));
     if (realEnv) {
       if (realEnv !== ip && realEnv.trim().split(/\s*,\s*/).indexOf(ip) === -1) {
-        ip = realEnv + ',' + ip;
+        ip = realEnv + ', ' + ip;
       } else {
         ip = realEnv;
       }
