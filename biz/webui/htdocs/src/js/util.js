@@ -198,7 +198,11 @@ var filterEmptyStr = function(item) {
 function getServerIp(modal) {
   var ip = modal.hostIp;
   if (!modal.serverIp && ip) {
-    var realEnv = decodeURIComponentSafe(getProperty(modal, 'res.headers.x-whistle-response-for'));
+    var res = modal.res || '';
+    if (res.phost) {
+      ip = res.phost + ',' + ip;
+    }
+    var realEnv = decodeURIComponentSafe(getProperty(res, 'headers.x-whistle-response-for'));
     if (realEnv) {
       if (realEnv !== ip && realEnv.trim().split(/\s*,\s*/).indexOf(ip) === -1) {
         ip = realEnv + ',' + ip;
