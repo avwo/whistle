@@ -5,7 +5,6 @@ var handleUIReq = require('./webui/lib').handleRequest;
 var handleWeinreReq = require('./weinre');
 var config = require('../lib/config');
 
-var HTTP_PROXY_RE = /^x?(?:proxy|http-proxy|http2https-proxy|https2http-proxy|internal-proxy|internal-https-proxy):\/\//;
 var WEBUI_PATH = config.WEBUI_PATH;
 var PREVIEW_PATH_RE = config.PREVIEW_PATH_RE;
 var webuiPathRe = util.escapeRegExp(WEBUI_PATH);
@@ -43,8 +42,8 @@ module.exports = function(req, res, next) {
         req.curUrl = fullUrl;
         proxyUrl = rules.resolveProxy(req, true);
         proxyUrl = proxyUrl && proxyUrl.matcher;
-        if (proxyUrl && HTTP_PROXY_RE.test(proxyUrl)) {
-          proxyUrl = proxyUrl.replace(HTTP_PROXY_RE, '');
+        if (proxyUrl) {
+          proxyUrl = proxyUrl.substring(proxyUrl.indexOf('://') + 3);
         } else {
           proxyUrl = null;
         }
