@@ -1,6 +1,6 @@
 {
   "name": "whistle",
-  "description": "HTTP, HTTPS, Websocket debugging proxy",
+  "description": "HTTP, HTTP2, HTTPS, Websocket debugging proxy",
   "version": "2.0.0",
   "dataDirname": ".whistle",
   "localUIHost": "local.whistlejs.com",
@@ -19,6 +19,7 @@
     "fiddler",
     "charles",
     "websocket",
+    "http2",
     "hosts"
   ],
   "bin": {
