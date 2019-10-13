@@ -177,8 +177,9 @@ module.exports = function(req, res) {
   if (!options.host) {
     return res.json({ec: 0});
   }
-  if (options.protocol) {
-    options.protocol = options.protocol.toLowerCase();
+  var protocol = options.protocol;
+  if (protocol) {
+    options.protocol = protocol = protocol.toLowerCase();
   }
   properties.addHistory(req.body);
   var rawHeaderNames = {};
@@ -189,6 +190,13 @@ module.exports = function(req, res) {
   var clientIp = util.getClientIp(req);
   if (!util.isLocalAddress(clientIp)) {
     headers[config.CLIENT_IP_HEAD] = clientIp;
+  }
+  if (protocol === 'h2:' || protocol === 'http2:') {
+    options.protocol = protocol = 'https:';
+    var s = req.socket || '';
+    s._h2SessionId = s._h2SessionId || util.getSessionId();
+    headers[config.SESSION_ID_HEADER] = s._h2SessionId;
+    headers[config.ALPN_PROTOCOL_HEADER] = 'h2';
   }
   headers[config.CLIENT_PORT_HEAD] = util.getClientPort(req);
   options.method = util.getMethod(req.body.method);
