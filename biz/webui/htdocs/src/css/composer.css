@@ -192,3 +192,13 @@
   border-radius: 0;
   background-color: lightyellow;
 }
+
+.w-composer-use-h2 {
+  position: absolute;
+  top: 0;
+  right: 90px;
+}
+
+.w-composer-use-h2 input {
+  margin-right: 5px;
+}

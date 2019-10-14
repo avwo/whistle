@@ -191,13 +191,6 @@ module.exports = function(req, res) {
   if (!util.isLocalAddress(clientIp)) {
     headers[config.CLIENT_IP_HEAD] = clientIp;
   }
-  if (protocol === 'h2:' || protocol === 'http2:') {
-    options.protocol = protocol = 'https:';
-    var s = req.socket || '';
-    s._h2SessionId = s._h2SessionId || util.getSessionId();
-    headers[config.SESSION_ID_HEADER] = s._h2SessionId;
-    headers[config.ALPN_PROTOCOL_HEADER] = 'h2';
-  }
   headers[config.CLIENT_PORT_HEAD] = util.getClientPort(req);
   options.method = util.getMethod(req.body.method);
 
@@ -212,6 +205,13 @@ module.exports = function(req, res) {
   } else {
     headers.connection = 'close';
     delete headers.upgrade;
+    if (!isConn && ((req.body.useH2 && protocol === 'https:') || protocol === 'h2:' || protocol === 'http2:')) {
+      options.protocol = protocol = 'https:';
+      var s = req.socket || '';
+      s._h2SessionId = s._h2SessionId || util.getSessionId();
+      headers[config.SESSION_ID_HEADER] = s._h2SessionId;
+      headers[config.ALPN_PROTOCOL_HEADER] = 'h2';
+    }
   }
 
   var base64 = req.body.base64;
