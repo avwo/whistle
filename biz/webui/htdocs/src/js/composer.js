@@ -126,6 +126,7 @@ var Composer = React.createClass({
           self.update(activeItem);
           self.onComposerChange();
         });
+        storage.set('useH2InComposer', activeItem.useH2 ? 1 : '');
       }
     });
     events.on('updateStrictMode', function() {
@@ -254,6 +255,7 @@ var Composer = React.createClass({
     this.state.useH2 = item.useH2;
     this.state.headers = item.headers;
     this.onComposerChange(true);
+    storage.set('useH2InComposer', item.useH2 ? 1 : '');
   },
   onReplay: function(item) {
     this.onCompose(item);
