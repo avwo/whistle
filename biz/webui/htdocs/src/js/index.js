@@ -2120,6 +2120,7 @@ var Index = React.createClass({
       var req = item.req;
       if (util.canReplay(item)) {
         dataCenter.composer({
+          useH2: item.useH2 ? 1 : '',
           url: item.url,
           headers:   util.getOriginalReqHeaders(item),
           method: req.method,

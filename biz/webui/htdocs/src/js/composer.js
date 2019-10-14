@@ -87,6 +87,7 @@ var Composer = React.createClass({
     var rules = storage.get('composerRules');
     var data = util.parseJSON(storage.get('composerData')) || {};
     var showPretty = storage.get('showPretty') == '1';
+    var useH2 = storage.get('useH2InComposer') == '1';
     var disableComposerRules = storage.get('disableComposerRules') == '1';
     return {
       historyData: [],
@@ -96,6 +97,7 @@ var Composer = React.createClass({
       body: data.body,
       tabName: 'Request',
       showPretty: showPretty,
+      useH2: useH2,
       rules: typeof rules === 'string' ? rules : '',
       type: getType(util.parseHeaders(data.headers)),
       disableComposerRules: disableComposerRules,
@@ -113,6 +115,7 @@ var Composer = React.createClass({
       var activeItem = self.props.modal;
       if (activeItem) {
         self.setState({
+          useH2: activeItem.useH2,
           url: activeItem.url,
           headers: activeItem.headers,
           result: activeItem,
@@ -123,6 +126,7 @@ var Composer = React.createClass({
           self.update(activeItem);
           self.onComposerChange();
         });
+        storage.set('useH2InComposer', activeItem.useH2 ? 1 : '');
       }
     });
     events.on('updateStrictMode', function() {
@@ -191,6 +195,7 @@ var Composer = React.createClass({
       url: url,
       headers: headers,
       method: method,
+      useH2: this.state.useH2 ? 1 : '',
       body: ReactDOM.findDOMNode(refs.body).value.replace(/\r\n|\r|\n/g, '\r\n')
     };
     storage.set('composerData', JSON.stringify(params));
@@ -247,8 +252,10 @@ var Composer = React.createClass({
     this.state.result = '';
     this.state.isHexText = isHexText;
     this.state.url = item.url;
+    this.state.useH2 = item.useH2;
     this.state.headers = item.headers;
     this.onComposerChange(true);
+    storage.set('useH2InComposer', item.useH2 ? 1 : '');
   },
   onReplay: function(item) {
     this.onCompose(item);
@@ -334,6 +341,11 @@ var Composer = React.createClass({
     storage.set('showPretty', show ? 1 : 0);
     this.setState({ showPretty: show }, this.updatePrettyData);
   },
+  toggleH2: function(e) {
+    var useH2 = e.target.checked;
+    storage.set('useH2InComposer', useH2 ? 1 : '');
+    this.setState({ useH2: useH2 });
+  },
   onDisableChange: function(e) {
     var disableComposerRules = !e.target.checked;
     storage.set('disableComposerRules', disableComposerRules ? 1 : 0);
@@ -407,6 +419,7 @@ var Composer = React.createClass({
       body = body.replace(/\r\n|\r|\n/g, '\r\n');
     }
     var params = {
+      useH2: this.state.useH2 ? 1 : '',
       needResponse: true,
       url: url.replace(/^\/\//, ''),
       headers: headers,
@@ -487,6 +500,7 @@ var Composer = React.createClass({
     var type = state.type;
     var rules = state.rules;
     var showPretty = state.showPretty;
+    var useH2 = state.useH2;
     var pending = state.pending;
     var result = state.result || '';
     var tabName = state.tabName;
@@ -521,6 +535,10 @@ var Composer = React.createClass({
         <div className="w-detail-inspectors-title w-composer-tabs">
           <button onClick={this.onTabChange} name="Request" className={showRequest ? 'w-tab-btn w-active' : 'w-tab-btn'}>Request</button>
           <button title={result.url} onClick={this.onTabChange} name="Response"  className={showResponse ? 'w-tab-btn w-active' : 'w-tab-btn'}>Response</button>
+          <label className="w-composer-use-h2">
+            <input type="checkbox" onChange={this.toggleH2} checked={useH2} />
+            Use H2
+          </label>
           <button onClick={this.showHistory} className="btn btn-default" title={historyData.length ? 'No history' : undefined}
             disabled={disableHistory}>History</button>
         </div>
