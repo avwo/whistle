@@ -45,6 +45,10 @@ PROTOCOLS.forEach(function(name) {
   DEFAULT_RULES_MODAL[name] = '';
 });
 
+function formatSize(value) {
+  return value >= 1024 ? value + '(' + Number(value / 1024).toFixed(2) + 'k)' : value;
+}
+
 var Overview = React.createClass({
   getInitialState: function() {
     return {
@@ -87,9 +91,13 @@ var Overview = React.createClass({
           if (value && prop === 'res.ip') {
             value = util.getServerIp(modal);
           }
-          if (value) {
-            if ((prop == 'req.size' || prop == 'res.size') && value >= 1024) {
-              value += '(' + Number(value / 1024).toFixed(2) + 'k)';
+          if (value != null) {
+            if (prop == 'req.size' || prop == 'res.size') {
+              value = formatSize(value);
+              var unzipSize = value ? util.getProperty(modal, prop.substring(0, 4) + 'unzipSize') : -1;
+              if (unzipSize >= 0) {
+                value += ' / ' + formatSize(unzipSize);
+              }
             } else if (prop == 'realUrl') {
               if (value == modal.url) {
                 value = '';
