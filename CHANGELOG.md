@@ -1,3 +1,6 @@
+# v2.1.1
+1. fix: 修复一些UI显示问题
+
 # v2.1.0
 1. fix: 修复url替换 `url replacementUrl` path取错问题
 
