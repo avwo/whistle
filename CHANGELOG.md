@@ -1,3 +1,6 @@
+# v2.1.0
+1. fix: 修复url替换 `url replacementUrl` path取错问题
+
 # v2.0.0
 1. feat: **支持 HTTP2 功能**
 	> 请确保运行的 Node 版本为 [LTS(>= 10.16.0) 或 Stable(>= 12.12.0) 的最新版本](https://nodejs.org/en/)，否则可能会出现一些异常，如：[#24037](https://github.com/nodejs/node/issues/24037)、[#24470](https://github.com/nodejs/node/issues/24470)
