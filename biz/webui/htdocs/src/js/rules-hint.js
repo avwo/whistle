@@ -192,9 +192,7 @@ function handleRemoteHints(data, editor, plugin, protoName, value, cgi) {
       }
     }
   });
-  if (len === 1 && curHintList[0] !== protoName) {
-    curHintList = [];
-  } else if (waitingRemoteHints && len) {
+  if (waitingRemoteHints && len) {
     editor._byPlugin = true;
     editor.execCommand('autocomplete');
   }
