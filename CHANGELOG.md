@@ -1,6 +1,7 @@
 # v2.1.1
 1. fix: 修复自定义插件hint时，如果只有一个补全数据不显示的问题，以及请求和响应内容为空时不显示大小的问题
 2. style: Overview 里面支持显示gzip前后的大小
+3. feat: 支持通过环境变量 `env.WHISTLE_PLUGIN_EXEC_PATH` 或启动参数 `-M buildIn` 设置 fork whistle 插件进程的 Node 路径 （默认为全局 Node ）
 
 # v2.1.0
 1. fix: 修复url替换 `url replacementUrl` path取错问题
