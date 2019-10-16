@@ -1,5 +1,6 @@
 # v2.1.1
-1. fix: 修复一些UI显示问题
+1. fix: 修复自定义插件hint时，如果只有一个补全数据不显示的问题，以及请求和响应内容为空时不显示大小的问题
+2. style: Overview 里面支持显示gzip前后的大小
 
 # v2.1.0
 1. fix: 修复url替换 `url replacementUrl` path取错问题
