@@ -93,9 +93,10 @@ var Overview = React.createClass({
           }
           if (value != null) {
             if (prop == 'req.size' || prop == 'res.size') {
-              value = formatSize(value);
+              var size = value;
+              value = formatSize(size);
               var unzipSize = value ? util.getProperty(modal, prop.substring(0, 4) + 'unzipSize') : -1;
-              if (unzipSize >= 0) {
+              if (unzipSize >= 0 && unzipSize != size) {
                 value += ' / ' + formatSize(unzipSize);
               }
             } else if (prop == 'realUrl') {

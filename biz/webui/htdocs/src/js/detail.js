@@ -144,10 +144,12 @@ var ReqData = React.createClass({
       overview = {
         req: {
           size: 0,
+          unzipSize: 0,
           headers: {}
         },
         res: {
           size: 0,
+          unzipSize: 0,
           headers: {}
         }
       };
@@ -158,11 +160,15 @@ var ReqData = React.createClass({
         if (overview.endTime == null || overview.endTime < item.endTime) {
           overview.endTime = item.endTime;
         }
-        if (item.req.size > 0) {
-          overview.req.size += item.req.size;
+        var req = item.req;
+        if (req.size > 0) {
+          overview.req.size += req.size;
+          overview.req.unzipSize += req.unzipSize == null ? req.size : req.unzipSize;
         }
-        if (item.res.size > 0) {
-          overview.res.size += item.res.size;
+        var res = item.res;
+        if (res.size > 0) {
+          overview.res.size += res.size;
+          overview.res.unzipSize += res.unzipSize == null ? res.size : res.unzipSize;
         }
       });
     } else if (data) {
