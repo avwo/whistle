@@ -122,10 +122,11 @@ CodeMirror.defineMode('rules', function() {
   }
 
   function isWildcard(str) {
-    if (!/^(?:\$?(?:https?:|wss?:|tunnel:)?\/\/)?([^/]+)/.test(str)) {
+    if (!/^(?:\$?(?:https?:|wss?:|tunnel:)?\/\/)?([^/?]+)/.test(str)) {
       return false;
     }
-    return RegExp.$1.indexOf('*') !== -1 || RegExp.$1.indexOf('~') !== -1;
+    var domain = RegExp.$1;
+    return domain.indexOf('*') !== -1 || domain.indexOf('~') !== -1;
   }
 
   function isRegUrl(url) {
@@ -149,7 +150,7 @@ CodeMirror.defineMode('rules', function() {
       var not = ch === '!';
       var str = not ? stream.next() : ch;
       var type = '';
-      var pre;
+      var pre, isHttpUrl;
       stream.eatWhile(function(ch) {
         if (/\s/.test(ch) || ch == '#') {
           return false;
@@ -201,6 +202,7 @@ CodeMirror.defineMode('rules', function() {
           } else if (isRulesFile(str)) {
             type = 'variable-2 js-rulesFile js-type';
           } else if (isUrl(str)) {
+            isHttpUrl = true;
             type = 'string-2 js-url js-type' + (str[0] === 'h' ? ' js-http-url' : '');
           } else if (isWildcard(str)) {
             type = 'attribute js-attribute';
@@ -226,6 +228,8 @@ CodeMirror.defineMode('rules', function() {
         } else if (isLocalPath(str)) {
           type = 'builtin js-rule js-type';
         }
+      } else if (isHttpUrl && isWildcard(str)) {
+        return 'attribute js-attribute';
       }
       return not ? type + ' error-rule' : (type || 'js-http-url');
     }
