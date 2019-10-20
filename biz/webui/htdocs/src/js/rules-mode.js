@@ -4,6 +4,7 @@ var protocols = require('./protocols');
 var forwardRules = protocols.getForwardRules();
 var pluginRules = protocols.getPluginRules();
 var DOT_PATTERN_RE = /^\.[\w-]+(?:[?$]|$)/;
+var DOT_DOMAIN_RE = /^\.[^./?]+\.[^/?]/;
 
 events.on('updatePlugins', function() {
   forwardRules = protocols.getForwardRules();
@@ -126,7 +127,7 @@ CodeMirror.defineMode('rules', function() {
       return false;
     }
     var domain = RegExp.$1;
-    return domain.indexOf('*') !== -1 || domain.indexOf('~') !== -1;
+    return domain.indexOf('*') !== -1 || domain.indexOf('~') !== -1 || DOT_DOMAIN_RE.test(domain);
   }
 
   function isRegUrl(url) {
