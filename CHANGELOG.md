@@ -5,8 +5,7 @@
 	````
 	``` test
 	[1]: "test"
-	a: 1
-	b: 2
+	[10]: 1
 	```
 	````
 	``` txt
@@ -16,16 +15,15 @@
 	``` txt
 	{
 		"[1]": "test",
-		"a": 1,
-		"b": xxxx
+		"[10]": 1
 	}
 	```
 
 	而 `v2.1.2` 版本开始，上述文本会转成
 	```
-	var arr = ["test"];
-	arr.a = 1;
-	arr.b = 2;
+	var arr = [];
+	arr[1] = 'test';
+	arr[10] = 1;
 	```
 	更复杂的规则：
 	````
@@ -39,6 +37,15 @@
 		c: "abc"
 	}]}}
 	```
+	> 如果不希望进行自动转义，可以使用双引号 `"[xxx.yyy[n]]"`
+	2. feat: 添加在域名中 `.` 匹配模式
+		``` txt
+		.test.com 表示匹配 x.test.com 与 test.com
+		*.test.com 表示匹配 x.test.com，不匹配 test.com
+		**.test.com 表示匹配 x.test.com 及其所有子孙代域名
+		***.test.com 表示匹配 test.com 及其所有子孙代域名
+		上述匹配可以加协议及路径进行更精确代匹配 `http://.test.com/path/to/*`
+		```
 
 # v2.1.1
 1. fix: 修复自定义插件hint时，如果只有一个补全数据不显示的问题，以及请求和响应内容为空时不显示大小的问题
