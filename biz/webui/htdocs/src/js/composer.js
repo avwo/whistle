@@ -13,7 +13,7 @@ var PropsEditor = require('./props-editor');
 var HistoryData = require('./history-data');
 var message = require('./message');
 
-var METHODS = 'GET,POST,PUT,HEAD,TRACE,DELETE,SEARCH,CONNECT,UPGRADE,PROPFIND,PROPPATCH,MKCOL,COPY,MOVE,LOCK,UNLOCK,OPTIONS'.split(',');
+var METHODS = 'GET,POST,PUT,HEAD,TRACE,DELETE,SEARCH,CONNECT,UPGRADE,PROPFIND,PROPPATCH,MKCOL,COPY,MOVE,LOCK,UNLOCK,OPTIONS,+ Method'.split(',');
 var TYPES = {
   form: 'application/x-www-form-urlencoded',
   upload: 'multipart/form-data',
@@ -89,10 +89,14 @@ var Composer = React.createClass({
     var showPretty = storage.get('showPretty') == '1';
     var useH2 = storage.get('useH2InComposer') == '1';
     var disableComposerRules = storage.get('disableComposerRules') == '1';
+    var method = data.method;
+    if (METHODS.indexOf(method) === -1 || method === '+ Method') {
+      method = 'GET';
+    }
     return {
       historyData: [],
       url: data.url,
-      method: data.method,
+      method: method,
       headers: data.headers,
       body: data.body,
       tabName: 'Request',
@@ -147,6 +151,11 @@ var Composer = React.createClass({
       setTimeout(this.loadHistory, 6000);
     });
   },
+  getMethod: function() {
+    var curMethod = this.state.method || 'GET';
+    var method = ReactDOM.findDOMNode(this.refs.method).value || curMethod;
+    return method === '+ Custom' ? method : curMethod;
+  },
   updatePrettyData: function() {
     if (!this.state.showPretty) {
       return;
@@ -155,7 +164,7 @@ var Composer = React.createClass({
     var headers = ReactDOM.findDOMNode(this.refs.headers).value;
     var prettyHeaders = util.parseHeaders(headers);
     this.refs.prettyHeaders.update(prettyHeaders);
-    var method = ReactDOM.findDOMNode(this.refs.method).value || 'GET';
+    var method = this.getMethod();
     var body;
     if (hasReqBody(method, url, headers)) {
       body = ReactDOM.findDOMNode(this.refs.body).value;
@@ -186,7 +195,7 @@ var Composer = React.createClass({
   },
   saveComposer: function() {
     var refs = this.refs;
-    var method = ReactDOM.findDOMNode(refs.method).value || 'GET';
+    var method = this.getMethod();
     var url = ReactDOM.findDOMNode(this.refs.url).value.trim();
     var headers = ReactDOM.findDOMNode(this.refs.headers).value;
     this.state.url = url;
@@ -267,7 +276,14 @@ var Composer = React.createClass({
     var target = e === true ? e : (e && e.target);
     if (target) {
       if (target === true || target.nodeName === 'SELECT') {
-        this.setState({ method: ReactDOM.findDOMNode(this.refs.method).value });
+        var method = ReactDOM.findDOMNode(this.refs.method).value;
+        var state = {};
+        if (method === '+ Method') {
+          alert(2);
+        } else {
+          state.method = method;
+        }
+        this.setState(state);
         this.updatePrettyData();
       }
       if (target === true || target.name === 'headers') {
@@ -404,7 +420,7 @@ var Composer = React.createClass({
       }
     }
     var self = this;
-    var method = ReactDOM.findDOMNode(refs.method).value || 'GET';
+    var method = self.getMethod();
     var body = ReactDOM.findDOMNode(refs.body).value;
     var base64;
     var isHexText = this.state.isHexText;
