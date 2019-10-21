@@ -12,8 +12,9 @@ var Properties = require('./properties');
 var PropsEditor = require('./props-editor');
 var HistoryData = require('./history-data');
 var message = require('./message');
+var Dialog = require('./dialog');
 
-var METHODS = 'GET,POST,PUT,HEAD,TRACE,DELETE,SEARCH,CONNECT,UPGRADE,PROPFIND,PROPPATCH,MKCOL,COPY,MOVE,LOCK,UNLOCK,OPTIONS,+ Method'.split(',');
+var METHODS = 'GET,POST,PUT,HEAD,TRACE,DELETE,SEARCH,CONNECT,UPGRADE,PROPFIND,PROPPATCH,MKCOL,COPY,MOVE,LOCK,UNLOCK,OPTIONS,VIEW,PURGE,+ Edit'.split(',');
 var TYPES = {
   form: 'application/x-www-form-urlencoded',
   upload: 'multipart/form-data',
@@ -90,13 +91,15 @@ var Composer = React.createClass({
     var useH2 = storage.get('useH2InComposer') == '1';
     var disableComposerRules = storage.get('disableComposerRules') == '1';
     var method = data.method;
-    if (METHODS.indexOf(method) === -1 || method === '+ Method') {
+    var methods = this.getCustomMethods();
+    if (methods.indexOf(method) === -1 || method === '+ Edit') {
       method = 'GET';
     }
     return {
       historyData: [],
       url: data.url,
       method: method,
+      methods: methods,
       headers: data.headers,
       body: data.body,
       tabName: 'Request',
@@ -278,8 +281,8 @@ var Composer = React.createClass({
       if (target === true || target.nodeName === 'SELECT') {
         var method = ReactDOM.findDOMNode(this.refs.method).value;
         var state = {};
-        if (method === '+ Method') {
-          alert(2);
+        if (method === '+ Edit') {
+          this.refs.addMethodDialog.show();
         } else {
           state.method = method;
         }
@@ -511,6 +514,29 @@ var Composer = React.createClass({
     }
     this.setState({ tabName: tabName, initedResponse: true });
   },
+  getCustomMethods: function() {
+    var result = METHODS.slice();
+    var methods = storage.get('customComposerMethods');
+    if (methods && typeof methods === 'string') {
+      var count = 6;
+      result = result.slice(0, -1);
+      methods.trim().split(/\s+/).forEach(function(method) {
+        if (method && method.length <= 36 && !/[^\w.-]/.test(method)) {
+          method = method.toUpperCase();
+          if (result.indexOf(method) === -1 && --count >= 0) {
+            result.push(method);
+          }
+        }
+      });
+      result.push('+ Edit');
+    }
+    return result;
+  },
+  saveMethods: function() {
+    var value = ReactDOM.findDOMNode(this.refs.newMethods).value.substring(0, 200);
+    storage.set('customComposerMethods', value);
+    this.setState({ methods: this.getCustomMethods() });
+  },
   render: function() {
     var state = this.state;
     var type = state.type;
@@ -524,7 +550,7 @@ var Composer = React.createClass({
     var showResponse = tabName === 'Response';
     var statusCode = result ? (result.res && result.res.statusCode) : '';
     var isForm = type === 'form';
-    var method = state.method || 'GET';
+    var method = state.method;
     var hasBody = hasReqBody(method, state.url, state.headers);
     var historyData = state.historyData;
     var disableHistory = !historyData.length || pending;
@@ -538,10 +564,10 @@ var Composer = React.createClass({
     return (
       <div className={'fill orient-vertical-box w-detail-content w-detail-composer' + (util.getBoolean(this.props.hide) ? ' hide' : '')}>
         <div className="w-composer-url box">
-          <select disabled={pending} defaultValue={method}
+          <select disabled={pending} value={method}
             onChange={this.onComposerChange} ref="method"
             className="form-control w-composer-method">
-            {METHODS.map(function(m) {
+            {state.methods.map(function(m) {
               return <option value={m}>{m}</option>;
             })}
           </select>
@@ -643,6 +669,16 @@ var Composer = React.createClass({
           </div>
         </Divider>
         <HistoryData ref="historyDialog" onReplay={this.onReplay} onCompose={this.onCompose} data={historyData} />
+        <Dialog wstyle="w-composer-methods" ref="addMethodDialog">
+          <div className="modal-body">
+            <textarea ref="newMethods" maxLength="200" defaultValue={storage.get('customComposerMethods')}
+              placeholder="Please enter a new method name separated by a space or a newline" />
+          </div>
+          <div className="modal-footer">
+            <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={this.saveMethods}>Save</button>
+            <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </Dialog>
       </div>
     );
   }
