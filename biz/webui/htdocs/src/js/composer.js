@@ -28,6 +28,7 @@ var WS_RE = /^wss?:\/\//i;
 var WS_CONNNECT_RE = /^\s*connection\s*:\s*upgrade\s*$/im;
 var WS_UPGRADE_RE = /^\s*upgrade\s*:\s*websocket\s*$/im;
 var REV_TYPES = {};
+var MAX_TEXT_LEN = 200;
 Object.keys(TYPES).forEach(function(name) {
   REV_TYPES[TYPES[name]] = name;
 });
@@ -37,6 +38,11 @@ function hasReqBody(method, url, headers) {
     return true;
   }
   return headers && WS_CONNNECT_RE.test(headers) && WS_UPGRADE_RE.test(headers);
+}
+
+function getCustomMethodText() {
+  var text = storage.get('customComposerMethods');
+  return typeof text === 'string' ? text.substring(0, MAX_TEXT_LEN) : '';
 }
 
 function getType(headers) {
@@ -99,6 +105,7 @@ var Composer = React.createClass({
       historyData: [],
       url: data.url,
       method: method,
+      methodText: getCustomMethodText(),
       methods: methods,
       headers: data.headers,
       body: data.body,
@@ -516,7 +523,7 @@ var Composer = React.createClass({
   },
   getCustomMethods: function() {
     var result = METHODS.slice();
-    var methods = storage.get('customComposerMethods');
+    var methods = getCustomMethodText();
     if (methods && typeof methods === 'string') {
       var count = 6;
       result = result.slice(0, -1);
@@ -535,7 +542,7 @@ var Composer = React.createClass({
   saveMethods: function() {
     var value = ReactDOM.findDOMNode(this.refs.newMethods).value.substring(0, 200);
     storage.set('customComposerMethods', value);
-    this.setState({ methods: this.getCustomMethods() });
+    this.setState({ methods: this.getCustomMethods(), methodText: value });
   },
   render: function() {
     var state = this.state;
@@ -671,7 +678,7 @@ var Composer = React.createClass({
         <HistoryData ref="historyDialog" onReplay={this.onReplay} onCompose={this.onCompose} data={historyData} />
         <Dialog wstyle="w-composer-methods" ref="addMethodDialog">
           <div className="modal-body">
-            <textarea ref="newMethods" maxLength="200" defaultValue={storage.get('customComposerMethods')}
+            <textarea ref="newMethods" maxLength="200" defaultValue={state.methodText}
               placeholder="Please enter a new method name separated by a space or a newline" />
           </div>
           <div className="modal-footer">
