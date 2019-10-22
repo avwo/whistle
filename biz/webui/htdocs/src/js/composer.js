@@ -14,7 +14,7 @@ var HistoryData = require('./history-data');
 var message = require('./message');
 var Dialog = require('./dialog');
 
-var METHODS = 'GET,POST,PUT,HEAD,TRACE,DELETE,SEARCH,CONNECT,UPGRADE,PROPFIND,PROPPATCH,MKCOL,COPY,MOVE,LOCK,UNLOCK,OPTIONS,VIEW,PURGE,+ Method'.split(',');
+var METHODS = 'GET,POST,PUT,HEAD,TRACE,DELETE,SEARCH,CONNECT,UPGRADE,PROPFIND,PROPPATCH,MKCOL,COPY,MOVE,LOCK,UNLOCK,OPTIONS,PURGE,+ Method'.split(',');
 var TYPES = {
   form: 'application/x-www-form-urlencoded',
   upload: 'multipart/form-data',
