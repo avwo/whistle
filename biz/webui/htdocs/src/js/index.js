@@ -2828,55 +2828,39 @@ var Index = React.createClass({
         <div className="w-container box fill">
           <div className="w-left-menu" style={{display: networkMode ? 'none' : undefined}}>
             <a onClick={this.showNetwork} onDoubleClick={this.clearNetwork}
-              title={name == 'network' ? 'Double click to remove all sessions' : undefined}
+              title="Network: double click to remove all sessions"
               className="w-network-menu"
               style={{
                 background: name == 'network' ? '#ddd' : null,
                 display: rulesMode ? 'none' : undefined
               }}
               href="javascript:;"  draggable="false">
-                <span className="glyphicon glyphicon-globe"></span>
-                <span className="w-left-menu-tips">
-                  <i className="w-arrow w-arrow-left"></i>
-                  Network
-                </span>
+                <span className="glyphicon glyphicon-globe"></span><i>Network</i>
             </a>
             <a onClick={this.showRules} className="w-save-menu w-rules-menu"
               onDoubleClick={this.onClickMenu}
-              title={name == 'rules' ? 'Double click to save all changed' : undefined}
+              title="Rules: double click to save all changed"
               style={{
                 background: name == 'rules' ? '#ddd' : null,
                 display: pluginsMode ? 'none' : undefined
               }} href="javascript:;" draggable="false">
-              <span className={'glyphicon glyphicon-list' + (state.disabledAllRules ? ' w-disabled' : '')} ></span>
-              <span className="w-left-menu-tips">
-                <i className="w-arrow w-arrow-left"></i>
-                Rules
-              </span>
+              <span className={'glyphicon glyphicon-list' + (state.disabledAllRules ? ' w-disabled' : '')} ></span><i>Rules</i>
               <i className="w-menu-changed" style={{display: state.rules.hasChanged() ? undefined : 'none'}}>*</i>
             </a>
             <a onClick={this.showValues} className="w-save-menu w-values-menu"
               onDoubleClick={this.onClickMenu}
-              title={name == 'values' ? 'Double click to save all changed' : undefined}
+              title="Values: double click to save all changed"
               style={{
                 background: name == 'values' ? '#ddd' : null,
                 display: pluginsMode ? 'none' : undefined
               }} href="javascript:;" draggable="false">
-              <span className="glyphicon glyphicon-folder-open"></span>
-              <span className="w-left-menu-tips">
-                <i className="w-arrow w-arrow-left"></i>
-                Values
-              </span>
+              <span className="glyphicon glyphicon-folder-open"></span><i>Values</i>
               <i className="w-menu-changed" style={{display: state.values.hasChanged() ? undefined : 'none'}}>*</i>
             </a>
             <a onClick={this.showPlugins} className="w-plugins-menu"
-              title={name == 'plugins' ? 'Double click to ' + (state.disabledAllPlugins ? 'enable' : 'disable') + ' all plugins': undefined}
+              title="Plugins"
               style={{background: name == 'plugins' ? '#ddd' : null}} href="javascript:;" draggable="false">
-              <span className={'glyphicon glyphicon-list-alt' + (disabledAllPlugins ? ' w-disabled' : '')}></span>
-              <span className="w-left-menu-tips">
-                <i className="w-arrow w-arrow-left"></i>
-                Plugins
-              </span>
+              <span className={'glyphicon glyphicon-list-alt' + (disabledAllPlugins ? ' w-disabled' : '')}></span><i>Plugins</i>
             </a>
           </div>
           {state.hasRules ? <List ref="rules" disabled={state.disabledAllRules} theme={rulesTheme}
