@@ -14,7 +14,7 @@ var HistoryData = require('./history-data');
 var message = require('./message');
 var Dialog = require('./dialog');
 
-var METHODS = 'GET,POST,PUT,HEAD,TRACE,DELETE,SEARCH,CONNECT,UPGRADE,PROPFIND,PROPPATCH,MKCOL,COPY,MOVE,LOCK,UNLOCK,OPTIONS,VIEW,PURGE,+ Edit'.split(',');
+var METHODS = 'GET,POST,PUT,HEAD,TRACE,DELETE,SEARCH,CONNECT,UPGRADE,PROPFIND,PROPPATCH,MKCOL,COPY,MOVE,LOCK,UNLOCK,OPTIONS,VIEW,PURGE,+ Method'.split(',');
 var TYPES = {
   form: 'application/x-www-form-urlencoded',
   upload: 'multipart/form-data',
@@ -98,7 +98,7 @@ var Composer = React.createClass({
     var disableComposerRules = storage.get('disableComposerRules') == '1';
     var method = data.method;
     var methods = this.getCustomMethods();
-    if (methods.indexOf(method) === -1 || method === '+ Edit') {
+    if (methods.indexOf(method) === -1 || method === '+ Method') {
       method = 'GET';
     }
     return {
@@ -281,25 +281,30 @@ var Composer = React.createClass({
     this.execute();
   },
   onComposerChange: function(e) {
-    clearTimeout(this.composerTimer);
-    this.composerTimer = setTimeout(this.saveComposer, 1000);
+    var self = this;
+    clearTimeout(self.composerTimer);
+    self.composerTimer = setTimeout(self.saveComposer, 1000);
     var target = e === true ? e : (e && e.target);
     if (target) {
       if (target === true || target.nodeName === 'SELECT') {
-        var method = ReactDOM.findDOMNode(this.refs.method).value;
+        var method = ReactDOM.findDOMNode(self.refs.method).value;
         var state = {};
-        if (method === '+ Edit') {
-          this.refs.addMethodDialog.show();
+        if (method === '+ Method') {
+          self.refs.addMethodDialog.show();
+          setTimeout(function() {
+            var box = ReactDOM.findDOMNode(self.refs.newMethods);
+            box.select();
+            box.focus();
+          }, 600);
         } else {
           state.method = method;
         }
-        this.setState(state);
-        this.updatePrettyData();
+        self.setState(state);
+        self.updatePrettyData();
       }
       if (target === true || target.name === 'headers') {
-        clearTimeout(this.typeTimer);
-        var self = this;
-        this.typeTimer = setTimeout(function() {
+        clearTimeout(self.typeTimer);
+        self.typeTimer = setTimeout(function() {
           var headers = ReactDOM.findDOMNode(self.refs.headers).value;
           self.setState({
             type: getType(util.parseHeaders(headers))
@@ -535,7 +540,7 @@ var Composer = React.createClass({
           }
         }
       });
-      result.push('+ Edit');
+      result.push('+ Method');
     }
     return result;
   },
@@ -679,7 +684,7 @@ var Composer = React.createClass({
         <Dialog wstyle="w-composer-methods" ref="addMethodDialog">
           <div className="modal-body">
             <textarea ref="newMethods" maxLength="200" defaultValue={state.methodText}
-              placeholder="Please enter a new method name separated by a space or a newline" />
+              placeholder="Please enter the new methods separated by a space or a newline" />
           </div>
           <div className="modal-footer">
             <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={this.saveMethods}>Save</button>
