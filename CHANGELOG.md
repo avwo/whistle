@@ -1,6 +1,6 @@
 # v2.1.3
 1. style: Composer 里面支持自定义方法
-2. refactor: 减少h2到session数，每个 clientIp 同类请求只会一个实例
+2. perf: 减少h2的session数，每个客户端到h2 session可以完全复用
 
 # v2.1.2
 1. feat: 多行形式的 JSON 对象支持设置数组及多层嵌套的值
