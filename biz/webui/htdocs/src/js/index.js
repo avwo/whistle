@@ -2828,7 +2828,7 @@ var Index = React.createClass({
         <div className="w-container box fill">
           <div className="w-left-menu" style={{display: networkMode ? 'none' : undefined}}>
             <a onClick={this.showNetwork} onDoubleClick={this.clearNetwork}
-              title="Network: double click to remove all sessions"
+              title="Double click to remove all sessions"
               className="w-network-menu"
               style={{
                 background: name == 'network' ? '#ddd' : null,
@@ -2839,7 +2839,7 @@ var Index = React.createClass({
             </a>
             <a onClick={this.showRules} className="w-save-menu w-rules-menu"
               onDoubleClick={this.onClickMenu}
-              title="Rules: double click to save all changed"
+              title="Double click to save all changed"
               style={{
                 background: name == 'rules' ? '#ddd' : null,
                 display: pluginsMode ? 'none' : undefined
@@ -2849,7 +2849,7 @@ var Index = React.createClass({
             </a>
             <a onClick={this.showValues} className="w-save-menu w-values-menu"
               onDoubleClick={this.onClickMenu}
-              title="Values: double click to save all changed"
+              title="Double click to save all changed"
               style={{
                 background: name == 'values' ? '#ddd' : null,
                 display: pluginsMode ? 'none' : undefined
@@ -2858,7 +2858,6 @@ var Index = React.createClass({
               <i className="w-menu-changed" style={{display: state.values.hasChanged() ? undefined : 'none'}}>*</i>
             </a>
             <a onClick={this.showPlugins} className="w-plugins-menu"
-              title="Plugins"
               style={{background: name == 'plugins' ? '#ddd' : null}} href="javascript:;" draggable="false">
               <span className={'glyphicon glyphicon-list-alt' + (disabledAllPlugins ? ' w-disabled' : '')}></span><i>Plugins</i>
             </a>
