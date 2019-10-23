@@ -58,7 +58,7 @@
 .w-left-menu { background: #f1f3f4; border: 1px solid #ccc; border-bottom: none; display: none; }
 .w-show-left-menu .w-left-menu { display: block; }
 .w-show-left-menu .w-nav-menu { display: none; }
-.w-left-menu a { display: block; position: relative; padding: 6px 0 4px; width: 40px; overflow: hidden; text-align: center;
+.w-left-menu a { display: block; position: relative; padding: 10px 0 8px; width: 42px; overflow: hidden; text-align: center;
   text-decoration: none!important; color: #000; }
 .w-left-menu a span { margin-right: 5px; }
 .w-left-menu a i {
@@ -68,7 +68,7 @@
   zoom: 1;
   transform: scale(0.7, 0.7);
   width: 66px;
-  margin-left: -14px;
+  margin-left: -13px;
 }
 .w-left-menu-tips {
   padding: 6px 10px; display: none; left: 47px; top: 3px; position: absolute;
