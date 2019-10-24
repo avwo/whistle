@@ -1,3 +1,7 @@
+# v2.1.4
+1. feat: 支持通过 `Network -> HTTPS -> Enable HTTP/2` 关闭或开启 HTTP/2 请求，可以通过 `pattern enable://h2` 局部开启 HTTP/2
+2. refactor: 支持自动检测 `xxx.har` 文件是否使用base64编码
+
 # v2.1.3
 1. style: Composer 里面支持自定义方法
 2. perf: 减少h2的session数，每个客户端到h2 session可以完全复用
