@@ -332,6 +332,7 @@ var Index = React.createClass({
     state.disabledAllRules = modal.disabledAllRules;
     state.disabledAllPlugins = modal.disabledAllPlugins;
     state.interceptHttpsConnects = !multiEnv && modal.interceptHttpsConnects;
+    state.enableHttp2 = modal.enableHttp2;
     state.rules = rulesModal;
     state.rulesOptions = rulesOptions;
     state.pluginsOptions = this.createPluginsOptions(modal.plugins);
@@ -790,10 +791,12 @@ var Index = React.createClass({
     dataCenter.on('settings', function(data) {
       var state = self.state;
       if (state.interceptHttpsConnects !== data.interceptHttpsConnects
+        || state.enableHttp2 !== data.enableHttp2
         || state.disabledAllRules !== data.disabledAllRules
         || state.allowMultipleChoice !== data.allowMultipleChoice
         || state.disabledAllPlugins !== data.disabledAllPlugins) {
         state.interceptHttpsConnects = data.interceptHttpsConnects;
+        state.enableHttp2 = data.enableHttp2;
         state.disabledAllRules = data.disabledAllRules;
         state.allowMultipleChoice = data.allowMultipleChoice;
         state.disabledAllPlugins = data.disabledAllPlugins;
@@ -1802,6 +1805,19 @@ var Index = React.createClass({
         function(data, xhr) {
           if (data && data.ec === 0) {
             self.state.interceptHttpsConnects = checked;
+          } else {
+            util.showSystemError(xhr);
+          }
+          self.setState({});
+        });
+  },
+  enableHttp2: function(e) {
+    var self = this;
+    var checked = e.target.checked;
+    dataCenter.enableHttp2({enableHttp2: checked ? 1 : 0},
+        function(data, xhr) {
+          if (data && data.ec === 0) {
+            self.state.enableHttp2 = checked;
           } else {
             util.showSystemError(xhr);
           }
@@ -2936,6 +2952,8 @@ var Index = React.createClass({
                     checked={state.interceptHttpsConnects}
                     onChange={this.interceptHttpsConnects}
                     type="checkbox" /> Capture TUNNEL CONNECTs</label></p>
+                  <p><label><input checked={state.enableHttp2}
+                    onChange={this.enableHttp2} type="checkbox" /> Enable HTTP/2</label></p>
                     <a href="javascript:;" draggable="false" onClick={this.showCustomCertsInfo}>View custom certs info</a>
                     <CertsInfoDialog ref="certsInfoDialog" />
                 </div>

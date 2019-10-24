@@ -31,6 +31,7 @@ module.exports = function(req, res) {
     rules: getRules(),
     values: getValues(),
     interceptHttpsConnects: !config.multiEnv && properties.get('interceptHttpsConnects'),
+    enableHttp2: properties.get('enableHttp2') !== false,
     plugins: pluginMgr.getPlugins(),
     disabledAllRules: properties.get('disabledAllRules'),
     disabledPlugins: properties.get('disabledPlugins') || {},

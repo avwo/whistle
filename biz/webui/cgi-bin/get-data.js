@@ -38,6 +38,7 @@ module.exports = function(req, res) {
     disabledAllPlugins: properties.get('disabledAllPlugins'),
     disabledAllRules: properties.get('disabledAllRules'),
     interceptHttpsConnects: !config.multiEnv && properties.get('interceptHttpsConnects'),
+    enableHttp2: properties.get('enableHttp2') !== false,
     defaultRulesIsDisabled: rules.defaultRulesIsDisabled(),
     list: rules.getSelectedList(),
     data: proxy.getData(data, clientIp)

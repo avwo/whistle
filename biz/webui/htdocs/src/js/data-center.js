@@ -401,6 +401,7 @@ exports.log = createCgiObj({
 $.extend(exports, createCgiObj({
   composer: BASE_URI + 'cgi-bin/composer',
   interceptHttpsConnects: BASE_URI + 'cgi-bin/intercept-https-connects',
+  enableHttp2: BASE_URI + 'cgi-bin/enable-http2',
   abort: BASE_URI + 'cgi-bin/abort'
 }, POST_CONF));
 $.extend(exports, createCgiObj({
