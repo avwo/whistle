@@ -657,7 +657,7 @@ var Composer = React.createClass({
             {state.initedResponse ? (
               <div style={{display: showResponse ? undefined : 'none'}} className={'w-composer-res-' + getStatus(statusCode)}>
                 <button onClick={this.onTabChange} name="Request" className="btn btn-default w-composer-back-btn" title="Back to Request"><span className="glyphicon glyphicon-menu-left"></span></button>
-                <Properties modal={{ statusCode: statusCode == null ? 'aborted' : statusCode }} />
+                <Properties modal={{ 'Status Code': statusCode == null ? 'aborted' : statusCode }} />
               </div>
             ) : undefined}
             {state.initedResponse ? <ResDetail modal={result} hide={!showResponse} /> : undefined}
