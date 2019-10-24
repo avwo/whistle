@@ -2504,11 +2504,12 @@ var Index = React.createClass({
         trailers: {}
       };
       var resCtn = rawRes.content;
-      if (resCtn) {
-        if (util.getContentType(resCtn.mimeType) === 'IMG') {
-          res.base64 = resCtn.text;
+      var text = resCtn && resCtn.text;
+      if (text) {
+        if (util.getContentType(resCtn.mimeType) === 'IMG' || (text.length % 4 === 0 && /^[a-z\d+/]+={0,2}$/i.test(text))) {
+          res.base64 = text;
         } else {
-          res.body = resCtn.text;
+          res.body = text;
         }
       }
       var session = {
