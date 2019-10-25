@@ -399,11 +399,13 @@ var List = React.createClass({
     }
     var isRules = self.props.name == 'rules';
     var draggable = false;
-
+    var activeName = activeItem ? activeItem.name : '';
     if (isRules) {
       draggable = list.length > 2;
+      util.triggerRulesActiveChange(activeName);
     } else if (list.length > 1) {
       draggable = true;
+      util.triggerValuesActiveChange(activeName);
     }
 
     //不设置height为0，滚动会有问题

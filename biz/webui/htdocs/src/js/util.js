@@ -1249,6 +1249,33 @@ function triggerPageChange(name) {
 
 exports.triggerPageChange = triggerPageChange;
 
+var curActiveRules;
+exports.triggerRulesActiveChange = function(name) {
+  if (curActiveRules === name) {
+    return;
+  }
+  curActiveRules = name;
+  try {
+    var onChange = window.parent.onWhistleRulesActiveChange;
+    if (typeof onChange === 'function') {
+      onChange(name, location.href);
+    }
+  } catch (e) {}
+};
+var curActiveValues;
+exports.triggerValuesActiveChange = function(name) {
+  if (curActiveValues === name) {
+    return;
+  }
+  curActiveValues = name;
+  try {
+    var onChange = window.parent.onWhistleValuesActiveChange;
+    if (typeof onChange === 'function') {
+      onChange(name, location.href);
+    }
+  } catch (e) {}
+};
+
 function changePageName(name) {
   var hash = location.hash.substring(1);
   var index = hash.indexOf('?');
