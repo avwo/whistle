@@ -1236,10 +1236,12 @@ exports.getHexText = function (text) {
   return text.split('\n').map(getHexLine).join('\n');
 };
 
+var curPageName;
 function triggerPageChange(name) {
   try {
     var onPageChange = window.parent.onWhistlePageChange;
-    if (typeof onPageChange === 'function') {
+    if (typeof onPageChange === 'function' && curPageName !== name) {
+      curPageName = name;
       onPageChange(name, location.href);
     }
   } catch (e) {}
