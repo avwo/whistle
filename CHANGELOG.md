@@ -1,3 +1,7 @@
+# v2.2.2
+1. fix: https://github.com/nodejs/node/issues/27384
+2. refactor: 优化 H2 session 缓存策略
+
 # v2.2.1
 1. refactor: 去掉请求超时设置
 
