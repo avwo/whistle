@@ -76,7 +76,7 @@ var HistoryData = React.createClass({
                     );
                   }) : (
                     <tr>
-                      <td colSpan="5" className="w-empty">No Data</td>
+                      <td colSpan="5" className="w-empty">Empty</td>
                     </tr>
                   )
                 }

@@ -188,7 +188,7 @@ var Home = React.createClass({
                       <td className="w-plugins-desc" title={plugin.description}>{plugin.description}</td>
                     </tr>
                   );
-                }) : <tr><td colSpan="7" className="w-empty"><a href="https://github.com/whistle-plugins" target="_blank">No Data</a></td></tr>}
+                }) : <tr><td colSpan="7" className="w-empty"><a href="https://github.com/whistle-plugins" target="_blank">Empty</a></td></tr>}
               </tbody>
             </table>
           </div>

@@ -65,7 +65,7 @@ var KVDialog = React.createClass({
                 {
                   noData ? (
                     <tr>
-                      <td colSpan="2" className="w-empty">No Data</td>
+                      <td colSpan="2" className="w-empty">Empty</td>
                     </tr>
                   ) : list.map(function(item, i) {
                     return (
