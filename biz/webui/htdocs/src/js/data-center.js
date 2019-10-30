@@ -808,6 +808,9 @@ function setReqData(item) {
   } else if (!item.useH2 && item.protocol === 'H2') {
     item.protocol = item.isHttps ? 'HTTP' : util.getProtocol(url);
   }
+  if (item.useHttp && (item.protocol === 'HTTPS' || item.protocol === 'WSS')) {
+    item.protocol = item.protocol + ' > ' + item.protocol.slice(0, -1);
+  }
   if (!item.frames && isSocket(item)) {
     item.frames = [];
   }

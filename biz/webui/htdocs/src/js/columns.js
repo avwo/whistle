@@ -34,7 +34,7 @@ function getDefaultColumns() {
       name: 'protocol',
       className: 'protocol',
       selected: true,
-      minWidth: 75
+      minWidth: 95
     },
     {
       title: 'ClientIP',
