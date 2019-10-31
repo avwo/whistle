@@ -373,6 +373,13 @@ var Composer = React.createClass({
     this.setState({ showPretty: show }, this.updatePrettyData);
   },
   toggleH2: function(e) {
+    if (!dataCenter.supportH2) {
+      if (window.confirm('The current version of Node.js cannot support HTTP/2.\nPlease upgrade to the latest LTS version.')) {
+        window.open('https://nodejs.org/');
+      }
+      this.setState({});
+      return;
+    }
     var useH2 = e.target.checked;
     storage.set('useH2InComposer', useH2 ? 1 : '');
     this.setState({ useH2: useH2 });
@@ -589,10 +596,10 @@ var Composer = React.createClass({
         <div className="w-detail-inspectors-title w-composer-tabs">
           <button onClick={this.onTabChange} name="Request" className={showRequest ? 'w-tab-btn w-active' : 'w-tab-btn'}>Request</button>
           <button title={result.url} onClick={this.onTabChange} name="Response"  className={showResponse ? 'w-tab-btn w-active' : 'w-tab-btn'}>Response</button>
-          { dataCenter.supportH2 ? <label className="w-composer-use-h2">
-            <input type="checkbox" onChange={this.toggleH2} checked={useH2} />
+          <label className="w-composer-use-h2">
+            <input type="checkbox" onChange={this.toggleH2} checked={dataCenter.supportH2 && useH2} />
             Use H2
-          </label> : undefined }
+          </label>
           <button onClick={this.showHistory} className="btn btn-default" title={historyData.length ? 'No history' : undefined}
             disabled={disableHistory}>History</button>
         </div>

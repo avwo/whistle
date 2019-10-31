@@ -1812,6 +1812,13 @@ var Index = React.createClass({
         });
   },
   enableHttp2: function(e) {
+    if (!dataCenter.supportH2) {
+      if (window.confirm('The current version of Node.js cannot support HTTP/2.\nPlease upgrade to the latest LTS version.')) {
+        window.open('https://nodejs.org/');
+      }
+      this.setState({});
+      return;
+    }
     var self = this;
     var checked = e.target.checked;
     dataCenter.enableHttp2({enableHttp2: checked ? 1 : 0},
@@ -2952,8 +2959,8 @@ var Index = React.createClass({
                     checked={state.interceptHttpsConnects}
                     onChange={this.interceptHttpsConnects}
                     type="checkbox" /> Capture TUNNEL CONNECTs</label></p>
-                  { dataCenter.supportH2 ? <p><label><input checked={state.enableHttp2}
-                    onChange={this.enableHttp2} type="checkbox" /> Enable HTTP/2</label></p> : undefined }
+                  <p><label><input checked={dataCenter.supportH2 && state.enableHttp2}
+                    onChange={this.enableHttp2} type="checkbox" /> Enable HTTP/2</label></p>
                     <a href="javascript:;" draggable="false" onClick={this.showCustomCertsInfo}>View custom certs info</a>
                     <CertsInfoDialog ref="certsInfoDialog" />
                 </div>
