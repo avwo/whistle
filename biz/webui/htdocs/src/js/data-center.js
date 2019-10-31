@@ -324,7 +324,7 @@ var GET_CONF = $.extend({
 }, DEFAULT_CONF);
 var cgi = createCgiObj({
   getData: BASE_URI + 'cgi-bin/get-data',
-  getInitaial: BASE_URI + 'cgi-bin/init'
+  getInitial: BASE_URI + 'cgi-bin/init'
 }, GET_CONF);
 
 exports.createCgi = function(url, cancel) {
@@ -431,10 +431,11 @@ exports.getInitialData = function (callback) {
     initialDataPromise = $.Deferred();
 
     var load = function() {
-      cgi.getInitaial(function (data) {
+      cgi.getInitial(function (data) {
         if (!data) {
           return setTimeout(load, 1000);
         }
+        exports.supportH2 = data.supportH2;
         uploadFiles = data.uploadFiles;
         initialData = data;
         DEFAULT_CONF.data.clientId = data.clientId;
@@ -567,6 +568,7 @@ function startLoadData() {
       if (!data || data.ec !== 0) {
         return;
       }
+      exports.supportH2 = data.supportH2;
       if (options.dumpCount > 0) {
         dumpCount = 0;
       }

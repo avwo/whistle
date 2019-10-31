@@ -2952,8 +2952,8 @@ var Index = React.createClass({
                     checked={state.interceptHttpsConnects}
                     onChange={this.interceptHttpsConnects}
                     type="checkbox" /> Capture TUNNEL CONNECTs</label></p>
-                  <p><label><input checked={state.enableHttp2}
-                    onChange={this.enableHttp2} type="checkbox" /> Enable HTTP/2</label></p>
+                  { dataCenter.supportH2 ? <p><label><input checked={state.enableHttp2}
+                    onChange={this.enableHttp2} type="checkbox" /> Enable HTTP/2</label></p> : undefined }
                     <a href="javascript:;" draggable="false" onClick={this.showCustomCertsInfo}>View custom certs info</a>
                     <CertsInfoDialog ref="certsInfoDialog" />
                 </div>

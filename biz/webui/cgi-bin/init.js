@@ -16,6 +16,7 @@ module.exports = function(req, res) {
 
   res.json({
     version: config.version,
+    supportH2: config.enableH2,
     lastLogId: lastLog && lastLog.id,
     lastSvrLogId: lastSvrLog && lastSvrLog.id,
     lastDataId: proxy.getLastDataId(),

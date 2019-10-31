@@ -21,6 +21,7 @@ module.exports = function(req, res) {
   res.json({
     ec: 0,
     version: config.version,
+    supportH2: config.enableH2,
     clientIp: clientIp,
     mrulesClientId: config.mrulesClientId,
     mrulesTime: config.mrulesTime,
