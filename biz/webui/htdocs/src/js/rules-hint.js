@@ -53,18 +53,6 @@ function getHints(keyword) {
     return allRules;
   }
   keyword = keyword.toLowerCase();
-  if (keyword === 'csp') {
-    return ['disable://csp'];
-  }
-  if (keyword.indexOf('up') === 0) {
-    return ['proxy://'];
-  }
-  if (keyword.indexOf('xup') === 0) {
-    return ['xproxy://'];
-  }
-  if (keyword.length > 2 && 'extend'.indexOf(keyword) === 0) {
-    return ['reqMerge://', 'resMerge://'];
-  }
   var list = allRules.filter(function(name) {
     if (name === 'socks://' && 'proxy'.indexOf(keyword) !== -1) {
       return true;
@@ -80,6 +68,15 @@ function getHints(keyword) {
     }
     return curIndex < 0 || (curIndex > nextIndex && nextIndex >= 0) ? 1 : -1;
   });
+  if (keyword === 'csp') {
+    list.push('disable://csp');
+  } else if ('upstream'.indexOf(keyword) !== -1) {
+    list.push('proxy://', 'xproxy://');
+  } else if ('xupstream'.indexOf(keyword) !== -1) {
+    list.push('xproxy://');
+  } else if ('extend'.indexOf(keyword) !== -1) {
+    list.push('reqMerge://', 'resMerge://');
+  }
   return list;
 }
 
