@@ -1,3 +1,7 @@
+# v2.2.3
+1. feat: 部分在响应阶段才会执行的规则放到请求响应后再做匹配
+2. style: `Networt > HTTPS > Enable HTTP/2` 去选后接收和发送请求的方式都改用非 H2
+
 # v2.2.2
 1. fix: https://github.com/nodejs/node/issues/27384
 2. refactor: 优化 H2 session 缓存策略
