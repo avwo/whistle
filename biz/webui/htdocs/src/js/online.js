@@ -104,8 +104,9 @@ var Online = React.createClass({
     if (server.version) {
       info.push('<h5><strong>Whistle:</strong> v' + server.version + '</h5>');
     }
-    if (server.port) {
-      info.push('<h5><strong>Port:</strong> ' + server.port + '</h5>');
+    var port = server.realPort || server.port;
+    if (port) {
+      info.push('<h5><strong>Port:</strong> ' + port + '</h5>');
     }
     if (server.socksPort) {
       info.push('<h5><strong>SOCKS Port:</strong> ' + server.socksPort + '</h5>');
@@ -137,9 +138,9 @@ var Online = React.createClass({
       if (server.host) {
         info.push('Host: ' + server.host);
       }
-
-      if (server.port) {
-        info.push('Port: ' + server.port);
+      var port = server.realPort || server.port;
+      if (port) {
+        info.push('Port: ' + port);
       }
       if (server.socksPort) {
         info.push('SOCKS Port: ' + server.socksPort);

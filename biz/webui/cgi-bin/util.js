@@ -27,6 +27,7 @@ exports.getServerInfo = function(req) {
     host: util.hostname(),
     isWin: util.isWin,
     port: config.port,
+    realPort: config.realPort,
     socksPort: config.socksPort,
     httpPort: config.httpPort,
     httpsPort: config.httpsPort,
