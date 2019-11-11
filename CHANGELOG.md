@@ -1,3 +1,18 @@
+
+# v2.2.4
+1. feat: 支持通过启动命令行参数添加规则
+	``` txt
+	# 从 https://xxx 加载规则，如果远程规则有更新也会自动同步更新
+	w2 start -r "@https://xxx"
+
+	# 从本地绝对路径 filepath 加载规则，如果文件有更新也会自动同步更新
+	w2 start -r "@filepath"
+
+	# 直接设置规则
+	w2 start -r "www.test.com/path/to reqHeaders://x-test=1"
+	```
+	> 组合设置 JSON.stringify('@https://xxx\n@filepath\nwww.test.com/path/to reqHeaders://x-test=1')
+
 # v2.2.3
 1. feat: 部分在响应阶段才会执行的规则放到请求响应后再做匹配
 2. style: `Networt > HTTPS > Enable HTTP/2` 去选后接收和发送请求的方式都改用非 H2
