@@ -1,5 +1,5 @@
 # resType
-修改请求头的`content-type`，配置方式：
+修改响应头的`content-type`，配置方式：
 
 	pattern resType://mimeType
 
