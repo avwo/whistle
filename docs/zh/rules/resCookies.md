@@ -1,5 +1,5 @@
 # resCookies
-修改请求的cookie，配置方式：
+修改响应头的`Set-Cookie`，配置方式：
 
 	pattern resCookies://filepath
 

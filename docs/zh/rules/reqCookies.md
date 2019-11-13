@@ -1,6 +1,6 @@
 
 # reqCookies
-修改响应的cookie，配置方式：
+修改请求头的`Cookie`，配置方式：
 
 	pattern reqCookies://filepath
 
