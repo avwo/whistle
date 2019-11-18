@@ -1,6 +1,7 @@
 
 # v2.2.5
 1. feat: `@url` 请求时自动带上 `x-whistle-runtime-id` 便于插件判断请求是否来自宿主代理
+2. fix: https://github.com/avwo/whistle/issues/352
 
 # v2.2.4
 1. feat: 支持通过启动命令行参数添加规则
