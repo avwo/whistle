@@ -1,4 +1,7 @@
 
+# v2.3.1
+1. fix: 修复 `x-forwarded-for` 混乱问题，直接请求默认不带 `x-forwarded-for`（代理转发会自动带上非本地IP），可以通过 `forwardedFor://ip` 或 `reqHeaders://x-forwarded-for=ip` 自定义 `x-forwarded-for`
+
 # v2.3.0
 1. feat: `@url` 请求时自动带上 `x-whistle-runtime-id` 便于插件判断请求是否来自宿主代理
 2. fix: https://github.com/avwo/whistle/issues/352
