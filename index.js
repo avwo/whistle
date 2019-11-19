@@ -81,6 +81,9 @@ module.exports = function(options, callback) {
     callback = options;
     options = null;
   }
+  if (options && options.debugMode) {
+    env.PFORK_MODE = 'bind';
+  }
   require('./lib/config').extend(options);
   return require('./lib')(callback);
 };
