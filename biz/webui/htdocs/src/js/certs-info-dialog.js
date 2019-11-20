@@ -3,6 +3,8 @@ require('../css/certs.css');
 var React = require('react');
 var Dialog = require('./dialog');
 
+var OK_STYLE = { color: '#5bbd72' };
+
 var HistoryData = React.createClass({
   getInitialState: function() {
     return { list: [] };
@@ -13,7 +15,7 @@ var HistoryData = React.createClass({
       var cert = data[domain];
       var startDate = new Date(cert.notBefore);
       var endDate = new Date(cert.notAfter);
-      var status = 'OK';
+      var status = '';
       var now = Date.now();
       var isInvalid;
       if (startDate.getTime() > now) {
@@ -27,7 +29,7 @@ var HistoryData = React.createClass({
         filename: cert.filename,
         domain: cert.domain,
         validity: startDate.toLocaleString() + ' ~ ' + endDate.toLocaleString(),
-        status: status,
+        status: status || <span className="glyphicon glyphicon-ok" style={OK_STYLE} />,
         isInvalid: isInvalid
       });
     });
