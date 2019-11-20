@@ -343,7 +343,7 @@ var Index = React.createClass({
       this.setRulesActive(dataCenter.activeRulesName, rulesModal);
     }
     if (valuesModal.exists(dataCenter.activeValuesName)) {
-      this.setRulesActive(dataCenter.activeValuesName, valuesModal);
+      this.setValuesActive(dataCenter.activeValuesName, valuesModal);
     }
 
     state.networkOptions = [
@@ -588,6 +588,22 @@ var Index = React.createClass({
     events.on('showFiles', function(_, data) {
       self.files = self.files || data;
       self.showFiles();
+    });
+
+    events.on('activeRules', function() {
+      var rulesModal = dataCenter.rulesModal;
+      if (rulesModal.exists(dataCenter.activeRulesName)) {
+        self.setRulesActive(dataCenter.activeRulesName, rulesModal);
+        self.setState({});
+      }
+    });
+
+    events.on('activeValues', function() {
+      var valuesModal = dataCenter.valuesModal;
+      if (valuesModal.exists(dataCenter.activeValuesName)) {
+        self.setValuesActive(dataCenter.activeValuesName, valuesModal);
+        self.setState({});
+      }
     });
 
     $(document)

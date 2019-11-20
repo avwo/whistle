@@ -103,8 +103,16 @@ function handleHashFilterChanged(e) {
   var filter;
   if (index !== -1) {
     var obj = util.parseQueryString(hash.substring(index + 1), null, null, decodeURIComponent);
-    exports.activeRulesName = obj.rulesName || obj.ruleName;
-    exports.activeValuesName = obj.valuesName || obj.valueName;
+    var curRuleName = obj.rulesName || obj.ruleName;
+    var curValueName = obj.valuesName || obj.valueName;
+    if (curRuleName !== exports.activeRulesName) {
+      exports.activeRulesName = curRuleName;
+      events.trigger('activeRules');
+    }
+    if (curValueName !== exports.activeValuesName) {
+      exports.activeValuesName = curValueName;
+      events.trigger('activeValues');
+    }
     if (obj.url) {
       filter = {};
       filter.url = obj.url;
