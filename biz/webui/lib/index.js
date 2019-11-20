@@ -24,7 +24,7 @@ var uploadJsonParser = bodyParser.json(UPLOAD_PARSE_CONF);
 var GET_METHOD_RE = /^get$/i;
 var WEINRE_RE = /^\/weinre\/.*/;
 var ALLOW_PLUGIN_PATHS = ['/cgi-bin/rules/list2', '/cgi-bin/values/list2', '/cgi-bin/get-custom-certs-info'];
-var DONT_CHECK_PATHS = ['/cgi-bin/server-info', '/cgi-bin/show-host-ip-in-res-headers',
+var DONT_CHECK_PATHS = ['/cgi-bin/server-info', '/cgi-bin/show-host-ip-in-res-headers', '/cgi-bin/plugins/is-enable',
                         '/cgi-bin/composer', '/cgi-bin/socket/data', '/preview.html',
                         '/cgi-bin/socket/abort', '/cgi-bin/socket/change-status',
                         '/cgi-bin/sessions/export', '/cgi-bin/sessions/import', '/cgi-bin/plugins/update-rules',
