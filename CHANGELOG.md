@@ -3,6 +3,7 @@
 1. fix: 修复 `x-forwarded-for` 混乱问题，直接请求默认不带 `x-forwarded-for`（代理转发会自动带上非本地IP），可以通过 `forwardedFor://ip` 或 `reqHeaders://x-forwarded-for=ip` 自定义 `x-forwarded-for`
 2. style: https://github.com/avwo/whistle/issues/354
 3. feat: 插件新增方法 `optins.isEnable((enable) => {})` 获取插件是否处于启用状态
+4. feat: 插件的 `rules.txt`、`_rules.txt`、`values.txt`、`resRules.txt` 文件支持设置占位符 `{{whistlePluginName}}` 获取插件的短名称（不包含 `whistle.`）, 以及通过 `{{whistlePluginPackage.xx.yy.zzz}}` 获取插件 `package.json` 的值
 
 # v2.3.0
 1. feat: `@url` 请求时自动带上 `x-whistle-runtime-id` 便于插件判断请求是否来自宿主代理
