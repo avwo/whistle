@@ -5,7 +5,6 @@ var handleUIReq = require('./webui/lib').handleRequest;
 var handleWeinreReq = require('./weinre');
 var config = require('../lib/config');
 
-var isProxyPort = util.isProxyPort;
 var localIpCache = util.localIpCache;
 var WEBUI_PATH = config.WEBUI_PATH;
 var PREVIEW_PATH_RE = config.PREVIEW_PATH_RE;
@@ -57,10 +56,10 @@ module.exports = function(req, res, next) {
       if (!(isWebUI = localIpCache.get(host))) {
         isWebUI = config.isLocalUIUrl(host);
         if (isWebUI ? net.isIP(host) : util.isLocalHost(host)) {
-          isWebUI = isProxyPort(port);
+          isWebUI = util.isProxyPort(port);
         }
       }
-    } else if (isProxyPort(port) && net.isIP(host)) {
+    } else if (util.isProxyPort(port) && net.isIP(host)) {
       localIpCache.set(host, 1);
     }
     if (isWebUI) {
