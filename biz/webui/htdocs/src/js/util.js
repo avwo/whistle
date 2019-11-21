@@ -717,7 +717,7 @@ exports.getMenuPosition = function(e, menuWidth, menuHeight) {
   if (left + menuWidth - window.scrollX >= clientWidth) {
     left = Math.max(left - menuWidth, window.scrollX + 1);
   }
-  if (top + menuHeight - window.scrollY >= docElem.clientHeight) {
+  if (top + menuHeight - window.scrollY >= docElem.clientHeight - 25) {
     top = Math.max(top - menuHeight, window.scrollY + 1);
   }
   return { top: top, left: left, marginRight: clientWidth - left };
