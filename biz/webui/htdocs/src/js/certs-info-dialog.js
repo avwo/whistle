@@ -1,6 +1,7 @@
 require('./base-css.js');
 require('../css/certs.css');
 var React = require('react');
+var util = require('./util');
 var Dialog = require('./dialog');
 
 var OK_STYLE = { color: '#5bbd72' };
@@ -34,7 +35,7 @@ var HistoryData = React.createClass({
       });
     });
     list.sort(function(a, b) {
-      return a.filename > b.filename ? 1 : -1;
+      return util.compare(b.filename, a.filename);
     });
     this.refs.certsInfoDialog.show();
     this._hideDialog = false;

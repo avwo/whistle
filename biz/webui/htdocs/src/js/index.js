@@ -445,10 +445,7 @@ var Index = React.createClass({
     Object.keys(plugins).sort(function(a, b) {
       var p1 = plugins[a];
       var p2 = plugins[b];
-      if (p1.priority || p2.priority) {
-        return p1.priority > p2.priority ? -1 : 1;
-      }
-      return (p1.mtime > p2.mtime) ? 1 : -1;
+      return util.compare(p1.priority, p2.priority) || util.compare(p2.mtime, p1.mtime);
     }).forEach(function(name) {
       var plugin = plugins[name];
       pluginsOptions.push({

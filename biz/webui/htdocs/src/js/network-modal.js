@@ -165,7 +165,7 @@ function compare(prev, next, order, name) {
 
 function _compare(prev, next, name) {
   if (prev == null || prev == '') {
-    return -1;
+    return next == null || next == '' ? 0 : -1;
   }
   if (next == null || next == '') {
     return 1;

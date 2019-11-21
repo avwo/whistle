@@ -22,6 +22,12 @@ function noop(_) {
 
 exports.noop = noop;
 
+function compare(v1, v2) {
+  return v1 == v2 ? 0 : (v1 > v2 ? -1 : 1);
+}
+
+exports.compare = compare;
+
 exports.isString = function(str) {
   return typeof str === 'string';
 };
