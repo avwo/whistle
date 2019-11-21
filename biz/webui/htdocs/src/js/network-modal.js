@@ -164,10 +164,11 @@ function compare(prev, next, order, name) {
 }
 
 function _compare(prev, next, name) {
+  var isNull = next == null || next == '';
   if (prev == null || prev == '') {
-    return next == null || next == '' ? 0 : -1;
+    return isNull ? 0 : -1;
   }
-  if (next == null || next == '') {
+  if (isNull) {
     return 1;
   }
   var isTime = 'dns,request,response,download,time'.indexOf(name) !== -1;
