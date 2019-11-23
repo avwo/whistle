@@ -1,3 +1,7 @@
+# v2.3.2
+1. fix: WebSocket 请求采用 `internal-proxy://host:port` 时无法准确带上 clientIp 的问题
+2. feat: 支持通过设置 `enable://strictHtml` 可以在使用 `htmlXxx, jsXxx, cssXxx` 注入内容到html页面时，会先判断是否第一个非空白字符是 `<` 才会注入
+3. feat: 支持通过设置 `enable://safeHtml` 可以在使用 `htmlXxx, jsXxx, cssXxx` 注入内容到html页面时，会先判断是否第一个非空白字符不是是 `{{` 才会注入 （用于统一给某个域名的页面注入脚本等时，防止一些非标准等接口响应类型设置为html，导致误注入的问题）
 
 # v2.3.1
 1. fix: 修复 `x-forwarded-for` 混乱问题，直接请求默认不带 `x-forwarded-for`（代理转发会自动带上非本地IP），可以通过 `forwardedFor://ip` 或 `reqHeaders://x-forwarded-for=ip` 自定义 `x-forwarded-for`
