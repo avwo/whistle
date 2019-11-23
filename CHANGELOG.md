@@ -2,6 +2,8 @@
 1. fix: WebSocket 请求采用 `internal-proxy://host:port` 时无法准确带上 clientIp 的问题
 2. feat: 支持通过设置 `enable://strictHtml` 可以在使用 `htmlXxx, jsXxx, cssXxx` 注入内容到html页面时，会先判断是否第一个非空白字符是 `<` 才会注入
 3. feat: 支持通过设置 `enable://safeHtml` 可以在使用 `htmlXxx, jsXxx, cssXxx` 注入内容到html页面时，会先判断是否第一个非空白字符不是是 `{{` 才会注入 （用于统一给某个域名的页面注入脚本等时，防止一些非标准等接口响应类型设置为html，导致误注入的问题）
+4. feat: 支持通过启动参数 `-M noGzip` 禁用所有请求的 `gzip` 功能
+5. perf: 限制 zlib 的并发量，减少内存泄露（原因：	[https://github.com/nodejs/node/issues/8871#issuecomment-250915913](https://github.com/nodejs/node/issues/8871#issuecomment-250915913)），由于 whistle 用到了 zlib 的流接口，这部分无法限制并发数，会影响整个系统的请求性能，如果想完全避免这个问题，可以使用上述启动参数 `-M noGzip` 禁用所有请求的 `gzip` 功能
 
 # v2.3.1
 1. fix: 修复 `x-forwarded-for` 混乱问题，直接请求默认不带 `x-forwarded-for`（代理转发会自动带上非本地IP），可以通过 `forwardedFor://ip` 或 `reqHeaders://x-forwarded-for=ip` 自定义 `x-forwarded-for`
