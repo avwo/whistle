@@ -98,6 +98,9 @@ var Online = React.createClass({
     if (host) {
       info.push('<h5><strong>Host:</strong> ' + host + '</h5>');
     }
+    if (server.pid) {
+      info.push('<h5><strong>PID:</strong> ' + server.pid + '</h5>');
+    }
     if (server.nodeVersion) {
       info.push('<h5><strong>Node:</strong> ' + server.nodeVersion + '</h5>');
     }
@@ -137,6 +140,9 @@ var Online = React.createClass({
     if (server) {
       if (server.host) {
         info.push('Host: ' + server.host);
+      }
+      if (server.pid) {
+        info.push('PID: ' + server.pid);
       }
       var port = server.realPort || server.port;
       if (port) {
