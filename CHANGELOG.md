@@ -1,3 +1,6 @@
+# v2.3.3
+1. style: 修复同时安装的插件可能出现排序跳动问题
+
 # v2.3.2
 1. fix: WebSocket 请求采用 `internal-proxy://host:port` 时无法准确带上 clientIp 的问题
 2. feat: 支持通过设置 `enable://strictHtml` 可以在使用 `htmlXxx, jsXxx, cssXxx` 注入内容到html页面时，会先判断是否第一个非空白字符是 `<` 才会注入
