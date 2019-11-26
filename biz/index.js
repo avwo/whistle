@@ -109,7 +109,7 @@ module.exports = function(req, res, next) {
   } else if (localRule = rules.resolveLocalRule(req)) {
     req.url = localRule.url;
     if (localRule.realPort) {
-      req.headers.host = 'local.whistlejs.com'; 
+      req.headers.host = '127.0.0.1:' + localRule.realPort; 
       util.transformReq(req, res, localRule.realPort);
     } else {
       handleUIReq(req, res);
