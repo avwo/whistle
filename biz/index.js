@@ -108,7 +108,12 @@ module.exports = function(req, res, next) {
     }
   } else if (localRule = rules.resolveLocalRule(req)) {
     req.url = localRule.url;
-    handleUIReq(req, res);
+    if (localRule.realPort) {
+      req.headers.host = 'local.whistlejs.com'; 
+      util.transformReq(req, res, localRule.realPort);
+    } else {
+      handleUIReq(req, res);
+    }
   } else {
     next();
   }
