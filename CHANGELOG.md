@@ -1,5 +1,9 @@
+# v2.3.5
+1. refactor: 在之前版本设置 `log://xxx weinre://xxx` 时，为了防止把注入都js缓存到浏览器，whistle 会自动删除缓存的响应头，即使设置了 `cache://xxx` 也无用，新版以 `cache://xxx` 优先级最高，并支持通过设置 `cache://reserve` 强制保留原来的请求头
+2. refactor: 某些 Node 版本会出现某些 socket 没有没有监听 `error` 事件，这里会强制设置一个空的 errorHandler，防止异常抛出
+
 # v2.3.4
-# v2.3.3
+<del>v2.3.3</del>
 1. style: 修复同时安装的插件可能出现排序跳动问题
 
 # v2.3.2
