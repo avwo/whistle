@@ -297,6 +297,8 @@ var ReqData = React.createClass({
       }
 
       if (item) {
+        self.scrollToRow(item);
+        // TODO: e.target 始终是第一次触发点击的节点，当试图滚动时，最终会由于虚拟滚动而销毁，造成无法继续up/down
         self.onClick(e, item, true);
         e.preventDefault();
       }
@@ -309,15 +311,7 @@ var ReqData = React.createClass({
       var modal = self.props.modal;
       var selected =  modal && modal.getSelectedList()[0];
       if(selected){
-        modal.list
-        .filter(function(item){return !item.hide;})
-        .some(function(item,index){
-          if(item.id===selected.id){
-            self.scrollToRow(index);
-            return true;
-          }
-          return false;
-        });
+        self.scrollToRow(selected);
       }else{
         self.scrollToRow(0);
       }
@@ -802,8 +796,22 @@ var ReqData = React.createClass({
     );
   },
 
-  scrollToRow: function(index){
-    this.refs.content.refs.list.scrollToRow(index);
+  scrollToRow: function(target){
+    var self = this;
+    var modal = self.props.modal;
+    if(typeof target==='number'){
+      self.refs.content.refs.list.scrollToRow(target);
+    }else if(modal){
+      modal.list
+      .filter(function(item){return !item.hide;})
+      .some(function(item,index){
+        if(item.id===target.id){
+          self.scrollToRow(index);
+          return true;
+        }
+        return false;
+      });
+    }
   },
 
   render: function() {
