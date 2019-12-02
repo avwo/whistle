@@ -102,6 +102,7 @@
     "react": "^15.6.2",
     "react-base16-styling": "^0.5.1",
     "react-dom": "^15.6.2",
+    "react-virtualized": "^9.21.2",
     "request": "^2.74.0",
     "should": "^10.0.0",
     "should-http": "0.0.4",
