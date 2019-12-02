@@ -1,5 +1,8 @@
 require('./base-css.js');
 require('../css/req-data.css');
+require('react-virtualized/styles.css');
+
+var RV = require('react-virtualized/dist/umd/react-virtualized');
 var React = require('react');
 var ReactDOM = require('react-dom');
 var $ = require('jquery');
@@ -211,46 +214,28 @@ function getFilename(item, type) {
 var Row = React.createClass({
   shouldComponentUpdate: function(nextProps) {
     var p = this.props;
-    return p.order != nextProps.order || this.req != p.item.req || this.hide != p.item.hide ||
-    p.draggable != nextProps.draggable || p.columnList != nextProps.columnList
-    || p.startIndex != nextProps.startIndex || p.endIndex != nextProps.endIndex;
+    return p.order != nextProps.order || this.req != p.item.req ||
+    p.draggable != nextProps.draggable || p.columnList != nextProps.columnList;
   },
   render: function() {
     var p = this.props;
     var order = p.order;
     var draggable = p.draggable;
     var columnList = p.columnList;
-    var index = p.index;
-    var startIndex = p.startIndex;
-    var endIndex = p.endIndex;
     var item = p.item;
     var style = item.style;
     this.req = item.req;
-    this.hide = item.hide;
-    return (<tr tabIndex="-1" draggable={draggable} data-id={item.id} key={item.id} style={{display: item.hide ? 'none' : ''}}
-              className={getClassName(item)}>
-              <th className="order" scope="row" style={style}>{order}</th>
-              {columnList.map(function(col) {
-                var name = col.name;
-                var className = col.className;
-                if (col.lazy && !item.hide) {
-                  var title = '-';
-                  var text = '-';
-                  if (index >= startIndex && index <= endIndex) {
-                    if (name === 'path') {
-                      title = item.url;
-                      text = item.path;
-                    } else {
-                      text = item[name];
-                      title = col.showTitle ? text : undefined;
-                    }
-                  }
-                  return <td key={name} className={className} style={style} title={title}>{text}</td>;
-                }
-                var value = name === 'hostIp' ? util.getServerIp(item) : item[name];
-                return (<td key={name} className={className} style={style} title={col.showTitle ? value : undefined}>{value}</td>);
-              })}
-            </tr>);
+    return (<table  className="table" key={p.key} style={p.style}><tbody>
+              <tr tabIndex="-1" draggable={draggable} data-id={item.id} className={getClassName(item)} style={{outline:'none'}}>
+                <th className="order" scope="row" style={style}>{order}</th>
+                {columnList.map(function(col) {
+                  var name = col.name;
+                  var className = col.className;
+                  var value = name === 'hostIp' ? util.getServerIp(item) : item[name];
+                  return (<td key={name} className={className} style={style} title={col.showTitle ? value : undefined}>{value}</td>);
+                })}
+              </tr>
+            </tbody></table>);
   }
 });
 
@@ -677,7 +662,7 @@ var ReqData = React.createClass({
     list3[4].disabled = selectedCount === hasData;
     list3[5].disabled = disabled;
     list3[6].disabled = disabled;
-    
+
     var list4 = contextMenuList[4].list;
     list4[1].disabled = disabled;
     list4[2].disabled = disabled;
@@ -803,23 +788,14 @@ var ReqData = React.createClass({
     var self = this;
     var state = this.state;
     var modal = self.props.modal;
-    var list = modal ? modal.list : [];
+    var list = modal ? modal.list.filter(function(item){return !item.hide;}) : [];
     var hasKeyword = modal && modal.hasKeyword();
     var index = 0;
-    var indeies = self.getVisibleIndex();
     var draggable = state.draggable;
     var columnList = state.columns;
     var filterText = (state.filterText || '').trim();
     var minWidth = 50;
-    var startIndex, endIndex;
 
-    if (indeies) {
-      startIndex = indeies[0];
-      endIndex = indeies[1];
-    } else {
-      startIndex = 0;
-      endIndex = list.length;
-    }
 
     // reduce
     for (var i = 0, len = columnList.length; i < len; i++) {
@@ -842,19 +818,24 @@ var ReqData = React.createClass({
             </div>
             <div ref="container" tabIndex="0" onContextMenu={self.onContextMenu}
               style={{background: (dataCenter.hashFilterObj || filterText) ? 'lightyellow' : undefined}}
-              className="w-req-data-list fill">
-              <table ref="content" className="table" onDragStart={this.onDragStart}>
-                  <tbody>
-                  {
-                    list.map(function(item, i) {
-                      i = hasKeyword ? index : i;
-                      var order = hasKeyword && !item.hide ? ++index : item.order;
-                      return <Row order={order} startIndex={startIndex} endIndex={endIndex} index={i}
-                        columnList={columnList} draggable={draggable} item={item} />;
-                    })
-                  }
-                  </tbody>
-                </table>
+              className="w-req-data-list fill"  onDragStart={this.onDragStart}>
+                <RV.AutoSizer ref="content" >{function(size){
+                  return (
+                      <RV.List
+                      rowHeight={30}
+                      width={size.width}
+                      height={size.height}
+                      rowCount={list.length}
+                      rowRenderer={function(options){
+                        // var {index, isScrolling, key, style}=options;
+                        var item = list[options.index];
+                        var order = hasKeyword? options.index+1 : item.order;
+                        return <Row style={options.style} key={options.key} order={order}  index={index}
+                          columnList={columnList} draggable={draggable} item={item} />;
+                      }}
+                      />);
+                }}
+                </RV.AutoSizer>
             </div>
           </div>
           <FilterInput ref="filterInput" onKeyDown={this.onFilterKeyDown}

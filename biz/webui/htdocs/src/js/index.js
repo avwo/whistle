@@ -238,7 +238,7 @@ var Index = React.createClass({
       state.hasNetwork = true;
       state.name = 'network';
     }
-    
+
     var rulesList = [];
     var rulesOptions = [];
     var rulesData = {};
@@ -1150,8 +1150,8 @@ var Index = React.createClass({
       return;
     }
     var scrollTimeout;
-    var con = $(ReactDOM.findDOMNode(self.refs.network))
-      .find('.w-req-data-list').scroll(function() {
+    var baseDom = $(ReactDOM.findDOMNode(self.refs.network))
+      .find('.w-req-data-list .ReactVirtualized__Grid').scroll(function() {
         var modal = self.state.network;
         scrollTimeout && clearTimeout(scrollTimeout);
         scrollTimeout = null;
@@ -1161,9 +1161,9 @@ var Index = React.createClass({
           }, 1000);
         }
       });
-    var body = con.children('table')[0];
+
     var timeout;
-    con = con[0];
+    var con = baseDom[0];
     dataCenter.on('data', update);
 
     function update(modal, _atBottom) {
@@ -1188,7 +1188,10 @@ var Index = React.createClass({
     }
 
     function scrollToBottom() {
-      con.scrollTop = body.offsetHeight;
+      var body = baseDom.find('.ReactVirtualized__Grid__innerScrollContainer')[0];
+      if(body){
+        con.scrollTop = body.offsetHeight;
+      }
     }
 
     $(document).on('dblclick', '.w-network-menu-list', function(e) {
@@ -1202,6 +1205,10 @@ var Index = React.createClass({
     self.scrollerAtBottom = atBottom;
 
     function atBottom() {
+      var body = baseDom.find('.ReactVirtualized__Grid__innerScrollContainer')[0];
+      if(!body){
+        return true;
+      }
       return con.scrollTop + con.offsetHeight + 5 > body.offsetHeight;
     }
   },
@@ -2363,7 +2370,7 @@ var Index = React.createClass({
   disableAllRules: function(e) {
     var checked = e.target.checked;
     var self = this;
-    
+
     dataCenter.rules.disableAllRules({disabledAllRules: checked ? 1 : 0}, function(data, xhr) {
       if (data && data.ec === 0) {
         var state = self.state;
