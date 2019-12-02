@@ -307,15 +307,19 @@ var ReqData = React.createClass({
     var modal = self.props.modal;
     var rows;
     var allowMultiSelect = e.ctrlKey || e.metaKey;
-    this.$content.find('tr.w-selected').removeClass('w-selected');
     if (hm) {
       self.clearSelection();
+      this.$content.find('tr.w-selected').removeClass('w-selected');
       item.selected = true;
       self.setSelected(item);
     } else if (e.shiftKey && (rows = self.getSelectedRows(item))) {
+      this.$content.find('tr.w-selected').removeClass('w-selected');
       modal.setSelectedList(rows[0], rows[1], self.setSelected);
     } else {
-      self.clearSelection();
+      if (!allowMultiSelect) {
+        this.$content.find('tr.w-selected').removeClass('w-selected');
+        self.clearSelection();
+      }
       item.selected = !allowMultiSelect || !item.selected;
       self.setSelected(item, true);
     }
