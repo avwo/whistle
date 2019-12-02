@@ -305,6 +305,23 @@ var ReqData = React.createClass({
     .on('mouseleave', toggoleDraggable);
 
     $(window).on('resize', render);
+    events.on('overviewScrollTop', function () {
+      var modal = self.props.modal;
+      var selected =  modal && modal.getSelectedList()[0];
+      if(selected){
+        modal.list
+        .filter(function(item){return !item.hide;})
+        .some(function(item,index){
+          if(item.id===selected.id){
+            self.scrollToRow(index);
+            return true;
+          }
+          return false;
+        });
+      }else{
+        self.scrollToRow(0);
+      }
+    });
   },
   onDragStart: function(e) {
     var target = $(e.target).closest('.w-req-data-item');
@@ -784,6 +801,11 @@ var ReqData = React.createClass({
       </th>
     );
   },
+
+  scrollToRow: function(index){
+    this.refs.content.refs.list.scrollToRow(index);
+  },
+
   render: function() {
     var self = this;
     var state = this.state;
@@ -822,6 +844,7 @@ var ReqData = React.createClass({
                 <RV.AutoSizer ref="content" >{function(size){
                   return (
                       <RV.List
+                      ref="list"
                       rowHeight={30}
                       width={size.width}
                       height={size.height}
