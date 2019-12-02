@@ -1163,6 +1163,7 @@ var Index = React.createClass({
 
     var timeout;
     var con = baseDom[0];
+    this.container = baseDom;
     dataCenter.on('data', update);
 
     function update(modal, _atBottom) {
@@ -1187,10 +1188,7 @@ var Index = React.createClass({
     }
 
     function scrollToBottom() {
-      var body = baseDom.find('.ReactVirtualized__Grid__innerScrollContainer')[0];
-      if(body){
-        con.scrollTop = body.offsetHeight;
-      }
+      con.scrollTop = 10000000;
     }
 
     $(document).on('dblclick', '.w-network-menu-list', function(e) {
@@ -1226,8 +1224,7 @@ var Index = React.createClass({
   },
   handleAction: function(type) {
     if (type === 'top') {
-      $(ReactDOM.findDOMNode(this.refs.network))
-        .find('.w-req-data-list')[0].scrollTop = 0;
+      this.container[0].scrollTop = 0;
       return;
     }
     if (type === 'bottom') {
