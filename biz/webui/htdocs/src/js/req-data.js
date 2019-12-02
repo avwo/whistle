@@ -243,7 +243,7 @@ var ReqData = React.createClass({
       timer && clearTimeout(timer);
       timer = setTimeout(update, 60);
     };
-    self.container = ReactDOM.findDOMNode(self.refs.container);
+    self.container = $(ReactDOM.findDOMNode(self.refs.container));
     self.content = ReactDOM.findDOMNode(self.refs.content);
     self.$content = $(self.content).on('dblclick', 'tr', function() {
       events.trigger('showOverview');
@@ -259,7 +259,7 @@ var ReqData = React.createClass({
       }
       self.setState({ draggable: draggable });
     };
-    $(self.container).on('keydown', function(e) {
+    self.container.on('keydown', function(e) {
       var modal = self.props.modal;
       toggleDraggable(e);
       if (!modal) {
@@ -273,7 +273,6 @@ var ReqData = React.createClass({
       }
 
       if (item) {
-        self.scrollToRow(item);
         self.onClick(e, item, true);
         e.preventDefault();
       }
@@ -324,7 +323,7 @@ var ReqData = React.createClass({
 
     modal.clearActive();
     item.active = item.selected;
-    hm && util.ensureVisible(this.$content.find('tr[data-id=' + item.id + ']'), self.container);
+    hm && self.scrollToRow(item);
     events.trigger('networkStateChange');
   },
   setSelected: function(item, unselect) {
@@ -685,7 +684,7 @@ var ReqData = React.createClass({
   },
   autoRefresh: function() {
     if (this.container) {
-      this.container.scrollTop = this.content.offsetHeight;
+      this.container.find('.ReactVirtualized__Grid__innerScrollContainer')[0].scrollTop = 100000000;
     }
   },
   orderBy: function(e) {
@@ -725,19 +724,6 @@ var ReqData = React.createClass({
   },
   onColumnsResort: function() {
     this.setState({ columns: columns.getSelectedColumns() });
-  },
-  getVisibleIndex: function() {
-    var container = this.container;
-    var len = container && this.props.modal && this.props.modal.list.length;
-    var height = len && container.offsetHeight;
-    if (height) {
-      var scrollTop = container.scrollTop;
-      var startIndex = Math.floor(Math.max(scrollTop - 240, 0) / HEIGHT);
-      var endIndex = Math.floor(Math.max(scrollTop + height + 240, 0) / HEIGHT);
-      this.indeies = [startIndex, endIndex];
-    }
-
-    return this.indeies;
   },
   renderColumn: function(col) {
     var name = col.name;
