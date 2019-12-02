@@ -20,7 +20,8 @@
 .w-req-data-headers .table th:last-child { box-sizing: content-box; }
 .w-req-data-headers .table th:hover {background-color: #e6e6e6!important;}
 .w-req-data-list {overflow-y: auto; overflow-x: hidden; outline: none;}
-.w-req-data-list th, .w-req-data-list td {border-top: none!important; border-bottom: 1px solid #ddd; font-weight: normal; font-size: 12px; padding: 3px 0 3px 6px!important; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}
+.w-req-data-list th, .w-req-data-list td {border-top: none!important; border-bottom: 1px solid #ddd; font-weight: normal; font-size: 12px;
+  padding: 3px 0 3px 6px!important; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 23px!important;}
 .w-req-data-con .w-filter-con, .w-req-data-content {min-width: 770px;}
 .w-req-data-list .w-tunnel th, .w-req-data-list .w-tunnel td {color: #808080;}
 .w-req-data-list .w-has-rules th, .w-req-data-list .w-has-rules td {font-weight: bold; color: #000093;}
