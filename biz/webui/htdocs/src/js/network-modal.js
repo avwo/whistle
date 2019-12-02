@@ -473,26 +473,44 @@ proto.getSelectedList = function() {
   });
 };
 
-proto.setSelectedList = function(startId, endId, selectElem, allowMultiSelect) {
-  if (!startId || !endId) {
-    return;
-  }
-
-  var selected, item;
-  for (var i = 0, len = this.list.length; i < len; i++) {
-    item = this.list[i];
-    if (item.id == startId) {
-      selected = !selected;
-      item.selected = true;
-    } else if (selected || !allowMultiSelect) {
-      item.selected = selected;
+function getPrevSelected(start, list) {
+  for (; start >= 0; start--) {
+    var item = list[start - 1];
+    if (!item || (!item.selected && !item.active)) {
+      return start;
     }
-    selectElem(item, true);
-    if (item.id == endId) {
-      if (allowMultiSelect) {
-        return;
-      }
-      selected = !selected;
+  }
+  return start;
+}
+
+function getNextSelected(start, list) {
+  for (var len = list.length; start < len; start++) {
+    var item = list[start + 1];
+    if (!item || (!item.selected && !item.active)) {
+      return start;
+    }
+  }
+  return start;
+}
+
+proto.setSelectedList = function(start, end, selectElem) {
+  var list = this.list;
+  start = list.indexOf(start);
+  end = list.indexOf(end);
+  if (start > end) {
+    var temp = getNextSelected(start, list);
+    start = end;
+    end = temp;
+  } else {
+    start = getPrevSelected(start, list);
+  }
+  for (var i = 0, len = list.length; i < len; i++) {
+    var item = list[i];
+    if (i >= start && i <= end) {
+      item.selected = true;
+      selectElem(item, true);
+    } else {
+      item.selected = false;
     }
   }
 };

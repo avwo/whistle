@@ -166,34 +166,6 @@ function getStatusClass(data) {
   return type;
 }
 
-function getSelectedRows() {
-  var range = getSelection();
-  if (!range) {
-    return;
-  }
-  try {
-    range = range.getRangeAt(0);
-  } catch(e) {
-    return;
-  }
-  var startElem = $(range.startContainer).closest('.w-req-data-item');
-  if (!startElem.length) {
-    return null;
-  }
-  var endElem = $(range.endContainer).closest('.w-req-data-item');
-  if (!startElem.length || !endElem.length) {
-    return null;
-  }
-  return [startElem, endElem];
-}
-
-function getSelection() {
-  if (window.getSelection) {
-    return window.getSelection();
-  }
-  return document.getSelection();
-}
-
 function getFilename(item, type) {
   var url = util.removeProtocol(item.url.replace(/[?#].*/, ''));
   var index = url.lastIndexOf('/');
@@ -276,7 +248,7 @@ var ReqData = React.createClass({
       var item = modal.getItem(this.getAttribute('data-id'));
       self.onClick(e, item);
     });
-    var toggoleDraggable = function(e) {
+    var toggleDraggable = function(e) {
       var draggable = !e.shiftKey;
       if (self.state.draggable === draggable) {
         return;
@@ -285,7 +257,7 @@ var ReqData = React.createClass({
     };
     $(self.container).on('keydown', function(e) {
       var modal = self.props.modal;
-      toggoleDraggable(e);
+      toggleDraggable(e);
       if (!modal) {
         return;
       }
@@ -298,13 +270,12 @@ var ReqData = React.createClass({
 
       if (item) {
         self.scrollToRow(item);
-        // TODO: e.target 始终是第一次触发点击的节点，当试图滚动时，最终会由于虚拟滚动而销毁，造成无法继续up/down
         self.onClick(e, item, true);
         e.preventDefault();
       }
-    }).on('scroll', render).on('keyup', toggoleDraggable)
-    .on('mouseover', toggoleDraggable)
-    .on('mouseleave', toggoleDraggable);
+    }).on('scroll', render).on('keyup', toggleDraggable)
+    .on('mouseover', toggleDraggable)
+    .on('mouseleave', toggleDraggable);
 
     $(window).on('resize', render);
     events.on('ensureSelectedItemVisible', function () {
@@ -321,47 +292,28 @@ var ReqData = React.createClass({
     var target = $(e.target).closest('.w-req-data-item');
     e.dataTransfer.setData('reqDataId', target.attr('data-id'));
   },
+  getSelectedRows: function (item) {
+    var modal = this.props.modal;
+    var active = modal.getActive();
+    if (!active || item === active) {
+      return;
+    }
+    return [active, item];
+  },
   onClick: function(e, item, hm) {
     var self = this;
     var modal = self.props.modal;
-    var resetRange = function() {
-      var range = getSelection();
-      if (range) {
-        range.removeAllRanges();
-        var target = e.target;
-        var row = $(target).closest('.w-req-data-item')[0];
-        if (row) {
-          var draggable = row.draggable;
-          row.draggable = false;
-          var r = document.createRange();
-          r.selectNodeContents(target);
-          range.addRange(r);
-          if (draggable) {
-            row.draggable = true;
-          }
-        }
-      }
-      return range;
-    };
     var rows;
-    if (e.shiftKey) {
-      rows = getSelectedRows();
-      !rows && resetRange();
-    } else {
-      resetRange();
-    }
     var allowMultiSelect = e.ctrlKey || e.metaKey;
-    if (hm || !allowMultiSelect) {
-      self.$content.find('tr.w-selected').removeClass('w-selected');
-      self.clearSelection();
-    }
+    this.$content.find('tr.w-selected').removeClass('w-selected');
     if (hm) {
+      self.clearSelection();
       item.selected = true;
       self.setSelected(item);
-    } else if (e.shiftKey && (rows = getSelectedRows())) {
-      modal.setSelectedList(rows[0].attr('data-id'),
-          rows[1].attr('data-id'), self.setSelected.bind(self), allowMultiSelect);
+    } else if (e.shiftKey && (rows = self.getSelectedRows(item))) {
+      modal.setSelectedList(rows[0], rows[1], self.setSelected);
     } else {
+      self.clearSelection();
       item.selected = !allowMultiSelect || !item.selected;
       self.setSelected(item, true);
     }
@@ -799,13 +751,13 @@ var ReqData = React.createClass({
   scrollToRow: function(target){
     var self = this;
     var modal = self.props.modal;
-    if(typeof target==='number'){
+    if(typeof target === 'number'){
       self.refs.content.refs.list.scrollToRow(target);
     }else if(modal){
       modal.list
       .filter(function(item){return !item.hide;})
       .some(function(item,index){
-        if(item.id===target.id){
+        if(item.id === target.id){
           self.scrollToRow(index);
           return true;
         }
