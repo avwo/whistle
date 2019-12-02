@@ -1150,17 +1150,16 @@ var Index = React.createClass({
       return;
     }
     var scrollTimeout;
-    var baseDom = $(ReactDOM.findDOMNode(self.refs.network))
-      .find('.w-req-data-list .ReactVirtualized__Grid').scroll(function() {
-        var modal = self.state.network;
-        scrollTimeout && clearTimeout(scrollTimeout);
-        scrollTimeout = null;
-        if (modal && atBottom()) {
-          scrollTimeout = setTimeout(function() {
-            update(modal, true);
-          }, 1000);
-        }
-      });
+    var baseDom = $('.w-req-data-list .ReactVirtualized__Grid:first').scroll(function() {
+      var modal = self.state.network;
+      scrollTimeout && clearTimeout(scrollTimeout);
+      scrollTimeout = null;
+      if (modal && atBottom()) {
+        scrollTimeout = setTimeout(function() {
+          update(modal, true);
+        }, 1000);
+      }
+    });
 
     var timeout;
     var con = baseDom[0];

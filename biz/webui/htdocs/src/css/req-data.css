@@ -28,6 +28,11 @@
   -webkit-user-select:none;
   user-select:none; 
 }
+.w-menu, .w-left-menu {
+  -moz-user-select:none;
+  -webkit-user-select:none;
+  user-select:none; 
+}
 .w-req-data-list .w-tunnel th, .w-req-data-list .w-tunnel td {color: #808080;}
 .w-req-data-list .w-has-rules th, .w-req-data-list .w-has-rules td {font-weight: bold; color: #000093;}
 .w-req-data-list .w-error-status th, .w-req-data-list .w-error-status td {color: #ff3a90;}

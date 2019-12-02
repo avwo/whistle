@@ -16,7 +16,6 @@ var events = require('./events');
 var iframes = require('./iframes');
 var dataCenter = require('./data-center');
 
-var HEIGHT = 24;
 var columnState = {};
 var CMD_RE = /^:dump\s+(\d{1,15})\s*$/;
 var NOT_BOLD_RULES = {
@@ -684,7 +683,7 @@ var ReqData = React.createClass({
   },
   autoRefresh: function() {
     if (this.container) {
-      this.container.find('.ReactVirtualized__Grid__innerScrollContainer')[0].scrollTop = 100000000;
+      this.container.find('.ReactVirtualized__Grid:first').scrollTop = 100000000;
     }
   },
   orderBy: function(e) {
