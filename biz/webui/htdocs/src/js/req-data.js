@@ -119,6 +119,10 @@ function getClassName(data) {
         + (data.selected ? ' w-selected' : '');
 }
 
+function isVisible(item) {
+  return !item.hide;
+}
+
 function hasRules(data) {
   var rules = data.rules;
   if (!rules) {
@@ -749,28 +753,17 @@ var ReqData = React.createClass({
   },
 
   scrollToRow: function(target){
-    var self = this;
-    var modal = self.props.modal;
-    if(typeof target === 'number'){
-      self.refs.content.refs.list.scrollToRow(target);
-    }else if(modal){
-      modal.list
-      .filter(function(item){return !item.hide;})
-      .some(function(item,index){
-        if(item.id === target.id){
-          self.scrollToRow(index);
-          return true;
-        }
-        return false;
-      });
+    if(target && target.id){
+      target = this.props.modal.list.indexOf(target);
     }
+    this.refs.content.refs.list.scrollToRow(target);
   },
 
   render: function() {
     var self = this;
     var state = this.state;
     var modal = self.props.modal;
-    var list = modal ? modal.list.filter(function(item){return !item.hide;}) : [];
+    var list = modal ? modal.list.filter(isVisible) : [];
     var hasKeyword = modal && modal.hasKeyword();
     var index = 0;
     var draggable = state.draggable;
