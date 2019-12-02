@@ -10,7 +10,6 @@ var Frames = require('./frames');
 var Timeline = require('./timeline');
 var Composer = require('./composer');
 var Tools = require('./tools');
-var util = require('./util');
 
 var ReqData = React.createClass({
   getInitialState: function() {
@@ -100,15 +99,7 @@ var ReqData = React.createClass({
     }
   },
   onDoubleClick: function(e) {
-    var target = e.target;
-    if (/overview/i.test(target.innerHTML)) {
-      events.trigger('overviewScrollTop');
-    }
-    var container = $('.w-req-data-list');
-    var elem = container.find('.w-req-data-item.w-selected:visible:first');
-    if (elem.length) {
-      util.ensureVisible(elem, container, true);
-    }
+    events.trigger('ensureSelectedItemVisible');
   },
   toggleTab: function(tab, callback) {
     if (tab.name === 'Inspectors' && this.state.initedInspectors) {

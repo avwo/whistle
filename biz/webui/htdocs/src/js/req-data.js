@@ -305,7 +305,7 @@ var ReqData = React.createClass({
     .on('mouseleave', toggoleDraggable);
 
     $(window).on('resize', render);
-    events.on('overviewScrollTop', function () {
+    events.on('ensureSelectedItemVisible', function () {
       var modal = self.props.modal;
       var selected =  modal && modal.getSelectedList()[0];
       if(selected){
