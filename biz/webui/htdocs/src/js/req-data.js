@@ -743,6 +743,7 @@ var ReqData = React.createClass({
       target = this.props.modal.list.indexOf(target);
     }
     this.refs.content.refs.list.scrollToRow(target);
+    this.container.focus();
   },
 
   render: function() {
