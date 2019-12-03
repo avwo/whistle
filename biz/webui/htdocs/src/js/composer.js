@@ -466,7 +466,12 @@ var Composer = React.createClass({
       base64: base64,
       isHexText: isHexText
     };
+    clearTimeout(self.comTimer);
+    self.comTimer = setTimeout(function() {
+      self.setState({ pending: false });
+    }, 3000);
     dataCenter.composer(params, function(data, xhr, em) {
+      clearTimeout(self.comTimer);
       var state = {
         pending: false,
         tabName: 'Response',

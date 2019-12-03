@@ -47,7 +47,6 @@ var DEFAULT_CONF = {
   },
   data: {}
 };
-var BASE_URI = '';
 exports.clientIp = '127.0.0.1';
 exports.MAX_INCLUDE_LEN = MAX_INCLUDE_LEN;
 exports.MAX_EXCLUDE_LEN = MAX_EXCLUDE_LEN;
@@ -323,13 +322,13 @@ var GET_CONF = $.extend({
   cache: false
 }, DEFAULT_CONF);
 var cgi = createCgiObj({
-  getData: BASE_URI + 'cgi-bin/get-data',
-  getInitial: BASE_URI + 'cgi-bin/init'
+  getData: 'cgi-bin/get-data',
+  getInitial: 'cgi-bin/init'
 }, GET_CONF);
 
 exports.createCgi = function(url, cancel) {
   return createCgi({
-    url: BASE_URI + url,
+    url: url,
     mode: cancel ? 'cancel' : null
   }, GET_CONF);
 };
@@ -339,90 +338,93 @@ function toLowerCase(str) {
 }
 
 exports.getCustomCertsInfo = createCgiObj({
-  getCustomCertsInfo: BASE_URI + 'cgi-bin/get-custom-certs-info'
+  getCustomCertsInfo: 'cgi-bin/get-custom-certs-info'
 }, GET_CONF).getCustomCertsInfo;
 
 exports.values = createCgiObj({
   moveTo: {
     mode: 'chain',
-    url: BASE_URI + 'cgi-bin/values/move-to'
+    url: 'cgi-bin/values/move-to'
   },
   list: {
     type: 'get',
-    url: BASE_URI + 'cgi-bin/values/list'
+    url: 'cgi-bin/values/list'
   },
-  add: BASE_URI + 'cgi-bin/values/add',
-  remove: BASE_URI + 'cgi-bin/values/remove',
-  rename: BASE_URI + 'cgi-bin/values/rename',
-  upload: BASE_URI + 'cgi-bin/values/upload',
-  checkFile: BASE_URI + 'cgi-bin/values/check-file',
-  removeFile: BASE_URI + 'cgi-bin/values/remove-file'
+  add: 'cgi-bin/values/add',
+  remove: 'cgi-bin/values/remove',
+  rename: 'cgi-bin/values/rename',
+  upload: 'cgi-bin/values/upload',
+  checkFile: 'cgi-bin/values/check-file',
+  removeFile: 'cgi-bin/values/remove-file'
 }, POST_CONF);
 
 exports.plugins = createCgiObj({
-  disablePlugin: BASE_URI + 'cgi-bin/plugins/disable-plugin',
-  disableAllPlugins: BASE_URI + 'cgi-bin/plugins/disable-all-plugins'
+  disablePlugin: 'cgi-bin/plugins/disable-plugin',
+  disableAllPlugins: 'cgi-bin/plugins/disable-all-plugins'
 }, POST_CONF);
 
 exports.rules = createCgiObj({
-  disableAllRules: BASE_URI + 'cgi-bin/rules/disable-all-rules',
+  disableAllRules: 'cgi-bin/rules/disable-all-rules',
   moveTo: {
     mode: 'chain',
-    url: BASE_URI + 'cgi-bin/rules/move-to'
+    url: 'cgi-bin/rules/move-to'
   },
   list: {
     type: 'get',
-    url: BASE_URI + 'cgi-bin/rules/list'
+    url: 'cgi-bin/rules/list'
   },
-  add: BASE_URI + 'cgi-bin/rules/add',
-  disableDefault: BASE_URI + 'cgi-bin/rules/disable-default',
-  enableDefault: BASE_URI + 'cgi-bin/rules/enable-default',
-  remove: BASE_URI + 'cgi-bin/rules/remove',
-  rename: BASE_URI + 'cgi-bin/rules/rename',
-  select: BASE_URI + 'cgi-bin/rules/select',
-  unselect: BASE_URI + 'cgi-bin/rules/unselect',
+  add: 'cgi-bin/rules/add',
+  disableDefault: 'cgi-bin/rules/disable-default',
+  enableDefault: 'cgi-bin/rules/enable-default',
+  remove: 'cgi-bin/rules/remove',
+  rename: 'cgi-bin/rules/rename',
+  select: 'cgi-bin/rules/select',
+  unselect: 'cgi-bin/rules/unselect',
   allowMultipleChoice: {
     mode: 'ignore',
-    url: BASE_URI + 'cgi-bin/rules/allow-multiple-choice'
+    url: 'cgi-bin/rules/allow-multiple-choice'
   },
   enableBackRulesFirst: {
     mode: 'ignore',
-    url: BASE_URI + 'cgi-bin/rules/enable-back-rules-first'
+    url: 'cgi-bin/rules/enable-back-rules-first'
   },
-  syncWithSysHosts: BASE_URI + 'cgi-bin/rules/sync-with-sys-hosts',
-  setSysHosts: BASE_URI + 'cgi-bin/rules/set-sys-hosts',
-  getSysHosts: BASE_URI + 'cgi-bin/rules/get-sys-hosts'
+  syncWithSysHosts: 'cgi-bin/rules/sync-with-sys-hosts',
+  setSysHosts: 'cgi-bin/rules/set-sys-hosts',
+  getSysHosts: 'cgi-bin/rules/get-sys-hosts'
 }, POST_CONF);
 
 exports.log = createCgiObj({
-  set: BASE_URI + 'cgi-bin/log/set'
+  set: 'cgi-bin/log/set'
 }, POST_CONF);
 
 $.extend(exports, createCgiObj({
-  composer: BASE_URI + 'cgi-bin/composer',
-  interceptHttpsConnects: BASE_URI + 'cgi-bin/intercept-https-connects',
-  enableHttp2: BASE_URI + 'cgi-bin/enable-http2',
-  abort: BASE_URI + 'cgi-bin/abort'
+  composer: {
+    url: 'cgi-bin/composer',
+    mode: 'cancel'
+  },
+  interceptHttpsConnects: 'cgi-bin/intercept-https-connects',
+  enableHttp2: 'cgi-bin/enable-http2',
+  abort: 'cgi-bin/abort'
 }, POST_CONF));
 $.extend(exports, createCgiObj({
-  donotShowAgain: BASE_URI + 'cgi-bin/do-not-show-again',
-  checkUpdate: BASE_URI + 'cgi-bin/check-update',
-  importRemote: BASE_URI + 'cgi-bin/import-remote',
-  getHistory: BASE_URI + 'cgi-bin/history'
+  donotShowAgain: 'cgi-bin/do-not-show-again',
+  checkUpdate: 'cgi-bin/check-update',
+  importRemote: 'cgi-bin/import-remote',
+  getHistory: 'cgi-bin/history'
 }, GET_CONF));
 
 exports.socket = $.extend(createCgiObj({
   changeStatus: {
     mode: 'cancel',
-    url: BASE_URI + 'cgi-bin/socket/change-status'
+    url: 'cgi-bin/socket/change-status'
   },
   abort: {
     mode: 'ignore',
-    url: BASE_URI + 'cgi-bin/socket/abort'
+    url: 'cgi-bin/socket/abort'
   },
   send: {
     mode: 'ignore',
-    url: BASE_URI + 'cgi-bin/socket/data'
+    url: 'cgi-bin/socket/data'
   }
 }, POST_CONF));
 
@@ -449,9 +451,9 @@ exports.getInitialData = function (callback) {
           lastRowId = data.lastDataId;
         }
         exports.upload = createCgiObj({
-          importSessions: BASE_URI + 'cgi-bin/sessions/import?clientId=' + data.clientId,
-          importRules: BASE_URI + 'cgi-bin/rules/import?clientId=' + data.clientId,
-          importValues: BASE_URI + 'cgi-bin/values/import?clientId=' + data.clientId
+          importSessions: 'cgi-bin/sessions/import?clientId=' + data.clientId,
+          importRules: 'cgi-bin/rules/import?clientId=' + data.clientId,
+          importValues: 'cgi-bin/values/import?clientId=' + data.clientId
         }, $.extend({
           type: 'post'
         }, DEFAULT_CONF, {
