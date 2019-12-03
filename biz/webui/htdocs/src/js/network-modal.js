@@ -1,6 +1,6 @@
 var util = require('./util');
 
-var MAX_LENGTH = 2200;
+var MAX_LENGTH = 2500;
 var MAX_COUNT = 2560;
 var WIN_NAME_PRE = '__whistle_' + location.href.replace(/\/[^/]*([#?].*)?$/, '/') + '__';
 

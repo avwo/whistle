@@ -743,7 +743,7 @@ var ReqData = React.createClass({
 
   scrollToRow: function(target){
     if(target && target.id){
-      target = this.props.modal.list.indexOf(target);
+      target = this.props.modal.list.filter(isVisible).indexOf(target);
     }
     this.refs.content.refs.list.scrollToRow(target);
     this.container.focus();
@@ -788,7 +788,7 @@ var ReqData = React.createClass({
                   return (
                       <RV.List
                       ref="list"
-                      rowHeight={30}
+                      rowHeight={28}
                       width={size.width}
                       height={size.height}
                       rowCount={list.length}
