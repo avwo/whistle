@@ -667,12 +667,10 @@ var ReqData = React.createClass({
   onFilterChange: function(keyword) {
     var self = this;
     var modal = self.props.modal;
-    var autoRefresh = modal && modal.search(keyword);
+    modal && modal.search(keyword);
     clearTimeout(self.networkStateChangeTimer);
     self.networkStateChangeTimer = setTimeout(function() {
-      self.setState({filterText: keyword}, function() {
-        autoRefresh && self.autoRefresh();
-      });
+      self.setState({filterText: keyword});
       events.trigger('networkStateChange');
     }, 600);
   },
