@@ -2,7 +2,7 @@ require('./base-css.js');
 require('../css/network-settings.css');
 var $ = require('jquery');
 var React = require('react');
-
+var NetworkModal = require('./network-modal');
 var Dialog = require('./dialog');
 var columns = require('./columns');
 var dataCenter = require('./data-center');
@@ -82,6 +82,9 @@ var Settings = React.createClass({
       e.stopPropagation();
     }
   },
+  onRowsChange: function(e) {
+    NetworkModal.setMaxRows(e.target.value);
+  },
   showDialog: function() {
     var settings = this.getNetworkSettings();
     this.setState(settings);
@@ -150,6 +153,18 @@ var Settings = React.createClass({
               );
             })}
           </fieldset>
+
+          <label className="w-network-settings-own">
+            Max rows number:
+            <select className="form-control" onChange={this.onRowsChange} defaultValue={NetworkModal.getMaxRows()}>
+              <option value="500">500</option>
+              <option value="1000">1000</option>
+              <option value="1500">1500</option>
+              <option value="2000">2000</option>
+              <option value="2500">2500</option>
+              <option value="3000">3000</option>
+            </select>
+          </label>
           <label className="w-network-settings-own">
             <input checked={dataCenter.isOnlyViewOwnData()} data-name="viewOwn" type="checkbox" />Only take this machine's request into consideration (IP: {dataCenter.clientIp})
           </label>

@@ -22,4 +22,6 @@
 .w-files-dialog .w-help-menu:hover { color: #337ab7 }
 .w-https-dialog .w-help-menu, .w-files-dialog .w-help-menu { margin-right: 5px; }
 .w-network-settings-dialog div input[type=text] { width: 436px; }
-.w-network-settings-own { width: auto!important; margin: 10px 0 0;}
+.w-network-settings-own { width: auto!important; margin: 15px 0 0; white-space: nowrap; }
+.w-network-settings-own select { margin-left: 20px; width: 160px; display: inline-block; }
+

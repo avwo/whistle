@@ -9,7 +9,6 @@ var createCgi = createCgiObj.createCgi;
 var MAX_INCLUDE_LEN = 5120;
 var MAX_EXCLUDE_LEN = 5120;
 var MAX_FRAMES_LENGTH = exports.MAX_FRAMES_LENGTH = 80;
-var MAX_COUNT = NetworkModal.MAX_COUNT;
 var TIMEOUT = 20000;
 var dataCallbacks = [];
 var serverInfoCallbacks = [];
@@ -870,7 +869,7 @@ function getStartTime() {
   if (!inited) {
     return clearNetwork ? -2 : '';
   }
-  if (dataList.length - 1 > MAX_COUNT || exports.stopRefresh) {
+  if (dataList.length - 1 > NetworkModal.MAX_COUNT || exports.stopRefresh) {
     return -1;
   }
   return lastRowId || '0';

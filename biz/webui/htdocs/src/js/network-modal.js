@@ -1,7 +1,10 @@
 var util = require('./util');
+var storage = require('./storage');
 
-var MAX_LENGTH = 1500;
-var MAX_COUNT = 1600;
+var NUM_OPTIONS = [500, 1000, 1500, 2000, 2500, 3000];
+var curLength = parseInt(storage.get('maxNetworkRows'), 10) || 1500;
+var MAX_LENGTH = NUM_OPTIONS.indexOf(curLength) === -1 ? 1500 : curLength;
+var MAX_COUNT = MAX_LENGTH + 100;
 var WIN_NAME_PRE = '__whistle_' + location.href.replace(/\/[^/]*([#?].*)?$/, '/') + '__';
 
 function NetworkModal(list) {
@@ -10,6 +13,20 @@ function NetworkModal(list) {
 }
 
 NetworkModal.MAX_COUNT = MAX_COUNT;
+
+NetworkModal.setMaxRows = function(num) {
+  num = parseInt(num, 10);
+  if (NUM_OPTIONS.indexOf(num) !== -1) {
+    MAX_LENGTH = num;
+    MAX_COUNT = MAX_LENGTH + 100;
+    NetworkModal.MAX_COUNT = MAX_COUNT;
+    storage.set('maxNetworkRows', num);
+  }
+};
+
+NetworkModal.getMaxRows = function() {
+  return MAX_LENGTH;
+};
 
 var proto = NetworkModal.prototype;
 
