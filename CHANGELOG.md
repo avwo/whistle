@@ -1,7 +1,7 @@
 # v2.3.6
 1. refactor: 添加 `package-lock.json`
 2. perf: 引入 [react-virtualized](https://github.com/bvaughn/react-virtualized) 极大提升列表性能，详见：https://github.com/avwo/whistle/pull/358
-3. refactor: 调整列表长度，支持同时显示 2500 条抓包数据
+3. feat: 调整列表长度，默认支持同时显示 1500 条抓包数据，可以通过 Network > Filter > Max rows number 调整大小
 
 # v2.3.5
 1. refactor: 在之前版本设置 `log://xxx weinre://xxx` 时，为了防止把注入都js缓存到浏览器，whistle 会自动删除缓存的响应头，即使设置了 `cache://xxx` 也无用，新版以 `cache://xxx` 优先级最高，并支持通过设置 `cache://reserve` 强制保留原来的请求头
