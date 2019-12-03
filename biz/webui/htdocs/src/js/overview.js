@@ -97,7 +97,7 @@ var Overview = React.createClass({
               value = formatSize(size);
               var unzipSize = value ? util.getProperty(modal, prop.substring(0, 4) + 'unzipSize') : -1;
               if (unzipSize >= 0 && unzipSize != size) {
-                value += ' / ' + formatSize(unzipSize);
+                value += ' / ' + formatSize(unzipSize) + ' = ' + Number(size * 100 / unzipSize).toFixed(2) + '%';
               }
             } else if (prop == 'realUrl') {
               if (value == modal.url) {
