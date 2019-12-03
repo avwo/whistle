@@ -1,17 +1,10 @@
 require('./lib/util/patch');
 var net = require('net');
 var tls = require('tls');
-var res = require('http').OutgoingMessage.prototype;
 
 var ver = process.version.substring(1).split('.');
-var setHeader = res.setHeader;
 
 process.emitWarning = function() {};
-res.setHeader = function(field, val){
-  try {
-    return setHeader.call(this, field, val);
-  } catch(e) {}
-};
 
 if (ver[0] >= 7 && ver[1] >= 7) {
   var connect = net.Socket.prototype.connect;
