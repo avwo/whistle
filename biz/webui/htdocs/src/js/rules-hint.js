@@ -216,7 +216,7 @@ CodeMirror.registerHelper('hint', 'rulesHint', function(editor, options) {
   }
   var curWord = start != end && curLine.substring(start, end);
   if (AT_RE.test(curWord)) {
-    list = getAtValueList(curWord.substring(1));
+    list = !byEnter && getAtValueList(curWord.substring(1));
     if (!list || !list.length) {
       return;
     }
