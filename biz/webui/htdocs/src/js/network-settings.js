@@ -155,7 +155,7 @@ var Settings = React.createClass({
           </fieldset>
 
           <label className="w-network-settings-own">
-            Max rows number:
+            Max Rows Number:
             <select className="form-control" onChange={this.onRowsChange} defaultValue={NetworkModal.getMaxRows()}>
               <option value="500">500</option>
               <option value="1000">1000</option>
