@@ -91,9 +91,11 @@ function handleWebSocket(options, cb) {
       var handleResponse = function(resData) {
         resData = resData + '';
         var index = resData.indexOf('\r\n\r\n');
+        var body = '';
         if (index !== -1) {
           socket.removeListener('data', handleResponse);
           socket.headers = parseHeaders(resData.slice(0, index));
+          body = resData.slice(index + 4).toString();
           var sender = getSender(socket);
           var data = util.toBuffer(options.body, getCharset(socket.headers) || getCharset(options.headers));
           if (data && data.length) {
@@ -111,7 +113,7 @@ function handleWebSocket(options, cb) {
           cb(null, {
             statusCode: statusCode,
             headers: socket.headers || {},
-            body: ''
+            body: body
           });
         }
       };
