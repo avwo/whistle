@@ -110,6 +110,9 @@ function handleWebSocket(options, cb) {
           if (STATUS_CODE_RE.test(resData)) {
             statusCode = parseInt(RegExp.$1, 10);
           }
+          if (statusCode !== 101) {
+            socket.destroy();
+          }
           cb(null, {
             statusCode: statusCode,
             headers: socket.headers || {},
