@@ -16,35 +16,6 @@ var iframes = require('./iframes');
 var dataCenter = require('./data-center');
 
 var ROW_STYLE = { outline: 'none'};
-
-// util.addDragEvent('.w-spinner', function(target, x, y) {
-//   console.log(x, y);
-// });
-
-var Spinner = React.createClass({
-  // stopPropagation: function(e) {
-  //   if (!$(e.target).closest('th').next('th').length) {
-  //     return;
-  //   }
-  //   e.stopPropagation();
-  //   e.preventDefault();
-  // },
-  render: function() {
-    var order = this.props.order;
-    var desc = order == 'desc';
-    if (!desc && order != 'asc') {
-      order = null;
-    }
-    return (
-      <div /* onClick={this.stopPropagation} onDragStart={this.stopPropagation} */
-        /* draggable={true}  */className="w-spinner">
-        <span className={'glyphicon glyphicon-triangle-top' + (order ? ' spinner-' + order : '')}></span>
-        <span className={'glyphicon glyphicon-triangle-bottom' + (order ? ' spinner-' + order : '')}></span>
-      </div>
-    );
-  }
-});
-
 var columnState = {};
 var CMD_RE = /^:dump\s+(\d{1,15})\s*$/;
 var NOT_BOLD_RULES = {
@@ -132,6 +103,42 @@ var contextMenuList = [
   },
   { name: 'Help', sep: true }
 ];
+
+// util.addDragEvent('.w-spinner', function(target, x, y) {
+//   console.log(x, y);
+// });
+
+var Spinner = React.createClass({
+  // stopPropagation: function(e) {
+  //   if (!$(e.target).closest('th').next('th').length) {
+  //     return;
+  //   }
+  //   e.stopPropagation();
+  //   e.preventDefault();
+  // },
+  render: function() {
+    var order = this.props.order;
+    var desc = order == 'desc';
+    if (!desc && order != 'asc') {
+      order = null;
+    }
+    return (
+      <div /* onClick={this.stopPropagation} onDragStart={this.stopPropagation} */
+        /* draggable={true}  */className="w-spinner">
+        <span className={'glyphicon glyphicon-triangle-top' + (order ? ' spinner-' + order : '')}></span>
+        <span className={'glyphicon glyphicon-triangle-bottom' + (order ? ' spinner-' + order : '')}></span>
+      </div>
+    );
+  }
+});
+
+function getColStyle(col, style) {
+  style = style ? $.extend({}, style) : {};
+  if (col.width) {
+    style.width = col.width;
+  }
+  return style;
+}
 
 function getUploadSessionsFn() {
   try {
@@ -236,7 +243,8 @@ var Row = React.createClass({
                   var name = col.name;
                   var className = col.className;
                   var value = name === 'hostIp' ? util.getServerIp(item) : item[name];
-                  return (<td key={name} className={className} style={style} title={col.showTitle ? value : undefined}>{value}</td>);
+                  var colStyle = getColStyle(col, style);
+                  return (<td key={name} className={className} style={colStyle} title={col.showTitle ? value : undefined}>{value}</td>);
                 })}
               </tr>
             </tbody></table>);
@@ -758,11 +766,16 @@ var ReqData = React.createClass({
   renderColumn: function(col) {
     var name = col.name;
     var disabledColumns = columns.isDisabled();
+    var style = getColStyle(col);
+    if (columnState[name]) {
+      style.color = '#337ab7';
+    }
     return (
       <th {...this.state.dragger} data-name={name}
         draggable={!disabledColumns}
         key={name} className={col.className}
-        style={{color: columnState[name] ? '#337ab7' : undefined}}>
+        style={style}
+      >
         {col.title}<Spinner order={columnState[name]} />
       </th>
     );
@@ -791,7 +804,8 @@ var ReqData = React.createClass({
 
     // reduce
     for (var i = 0, len = columnList.length; i < len; i++) {
-      minWidth += columnList[i].minWidth;
+      var col = columnList[i];
+      minWidth += col.width || col.minWidth;
     }
     minWidth = {'min-width': minWidth + 'px'};
 

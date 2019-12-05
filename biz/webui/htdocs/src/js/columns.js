@@ -12,14 +12,14 @@ function getDefaultColumns() {
       name: 'date',
       className: 'date',
       showTitle: true,
-      minWidth: 150
+      width: 150
     },
     {
       title: 'Result',
       name: 'result',
       className: 'result',
       selected: true,
-      minWidth: 65
+      width: 65
     },
     {
       title: 'Method',
@@ -27,21 +27,21 @@ function getDefaultColumns() {
       className: 'method',
       showTitle: true,
       selected: true,
-      minWidth: 75
+      width: 75
     },
     {
       title: 'Protocol',
       name: 'protocol',
       className: 'protocol',
       selected: true,
-      minWidth: 95
+      width: 95
     },
     {
       title: 'ClientIP',
       name: 'clientIp',
       className: 'clientIp',
       showTitle: true,
-      minWidth: 110
+      width: 110
     },
     {
       title: 'ServerIP',
@@ -49,19 +49,19 @@ function getDefaultColumns() {
       className: 'hostIp',
       selected: true,
       showTitle: true,
-      minWidth: 110
+      width: 110
     },
     {
       title: 'ClientPort',
       name: 'clientPort',
       className: 'clientPort',
-      minWidth: 90
+      width: 90
     },
     {
       title: 'ServerPort',
       name: 'serverPort',
       className: 'serverPort',
-      minWidth: 90,
+      width: 90,
       lazy: true
     },
     {
@@ -70,14 +70,14 @@ function getDefaultColumns() {
       className: 'hostname',
       selected: true,
       showTitle: true,
-      minWidth: 150
+      width: 150
     },
     {
       title: 'URL',
       name: 'path',
       className: 'path',
       selected: true,
-      minWidth: 60,
+      locked: true,
       lazy: true
     },
     {
@@ -86,47 +86,47 @@ function getDefaultColumns() {
       className: 'type',
       selected: true,
       showTitle: true,
-      minWidth: 125,
+      width: 125,
       lazy: true
     },
     {
       title: 'Body',
       name: 'body',
       className: 'body',
-      minWidth: 90,
+      width: 90,
       lazy: true
     },
     {
       title: 'Encoding',
       name: 'contentEncoding',
       className: 'contentEncoding',
-      minWidth: 90,
+      width: 90,
       lazy: true
     },
     {
       title: 'DNS',
       name: 'dns',
       className: 'dns',
-      minWidth: 70
+      width: 70
     },
     {
       title: 'Request',
       name: 'request',
       className: 'request',
-      minWidth: 90
+      width: 90
     },
     {
       title: 'Response',
       name: 'response',
       className: 'response',
-      minWidth: 90,
+      width: 90,
       lazy: true
     },
     {
       title: 'Download',
       name: 'download',
       className: 'download',
-      minWidth: 90,
+      width: 90,
       lazy: true
     },
     {
@@ -134,7 +134,7 @@ function getDefaultColumns() {
       name: 'time',
       className: 'time',
       selected: true,
-      minWidth: 70,
+      width: 70,
       lazy: true
     }
   ];

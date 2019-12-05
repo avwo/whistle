@@ -109,6 +109,7 @@ $(document).on('mousedown', function(e) {
       dragCallback = dragCallbacks[selector];
       return true;
     }
+    dragTarget = null;
   });
 
   if (!dragTarget || !dragCallback) {
