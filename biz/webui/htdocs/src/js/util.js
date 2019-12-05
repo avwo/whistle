@@ -103,13 +103,12 @@ exports.getBase64FromHexText = function (str, check) {
 $(document).on('mousedown', function(e) {
   stopDrag();
   var target = $(e.target);
-  Object.keys(dragCallbacks).forEach(function(selector) {
+  Object.keys(dragCallbacks).some(function(selector) {
     dragTarget = target.closest(selector);
     if (dragTarget.length) {
       dragCallback = dragCallbacks[selector];
-      return false;
+      return true;
     }
-    stopDrag();
   });
 
   if (!dragTarget || !dragCallback) {

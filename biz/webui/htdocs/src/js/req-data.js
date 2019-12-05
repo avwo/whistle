@@ -10,11 +10,40 @@ var QRCodeDialog = require('./qrcode-dialog');
 var util = require('./util');
 var columns = require('./columns');
 var FilterInput = require('./filter-input');
-var Spinner = require('./spinner');
 var ContextMenu = require('./context-menu');
 var events = require('./events');
 var iframes = require('./iframes');
 var dataCenter = require('./data-center');
+
+var ROW_STYLE = { outline: 'none'};
+
+// util.addDragEvent('.w-spinner', function(target, x, y) {
+//   console.log(x, y);
+// });
+
+var Spinner = React.createClass({
+  // stopPropagation: function(e) {
+  //   if (!$(e.target).closest('th').next('th').length) {
+  //     return;
+  //   }
+  //   e.stopPropagation();
+  //   e.preventDefault();
+  // },
+  render: function() {
+    var order = this.props.order;
+    var desc = order == 'desc';
+    if (!desc && order != 'asc') {
+      order = null;
+    }
+    return (
+      <div /* onClick={this.stopPropagation} onDragStart={this.stopPropagation} */
+        /* draggable={true}  */className="w-spinner">
+        <span className={'glyphicon glyphicon-triangle-top' + (order ? ' spinner-' + order : '')}></span>
+        <span className={'glyphicon glyphicon-triangle-bottom' + (order ? ' spinner-' + order : '')}></span>
+      </div>
+    );
+  }
+});
 
 var columnState = {};
 var CMD_RE = /^:dump\s+(\d{1,15})\s*$/;
@@ -201,7 +230,7 @@ var Row = React.createClass({
     var style = item.style;
     this.req = item.req;
     return (<table  className="table" key={p.key} style={p.style}><tbody>
-              <tr tabIndex="-1" draggable={draggable} data-id={item.id} className={getClassName(item)} style={{outline:'none'}}>
+              <tr tabIndex="-1" draggable={draggable} data-id={item.id} className={getClassName(item)} style={ROW_STYLE}>
                 <th className="order" scope="row" style={style}>{order}</th>
                 {columnList.map(function(col) {
                   var name = col.name;
