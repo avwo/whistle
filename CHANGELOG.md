@@ -1,3 +1,7 @@
+# v2.3.7
+1. style: Network 的 `URL` 支持修改宽度（个人体验考虑其它列暂时不支持修改宽度）
+2. refactor: websocket 如果返回非 101 状态，则透传给浏览器
+
 # v2.3.6
 1. refactor: 添加 `package-lock.json`
 2. perf: 引入 [react-virtualized](https://github.com/bvaughn/react-virtualized) 极大提升列表性能，详见：https://github.com/avwo/whistle/pull/358
