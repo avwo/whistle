@@ -262,9 +262,7 @@ var ReqData = React.createClass({
       self.setState({});
     });
     events.on('onColumnsChanged', function() {
-      self.setState({
-        columns: settings.getSelectedColumns()
-      });
+      self.setState({ columns: settings.getSelectedColumns() });
     });
     var update = function() {
       self.setState({});
@@ -320,13 +318,16 @@ var ReqData = React.createClass({
         self.scrollToRow(0);
       }
     });
+    var wrapper = ReactDOM.findDOMNode(self.refs.wrapper);
     var updateTimer;
     var updateUI = function() {
       updateTimer = null;
       self.setState({ columns: settings.getSelectedColumns() });
     };
-    util.addDragEvent('.w-header-drag-block', function(target, x) {
-      updateTimer = updateTimer || setTimeout(updateUI, 60);
+    util.addDragEvent('.w-header-drag-block', function(_, x) {
+      self.minWidth = wrapper.offsetWidth + x;
+      settings.setMinWidth(self.minWidth);
+      updateTimer = updateTimer || setTimeout(updateUI, 50);
     });
   },
   onDragStart: function(e) {
@@ -778,7 +779,7 @@ var ReqData = React.createClass({
       <th onMouseDown={this.onMouseDown} {...this.state.dragger} data-name={name}
         draggable={true} key={name} className={col.className} style={style}
       >
-        {i == this.lastIndex ? <div onDragStart={stopPropagation} draggable={true} className="w-header-drag-block" /> : undefined}
+        { name === 'path' ? <div onDragStart={stopPropagation} draggable={true} className="w-header-drag-block" /> : undefined}
         {col.title}<Spinner order={columnState[name]} />
       </th>
     );
@@ -804,11 +805,15 @@ var ReqData = React.createClass({
     var width = state.columns.width;
     var colStyle = state.columns.style;
     var filterText = (state.filterText || '').trim();
-    this.lastIndex = columnList.length - 1;
+    var minWidth = settings.getMinWidth();
+    if (minWidth && minWidth > width) {
+      width = minWidth;
+      colStyle.minWidth = width;
+    }
 
     return (
         <div className="fill w-req-data-con orient-vertical-box">
-          <div className="w-req-data-content fill orient-vertical-box" style={colStyle}>
+          <div ref="wrapper" className="w-req-data-content fill orient-vertical-box" style={colStyle}>
             <div className="w-req-data-headers">
               <table className="table">
                   <thead>

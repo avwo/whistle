@@ -1,5 +1,4 @@
 .w-req-data-con {overflow-x: auto;}
-.w-req-data-con th, .w-req-data-con td { box-sizing: border-box!important; }
 .w-req-data-content {overflow-x: auto; overflow-y: hidden;}
 .w-req-data-content .order {width: 50px;}
 .w-req-data-content .date {width: 150px;}
@@ -105,7 +104,7 @@
   top: 0;
   right: -2px;
   height: 28px;
-  width: 8px;
+  width: 12px;
   cursor: col-resize;
   z-index: 1;
 }

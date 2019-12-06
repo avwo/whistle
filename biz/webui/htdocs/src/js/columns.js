@@ -1,8 +1,22 @@
 var $ = require('jquery');
 var dataCenter = require('./data-center');
 var util = require('./util');
+var storage = require('./storage');
 
 var settings = dataCenter.getNetworkColumns();
+
+var minWidth = storage.get('minNetworkWidth');
+if (minWidth) {
+  storage.set('minNetworkWidth', parseInt(minWidth, 10) || '');
+}
+
+exports.getMinWidth = function() {
+  return storage.get('minNetworkWidth');
+};
+
+exports.setMinWidth = function(width) {
+  storage.set('minNetworkWidth', width);
+};
 
 function getDefaultColumns() {
 
@@ -206,6 +220,7 @@ exports.getAllColumns = function() {
   return curColumns;
 };
 exports.reset = function() {
+  storage.set('minNetworkWidth', '');
   reset();
   save();
 };
