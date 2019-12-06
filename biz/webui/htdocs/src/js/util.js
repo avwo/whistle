@@ -100,6 +100,10 @@ exports.getBase64FromHexText = function (str, check) {
   return false;
 };
 
+function stopDrag() {
+  dragCallback = dragTarget = dragOffset = null;
+}
+
 $(document).on('mousedown', function(e) {
   stopDrag();
   var target = $(e.target);
@@ -130,10 +134,6 @@ $(document).on('mousedown', function(e) {
 .on('mouseout', function(e) {
   !e.relatedTarget && stopDrag();
 });
-
-function stopDrag() {
-  dragCallback = dragTarget = dragOffset = null;
-}
 
 function addDragEvent(selector, callback) {
   if (!selector || typeof callback != 'function'

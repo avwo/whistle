@@ -78,7 +78,8 @@ function getDefaultColumns() {
       className: 'path',
       selected: true,
       locked: true,
-      lazy: true
+      lazy: true,
+      minWidth: 60
     },
     {
       title: 'Type',
@@ -141,7 +142,7 @@ function getDefaultColumns() {
 }
 
 function filterSelected(item) {
-  return item.selected;
+  return item.selected || item.locked;
 }
 
 var columnsMap;
@@ -219,7 +220,7 @@ exports.reset = function() {
   reset();
   save();
 };
-exports.setselected = function(name, selected) {
+exports.setSelected = function(name, selected) {
   var col = columnsMap[name];
   if (col) {
     col.selected = selected !== false;

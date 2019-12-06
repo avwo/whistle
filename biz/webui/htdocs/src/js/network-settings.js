@@ -31,7 +31,7 @@ var Settings = React.createClass({
   onNetworkSettingsChange: function(e) {
     var target = e.target;
     var name = target.getAttribute('data-name');
-    if (!name) {
+    if (!name || name === 'path') {
       return;
     }
     if (name === 'viewOwn') {
@@ -66,7 +66,7 @@ var Settings = React.createClass({
       columnsChanged = true;
       break;
     default:
-      columns.setselected(name, target.checked);
+      columns.setSelected(name, target.checked);
       columnsChanged = true;
     }
     if (filterTextChanged) {
