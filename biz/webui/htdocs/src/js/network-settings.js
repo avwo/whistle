@@ -16,7 +16,6 @@ var Settings = React.createClass({
   },
   getNetworkSettings: function() {
     return $.extend(dataCenter.getFilterText(), {
-      disabledColumns: columns.isDisabled(),
       columns: columns.getAllColumns()
     });
   },
@@ -61,8 +60,6 @@ var Settings = React.createClass({
       settings.excludeText = target.value;
       break;
     case 'networkColumns':
-      settings.disabledColumns = !target.checked;
-      columns.disable(settings.disabledColumns);
       columnsChanged = true;
       break;
     default:
@@ -95,7 +92,6 @@ var Settings = React.createClass({
   },
   render: function() {
     var state = this.state;
-    var disabledColumns = state.disabledColumns;
     var columnList = state.columns;
 
     return (
@@ -136,9 +132,7 @@ var Settings = React.createClass({
           </fieldset>
           <fieldset className="network-settings-columns">
             <legend>
-              <label>
-                <input checked={!disabledColumns} data-name="networkColumns" type="checkbox" />Network Columns
-              </label>
+              <label>Network Columns</label>
               <label onClick={this.resetColumns} className="btn btn-default">Reset</label>
             </legend>
             {columnList.map(function(col) {
@@ -146,9 +140,9 @@ var Settings = React.createClass({
                 <label
                   {...state.dragger}
                   data-name={col.name}
-                  draggable={!disabledColumns}
+                  draggable={true}
                   >
-                  <input disabled={disabledColumns || col.locked} checked={!!col.selected} data-name={col.name} type="checkbox" />{col.title}
+                  <input disabled={col.locked} checked={!!col.selected} data-name={col.name} type="checkbox" />{col.title}
                 </label>
               );
             })}

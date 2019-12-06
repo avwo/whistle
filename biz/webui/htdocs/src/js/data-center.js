@@ -173,7 +173,6 @@ exports.getFilterText = getFilterText;
 function setNetworkColumns(settings) {
   settings = settings || {};
   storage.set('networkColumns', JSON.stringify({
-    disabledColumns: settings.disabledColumns,
     columns: settings.columns
   }));
 }

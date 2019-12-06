@@ -8,7 +8,7 @@ var ReactDOM = require('react-dom');
 var $ = require('jquery');
 var QRCodeDialog = require('./qrcode-dialog');
 var util = require('./util');
-var columns = require('./columns');
+var settings = require('./columns');
 var FilterInput = require('./filter-input');
 var ContextMenu = require('./context-menu');
 var events = require('./events');
@@ -104,18 +104,15 @@ var contextMenuList = [
   { name: 'Help', sep: true }
 ];
 
-// util.addDragEvent('.w-spinner', function(target, x, y) {
-//   console.log(x, y);
-// });
+function stopPropagation(e) {
+  if (!$(e.target).closest('th').next('th').length) {
+    return;
+  }
+  e.stopPropagation();
+  e.preventDefault();
+}
 
 var Spinner = React.createClass({
-  // stopPropagation: function(e) {
-  //   if (!$(e.target).closest('th').next('th').length) {
-  //     return;
-  //   }
-  //   e.stopPropagation();
-  //   e.preventDefault();
-  // },
   render: function() {
     var order = this.props.order;
     var desc = order == 'desc';
@@ -123,8 +120,7 @@ var Spinner = React.createClass({
       order = null;
     }
     return (
-      <div /* onClick={this.stopPropagation} onDragStart={this.stopPropagation} */
-        /* draggable={true}  */className="w-spinner">
+      <div className="w-spinner">
         <span className={'glyphicon glyphicon-triangle-top' + (order ? ' spinner-' + order : '')}></span>
         <span className={'glyphicon glyphicon-triangle-bottom' + (order ? ' spinner-' + order : '')}></span>
       </div>
@@ -134,9 +130,7 @@ var Spinner = React.createClass({
 
 function getColStyle(col, style) {
   style = style ? $.extend({}, style) : {};
-  if (col.width) {
-    style.width = col.width;
-  }
+  style.width = col.minWidth ? Math.max(col.width, col.minWidth) : col.width;
   return style;
 }
 
@@ -223,10 +217,10 @@ function getFilename(item, type) {
 }
 
 var Row = React.createClass({
-  shouldComponentUpdate: function(nextProps) {
+  shouldComponentUpdate: function(n) {
     var p = this.props;
-    return p.order != nextProps.order || this.req != p.item.req ||
-    p.draggable != nextProps.draggable || p.columnList != nextProps.columnList;
+    return p.width !== n.width || p.order != n.order || this.req != p.item.req ||
+    p.draggable != n.draggable || p.columnList != n.columnList;
   },
   render: function() {
     var p = this.props;
@@ -253,11 +247,11 @@ var Row = React.createClass({
 
 var ReqData = React.createClass({
   getInitialState: function() {
-    var dragger = columns.getDragger();
+    var dragger = settings.getDragger();
     dragger.onDrop = dragger.onDrop.bind(this);
     return {
       draggable: true,
-      columns: columns.getSelectedColumns(),
+      columns: settings.getSelectedColumns(),
       dragger: dragger
     };
   },
@@ -269,7 +263,7 @@ var ReqData = React.createClass({
     });
     events.on('onColumnsChanged', function() {
       self.setState({
-        columns: columns.getSelectedColumns()
+        columns: settings.getSelectedColumns()
       });
     });
     var update = function() {
@@ -325,6 +319,14 @@ var ReqData = React.createClass({
       }else{
         self.scrollToRow(0);
       }
+    });
+    var updateTimer;
+    var updateUI = function() {
+      updateTimer = null;
+      self.setState({ columns: settings.getSelectedColumns() });
+    };
+    util.addDragEvent('.w-header-drag-block', function(target, x) {
+      updateTimer = updateTimer || setTimeout(updateUI, 60);
     });
   },
   onDragStart: function(e) {
@@ -726,7 +728,7 @@ var ReqData = React.createClass({
     }
   },
   orderBy: function(e) {
-    var target = $(e.target).closest('th')[0];
+    var target = this.willResort && $(e.target).closest('th')[0];
     if (!target) {
       return;
     }
@@ -761,22 +763,22 @@ var ReqData = React.createClass({
     this.setState({});
   },
   onColumnsResort: function() {
-    this.setState({ columns: columns.getSelectedColumns() });
+    this.setState({ columns: settings.getSelectedColumns() });
+  },
+  onMouseDown: function(e) {
+    this.willResort = e.target.className !== 'w-header-drag-block';
   },
   renderColumn: function(col, i) {
     var name = col.name;
-    var disabledColumns = columns.isDisabled();
     var style = getColStyle(col);
     if (columnState[name]) {
       style.color = '#337ab7';
     }
     return (
-      <th {...this.state.dragger} data-name={name}
-        draggable={!disabledColumns}
-        key={name} className={col.className}
-        style={style}
+      <th onMouseDown={this.onMouseDown} {...this.state.dragger} data-name={name}
+        draggable={true} key={name} className={col.className} style={style}
       >
-        {i ? <div className="w-header-drag-block" /> : undefined}
+        {i == this.lastIndex ? <div onDragStart={stopPropagation} draggable={true} className="w-header-drag-block" /> : undefined}
         {col.title}<Spinner order={columnState[name]} />
       </th>
     );
@@ -798,21 +800,15 @@ var ReqData = React.createClass({
     var hasKeyword = modal && modal.hasKeyword();
     var index = 0;
     var draggable = state.draggable;
-    var columnList = state.columns;
+    var columnList = state.columns.list;
+    var width = state.columns.width;
+    var colStyle = state.columns.style;
     var filterText = (state.filterText || '').trim();
-    var minWidth = 50;
-
-
-    // reduce
-    for (var i = 0, len = columnList.length; i < len; i++) {
-      var col = columnList[i];
-      minWidth += col.width || col.minWidth;
-    }
-    minWidth = {'min-width': minWidth + 'px'};
+    this.lastIndex = columnList.length - 1;
 
     return (
         <div className="fill w-req-data-con orient-vertical-box">
-          <div style={minWidth} className="w-req-data-content fill orient-vertical-box">
+          <div className="w-req-data-content fill orient-vertical-box" style={colStyle}>
             <div className="w-req-data-headers">
               <table className="table">
                   <thead>
@@ -838,7 +834,7 @@ var ReqData = React.createClass({
                         // var {index, isScrolling, key, style}=options;
                         var item = list[options.index];
                         var order = hasKeyword? options.index+1 : item.order;
-                        return <Row style={options.style} key={options.key} order={order}  index={index}
+                        return <Row width={width} style={options.style} key={options.key} order={order}  index={index}
                           columnList={columnList} draggable={draggable} item={item} />;
                       }}
                       />);
@@ -847,7 +843,7 @@ var ReqData = React.createClass({
             </div>
           </div>
           <FilterInput ref="filterInput" onKeyDown={this.onFilterKeyDown}
-            onChange={this.onFilterChange} wStyle={minWidth} />
+            onChange={this.onFilterChange} wStyle={colStyle} />
           <ContextMenu onClick={this.onClickContextMenu} ref="contextMenu" />
           <QRCodeDialog ref="qrcodeDialog" />
       </div>
