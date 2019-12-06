@@ -763,7 +763,7 @@ var ReqData = React.createClass({
   onColumnsResort: function() {
     this.setState({ columns: columns.getSelectedColumns() });
   },
-  renderColumn: function(col) {
+  renderColumn: function(col, i) {
     var name = col.name;
     var disabledColumns = columns.isDisabled();
     var style = getColStyle(col);
@@ -776,6 +776,7 @@ var ReqData = React.createClass({
         key={name} className={col.className}
         style={style}
       >
+        {i ? <div className="w-header-drag-block" /> : undefined}
         {col.title}<Spinner order={columnState[name]} />
       </th>
     );

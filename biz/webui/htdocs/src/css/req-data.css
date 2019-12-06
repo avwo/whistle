@@ -85,13 +85,13 @@
 
 .w-spinner {
   position: absolute;
-  top: -6px;
+  top: -9px;
   right: -2px;
   font-size: 12px;
   -webkit-transform : scale(0.625,0.625); 
   transform: scale(0.625,0.625);
   overflow: hidden;
-  padding: 8px 4px 8px 0;
+  padding: 11px 4px 10px 0;
   /* cursor: col-resize; */
 }
 /* .w-req-data-headers th:last-child .w-spinner {
@@ -101,4 +101,13 @@
 .w-spinner .glyphicon-triangle-top.spinner-desc {visibility: hidden;}
 .w-spinner .glyphicon-triangle-bottom.spinner-asc {
   visibility: hidden;
+}
+
+.w-header-drag-block {
+  position: absolute;
+  top: 0;
+  left: -2px;
+  height: 28px;
+  width: 8px;
+  /* cursor: col-resize; */
 }
