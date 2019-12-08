@@ -142,7 +142,7 @@ var Settings = React.createClass({
                   data-name={col.name}
                   draggable={true}
                   >
-                  <input disabled={col.locked} checked={!!col.selected} data-name={col.name} type="checkbox" />{col.title}
+                  <input disabled={col.locked} checked={!!col.selected || col.locked} data-name={col.name} type="checkbox" />{col.title}
                 </label>
               );
             })}
