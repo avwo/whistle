@@ -2854,7 +2854,7 @@ var Index = React.createClass({
               onClick={this.showAboutDialog}
               title={state.hasNewVersion ? 'There is a new version of whistle' : undefined}
               href={state.hasNewVersion ? 'javascript:;' : 'https://github.com/avwo/whistle#whistle'}
-              target="_blank"><span className="glyphicon glyphicon-question-sign"></span>Help</a>
+              target={!state.hasNewVersion ? '_blank' : undefined}><span className="glyphicon glyphicon-question-sign"></span>Help</a>
             <MenuItem ref="helpMenuItem" options={state.helpOptions}
               name={<About ref="aboutDialog" onClick={this.hideHelpOptions} onCheckUpdate={this.showHasNewVersion} />}
               className="w-help-menu-item" />
