@@ -28,7 +28,7 @@ var DONT_CHECK_PATHS = ['/cgi-bin/server-info', '/cgi-bin/show-host-ip-in-res-he
                         '/cgi-bin/composer', '/cgi-bin/socket/data', '/preview.html',
                         '/cgi-bin/socket/abort', '/cgi-bin/socket/change-status',
                         '/cgi-bin/sessions/export', '/cgi-bin/sessions/import', '/cgi-bin/plugins/update-rules',
-                        '/cgi-bin/lookup-tunnel-dns', '/cgi-bin/rootca', '/cgi-bin/log/set'];
+                        '/cgi-bin/rootca', '/cgi-bin/log/set'];
 var PLUGIN_PATH_RE = /^\/(whistle|plugin)\.([^/?#]+)(\/)?/;
 var STATIC_SRC_RE = /\.(?:ico|js|css|png)$/i;
 var proxyEvent, util, pluginMgr;
