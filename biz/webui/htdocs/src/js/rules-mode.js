@@ -6,7 +6,7 @@ var pluginRules = protocols.getPluginRules();
 var DOT_PATTERN_RE = /^\.[\w-]+(?:[?$]|$)/;
 var DOT_DOMAIN_RE = /^\.[^./?]+\.[^/?]/;
 var IPV4_RE = /^(?:::(?:ffff:)?)?(?:(?:25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)\.){3}(?:25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)?$/;
-var IPV4_PORT_RE = /^(?:::(?:ffff:)?)?(?:(?:25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)\.){3}(?:25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)(?:\:\d+)?$/;
+var IPV4_PORT_RE = /^(?:::(?:ffff:)?)?(?:(?:25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)\.){3}(?:25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)(?:\:(\d+))?$/;
 var FULL_IPV6_RE = /^[\da-f]{1,4}(?::[\da-f]{1,4}){7}$/;
 var SHORT_IPV6_RE = /^[\da-f]{1,4}(?::[\da-f]{1,4}){0,6}$/;
 var IP_WITH_PORT_RE = /^\[([:\da-f.]+)\](?::(\d+))?$/i;
@@ -20,9 +20,10 @@ events.on('updatePlugins', function() {
 CodeMirror.defineMode('rules', function() {
   function isIP(str) {
     var ipv4Test = IPV4_PORT_RE;
+    var port;
     if (IP_WITH_PORT_RE.test(str)) {
       str = RegExp.$1;
-      var port = RegExp.$2;
+      port = RegExp.$2;
       if (port) {
         if (port == 0 || port > 65535) {
           return false;
@@ -31,7 +32,8 @@ CodeMirror.defineMode('rules', function() {
       }
     }
     if (ipv4Test.test(str)) {
-      return true;
+      port = RegExp.$1;
+      return port && (port == 0 || port > 65535) ? false : true;
     }
     var index = str.indexOf('::');
     if (index !== -1) {
