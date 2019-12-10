@@ -18,7 +18,6 @@ var OVERVIEW_PROPS = ['url', 'realUrl', 'req.method', 'req.httpVersion', 'res.st
 var PROTOCOLS = require('./protocols').PROTOCOLS;
 var DEFAULT_OVERVIEW_MODAL = {};
 var DEFAULT_RULES_MODAL = {};
-var IPV6_RE = /^host:\/\/[:\da-f]*:[\da-f]*:[\da-f]+$/i;
 var PROXY_PROTOCOLS = ['socks', 'http-proxy', 'https-proxy'];
 
 function getRuleStr(rule) {
@@ -27,8 +26,8 @@ function getRuleStr(rule) {
   }
   var matcher = rule.matcher;
   if (rule.port) {
-    if (IPV6_RE.test(matcher)) {
-      matcher = '[' + matcher + ']';
+    if (matcher.indexOf(':') !== -1) {
+      matcher = 'host://[' + matcher.substring(7) + ']';
     }
     matcher = matcher + ':' + rule.port;
   }
