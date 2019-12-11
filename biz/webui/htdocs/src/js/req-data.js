@@ -710,7 +710,9 @@ var ReqData = React.createClass({
     modal && modal.search(keyword);
     clearTimeout(self.networkStateChangeTimer);
     self.networkStateChangeTimer = setTimeout(function() {
-      self.setState({filterText: keyword});
+      self.setState({filterText: keyword}, function() {
+        self.refs.content.refs.list.forceUpdateGrid();
+      });
       events.trigger('networkStateChange');
     }, 600);
   },
