@@ -217,11 +217,6 @@ function getFilename(item, type) {
 }
 
 var Row = React.createClass({
-  shouldComponentUpdate: function(n) {
-    var p = this.props;
-    return p.width !== n.width || p.order != n.order || this.req != p.item.req ||
-    p.draggable != n.draggable || p.columnList != n.columnList;
-  },
   render: function() {
     var p = this.props;
     var order = p.order;
@@ -229,7 +224,6 @@ var Row = React.createClass({
     var columnList = p.columnList;
     var item = p.item;
     var style = item.style;
-    this.req = item.req;
     return (<table  className="table" key={p.key} style={p.style}><tbody>
               <tr tabIndex="-1" draggable={draggable} data-id={item.id} className={getClassName(item)} style={ROW_STYLE}>
                 <th className="order" scope="row" style={style}>{order}</th>
@@ -704,15 +698,16 @@ var ReqData = React.createClass({
     data.className = data.marginRight < 360 ? 'w-ctx-menu-left' : '';
     this.refs.contextMenu.show(data);
   },
+  updateList: function() {
+    this.refs.content.refs.list.forceUpdateGrid();
+  },
   onFilterChange: function(keyword) {
     var self = this;
     var modal = self.props.modal;
     modal && modal.search(keyword);
     clearTimeout(self.networkStateChangeTimer);
     self.networkStateChangeTimer = setTimeout(function() {
-      self.setState({filterText: keyword}, function() {
-        self.refs.content.refs.list.forceUpdateGrid();
-      });
+      self.setState({filterText: keyword}, self.updateList);
       events.trigger('networkStateChange');
     }, 600);
   },
@@ -841,7 +836,7 @@ var ReqData = React.createClass({
                         // var {index, isScrolling, key, style}=options;
                         var item = list[options.index];
                         var order = hasKeyword? options.index+1 : item.order;
-                        return <Row width={width} style={options.style} key={options.key} order={order}  index={index}
+                        return <Row style={options.style} key={options.key} order={order}  index={index}
                           columnList={columnList} draggable={draggable} item={item} />;
                       }}
                       />);
