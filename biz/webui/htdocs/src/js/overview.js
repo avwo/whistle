@@ -26,7 +26,7 @@ function getRuleStr(rule) {
   }
   var matcher = rule.matcher;
   if (rule.port) {
-    if (matcher.indexOf(':') !== -1) {
+    if (matcher.indexOf(':', 7) !== -1) {
       matcher = 'host://[' + matcher.substring(7) + ']';
     }
     matcher = matcher + ':' + rule.port;
