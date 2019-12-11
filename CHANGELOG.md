@@ -1,3 +1,6 @@
+# v2.3.9
+1. fix: 上个版本引入的配置 host 出错问题
+
 # v2.3.8
 1. refactor: 优化 IPv6 配置
 2. refactor: 去掉多余的接口
