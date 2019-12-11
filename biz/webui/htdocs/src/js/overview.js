@@ -26,8 +26,10 @@ function getRuleStr(rule) {
   }
   var matcher = rule.matcher;
   if (rule.port) {
-    if (matcher.indexOf(':', 7) !== -1) {
-      matcher = 'host://[' + matcher.substring(7) + ']';
+    var protoIndex = matcher.indexOf(':') + 3;
+    var proto = matcher.substring(0, protoIndex);
+    if (matcher.indexOf(':', protoIndex) !== -1) {
+      matcher = proto + '[' + matcher.substring(protoIndex) + ']';
     }
     matcher = matcher + ':' + rule.port;
   }
