@@ -1,3 +1,6 @@
+# v2.4.2
+1. fix: 启用 `--socksServer port` 后请求出现异常可能导致程序 crash 问题
+
 # v2.4.1
 1. refactor: 支持显示saz文件里面的非文本内容
 2. feat: 添加启动参数 `-M safe` 开启安全模式，安全模式下会对服务端的证书进行校验，如果本地的根证书链不支持，则请求会报 `unable to verify the first certificate`，参见：https://github.com/avwo/whistle/issues/368
