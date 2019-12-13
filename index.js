@@ -4,8 +4,6 @@ var tls = require('tls');
 
 var ver = process.version.substring(1).split('.');
 
-process.emitWarning = function() {};
-
 if (ver[0] >= 7 && ver[1] >= 7) {
   var connect = net.Socket.prototype.connect;
   if (typeof connect === 'function') {
