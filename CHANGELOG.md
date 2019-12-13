@@ -1,3 +1,6 @@
+# v2.4.3
+1. fix: 使用 `pipe` 时请求异常导致没有捕获问题
+
 # v2.4.2
 1. fix: 启用 `--socksServer port` 后请求出现异常可能导致程序 crash 问题
 
