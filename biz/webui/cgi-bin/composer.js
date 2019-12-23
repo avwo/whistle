@@ -232,7 +232,7 @@ module.exports = function(req, res) {
           }
           headers['content-encoding'] = 'gzip';
           if ('content-length' in headers) {
-            headers['content-length'] = body.length;
+            headers['content-length'] = gzipData.length;
           } else {
             delete headers['content-length'];
           }
