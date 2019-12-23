@@ -55,9 +55,9 @@ function handleConnect(options, cb) {
     proxyHost: '127.0.0.1',
     proxyPort: config.port,
     headers: options.headers
-  }, function(socket, res, err) {
+  }, function(socket, _, err) {
     drain(socket);
-    var data = util.toBuffer(options.body, getCharset(options.headers));
+    var data = options.body;
     if (data && data.length) {
       socket.write(data);
     }
@@ -97,7 +97,7 @@ function handleWebSocket(options, cb) {
           socket.headers = parseHeaders(resData.slice(0, index));
           body = resData.slice(index + 4).toString();
           var sender = getSender(socket);
-          var data = util.toBuffer(options.body, getCharset(socket.headers) || getCharset(options.headers));
+          var data = options.body;
           if (data && data.length) {
             sender.send(data, {
               mask: true,
@@ -139,7 +139,7 @@ function handleHttp(options, cb) {
   options.hostname = null;
   options.host = '127.0.0.1';
   options.port = config.port;
-  http.request(options, function(res) {
+  var client = http.request(options, function(res) {
     if (cb) {
       res.on('error', cb);
       var buffer;
@@ -163,7 +163,9 @@ function handleHttp(options, cb) {
     } else {
       drain(res);
     }
-  }).on('error', cb || util.noop).end(options.body);
+  });
+  client.on('error', cb || util.noop);
+  client.end(options.body);
 }
 
 function getCharset(headers) {
