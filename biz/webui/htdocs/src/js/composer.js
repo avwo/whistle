@@ -115,7 +115,8 @@ var Composer = React.createClass({
       rules: typeof rules === 'string' ? rules : '',
       type: getType(util.parseHeaders(data.headers)),
       disableComposerRules: disableComposerRules,
-      isHexText: storage.get('showHexTextBody'),
+      isHexText: !!storage.get('showHexTextBody'),
+      isGzip: !!storage.get('enableGzip'),
       isCRLF: !!storage.get('useCRLBody')
     };
   },
@@ -252,6 +253,11 @@ var Composer = React.createClass({
     if (isHexText && util.getBase64FromHexText(body, true) === false) {
       message.error('The hex text cannot be converted to binary data.');
     }
+  },
+  onGzipChange: function(e) {
+    var isGzip = e.target.checked;
+    storage.set('enableGzip', isGzip ? 1 : '');
+    this.setState({ isGzip: isGzip });
   },
   onCRLFChange: function(e) {
     var isCRLF = e.target.checked;
@@ -464,7 +470,8 @@ var Composer = React.createClass({
       method: method,
       body: body,
       base64: base64,
-      isHexText: isHexText
+      isHexText: isHexText,
+      isGzip: this.state.isGzip ? 1 : undefined
     };
     clearTimeout(self.comTimer);
     self.comTimer = setTimeout(function() {
@@ -583,6 +590,7 @@ var Composer = React.createClass({
     var disableComposerRules = isStrictMode || state.disableComposerRules;
     var isHexText = state.isHexText;
     var isCRLF = state.isCRLF;
+    var isGzip = state.isGzip;
     self.hasBody = hasBody;
     
     return (
@@ -654,6 +662,9 @@ var Composer = React.createClass({
                   <label className={'w-composer-crlf' + (isHexText ? ' hide' : '')
                     + (isCRLF ? ' w-checked' : '')}>
                     <input checked={isCRLF} onChangeCapture={this.onCRLFChange} type="checkbox" />\r\n
+                  </label>
+                  <label className={'w-composer-gzip' + (isGzip ? ' w-checked' : '')}>
+                    <input checked={isGzip} type="checkbox" onChange={this.onGzipChange} />Gzip
                   </label>
                   <button className={'btn btn-default' + (showPrettyBody || isHexText ? ' hide' : '')} onClick={this.formatJSON}>Format JSON</button>
                   <button className={'btn btn-primary' + (showPrettyBody && !isHexText ? '' : ' hide')} onClick={this.addField}>Add field</button>
