@@ -1,4 +1,5 @@
 var http = require('http');
+var gzip = require('zlib').gzip;
 var config = require('../../../lib/config');
 var util = require('../../../lib/util');
 var zlib = require('../../../lib/util/zlib');
@@ -218,56 +219,80 @@ module.exports = function(req, res) {
     }
   }
 
-  var base64 = req.body.base64;
-  var body = base64 || req.body.body;
-  if (body && (isWs || isConn || util.hasRequestBody(options))) {
-    body = util.toBuffer(body, base64 ? 'base64' : getCharset(headers));
-    options.body = body;
-    if ('content-length' in headers) {
-      if (isWs || isConn) {
-        delete headers['content-length'];
-      } else {
-        headers['content-length'] = body ? body.length : '0';
+  var getBody = function(cb) {
+    var base64 = req.body.base64;
+    var body = base64 || req.body.body;
+    if (body && (isWs || isConn || util.hasRequestBody(options))) {
+      body = util.toBuffer(body, base64 ? 'base64' : getCharset(headers));
+      options.body = body;
+      if (!isWs && !isConn && body && req.body.isGzip) {
+        gzip(body, function(err, gzipData) {
+          if (err) {
+            return cb(err);
+          }
+          headers['content-encoding'] = 'gzip';
+          if ('content-length' in headers) {
+            headers['content-length'] = body.length;
+          } else {
+            delete headers['content-length'];
+          }
+          options.body = gzipData;
+          cb();
+        });
+        return;
       }
+      if ('content-length' in headers) {
+        if (isWs || isConn) {
+          delete headers['content-length'];
+        } else {
+          headers['content-length'] = body ? body.length : '0';
+        }
+      }
+    } else {
+      delete headers['content-length'];
     }
-  } else {
-    delete headers['content-length'];
-  }
-  delete headers['content-encoding'];
-  options.headers = formatHeaders(headers, rawHeaderNames);
-  var done;
-  var needResponse = req.query.needResponse || req.body.needResponse;
-  var handleResponse = needResponse ? function(err, data) {
-    if (done) {
-      return;
-    }
-    done = true;
+    delete headers['content-encoding'];
+    cb();
+  };
+  getBody(function(err) {
+    options.headers = formatHeaders(headers, rawHeaderNames);
+    var done;
+    var needResponse = req.query.needResponse || req.body.needResponse;
+    var handleResponse = needResponse ? function(err, data) {
+      if (done) {
+        return;
+      }
+      done = true;
+      if (err) {
+        res.json({ec: 0, res: {
+          statusCode:  err.statusCode ? parseInt(err.statusCode, 10) : 502,
+          headers: '',
+          body: err.stack
+        }});
+        return;
+      }
+      res.json({ec: 0, em: 'success', res: data || ''});
+    } : null;
     if (err) {
-      res.json({ec: 0, res: {
-        statusCode:  err.statusCode ? parseInt(err.statusCode, 10) : 502,
-        headers: '',
-        body: err.stack
-      }});
-      return;
+      return handleResponse && handleResponse(err);
     }
-    res.json({ec: 0, em: 'success', res: data || ''});
-  } : null;
-  if (isWs) {
-    options.method = 'GET';
-    if (handleResponse) {
-      return handleWebSocket(options, handleResponse);
+    if (isWs) {
+      options.method = 'GET';
+      if (handleResponse) {
+        return handleWebSocket(options, handleResponse);
+      }
+      handleWebSocket(options);
+    } else if (isConn) {
+      if (handleResponse) {
+        return handleConnect(options, handleResponse);
+      }
+      handleConnect(options);
+    } else  {
+      if (handleResponse) {
+        return handleHttp(options, handleResponse);
+      }
+      handleHttp(options);
     }
-    handleWebSocket(options);
-  } else if (isConn) {
-    if (handleResponse) {
-      return handleConnect(options, handleResponse);
-    }
-    handleConnect(options);
-  } else  {
-    if (handleResponse) {
-      return handleHttp(options, handleResponse);
-    }
-    handleHttp(options);
-  }
-  res.json({ec: 0, em: 'success'});
+    res.json({ec: 0, em: 'success'});
+  });
 };
