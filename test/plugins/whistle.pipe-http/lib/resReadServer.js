@@ -1,5 +1,5 @@
 module.exports = function(server) {
-  server.on('connect', function(req, socket) {
-    socket.pipe(socket);
+  server.on('request', function(req, res) {
+    req.pipe(res);
   });
 };
