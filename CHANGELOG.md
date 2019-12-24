@@ -1,7 +1,7 @@
 # v2.4.3
 1. fix: 使用 `pipe` 时请求异常导致没有捕获问题，及 http 请求 pipe 失效问题
 2. style: 支持在 Overview 里显示 HTTPS 自动转 HTTP 所消耗的时间
-3. 
+3. fix: 调整 `includeFilter` 和 `excludeFilter` 匹配方式，需要满足所有 `includeFilter` 中的一个，且不能匹配到任何 `excludeFilter`，即 `excludeFilter://p1 excludeFilter://p2 includeFilter://p3 includeFilter://p4` 相当于 `!(p1 || p2) && (p3 || p4)`
 
 # v2.4.2
 1. fix: 启用 `--socksServer port` 后请求出现异常可能导致程序 crash 问题

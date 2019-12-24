@@ -1,5 +1,5 @@
 # filter (excludeFilter|includeFilter)
-> 以下功能需要把whistle(`>= v1.13.25`)[升级到最新版本](../update.html)
+> 以下功能需要把whistle(`>= v2.4.3`)[升级到最新版本](../update.html)
 
 excludeFilter和includeFilter是作为二级条件，用来过滤匹配已匹配的规则：
 
@@ -12,23 +12,12 @@ pattern operatorURI excludeFilter://p1 includeFilter://p2 includeFilter://p3
 其中：p1、p2、... 可以为匹配模式里面的正则表达式、通配符、通配路径，具体参见：[匹配模式](../pattern.html)，且支持匹配请求头、请求方法、请求IP等
 
 ```
-pattern operatorURI excludeFilter://p1 includeFilter://p2 includeFilter://!p3
+pattern operatorURI excludeFilter://p0 excludeFilter://p1 includeFilter://p2 includeFilter://p3
 ```
 
 上述表示：
 ```js
-if (p1) {
-  return;
-}
-if (p2) {
-  // do operatorURI
-  return;
-}
-if (!p3) {
-  // do operatorURI
-  return;
-}
-
+匹配：!(p0 || p1) && (p2 || p3)
 ```
 即：通过url匹配 `pattern` 的请求，要不能匹配`p1`、或匹配 `p2`、或不匹配 `p3`，后面过滤条件可以任意个。
 
