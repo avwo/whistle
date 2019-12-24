@@ -20,7 +20,7 @@ module.exports = function(req, res, next) {
   var port = host[1] || (req.isHttps ? 443 : 80);
   var bypass;
   host = host[0];
-  var transformPort, proxyUrl, isWeinre, isOthers;
+  var transformPort, proxyUrl, isWeinre, isOthers, isInternal;
   var isWebUI = req.path.indexOf(WEBUI_PATH) === 0;
   if (isWebUI) {
     isWebUI = !config.pureProxy;
@@ -42,7 +42,10 @@ module.exports = function(req, res, next) {
       if (proxyUrl) {
         req.curUrl = fullUrl;
         proxyUrl = rules.resolveProxy(req, true);
-        proxyUrl = proxyUrl && proxyUrl.matcher;
+        if (proxyUrl) {
+          isInternal = proxyUrl.isInternal;
+          proxyUrl = proxyUrl.matcher;
+        }
         if (proxyUrl) {
           proxyUrl = proxyUrl.substring(proxyUrl.indexOf('://') + 3);
         } else {
@@ -92,7 +95,7 @@ module.exports = function(req, res, next) {
       var colon = proxyUrl.indexOf(':');
       var proxyPort = colon === -1 ? 80 : proxyUrl.substring(colon + 1);
       req.headers.host = 'local.whistlejs.com';
-      util.setClientId(req.headers, rules.resolveEnable(req), rules.resolveDisable(req), req.clientIp);
+      util.setClientId(req.headers, rules.resolveEnable(req), rules.resolveDisable(req), req.clientIp, isInternal);
       util.transformReq(req, res, proxyPort > 0 ? proxyPort : 80, ip);
     });
   } else if (isWebUI) {
