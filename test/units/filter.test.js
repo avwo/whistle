@@ -14,7 +14,7 @@ module.exports = function() {
   });
   util.request({
     url: 'https://filter.com/index.html',
-    method: 'post',
+    method: 'delete',
     body: 'test',
     headers: {
       'test': 'abc'

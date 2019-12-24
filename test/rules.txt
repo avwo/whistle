@@ -22,7 +22,7 @@ weinre1.test2.whistlejs.com weinre://xxx file://(hello) log://test resType://js 
 filter.com enable://capture
 filter.com/index.html file://({"ec":0}) excludeFilter://m:post excludeFilter://m:/delete/
 filter.com/index.html file://({"ec":1}) includeFilter://m:delete includeFilter://b:test
-filter.com/index.html file://({"ec":2}) includeFilter://b:test excludeFilter://h:x-test=/\d+/
+filter.com/index.html file://({"ec":2}) includeFilter://b:test excludeFilter://reqH:x-test=/\d+/
 filter.com/index.html file://({"ec":3}) excludeFilter://h:x-test=/\d+/
 filter.com/index.html file://({"ec":4}) 
 
