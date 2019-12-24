@@ -672,7 +672,7 @@ var Composer = React.createClass({
                 <textarea readOnly={pending || !hasBody} defaultValue={state.body || ''} onChange={this.onComposerChange}
                   onKeyDown={this.onKeyDown} ref="body" placeholder={hasBody ? 'Input the ' + (isHexText ? 'hex text' : 'body') : method + ' operations cannot have a request body'}
                   title={hasBody ? undefined : method + ' operations cannot have a request body'}
-                  style={{ fontFamily: isHexText ? 'monospace' : undefined }}
+                  style={{ fontFamily: isHexText ? 'monospace' : undefined, background: isGzip ? 'lightyellow' : undefined }}
                   className={'fill orient-vertical-box' + (showPrettyBody && !isHexText ? ' hide' : '')} />
                 <PropsEditor disabled={pending} ref="prettyBody" hide={!showPrettyBody || isHexText} onChange={this.onFieldChange} />
               </div>
