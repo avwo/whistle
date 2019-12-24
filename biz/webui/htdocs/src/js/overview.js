@@ -129,6 +129,13 @@ var Overview = React.createClass({
           case OVERVIEW[lastIndex - 2]:
             if (modal.requestTime) {
               time = modal.requestTime - modal.startTime + 'ms';
+              var protocol = modal.protocol;
+              if (typeof protocol === 'string' && protocol.indexOf('>') !== -1) {
+                var diffTime =  modal.httpsTime - modal.startTime;
+                if (diffTime > 0) {
+                  time += ' - ' + diffTime + 'ms(' + protocol + ') = ' + (modal.requestTime - modal.httpsTime) + 'ms';
+                }
+              }
             }
             break;
           case OVERVIEW[lastIndex - 1]:
