@@ -1,6 +1,6 @@
 # pipe
-> 该功能需要 whistle 1.4.0 及以上版本，更新whistle请求参见[帮助文档](../update.html)
-> 建议使用最新版本 whistle，至少 `v1.14.10` 及以上版本，确保 pipe 功能更加合理完善
+> 该功能需要 whistle 2.4.3 及以上版本，更新whistle请求参见[帮助文档](../update.html)
+> 建议使用最新版本 whistle，至少 `v2.4.3` 及以上版本，确保 pipe 功能更加合理完善
 
 类似Node里面的 `stream.pipe` 方法，把 `http[s]`、`websocket`、`tunnel` 的请求或响应内容pipe到插件对应server，可以在插件动态修改请求响应内容，配置方式：
 ``` txt
