@@ -169,12 +169,6 @@
 
 .w-composer-bar .w-composer-crlf {
   top: 0;
-  left: 198px;
-  position: absolute;
-}
-
-.w-composer-bar .w-composer-gzip {
-  top: 0;
   left: 146px;
   position: absolute;
 }
