@@ -181,7 +181,12 @@
   margin-left: -10px;
   font-weight: normal;
 }
-.w-frames-composer-action .w-frames-hex-data.w-frames-checked {
+
+.w-frames-crlf {
+  font-weight: normal;
+  margin-left: 1px;
+}
+.w-frames-composer-action .w-frames-checked {
   font-weight: bold;
 }
 .w-frames-composer-action input[type=checkbox] {
