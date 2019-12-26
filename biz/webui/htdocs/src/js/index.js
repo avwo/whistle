@@ -807,9 +807,11 @@ var Index = React.createClass({
         || state.enableHttp2 !== data.enableHttp2
         || state.disabledAllRules !== data.disabledAllRules
         || state.allowMultipleChoice !== data.allowMultipleChoice
-        || state.disabledAllPlugins !== data.disabledAllPlugins) {
+        || state.disabledAllPlugins !== data.disabledAllPlugins
+        || state.multiEnv != data.server.multiEnv) {
         state.interceptHttpsConnects = data.interceptHttpsConnects;
         state.enableHttp2 = data.enableHttp2;
+        state.multiEnv = data.server.multiEnv;
         state.disabledAllRules = data.disabledAllRules;
         state.allowMultipleChoice = data.allowMultipleChoice;
         state.disabledAllPlugins = data.disabledAllPlugins;
@@ -2924,7 +2926,8 @@ var Index = React.createClass({
                     onFontSizeChange={this.onRulesFontSizeChange}
                     onLineNumberChange={this.onRulesLineNumberChange} />
                     <p className="w-editor-settings-box"><label><input type="checkbox" checked={state.backRulesFirst} onChange={this.enableBackRulesFirst} /> Back rules first</label></p>
-                  <p className="w-editor-settings-box"><label><input type="checkbox" checked={state.allowMultipleChoice} onChange={this.allowMultipleChoice} /> Use multiple rules</label></p>
+                  <p className="w-editor-settings-box"><label style={{color: multiEnv ? '#aaa' : undefined}}><input type="checkbox" disabled={multiEnv}
+                    checked={!multiEnv && state.allowMultipleChoice} onChange={this.allowMultipleChoice} /> Use multiple rules</label></p>
                   <p className="w-editor-settings-box"><label><input type="checkbox" checked={state.disabledAllRules} onChange={this.disableAllRules} /> Disable all rules</label></p>
                   <p className="w-editor-settings-box"><label><input type="checkbox" checked={state.disabledAllPlugins} onChange={this.disableAllPlugins} /> Disable all plugins</label></p>
                   <p className="w-editor-settings-box"><label><input type="checkbox" checked={state.syncWithSysHosts} onChange={this.syncWithSysHosts} /> Synchronized with the system hosts</label></p>
