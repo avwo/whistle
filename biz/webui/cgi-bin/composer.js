@@ -96,7 +96,7 @@ function handleWebSocket(options, cb) {
         if (index !== -1) {
           socket.removeListener('data', handleResponse);
           socket.headers = parseHeaders(resData.slice(0, index));
-          body = resData.slice(index + 4).toString();
+          body = resData.slice(index + 4);
           var sender = getSender(socket);
           var data = options.body;
           if (data && data.length) {
@@ -114,11 +114,14 @@ function handleWebSocket(options, cb) {
           if (statusCode !== 101) {
             socket.destroy();
           }
-          cb(null, {
+          var result = {
             statusCode: statusCode,
-            headers: socket.headers || {},
-            body: body
-          });
+            headers: socket.headers || {}
+          };
+          if (body) {
+            result.base64 = body.toString('base64');
+          }
+          cb(null, result);
         }
       };
       socket.on('data', handleResponse);
@@ -154,11 +157,16 @@ function handleHttp(options, cb) {
       });
       res.on('end', function() {
         zlib.unzip(res.headers['content-encoding'], buffer, function(err, body) {
-          cb(null, {
+          var result = {
             statusCode: res.statusCode,
-            headers: res.headers,
-            body: err ? err.stack : util.decodeBuffer(body)
-          });
+            headers: res.headers
+          };
+          if (err) {
+            result.body = err.stack;
+          } else if (body) {
+            result.base64 = body.toString('base64');
+          }
+          cb(null, result);
         });
       });
     } else {
