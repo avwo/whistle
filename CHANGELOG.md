@@ -1,3 +1,7 @@
+# v2.4.4
+1. refactor: 传给 Composer 的响应数据改成 base64
+2. refactor: 支持从请求 headers 里面的规则解析出 pipe 规则
+
 # v2.4.3
 1. fix: 使用 `pipe` 时请求异常导致没有捕获问题，及 http 请求 pipe 失效问题
 2. style: 支持在 Overview 里显示 HTTPS 自动转 HTTP 所消耗的时间
