@@ -1,3 +1,6 @@
+# v2.4.5
+1. feat: 添加 `internal-http-proxy` 大致功能与 `internal-proxy` 一致，只是前者针对 websocket 请求使用的是 tunnel 代理，而后者使用直接 upgrade 请求
+
 # v2.4.4
 1. refactor: 传给 Composer 的响应数据改成 base64
 2. refactor: 支持从请求 headers 里面的规则解析出 pipe 规则
