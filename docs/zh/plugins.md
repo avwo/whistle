@@ -1,11 +1,11 @@
 # 插件开发
 > 插件脚手架及辅助工具：https://github.com/avwo/lack
 
+> 插件开发示例参见：https://github.com/whistle-plugins/examples
+
 为了满足一些特定业务场景的需要，whistle提供了插件扩展能力，通过插件可以新增whistle的协议实现更复杂的操作、也可以用来存储或监控指定请求、集成业务本地开发调试环境等等，基本上可以做任何你想做的事情，且开发、发布及安装whistle插件也都很简单。
 
 先了解下如何安装使用插件：
-
-> 可以先看下一个mock server插件的实现：[whistle.vase](https://github.com/whistle-plugins/whistle.vase)
 
 #### 安装插件
 whistle的插件就是一个Node模块，名字必须为 `whistle.your-plugin-name` 或 `@org/whistle.your-plugin-name`，其中 `your-plugin-name` 为插件名称，只能包含 `小写字母(a-z)`、`数字(0-9)`、`_`、`-` 四种字符，安装插件直接全局npm安装即可：
@@ -475,5 +475,5 @@ whistle v1.13.0版本开始支持通过插件自定义长连接数据的解析�
 
 更多例子参考：
 
-1. [https://github.com/whistle-plugins/whistle.script](https://github.com/whistle-plugins/whistle.script)
+1. [https://github.com/whistle-plugins/examples](https://github.com/whistle-plugins/examples)
 2. [https://github.com/whistle-plugins](https://github.com/whistle-plugins)
