@@ -26,6 +26,10 @@ filter.com/index.html file://({"ec":2}) includeFilter://b:test excludeFilter://r
 filter.com/index.html file://({"ec":3}) excludeFilter://h:x-test=/\d+/
 filter.com/index.html file://({"ec":4}) 
 
+filter2.com/test.html file://({"ec":123}) includeFilter:///abc/
+filter2.com/test.html file://({"ec":321}) excludeFilter:///cba/
+filter2.com/test.html file://({"ec":333})
+
 1.tps.whistlejs.com file://() enable://capture resAppend://`{${url.query.name}}`
 2.tps.whistlejs.com resScript://{tps.rules} rawfile://{rawFile2.js} enable://capture
 line`

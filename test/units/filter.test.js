@@ -5,6 +5,19 @@ module.exports = function() {
     data.should.have.property('ec', 0);
   });
 
+  util.request('http://filter2.com/test.html?abc', function(res, data) {
+    data.should.have.property('ec', 123);
+  });
+
+  util.request('http://filter2.com/test.html?cba', function(res, data) {
+    data.should.have.property('ec', 333);
+  });
+
+  util.request('http://filter2.com/test.html?cb2a', function(res, data) {
+    data.should.have.property('ec', 321);
+  });
+
+
   util.request({
     url: 'https://filter.com/index.html',
     method: 'delete',
