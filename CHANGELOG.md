@@ -1,3 +1,6 @@
+# v2.4.6
+1. fix: https://github.com/avwo/whistle/issues/380
+
 # v2.4.5
 1. feat: 添加 `internal-http-proxy` 大致功能与 `internal-proxy` 一致，只是前者针对 websocket 请求使用的是 tunnel 代理，而后者使用直接 upgrade 请求
 
