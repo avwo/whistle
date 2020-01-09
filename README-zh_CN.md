@@ -20,17 +20,17 @@
 
 [README in English](README.md)
 
-whistle(读音`[ˈwɪsəl]`，拼音`[wēisǒu]`)是基于Node实现的跨平台抓包调试代理工具，有以下基本功能：
+whistle(读音 `[ˈwɪsəl]`，拼音 `[wēisǒu]` )是基于 Node 实现的跨平台抓包调试代理工具，有以下基本功能：
 
-1. 查看HTTP、HTTPS请求响应内容
-2. 查看WebSocket、Socket收发的帧数据
-3. 设置请求hosts、上游http/socks代理
-4. 修改请求url、方法、头部、内容
-5. 修改响应状态码、头部、内容，并支持本地替换
-6. 修改WebSocket或Socket收发的帧数据
-7. 内置调试移动端页面的weinre和log
-8. 作为HTTP代理或反向代理
-9. 支持用Node编写插件扩展功能
+1. 查看 HTTP、HTTPS、HTTP2、WebSocket、TCP 请求响应数据
+2. 修改 HTTP、HTTPS、HTTP2、WebSocket、TCP 请求响应数据
+	- 修改请求 url、方法、头部、内容等
+	- 修改响应状态码、头部、内容，并支持本地替换等
+	- 修改 WebSocket 和 TCP 收发的帧数据
+3. 设置 hosts（支持 IPv6）、http-proxy、https-proxy、socks 
+4. 作为HTTP代理或反向代理
+5. 集成常用的 web 调试工具，如 weinre 和 log 等
+6. 支持用 Node 编写插件扩展
 
 具体功能如下：
 
