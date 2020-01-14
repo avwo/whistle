@@ -88,7 +88,7 @@ var HistoryData = React.createClass({
              </table>
           </div>
           <div className="modal-footer">
-            <a href="https://avwo.github.io/whistle/customCerts.html" target="_blank" className="btn btn-primary">Help</a>
+            <a href="https://avwo.github.io/whistle/custom-certs.html" target="_blank" className="btn btn-primary">Help</a>
             <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
           </div>
         </Dialog>
