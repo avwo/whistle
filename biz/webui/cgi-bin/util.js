@@ -16,6 +16,7 @@ exports.getClientId = function() {
 exports.getServerInfo = function(req) {
   var info = {
     pid: PID,
+    createTime: config.createWhistleTime,
     version: config.version,
     networkMode: config.networkMode,
     pluginsMode: config.pluginsMode,

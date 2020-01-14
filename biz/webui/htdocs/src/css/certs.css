@@ -1,12 +1,12 @@
 .w-certs-info-dialog .modal-dialog {
-  width: 960px;
+  width: 1024px;
 }
 
 .w-certs-info-order {
   width: 50px;
 }
 .w-certs-info-validity {
-  width: 400px;
+  width: 330px;
 }
 .w-certs-info-status {
   width: 100px;
@@ -15,7 +15,19 @@
   color: red;
 }
 
+.w-cert-invalid a {
+  color: red;
+}
+
 .w-certs-info-dialog td {
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.w-certs-info-filename {
+  width: 220px;
+}
+
+.w-certs-info-dialog th, .w-certs-info-dialog td {
+  vertical-align: middle!important;
 }

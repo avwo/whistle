@@ -337,7 +337,7 @@ function toLowerCase(str) {
 }
 
 exports.getCustomCertsInfo = createCgiObj({
-  getCustomCertsInfo: 'cgi-bin/get-custom-certs-info'
+  getCustomCertsInfo: 'cgi-bin/get-custom-certs-files'
 }, GET_CONF).getCustomCertsInfo;
 
 exports.values = createCgiObj({

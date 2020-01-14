@@ -15,6 +15,7 @@ module.exports = function(req, res) {
   var lastSvrLog = logger.getLogs(0, 1)[0];
 
   res.json({
+    createTime: config.createWhistleTime,
     version: config.version,
     supportH2: config.enableH2,
     lastLogId: lastLog && lastLog.id,
