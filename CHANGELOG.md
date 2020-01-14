@@ -2,6 +2,7 @@
 1. fix: https://github.com/avwo/whistle/pull/383
 2. refactor: HTTP/2 支持 delete 请求携带 body
 3. style: `HTTPS > View custom certs info` 支持高亮显示过期证书，且支持 copy 证书安装路径
+3. fix: 设置 `reqBody://(xxxx) method://post` 无法同时生效问题
 
 # v2.4.6
 1. fix: https://github.com/avwo/whistle/issues/380
