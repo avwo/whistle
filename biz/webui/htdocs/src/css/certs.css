@@ -15,8 +15,9 @@
   color: red;
 }
 
-.w-cert-invalid a {
-  color: red;
+.w-certs-info-filename a {
+  font-size: 12px;
+  cursor: pointer;
 }
 
 .w-certs-info-dialog td {

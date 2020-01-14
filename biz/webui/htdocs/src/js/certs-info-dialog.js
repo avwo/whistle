@@ -27,7 +27,8 @@ var HistoryData = React.createClass({
         status = 'Expired';
       }
       list.push({
-        filename: <a title={filename}>{filename}</a>,
+        dir: cert.dir,
+        filename: filename,
         domain: cert.dnsName,
         mtime: cert.mtime,
         validity: startDate.toLocaleString() + ' ~ ' + endDate.toLocaleString(),
@@ -72,7 +73,10 @@ var HistoryData = React.createClass({
                     return (
                       <tr className={item.isInvalid ? 'w-cert-invalid' : undefined}>
                         <th className="w-certs-info-order">{i + 1}</th>
-                        <td className="w-certs-info-filename">{item.filename}</td>
+                        <td className="w-certs-info-filename" title={item.filename}>
+                          {item.filename}<br />
+                          <a className="w-copy-text-with-tips" data-clipboard-text={item.dir}>Copy path</a>
+                        </td>
                         <td className="w-certs-info-domain" title={item.domain}>{item.domain}</td>
                         <td className="w-certs-info-validity" title={item.validity}>{item.validity}</td>
                         <td className="w-certs-info-status">{item.status}</td>
