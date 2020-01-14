@@ -437,6 +437,7 @@ exports.getInitialData = function (callback) {
           return setTimeout(load, 1000);
         }
         exports.supportH2 = data.supportH2;
+        exports.hasInvalidCerts = data.hasInvalidCerts;
         uploadFiles = data.uploadFiles;
         initialData = data;
         DEFAULT_CONF.data.clientId = data.clientId;
@@ -570,6 +571,7 @@ function startLoadData() {
         return;
       }
       exports.supportH2 = data.supportH2;
+      exports.hasInvalidCerts = data.hasInvalidCerts;
       if (options.dumpCount > 0) {
         dumpCount = 0;
       }

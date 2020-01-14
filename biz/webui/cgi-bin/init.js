@@ -3,9 +3,10 @@ var getValues = require('./values');
 var util = require('./util');
 var config = require('../../../lib/config');
 var rulesUtil = require('../../../lib/rules/util');
-var properties = rulesUtil.properties;
+var ca = require('../../../lib/https/ca');
 var proxy = require('../lib/proxy');
 
+var properties = rulesUtil.properties;
 var getUploadFiles = rulesUtil.values.getUploadFiles;
 var logger = proxy.logger;
 var pluginMgr = proxy.pluginMgr;
@@ -15,8 +16,8 @@ module.exports = function(req, res) {
   var lastSvrLog = logger.getLogs(0, 1)[0];
 
   res.json({
-    createTime: config.createWhistleTime,
     version: config.version,
+    hasInvalidCerts: ca.hasInvalidCerts,
     supportH2: config.enableH2,
     lastLogId: lastLog && lastLog.id,
     lastSvrLogId: lastSvrLog && lastSvrLog.id,

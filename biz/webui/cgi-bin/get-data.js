@@ -2,6 +2,7 @@ var proxy = require('../lib/proxy');
 var util = require('./util');
 var config = require('../../../lib/config');
 var rulesUtil = require('../../../lib/rules/util');
+var ca = require('../../../lib/https/ca');
 
 var properties = rulesUtil.properties;
 var rules = rulesUtil.rules;
@@ -22,6 +23,7 @@ module.exports = function(req, res) {
     ec: 0,
     version: config.version,
     supportH2: config.enableH2,
+    hasInvalidCerts: ca.hasInvalidCerts,
     clientIp: clientIp,
     mrulesClientId: config.mrulesClientId,
     mrulesTime: config.mrulesTime,

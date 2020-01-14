@@ -11,6 +11,7 @@
 * [匹配原则](principle.md)
 * [常用功能](frequet.md)
 * [插件开发](plugins.md)
+* [自定义证书](custom-certs.md)
 * [注意事项](attention.md)
 * [常见问题](questions.md)
 * [界面功能](webui/README.md)

@@ -2849,7 +2849,11 @@ var Index = React.createClass({
               draggable="false"><span className="glyphicon glyphicon-console"></span>Weinre</a>
             <MenuItem ref="weinreMenuItem" name="anonymous" options={state.weinreOptions} className="w-weinre-menu-item" onClick={this.showAnonymousWeinre} onClickOption={this.showWeinre} />
           </div>
-          <a onClick={this.showHttpsSettingsDialog} className="w-https-menu" href="javascript:;" draggable="false"><span className={'glyphicon glyphicon-' + (state.interceptHttpsConnects ? 'ok' : 'lock')}></span>HTTPS</a>
+          <a onClick={this.showHttpsSettingsDialog} className="w-https-menu" href="javascript:;" draggable="false"
+            style={{color: dataCenter.hasInvalidCerts ? 'red' : undefined}}
+          >
+            <span className={'glyphicon glyphicon-' + (state.interceptHttpsConnects ? 'ok' : 'lock')}></span>HTTPS
+          </a>
           <div onMouseEnter={this.showHelpOptions} onMouseLeave={this.hideHelpOptions}
             className={'w-menu-wrapper' + (showHelpOptions ? ' w-menu-wrapper-show' : '')}>
             <a className={'w-help-menu' + (state.hasNewVersion ? ' w-menu-enable'  : '')}
@@ -2980,7 +2984,7 @@ var Index = React.createClass({
                     type="checkbox" /> Capture TUNNEL CONNECTs</label></p>
                   <p><label><input checked={dataCenter.supportH2 && state.enableHttp2}
                     onChange={this.enableHttp2} type="checkbox" /> Enable HTTP/2</label></p>
-                    <a href="javascript:;" draggable="false" onClick={this.showCustomCertsInfo}>View custom certs info</a>
+                    <a href="javascript:;" draggable="false" style={{color: dataCenter.hasInvalidCerts ? 'red' : undefined}} onClick={this.showCustomCertsInfo}>View custom certs info</a>
                     <CertsInfoDialog ref="certsInfoDialog" />
                 </div>
               </div>
