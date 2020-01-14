@@ -6,6 +6,9 @@
   2. (v1.14.8及以上版本支持) 把上述证书或根证书放在固定目录 `~/.WhistleAppData/custom_certs/`里面，whistle会自动加里面的证书
     > 优先级 `-z dir` > `~/.WhistleAppData/custom_certs/` > 自动生成的证书
 
+### 查看自定义证书
+顶部菜单 `HTTPS` > `View custom certs info`。
+
 ### 删除过期证书
 在上述目录删除或替换过期的证书后，需要重启下 whistle 才能生效。
 
