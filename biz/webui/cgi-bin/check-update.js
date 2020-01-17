@@ -32,7 +32,7 @@ module.exports = function(req, res) {
   res.json({
     ec: 0,
     em: 'success',
-    showUpdate: compare(latestVersion, version) && compare(latestVersion, doNotShowAgainVersion),
+    showUpdate: !config.disableUpdateTips && compare(latestVersion, version) && compare(latestVersion, doNotShowAgainVersion),
     version: config.version,
     latestVersion: latestVersion
   });
