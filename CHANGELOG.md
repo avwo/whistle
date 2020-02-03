@@ -1,3 +1,7 @@
+# v2.4.9
+1. refactor: 优化远程规则更新机制，防止误判拉取失败，导致远程规则被情况
+2. feat: 支持通过 `-M disableUpdateTips` 禁用版本升级通知（一般用于集成 whistle 的第三方应用）
+
 # v2.4.8
 1. fix: 本地 hosts 文件没配 `127.0.0.1 localhost` 可能导致https请求失败问题
 2. feat: HTTP2 的 `DELETE` 请求如果携带请求内容，则自动降级为 http/1.1，否则会出现 400 或 忽略请求内容
