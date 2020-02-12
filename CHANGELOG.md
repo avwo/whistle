@@ -1,3 +1,6 @@
+# v2.4.10
+1. feat: 支持 post 等包含请求内容的https请求自动降级到http请求（如果不支持https服务的话）
+
 # v2.4.9
 1. refactor: 优化远程规则更新机制，防止误判拉取失败，导致远程规则被情况
 2. feat: 支持通过 `-M disableUpdateTips` 禁用版本升级通知（一般用于集成 whistle 的第三方应用）
