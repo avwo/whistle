@@ -518,12 +518,23 @@ function startLoadData() {
       lastRowId = endId || lastRowId;
       networkModal.clearNetwork = false;
     }
-    var pendingIds = getPendingIds();
+
     var startTime = getStartTime();
     var len = logList.length;
     var svrLen = svrLogList.length;
     var startLogTime = -1;
     var startSvrLogTime = -1;
+    var pendingIds = [];
+    var tunnelIds = [];
+    dataList.forEach(function (item) {
+      if (!item.endTime && !item.lost) {
+        pendingIds.push(item.id);
+      }
+      if (item.reqPlugin > 0 && item.reqPlugin < 10) {
+        ++item.reqPlugin;
+        tunnelIds.push(item.id);
+      }
+    });
 
     if (!exports.pauseConsoleRefresh && len < 100) {
       startLogTime = lastPageLogTime;
@@ -556,7 +567,8 @@ function startLoadData() {
       curReqId: curReqId,
       lastFrameId: lastFrameId,
       logId: logId || '',
-      count: count || 20
+      count: count || 20,
+      tunnelIds: tunnelIds
     };
     inited = true;
     $.extend(options, hashFilterObj);
@@ -645,11 +657,24 @@ function startLoadData() {
       if (data.endId) {
         endId = data.endId;
       }
+      var tunnelIps = data.tunnelIps || '';
       if ((!data.ids.length && !data.newIds.length) || networkModal.clearNetwork) {
         if (hasChhanged || framesLen) {
           framesUpdateCallbacks.forEach(function(cb) {
             cb();
           });
+        }
+        if (Object.keys(tunnelIps).length) {
+          var hasNewIp;
+          dataList.forEach(function(item) {
+            var realIp = tunnelIps[item.id];
+            if (realIp) {
+              delete item.reqPlugin;
+              item.realIp = realIp;
+              hasNewIp = true;
+            }
+          });
+          hasNewIp && events.trigger('updateUI');
         }
         return;
       }
@@ -662,6 +687,11 @@ function startLoadData() {
           setReqData(item);
         } else {
           item.lost = true;
+        }
+        var realIp = tunnelIps[item.id];
+        if (realIp) {
+          delete item.reqPlugin;
+          item.realIp = realIp;
         }
       });
       if (ids.length) {
@@ -857,16 +887,6 @@ exports.addNetworkList = function (list) {
     });
   }
 };
-
-function getPendingIds() {
-  var pendingIds = [];
-  dataList.forEach(function (item) {
-    if (!item.endTime && !item.lost) {
-      pendingIds.push(item.id);
-    }
-  });
-  return pendingIds;
-}
 
 function getStartTime() {
   if (!inited) {

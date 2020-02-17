@@ -847,6 +847,10 @@ var Index = React.createClass({
       return [curItem];
     };
 
+    events.on('updateUI', function() {
+      self.setState({});
+    });
+
     events.on('replaySessions', function(e, curItem, shiftKey) {
       var modal = self.state.network;
       var list = getFocusItemList(curItem) || (modal && modal.getSelectedList());

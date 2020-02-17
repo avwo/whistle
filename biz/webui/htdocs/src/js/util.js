@@ -199,7 +199,13 @@ exports.getProperty = getProperty;
 
 function getServerIp(modal) {
   var ip = modal.hostIp;
-  if (!modal.serverIp && ip) {
+  if (!ip) {
+    return modal.serverIp;
+  }
+  if (modal.realIp) {
+    modal.serverIp = modal.realIp + ', ' + ip;
+    delete modal.realIp;
+  } else if (!modal.serverIp) {
     var res = modal.res || '';
     if (res.phost) {
       ip = res.phost + ', ' + ip;
