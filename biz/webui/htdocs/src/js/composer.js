@@ -399,6 +399,7 @@ var Composer = React.createClass({
     if (!url) {
       return;
     }
+    this.setState({ tabName: 'Request' });
     var disableComposerRules = dataCenter.isStrictMode() || this.state.disableComposerRules;
     var rules = disableComposerRules ? null : this.state.rules;
     var headers = ReactDOM.findDOMNode(refs.headers).value;
@@ -602,7 +603,7 @@ var Composer = React.createClass({
           <button onClick={this.onTabChange} name="Request" className={showRequest ? 'w-tab-btn w-active' : 'w-tab-btn'}>Request</button>
           <button title={result.url} onClick={this.onTabChange} name="Response"  className={showResponse ? 'w-tab-btn w-active' : 'w-tab-btn'}>Response</button>
           <label className="w-composer-use-h2">
-            <input type="checkbox" onChange={this.toggleH2} checked={dataCenter.supportH2 && useH2} />
+            <input disabled={pending} type="checkbox" onChange={this.toggleH2} checked={dataCenter.supportH2 && useH2} />
             Use H2
           </label>
           <button onClick={this.showHistory} className="btn btn-default" title={historyData.length ? 'No history' : undefined}
@@ -619,19 +620,19 @@ var Composer = React.createClass({
                   </label>
                   <label className="w-composer-label">Type:</label>
                   <label>
-                    <input data-type="form" name="type" type="radio" checked={isForm} />
+                    <input disabled={pending}  data-type="form" name="type" type="radio" checked={isForm} />
                     Form
                   </label>
                   <label>
-                    <input data-type="upload" name="type" type="radio" checked={type === 'upload'} />
+                    <input disabled={pending}  data-type="upload" name="type" type="radio" checked={type === 'upload'} />
                     Upload
                   </label>
                   <label>
-                    <input data-type="json" name="type" type="radio" checked={type === 'json'} />
+                    <input disabled={pending}  data-type="json" name="type" type="radio" checked={type === 'json'} />
                     JSON
                   </label>
                   <label>
-                    <input data-type="text" name="type" type="radio" checked={type === 'text'} />
+                    <input disabled={pending}  data-type="text" name="type" type="radio" checked={type === 'text'} />
                     Text
                   </label>
                   <label className="w-custom-type" title="Directly modify Content-Type in the headers">
@@ -649,11 +650,11 @@ var Composer = React.createClass({
                 <div className="w-composer-bar">
                   <label className="w-composer-label">Body</label>
                   <label className={'w-composer-hex-text' + (isHexText ? ' w-checked' : '')}>
-                    <input checked={isHexText} type="checkbox" onChange={this.onHexTextChange} />HexText
+                    <input disabled={pending} checked={isHexText} type="checkbox" onChange={this.onHexTextChange} />HexText
                   </label>
                   <label className={'w-composer-crlf' + (isHexText ? ' hide' : '')
                     + (isCRLF ? ' w-checked' : '')}>
-                    <input checked={isCRLF} onChangeCapture={this.onCRLFChange} type="checkbox" />\r\n
+                    <input disabled={pending} checked={isCRLF} onChangeCapture={this.onCRLFChange} type="checkbox" />\r\n
                   </label>
                   <button className={'btn btn-default' + (showPrettyBody || isHexText ? ' hide' : '')} onClick={this.formatJSON}>Format JSON</button>
                   <button className={'btn btn-primary' + (showPrettyBody && !isHexText ? '' : ' hide')} onClick={this.addField}>Add field</button>
@@ -677,12 +678,12 @@ var Composer = React.createClass({
           <div ref="rulesCon" title={isStrictMode ? TIPS : undefined} className="orient-vertical-box fill w-composer-rules">
             <div className="w-detail-inspectors-title">
               <label>
-                <input onChange={this.onDisableChange} checked={!state.disableComposerRules} type="checkbox" />
+                <input disabled={pending} onChange={this.onDisableChange} checked={!state.disableComposerRules} type="checkbox" />
                 Rules
               </label>
             </div>
             <textarea
-              disabled={disableComposerRules}
+              disabled={disableComposerRules || pending}
               defaultValue={rules}
               ref='composerRules'
               onChange={this.onRulesChange}
