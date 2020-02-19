@@ -1,3 +1,6 @@
+# v2.4.12
+1. fix: 部分网站可能出现的 `ERR_HTTP2_SESSION_ERROR`
+
 # v2.4.11
 1. feat: 支持 post 等包含请求内容的https请求自动降级到http请求（如果不支持https服务的话）
 
