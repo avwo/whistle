@@ -639,7 +639,7 @@ var Composer = React.createClass({
                     <input data-type="custom" name="type" type="radio" checked={type === 'custom'} disabled />
                     Custom
                   </label>
-                  <button className={'btn btn-primary' + (showPretty ? '' : ' hide')} onClick={this.addHeader}>Add header</button>
+                  <button disabled={pending} className={'btn btn-primary' + (showPretty ? '' : ' hide')} onClick={this.addHeader}>Add header</button>
                 </div>
                 <textarea readOnly={pending} defaultValue={state.headers} onChange={this.onComposerChange}
                   onKeyDown={this.onKeyDown} ref="headers" placeholder="Input the headers" name="headers"
@@ -656,8 +656,8 @@ var Composer = React.createClass({
                     + (isCRLF ? ' w-checked' : '')}>
                     <input disabled={pending} checked={isCRLF} onChangeCapture={this.onCRLFChange} type="checkbox" />\r\n
                   </label>
-                  <button className={'btn btn-default' + (showPrettyBody || isHexText ? ' hide' : '')} onClick={this.formatJSON}>Format JSON</button>
-                  <button className={'btn btn-primary' + (showPrettyBody && !isHexText ? '' : ' hide')} onClick={this.addField}>Add field</button>
+                  <button disabled={pending} className={'btn btn-default' + (showPrettyBody || isHexText ? ' hide' : '')} onClick={this.formatJSON}>Format JSON</button>
+                  <button disabled={pending} className={'btn btn-primary' + (showPrettyBody && !isHexText ? '' : ' hide')} onClick={this.addField}>Add field</button>
                 </div>
                 <textarea readOnly={pending || !hasBody} defaultValue={state.body || ''} onChange={this.onComposerChange}
                   onKeyDown={this.onKeyDown} ref="body" placeholder={hasBody ? 'Input the ' + (isHexText ? 'hex text' : 'body') : method + ' operations cannot have a request body'}
