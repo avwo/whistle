@@ -401,6 +401,7 @@ $.extend(exports, createCgiObj({
     url: 'cgi-bin/composer',
     mode: 'cancel'
   },
+  compose2: 'cgi-bin/composer',
   interceptHttpsConnects: 'cgi-bin/intercept-https-connects',
   enableHttp2: 'cgi-bin/enable-http2',
   abort: 'cgi-bin/abort'
