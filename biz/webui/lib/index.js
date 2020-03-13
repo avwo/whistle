@@ -120,6 +120,8 @@ function checkAuth(req, res, auth) {
   return false;
 }
 
+app.disable('x-powered-by');
+
 if (typeof config.uiMiddleware === 'function') {
   app.use(config.uiMiddleware);
 }
