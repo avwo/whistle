@@ -1,3 +1,6 @@
+# v2.4.13
+1. fix: Express 框架默认添加的 `x-powered-by` 响应头：https://github.com/avwo/whistle/issues/395
+
 # v2.4.12
 1. fix: 部分网站可能出现的 `ERR_HTTP2_SESSION_ERROR`
 
