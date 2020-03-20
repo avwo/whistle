@@ -1,5 +1,6 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
+var $ = require('jquery');
 var util = require('./util');
 var FilterInput = require('./filter-input');
 var DropDown = require('./dropdown');
@@ -56,7 +57,20 @@ var FrameList = React.createClass({
     }, 600);
   },
   componentDidMount: function() {
-    events.on('autoRefreshFrames', this.autoRefresh);
+    var self = this;
+    events.on('autoRefreshFrames', self.autoRefresh);
+    events.on('composeFrameId', function(e, id) {
+      var modal = id && self.props.modal;
+      var list = modal && modal.list;
+      if (list) {
+        for (var i = 0, len = list.length; i < len; i++) {
+          var frame = list[i];
+          if (frame && frame.frameId === id) {
+            return events.trigger('composeFrame', frame);
+          }
+        }
+      }
+    });
   },
   shouldComponentUpdate: function() {
     clearTimeout(this.filterTimer);
@@ -205,6 +219,13 @@ var FrameList = React.createClass({
       return this.autoRefresh();
     }
   },
+  onDragStart: function(e) {
+    const dataId = $(e.target).closest('li').attr('data-id');
+    if (!dataId) {
+      return;
+    }
+    e.dataTransfer.setData('frameDataId', dataId);
+  },
   render: function() {
     var self = this;
     var props = self.props;
@@ -254,7 +275,7 @@ var FrameList = React.createClass({
         onKeyDown={this.onClear}
         style={{background: keyword ? '#ffffe0' : undefined}}
         onScroll={self.shouldScrollToBottom} ref={self.setContainer} className="fill w-frames-list">
-        <ul ref={self.setContent}>
+        <ul ref={self.setContent} onDragStart={self.onDragStart}>
           {list.map(function(item) {
             var statusClass = '';
             if (item.closed || item.err || item.isError) {
@@ -302,7 +323,9 @@ var FrameList = React.createClass({
             }
             return (
               <li
+                draggable
                 key={item.frameId}
+                data-id={item.frameId}
                 title={item.title}
                 style={{display: item.hide ? 'none' : undefined}}
                 onClick={function() {

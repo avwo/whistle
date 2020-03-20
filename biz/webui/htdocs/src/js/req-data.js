@@ -326,7 +326,8 @@ var ReqData = React.createClass({
   },
   onDragStart: function(e) {
     var target = $(e.target).closest('.w-req-data-item');
-    e.dataTransfer.setData('reqDataId', target.attr('data-id'));
+    var dataId = target.attr('data-id');
+    dataId && e.dataTransfer.setData('reqDataId', dataId);
   },
   getSelectedRows: function (item) {
     var modal = this.props.modal;

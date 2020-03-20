@@ -41,6 +41,16 @@ var FrameClient = React.createClass({
       self.showTab(0);
     });
   },
+  onDragEnter: function(e) {
+    if (e.dataTransfer.types.indexOf('framedataid') != -1) {
+      this.showTab(4);
+      e.preventDefault();
+    }
+  },
+  onDrop: function(e) {
+    var id = e.dataTransfer.getData('frameDataId');
+    id && events.trigger('composeFrameId', id);
+  },
   onClickBtn: function(btn) {
     this.selectBtn(btn);
     this.setState({});
@@ -82,7 +92,7 @@ var FrameClient = React.createClass({
     }
     base64 = base64 || '';
     return (
-      <div className={'fill orient-vertical-box w-frames-data' + (this.props.hide ? ' hide' : '')}>
+      <div className={'fill orient-vertical-box w-frames-data' + (this.props.hide ? ' hide' : '')} onDragEnter={this.onDragEnter} onDrop={this.onDrop}>
         <BtnGroup onClick={this.onClickBtn} btns={BTNS} />
         <Properties modal={overview} hide={btn.name !== 'Overview'} />
         <Textarea className="fill" base64={base64} value={text} hide={btn.name !== 'TextView'} />
