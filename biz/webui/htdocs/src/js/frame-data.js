@@ -5,8 +5,10 @@ var Textarea = require('./textarea');
 var FrameComposer = require('./frame-composer');
 var util = require('./util');
 var events = require('./events');
+var Properties = require('./properties');
 
 var BTNS = [
+  {name: 'Overview'},
   {name: 'TextView'},
   {name: 'JSONView'},
   {name: 'HexView'},
@@ -55,8 +57,23 @@ var FrameClient = React.createClass({
       this.selectBtn(btn);
     }
     var frame = this.props.frame;
-    var text, json, bin, base64;
+    var text, json, bin, base64, overview;
     if (frame) {
+      if (!frame.closed) {
+        var len = frame.length;
+        overview = {
+          Date: new Date(parseInt(frame.frameId, 10)).toLocaleString(),
+          Opcode: frame.opcode,
+          Type: frame.opcode == 1 ? 'Text' : 'Binary',
+          Compressed: frame.compressed ? 'true' : 'false',
+          Mask: frame.mask ? 'true' : 'false',
+          Length: len >= 0 ? (len >= 1024 ? length + '(' + Number(length / 1024).toFixed(2) + 'k)' : len) : ''
+        };
+      } else {
+        overview = {
+          Date: new Date(parseInt(frame.frameId, 10)).toLocaleString()
+        };
+      }
       text = util.getBody(frame, true);
       bin = util.getHex(frame);
       json = util.getJson(frame, true);
@@ -66,6 +83,7 @@ var FrameClient = React.createClass({
     return (
       <div className={'fill orient-vertical-box w-frames-data' + (this.props.hide ? ' hide' : '')}>
         <BtnGroup onClick={this.onClickBtn} btns={BTNS} />
+        <Properties modal={overview} hide={btn.name !== 'Overview'} />
         <Textarea className="fill" base64={base64} value={text} hide={btn.name !== 'TextView'} />
         <JSONViewer data={json} hide={btn.name !== 'JSONView'} />
         <Textarea className="fill n-monospace" isHexView="1" base64={base64} value={bin} hide={btn.name !== 'HexView'} />
