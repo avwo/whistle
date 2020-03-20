@@ -34,10 +34,10 @@ var FrameClient = React.createClass({
     var self = this;
     events.on('composeFrame', function(e, frame) {
       if (frame) {
-        self.showTab(3);
+        self.showTab(4);
       }
     });
-    events.on('showFrameTextView', function() {
+    events.on('showFrameOverview', function() {
       self.showTab(0);
     });
   },

@@ -109,10 +109,10 @@ var FrameComposer = React.createClass({
   },
   onSend: function(e) {
     var value = this.state.text;
-    if (!value) {
+    var self = this;
+    if (!value || self.sendTimer) {
       return;
     }
-    var self = this;
     var target = e.target;
     var base64;
     if (this.state.isHexText) {
@@ -131,8 +131,16 @@ var FrameComposer = React.createClass({
       text: value,
       base64: base64
     };
+    self.setState({});
+    self.sendTimer = setTimeout(function() {
+      self.sendTimer = null;
+      self.setState({});
+    }, 5000);
     self.send(params, function() {
-      self.setTextarea('');
+      clearTimeout(self.sendTimer);
+      self.sendTimer = null;
+      events.trigger('autoRefreshFrames');
+      self.setState({});
     });
   },
   format: function() {
@@ -185,7 +193,8 @@ var FrameComposer = React.createClass({
     var isHttps = data.isHttps;
     var leftStyle = isHttps ? {left: 0} : undefined;
     var displayStyle = isHttps ? {display: 'none'} : undefined;
-    var tips = data.closed ? 'The connection is closed' : undefined;
+    var tips = closed ? 'The connection is closed' : undefined;
+    var disabled = closed || this.sendTimer;
     return (
       <div onDrop={this.onDrop} className={'fill orient-vertical-box w-frames-composer' + (this.props.hide ? ' hide' : '')}>
         <div className="w-frames-composer-action">
@@ -197,12 +206,12 @@ var FrameComposer = React.createClass({
             <input checked={isCRLF} onChangeCapture={this.onCRLFChange} type="checkbox" />\r\n
           </label>
           <div className="btn-group">
-            <button disabled={closed} title={tips} onMouseDown={this.preventDefault} onClick={this.onSend}
+            <button disabled={disabled} title={tips} onMouseDown={this.preventDefault} onClick={this.onSend}
               type="button" className="btn btn-default btn-sm">
               <span className="glyphicon glyphicon-arrow-left"></span>
               Send to client
             </button>
-            <button disabled={closed} title={tips} type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button disabled={disabled} title={tips} type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <span className="caret"></span>
             </button>
             <ul style={leftStyle} className={'dropdown-menu' + (closed ? ' hide' : '')}>
@@ -212,12 +221,12 @@ var FrameComposer = React.createClass({
             </ul>
           </div>
           <div className="btn-group">
-            <button disabled={closed} title={tips} onMouseDown={this.preventDefault} data-target="server"
+            <button disabled={disabled} title={tips} onMouseDown={this.preventDefault} data-target="server"
               onClick={this.onSend} type="button" className="btn btn-default btn-sm">
               <span className="glyphicon glyphicon-arrow-right"></span>
               Send to server
             </button>
-            <button disabled={closed} title={tips} type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button disabled={disabled} title={tips} type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <span className="caret"></span>
             </button>
             <ul style={leftStyle} className={'dropdown-menu' + (closed ? ' hide' : '')}>

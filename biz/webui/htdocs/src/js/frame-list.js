@@ -63,7 +63,7 @@ var FrameList = React.createClass({
     return true;
   },
   onDoubleClick: function() {
-    events.trigger('showFrameTextView');
+    events.trigger('showFrameOverview');
   },
   componentWillUpdate: function() {
     this.atBottom = this.shouldScrollToBottom();
