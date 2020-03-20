@@ -1,3 +1,7 @@
+# v2.4.14
+1. style: Frames 页面新增 Overview Tab 用于查看帧数据的基本信息
+2. style: Frames 里面二进制数据字体加粗
+
 # v2.4.13
 1. fix: Express 框架默认添加的 `x-powered-by` 响应头：https://github.com/avwo/whistle/issues/395
 
