@@ -63,6 +63,7 @@ var FrameClient = React.createClass({
         var len = frame.length;
         overview = {
           Date: new Date(parseInt(frame.frameId, 10)).toLocaleString(),
+          Path: frame.isClient ? 'Client -> Server' : 'Server -> Client',
           Opcode: frame.opcode,
           Type: frame.opcode == 1 ? 'Text' : 'Binary',
           Compressed: frame.compressed ? 'true' : 'false',
