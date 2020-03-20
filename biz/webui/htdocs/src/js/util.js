@@ -207,7 +207,7 @@ function getServerIp(modal) {
     delete modal.realIp;
   } else if (!modal.serverIp) {
     var res = modal.res || '';
-    if (res.phost) {
+    if (res.phost && res.phost != ip) {
       ip = res.phost + ', ' + ip;
     }
     var realEnv = decodeURIComponentSafe(getProperty(res, 'headers.x-whistle-response-for'));
