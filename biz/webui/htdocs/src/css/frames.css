@@ -197,3 +197,7 @@
 .w-frames-composer textarea {
   padding: 5px;
 }
+
+.w-frames-bin {
+  font-weight: bold;
+}

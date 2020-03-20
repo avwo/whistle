@@ -333,7 +333,7 @@ var FrameList = React.createClass({
                 }}
                 onDoubleClick={self.onDoubleClick}
                 className={(item.isClient ? 'w-frames-send' : '') + (item.ignore ? ' w-frames-ignore' : '')
-                  + (item.active ? '  w-frames-selected' : '') + statusClass}>
+                  + (item.active ? '  w-frames-selected' : '') + (item.opcode == 2 ? ' w-frames-bin' : '') + statusClass}>
                 <span className={'glyphicon glyphicon-' + icon}></span>
                 {item.data}
               </li>
