@@ -1,3 +1,6 @@
+# v2.4.15
+1. chore: 去掉安装过程中的 `warning`
+
 # v2.4.14
 1. style: Frames 页面新增 Overview Tab 用于查看帧数据的基本信息
 2. style: Frames 里面二进制数据字体加粗
