@@ -39,6 +39,18 @@ module.exports = function() {
   util.request({
     url: 'https://filter.com/index.html',
     method: 'post',
+    body: '555555',
+    headers: {
+      'test': 'abc',
+      'x-test': 'abc'
+    }
+  }, function(res, data) {
+    data.should.have.property('ec', 2);
+  });
+
+  util.request({
+    url: 'https://filter.com/index.html',
+    method: 'post',
     headers: {
       'test': 'abc',
       'x-test': 'hehe'
