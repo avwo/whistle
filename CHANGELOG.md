@@ -1,3 +1,6 @@
+# v2.4.16
+1. fix: `includeFilter://b:pattern` 失效问题
+
 # v2.4.15
 1. chore: 去掉安装过程中的 `warning`
 
