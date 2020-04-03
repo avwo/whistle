@@ -1,5 +1,6 @@
 # v2.4.16
 1. fix: `includeFilter://b:pattern` 失效问题
+2. refactor: 鉴于低版本 Node 的 HTTP/2 模块 bug比较多，统一调整为 `Node v12.12.0` 及以上版本才会支持 HTTP/2
 
 # v2.4.15
 1. chore: 去掉安装过程中的 `warning`
