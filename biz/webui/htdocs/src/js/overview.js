@@ -33,7 +33,7 @@ function getRuleStr(rule) {
     }
     matcher = matcher + ':' + rule.port;
   }
-  return rule.rawPattern + ' ' +  matcher;
+  return rule.rawPattern + ' ' +  matcher + (rule.filter ? ' ' + rule.filter : '');
 }
 
 OVERVIEW.forEach(function(name) {
