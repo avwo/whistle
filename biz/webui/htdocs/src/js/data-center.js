@@ -756,6 +756,22 @@ function getStyleValue(style) {
   return style.length > 32 ? undefined : style;
 }
 
+function getCustomValue(style, isFirst) {
+  var index = style.lastIndexOf('&custom' + (isFirst ? '1=' : '2='));
+  if (index === -1) {
+    return;
+  }
+  style = style.substring(index + 9);
+  index = style.indexOf('&');
+  style = index === -1 ? style : style.substring(0, index);
+  if (style.indexOf('%') !== -1) {
+    try {
+      return decodeURIComponent(style);
+    } catch (e) {}
+  }
+  return style;
+}
+
 function setStyle(item) {
   item.style = undefined;
   var style = item.rules && item.rules.style;
@@ -787,6 +803,8 @@ function setStyle(item) {
       backgroundColor: bgColor
     };
   }
+  item.custom1 = getCustomValue(style, true);
+  item.custom2 = getCustomValue(style);
 }
 
 function setReqData(item) {

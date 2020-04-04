@@ -75,8 +75,7 @@ function getDefaultColumns() {
       title: 'ServerPort',
       name: 'serverPort',
       className: 'serverPort',
-      width: 90,
-      lazy: true
+      width: 90
     },
     {
       title: 'Host',
@@ -92,7 +91,6 @@ function getDefaultColumns() {
       className: 'path',
       selected: true,
       locked: true,
-      lazy: true,
       minWidth: 60
     },
     {
@@ -101,22 +99,19 @@ function getDefaultColumns() {
       className: 'type',
       selected: true,
       showTitle: true,
-      width: 125,
-      lazy: true
+      width: 125
     },
     {
       title: 'Body',
       name: 'body',
       className: 'body',
-      width: 90,
-      lazy: true
+      width: 90
     },
     {
       title: 'Encoding',
       name: 'contentEncoding',
       className: 'contentEncoding',
-      width: 90,
-      lazy: true
+      width: 90
     },
     {
       title: 'DNS',
@@ -134,23 +129,32 @@ function getDefaultColumns() {
       title: 'Response',
       name: 'response',
       className: 'response',
-      width: 90,
-      lazy: true
+      width: 90
     },
     {
       title: 'Download',
       name: 'download',
       className: 'download',
-      width: 90,
-      lazy: true
+      width: 90
     },
     {
       title: 'Time',
       name: 'time',
       className: 'time',
       selected: true,
-      width: 70,
-      lazy: true
+      width: 70
+    },
+    {
+      title: 'Custom1',
+      name: 'custom1',
+      className: 'custom1',
+      width: 100
+    },
+    {
+      title: 'Custom2',
+      name: 'custom2',
+      className: 'custom2',
+      width: 100
     }
   ];
 }
