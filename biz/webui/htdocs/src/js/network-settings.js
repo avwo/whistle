@@ -8,12 +8,7 @@ var Dialog = require('./dialog');
 var columns = require('./columns');
 var dataCenter = require('./data-center');
 var events = require('./events');
-
-var widthOptions = [];
-
-for (var i = 0; i < 41; i++) {
-  widthOptions[i] = 60 + 5 * i;
-}
+var util = require('./util');
 
 var Settings = React.createClass({
   getInitialState: function() {
@@ -97,20 +92,47 @@ var Settings = React.createClass({
   hideDialog: function() {
     this.refs.networkSettingsDialog.hide();
   },
-  setColumnWidth: function() {
-    this.refs.setColumnWidth.show();
-  },
   editCustomCol: function(e) {
     e.preventDefault();
     var self = this;
     self.refs.editCustomColumn.show();
-    self.customName = e.target.getAttribute('data-name');
-    self.setState({}, function() {
+    var name = e.target.getAttribute('data-name');
+    self.setState({
+      name: name,
+      value: dataCenter[name.toLowerCase()],
+      nameChanged: false
+    }, function() {
       setTimeout(function() {
         var input = ReactDOM.findDOMNode(self.refs.newColumnName);
         input.select();
         input.focus();
       }, 360);
+    });
+  },
+  onNameChange: function(e) {
+    var value = e.target.value;
+    this.setState({
+      value: value.trim(),
+      nameChanged: true
+    });
+  },
+  changeName: function() {
+    var self = this;
+    var state = self.state;
+    var name = state.name;
+    var value = state.value;
+    dataCenter.setCustomColumn({
+      name: name,
+      value: value
+    }, function(data, xhr) {
+      if (!data) {
+        util.showSystemError(xhr);
+        return;
+      }
+      self.refs.editCustomColumn.hide();
+      dataCenter[name.toLowerCase()] = value;
+      self.setState({});
+      events.trigger('onColumnTitleChange');
     });
   },
   render: function() {
@@ -157,13 +179,18 @@ var Settings = React.createClass({
           <fieldset className="network-settings-columns">
             <legend>
               <label>Network Columns</label>
-              <label onClick={self.setColumnWidth} className="btn btn-primary">Set Column Width</label>
               <label onClick={self.resetColumns} className="btn btn-default">Reset</label>
             </legend>
             {columnList.map(function(col) {
               var name = col.name;
               var canEdit1 = name === 'custom1';
               var canEdit = canEdit1 || name === 'custom2';
+              var title;
+              if (canEdit) {
+                title = canEdit1 ? dataCenter.custom1 : dataCenter.custom2;
+              } else {
+                title = col.title;
+              }
               return (
                 <label
                   {...state.dragger}
@@ -171,7 +198,7 @@ var Settings = React.createClass({
                   draggable={true}
                   >
                   <input disabled={col.locked} checked={!!col.selected || col.locked} data-name={name} type="checkbox" />
-                  {canEdit ? <span title={col.title} className="w-network-custom-col">{col.title}</span> : col.title}
+                  {canEdit ? <span title={title} className="w-network-custom-col">{title}</span> : title}
                   {canEdit ? <span onClick={self.editCustomCol} data-name={col.title} title={'Edit ' + col.title}
                     className="glyphicon glyphicon-edit">{canEdit1 ? 1 : 2}</span> : undefined}
                 </label>
@@ -204,32 +231,14 @@ var Settings = React.createClass({
           <div onChange={self.onNetworkSettingsChange} className="modal-body">
             <button type="button" className="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <label>
-              {this.customName || 'Custom1'} Name:
-              <input ref="newColumnName" className="form-control" maxLength="16" placeholder="Input the new column name" />
+              New {state.name} Name:
+              <input onChange={this.onNameChange} ref="newColumnName" value={state.value} className="form-control"
+                maxLength="16" placeholder="Input the new column name" />
             </label>
           </div>
           <div className="modal-footer">
-            <button type="button" className="btn btn-primary" data-dismiss="modal">Confirm</button>
+            <button disabled={!state.nameChanged} onClick={self.changeName} type="button" className="btn btn-primary">Confirm</button>
             <button type="button" className="btn btn-default" data-dismiss="modal">Cancel</button>
-          </div>
-        </Dialog>
-        <Dialog
-          ref="setColumnWidth"
-          wstyle="w-network-settings-width"
-        >
-          <div onChange={self.onNetworkSettingsChange} className="modal-body">
-            <button type="button" className="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <label>
-              <span>Name:</span>
-              <select className="form-control">
-                {widthOptions.map(function(px) {
-                  return <option value={px}>{px}px</option>;
-                })}
-              </select>
-            </label>
-          </div>
-          <div className="modal-footer">
-            <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
           </div>
         </Dialog>
       </Dialog>

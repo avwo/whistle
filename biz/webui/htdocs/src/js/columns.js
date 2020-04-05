@@ -149,14 +149,14 @@ function getDefaultColumns() {
       name: 'custom1',
       className: 'custom1',
       showTitle: true,
-      width: 100
+      width: 120
     },
     {
       title: 'Custom2',
       name: 'custom2',
       className: 'custom2',
       showTitle: true,
-      width: 100
+      width: 160
     }
   ];
 }

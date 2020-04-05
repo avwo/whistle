@@ -404,7 +404,8 @@ $.extend(exports, createCgiObj({
   compose2: 'cgi-bin/composer',
   interceptHttpsConnects: 'cgi-bin/intercept-https-connects',
   enableHttp2: 'cgi-bin/enable-http2',
-  abort: 'cgi-bin/abort'
+  abort: 'cgi-bin/abort',
+  setCustomColumn: 'cgi-bin/set-custom-column'
 }, POST_CONF));
 $.extend(exports, createCgiObj({
   donotShowAgain: 'cgi-bin/do-not-show-again',
@@ -439,6 +440,8 @@ exports.getInitialData = function (callback) {
         }
         exports.supportH2 = data.supportH2;
         exports.hasInvalidCerts = data.hasInvalidCerts;
+        exports.custom1 = data.custom1;
+        exports.custom2 = data.custom2;
         uploadFiles = data.uploadFiles;
         initialData = data;
         DEFAULT_CONF.data.clientId = data.clientId;
@@ -585,6 +588,8 @@ function startLoadData() {
       }
       exports.supportH2 = data.supportH2;
       exports.hasInvalidCerts = data.hasInvalidCerts;
+      exports.custom1 = data.custom1;
+      exports.custom2 = data.custom2;
       if (options.dumpCount > 0) {
         dumpCount = 0;
       }

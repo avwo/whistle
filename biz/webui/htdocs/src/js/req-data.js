@@ -258,6 +258,9 @@ var ReqData = React.createClass({
     events.on('onColumnsChanged', function() {
       self.setState({ columns: settings.getSelectedColumns() });
     });
+    events.on('onColumnTitleChange', function() {
+      this.setState({});
+    });
     var update = function() {
       self.setState({});
     };
@@ -773,12 +776,18 @@ var ReqData = React.createClass({
     if (columnState[name]) {
       style.color = '#337ab7';
     }
+    var title;
+    if (name === 'custom1' || name === 'custom2') {
+      title = dataCenter[name];
+    } else {
+      title = col.title;
+    }
     return (
       <th onMouseDown={this.onMouseDown} {...this.state.dragger} data-name={name}
         draggable={true} key={name} className={col.className} style={style}
       >
         { name === 'path' ? <div onDragStart={stopPropagation} draggable={true} className="w-header-drag-block" /> : undefined}
-        {col.title}<Spinner order={columnState[name]} />
+        {title}<Spinner order={columnState[name]} />
       </th>
     );
   },

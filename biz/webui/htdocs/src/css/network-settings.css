@@ -26,16 +26,11 @@
 .w-network-settings-dialog div input[type=text] { width: 436px; }
 .w-network-settings-own { width: auto!important; margin: 15px 0 0; white-space: nowrap; }
 .w-network-settings-own select { margin-left: 20px; width: 160px; display: inline-block; }
-.w-network-custom-col { display: inline-block; max-width: 100px; text-overflow: ellipsis; white-space: nowrap; }
+.w-network-custom-col { display: inline-block; max-width: 90px; text-overflow: ellipsis; white-space: nowrap; }
 .network-settings-columns label span { vertical-align: middle; overflow: hidden; font-weight: normal; }
 .w-network-settings-edit label { white-space: nowrap; }
 .w-network-settings-edit label .form-control { display: inline-block; margin: 0 10px; font-weight: normal; }
 .w-network-settings-edit label select { width: 150px; }
 .w-network-settings-edit label input { width: 330px; }
-.w-network-settings-edit .modal-dialog {width: 500px;}
+.w-network-settings-edit .modal-dialog {width: 530px;}
 .network-settings-columns legend .btn-primary { width: auto; margin-right: 10px; padding: 0 8px; color: #fff; font-weight: normal; }
-.w-network-settings-width .modal-dialog {width: 360px;}
-.w-network-settings-width label { display: block; white-space: nowrap; }
-.w-network-settings-width label .form-control { display: inline-block; width: 160px; }
-.w-network-settings-width label span { text-align: right; vertical-align: middle; display: inline-block; width: 110px; overflow: hidden;
-  text-overflow: ellipsis; white-space: nowrap; margin-right: 15px; }
