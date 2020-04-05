@@ -1,4 +1,4 @@
-# v2.5.0
+# v2.4.17
 1. feat: 支持客户端服务端双向认证，详见：[自定义证书](https://wproxy.org/whistle/custom-certs.html)
 2. feat: 支持在 Network 自定义列，详见：[style](https://wproxy.org/whistle/rules/style.html)
 3. style: 在 Overview 里面显示匹配的 `includeFilter`
