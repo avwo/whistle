@@ -196,8 +196,9 @@ var Settings = React.createClass({
                   {...state.dragger}
                   data-name={name}
                   draggable={true}
+                  key={name}
                   >
-                  <input disabled={col.locked} checked={!!col.selected || col.locked} data-name={name} type="checkbox" />
+                  <input disabled={col.locked} checked={!!col.selected || !!col.locked} data-name={name} type="checkbox" />
                   {canEdit ? <span title={title} className="w-network-custom-col">{title}</span> : title}
                   {canEdit ? <span onClick={self.editCustomCol} data-name={col.title} title={'Edit ' + col.title}
                     className="glyphicon glyphicon-edit">{canEdit1 ? 1 : 2}</span> : undefined}
