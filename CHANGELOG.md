@@ -1,3 +1,8 @@
+# v2.5.0
+1. feat: 支持客户端服务端双向认证，详见：[自定义证书](https://wproxy.org/whistle/custom-certs.html)
+2. feat: 支持在 Network 自定义列，详见：[style](https://wproxy.org/whistle/rules/style.html)
+3. style: 在 Overview 里面显示匹配的 `includeFilter`
+
 # v2.4.16
 1. fix: `includeFilter://b:pattern` 失效问题
 2. refactor: 鉴于低版本 Node 的 HTTP/2 模块 bug比较多，统一调整为 `Node v12.12.0` 及以上版本才会支持 HTTP/2
