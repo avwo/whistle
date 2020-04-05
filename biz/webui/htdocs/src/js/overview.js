@@ -2,10 +2,12 @@ require('./base-css.js');
 require('../css/overview.css');
 var React = require('react');
 var ReactDOM = require('react-dom');
+var columns = require('./columns');
 var events = require('./events');
 var util = require('./util');
 var storage = require('./storage');
 var Properties = require('./properties');
+var dataCenter = require('./data-center');
 
 var OVERVIEW = ['Url', 'Real Url', 'Method', 'Http Version', 'Status Code', 'Status Message', 'Client IP', 'Server IP', 'Client Port', 'Server Port', 'Request Length', 'Content Length'
                       , 'Content Encoding', 'Start Date', 'DNS Lookup', 'Request Sent', 'Response Headers', 'Content Download'];
@@ -152,6 +154,16 @@ var Overview = React.createClass({
           overviewModal[name] = time;
         }
       });
+      var custom1 = columns.getColumn('custom1');
+      var custom2 = columns.getColumn('custom2');
+      if (custom1.selected) {
+        overviewModal[(dataCenter.custom1 || 'Custom1') + ' '] = modal.custom1;
+      }
+
+      if (custom2.selected) {
+        overviewModal[(dataCenter.custom2 || 'Custom2') + '  '] = modal.custom2;
+      }
+
       var rules = modal.rules;
       var titleModal = {};
       if (rules) {
