@@ -2,11 +2,18 @@ require('./base-css.js');
 require('../css/network-settings.css');
 var $ = require('jquery');
 var React = require('react');
+var ReactDOM = require('react-dom');
 var NetworkModal = require('./network-modal');
 var Dialog = require('./dialog');
 var columns = require('./columns');
 var dataCenter = require('./data-center');
 var events = require('./events');
+
+var widthOptions = [];
+
+for (var i = 0; i < 41; i++) {
+  widthOptions[i] = 60 + 5 * i;
+}
 
 var Settings = React.createClass({
   getInitialState: function() {
@@ -90,13 +97,30 @@ var Settings = React.createClass({
   hideDialog: function() {
     this.refs.networkSettingsDialog.hide();
   },
+  setColumnWidth: function() {
+    this.refs.setColumnWidth.show();
+  },
+  editCustomCol: function(e) {
+    e.preventDefault();
+    var self = this;
+    self.refs.editCustomColumn.show();
+    self.customName = e.target.getAttribute('data-name');
+    self.setState({}, function() {
+      setTimeout(function() {
+        var input = ReactDOM.findDOMNode(self.refs.newColumnName);
+        input.select();
+        input.focus();
+      }, 360);
+    });
+  },
   render: function() {
-    var state = this.state;
+    var self = this;
+    var state = self.state;
     var columnList = state.columns;
 
     return (
       <Dialog ref="networkSettingsDialog" wstyle="w-network-settings-dialog">
-        <div onChange={this.onNetworkSettingsChange} className="modal-body">
+        <div onChange={self.onNetworkSettingsChange} className="modal-body">
           <button type="button" className="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
           <fieldset className="network-settings-filter">
             <legend>
@@ -110,7 +134,7 @@ var Settings = React.createClass({
               </a>
             </legend>
             <textarea disabled={state.disabledExcludeText}
-              onKeyDown={this.onFilterKeyDown}
+              onKeyDown={self.onFilterKeyDown}
               value={state.excludeText} data-name="excludeText"
               placeholder="type filter text" maxLength={dataCenter.MAX_EXCLUDE_LEN} />
           </fieldset>
@@ -126,23 +150,30 @@ var Settings = React.createClass({
               </a>
             </legend>
             <textarea disabled={state.disabledFilterText}
-              onKeyDown={this.onFilterKeyDown}
+              onKeyDown={self.onFilterKeyDown}
               value={state.filterText} data-name="filterText"
               placeholder="type filter text" maxLength={dataCenter.MAX_INCLUDE_LEN} />
           </fieldset>
           <fieldset className="network-settings-columns">
             <legend>
               <label>Network Columns</label>
-              <label onClick={this.resetColumns} className="btn btn-default">Reset</label>
+              <label onClick={self.setColumnWidth} className="btn btn-primary">Set Column Width</label>
+              <label onClick={self.resetColumns} className="btn btn-default">Reset</label>
             </legend>
             {columnList.map(function(col) {
+              var name = col.name;
+              var canEdit1 = name === 'custom1';
+              var canEdit = canEdit1 || name === 'custom2';
               return (
                 <label
                   {...state.dragger}
-                  data-name={col.name}
+                  data-name={name}
                   draggable={true}
                   >
-                  <input disabled={col.locked} checked={!!col.selected || col.locked} data-name={col.name} type="checkbox" />{col.title}
+                  <input disabled={col.locked} checked={!!col.selected || col.locked} data-name={name} type="checkbox" />
+                  {canEdit ? <span title={col.title} className="w-network-custom-col">{col.title}</span> : col.title}
+                  {canEdit ? <span onClick={self.editCustomCol} data-name={col.title} title={'Edit ' + col.title}
+                    className="glyphicon glyphicon-edit">{canEdit1 ? 1 : 2}</span> : undefined}
                 </label>
               );
             })}
@@ -150,7 +181,7 @@ var Settings = React.createClass({
 
           <label className="w-network-settings-own">
             Max Rows Number:
-            <select className="form-control" onChange={this.onRowsChange} defaultValue={NetworkModal.getMaxRows()}>
+            <select className="form-control" onChange={self.onRowsChange} defaultValue={NetworkModal.getMaxRows()}>
               <option value="500">500</option>
               <option value="1000">1000</option>
               <option value="1500">1500</option>
@@ -166,6 +197,41 @@ var Settings = React.createClass({
         <div className="modal-footer">
           <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
         </div>
+        <Dialog
+          ref="editCustomColumn"
+          wstyle="w-network-settings-edit"
+        >
+          <div onChange={self.onNetworkSettingsChange} className="modal-body">
+            <button type="button" className="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <label>
+              {this.customName || 'Custom1'} Name:
+              <input ref="newColumnName" className="form-control" maxLength="16" placeholder="Input the new column name" />
+            </label>
+          </div>
+          <div className="modal-footer">
+            <button type="button" className="btn btn-primary" data-dismiss="modal">Confirm</button>
+            <button type="button" className="btn btn-default" data-dismiss="modal">Cancel</button>
+          </div>
+        </Dialog>
+        <Dialog
+          ref="setColumnWidth"
+          wstyle="w-network-settings-width"
+        >
+          <div onChange={self.onNetworkSettingsChange} className="modal-body">
+            <button type="button" className="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <label>
+              <span>Name:</span>
+              <select className="form-control">
+                {widthOptions.map(function(px) {
+                  return <option value={px}>{px}px</option>;
+                })}
+              </select>
+            </label>
+          </div>
+          <div className="modal-footer">
+            <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </Dialog>
       </Dialog>
     );
   }

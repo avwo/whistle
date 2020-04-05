@@ -22,6 +22,8 @@ module.exports = function(req, res) {
   res.json({
     ec: 0,
     version: config.version,
+    custom1: properties.get('Custom1'),
+    custom2: properties.get('Custom2'),
     supportH2: config.enableH2,
     hasInvalidCerts: ca.hasInvalidCerts,
     clientIp: clientIp,
