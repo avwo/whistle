@@ -32,7 +32,7 @@ var clearNetwork;
 var inited;
 var logId;
 var uploadFiles;
-var flag;
+var port;
 var dumpCount = 0;
 var updateCount = 0;
 var MAX_UPDATE_COUNT = 4;
@@ -59,8 +59,8 @@ exports.getUploadFiles = function() {
   return uploadFiles;
 };
 
-exports.getFlag = function() {
-  return flag;
+exports.getPort = function() {
+  return port;
 };
 
 exports.setDumpCount = function(count) {
@@ -443,10 +443,7 @@ exports.getInitialData = function (callback) {
         if (!data) {
           return setTimeout(load, 1000);
         }
-        var server = data.server;
-        if (server) {
-          flag = server.pid + '_' + server.port;
-        }
+        port = data.server && data.server.port;
         exports.supportH2 = data.supportH2;
         exports.hasInvalidCerts = data.hasInvalidCerts;
         exports.custom1 = data.custom1;
@@ -595,10 +592,7 @@ function startLoadData() {
       if (!data || data.ec !== 0) {
         return;
       }
-      var server = data.server;
-      if (server) {
-        flag = server.pid + '_' + server.port;
-      }
+      port = data.server && data.server.port;
       exports.supportH2 = data.supportH2;
       exports.hasInvalidCerts = data.hasInvalidCerts;
       exports.custom1 = data.custom1;
