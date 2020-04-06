@@ -43,6 +43,14 @@ var detectTimeout = function() {
 function getItem(win) {
   try {
     var page = win.location.pathname.substring(1) + win.location.search;
+    var index = page.lastIndexOf('?');
+    if (index !== -1) {
+      ++index;
+      var len = parseInt(page.substring(index), 10);
+      if (len > 0) {
+        page = page.substring(index - len, index);
+      }
+    }
     return cache[page];
   } catch (e) {}
 }
@@ -174,7 +182,7 @@ exports.fork = function(page, options) {
     dialogs: []
   };
   document.body.appendChild(iframe);
-  iframe.src = page;
+  iframe.src = page + page.length;
   setTimeout(function() {
     !item.emit && destroy(item);
   }, TIMEOUT);
