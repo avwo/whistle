@@ -573,6 +573,7 @@ var ReqData = React.createClass({
       break;
     case 'Plugins':
       iframes.fork(action, {
+        port: dataCenter.getFlag(),
         type: 'network',
         name: name,
         activeItem: item,

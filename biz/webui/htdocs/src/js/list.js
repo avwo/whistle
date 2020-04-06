@@ -316,6 +316,7 @@ var List = React.createClass({
     case 'Plugins':
       var modal = this.props.modal;
       iframes.fork(action, {
+        port: dataCenter.getFlag(),
         type: this.props.name === 'rules' ? 'rules' : 'values',
         name: menuName,
         activeItem: this.currentFocusItem,

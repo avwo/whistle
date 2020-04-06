@@ -34,7 +34,7 @@ var STATIC_SRC_RE = /\.(?:ico|js|css|png)$/i;
 var proxyEvent, util, pluginMgr;
 var MAX_AGE = 60 * 60 * 24 * 3;
 var MENU_HTML = fs.readFileSync(path.join(__dirname, '../../../assets/menu.html'));
-var MENU_URL = '???_WHISTLE_PLUGIN_EXT_CONTEXT_MENU_???';
+var MENU_URL = '???_WHISTLE_PLUGIN_EXT_CONTEXT_MENU_' + process.pid + '_' + config.port + '???';
 
 function doNotCheckLogin(req) {
   var path = req.path;

@@ -147,7 +147,7 @@ exports.fork = function(page, options) {
     // 保持状态
     options = JSON.parse(JSON.stringify(options));
   } catch (e) {}
-  page += '???_WHISTLE_PLUGIN_EXT_CONTEXT_MENU_???';
+  page += '???_WHISTLE_PLUGIN_EXT_CONTEXT_MENU_' + options.port + '???';
   var item = latestItem = cache[page];
   if (item) {
     item.mtime = Date.now();
