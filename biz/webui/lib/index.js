@@ -195,7 +195,7 @@ app.all('/cgi-bin/sessions/*', cgiHandler);
 app.all('/favicon.ico', function(req, res) {
   res.sendFile(htdocs.getImgFile('favicon.ico'));
 });
-app.all(PLUGIN_PATH_RE, function(req, res, next) {
+app.all(PLUGIN_PATH_RE, function(req, res) {
   var result = PLUGIN_PATH_RE.exec(req.url);
   var type = result[1];
   var name = result[2];
@@ -206,6 +206,7 @@ app.all(PLUGIN_PATH_RE, function(req, res, next) {
     return res.status(404).send('Not Found');
   }
   if (req.url.indexOf(MENU_URL) !== -1) {
+    res.type('html');
     res.write(plugin[util.PLUGIN_MENU_CONFIG]);
     res.write(MENU_HTML);
     var index = req.path.indexOf('/', 1);
