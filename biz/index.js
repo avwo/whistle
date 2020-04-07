@@ -102,6 +102,7 @@ module.exports = function(req, res, next) {
     if (isOthers) {
       util.transformReq(req, res, transformPort);
     } else {
+      req._hasRespond = true;
       req.url = req.url.replace(transformPort ? INTERNAL_APP : WEBUI_PATH, '/');
       if (isWeinre) {
         handleWeinreReq(req, res);

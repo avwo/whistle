@@ -122,21 +122,25 @@ function checkAuth(req, res, auth) {
 
 app.disable('x-powered-by');
 
+app.use(function(req, res, next) {
+  proxyEvent.emit('_request', req.url);
+  var aborted;
+  var abort = function() {
+    if (!aborted) {
+      aborted = true;
+      res.destroy();
+    }
+  };
+  req.on('error', abort).on('close', abort);
+  res.on('error', abort);
+  next();
+});
+
 if (typeof config.uiMiddleware === 'function') {
   app.use(config.uiMiddleware);
 }
 
 app.use(function(req, res, next) {
-  proxyEvent.emit('_request', req.url);
-  var aborted;
-  req.on('error', abort).on('close', abort);
-  res.on('error', abort);
-  function abort() {
-    if (!aborted) {
-      aborted = true;
-      res.destroy();
-    }
-  }
   var referer = req.headers.referer;
   var options = parseurl(req);
   var path = options.path;
