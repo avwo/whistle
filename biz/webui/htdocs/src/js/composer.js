@@ -108,8 +108,12 @@ var Composer = React.createClass({
     var disableComposerRules = storage.get('disableComposerRules') == '1';
     var method = data.method;
     var methods = this.getCustomMethods();
+    var body = getString(data.body);
     if (methods.indexOf(method) === -1 || method === '+ Method') {
       method = 'GET';
+    }
+    if (body && body !== data.body) {
+      message.warn('The length of the body cannot exceed 128k, and the excess will be truncated.');
     }
     return {
       historyData: [],
@@ -118,7 +122,7 @@ var Composer = React.createClass({
       methodText: getCustomMethodText(),
       methods: methods,
       headers: getString(data.headers, MAX_HEADERS_SIZE),
-      body: getString(data.body),
+      body: body,
       tabName: 'Request',
       showPretty: showPretty,
       useH2: useH2,
@@ -674,7 +678,7 @@ var Composer = React.createClass({
                   <button disabled={pending} className={'btn btn-default' + (showPrettyBody || isHexText ? ' hide' : '')} onClick={this.formatJSON}>Format JSON</button>
                   <button disabled={pending} className={'btn btn-primary' + (showPrettyBody && !isHexText ? '' : ' hide')} onClick={this.addField}>Add field</button>
                 </div>
-                <textarea readOnly={pending || !hasBody} defaultValue={state.body || ''} onChange={this.onComposerChange} maxLength={MAX_BODY_SIZE}
+                <textarea readOnly={pending || !hasBody} defaultValue={state.body} onChange={this.onComposerChange} maxLength={MAX_BODY_SIZE}
                   onKeyDown={this.onKeyDown} ref="body" placeholder={hasBody ? 'Input the ' + (isHexText ? 'hex text' : 'body') : method + ' operations cannot have a request body'}
                   title={hasBody ? undefined : method + ' operations cannot have a request body'}
                   style={{ fontFamily: isHexText ? 'monospace' : undefined }}
