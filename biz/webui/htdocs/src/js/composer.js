@@ -29,9 +29,19 @@ var WS_CONNNECT_RE = /^\s*connection\s*:\s*upgrade\s*$/im;
 var WS_UPGRADE_RE = /^\s*upgrade\s*:\s*websocket\s*$/im;
 var REV_TYPES = {};
 var MAX_TEXT_LEN = 200;
+var MAX_HEADERS_SIZE = 1024 * 64;
+var MAX_BODY_SIZE = 1024 * 128;
 Object.keys(TYPES).forEach(function(name) {
   REV_TYPES[TYPES[name]] = name;
 });
+
+function getString(str, len) {
+  if (typeof str !== 'string') {
+    return '';
+  }
+  len = len || MAX_BODY_SIZE;
+  return str.length > len ? str.substring(0, len) : str;
+}
 
 function hasReqBody(method, url, headers) {
   if (method === 'CONNECT' || util.hasRequestBody(method) || WS_RE.test(url)) {
@@ -107,8 +117,8 @@ var Composer = React.createClass({
       method: method,
       methodText: getCustomMethodText(),
       methods: methods,
-      headers: data.headers,
-      body: data.body,
+      headers: getString(data.headers, MAX_HEADERS_SIZE),
+      body: getString(data.body),
       tabName: 'Request',
       showPretty: showPretty,
       useH2: useH2,
@@ -195,7 +205,12 @@ var Composer = React.createClass({
     if (req.method === 'GET') {
       bodyElem.value = '';
     } else {
-      bodyElem.value = this.state.isHexText ? util.getHexText(util.getHex(req)) : util.getBody(req);
+      var body = this.state.isHexText ? util.getHexText(util.getHex(req)) : util.getBody(req);
+      var value = getString(body);
+      bodyElem.value = value;
+      if (value !== body) {
+        message.warn('The length of the body cannot exceed 128k, and the excess will be truncated.');
+      }
     }
     this.updatePrettyData();
   },
@@ -641,7 +656,7 @@ var Composer = React.createClass({
                   </label>
                   <button disabled={pending} className={'btn btn-primary' + (showPretty ? '' : ' hide')} onClick={this.addHeader}>Add header</button>
                 </div>
-                <textarea readOnly={pending} defaultValue={state.headers} onChange={this.onComposerChange}
+                <textarea readOnly={pending} defaultValue={state.headers} onChange={this.onComposerChange} maxLength={MAX_HEADERS_SIZE}
                   onKeyDown={this.onKeyDown} ref="headers" placeholder="Input the headers" name="headers"
                   className={'fill orient-vertical-box' + (showPretty ? ' hide' : '')} />
                 <PropsEditor disabled={pending} ref="prettyHeaders" isHeader="1" hide={!showPretty} onChange={this.onHeaderChange} />
@@ -659,7 +674,7 @@ var Composer = React.createClass({
                   <button disabled={pending} className={'btn btn-default' + (showPrettyBody || isHexText ? ' hide' : '')} onClick={this.formatJSON}>Format JSON</button>
                   <button disabled={pending} className={'btn btn-primary' + (showPrettyBody && !isHexText ? '' : ' hide')} onClick={this.addField}>Add field</button>
                 </div>
-                <textarea readOnly={pending || !hasBody} defaultValue={state.body || ''} onChange={this.onComposerChange}
+                <textarea readOnly={pending || !hasBody} defaultValue={state.body || ''} onChange={this.onComposerChange} maxLength={MAX_BODY_SIZE}
                   onKeyDown={this.onKeyDown} ref="body" placeholder={hasBody ? 'Input the ' + (isHexText ? 'hex text' : 'body') : method + ' operations cannot have a request body'}
                   title={hasBody ? undefined : method + ' operations cannot have a request body'}
                   style={{ fontFamily: isHexText ? 'monospace' : undefined }}
