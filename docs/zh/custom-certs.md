@@ -12,3 +12,27 @@
 ### 删除过期证书
 在上述目录删除或替换过期的证书后，需要重启下 whistle 才能生效。
 
+# 自定义客户端证书
+有些网站需要客户端和服务端双向验证，可以在 whistle 里面配置:
+
+``` txt
+
+# cert 或 pem 格式证书
+pattern @clientCert://key=keypath.key&cert=certpath.crt
+# 或
+pattern @clientCert://key=keypath.pem&cert=certpath.pem
+
+# pfx 或 p12 格式证书
+pattern @clientCert://pwd=passphrase&cert=pfxfilepagh.pfx
+# 或
+pattern @clientCert://pwd=passphrase&cert=p2filepath.p12
+```
+> pattern 详见 [pattern](./pattern.html)
+
+一般浏览器到 whistle 请求的客户端证书可以忽略，如果某些自定义客户端强制要带上客户端证书，可以采用：
+
+``` txt
+ke.qq.com enable://clientCert
+# 即: 域名 enable://clientCert
+```
+

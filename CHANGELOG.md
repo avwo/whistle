@@ -1,3 +1,8 @@
+# v2.5.0
+1. feat: 支持自定义客户端证书：https://wproxy.org/whistle/custom-certs.html
+2. refactor: 优化建立连接时的错误处理
+3. style: 现在 Composer 输入的文本长度防止浏览器卡死
+
 # v2.4.17
 1. feat: 支持客户端服务端双向认证，详见：[自定义证书](https://wproxy.org/whistle/custom-certs.html)
 2. feat: 支持在 Network 自定义列，详见：[style](https://wproxy.org/whistle/rules/style.html)
