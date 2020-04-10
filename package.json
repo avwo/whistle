@@ -42,7 +42,7 @@
     "express": "4.12.3",
     "extend": "^3.0.1",
     "fs-extra2": "^1.0.0",
-    "hagent": "^0.6.1",
+    "hagent": "^0.7.1",
     "hparser": "^0.3.0",
     "iconv-lite": "0.4.7",
     "lru-cache": "^4.1.1",
