@@ -22,6 +22,10 @@ var DEFAULT_OVERVIEW_MODAL = {};
 var DEFAULT_RULES_MODAL = {};
 var PROXY_PROTOCOLS = ['socks', 'http-proxy', 'https-proxy'];
 
+function getAtRule(rule) {
+  return rule.rawPattern + ' @' + rule.matcher.substring(4);
+}
+
 function getRuleStr(rule) {
   if (!rule) {
     return;
@@ -168,6 +172,24 @@ var Overview = React.createClass({
       var titleModal = {};
       if (rules) {
         rulesModal = {};
+        var atRule = rules.G;
+        var clientCert = rules.clientCert;
+        var atCtn;
+        var atTitle;
+        if (atRule) {
+          atCtn = [getAtRule(atRule)];
+          atTitle = [atRule.raw];
+        }
+        if (clientCert) {
+          atCtn = atCtn || [];
+          atTitle = atTitle || [];
+          atCtn.push(getAtRule(clientCert));
+          atTitle.push(clientCert.raw);
+        }
+        if (atCtn) {
+          rulesModal['@'] = atCtn.join('\n');
+          titleModal['@'] = atTitle.join('\n');
+        }
         PROTOCOLS.forEach(function(name) {
           if (PROXY_PROTOCOLS.indexOf(name) !== -1 || /^x/.test(name)) {
             return;

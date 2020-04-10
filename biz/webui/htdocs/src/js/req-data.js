@@ -26,7 +26,8 @@ var NOT_BOLD_RULES = {
   reqWriteRaw: 1,
   resWriteRaw: 1,
   responseFor: 1,
-  style: 1
+  style: 1,
+  G: 1
 };
 var contextMenuList = [
   {
