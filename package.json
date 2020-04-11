@@ -89,7 +89,7 @@
     "codemirror": "5.5.0",
     "coveralls": "^2.11.12",
     "css-loader": "0.16.0",
-    "eslint": "^2.8.0",
+    "eslint": "^4.18.2",
     "eslint-plugin-react": "^4.3.0",
     "file-loader": "0.8.4",
     "glob": "^7.1.2",
