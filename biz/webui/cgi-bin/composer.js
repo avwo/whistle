@@ -197,7 +197,7 @@ module.exports = function(req, res) {
   if (protocol) {
     options.protocol = protocol = protocol.toLowerCase();
   }
-  properties.addHistory(req.body);
+  !req.body.noStore && properties.addHistory(req.body);
   var rawHeaderNames = {};
   var headers = parseHeaders(req.body.headers, rawHeaderNames);
   delete headers[config.WEBUI_HEAD];
