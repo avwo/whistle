@@ -203,7 +203,16 @@ var Overview = React.createClass({
             key = 'urlReplace';
           }
           var rule = rules[key];
-          if (rule && rule.list) {
+          if (name === 'plugin' && rules._pluginRule) {
+            var ruleList = [ rules._pluginRule.rawPattern + ' ' + rules._pluginRule.matcher ];
+            var titleList = [rules._pluginRule.raw];
+            rule.list && rule.list.forEach(function(item) {
+              ruleList.push(item.rawPattern + ' ' + item.matcher);
+              titleList.push(item.raw);
+            });
+            rulesModal[name] = ruleList.join('\n');
+            titleModal[name] = titleList.join('\n');
+          } else if (rule && rule.list) {
             rulesModal[name] = rule.list.map(function(rule) {
               return rule.rawPattern + ' ' + rule.matcher;
             }).join('\n');
