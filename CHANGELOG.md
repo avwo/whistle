@@ -1,3 +1,6 @@
+# v2.5.1
+1. fix: `includeFilter://h:key=pattern` 只能匹配请求头，无法匹配响应头问题
+
 # v2.5.0
 1. feat: 支持自定义客户端证书：https://wproxy.org/whistle/custom-certs.html
 2. refactor: 优化建立连接时的错误处理
