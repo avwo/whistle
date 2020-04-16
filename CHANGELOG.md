@@ -1,5 +1,7 @@
 # v2.5.1
 1. fix: `includeFilter://h:key=pattern` 只能匹配请求头，无法匹配响应头问题
+2. feat: JSON Tree 支持 Copy 字节点数据
+3. feat: Composer 支持上传本地文件
 
 # v2.5.0
 1. feat: 支持自定义客户端证书：https://wproxy.org/whistle/custom-certs.html
