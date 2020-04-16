@@ -2,6 +2,14 @@
 
 exports.__esModule = true;
 
+var _extends2 = require('babel-runtime/helpers/extends');
+
+var _extends3 = _interopRequireDefault(_extends2);
+
+var _stringify = require('babel-runtime/core-js/json/stringify');
+
+var _stringify2 = _interopRequireDefault(_stringify);
+
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
@@ -29,7 +37,7 @@ var JSONValueNode = function JSONValueNode(_ref) {
     styling('value', nodeType, keyPath),
     _react2['default'].createElement(
       'label',
-      styling(['label', 'valueLabel'], nodeType, keyPath),
+      (0, _extends3['default'])({}, styling(['label', 'valueLabel'], nodeType, keyPath), { 'data-key-path': (0, _stringify2['default'])(keyPath) }),
       labelRenderer(keyPath, nodeType, false, false)
     ),
     _react2['default'].createElement(

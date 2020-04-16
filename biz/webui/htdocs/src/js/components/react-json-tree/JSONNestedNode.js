@@ -2,6 +2,10 @@
 
 exports.__esModule = true;
 
+var _stringify = require('babel-runtime/core-js/json/stringify');
+
+var _stringify2 = _interopRequireDefault(_stringify);
+
 var _keys = require('babel-runtime/core-js/object/keys');
 
 var _keys2 = _interopRequireDefault(_keys);
@@ -181,7 +185,8 @@ var JSONNestedNode = function (_React$Component) {
       _react2['default'].createElement(
         'label',
         (0, _extends3['default'])({}, styling.apply(undefined, [['label', 'nestedNodeLabel']].concat(stylingArgs)), {
-          onClick: this.handleClick
+          onClick: this.handleClick,
+          'data-key-path': (0, _stringify2['default'])(keyPath)
         }),
         labelRenderer.apply(undefined, stylingArgs)
       ),

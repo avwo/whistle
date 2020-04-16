@@ -19,3 +19,7 @@
 .w-detail-dialog .w-detail {
   border-radius: 6px;
 }
+
+.w-inspectors-ctx-menu .w-ctx-menu-list {
+  min-width: 100px;
+}
