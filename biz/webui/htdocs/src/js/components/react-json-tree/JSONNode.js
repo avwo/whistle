@@ -90,10 +90,12 @@ var JSONNode = function JSONNode(_ref) {
     case 'Set':
       return _react2['default'].createElement(_JSONIterableNode2['default'], nestedNodeProps);
     case 'String':
-      return _react2['default'].createElement(_JSONValueNode2['default'], (0, _extends3['default'])({}, simpleNodeProps, { valueGetter: function valueGetter(raw) {
+      return _react2['default'].createElement(_JSONValueNode2['default'], (0, _extends3['default'])({}, simpleNodeProps, {
+        valueGetter: function valueGetter(raw) {
           raw = '"' + raw + '"';
           return raw.length > 1024 ? _react2['default'].createElement(_expandCollapse2['default'], { text: raw }) : raw;
-        } }));
+        }
+      }));
     case 'Number':
       return _react2['default'].createElement(_JSONValueNode2['default'], simpleNodeProps);
     case 'Boolean':
