@@ -38,7 +38,7 @@ var _JSONValueNode = require('./JSONValueNode');
 
 var _JSONValueNode2 = _interopRequireDefault(_JSONValueNode);
 
-var _expandCollapse = require('../../expand-collapse.js');
+var _expandCollapse = require('../../expand-collapse');
 
 var _expandCollapse2 = _interopRequireDefault(_expandCollapse);
 

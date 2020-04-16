@@ -3,6 +3,7 @@ require('../css/context-menu.css');
 var $ = require('jquery');
 var React = require('react');
 var ReactDOM = require('react-dom');
+var util = require('./util');
 
 var ContextMenu = React.createClass({
   getInitialState: function() {
@@ -109,5 +110,8 @@ var ContextMenu = React.createClass({
     return null;
   }
 });
+
+ContextMenu.util = util;
+ContextMenu.$ = $;
 
 module.exports = ContextMenu;

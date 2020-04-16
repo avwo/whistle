@@ -6,6 +6,14 @@ var _objectWithoutProperties2 = require('babel-runtime/helpers/objectWithoutProp
 
 var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
 
+var _stringify = require('babel-runtime/core-js/json/stringify');
+
+var _stringify2 = _interopRequireDefault(_stringify);
+
+var _typeof2 = require('babel-runtime/helpers/typeof');
+
+var _typeof3 = _interopRequireDefault(_typeof2);
+
 var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
 
 var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
@@ -44,15 +52,22 @@ var _createStylingFromTheme2 = _interopRequireDefault(_createStylingFromTheme);
 
 var _reactBase16Styling = require('react-base16-styling');
 
+var _contextMenu = require('../../context-menu');
+
+var _contextMenu2 = _interopRequireDefault(_contextMenu);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var identity = function identity(value) {
-  return value;
-}; // ES6 + inline style port of JSONViewer https://bitbucket.org/davevedder/react-json-viewer/
+/* eslint-disable react/no-string-refs */
+// ES6 + inline style port of JSONViewer https://bitbucket.org/davevedder/react-json-viewer/
 // all credits and original code to the author
 // Dave Vedder <veddermatic@gmail.com> http://www.eskimospy.com/
 // port by Daniele Zannotti http://www.github.com/dzannotti <dzannotti@me.com>
 
+var contextMenuList = [{ name: 'Copy Key' }, { name: 'Copy Value' }];
+var identity = function identity(value) {
+  return value;
+};
 var expandRootNode = function expandRootNode(keyName, data, level) {
   return level === 0;
 };
@@ -148,6 +163,32 @@ var JSONTree = function (_React$Component) {
 
     var _this = (0, _possibleConstructorReturn3['default'])(this, _React$Component.call(this, props));
 
+    _this.onContextMenu = function (e) {
+      var target = (0, _contextMenu.$)(e.target).closest('label');
+      var keyPath = _contextMenu.util.parseJSON(target.attr('data-key-path'));
+      if (!Array.isArray(keyPath)) {
+        return;
+      }
+      var data = _this.props.data;
+      if (data) {
+        for (var i = keyPath.length - 2; i >= 0; i--) {
+          data = data && data[keyPath[i]];
+        }
+      }
+      var ctxMenu = _contextMenu.util.getMenuPosition(e, 110, 70);
+      ctxMenu.list = contextMenuList;
+      ctxMenu.className = 'w-inspectors-ctx-menu';
+      contextMenuList[0].copyText = keyPath[0];
+      if (data && (typeof data === 'undefined' ? 'undefined' : (0, _typeof3['default'])(data)) === 'object' && !(data instanceof String)) {
+        try {
+          data = (0, _stringify2['default'])(data, null, '  ');
+        } catch (e) {} // eslint-disable-line
+      }
+      contextMenuList[1].copyText = data + '';
+      _this.refs.contextMenu.show(ctxMenu); // eslint-disable-line
+      e.preventDefault();
+    };
+
     _this.state = getStateFromProps(props);
     return _this;
   }
@@ -184,11 +225,12 @@ var JSONTree = function (_React$Component) {
 
     return _react2['default'].createElement(
       'ul',
-      styling('tree'),
+      (0, _extends3['default'])({}, styling('tree'), { onContextMenu: this.onContextMenu }),
       _react2['default'].createElement(_JSONNode2['default'], (0, _extends3['default'])({}, (0, _extends3['default'])({ postprocessValue: postprocessValue, hideRoot: hideRoot, styling: styling }, rest), {
         keyPath: hideRoot ? [] : keyPath,
         value: postprocessValue(value)
-      }))
+      })),
+      _react2['default'].createElement(_contextMenu2['default'], { ref: 'contextMenu' })
     );
   };
 

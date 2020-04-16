@@ -37,7 +37,9 @@ var JSONValueNode = function JSONValueNode(_ref) {
     styling('value', nodeType, keyPath),
     _react2['default'].createElement(
       'label',
-      (0, _extends3['default'])({}, styling(['label', 'valueLabel'], nodeType, keyPath), { 'data-key-path': (0, _stringify2['default'])(keyPath) }),
+      (0, _extends3['default'])({}, styling(['label', 'valueLabel'], nodeType, keyPath), {
+        'data-key-path': (0, _stringify2['default'])(keyPath)
+      }),
       labelRenderer(keyPath, nodeType, false, false)
     ),
     _react2['default'].createElement(
