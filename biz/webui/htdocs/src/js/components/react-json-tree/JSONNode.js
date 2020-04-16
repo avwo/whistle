@@ -38,6 +38,10 @@ var _JSONValueNode = require('./JSONValueNode');
 
 var _JSONValueNode2 = _interopRequireDefault(_JSONValueNode);
 
+var _expandCollapse = require('../../expand-collapse.js');
+
+var _expandCollapse2 = _interopRequireDefault(_expandCollapse);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var JSONNode = function JSONNode(_ref) {
@@ -87,7 +91,8 @@ var JSONNode = function JSONNode(_ref) {
       return _react2['default'].createElement(_JSONIterableNode2['default'], nestedNodeProps);
     case 'String':
       return _react2['default'].createElement(_JSONValueNode2['default'], (0, _extends3['default'])({}, simpleNodeProps, { valueGetter: function valueGetter(raw) {
-          return '"' + raw + '"';
+          raw = '"' + raw + '"';
+          return raw.length > 1024 ? _react2['default'].createElement(_expandCollapse2['default'], { text: raw }) : raw;
         } }));
     case 'Number':
       return _react2['default'].createElement(_JSONValueNode2['default'], simpleNodeProps);
@@ -121,9 +126,11 @@ var JSONNode = function JSONNode(_ref) {
     case 'Custom':
       return _react2['default'].createElement(_JSONValueNode2['default'], simpleNodeProps);
     default:
-      return _react2['default'].createElement(_JSONValueNode2['default'], (0, _extends3['default'])({}, simpleNodeProps, { valueGetter: function valueGetter(raw) {
+      return _react2['default'].createElement(_JSONValueNode2['default'], (0, _extends3['default'])({}, simpleNodeProps, {
+        valueGetter: function valueGetter(raw) {
           return '<' + nodeType + '>';
-        } }));
+        }
+      }));
   }
 };
 
