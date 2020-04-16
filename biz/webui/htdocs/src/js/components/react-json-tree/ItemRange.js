@@ -1,7 +1,6 @@
 'use strict';
 
 exports.__esModule = true;
-exports['default'] = undefined;
 
 var _extends2 = require('babel-runtime/helpers/extends');
 
@@ -19,8 +18,6 @@ var _inherits2 = require('babel-runtime/helpers/inherits');
 
 var _inherits3 = _interopRequireDefault(_inherits2);
 
-var _class, _temp;
-
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
@@ -35,7 +32,7 @@ var _JSONArrow2 = _interopRequireDefault(_JSONArrow);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var ItemRange = (_temp = _class = function (_React$Component) {
+var ItemRange = function (_React$Component) {
   (0, _inherits3['default'])(ItemRange, _React$Component);
 
   function ItemRange(props) {
@@ -83,11 +80,13 @@ var ItemRange = (_temp = _class = function (_React$Component) {
   };
 
   return ItemRange;
-}(_react2['default'].Component), _class.propTypes = {
+}(_react2['default'].Component);
+
+ItemRange.propTypes = {
   styling: _propTypes2['default'].func.isRequired,
   from: _propTypes2['default'].number.isRequired,
   to: _propTypes2['default'].number.isRequired,
   renderChildNodes: _propTypes2['default'].func.isRequired,
   nodeType: _propTypes2['default'].string.isRequired
-}, _temp);
+};
 exports['default'] = ItemRange;

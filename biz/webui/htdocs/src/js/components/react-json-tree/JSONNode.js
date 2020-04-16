@@ -51,10 +51,12 @@ var JSONNode = function JSONNode(_ref) {
       rest = (0, _objectWithoutProperties3['default'])(_ref, ['getItemString', 'keyPath', 'labelRenderer', 'styling', 'value', 'valueRenderer', 'isCustomNode']);
 
   var nodeType = isCustomNode(value) ? 'Custom' : (0, _objType2['default'])(value);
+
   if (nodeType === 'BigNumber') {
     nodeType = 'Number';
     value = value.toString();
   }
+
   var simpleNodeProps = {
     getItemString: getItemString,
     key: keyPath[0],
@@ -90,13 +92,17 @@ var JSONNode = function JSONNode(_ref) {
     case 'Number':
       return _react2['default'].createElement(_JSONValueNode2['default'], simpleNodeProps);
     case 'Boolean':
-      return _react2['default'].createElement(_JSONValueNode2['default'], (0, _extends3['default'])({}, simpleNodeProps, { valueGetter: function valueGetter(raw) {
+      return _react2['default'].createElement(_JSONValueNode2['default'], (0, _extends3['default'])({}, simpleNodeProps, {
+        valueGetter: function valueGetter(raw) {
           return raw ? 'true' : 'false';
-        } }));
+        }
+      }));
     case 'Date':
-      return _react2['default'].createElement(_JSONValueNode2['default'], (0, _extends3['default'])({}, simpleNodeProps, { valueGetter: function valueGetter(raw) {
+      return _react2['default'].createElement(_JSONValueNode2['default'], (0, _extends3['default'])({}, simpleNodeProps, {
+        valueGetter: function valueGetter(raw) {
           return raw.toISOString();
-        } }));
+        }
+      }));
     case 'Null':
       return _react2['default'].createElement(_JSONValueNode2['default'], (0, _extends3['default'])({}, simpleNodeProps, { valueGetter: function valueGetter() {
           return 'null';
@@ -107,13 +113,17 @@ var JSONNode = function JSONNode(_ref) {
         } }));
     case 'Function':
     case 'Symbol':
-      return _react2['default'].createElement(_JSONValueNode2['default'], (0, _extends3['default'])({}, simpleNodeProps, { valueGetter: function valueGetter(raw) {
+      return _react2['default'].createElement(_JSONValueNode2['default'], (0, _extends3['default'])({}, simpleNodeProps, {
+        valueGetter: function valueGetter(raw) {
           return raw.toString();
-        } }));
+        }
+      }));
     case 'Custom':
       return _react2['default'].createElement(_JSONValueNode2['default'], simpleNodeProps);
     default:
-      return null;
+      return _react2['default'].createElement(_JSONValueNode2['default'], (0, _extends3['default'])({}, simpleNodeProps, { valueGetter: function valueGetter(raw) {
+          return '<' + nodeType + '>';
+        } }));
   }
 };
 

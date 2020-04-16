@@ -38,6 +38,7 @@ function createItemString(data, limit) {
   if ((0, _isSafeInteger2['default'])(data.size)) {
     count = data.size;
   } else {
+    // eslint-disable-next-line no-unused-vars
     for (var _iterator = data, _isArray = Array.isArray(_iterator), _i = 0, _iterator = _isArray ? _iterator : (0, _getIterator3['default'])(_iterator);;) {
       var _ref;
 
@@ -51,7 +52,7 @@ function createItemString(data, limit) {
       }
 
       var entry = _ref;
-      // eslint-disable-line no-unused-vars
+
       if (limit && count + 1 > limit) {
         hasMore = true;
         break;

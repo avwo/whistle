@@ -15,8 +15,15 @@ function objType(obj) {
   if (type === 'Object' && typeof obj[_iterator2['default']] === 'function') {
     return 'Iterable';
   }
+
   if (type === 'String' && obj._$isNumber) {
     return 'BigNumber';
   }
+
+  if (type === 'Custom' && obj.constructor !== Object && obj instanceof Object) {
+    // For projects implementing objects overriding `.prototype[Symbol.toStringTag]`
+    return 'Object';
+  }
+
   return type;
 }

@@ -220,7 +220,7 @@ var FrameList = React.createClass({
     }
   },
   onDragStart: function(e) {
-    const dataId = $(e.target).closest('li').attr('data-id');
+    var dataId = $(e.target).closest('li').attr('data-id');
     if (!dataId) {
       return;
     }

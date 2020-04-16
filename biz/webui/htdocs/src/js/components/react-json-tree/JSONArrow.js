@@ -24,9 +24,7 @@ var JSONArrow = function JSONArrow(_ref) {
       onClick = _ref.onClick;
   return _react2['default'].createElement(
     'div',
-    (0, _extends3['default'])({}, styling('arrowContainer', arrowStyle), {
-      onClick: onClick
-    }),
+    (0, _extends3['default'])({}, styling('arrowContainer', arrowStyle), { onClick: onClick }),
     _react2['default'].createElement(
       'div',
       styling(['arrow', 'arrowSign'], nodeType, expanded, arrowStyle),

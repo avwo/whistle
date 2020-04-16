@@ -1,7 +1,6 @@
 'use strict';
 
 exports.__esModule = true;
-exports['default'] = undefined;
 
 var _objectWithoutProperties2 = require('babel-runtime/helpers/objectWithoutProperties');
 
@@ -27,11 +26,6 @@ var _keys = require('babel-runtime/core-js/object/keys');
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _class, _temp; // ES6 + inline style port of JSONViewer https://bitbucket.org/davevedder/react-json-viewer/
-// all credits and original code to the author
-// Dave Vedder <veddermatic@gmail.com> http://www.eskimospy.com/
-// port by Daniele Zannotti http://www.github.com/dzannotti <dzannotti@me.com>
-
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
@@ -54,7 +48,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 
 var identity = function identity(value) {
   return value;
-};
+}; // ES6 + inline style port of JSONViewer https://bitbucket.org/davevedder/react-json-viewer/
+// all credits and original code to the author
+// Dave Vedder <veddermatic@gmail.com> http://www.eskimospy.com/
+// port by Daniele Zannotti http://www.github.com/dzannotti <dzannotti@me.com>
+
 var expandRootNode = function expandRootNode(keyName, data, level) {
   return level === 0;
 };
@@ -103,8 +101,8 @@ function checkLegacyTheming(theme, props) {
     }
 
     deprecatedStylingMethods.forEach(function (name) {
-      console.error( // eslint-disable-line no-console
-      'Styling method "' + name + '" is deprecated, use "theme" property instead');
+      // eslint-disable-next-line no-console
+      console.error('Styling method "' + name + '" is deprecated, use "theme" property instead');
 
       theme[deprecatedStylingMethodsMap[name]] = function (_ref2) {
         for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
@@ -142,7 +140,7 @@ function getStateFromProps(props) {
   };
 }
 
-var JSONTree = (_temp = _class = function (_React$Component) {
+var JSONTree = function (_React$Component) {
   (0, _inherits3['default'])(JSONTree, _React$Component);
 
   function JSONTree(props) {
@@ -195,7 +193,9 @@ var JSONTree = (_temp = _class = function (_React$Component) {
   };
 
   return JSONTree;
-}(_react2['default'].Component), _class.propTypes = {
+}(_react2['default'].Component);
+
+JSONTree.propTypes = {
   data: _propTypes2['default'].oneOfType([_propTypes2['default'].array, _propTypes2['default'].object]).isRequired,
   hideRoot: _propTypes2['default'].bool,
   theme: _propTypes2['default'].oneOfType([_propTypes2['default'].object, _propTypes2['default'].string]),
@@ -203,7 +203,8 @@ var JSONTree = (_temp = _class = function (_React$Component) {
   keyPath: _propTypes2['default'].arrayOf(_propTypes2['default'].oneOfType([_propTypes2['default'].string, _propTypes2['default'].number])),
   postprocessValue: _propTypes2['default'].func,
   sortObjectKeys: _propTypes2['default'].oneOfType([_propTypes2['default'].func, _propTypes2['default'].bool])
-}, _class.defaultProps = {
+};
+JSONTree.defaultProps = {
   shouldExpandNode: expandRootNode,
   hideRoot: false,
   keyPath: ['root'],
@@ -214,5 +215,5 @@ var JSONTree = (_temp = _class = function (_React$Component) {
   isCustomNode: noCustomNode,
   collectionLimit: 50,
   invertTheme: true
-}, _temp);
+};
 exports['default'] = JSONTree;

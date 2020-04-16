@@ -41,8 +41,8 @@ function getEntries(type, collection, sortObjectKeys) {
   if (type === 'Object') {
     var keys = (0, _getOwnPropertyNames2['default'])(collection);
 
-    if (typeof sortObjectKeys !== 'undefined') {
-      keys.sort(sortObjectKeys);
+    if (sortObjectKeys) {
+      keys.sort(sortObjectKeys === true ? undefined : sortObjectKeys);
     }
 
     keys = keys.slice(from, to + 1);
@@ -82,15 +82,19 @@ function getEntries(type, collection, sortObjectKeys) {
       if (idx > to) {
         done = false;
         break;
-      }if (from <= idx) {
+      }
+      if (from <= idx) {
         if (isMap && Array.isArray(item)) {
           if (typeof item[0] === 'string' || typeof item[0] === 'number') {
             entries.push({ key: item[0], value: item[1] });
           } else {
-            entries.push({ key: '[entry ' + idx + ']', value: {
+            entries.push({
+              key: '[entry ' + idx + ']',
+              value: {
                 '[key]': item[0],
                 '[value]': item[1]
-              } });
+              }
+            });
           }
         } else {
           entries.push({ key: idx, value: item });
