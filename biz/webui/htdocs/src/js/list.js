@@ -319,6 +319,7 @@ var List = React.createClass({
         port: dataCenter.getPort(),
         type: this.props.name === 'rules' ? 'rules' : 'values',
         name: menuName,
+        list: modal && modal.getList(),
         activeItem: this.currentFocusItem,
         selectedItem: modal && modal.getActive()
       });

@@ -15,6 +15,10 @@
   font-size: 13px;
   line-height: 14px;
 }
+
+.w-composer-tabs .w-composer-cookies {
+  right: 80px;
+}
 .w-composer-tabs button {
   line-height: 16px;
   padding: 0 10px!important;
@@ -197,7 +201,7 @@
 .w-composer-use-h2 {
   position: absolute;
   top: 0;
-  right: 90px;
+  right: 155px;
 }
 
 .w-composer-use-h2 input {

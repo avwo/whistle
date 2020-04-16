@@ -22,6 +22,13 @@ proto.reset = function(list, data, init) {
   }
 };
 
+proto.getList = function() {
+  var data = this.data;
+  return this.list.map(function(key) {
+    return data[key];
+  });
+};
+
 proto._getList = function(prop) {
   var list = [];
   var data = this.data;
