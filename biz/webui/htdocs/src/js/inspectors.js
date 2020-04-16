@@ -46,7 +46,7 @@ var Inspector = React.createClass({
     ctxMenu.list = contextMenuList;
     ctxMenu.className = 'w-inspectors-ctx-menu';
     contextMenuList[0].copyText = keyPath[0];
-    if (value && typeof value === 'object') {
+    if (value && typeof value === 'object' && !(value instanceof String)) {
       try {
         value = JSON.stringify(value, null, '  ');
       } catch (e) {}
