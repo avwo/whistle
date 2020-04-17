@@ -109,6 +109,7 @@ var Composer = React.createClass({
     var method = data.method;
     var methods = this.getCustomMethods();
     var body = getString(data.body);
+    this.uploadBodyData = util.parseJSON(storage.get('composerUploadBody'));
     if (methods.indexOf(method) === -1 || method === '+ Method') {
       method = 'GET';
     }
@@ -136,7 +137,7 @@ var Composer = React.createClass({
   componentDidMount: function() {
     var self = this;
     self.update(self.props.modal);
-    this.refs.uploadBody.update();
+    this.refs.uploadBody.update(this.uploadBodyData);
     events.on('setComposer', function() {
       if (self.state.pending) {
         return;
@@ -340,7 +341,6 @@ var Composer = React.createClass({
     }
     var type = target.getAttribute('data-type');
     if (type) {
-      type === 'upload' && this.refs.uploadBody.update();
       this.setState({ type: type });
       if (type = TYPES[type]) {
         var elem = ReactDOM.findDOMNode(this.refs.headers);
@@ -392,7 +392,19 @@ var Composer = React.createClass({
     this.saveComposer();
   },
   onUploadFieldChange: function() {
-    // var fields = this.refs.uploadBody.getFields();
+    var fields = this.refs.uploadBody.getFields();
+    var result = {};
+    fields.forEach(function(field) {
+      var value = result[field.name];
+      if (value == null) {
+        result[field.name] = field.value;
+      } else if (Array.isArray(value)) {
+        value.push(field.value);
+      } else {
+        result[field.name] = [value, field.value];
+      }
+    });
+    storage.set('composerUploadBody', JSON.stringify(result));
   },
   onShowPretty: function(e) {
     var show = e.target.checked;

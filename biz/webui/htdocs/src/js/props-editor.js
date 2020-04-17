@@ -162,16 +162,14 @@ var PropsEditor = React.createClass({
     }
   },
   getFields: function() {
-    var state = this.state;
-    return {
-      name: state.filename,
-      size: state.fileSize,
-      value: state.fileData
-    };
+    var modal = this.state.modal || '';
+    return Object.keys(modal).map(function(key) {
+      return modal[key];
+    });
   },
   toString: function() {
-    var modal = this.state.modal;
-    var keys = Object.keys(modal || '');
+    var modal = this.state.modal || '';
+    var keys = Object.keys(modal);
     if (this.props.isHeader) {
       return keys.map(function(key) {
         var obj = modal[key];
