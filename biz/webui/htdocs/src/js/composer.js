@@ -392,7 +392,8 @@ var Composer = React.createClass({
     this.saveComposer();
   },
   onUploadFieldChange: function() {
-    
+    var file = this.refs.uploadBody.getFile();
+    console.log(file);
   },
   onShowPretty: function(e) {
     var show = e.target.checked;

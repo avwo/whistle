@@ -6,6 +6,7 @@ var Dialog = require('./dialog');
 var util = require('./util');
 var message = require('./message');
 
+var MAX_FILE_SIZE = 1024 * 1024 * 100;
 var MAX_NAME_LEN = 128;
 var MAX_VALUE_LEN = 36 * 1024;
 var MAX_COUNT = 160;
@@ -130,6 +131,14 @@ var PropsEditor = React.createClass({
       this.setState({});
     }
   },
+  getFile: function() {
+    var state = this.state;
+    return {
+      name: state.filename,
+      size: state.fileSize,
+      data: state.fileData
+    };
+  },
   toString: function() {
     var modal = this.state.modal;
     var keys = Object.keys(modal || '');
@@ -144,9 +153,41 @@ var PropsEditor = React.createClass({
       return util.encodeURIComponent(obj.name) + '=' + util.encodeURIComponent(obj.value);
     }).join('&');
   },
+  onUpload: function() {
+    if (!this.reading) {
+      ReactDOM.findDOMNode(this.refs.readLocalFile).click();
+    }
+  },
+  readLocalFile: function() {
+    var form = new FormData(ReactDOM.findDOMNode(this.refs.readLocalFileForm));
+    var file = form.get('localFile');
+    if (file.size > MAX_FILE_SIZE) {
+      return alert('The file size cannot exceed 100m.');
+    }
+    var self = this;
+    self.reading = true;
+    util.readFile(file, function(data) {
+      self.reading = false;
+      self.localFileData = data;
+      self.setState({ 
+        filename: file.name || 'unknown',
+        fileData: data,
+        fileSize: file.size
+      });
+    });
+    ReactDOM.findDOMNode(this.refs.readLocalFile).value = '';
+  },
+  removeLocalFile: function(e) {
+    this.setState({ 
+      filename: null,
+      fileData: null
+    });
+    e.stopPropagation();
+  },
   render: function() {
     var self = this;
     var modal = this.state.modal || '';
+    var filename = this.state.filename;
     var keys = Object.keys(modal);
     var isHeader = this.props.isHeader;
     var allowUploadFile = this.props.allowUploadFile;
@@ -187,13 +228,20 @@ var PropsEditor = React.createClass({
                 Name:
                 <input ref="name" placeholder="Input the name" className="form-control" maxLength="128" />
               </label>
-              <label>
+              <div>
                 Value:
                 <div className={allowUploadFile ? 'w-props-editor-upload' : 'w-props-editor-form'}>
-                  <textarea ref="valueInput" maxLength={MAX_VALUE_LEN} placeholder="Input the value" className="form-control" />
-                  <button className="btn btn-primary">Upload file</button>
+                  <div onClick={this.onUpload} className={'w-props-editor-file' + (filename ? '' : ' hide')} title={filename}>
+                    <button onClick={this.removeLocalFile} type="button" className="close" title="Remove file">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                    <span className="glyphicon glyphicon-file"></span>
+                    {filename}
+                  </div>
+                  <textarea ref="valueInput" maxLength={MAX_VALUE_LEN} placeholder="Input the value" className={'form-control' + (filename ? ' hide' : '')} />
+                  <button onClick={this.onUpload} className="btn btn-primary">Upload file</button>
                 </div>
-              </label>
+              </div>
             </div>
             <div className="modal-footer">
               <button type="button" className="btn btn-primary"
@@ -201,6 +249,9 @@ var PropsEditor = React.createClass({
               <button type="button" className="btn btn-default" data-dismiss="modal">Cancel</button>
             </div>
           </Dialog>
+          <form ref="readLocalFileForm" encType="multipart/form-data" style={{display: 'none'}}>
+            <input ref="readLocalFile" onChange={this.readLocalFile} type="file" name="localFile" />
+          </form>
       </div>
     );
   }

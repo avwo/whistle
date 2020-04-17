@@ -68,14 +68,14 @@
   display: block;
   padding: 10px 0;
 }
-.w-composer-dialog label textarea {
+.w-composer-dialog textarea {
   height: 120px;
   white-space: normal;
 }
 .w-props-editor-upload {
   white-space: nowrap;
 }
-.w-props-editor-upload button {
+.w-props-editor-upload .btn-primary {
   line-height: 108px;
   vertical-align: middle;
 }
@@ -90,4 +90,30 @@
 }
 .w-composer-dialog label input, .w-composer-dialog label textarea {
   font-weight: normal;
+}
+
+.w-props-editor-file {
+  position: relative;
+  display: inline-block;
+  width: 475px;
+  height: 120px;
+  line-height: 120px;
+  vertical-align: middle;
+  margin-right: 8px;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+}
+
+.w-props-editor-file .close {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  line-height: 20px;
+  top: 0;
+  right: 0;
 }

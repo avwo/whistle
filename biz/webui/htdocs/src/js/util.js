@@ -1325,7 +1325,11 @@ function readFile(file, callback, type) {
   reader.onload = function () {
     var result = reader.result;
     try {
-      execCallback(null, isText ? result : fromByteArray(new window.Uint8Array(result)));
+      if (!isText) {
+        result = new window.Uint8Array(result);
+        result = type === 'base64' ? fromByteArray(result) : result;
+      }
+      execCallback(null, result);
     } catch(e) {
       execCallback(e);
     }
@@ -1333,8 +1337,10 @@ function readFile(file, callback, type) {
   return reader;
 }
 
+exports.readFile = readFile;
+
 exports.readFileAsBase64 = function(file, callback) {
-  return readFile(file, callback);
+  return readFile(file, callback, 'base64');
 };
 
 exports.readFileAsText = function(file, callback) {
