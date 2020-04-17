@@ -149,6 +149,7 @@ var PropsEditor = React.createClass({
     var modal = this.state.modal || '';
     var keys = Object.keys(modal);
     var isHeader = this.props.isHeader;
+    var allowUploadFile = this.props.allowUploadFile;
     var data = this.state.data || '';
     var btnText = (data ? 'Modify' : 'Add') + (isHeader ? ' header' : ' field');
     
@@ -188,7 +189,10 @@ var PropsEditor = React.createClass({
               </label>
               <label>
                 Value:
-                <textarea ref="valueInput" maxLength={MAX_VALUE_LEN} placeholder="Input the value" className="form-control" />
+                <div className={allowUploadFile ? 'w-props-editor-upload' : 'w-props-editor-form'}>
+                  <textarea ref="valueInput" maxLength={MAX_VALUE_LEN} placeholder="Input the value" className="form-control" />
+                  <button className="btn btn-primary">Upload file</button>
+                </div>
               </label>
             </div>
             <div className="modal-footer">

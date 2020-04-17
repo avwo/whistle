@@ -9,8 +9,7 @@ var BtnGroup = require('./btn-group');
 var Textarea = require('./textarea');
 var ImageView = require('./image-view');
 var JSONViewer = require('./json-viewer');
-var COOKIE_HEADERS = ['Name', 'Value', 'Domain', 'Path', 'Expires', 'Max-Age', 'HttpOnly', 'Secure'];
-var SS_COOKIE_HEADERS = COOKIE_HEADERS.concat(['SameSite']);
+var COOKIE_HEADERS = ['Name', 'Value', 'Domain', 'Path', 'Expires', 'Max-Age', 'HttpOnly', 'Secure', 'SameSite'];
 
 var ResDetail = React.createClass({
   getInitialState: function() {
@@ -56,7 +55,7 @@ var ResDetail = React.createClass({
     }
     var name = btn && btn.name;
     var modal = this.props.modal;
-    var res, rawHeaders, headersStr, headers, cookies, body, raw, json, tips, defaultName, base64, bin, hasSameSite;
+    var res, rawHeaders, headersStr, headers, cookies, body, raw, json, tips, defaultName, base64, bin;
     body = raw = '';
     if (modal) {
       res = modal.res;
@@ -74,7 +73,7 @@ var ResDetail = React.createClass({
         }
         cookies = cookies.map(function(cookie) {
           cookie = util.parseQueryString(cookie, /;\s*/, null, decodeURIComponent, true);
-          var row = ['', '', '', '', '', '', '', ''];
+          var row = ['', '', '', '', '', '', '', '', ''];
           for (var i in cookie) {
             switch(i.toLowerCase()) {
             case 'domain':
@@ -97,7 +96,6 @@ var ResDetail = React.createClass({
               break;
             case 'samesite':
               row[8] = cookie[i];
-              hasSameSite = true;
               break;
             default:
               if (!row[0]) {
@@ -159,7 +157,7 @@ var ResDetail = React.createClass({
         {state.initedTextView ? <Textarea defaultName={defaultName} tips={tips} base64={base64} value={body} className="fill w-detail-response-textview" hide={name != btns[2].name} /> : undefined}
         {state.initedJSONView ? <JSONViewer defaultName={defaultName} data={json} hide={name != btns[3].name} /> : undefined}
         {state.initedHexView ? <Textarea defaultName={defaultName} isHexView="1" base64={base64} value={bin} className="fill n-monospace w-detail-response-hex" hide={name != btns[4].name} /> : undefined}
-        {state.initedCookies ? <div className={'fill w-detail-response-cookies' + (name == btns[5].name ? '' : ' hide')}>{cookies && cookies.length ? <Table head={hasSameSite ? SS_COOKIE_HEADERS : COOKIE_HEADERS} modal={cookies} /> : undefined}</div> : undefined}
+        {state.initedCookies ? <div className={'fill w-detail-response-cookies' + (name == btns[5].name ? '' : ' hide')}>{cookies && cookies.length ? <Table head={COOKIE_HEADERS} modal={cookies} /> : undefined}</div> : undefined}
         {state.initedRaw ? <Textarea defaultName={defaultName} value={raw} headers={headersStr}
           base64={base64} className="fill w-detail-response-raw" hide={name != btns[6].name} /> : undefined}
       </div>

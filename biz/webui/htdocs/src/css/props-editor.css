@@ -70,6 +70,23 @@
 }
 .w-composer-dialog label textarea {
   height: 120px;
+  white-space: normal;
+}
+.w-props-editor-upload {
+  white-space: nowrap;
+}
+.w-props-editor-upload button {
+  line-height: 108px;
+  vertical-align: middle;
+}
+.w-props-editor-upload textarea {
+  display: inline-block;
+  width: 475px;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+.w-props-editor-form button {
+  display: none;
 }
 .w-composer-dialog label input, .w-composer-dialog label textarea {
   font-weight: normal;

@@ -136,6 +136,7 @@ var Composer = React.createClass({
   componentDidMount: function() {
     var self = this;
     self.update(self.props.modal);
+    this.refs.uploadBody.update();
     events.on('setComposer', function() {
       if (self.state.pending) {
         return;
@@ -339,6 +340,7 @@ var Composer = React.createClass({
     }
     var type = target.getAttribute('data-type');
     if (type) {
+      type === 'upload' && this.refs.uploadBody.update();
       this.setState({ type: type });
       if (type = TYPES[type]) {
         var elem = ReactDOM.findDOMNode(this.refs.headers);
@@ -369,6 +371,9 @@ var Composer = React.createClass({
   addField: function() {
     this.refs.prettyBody.onAdd();
   },
+  addUploadFiled: function() {
+    this.refs.uploadBody.onAdd();
+  },
   onHeaderChange: function(key, newKey) {
     var refs = this.refs;
     var headers = refs.prettyHeaders.toString();
@@ -385,6 +390,9 @@ var Composer = React.createClass({
     var refs = this.refs;
     ReactDOM.findDOMNode(refs.body).value = refs.prettyBody.toString();
     this.saveComposer();
+  },
+  onUploadFieldChange: function() {
+    
   },
   onShowPretty: function(e) {
     var show = e.target.checked;
@@ -599,6 +607,7 @@ var Composer = React.createClass({
     var historyData = state.historyData;
     var disableHistory = !historyData.length || pending;
     var showPrettyBody = hasBody && showPretty && isForm;
+    var showUpload = type === 'upload';
     var isStrictMode = dataCenter.isStrictMode();
     var disableComposerRules = isStrictMode || state.disableComposerRules;
     var isHexText = state.isHexText;
@@ -668,22 +677,23 @@ var Composer = React.createClass({
               <div className="fill orient-vertical-box w-composer-body">
                 <div className="w-composer-bar">
                   <label className="w-composer-label">Body</label>
-                  <label className={'w-composer-hex-text' + (isHexText ? ' w-checked' : '')}>
+                  <label className={'w-composer-hex-text' + (isHexText ? ' w-checked' : '') + (showUpload ? ' hide' : '')}>
                     <input disabled={pending} checked={isHexText} type="checkbox" onChange={this.onHexTextChange} />HexText
                   </label>
-                  <label className={'w-composer-crlf' + (isHexText ? ' hide' : '')
+                  <label className={'w-composer-crlf' + (isHexText || showUpload ? ' hide' : '')
                     + (isCRLF ? ' w-checked' : '')}>
                     <input disabled={pending} checked={isCRLF} onChangeCapture={this.onCRLFChange} type="checkbox" />\r\n
                   </label>
-                  <button disabled={pending} className={'btn btn-default' + (showPrettyBody || isHexText ? ' hide' : '')} onClick={this.formatJSON}>Format JSON</button>
-                  <button disabled={pending} className={'btn btn-primary' + (showPrettyBody && !isHexText ? '' : ' hide')} onClick={this.addField}>Add field</button>
+                  <button disabled={pending} className={'btn btn-default' + (showPrettyBody || isHexText || showUpload ? ' hide' : '')} onClick={this.formatJSON}>Format JSON</button>
+                  <button disabled={pending} className={'btn btn-primary' + (showPrettyBody && !isHexText || showUpload ? '' : ' hide')} onClick={showUpload ? this.addUploadFiled : this.addField}>Add field</button>
                 </div>
                 <textarea readOnly={pending || !hasBody} defaultValue={state.body} onChange={this.onComposerChange} maxLength={MAX_BODY_SIZE}
                   onKeyDown={this.onKeyDown} ref="body" placeholder={hasBody ? 'Input the ' + (isHexText ? 'hex text' : 'body') : method + ' operations cannot have a request body'}
                   title={hasBody ? undefined : method + ' operations cannot have a request body'}
                   style={{ fontFamily: isHexText ? 'monospace' : undefined }}
-                  className={'fill orient-vertical-box' + (showPrettyBody && !isHexText ? ' hide' : '')} />
-                <PropsEditor disabled={pending} ref="prettyBody" hide={!showPrettyBody || isHexText} onChange={this.onFieldChange} />
+                  className={'fill orient-vertical-box' + (showPrettyBody && !isHexText || showUpload ? ' hide' : '')} />
+                <PropsEditor disabled={pending} ref="prettyBody" hide={!showPrettyBody || isHexText || showUpload} onChange={this.onFieldChange} />
+                <PropsEditor disabled={pending} ref="uploadBody" hide={!showUpload} onChange={this.onUploadFieldChange} allowUploadFile />
               </div>
             </Divider>
             {state.initedResponse ? (
