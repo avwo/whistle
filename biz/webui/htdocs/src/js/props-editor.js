@@ -71,16 +71,28 @@ var PropsEditor = React.createClass({
     var nameInput = ReactDOM.findDOMNode(this.refs.name);
     var name = nameInput.value.trim();
     if (!name) {
+      nameInput.focus();
       return message.error('The name cannot be empty.');
     }
     var valueInput = ReactDOM.findDOMNode(this.refs.valueInput);
     var value = valueInput.value.trim();
-    var data = this.state.data;
+    var state = this.state;
+    var data = state.data;
     var origName = data.name;
     data.name = name;
-    data.value = value;
+    data.data = state.fileData;
+    if (state.fileData) {
+      data.size = state.fileSize;
+      data.value = state.filename;
+    } else {
+      data.value = value;
+    }
     this.props.onChange(origName, name);
-    this.setState({});
+    this.setState({
+      fileData: null,
+      fileSize: null,
+      filename: null
+    });
     this.hideDialog();
     nameInput.value = valueInput.value = '';
   },
@@ -88,17 +100,28 @@ var PropsEditor = React.createClass({
     var nameInput = ReactDOM.findDOMNode(this.refs.name);
     var name = nameInput.value.trim();
     if (!name) {
+      nameInput.focus();
       return message.error('The name cannot be empty.');
     }
     var valueInput = ReactDOM.findDOMNode(this.refs.valueInput);
     var value = valueInput.value.trim();
     var modal = this.state.modal;
-    modal[name + '_' + ++index] = {
+    var state = this.state;
+    modal[name + '_' + ++index] = state.fileData ? {
+      name: name,
+      value: state.filename,
+      size: state.fileSize,
+      data: state.fileData
+    } : {
       name: name,
       value: value
     };
     this.props.onChange(name);
-    this.setState({});
+    this.setState({
+      fileData: null,
+      fileSize: null,
+      filename: null
+    });
     this.hideDialog();
     nameInput.value = valueInput.value = '';
   },
@@ -108,10 +131,17 @@ var PropsEditor = React.createClass({
   showDialog: function(data) {
     this.refs.composerDialog.show();
     var nameInput = ReactDOM.findDOMNode(this.refs.name);
-    var valueInput = ReactDOM.findDOMNode(this.refs.valueInput);
     if (data) {
       nameInput.value = data.name || '';
-      valueInput.value = data.value || '';
+      if (data.data) {
+        this.setState({
+          filename: data.value,
+          fileSize: data.size,
+          fileData: data.data
+        });
+      } else {
+        ReactDOM.findDOMNode(this.refs.valueInput).value = data.value || '';
+      }
     }
     setTimeout(function() {
       nameInput.select();
@@ -131,12 +161,12 @@ var PropsEditor = React.createClass({
       this.setState({});
     }
   },
-  getFile: function() {
+  getFields: function() {
     var state = this.state;
     return {
       name: state.filename,
       size: state.fileSize,
-      data: state.fileData
+      value: state.fileData
     };
   },
   toString: function() {
@@ -178,9 +208,14 @@ var PropsEditor = React.createClass({
     ReactDOM.findDOMNode(this.refs.readLocalFile).value = '';
   },
   removeLocalFile: function(e) {
-    this.setState({ 
+    var self = this;
+    self.setState({ 
       filename: null,
       fileData: null
+    }, function() {
+      var valueInput = ReactDOM.findDOMNode(self.refs.valueInput);
+      valueInput.select();
+      valueInput.focus();
     });
     e.stopPropagation();
   },
@@ -205,7 +240,10 @@ var PropsEditor = React.createClass({
                   <tr key={name}>
                     <th>{item.name}</th>
                     <td>
-                      <pre>{item.value}</pre>
+                      <pre>
+                        {item.data ? <span className="glyphicon glyphicon-file"></span> : undefined}
+                        {item.value}
+                      </pre>
                     </td>
                     <td className="w-props-ops">
                       <a data-name={name} onClick={self.onEdit} className="glyphicon glyphicon-edit" href="javascript:;" title="Edit"></a>
