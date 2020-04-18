@@ -1408,3 +1408,18 @@ exports.parseImportData = function(data, modal, isValues) {
   list.hasConflict = hasConflict;
   return list;
 };
+
+exports.getSize = function(size) {
+  if (size < 1024) {
+    return size;
+  }
+  size = (size / 1024).toFixed(2);
+  if (size < 1024) {
+    return size + 'k';
+  }
+  size = (size / 1024).toFixed(2);
+  if (size < 1024) {
+    return size + 'm';
+  }
+  return (size / 1024).toFixed(2) + 'G';
+};

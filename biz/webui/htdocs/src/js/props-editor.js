@@ -221,6 +221,7 @@ var PropsEditor = React.createClass({
     var self = this;
     var modal = this.state.modal || '';
     var filename = this.state.filename;
+    var fileSize = this.state.fileSize;
     var keys = Object.keys(modal);
     var isHeader = this.props.isHeader;
     var allowUploadFile = this.props.allowUploadFile;
@@ -240,6 +241,7 @@ var PropsEditor = React.createClass({
                     <td>
                       <pre>
                         {item.data ? <span className="glyphicon glyphicon-file"></span> : undefined}
+                        {item.data ? ' [' + util.getSize(item.size) + '] ' : undefined}
                         {item.value}
                       </pre>
                     </td>
@@ -272,6 +274,7 @@ var PropsEditor = React.createClass({
                       <span aria-hidden="true">&times;</span>
                     </button>
                     <span className="glyphicon glyphicon-file"></span>
+                     {' [' + util.getSize(fileSize) + '] '} 
                     {filename}
                   </div>
                   <textarea ref="valueInput" maxLength={MAX_VALUE_LEN} placeholder="Input the value" className={'form-control' + (filename ? ' hide' : '')} />
