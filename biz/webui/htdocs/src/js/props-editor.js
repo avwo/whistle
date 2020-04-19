@@ -84,6 +84,7 @@ var PropsEditor = React.createClass({
     if (state.fileData) {
       data.size = state.fileSize;
       data.value = state.filename;
+      data.type = state.fileType;
     } else {
       data.value = value;
     }
@@ -91,7 +92,8 @@ var PropsEditor = React.createClass({
     this.setState({
       fileData: null,
       fileSize: null,
-      filename: null
+      filename: null,
+      fileType: null
     });
     this.hideDialog();
     nameInput.value = valueInput.value = '';
@@ -111,7 +113,8 @@ var PropsEditor = React.createClass({
       name: name,
       value: state.filename,
       size: state.fileSize,
-      data: state.fileData
+      data: state.fileData,
+      type: state.fileType
     } : {
       name: name,
       value: value
@@ -120,7 +123,8 @@ var PropsEditor = React.createClass({
     this.setState({
       fileData: null,
       fileSize: null,
-      filename: null
+      filename: null,
+      fileType: null
     });
     this.hideDialog();
     nameInput.value = valueInput.value = '';
@@ -137,7 +141,8 @@ var PropsEditor = React.createClass({
         this.setState({
           filename: data.value,
           fileSize: data.size,
-          fileData: data.data
+          fileData: data.value,
+          fileType: data.type
         });
       } else {
         ReactDOM.findDOMNode(this.refs.valueInput).value = data.value || '';
@@ -200,7 +205,8 @@ var PropsEditor = React.createClass({
       self.setState({ 
         filename: file.name || 'unknown',
         fileData: data,
-        fileSize: file.size
+        fileSize: file.size,
+        fileType: file.type
       });
     });
     ReactDOM.findDOMNode(this.refs.readLocalFile).value = '';
