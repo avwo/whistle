@@ -588,6 +588,7 @@ var Composer = React.createClass({
         var status = xhr && xhr.status;
         if (status) {
           em = status;
+          util.showSystemError(xhr);
         } else if (!em || typeof em !== 'string' || em === 'error') {
           em = 'Please check the proxy settings or whether whistle has been started.';
         }
