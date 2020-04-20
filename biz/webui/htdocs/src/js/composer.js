@@ -219,6 +219,24 @@ var Composer = React.createClass({
       }
     }
     this.updatePrettyData();
+    if (util.isUploadForm(req)) {
+      var fields = util.parseUploadBody(req);
+      var uploadModal = {};
+      var result = {};
+      fields && fields.forEach(function(field) {
+        var name = field.name;
+        var list = uploadModal[name];
+        if (list) {
+          list.push(field);
+          result[name].push(field.value);
+        } else {
+          uploadModal[name] = [field];
+          result[name] = [field.value];
+        }
+      });
+      this.refs.uploadBody.update(uploadModal);
+      storage.set('composerUploadBody', JSON.stringify(result));
+    }
   },
   shouldComponentUpdate: function(nextProps) {
     var hide = util.getBoolean(this.props.hide);
@@ -405,6 +423,7 @@ var Composer = React.createClass({
       }
     });
     storage.set('composerUploadBody', JSON.stringify(result));
+    console.log(util.getMultiBody(fields));
   },
   onShowPretty: function(e) {
     var show = e.target.checked;

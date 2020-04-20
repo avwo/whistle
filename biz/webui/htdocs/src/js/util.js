@@ -4,6 +4,7 @@ var fromByteArray  = require('base64-js').fromByteArray;
 var jsBase64 = require('js-base64').Base64;
 var base64Decode = jsBase64.decode;
 var base64Encode = jsBase64.encode;
+var toBase64 = jsBase64.toBase64;
 var json2 = require('./components/json');
 var evalJson = require('./components/json/eval');
 var isUtf8 = require('./is-utf8');
@@ -1423,3 +1424,163 @@ exports.getSize = function(size) {
   }
   return (size / 1024).toFixed(2) + 'G';
 };
+
+
+function indexOfList(list, subList, start) {
+  var len = list.length;
+  var subLen = subList && subList.length;
+  if (!len || !subLen) {
+    return -1;
+  }
+  var first = subList[0];
+  var index = list.indexOf(first, start || 0);
+  if (subLen === 1) {
+    return index;
+  }
+  var result = -1;
+  while (index !== -1) {
+    result = index;
+    for (var i = 0; i < subLen; i++) {
+      if (subList[i] !== list[i + index]) {
+        result = -1;
+        index = list.indexOf(first, index + 1);
+        break;
+      }
+    }
+    if (result !== -1) {
+      return result;
+    }
+  }
+  return result;
+}
+
+function concatByteArray(list1, list2) {
+  var len = list1.length;
+  var result = new window.Uint8Array(len + list2.length);
+  result.set(list1);
+  result.set(list2, len);
+  return result;
+}
+
+function strToByteArray(str) {
+  try {
+    str = toBase64(str);
+    return toByteArray(str);
+  } catch (e) {}
+  return null;
+}
+
+function base64ToByteArray(str) {
+  try {
+    return toByteArray(str);
+  } catch (e) {}
+  return null;
+}
+
+var UPLOAD_TYPE_RE = /^\s*multipart\/form-data\b/i;
+var BOUNDARY_RE = /boundary=(?:"([^"]+)"|([^;]+))/i;
+var BODY_SEP = strToByteArray('\r\n\r\n');
+var NAME_RE = /name=(?:"([^"]+)"|([^;]+))/i;
+var FILENAME_RE = /filename=(?:"([^"]+)"|([^;]+))/i;
+var TYPE_RE = /^\s*content-type:\s*([^\s]+)/i;
+
+function parseMultiHeader(header) {
+  try {
+    header = base64Decode(fromByteArray(header)).split('\r\n');
+  } catch (e) {
+    return;
+  }
+  if (!NAME_RE.test(header[0])) {
+    return;
+  }
+  var result = {
+    name: RegExp.$1 || RegExp.$2,
+    value: ''
+  };
+  if (TYPE_RE.test(header[1])) {
+    result.type = RegExp.$1;
+    var index = header[0].indexOf('name=' + RegExp['$&']);
+    if (FILENAME_RE.test(header[0].substring(index + 1))) {
+      result.value = RegExp.$1 || RegExp.$2;
+    }
+  }
+  return result;
+}
+
+exports.isUploadForm = function(req) {
+  var type = req.headers && req.headers['content-type'];
+  return UPLOAD_TYPE_RE.test(type);
+};
+
+exports.parseUploadBody = function(req) {
+  if (!req.base64) {
+    return;
+  }
+  var type = req.headers && req.headers['content-type'];
+  if (!BOUNDARY_RE.test(type)) {
+    return;
+  }
+  var sep = '--' + (RegExp.$1 || RegExp.$2);
+  var body = base64ToByteArray(req.base64);
+  if (!body) {
+    return;
+  }
+  var start = strToByteArray(sep + '\r\n');
+  var end = strToByteArray('\r\n' + sep );
+  var len = start.length;
+  var index = indexOfList(body, start);
+  var result = [];
+  while(index >= 0) {
+    index += len;
+    var hIndex = indexOfList(body, BODY_SEP, index);
+    if (hIndex === -1) {
+      return result;
+    }
+    var endIndex = indexOfList(body, end, hIndex + 2);
+    if (endIndex === -1) {
+      return;
+    }
+    var header = body.slice(index, hIndex);
+    hIndex += 4;
+    var data = hIndex >= endIndex ? '' : body.slice(hIndex, endIndex);
+    header = parseMultiHeader(header);
+    if (header) {
+      if (header.type) {
+        header.data = data;
+      } else {
+        try {
+          header.value = data && base64Decode(fromByteArray(data));
+        } catch (e) {}
+      }
+      result.push(header);
+    }
+    index = indexOfList(body, start, endIndex + 2);
+  }
+
+  return result;
+};
+
+function getMulitPart(part) {
+  var header = 'Content-Disposition: form-data; name="' + part.name + '"';
+  var data = part.data;
+  if (data) {
+    header += '; filename="' + part.value + '"';
+    if (part.type) {
+      header += '\r\nContent-Type: ' + part.type;
+    }
+  } else {
+    data = part.value && strToByteArray(part.value);
+  }
+  header = strToByteArray(header + '\r\n\r\n');
+  return header && (data ? concatByteArray(header, data) : header);
+}
+
+exports.getMultiBody = function(fields) {
+  var result = [];
+  fields.forEach(function(field) {
+    field = getMulitPart(field);
+    field && result.push(field);
+  });
+  return result;
+};
+

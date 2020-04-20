@@ -16,32 +16,40 @@ var PropsEditor = React.createClass({
   getInitialState: function() {
     return {};
   },
+  getValue: function(name, field) {
+    var isHeader = this.props.isHeader;
+    var allowUploadFile = this.props.allowUploadFile;
+    var decode = isHeader ? util.decodeURIComponentSafe : util.noop;
+    var shortName = decode(name.substring(0, MAX_NAME_LEN), isHeader);
+    var result = { name: shortName };
+    if (allowUploadFile && field && field.value != null) {
+      result.value = decode(util.toString(field.value).substring(0, MAX_VALUE_LEN), isHeader);
+      result.data = field.data;
+      result.size = field.data && field.data.length;
+      result.type = field.type;
+    } else {
+      result.value = decode(util.toString(field).substring(0, MAX_VALUE_LEN), isHeader);
+    }
+    return result;
+  },
   update: function(data) {
     var modal = {};
     var overflow;
     if (data) {
+      var self = this;
       var keys = Object.keys(data);
       overflow = keys.length >= MAX_COUNT;
       if (overflow) {
         keys = keys.slice(0, MAX_COUNT);
       }
-      var isHeader = this.props.isHeader;
-      var decode = isHeader ? util.decodeURIComponentSafe : util.noop;
       keys.forEach(function(name) {
         var value = data[name];
-        var shortName = decode(name.substring(0, MAX_NAME_LEN), isHeader);
         if (!Array.isArray(value)) {
-          modal[name + '_0'] =  {
-            name: shortName,
-            value: decode(util.toString(value).substring(0, MAX_VALUE_LEN), isHeader)
-          };
+          modal[name + '_0'] = self.getValue(name, value);
           return;
         }
         value.forEach(function(val, i) {
-          modal[name + '_' + i] =  {
-            name: shortName,
-            value: decode(util.toString(val).substring(0, MAX_VALUE_LEN))
-          };
+          modal[name + '_' + i] =  self.getValue(name, val);
         });
       });
     }
@@ -141,7 +149,7 @@ var PropsEditor = React.createClass({
         this.setState({
           filename: data.value,
           fileSize: data.size,
-          fileData: data.value,
+          fileData: data.data,
           fileType: data.type
         });
       } else {
