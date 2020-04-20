@@ -1454,11 +1454,13 @@ function indexOfList(list, subList, start) {
   return result;
 }
 
-function concatByteArray(list1, list2) {
+function concatByteArray(list1, list2, list3) {
   var len = list1.length;
-  var result = new window.Uint8Array(len + list2.length);
+  var len2 = list2.length;
+  var result = new window.Uint8Array(len + len2 + (list3 ? list3.length : 0));
   result.set(list1);
   result.set(list2, len);
+  list3 && result.set(list3, len + len2);
   return result;
 }
 
@@ -1477,12 +1479,13 @@ function base64ToByteArray(str) {
   return null;
 }
 
-var UPLOAD_TYPE_RE = /^\s*multipart\/form-data\b/i;
+var UPLOAD_TYPE_RE = /^\s*multipart\//i;
 var BOUNDARY_RE = /boundary=(?:"([^"]+)"|([^;]+))/i;
 var BODY_SEP = strToByteArray('\r\n\r\n');
 var NAME_RE = /name=(?:"([^"]+)"|([^;]+))/i;
 var FILENAME_RE = /filename=(?:"([^"]+)"|([^;]+))/i;
 var TYPE_RE = /^\s*content-type:\s*([^\s]+)/i;
+var CRLF_BUF = strToByteArray('\r\n');
 
 function parseMultiHeader(header) {
   try {
@@ -1512,19 +1515,8 @@ exports.isUploadForm = function(req) {
   return UPLOAD_TYPE_RE.test(type);
 };
 
-exports.parseUploadBody = function(req) {
-  if (!req.base64) {
-    return;
-  }
-  var type = req.headers && req.headers['content-type'];
-  if (!BOUNDARY_RE.test(type)) {
-    return;
-  }
-  var sep = '--' + (RegExp.$1 || RegExp.$2);
-  var body = base64ToByteArray(req.base64);
-  if (!body) {
-    return;
-  }
+function parseUploadBody(body, boundary) {
+  var sep = '--' + boundary;
   var start = strToByteArray(sep + '\r\n');
   var end = strToByteArray('\r\n' + sep );
   var len = start.length;
@@ -1538,7 +1530,7 @@ exports.parseUploadBody = function(req) {
     }
     var endIndex = indexOfList(body, end, hIndex + 2);
     if (endIndex === -1) {
-      return;
+      return result;
     }
     var header = body.slice(index, hIndex);
     hIndex += 4;
@@ -1558,9 +1550,22 @@ exports.parseUploadBody = function(req) {
   }
 
   return result;
+}
+
+exports.parseUploadBody = function(req) {
+  if (!req.base64) {
+    return;
+  }
+  var type = req.headers && req.headers['content-type'];
+  if (!BOUNDARY_RE.test(type)) {
+    return;
+  }
+  var boundary = RegExp.$1 || RegExp.$2;
+  var body = base64ToByteArray(req.base64);
+  return body && parseUploadBody(body, boundary);
 };
 
-function getMulitPart(part) {
+function getMultiPart(part) {
   var header = 'Content-Disposition: form-data; name="' + part.name + '"';
   var data = part.data;
   if (data) {
@@ -1571,16 +1576,32 @@ function getMulitPart(part) {
   } else {
     data = part.value && strToByteArray(part.value);
   }
+  if (!header) {
+    return;
+  }
   header = strToByteArray(header + '\r\n\r\n');
-  return header && (data ? concatByteArray(header, data) : header);
+  return data ? concatByteArray(header, data, CRLF_BUF) : header;
+}
+
+function getBoundary() {
+  return '----WhistleUploadForm' + Date.now().toString(16) + Math.floor(Math.random() * 100000000000).toString(16);
 }
 
 exports.getMultiBody = function(fields) {
-  var result = [];
+  var result;
+  var boundary = getBoundary();
+  var boundBuf = strToByteArray('--' + boundary + '\r\n');
   fields.forEach(function(field) {
-    field = getMulitPart(field);
-    field && result.push(field);
+    field = getMultiPart(field);
+    if (field) {
+      field = concatByteArray(boundBuf, field);
+      result = result ? concatByteArray(result, field) : field;
+    }
   });
-  return result;
+  result = result && concatByteArray(result, strToByteArray('--' + boundary + '--'));
+  return {
+    boundary: boundary,
+    buffer: result
+  };
 };
 

@@ -423,7 +423,6 @@ var Composer = React.createClass({
       }
     });
     storage.set('composerUploadBody', JSON.stringify(result));
-    console.log(util.getMultiBody(fields));
   },
   onShowPretty: function(e) {
     var show = e.target.checked;
