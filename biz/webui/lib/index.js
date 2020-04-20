@@ -31,6 +31,7 @@ var DONT_CHECK_PATHS = ['/cgi-bin/server-info', '/cgi-bin/show-host-ip-in-res-he
                         '/cgi-bin/rootca', '/cgi-bin/log/set'];
 var PLUGIN_PATH_RE = /^\/(whistle|plugin)\.([^/?#]+)(\/)?/;
 var STATIC_SRC_RE = /\.(?:ico|js|css|png)$/i;
+var UPLOAD_URLS = ['/cgi-bin/values/upload', '/cgi-bin/composer'];
 var proxyEvent, util, pluginMgr;
 var MAX_AGE = 60 * 60 * 24 * 3;
 var MENU_HTML = fs.readFileSync(path.join(__dirname, '../../../assets/menu.html'));
@@ -278,11 +279,10 @@ app.use(function(req, res, next) {
 });
 
 app.all('/cgi-bin/*', function(req, res, next) {
-  return req.path === '/cgi-bin/values/upload' ?
-    uploadUrlencodedParser(req, res, next) : urlencodedParser(req, res, next);
+  req.isUploadReq = UPLOAD_URLS.indexOf(req.path) !== -1;
+  return req.isUploadReq ? uploadUrlencodedParser(req, res, next) : urlencodedParser(req, res, next);
 }, function(req, res, next) {
-  return req.path === '/cgi-bin/values/upload' ?
-    uploadJsonParser(req, res, next) : jsonParser(req, res, next);
+  return req.isUploadReq ? uploadJsonParser(req, res, next) : jsonParser(req, res, next);
 }, cgiHandler);
 
 app.use('/preview.html', function(req, res, next) {

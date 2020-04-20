@@ -6,7 +6,7 @@ var Dialog = require('./dialog');
 var util = require('./util');
 var message = require('./message');
 
-var MAX_FILE_SIZE = 1024 * 1024 * 100;
+var MAX_FILE_SIZE = 1024 * 1024 * 20;
 var MAX_NAME_LEN = 128;
 var MAX_VALUE_LEN = 36 * 1024;
 var MAX_COUNT = 160;
@@ -203,7 +203,15 @@ var PropsEditor = React.createClass({
     var form = new FormData(ReactDOM.findDOMNode(this.refs.readLocalFileForm));
     var file = form.get('localFile');
     if (file.size > MAX_FILE_SIZE) {
-      return alert('The file size cannot exceed 100m.');
+      return alert('The size of all files cannot exceed 20m.');
+    }
+    var modal = this.state.modal || '';
+    var size = file.size;
+    Object.keys(modal).forEach(function(key) {
+      size += modal[key].size;
+    });
+    if (size > MAX_FILE_SIZE) {
+      return alert('The size of all files cannot exceed 20m.');
     }
     var self = this;
     self.reading = true;

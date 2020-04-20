@@ -61,6 +61,7 @@ function handleConnect(options, cb) {
     var data = options.body;
     if (data && data.length) {
       socket.write(data);
+      options.body = data = null;
     }
     if (cb) {
       cb(err);
@@ -104,6 +105,7 @@ function handleWebSocket(options, cb) {
               mask: true,
               binary: binary
             }, util.noop);
+            options.body = data = null;
           }
         }
         if (cb) {
@@ -175,6 +177,7 @@ function handleHttp(options, cb) {
   });
   client.on('error', cb || util.noop);
   client.end(options.body);
+  options.body = null;
 }
 
 function getCharset(headers) {
