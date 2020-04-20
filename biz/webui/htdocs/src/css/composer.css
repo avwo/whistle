@@ -123,18 +123,24 @@
 .w-composer-rules .w-detail-inspectors-title label {
   margin: 0;
 }
-textarea.w-composer-rules[disabled] {
-  background: #fefefe;
-  color: #999;
-}
+
 .w-custom-type {
   cursor: not-allowed!important;
   color: #333!important;
 }
 
 .w-composer-headers textarea:read-only, .w-composer-body textarea:read-only,
-.w-detail-composer input:read-only {
-  background-color: #eee!important;
+.w-detail-composer input:read-only, .w-detail-composer textarea:disabled {
+  background: #fefefe!important;
+  color: #999!important;
+}
+
+.w-composer-tips {
+    color: red;
+    font-size: 12px;
+    position: absolute;
+    top: 0;
+    left: 210px;
 }
 
 .w-composer-history td {

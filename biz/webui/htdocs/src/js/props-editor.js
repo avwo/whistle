@@ -251,7 +251,7 @@ var PropsEditor = React.createClass({
     var btnText = (data ? 'Modify' : 'Add') + (isHeader ? ' header' : ' field');
     
     return (
-      <div className={'fill orient-vertical-box w-props-editor' + (this.props.hide ? ' hide' : '')}>
+      <div className={'fill orient-vertical-box w-props-editor' + (this.props.hide ? ' hide' : '')} title={this.props.title}>
         {keys.length ? (<table className="table">
           <tbody>
             {

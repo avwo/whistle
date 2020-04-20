@@ -193,16 +193,11 @@ var Composer = React.createClass({
     if (!this.state.showPretty) {
       return;
     }
-    var url = ReactDOM.findDOMNode(this.refs.url).value.trim();
     var headers = ReactDOM.findDOMNode(this.refs.headers).value;
     var prettyHeaders = util.parseHeaders(headers);
     this.refs.prettyHeaders.update(prettyHeaders);
-    var method = this.getMethod();
-    var body;
-    if (hasReqBody(method, url, headers)) {
-      body = ReactDOM.findDOMNode(this.refs.body).value;
-      body = util.parseQueryString(body, null, null, decodeURIComponent);
-    }
+    var body = ReactDOM.findDOMNode(this.refs.body).value;
+    body = util.parseQueryString(body, null, null, decodeURIComponent);
     this.refs.prettyBody.update(body);
   },
   update: function(item) {
@@ -334,7 +329,6 @@ var Composer = React.createClass({
     if (target) {
       if (target === true || target.nodeName === 'SELECT') {
         var method = ReactDOM.findDOMNode(self.refs.method).value;
-        var state = {};
         if (method === '+ Method') {
           self.refs.addMethodDialog.show();
           setTimeout(function() {
@@ -343,10 +337,9 @@ var Composer = React.createClass({
             box.focus();
           }, 600);
         } else {
-          state.method = method;
+          this.state.method = method;
         }
-        self.setState(state);
-        self.updatePrettyData();
+        self.setState({}, self.updatePrettyData);
       }
       if (target === true || target.name === 'headers') {
         clearTimeout(self.typeTimer);
@@ -466,7 +459,8 @@ var Composer = React.createClass({
     this.setState({ tabName: 'Request' });
     var disableComposerRules = dataCenter.isStrictMode() || this.state.disableComposerRules;
     var rules = disableComposerRules ? null : this.state.rules;
-    var headers = ReactDOM.findDOMNode(refs.headers).value;
+    var headersStr = ReactDOM.findDOMNode(refs.headers).value;
+    var headers = headersStr;
     if (typeof rules === 'string' && (rules = rules.trim())) {
       var obj = util.parseJSON(headers);
       var result = [];
@@ -509,58 +503,60 @@ var Composer = React.createClass({
     var self = this;
     var method = self.getMethod();
     var body, base64, isHexText;
-    if (self.state.type === 'upload') {
-      var fields = this.refs.uploadBody.getFields();
-      var uploadData = util.getMultiBody(fields);
-      var boundary = uploadData.boundary;
-      var ctnLen = uploadData.length;
-      base64 = uploadData.base64;
-      var obj2 = util.parseJSON(headers);
-      var type;
-      if (obj2) {
-        Object.keys(obj2).forEach(function(key) {
-          key = key.toLowerCase();
-          if (key === 'content-type') {
-            type = type || obj2[key];
-            delete obj2[key];
-          } else if (key === 'content-length') {
-            delete obj2[key];
-          }
-        });
-        obj2['Content-Type'] = getUploadType(type, boundary);
-        obj2['Content-Length'] = ctnLen;
-        headers = JSON.stringify(obj2);
-      } else {
-        var list = [];
-        headers.split(/\r\n|\r|\n/).forEach(function(line) {
-          var index = line.indexOf(': ');
-          if (index === -1) {
-            index = line.indexOf(':');
-          }
-          var key = index === -1 ? line : line.substring(0, index);
-          key = key.toLowerCase();
-          if (key === 'content-type') {
-            type = type || line.substring(index + 1).trim();
-          } else if (key !== 'content-length') {
-            list.push(line);
-          }
-        });
-        list.push('Content-Type: ' + getUploadType(type, boundary));
-        list.push('Content-Length: ' + ctnLen);
-        headers = list.join('\n');
-      }
-    } else {
-      body = ReactDOM.findDOMNode(refs.body).value;
-      isHexText = this.state.isHexText;
-      if (isHexText && hasReqBody(method, ReactDOM.findDOMNode(this.refs.url).value.trim(), ReactDOM.findDOMNode(this.refs.headers).value)) {
-        base64 = util.getBase64FromHexText(body);
-        if (base64 === false) {
-          alert('The hex text cannot be converted to binary data.\nPlease check the hex text or switch to plain text.');
-          return;
+    if (hasReqBody(method, url, headersStr)) {
+      if (self.state.type === 'upload') {
+        var fields = this.refs.uploadBody.getFields();
+        var uploadData = util.getMultiBody(fields);
+        var boundary = uploadData.boundary;
+        var ctnLen = uploadData.length;
+        base64 = uploadData.base64;
+        var obj2 = util.parseJSON(headers);
+        var type;
+        if (obj2) {
+          Object.keys(obj2).forEach(function(key) {
+            key = key.toLowerCase();
+            if (key === 'content-type') {
+              type = type || obj2[key];
+              delete obj2[key];
+            } else if (key === 'content-length') {
+              delete obj2[key];
+            }
+          });
+          obj2['Content-Type'] = getUploadType(type, boundary);
+          obj2['Content-Length'] = ctnLen;
+          headers = JSON.stringify(obj2);
+        } else {
+          var list = [];
+          headers.split(/\r\n|\r|\n/).forEach(function(line) {
+            var index = line.indexOf(': ');
+            if (index === -1) {
+              index = line.indexOf(':');
+            }
+            var key = index === -1 ? line : line.substring(0, index);
+            key = key.toLowerCase();
+            if (key === 'content-type') {
+              type = type || line.substring(index + 1).trim();
+            } else if (key !== 'content-length') {
+              list.push(line);
+            }
+          });
+          list.push('Content-Type: ' + getUploadType(type, boundary));
+          list.push('Content-Length: ' + ctnLen);
+          headers = list.join('\n');
         }
-        body = undefined;
-      } else if (body && this.state.isCRLF) {
-        body = body.replace(/\r\n|\r|\n/g, '\r\n');
+      } else {
+        body = ReactDOM.findDOMNode(refs.body).value;
+        isHexText = this.state.isHexText;
+        if (isHexText) {
+          base64 = util.getBase64FromHexText(body);
+          if (base64 === false) {
+            alert('The hex text cannot be converted to binary data.\nPlease check the hex text or switch to plain text.');
+            return;
+          }
+          body = undefined;
+        } else if (body && this.state.isCRLF) {
+          body = body.replace(/\r\n|\r|\n/g, '\r\n');
+        }
       }
     }
     var params = {
@@ -692,8 +688,8 @@ var Composer = React.createClass({
     var hasBody = hasReqBody(method, state.url, state.headers);
     var historyData = state.historyData;
     var disableHistory = !historyData.length || pending;
-    var showPrettyBody = hasBody && showPretty && isForm;
-    var showUpload = type === 'upload';
+    var showPrettyBody =  showPretty && isForm && hasBody;
+    var showUpload = type === 'upload' && hasBody;
     var isStrictMode = dataCenter.isStrictMode();
     var disableComposerRules = isStrictMode || state.disableComposerRules;
     var isHexText = state.isHexText;
@@ -770,6 +766,7 @@ var Composer = React.createClass({
                     + (isCRLF ? ' w-checked' : '')}>
                     <input disabled={pending} checked={isCRLF} onChangeCapture={this.onCRLFChange} type="checkbox" />\r\n
                   </label>
+                  {hasBody ? undefined : <span className="w-composer-tips" style={{ left: isHexText ? 165 : undefined }}>{method + ' operations cannot have a request body'}</span> }
                   <button disabled={pending} className={'btn btn-default' + (showPrettyBody || isHexText || showUpload ? ' hide' : '')} onClick={this.formatJSON}>Format JSON</button>
                   <button disabled={pending} className={'btn btn-primary' + (showPrettyBody && !isHexText || showUpload ? '' : ' hide')} onClick={showUpload ? this.addUploadFiled : this.addField}>Add field</button>
                 </div>
@@ -779,7 +776,7 @@ var Composer = React.createClass({
                   style={{ fontFamily: isHexText ? 'monospace' : undefined }}
                   className={'fill orient-vertical-box' + (showPrettyBody && !isHexText || showUpload ? ' hide' : '')} />
                 <PropsEditor disabled={pending} ref="prettyBody" hide={!showPrettyBody || isHexText || showUpload} onChange={this.onFieldChange} />
-                <PropsEditor disabled={pending} ref="uploadBody" hide={!showUpload} onChange={this.onUploadFieldChange} allowUploadFile />
+                <PropsEditor disabled={pending} ref="uploadBody" hide={!showUpload} onChange={this.onUploadFieldChange} allowUploadFile title={hasBody ? undefined : method + ' operations cannot have a request body'} />
               </div>
             </Divider>
             {state.initedResponse ? (
