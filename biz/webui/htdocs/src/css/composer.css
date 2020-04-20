@@ -123,6 +123,10 @@
 .w-composer-rules .w-detail-inspectors-title label {
   margin: 0;
 }
+textarea.w-composer-rules[disabled] {
+  background: #fefefe;
+  color: #999;
+}
 .w-custom-type {
   cursor: not-allowed!important;
   color: #333!important;
