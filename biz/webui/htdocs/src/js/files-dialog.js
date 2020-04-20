@@ -121,7 +121,7 @@ var FilesDialog = React.createClass({
         return;
       }
       self.pending = true;
-      dataCenter.values.upload(self.params, function(data, xhr) {
+      dataCenter.values.upload(JSON.stringify(self.params), function(data, xhr) {
         self.pending = false;
         if (!data) {
           return util.showSystemError(xhr);
@@ -133,6 +133,9 @@ var FilesDialog = React.createClass({
         self.refs.filenameDialog.hide();
         self.updateFiles(data.files);
         self.show();
+      }, {
+        contentType: 'application/json',
+        processData: false
       });
     });
   },

@@ -577,7 +577,7 @@ var Composer = React.createClass({
     self.comTimer = setTimeout(function() {
       self.setState({ pending: false });
     }, 3000);
-    dataCenter.composer(params, function(data, xhr, em) {
+    dataCenter.composer(JSON.stringify(params), function(data, xhr, em) {
       clearTimeout(self.comTimer);
       var state = {
         pending: false,
@@ -600,6 +600,9 @@ var Composer = React.createClass({
         state.result = data;
       }
       self.setState(state);
+    }, {
+      contentType: 'application/json',
+      processData: false
     });
     params.date = Date.now();
     this.addHistory(params);
