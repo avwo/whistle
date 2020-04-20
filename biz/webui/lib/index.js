@@ -280,12 +280,10 @@ app.use(function(req, res, next) {
 app.all('/cgi-bin/*', function(req, res, next) {
   return req.path === '/cgi-bin/values/upload' ?
     uploadUrlencodedParser(req, res, next) : urlencodedParser(req, res, next);
-});
-app.all('/cgi-bin/*', function(req, res, next) {
+}, function(req, res, next) {
   return req.path === '/cgi-bin/values/upload' ?
     uploadJsonParser(req, res, next) : jsonParser(req, res, next);
-});
-app.all('/cgi-bin/*', cgiHandler);
+}, cgiHandler);
 
 app.use('/preview.html', function(req, res, next) {
   next();
