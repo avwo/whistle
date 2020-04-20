@@ -95,11 +95,10 @@
 .w-props-editor-file {
   position: relative;
   display: inline-block;
-  width: 475px;
+  width: 577px;
   height: 120px;
   line-height: 120px;
   vertical-align: middle;
-  margin-right: 8px;
   cursor: pointer;
   border: 1px solid #ccc;
   border-radius: 4px;

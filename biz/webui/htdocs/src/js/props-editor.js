@@ -300,7 +300,7 @@ var PropsEditor = React.createClass({
                     {filename}
                   </div>
                   <textarea ref="valueInput" maxLength={MAX_VALUE_LEN} placeholder="Input the value" className={'form-control' + (filename ? ' hide' : '')} />
-                  <button onClick={this.onUpload} className="btn btn-primary">Upload file</button>
+                  <button onClick={this.onUpload} className={'btn btn-primary' + (filename ? ' hide' : '')}>Upload file</button>
                 </div>
               </div>
             </div>
