@@ -1633,6 +1633,7 @@ exports.getMultiBody = function(fields) {
   result = result && concatByteArray(result, strToByteArray('--' + boundary + '--'));
   return {
     boundary: boundary,
+    length: result ? result.length : 0,
     base64: result && bytesToBase64(result)
   };
 };

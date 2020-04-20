@@ -89,6 +89,13 @@ function removeDuplicateRules(rules) {
   return encodeURIComponent(rules);
 }
 
+function getUploadType(type, boundary) {
+  if (type) {
+    type = (type + '').replace(/;?\s*boundary=.*$/, '');
+  }
+  return (type || 'multipart/form-data') + '; boundary=' + boundary;
+}
+
 function getStatus(statusCode) {
   if (statusCode == 403) {
     return 'forbidden';
@@ -501,18 +508,60 @@ var Composer = React.createClass({
     }
     var self = this;
     var method = self.getMethod();
-    var body = ReactDOM.findDOMNode(refs.body).value;
-    var base64;
-    var isHexText = this.state.isHexText;
-    if (isHexText && hasReqBody(method, ReactDOM.findDOMNode(this.refs.url).value.trim(), ReactDOM.findDOMNode(this.refs.headers).value)) {
-      base64 = util.getBase64FromHexText(body);
-      if (base64 === false) {
-        alert('The hex text cannot be converted to binary data.\nPlease check the hex text or switch to plain text.');
-        return;
+    var body, base64, isHexText;
+    if (self.state.type === 'upload') {
+      var fields = this.refs.uploadBody.getFields();
+      var uploadData = util.getMultiBody(fields);
+      var boundary = uploadData.boundary;
+      var ctnLen = uploadData.length;
+      base64 = uploadData.base64;
+      var obj2 = util.parseJSON(headers);
+      var type;
+      if (obj2) {
+        Object.keys(obj2).forEach(function(key) {
+          key = key.toLowerCase();
+          if (key === 'content-type') {
+            type = type || obj2[key];
+            delete obj2[key];
+          } else if (key === 'content-length') {
+            delete obj2[key];
+          }
+        });
+        obj2['Content-Type'] = getUploadType(type, boundary);
+        obj2['Content-Length'] = ctnLen;
+        headers = JSON.stringify(obj2);
+      } else {
+        var list = [];
+        headers.split(/\r\n|\r|\n/).forEach(function(line) {
+          var index = line.indexOf(': ');
+          if (index === -1) {
+            index = line.indexOf(':');
+          }
+          var key = index === -1 ? line : line.substring(0, index);
+          key = key.toLowerCase();
+          if (key === 'content-type') {
+            type = type || line.substring(index + 1).trim();
+          } else if (key !== 'content-length') {
+            list.push(line);
+          }
+        });
+        list.push('Content-Type: ' + getUploadType(type, boundary));
+        list.push('Content-Length: ' + ctnLen);
+        headers = list.join('\n');
       }
-      body = undefined;
-    } else if (body && this.state.isCRLF) {
-      body = body.replace(/\r\n|\r|\n/g, '\r\n');
+    } else {
+      body = ReactDOM.findDOMNode(refs.body).value;
+      isHexText = this.state.isHexText;
+      if (isHexText && hasReqBody(method, ReactDOM.findDOMNode(this.refs.url).value.trim(), ReactDOM.findDOMNode(this.refs.headers).value)) {
+        base64 = util.getBase64FromHexText(body);
+        if (base64 === false) {
+          alert('The hex text cannot be converted to binary data.\nPlease check the hex text or switch to plain text.');
+          return;
+        }
+        body = undefined;
+      } else if (body && this.state.isCRLF) {
+        body = body.replace(/\r\n|\r|\n/g, '\r\n');
+      }
     }
     var params = {
       useH2: this.state.useH2 ? 1 : '',
@@ -536,7 +585,10 @@ var Composer = React.createClass({
         initedResponse: true
       };
       if (!data || data.ec !== 0) {
-        if (!em || typeof em !== 'string' || em === 'error') {
+        var status = xhr && xhr.status;
+        if (status) {
+          em = status;
+        } else if (!em || typeof em !== 'string' || em === 'error') {
           em = 'Please check the proxy settings or whether whistle has been started.';
         }
         state.result = { url: url, req: '', res: { statusCode: em } };
