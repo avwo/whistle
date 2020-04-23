@@ -45,6 +45,7 @@
     "hagent": "^0.7.1",
     "hparser": "^0.3.0",
     "iconv-lite": "0.4.7",
+    "json5": "^2.1.3",
     "lru-cache": "^4.1.1",
     "mime": "^1.4.1",
     "multer2": "^1.0.1",
@@ -75,7 +76,7 @@
     "docs:dev": "vuepress dev docs"
   },
   "engines": {
-    "node": ">= 0.10.0"
+    "node": ">= 6"
   },
   "devDependencies": {
     "babel-core": "^6.7.6",
