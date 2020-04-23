@@ -1,3 +1,8 @@
+# v2.5.2
+1. feat: 支持 `-M proxifier` 开头 `proxfifier` 模式，该模式下会 whistle 会对所有请求域名为 `ip` 且端口为 `80`, `443` 的请求进行 https 拦截，并判断是否有上传自定义证书
+2. fix: Node13~14 开启 http2 功能
+3. feat: 支持 json5 配置（Node版本最低要求改为 6）
+
 # v2.5.1
 1. fix: `includeFilter://h:key=pattern` 只能匹配请求头，无法匹配响应头问题
 2. feat: JSON Tree 支持 Copy 字节点数据
