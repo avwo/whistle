@@ -1,5 +1,6 @@
 # v2.5.3
 1. refactor: 优化 `resCors://enable` 支持自动设置 `OPTIONS` 请求的 `access-control-request-headers`, `access-control-request-method` 字段
+2. fix: https://github.com/avwo/whistle/issues/412
 
 # v2.5.2
 1. feat: 支持 `-M proxifier` 开头 `proxfifier` 模式，该模式下会 whistle 会对所有请求域名为 `ip` 且端口为 `80`, `443` 的请求进行 https 拦截，并判断是否有上传自定义证书
