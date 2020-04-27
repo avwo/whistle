@@ -1,3 +1,6 @@
+# v2.5.4
+1. fix: 请求包含匹配的插件规则时，可能导致 Overview 界面脚本报错问题（可能导致某些配了请求映射及包含插件规则的请求 Overvew 出现空白）
+
 # v2.5.3
 1. refactor: 优化 `resCors://enable` 支持自动设置 `OPTIONS` 请求的 `access-control-request-headers`, `access-control-request-method` 字段
 2. fix: https://github.com/avwo/whistle/issues/412
