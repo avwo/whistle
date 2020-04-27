@@ -206,7 +206,7 @@ var Overview = React.createClass({
           if (name === 'plugin' && rules._pluginRule) {
             var ruleList = [ rules._pluginRule.rawPattern + ' ' + rules._pluginRule.matcher ];
             var titleList = [rules._pluginRule.raw];
-            rule.list && rule.list.forEach(function(item) {
+            rule && rule.list && rule.list.forEach(function(item) {
               ruleList.push(item.rawPattern + ' ' + item.matcher);
               titleList.push(item.raw);
             });
