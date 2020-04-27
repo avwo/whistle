@@ -1,3 +1,6 @@
+# v2.5.4
+1. fix: 显示插件规则时界面报错问题
+
 # v2.5.3
 1. refactor: 优化 `resCors://enable` 支持自动设置 `OPTIONS` 请求的 `access-control-request-headers`, `access-control-request-method` 字段
 2. fix: https://github.com/avwo/whistle/issues/412
