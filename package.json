@@ -95,7 +95,7 @@
     "file-loader": "0.8.4",
     "glob": "^7.1.2",
     "istanbul": "^0.4.4",
-    "jquery": "3.3.1",
+    "jquery": "3.5.0",
     "js-base64": "^2.4.5",
     "lodash.startcase": "^4.4.0",
     "prop-types": "^15.5.8",
