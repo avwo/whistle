@@ -2495,6 +2495,9 @@ var Index = React.createClass({
     }
 
   },
+  reinstallAllPlugins: function() {
+    events.trigger('updateAllPlugins', 'reinstallAllPlugins');
+  },
   chooseFileType: function(e) {
     var value = e.target.value;
     storage.set('exportFileType', value);
@@ -2810,6 +2813,11 @@ var Index = React.createClass({
             {disabledAllPlugins ? 'EnableAll' : 'DisableAll'}
           </a>
           <UpdateAllBtn hide={!isPlugins} />
+          <a onClick={this.reinstallAllPlugins} className={'w-plugins-menu' +
+            (isPlugins ? '' : ' hide')} href="javascript:;" draggable="false">
+            <span className="glyphicon glyphicon-download-alt" />
+            ReinstallAll
+          </a>
           <a onClick={this.importData} className="w-import-menu"
             style={{display: isPlugins ? 'none' : ''}} href="javascript:;"
             draggable="false">

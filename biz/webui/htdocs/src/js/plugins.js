@@ -19,14 +19,15 @@ var Home = React.createClass({
   componentDidMount: function() {
     var self = this;
     self.setUpdateAllBtnState();
-    events.on('updateAllPlugins', function() {
+    events.on('updateAllPlugins', function(_, byInstall) {
+      byInstall = byInstall === 'reinstallAllPlugins';
       var data = self.props.data || {};
       var plugins = data.plugins || {};
       var newPlugins = {};
       Object.keys(plugins).sort(getPluginComparator(plugins))
       .map(function(name) {
         var plugin = plugins[name];
-        if (!util.compareVersion(plugin.latest, plugin.version)) {
+        if (!byInstall && !util.compareVersion(plugin.latest, plugin.version)) {
           return;
         }
         var registry = plugin.registry ? ' --registry=' + plugin.registry : '';
@@ -72,6 +73,9 @@ var Home = React.createClass({
     this.setState({
       plugin: plugin
     }, this.showDialog);
+  },
+  onCmdChange: function(e) {
+    this.setState({ cmdMsg: e.target.value });
   },
   showMsgDialog: function() {
     this.refs.operatePluginDialog.show();
@@ -229,9 +233,7 @@ var Home = React.createClass({
                   Copy the following command
                 </a> to the CLI to execute:
               </h5>
-              <pre className="w-plugin-update-cmd">
-                  {cmdMsg}
-              </pre>
+              <textarea value={cmdMsg} className="w-plugin-update-cmd" onChange={this.onCmdChange} />
               <div style={{
                 margin: '8px 0 0',
                 color: 'red',
