@@ -1,3 +1,7 @@
+# v2.5.6
+1. style: Plugins 添加 `ReinstallAll` 按钮，可以copy插件安装命令
+2. fix: 还原匹配顺序，修复：https://github.com/avwo/whistle/issues/421
+
 # v2.5.5
 1. fix: `Node >= 14.1` 无法使用http2问题
 2. fix: 某些规则可能会被插件返回的规则覆盖问题
