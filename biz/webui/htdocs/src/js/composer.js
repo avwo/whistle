@@ -151,7 +151,7 @@ var Composer = React.createClass({
       }
       var activeItem = self.props.modal;
       if (activeItem) {
-        self.setState({
+        var state = {
           useH2: activeItem.useH2,
           url: activeItem.url,
           headers: activeItem.headers,
@@ -159,7 +159,11 @@ var Composer = React.createClass({
           type: getType(activeItem.req.headers),
           method: activeItem.req.method,
           tabName: 'Request'
-        }, function() {
+        };
+        var body = util.getBody(activeItem.req);
+        state.isCRLF = !!body && body.indexOf('\r\n') !== -1;
+        storage.set('useCRLBody', state.isCRLF ? 1 : '');
+        self.setState(state, function() {
           self.update(activeItem);
           self.onComposerChange();
         });
