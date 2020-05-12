@@ -1,3 +1,6 @@
+# v2.5.7
+1. fix: 通过 [urlParams](https://wproxy.org/whistle/rules/urlParams.html) 和 [pathReplace](https://wproxy.org/whistle/rules/pathReplace.html) 修改请求URL参数的问题
+
 # v2.5.6
 1. style: Plugins 添加 `ReinstallAll` 按钮，可以copy插件安装命令
 2. fix: 还原匹配顺序，修复：https://github.com/avwo/whistle/issues/421
