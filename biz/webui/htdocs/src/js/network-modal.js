@@ -42,8 +42,8 @@ var proto = NetworkModal.prototype;
 proto.search = function(keyword) {
   this._type = 'url';
   this._keyword = typeof keyword != 'string' ? '' : keyword.trim();
-  if (this._keyword && /^(url|u|content|c|b|body|headers|h|ip|i|status|result|s|r|method|m|mark|type|t):(.*)$/.test(keyword)) {
-    this._type = RegExp.$1;
+  if (this._keyword && /^(url|u|content|c|b|body|headers|h|ip|i|status|result|s|r|method|m|mark|type|t):(.*)$/i.test(keyword)) {
+    this._type = RegExp.$1.toLowerCase();
     this._keyword = RegExp.$2.trim();
   }
   if (this._not = this._keyword[0] === '!') {
