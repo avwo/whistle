@@ -42,7 +42,7 @@ var proto = NetworkModal.prototype;
 proto.search = function(keyword) {
   this._type = 'url';
   this._keyword = typeof keyword != 'string' ? '' : keyword.trim();
-  if (this._keyword && /^(url|u|content|c|b|body|headers|h|ip|i|status|result|s|r|method|m|type|t):(.*)$/.test(keyword)) {
+  if (this._keyword && /^(url|u|content|c|b|body|headers|h|ip|i|status|result|s|r|method|m|mark|type|t):(.*)$/.test(keyword)) {
     this._type = RegExp.$1;
     this._keyword = RegExp.$2.trim();
   }
@@ -84,7 +84,11 @@ proto.filter = function(newList) {
   var self = this;
   var keyword = self._keyword;
   var list = self.list;
-  if (!keyword) {
+  if (self._type === 'mark') {
+    list.forEach(function(item) {
+      item.hide = !item.mark || self.checkNot(!self.checkKeywork(item.url));
+    });
+  } else if (!keyword) {
     list.forEach(function(item) {
       item.hide = false;
     });
@@ -138,7 +142,7 @@ proto.filter = function(newList) {
       break;
     default:
       list.forEach(function(item) {
-        item.hide = self.checkNot(!self.checkKeywork(item.url.toLowerCase()));
+        item.hide = self.checkNot(!self.checkKeywork(item.url));
       });
     }
   }

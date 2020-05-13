@@ -91,7 +91,8 @@ var contextMenuList = [
     list: [
       { name: 'Abort' },
       { name: 'Replay' },
-      { name: 'Compose' }
+      { name: 'Compose' },
+      { name: 'Mark' }
     ]
   },
   { name: 'Share' },
@@ -112,6 +113,13 @@ function stopPropagation(e) {
   e.stopPropagation();
   e.preventDefault();
 }
+
+var getFocusItemList = function(curItem) {
+  if (!curItem || curItem.selected) {
+    return;
+  }
+  return [curItem];
+};
 
 var Spinner = React.createClass({
   render: function() {
@@ -195,6 +203,10 @@ function getStatusClass(data) {
     type += ' w-forbidden';
   } else if (statusCode && (!/^\d+$/.test(statusCode) || statusCode >= 400)) {
     type += ' w-error-status';
+  }
+
+  if (data.mark) {
+    type += ' w-mark';
   }
 
   return type;
@@ -480,6 +492,16 @@ var ReqData = React.createClass({
       break;
     case 'Compose':
       events.trigger('composer', item);
+      break;
+    case 'Mark':
+      var modal = this.props.modal;
+      var list = getFocusItemList(item) || (modal && modal.getSelectedList());
+      if (list) {
+        list.forEach(function(item) {
+          item.mark = !item.mark;
+        });
+      }
+      this.setState({});
       break;
     case 'Replay':
       events.trigger('replaySessions', [item, e.shiftKey]);
