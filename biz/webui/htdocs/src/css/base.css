@@ -160,7 +160,6 @@ body .cm-s-cobalt span.cm-number {
 }
 
 .w-mark th, .w-mark td {
-  font-size: 13px!important;
-  font-style: italic;
-  font-family: monospace;
+  background-color: #3b88fd!important;
+  color: #fff!important;
 }

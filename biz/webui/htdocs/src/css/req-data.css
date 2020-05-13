@@ -38,7 +38,7 @@
 .w-req-data-list .w-error-status th, .w-req-data-list .w-error-status td {color: #ff3a90;}
 .w-req-data-list .w-forbidden th, .w-req-data-list .w-forbidden td {color: #808000;}
 .w-req-data-list tr {cursor: default; background: #fff;}
-.w-req-data-list tr.w-selected th, .w-req-data-list tr.w-selected td {background-color: #337ab7!important; color: #fff;}
+.w-req-data-list tr.w-selected th, .w-req-data-list tr.w-selected td {background-color: #337ab7!important; color: #fff!important;}
 
 .w-qrcode-dialog .modal-dialog {
   width: 350px;
