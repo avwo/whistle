@@ -64,3 +64,5 @@ headerreplace.plugin.whistlejs.com headerReplace://req.host:headerreplace.=&/Plu
 [list[40].a]: "123"
 ```
 .test.wildcard5.com resMerge://{w1.json}
+
+/testx.whistlejs.com/ enable://capture
