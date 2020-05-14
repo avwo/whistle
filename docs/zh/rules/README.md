@@ -56,8 +56,8 @@
 5. [**reqMerge** (修改请求参数或请求内容)](reqMerge.html)
 
 #### 修改响应状态码
-1. [**statusCode** (直接响应)](statusCode.html)
-2. [**replaceStatus** (替换后台的响应状态码)](replaceStatus.html)
+1. [**replaceStatus** (替换后台的响应状态码)](replaceStatus.html)
+2. [**statusCode** (直接响应)](rule/statusCode.html)
 
 #### 修改响应头
 1. [**resHeaders** (修改响应头)](resHeaders.html)
@@ -79,6 +79,7 @@
     * [**xtpl** (替换本地目标文件，如果本地文件找不到会继续请求线上，可用于模拟jsonp请求)](rule/xtpl.html)
     * [**rawfile** (替换本地http响应内容格式的文件)](rule/rawfile.html)
     * [**xrawfile** (替换本地http响应内容格式的文件，如果本地文件找不到会继续请求线上)](rule/xrawfile.html)
+    * [**statusCode** (直接响应)](rule/statusCode.html)
     * [**自定义**](rule/custom.html)
 2. [**resMerge** (修改响应参数)](resMerge.html)
 3. [**resPrepend** (往响应内容前面添加数据)](resPrepend.html)
