@@ -72,7 +72,7 @@ CodeMirror.defineMode('rules', function() {
 
   function notExistRule(str) {
     str = str.substring(0, str.indexOf(':'));
-    return forwardRules.indexOf(str) == -1;
+    return forwardRules.indexOf(str) == -1 && str !== 'status';
   }
 
   function notExistPlugin(str) {
