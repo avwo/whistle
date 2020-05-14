@@ -1,6 +1,7 @@
 # v2.5.7
 1. fix: 通过 [urlParams](https://wproxy.org/whistle/rules/urlParams.html) 和 [pathReplace](https://wproxy.org/whistle/rules/pathReplace.html) 修改请求URL参数的问题
 2. style: Network 右键菜单添加 `Actions>Mark` 标记抓包数据
+3. refactor: `statusCode` 移入 `rule` 里面跟 `file` 等协议同级
 
 # v2.5.6
 1. style: Plugins 添加 `ReinstallAll` 按钮，可以copy插件安装命令
