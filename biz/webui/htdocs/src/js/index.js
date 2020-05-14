@@ -923,6 +923,13 @@ var Index = React.createClass({
         self.setState({});
       }
     });
+    events.on('removeUnmarked', function() {
+      var modal = self.state.network;
+      if (modal) {
+        modal.removeUnmarkedItems();
+        self.setState({});
+      }
+    });
     events.on('saveRules', function(e, item) {
       if (item.changed || !item.selected) {
         self.selectRules(item);

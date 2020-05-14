@@ -80,6 +80,16 @@ proto.setSortColumns = function(columns) {
 proto.checkNot = function(flag) {
   return this._not ? !flag : flag;
 };
+
+proto.hasUnmarked = function() {
+  var list = this._list;
+  for (var i = list.length - 1; i >= 0; --i) {
+    if (!list[i].mark) {
+      return true;
+    }
+  }
+};
+
 proto.filter = function(newList) {
   var self = this;
   var keyword = self._keyword;
@@ -338,6 +348,33 @@ proto.removeUnselectedItems = function() {
   }
 
   if (hasUnselectedItem) {
+    this.update(false, true);
+    return true;
+  }
+};
+
+proto.removeUnmarkedItems = function() {
+  var hasUnmarkedItem;
+  var endIndex = -1;
+  var list = this._list;
+
+  for (var i = list.length - 1; i >= 0; i--) {
+    var item = list[i];
+    if (!item.mark) {
+      hasUnmarkedItem = true;
+      if (endIndex == -1) {
+        endIndex = i;
+      }
+      if (!i) {
+        list.splice(i, endIndex - i + 1);
+      }
+    } else if (endIndex != -1) {
+      list.splice(i + 1, endIndex - i);
+      endIndex = -1;
+    }
+  }
+
+  if (hasUnmarkedItem) {
     this.update(false, true);
     return true;
   }
