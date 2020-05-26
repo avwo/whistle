@@ -801,6 +801,11 @@ var ReqData = React.createClass({
   onMouseDown: function(e) {
     this.willResort = e.target.className !== 'w-header-drag-block';
   },
+  onReplay: function(e) {
+    if ((e.metaKey || e.ctrlKey) && e.keyCode === 82) {
+      events.trigger('replaySessions', [null, e.shiftKey]);
+    }
+  },
   renderColumn: function(col, i) {
     var name = col.name;
     var style = getColStyle(col);
@@ -862,7 +867,7 @@ var ReqData = React.createClass({
                   </thead>
                 </table>
             </div>
-            <div ref="container" tabIndex="0" onContextMenu={self.onContextMenu}
+            <div ref="container" tabIndex="0" onContextMenu={self.onContextMenu} onKeyDown={this.onReplay}
               style={{background: (dataCenter.hashFilterObj || filterText) ? 'lightyellow' : undefined}}
               className="w-req-data-list fill"  onDragStart={this.onDragStart}>
                 <RV.AutoSizer ref="content" >{function(size){

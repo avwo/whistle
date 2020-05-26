@@ -657,6 +657,10 @@ var Index = React.createClass({
             self.refs.confirmImportValues.show();
           }
         }
+      }).on('keydown', function(e) {
+        if ((e.metaKey || e.ctrlKey) && e.keyCode === 82) {
+          e.preventDefault();
+        }
       });
     var removeItem = function(e) {
       var target = e.target;
