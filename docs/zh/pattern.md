@@ -38,6 +38,7 @@ whistle的匹配模式(`pattern`)大体可以分成 **域名、路径、正则�
 	# 匹配指定路径下的所有请求
 	www.test.com/xxx operatorURI
 	www.test.com:8080/xxx operatorURI
+  */xxx operatorURI # 使用了通配符匹配特性
 
 路径匹配不支持tunnel协议的url。
 
