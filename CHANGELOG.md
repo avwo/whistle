@@ -1,3 +1,8 @@
+# v2.5.8
+1. perf: gzip 返回抓包数据的 cgi
+2. fix: Composer 构造没有body的请求不设置 `content-length: 0` 问题
+3. style: 添加快捷键 `ctrl[cmd] + r` 或 `ctrl[cmd] + shift + r` 重放请求
+
 # v2.5.7
 1. fix: 通过 [urlParams](https://wproxy.org/whistle/rules/urlParams.html) 和 [pathReplace](https://wproxy.org/whistle/rules/pathReplace.html) 修改请求URL参数的问题
 2. style: Network 右键菜单添加 `Actions>Mark` 标记抓包数据
