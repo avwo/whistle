@@ -2653,6 +2653,7 @@ var Index = React.createClass({
     }
     this.refs.setReplayCount.hide();
     this.replay('', this.replayList, this.state.replayCount);
+    events.trigger('focusNetworkList');
   },
   showAboutDialog: function(e) {
     if ($(e.target).closest('.w-menu-enable').length) {

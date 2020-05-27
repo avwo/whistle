@@ -273,7 +273,7 @@ var ReqData = React.createClass({
       self.setState({ columns: settings.getSelectedColumns() });
     });
     events.on('onColumnTitleChange', function() {
-      this.setState({});
+      self.setState({});
     });
     var update = function() {
       self.setState({});
@@ -328,6 +328,9 @@ var ReqData = React.createClass({
       }else{
         self.scrollToRow(0);
       }
+    });
+    events.on('focusNetworkList', function() {
+      self.container.focus();
     });
     var wrapper = ReactDOM.findDOMNode(self.refs.wrapper);
     var updateTimer;
