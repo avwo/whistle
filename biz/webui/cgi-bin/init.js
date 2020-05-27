@@ -15,7 +15,7 @@ module.exports = function(req, res) {
   var lastLog = proxy.getLogs(0, 1)[0];
   var lastSvrLog = logger.getLogs(0, 1)[0];
 
-  res.json({
+  util.sendGzip(req, res, {
     version: config.version,
     custom1: properties.get('Custom1'),
     custom2: properties.get('Custom2'),

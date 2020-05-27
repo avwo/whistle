@@ -1,3 +1,4 @@
+var gzip = require('zlib').gzip;
 var util = require('../../../lib/util');
 var config = require('../../../lib/config');
 var properties = require('../../../lib/rules/util').properties;
@@ -114,3 +115,26 @@ function formatDate() {
 exports.formatDate = formatDate;
 
 exports.getClientIp = util.getClientIp;
+
+exports.sendGzip = function(req, res, data) {
+  if (!util.canGzip(req)) {
+    return res.json(data);
+  }
+  gzip(JSON.stringify(data), function(err, result) {
+    if (err) {
+      try {
+        res.json(data);
+      } catch (e) {
+        res.status(500).send(config.debugMode ?
+          '<pre>' + util.getErrorStack(err) + '</pre>' : 'Internal Server Error');
+      }
+      return;
+    }
+    res.writeHead(200, {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Content-Encoding': 'gzip',
+      'Content-Length': result.length
+    });
+    res.end(result);
+  });
+};

@@ -19,7 +19,7 @@ module.exports = function(req, res) {
   var clientIp = util.getClientIp(req);
   var stopRecordConsole = data.startLogTime == -3;
   var stopRecordSvrLog = data.startSvrLogTime == -3;
-  res.json({
+  util.sendGzip(req, res, {
     ec: 0,
     version: config.version,
     custom1: properties.get('Custom1'),
