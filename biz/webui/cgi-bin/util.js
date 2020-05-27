@@ -117,7 +117,7 @@ exports.formatDate = formatDate;
 exports.getClientIp = util.getClientIp;
 
 exports.sendGzip = function(req, res, data) {
-  if (!util.canGzip(req)) {
+  if (req.clientIp === '127.0.0.1' || !util.canGzip(req)) {
     return res.json(data);
   }
   gzip(JSON.stringify(data), function(err, result) {
