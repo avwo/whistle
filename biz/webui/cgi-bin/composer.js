@@ -233,8 +233,8 @@ module.exports = function(req, res) {
   var getBody = function(cb) {
     var base64 = req.body.base64;
     var body = base64 || req.body.body;
-    if (body && (isWs || isConn || util.hasRequestBody(options))) {
-      body = util.toBuffer(body, base64 ? 'base64' : getCharset(headers));
+    if (isWs || isConn || util.hasRequestBody(options)) {
+      body = body && util.toBuffer(body, base64 ? 'base64' : getCharset(headers));
       options.body = body;
       if (!isWs && !isConn && body && req.body.isGzip) {
         gzip(body, function(err, gzipData) {
