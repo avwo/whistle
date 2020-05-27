@@ -298,7 +298,6 @@ if (!config.debugMode) {
   var indexJs = fs.readFileSync(htdocs.getJsFile('index.js'));
   var jsETag = shasum(indexJs);
   var gzipIndexJs = zlib.gzipSync(indexJs);
-  var GZIP_RE = /\bgzip\b/i;
   app.use('/js/index.js', function(req, res) {
     if (req.headers['if-none-match'] === jsETag) {
       return res.sendStatus(304);
@@ -308,7 +307,7 @@ if (!config.debugMode) {
       'Cache-Control': 'public, max-age=300',
       ETag: jsETag
     };
-    if (GZIP_RE.test(req.headers['accept-encoding'])) {
+    if (util.canGzip(req)) {
       headers['Content-Encoding'] = 'gzip';
       res.writeHead(200, headers);
       res.end(gzipIndexJs);
