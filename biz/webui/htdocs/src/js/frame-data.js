@@ -76,9 +76,9 @@ var FrameClient = React.createClass({
           Path: frame.isClient ? 'Client -> Server' : 'Server -> Client',
           Opcode: frame.opcode,
           Type: frame.opcode == 1 ? 'Text' : 'Binary',
-          Compressed: frame.compressed ? 'true' : 'false',
-          Mask: frame.mask ? 'true' : 'false',
-          Length: len >= 0 ? (len >= 1024 ? length + '(' + Number(length / 1024).toFixed(2) + 'k)' : len) : ''
+          Compressed: frame.compressed ? 'Yes' : 'No',
+          Mask: frame.mask ? 'Yes' : 'No',
+          Length: len >= 1024 ? len + '(' + Number(len / 1024).toFixed(2) + 'k)' : (len >= 0 ? len : '')
         };
       } else {
         overview = {

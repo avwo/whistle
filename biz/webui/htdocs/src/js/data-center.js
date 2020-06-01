@@ -8,7 +8,7 @@ var events = require('./events');
 var createCgi = createCgiObj.createCgi;
 var MAX_INCLUDE_LEN = 5120;
 var MAX_EXCLUDE_LEN = 5120;
-var MAX_FRAMES_LENGTH = exports.MAX_FRAMES_LENGTH = 80;
+var MAX_FRAMES_LENGTH = exports.MAX_FRAMES_LENGTH = 120;
 var TIMEOUT = 20000;
 var dataCallbacks = [];
 var serverInfoCallbacks = [];
