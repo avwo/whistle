@@ -163,3 +163,7 @@ body .cm-s-cobalt span.cm-number {
   background-color: #3b88fd!important;
   color: #fff!important;
 }
+
+.ReactVirtualized__Grid.ReactVirtualized__List {
+  outline: none;
+}
