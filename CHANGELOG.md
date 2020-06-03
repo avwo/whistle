@@ -1,3 +1,8 @@
+# v2.5.9
+1. style: Frames 里面支持快捷键 `Ctrm[Cmd] + R` 重放请求
+2. refactor: 插件里面可以通过 `req.originalReq.ruleUrl` 获取 [rule](https://wproxy.org/whistle/rules/rule/) 匹配结果
+3. feat: 拦截 https 请求后，会保留 tunnel 代理请求头 `x-whistle-tunnel-data` 的数据
+
 # v2.5.8
 1. perf: gzip 返回抓包数据的 cgi
 2. fix: Composer 构造没有body的请求不设置 `content-length: 0` 问题
