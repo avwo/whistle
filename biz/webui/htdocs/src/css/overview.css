@@ -7,5 +7,5 @@
 }
 .w-detail-overview-title a {text-decoration: none!important; color: #333; float: left;}
 .w-detail-overview-title label { float: right; font-weight: normal; } 
-.w-detail-overview-title label input { margin-right: 5px; }
+.w-detail-overview-title label input { margin-right: 5px; vertical-align:text-bottom; }
 .w-detail-overview-title a:hover {color: #337ab7;}

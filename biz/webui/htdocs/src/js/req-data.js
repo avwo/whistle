@@ -805,8 +805,17 @@ var ReqData = React.createClass({
     this.willResort = e.target.className !== 'w-header-drag-block';
   },
   onReplay: function(e) {
-    if ((e.metaKey || e.ctrlKey) && e.keyCode === 82) {
+    if (!e.metaKey && !e.ctrlKey) {
+      return;
+    }
+    if (e.keyCode === 82) {
       events.trigger('replaySessions', [null, e.shiftKey]);
+    } else if (e.keyCode === 65) {
+      e.preventDefault();
+      events.trigger('abortRequest');
+    } else if (e.keyCode === 69) {
+      e.preventDefault();
+      events.trigger('composer');
     }
   },
   renderColumn: function(col, i) {

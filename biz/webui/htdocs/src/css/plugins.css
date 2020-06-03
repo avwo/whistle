@@ -16,7 +16,7 @@ padding: 8px 6px!important; overflow: hidden; text-overflow: ellipsis; white-spa
 
 .w-plugins-order {width: 50px;}
 .w-plugins-active {width: 60px;}
-.w-plugins-list td.w-plugins-active input {margin-left: 12px;}
+.w-plugins-list td.w-plugins-active input {margin-left: 12px; vertical-align:text-bottom;}
 .w-plugins-name {width: 160px;}
 .w-plugins-version {width: 140px;}
 .w-plugins-list .w-has-new-version .w-plugins-version .w-new-version,

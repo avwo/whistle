@@ -2,6 +2,6 @@
 .w-menu-item a {display: block; max-width: 160px; text-overflow: ellipsis; overflow: hidden; padding: 0 6px; font-weight: normal; white-space: nowrap; margin: 0!important;}
 .w-menu-auto .w-menu-item a { max-width: inherit; }
 .w-menu-item .w-menu-options {border-bottom: 1px dashed #ccc; max-height: 500px; overflow-x: hidden; overflow-y: auto;}
-.w-menu-item a .glyphicon, .w-menu-item input {margin-right: 8px; font-size: 12px;}
+.w-menu-item a .glyphicon, .w-menu-item input {margin-right: 8px; font-size: 12px; vertical-align:text-bottom;}
 .w-menu-item a .glyphicon-ok, .w-menu-item a .glyphicon-plus {color: #5bbd72;}
 .w-network-menu-item .w-menu-options a {max-width: 320px;}
