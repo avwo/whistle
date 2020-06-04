@@ -106,8 +106,7 @@ var Home = React.createClass({
   },
   enableAllPlugins: function(e) {
     var data = this.props.data || {};
-    if ((!data.disabledAllRules && !data.disabledAllPlugins)
-        || !confirm('Do you want to enable all plugins?')) {
+    if (!data.disabledAllPlugins || !confirm('Do you want to enable all plugins?')) {
       return;
     }
     events.trigger('disableAllPlugins', e);
@@ -124,7 +123,7 @@ var Home = React.createClass({
     var cmdMsg = state.cmdMsg;
     var list = Object.keys(plugins);
     var disabledPlugins = data.disabledPlugins || {};
-    var disabled = data.disabledAllRules || data.disabledAllPlugins;
+    var disabled = data.disabledAllPlugins;
     self.hasNewPlugin = false;
 
     return (

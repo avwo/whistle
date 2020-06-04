@@ -221,7 +221,6 @@ var Index = React.createClass({
       replayCount: 1,
       allowMultipleChoice: modal.rules.allowMultipleChoice,
       backRulesFirst: modal.rules.backRulesFirst,
-      syncWithSysHosts: modal.rules.syncWithSysHosts,
       networkMode: !!modal.server.networkMode,
       rulesMode: !!modal.server.rulesMode,
       pluginsMode: !!modal.server.pluginsMode,
@@ -2089,7 +2088,6 @@ var Index = React.createClass({
           dataCenter.rules.disableAllRules({disabledAllRules: 0}, function(data, xhr) {
             if (data && data.ec === 0) {
               self.state.disabledAllRules = false;
-              protocols.setPlugins(self.state);
               self.setState({});
             } else {
               util.showSystemError(xhr);
@@ -2385,32 +2383,23 @@ var Index = React.createClass({
     });
   },
   disableAllRules: function(e) {
-    var checked = e.target.checked;
+    var checked = !e.target.checked;
     var self = this;
 
     dataCenter.rules.disableAllRules({disabledAllRules: checked ? 1 : 0}, function(data, xhr) {
       if (data && data.ec === 0) {
         var state = self.state;
         state.disabledAllRules = checked;
-        protocols.setPlugins(state);
         self.setState({});
       } else {
         util.showSystemError(xhr);
       }
     });
-    e.preventDefault();
   },
   disableAllPlugins: function(e) {
     var self = this;
     var state = self.state;
-    var checked = e.target.checked;
-    if (e.target.nodeName !== 'INPUT') {
-      if (state.disabledAllRules) {
-        alert('Please enbale all rules by the following steps:\nRules -> Settings -> Uncheck `Disable all rules`');
-        return;
-      }
-      checked = !state.disabledAllPlugins;
-    }
+    var checked = !e.target.checked;
     dataCenter.plugins.disableAllPlugins({disabledAllPlugins: checked ? 1 : 0}, function(data, xhr) {
       if (data && data.ec === 0) {
         state.disabledAllPlugins = checked;
@@ -2420,7 +2409,6 @@ var Index = React.createClass({
         util.showSystemError(xhr);
       }
     });
-    e.preventDefault();
   },
   disablePlugin: function(e) {
     var self = this;
@@ -2480,35 +2468,6 @@ var Index = React.createClass({
         util.showSystemError(xhr);
       }
     });
-  },
-  syncWithSysHosts: function(e) {
-    var checked = e.target.checked;
-    dataCenter.rules.syncWithSysHosts({syncWithSysHosts: checked ? 1 : 0});
-    this.setState({
-      syncWithSysHosts: checked
-    });
-  },
-  importSysHosts: function() {
-    var self = this;
-    var modal = self.state.rules;
-    var defaultRules = modal.data['Default'];
-    if (!(defaultRules.value || '').trim() || confirm('Are you sure to overwrite the original Default data?')) {
-      dataCenter.rules.getSysHosts(function(data) {
-        if (data.ec !== 0) {
-          alert(data.em);
-          return;
-        }
-
-        modal.setActive('Default');
-        defaultRules.changed = !data.selected || defaultRules.value != data.hosts;
-        defaultRules.value = data.hosts;
-        self.activeRules(defaultRules);
-        self.setState({}, function() {
-          ReactDOM.findDOMNode(self.refs.rules.refs.list).scrollTop = 0;
-        });
-      });
-    }
-
   },
   reinstallAllPlugins: function() {
     events.trigger('updateAllPlugins', 'reinstallAllPlugins');
@@ -2788,8 +2747,7 @@ var Index = React.createClass({
     var pendingRules = state.pendingRules;
     var pendingValues = state.pendingValues;
     var showLeftMenu = networkMode || state.showLeftMenu;
-    var disabledAllPlugins = state.disabledAllRules || state.disabledAllPlugins;
-    var disabledRules = isRules && state.disabledAllRules;
+    var disabledAllPlugins = state.disabledAllPlugins;
 
     return (
       <div className={'main orient-vertical-box' + (showLeftMenu ? ' w-show-left-menu' : '')}>
@@ -2822,12 +2780,6 @@ var Index = React.createClass({
             <MenuItem ref="pluginsMenuItem" name={name == 'plugins' ? null : 'Open'} options={pluginsOptions} checkedOptions={state.disabledPlugins} disabled={disabledAllPlugins}
               className="w-plugins-menu-item" onClick={this.showPlugins} onChange={this.disablePlugin} onClickOption={this.showAndActivePlugins} />
           </div>
-          <a onClick={this.disableAllPlugins} className="w-enable-plugin-menu"
-            style={{display: isPlugins ? '' : 'none', color: disabledAllPlugins ? '#f66' : undefined}} href="javascript:;"
-            draggable="false">
-            <span className={'glyphicon glyphicon-' + (disabledAllPlugins ? 'ok-circle' : 'ban-circle')}/>
-            {disabledAllPlugins ? 'EnableAll' : 'DisableAll'}
-          </a>
           <UpdateAllBtn hide={!isPlugins} />
           <a onClick={this.reinstallAllPlugins} className={'w-plugins-menu' +
             (isPlugins ? '' : ' hide')} href="javascript:;" draggable="false">
@@ -2868,7 +2820,7 @@ var Index = React.createClass({
           <a onClick={this.composer} className="w-composer-menu" style={{display: isNetwork ? '' : 'none'}} href="javascript:;" draggable="false"><span className="glyphicon glyphicon-edit"></span>Compose</a>
           <RecordBtn hide={!isNetwork} onClick={this.handleAction} />
           <a onClick={this.onClickMenu} className={'w-delete-menu' + (disabledDeleteBtn ? ' w-disabled' : '')} style={{display: (isNetwork || isPlugins) ? 'none' : ''}} href="javascript:;" draggable="false"><span className="glyphicon glyphicon-trash"></span>Delete</a>
-          <FilterBtn onClick={this.showSettings} disabledRules={disabledRules}  isNetwork={isNetwork} hide={isPlugins} />
+          <FilterBtn onClick={this.showSettings} isNetwork={isNetwork} hide={isPlugins} />
           <a onClick={this.showFiles} className="w-files-menu" href="javascript:;" draggable="false"><span className="glyphicon glyphicon-upload"></span>Files</a>
           <div onMouseEnter={this.showWeinreOptions} onMouseLeave={this.hideWeinreOptions} className={'w-menu-wrapper' + (showWeinreOptions ? ' w-menu-wrapper-show' : '')}>
             <a onClick={this.showWeinreOptionsQuick}
@@ -2919,7 +2871,7 @@ var Index = React.createClass({
                 display: pluginsMode ? 'none' : undefined
               }} href="javascript:;" draggable="false">
               <span className={'glyphicon glyphicon-list' + (state.disabledAllRules ? ' w-disabled' : '')} ></span>
-              <i><input type="checkbox" onClick={stopPropagation} /> Rules</i>
+              <i><input onChange={this.disableAllRules} type="checkbox" onClick={stopPropagation} checked={!state.disabledAllRules} /> Rules</i>
               <i className="w-menu-changed" style={{display: state.rules.hasChanged() ? undefined : 'none'}}>*</i>
             </a>
             <a onClick={this.showValues} className="w-save-menu w-values-menu"
@@ -2935,7 +2887,7 @@ var Index = React.createClass({
             <a onClick={this.showPlugins} className="w-plugins-menu"
               style={{background: name == 'plugins' ? '#ddd' : null}} href="javascript:;" draggable="false">
               <span className={'glyphicon glyphicon-list-alt' + (disabledAllPlugins ? ' w-disabled' : '')}></span>
-              <i><input type="checkbox" onClick={stopPropagation} /> Plugins</i>
+              <i><input onChange={this.disableAllPlugins} type="checkbox" onClick={stopPropagation} checked={!disabledAllPlugins} /> Plugins</i>
             </a>
           </div>
           {state.hasRules ? <List ref="rules" disabled={state.disabledAllRules} theme={rulesTheme}
@@ -2962,10 +2914,6 @@ var Index = React.createClass({
                     <p className="w-editor-settings-box"><label><input type="checkbox" checked={state.backRulesFirst} onChange={this.enableBackRulesFirst} /> Back rules first</label></p>
                   <p className="w-editor-settings-box"><label style={{color: multiEnv ? '#aaa' : undefined}}><input type="checkbox" disabled={multiEnv}
                     checked={!multiEnv && state.allowMultipleChoice} onChange={this.allowMultipleChoice} /> Use multiple rules</label></p>
-                  <p className="w-editor-settings-box"><label><input type="checkbox" checked={state.disabledAllRules} onChange={this.disableAllRules} /> Disable all rules</label></p>
-                  <p className="w-editor-settings-box"><label><input type="checkbox" checked={state.disabledAllPlugins} onChange={this.disableAllPlugins} /> Disable all plugins</label></p>
-                  <p className="w-editor-settings-box"><label><input type="checkbox" checked={state.syncWithSysHosts} onChange={this.syncWithSysHosts} /> Synchronized with the system hosts</label></p>
-                  <p className="w-editor-settings-box"><a onClick={this.importSysHosts} href="javascript:;" draggable="false">Import system hosts to <strong>Default</strong></a></p>
                 </div>
                 <div className="modal-footer">
                   <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>

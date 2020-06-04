@@ -6,7 +6,6 @@ module.exports = function get() {
     ec: 0,
     defaultRulesIsDisabled: rules.defaultRulesIsDisabled(),
     defaultRules: rules.getDefault(),
-    syncWithSysHosts: properties.get('syncWithSysHosts'),
     allowMultipleChoice: properties.get('allowMultipleChoice'),
     backRulesFirst: properties.get('backRulesFirst'),
     list: rules.list()

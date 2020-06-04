@@ -392,9 +392,7 @@ exports.rules = createCgiObj({
     mode: 'ignore',
     url: 'cgi-bin/rules/enable-back-rules-first'
   },
-  syncWithSysHosts: 'cgi-bin/rules/sync-with-sys-hosts',
-  setSysHosts: 'cgi-bin/rules/set-sys-hosts',
-  getSysHosts: 'cgi-bin/rules/get-sys-hosts'
+  setSysHosts: 'cgi-bin/rules/set-sys-hosts'
 }, POST_CONF);
 
 exports.log = createCgiObj({
