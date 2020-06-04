@@ -2383,9 +2383,12 @@ var Index = React.createClass({
     });
   },
   disableAllRules: function(e) {
-    var checked = !e.target.checked;
+    var target = e.target;
+    var checked = e.target.checked;
     var self = this;
-
+    if (target.name !== 'disableAll') {
+      checked = !checked;
+    }
     dataCenter.rules.disableAllRules({disabledAllRules: checked ? 1 : 0}, function(data, xhr) {
       if (data && data.ec === 0) {
         var state = self.state;
@@ -2395,11 +2398,17 @@ var Index = React.createClass({
         util.showSystemError(xhr);
       }
     });
+    e.preventDefault();
   },
   disableAllPlugins: function(e) {
     var self = this;
     var state = self.state;
-    var checked = !e.target.checked;
+    var checked;
+    if (e.target.nodeName === 'INPUT') {
+      checked = !e.target.checked;
+    } else {
+      checked = !state.disabledAllPlugins;
+    }
     dataCenter.plugins.disableAllPlugins({disabledAllPlugins: checked ? 1 : 0}, function(data, xhr) {
       if (data && data.ec === 0) {
         state.disabledAllPlugins = checked;
@@ -2409,6 +2418,7 @@ var Index = React.createClass({
         util.showSystemError(xhr);
       }
     });
+    e.preventDefault();
   },
   disablePlugin: function(e) {
     var self = this;
@@ -2780,6 +2790,12 @@ var Index = React.createClass({
             <MenuItem ref="pluginsMenuItem" name={name == 'plugins' ? null : 'Open'} options={pluginsOptions} checkedOptions={state.disabledPlugins} disabled={disabledAllPlugins}
               className="w-plugins-menu-item" onClick={this.showPlugins} onChange={this.disablePlugin} onClickOption={this.showAndActivePlugins} />
           </div>
+          <a onClick={this.disableAllPlugins} className="w-enable-plugin-menu" href="javascript:;"
+            style={{display: isPlugins ? '' : 'none', color: disabledAllPlugins ? '#f66' : undefined}}
+            draggable="false">
+            <span className={'glyphicon glyphicon-' + (disabledAllPlugins ? 'ok-circle' : 'ban-circle')}/>
+            {disabledAllPlugins ? 'EnableAll' : 'DisableAll'}
+          </a>
           <UpdateAllBtn hide={!isPlugins} />
           <a onClick={this.reinstallAllPlugins} className={'w-plugins-menu' +
             (isPlugins ? '' : ' hide')} href="javascript:;" draggable="false">
@@ -2820,7 +2836,7 @@ var Index = React.createClass({
           <a onClick={this.composer} className="w-composer-menu" style={{display: isNetwork ? '' : 'none'}} href="javascript:;" draggable="false"><span className="glyphicon glyphicon-edit"></span>Compose</a>
           <RecordBtn hide={!isNetwork} onClick={this.handleAction} />
           <a onClick={this.onClickMenu} className={'w-delete-menu' + (disabledDeleteBtn ? ' w-disabled' : '')} style={{display: (isNetwork || isPlugins) ? 'none' : ''}} href="javascript:;" draggable="false"><span className="glyphicon glyphicon-trash"></span>Delete</a>
-          <FilterBtn onClick={this.showSettings} isNetwork={isNetwork} hide={isPlugins} />
+          <FilterBtn onClick={this.showSettings} disabledRules={isRules && state.disabledAllRules} isNetwork={isNetwork} hide={isPlugins} />
           <a onClick={this.showFiles} className="w-files-menu" href="javascript:;" draggable="false"><span className="glyphicon glyphicon-upload"></span>Files</a>
           <div onMouseEnter={this.showWeinreOptions} onMouseLeave={this.hideWeinreOptions} className={'w-menu-wrapper' + (showWeinreOptions ? ' w-menu-wrapper-show' : '')}>
             <a onClick={this.showWeinreOptionsQuick}
@@ -2914,6 +2930,7 @@ var Index = React.createClass({
                     <p className="w-editor-settings-box"><label><input type="checkbox" checked={state.backRulesFirst} onChange={this.enableBackRulesFirst} /> Back rules first</label></p>
                   <p className="w-editor-settings-box"><label style={{color: multiEnv ? '#aaa' : undefined}}><input type="checkbox" disabled={multiEnv}
                     checked={!multiEnv && state.allowMultipleChoice} onChange={this.allowMultipleChoice} /> Use multiple rules</label></p>
+                  <p className="w-editor-settings-box"><label><input type="checkbox" checked={state.disabledAllRules} onChange={this.disableAllRules} name="disableAll" /> Disable all rules</label></p>
                 </div>
                 <div className="modal-footer">
                   <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>

@@ -611,7 +611,6 @@ function startLoadData() {
       pluginsMap = data.plugins || {};
       disabledPlugins = data.disabledPlugins || {};
       disabledAllPlugins = data.disabledAllPlugins;
-      disabledAllRules = data.disabledAllRules;
       if (len || svrLen) {
         if (len) {
           logList.push.apply(logList, data.log);
@@ -1033,7 +1032,7 @@ exports.stopServerLogRecord = function(stop) {
 };
 
 exports.getPlugin = function(name) {
-  if (disabledAllPlugins || disabledAllRules || disabledPlugins[name.slice(0, -1)]) {
+  if (disabledAllPlugins || disabledPlugins[name.slice(0, -1)]) {
     return;
   }
   return pluginsMap[name];
@@ -1041,7 +1040,7 @@ exports.getPlugin = function(name) {
 
 function getMenus(menuName) {
   var list = [];
-  if (disabledAllPlugins || disabledAllRules) {
+  if (disabledAllPlugins) {
     return list;
   }
   Object.keys(pluginsMap).forEach(function(name) {
