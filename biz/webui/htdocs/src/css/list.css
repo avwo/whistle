@@ -1,7 +1,7 @@
 .w-divider-con .w-divider {border: none;}
-.w-list-data {border-top: 1px solid #ccc; background: #fafafa; overflow-x: hidden; overflow-y: auto;}
+.w-list-data {border-top: 1px solid #ccc; background: #fafafa; overflow-x: hidden; overflow-y: auto; outline: none;}
 .w-list-data a {display: block; padding-left: 10px; line-height: 32px; position: relative; border-bottom: 1px solid #ccc; color: #000; 
-text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: #fff;}
+text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: #fff; outline: none;}
 .w-list-data a .glyphicon-ok {position: absolute; top: 50%; right: 10px; margin-top: -8px; color: #5bbd72; display: none;}
 .w-list-content {border: 1px solid #ccc; border-left: none;} 
 .w-list-data .w-changed:before {content: '*'; margin-right: 5px; color: red; margin-right: 5px;}
