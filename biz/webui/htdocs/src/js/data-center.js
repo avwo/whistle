@@ -40,7 +40,7 @@ var MAX_WAIT_TIME = 1000 * 60 * 3;
 var onlyViewOwnData = storage.get('onlyViewOwnData') == 1;
 var pluginsMap = {};
 var disabledPlugins = {};
-var disabledAllPlugins, disabledAllRules;
+var disabledAllPlugins;
 var DEFAULT_CONF = {
   timeout: TIMEOUT,
   xhrFields: {

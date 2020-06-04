@@ -2887,7 +2887,8 @@ var Index = React.createClass({
                 display: pluginsMode ? 'none' : undefined
               }} href="javascript:;" draggable="false">
               <span className={'glyphicon glyphicon-list' + (state.disabledAllRules ? ' w-disabled' : '')} ></span>
-              <i><input onChange={this.disableAllRules} type="checkbox" onClick={stopPropagation} checked={!state.disabledAllRules} /> Rules</i>
+              <i><input onChange={this.disableAllRules} type="checkbox" onClick={stopPropagation} checked={!state.disabledAllRules}
+                title={state.disabledAllRules ? 'Click to enable all rules' : 'Click to disable all rules'} /> Rules</i>
               <i className="w-menu-changed" style={{display: state.rules.hasChanged() ? undefined : 'none'}}>*</i>
             </a>
             <a onClick={this.showValues} className="w-save-menu w-values-menu"
@@ -2903,7 +2904,9 @@ var Index = React.createClass({
             <a onClick={this.showPlugins} className="w-plugins-menu"
               style={{background: name == 'plugins' ? '#ddd' : null}} href="javascript:;" draggable="false">
               <span className={'glyphicon glyphicon-list-alt' + (disabledAllPlugins ? ' w-disabled' : '')}></span>
-              <i><input onChange={this.disableAllPlugins} type="checkbox" onClick={stopPropagation} checked={!disabledAllPlugins} /> Plugins</i>
+              <i><input onChange={this.disableAllPlugins} type="checkbox" onClick={stopPropagation} checked={!disabledAllPlugins}
+                title={disabledAllPlugins ? 'Click to enable all plugins' : 'Click to disable all plugins'}
+                /> Plugins</i>
             </a>
           </div>
           {state.hasRules ? <List ref="rules" disabled={state.disabledAllRules} theme={rulesTheme}
