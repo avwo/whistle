@@ -148,6 +148,10 @@ function getRemoteDataHandler(callback) {
   };
 }
 
+function stopPropagation(e) {
+  e.stopPropagation();
+}
+
 function getPageName(options) {
   if (options.networkMode) {
     return 'network';
@@ -2402,7 +2406,7 @@ var Index = React.createClass({
     var checked = e.target.checked;
     if (e.target.nodeName !== 'INPUT') {
       if (state.disabledAllRules) {
-        alert('Please enbale all rules by the following steps:\nRules -> Settings -> Uncheck `Diable all rules`');
+        alert('Please enbale all rules by the following steps:\nRules -> Settings -> Uncheck `Disable all rules`');
         return;
       }
       checked = !state.disabledAllPlugins;
@@ -2914,7 +2918,8 @@ var Index = React.createClass({
                 background: name == 'rules' ? '#ddd' : null,
                 display: pluginsMode ? 'none' : undefined
               }} href="javascript:;" draggable="false">
-              <span className={'glyphicon glyphicon-list' + (state.disabledAllRules ? ' w-disabled' : '')} ></span><i>Rules</i>
+              <span className={'glyphicon glyphicon-list' + (state.disabledAllRules ? ' w-disabled' : '')} ></span>
+              <i><input type="checkbox" onClick={stopPropagation} /> Rules</i>
               <i className="w-menu-changed" style={{display: state.rules.hasChanged() ? undefined : 'none'}}>*</i>
             </a>
             <a onClick={this.showValues} className="w-save-menu w-values-menu"
@@ -2929,7 +2934,8 @@ var Index = React.createClass({
             </a>
             <a onClick={this.showPlugins} className="w-plugins-menu"
               style={{background: name == 'plugins' ? '#ddd' : null}} href="javascript:;" draggable="false">
-              <span className={'glyphicon glyphicon-list-alt' + (disabledAllPlugins ? ' w-disabled' : '')}></span><i>Plugins</i>
+              <span className={'glyphicon glyphicon-list-alt' + (disabledAllPlugins ? ' w-disabled' : '')}></span>
+              <i><input type="checkbox" onClick={stopPropagation} /> Plugins</i>
             </a>
           </div>
           {state.hasRules ? <List ref="rules" disabled={state.disabledAllRules} theme={rulesTheme}
