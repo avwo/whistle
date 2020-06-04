@@ -133,7 +133,8 @@ var List = React.createClass({
       self.onDoubleClick(item);
     }
     var modal = self.props.modal;
-
+    this.curListLen = modal.list.length;
+    this.curActiveItem = modal.getActive();
     $(ReactDOM.findDOMNode(self.refs.list)).focus().on('keydown', function(e) {
       var item;
       if (e.keyCode == 38) { //up
@@ -154,7 +155,14 @@ var List = React.createClass({
     return hide != util.getBoolean(nextProps.hide) || !hide;
   },
   componentDidUpdate: function() {
-    this.ensureVisible();
+    var modal = this.props.modal;
+    var curListLen = modal.list.length;
+    var curActiveItem = modal.getActive();
+    if (curListLen > this.curListLen || curActiveItem !== this.curActiveItem) {
+      this.ensureVisible();
+    }
+    this.curListLen = curListLen;
+    this.curActiveItem = curActiveItem;
   },
   ensureVisible: function(init) {
     var activeItem = this.props.modal.getActive();
