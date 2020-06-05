@@ -20,6 +20,8 @@ exports.getServerInfo = function(req) {
     version: config.version,
     networkMode: config.networkMode,
     pluginsMode: config.pluginsMode,
+    ndr: config.notAllowedDisableRules,
+    ndp: config.notAllowedDisablePlugins,
     rulesMode: config.rulesMode,
     strictMode: config.strict,
     multiEnv: config.multiEnv,

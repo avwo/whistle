@@ -225,7 +225,9 @@ var Index = React.createClass({
       rulesMode: !!modal.server.rulesMode,
       pluginsMode: !!modal.server.pluginsMode,
       multiEnv: modal.server.multiEnv,
-      isWin: modal.server.isWin
+      isWin: modal.server.isWin,
+      ndr: modal.server.ndr,
+      ndp: modal.server.ndp
     };
     var pageName = getPageName(state);
     if (!pageName || pageName.indexOf('rules') != -1) {
@@ -815,13 +817,16 @@ var Index = React.createClass({
         || state.disabledAllRules !== data.disabledAllRules
         || state.allowMultipleChoice !== data.allowMultipleChoice
         || state.disabledAllPlugins !== data.disabledAllPlugins
-        || state.multiEnv != data.server.multiEnv) {
+        || state.multiEnv != data.server.multiEnv
+        || state.ndp != data.server.ndp || state.ndr != data.server.ndr) {
         state.interceptHttpsConnects = data.interceptHttpsConnects;
         state.enableHttp2 = data.enableHttp2;
-        state.multiEnv = data.server.multiEnv;
         state.disabledAllRules = data.disabledAllRules;
         state.allowMultipleChoice = data.allowMultipleChoice;
         state.disabledAllPlugins = data.disabledAllPlugins;
+        state.multiEnv = data.server.multiEnv;
+        state.ndp = data.server.ndp;
+        state.ndr = data.server.ndr;
         protocols.setPlugins(state);
         self.setState({});
       }
@@ -2790,12 +2795,12 @@ var Index = React.createClass({
             <MenuItem ref="pluginsMenuItem" name={name == 'plugins' ? null : 'Open'} options={pluginsOptions} checkedOptions={state.disabledPlugins} disabled={disabledAllPlugins}
               className="w-plugins-menu-item" onClick={this.showPlugins} onChange={this.disablePlugin} onClickOption={this.showAndActivePlugins} />
           </div>
-          <a onClick={this.disableAllPlugins} className="w-enable-plugin-menu" href="javascript:;"
+          {!state.ndp && <a onClick={this.disableAllPlugins} className="w-enable-plugin-menu" href="javascript:;"
             style={{display: isPlugins ? '' : 'none', color: disabledAllPlugins ? '#f66' : undefined}}
             draggable="false">
             <span className={'glyphicon glyphicon-' + (disabledAllPlugins ? 'ok-circle' : 'ban-circle')}/>
             {disabledAllPlugins ? 'EnableAll' : 'DisableAll'}
-          </a>
+          </a>}
           <UpdateAllBtn hide={!isPlugins} />
           <a onClick={this.reinstallAllPlugins} className={'w-plugins-menu' +
             (isPlugins ? '' : ' hide')} href="javascript:;" draggable="false">
@@ -2887,8 +2892,8 @@ var Index = React.createClass({
                 display: pluginsMode ? 'none' : undefined
               }} href="javascript:;" draggable="false">
               <span className={'glyphicon glyphicon-list' + (state.disabledAllRules ? ' w-disabled' : '')} ></span>
-              <i><input onChange={this.disableAllRules} type="checkbox" onClick={stopPropagation} checked={!state.disabledAllRules}
-                title={state.disabledAllRules ? 'Click to enable all rules' : 'Click to disable all rules'} /> Rules</i>
+              <i>{!state.ndr && <input onChange={this.disableAllRules} type="checkbox" onClick={stopPropagation} checked={!state.disabledAllRules}
+                title={state.disabledAllRules ? 'Click to enable all rules' : 'Click to disable all rules'} />} Rules</i>
               <i className="w-menu-changed" style={{display: state.rules.hasChanged() ? undefined : 'none'}}>*</i>
             </a>
             <a onClick={this.showValues} className="w-save-menu w-values-menu"
@@ -2904,9 +2909,9 @@ var Index = React.createClass({
             <a onClick={this.showPlugins} className="w-plugins-menu"
               style={{background: name == 'plugins' ? '#ddd' : null}} href="javascript:;" draggable="false">
               <span className={'glyphicon glyphicon-list-alt' + (disabledAllPlugins ? ' w-disabled' : '')}></span>
-              <i><input onChange={this.disableAllPlugins} type="checkbox" onClick={stopPropagation} checked={!disabledAllPlugins}
+              <i>{!state.ndp && <input onChange={this.disableAllPlugins} type="checkbox" onClick={stopPropagation} checked={!disabledAllPlugins}
                 title={disabledAllPlugins ? 'Click to enable all plugins' : 'Click to disable all plugins'}
-                /> Plugins</i>
+            />} Plugins</i>
             </a>
           </div>
           {state.hasRules ? <List ref="rules" disabled={state.disabledAllRules} theme={rulesTheme}
@@ -2933,7 +2938,7 @@ var Index = React.createClass({
                     <p className="w-editor-settings-box"><label><input type="checkbox" checked={state.backRulesFirst} onChange={this.enableBackRulesFirst} /> Back rules first</label></p>
                   <p className="w-editor-settings-box"><label style={{color: multiEnv ? '#aaa' : undefined}}><input type="checkbox" disabled={multiEnv}
                     checked={!multiEnv && state.allowMultipleChoice} onChange={this.allowMultipleChoice} /> Use multiple rules</label></p>
-                  <p className="w-editor-settings-box"><label><input type="checkbox" checked={state.disabledAllRules} onChange={this.disableAllRules} name="disableAll" /> Disable all rules</label></p>
+                  {!state.ndr && <p className="w-editor-settings-box"><label><input type="checkbox" checked={state.disabledAllRules} onChange={this.disableAllRules} name="disableAll" /> Disable all rules</label></p>}
                 </div>
                 <div className="modal-footer">
                   <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
