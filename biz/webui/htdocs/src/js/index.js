@@ -227,7 +227,8 @@ var Index = React.createClass({
       multiEnv: modal.server.multiEnv,
       isWin: modal.server.isWin,
       ndr: modal.server.ndr,
-      ndp: modal.server.ndp
+      ndp: modal.server.ndp,
+      classic: modal.classic
     };
     var pageName = getPageName(state);
     if (!pageName || pageName.indexOf('rules') != -1) {
@@ -812,21 +813,23 @@ var Index = React.createClass({
     }
     dataCenter.on('settings', function(data) {
       var state = self.state;
+      var server = data.server;
       if (state.interceptHttpsConnects !== data.interceptHttpsConnects
         || state.enableHttp2 !== data.enableHttp2
         || state.disabledAllRules !== data.disabledAllRules
         || state.allowMultipleChoice !== data.allowMultipleChoice
         || state.disabledAllPlugins !== data.disabledAllPlugins
-        || state.multiEnv != data.server.multiEnv
-        || state.ndp != data.server.ndp || state.ndr != data.server.ndr) {
+        || state.multiEnv != server.multiEnv || state.classic != data.classic
+        || state.ndp != server.ndp || state.ndr != server.ndr) {
         state.interceptHttpsConnects = data.interceptHttpsConnects;
         state.enableHttp2 = data.enableHttp2;
         state.disabledAllRules = data.disabledAllRules;
         state.allowMultipleChoice = data.allowMultipleChoice;
         state.disabledAllPlugins = data.disabledAllPlugins;
-        state.multiEnv = data.server.multiEnv;
-        state.ndp = data.server.ndp;
-        state.ndr = data.server.ndr;
+        state.multiEnv = server.multiEnv;
+        state.ndp = server.ndp;
+        state.ndr = server.ndr;
+        state.classic = data.classic;
         protocols.setPlugins(state);
         self.setState({});
       }
@@ -2892,7 +2895,7 @@ var Index = React.createClass({
                 display: pluginsMode ? 'none' : undefined
               }} href="javascript:;" draggable="false">
               <span className={'glyphicon glyphicon-list' + (state.disabledAllRules ? ' w-disabled' : '')} ></span>
-              <i>{!state.ndr && <input onChange={this.disableAllRules} type="checkbox" onClick={stopPropagation} checked={!state.disabledAllRules}
+              <i>{!state.classic && !state.ndr && <input onChange={this.disableAllRules} type="checkbox" onClick={stopPropagation} checked={!state.disabledAllRules}
                 title={state.disabledAllRules ? 'Click to enable all rules' : 'Click to disable all rules'} />} Rules</i>
               <i className="w-menu-changed" style={{display: state.rules.hasChanged() ? undefined : 'none'}}>*</i>
             </a>
@@ -2909,7 +2912,7 @@ var Index = React.createClass({
             <a onClick={this.showPlugins} className="w-plugins-menu"
               style={{background: name == 'plugins' ? '#ddd' : null}} href="javascript:;" draggable="false">
               <span className={'glyphicon glyphicon-list-alt' + (disabledAllPlugins ? ' w-disabled' : '')}></span>
-              <i>{!state.ndp && <input onChange={this.disableAllPlugins} type="checkbox" onClick={stopPropagation} checked={!disabledAllPlugins}
+              <i>{!state.classic && !state.ndp && <input onChange={this.disableAllPlugins} type="checkbox" onClick={stopPropagation} checked={!disabledAllPlugins}
                 title={disabledAllPlugins ? 'Click to enable all plugins' : 'Click to disable all plugins'}
             />} Plugins</i>
             </a>
