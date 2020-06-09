@@ -1,6 +1,11 @@
 # 安装启动
 
-安装启动whistle，需要以下四个步骤： **安装Node**、**安装whistle**、**启动whistle**、**配置代理**。
+whistle安装过程需要以下步骤(缺一不可)：
+1. **安装Node**
+2. **安装whistle**
+3. **启动whistle**
+4. **配置代理**
+5. **安装根证书**
 
 ### 1. 安装Node
 
@@ -172,3 +177,6 @@ PS: 如果配置完代理，手机无法访问，可能是whistle所在的电脑
 * 方式1：域名访问 [http://local.whistlejs.com/](http://local.whistlejs.com/)
 * 方式2：通过ip+端口来访问，形式如 `http://whistleServerIP:whistlePort/` e.g. [http://127.0.0.1:8899](http://127.0.0.1:8899)
 * 方式2：通过命令行参数 `-P xxxx` 自定义webui的端口(`xxxx`表示要设置的端口号)，自定义端口支持上述两种方式访问，也支持 [http://127.0.0.1:xxxx](http://127.0.0.1:xxxx)
+
+### 5. 安装根证书
+安装证书请参考文档: [http://wproxy.org/whistle/webui/https.html](http://wproxy.org/whistle/webui/https.html)
