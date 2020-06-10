@@ -95,6 +95,8 @@ $ w2 help
 
 如果能正常输出whistle的帮助信息，表示whistle已安装成功。
 
+> 有关命令行参数参见：[命令行参数](options.html)
+
 
 ### 3. 启动whistle
 
