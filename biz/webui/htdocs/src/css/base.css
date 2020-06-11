@@ -167,3 +167,7 @@ body .cm-s-cobalt span.cm-number {
 .ReactVirtualized__Grid.ReactVirtualized__List {
   outline: none;
 }
+
+.w-not-allowed {
+  cursor: not-allowed;
+}

@@ -2432,7 +2432,7 @@ var Index = React.createClass({
     var self = this;
     var target = e.target;
     if (self.state.ndp) {
-      return message.warn('Plugins are not allowed to be disabled.');
+      return message.warn('Not allowed disable plugins.');
     }
     dataCenter.plugins.disablePlugin({
       name: $(target).attr('data-name'),
