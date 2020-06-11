@@ -92,7 +92,7 @@ program
   .option('-w, --password [password]', 'set the password to access the web ui', String, undefined)
   .option('-N, --guestName [username]', 'set the the guest name to access the web ui (can only view the data)', String, undefined)
   .option('-W, --guestPassword [password]', 'set the guest password to access the web ui (can only view the data)', String, undefined)
-  .option('-s, --sockets [number]', 'set the max number of cached long connection on each domain (' + config.sockets + ' by default)', parseInt, undefined)
+  .option('-s, --sockets [number]', 'set the max number of cached connections on each domain (' + config.sockets + ' by default)', parseInt, undefined)
   .option('-S, --storage [newStorageDir]', 'set the configured storage directory', String, undefined)
   .option('-C, --copy [storageDir]', 'copy the configuration of the specified directory to a new directory', String, undefined)
   .option('-c, --dnsCache [time]', 'set the cache time of DNS (30000ms by default)', String, undefined)
