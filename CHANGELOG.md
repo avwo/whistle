@@ -1,3 +1,7 @@
+# v2.5.10
+1. fix: `--addon "path1,path2"` 无法填多个路径问题
+2. fix: 某些服务没按http标准执行，如 `302` 返回内容，可能导致页面或下游代理 pending问题
+
 # v2.5.9
 1. style: Frames 里面支持快捷键 `Ctrm[Cmd] + R` 重放请求
 2. refactor: 插件里面可以通过 `req.originalReq.ruleUrl` 获取 [rule](https://wproxy.org/whistle/rules/rule/) 匹配结果
