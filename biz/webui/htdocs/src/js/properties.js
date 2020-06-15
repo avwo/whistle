@@ -5,6 +5,7 @@ var util = require('./util');
 var CopyBtn = require('./copy-btn');
 var ExpandCollapse = require('./expand-collapse');
 
+
 var Properties = React.createClass({
   getInitialState: function() {
     return { viewSource: false };
@@ -28,12 +29,21 @@ var Properties = React.createClass({
           : name + ': ' + util.toString(value)
       );
     }).join('\n');
+    if (this.textStr !== sourceText) {
+      this.textStr = sourceText;
+      try {
+        this.jsonStr = JSON.stringify(modal, null, '  ');
+      } catch (e) {
+        this.jsonStr = undefined;
+      }
+    }
 
     return (
       <div className={ 'w-properties-wrap ' + (viewSource ? 'w-properties-view-source ' : 'w-properties-view-parsed ') + (props.hide ? 'hide' : '') }>
         { sourceText ? 
           <div className="w-textarea-bar">
-            <CopyBtn value={sourceText} />
+            <CopyBtn value={sourceText} name="Text" />
+            {this.jsonStr ? <CopyBtn value={this.jsonStr} name="JSON" /> : undefined }
             <a onClick={this.toggle} href="javascript:;">{ viewSource ? 'Form' : 'Text' }</a>
           </div> : undefined
         }
