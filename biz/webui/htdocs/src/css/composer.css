@@ -98,7 +98,7 @@
   display: inline-block;
   padding: 0 0 0 15px;
   border-left: 1px solid #ddd;
-  cursor: text;
+  cursor: default;
   color: #000!important;
 }
 .w-composer-body .w-composer-encoding {
