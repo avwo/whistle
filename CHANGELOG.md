@@ -1,3 +1,7 @@
+# v2.5.11
+1. feat: 支持显示 websocket 关闭的错误码
+2. style: 支持将请求头以 JSON 文本拷贝
+
 # v2.5.10
 1. fix: `--addon "path1,path2"` 无法填多个路径问题
 2. fix: 某些服务没按http标准执行，如 `302` 返回内容，可能导致页面或下游代理 pending问题
