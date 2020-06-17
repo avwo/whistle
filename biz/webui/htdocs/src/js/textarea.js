@@ -142,8 +142,8 @@ var Textarea = React.createClass({
         <div className={'fill orient-vertical-box w-textarea' + (this.props.hide ? ' hide' : '')}>
           <Tips data={this.props.tips} />
           <div className={'w-textarea-bar' + (value ? '' : ' hide')}>
-            <CopyBtn name={isHexView ? 'All' : ''} value={this.props.value} />
-            {isHexView ? <CopyBtn name={isHexView ? 'Hex' : ''} value={util.getHexText(this.props.value)} /> : undefined}
+            <CopyBtn value={this.props.value} />
+            {isHexView ? <CopyBtn name="AsHex" value={util.getHexText(this.props.value)} /> : undefined}
             <a className="w-download" onDoubleClick={this.download}
               onClick={this.showNameInput} href="javascript:;" draggable="false">Download</a>
             {showAddToValuesBtn ? <a className="w-add" onClick={this.showNameInput} href="javascript:;" draggable="false">+Value</a> : ''}

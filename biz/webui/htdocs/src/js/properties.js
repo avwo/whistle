@@ -42,8 +42,8 @@ var Properties = React.createClass({
       <div className={ 'w-properties-wrap ' + (viewSource ? 'w-properties-view-source ' : 'w-properties-view-parsed ') + (props.hide ? 'hide' : '') }>
         { sourceText ? 
           <div className="w-textarea-bar">
-            <CopyBtn value={sourceText} name="Text" />
-            {this.jsonStr ? <CopyBtn value={this.jsonStr} name="JSON" /> : undefined }
+            <CopyBtn value={sourceText} name="AsText" />
+            {this.jsonStr ? <CopyBtn value={this.jsonStr} name="AsJSON" /> : undefined }
             <a onClick={this.toggle} href="javascript:;">{ viewSource ? 'Form' : 'Text' }</a>
           </div> : undefined
         }
