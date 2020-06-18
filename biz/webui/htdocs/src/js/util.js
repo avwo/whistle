@@ -1046,7 +1046,7 @@ function getHexFromBase64(base64) {
 exports.getHexFromBase64 = getHexFromBase64;
 
 function getClosedMsg(data) {
-  return 'Closed' + (data.code ? ' (Code: ' + data.code + ')' : '');
+  return 'Closed' + (data.code ? ' (' + data.code + ')' : '');
 }
 
 function initData(data, isReq) {
