@@ -19,6 +19,7 @@ module.exports = function(req, res) {
   var clientIp = util.getClientIp(req);
   var stopRecordConsole = data.startLogTime == -3;
   var stopRecordSvrLog = data.startSvrLogTime == -3;
+  var h = req.headers;
   util.sendGzip(req, res, {
     ec: 0,
     version: config.version,
@@ -46,6 +47,6 @@ module.exports = function(req, res) {
     enableHttp2: properties.isEnableHttp2(),
     defaultRulesIsDisabled: rules.defaultRulesIsDisabled(),
     list: rules.getSelectedList(),
-    data: proxy.getData(data, clientIp, req.headers['x-whistle-filter-key'], req.headers['x-whistle-filter-value'])
+    data: proxy.getData(data, clientIp, h['x-whistle-filter-key'], h['x-whistle-filter-value'], h['x-whistle-filter-client-id'])
   });
 };

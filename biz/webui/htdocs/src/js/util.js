@@ -458,6 +458,9 @@ function getContentEncoding(headers) {
 exports.getOriginalReqHeaders = function(item) {
   var req = item.req;
   var headers = $.extend({}, req.headers, item.rulesHeaders, true);
+  if (item.clientId && !headers['x-whistle-client-id']) {
+    headers['x-whistle-client-id'] = item.clientId;
+  }
   if (getContentEncoding(headers)) {
     delete headers['content-encoding'];
   }
