@@ -114,13 +114,15 @@ test.json:
 	"url": "${url}",
 	"port": "${port}",
 	"version": "${version}",
-	"search": "${url.search}",
-	"query": "${url.query}",
-	"queryValue": "${url.query.name}",
-	"host": "${url.host}",
-	"hostname": "${url.hostname}",
-	"path": "${url.path}",
-	"pathname": "${url.pathname}",
+	"query": "${query}", // 相当于 location.search ，如果 url 里面没有 ? 则为空字符串
+	"search": "${search}", // 相当于 location.search ，如果 url 里面没有 ? 则为空字符串
+	"queryString": "${queryString}",  // 相当于 location.search ，但如果 url 里面没有 ? 则为 ?
+	"searchString": "${searchString}",  // 相当于 location.search ，但如果 url 里面没有 ? 则为 ?
+	"queryValue": "${query.name}",
+	"host": "${host}",
+	"hostname": "${hostname}",
+	"path": "${path}",
+	"pathname": "${pathname}",
 	"reqId": "${reqId}",
 	"now": ${now},
 	"method": "${method}",
@@ -131,6 +133,7 @@ test.json:
 	"clientIp": "${clientIp}"
 }
 ```
+
 这里 `test.json` 在规则中一定要用模板字符串引入：
 ```
  protocol://`{test.json}`
@@ -183,4 +186,14 @@ test2.json:
 ```
 protocol://`${search.replace(/course=([^&]+)/ig,name=$1)}`
 protocol://`${search.replace(a,b)}`
+```
+
+
+`${query}` 和 `${queryString}` 的用途，如配置[redirect](rules/redirect.html) 重定向：
+``` txt
+# 不需要追加参数
+www.test.com/index.html redirect://`https://ke.qq.com/test${query}`
+
+# 需要追加参数
+www.test.com/index.html redirect://`https://ke.qq.com/test${queryString}&test=1`
 ```

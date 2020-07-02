@@ -11,6 +11,16 @@ jumpUrl为请求要302跳转的目标url，pattern参见[匹配模式](../patter
 
 	www.ifeng.com redirect://http://www.aliexpress.com/
 
+不需要追加参数
+``` txt
+www.test.com/index.html redirect://`https://ke.qq.com/test${query}`
+```
+
+需要追加参数
+``` txt
+www.test.com/index.html redirect://`https://ke.qq.com/test${queryString}&test=1`
+```
+
 #### 过滤规则
 需要确保whistle是最新版本：[更新whistle](../update.html)
 
