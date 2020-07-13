@@ -286,6 +286,9 @@ app.all('/cgi-bin/*', function(req, res, next) {
 }, cgiHandler);
 
 app.use('/preview.html', function(req, res, next) {
+  if (req.headers[config.INTERNAL_ID_HEADER] !== config.INTERNAL_ID) {
+    return res.status(404).end('Not Found');
+  }
   next();
   var index = req.path.indexOf('=') + 1;
   if (index) {

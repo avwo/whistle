@@ -74,7 +74,9 @@ module.exports = function(req, res, next) {
       if (bypass) {
         req.url = req.url.replace(bypass, '/');
       }
+      delete req.headers[config.INTERNAL_ID_HEADER];
     } else if (PREVIEW_PATH_RE.test(req.url)) {
+      req.headers[config.INTERNAL_ID_HEADER] = config.INTERNAL_ID;
       req.url = '/preview.html?charset=' + RegExp.$1;
       isWebUI = true;
     }
