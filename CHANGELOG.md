@@ -1,3 +1,8 @@
+# v2.5.12
+1. style: 加粗 Composer 里面的 whistle 自定义请求头
+2. fix: https://github.com/avwo/whistle/issues/451
+3. refactor: 减少暴露无登录态的接口
+
 # v2.5.11
 1. feat: 支持显示 websocket 关闭的错误码
 2. style: 支持将请求头以 JSON 文本拷贝
