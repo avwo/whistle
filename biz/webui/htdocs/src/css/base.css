@@ -171,3 +171,7 @@ body .cm-s-cobalt span.cm-number {
 .w-not-allowed {
   cursor: not-allowed;
 }
+
+.w-bold {
+  font-weight: bold!important;
+}

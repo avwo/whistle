@@ -11,7 +11,11 @@ var MAX_NAME_LEN = 128;
 var MAX_VALUE_LEN = 36 * 1024;
 var MAX_COUNT = 160;
 var index = MAX_COUNT;
+var W2_HEADER_RE = /^x-whistle-/;
 
+var highlight = function(name) {
+  return name === 'x-forwarded-for' || W2_HEADER_RE.test(name);
+};
 var PropsEditor = React.createClass({
   getInitialState: function() {
     return {};
@@ -259,7 +263,7 @@ var PropsEditor = React.createClass({
                 var item = modal[name];
                 return (
                   <tr key={name}>
-                    <th>{item.name}</th>
+                    <th className={isHeader && highlight(item.name) ? 'w-bold' : undefined}>{item.name}</th>
                     <td>
                       <pre>
                         {item.data ? <span className="glyphicon glyphicon-file"></span> : undefined}
