@@ -26,8 +26,7 @@ var WEINRE_RE = /^\/weinre\/.*/;
 var ALLOW_PLUGIN_PATHS = ['/cgi-bin/rules/list2', '/cgi-bin/values/list2', '/cgi-bin/get-custom-certs-info'];
 var DONT_CHECK_PATHS = ['/cgi-bin/server-info', '/cgi-bin/plugins/is-enable', '/cgi-bin/composer', '/cgi-bin/socket/data',
                         '/preview.html', '/cgi-bin/socket/abort', '/cgi-bin/socket/change-status',
-                        '/cgi-bin/sessions/export', '/cgi-bin/sessions/import', '/cgi-bin/plugins/update-rules',
-                        '/cgi-bin/rootca', '/cgi-bin/log/set'];
+                        '/cgi-bin/sessions/export', '/cgi-bin/sessions/import', '/cgi-bin/rootca', '/cgi-bin/log/set'];
 var PLUGIN_PATH_RE = /^\/(whistle|plugin)\.([^/?#]+)(\/)?/;
 var STATIC_SRC_RE = /\.(?:ico|js|css|png)$/i;
 var UPLOAD_URLS = ['/cgi-bin/values/upload', '/cgi-bin/composer'];
