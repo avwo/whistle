@@ -125,7 +125,7 @@ var Overview = React.createClass({
           var time;
           switch(name) {
           case OVERVIEW[lastIndex - 4]:
-            time = new Date(modal.startTime).toLocaleString();
+            time = util.toLocaleString(new Date(modal.startTime));
             break;
           case OVERVIEW[lastIndex - 3]:
             if (modal.dnsTime) {

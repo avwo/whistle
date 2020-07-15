@@ -2,6 +2,7 @@ require('./base-css.js');
 require('../css/composer.css');
 var React = require('react');
 var Dialog = require('./dialog');
+var util = require('./util');
 
 var HistoryData = React.createClass({
   show: function() {
@@ -46,7 +47,7 @@ var HistoryData = React.createClass({
               <tbody>
                 {
                   data.map(function(item, i) {
-                    var date = item.dateStr = item.dateStr || new Date(item.date).toLocaleString();
+                    var date = item.dateStr = item.dateStr || util.toLocaleString(new Date(item.date));
                     return (
                       <tr>
                         <th className="w-composer-history-order">{i + 1}</th>

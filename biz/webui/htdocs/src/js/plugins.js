@@ -165,7 +165,7 @@ var Home = React.createClass({
                         <input type="checkbox" title={ndp ? 'Not allowed disable plugins' : (disabled ? 'Disabled' : (checked ? 'Disable ' : 'Enable ') + name)}
                           data-name={name} checked={ndp || checked} disabled={!ndp && disabled} onChange={self.props.onChange} className={ndp ? 'w-not-allowed' : undefined} />
                       </td>
-                      <td className="w-plugins-date">{new Date(plugin.mtime).toLocaleString()}</td>
+                      <td className="w-plugins-date">{util.toLocaleString(new Date(plugin.mtime))}</td>
                       <td className="w-plugins-name" title={plugin.moduleName}><a href={url} target="_blank" data-name={name} onClick={plugin.pluginHomepage ? null : self.onOpen}>{name}</a></td>
                       <td className="w-plugins-version">
                         {plugin.homepage ? <a href={plugin.homepage} target="_blank">{plugin.version}</a> : plugin.version}

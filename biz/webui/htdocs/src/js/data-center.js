@@ -826,7 +826,7 @@ function setReqData(item) {
   var resHeaders = res.headers || '';
   item.hostIp = res.ip || defaultValue;
   item.clientIp = req.ip || '127.0.0.1';
-  item.date = item.date || new Date(item.startTime).toLocaleString();
+  item.date = item.date || util.toLocaleString(new Date(item.startTime));
   item.clientPort = req.port;
   item.serverPort = item.res.port;
   item.contentEncoding = resHeaders['content-encoding'];

@@ -869,6 +869,26 @@ exports.trimLogList = function(list, overflow, hasKeyword) {
   overflow > 0 && list.splice(0, overflow);
   return list;
 };
+
+var TIME_RE = /\b\d\d?:\d\d?:\d\d?\b/;
+
+function toLocaleString(date) {
+  var str = date.toLocaleString();
+  if (!TIME_RE.test(str)) {
+    return str;
+  }
+  var time = RegExp['$&'];
+  var ms = date.getTime() % 1000;
+  if (ms < 10) {
+    ms = '00' + ms;
+  } else if (ms < 100) {
+    ms = '0' + ms;
+  }
+  return str.replace(time, time + '.' + ms);
+}
+
+exports.toLocaleString = toLocaleString;
+
 exports.filterLogList = function(list, keyword) {
   if (!list) {
     return;
@@ -882,7 +902,7 @@ exports.filterLogList = function(list, keyword) {
     if (level && log.level !== level) {
       log.hide = true;
     } else {
-      var text = 'Date: ' + (new Date(log.date)).toLocaleString() + log.logId + '\r\n' + log.text;
+      var text = 'Date: ' + toLocaleString(new Date(log.date)) + log.logId + '\r\n' + log.text;
       log.hide = checkLogText(text, keyword);
     }
   });

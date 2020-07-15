@@ -290,7 +290,7 @@ var FrameList = React.createClass({
               } else {
                 statusClass = ' w-connection-error';
               }
-              item.title = item.title || 'Date: ' + new Date(parseInt(item.frameId, 10)).toLocaleString();
+              item.title = item.title || 'Date: ' + util.toLocaleString(new Date(parseInt(item.frameId, 10)));
             }
             if (item.data == null) {
               item.data = util.getBody(item, true);
@@ -299,7 +299,7 @@ var FrameList = React.createClass({
               }
             }
             if (!item.title && !item.closed) {
-              item.title = 'Date: ' + new Date(parseInt(item.frameId, 10)).toLocaleString()
+              item.title = 'Date: ' + util.toLocaleString(new Date(parseInt(item.frameId, 10)))
                + '\nFrom: ' + (item.isClient ? 'Client' : 'Server');
               if (item.opcode) {
                 item.title += '\nOpcode: ' + item.opcode;

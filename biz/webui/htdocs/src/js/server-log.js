@@ -278,7 +278,7 @@ var ServerLog = React.createClass({
         <div ref="svrContainer" className="fill w-detail-log-content">
           <ul ref="svrContent">
             {logs.map(function(log) {
-              var text = 'Date: ' + (new Date(log.date)).toLocaleString() + '\r\n' + log.text;
+              var text = 'Date: ' + util.toLocaleString(new Date(log.date)) + '\r\n' + log.text;
               var hide = (log.hide || (level && !hide && log.level !== level)) ? ' hide' : '';
               return (
                 <li key={log.id} title={log.level.toUpperCase()} className={'w-' + log.level + hide}>

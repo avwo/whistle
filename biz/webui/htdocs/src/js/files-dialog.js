@@ -24,7 +24,7 @@ function showError(msg, input) {
 
 function fomatFiles(files) {
   return files.map(function(file) {
-    file.date = new Date(file.date).toLocaleString();
+    file.date = util.toLocaleString(new Date(file.date));
     return file;
   });
 }

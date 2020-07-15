@@ -344,7 +344,7 @@ var Console = React.createClass({
             {logs.map(function(log) {
               var logId = log.logId;
               logId = logId ? ' (LogID: ' + logId + ')' : '';
-              var date = 'Date: ' + (new Date(log.date)).toLocaleString() + logId + '\r\n';
+              var date = 'Date: ' + util.toLocaleString(new Date(log.date)) + logId + '\r\n';
               var hide = (log.hide || (level && !hide && log.level !== level)) ? ' hide' : '';
               return (
                 <li key={log.id} title={log.level.toUpperCase()} className={'w-' + log.level + hide}>

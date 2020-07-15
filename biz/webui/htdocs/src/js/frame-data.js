@@ -72,7 +72,7 @@ var FrameClient = React.createClass({
       if (!frame.closed) {
         var len = frame.length;
         overview = {
-          Date: new Date(parseInt(frame.frameId, 10)).toLocaleString(),
+          Date: util.toLocaleString(new Date(parseInt(frame.frameId, 10))),
           Path: frame.isClient ? 'Client -> Server' : 'Server -> Client',
           Opcode: frame.opcode,
           Type: frame.opcode == 1 ? 'Text' : 'Binary',
@@ -82,7 +82,7 @@ var FrameClient = React.createClass({
         };
       } else {
         overview = {
-          Date: new Date(parseInt(frame.frameId, 10)).toLocaleString()
+          Date: util.toLocaleString(new Date(parseInt(frame.frameId, 10)))
         };
       }
       text = util.getBody(frame, true);
