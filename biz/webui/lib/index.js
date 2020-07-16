@@ -25,7 +25,8 @@ var GET_METHOD_RE = /^get$/i;
 var WEINRE_RE = /^\/weinre\/.*/;
 var ALLOW_PLUGIN_PATHS = ['/cgi-bin/rules/list2', '/cgi-bin/values/list2', '/cgi-bin/get-custom-certs-info'];
 var DONT_CHECK_PATHS = ['/cgi-bin/server-info', '/cgi-bin/plugins/is-enable', '/preview.html', '/cgi-bin/rootca', '/cgi-bin/log/set'];
-var GUEST_PATHS = ['/cgi-bin/composer', '/cgi-bin/socket/data', '/cgi-bin/socket/abort', '/cgi-bin/socket/change-status', '/cgi-bin/sessions/export'];
+var GUEST_PATHS = ['/cgi-bin/composer', '/cgi-bin/socket/data', '/cgi-bin/abort', '/cgi-bin/socket/abort',
+  '/cgi-bin/socket/change-status', '/cgi-bin/sessions/export'];
 var PLUGIN_PATH_RE = /^\/(whistle|plugin)\.([^/?#]+)(\/)?/;
 var STATIC_SRC_RE = /\.(?:ico|js|css|png)$/i;
 var UPLOAD_URLS = ['/cgi-bin/values/upload', '/cgi-bin/composer'];
@@ -78,9 +79,6 @@ function verifyLogin(req, res, auth) {
     if (!auth.authKey) {
       auth.authKey = 'whistle_v_lk_' + encodeURIComponent(auth.username);
     }
-  }
-  if (!auth) {
-    return;
   }
   var username = auth.username;
   var password = auth.password;
@@ -260,8 +258,8 @@ app.use(function(req, res, next) {
   }
   var guestAuthKey = config.guestAuthKey;
   if (((guestAuthKey && guestAuthKey === req.headers['x-whistle-guest-auth-key'])
-    || verifyLogin(req, res)) && (!req.method || GET_METHOD_RE.test(req.method) || WEINRE_RE.test(req.path)
-    || GUEST_PATHS.indexOf(req.path) !== -1)) {
+    || verifyLogin(req, res)) && (!req.method || GET_METHOD_RE.test(req.method)
+    || WEINRE_RE.test(req.path) || GUEST_PATHS.indexOf(req.path) !== -1)) {
     return next();
   }
   var username = getUsername();
