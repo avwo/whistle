@@ -2166,6 +2166,13 @@ var Index = React.createClass({
     }
     this.setState({ replayCount: replayCount });
   },
+  clickReplay: function(e) {
+    if (e.shiftKey) {
+      events.trigger('replaySessions', [null, e.shiftKey]);
+    } else {
+      this.replay(e);
+    }
+  },
   replay: function(e, list, count) {
     var modal = this.state.network;
     list = Array.isArray(list) ? list : (modal && modal.getSelectedList());
@@ -2837,7 +2844,7 @@ var Index = React.createClass({
           <div onMouseEnter={this.showAbortOptions} onMouseLeave={this.hideAbortOptions}
             style={{display: isNetwork ? '' : 'none'}}
             className={'w-menu-wrapper w-abort-menu-list w-menu-auto' + (state.showAbortOptions ? ' w-menu-wrapper-show' : '')}>
-            <a onClick={this.replay} className="w-replay-menu"
+            <a onClick={this.clickReplay} className="w-replay-menu"
               style={{display: isNetwork ? '' : 'none'}} href="javascript:;"
               draggable="false">
               <span className="glyphicon glyphicon-repeat"></span>Replay
