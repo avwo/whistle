@@ -1,3 +1,7 @@
+# v2.5.13
+1. refactor: 新增访客模式可以访问的接口
+2. style: 页面时间支持显示毫秒
+
 # v2.5.12
 1. style: 加粗 Composer 里面的 whistle 自定义请求头
 2. fix: https://github.com/avwo/whistle/issues/451
