@@ -58,6 +58,13 @@ var Timeline = React.createClass({
                 request = item.requestTime - item.dnsTime;
                 requestRate = request * TOTAL_RATE / maxTotal + '%';
                 request += 'ms';
+                var protocol = item.protocol;
+                if (typeof protocol === 'string' && protocol.indexOf('>') !== -1) {
+                  var diffTime =  item.httpsTime - item.startTime;
+                  if (diffTime > 0) {
+                    request += ' - ' + diffTime + 'ms(' + protocol + ') = ' + (item.requestTime - item.httpsTime) + 'ms';
+                  }
+                }
               } else {
                 request = '-';
                 requestRate = 0;
