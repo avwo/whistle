@@ -11,6 +11,9 @@ pattern参见[匹配模式](../pattern.html)，更多模式请参考[配置方�
 1. `req.headers.xxx`: 删除req.headers的xxx字段
 2. `res.headers.xxx`: 删除res.headers的xxx字段
 3. `headers.xxx`: 删除res.headers&res.headers的xxx字段
+4. `body`: 删除请求和响应内容 (`版本 >= v2.5.14`)
+5. `req.body`: 删除请求内容 (`版本 >= v2.5.14`)
+6. `res.body`: 删除响应内容 (`版本 >= v2.5.14`)
 
 #### 过滤规则
 需要确保whistle是最新版本：[更新whistle](../update.html)
