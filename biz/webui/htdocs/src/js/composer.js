@@ -448,10 +448,17 @@ var Composer = React.createClass({
     storage.set('useH2InComposer', useH2 ? 1 : '');
     this.setState({ useH2: useH2 });
   },
-  onDisableChange: function(e) {
-    var disableComposerRules = !e.target.checked;
+  setRulesDisable: function(disableComposerRules) {
     storage.set('disableComposerRules', disableComposerRules ? 1 : 0);
     this.setState({ disableComposerRules: disableComposerRules });
+  },
+  onDisableChange: function(e) {
+    this.setRulesDisable(!e.target.checked);
+  },
+  enableRules: function() {
+    if (this.state.disableComposerRules) {
+      this.setRulesDisable(false);
+    }
   },
   execute: function(e) {
     if (e && e.target.nodeName === 'INPUT' && e.keyCode !== 13) {
@@ -807,7 +814,8 @@ var Composer = React.createClass({
             ) : undefined}
             {state.initedResponse ? <ResDetail modal={result} hide={!showResponse} /> : undefined}
           </div>
-          <div ref="rulesCon" title={isStrictMode ? TIPS : undefined} className="orient-vertical-box fill w-composer-rules">
+          <div ref="rulesCon" onDoubleClick={this.enableRules} title={isStrictMode ? TIPS : undefined}
+            className="orient-vertical-box fill w-composer-rules">
             <div className="w-detail-inspectors-title">
               <label>
                 <input disabled={pending} onChange={this.onDisableChange} checked={!state.disableComposerRules} type="checkbox" />
