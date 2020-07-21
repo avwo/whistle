@@ -1,3 +1,8 @@
+# v2.5.14
+1. feat: 支持通过 `delete://body` 删除请求及响应内容，或 `delete://req.body` 删除请求内容，`delete://res.body` 删除响应内容
+2. feat: 支持通过 `reqBody://()` 或 `resBody://()` 分别清空请求或响应内容（不影响reqPrepend、reqAppend 等注入的内容）
+3. fix: #456
+
 # v2.5.13
 1. refactor: 新增访客模式可以访问的接口
 2. style: 页面时间支持显示毫秒
