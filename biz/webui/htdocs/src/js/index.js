@@ -40,32 +40,36 @@ var AT_LINK_RE = /^@(https?:)?(\/\/[^/]\S+)$/i;
 var OPTIONS_WITH_SELECTED = ['removeSelected', 'exportWhistleFile', 'exportSazFile'];
 var RULES_ACTIONS = [
   {
-    name: 'Export Selected Rules',
+    name: 'Export Selected',
     icon: 'export',
     id: 'exportRules'
   },
   {
-    name: 'Export All Rules',
-    href: 'cgi-bin/rules/export'
+    name: 'Export All',
+    href: 'cgi-bin/rules/export',
+    target: 'downloadTargetFrame',
+    id: 'exportAllRules'
   },
   {
-    name: 'Import Rules',
+    name: 'Import',
     icon: 'import',
     id: 'importRules'
   }
 ];
 var VALUES_ACTIONS = [
   {
-    name: 'Export Selected Values',
+    name: 'Export Selected',
     icon: 'export',
     id: 'exportValues'
   },
   {
-    name: 'Export All Values',
-    href: 'cgi-bin/values/export'
+    name: 'Export All',
+    href: 'cgi-bin/values/export',
+    target: 'downloadTargetFrame',
+    id: 'exportAllValues'
   },
   {
-    name: 'Import Values',
+    name: 'Import',
     icon: 'import',
     id: 'importValues'
   }
