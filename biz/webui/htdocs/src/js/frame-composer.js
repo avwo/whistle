@@ -215,9 +215,9 @@ var FrameComposer = React.createClass({
               <span className="caret"></span>
             </button>
             <ul style={leftStyle} className={'dropdown-menu' + (closed ? ' hide' : '')}>
-              <li style={displayStyle}><a onClick={this.onSend} href="javascript:;">Send binary data</a></li>
-              <li><a onClick={this.uploadTextToClient} href="javascript:;">{isHttps ? 'Upload to client' : 'Upload text data'}</a></li>
-              <li style={displayStyle}><a onClick={this.uploadBinToClient} href="javascript:;">Upload binary data</a></li>
+              <li style={displayStyle}><a onClick={this.onSend}>Send binary data</a></li>
+              <li><a onClick={this.uploadTextToClient}>{isHttps ? 'Upload to client' : 'Upload text data'}</a></li>
+              <li style={displayStyle}><a onClick={this.uploadBinToClient}>Upload binary data</a></li>
             </ul>
           </div>
           <div className="btn-group">
@@ -230,9 +230,9 @@ var FrameComposer = React.createClass({
               <span className="caret"></span>
             </button>
             <ul style={leftStyle} className={'dropdown-menu' + (closed ? ' hide' : '')}>
-              <li style={displayStyle}><a data-target="server" onClick={this.onSend} href="javascript:;">Send binary data</a></li>
-              <li><a onClick={this.uploadTextToServer} href="javascript:;">{isHttps ? 'Upload to server' : 'Upload text data'}</a></li>
-              <li style={displayStyle}><a onClick={this.uploadBinToServer} href="javascript:;">Upload binary data</a></li>
+              <li style={displayStyle}><a data-target="server" onClick={this.onSend}>Send binary data</a></li>
+              <li><a onClick={this.uploadTextToServer}>{isHttps ? 'Upload to server' : 'Upload text data'}</a></li>
+              <li style={displayStyle}><a onClick={this.uploadBinToServer}>Upload binary data</a></li>
             </ul>
           </div>
           <button disabled={!isJSON} type="button" title="Format JSON" onClick={this.format}

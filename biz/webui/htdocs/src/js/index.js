@@ -2784,18 +2784,18 @@ var Index = React.createClass({
     return (
       <div className={'main orient-vertical-box' + (showLeftMenu ? ' w-show-left-menu' : '')}>
         <div className={'w-menu w-' + name + '-menu-list'}>
-          <a onClick={this.toggleLeftMenu} href="javascript:;" draggable="false" className="w-show-left-menu-btn"
+          <a onClick={this.toggleLeftMenu} draggable="false" className="w-show-left-menu-btn"
             style={{display: networkMode ? 'none' : undefined}} title={'Dock to ' + (showLeftMenu ? 'top' : 'left') + ' (Ctrl[Command] + M)'}>
             <span className={'glyphicon glyphicon-chevron-' + (showLeftMenu ? 'up' : 'left')}></span>
           </a>
           <div style={{display: rulesMode ? 'none' : undefined}} onMouseEnter={this.showNetworkOptions} onMouseLeave={this.hideNetworkOptions} className={'w-nav-menu w-menu-wrapper' + (showNetworkOptions ? ' w-menu-wrapper-show' : '')}>
             <a onClick={this.showNetwork} onDoubleClick={this.clearNetwork} className="w-network-menu" title="Double click to remove all sessions" style={{background: name == 'network' ? '#ddd' : null}}
-          href="javascript:;"  draggable="false"><span className="glyphicon glyphicon-globe"></span>Network</a>
+           draggable="false"><span className="glyphicon glyphicon-globe"></span>Network</a>
             <MenuItem ref="networkMenuItem" options={state.networkOptions} className="w-network-menu-item" onClickOption={this.handleNetwork} />
           </div>
           <div style={{display: pluginsMode ? 'none' : undefined}} onMouseEnter={this.showRulesOptions} onMouseLeave={this.hideRulesOptions}
             className={'w-nav-menu w-menu-wrapper' + (showRulesOptions ? ' w-menu-wrapper-show' : '') + (isRules ? ' w-menu-auto' : '')}>
-            <a onClick={this.showRules} className="w-rules-menu" style={{background: name == 'rules' ? '#ddd' : null}} href="javascript:;" draggable="false"><span className="glyphicon glyphicon-list"></span>Rules</a>
+            <a onClick={this.showRules} className="w-rules-menu" style={{background: name == 'rules' ? '#ddd' : null}} draggable="false"><span className="glyphicon glyphicon-list"></span>Rules</a>
             <MenuItem ref="rulesMenuItem"  name={name == 'rules' ? null : 'Open'} options={rulesOptions} checkedOptions={uncheckedRules} disabled={state.disabledAllRules}
               className="w-rules-menu-item"
               onClick={this.showRules}
@@ -2804,15 +2804,15 @@ var Index = React.createClass({
           </div>
           <div style={{display: pluginsMode ? 'none' : undefined}} onMouseEnter={this.showValuesOptions} onMouseLeave={this.hideValuesOptions}
             className={'w-nav-menu w-menu-wrapper' + (showValuesOptions ? ' w-menu-wrapper-show' : '') + (isValues ? ' w-menu-auto' : '')}>
-            <a onClick={this.showValues} className="w-values-menu" style={{background: name == 'values' ? '#ddd' : null}} href="javascript:;" draggable="false"><span className="glyphicon glyphicon-folder-open"></span>Values</a>
+            <a onClick={this.showValues} className="w-values-menu" style={{background: name == 'values' ? '#ddd' : null}} draggable="false"><span className="glyphicon glyphicon-folder-open"></span>Values</a>
             <MenuItem ref="valuesMenuItem" name={name == 'values' ? null : 'Open'} options={state.valuesOptions} className="w-values-menu-item" onClick={this.showValues} onClickOption={this.showAndActiveValues} />
           </div>
           <div ref="pluginsMenu" onMouseEnter={this.showPluginsOptions} onMouseLeave={this.hidePluginsOptions} className={'w-nav-menu w-menu-wrapper' + (showPluginsOptions ? ' w-menu-wrapper-show' : '')}>
-            <a onClick={this.showPlugins} className="w-plugins-menu" style={{background: name == 'plugins' ? '#ddd' : null}} href="javascript:;" draggable="false"><span className="glyphicon glyphicon-list-alt"></span>Plugins</a>
+            <a onClick={this.showPlugins} className="w-plugins-menu" style={{background: name == 'plugins' ? '#ddd' : null}} draggable="false"><span className="glyphicon glyphicon-list-alt"></span>Plugins</a>
             <MenuItem ref="pluginsMenuItem" name={name == 'plugins' ? null : 'Open'} options={pluginsOptions} checkedOptions={state.disabledPlugins} disabled={disabledAllPlugins}
               className="w-plugins-menu-item" onClick={this.showPlugins} onChange={this.disablePlugin} onClickOption={this.showAndActivePlugins} />
           </div>
-          {!state.ndp && <a onClick={this.disableAllPlugins} className="w-enable-plugin-menu" href="javascript:;"
+          {!state.ndp && <a onClick={this.disableAllPlugins} className="w-enable-plugin-menu"
             style={{display: isPlugins ? '' : 'none', color: disabledAllPlugins ? '#f66' : undefined}}
             draggable="false">
             <span className={'glyphicon glyphicon-' + (disabledAllPlugins ? 'ok-circle' : 'ban-circle')}/>
@@ -2820,16 +2820,16 @@ var Index = React.createClass({
           </a>}
           <UpdateAllBtn hide={!isPlugins} />
           <a onClick={this.reinstallAllPlugins} className={'w-plugins-menu' +
-            (isPlugins ? '' : ' hide')} href="javascript:;" draggable="false">
+            (isPlugins ? '' : ' hide')} draggable="false">
             <span className="glyphicon glyphicon-download-alt" />
             ReinstallAll
           </a>
           <a onClick={this.importData} className="w-import-menu"
-            style={{display: isPlugins ? 'none' : ''}} href="javascript:;"
+            style={{display: isPlugins ? 'none' : ''}}
             draggable="false">
             <span className="glyphicon glyphicon-import"></span>Import
           </a>
-          <a onClick={this.exportData} className="w-export-menu" href="javascript:;"
+          <a onClick={this.exportData} className="w-export-menu"
           style={{display: isPlugins ? 'none' : ''}} draggable="false">
             <span className="glyphicon glyphicon-export"></span>Export
           </a>
@@ -2837,37 +2837,37 @@ var Index = React.createClass({
             style={{display: isNetwork ? '' : 'none'}}
             className={'w-menu-wrapper w-remove-menu-list w-menu-auto' + (state.showRemoveOptions ? ' w-menu-wrapper-show' : '')}>
             <a onClick={this.clear} className="w-remove-menu" title="Ctrl[Command] + X"
-              href="javascript:;" draggable="false">
+              draggable="false">
               <span className="glyphicon glyphicon-remove"></span>Clear
             </a>
             <MenuItem options={REMOVE_OPTIONS} className="w-remove-menu-item" onClickOption={this.handleNetwork} />
           </div>
-          <a onClick={this.onClickMenu} className="w-save-menu" style={{display: (isNetwork || isPlugins) ? 'none' : ''}} href="javascript:;" draggable="false" title="Ctrl[Command] + S"><span className="glyphicon glyphicon-save-file"></span>Save</a>
-          <a onClick={this.onClickMenu} className="w-create-menu" style={{display: (isNetwork || isPlugins) ? 'none' : ''}} href="javascript:;" draggable="false"><span className="glyphicon glyphicon-plus"></span>Create</a>
-          <a onClick={this.onClickMenu} className={'w-edit-menu' + (disabledEditBtn ? ' w-disabled' : '')} style={{display: (isNetwork || isPlugins) ? 'none' : ''}} href="javascript:;" draggable="false"><span className="glyphicon glyphicon-edit"></span>Rename</a>
+          <a onClick={this.onClickMenu} className="w-save-menu" style={{display: (isNetwork || isPlugins) ? 'none' : ''}} draggable="false" title="Ctrl[Command] + S"><span className="glyphicon glyphicon-save-file"></span>Save</a>
+          <a onClick={this.onClickMenu} className="w-create-menu" style={{display: (isNetwork || isPlugins) ? 'none' : ''}} draggable="false"><span className="glyphicon glyphicon-plus"></span>Create</a>
+          <a onClick={this.onClickMenu} className={'w-edit-menu' + (disabledEditBtn ? ' w-disabled' : '')} style={{display: (isNetwork || isPlugins) ? 'none' : ''}} draggable="false"><span className="glyphicon glyphicon-edit"></span>Rename</a>
           <div onMouseEnter={this.showAbortOptions} onMouseLeave={this.hideAbortOptions}
             style={{display: isNetwork ? '' : 'none'}}
             className={'w-menu-wrapper w-abort-menu-list w-menu-auto' + (state.showAbortOptions ? ' w-menu-wrapper-show' : '')}>
             <a onClick={this.clickReplay} className="w-replay-menu"
-              style={{display: isNetwork ? '' : 'none'}} href="javascript:;"
+              style={{display: isNetwork ? '' : 'none'}}
               draggable="false">
               <span className="glyphicon glyphicon-repeat"></span>Replay
             </a>
             <MenuItem options={ABORT_OPTIONS} className="w-remove-menu-item" onClickOption={this.abort} />
           </div>
-          <a onClick={this.composer} className="w-composer-menu" style={{display: isNetwork ? '' : 'none'}} href="javascript:;" draggable="false"><span className="glyphicon glyphicon-edit"></span>Compose</a>
+          <a onClick={this.composer} className="w-composer-menu" style={{display: isNetwork ? '' : 'none'}} draggable="false"><span className="glyphicon glyphicon-edit"></span>Compose</a>
           <RecordBtn hide={!isNetwork} onClick={this.handleAction} />
-          <a onClick={this.onClickMenu} className={'w-delete-menu' + (disabledDeleteBtn ? ' w-disabled' : '')} style={{display: (isNetwork || isPlugins) ? 'none' : ''}} href="javascript:;" draggable="false"><span className="glyphicon glyphicon-trash"></span>Delete</a>
+          <a onClick={this.onClickMenu} className={'w-delete-menu' + (disabledDeleteBtn ? ' w-disabled' : '')} style={{display: (isNetwork || isPlugins) ? 'none' : ''}} draggable="false"><span className="glyphicon glyphicon-trash"></span>Delete</a>
           <FilterBtn onClick={this.showSettings} disabledRules={isRules && state.disabledAllRules} isNetwork={isNetwork} hide={isPlugins} />
-          <a onClick={this.showFiles} className="w-files-menu" href="javascript:;" draggable="false"><span className="glyphicon glyphicon-upload"></span>Files</a>
+          <a onClick={this.showFiles} className="w-files-menu" draggable="false"><span className="glyphicon glyphicon-upload"></span>Files</a>
           <div onMouseEnter={this.showWeinreOptions} onMouseLeave={this.hideWeinreOptions} className={'w-menu-wrapper' + (showWeinreOptions ? ' w-menu-wrapper-show' : '')}>
             <a onClick={this.showWeinreOptionsQuick}
               onDoubleClick={this.showAnonymousWeinre}
-              className="w-weinre-menu" href="javascript:;"
+              className="w-weinre-menu"
               draggable="false"><span className="glyphicon glyphicon-console"></span>Weinre</a>
             <MenuItem ref="weinreMenuItem" name="anonymous" options={state.weinreOptions} className="w-weinre-menu-item" onClick={this.showAnonymousWeinre} onClickOption={this.showWeinre} />
           </div>
-          <a onClick={this.showHttpsSettingsDialog} className="w-https-menu" href="javascript:;" draggable="false"
+          <a onClick={this.showHttpsSettingsDialog} className="w-https-menu" draggable="false"
             style={{color: dataCenter.hasInvalidCerts ? 'red' : undefined}}
           >
             <span className={'glyphicon glyphicon-' + (state.interceptHttpsConnects ? 'ok' : 'lock')}></span>HTTPS
@@ -2877,7 +2877,7 @@ var Index = React.createClass({
             <a className={'w-help-menu' + (state.hasNewVersion ? ' w-menu-enable'  : '')}
               onClick={this.showAboutDialog}
               title={state.hasNewVersion ? 'There is a new version of whistle' : undefined}
-              href={state.hasNewVersion ? 'javascript:;' : 'https://github.com/avwo/whistle#whistle'}
+              href={state.hasNewVersion ? undefined : 'https://github.com/avwo/whistle#whistle'}
               target={state.hasNewVersion ? undefined : '_blank'}><span className="glyphicon glyphicon-question-sign"></span>Help</a>
             <MenuItem ref="helpMenuItem" options={state.helpOptions}
               name={<About ref="aboutDialog" onClick={this.hideHelpOptions} onCheckUpdate={this.showHasNewVersion} />}
@@ -2898,7 +2898,7 @@ var Index = React.createClass({
                 background: name == 'network' ? '#ddd' : null,
                 display: rulesMode ? 'none' : undefined
               }}
-              href="javascript:;"  draggable="false">
+               draggable="false">
                 <span className="glyphicon glyphicon-globe"></span><i>Network</i>
             </a>
             <a onClick={this.showRules} className="w-save-menu w-rules-menu"
@@ -2907,7 +2907,7 @@ var Index = React.createClass({
               style={{
                 background: name == 'rules' ? '#ddd' : null,
                 display: pluginsMode ? 'none' : undefined
-              }} href="javascript:;" draggable="false">
+              }} draggable="false">
               <span className={'glyphicon glyphicon-list' + (state.disabledAllRules ? ' w-disabled' : '')} ></span>
               <i>{!state.classic && !state.ndr && <input onChange={this.disableAllRules} type="checkbox" onClick={stopPropagation} checked={!state.disabledAllRules}
                 title={state.disabledAllRules ? 'Click to enable all rules' : 'Click to disable all rules'} />} Rules</i>
@@ -2919,12 +2919,12 @@ var Index = React.createClass({
               style={{
                 background: name == 'values' ? '#ddd' : null,
                 display: pluginsMode ? 'none' : undefined
-              }} href="javascript:;" draggable="false">
+              }} draggable="false">
               <span className="glyphicon glyphicon-folder-open"></span><i>Values</i>
               <i className="w-menu-changed" style={{display: state.values.hasChanged() ? undefined : 'none'}}>*</i>
             </a>
             <a onClick={this.showPlugins} className="w-plugins-menu"
-              style={{background: name == 'plugins' ? '#ddd' : null}} href="javascript:;" draggable="false">
+              style={{background: name == 'plugins' ? '#ddd' : null}} draggable="false">
               <span className={'glyphicon glyphicon-list-alt' + (disabledAllPlugins ? ' w-disabled' : '')}></span>
               <i>{!state.classic && !state.ndp && <input onChange={this.disableAllPlugins} type="checkbox" onClick={stopPropagation} checked={!disabledAllPlugins}
                 title={disabledAllPlugins ? 'Click to enable all plugins' : 'Click to disable all plugins'}
@@ -3004,7 +3004,7 @@ var Index = React.createClass({
                     type="checkbox" /> Capture TUNNEL CONNECTs</label></p>
                   <p><label><input checked={dataCenter.supportH2 && state.enableHttp2}
                     onChange={this.enableHttp2} type="checkbox" /> Enable HTTP/2</label></p>
-                    <a href="javascript:;" draggable="false" style={{color: dataCenter.hasInvalidCerts ? 'red' : undefined}} onClick={this.showCustomCertsInfo}>View custom certs info</a>
+                    <a draggable="false" style={{color: dataCenter.hasInvalidCerts ? 'red' : undefined}} onClick={this.showCustomCertsInfo}>View custom certs info</a>
                     <CertsInfoDialog ref="certsInfoDialog" />
                 </div>
               </div>

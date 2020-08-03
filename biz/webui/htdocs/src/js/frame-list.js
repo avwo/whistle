@@ -246,19 +246,19 @@ var FrameList = React.createClass({
       <div className="w-frames-action">
         <RecordBtn ref="recordBtn" onClick={this.handleAction} disabledRecord={reqData.closed} />
         <a onClick={self.clear} className="w-remove-menu"
-          href="javascript:;" draggable="false">
+          draggable="false">
           <span className="glyphicon glyphicon-remove"></span>Clear
         </a>
         <a onClick={self.replay} className={'w-remove-menu' + ((!activeItem || reqData.closed) ? ' w-disabled' : '')}
-          href="javascript:;" draggable="false">
+          draggable="false">
           <span className="glyphicon glyphicon-repeat"></span>Replay
         </a>
         <a onClick={self.compose} className={'w-remove-menu' + (activeItem ? '' : ' w-disabled')}
-          href="javascript:;" draggable="false">
+          draggable="false">
           <span className="glyphicon glyphicon-edit"></span>Compose
         </a>
         <a onClick={self.abort} className={'w-remove-menu' + (reqData.closed ? ' w-disabled' : '')}
-          href="javascript:;" draggable="false">
+          draggable="false">
           <span className="glyphicon glyphicon-ban-circle"></span>Abort
         </a>
         <DropDown

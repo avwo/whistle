@@ -236,10 +236,10 @@ var FilesDialog = React.createClass({
                         <td className="w-files-date">{file.date}</td>
                         <td className="w-files-path">{filePath}</td>
                         <td className="w-files-operation">
-                          <a href="javascript:;" className="w-copy-text-with-tips"
+                          <a className="w-copy-text-with-tips"
                             data-clipboard-text={filePath}>Copy path</a>
-                          <a href="javascript:;" data-name={file.name} onClick={self.downloadFile}>Download</a>
-                          <a href="javascript:;" data-name={file.name} onClick={self.remove}>Delete</a>
+                          <a data-name={file.name} onClick={self.downloadFile}>Download</a>
+                          <a data-name={file.name} onClick={self.remove}>Delete</a>
                         </td>
                       </tr>
                     );

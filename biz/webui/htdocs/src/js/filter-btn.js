@@ -29,7 +29,7 @@ var FilterBtn = React.createClass({
         onClick={this.props.onClick}
         className={'w-settings-menu' + className}
         style={{display: hide ? 'none' : ''}}
-        href="javascript:;"
+       
         draggable="false"
       >
         <span

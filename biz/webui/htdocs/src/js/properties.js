@@ -44,7 +44,7 @@ var Properties = React.createClass({
           <div className="w-textarea-bar">
             <CopyBtn value={sourceText} name="AsText" />
             {this.jsonStr ? <CopyBtn value={this.jsonStr} name="AsJSON" /> : undefined }
-            <a onClick={this.toggle} href="javascript:;">{ viewSource ? 'Form' : 'Text' }</a>
+            <a onClick={this.toggle}>{ viewSource ? 'Form' : 'Text' }</a>
           </div> : undefined
         }
         { sourceText ? (<pre className="w-properties-source">

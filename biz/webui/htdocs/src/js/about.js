@@ -67,7 +67,7 @@ var About = React.createClass({
     var latest = state.latestVersion;
 
     return (
-        <a  draggable="false" onClick={self.showAboutInfo} className="w-about-menu" href="javascript:;">
+        <a  draggable="false" onClick={self.showAboutInfo} className="w-about-menu">
           <i style={{display: state.hasUpdate ? 'block' : ''}}></i><span className="glyphicon glyphicon-info-sign"></span>About
           <Dialog ref="aboutDialog" wstyle="w-about-dialog">
             <div className="modal-body w-about-has-plugins">

@@ -73,8 +73,8 @@ var KVDialog = React.createClass({
                         <th title={item.name}
                           className="w-kv-name">{item.name}</th>
                         <td className="w-kv-operation">
-                          <a href="javascript:;" title={item.value} onClick={self.viewContent}>Content</a>
-                          <a href="javascript:;" data-name={item.name} onClick={function() {
+                          <a title={item.value} onClick={self.viewContent}>Content</a>
+                          <a data-name={item.name} onClick={function() {
                             self.remove(item);
                           }}>Delete</a>
                           <strong>{item.isConflict ? '[Conflict]' : ''}</strong>

@@ -23,7 +23,7 @@ var UpdateAllBtn = React.createClass({
     return (
       <a style={this.state.disabled ? DISABLED : undefined}
         onClick={this.updateAllPlugins} className={'w-plugins-menu' +
-        (this.props.hide ? ' hide' : '')} href="javascript:;" draggable="false">
+        (this.props.hide ? ' hide' : '')} draggable="false">
         <span className="glyphicon glyphicon-refresh" />
         UpdateAll
       </a>

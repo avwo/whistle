@@ -175,3 +175,7 @@ body .cm-s-cobalt span.cm-number {
 .w-bold {
   font-weight: bold!important;
 }
+
+a {
+  cursor: pointer;
+}

@@ -81,7 +81,7 @@ var RecordBtn = React.createClass({
           + (state.showActionOptions ? ' w-menu-wrapper-show' : '')
           + (hide ? ' hide' : '')}
       >
-        <a onClick={this.onClick} href="javascript:;" draggable="false"
+        <a onClick={this.onClick} draggable="false"
           className={'w-scroll-menu' + (this.props.disabledRecord ? ' w-disabled' : '')}
           title={title}
         >

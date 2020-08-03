@@ -174,12 +174,12 @@ var Home = React.createClass({
                       </td>
                       <td className="w-plugins-operation">
                         <a href={url} target="_blank" data-name={name} className="w-plugin-btn" onClick={plugin.pluginHomepage ? null : self.onOpen}>Option</a>
-                        {(plugin.rules || plugin._rules || plugin.resRules) ? <a href="javascript:;" draggable="false" data-name={name} onClick={self.showRules}>Rules</a> : <span className="disabled">Rules</span>}
-                        <a href="javascript:;" draggable="false" className="w-plugin-btn w-plugin-update-btn"
+                        {(plugin.rules || plugin._rules || plugin.resRules) ? <a draggable="false" data-name={name} onClick={self.showRules}>Rules</a> : <span className="disabled">Rules</span>}
+                        <a draggable="false" className="w-plugin-btn w-plugin-update-btn"
                           data-name={name} onClick={self.showUpdate}>Update</a>
-                        <a href="javascript:;" draggable="false" className="w-plugin-btn"
+                        <a draggable="false" className="w-plugin-btn"
                           data-name={name} onClick={self.showUninstall}>Uninstall</a>
-                        {(util.isString(plugin.rulesUrl) || util.isString(plugin.valuesUrl)) ? <a href="javascript:;" className="w-plugin-btn"
+                        {(util.isString(plugin.rulesUrl) || util.isString(plugin.valuesUrl)) ? <a className="w-plugin-btn"
                           onClick={function() {
                             self.syncData(plugin);
                           }}>Sync</a> : undefined}
@@ -225,7 +225,7 @@ var Home = React.createClass({
             <div className="modal-body">
               <h5>
                 <a
-                  href="javascript:;"
+                 
                   data-dismiss="modal"
                   className="w-copy-text-with-tips"
                   data-clipboard-text={cmdMsg}
@@ -314,10 +314,10 @@ var Tabs = React.createClass({
     return (
       <div className="w-nav-tabs fill orient-vertical-box" style={{display: self.props.hide ? 'none' : ''}}>
          <ul className="nav nav-tabs">
-            <li className={'w-nav-home-tab' + (activeName == 'Home' ? ' active' : '')} data-name="Home"  onClick={self.props.onActive}><a href="javascript:;" draggable="false">Home</a></li>
+            <li className={'w-nav-home-tab' + (activeName == 'Home' ? ' active' : '')} data-name="Home"  onClick={self.props.onActive}><a draggable="false">Home</a></li>
             {tabs.map(function(tab) {
               return <li className={activeName == tab.name ? ' active' : ''}>
-                  <a data-name={tab.name}  onClick={self.props.onActive} href="javascript:;" draggable="false">
+                  <a data-name={tab.name}  onClick={self.props.onActive} draggable="false">
                     {tab.name}
                     <span data-name={tab.name} title="Close" onClick={self.onClose}>&times;</span>
                   </a>

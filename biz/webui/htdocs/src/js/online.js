@@ -168,7 +168,7 @@ var Online = React.createClass({
       }
     }
     return (
-        <a title={info.join('\n')} href="javascript:;" draggable="false"
+        <a title={info.join('\n')} draggable="false"
           className={'w-online-menu w-online' + (server ? '' : ' w-offline')} onClick={this.showServerInfo}>
           <span className="glyphicon glyphicon-stats"></span>{server ? 'Online' : 'Offline'}
           <Dialog ref="confirmReload" wstyle="w-confirm-reload-dialog">

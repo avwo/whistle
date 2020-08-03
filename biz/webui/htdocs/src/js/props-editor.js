@@ -272,8 +272,8 @@ var PropsEditor = React.createClass({
                       </pre>
                     </td>
                     <td className="w-props-ops">
-                      <a data-name={name} onClick={self.onEdit} className="glyphicon glyphicon-edit" href="javascript:;" title="Edit"></a>
-                      <a data-name={name} onClick={self.onRemove} className="glyphicon glyphicon-remove" href="javascript:;" title="Delete"></a>
+                      <a data-name={name} onClick={self.onEdit} className="glyphicon glyphicon-edit" title="Edit"></a>
+                      <a data-name={name} onClick={self.onRemove} className="glyphicon glyphicon-remove" title="Delete"></a>
                     </td>
                   </tr>
                 );
