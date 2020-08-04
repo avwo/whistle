@@ -20,7 +20,7 @@ var BTNS = [
     icon: 'exclamation-sign'
   },
   {
-    name: 'ToolBox',
+    name: 'Tools',
     icon: 'wrench'
   }/* ,
   {
