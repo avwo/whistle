@@ -947,7 +947,7 @@ function updateServerInfo(data) {
     curServerInfo.strictMode = data.strictMode;
     events.trigger('updateStrictMode');
   }
-  if (curServerInfo && curServerInfo.version == data.version && curServerInfo.rulesMode === data.rulesMode &&
+  if (curServerInfo && curServerInfo.version == data.version && curServerInfo.rulesMode === data.rulesMode && curServerInfo.cmdName === data.cmdName &&
     curServerInfo.networkMode === data.networkMode && curServerInfo.pluginsMode === data.pluginsMode && curServerInfo.multiEnv === data.multiEnv &&
     curServerInfo.baseDir == data.baseDir && curServerInfo.username == data.username &&
     curServerInfo.port == data.port && curServerInfo.host == data.host &&
@@ -967,6 +967,10 @@ exports.isMutilEnv = function() {
 };
 exports.isStrictMode = function() {
   return (curServerInfo && curServerInfo.strictMode) || false;
+};
+
+exports.getServerInfo = function() {
+  return curServerInfo || '';
 };
 
 exports.on = function (type, callback) {

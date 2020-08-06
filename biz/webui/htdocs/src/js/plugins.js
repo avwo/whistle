@@ -5,7 +5,10 @@ var ReactDOM = require('react-dom');
 var events = require('./events');
 var Dialog = require('./dialog');
 var SyncDialog = require('./sync-dialog');
+var dataCenter = require('./data-center');
 var util = require('./util');
+
+var CMD_RE = /^([\w]{1,12})(\s+-g)?$/;
 
 function getPluginComparator(plugins) {
   return function(a, b) {
@@ -13,6 +16,18 @@ function getPluginComparator(plugins) {
     var p2 = plugins[b];
     return util.compare(p1.priority, p2.priority) || util.compare(p2.mtime, p1.mtime) || (a > b ? 1 : -1);
   };
+}
+
+function getCmd(uninstall) {
+  var cmdName = dataCenter.getServerInfo().cmdName;
+  var g = '';
+  if (cmdName && CMD_RE.test(cmdName)) {
+    cmdName = RegExp.$1 + ' ';
+    g = ' ' + RegExp.$2.trim();
+  } else {
+    cmdName = 'w2 ';
+  }
+  return cmdName + (uninstall ? 'uninstall' : 'install') + g + ' ';
 }
 
 var Home = React.createClass({
@@ -37,7 +52,7 @@ var Home = React.createClass({
       });
       var cmdMsg = Object.keys(newPlugins).map(function(registry) {
         var list = newPlugins[registry].join(' ');
-        return 'w2 install ' + list + registry;
+        return getCmd() + list + registry;
       }).join('\n\n');
       cmdMsg && self.setState({
         cmdMsg: cmdMsg,
@@ -85,7 +100,7 @@ var Home = React.createClass({
     var plugin = this.props.data.plugins[name + ':'];
     var registry = plugin.registry ? ' --registry=' + plugin.registry : '';
     this.setState({
-      cmdMsg: 'w2 install ' + plugin.moduleName + registry,
+      cmdMsg: getCmd() + plugin.moduleName + registry,
       isSys: plugin.isSys,
       uninstall: false
     }, this.showMsgDialog);
@@ -95,7 +110,7 @@ var Home = React.createClass({
     var plugin = this.props.data.plugins[name + ':'];
     var sudo = this.props.data.isWin ? '' : 'sudo ';
     var isSys = plugin.isSys;
-    var cmdMsg = isSys ? 'w2 uninstall ' : sudo + 'npm uninstall -g ';
+    var cmdMsg = isSys ? getCmd(true) : sudo + 'npm uninstall -g ';
     var registry = !isSys && plugin.registry ? ' --registry=' + plugin.registry : '';
     this.setState({
       cmdMsg: cmdMsg + plugin.moduleName + registry,
