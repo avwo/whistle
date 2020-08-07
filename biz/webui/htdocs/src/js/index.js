@@ -1370,7 +1370,6 @@ var Index = React.createClass({
         return;
       }
       self.refs.importRemoteSessions.hide();
-      input.value = '';
       self.importAnySessions(data);
     }));
   },
@@ -1405,7 +1404,6 @@ var Index = React.createClass({
         return;
       }
       self.refs.importRemoteRules.hide();
-      input.value = '';
       if (data) {
         self.rulesForm = getJsonForm(data);
         self.refs.confirmImportRules.show();
@@ -1443,7 +1441,6 @@ var Index = React.createClass({
         return;
       }
       self.refs.importRemoteValues.hide();
-      input.value = '';
       if (data) {
         self.valuesForm = getJsonForm(data, 'values');
         self.refs.confirmImportValues.show();
