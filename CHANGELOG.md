@@ -1,3 +1,8 @@
+# v2.5.15
+1. fix: #464
+2. feat: 支持自定义 plugins 列表的卸载及安装命令名称
+3. chore: 优化界面及依赖
+
 # v2.5.14
 1. feat: 支持通过 `delete://body` 删除请求及响应内容，或 `delete://req.body` 删除请求内容，`delete://res.body` 删除响应内容
 2. feat: 支持通过 `reqBody://()` 或 `resBody://()` 分别清空请求或响应内容（不影响reqPrepend、reqAppend 等注入的内容）
