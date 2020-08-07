@@ -1057,7 +1057,8 @@ var Index = React.createClass({
         onReady({
           url: location.href,
           importSessions: self.importAnySessions,
-          importHarSessions: self.importHarSessions
+          importHarSessions: self.importHarSessions,
+          clearSessions: self.clear
         });
       }
     } catch(e) {}
