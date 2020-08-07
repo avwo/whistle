@@ -190,10 +190,10 @@ var Home = React.createClass({
                       <td className="w-plugins-operation">
                         <a href={url} target="_blank" data-name={name} className="w-plugin-btn" onClick={plugin.pluginHomepage ? null : self.onOpen}>Option</a>
                         {(plugin.rules || plugin._rules || plugin.resRules) ? <a draggable="false" data-name={name} onClick={self.showRules}>Rules</a> : <span className="disabled">Rules</span>}
-                        <a draggable="false" className="w-plugin-btn w-plugin-update-btn"
-                          data-name={name} onClick={self.showUpdate}>Update</a>
-                        <a draggable="false" className="w-plugin-btn"
-                          data-name={name} onClick={self.showUninstall}>Uninstall</a>
+                        {plugin.isProj ? <span className="disabled">Update</span> : <a draggable="false" className="w-plugin-btn w-plugin-update-btn"
+                          data-name={name} onClick={self.showUpdate}>Update</a>}
+                        {plugin.isProj ? <span className="disabled">Uninstall</span> : <a draggable="false" className="w-plugin-btn"
+                          data-name={name} onClick={self.showUninstall}>Uninstall</a>}
                         {(util.isString(plugin.rulesUrl) || util.isString(plugin.valuesUrl)) ? <a className="w-plugin-btn"
                           onClick={function() {
                             self.syncData(plugin);
