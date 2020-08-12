@@ -80,7 +80,7 @@ var ToolBox = React.createClass({
         <div className="w-detail-inspectors-title">
           <span className="glyphicon glyphicon-qrcode"></span>QRCode
           <button className="btn btn-primary" disabled={!NOT_EMPTY_RE.test(qrcodeValue)}
-          onClick={this.generageQRCode}>Generate</button>
+          onClick={this.generageQRCode}>Confirm</button>
         </div>
         <textarea onChange={this.onQRCodeChange} value={qrcodeValue} className="w-tool-box-ctn"
           maxLength={MAX_QRCODE_LEN} placeholder="Input the URL" />
