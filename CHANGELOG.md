@@ -1,3 +1,6 @@
+# v2.5.16
+1. fix: https://github.com/avwo/whistle/issues/462
+
 # v2.5.15
 1. fix: #464
 2. feat: 支持自定义 plugins 列表的卸载及安装命令名称
