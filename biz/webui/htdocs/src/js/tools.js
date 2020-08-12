@@ -20,7 +20,7 @@ var BTNS = [
     icon: 'exclamation-sign'
   },
   {
-    name: 'Tools',
+    name: 'Toolbox',
     icon: 'wrench'
   }/* ,
   {
@@ -66,7 +66,7 @@ var Tools = React.createClass({
           <BtnGroup onDoubleClickBar={this.onDoubleClickBar} onClick={this.toggleTabs} onDoubleClick={this.clearLogs} btns={BTNS} />
           {state.initedConsole ? <Console ref="console" hide={!BTNS[0].active} /> : undefined}
           {state.initedServer ? <ServerLog ref="serverLog" hide={!BTNS[1].active} /> : undefined}
-          {state.initedToolBox ? <ToolBox hide={!BTNS[2].active} /> : undefined}
+          {state.initedToolbox ? <ToolBox hide={!BTNS[2].active} /> : undefined}
           {state.initedFavorites ? <Favorites hide={!BTNS[3].active} /> : undefined}
       </div>
     );
