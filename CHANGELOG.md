@@ -1,3 +1,7 @@
+# v2.5.17
+1. feat: 支持 `includeFilter://reqH.cookie=pattern` 等价与 `includeFilter://reqH:cookie=pattern`
+2. style: 调整Network字体加粗效果
+
 # v2.5.16
 1. fix: https://github.com/avwo/whistle/issues/462
 
