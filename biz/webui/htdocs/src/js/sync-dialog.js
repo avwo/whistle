@@ -76,7 +76,7 @@ var SyncDialog = React.createClass({
             <span className="glyphicon glyphicon-list" /> {this.loadingRules ? 'Loading' : 'Sync'} Rules
           </button>
           <button onClick={this.syncValues} disabled={this.loadingValues || !util.isString(state.valuesUrl)} type="button" className="btn btn-default">
-            <span className="glyphicon glyphicon-folder-open" /> {this.loadingValues ? 'Loading' : 'Sync'} Values
+            <span className="glyphicon glyphicon-folder-close" /> {this.loadingValues ? 'Loading' : 'Sync'} Values
           </button>
         </div>
         <div className="modal-footer">

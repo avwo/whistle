@@ -1,7 +1,7 @@
 .w-menu {height: 28px; border-top: 1px solid #fcfcfc; background: #f1f3f4; padding-right: 80px; position: relative; z-index: 1001;}
 .w-menu a {text-decoration: none!important; color: #000; padding: 0 5px; line-height: 26px; height: 26px; margin-right: 5px; display: inline-block;}
 .w-menu .glyphicon, .w-detail .glyphicon {margin-right: 3px;}
-.w-menu .glyphicon-folder-open {margin-right: 6px;}
+.w-menu .glyphicon-folder-open, .w-menu .glyphicon-folder-close {margin-right: 6px;}
 .w-menu .w-online {position: absolute; right: 0;}
 .w-menu .w-online, .w-menu a:hover, .w-left-menu a:hover, .w-left-menu a:hover .w-disabled {color: #337ab7;}
 .w-menu .w-offline {color: #ccc!important; cursor: default;}
