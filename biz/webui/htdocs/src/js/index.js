@@ -97,6 +97,32 @@ var ABORT_OPTIONS = [
   }
 ];
 
+var CREATE_RULE_OPTIONS = [
+  {
+    name: 'Rule',
+    icon: 'plus',
+    id: 'addRule'
+  },
+  {
+    name: 'Group',
+    icon: 'plus',
+    id: 'addRule'
+  }
+];
+
+var CREATE_VALUE_OPTIONS = [
+  {
+    name: 'Value',
+    icon: 'plus',
+    id: 'addRule'
+  },
+  {
+    name: 'Group',
+    icon: 'plus',
+    id: 'addRule'
+  }
+];
+
 function checkJson(item) {
   if (/\.json$/i.test(item.name) && JSON_RE.test(item.value)) {
     try {
@@ -1630,6 +1656,16 @@ var Index = React.createClass({
       showAbortOptions: true
     });
   },
+  showCreateOptions: function() {
+    this.setState({
+      showCreateOptions: true
+    });
+  },
+  hideCreateOptions: function() {
+    this.setState({
+      showCreateOptions: false
+    });
+  },
   hideRemoveOptions: function() {
     this.setState({
       showRemoveOptions: false
@@ -2841,13 +2877,22 @@ var Index = React.createClass({
             <MenuItem options={REMOVE_OPTIONS} className="w-remove-menu-item" onClickOption={this.handleNetwork} />
           </div>
           <a onClick={this.onClickMenu} className="w-save-menu" style={{display: (isNetwork || isPlugins) ? 'none' : ''}} draggable="false" title="Ctrl[Command] + S"><span className="glyphicon glyphicon-save-file"></span>Save</a>
-          <a onClick={this.onClickMenu} className="w-create-menu" style={{display: (isNetwork || isPlugins) ? 'none' : ''}} draggable="false"><span className="glyphicon glyphicon-plus"></span>Create</a>
+          <div onMouseEnter={this.showCreateOptions} onMouseLeave={this.hideCreateOptions}
+            style={{display: (isNetwork || isPlugins) ? 'none' : ''}}
+            className={'w-menu-wrapper w-abort-menu-list w-menu-auto' + (state.showCreateOptions ? ' w-menu-wrapper-show' : '')}>
+            <a
+              onClick={this.onClickMenu} className="w-create-menu"
+              draggable="false"
+            >
+              <span className="glyphicon glyphicon-plus"></span>Create
+            </a>
+            <MenuItem options={isRules ? CREATE_RULE_OPTIONS : CREATE_VALUE_OPTIONS} className="w-create-menu-item" onClickOption={this.create} />
+          </div>
           <a onClick={this.onClickMenu} className={'w-edit-menu' + (disabledEditBtn ? ' w-disabled' : '')} style={{display: (isNetwork || isPlugins) ? 'none' : ''}} draggable="false"><span className="glyphicon glyphicon-edit"></span>Rename</a>
           <div onMouseEnter={this.showAbortOptions} onMouseLeave={this.hideAbortOptions}
             style={{display: isNetwork ? '' : 'none'}}
             className={'w-menu-wrapper w-abort-menu-list w-menu-auto' + (state.showAbortOptions ? ' w-menu-wrapper-show' : '')}>
             <a onClick={this.clickReplay} className="w-replay-menu"
-              style={{display: isNetwork ? '' : 'none'}}
               draggable="false">
               <span className="glyphicon glyphicon-repeat"></span>Replay
             </a>

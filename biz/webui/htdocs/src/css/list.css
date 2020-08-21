@@ -25,8 +25,8 @@ text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ell
   border-bottom: 1px solid #ccc;
 }
 
-.w-list-data .w-list-group-wrap:hover {
-  background-color: #dfdfdf;
+.w-list-data .w-list-group-wrap:hover, .w-list-data .w-list-group-wrap.w-active {
+  background-color: #ddd;
 }
 
 .w-list-group-wrap>a {

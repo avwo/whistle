@@ -16,7 +16,13 @@ var iframes = require('./iframes');
 var rulesCtxMenuList = [
   { name: 'Copy' },
   { name: 'Enable', action: 'Save' },
-  { name: 'Create' },
+  {
+    name: 'Create',
+    list: [
+      { name: 'Rule' },
+      { name: 'Group' }
+    ]
+  },
   { name: 'Rename' },
   { name: 'Delete' },
   { name: 'Export' },
@@ -31,7 +37,13 @@ var rulesCtxMenuList = [
 var valuesCtxMenuList = [
   { name: 'Copy' },
   { name: 'Save' },
-  { name: 'Create' },
+  {
+    name: 'Create',
+    list: [
+      { name: 'Value' },
+      { name: 'Group' }
+    ]
+  },
   { name: 'Rename' },
   { name: 'Delete' },
   {
