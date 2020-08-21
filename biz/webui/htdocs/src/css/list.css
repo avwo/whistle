@@ -19,3 +19,41 @@ text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ell
   background: center center no-repeat;
   background-size: 100%;
 }
+
+.w-list-data .w-list-group-wrap {
+  background-color: #f1f3f4;
+  border-bottom: 1px solid #ccc;
+}
+
+.w-list-data .w-list-group-wrap:hover {
+  background-color: #dfdfdf;
+}
+
+.w-list-group-wrap>a {
+  margin-left: 12px;
+  border-bottom: none;
+  border-left: 1px solid #ccc;
+  border-top: 1px solid #ccc;
+  display: none;
+}
+
+.w-list-data .w-list-group {
+  background-color: transparent;
+  padding-left: 5px;
+  cursor: default;
+  color: #000!important;
+  margin: 0;
+  border-left: none;
+  border-top: none;
+  display: block;
+}
+
+.w-group-expand>a {
+  display: block;
+}
+
+.w-list-group .glyphicon-triangle-right, .w-list-group .glyphicon-triangle-bottom {
+  font-size: 12px;
+  margin-right: 3px;
+  display: inline-block!important;
+}

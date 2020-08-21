@@ -180,6 +180,16 @@ var List = React.createClass({
       self.setState({activeItem: item});
     }
   },
+  onClickGroup: function(e) {
+    var name = e.target.getAttribute('data-group');
+    var groups = this.props.modal.groups;
+    var group = groups[name];
+    if (!group) {
+      group = groups[name] = {};
+    }
+    group.expand = !group.expand;
+    this.setState({});
+  },
   onDoubleClick: function(item, okIcon) {
     item.selected && !item.changed || okIcon ? this.onUnselect(item) : this.onSelect(item);
     var onDoubleClick = this.props.onDoubleClick;

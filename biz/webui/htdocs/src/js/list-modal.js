@@ -12,6 +12,7 @@ proto.reset = function(list, data, init) {
   self.list = Array.isArray(list) ? list : [];
   data = data || {};
   self.data = {};
+  self.groups = {};
   self.list.forEach(function(name) {
     var item = self.data[name] = data[name] || {};
     item.key = item.key || util.getKey();
