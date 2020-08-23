@@ -101,12 +101,12 @@ var CREATE_RULE_OPTIONS = [
   {
     name: 'Rule',
     icon: 'plus',
-    id: 'addRule'
+    id: 'addItem'
   },
   {
     name: 'Group',
     icon: 'plus',
-    id: 'addRule'
+    id: 'addGroup'
   }
 ];
 
@@ -114,12 +114,12 @@ var CREATE_VALUE_OPTIONS = [
   {
     name: 'Value',
     icon: 'plus',
-    id: 'addRule'
+    id: 'addItem'
   },
   {
     name: 'Group',
     icon: 'plus',
-    id: 'addRule'
+    id: 'addGroup'
   }
 ];
 
@@ -1003,6 +1003,8 @@ var Index = React.createClass({
     });
     events.on('createRules', self.showCreateRules);
     events.on('createValues', self.showCreateValues);
+    events.on('createRuleGroup', self.showCreateRuleGroup);
+    events.on('createValueGroup', self.showCreateValueGroup);
     events.on('exportRules', self.exportData);
     events.on('exportValues', self.exportData);
     events.on('importRules', self.importRules);
@@ -1853,8 +1855,11 @@ var Index = React.createClass({
     var state = {
       showCreateRules: false,
       showCreateValues: false,
+      showCreateRuleGroup: false,
+      showCreateValueGroup: false,
       showEditRules: false,
-      showEditValues: false
+      showEditValues: false,
+      showCreateOptions: false
     };
     if (name) {
       state[name] = true;
@@ -1875,6 +1880,22 @@ var Index = React.createClass({
       showCreateValues: true
     }, function() {
       createValuesInput.focus();
+    });
+  },
+  showCreateRuleGroup: function() {
+    var createGroupInput = ReactDOM.findDOMNode(this.refs.createRuleGroupInput);
+    this.setState({
+      showCreateRuleGroup: true
+    }, function() {
+      createGroupInput.focus();
+    });
+  },
+  showCreateValueGroup: function() {
+    var createGroupInput = ReactDOM.findDOMNode(this.refs.createValueGroupInput);
+    this.setState({
+      showCreateValueGroup: true
+    }, function() {
+      createGroupInput.focus();
     });
   },
   showHttpsSettingsDialog: function() {
@@ -2324,14 +2345,22 @@ var Index = React.createClass({
     });
     storage.set('showLeftMenu', showLeftMenu ? 1 : '');
   },
+  createOptions: function(item) {
+    var self = this;
+    var isRules = self.state.name == 'rules';
+    if (item.id === 'addItem') {
+      isRules ? self.showCreateRules() : self.showCreateValues();
+    } else {
+      isRules ? self.showCreateRuleGroup() : self.showCreateValueGroup();
+    }
+    this.setState({showCreateOptions: false});
+  },
   onClickMenu: function(e) {
     var target = $(e.target).closest('a');
     var self = this;
     var list;
     var isRules = self.state.name == 'rules';
-    if (target.hasClass('w-create-menu')) {
-      isRules ? self.showCreateRules() : self.showCreateValues();
-    } else if (target.hasClass('w-edit-menu')) {
+    if (target.hasClass('w-edit-menu')) {
       isRules ? self.showEditRules() : self.showEditValues();
     } else if (target.hasClass('w-delete-menu')) {
       isRules ? self.removeRules() : self.removeValues();
@@ -2880,13 +2909,12 @@ var Index = React.createClass({
           <div onMouseEnter={this.showCreateOptions} onMouseLeave={this.hideCreateOptions}
             style={{display: (isNetwork || isPlugins) ? 'none' : ''}}
             className={'w-menu-wrapper w-abort-menu-list w-menu-auto' + (state.showCreateOptions ? ' w-menu-wrapper-show' : '')}>
-            <a
-              onClick={this.onClickMenu} className="w-create-menu"
+            <a className="w-create-menu"
               draggable="false"
             >
               <span className="glyphicon glyphicon-plus"></span>Create
             </a>
-            <MenuItem options={isRules ? CREATE_RULE_OPTIONS : CREATE_VALUE_OPTIONS} className="w-create-menu-item" onClickOption={this.create} />
+            <MenuItem options={isRules ? CREATE_RULE_OPTIONS : CREATE_VALUE_OPTIONS} className="w-create-menu-item" onClickOption={this.createOptions} />
           </div>
           <a onClick={this.onClickMenu} className={'w-edit-menu' + (disabledEditBtn ? ' w-disabled' : '')} style={{display: (isNetwork || isPlugins) ? 'none' : ''}} draggable="false"><span className="glyphicon glyphicon-edit"></span>Rename</a>
           <div onMouseEnter={this.showAbortOptions} onMouseLeave={this.hideAbortOptions}
@@ -2927,8 +2955,10 @@ var Index = React.createClass({
               className="w-help-menu-item" />
           </div>
           <Online name={name} />
-          <div onMouseDown={this.preventBlur} style={{display: state.showCreateRules ? 'block' : 'none'}} className="shadow w-input-menu-item w-create-rules-input"><input ref="createRulesInput" onKeyDown={this.createRules} onBlur={this.hideOptions} type="text" maxLength="64" placeholder="Input the name" /><button type="button" onClick={this.createRules} className="btn btn-primary">OK</button></div>
-          <div onMouseDown={this.preventBlur} style={{display: state.showCreateValues ? 'block' : 'none'}} className="shadow w-input-menu-item w-create-values-input"><input ref="createValuesInput" onKeyDown={this.createValues} onBlur={this.hideOptions} type="text" maxLength="64" placeholder="Input the key" /><button type="button" onClick={this.createValues} className="btn btn-primary">OK</button></div>
+          <div onMouseDown={this.preventBlur} style={{display: state.showCreateRules ? 'block' : 'none'}} className="shadow w-input-menu-item w-create-rules-input"><input ref="createRulesInput" onKeyDown={this.createRules} onBlur={this.hideOptions} type="text" maxLength="64" placeholder="Input the name" /><button type="button" onClick={this.createRules} className="btn btn-primary">+Rule</button></div>
+          <div onMouseDown={this.preventBlur} style={{display: state.showCreateValues ? 'block' : 'none'}} className="shadow w-input-menu-item w-create-values-input"><input ref="createValuesInput" onKeyDown={this.createValues} onBlur={this.hideOptions} type="text" maxLength="64" placeholder="Input the key" /><button type="button" onClick={this.createValues} className="btn btn-primary">+Value</button></div>
+          <div onMouseDown={this.preventBlur} style={{display: state.showCreateRuleGroup ? 'block' : 'none'}} className="shadow w-input-menu-item w-create-rules-input"><input ref="createRuleGroupInput" onKeyDown={this.createRules} onBlur={this.hideOptions} type="text" maxLength="64" placeholder="Input the group name" /><button type="button" onClick={this.createRuleGroup} className="btn btn-primary">+Group</button></div>
+          <div onMouseDown={this.preventBlur} style={{display: state.showCreateValueGroup ? 'block' : 'none'}} className="shadow w-input-menu-item w-create-values-input"><input ref="createValueGroupInput" onKeyDown={this.createValues} onBlur={this.hideOptions} type="text" maxLength="64" placeholder="Input the group name" /><button type="button" onClick={this.createValueGroup} className="btn btn-primary">+Group</button></div>
           <div onMouseDown={this.preventBlur} style={{display: state.showEditRules ? 'block' : 'none'}} className="shadow w-input-menu-item w-edit-rules-input"><input ref="editRulesInput" onKeyDown={this.editRules} onBlur={this.hideOptions} type="text" maxLength="64"  /><button type="button" onClick={this.editRules} className="btn btn-primary">OK</button></div>
           <div onMouseDown={this.preventBlur} style={{display: state.showEditValues ? 'block' : 'none'}} className="shadow w-input-menu-item w-edit-values-input"><input ref="editValuesInput" onKeyDown={this.editValues} onBlur={this.hideOptions} type="text" maxLength="64" /><button type="button" onClick={this.editValues} className="btn btn-primary">OK</button></div>
         </div>

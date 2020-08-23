@@ -20,7 +20,7 @@ var rulesCtxMenuList = [
     name: 'Create',
     list: [
       { name: 'Rule' },
-      { name: 'Group' }
+      { name: 'Group', action: 'ruleGroup' }
     ]
   },
   { name: 'Rename' },
@@ -41,7 +41,7 @@ var valuesCtxMenuList = [
     name: 'Create',
     list: [
       { name: 'Value' },
-      { name: 'Group' }
+      { name: 'Group', action: 'valueGroup' }
     ]
   },
   { name: 'Rename' },
@@ -313,8 +313,17 @@ var List = React.createClass({
     case 'Delete':
       events.trigger('delete' + name, this.currentFocusItem);
       break;
-    case 'Create':
-      events.trigger('create' + name);
+    case 'Rule':
+      events.trigger('createRules');
+      break;
+    case 'Value':
+      events.trigger('createValues');
+      break;
+    case 'ruleGroup':
+      events.trigger('createRuleGroup');
+      break;
+    case 'valueGroup':
+      events.trigger('createValueGroup');
       break;
     case 'Export':
       events.trigger('export' + name);
