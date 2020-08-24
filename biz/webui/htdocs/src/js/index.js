@@ -2621,8 +2621,7 @@ var Index = React.createClass({
         size: rawReq.bodySize,
         headers: reqHeaders.headers,
         rawHeaderNames: reqHeaders.rawHeaderNames,
-        body: rawReq.postData && rawReq.postData.text || '',
-        trailers: {}
+        body: rawReq.postData && rawReq.postData.text || ''
       };
       var res = {
         httpVersion: '1.1',
@@ -2632,8 +2631,7 @@ var Index = React.createClass({
         headers: resHeaders.headers,
         rawHeaderNames: resHeaders.rawHeaderNames,
         ip: serverIp,
-        body: '',
-        trailers: {}
+        body: ''
       };
       var resCtn = rawRes.content;
       var text = resCtn && resCtn.text;
