@@ -5,7 +5,7 @@ var PROTOCOLS = ['rule', 'style', 'pipe', 'plugin', 'host', 'xhost', 'proxy', 'x
   'urlParams', 'pathReplace', 'method', 'replaceStatus', 'referer', 'auth', 'ua', 'cache',
   'redirect', 'attachment', 'forwardedFor', 'responseFor', 'reqMerge', 'resMerge',
   'reqScript', 'resScript', 'reqDelay', 'resDelay', 'reqSpeed', 'resSpeed',
-  'reqHeaders', 'resHeaders', 'reqType', 'resType', 'reqCharset',
+  'reqHeaders', 'resHeaders', 'trailers', 'reqType', 'resType', 'reqCharset',
   'resCharset', 'reqCookies', 'resCookies', 'reqCors', 'resCors', 'reqPrepend', 'resPrepend',
   'reqBody', 'resBody', 'reqAppend', 'resAppend', 'headerReplace', 'reqReplace', 'resReplace',
   'htmlPrepend', 'htmlBody', 'htmlAppend', 'cssPrepend', 'cssBody',
