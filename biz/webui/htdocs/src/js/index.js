@@ -112,7 +112,7 @@ var CREATE_RULE_OPTIONS = [
 
 var CREATE_VALUE_OPTIONS = [
   {
-    name: 'Value',
+    name: 'Key',
     icon: 'plus',
     id: 'addItem'
   },
@@ -719,7 +719,7 @@ var Index = React.createClass({
       }
     }).on('keyup', function(e) {
       if (e.keyCode == 27) {
-        self.hideOptions();
+        self.setMenuOptionsState();
         var dialog = $('.modal');
         if (typeof dialog.modal == 'function') {
           dialog.modal('hide');
@@ -1848,9 +1848,6 @@ var Index = React.createClass({
       showWeinreOptions: false
     });
   },
-  hideOptions: function() {
-    this.setMenuOptionsState();
-  },
   setMenuOptionsState: function(name, callback) {
     var state = {
       showCreateRules: false,
@@ -1865,6 +1862,24 @@ var Index = React.createClass({
       state[name] = true;
     }
     this.setState(state, callback);
+  },
+  hideRulesInput: function() {
+    this.setState({ showCreateRules: false });
+  },
+  hideValuesInput: function() {
+    this.setState({ showCreateValues: false });
+  },
+  hideRuleGroup: function() {
+    this.setState({ showCreateRuleGroup: false });
+  },
+  hideValueGroup: function() {
+    this.setState({ showCreateValueGroup: false });
+  },
+  hideRenameRuleInput: function() {
+    this.setState({ showEditRules: false });
+  },
+  hideRenameValueInput: function() {
+    this.setState({ showEditValues: false });
   },
   showCreateRules: function() {
     var createRulesInput = ReactDOM.findDOMNode(this.refs.createRulesInput);
@@ -2955,12 +2970,12 @@ var Index = React.createClass({
               className="w-help-menu-item" />
           </div>
           <Online name={name} />
-          <div onMouseDown={this.preventBlur} style={{display: state.showCreateRules ? 'block' : 'none'}} className="shadow w-input-menu-item w-create-rules-input"><input ref="createRulesInput" onKeyDown={this.createRules} onBlur={this.hideOptions} type="text" maxLength="64" placeholder="Input the name" /><button type="button" onClick={this.createRules} className="btn btn-primary">+Rule</button></div>
-          <div onMouseDown={this.preventBlur} style={{display: state.showCreateValues ? 'block' : 'none'}} className="shadow w-input-menu-item w-create-values-input"><input ref="createValuesInput" onKeyDown={this.createValues} onBlur={this.hideOptions} type="text" maxLength="64" placeholder="Input the key" /><button type="button" onClick={this.createValues} className="btn btn-primary">+Value</button></div>
-          <div onMouseDown={this.preventBlur} style={{display: state.showCreateRuleGroup ? 'block' : 'none'}} className="shadow w-input-menu-item w-create-rules-input"><input ref="createRuleGroupInput" onKeyDown={this.createRules} onBlur={this.hideOptions} type="text" maxLength="64" placeholder="Input the group name" /><button type="button" onClick={this.createRuleGroup} className="btn btn-primary">+Group</button></div>
-          <div onMouseDown={this.preventBlur} style={{display: state.showCreateValueGroup ? 'block' : 'none'}} className="shadow w-input-menu-item w-create-values-input"><input ref="createValueGroupInput" onKeyDown={this.createValues} onBlur={this.hideOptions} type="text" maxLength="64" placeholder="Input the group name" /><button type="button" onClick={this.createValueGroup} className="btn btn-primary">+Group</button></div>
-          <div onMouseDown={this.preventBlur} style={{display: state.showEditRules ? 'block' : 'none'}} className="shadow w-input-menu-item w-edit-rules-input"><input ref="editRulesInput" onKeyDown={this.editRules} onBlur={this.hideOptions} type="text" maxLength="64"  /><button type="button" onClick={this.editRules} className="btn btn-primary">OK</button></div>
-          <div onMouseDown={this.preventBlur} style={{display: state.showEditValues ? 'block' : 'none'}} className="shadow w-input-menu-item w-edit-values-input"><input ref="editValuesInput" onKeyDown={this.editValues} onBlur={this.hideOptions} type="text" maxLength="64" /><button type="button" onClick={this.editValues} className="btn btn-primary">OK</button></div>
+          <div onMouseDown={this.preventBlur} style={{display: state.showCreateRules ? 'block' : 'none'}} className="shadow w-input-menu-item w-create-rules-input"><input ref="createRulesInput" onKeyDown={this.createRules} onBlur={this.hideRulesInput} type="text" maxLength="64" placeholder="Input the name" /><button type="button" onClick={this.createRules} className="btn btn-primary">+Rule</button></div>
+          <div onMouseDown={this.preventBlur} style={{display: state.showCreateValues ? 'block' : 'none'}} className="shadow w-input-menu-item w-create-values-input"><input ref="createValuesInput" onKeyDown={this.createValues} onBlur={this.hideValuesInput} type="text" maxLength="64" placeholder="Input the key" /><button type="button" onClick={this.createValues} className="btn btn-primary">+Key</button></div>
+          <div onMouseDown={this.preventBlur} style={{display: state.showCreateRuleGroup ? 'block' : 'none'}} className="shadow w-input-menu-item w-create-rules-input"><input ref="createRuleGroupInput" onKeyDown={this.createRules} onBlur={this.hideRuleGroup} type="text" maxLength="64" placeholder="Input the group name" /><button type="button" onClick={this.createRuleGroup} className="btn btn-primary">+Group</button></div>
+          <div onMouseDown={this.preventBlur} style={{display: state.showCreateValueGroup ? 'block' : 'none'}} className="shadow w-input-menu-item w-create-values-input"><input ref="createValueGroupInput" onKeyDown={this.createValues} onBlur={this.hideValueGroup} type="text" maxLength="64" placeholder="Input the group name" /><button type="button" onClick={this.createValueGroup} className="btn btn-primary">+Group</button></div>
+          <div onMouseDown={this.preventBlur} style={{display: state.showEditRules ? 'block' : 'none'}} className="shadow w-input-menu-item w-edit-rules-input"><input ref="editRulesInput" onKeyDown={this.editRules} onBlur={this.hideRenameRuleInput} type="text" maxLength="64"  /><button type="button" onClick={this.editRules} className="btn btn-primary">OK</button></div>
+          <div onMouseDown={this.preventBlur} style={{display: state.showEditValues ? 'block' : 'none'}} className="shadow w-input-menu-item w-edit-values-input"><input ref="editValuesInput" onKeyDown={this.editValues} onBlur={this.hideRenameValueInput} type="text" maxLength="64" /><button type="button" onClick={this.editValues} className="btn btn-primary">OK</button></div>
         </div>
         <div className="w-container box fill">
           <div className="w-left-menu" style={{display: networkMode ? 'none' : undefined}}>

@@ -26,7 +26,7 @@ function getDefaultColumns() {
       name: 'date',
       className: 'date',
       showTitle: true,
-      width: 150
+      width: 160
     },
     {
       title: 'Result',

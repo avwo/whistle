@@ -40,7 +40,7 @@ var valuesCtxMenuList = [
   {
     name: 'Create',
     list: [
-      { name: 'Value' },
+      { name: 'Key' },
       { name: 'Group', action: 'valueGroup' }
     ]
   },
@@ -316,7 +316,7 @@ var List = React.createClass({
     case 'Rule':
       events.trigger('createRules');
       break;
-    case 'Value':
+    case 'Key':
       events.trigger('createValues');
       break;
     case 'ruleGroup':
