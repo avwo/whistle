@@ -604,7 +604,13 @@ var Composer = React.createClass({
         }
         state.result = { url: url, req: '', res: { statusCode: em } };
       } else {
-        data.res = data.res || { statusCode: 200 };
+        var res = data.res;
+        if (res) {
+          res.rawHeaders = dataCenter.getRawHeaders(res.headers, res.rawHeaderNames);
+          res.rawTrailers = dataCenter.getRawHeaders(res.trailers, res.rawTrailerNames);
+        } else {
+          data.res = { statusCode: 200 };
+        }
         data.url = url;
         data.req = '';
         state.result = data;

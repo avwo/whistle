@@ -9,6 +9,7 @@ var hparser = require('hparser');
 
 var formatHeaders = hparser.formatHeaders;
 var getRawHeaders = hparser.getRawHeaders;
+var getRawHeaderNames = hparser.getRawHeaderNames;
 var STATUS_CODE_RE = /^\S+\s+(\d+)/i;
 var MAX_LENGTH = 1024 * 512;
 var PROXY_OPTS = {
@@ -161,7 +162,10 @@ function handleHttp(options, cb) {
         zlib.unzip(res.headers['content-encoding'], buffer, function(err, body) {
           var result = {
             statusCode: res.statusCode,
-            headers: res.headers
+            headers: res.headers,
+            trailers: res.trailers,
+            rawHeaderNames: getRawHeaderNames(res.rawHeaders),
+            rawTrailerNames: getRawHeaderNames(res.rawTrailers)
           };
           if (err) {
             result.body = err.stack;

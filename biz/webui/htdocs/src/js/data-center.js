@@ -727,7 +727,7 @@ function startLoadData() {
   load();
 }
 
-function setRawHeaders(headers, rawHeaderNames) {
+function getRawHeaders(headers, rawHeaderNames) {
   if (!headers || !rawHeaderNames) {
     return;
   }
@@ -737,6 +737,8 @@ function setRawHeaders(headers, rawHeaderNames) {
   });
   return rawHeaders;
 }
+
+exports.getRawHeaders = getRawHeaders;
 
 function isSocket(item) {
   if (!item || !item.endTime || item.reqError || item.resError) {
@@ -847,9 +849,9 @@ function setReqData(item) {
     }
   }
   
-  req.rawHeaders = setRawHeaders(req.headers, req.rawHeaderNames);
-  res.rawHeaders = setRawHeaders(res.headers, res.rawHeaderNames);
-  res.rawTrailers = setRawHeaders(res.trailers, res.rawTrailersNames);
+  req.rawHeaders = getRawHeaders(req.headers, req.rawHeaderNames);
+  res.rawHeaders = getRawHeaders(res.headers, res.rawHeaderNames);
+  res.rawTrailers = getRawHeaders(res.trailers, res.rawTrailersNames);
   setStyle(item);
   if (item.rules && item.pipe) {
     item.rules.pipe = item.pipe;
