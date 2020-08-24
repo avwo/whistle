@@ -115,7 +115,7 @@ var ResDetail = React.createClass({
       var imgSrc, data, isJson;
       var isText = true;
       var status = res.statusCode;
-      var showImg = name === btns[1].name;
+      var showImg = name === btns[2].name;
       if (status != null) {
         headersStr = util.objectToString(headers, res.rawHeaderNames);
         trailerStr = trailers ? util.objectToString(trailers, res.rawTrailerNames) : '';
