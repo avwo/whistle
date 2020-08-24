@@ -851,7 +851,7 @@ function setReqData(item) {
   
   req.rawHeaders = getRawHeaders(req.headers, req.rawHeaderNames);
   res.rawHeaders = getRawHeaders(res.headers, res.rawHeaderNames);
-  res.rawTrailers = getRawHeaders(res.trailers, res.rawTrailersNames);
+  res.rawTrailers = getRawHeaders(res.trailers, res.rawTrailerNames);
   setStyle(item);
   if (item.rules && item.pipe) {
     item.rules.pipe = item.pipe;
