@@ -15,6 +15,7 @@ var ResDetail = React.createClass({
   getInitialState: function() {
     return {
       initedHeaders: false,
+      initedTrailers: false,
       initedTextView: false,
       initedPreview: false,
       initedCookies: false,
@@ -23,6 +24,7 @@ var ResDetail = React.createClass({
       initedRaw: false,
       btns: [
         {name: 'Headers'},
+        {name: 'Trailers'},
         {name: 'Preview'},
         {name: 'TextView', display: 'Body'},
         {name: 'JSONView'},
@@ -55,16 +57,18 @@ var ResDetail = React.createClass({
     }
     var name = btn && btn.name;
     var modal = this.props.modal;
-    var res, rawHeaders, headersStr, headers, cookies, body, raw, json, tips, defaultName, base64, bin;
+    var res, rawHeaders, rawTrailers, headersStr, trailerStr, headers, trailers, cookies, body, raw, json, tips, defaultName, base64, bin;
     body = raw = '';
     if (modal) {
       res = modal.res;
       defaultName = util.getFilename(modal, true);
       rawHeaders = res.rawHeaders;
+      rawTrailers = res.rawTrailers;
       body = util.getBody(res);
       bin = util.getHex(res);
       base64 = res.base64;
       headers = res.headers;
+      trailers = res.trailers;
       json = util.getJson(res);
       if (headers && headers['set-cookie']) {
         cookies = headers['set-cookie'];
@@ -114,9 +118,10 @@ var ResDetail = React.createClass({
       var showImg = name === btns[1].name;
       if (status != null) {
         headersStr = util.objectToString(headers, res.rawHeaderNames);
+        trailerStr = trailers ? util.objectToString(trailers, res.rawTrailerNames) : '';
         headersStr = ['HTTP/' + (modal.req.httpVersion || '1.1'), status, util.getStatusMessage(res)].join(' ')
         + '\r\n' + headersStr;
-        raw = headersStr + '\r\n\r\n' + body;
+        raw = headersStr + '\r\n\r\n' + body + '\r\n\r\n' + trailerStr;
         var type = util.getContentType(headers);
         isJson = type === 'JSON';
         if (type === 'IMG') {
@@ -153,13 +158,14 @@ var ResDetail = React.createClass({
         + (util.getBoolean(this.props.hide) ? ' hide' : '')}>
         <BtnGroup onClick={this.onClickBtn} btns={btns} />
         {state.initedHeaders ? <div className={'fill w-detail-response-headers' + (name == btns[0].name ? '' : ' hide')}><Properties modal={rawHeaders || headers} enableViewSource="1" /></div> : undefined}
+        {state.initedTrailers ? <div className={'fill w-detail-response-headers' + (name == btns[1].name ? '' : ' hide')}><Properties modal={rawTrailers || trailers} enableViewSource="1" /></div> : undefined}
         {state.initedPreview ? <ImageView imgSrc={imgSrc} data={data} hide={!showImg} /> : undefined}
-        {state.initedTextView ? <Textarea defaultName={defaultName} tips={tips} base64={base64} value={body} className="fill w-detail-response-textview" hide={name != btns[2].name} /> : undefined}
-        {state.initedJSONView ? <JSONViewer defaultName={defaultName} data={json} hide={name != btns[3].name} /> : undefined}
-        {state.initedHexView ? <Textarea defaultName={defaultName} isHexView="1" base64={base64} value={bin} className="fill n-monospace w-detail-response-hex" hide={name != btns[4].name} /> : undefined}
-        {state.initedCookies ? <div className={'fill w-detail-response-cookies' + (name == btns[5].name ? '' : ' hide')}>{cookies && cookies.length ? <Table head={COOKIE_HEADERS} modal={cookies} /> : undefined}</div> : undefined}
+        {state.initedTextView ? <Textarea defaultName={defaultName} tips={tips} base64={base64} value={body} className="fill w-detail-response-textview" hide={name != btns[3].name} /> : undefined}
+        {state.initedJSONView ? <JSONViewer defaultName={defaultName} data={json} hide={name != btns[4].name} /> : undefined}
+        {state.initedHexView ? <Textarea defaultName={defaultName} isHexView="1" base64={base64} value={bin} className="fill n-monospace w-detail-response-hex" hide={name != btns[5].name} /> : undefined}
+        {state.initedCookies ? <div className={'fill w-detail-response-cookies' + (name == btns[6].name ? '' : ' hide')}>{cookies && cookies.length ? <Table head={COOKIE_HEADERS} modal={cookies} /> : undefined}</div> : undefined}
         {state.initedRaw ? <Textarea defaultName={defaultName} value={raw} headers={headersStr}
-          base64={base64} className="fill w-detail-response-raw" hide={name != btns[6].name} /> : undefined}
+          base64={base64} className="fill w-detail-response-raw" hide={name != btns[7].name} /> : undefined}
       </div>
     );
   }

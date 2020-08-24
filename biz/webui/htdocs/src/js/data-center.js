@@ -727,9 +727,7 @@ function startLoadData() {
   load();
 }
 
-function setRawHeaders(obj) {
-  var headers = obj.headers;
-  var rawHeaderNames = obj.rawHeaderNames;
+function setRawHeaders(headers, rawHeaderNames) {
   if (!headers || !rawHeaderNames) {
     return;
   }
@@ -737,7 +735,7 @@ function setRawHeaders(obj) {
   Object.keys(headers).forEach(function (name) {
     rawHeaders[rawHeaderNames[name] || name] = headers[name];
   });
-  obj.rawHeaders = rawHeaders;
+  return rawHeaders;
 }
 
 function isSocket(item) {
@@ -849,8 +847,9 @@ function setReqData(item) {
     }
   }
   
-  setRawHeaders(req);
-  setRawHeaders(res);
+  req.rawHeaders = setRawHeaders(req.headers, req.rawHeaderNames);
+  res.rawHeaders = setRawHeaders(res.headers, res.rawHeaderNames);
+  res.rawTrailers = setRawHeaders(res.trailers, res.rawTrailersNames);
   setStyle(item);
   if (item.rules && item.pipe) {
     item.rules.pipe = item.pipe;
