@@ -1,30 +1,29 @@
-# headerReplace
-通过替换字符的方式修改请求或响应投稿，配置方式：
+# trailers
 
-	# 通过替换的方式修改请求头
-	pattern headerReplace://req.header-name:pattern1=replacement1&pattern2=replacement2
-	# 通过替换的方式修改响应头
-	pattern headerReplace://res.header-name:pattern3=replacement3
+修改tailers，配置方式：
 
-	# 通过替换的方式修改trailers
-	pattern headerReplace://trailer.header-name:pattern4=replacement4
+	pattern trailers://filepath
 
-	# 也可以
-	``` replacement.json
-	res.header-name:pattern3: replacement3
-	trailer.header-name:pattern4: replacement4
-	```
-	pattern headerReplace://{replacement.json}
+filepath为[Values](http://local.whistlejs.com/#values)里面的{key}或者本地文件(如：`e:\test\xxx`、`e:/test/xxx`、`/User/username/test/xxx`等):
 
-版本要求：`>= v2.5.18`，pattern参见[匹配模式](../pattern.html)，更多模式请参考[配置方式](../mode.html)。
+	x-test1: value1
+	x-test2: value2
+	x-testN: valueN
+
+pattern参见[匹配模式](../pattern.html)，更多模式请参考[配置方式](../mode.html)，json格式参考[操作值](../data.html)。
 
 例子：
 
-	www.test.com headerReplace://req.cookie:/a(.)/=$1&test=a%20bc headerReplace://res.set-cookie:/\bdomain=[^;]%2b(;|\s*$)/=
+	www.ifeng.com trailers://{test-trailers.json}
 
-> 上述是将所有 `www.test.com` 的请求头cookie字段里面的值的 ax 替换成 x 、test替换成 a bc
-> 注意：同时多个 str.replace(p1, r1).replace(p2, r2) 通过 `&` 分开，whistle会通过 querystring.parse的方式转成相应的对象 (会对 `%xx` 进行转义)
-> 正则里面的 + 号要用 `%2b` 代替
+
+test-trailers.json:
+
+	x-test1: value1
+	x-test2: value2
+	x-testN: valueN
+
+whistle 会字段根据 trailers 添加响应头 `trailers: xxx` ，如果不想自动添加响应头可以设置 `disable://trailerHeader`，禁用 trailers 可以用 `disable://trailer`。
 
 #### 过滤规则
 需要确保whistle是最新版本：[更新whistle](../update.html)

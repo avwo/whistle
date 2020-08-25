@@ -86,6 +86,7 @@
   * [resCors](rules/resCors.md)
   * [reqHeaders](rules/reqHeaders.md)
   * [resHeaders](rules/resHeaders.md)
+  * [trailers](rules/trailers.md)
   * [reqPrepend](rules/reqPrepend.md)
   * [resPrepend](rules/resPrepend.md)
   * [reqBody](rules/reqBody.md)

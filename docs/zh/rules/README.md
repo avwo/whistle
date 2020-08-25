@@ -96,6 +96,9 @@
 14. [**cssAppend** (往响应为html或css的内容后面追加数据)](cssAppend.md)
 15. [**jsAppend** (往响应为html或js的内容后面追加数据)](jsAppend.md)
 
+#### 修改 trailers
+1. [**trailers** (302重定向)](trailers.html)
+
 #### 过滤配置
 1. [**filter (excludeFilter|includeFilter)** (过滤规则，隐藏请求等)](filter.html)
 2. [**ignore** (忽略规则)](ignore.html)
