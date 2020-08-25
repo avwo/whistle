@@ -61,18 +61,20 @@ function handleConnect(options, cb) {
     proxyPort: config.port,
     headers: options.headers
   }, function(socket, _, err) {
-    if (TLS_PROTOS.indexOf(options.protocol) !== -1) {
-      socket = tls.connect({
-        rejectUnauthorized: config.rejectUnauthorized,
-        socket: socket,
-        servername: options.hostname
-      });
-    }
-    drain(socket);
-    var data = options.body;
-    if (data && data.length) {
-      socket.write(data);
-      options.body = data = null;
+    if (!err) {
+      if (TLS_PROTOS.indexOf(options.protocol) !== -1) {
+        socket = tls.connect({
+          rejectUnauthorized: config.rejectUnauthorized,
+          socket: socket,
+          servername: options.hostname
+        });
+      }
+      drain(socket);
+      var data = options.body;
+      if (data && data.length) {
+        socket.write(data);
+        options.body = data = null;
+      }
     }
     cb && cb(err);
   }).on('error', cb || util.noop);
