@@ -18,10 +18,7 @@ var rulesCtxMenuList = [
   { name: 'Enable', action: 'Save' },
   {
     name: 'Create',
-    list: [
-      { name: 'Rule' },
-      { name: 'Group', action: 'ruleGroup' }
-    ]
+    action: 'Rule'
   },
   { name: 'Rename' },
   { name: 'Delete' },
@@ -39,10 +36,7 @@ var valuesCtxMenuList = [
   { name: 'Save' },
   {
     name: 'Create',
-    list: [
-      { name: 'Key' },
-      { name: 'Group', action: 'valueGroup' }
-    ]
+    action: 'Key'
   },
   { name: 'Rename' },
   { name: 'Delete' },
