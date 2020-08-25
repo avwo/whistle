@@ -1,5 +1,6 @@
 var http = require('http');
 var gzip = require('zlib').gzip;
+var tls = require('tls');
 var config = require('../../../lib/config');
 var util = require('../../../lib/util');
 var zlib = require('../../../lib/util/zlib');
@@ -36,12 +37,14 @@ function isWebSocket(options) {
 }
 
 var crypto = require('crypto');
+var CONNECT_PROTOS = 'connect:,socket:,tunnel:,conn:,tls:,tcp:'.split(',');
+var TLS_PROTOS = 'https:,wss:,tls:'.split(',');
 function isConnect(options) {
   if (options.method === 'CONNECT') {
     return true;
   }
   var p = options.protocol;
-  return p === 'connect:' || p === 'socket:' || p === 'tunnel:' || p === 'conn:';
+  return CONNECT_PROTOS.indexOf(p) !== -1;
 }
 
 function drain(socket) {
@@ -58,18 +61,20 @@ function handleConnect(options, cb) {
     proxyPort: config.port,
     headers: options.headers
   }, function(socket, _, err) {
+    if (TLS_PROTOS.indexOf(options.protocol) !== -1) {
+      socket = tls.connect({
+        rejectUnauthorized: config.rejectUnauthorized,
+        socket: socket,
+        servername: options.hostname
+      });
+    }
     drain(socket);
     var data = options.body;
     if (data && data.length) {
       socket.write(data);
       options.body = data = null;
     }
-    if (cb) {
-      cb(err);
-      util.onSocketEnd(socket, function(err) {
-        cb(err || new Error('Closed'));
-      });
-    }
+    cb && cb(err);
   }).on('error', cb || util.noop);
 }
 
