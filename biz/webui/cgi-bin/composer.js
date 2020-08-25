@@ -1,6 +1,7 @@
 var http = require('http');
 var gzip = require('zlib').gzip;
 var tls = require('tls');
+var Buffer = require('safe-buffer').Buffer;
 var config = require('../../../lib/config');
 var util = require('../../../lib/util');
 var zlib = require('../../../lib/util/zlib');
@@ -11,6 +12,7 @@ var hparser = require('hparser');
 var formatHeaders = hparser.formatHeaders;
 var getRawHeaders = hparser.getRawHeaders;
 var getRawHeaderNames = hparser.getRawHeaderNames;
+var BODY_SEP = Buffer.from('\r\n\r\n');
 var STATUS_CODE_RE = /^\S+\s+(\d+)/i;
 var MAX_LENGTH = 1024 * 512;
 var PROXY_OPTS = {
@@ -99,12 +101,11 @@ function handleWebSocket(options, cb) {
     } else {
       socket.write(getReqRaw(options));
       var handleResponse = function(resData) {
-        resData = resData + '';
-        var index = resData.indexOf('\r\n\r\n');
+        var index = util.indexOfList(resData, BODY_SEP);
         var body = '';
         if (index !== -1) {
           socket.removeListener('data', handleResponse);
-          socket.headers = parseHeaders(resData.slice(0, index));
+          socket.headers = parseHeaders(resData.slice(0, index) + '');
           body = resData.slice(index + 4);
           var sender = getSender(socket);
           var data = options.body;
