@@ -162,8 +162,11 @@ var Composer = React.createClass({
           tabName: 'Request'
         };
         var body = util.getBody(activeItem.req);
-        if (body && body.indexOf('\n') !== -1) {
-          state.isCRLF = body.indexOf('\r\n') !== -1;
+        if (body) {
+          state.disableBody = false;
+          if (body.indexOf('\n') !== -1) {
+            state.isCRLF = body.indexOf('\r\n') !== -1;
+          }
         }
         storage.set('useCRLBody', state.isCRLF ? 1 : '');
         self.setState(state, function() {
