@@ -168,9 +168,13 @@ function handleHttp(options, cb) {
       });
       res.on('end', function() {
         zlib.unzip(res.headers['content-encoding'], buffer, function(err, body) {
+          var headers = res.headers;
+          if (typeof headers.trailer === 'string' && headers.trailer.indexOf(',') !== -1) {
+            headers.trailer = headers.trailer.split(',');
+          }
           var result = {
             statusCode: res.statusCode,
-            headers: res.headers,
+            headers: headers,
             trailers: res.trailers,
             rawHeaderNames: getRawHeaderNames(res.rawHeaders),
             rawTrailerNames: getRawHeaderNames(res.rawTrailers)
