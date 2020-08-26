@@ -2,6 +2,7 @@
 1. feat: 支持传递 `trailers`
 2. feat: 支持通过 `delete://trailer.xxx|trailer.yyy` 删除指定tailer（如果存在）
 3. feat: 支持通过 `headerReplace://trailer.key:pattern=value` 及 `trailers://json` 修改tailers
+4. fix: 自动修改 websocket origin 问题
 
 # v2.5.17
 1. feat: 支持 `includeFilter://reqH.cookie=pattern` 等价与 `includeFilter://reqH:cookie=pattern`
