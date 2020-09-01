@@ -1,3 +1,7 @@
+# v2.5.19
+1. feat: 插件自动添加trailers，可以通过 `res.disableTrailer` 禁用
+2. refactor: 优化监听 `res.on('end', cb)` 事件，确保事件触发
+
 # v2.5.18
 1. feat: 支持传递 `trailers`
 2. feat: 支持通过 `delete://trailer.xxx|trailer.yyy` 删除指定tailer（如果存在）
