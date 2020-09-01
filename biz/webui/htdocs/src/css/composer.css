@@ -163,12 +163,20 @@
 .w-composer-history-operation {
   width: 136px;
 }
+.w-composer-history-url strong {
+  margin-right: 5px;
+}
+
+.w-composer-history-body {
+  width: 260px;
+}
+
 .w-composer-history-operation .btn {
   padding: 2px 10px!important;
   margin-right: 20px;
 }
 .w-composer-history-dialog .modal-dialog {
-  width: 900px;
+  width: 1060px;
 }
 
 .w-composer-bar .w-composer-hex-text {

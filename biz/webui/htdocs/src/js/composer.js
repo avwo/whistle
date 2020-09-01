@@ -309,7 +309,7 @@ var Composer = React.createClass({
     storage.set('useCRLBody', isCRLF ? 1 : '');
     this.setState({ isCRLF: isCRLF });
   },
-  onCompose: function(item) {
+  onCompose: function(item, enableBody) {
     this.refs.historyDialog.hide();
     var refs = this.refs;
     var isHexText = !!item.isHexText;
@@ -324,11 +324,14 @@ var Composer = React.createClass({
     this.state.url = item.url;
     this.state.useH2 = item.useH2;
     this.state.headers = item.headers;
+    if (enableBody && body) {
+      this.state.disableBody = false;
+    }
     this.onComposerChange(true);
     storage.set('useH2InComposer', item.useH2 ? 1 : '');
   },
-  onReplay: function(item) {
-    this.onCompose(item);
+  onReplay: function(item, enableBody) {
+    this.onCompose(item, enableBody);
     this.execute();
   },
   onComposerChange: function(e) {

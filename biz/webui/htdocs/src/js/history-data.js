@@ -22,10 +22,10 @@ var HistoryData = React.createClass({
     return this.props.data[i];
   },
   onCompose: function(e) {
-    this.props.onCompose(this.getItem(e));
+    this.props.onCompose(this.getItem(e), true);
   },
   onReplay: function(e) {
-    this.props.onReplay(this.getItem(e));
+    this.props.onReplay(this.getItem(e), true);
   },
   render: function() {
     var self = this;
@@ -42,18 +42,23 @@ var HistoryData = React.createClass({
                 <th className="w-composer-history-date">Date</th>
                 <th className="w-composer-history-method">Method</th>
                 <th className="w-composer-history-url">URL</th>
+                <th className="w-composer-history-body">Body</th>
                 <th className="w-composer-history-operation">Operation</th>
               </thead>
               <tbody>
                 {
                   data.map(function(item, i) {
                     var date = item.dateStr = item.dateStr || util.toLocaleString(new Date(item.date));
+                    if (item.bodyStr == null) {
+                      item.bodyStr = item.body && typeof item.body === 'string' ? item.body.substring(0, 100) : '';
+                    }
                     return (
                       <tr>
                         <th className="w-composer-history-order">{i + 1}</th>
                         <td className="w-composer-history-date" title={date}>{date}</td>
                         <td className="w-composer-history-method" title={item.method}>{item.method}</td>
-                        <td className="w-composer-history-url" title={item.url}>{item.url}</td>
+                        <td className="w-composer-history-url" title={item.url}><strong>{item.useH2 ? '[H2]' : undefined}</strong>{item.url}</td>
+                        <td className="w-composer-history-body" title={item.body}>{item.bodyStr}</td>
                         <td className="w-composer-history-operation">
                           <button title="Replay" data-index={i} onClick={self.onReplay} className="btn btn-primary">
                             <span data-index={i} className="glyphicon glyphicon-repeat"></span>

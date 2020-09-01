@@ -216,7 +216,6 @@ module.exports = function(req, res) {
   if (protocol) {
     options.protocol = protocol = protocol.toLowerCase();
   }
-  !req.body.noStore && properties.addHistory(req.body);
   var rawHeaderNames = {};
   var headers = parseHeaders(req.body.headers, rawHeaderNames);
   delete headers[config.WEBUI_HEAD];
@@ -232,6 +231,8 @@ module.exports = function(req, res) {
   var isConn = isConnect(options);
   var isWs = !isConn && (isWebSocket(options)
     || (/^\s*upgrade\s*$/i.test(headers.connection) && /^\s*websocket\s*$/i.test(headers.upgrade)));
+  var useH2 = req.body.useH2;
+  req.body.useH2 = false;
   if (isWs) {
     headers.connection = 'Upgrade';
     headers.upgrade = 'websocket';
@@ -240,11 +241,13 @@ module.exports = function(req, res) {
   } else {
     headers.connection = 'close';
     delete headers.upgrade;
-    if (!isConn && ((req.body.useH2 && protocol === 'https:') || protocol === 'h2:' || protocol === 'http2:')) {
+    if (!isConn && ((useH2 && protocol === 'https:') || protocol === 'h2:' || protocol === 'http2:')) {
+      req.body.useH2 = true;
       options.protocol = protocol = 'https:';
       headers[config.ALPN_PROTOCOL_HEADER] = 'h2';
     }
   }
+  !req.body.noStore && properties.addHistory(req.body);
 
   var getBody = function(cb) {
     var base64 = req.body.base64;
