@@ -2050,12 +2050,12 @@ var Index = React.createClass({
     var target = ReactDOM.findDOMNode(self.refs.editRulesInput);
     var name = $.trim(target.value);
     if (!name) {
-      message.error('The rule group name cannot be empty.');
+      message.error('The name cannot be empty.');
       return;
     }
 
     if (modal.exists(name)) {
-      message.error('The rule group name \'' + name + '\' already exists.');
+      message.error('The name \'' + name + '\' already exists.');
       return;
     }
 
@@ -2089,12 +2089,12 @@ var Index = React.createClass({
     var target = ReactDOM.findDOMNode(self.refs.editValuesInput);
     var name = $.trim(target.value);
     if (!name) {
-      message.error('The rule group name cannot be empty.');
+      message.error('The name cannot be empty.');
       return;
     }
 
     if (modal.exists(name)) {
-      message.error('The rule group name \'' + name + '\' already exists.');
+      message.error('The name \'' + name + '\' already exists.');
       return;
     }
 
