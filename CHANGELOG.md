@@ -1,5 +1,6 @@
 # v2.5.20
 1. fix: `reqHeaders://cookie=xxx` 和 `reqCookies://test=123` 无法同时生效问题
+2. feat: 支持通过请求参数 `hideLeftMenu=true` 或启动参数 `-M hideLeftMenu` 隐藏左菜单
 
 # v2.5.19
 1. feat: 插件自动添加trailers，可以通过 `res.disableTrailer` 禁用
