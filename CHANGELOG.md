@@ -1,3 +1,6 @@
+# v2.5.20
+1. fix: `reqHeaders://cookie=xxx` 和 `reqCookies://test=123` 无法同时生效问题
+
 # v2.5.19
 1. feat: 插件自动添加trailers，可以通过 `res.disableTrailer` 禁用
 2. refactor: 优化监听 `res.on('end', cb)` 事件，确保事件触发
