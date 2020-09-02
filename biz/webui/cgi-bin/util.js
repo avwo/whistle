@@ -19,6 +19,7 @@ exports.getServerInfo = function(req) {
     pid: PID,
     version: config.version,
     cmdName: config.cmdName,
+    hideLeftMenu: config.hideLeftMenu,
     networkMode: config.networkMode,
     pluginsMode: config.pluginsMode,
     ndr: config.notAllowedDisableRules,

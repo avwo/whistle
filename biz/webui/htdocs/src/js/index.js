@@ -38,6 +38,7 @@ var LINK_SELECTOR = '.cm-js-type, .cm-js-http-url, .cm-string, .cm-js-at';
 var LINK_RE = /^"(https?:)?(\/\/[^/]\S+)"$/i;
 var AT_LINK_RE = /^@(https?:)?(\/\/[^/]\S+)$/i;
 var OPTIONS_WITH_SELECTED = ['removeSelected', 'exportWhistleFile', 'exportSazFile'];
+var hideLeftMenu = /(?:^\?|&)hideLeft(?:Bar|Menu)=(?:true|1)(?:&|$)/.test(window.location.search);
 var RULES_ACTIONS = [
   {
     name: 'Export Selected',
@@ -234,6 +235,7 @@ var Index = React.createClass({
       ndp: modal.server.ndp,
       classic: modal.classic
     };
+    hideLeftMenu = hideLeftMenu || modal.server.hideLeftMenu;
     var pageName = getPageName(state);
     if (!pageName || pageName.indexOf('rules') != -1) {
       state.hasRules = true;
@@ -2713,6 +2715,12 @@ var Index = React.createClass({
       self.refs.certsInfoDialog.show(data);
     });
   },
+  forceShowLeftMenu: function() {
+    this.setState({ forceShowLeftMenu: true });
+  },
+  forceHideLeftMenu: function() {
+    this.setState({ forceShowLeftMenu: false });
+  },
   render: function() {
     var state = this.state;
     var networkMode = state.networkMode;
@@ -2821,15 +2829,21 @@ var Index = React.createClass({
     var pendingSessions = state.pendingSessions;
     var pendingRules = state.pendingRules;
     var pendingValues = state.pendingValues;
+    var mustHideLeftMenu = hideLeftMenu && !state.forceShowLeftMenu;
     var showLeftMenu = networkMode || state.showLeftMenu;
     var disabledAllPlugins = state.disabledAllPlugins;
+    var forceShowLeftMenu, forceHideLeftMenu;
+    if (showLeftMenu && hideLeftMenu) {
+      forceShowLeftMenu = this.forceShowLeftMenu;
+      forceHideLeftMenu = this.forceHideLeftMenu;
+    }
 
     return (
       <div className={'main orient-vertical-box' + (showLeftMenu ? ' w-show-left-menu' : '')}>
-        <div className={'w-menu w-' + name + '-menu-list'}>
+        <div className={'w-menu w-' + name + '-menu-list'} onMouseEnter={forceShowLeftMenu} onMouseLeave={forceHideLeftMenu}>
           <a onClick={this.toggleLeftMenu} draggable="false" className="w-show-left-menu-btn"
             style={{display: networkMode ? 'none' : undefined}} title={'Dock to ' + (showLeftMenu ? 'top' : 'left') + ' (Ctrl[Command] + M)'}>
-            <span className={'glyphicon glyphicon-chevron-' + (showLeftMenu ? 'up' : 'left')}></span>
+            <span className={'glyphicon glyphicon-chevron-' + (showLeftMenu ? (mustHideLeftMenu ? 'down' : 'up') : 'left')}></span>
           </a>
           <div style={{display: rulesMode ? 'none' : undefined}} onMouseEnter={this.showNetworkOptions} onMouseLeave={this.hideNetworkOptions} className={'w-nav-menu w-menu-wrapper' + (showNetworkOptions ? ' w-menu-wrapper-show' : '')}>
             <a onClick={this.showNetwork} onDoubleClick={this.clearNetwork} className="w-network-menu" title="Double click to remove all sessions" style={{background: name == 'network' ? '#ddd' : null}}
@@ -2940,7 +2954,7 @@ var Index = React.createClass({
           <div onMouseDown={this.preventBlur} style={{display: state.showEditValues ? 'block' : 'none'}} className="shadow w-input-menu-item w-edit-values-input"><input ref="editValuesInput" onKeyDown={this.editValues} onBlur={this.hideRenameValueInput} type="text" maxLength="64" /><button type="button" onClick={this.editValues} className="btn btn-primary">OK</button></div>
         </div>
         <div className="w-container box fill">
-          <div className="w-left-menu" style={{display: networkMode ? 'none' : undefined}}>
+          <div className="w-left-menu" style={{display: networkMode || mustHideLeftMenu ? 'none' : undefined}} onMouseEnter={forceShowLeftMenu} onMouseLeave={forceHideLeftMenu}>
             <a onClick={this.showNetwork} onDoubleClick={this.clearNetwork}
               title="Double click to remove all sessions"
               className="w-network-menu"
