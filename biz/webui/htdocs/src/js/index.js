@@ -2716,12 +2716,17 @@ var Index = React.createClass({
     });
   },
   forceShowLeftMenu: function() {
-    clearTimeout(this.hideTimer);
-    this.setState({ forceShowLeftMenu: true });
+    var self = this;
+    clearTimeout(self.hideTimer);
+    clearTimeout(self.showTimer);
+    self.showTimer = setTimeout(function() {
+      self.setState({ forceShowLeftMenu: true });
+    }, 300);
   },
   forceHideLeftMenu: function() {
     var self = this;
     clearTimeout(self.hideTimer);
+    clearTimeout(self.showTimer);
     self.hideTimer = setTimeout(function() {
       self.setState({ forceShowLeftMenu: false });
     }, 500);
