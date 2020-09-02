@@ -2721,7 +2721,7 @@ var Index = React.createClass({
     clearTimeout(self.showTimer);
     self.showTimer = setTimeout(function() {
       self.setState({ forceShowLeftMenu: true });
-    }, 300);
+    }, 200);
   },
   forceHideLeftMenu: function() {
     var self = this;
@@ -2964,7 +2964,9 @@ var Index = React.createClass({
           <div onMouseDown={this.preventBlur} style={{display: state.showEditValues ? 'block' : 'none'}} className="shadow w-input-menu-item w-edit-values-input"><input ref="editValuesInput" onKeyDown={this.editValues} onBlur={this.hideRenameValueInput} type="text" maxLength="64" /><button type="button" onClick={this.editValues} className="btn btn-primary">OK</button></div>
         </div>
         <div className="w-container box fill">
-          <div className="w-left-menu" style={{display: networkMode || mustHideLeftMenu ? 'none' : undefined}} onMouseEnter={forceShowLeftMenu} onMouseLeave={forceHideLeftMenu}>
+          <div className={'w-left-menu' + (forceShowLeftMenu ? ' w-hover-left-menu' : '')}
+            style={{display: networkMode || mustHideLeftMenu ? 'none' : undefined}}
+            onMouseEnter={forceShowLeftMenu} onMouseLeave={forceHideLeftMenu}>
             <a onClick={this.showNetwork} onDoubleClick={this.clearNetwork}
               title="Double click to remove all sessions"
               className="w-network-menu"

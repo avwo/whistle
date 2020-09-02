@@ -113,3 +113,11 @@
 .w-https-menu .glyphicon-lock {
   color: #9e9e26;
 }
+
+.w-hover-left-menu {
+  position: absolute;
+  z-index: 1;
+  height: 230px;
+  border-bottom: 1px solid #ccc;
+  min-height: 0;
+}
