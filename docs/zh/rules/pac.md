@@ -9,7 +9,7 @@ filepath为[Values](http://local.whistlejs.com/#values)里面的{key}或者本�
 例子：
 
 
-	/./ pac://https://raw.githubusercontent.com/imweb/node-pac/master/test/scripts/normal.pac
+	* pac://https://raw.githubusercontent.com/imweb/node-pac/master/test/scripts/normal.pac
 
 	#### 过滤规则
 需要确保whistle是最新版本：[更新whistle](../update.html)

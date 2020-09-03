@@ -56,11 +56,11 @@ rulesFile.txt:
 rulesFile.js:
 
 	if (/index\.html/i.test(url)) {
-		rules.push('/./ redirect://http://www.ifeng.com/?test.js');
+		rules.push('* redirect://http://www.ifeng.com/?test.js');
 	}
 
 	if (/html/.test(headers.accept)) {
-		rules.push('/./ resType://text');
+		rules.push('* resType://text');
 	}
 	// 如果请求内容里面有prefix字段，则作为新url的前缀
 	if (/(?:^|&)prefix=([^&]+)/.test(body)) {
@@ -69,7 +69,7 @@ rulesFile.js:
 		var schema = url.substring(0, index);
 		var newUrl = schema + prefix + '.' + url.substring(index);
 		rules.push(url + ' ' + newUrl);
-		// rules.push('/./ ' + newUrl);
+		// rules.push('* ' + newUrl);
 	}
 
 	#### 过滤规则
