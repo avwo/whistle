@@ -1,7 +1,7 @@
 # https-proxy
 > 如果需要用到该协议，建议 Node >= 10 ，否则可能出现 whistle 无异常退出，新版本 Node 不会有这个问题 
 
-设置https代理（即用https代理协议），配置方式：
+设置https代理（即用https代理协议，也支持[socks代理](socks.html)、[http代理](proxy.html)），配置方式：
 
 	pattern https-proxy://ip:port
 

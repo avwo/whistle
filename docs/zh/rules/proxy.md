@@ -1,6 +1,6 @@
 # proxy(http-proxy)
 
-设置http代理，配置方式：
+设置http代理（也支持[socks代理](socks.html)、[https代理](https-proxy.html)），配置方式：
 
 	pattern proxy://ip:port
 

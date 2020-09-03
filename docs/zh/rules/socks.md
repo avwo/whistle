@@ -1,6 +1,6 @@
 # socks
 
-设置socks代理，配置方式：
+设置socks代理（也支持[http代理](proxy.html)、[https代理](https-proxy.html)），配置方式：
 
 	pattern socks://ip:port
 
