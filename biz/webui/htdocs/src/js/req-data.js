@@ -903,7 +903,7 @@ var ReqData = React.createClass({
             </div>
           </div>
           <FilterInput ref="filterInput" onKeyDown={this.onFilterKeyDown}
-            onChange={this.onFilterChange} wStyle={colStyle} />
+            onChange={this.onFilterChange} wStyle={colStyle} hintKey="networkHintList" />
           <ContextMenu onClick={this.onClickContextMenu} ref="contextMenu" />
           <QRCodeDialog ref="qrcodeDialog" />
       </div>

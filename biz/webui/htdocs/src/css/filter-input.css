@@ -2,10 +2,9 @@
 .w-filter-con .close {position: absolute; right: 5px; top: 7px; color: #fff; line-height: 16px; display: none;}
 
 .w-filter-hint {
-  margin: 0;
-  top: -31px;
-  width: 100%;
-  display: none;
+  margin: 0 3px;
+  bottom: 35px;
+  width: 99%;
   padding: 5px;
   color: rgba(0, 0, 0, 0.65);
   line-height: 1.5;
@@ -16,6 +15,19 @@
   border-radius: 3px;
   -webkit-box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
   box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
+}
+
+.w-filter-hint ul, .w-filter-hint li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.w-filter-hint li {
+  line-height: 26px;
 }
 
 .w-filter-con li:hover {
