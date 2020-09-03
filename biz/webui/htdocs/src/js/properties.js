@@ -17,6 +17,7 @@ var Properties = React.createClass({
     var props = this.props;
     var sourceText = props.enableViewSource;
     var viewSource = this.state.viewSource;
+    var onHelp = props.onHelp;
     var modal = props.modal || {};
     var title = props.title || {};
     var keys = Object.keys(modal);
@@ -61,7 +62,10 @@ var Properties = React.createClass({
                       val = util.toString(val);
                       return (
                         <tr key={i} className={val ? undefined : 'w-no-value'}>
-                          <th>{name && name.length >= 2100 ? <ExpandCollapse text={name} /> : name}</th>
+                          <th>
+                            {onHelp ? <span data-name={name} onClick={onHelp} className="glyphicon glyphicon-question-sign"></span> : undefined}
+                            {name && name.length >= 2100 ? <ExpandCollapse text={name} /> : name}
+                          </th>
                           <td><pre>{val && val.length >= 2100 ? <ExpandCollapse text={val} /> : val}</pre></td>
                         </tr>
                       );
@@ -71,7 +75,10 @@ var Properties = React.createClass({
                 value = util.toString(value);
                 return (
                   <tr key={name} title={title[name]} className={value ? undefined : 'w-no-value'}>
-                    <th>{name && name.length >= 2100 ? <ExpandCollapse text={name} /> : name}</th>
+                    <th>
+                      {onHelp ? <span data-name={name} onClick={onHelp} className="glyphicon glyphicon-question-sign"></span> : undefined}
+                      {name && name.length >= 2100 ? <ExpandCollapse text={name} /> : name}
+                    </th>
                     <td><pre>{value && value.length >= 2100 ? <ExpandCollapse text={value} /> : value}</pre></td>
                   </tr>
                 );

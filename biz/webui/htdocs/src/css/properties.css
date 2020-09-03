@@ -13,4 +13,14 @@
 .w-properties-btn {display: none; position: absolute; text-decoration: none!important; color: #747474; padding: 0 5px;
 z-index: 1; border-radius: 2px; top: 2px; right: 5px; font-size: 12px; line-height: 1.5; background: #eee; cursor: pointer; }
 .w-properties-btn:hover {color: #337ab7;}
+.w-properties th .glyphicon-question-sign {
+  display: none;
+}
 
+.w-properties th:hover .glyphicon-question-sign {
+  display: inline-block;
+  vertical-align: text-top;
+  margin-right: 5px;
+  cursor: pointer;
+  font-size: 13px;
+}

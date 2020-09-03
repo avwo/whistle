@@ -8,6 +8,7 @@ var util = require('./util');
 var storage = require('./storage');
 var Properties = require('./properties');
 var dataCenter = require('./data-center');
+var getHelpUrl = require('./protocols').getHelpUrl;
 
 var OVERVIEW = ['Url', 'Real Url', 'Method', 'Http Version', 'Status Code', 'Status Message', 'Client IP', 'Server IP', 'Client Port', 'Server Port', 'Request Length', 'Content Length'
                       , 'Content Encoding', 'Start Date', 'DNS Lookup', 'Request Sent', 'Response Headers', 'Content Download'];
@@ -81,6 +82,14 @@ var Overview = React.createClass({
     this.setState({
       showOnlyMatchRules: showOnlyMatchRules
     });
+  },
+  onHelp: function(e) {
+    var name = e.target.getAttribute('data-name');
+    var helpUrl = getHelpUrl(name);
+    if (!helpUrl) {
+      return;
+    }
+    window.open(name === 'rule' ? helpUrl + 'rule/' : helpUrl);
   },
   render: function() {
     var overviewModal = DEFAULT_OVERVIEW_MODAL;
@@ -239,7 +248,7 @@ var Overview = React.createClass({
           <a href="https://avwo.github.io/whistle/rules/" target="_blank"><span className="glyphicon glyphicon-question-sign"></span></a>All Rules:
           <label><input checked={showOnlyMatchRules} onChange={this.showOnlyMatchRules} type="checkbox" />Only show matching rules</label>
         </p>
-        <Properties className={showOnlyMatchRules ? 'w-hide-no-value' : undefined} modal={rulesModal} title={titleModal} />
+        <Properties onHelp={this.onHelp} className={showOnlyMatchRules ? 'w-hide-no-value' : undefined} modal={rulesModal} title={titleModal} />
       </div>
     );
   }
