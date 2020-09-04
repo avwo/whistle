@@ -1,3 +1,7 @@
+# v2.5.21
+1. style: Overview 规则列表 hover 上去可以点击查看帮助文档
+2. style: Network 搜索框添加历史记录功能
+
 # v2.5.20
 1. fix: `reqHeaders://cookie=xxx` 和 `reqCookies://test=123` 无法同时生效问题
 2. feat: 支持通过请求参数 `hideLeftMenu=true` 或启动参数 `-M hideLeftMenu` 隐藏左菜单
