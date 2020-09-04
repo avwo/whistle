@@ -48,13 +48,12 @@
   cursor: pointer;
 }
 .w-filter-bar a {
-  position: absolute;
-  left: -12px;
-  top: 0;
-  transform: scale(0.8);
+  margin-right: 10px;
+  font-size: 12px;
 }
 .w-filter-bar a span {
   font-size: 12px;
+  width: 22px;
 }
 
 .w-filter-hint li:hover, .w-filter-hint .w-active {
