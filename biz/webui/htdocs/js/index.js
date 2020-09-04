@@ -56549,7 +56549,8 @@
 	    return { hintList: [] };
 	  },
 	  addHint: function () {
-	    var value = this.state.filterText.trim();
+	    var value = this.state.filterText;
+	    value = value && value.trim();
 	    if (value) {
 	      var list = this.allHintList;
 	      var index = list.indexOf(value);
@@ -56598,8 +56599,7 @@
 	    });
 	  },
 	  hideHints: function () {
-	    var state = this.state;
-	    this.setState({ hintList: state.hintList === null ? this.filterHints(state.filterText) : null });
+	    this.setState({ hintList: null });
 	    this.addHint();
 	  },
 	  showHints: function () {
@@ -56607,7 +56607,12 @@
 	  },
 	  onFilterKeyDown: function (e) {
 	    if (e.keyCode === 27) {
-	      this.hideHints();
+	      var hintList = this.state.hintList;
+	      if (hintList === null) {
+	        this.showHints();
+	      } else {
+	        this.hideHints();
+	      }
 	    } else if (e.ctrlKey || e.metaKey) {
 	      if (e.keyCode == 68) {
 	        this.clearFilterText();
