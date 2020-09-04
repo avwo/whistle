@@ -27,7 +27,7 @@
 }
 
 .w-filter-hint li {
-  line-height: 26px;
+  line-height: 24px;
   font-size: 12px;
   border-radius: 3px;
   padding: 0 5px;
@@ -47,6 +47,6 @@
   cursor: pointer;
 }
 
-.w-filter-con li:hover {
-  background-color: #f5f5f5;
+.w-filter-hint li:hover, .w-filter-hint .w-active {
+  background-color: #f5f5f5!important;
 }

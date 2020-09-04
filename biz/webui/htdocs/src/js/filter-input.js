@@ -2,6 +2,8 @@ require('./base-css.js');
 require('../css/filter-input.css');
 var util = require('./util');
 var React = require('react');
+var ReactDOM = require('react-dom');
+var $ = require('jquery');
 var storage = require('./storage');
 
 var MAX_LEN = 128;
@@ -28,6 +30,9 @@ var FilterInput = React.createClass({
     }
     return { hintList: [] };
   },
+  componentDidMount: function() {
+    this.hintElem = $(ReactDOM.findDOMNode(this.refs.hints));
+  },
   addHint: function() {
     var value = this.state.filterText;
     value = value && value.trim();
@@ -48,7 +53,7 @@ var FilterInput = React.createClass({
   },
   filterHints: function(keyword) {
     keyword = keyword && keyword.trim();
-    let count = 12;
+    var count = 12;
     if (!keyword) {
       return this.allHintList.slice(-count);
     }
@@ -67,16 +72,23 @@ var FilterInput = React.createClass({
     return list;
   },
   onFilterChange: function(e) {
-    var value = e.target.value;
+    this.changeInput(e.target.value);
+  },
+  changeInput: function(value) {
     var self = this;
     self.props.onChange && self.props.onChange(value);
     var hintKey = self.props.hintKey;
     hintKey && clearTimeout(self.timer);
-    self.setState({filterText: value, hintList: this.filterHints(value) }, function() {
+    this.state.filterText = value;
+    self.setState({ hintList: this.filterHints(value) }, function() {
       if (hintKey) {
         self.timer = setTimeout(this.addHint, 10000);
       }
     });
+  },
+  onClick: function(e) {
+    this.changeInput(e.target.title);
+    this.hideHints();
   },
   hideHints: function() {
     this.setState({ hintList: null });
@@ -86,11 +98,43 @@ var FilterInput = React.createClass({
     this.setState({ hintList: this.filterHints(this.state.filterText) });
   },
   onFilterKeyDown: function(e) {
+    var elem;
     if (e.keyCode === 27) {
       var hintList = this.state.hintList;
       if (hintList === null) {
         this.showHints();
       } else {
+        this.hideHints();
+      }
+    } else if (e.keyCode === 38) { // up
+      elem = this.hintElem.find('.w-active');
+      if (elem.length) {
+        elem.removeClass('w-active');
+        elem = elem.prev('li').addClass('w-active');
+      }
+
+      if (!elem.length) {
+        elem = this.hintElem.find('li:last');
+        elem.addClass('w-active');
+      }
+      e.preventDefault();
+    } else if (e.keyCode === 40) { // down
+      elem = this.hintElem.find('.w-active');
+      if (elem.length) {
+        elem.removeClass('w-active');
+        elem = elem.next('li').addClass('w-active');
+      }
+
+      if (!elem.length) {
+        elem = this.hintElem.find('li:first');
+        elem.addClass('w-active');
+      }
+      e.preventDefault();
+    } else if (e.keyCode === 13) {
+      elem = this.hintElem.find('.w-active');
+      var value = elem.attr('title');
+      if (value) {
+        this.changeInput(value);
         this.hideHints();
       }
     } else if ((e.ctrlKey || e.metaKey)) {
@@ -112,33 +156,34 @@ var FilterInput = React.createClass({
     this.setState({filterText: '', hintList: this.filterHints()});
   },
   render: function() {
-    var filterText = this.state.filterText || '';
-    var hintKey = this.props.hintKey;
-    var hintList = this.state.hintList;
+    var self = this;
+    var filterText = self.state.filterText || '';
+    var hintKey = self.props.hintKey;
+    var hintList = self.state.hintList;
     return (
-        <div className="w-filter-con" style={this.props.wStyle}>
+        <div className="w-filter-con" style={self.props.wStyle}>
           {hintKey ? <div className="w-filter-hint" style={{ display: hintList && hintList.length ? '' : 'none' }} onMouseDown={util.preventBlur}>
             <div className="w-filter-bar">
-              <span onClick={this.hideHints} aria-hidden="true">&times;</span>
+              <span onClick={self.hideHints} aria-hidden="true">&times;</span>
             </div>
-            <ul>
+            <ul ref="hints">
               {
                 hintList && hintList.map(function(key) {
-                  return <li title={key}>{key}</li>;
+                  return <li key={key} onClick={self.onClick} title={key}>{key}</li>;
                 })
               }
             </ul>
           </div> : undefined}
           <input type="text" value={filterText}
-            onChange={this.onFilterChange}
-            onKeyDown={this.onFilterKeyDown}
-            onFocus={this.showHints}
-            onBlur={this.hideHints}
+            onChange={self.onFilterChange}
+            onKeyDown={self.onFilterKeyDown}
+            onFocus={self.showHints}
+            onBlur={self.hideHints}
             style={{background: filterText.trim() ? '#000' : undefined}}
             className="w-filter-input" maxLength={MAX_LEN} placeholder="type filter text" />
           <button onMouseDown={util.preventBlur}
-            onClick={this.clearFilterText}
-            style={{display: this.state.filterText ? 'block' :  'none'}} type="button" className="close" title="Ctrl[Command]+D"><span aria-hidden="true">&times;</span></button>
+            onClick={self.clearFilterText}
+            style={{display: self.state.filterText ? 'block' :  'none'}} type="button" className="close" title="Ctrl[Command]+D"><span aria-hidden="true">&times;</span></button>
         </div>
     );
   }
