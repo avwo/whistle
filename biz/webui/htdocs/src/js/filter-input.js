@@ -108,6 +108,9 @@ var FilterInput = React.createClass({
       }
     } else if (e.keyCode === 38) { // up
       elem = this.hintElem.find('.w-active');
+      if (this.state.hintList === null) {
+        this.showHints();
+      }
       if (elem.length) {
         elem.removeClass('w-active');
         elem = elem.prev('li').addClass('w-active');
@@ -120,6 +123,9 @@ var FilterInput = React.createClass({
       e.preventDefault();
     } else if (e.keyCode === 40) { // down
       elem = this.hintElem.find('.w-active');
+      if (this.state.hintList === null) {
+        this.showHints();
+      }
       if (elem.length) {
         elem.removeClass('w-active');
         elem = elem.next('li').addClass('w-active');
@@ -151,6 +157,13 @@ var FilterInput = React.createClass({
     }
 
   },
+  clear: function() {
+    if (window.confirm('Confirm to clear history?')) {
+      storage.set(this.props.hintKey, '');
+      this.allHintList = [];
+      this.hideHints();
+    }
+  },
   clearFilterText: function() {
     this.props.onChange && this.props.onChange('');
     this.setState({filterText: '', hintList: this.filterHints()});
@@ -164,6 +177,10 @@ var FilterInput = React.createClass({
         <div className="w-filter-con" style={self.props.wStyle}>
           {hintKey ? <div className="w-filter-hint" style={{ display: hintList && hintList.length ? '' : 'none' }} onMouseDown={util.preventBlur}>
             <div className="w-filter-bar">
+              <a onClick={this.clear}>
+                <span className="glyphicon glyphicon-trash"></span>
+                Clear history
+              </a>
               <span onClick={self.hideHints} aria-hidden="true">&times;</span>
             </div>
             <ul ref="hints">

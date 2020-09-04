@@ -36,6 +36,7 @@
 .w-filter-bar {
   text-align: right;
   height: 20px;
+  position: relative;
 }
 
 .w-filter-bar span {
@@ -45,6 +46,15 @@
   display: inline-block;
   font-size: 16px;
   cursor: pointer;
+}
+.w-filter-bar a {
+  position: absolute;
+  left: -12px;
+  top: 0;
+  transform: scale(0.8);
+}
+.w-filter-bar a span {
+  font-size: 12px;
 }
 
 .w-filter-hint li:hover, .w-filter-hint .w-active {
