@@ -8,6 +8,7 @@ var MAX_LEN = 128;
 var FilterInput = React.createClass({
   getInitialState: function() {
     var hintKey = this.props.hintKey;
+    this.allHintList = [];
     if (hintKey) {
       try {
         var hintList = JSON.parse(storage.get(hintKey));
@@ -48,7 +49,7 @@ var FilterInput = React.createClass({
     keyword = keyword && keyword.trim();
     let count = 12;
     if (!keyword) {
-      return this.allHintList.slice(0, count);
+      return this.allHintList.slice(-count);
     }
     var list = [];
     var index = this.allHintList.indexOf(keyword);
@@ -72,13 +73,14 @@ var FilterInput = React.createClass({
     hintKey && clearTimeout(self.timer);
     self.setState({filterText: value, hintList: this.filterHints(value) }, function() {
       if (hintKey) {
-        self.timer = setTimeout(this.addHint, 1000);
+        self.timer = setTimeout(this.addHint, 10000);
       }
     });
   },
   hideHints: function() {
     var state = this.state;
     this.setState({ hintList: state.hintList === null ? this.filterHints(state.filterText) : null });
+    this.addHint();
   },
   showHints: function() {
     this.setState({ hintList: this.filterHints(this.state.filterText) });
@@ -111,6 +113,9 @@ var FilterInput = React.createClass({
     return (
         <div className="w-filter-con" style={this.props.wStyle}>
           {hintKey ? <div className="w-filter-hint" style={{ display: hintList && hintList.length ? '' : 'none' }} onMouseDown={util.preventBlur}>
+            <div className="w-filter-bar">
+              <span onClick={this.hideHints} aria-hidden="true">&times;</span>
+            </div>
             <ul>
               {
                 hintList && hintList.map(function(key) {
@@ -120,15 +125,15 @@ var FilterInput = React.createClass({
             </ul>
           </div> : undefined}
           <input type="text" value={filterText}
-          onChange={this.onFilterChange}
-          onKeyDown={this.onFilterKeyDown}
-          onFocus={this.showHints}
-          onBlur={this.hideHints}
-          style={{background: filterText.trim() ? '#000' : undefined}}
-          className="w-filter-input" maxLength={MAX_LEN} placeholder="type filter text" />
+            onChange={this.onFilterChange}
+            onKeyDown={this.onFilterKeyDown}
+            onFocus={this.showHints}
+            onBlur={this.hideHints}
+            style={{background: filterText.trim() ? '#000' : undefined}}
+            className="w-filter-input" maxLength={MAX_LEN} placeholder="type filter text" />
           <button onMouseDown={util.preventBlur}
-          onClick={this.clearFilterText}
-          style={{display: this.state.filterText ? 'block' :  'none'}} type="button" className="close" title="Ctrl[Command]+D"><span aria-hidden="true">&times;</span></button>
+            onClick={this.clearFilterText}
+            style={{display: this.state.filterText ? 'block' :  'none'}} type="button" className="close" title="Ctrl[Command]+D"><span aria-hidden="true">&times;</span></button>
         </div>
     );
   }

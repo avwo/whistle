@@ -5,7 +5,7 @@
   margin: 0 3px;
   bottom: 35px;
   width: 99%;
-  padding: 5px;
+  padding-bottom: 5px;
   color: rgba(0, 0, 0, 0.65);
   line-height: 1.5;
   position: absolute;
@@ -28,6 +28,23 @@
 
 .w-filter-hint li {
   line-height: 26px;
+  font-size: 12px;
+  border-radius: 3px;
+  padding: 0 5px;
+}
+
+.w-filter-bar {
+  text-align: right;
+  height: 20px;
+}
+
+.w-filter-bar span {
+  line-height: 20px;
+  width: 28px;
+  text-align: center;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
 }
 
 .w-filter-con li:hover {

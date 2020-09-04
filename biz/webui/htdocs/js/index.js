@@ -56528,6 +56528,7 @@
 	
 	  getInitialState: function () {
 	    var hintKey = this.props.hintKey;
+	    this.allHintList = [];
 	    if (hintKey) {
 	      try {
 	        var hintList = JSON.parse(storage.get(hintKey));
@@ -56568,7 +56569,7 @@
 	    keyword = keyword && keyword.trim();
 	    let count = 12;
 	    if (!keyword) {
-	      return this.allHintList.slice(0, count);
+	      return this.allHintList.slice(-count);
 	    }
 	    var list = [];
 	    var index = this.allHintList.indexOf(keyword);
@@ -56592,13 +56593,14 @@
 	    hintKey && clearTimeout(self.timer);
 	    self.setState({ filterText: value, hintList: this.filterHints(value) }, function () {
 	      if (hintKey) {
-	        self.timer = setTimeout(this.addHint, 1000);
+	        self.timer = setTimeout(this.addHint, 10000);
 	      }
 	    });
 	  },
 	  hideHints: function () {
 	    var state = this.state;
 	    this.setState({ hintList: state.hintList === null ? this.filterHints(state.filterText) : null });
+	    this.addHint();
 	  },
 	  showHints: function () {
 	    this.setState({ hintList: this.filterHints(this.state.filterText) });
@@ -56633,6 +56635,15 @@
 	      hintKey ? React.createElement(
 	        'div',
 	        { className: 'w-filter-hint', style: { display: hintList && hintList.length ? '' : 'none' }, onMouseDown: util.preventBlur },
+	        React.createElement(
+	          'div',
+	          { className: 'w-filter-bar' },
+	          React.createElement(
+	            'span',
+	            { onClick: this.hideHints, 'aria-hidden': 'true' },
+	            '\xD7'
+	          )
+	        ),
 	        React.createElement(
 	          'ul',
 	          null,
@@ -56704,7 +56715,7 @@
 	
 	
 	// module
-	exports.push([module.id, ".w-filter-con{position:relative}.w-filter-con .close{position:absolute;right:5px;top:7px;color:#fff;line-height:1pc;display:none}.w-filter-hint{margin:0 3px;bottom:35px;width:99%;padding:5px;color:rgba(0,0,0,.65);line-height:1.5;position:absolute;overflow:hidden;font-size:14px;background-color:#fff;border-radius:3px;box-shadow:0 3px 6px -4px rgba(0,0,0,.12),0 6px 1pc 0 rgba(0,0,0,.08),0 9px 28px 8px rgba(0,0,0,.05)}.w-filter-hint li,.w-filter-hint ul{list-style:none;margin:0;padding:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.w-filter-hint li{line-height:26px}.w-filter-con li:hover{background-color:#f5f5f5}", ""]);
+	exports.push([module.id, ".w-filter-con{position:relative}.w-filter-con .close{position:absolute;right:5px;top:7px;color:#fff;line-height:1pc;display:none}.w-filter-hint{margin:0 3px;bottom:35px;width:99%;padding-bottom:5px;color:rgba(0,0,0,.65);line-height:1.5;position:absolute;overflow:hidden;font-size:14px;background-color:#fff;border-radius:3px;box-shadow:0 3px 6px -4px rgba(0,0,0,.12),0 6px 1pc 0 rgba(0,0,0,.08),0 9px 28px 8px rgba(0,0,0,.05)}.w-filter-hint li,.w-filter-hint ul{list-style:none;margin:0;padding:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.w-filter-hint li{line-height:26px;font-size:9pt;border-radius:3px;padding:0 5px}.w-filter-bar{text-align:right;height:20px}.w-filter-bar span{line-height:20px;width:28px;text-align:center;display:inline-block;font-size:1pc;cursor:pointer}.w-filter-con li:hover{background-color:#f5f5f5}", ""]);
 	
 	// exports
 
