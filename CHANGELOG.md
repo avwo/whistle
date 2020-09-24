@@ -1,3 +1,7 @@
+# v2.5.22
+1. refactor: 更新 node-forge 解决安全问题
+2. fix: h2 请求转成 https 请求时，界面显示响应头大小问题
+
 # v2.5.21
 1. style: Overview 规则列表 hover 上去可以点击查看帮助文档
 2. style: Network 搜索框添加历史记录功能
