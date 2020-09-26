@@ -1,6 +1,7 @@
 # v2.5.22
 1. refactor: 更新 node-forge 解决安全问题
 2. fix: h2 请求转成 https 请求时，界面显示响应头大小问题
+3. feat: 启动参数 `options` 支持通过字段 `allowPluginList` 和 `blockPluginList` 分别设置可加载的插件及不可加载的插件列表 
 
 # v2.5.21
 1. style: Overview 规则列表 hover 上去可以点击查看帮助文档
