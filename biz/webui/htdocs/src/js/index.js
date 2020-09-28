@@ -3031,7 +3031,11 @@ var Index = React.createClass({
                     <p className="w-editor-settings-box"><label><input type="checkbox" checked={state.backRulesFirst} onChange={this.enableBackRulesFirst} /> Back rules first</label></p>
                   <p className="w-editor-settings-box"><label style={{color: multiEnv ? '#aaa' : undefined}}><input type="checkbox" disabled={multiEnv}
                     checked={!multiEnv && state.allowMultipleChoice} onChange={this.allowMultipleChoice} /> Use multiple rules</label></p>
-                  {!state.ndr && <p className="w-editor-settings-box"><label><input type="checkbox" checked={state.disabledAllRules} onChange={this.disableAllRules} name="disableAll" /> Disable all rules</label></p>}
+                  {!state.ndr && <p className="w-editor-settings-box">
+                    <label style={{color: state.disabledAllRules ? '#f66' : undefined}}>
+                      <input type="checkbox" checked={state.disabledAllRules} onChange={this.disableAllRules} name="disableAll" /> Disable all rules
+                    </label>
+                  </p>}
                 </div>
                 <div className="modal-footer">
                   <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
