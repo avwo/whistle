@@ -42,7 +42,7 @@
     "express": "^4.17.1",
     "extend": "^3.0.1",
     "fs-extra2": "^1.0.0",
-    "hagent": "^0.7.2",
+    "hagent": "^0.7.3",
     "hparser": "^0.3.2",
     "iconv-lite": "0.4.7",
     "json5": "^2.1.3",
