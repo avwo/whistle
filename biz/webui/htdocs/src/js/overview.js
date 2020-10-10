@@ -10,9 +10,9 @@ var Properties = require('./properties');
 var dataCenter = require('./data-center');
 var getHelpUrl = require('./protocols').getHelpUrl;
 
-var OVERVIEW = ['Url', 'Real Url', 'Method', 'Http Version', 'Status Code', 'Status Message', 'Client IP', 'Server IP', 'Client Port', 'Server Port', 'Request Length', 'Content Length'
+var OVERVIEW = ['Url', 'Real Url', 'Method', 'Http Version', 'Status Code', 'Status Message', 'Client IP', 'Client Port', 'Server IP', 'Server Port', 'Request Length', 'Content Length'
                       , 'Content Encoding', 'Start Date', 'DNS Lookup', 'Request Sent', 'Response Headers', 'Content Download'];
-var OVERVIEW_PROPS = ['url', 'realUrl', 'req.method', 'req.httpVersion', 'res.statusCode', 'res.statusMessage', 'req.ip', 'res.ip', 'req.port', 'res.port', 'req.size', 'res.size', 'contentEncoding'];
+var OVERVIEW_PROPS = ['url', 'realUrl', 'req.method', 'req.httpVersion', 'res.statusCode', 'res.statusMessage', 'req.ip', 'req.port', 'res.ip', 'res.port', 'req.size', 'res.size', 'contentEncoding'];
 /**
  * statusCode://, redirect://[statusCode:]url, [req, res]speed://,
  * [req, res]delay://, method://, [req, res][content]Type://自动lookup,
