@@ -1,3 +1,6 @@
+# v2.5.24
+1. feat: 添加 [cipher](http://wproxy.org/whistle/rules/cipher.html) 支持自定义兜底加密套件
+
 # v2.5.23
 1. fix: 代理请求头 `Host` 错乱问题（不影响正常使用）
 
