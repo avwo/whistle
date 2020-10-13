@@ -109,4 +109,5 @@
   * [resWrite](rules/resWrite.md)
   * [reqWriteRaw](rules/reqWriteRaw.md)
   * [resWriteRaw](rules/resWriteRaw.md)
+  * [cipher](rules/cipher.md)
 * [用户反馈](feedback.md)
