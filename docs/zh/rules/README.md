@@ -127,4 +127,4 @@
 
 
 #### 修改加密算法
-1. [**cipher** (设置兜底加密套件)](cipher.html)
+1. [**cipher** (设置兜底加密算法)](cipher.html)
