@@ -112,6 +112,10 @@ CodeMirror.defineMode('rules', function() {
     return /^disable:\/\//.test(str);
   }
 
+  function isCipher(str) {
+    return /^cipher:\/\//.test(str);
+  }
+
   function isIgnore(str) {
     return /^ignore:\/\//.test(str);
   }
@@ -218,6 +222,8 @@ CodeMirror.defineMode('rules', function() {
             type = 'atom js-enable js-type';
           } else if (isDisable(str)) {
             type = 'negative js-disable js-type';
+          } else if (isCipher(str)) {
+            type = 'atom js-cipher js-type';
           } else if (isDelete(str)) {
             type = 'negative js-delete js-type';
           } else if (isProxy(str)) {
