@@ -68,6 +68,7 @@ var ContextMenu = React.createClass({
                 + (item.copyText ? ' w-copy-text' : '')}
                 data-clipboard-text={item.copyText}
                 style={{display: item.hide ? 'none' : undefined}}
+                onClick={item.onClick}
               >
                 <p className="w-ctx-item-tt">{item.name}</p>
                 {subList ? <span className="glyphicon glyphicon-play"></span> : undefined}
@@ -78,7 +79,7 @@ var ContextMenu = React.createClass({
                       {subList.map(function(subItem, i) {
                         return (
                           <li title={subItem.title} data-parent-action={item.action} data-name={subItem.name}
-                            data-menu-action={subItem.action || subItem.name} key={i}
+                            data-menu-action={subItem.action || subItem.name} key={i} onClick={subItem.onClick}
                             className={'w-ctx-menu-item ' + (subItem.sep ? 'w-ctx-item-sep' : '')
                             + (subItem.disabled ? ' w-ctx-item-disabled' : '')
                             + (subItem.copyText ? ' w-copy-text' : '')}

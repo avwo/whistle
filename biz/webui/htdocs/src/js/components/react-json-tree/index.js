@@ -64,7 +64,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 // Dave Vedder <veddermatic@gmail.com> http://www.eskimospy.com/
 // port by Daniele Zannotti http://www.github.com/dzannotti <dzannotti@me.com>
 
-var contextMenuList = [{ name: 'Copy Key' }, { name: 'Copy Value' }];
+var contextMenuList = [{ name: 'Copy Key' }, { name: 'Copy Value' }, { name: 'Collapse Parent' }];
 var identity = function identity(value) {
   return value;
 };
@@ -175,7 +175,8 @@ var JSONTree = function (_React$Component) {
           data = data && data[keyPath[i]];
         }
       }
-      var ctxMenu = _contextMenu.util.getMenuPosition(e, 110, 70);
+      var isRoot = keyPath.length === 1;
+      var ctxMenu = _contextMenu.util.getMenuPosition(e, 110, isRoot ? 60 : 90);
       ctxMenu.list = contextMenuList;
       ctxMenu.className = 'w-inspectors-ctx-menu';
       contextMenuList[0].copyText = keyPath[0];
@@ -185,6 +186,10 @@ var JSONTree = function (_React$Component) {
         } catch (e) {} // eslint-disable-line
       }
       contextMenuList[1].copyText = data + '';
+      contextMenuList[2].onClick = function() {
+        target.closest('li').parent().closest('li').find('div:first').click();
+      };
+      contextMenuList[2].hide = isRoot;
       _this.refs.contextMenu.show(ctxMenu); // eslint-disable-line
       e.preventDefault();
     };
