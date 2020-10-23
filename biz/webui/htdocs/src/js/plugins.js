@@ -332,7 +332,7 @@ var Tabs = React.createClass({
             <li className={'w-nav-home-tab' + (activeName == 'Home' ? ' active' : '')} data-name="Home"  onClick={self.props.onActive}><a draggable="false">Home</a></li>
             {tabs.map(function(tab) {
               return <li className={activeName == tab.name ? ' active' : ''}>
-                  <a data-name={tab.name}  onClick={self.props.onActive} draggable="false">
+                  <a data-name={tab.name} title={tab.name}  onClick={self.props.onActive} draggable="false">
                     {tab.name}
                     <span data-name={tab.name} title="Close" onClick={self.onClose}>&times;</span>
                   </a>
