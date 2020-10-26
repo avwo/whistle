@@ -1,7 +1,7 @@
 # enable
 通过配置开启指定的设置(https拦截、隐藏请求)，配置方式：
 
-	pattern enable://https|intercept|hide|abort|gzip
+	pattern enable://https|intercept|hide|abort|gzip|proxyHost|proxyTunnel
 
 其中，`pattern`参见[匹配模式](../pattern.html)，`https`或`intercept`(或 `capture`)表示拦截pattern匹配的tunnel请求(如果是https或wss请求需要安装whistle的根证书：[点击这里](../webui/https.html)，拦截后可以查看https请求的具体内容)；`hide`表示隐藏pattern匹配的所有请求，将不显示在[Network](../webui/network.html)上；通过`|`可以同时设置多个操作。
 
@@ -18,6 +18,12 @@
 
 	# gzip本地内容
 	ke.qq.com file:///User/xxx/test enable://gzip
+
+	# 给上游代理设置 hosts(10.10.10.20:8888)
+	ke.qq.com proxy://10.1.1.1:8080 10.10.10.20:8888 enable://proxyHost
+
+	# 通过上游 http 代理(10.1.1.1:8080)将请求转发到指定的 http 代理(10.10.10.20:8080)
+	ke.qq.com proxy://10.1.1.1:8080 10.10.10.20:8080 enable://proxyHost|proxyTunnel
 	
 
 
