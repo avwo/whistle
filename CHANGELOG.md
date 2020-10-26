@@ -1,3 +1,11 @@
+# v2.5.26
+1. style: JSONView 的右键菜单新增 `Collapse Parent`
+2. feat: 添加 `enable://proxyTunnel`，支持两层http代理 **请求 -> http 代理 -> http 代理**
+		``` txt
+    www.test.com proxy://10.0.0.1:5566 10.1.2.3:8080 enable://proxyHost|proxyTunnel
+		```
+		上述表示请求将通过 http 代理 `10.0.0.1:5566` 转发到上层 http 代理 `10.1.2.3:8080`
+
 # v2.5.25
 1. feat: 支持通过 `-M useMultipleRules` 启用多选，相当于在 Rules/Settings 勾选 `Use multiple rules`
 2. fix: 解决 `https2http-proxy` 部分请求无法正常转换问题，该协议主要是将请求自动转成http，并代理到指定 `http proxy`，功能同 `internal-proxy`，但 `internal-proxy` 无法[同时设置host](https://github.com/avwo/help/issues/5)
