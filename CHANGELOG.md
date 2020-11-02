@@ -1,3 +1,6 @@
+# v2.5.27
+1. feat: 以 `/...whistle-path.5b6af7b9884e1165...///` 路径开头的内部请求也支持 `enable://proxyTunnel`
+
 # v2.5.26
 1. style: JSONView 的右键菜单新增 `Collapse Parent`
 2. feat: 添加 `enable://proxyTunnel`，支持两层http代理 **请求 -> http 代理 -> http 代理**
