@@ -41,16 +41,20 @@ module.exports = function(req, res, next) {
       }
       if (proxyUrl) {
         req.curUrl = fullUrl;
-        proxyUrl = rules.resolveProxy(req, true);
-        if (proxyUrl) {
-          isInternal = proxyUrl.isInternal;
-          proxyUrl = proxyUrl.matcher;
-        }
-        if (proxyUrl) {
-          proxyUrl = proxyUrl.substring(proxyUrl.indexOf('://') + 3);
-        } else {
-          proxyUrl = null;
-        }
+        rules.getHttpProxy(fullUrl, req, function() {
+          proxyUrl = req.rules.proxy;
+          if (proxyUrl) {
+            isInternal = proxyUrl.isInternal;
+            proxyUrl = proxyUrl.matcher;
+          }
+          if (proxyUrl) {
+            proxyUrl = proxyUrl.substring(proxyUrl.indexOf('://') + 3);
+          } else {
+            proxyUrl = null;
+          }
+          handleNext();
+        });
+        return;
       }
     }
   } else {
@@ -81,47 +85,51 @@ module.exports = function(req, res, next) {
       isWebUI = true;
     }
   }
-  // 后续有用到
-  fullUrl = req.fullUrl = util.getFullUrl(req);
-  if (bypass) {
-    return next();
-  }
-  var localRule;
-  req.curUrl = fullUrl;
-  if (proxyUrl) {
-    req.curUrl = 'http://' + proxyUrl;
-    rules.resolveHost(req, function(err, ip) {
-      if (err) {
-        return next(err);
+  handleNext();
+  
+  function handleNext() {
+    // 后续有用到
+    fullUrl = req.fullUrl = util.getFullUrl(req);
+    if (bypass) {
+      return next();
+    }
+    var localRule;
+    req.curUrl = fullUrl;
+    if (proxyUrl) {
+      req.curUrl = 'http://' + proxyUrl;
+      rules.resolveHost(req, function(err, ip) {
+        if (err) {
+          return next(err);
+        }
+        var colon = proxyUrl.indexOf(':');
+        var proxyPort = colon === -1 ? 80 : proxyUrl.substring(colon + 1);
+        req.headers.host = 'local.whistlejs.com';
+        util.setClientId(req.headers, rules.resolveEnable(req), rules.resolveDisable(req), req.clientIp, isInternal);
+        util.transformReq(req, res, proxyPort > 0 ? proxyPort : 80, ip);
+      });
+    } else if (isWebUI) {
+      if (isOthers) {
+        util.transformReq(req, res, transformPort);
+      } else {
+        req._hasRespond = true;
+        req.url = req.url.replace(transformPort ? INTERNAL_APP : WEBUI_PATH, '/');
+        if (isWeinre) {
+          handleWeinreReq(req, res);
+        } else {
+          handleUIReq(req, res);
+        }
       }
-      var colon = proxyUrl.indexOf(':');
-      var proxyPort = colon === -1 ? 80 : proxyUrl.substring(colon + 1);
-      req.headers.host = 'local.whistlejs.com';
-      util.setClientId(req.headers, rules.resolveEnable(req), rules.resolveDisable(req), req.clientIp, isInternal);
-      util.transformReq(req, res, proxyPort > 0 ? proxyPort : 80, ip);
-    });
-  } else if (isWebUI) {
-    if (isOthers) {
-      util.transformReq(req, res, transformPort);
-    } else {
-      req._hasRespond = true;
-      req.url = req.url.replace(transformPort ? INTERNAL_APP : WEBUI_PATH, '/');
-      if (isWeinre) {
-        handleWeinreReq(req, res);
+    } else if (localRule = rules.resolveLocalRule(req)) {
+      req.url = localRule.url;
+      if (localRule.realPort) {
+        req.headers.host = '127.0.0.1:' + localRule.realPort; 
+        util.transformReq(req, res, localRule.realPort);
       } else {
         handleUIReq(req, res);
       }
-    }
-  } else if (localRule = rules.resolveLocalRule(req)) {
-    req.url = localRule.url;
-    if (localRule.realPort) {
-      req.headers.host = '127.0.0.1:' + localRule.realPort; 
-      util.transformReq(req, res, localRule.realPort);
     } else {
-      handleUIReq(req, res);
+      next();
     }
-  } else {
-    next();
   }
 };
 
