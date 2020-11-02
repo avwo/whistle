@@ -105,7 +105,7 @@ module.exports = function(req, res, next) {
         var proxyPort = colon === -1 ? 80 : proxyUrl.substring(colon + 1);
         req.headers.host = 'local.whistlejs.com';
         util.setClientId(req.headers, rules.resolveEnable(req), rules.resolveDisable(req), req.clientIp, isInternal);
-        util.transformReq(req, res, proxyPort > 0 ? proxyPort : 80, ip);
+        util.transformReq(req, res, proxyPort > 0 ? proxyPort : 80, ip, true);
       });
     } else if (isWebUI) {
       if (isOthers) {
