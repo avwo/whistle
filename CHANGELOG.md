@@ -1,3 +1,6 @@
+# v2.5.28
+1. feat: 新增 `lineProps://proxyHost|proxyTunnel` 只对当前行生效
+
 # v2.5.27
 1. feat: 以 `/...whistle-path.5b6af7b9884e1165...///` 路径开头的内部请求也支持 `enable://proxyTunnel`
 
