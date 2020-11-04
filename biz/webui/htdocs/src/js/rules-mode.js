@@ -100,6 +100,10 @@ CodeMirror.defineMode('rules', function() {
     return /^(?:excludeFilter|filter):\/\//.test(str);
   }
 
+  function isLineProps(str) {
+    return /^lineProps:\/\//.test(str);
+  }
+
   function isPlugin(str) {
     return /^pipe:\/\//.test(str) || (/^(?:plugin|whistle)\.[a-z\d_\-]+:\/\//.test(str) && !notExistPlugin(str));
   }
@@ -216,6 +220,8 @@ CodeMirror.defineMode('rules', function() {
             type = 'variable-2 js-headerReplace js-type';
           } else if (isFilter(str)) {
             type = 'negative js-filter js-type';
+          } else if (isLineProps(str)) {
+            type = 'negative js-line-props js-type';
           } else if (isIgnore(str)) {
             type = 'negative js-ignore js-type';
           } else if (isEnable(str)) {
