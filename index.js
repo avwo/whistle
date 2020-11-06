@@ -3,6 +3,7 @@ var net = require('net');
 var tls = require('tls');
 
 var ver = process.version.substring(1).split('.');
+var PROD_RE = /(^|\|)prod(uction)?($|\|)/;
 
 if (ver[0] >= 7 && ver[1] >= 7) {
   var connect = net.Socket.prototype.connect;
@@ -73,7 +74,11 @@ module.exports = function(options, callback) {
     options = null;
   }
   if (options && options.debugMode) {
-    env.PFORK_MODE = 'bind';
+    if (PROD_RE.test(options.mode)) {
+      options.debugMode = false;
+    } else {
+      env.PFORK_MODE = 'bind';
+    }
   }
   require('./lib/config').extend(options);
   return require('./lib')(callback);

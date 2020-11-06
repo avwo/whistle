@@ -100,7 +100,7 @@ program
   .option('-p, --port [proxyPort]', 'set the proxy port (' + config.port + ' by default)', parseInt, undefined)
   .option('-P, --uiport [uiport]', 'set the webui port', parseInt, undefined)
   .option('-m, --middlewares [script path or module name]', 'set the express middlewares loaded at startup (as: xx,yy/zz.js)', String, undefined)
-  .option('-M, --mode [mode]', 'set the starting mode (as: pureProxy|debug|multiEnv|capture|disableH2|network|rules|plugins)', String, undefined)
+  .option('-M, --mode [mode]', 'set the starting mode (as: pureProxy|debug|multiEnv|capture|disableH2|network|rules|plugins|prod)', String, undefined)
   .option('-t, --timeout [ms]', 'set the request timeout (' + config.timeout + 'ms by default)', parseInt, undefined)
   .option('-e, --extra [extraData]', 'set the extra parameters for plugin', String, undefined)
   .option('-f, --secureFilter [secureFilter]', 'set the path of secure filter', String, undefined)
