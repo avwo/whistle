@@ -829,7 +829,7 @@ function setReqData(item) {
   item.date = item.date || util.toLocaleString(new Date(item.startTime));
   item.clientPort = req.port;
   item.serverPort = item.res.port;
-  item.contentEncoding = resHeaders['content-encoding'];
+  item.contentEncoding = (resHeaders['content-encoding'] || '') + (item.res.hasGzipError ? ' (Incorrect header)' : '');
   item.body = res.size == null ? defaultValue : res.size;
   var result = res.statusCode == null ? defaultValue : res.statusCode;
   item.result = /^[1-9]/.test(result) && parseInt(result, 10) || result;
