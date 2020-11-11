@@ -27,7 +27,7 @@ function compare(v1, v2) {
 module.exports = function(req, res) {
   var version = config.version;
   var doNotShowAgainVersion = properties.get('doNotShowAgainVersion');
-  var latestVersion = properties.get('latestVersion');
+  var latestVersion = properties.getLatestVersion('latestVersion');
 
   res.json({
     ec: 0,

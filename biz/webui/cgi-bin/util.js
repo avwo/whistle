@@ -30,7 +30,7 @@ exports.getServerInfo = function(req) {
     baseDir: config.baseDirHash,
     username: config.username,
     nodeVersion: process.version,
-    latestVersion: properties.get('latestVersion'),
+    latestVersion: properties.getLatestVersion('latestVersion'),
     host: util.hostname(),
     isWin: util.isWin,
     port: config.port,

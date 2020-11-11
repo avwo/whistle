@@ -30,7 +30,7 @@ module.exports = function(req, res) {
     mrulesTime: config.mrulesTime,
     mvaluesClientId: config.mvaluesClientId,
     mvaluesTime: config.mvaluesTime,
-    latestVersion: properties.get('latestVersion'),
+    latestVersion: properties.getLatestVersion('latestVersion'),
     server: util.getServerInfo(req),
     uploadFiles: getUploadFiles(),
     rules: getRules(),
