@@ -1,3 +1,7 @@
+# v2.5.29
+1. feat: `enable://servername` 删除 https 请求的 sni
+2. refactor: 自动简称请求或响应内容是否支持gzip
+
 # v2.5.28
 1. feat: 新增 `lineProps://proxyHost|proxyTunnel` 只对当前行生效
 
