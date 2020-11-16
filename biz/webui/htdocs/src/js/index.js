@@ -2850,8 +2850,8 @@ var Index = React.createClass({
 
     return (
       <div className={'main orient-vertical-box' + (showLeftMenu ? ' w-show-left-menu' : '')}>
-        <div className={'w-menu w-' + name + '-menu-list'} onMouseEnter={forceShowLeftMenu} onMouseLeave={forceHideLeftMenu}>
-          <a onClick={this.toggleLeftMenu} draggable="false" className="w-show-left-menu-btn"
+        <div className={'w-menu w-' + name + '-menu-list'}>
+          <a onClick={this.toggleLeftMenu} draggable="false" className="w-show-left-menu-btn" onMouseEnter={forceShowLeftMenu} onMouseLeave={forceHideLeftMenu}
             style={{display: networkMode ? 'none' : undefined}} title={'Dock to ' + (showLeftMenu ? 'top' : 'left') + ' (Ctrl[Command] + M)'}>
             <span className={'glyphicon glyphicon-chevron-' + (showLeftMenu ? (mustHideLeftMenu ? 'down' : 'up') : 'left')}></span>
           </a>
