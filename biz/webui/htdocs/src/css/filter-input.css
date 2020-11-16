@@ -5,7 +5,7 @@
   margin: 0 3px;
   bottom: 35px;
   width: 99%;
-  padding-bottom: 5px;
+  padding-bottom: 3px;
   color: rgba(0, 0, 0, 0.65);
   line-height: 1.5;
   position: absolute;
@@ -48,7 +48,9 @@
   cursor: pointer;
 }
 .w-filter-bar a {
-  margin-right: 10px;
+  left: -5px;
+  transform: scale(0.9);
+  position: absolute;
   font-size: 12px;
 }
 .w-filter-bar a span {
