@@ -195,6 +195,7 @@ var FilterInput = React.createClass({
             onChange={self.onFilterChange}
             onKeyDown={self.onFilterKeyDown}
             onFocus={self.showHints}
+            onDoubleClick={self.showHints}
             onBlur={self.hideHints}
             style={{background: filterText.trim() ? '#000' : undefined}}
             className="w-filter-input" maxLength={MAX_LEN} placeholder="type filter text" />
