@@ -95,7 +95,7 @@ program
   .option('-s, --sockets [number]', 'set the max number of cached connections on each domain (' + config.sockets + ' by default)', parseInt, undefined)
   .option('-S, --storage [newStorageDir]', 'set the configured storage directory', String, undefined)
   .option('-C, --copy [storageDir]', 'copy the configuration of the specified directory to a new directory', String, undefined)
-  .option('-c, --dnsCache [time]', 'set the cache time of DNS (30000ms by default)', String, undefined)
+  .option('-c, --dnsCache [time]', 'set the cache time of DNS (60000ms by default)', String, undefined)
   .option('-H, --host [boundHost]', 'set the bound host (INADDR_ANY by default)', String, undefined)
   .option('-p, --port [proxyPort]', 'set the proxy port (' + config.port + ' by default)', parseInt, undefined)
   .option('-P, --uiport [uiport]', 'set the webui port', parseInt, undefined)
