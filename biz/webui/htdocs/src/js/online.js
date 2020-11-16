@@ -70,8 +70,8 @@ var Online = React.createClass({
       this.pluginsMode = data.pluginsMode;
       this.rulesMode = data.rulesMode;
       this.multiEnv = data.multiEnv;
-    } else if (this.macAddr !== data.mac || this.version !== data.version
-      || this.baseDir !== data.baseDir || this.networkMode !== data.networkMode || this.pluginsMode !== data.pluginsMode
+    } else if (this.version !== data.version || this.baseDir !== data.baseDir
+      || this.networkMode !== data.networkMode || this.pluginsMode !== data.pluginsMode
       || this.rulesMode !== data.rulesMode || this.multiEnv !== data.multiEnv) {
       this.refs.confirmReload.show();
     } else {
