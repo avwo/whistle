@@ -1,3 +1,6 @@
+# v2.5.30
+1. fix: 页面 Content Encoding 显示错误问题
+
 # v2.5.29
 1. feat: `enable://servername` 删除 https 请求的 sni
 2. feat: 支持 `w2 run -M prod` 方便 docker 部署
