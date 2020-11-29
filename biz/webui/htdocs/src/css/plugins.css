@@ -1,7 +1,9 @@
 .w-nav-tabs {padding-top: 10px; border-top: 1px solid #ccc; font-size: 13px;}
 .w-nav-tabs>.nav>li>a {padding: 5px 20px 5px 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 120px; position: relative;}
-.w-nav-tabs>.nav>li>a>span {display: block; position: absolute; top: 5px; right: 5px; color: #999; cursor: pointer;}
-.w-nav-tabs>.nav>li>a>span:hover {color: #000;}
+.w-nav-tabs>.nav>li>a>.w-close-icon {display: block; position: absolute; top: 5px; right: 5px; color: #999; cursor: pointer;}
+.w-nav-tabs>.nav>li>a>.w-close-icon:hover {color: #000;}
+.w-plugin-tab-disabled { color: #ccc; }
+.w-plugin-tab-disabled .glyphicon-ban-circle { vertical-align: text-top; margin-right: 3px; color: #ccc!important; }
 .w-nav-tabs iframe {border: none; display: block; margin: 0; padding: 0; width: 100%; height: 100%;}
 .w-nav-tabs .w-nav-tab-panel, .w-nav-tabs .w-nav-tab-panel>div {overflow: hidden;}
 .w-nav-tabs>.nav>.w-nav-home-tab>a {padding-right: 10px!important;}

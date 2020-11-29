@@ -9,7 +9,6 @@ var dataCenter = require('./data-center');
 var util = require('./util');
 
 var CMD_RE = /^([\w]{1,12})(\s+-g)?$/;
-var DIS_STYLE = { color: '#ccc' };
 
 function getPluginComparator(plugins) {
   return function(a, b) {
@@ -338,9 +337,10 @@ var Tabs = React.createClass({
             {tabs.map(function(tab) {
               var disd = !ndp && (disabled || disabledPlugins[tab.name]);
               return <li className={activeName == tab.name ? ' active' : ''}>
-                  <a data-name={tab.name} title={tab.name}  onClick={self.props.onActive} draggable="false" style={disd ? DIS_STYLE: undefined}>
-                    {disd ? '[Disabled] ' + tab.name : tab.name}
-                    <span data-name={tab.name} title="Close" onClick={self.onClose}>&times;</span>
+                  <a data-name={tab.name} title={tab.name}  onClick={self.props.onActive} draggable="false" className={disd ? 'w-plugin-tab-disabled': undefined}>
+                    {disd ? <span className="glyphicon glyphicon-ban-circle"></span> : undefined}
+                    {tab.name}
+                    <span data-name={tab.name} title="Close" className="w-close-icon" onClick={self.onClose}>&times;</span>
                   </a>
                   </li>;
             })}
