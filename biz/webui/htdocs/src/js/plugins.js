@@ -9,6 +9,7 @@ var dataCenter = require('./data-center');
 var util = require('./util');
 
 var CMD_RE = /^([\w]{1,12})(\s+-g)?$/;
+var DIS_STYLE = { color: '#ccc' };
 
 function getPluginComparator(plugins) {
   return function(a, b) {
@@ -313,8 +314,12 @@ var Tabs = React.createClass({
   },
   render: function() {
     var self = this;
-    var tabs = self.props.tabs || [];
+    var props = self.props;
+    var tabs = props.tabs || [];
     var activeName = 'Home';
+    var disabledPlugins = props.disabledPlugins || {};
+    var disabled = props.disabledAllPlugins;
+    var ndp = props.ndp;
     var active = self.props.active;
     if (active && active != activeName) {
       for (var i = 0, len = tabs.length; i < len; i++) {
@@ -331,9 +336,10 @@ var Tabs = React.createClass({
          <ul className="nav nav-tabs">
             <li className={'w-nav-home-tab' + (activeName == 'Home' ? ' active' : '')} data-name="Home"  onClick={self.props.onActive}><a draggable="false">Home</a></li>
             {tabs.map(function(tab) {
+              var disd = !ndp && (disabled || disabledPlugins[tab.name]);
               return <li className={activeName == tab.name ? ' active' : ''}>
-                  <a data-name={tab.name} title={tab.name}  onClick={self.props.onActive} draggable="false">
-                    {tab.name}
+                  <a data-name={tab.name} title={tab.name}  onClick={self.props.onActive} draggable="false" style={disd ? DIS_STYLE: undefined}>
+                    {disd ? '[Disabled] ' + tab.name : tab.name}
                     <span data-name={tab.name} title="Close" onClick={self.onClose}>&times;</span>
                   </a>
                   </li>;
