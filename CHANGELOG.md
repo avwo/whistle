@@ -1,3 +1,7 @@
+# v2.5.31
+1. fix: http 请求走 tunnel 代理没有主动调用 `socket.resume()`，可能导致用 lack-proxy 代理的部分请求超时
+2. style: 插件禁用后在页面的标签显示 `Disabled`
+
 # v2.5.30
 1. fix: 页面 Content Encoding 显示错误问题
 
