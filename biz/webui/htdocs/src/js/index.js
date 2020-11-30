@@ -2882,8 +2882,8 @@ var Index = React.createClass({
           {!state.ndp && <a onClick={this.disableAllPlugins} className="w-enable-plugin-menu"
             style={{display: isPlugins ? '' : 'none', color: disabledAllPlugins ? '#f66' : undefined}}
             draggable="false">
-            <span className={'glyphicon glyphicon-' + (disabledAllPlugins ? 'ok-circle' : 'ban-circle')}/>
-            {disabledAllPlugins ? 'EnableAll' : 'DisableAll'}
+            <span className={'glyphicon glyphicon-' + (disabledAllPlugins ? 'play-circle' : 'off')}/>
+            {disabledAllPlugins ? 'ON' : 'OFF'}
           </a>}
           <UpdateAllBtn hide={!isPlugins} />
           <a onClick={this.reinstallAllPlugins} className={'w-plugins-menu' +
@@ -3003,7 +3003,7 @@ var Index = React.createClass({
               style={{background: name == 'plugins' ? '#ddd' : null}} draggable="false">
               <span className={'glyphicon glyphicon-list-alt' + (disabledAllPlugins ? ' w-disabled' : '')}></span>
               <i>{!state.classic && !state.ndp && <input onChange={this.disableAllPlugins} type="checkbox" onClick={stopPropagation} checked={!disabledAllPlugins}
-                title={disabledAllPlugins ? 'Click to enable all plugins' : 'Click to disable all plugins'}
+                title={disabledAllPlugins ? 'Click to turn on all plugins' : 'Click to turn off all plugins'}
             />} Plugins</i>
             </a>
           </div>
