@@ -2142,7 +2142,7 @@ var Index = React.createClass({
         self.setState({});
         self.triggerRulesChange('save');
         if (self.state.disabledAllRules &&
-          confirm('All rules are disabled, do you want to enable them?')) {
+          confirm('Rules has been turn off, do you want to turn on it?')) {
           dataCenter.rules.disableAllRules({disabledAllRules: 0}, function(data, xhr) {
             if (data && data.ec === 0) {
               self.state.disabledAllRules = false;
@@ -2986,7 +2986,7 @@ var Index = React.createClass({
               }} draggable="false">
               <span className={'glyphicon glyphicon-list' + (state.disabledAllRules ? ' w-disabled' : '')} ></span>
               <i>{!state.classic && !state.ndr && <input onChange={this.disableAllRules} type="checkbox" onClick={stopPropagation} checked={!state.disabledAllRules}
-                title={state.disabledAllRules ? 'Click to enable all rules' : 'Click to disable all rules'} />} Rules</i>
+                title={state.disabledAllRules ? 'Click to turn on Rules' : 'Click to turn off Rules'} />} Rules</i>
               <i className="w-menu-changed" style={{display: state.rules.hasChanged() ? undefined : 'none'}}>*</i>
             </a>
             <a onClick={this.showValues} className="w-save-menu w-values-menu"
@@ -3003,7 +3003,7 @@ var Index = React.createClass({
               style={{background: name == 'plugins' ? '#ddd' : null}} draggable="false">
               <span className={'glyphicon glyphicon-list-alt' + (disabledAllPlugins ? ' w-disabled' : '')}></span>
               <i>{!state.classic && !state.ndp && <input onChange={this.disableAllPlugins} type="checkbox" onClick={stopPropagation} checked={!disabledAllPlugins}
-                title={disabledAllPlugins ? 'Click to turn on all plugins' : 'Click to turn off all plugins'}
+                title={disabledAllPlugins ? 'Click to turn on Plugins' : 'Click to turn off Plugins'}
             />} Plugins</i>
             </a>
           </div>
@@ -3033,7 +3033,7 @@ var Index = React.createClass({
                     checked={!multiEnv && state.allowMultipleChoice} onChange={this.allowMultipleChoice} /> Use multiple rules</label></p>
                   {!state.ndr && <p className="w-editor-settings-box">
                     <label style={{color: state.disabledAllRules ? '#f66' : undefined}}>
-                      <input type="checkbox" checked={state.disabledAllRules} onChange={this.disableAllRules} name="disableAll" /> Disable all rules
+                      <input type="checkbox" checked={state.disabledAllRules} onChange={this.disableAllRules} name="disableAll" /> Turn off Rules
                     </label>
                   </p>}
                 </div>

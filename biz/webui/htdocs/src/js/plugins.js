@@ -121,7 +121,7 @@ var Home = React.createClass({
   },
   enableAllPlugins: function(e) {
     var data = this.props.data || {};
-    if (!data.disabledAllPlugins || !confirm('Do you want to enable all plugins?')) {
+    if (!data.disabledAllPlugins || !confirm('Do you want to turn on Plugins?')) {
       return;
     }
     events.trigger('disableAllPlugins', e);
