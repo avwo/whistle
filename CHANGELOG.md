@@ -1,3 +1,6 @@
+# v2.5.32
+1. feat: tunnel 代理支持确认机制，详见：https://github.com/avwo/lack-proxy/blob/master/lib/proxy.js#L100
+
 # v2.5.31
 1. fix: http 请求走 tunnel 代理没有主动调用 `socket.resume()`，可能导致用 lack-proxy 代理的部分请求超时
 2. style: 插件禁用后在页面的标签显示 `Disabled`
