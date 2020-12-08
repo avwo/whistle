@@ -749,6 +749,17 @@ var Index = React.createClass({
         self.importSessions(e);
         e.preventDefault();
       }
+
+      if (
+        (util.IS_MACOS && e.key === 'Backspace' && e.metaKey === true) ||
+        (!util.IS_MACOS && e.key === 'Delete')
+      ) {
+        if (self.state.name === 'rules') {
+          self.removeRules();
+        } else if (self.state.name === 'values') {
+          self.removeValues();
+        }
+      }
     });
 
     function getKey(url) {
