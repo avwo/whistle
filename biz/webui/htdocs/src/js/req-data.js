@@ -93,7 +93,8 @@ var contextMenuList = [
       { name: 'Abort' },
       { name: 'Replay' },
       { name: 'Compose' },
-      { name: 'Mark' }
+      { name: 'Mark' },
+      { name: 'Unmark' }
     ]
   },
   { name: 'Share' },
@@ -498,11 +499,13 @@ var ReqData = React.createClass({
       events.trigger('composer', item);
       break;
     case 'Mark':
+    case 'Unmark':
       var modal = this.props.modal;
       var list = getFocusItemList(item) || (modal && modal.getSelectedList());
       if (list) {
+        var isMark = action === 'Mark';
         list.forEach(function(item) {
-          item.mark = !item.mark;
+          item.mark = isMark;
         });
       }
       this.setState({});
@@ -710,7 +713,21 @@ var ReqData = React.createClass({
     var list5 = contextMenuList[5].list;
     if (item) {
       list5[2].disabled = false;
-      list5[3].disabled = false;
+      if (item.selected) {
+        list5[3].disabled = true;
+        list5[4].disabled = true;
+        selectedList.forEach(function(selectedItem) {
+          if (selectedItem.mark) {
+            list5[4].disabled = false;
+          } else {
+            list5[3].disabled = false;
+          }
+        });
+      } else {
+        var unmark = !item.mark;
+        list5[3].disabled = !unmark;
+        list5[4].disabled = unmark;
+      }
       if (item.selected) {
         list5[1].disabled = !selectedList.filter(util.canReplay).length;
         list5[0].disabled = !selectedList.filter(util.canAbort).length;
