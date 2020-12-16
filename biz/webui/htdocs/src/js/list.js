@@ -12,6 +12,7 @@ var ContextMenu = require('./context-menu');
 var dataCenter = require('./data-center');
 var events = require('./events');
 var iframes = require('./iframes');
+var RecycleBinDialog = require('./recycle-bin');
 
 var rulesCtxMenuList = [
   { name: 'Copy' },
@@ -24,6 +25,7 @@ var rulesCtxMenuList = [
   { name: 'Delete' },
   { name: 'Export' },
   { name: 'Import' },
+  { name: 'Recycle Bin', action: 'RecycleBin' },
   {
     name: 'Others',
     action: 'Plugins',
@@ -49,6 +51,7 @@ var valuesCtxMenuList = [
   },
   { name: 'Export' },
   { name: 'Import' },
+  { name: 'Recycle Bin', action: 'RecycleBin' },
   {
     name: 'Others',
     action: 'Plugins',
@@ -325,6 +328,9 @@ var List = React.createClass({
     case 'Import':
       events.trigger('import' + name, e);
       break;
+    case 'RecycleBin':
+      this.refs.recycleBinDialog.show();
+      break;
     case 'Validate':
       var item = this.currentFocusItem;
       if (item) {
@@ -386,9 +392,9 @@ var List = React.createClass({
     var disabled = !name;
     var isDefault;
     var isRules = this.props.name == 'rules';
-    var pluginItem = isRules ? rulesCtxMenuList[7] : valuesCtxMenuList[8];
+    var pluginItem = isRules ? rulesCtxMenuList[8] : valuesCtxMenuList[9];
     util.addPluginMenus(pluginItem, dataCenter[isRules ? 'getRulesMenus' : 'getValuesMenus'](), isRules ? 7 : 8);
-    var height = (isRules ? 250 : 280) - (pluginItem.hide ? 30 : 0);
+    var height = (isRules ? 280 : 310) - (pluginItem.hide ? 30 : 0);
     pluginItem.maxHeight = height + 30;
     var data = util.getMenuPosition(e, 110, height);
     if (isRules) {
@@ -483,6 +489,7 @@ var List = React.createClass({
             </div>
             <FilterInput onChange={this.onFilterChange} />
             <ContextMenu onClick={this.onClickContextMenu} ref="contextMenu" />
+            <RecycleBinDialog ref="recycleBinDialog" />
           </div>
           <Editor {...self.props} onChange={self.onChange} readOnly={!activeItem}
             name={activeItem.name} value={activeItem.value}
