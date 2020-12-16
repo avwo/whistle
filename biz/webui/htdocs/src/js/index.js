@@ -1112,7 +1112,7 @@ var Index = React.createClass({
   getWeinreFromRules: function() {
     var values = this.state.values;
     var text = this.getAllRulesText();
-    if (text = text.match(/\sweinre:\/\/[^\s#]+\s/g)) {
+    if (text = text.match(/(?:^|\s)weinre:\/\/[^\s#]+(?:$|\s)/mg)) {
       var flags = {};
       text = text.map(function(weinre) {
         weinre = util.removeProtocol(weinre.trim());
