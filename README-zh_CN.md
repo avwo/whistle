@@ -34,7 +34,7 @@ whistle(读音 `[ˈwɪsəl]`，拼音 `[wēisǒu]` )是基于 Node 实现的跨�
 
 具体功能如下：
 
-![基本功能](https://raw.githubusercontent.com/avwo/whistleui/master/assets/whistle.png)
+![基本功能](https://raw.githubusercontent.com/avwo/whistle/master/docs/assets/whistle-en_US.png)
 
 whistle基本上覆盖了所有抓包调试代理可以实现的功能，且所有操作都可以通过类似配置hosts的方式实现。
 
