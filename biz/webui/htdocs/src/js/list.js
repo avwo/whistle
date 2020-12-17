@@ -329,7 +329,7 @@ var List = React.createClass({
       events.trigger('import' + name, e);
       break;
     case 'RecycleBin':
-      this.refs.recycleBinDialog.show();
+      this.refs.recycleBinDialog.show({ name: name });
       break;
     case 'Validate':
       var item = this.currentFocusItem;

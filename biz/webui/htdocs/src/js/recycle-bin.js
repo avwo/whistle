@@ -4,12 +4,19 @@ var message = require('./message');
 var dataCenter = require('./data-center');
 
 var RecycleBinDialog = React.createClass({
+  getInitialState: function() {
+    return {};
+  },
   show: function(options) {
-    this.refs.recycleBinDialog.show();
+    var self = this;
+    self.setState(options, function() {
+      self.refs.recycleBinDialog.show();
+    });
   },
   render: function() {
+    var state = this.state;
     var self = this;
-    var list = [];
+    var list = state.list || [];
 
     return (
       <Dialog ref="recycleBinDialog" wstyle="w-files-dialog">
@@ -17,6 +24,9 @@ var RecycleBinDialog = React.createClass({
           <button type="button" className="close" data-dismiss="modal">
             <span aria-hidden="true">&times;</span>
           </button>
+          <h4>
+            {state.name} Recycle Bin
+          </h4>
           <table className="table">
               <thead>
                 <th className="w-files-order">#</th>
@@ -26,7 +36,7 @@ var RecycleBinDialog = React.createClass({
               </thead>
               <tbody>
                 {
-                  list.map(function(item, i) {
+                  list.length ? list.map(function(item, i) {
                     var filePath = '/$whistle/' + item.name;
                     return (
                       <tr>
@@ -41,7 +51,14 @@ var RecycleBinDialog = React.createClass({
                       </tr>
                     );
                   })
-                }
+                 : (
+                  <tr>
+                    <td colSpan="4" style={{textAlign: 'center'}}>
+                      Empty
+                    </td>
+                  </tr>
+                )
+              }
               </tbody>
              </table>
         </div>
