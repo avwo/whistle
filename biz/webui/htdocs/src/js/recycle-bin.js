@@ -2,6 +2,9 @@ var React = require('react');
 var Dialog = require('./dialog');
 var message = require('./message');
 var dataCenter = require('./data-center');
+var util = require('./util');
+
+var TIMESTAMP_RE = /^(\d+)\.([\s\S]]+)$/;
 
 var RecycleBinDialog = React.createClass({
   getInitialState: function() {
@@ -9,6 +12,18 @@ var RecycleBinDialog = React.createClass({
   },
   show: function(options) {
     var self = this;
+    if (options.list) {
+      options.list = options.list.map(function(name) {
+        if (!TIMESTAMP_RE.test(name)) {
+          return;
+        }
+        return {
+          filename: RegExp.$2,
+          dtime: util.formatDate(new Date(parseInt(RegExp.$1, 10))),
+          name: name
+        };
+      }).filter(util.noop);
+    }
     self.setState(options, function() {
       self.refs.recycleBinDialog.show();
     });
