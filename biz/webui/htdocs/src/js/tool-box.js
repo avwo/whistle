@@ -113,7 +113,7 @@ var ToolBox = React.createClass({
           <span className="glyphicon glyphicon-certificate"></span>Certificate
         </div>
         <div className="box w-generate-cert">
-          <input className="fill" maxLength="64" value={domainValue} onChange={this.onDomainChange} />
+          <input className="fill" maxLength="64" placeholder="Input the domain name of the certificate" value={domainValue} onChange={this.onDomainChange} />
           <button className="btn btn-primary" disabled={!domainValue || !URL_RE.test(domainValue)} onClick={this.generateCert}>Generate</button>
         </div>
         <QRCodeDialog ref="qrcodeDialog" />

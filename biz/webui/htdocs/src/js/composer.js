@@ -849,7 +849,7 @@ var Composer = React.createClass({
         <Dialog wstyle="w-composer-methods" ref="addMethodDialog">
           <div className="modal-body">
             <textarea ref="newMethods" maxLength="200" defaultValue={state.methodText}
-              placeholder="Please enter the new methods separated by space, newline, comma (,) or semicolon (;)" />
+              placeholder="Input the new methods separated by space, newline, comma (,) or semicolon (;)" />
           </div>
           <div className="modal-footer">
             <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={this.saveMethods}>Save</button>
