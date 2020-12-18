@@ -1,3 +1,4 @@
+var Zip = require('node-native-zip2');
 var createCertificate = require('../../../lib/https/ca').createCertificate;
 
 module.exports = function(req, res) {
@@ -6,16 +7,10 @@ module.exports = function(req, res) {
   if (!domain || domain.length > 64) {
     return res.status(400);
   }
-  try {
-    var cert = createCertificate(domain);
-    res.json({
-      ec: 0,
-      cert: cert
-    });
-  } catch (e) {
-    res.json({
-      ec: 2,
-      em: e.message
-    });
-  }
+  var cert = createCertificate(domain);
+  var zip = new Zip();
+  var dir = domain + '/' + domain;
+  zip.add(dir + '.crt', cert.cert);
+  zip.add(dir + '.key', cert.key);
+  res.attachment(domain + '.zip').send(zip.toBuffer());
 };
