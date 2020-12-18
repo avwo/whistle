@@ -1,6 +1,7 @@
 var gzip = require('zlib').gzip;
 var util = require('../../../lib/util');
 var config = require('../../../lib/config');
+var proc = require('../../../lib/util/process');
 var properties = require('../../../lib/rules/util').properties;
 
 var PID = process.pid;
@@ -17,6 +18,10 @@ exports.getClientId = function() {
 exports.getServerInfo = function(req) {
   var info = {
     pid: PID,
+    pInfo: proc,
+    http: util.httpRequests,
+    ws: util.wsRequests,
+    tunnel: util.tunnelRequests,
     version: config.version,
     cmdName: config.cmdName,
     hideLeftMenu: config.hideLeftMenu,
