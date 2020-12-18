@@ -140,3 +140,16 @@
 .w-json-dialog .modal-dialog {
   width: 745px;
 }
+
+.w-generate-cert input {
+  line-height: 34px;
+  height: 34px;
+  padding: 5px;
+  border-radius: 0;
+  border: 1px solid #ccc;
+  display: block;
+}
+
+.w-generate-cert button {
+  border-radius: 0;
+}

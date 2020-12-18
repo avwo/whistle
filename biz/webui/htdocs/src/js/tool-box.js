@@ -6,6 +6,7 @@ var TextDialog = require('./text-dialog');
 var JSONDialog = require('./json-dialog');
 var storage = require('./storage');
 
+var URL_RE = /^(?:(?:[\w.-]+:)?\/\/)?([\w.-]+)/i;
 var NOT_EMPTY_RE = /[^\s]/;
 var MAX_QRCODE_LEN = 2048;
 var MAX_JSON_LEN = 32768;
@@ -67,6 +68,14 @@ var ToolBox = React.createClass({
       qrcodeValue: e.target.value
     }, this.saveQRCodeValue);
   },
+  onDomainChange: function(e) {
+    this.setState({
+      domainValue: e.target.value
+    });
+  },
+  generateCert: function() {
+    window.open('cgi-bin/create-cert?domain=' + this.state.domainValue, 'downloadTargetFrame');
+  },
   shouldComponentUpdate: function(nextProps) {
     var hide = util.getBoolean(this.props.hide);
     return hide != util.getBoolean(nextProps.hide) || !hide;
@@ -75,6 +84,7 @@ var ToolBox = React.createClass({
     var state = this.state;
     var qrcodeValue = state.qrcodeValue;
     var jsonValue = state.jsonValue;
+    var domainValue = state.domainValue;
     return (
       <div className={'fill orient-vertical-box w-tool-box ' + (this.props.hide ? 'hide' : '')}>
         <div className="w-detail-inspectors-title">
@@ -99,6 +109,13 @@ var ToolBox = React.createClass({
           <span className="glyphicon glyphicon-arrow-up"></span>
           Click here to upload image (size &lt;= 1m)
         </button>
+        <div className="w-detail-inspectors-title">
+          <span className="glyphicon glyphicon-certificate"></span>Certificate
+        </div>
+        <div className="box w-generate-cert">
+          <input className="fill" maxLength="64" value={domainValue} onChange={this.onDomainChange} />
+          <button className="btn btn-primary" disabled={!domainValue || !URL_RE.test(domainValue)} onClick={this.generateCert}>Generate</button>
+        </div>
         <QRCodeDialog ref="qrcodeDialog" />
         <TextDialog ref="textDialog" />
         <JSONDialog ref="jsonDialog" />
