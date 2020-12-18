@@ -12,12 +12,18 @@ var dialog;
 
 function createDialog() {
   if (!dialog) {
+    var proxyInfoList = [
+      '<h5><strong>Requests:</strong> <span id="whistleRequests">-</span></h5>',
+      '<h5><strong>CPU:</strong> <span id="whistleCpu">-</span></h5>',
+      '<h5><strong>Memory:</strong> <span id="whistleMemory">-</span></h5>'
+    ];
     dialog = $('<div class="modal fade w-online-dialog">' +
           '<div class="modal-dialog">' +
             '<div class="modal-content">' +
               '<div class="modal-body">' +
               '<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
                 '<div class="w-online-dialog-ctn"></div>' +
+                '<div class="w-online-dialog-info">' + proxyInfoList.join('') + '</div>' +
               '</div>' +
               '<div class="modal-footer">' +
                 '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>' +
@@ -130,6 +136,52 @@ var Online = React.createClass({
     }
     var ctn = createDialog().find('.w-online-dialog-ctn').html(info.join(''));
     ctn.find('h5:first').attr('title', server.host);
+    if (!this._initProxyInfo) {
+      this._initProxyInfo = true;
+      var curServerInfo;
+      var isHide = true;
+      setInterval(function() {
+        var info = dataCenter.getServerInfo();
+        var pInfo = info && info.pInfo;
+        if (!pInfo) {
+          if (isHide) {
+            isHide = true;
+            dialog.find('.w-online-dialog-info').hide();
+          }
+          return;
+        }
+        if (isHide) {
+          isHide = false;
+          dialog.find('.w-online-dialog-info').show();
+        }
+        var reqElem = dialog.find('#whistleRequests');
+        var cpuElem = dialog.find('#whistleCpu');
+        var memElem = dialog.find('#whistleMemory');
+        reqElem.parent().attr('title', 'HTTP[S]: ' + info.http + '\nWS[S]: ' + info.ws + '\nTUNNEL: ' + info.tunnel);
+        memElem.parent().attr('title', Object.keys(pInfo.memUsage).map(function(key) {
+          return key + ': ' + pInfo.memUsage[key];
+        }).join('\n'));
+        if (!curServerInfo || !curServerInfo.pInfo) {
+          reqElem.text(info.http + info.ws + info.tunnel);
+          cpuElem.text(pInfo.cpuPercent);
+          memElem.text(util.getSize(pInfo.memUsage.rss));
+        } else {
+          var curPInfo = curServerInfo.pInfo;
+          if (pInfo.memUsage !== curPInfo.memUsage) {
+            memElem.text(util.getSize(pInfo.memUsage.rss));
+          }
+          var totalCount = info.http + info.ws + info.tunnel;
+          pInfo.totalCount = totalCount;
+          if (totalCount !== curPInfo.totalCount) {
+            reqElem.text(totalCount);
+          }
+          if (pInfo.cpuPercent !== curPInfo.cpuPercent) {
+            cpuElem.text(pInfo.cpuPercent);
+          }
+        }
+        curServerInfo = info;
+      }, 1000);
+    }
   },
   reload: function() {
     location.reload();

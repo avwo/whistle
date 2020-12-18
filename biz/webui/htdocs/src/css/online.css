@@ -1,4 +1,5 @@
 .w-online-dialog .modal-dialog {width: 320px;}
+.w-online-dialog-info { display: none; }
 .w-online-dialog-ctn h5 {padding: 5px 0; margin: 0; text-overflow: ellipsis; max-width: 100%; white-space: nowrap; overflow: hidden;}
 .w-online-dialog-ctn p {margin: -23px 0 5px 36px}
 .w-confirm-reload-dialog .modal-dialog {width: 280px;}
