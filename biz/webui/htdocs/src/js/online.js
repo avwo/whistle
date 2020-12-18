@@ -176,7 +176,7 @@ var Online = React.createClass({
             reqElem.text(totalCount);
           }
           if (pInfo.cpuPercent !== curPInfo.cpuPercent) {
-            cpuElem.text(pInfo.cpuPercent);
+            cpuElem.text(pInfo.cpuPercent || '-');
           }
         }
         curServerInfo = info;
