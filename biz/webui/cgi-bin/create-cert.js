@@ -1,4 +1,5 @@
 var Zip = require('node-native-zip2');
+var Buffer = require('safe-buffer').Buffer;
 var createCertificate = require('../../../lib/https/ca').createCertificate;
 
 module.exports = function(req, res) {
@@ -10,7 +11,7 @@ module.exports = function(req, res) {
   var cert = createCertificate(domain);
   var zip = new Zip();
   var dir = domain + '/' + domain;
-  zip.add(dir + '.crt', cert.cert);
-  zip.add(dir + '.key', cert.key);
+  zip.add(dir + '.crt', Buffer.from(cert.cert));
+  zip.add(dir + '.key', Buffer(cert.key));
   res.attachment(domain + '.zip').send(zip.toBuffer());
 };
