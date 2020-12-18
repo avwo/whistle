@@ -81,6 +81,7 @@ var ReqDetail = React.createClass({
         if (req.size < 5120) {
           tips = { message: 'No request body data' };
         }  else {
+          raw += '(Request data too large to show)';
           tips = { message: 'Request data too large to show' };
         }
       }
