@@ -218,6 +218,12 @@ var Online = React.createClass({
         info.push('IPv6:');
         info.push.apply(info, addIndent(server.ipv6));
       }
+      var pInfo = server.pInfo;
+      if (pInfo) {
+        info.push('Requests: ' + (server.http + server.ws + server.tunnel));
+        pInfo.cpuPercent && info.push('CPU: ' + pInfo.cpuPercent);
+        info.push('Memory: ' + util.getSize(pInfo.memUsage.rss));
+      }
     }
     return (
         <a title={info.join('\n')} draggable="false"
