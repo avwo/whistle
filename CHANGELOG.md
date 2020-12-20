@@ -1,3 +1,8 @@
+# v2.6.0
+1. feat: 支持通过 `Online` 菜单查看当前进程的请求数、CPU、内存状态等
+2. feat: 支持通过 `proxy.getRuntimeInfo()` 获取当前进程的请求数、CPU、内存状态等
+3. feat: 添加回收站，删除的 Rules 或 Values 会先存放到回收站（最多缓存120条），并可以点击恢复
+
 # v2.5.32
 1. feat: tunnel 代理支持确认机制，详见：https://github.com/avwo/lack-proxy/blob/master/lib/proxy.js#L100
 
