@@ -1,10 +1,16 @@
 var React = require('react');
 var Dialog = require('./dialog');
-var message = require('./message');
 var dataCenter = require('./data-center');
 var util = require('./util');
 
-var TIMESTAMP_RE = /^(\d+)\.([\s\S]]+)$/;
+var TIMESTAMP_RE = /^(\d+)\.([\s\S]+)$/;
+
+function decode(name) {
+  try {
+    return decodeURIComponent(name);
+  } catch (e) {}
+  return name;
+}
 
 var RecycleBinDialog = React.createClass({
   getInitialState: function() {
@@ -18,8 +24,8 @@ var RecycleBinDialog = React.createClass({
           return;
         }
         return {
-          filename: RegExp.$2,
-          dtime: util.formatDate(new Date(parseInt(RegExp.$1, 10))),
+          filename: decode(RegExp.$2),
+          date: util.toLocaleString(new Date(parseInt(RegExp.$1, 10))),
           name: name
         };
       }).filter(util.noop);
@@ -28,11 +34,32 @@ var RecycleBinDialog = React.createClass({
       self.refs.recycleBinDialog.show();
     });
   },
+  view: function(e) {
+    var name = e.target.getAttribute('data-name');
+  },
+  recover: function(e) {
+    var name = e.target.getAttribute('data-name');
+  },
+  remove: function(e) {
+    var name = e.target.getAttribute('data-name');
+    var origName = decode(name.substring(name.indexOf('.') + 1));
+    if (confirm('Are you sure to delete \'' + origName + '\' completely.')) {
+      var self = this;
+      dataCenter[this.state.name.toLowerCase()]
+        .recycleRemove({ name: name }, function(data, xhr) {
+          self._pendingRecycle = false;
+          if (!data) {
+            util.showSystemError(xhr);
+            return;
+          }
+          self.show(data);
+        });
+    }
+  },
   render: function() {
     var state = this.state;
     var self = this;
     var list = state.list || [];
-
     return (
       <Dialog ref="recycleBinDialog" wstyle="w-files-dialog">
         <div className="modal-body">
@@ -52,15 +79,14 @@ var RecycleBinDialog = React.createClass({
               <tbody>
                 {
                   list.length ? list.map(function(item, i) {
-                    var filePath = '/$whistle/' + item.name;
                     return (
-                      <tr>
+                      <tr key={item.name}>
                         <th className="w-files-order">{ i + 1 }</th>
                         <td className="w-files-date">{item.date}</td>
-                        <td className="w-files-path">{filePath}</td>
+                        <td className="w-files-path" title={item.filename}>{item.filename}</td>
                         <td className="w-files-operation">
-                          <a>View</a>
-                          <a data-name={item.name} onClick={self.downloadFile}>Recover</a>
+                          <a data-name={item.name} onClick={self.view}>View</a>
+                          <a data-name={item.name} onClick={self.recover}>Recover</a>
                           <a data-name={item.name} onClick={self.remove}>Delete</a>
                         </td>
                       </tr>

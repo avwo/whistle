@@ -299,16 +299,17 @@ var List = React.createClass({
     }
   },
   onClickContextMenu: function(action, e, parentAction, menuName) {
-    var name = this.props.name === 'rules' ? 'Rules' : 'Values';
+    var self = this;
+    var name = self.props.name === 'rules' ? 'Rules' : 'Values';
     switch(parentAction || action) {
     case 'Save':
-      events.trigger('save' + name, this.currentFocusItem);
+      events.trigger('save' + name, self.currentFocusItem);
       break;
     case 'Rename':
-      events.trigger('rename' + name, this.currentFocusItem);
+      events.trigger('rename' + name, self.currentFocusItem);
       break;
     case 'Delete':
-      events.trigger('delete' + name, this.currentFocusItem);
+      events.trigger('delete' + name, self.currentFocusItem);
       break;
     case 'Rule':
       events.trigger('createRules');
@@ -329,10 +330,23 @@ var List = React.createClass({
       events.trigger('import' + name, e);
       break;
     case 'RecycleBin':
-      this.refs.recycleBinDialog.show({ name: name });
+      if (!self._pendingRecycle) {
+        self._pendingRecycle = true;
+        dataCenter[name.toLowerCase()].recycleList(function(data, xhr) {
+          self._pendingRecycle = false;
+          if (!data) {
+            util.showSystemError(xhr);
+            return;
+          }
+          if (!data.list.length) {
+            return message.info('Recycle bin is empty.');
+          }
+          self.refs.recycleBinDialog.show({ name: name, list: data.list });
+        });
+      }
       break;
     case 'Validate':
-      var item = this.currentFocusItem;
+      var item = self.currentFocusItem;
       if (item) {
         if (JSON_RE.test(item.value)) {
           try {
@@ -347,19 +361,19 @@ var List = React.createClass({
       }
       break;
     case 'Format':
-      this.formatJson(this.currentFocusItem);
+      self.formatJson(self.currentFocusItem);
       break;
     case 'Help':
-      window.open('https://avwo.github.io/whistle/webui/' + (this.props.name || 'values') + '.html');
+      window.open('https://avwo.github.io/whistle/webui/' + (self.props.name || 'values') + '.html');
       break;
     case 'Plugins':
-      var modal = this.props.modal;
+      var modal = self.props.modal;
       iframes.fork(action, {
         port: dataCenter.getPort(),
-        type: this.props.name === 'rules' ? 'rules' : 'values',
+        type: self.props.name === 'rules' ? 'rules' : 'values',
         name: menuName,
         list: modal && modal.getList(),
-        activeItem: this.currentFocusItem,
+        activeItem: self.currentFocusItem,
         selectedItem: modal && modal.getActive()
       });
       break;

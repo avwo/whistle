@@ -369,6 +369,13 @@ exports.plugins = createCgiObj({
 
 exports.rules = createCgiObj({
   disableAllRules: 'cgi-bin/rules/disable-all-rules',
+  recycleList: 'cgi-bin/rules/recycle/list',
+  recycleView: 'cgi-bin/rules/recycle/view',
+  recycleRemove: {
+    url:  'cgi-bin/rules/recycle/remove',
+    type: 'post'
+  },
+  recycleRecover:  'cgi-bin/rules/recycle/recover',
   moveTo: {
     mode: 'chain',
     url: 'cgi-bin/rules/move-to'

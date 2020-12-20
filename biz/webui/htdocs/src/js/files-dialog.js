@@ -231,7 +231,7 @@ var FilesDialog = React.createClass({
                   files.map(function(file, i) {
                     var filePath = '/$whistle/' + file.name;
                     return (
-                      <tr>
+                      <tr key={file.name}>
                         <th className="w-files-order">{ i + 1 }</th>
                         <td className="w-files-date">{file.date}</td>
                         <td className="w-files-path">{filePath}</td>
