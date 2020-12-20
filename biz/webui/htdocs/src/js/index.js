@@ -615,6 +615,54 @@ var Index = React.createClass({
       }
     });
 
+    events.on('recoverRules', function(_, data) {
+      var modal = self.state.rules;
+      var filename = data.filename;
+      if (modal.exists(filename) &&
+      !confirm('The name `' + filename + '`  already exists, whether to overwrite it?')) {
+        return;
+      }
+      dataCenter.rules.add({
+        name: filename,
+        value: data.data,
+        recycleFilename: data.name
+      }, function(result, xhr) {
+        if (result && result.ec === 0) {
+          var item = modal.add(filename, data.data);
+          self.setRulesActive(filename);
+          self.setState({ activeRules: item });
+          self.triggerRulesChange('create');
+          events.trigger('rulesRecycleList', result);
+        } else {
+          util.showSystemError(xhr);
+        }
+      });
+    });
+
+    events.on('recoverValues', function(_, data) {
+      var modal = self.state.values;
+      var filename = data.filename;
+      if (modal.exists(filename) &&
+      !confirm('The name `' + filename + '`  already exists, whether to overwrite it?')) {
+        return;
+      }
+      dataCenter.values.add({
+        name: filename,
+        value: data.data,
+        recycleFilename: data.name
+      }, function(result, xhr) {
+        if (result && result.ec === 0) {
+          var item = modal.add(filename, data.data);
+          self.setValuesActive(filename);
+          self.setState({ activeValues: item });
+          self.triggerValuesChange('create');
+          events.trigger('valuesRecycleList', result);
+        } else {
+          util.showSystemError(xhr);
+        }
+      });
+    });
+
     $(document)
       .on( 'dragleave', preventDefault)
       .on( 'dragenter', preventDefault)
@@ -1593,6 +1641,9 @@ var Index = React.createClass({
       this.showValues();
     }
     self.hideValuesOptions();
+  },
+  addValue: function() {
+    
   },
   showValues: function(e) {
     if (this.state.name != 'values') {

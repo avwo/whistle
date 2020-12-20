@@ -3,7 +3,7 @@ var Dialog = require('./dialog');
 var dataCenter = require('./data-center');
 var util = require('./util');
 var message = require('./message');
-const events = require('./events');
+var events = require('./events');
 
 var TIMESTAMP_RE = /^(\d+)\.([\s\S]+)$/;
 
@@ -18,7 +18,20 @@ var RecycleBinDialog = React.createClass({
   getInitialState: function() {
     return {};
   },
-  show: function(options) {
+  componentDidMount: function() {
+    var self = this;
+    events.on('rulesRecycleList', function(_, data) {
+      if (self.state.name === 'Rules') {
+        self.show(data, true);
+      }
+    });
+    events.on('valuesRecycleList', function(_, data) {
+      if (self.state.name === 'Values') {
+        self.show(data, true);
+      }
+    });
+  },
+  show: function(options, quiet) {
     var self = this;
     if (options.list) {
       options.list = options.list.map(function(name) {
@@ -33,28 +46,53 @@ var RecycleBinDialog = React.createClass({
       }).filter(util.noop);
     }
     self.setState(options, function() {
-      self.refs.recycleBinDialog.show();
+      !quiet && self.refs.recycleBinDialog.show();
     });
   },
+  checkFile: function(data, xhr) {
+    if (!data) {
+      util.showSystemError(xhr);
+      return;
+    }
+    if (data.ec === 3) {
+      var self = this;
+      message.error('The file does not exist.');
+      dataCenter[this.state.name.toLowerCase()]
+      .recycleList(function(result, xhr) {
+        if (!result) {
+          util.showSystemError(xhr);
+          return;
+        }
+        self.show(result);
+      });
+      return;
+    }
+    return true;
+  },
   view: function(e) {
+    var self = this;
     var name = e.target.getAttribute('data-name');
     dataCenter[this.state.name.toLowerCase()]
         .recycleView({ name: name }, function(data, xhr) {
-          if (!data) {
-            util.showSystemError(xhr);
+          if (!self.checkFile(data, xhr)) {
             return;
           }
-          if (data.ec === 3) {
-            return message.error('The file does not exist.');
-          }
-          if (!data.text) {
+          if (!data.data) {
             return message.warn('No content.');
           }
-          util.openEditor(data.text);
+          util.openEditor(data.data);
         });
   },
   recover: function(item) {
-    events.trigger('recover' + this.state.name, item.name, item.data);
+    var self = this;
+    dataCenter[self.state.name.toLowerCase()]
+      .recycleView({ name: item.name }, function(data, xhr) {
+        if (!self.checkFile(data, xhr)) {
+          return;
+        }
+        item.data = data.data;
+        events.trigger('recover' + self.state.name, item);
+      });
   },
   remove: function(e) {
     var name = e.target.getAttribute('data-name');
@@ -72,8 +110,8 @@ var RecycleBinDialog = React.createClass({
     }
   },
   render: function() {
-    var state = this.state;
     var self = this;
+    var state = self.state;
     var list = state.list || [];
     return (
       <Dialog ref="recycleBinDialog" wstyle="w-files-dialog">
