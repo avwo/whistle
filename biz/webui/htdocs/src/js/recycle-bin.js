@@ -2,6 +2,8 @@ var React = require('react');
 var Dialog = require('./dialog');
 var dataCenter = require('./data-center');
 var util = require('./util');
+var message = require('./message');
+const events = require('./events');
 
 var TIMESTAMP_RE = /^(\d+)\.([\s\S]+)$/;
 
@@ -36,9 +38,23 @@ var RecycleBinDialog = React.createClass({
   },
   view: function(e) {
     var name = e.target.getAttribute('data-name');
+    dataCenter[this.state.name.toLowerCase()]
+        .recycleView({ name: name }, function(data, xhr) {
+          if (!data) {
+            util.showSystemError(xhr);
+            return;
+          }
+          if (data.ec === 3) {
+            return message.error('The file does not exist.');
+          }
+          if (!data.text) {
+            return message.warn('No content.');
+          }
+          util.openEditor(data.text);
+        });
   },
-  recover: function(e) {
-    var name = e.target.getAttribute('data-name');
+  recover: function(item) {
+    events.trigger('recover' + this.state.name, item.name, item.data);
   },
   remove: function(e) {
     var name = e.target.getAttribute('data-name');
@@ -47,7 +63,6 @@ var RecycleBinDialog = React.createClass({
       var self = this;
       dataCenter[this.state.name.toLowerCase()]
         .recycleRemove({ name: name }, function(data, xhr) {
-          self._pendingRecycle = false;
           if (!data) {
             util.showSystemError(xhr);
             return;
@@ -86,7 +101,9 @@ var RecycleBinDialog = React.createClass({
                         <td className="w-files-path" title={item.filename}>{item.filename}</td>
                         <td className="w-files-operation">
                           <a data-name={item.name} onClick={self.view}>View</a>
-                          <a data-name={item.name} onClick={self.recover}>Recover</a>
+                          <a onClick={function() {
+                            self.recover(item);
+                          }}>Recover</a>
                           <a data-name={item.name} onClick={self.remove}>Delete</a>
                         </td>
                       </tr>

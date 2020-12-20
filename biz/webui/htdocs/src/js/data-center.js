@@ -346,6 +346,15 @@ exports.getCustomCertsInfo = createCgiObj({
 }, GET_CONF).getCustomCertsInfo;
 
 exports.values = createCgiObj({
+  recycleList: {
+    type: 'get',
+    url: 'cgi-bin/values/recycle/list'
+  },
+  recycleView: {
+    type: 'get',
+    url: 'cgi-bin/values/recycle/view'
+  },
+  recycleRemove: 'cgi-bin/values/recycle/remove',
   moveTo: {
     mode: 'chain',
     url: 'cgi-bin/values/move-to'
@@ -369,13 +378,15 @@ exports.plugins = createCgiObj({
 
 exports.rules = createCgiObj({
   disableAllRules: 'cgi-bin/rules/disable-all-rules',
-  recycleList: 'cgi-bin/rules/recycle/list',
-  recycleView: 'cgi-bin/rules/recycle/view',
-  recycleRemove: {
-    url:  'cgi-bin/rules/recycle/remove',
-    type: 'post'
+  recycleList: {
+    type: 'get',
+    url: 'cgi-bin/rules/recycle/list'
   },
-  recycleRecover:  'cgi-bin/rules/recycle/recover',
+  recycleView: {
+    type: 'get',
+    url: 'cgi-bin/rules/recycle/view'
+  },
+  recycleRemove: 'cgi-bin/rules/recycle/remove',
   moveTo: {
     mode: 'chain',
     url: 'cgi-bin/rules/move-to'
