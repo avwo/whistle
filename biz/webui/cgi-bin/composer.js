@@ -16,7 +16,7 @@ var BODY_SEP = Buffer.from('\r\n\r\n');
 var STATUS_CODE_RE = /^\S+\s+(\d+)/i;
 var MAX_LENGTH = 1024 * 512;
 var PROXY_OPTS = {
-  host: '127.0.0.1',
+  host: config.host || '127.0.0.1',
   port: config.port
 };
 
@@ -59,8 +59,8 @@ function handleConnect(options, cb) {
   config.connect({
     host: options.hostname,
     port: options.port || 443,
-    proxyHost: '127.0.0.1',
-    proxyPort: config.port,
+    proxyHost: PROXY_OPTS.host,
+    proxyPort: PROXY_OPTS.port,
     headers: options.headers
   }, function(socket, _, err) {
     if (!err) {
@@ -152,8 +152,8 @@ function handleHttp(options, cb) {
   }
   options.protocol = null;
   options.hostname = null;
-  options.host = '127.0.0.1';
-  options.port = config.port;
+  options.host = PROXY_OPTS.host;
+  options.port = PROXY_OPTS.port;
   var client = http.request(options, function(res) {
     if (cb) {
       res.on('error', cb);
