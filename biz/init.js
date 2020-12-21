@@ -1,7 +1,6 @@
 var http = require('http');
 var ui = require('./webui/lib');
-
-var LOCALHOST = '127.0.0.1';
+var util = require('../lib/util');
 
 module.exports = function init(proxy, callback) {
   var config = proxy.config;
@@ -9,11 +8,13 @@ module.exports = function init(proxy, callback) {
   if (config.customUIPort) {
     var server = http.createServer();
     ui.setupServer(server);
-    if (config.host === LOCALHOST) {
-      server.listen(config.uiport, LOCALHOST, callback);
-    } else {
-      server.listen(config.uiport, callback);
-    }
+    util.getBoundIp(config.uihost, function(host) {
+      if (host) {
+        server.listen(config.uiport, host, callback);
+      } else {
+        server.listen(config.uiport, callback);
+      }
+    });
   } else {
     callback();
   }
