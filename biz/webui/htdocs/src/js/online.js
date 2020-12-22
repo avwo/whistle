@@ -13,6 +13,7 @@ var dialog;
 function createDialog() {
   if (!dialog) {
     var proxyInfoList = [
+      '<h5><strong>Uptime:</strong> <span id="whistleUptime">-</span></h5>',
       '<h5><strong>Requests:</strong> <span id="whistleRequests">-</span></h5>',
       '<h5><strong>CPU:</strong> <span id="whistleCpu">-</span></h5>',
       '<h5><strong>Memory:</strong> <span id="whistleMemory">-</span></h5>'
@@ -157,6 +158,7 @@ var Online = React.createClass({
         var reqElem = dialog.find('#whistleRequests');
         var cpuElem = dialog.find('#whistleCpu');
         var memElem = dialog.find('#whistleMemory');
+        dialog.find('#whistleUptime').text(util.formatTime(pInfo.uptime));
         reqElem.parent().attr('title', 'HTTP[S]: ' + info.http + '\nWS[S]: ' + info.ws + '\nTUNNEL: ' + info.tunnel);
         memElem.parent().attr('title', Object.keys(pInfo.memUsage).map(function(key) {
           return key + ': ' + pInfo.memUsage[key];
@@ -220,6 +222,7 @@ var Online = React.createClass({
       }
       var pInfo = server.pInfo;
       if (pInfo) {
+        info.push('Uptime: ' + util.formatTime(pInfo.uptime));
         info.push('Requests: ' + (server.http + server.ws + server.tunnel));
         pInfo.cpuPercent && info.push('CPU: ' + pInfo.cpuPercent);
         info.push('Memory: ' + util.getSize(pInfo.memUsage.rss));
