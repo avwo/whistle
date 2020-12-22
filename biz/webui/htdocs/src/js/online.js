@@ -158,7 +158,9 @@ var Online = React.createClass({
         var reqElem = dialog.find('#whistleRequests');
         var cpuElem = dialog.find('#whistleCpu');
         var memElem = dialog.find('#whistleMemory');
-        dialog.find('#whistleUptime').text(util.formatTime(pInfo.uptime));
+        var uptimeElem = dialog.find('#whistleUptime');
+        uptimeElem.text(util.formatTime(pInfo.uptime));
+        uptimeElem.parent().attr('title', pInfo.uptime);
         reqElem.parent().attr('title', 'HTTP[S]: ' + info.http + '\nWS[S]: ' + info.ws + '\nTUNNEL: ' + info.tunnel);
         memElem.parent().attr('title', Object.keys(pInfo.memUsage).map(function(key) {
           return key + ': ' + pInfo.memUsage[key];
