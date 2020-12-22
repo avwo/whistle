@@ -1695,13 +1695,12 @@ function formatDate(date) {
 exports.formatDate = formatDate;
 
 exports.formatTime = function(time) {
-  var ms = paddingMS(time % 1000);
   time = Math.floor(time / 1000);
   var sec = padding(time % 60);
   time = Math.floor(time / 60);
   var min = padding(time % 60);
   time = Math.floor(time / 60);
   var hour = padding(time % 24);
-  var day = padding(Math.floor(time / 24));
-  return day + ' ' + hour + ':' + min + ':' + sec;
+  var day = Math.floor(time / 24);
+  return (day ? padding(day) + ' ' : '') + hour + ':' + min + ':' + sec;
 };
