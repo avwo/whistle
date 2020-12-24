@@ -1,3 +1,6 @@
+# v2.6.1
+1. fix: `v15.5.0` 版本自动设置 `autoDestroy` 导致无法请求的问题
+
 # v2.6.0
 1. feat: 支持通过 `Online` 菜单查看当前进程的请求数、CPU、内存状态等
 2. feat: 支持通过 `proxy.getRuntimeInfo()` 获取当前进程的请求数、CPU、内存状态等
