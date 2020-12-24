@@ -127,8 +127,8 @@ app.use(function(req, res, next) {
       res.destroy();
     }
   };
-  req.on('error', abort).on('close', abort);
-  res.on('error', abort);
+  req.on('error', abort);
+  res.on('error', abort).on('close', abort);
   next();
 });
 
