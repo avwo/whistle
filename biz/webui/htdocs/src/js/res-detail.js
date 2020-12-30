@@ -124,12 +124,13 @@ var ResDetail = React.createClass({
         raw = headersStr + '\r\n\r\n' + body;
         var type = util.getContentType(headers);
         isJson = type === 'JSON';
-        if (type === 'IMG') {
+        var isSVG = util.getRawType(headers) === 'image/svg+xml'
+        if (isSVG) {
+          // 对 SVG 做特殊处理, 利用 base64 ，图片标签展示 svg 元素
           isText = false;
-          if (util.getRawType(headers) === 'image/svg+xml') {
-            // 对 SVG 做特殊处理
-            imgSrc = 'data:image/svg+xml;base64,' + (res.base64 || '')
-          }
+          imgSrc = 'data:image/svg+xml;base64,' + (res.base64 || '')
+        } else if (type === 'IMG') {
+          isText = false;
           imgSrc = body || (res.size ? modal.url : undefined);
         } else if (showImg && res.base64 && type === 'HTML') {
           data = modal;
