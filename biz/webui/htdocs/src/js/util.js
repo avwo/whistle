@@ -297,14 +297,14 @@ function getContentType(type) {
     if (type.indexOf('json') != -1) {
       return 'JSON';
     }
-    if (type.indexOf('image/') != -1) {
-      return 'IMG';
-    }
     if (type.indexOf('xml') != -1) {
       return 'XML';
     }
     if (type.indexOf('text/') != -1) {
       return 'TEXT';
+    }
+    if (type.indexOf('image/') != -1) {
+      return 'IMG';
     }
   }
 
