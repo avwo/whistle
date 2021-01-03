@@ -263,6 +263,8 @@ function getRawType(type) {
   return typeof type === 'string' ? type.split(';')[0].trim().toLowerCase() : '';
 }
 
+exports.getRawType = getRawType;
+
 exports.getExtension = function(headers) {
   var suffix = getContentType(headers);
   var type;
@@ -295,14 +297,14 @@ function getContentType(type) {
     if (type.indexOf('json') != -1) {
       return 'JSON';
     }
+    if (type.indexOf('image/') != -1) {
+      return 'IMG';
+    }
     if (type.indexOf('xml') != -1) {
       return 'XML';
     }
     if (type.indexOf('text/') != -1) {
       return 'TEXT';
-    }
-    if (type.indexOf('image/') != -1) {
-      return 'IMG';
     }
   }
 

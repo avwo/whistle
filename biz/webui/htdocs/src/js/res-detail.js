@@ -125,8 +125,12 @@ var ResDetail = React.createClass({
         var type = util.getContentType(headers);
         isJson = type === 'JSON';
         if (type === 'IMG') {
-          imgSrc = body || (res.size ? modal.url : undefined);
           isText = false;
+          if (util.getRawType(headers) === 'image/svg+xml') {
+            // 对 SVG 做特殊处理
+            imgSrc = 'data:image/svg+xml;base64,' + (res.base64 || '')
+          }
+          imgSrc = body || (res.size ? modal.url : undefined);
         } else if (showImg && res.base64 && type === 'HTML') {
           data = modal;
           isText = false;
