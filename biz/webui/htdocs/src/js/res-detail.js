@@ -122,16 +122,16 @@ var ResDetail = React.createClass({
         headersStr = ['HTTP/' + (modal.req.httpVersion || '1.1'), status, util.getStatusMessage(res)].join(' ')
         + '\r\n' + headersStr;
         raw = headersStr + '\r\n\r\n' + body;
-        var type = util.getContentType(headers);
+        var rawType = util.getRawType(headers);
+        var type = util.getContentType(rawType);
         isJson = type === 'JSON';
-        var isSVG = util.getRawType(headers) === 'image/svg+xml'
-        if (isSVG) {
-          // 对 SVG 做特殊处理, 利用 base64 ，图片标签展示 svg 元素
+        // 对 SVG 做特殊处理, 利用 base64 ，图片标签展示 svg 元素
+        if (rawType === 'image/svg+xml') {
+          imgSrc = 'data:image/svg+xml;base64,' + (res.base64 || '');
           isText = false;
-          imgSrc = 'data:image/svg+xml;base64,' + (res.base64 || '')
         } else if (type === 'IMG') {
-          isText = false;
           imgSrc = body || (res.size ? modal.url : undefined);
+          isText = false;
         } else if (showImg && res.base64 && type === 'HTML') {
           data = modal;
           isText = false;
