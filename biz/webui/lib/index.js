@@ -179,11 +179,11 @@ app.use(function(req, res, next) {
 });
 
 function cgiHandler(req, res) {
+  if (req.headers.origin) {
+    res.setHeader('access-control-allow-origin', req.headers.origin);
+    res.setHeader('access-control-allow-credentials', true);
+  }
   try {
-    if (req.headers.origin) {
-      res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
-      res.setHeader('Access-Control-Allow-Credentials', true);
-    }
     require(path.join(__dirname, '..' + req.path))(req, res);
   } catch(err) {
     res.status(500).send(config.debugMode ?
