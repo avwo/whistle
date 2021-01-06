@@ -1,5 +1,7 @@
 # v2.6.3
 1. style: 支持预览 SVG 文件
+2. feat: 支持通过 `process.on('pforkError', (info) => {})` 获取插件抛出的异常信息
+3. perf: 调整GC参数 `--max-semi-space-size=64`
 
 # v2.6.2
 1. fix: `v15.5.0` 版本界面无法打开问题
