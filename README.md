@@ -41,7 +41,7 @@ Manipulations to http request and response in whistle can be achieved as a **Rul
 
 Description：
 
-1. **pattern** is an expression to match the target request url. You can write patterns in different forms including domain, path, reqular expression, wildcard, and so on.
+1. **pattern** is an expression to match the target request url. You can write patterns in different forms including domain, path, regular expression, wildcard, and so on.
 
 		# matching domain
 		www.example.com
