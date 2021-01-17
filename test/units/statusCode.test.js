@@ -9,10 +9,6 @@ module.exports = function() {
     res.statusCode.should.equal(999);
   });
 
-  util.request('https://statuscode2.testx.whistlejs.com/index.html?resBody=', function(res) {
-    res.statusCode.should.equal(101);
-  });
-
   util.request('http://statuscode3.testx.whistlejs.com/index.html?resBody=', function(res) {
     res.statusCode.should.equal(500);
   });
