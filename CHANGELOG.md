@@ -1,3 +1,7 @@
+# v2.6.4
+1. fix: 编辑器高亮显示插件规则的一些问题
+2. refactor: 内部 tunnel 代理全部采用 `x-whistle-allow-tunnel-ack`
+
 # v2.6.3
 1. style: 支持预览 SVG 文件
 2. feat: 支持通过 `process.on('pforkError', (info) => {})` 获取插件抛出的异常信息
