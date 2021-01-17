@@ -27,23 +27,21 @@ var allRules = allInnerRules = allInnerRules.map(function (name) {
 });
 allRules.splice(allRules.indexOf('filter://'), 1, 'excludeFilter://', 'includeFilter://');
 allRules.push('lineProps://');
-var plugins = {};
+var pluginsOptions = [];
 
 exports.setPlugins = function (pluginsState) {
-  var pluginsOptions = pluginsState.pluginsOptions;
   var disabledPlugins = pluginsState.disabledPlugins;
-  plugins = {};
+  pluginsOptions = pluginsState.pluginsOptions;
   pluginRules = [];
   forwardRules = innerRules.slice();
   allRules = allInnerRules.slice();
 
-  if (!pluginsState.disabledAllPlugins && !pluginsState.disabledAllRules) {
+  if (!pluginsState.disabledAllPlugins) {
     pluginsOptions.forEach(function (plugin, i) {
       if (!i) {
         return;
       }
       var name = plugin.name;
-      plugins[name] = plugin;
       if (!disabledPlugins[name]) {
         if (!plugin.hideShortProtocol) {
           forwardRules.push(name);
@@ -73,6 +71,16 @@ exports.getAllRules = function () {
   return allRules;
 };
 
+function getPlugin(rule) {
+  rule = rule.substring(rule.indexOf('.') + 1);
+  for (var i = 0, len = pluginsOptions.length; i < len; i++) {
+    var plugin = pluginsOptions[i];
+    if (plugin.name === rule) {
+      return plugin;
+    }
+  }
+}
+
 var ROOT_HELP_URL = 'https://avwo.github.io/whistle/rules/';
 exports.getHelpUrl = function (rule) {
   if (!rule || rule === 'rule') {
@@ -99,10 +107,7 @@ exports.getHelpUrl = function (rule) {
   if (PROTOCOLS.indexOf(rule) !== -1) {
     return ROOT_HELP_URL + rule.replace(/^x/, '') + '.html';
   }
-  if (pluginRules.indexOf(rule) !== -1) {
-    rule = rule.substring(rule.indexOf('.') + 1);
-  }
-  rule = plugins[rule];
+  rule= getPlugin(rule);
   if (rule && rule.homepage) {
     return rule.homepage;
   }
