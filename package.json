@@ -24,6 +24,7 @@
   ],
   "bin": {
     "whistle": "./bin/whistle.js",
+    "wisl": "./bin/whistle.js",
     "w2": "./bin/whistle.js",
     "wproxy": "./bin/whistle.js"
   },
