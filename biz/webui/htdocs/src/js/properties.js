@@ -16,20 +16,25 @@ var Properties = React.createClass({
   render: function() {
     var props = this.props;
     var sourceText = props.enableViewSource;
+    var copyValue = props.enableCopyValue;
     var viewSource = this.state.viewSource;
     var onHelp = props.onHelp;
     var modal = props.modal || {};
     var title = props.title || {};
     var keys = Object.keys(modal);
-    sourceText = sourceText && keys.map(function(name) {
-      var value = modal[name];
-      return (Array.isArray(value) ?
-          value.map(function(val, i) {
-            return name + ': ' + util.toString(val);
-          }).join('\n')
-          : name + ': ' + util.toString(value)
-      );
-    }).join('\n');
+    if (sourceText || copyValue) {
+      var result = [];
+      keys.forEach(function(name) {
+        var value = modal[name];
+        name = sourceText ? name + ': ' : '';
+        result.push(Array.isArray(value) ?
+          value.map(function(val) {
+            return name + util.toString(val);
+          }).join('\n') : name + util.toString(value));
+      });
+      sourceText = sourceText && result.join('\n');
+      copyValue = copyValue && result.join('\n').trim();
+    }
     if (this.textStr !== sourceText) {
       this.textStr = sourceText;
       try {
@@ -46,6 +51,11 @@ var Properties = React.createClass({
             <CopyBtn value={sourceText} name="AsText" />
             {this.jsonStr ? <CopyBtn value={this.jsonStr} name="AsJSON" /> : undefined }
             <a onClick={this.toggle}>{ viewSource ? 'Form' : 'Text' }</a>
+          </div> : undefined
+        }
+        { copyValue ? 
+          <div className="w-textarea-bar">
+            <CopyBtn value={copyValue} name={props.name} />
           </div> : undefined
         }
         { sourceText ? (<pre className="w-properties-source">
