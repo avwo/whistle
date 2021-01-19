@@ -29,6 +29,12 @@ function showStartupInfo(err, options, debugMode, restart) {
   error(err.stack ? 'Date: ' + new Date().toLocaleString() + '\n' + err.stack : err);
 }
 
+function getName() {
+  if (/[/\\](\w+)$/.test(process.argv[1])) {
+    return RegExp.$1;
+  }
+}
+
 program.setConfig({
   main: function(options) {
     var cmd = process.argv[2];
@@ -41,7 +47,7 @@ program.setConfig({
     var hash = options && options.storage && encodeURIComponent(options.storage);
     return path.join(__dirname, '../index.js') + (hash ? '#' + hash + '#' : '');
   },
-  name: config.name,
+  name: getName() || config.name,
   version: config.version,
   runCallback: function(err, options) {
     if (err) {
