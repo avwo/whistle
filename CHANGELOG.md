@@ -1,6 +1,6 @@
 # v2.6.4
 1. fix: 编辑器高亮显示插件规则的一些问题
-2. refactor: 内部 tunnel 代理全部采用 `x-whistle-allow-tunnel-ack`
+2. feat: 本地文件替换支持通过 `enable://contentLength` 在响应头加入 `content-length` 字段
 
 # v2.6.3
 1. style: 支持预览 SVG 文件
