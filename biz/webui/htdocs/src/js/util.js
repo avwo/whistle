@@ -1043,7 +1043,7 @@ function decodeBase64(base64) {
 }
 
 function getMediaType(res) {
-  var type = !res._hasError && getRawType(res.headers);
+  var type = getRawType(res.headers);
   if (!type || getContentType(type) !== 'IMG') {
     return '';
   }

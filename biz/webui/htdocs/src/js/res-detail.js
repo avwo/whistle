@@ -122,7 +122,7 @@ var ResDetail = React.createClass({
         headersStr = ['HTTP/' + (modal.req.httpVersion || '1.1'), status, util.getStatusMessage(res)].join(' ')
         + '\r\n' + headersStr;
         raw = headersStr + '\r\n\r\n' + body;
-        var rawType = util.getRawType(headers);
+        var rawType = !modal.resError && util.getRawType(headers);
         var type = util.getContentType(rawType);
         isJson = type === 'JSON';
         // 对 SVG 做特殊处理, 利用 base64 ，图片标签展示 svg 元素
