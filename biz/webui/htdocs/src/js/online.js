@@ -161,12 +161,14 @@ var Online = React.createClass({
         var uptimeElem = dialog.find('#whistleUptime');
         uptimeElem.text(util.formatTime(pInfo.uptime));
         uptimeElem.parent().attr('title', pInfo.uptime);
-        reqElem.parent().attr('title', 'HTTP[S]: ' + info.http + '\nWS[S]: ' + info.ws + '\nTUNNEL: ' + info.tunnel);
+        reqElem.parent().attr('title', 'HTTP[S]: ' + info.http + ' (Total: ' + info.totalHttp + ')'
+          + '\nWS[S]: ' + info.ws + ' (Total: ' + info.totalWs + ')'
+          + '\nTUNNEL: ' + info.tunnel + ' (Total: ' + info.totalTunnel + ')');
         memElem.parent().attr('title', Object.keys(pInfo.memUsage).map(function(key) {
           return key + ': ' + pInfo.memUsage[key];
         }).join('\n'));
         if (!curServerInfo || !curServerInfo.pInfo) {
-          reqElem.text(info.http + info.ws + info.tunnel);
+          reqElem.text(info.http + info.ws + info.tunnel + ' (Total: ' + (info.totalHttp + info.totalWs + info.totalTunnel) + ')');
           cpuElem.text(pInfo.cpuPercent);
           memElem.text(util.getSize(pInfo.memUsage.rss));
         } else {
@@ -175,9 +177,11 @@ var Online = React.createClass({
             memElem.text(util.getSize(pInfo.memUsage.rss));
           }
           var totalCount = info.http + info.ws + info.tunnel;
+          var allCount = info.totalHttp + info.totalWs + info.totalTunnel;
           pInfo.totalCount = totalCount;
-          if (totalCount !== curPInfo.totalCount) {
-            reqElem.text(totalCount);
+          pInfo.allCount = allCount;
+          if (totalCount !== curPInfo.totalCount || allCount !== curPInfo.allCount) {
+            reqElem.text(totalCount + ' (Total: ' + allCount + ')');
           }
           if (pInfo.cpuPercent !== curPInfo.cpuPercent) {
             cpuElem.text(pInfo.cpuPercent || '-');
@@ -225,7 +229,8 @@ var Online = React.createClass({
       var pInfo = server.pInfo;
       if (pInfo) {
         info.push('Uptime: ' + util.formatTime(pInfo.uptime));
-        info.push('Requests: ' + (server.http + server.ws + server.tunnel));
+        info.push('Requests: ' + (server.http + server.ws + server.tunnel
+          + ' (' + (server.totalHttp + server.totalWs + server.totalTunnel) + ')'));
         pInfo.cpuPercent && info.push('CPU: ' + pInfo.cpuPercent);
         info.push('Memory: ' + util.getSize(pInfo.memUsage.rss));
       }
