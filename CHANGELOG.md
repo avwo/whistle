@@ -1,6 +1,7 @@
 # v2.6.4
 1. fix: 编辑器高亮显示插件规则的一些问题
 2. feat: 本地文件替换的响应头头默认加入 `content-length` 字段，可以通过 `delete://resH.content-length` 禁用
+3. feat: 支持通过 CGI 或 API 获取当前处理的请求总数
 
 # v2.6.3
 1. style: 支持预览 SVG 文件
