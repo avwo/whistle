@@ -866,7 +866,8 @@ function setReqData(item) {
       }
     }
   }
-  
+  req._hasError = item.reqError;
+  res._hasError = item.resError;
   req.rawHeaders = getRawHeaders(req.headers, req.rawHeaderNames);
   res.rawHeaders = getRawHeaders(res.headers, res.rawHeaderNames);
   res.rawTrailers = getRawHeaders(res.trailers, res.rawTrailerNames);

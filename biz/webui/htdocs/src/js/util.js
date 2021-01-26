@@ -1043,7 +1043,7 @@ function decodeBase64(base64) {
 }
 
 function getMediaType(res) {
-  var type = getRawType(res.headers);
+  var type = !res._hasError && getRawType(res.headers);
   if (!type || getContentType(type) !== 'IMG') {
     return '';
   }
@@ -1095,7 +1095,7 @@ function initData(data, isReq) {
         delete data.text;
       }
     }
-    if (!data.base64) {
+    if (!data.base64 || data._hasError) {
       return;
     }
   }
