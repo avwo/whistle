@@ -3,6 +3,7 @@ require('../css/online.css');
 var $ = window.jQuery = require('jquery'); //for bootstrap
 require('bootstrap/dist/js/bootstrap.js');
 var React = require('react');
+var ReactDOM = require('react-dom');
 
 var Dialog = require('./dialog');
 var dataCenter = require('./data-center');
@@ -96,6 +97,7 @@ var Online = React.createClass({
     if (!server) {
       return;
     }
+    this.state.server = server;
     var info = [];
     var username = util.escape(server.username);
     if (username) {
@@ -161,14 +163,15 @@ var Online = React.createClass({
         var uptimeElem = dialog.find('#whistleUptime');
         uptimeElem.text(util.formatTime(pInfo.uptime));
         uptimeElem.parent().attr('title', pInfo.uptime);
-        reqElem.parent().attr('title', 'HTTP[S]: ' + info.http + ' (Total: ' + info.totalHttp + ')'
-          + '\nWS[S]: ' + info.ws + ' (Total: ' + info.totalWs + ')'
-          + '\nTUNNEL: ' + info.tunnel + ' (Total: ' + info.totalTunnel + ')');
+        reqElem.parent().attr('title', 'HTTP[S]: ' + pInfo.httpRequests + ' (Total: ' + pInfo.totalHttpRequests + ')'
+          + '\nWS[S]: ' + pInfo.wsRequests + ' (Total: ' + pInfo.totalWsRequests + ')'
+          + '\nTUNNEL: ' + pInfo.tunnelRequests + ' (Total: ' + pInfo.totalTunnelRequests + ')');
         memElem.parent().attr('title', Object.keys(pInfo.memUsage).map(function(key) {
           return key + ': ' + pInfo.memUsage[key];
         }).join('\n'));
         if (!curServerInfo || !curServerInfo.pInfo) {
-          reqElem.text(info.http + info.ws + info.tunnel + ' (Total: ' + (info.totalHttp + info.totalWs + info.totalTunnel) + ')');
+          reqElem.text(pInfo.httpRequests + pInfo.wsRequests + pInfo.tunnelRequests +
+            ' (Total: ' + (pInfo.totalHttpRequests + pInfo.totalWsRequests + pInfo.totalTunnelRequests) + ')');
           cpuElem.text(pInfo.cpuPercent);
           memElem.text(util.getSize(pInfo.memUsage.rss));
         } else {
@@ -176,8 +179,8 @@ var Online = React.createClass({
           if (pInfo.memUsage !== curPInfo.memUsage) {
             memElem.text(util.getSize(pInfo.memUsage.rss));
           }
-          var totalCount = info.http + info.ws + info.tunnel;
-          var allCount = info.totalHttp + info.totalWs + info.totalTunnel;
+          var totalCount = pInfo.httpRequests + pInfo.wsRequests + pInfo.tunnelRequests;
+          var allCount = pInfo.totalHttpRequests + pInfo.totalWsRequests + pInfo.totalTunnelRequests;
           pInfo.totalCount = totalCount;
           pInfo.allCount = allCount;
           if (totalCount !== curPInfo.totalCount || allCount !== curPInfo.allCount) {
@@ -194,49 +197,57 @@ var Online = React.createClass({
   reload: function() {
     location.reload();
   },
-  render: function() {
-    var info = [];
-    var server = this.state.server;
-    if (server) {
-      if (server.host) {
-        info.push('Host: ' + server.host);
-      }
-      if (server.pid) {
-        info.push('PID: ' + server.pid);
-      }
-      var port = server.realPort || server.port;
-      if (port) {
-        info.push('Port: ' + port);
-      }
-      if (server.socksPort) {
-        info.push('SOCKS Port: ' + server.socksPort);
-      }
-      if (server.httpPort) {
-        info.push('HTTP Port: ' + server.httpPort);
-      }
-      if (server.httpsPort) {
-        info.push('HTTPS Port: ' + server.httpsPort);
-      }
-
-      if (server.ipv4.length) {
-        info.push('IPv4:');
-        info.push.apply(info, addIndent(server.ipv4));
-      }
-      if (server.ipv6.length) {
-        info.push('IPv6:');
-        info.push.apply(info, addIndent(server.ipv6));
-      }
-      var pInfo = server.pInfo;
-      if (pInfo) {
-        info.push('Uptime: ' + util.formatTime(pInfo.uptime));
-        info.push('Requests: ' + (server.http + server.ws + server.tunnel
-          + ' (' + (server.totalHttp + server.totalWs + server.totalTunnel) + ')'));
-        pInfo.cpuPercent && info.push('CPU: ' + pInfo.cpuPercent);
-        info.push('Memory: ' + util.getSize(pInfo.memUsage.rss));
-      }
+  getTitle: function(server) {
+    if (!server) {
+      return;
     }
+    var info = [];
+    if (server.host) {
+      info.push('Host: ' + server.host);
+    }
+    if (server.pid) {
+      info.push('PID: ' + server.pid);
+    }
+    var port = server.realPort || server.port;
+    if (port) {
+      info.push('Port: ' + port);
+    }
+    if (server.socksPort) {
+      info.push('SOCKS Port: ' + server.socksPort);
+    }
+    if (server.httpPort) {
+      info.push('HTTP Port: ' + server.httpPort);
+    }
+    if (server.httpsPort) {
+      info.push('HTTPS Port: ' + server.httpsPort);
+    }
+
+    if (server.ipv4.length) {
+      info.push('IPv4:');
+      info.push.apply(info, addIndent(server.ipv4));
+    }
+    if (server.ipv6.length) {
+      info.push('IPv6:');
+      info.push.apply(info, addIndent(server.ipv6));
+    }
+    var pInfo = server.pInfo;
+    if (pInfo) {
+      info.push('Uptime: ' + util.formatTime(pInfo.uptime));
+      info.push('Requests: ' + (pInfo.httpRequests + pInfo.wsRequests + pInfo.tunnelRequests
+        + ' (Total: ' + (pInfo.totalHttpRequests + pInfo.totalWsRequests + pInfo.totalTunnelRequests) + ')'));
+      pInfo.cpuPercent && info.push('CPU: ' + pInfo.cpuPercent);
+      info.push('Memory: ' + util.getSize(pInfo.memUsage.rss));
+    }
+    return info.join('\n');
+  },
+  setTitle: function() {
+    var server =  dataCenter.getServerInfo() || this.state.server;
+    ReactDOM.findDOMNode(this.refs.onlineMenu).title = this.getTitle(server);
+  },
+  render: function() {
+    var server = this.state.server;
     return (
-        <a title={info.join('\n')} draggable="false"
+        <a ref="onlineMenu" draggable="false" onMouseEnter={this.setTitle}
           className={'w-online-menu w-online' + (server ? '' : ' w-offline')} onClick={this.showServerInfo}>
           <span className="glyphicon glyphicon-stats"></span>{server ? 'Online' : 'Offline'}
           <Dialog ref="confirmReload" wstyle="w-confirm-reload-dialog">
