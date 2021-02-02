@@ -1,3 +1,7 @@
+# v2.6.5
+1. fix: 部分 Node 版本可能卡死问题
+2. fix: [pipe](http://wproxy.org/whistle/rules/pipe.html) 可能导致数据丢失问题
+
 # v2.6.4
 1. fix: 编辑器高亮显示插件规则的一些问题
 2. feat: 本地文件替换的响应头头默认加入 `content-length` 字段，可以通过 `delete://resH.content-length` 禁用
