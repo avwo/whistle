@@ -34,6 +34,7 @@ var proxyEvent, util, pluginMgr;
 var MAX_AGE = 60 * 60 * 24 * 3;
 var MENU_HTML = fs.readFileSync(path.join(__dirname, '../../../assets/menu.html'));
 var MENU_URL = '???_WHISTLE_PLUGIN_EXT_CONTEXT_MENU_' + config.port + '???';
+var UP_PATH_REGEXP = /(?:^|[\\/])\.\.(?:[\\/]|$)/;
 
 function doNotCheckLogin(req) {
   var path = req.path;
@@ -179,6 +180,9 @@ app.use(function(req, res, next) {
 });
 
 function cgiHandler(req, res) {
+  if (UP_PATH_REGEXP.test(req.path)) {
+    return res.status(403).end('Forbidden');
+  }
   if (req.headers.origin) {
     res.setHeader('access-control-allow-origin', req.headers.origin);
     res.setHeader('access-control-allow-credentials', true);
