@@ -1,3 +1,6 @@
+# v2.6.6
+1. fix: 管理界面 CGI 路径可以随意拼接问题
+
 # v2.6.5
 1. fix: 部分 Node 版本可能卡死问题
 2. fix: [pipe](http://wproxy.org/whistle/rules/pipe.html) 可能导致数据丢失问题
