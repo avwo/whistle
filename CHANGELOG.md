@@ -1,3 +1,6 @@
+# v2.6.7
+1. fix: https://github.com/avwo/whistle/issues/540
+
 # v2.6.6
 1. fix: 管理界面 CGI 路径可以随意拼接问题
 
