@@ -23,6 +23,7 @@ exports.getServerInfo = function(req) {
     cmdName: config.cmdName,
     hideLeftMenu: config.hideLeftMenu,
     networkMode: config.networkMode,
+    rulesOnlyMode: config.rulesOnlyMode,
     pluginsMode: config.pluginsMode,
     ndr: config.notAllowedDisableRules,
     ndp: config.notAllowedDisablePlugins,

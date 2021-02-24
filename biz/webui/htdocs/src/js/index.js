@@ -161,13 +161,18 @@ function getPageName(options) {
   if (options.networkMode) {
     return 'network';
   }
+  if (options.rulesMode && options.pluginsMode) {
+    return 'plugins';
+  }
   var hash = location.hash.substring(1);
   if (hash) {
     hash = hash.replace(/[?#].*$/, '');
   } else {
     hash = location.href.replace(/[?#].*$/, '').replace(/.*\//, '');
   }
-
+  if (options.rulesOnlyMode) {
+    return hash === 'values' ? 'values' : 'rules';
+  }
   if (options.rulesMode) {
     return hash === 'network' ? 'rules' : hash;
   }
@@ -229,6 +234,7 @@ var Index = React.createClass({
       networkMode: !!modal.server.networkMode,
       rulesMode: !!modal.server.rulesMode,
       pluginsMode: !!modal.server.pluginsMode,
+      rulesOnlyMode: !!modal.server.rulesOnlyMode,
       multiEnv: modal.server.multiEnv,
       isWin: modal.server.isWin,
       ndr: modal.server.ndr,
@@ -2786,11 +2792,17 @@ var Index = React.createClass({
     var state = this.state;
     var networkMode = state.networkMode;
     var rulesMode = state.rulesMode;
+    var rulesOnlyMode = state.rulesOnlyMode;
     var pluginsMode = state.pluginsMode;
     var multiEnv = state.multiEnv;
     var name = state.name;
     if (networkMode) {
       name = 'network';
+    } else if (rulesOnlyMode) {
+      name = name === 'values' ? 'values' : 'rules';
+    } else if (rulesMode && pluginsMode) {
+      name = 'plugins';
+      networkMode = true;
     } else if (rulesMode) {
       name = name === 'network' ? 'rules' : name;
     } else if (pluginsMode) {
@@ -2925,7 +2937,7 @@ var Index = React.createClass({
             <a onClick={this.showValues} className="w-values-menu" style={{background: name == 'values' ? '#ddd' : null}} draggable="false"><span className="glyphicon glyphicon-folder-close"></span>Values</a>
             <MenuItem ref="valuesMenuItem" name={name == 'values' ? null : 'Open'} options={state.valuesOptions} className="w-values-menu-item" onClick={this.showValues} onClickOption={this.showAndActiveValues} />
           </div>
-          <div ref="pluginsMenu" onMouseEnter={this.showPluginsOptions} onMouseLeave={this.hidePluginsOptions} className={'w-nav-menu w-menu-wrapper' + (showPluginsOptions ? ' w-menu-wrapper-show' : '')}>
+          <div style={{display: rulesOnlyMode ? 'none' : undefined}} ref="pluginsMenu" onMouseEnter={this.showPluginsOptions} onMouseLeave={this.hidePluginsOptions} className={'w-nav-menu w-menu-wrapper' + (showPluginsOptions ? ' w-menu-wrapper-show' : '')}>
             <a onClick={this.showPlugins} className="w-plugins-menu" style={{background: name == 'plugins' ? '#ddd' : null}} draggable="false"><span className="glyphicon glyphicon-list-alt"></span>Plugins</a>
             <MenuItem ref="pluginsMenuItem" name={name == 'plugins' ? null : 'Open'} options={pluginsOptions} checkedOptions={state.disabledPlugins} disabled={disabledAllPlugins}
               className="w-plugins-menu-item" onClick={this.showPlugins} onChange={this.disablePlugin} onClickOption={this.showAndActivePlugins} />
@@ -3051,7 +3063,10 @@ var Index = React.createClass({
               <i className="w-menu-changed" style={{display: state.values.hasChanged() ? undefined : 'none'}}>*</i>
             </a>
             <a onClick={this.showPlugins} className="w-plugins-menu"
-              style={{background: name == 'plugins' ? '#ddd' : null}} draggable="false">
+              style={{
+                background: name == 'plugins' ? '#ddd' : null,
+                display: rulesOnlyMode ? 'none' : undefined
+              }} draggable="false">
               <span className={'glyphicon glyphicon-list-alt' + (disabledAllPlugins ? ' w-disabled' : '')}></span>
               <i>{!state.classic && !state.ndp && <input onChange={this.disableAllPlugins} type="checkbox" onClick={stopPropagation} checked={!disabledAllPlugins}
                 title={disabledAllPlugins ? 'Click to turn on Plugins' : 'Click to turn off Plugins'}
