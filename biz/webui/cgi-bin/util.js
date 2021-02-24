@@ -16,6 +16,10 @@ exports.getClientId = function() {
 };
 
 exports.getServerInfo = function(req) {
+  var baseDir;
+  if (!config.networkMode && !config.pluginsMode) {
+    baseDir = config.baseDirHash;
+  }
   var info = {
     pid: PID,
     pInfo: proc,
@@ -30,7 +34,7 @@ exports.getServerInfo = function(req) {
     rulesMode: config.rulesMode,
     strictMode: config.strict,
     multiEnv: config.multiEnv,
-    baseDir: config.baseDirHash,
+    baseDir: baseDir,
     username: config.username,
     nodeVersion: process.version,
     latestVersion: properties.getLatestVersion('latestVersion'),
