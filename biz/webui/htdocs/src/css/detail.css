@@ -23,3 +23,7 @@
 .w-inspectors-ctx-menu .w-ctx-menu-list {
   min-width: 100px;
 }
+
+.w-detail-inspectors {
+  min-width: 560px;
+}
