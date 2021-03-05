@@ -90,14 +90,8 @@ function showUsage(isRunning, options, restart) {
 
 exports.showUsage = showUsage;
 
-function getHomedir() {
-  //默认设置为`~`，防止Linux在开机启动时Node无法获取homedir
-  return (typeof os.homedir == 'function' ? os.homedir() :
-    process.env[process.platform == 'win32' ? 'USERPROFILE' : 'HOME']) || '~';
-}
-
 function getDataDir() {
-  return path.resolve(getHomedir(), '.startingAppData');
+  return path.resolve(config.getHomedir(), '.startingAppData');
 }
 
 function readConfig(storage) {
