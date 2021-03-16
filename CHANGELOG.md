@@ -1,3 +1,7 @@
+# v2.6.8
+1. fix: `excludeFilter` `includeFilter` 混合配置时结果错乱问题
+2. feat: 支持 -M `rulesOnly` 及 `pluginsOnly`
+
 # v2.6.7
 1. fix: https://github.com/avwo/whistle/issues/540
 
