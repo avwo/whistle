@@ -106,6 +106,7 @@
 .w-tool-box {
   overflow-x: hidden;
   overflow-y: auto;
+  padding-bottom: 20px;
 }
 .w-tool-box .w-detail-inspectors-title {
   border: none;

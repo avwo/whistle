@@ -11,13 +11,15 @@ var NOT_EMPTY_RE = /[^\s]/;
 var MAX_QRCODE_LEN = 2048;
 var MAX_JSON_LEN = 32768;
 var MAX_SAVE_LEN = 5120;
+var MAX_TEXT_LEN = 5120;
 var MAX_IMAGE_SIZE = 1024 * 1024;
 
 var ToolBox = React.createClass({
   getInitialState: function() {
     return {
       qrcodeValue: util.toString(storage.get('qrcodeValue')).substring(0, MAX_QRCODE_LEN),
-      jsonValue: util.toString(storage.get('jsonValue')).substring(0, MAX_SAVE_LEN)
+      jsonValue: util.toString(storage.get('jsonValue')).substring(0, MAX_SAVE_LEN),
+      codecText: util.toString(storage.get('codecText')).substring(0, MAX_TEXT_LEN)
     };
   },
   _saveQRCodeValue: function() {
@@ -33,20 +35,59 @@ var ToolBox = React.createClass({
       storage.set('jsonValue', value);
     }
   },
+  _saveCodecText: function() {
+    var value = this.state.codecText;
+    if (value.length <= MAX_TEXT_LEN) {
+      storage.set('codecText', value);
+    }
+  },
   saveJSONValue: function() {
     clearTimeout(this.jsonTimer);
     this.jsonTimer = setTimeout(this._saveJSONValue, 1000);
+  },
+  saveCodecText: function() {
+    clearTimeout(this.codecTimer);
+    this.codecTimer = setTimeout(this._saveCodecText, 1000);
   },
   onJSONChange: function(e) {
     this.setState({
       jsonValue: e.target.value
     }, this._saveJSONValue);
   },
+  onCodecChange: function(e) {
+    this.setState({
+      codecText: e.target.value
+    }, this._saveCodecText);
+  },
   generageQRCode: function() {
     this.refs.qrcodeDialog.show(this.state.qrcodeValue);
   },
   parseJSON: function() {
     this.refs.jsonDialog.show(this.state.jsonValue);
+  },
+  encode: function() {
+    try {
+      var value = encodeURIComponent(this.state.codecText);
+      this.refs.textDialog.show(value);
+    } catch (e) {
+      alert(e.message);
+    }
+  },
+  showShadowRules: function() {
+    try {
+      var value = encodeURIComponent(this.state.codecText);
+      this.refs.textDialog.show('"' + value + '"');
+    } catch (e) {
+      alert(e.message);
+    }
+  },
+  decode: function() {
+    try {
+      var value = decodeURIComponent(this.state.codecText);
+      this.refs.textDialog.show(value);
+    } catch (e) {
+      alert(e.message);
+    }
   },
   uploadImg: function() {
     ReactDOM.findDOMNode(this.refs.uploadImg).click();
@@ -85,6 +126,7 @@ var ToolBox = React.createClass({
     var qrcodeValue = state.qrcodeValue;
     var jsonValue = state.jsonValue;
     var domainValue = state.domainValue;
+    var codecText = state.codecText;
     return (
       <div className={'fill orient-vertical-box w-tool-box ' + (this.props.hide ? 'hide' : '')}>
         <div className="w-detail-inspectors-title">
@@ -101,6 +143,16 @@ var ToolBox = React.createClass({
         </div>
         <textarea onChange={this.onJSONChange} value={jsonValue} className="w-tool-box-ctn"
           maxLength={MAX_JSON_LEN} placeholder="Input the JSON text" />
+        <div className="w-detail-inspectors-title" style={{height: 20}}>
+          <button className="btn btn-default" style={{float: 'left'}} disabled={!NOT_EMPTY_RE.test(codecText)}
+            onClick={this.encode}>EncodeURICompoment</button>
+          <button className="btn btn-default" style={{float: 'left', marginLeft: 10}} disabled={!NOT_EMPTY_RE.test(codecText)}
+            onClick={this.decode}>DecodeURICompoment</button>
+          <button className="btn btn-primary" disabled={!NOT_EMPTY_RE.test(codecText)}
+            onClick={this.showShadowRules}>ShadowRules</button>
+        </div>
+        <textarea onChange={this.onCodecChange} value={codecText} className="w-tool-box-ctn"
+          maxLength={MAX_TEXT_LEN} placeholder="Input the text" />
         <div className="w-detail-inspectors-title">
           <span className="glyphicon glyphicon-picture"></span>Base64
           <button className="btn btn-primary" onClick={this.uploadImg}>Upload</button>
