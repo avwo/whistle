@@ -145,9 +145,9 @@ var ToolBox = React.createClass({
           maxLength={MAX_JSON_LEN} placeholder="Input the JSON text" />
         <div className="w-detail-inspectors-title" style={{height: 20}}>
           <button className="btn btn-default" style={{float: 'left'}} disabled={!NOT_EMPTY_RE.test(codecText)}
-            onClick={this.encode}>EncodeURICompoment</button>
+            onClick={this.encode}>EncodeURIComponent</button>
           <button className="btn btn-default" style={{float: 'left', marginLeft: 10}} disabled={!NOT_EMPTY_RE.test(codecText)}
-            onClick={this.decode}>DecodeURICompoment</button>
+            onClick={this.decode}>DecodeURIComponent</button>
           <button className="btn btn-primary" disabled={!NOT_EMPTY_RE.test(codecText)}
             onClick={this.showShadowRules}>ShadowRules</button>
         </div>
