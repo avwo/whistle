@@ -1,3 +1,7 @@
+# v2.6.9
+1. feat: 支持通过 `--shadowRules jsonString` 导入规则到 Rules
+2. style: 支持通过设置请求参数 `disabledEditor=1` 将 Rules & Values 编辑框设置为只读模式
+
 # v2.6.8
 1. fix: `excludeFilter` `includeFilter` 混合配置时结果错乱问题
 2. feat: 支持 -M `rulesOnly` 及 `pluginsOnly`
