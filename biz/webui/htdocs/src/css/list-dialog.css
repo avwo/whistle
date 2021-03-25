@@ -2,3 +2,11 @@
     text-overflow: ellipsis; white-space: nowrap; margin-left: 10px; }
 .w-list-dialog label input { margin-right: 5px; }
 .w-list-dialog {width: 500px;}
+.w-list-dialog .modal-footer {
+    position: relative;
+}
+.w-list-counter {
+    position: absolute;
+    left: 10px;
+    top: 15px;
+}

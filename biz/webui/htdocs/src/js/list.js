@@ -15,7 +15,7 @@ var iframes = require('./iframes');
 var RecycleBinDialog = require('./recycle-bin');
 
 var search = window.location.search || '';
-var disabledEditor = search.indexOf('disabledEditor=1') !== -1
+var disabledEditor = search.indexOf('disabledEditor=1') !== -1;
 var rulesCtxMenuList = [
   { name: 'Copy' },
   { name: 'Enable', action: 'Save' },

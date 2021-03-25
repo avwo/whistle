@@ -8,7 +8,8 @@ var Dialog = require('./dialog');
 var ListDialog = React.createClass({
   getInitialState: function() {
     return {
-      checkedItems: {}
+      checkedItems: {},
+      selectedCount: 0
     };
   },
   onChange: function(e) {
@@ -20,7 +21,7 @@ var ListDialog = React.createClass({
     } else {
       delete checkedItems[name];
     }
-    this.setState({});
+    this.setState({ selectedCount: Object.keys(checkedItems).length });
   },
   onConfirm: function(e) {
     if (e.target.disabled) {
@@ -58,6 +59,7 @@ var ListDialog = React.createClass({
     var self = this;
     var list = self.props.list || [];
     var checkedItems = self.state.checkedItems;
+    var selectedCount = self.state.selectedCount;
     var pageName = this.props.name;
 
     return (
@@ -88,6 +90,9 @@ var ListDialog = React.createClass({
           })}
         </div>
         <div className="modal-footer">
+          <div className="w-list-counter">
+            Selected: {selectedCount} / {list.length}
+          </div>
           <button type="button" className="btn btn-default" data-dismiss="modal">Cancel</button>
           <button type="button" className="btn btn-warning"
             onMouseDown={this.preventDefault}
