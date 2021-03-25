@@ -5,6 +5,7 @@ var CodeMirror = require('codemirror');
 var protocols = require('./protocols');
 var dataCenter = require('./data-center');
 
+var disabledEditor = window.location.href.indexOf('disabledEditor=1') !== -1;
 var NON_SPECAIL_RE = /[^:/]/;
 var PLUGIN_NAME_RE = /^((?:whistle\.)?([a-z\d_\-]+:))(\/?$|\/\/)/;
 var MAX_HINT_LEN = 512;
@@ -30,6 +31,14 @@ for (var a = 'a'.charCodeAt(), z = 'z'.charCodeAt(); a <= z; a++) {
   CHARS.push('\'' + ch + '\'');
 }
 
+$(window).on('hashchange', function() {
+  var disabled = window.location.href.indexOf('disabledEditor=1') !== -1;
+  if (disabled !== disabledEditor) {
+    disabledEditor = disabled;
+  }
+});
+
+
 function getHintCgi(plugin) {
   var moduleName = plugin.moduleName;
   var url = plugin.hintUrl || '';
@@ -48,6 +57,9 @@ function getHintCgi(plugin) {
 }
 
 function getHints(keyword) {
+  if (disabledEditor) {
+    return [];
+  }
   var allRules = protocols.getAllRules();
   if (!keyword) {
     return allRules;
