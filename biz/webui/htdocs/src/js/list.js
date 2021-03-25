@@ -14,8 +14,7 @@ var events = require('./events');
 var iframes = require('./iframes');
 var RecycleBinDialog = require('./recycle-bin');
 
-var search = window.location.search || '';
-var disabledEditor = search.indexOf('disabledEditor=1') !== -1;
+var disabledEditor = window.location.href.indexOf('disabledEditor=1') !== -1;
 var rulesCtxMenuList = [
   { name: 'Copy' },
   { name: 'Enable', action: 'Save' },
@@ -137,6 +136,13 @@ var List = React.createClass({
           modal.getChangedList().forEach(trigger);
           return false;
         }
+      }
+    })
+    .on('hashchange', function() {
+      var disabled = window.location.href.indexOf('disabledEditor=1') !== -1;
+      if (disabled !== disabledEditor) {
+        disabledEditor = disabled;
+        self.setState({});
       }
     });
 
