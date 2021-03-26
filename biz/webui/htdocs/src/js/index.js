@@ -27,6 +27,7 @@ var message = require('./message');
 var UpdateAllBtn = require('./update-all-btn');
 var CertsInfoDialog = require('./certs-info-dialog');
 
+var H2_RE = /http\/2\.0/i;
 var JSON_RE = /^\s*(?:[\{｛][\w\W]+[\}｝]|\[[\w\W]+\])\s*$/;
 var DEFAULT = 'Default';
 var MAX_PLUGINS_TABS = 7;
@@ -2640,20 +2641,30 @@ var Index = React.createClass({
       var resHeaders = util.parseHeadersFromHar(rawRes.headers);
       var clientIp = entry.clientIPAddress || '127.0.0.1';
       var serverIp = entry.serverIPAddress || '';
+      var useH2 = H2_RE.test(rawReq.httpVersion || rawRes.httpVersion);
+      var version = useH2 ? '2.0' : '1.1';
       var req = {
         method: rawReq.method,
         ip: clientIp,
-        httpVersion: '1.1',
-        size: rawReq.bodySize,
+        httpVersion: version,
+        size: rawReq.bodySize > 0 ? rawReq.bodySize : 0,
         headers: reqHeaders.headers,
         rawHeaderNames: reqHeaders.rawHeaderNames,
-        body: rawReq.postData && rawReq.postData.text || ''
+        body: ''
       };
+      var reqText = rawReq.postData && rawReq.postData.text;
+      if (reqText) {
+        if (rawReq.encoding === 'base64') {
+          req.base64 = reqText;
+        } else {
+          req.body = reqText;
+        }
+      }
       var res = {
-        httpVersion: '1.1',
+        httpVersion: version,
         statusCode: rawRes.status,
         statusMessage: rawRes.statusText,
-        size: rawRes.bodySize,
+        size: rawRes.bodySize > 0 ? rawRes.bodySize : 0,
         headers: resHeaders.headers,
         rawHeaderNames: resHeaders.rawHeaderNames,
         ip: serverIp,
@@ -2669,11 +2680,12 @@ var Index = React.createClass({
         }
       }
       var session = {
+        useH2: useH2,
         startTime: startTime,
         url: rawReq.url,
         req: req,
         res: res,
-        rules: {}
+        rules: entry.whistleRules || {}
       };
       var timings = entry.timings || {};
       var endTime = Math.round(startTime + util.getTimeFromHar(entry.time));
