@@ -1780,15 +1780,25 @@ function objectToArray(obj, rawNames) {
   return result;
 }
 
+function stringToArray(str, delimiter) {
+  str = parseQueryString(str, delimiter);
+  return objectToArray(str);
+}
+
 function toHarReq(item) {
   var req = item.req;
+  var url = item.url;
+  var headers = req.headers || '';
+  var cookies = stringToArray(headers.cookie, /;\s*/);
+  var index = url.indexOf('?');
+  var queryString = index === -1 ? [] : stringToArray(url.substring(index + 1));
   return {
     method: item.method,
-    url: item.url,
+    url: url,
     httpVersion: item.useH2 ? 'HTTP/2.0' : 'HTTP/1.1',
-    cookies: [],
-    headers: objectToArray(req.headers, req.rawHeaderNames),
-    queryString: [],
+    cookies: cookies,
+    headers: objectToArray(headers, req.rawHeaderNames),
+    queryString: queryString,
     postData: {
       size: req.unzipSize || req.size || -1
     },
