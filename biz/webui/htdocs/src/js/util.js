@@ -1708,3 +1708,164 @@ exports.formatTime = function(time) {
   var day = Math.floor(time / 24);
   return (day ? padding(day) + ' ' : '') + hour + ':' + min + ':' + sec;
 };
+
+var EMPTY_OBJ = {};
+
+function parseResCookie(cookie) {
+  cookie = parseQueryString(cookie, /;\s*/, null, null, true);
+  var result = {
+    httpOnly: false,
+    secure: false
+  };
+  for (var i in cookie) {
+    switch(i.toLowerCase()) {
+    case 'domain':
+      result.domain = cookie[i];
+      break;
+    case 'path':
+      result.path = cookie[i];
+      break;
+    case 'expires':
+      result.expires = cookie[i];
+      break;
+    case 'max-age':
+      result['max-age'] = cookie[i];
+      result.maxAge = cookie[i];
+      result.maxage = cookie[i];
+      break;
+    case 'httponly':
+      result.httpOnly = true;
+      result.httponly = true;
+      break;
+    case 'secure':
+      result.secure = true;
+      break;
+    case 'samesite':
+      result.sameSite = cookie[i];
+      result.samesite = cookie[i];
+      break;
+    default:
+      if (!result[0]) {
+        result.name = i;
+        result.value = cookie[i];
+      }
+    }
+  }
+
+  return result;
+}
+
+function objectToArray(obj, rawNames) {
+  var result = [];
+  if (obj) {
+    rawNames = rawNames || EMPTY_OBJ;
+    Object.keys(obj).forEach(function(name) {
+      var value = obj[name];
+      name = rawNames[name] || name;
+      if (Array.isArray(value)) {
+        value.forEach(function(val) {
+          result.push({
+            name: name,
+            value: val
+          });
+        });
+      } else {
+        result.push({
+          name: name,
+          value: value
+        });
+      }
+    });
+  }
+  return result;
+}
+
+function toHarReq(item) {
+  var req = item.req;
+  return {
+    method: item.method,
+    url: item.url,
+    httpVersion: item.useH2 ? 'HTTP/2.0' : 'HTTP/1.1',
+    cookies: [],
+    headers: objectToArray(req.headers, req.rawHeaderNames),
+    queryString: [],
+    postData: {
+      size: req.unzipSize || req.size || -1
+    },
+    headersSize: -1,
+    bodySize: req.size || -1,
+    comment: ''
+  };
+}
+
+function toHarRes(item) {
+  var res = item.res;
+  var headers = res.headers || '';
+  var cookies = headers['set-cookie'];
+  if (cookies) {
+    if (Array.isArray(cookies)) {
+      cookies = cookies.map(parseResCookie);
+    } else {
+      cookies = [parseResCookie(cookies)];
+    }
+  } else {
+    cookies = [];
+  }
+  return {
+    status: res.statusCode ||  -1,
+    statusText: res.statusMessage || '',
+    httpVersion: item.useH2 ? 'HTTP/2.0' : 'HTTP/1.1',
+    cookies: cookies,
+    headers: objectToArray(headers, res.rawHeaderNames),
+    content: {
+      size: res.unzipSize || res.size || -1,
+      mimeType: headers['content-type'] || '',
+      encoding: 'base64',
+      text: res.base64
+    },
+    redirectURL: headers.location || '',
+    headersSize: -1,
+    bodySize: res.size || -1,
+    comment: ''
+  };
+}
+
+exports.toHar = function(item) {
+  var time = -1;
+  var dns = -1;
+  var send = -1;
+  var receive = -1;
+  if (item.dnsTime >= item.startTime) {
+    dns = item.dnsTime - item.startTime;
+    time = dns;
+    if (item.requestTime >= item.dnsTime) {
+      send = item.requestTime - item.dnsTime;
+      time = send;
+      if (item.responseTime >= item.requestTime) {
+        receive = item.responseTime - item.requestTime;
+        time = receive;
+        if (item.endTime >= item.responseTime) {
+          time = item.endTime - item.responseTime;
+        }
+      }
+    }
+  }
+  return {
+    startedDateTime: new Date(item.startTime).toISOString(),
+    time: time,
+    request: toHarReq(item),
+    response: toHarRes(item),
+    cache: {},
+    timings: {
+      blocked: 0,
+      dns: dns,
+      connect: -1,
+      send: send,
+      wait: -1,
+      receive: receive,
+      ssl: -1,
+      comment: ''
+    },
+    serverIPAddress: item.hostIp
+  };
+};
