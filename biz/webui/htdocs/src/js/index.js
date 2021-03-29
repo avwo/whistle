@@ -240,6 +240,8 @@ var Index = React.createClass({
       isWin: modal.server.isWin,
       ndr: modal.server.ndr,
       ndp: modal.server.ndp,
+      drb: modal.server.drb,
+      drm: modal.server.drm,
       classic: modal.classic,
       version: modal.version
     };
@@ -888,7 +890,8 @@ var Index = React.createClass({
         || state.allowMultipleChoice !== data.allowMultipleChoice
         || state.disabledAllPlugins !== data.disabledAllPlugins
         || state.multiEnv != server.multiEnv || state.classic != data.classic
-        || state.ndp != server.ndp || state.ndr != server.ndr) {
+        || state.ndp != server.ndp || state.ndr != server.ndr
+        || state.drb != server.drb || state.drm != server.drm) {
         state.interceptHttpsConnects = data.interceptHttpsConnects;
         state.enableHttp2 = data.enableHttp2;
         state.disabledAllRules = data.disabledAllRules;
@@ -897,6 +900,8 @@ var Index = React.createClass({
         state.multiEnv = server.multiEnv;
         state.ndp = server.ndp;
         state.ndr = server.ndr;
+        state.drb = server.drb;
+        state.drm = server.drm;
         state.classic = data.classic;
         protocols.setPlugins(state);
         self.setState({});
@@ -3131,10 +3136,10 @@ var Index = React.createClass({
                     onThemeChange={this.onRulesThemeChange}
                     onFontSizeChange={this.onRulesFontSizeChange}
                     onLineNumberChange={this.onRulesLineNumberChange} />
-                    <p className="w-editor-settings-box"><label><input type="checkbox" checked={state.backRulesFirst} onChange={this.enableBackRulesFirst} /> Back rules first</label></p>
-                  <p className="w-editor-settings-box"><label style={{color: multiEnv ? '#aaa' : undefined}}><input type="checkbox" disabled={multiEnv}
-                    checked={!multiEnv && state.allowMultipleChoice} onChange={this.allowMultipleChoice} /> Use multiple rules</label></p>
-                  {!state.ndr && <p className="w-editor-settings-box">
+                   {!state.drb && <p className="w-editor-settings-box"><label><input type="checkbox" checked={state.backRulesFirst} onChange={this.enableBackRulesFirst} /> Back rules first</label></p>}
+                   {!state.drm && <p className="w-editor-settings-box"><label style={{color: multiEnv ? '#aaa' : undefined}}><input type="checkbox" disabled={multiEnv}
+                    checked={!multiEnv && state.allowMultipleChoice} onChange={this.allowMultipleChoice} /> Use multiple rules</label></p>}
+                   {!state.ndr && <p className="w-editor-settings-box">
                     <label style={{color: state.disabledAllRules ? '#f66' : undefined}}>
                       <input type="checkbox" checked={state.disabledAllRules} onChange={this.disableAllRules} name="disableAll" /> Turn off Rules
                     </label>
