@@ -240,7 +240,8 @@ var Index = React.createClass({
       isWin: modal.server.isWin,
       ndr: modal.server.ndr,
       ndp: modal.server.ndp,
-      classic: modal.classic
+      classic: modal.classic,
+      version: modal.version
     };
     hideLeftMenu = hideLeftMenu || modal.server.hideLeftMenu;
     var pageName = getPageName(state);
@@ -2751,6 +2752,22 @@ var Index = React.createClass({
     var form = ReactDOM.findDOMNode(this.refs.exportSessionsForm);
     ReactDOM.findDOMNode(this.refs.exportFilename).value = name || '';
     ReactDOM.findDOMNode(this.refs.exportFileType).value = type;
+    if (type === 'har') {
+      sessions = {
+        log: {
+          version : '1.2',
+          creator: {
+            name: 'Whistle',
+            version: this.state.version,
+            comment: ''
+          },
+          browser: {},
+          pages: [],
+          entries: sessions.map(util.toHar),
+          comment: ''
+        }
+      };
+    }
     ReactDOM.findDOMNode(this.refs.sessions).value = JSON.stringify(sessions, null, '  ');
     form.submit();
   },
