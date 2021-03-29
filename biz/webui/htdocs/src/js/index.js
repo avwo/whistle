@@ -2657,17 +2657,19 @@ var Index = React.createClass({
       var serverIp = entry.serverIPAddress || '';
       var useH2 = H2_RE.test(rawReq.httpVersion || rawRes.httpVersion);
       var version = useH2 ? '2.0' : '1.1';
+      var postData = rawReq.postData || '';
       var req = {
         method: rawReq.method,
         ip: clientIp,
         port: rawReq.port,
         httpVersion: version,
+        unzipSize: postData.size, 
         size: rawReq.bodySize > 0 ? rawReq.bodySize : 0,
         headers: reqHeaders.headers,
         rawHeaderNames: reqHeaders.rawHeaderNames,
         body: ''
       };
-      var reqText = rawReq.postData && rawReq.postData.text;
+      var reqText = postData.text;
       if (reqText) {
         if (rawReq.encoding === 'base64') {
           req.base64 = reqText;
@@ -2675,10 +2677,12 @@ var Index = React.createClass({
           req.body = reqText;
         }
       }
+      var content = rawRes.content;
       var res = {
         httpVersion: version,
         statusCode: rawRes.status,
         statusMessage: rawRes.statusText,
+        unzipSize: content.size, 
         size: rawRes.bodySize > 0 ? rawRes.bodySize : 0,
         headers: resHeaders.headers,
         rawHeaderNames: resHeaders.rawHeaderNames,

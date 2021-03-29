@@ -1826,7 +1826,7 @@ function toHarRes(item) {
     cookies = [];
   }
   return {
-    status: res.statusCode ||  '-',
+    status: res.statusCode || '-',
     ip: res.ip,
     port: res.port,
     statusText: getStatusMessage(res),
@@ -1856,13 +1856,15 @@ exports.toHar = function(item) {
     time = dns;
     if (item.requestTime >= item.dnsTime) {
       send = item.requestTime - item.dnsTime;
-      time = send;
       if (item.responseTime >= item.requestTime) {
         receive = item.responseTime - item.requestTime;
-        time = receive;
         if (item.endTime >= item.responseTime) {
-          time = item.endTime - item.responseTime;
+          time = item.endTime - item.startTime;
+        } else {
+          time = item.responseTime - item.startTime;
         }
+      } else {
+        time = item.requestTime - item.startTime;
       }
     }
   }
