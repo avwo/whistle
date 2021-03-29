@@ -1794,6 +1794,22 @@ function toHarReq(item) {
   var cookies = stringToArray(headers.cookie, /;\s*/);
   var index = url.indexOf('?');
   var queryString = index === -1 ? [] : stringToArray(url.substring(index + 1));
+  var isForm = isUrlEncoded(req);
+  var postData = {
+    size: req.unzipSize || req.size || -1,
+    mimeType: headers['content-type'],
+    text: ''
+  };
+  if (isForm) {
+    var body = getBody(req, true);
+    postData.text = body;
+    postData.params = parseQueryString(body);
+  } else if (req.base64) {
+    postData.text = req.base64;
+    postData.encoding = 'base64';
+  } else if (req.body) {
+    postData.text = req.body;
+  }
   return {
     method: item.method,
     url: url,
@@ -1803,9 +1819,7 @@ function toHarReq(item) {
     cookies: cookies,
     headers: objectToArray(headers, req.rawHeaderNames),
     queryString: queryString,
-    postData: {
-      size: req.unzipSize || req.size || -1
-    },
+    postData: postData,
     headersSize: -1,
     bodySize: req.size || -1,
     comment: ''
@@ -1871,6 +1885,7 @@ exports.toHar = function(item) {
   return {
     startedDateTime: new Date(item.startTime).toISOString(),
     time: time,
+    whistleRules: item.rules,
     request: toHarReq(item),
     response: toHarRes(item),
     cache: {},

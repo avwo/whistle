@@ -2671,7 +2671,7 @@ var Index = React.createClass({
       };
       var reqText = postData.text;
       if (reqText) {
-        if (rawReq.encoding === 'base64') {
+        if (postData.encoding === 'base64') {
           req.base64 = reqText;
         } else {
           req.body = reqText;
