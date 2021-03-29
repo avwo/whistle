@@ -399,6 +399,12 @@ var Index = React.createClass({
         title: 'Ctrl + S'
       },
       {
+        name: 'Export Selected Sessions (*.har)',
+        id: 'exportHarFile',
+        disabled: true,
+        title: 'Ctrl + S'
+      },
+      {
         name: 'Import Sessions',
         icon: 'import',
         id: 'importSessions',
@@ -1357,6 +1363,8 @@ var Index = React.createClass({
       this.exportSessions('whistle');
     } else if (item.id == 'exportSazFile') {
       this.exportSessions('Fiddler');
+    } else if (item.id == 'exportHarFile') {
+      this.exportSessions('har');
     } else if (item.id == 'importSessions') {
       this.importSessions(e);
     }
@@ -3185,6 +3193,7 @@ var Index = React.createClass({
                 <select ref="fileType" className="form-control" value={state.exportFileType} onChange={this.chooseFileType}>
                   <option value="whistle">*.txt</option>
                   <option value="Fiddler">*.saz</option>
+                  <option value="har">*.har</option>
                 </select>
               </label>
               <a type="button"
