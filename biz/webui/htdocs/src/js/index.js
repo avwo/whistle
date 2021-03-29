@@ -2660,6 +2660,7 @@ var Index = React.createClass({
       var req = {
         method: rawReq.method,
         ip: clientIp,
+        port: rawReq.port,
         httpVersion: version,
         size: rawReq.bodySize > 0 ? rawReq.bodySize : 0,
         headers: reqHeaders.headers,
@@ -2682,6 +2683,7 @@ var Index = React.createClass({
         headers: resHeaders.headers,
         rawHeaderNames: resHeaders.rawHeaderNames,
         ip: serverIp,
+        port: rawRes.port,
         body: ''
       };
       var resCtn = rawRes.content;

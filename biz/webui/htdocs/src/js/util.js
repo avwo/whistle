@@ -641,7 +641,7 @@ var STATUS_CODES = {
   511 : 'Network Authentication Required' // RFC 6585
 };
 
-exports.getStatusMessage = function(res) {
+function getStatusMessage(res) {
   if (!res.statusCode) {
     return '';
   }
@@ -649,7 +649,9 @@ exports.getStatusMessage = function(res) {
     return res.statusMessage;
   }
   return STATUS_CODES[res.statusCode] || 'unknown';
-};
+}
+
+exports.getStatusMessage = getStatusMessage;
 
 function isUrlEncoded(req) {
 
@@ -1795,6 +1797,8 @@ function toHarReq(item) {
   return {
     method: item.method,
     url: url,
+    ip: req.ip,
+    port: req.port,
     httpVersion: item.useH2 ? 'HTTP/2.0' : 'HTTP/1.1',
     cookies: cookies,
     headers: objectToArray(headers, req.rawHeaderNames),
@@ -1822,8 +1826,10 @@ function toHarRes(item) {
     cookies = [];
   }
   return {
-    status: res.statusCode ||  -1,
-    statusText: res.statusMessage || '',
+    status: res.statusCode ||  '-',
+    ip: res.ip,
+    port: res.port,
+    statusText: getStatusMessage(res),
     httpVersion: item.useH2 ? 'HTTP/2.0' : 'HTTP/1.1',
     cookies: cookies,
     headers: objectToArray(headers, res.rawHeaderNames),
@@ -1876,6 +1882,7 @@ exports.toHar = function(item) {
       ssl: -1,
       comment: ''
     },
+    clientIPAddress: item.clientIp,
     serverIPAddress: item.hostIp
   };
 };
