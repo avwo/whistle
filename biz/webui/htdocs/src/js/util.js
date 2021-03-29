@@ -387,7 +387,7 @@ exports.ensureVisible = function(elem, container, init) {
   }
 };
 
-exports.parseQueryString = function(str, delimiter, seperator, decode, donotAllowRepeat) {
+function parseQueryString(str, delimiter, seperator, decode, donotAllowRepeat) {
   var result = {};
   window.___hasFormData = false;
   if (!str || !(str = (str + '').trim())) {
@@ -425,7 +425,9 @@ exports.parseQueryString = function(str, delimiter, seperator, decode, donotAllo
     }
   });
   return result;
-};
+}
+
+exports.parseQueryString = parseQueryString;
 
 function objectToString(obj, rawNames, noEncoding) {
   if (!obj) {
