@@ -9,6 +9,7 @@
 
 #### 安装插件
 whistle的插件就是一个Node模块，名字必须为 `whistle.your-plugin-name` 或 `@org/whistle.your-plugin-name`，其中 `your-plugin-name` 为插件名称，只能包含 `小写字母(a-z)`、`数字(0-9)`、`_`、`-` 四种字符，安装插件直接全局npm安装即可：
+> 如果插件名称包含 `_` ，则不能配置 `your-plugin-name://`
 
 ```
 npm i -g whistle.your-plugin-name
