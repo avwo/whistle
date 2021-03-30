@@ -9,6 +9,7 @@ var localIpCache = util.localIpCache;
 var WEBUI_PATH = config.WEBUI_PATH;
 var PREVIEW_PATH_RE = config.PREVIEW_PATH_RE;
 var webuiPathRe = util.escapeRegExp(WEBUI_PATH);
+var REAL_WEBUI_HOST = new RegExp('^' + webuiPathRe + '(__([a-z\\d_.-]+)(?:__(\\d{1,5}))__/)?');
 var INTERNAL_APP = new RegExp('^' + webuiPathRe + '(log|weinre|cgi)(?:\\.(\\d{1,5}))?/');
 var PLUGIN_RE = new RegExp('^' + webuiPathRe + 'whistle\\.([a-z\\d_-]+)/');
 
@@ -25,6 +26,19 @@ module.exports = function(req, res, next) {
   if (isWebUI) {
     isWebUI = !config.pureProxy;
     if (isWebUI) {
+      if (REAL_WEBUI_HOST.test(req.path)) {
+        var realPath = RegExp.$1;
+        if (realPath) {
+          var realPort = RegExp.$3;
+          var realHost = RegExp.$2;
+          if (realHost.indexOf('.') === -1) {
+            realHost = realHost.replace(/_/g, '.') + (realPort ? ':' + realPort : '');
+          }
+          req.headers['x-whistle-real-host'] = realHost;
+          req.url = req.url.replace(realPath, '');
+          fullUrl = util.getFullUrl(req);
+        }
+      }
       if (INTERNAL_APP.test(req.path)) {
         transformPort = RegExp.$2;
         isWeinre = RegExp.$1 === 'weinre';
