@@ -114,6 +114,7 @@ module.exports = function(req, res, next) {
         var colon = proxyUrl.indexOf(':');
         var proxyPort = colon === -1 ? 80 : proxyUrl.substring(colon + 1);
         req.headers.host = 'local.whistlejs.com';
+        req.headers['x-whistle-transit-version'] = config.version;
         util.setClientId(req.headers, req.enable, req.disable, req.clientIp, isInternal);
         util.transformReq(req, res, proxyPort > 0 ? proxyPort : 80, ip, true);
       });
