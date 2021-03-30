@@ -31,10 +31,7 @@ module.exports = function(req, res, next) {
       if (existsRealHost || REAL_WEBUI_HOST_PARAM.test(req.url)) {
         var realPath = RegExp.$1;
         var realPort = RegExp.$3;
-        var realHost = RegExp.$2;
-        if (realHost.indexOf('.') === -1) {
-          realHost = realHost.replace(/_/g, '.') + (realPort ? ':' + realPort : '');
-        }
+        var realHost = RegExp.$2 + (realPort ? ':' + realPort : '');
         req.headers['x-whistle-real-host'] = realHost;
         req.url = req.url.replace(realPath, existsRealHost ? '' : '?');
         fullUrl = util.getFullUrl(req);
