@@ -1,3 +1,8 @@
+# v2.6.10
+1. feat: 支持导出 har 文件
+2. feat: 支持设置 `-M "disabledBackOption|disabledMultipleOption|notAllowDisableRules"`
+3. feat: 内部路径 `/...whistle-path.5b6af7b9884e1165...///` 支持设置域名 `/...whistle-path.5b6af7b9884e1165...///__domain__port__/path/to` (`port__` 可选) 或 `/...whistle-path.5b6af7b9884e1165...///path/to?_whistleInternalHost_=__domain__port__` (`port__` 可选) 
+
 # v2.6.9
 1. feat: 支持通过 `--shadowRules jsonString` 导入规则到 Rules
 2. style: 支持通过设置请求参数 `disabledEditor=1` 将 Rules & Values 编辑框设置为只读模式
