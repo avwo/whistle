@@ -2669,9 +2669,9 @@ var Index = React.createClass({
         rawHeaderNames: reqHeaders.rawHeaderNames,
         body: ''
       };
-      var reqText = postData.text;
+      var reqText = postData.base64 || postData.text;
       if (reqText) {
-        if (postData.encoding === 'base64') {
+        if (postData.base64) {
           req.base64 = reqText;
         } else {
           req.body = reqText;
@@ -2772,7 +2772,10 @@ var Index = React.createClass({
             version: this.state.version,
             comment: ''
           },
-          browser: {},
+          browser: {
+            name: 'Whistle',
+            version: this.state.version
+          },
           pages: [],
           entries: sessions.map(util.toHar),
           comment: ''

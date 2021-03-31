@@ -1797,16 +1797,17 @@ function toHarReq(item) {
   var isForm = isUrlEncoded(req);
   var postData = {
     size: req.unzipSize || req.size || -1,
-    mimeType: headers['content-type'],
+    mimeType: headers['content-type'] || 'none',
+    params: [],
     text: ''
   };
   if (isForm) {
     var body = getBody(req, true);
     postData.text = body;
-    postData.params = parseQueryString(body);
+    postData.params = stringToArray(body);
   } else if (req.base64) {
-    postData.text = req.base64;
-    postData.encoding = 'base64';
+    postData.base64 = req.base64;
+    postData.text = getBody(req, true);
   } else if (req.body) {
     postData.text = req.body;
   }
