@@ -1768,13 +1768,13 @@ function objectToArray(obj, rawNames) {
         value.forEach(function(val) {
           result.push({
             name: name,
-            value: val
+            value: val + ''
           });
         });
       } else {
         result.push({
           name: name,
-          value: value
+          value: value + ''
         });
       }
     });
@@ -1787,6 +1787,16 @@ function stringToArray(str, delimiter) {
   return objectToArray(str);
 }
 
+function getPostData(req) {
+  var headers = req.headers || '';
+  return {
+    size: req.unzipSize || req.size || -1,
+    mimeType: headers['content-type'] || 'none',
+    params: [],
+    text: ''
+  };
+}
+
 function toHarReq(item) {
   var req = item.req;
   var url = item.url;
@@ -1795,20 +1805,18 @@ function toHarReq(item) {
   var index = url.indexOf('?');
   var queryString = index === -1 ? [] : stringToArray(url.substring(index + 1));
   var isForm = isUrlEncoded(req);
-  var postData = {
-    size: req.unzipSize || req.size || -1,
-    mimeType: headers['content-type'] || 'none',
-    params: [],
-    text: ''
-  };
+  var postData;
   if (isForm) {
     var body = getBody(req, true);
+    postData = postData || getPostData(req);
     postData.text = body;
     postData.params = stringToArray(body);
   } else if (req.base64) {
+    postData = postData || getPostData(req);
     postData.base64 = req.base64;
     postData.text = getBody(req, true);
   } else if (req.body) {
+    postData = postData || getPostData(req);
     postData.text = req.body;
   }
   return {
@@ -1841,7 +1849,8 @@ function toHarRes(item) {
     cookies = [];
   }
   return {
-    status: res.statusCode || '-',
+    statusCode: res.statusCode,
+    status: parseInt(res.statusCode, 10) || 0,
     ip: res.ip,
     port: res.port,
     statusText: getStatusMessage(res),
@@ -1851,8 +1860,8 @@ function toHarRes(item) {
     content: {
       size: res.unzipSize || res.size || -1,
       mimeType: headers['content-type'] || '',
-      encoding: 'base64',
-      text: res.base64
+      base64: res.base64,
+      text: getBody(res)
     },
     redirectURL: headers.location || '',
     headersSize: -1,
@@ -1889,6 +1898,7 @@ exports.toHar = function(item) {
     whistleRules: item.rules,
     request: toHarReq(item),
     response: toHarRes(item),
+    frames: item.frames,
     cache: {},
     timings: {
       blocked: 0,

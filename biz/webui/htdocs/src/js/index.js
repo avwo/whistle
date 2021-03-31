@@ -2680,7 +2680,7 @@ var Index = React.createClass({
       var content = rawRes.content;
       var res = {
         httpVersion: version,
-        statusCode: rawRes.status,
+        statusCode: rawRes.statusCode || rawRes.status,
         statusMessage: rawRes.statusText,
         unzipSize: content.size, 
         size: rawRes.bodySize > 0 ? rawRes.bodySize : 0,
@@ -2693,7 +2693,9 @@ var Index = React.createClass({
       var resCtn = rawRes.content;
       var text = resCtn && resCtn.text;
       if (text) {
-        if (util.getContentType(resCtn.mimeType) === 'IMG' || (text.length % 4 === 0 && /^[a-z\d+/]+={0,2}$/i.test(text))) {
+        if (resCtn.base64) {
+          res.base64 = resCtn.base64;
+        } else if (util.getContentType(resCtn.mimeType) === 'IMG' || (text.length % 4 === 0 && /^[a-z\d+/]+={0,2}$/i.test(text))) {
           res.base64 = text;
         } else {
           res.body = text;
@@ -2702,6 +2704,7 @@ var Index = React.createClass({
       var session = {
         useH2: useH2,
         startTime: startTime,
+        frames: entry.frames,
         url: rawReq.url,
         req: req,
         res: res,
