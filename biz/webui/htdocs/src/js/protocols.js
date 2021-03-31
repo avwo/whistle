@@ -43,7 +43,7 @@ exports.setPlugins = function (pluginsState) {
       }
       var name = plugin.name;
       if (!disabledPlugins[name]) {
-        if (!plugin.hideShortProtocol) {
+        if (!plugin.hideShortProtocol && name.indexOf('_') === -1) {
           forwardRules.push(name);
           allRules.push(name+ '://');
         }
