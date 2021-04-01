@@ -26,14 +26,21 @@ module.exports = function(req, res, next) {
   var isWebUI = req.path.indexOf(WEBUI_PATH) === 0;
   if (isWebUI) {
     isWebUI = !config.pureProxy;
+    var realHost;
     if (isWebUI) {
       if (REAL_WEBUI_HOST.test(req.path) || REAL_WEBUI_HOST_PARAM.test(req.url)) {
         var realPath = RegExp.$1;
         var realPort = RegExp.$3;
-        var realHost = RegExp.$2 + (realPort ? ':' + realPort : '');
+        realHost = RegExp.$2 + (realPort ? ':' + realPort : '');
         req.headers['x-whistle-real-host'] = realHost;
         req.url = req.url.replace(realPath, '');
         fullUrl = util.getFullUrl(req);
+      } else {
+        req.curUrl = fullUrl;
+        if (realHost = rules.resolveInternalHost(req)) {
+          req.headers['x-whistle-real-host'] = realHost;
+          fullUrl = util.getFullUrl(req);
+        }
       }
       if (INTERNAL_APP.test(req.path)) {
         transformPort = RegExp.$2;
