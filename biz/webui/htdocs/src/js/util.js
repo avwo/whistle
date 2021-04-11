@@ -245,7 +245,7 @@ exports.showSystemError = function(xhr) {
   if (status == 413) {
     return alert('The content is too large.');
   }
-  alert('System error, try again later.');
+  alert('Server internal error, try again later.');
 };
 
 exports.getClasses = function getClasses(obj) {
