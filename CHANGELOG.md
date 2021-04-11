@@ -1,3 +1,8 @@
+# v2.6.11
+1. perf: 确保及时关闭无用连接，减少内存占用
+2. style: Online 支持显示 QPS，及 内存、CPU、QPS 的最大值
+3. refactor: 处理处理请求过程中无法捕获的异常
+
 # v2.6.10
 1. feat: 支持导出 har 文件
 2. feat: 支持设置 `-M "disabledBackOption|disabledMultipleOption|notAllowDisableRules"`
