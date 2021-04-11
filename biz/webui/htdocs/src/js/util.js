@@ -1458,6 +1458,14 @@ exports.getSize = function(size) {
   return (size / 1024).toFixed(2) + 'G';
 };
 
+function getQps(num) {
+  if (!num) {
+    return '0';
+  }
+  return (num / 100).toFixed(2);
+}
+
+exports.getQps = getQps;
 
 function indexOfList(list, subList, start) {
   var len = list.length;

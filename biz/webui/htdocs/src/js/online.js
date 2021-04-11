@@ -17,7 +17,8 @@ function createDialog() {
       '<h5><strong>Uptime:</strong> <span id="whistleUptime">-</span></h5>',
       '<h5><strong>Requests:</strong> <span id="whistleRequests">-</span></h5>',
       '<h5><strong>CPU:</strong> <span id="whistleCpu">-</span></h5>',
-      '<h5><strong>Memory:</strong> <span id="whistleMemory">-</span></h5>'
+      '<h5><strong>Memory:</strong> <span id="whistleMemory">-</span></h5>',
+      '<h5><strong>QPS:</strong> <span id="whistleQps">-</span></h5>'
     ];
     dialog = $('<div class="modal fade w-online-dialog">' +
           '<div class="modal-dialog">' +
@@ -161,6 +162,7 @@ var Online = React.createClass({
         var cpuElem = dialog.find('#whistleCpu');
         var memElem = dialog.find('#whistleMemory');
         var uptimeElem = dialog.find('#whistleUptime');
+        var qpsElem = dialog.find('#whistleQps');
         uptimeElem.text(util.formatTime(pInfo.uptime));
         uptimeElem.parent().attr('title', pInfo.uptime);
         reqElem.parent().attr('title', 'HTTP[S]: ' + pInfo.httpRequests + ' (Total: ' + pInfo.totalHttpRequests + ')'
@@ -169,25 +171,35 @@ var Online = React.createClass({
         memElem.parent().attr('title', Object.keys(pInfo.memUsage).map(function(key) {
           return key + ': ' + pInfo.memUsage[key];
         }).join('\n'));
+        qpsElem.parent().attr('title', [
+          'HTTP[s]: ' + util.getQps(pInfo.httpQps),
+          'WS[S]: ' + util.getQps(pInfo.wsQps),
+          'TUNNEL: ' + util.getQps(pInfo.tunnelQps)
+        ].join('\n'));
+        var totalCount = pInfo.httpRequests + pInfo.wsRequests + pInfo.tunnelRequests;
+        var allCount = pInfo.totalHttpRequests + pInfo.totalWsRequests + pInfo.totalTunnelRequests;
+        var allQps = pInfo.httpQps + pInfo.tunnelQps + pInfo.wsQps;
+        pInfo.totalCount = totalCount;
+        pInfo.allCount = allCount;
+        pInfo.allQps = allQps;
         if (!curServerInfo || !curServerInfo.pInfo) {
-          reqElem.text(pInfo.httpRequests + pInfo.wsRequests + pInfo.tunnelRequests +
-            ' (Total: ' + (pInfo.totalHttpRequests + pInfo.totalWsRequests + pInfo.totalTunnelRequests) + ')');
+          reqElem.text(totalCount + ' (Total: ' + allCount + ')');
           cpuElem.text(pInfo.cpuPercent);
           memElem.text(util.getSize(pInfo.memUsage.rss));
+          qpsElem.text(util.getQps(allQps));
         } else {
           var curPInfo = curServerInfo.pInfo;
-          if (pInfo.memUsage !== curPInfo.memUsage) {
+          if (pInfo.memUsage.rss !== curPInfo.memUsage.rss) {
             memElem.text(util.getSize(pInfo.memUsage.rss));
           }
-          var totalCount = pInfo.httpRequests + pInfo.wsRequests + pInfo.tunnelRequests;
-          var allCount = pInfo.totalHttpRequests + pInfo.totalWsRequests + pInfo.totalTunnelRequests;
-          pInfo.totalCount = totalCount;
-          pInfo.allCount = allCount;
           if (totalCount !== curPInfo.totalCount || allCount !== curPInfo.allCount) {
             reqElem.text(totalCount + ' (Total: ' + allCount + ')');
           }
           if (pInfo.cpuPercent !== curPInfo.cpuPercent) {
             cpuElem.text(pInfo.cpuPercent || '-');
+          }
+          if (allQps !== curPInfo.allQps) {
+            qpsElem.text(util.getQps(allQps));
           }
         }
         curServerInfo = info;
