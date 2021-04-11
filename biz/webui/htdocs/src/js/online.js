@@ -178,28 +178,26 @@ var Online = React.createClass({
         ].join('\n'));
         var totalCount = pInfo.httpRequests + pInfo.wsRequests + pInfo.tunnelRequests;
         var allCount = pInfo.totalHttpRequests + pInfo.totalWsRequests + pInfo.totalTunnelRequests;
-        var allQps = pInfo.httpQps + pInfo.tunnelQps + pInfo.wsQps;
         pInfo.totalCount = totalCount;
         pInfo.allCount = allCount;
-        pInfo.allQps = allQps;
         if (!curServerInfo || !curServerInfo.pInfo) {
           reqElem.text(totalCount + ' (Total: ' + allCount + ')');
-          cpuElem.text(pInfo.cpuPercent);
-          memElem.text(util.getSize(pInfo.memUsage.rss));
-          qpsElem.text(util.getQps(allQps));
+          cpuElem.text(pInfo.cpuPercent + ' (Max: ' + pInfo.maxCpu + ')');
+          memElem.text(util.getSize(pInfo.memUsage.rss) + ' (Max: ' + util.getSize(pInfo.maxRss) + ')');
+          qpsElem.text(util.getQps(pInfo.totalQps) + ' (Max: ' + util.getQps(pInfo.maxQps) + ')');
         } else {
           var curPInfo = curServerInfo.pInfo;
           if (pInfo.memUsage.rss !== curPInfo.memUsage.rss) {
-            memElem.text(util.getSize(pInfo.memUsage.rss));
+            memElem.text(util.getSize(pInfo.memUsage.rss) + ' (Max: ' + util.getSize(pInfo.maxRss) + ')');
           }
           if (totalCount !== curPInfo.totalCount || allCount !== curPInfo.allCount) {
             reqElem.text(totalCount + ' (Total: ' + allCount + ')');
           }
           if (pInfo.cpuPercent !== curPInfo.cpuPercent) {
-            cpuElem.text(pInfo.cpuPercent || '-');
+            cpuElem.text(pInfo.cpuPercent + ' (Max: ' + pInfo.maxCpu + ')');
           }
-          if (allQps !== curPInfo.allQps) {
-            qpsElem.text(util.getQps(allQps));
+          if (pInfo.totalQps !== curPInfo.totalQps) {
+            qpsElem.text(util.getQps(pInfo.totalQps) + ' (Max: ' + util.getQps(pInfo.maxQps) + ')');
           }
         }
         curServerInfo = info;
