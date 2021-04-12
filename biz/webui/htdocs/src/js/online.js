@@ -247,6 +247,7 @@ var Online = React.createClass({
         + ' (Total: ' + (pInfo.totalHttpRequests + pInfo.totalWsRequests + pInfo.totalTunnelRequests) + ')'));
       pInfo.cpuPercent && info.push('CPU: ' + pInfo.cpuPercent);
       info.push('Memory: ' + util.getSize(pInfo.memUsage.rss));
+      info.push('QPS: ' + util.getQps(pInfo.totalQps));
     }
     return info.join('\n');
   },
