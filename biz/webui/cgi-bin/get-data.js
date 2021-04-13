@@ -47,6 +47,6 @@ module.exports = function(req, res) {
     enableHttp2: properties.isEnableHttp2(),
     defaultRulesIsDisabled: rules.defaultRulesIsDisabled(),
     list: rules.getSelectedList(),
-    data: proxy.getData(data, clientIp, h['x-whistle-filter-key'], h['x-whistle-filter-value'], h['x-whistle-filter-client-id'])
+    data: proxy.getData(data, clientIp, h['x-whistle-filter-key'], h['x-whistle-filter-value'], h['x-whistle-filter-client-id'], h[config.CLIENT_ID_HEADER])
   });
 };
