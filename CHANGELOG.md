@@ -1,3 +1,6 @@
+# v2.6.12
+1. feat: 支持通过 url 参数的 clientId 过来抓包数据
+
 # v2.6.11
 1. perf: 确保及时关闭无用连接，减少内存占用
 2. style: Online 支持显示 QPS，及 内存、CPU、QPS 的最大值
