@@ -1,5 +1,6 @@
 # v2.6.12
 1. feat: 支持通过 url 参数的 clientId 过来抓包数据
+2. feat: 支持通过 `disable://proxyConnection` 将代理转发头改为 `Proxy-Connection: close`
 
 # v2.6.11
 1. perf: 确保及时关闭无用连接，减少内存占用
