@@ -39,7 +39,8 @@ var contextMenuList = [
       { name: 'Timeline' },
       { name: 'New Tab'},
       { name: 'QR Code' },
-      { name: 'Preview' }
+      { name: 'Preview' },
+      { name: 'Source' }
     ]
   },
   {
@@ -479,6 +480,9 @@ var ReqData = React.createClass({
     case 'Preview':
       util.openPreview(item);
       break;
+    case 'Source':
+      util.openEditor(JSON.stringify(item, null, '  '));
+      break;
     case 'Overview':
       self.triggerActiveItem(item);
       events.trigger('showOverview');
@@ -635,6 +639,7 @@ var ReqData = React.createClass({
     list0[1].disabled = disabled;
     list0[2].disabled = (disabled || !item.frames);
     list0[3].disabled = disabled;
+    list0[7].disabled = disabled;
 
     contextMenuList[1].disabled = disabled;
     contextMenuList[1].list.forEach(function(menu) {
