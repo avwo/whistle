@@ -59,15 +59,15 @@ proto.search = function(keyword) {
   return keyword;
 };
 
-proto.checkKeywork = function(str) {
+function checkKeywork(str, k, ke) {
   if (!str) {
     return false;
   }
-  if (!this._keyword) {
+  if (!k) {
     return true;
   }
-  return this._keywordRE ? this._keywordRE.test(str) : str.toLowerCase().indexOf(this._keyword) !== -1;
-};
+  return ke ? ke.test(str) : str.toLowerCase().indexOf(k) !== -1;
+}
 
 proto.hasKeyword = function() {
   return !!this._keyword;
@@ -77,9 +77,54 @@ proto.setSortColumns = function(columns) {
   this._columns = columns;
   this.filter();
 };
-proto.checkNot = function(flag) {
-  return this._not ? !flag : flag;
-};
+
+function setNot(flag, not) {
+  return not ? !flag : flag;
+}
+
+function filterItem(item, _type, k, ke, not) {
+  switch(_type) {
+  case 'mark':
+    item.hide = !item.mark || setNot(!checkKeywork(item.url, k, ke), not);
+    break;
+  case 'c':
+  case 'content':
+  case 'b':
+  case 'body':
+    var reqBody = util.getBody(item.req, true);
+    var resBody = util.getBody(item.res);
+    item.hide = setNot(!checkKeywork(reqBody, k, ke) && !checkKeywork(resBody, k, ke), not);
+    break;
+  case 'headers':
+  case 'h':
+    item.hide = setNot(!inObject(item.req.headers, k, ke)
+                && !inObject(item.res.headers), not, k, ke);
+    break;
+  case 'type':
+  case 't':
+    var type = item.res.headers;
+    type = type && type['content-type'];
+    item.hide = setNot(!(typeof type == 'string' && checkKeywork(type, k, ke)), not);
+    break;
+  case 'ip':
+  case 'i':
+    item.hide = setNot(!checkKeywork(item.req.ip, k, ke) && !checkKeywork(item.res.ip, k, ke), not);
+    break;
+  case 'status':
+  case 's':
+  case 'result':
+  case 'r':
+    var status = item.res.statusCode;
+    item.hide = setNot(!checkKeywork(status == null ? '-' : String(status), k, ke), not);
+    break;
+  case 'method':
+  case 'm':
+    item.hide = setNot(!checkKeywork(item.req.method, k, ke), not);
+    break;
+  default:
+    item.hide = setNot(!checkKeywork(item.url, k, ke), not);
+  }
+}
 
 proto.hasUnmarked = function() {
   var list = this._list;
@@ -92,69 +137,19 @@ proto.hasUnmarked = function() {
 
 proto.filter = function(newList) {
   var self = this;
-  var keyword = self._keyword;
+  var k = self._keyword;
+  var ke = self._keywordRE;
   var list = self.list;
-  if (self._type === 'mark') {
-    list.forEach(function(item) {
-      item.hide = !item.mark || self.checkNot(!self.checkKeywork(item.url));
-    });
-  } else if (!keyword) {
+  var _type = self._type;
+  if (!k && _type !== 'mark') {
     list.forEach(function(item) {
       item.hide = false;
     });
   } else {
-    switch(self._type) {
-    case 'c':
-    case 'content':
-    case 'b':
-    case 'body':
-      list.forEach(function(item) {
-        var reqBody = util.getBody(item.req, true);
-        var resBody = util.getBody(item.res);
-        item.hide = self.checkNot(!self.checkKeywork(reqBody) && !self.checkKeywork(resBody));
-      });
-      break;
-    case 'headers':
-    case 'h':
-      list.forEach(function(item) {
-        item.hide = self.checkNot(!self.inObject(item.req.headers, keyword)
-                && !self.inObject(item.res.headers, keyword));
-      });
-      break;
-    case 'type':
-    case 't':
-      list.forEach(function(item) {
-        var type = item.res.headers;
-        type = type && type['content-type'];
-        item.hide = self.checkNot(!(typeof type == 'string' && self.checkKeywork(type)));
-      });
-      break;
-    case 'ip':
-    case 'i':
-      list.forEach(function(item) {
-        item.hide = self.checkNot(!self.checkKeywork(item.req.ip) && !self.checkKeywork(item.res.ip));
-      });
-      break;
-    case 'status':
-    case 's':
-    case 'result':
-    case 'r':
-      list.forEach(function(item) {
-        var status = item.res.statusCode;
-        item.hide = self.checkNot(!self.checkKeywork(status == null ? '-' : String(status)));
-      });
-      break;
-    case 'method':
-    case 'm':
-      list.forEach(function(item) {
-        item.hide = self.checkNot(!self.checkKeywork(item.req.method));
-      });
-      break;
-    default:
-      list.forEach(function(item) {
-        item.hide = self.checkNot(!self.checkKeywork(item.url));
-      });
-    }
+    var not = self._not;
+    list.forEach(function(item) {
+      filterItem(item, _type, k, ke, not);
+    });
   }
 
   var columns = self._columns;
@@ -218,20 +213,20 @@ function _compare(prev, next, name) {
   return -1;
 }
 
-proto.inObject = function(obj) {
+function inObject(obj, k, ke) {
   for (var i in obj) {
-    if (this.checkKeywork(i)) {
+    if (checkKeywork(i, k, ke)) {
       return true;
     }
     var value = obj[i];
     if (typeof value == 'string'
-        && this.checkKeywork(value)) {
+        && checkKeywork(value, k, ke)) {
       return true;
     }
   }
 
   return false;
-};
+}
 
 var MAX_FS_COUNT = 60;
 
