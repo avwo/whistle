@@ -915,7 +915,7 @@ var ReqData = React.createClass({
                       rowRenderer={function(options){
                         // var {index, isScrolling, key, style}=options;
                         var item = list[options.index];
-                        var order = hasKeyword? options.index+1 : item.order;
+                        var order = hasKeyword ? options.index+1 : item.order;
                         return <Row style={options.style} key={options.key} order={order}  index={index}
                           columnList={columnList} draggable={draggable} item={item} />;
                       }}

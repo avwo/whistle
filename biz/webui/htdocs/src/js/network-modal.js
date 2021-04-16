@@ -6,6 +6,8 @@ var curLength = parseInt(storage.get('maxNetworkRows'), 10) || 1500;
 var MAX_LENGTH = NUM_OPTIONS.indexOf(curLength) === -1 ? 1500 : curLength;
 var MAX_COUNT = MAX_LENGTH + 100;
 var WIN_NAME_PRE = '__whistle_' + location.href.replace(/\/[^/]*([#?].*)?$/, '/') + '__';
+var KW_RE = /^(url|u|content|c|b|body|headers|h|ip|i|status|result|s|r|method|m|mark|type|t):(.*)$/i;
+var KW_LIST_RE = /([^\s]+)(?:\s+([^\s]+)(?:\s+([\S\s]+))?)?/;
 
 function NetworkModal(list) {
   this._list = updateOrder(list);
@@ -39,38 +41,79 @@ var proto = NetworkModal.prototype;
  * status[result]: 根据status过滤
  * method[m]: 根据method过滤
  */
+
+function parseKeyword(keyword) {
+  keyword = typeof keyword != 'string' ? '' : keyword.trim();
+  if (!keyword) {
+    return;
+  }
+  var type = 'url';
+  if (KW_RE.test(keyword)) {
+    type = RegExp.$1.toLowerCase();
+    keyword = RegExp.$2.trim();
+  }
+  var not = keyword[0] === '!';
+  if (not) {
+    keyword = keyword.substring(1);
+  }
+  if (!keyword && type !== 'mark') {
+    return;
+  }
+  return {
+    not: not,
+    type: type,
+    keyword: keyword.toLowerCase(),
+    regexp: util.toRegExp(keyword)
+  };
+}
+
+function parseKeywordList(keyword) {
+  keyword = typeof keyword != 'string' ? '' : keyword.trim();
+  if (!keyword) {
+    return;
+  }
+  var result;
+  var addKw = function(kw) {
+    if (kw) {
+      result = result || [];
+      result.push(kw);
+    }
+  };
+  if (KW_LIST_RE.test(keyword)) {
+    var k1 = RegExp.$1;
+    var k2 = RegExp.$2;
+    var k3 = RegExp.$3;
+    addKw(parseKeyword(k1));
+    addKw(parseKeyword(k2));
+    addKw(parseKeyword(k3));
+  } else {
+    addKw(parseKeyword(keyword));
+  }
+  return result;
+}
+
 proto.search = function(keyword) {
-  this._type = 'url';
-  this._keyword = typeof keyword != 'string' ? '' : keyword.trim();
-  if (this._keyword && /^(url|u|content|c|b|body|headers|h|ip|i|status|result|s|r|method|m|mark|type|t):(.*)$/i.test(keyword)) {
-    this._type = RegExp.$1.toLowerCase();
-    this._keyword = RegExp.$2.trim();
-  }
-  if (this._not = this._keyword[0] === '!') {
-    this._keyword = this._keyword.substring(1);
-  }
-  this._keywordRE = util.toRegExp(this._keyword);
-  this._keyword = this._keyword.toLowerCase();
+  this._keyword = parseKeywordList(keyword);
   this.filter();
-  if (!this._keyword) {
+  if (!this.hasKeyword()) {
     var overflow = this._list.length - MAX_COUNT;
     overflow > 0 && this._list.splice(0, overflow);
   }
   return keyword;
 };
 
-function checkKeywork(str, k, ke) {
+function checkKeywork(str, opts) {
   if (!str) {
     return false;
   }
-  if (!k) {
+  if (!opts.keyword) {
     return true;
   }
-  return ke ? ke.test(str) : str.toLowerCase().indexOf(k) !== -1;
+  return opts.regexp ? opts.regexp.test(str) : str.toLowerCase().indexOf(opts.keyword) !== -1;
 }
 
 proto.hasKeyword = function() {
-  return !!this._keyword;
+  return this._keyword;
 };
 
 proto.setSortColumns = function(columns) {
@@ -82,47 +125,39 @@ function setNot(flag, not) {
   return not ? !flag : flag;
 }
 
-function filterItem(item, _type, k, ke, not) {
-  switch(_type) {
+function checkItem(item, opts) {
+  switch(opts.type) {
   case 'mark':
-    item.hide = !item.mark || setNot(!checkKeywork(item.url, k, ke), not);
-    break;
+    return !item.mark || setNot(!checkKeywork(item.url, opts), opts.not);
   case 'c':
   case 'content':
   case 'b':
   case 'body':
     var reqBody = util.getBody(item.req, true);
     var resBody = util.getBody(item.res);
-    item.hide = setNot(!checkKeywork(reqBody, k, ke) && !checkKeywork(resBody, k, ke), not);
-    break;
+    return setNot(!checkKeywork(reqBody, opts) && !checkKeywork(resBody, opts), opts.not);
   case 'headers':
   case 'h':
-    item.hide = setNot(!inObject(item.req.headers, k, ke)
-                && !inObject(item.res.headers), not, k, ke);
-    break;
+    return setNot(!inObject(item.req.headers, opts) && !inObject(item.res.headers, opts), opts.not);
   case 'type':
   case 't':
     var type = item.res.headers;
     type = type && type['content-type'];
-    item.hide = setNot(!(typeof type == 'string' && checkKeywork(type, k, ke)), not);
-    break;
+    return setNot(!(typeof type == 'string' && checkKeywork(type, opts)), opts.not);
   case 'ip':
   case 'i':
-    item.hide = setNot(!checkKeywork(item.req.ip, k, ke) && !checkKeywork(item.res.ip, k, ke), not);
-    break;
+    return setNot(!checkKeywork(item.req.ip, opts) && !checkKeywork(item.res.ip, opts), opts.not);
   case 'status':
   case 's':
   case 'result':
   case 'r':
     var status = item.res.statusCode;
-    item.hide = setNot(!checkKeywork(status == null ? '-' : String(status), k, ke), not);
-    break;
+    return setNot(!checkKeywork(status == null ? '-' : String(status), opts), opts.not);
   case 'method':
   case 'm':
-    item.hide = setNot(!checkKeywork(item.req.method, k, ke), not);
-    break;
+    return setNot(!checkKeywork(item.req.method, opts), opts.not);
   default:
-    item.hide = setNot(!checkKeywork(item.url, k, ke), not);
+    return setNot(!checkKeywork(item.url, opts), opts.not);
   }
 }
 
@@ -137,20 +172,17 @@ proto.hasUnmarked = function() {
 
 proto.filter = function(newList) {
   var self = this;
-  var k = self._keyword;
-  var ke = self._keywordRE;
   var list = self.list;
-  var _type = self._type;
-  if (!k && _type !== 'mark') {
-    list.forEach(function(item) {
+  var keyword = self._keyword;
+  list.forEach(function(item) {
+    if (keyword) {
+      item.hide = checkItem(item, keyword[0])
+        || (keyword[1] && checkItem(item, keyword[1]))
+        || (keyword[2] && checkItem(item, keyword[2]));
+    } else {
       item.hide = false;
-    });
-  } else {
-    var not = self._not;
-    list.forEach(function(item) {
-      filterItem(item, _type, k, ke, not);
-    });
-  }
+    }
+  });
 
   var columns = self._columns;
   if (columns && columns.length) {
@@ -213,14 +245,14 @@ function _compare(prev, next, name) {
   return -1;
 }
 
-function inObject(obj, k, ke) {
+function inObject(obj, opts) {
   for (var i in obj) {
-    if (checkKeywork(i, k, ke)) {
+    if (checkKeywork(i, opts)) {
       return true;
     }
     var value = obj[i];
     if (typeof value == 'string'
-        && checkKeywork(value, k, ke)) {
+        && checkKeywork(value, opts)) {
       return true;
     }
   }
@@ -425,12 +457,12 @@ proto.next = function() {
 
 
 
-function updateList(list, len, keyword) {
+function updateList(list, len, hasKeyword) {
   if (!(len > 0)) {
     return;
   }
   var activeItem = getActive(list);
-  if (keyword) {
+  if (hasKeyword) {
     var i = 0;
     var length = list.length;
     while(len > 0 && i < length) {
@@ -454,7 +486,7 @@ proto.update = function(scrollAtBottom, force) {
   updateOrder(this._list, force);
   if (scrollAtBottom) {
     var exceed = Math.min(this._list.length - MAX_LENGTH, 100);
-    updateList(this._list, exceed, this._keyword);
+    updateList(this._list, exceed, this.hasKeyword());
   }
 
   this.list = this._list.slice(0, MAX_LENGTH);
