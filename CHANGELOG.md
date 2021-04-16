@@ -1,3 +1,8 @@
+# v2.6.13
+1. style: Network 搜索框支持最多3个关键字过滤
+2. style: Network 右键菜单新增 `Open/Source` 查看当前抓包数据的源码
+3. refactor: `onSocketEnd` 添加 `timeout` 事件，兼容各种诡异行为
+
 # v2.6.12
 1. feat: 支持通过 url 参数的 clientId 过来抓包数据
 2. feat: 支持通过 `disable://proxyConnection` 将代理转发头改为 `Proxy-Connection: close`
