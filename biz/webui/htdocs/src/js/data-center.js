@@ -970,9 +970,8 @@ function updateServerInfo(data) {
   if (curServerInfo && curServerInfo.version == data.version && curServerInfo.rulesMode === data.rulesMode && curServerInfo.cmdName === data.cmdName &&
     curServerInfo.networkMode === data.networkMode && curServerInfo.pluginsMode === data.pluginsMode && curServerInfo.multiEnv === data.multiEnv &&
     curServerInfo.baseDir == data.baseDir && curServerInfo.username == data.username && curServerInfo.nodeVersion == data.nodeVersion &&
-    curServerInfo.port == data.port && curServerInfo.host == data.host &&
-    curServerInfo.ipv4.sort().join() == data.ipv4.sort().join() &&
-    curServerInfo.ipv6.sort().join() == data.ipv6.sort().join()) {
+    curServerInfo.port == data.port && curServerInfo.host == data.host && curServerInfo.pid == data.pid &&
+    curServerInfo.ipv4.sort().join() == data.ipv4.sort().join() && curServerInfo.ipv6.sort().join() == data.ipv6.sort().join()) {
     curServerInfo = data;
     return;
   }
