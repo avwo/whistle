@@ -1,3 +1,7 @@
+
+# v2.6.14
+1. chore: https://github.com/avwo/whistle/issues/559
+
 # v2.6.13
 1. style: Network 搜索框支持最多3个关键字过滤
 2. style: Network 右键菜单新增 `Open/Source` 查看当前抓包数据的源码
