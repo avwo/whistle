@@ -30,6 +30,7 @@ function showAll() {
         ++i;
         var options = conf.options;
         tips.push('  ' + i + '. port: ' + (options.port || pkg.port)
+          + (options.host ? ', host: ' + options.host : '')
           + (options.storage ? ', storage: ' + options.storage : ''));
       });
       info(tips.join('\n'));

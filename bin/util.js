@@ -62,6 +62,7 @@ function showKillError() {
 exports.showKillError = showKillError;
 
 function showUsage(isRunning, options, restart) {
+  options = foramtOptions(options);
   if (isRunning) {
     if (restart) {
       showKillError();
