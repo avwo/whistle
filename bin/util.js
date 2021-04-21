@@ -94,6 +94,17 @@ function getDataDir() {
   return path.resolve(config.getHomedir(), '.startingAppData');
 }
 
+function foramtOptions(options) {
+  if (!options || !/^(?:([\w.-]+):)?([1-9]\d{0,4})$/.test(options.port)) {
+    return options;
+  }
+  options.host = options.host || RegExp.$1;
+  options.port = parseInt(RegExp.$2, 10);
+  return options;
+}
+
+exports.foramtOptions = foramtOptions;
+
 function readConfig(storage) {
   var dataDir = getDataDir();
   var configFile = path.join(dataDir, encodeURIComponent('#' + (storage ? storage + '#' : '')));
@@ -101,7 +112,9 @@ function readConfig(storage) {
     return;
   }
   try {
-    return fse.readJsonSync(configFile);
+    var conf = fse.readJsonSync(configFile);
+    conf && foramtOptions(conf.options);
+    return conf;
   } catch(e) {}
 }
 

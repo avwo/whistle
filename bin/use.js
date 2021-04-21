@@ -51,7 +51,7 @@ function existsPlugin(name) {
 var reqOptions;
 function request(body, callback) {
   if (!reqOptions) {
-    reqOptions = url.parse('http://127.0.0.1:' + options.port + '/cgi-bin/rules/project');
+    reqOptions = url.parse('http://' + (options.host || '127.0.0.1') + ':' + options.port + '/cgi-bin/rules/project');
     reqOptions.headers = {
       'content-type': 'application/x-www-form-urlencoded'
     };
@@ -113,7 +113,7 @@ module.exports = function(filepath, storage, force) {
           'rules=' + encodeURIComponent(rules)
         ].join('&');
         request(body, function() {
-          info('Setting whistle[127.0.0.1:' + port + '] rules successful.');
+          info('Setting whistle[' + (options.host || '127.0.0.1') + ':' + port + '] rules successful.');
         });
       };
       if (force) {
