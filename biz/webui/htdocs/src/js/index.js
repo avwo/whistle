@@ -441,6 +441,9 @@ var Index = React.createClass({
     var showLeftMenu = storage.get('showLeftMenu');
     state.showLeftMenu = showLeftMenu == null ? true : showLeftMenu;
     util.triggerPageChange(state.name);
+
+    state.isTreeView = storage.get('isTreeView') === '1';
+
     return state;
   },
   getListByName: function(name, type) {
@@ -1666,7 +1669,7 @@ var Index = React.createClass({
     self.hideValuesOptions();
   },
   addValue: function() {
-    
+
   },
   showValues: function(e) {
     if (this.state.name != 'values') {
@@ -2665,7 +2668,7 @@ var Index = React.createClass({
         ip: clientIp,
         port: rawReq.port,
         httpVersion: version,
-        unzipSize: postData.size, 
+        unzipSize: postData.size,
         size: rawReq.bodySize > 0 ? rawReq.bodySize : 0,
         headers: reqHeaders.headers,
         rawHeaderNames: reqHeaders.rawHeaderNames,
@@ -2684,7 +2687,7 @@ var Index = React.createClass({
         httpVersion: version,
         statusCode: rawRes.statusCode || rawRes.status,
         statusMessage: rawRes.statusText,
-        unzipSize: content.size, 
+        unzipSize: content.size,
         size: rawRes.bodySize > 0 ? rawRes.bodySize : 0,
         headers: resHeaders.headers,
         rawHeaderNames: resHeaders.rawHeaderNames,
@@ -2843,6 +2846,20 @@ var Index = React.createClass({
     self.hideTimer = setTimeout(function() {
       self.setState({ forceShowLeftMenu: false });
     }, 500);
+  },
+  toggleTreeView() {
+    const {network, isTreeView} = this.state;
+    if (!network) {
+      return;
+    }
+
+    const next = !isTreeView;
+
+    this.setState({
+      isTreeView: next,
+    }, () => {
+      network.setTreeView(next);
+    });
   },
   render: function() {
     var state = this.state;
@@ -3009,6 +3026,13 @@ var Index = React.createClass({
             (isPlugins ? '' : ' hide')} draggable="false">
             <span className="glyphicon glyphicon-download-alt" />
             ReinstallAll
+          </a>
+          <a
+            onClick={this.toggleTreeView}
+            className={`w-tree-view ${state.isTreeView ? 'w-tree-view-active' : ''}`}
+            style={{display: isNetwork ? '' : 'none'}}
+            draggable="false">
+            <span className="glyphicon glyphicon-tree-conifer"></span>Tree View
           </a>
           <a onClick={this.importData} className="w-import-menu"
             style={{display: isPlugins ? 'none' : ''}}

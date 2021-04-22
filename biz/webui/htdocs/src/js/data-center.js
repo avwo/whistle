@@ -15,7 +15,48 @@ var serverInfoCallbacks = [];
 var framesUpdateCallbacks = [];
 var logCallbacks = [];
 var directCallbacks = [];
-var dataList = [];
+
+const handler = () => {
+  let next = null;
+
+  return {
+    get(target, key, receiver) {
+      if (next === 'splice' && /^\d+$/.test(key)) {
+        next = target[key];
+      } else if (key === 'splice') {
+        next = key;
+      }
+
+      return Reflect.get(target, key, receiver);
+    },
+
+    set(target, key, value, receiver) {
+      if (/^\d+$/.test(key)) {
+        events.trigger('request', {key, value, handler: 'insert'});
+      }
+
+      return Reflect.set(target, key, value, receiver);
+    },
+
+    deleteProperty(target, key) {
+      if (/^\d+$/.test(key)) {
+        let value = target[key];
+
+        if (next) {
+          value = next;
+          next = null;
+        }
+
+        events.trigger('request', {value, handler: 'delete'});
+      }
+
+      return Reflect.deleteProperty(target, key);
+    },
+  };
+};
+
+let dataList = new Proxy([], handler());
+
 var logList = [];
 var svrLogList = [];
 var networkModal = new NetworkModal(dataList);
