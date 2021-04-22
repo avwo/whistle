@@ -15,7 +15,16 @@ var BIG_NUM_RE = /[:\[][\s\n\r]*-?[\d.]{16,}[\s\n\r]*[,\}\]]/;
 var dragCallbacks = {};
 var dragTarget, dragOffset, dragCallback;
 var logTempId = 0;
+var RAW_CRLF_RE = /\\n|\\r/g;
+var NUM_RE = /^\d+$/;
+var DIG_RE = /^[+-]?[1-9]\d*$/;
+var INDEX_RE = /^\[(\d+)\]$/;
+var ARR_FILED_RE = /(.)?(?:\[(\d+)\])$/;
 var LEVELS = ['fatal', 'error', 'warn', 'info', 'debug'];
+
+function replaceCrLf(char) {
+  return char === '\\r' ? '\r' : '\n';
+}
 
 function noop(_) {
   return _;
@@ -515,6 +524,121 @@ function parseJSON(str, resolve) {
 }
 
 exports.parseJSON = parseJSON;
+
+function parseLinesJSON(text) {
+  if (typeof text !== 'string' || !(text = text.trim())) {
+    return null;
+  }
+  var first = text[0];
+  var last = text[text.length - 1];
+  if ((first === '[' && last === ']') || (first === '{' && last === '}')) {
+    return null;
+  }
+  var result;
+  text.split(/\r\n|\n|\r/g).forEach(function(line) {
+    if (!(line = line.trim())) {
+      return;
+    }
+    var index = line.indexOf(': ');
+    if (index === -1) {
+      index = line.indexOf(':');
+    }
+    var name, value, arrIndex;
+    if (index != -1) {
+      name = line.substring(0, index).trim();
+      value = line.substring(index + 1).trim();
+      if (value) {
+        var fv = value[0];
+        var lv = value[value.length - 1];
+        if (fv === lv) { 
+          if (fv === '"' || fv === '\'' || fv === '`') {
+            value = value.slice(1, -1);
+          }
+          if (value && fv === '`' && (value.indexOf('\\n') !== -1 || value.indexOf('\\r') !== -1)) {
+            value = value.replace(RAW_CRLF_RE, replaceCrLf);
+          }
+        } else if (value === '0') {
+          value = 0;
+        } else if (value.length < 16 && DIG_RE.test(value)) {
+          try {
+            value = parseInt(value, 10);
+          } catch (e) {}
+        }
+      }
+    } else {
+      name = line.trim();
+      value = '';
+    }
+    first = name[0];
+    last = name[name.length - 1];
+    if (first === last && last === '"') {
+      name = name.slice(1, -1);
+    } else if (first === '[' && last === ']') {
+      name = name.slice(1, -1).trim();
+      if (NUM_RE.test(name) || INDEX_RE.test(name)) {
+        name = RegExp.$1 || RegExp['$&'];
+        result = result || [];
+      } else {
+        var keys = name.split(/\s*\.\s*/);
+        name = keys.shift().trim();
+        if (ARR_FILED_RE.test(name)) {
+          var idx = RegExp.$2;
+          if (RegExp.$1) {
+            name = name.slice(0, -idx.length - 2);
+            arrIndex = idx;
+          } else {
+            name = idx;
+            result = result || [];
+          }
+        }
+        if (keys.length) {
+          keys.reverse().forEach(function(key) {
+            var obj;
+            if (ARR_FILED_RE.test(key)) {
+              var idx2 = RegExp.$2;
+              var arr = [];
+              if (RegExp.$1) {
+                obj = {};
+                obj[key.slice(0, -idx2.length - 2)] = arr;
+                arr[idx2] = value;
+                value = obj;
+              } else {
+                arr[idx2] = value;
+                value = arr;
+              }
+            } else {
+              obj = {};
+              obj[key] = value;
+              value = obj;
+            }
+          });
+        }
+      }
+    }
+    result = result || {};
+    var list = result[name];
+    if (list == null) {
+      if (arrIndex) {
+        var arr = [];
+        arr[arrIndex] = value;
+        result[name] = arr;
+      } else {
+        result[name] = value;
+      }
+    } else if (typeof list === 'object') {
+      if (arrIndex) {
+        list[arrIndex] = value;
+      } else if (typeof value === 'object') {
+        $.extend(true, list, value);
+      }
+    }
+  });
+  return result || {};
+}
+
+exports.parseJSON2 = function(str) {
+  return  parseJSON(str) || parseLinesJSON(str);
+};
 
 function resolveJSON(str, decode) {
   window._$hasBigNumberJson = false;

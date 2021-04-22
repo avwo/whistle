@@ -1,5 +1,6 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
+var $ = require('jquery');
 var util = require('./util');
 var QRCodeDialog = require('./qrcode-dialog');
 var TextDialog = require('./text-dialog');
@@ -89,6 +90,14 @@ var ToolBox = React.createClass({
       alert(e.message);
     }
   },
+  toQuery: function() {
+    try {
+      var value = util.parseJSON2(this.state.codecText) || '';
+      this.refs.textDialog.show(value && $.param(value, true));
+    } catch (e) {
+      alert(e.message);
+    }
+  },
   uploadImg: function() {
     ReactDOM.findDOMNode(this.refs.uploadImg).click();
   },
@@ -148,6 +157,8 @@ var ToolBox = React.createClass({
             onClick={this.encode}>EncodeURIComponent</button>
           <button className="btn btn-default" style={{float: 'left', marginLeft: 10}} disabled={!NOT_EMPTY_RE.test(codecText)}
             onClick={this.decode}>DecodeURIComponent</button>
+          <button className="btn btn-default" style={{float: 'left', marginLeft: 10}} disabled={!NOT_EMPTY_RE.test(codecText)}
+            onClick={this.toQuery}>Query</button>
           <button className="btn btn-primary" disabled={!NOT_EMPTY_RE.test(codecText)}
             onClick={this.showShadowRules}>ShadowRules</button>
         </div>
