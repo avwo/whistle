@@ -62,7 +62,7 @@ function showKillError() {
 exports.showKillError = showKillError;
 
 function showUsage(isRunning, options, restart) {
-  options = foramtOptions(options);
+  options = formatOptions(options);
   if (isRunning) {
     if (restart) {
       showKillError();
@@ -95,7 +95,7 @@ function getDataDir() {
   return path.resolve(config.getHomedir(), '.startingAppData');
 }
 
-function foramtOptions(options) {
+function formatOptions(options) {
   if (!options || !/^(?:([\w.-]+):)?([1-9]\d{0,4})$/.test(options.port)) {
     return options;
   }
@@ -104,7 +104,7 @@ function foramtOptions(options) {
   return options;
 }
 
-exports.foramtOptions = foramtOptions;
+exports.formatOptions = formatOptions;
 
 function readConfig(storage) {
   var dataDir = getDataDir();
@@ -114,7 +114,7 @@ function readConfig(storage) {
   }
   try {
     var conf = fse.readJsonSync(configFile);
-    conf && foramtOptions(conf.options);
+    conf && formatOptions(conf.options);
     return conf;
   } catch(e) {}
 }

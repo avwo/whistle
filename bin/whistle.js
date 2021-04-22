@@ -18,7 +18,7 @@ function showStartupInfo(err, options, debugMode, restart) {
     return showUsage(err, options, restart);
   }
   if (/listen EADDRINUSE/.test(err)) {
-    options = util.foramtOptions(options);
+    options = util.formatOptions(options);
     error('[!] Failed to bind proxy port ' + (options.host ? options.host + ':' : '') + (options.port || config.port) + ': The port is already in use');
     info('[i] Please check if ' + config.name + ' is already running, you can ' + (debugMode ? 'stop whistle with `w2 stop` first' : 'restart whistle with `w2 restart`'));
     info('    or if another application is using the port, you can change the port with ' + (debugMode ? '`w2 run -p newPort`\n' : '`w2 start -p newPort`\n'));
