@@ -26,12 +26,12 @@
   min-width: 770px;
   -moz-user-select:none;
   -webkit-user-select:none;
-  user-select:none; 
+  user-select:none;
 }
 .w-menu, .w-left-menu {
   -moz-user-select:none;
   -webkit-user-select:none;
-  user-select:none; 
+  user-select:none;
 }
 .w-req-data-list .w-tunnel th, .w-req-data-list .w-tunnel td {color: #808080;}
 .w-req-data-list .w-has-rules th, .w-req-data-list .w-has-rules td {font-weight: 500; color: #000093;}
@@ -88,7 +88,7 @@
   top: -9px;
   right: -2px;
   font-size: 12px;
-  -webkit-transform : scale(0.625,0.625); 
+  -webkit-transform : scale(0.625,0.625);
   transform: scale(0.625,0.625);
   overflow: hidden;
   padding: 11px 4px 10px 0;
@@ -107,4 +107,40 @@
   width: 12px;
   cursor: col-resize;
   z-index: 1;
+}
+
+.tree-node {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 24px;
+  padding: 0 10px;
+  font-size: 14px;
+  outline: none;
+}
+
+.tree-node:hover, .tree-node.w-selected {
+  background-color: darkseagreen;
+  color: white;
+}
+
+.highlight {
+  animation-name: blink;
+  animation-iteration-count: 1;
+  animation-duration: 1s;
+  animation-timing-function: linear;
+}
+
+@keyframes blink {
+  50% {
+    background-color: #ffeb3b;
+  }
+}
+
+.icon-fold {
+  font-size: 10px;
+  opacity: 0.5;
+  padding: 10px 10px;
+  margin: -10px;
+  margin-right: -6px;
 }

@@ -1,8 +1,13 @@
 {
-    "presets": [
-      "react"
-    ],
-    "ignore": [
-      "./biz/webui/htdocs/src/js/components/json/eval.js"
-    ]
-  }
+  "presets": [
+    "env",
+    "react"
+  ],
+  "plugins": [
+    "transform-class-properties",
+    "transform-object-rest-spread"
+  ],
+  "ignore": [
+    "./biz/webui/htdocs/src/js/components/json/eval.js"
+  ]
+}

@@ -121,3 +121,7 @@
   border-bottom: 1px solid #ccc;
   min-height: 0;
 }
+
+.w-menu .w-tree-view-active {
+  color: #337ab7;
+}

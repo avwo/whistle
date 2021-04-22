@@ -98,6 +98,22 @@ var contextMenuList = [
       { name: 'Unmark' }
     ]
   },
+  {
+    name: 'Fold',
+    action: 'Fold',
+  },
+  {
+    name: 'Unfold',
+    action: 'Unfold',
+  },
+  {
+    name: 'Fold All',
+    action: 'Fold All',
+  },
+  {
+    name: 'Unfold All',
+    action: 'Unfold All',
+  },
   { name: 'Share' },
   { name: 'Import' },
   { name: 'Export' },
@@ -262,7 +278,8 @@ var ReqData = React.createClass({
     return {
       draggable: true,
       columns: settings.getSelectedColumns(),
-      dragger: dragger
+      dragger: dragger,
+      stopHighlight: -1,
     };
   },
   componentDidMount: function() {
@@ -302,6 +319,11 @@ var ReqData = React.createClass({
     };
     self.container.on('keydown', function(e) {
       var modal = self.props.modal;
+
+      if (modal.isTreeView) {
+        return;
+      }
+
       toggleDraggable(e);
       if (!modal) {
         return;
@@ -345,6 +367,30 @@ var ReqData = React.createClass({
       settings.setMinWidth(self.minWidth);
       updateTimer = updateTimer || setTimeout(updateUI, 50);
     });
+
+    const enableHighlight = (next) => {
+      this.clearHighlight();
+      if (!next) {
+        return;
+      }
+
+      const {modal = {}} = this.props;
+      if (modal.isTreeView) {
+        this.stopHighlight = this.startHighlight();
+      }
+    };
+
+    events.on('toggleTreeView', (_, next) => {
+      enableHighlight(next);
+    });
+
+    $(document).on('visibilitychange', () => {
+      enableHighlight(!document.hidden);
+    });
+
+    events.on('highlightTree', (_, id) => this.highlight(id));
+
+    this.stopHighlight = -1;
   },
   onDragStart: function(e) {
     var target = $(e.target).closest('.w-req-data-item');
@@ -360,6 +406,10 @@ var ReqData = React.createClass({
     return [active, item];
   },
   onClick: function(e, item, hm) {
+    if (!item) {
+      return;
+    }
+
     var self = this;
     var modal = self.props.modal;
     var rows;
@@ -387,10 +437,17 @@ var ReqData = React.createClass({
     events.trigger('networkStateChange');
   },
   setSelected: function(item, unselect) {
+    // list view
+    let selector = `tr[data-id="${item.id}"]`;
+    // tree view
+    if (!item.req) {
+      selector = `tr[data-tree="${item.id}"]`;
+    }
+
     if (item.selected) {
-      this.$content.find('tr[data-id=' + item.id + ']').addClass('w-selected');
+      this.$content.find(selector).addClass('w-selected');
     } else if (unselect) {
-      this.$content.find('tr[data-id=' + item.id + ']').removeClass('w-selected');
+      this.$content.find(selector).removeClass('w-selected');
     }
   },
   clearSelection: function() {
@@ -470,6 +527,8 @@ var ReqData = React.createClass({
   onClickContextMenu: function(action, e, parentAction, name) {
     var self = this;
     var item = self.currentFocusItem;
+    const {modal} = this.props;
+
     switch(parentAction || action) {
     case 'New Tab':
       item && window.open(item.url);
@@ -504,7 +563,6 @@ var ReqData = React.createClass({
       break;
     case 'Mark':
     case 'Unmark':
-      var modal = this.props.modal;
       var list = getFocusItemList(item) || (modal && modal.getSelectedList());
       if (list) {
         var isMark = action === 'Mark';
@@ -617,10 +675,38 @@ var ReqData = React.createClass({
         selectedList: self.props.modal.getSelectedList()
       });
       break;
+    case 'Fold':
+      modal.toggleTreeNode({
+        id: this.treeTarget,
+        next: true,
+      });
+      break;
+    case 'Unfold':
+      modal.toggleTreeNode({
+        id: this.treeTarget,
+        next: false,
+      });
+      break;
+    case 'Fold All':
+      modal.toggleTreeNode({
+        id: this.treeTarget,
+        next: true,
+        recursive: true,
+      });
+      break;
+    case 'Unfold All':
+      modal.toggleTreeNode({
+        id: this.treeTarget,
+        next: false,
+        recursive: true,
+      });
+      break;
     }
   },
   onContextMenu: function(e) {
-    var dataId = $(e.target).closest('.w-req-data-item').attr('data-id');
+    const el = $(e.target).closest('.w-req-data-item');
+    var dataId = el.attr('data-id');
+    const treeId = el.attr('data-tree');
     var modal = this.props.modal;
     var item = modal.getItem(dataId);
     var disabled = !item;
@@ -746,10 +832,29 @@ var ReqData = React.createClass({
       list5[2].disabled = true;
       list5[3].disabled = true;
     }
-    var uploadItem = contextMenuList[6];
+
+    if (modal.isTreeView) {
+      this.treeTarget = null;
+
+      const treeNodeData = modal.getTreeNode(treeId);
+      if (treeNodeData) {
+        const {config} = treeNodeData;
+        const {index, fold} = config;
+        const isLeaf = index > -1;
+
+        this.treeTarget = treeId;
+
+        contextMenuList[6].hide = fold || isLeaf;
+        contextMenuList[7].hide = !fold || isLeaf;
+        contextMenuList[8].hide = isLeaf;
+        contextMenuList[9].hide = isLeaf;
+      }
+    }
+
+    var uploadItem = contextMenuList[14];
     uploadItem.hide = !getUploadSessionsFn();
-    contextMenuList[9].disabled = uploadItem.disabled = disabled && !selectedCount;
-    var pluginItem = contextMenuList[9];
+    contextMenuList[13].disabled = uploadItem.disabled = disabled && !selectedCount;
+    var pluginItem = contextMenuList[13];
     util.addPluginMenus(pluginItem, dataCenter.getNetworkMenus(), uploadItem.hide ? 8 : 9, disabled);
     var height = (uploadItem.hide ? 310 : 340) - (pluginItem.hide ? 30 : 0);
     pluginItem.maxHeight = height;
@@ -870,6 +975,147 @@ var ReqData = React.createClass({
     this.container.focus();
   },
 
+  highlight(id) {
+    if (!id) {
+      return;
+    }
+
+    const {modal = {}} = this.props;
+    const {isTreeView} = modal;
+    if (!isTreeView) {
+      return;
+    }
+
+    if (this.stopHighlight === -1) {
+      this.stopHighlight = this.startHighlight();
+    }
+    if (!this.stopHighlight) {
+      return;
+    }
+
+    if (!this.highlightMap) {
+      this.highlightMap = new Map();
+    }
+    this.highlightMap.set(id, -1);
+  },
+
+  startHighlight() {
+    const timer = setInterval(() => {
+      if (!this.highlightMap || this.highlightMap.size <= 0) {
+        return;
+      }
+
+      this.highlightMap.forEach((expire, id) => {
+        if (!id || !expire) {
+          return;
+        }
+
+        const el = this.$content.find(`[data-tree="${id}"]`);
+        if (el) {
+          if (expire === -1) {
+            this.highlightMap.set(id, Date.now() + 1100);
+            el.addClass('highlight');
+            return;
+          }
+
+          if (expire < Date.now()) {
+            this.highlightMap.delete(id);
+            el.removeClass('highlight');
+          }
+        }
+      });
+    }, 500);
+
+    return () => {
+      clearInterval(timer);
+      if (this.highlightMap) {
+        this.highlightMap.clear();
+      }
+    };
+  },
+
+  clearHighlight() {
+    if (typeof this.stopHighlight === 'function') {
+      this.stopHighlight();
+      this.stopHighlight = null;
+
+      $('.highlight').each((el) => {
+        if (!el) {
+          return;
+        }
+        $(el).removeClass('highlight');
+      });
+    }
+  },
+
+  renderTreeNode(offset, style) {
+    if (typeof offset !== 'number') {
+      return null;
+    }
+
+    const {modal = {}} = this.props;
+    const {draggable} = this.state;
+
+    if (!modal || !modal.tree) {
+      return null;
+    }
+
+    const id = modal.tree[offset];
+    const data = modal.getTreeNode(id);
+    if (!data) {
+      return null;
+    }
+
+    const {
+      config,
+      request,
+    } = data;
+
+    const {index, depth, search, value, fold} = config;
+    let label = value;
+    const isLeaf = index > -1;
+    if (isLeaf) {
+      label += search;
+      if (depth > 0) {
+        label = '/' + label;
+      }
+    }
+
+    const onToggle = (_) => {
+      modal.toggleTreeNode({id});
+    };
+
+    const onArrow = (e) => {
+      e.preventDefault();
+      if ([37, 39].includes(e.which)) {
+        modal.toggleTreeNode({id});
+      }
+    };
+
+    return (
+      <tr
+        key={id}
+        style={{
+          ...style,
+          marginLeft: depth * 32,
+        }}
+        className={`w-req-data-item tree-node ${isLeaf ? 'tree-leaf': ''} ${request ? getClassName(request) : ''}`}
+        data-id={request ? request.id : id}
+        data-tree={id}
+        draggable={draggable}
+        tabIndex={index}
+        onKeyDown={onArrow}
+      >
+        {
+          isLeaf ? null : (
+            <span onClick={onToggle} className={`icon-fold glyphicon glyphicon-triangle-${fold ? 'right' : 'bottom'}`}></span>
+          )
+        }
+        {label}
+      </tr>
+    );
+  },
+
   render: function() {
     var self = this;
     var state = this.state;
@@ -888,39 +1134,50 @@ var ReqData = React.createClass({
       colStyle.minWidth = width;
     }
 
+    const {isTreeView} = modal || {};
+
     return (
         <div className="fill w-req-data-con orient-vertical-box">
           <div ref="wrapper" className="w-req-data-content fill orient-vertical-box" style={colStyle}>
-            <div className="w-req-data-headers">
-              <table className="table">
-                  <thead>
-                    <tr onClick={self.orderBy}>
-                      <th className="order">#</th>
-                      {columnList.map(this.renderColumn)}
-                    </tr>
-                  </thead>
-                </table>
-            </div>
+          {
+              isTreeView ? null : (
+                <div className="w-req-data-headers">
+                  <table className="table">
+                      <thead>
+                        <tr onClick={self.orderBy}>
+                          <th className="order">#</th>
+                          {columnList.map(this.renderColumn)}
+                        </tr>
+                      </thead>
+                    </table>
+                </div>
+              )
+            }
             <div ref="container" tabIndex="0" onContextMenu={self.onContextMenu} onKeyDown={this.onReplay}
               style={{background: (dataCenter.hashFilterObj || filterText) ? 'lightyellow' : undefined}}
               className="w-req-data-list fill"  onDragStart={this.onDragStart}>
-                <RV.AutoSizer ref="content" >{function(size){
-                  return (
-                      <RV.List
+                <RV.AutoSizer ref="content">
+                  {(size) => (
+                    <RV.List
                       ref="list"
-                      rowHeight={28}
+                      rowHeight={isTreeView ? 24 : 28}
                       width={size.width}
                       height={size.height}
-                      rowCount={list.length}
-                      rowRenderer={function(options){
+                      rowCount={isTreeView ? modal.tree.length : list.length}
+                      rowRenderer={(options) => {
                         // var {index, isScrolling, key, style}=options;
+
+                        if (isTreeView) {
+                          return this.renderTreeNode(options.index, options.style);
+                        }
+
                         var item = list[options.index];
                         var order = hasKeyword ? options.index+1 : item.order;
                         return <Row style={options.style} key={options.key} order={order}  index={index}
                           columnList={columnList} draggable={draggable} item={item} />;
                       }}
-                      />);
-                }}
+                    />
+                  )}
                 </RV.AutoSizer>
             </div>
           </div>
