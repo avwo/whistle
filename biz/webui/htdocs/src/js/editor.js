@@ -47,7 +47,7 @@ var themes = ['default', 'neat', 'elegant', 'erlang-dark', 'night', 'monokai', '
 require('./rules-mode');
 var DEFAULT_THEME = 'cobalt';
 var DEFAULT_FONT_SIZE = '16px';
-var RULES_COMMENT_RE = /^()\s*#\s*/;
+var RULES_COMMENT_RE = /^(\s*)#\s*/;
 var JS_COMMENT_RE = /^(\s*)\/\/+\s?/;
 var NO_SPACE_RE = /\S/;
 
