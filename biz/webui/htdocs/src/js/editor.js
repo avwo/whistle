@@ -181,6 +181,25 @@ var Editor = React.createClass({
         editor.setSize(null, height);
       }
     }
+    $(elem).on('dblclick', '.CodeMirror-linenumber', function(e) {
+      var num = parseInt($(e.target).text(), 10);
+      if (!(num > 0)){
+        return;
+      }
+      var start = num - 1;
+      var line = editor.getLine(start);
+      if (!line || !line.trim()) {
+        return;
+      }
+      var isRules = self.isRulesEditor();
+      var commentRE = isRules ? RULES_COMMENT_RE : JS_COMMENT_RE;
+      if (commentRE.test(line)) {
+        line = line.replace(commentRE, '$1');
+      } else {
+        line = (isRules ? '# ' : '// ') + line;
+      }
+      editor.replaceRange(line + '\n', {line: start, ch: 0}, {line: num, ch: 0});
+    });
     $(elem).on('keydown', function(e) {
       var isRules = self.isRulesEditor();
       var isJS = self._mode == 'javascript';
