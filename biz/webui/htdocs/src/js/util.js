@@ -21,6 +21,7 @@ var DIG_RE = /^[+-]?[1-9]\d*$/;
 var INDEX_RE = /^\[(\d+)\]$/;
 var ARR_FILED_RE = /(.)?(?:\[(\d+)\])$/;
 var LEVELS = ['fatal', 'error', 'warn', 'info', 'debug'];
+var useCustomEditor = window.location.search.indexOf('useCustomEditor') !== -1;
 
 function replaceCrLf(char) {
   return char === '\\r' ? '\r' : '\n';
@@ -792,6 +793,10 @@ exports.toString = toString;
 
 
 function openEditor(value) {
+  if (useCustomEditor && typeof window.customWhistleEditor === 'function'
+    && window.customWhistleEditor(value) !== false) {
+    return;
+  }
   var win = window.open('editor.html');
   win.getValue = function() {
     return value;
