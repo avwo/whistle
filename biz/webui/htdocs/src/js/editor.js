@@ -181,24 +181,55 @@ var Editor = React.createClass({
         editor.setSize(null, height);
       }
     }
+    var getCh = function(ch, dis) {
+      return Math.max(0, ch + dis);
+    };
     $(elem).on('dblclick', '.CodeMirror-linenumber', function(e) {
       var num = parseInt($(e.target).text(), 10);
       if (!(num > 0)){
         return;
       }
-      var start = num - 1;
-      var line = editor.getLine(start);
+      var lineNum = num - 1;
+      var line = editor.getLine(lineNum);
       if (!line || !line.trim()) {
         return;
       }
       var isRules = self.isRulesEditor();
       var commentRE = isRules ? RULES_COMMENT_RE : JS_COMMENT_RE;
+      var origLine = line;
       if (commentRE.test(line)) {
         line = line.replace(commentRE, '$1');
       } else {
-        line = (isRules ? '# ' : '// ') + line;
+        line = (isRules ? '#' : '//') + (/^\s/.test(line) ? '' : ' ') + line;
       }
-      editor.replaceRange(line + '\n', {line: start, ch: 0}, {line: num, ch: 0});
+      var list = editor.listSelections();
+      var resetRange;
+      var len = list && list.length;
+      var dis = line.length - origLine.length;
+      if (list && list.length) {
+        for (var i = 0; i < len; i++) {
+          var pre = list[i];
+          var hLine = pre.head.line;
+          var aLine = pre.anchor.line;
+          if (hLine === lineNum) {
+            resetRange = true;
+            pre.head.ch = getCh(pre.head.ch, dis);
+            if (aLine === hLine && pre.head !== pre.anchor) {
+              pre.anchor.ch = getCh(pre.anchor.ch, dis);
+            }
+            break;
+          }
+          if (aLine === lineNum) {
+            resetRange = true;
+            pre.anchor.ch = getCh(pre.anchor.ch, dis);
+            break;
+          }
+        }
+      }
+      editor.replaceRange(line + '\n', {line: lineNum, ch: 0}, {line: num, ch: 0});
+      if (resetRange) {
+        editor.setSelections(list);
+      }
     });
     $(elem).on('keydown', function(e) {
       var isRules = self.isRulesEditor();
