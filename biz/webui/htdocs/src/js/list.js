@@ -165,6 +165,13 @@ var List = React.createClass({
         e.preventDefault();
       }
     });
+    events.on('toggleCommentInEditor', function() {
+      var activeItem = modal.getActive();
+      if (activeItem) {
+        var name = self.props.name === 'rules' ? 'Rules' : 'Values';
+        events.trigger('save' + name, activeItem);
+      }
+    });
     this.ensureVisible(true);
   },
   shouldComponentUpdate: function(nextProps) {
