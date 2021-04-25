@@ -1,4 +1,10 @@
 
+# v2.6.15
+1. refactor: 优化命令行启动输出的信息
+2. feat: 编辑器 `Show Line Number` 时，双击行数可以注释或取消注释
+3. feat: `Network / Tools / Toolbox` 支持将对象转成 `Query` 参数
+4. style: 支持扩展 `util.openEditor(value)` 方法 
+
 # v2.6.14
 1. chore: https://github.com/avwo/whistle/issues/559
 
