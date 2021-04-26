@@ -288,7 +288,7 @@ exports.getExtension = function(headers) {
   }
   type = type || getRawType(headers);
   type = type.substring(type.indexOf('/') + 1).toLowerCase();
-  return /\w+/.test(type) ? '.' + RegExp['$&'] : ''; 
+  return /\w+/.test(type) ? '.' + RegExp['$&'] : '';
 };
 
 function getContentType(type) {
@@ -550,7 +550,7 @@ function parseLinesJSON(text) {
       if (value) {
         var fv = value[0];
         var lv = value[value.length - 1];
-        if (fv === lv) { 
+        if (fv === lv) {
           if (fv === '"' || fv === '\'' || fv === '`') {
             value = value.slice(1, -1);
           }
@@ -792,13 +792,18 @@ exports.toString = toString;
 
 
 function openEditor(value) {
+  var enableExternalWebviewOpener = window.location.search.indexOf('enableExternalWebviewOpener=1') !== -1;
+  if (enableExternalWebviewOpener) {
+    localStorage.setItem('TEMP_EDITOR_CONTENT', value);
+    window.open('editor.html');
+    return;
+  }
+
   var win = window.open('editor.html');
+
   win.getValue = function() {
     return value;
   };
-  if (win.setValue) {
-    win.setValue(value);
-  }
 }
 
 exports.openEditor = openEditor;

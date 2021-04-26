@@ -64,3 +64,5 @@ coverage
 _book
 dist
 /.history
+
+.idea

@@ -21,20 +21,29 @@ textarea {resize: none; display: block; padding: 6px; font-size: 12px; width: 10
 	<textarea id="editor"></textarea>
 </div>
 <script>
-	var editor = document.getElementById('editor');
-	if (window.getValue) {
-	  var value = getValue();
-	  if (value) {
-	    editor.value = window.name = value;
-    } else {
-      editor.value = window.name;
+  function getOriginContent() {
+    if (window.getValue) {
+      return window.getValue();
     }
-	} else {
-	  editor.value = window.name;
-		window.setValue = function(value) {
-			editor.value = value;
-		};
-	}
+
+    return localStorage.getItem('TEMP_EDITOR_CONTENT');
+  }
+
+  function getContent() {
+    if (history.state !== null) {
+      return history.state;
+    }
+
+    var content = getOriginContent();
+
+    history.replaceState(content, '');
+
+    return content;
+  }
+
+  var content = getContent();
+
+  document.getElementById('editor').value = getContent();
 </script>
 </body>
 </html>
