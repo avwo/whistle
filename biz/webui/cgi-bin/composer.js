@@ -138,6 +138,7 @@ function handleWebSocket(options, cb) {
       socket.on('data', handleResponse);
       if (cb) {
         util.onSocketEnd(socket, function(err) {
+          socket.destroy();
           cb(err || new Error('Closed'));
         });
       }
