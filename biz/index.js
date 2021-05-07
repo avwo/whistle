@@ -7,16 +7,16 @@ var config = require('../lib/config');
 
 var localIpCache = util.localIpCache;
 var WEBUI_PATH = config.WEBUI_PATH;
-var OLD_WEBUI_PATH = config.OLD_WEBUI_PATH;
+var CUSTOM_WEBUI_PATH = /\/[\w.-]*\.whistle-path\.5b6af7b9884e1165[\w.-]*\/+/;
+var CUSTOM_WEBUI_PATH_RE = /^\/[\w.-]*\.whistle-path\.5b6af7b9884e1165[\w.-]*\/+/;
 var PREVIEW_PATH_RE = config.PREVIEW_PATH_RE;
 var WEBUI_PATH_RE = util.escapeRegExp(WEBUI_PATH);
-var OLD_WEBUI_PATH_RE = util.escapeRegExp(OLD_WEBUI_PATH);
 var REAL_WEBUI_HOST = new RegExp('^' + WEBUI_PATH_RE + '(__([a-z\\d.-]+)(?:__(\\d{1,5}))?__/)');
 var INTERNAL_APP = new RegExp('^' + WEBUI_PATH_RE + '(log|weinre|cgi)(?:\\.(\\d{1,5}))?/');
 var PLUGIN_RE = new RegExp('^' + WEBUI_PATH_RE + 'whistle\\.([a-z\\d_-]+)/');
-var OLD_REAL_WEBUI_HOST = new RegExp('^' + OLD_WEBUI_PATH_RE + '(__([a-z\\d.-]+)(?:__(\\d{1,5}))?__/)');
-var OLD_INTERNAL_APP = new RegExp('^' + OLD_WEBUI_PATH_RE + '(log|weinre|cgi)(?:\\.(\\d{1,5}))?/');
-var OLD_PLUGIN_RE = new RegExp('^' + OLD_WEBUI_PATH_RE + 'whistle\\.([a-z\\d_-]+)/');
+var CUSTOM_REAL_WEBUI_HOST = new RegExp('^/[\\w.-]*\\.whistle-path\\.5b6af7b9884e1165[\\w.-]*/+(__([a-z\\d.-]+)(?:__(\\d{1,5}))?__/)');
+var CUSTOM_INTERNAL_APP = new RegExp('^/[\\w.-]*\\.whistle-path\\.5b6af7b9884e1165[\\w.-]*/+(log|weinre|cgi)(?:\\.(\\d{1,5}))?/');
+var CUSTOM_PLUGIN_RE = new RegExp('^/[\\w.-]*\\.whistle-path\\.5b6af7b9884e1165[\\w.-]*/+whistle\\.([a-z\\d_-]+)/');
 var REAL_WEBUI_HOST_PARAM = /_whistleInternalHost_=(__([a-z\d.-]+)(?:__(\d{1,5}))?__)/;
 
 module.exports = function(req, res, next) {
@@ -33,12 +33,14 @@ module.exports = function(req, res, next) {
   var internalAppRe = INTERNAL_APP;
   var pluginRe = PLUGIN_RE;
   var isWebUI = req.path.indexOf(WEBUI_PATH) === 0;
-  if (!isWebUI && req.path.indexOf(OLD_WEBUI_PATH) === 0) {
+  var isOld;
+  if (!isWebUI && CUSTOM_WEBUI_PATH_RE.test(req.path)) {
     isWebUI = true;
-    webUI = OLD_WEBUI_PATH;
-    realHostRe = OLD_REAL_WEBUI_HOST;
-    internalAppRe = OLD_INTERNAL_APP;
-    pluginRe = OLD_PLUGIN_RE;
+    isOld = true;
+    webUI = CUSTOM_WEBUI_PATH;
+    realHostRe = CUSTOM_REAL_WEBUI_HOST;
+    internalAppRe = CUSTOM_INTERNAL_APP;
+    pluginRe = CUSTOM_PLUGIN_RE;
   }
   if (isWebUI) {
     isWebUI = !config.pureProxy;
@@ -67,6 +69,7 @@ module.exports = function(req, res, next) {
           proxyUrl = false;
           transformPort = config.port;
         }
+        proxyUrl = proxyUrl || isOld;
       } else if (pluginRe.test(req.path)) {
         proxyUrl = !pluginMgr.getPlugin(RegExp.$1 + ':');
       } else if (!req.headers[config.WEBUI_HEAD]) {
