@@ -7,12 +7,17 @@ var config = require('../lib/config');
 
 var localIpCache = util.localIpCache;
 var WEBUI_PATH = config.WEBUI_PATH;
+var OLD_WEBUI_PATH = config.OLD_WEBUI_PATH;
 var PREVIEW_PATH_RE = config.PREVIEW_PATH_RE;
-var webuiPathRe = util.escapeRegExp(WEBUI_PATH);
-var REAL_WEBUI_HOST = new RegExp('^' + webuiPathRe + '(__([a-z\\d.-]+)(?:__(\\d{1,5}))?__/)');
+var WEBUI_PATH_RE = util.escapeRegExp(WEBUI_PATH);
+var OLD_WEBUI_PATH_RE = util.escapeRegExp(OLD_WEBUI_PATH);
+var REAL_WEBUI_HOST = new RegExp('^' + WEBUI_PATH_RE + '(__([a-z\\d.-]+)(?:__(\\d{1,5}))?__/)');
+var INTERNAL_APP = new RegExp('^' + WEBUI_PATH_RE + '(log|weinre|cgi)(?:\\.(\\d{1,5}))?/');
+var PLUGIN_RE = new RegExp('^' + WEBUI_PATH_RE + 'whistle\\.([a-z\\d_-]+)/');
+var OLD_REAL_WEBUI_HOST = new RegExp('^' + OLD_WEBUI_PATH_RE + '(__([a-z\\d.-]+)(?:__(\\d{1,5}))?__/)');
+var OLD_INTERNAL_APP = new RegExp('^' + OLD_WEBUI_PATH_RE + '(log|weinre|cgi)(?:\\.(\\d{1,5}))?/');
+var OLD_PLUGIN_RE = new RegExp('^' + OLD_WEBUI_PATH_RE + 'whistle\\.([a-z\\d_-]+)/');
 var REAL_WEBUI_HOST_PARAM = /_whistleInternalHost_=(__([a-z\d.-]+)(?:__(\d{1,5}))?__)/;
-var INTERNAL_APP = new RegExp('^' + webuiPathRe + '(log|weinre|cgi)(?:\\.(\\d{1,5}))?/');
-var PLUGIN_RE = new RegExp('^' + webuiPathRe + 'whistle\\.([a-z\\d_-]+)/');
 
 module.exports = function(req, res, next) {
   var config = this.config;
@@ -23,12 +28,23 @@ module.exports = function(req, res, next) {
   var bypass;
   host = host[0];
   var transformPort, proxyUrl, isWeinre, isOthers, isInternal;
+  var webUI = WEBUI_PATH;
+  var realHostRe = REAL_WEBUI_HOST;
+  var internalAppRe = INTERNAL_APP;
+  var pluginRe = PLUGIN_RE;
   var isWebUI = req.path.indexOf(WEBUI_PATH) === 0;
+  if (!isWebUI && req.path.indexOf(OLD_WEBUI_PATH) === 0) {
+    isWebUI = true;
+    webUI = OLD_WEBUI_PATH;
+    realHostRe = OLD_REAL_WEBUI_HOST;
+    internalAppRe = OLD_INTERNAL_APP;
+    pluginRe = OLD_PLUGIN_RE;
+  }
   if (isWebUI) {
     isWebUI = !config.pureProxy;
     var realHost;
     if (isWebUI) {
-      if (REAL_WEBUI_HOST.test(req.path) || REAL_WEBUI_HOST_PARAM.test(req.url)) {
+      if (realHostRe.test(req.path) || REAL_WEBUI_HOST_PARAM.test(req.url)) {
         var realPath = RegExp.$1;
         var realPort = RegExp.$3;
         realHost = RegExp.$2 + (realPort ? ':' + realPort : '');
@@ -42,7 +58,7 @@ module.exports = function(req, res, next) {
           fullUrl = util.getFullUrl(req);
         }
       }
-      if (INTERNAL_APP.test(req.path)) {
+      if (internalAppRe.test(req.path)) {
         transformPort = RegExp.$2;
         isWeinre = RegExp.$1 === 'weinre';
         if (transformPort) {
@@ -51,7 +67,7 @@ module.exports = function(req, res, next) {
           proxyUrl = false;
           transformPort = config.port;
         }
-      } else if (PLUGIN_RE.test(req.path)) {
+      } else if (pluginRe.test(req.path)) {
         proxyUrl = !pluginMgr.getPlugin(RegExp.$1 + ':');
       } else if (!req.headers[config.WEBUI_HEAD]) {
         isWebUI = false;
@@ -130,7 +146,7 @@ module.exports = function(req, res, next) {
         util.transformReq(req, res, transformPort);
       } else {
         req._hasRespond = true;
-        req.url = req.url.replace(transformPort ? INTERNAL_APP : WEBUI_PATH, '/');
+        req.url = req.url.replace(transformPort ? internalAppRe : webUI, '/');
         if (isWeinre) {
           handleWeinreReq(req, res);
         } else {
