@@ -27,11 +27,16 @@ function getAtRule(rule) {
   return rule.rawPattern + ' @' + rule.matcher.substring(4);
 }
 
+function getStr(str) {
+  return str ? ' ' + str : '';
+}
+
 function getRuleStr(rule) {
   if (!rule) {
     return;
   }
   var matcher = rule.matcher;
+  var props = rule.rawProps && rule.rawProps.join(' ');
   if (rule.port) {
     var protoIndex = matcher.indexOf(':') + 3;
     var proto = matcher.substring(0, protoIndex);
@@ -40,7 +45,7 @@ function getRuleStr(rule) {
     }
     matcher = matcher + ':' + rule.port;
   }
-  return rule.rawPattern + ' ' +  matcher + (rule.filter ? ' ' + rule.filter : '');
+  return rule.rawPattern + ' ' +  matcher + getStr(props) + getStr(rule.filter);
 }
 
 OVERVIEW.forEach(function(name) {
@@ -96,7 +101,7 @@ var Overview = React.createClass({
     var rulesModal = DEFAULT_RULES_MODAL;
     var modal = this.props.modal;
     var showOnlyMatchRules = this.state.showOnlyMatchRules;
-    var realUrl;
+    var realUrl, hasPluginRule;
 
     if (modal) {
       overviewModal = {};
@@ -213,6 +218,7 @@ var Overview = React.createClass({
           }
           var rule = rules[key];
           if (name === 'plugin' && rules._pluginRule) {
+            hasPluginRule = true;
             var ruleList = [ rules._pluginRule.rawPattern + ' ' + rules._pluginRule.matcher ];
             var titleList = [rules._pluginRule.raw];
             rule && rule.list && rule.list.forEach(function(item) {
@@ -229,10 +235,10 @@ var Overview = React.createClass({
               return rule.raw;
             }).join('\n');
           } else {
+            var isProxyOrHost = name === 'proxy' || name === 'host';
             rulesModal[name] = getRuleStr(rule);
             if (rule) {
-              titleModal[name] = realUrl && (name === 'proxy' || name === 'host') ? 'Raw Rule: '
-                + rule.raw + '\nReal Url: ' + realUrl : rule.raw;
+              titleModal[name] = realUrl && isProxyOrHost ? 'Raw Rule: ' + rule.raw + '\nReal Url: ' + realUrl : rule.raw;
             } else {
               titleModal[name] = rule ? rule.raw : undefined;
             }
@@ -248,7 +254,8 @@ var Overview = React.createClass({
           <a href="https://avwo.github.io/whistle/rules/" target="_blank"><span className="glyphicon glyphicon-question-sign"></span></a>All Rules:
           <label><input checked={showOnlyMatchRules} onChange={this.showOnlyMatchRules} type="checkbox" />Only show matching rules</label>
         </p>
-        <Properties onHelp={this.onHelp} className={showOnlyMatchRules ? 'w-hide-no-value' : undefined} modal={rulesModal} title={titleModal} enableCopyValue name="Rules" />
+        <Properties onHelp={this.onHelp} className={showOnlyMatchRules ? 'w-hide-no-value' : undefined}
+          modal={rulesModal} title={titleModal} enableCopyValue name="Rules" hasPluginRule={hasPluginRule} />
       </div>
     );
   }

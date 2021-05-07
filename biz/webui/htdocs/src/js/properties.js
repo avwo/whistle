@@ -17,6 +17,7 @@ var Properties = React.createClass({
     var props = this.props;
     var sourceText = props.enableViewSource;
     var copyValue = props.enableCopyValue;
+    var hasPluginRule = props.hasPluginRule;
     var viewSource = this.state.viewSource;
     var onHelp = props.onHelp;
     var modal = props.modal || {};
@@ -25,6 +26,9 @@ var Properties = React.createClass({
     if (sourceText || copyValue) {
       var result = [];
       keys.forEach(function(name) {
+        if (hasPluginRule && name === 'rule') {
+          return;
+        }
         var value = modal[name];
         name = sourceText ? name + ': ' : '';
         result.push(Array.isArray(value) ?
@@ -33,7 +37,7 @@ var Properties = React.createClass({
           }).join('\n') : name + util.toString(value));
       });
       sourceText = sourceText && result.join('\n');
-      copyValue = copyValue && result.join('\n').trim();
+      copyValue = copyValue && result.filter(util.noop).join('\n').trim();
     }
     if (this.textStr !== sourceText) {
       this.textStr = sourceText;
