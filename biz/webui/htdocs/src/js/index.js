@@ -550,8 +550,10 @@ var Index = React.createClass({
     };
     if (isRules) {
       dataCenter.rules.list(handleResponse);
+      events.trigger('reloadRulesRecycleBin');
     } else {
       dataCenter.values.list(handleResponse);
+      events.trigger('reloadValuesRecycleBin');
     }
   },
   showReloadRules: function() {

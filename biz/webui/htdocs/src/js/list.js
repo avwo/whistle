@@ -172,6 +172,12 @@ var List = React.createClass({
         events.trigger('save' + name, activeItem);
       }
     });
+    events.on('reloadRulesRecycleBin', function() {
+      self.reloadRecycleBin('rules');
+    });
+    events.on('reloadValuesRecycleBin', function() {
+      self.reloadRecycleBin('values');
+    });
     this.ensureVisible(true);
   },
   shouldComponentUpdate: function(nextProps) {
@@ -313,6 +319,30 @@ var List = React.createClass({
       }
     }
   },
+  reloadRecycleBin: function(name) {
+    if (this.refs.recycleBinDialog.isVisible(name)) {
+      this._pendingRecycle = false;
+      this.showRecycleBin(name);
+    }
+  },
+  showRecycleBin: function(name) {
+    var self = this;
+    if (self._pendingRecycle) {
+      return;
+    }
+    self._pendingRecycle = true;
+    dataCenter[name.toLowerCase()].recycleList(function(data, xhr) {
+      self._pendingRecycle = false;
+      if (!data) {
+        util.showSystemError(xhr);
+        return;
+      }
+      if (!data.list.length) {
+        return message.info('Recycle bin is empty.');
+      }
+      self.refs.recycleBinDialog.show({ name: name, list: data.list });
+    });
+  },
   onClickContextMenu: function(action, e, parentAction, menuName) {
     var self = this;
     var name = self.props.name === 'rules' ? 'Rules' : 'Values';
@@ -345,20 +375,7 @@ var List = React.createClass({
       events.trigger('import' + name, e);
       break;
     case 'RecycleBin':
-      if (!self._pendingRecycle) {
-        self._pendingRecycle = true;
-        dataCenter[name.toLowerCase()].recycleList(function(data, xhr) {
-          self._pendingRecycle = false;
-          if (!data) {
-            util.showSystemError(xhr);
-            return;
-          }
-          if (!data.list.length) {
-            return message.info('Recycle bin is empty.');
-          }
-          self.refs.recycleBinDialog.show({ name: name, list: data.list });
-        });
-      }
+      self.showRecycleBin(name);
       break;
     case 'Validate':
       var item = self.currentFocusItem;

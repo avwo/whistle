@@ -1,4 +1,6 @@
 var React = require('react');
+var ReactDOM = require('react-dom');
+var $ = require('jquery');
 var Dialog = require('./dialog');
 var dataCenter = require('./data-center');
 var util = require('./util');
@@ -109,13 +111,19 @@ var RecycleBinDialog = React.createClass({
         });
     }
   },
+  isVisible: function(name) {
+    if (name !== this.state.name.toLowerCase()) {
+      return false;
+    }
+    return $(ReactDOM.findDOMNode(this.refs.recycleBinBody)).is(':visible');
+  },
   render: function() {
     var self = this;
     var state = self.state;
     var list = state.list || [];
     return (
       <Dialog ref="recycleBinDialog" wstyle="w-files-dialog">
-        <div className="modal-body">
+        <div className="modal-body" ref="recycleBinBody">
           <button type="button" className="close" data-dismiss="modal">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -172,6 +180,9 @@ var RecycleBinDialogWrap = React.createClass({
   },
   show: function(options) {
     this.refs.recycleBinDialog.show(options);
+  },
+  isVisible: function(name) {
+    return this.refs.recycleBinDialog.isVisible(name);
   },
   render: function() {
     return <RecycleBinDialog ref="recycleBinDialog" />;
