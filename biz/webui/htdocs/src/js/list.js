@@ -173,10 +173,10 @@ var List = React.createClass({
       }
     });
     events.on('reloadRulesRecycleBin', function() {
-      self.reloadRecycleBin('rules');
+      self.reloadRecycleBin('Rules');
     });
     events.on('reloadValuesRecycleBin', function() {
-      self.reloadRecycleBin('values');
+      self.reloadRecycleBin('Values');
     });
     this.ensureVisible(true);
   },
@@ -193,6 +193,9 @@ var List = React.createClass({
     }
     this.curListLen = curListLen;
     this.curActiveItem = curActiveItem;
+    if (this.props.hide) {
+      this.refs.recycleBinDialog.hide();
+    }
   },
   ensureVisible: function(init) {
     var activeItem = this.props.modal.getActive();
@@ -320,7 +323,7 @@ var List = React.createClass({
     }
   },
   reloadRecycleBin: function(name) {
-    if (this.refs.recycleBinDialog.isVisible(name)) {
+    if (this.refs.recycleBinDialog.isVisible()) {
       this._pendingRecycle = false;
       this.showRecycleBin(name);
     }

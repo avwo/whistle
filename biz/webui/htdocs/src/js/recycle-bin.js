@@ -51,6 +51,9 @@ var RecycleBinDialog = React.createClass({
       !quiet && self.refs.recycleBinDialog.show();
     });
   },
+  hide: function() {
+    this.refs.recycleBinDialog.hide();
+  },
   checkFile: function(data, xhr) {
     if (!data) {
       util.showSystemError(xhr);
@@ -111,10 +114,7 @@ var RecycleBinDialog = React.createClass({
         });
     }
   },
-  isVisible: function(name) {
-    if (name !== this.state.name.toLowerCase()) {
-      return false;
-    }
+  isVisible: function() {
     return $(ReactDOM.findDOMNode(this.refs.recycleBinBody)).is(':visible');
   },
   render: function() {
@@ -181,8 +181,11 @@ var RecycleBinDialogWrap = React.createClass({
   show: function(options) {
     this.refs.recycleBinDialog.show(options);
   },
-  isVisible: function(name) {
-    return this.refs.recycleBinDialog.isVisible(name);
+  hide: function() {
+    this.refs.recycleBinDialog.hide();
+  },
+  isVisible: function() {
+    return this.refs.recycleBinDialog.isVisible();
   },
   render: function() {
     return <RecycleBinDialog ref="recycleBinDialog" />;
