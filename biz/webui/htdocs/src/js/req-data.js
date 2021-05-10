@@ -1081,7 +1081,7 @@ var ReqData = React.createClass({
         draggable={isLeaf && draggable}
         tabIndex={index}
         onClick={isLeaf ? null : onToggle}
-        title={isLeaf ? request.url  : undefined}
+        title={isLeaf && request ? request.url  : label}
         onKeyDown={onArrow}
       >
         {
@@ -1089,7 +1089,7 @@ var ReqData = React.createClass({
             <span className={`icon-fold glyphicon glyphicon-triangle-${fold ? 'right' : 'bottom'}`}></span>
           )
         }
-        {label}
+        {label.length > 512 ? label.substring(0, 512) + '...' : label}
       </tr>
     );
   },

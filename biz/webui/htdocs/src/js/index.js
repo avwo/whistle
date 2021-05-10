@@ -3118,7 +3118,8 @@ var Index = React.createClass({
                 display: rulesMode ? 'none' : undefined
               }}
                draggable="false">
-                <span className="glyphicon glyphicon-globe"></span><i>Network</i>
+                <span className="glyphicon glyphicon-globe"></span>
+                <i><span title="Click to switch to structure sequence" className="glyphicon glyphicon-tree-conifer"></span>Network</i>
             </a>
             <a onClick={this.showRules} className="w-save-menu w-rules-menu"
               onDoubleClick={this.onClickMenu}

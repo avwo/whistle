@@ -64,7 +64,7 @@
 }
 .w-show-left-menu .w-left-menu { display: block; border-left: none; }
 .w-show-left-menu .w-nav-menu { display: none; }
-.w-left-menu a { display: block; position: relative; padding: 10px 0 8px; width: 45px; overflow: hidden; text-align: center;
+.w-left-menu a { display: block; position: relative; padding: 10px 0 8px; width: 47px; overflow: hidden; text-align: center;
   text-decoration: none!important; color: #000; }
 .w-left-menu a span { margin-right: 5px; }
 .w-left-menu a i {
@@ -75,6 +75,16 @@
   transform: scale(0.7, 0.7);
   width: 66px;
   margin-left: -11px;
+  white-space: nowrap;
+}
+.w-left-menu a i .glyphicon-tree-conifer {
+  margin-right: 0;
+  cursor: default;
+  color: #888;
+  font-size: 15px;
+}
+.w-left-menu a i span.enable-tree-view {
+  color: green;
 }
 .w-left-menu-tips {
   padding: 6px 10px; display: none; left: 47px; top: 3px; position: absolute;
