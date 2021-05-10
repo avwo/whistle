@@ -23,7 +23,6 @@ const parse = ({ url, id, method }) => {
       search: search.slice(0, 200)
     };
   } catch (error) {
-    console.error('parse url fail', url);
     return null;
   }
 };
