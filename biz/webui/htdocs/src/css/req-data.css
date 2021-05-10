@@ -147,13 +147,12 @@
 }
 
 .w-tree-view-list>div>.ReactVirtualized__Grid {
-  overflow: hidden!important;
+  overflow: auto!important;
 }
 .w-tree-view-list .ReactVirtualized__Grid__innerScrollContainer {
   overflow: auto!important;
   width: 100%!important;
-  height: 100%!important;
-  max-height: 100%!important;
+  overflow-y: hidden!important;
 }
 
 .w-tree-view-list .ReactVirtualized__Grid__innerScrollContainer tr {
@@ -163,7 +162,7 @@
 
 .w-tree-view-list .ReactVirtualized__Grid__innerScrollContainer::-webkit-scrollbar {
   width: 10px;
-  height: 7px;
+  height: 0px;
 }
 
 .w-tree-view-list .ReactVirtualized__Grid__innerScrollContainer::-webkit-scrollbar-thumb {
