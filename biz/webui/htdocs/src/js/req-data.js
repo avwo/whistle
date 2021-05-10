@@ -1080,11 +1080,12 @@ var ReqData = React.createClass({
         data-tree={id}
         draggable={draggable}
         tabIndex={index}
+        onClick={isLeaf ? null : onToggle}
         onKeyDown={onArrow}
       >
         {
           isLeaf ? null : (
-            <span onClick={onToggle} className={`icon-fold glyphicon glyphicon-triangle-${fold ? 'right' : 'bottom'}`}></span>
+            <span className={`icon-fold glyphicon glyphicon-triangle-${fold ? 'right' : 'bottom'}`}></span>
           )
         }
         {label}
