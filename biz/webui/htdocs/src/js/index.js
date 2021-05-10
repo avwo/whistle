@@ -2856,7 +2856,7 @@ var Index = React.createClass({
     const next = !isTreeView;
 
     this.setState({
-      isTreeView: next,
+      isTreeView: next
     }, () => {
       network.setTreeView(next);
     });

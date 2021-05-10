@@ -99,22 +99,14 @@ var contextMenuList = [
     ]
   },
   {
-    name: 'Fold',
-    action: 'Fold',
+    name: 'Tree',
+    list: [
+      { name: 'Fold' },
+      { name: 'Unfold' },
+      { name: 'Fold All' },
+      { name: 'Unfold All' }
+    ]
   },
-  {
-    name: 'Unfold',
-    action: 'Unfold',
-  },
-  {
-    name: 'Fold All',
-    action: 'Fold All',
-  },
-  {
-    name: 'Unfold All',
-    action: 'Unfold All',
-  },
-  { name: 'Share' },
   { name: 'Import' },
   { name: 'Export' },
   {
@@ -160,13 +152,6 @@ function getColStyle(col, style) {
   style = style ? $.extend({}, style) : {};
   style.width = col.minWidth ? Math.max(col.width, col.minWidth) : col.width;
   return style;
-}
-
-function getUploadSessionsFn() {
-  try {
-    var uploadSessions = window.parent.uploadWhistleSessions;
-    return typeof uploadSessions === 'function' ? uploadSessions : null;
-  } catch(e) {}
 }
 
 function getClassName(data) {
@@ -279,7 +264,7 @@ var ReqData = React.createClass({
       draggable: true,
       columns: settings.getSelectedColumns(),
       dragger: dragger,
-      stopHighlight: -1,
+      stopHighlight: -1
     };
   },
   componentDidMount: function() {
@@ -621,12 +606,6 @@ var ReqData = React.createClass({
         name: getFilename(item, 'res_raw')
       });
       break;
-    case 'Share':
-      events.trigger('uploadSessions', {
-        curItem: item,
-        upload: getUploadSessionsFn()
-      });
-      break;
     case 'Import':
       events.trigger('importSessions', e);
       break;
@@ -678,27 +657,27 @@ var ReqData = React.createClass({
     case 'Fold':
       modal.toggleTreeNode({
         id: this.treeTarget,
-        next: true,
+        next: true
       });
       break;
     case 'Unfold':
       modal.toggleTreeNode({
         id: this.treeTarget,
-        next: false,
+        next: false
       });
       break;
     case 'Fold All':
       modal.toggleTreeNode({
         id: this.treeTarget,
         next: true,
-        recursive: true,
+        recursive: true
       });
       break;
     case 'Unfold All':
       modal.toggleTreeNode({
         id: this.treeTarget,
         next: false,
-        recursive: true,
+        recursive: true
       });
       break;
     }
@@ -843,20 +822,17 @@ var ReqData = React.createClass({
         const isLeaf = index > -1;
 
         this.treeTarget = treeId;
-
-        contextMenuList[6].hide = fold || isLeaf;
-        contextMenuList[7].hide = !fold || isLeaf;
-        contextMenuList[8].hide = isLeaf;
-        contextMenuList[9].hide = isLeaf;
+        var treeList = contextMenuList[6].list;
+        treeList[0].hide = fold || isLeaf;
+        treeList[1].hide = !fold || isLeaf;
+        treeList[2].hide = isLeaf;
+        treeList[3].hide = isLeaf;
       }
     }
-
-    var uploadItem = contextMenuList[14];
-    uploadItem.hide = !getUploadSessionsFn();
-    contextMenuList[13].disabled = uploadItem.disabled = disabled && !selectedCount;
-    var pluginItem = contextMenuList[13];
-    util.addPluginMenus(pluginItem, dataCenter.getNetworkMenus(), uploadItem.hide ? 8 : 9, disabled);
-    var height = (uploadItem.hide ? 310 : 340) - (pluginItem.hide ? 30 : 0);
+    var pluginItem = contextMenuList[9];
+    pluginItem.disabled = disabled && !selectedCount;
+    util.addPluginMenus(pluginItem, dataCenter.getNetworkMenus(), 9, disabled);
+    var height = 340 - (pluginItem.hide ? 30 : 0);
     pluginItem.maxHeight = height;
     var data = util.getMenuPosition(e, 110, height);
     data.list = contextMenuList;
@@ -1068,7 +1044,7 @@ var ReqData = React.createClass({
 
     const {
       config,
-      request,
+      request
     } = data;
 
     const {index, depth, search, value, fold} = config;
@@ -1097,7 +1073,7 @@ var ReqData = React.createClass({
         key={id}
         style={{
           ...style,
-          marginLeft: depth * 32,
+          marginLeft: depth * 32
         }}
         className={`w-req-data-item tree-node ${isLeaf ? 'tree-leaf': ''} ${request ? getClassName(request) : ''}`}
         data-id={request ? request.id : id}

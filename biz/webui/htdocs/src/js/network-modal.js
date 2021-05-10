@@ -31,7 +31,7 @@ const startInterceptor = () => {
 
     const hl = tree[handler]({
       index: key,
-      ...value,
+      ...value
     });
 
     events.trigger('updateUI');
@@ -714,7 +714,7 @@ proto.intercept = function() {
       debut = true;
       this._list.forEach((item, index) => tree.insert({
         ...item,
-        index,
+        index
       }));
     }
 
@@ -745,19 +745,19 @@ proto.getTreeNode = function(id) {
 
   return {
     config: item,
-    request: data,
+    request: data
   };
 };
 
 proto.toggleTreeNode = function({
   id,
   next,
-  recursive,
+  recursive
 }) {
   tree.toggle({
     id,
     next,
-    recursive,
+    recursive
   });
   events.trigger('updateUI');
 };

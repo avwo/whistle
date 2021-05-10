@@ -5,7 +5,7 @@ const parse = ({ url, id, method }) => {
     if (/connect/i.test(method)) {
       return {
         queue: url.split(':').slice(0, 1),
-        search: '',
+        search: ''
       };
     }
 
@@ -20,7 +20,7 @@ const parse = ({ url, id, method }) => {
 
     return {
       queue: result,
-      search: search.slice(0, 200),
+      search: search.slice(0, 200)
     };
   } catch (error) {
     console.error('parse url fail', url);
@@ -38,7 +38,7 @@ const prune = (url) => {
 const dfs = ({
   node,
   callback,
-  filter,
+  filter
 }) => {
   let stack = [node];
 
@@ -87,7 +87,7 @@ class Tree {
 
     const {
       queue,
-      search,
+      search
     } = result;
 
     let node = this.root;
@@ -130,7 +130,7 @@ class Tree {
       queue,
       depth,
       search,
-      highlight,
+      highlight
     };
   }
 
@@ -157,7 +157,7 @@ class Tree {
       queue,
       depth,
       search,
-      highlight,
+      highlight
     } = result;
 
     let child = null;
@@ -184,7 +184,7 @@ class Tree {
       let temp = {
         value: item, // for tree
         id: prefix, // for map & list
-        parent: node,
+        parent: node
       };
 
       if (!isLeaf) {
@@ -201,7 +201,7 @@ class Tree {
         search, // for render
         value: prune(item), // for render
         depth: ++depth,
-        fold: true,
+        fold: true
       });
 
       node = node.children[next];
@@ -213,7 +213,7 @@ class Tree {
 
     return this.flush({
       parent: highlight,
-      child,
+      child
     });
   }
 
@@ -227,7 +227,7 @@ class Tree {
     const { index } = data;
     this.map.set(id, {
       ...item,
-      index,
+      index
     });
 
     return true;
@@ -238,7 +238,7 @@ class Tree {
   // 3. update queue
   flush({
     parent,
-    child,
+    child
   }) {
     if (!child) {
       return parent;
@@ -316,7 +316,7 @@ class Tree {
 
     dfs({
       node,
-      callback,
+      callback
     });
 
     while (node && node.parent) {
@@ -338,7 +338,7 @@ class Tree {
   toggle({
     id: url,
     next,
-    recursive = false,
+    recursive = false
   }) {
     // invalid url
     if (!url || !this.map.has(url)) {
@@ -364,7 +364,7 @@ class Tree {
     }
     this.map.set(url, {
       ...item,
-      fold: next,
+      fold: next
     });
 
     let { node } = result;
@@ -402,7 +402,7 @@ class Tree {
         const item = this.map.get(id);
         this.map.set(id, {
           ...item,
-          fold: next,
+          fold: next
         });
       }
     };
@@ -420,7 +420,7 @@ class Tree {
           }
         }
         return false;
-      },
+      }
     });
 
     // fold
@@ -440,7 +440,7 @@ class Tree {
     }
 
     const {
-      queue,
+      queue
     } = result;
 
     return queue.join('/');

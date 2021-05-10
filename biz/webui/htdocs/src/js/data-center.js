@@ -51,7 +51,7 @@ const handler = () => {
       }
 
       return Reflect.deleteProperty(target, key);
-    },
+    }
   };
 };
 

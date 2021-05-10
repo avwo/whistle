@@ -50,10 +50,6 @@
         "allowEmptyCatch": true
       }
     ],
-    "no-cond-assign": "off",
-    "comma-dangle": [
-      "warn",
-      "always-multiline"
-    ]
+    "no-cond-assign": "off"
   }
 }
