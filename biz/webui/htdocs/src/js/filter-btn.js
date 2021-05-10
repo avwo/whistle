@@ -33,8 +33,8 @@ var FilterBtn = React.createClass({
         draggable="false"
       >
         <span
-          className={'glyphicon glyphicon-' + (isNetwork ? 'filter' : 'cog')}
-        />{isNetwork ? 'Filter' : 'Settings'}
+          className="glyphicon glyphicon-cog"
+        />Settings
       </a>
     );
   }

@@ -83,7 +83,10 @@
   color: #888;
   font-size: 15px;
 }
-.w-left-menu a i span.enable-tree-view {
+.w-left-menu a i .glyphicon-tree-conifer:hover {
+  color: #8fbc8f;
+}
+.w-left-menu a i .glyphicon-tree-conifer.enable-tree-view {
   color: green;
 }
 .w-left-menu-tips {

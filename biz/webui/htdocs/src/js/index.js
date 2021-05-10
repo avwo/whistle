@@ -605,6 +605,9 @@ var Index = React.createClass({
       self.rulesChanged = true;
       self.showReloadRules();
     });
+    events.on('switchStructureView', function() {
+      self.toggleTreeView();
+    });
     events.on('updateGlobal', function() {
       self.setState({});
     });
@@ -3027,13 +3030,6 @@ var Index = React.createClass({
             <span className="glyphicon glyphicon-download-alt" />
             ReinstallAll
           </a>
-          <a
-            onClick={this.toggleTreeView}
-            className={`w-tree-view ${state.isTreeView ? 'w-tree-view-active' : ''}`}
-            style={{display: isNetwork ? '' : 'none'}}
-            draggable="false">
-            <span className="glyphicon glyphicon-tree-conifer"></span>Tree View
-          </a>
           <a onClick={this.importData} className="w-import-menu"
             style={{display: isPlugins ? 'none' : ''}}
             draggable="false">
@@ -3119,7 +3115,8 @@ var Index = React.createClass({
               }}
                draggable="false">
                 <span className="glyphicon glyphicon-globe"></span>
-                <i><span title="Click to switch to structure sequence" className="glyphicon glyphicon-tree-conifer"></span>Network</i>
+                <i><span title={'Click to switch to ' + (state.isTreeView ? 'sequence' : 'structure') + ' view'}
+                  onClick={this.toggleTreeView} className={'glyphicon glyphicon-tree-conifer' + (state.isTreeView ? ' enable-tree-view' : '')}></span>Network</i>
             </a>
             <a onClick={this.showRules} className="w-save-menu w-rules-menu"
               onDoubleClick={this.onClickMenu}

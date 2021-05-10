@@ -9,6 +9,7 @@ var columns = require('./columns');
 var dataCenter = require('./data-center');
 var events = require('./events');
 var util = require('./util');
+var storage = require('./storage');
 
 var Settings = React.createClass({
   getInitialState: function() {
@@ -29,6 +30,12 @@ var Settings = React.createClass({
     columns.reset();
     this.onColumnsResort();
   },
+  componentDidMount: function() {
+    var self = this;
+    events.on('toggleTreeView', function() {
+      self.setState({});
+    });
+  },
   onNetworkSettingsChange: function(e) {
     var target = e.target;
     var name = target.getAttribute('data-name');
@@ -39,6 +46,10 @@ var Settings = React.createClass({
       dataCenter.setOnlyViewOwnData(target.checked);
       this.setState({});
       events.trigger('filterChanged');
+      return;
+    }
+    if (name === 'structureView') {
+      events.trigger('switchStructureView');
       return;
     }
     var settings = this.state;
@@ -220,6 +231,10 @@ var Settings = React.createClass({
           </label>
           <label className="w-network-settings-own">
             <input checked={dataCenter.isOnlyViewOwnData()} data-name="viewOwn" type="checkbox" />Only take this machine's request into consideration (IP: {dataCenter.clientIp})
+          </label>
+          <label className="w-network-settings-own">
+            <input checked={storage.get('isTreeView') === '1'} data-name="structureView" type="checkbox" />
+            <span className="glyphicon glyphicon-tree-conifer" style={{marginRight: 2}}></span>Switch to structure view
           </label>
         </div>
         <div className="modal-footer">
