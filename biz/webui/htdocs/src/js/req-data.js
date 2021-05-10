@@ -1081,6 +1081,7 @@ var ReqData = React.createClass({
         draggable={isLeaf && draggable}
         tabIndex={index}
         onClick={isLeaf ? null : onToggle}
+        title={isLeaf ? request.url  : undefined}
         onKeyDown={onArrow}
       >
         {
