@@ -14,7 +14,7 @@
 .w-req-data-content .download, .w-req-data-content .contentEncoding,
 .w-req-data-content .body { width: 90px; }
 
-.w-req-data-headers {height: 30px; border-top: 1px solid #ccc; border-bottom: 1px solid #ccc; overflow: hidden;}
+.w-req-data-headers {height: 29px; border-bottom: 1px solid #ccc; overflow: hidden;}
 .w-req-data-headers .table {height: 30px;}
 .w-req-data-headers .table th {border: none!important; padding: 4px 0 4px 6px; -webkit-user-select: none; font-weight: normal; color: #000; position: relative; cursor: pointer;}
 .w-req-data-headers .table th:last-child { box-sizing: content-box; }

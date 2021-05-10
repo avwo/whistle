@@ -1,4 +1,7 @@
-.w-menu {height: 28px; border-top: 1px solid #fcfcfc; background: #f1f3f4; padding-right: 80px; position: relative; z-index: 1001;}
+.w-menu {
+  height: 28px; border-top: 1px solid #fcfcfc; border-bottom: 1px solid #ccc;
+  background: #f1f3f4; padding-right: 80px; position: relative; z-index: 1001;
+}
 .w-menu a {text-decoration: none!important; color: #000; padding: 0 5px; line-height: 26px; height: 26px; margin-right: 5px; display: inline-block;}
 .w-menu .glyphicon, .w-detail .glyphicon {margin-right: 3px;}
 .w-menu .glyphicon-folder-open, .w-menu .glyphicon-folder-close {margin-right: 6px;}
@@ -55,7 +58,10 @@
 .w-confirm-import-dialog .modal-dialog { width: 320px; font-weight: bold; }
 
 .w-show-left-menu-btn { padding: 0 15px!important; margin-right: 0!important; }
-.w-left-menu { background: #f1f3f4; border: 1px solid #ccc; border-bottom: none; display: none; }
+.w-left-menu {
+  background: #f1f3f4; border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc; display: none;
+}
 .w-show-left-menu .w-left-menu { display: block; border-left: none; }
 .w-show-left-menu .w-nav-menu { display: none; }
 .w-left-menu a { display: block; position: relative; padding: 10px 0 8px; width: 45px; overflow: hidden; text-align: center;

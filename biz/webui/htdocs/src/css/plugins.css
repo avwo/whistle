@@ -1,4 +1,4 @@
-.w-nav-tabs {padding-top: 10px; border-top: 1px solid #ccc; font-size: 13px;}
+.w-nav-tabs {padding-top: 10px; font-size: 13px;}
 .w-nav-tabs>.nav>li>a {padding: 5px 20px 5px 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 120px; position: relative;}
 .w-nav-tabs>.nav>li>a>.w-close-icon {display: block; position: absolute; top: 5px; right: 5px; color: #999; cursor: pointer;}
 .w-nav-tabs>.nav>li>a>.w-close-icon:hover {color: #000;}
