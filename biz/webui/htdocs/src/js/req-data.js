@@ -1078,7 +1078,7 @@ var ReqData = React.createClass({
         className={`w-req-data-item tree-node ${isLeaf ? 'tree-leaf': ''} ${request ? getClassName(request) : ''}`}
         data-id={request ? request.id : id}
         data-tree={id}
-        draggable={draggable}
+        draggable={isLeaf && draggable}
         tabIndex={index}
         onClick={isLeaf ? null : onToggle}
         onKeyDown={onArrow}
@@ -1132,7 +1132,7 @@ var ReqData = React.createClass({
             }
             <div ref="container" tabIndex="0" onContextMenu={self.onContextMenu} onKeyDown={this.onReplay}
               style={{background: (dataCenter.hashFilterObj || filterText) ? 'lightyellow' : undefined}}
-              className="w-req-data-list fill"  onDragStart={this.onDragStart}>
+              className={'w-req-data-list fill' + (isTreeView ? ' w-tree-view-list' : '')}  onDragStart={this.onDragStart}>
                 <RV.AutoSizer ref="content">
                   {(size) => (
                     <RV.List

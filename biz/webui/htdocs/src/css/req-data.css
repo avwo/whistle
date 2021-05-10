@@ -143,4 +143,29 @@
   padding: 10px 10px;
   margin: -10px;
   margin-right: -6px;
+  transform: scale(0.8);
+}
+
+.w-tree-view-list>div>.ReactVirtualized__Grid {
+  overflow: hidden!important;
+}
+.w-tree-view-list .ReactVirtualized__Grid__innerScrollContainer {
+  overflow: auto!important;
+  width: 100%!important;
+  height: 100%!important;
+  max-height: 100%!important;
+}
+
+.w-tree-view-list .ReactVirtualized__Grid__innerScrollContainer tr {
+  width: auto!important;
+  white-space: nowrap;
+}
+
+.w-tree-view-list .ReactVirtualized__Grid__innerScrollContainer::-webkit-scrollbar {
+  width: 10px;
+  height: 7px;
+}
+
+.w-tree-view-list .ReactVirtualized__Grid__innerScrollContainer::-webkit-scrollbar-thumb {
+  border-radius:8px; 
 }
