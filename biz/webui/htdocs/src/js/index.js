@@ -39,7 +39,8 @@ var LINK_SELECTOR = '.cm-js-type, .cm-js-http-url, .cm-string, .cm-js-at';
 var LINK_RE = /^"(https?:)?(\/\/[^/]\S+)"$/i;
 var AT_LINK_RE = /^@(https?:)?(\/\/[^/]\S+)$/i;
 var OPTIONS_WITH_SELECTED = ['removeSelected', 'exportWhistleFile', 'exportSazFile'];
-var hideLeftMenu = /(?:^\?|&)hideLeft(?:Bar|Menu)=(?:true|1)(?:&|$)/.test(window.location.search);
+var hideLeftMenu = /[&#?]hideLeft(?:Bar|Menu)=(?:true|1)(?:&|$|#)/.test(window.location.search);
+var showStructure = /[&#?]showStructure=(?:1|true)(?:&|$|#)/.test(window.location.search);
 var RULES_ACTIONS = [
   {
     name: 'Export Selected',
@@ -442,7 +443,7 @@ var Index = React.createClass({
     state.showLeftMenu = showLeftMenu == null ? true : showLeftMenu;
     util.triggerPageChange(state.name);
 
-    state.isTreeView = storage.get('isTreeView') === '1';
+    state.isTreeView = showStructure || storage.get('isTreeView') === '1';
 
     return state;
   },
@@ -1304,6 +1305,10 @@ var Index = React.createClass({
         network: modal
       }, function() {
         _atBottom && scrollToBottom();
+        if (!self._inited && self.state.isTreeView) {
+          self._inited = true;
+          modal.setTreeView(true, true);
+        }
       });
     }
 

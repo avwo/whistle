@@ -709,9 +709,9 @@ function updateOrder(list, force) {
   return list;
 }
 
-proto.setTreeView = function(next = !this.isTreeView) {
+proto.setTreeView = function(next = !this.isTreeView, quiet) {
   this.isTreeView = !!next;
-  storage.set('isTreeView', +next);
+  !quiet && storage.set('isTreeView', +next);
   events.trigger('toggleTreeView', this.isTreeView);
   if (this.isTreeView) {
     debut = false;
