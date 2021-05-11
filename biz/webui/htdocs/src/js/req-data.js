@@ -827,6 +827,7 @@ var ReqData = React.createClass({
     }
     var treeItem = contextMenuList[6];
     treeItem.hide = !modal.isTreeView;
+    treeItem.disabled = !treeNodeData;
     if (treeNodeData) {
       const {config} = treeNodeData;
       const {index, fold} = config;
@@ -835,10 +836,10 @@ var ReqData = React.createClass({
       this.treeTarget = treeId;
       this.isTreeLeafNode = isLeaf;
       var treeList = treeItem.list;
-      treeList[0].hide = fold || isLeaf;
-      treeList[1].hide = !fold || isLeaf;
-      treeList[2].hide = isLeaf;
-      treeList[3].hide = isLeaf;
+      treeList[0].disabled = fold || isLeaf;
+      treeList[1].disabled = !fold || isLeaf;
+      treeList[2].disabled = isLeaf;
+      treeList[3].disabled = isLeaf;
     }
     var pluginItem = contextMenuList[9];
     pluginItem.disabled = disabled && !selectedCount;
