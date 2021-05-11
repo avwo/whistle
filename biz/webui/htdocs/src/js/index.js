@@ -937,6 +937,9 @@ var Index = React.createClass({
     });
 
     var getFocusItemList = function(curItem) {
+      if (Array.isArray(curItem)) {
+        return curItem;
+      }
       if (!curItem || curItem.selected) {
         return;
       }

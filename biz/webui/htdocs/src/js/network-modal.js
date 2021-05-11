@@ -594,9 +594,20 @@ proto.setSelected = function(item, selected) {
 };
 
 proto.getSelectedList = function() {
-
   return this.list.filter(function(item) {
     return !item.hide && item.selected;
+  });
+};
+
+proto.getListByPath = function(path) {
+  var isTunnel = path.indexOf('tunnel://') === 0;
+  if (isTunnel) {
+    path = path.substring(9);
+  } else {
+    path = path + '/';
+  }
+  return this.list.filter(function(item) {
+    return !item.hide && (isTunnel ? item.url === path : !item.url.indexOf(path));
   });
 };
 

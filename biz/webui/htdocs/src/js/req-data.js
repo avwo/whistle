@@ -565,7 +565,11 @@ var ReqData = React.createClass({
       events.trigger('replaySessions', [item, e.shiftKey]);
       break;
     case 'Export':
-      events.trigger('exportSessions', item);
+      if (self.treeTarget && !self.isTreeLeafNode) {
+        events.trigger('exportSessions', [modal.getListByPath(self.treeTarget)]);
+      } else {
+        events.trigger('exportSessions', item);
+      }
       break;
     case 'Abort':
       events.trigger('abortRequest', item);
@@ -823,6 +827,7 @@ var ReqData = React.createClass({
       const isLeaf = index > -1;
 
       this.treeTarget = treeId;
+      this.isTreeLeafNode = isLeaf;
       var treeList = contextMenuList[6].list;
       treeList[0].hide = fold || isLeaf;
       treeList[1].hide = !fold || isLeaf;
