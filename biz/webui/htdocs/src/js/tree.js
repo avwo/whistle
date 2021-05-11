@@ -4,7 +4,7 @@ const parse = ({ url, id, method }) => {
   try {
     if (/connect/i.test(method)) {
       return {
-        queue: url.split(':').slice(0, 1),
+        queue: ['tunnel://' + url],
         search: ''
       };
     }
