@@ -20,7 +20,7 @@ const parse = ({ url, id, method }) => {
 
     return {
       queue: result,
-      search: search.slice(0, 200)
+      search: search.slice(0, 326)
     };
   } catch (error) {
     return null;
