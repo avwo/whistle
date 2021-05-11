@@ -2051,3 +2051,7 @@ exports.toHar = function(item) {
     serverIPAddress: item.hostIp
   };
 };
+
+exports.getUrl = function(url) {
+  return url && url.indexOf('/') === -1 ? 'tunnel://' + url : url;
+};

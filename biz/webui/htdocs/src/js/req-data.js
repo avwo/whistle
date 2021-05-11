@@ -693,6 +693,8 @@ var ReqData = React.createClass({
     var modal = this.props.modal;
     var item = modal.getItem(dataId);
     var disabled = !item;
+    var treeNodeData = modal.isTreeView && modal.getTreeNode(treeId);
+    this.treeTarget = null;
     e.preventDefault();
     this.currentFocusItem = item;
     contextMenuList[0].disabled = disabled;
@@ -715,7 +717,7 @@ var ReqData = React.createClass({
       menu.disabled = disabled;
       switch(menu.name) {
       case 'URL':
-        menu.copyText = item && item.url.replace(/[?#].*$/, '');
+        menu.copyText = util.getUrl(item && item.url.replace(/[?#].*$/, ''));
         break;
       case 'Host':
         menu.copyText = item && (item.isHttps ? item.path : item.hostname);
@@ -724,7 +726,7 @@ var ReqData = React.createClass({
         menu.copyText = item && item.path;
         break;
       case 'Full URL':
-        menu.copyText = item && item.url;
+        menu.copyText = util.getUrl(item && item.url);
         break;
       case 'As CURL':
         menu.copyText = util.asCURL(item);
@@ -815,23 +817,17 @@ var ReqData = React.createClass({
       list5[2].disabled = true;
       list5[3].disabled = true;
     }
+    if (treeNodeData) {
+      const {config} = treeNodeData;
+      const {index, fold} = config;
+      const isLeaf = index > -1;
 
-    if (modal.isTreeView) {
-      this.treeTarget = null;
-
-      const treeNodeData = modal.getTreeNode(treeId);
-      if (treeNodeData) {
-        const {config} = treeNodeData;
-        const {index, fold} = config;
-        const isLeaf = index > -1;
-
-        this.treeTarget = treeId;
-        var treeList = contextMenuList[6].list;
-        treeList[0].hide = fold || isLeaf;
-        treeList[1].hide = !fold || isLeaf;
-        treeList[2].hide = isLeaf;
-        treeList[3].hide = isLeaf;
-      }
+      this.treeTarget = treeId;
+      var treeList = contextMenuList[6].list;
+      treeList[0].hide = fold || isLeaf;
+      treeList[1].hide = !fold || isLeaf;
+      treeList[2].hide = isLeaf;
+      treeList[3].hide = isLeaf;
     }
     var pluginItem = contextMenuList[9];
     pluginItem.disabled = disabled && !selectedCount;
@@ -1084,7 +1080,7 @@ var ReqData = React.createClass({
         draggable={isLeaf && draggable}
         tabIndex={index}
         onClick={isLeaf ? null : onToggle}
-        title={isLeaf && request ? request.url  : label}
+        title={isLeaf && request ? util.getUrl(request.url) : label}
         onKeyDown={onArrow}
       >
         {
