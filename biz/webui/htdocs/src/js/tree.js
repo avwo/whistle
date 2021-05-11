@@ -1,30 +1,53 @@
 const LEAF_DELIMITER = '#';
 
-const parse = ({ url, id, method }) => {
-  try {
-    if (/connect/i.test(method)) {
-      return {
-        queue: ['tunnel://' + url],
-        search: ''
-      };
-    }
-
-    const { origin, pathname, search } = new URL(url);
-    let result = [origin, ...pathname.slice(1).split('/')];
-
-    if (id) {
-      let leaf = result.pop();
-      leaf += LEAF_DELIMITER + id;
-      result = [...result, leaf];
-    }
-
-    return {
-      queue: result,
-      search: search.slice(0, 326)
-    };
-  } catch (error) {
-    return null;
+function parseUrl(url) {
+  if (!url || typeof url !== 'string') {
+    return;
   }
+  var index = url.indexOf('?');
+  var search = index === -1 ? '' : url.substring(index);
+  url = url.replace(/[?#].*$/, '');
+  index = url.indexOf('://');
+  var pathname;
+  var origin;
+  if (index === -1) {
+    origin = 'tunnel://' + url;
+    pathname = '/';
+  } else {
+    index = url.indexOf('/', index + 3);
+    if (index === -1) {
+      pathname = '/';
+      origin = url;
+    } else {
+      pathname = url.substring(index);
+      origin = url.substring(0, index);
+    }
+  }
+  return {
+    search: search,
+    pathname: pathname,
+    origin: origin
+  };
+}
+
+const parse = ({ url, id }) => {
+  var options = parseUrl(url);
+  if (!options) {
+    return;
+  }
+  const { origin, pathname, search } = options;
+  let result = [origin, ...pathname.slice(1).split('/')];
+
+  if (id) {
+    let leaf = result.pop();
+    leaf += LEAF_DELIMITER + id;
+    result = [...result, leaf];
+  }
+
+  return {
+    queue: result,
+    search: search.slice(0, 326)
+  };
 };
 
 const prune = (url) => {
