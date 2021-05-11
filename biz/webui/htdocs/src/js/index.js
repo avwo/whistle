@@ -790,6 +790,7 @@ var Index = React.createClass({
       } else if (e.keyCode === 66) {
         self.toggleTreeView();
         e.preventDefault();
+        events.trigger('toggleTreeViewByAccessKey');
       }
       var isNetwork = self.state.name === 'network';
       if (isNetwork && e.keyCode == 88) {

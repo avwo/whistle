@@ -373,6 +373,10 @@ var ReqData = React.createClass({
       enableHighlight(next);
     });
 
+    events.on('toggleTreeViewByAccessKey', function() {
+      self.refs.contextMenu.hide();
+    });
+
     $(document).on('visibilitychange', () => {
       enableHighlight(!document.hidden);
     });
@@ -821,6 +825,8 @@ var ReqData = React.createClass({
       list5[2].disabled = true;
       list5[3].disabled = true;
     }
+    var treeItem = contextMenuList[6];
+    treeItem.hide = !modal.isTreeView;
     if (treeNodeData) {
       const {config} = treeNodeData;
       const {index, fold} = config;
@@ -828,7 +834,7 @@ var ReqData = React.createClass({
 
       this.treeTarget = treeId;
       this.isTreeLeafNode = isLeaf;
-      var treeList = contextMenuList[6].list;
+      var treeList = treeItem.list;
       treeList[0].hide = fold || isLeaf;
       treeList[1].hide = !fold || isLeaf;
       treeList[2].hide = isLeaf;
@@ -836,8 +842,8 @@ var ReqData = React.createClass({
     }
     var pluginItem = contextMenuList[9];
     pluginItem.disabled = disabled && !selectedCount;
-    util.addPluginMenus(pluginItem, dataCenter.getNetworkMenus(), 9, disabled);
-    var height = 340 - (pluginItem.hide ? 30 : 0);
+    util.addPluginMenus(pluginItem, dataCenter.getNetworkMenus(), treeItem.hide ? 8 : 9, disabled);
+    var height = (treeItem.hide ? 310 : 340) - (pluginItem.hide ? 30 : 0);
     pluginItem.maxHeight = height;
     var data = util.getMenuPosition(e, 110, height);
     data.list = contextMenuList;
