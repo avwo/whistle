@@ -1071,7 +1071,6 @@ var ReqData = React.createClass({
         modal.toggleTreeNode({id});
       }
     };
-
     return (
       <tr
         key={id}
