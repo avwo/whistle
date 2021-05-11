@@ -234,7 +234,7 @@ var Settings = React.createClass({
           </label>
           <label className="w-network-settings-own">
             <input checked={storage.get('isTreeView') === '1'} data-name="structureView" type="checkbox" />
-            <span className="glyphicon glyphicon-tree-conifer" style={{marginRight: 2}}></span>Switch to structure view
+            <span className="glyphicon glyphicon-tree-conifer" style={{marginRight: 2}}></span>Switch to structure view (Ctrl[Command] + B)
           </label>
         </div>
         <div className="modal-footer">

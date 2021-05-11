@@ -786,6 +786,10 @@ var Index = React.createClass({
       }
       if (e.keyCode === 77) {
         self.toggleLeftMenu();
+        e.preventDefault();
+      } else if (e.keyCode === 66) {
+        self.toggleTreeView();
+        e.preventDefault();
       }
       var isNetwork = self.state.name === 'network';
       if (isNetwork && e.keyCode == 88) {
@@ -3118,7 +3122,7 @@ var Index = React.createClass({
               }}
                draggable="false">
                 <span className="glyphicon glyphicon-globe"></span>
-                <i><span title={'Click to switch to ' + (state.isTreeView ? 'sequence' : 'structure') + ' view'} onDoubleClick={stopPropagation}
+                <i><span title={'Click to switch to ' + (state.isTreeView ? 'sequence' : 'structure') + ' view (Ctrl[Command] + B)'} onDoubleClick={stopPropagation}
                   onClick={this.toggleTreeView} className={'glyphicon glyphicon-tree-conifer' + (state.isTreeView ? ' enable-tree-view' : '')}></span>Network</i>
             </a>
             <a onClick={this.showRules} className="w-save-menu w-rules-menu"
