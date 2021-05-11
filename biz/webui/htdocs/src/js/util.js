@@ -334,6 +334,9 @@ function isText(contentType) {
 exports.isText = isText;
 
 function getHost(url) {
+  if (!url) {
+    return '';
+  }
   var start = url.indexOf(':\/\/');
   start = start == -1 ? 0 : start + 3;
   var end = url.indexOf('\/', start);
@@ -489,6 +492,9 @@ function removeProtocol(url) {
 exports.removeProtocol = removeProtocol;
 
 exports.getPath = function(url) {
+  if (!url) {
+    return '';
+  }
   url = removeProtocol(url);
   var index = url.indexOf('/');
   return index == -1 ? '/' : url.substring(index);

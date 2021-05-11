@@ -521,13 +521,14 @@ var ReqData = React.createClass({
     var self = this;
     var item = self.currentFocusItem;
     const {modal} = this.props;
+    var curUrl = item && item.url || (self.treeTarget && self.treeTarget + '/');
 
     switch(parentAction || action) {
     case 'New Tab':
-      item && window.open(item.url);
+      curUrl && window.open(curUrl);
       break;
     case 'QR Code':
-      self.refs.qrcodeDialog.show(item && item.url);
+      self.refs.qrcodeDialog.show(curUrl);
       break;
     case 'Preview':
       util.openPreview(item);
@@ -705,9 +706,10 @@ var ReqData = React.createClass({
     this.treeTarget = null;
     e.preventDefault();
     this.currentFocusItem = item;
-    contextMenuList[0].disabled = disabled;
+    var clickBlank = disabled && !treeNodeData;
+    contextMenuList[0].disabled = clickBlank;
     var list0 = contextMenuList[0].list;
-    list0[4].disabled = disabled || !/^https?:\/\//.test(item.url);
+    list0[4].disabled = clickBlank || !/^https?:\/\//.test(treeId || item.url);
     if (disabled) {
       list0[6].disabled = true;
     } else {
@@ -720,21 +722,27 @@ var ReqData = React.createClass({
     list0[3].disabled = disabled;
     list0[7].disabled = disabled;
 
-    contextMenuList[1].disabled = disabled;
+    contextMenuList[1].disabled = disabled && !treeId;
+    var treeUrl = treeId ? treeId + '/' : '';
+    var isTreeNode = disabled && !treeUrl;
     contextMenuList[1].list.forEach(function(menu) {
       menu.disabled = disabled;
       switch(menu.name) {
       case 'URL':
-        menu.copyText = util.getUrl(item && item.url.replace(/[?#].*$/, ''));
+        menu.copyText = util.getUrl(item && item.url.replace(/[?#].*$/, '') || treeUrl);
+        menu.disabled = isTreeNode;
         break;
       case 'Host':
-        menu.copyText = item && (item.isHttps ? item.path : item.hostname);
+        menu.copyText = item && (item.isHttps ? item.path : item.hostname) || util.getHost(treeUrl);
+        menu.disabled = isTreeNode;
         break;
       case 'Path':
-        menu.copyText = item && item.path;
+        menu.copyText = item && item.path || util.getPath(treeUrl);
+        menu.disabled = isTreeNode;
         break;
       case 'Full URL':
-        menu.copyText = util.getUrl(item && item.url);
+        menu.copyText = util.getUrl(item && item.url || treeUrl);
+        menu.disabled = isTreeNode;
         break;
       case 'As CURL':
         menu.copyText = util.asCURL(item);
