@@ -1,4 +1,4 @@
-const LEAF_DELIMITER = '__LEAF__';
+const LEAF_DELIMITER = '#';
 
 const parse = ({ url, id, method }) => {
   try {
@@ -12,7 +12,7 @@ const parse = ({ url, id, method }) => {
     const { origin, pathname, search } = new URL(url);
     let result = [origin, ...pathname.slice(1).split('/')];
 
-    if (pathname.indexOf(LEAF_DELIMITER) === -1 && id) {
+    if (id) {
       let leaf = result.pop();
       leaf += LEAF_DELIMITER + id;
       result = [...result, leaf];
@@ -28,7 +28,7 @@ const parse = ({ url, id, method }) => {
 };
 
 const prune = (url) => {
-  if (!url || !RegExp(LEAF_DELIMITER).test(url)) {
+  if (!url || url.indexOf('#') === -1) {
     return url;
   }
   return url.split(LEAF_DELIMITER)[0];
