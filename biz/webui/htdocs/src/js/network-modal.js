@@ -800,6 +800,7 @@ proto.filterTree = function() {
       return !hide;
     });
   }
+  this.intercept();
 };
 
 module.exports = NetworkModal;
