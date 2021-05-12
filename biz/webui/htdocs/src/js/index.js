@@ -1312,8 +1312,10 @@ var Index = React.createClass({
       });
     }
 
-    function scrollToBottom() {
-      con.scrollTop = 10000000;
+    function scrollToBottom(force) {
+      if (force || !self.state.isTreeView) {
+        con.scrollTop = 10000000;
+      }
     }
 
     $(document).on('dblclick', '.w-network-menu-list', function(e) {
@@ -1353,7 +1355,7 @@ var Index = React.createClass({
       return;
     }
     if (type === 'bottom') {
-      return this.autoRefresh();
+      return this.autoRefresh(true);
     }
     if (type === 'pause') {
       return dataCenter.pauseNetworkRecord();
