@@ -56,6 +56,12 @@ var ReqData = React.createClass({
       self.toggleTab(tabs[0]);
     }).on('showInspectors', function() {
       self.toggleTab(tabs[1]);
+    }).on('toggleInspectors', function() {
+      if (self.state.tab !== tabs[1]) {
+        self.toggleTab(tabs[1]);
+      } else {
+        self.toggleTab(tabs[0]);
+      }
     }).on('showFrames', function() {
       self.toggleTab(tabs[2]);
     }).on('showTimeline', function() {

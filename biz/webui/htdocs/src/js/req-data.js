@@ -198,6 +198,12 @@ function getStatusClass(data) {
   case 'IMG':
     type = 'active';
     break;
+  case 'JSON':
+    type = '_json';
+    break;
+  case 'XML':
+    type = '_xml';
+    break;
   }
 
   var statusCode = data.res && data.res.statusCode;
@@ -228,6 +234,12 @@ function getType(className) {
   }
   if (className.indexOf('active') !== -1) {
     return 'IMG';
+  }
+  if (className.indexOf('_json') !== -1) {
+    return 'JSON';
+  }
+  if (className.indexOf('_xml') !== -1) {
+    return 'XML';
   }
   return '';
 }
@@ -322,7 +334,7 @@ var ReqData = React.createClass({
       if (e.shiftKey) {
         events.trigger('toggleDetailTab');
       } else {
-        events.trigger('showInspectors');
+        events.trigger('toggleInspectors');
       }
     }).on('click', 'tr', function(e) {
       var modal = self.props.modal;
