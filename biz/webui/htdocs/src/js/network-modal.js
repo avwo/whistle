@@ -340,9 +340,17 @@ proto.removeByHostList = function(hostList) {
 
 proto.removeByUrlList = function(urlList) {
   var list = this._list;
-  for (var i = list.length - 1; i >= 0; --i) {
-    if (urlList.indexOf(list[i].url.replace(/\?.*$/, '').substring(0, 1024)) !== -1) {
-      list.splice(i, 1);
+  if (typeof urlList === 'string') {
+    for (var i = list.length - 1; i >= 0; --i) {
+      if (list[i].url.indexOf(urlList) === 0) {
+        list.splice(i, 1);
+      }
+    }
+  } else {
+    for (var j = list.length - 1; j >= 0; --j) {
+      if (urlList.indexOf(list[j].url.replace(/\?.*$/, '').substring(0, 1024)) !== -1) {
+        list.splice(j, 1);
+      }
     }
   }
   this.update();

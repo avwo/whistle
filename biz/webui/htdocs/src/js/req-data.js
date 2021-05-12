@@ -500,13 +500,17 @@ var ReqData = React.createClass({
   },
   removeAllSuchHost: function(item, justRemove) {
     var hostList = [];
-    var list = this.getActiveList(item);
-    list.forEach(function(item) {
-      var host = item.isHttps ? item.path : item.hostname;
-      if (hostList.indexOf(host) === -1) {
-        hostList.push(host);
-      }
-    });
+    if (item) {
+      var list = this.getActiveList(item);
+      list.forEach(function(item) {
+        var host = item.isHttps ? item.path : item.hostname;
+        if (hostList.indexOf(host) === -1) {
+          hostList.push(host);
+        }
+      });
+    } else {
+      hostList.push(util.getHost(this.treeTarget));
+    }
     var modal = this.props.modal;
     modal && modal.removeByHostList(hostList);
     if (!justRemove) {
@@ -523,15 +527,21 @@ var ReqData = React.createClass({
   },
   removeAllSuchURL: function(item, justRemove) {
     var urlList = [];
-    var list = this.getActiveList(item);
-    list.forEach(function(item) {
-      var url = item.isHttps ? item.path : item.url.replace(/\?.*$/, '').substring(0, 1024);
-      if (urlList.indexOf(url) === -1) {
-        urlList.push(url);
-      }
-    });
+    var url;
+    if (typeof item === 'string') {
+      url = item;
+      urlList.push(item);
+    } else {
+      var list = this.getActiveList(item);
+      list.forEach(function(item) {
+        var url = item.isHttps ? item.path : item.url.replace(/\?.*$/, '').substring(0, 1024);
+        if (urlList.indexOf(url) === -1) {
+          urlList.push(url);
+        }
+      });
+    }
     var modal = this.props.modal;
-    modal && modal.removeByUrlList(urlList);
+    modal && modal.removeByUrlList(url || urlList);
     if (!justRemove) {
       var filterList = this.getFilterList();
       urlList.forEach(function(url) {
@@ -656,16 +666,16 @@ var ReqData = React.createClass({
       events.trigger('filterSessions', e);
       break;
     case 'removeAllSuchHost':
-      item && self.removeAllSuchHost(item, true);
+      curUrl && self.removeAllSuchHost(item, true);
       break;
     case 'removeAllSuchURL':
-      item && self.removeAllSuchURL(item, true);
+      curUrl && self.removeAllSuchURL(item || curUrl, true);
       break;
     case 'excludeHost':
-      item && self.removeAllSuchHost(item);
+      curUrl && self.removeAllSuchHost(item);
       break;
     case 'excludeUrl':
-      item && self.removeAllSuchURL(item);
+      curUrl && self.removeAllSuchURL(item || curUrl);
       break;
     case 'This':
       events.trigger('removeIt', item);
@@ -824,12 +834,12 @@ var ReqData = React.createClass({
     list3[3].disabled = !selectedCount;
     list3[4].disabled = selectedCount === hasData;
     list3[5].disabled = !modal.hasUnmarked();
-    list3[6].disabled = disabled;
-    list3[7].disabled = disabled;
+    list3[6].disabled = clickBlank;
+    list3[7].disabled = clickBlank;
 
     var list4 = contextMenuList[4].list;
-    list4[1].disabled = disabled;
-    list4[2].disabled = disabled;
+    list4[1].disabled = clickBlank;
+    list4[2].disabled = clickBlank;
 
     contextMenuList[5].disabled = disabled;
     var list5 = contextMenuList[5].list;
