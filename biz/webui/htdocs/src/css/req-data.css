@@ -40,6 +40,17 @@
 .w-req-data-list tr {cursor: default; background: #fff;}
 .w-req-data-list tr.w-selected th, .w-req-data-list tr.w-selected td {background-color: #337ab7!important; color: #fff!important;}
 
+.w-req-data-list .tree-leaf .glyphicon { color: #666!important; font-size: 12px; display: inline-block; margin-right: 5px; overflow: hidden;}
+.w-req-data-list .tree-leaf .w-type-icon { transform: scale(0.7); display: inline-block; padding-right: 3px; }
+.w-req-data-list .tree-leaf.success span { color: #3c763d!important;}
+.w-req-data-list .tree-leaf.info span { color: #31708f!important;}
+.w-req-data-list .tree-leaf.warning span { color: #8a6d3b!important;}
+.w-req-data-list .tree-leaf.active span { color: #337ab7!important;}
+.w-req-data-list .tree-leaf.danger span { color: #a94442!important;}
+.w-req-data-list .tree-leaf.w-forbidden span { color: #aa6708!important;}
+.w-req-data-list .tree-leaf.w-mark { color: #3b88fd!important;}
+
+
 .w-qrcode-dialog .modal-dialog {
   width: 350px;
 }
@@ -168,3 +179,4 @@
 .w-tree-view-list .ReactVirtualized__Grid__innerScrollContainer::-webkit-scrollbar-thumb {
   border-radius:8px; 
 }
+

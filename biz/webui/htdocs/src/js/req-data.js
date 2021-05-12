@@ -216,6 +216,36 @@ function getStatusClass(data) {
   return type;
 }
 
+function getType(className) {
+  if (className.indexOf('warning') !== -1) {
+    return 'JS';
+  }
+  if (className.indexOf('info') !== -1) {
+    return 'CSS';
+  }
+  if (className.indexOf('success') !== -1) {
+    return 'HTML';
+  }
+  if (className.indexOf('active') !== -1) {
+    return 'IMG';
+  }
+  return '';
+}
+
+function getIcon(data, className) {
+  if (className.indexOf('danger') !== -1) {
+    return <span className="icon-leaf glyphicon glyphicon-remove-circle" />;
+  }
+  if (className.indexOf('w-forbidden') !== -1) {
+    return <span className="icon-leaf glyphicon glyphicon-ban-circle" />;
+  }
+  if (data && !data.endTime && !data.lost) {
+    return <span className="icon-leaf glyphicon glyphicon-hourglass" />;
+  }
+  var type = getType(className);
+  return <span className={type ? 'w-type-icon' : 'glyphicon glyphicon-file'}>{type || null}</span>;
+}
+
 function getFilename(item, type) {
   var url = util.removeProtocol(item.url.replace(/[?#].*/, ''));
   var index = url.lastIndexOf('/');
@@ -1087,6 +1117,7 @@ var ReqData = React.createClass({
         modal.toggleTreeNode({id});
       }
     };
+    var className = request ? getClassName(request) : '';
     return (
       <tr
         key={id}
@@ -1094,7 +1125,7 @@ var ReqData = React.createClass({
           ...style,
           marginLeft: depth * 32
         }}
-        className={`w-req-data-item tree-node ${isLeaf ? 'tree-leaf': ''} ${request ? getClassName(request) : ''}`}
+        className={`w-req-data-item tree-node ${isLeaf ? 'tree-leaf': ''} ${className}`}
         data-id={request ? request.id : id}
         data-tree={id}
         draggable={isLeaf && draggable}
@@ -1104,7 +1135,7 @@ var ReqData = React.createClass({
         onKeyDown={onArrow}
       >
         {
-          isLeaf ? null : (
+          isLeaf ? getIcon(request, className) : (
             <span className={`icon-fold glyphicon glyphicon-triangle-${fold ? 'right' : 'bottom'}`}></span>
           )
         }
