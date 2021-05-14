@@ -48,8 +48,8 @@ var Settings = React.createClass({
       events.trigger('filterChanged');
       return;
     }
-    if (name === 'structureView') {
-      events.trigger('switchStructureView');
+    if (name === 'treeView') {
+      events.trigger('switchTreeView');
       return;
     }
     var settings = this.state;
@@ -233,8 +233,8 @@ var Settings = React.createClass({
             <input checked={dataCenter.isOnlyViewOwnData()} data-name="viewOwn" type="checkbox" />Only take this machine's request into consideration (IP: {dataCenter.clientIp})
           </label>
           <label className="w-network-settings-own">
-            <input checked={storage.get('isTreeView') === '1'} data-name="structureView" type="checkbox" />
-            <span className="glyphicon glyphicon-tree-conifer" style={{marginRight: 2}}></span>Switch to structure view (Ctrl[Command] + B)
+            <input checked={storage.get('isTreeView') === '1'} data-name="treeView" type="checkbox" />
+            <span className="glyphicon glyphicon-tree-conifer" style={{marginRight: 2}}></span>Switch to Tree View (Ctrl[Command] + B)
           </label>
         </div>
         <div className="modal-footer">

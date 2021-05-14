@@ -1,5 +1,7 @@
 var util = require('./util');
 var storage = require('./storage');
+const events = require('./events');
+const Tree = require('./tree');
 
 var NUM_OPTIONS = [500, 1000, 1500, 2000, 2500, 3000];
 var curLength = parseInt(storage.get('maxNetworkRows'), 10) || 1500;
@@ -9,9 +11,49 @@ var WIN_NAME_PRE = '__whistle_' + location.href.replace(/\/[^/]*([#?].*)?$/, '/'
 var KW_RE = /^(url|u|content|c|b|body|headers|h|ip|i|status|result|s|r|method|m|mark|type|t):(.*)$/i;
 var KW_LIST_RE = /([^\s]+)(?:\s+([^\s]+)(?:\s+([\S\s]+))?)?/;
 
+let tree = new Tree();
+let debut = false;
+
+const startInterceptor = () => {
+  if (!tree) {
+    return;
+  }
+
+  const onRequest = (_, data) => {
+    if (!data) {
+      return;
+    }
+
+    const {handler, key, value} = data;
+    if (typeof tree[handler] !== 'function') {
+      return;
+    }
+
+    const hl = tree[handler]({
+      index: key,
+      ...value
+    });
+
+    events.trigger('updateUI');
+
+    if (hl) {
+      events.trigger('highlightTree', hl);
+    }
+  };
+
+  events.on('request', onRequest);
+
+  return () => {
+    events.off('request', onRequest);
+  };
+};
+
 function NetworkModal(list) {
   this._list = updateOrder(list);
   this.list = list.slice(0, MAX_LENGTH);
+  this.tree = tree.queue;
+  this.isTreeView = storage.get('isTreeView') === '1';
+  this.intercept();
 }
 
 NetworkModal.MAX_COUNT = MAX_COUNT;
@@ -204,6 +246,7 @@ proto.filter = function(newList) {
     self.list = self._list.slice(0, MAX_LENGTH);
   }
   this.updateDisplayCount();
+  this.filterTree();
   return list;
 };
 
@@ -275,6 +318,7 @@ proto.getDisplayCount = function() {
 };
 
 proto.clear = function clear() {
+  this.tree = tree.clear();
   this.clearNetwork = true;
   this._list.splice(0, this._list.length);
   this.list = [];
@@ -296,9 +340,17 @@ proto.removeByHostList = function(hostList) {
 
 proto.removeByUrlList = function(urlList) {
   var list = this._list;
-  for (var i = list.length - 1; i >= 0; --i) {
-    if (urlList.indexOf(list[i].url.replace(/\?.*$/, '').substring(0, 1024)) !== -1) {
-      list.splice(i, 1);
+  if (typeof urlList === 'string') {
+    for (var i = list.length - 1; i >= 0; --i) {
+      if (list[i].url.indexOf(urlList) === 0) {
+        list.splice(i, 1);
+      }
+    }
+  } else {
+    for (var j = list.length - 1; j >= 0; --j) {
+      if (urlList.indexOf(list[j].url.replace(/\?.*$/, '').substring(0, 1024)) !== -1) {
+        list.splice(j, 1);
+      }
     }
   }
   this.update();
@@ -336,7 +388,7 @@ proto.remove = function(item) {
   var list = this._list;
   var index = list.indexOf(item);
   if (index !== -1) {
-    list.splice(index ,1);
+    list.splice(index, 1);
     this.update(false, true);
   }
 };
@@ -455,8 +507,6 @@ proto.next = function() {
   }
 };
 
-
-
 function updateList(list, len, hasKeyword) {
   if (!(len > 0)) {
     return;
@@ -552,15 +602,34 @@ proto.setSelected = function(item, selected) {
 };
 
 proto.getSelectedList = function() {
-
   return this.list.filter(function(item) {
     return !item.hide && item.selected;
   });
 };
 
-function getPrevSelected(start, list) {
+proto.getListByPath = function(path) {
+  var isTunnel = path.indexOf('tunnel://') === 0;
+  if (isTunnel) {
+    path = path.substring(9);
+  } else {
+    path = path + '/';
+  }
+  return this.list.filter(function(item) {
+    return !item.hide && (isTunnel ? item.url === path : !item.url.indexOf(path));
+  });
+};
+
+function getPrevSelected(start, list, source) {
   for (; start >= 0; start--) {
     var item = list[start - 1];
+
+    if (Array.isArray(source)) {
+      const config = tree.map.get(item);
+      if (config) {
+        item = source[config.index];
+      }
+    }
+
     if (!item || (!item.selected && !item.active)) {
       return start;
     }
@@ -568,9 +637,17 @@ function getPrevSelected(start, list) {
   return start;
 }
 
-function getNextSelected(start, list) {
+function getNextSelected(start, list, source) {
   for (var len = list.length; start < len; start++) {
     var item = list[start + 1];
+
+    if (Array.isArray(source)) {
+      const config = tree.map.get(item);
+      if (config) {
+        item = source[config.index];
+      }
+    }
+
     if (!item || (!item.selected && !item.active)) {
       return start;
     }
@@ -580,17 +657,33 @@ function getNextSelected(start, list) {
 
 proto.setSelectedList = function(start, end, selectElem) {
   var list = this.list;
-  start = list.indexOf(start);
-  end = list.indexOf(end);
+  if (this.isTreeView) {
+    list = this.tree;
+    start = list.indexOf(Tree.parse({url: start.url, id: start.id}));
+    end = list.indexOf(Tree.parse({url: end.url, id: end.id}));
+  } else {
+    start = list.indexOf(start);
+    end = list.indexOf(end);
+  }
+
   if (start > end) {
-    var temp = getNextSelected(start, list);
+    var temp = getNextSelected(start, list, this._list);
     start = end;
     end = temp;
   } else {
-    start = getPrevSelected(start, list);
+    start = getPrevSelected(start, list, this._list);
   }
+
   for (var i = 0, len = list.length; i < len; i++) {
     var item = list[i];
+    if (this.isTreeView) {
+      const data = tree.map.get(item);
+      const {index} = data || {};
+      item = this._list[index];
+      if (!item) {
+        continue;
+      }
+    }
     if (i >= start && i <= end) {
       item.selected = true;
       selectElem(item, true);
@@ -623,6 +716,100 @@ function updateOrder(list, force) {
 
   return list;
 }
+
+proto.setTreeView = function(next = !this.isTreeView, quiet) {
+  this.isTreeView = !!next;
+  !quiet && storage.set('isTreeView', +next);
+  events.trigger('toggleTreeView', this.isTreeView);
+  if (this.isTreeView) {
+    debut = false;
+  }
+  this.intercept();
+};
+
+proto.intercept = function() {
+  if (this.isTreeView) {
+    if (!debut) {
+      debut = true;
+      this._list.forEach((item, index) => tree.insert({
+        ...item,
+        index
+      }));
+    }
+
+    this.stopInterceptor = startInterceptor();
+  } else {
+    if (!this.stopInterceptor) {
+      return;
+    }
+    this.stopInterceptor();
+    this.stopInterceptor = null;
+  }
+
+  events.trigger('updateUI');
+};
+
+proto.getTreeNode = function(id) {
+  if (!id) {
+    return null;
+  }
+
+  const item  = tree.map.get(id);
+  if (!item) {
+    return null;
+  }
+
+  const {index} = item;
+  const data = this._list[index];
+
+  return {
+    config: item,
+    request: data
+  };
+};
+
+proto.toggleTreeNode = function({
+  id,
+  next,
+  recursive
+}) {
+  tree.toggle({
+    id,
+    next,
+    recursive
+  });
+  events.trigger('updateUI');
+};
+
+proto.filterTree = function() {
+  if (!this.isTreeView) {
+    return;
+  }
+
+  const {_keyword: keyword, _list} = this;
+
+  if (!keyword) {
+    this.tree = tree.queue;
+  } else {
+    this.tree = tree.queue.filter((id) => {
+      const index = tree.map.get(id);
+      let item = {url: id};
+
+      // leaf node
+      if (index > -1) {
+        item = _list[index];
+        return !item.hide;
+      }
+
+      // inner node
+      const hide = checkItem(item, keyword[0])
+      || (keyword[1] && checkItem(item, keyword[1]))
+      || (keyword[2] && checkItem(item, keyword[2]));
+      return !hide;
+    });
+  }
+  events.trigger('updateUI');
+};
 
 module.exports = NetworkModal;
 

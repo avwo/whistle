@@ -98,7 +98,15 @@ var contextMenuList = [
       { name: 'Unmark' }
     ]
   },
-  { name: 'Share' },
+  {
+    name: 'Tree',
+    list: [
+      { name: 'Fold' },
+      { name: 'Unfold' },
+      { name: 'Fold All' },
+      { name: 'Unfold All' }
+    ]
+  },
   { name: 'Import' },
   { name: 'Export' },
   {
@@ -146,13 +154,6 @@ function getColStyle(col, style) {
   return style;
 }
 
-function getUploadSessionsFn() {
-  try {
-    var uploadSessions = window.parent.uploadWhistleSessions;
-    return typeof uploadSessions === 'function' ? uploadSessions : null;
-  } catch(e) {}
-}
-
 function getClassName(data) {
   return getStatusClass(data) + ' w-req-data-item'
     + (data.isHttps ? ' w-tunnel' : '')
@@ -197,6 +198,12 @@ function getStatusClass(data) {
   case 'IMG':
     type = 'active';
     break;
+  case 'JSON':
+    type = '_json';
+    break;
+  case 'XML':
+    type = '_xml';
+    break;
   }
 
   var statusCode = data.res && data.res.statusCode;
@@ -213,6 +220,42 @@ function getStatusClass(data) {
   }
 
   return type;
+}
+
+function getType(className) {
+  if (className.indexOf('warning') !== -1) {
+    return 'JS';
+  }
+  if (className.indexOf('info') !== -1) {
+    return 'CSS';
+  }
+  if (className.indexOf('success') !== -1) {
+    return 'HTML';
+  }
+  if (className.indexOf('active') !== -1) {
+    return 'IMG';
+  }
+  if (className.indexOf('_json') !== -1) {
+    return 'JSON';
+  }
+  if (className.indexOf('_xml') !== -1) {
+    return 'XML';
+  }
+  return '';
+}
+
+function getIcon(data, className) {
+  if (className.indexOf('danger') !== -1) {
+    return <span className="icon-leaf glyphicon glyphicon-remove-circle" />;
+  }
+  if (className.indexOf('w-forbidden') !== -1) {
+    return <span className="icon-leaf glyphicon glyphicon-ban-circle" />;
+  }
+  if (data && !data.endTime && !data.lost) {
+    return <span className="icon-leaf glyphicon glyphicon-hourglass" />;
+  }
+  var type = getType(className);
+  return <span className={type ? 'w-type-icon' : 'glyphicon glyphicon-file'}>{type || null}</span>;
 }
 
 function getFilename(item, type) {
@@ -262,7 +305,8 @@ var ReqData = React.createClass({
     return {
       draggable: true,
       columns: settings.getSelectedColumns(),
-      dragger: dragger
+      dragger: dragger,
+      stopHighlight: -1
     };
   },
   componentDidMount: function() {
@@ -286,8 +330,12 @@ var ReqData = React.createClass({
     };
     self.container = $(ReactDOM.findDOMNode(self.refs.container));
     self.content = ReactDOM.findDOMNode(self.refs.content);
-    self.$content = $(self.content).on('dblclick', 'tr', function() {
-      events.trigger('showOverview');
+    self.$content = $(self.content).on('dblclick', 'tr', function(e) {
+      if (e.shiftKey) {
+        events.trigger('toggleDetailTab');
+      } else {
+        events.trigger('toggleInspectors');
+      }
     }).on('click', 'tr', function(e) {
       var modal = self.props.modal;
       var item = modal.getItem(this.getAttribute('data-id'));
@@ -302,6 +350,11 @@ var ReqData = React.createClass({
     };
     self.container.on('keydown', function(e) {
       var modal = self.props.modal;
+
+      if (modal.isTreeView) {
+        return;
+      }
+
       toggleDraggable(e);
       if (!modal) {
         return;
@@ -345,6 +398,34 @@ var ReqData = React.createClass({
       settings.setMinWidth(self.minWidth);
       updateTimer = updateTimer || setTimeout(updateUI, 50);
     });
+
+    const enableHighlight = (next) => {
+      this.clearHighlight();
+      if (!next) {
+        return;
+      }
+
+      const {modal = {}} = this.props;
+      if (modal.isTreeView) {
+        this.stopHighlight = this.startHighlight();
+      }
+    };
+
+    events.on('toggleTreeView', (_, next) => {
+      enableHighlight(next);
+    });
+
+    events.on('toggleTreeViewByAccessKey', function() {
+      self.refs.contextMenu.hide();
+    });
+
+    $(document).on('visibilitychange', () => {
+      enableHighlight(!document.hidden);
+    });
+
+    events.on('highlightTree', (_, id) => this.highlight(id));
+
+    this.stopHighlight = -1;
   },
   onDragStart: function(e) {
     var target = $(e.target).closest('.w-req-data-item');
@@ -360,6 +441,10 @@ var ReqData = React.createClass({
     return [active, item];
   },
   onClick: function(e, item, hm) {
+    if (!item) {
+      return;
+    }
+
     var self = this;
     var modal = self.props.modal;
     var rows;
@@ -387,10 +472,17 @@ var ReqData = React.createClass({
     events.trigger('networkStateChange');
   },
   setSelected: function(item, unselect) {
+    // list view
+    let selector = `tr[data-id="${item.id}"]`;
+    // tree view
+    if (!item.req) {
+      selector = `tr[data-tree="${item.id}"]`;
+    }
+
     if (item.selected) {
-      this.$content.find('tr[data-id=' + item.id + ']').addClass('w-selected');
+      this.$content.find(selector).addClass('w-selected');
     } else if (unselect) {
-      this.$content.find('tr[data-id=' + item.id + ']').removeClass('w-selected');
+      this.$content.find(selector).removeClass('w-selected');
     }
   },
   clearSelection: function() {
@@ -420,13 +512,17 @@ var ReqData = React.createClass({
   },
   removeAllSuchHost: function(item, justRemove) {
     var hostList = [];
-    var list = this.getActiveList(item);
-    list.forEach(function(item) {
-      var host = item.isHttps ? item.path : item.hostname;
-      if (hostList.indexOf(host) === -1) {
-        hostList.push(host);
-      }
-    });
+    if (item) {
+      var list = this.getActiveList(item);
+      list.forEach(function(item) {
+        var host = item.isHttps ? item.path : item.hostname;
+        if (hostList.indexOf(host) === -1) {
+          hostList.push(host);
+        }
+      });
+    } else {
+      hostList.push(util.getHost(this.treeTarget));
+    }
     var modal = this.props.modal;
     modal && modal.removeByHostList(hostList);
     if (!justRemove) {
@@ -443,15 +539,21 @@ var ReqData = React.createClass({
   },
   removeAllSuchURL: function(item, justRemove) {
     var urlList = [];
-    var list = this.getActiveList(item);
-    list.forEach(function(item) {
-      var url = item.isHttps ? item.path : item.url.replace(/\?.*$/, '').substring(0, 1024);
-      if (urlList.indexOf(url) === -1) {
-        urlList.push(url);
-      }
-    });
+    var url;
+    if (typeof item === 'string') {
+      url = item;
+      urlList.push(item);
+    } else {
+      var list = this.getActiveList(item);
+      list.forEach(function(item) {
+        var url = item.isHttps ? item.path : item.url.replace(/\?.*$/, '').substring(0, 1024);
+        if (urlList.indexOf(url) === -1) {
+          urlList.push(url);
+        }
+      });
+    }
     var modal = this.props.modal;
-    modal && modal.removeByUrlList(urlList);
+    modal && modal.removeByUrlList(url || urlList);
     if (!justRemove) {
       var filterList = this.getFilterList();
       urlList.forEach(function(url) {
@@ -470,12 +572,15 @@ var ReqData = React.createClass({
   onClickContextMenu: function(action, e, parentAction, name) {
     var self = this;
     var item = self.currentFocusItem;
+    const {modal} = this.props;
+    var curUrl = item && item.url || (self.treeTarget && self.treeTarget + '/');
+
     switch(parentAction || action) {
     case 'New Tab':
-      item && window.open(item.url);
+      curUrl && window.open(curUrl);
       break;
     case 'QR Code':
-      self.refs.qrcodeDialog.show(item && item.url);
+      self.refs.qrcodeDialog.show(curUrl);
       break;
     case 'Preview':
       util.openPreview(item);
@@ -504,7 +609,6 @@ var ReqData = React.createClass({
       break;
     case 'Mark':
     case 'Unmark':
-      var modal = this.props.modal;
       var list = getFocusItemList(item) || (modal && modal.getSelectedList());
       if (list) {
         var isMark = action === 'Mark';
@@ -518,7 +622,11 @@ var ReqData = React.createClass({
       events.trigger('replaySessions', [item, e.shiftKey]);
       break;
     case 'Export':
-      events.trigger('exportSessions', item);
+      if (self.treeTarget && !self.isTreeLeafNode) {
+        events.trigger('exportSessions', [modal.getListByPath(self.treeTarget)]);
+      } else {
+        events.trigger('exportSessions', item);
+      }
       break;
     case 'Abort':
       events.trigger('abortRequest', item);
@@ -563,12 +671,6 @@ var ReqData = React.createClass({
         name: getFilename(item, 'res_raw')
       });
       break;
-    case 'Share':
-      events.trigger('uploadSessions', {
-        curItem: item,
-        upload: getUploadSessionsFn()
-      });
-      break;
     case 'Import':
       events.trigger('importSessions', e);
       break;
@@ -576,16 +678,16 @@ var ReqData = React.createClass({
       events.trigger('filterSessions', e);
       break;
     case 'removeAllSuchHost':
-      item && self.removeAllSuchHost(item, true);
+      curUrl && self.removeAllSuchHost(item, true);
       break;
     case 'removeAllSuchURL':
-      item && self.removeAllSuchURL(item, true);
+      curUrl && self.removeAllSuchURL(item || curUrl, true);
       break;
     case 'excludeHost':
-      item && self.removeAllSuchHost(item);
+      curUrl && self.removeAllSuchHost(item);
       break;
     case 'excludeUrl':
-      item && self.removeAllSuchURL(item);
+      curUrl && self.removeAllSuchURL(item || curUrl);
       break;
     case 'This':
       events.trigger('removeIt', item);
@@ -617,18 +719,49 @@ var ReqData = React.createClass({
         selectedList: self.props.modal.getSelectedList()
       });
       break;
+    case 'Fold':
+      modal.toggleTreeNode({
+        id: this.treeTarget,
+        next: true
+      });
+      break;
+    case 'Unfold':
+      modal.toggleTreeNode({
+        id: this.treeTarget,
+        next: false
+      });
+      break;
+    case 'Fold All':
+      modal.toggleTreeNode({
+        id: this.treeTarget,
+        next: true,
+        recursive: true
+      });
+      break;
+    case 'Unfold All':
+      modal.toggleTreeNode({
+        id: this.treeTarget,
+        next: false,
+        recursive: true
+      });
+      break;
     }
   },
   onContextMenu: function(e) {
-    var dataId = $(e.target).closest('.w-req-data-item').attr('data-id');
+    const el = $(e.target).closest('.w-req-data-item');
+    var dataId = el.attr('data-id');
+    const treeId = el.attr('data-tree');
     var modal = this.props.modal;
     var item = modal.getItem(dataId);
     var disabled = !item;
+    var treeNodeData = modal.isTreeView && modal.getTreeNode(treeId);
+    this.treeTarget = null;
     e.preventDefault();
     this.currentFocusItem = item;
-    contextMenuList[0].disabled = disabled;
+    var clickBlank = disabled && !treeNodeData;
+    contextMenuList[0].disabled = clickBlank;
     var list0 = contextMenuList[0].list;
-    list0[4].disabled = disabled || !/^https?:\/\//.test(item.url);
+    list0[4].disabled = clickBlank || !/^https?:\/\//.test(treeId || item.url);
     if (disabled) {
       list0[6].disabled = true;
     } else {
@@ -641,21 +774,27 @@ var ReqData = React.createClass({
     list0[3].disabled = disabled;
     list0[7].disabled = disabled;
 
-    contextMenuList[1].disabled = disabled;
+    contextMenuList[1].disabled = disabled && !treeId;
+    var treeUrl = treeId ? treeId + '/' : '';
+    var isTreeNode = disabled && !treeUrl;
     contextMenuList[1].list.forEach(function(menu) {
       menu.disabled = disabled;
       switch(menu.name) {
       case 'URL':
-        menu.copyText = item && item.url.replace(/[?#].*$/, '');
+        menu.copyText = util.getUrl(item && item.url.replace(/[?#].*$/, '') || treeUrl);
+        menu.disabled = isTreeNode;
         break;
       case 'Host':
-        menu.copyText = item && (item.isHttps ? item.path : item.hostname);
+        menu.copyText = item && (item.isHttps ? item.path : item.hostname) || util.getHost(treeUrl);
+        menu.disabled = isTreeNode;
         break;
       case 'Path':
-        menu.copyText = item && item.path;
+        menu.copyText = item && item.path || util.getPath(treeUrl);
+        menu.disabled = isTreeNode;
         break;
       case 'Full URL':
-        menu.copyText = item && item.url;
+        menu.copyText = util.getUrl(item && item.url || treeUrl);
+        menu.disabled = isTreeNode;
         break;
       case 'As CURL':
         menu.copyText = util.asCURL(item);
@@ -707,12 +846,12 @@ var ReqData = React.createClass({
     list3[3].disabled = !selectedCount;
     list3[4].disabled = selectedCount === hasData;
     list3[5].disabled = !modal.hasUnmarked();
-    list3[6].disabled = disabled;
-    list3[7].disabled = disabled;
+    list3[6].disabled = clickBlank;
+    list3[7].disabled = clickBlank;
 
     var list4 = contextMenuList[4].list;
-    list4[1].disabled = disabled;
-    list4[2].disabled = disabled;
+    list4[1].disabled = clickBlank;
+    list4[2].disabled = clickBlank;
 
     contextMenuList[5].disabled = disabled;
     var list5 = contextMenuList[5].list;
@@ -746,12 +885,26 @@ var ReqData = React.createClass({
       list5[2].disabled = true;
       list5[3].disabled = true;
     }
-    var uploadItem = contextMenuList[6];
-    uploadItem.hide = !getUploadSessionsFn();
-    contextMenuList[9].disabled = uploadItem.disabled = disabled && !selectedCount;
+    var treeItem = contextMenuList[6];
+    treeItem.hide = !modal.isTreeView;
+    treeItem.disabled = !treeNodeData;
+    if (treeNodeData) {
+      const {config} = treeNodeData;
+      const {index, fold} = config;
+      const isLeaf = index > -1;
+
+      this.treeTarget = treeId;
+      this.isTreeLeafNode = isLeaf;
+      var treeList = treeItem.list;
+      treeList[0].disabled = fold || isLeaf;
+      treeList[1].disabled = !fold || isLeaf;
+      treeList[2].disabled = isLeaf;
+      treeList[3].disabled = isLeaf;
+    }
     var pluginItem = contextMenuList[9];
-    util.addPluginMenus(pluginItem, dataCenter.getNetworkMenus(), uploadItem.hide ? 8 : 9, disabled);
-    var height = (uploadItem.hide ? 310 : 340) - (pluginItem.hide ? 30 : 0);
+    pluginItem.disabled = disabled && !selectedCount;
+    util.addPluginMenus(pluginItem, dataCenter.getNetworkMenus(), treeItem.hide ? 8 : 9, disabled);
+    var height = (treeItem.hide ? 310 : 340) - (pluginItem.hide ? 30 : 0);
     pluginItem.maxHeight = height;
     var data = util.getMenuPosition(e, 110, height);
     data.list = contextMenuList;
@@ -870,6 +1023,149 @@ var ReqData = React.createClass({
     this.container.focus();
   },
 
+  highlight(id) {
+    if (!id) {
+      return;
+    }
+
+    const {modal = {}} = this.props;
+    const {isTreeView} = modal;
+    if (!isTreeView) {
+      return;
+    }
+
+    if (this.stopHighlight === -1) {
+      this.stopHighlight = this.startHighlight();
+    }
+    if (!this.stopHighlight) {
+      return;
+    }
+
+    if (!this.highlightMap) {
+      this.highlightMap = new Map();
+    }
+    this.highlightMap.set(id, -1);
+  },
+
+  startHighlight() {
+    const timer = setInterval(() => {
+      if (!this.highlightMap || this.highlightMap.size <= 0) {
+        return;
+      }
+
+      this.highlightMap.forEach((expire, id) => {
+        if (!id || !expire) {
+          return;
+        }
+
+        const el = this.$content.find(`[data-tree="${id}"]`);
+        if (el) {
+          if (expire === -1) {
+            this.highlightMap.set(id, Date.now() + 1100);
+            el.addClass('highlight');
+            return;
+          }
+
+          if (expire < Date.now()) {
+            this.highlightMap.delete(id);
+            el.removeClass('highlight');
+          }
+        }
+      });
+    }, 500);
+
+    return () => {
+      clearInterval(timer);
+      if (this.highlightMap) {
+        this.highlightMap.clear();
+      }
+    };
+  },
+
+  clearHighlight() {
+    if (typeof this.stopHighlight === 'function') {
+      this.stopHighlight();
+      this.stopHighlight = null;
+
+      $('.highlight').each((el) => {
+        if (!el) {
+          return;
+        }
+        $(el).removeClass('highlight');
+      });
+    }
+  },
+
+  renderTreeNode(offset, style) {
+    if (typeof offset !== 'number') {
+      return null;
+    }
+
+    const {modal = {}} = this.props;
+    const {draggable} = this.state;
+
+    if (!modal || !modal.tree) {
+      return null;
+    }
+
+    const id = modal.tree[offset];
+    const data = modal.getTreeNode(id);
+    if (!data) {
+      return null;
+    }
+
+    const {
+      config,
+      request
+    } = data;
+
+    const {index, depth, search, value, fold} = config;
+    let label = value;
+    const isLeaf = index > -1;
+    if (isLeaf) {
+      label += search;
+      if (depth > 0) {
+        label = '/' + label;
+      }
+    }
+
+    const onToggle = (_) => {
+      modal.toggleTreeNode({id});
+    };
+
+    const onArrow = (e) => {
+      e.preventDefault();
+      if ([37, 39].includes(e.which)) {
+        modal.toggleTreeNode({id});
+      }
+    };
+    var className = request ? getClassName(request) : '';
+    return (
+      <tr
+        key={id}
+        style={{
+          ...style,
+          marginLeft: depth * 32
+        }}
+        className={`w-req-data-item tree-node ${isLeaf ? 'tree-leaf': ''} ${className}`}
+        data-id={request ? request.id : id}
+        data-tree={id}
+        draggable={isLeaf && draggable}
+        tabIndex={index}
+        onClick={isLeaf ? null : onToggle}
+        title={isLeaf && request ? util.getUrl(request.url) : label}
+        onKeyDown={onArrow}
+      >
+        {
+          isLeaf ? getIcon(request, className) : (
+            <span className={`icon-fold glyphicon glyphicon-triangle-${fold ? 'right' : 'bottom'}`}></span>
+          )
+        }
+        {label.length > 320 ? label.substring(0, 320) + '...' : label}
+      </tr>
+    );
+  },
+
   render: function() {
     var self = this;
     var state = this.state;
@@ -888,39 +1184,50 @@ var ReqData = React.createClass({
       colStyle.minWidth = width;
     }
 
+    const {isTreeView} = modal || {};
+
     return (
         <div className="fill w-req-data-con orient-vertical-box">
           <div ref="wrapper" className="w-req-data-content fill orient-vertical-box" style={colStyle}>
-            <div className="w-req-data-headers">
-              <table className="table">
-                  <thead>
-                    <tr onClick={self.orderBy}>
-                      <th className="order">#</th>
-                      {columnList.map(this.renderColumn)}
-                    </tr>
-                  </thead>
-                </table>
-            </div>
+          {
+              isTreeView ? null : (
+                <div className="w-req-data-headers">
+                  <table className="table">
+                      <thead>
+                        <tr onClick={self.orderBy}>
+                          <th className="order">#</th>
+                          {columnList.map(this.renderColumn)}
+                        </tr>
+                      </thead>
+                    </table>
+                </div>
+              )
+            }
             <div ref="container" tabIndex="0" onContextMenu={self.onContextMenu} onKeyDown={this.onReplay}
               style={{background: (dataCenter.hashFilterObj || filterText) ? 'lightyellow' : undefined}}
-              className="w-req-data-list fill"  onDragStart={this.onDragStart}>
-                <RV.AutoSizer ref="content" >{function(size){
-                  return (
-                      <RV.List
+              className={'w-req-data-list fill' + (isTreeView ? ' w-tree-view-list' : '')}  onDragStart={this.onDragStart}>
+                <RV.AutoSizer ref="content">
+                  {(size) => (
+                    <RV.List
                       ref="list"
-                      rowHeight={28}
+                      rowHeight={isTreeView ? 24 : 28}
                       width={size.width}
                       height={size.height}
-                      rowCount={list.length}
-                      rowRenderer={function(options){
+                      rowCount={isTreeView ? modal.tree.length : list.length}
+                      rowRenderer={(options) => {
                         // var {index, isScrolling, key, style}=options;
+
+                        if (isTreeView) {
+                          return this.renderTreeNode(options.index, options.style);
+                        }
+
                         var item = list[options.index];
                         var order = hasKeyword ? options.index+1 : item.order;
                         return <Row style={options.style} key={options.key} order={order}  index={index}
                           columnList={columnList} draggable={draggable} item={item} />;
                       }}
-                      />);
-                }}
+                    />
+                  )}
                 </RV.AutoSizer>
             </div>
           </div>

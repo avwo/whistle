@@ -40,7 +40,7 @@ var LINK_RE = /^"(https?:)?(\/\/[^/]\S+)"$/i;
 var AT_LINK_RE = /^@(https?:)?(\/\/[^/]\S+)$/i;
 var OPTIONS_WITH_SELECTED = ['removeSelected', 'exportWhistleFile', 'exportSazFile'];
 var hideLeftMenu = /[&#?]hideLeft(?:Bar|Menu)=(?:true|1)(?:&|$|#)/.test(window.location.search);
-var showStructure = /[&#?]showStructure=(?:1|true)(?:&|$|#)/.test(window.location.search);
+var showTreeView = /[&#?]showTreeView=(?:1|true)(?:&|$|#)/.test(window.location.search);
 var RULES_ACTIONS = [
   {
     name: 'Export Selected',
@@ -443,7 +443,7 @@ var Index = React.createClass({
     state.showLeftMenu = showLeftMenu == null ? true : showLeftMenu;
     util.triggerPageChange(state.name);
 
-    state.isTreeView = showStructure || storage.get('isTreeView') === '1';
+    state.isTreeView = showTreeView || storage.get('isTreeView') === '1';
 
     return state;
   },
@@ -606,7 +606,7 @@ var Index = React.createClass({
       self.rulesChanged = true;
       self.showReloadRules();
     });
-    events.on('switchStructureView', function() {
+    events.on('switchTreeView', function() {
       self.toggleTreeView();
     });
     events.on('updateGlobal', function() {
@@ -1307,7 +1307,7 @@ var Index = React.createClass({
         _atBottom && scrollToBottom();
         if (!self._inited && self.state.isTreeView) {
           self._inited = true;
-          modal.setTreeView(true, true);
+          this.setTreeView(true);
         }
       });
     }
@@ -1335,6 +1335,9 @@ var Index = React.createClass({
       }
       return con.scrollTop + con.offsetHeight + 5 > body.offsetHeight;
     }
+  },
+  setTreeView: function(isTreeView) {
+
   },
   showPlugins: function(e) {
     if (this.state.name != 'plugins') {
@@ -2870,13 +2873,11 @@ var Index = React.createClass({
     if (!network) {
       return;
     }
-
-    const next = !isTreeView;
-
-    this.setState({
-      isTreeView: next
-    }, () => {
-      network.setTreeView(next);
+    var next = !isTreeView;
+    var self = this;
+    storage.set('isTreeView', next ? '1' : '');
+    self.setState({ isTreeView: next }, () => {
+      self.setTreeView(next);
     });
   },
   render: function() {
@@ -3130,7 +3131,7 @@ var Index = React.createClass({
               }}
                draggable="false">
                 <span className="glyphicon glyphicon-globe"></span>
-                <i><span title={'Click to switch to ' + (state.isTreeView ? 'sequence' : 'structure') + ' view (Ctrl[Command] + B)'} onDoubleClick={stopPropagation}
+                <i><span title={'Click to switch to ' + (state.isTreeView ? 'List View' : 'Tree View') + ' (Ctrl[Command] + B)'} onDoubleClick={stopPropagation}
                   onClick={this.toggleTreeView} className={'glyphicon glyphicon-tree-conifer' + (state.isTreeView ? ' enable-tree-view' : '')}></span>Network</i>
             </a>
             <a onClick={this.showRules} className="w-save-menu w-rules-menu"
