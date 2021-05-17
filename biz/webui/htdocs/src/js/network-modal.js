@@ -120,7 +120,7 @@ proto.hasKeyword = function() {
 
 proto.setSortColumns = function(columns) {
   this._columns = columns;
-  this.filter();
+  this.filter(false, true);
 };
 
 function setNot(flag, not) {
@@ -172,7 +172,7 @@ proto.hasUnmarked = function() {
   }
 };
 
-proto.filter = function(newList) {
+proto.filter = function(newList, sort) {
   var self = this;
   var list = self.list;
   var keyword = self._keyword;
@@ -205,6 +205,7 @@ proto.filter = function(newList) {
   } else if (!newList) {
     self.list = self._list.slice(0, MAX_LENGTH);
   }
+  !sort && this.updateTree();
   this.updateDisplayCount();
   return list;
 };
@@ -280,6 +281,7 @@ proto.clear = function clear() {
   this.clearNetwork = true;
   this._list.splice(0, this._list.length);
   this.list = [];
+  this.updateTree();
   this.updateDisplayCount();
   return this;
 };
@@ -493,7 +495,6 @@ proto.update = function(scrollAtBottom, force) {
 
   this.list = this._list.slice(0, MAX_LENGTH);
   this.filter(true);
-  this.updateTree();
   return !this.isTreeView && this._list.length > MAX_LENGTH;
 };
 
@@ -555,7 +556,6 @@ proto.setSelected = function(item, selected) {
 };
 
 proto.getSelectedList = function() {
-
   return this.list.filter(function(item) {
     return !item.hide && item.selected;
   });

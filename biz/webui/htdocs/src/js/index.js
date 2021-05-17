@@ -341,6 +341,7 @@ var Index = React.createClass({
     }
     var rulesModal = new ListModal(rulesList, rulesData);
     var valuesModal = new ListModal(valuesList, valuesData);
+    var networkModal = dataCenter.networkModal;
     dataCenter.rulesModal = rulesModal;
     state.rulesTheme = rulesTheme;
     state.valuesTheme = valuesTheme;
@@ -357,7 +358,7 @@ var Index = React.createClass({
     state.interceptHttpsConnects = !multiEnv && modal.interceptHttpsConnects;
     state.enableHttp2 = modal.enableHttp2;
     state.rules = rulesModal;
-    state.network = dataCenter.networkModal;
+    state.network = networkModal;
     state.rulesOptions = rulesOptions;
     state.pluginsOptions = this.createPluginsOptions(modal.plugins);
     dataCenter.valuesModal = state.values = valuesModal;
@@ -443,8 +444,7 @@ var Index = React.createClass({
     var showLeftMenu = storage.get('showLeftMenu');
     state.showLeftMenu = showLeftMenu == null ? true : showLeftMenu;
     util.triggerPageChange(state.name);
-
-    state.isTreeView = showTreeView || storage.get('isTreeView') === '1';
+    showTreeView && networkModal.setTreeView(showTreeView, true);
 
     return state;
   },
@@ -589,7 +589,6 @@ var Index = React.createClass({
   },
   componentDidMount: function() {
     var self = this;
-    var modal = self.state.network;
     var clipboard = new Clipboard('.w-copy-text');
     clipboard.on('error', function(e) {
       alert('Copy failed.');
@@ -601,7 +600,6 @@ var Index = React.createClass({
     clipboard.on('success', function(e) {
       message.success('Copied clipboard.');
     });
-    modal.setTreeView(true, true);
     var preventDefault = function(e) {
       e.preventDefault();
     };
@@ -1294,7 +1292,7 @@ var Index = React.createClass({
       modal = modal || self.state.network;
       clearTimeout(timeout);
       timeout = null;
-      if (self.state.name != 'network' || !modal) {
+      if (self.state.name != 'network') {
         return;
       }
       _atBottom = _atBottom || atBottom();
@@ -1310,7 +1308,7 @@ var Index = React.createClass({
     }
 
     function scrollToBottom(force) {
-      if (force || !self.state.isTreeView) {
+      if (force || !self.state.network.isTreeView) {
         con.scrollTop = 10000000;
       }
     }
@@ -2863,15 +2861,9 @@ var Index = React.createClass({
     }, 500);
   },
   toggleTreeView() {
-    const {network, isTreeView} = this.state;
-    if (!network) {
-      return;
-    }
-    var next = !isTreeView;
-    var self = this;
     var modal = this.state.network;
-    modal.setTreeView(next);
-    self.setState({ isTreeView: next });
+    modal.setTreeView(!modal.isTreeView);
+    this.setState({});
   },
   render: function() {
     var state = this.state;
@@ -2917,7 +2909,6 @@ var Index = React.createClass({
     var showWeinreOptions = state.showWeinreOptions;
     var showHelpOptions = state.showHelpOptions;
     var modal = state.network;
-
     if (rulesOptions[0].name === DEFAULT) {
       rulesOptions.forEach(function(item, i) {
         item.icon = (!i || !state.multiEnv) ? 'checkbox' : 'edit';
@@ -3123,8 +3114,8 @@ var Index = React.createClass({
               }}
                draggable="false">
                 <span className="glyphicon glyphicon-globe"></span>
-                <i><span title={'Click to switch to ' + (state.isTreeView ? 'List View' : 'Tree View') + ' (Ctrl[Command] + B)'} onDoubleClick={stopPropagation}
-                  onClick={this.toggleTreeView} className={'glyphicon glyphicon-tree-conifer' + (state.isTreeView ? ' enable-tree-view' : '')}></span>Network</i>
+                <i><span title={'Click to switch to ' + (modal.isTreeView ? 'List View' : 'Tree View') + ' (Ctrl[Command] + B)'} onDoubleClick={stopPropagation}
+                  onClick={this.toggleTreeView} className={'glyphicon glyphicon-tree-conifer' + (modal.isTreeView ? ' enable-tree-view' : '')}></span>Network</i>
             </a>
             <a onClick={this.showRules} className="w-save-menu w-rules-menu"
               onDoubleClick={this.onClickMenu}
