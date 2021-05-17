@@ -1074,6 +1074,8 @@ exports.on = function (type, callback) {
   }
 };
 
+exports.networkModal = networkModal;
+
 exports.stopNetworkRecord = function(stop) {
   if (!stop && exports.pauseRefresh) {
     networkModal.clearNetwork = false;

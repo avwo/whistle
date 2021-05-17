@@ -357,6 +357,7 @@ var Index = React.createClass({
     state.interceptHttpsConnects = !multiEnv && modal.interceptHttpsConnects;
     state.enableHttp2 = modal.enableHttp2;
     state.rules = rulesModal;
+    state.network = dataCenter.networkModal;
     state.rulesOptions = rulesOptions;
     state.pluginsOptions = this.createPluginsOptions(modal.plugins);
     dataCenter.valuesModal = state.values = valuesModal;
@@ -588,6 +589,7 @@ var Index = React.createClass({
   },
   componentDidMount: function() {
     var self = this;
+    var modal = self.state.network;
     var clipboard = new Clipboard('.w-copy-text');
     clipboard.on('error', function(e) {
       alert('Copy failed.');
@@ -599,6 +601,7 @@ var Index = React.createClass({
     clipboard.on('success', function(e) {
       message.success('Copied clipboard.');
     });
+    modal.setTreeView(true, true);
     var preventDefault = function(e) {
       e.preventDefault();
     };
@@ -813,7 +816,7 @@ var Index = React.createClass({
         if (nodeName === 'INPUT' || nodeName === 'TEXTAREA') {
           return;
         }
-        var hasSelected = modal && modal.hasSelected();
+        var hasSelected = modal.hasSelected();
         if (hasSelected) {
           $(ReactDOM.findDOMNode(self.refs.chooseFileType)).modal('show');
           setTimeout(function() {
@@ -958,7 +961,7 @@ var Index = React.createClass({
 
     events.on('replaySessions', function(e, curItem, shiftKey) {
       var modal = self.state.network;
-      var list = getFocusItemList(curItem) || (modal && modal.getSelectedList());
+      var list = getFocusItemList(curItem) || modal.getSelectedList();
       var len = list && list.length;
       if (shiftKey && len === 1) {
         self.replayList = list;
@@ -987,7 +990,7 @@ var Index = React.createClass({
       if (typeof upload === 'function') {
         if (!sessions) {
           var modal = self.state.network;
-          sessions = modal && modal.getSelectedList();
+          sessions = modal.getSelectedList();
           if (sessions && sessions.length) {
             sessions = $.extend(true, [], sessions);
           }
@@ -1275,7 +1278,7 @@ var Index = React.createClass({
       var modal = self.state.network;
       scrollTimeout && clearTimeout(scrollTimeout);
       scrollTimeout = null;
-      if (modal && atBottom()) {
+      if (atBottom()) {
         scrollTimeout = setTimeout(function() {
           update(modal, true);
         }, 1000);
@@ -1301,14 +1304,8 @@ var Index = React.createClass({
       if (document.hidden) {
         return;
       }
-      self.setState({
-        network: modal
-      }, function() {
+      self.setState({}, function() {
         _atBottom && scrollToBottom();
-        if (!self._inited && self.state.isTreeView) {
-          self._inited = true;
-          this.setTreeView(true);
-        }
       });
     }
 
@@ -1335,9 +1332,6 @@ var Index = React.createClass({
       }
       return con.scrollTop + con.offsetHeight + 5 > body.offsetHeight;
     }
-  },
-  setTreeView: function(isTreeView) {
-
   },
   showPlugins: function(e) {
     if (this.state.name != 'plugins') {
@@ -1388,9 +1382,9 @@ var Index = React.createClass({
     if (item.id == 'removeAll') {
       this.clear();
     } else if (item.id == 'removeSelected') {
-      modal && modal.removeSelectedItems();
+      modal.removeSelectedItems();
     } else if (item.id == 'removeUnselected') {
-      modal && modal.removeUnselectedItems();
+      modal.removeUnselectedItems();
     } else if (item.id == 'exportWhistleFile') {
       this.exportSessions('whistle');
     } else if (item.id == 'exportSazFile') {
@@ -1419,7 +1413,7 @@ var Index = React.createClass({
     switch(this.state.name) {
     case 'network':
       var modal = this.state.network;
-      var hasSelected = Array.isArray(curItem) || (modal && modal.hasSelected());
+      var hasSelected = Array.isArray(curItem) || modal.hasSelected();
       this.currentFoucsItem = curItem;
       if (hasSelected) {
         $(ReactDOM.findDOMNode(this.refs.chooseFileType)).modal('show');
@@ -1726,7 +1720,7 @@ var Index = React.createClass({
   },
   showAbortOptions: function() {
     var modal = this.state.network;
-    var list = modal && modal.getSelectedList();
+    var list = modal.getSelectedList();
     ABORT_OPTIONS[0].disabled = !list || !list.filter(util.canAbort).length;
     this.setState({
       showAbortOptions: true
@@ -2323,7 +2317,7 @@ var Index = React.createClass({
   },
   replay: function(e, list, count) {
     var modal = this.state.network;
-    list = Array.isArray(list) ? list : (modal && modal.getSelectedList());
+    list = Array.isArray(list) ? list : modal.getSelectedList();
     if (!list || !list.length) {
       return;
     }
@@ -2360,7 +2354,7 @@ var Index = React.createClass({
   },
   clear: function() {
     var modal = this.state.network;
-    modal && this.setState({
+    this.setState({
       network: modal.clear(),
       showRemoveOptions: false
     });
@@ -2606,7 +2600,7 @@ var Index = React.createClass({
   abort: function(list) {
     if (!Array.isArray(list)) {
       var modal = this.state.network;
-      list = modal && modal.getSelectedList();
+      list = modal.getSelectedList();
     }
     if (list) {
       list = list.map(function(item) {
@@ -2784,7 +2778,7 @@ var Index = React.createClass({
     var sessions = this.currentFoucsItem;
     this.currentFoucsItem = null;
     if (!sessions || !$(ReactDOM.findDOMNode(this.refs.chooseFileType)).is(':visible')) {
-      sessions = modal && modal.getSelectedList();
+      sessions = modal.getSelectedList();
     }
     if (!sessions || !sessions.length) {
       return;
@@ -2875,10 +2869,9 @@ var Index = React.createClass({
     }
     var next = !isTreeView;
     var self = this;
-    storage.set('isTreeView', next ? '1' : '');
-    self.setState({ isTreeView: next }, () => {
-      self.setTreeView(next);
-    });
+    var modal = this.state.network;
+    modal.setTreeView(next);
+    self.setState({ isTreeView: next });
   },
   render: function() {
     var state = this.state;
@@ -2923,6 +2916,7 @@ var Index = React.createClass({
     var showPluginsOptions = state.showPluginsOptions;
     var showWeinreOptions = state.showWeinreOptions;
     var showHelpOptions = state.showHelpOptions;
+    var modal = state.network;
 
     if (rulesOptions[0].name === DEFAULT) {
       rulesOptions.forEach(function(item, i) {
@@ -2951,45 +2945,43 @@ var Index = React.createClass({
         }
       }
     }
-    if (state.network) {
-      state.network.rulesModal = state.rules;
-      state.rules.editorTheme = {
-        theme: rulesTheme,
-        fontSize: rulesFontSize,
-        lineNumbers: showRulesLineNumbers
-      };
-      var networkOptions = state.networkOptions;
-      var hasUnselected = state.network.hasUnselected();
-      if (state.network.hasSelected()) {
-        networkOptions.forEach(function(option) {
-          option.disabled = false;
-          if (option.id === 'removeUnselected') {
-            option.disabled = !hasUnselected;
-          }
-        });
-        REMOVE_OPTIONS.forEach(function(option) {
-          option.disabled = false;
-          if (option.id === 'removeUnselected') {
-            option.disabled = !hasUnselected;
-          }
-        });
-      } else {
-        networkOptions.forEach(function(option) {
-          if (OPTIONS_WITH_SELECTED.indexOf(option.id) !== -1) {
-            option.disabled = true;
-          } else if (option.id === 'removeUnselected') {
-            option.disabled = !hasUnselected;
-          }
-        });
-        networkOptions[0].disabled = !hasUnselected;
-        REMOVE_OPTIONS.forEach(function(option) {
-          if (OPTIONS_WITH_SELECTED.indexOf(option.id) !== -1) {
-            option.disabled = true;
-          } else if (option.id === 'removeUnselected') {
-            option.disabled = !hasUnselected;
-          }
-        });
-      }
+    modal.rulesModal = state.rules;
+    state.rules.editorTheme = {
+      theme: rulesTheme,
+      fontSize: rulesFontSize,
+      lineNumbers: showRulesLineNumbers
+    };
+    var networkOptions = state.networkOptions;
+    var hasUnselected = modal.hasUnselected();
+    if (modal.hasSelected()) {
+      networkOptions.forEach(function(option) {
+        option.disabled = false;
+        if (option.id === 'removeUnselected') {
+          option.disabled = !hasUnselected;
+        }
+      });
+      REMOVE_OPTIONS.forEach(function(option) {
+        option.disabled = false;
+        if (option.id === 'removeUnselected') {
+          option.disabled = !hasUnselected;
+        }
+      });
+    } else {
+      networkOptions.forEach(function(option) {
+        if (OPTIONS_WITH_SELECTED.indexOf(option.id) !== -1) {
+          option.disabled = true;
+        } else if (option.id === 'removeUnselected') {
+          option.disabled = !hasUnselected;
+        }
+      });
+      networkOptions[0].disabled = !hasUnselected;
+      REMOVE_OPTIONS.forEach(function(option) {
+        if (OPTIONS_WITH_SELECTED.indexOf(option.id) !== -1) {
+          option.disabled = true;
+        } else if (option.id === 'removeUnselected') {
+          option.disabled = !hasUnselected;
+        }
+      });
     }
     var pendingSessions = state.pendingSessions;
     var pendingRules = state.pendingRules;
@@ -3174,7 +3166,7 @@ var Index = React.createClass({
           {state.hasValues ? <List theme={valuesTheme} onDoubleClick={this.showEditValuesByDBClick} fontSize={valuesFontSize}
             lineWrapping={autoValuesLineWrapping} lineNumbers={showValuesLineNumbers} onSelect={this.saveValues} onActive={this.activeValues}
             modal={state.values} hide={name == 'values' ? false : true} className="w-values-list" /> : undefined}
-          {state.hasNetwork ? <Network ref="network" hide={name === 'rules' || name === 'values' || name === 'plugins'} modal={state.network} /> : undefined}
+          {state.hasNetwork ? <Network ref="network" hide={name === 'rules' || name === 'values' || name === 'plugins'} modal={modal} /> : undefined}
           {state.hasPlugins ? <Plugins {...state} onOpen={this.activePluginTab} onClose={this.closePluginTab} onActive={this.activePluginTab} onChange={this.disablePlugin} ref="plugins" hide={name == 'plugins' ? false : true} /> : undefined}
         </div>
         <div ref="rulesSettingsDialog" className="modal fade w-rules-settings-dialog">

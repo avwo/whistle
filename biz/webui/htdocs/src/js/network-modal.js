@@ -12,6 +12,7 @@ var KW_LIST_RE = /([^\s]+)(?:\s+([^\s]+)(?:\s+([\S\s]+))?)?/;
 function NetworkModal(list) {
   this._list = updateOrder(list);
   this.list = list.slice(0, MAX_LENGTH);
+  this.isTreeView = storage.get('isTreeView') === '1';
   this.clearRoot();
 }
 
@@ -492,7 +493,8 @@ proto.update = function(scrollAtBottom, force) {
 
   this.list = this._list.slice(0, MAX_LENGTH);
   this.filter(true);
-  return this._list.length > MAX_LENGTH;
+  this.updateTree();
+  return !this.isTreeView && this._list.length > MAX_LENGTH;
 };
 
 proto.hasSelected = function() {
@@ -673,7 +675,12 @@ proto.clearRoot = function() {
   return root;
 };
 
-proto.getTree = function() {
+proto.updateTree = function() {
+  if (!this.isTreeView) {
+    this._updateOnTreeView = true; // 非树状展示模式，不更新 tree 数据，等切换 view 时更新
+    return this.root;
+  }
+  this._updateOnTreeView = false;
   var allData = this._list;
   var len = allData.length;
   if (!len) {
@@ -715,10 +722,22 @@ proto.getTree = function() {
       data: item
     });
   }
-  // filterTree
   root.children.forEach(checkHide);
   handleTree(root, root.list);
   return root;
+};
+
+proto.setTreeView = function(isTreeView, quiet) {
+  isTreeView = isTreeView !== false;
+  if (this.isTreeView !== isTreeView) {
+    this.isTreeView = isTreeView;
+    !quiet && storage.set('isTreeView', isTreeView ? '1' : '');
+    isTreeView && this._updateOnTreeView && this.updateTree();
+  }
+};
+
+proto.getTree = function() {
+  return this.root;
 };
 
 function updateOrder(list, force) {
