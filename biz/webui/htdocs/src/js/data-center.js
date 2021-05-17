@@ -969,8 +969,6 @@ exports.addNetworkList = function (list) {
     delete data.order;
     delete data.req.json;
     delete data.res.json;
-    delete data.leafValue;
-    delete data.children;
     if (Array.isArray(data.frames)) {
       data.frames = data.frames.filter(function(frame) {
         if (frame) {

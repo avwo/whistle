@@ -615,8 +615,11 @@ proto.clearActive = function() {
 
 function parsePaths(url) {
   var index = url.indexOf('?');
-  var search = url.substring(index);
-  url = url.substring(0, index);
+  var search = '';
+  if (index !== -1) {
+    search = url.substring(index);
+    url = url.substring(0, index);
+  }
   index = url.indexOf('://');
   if (index === -1) {
     return ['tunnel://' + url, '/'];
@@ -632,22 +635,13 @@ function parsePaths(url) {
   return paths;
 }
 
-function getTreeList(root, list) {
+function handleTree(root, list) {
   var children = root.children;
-  var newChidren = [];
-  var newMap = {};
   for (var i = 0, len = children.length; i < len; i++) {
     var item = children[i];
-    if (item._exists) {
-      delete item._exists;
-      newChidren.push(item);
-      newMap[item.path] = item;
-      list.push(item);
-      item.children && getTreeList(item, list);
-    }
+    list.push(item);
+    item.children && handleTree(item, list);
   }
-  root.children = newChidren;
-  root.map = newMap;
   return root;
 }
 
@@ -667,16 +661,19 @@ proto.getTree = function() {
   if (!len) {
     return this.clearRoot();
   }
-  var root = this.root;
+  var oldRoot = this.root;
+  var root = this.clearRoot();
   for (var i = 0; i < len; i++) {
     var item = allData[i];
     var paths = parsePaths(item.url);
     var lastIndex = paths.length - 1;
     var parent = root;
+    var pre = oldRoot;
     var path;
     for (var j = 0; j < lastIndex; j++) {
       var value = paths[j];
       var next = parent.map[value];
+      var old = pre && pre.map[value];
       path = j ? path + '/' + value : value;
       if (!next) {
         next = {
@@ -684,22 +681,24 @@ proto.getTree = function() {
           path: path,
           value: value,
           children: [],
+          expended: old && old.expended,
           map: {}
         };
         parent.map[value] = next;
         parent.children.push(next);
       }
-      next._exists = 1;
       parent = next;
+      pre = old;
     }
-    item._exists = 1;
-    if (!item.leafValue) {
-      item.leafValue = paths[lastIndex];
-      parent.children.push(item);
-    }
+    parent.children.push({
+      depth: lastIndex,
+      expended: pre && pre.expended,
+      value: paths[lastIndex],
+      data: item
+    });
   }
-  root.list = [];
-  getTreeList(root, root.list);
+  // filterTree
+  handleTree(root, root.list);
   return root;
 };
 
