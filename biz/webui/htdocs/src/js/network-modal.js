@@ -12,6 +12,7 @@ var KW_LIST_RE = /([^\s]+)(?:\s+([^\s]+)(?:\s+([\S\s]+))?)?/;
 function NetworkModal(list) {
   this._list = updateOrder(list);
   this.list = list.slice(0, MAX_LENGTH);
+  this.clearRoot();
 }
 
 NetworkModal.MAX_COUNT = MAX_COUNT;
@@ -614,12 +615,8 @@ proto.clearActive = function() {
 
 function parsePaths(url) {
   var index = url.indexOf('?');
-  var hasQuery = index !== -1;
-  var search = '';
-  if (hasQuery) {
-    url = url.substring(0, index);
-    search = url.substring(index);
-  }
+  var search = url.substring(index);
+  url = url.substring(0, index);
   index = url.indexOf('://');
   if (index === -1) {
     return ['tunnel://' + url, '/'];
@@ -631,60 +628,79 @@ function parsePaths(url) {
   var paths = url.substring(index).split('/');
   paths[0] = url.substring(0, index);
   var lastIndex = paths.length - 1;
-  paths[lastIndex] = (paths[lastIndex] || '/') + (hasQuery ? '?' : '') + search;
+  paths[lastIndex] = '/' + paths[lastIndex] + search;
   return paths;
 }
 
-function parseTree(list) {
-  var root = {
-    children: [],
-    map: {}
-  };
-  for (var i = 0, len = list.length; i < len; i++) {
-    var item = list[i];
-    var paths = parsePaths(item.url);
-    var lastIndex = paths.length - 1;
-    var prev = root;
-    for (var j = 0; j < lastIndex; j++) {
-      var path = paths[j];
-      var next = prev.map[path];
-      if (!next) {
-        next = {
-          depth: j,
-          value: path,
-          children: [],
-          map: {}
-        };
-        prev.map[path] = next;
-        prev.children.push(next);
-        prev = next;
-      }
+function getTreeList(root, list) {
+  var children = root.children;
+  var newChidren = [];
+  var newMap = {};
+  for (var i = 0, len = children.length; i < len; i++) {
+    var item = children[i];
+    if (item._exists) {
+      delete item._exists;
+      newChidren.push(item);
+      newMap[item.path] = item;
+      list.push(item);
+      item.children && getTreeList(item, list);
     }
-    prev.children.push({
-      value: paths[lastIndex],
-      item: item
-    });
   }
+  root.children = newChidren;
+  root.map = newMap;
   return root;
 }
 
-function getTreeList(children, list) {
-  if (children) {
-    for (var i = 0, len = children.length; i < len; i++) {
-      var item = children[i];
-      list.push(item);
-      getTreeList(item.children, list);
-    }
-  }
-  return list;
-}
+proto.clearRoot = function() {
+  var root = {
+    children: [],
+    map: {},
+    list: []
+  };
+  this.root = root;
+  return root;
+};
 
 proto.getTree = function() {
-  var root = parseTree(this._list);
-  return {
-    root: root,
-    list: getTreeList(root.children, [])
-  };
+  var allData = this._list;
+  var len = allData.length;
+  if (!len) {
+    return this.clearRoot();
+  }
+  var root = this.root;
+  for (var i = 0; i < len; i++) {
+    var item = allData[i];
+    var paths = parsePaths(item.url);
+    var lastIndex = paths.length - 1;
+    var parent = root;
+    var path;
+    for (var j = 0; j < lastIndex; j++) {
+      var value = paths[j];
+      var next = parent.map[value];
+      path = j ? path + '/' + value : value;
+      if (!next) {
+        next = {
+          depth: j,
+          path: path,
+          value: value,
+          children: [],
+          map: {}
+        };
+        parent.map[value] = next;
+        parent.children.push(next);
+      }
+      next._exists = 1;
+      parent = next;
+    }
+    item._exists = 1;
+    if (!item.leafValue) {
+      item.leafValue = paths[lastIndex];
+      parent.children.push(item);
+    }
+  }
+  root.list = [];
+  getTreeList(root, root.list);
+  return root;
 };
 
 function updateOrder(list, force) {
