@@ -635,12 +635,30 @@ function parsePaths(url) {
   return paths;
 }
 
+function checkHide(item) {
+  if (item.data) {
+    item.hide = item.data.hide;
+    return item.hide;
+  }
+  var children = item.children;
+  for (var i = 0, len = children.length; i < len; i++) {
+    if (!checkHide(children[i])) {
+      item.hide = false;
+      return false;
+    }
+  }
+  item.hide = true;
+  return true;
+}
+
 function handleTree(root, list) {
   var children = root.children;
   for (var i = 0, len = children.length; i < len; i++) {
     var item = children[i];
-    list.push(item);
-    item.children && handleTree(item, list);
+    if (!item.hide) {
+      list.push(item);
+      item.children && handleTree(item, list);
+    }
   }
   return root;
 }
@@ -698,6 +716,7 @@ proto.getTree = function() {
     });
   }
   // filterTree
+  root.children.forEach(checkHide);
   handleTree(root, root.list);
   return root;
 };
