@@ -612,6 +612,81 @@ proto.clearActive = function() {
   });
 };
 
+function parsePaths(url) {
+  var index = url.indexOf('?');
+  var hasQuery = index !== -1;
+  var search = '';
+  if (hasQuery) {
+    url = url.substring(0, index);
+    search = url.substring(index);
+  }
+  index = url.indexOf('://');
+  if (index === -1) {
+    return ['tunnel://' + url, '/'];
+  }
+  index = url.indexOf('/', index + 3);
+  if (index === -1) {
+    return [url, '/'];
+  }
+  var paths = url.substring(index).split('/');
+  paths[0] = url.substring(0, index);
+  var lastIndex = paths.length - 1;
+  paths[lastIndex] = (paths[lastIndex] || '/') + (hasQuery ? '?' : '') + search;
+  return paths;
+}
+
+function parseTree(list) {
+  var root = {
+    children: [],
+    map: {}
+  };
+  for (var i = 0, len = list.length; i < len; i++) {
+    var item = list[i];
+    var paths = parsePaths(item.url);
+    var lastIndex = paths.length - 1;
+    var prev = root;
+    for (var j = 0; j < lastIndex; j++) {
+      var path = paths[j];
+      var next = prev.map[path];
+      if (!next) {
+        next = {
+          depth: j,
+          value: path,
+          children: [],
+          map: {}
+        };
+        prev.map[path] = next;
+        prev.children.push(next);
+        prev = next;
+      }
+    }
+    prev.children.push({
+      value: paths[lastIndex],
+      item: item
+    });
+  }
+  return root;
+}
+
+function getTreeList(children, list) {
+  if (children) {
+    for (var i = 0, len = children.length; i < len; i++) {
+      var item = children[i];
+      list.push(item);
+      getTreeList(item.children, list);
+    }
+  }
+  return list;
+}
+
+proto.getTree = function() {
+  var root = parseTree(this._list);
+  return {
+    root: root,
+    list: getTreeList(root.children, [])
+  };
+};
+
 function updateOrder(list, force) {
   var len = list.length;
   if (len && (force || !list[len - 1].order)) {

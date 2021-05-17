@@ -940,14 +940,27 @@ function setReqData(item) {
   }
 }
 
+var PROTOCOL_RE = /^(?:https?|wss?):\/\//;
+
+function checkUrl(data) {
+  var url = data && data.url;
+  if (!url || typeof url !== 'string' || url.indexOf('#') !== -1) {
+    return false;
+  }
+  if (data.isHttps) {
+    return url.indexOf('/') === -1 && url.indexOf('?') === -1;
+  }
+  return PROTOCOL_RE.test(url);
+}
+
 exports.addNetworkList = function (list) {
   if (!Array.isArray(list) || !list.length) {
     return;
   }
   var hasData;
   list.forEach(function (data) {
-    if (!data || !(data.startTime >= 0) || !data.req ||
-      !data.req.headers || !data.res) {
+    if (!data || !(data.startTime >= 0) || !data.req || !data.req.headers
+      || !data.res || !checkUrl(data)) {
       return;
     }
     delete data.active;
