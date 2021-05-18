@@ -706,9 +706,12 @@ proto.updateTree = function() {
           path: path,
           value: value,
           children: [],
-          expand: old && old.expand,
           map: {}
         };
+        if (old) {
+          next.expand = old.expand;
+          next.pExpand = old.pExpand;
+        }
         parent.map[value] = next;
         parent.children.push(next);
       }

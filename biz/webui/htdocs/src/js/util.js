@@ -2065,6 +2065,7 @@ exports.getUrl = function(url) {
 function expandAll(node) {
   if (node.children) {
     node.expand = true;
+    node.pExpand = true;
     node.children.forEach(expandAll);
   }
 }
@@ -2074,8 +2075,32 @@ exports.expandAll = expandAll;
 function collapseAll(node) {
   if (node.children) {
     node.expand = false;
+    node.pExpand = false;
     node.children.forEach(collapseAll);
   }
 }
 
 exports.collapseAll = collapseAll;
+
+function setPExpand(node, pExpand) {
+  if (node.children) {
+    node.pExpand = pExpand;
+    pExpand = node.expand && pExpand;
+    node.children.forEach(function(child) {
+      setPExpand(child, pExpand);
+    });
+  }
+}
+
+function expand(node) {
+  node.expand = true;
+  setPExpand(node, true);
+}
+
+function collapse(node) {
+  node.expand = false;
+  setPExpand(node, false);
+}
+
+exports.expand = expand;
+exports.collapse = collapse;

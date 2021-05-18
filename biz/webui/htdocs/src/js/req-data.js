@@ -167,13 +167,7 @@ function isVisible(item) {
 
 function isVisibleInTree(item) {
   var parent = item.parent;
-  while (parent) {
-    if (!parent.expand) {
-      return false;
-    }
-    parent = parent.parent;
-  }
-  return true;
+  return !parent || (parent.expand && parent.pExpand);
 }
 
 function hasRules(data) {
@@ -961,7 +955,11 @@ var ReqData = React.createClass({
   toggleNode: function(e) {
     var node = this.getTreeNode(e);
     if (node) {
-      node.expand = !node.expand;
+      if (node.expand) {
+        util.collapse(node);
+      } else {
+        util.expand(node);
+      }
       this.setState({});
     }
   },
