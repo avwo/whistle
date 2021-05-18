@@ -675,6 +675,18 @@ proto.clearRoot = function() {
   return root;
 };
 
+proto.getListByPath = function(path) {
+  var isTunnel = path.indexOf('tunnel://') === 0;
+  if (isTunnel) {
+    path = path.substring(9);
+  } else {
+    path = path + '/';
+  }
+  return this.list.filter(function(item) {
+    return !item.hide && (isTunnel ? item.url === path : !item.url.indexOf(path));
+  });
+};
+
 proto.updateTree = function() {
   if (!this.isTreeView) {
     this._updateOnTreeView = true; // 非树状展示模式，不更新 tree 数据，等切换 view 时更新

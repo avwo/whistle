@@ -16,7 +16,13 @@ var RecycleBinDialog = require('./recycle-bin');
 
 var disabledEditor = window.location.href.indexOf('disabledEditor=1') !== -1;
 var rulesCtxMenuList = [
-  { name: 'Copy' },
+  {
+    name: 'Copy',
+    list: [
+      { name: 'Name' },
+      { name: 'Rules' }
+    ]
+  },
   { name: 'Enable', action: 'Save' },
   {
     name: 'Create',
@@ -35,7 +41,13 @@ var rulesCtxMenuList = [
   { name: 'Help', sep: true }
 ];
 var valuesCtxMenuList = [
-  { name: 'Copy' },
+  {
+    name: 'Copy',
+    list: [
+      { name: 'Key' },
+      { name: 'Value' }
+    ]
+  },
   { name: 'Save' },
   {
     name: 'Create',
@@ -446,6 +458,7 @@ var List = React.createClass({
     var height = (isRules ? 280 : 310) - (pluginItem.hide ? 30 : 0);
     pluginItem.maxHeight = height + 30;
     var data = util.getMenuPosition(e, 110, height);
+    data.className = 'w-contenxt-menu-list';
     if (isRules) {
       data.list = rulesCtxMenuList;
       data.list[1].disabled = disabled;
@@ -467,8 +480,17 @@ var List = React.createClass({
       data.list[5].disabled = disabled;
       data.list[6].disabled = !modal.list.length;
     }
-    data.list[0].copyText = name;
-    data.list[0].disabled = disabled;
+    var copyItem = data.list[0];
+    copyItem.disabled = disabled;
+    if (!disabled) {
+      copyItem.list[0].copyText = name;
+      if (item.value) {
+        copyItem.list[1].disabled = false;
+        copyItem.list[1].copyText = item.value;
+      } else {
+        copyItem.list[1].disabled = true;
+      }
+    }
     data.list[3].disabled = isDefault || disabled;
     data.list[4].disabled = isDefault || disabled;
     this.refs.contextMenu.show(data);

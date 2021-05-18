@@ -78,6 +78,10 @@
   top: -31px!important;
 }
 
+.w-context-menu.w-contenxt-menu-list li[data-menu-action=Copy] ul {
+  top: 0!important;
+}
+
 .w-context-menu  li[data-menu-action=Plugins] ul {
   overflow-x: hidden;
   overflow-y: auto;
