@@ -814,19 +814,24 @@ var ReqData = React.createClass({
       list5[3].disabled = true;
     }
     var treeItem = contextMenuList[6];
+    var treeList = treeItem.list;
     treeItem.hide = !modal.isTreeView;
-    treeItem.disabled = !treeNodeData;
+    treeItem.disabled = !treeNodeData && !hasData;
     if (treeNodeData) {
       var isLeaf = treeNodeData.data;
       var expand = treeNodeData.expand;
 
       this.treeTarget = treeId;
       this.isTreeLeafNode = isLeaf;
-      var treeList = treeItem.list;
       treeList[0].disabled = expand || isLeaf;
       treeList[1].disabled = !expand || isLeaf;
       treeList[2].disabled = isLeaf;
       treeList[3].disabled = isLeaf;
+    } else if (modal.isTreeView) {
+      treeList[0].disabled = true;
+      treeList[1].disabled = true;
+      treeList[2].disabled = !hasData;
+      treeList[3].disabled = !hasData;
     }
     var pluginItem = contextMenuList[9];
     pluginItem.disabled = disabled && !selectedCount;
@@ -964,6 +969,10 @@ var ReqData = React.createClass({
     }
   },
   expandAll: function(e) {
+    if (!e) {
+      var root = this.props.modal.getTree();
+      return root.children.forEach(util.expandAll);
+    }
     var node = this.getTreeNode(e);
     if (node) {
       util.expandAll(node);
@@ -971,6 +980,10 @@ var ReqData = React.createClass({
     }
   },
   collapseAll: function(e) {
+    if (!e) {
+      var root = this.props.modal.getTree();
+      return root.children.forEach(util.collapseAll);
+    }
     var node = this.getTreeNode(e);
     if (node) {
       util.collapseAll(node);
