@@ -120,7 +120,7 @@ proto.hasKeyword = function() {
 
 proto.setSortColumns = function(columns) {
   this._columns = columns;
-  this.filter(false, true);
+  this.filter(false);
 };
 
 function setNot(flag, not) {
@@ -172,7 +172,7 @@ proto.hasUnmarked = function() {
   }
 };
 
-proto.filter = function(newList, sort) {
+proto.filter = function(newList) {
   var self = this;
   var list = self.list;
   var keyword = self._keyword;
@@ -205,7 +205,7 @@ proto.filter = function(newList, sort) {
   } else if (!newList) {
     self.list = self._list.slice(0, MAX_LENGTH);
   }
-  !sort && this.updateTree();
+  this.updateTree();
   this.updateDisplayCount();
   return list;
 };
@@ -638,14 +638,14 @@ function parsePaths(url) {
 }
 
 function checkHide(item) {
-  if (item.data) {
-    item.hide = item.data.hide;
+  if (item.data || item.hide) {
     return item.hide;
   }
   var children = item.children;
   for (var i = 0, len = children.length; i < len; i++) {
-    if (!checkHide(children[i])) {
-      item.hide = false;
+    var child = children[i];
+    if (!checkHide(child)) {
+      child.hide = false;
       return false;
     }
   }
@@ -725,6 +725,7 @@ proto.updateTree = function() {
       depth: lastIndex,
       parent: parent,
       value: paths[lastIndex],
+      hide: item.hide,
       data: item
     });
   }
