@@ -166,7 +166,14 @@ function isVisible(item) {
 }
 
 function isVisibleInTree(item) {
-  return !item.depth || item.expand;
+  var parent = item.parent;
+  while (parent) {
+    if (!parent.expand) {
+      return false;
+    }
+    parent = parent.parent;
+  }
+  return true;
 }
 
 function hasRules(data) {
@@ -401,6 +408,9 @@ var ReqData = React.createClass({
     return [active, item];
   },
   onClick: function(e, item, hm) {
+    if (!item) {
+      return;
+    }
     var self = this;
     var modal = self.props.modal;
     var rows;
@@ -508,7 +518,8 @@ var ReqData = React.createClass({
     var self = this;
     var item = self.currentFocusItem;
     var modal = self.props.modal;
-    var curUrl = item && item.url || (self.treeTarget && self.treeTarget + '/');
+    var treeId = self.treeTarget;
+    var curUrl = item && item.url || (treeId && treeId + '/');
 
     switch(parentAction || action) {
     case 'New Tab':
@@ -655,30 +666,14 @@ var ReqData = React.createClass({
       });
       break;
     case 'Expand':
-      modal.toggleTreeNode({
-        id: this.treeTarget,
-        next: true
-      });
-      break;
     case 'Collapse':
-      modal.toggleTreeNode({
-        id: this.treeTarget,
-        next: false
-      });
+      self.toggleNode(treeId);
       break;
     case 'Expand All':
-      modal.toggleTreeNode({
-        id: this.treeTarget,
-        next: true,
-        recursive: true
-      });
+      self.expandAll(treeId);
       break;
     case 'Collapse All':
-      modal.toggleTreeNode({
-        id: this.treeTarget,
-        next: false,
-        recursive: true
-      });
+      self.collapseAll(treeId);
       break;
     }
   },
@@ -689,7 +684,7 @@ var ReqData = React.createClass({
     var modal = this.props.modal;
     var item = modal.getItem(dataId);
     var disabled = !item;
-    var treeNodeData = modal.isTreeView && null;
+    var treeNodeData = modal.isTreeView && modal.getTreeNode(treeId);
     this.treeTarget = null;
     e.preventDefault();
     this.currentFocusItem = item;
@@ -830,8 +825,8 @@ var ReqData = React.createClass({
       this.treeTarget = treeId;
       this.isTreeLeafNode = isLeaf;
       var treeList = treeItem.list;
-      treeList[0].disabled = !expand || isLeaf;
-      treeList[1].disabled = expand || isLeaf;
+      treeList[0].disabled = expand || isLeaf;
+      treeList[1].disabled = !expand || isLeaf;
       treeList[2].disabled = isLeaf;
       treeList[3].disabled = isLeaf;
     }
@@ -951,12 +946,41 @@ var ReqData = React.createClass({
     this.refs.content.refs.list.scrollToRow(target);
     this.container.focus();
   },
+  getTreeNode: function(e) {
+    var modal = this.props.modal;
+    if (typeof e === 'string') {
+      return modal.getTreeNode(e);
+    }
+    var elem = $(e.target).closest('.w-req-data-item');
+    return modal.getTreeNode(elem.attr('data-tree'));
+  },
+  toggleNode: function(e) {
+    var node = this.getTreeNode(e);
+    if (node) {
+      node.expand = !node.expand;
+      this.setState({});
+    }
+  },
+  expandAll: function(e) {
+    var node = this.getTreeNode(e);
+    if (node) {
+      util.expandAll(node);
+      this.setState({});
+    }
+  },
+  collapseAll: function(e) {
+    var node = this.getTreeNode(e);
+    if (node) {
+      util.collapseAll(node);
+      this.setState({});
+    }
+  },
   renderTreeNode: function(item, options) {
     var draggable = this.state.draggable;
     var style = options.style;
     var leaf = item.data;
     var className = leaf ? getClassName(leaf) : '';
-    var id = leaf ? leaf.id : item.value;
+    var id = leaf ? leaf.id : item.path;
     var value = item.value;
     style.marginLeft = item.depth * 32;
     return (
@@ -964,10 +988,10 @@ var ReqData = React.createClass({
         key={id}
         style={style}
         className={`w-req-data-item tree-node ${leaf ? 'tree-leaf': ''} ${className}`}
-        data-id={leaf ? leaf.id : id}
+        data-id={leaf && leaf.id}
         data-tree={id}
         draggable={leaf && draggable}
-        onClick={leaf ? null : null}
+        onClick={leaf ? null : this.toggleNode}
         title={leaf ? util.getUrl(leaf.url) : value}
         onKeyDown={function(){}}
       >
@@ -1002,7 +1026,7 @@ var ReqData = React.createClass({
     return (
         <div className="fill w-req-data-con orient-vertical-box">
           <div ref="wrapper" className="w-req-data-content fill orient-vertical-box" style={colStyle}>
-            <div className="w-req-data-headers">
+            <div className={'w-req-data-headers' + (isTreeView ? ' hide' : '')}>
               <table className="table">
                   <thead>
                     <tr onClick={self.orderBy}>

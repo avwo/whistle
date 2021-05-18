@@ -712,12 +712,15 @@ proto.updateTree = function() {
         parent.map[value] = next;
         parent.children.push(next);
       }
+      if (j) {
+        next.parent = parent;
+      }
       parent = next;
       pre = old;
     }
     parent.children.push({
       depth: lastIndex,
-      expand: pre && pre.expand,
+      parent: parent,
       value: paths[lastIndex],
       data: item
     });
@@ -738,6 +741,16 @@ proto.setTreeView = function(isTreeView, quiet) {
 
 proto.getTree = function() {
   return this.root;
+};
+
+proto.getTreeNode = function(id) {
+  var list = this.root.list;
+  for (var i = 0, len = list.length; i < len; i++) {
+    var item = list[i];
+    if (item.data ? item.data.id === id : item.path === id) {
+      return item;
+    }
+  }
 };
 
 function updateOrder(list, force) {

@@ -2061,3 +2061,21 @@ exports.toHar = function(item) {
 exports.getUrl = function(url) {
   return url && url.indexOf('/') === -1 ? 'tunnel://' + url : url;
 };
+
+function expandAll(node) {
+  if (node.children) {
+    node.expand = true;
+    node.children.forEach(expandAll);
+  }
+}
+
+exports.expandAll = expandAll;
+
+function collapseAll(node) {
+  if (node.children) {
+    node.expand = false;
+    node.children.forEach(collapseAll);
+  }
+}
+
+exports.collapseAll = collapseAll;
