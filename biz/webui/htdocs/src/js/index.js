@@ -2861,9 +2861,17 @@ var Index = React.createClass({
     }, 500);
   },
   toggleTreeView() {
-    var modal = this.state.network;
+    var self = this;
+    var modal = self.state.network;
     modal.setTreeView(!modal.isTreeView);
-    this.setState({});
+    if (modal.isTreeView) {
+      modal.updateTree();
+    }
+    self.setState({}, function() {
+      if (!modal.isTreeView) {
+        self.autoRefresh && self.autoRefresh();
+      }
+    });
   },
   render: function() {
     var state = this.state;
@@ -2909,6 +2917,7 @@ var Index = React.createClass({
     var showWeinreOptions = state.showWeinreOptions;
     var showHelpOptions = state.showHelpOptions;
     var modal = state.network;
+    var isTreeView = modal.isTreeView;
     if (rulesOptions[0].name === DEFAULT) {
       rulesOptions.forEach(function(item, i) {
         item.icon = (!i || !state.multiEnv) ? 'checkbox' : 'edit';
@@ -3114,8 +3123,8 @@ var Index = React.createClass({
               }}
                draggable="false">
                 <span className="glyphicon glyphicon-globe"></span>
-                <i><span title={'Click to switch to ' + (modal.isTreeView ? 'List View' : 'Tree View') + ' (Ctrl[Command] + B)'} onDoubleClick={stopPropagation}
-                  onClick={this.toggleTreeView} className={'glyphicon glyphicon-tree-conifer' + (modal.isTreeView ? ' enable-tree-view' : '')}></span>Network</i>
+                <i><span title={'Click to switch to ' + (isTreeView ? 'List View' : 'Tree View') + ' (Ctrl[Command] + B)'} onDoubleClick={stopPropagation}
+                  onClick={this.toggleTreeView} className={'glyphicon glyphicon-tree-conifer' + (isTreeView ? ' enable-tree-view' : '')}></span>Network</i>
             </a>
             <a onClick={this.showRules} className="w-save-menu w-rules-menu"
               onDoubleClick={this.onClickMenu}

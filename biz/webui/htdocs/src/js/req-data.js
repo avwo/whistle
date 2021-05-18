@@ -164,6 +164,10 @@ function isVisible(item) {
   return !item.hide;
 }
 
+function isExpanded(item) {
+  return !item.depth || item.expanded;
+}
+
 function hasRules(data) {
   var rules = data.rules;
   if (!rules) {
@@ -289,8 +293,7 @@ var ReqData = React.createClass({
     self.$content = $(self.content).on('dblclick', 'tr', function() {
       events.trigger('showOverview');
     }).on('click', 'tr', function(e) {
-      var modal = self.props.modal;
-      var item = modal.getItem(this.getAttribute('data-id'));
+      var item = self.props.modal.getItem(this.getAttribute('data-id'));
       self.onClick(e, item);
     });
     var toggleDraggable = function(e) {
@@ -303,9 +306,6 @@ var ReqData = React.createClass({
     self.container.on('keydown', function(e) {
       var modal = self.props.modal;
       toggleDraggable(e);
-      if (!modal) {
-        return;
-      }
       var item;
       if (e.keyCode == 38) { //up
         item = modal.prev();
@@ -323,8 +323,7 @@ var ReqData = React.createClass({
 
     $(window).on('resize', render);
     events.on('ensureSelectedItemVisible', function () {
-      var modal = self.props.modal;
-      var selected =  modal && modal.getSelectedList()[0];
+      var selected = self.props.modal.getSelectedList()[0];
       if(selected){
         self.scrollToRow(selected);
       }else{
@@ -352,8 +351,7 @@ var ReqData = React.createClass({
     dataId && e.dataTransfer.setData('reqDataId', dataId);
   },
   getSelectedRows: function (item) {
-    var modal = this.props.modal;
-    var active = modal.getActive();
+    var active = this.props.modal.getActive();
     if (!active || item === active) {
       return;
     }
@@ -394,8 +392,7 @@ var ReqData = React.createClass({
     }
   },
   clearSelection: function() {
-    var modal = this.props.modal;
-    modal && modal.clearSelection();
+    this.props.modal.clearSelection();
   },
   getFilterList: function() {
     var settings = dataCenter.getFilterText();
@@ -412,11 +409,10 @@ var ReqData = React.createClass({
     events.trigger('filterChanged');
   },
   getActiveList: function(curItem) {
-    var modal = this.props.modal;
-    if (!modal || !curItem.selected) {
+    if (!curItem.selected) {
       return [curItem];
     }
-    return modal.getSelectedList();
+    return this.props.modal.getSelectedList();
   },
   removeAllSuchHost: function(item, justRemove) {
     var hostList = [];
@@ -427,8 +423,7 @@ var ReqData = React.createClass({
         hostList.push(host);
       }
     });
-    var modal = this.props.modal;
-    modal && modal.removeByHostList(hostList);
+    this.props.modal.removeByHostList(hostList);
     if (!justRemove) {
       var filterList = this.getFilterList();
       hostList.forEach(function(host) {
@@ -450,8 +445,7 @@ var ReqData = React.createClass({
         urlList.push(url);
       }
     });
-    var modal = this.props.modal;
-    modal && modal.removeByUrlList(urlList);
+    this.props.modal.removeByUrlList(urlList);
     if (!justRemove) {
       var filterList = this.getFilterList();
       urlList.forEach(function(url) {
@@ -504,15 +498,14 @@ var ReqData = React.createClass({
       break;
     case 'Mark':
     case 'Unmark':
-      var modal = this.props.modal;
-      var list = getFocusItemList(item) || (modal && modal.getSelectedList());
+      var list = getFocusItemList(item) || self.props.modal.getSelectedList();
       if (list) {
         var isMark = action === 'Mark';
         list.forEach(function(item) {
           item.mark = isMark;
         });
       }
-      this.setState({});
+      self.setState({});
       break;
     case 'Replay':
       events.trigger('replaySessions', [item, e.shiftKey]);
@@ -763,8 +756,7 @@ var ReqData = React.createClass({
   },
   onFilterChange: function(keyword) {
     var self = this;
-    var modal = self.props.modal;
-    modal && modal.search(keyword);
+    self.props.modal.search(keyword);
     clearTimeout(self.networkStateChangeTimer);
     self.networkStateChangeTimer = setTimeout(function() {
       self.setState({filterText: keyword}, self.updateList);
@@ -776,8 +768,7 @@ var ReqData = React.createClass({
       return;
     }
     dataCenter.setDumpCount(parseInt(RegExp.$1, 10));
-    var modal = this.props.modal;
-    modal && modal.clear();
+    this.props.modal.clear();
     this.refs.filterInput.clearFilterText();
   },
   autoRefresh: function() {
@@ -790,7 +781,6 @@ var ReqData = React.createClass({
     if (!target) {
       return;
     }
-    var modal = this.props.modal;
     var name = target.className;
     var order;
     if (name == 'order') {
@@ -806,18 +796,16 @@ var ReqData = React.createClass({
       }
     }
 
-    if (modal) {
-      var sortColumns = [];
-      Object.keys(columnState).forEach(function(name) {
-        if (order = columnState[name]) {
-          sortColumns.push({
-            name: name,
-            order: order
-          });
-        }
-      });
-      modal.setSortColumns(sortColumns);
-    }
+    var sortColumns = [];
+    Object.keys(columnState).forEach(function(name) {
+      if (order = columnState[name]) {
+        sortColumns.push({
+          name: name,
+          order: order
+        });
+      }
+    });
+    this.props.modal.setSortColumns(sortColumns);
     this.setState({});
   },
   onColumnsResort: function() {
@@ -874,8 +862,8 @@ var ReqData = React.createClass({
     var self = this;
     var state = this.state;
     var modal = self.props.modal;
-    var list = modal ? modal.list.filter(isVisible) : [];
-    var hasKeyword = modal && modal.hasKeyword();
+    var list = modal.isTreeView ? modal.getTree().list.filter(isExpanded) : modal.list.filter(isVisible);
+    var hasKeyword = modal.hasKeyword();
     var index = 0;
     var draggable = state.draggable;
     var columnList = state.columns.list;
