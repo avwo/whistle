@@ -706,7 +706,7 @@ proto.updateTree = function() {
           path: path,
           value: value,
           children: [],
-          expended: old && old.expended,
+          expand: old && old.expand,
           map: {}
         };
         parent.map[value] = next;
@@ -717,7 +717,7 @@ proto.updateTree = function() {
     }
     parent.children.push({
       depth: lastIndex,
-      expended: pre && pre.expended,
+      expand: pre && pre.expand,
       value: paths[lastIndex],
       data: item
     });

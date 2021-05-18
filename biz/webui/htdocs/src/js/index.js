@@ -2864,9 +2864,6 @@ var Index = React.createClass({
     var self = this;
     var modal = self.state.network;
     modal.setTreeView(!modal.isTreeView);
-    if (modal.isTreeView) {
-      modal.updateTree();
-    }
     self.setState({}, function() {
       if (!modal.isTreeView) {
         self.autoRefresh && self.autoRefresh();

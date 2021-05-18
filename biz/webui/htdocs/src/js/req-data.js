@@ -98,7 +98,15 @@ var contextMenuList = [
       { name: 'Unmark' }
     ]
   },
-  { name: 'Share' },
+  {
+    name: 'Tree',
+    list: [
+      { name: 'Expand' },
+      { name: 'Collapse' },
+      { name: 'Expand All' },
+      { name: 'Collapse All' }
+    ]
+  },
   { name: 'Import' },
   { name: 'Export' },
   {
@@ -146,13 +154,6 @@ function getColStyle(col, style) {
   return style;
 }
 
-function getUploadSessionsFn() {
-  try {
-    var uploadSessions = window.parent.uploadWhistleSessions;
-    return typeof uploadSessions === 'function' ? uploadSessions : null;
-  } catch(e) {}
-}
-
 function getClassName(data) {
   return getStatusClass(data) + ' w-req-data-item'
     + (data.isHttps ? ' w-tunnel' : '')
@@ -164,8 +165,8 @@ function isVisible(item) {
   return !item.hide;
 }
 
-function isExpanded(item) {
-  return !item.depth || item.expanded;
+function isVisibleInTree(item) {
+  return !item.depth || item.expand;
 }
 
 function hasRules(data) {
@@ -201,6 +202,12 @@ function getStatusClass(data) {
   case 'IMG':
     type = 'active';
     break;
+  case 'JSON':
+    type = '_json';
+    break;
+  case 'XML':
+    type = '_xml';
+    break;
   }
 
   var statusCode = data.res && data.res.statusCode;
@@ -217,6 +224,42 @@ function getStatusClass(data) {
   }
 
   return type;
+}
+
+function getType(className) {
+  if (className.indexOf('warning') !== -1) {
+    return 'JS';
+  }
+  if (className.indexOf('info') !== -1) {
+    return 'CSS';
+  }
+  if (className.indexOf('success') !== -1) {
+    return 'HTML';
+  }
+  if (className.indexOf('active') !== -1) {
+    return 'IMG';
+  }
+  if (className.indexOf('_json') !== -1) {
+    return 'JSON';
+  }
+  if (className.indexOf('_xml') !== -1) {
+    return 'XML';
+  }
+  return '';
+}
+
+function getIcon(data, className) {
+  if (className.indexOf('danger') !== -1) {
+    return <span className="icon-leaf glyphicon glyphicon-remove-circle" />;
+  }
+  if (className.indexOf('w-forbidden') !== -1) {
+    return <span className="icon-leaf glyphicon glyphicon-ban-circle" />;
+  }
+  if (data && !data.endTime && !data.lost) {
+    return <span className="icon-leaf glyphicon glyphicon-hourglass" />;
+  }
+  var type = getType(className);
+  return <span className={type ? 'w-type-icon' : 'glyphicon glyphicon-file'}>{type || null}</span>;
 }
 
 function getFilename(item, type) {
@@ -464,12 +507,15 @@ var ReqData = React.createClass({
   onClickContextMenu: function(action, e, parentAction, name) {
     var self = this;
     var item = self.currentFocusItem;
+    var modal = self.props.modal;
+    var curUrl = item && item.url || (self.treeTarget && self.treeTarget + '/');
+
     switch(parentAction || action) {
     case 'New Tab':
-      item && window.open(item.url);
+      curUrl && window.open(curUrl);
       break;
     case 'QR Code':
-      self.refs.qrcodeDialog.show(item && item.url);
+      self.refs.qrcodeDialog.show(curUrl);
       break;
     case 'Preview':
       util.openPreview(item);
@@ -498,20 +544,24 @@ var ReqData = React.createClass({
       break;
     case 'Mark':
     case 'Unmark':
-      var list = getFocusItemList(item) || self.props.modal.getSelectedList();
+      var list = getFocusItemList(item) || (modal && modal.getSelectedList());
       if (list) {
         var isMark = action === 'Mark';
         list.forEach(function(item) {
           item.mark = isMark;
         });
       }
-      self.setState({});
+      this.setState({});
       break;
     case 'Replay':
       events.trigger('replaySessions', [item, e.shiftKey]);
       break;
     case 'Export':
-      events.trigger('exportSessions', item);
+      if (self.treeTarget && !self.isTreeLeafNode) {
+        events.trigger('exportSessions', [modal.getListByPath(self.treeTarget)]);
+      } else {
+        events.trigger('exportSessions', item);
+      }
       break;
     case 'Abort':
       events.trigger('abortRequest', item);
@@ -556,12 +606,6 @@ var ReqData = React.createClass({
         name: getFilename(item, 'res_raw')
       });
       break;
-    case 'Share':
-      events.trigger('uploadSessions', {
-        curItem: item,
-        upload: getUploadSessionsFn()
-      });
-      break;
     case 'Import':
       events.trigger('importSessions', e);
       break;
@@ -569,16 +613,16 @@ var ReqData = React.createClass({
       events.trigger('filterSessions', e);
       break;
     case 'removeAllSuchHost':
-      item && self.removeAllSuchHost(item, true);
+      curUrl && self.removeAllSuchHost(item, true);
       break;
     case 'removeAllSuchURL':
-      item && self.removeAllSuchURL(item, true);
+      curUrl && self.removeAllSuchURL(item || curUrl, true);
       break;
     case 'excludeHost':
-      item && self.removeAllSuchHost(item);
+      curUrl && self.removeAllSuchHost(item);
       break;
     case 'excludeUrl':
-      item && self.removeAllSuchURL(item);
+      curUrl && self.removeAllSuchURL(item || curUrl);
       break;
     case 'This':
       events.trigger('removeIt', item);
@@ -610,18 +654,49 @@ var ReqData = React.createClass({
         selectedList: self.props.modal.getSelectedList()
       });
       break;
+    case 'Expand':
+      modal.toggleTreeNode({
+        id: this.treeTarget,
+        next: true
+      });
+      break;
+    case 'Collapse':
+      modal.toggleTreeNode({
+        id: this.treeTarget,
+        next: false
+      });
+      break;
+    case 'Expand All':
+      modal.toggleTreeNode({
+        id: this.treeTarget,
+        next: true,
+        recursive: true
+      });
+      break;
+    case 'Collapse All':
+      modal.toggleTreeNode({
+        id: this.treeTarget,
+        next: false,
+        recursive: true
+      });
+      break;
     }
   },
   onContextMenu: function(e) {
-    var dataId = $(e.target).closest('.w-req-data-item').attr('data-id');
+    var el = $(e.target).closest('.w-req-data-item');
+    var dataId = el.attr('data-id');
+    var treeId = el.attr('data-tree');
     var modal = this.props.modal;
     var item = modal.getItem(dataId);
     var disabled = !item;
+    var treeNodeData = modal.isTreeView && null;
+    this.treeTarget = null;
     e.preventDefault();
     this.currentFocusItem = item;
-    contextMenuList[0].disabled = disabled;
+    var clickBlank = disabled && !treeNodeData;
+    contextMenuList[0].disabled = clickBlank;
     var list0 = contextMenuList[0].list;
-    list0[4].disabled = disabled || !/^https?:\/\//.test(item.url);
+    list0[4].disabled = clickBlank || !/^https?:\/\//.test(treeId || item.url);
     if (disabled) {
       list0[6].disabled = true;
     } else {
@@ -634,21 +709,27 @@ var ReqData = React.createClass({
     list0[3].disabled = disabled;
     list0[7].disabled = disabled;
 
-    contextMenuList[1].disabled = disabled;
+    contextMenuList[1].disabled = disabled && !treeId;
+    var treeUrl = treeId ? treeId + '/' : '';
+    var isTreeNode = disabled && !treeUrl;
     contextMenuList[1].list.forEach(function(menu) {
       menu.disabled = disabled;
       switch(menu.name) {
       case 'URL':
-        menu.copyText = item && item.url.replace(/[?#].*$/, '');
+        menu.copyText = util.getUrl(item && item.url.replace(/[?#].*$/, '') || treeUrl);
+        menu.disabled = isTreeNode;
         break;
       case 'Host':
-        menu.copyText = item && (item.isHttps ? item.path : item.hostname);
+        menu.copyText = item && (item.isHttps ? item.path : item.hostname) || util.getHost(treeUrl);
+        menu.disabled = isTreeNode;
         break;
       case 'Path':
-        menu.copyText = item && item.path;
+        menu.copyText = item && item.path || util.getPath(treeUrl);
+        menu.disabled = isTreeNode;
         break;
       case 'Full URL':
-        menu.copyText = item && item.url;
+        menu.copyText = util.getUrl(item && item.url || treeUrl);
+        menu.disabled = isTreeNode;
         break;
       case 'As CURL':
         menu.copyText = util.asCURL(item);
@@ -700,12 +781,12 @@ var ReqData = React.createClass({
     list3[3].disabled = !selectedCount;
     list3[4].disabled = selectedCount === hasData;
     list3[5].disabled = !modal.hasUnmarked();
-    list3[6].disabled = disabled;
-    list3[7].disabled = disabled;
+    list3[6].disabled = clickBlank;
+    list3[7].disabled = clickBlank;
 
     var list4 = contextMenuList[4].list;
-    list4[1].disabled = disabled;
-    list4[2].disabled = disabled;
+    list4[1].disabled = clickBlank;
+    list4[2].disabled = clickBlank;
 
     contextMenuList[5].disabled = disabled;
     var list5 = contextMenuList[5].list;
@@ -739,12 +820,25 @@ var ReqData = React.createClass({
       list5[2].disabled = true;
       list5[3].disabled = true;
     }
-    var uploadItem = contextMenuList[6];
-    uploadItem.hide = !getUploadSessionsFn();
-    contextMenuList[9].disabled = uploadItem.disabled = disabled && !selectedCount;
+    var treeItem = contextMenuList[6];
+    treeItem.hide = !modal.isTreeView;
+    treeItem.disabled = !treeNodeData;
+    if (treeNodeData) {
+      var isLeaf = treeNodeData.data;
+      var expand = treeNodeData.expand;
+
+      this.treeTarget = treeId;
+      this.isTreeLeafNode = isLeaf;
+      var treeList = treeItem.list;
+      treeList[0].disabled = !expand || isLeaf;
+      treeList[1].disabled = expand || isLeaf;
+      treeList[2].disabled = isLeaf;
+      treeList[3].disabled = isLeaf;
+    }
     var pluginItem = contextMenuList[9];
-    util.addPluginMenus(pluginItem, dataCenter.getNetworkMenus(), uploadItem.hide ? 8 : 9, disabled);
-    var height = (uploadItem.hide ? 310 : 340) - (pluginItem.hide ? 30 : 0);
+    pluginItem.disabled = disabled && !selectedCount;
+    util.addPluginMenus(pluginItem, dataCenter.getNetworkMenus(), treeItem.hide ? 8 : 9, disabled);
+    var height = (treeItem.hide ? 310 : 340) - (pluginItem.hide ? 30 : 0);
     pluginItem.maxHeight = height;
     var data = util.getMenuPosition(e, 110, height);
     data.list = contextMenuList;
@@ -857,12 +951,41 @@ var ReqData = React.createClass({
     this.refs.content.refs.list.scrollToRow(target);
     this.container.focus();
   },
-
+  renderTreeNode: function(item, options) {
+    var draggable = this.state.draggable;
+    var style = options.style;
+    var leaf = item.data;
+    var className = leaf ? getClassName(leaf) : '';
+    var id = leaf ? leaf.id : item.value;
+    var value = item.value;
+    style.marginLeft = item.depth * 32;
+    return (
+      <tr
+        key={id}
+        style={style}
+        className={`w-req-data-item tree-node ${leaf ? 'tree-leaf': ''} ${className}`}
+        data-id={leaf ? leaf.id : id}
+        data-tree={id}
+        draggable={leaf && draggable}
+        onClick={leaf ? null : null}
+        title={leaf ? util.getUrl(leaf.url) : value}
+        onKeyDown={function(){}}
+      >
+        {
+          leaf ? getIcon(leaf, className) : (
+            <span className={`icon-fold glyphicon glyphicon-triangle-${item.expand ? 'bottom' : 'right'}`}></span>
+          )
+        }
+        {value.length > 320 ? value.substring(0, 320) + '...' : value}
+      </tr>
+    );
+  },
   render: function() {
     var self = this;
     var state = this.state;
     var modal = self.props.modal;
-    var list = modal.isTreeView ? modal.getTree().list.filter(isExpanded) : modal.list.filter(isVisible);
+    var isTreeView = modal.isTreeView;
+    var list = isTreeView ? modal.getTree().list.filter(isVisibleInTree) : modal.list.filter(isVisible);
     var hasKeyword = modal.hasKeyword();
     var index = 0;
     var draggable = state.draggable;
@@ -884,26 +1007,28 @@ var ReqData = React.createClass({
                   <thead>
                     <tr onClick={self.orderBy}>
                       <th className="order">#</th>
-                      {columnList.map(this.renderColumn)}
+                      {columnList.map(self.renderColumn)}
                     </tr>
                   </thead>
                 </table>
             </div>
-            <div ref="container" tabIndex="0" onContextMenu={self.onContextMenu} onKeyDown={this.onReplay}
+            <div ref="container" tabIndex="0" onContextMenu={self.onContextMenu} onKeyDown={self.onReplay}
               style={{background: (dataCenter.hashFilterObj || filterText) ? 'lightyellow' : undefined}}
-              className="w-req-data-list fill"  onDragStart={this.onDragStart}>
+              className={'w-req-data-list fill' + (isTreeView ? ' w-tree-view-list' : '')} onDragStart={self.onDragStart}>
                 <RV.AutoSizer ref="content" >{function(size){
                   return (
                       <RV.List
                       ref="list"
-                      rowHeight={28}
+                      rowHeight={isTreeView ? 24 : 28}
                       width={size.width}
                       height={size.height}
                       rowCount={list.length}
                       rowRenderer={function(options){
-                        // var {index, isScrolling, key, style}=options;
                         var item = list[options.index];
-                        var order = hasKeyword ? options.index+1 : item.order;
+                        if (isTreeView) {
+                          return self.renderTreeNode(item, options);
+                        }
+                        var order = hasKeyword ? options.index + 1 : item.order;
                         return <Row style={options.style} key={options.key} order={order}  index={index}
                           columnList={columnList} draggable={draggable} item={item} />;
                       }}
