@@ -340,8 +340,12 @@ var ReqData = React.createClass({
     };
     self.container = $(ReactDOM.findDOMNode(self.refs.container));
     self.content = ReactDOM.findDOMNode(self.refs.content);
-    self.$content = $(self.content).on('dblclick', 'tr', function() {
-      events.trigger('showOverview');
+    self.$content = $(self.content).on('dblclick', 'tr', function(e) {
+      if (e.shiftKey) {
+        events.trigger('toggleDetailTab');
+      } else {
+        events.trigger('toggleInspectors');
+      }
     }).on('click', 'tr', function(e) {
       var item = self.props.modal.getItem(this.getAttribute('data-id'));
       self.onClick(e, item);
