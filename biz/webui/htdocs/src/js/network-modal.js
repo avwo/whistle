@@ -638,10 +638,10 @@ function parsePaths(url) {
 }
 
 function checkHide(item) {
-  if (item.data || item.hide) {
+  var children = item.children;
+  if (!children || item.hide) {
     return item.hide;
   }
-  var children = item.children;
   for (var i = 0, len = children.length; i < len; i++) {
     var child = children[i];
     if (!checkHide(child)) {
