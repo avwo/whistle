@@ -645,9 +645,11 @@ function checkHide(item) {
   for (var i = 0, len = children.length; i < len; i++) {
     var child = children[i];
     if (!checkHide(child)) {
+      item.hide = false;
       child.hide = false;
       return false;
     }
+    child.hide = true;
   }
   item.hide = true;
   return true;
