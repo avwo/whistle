@@ -330,7 +330,7 @@ var ReqData = React.createClass({
     events.on('onColumnTitleChange', function() {
       self.setState({});
     });
-    events.on('replayTreeView', function(_, dataId) {
+    events.on('replayTreeView', function(_, dataId, count) {
       var item = self.props.modal.getTreeNode(dataId);
       var parent = item && item.parent;
       if (!parent) {
@@ -338,7 +338,7 @@ var ReqData = React.createClass({
       }
       var list = parent.children.filter(isVisibleInTree);
       item = list[list.length - 1];
-      item && self.scrollToRow(item);
+      item && self.scrollToRow(item, count);
     });
     var update = function() {
       self.setState({});
@@ -961,21 +961,12 @@ var ReqData = React.createClass({
     );
   },
 
-  scrollToRow: function(target){
+  scrollToRow: function(target, count){
     if(target && (target.id || (target.data && target.data.id))) {
       var modal = this.props.modal;
-      var selectedCount = 3;
+      var selectedCount = count > 0 ? count + 2 : 2;
       if (modal.isTreeView) {
-        var focusItem = self.currentFocusItem;
-        var useSelected = focusItem && focusItem.selected;
-        target = modal.root.list.filter(function(item) {
-          if (isVisibleInTree(item)) {
-            if (useSelected && item.data && item.data.selected) {
-              ++selectedCount;
-            }
-            return true;
-          }
-        }).indexOf(target) + selectedCount;
+        target = modal.root.list.filter(isVisibleInTree).indexOf(target) + selectedCount;
       } else {
         target = modal.list.filter(isVisible).indexOf(target) + selectedCount;
       }

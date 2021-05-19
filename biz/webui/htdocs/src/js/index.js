@@ -2340,11 +2340,13 @@ var Index = React.createClass({
         }
       }
     } else {
-      list.slice(0, MAX_REPLAY_COUNT).forEach(replayReq);
+      list = list.slice(0, MAX_REPLAY_COUNT);
+      count = list.length;
+      list.forEach(replayReq);
     }
     if (this.state.network.isTreeView) {
       var dataId = dataCenter.lastSelectedDataId;
-      dataId && events.trigger('replayTreeView', dataId);
+      dataId && events.trigger('replayTreeView', [dataId, count]);
     } else if (this.autoRefresh) {
       this.autoRefresh();
     }
