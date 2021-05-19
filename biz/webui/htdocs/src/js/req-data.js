@@ -537,7 +537,7 @@ var ReqData = React.createClass({
     var modal = self.props.modal;
     var treeId = self.treeTarget;
     var curUrl = item && item.url || (treeId && treeId + '/');
-
+    self.currentFocusItem = null;
     switch(parentAction || action) {
     case 'New Tab':
       curUrl && window.open(curUrl);
@@ -964,10 +964,20 @@ var ReqData = React.createClass({
   scrollToRow: function(target){
     if(target && (target.id || (target.data && target.data.id))) {
       var modal = this.props.modal;
+      var selectedCount = 3;
       if (modal.isTreeView) {
-        target = modal.root.list.filter(isVisibleInTree).indexOf(target) + 3;
+        var focusItem = self.currentFocusItem;
+        var useSelected = focusItem && focusItem.selected;
+        target = modal.root.list.filter(function(item) {
+          if (isVisibleInTree(item)) {
+            if (useSelected && item.data && item.data.selected) {
+              ++selectedCount;
+            }
+            return true;
+          }
+        }).indexOf(target) + selectedCount;
       } else {
-        target = modal.list.filter(isVisibleInTree).indexOf(target) + 3;
+        target = modal.list.filter(isVisible).indexOf(target) + selectedCount;
       }
     }
     this.refs.content.refs.list.scrollToRow(target);
