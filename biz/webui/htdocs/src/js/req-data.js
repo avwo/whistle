@@ -971,7 +971,8 @@ var ReqData = React.createClass({
   expandAll: function(e) {
     if (!e) {
       var root = this.props.modal.getTree();
-      return root.children.forEach(util.expandAll);
+      root.children.forEach(util.expandAll);
+      return this.setState({});
     }
     var node = this.getTreeNode(e);
     if (node) {
@@ -982,7 +983,8 @@ var ReqData = React.createClass({
   collapseAll: function(e) {
     if (!e) {
       var root = this.props.modal.getTree();
-      return root.children.forEach(util.collapseAll);
+      root.children.forEach(util.collapseAll);
+      return this.setState({});
     }
     var node = this.getTreeNode(e);
     if (node) {

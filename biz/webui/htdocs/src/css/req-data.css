@@ -46,6 +46,7 @@
 .w-req-data-list .tree-leaf.info span { color: #31708f!important;}
 .w-req-data-list .tree-leaf.warning span { color: #8a6d3b!important;}
 .w-req-data-list .tree-leaf.active span { color: #337ab7!important;}
+.w-req-data-list .tree-leaf.w-error-status { color: #ff3a90!important;}
 .w-req-data-list .tree-leaf.danger span { color: #a94442!important;}
 .w-req-data-list .tree-leaf.w-forbidden span { color: #aa6708!important;}
 .w-req-data-list .tree-leaf.w-mark { color: #3b88fd!important;}
