@@ -15,6 +15,7 @@ var events = require('./events');
 var iframes = require('./iframes');
 var dataCenter = require('./data-center');
 
+var TREE_ROW_HEIGHT = 24;
 var ROW_STYLE = { outline: 'none'};
 var columnState = {};
 var CMD_RE = /^:dump\s+(\d{1,15})\s*$/;
@@ -329,6 +330,16 @@ var ReqData = React.createClass({
     events.on('onColumnTitleChange', function() {
       self.setState({});
     });
+    events.on('replayTreeView', function(_, dataId) {
+      var item = self.props.modal.getTreeNode(dataId);
+      var parent = item && item.parent;
+      if (!parent) {
+        return;
+      }
+      var list = parent.children.filter(isVisibleInTree);
+      item = list[list.length - 1];
+      item && self.scrollToRow(item);
+    });
     var update = function() {
       self.setState({});
     };
@@ -345,8 +356,12 @@ var ReqData = React.createClass({
         events.trigger('toggleInspectors');
       }
     }).on('click', 'tr', function(e) {
-      var item = self.props.modal.getItem(this.getAttribute('data-id'));
-      self.onClick(e, item);
+      var id = this.getAttribute('data-id');
+      if (id) {
+        dataCenter.lastSelectedDataId = id;
+        var item = self.props.modal.getItem(id);
+        self.onClick(e, item);
+      }
     });
     var toggleDraggable = function(e) {
       var draggable = !e.shiftKey;
@@ -947,8 +962,13 @@ var ReqData = React.createClass({
   },
 
   scrollToRow: function(target){
-    if(target && target.id){
-      target = this.props.modal.list.filter(isVisible).indexOf(target);
+    if(target && (target.id || (target.data && target.data.id))) {
+      var modal = this.props.modal;
+      if (modal.isTreeView) {
+        target = modal.root.list.filter(isVisibleInTree).indexOf(target) + 3;
+      } else {
+        target = modal.list.filter(isVisibleInTree).indexOf(target) + 3;
+      }
     }
     this.refs.content.refs.list.scrollToRow(target);
     this.container.focus();
@@ -1064,7 +1084,7 @@ var ReqData = React.createClass({
                   return (
                       <RV.List
                       ref="list"
-                      rowHeight={isTreeView ? 24 : 28}
+                      rowHeight={isTreeView ? TREE_ROW_HEIGHT : 28}
                       width={size.width}
                       height={size.height}
                       rowCount={list.length}

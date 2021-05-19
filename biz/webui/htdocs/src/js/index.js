@@ -2342,7 +2342,12 @@ var Index = React.createClass({
     } else {
       list.slice(0, MAX_REPLAY_COUNT).forEach(replayReq);
     }
-    this.autoRefresh && this.autoRefresh();
+    if (this.state.network.isTreeView) {
+      var dataId = dataCenter.lastSelectedDataId;
+      dataId && events.trigger('replayTreeView', dataId);
+    } else if (this.autoRefresh) {
+      this.autoRefresh();
+    }
   },
   composer: function() {
     events.trigger('composer');
