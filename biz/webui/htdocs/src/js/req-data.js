@@ -228,6 +228,9 @@ function getStatusClass(data) {
 }
 
 function getType(className) {
+  if (className.indexOf('w-error-status') !== -1) {
+    return 'ERROR';
+  }
   if (className.indexOf('warning') !== -1) {
     return 'JS';
   }
@@ -260,7 +263,8 @@ function getIcon(data, className) {
     return <span className="icon-leaf glyphicon glyphicon-hourglass" />;
   }
   var type = getType(className);
-  return <span className={type ? 'w-type-icon' : 'glyphicon glyphicon-file'}>{type || null}</span>;
+  var status = type === 'ERROR' && data.res && data.res.statusCode;
+  return <span className={type ? 'w-type-icon' : 'glyphicon glyphicon-file'}>{status || type || null}</span>;
 }
 
 function getFilename(item, type) {
