@@ -642,17 +642,18 @@ function checkHide(item) {
   if (!children || item.hide) {
     return item.hide;
   }
+  var hide = true;
   for (var i = 0, len = children.length; i < len; i++) {
     var child = children[i];
-    if (!checkHide(child)) {
-      item.hide = false;
+    if (checkHide(child)) {
+      child.hide = true;
+    } else {
+      hide = false;
       child.hide = false;
-      return false;
     }
-    child.hide = true;
   }
-  item.hide = true;
-  return true;
+  item.hide = hide;
+  return hide;
 }
 
 function handleTree(root, list) {
