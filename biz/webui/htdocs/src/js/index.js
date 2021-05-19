@@ -2860,7 +2860,7 @@ var Index = React.createClass({
       self.setState({ forceShowLeftMenu: false });
     }, 500);
   },
-  toggleTreeView() {
+  toggleTreeView: function() {
     var self = this;
     var modal = self.state.network;
     modal.setTreeView(!modal.isTreeView);
@@ -2870,13 +2870,17 @@ var Index = React.createClass({
       }
     });
   },
-  render: function() {
+  toggleTreeViewByIcon: function() {
+    if (this.getTabName() == 'network') {
+      this.toggleTreeView();
+    }
+  },
+  getTabName: function() {
     var state = this.state;
     var networkMode = state.networkMode;
     var rulesMode = state.rulesMode;
     var rulesOnlyMode = state.rulesOnlyMode;
     var pluginsMode = state.pluginsMode;
-    var multiEnv = state.multiEnv;
     var name = state.name;
     if (networkMode) {
       name = 'network';
@@ -2890,7 +2894,17 @@ var Index = React.createClass({
     } else if (pluginsMode) {
       name = name !== 'plugins' ? 'network' : name;
     }
-    var isNetwork = name === undefined || name == 'network';
+    return name || 'network';
+  },
+  render: function() {
+    var state = this.state;
+    var networkMode = state.networkMode;
+    var rulesMode = state.rulesMode;
+    var rulesOnlyMode = state.rulesOnlyMode;
+    var pluginsMode = state.pluginsMode;
+    var multiEnv = state.multiEnv;
+    var name = this.getTabName();
+    var isNetwork = name == 'network';
     var isRules = name == 'rules';
     var isValues = name == 'values';
     var isPlugins = name == 'plugins';
@@ -3121,7 +3135,7 @@ var Index = React.createClass({
                draggable="false">
                 <span className="glyphicon glyphicon-globe"></span>
                 <i><span title={'Click to switch to ' + (isTreeView ? 'List View' : 'Tree View') + ' (Ctrl[Command] + B)'} onDoubleClick={stopPropagation}
-                  onClick={this.toggleTreeView} className={'glyphicon glyphicon-tree-conifer' + (isTreeView ? ' enable-tree-view' : '')}></span>Network</i>
+                  onClick={this.toggleTreeViewByIcon} className={'glyphicon glyphicon-tree-conifer' + (isTreeView ? ' enable-tree-view' : '')}></span>Network</i>
             </a>
             <a onClick={this.showRules} className="w-save-menu w-rules-menu"
               onDoubleClick={this.onClickMenu}
