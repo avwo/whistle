@@ -14,6 +14,7 @@ var ContextMenu = require('./context-menu');
 var events = require('./events');
 var iframes = require('./iframes');
 var dataCenter = require('./data-center');
+var storage = require('./storage');
 
 var TREE_ROW_HEIGHT = 24;
 var ROW_STYLE = { outline: 'none'};
@@ -323,6 +324,9 @@ var ReqData = React.createClass({
     };
   },
   componentDidUpdate: function() {
+    if (storage.get('disabledHNR') === '1') {
+      return;
+    }
     var modal = this.props.modal;
     if (!modal.isTreeView || !this.visibleList || this.startIndex == null) {
       return;

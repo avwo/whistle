@@ -52,6 +52,10 @@ var Settings = React.createClass({
       events.trigger('switchTreeView');
       return;
     }
+    if (name === 'disabledHNR') {
+      storage.set('disabledHNR', target.checked ? '' : '1');
+      return this.setState({});
+    }
     var settings = this.state;
     var filterTextChanged;
     var columnsChanged;
@@ -150,6 +154,7 @@ var Settings = React.createClass({
     var self = this;
     var state = self.state;
     var columnList = state.columns;
+    var isTreeView = storage.get('isTreeView') === '1';
 
     return (
       <Dialog ref="networkSettingsDialog" wstyle="w-network-settings-dialog">
@@ -233,9 +238,18 @@ var Settings = React.createClass({
             <input checked={dataCenter.isOnlyViewOwnData()} data-name="viewOwn" type="checkbox" />Only take this machine's request into consideration (IP: {dataCenter.clientIp})
           </label>
           <label className="w-network-settings-own">
-            <input checked={storage.get('isTreeView') === '1'} data-name="treeView" type="checkbox" />
+            <input checked={isTreeView} data-name="treeView" type="checkbox" />
             <span className="glyphicon glyphicon-tree-conifer" style={{marginRight: 2}}></span>Switch to Tree View (Ctrl[Command] + B)
           </label>
+          { isTreeView ? <br /> : null }
+          {
+            isTreeView ? (
+              <label className="w-network-settings-own">
+                <input checked={storage.get('disabledHNR') !== '1'} data-name="disabledHNR" type="checkbox" />
+                Highlight new requests
+              </label>
+            ) : null
+          }
         </div>
         <div className="modal-footer">
           <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
