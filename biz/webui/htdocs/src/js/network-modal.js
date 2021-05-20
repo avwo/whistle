@@ -574,6 +574,9 @@ function getPrevSelected(start, list) {
 function getNextSelected(start, list) {
   for (var len = list.length; start < len; start++) {
     var item = list[start + 1];
+    if (item && item.data) {
+      item = item.data;
+    }
     if (!item || (!item.selected && !item.active)) {
       return start;
     }
@@ -583,6 +586,11 @@ function getNextSelected(start, list) {
 
 proto.setSelectedList = function(start, end, selectElem) {
   var list = this.list;
+  if (this.isTreeView) {
+    list = this.root.list;
+    start = this.getTreeNode(start.id);
+    end = this.getTreeNode(end.id);
+  }
   start = list.indexOf(start);
   end = list.indexOf(end);
   if (start > end) {
@@ -594,6 +602,7 @@ proto.setSelectedList = function(start, end, selectElem) {
   }
   for (var i = 0, len = list.length; i < len; i++) {
     var item = list[i];
+    item = item.data || item;
     if (i >= start && i <= end) {
       item.selected = true;
       selectElem(item, true);

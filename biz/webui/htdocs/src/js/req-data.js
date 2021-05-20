@@ -960,16 +960,13 @@ var ReqData = React.createClass({
       </th>
     );
   },
-
   scrollToRow: function(target, count){
     if(target && (target.id || (target.data && target.data.id))) {
-      var modal = this.props.modal;
-      var selectedCount = count > 0 ? count + 2 : 2;
-      if (modal.isTreeView) {
-        target = modal.root.list.filter(isVisibleInTree).indexOf(target) + selectedCount;
-      } else {
-        target = modal.list.filter(isVisible).indexOf(target) + selectedCount;
+      var index = this.getVisibleList().indexOf(target);
+      if (index === -1) {
+        return;
       }
+      target = index + (count > 0 ? count + 2 : 2);
     }
     try {
       this.refs.content.refs.list.scrollToRow(target);
@@ -1048,12 +1045,16 @@ var ReqData = React.createClass({
       </tr>
     );
   },
+  getVisibleList: function() {
+    var modal = this.props.modal;
+    return modal.isTreeView ? modal.getTree().list.filter(isVisibleInTree) : modal.list.filter(isVisible);
+  },
   render: function() {
     var self = this;
     var state = this.state;
     var modal = self.props.modal;
     var isTreeView = modal.isTreeView;
-    var list = isTreeView ? modal.getTree().list.filter(isVisibleInTree) : modal.list.filter(isVisible);
+    var list = this.getVisibleList();
     var hasKeyword = modal.hasKeyword();
     var index = 0;
     var draggable = state.draggable;
