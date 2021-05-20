@@ -364,7 +364,7 @@ var ReqData = React.createClass({
 
       }
     });
-    var overCount = Math.floor((lightList.length - 30) / 2);
+    var overCount = Math.floor((lightList.length - 60) / 2);
     if (overCount > 0) {
       lightList = lightList.slice(overCount, -overCount);
     }
@@ -573,6 +573,11 @@ var ReqData = React.createClass({
     }
     events.trigger('updateGlobal');
   },
+  removeTreeNode: function(treeId, others) {
+    if (this.props.modal.removeTreeNode(treeId, others)) {
+      events.trigger('updateGlobal');
+    }
+  },
   removeAllSuchURL: function(item, justRemove) {
     var urlList = [];
     var list = this.getActiveList(item);
@@ -720,13 +725,21 @@ var ReqData = React.createClass({
       curUrl && self.removeAllSuchURL(item || curUrl);
       break;
     case 'This':
-      events.trigger('removeIt', item);
+      if (treeId) {
+        self.removeTreeNode(treeId);
+      } else {
+        events.trigger('removeIt', item);
+      }
       break;
     case 'All':
       events.trigger('clearAll');
       break;
     case 'Others':
-      events.trigger('removeOthers', item);
+      if (treeId) {
+        self.removeTreeNode(treeId, true);
+      } else {
+        events.trigger('removeOthers', item);
+      }
       break;
     case 'Selected':
       events.trigger('removeSelected');
@@ -855,7 +868,7 @@ var ReqData = React.createClass({
     var list3 = contextMenuList[3].list;
     contextMenuList[3].disabled = !hasData;
     list3[0].disabled = !hasData;
-    list3[1].disabled = disabled;
+    list3[1].disabled = clickBlank;
     list3[2].disabled = disabled || selectedCount === hasData;
     list3[3].disabled = !selectedCount;
     list3[4].disabled = selectedCount === hasData;
@@ -913,6 +926,8 @@ var ReqData = React.createClass({
       treeList[1].disabled = !expand || isLeaf;
       treeList[2].disabled = isLeaf;
       treeList[3].disabled = isLeaf;
+      var count = (treeNodeData.parent || modal.root).children.length;
+      list3[2].disabled = count <= 1;
     } else if (modal.isTreeView) {
       treeList[0].disabled = true;
       treeList[1].disabled = true;
@@ -1088,16 +1103,15 @@ var ReqData = React.createClass({
     var style = options.style;
     var leaf = item.data;
     var className = leaf ? getClassName(leaf) : '';
-    var id = leaf ? leaf.id : item.path;
     var value = item.value;
     style.marginLeft = item.depth * 32;
     return (
       <tr
-        key={id}
+        key={leaf ? leaf.id : item.path}
         style={style}
         className={`w-req-data-item tree-node ${leaf ? 'tree-leaf': ''} ${className}`}
         data-id={leaf && leaf.id}
-        data-tree={id}
+        data-tree={item.path}
         draggable={leaf && draggable}
         onClick={leaf ? null : this.toggleNode}
         title={leaf ? util.getUrl(leaf.url) : value}

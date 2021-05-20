@@ -298,6 +298,35 @@ proto.removeByHostList = function(hostList) {
   this.updateDisplayCount();
 };
 
+function getNodeIdMap(node, map) {
+  var children = node.children;
+  if (!children) {
+    map[node.data.id] = 1;
+    return map;
+  }
+  children.forEach(function(child) {
+    getNodeIdMap(child, map);
+  });
+  return map;
+}
+
+proto.removeTreeNode = function(path, others) {
+  var node = this.getTreeNode(path);
+  if (!node) {
+    return;
+  }
+  var map = getNodeIdMap(node, {});
+  var list = this._list;
+  for (var i = list.length - 1; i >= 0; --i) {
+    if (others ? !map[list[i].id] : map[list[i].id]) {
+      list.splice(i, 1);
+    }
+  }
+  this.update();
+  this.updateDisplayCount();
+  return true;
+};
+
 proto.removeByUrlList = function(urlList) {
   var list = this._list;
   for (var i = list.length - 1; i >= 0; --i) {
