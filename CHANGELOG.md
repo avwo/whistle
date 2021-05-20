@@ -1,4 +1,8 @@
 
+# v2.7.0
+1. feat: Network 支持 Tree View 展示
+2. feat: `pac` 支持设置用户名密码：`pac://user:pass@pacPath`
+
 # v2.6.16
 1. fix: 解决规则文件名称过长保存失败的问题
 2. feat: 域名统配也支持获取子匹配内容 
