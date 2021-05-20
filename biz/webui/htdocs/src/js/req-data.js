@@ -348,6 +348,8 @@ var ReqData = React.createClass({
           visibleMap[item.path] = 1;
         } else if (!item.data) {
           visibleMap[item.path] = 1;
+        } else if (curNewIdList.indexOf(item.data.id) !== -1 && isVisibleInTree(item)) {
+          lightList.push(item);
         }
       }
     }
@@ -360,7 +362,7 @@ var ReqData = React.createClass({
             visibleMap[parent.path] = 0;
             lightList.push(parent);
           }
-          if (isVisibleInTree(item)) {
+          if (lightList.indexOf(item) === -1 && isVisibleInTree(item)) {
             lightList.push(item);
           }
           parent = parent.parent;
