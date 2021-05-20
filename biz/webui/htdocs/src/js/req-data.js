@@ -285,6 +285,10 @@ function getFilename(item, type) {
   return name + '_' + type + suffix;
 }
 
+function removeLighhight(elem) {
+  elem.removeClass('highlight');
+}
+
 var Row = React.createClass({
   render: function() {
     var p = this.props;
@@ -317,6 +321,69 @@ var ReqData = React.createClass({
       columns: settings.getSelectedColumns(),
       dragger: dragger
     };
+  },
+  componentDidUpdate: function() {
+    var modal = this.props.modal;
+    if (!modal.isTreeView || !this.visibleList || this.startIndex == null) {
+      return;
+    }
+    var curNewIdList = dataCenter.curNewIdList;
+    if (!curNewIdList || !curNewIdList.length) {
+      return;
+    }
+    dataCenter.curNewIdList = null;
+    var leafMap = {};
+    var visibleMap = {};
+    var list = this.visibleList;
+    var lightList = [];
+    for (var i = this.startIndex; i <= this.endIndex; i++) {
+      var item = list[i];
+      if (item) {
+        if (!item.parent) {
+          $.extend(leafMap, item.map);
+          visibleMap[item.path] = 1;
+        } else if (!item.data) {
+          visibleMap[item.path] = 1;
+        }
+      }
+    }
+    curNewIdList.forEach(function(id) {
+      var item = leafMap[id];
+      if (item) {
+        var parent = item.parent;
+        while(parent) {
+          if (visibleMap[parent.path]) {
+            visibleMap[parent.path] = 0;
+            lightList.push(parent);
+          }
+          if (isVisibleInTree(item)) {
+            lightList.push(item);
+          }
+          parent = parent.parent;
+        }
+
+      }
+    });
+    var overCount = Math.floor((lightList.length - 30) / 2);
+    if (overCount > 0) {
+      lightList = lightList.slice(overCount, -overCount);
+    }
+    lightList = lightList.map(function(item) {
+      var elem;
+      if (item.data) {
+        elem = $('tr[data-id="' + item.data.id + '"]:not(.highlight)');
+      } else {
+        elem = $('tr[data-tree="' + item.path + '"]:not(.highlight)');
+      }
+      if (elem.length) {
+        return elem.addClass('highlight');
+      }
+    }).filter(util.noop);
+    if (lightList.length) {
+      setTimeout(function() {
+        lightList.forEach(removeLighhight);
+      }, 800);
+    }
   },
   componentDidMount: function() {
     var self = this;
@@ -1056,7 +1123,6 @@ var ReqData = React.createClass({
     var isTreeView = modal.isTreeView;
     var list = this.getVisibleList();
     var hasKeyword = modal.hasKeyword();
-    var index = 0;
     var draggable = state.draggable;
     var columnList = state.columns.list;
     var width = state.columns.width;
@@ -1067,6 +1133,9 @@ var ReqData = React.createClass({
       width = minWidth;
       colStyle.minWidth = width;
     }
+    self.startIndex = null;
+    self.endIndex = null;
+    self.visibleList = list;
 
     return (
         <div className="fill w-req-data-con orient-vertical-box">
@@ -1093,12 +1162,17 @@ var ReqData = React.createClass({
                       height={size.height}
                       rowCount={list.length}
                       rowRenderer={function(options){
-                        var item = list[options.index];
+                        var index = options.index;
+                        var item = list[index];
                         if (isTreeView) {
+                          if (self.startIndex == null) {
+                            self.startIndex = index;
+                          }
+                          self.endIndex = index;
                           return self.renderTreeNode(item, options);
                         }
-                        var order = hasKeyword ? options.index + 1 : item.order;
-                        return <Row style={options.style} key={options.key} order={order}  index={index}
+                        var order = hasKeyword ? index + 1 : item.order;
+                        return <Row style={options.style} key={options.key} order={order}
                           columnList={columnList} draggable={draggable} item={item} />;
                       }}
                       />);

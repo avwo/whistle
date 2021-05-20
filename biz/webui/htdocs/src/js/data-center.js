@@ -767,13 +767,14 @@ function startLoadData() {
         var filter = getFilterText();
         var excludeFilter = filter.disabledExcludeText ? null : resolveFilterText(filter.excludeText);
         var includeFilter = filter.disabledFilterText ? null : resolveFilterText(filter.filterText);
-        ids.forEach(function (id) {
+        exports.curNewIdList = ids.filter(function (id) {
           var item = data[id];
           if (item) {
             if ((!excludeFilter || !checkFilter(item, excludeFilter))
               && (!includeFilter || checkFilter(item, includeFilter))) {
               setReqData(item);
               dataList.push(item);
+              return true;
             }
           }
         });
@@ -958,6 +959,7 @@ exports.addNetworkList = function (list) {
     return;
   }
   var hasData;
+  var curNewIdList = [];
   list.forEach(function (data) {
     if (!data || !(data.startTime >= 0) || !data.req || !data.req.headers
       || !data.res || !checkUrl(data)) {
@@ -982,9 +984,11 @@ exports.addNetworkList = function (list) {
     data.id = data.startTime + '-' + ++dataIndex;
     setReqData(data);
     dataList.push(data);
+    curNewIdList.push(data.id);
     hasData = true;
   });
   if (hasData) {
+    exports.curNewIdList = curNewIdList;
     dataCallbacks.forEach(function (cb) {
       cb(networkModal);
     });

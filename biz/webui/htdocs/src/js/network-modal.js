@@ -719,6 +719,7 @@ proto.updateTree = function() {
     var parent = root;
     var pre = oldRoot;
     var path;
+    var top;
     for (var j = 0; j < lastIndex; j++) {
       var value = paths[j];
       var next = parent.map[value];
@@ -741,17 +742,21 @@ proto.updateTree = function() {
       }
       if (j) {
         next.parent = parent;
+      } else {
+        top = next;
       }
       parent = next;
       pre = old;
     }
-    parent.children.push({
+    var leaf = {
       depth: lastIndex,
       parent: parent,
       value: paths[lastIndex],
       hide: item.hide,
       data: item
-    });
+    };
+    top.map[item.id] = leaf;
+    parent.children.push(leaf);
   }
   root.children.forEach(checkHide);
   handleTree(root, root.list);
