@@ -971,7 +971,9 @@ var ReqData = React.createClass({
         target = modal.list.filter(isVisible).indexOf(target) + selectedCount;
       }
     }
-    this.refs.content.refs.list.scrollToRow(target);
+    try {
+      this.refs.content.refs.list.scrollToRow(target);
+    } catch (e) {}
     this.container.focus();
   },
   getTreeNode: function(e) {

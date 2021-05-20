@@ -2331,6 +2331,7 @@ var Index = React.createClass({
         });
       }
     };
+    var map;
     if (count > 1) {
       count = Math.min(count, MAX_REPLAY_COUNT);
       var reqItem = list[0];
@@ -2340,13 +2341,33 @@ var Index = React.createClass({
         }
       }
     } else {
-      list = list.slice(0, MAX_REPLAY_COUNT);
-      count = list.length;
-      list.forEach(replayReq);
+      map = {};
+      list.slice(0, MAX_REPLAY_COUNT).forEach(function(item) {
+        map[item.id] = 1;
+        replayReq(item);
+      });
     }
-    if (this.state.network.isTreeView) {
+    if (modal.isTreeView) {
       var dataId = dataCenter.lastSelectedDataId;
-      dataId && events.trigger('replayTreeView', [dataId, count]);
+      if (!dataId) {
+        return;
+      }
+      if (!map) {
+        return events.trigger('replayTreeView', [dataId, count]);
+      }
+      var node = dataId && modal.getTreeNode(dataId);
+      node = node && node.parent;
+      if (!node) {
+        return;
+      }
+      count = 0;
+      node.children.forEach(function(item) {
+        item = item.data;
+        if (item && map[item.id]) {
+          ++count;
+        }
+      });
+      events.trigger('replayTreeView', [dataId, count]);
     } else if (this.autoRefresh) {
       this.autoRefresh();
     }
