@@ -239,7 +239,7 @@ var Settings = React.createClass({
           </label>
           <label className="w-network-settings-own">
             <input checked={isTreeView} data-name="treeView" type="checkbox" />
-            <span className="glyphicon glyphicon-tree-conifer" style={{marginRight: 2}}></span>Switch to Tree View (Ctrl[Command] + B)
+            <span className="glyphicon glyphicon-tree-conifer" style={{marginRight: 2}}></span>Show Tree View (Ctrl[Command] + B)
           </label>
           { isTreeView ? <br /> : null }
           {

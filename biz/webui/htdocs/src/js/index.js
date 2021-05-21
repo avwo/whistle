@@ -39,8 +39,20 @@ var LINK_SELECTOR = '.cm-js-type, .cm-js-http-url, .cm-string, .cm-js-at';
 var LINK_RE = /^"(https?:)?(\/\/[^/]\S+)"$/i;
 var AT_LINK_RE = /^@(https?:)?(\/\/[^/]\S+)$/i;
 var OPTIONS_WITH_SELECTED = ['removeSelected', 'exportWhistleFile', 'exportSazFile'];
-var hideLeftMenu = /[&#?]hideLeft(?:Bar|Menu)=(?:true|1)(?:&|$|#)/.test(window.location.search);
-var showTreeView = /[&#?]showTreeView=(?:1|true)(?:&|$|#)/.test(window.location.search);
+var search = window.location.search;
+var hideLeftMenu;
+var showTreeView;
+
+if (/[&#?]showTreeView=(0|false|1|true)(?:&|$|#)/.test(search)) {
+  showTreeView = RegExp.$1 === '1' || RegExp.$1 === 'true';
+}
+
+if (/[&#?]hideLeft(?:Bar|Menu)=(0|false|1|true)(?:&|$|#)/.test(search)) {
+  hideLeftMenu = RegExp.$1 === '1' || RegExp.$1 === 'true';
+} else if (/[&#?]showLeft(?:Bar|Menu)=(0|false|1|true)(?:&|$|#)/.test(search)) {
+  hideLeftMenu = RegExp.$1 === '0' || RegExp.$1 === 'false';
+}
+
 var RULES_ACTIONS = [
   {
     name: 'Export Selected',
@@ -246,7 +258,9 @@ var Index = React.createClass({
       classic: modal.classic,
       version: modal.version
     };
-    hideLeftMenu = hideLeftMenu || modal.server.hideLeftMenu;
+    if (hideLeftMenu !== false) {
+      hideLeftMenu = hideLeftMenu || modal.server.hideLeftMenu;
+    }
     var pageName = getPageName(state);
     if (!pageName || pageName.indexOf('rules') != -1) {
       state.hasRules = true;
@@ -444,7 +458,9 @@ var Index = React.createClass({
     var showLeftMenu = storage.get('showLeftMenu');
     state.showLeftMenu = showLeftMenu == null ? true : showLeftMenu;
     util.triggerPageChange(state.name);
-    showTreeView && networkModal.setTreeView(showTreeView, true);
+    if (showTreeView || showTreeView === false) {
+      networkModal.setTreeView(showTreeView, true);
+    }
 
     return state;
   },

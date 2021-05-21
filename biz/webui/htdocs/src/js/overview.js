@@ -10,7 +10,6 @@ var Properties = require('./properties');
 var dataCenter = require('./data-center');
 var getHelpUrl = require('./protocols').getHelpUrl;
 
-var PROTO_RE = /^((?:http|ws)s?:\/\/)[^/?]*/;
 var OVERVIEW = ['Url', 'Final Url', 'Method', 'Http Version', 'Status Code', 'Status Message', 'Client IP', 'Client Port', 'Server IP', 'Server Port', 'Request Length', 'Content Length'
                       , 'Content Encoding', 'Start Date', 'DNS Lookup', 'Request Sent', 'Response Headers', 'Content Download'];
 var OVERVIEW_PROPS = ['url', 'realUrl', 'req.method', 'req.httpVersion', 'res.statusCode', 'res.statusMessage', 'req.ip', 'req.port', 'res.ip', 'res.port', 'req.size', 'res.size', 'contentEncoding'];
