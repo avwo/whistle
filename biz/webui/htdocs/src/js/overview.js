@@ -106,11 +106,7 @@ var Overview = React.createClass({
 
     if (modal) {
       overviewModal = {};
-      var rawUrl;
-      var fwdHost = modal.fwdHost;
-      if (fwdHost) {
-        rawUrl = modal.url.replace(PROTO_RE, '$1' + fwdHost);
-      }
+      var rawUrl = util.getRawUrl(modal);
       OVERVIEW.forEach(function(name, i) {
         var prop = OVERVIEW_PROPS[i];
         if (prop) {

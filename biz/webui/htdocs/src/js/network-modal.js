@@ -114,6 +114,14 @@ function checkKeywork(str, opts) {
   return opts.regexp ? opts.regexp.test(str) : str.toLowerCase().indexOf(opts.keyword) !== -1;
 }
 
+function checkUrl(item, opts) {
+  if (checkKeywork(item.url, opts)) {
+    return true;
+  }
+  var rawUrl = util.getRawUrl(item);
+  return checkKeywork(rawUrl, opts);
+}
+
 proto.hasKeyword = function() {
   return this._keyword;
 };
@@ -130,7 +138,7 @@ function setNot(flag, not) {
 function checkItem(item, opts) {
   switch(opts.type) {
   case 'mark':
-    return !item.mark || setNot(!checkKeywork(item.url, opts), opts.not);
+    return !item.mark || setNot(!checkUrl(item, opts), opts.not);
   case 'c':
   case 'content':
   case 'b':
@@ -159,7 +167,7 @@ function checkItem(item, opts) {
   case 'm':
     return setNot(!checkKeywork(item.req.method, opts), opts.not);
   default:
-    return setNot(!checkKeywork(item.url, opts), opts.not);
+    return setNot(!checkUrl(item, opts), opts.not);
   }
 }
 
