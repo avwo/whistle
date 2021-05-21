@@ -2,6 +2,7 @@
 # v2.7.0
 1. feat: Network 支持 Tree View 展示
 2. feat: `pac` 支持设置用户名密码：`pac://user:pass@pacPath`
+3. style: 支持显示 `Raw Url` 详见：https://github.com/avwo/whistle/issues/572
 
 # v2.6.16
 1. fix: 解决规则文件名称过长保存失败的问题
