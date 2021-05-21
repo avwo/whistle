@@ -24,3 +24,9 @@ z-index: 1; border-radius: 2px; top: 2px; right: 5px; font-size: 12px; line-heig
   cursor: pointer;
   font-size: 13px;
 }
+
+.w-prop-raw-data {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

@@ -965,13 +965,17 @@ exports.addNetworkList = function (list) {
       || !data.res || !checkUrl(data)) {
       return;
     }
+    var req = data.req;
     delete data.active;
     delete data.selected;
     delete data.hide;
     delete data.order;
-    delete data.req.json;
+    delete req.json;
     delete data.res.json;
     delete data.data;
+    if (!util.isString(data.fwdHost)) {
+      delete data.fwdHost;
+    }
     if (Array.isArray(data.frames)) {
       data.frames = data.frames.filter(function(frame) {
         if (frame) {

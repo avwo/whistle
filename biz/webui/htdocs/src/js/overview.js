@@ -10,6 +10,7 @@ var Properties = require('./properties');
 var dataCenter = require('./data-center');
 var getHelpUrl = require('./protocols').getHelpUrl;
 
+var PROTO_RE = /^((?:http|ws)s?:\/\/)[^/?]*/;
 var OVERVIEW = ['Url', 'Final Url', 'Method', 'Http Version', 'Status Code', 'Status Message', 'Client IP', 'Client Port', 'Server IP', 'Server Port', 'Request Length', 'Content Length'
                       , 'Content Encoding', 'Start Date', 'DNS Lookup', 'Request Sent', 'Response Headers', 'Content Download'];
 var OVERVIEW_PROPS = ['url', 'realUrl', 'req.method', 'req.httpVersion', 'res.statusCode', 'res.statusMessage', 'req.ip', 'req.port', 'res.ip', 'res.port', 'req.size', 'res.size', 'contentEncoding'];
@@ -105,6 +106,11 @@ var Overview = React.createClass({
 
     if (modal) {
       overviewModal = {};
+      var rawUrl;
+      var fwdHost = modal.fwdHost;
+      if (fwdHost) {
+        rawUrl = modal.url.replace(PROTO_RE, '$1' + fwdHost);
+      }
       OVERVIEW.forEach(function(name, i) {
         var prop = OVERVIEW_PROPS[i];
         if (prop) {
@@ -249,7 +255,7 @@ var Overview = React.createClass({
 
     return (
       <div ref="container" className={'fill orient-vertical-box w-detail-content w-detail-overview' + (util.getBoolean(this.props.hide) ? ' hide' : '')}>
-        <Properties modal={overviewModal} />
+        <Properties modal={overviewModal} rawName="Raw Url" rawValue={rawUrl} />
         <p className="w-detail-overview-title" style={{ background: showOnlyMatchRules ? 'lightyellow' : undefined }}>
           <a href="https://avwo.github.io/whistle/rules/" target="_blank"><span className="glyphicon glyphicon-question-sign"></span></a>All Rules:
           <label><input checked={showOnlyMatchRules} onChange={this.showOnlyMatchRules} type="checkbox" />Only show matching rules</label>

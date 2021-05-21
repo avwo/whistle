@@ -2754,6 +2754,7 @@ var Index = React.createClass({
         url: rawReq.url,
         req: req,
         res: res,
+        fwdHost: entry.whistleFwdHost,
         rules: entry.whistleRules || {}
       };
       var timings = entry.timings || {};

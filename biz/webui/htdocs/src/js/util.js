@@ -2039,6 +2039,7 @@ exports.toHar = function(item) {
     startedDateTime: new Date(item.startTime).toISOString(),
     time: time,
     whistleRules: item.rules,
+    whistleFwdHost: item.fwdHost,
     request: toHarReq(item),
     response: toHarRes(item),
     frames: item.frames,
