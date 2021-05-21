@@ -42,7 +42,8 @@ var contextMenuList = [
       { name: 'New Tab'},
       { name: 'QR Code' },
       { name: 'Preview' },
-      { name: 'Source' }
+      { name: 'Source' },
+      { name: 'Tree View', action: 'toggleView' }
     ]
   },
   {
@@ -629,6 +630,9 @@ var ReqData = React.createClass({
     case 'Source':
       util.openEditor(JSON.stringify(item, null, '  '));
       break;
+    case 'toggleView':
+      events.trigger('switchTreeView');
+      break;
     case 'Overview':
       self.triggerActiveItem(item);
       events.trigger('showOverview');
@@ -792,7 +796,6 @@ var ReqData = React.createClass({
     e.preventDefault();
     this.currentFocusItem = item;
     var clickBlank = disabled && !treeNodeData;
-    contextMenuList[0].disabled = clickBlank;
     var list0 = contextMenuList[0].list;
     list0[4].disabled = clickBlank || !/^https?:\/\//.test(treeId || item.url);
     if (disabled) {
@@ -805,8 +808,15 @@ var ReqData = React.createClass({
     list0[1].disabled = disabled;
     list0[2].disabled = (disabled || !item.frames);
     list0[3].disabled = disabled;
+    list0[4].disabled = clickBlank;
+    list0[5].disabled = clickBlank;
+    list0[6].disabled = clickBlank;
     list0[7].disabled = disabled;
-
+    if (modal.isTreeView) {
+      list0[8].name = 'List View';
+    } else {
+      list0[8].name = 'Tree View';
+    }
     contextMenuList[1].disabled = disabled && !treeId;
     var treeUrl = treeId ? treeId + '/' : '';
     var isTreeNode = disabled && !treeUrl;
