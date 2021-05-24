@@ -57,8 +57,14 @@ var ReqData = React.createClass({
     }).on('showInspectors', function() {
       self.toggleTab(tabs[1]);
     }).on('toggleInspectors', function() {
-      if (self.state.tab !== tabs[1]) {
+      var modal = self.props.modal;
+      var item = modal && modal.getActive();
+      var isWs = item && /^ws/.test(item.url);
+      var tab = self.state.tab;
+      if (!tab || tab === tabs[0]) {
         self.toggleTab(tabs[1]);
+      } else if (isWs && tab === tabs[1]) {
+        self.toggleTab(tabs[2]);
       } else {
         self.toggleTab(tabs[0]);
       }
