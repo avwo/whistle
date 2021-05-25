@@ -508,7 +508,11 @@ var ReqData = React.createClass({
 
     $(window).on('resize', render);
     events.on('ensureSelectedItemVisible', function () {
+      var modal = self.props.modal;
       var selected = self.props.modal.getSelectedList()[0];
+      if (selected && modal.isTreeView) {
+        selected = modal.getTreeNode(selected.id);
+      }
       if(selected){
         self.scrollToRow(selected);
       }else{
@@ -1108,7 +1112,7 @@ var ReqData = React.createClass({
       if (index === -1) {
         return;
       }
-      target = index + (count > 0 ? count + 2 : 2);
+      target = index + (count > 0 ? count : 0);
     }
     try {
       this.refs.content.refs.list.scrollToRow(target);
