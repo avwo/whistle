@@ -521,11 +521,11 @@ function updateList(list, len, hasKeyword) {
 
 proto.update = function(scrollAtBottom, force) {
   updateOrder(this.list, force);
-  if (scrollAtBottom) {
+  if (scrollAtBottom && !this.isTreeView) {
     var exceed = Math.min(this.list.length - MAX_LENGTH, 100);
     updateList(this.list, exceed, this.hasKeyword());
   }
-  this.filter(true);
+  this.filter();
   return !this.isTreeView && this.list.length > MAX_LENGTH;
 };
 

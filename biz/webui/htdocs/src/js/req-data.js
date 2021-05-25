@@ -370,6 +370,7 @@ var ReqData = React.createClass({
           allList.splice(i, 1);
           --overflow;
           --i;
+          --len;
           hasChanged = true;
           if (overflow <= 0) {
             break;
@@ -384,6 +385,7 @@ var ReqData = React.createClass({
             allList.splice(i, 1);
             --overflow;
             --i;
+            --len;
             hasChanged = true;
             if (overflow <= 0) {
               break;
