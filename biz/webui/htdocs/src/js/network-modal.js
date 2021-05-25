@@ -10,8 +10,7 @@ var KW_RE = /^(url|u|content|c|b|body|headers|h|ip|i|status|result|s|r|method|m|
 var KW_LIST_RE = /([^\s]+)(?:\s+([^\s]+)(?:\s+([\S\s]+))?)?/;
 
 function NetworkModal(list) {
-  this._list = updateOrder(list);
-  this.list = list.slice(0, MAX_LENGTH);
+  this.list = updateOrder(list);
   this.isTreeView = storage.get('isTreeView') === '1';
   this.clearRoot();
 }
@@ -98,8 +97,8 @@ proto.search = function(keyword) {
   this._keyword = parseKeywordList(keyword);
   this.filter();
   if (!this.hasKeyword()) {
-    var overflow = this._list.length - MAX_COUNT;
-    overflow > 0 && this._list.splice(0, overflow);
+    var overflow = this.list.length - MAX_COUNT;
+    overflow > 0 && this.list.splice(0, overflow);
   }
   return keyword;
 };
@@ -172,7 +171,7 @@ function checkItem(item, opts) {
 }
 
 proto.hasUnmarked = function() {
-  var list = this._list;
+  var list = this.list;
   for (var i = list.length - 1; i >= 0; --i) {
     if (!list[i].mark) {
       return true;
@@ -180,7 +179,7 @@ proto.hasUnmarked = function() {
   }
 };
 
-proto.filter = function(newList) {
+proto.filter = function() {
   var self = this;
   var list = self.list;
   var keyword = self._keyword;
@@ -210,8 +209,6 @@ proto.filter = function(newList) {
 
       return prev.order > next.order ? 1 : -1;
     });
-  } else if (!newList) {
-    self.list = self._list.slice(0, MAX_LENGTH);
   }
   this.updateTree();
   this.updateDisplayCount();
@@ -274,7 +271,7 @@ function inObject(obj, opts) {
 var MAX_FS_COUNT = 60;
 
 proto.updateDisplayCount = function() {
-  window.name = WIN_NAME_PRE + this._list.length;
+  window.name = WIN_NAME_PRE + this.list.length;
 };
 proto.getDisplayCount = function() {
   var winName = window.name;
@@ -287,15 +284,14 @@ proto.getDisplayCount = function() {
 
 proto.clear = function clear() {
   this.clearNetwork = true;
-  this._list.splice(0, this._list.length);
-  this.list = [];
+  this.list.splice(0, this.list.length);
   this.updateTree();
   this.updateDisplayCount();
   return this;
 };
 
 proto.removeByHostList = function(hostList) {
-  var list = this._list;
+  var list = this.list;
   for (var i = list.length - 1; i >= 0; --i) {
     var item = list[i];
     if (hostList.indexOf(item.isHttps ? item.path : item.hostname) !== -1) {
@@ -324,7 +320,7 @@ proto.removeTreeNode = function(path, others) {
     return;
   }
   var map = getNodeIdMap(node, {});
-  var list = this._list;
+  var list = this.list;
   for (var i = list.length - 1; i >= 0; --i) {
     if (others ? !map[list[i].id] : map[list[i].id]) {
       list.splice(i, 1);
@@ -336,7 +332,7 @@ proto.removeTreeNode = function(path, others) {
 };
 
 proto.removeByUrlList = function(urlList) {
-  var list = this._list;
+  var list = this.list;
   for (var i = list.length - 1; i >= 0; --i) {
     if (urlList.indexOf(list[i].url.replace(/\?.*$/, '').substring(0, 1024)) !== -1) {
       list.splice(i, 1);
@@ -349,7 +345,7 @@ proto.removeByUrlList = function(urlList) {
 proto.removeSelectedItems = function() {
   var hasSelectedItem;
   var endIndex = -1;
-  var list = this._list;
+  var list = this.list;
 
   for (var i = list.length - 1; i >= 0; i--) {
     var item = list[i];
@@ -374,7 +370,7 @@ proto.removeSelectedItems = function() {
 };
 
 proto.remove = function(item) {
-  var list = this._list;
+  var list = this.list;
   var index = list.indexOf(item);
   if (index !== -1) {
     list.splice(index ,1);
@@ -383,7 +379,7 @@ proto.remove = function(item) {
 };
 
 proto.removeOthers = function(item) {
-  var list = this._list;
+  var list = this.list;
   var index = list.indexOf(item);
   if (index !== -1) {
     list.splice(index + 1, list.length - index);
@@ -397,7 +393,7 @@ proto.removeOthers = function(item) {
 proto.removeUnselectedItems = function() {
   var hasUnselectedItem;
   var endIndex = -1;
-  var list = this._list;
+  var list = this.list;
 
   for (var i = list.length - 1; i >= 0; i--) {
     var item = list[i];
@@ -424,7 +420,7 @@ proto.removeUnselectedItems = function() {
 proto.removeUnmarkedItems = function() {
   var hasUnmarkedItem;
   var endIndex = -1;
-  var list = this._list;
+  var list = this.list;
 
   for (var i = list.length - 1; i >= 0; i--) {
     var item = list[i];
@@ -524,15 +520,13 @@ function updateList(list, len, hasKeyword) {
 }
 
 proto.update = function(scrollAtBottom, force) {
-  updateOrder(this._list, force);
+  updateOrder(this.list, force);
   if (scrollAtBottom) {
-    var exceed = Math.min(this._list.length - MAX_LENGTH, 100);
-    updateList(this._list, exceed, this.hasKeyword());
+    var exceed = Math.min(this.list.length - MAX_LENGTH, 100);
+    updateList(this.list, exceed, this.hasKeyword());
   }
-
-  this.list = this._list.slice(0, MAX_LENGTH);
   this.filter(true);
-  return !this.isTreeView && this._list.length > MAX_LENGTH;
+  return !this.isTreeView && this.list.length > MAX_LENGTH;
 };
 
 proto.hasSelected = function() {
@@ -742,7 +736,7 @@ proto.updateTree = function() {
     return this.root;
   }
   this._updateOnTreeView = false;
-  var allData = this._list;
+  var allData = this.list;
   var len = allData.length;
   if (!len) {
     return this.clearRoot();

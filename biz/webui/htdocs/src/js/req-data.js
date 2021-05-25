@@ -351,20 +351,22 @@ var ReqData = React.createClass({
           visibleMap[item.path] = 1;
         } else if (!item.data) {
           visibleMap[item.path] = 1;
-        } else if (curNewIdList.indexOf(item.data.id) !== -1 && isVisibleInTree(item)) {
+        } else if (isVisibleInTree(item)) {
           visibleLeafMap[item.data.id] = 1;
-          lightList.push(item);
+          if (curNewIdList.indexOf(item.data.id) !== -1) {
+            lightList.push(item);
+          }
         }
       }
     }
     var overflow = dataCenter.overflowCount();
     if (overflow > 0) {
       var hasChanged;
-      var allList = modal._list;
+      var allList = modal.list;
       var len = allList.length;
       for (i = 0; i < len; i++) {
         item = allList[i];
-        if ((!item.active && !visibleLeafMap[item.id] && !leafMap[item.id]) || item.hide) {
+        if (item.hide || (!item.active && !visibleLeafMap[item.id] && !leafMap[item.id])) {
           allList.splice(i, 1);
           --overflow;
           --i;
