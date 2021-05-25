@@ -341,8 +341,10 @@ var ReqData = React.createClass({
     var visibleMap = {};
     var list = this.visibleList;
     var lightList = [];
+    var visibleLeafMap = {};
+    var item;
     for (var i = this.startIndex; i <= this.endIndex; i++) {
-      var item = list[i];
+      item = list[i];
       if (item) {
         if (!item.parent) {
           $.extend(leafMap, item.map);
@@ -350,21 +352,59 @@ var ReqData = React.createClass({
         } else if (!item.data) {
           visibleMap[item.path] = 1;
         } else if (curNewIdList.indexOf(item.data.id) !== -1 && isVisibleInTree(item)) {
+          visibleLeafMap[item.data.id] = 1;
           lightList.push(item);
         }
       }
     }
+    var overflow = dataCenter.overflowCount();
+    if (overflow > 0) {
+      var hasChanged;
+      var allList = modal._list;
+      var len = allList.length;
+      for (i = 0; i < len; i++) {
+        item = allList[i];
+        if ((!item.active && !visibleLeafMap[item.id] && !leafMap[item.id]) || item.hide) {
+          allList.splice(i, 1);
+          --overflow;
+          --i;
+          hasChanged = true;
+          if (overflow <= 0) {
+            break;
+          }
+        }
+      }
+      if (overflow > 0) {
+        len = allList.length;
+        for (i = 0; i < len; i++) {
+          item = allList[i];
+          if (!item.active && !visibleLeafMap[item.id]) {
+            allList.splice(i, 1);
+            --overflow;
+            --i;
+            hasChanged = true;
+            if (overflow <= 0) {
+              break;
+            }
+          }
+        }
+      }
+      if (hasChanged) {
+        modal.updateTree();
+        events.trigger('updateGlobal');
+      }
+    }
     curNewIdList.forEach(function(id) {
-      var item = leafMap[id];
-      if (item) {
-        var parent = item.parent;
+      var newItem = leafMap[id];
+      if (newItem) {
+        var parent = newItem.parent;
         while(parent) {
           if (visibleMap[parent.path]) {
             visibleMap[parent.path] = 0;
             lightList.push(parent);
           }
-          if (lightList.indexOf(item) === -1 && isVisibleInTree(item)) {
-            lightList.push(item);
+          if (lightList.indexOf(newItem) === -1 && isVisibleInTree(newItem)) {
+            lightList.push(newItem);
           }
           parent = parent.parent;
         }
