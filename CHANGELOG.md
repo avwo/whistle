@@ -1,4 +1,7 @@
 
+
+# 2.7.1
+1. fix: Tree View 抓包数据满了后无法自动更新问题
 # v2.7.0
 1. feat: Network 支持 Tree View 展示
 2. feat: `pac` 支持设置用户名密码：`pac://user:pass@pacPath`
