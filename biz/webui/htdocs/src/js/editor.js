@@ -40,7 +40,7 @@ require('codemirror/addon/scroll/annotatescrollbar');
 require('codemirror/addon/search/matchesonscrollbar');
 
 var rulesHint = require('./rules-hint');
-const events = require('./events');
+var events = require('./events');
 
 var themes = ['default', 'neat', 'elegant', 'erlang-dark', 'night', 'monokai', 'cobalt', 'eclipse'
               , 'rubyblue', 'lesser-dark', 'xq-dark', 'xq-light', 'ambiance'
