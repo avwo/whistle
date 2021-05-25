@@ -958,11 +958,17 @@ exports.addNetworkList = function (list) {
   }
 };
 
+function overflowCount() {
+  return dataList.length - NetworkModal.MAX_COUNT - 1;
+}
+
+exports.overflowCount = overflowCount;
+
 function getStartTime() {
   if (!inited) {
     return clearNetwork ? -2 : '';
   }
-  if (dataList.length - 1 > NetworkModal.MAX_COUNT || exports.stopRefresh) {
+  if (overflowCount() > 0 || exports.stopRefresh) {
     return -1;
   }
   return lastRowId || '0';
