@@ -36,6 +36,7 @@ var FrameComposer = React.createClass({
       if (!frame) {
         return;
       }
+      events.trigger('enableRecordFrame');
       self.send({
         target: frame.isClient ? 'server' : 'client',
         type: frame.opcode == 1 ? 'text' : 'bin',
@@ -97,6 +98,7 @@ var FrameComposer = React.createClass({
       return;
     }
     params.reqId = data.id;
+    events.trigger('enableRecordFrame');
     dataCenter.socket.send(params, function(data, xhr) {
       if (!data) {
         return util.showSystemError(xhr);

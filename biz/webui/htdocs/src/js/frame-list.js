@@ -71,6 +71,9 @@ var FrameList = React.createClass({
         }
       }
     });
+    events.on('enableRecordFrame', function() {
+      self.refs.recordBtn.enable();
+    });
   },
   shouldComponentUpdate: function() {
     clearTimeout(this.filterTimer);
