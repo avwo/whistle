@@ -17,6 +17,7 @@ var HistoryData = React.createClass({
     });
     this.setState({
       ipv6: data.r6,
+      useDefault: data.df,
       servers: servers.join('\n')
     });
     this.refs.dnsServersDialog.show();
@@ -33,7 +34,7 @@ var HistoryData = React.createClass({
     return (
       <Dialog ref="dnsServersDialog" wstyle="w-dns-servers-dialog">
         <div className="modal-header">
-          Resolve {state.ipv6 ? 'IPv6' : 'IPv4'} address from follow DNS servers:
+          Resolve {state.ipv6 ? 'IPv6' : 'IPv4'} address from follow DNS servers{state.useDefault ? ' first' : ''}:
           <button type="button" className="close" data-dismiss="modal">
             <span aria-hidden="true">&times;</span>
           </button>
