@@ -1,4 +1,6 @@
-
+# v2.7.2
+1. feat: 支持通过命令行参数 `--dnsServer ip1:port,ip2,ipX` 自定义 DNS server
+2. fix: 修复 List View 通过表头排序后无法 Reset 的问题
 
 # 2.7.1
 1. fix: Tree View 抓包数据满了后无法自动更新问题
