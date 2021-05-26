@@ -12,9 +12,12 @@ var HistoryData = React.createClass({
       return;
     }
     this._hideDialog = false;
+    var servers = data.dns.split(',').map(function(dns, i) {
+      return 'DNS Server' + (i + 1) + ': ' + dns;
+    });
     this.setState({
       ipv6: data.r6,
-      servers: data.dns.split(',').join('\n')
+      servers: servers.join('\n')
     });
     this.refs.dnsServersDialog.show();
   },

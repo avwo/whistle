@@ -24,7 +24,6 @@
 .w-dns-servers-dialog pre {
   font-size: 14px;
   font-weight: bold;
-  padding-left: 20px!important;
 }
 
 .w-dns-servers-dialog .modal-dialog {width: 420px;}
