@@ -619,6 +619,9 @@ var Index = React.createClass({
     var preventDefault = function(e) {
       e.preventDefault();
     };
+    events.on('enableRecord', function() {
+      self.enableRecord();
+    });
     events.on('rulesChanged', function() {
       self.rulesChanged = true;
       self.showReloadRules();
@@ -2335,6 +2338,7 @@ var Index = React.createClass({
     if (!list || !list.length) {
       return;
     }
+    this.enableRecord();
     var replayReq = function(item) {
       var req = item.req;
       if (util.canReplay(item)) {
@@ -2387,6 +2391,9 @@ var Index = React.createClass({
     } else if (this.autoRefresh) {
       this.autoRefresh();
     }
+  },
+  enableRecord: function() {
+    this.refs.recordBtn.enable();
   },
   composer: function() {
     events.trigger('composer');
@@ -3131,7 +3138,7 @@ var Index = React.createClass({
             <MenuItem options={ABORT_OPTIONS} className="w-remove-menu-item" onClickOption={this.abort} />
           </div>
           <a onClick={this.composer} className="w-composer-menu" style={{display: isNetwork ? '' : 'none'}} draggable="false"><span className="glyphicon glyphicon-edit"></span>Compose</a>
-          <RecordBtn hide={!isNetwork} onClick={this.handleAction} />
+          <RecordBtn ref="recordBtn" hide={!isNetwork} onClick={this.handleAction} />
           <a onClick={this.onClickMenu} className={'w-delete-menu' + (disabledDeleteBtn ? ' w-disabled' : '')} style={{display: (isNetwork || isPlugins) ? 'none' : ''}} draggable="false"><span className="glyphicon glyphicon-trash"></span>Delete</a>
           <FilterBtn onClick={this.showSettings} disabledRules={isRules && state.disabledAllRules} isNetwork={isNetwork} hide={isPlugins} />
           <a onClick={this.showFiles} className="w-files-menu" draggable="false"><span className="glyphicon glyphicon-upload"></span>Files</a>

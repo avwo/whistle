@@ -932,6 +932,8 @@ exports.addNetworkList = function (list) {
     delete req.json;
     delete data.res.json;
     delete data.data;
+    delete data.stopRecordFrames;
+    delete data.pauseRecordFrames;
     if (!util.isString(data.fwdHost)) {
       delete data.fwdHost;
     }

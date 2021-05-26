@@ -38,12 +38,25 @@ var RecordBtn = React.createClass({
     this.setState({});
   },
   enable: function(flag) {
-    var stop = flag === false;
-    if (stop === this.state.stop) {
+    var state = this.state;
+    var pause = state.pause;
+    var stop = state.stop;
+    if (flag === 'stop') {
+      if (stop) {
+        return;
+      }
+    } else if (flag === 'pause') {
+      if (pause) {
+        return;
+      }
+    } else {
+      if (stop || pause) {
+        this.onClick();
+      }
       return;
     }
-    this.state.stop = stop;
-    this.setState({});
+    
+    this.onClickOption({ id: flag });
   },
   showActionOptions: function() {
     this.setState({

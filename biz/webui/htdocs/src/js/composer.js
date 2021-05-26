@@ -593,6 +593,7 @@ var Composer = React.createClass({
     self.comTimer = setTimeout(function() {
       self.setState({ pending: false });
     }, 3000);
+    events.trigger('enableRecord');
     dataCenter.composer(JSON.stringify(params), function(data, xhr, em) {
       clearTimeout(self.comTimer);
       var state = {
