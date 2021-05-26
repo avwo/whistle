@@ -1,5 +1,7 @@
 # v2.7.2
-1. feat: 支持通过命令行参数 `--dnsServer ip1:port,ip2,ipX` 自定义 DNS server
+1. feat: 支持通过命令行参数 `--dnsServer "1.1.1.1,8.8.8.8,10.3.2.1:8080"` 自定义 DNS server
+		> 如果需要请求自定义 DNS server 出错时自动转成默认可以用: `--dnsServer "1.1.1.1,8.8.8.8,10.3.2.1:8080,default"`
+		> 自定义 DNS server，默认是获取 IPv4，如果需要获取 IPv6，要手动指定 `--dnsServer "2001:4860:4860::8888,[2001:4860:4860::8888]:1053,ipv6"`
 2. fix: 修复 List View 通过表头排序后无法 Reset 的问题
 
 # 2.7.1
