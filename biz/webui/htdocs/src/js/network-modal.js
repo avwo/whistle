@@ -196,7 +196,7 @@ proto.filter = function() {
   var columns = self._columns;
   if (columns && columns.length) {
     var len = columns.length;
-    self.list.sort(function(prev, next) {
+    self._list = self.list.slice().sort(function(prev, next) {
       for (var i = 0; i < len; i++) {
         var column = columns[i];
         var prevVal = prev[column.name];
@@ -209,6 +209,8 @@ proto.filter = function() {
 
       return prev.order > next.order ? 1 : -1;
     });
+  } else {
+    self._list = null;
   }
   this.updateTree();
   this.updateDisplayCount();
