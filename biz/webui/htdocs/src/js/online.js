@@ -8,6 +8,7 @@ var ReactDOM = require('react-dom');
 var Dialog = require('./dialog');
 var dataCenter = require('./data-center');
 var util = require('./util');
+var DNSDialog = require('./dns-servers-dialog');
 
 var dialog;
 
@@ -27,6 +28,7 @@ function createDialog() {
               '<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
                 '<div class="w-online-dialog-ctn"></div>' +
                 '<div class="w-online-dialog-info">' + proxyInfoList.join('') + '</div>' +
+                '<a class="w-online-view-dns">View custom DNS servers</a>' +
               '</div>' +
               '<div class="modal-footer">' +
                 '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>' +
@@ -144,9 +146,30 @@ var Online = React.createClass({
       this._initProxyInfo = true;
       var curServerInfo;
       var isHide = true;
+      var dnsElem = dialog.find('.w-online-view-dns');
+      var hideDns = true;
+      var self = this;
+      dnsElem.on('click', function() {
+        self.refs.dnsDialog.show(dataCenter.getServerInfo());
+      });
+      var toggleDns = function(svrInfo) {
+        if (svrInfo && svrInfo.dns) {
+          if (hideDns) {
+            hideDns = false;
+            dnsElem.show();
+          }
+        } else {
+          if (!hideDns) {
+            hideDns = true;
+            dnsElem.hide();
+          }
+        }
+      };
+      toggleDns(server);
       setInterval(function() {
         var info = dataCenter.getServerInfo();
         var pInfo = info && info.pInfo;
+        toggleDns(info);
         if (!pInfo) {
           if (isHide) {
             isHide = true;
@@ -249,6 +272,9 @@ var Online = React.createClass({
       info.push('Memory: ' + util.getSize(pInfo.memUsage.rss));
       info.push('QPS: ' + util.getQps(pInfo.totalQps));
     }
+    if (server.dns) {
+      info.push('Use custom DNS servers');
+    }
     return info.join('\n');
   },
   setTitle: function() {
@@ -260,7 +286,9 @@ var Online = React.createClass({
     return (
         <a ref="onlineMenu" draggable="false" onMouseEnter={this.setTitle}
           className={'w-online-menu w-online' + (server ? '' : ' w-offline')} onClick={this.showServerInfo}>
-          <span className="glyphicon glyphicon-stats"></span>{server ? 'Online' : 'Offline'}
+          <span className="glyphicon glyphicon-stats"></span>
+          {server ? 'Online' : 'Offline'}
+          {server && server.dns ? <span>{server.r6 ? '(IPv6)' : '(IPv4)'}</span> : null}
           <Dialog ref="confirmReload" wstyle="w-confirm-reload-dialog w-confirm-reload-global">
             <div className="modal-body w-confirm-reload">
               <button type="button" className="close" data-dismiss="modal">
@@ -274,6 +302,7 @@ var Online = React.createClass({
               <button type="button" className="btn btn-primary" onClick={this.reload}>Reload</button>
             </div>
           </Dialog>
+          <DNSDialog ref="dnsDialog" />
         </a>
     );
   }

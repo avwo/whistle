@@ -23,6 +23,8 @@ exports.getServerInfo = function(req) {
   var info = {
     pid: PID,
     pInfo: proc,
+    dns: config.dnsServer,
+    r6: config.resolve6,
     version: config.version,
     cmdName: config.cmdName,
     hideLeftMenu: config.hideLeftMenu,
