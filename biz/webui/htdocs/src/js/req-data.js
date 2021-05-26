@@ -1192,7 +1192,7 @@ var ReqData = React.createClass({
   },
   getVisibleList: function() {
     var modal = this.props.modal;
-    return modal.isTreeView ? modal.getTree().list.filter(isVisibleInTree) : (modal._list || modal.list).filter(isVisible);
+    return modal.isTreeView ? modal.getTree().list.filter(isVisibleInTree) : modal.getList().filter(isVisible);
   },
   render: function() {
     var self = this;

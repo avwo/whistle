@@ -96,10 +96,6 @@ function parseKeywordList(keyword) {
 proto.search = function(keyword) {
   this._keyword = parseKeywordList(keyword);
   this.filter();
-  if (!this.hasKeyword()) {
-    var overflow = this.list.length - MAX_COUNT;
-    overflow > 0 && this.list.splice(0, overflow);
-  }
   return keyword;
 };
 
@@ -177,6 +173,10 @@ proto.hasUnmarked = function() {
       return true;
     }
   }
+};
+
+proto.getList = function() {
+  return this._list || this.list;
 };
 
 proto.filter = function() {
@@ -287,6 +287,7 @@ proto.getDisplayCount = function() {
 proto.clear = function clear() {
   this.clearNetwork = true;
   this.list.splice(0, this.list.length);
+  this._list = null;
   this.updateTree();
   this.updateDisplayCount();
   return this;
@@ -447,7 +448,7 @@ proto.removeUnmarkedItems = function() {
 };
 
 proto.prev = function() {
-  var list = this.list;
+  var list = this.getList();
   var len = list.length;
   if (!len) {
     return;
@@ -471,7 +472,7 @@ proto.prev = function() {
 };
 
 proto.next = function() {
-  var list = this.list;
+  var list = this.getList();
   var len = list.length;
   if (!len) {
     return;
@@ -618,7 +619,7 @@ function getNextSelected(start, list) {
 }
 
 proto.setSelectedList = function(start, end, selectElem) {
-  var list = this.list;
+  var list = this.getList();
   if (this.isTreeView) {
     list = this.root.list;
     start = this.getTreeNode(start.id);
