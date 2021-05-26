@@ -32,7 +32,7 @@ var rulesCtxMenuList = [
   { name: 'Delete' },
   { name: 'Export' },
   { name: 'Import' },
-  { name: 'Recycle Bin', action: 'RecycleBin' },
+  { name: 'Trash' },
   {
     name: 'Others',
     action: 'Plugins',
@@ -64,7 +64,7 @@ var valuesCtxMenuList = [
   },
   { name: 'Export' },
   { name: 'Import' },
-  { name: 'Recycle Bin', action: 'RecycleBin' },
+  { name: 'Trash' },
   {
     name: 'Others',
     action: 'Plugins',
@@ -353,7 +353,7 @@ var List = React.createClass({
         return;
       }
       if (!data.list.length) {
-        return message.info('Recycle bin is empty.');
+        return message.info('Trash is empty.');
       }
       self.refs.recycleBinDialog.show({ name: name, list: data.list });
     });
@@ -389,7 +389,7 @@ var List = React.createClass({
     case 'Import':
       events.trigger('import' + name, e);
       break;
-    case 'RecycleBin':
+    case 'Trash':
       self.showRecycleBin(name);
       break;
     case 'Validate':

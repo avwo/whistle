@@ -128,7 +128,7 @@ var RecycleBinDialog = React.createClass({
             <span aria-hidden="true">&times;</span>
           </button>
           <h4>
-            {state.name} Recycle Bin
+            {state.name} Trash
           </h4>
           <table className="table">
               <thead>
