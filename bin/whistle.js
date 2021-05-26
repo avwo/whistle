@@ -115,6 +115,7 @@ program
   .option('-R, --reqCacheSize [reqCacheSize]', 'set the cache size of request data (600 by default)', String, undefined)
   .option('-F, --frameCacheSize [frameCacheSize]', 'set the cache size of webSocket and socket\'s frames (512 by default)', String, undefined)
   .option('-A, --addon [pluginPaths]', 'add custom plugin paths', String, undefined)
+  .option('--dnsServer [dnsServer]', 'set custom dns servers', String, undefined)
   .option('--socksPort [socksPort]', 'set the socksv5 server port', String, undefined)
   .option('--httpPort [httpPort]', 'set the http server port', String, undefined)
   .option('--httpsPort [httpsPort]', 'set the https server port', String, undefined)
