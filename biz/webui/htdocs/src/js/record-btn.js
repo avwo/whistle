@@ -42,7 +42,7 @@ var RecordBtn = React.createClass({
     var pause = state.pause;
     var stop = state.stop;
     if (flag === 'stop') {
-      if (stop) {
+      if (stop && !pause) {
         return;
       }
     } else if (flag === 'pause') {

@@ -13,7 +13,7 @@ var filterItem = function(keyword, item) {
   return lowerBody.indexOf(keyword) !== -1;
 };
 
-function FramesModal(list) {
+function FramesModal() {
   this.list = [];
 }
 

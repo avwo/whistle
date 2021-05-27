@@ -266,8 +266,11 @@ function getIcon(data, className) {
     return <span className="icon-leaf glyphicon glyphicon-hourglass" />;
   }
   var type = getType(className);
-  var status = type === 'ERROR' && data.res && data.res.statusCode;
-  return <span className={type ? 'w-type-icon' : 'glyphicon glyphicon-file'}>{status || type || null}</span>;
+  var status = data.res && data.res.statusCode;
+  if (type !== 'ERROR' && status != 101) {
+    status = null;
+  }
+  return <span className={status || type ? 'w-type-icon' : 'glyphicon glyphicon-file'}>{status || type || null}</span>;
 }
 
 function getFilename(item, type) {
