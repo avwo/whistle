@@ -2816,7 +2816,7 @@ var Index = React.createClass({
             self.importHarSessions(result);
           }
         } catch (e) {
-          alert('Incorrect file format.');
+          alert('Unrecognized format.');
         }
       });
       return;
