@@ -907,23 +907,23 @@ exports.asCURL = function(item) {
   var req = item.req;
   var url = item.url.replace(/^ws/, 'http');
   var method = req.method;
-  var result = ['curl', '-X', method, JSON.stringify(url)];
+  var result = [['curl', '-X', method, JSON.stringify(url)]];
   var headers = req.headers;
   var rawHeaderNames = req.rawHeaderNames || {};
   Object.keys(headers).forEach(function(key) {
     if (key === 'content-length' || key === 'content-encoding' || key === 'accept-encoding') {
       return;
     }
-    result.push('\n', '-H', JSON.stringify((rawHeaderNames[key] || key) + ': ' + headers[key]));
+    result.push(['-H', JSON.stringify((rawHeaderNames[key] || key) + ': ' + headers[key])]);
   });
   var body = (isText(req.headers) || isUrlEncoded(req)) ? getBody(req, true) : '';
   try {
     body = JSON.parse(body);
   } catch (error) {}
   if (body) {
-    result.push('\n', '-d', '\'' + JSON.stringify(body, null, 2) + '\'');
+    result.push(['-d', '\'' + JSON.stringify(body, null, 2) + '\'']);
   }
-  return result.join(' ');
+  return result.map(function(item) {return item.join(' ');}).join(' \\\n');
 };
 
 exports.parseHeadersFromHar = function(list) {
