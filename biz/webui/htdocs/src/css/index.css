@@ -67,27 +67,15 @@
 .w-left-menu a { display: block; position: relative; padding: 10px 0 8px; width: 47px; overflow: hidden; text-align: center;
   text-decoration: none!important; color: #000; }
 .w-left-menu a span { margin-right: 5px; }
-.w-left-menu a i {
+.w-left-menu a .w-left-menu-name {
   display: block;
   font-style: normal;
-  font-size: 13px;
+  font-size: 12px;
   zoom: 1;
-  transform: scale(0.7, 0.7);
-  width: 66px;
-  margin-left: -11px;
+  transform: scale(0.8, 0.8);
+  width: 65px;
+  margin-left: -10px;
   white-space: nowrap;
-}
-.w-left-menu a i .glyphicon-tree-conifer {
-  margin-right: 0;
-  cursor: default;
-  color: #888;
-  font-size: 15px;
-}
-.w-left-menu a i .glyphicon-tree-conifer:hover {
-  color: #8fbc8f;
-}
-.w-left-menu a i .glyphicon-tree-conifer.enable-tree-view {
-  color: green;
 }
 .w-left-menu-tips {
   padding: 6px 10px; display: none; left: 47px; top: 3px; position: absolute;
@@ -103,7 +91,7 @@
 .w-menu-changed {
   position: absolute;
   top: 2px;
-  left: 2px;
+  left: 5px;
   color: red;
 }
 .w-replay-count-dialog .modal-content {

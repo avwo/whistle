@@ -40,7 +40,6 @@
   - **`safe`：** 安全模式，禁用 `rejectUnauthorized`，如果服务端返回自定义证书会报错，默认忽略错误
   - **`notAllowedDisableRules`：** 不允许禁用规则
   - **`notAllowedDisablePlugins`：** 不允许禁用插件
-  - **`classic`：** 左侧菜单不显示 checkbox
   - **`socks`：**  socks模式，通过socks转发的请求默认走tunnel
   - **`keepXFF`：** 是否自动带上 `x-forwarded-for` 请求头
   - **`buildIn`：** 插件是否使用跟主进程一样的 Node 版本，默认是全局 Node，一般用于打包 electron 应用时使用

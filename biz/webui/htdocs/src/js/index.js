@@ -167,10 +167,6 @@ function getRemoteDataHandler(callback) {
   };
 }
 
-function stopPropagation(e) {
-  e.stopPropagation();
-}
-
 function getPageName(options) {
   if (options.networkMode) {
     return 'network';
@@ -255,7 +251,6 @@ var Index = React.createClass({
       ndp: modal.server.ndp,
       drb: modal.server.drb,
       drm: modal.server.drm,
-      classic: modal.classic,
       version: modal.version
     };
     if (hideLeftMenu !== false) {
@@ -923,7 +918,7 @@ var Index = React.createClass({
         || state.disabledAllRules !== data.disabledAllRules
         || state.allowMultipleChoice !== data.allowMultipleChoice
         || state.disabledAllPlugins !== data.disabledAllPlugins
-        || state.multiEnv != server.multiEnv || state.classic != data.classic
+        || state.multiEnv != server.multiEnv
         || state.ndp != server.ndp || state.ndr != server.ndr
         || state.drb != server.drb || state.drm != server.drm) {
         state.interceptHttpsConnects = data.interceptHttpsConnects;
@@ -936,7 +931,6 @@ var Index = React.createClass({
         state.ndr = server.ndr;
         state.drb = server.drb;
         state.drm = server.drm;
-        state.classic = data.classic;
         protocols.setPlugins(state);
         self.setState({});
       }
@@ -1637,10 +1631,6 @@ var Index = React.createClass({
   uploadValuesForm: function() {
     this.valuesForm = new FormData(ReactDOM.findDOMNode(this.refs.importValuesForm));
     this.refs.confirmImportValues.show();
-  },
-  clearNetwork: function() {
-    this.clear();
-    this.hideNetworkOptions();
   },
   showAndActiveRules: function(item, e) {
     if (this.state.name === 'rules') {
@@ -2490,15 +2480,16 @@ var Index = React.createClass({
   onClickMenu: function(e) {
     var target = $(e.target).closest('a');
     var self = this;
+    var state = self.state;
     var list;
-    var isRules = self.state.name == 'rules';
+    var isRules = state.name == 'rules';
     if (target.hasClass('w-edit-menu')) {
       isRules ? self.showEditRules() : self.showEditValues();
     } else if (target.hasClass('w-delete-menu')) {
       isRules ? self.removeRules() : self.removeValues();
     } else if (target.hasClass('w-save-menu')) {
       if (isRules) {
-        list = self.state.rules.getChangedList();
+        list = state.rules.getChangedList();
         if(list.length) {
           list.forEach(function(item) {
             self.selectRules(item);
@@ -2506,7 +2497,7 @@ var Index = React.createClass({
           self.setState({});
         }
       } else {
-        list = self.state.values.getChangedList();
+        list = state.values.getChangedList();
         if (list.length) {
           list.forEach(function(item) {
             self.saveValues(item);
@@ -2597,15 +2588,11 @@ var Index = React.createClass({
     });
   },
   disableAllRules: function(e) {
-    var target = e.target;
-    var checked = e.target.checked;
     var self = this;
-    if (target.name !== 'disableAll') {
-      checked = !checked;
-    }
+    var state = self.state;
+    var checked = !state.disabledAllRules;
     dataCenter.rules.disableAllRules({disabledAllRules: checked ? 1 : 0}, function(data, xhr) {
       if (data && data.ec === 0) {
-        var state = self.state;
         state.disabledAllRules = checked;
         self.setState({});
       } else {
@@ -2617,12 +2604,7 @@ var Index = React.createClass({
   disableAllPlugins: function(e) {
     var self = this;
     var state = self.state;
-    var checked;
-    if (e.target.nodeName === 'INPUT') {
-      checked = !e.target.checked;
-    } else {
-      checked = !state.disabledAllPlugins;
-    }
+    var checked = !state.disabledAllPlugins;
     dataCenter.plugins.disableAllPlugins({disabledAllPlugins: checked ? 1 : 0}, function(data, xhr) {
       if (data && data.ec === 0) {
         state.disabledAllPlugins = checked;
@@ -2988,6 +2970,7 @@ var Index = React.createClass({
     var showHelpOptions = state.showHelpOptions;
     var modal = state.network;
     var isTreeView = modal.isTreeView;
+    var networkType = isTreeView ? 'tree-conifer' : 'globe';
     if (rulesOptions[0].name === DEFAULT) {
       rulesOptions.forEach(function(item, i) {
         item.icon = (!i || !state.multiEnv) ? 'checkbox' : 'edit';
@@ -3059,6 +3042,7 @@ var Index = React.createClass({
     var mustHideLeftMenu = hideLeftMenu && !state.forceShowLeftMenu;
     var showLeftMenu = networkMode || state.showLeftMenu;
     var disabledAllPlugins = state.disabledAllPlugins;
+    var disabledAllRules = state.disabledAllRules;
     var forceShowLeftMenu, forceHideLeftMenu;
     if (showLeftMenu && hideLeftMenu) {
       forceShowLeftMenu = this.forceShowLeftMenu;
@@ -3073,14 +3057,16 @@ var Index = React.createClass({
             <span className={'glyphicon glyphicon-chevron-' + (showLeftMenu ? (mustHideLeftMenu ? 'down' : 'up') : 'left')}></span>
           </a>
           <div style={{display: rulesMode ? 'none' : undefined}} onMouseEnter={this.showNetworkOptions} onMouseLeave={this.hideNetworkOptions} className={'w-nav-menu w-menu-wrapper' + (showNetworkOptions ? ' w-menu-wrapper-show' : '')}>
-            <a onClick={this.showNetwork} onDoubleClick={this.clearNetwork} className="w-network-menu" title="Double click to remove all sessions" style={{background: name == 'network' ? '#ddd' : null}}
-           draggable="false"><span className="glyphicon glyphicon-globe"></span>Network</a>
+            <a onClick={this.showNetwork} onDoubleClick={this.toggleTreeView} className="w-network-menu"
+              title={'Double click to show' + (isTreeView ? ' List View' : 'Tree View')} style={{background: name == 'network' ? '#ddd' : null}}
+           draggable="false"><span className={'glyphicon glyphicon-' + networkType}></span>Network</a>
             <MenuItem ref="networkMenuItem" options={state.networkOptions} className="w-network-menu-item" onClickOption={this.handleNetwork} />
           </div>
           <div style={{display: pluginsMode ? 'none' : undefined}} onMouseEnter={this.showRulesOptions} onMouseLeave={this.hideRulesOptions}
             className={'w-nav-menu w-menu-wrapper' + (showRulesOptions ? ' w-menu-wrapper-show' : '') + (isRules ? ' w-menu-auto' : '')}>
-            <a onClick={this.showRules} className="w-rules-menu" style={{background: name == 'rules' ? '#ddd' : null}} draggable="false"><span className="glyphicon glyphicon-list"></span>Rules</a>
-            <MenuItem ref="rulesMenuItem"  name={name == 'rules' ? null : 'Open'} options={rulesOptions} checkedOptions={uncheckedRules} disabled={state.disabledAllRules}
+            <a onClick={this.showRules} className="w-rules-menu" style={{background: name == 'rules' ? '#ddd' : null}} draggable="false">
+              <span className={'glyphicon glyphicon-list' + (disabledAllRules ? ' w-disabled' : '')}></span>Rules</a>
+            <MenuItem ref="rulesMenuItem"  name={name == 'rules' ? null : 'Open'} options={rulesOptions} checkedOptions={uncheckedRules} disabled={disabledAllRules}
               className="w-rules-menu-item"
               onClick={this.showRules}
               onClickOption={this.showAndActiveRules}
@@ -3092,15 +3078,24 @@ var Index = React.createClass({
             <MenuItem ref="valuesMenuItem" name={name == 'values' ? null : 'Open'} options={state.valuesOptions} className="w-values-menu-item" onClick={this.showValues} onClickOption={this.showAndActiveValues} />
           </div>
           <div style={{display: rulesOnlyMode ? 'none' : undefined}} ref="pluginsMenu" onMouseEnter={this.showPluginsOptions} onMouseLeave={this.hidePluginsOptions} className={'w-nav-menu w-menu-wrapper' + (showPluginsOptions ? ' w-menu-wrapper-show' : '')}>
-            <a onClick={this.showPlugins} className="w-plugins-menu" style={{background: name == 'plugins' ? '#ddd' : null}} draggable="false"><span className="glyphicon glyphicon-list-alt"></span>Plugins</a>
+            <a onClick={this.showPlugins} className="w-plugins-menu" style={{background: name == 'plugins' ? '#ddd' : null}} draggable="false">
+              <span className={'glyphicon glyphicon-list-alt' + (disabledAllPlugins ? ' w-disabled' : '')}></span>Plugins</a>
             <MenuItem ref="pluginsMenuItem" name={name == 'plugins' ? null : 'Open'} options={pluginsOptions} checkedOptions={state.disabledPlugins} disabled={disabledAllPlugins}
               className="w-plugins-menu-item" onClick={this.showPlugins} onChange={this.disablePlugin} onClickOption={this.showAndActivePlugins} />
           </div>
+          {!state.ndr && <a onClick={this.disableAllRules} className="w-enable-plugin-menu"
+             title={disabledAllRules ? 'Disable all rules' : 'Enable all rules'}
+            style={{display: isRules ? '' : 'none', color: disabledAllRules ? '#f66' : undefined}}
+            draggable="false">
+            <span className={'glyphicon glyphicon-' + (disabledAllRules ? 'play-circle' : 'off')}/>
+            {disabledAllRules ? 'ON' : 'OFF'}
+          </a>}
           {!state.ndp && <a onClick={this.disableAllPlugins} className="w-enable-plugin-menu"
+            title={disabledAllPlugins ? 'Disable all plugins' : 'Enable all plugins'}
             style={{display: isPlugins ? '' : 'none', color: disabledAllPlugins ? '#f66' : undefined}}
             draggable="false">
             <span className={'glyphicon glyphicon-' + (disabledAllPlugins ? 'play-circle' : 'off')}/>
-            {disabledAllPlugins ? 'ON' : 'OFF'}
+              {disabledAllPlugins ? 'ON' : 'OFF'}
           </a>}
           <UpdateAllBtn hide={!isPlugins} />
           <a onClick={this.reinstallAllPlugins} className={'w-plugins-menu' +
@@ -3108,6 +3103,7 @@ var Index = React.createClass({
             <span className="glyphicon glyphicon-download-alt" />
             ReinstallAll
           </a>
+          <RecordBtn ref="recordBtn" hide={!isNetwork} onClick={this.handleAction} />
           <a onClick={this.importData} className="w-import-menu"
             style={{display: isPlugins ? 'none' : ''}}
             draggable="false">
@@ -3145,9 +3141,8 @@ var Index = React.createClass({
             <MenuItem options={ABORT_OPTIONS} className="w-remove-menu-item" onClickOption={this.abort} />
           </div>
           <a onClick={this.composer} className="w-composer-menu" style={{display: isNetwork ? '' : 'none'}} draggable="false"><span className="glyphicon glyphicon-edit"></span>Compose</a>
-          <RecordBtn ref="recordBtn" hide={!isNetwork} onClick={this.handleAction} />
           <a onClick={this.onClickMenu} className={'w-delete-menu' + (disabledDeleteBtn ? ' w-disabled' : '')} style={{display: (isNetwork || isPlugins) ? 'none' : ''}} draggable="false"><span className="glyphicon glyphicon-trash"></span>Delete</a>
-          <FilterBtn onClick={this.showSettings} disabledRules={isRules && state.disabledAllRules} isNetwork={isNetwork} hide={isPlugins} />
+          <FilterBtn onClick={this.showSettings} disabledRules={isRules && disabledAllRules} isNetwork={isNetwork} hide={isPlugins} />
           <a onClick={this.showFiles} className="w-files-menu" draggable="false"><span className="glyphicon glyphicon-upload"></span>Files</a>
           <div onMouseEnter={this.showWeinreOptions} onMouseLeave={this.hideWeinreOptions} className={'w-menu-wrapper' + (showWeinreOptions ? ' w-menu-wrapper-show' : '')}>
             <a onClick={this.showWeinreOptionsQuick}
@@ -3184,7 +3179,7 @@ var Index = React.createClass({
           <div className={'w-left-menu' + (forceShowLeftMenu ? ' w-hover-left-menu' : '')}
             style={{display: networkMode || mustHideLeftMenu ? 'none' : undefined}}
             onMouseEnter={forceShowLeftMenu} onMouseLeave={forceHideLeftMenu}>
-            <a onClick={this.showNetwork} onDoubleClick={this.clearNetwork}
+            <a onClick={this.showNetwork} onDoubleClick={this.toggleTreeView}
               title="Double click to remove all sessions"
               className="w-network-menu"
               style={{
@@ -3192,9 +3187,8 @@ var Index = React.createClass({
                 display: rulesMode ? 'none' : undefined
               }}
                draggable="false">
-                <span className="glyphicon glyphicon-globe"></span>
-                <i><span title={'Click to switch to ' + (isTreeView ? 'List View' : 'Tree View') + ' (Ctrl[Command] + B)'} onDoubleClick={stopPropagation}
-                  onClick={this.toggleTreeViewByIcon} className={'glyphicon glyphicon-tree-conifer' + (isTreeView ? ' enable-tree-view' : '')}></span>Network</i>
+                <span className={'glyphicon glyphicon-' + networkType}></span>
+                <i className="w-left-menu-name">Network</i>
             </a>
             <a onClick={this.showRules} className="w-save-menu w-rules-menu"
               onDoubleClick={this.onClickMenu}
@@ -3203,9 +3197,8 @@ var Index = React.createClass({
                 background: name == 'rules' ? '#ddd' : null,
                 display: pluginsMode ? 'none' : undefined
               }} draggable="false">
-              <span className={'glyphicon glyphicon-list' + (state.disabledAllRules ? ' w-disabled' : '')} ></span>
-              <i>{!state.classic && !state.ndr && <input onChange={this.disableAllRules} type="checkbox" onClick={stopPropagation} checked={!state.disabledAllRules}
-                title={state.disabledAllRules ? 'Click to turn on Rules' : 'Click to turn off Rules'} />} Rules</i>
+              <span className={'glyphicon glyphicon-list' + (disabledAllRules ? ' w-disabled' : '')} ></span>
+              <i className="w-left-menu-name">Rules</i>
               <i className="w-menu-changed" style={{display: state.rules.hasChanged() ? undefined : 'none'}}>*</i>
             </a>
             <a onClick={this.showValues} className="w-save-menu w-values-menu"
@@ -3215,7 +3208,8 @@ var Index = React.createClass({
                 background: name == 'values' ? '#ddd' : null,
                 display: pluginsMode ? 'none' : undefined
               }} draggable="false">
-              <span className="glyphicon glyphicon-folder-close"></span><i>Values</i>
+              <span className="glyphicon glyphicon-folder-close"></span>
+              <i className="w-left-menu-name">Values</i>
               <i className="w-menu-changed" style={{display: state.values.hasChanged() ? undefined : 'none'}}>*</i>
             </a>
             <a onClick={this.showPlugins} className="w-plugins-menu"
@@ -3224,12 +3218,10 @@ var Index = React.createClass({
                 display: rulesOnlyMode ? 'none' : undefined
               }} draggable="false">
               <span className={'glyphicon glyphicon-list-alt' + (disabledAllPlugins ? ' w-disabled' : '')}></span>
-              <i>{!state.classic && !state.ndp && <input onChange={this.disableAllPlugins} type="checkbox" onClick={stopPropagation} checked={!disabledAllPlugins}
-                title={disabledAllPlugins ? 'Click to turn on Plugins' : 'Click to turn off Plugins'}
-            />} Plugins</i>
+              <i className="w-left-menu-name">Plugins</i>
             </a>
           </div>
-          {state.hasRules ? <List ref="rules" disabled={state.disabledAllRules} theme={rulesTheme}
+          {state.hasRules ? <List ref="rules" disabled={disabledAllRules} theme={rulesTheme}
             lineWrapping={autoRulesLineWrapping} fontSize={rulesFontSize} lineNumbers={showRulesLineNumbers} onSelect={this.selectRules}
             onUnselect={this.unselectRules} onActive={this.activeRules} modal={state.rules}
             hide={name == 'rules' ? false : true} name="rules" /> : undefined}
@@ -3253,11 +3245,6 @@ var Index = React.createClass({
                    {!state.drb && <p className="w-editor-settings-box"><label><input type="checkbox" checked={state.backRulesFirst} onChange={this.enableBackRulesFirst} /> Back rules first</label></p>}
                    {!state.drm && <p className="w-editor-settings-box"><label style={{color: multiEnv ? '#aaa' : undefined}}><input type="checkbox" disabled={multiEnv}
                     checked={!multiEnv && state.allowMultipleChoice} onChange={this.allowMultipleChoice} /> Use multiple rules</label></p>}
-                   {!state.ndr && <p className="w-editor-settings-box">
-                    <label style={{color: state.disabledAllRules ? '#f66' : undefined}}>
-                      <input type="checkbox" checked={state.disabledAllRules} onChange={this.disableAllRules} name="disableAll" /> Turn off Rules
-                    </label>
-                  </p>}
                 </div>
                 <div className="modal-footer">
                   <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
