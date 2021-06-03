@@ -188,12 +188,31 @@ function cgiHandler(req, res) {
     res.setHeader('access-control-allow-origin', req.headers.origin);
     res.setHeader('access-control-allow-credentials', true);
   }
-  try {
-    require(path.join(__dirname, '..' + req.path))(req, res);
-  } catch(err) {
-    res.status(500).send(config.debugMode ?
-        '<pre>' + util.getErrorStack(err) + '</pre>' : 'Internal Server Error');
+  var filepath = path.join(__dirname, '..' + req.path) + '.js';
+  var handleResponse = function() {
+    try {
+      require(filepath)(req, res);
+    } catch(err) {
+      var msg = config.debugMode ? '<pre>' + util.getErrorStack(err) + '</pre>' : 'Internal Server Error';
+      res.status(500).send(msg);
+    }
+  };
+  if (require.cache[filepath]) {
+    return handleResponse();
   }
+  fs.stat(filepath, function(err, stat) {
+    if (err || !stat.isFile()) {
+      var notFound = err ? err.code === 'ENOENT' : !stat.isFile();
+      var msg;
+      if (config.debugMode) {
+        msg =  '<pre>' + (err ? util.getErrorStack(err) : 'Not File') + '</pre>';
+      } else {
+        msg = notFound ? 'Not Found' : 'Internal Server Error';
+      }
+      return res.status(notFound ? 404 : 500).send(msg);
+    }
+    handleResponse();
+  });
 }
 
 app.all('/cgi-bin/sessions/*', cgiHandler);
