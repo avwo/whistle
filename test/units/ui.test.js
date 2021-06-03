@@ -19,7 +19,7 @@ module.exports = function() {
   util.request('http://local.whistlejs.com/cgi-bin/rules/list');
   util.request('http://local.whistlejs.com/cgi-bin/rootca');
   util.request('http://local.whistlejs.com/cgi-bin/root?doNotParseJson', function(res) {
-    res.statusCode.should.be.equal(500);
+    res.statusCode.should.be.equal(404);
   });
 
   util.request('https://local.whistlejs.com/index.html?doNotParseJson');
