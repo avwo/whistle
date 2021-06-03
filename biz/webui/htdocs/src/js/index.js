@@ -3084,14 +3084,14 @@ var Index = React.createClass({
               className="w-plugins-menu-item" onClick={this.showPlugins} onChange={this.disablePlugin} onClickOption={this.showAndActivePlugins} />
           </div>
           {!state.ndr && <a onClick={this.disableAllRules} className="w-enable-plugin-menu"
-             title={disabledAllRules ? 'Disable all rules' : 'Enable all rules'}
+             title={disabledAllRules ? 'Enable all rules' : 'Disable all rules'}
             style={{display: isRules ? '' : 'none', color: disabledAllRules ? '#f66' : undefined}}
             draggable="false">
             <span className={'glyphicon glyphicon-' + (disabledAllRules ? 'play-circle' : 'off')}/>
             {disabledAllRules ? 'ON' : 'OFF'}
           </a>}
           {!state.ndp && <a onClick={this.disableAllPlugins} className="w-enable-plugin-menu"
-            title={disabledAllPlugins ? 'Disable all plugins' : 'Enable all plugins'}
+            title={disabledAllPlugins ? 'Enable all plugins' : 'Disable all plugins'}
             style={{display: isPlugins ? '' : 'none', color: disabledAllPlugins ? '#f66' : undefined}}
             draggable="false">
             <span className={'glyphicon glyphicon-' + (disabledAllPlugins ? 'play-circle' : 'off')}/>
@@ -3180,7 +3180,7 @@ var Index = React.createClass({
             style={{display: networkMode || mustHideLeftMenu ? 'none' : undefined}}
             onMouseEnter={forceShowLeftMenu} onMouseLeave={forceHideLeftMenu}>
             <a onClick={this.showNetwork} onDoubleClick={this.toggleTreeView}
-              title="Double click to remove all sessions"
+              title={'Double click to show' + (isTreeView ? ' List View' : 'Tree View')}
               className="w-network-menu"
               style={{
                 background: name == 'network' ? '#ddd' : null,
