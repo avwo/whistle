@@ -141,14 +141,14 @@ var ToolBox = React.createClass({
         <div className="w-detail-inspectors-title">
           <span className="glyphicon glyphicon-qrcode"></span>QRCode
           <button className="btn btn-primary" disabled={!NOT_EMPTY_RE.test(qrcodeValue)}
-          onClick={this.generageQRCode}>Confirm</button>
+          onClick={this.generageQRCode}>Show</button>
         </div>
         <textarea onChange={this.onQRCodeChange} value={qrcodeValue} className="w-tool-box-ctn"
           maxLength={MAX_QRCODE_LEN} placeholder="Input the URL" />
         <div className="w-detail-inspectors-title">
           <span className="glyphicon glyphicon-pencil"></span>JSONView
           <button className="btn btn-primary" disabled={!NOT_EMPTY_RE.test(jsonValue)}
-            onClick={this.parseJSON}>Parse</button>
+            onClick={this.parseJSON}>View</button>
         </div>
         <textarea onChange={this.onJSONChange} value={jsonValue} className="w-tool-box-ctn"
           maxLength={MAX_JSON_LEN} placeholder="Input the JSON text" />
@@ -177,7 +177,7 @@ var ToolBox = React.createClass({
         </div>
         <div className="box w-generate-cert">
           <input className="fill" maxLength="64" placeholder="Input the domain name of the certificate" value={domainValue} onChange={this.onDomainChange} />
-          <button className="btn btn-primary" disabled={!domainValue || !URL_RE.test(domainValue)} onClick={this.generateCert}>Generate</button>
+          <button className="btn btn-primary" disabled={!domainValue || !URL_RE.test(domainValue)} onClick={this.generateCert}>Download</button>
         </div>
         <QRCodeDialog ref="qrcodeDialog" />
         <TextDialog ref="textDialog" />
