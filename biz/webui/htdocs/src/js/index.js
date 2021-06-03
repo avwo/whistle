@@ -1372,9 +1372,15 @@ var Index = React.createClass({
       return this.autoRefresh(true);
     }
     if (type === 'pause') {
+      events.trigger('changeRecordState', type);
       return dataCenter.pauseNetworkRecord();
     }
     var refresh = type === 'refresh';
+    if (refresh) {
+      events.trigger('changeRecordState');
+    } else {
+      events.trigger('changeRecordState', 'stop');
+    }
     dataCenter.stopNetworkRecord(!refresh);
     if (refresh) {
       return this.autoRefresh();
@@ -2394,6 +2400,7 @@ var Index = React.createClass({
   },
   enableRecord: function() {
     this.refs.recordBtn.enable();
+    events.trigger('changeRecordState');
   },
   composer: function() {
     events.trigger('composer');

@@ -451,6 +451,9 @@ var ReqData = React.createClass({
     events.on('onColumnTitleChange', function() {
       self.setState({});
     });
+    events.on('changeRecordState', function(_, type) {
+      self.setState({ record: type }, self.updateList);
+    });
     events.on('replayTreeView', function(_, dataId, count) {
       var item = self.props.modal.getTreeNode(dataId);
       var parent = item && item.parent;
@@ -1193,6 +1196,9 @@ var ReqData = React.createClass({
       </tr>
     );
   },
+  enableRecord: function() {
+    events.trigger('enableRecord');
+  },
   getVisibleList: function() {
     var modal = this.props.modal;
     return modal.isTreeView ? modal.getTree().list.filter(isVisibleInTree) : modal.getList().filter(isVisible);
@@ -1210,6 +1216,7 @@ var ReqData = React.createClass({
     var colStyle = state.columns.style;
     var filterText = (state.filterText || '').trim();
     var minWidth = settings.getMinWidth();
+    var record = state.record;
     if (minWidth && minWidth > width) {
       width = minWidth;
       colStyle.minWidth = width;
@@ -1221,6 +1228,10 @@ var ReqData = React.createClass({
     return (
         <div className="fill w-req-data-con orient-vertical-box">
           <div ref="wrapper" className="w-req-data-content fill orient-vertical-box" style={colStyle}>
+            { record ? <div className="w-record-status">
+              { record === 'stop' ? 'Recording stopped' : 'Recording paused' }
+              <button className="btn btn-primary" onClick={self.enableRecord}>Enable</button>
+            </div> : null }
             <div className={'w-req-data-headers' + (isTreeView ? ' hide' : '')}>
               <table className="table">
                   <thead>
