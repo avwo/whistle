@@ -970,10 +970,10 @@ var ReqData = React.createClass({
         list5[4].disabled = unmark;
       }
       if (item.selected) {
-        list5[1].disabled = !selectedList.filter(util.canReplay).length;
+        list5[1].disabled = !selectedList.length;
         list5[0].disabled = !selectedList.filter(util.canAbort).length;
       } else {
-        list5[1].disabled = !util.canReplay(item);
+        list5[1].disabled = false;
         list5[0].disabled = !util.canAbort(item);
       }
     } else {

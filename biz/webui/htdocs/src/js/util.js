@@ -874,10 +874,6 @@ exports.getMenuPosition = function(e, menuWidth, menuHeight) {
   return { top: top, left: left, marginRight: clientWidth - left };
 };
 
-exports.canReplay = function(item) {
-  return !item.isHttps || item.req.headers['x-whistle-policy'] === 'tunnel' || /^wss?:/.test(item.url);
-};
-
 function socketIsClosed(reqData) {
   if (!reqData.closed && reqData.frames) {
     var lastItem = reqData.frames[reqData.frames.length - 1];

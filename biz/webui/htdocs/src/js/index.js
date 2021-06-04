@@ -2357,24 +2357,20 @@ var Index = React.createClass({
     this.enableRecord();
     var replayReq = function(item) {
       var req = item.req;
-      if (util.canReplay(item)) {
-        dataCenter.compose2({
-          useH2: item.useH2 ? 1 : '',
-          url: item.url,
-          headers:   util.getOriginalReqHeaders(item),
-          method: req.method,
-          base64: req.base64
-        });
-      }
+      dataCenter.compose2({
+        useH2: item.useH2 ? 1 : '',
+        url: item.url,
+        headers:   util.getOriginalReqHeaders(item),
+        method: req.method,
+        base64: req.base64
+      });
     };
     var map;
     if (count > 1) {
       count = Math.min(count, MAX_REPLAY_COUNT);
       var reqItem = list[0];
-      if (util.canReplay(reqItem)) {
-        for(var i = 0; i < count; i++) {
-          replayReq(reqItem);
-        }
+      for(var i = 0; i < count; i++) {
+        replayReq(reqItem);
       }
     } else {
       map = {};
@@ -3119,7 +3115,7 @@ var Index = React.createClass({
           </a>
           <div style={{display: rulesMode ? 'none' : undefined}} onMouseEnter={this.showNetworkOptions} onMouseLeave={this.hideNetworkOptions} className={'w-nav-menu w-menu-wrapper' + (showNetworkOptions ? ' w-menu-wrapper-show' : '')}>
             <a onClick={this.showNetwork} onDoubleClick={this.toggleTreeView} className="w-network-menu"
-              title={'Double click to show' + (isTreeView ? ' List View' : 'Tree View')} style={{background: name == 'network' ? '#ddd' : null}}
+              title={'Double click to show' + (isTreeView ? ' List View' : ' Tree View')} style={{background: name == 'network' ? '#ddd' : null}}
            draggable="false"><span className={'glyphicon glyphicon-' + networkType}></span>Network</a>
             <MenuItem ref="networkMenuItem" options={state.networkOptions} className="w-network-menu-item" onClickOption={this.handleNetwork} />
           </div>
@@ -3242,7 +3238,7 @@ var Index = React.createClass({
             style={{display: networkMode || mustHideLeftMenu ? 'none' : undefined}}
             onMouseEnter={forceShowLeftMenu} onMouseLeave={forceHideLeftMenu}>
             <a onClick={this.showNetwork} onDoubleClick={this.toggleTreeView}
-              title={'Double click to show' + (isTreeView ? ' List View' : 'Tree View')}
+              title={'Double click to show' + (isTreeView ? ' List View' : ' Tree View')}
               className="w-network-menu"
               style={{
                 background: name == 'network' ? '#ddd' : null,
