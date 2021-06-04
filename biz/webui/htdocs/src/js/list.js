@@ -44,7 +44,7 @@ var valuesCtxMenuList = [
   {
     name: 'Copy',
     list: [
-      { name: 'Key' },
+      { name: 'Key', action: 'CopyKey' },
       { name: 'Value' }
     ]
   },

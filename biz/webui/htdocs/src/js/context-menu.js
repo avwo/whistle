@@ -70,7 +70,7 @@ var ContextMenu = React.createClass({
                 style={{display: item.hide ? 'none' : undefined}}
                 onClick={item.onClick}
               >
-                <p className="w-ctx-item-tt">{item.name}</p>
+                <label className="w-ctx-item-tt">{item.name}</label>
                 {subList ? <span className="glyphicon glyphicon-play"></span> : undefined}
                 {subList ? <div className="w-ctx-menu-gap"></div> : undefined}
                 {
@@ -85,7 +85,7 @@ var ContextMenu = React.createClass({
                             + (subItem.copyText ? ' w-copy-text' : '')}
                             data-clipboard-text={subItem.copyText}
                           >
-                            <p className="w-ctx-item-tt">{subItem.name}</p>
+                            <label className="w-ctx-item-tt">{subItem.name}</label>
                           </li>
                         );
                       })}

@@ -22,8 +22,10 @@
   margin-left: 10px;
 }
 
-.w-ctx-menu-list p {
+.w-ctx-menu-list label {
   margin: 0!important;
+  font-weight: normal!important;
+  display: block;
 }
 body .w-ctx-menu-list .w-ctx-menu-list {
   margin-left: 3px;
