@@ -25,6 +25,7 @@ var FilterBtn = require('./filter-btn');
 var FilesDialog = require('./files-dialog');
 var message = require('./message');
 var UpdateAllBtn = require('./update-all-btn');
+var ContextMenu = require('./context-menu');
 var CertsInfoDialog = require('./certs-info-dialog');
 
 var H2_RE = /http\/2\.0/i;
@@ -52,6 +53,21 @@ if (/[&#?]hideLeft(?:Bar|Menu)=(0|false|1|true)(?:&|$|#)/.test(search)) {
 } else if (/[&#?]showLeft(?:Bar|Menu)=(0|false|1|true)(?:&|$|#)/.test(search)) {
   hideLeftMenu = RegExp.$1 === '0' || RegExp.$1 === 'false';
 }
+
+var LEFT_BAR_MENUS = [
+  {
+    name: 'Tree View',
+    multiple: true
+  },
+  {
+    name: 'Rules',
+    multiple: true
+  },
+  {
+    name: 'Plugins',
+    multiple: true
+  }
+];
 
 var RULES_ACTIONS = [
   {
@@ -932,7 +948,11 @@ var Index = React.createClass({
         state.drb = server.drb;
         state.drm = server.drm;
         protocols.setPlugins(state);
+        var list = LEFT_BAR_MENUS;
+        list[1].checked = !state.disabledAllRules;
+        list[2].checked = !state.disabledAllPlugins;
         self.setState({});
+        self.refs.contextMenu.update();
       }
     });
     dataCenter.on('rules', function(data) {
@@ -2587,7 +2607,7 @@ var Index = React.createClass({
       autoValuesLineWrapping: checked
     });
   },
-  disableAllRules: function(e) {
+  disableAllRules: function(e, callback) {
     var self = this;
     var state = self.state;
     var checked = !state.disabledAllRules;
@@ -2595,13 +2615,16 @@ var Index = React.createClass({
       if (data && data.ec === 0) {
         state.disabledAllRules = checked;
         self.setState({});
+        if (typeof callback === 'function') {
+          callback(checked);
+        }
       } else {
         util.showSystemError(xhr);
       }
     });
-    e.preventDefault();
+    e && e.preventDefault();
   },
-  disableAllPlugins: function(e) {
+  disableAllPlugins: function(e, callback) {
     var self = this;
     var state = self.state;
     var checked = !state.disabledAllPlugins;
@@ -2610,11 +2633,14 @@ var Index = React.createClass({
         state.disabledAllPlugins = checked;
         protocols.setPlugins(state);
         self.setState({});
+        if (typeof callback === 'function') {
+          callback(checked);
+        }
       } else {
         util.showSystemError(xhr);
       }
     });
-    e.preventDefault();
+    e && e.preventDefault();
   },
   disablePlugin: function(e) {
     var self = this;
@@ -2884,6 +2910,41 @@ var Index = React.createClass({
       }
       self.refs.certsInfoDialog.show(data);
     });
+  },
+  onContextMenu: function(e) {
+    var data = util.getMenuPosition(e, 110, 100);
+    var state = this.state;
+    var list = LEFT_BAR_MENUS;
+    data.list = list;
+    list[0].checked = !!state.network.isTreeView;
+    list[1].checked = !state.disabledAllRules;
+    list[2].checked = !state.disabledAllPlugins;
+    this.refs.contextMenu.show(data);
+    e.preventDefault();
+  },
+  onClickContextMenu: function(action) {
+    var self = this;
+    var state = self.state;
+    var list = LEFT_BAR_MENUS;
+    switch(action) {
+    case 'Tree View':
+      list[0].checked = !state.network.isTreeView;
+      self.toggleTreeView();
+      break;
+    case 'Rules':
+      self.disableAllRules(null, function(disabled) {
+        list[1].checked = !disabled;
+        self.setState({});
+      });
+      break;
+    case 'Plugins':
+      self.disableAllPlugins(null, function(disabled) {
+        list[2].checked = !disabled;
+        self.setState({});
+      });
+      break;
+    }
+    this.refs.contextMenu.show({});
   },
   forceShowLeftMenu: function() {
     var self = this;
@@ -3176,7 +3237,8 @@ var Index = React.createClass({
           <div onMouseDown={this.preventBlur} style={{display: state.showEditValues ? 'block' : 'none'}} className="shadow w-input-menu-item w-edit-values-input"><input ref="editValuesInput" onKeyDown={this.editValues} onBlur={this.hideRenameValueInput} type="text" maxLength="64" /><button type="button" onClick={this.editValues} className="btn btn-primary">OK</button></div>
         </div>
         <div className="w-container box fill">
-          <div className={'w-left-menu' + (forceShowLeftMenu ? ' w-hover-left-menu' : '')}
+          <ContextMenu onClick={this.onClickContextMenu} ref="contextMenu" />
+          <div onContextMenu={this.onContextMenu} className={'w-left-menu' + (forceShowLeftMenu ? ' w-hover-left-menu' : '')}
             style={{display: networkMode || mustHideLeftMenu ? 'none' : undefined}}
             onMouseEnter={forceShowLeftMenu} onMouseLeave={forceHideLeftMenu}>
             <a onClick={this.showNetwork} onDoubleClick={this.toggleTreeView}
@@ -3462,5 +3524,3 @@ var Index = React.createClass({
 dataCenter.getInitialData(function(data) {
   ReactDOM.render(<Index modal={data} />, document.getElementById('container'));
 });
-
-

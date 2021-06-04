@@ -16,7 +16,9 @@ var ContextMenu = React.createClass({
     self.componentDidUpdate();
     $(document).on('mousedown click', function(e) {
       if ($(e.target).closest('.w-context-menu').length) {
-        e.preventDefault();
+        if (e.target.nodeName !== 'INPUT') {
+          e.preventDefault();
+        }
         return;
       }
       self.hide();
@@ -44,24 +46,26 @@ var ContextMenu = React.createClass({
     if (target.hasClass('w-ctx-sub-menu-list') || target.hasClass('w-ctx-item-disabled')) {
       return;
     }
-    this.hide();
+    !target.hasClass('w-ctx-item-multi') && this.hide();
     if (this.props.onClick) {
       this.props.onClick(target.attr('data-menu-action'), e, target.attr('data-parent-action'), target.attr('data-name'));
     }
   },
   getDialogElement: function() {
-    var data = this.state;
+    var self = this;
+    var data = self.state;
     var list = data.list || [];
     return (
         <div
-          onClick={this.onClick}
+          onClick={self.onClick}
           className={'w-context-menu ' + (data.className || '')}
-          onContextMenu={this.preventDefault}
+          onContextMenu={self.preventDefault}
           style={{left: data.left, top: data.top, display: data.visible ? '' : 'none'}}
         >
         <ul className="w-ctx-menu-list">
           {list.map(function(item) {
             var subList = item.list;
+            var multiple = !subList && item.multiple;
             return (
               <li data-menu-action={item.action || item.name} key={item.name} className={'w-ctx-menu-item ' + (item.sep ? 'w-ctx-item-sep' : '')
                 + (item.disabled ? ' w-ctx-item-disabled' : '') + (subList ? ' w-ctx-sub-menu-list' : '')
@@ -70,8 +74,11 @@ var ContextMenu = React.createClass({
                 style={{display: item.hide ? 'none' : undefined}}
                 onClick={item.onClick}
               >
-                <label className="w-ctx-item-tt">{item.name}</label>
-                {subList ? <span className="glyphicon glyphicon-play"></span> : undefined}
+                <label className="w-ctx-item-tt">
+                  {multiple ?  <input type="checkbox" checked={item.checked} /> : null}
+                  {item.name}
+                </label>
+                {subList ? <span className="glyphicon glyphicon-play" /> : undefined}
                 {subList ? <div className="w-ctx-menu-gap"></div> : undefined}
                 {
                   subList ? (
@@ -85,7 +92,10 @@ var ContextMenu = React.createClass({
                             + (subItem.copyText ? ' w-copy-text' : '')}
                             data-clipboard-text={subItem.copyText}
                           >
-                            <label className="w-ctx-item-tt">{subItem.name}</label>
+                            <label className="w-ctx-item-tt">
+                              {subItem.multiple ? <input type="checkbox" checked={subItem.checked} /> : null}
+                              {subItem.name}
+                            </label>
                           </li>
                         );
                       })}
@@ -105,6 +115,9 @@ var ContextMenu = React.createClass({
   },
   hide: function() {
     this.setState({ visible: false });
+  },
+  update: function() {
+    this.state.visible && this.setState({});
   },
   render: function() {
 
