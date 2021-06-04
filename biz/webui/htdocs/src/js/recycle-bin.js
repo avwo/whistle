@@ -149,7 +149,7 @@ var RecycleBinDialog = React.createClass({
                           <a data-name={item.name} onClick={self.view}>View</a>
                           <a onClick={function() {
                             self.recover(item);
-                          }}>Recover</a>
+                          }}>Restore</a>
                           <a data-name={item.name} onClick={self.remove}>Delete</a>
                         </td>
                       </tr>
