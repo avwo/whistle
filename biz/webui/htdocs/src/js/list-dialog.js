@@ -100,7 +100,7 @@ var ListDialog = React.createClass({
           <button type="button" className="btn btn-primary"
             disabled={!Object.keys(checkedItems).length}
             onMouseDown={this.preventDefault}
-            onClick={this.onConfirm}>Confirm</button>
+            onClick={this.onConfirm}>Export Selected</button>
         </div>
         <form action={'cgi-bin/' + pageName + '/export'} ref="exportData" style={{display: 'none'}} target="downloadTargetFrame">
           <input ref="exportName" type="hidden" name="filename" />
