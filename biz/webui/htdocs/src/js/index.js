@@ -3109,7 +3109,8 @@ var Index = React.createClass({
     var pendingRules = state.pendingRules;
     var pendingValues = state.pendingValues;
     var mustHideLeftMenu = hideLeftMenu && !state.forceShowLeftMenu;
-    var showLeftMenu = networkMode || state.showLeftMenu;
+    var pluginsOnlyMode = pluginsMode && rulesMode;
+    var showLeftMenu = (networkMode || state.showLeftMenu) && !pluginsOnlyMode;
     var disabledAllPlugins = state.disabledAllPlugins;
     var disabledAllRules = state.disabledAllRules;
     var forceShowLeftMenu, forceHideLeftMenu;
@@ -3124,7 +3125,7 @@ var Index = React.createClass({
       <div className={'main orient-vertical-box' + (showLeftMenu ? ' w-show-left-menu' : '')}>
         <div className={'w-menu w-' + name + '-menu-list'}>
           <a onClick={this.toggleLeftMenu} draggable="false" className="w-show-left-menu-btn" onMouseEnter={forceShowLeftMenu} onMouseLeave={forceHideLeftMenu}
-            style={{display: networkMode ? 'none' : undefined}} title={'Dock to ' + (showLeftMenu ? 'top' : 'left') + ' (Ctrl[Command] + M)'}>
+            style={{display: networkMode || pluginsOnlyMode ? 'none' : undefined}} title={'Dock to ' + (showLeftMenu ? 'top' : 'left') + ' (Ctrl[Command] + M)'}>
             <span className={'glyphicon glyphicon-chevron-' + (showLeftMenu ? (mustHideLeftMenu ? 'down' : 'up') : 'left')}></span>
           </a>
           <div style={{display: rulesMode ? 'none' : undefined}} onMouseEnter={this.showNetworkOptions} onMouseLeave={this.hideNetworkOptions} className={'w-nav-menu w-menu-wrapper' + (showNetworkOptions ? ' w-menu-wrapper-show' : '')}>
@@ -3148,7 +3149,7 @@ var Index = React.createClass({
             <a onClick={this.showValues} className="w-values-menu" style={{background: name == 'values' ? '#ddd' : null}} draggable="false"><span className="glyphicon glyphicon-folder-close"></span>Values</a>
             <MenuItem ref="valuesMenuItem" name={name == 'values' ? null : 'Open'} options={state.valuesOptions} className="w-values-menu-item" onClick={this.showValues} onClickOption={this.showAndActiveValues} />
           </div>
-          <div style={{display: rulesOnlyMode ? 'none' : undefined}} ref="pluginsMenu" onMouseEnter={this.showPluginsOptions} onMouseLeave={this.hidePluginsOptions} className={'w-nav-menu w-menu-wrapper' + (showPluginsOptions ? ' w-menu-wrapper-show' : '')}>
+          <div style={{display: rulesOnlyMode || pluginsOnlyMode ? 'none' : undefined}} ref="pluginsMenu" onMouseEnter={this.showPluginsOptions} onMouseLeave={this.hidePluginsOptions} className={'w-nav-menu w-menu-wrapper' + (showPluginsOptions ? ' w-menu-wrapper-show' : '')}>
             <a onClick={this.showPlugins} className="w-plugins-menu" style={{background: name == 'plugins' ? '#ddd' : null}} draggable="false">
               <span className={'glyphicon glyphicon-list-alt' + (disabledAllPlugins ? ' w-disabled' : '')}></span>Plugins</a>
             <MenuItem ref="pluginsMenuItem" name={name == 'plugins' ? null : 'Open'} options={pluginsOptions} checkedOptions={state.disabledPlugins} disabled={disabledAllPlugins}
@@ -3287,7 +3288,7 @@ var Index = React.createClass({
             <a onClick={this.showPlugins} className="w-plugins-menu"
               style={{
                 background: name == 'plugins' ? '#ddd' : null,
-                display: rulesOnlyMode ? 'none' : undefined
+                display: rulesOnlyMode || pluginsOnlyMode ? 'none' : undefined
               }} draggable="false">
               <span className={'glyphicon glyphicon-list-alt' + (disabledAllPlugins ? ' w-disabled' : '')}></span>
               <i className="w-left-menu-name">Plugins</i>

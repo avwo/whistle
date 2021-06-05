@@ -81,7 +81,9 @@ var Online = React.createClass({
       this.pluginsMode = data.pluginsMode;
       this.rulesMode = data.rulesMode;
       this.multiEnv = data.multiEnv;
+      this.rulesOnlyMode =  data.rulesOnlyMode;
     } else if (this.version !== data.version || this.baseDir !== data.baseDir
+      || this.rulesOnlyMode !== data.rulesOnlyMode
       || this.networkMode !== data.networkMode || this.pluginsMode !== data.pluginsMode
       || this.rulesMode !== data.rulesMode || this.multiEnv !== data.multiEnv) {
       this.refs.confirmReload.show();
