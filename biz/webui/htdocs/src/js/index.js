@@ -2908,14 +2908,26 @@ var Index = React.createClass({
     });
   },
   onContextMenu: function(e) {
-    var data = util.getMenuPosition(e, 110, 100);
-    var state = this.state;
+    var count = 0;
     var list = LEFT_BAR_MENUS;
-    data.list = list;
-    list[0].checked = !!state.network.isTreeView;
-    list[1].checked = !state.disabledAllRules;
-    list[2].checked = !state.disabledAllPlugins;
-    this.refs.contextMenu.show(data);
+    if (list[0].hide) {
+      ++count;
+    }
+    if (list[1].hide) {
+      ++count;
+    }
+    if (list[2].hide) {
+      ++count;
+    }
+    if (count < 3) {
+      var data = util.getMenuPosition(e, 110, 100 - count * 30);
+      var state = this.state;
+      data.list = list;
+      list[0].checked = !!state.network.isTreeView;
+      list[1].checked = !state.disabledAllRules;
+      list[2].checked = !state.disabledAllPlugins;
+      this.refs.contextMenu.show(data);
+    }
     e.preventDefault();
   },
   onClickContextMenu: function(action) {
@@ -3105,7 +3117,9 @@ var Index = React.createClass({
       forceShowLeftMenu = this.forceShowLeftMenu;
       forceHideLeftMenu = this.forceHideLeftMenu;
     }
-
+    LEFT_BAR_MENUS[0].hide = rulesMode;
+    LEFT_BAR_MENUS[1].hide = pluginsMode;
+    LEFT_BAR_MENUS[2].hide = rulesOnlyMode;
     return (
       <div className={'main orient-vertical-box' + (showLeftMenu ? ' w-show-left-menu' : '')}>
         <div className={'w-menu w-' + name + '-menu-list'}>
