@@ -1,6 +1,7 @@
 # v2.7.3
 1. style: 优化左侧菜单
 2. styl: 修复 Values 右键菜单 Copy / Key 弹出创建新 key 输入框问题
+3. feat: 支持设置 `-M shadowRules` （抓包 + 设置 shadowRules） 或 `-M shadowRulesOnly` （无法查看抓包）
 
 # v2.7.2
 1. feat: 支持通过命令行参数 `--dnsServer "1.1.1.1,8.8.8.8,10.3.2.1:8080"` 自定义 DNS server
