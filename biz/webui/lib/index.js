@@ -131,6 +131,9 @@ app.use(function(req, res, next) {
   };
   req.on('error', abort);
   res.on('error', abort).on('close', abort);
+  if (config.shadowRulesOnlyMode && req.path !== '/cgi-bin/rootca') {
+    return res.status(404).end('Not Found');
+  }
   next();
 });
 
