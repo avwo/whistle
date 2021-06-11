@@ -62,6 +62,7 @@ assets/launcher
 /biz/webui/htdocs/src
 /docs
 /.history
+CHANGELOG.md
 
 
 # Coveralls
