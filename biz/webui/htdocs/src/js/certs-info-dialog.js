@@ -59,6 +59,16 @@ var HistoryData = React.createClass({
             <button type="button" className="close" onClick={self.hide}>
               <span aria-hidden="true">&times;</span>
             </button>
+            <h4 className="w-certs-info-title">
+              <a
+                className="w-help-menu"
+                title="Click here to see help"
+                href="https://avwo.github.io/whistle/custom-certs.html"
+                target="_blank"
+              >
+              <span className="glyphicon glyphicon-question-sign"></span></a>
+              Custom Certs
+            </h4>
              <table className="table">
               <thead>
                 <th className="w-certs-info-order">#</th>
@@ -92,7 +102,6 @@ var HistoryData = React.createClass({
              </table>
           </div>
           <div className="modal-footer">
-            <a href="https://avwo.github.io/whistle/custom-certs.html" target="_blank" className="btn btn-primary">Help</a>
             <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
           </div>
         </Dialog>
