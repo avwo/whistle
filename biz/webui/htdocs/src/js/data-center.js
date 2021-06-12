@@ -311,7 +311,7 @@ function checkFilter(item, list) {
       }
       break;
     default:
-      if (checkFilterField(item.url, filter)) {
+      if (checkFilterField(item.isHttps ? 'tunnel://' + item.url : item.url, filter)) {
         return true;
       }
     }
