@@ -1,3 +1,6 @@
+# v2.7.4
+1. refactor: 调整 `delete://reqH.xxxx` 的时机
+
 # v2.7.3
 1. style: 优化左侧菜单
 2. styl: 修复 Values 右键菜单 Copy / Key 弹出创建新 key 输入框问题
