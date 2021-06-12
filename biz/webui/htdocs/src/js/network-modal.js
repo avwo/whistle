@@ -110,7 +110,7 @@ function checkKeywork(str, opts) {
 }
 
 function checkUrl(item, opts) {
-  if (checkKeywork(item.isHttps ? 'tunnel://' + item.url : item.url, opts)) {
+  if (checkKeywork((item.isHttps ? 'tunnel://' : '') + item.url, opts)) {
     return true;
   }
   var rawUrl = util.getRawUrl(item);
