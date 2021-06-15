@@ -1,5 +1,5 @@
 # Mac上配置开机重启whistle
-首先，下载Mac上的whistle脚步文件：[whistle.zip](https://github.com/avwo/whistle/raw/avenwu/assets/launcher/mac/whistle.zip)。
+首先，下载Mac上的whistle脚步文件：[whistle.zip](https://github.com/avwo/whistle/blob/master/assets/launcher/mac/whistle.zip)。
 
 1. 解压whistle.zip获取whistle脚本文件，把该脚本文件拷贝一份到**应用程序**，打开桌面即可看到whistle这个脚本文件，这样可以直接在Mac的桌面上刊登whistle的启动脚本，点击该文件即可重启whistle;
 
