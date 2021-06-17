@@ -889,7 +889,9 @@ function setReqData(item) {
     if (item.path.length > MAX_PATH_LENGTH) {
       item.path = item.path.substring(0, MAX_PATH_LENGTH) + '...';
     }
-  } else if (!item.useH2 && item.protocol === 'H2') {
+  } else if (item.useH2) {
+    item.protocol = 'H2';
+  } else if (item.protocol === 'H2') {
     item.protocol = item.isHttps ? 'HTTP' : util.getProtocol(url);
   }
   if (item.useHttp && (item.protocol === 'HTTPS' || item.protocol === 'WSS')) {
