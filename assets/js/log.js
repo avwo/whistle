@@ -327,26 +327,28 @@
         result = stringifyObj(result);
         result && addLog(level, result);
       };
-      console[level] = function() {
-        if (pending) {
-          return;
-        }
-        pending = true;
-        var weinreFn = console['_weinre_' + level];
-        if (typeof weinreFn === 'function') {
+      if ($INTERCEPT_CONSOLE) {
+        console[level] = function() {
+          if (pending) {
+            return;
+          }
+          pending = true;
+          var weinreFn = console['_weinre_' + level];
+          if (typeof weinreFn === 'function') {
+            try {
+              weinreFn.apply(this, arguments);
+            } catch (e) {}
+          }
+          wFn.apply(null, arguments);
           try {
-            weinreFn.apply(this, arguments);
-          } catch (e) {}
-        }
-        wFn.apply(null, arguments);
-        try {
-          fn.apply(this, arguments);
-        } catch(e) {
-          fn(arguments.length < 2 ? arguments[0] : slice.apply(arguments));
-        } finally {
-          pending = false;
-        }
-      };
+            fn.apply(this, arguments);
+          } catch(e) {
+            fn(arguments.length < 2 ? arguments[0] : slice.apply(arguments));
+          } finally {
+            pending = false;
+          }
+        };
+      }
     })(levels[i]);
   }
   /*eslint no-console: "off"*/
@@ -371,7 +373,7 @@
     var curConsole = window.console;
     if (!curConsole) {
       window.console = console;
-    } else if (isWeinreConsole(curConsole)) {
+    } else if ($INTERCEPT_CONSOLE && isWeinreConsole(curConsole)) {
       for (var i = 0, len = levels.length; i < len; i++) {
         var level = levels[i];
         var fn = console[level];
