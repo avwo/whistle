@@ -1,3 +1,7 @@
+# v2.7.5
+1. feat: 支持通过 `disable://interceptConsole` 禁止 `log://` 拦截 `console` 的请求，用户只能通过代码 `window._whistleConsole && _whistleConsole.xxx(a, b, ...)` 记录日志
+2. refactor: 显示插件转发的 HTTP 协议 
+
 # v2.7.4
 1. refactor: 调整 `delete://reqH.xxxx` 的时机
 
