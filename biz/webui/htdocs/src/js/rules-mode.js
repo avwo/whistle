@@ -3,16 +3,19 @@ var events = require('./events');
 var protocols = require('./protocols');
 var forwardRules = protocols.getForwardRules();
 var pluginRules = protocols.getPluginRules();
+var pluginNameList = protocols.getPluginNameList();
 var DOT_PATTERN_RE = /^\.[\w-]+(?:[?$]|$)/;
 var DOT_DOMAIN_RE = /^\.[^./?]+\.[^/?]/;
 var IPV4_PORT_RE = /^(?:::(?:ffff:)?)?(?:(?:25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)\.){3}(?:25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)(?:\:(\d+))?$/;
 var FULL_IPV6_RE = /^[\da-f]{1,4}(?::[\da-f]{1,4}){7}$/;
 var SHORT_IPV6_RE = /^[\da-f]{1,4}(?::[\da-f]{1,4}){0,6}$/;
 var IP_WITH_PORT_RE = /^\[([:\da-f.]+)\](?::(\d+))?$/i;
+var PLUGIN_VAR_RE = /^%([a-z\d_\-]+)=/;
 
 events.on('updatePlugins', function() {
   forwardRules = protocols.getForwardRules();
   pluginRules = protocols.getPluginRules();
+  pluginNameList = protocols.getPluginNameList();
 });
 
 function notPort(port) {
@@ -164,6 +167,10 @@ CodeMirror.defineMode('rules', function() {
     return domain.indexOf('*') !== -1 || domain.indexOf('~') !== -1 || DOT_DOMAIN_RE.test(domain);
   }
 
+  function isPluginVar(str) {
+    return PLUGIN_VAR_RE.test(str) && RegExp.$1;
+  }
+
   function isRegUrl(url) {
     return /^\^/.test(url) || DOT_PATTERN_RE.test(url);
   }
@@ -256,8 +263,14 @@ CodeMirror.defineMode('rules', function() {
         if (isRegExp(str) || isRegUrl(str) || isPortPattern(str)) {
           return 'attribute js-attribute';
         }
+        var pluginName;
         if (/^@/.test(str)) {
           type = 'atom js-at js-type';
+        } else if (pluginName = isPluginVar(str)) {
+          type = 'variable-2 js-plugin-var js-type';
+          if (pluginNameList.indexOf(pluginName) === -1 || stream.column() !== stream.indentation()) {
+            type += ' error-rule';
+          }
         } else if (isWildcard(str)) {
           type = 'attribute js-attribute';
         } else if (isIP(str)) {
