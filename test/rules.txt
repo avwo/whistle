@@ -15,6 +15,22 @@ tunnel://127.0.0.1:8080 filter://https xproxy://127.0.0.1:19999
 http://127.0.0.1:6666/abc.htm 127.0.0.1:8080
 test.internal.path.com proxy://127.0.0.1:8080
 
+%pipe-ws=test1
+%pipe-ws=test2
+%pipe-http=test1
+%pipe-http=test2
+%pipe-tunnel=test1
+%pipe-tunnel=test2
+%test1=test1
+%test1=test2
+%test2=test1
+%test2=test2
+%test3=test1
+%test3=test2
+%test32=test1
+%test32=test2
+
+
 params.test.whistlejs.com/index.html resMerge://(resMerge=test) resType://js
 weinre1.test2.whistlejs.com:1234 weinre://xxx file://(hello) log://test resType://html enable://capture ignore://plugin
 weinre1.test2.whistlejs.com weinre://xxx file://(hello) log://test resType://js enable://capture ignore://plugin
