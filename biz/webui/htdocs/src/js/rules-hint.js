@@ -153,14 +153,14 @@ function getPluginVarHints(keyword) {
 function getAtHelpUrl(name, options) {
   try {
     var _getAtHelpUrl = window.parent.getAtHelpUrlForWhistle;
-    if (typeof _getAtHelpUrl !== 'function') {
-      return;
-    }
-    var url = _getAtHelpUrl(name, options);
-    if (url === false || typeof url === 'string') {
-      return url;
+    if (typeof _getAtHelpUrl === 'function') {
+      var url = _getAtHelpUrl(name, options);
+      if (url === false || typeof url === 'string') {
+        return url;
+      }
     }
   } catch (e) {}
+  return 'https://avwo.github.io/whistle/rules/@.html';
 }
 
 function getRuleHelp(plugin, helpUrl) {
@@ -465,7 +465,7 @@ function getFocusRuleName(editor) {
         }
       }
       curLine = curLine.slice(start, end);
-      if (AT_RE.test(curLine)) {
+      if (AT_RE.test(curLine) || P_RE.test(curLine)) {
         name = curLine;
       } else if (PROTOCOL_RE.test(curLine)) {
         name = RegExp.$1;
@@ -486,7 +486,13 @@ exports.getHelpUrl = function(editor, options) {
     return url;
   }
   if (P_RE.test(name)) {
-    return 'https://avwo.github.io/whistle/plugins.html?anchor=pluginvars&plugin=' + name.slice(1, -1);
+    name = name.substring(1, name.indexOf('='));
+    var plugin = name && protocols.getPlugin(name);
+    plugin = plugin && plugin.homepage;
+    if (plugin) {
+      return plugin + (plugin.indexOf('?') === -1 ? '?' : '&') + 'whistleFunc=pluginvars';
+    }
+    return 'https://avwo.github.io/whistle/plugins.html?whistleFunc=pluginvars&plugin=' + name;
   }
   if (url === false) {
     return false;

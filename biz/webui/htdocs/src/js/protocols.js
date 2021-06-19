@@ -120,3 +120,5 @@ exports.getHelpUrl = function (rule) {
   }
   return ROOT_HELP_URL;
 };
+
+exports.getPlugin = getPlugin;
