@@ -10,6 +10,7 @@ var NON_SPECAIL_RE = /[^:/]/;
 var PLUGIN_NAME_RE = /^((?:whistle\.)?([a-z\d_\-]+:))(\/?$|\/\/)/;
 var MAX_HINT_LEN = 512;
 var AT_RE = /^@/;
+var P_RE = /^%/;
 var PROTOCOL_RE = /^([^\s:]+):\/\//;
 var HINT_TIMEOUT = 120;
 var curHintMap = {};
@@ -94,11 +95,11 @@ function getHints(keyword) {
 
 function getAtValueList(keyword) {
   try {
-    var getAtValueList = window.parent.getAtValueListForWhistle;
-    if (typeof getAtValueList !== 'function') {
+    var getList = window.parent.getAtValueListForWhistle;
+    if (typeof getList !== 'function') {
       return;
     }
-    var list = getAtValueList(keyword);
+    var list = getList(keyword);
     if (Array.isArray(list)) {
       var result = [];
       var len = 60;
@@ -129,6 +130,24 @@ function getAtValueList(keyword) {
       return result;
     }
   } catch (e) {}
+}
+
+function getPluginVarHints(keyword) {
+  var list = protocols.getPluginNameList();
+  if (!keyword) {
+    return list.map(function(name) {
+      return name + '=';
+    });
+  }
+  var result = [];
+  keyword = keyword.toLowerCase();
+  list.forEach(function(name) {
+    name += '=';
+    if (name.indexOf(keyword) !== -1) {
+      result.push(name);
+    }
+  });
+  return result;
 }
 
 function getAtHelpUrl(name, options) {
@@ -209,8 +228,10 @@ function handleRemoteHints(data, editor, plugin, protoName, value, cgi) {
 
 var WORD = /\S+/;
 var showAtHint;
+var showVarHint;
 CodeMirror.registerHelper('hint', 'rulesHint', function(editor, options) {
   showAtHint = false;
+  showVarHint = false;
   waitingRemoteHints = false;
   curFocusProto = null;
   var byDelete = editor._byDelete || editor._byPlugin;
@@ -227,12 +248,17 @@ CodeMirror.registerHelper('hint', 'rulesHint', function(editor, options) {
     --start;
   }
   var curWord = start != end && curLine.substring(start, end);
-  if (AT_RE.test(curWord)) {
-    list = !byEnter && getAtValueList(curWord.substring(1));
+  var isAt = AT_RE.test(curWord);
+  if (isAt || P_RE.test(curWord)) {
+    list = !byEnter && (isAt ? getAtValueList(curWord.substring(1)) : getPluginVarHints(curWord.substring(1)));
     if (!list || !list.length) {
       return;
     }
-    showAtHint = true;
+    if (isAt) {
+      showAtHint = true;
+    } else {
+      showVarHint = true;
+    }
     return { list: list, from: CodeMirror.Pos(cur.line, start + 1), to: CodeMirror.Pos(cur.line, end) };
   }
   if (curWord) {
@@ -411,6 +437,8 @@ function getFocusRuleName(editor) {
     name = activeHint.text();
     if (showAtHint) {
       name = '@' + name;
+    } else if (showVarHint) {
+      name = '%' + name;
     } else {
       var index = name.indexOf(':');
       curValue = name;
@@ -456,6 +484,9 @@ exports.getHelpUrl = function(editor, options) {
   var url;
   if (AT_RE.test(name) && (url = getAtHelpUrl(name.substring(1), options))) {
     return url;
+  }
+  if (P_RE.test(name)) {
+    return 'https://avwo.github.io/whistle/plugins.html?anchor=pluginvars&plugin=' + name.slice(1, -1);
   }
   if (url === false) {
     return false;
