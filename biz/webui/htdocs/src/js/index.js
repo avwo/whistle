@@ -515,7 +515,8 @@ var Index = React.createClass({
         homepage: plugin.homepage,
         latest: plugin.latest,
         hideLongProtocol: plugin.hideLongProtocol,
-        hideShortProtocol: plugin.hideShortProtocol
+        hideShortProtocol: plugin.hideShortProtocol,
+        pluginVars: plugin.pluginVars
       });
     });
     return pluginsOptions;
@@ -1156,7 +1157,8 @@ var Index = React.createClass({
             || plugin.latest !== oldPlugin.latest || plugin.mtime != oldPlugin.mtime
             || (oldDisabledPlugins[plugin.name] != disabledPlugins[plugin.name])
             || plugin.hideLongProtocol != oldPlugin.hideLongProtocol
-            || plugin.hideShortProtocol != oldPlugin.hideShortProtocol) {
+            || plugin.hideShortProtocol != oldPlugin.hideShortProtocol
+            || plugin.pluginVars != oldPlugin.pluginVars) {
             hasUpdate = true;
             break;
           }

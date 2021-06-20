@@ -45,7 +45,9 @@ exports.setPlugins = function (pluginsState) {
       }
       var name = plugin.name;
       if (!disabledPlugins[name]) {
-        pluginNameList.push(name);
+        if (plugin.pluginVars) {
+          pluginNameList.push(name);
+        }
         if (!plugin.hideShortProtocol && name.indexOf('_') === -1) {
           forwardRules.push(name);
           allRules.push(name+ '://');

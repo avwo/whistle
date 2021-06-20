@@ -249,7 +249,25 @@ CodeMirror.registerHelper('hint', 'rulesHint', function(editor, options) {
   }
   var curWord = start != end && curLine.substring(start, end);
   var isAt = AT_RE.test(curWord);
-  if (isAt || P_RE.test(curWord)) {
+  var plugin;
+  var pluginName;
+  var pluginVar;
+  var isPluginVar = !isAt && P_RE.test(curWord);
+  if (isPluginVar) {
+    var eqIdx = curWord.indexOf('=');
+    if (eqIdx !== -1) {
+      pluginName = curWord.substring(1, eqIdx);
+      plugin = pluginName && dataCenter.getPlugin(pluginName + ':');
+      if (!plugin || !plugin.pluginVars) {
+        return;
+      }
+      pluginVar = curWord.substring(eqIdx + 1);
+      if (pluginVar) {
+        isPluginVar = false;
+      }
+    }
+  }
+  if (isAt || isPluginVar) {
     list = !byEnter && (isAt ? getAtValueList(curWord.substring(1)) : getPluginVarHints(curWord.substring(1)));
     if (!list || !list.length) {
       return;
@@ -263,7 +281,7 @@ CodeMirror.registerHelper('hint', 'rulesHint', function(editor, options) {
   }
   if (curWord) {
     if (PLUGIN_NAME_RE.test(curWord)) {
-      var plugin = dataCenter.getPlugin(RegExp.$2);
+      plugin = dataCenter.getPlugin(RegExp.$2);
       if (plugin && (typeof plugin.hintUrl === 'string' || plugin.hintList)) {
         var value = RegExp.$3 || '';
         value = value.length === 2 ?  curWord.substring(curWord.indexOf('//') + 2) : '';
