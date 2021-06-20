@@ -9,6 +9,7 @@ var disabledEditor = window.location.href.indexOf('disabledEditor=1') !== -1;
 var NON_SPECAIL_RE = /[^:/]/;
 var PLUGIN_NAME_RE = /^((?:whistle\.)?([a-z\d_\-]+:))(\/?$|\/\/)/;
 var MAX_HINT_LEN = 512;
+var MAX_VAR_LEN = 100;
 var AT_RE = /^@/;
 var P_RE = /^%/;
 var PROTOCOL_RE = /^([^\s:]+):\/\//;
@@ -40,9 +41,9 @@ $(window).on('hashchange', function() {
 });
 
 
-function getHintCgi(plugin) {
+function getHintCgi(plugin, pluginVars) {
   var moduleName = plugin.moduleName;
-  var url = plugin.hintUrl || '';
+  var url = (pluginVars && pluginVars.hintUrl) || plugin.hintUrl || '';
   var pluginName = 'plugin.' + moduleName.substring(8);
   if (url.indexOf(moduleName) !== 0 && url.indexOf(pluginName) !== 0) {
     url = pluginName + '/' + url;
@@ -170,7 +171,7 @@ function getRuleHelp(plugin, helpUrl) {
   return helpUrl || plugin.homepage || 'https://avwo.github.io/whistle/plugins.html';
 }
 
-function handleRemoteHints(data, editor, plugin, protoName, value, cgi) {
+function handleRemoteHints(data, editor, plugin, protoName, value, cgi, isVar) {
   curHintList = [];
   curHintMap = {};
   curHintPos = null;
@@ -187,20 +188,21 @@ function handleRemoteHints(data, editor, plugin, protoName, value, cgi) {
     curHintOffset = parseInt(data.offset, 10) || 0;
     data = data.list;
   }
-  protoName += '://';
+  protoName += isVar ? '=' : '://';
+  var maxLen = isVar ? MAX_VAR_LEN : MAX_HINT_LEN;
   data.forEach(function(item) {
     if (len >= 60) {
       return;
     }
     if (typeof item === 'string') {
       item = protoName + item.trim();
-      if (item.length < MAX_HINT_LEN && !curHintMap[item]) {
+      if (item.length < maxLen && !curHintMap[item]) {
         ++len;
         curHintList.push(item);
         curHintMap[item] = getRuleHelp(plugin);
       }
     } else if (item) {
-      var label, value;
+      var label, curVal;
       if (typeof item.label === 'string') {
         label = item.label.trim();
       }
@@ -208,15 +210,15 @@ function handleRemoteHints(data, editor, plugin, protoName, value, cgi) {
         label = item.display.trim();
       }
       if (typeof item.value === 'string') {
-        value = protoName + item.value.trim();
+        curVal = protoName + item.value.trim();
       }
-      if (value && value.length < MAX_HINT_LEN && !curHintMap[label || value]) {
+      if (curVal && curVal.length < maxLen && !curHintMap[label || curVal]) {
         ++len;
-        curHintList.push(label && label !== value ? {
+        curHintList.push(label && label !== curVal ? {
           displayText: label,
-          text: value
-        } : value);
-        curHintMap[label || value] = getRuleHelp(plugin, item.help);
+          text: curVal
+        } : curVal);
+        curHintMap[label || curVal] = getRuleHelp(plugin, item.help);
       }
     }
   });
@@ -251,20 +253,20 @@ CodeMirror.registerHelper('hint', 'rulesHint', function(editor, options) {
   var isAt = AT_RE.test(curWord);
   var plugin;
   var pluginName;
-  var pluginVar;
+  var value;
+  var pluginVars;
   var isPluginVar = !isAt && P_RE.test(curWord);
   if (isPluginVar) {
     var eqIdx = curWord.indexOf('=');
     if (eqIdx !== -1) {
       pluginName = curWord.substring(1, eqIdx);
       plugin = pluginName && dataCenter.getPlugin(pluginName + ':');
-      if (!plugin || !plugin.pluginVars) {
+      pluginVars = plugin && plugin.pluginVars;
+      if (!pluginVars) {
         return;
       }
-      pluginVar = curWord.substring(eqIdx + 1);
-      if (pluginVar) {
-        isPluginVar = false;
-      }
+      value = curWord.substring(eqIdx + 1);
+      isPluginVar = false;
     }
   }
   if (isAt || isPluginVar) {
@@ -280,41 +282,58 @@ CodeMirror.registerHelper('hint', 'rulesHint', function(editor, options) {
     return { list: list, from: CodeMirror.Pos(cur.line, start + 1), to: CodeMirror.Pos(cur.line, end) };
   }
   if (curWord) {
-    if (PLUGIN_NAME_RE.test(curWord)) {
-      plugin = dataCenter.getPlugin(RegExp.$2);
-      if (plugin && (typeof plugin.hintUrl === 'string' || plugin.hintList)) {
-        var value = RegExp.$3 || '';
-        value = value.length === 2 ?  curWord.substring(curWord.indexOf('//') + 2) : '';
-        if (value && (value.length > MAX_HINT_LEN || byEnter)) {
+    if (plugin || PLUGIN_NAME_RE.test(curWord)) {
+      plugin = plugin || dataCenter.getPlugin(RegExp.$2);
+      var pluginConf = pluginVars || plugin;
+      if (plugin && (typeof pluginConf.hintUrl === 'string' || pluginConf.hintList)) {
+        if (!pluginVars) {
+          value = RegExp.$3 || '';
+          value = value.length === 2 ?  curWord.substring(curWord.indexOf('//') + 2) : '';
+          if (value && (value.length > MAX_HINT_LEN || byEnter)) {
+            return;
+          }
+        } else if (value && (byEnter || value.length > MAX_VAR_LEN)) {
           return;
         }
         clearTimeout(hintTimer);
-        var protoName = RegExp.$1.slice(0, -1);
-        if (plugin.hintList) {
+        var protoName = pluginVars ? '%' + pluginName : RegExp.$1.slice(0, -1);
+        if (pluginConf.hintList) {
           if (value) {
             value = value.toLowerCase();
-            curHintList = plugin.hintList.filter(function(item) {
+            curHintList = pluginConf.hintList.filter(function(item) {
               if (typeof item === 'string') {
                 return item.toLowerCase().indexOf(value) !== -1;
               }
-              return item.text.toLowerCase().indexOf(value) !== -1;
+              if (item.text.toLowerCase().indexOf(value) !== -1) {
+                return true;
+              }
+              return item.displayText && item.displayText.toLowerCase().indexOf(value) !== -1;
             });
           } else {
-            curHintList = plugin.hintList;
+            curHintList = pluginConf.hintList;
           }
           if (!curHintList.length) {
             return;
           }
           curHintMap = {};
           curHintList = curHintList.map(function(item) {
+            var hint;
             var text;
+            var sep = pluginVars ? '=' : '://';
             if (typeof item === 'string') {
-              text = protoName + '://' + item;
+              text = protoName + sep + item;
             } else {
-              text = protoName + '://' + item.text;
+              text = protoName + sep + item.text;
+              if (item.displayText) {
+                text = item.displayText;
+                hint = {
+                  text: text,
+                  displayText: item.displayText
+                };
+              }
             }
             curHintMap[text] = getRuleHelp(plugin, item.help);
-            return text;
+            return hint || text;
           });
           curHintPos = '';
           curHintOffset = 0;
@@ -367,7 +386,7 @@ CodeMirror.registerHelper('hint', 'rulesHint', function(editor, options) {
         }
         waitingRemoteHints = true;
         hintTimer = setTimeout(function() {
-          var getRemoteHints = getHintCgi(plugin);
+          var getRemoteHints = getHintCgi(plugin, pluginConf);
           if (!editor._bindedHintEvents) {
             editor._bindedHintEvents = true;
             editor.on('blur', function() {
@@ -378,12 +397,12 @@ CodeMirror.registerHelper('hint', 'rulesHint', function(editor, options) {
             protocol: protoName,
             value: value
           }, function(data) {
-            handleRemoteHints(data, editor, plugin, protoName, value, getRemoteHints);
+            handleRemoteHints(data, editor, plugin, protoName, value, getRemoteHints, pluginVars);
           });
         }, HINT_TIMEOUT);
       }
     }
-    if (curWord.indexOf('//') !== -1 || !NON_SPECAIL_RE.test(curWord)) {
+    if (value || curWord.indexOf('//') !== -1 || !NON_SPECAIL_RE.test(curWord)) {
       return;
     }
   } else if (byDelete) {
@@ -503,20 +522,17 @@ exports.getHelpUrl = function(editor, options) {
   if (AT_RE.test(name) && (url = getAtHelpUrl(name.substring(1), options))) {
     return url;
   }
-  if (P_RE.test(name)) {
-    name = name.substring(1, name.indexOf('='));
-    var plugin = name && protocols.getPlugin(name);
-    plugin = plugin && plugin.homepage;
-    if (plugin) {
-      return plugin + (plugin.indexOf('?') === -1 ? '?' : '&') + 'whistleFunc=pluginvars';
-    }
-    return 'https://avwo.github.io/whistle/plugins.html?whistleFunc=pluginvars&plugin=' + name;
-  }
   if (url === false) {
     return false;
   }
   if (curValue && (name === curHintProto || curFocusProto === curHintProto) && (url = curHintMap[curValue])) {
     return url;
+  }
+  if (P_RE.test(name)) {
+    name = name.substring(1, name.indexOf('='));
+    var plugin = name && protocols.getPlugin(name);
+    plugin = plugin && plugin.homepage;
+    return plugin || 'https://avwo.github.io/whistle/plugins.html?plugin=' + name;
   }
   return protocols.getHelpUrl(name);
 };
