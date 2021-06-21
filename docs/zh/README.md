@@ -4,7 +4,7 @@
 
 [whistle](https://github.com/avwo/whistle)(读音[ˈwɪsəl]，拼音[wēisǒu])基于Node实现的跨平台web调试代理工具，类似的工具有Windows平台上的[Fiddler](http://www.telerik.com/fiddler/)，主要用于查看、修改HTTP、HTTPS、Websocket的请求、响应，也可以作为HTTP代理服务器使用，不同于Fiddler通过断点修改请求响应的方式，whistle采用的是类似配置系统hosts的方式，一切操作都可以通过配置实现，支持域名、路径、正则表达式、通配符、通配路径等多种[匹配方式](./pattern.html)，且可以通过Node模块[扩展功能](./plugins.html)：
 
-![基本功能](https://raw.githubusercontent.com/avwo/whistleui/master/assets/whistle.png)
+![基本功能](https://user-images.githubusercontent.com/11450939/122700870-b0de4100-d27e-11eb-8d2a-46e352b49727.png)
 
 whistle的所有操作都可以通过类似如下配置方式实现：
 

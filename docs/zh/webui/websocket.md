@@ -1,16 +1,16 @@
 # websocket
 whistle v1.6.0开始支持WebSocket及一般Socket请求的抓包及构造请求，点击建立连接的WebSocket(Socket)请求，打开 右侧 `Response / Frames` 即可看到WebSocket的请求贞数据：
 
-![WebSocket](https://raw.githubusercontent.com/avwo/whistleui/master/img/socket/frames.gif)
+![WebSocket](https://user-images.githubusercontent.com/11450939/122701249-6610f900-d27f-11eb-945d-eca29d163063.gif)
 
 PS：如果是普通的Socket请求要通过whistle代理，要走tunnel代理，且代理的请求头要加个字段 `x-whistle-policy: tunnel`，这样whistle就会把这个请求当成一般的socket请求处理，且可以跟WebSocket一样进行抓包
 
 也支持构造WebSocket请求和一般的Socket请求，通过whistle的Composer构造的WebSocket和Socket请求，还也自定义请求数据：
 
-![Build WebSocket](https://raw.githubusercontent.com/avwo/whistleui/master/img/socket/composer.gif)
+![Build WebSocket](https://user-images.githubusercontent.com/11450939/122701285-775a0580-d27f-11eb-8257-49f70edf6a08.gif)
 
 
-![Build Socket](https://raw.githubusercontent.com/avwo/whistleui/master/img/socket/socket.gif)
+![Build Socket](https://user-images.githubusercontent.com/11450939/122701238-5f828180-d27f-11eb-99b5-2da593a67b3b.gif)
 
 
 

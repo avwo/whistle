@@ -13,4 +13,4 @@
 
 更多功能及快捷键参考下图：
 
-![Network](https://raw.githubusercontent.com/avwo/whistleui/master/img/network.png)
+![Network](https://user-images.githubusercontent.com/11450939/122700926-ca7f8880-d27e-11eb-95ff-7c703d4152b5.png)
