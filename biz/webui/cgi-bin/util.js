@@ -7,6 +7,8 @@ var properties = require('../../../lib/rules/util').properties;
 var PID = process.pid;
 var MAX_OBJECT_SIZE = 1024 * 1024 * 6;
 var index = 0;
+var dnsOverHttps = config.dnsOverHttps;
+const doh = !!dnsOverHttps;
 
 exports.getClientId = function() {
   if (index > 9999) {
@@ -23,7 +25,8 @@ exports.getServerInfo = function(req) {
   var info = {
     pid: PID,
     pInfo: proc,
-    dns: config.dnsServer,
+    dns: dnsOverHttps || config.dnsServer,
+    doh: doh,
     df: config.dnsOptional,
     r6: config.resolve6,
     version: config.version,

@@ -290,7 +290,7 @@ var Online = React.createClass({
           className={'w-online-menu w-online' + (server ? '' : ' w-offline')} onClick={this.showServerInfo}>
           <span className="glyphicon glyphicon-stats"></span>
           {server ? 'Online' : 'Offline'}
-          {server && server.dns ? <span>{server.r6 ? '(IPv6)' : '(IPv4)'}</span> : null}
+          {server && server.dns ? <span>{server.doh ? '(DOH)' : (server.r6 ? '(IPv6)' : '(IPv4)')}</span> : null}
           <Dialog ref="confirmReload" wstyle="w-confirm-reload-dialog w-confirm-reload-global">
             <div className="modal-body w-confirm-reload">
               <button type="button" className="close" data-dismiss="modal">

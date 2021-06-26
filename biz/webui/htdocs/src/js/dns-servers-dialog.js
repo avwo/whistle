@@ -3,7 +3,7 @@ var React = require('react');
 var Dialog = require('./dialog');
 
 
-var HistoryData = React.createClass({
+var DNSDialog = React.createClass({
   getInitialState: function() {
     return { servers: '' };
   },
@@ -12,13 +12,17 @@ var HistoryData = React.createClass({
       return;
     }
     this._hideDialog = false;
-    var servers = data.dns.split(',').map(function(dns, i) {
-      return 'DNS Server' + (i + 1) + ': ' + dns;
-    });
+    var servers = data.dns;
+    if (!data.doh) {
+      servers = data.dns.split(',').map(function(dns, i) {
+        return 'DNS Server' + (i + 1) + ':  ' + dns;
+      }).join('\n');
+    }
     this.setState({
       ipv6: data.r6,
       useDefault: data.df,
-      servers: servers.join('\n')
+      servers: servers,
+      doh: data.doh
     });
     this.refs.dnsServersDialog.show();
   },
@@ -31,10 +35,16 @@ var HistoryData = React.createClass({
   },
   render: function() {
     var state = this.state;
+    var title;
+    if (state.doh) {
+      title = 'Resolve IP address from follow URL:';
+    } else {
+      title = 'Resolve ' + (state.ipv6 ? 'IPv6' : 'IPv4') + ' address from follow DNS servers' + (state.useDefault ? ' first' : '') + ':';
+    }
     return (
       <Dialog ref="dnsServersDialog" wstyle="w-dns-servers-dialog">
         <div className="modal-header">
-          Resolve {state.ipv6 ? 'IPv6' : 'IPv4'} address from follow DNS servers{state.useDefault ? ' first' : ''}:
+          {title}
           <button type="button" className="close" data-dismiss="modal">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -52,4 +62,4 @@ var HistoryData = React.createClass({
   }
 });
 
-module.exports = HistoryData;
+module.exports = DNSDialog;
