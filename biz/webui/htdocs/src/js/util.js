@@ -249,13 +249,11 @@ exports.showSystemError = function(xhr) {
   if (!status) {
     return alert('Please check the proxy settings or whether whistle has been started.');
   }
-  if (status == 401) {
-    return alert('You do not have permission to operate.');
+  var msg = STATUS_CODES[status];
+  if (msg) {
+    return alert('[' + status + '] ' + msg + '.');
   }
-  if (status == 413) {
-    return alert('The content is too large.');
-  }
-  alert('Server internal error, try again later.');
+  alert('[' + status + '] Unknown error, try again later.');
 };
 
 exports.getClasses = function getClasses(obj) {
