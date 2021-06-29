@@ -181,3 +181,11 @@ body .cm-s-cobalt span.cm-number {
 a {
   cursor: pointer;
 }
+
+.w-delete {
+  color: #f66;
+}
+
+.w-delete:hover {
+  color: red;
+}

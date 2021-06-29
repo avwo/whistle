@@ -3,6 +3,7 @@ require('../css/certs.css');
 var React = require('react');
 var util = require('./util');
 var Dialog = require('./dialog');
+var TipsDialog = require('./tips-dialog');
 
 var OK_STYLE = { color: '#5bbd72' };
 
@@ -47,6 +48,17 @@ var HistoryData = React.createClass({
     this.refs.certsInfoDialog.hide();
     this._hideDialog = true;
   },
+  showRemoveTips: function(item) {
+    var dir = (item.dir || '').replace(/\\/g, '/');
+    dir = dir + (/\/$/.test(dir) ? '' : '/') + item.filename;
+    var crt = dir + '.crt';
+    var key = dir + '.key';
+    this.refs.tipsDialog.show({
+      title: 'Delete the following files and restart whistle:',
+      tips: key + '\n' + crt,
+      dir: item.dir
+    });
+  },
   shouldComponentUpdate: function() {
     return this._hideDialog === false;
   },
@@ -85,7 +97,9 @@ var HistoryData = React.createClass({
                         <th className="w-certs-info-order">{i + 1}</th>
                         <td className="w-certs-info-filename" title={item.filename}>
                           {item.filename}<br />
-                          <a className="w-copy-text-with-tips" data-clipboard-text={item.dir}>Copy path</a>
+                          <a className="w-delete" onClick={function() {
+                            self.showRemoveTips(item);
+                          }} title="">Delete</a>
                         </td>
                         <td className="w-certs-info-domain" title={item.domain}>{item.domain}</td>
                         <td className="w-certs-info-validity" title={item.validity}>{item.validity}</td>
@@ -104,6 +118,7 @@ var HistoryData = React.createClass({
           <div className="modal-footer">
             <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
           </div>
+          <TipsDialog ref="tipsDialog" />
         </Dialog>
     );
   }
