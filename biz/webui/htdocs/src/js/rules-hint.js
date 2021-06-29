@@ -12,6 +12,7 @@ var MAX_HINT_LEN = 512;
 var MAX_VAR_LEN = 100;
 var AT_RE = /^@/;
 var P_RE = /^%/;
+var PIPE_RE = /^pipe:/;
 var PROTOCOL_RE = /^([^\s:]+):\/\//;
 var HINT_TIMEOUT = 120;
 var curHintMap = {};
@@ -95,6 +96,7 @@ function getHints(keyword) {
 }
 
 function getAtValueList(keyword) {
+  keyword = keyword.substring(1);
   try {
     var getList = window.parent.getAtValueListForWhistle;
     if (typeof getList !== 'function') {
@@ -133,17 +135,27 @@ function getAtValueList(keyword) {
   } catch (e) {}
 }
 
-function getPluginVarHints(keyword) {
-  var list = protocols.getPluginNameList();
+function getPluginVarHints(keyword, isPipe) {
+  var list;
+  if (isPipe) {
+    list = protocols.getAllPluginNameList();
+  } else {
+    keyword = keyword.substring(1);
+    list = protocols.getPluginNameList();
+  }
   if (!keyword) {
     return list.map(function(name) {
-      return name + '=';
+      return isPipe ? 'pipe://' + name : name + '=';
     });
   }
   var result = [];
   keyword = keyword.toLowerCase();
   list.forEach(function(name) {
-    name += '=';
+    if (isPipe) {
+      name = 'pipe://' + name;
+    } else {
+      name += '=';
+    }
     if (name.indexOf(keyword) !== -1) {
       result.push(name);
     }
@@ -255,7 +267,8 @@ CodeMirror.registerHelper('hint', 'rulesHint', function(editor, options) {
   var pluginName;
   var value;
   var pluginVars;
-  var isPluginVar = !isAt && P_RE.test(curWord);
+  var isPipe = PIPE_RE.test(curWord);
+  var isPluginVar = P_RE.test(curWord);
   if (isPluginVar) {
     var eqIdx = curWord.indexOf('=');
     if (eqIdx !== -1) {
@@ -269,17 +282,19 @@ CodeMirror.registerHelper('hint', 'rulesHint', function(editor, options) {
       isPluginVar = false;
     }
   }
-  if (isAt || isPluginVar) {
-    list = !byEnter && (isAt ? getAtValueList(curWord.substring(1)) : getPluginVarHints(curWord.substring(1)));
+  if (isAt || isPipe || isPluginVar) {
+    if (!byEnter || /^pipe:\/\/$/.test(curWord)) {
+      list = isAt ? getAtValueList(curWord) : getPluginVarHints(curWord, isPipe);
+    }
     if (!list || !list.length) {
       return;
     }
     if (isAt) {
       showAtHint = true;
-    } else {
+    } else if (isPluginVar) {
       showVarHint = true;
     }
-    return { list: list, from: CodeMirror.Pos(cur.line, start + 1), to: CodeMirror.Pos(cur.line, end) };
+    return { list: list, from: CodeMirror.Pos(cur.line, isPipe ? start : start + 1), to: CodeMirror.Pos(cur.line, end) };
   }
   if (curWord) {
     if (plugin || PLUGIN_NAME_RE.test(curWord)) {

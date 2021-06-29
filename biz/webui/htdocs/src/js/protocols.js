@@ -17,6 +17,7 @@ var PROTOCOLS = ['rule', 'style', 'pipe', 'plugin', 'host', 'xhost', 'proxy', 'x
 var innerRules = ['file', 'xfile', 'tpl', 'xtpl', 'rawfile', 'xrawfile', 'statusCode'];
 var pluginRules = [];
 var pluginNameList = [];
+var allPluginNameList = [];
 var forwardRules = innerRules.slice();
 var webProtocols = ['http', 'https', 'ws', 'wss', 'tunnel'];
 var allInnerRules = webProtocols.concat(innerRules).concat(PROTOCOLS.slice(1));
@@ -35,6 +36,7 @@ exports.setPlugins = function (pluginsState) {
   pluginsOptions = pluginsState.pluginsOptions;
   pluginRules = [];
   pluginNameList = [];
+  allPluginNameList = [];
   forwardRules = innerRules.slice();
   allRules = allInnerRules.slice();
 
@@ -48,6 +50,7 @@ exports.setPlugins = function (pluginsState) {
         if (plugin.pluginVars) {
           pluginNameList.push(name);
         }
+        allPluginNameList.push(name);
         if (!plugin.hideShortProtocol && name.indexOf('_') === -1) {
           forwardRules.push(name);
           allRules.push(name+ '://');
@@ -74,6 +77,10 @@ exports.getPluginRules = function () {
 
 exports.getPluginNameList = function() {
   return pluginNameList;
+};
+
+exports.getAllPluginNameList = function() {
+  return allPluginNameList;
 };
 
 exports.getAllRules = function () {
