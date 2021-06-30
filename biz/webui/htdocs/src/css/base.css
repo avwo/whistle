@@ -189,3 +189,13 @@ a {
 .w-delete:hover {
   color: red;
 }
+
+.w-editor-dialog .modal-dialog {
+  width: 720px;
+}
+
+.w-editor-dialog textarea {
+  width: 700px;
+  height: 320px;
+  padding: 5px;
+}

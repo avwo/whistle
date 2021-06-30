@@ -48,6 +48,7 @@ var contextMenuList = [
   },
   {
     name: 'Copy',
+    shiftToEdit: true,
     list: [
       { name: 'Host' },
       { name: 'Path' },

@@ -4,6 +4,7 @@ var $ = require('jquery');
 var React = require('react');
 var ReactDOM = require('react-dom');
 var util = require('./util');
+var EditorDialog = require('./editor-dialog');
 
 var ContextMenu = React.createClass({
   getInitialState: function() {
@@ -50,6 +51,9 @@ var ContextMenu = React.createClass({
     if (this.props.onClick) {
       this.props.onClick(target.attr('data-menu-action'), e, target.attr('data-parent-action'), target.attr('data-name'));
     }
+    if (e.shiftKey && target.attr('data-shift-to-edit')) {
+      this.refs.editorDialog.show({ value: target.attr('data-clipboard-text') });
+    }
   },
   getDialogElement: function() {
     var self = this;
@@ -65,6 +69,7 @@ var ContextMenu = React.createClass({
         <ul className="w-ctx-menu-list">
           {list.map(function(item) {
             var subList = item.list;
+            var shiftToEdit = item.shiftToEdit ? 1 : undefined;
             var multiple = !subList && item.multiple;
             return (
               <li data-menu-action={item.action || item.name} key={item.name} className={'w-ctx-menu-item ' + (item.sep ? 'w-ctx-item-sep' : '')
@@ -91,6 +96,7 @@ var ContextMenu = React.createClass({
                             + (subItem.disabled ? ' w-ctx-item-disabled' : '')
                             + (subItem.copyText ? ' w-copy-text' : '')}
                             data-clipboard-text={subItem.copyText}
+                            data-shift-to-edit={shiftToEdit}
                           >
                             <label className="w-ctx-item-tt">
                               {subItem.multiple ? <input type="checkbox" checked={subItem.checked} /> : null}
@@ -121,7 +127,7 @@ var ContextMenu = React.createClass({
   },
   render: function() {
 
-    return null;
+    return <EditorDialog ref="editorDialog" />;
   }
 });
 
