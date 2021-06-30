@@ -13,6 +13,7 @@ var HistoryData = React.createClass({
   },
   show: function(data) {
     var list = [];
+    var rootCA;
     Object.keys(data).forEach(function(filename) {
       var cert = data[filename];
       var startDate = new Date(cert.notBefore);
@@ -27,7 +28,7 @@ var HistoryData = React.createClass({
         isInvalid = true;
         status = 'Expired';
       }
-      list.push({
+      var item = {
         dir: cert.dir,
         filename: filename,
         domain: cert.dnsName,
@@ -35,11 +36,20 @@ var HistoryData = React.createClass({
         validity: startDate.toLocaleString() + ' ~ ' + endDate.toLocaleString(),
         status: status || <span className="glyphicon glyphicon-ok" style={OK_STYLE} />,
         isInvalid: isInvalid
-      });
+      };
+      if (filename === 'root') {
+        item.displayName = 'root (Root CA)';
+        rootCA = item;
+      } else {
+        list.push(item);
+      }
     });
     list.sort(function(a, b) {
       return util.compare(b.mtime, a.mtime);
     });
+    if (rootCA) {
+      list.unshift(rootCA);
+    }
     this.refs.certsInfoDialog.show();
     this._hideDialog = false;
     this.setState({ list: list });
@@ -96,7 +106,7 @@ var HistoryData = React.createClass({
                       <tr className={item.isInvalid ? 'w-cert-invalid' : undefined}>
                         <th className="w-certs-info-order">{i + 1}</th>
                         <td className="w-certs-info-filename" title={item.filename}>
-                          {item.filename}<br />
+                          {item.displayName || item.filename}<br />
                           <a className="w-delete" onClick={function() {
                             self.showRemoveTips(item);
                           }} title="">Delete</a>
