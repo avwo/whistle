@@ -1,3 +1,8 @@
+# v2.7.7
+1. fix: [pipe](https://wproxy.org/whistle/rules/pipe.html) 无法直接透传 WebSocket 的二进制包问题
+2. style: 支持显示自定义根证书及删除自定义证书导引
+3. style: `pipe` 支持智能提示
+
 # v2.7.6
 1. feat: 支持通过类似 `--dnsServer http://dns.alidns.com/resolve` 自定义 `dns-over-https` 服务： https://github.com/avwo/whistle/issues/439
 2. style: 优化错误提示
