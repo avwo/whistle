@@ -2,7 +2,7 @@ var React = require('react');
 var events = require('./events');
 
 var DISABLED = {
-  color: '#888',
+  color: '#aaa',
   cursor: 'not-allowed'
 };
 

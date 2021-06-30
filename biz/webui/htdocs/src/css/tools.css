@@ -66,7 +66,7 @@
 }
 .w-textarea-bar .w-disabled {
   cursor: not-allowed;
-  color: #888!important;
+  color: #aaa!important;
 }
 .w-textarea-bar .w-refresh-menu-list {
   display: inline-block;
