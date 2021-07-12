@@ -63,6 +63,7 @@ assets/launcher
 /docs
 /.history
 CHANGELOG.md
+Dockerfile
 
 
 # Coveralls
