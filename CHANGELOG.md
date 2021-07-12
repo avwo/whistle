@@ -2,6 +2,7 @@
 1. feat: 源码目录添加 Dockerfile: https://github.com/avwo/whistle/pull/601
 2. feat: 支持在插件的根目录执行 `w2 run` 时自动加载该插件
 3. refactor: 设置 `resCors://enable` 如果请求头不存在 `origin` 则自动忽略该设置
+4. fix: https://github.com/avwo/whistle/issues/600
 
 # v2.7.7
 1. fix: [pipe](https://wproxy.org/whistle/rules/pipe.html) 无法直接透传 WebSocket 的二进制包问题
