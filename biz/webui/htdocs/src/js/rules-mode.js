@@ -268,7 +268,7 @@ CodeMirror.defineMode('rules', function() {
           type = 'atom js-at js-type';
         } else if (pluginName = isPluginVar(str)) {
           type = 'variable-2 js-plugin-var js-type';
-          if (pluginNameList.indexOf(pluginName) === -1 || stream.column() !== stream.indentation()) {
+          if (pluginNameList.indexOf(pluginName) === -1) {
             type += ' error-rule';
           }
         } else if (isWildcard(str)) {

@@ -27,6 +27,10 @@ function getAtRule(rule) {
   return rule.rawPattern + ' @' + rule.matcher.substring(4);
 }
 
+function getVarRule(rule) {
+  return rule.rawPattern + ' %' + rule.matcher.substring(4);
+}
+
 function getStr(str) {
   return str ? ' ' + str : '';
 }
@@ -196,6 +200,13 @@ var Overview = React.createClass({
         if (atRule) {
           atCtn = [getAtRule(atRule)];
           atTitle = [atRule.raw];
+        }
+        var pList = rules.P;
+        if (pList) {
+          pList.forEach(function(item) {
+            atCtn.push(getVarRule(item));
+            atTitle = [item.raw];
+          });
         }
         if (clientCert) {
           atCtn = atCtn || [];
