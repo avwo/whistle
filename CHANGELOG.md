@@ -1,3 +1,6 @@
+# v2.7.9
+1. feat: 支持 `pattern %plugin=xxx`
+
 # v2.7.8
 1. feat: 源码目录添加 Dockerfile: https://github.com/avwo/whistle/pull/601
 2. feat: 支持在插件的根目录执行 `w2 run` 时自动加载该插件
