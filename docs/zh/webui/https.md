@@ -19,6 +19,7 @@
   ![img](../img/windows_rootca.jpeg)
 
   下载证书后，双击证书，根据指引安装证书。证书安装过程，要确保证书存储到`受信任的根证书颁发机构`下。
+  
 2. Mac: [Mac根证书怎么安装](http://zhidao.baidu.com/link?url=bQ8ZnDTxUIlqruQ56NYjBmwztWPlZtv9AIRazkoKeMsdpAq7mcwXOHQduRwmHV1M2hf143vqBxHzKb1tg0L03DJoj6XS109P8zBNF1E9uU_)
 
   Mac 安装证书后，需要手动信任证书，步骤如下：
@@ -33,7 +34,18 @@
   以看到证书上面红色的图标 `x` 不见了，到这一步说明完成证书安装。
 
   ![img](https://ae01.alicdn.com/kf/HTB1UWItd8USMeJjy1zk761WmpXaT.png)
-3. Firefox:
+  
+3. Linux:
+
+  Linux 安装较为复杂，根据发行版本的不同，安装位置可能略有变化，以下是一些常用发行版的安装方法：
+  
+  - ArchLinux: 将下载的 rootCA.crt 复制到 `/etc/ca-certificates/trust-source/anchors/` 然后执行 `trust extract-compat`
+  - Fedora: 将下载的 rootCA.crt 复制到 `/etc/pki/ca-trust/source/anchors` 然后执行 `trust extract-compat`
+  - Ubuntu/Debian: 将下载的 rootCA.crt 复制到 `/usr/share/ca-certificates/` 然后执行 `echo "rootCA.crt" >> /etc/ca-certificates.conf && update-ca-certificates`
+  
+  如果成功安装，命令 `trust list | grep -i whistle` 输出不为空。
+
+5. Firefox:
 
   菜单 > 首选项 > 高级 > 证书 > 证书机构 > 导入 -> 选中所有checkbox -> 确定
 4. Linux Chrome(Chromium): 参照这个[教程](http://www.richud.com/wiki/Ubuntu_chrome_browser_import_self_signed_certificate)
