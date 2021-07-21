@@ -36,13 +36,14 @@
 3. Firefox:
 
   菜单 > 首选项 > 高级 > 证书 > 证书机构 > 导入 -> 选中所有checkbox -> 确定
-4. Linux Chrome(Chromium): 参照这个[教程](http://www.richud.com/wiki/Ubuntu_chrome_browser_import_self_signed_certificate)
+  
+  ![ubuntu Chromium](https://cloud.githubusercontent.com/assets/16034964/20553721/9c3d1bda-b191-11e6-880f-9fd6976b95cc.png)
+4. Linux Chrome(Chromium):
   * 地址栏输入`chrome://settings/`
   * Show advanced Settings > Manage certificates > Authorities > Import
   * 选择证书后确认，重启浏览器
   * done
-
-  ![ubuntu Chromium](https://cloud.githubusercontent.com/assets/16034964/20553721/9c3d1bda-b191-11e6-880f-9fd6976b95cc.png)
+  > 详细内容参照这个[教程](http://www.richud.com/wiki/Ubuntu_chrome_browser_import_self_signed_certificate)
 5. 手机
 
   **iOS**
