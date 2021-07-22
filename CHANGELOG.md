@@ -2,13 +2,12 @@
 # v2.7.10
 1. feat: 支持通过 `-M disableForwardedHost` 禁止 Whistle 使用 `x-forwarded-host` 请求头，默认 Whistle 会用该请求头作为请求 URL 的域名
 2. feat: 支持通过 `-M disableForwardedProto` 禁止 Whistle 使用 `x-forwarded-proto` 请求头，默认当该请求头值为 `https` 时， Whistle 会把请求当成 HTTPS 处理
-3. feat: 第三方通过 `const proxy = startWhistle(options);` 启动 Whistle 时，可以通过 `proxy.on('perfChange', (perfInfo) => {})` 获取 cpu、内存、请求量等数据
+3. feat: 第三方通过 `const proxy = startWhistle(options);` 启动 Whistle 时，可以通过 `proxy.on('perfDataChange', (perfData) => {})` 获取 cpu、内存、请求量等数据
 4. refactor: 第三方通过 `const proxy = startWhistle(options);` 启动 Whistle 时，可以通过 `proxy.on('pluginLoad', child, name, moduleName);`、`proxy.on('pluginLoadError', err, name, moduleName);` 监听插件启动信息
 
 # v2.7.9
 1. feat: 支持 `pattern %plugin=xxx`
-2. feat: 第三方通过 `const proxy = startWhistle(options);` 启动 Whistle 时，可以通过 `proxy.on('onPluginLoad', child, name, moduleName);`、`proxy.on('onPluginLoadError', err, name, moduleName);` 监听插件启动信息
-3. feat: 支持插件通过 `options.getTop(data => data && console.log(data))` 获取所在 Whistle 的 CPU、内存及请求量等信息
+2. feat: 支持插件通过 `options.getTop(data => data && console.log(data))` 获取所在 Whistle 的 CPU、内存及请求量等信息
 
 # v2.7.8
 1. feat: 源码目录添加 Dockerfile: https://github.com/avwo/whistle/pull/601
