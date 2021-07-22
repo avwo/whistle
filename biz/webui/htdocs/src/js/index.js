@@ -2429,7 +2429,7 @@ var Index = React.createClass({
     var activeItem = item || modal.getActive();
     if (activeItem && !activeItem.isDefault) {
       var name = activeItem.name;
-      if (confirm('Are you sure to delete this rule group \'' + name + '\'.')) {
+      if (confirm('Are you sure to delete \'' + name + '\'.')) {
         dataCenter.rules.remove({name: name}, function(data, xhr) {
           if (data && data.ec === 0) {
             var nextItem = item && !item.active ? null : modal.getSibling(name);
@@ -2452,7 +2452,7 @@ var Index = React.createClass({
     var activeItem = item || modal.getActive();
     if (activeItem && !activeItem.isDefault) {
       var name = activeItem.name;
-      if (confirm('Are you sure to delete this Value \'' + name + '\'.')) {
+      if (confirm('Are you sure to delete \'' + name + '\'.')) {
         dataCenter.values.remove({name: name}, function(data, xhr) {
           if (data && data.ec === 0) {
             var nextItem = item && !item.active ? null : modal.getSibling(name);

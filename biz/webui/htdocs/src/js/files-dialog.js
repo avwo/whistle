@@ -180,7 +180,7 @@ var FilesDialog = React.createClass({
   },
   remove: function(e) {
     var name = e.target.getAttribute('data-name');
-    if (!confirm('Are you sure to delete this file \'' + name + '\'.')) {
+    if (!confirm('Are you sure to delete \'' + name + '\'.')) {
       return;
     }
     var self = this;
