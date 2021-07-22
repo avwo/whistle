@@ -50,13 +50,13 @@ module.exports = function(req, res, next) {
         var realPath = RegExp.$1;
         var realPort = RegExp.$3;
         realHost = RegExp.$2 + (realPort ? ':' + realPort : '');
-        req.headers['x-whistle-real-host'] = realHost;
+        req.headers[config.REAL_HOST_HEADER] = realHost;
         req.url = req.url.replace(realPath, '');
         fullUrl = util.getFullUrl(req);
       } else {
         req.curUrl = fullUrl;
         if (realHost = rules.resolveInternalHost(req)) {
-          req.headers['x-whistle-real-host'] = realHost;
+          req.headers[config.REAL_HOST_HEADER] = realHost;
           fullUrl = util.getFullUrl(req);
         }
       }
