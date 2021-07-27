@@ -1,4 +1,14 @@
 
+# v2.7.11
+1. feat: 插件 hook 支持 `async-await`：
+
+		``` js
+		module.exports = async (server, options) => {
+			// ... do sth
+		};
+		```
+2. feat: `pipe://xxx` 支持插件内部通过 `req.originalReq.ruleValue` 获取 `xxx://value` 的 `value` 值
+
 # v2.7.10
 1. feat: 支持通过 `-M disableForwardedHost` 禁止 Whistle 使用 `x-forwarded-host` 请求头，默认 Whistle 会用该请求头作为请求 URL 的域名
 2. feat: 支持通过 `-M disableForwardedProto` 禁止 Whistle 使用 `x-forwarded-proto` 请求头，默认当该请求头值为 `https` 时， Whistle 会把请求当成 HTTPS 处理
