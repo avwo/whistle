@@ -20,17 +20,21 @@ var PROXY_OPTS = {
   port: config.port
 };
 
-function parseHeaders(headers, rawHeaderNames) {
+function parseHeaders(headers, rawHeaderNames, clientId) {
   if (!headers || typeof headers != 'string') {
     return {};
   }
 
   var reqHeaders = util.parseRawJson(headers);
   if (reqHeaders) {
-    return util.lowerCaseify(reqHeaders, rawHeaderNames);
+    reqHeaders = util.lowerCaseify(reqHeaders, rawHeaderNames);
+  } else {
+    reqHeaders = util.parseHeaders(headers, rawHeaderNames);
   }
-
-  return util.parseHeaders(headers, rawHeaderNames);
+  if (clientId && reqHeaders[config.CLIENT_ID_HEADER] !== clientId) {
+    reqHeaders[config.COMPOSER_CLIENT_ID_HEADER] = clientId;
+  }
+  return reqHeaders;
 }
 
 function isWebSocket(options) {
@@ -105,7 +109,7 @@ function handleWebSocket(options, cb) {
         var body = '';
         if (index !== -1) {
           socket.removeListener('data', handleResponse);
-          socket.headers = parseHeaders(resData.slice(0, index) + '');
+          socket.headers = parseHeaders(resData.slice(0, index) + '', null, options.clientId);
           body = resData.slice(index + 4);
           var sender = getSender(socket);
           var data = options.body;
@@ -218,10 +222,12 @@ module.exports = function(req, res) {
     options.protocol = protocol = protocol.toLowerCase();
   }
   var rawHeaderNames = {};
-  var headers = parseHeaders(req.body.headers, rawHeaderNames);
+  var clientId = req.headers[config.CLIENT_ID_HEADER];
+  var headers = parseHeaders(req.body.headers, rawHeaderNames, clientId);
   delete headers[config.WEBUI_HEAD];
   headers[config.WHISTLE_REQ_FROM_HEADER] = 'W2COMPOSER';
   headers.host = options.host;
+  options.clientId = clientId;
   var clientIp = util.getClientIp(req);
   if (!util.isLocalAddress(clientIp)) {
     headers[config.CLIENT_IP_HEAD] = clientIp;
