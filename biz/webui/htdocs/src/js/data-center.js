@@ -599,7 +599,7 @@ function startLoadData() {
     inited = true;
     $.extend(options, hashFilterObj);
     if (onlyViewOwnData) {
-      options.ip = 'self,clientId';
+      options.ip = 'self';
     }
     cgi.getData(options, function (data) {
       var hasNewData = data && data.data && data.data.hasNew;
