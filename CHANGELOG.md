@@ -1,4 +1,7 @@
 
+# v2.7.12
+1. fix: `reqReplace` 及 `resReplace` 可能因为拆包导致匹配不准确问题
+
 # v2.7.11
 1. feat: 插件 hook 支持 `async-await`：
 
