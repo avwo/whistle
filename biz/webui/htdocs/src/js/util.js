@@ -22,6 +22,7 @@ var INDEX_RE = /^\[(\d+)\]$/;
 var ARR_FILED_RE = /(.)?(?:\[(\d+)\])$/;
 var LEVELS = ['fatal', 'error', 'warn', 'info', 'debug'];
 var useCustomEditor = window.location.search.indexOf('useCustomEditor') !== -1;
+var isJSONText;
 
 function replaceCrLf(char) {
   return char === '\\r' ? '\r' : '\n';
@@ -512,6 +513,7 @@ var parseJ = function (str, resolve) {
 exports.evalJson = evalJson;
 
 function parseJSON(str, resolve) {
+  isJSONText = false;
   if (typeof str !== 'string' || !(str = str.trim())) {
     return;
   }
@@ -519,7 +521,11 @@ function parseJSON(str, resolve) {
     if (!/({[\w\W]*}|\[[\w\W]*\])/.test(str)) {
       return;
     }
-    str = RegExp.$1;
+    if (str === RegExp.$1) {
+      isJSONText = true;
+    } else {
+      str = RegExp.$1;
+    }
   }
   try {
     return parseJ(str, resolve);
@@ -1249,6 +1255,7 @@ exports.getJson = function(data, isReq, decode) {
     body = body && resolveJSON(body, decode);
     data[JSON_KEY] = body ? {
       json: body,
+      isJSONText: isJSONText,
       str: (window._$hasBigNumberJson ? json2 : JSON).stringify(body, null, '    ')
     } : '';
   }

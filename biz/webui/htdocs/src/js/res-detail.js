@@ -133,8 +133,12 @@ var ResDetail = React.createClass({
           imgSrc = body || (res.size ? modal.url : undefined);
           isText = false;
         } else if (showImg && res.base64 && type === 'HTML') {
-          data = modal;
-          isText = false;
+          if (json && json.isJSONText) {
+            isJson = true;
+          } else if (!body || (body.indexOf('<') !== -1 && body.indexOf('>') !== -1)) {
+            data = modal;
+            isText = false;
+          }
         }
       }
       if (modal.isHttps) {
