@@ -259,6 +259,9 @@ CodeMirror.defineMode('rules', function() {
         pre = ch;
         return true;
       });
+      if (!str) {
+        return;
+      }
       if (!type) {
         if (isRegExp(str) || isRegUrl(str) || isPortPattern(str)) {
           return 'attribute js-attribute';
