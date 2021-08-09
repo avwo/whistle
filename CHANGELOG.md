@@ -1,3 +1,7 @@
+# v2.7.13
+1. fix: 特殊情况下 Whistle 无法展示 WebSocket 前几个请求帧问题
+2. feat: 支持在模板字符串里面通过 `clientPort` 和 `serverPort` 分别获取客户端和服务端端口
+3. refactor: `alert`、`confirm`、`prompt` 等浏览器内置的窗口改用自定义实现，防止 https://www.chromestatus.com/feature/5148698084376576
 
 # v2.7.12
 1. fix: `reqReplace` 及 `resReplace` 可能因为拆包导致匹配不准确问题
