@@ -6,6 +6,7 @@ var CopyBtn = require('./copy-btn');
 var util = require('./util');
 var dataCenter = require('./data-center');
 var message = require('./message');
+var win = require('./win');
 
 var MAX_LENGTH = 1024 * 6;
 
@@ -88,8 +89,9 @@ var Textarea = React.createClass({
     }
     var target = ReactDOM.findDOMNode(this.refs.nameInput);
     var name = target.value.trim();
-    if (this.state.showDownloadInput) {
-      this.download();
+    var self = this;
+    if (self.state.showDownloadInput) {
+      self.download();
       return;
     }
     if (!name) {
@@ -101,22 +103,25 @@ var Textarea = React.createClass({
       message.error('Name cannot have spaces.');
       return;
     }
-
-    if (modal.exists(name) &&
-      !confirm('The name \'' + name + '\' already exists.\nDo you want to override it.')) {
-      return;
-    }
-
-    var value = (this.props.value || '').replace(/\r\n|\r/g, '\n');
-    dataCenter.values.add({name: name, value: value}, function(data, xhr) {
-      if (data && data.ec === 0) {
-        modal.add(name, value);
-        target.value = '';
-        target.blur();
-      } else {
-        util.showSystemError(xhr);
+    var handleSubmit = function(sure) {
+      if (!sure) {
+        return;
       }
-    });
+      var value = (self.props.value || '').replace(/\r\n|\r/g, '\n');
+      dataCenter.values.add({name: name, value: value}, function(data, xhr) {
+        if (data && data.ec === 0) {
+          modal.add(name, value);
+          target.value = '';
+          target.blur();
+        } else {
+          util.showSystemError(xhr);
+        }
+      });
+    };
+    if (!modal.exists(name)) {
+      return handleSubmit(true);
+    }
+    win.confirm('The name \'' + name + '\' already exists.\nDo you want to override it.', handleSubmit);
   },
   hideNameInput: function() {
     this.state.showNameInput = false;

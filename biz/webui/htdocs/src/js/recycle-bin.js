@@ -6,6 +6,7 @@ var dataCenter = require('./data-center');
 var util = require('./util');
 var message = require('./message');
 var events = require('./events');
+var win = require('./win');
 
 var TIMESTAMP_RE = /^(\d+)\.([\s\S]+)$/;
 
@@ -102,9 +103,10 @@ var RecycleBinDialog = React.createClass({
   remove: function(e) {
     var name = e.target.getAttribute('data-name');
     var origName = decode(name.substring(name.indexOf('.') + 1));
-    if (confirm('Are you sure to delete \'' + origName + '\' completely.')) {
-      var self = this;
-      dataCenter[this.state.name.toLowerCase()]
+    var self = this;
+    win.confirm('Are you sure to delete \'' + origName + '\' completely.', function(sure) {
+      if (sure) {
+        dataCenter[this.state.name.toLowerCase()]
         .recycleRemove({ name: name }, function(data, xhr) {
           if (!data) {
             util.showSystemError(xhr);
@@ -112,7 +114,8 @@ var RecycleBinDialog = React.createClass({
           }
           self.show(data);
         });
-    }
+      }
+    });
   },
   isVisible: function() {
     return $(ReactDOM.findDOMNode(this.refs.recycleBinBody)).is(':visible');

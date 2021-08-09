@@ -444,16 +444,18 @@ var Composer = React.createClass({
     this.setState({ showPretty: show }, this.updatePrettyData);
   },
   toggleH2: function(e) {
+    var self = this;
     if (!dataCenter.supportH2) {
-      if (window.confirm('The current version of Node.js cannot support HTTP/2.\nPlease upgrade to the latest LTS version.')) {
-        window.open('https://nodejs.org/');
-      }
-      this.setState({});
+      win.confirm('The current version of Node.js cannot support HTTP/2.\nPlease upgrade to the latest LTS version.',
+        function(sure) {
+          sure && window.open('https://nodejs.org/');
+          self.setState({});
+        });
       return;
     }
     var useH2 = e.target.checked;
     storage.set('useH2InComposer', useH2 ? 1 : '');
-    this.setState({ useH2: useH2 });
+    self.setState({ useH2: useH2 });
   },
   setRulesDisable: function(disableComposerRules) {
     storage.set('disableComposerRules', disableComposerRules ? 1 : 0);

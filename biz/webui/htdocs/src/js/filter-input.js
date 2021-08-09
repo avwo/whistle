@@ -5,6 +5,7 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var $ = require('jquery');
 var storage = require('./storage');
+var win = require('./win');
 
 var MAX_LEN = 128;
 var FilterInput = React.createClass({
@@ -158,11 +159,14 @@ var FilterInput = React.createClass({
 
   },
   clear: function() {
-    if (window.confirm('Confirm to clear history?')) {
-      storage.set(this.props.hintKey, '');
-      this.allHintList = [];
-      this.hideHints();
-    }
+    var self = this;
+    win.confirm('Confirm to clear history?', function(sure) {
+      if (sure) {
+        storage.set(this.props.hintKey, '');
+        self.allHintList = [];
+        self.hideHints();
+      }
+    });
   },
   clearFilterText: function() {
     this.props.onChange && this.props.onChange('');

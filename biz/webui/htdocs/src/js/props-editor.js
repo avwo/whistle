@@ -167,17 +167,20 @@ var PropsEditor = React.createClass({
     }, 600);
   },
   onRemove: function(e) {
-    if (this.props.disabled) {
+    var self = this;
+    if (self.props.disabled) {
       return;
     }
     var name = e.target.getAttribute('data-name');
-    var opName = this.props.isHeader ? 'header' : 'field';
-    var item = this.state.modal[name];
-    if (confirm('Are you sure to delete this ' + opName + ' \'' + item.name + '\'.')) {
-      delete this.state.modal[name];
-      this.props.onChange(item.name);
-      this.setState({});
-    }
+    var opName = self.props.isHeader ? 'header' : 'field';
+    var item = self.state.modal[name];
+    win.confirm('Are you sure to delete this ' + opName + ' \'' + item.name + '\'.', function(sure) {
+      if (sure) {
+        delete self.state.modal[name];
+        self.props.onChange(item.name);
+        self.setState({});
+      }
+    });
   },
   getFields: function() {
     var modal = this.state.modal || '';

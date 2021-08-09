@@ -4,6 +4,7 @@ var React = require('react');
 var Dialog = require('./dialog');
 var util = require('./util');
 var events = require('./events');
+var win = require('./win');
 
 var KVDialog = React.createClass({
   getInitialState: function() {
@@ -28,23 +29,29 @@ var KVDialog = React.createClass({
   confirm: function() {
     var data = {};
     var hasConflict;
-    this.state.list.forEach(function(item) {
+    var self = this;
+    self.state.list.forEach(function(item) {
       hasConflict = hasConflict || item.isConflict;
       data[item.name] = item.value;
     });
-    if (!hasConflict || confirm('Conflict with existing content, whether to continue to overwrite them?')) {
-      events.trigger(this.isValues ? 'uploadValues' : 'uploadRules', data);
+    if (!hasConflict) {
+      return events.trigger(self.isValues ? 'uploadValues' : 'uploadRules', data);
     }
+    win.confirm('Conflict with existing content, whether to continue to overwrite them?', function(sure) {
+      sure && events.trigger(self.isValues ? 'uploadValues' : 'uploadRules', data);
+    });
   },
   remove: function(item) {
-    if (!confirm('Are you sure to delete \'' + item.name + '\'.')) {
-      return;
-    }
-    var index = this.state.list.indexOf(item);
-    if (index !== -1) {
-      this.state.list.splice(index, 1);
-      this.setState({});
-    }
+    var self = this;
+    win.confirm('Are you sure to delete \'' + item.name + '\'.', function(sure) {
+      if (sure) {
+        var index = self.state.list.indexOf(item);
+        if (index !== -1) {
+          self.state.list.splice(index, 1);
+          self.setState({});
+        }
+      }
+    });
   },
   render: function() {
     var self = this;

@@ -5,6 +5,7 @@ var ReactDOM = require('react-dom');
 var TextView = require('./textview');
 var CopyBtn = require('./copy-btn');
 var message = require('./message');
+var win = require('./win');
 
 var JSONTree = require('./components/react-json-tree')['default'];
 var dataCenter = require('./data-center');
@@ -69,8 +70,9 @@ var JsonViewer = React.createClass({
     }
     var target = ReactDOM.findDOMNode(this.refs.nameInput);
     var name = target.value.trim();
-    if (this.state.showDownloadInput) {
-      this.download();
+    var self = this;
+    if (self.state.showDownloadInput) {
+      self.download();
       return;
     }
     if (!name) {
@@ -82,21 +84,25 @@ var JsonViewer = React.createClass({
       message.error('Name cannot have spaces.');
       return;
     }
-    if (modal.exists(name) &&
-      !confirm('The name \'' + name + '\' already exists.\nDo you want to override it.')) {
-      return;
-    }
-
-    var value = (this.state.lastData.str || '').replace(/\r\n|\r/g, '\n');
-    dataCenter.values.add({name: name, value: value}, function(data, xhr) {
-      if (data && data.ec === 0) {
-        modal.add(name, value);
-        target.value = '';
-        target.blur();
-      } else {
-        util.showSystemError(xhr);
+    var handleSubmit = function(sure) {
+      if (!sure) {
+        return;
       }
-    });
+      var value = (self.state.lastData.str || '').replace(/\r\n|\r/g, '\n');
+      dataCenter.values.add({name: name, value: value}, function(data, xhr) {
+        if (data && data.ec === 0) {
+          modal.add(name, value);
+          target.value = '';
+          target.blur();
+        } else {
+          util.showSystemError(xhr);
+        }
+      });
+    };
+    if (!modal.exists(name)) {
+      return handleSubmit(true);
+    }
+    win.confirm('The name \'' + name + '\' already exists.\nDo you want to override it.', handleSubmit);
   },
   download: function() {
     var target = ReactDOM.findDOMNode(this.refs.nameInput);

@@ -5,6 +5,7 @@ var dataCenter = require('./data-center');
 var util = require('./util');
 var modal = require('./modal');
 var events = require('./events');
+var mockWin = require('./win');
 
 var MAX_COUNT = 6;
 var MAX_CACHE_TIME = 1000 * 60 * 3;
@@ -106,26 +107,38 @@ function onPluginContextMenuReady(win) {
           return;
         }
         var list = util.parseImportData(data, dataCenter.rulesModal);
-        if (!list.hasConflict || confirm('Conflict with existing content, whether to continue to overwrite them?')) {
-          data = {};
-          list.forEach(function(item) {
-            data[item.name] = item.value;
-          });
-          events.trigger('uploadRules', data);
+        var handleImport = function(sure) {
+          if (sure) {
+            data = {};
+            list.forEach(function(item) {
+              data[item.name] = item.value;
+            });
+            events.trigger('uploadRules', data);
+          }
+        };
+        if (!list.hasConflict) {
+          return handleImport(true);
         }
+        mockWin.confirm('Conflict with existing content, whether to continue to overwrite them?', handleImport);
       },
       importValues: function(data) {
         if (!data) {
           return;
         }
         var list = util.parseImportData(data, dataCenter.valuesModal, true);
-        if (!list.hasConflict || confirm('Conflict with existing content, whether to continue to overwrite them?')) {
-          data = {};
-          list.forEach(function(item) {
-            data[item.name] = item.value;
-          });
-          events.trigger('uploadValues', data);
+        var handleImport = function(sure) {
+          if (sure) {
+            data = {};
+            list.forEach(function(item) {
+              data[item.name] = item.value;
+            });
+            events.trigger('uploadValues', data);
+          }
+        };
+        if (!list.hasConflict) {
+          return handleImport(true);
         }
+        mockWin.confirm('Conflict with existing content, whether to continue to overwrite them?', handleImport);
       }
     });
   } catch (e) {}

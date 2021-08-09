@@ -117,27 +117,32 @@ var FilesDialog = React.createClass({
       if (data.isMax) {
         return win.alert('The number of uploaded files cannot exceed 60,\ndelete the unnecessary files first.');
       }
-      if (data.exists &&
-          !confirm('The name `' + name + '`  already exists, whether to overwrite it?')) {
-        return;
+      var handleUpload = function(sure) {
+        if (!sure) {
+          return;
+        }
+        self.pending = true;
+        dataCenter.values.upload(JSON.stringify(self.params), function(data, xhr) {
+          self.pending = false;
+          if (!data) {
+            return util.showSystemError(xhr);
+          }
+          if (data.ec !== 0) {
+            return win.alert(data.em);
+          }
+          self.params = '';
+          self.refs.filenameDialog.hide();
+          self.updateFiles(data.files);
+          self.show();
+        }, {
+          contentType: 'application/json',
+          processData: false
+        });
+      };
+      if (!data.exists) {
+        return handleUpload(true);
       }
-      self.pending = true;
-      dataCenter.values.upload(JSON.stringify(self.params), function(data, xhr) {
-        self.pending = false;
-        if (!data) {
-          return util.showSystemError(xhr);
-        }
-        if (data.ec !== 0) {
-          return win.alert(data.em);
-        }
-        self.params = '';
-        self.refs.filenameDialog.hide();
-        self.updateFiles(data.files);
-        self.show();
-      }, {
-        contentType: 'application/json',
-        processData: false
-      });
+      win.confirm('The name `' + name + '`  already exists, whether to overwrite it?', handleUpload);
     });
   },
   startDownload: function(params) {
@@ -181,18 +186,20 @@ var FilesDialog = React.createClass({
   },
   remove: function(e) {
     var name = e.target.getAttribute('data-name');
-    if (!confirm('Are you sure to delete \'' + name + '\'.')) {
-      return;
-    }
     var self = this;
-    dataCenter.values.removeFile({ name: name }, function(data, xhr) {
-      if (!data) {
-        return util.showSystemError(xhr);
+    win.confirm('Are you sure to delete \'' + name + '\'.', function(sure) {
+      if (!sure) {
+        return;
       }
-      if (data.ec !== 0) {
-        return win.alert(data.em);
-      }
-      self.updateFiles(data.files);
+      dataCenter.values.removeFile({ name: name }, function(data, xhr) {
+        if (!data) {
+          return util.showSystemError(xhr);
+        }
+        if (data.ec !== 0) {
+          return win.alert(data.em);
+        }
+        self.updateFiles(data.files);
+      });
     });
   },
   downloadFile: function(e) {

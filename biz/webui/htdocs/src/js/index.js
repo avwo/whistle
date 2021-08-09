@@ -676,49 +676,59 @@ var Index = React.createClass({
     events.on('recoverRules', function(_, data) {
       var modal = self.state.rules;
       var filename = data.filename;
-      if (modal.exists(filename) &&
-      !confirm('The name `' + filename + '`  already exists, whether to overwrite it?')) {
-        return;
-      }
-      dataCenter.rules.add({
-        name: filename,
-        value: data.data,
-        recycleFilename: data.name
-      }, function(result, xhr) {
-        if (result && result.ec === 0) {
-          var item = modal.add(filename, data.data);
-          self.setRulesActive(filename);
-          self.setState({ activeRules: item });
-          self.triggerRulesChange('create');
-          events.trigger('rulesRecycleList', result);
-        } else {
-          util.showSystemError(xhr);
+      var handleRecover = function(sure) {
+        if (!sure) {
+          return;
         }
-      });
+        dataCenter.rules.add({
+          name: filename,
+          value: data.data,
+          recycleFilename: data.name
+        }, function(result, xhr) {
+          if (result && result.ec === 0) {
+            var item = modal.add(filename, data.data);
+            self.setRulesActive(filename);
+            self.setState({ activeRules: item });
+            self.triggerRulesChange('create');
+            events.trigger('rulesRecycleList', result);
+          } else {
+            util.showSystemError(xhr);
+          }
+        });
+      };
+      if (!modal.exists(filename)) {
+        return handleRecover(true);
+      }
+      win.confirm('The name `' + filename + '`  already exists, whether to overwrite it?', handleRecover);
     });
 
     events.on('recoverValues', function(_, data) {
       var modal = self.state.values;
       var filename = data.filename;
-      if (modal.exists(filename) &&
-      !confirm('The name `' + filename + '`  already exists, whether to overwrite it?')) {
-        return;
-      }
-      dataCenter.values.add({
-        name: filename,
-        value: data.data,
-        recycleFilename: data.name
-      }, function(result, xhr) {
-        if (result && result.ec === 0) {
-          var item = modal.add(filename, data.data);
-          self.setValuesActive(filename);
-          self.setState({ activeValues: item });
-          self.triggerValuesChange('create');
-          events.trigger('valuesRecycleList', result);
-        } else {
-          util.showSystemError(xhr);
+      var handleRecover = function(sure) {
+        if (!sure) {
+          return;
         }
-      });
+        dataCenter.values.add({
+          name: filename,
+          value: data.data,
+          recycleFilename: data.name
+        }, function(result, xhr) {
+          if (result && result.ec === 0) {
+            var item = modal.add(filename, data.data);
+            self.setValuesActive(filename);
+            self.setState({ activeValues: item });
+            self.triggerValuesChange('create');
+            events.trigger('valuesRecycleList', result);
+          } else {
+            util.showSystemError(xhr);
+          }
+        });
+      };
+      if (!modal.exists(filename)) {
+        return handleRecover(true);
+      }
+      win.confirm('The name `' + filename + '`  already exists, whether to overwrite it?', handleRecover);
     });
 
     $(document)
@@ -2035,13 +2045,14 @@ var Index = React.createClass({
   },
   enableHttp2: function(e) {
     if (!dataCenter.supportH2) {
-      if (window.confirm('The current version of Node.js cannot support HTTP/2.\nPlease upgrade to the latest LTS version.')) {
-        window.open('https://nodejs.org/');
-      }
-      this.setState({});
+      var self = this;
+      win.confirm('The current version of Node.js cannot support HTTP/2.\nPlease upgrade to the latest LTS version.',
+      function(sure) {
+        sure && window.open('https://nodejs.org/');
+        self.setState({});
+      });
       return;
     }
-    var self = this;
     var checked = e.target.checked;
     dataCenter.enableHttp2({enableHttp2: checked ? 1 : 0},
         function(data, xhr) {
@@ -2269,14 +2280,17 @@ var Index = React.createClass({
         self.state.rules.setChanged(item.name, false);
         self.setState({});
         self.triggerRulesChange('save');
-        if (self.state.disabledAllRules &&
-          confirm('Rules has been turn off, do you want to turn on it?')) {
-          dataCenter.rules.disableAllRules({disabledAllRules: 0}, function(data, xhr) {
-            if (data && data.ec === 0) {
-              self.state.disabledAllRules = false;
-              self.setState({});
-            } else {
-              util.showSystemError(xhr);
+        if (self.state.disabledAllRules) {
+          win.confirm('Rules has been turn off, do you want to turn on it?', function(sure) {
+            if (sure) {
+              dataCenter.rules.disableAllRules({disabledAllRules: 0}, function(data, xhr) {
+                if (data && data.ec === 0) {
+                  self.state.disabledAllRules = false;
+                  self.setState({});
+                } else {
+                  util.showSystemError(xhr);
+                }
+              });
             }
           });
         }
@@ -2430,7 +2444,10 @@ var Index = React.createClass({
     var activeItem = item || modal.getActive();
     if (activeItem && !activeItem.isDefault) {
       var name = activeItem.name;
-      if (confirm('Are you sure to delete \'' + name + '\'.')) {
+      win.confirm('Are you sure to delete \'' + name + '\'.', function(sure) {
+        if (!sure) {
+          return;
+        }
         dataCenter.rules.remove({name: name}, function(data, xhr) {
           if (data && data.ec === 0) {
             var nextItem = item && !item.active ? null : modal.getSibling(name);
@@ -2444,7 +2461,7 @@ var Index = React.createClass({
             util.showSystemError(xhr);
           }
         });
-      }
+      });
     }
   },
   removeValues: function(item) {
@@ -2453,7 +2470,10 @@ var Index = React.createClass({
     var activeItem = item || modal.getActive();
     if (activeItem && !activeItem.isDefault) {
       var name = activeItem.name;
-      if (confirm('Are you sure to delete \'' + name + '\'.')) {
+      win.confirm('Are you sure to delete \'' + name + '\'.', function(sure) {
+        if (!sure) {
+          return;
+        }
         dataCenter.values.remove({name: name}, function(data, xhr) {
           if (data && data.ec === 0) {
             var nextItem = item && !item.active ? null : modal.getSibling(name);
@@ -2467,7 +2487,7 @@ var Index = React.createClass({
             util.showSystemError(xhr);
           }
         });
-      }
+      });
     }
   },
   setRulesActive: function(name, modal) {

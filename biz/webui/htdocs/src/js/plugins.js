@@ -7,6 +7,7 @@ var Dialog = require('./dialog');
 var SyncDialog = require('./sync-dialog');
 var dataCenter = require('./data-center');
 var util = require('./util');
+var win = require('./win');
 
 var CMD_RE = /^([\w]{1,12})(\s+-g)?$/;
 
@@ -121,10 +122,12 @@ var Home = React.createClass({
   },
   enableAllPlugins: function(e) {
     var data = this.props.data || {};
-    if (!data.disabledAllPlugins || !confirm('Do you want to turn on Plugins?')) {
+    if (!data.disabledAllPlugins) {
       return;
     }
-    events.trigger('disableAllPlugins', e);
+    win.confirm('Do you want to turn on Plugins?', function(sure) {
+      sure && events.trigger('disableAllPlugins', e);
+    });
   },
   setUpdateAllBtnState: function() {
     events.trigger('setUpdateAllBtnState', this.hasNewPlugin);
