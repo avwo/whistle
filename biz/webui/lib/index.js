@@ -351,7 +351,6 @@ if (!config.debugMode) {
   app.get('/', sendIndex);
   app.get('/index.html', sendIndex);
 }
-app.use(express.static(path.join(__dirname, '../htdocs'), {maxAge: 300000}));
 
 app.get('/', function(req, res) {
   res.sendFile(htdocs.getHtmlFile('index.html'));
@@ -375,6 +374,8 @@ function init(proxy) {
   util = proxy.util;
   setProxy(proxy);
 }
+
+app.use(express.static(path.join(__dirname, '../htdocs'), {maxAge: 300000}));
 
 exports.init = init;
 exports.setupServer = function(server) {
