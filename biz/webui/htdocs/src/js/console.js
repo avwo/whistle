@@ -13,6 +13,7 @@ var DropDown = require('./dropdown');
 var RecordBtn = require('./record-btn');
 var events = require('./events');
 var storage = require('./storage');
+var win = require('./win');
 
 var MAX_COUNT = 90;
 var MAX_FILE_SIZE = 1024 * 1024 * 2;
@@ -144,10 +145,10 @@ var Console = React.createClass({
     var form = new FormData(ReactDOM.findDOMNode(this.refs.importDataForm));
     var file = form.get('importData');
     if (!file || !/\.log$/i.test(file.name)) {
-      return alert('Only supports .log file.');
+      return win.alert('Only supports .log file.');
     }
     if (file.size > MAX_FILE_SIZE) {
-      return alert('The file size cannot exceed 2m.');
+      return win.alert('The file size cannot exceed 2m.');
     }
     util.readFileAsText(file, function(logs) {
       logs = util.parseLogs(logs);

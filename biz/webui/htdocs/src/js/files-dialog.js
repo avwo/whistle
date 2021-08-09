@@ -7,6 +7,7 @@ var util = require('./util');
 var events = require('./events');
 var message = require('./message');
 var dataCenter = require('./data-center');
+var win = require('./win');
 
 var MAX_FILE_SIZE = 1024 * 1024 * 20;
 var MAX_FILES_COUNT = 60;
@@ -91,7 +92,7 @@ var FilesDialog = React.createClass({
     if (files.length >= MAX_FILES_COUNT) {
       this.show();
       setTimeout(function() {
-        alert('The number of uploaded files cannot exceed 60,\ndelete the unnecessary files first.');
+        win.alert('The number of uploaded files cannot exceed 60,\ndelete the unnecessary files first.');
       }, 10);
       return false;
     }
@@ -114,7 +115,7 @@ var FilesDialog = React.createClass({
       }
       self.updateFiles(data.files);
       if (data.isMax) {
-        return alert('The number of uploaded files cannot exceed 60,\ndelete the unnecessary files first.');
+        return win.alert('The number of uploaded files cannot exceed 60,\ndelete the unnecessary files first.');
       }
       if (data.exists &&
           !confirm('The name `' + name + '`  already exists, whether to overwrite it?')) {
@@ -127,7 +128,7 @@ var FilesDialog = React.createClass({
           return util.showSystemError(xhr);
         }
         if (data.ec !== 0) {
-          return alert(data.em);
+          return win.alert(data.em);
         }
         self.params = '';
         self.refs.filenameDialog.hide();
@@ -153,10 +154,10 @@ var FilesDialog = React.createClass({
   },
   submit: function(file) {
     if (!file.size) {
-      return alert('The file size cannot be empty.');
+      return win.alert('The file size cannot be empty.');
     }
     if (file.size > MAX_FILE_SIZE) {
-      return alert('The file size cannot exceed 20m.');
+      return win.alert('The file size cannot exceed 20m.');
     }
     var self = this;
     var params = {};
@@ -189,7 +190,7 @@ var FilesDialog = React.createClass({
         return util.showSystemError(xhr);
       }
       if (data.ec !== 0) {
-        return alert(data.em);
+        return win.alert(data.em);
       }
       self.updateFiles(data.files);
     });

@@ -27,6 +27,7 @@ var message = require('./message');
 var UpdateAllBtn = require('./update-all-btn');
 var ContextMenu = require('./context-menu');
 var CertsInfoDialog = require('./certs-info-dialog');
+var win = require('./win');
 
 var H2_RE = /http\/2\.0/i;
 var JSON_RE = /^\s*(?:[\{｛][\w\W]+[\}｝]|\[[\w\W]+\])\s*$/;
@@ -619,7 +620,7 @@ var Index = React.createClass({
     var self = this;
     var clipboard = new Clipboard('.w-copy-text');
     clipboard.on('error', function(e) {
-      alert('Copy failed.');
+      win.alert('Copy failed.');
     });
     clipboard = new Clipboard('.w-copy-text-with-tips');
     clipboard.on('error', function(e) {
@@ -743,7 +744,7 @@ var Index = React.createClass({
           }
           if (/\.log$/i.test(file.name)) {
             if (file.size > MAX_LOG_SIZE) {
-              return alert('The file size cannot exceed 2m.');
+              return win.alert('The file size cannot exceed 2m.');
             }
             util.readFileAsText(file, function(logs) {
               logs = util.parseLogs(logs);
@@ -1589,7 +1590,7 @@ var Index = React.createClass({
         self.reloadRules(data);
         showResult && message.success('Successful synchronization Rules.');
       } else  {
-        alert(data.em);
+        win.alert(data.em);
       }
     });
   },
@@ -1602,7 +1603,7 @@ var Index = React.createClass({
         self.reloadValues(data);
         showResult && message.success('Successful synchronization Values.');
       } else {
-        alert(data.em);
+        win.alert(data.em);
       }
     });
   },
@@ -1614,11 +1615,11 @@ var Index = React.createClass({
     }
     var file = data.get('rules');
     if (!file || !/\.(txt|json)$/i.test(file.name)) {
-      return alert('Only supports .txt or .json file.');
+      return win.alert('Only supports .txt or .json file.');
     }
 
     if (file.size > MAX_OBJECT_SIZE) {
-      return alert('The file size cannot exceed 6m.');
+      return win.alert('The file size cannot exceed 6m.');
     }
     if ($(e.target).hasClass('btn-danger')) {
       data.append('replaceAll', '1');
@@ -1634,11 +1635,11 @@ var Index = React.createClass({
     }
     var file = data.get('values');
     if (!file || !/\.(txt|json)$/i.test(file.name)) {
-      return alert('Only supports .txt or .json file.');
+      return win.alert('Only supports .txt or .json file.');
     }
 
     if (file.size > MAX_OBJECT_SIZE) {
-      return alert('The file size cannot exceed 6m.');
+      return win.alert('The file size cannot exceed 6m.');
     }
     if ($(e.target).hasClass('btn-danger')) {
       data.append('replaceAll', '1');
@@ -1877,7 +1878,7 @@ var Index = React.createClass({
 
     if (name &&  this.state.plugins[name + ':']) {
       if (tabs.length >= MAX_PLUGINS_TABS) {
-        alert('You can only open ' + MAX_PLUGINS_TABS + ' tabs.');
+        win.alert('You can only open ' + MAX_PLUGINS_TABS + ' tabs.');
         return this.showPlugins();
       }
       active = name;
@@ -2811,11 +2812,11 @@ var Index = React.createClass({
   uploadSessionsForm: function(data) {
     var file = data.get('importSessions');
     if (!file || !/\.(txt|json|saz|har)$/i.test(file.name)) {
-      return alert('Only supports .txt, .json, .saz or .har file.');
+      return win.alert('Only supports .txt, .json, .saz or .har file.');
     }
 
     if (file.size > MAX_FILE_SIZE) {
-      return alert('The file size cannot exceed 64m.');
+      return win.alert('The file size cannot exceed 64m.');
     }
     var isText = /\.txt$/i.test(file.name);
     if (isText || /\.har$/i.test(file.name)) {
@@ -2829,7 +2830,7 @@ var Index = React.createClass({
             self.importHarSessions(result);
           }
         } catch (e) {
-          alert('Unrecognized format.');
+          win.alert('Unrecognized format.');
         }
       });
       return;

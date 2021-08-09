@@ -6,6 +6,7 @@ var QRCodeDialog = require('./qrcode-dialog');
 var TextDialog = require('./text-dialog');
 var JSONDialog = require('./json-dialog');
 var storage = require('./storage');
+var win = require('./win');
 
 var URL_RE = /^(?:(?:[\w.-]+:)?\/\/)?([\w.-]+)/i;
 var NOT_EMPTY_RE = /[^\s]/;
@@ -71,7 +72,7 @@ var ToolBox = React.createClass({
       var value = encodeURIComponent(this.state.codecText);
       this.refs.textDialog.show(value);
     } catch (e) {
-      alert(e.message);
+      win.alert(e.message);
     }
   },
   showShadowRules: function() {
@@ -79,7 +80,7 @@ var ToolBox = React.createClass({
       var value = encodeURIComponent(this.state.codecText);
       this.refs.textDialog.show('"' + value + '"');
     } catch (e) {
-      alert(e.message);
+      win.alert(e.message);
     }
   },
   decode: function() {
@@ -87,7 +88,7 @@ var ToolBox = React.createClass({
       var value = decodeURIComponent(this.state.codecText);
       this.refs.textDialog.show(value);
     } catch (e) {
-      alert(e.message);
+      win.alert(e.message);
     }
   },
   toQuery: function() {
@@ -95,7 +96,7 @@ var ToolBox = React.createClass({
       var value = util.parseJSON2(this.state.codecText) || '';
       this.refs.textDialog.show(value && $.param(value, true));
     } catch (e) {
-      alert(e.message);
+      win.alert(e.message);
     }
   },
   uploadImg: function() {
@@ -105,7 +106,7 @@ var ToolBox = React.createClass({
     var self = this;
     var image = new FormData(ReactDOM.findDOMNode(this.refs.uploadImgForm)).get('image');
     if (!(image.size <= MAX_IMAGE_SIZE)) {
-      return alert('The file size cannot exceed 1m.');
+      return win.alert('The file size cannot exceed 1m.');
     }
     var type = 'data:' + image.type + ';base64,';
     util.readFileAsBase64(image, function(base64) {

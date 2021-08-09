@@ -1,13 +1,11 @@
 
-function alert(msg) {
+function mockAlert(msg) {
   window.alert(msg);
 }
 
-function confirm(msg, cb) {
-  if (window.confirm(msg)) {
-    cb();
-  }
+function mockConfirm(msg, cb) {
+  cb(window.confirm(msg));
 }
 
-exports.alert = alert;
-exports.confirm = confirm;
+exports.alert = mockAlert;
+exports.confirm = mockConfirm;

@@ -5,6 +5,7 @@ var util = require('./util');
 var events = require('./events');
 var message = require('./message');
 var storage = require('./storage');
+var win = require('./win');
 
 var MAX_FILE_SIZE = 1024 * 1025;
 var MAX_LENGTH = 1024 * 64;
@@ -79,7 +80,7 @@ var FrameComposer = React.createClass({
   uploadForm: function(form) {
     var file = form.get('uploadData');
     if (file.size > MAX_FILE_SIZE) {
-      return alert('The file size cannot exceed 1m.');
+      return win.alert('The file size cannot exceed 1m.');
     }
     var self = this;
     var params = {
@@ -120,7 +121,7 @@ var FrameComposer = React.createClass({
     if (this.state.isHexText) {
       base64 = util.getBase64FromHexText(value);
       if (base64 === false) {
-        alert('The hex text cannot be converted to binary data.\nPlease check the hex text or switch to plain text.');
+        win.alert('The hex text cannot be converted to binary data.\nPlease check the hex text or switch to plain text.');
         return;
       }
       value = undefined;

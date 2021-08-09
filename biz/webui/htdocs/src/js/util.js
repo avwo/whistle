@@ -9,6 +9,7 @@ var json2 = require('./components/json');
 var evalJson = require('./components/json/eval');
 var isUtf8 = require('./is-utf8');
 var message = require('./message');
+var win = require('./win');
 
 var CRLF_RE = /\r\n|\r|\n/g;
 var BIG_NUM_RE = /[:\[][\s\n\r]*-?[\d.]{16,}[\s\n\r]*[,\}\]]/;
@@ -248,13 +249,13 @@ exports.showSystemError = function(xhr) {
   xhr = xhr || {};
   var status = xhr.status;
   if (!status) {
-    return alert('Please check the proxy settings or whether whistle has been started.');
+    return win.alert('Please check the proxy settings or whether whistle has been started.');
   }
   var msg = STATUS_CODES[status];
   if (msg) {
-    return alert('[' + status + '] ' + msg + '.');
+    return win.alert('[' + status + '] ' + msg + '.');
   }
-  alert('[' + status + '] Unknown error, try again later.');
+  win.alert('[' + status + '] Unknown error, try again later.');
 };
 
 exports.getClasses = function getClasses(obj) {
@@ -1482,7 +1483,7 @@ function readFile(file, callback, type) {
     done = true;
     if (err) {
       reader.abort();
-      return alert(err.message);
+      return win.alert(err.message);
     }
     callback(result);
   };

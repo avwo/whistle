@@ -3,6 +3,7 @@ var ReactDOM = require('react-dom');
 var Dialog = require('./dialog');
 var QRCode = require('qrcode');
 var events = require('./events');
+var win = require('./win');
 
 var QRCodeDialog = React.createClass({
   shouldComponentUpdate: function() {
@@ -19,7 +20,7 @@ var QRCodeDialog = React.createClass({
       margin: 0
     }, function(err, result) {
       if (err) {
-        return alert(err.message);
+        return win.alert(err.message);
       }
       var img = ReactDOM.findDOMNode(self.refs.qrcodeImg);
       img.title = url;

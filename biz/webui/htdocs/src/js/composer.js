@@ -13,6 +13,7 @@ var PropsEditor = require('./props-editor');
 var HistoryData = require('./history-data');
 var message = require('./message');
 var Dialog = require('./dialog');
+var win = require('./win');
 
 var METHODS = 'GET,POST,PUT,HEAD,TRACE,DELETE,SEARCH,CONNECT,UPGRADE,PROPFIND,PROPPATCH,MKCOL,COPY,MOVE,LOCK,UNLOCK,OPTIONS,PURGE,+ Method'.split(',');
 var TYPES = {
@@ -570,7 +571,7 @@ var Composer = React.createClass({
         if (isHexText) {
           base64 = util.getBase64FromHexText(body);
           if (base64 === false) {
-            alert('The hex text cannot be converted to binary data.\nPlease check the hex text or switch to plain text.');
+            win.alert('The hex text cannot be converted to binary data.\nPlease check the hex text or switch to plain text.');
             return;
           }
           body = undefined;
