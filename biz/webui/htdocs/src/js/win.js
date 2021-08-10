@@ -60,11 +60,11 @@ function mockAlert(msg) {
 }
 
 function mockConfirm(msg, cb) {
-  if (handleConfirm) {
+  createConfirm();
+  if (confirmDialog.is(':visible')) {
     return;
   }
   handleConfirm = cb;
-  createConfirm();
   confirmDialog.find('pre').text(msg);
   confirmDialog.modal('show');
 }
