@@ -209,6 +209,7 @@ a {
   padding: 12px 10px;
   line-height: 2;
   margin: 0;
+  word-break: break-word;
 }
 
 .w-win-dialog .modal-body {
