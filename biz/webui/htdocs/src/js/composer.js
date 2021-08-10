@@ -573,7 +573,7 @@ var Composer = React.createClass({
         if (isHexText) {
           base64 = util.getBase64FromHexText(body);
           if (base64 === false) {
-            win.alert('The hex text cannot be converted to binary data.\nPlease check the hex text or switch to plain text.');
+            win.alert('The hex text cannot be converted to binary data.\nPlease uncheck the checkbox of HexText option.');
             return;
           }
           body = undefined;
