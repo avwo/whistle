@@ -258,7 +258,7 @@ var Overview = React.createClass({
               curUrl = rules.proxy && rules.proxy.matcher || realUrl;
             }
             if (curUrl && rulesModal[name]) {
-              rulesModal[name] += '\n👉 ' + curUrl;
+              rulesModal[name] += '\n👉 ' + curUrl + ' 👈';
             }
           }
         });
