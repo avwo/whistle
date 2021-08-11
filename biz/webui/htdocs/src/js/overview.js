@@ -249,12 +249,16 @@ var Overview = React.createClass({
               return rule.raw;
             }).join('\n');
           } else {
-            var isProxyOrHost = name === 'proxy' || name === 'host';
             rulesModal[name] = getRuleStr(rule);
-            if (rule) {
-              titleModal[name] = realUrl && isProxyOrHost ? 'Raw Rule: ' + rule.raw + '\nReal Url: ' + realUrl : rule.raw;
-            } else {
-              titleModal[name] = rule ? rule.raw : undefined;
+            titleModal[name] = rule ? rule.raw : undefined;
+            var curUrl;
+            if (name === 'proxy') {
+              curUrl = realUrl;
+            } else if (name === 'host') {
+              curUrl = rules.proxy && rules.proxy.matcher || realUrl;
+            }
+            if (curUrl && rulesModal[name]) {
+              rulesModal[name] += '\n👉 ' + curUrl;
             }
           }
         });
