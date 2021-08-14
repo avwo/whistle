@@ -1,3 +1,7 @@
+# v2.7.14
+1. feat: 插件支持通过 `options.require` 直接引用 Whistle 里面的第三方模块或文件
+2. refacto: 插件在不同实例使用不同的存储目录
+
 # v2.7.13
 1. fix: 特殊情况下 Whistle 无法展示 WebSocket 前几个请求帧问题
 2. feat: 支持在模板字符串里面通过 `clientPort` 和 `serverPort` 分别获取客户端和服务端端口
