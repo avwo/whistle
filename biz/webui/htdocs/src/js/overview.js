@@ -10,7 +10,7 @@ var Properties = require('./properties');
 var dataCenter = require('./data-center');
 var getHelpUrl = require('./protocols').getHelpUrl;
 
-var OVERVIEW = ['Url', 'Final Url', 'Method', 'Http Version', 'Status Code', 'Status Message', 'Client IP', 'Client Port', 'Client ID', 'Server IP', 'Server Port', 'Request Length', 'Content Length'
+var OVERVIEW = ['Url', 'Final Url', 'Method', 'Http Version', 'Status Code', 'Status Message', 'Client IP', 'Client Port', 'Client ID', 'Server IP', 'Server Port', 'Request Body', 'Rersponse Body'
                       , 'Content Encoding', 'Start Date', 'DNS Lookup', 'Request Sent', 'Response Headers', 'Content Download'];
 var OVERVIEW_PROPS = ['url', 'realUrl', 'req.method', 'req.httpVersion', 'res.statusCode', 'res.statusMessage', 'req.ip', 'req.port', 'clientId', 'res.ip', 'res.port', 'req.size', 'res.size', 'contentEncoding'];
 /**
@@ -125,7 +125,7 @@ var Overview = React.createClass({
               value = formatSize(size);
               var unzipSize = value ? util.getProperty(modal, prop.substring(0, 4) + 'unzipSize') : -1;
               if (unzipSize >= 0 && unzipSize != size) {
-                value += ' / ' + formatSize(unzipSize) + ' = ' + Number(size * 100 / unzipSize).toFixed(2) + '%';
+                value += ' / ' + formatSize(unzipSize) + (unzipSize ? ' = ' + Number(size * 100 / unzipSize).toFixed(2) + '%' : '');
               }
             } else if (prop == 'realUrl') {
               if (value == modal.url) {
@@ -155,10 +155,10 @@ var Overview = React.createClass({
             break;
           case OVERVIEW[lastIndex - 2]:
             if (modal.requestTime) {
-              time = modal.requestTime - modal.startTime + 'ms';
+              time = modal.requestTime - modal.dnsTime + 'ms';
               var protocol = modal.protocol;
               if (typeof protocol === 'string' && protocol.indexOf('>') !== -1) {
-                var diffTime =  modal.httpsTime - modal.startTime;
+                var diffTime =  modal.httpsTime - modal.dnsTime;
                 if (diffTime > 0) {
                   time += ' - ' + diffTime + 'ms(' + protocol + ') = ' + (modal.requestTime - modal.httpsTime) + 'ms';
                 }
@@ -167,12 +167,12 @@ var Overview = React.createClass({
             break;
           case OVERVIEW[lastIndex - 1]:
             if (modal.responseTime) {
-              time = modal.responseTime - modal.startTime + 'ms';
+              time = modal.responseTime - modal.requestTime + 'ms';
             }
             break;
           case OVERVIEW[lastIndex]:
             if (modal.endTime) {
-              time = modal.endTime - modal.startTime + 'ms';
+              time = modal.endTime - modal.responseTime + 'ms';
             }
             break;
           }
