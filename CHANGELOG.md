@@ -1,3 +1,7 @@
+# v2.7.15
+1. perf: 去掉 `Empty Request`，减少内存及 CPU 占用
+2. style: Network 的  `Body` 支持显示请求内容大小
+
 # v2.7.14
 1. feat: 插件支持通过 `options.require` 直接引用 Whistle 里面的第三方模块或文件
 2. refacto: 插件在不同实例使用不同的存储目录
