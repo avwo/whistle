@@ -103,6 +103,7 @@ function getDefaultColumns() {
     },
     {
       title: 'Body',
+      showTitle: true,
       name: 'body',
       className: 'body',
       width: 90
