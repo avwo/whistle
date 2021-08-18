@@ -849,7 +849,9 @@ function setReqData(item) {
   item.clientPort = req.port;
   item.serverPort = item.res.port;
   item.contentEncoding = (resHeaders['content-encoding'] || '') + (item.res.hasGzipError ? ' (Incorrect header)' : '');
-  item.body = res.size == null ? defaultValue : res.size;
+  var reqSize = req.size == null ? defaultValue : req.size;
+  var resSize = res.size == null ? defaultValue : res.size;
+  item.body = reqSize + ' + ' + resSize;
   var result = res.statusCode == null ? defaultValue : res.statusCode;
   item.result = /^[1-9]/.test(result) && parseInt(result, 10) || result;
   item.type = (resHeaders['content-type'] || defaultValue).split(';')[0].toLowerCase();
