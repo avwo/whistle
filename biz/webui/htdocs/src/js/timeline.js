@@ -2,7 +2,7 @@ require('./base-css.js');
 require('../css/timeline.css');
 var React = require('react');
 var util = require('./util');
-var TOTAL_RATE = 80;
+var TOTAL_RATE = 78;
 
 var Timeline = React.createClass({
   shouldComponentUpdate: function(nextProps) {
@@ -97,8 +97,8 @@ var Timeline = React.createClass({
                       <li><span className="w-detail-timeline-url">URL:</span><span className="w-detail-timeline-full-url" title={item.url}>{item.url}</span></li>
                       <li><span className="w-detail-timeline-url">DNS Lookup:</span><span style={{width: dnsRate}} className="w-detail-timeline-dns"></span><span title={title} className="w-detail-timeline-time">{dns}</span></li>
                       <li><span className="w-detail-timeline-url">Request Sent:</span><span style={{width: dnsRate}}></span><span style={{width: requestRate}} className="w-detail-timeline-request"> </span><span title={title} className="w-detail-timeline-time">{request}</span></li>
-                      <li><span className="w-detail-timeline-url">Response:</span><span style={{width: dnsRate}}></span><span style={{width: requestRate}}></span><span style={{width: responseRate}} className="w-detail-timeline-response"></span><span title={title} className="w-detail-timeline-time">{response}</span></li>
-                      <li><span className="w-detail-timeline-url">Content Load:</span><span style={{width: dnsRate}}></span><span style={{width: requestRate}}></span><span style={{width: responseRate}}></span><span style={{width: loadRate}} className="w-detail-timeline-load"></span><span title={title} className="w-detail-timeline-time">{load}</span></li>
+                      <li><span className="w-detail-timeline-url">Response Headers:</span><span style={{width: dnsRate}}></span><span style={{width: requestRate}}></span><span style={{width: responseRate}} className="w-detail-timeline-response"></span><span title={title} className="w-detail-timeline-time">{response}</span></li>
+                      <li><span className="w-detail-timeline-url">Response Body:</span><span style={{width: dnsRate}}></span><span style={{width: requestRate}}></span><span style={{width: responseRate}}></span><span style={{width: loadRate}} className="w-detail-timeline-load"></span><span title={title} className="w-detail-timeline-time">{load}</span></li>
                       <li><span className="w-detail-timeline-url">Total:</span><span title={title} className="w-detail-timeline-time">{total}</span></li>
                     </ul>
                   </li>

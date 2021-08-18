@@ -11,7 +11,7 @@ var dataCenter = require('./data-center');
 var getHelpUrl = require('./protocols').getHelpUrl;
 
 var OVERVIEW = ['Url', 'Final Url', 'Method', 'Http Version', 'Status Code', 'Status Message', 'Client IP', 'Client Port', 'Client ID', 'Server IP', 'Server Port', 'Request Body', 'Rersponse Body'
-                      , 'Content Encoding', 'Start Date', 'DNS Lookup', 'Request Sent', 'Response Headers', 'Content Download'];
+                      , 'Content Encoding', 'Start Date', 'DNS Lookup', 'Request Sent', 'Response Headers', 'Response Body', 'Total'];
 var OVERVIEW_PROPS = ['url', 'realUrl', 'req.method', 'req.httpVersion', 'res.statusCode', 'res.statusMessage', 'req.ip', 'req.port', 'clientId', 'res.ip', 'res.port', 'req.size', 'res.size', 'contentEncoding'];
 /**
  * statusCode://, redirect://[statusCode:]url, [req, res]speed://,
@@ -145,15 +145,15 @@ var Overview = React.createClass({
           var lastIndex = OVERVIEW.length - 1;
           var time;
           switch(name) {
-          case OVERVIEW[lastIndex - 4]:
+          case OVERVIEW[lastIndex - 5]:
             time = util.toLocaleString(new Date(modal.startTime));
             break;
-          case OVERVIEW[lastIndex - 3]:
+          case OVERVIEW[lastIndex - 4]:
             if (modal.dnsTime) {
               time = modal.dnsTime - modal.startTime + 'ms';
             }
             break;
-          case OVERVIEW[lastIndex - 2]:
+          case OVERVIEW[lastIndex - 3]:
             if (modal.requestTime) {
               time = modal.requestTime - modal.dnsTime + 'ms';
               var protocol = modal.protocol;
@@ -165,14 +165,19 @@ var Overview = React.createClass({
               }
             }
             break;
-          case OVERVIEW[lastIndex - 1]:
+          case OVERVIEW[lastIndex - 2]:
             if (modal.responseTime) {
               time = modal.responseTime - modal.requestTime + 'ms';
             }
             break;
-          case OVERVIEW[lastIndex]:
+          case OVERVIEW[lastIndex - 1]:
             if (modal.endTime) {
               time = modal.endTime - modal.responseTime + 'ms';
+            }
+            break;
+          case OVERVIEW[lastIndex]:
+            if (modal.endTime) {
+              time = modal.endTime - modal.startTime + 'ms';
             }
             break;
           }
