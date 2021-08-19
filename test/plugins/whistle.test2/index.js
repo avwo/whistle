@@ -3,3 +3,5 @@ exports.statsServer = function(server, options) {
     res.end();
   });
 };
+
+exports.auth = function() {};
