@@ -209,6 +209,7 @@ var Overview = React.createClass({
         var pList = rules.P;
         if (pList) {
           pList.forEach(function(item) {
+            atCtn = atCtn || [];
             atCtn.push(getVarRule(item));
             atTitle = [item.raw];
           });
