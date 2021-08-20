@@ -1,3 +1,6 @@
+# v2.7.16
+1. fix: Maximum call stack size exceeded
+
 # v2.7.15
 1. perf: 去掉 `Empty Request`，减少内存及 CPU 占用
 2. style: Network 的  `Body` 支持显示请求内容大小
