@@ -1,3 +1,6 @@
+# v2.7.17
+1. feat: WebSocket 和 Tunnel 请求支持 `replaceStatus`
+
 # v2.7.16
 1. fix: Maximum call stack size exceeded
 
