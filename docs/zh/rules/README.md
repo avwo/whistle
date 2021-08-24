@@ -28,10 +28,10 @@
 3. [**pathReplace** (通过正则或字符串替换请求url，类似str.replace)](pathReplace.html)
 
 #### 修改请求方法
-1. . [**method** (修改请求方法)](method.html)
+1. [**method** (修改请求方法)](method.html)
 
 #### 修改请求头
-1. . [**referer** (修改请求referer)](referer.html)
+1. [**referer** (修改请求referer)](referer.html)
 2. [**auth** (修改请求用户名密码)](auth.html)
 3. [**ua** (修改请求user-agent)](ua.html)
 4. [**forwardedFor** (修改请求头x-forwarded-for)](forwardedFor.html)
