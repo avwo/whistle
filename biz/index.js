@@ -115,6 +115,8 @@ module.exports = function(req, res, next) {
   var localRule;
   req.curUrl = fullUrl;
   if (isWebUI) {
+    ++util.proc.httpUIRequests;
+    ++util.proc.totalHttpUIRequests;
     if (isOthers) {
       util.transformReq(req, res, transformPort);
     } else {
@@ -127,6 +129,8 @@ module.exports = function(req, res, next) {
       }
     }
   } else if (localRule = rules.resolveLocalRule(req)) {
+    ++util.proc.httpUIRequests;
+    ++util.proc.totalHttpUIRequests;
     req.url = localRule.url;
     if (localRule.realPort) {
       req.headers.host = '127.0.0.1:' + localRule.realPort; 
