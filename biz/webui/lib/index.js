@@ -14,6 +14,7 @@ var handleWeinreReq = require('../../weinre');
 var setProxy = require('./proxy');
 var getRootCAFile = require('../../../lib/https/ca').getRootCAFile;
 var config = require('../../../lib/config');
+var loadAuthPlugins = require('../../../lib/plugins').loadAuthPlugins;
 
 var PARSE_CONF = { extended: true, limit: '3mb'};
 var UPLOAD_PARSE_CONF = { extended: true, limit: '30mb'};
@@ -134,7 +135,15 @@ app.use(function(req, res, next) {
   if (config.shadowRulesOnlyMode && req.path !== '/cgi-bin/rootca') {
     return res.status(404).end('Not Found');
   }
-  next();
+  loadAuthPlugins(req, function(status) {
+    if (!status) {
+      return next();
+    }
+    if (status === 401) {
+      return requireLogin(res);
+    }
+    res.status(403).end('Forbidden');
+  });
 });
 
 if (typeof config.uiMiddleware === 'function') {
