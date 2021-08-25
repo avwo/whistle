@@ -17,9 +17,11 @@ function createDialog() {
     var proxyInfoList = [
       '<h5><strong>Uptime:</strong> <span id="whistleUptime">-</span></h5>',
       '<h5><strong>Requests:</strong> <span id="whistleRequests">-</span></h5>',
+      '<h5><strong>UI Requests:</strong> <span id="whistleUIRequests">-</span></h5>',
       '<h5><strong>CPU:</strong> <span id="whistleCpu">-</span></h5>',
       '<h5><strong>Memory:</strong> <span id="whistleMemory">-</span></h5>',
-      '<h5><strong>QPS:</strong> <span id="whistleQps">-</span></h5>'
+      '<h5><strong>QPS:</strong> <span id="whistleQps">-</span></h5>',
+      '<h5><strong>UI QPS:</strong> <span id="whistleUIQps">-</span></h5>'
     ];
     dialog = $('<div class="modal fade w-online-dialog">' +
           '<div class="modal-dialog">' +
@@ -270,9 +272,12 @@ var Online = React.createClass({
       info.push('Uptime: ' + util.formatTime(pInfo.uptime));
       info.push('Requests: ' + (pInfo.httpRequests + pInfo.wsRequests + pInfo.tunnelRequests
         + ' (Total: ' + (pInfo.totalHttpRequests + pInfo.totalWsRequests + pInfo.totalTunnelRequests) + ')'));
+      info.push('UI Requests: ' + (pInfo.httpUIRequests + pInfo.wsUIRequests 
+          + ' (Total: ' + (pInfo.totalHttpUIRequests + pInfo.totalWsUIRequests) + ')'));
       pInfo.cpuPercent && info.push('CPU: ' + pInfo.cpuPercent);
       info.push('Memory: ' + util.getSize(pInfo.memUsage.rss));
       info.push('QPS: ' + util.getQps(pInfo.totalQps));
+      info.push('UI QPS: ' + util.getQps(pInfo.totalUIQps));
     }
     if (server.dns) {
       info.push('Use custom DNS servers');
