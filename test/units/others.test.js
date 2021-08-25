@@ -6,6 +6,6 @@ module.exports = function() {
   });
   require('../../biz/webui/cgi-bin/util').formatDate();
   util.request('http://test.internal.path.com/...whistle-path.5b6af7b9884e1165...///whistle._abc/index.html', function(res, data) {
-    data.url.should.be.equal('/...whistle-path.5b6af7b9884e1165...///whistle._abc/index.html');
+    data.url.should.be.equal('http://test.internal.path.com/...whistle-path.5b6af7b9884e1165...///whistle._abc/index.html');
   });
 };
