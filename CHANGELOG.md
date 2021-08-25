@@ -2,6 +2,8 @@
 1. feat: 支持插件设置 `tunnelKey` 将指定的隧道代理请求头带到解开后的 http/https/ws 请求头
 2. feat: 插件 `auth` 方法支持处理 Whistle 的内部请求
 3. feat: 插件 `auth` 支持设置 `req.showLoginBox` 弹出登录框
+4. style: 显示 UI 请求情况
+5. refactor: 优化内部请求转发逻辑的实现方式
 
 # v2.7.17
 1. feat: WebSocket 和 Tunnel 请求支持 `replaceStatus`
