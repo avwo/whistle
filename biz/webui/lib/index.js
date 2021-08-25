@@ -135,12 +135,15 @@ app.use(function(req, res, next) {
   if (config.shadowRulesOnlyMode && req.path !== '/cgi-bin/rootca') {
     return res.status(404).end('Not Found');
   }
-  loadAuthPlugins(req, function(status) {
+  loadAuthPlugins(req, function(status, msg) {
     if (!status) {
       return next();
     }
     if (status === 401) {
       return requireLogin(res);
+    }
+    if (status === 502) {
+      return res.status(502).end(msg || 'Error');
     }
     res.status(403).end('Forbidden');
   });
