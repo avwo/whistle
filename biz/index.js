@@ -27,7 +27,7 @@ module.exports = function(req, res, next) {
   var port = host[1] || (req.isHttps ? 443 : 80);
   var bypass;
   host = host[0];
-  var transformPort, isPluginReq, isWeinre, isOthers;
+  var transformPort, isProxyReq, isWeinre, isOthers;
   var webUI = WEBUI_PATH;
   var realHostRe = REAL_WEBUI_HOST;
   var internalAppRe = INTERNAL_APP;
@@ -62,20 +62,21 @@ module.exports = function(req, res, next) {
         transformPort = RegExp.$2;
         isWeinre = RegExp.$1 === 'weinre';
         if (transformPort) {
-          isOthers = isPluginReq = transformPort != config.port;
+          isOthers = isProxyReq = transformPort != config.port;
         } else {
-          isPluginReq = false;
+          isProxyReq = false;
           transformPort = config.port;
         }
-        isPluginReq = isPluginReq || isOld;
+        isProxyReq = isProxyReq || isOld;
       } else if (pluginRe.test(req.path)) {
-        isPluginReq = !pluginMgr.getPlugin(RegExp.$1 + ':');
+        isProxyReq = !pluginMgr.getPlugin(RegExp.$1 + ':');
       } else if (!req.headers[config.WEBUI_HEAD]) {
         isWebUI = false;
       }
-      if (isPluginReq) {
+      if (isProxyReq) {
         isWebUI = false;
         req.isPluginReq = true;
+        req._isProxyReq = true;
       }
     }
   } else {
