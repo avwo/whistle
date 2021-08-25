@@ -16,10 +16,10 @@ function createDialog() {
   if (!dialog) {
     var proxyInfoList = [
       '<h5><strong>Uptime:</strong> <span id="whistleUptime">-</span></h5>',
+      '<h5><strong>All Requests:</strong> <span id="whistleAllRequests">-</span></h5>',
+      '<h5><strong>All QPS:</strong> <span id="whistleAllQps">-</span></h5>',
       '<h5><strong>Requests:</strong> <span id="whistleRequests">-</span></h5>',
       '<h5><strong>QPS:</strong> <span id="whistleQps">-</span></h5>',
-      '<h5><strong>UI Requests:</strong> <span id="whistleUIRequests">-</span></h5>',
-      '<h5><strong>UI QPS:</strong> <span id="whistleUIQps">-</span></h5>',
       '<h5><strong>CPU:</strong> <span id="whistleCpu">-</span></h5>',
       '<h5><strong>Memory:</strong> <span id="whistleMemory">-</span></h5>'
     ];
@@ -186,19 +186,20 @@ var Online = React.createClass({
           dialog.find('.w-online-dialog-info').show();
         }
         var reqElem = dialog.find('#whistleRequests');
-        var uiReqElem = dialog.find('#whistleUIRequests');
+        var uiReqElem = dialog.find('#whistleAllRequests');
         var cpuElem = dialog.find('#whistleCpu');
         var memElem = dialog.find('#whistleMemory');
         var uptimeElem = dialog.find('#whistleUptime');
         var qpsElem = dialog.find('#whistleQps');
-        var uiQpsElem = dialog.find('#whistleUIQps');
+        var uiQpsElem = dialog.find('#whistleAllQps');
         uptimeElem.text(util.formatTime(pInfo.uptime));
         uptimeElem.parent().attr('title', pInfo.uptime);
         reqElem.parent().attr('title', 'HTTP[S]: ' + pInfo.httpRequests + ' (Total: ' + pInfo.totalHttpRequests + ')'
           + '\nWS[S]: ' + pInfo.wsRequests + ' (Total: ' + pInfo.totalWsRequests + ')'
           + '\nTUNNEL: ' + pInfo.tunnelRequests + ' (Total: ' + pInfo.totalTunnelRequests + ')');
-        uiReqElem.parent().attr('title', 'HTTP[S]: ' + pInfo.httpUIRequests + ' (Total: ' + pInfo.totalHttpUIRequests + ')'
-        + '\nWS[S]: ' + pInfo.wsUIRequests + ' (Total: ' + pInfo.totalWsUIRequests + ')');
+        uiReqElem.parent().attr('title', 'HTTP[S]: ' + pInfo.allHttpRequests + ' (Total: ' + pInfo.totalAllHttpRequests + ')'
+        + '\nWS[S]: ' + pInfo.allWsRequests + ' (Total: ' + pInfo.totalAllWsRequests + ')'
+        + '\nTUNNEL: ' + pInfo.tunnelRequests + ' (Total: ' + pInfo.totalTunnelRequests + ')');
         memElem.parent().attr('title', Object.keys(pInfo.memUsage).map(function(key) {
           return key + ': ' + pInfo.memUsage[key];
         }).join('\n'));
@@ -208,13 +209,14 @@ var Online = React.createClass({
           'TUNNEL: ' + util.getQps(pInfo.tunnelQps)
         ].join('\n'));
         uiQpsElem.parent().attr('title', [
-          'HTTP[s]: ' + util.getQps(pInfo.httpUIQps),
-          'WS[S]: ' + util.getQps(pInfo.wsUIQps)
+          'HTTP[s]: ' + util.getQps(pInfo.allHttpQps),
+          'WS[S]: ' + util.getQps(pInfo.allWsQps),
+          'TUNNEL: ' + util.getQps(pInfo.tunnelQps)
         ].join('\n'));
         var totalCount = pInfo.httpRequests + pInfo.wsRequests + pInfo.tunnelRequests;
-        var totalUICount = pInfo.httpUIRequests + pInfo.wsUIRequests;
+        var totalUICount = pInfo.allHttpRequests + pInfo.allWsRequests + pInfo.tunnelRequests;
         var allCount = pInfo.totalHttpRequests + pInfo.totalWsRequests + pInfo.totalTunnelRequests;
-        var allUICount = pInfo.totalHttpUIRequests + pInfo.totalWsUIRequests;
+        var allUICount = pInfo.totalAllHttpRequests + pInfo.totalAllWsRequests + pInfo.totalTunnelRequests;
         pInfo.totalCount = totalCount;
         pInfo.allCount = allCount;
         pInfo.totalUICount = totalUICount;
@@ -225,7 +227,7 @@ var Online = React.createClass({
           cpuElem.text(pInfo.cpuPercent + ' (Max: ' + pInfo.maxCpu + ')');
           memElem.text(util.getSize(pInfo.memUsage.rss) + ' (Max: ' + util.getSize(pInfo.maxRss) + ')');
           qpsElem.text(util.getQps(pInfo.totalQps) + ' (Max: ' + util.getQps(pInfo.maxQps) + ')');
-          uiQpsElem.text(util.getQps(pInfo.totalUIQps) + ' (Max: ' + util.getQps(pInfo.maxUIQps) + ')');
+          uiQpsElem.text(util.getQps(pInfo.totalAllQps) + ' (Max: ' + util.getQps(pInfo.maxAllQps) + ')');
         } else {
           var curPInfo = curServerInfo.pInfo;
           if (pInfo.memUsage.rss !== curPInfo.memUsage.rss) {
@@ -243,8 +245,8 @@ var Online = React.createClass({
           if (pInfo.totalQps !== curPInfo.totalQps) {
             qpsElem.text(util.getQps(pInfo.totalQps) + ' (Max: ' + util.getQps(pInfo.maxQps) + ')');
           }
-          if (pInfo.totalUIQps !== curPInfo.totalUIQps) {
-            uiQpsElem.text(util.getQps(pInfo.totalUIQps) + ' (Max: ' + util.getQps(pInfo.maxUIQps) + ')');
+          if (pInfo.totalAllQps !== curPInfo.totalAllQps) {
+            uiQpsElem.text(util.getQps(pInfo.totalAllQps) + ' (Max: ' + util.getQps(pInfo.maxAllQps) + ')');
           }
         }
         curServerInfo = info;
@@ -290,14 +292,14 @@ var Online = React.createClass({
     var pInfo = server.pInfo;
     if (pInfo) {
       info.push('Uptime: ' + util.formatTime(pInfo.uptime));
+      info.push('All Requests: ' + (pInfo.allHttpRequests + pInfo.allWsRequests + pInfo.tunnelRequests
+        + ' (Total: ' + (pInfo.totalAllHttpRequests + pInfo.totalAllWsRequests + pInfo.totalTunnelRequests) + ')'));
       info.push('Requests: ' + (pInfo.httpRequests + pInfo.wsRequests + pInfo.tunnelRequests
         + ' (Total: ' + (pInfo.totalHttpRequests + pInfo.totalWsRequests + pInfo.totalTunnelRequests) + ')'));
-      info.push('UI Requests: ' + (pInfo.httpUIRequests + pInfo.wsUIRequests 
-          + ' (Total: ' + (pInfo.totalHttpUIRequests + pInfo.totalWsUIRequests) + ')'));
       pInfo.cpuPercent && info.push('CPU: ' + pInfo.cpuPercent);
       info.push('Memory: ' + util.getSize(pInfo.memUsage.rss));
       info.push('QPS: ' + util.getQps(pInfo.totalQps));
-      info.push('UI QPS: ' + util.getQps(pInfo.totalUIQps));
+      info.push('All QPS: ' + util.getQps(pInfo.totalAllQps));
     }
     if (server.dns) {
       info.push('Use custom DNS servers');
