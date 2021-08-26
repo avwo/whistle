@@ -241,7 +241,7 @@ var Composer = React.createClass({
       var value = getString(body);
       bodyElem.value = value;
       if (value !== body) {
-        message.warn('The length of the body cannot exceed 128k, and the excess will be truncated.');
+        message.warn('The length of request body > 128k, and has been truncated.');
       }
     }
     this.updatePrettyData();
