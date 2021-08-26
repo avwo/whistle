@@ -152,7 +152,11 @@ var Composer = React.createClass({
         return;
       }
       var activeItem = self.props.modal;
-      if (activeItem) {
+      if (!activeItem) {
+        return;
+      }
+      var body = util.getBody(activeItem.req);
+      var updateComposer = function() {
         var state = {
           useH2: activeItem.useH2,
           url: activeItem.url,
@@ -175,6 +179,15 @@ var Composer = React.createClass({
           self.onComposerChange();
         });
         storage.set('useH2InComposer', activeItem.useH2 ? 1 : '');
+      };
+      if (body.length > MAX_BODY_SIZE) {
+        win.confirm('The request body is too long and will be truncated, continue?', function(allow) {
+          if (allow) {
+            updateComposer();
+          }
+        });
+      } else {
+        updateComposer();
       }
     });
     events.on('updateStrictMode', function() {
