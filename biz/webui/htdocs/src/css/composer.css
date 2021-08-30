@@ -212,13 +212,21 @@
   background-color: lightyellow;
 }
 
-.w-composer-use-h2 {
+.w-composer-use-h2, .w-composer-enable-rules, .w-composer-enable-body {
   position: absolute;
   top: 0;
-  right: 90px;
+  right: 100px;
 }
 
-.w-composer-use-h2 input {
+.w-composer-enable-rules {
+  right: 180px;
+}
+
+.w-composer-enable-body {
+  right: 255px;
+}
+
+.w-composer-tabs input {
   margin-right: 5px;
 }
 

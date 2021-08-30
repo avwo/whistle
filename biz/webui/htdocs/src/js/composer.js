@@ -769,6 +769,14 @@ var Composer = React.createClass({
         <div className="w-detail-inspectors-title w-composer-tabs">
           <button onClick={this.onTabChange} name="Request" className={showRequest ? 'w-tab-btn w-active' : 'w-tab-btn'}>Request</button>
           <button title={result.url} onClick={this.onTabChange} name="Response"  className={showResponse ? 'w-tab-btn w-active' : 'w-tab-btn'}>Response</button>
+          <label className="w-composer-enable-body">
+            <input disabled={pending} checked={!disableBody} type="checkbox" onChange={this.onBodyStateChange} />
+            Body
+          </label>
+          <label className="w-composer-enable-rules">
+            <input disabled={pending} onChange={this.onDisableChange} checked={!state.disableComposerRules} type="checkbox" />
+            Rules
+          </label>
           <label className="w-composer-use-h2">
             <input disabled={pending} type="checkbox" onChange={this.toggleH2} checked={dataCenter.supportH2 && useH2} />
             Use H2
