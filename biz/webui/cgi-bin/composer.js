@@ -248,9 +248,9 @@ module.exports = function(req, res) {
   } else {
     headers.connection = 'close';
     delete headers.upgrade;
-    if (!isConn && ((useH2 && protocol === 'https:') || protocol === 'h2:' || protocol === 'http2:')) {
+    if (!isConn && ((useH2 && (protocol === 'https:' || protocol === 'http:')) || protocol === 'h2:' || protocol === 'http2:')) {
       req.body.useH2 = true;
-      options.protocol = protocol = 'https:';
+      options.protocol = protocol === 'http:' ? 'http:' : 'https:';
       headers[config.ALPN_PROTOCOL_HEADER] = 'h2';
     }
   }
