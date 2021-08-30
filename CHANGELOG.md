@@ -1,3 +1,8 @@
+
+# v2.7.19
+1. feat: HTTP2 支持非 HTTPS 请求
+2. feat: 插件支持通过 `options.getCert(domain, (cert || '') => {})` 获取指定域名证书
+3. refactor: 优化 `reqDelay` 和 `resDelay` 实现
 # v2.7.18
 1. feat: 支持插件设置 `tunnelKey` 将指定的隧道代理请求头带到解开后的 http/https/ws 请求头
 2. feat: 插件 `auth` 方法支持处理 Whistle 的内部请求
