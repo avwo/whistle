@@ -760,7 +760,8 @@ var Composer = React.createClass({
               return <option value={m}>{m}</option>;
             })}
           </select>
-          <input readOnly={pending} defaultValue={state.url} onKeyUp={this.execute} onChange={this.onComposerChange} onKeyDown={this.onKeyDown} onFocus={this.selectAll} ref="url" type="text" maxLength="8192" placeholder="url" className="fill w-composer-input" />
+          <input readOnly={pending} defaultValue={state.url} onKeyUp={this.execute} onChange={this.onComposerChange} onKeyDown={this.onKeyDown}
+            onFocus={this.selectAll} ref="url" type="text" maxLength="8192" placeholder="Input the url" className="fill w-composer-input" />
           <button disabled={pending} onClick={this.execute} className="btn btn-primary w-composer-execute">
             <span className="glyphicon glyphicon-send" />
           </button>
