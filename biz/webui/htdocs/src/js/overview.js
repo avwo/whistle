@@ -167,7 +167,7 @@ var Overview = React.createClass({
             break;
           case OVERVIEW[lastIndex - 2]:
             if (modal.responseTime) {
-              time = modal.responseTime - modal.requestTime + 'ms';
+              time = modal.responseTime - (modal.requestTime || modal.dnsTime) + 'ms';
             }
             break;
           case OVERVIEW[lastIndex - 1]:

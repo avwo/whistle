@@ -860,12 +860,12 @@ function setReqData(item) {
     item.dns = item.dnsTime - item.startTime + 'ms';
     if (item.requestTime > 0) {
       item.request =  item.requestTime - item.dnsTime + 'ms';
-      if (item.responseTime > 0) {
-        item.response = item.responseTime - item.requestTime + 'ms';
-        if (end > 0) {
-          item.download = end - item.responseTime + 'ms';
-          item.time = end - item.startTime + 'ms';
-        }
+    }
+    if (item.responseTime > 0) {
+      item.response = item.responseTime - (item.requestTime || item.dnsTime) + 'ms';
+      if (end > 0) {
+        item.download = end - item.responseTime + 'ms';
+        item.time = end - item.startTime + 'ms';
       }
     }
   }
