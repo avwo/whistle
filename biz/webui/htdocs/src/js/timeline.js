@@ -23,7 +23,7 @@ var Timeline = React.createClass({
     });
 
     list.forEach(function(item) {
-      var total = (item.endTime || item.responseTime || item.requestTime || item.dnsTime) - startTime;
+      var total = (item.endTime || Math.max(item.responseTime || 0,  item.requestTime || 0) || item.dnsTime) - startTime;
       if (total > maxTotal) {
         maxTotal = total;
       }
@@ -54,6 +54,17 @@ var Timeline = React.createClass({
                 dnsRate = 0;
               }
 
+              var isStream;
+              if (item.responseTime) {
+                isStream = !item.requestTime || item.requestTime > item.responseTime;
+                response = item.responseTime - (isStream ? item.dnsTime : item.requestTime);
+                responseRate = response * TOTAL_RATE / maxTotal + '%';
+                response += 'ms';
+              } else {
+                response = '-';
+                responseRate = 0;
+              }
+
               if (item.requestTime) {
                 request = item.requestTime - item.dnsTime;
                 requestRate = request * TOTAL_RATE / maxTotal + '%';
@@ -68,15 +79,6 @@ var Timeline = React.createClass({
               } else {
                 request = '-';
                 requestRate = 0;
-              }
-
-              if (item.responseTime) {
-                response = item.responseTime - item.requestTime;
-                responseRate = response * TOTAL_RATE / maxTotal + '%';
-                response += 'ms';
-              } else {
-                response = '-';
-                responseRate = 0;
               }
 
               if (item.endTime) {
@@ -97,8 +99,8 @@ var Timeline = React.createClass({
                       <li><span className="w-detail-timeline-url">URL:</span><span className="w-detail-timeline-full-url" title={item.url}>{item.url}</span></li>
                       <li><span className="w-detail-timeline-url">DNS Lookup:</span><span style={{width: dnsRate}} className="w-detail-timeline-dns"></span><span title={title} className="w-detail-timeline-time">{dns}</span></li>
                       <li><span className="w-detail-timeline-url">Request Sent:</span><span style={{width: dnsRate}}></span><span style={{width: requestRate}} className="w-detail-timeline-request"> </span><span title={title} className="w-detail-timeline-time">{request}</span></li>
-                      <li><span className="w-detail-timeline-url">Response Headers:</span><span style={{width: dnsRate}}></span><span style={{width: requestRate}}></span><span style={{width: responseRate}} className="w-detail-timeline-response"></span><span title={title} className="w-detail-timeline-time">{response}</span></li>
-                      <li><span className="w-detail-timeline-url">Response Body:</span><span style={{width: dnsRate}}></span><span style={{width: requestRate}}></span><span style={{width: responseRate}}></span><span style={{width: loadRate}} className="w-detail-timeline-load"></span><span title={title} className="w-detail-timeline-time">{load}</span></li>
+                      <li><span className="w-detail-timeline-url">Response Headers:</span><span style={{width: dnsRate}}></span>{isStream ? null : <span style={{width: requestRate}} />}<span style={{width: responseRate}} className="w-detail-timeline-response"></span><span title={title} className="w-detail-timeline-time">{response}</span></li>
+                      <li><span className="w-detail-timeline-url">Response Body:</span><span style={{width: dnsRate}}></span>{isStream ? null : <span style={{width: requestRate}} />}<span style={{width: responseRate}} /><span style={{width: loadRate}} className="w-detail-timeline-load"></span><span title={title} className="w-detail-timeline-time">{load}</span></li>
                       <li><span className="w-detail-timeline-url">Total:</span><span title={title} className="w-detail-timeline-time">{total}</span></li>
                     </ul>
                   </li>
@@ -112,9 +114,22 @@ var Timeline = React.createClass({
                     <span title={item.url} className="w-detail-timeline-url">{util.getFilename(item)}</span>
                     <span style={{width: stalledRate}} className="w-detail-timeline-stalled"></span>
                     <span style={{width: dnsRate}} className="w-detail-timeline-dns"></span>
-                    <span style={{width: requestRate}} className="w-detail-timeline-request"></span>
-                    <span style={{width: responseRate}} className="w-detail-timeline-response"></span>
-                    <span style={{width: loadRate}} className="w-detail-timeline-load"></span>
+                    <span style={{
+                      width: requestRate,
+                      marginBottom: isStream && responseRate ? '5px' : undefined
+                    }} className="w-detail-timeline-request"></span>
+                    <span style={{
+                      width: responseRate,
+                      marginLeft: isStream && requestRate ? '-' + requestRate : undefined,
+                      marginBottom: isStream && requestRate ? '-5px' : undefined,
+                      height: isStream && requestRate ? '15px' : undefined
+                    }} className="w-detail-timeline-response"></span>
+                    <span style={{
+                      width: loadRate,
+                      marginLeft: isStream && responseRate ? '-' + responseRate : undefined,
+                      marginBottom: isStream && requestRate ? '-5px' : undefined,
+                      height: isStream && requestRate ? '15px' : undefined
+                    }} className="w-detail-timeline-load"></span>
                     <span title={title} className="w-detail-timeline-time">{total}</span>
                   </li>
               );

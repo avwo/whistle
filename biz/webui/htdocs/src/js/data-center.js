@@ -862,7 +862,11 @@ function setReqData(item) {
       item.request =  item.requestTime - item.dnsTime + 'ms';
     }
     if (item.responseTime > 0) {
-      item.response = item.responseTime - (item.requestTime || item.dnsTime) + 'ms';
+      if (!item.requestTime || item.requestTime > item.responseTime) {
+        item.response = item.responseTime - item.dnsTime + 'ms';
+      } else {
+        item.response = item.responseTime - item.requestTime + 'ms';
+      }
       if (end > 0) {
         item.download = end - item.responseTime + 'ms';
         item.time = end - item.startTime + 'ms';

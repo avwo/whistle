@@ -1,5 +1,5 @@
 .w-detail-timeline ul, .w-detail-timeline li {list-style: none; margin: 0; padding: 0; white-space: nowrap; font-size: 0; width: 100%; display: block;}
-.w-detail-timeline li {padding: 2px 0 2px; position: relative; white-space: nowrap;}
+.w-detail-timeline li {padding: 2px 0 2px; position: relative; white-space: nowrap; margin-bottom: 12px;}
 .w-detail-timeline span {display: inline-block; font-size: 12px; height: 20px; line-height: 20px; overflow: hidden; text-overflow: ellipsis; cursor: default;}
 .w-detail-timeline-url {padding-right: 5px; width: 22%; max-width: 200px; text-align: right;}
 .w-detail-timeline-stalled {background: #aaa;}

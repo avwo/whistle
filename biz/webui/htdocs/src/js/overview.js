@@ -149,13 +149,11 @@ var Overview = React.createClass({
             time = util.toLocaleString(new Date(modal.startTime));
             break;
           case OVERVIEW[lastIndex - 4]:
-            if (modal.dnsTime) {
-              time = modal.dnsTime - modal.startTime + 'ms';
-            }
+            time = modal.dns;
             break;
           case OVERVIEW[lastIndex - 3]:
             if (modal.requestTime) {
-              time = modal.requestTime - modal.dnsTime + 'ms';
+              time = modal.request;
               var protocol = modal.protocol;
               if (typeof protocol === 'string' && protocol.indexOf('>') !== -1) {
                 var diffTime =  modal.httpsTime - modal.dnsTime;
@@ -166,16 +164,13 @@ var Overview = React.createClass({
             }
             break;
           case OVERVIEW[lastIndex - 2]:
-            if (modal.responseTime) {
-              time = modal.responseTime - (modal.requestTime || modal.dnsTime) + 'ms';
-            }
+            time = modal.response;
             break;
           case OVERVIEW[lastIndex - 1]:
-            if (modal.endTime) {
-              time = modal.endTime - modal.responseTime + 'ms';
-            }
+            time = modal.download;
             break;
           case OVERVIEW[lastIndex]:
+            time = modal.time;
             if (modal.endTime) {
               time = modal.endTime - modal.startTime + 'ms';
             }
