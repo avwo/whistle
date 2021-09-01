@@ -2042,6 +2042,13 @@ exports.toHar = function(item) {
     time: time,
     whistleRules: item.rules,
     whistleFwdHost: item.fwdHost,
+    whistleTimes: {
+      startTime: item.startTime,
+      dnsTime: item.dnsTime,
+      requestTime: item.requestTime,
+      responseTime: item.responseTime,
+      endTime: item.endTime
+    },
     request: toHarReq(item),
     response: toHarRes(item),
     frames: item.frames,

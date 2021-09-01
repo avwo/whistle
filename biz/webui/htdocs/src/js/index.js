@@ -2747,7 +2747,8 @@ var Index = React.createClass({
       if (!entry) {
         return;
       }
-      var startTime = new Date(entry.startedDateTime).getTime();
+      var times = entry.whistleTimes || '';
+      var startTime = new Date(times.startTime || entry.startedDateTime).getTime();
       if (isNaN(startTime)) {
         return;
       }
@@ -2814,17 +2815,24 @@ var Index = React.createClass({
         fwdHost: entry.whistleFwdHost,
         rules: entry.whistleRules || {}
       };
-      var timings = entry.timings || {};
-      var endTime = Math.round(startTime + util.getTimeFromHar(entry.time));
-      startTime = Math.floor(startTime + util.getTimeFromHar(timings.dns));
-      session.dnsTime = startTime;
-      startTime = Math.floor(startTime + util.getTimeFromHar(timings.connect)
-      + util.getTimeFromHar(timings.ssl) + util.getTimeFromHar(timings.send)
-      + util.getTimeFromHar(timings.blocked) + util.getTimeFromHar(timings.wait));
-      session.requestTime = startTime;
-      startTime = Math.floor(startTime + util.getTimeFromHar(timings.receive));
-      session.responseTime = startTime;
-      session.endTime = Math.max(startTime, endTime);
+      if (times && times.startTime) {
+        session.dnsTime = times.dnsTime;
+        session.requestTime = times.requestTime;
+        session.responseTime = times.responseTime;
+        session.endTime = times.endTime;
+      } else {
+        var timings = entry.timings || {};
+        var endTime = Math.round(startTime + util.getTimeFromHar(entry.time));
+        startTime = Math.floor(startTime + util.getTimeFromHar(timings.dns));
+        session.dnsTime = startTime;
+        startTime = Math.floor(startTime + util.getTimeFromHar(timings.connect)
+        + util.getTimeFromHar(timings.ssl) + util.getTimeFromHar(timings.send)
+        + util.getTimeFromHar(timings.blocked) + util.getTimeFromHar(timings.wait));
+        session.requestTime = startTime;
+        startTime = Math.floor(startTime + util.getTimeFromHar(timings.receive));
+        session.responseTime = startTime;
+        session.endTime = Math.max(startTime, endTime);
+      }
       sessions.push(session);
     });
     dataCenter.addNetworkList(sessions);
