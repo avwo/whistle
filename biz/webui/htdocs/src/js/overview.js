@@ -52,6 +52,10 @@ function getRuleStr(rule) {
   return rule.rawPattern + ' ' +  matcher + getStr(props) + getStr(rule.filter);
 }
 
+function getTime(time) {
+  return time === '-' ? '' : time;
+}
+
 OVERVIEW.forEach(function(name) {
   DEFAULT_OVERVIEW_MODAL[name] = '';
 });
@@ -149,11 +153,11 @@ var Overview = React.createClass({
             time = util.toLocaleString(new Date(modal.startTime));
             break;
           case OVERVIEW[lastIndex - 4]:
-            time = modal.dns;
+            time = getTime(modal.dns);
             break;
           case OVERVIEW[lastIndex - 3]:
             if (modal.requestTime) {
-              time = modal.request;
+              time = getTime(modal.request);
               var protocol = modal.protocol;
               if (typeof protocol === 'string' && protocol.indexOf('>') !== -1) {
                 var diffTime =  modal.httpsTime - modal.dnsTime;
@@ -164,13 +168,13 @@ var Overview = React.createClass({
             }
             break;
           case OVERVIEW[lastIndex - 2]:
-            time = modal.response;
+            time = getTime(modal.response);
             break;
           case OVERVIEW[lastIndex - 1]:
-            time = modal.download;
+            time = getTime(modal.download);
             break;
           case OVERVIEW[lastIndex]:
-            time = modal.time;
+            time = getTime(modal.time);
             if (modal.endTime) {
               time = modal.endTime - modal.startTime + 'ms';
             }
