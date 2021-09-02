@@ -11,6 +11,7 @@ var warn = util.warn;
 var info = util.info;
 var readConfig = util.readConfig;
 var MAX_RULES_LEN = 1024 * 16;
+var DEFAULT_OPTIONS = { host: '127.0.0.1', port: 8899 };
 var options;
 
 function showStartWhistleTips(storage) {
@@ -48,6 +49,21 @@ function existsPlugin(name) {
   return false;
 }
 
+function getBody(res, callback) {
+  var resBody = '';
+  res.setEncoding('utf8');
+  res.on('data', function(data) {
+    resBody += data;
+  });
+  res.on('end', function() {
+    if (res.statusCode != 200) {
+      callback(resBody || 'response ' + res.statusCode + ' error');
+    } else {
+      callback(null, JSON.parse(resBody));
+    }
+  });
+}
+
 var reqOptions;
 function request(body, callback) {
   if (!reqOptions) {
@@ -62,23 +78,40 @@ function request(body, callback) {
     }
   }
   var req = http.request(reqOptions, function(res) {
-    res.setEncoding('utf8');
-    var resBody = '';
-    res.on('data', function(data) {
-      resBody += data;
-    });
-    res.on('end', function() {
-      if (res.statusCode != 200) {
-        throw resBody || 'response ' + res.statusCode + ' error';
+    getBody(res, function(err, data) {
+      if (err) {
+        throw err;
       }
-      callback(JSON.parse(resBody));
+      callback(data);
     });
   });
   // 不处理错误，直接抛出终止进程
   req.end(body);
 }
 
+function checkDefault(running, storage, callback) {
+  if (running) {
+    return callback();
+  }
+  var execCallback = function(err) {
+    callback && callback(err);
+    callback = null;
+  };
+  var req = http.get('http://' + DEFAULT_OPTIONS.host + ':' + DEFAULT_OPTIONS.port + '/cgi-bin/status', function(res) {
+    res.on('error', execCallback);
+    getBody(res, function(err, data) {
+      if (err || !data || data.name !== pkg.name || data.storage !== storage) {
+        return execCallback(true);
+      }
+      callback(null, DEFAULT_OPTIONS.port);
+    });
+  });
+  req.on('error', execCallback);
+  req.end();
+}
+
 module.exports = function(filepath, storage, force) {
+  storage = storage || '';
   var config = readConfig(storage) || '';
   options = config.options; 
   var pid = options && config.pid;
@@ -87,46 +120,52 @@ module.exports = function(filepath, storage, force) {
   conf.addon = addon && typeof addon === 'string' ? addon.split(/[|,]/) : null;
   conf.noGlobalPlugins = options && options.noGlobalPlugins;
   isRunning(pid, function(running) {
-    if (!running) {
-      return showStartWhistleTips(storage);
-    }
-    filepath = path.resolve(filepath || '.whistle.js');
-    var port = options.port = options.port > 0 ? options.port : pkg.port;
-    handleRules(filepath, function(result) {
-      if (!result) {
-        error('The name and rules cannot be empty.');
-        return;
+    checkDefault(running, storage, function(err, port) {
+      if (err) {
+        return showStartWhistleTips(storage);
       }
-      var name = getString(result.name);
-      if (!name || name.length > 64) {
-        error('The name cannot be empty and the length cannot exceed 64 characters.');
-        return;
+      filepath = path.resolve(filepath || '.whistle.js');
+      if (port) {
+        options = DEFAULT_OPTIONS;
+      } else {
+        port = options.port = options.port > 0 ? options.port : pkg.port;
       }
-      var rules = getString(result.rules);
-      if (rules.length > MAX_RULES_LEN) {
-        error('The rules cannot be empty and the size cannot exceed 16k.');
-        return;
-      }
-      var setRules = function() {
-        var body = [
-          'name=' + encodeURIComponent(name),
-          'rules=' + encodeURIComponent(rules)
-        ].join('&');
-        request(body, function() {
-          info('Setting whistle[' + (options.host || '127.0.0.1') + ':' + port + '] rules successful.');
-        });
-      };
-      if (force) {
-        return setRules();
-      }
-      request('name=' + encodeURIComponent(name) + '&enable=1&top=1', function(data) {
-        if (data.rules) {
-          info('Successfully enabled.');
-          warn('Warning: The rule already exists, to override the content, add CLI option --force.');
+      handleRules(filepath, function(result) {
+        if (!result) {
+          error('The name and rules cannot be empty.');
           return;
         }
-        setRules();
-      });
-    }, port);
+        var name = getString(result.name);
+        if (!name || name.length > 64) {
+          error('The name cannot be empty and the length cannot exceed 64 characters.');
+          return;
+        }
+        var rules = getString(result.rules);
+        if (rules.length > MAX_RULES_LEN) {
+          error('The rules cannot be empty and the size cannot exceed 16k.');
+          return;
+        }
+        var setRules = function() {
+          var body = [
+            'name=' + encodeURIComponent(name),
+            'rules=' + encodeURIComponent(rules)
+          ].join('&');
+          request(body, function() {
+            info('Setting whistle[' + (options.host || '127.0.0.1') + ':' + port + '] rules successful.');
+          });
+        };
+        if (force) {
+          return setRules();
+        }
+        request('name=' + encodeURIComponent(name) + '&enable=1&top=1', function(data) {
+          if (data.rules) {
+            info('Successfully enabled.');
+            warn('Warning: The rule already exists, to override the content, add CLI option --force.');
+            return;
+          }
+          setRules();
+        });
+      }, port);
+    });
   });
 };
