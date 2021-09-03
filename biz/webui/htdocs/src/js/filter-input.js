@@ -162,7 +162,7 @@ var FilterInput = React.createClass({
     var self = this;
     win.confirm('Confirm to clear history?', function(sure) {
       if (sure) {
-        storage.set(this.props.hintKey, '');
+        storage.set(self.props.hintKey, '');
         self.allHintList = [];
         self.hideHints();
       }
