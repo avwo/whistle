@@ -1,4 +1,7 @@
 
+# v2.7.20
+1. fix: Cannot read property 'headers' of undefined
+
 # v2.7.19
 1. feat: HTTP2 支持非 HTTPS 请求
 2. feat: 插件支持通过 `options.getCert(domain, (cert || '') => {})` 获取指定域名证书
