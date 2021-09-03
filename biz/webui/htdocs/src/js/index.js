@@ -67,6 +67,10 @@ var LEFT_BAR_MENUS = [
   {
     name: 'Plugins',
     multiple: true
+  },
+  {
+    name: 'Clear',
+    icon: 'remove'
   }
 ];
 
@@ -2957,6 +2961,7 @@ var Index = React.createClass({
       list[0].checked = !!state.network.isTreeView;
       list[1].checked = !state.disabledAllRules;
       list[2].checked = !state.disabledAllPlugins;
+      list[3].hide = !$(e.target).closest('.w-network-menu').length;
       this.refs.contextMenu.show(data);
     }
     e.preventDefault();
@@ -2982,6 +2987,9 @@ var Index = React.createClass({
         self.setState({});
       });
       break;
+    case 'Clear':
+      self.clear();
+      return;
     }
     this.refs.contextMenu.show({});
   },
@@ -3280,11 +3288,11 @@ var Index = React.createClass({
         </div>
         <div className="w-container box fill">
           <ContextMenu onClick={this.onClickContextMenu} ref="contextMenu" />
-          <div onContextMenu={this.onContextMenu} className={'w-left-menu' + (forceShowLeftMenu ? ' w-hover-left-menu' : '')}
+          <div onContextMenu={this.onContextMenu} onDoubleClick={this.onContextMenu}
+            className={'w-left-menu' + (forceShowLeftMenu ? ' w-hover-left-menu' : '')}
             style={{display: networkMode || mustHideLeftMenu ? 'none' : undefined}}
             onMouseEnter={forceShowLeftMenu} onMouseLeave={forceHideLeftMenu}>
-            <a onClick={this.showNetwork} onDoubleClick={this.toggleTreeView}
-              title={'Double click to show' + (isTreeView ? ' List View' : ' Tree View')}
+            <a onClick={this.showNetwork} title={'Double click to show' + (isTreeView ? ' List View' : ' Tree View')}
               className="w-network-menu"
               style={{
                 background: name == 'network' ? '#ddd' : null,

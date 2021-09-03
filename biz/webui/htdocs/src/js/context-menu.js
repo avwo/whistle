@@ -80,6 +80,7 @@ var ContextMenu = React.createClass({
                 onClick={item.onClick}
               >
                 <label className="w-ctx-item-tt">
+                  {item.icon ? <span style={{marginRight: '5px'}} className={'glyphicon glyphicon-' + item.icon} /> : null}
                   {multiple ?  <input type="checkbox" checked={item.checked} /> : null}
                   {item.name}
                 </label>
