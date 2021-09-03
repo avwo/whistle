@@ -1,4 +1,7 @@
 
+# v2.7.21
+1. fix: 清除搜索框历史记录 js 报错问题
+
 # v2.7.20
 1. fix: Cannot read property 'headers' of undefined
 
