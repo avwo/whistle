@@ -1,4 +1,4 @@
-var createCertificate = require('../../../lib/https/ca').createCertificate;
+var ca = require('../../../lib/https/ca');
 
 var URL_RE = /^(?:(?:[\w.-]+:)?\/\/)?([\w.-]+)/i;
 
@@ -7,7 +7,7 @@ function parseDomain(domain) {
   if (!domain || domain.length > 64 || !URL_RE.test(domain)) {
     return;
   }
-  return RegExp.$1.toLowerCase();
+  return RegExp.$1;
 }
 
 module.exports = function(req, res) {
@@ -15,5 +15,8 @@ module.exports = function(req, res) {
   if (!domain) {
     return res.status(400).end('Bad Request');
   }
-  res.json(createCertificate(domain));
+  if (domain === 'RootCA' || domain === 'rootCA') {
+    return res.json(ca.getRootCA());
+  }
+  res.json(ca.createCertificate(domain.toLowerCase()));
 };
