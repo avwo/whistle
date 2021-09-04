@@ -15,7 +15,7 @@ module.exports = function(req, res) {
   if (!domain) {
     return res.status(400).end('Bad Request');
   }
-  if (domain === 'RootCA' || domain === 'rootCA') {
+  if (domain === 'rootCA') {
     return res.json(ca.getRootCA());
   }
   res.json(ca.createCertificate(domain.toLowerCase()));
