@@ -7,15 +7,28 @@ var util = require('./util');
 var dataCenter = require('./data-center');
 var message = require('./message');
 var win = require('./win');
+var events = require('./events');
 
 var MAX_LENGTH = 1024 * 6;
+
+function showFrames() {
+  events.trigger('showFrames');
+}
 
 var Tips = React.createClass({
   render: function() {
     var data = this.props.data || { hide: true };
+    var className = 'w-textview-tips' + (data.hide ? ' hide' : '');
+    if (data.isFrames) {
+      return  (
+        <a className={className} onClick={showFrames}>
+          Need to be viewed in Frames
+        </a>
+      );
+    }
     if (data.isHttps) {
       return (
-        <div className={'w-textview-tips' + (data.hide ? ' hide' : '')}>
+        <div className={className}>
           <p>Tunnel</p>
           <a href="https://avwo.github.io/whistle/webui/https.html" target="_blank">
             Click here for more information
@@ -24,7 +37,7 @@ var Tips = React.createClass({
       );
     }
     return (
-      <div className={'w-textview-tips' + (data.hide ? ' hide' : '')}>
+      <div className={className}>
         <p>{data.message}</p>
         {data.url ? <a href={data.url} target="_blank">Open the URL in a new window</a> : undefined}
       </div>

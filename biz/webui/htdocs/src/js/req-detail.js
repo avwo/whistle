@@ -75,7 +75,9 @@ var ReqDetail = React.createClass({
       headersStr = [req.method, req.method == 'CONNECT' ? headers.host : util.getPath(realUrl), 'HTTP/' + (req.httpVersion || '1.1')].join(' ')
       + '\r\n' + headersStr;
       raw = headersStr + '\r\n\r\n' + body;
-      if (modal.isHttps) {
+      if (modal.frames) {
+        tips = { isFrames: true };
+      } else if (modal.isHttps) {
         tips = { isHttps: true };
       } else if (modal.requestTime && !body && !/^ws/.test(modal.url)) {
         if (req.size < 5120) {

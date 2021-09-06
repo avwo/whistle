@@ -220,7 +220,7 @@ var ReqData = React.createClass({
           </button>
         } onDoubleClick={this.onDoubleClick} onClick={this.toggleTab} tabs={tabs} />
         {this.state.initedOverview ? <Overview modal={overview} hide={name != tabs[0].name} /> : ''}
-        {this.state.initedInspectors ? <Inspectors modal={activeItem} hide={name != tabs[1].name} /> : ''}
+        {this.state.initedInspectors ? <Inspectors modal={activeItem} frames={frames} hide={name != tabs[1].name} /> : ''}
         {this.state.initedFrames ? <Frames data={activeItem} frames={frames} hide={name != tabs[2].name} /> : ''}
         {this.state.initedTimeline ? <Timeline data={data} modal={modal} hide={name != tabs[4].name} /> : ''}
         {this.state.initedComposer ? <Composer modal={this.state.activeItem} hide={name != tabs[3].name} /> : ''}

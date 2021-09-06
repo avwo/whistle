@@ -14,5 +14,6 @@
    position: absolute; left: 50%; top: 50%; margin: -50px 0 0 -260px; }
 .w-textview-tips p { font-size: 14px; line-height: 36px; margin: 0;
    white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
-.w-textview-tips a { font-size: 12px; color: #aaa; text-decoration: none; }
+.w-textview-tips a { font-size: 12px; color: #337ab7; text-decoration: none; }
+a.w-textview-tips { color: #337ab7; }
 .w-textview-tips a:hover { text-decoration: underline; }

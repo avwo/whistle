@@ -141,7 +141,9 @@ var ResDetail = React.createClass({
           }
         }
       }
-      if (modal.isHttps) {
+      if (modal.frames) {
+        tips = { isFrames: true };
+      } else if (modal.isHttps) {
         tips = !body && { isHttps: true };
       } else if (res.size >= 0 && headers && !body && modal.endTime && !/^ws/.test(modal.url)) {
         tips = { url: modal.url };
