@@ -145,7 +145,7 @@ var ResDetail = React.createClass({
         tips = { isFrames: true };
       } else if (modal.isHttps) {
         tips = !body && { isHttps: true };
-      } else if (res.size >= 0 && headers && !body && modal.endTime && !/^ws/.test(modal.url)) {
+      } else if (res.size >= 0 && headers && modal.frames !== false && !body && modal.endTime && !/^ws/.test(modal.url)) {
         tips = { url: modal.url };
         if (res.size < 5120) {
           tips.message = 'No response body data';

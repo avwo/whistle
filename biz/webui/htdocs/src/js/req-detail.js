@@ -79,7 +79,7 @@ var ReqDetail = React.createClass({
         tips = { isFrames: true };
       } else if (modal.isHttps) {
         tips = { isHttps: true };
-      } else if (modal.requestTime && !body && !/^ws/.test(modal.url)) {
+      } else if (modal.requestTime && modal.frames !== false && !body && !/^ws/.test(modal.url)) {
         if (req.size < 5120) {
           tips = { message: 'No request body data' };
         }  else {
