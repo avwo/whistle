@@ -254,7 +254,7 @@ var FrameList = React.createClass({
     util.socketIsClosed(reqData);
     return (<div className="fill orient-vertical-box w-frames-list">
       <FilterInput onChange={self.onFilterChange} />
-      <div className="w-frames-action">
+      <div className="w-frames-action" onMouseDown={util.preventBlur}>
         <RecordBtn ref="recordBtn" onClick={this.handleAction} disabledRecord={reqData.closed} />
         <a onClick={self.clear} className="w-remove-menu"
           draggable="false">
