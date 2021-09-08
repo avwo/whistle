@@ -75,11 +75,11 @@ var ReqDetail = React.createClass({
       headersStr = [req.method, req.method == 'CONNECT' ? headers.host : util.getPath(realUrl), 'HTTP/' + (req.httpVersion || '1.1')].join(' ')
       + '\r\n' + headersStr;
       raw = headersStr + '\r\n\r\n' + body;
-      if (modal.frames) {
+      if (modal.useFrames) {
         tips = { isFrames: true };
       } else if (modal.isHttps) {
         tips = { isHttps: true };
-      } else if (modal.requestTime && modal.frames !== false && !body && !/^ws/.test(modal.url)) {
+      } else if (modal.requestTime && modal.useFrames !== false && !body && !/^ws/.test(modal.url)) {
         if (req.size < 5120) {
           tips = { message: 'No request body data' };
         }  else {

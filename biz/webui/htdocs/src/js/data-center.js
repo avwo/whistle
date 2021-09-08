@@ -759,14 +759,14 @@ function getRawHeaders(headers, rawHeaderNames) {
 
 exports.getRawHeaders = getRawHeaders;
 
-function isSocket(item) {
-  if (!item || !item.endTime || item.reqError || item.resError) {
+function isFrames(item) {
+  if (!item || item.reqError || item.resError) {
     return false;
   }
   if (/^wss?:\/\//.test(item.url)) {
     return item.res.statusCode == 101;
   }
-  return item.inspect || (item.isHttps && item.req.headers['x-whistle-policy'] === 'tunnel');
+  return (item.endTime && item.inspect) || item.useFrames;
 }
 
 function getStyleValue(style) {
@@ -903,7 +903,7 @@ function setReqData(item) {
   if (item.useHttp && (item.protocol === 'HTTPS' || item.protocol === 'WSS')) {
     item.protocol = item.protocol + ' > ' + item.protocol.slice(0, -1);
   }
-  if (!item.frames && isSocket(item)) {
+  if (!item.frames && isFrames(item)) {
     item.frames = [];
   }
 }

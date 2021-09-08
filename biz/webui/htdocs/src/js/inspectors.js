@@ -27,7 +27,6 @@ var Inspector = React.createClass({
     var props = this.props;
     var modal = props.modal;
     var url = modal && modal.url;
-    var frames = modal && modal.frames;
     this.endTime = modal && (modal.endTime || modal.lost);
     return (
       <div className={'fill orient-vertical-box w-detail-inspectors' + (util.getBoolean(this.props.hide) ? ' hide' : '')}>
@@ -40,13 +39,13 @@ var Inspector = React.createClass({
             <div className="w-detail-inspectors-title">
               <span className="glyphicon glyphicon-arrow-right"></span>Request
             </div>
-            <ReqDetail modal={modal} frames={frames} />
+            <ReqDetail modal={modal} />
           </div>
           <div className="fill orient-vertical-box">
             <div className="w-detail-inspectors-title">
             <span className="glyphicon glyphicon-arrow-left"></span>Response
             </div>
-            <ResDetail modal={modal} frames={frames} />
+            <ResDetail modal={modal} />
           </div>
         </Divider>
       </div>
