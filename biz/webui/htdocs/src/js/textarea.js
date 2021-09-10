@@ -22,7 +22,7 @@ var Tips = React.createClass({
     if (data.isFrames) {
       return  (
         <a className={className} onClick={showFrames}>
-          Need to be viewed in Frames
+          View in Frames
         </a>
       );
     }

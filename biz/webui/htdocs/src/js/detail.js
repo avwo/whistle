@@ -205,10 +205,7 @@ var ReqData = React.createClass({
     }
     var name = curTab && curTab.name;
 
-    var frames;
-    if (activeItem && !activeItem.reqError && !activeItem.resError) {
-      frames = activeItem.frames;
-    }
+    var frames = activeItem && activeItem.frames;
     var dockToBottom = this.props.dockToBottom;
     return (
         <div className="fill orient-vertical-box w-detail" onDragEnter={this.onDragEnter} onDrop={this.onDrop}>

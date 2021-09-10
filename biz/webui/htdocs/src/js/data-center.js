@@ -760,13 +760,20 @@ function getRawHeaders(headers, rawHeaderNames) {
 exports.getRawHeaders = getRawHeaders;
 
 function isFrames(item) {
-  if (!item || item.reqError || item.resError) {
+  if (!item) {
     return false;
   }
-  if (/^wss?:\/\//.test(item.url)) {
-    return item.res.statusCode == 101;
+  if (item.useFrames) {
+    return true;
   }
-  return (item.endTime && item.inspect) || item.useFrames;
+  if (item.reqError || item.resError) {
+    return false;
+  }
+  var status = item.res.statusCode;
+  if (/^wss?:\/\//.test(item.url)) {
+    return status == 101;
+  }
+  return item.inspect && status == 200;
 }
 
 function getStyleValue(style) {
