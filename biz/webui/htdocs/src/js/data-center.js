@@ -776,6 +776,8 @@ function isFrames(item) {
   return item.inspect && status == 200;
 }
 
+exports.isFrames = isFrames;
+
 function getStyleValue(style) {
   var index = style.indexOf('&');
   if (index !== -1) {

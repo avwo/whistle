@@ -37,8 +37,20 @@ var FrameClient = React.createClass({
         self.showTab(4);
       }
     });
-    events.on('showFrameOverview', function() {
-      self.showTab(0);
+    events.on('toggleFramesInspectors', function() {
+      var btn = self.state.btn;
+      BTNS.forEach(function(b) {
+        b.active = false;
+      });
+      if (!btn || btn === BTNS[0]) {
+        self.onClickBtn(BTNS[1]);
+      } else if (btn === BTNS[1]) {
+        self.onClickBtn(BTNS[2]);
+      } else if (btn === BTNS[2]) {
+        self.onClickBtn(BTNS[3]);
+      } else {
+        self.onClickBtn(BTNS[0]);
+      }
     });
   },
   onDragEnter: function(e) {

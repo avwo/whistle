@@ -80,7 +80,7 @@ var FrameList = React.createClass({
     return true;
   },
   onDoubleClick: function() {
-    events.trigger('showFrameOverview');
+    events.trigger('toggleFramesInspectors');
   },
   componentWillUpdate: function() {
     this.atBottom = this.shouldScrollToBottom();

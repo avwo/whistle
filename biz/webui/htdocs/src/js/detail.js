@@ -9,6 +9,7 @@ var Inspectors = require('./inspectors');
 var Frames = require('./frames');
 var Timeline = require('./timeline');
 var Composer = require('./composer');
+var dataCenter = require('./data-center');
 var Tools = require('./tools');
 
 var ReqData = React.createClass({
@@ -59,11 +60,11 @@ var ReqData = React.createClass({
     }).on('toggleInspectors', function() {
       var modal = self.props.modal;
       var item = modal && modal.getActive();
-      var isWs = item && /^ws/.test(item.url);
+      var isFrames = dataCenter.isFrames(item);
       var tab = self.state.tab;
       if (!tab || tab === tabs[0]) {
         self.toggleTab(tabs[1]);
-      } else if (isWs && tab === tabs[1]) {
+      } else if (isFrames && tab === tabs[1]) {
         self.toggleTab(tabs[2]);
       } else {
         self.toggleTab(tabs[0]);
