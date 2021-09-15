@@ -1,3 +1,5 @@
+# v2.7.22
+1. feat: 插件 auth 方法支持 `req.setRedirect(url);`
 
 # v2.7.21
 1. fix: 清除搜索框历史记录 js 报错问题
