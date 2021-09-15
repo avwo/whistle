@@ -71,6 +71,10 @@ var LEFT_BAR_MENUS = [
   {
     name: 'Clear',
     icon: 'remove'
+  },
+  {
+    name: 'Save',
+    icon: 'save-file'
   }
 ];
 
@@ -2520,34 +2524,40 @@ var Index = React.createClass({
   handleCreate: function(item) {
     this.state.name == 'rules' ? this.showCreateRules() : this.showCreateValues();
   },
+  saveRulesOrValues: function() {
+    var self = this;
+    var state = self.state;
+    var list;
+    var isRules = state.name == 'rules';
+    if (isRules) {
+      list = state.rules.getChangedList();
+      if(list.length) {
+        list.forEach(function(item) {
+          self.selectRules(item);
+        });
+        self.setState({});
+      }
+    } else {
+      list = state.values.getChangedList();
+      if (list.length) {
+        list.forEach(function(item) {
+          self.saveValues(item);
+        });
+        self.setState({});
+      }
+    }
+  },
   onClickMenu: function(e) {
     var target = $(e.target).closest('a');
     var self = this;
     var state = self.state;
-    var list;
     var isRules = state.name == 'rules';
     if (target.hasClass('w-edit-menu')) {
       isRules ? self.showEditRules() : self.showEditValues();
     } else if (target.hasClass('w-delete-menu')) {
       isRules ? self.removeRules() : self.removeValues();
     } else if (target.hasClass('w-save-menu')) {
-      if (isRules) {
-        list = state.rules.getChangedList();
-        if(list.length) {
-          list.forEach(function(item) {
-            self.selectRules(item);
-          });
-          self.setState({});
-        }
-      } else {
-        list = state.values.getChangedList();
-        if (list.length) {
-          list.forEach(function(item) {
-            self.saveValues(item);
-          });
-          self.setState({});
-        }
-      }
+      self.saveRulesOrValues();
     }
   },
   showSettings: function(e) {
@@ -2961,7 +2971,19 @@ var Index = React.createClass({
       list[0].checked = !!state.network.isTreeView;
       list[1].checked = !state.disabledAllRules;
       list[2].checked = !state.disabledAllPlugins;
-      list[3].hide = !$(e.target).closest('.w-network-menu').length;
+      var target = $(e.target);
+      list[3].hide = true;
+      list[4].hide = true;
+      if (target.closest('.w-network-menu').length) {
+        list[3].hide = false;
+      } else if (target.closest('.w-save-menu').length) {
+        list[4].hide = false;
+        if (target.closest('.w-rules-menu').length) {
+          list[4].disabled = !state.rules.hasChanged();
+        } else {
+          list[4].disabled = !state.values.hasChanged();
+        }
+      }
       this.refs.contextMenu.show(data);
     }
     e.preventDefault();
@@ -2989,6 +3011,9 @@ var Index = React.createClass({
       break;
     case 'Clear':
       self.clear();
+      return;
+    case 'Save':
+      self.saveRulesOrValues();
       return;
     }
     this.refs.contextMenu.show({});
@@ -3292,7 +3317,7 @@ var Index = React.createClass({
             className={'w-left-menu' + (forceShowLeftMenu ? ' w-hover-left-menu' : '')}
             style={{display: networkMode || mustHideLeftMenu ? 'none' : undefined}}
             onMouseEnter={forceShowLeftMenu} onMouseLeave={forceHideLeftMenu}>
-            <a onClick={this.showNetwork} title={'Double click to show' + (isTreeView ? ' List View' : ' Tree View')}
+            <a onClick={this.showNetwork}
               className="w-network-menu"
               style={{
                 background: name == 'network' ? '#ddd' : null,
@@ -3303,8 +3328,6 @@ var Index = React.createClass({
                 <i className="w-left-menu-name">Network</i>
             </a>
             <a onClick={this.showRules} className="w-save-menu w-rules-menu"
-              onDoubleClick={this.onClickMenu}
-              title="Double click to save all changed"
               style={{
                 background: name == 'rules' ? '#ddd' : null,
                 display: pluginsMode ? 'none' : undefined
@@ -3314,8 +3337,6 @@ var Index = React.createClass({
               <i className="w-menu-changed" style={{display: state.rules.hasChanged() ? undefined : 'none'}}>*</i>
             </a>
             <a onClick={this.showValues} className="w-save-menu w-values-menu"
-              onDoubleClick={this.onClickMenu}
-              title="Double click to save all changed"
               style={{
                 background: name == 'values' ? '#ddd' : null,
                 display: pluginsMode ? 'none' : undefined
