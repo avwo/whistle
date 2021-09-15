@@ -139,6 +139,9 @@ app.use(function(req, res, next) {
     if (!status) {
       return next();
     }
+    if (!msg) {
+      return res.redirect(status);
+    }
     if (status === 401) {
       return requireLogin(res);
     }
