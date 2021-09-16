@@ -10,6 +10,7 @@ var util = require('./util');
 var win = require('./win');
 
 var CMD_RE = /^([\w]{1,12})(\s+-g)?$/;
+var pendingEnable;
 
 function getPluginComparator(plugins) {
   return function(a, b) {
@@ -17,6 +18,16 @@ function getPluginComparator(plugins) {
     var p2 = plugins[b];
     return util.compare(p1.priority, p2.priority) || util.compare(p2.mtime, p1.mtime) || (a > b ? 1 : -1);
   };
+}
+
+function enableAllPlugins(e) {
+  if (pendingEnable) {
+    return;
+  }
+  pendingEnable = setTimeout(function() {
+    pendingEnable = null;
+  }, 2000);
+  events.trigger('disableAllPlugins', e);
 }
 
 function getCmd(uninstall) {
@@ -121,12 +132,13 @@ var Home = React.createClass({
     }, this.showMsgDialog);
   },
   enableAllPlugins: function(e) {
-    var data = this.props.data || {};
-    if (!data.disabledAllPlugins) {
+    var self = this;
+    var data = self.props.data || {};
+    if (pendingEnable || !data.disabledAllPlugins) {
       return;
     }
     win.confirm('Do you want to turn on Plugins?', function(sure) {
-      sure && events.trigger('disableAllPlugins', e);
+      sure && enableAllPlugins(e);
     });
   },
   setUpdateAllBtnState: function() {
@@ -334,7 +346,14 @@ var Tabs = React.createClass({
     }
 
     return (
-      <div className="w-nav-tabs fill orient-vertical-box" style={{display: self.props.hide ? 'none' : ''}}>
+      <div className="w-nav-tabs fill orient-vertical-box" style={{display: self.props.hide ? 'none' : '', paddingTop: disabled ? 0 : undefined}}>
+        {
+          disabled ?
+          <div className="w-record-status" style={{marginBottom: 5}}>
+          All plugins is disabled
+          <button className="btn btn-primary" onClick={enableAllPlugins}>Enable</button>
+          </div> : null
+        }
          <ul className="nav nav-tabs">
             <li className={'w-nav-home-tab' + (activeName == 'Home' ? ' active' : '')} data-name="Home"  onClick={self.props.onActive}><a draggable="false">Home</a></li>
             {tabs.map(function(tab) {

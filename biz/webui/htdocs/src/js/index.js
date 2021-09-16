@@ -657,9 +657,7 @@ var Index = React.createClass({
       self.valuesChanged = true;
       self.showReloadValues();
     });
-    events.on('disableAllPlugins', function(e) {
-      self.disableAllPlugins(e);
-    });
+    events.on('disableAllPlugins', self.disableAllPlugins);
     events.on('disableAllRules', self.disableAllRules);
     events.on('showFiles', function(_, data) {
       self.files = self.files || data;
