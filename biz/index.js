@@ -40,7 +40,7 @@ module.exports = function(req, res, next) {
 
   if (process.env.VERBOSE) {
     util.log(`${ fullUrl }`, colors.blue);
-    util.perf.start('received_http_request: 0ms');
+    util.perf.start('received_http_request');
   }
 
   if (!isWebUI && CUSTOM_WEBUI_PATH_RE.test(req.path)) {
@@ -116,7 +116,6 @@ module.exports = function(req, res, next) {
       isWebUI = true;
     }
   }
-  util.perf.measure('before_preprocess');
   if (bypass) {
     return next();
   }
