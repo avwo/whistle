@@ -660,6 +660,7 @@ var Index = React.createClass({
     events.on('disableAllPlugins', function(e) {
       self.disableAllPlugins(e);
     });
+    events.on('disableAllRules', self.disableAllRules);
     events.on('showFiles', function(_, data) {
       self.files = self.files || data;
       self.showFiles();
@@ -3219,7 +3220,7 @@ var Index = React.createClass({
             <MenuItem ref="pluginsMenuItem" name={name == 'plugins' ? null : 'Open'} options={pluginsOptions} checkedOptions={state.disabledPlugins} disabled={disabledAllPlugins}
               className="w-plugins-menu-item" onClick={this.showPlugins} onChange={this.disablePlugin} onClickOption={this.showAndActivePlugins} />
           </div>
-          {!state.ndr && <a onClick={this.disableAllRules} className="w-enable-plugin-menu"
+          {!state.ndr && <a onClick={this.disableAllRules} className="w-enable-rules-menu"
              title={disabledAllRules ? 'Enable all rules' : 'Disable all rules'}
             style={{display: isRules ? '' : 'none', color: disabledAllRules ? '#f66' : undefined}}
             draggable="false">

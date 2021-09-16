@@ -500,11 +500,23 @@ var List = React.createClass({
     this.props.modal.setActive(name);
     this.setState({});
   },
+  enableAllRules: function() {
+    var self = this;
+    if (self._pendingEnableRules) {
+      return;
+    }
+    self._pendingEnableRules = setTimeout(function() {
+      self._pendingEnableRules = null;
+    }, 2000);
+    $('.w-enable-rules-menu').trigger('click');
+    events.trigger('disableAllRules');
+  },
   render: function() {
     var self = this;
     var modal = self.props.modal;
     var list = modal.list;
     var data = modal.data;
+    var props = self.props;
     var activeItem = modal.getActive() || '';
     if (!activeItem && list[0] && (activeItem = data[list[0]])) {
       activeItem.active = true;
@@ -522,10 +534,18 @@ var List = React.createClass({
 
     //不设置height为0，滚动会有问题
     return (
-        <Divider hide={this.props.hide} leftWidth="220">
+      <div className={'orient-vertical-box fill' + (props.hide ? ' hide' : '')}>
+        {
+          props.disabled ?
+          <div className="w-record-status">
+          All rules is disabled
+          <button className="btn btn-primary" onClick={self.enableAllRules}>Enable</button>
+          </div> : null
+        }
+        <Divider leftWidth="220">
         <div className="fill orient-vertical-box w-list-left">
           <div ref="list" tabIndex="0" onContextMenu={this.onContextMenu}
-            className={'fill orient-vertical-box w-list-data ' + (this.props.className || '') + (this.props.disabled ? ' w-disabled' : '')}
+            className={'fill orient-vertical-box w-list-data ' + (props.className || '') + (props.disabled ? ' w-disabled' : '')}
             >
               {
                 list.map(function(name, i) {
@@ -566,6 +586,7 @@ var List = React.createClass({
             name={activeItem.name} value={activeItem.value}
           mode={isRules ? 'rules' : getSuffix(activeItem.name)} />
         </Divider>
+      </div>
     );
   }
 });
