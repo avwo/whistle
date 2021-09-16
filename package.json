@@ -68,6 +68,7 @@
   "scripts": {
     "dev": "webpack --config ./biz/webui/htdocs/src/webpack.config -w",
     "start": "node bin/whistle.js run",
+    "debug": "npx nodemon bin/whistle.js run --inspect",
     "test": "node test/index.test.js",
     "lint": "eslint *.js ./lib ./bin ./biz ./test ./docs/script",
     "lintfix": "eslint --fix *.js ./lib ./bin ./biz ./test ./docs/script",
