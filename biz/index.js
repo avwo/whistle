@@ -36,13 +36,6 @@ module.exports = function(req, res, next) {
   var isWebUI = req.path.indexOf(WEBUI_PATH) === 0;
   var isOld;
 
-  fullUrl = req.fullUrl = util.getFullUrl(req);
-
-  if (process.env.VERBOSE) {
-    util.log(`${ fullUrl }`, colors.blue);
-    util.perf.start('received_http_request');
-  }
-
   if (!isWebUI && CUSTOM_WEBUI_PATH_RE.test(req.path)) {
     isWebUI = true;
     isOld = true;
@@ -116,6 +109,9 @@ module.exports = function(req, res, next) {
       isWebUI = true;
     }
   }
+
+  fullUrl = req.fullUrl = util.getFullUrl(req);
+
   if (bypass) {
     return next();
   }
@@ -142,6 +138,10 @@ module.exports = function(req, res, next) {
       handleUIReq(req, res);
     }
   } else {
+    if (process.env.VERBOSE) {
+      util.log(`${ fullUrl }`, colors.blue);
+      util.perf.start('received_http_request');
+    }
     next();
   }
 };
