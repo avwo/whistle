@@ -4,6 +4,8 @@ var util = require('../lib/util');
 var handleUIReq = require('./webui/lib').handleRequest;
 var handleWeinreReq = require('./weinre');
 var config = require('../lib/config');
+var { PerformanceObserver, performance } = require('perf_hooks');
+var colors = require('colors/safe');
 
 var localIpCache = util.localIpCache;
 var WEBUI_PATH = config.WEBUI_PATH;
@@ -18,6 +20,18 @@ var CUSTOM_REAL_WEBUI_HOST = new RegExp('^/[\\w.-]*\\.whistle-path\\.5b6af7b9884
 var CUSTOM_INTERNAL_APP = new RegExp('^/[\\w.-]*\\.whistle-path\\.5b6af7b9884e1165[\\w.-]*/+(log|weinre|cgi)(?:\\.(\\d{1,5}))?/');
 var CUSTOM_PLUGIN_RE = new RegExp('^/[\\w.-]*\\.whistle-path\\.5b6af7b9884e1165[\\w.-]*/+whistle\\.([a-z\\d_-]+)/');
 var REAL_WEBUI_HOST_PARAM = /_whistleInternalHost_=(__([a-z\d.-]+)(?:__(\d{1,5}))?__)/;
+
+var identity = x => x;
+var log = (msg, color = identity) => {
+  require('console').log(color(msg));
+};
+
+if (process.env.VERBOSE) {
+  new PerformanceObserver(list => {
+    var entry = list.getEntries()[0];
+    log(`${ entry.name }: ${ entry.duration }ms`);
+  }).observe({ entryTypes: ['measure'], buffered: false });
+}
 
 module.exports = function(req, res, next) {
   var config = this.config;
@@ -34,6 +48,15 @@ module.exports = function(req, res, next) {
   var pluginRe = PLUGIN_RE;
   var isWebUI = req.path.indexOf(WEBUI_PATH) === 0;
   var isOld;
+
+  fullUrl = req.fullUrl = util.getFullUrl(req);
+
+  if (process.env.VERBOSE) {
+    log(`${ fullUrl }`, colors.blue);
+    log('received_http_request: 0ms');
+    performance.mark('received_http_request');
+  }
+
   if (!isWebUI && CUSTOM_WEBUI_PATH_RE.test(req.path)) {
     isWebUI = true;
     isOld = true;
@@ -107,8 +130,8 @@ module.exports = function(req, res, next) {
       isWebUI = true;
     }
   }
-  // 后续有用到
-  fullUrl = req.fullUrl = util.getFullUrl(req);
+  performance.mark('before_preprocess');
+  performance.measure('before_preprocess', 'received_http_request', 'before_preprocess');
   if (bypass) {
     return next();
   }
@@ -129,7 +152,7 @@ module.exports = function(req, res, next) {
   } else if (localRule = rules.resolveLocalRule(req)) {
     req.url = localRule.url;
     if (localRule.realPort) {
-      req.headers.host = '127.0.0.1:' + localRule.realPort; 
+      req.headers.host = '127.0.0.1:' + localRule.realPort;
       util.transformReq(req, res, localRule.realPort);
     } else {
       handleUIReq(req, res);

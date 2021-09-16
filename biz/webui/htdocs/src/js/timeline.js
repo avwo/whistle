@@ -36,6 +36,7 @@ var Timeline = React.createClass({
             {list.map(function(item) {
               var stalled = item.startTime - startTime;
               var stalledRate, dns, dnsRate, request, requestRate, response, responseRate, load, loadRate;
+              console.log(item)
               if (item.dnsTime) {
                 stalled = item.startTime - startTime;
                 stalledRate = stalled * TOTAL_RATE / maxTotal + '%';
