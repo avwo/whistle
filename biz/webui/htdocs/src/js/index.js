@@ -2639,6 +2639,30 @@ var Index = React.createClass({
       autoValuesLineWrapping: checked
     });
   },
+  confirmDisableAllRules: function(e) {
+    var self = this;
+    var state = self.state;
+    if (state.disabledAllRules) {
+      self.disableAllRules();
+    } else {
+      win.confirm('Are you sure to disable all rules', function(sure) {
+        sure && self.disableAllRules();
+      });
+    }
+    e && e.preventDefault();
+  },
+  confirmDisableAllPlugins: function(e) {
+    var self = this;
+    var state = self.state;
+    if (state.disabledAllPlugins) {
+      self.disableAllPlugins();
+    } else {
+      win.confirm('Are you sure to disable all plugins', function(sure) {
+        sure && self.disableAllPlugins();
+      });
+    }
+    e && e.preventDefault();
+  },
   disableAllRules: function(e, callback) {
     var self = this;
     var state = self.state;
@@ -3218,14 +3242,14 @@ var Index = React.createClass({
             <MenuItem ref="pluginsMenuItem" name={name == 'plugins' ? null : 'Open'} options={pluginsOptions} checkedOptions={state.disabledPlugins} disabled={disabledAllPlugins}
               className="w-plugins-menu-item" onClick={this.showPlugins} onChange={this.disablePlugin} onClickOption={this.showAndActivePlugins} />
           </div>
-          {!state.ndr && <a onClick={this.disableAllRules} className="w-enable-rules-menu"
+          {!state.ndr && <a onClick={this.confirmDisableAllRules} className="w-enable-rules-menu"
              title={disabledAllRules ? 'Enable all rules' : 'Disable all rules'}
             style={{display: isRules ? '' : 'none', color: disabledAllRules ? '#f66' : undefined}}
             draggable="false">
             <span className={'glyphicon glyphicon-' + (disabledAllRules ? 'play-circle' : 'off')}/>
             {disabledAllRules ? 'ON' : 'OFF'}
           </a>}
-          {!state.ndp && <a onClick={this.disableAllPlugins} className="w-enable-plugin-menu"
+          {!state.ndp && <a onClick={this.confirmDisableAllPlugins} className="w-enable-plugin-menu"
             title={disabledAllPlugins ? 'Enable all plugins' : 'Disable all plugins'}
             style={{display: isPlugins ? '' : 'none', color: disabledAllPlugins ? '#f66' : undefined}}
             draggable="false">
