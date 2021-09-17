@@ -1,11 +1,6 @@
 var React = require('react');
 var events = require('./events');
 
-var DISABLED = {
-  color: '#aaa',
-  cursor: 'not-allowed'
-};
-
 var UpdateAllBtn = React.createClass({
   getInitialState: function() {
     return { disabled: true };
@@ -20,10 +15,9 @@ var UpdateAllBtn = React.createClass({
     !this.state.disabled && events.trigger('updateAllPlugins');
   },
   render: function() {
+    var hide = this.state.disabled || this.props.hide;
     return (
-      <a style={this.state.disabled ? DISABLED : undefined}
-        onClick={this.updateAllPlugins} className={'w-plugins-menu' +
-        (this.props.hide ? ' hide' : '')} draggable="false">
+      <a onClick={this.updateAllPlugins} className={'w-plugins-menu w-plugin-update-btn' + (hide ? ' hide' : '')} draggable="false">
         <span className="glyphicon glyphicon-refresh" />
         UpdateAll
       </a>
