@@ -65,7 +65,10 @@ function handleConnect(options, cb) {
     proxyHost: PROXY_OPTS.host,
     proxyPort: PROXY_OPTS.port,
     headers: options.headers
-  }, function(socket, _, err) {
+  }, function(socket, svrRes, err) {
+    if (err) {
+      return cb && cb(err);
+    }
     if (!err) {
       if (TLS_PROTOS.indexOf(options.protocol) !== -1) {
         socket = tls.connect({
@@ -81,7 +84,10 @@ function handleConnect(options, cb) {
         options.body = data = null;
       }
     }
-    cb && cb(err);
+    cb && cb(null, {
+      statusCode: svrRes.statusCode,
+      headers: svrRes.headers
+    });
   }).on('error', cb || util.noop);
 }
 
@@ -103,6 +109,10 @@ function handleWebSocket(options, cb) {
       cb && cb(err);
     } else {
       socket.write(getReqRaw(options));
+      var data = options.body;
+      if ((!data || !data.length) && !cb) {
+        return drain(socket);
+      }
       parseReq(socket, function(e) {
         if (e) {
           socket.destroy();
@@ -111,8 +121,7 @@ function handleWebSocket(options, cb) {
         var statusCode = socket.statusCode;
         if (statusCode == 101) {
           var sender = getSender(socket);
-          var data = options.body;
-          if (data && data.length) {
+          if (data) {
             sender.send(data, {
               mask: true,
               binary: binary
@@ -124,14 +133,11 @@ function handleWebSocket(options, cb) {
         } else {
           socket.destroy();
         }
-        if (cb) {
-          var result = {
-            statusCode: statusCode,
-            headers: socket.headers || {},
-            body: socket.body || ''
-          };
-          cb(null, result);
-        }
+        cb && cb(null, {
+          statusCode: statusCode,
+          headers: socket.headers || {},
+          body: socket.body || ''
+        });
       }, true);
     }
   });
@@ -304,21 +310,14 @@ module.exports = function(req, res) {
     }
     if (isWs) {
       options.method = 'GET';
-      if (handleResponse) {
-        return handleWebSocket(options, handleResponse);
-      }
-      handleWebSocket(options);
+      handleWebSocket(options, handleResponse);
     } else if (isConn) {
-      if (handleResponse) {
-        return handleConnect(options, handleResponse);
-      }
-      handleConnect(options);
+      handleConnect(options, handleResponse);
     } else  {
-      if (handleResponse) {
-        return handleHttp(options, handleResponse);
-      }
-      handleHttp(options);
+      handleHttp(options, handleResponse);
     }
-    res.json({ec: 0, em: 'success'});
+    if (!handleResponse) {
+      res.json({ec: 0, em: 'success'});
+    }
   });
 };
