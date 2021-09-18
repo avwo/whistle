@@ -12,8 +12,7 @@ var hparser = require('hparser');
 var formatHeaders = hparser.formatHeaders;
 var getRawHeaders = hparser.getRawHeaders;
 var getRawHeaderNames = hparser.getRawHeaderNames;
-var BODY_SEP = Buffer.from('\r\n\r\n');
-var STATUS_CODE_RE = /^\S+\s+(\d+)/i;
+var parseReq = hparser.parse;
 var MAX_LENGTH = 1024 * 512;
 var PROXY_OPTS = {
   host: config.host || '127.0.0.1',
@@ -104,13 +103,13 @@ function handleWebSocket(options, cb) {
       cb && cb(err);
     } else {
       socket.write(getReqRaw(options));
-      var handleResponse = function(resData) {
-        var index = util.indexOfList(resData, BODY_SEP);
-        var body = '';
-        if (index !== -1) {
-          socket.removeListener('data', handleResponse);
-          socket.headers = parseHeaders(resData.slice(0, index) + '', null, options.clientId);
-          body = resData.slice(index + 4);
+      parseReq(socket, function(e) {
+        if (e) {
+          socket.destroy();
+          return cb && cb(e);
+        }
+        var statusCode = socket.statusCode;
+        if (statusCode == 101) {
           var sender = getSender(socket);
           var data = options.body;
           if (data && data.length) {
@@ -120,33 +119,20 @@ function handleWebSocket(options, cb) {
             }, util.noop);
             options.body = data = null;
           }
+          socket.body = '';
+          drain(socket);
+        } else {
+          socket.destroy();
         }
         if (cb) {
-          var statusCode = 0;
-          if (STATUS_CODE_RE.test(resData)) {
-            statusCode = parseInt(RegExp.$1, 10);
-          }
-          if (statusCode !== 101) {
-            socket.destroy();
-          }
           var result = {
             statusCode: statusCode,
-            headers: socket.headers || {}
+            headers: socket.headers || {},
+            body: socket.body || ''
           };
-          if (body) {
-            result.base64 = body.toString('base64');
-          }
           cb(null, result);
         }
-      };
-      socket.on('data', handleResponse);
-      if (cb) {
-        util.onSocketEnd(socket, function(err) {
-          socket.destroy();
-          cb(err || new Error('Closed'));
-        });
-      }
-      drain(socket);
+      }, true);
     }
   });
 }
