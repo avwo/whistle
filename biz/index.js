@@ -73,7 +73,7 @@ module.exports = function(req, res, next) {
       } else if (!req.headers[config.WEBUI_HEAD]) {
         isWebUI = false;
       }
-      if (isProxyReq && !config.isLocalUIUrl(host)) {
+      if (!config.proxyServer && isProxyReq && !config.isLocalUIUrl(host)) {
         isWebUI = false;
         req.isPluginReq = true;
         req._isProxyReq = true;
