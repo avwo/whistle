@@ -12,10 +12,12 @@ var Properties = require('./properties');
 var PropsEditor = require('./props-editor');
 var HistoryData = require('./history-data');
 var message = require('./message');
-var Dialog = require('./dialog');
 var win = require('./win');
 
-var METHODS = 'GET,POST,PUT,HEAD,TRACE,DELETE,SEARCH,CONNECT,UPGRADE,PROPFIND,PROPPATCH,MKCOL,COPY,MOVE,LOCK,UNLOCK,OPTIONS,PURGE,+ Method'.split(',');
+var METHODS = ['GET', 'POST', 'PUT', 'HEAD', 'TRACE', 'DELETE', 'SEARCH', 'CONNECT', 'UPGRADE',
+  'PROPFIND', 'PROPPATCH', 'MKCOL', 'COPY', 'MOVE', 'LOCK', 'UNLOCK', 'OPTIONS', 'PURGE', 'ACL',
+  'BIND', 'CHECKOUT', 'LINK', 'M-SEARCH', 'MERGE', 'MKACTIVITY', 'MKCALENDAR', 'NOTIFY', 'PATCH',
+  'PRI', 'REBIND', 'REPORT', 'SOURCE', 'SUBSCRIBE', 'UNBIND', 'UNLINK', 'UNSUBSCRIBE'];
 var TYPES = {
   form: 'application/x-www-form-urlencoded',
   upload: 'multipart/form-data',
@@ -29,7 +31,6 @@ var WS_RE = /^wss?:\/\//i;
 var WS_CONNNECT_RE = /^\s*connection\s*:\s*upgrade\s*$/im;
 var WS_UPGRADE_RE = /^\s*upgrade\s*:\s*websocket\s*$/im;
 var REV_TYPES = {};
-var MAX_TEXT_LEN = 200;
 var MAX_HEADERS_SIZE = 1024 * 64;
 var MAX_BODY_SIZE = 1024 * 128;
 Object.keys(TYPES).forEach(function(name) {
@@ -49,11 +50,6 @@ function hasReqBody(method, url, headers) {
     return true;
   }
   return headers && WS_CONNNECT_RE.test(headers) && WS_UPGRADE_RE.test(headers);
-}
-
-function getCustomMethodText() {
-  var text = storage.get('customComposerMethods');
-  return typeof text === 'string' ? text.substring(0, MAX_TEXT_LEN) : '';
 }
 
 function getType(headers) {
@@ -115,12 +111,8 @@ var Composer = React.createClass({
     var useH2 = storage.get('useH2InComposer') == '1';
     var disableComposerRules = storage.get('disableComposerRules') == '1';
     var method = data.method;
-    var methods = this.getCustomMethods();
     var body = getString(data.body);
     this.uploadBodyData = util.parseJSON(storage.get('composerUploadBody'));
-    if (methods.indexOf(method) === -1 || method === '+ Method') {
-      method = 'GET';
-    }
     if (body && body !== data.body) {
       message.warn('The length of the body cannot exceed 128k, and the excess will be truncated.');
     }
@@ -128,9 +120,7 @@ var Composer = React.createClass({
       historyData: [],
       disableBody: !!storage.get('disableComposerBody'),
       url: data.url,
-      method: method,
-      methodText: getCustomMethodText(),
-      methods: methods,
+      method: METHODS.indexOf(method) === -1 ? 'GET' : method,
       headers: getString(data.headers, MAX_HEADERS_SIZE),
       body: body,
       tabName: 'Request',
@@ -356,17 +346,7 @@ var Composer = React.createClass({
     if (target) {
       if (target === true || target.nodeName === 'SELECT') {
         var method = ReactDOM.findDOMNode(self.refs.method).value;
-        if (method === '+ Method') {
-          self.refs.addMethodDialog.show();
-          setTimeout(function() {
-            var box = ReactDOM.findDOMNode(self.refs.newMethods);
-            box.select();
-            box.focus();
-          }, 600);
-        } else {
-          this.state.method = method;
-        }
-        self.setState({}, self.updatePrettyData);
+        self.setState({method: method}, self.updatePrettyData);
       }
       if (target === true || target.name === 'headers') {
         clearTimeout(self.typeTimer);
@@ -696,29 +676,6 @@ var Composer = React.createClass({
     this.setState({ disableBody: disableBody });
     storage.set('disableComposerBody', disableBody ? 1 : '');
   },
-  getCustomMethods: function() {
-    var result = METHODS.slice();
-    var methods = getCustomMethodText();
-    if (methods && typeof methods === 'string') {
-      var count = 6;
-      result = result.slice(0, -1);
-      methods.trim().split(/[,;\s|]+/).forEach(function(method) {
-        if (method && method.length <= 36 && !/[^\w.-]/.test(method)) {
-          method = method.toUpperCase();
-          if (result.indexOf(method) === -1 && --count >= 0) {
-            result.push(method);
-          }
-        }
-      });
-      result.push('+ Method');
-    }
-    return result;
-  },
-  saveMethods: function() {
-    var value = ReactDOM.findDOMNode(this.refs.newMethods).value.substring(0, 200);
-    storage.set('customComposerMethods', value);
-    this.setState({ methods: this.getCustomMethods(), methodText: value });
-  },
   focusEnableBody: function() {
     this.setState({ disableBody: false });
     storage.set('disableComposerBody', '');
@@ -756,7 +713,7 @@ var Composer = React.createClass({
           <select disabled={pending} value={method}
             onChange={this.onComposerChange} ref="method"
             className="form-control w-composer-method">
-            {state.methods.map(function(m) {
+            {METHODS.map(function(m) {
               return <option value={m}>{m}</option>;
             })}
           </select>
@@ -874,16 +831,6 @@ var Composer = React.createClass({
           </div>
         </Divider>
         <HistoryData ref="historyDialog" onReplay={this.onReplay} onCompose={this.onCompose} data={historyData} />
-        <Dialog wstyle="w-composer-methods" ref="addMethodDialog">
-          <div className="modal-body">
-            <textarea ref="newMethods" maxLength="200" defaultValue={state.methodText}
-              placeholder="Input the new methods separated by space, newline, comma (,) or semicolon (;)" />
-          </div>
-          <div className="modal-footer">
-            <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={this.saveMethods}>Save</button>
-            <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
-          </div>
-        </Dialog>
       </div>
     );
   }
