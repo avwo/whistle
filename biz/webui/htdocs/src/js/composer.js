@@ -708,7 +708,7 @@ var Composer = React.createClass({
     var isForm = type === 'form';
     var method = state.method;
     var hasBody = hasReqBody(method, state.url, state.headers);
-    var showPrettyBody =  showPretty && isForm && hasBody;
+    var showPrettyBody = showPretty && isForm && hasBody;
     var showUpload = type === 'upload' && hasBody;
     var isStrictMode = dataCenter.isStrictMode();
     var disableComposerRules = isStrictMode || state.disableComposerRules;
