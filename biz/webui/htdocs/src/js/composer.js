@@ -738,7 +738,7 @@ var Composer = React.createClass({
             <input disabled={pending} type="checkbox" onChange={this.toggleH2} checked={dataCenter.supportH2 && useH2} />
             Use H2
           </label>
-          <button onClick={this.showHistory} className="btn btn-default" title={historyData.length ? 'No history' : undefined}
+          <button onClick={this.showHistory} className="btn btn-default" title={historyData.length ? undefined : 'No data'}
             disabled={disableHistory}>History</button>
         </div>
         <Divider vertical="true" rightWidth="120">
