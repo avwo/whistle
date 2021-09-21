@@ -33,7 +33,7 @@ var REV_TYPES = {};
 var MAX_HEADERS_SIZE = 1024 * 64;
 var MAX_BODY_SIZE = 1024 * 128;
 var MAX_COUNT = 64;
-var ONE_HOUR = 1000 * 60 * 60;
+var ONE_MINS = 1000 * 60;
 Object.keys(TYPES).forEach(function(name) {
   REV_TYPES[TYPES[name]] = name;
 });
@@ -286,16 +286,17 @@ var Composer = React.createClass({
     }
     return params;
   },
-  showHistory: function() {
-    this.refs.historyDialog.show();
-  },
   addHistory: function(params) {
     var historyData = this.state.historyData;
-    params.now = Date.now();
+    params.date = Date.now();
     for (var i = 0, len = historyData.length; i < len; i++) {
       var item = historyData[i];
       if (item.url === params.url && item.method === params.method
         && item.headers === params.headers && item.body === params.body) {
+        if (item.selected) {
+          this._selectedItem = item;
+          params.selected = true;
+        }
         historyData.splice(i, 1);
         break;
       }
@@ -311,17 +312,25 @@ var Composer = React.createClass({
     var result = [];
     var curHours;
     historyData.forEach(function(item) {
-      if (item.title) {
+      if (!item.url) {
         return;
       }
-      var time = Math.floor(item.date / ONE_HOUR);
+      var time = Math.floor(item.date / ONE_MINS);
       if (curHours !== time) {
         curHours = time;
         var date = new Date(item.date);
         result.push({
-          title: date.getFullYear() + '-' + util.padding(date.getMonth() + 1) + '-' + util.padding(date.getDate()) + ' ' + util.padding(date.getHours()) + ':00',
+          title: date.getFullYear() + '-' + util.padding(date.getMonth() + 1) + '-' + util.padding(date.getDate())
+            + ' ' + util.padding(date.getHours()) + ':' + util.padding(date.getMinutes()),
           time: curHours
         });
+      }
+      if (!item.title) {
+        var title = [item.method + ' ' + item.url + ' HTTP/' + (item.useH2 ? '2.0' : '1.1')];
+        item.body = item.body || '';
+        item.headers && title.push(item.headers);
+        title.push('\n', item.body);
+        item.title = title.join('\n');
       }
       result.push(item);
     });
@@ -341,8 +350,11 @@ var Composer = React.createClass({
     storage.set('useCRLBody', isCRLF ? 1 : '');
     this.setState({ isCRLF: isCRLF });
   },
-  onCompose: function(item, enableBody) {
-    this.refs.historyDialog.hide();
+  onCompose: function() {
+    var item = this._selectedItem;
+    if (!item) {
+      return;
+    }
     var refs = this.refs;
     var isHexText = !!item.isHexText;
     ReactDOM.findDOMNode(refs.url).value = item.url;
@@ -356,15 +368,19 @@ var Composer = React.createClass({
     this.state.url = item.url;
     this.state.useH2 = item.useH2;
     this.state.headers = item.headers;
-    if (enableBody && body) {
+    this.state.method = item.method;
+    if (body) {
       this.state.disableBody = false;
     }
     this.onComposerChange(true);
     storage.set('useH2InComposer', item.useH2 ? 1 : '');
   },
-  onReplay: function(item, enableBody) {
-    this.onCompose(item, enableBody);
-    this.execute();
+  onReplay: function() {
+    this.onCompose();
+    if (this._selectedItem) {
+      this.execute();
+      ReactDOM.findDOMNode(this.refs.historyList).scrollTop = 0;
+    }
   },
   onComposerChange: function(e) {
     var self = this;
@@ -658,6 +674,7 @@ var Composer = React.createClass({
       processData: false
     });
     params.date = Date.now();
+    params.body = params.body || '';
     this.addHistory(params);
     events.trigger('executeComposer');
     self.setState({ result: '', pending: true });
@@ -714,8 +731,20 @@ var Composer = React.createClass({
     this.setState({ disableBody: false });
     storage.set('disableComposerBody', '');
   },
+  selectItem: function(item) {
+    if (item.selected) {
+      return;
+    }
+    this.state.historyData.forEach(function(item) {
+      item.selected = false;
+    });
+    item.selected = true;
+    this._selectedItem = item;
+    this.setState({});
+  },
   render: function() {
-    var state = this.state;
+    var self = this;
+    var state = self.state;
     var type = state.type;
     var rules = state.rules;
     var showPretty = state.showPretty;
@@ -739,29 +768,33 @@ var Composer = React.createClass({
     var lockBody = pending || disableBody;
     var showHistory = state.showHistory;
     var historyData = state.historyData;
+    var disabledClass = self._selectedItem ? null : 'w-disabled';
     self.hasBody = hasBody;
     
     return (
-      <div className={'fill box w-detail-content w-detail-composer' + (util.getBoolean(this.props.hide) ? ' hide' : '')}>
+      <div className={'fill box w-detail-content w-detail-composer' + (util.getBoolean(self.props.hide) ? ' hide' : '')}>
          <Divider hideLeft={!showHistory} leftWidth="160">
-          <div className="fill orient-vertical-box w-history-data">
+          <div className="fill orient-vertical-box w-history-data" onMouseDown={util.preventBlur}>
             {historyData.length ? null : <div className="w-tips">
                 {state.loading ? 'Loading' : 'No history data'}
               </div>}
             {historyData.length ? <div className="w-history-bar">
-              <a onClick={this.clickReplay} draggable="false">
+              <a onClick={this.onReplay} className={disabledClass} draggable="false">
                 <span className="glyphicon glyphicon-repeat"></span>Replay
               </a>
-              <a onClick={this.composer} draggable="false">
+              <a onClick={this.onCompose} className={disabledClass} draggable="false">
                 <span className="glyphicon glyphicon-edit"></span>Compose
               </a>
             </div> : null}
-            <div className="fill w-history-list">
+            <div className="fill w-history-list" ref="historyList">
               {historyData.map(function(item) {
-                if (item.title) {
+                if (!item.url) {
                   return <p>{item.title}</p>;
                 }
-                return (<div title={item.url}>
+                return (<div onClick={function() {
+                  self.selectItem(item);
+                }} onDoubleClick={self.onCompose} title={item.title}
+                className={item.selected ? 'w-selected' : null}>
                   {item.method} {item.url}
                 </div>);
               })}
