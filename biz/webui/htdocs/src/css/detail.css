@@ -27,3 +27,7 @@
 .w-detail-inspectors {
   min-width: 560px;
 }
+
+.w-detail-bottom.w-detail {
+  border-left: none;
+}

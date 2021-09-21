@@ -1820,6 +1820,8 @@ function padding(num) {
   return num < 10 ? '0' + num : num;
 }
 
+exports.padding = padding;
+
 function paddingMS(ms) {
   if (ms > 99) {
     return ms;

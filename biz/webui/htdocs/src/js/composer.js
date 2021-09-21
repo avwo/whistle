@@ -10,7 +10,6 @@ var Divider = require('./divider');
 var ResDetail = require('./res-detail');
 var Properties = require('./properties');
 var PropsEditor = require('./props-editor');
-var HistoryData = require('./history-data');
 var message = require('./message');
 var win = require('./win');
 
@@ -33,6 +32,8 @@ var WS_UPGRADE_RE = /^\s*upgrade\s*:\s*websocket\s*$/im;
 var REV_TYPES = {};
 var MAX_HEADERS_SIZE = 1024 * 64;
 var MAX_BODY_SIZE = 1024 * 128;
+var MAX_COUNT = 64;
+var ONE_HOUR = 1000 * 60 * 60;
 Object.keys(TYPES).forEach(function(name) {
   REV_TYPES[TYPES[name]] = name;
 });
@@ -198,7 +199,7 @@ var Composer = React.createClass({
       if (Array.isArray(data)) {
         self.setState({
           loading: 0,
-          historyData: data
+          historyData: self.formatHistory(data)
         });
         return;
       }
@@ -300,11 +301,31 @@ var Composer = React.createClass({
       }
     }
     historyData.unshift(params);
-    var overflow = historyData.length - 36;
+    var overflow = historyData.length - MAX_COUNT;
     if (overflow > 0) {
-      historyData.splice(36, overflow);
+      historyData.splice(MAX_COUNT, overflow);
     }
-    this.setState({});
+    this.setState({historyData: this.formatHistory(historyData)});
+  },
+  formatHistory: function(historyData) {
+    var result = [];
+    var curHours;
+    historyData.forEach(function(item) {
+      if (item.title) {
+        return;
+      }
+      var time = Math.floor(item.date / ONE_HOUR);
+      if (curHours !== time) {
+        curHours = time;
+        var date = new Date(item.date);
+        result.push({
+          title: date.getFullYear() + '-' + util.padding(date.getMonth() + 1) + '-' + util.padding(date.getDate()) + ' ' + util.padding(date.getHours()) + ':00',
+          time: curHours
+        });
+      }
+      result.push(item);
+    });
+    return result;
   },
   onHexTextChange: function(e) {
     var isHexText = e.target.checked;
@@ -723,10 +744,28 @@ var Composer = React.createClass({
     return (
       <div className={'fill box w-detail-content w-detail-composer' + (util.getBoolean(this.props.hide) ? ' hide' : '')}>
          <Divider hideLeft={!showHistory} leftWidth="160">
-          <div className="fill w-history-list">
+          <div className="fill orient-vertical-box w-history-data">
             {historyData.length ? null : <div className="w-tips">
                 {state.loading ? 'Loading' : 'No history data'}
               </div>}
+            {historyData.length ? <div className="w-history-bar">
+              <a onClick={this.clickReplay} draggable="false">
+                <span className="glyphicon glyphicon-repeat"></span>Replay
+              </a>
+              <a onClick={this.composer} draggable="false">
+                <span className="glyphicon glyphicon-edit"></span>Compose
+              </a>
+            </div> : null}
+            <div className="fill w-history-list">
+              {historyData.map(function(item) {
+                if (item.title) {
+                  return <p>{item.title}</p>;
+                }
+                return (<div title={item.url}>
+                  {item.method} {item.url}
+                </div>);
+              })}
+            </div>
           </div>
           <div className="fill orient-vertical-box">
             <div className="w-composer-url box">
@@ -854,7 +893,6 @@ var Composer = React.createClass({
             </Divider>
           </div>
         </Divider>
-        <HistoryData ref="historyDialog" onReplay={this.onReplay} onCompose={this.onCompose} data={historyData} />
       </div>
     );
   }

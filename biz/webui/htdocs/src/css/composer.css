@@ -7,6 +7,7 @@
 .w-composer-execute {padding: 0 8px; line-height: 24px; margin-left: 4px;}
 .w-composer-tabs {
   position: relative;
+  padding: 0!important;
 }
 .w-composer-tabs .btn {
   position: absolute;
@@ -143,38 +144,44 @@
     left: 210px;
 }
 
-.w-history-list {
+.w-history-data {
   position: relative;
-  overflow-y: auto;
+  overflow: hidden;
   font-size: 12px;
 }
 
-.w-composer-history td {
+.w-history-bar {
+  line-height: 30px;
+  padding-left: 10px;
+  border-bottom: 1px solid #ccc;
+  background-color: #f1f3f4;
+  padding: 0!important;
+}
+
+.w-history-bar>a:first-child {
+  margin-right: 15px;
+}
+
+.w-history-list p {
+  padding: 0 0 0 5px;
+  line-height: 22px;
+  margin: 5px 0 0;
+  font-weight: bold;
+}
+
+.w-history-list div {
+  line-height: 22px;
+  padding: 0 10px;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-}
-.w-composer-history th {
-  padding: 8px!important;
-}
-.w-composer-history-order {
-  width: 40px;
-}
-.w-composer-history-date {
-  width: 200px;
-}
-.w-composer-history-method {
-  width: 110px;
-}
-.w-composer-history-operation {
-  width: 136px;
-}
-.w-composer-history-url strong {
-  margin-right: 5px;
+  width: 100%;
+  cursor: default;
 }
 
-.w-composer-history-body {
-  width: 260px;
+.w-history-list div.w-selected, .w-history-list div:hover {
+  background-color: #337ab7!important;
+  color: #fff!important;
 }
 
 .w-composer-history-operation .btn {
@@ -231,7 +238,12 @@
   position: absolute;
 }
 
-.w-history-list .w-tips {
+.w-history-list {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.w-history-data .w-tips {
   position: absolute;
   top: 50%;
   left: 0;

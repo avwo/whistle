@@ -209,7 +209,7 @@ var ReqData = React.createClass({
     var frames = activeItem && activeItem.frames;
     var dockToBottom = this.props.dockToBottom;
     return (
-        <div className="fill orient-vertical-box w-detail" onDragEnter={this.onDragEnter} onDrop={this.onDrop}>
+        <div className={'fill orient-vertical-box w-detail' + (dockToBottom ? ' w-detail-bottom' : '')} onDragEnter={this.onDragEnter} onDrop={this.onDrop}>
         <BtnGroup dockBtn={
           <button
             onClick={this.props.onDockChange}
