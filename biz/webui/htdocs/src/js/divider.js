@@ -73,12 +73,12 @@ var Divider = React.createClass({
     return (
         <div ref="divider" className={(vertical ? 'orient-vertical-box' : 'box') + ' fill w-divider-con ' + (this.props.className || '')
             + (util.getBoolean(this.props.hide) ? ' hide' : '')}>
-          <div className={(leftWidth ? '' : 'fill ') + 'w-divider-left orient-vertical-box ' + (this.props.leftClassName || '')}>
-            {leftWidth ? divider : ''}
+          <div style={this.props.hideLeft ? HIDE : undefined} className={(leftWidth ? '' : 'fill ') + 'w-divider-left orient-vertical-box ' + (this.props.leftClassName || '')}>
+            {leftWidth ? divider : null}
             {this.props.children[0]}
           </div>
           <div style={this.props.hideRight ? HIDE : undefined} className={(leftWidth ? 'fill ' : '') + 'w-divider-right orient-vertical-box ' + (this.props.rightClassName || '')}>
-            {leftWidth ? '' : divider}
+            {leftWidth ? null : divider}
             {this.props.children[1]}
           </div>
         </div>

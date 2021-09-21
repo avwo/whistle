@@ -143,6 +143,12 @@
     left: 210px;
 }
 
+.w-history-list {
+  position: relative;
+  overflow-y: auto;
+  font-size: 12px;
+}
+
 .w-composer-history td {
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -215,15 +221,33 @@
 .w-composer-use-h2, .w-composer-enable-rules, .w-composer-enable-body {
   position: absolute;
   top: 0;
-  right: 100px;
+}
+.w-composer-use-h2 {
+  right: 75px;
+}
+
+.w-composer-history {
+  right: 2px;
+  position: absolute;
+}
+
+.w-history-list .w-tips {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  margin-top: -15px;
+  text-align: center;
+  width: 100%;
+  color: #999;
+  font-size: 13px;
 }
 
 .w-composer-enable-rules {
-  right: 180px;
+  right: 145px;
 }
 
 .w-composer-enable-body {
-  right: 255px;
+  right: 210px;
 }
 
 .w-composer-tabs input {

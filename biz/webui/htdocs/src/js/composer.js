@@ -117,7 +117,9 @@ var Composer = React.createClass({
       message.warn('The length of the body cannot exceed 128k, and the excess will be truncated.');
     }
     return {
+      loading: true,
       historyData: [],
+      showHistory: !!storage.get('showHistory'),
       disableBody: !!storage.get('disableComposerBody'),
       url: data.url,
       method: METHODS.indexOf(method) === -1 ? 'GET' : method,
@@ -184,13 +186,18 @@ var Composer = React.createClass({
       self.setState({});
     });
     self.updatePrettyData();
-    self.loadHistory();
+    self.state.showHistory && self.loadHistory();
   },
   loadHistory: function() {
     var self = this;
+    if (self.state.loading === 2) {
+      return;
+    }
+    self.state.loading = 2;
     dataCenter.getHistory(function(data) {
       if (Array.isArray(data)) {
         self.setState({
+          loading: 0,
           historyData: data
         });
         return;
@@ -450,6 +457,12 @@ var Composer = React.createClass({
     storage.set('useH2InComposer', useH2 ? 1 : '');
     self.setState({ useH2: useH2 });
   },
+  toggleHistory: function() {
+    var showHistory = !this.state.showHistory;
+    this.setState({showHistory: showHistory});
+    storage.set('showHistory', showHistory ? '1' : '');
+    showHistory && this.loadHistory();
+  },
   setRulesDisable: function(disableComposerRules) {
     storage.set('disableComposerRules', disableComposerRules ? 1 : 0);
     this.setState({ disableComposerRules: disableComposerRules });
@@ -695,8 +708,6 @@ var Composer = React.createClass({
     var isForm = type === 'form';
     var method = state.method;
     var hasBody = hasReqBody(method, state.url, state.headers);
-    var historyData = state.historyData;
-    var disableHistory = !historyData.length || pending;
     var showPrettyBody =  showPretty && isForm && hasBody;
     var showUpload = type === 'upload' && hasBody;
     var isStrictMode = dataCenter.isStrictMode();
@@ -705,129 +716,142 @@ var Composer = React.createClass({
     var isCRLF = state.isCRLF;
     var disableBody = state.disableBody;
     var lockBody = pending || disableBody;
+    var showHistory = state.showHistory;
+    var historyData = state.historyData;
     self.hasBody = hasBody;
     
     return (
-      <div className={'fill orient-vertical-box w-detail-content w-detail-composer' + (util.getBoolean(this.props.hide) ? ' hide' : '')}>
-        <div className="w-composer-url box">
-          <select disabled={pending} value={method}
-            onChange={this.onComposerChange} ref="method"
-            className="form-control w-composer-method">
-            {METHODS.map(function(m) {
-              return <option value={m}>{m}</option>;
-            })}
-          </select>
-          <input readOnly={pending} defaultValue={state.url} onKeyUp={this.execute} onChange={this.onComposerChange} onKeyDown={this.onKeyDown}
-            onFocus={this.selectAll} ref="url" type="text" maxLength="8192" placeholder="Input the url" className="fill w-composer-input" />
-          <button disabled={pending} onClick={this.execute} className="btn btn-primary w-composer-execute">
-            <span className="glyphicon glyphicon-send" />
-          </button>
-        </div>
-        <div className="w-detail-inspectors-title w-composer-tabs">
-          <button onClick={this.onTabChange} name="Request" className={showRequest ? 'w-tab-btn w-active' : 'w-tab-btn'}>Request</button>
-          <button title={result.url} onClick={this.onTabChange} name="Response"  className={showResponse ? 'w-tab-btn w-active' : 'w-tab-btn'}>Response</button>
-          <label className="w-composer-enable-body">
-            <input disabled={pending} checked={!disableBody} type="checkbox" onChange={this.onBodyStateChange} />
-            Body
-          </label>
-          <label className="w-composer-enable-rules">
-            <input disabled={pending} onChange={this.onDisableChange} checked={!state.disableComposerRules} type="checkbox" />
-            Rules
-          </label>
-          <label className="w-composer-use-h2">
-            <input disabled={pending} type="checkbox" onChange={this.toggleH2} checked={dataCenter.supportH2 && useH2} />
-            Use H2
-          </label>
-          <button onClick={this.showHistory} className="btn btn-default" title={historyData.length ? undefined : 'No data'}
-            disabled={disableHistory}>History</button>
-        </div>
-        <Divider vertical="true" rightWidth="120">
-          <div className="orient-vertical-box fill">
-            <Divider hide={!showRequest} vertical="true">
-              <div className="fill orient-vertical-box w-composer-headers">
-                <div className="w-composer-bar" onChange={this.onTypeChange}>
-                  <label>
-                    <input onChange={this.onShowPretty} type="checkbox" checked={showPretty} />
-                    Pretty
-                  </label>
-                  <label className="w-composer-label">Type:</label>
-                  <label>
-                    <input disabled={pending}  data-type="form" name="type" type="radio" checked={isForm} />
-                    Form
-                  </label>
-                  <label>
-                    <input disabled={pending}  data-type="upload" name="type" type="radio" checked={type === 'upload'} />
-                    Upload
-                  </label>
-                  <label>
-                    <input disabled={pending}  data-type="json" name="type" type="radio" checked={type === 'json'} />
-                    JSON
-                  </label>
-                  <label>
-                    <input disabled={pending}  data-type="text" name="type" type="radio" checked={type === 'text'} />
-                    Text
-                  </label>
-                  <label className="w-custom-type" title="Directly modify Content-Type in the headers">
-                    <input data-type="custom" name="type" type="radio" checked={type === 'custom'} disabled />
-                    Custom
-                  </label>
-                  <button disabled={pending} className={'btn btn-primary' + (showPretty ? '' : ' hide')} onClick={this.addHeader}>Add header</button>
-                </div>
-                <textarea readOnly={pending} defaultValue={state.headers} onChange={this.onComposerChange} maxLength={MAX_HEADERS_SIZE}
-                  onKeyDown={this.onKeyDown} ref="headers" placeholder="Input the headers" name="headers"
-                  className={'fill orient-vertical-box' + (showPretty ? ' hide' : '')} />
-                <PropsEditor disabled={pending} ref="prettyHeaders" isHeader="1" hide={!showPretty} onChange={this.onHeaderChange} />
-              </div>
-              <div className="fill orient-vertical-box w-composer-body">
-                <div className="w-composer-bar">
-                  <label className="w-composer-label">
-                    <input disabled={pending} checked={!disableBody} type="checkbox" onChange={this.onBodyStateChange} />
-                    Body
-                  </label>
-                  <label className={'w-composer-hex-text' + (isHexText ? ' w-checked' : '') + (showUpload ? ' hide' : '')} onDoubleClick={this.focusEnableBody}>
-                    <input disabled={lockBody} checked={isHexText} type="checkbox" onChange={this.onHexTextChange} />HexText
-                  </label>
-                  <label className={'w-composer-crlf' + (isHexText || showUpload ? ' hide' : '')
-                    + (isCRLF ? ' w-checked' : '')} onDoubleClick={this.focusEnableBody}>
-                    <input disabled={lockBody} checked={isCRLF} onChangeCapture={this.onCRLFChange} type="checkbox" />\r\n
-                  </label>
-                  <button disabled={lockBody} className={'btn btn-default' + (showPrettyBody || isHexText || showUpload ? ' hide' : '')} onClick={this.formatJSON}>Format JSON</button>
-                  <button disabled={lockBody} className={'btn btn-primary' + (showPrettyBody && !isHexText || showUpload ? '' : ' hide')} onClick={showUpload ? this.addUploadFiled : this.addField}>Add field</button>
-                </div>
-                <textarea readOnly={lockBody} defaultValue={state.body} onChange={this.onComposerChange} maxLength={MAX_BODY_SIZE} onDoubleClick={this.focusEnableBody}
-                  style={{background: hasBody && !disableBody ? 'lightyellow' : undefined, fontFamily: isHexText ? 'monospace' : undefined }}
-                  onKeyDown={this.onKeyDown} ref="body" placeholder={hasBody ? 'Input the ' + (isHexText ? 'hex text' : 'body') : method + ' operations cannot have a request body'}
-                  title={hasBody ? undefined : method + ' operations cannot have a request body'}
-                  className={'fill orient-vertical-box' + (showPrettyBody && !isHexText || showUpload ? ' hide' : '')} />
-                <PropsEditor onDoubleClick={this.focusEnableBody} disabled={lockBody} ref="prettyBody" hide={!showPrettyBody || isHexText || showUpload} onChange={this.onFieldChange} />
-                <PropsEditor onDoubleClick={this.focusEnableBody} disabled={lockBody} ref="uploadBody" hide={!showUpload} onChange={this.onUploadFieldChange} allowUploadFile title={hasBody ? undefined : method + ' operations cannot have a request body'} />
-              </div>
-            </Divider>
-            {state.initedResponse ? (
-              <div style={{display: showResponse ? undefined : 'none'}} className={'w-composer-res-' + getStatus(statusCode)}>
-                <button onClick={this.onTabChange} name="Request" className="btn btn-default w-composer-back-btn" title="Back to Request"><span className="glyphicon glyphicon-menu-left"></span></button>
-                <Properties modal={{ 'Status Code': statusCode == null ? 'aborted' : statusCode }} />
-              </div>
-            ) : undefined}
-            {state.initedResponse ? <ResDetail modal={result} hide={!showResponse} /> : undefined}
+      <div className={'fill box w-detail-content w-detail-composer' + (util.getBoolean(this.props.hide) ? ' hide' : '')}>
+         <Divider hideLeft={!showHistory} leftWidth="160">
+          <div className="fill w-history-list">
+            {historyData.length ? null : <div className="w-tips">
+                {state.loading ? 'Loading' : 'No history data'}
+              </div>}
           </div>
-          <div ref="rulesCon" onDoubleClick={this.enableRules} title={isStrictMode ? TIPS : undefined}
-            className="orient-vertical-box fill w-composer-rules">
-            <div className="w-detail-inspectors-title">
-              <label>
+          <div className="fill orient-vertical-box">
+            <div className="w-composer-url box">
+              <select disabled={pending} value={method}
+                onChange={this.onComposerChange} ref="method"
+                className="form-control w-composer-method">
+                {METHODS.map(function(m) {
+                  return <option value={m}>{m}</option>;
+                })}
+              </select>
+              <input readOnly={pending} defaultValue={state.url} onKeyUp={this.execute} onChange={this.onComposerChange} onKeyDown={this.onKeyDown}
+                onFocus={this.selectAll} ref="url" type="text" maxLength="8192" placeholder="Input the url" className="fill w-composer-input" />
+              <button disabled={pending} onClick={this.execute} className="btn btn-primary w-composer-execute">
+                <span className="glyphicon glyphicon-send" />
+              </button>
+            </div>
+            <div className="w-detail-inspectors-title w-composer-tabs">
+              <button onClick={this.onTabChange} name="Request" className={showRequest ? 'w-tab-btn w-active' : 'w-tab-btn'}>Request</button>
+              <button title={result.url} onClick={this.onTabChange} name="Response"  className={showResponse ? 'w-tab-btn w-active' : 'w-tab-btn'}>Response</button>
+              <label className="w-composer-enable-body">
+                <input disabled={pending} checked={!disableBody} type="checkbox" onChange={this.onBodyStateChange} />
+                Body
+              </label>
+              <label className="w-composer-enable-rules">
                 <input disabled={pending} onChange={this.onDisableChange} checked={!state.disableComposerRules} type="checkbox" />
                 Rules
               </label>
+              <label className="w-composer-use-h2">
+                <input disabled={pending} type="checkbox" onChange={this.toggleH2} checked={dataCenter.supportH2 && useH2} />
+                Use H2
+              </label>
+              <label className="w-composer-history">
+                <input disabled={pending} type="checkbox" onChange={this.toggleHistory} checked={showHistory} />
+                History
+              </label>
             </div>
-            <textarea
-              disabled={disableComposerRules || pending}
-              defaultValue={rules}
-              ref='composerRules'
-              onChange={this.onRulesChange}
-              style={{background: !disableComposerRules && rules ? 'lightyellow' : undefined }}
-              maxLength="8192"
-              className="fill orient-vertical-box w-composer-rules"
-              placeholder="Input the rules" />
+            <Divider vertical="true" rightWidth="120">
+              <div className="orient-vertical-box fill">
+                <Divider hide={!showRequest} vertical="true">
+                  <div className="fill orient-vertical-box w-composer-headers">
+                    <div className="w-composer-bar" onChange={this.onTypeChange}>
+                      <label>
+                        <input onChange={this.onShowPretty} type="checkbox" checked={showPretty} />
+                        Pretty
+                      </label>
+                      <label className="w-composer-label">Type:</label>
+                      <label>
+                        <input disabled={pending}  data-type="form" name="type" type="radio" checked={isForm} />
+                        Form
+                      </label>
+                      <label>
+                        <input disabled={pending}  data-type="upload" name="type" type="radio" checked={type === 'upload'} />
+                        Upload
+                      </label>
+                      <label>
+                        <input disabled={pending}  data-type="json" name="type" type="radio" checked={type === 'json'} />
+                        JSON
+                      </label>
+                      <label>
+                        <input disabled={pending}  data-type="text" name="type" type="radio" checked={type === 'text'} />
+                        Text
+                      </label>
+                      <label className="w-custom-type" title="Directly modify Content-Type in the headers">
+                        <input data-type="custom" name="type" type="radio" checked={type === 'custom'} disabled />
+                        Custom
+                      </label>
+                      <button disabled={pending} className={'btn btn-primary' + (showPretty ? '' : ' hide')} onClick={this.addHeader}>Add header</button>
+                    </div>
+                    <textarea readOnly={pending} defaultValue={state.headers} onChange={this.onComposerChange} maxLength={MAX_HEADERS_SIZE}
+                      onKeyDown={this.onKeyDown} ref="headers" placeholder="Input the headers" name="headers"
+                      className={'fill orient-vertical-box' + (showPretty ? ' hide' : '')} />
+                    <PropsEditor disabled={pending} ref="prettyHeaders" isHeader="1" hide={!showPretty} onChange={this.onHeaderChange} />
+                  </div>
+                  <div className="fill orient-vertical-box w-composer-body">
+                    <div className="w-composer-bar">
+                      <label className="w-composer-label">
+                        <input disabled={pending} checked={!disableBody} type="checkbox" onChange={this.onBodyStateChange} />
+                        Body
+                      </label>
+                      <label className={'w-composer-hex-text' + (isHexText ? ' w-checked' : '') + (showUpload ? ' hide' : '')} onDoubleClick={this.focusEnableBody}>
+                        <input disabled={lockBody} checked={isHexText} type="checkbox" onChange={this.onHexTextChange} />HexText
+                      </label>
+                      <label className={'w-composer-crlf' + (isHexText || showUpload ? ' hide' : '')
+                        + (isCRLF ? ' w-checked' : '')} onDoubleClick={this.focusEnableBody}>
+                        <input disabled={lockBody} checked={isCRLF} onChangeCapture={this.onCRLFChange} type="checkbox" />\r\n
+                      </label>
+                      <button disabled={lockBody} className={'btn btn-default' + (showPrettyBody || isHexText || showUpload ? ' hide' : '')} onClick={this.formatJSON}>Format JSON</button>
+                      <button disabled={lockBody} className={'btn btn-primary' + (showPrettyBody && !isHexText || showUpload ? '' : ' hide')} onClick={showUpload ? this.addUploadFiled : this.addField}>Add field</button>
+                    </div>
+                    <textarea readOnly={lockBody} defaultValue={state.body} onChange={this.onComposerChange} maxLength={MAX_BODY_SIZE} onDoubleClick={this.focusEnableBody}
+                      style={{background: hasBody && !disableBody ? 'lightyellow' : undefined, fontFamily: isHexText ? 'monospace' : undefined }}
+                      onKeyDown={this.onKeyDown} ref="body" placeholder={hasBody ? 'Input the ' + (isHexText ? 'hex text' : 'body') : method + ' operations cannot have a request body'}
+                      title={hasBody ? undefined : method + ' operations cannot have a request body'}
+                      className={'fill orient-vertical-box' + (showPrettyBody && !isHexText || showUpload ? ' hide' : '')} />
+                    <PropsEditor onDoubleClick={this.focusEnableBody} disabled={lockBody} ref="prettyBody" hide={!showPrettyBody || isHexText || showUpload} onChange={this.onFieldChange} />
+                    <PropsEditor onDoubleClick={this.focusEnableBody} disabled={lockBody} ref="uploadBody" hide={!showUpload} onChange={this.onUploadFieldChange} allowUploadFile title={hasBody ? undefined : method + ' operations cannot have a request body'} />
+                  </div>
+                </Divider>
+                {state.initedResponse ? (
+                  <div style={{display: showResponse ? undefined : 'none'}} className={'w-composer-res-' + getStatus(statusCode)}>
+                    <button onClick={this.onTabChange} name="Request" className="btn btn-default w-composer-back-btn" title="Back to Request"><span className="glyphicon glyphicon-menu-left"></span></button>
+                    <Properties modal={{ 'Status Code': statusCode == null ? 'aborted' : statusCode }} />
+                  </div>
+                ) : undefined}
+                {state.initedResponse ? <ResDetail modal={result} hide={!showResponse} /> : undefined}
+              </div>
+              <div ref="rulesCon" onDoubleClick={this.enableRules} title={isStrictMode ? TIPS : undefined}
+                className="orient-vertical-box fill w-composer-rules">
+                <div className="w-detail-inspectors-title">
+                  <label>
+                    <input disabled={pending} onChange={this.onDisableChange} checked={!state.disableComposerRules} type="checkbox" />
+                    Rules
+                  </label>
+                </div>
+                <textarea
+                  disabled={disableComposerRules || pending}
+                  defaultValue={rules}
+                  ref='composerRules'
+                  onChange={this.onRulesChange}
+                  style={{background: !disableComposerRules && rules ? 'lightyellow' : undefined }}
+                  maxLength="8192"
+                  className="fill orient-vertical-box w-composer-rules"
+                  placeholder="Input the rules" />
+              </div>
+            </Divider>
           </div>
         </Divider>
         <HistoryData ref="historyDialog" onReplay={this.onReplay} onCompose={this.onCompose} data={historyData} />
