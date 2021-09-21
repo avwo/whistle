@@ -1,3 +1,7 @@
+# v2.7.23
+1. style: 优化显示 Composer 历史记录列表
+2. style: 禁用 Rules、Plugins 显示小黄条提醒
+
 # v2.7.22
 1. feat: 插件 auth 方法支持 `req.setRedirect(url);`
 2. perf: 优化启动速度
