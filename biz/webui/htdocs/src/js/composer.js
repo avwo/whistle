@@ -726,6 +726,9 @@ var Composer = React.createClass({
     var disableBody = !e.target.checked;
     this.setState({ disableBody: disableBody });
     storage.set('disableComposerBody', disableBody ? 1 : '');
+    if (!disableBody) {
+      this.setState({ tabName: 'Request' });
+    }
   },
   focusEnableBody: function() {
     this.setState({ disableBody: false });
