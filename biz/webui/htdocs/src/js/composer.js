@@ -782,7 +782,8 @@ var Composer = React.createClass({
     self.hasBody = hasBody;
     
     return (
-      <div className={'fill box w-detail-content w-detail-composer' + (util.getBoolean(self.props.hide) ? ' hide' : '')}>
+      <div className={'fill box w-detail-content w-detail-composer' + (showHistory ? ' w-show-history' : '')
+          + (util.getBoolean(self.props.hide) ? ' hide' : '')}>
          <Divider hideLeft={!showHistory} leftWidth="160">
           <div className="fill orient-vertical-box w-history-data" onMouseDown={util.preventBlur}>
             {historyData.length ? null : <div className="w-tips">
