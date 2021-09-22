@@ -287,14 +287,15 @@ var Composer = React.createClass({
     return params;
   },
   addHistory: function(params) {
-    var historyData = this.state.historyData;
+    var self = this;
+    var historyData = self.state.historyData;
     params.date = Date.now();
     for (var i = 0, len = historyData.length; i < len; i++) {
       var item = historyData[i];
       if (item.url === params.url && item.method === params.method
         && item.headers === params.headers && item.body === params.body) {
         if (item.selected) {
-          this._selectedItem = item;
+          self._selectedItem = item;
           params.selected = true;
         }
         historyData.splice(i, 1);
@@ -305,8 +306,14 @@ var Composer = React.createClass({
     var overflow = historyData.length - MAX_COUNT;
     if (overflow > 0) {
       historyData.splice(MAX_COUNT, overflow);
+      self._selectedItem = null;
+      historyData.forEach(function(item) {
+        if (item.selected) {
+          self._selectedItem = item;
+        }
+      });
     }
-    this.setState({historyData: this.formatHistory(historyData)});
+    self.setState({historyData: self.formatHistory(historyData)});
   },
   formatHistory: function(historyData) {
     var result = [];

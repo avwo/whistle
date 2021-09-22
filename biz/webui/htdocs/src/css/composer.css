@@ -179,9 +179,13 @@
   cursor: default;
 }
 
-.w-history-list div.w-selected, .w-history-list div:hover {
+.w-history-list div.w-selected{
   background-color: #337ab7!important;
   color: #fff!important;
+}
+
+.w-history-list div:hover {
+  color: #337ab7;
 }
 
 .w-composer-history-operation .btn {
