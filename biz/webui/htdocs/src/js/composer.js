@@ -518,10 +518,10 @@ var Composer = React.createClass({
     }
     var refs = this.refs;
     var url = ReactDOM.findDOMNode(refs.url).value.trim();
-    this.onComposerChange();
-    if (!url) {
+    if (!url || this.state.pending) {
       return;
     }
+    this.onComposerChange();
     this.setState({ tabName: 'Request' });
     var disableComposerRules = dataCenter.isStrictMode() || this.state.disableComposerRules;
     var rules = disableComposerRules ? null : this.state.rules;
@@ -768,7 +768,7 @@ var Composer = React.createClass({
     var lockBody = pending || disableBody;
     var showHistory = state.showHistory;
     var historyData = state.historyData;
-    var disabledClass = self._selectedItem ? null : 'w-disabled';
+    var disabledClass = self._selectedItem && !pending ? null : 'w-disabled';
     self.hasBody = hasBody;
     
     return (

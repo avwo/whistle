@@ -165,8 +165,8 @@
 .w-history-list p {
   padding: 0 0 0 5px;
   line-height: 22px;
-  margin: 5px 0 0;
-  font-weight: bold;
+  margin: 8px 0 0;
+  color: #666;
 }
 
 .w-history-list div {
