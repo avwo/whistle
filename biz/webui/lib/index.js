@@ -139,6 +139,8 @@ app.use(function(req, res, next) {
     if (!status) {
       return next();
     }
+    res.set('x-server', 'whistle');
+    res.set('x-server-type', 'webui');
     if (!msg) {
       return res.redirect(status);
     }
