@@ -254,16 +254,22 @@ var Overview = React.createClass({
               return rule.raw;
             }).join('\n');
           } else {
-            rulesModal[name] = getRuleStr(rule);
+            var ruleStr = getRuleStr(rule);
+            rulesModal[name] = ruleStr;
             titleModal[name] = rule ? rule.raw : undefined;
-            var curUrl;
             if (name === 'proxy') {
-              curUrl = realUrl;
+              if (realUrl && ruleStr) {
+                rulesModal[name] += ruleStr + ' (' + realUrl + ')';
+              }
             } else if (name === 'host') {
-              curUrl = rules.proxy && rules.proxy.matcher || realUrl;
-            }
-            if (curUrl && rulesModal[name]) {
-              rulesModal[name] += '\n👉 ' + curUrl + ' 👈';
+              var result = [];
+              if (ruleStr) {
+                result.push(ruleStr + (realUrl ? ' (' + realUrl + ')' : ''));
+              }
+              if (rules.proxy && rules.proxy.host) {
+                result.push(getRuleStr(rules.proxy.host) + ' (' + rules.proxy.matcher + ')');
+              }
+              rulesModal[name] = result.join('\n');
             }
           }
         });
