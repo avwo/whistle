@@ -1,0 +1,22 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - 'master'
+  workflow_dispatch:
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+      - 
+        name: Publish to Registry
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          name: dragontao/whistle
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
