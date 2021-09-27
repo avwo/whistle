@@ -140,7 +140,7 @@ app.use(function(req, res, next) {
       return next();
     }
     res.set('x-server', 'whistle');
-    res.set('x-server-type', 'webui');
+    res.set('x-module', 'webui');
     if (!msg) {
       return res.redirect(status);
     }
