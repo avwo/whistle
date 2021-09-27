@@ -1,3 +1,6 @@
+# v2.7.24
+1. refactor: 优化 `lineProps://proxyHost|proxyTunnel|proxyFirst`
+
 # v2.7.23
 1. style: 优化显示 Composer 历史记录列表
 2. style: 禁用 Rules、Plugins 显示小黄条提醒
