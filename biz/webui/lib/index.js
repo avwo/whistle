@@ -147,6 +147,7 @@ app.use(function(req, res, next) {
     if (status === 401) {
       return requireLogin(res);
     }
+    res.set('Content-Type', 'text/html; charset=utf8');
     if (status === 502) {
       return res.status(502).end(msg || 'Error');
     }
