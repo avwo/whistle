@@ -1892,16 +1892,19 @@ var Index = React.createClass({
         }
       }
     }
-
-    if (name &&  this.state.plugins[name + ':']) {
+    var plugin = name &&  this.state.plugins[name + ':'];
+    if (plugin) {
       if (tabs.length >= MAX_PLUGINS_TABS) {
-        win.alert('You can only open ' + MAX_PLUGINS_TABS + ' tabs.');
+        win.alert('At most ' + MAX_PLUGINS_TABS + ' tabs can be opened at the same time.');
         return this.showPlugins();
       }
       active = name;
+      if (plugin.pluginHomepage && !plugin.openInPlugins) {
+        return window.open(plugin.pluginHomepage);
+      }
       tabs.push({
         name: name,
-        url: 'plugin.' + name + '/'
+        url: plugin.pluginHomepage || 'plugin.' + name + '/'
       });
     }
 

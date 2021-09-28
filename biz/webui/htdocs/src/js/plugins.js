@@ -182,6 +182,7 @@ var Home = React.createClass({
                   var plugin = plugins[name];
                   name = name.slice(0, -1);
                   var checked = !disabledPlugins[name];
+                  var openOutside = plugin.pluginHomepage && !plugin.openInPlugins;
                   var url = plugin.pluginHomepage || 'plugin.' + name + '/';
                   var hasNew = util.compareVersion(plugin.latest, plugin.version);
                   if (hasNew) {
@@ -196,14 +197,14 @@ var Home = React.createClass({
                           data-name={name} checked={ndp || checked} disabled={!ndp && disabled} onChange={self.props.onChange} className={ndp ? 'w-not-allowed' : undefined} />
                       </td>
                       <td className="w-plugins-date">{util.toLocaleString(new Date(plugin.mtime))}</td>
-                      <td className="w-plugins-name" title={plugin.moduleName}><a href={url} target="_blank" data-name={name} onClick={plugin.pluginHomepage ? null : self.onOpen}>{name}</a></td>
+                      <td className="w-plugins-name" title={plugin.moduleName}><a href={url} target="_blank" data-name={name} onClick={openOutside ? null : self.onOpen}>{name}</a></td>
                       <td className="w-plugins-version">
                         {plugin.homepage ? <a href={plugin.homepage} target="_blank">{plugin.version}</a> : plugin.version}
                         {hasNew ? (plugin.homepage ? <a className="w-new-version" href={plugin.homepage} target="_blank">{hasNew}</a>
                         : <span className="w-new-version">{hasNew}</span>) : undefined}
                       </td>
                       <td className="w-plugins-operation">
-                        <a href={url} target="_blank" data-name={name} className="w-plugin-btn" onClick={plugin.pluginHomepage ? null : self.onOpen}>Option</a>
+                        <a href={url} target="_blank" data-name={name} className="w-plugin-btn" onClick={openOutside ? null : self.onOpen}>Option</a>
                         {(plugin.rules || plugin._rules || plugin.resRules) ? <a draggable="false" data-name={name} onClick={self.showRules}>Rules</a> : <span className="disabled">Rules</span>}
                         {plugin.isProj ? <span className="disabled">Update</span> : <a draggable="false" className="w-plugin-btn w-plugin-update-btn"
                           data-name={name} onClick={self.showUpdate}>Update</a>}
