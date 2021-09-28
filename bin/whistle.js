@@ -10,7 +10,6 @@ var plugin = require('./plugin');
 
 var showUsage = util.showUsage;
 var error = util.error;
-var warn = util.warn;
 var info = util.info;
 
 function showStartupInfo(err, options, debugMode, restart) {
@@ -72,7 +71,7 @@ program.setConfig({
         error('[!] ' + err.message);
       }
     } else {
-      warn('[!] No running ' + config.name);
+      showStatus.showAll(true);
     }
   }
 });

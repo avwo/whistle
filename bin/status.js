@@ -1,15 +1,16 @@
 var Q = require('q');
+
 var util = require('./util');
 var pkg = require('../package.json');
-
+var colors = require('colors/safe');
 var isRunning = util.isRunning;
 var showUsage = util.showUsage;
 var readConfig = util.readConfig;
 var readConfigList = util.readConfigList;
-var error = util.error;
+var warn = util.warn;
 var info = util.info;
 
-function showAll() {
+function showAll(byStop) {
   var list = readConfigList().map(function(config) {
     var deferred = Q.defer();
     isRunning(config.pid, function(running) {
@@ -23,16 +24,18 @@ function showAll() {
     });
     var len = confList.length;
     if (!len) {
-      error('No running whistle.');
+      warn('[!] No running whistle.');
     } else {
-      var tips = ['All running whistle:'];
+      var tips = [byStop ? '[i] Other running whistle:' : '[i] All running whistle:'];
       confList.forEach(function(conf, i) {
         ++i;
         var options = conf.options;
-        tips.push('  ' + i + '. port: ' + (options.port || pkg.port)
-          + (options.host ? ', host: ' + options.host : '')
-          + (options.storage ? ', storage: ' + options.storage : ''));
+        tips.push('  ' + i + '. Port: ' + (options.port || pkg.port)
+          + (options.host ? ', Host: ' + options.host : '')
+          + (options.storage ? ', Storage: ' + options.storage : '')
+          + (byStop ? colors.red(' (Stop cmd: ' + (options.storage ? 'w2 stop -S ' + options.storage + ')' : ' (w2 stop)')) : ''));
       });
+      byStop && warn('[!] This whistle is not running.');
       info(tips.join('\n'));
     }
   });
@@ -59,3 +62,5 @@ module.exports = function(all, storage) {
   }
   showAll();
 };
+
+module.exports.showAll = showAll;
