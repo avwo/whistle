@@ -42,6 +42,11 @@ function getCmd(uninstall) {
   return cmdName + (uninstall ? 'uninstall' : 'install') + g + ' ';
 }
 
+window.getWhistleProxyServerInfo = function() {
+  var serverInfo = dataCenter.getServerInfo();
+  return serverInfo && $.extend(true, {}, serverInfo);
+};
+
 var Home = React.createClass({
   componentDidMount: function() {
     var self = this;
