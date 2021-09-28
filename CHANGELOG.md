@@ -1,3 +1,7 @@
+# v2.7.25
+1. fix: 某些情况下响应 stream pause 问题
+2. refactor: 优化 `w2 stop`，找不到指定实例时自动显示当前所有运行的实例
+
 # v2.7.24
 1. refactor: 优化 `lineProps://proxyHost|proxyTunnel|proxyFirst`
 
