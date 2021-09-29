@@ -108,12 +108,12 @@ var Textarea = React.createClass({
       return;
     }
     if (!name) {
-      message.error('Value name cannot be empty.');
+      message.error('The key cannot be empty.');
       return;
     }
 
     if (/\s/.test(name)) {
-      message.error('Name cannot have spaces.');
+      message.error('The key cannot have spaces.');
       return;
     }
     var handleSubmit = function(sure) {
@@ -134,7 +134,7 @@ var Textarea = React.createClass({
     if (!modal.exists(name)) {
       return handleSubmit(true);
     }
-    win.confirm('The name \'' + name + '\' already exists.\nDo you want to override it.', handleSubmit);
+    win.confirm('The key \'' + name + '\' already exists.\nDo you want to override it.', handleSubmit);
   },
   hideNameInput: function() {
     this.state.showNameInput = false;
@@ -164,7 +164,7 @@ var Textarea = React.createClass({
             {isHexView ? <CopyBtn name="AsHex" value={util.getHexText(this.props.value)} /> : undefined}
             <a className="w-download" onDoubleClick={this.download}
               onClick={this.showNameInput} draggable="false">Download</a>
-            {showAddToValuesBtn ? <a className="w-add" onClick={this.showNameInput} draggable="false">+Value</a> : ''}
+            {showAddToValuesBtn ? <a className="w-add" onClick={this.showNameInput} draggable="false">+Key</a> : ''}
             <a className="w-edit" onClick={this.edit} draggable="false">ViewAll</a>
             <div onMouseDown={this.preventBlur}
               style={{display: this.state.showNameInput ? 'block' : 'none'}}
@@ -174,7 +174,7 @@ var Textarea = React.createClass({
               type="text"
               maxLength="64"
               placeholder={this.state.showDownloadInput ? 'Input the filename' : 'Input the key'}
-            /><button type="button" onClick={this.submit} className="btn btn-primary">OK</button></div>
+            /><button type="button" onClick={this.submit} className="btn btn-primary">{this.state.showDownloadInput ? 'OK' : '+Key'}</button></div>
           </div>
           <TextView className={this.props.className || ''} value={value} />
           <form ref="downloadForm" action="cgi-bin/download" style={{display: 'none'}}

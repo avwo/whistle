@@ -77,7 +77,7 @@ proto.exists = function(name) {
   return this.list.indexOf(name) != -1;
 };
 
-proto.add = function(name, value) {
+function add(name, value, isPre) {
   if (!name) {
     return false;
   }
@@ -87,7 +87,11 @@ proto.add = function(name, value) {
     data.value = value;
     return;
   }
-  this.list.push(name);
+  if (isPre) {
+    this.list.splice(1, 0, name);
+  } else {
+    this.list.push(name);
+  }
   var item = this.data[name] = {
     key: util.getKey(),
     name: name,
@@ -95,6 +99,14 @@ proto.add = function(name, value) {
   };
   this.filter();
   return item;
+}
+
+proto.add = function(name, value) {
+  return add.call(this, name, value);
+};
+
+proto.unshift = function(name, value) {
+  return add.call(this, name, value, true);
 };
 
 proto.set = function(name, value) {

@@ -76,12 +76,12 @@ var JsonViewer = React.createClass({
       return;
     }
     if (!name) {
-      message.error('Value name cannot be empty.');
+      message.error('The key cannot be empty.');
       return;
     }
 
     if (/\s/.test(name)) {
-      message.error('Name cannot have spaces.');
+      message.error('The key cannot have spaces.');
       return;
     }
     var handleSubmit = function(sure) {
@@ -102,7 +102,7 @@ var JsonViewer = React.createClass({
     if (!modal.exists(name)) {
       return handleSubmit(true);
     }
-    win.confirm('The name \'' + name + '\' already exists.\nDo you want to override it.', handleSubmit);
+    win.confirm('The key \'' + name + '\' already exists.\nDo you want to override it.', handleSubmit);
   },
   download: function() {
     var target = ReactDOM.findDOMNode(this.refs.nameInput);
@@ -164,7 +164,7 @@ var JsonViewer = React.createClass({
             <a className="w-download" onDoubleClick={this.download}
               onClick={this.showNameInput} draggable="false">Download</a>
               <a className="w-add" onClick={this.showNameInput}
-                draggable="false">+Value</a>
+                draggable="false">+Key</a>
               {viewSource ? <a className="w-edit" onClick={this.edit} draggable="false">ViewAll</a> : undefined}
             <a onClick={this.toggle} className="w-properties-btn">{ viewSource ? 'JSON' : 'Text' }</a>
             <div onMouseDown={this.preventBlur}
@@ -175,7 +175,7 @@ var JsonViewer = React.createClass({
               type="text"
               maxLength="64"
               placeholder={state.showDownloadInput ? 'Input the filename' : 'Input the key'}
-            /><button type="button" onClick={this.submit} className="btn btn-primary">OK</button></div>
+            /><button type="button" onClick={this.submit} className="btn btn-primary">{state.showDownloadInput ? 'OK' : '+Key'}</button></div>
             <form ref="downloadForm" action="cgi-bin/download" style={{display: 'none'}}
               method="post" target="downloadTargetFrame">
               <input ref="filename" name="filename" type="hidden" />
