@@ -199,7 +199,7 @@ For more details, please visit [install and start](https://avwo.github.io/whistl
 	
 3. in mobiles, configure the proxy of current Wi-Fi in `Setting`
 
-PS: The mobile may failed to use network after configuration because the fireworks of the PC has forbidden remote visit to the whistle's port. you can try to close the fireworks or configure white list ：[ http://jingyan.baidu.com/article/870c6fc317cae7b03ee4be48.html]( http://jingyan.baidu.com/article/870c6fc317cae7b03ee4be48.html)
+PS: The mobile may failed to use network after configuration because the firewall of the PC has forbidden remote visit to the whistle's port. you can try to close the firewall or configure white list ：[ http://jingyan.baidu.com/article/870c6fc317cae7b03ee4be48.html]( http://jingyan.baidu.com/article/870c6fc317cae7b03ee4be48.html)
 
 For more details, please vsit [install and start](https://avwo.github.io/whistle/install.html)
 
