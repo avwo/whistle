@@ -1,6 +1,8 @@
 require('./lib/util/patch');
 var net = require('net');
 var tls = require('tls');
+var extend = require('extend');
+var path = require('path');
 
 var ver = process.version.substring(1).split('.');
 var PROD_RE = /(^|\|)prod(uction)?($|\|)/;
@@ -69,18 +71,51 @@ if (!net._normalizeConnectArgs) {
   };
 }
 
+function loadConfig(options) {
+  var config = options.config;
+  if (config) {
+    delete options.config;
+    return require(path.resolve(config));
+  }
+}
+
+function likePromise(p) {
+  return p && typeof p.then === 'function' && typeof p.catch === 'function';
+}
+
 module.exports = function(options, callback) {
   if (typeof options === 'function') {
     callback = options;
     options = null;
   }
-  if (options && options.debugMode) {
-    if (PROD_RE.test(options.mode)) {
-      options.debugMode = false;
-    } else {
-      env.PFORK_MODE = 'bind';
+  var startWhistle = function() {
+    require('./lib/config').extend(options);
+    return require('./lib')(callback);
+  };
+  if (options) {
+    if (options.debugMode) {
+      if (PROD_RE.test(options.mode)) {
+        options.debugMode = false;
+      } else {
+        env.PFORK_MODE = 'bind';
+      }
     }
+    var config = loadConfig(options);
+    if (typeof config === 'function') {
+      var handleCallback = function(opts) {
+        opts && extend(options, opts);
+        return startWhistle();
+      };
+      if (config.length < 2) {
+        config = config(options);
+        if (likePromise) {
+          return config.then(handleCallback);
+        }
+      } else {
+        config(options, handleCallback);
+      }
+    }
+    config && extend(options, config);
   }
-  require('./lib/config').extend(options);
-  return require('./lib')(callback);
+  return startWhistle();
 };
