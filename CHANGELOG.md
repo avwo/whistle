@@ -1,5 +1,5 @@
 # v2.7.26
-1. feat: 支持通过启动参数 `creatCert(req, callback)` 获取远程证书
+1. feat: 支持通过启动参数 `sniCallback(req, callback)` 获取远程证书
 
 # v2.7.25
 1. fix: 某些情况下响应 stream pause 问题
