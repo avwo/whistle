@@ -1,5 +1,6 @@
 # v2.7.26
 1. feat: 支持通过启动参数 `sniCallback(req, callback)` 获取远程证书
+2. feat: 支持通过 `--config localFile` 加载启动配置，优先级高于命令行
 
 # v2.7.25
 1. fix: 某些情况下响应 stream pause 问题
