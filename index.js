@@ -108,7 +108,7 @@ module.exports = function(options, callback) {
       };
       if (config.length < 2) {
         config = config(options);
-        if (likePromise) {
+        if (likePromise(config)) {
           return config.then(handleCallback);
         }
       } else {

@@ -132,9 +132,6 @@ app.use(function(req, res, next) {
   };
   req.on('error', abort);
   res.on('error', abort).on('close', abort);
-  if (config.shadowRulesOnlyMode && req.path !== '/cgi-bin/rootca') {
-    return res.status(404).end('Not Found');
-  }
   loadAuthPlugins(req, function(status, msg) {
     if (!status) {
       return next();
@@ -296,9 +293,13 @@ app.use(function(req, res, next) {
       return pluginMgr.getPlugin(name + ':') ? next() : res.sendStatus(403);
     }
   }
-  var authKey = config.authKey;
-  if ((authKey && authKey === req.headers['x-whistle-auth-key'])
-    || doNotCheckLogin(req)) {
+  if (doNotCheckLogin(req)) {
+    return next();
+  }
+  if (config.disableWebUI) {
+    return res.status(404).end('Not Found');
+  }
+  if (config.authKey && config.authKey === req.headers['x-whistle-auth-key']) {
     return next();
   }
   var guestAuthKey = config.guestAuthKey;
