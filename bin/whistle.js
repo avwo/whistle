@@ -167,5 +167,9 @@ if (cmd === 'status') {
   argv = Array.prototype.slice.call(argv, 4);
   plugin.run(cmd, argv);
 } else {
+  var pluginIndex = argv.indexOf('--pluginPaths');
+  if (pluginIndex !== -1) {
+    argv[pluginIndex] = '--addon';
+  }
   program.parse(argv);
 }

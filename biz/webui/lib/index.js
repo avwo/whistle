@@ -296,7 +296,7 @@ app.use(function(req, res, next) {
   if (doNotCheckLogin(req)) {
     return next();
   }
-  if (config.disableWebUI) {
+  if (config.disableWebUI && !config.debugMode) {
     return res.status(404).end('Not Found');
   }
   if (config.authKey && config.authKey === req.headers['x-whistle-auth-key']) {
