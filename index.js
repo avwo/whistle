@@ -109,7 +109,11 @@ module.exports = function(options, callback) {
       if (config.length < 2) {
         config = config(options);
         if (likePromise(config)) {
-          return config.then(handleCallback);
+          return config.then(handleCallback).catch(function(err) {
+            process.nextTick(function() {
+              throw err;
+            });
+          });
         }
       } else {
         config(options, handleCallback);
