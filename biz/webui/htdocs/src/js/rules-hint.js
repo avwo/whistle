@@ -12,7 +12,7 @@ var MAX_HINT_LEN = 512;
 var MAX_VAR_LEN = 100;
 var AT_RE = /^@/;
 var P_RE = /^%/;
-var PIPE_RE = /^pipe:/;
+var PLUGIN_SPEC_RE = /^(pipe|sniCallback):/;
 var PROTOCOL_RE = /^([^\s:]+):\/\//;
 var HINT_TIMEOUT = 120;
 var curHintMap = {};
@@ -135,24 +135,28 @@ function getAtValueList(keyword) {
   } catch (e) {}
 }
 
-function getPluginVarHints(keyword, isPipe) {
+function getPluginVarHints(keyword, specProto) {
   var list;
-  if (isPipe) {
+  if (specProto) {
     list = protocols.getAllPluginNameList();
+    keyword = keyword.substring(specProto.length + 3);
   } else {
     keyword = keyword.substring(1);
     list = protocols.getPluginNameList();
   }
   if (!keyword) {
     return list.map(function(name) {
-      return isPipe ? 'pipe://' + name : name + '=';
+      return specProto ? specProto + '://' + name : name + '=';
     });
   }
   var result = [];
   keyword = keyword.toLowerCase();
+  if (specProto) {
+    keyword = specProto + '://' + keyword;
+  }
   list.forEach(function(name) {
-    if (isPipe) {
-      name = 'pipe://' + name;
+    if (specProto) {
+      name = specProto + '://' + name;
     } else {
       name += '=';
     }
@@ -267,7 +271,7 @@ CodeMirror.registerHelper('hint', 'rulesHint', function(editor, options) {
   var pluginName;
   var value;
   var pluginVars;
-  var isPipe = PIPE_RE.test(curWord);
+  var specProto = PLUGIN_SPEC_RE.test(curWord) && RegExp.$1;
   var isPluginVar = P_RE.test(curWord);
   if (isPluginVar) {
     var eqIdx = curWord.indexOf('=');
@@ -282,9 +286,9 @@ CodeMirror.registerHelper('hint', 'rulesHint', function(editor, options) {
       isPluginVar = false;
     }
   }
-  if (isAt || isPipe || isPluginVar) {
-    if (!byEnter || /^pipe:\/\/$/.test(curWord)) {
-      list = isAt ? getAtValueList(curWord) : getPluginVarHints(curWord, isPipe);
+  if (isAt || specProto || isPluginVar) {
+    if (!byEnter || /^(?:pipe|sniCallback):\/\/$/.test(curWord)) {
+      list = isAt ? getAtValueList(curWord) : getPluginVarHints(curWord, specProto);
     }
     if (!list || !list.length) {
       return;
@@ -294,7 +298,7 @@ CodeMirror.registerHelper('hint', 'rulesHint', function(editor, options) {
     } else if (isPluginVar) {
       showVarHint = true;
     }
-    return { list: list, from: CodeMirror.Pos(cur.line, isPipe ? start : start + 1), to: CodeMirror.Pos(cur.line, end) };
+    return { list: list, from: CodeMirror.Pos(cur.line, specProto ? start : start + 1), to: CodeMirror.Pos(cur.line, end) };
   }
   if (curWord) {
     if (plugin || PLUGIN_NAME_RE.test(curWord)) {

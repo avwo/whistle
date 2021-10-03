@@ -108,7 +108,7 @@ CodeMirror.defineMode('rules', function() {
   }
 
   function isPlugin(str) {
-    return /^pipe:\/\//.test(str) || (/^(?:plugin|whistle)\.[a-z\d_\-]+:\/\//.test(str) && !notExistPlugin(str));
+    return /^(?:pipe|sniCallback):\/\//.test(str) || (/^(?:plugin|whistle)\.[a-z\d_\-]+:\/\//.test(str) && !notExistPlugin(str));
   }
 
   function isRulesFile(str) {
