@@ -1,5 +1,5 @@
 # v2.7.26
-1. feat: 支持通过启动参数 `sniCallback(req, callback)` 获取远程证书
+1. feat: 支持通过插件 `sniCallback(req, options)` hook 获取远程证书
 2. feat: 支持通过 `--config localFile` 加载启动配置，优先级高于命令行
 
 # v2.7.25
