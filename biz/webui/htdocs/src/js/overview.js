@@ -185,8 +185,8 @@ var Overview = React.createClass({
       });
       var custom1 = columns.getColumn('custom1');
       var custom2 = columns.getColumn('custom2');
-      if (modal.certSource) {
-        overviewModal['Cert Source'] = modal.certSource;
+      if (modal.sniPlugin) {
+        overviewModal['SNI Plugin'] = modal.sniPlugin;
       }
       if (custom1.selected) {
         overviewModal[(dataCenter.custom1 || 'Custom1') + ' '] = modal.custom1;
