@@ -2853,6 +2853,7 @@ var Index = React.createClass({
         req: req,
         res: res,
         fwdHost: entry.whistleFwdHost,
+        sniPlugin: entry.whistleSniPlugin,
         rules: entry.whistleRules || {}
       };
       if (times && times.startTime) {

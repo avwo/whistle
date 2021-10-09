@@ -2044,6 +2044,7 @@ exports.toHar = function(item) {
     time: time,
     whistleRules: item.rules,
     whistleFwdHost: item.fwdHost,
+    whistleSniPlugin: item.sniPlugin,
     whistleTimes: {
       startTime: item.startTime,
       dnsTime: item.dnsTime,

@@ -17,5 +17,6 @@
     <SessionFlag N="x-ttlb" V="${ttlb}" />
     <SessionFlag N="x-hostip" V="${hostip}" />
     <SessionFlag N="x-clientport" V="${clientport}" />
+    <SessionFlag N="x-serverport" V="${serverport}" />
   </SessionFlags>
 </Session>
