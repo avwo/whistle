@@ -1,3 +1,6 @@
+# v2.7.28
+1. fix: WebSocket 无法抓包问题
+
 # v2.7.27
 1. fix: 插件用到 `storage.setProperties` 失效问题
 2. feat: 插件 `whistleConfig` 支持配置 `inheritAuth` 复用 Whistle 的登录账号
