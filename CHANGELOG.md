@@ -1,3 +1,6 @@
+# v2.7.27
+1. fix: 插件用到 `storage.setProperties` 失效问题
+
 # v2.7.26
 1. feat: 支持通过插件 `sniCallback(req, options)` hook 获取远程证书
 2. feat: 支持通过 `--config localFile` 加载启动配置，优先级高于命令行
