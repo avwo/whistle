@@ -111,7 +111,13 @@ function verifyLogin(req, res, auth) {
   }
 }
 
-function checkAuth(req, res, auth) {
+function checkAuth(req, res) {
+  var username = getUsername();
+  var auth = {
+    authKey: 'whistle_lk_' + encodeURIComponent(username),
+    username: username,
+    password: getPassword()
+  };
   if (verifyLogin(req, res, auth)) {
     return true;
   }
@@ -267,6 +273,9 @@ app.all(PLUGIN_PATH_RE, function(req, res) {
     }
     return;
   }
+  if (plugin.inheritAuth && !checkAuth(req, res)) {
+    return;
+  }
   if (!slash) {
     return res.redirect(type + '.' + name + '/');
   }
@@ -308,14 +317,7 @@ app.use(function(req, res, next) {
     || WEINRE_RE.test(req.path) || GUEST_PATHS.indexOf(req.path) !== -1)) {
     return next();
   }
-  var username = getUsername();
-  var password = getPassword();
-  var authConf = {
-    authKey: 'whistle_lk_' + encodeURIComponent(username),
-    username: username,
-    password: password
-  };
-  if (checkAuth(req, res, authConf)) {
+  if (checkAuth(req, res)) {
     next();
   }
 });
