@@ -207,7 +207,7 @@ proto.filter = function() {
         }
       }
 
-      return prev.order > next.order ? 1 : -1;
+      return prev.order > next.order ? -1 : 1;
     });
   } else {
     self._list = null;
@@ -228,7 +228,7 @@ function compare(prev, next, order, name) {
   if (next == '-') {
     return -1;
   }
-  return order == 'asc' ? -_compare(prev, next, name) : _compare(prev, next, name);
+  return order == 'asc' ? _compare(prev, next, name) : -_compare(prev, next, name);
 }
 
 function _compare(prev, next, name) {
