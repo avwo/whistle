@@ -1,5 +1,6 @@
 # v2.7.27
 1. fix: 插件用到 `storage.setProperties` 失效问题
+2. feat: 插件 `whistleConfig` 支持配置 `inheritAuth` 复用 Whistle 的登录账号
 
 # v2.7.26
 1. feat: 支持通过插件 `sniCallback(req, options)` hook 获取远程证书
