@@ -34,7 +34,7 @@
     "url": "https://github.com/avwo/whistle.git"
   },
   "dependencies": {
-    "adm-zip": "0.4.11",
+    "adm-zip": "0.5.9",
     "async-limiter": "2.0.0",
     "basic-auth": "1.0.0",
     "body-parser": "^1.19.0",
