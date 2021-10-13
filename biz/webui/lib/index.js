@@ -273,7 +273,10 @@ app.all(PLUGIN_PATH_RE, function(req, res) {
     }
     return;
   }
-  if (plugin.inheritAuth && !checkAuth(req, res)) {
+  var internalId = req.headers['x-whistle-internal-id'];
+  if (internalId === util.INTERNAL_ID) {
+    delete req.headers['x-whistle-internal-id'];
+  } else if (plugin.inheritAuth && !checkAuth(req, res)) {
     return;
   }
   if (!slash) {
