@@ -1,3 +1,6 @@
+# v2.7.29
+1. fix: https://github.com/avwo/whistle/issues/643
+
 # v2.7.28
 1. fix: WebSocket 无法抓包问题
 
