@@ -242,8 +242,9 @@ module.exports = function(req, res) {
     delete headers.upgrade;
     if (!isConn && ((useH2 && (protocol === 'https:' || protocol === 'http:')) || protocol === 'h2:' || protocol === 'http2:')) {
       req.body.useH2 = true;
-      options.protocol = protocol === 'http:' ? 'http:' : 'https:';
-      headers[config.ALPN_PROTOCOL_HEADER] = 'h2';
+      var isHttp = protocol === 'http:';
+      options.protocol = isHttp ? 'http:' : 'https:';
+      headers[config.ALPN_PROTOCOL_HEADER] = isHttp ? 'httpH2' : 'h2';
     }
   }
   !req.body.noStore && properties.addHistory(req.body);
