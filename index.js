@@ -148,6 +148,10 @@ module.exports = function(options, callback) {
     options = null;
   }
   var startWhistle = function() {
+    var workerIndex = env.workerIndex;
+    if (options && options.cluster && workerIndex >= 0) {
+      options.storage = '.' + (options.storage || '') + '__cluster_worker.' + workerIndex + '_5b6af7b9884e1165__';
+    }
     var conf = require('./lib/config').extend(options);
     if (!conf.cluster) {
       return require('./lib')(callback);
