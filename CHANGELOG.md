@@ -1,3 +1,7 @@
+# v2.8.0
+1. feat: 支持启动 `--cluster [workers]` 模式，通过该方式可以启动多进程模式（worker 为 Whistle headless）
+2. fix: 启动时绑定非 `127.0.0.1` 网卡，插件远程规则访问失败问题
+
 # v2.7.29
 1. fix: https://github.com/avwo/whistle/issues/643
 
