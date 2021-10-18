@@ -30,10 +30,10 @@ function showAll(byStop) {
       confList.forEach(function(conf, i) {
         ++i;
         var options = conf.options;
-        tips.push('  ' + i + '. Port: ' + (options.port || pkg.port)
-          + (options.host ? ', Host: ' + options.host : '')
-          + (options.storage ? ', Storage: ' + options.storage : '')
-          + (byStop ? colors.red(' (Stop cmd: ' + (options.storage ? 'w2 stop -S ' + options.storage : 'w2 stop') + ')') : ''));
+        tips.push('  ' + i + '. port: ' + (options.port || pkg.port)
+          + (options.host ? ', host: ' + options.host : '')
+          + (options.storage ? ', storage: ' + options.storage : '')
+          + (byStop ? colors.red(' (stop cmd: ' + (options.storage ? 'w2 stop -S ' + options.storage : 'w2 stop') + ')') : ''));
       });
       byStop && warn('[!] This whistle is not running.');
       info(tips.join('\n'));
