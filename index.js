@@ -3,9 +3,16 @@ var net = require('net');
 var tls = require('tls');
 var extend = require('extend');
 var path = require('path');
+var cluster = require('cluster');
+var os = require('os');
 
 var ver = process.version.substring(1).split('.');
 var PROD_RE = /(^|\|)prod(uction)?($|\|)/;
+var noop = function() {};
+var state = {};
+var INTERVAL = 1000;
+var TIMEOUT = 10000;
+var MASTER_TIMEOUT = 12000;
 
 if (ver[0] >= 7 && ver[1] >= 7) {
   var connect = net.Socket.prototype.connect;
@@ -83,16 +90,102 @@ function likePromise(p) {
   return p && typeof p.then === 'function' && typeof p.catch === 'function';
 }
 
+function killWorker(worker) {
+  try {
+    worker.removeAllListeners();
+    worker.on('error', noop);
+    worker.kill('SIGTERM');
+  } catch (err) {}
+}
+
+function forkWorker(index) {
+  var worker = cluster.fork({ workerIndex: index });
+  var reforked;
+  var refork = () => {
+    if (!state[index]) {
+      setTimeout(function() {
+        process.exit(1);
+      }, INTERVAL);
+      return;
+    }
+    if (reforked) {
+      return;
+    }
+    reforked = true;
+    killWorker(worker);
+    clearInterval(worker.timer);
+    clearTimeout(worker.activeTimer);
+    setTimeout(function() {
+      forkWorker(index);
+    }, 600);
+  };
+  worker.once('disconnect', refork);
+  worker.once('exit', refork);
+  worker.on('error', noop);
+  worker.on('message', (msg) => {
+    if (msg !== '1') {
+      return;
+    }
+    state[index] = true;
+    if (!worker.timer) {
+      worker.timer = setInterval(() => {
+        try {
+          worker.send('1', noop);
+        } catch (e) {
+          clearInterval(worker.timer);
+        }
+      }, INTERVAL);
+    } else {
+      clearTimeout(worker.activeTimer);
+    }
+    worker.activeTimer = setTimeout(refork, MASTER_TIMEOUT);
+  });
+}
+
 module.exports = function(options, callback) {
   if (typeof options === 'function') {
     callback = options;
     options = null;
   }
   var startWhistle = function() {
-    require('./lib/config').extend(options);
-    return require('./lib')(callback);
+    var conf = require('./lib/config').extend(options);
+    if (!conf.cluster) {
+      return require('./lib')(callback);
+    }
+    var timer;
+    var activeTimeout = function() {
+      clearTimeout(timer);
+      timer = setTimeout(function() {
+        process.exit(1);
+      }, TIMEOUT);
+    };
+    process.once('SIGTERM', function() {
+      process.exit(0);
+    });
+
+    require('./lib')(function() {
+      activeTimeout();
+      process.on('message', activeTimeout);
+      process.send('1', noop);
+      setInterval(() => {
+        try {
+          process.send('1', noop);
+        } catch (e) {}
+      }, INTERVAL);
+    });
   };
   if (options) {
+    if (/^\d+$/.test(options.cluster)) {
+      options.cluster = Math.min(parseInt(options.cluster, 10), 999);
+    } else if (options.cluster) {
+      options.cluster = Math.min(os.cpus().length, 999);
+    }
+    if (options.cluster && cluster.isMaster) {
+      for (var i = 0; i < options.cluster; i++) {
+        forkWorker(i);
+      }
+      return;
+    }
     if (options.debugMode) {
       if (PROD_RE.test(options.mode)) {
         options.debugMode = false;
