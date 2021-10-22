@@ -133,7 +133,7 @@ var removeItem = function(list, name) {
   i !== -1 && list.splice(i, 1);
 };
 if (cmd === 'status') {
-  var all = argv[3] === '--all';
+  var all = argv[3] === '--all' || argv[3] === '-l';
   if (argv[3] === '-S') {
     storage = argv[4];
   }
