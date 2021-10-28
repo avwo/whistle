@@ -69,10 +69,10 @@ function getLoginKey (req, res, auth) {
   return shasum([auth.username, password, ip].join('\n'));
 }
 
-function requireLogin(res) {
+function requireLogin(res, msg) {
   res.setHeader('WWW-Authenticate', ' Basic realm=User Login');
   res.setHeader('Content-Type', 'text/html; charset=utf8');
-  res.status(401).end('Access denied, please <a href="javascript:;" onclick="location.reload()">try again</a>.');
+  res.status(401).end(msg || 'Access denied, please <a href="javascript:;" onclick="location.reload()">try again</a>.');
 }
 
 function verifyLogin(req, res, auth) {
@@ -149,6 +149,7 @@ function readRemoteStream(req, res, authUrl) {
   options.headers = headers;
   client = httpModule.request(options, function(svrRes) {
     svrRes.on('error', handleError);
+    res.writeHead(svrRes.statusCode, svrRes.headers);
     svrRes.pipe(res);
   });
   client.on('error', handleError);
@@ -176,7 +177,7 @@ app.use(function(req, res, next) {
       return res.redirect(status);
     }
     if (status === 401) {
-      return requireLogin(res);
+      return requireLogin(res, msg);
     }
     res.set('Content-Type', 'text/html; charset=utf8');
     if (authUrl) {
