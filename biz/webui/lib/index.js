@@ -2,6 +2,8 @@ var express = require('express');
 var app = express();
 var path = require('path');
 var url = require('url');
+var http = require('http');
+var https = require('https');
 var getAuth = require('basic-auth');
 var parseurl = require('parseurl');
 var bodyParser = require('body-parser');
@@ -9,6 +11,7 @@ var crypto = require('crypto');
 var cookie = require('cookie');
 var fs = require('fs');
 var zlib = require('zlib');
+var extend = require('extend');
 var htdocs = require('../htdocs');
 var handleWeinreReq = require('../../weinre');
 var setProxy = require('./proxy');
@@ -127,6 +130,31 @@ function checkAuth(req, res) {
 
 app.disable('x-powered-by');
 
+function readRemoteStream(req, res, authUrl) {
+  var client;
+  const handleError = function(err) {
+    res.emit('error', err);
+    client && client.destroy();
+  };
+  if (authUrl[0] === 'f') {
+    var stream = fs.createReadStream(authUrl.substring(7));
+    stream.on('error', handleError);
+    return stream.pipe(res);
+  }
+  var options = url.parse(authUrl);
+  options.rejectUnauthorized = false;
+  var httpModule = options.protocol === 'https:' ? https : http;
+  var headers = extend({}, req.headers);
+  delete headers.host;
+  options.headers = headers;
+  client = httpModule.request(options, function(svrRes) {
+    svrRes.on('error', handleError);
+    svrRes.pipe(res);
+  });
+  client.on('error', handleError);
+  client.end();
+}
+
 app.use(function(req, res, next) {
   proxyEvent.emit('_request', req.url);
   var aborted;
@@ -138,23 +166,26 @@ app.use(function(req, res, next) {
   };
   req.on('error', abort);
   res.on('error', abort).on('close', abort);
-  loadAuthPlugins(req, function(status, msg) {
-    if (!status) {
+  loadAuthPlugins(req, function(status, msg, authUrl) {
+    if (!status && !authUrl) {
       return next();
     }
     res.set('x-server', 'whistle');
     res.set('x-module', 'webui');
-    if (!msg) {
+    if (!msg && !authUrl) {
       return res.redirect(status);
     }
     if (status === 401) {
       return requireLogin(res);
     }
     res.set('Content-Type', 'text/html; charset=utf8');
+    if (authUrl) {
+      return readRemoteStream(req, res, authUrl);
+    }
     if (status === 502) {
       return res.status(502).end(msg || 'Error');
     }
-    res.status(403).end('Forbidden');
+    res.status(403).end(msg || 'Forbidden');
   });
 });
 
