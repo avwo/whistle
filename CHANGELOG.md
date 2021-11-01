@@ -1,3 +1,7 @@
+# v2.8.2
+1. feat: `resMerge://json1 resMerge://json2` 默认采用 `extend({}, json1, json2)`，新版支持通过 `resMerge://json1 resMerge://json2 resMerge://true` 开启  `extend(true, {}, json1, json2)`
+2. refactor: 插件规则里面的 req 和 res rules 分开执行
+
 # v2.8.1
 1. refactor: 优化获取证书逻辑，合并多次相同请求
 2. refactor: 处理 `unhandledRejection` 事件
