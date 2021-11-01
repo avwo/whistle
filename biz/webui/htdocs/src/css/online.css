@@ -29,3 +29,12 @@
 .w-dns-servers-dialog .modal-dialog {width: 420px;}
 
 .w-tips-dialog .modal-dialog {width: 560px!important;}
+
+#appearanceMode {
+  display: inline-block;
+  width: 150px;
+  margin-left: 10px;
+  height: 32px;
+  font-size: 13px;
+  font-weight: normal;
+}

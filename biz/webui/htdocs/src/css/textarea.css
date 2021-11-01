@@ -8,7 +8,7 @@
 
 .w-textarea-input {display: block; position: absolute; background: #fff; border: 1px solid #ccc; border-radius: 2px; z-index: 101; top: 22px; right: 0; display: none; white-space: nowrap;}
 .w-textarea-input input {width: 246px; height: 32px; border: 1px solid #ccc; border-radius: 2px; padding: 0 5px; vertical-align: middle;}
-.w-textarea-input .btn {height: 32px; padding: 0 12px; vertical-align: middle; border-radius: 0; border-right-top-radius: 2px; border-right-bottom-radius: 2px;}
+.w-textarea-input .btn {height: 32px; padding: 0 12px; vertical-align: middle; border-radius: 0; border-top-right-radius: 2px; border-bottom-right-radius: 2px;}
 
 .w-textview-tips {  color: #aaa; text-align: center; width: 520px; height: 70px;
    position: absolute; left: 50%; top: 50%; margin: -50px 0 0 -260px; }

@@ -14,6 +14,7 @@
   box-shadow: 2px 2px 2px rgba(0, 0, 0, .5);
   background: #fff;
   min-width: 110px;
+  border-radius: 2px;
 }
 
 .w-ctx-menu-list .w-ctx-item-tt input {

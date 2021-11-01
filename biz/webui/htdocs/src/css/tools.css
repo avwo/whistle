@@ -15,7 +15,7 @@
   display: inline-block; background: transparent!important;
   margin: 0 0 0 10px!important; vertical-align: top;
 }
-.w-detail-page-log li>pre>span {vertical-align: top; line-height: 24px; margin-top: }
+.w-detail-page-log li>pre>span {vertical-align: top; line-height: 24px; }
 .w-detail-page-log li>pre ul, .w-detail-page-log li>pre li { width: auto!important; }
 .w-detail-page-log>.w-detail-log-content>ul>li { border-bottom: 1px solid #ddd; }
 .w-detail-page-log li>pre>span { margin-left: 10px; }

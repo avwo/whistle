@@ -132,3 +132,7 @@
 .w-menu .w-tree-view-active {
   color: #337ab7;
 }
+
+.w-menu-selected {
+  background-color: #ddd;
+}

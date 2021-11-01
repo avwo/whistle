@@ -4,7 +4,7 @@
 .w-nav-tabs>.nav>li>a>.w-close-icon:hover {color: #000;}
 .w-plugin-tab-disabled { color: #ccc!important; }
 .w-plugin-tab-disabled .glyphicon-ban-circle { vertical-align: text-top; margin-right: 3px; color: #ccc!important; }
-.w-nav-tabs iframe {border: none; display: block; margin: 0; padding: 0; width: 100%; height: 100%;}
+.w-nav-tabs iframe {border: none; display: block; background-color: #fff; margin: 0; padding: 0; width: 100%; height: 100%;}
 .w-nav-tabs .w-nav-tab-panel, .w-nav-tabs .w-nav-tab-panel>div {overflow: hidden;}
 .w-nav-tabs>.nav>.w-nav-home-tab>a {padding-right: 10px!important;}
 
