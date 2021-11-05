@@ -1,0 +1,8 @@
+{
+  "plugins": ["icp"],
+  "pluginsConfig": {
+      "icp": {
+          "number": "浙ICP备15019507号"
+      }
+  }
+}
