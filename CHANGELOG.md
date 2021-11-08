@@ -1,5 +1,6 @@
 # v2.8.3
 1. fix: https://github.com/avwo/whistle/pull/657
+2. feat: 插件 `server` 钩子支持通过 `req.setReqRules & req.setResRules` 设置动态规则
 
 # v2.8.2
 1. feat: `resMerge://json1 resMerge://json2` 默认采用 `extend({}, json1, json2)`，新版支持通过 `resMerge://json1 resMerge://json2 resMerge://true` 开启  `extend(true, {}, json1, json2)`
