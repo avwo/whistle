@@ -54,7 +54,8 @@ node_modules
 .gitignore
 .npmignore
 .travis.yml
-.eslintrc.js
+.eslintrc
+.editorconfig
 .eslintignore
 .babelrc
 test
