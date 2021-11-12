@@ -5,7 +5,7 @@
 4. feat: `reqWrite:///path/to/` 和 `reqWrite:///path/to` 加以区别，前者会自动把根路径补成 `index.html`
 5. feat: 默认不启用 `x-forwarded-host` 和 `x-forwarded-proto` 直接放过，可以通过以下方式启用：
 	- 启动参数 `-M x-forwarded-host|x-forwarded-proto`
-	- 请求进入 Whistle 之前设置请求头 `x-whistle-enable-props: x-forwarded-host,x-forwarded-proto`
+	- 请求进入 Whistle 之前设置请求头 `x-whistle-forwarded-props: host,proto,for,clientIp,ip`
 
 # v2.8.2
 1. feat: `resMerge://json1 resMerge://json2` 默认采用 `extend({}, json1, json2)`，新版支持通过 `resMerge://json1 resMerge://json2 resMerge://true` 开启  `extend(true, {}, json1, json2)`
