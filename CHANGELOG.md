@@ -1,6 +1,8 @@
 # v2.8.3
 1. fix: https://github.com/avwo/whistle/pull/657
 2. feat: 插件 `server` 钩子支持通过 `req.setReqRules & req.setResRules` 设置动态规则
+3. feat: 支持通过 `enable://forceReqWrite` 和 `enable://forceResWrite` 强制 `reqWrite`、`reqWriteRaw` 和 `resWrite`、`resWriteRaw`
+4. feat: `reqWrite:///path/to/` 和 `reqWrite:///path/to` 加以区别，前者会自动把根路径补成 `index.html`
 
 # v2.8.2
 1. feat: `resMerge://json1 resMerge://json2` 默认采用 `extend({}, json1, json2)`，新版支持通过 `resMerge://json1 resMerge://json2 resMerge://true` 开启  `extend(true, {}, json1, json2)`
