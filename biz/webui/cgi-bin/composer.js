@@ -217,7 +217,7 @@ module.exports = function(req, res) {
   var clientId = req.headers[config.CLIENT_ID_HEADER];
   var headers = parseHeaders(req.body.headers, rawHeaderNames, clientId);
   delete headers[config.WEBUI_HEAD];
-  headers[config.WHISTLE_REQ_FROM_HEADER] = 'W2COMPOSER';
+  headers[config.REQ_FROM_HEADER] = 'W2COMPOSER';
   headers.host = options.host;
   options.clientId = clientId;
   var clientIp = util.getClientIp(req);
