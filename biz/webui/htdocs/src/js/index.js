@@ -481,7 +481,10 @@ var Index = React.createClass({
     if (showTreeView || showTreeView === false) {
       networkModal.setTreeView(showTreeView, true);
     }
-
+    var self = this;
+    events.on('importSessionsFromUrl', function(_, url) {
+      self.importSessionsFromUrl(url);
+    });
     return state;
   },
   getListByName: function(name, type) {
@@ -1026,7 +1029,6 @@ var Index = React.createClass({
       }
       self.replay(e, list);
     });
-
     events.on('importSessions', self.importSessions);
     events.on('filterSessions', self.showSettings);
     events.on('exportSessions', function(e, curItem) {
@@ -1505,6 +1507,20 @@ var Index = React.createClass({
     }
     ReactDOM.findDOMNode(self.refs.importSessions).click();
   },
+  importSessionsFromUrl: function(url, byInput) {
+    if (!url) {
+      return;
+    }
+    var self = this;
+    self.setState({ pendingSessions: true });
+    dataCenter.importRemote({ url: url },  getRemoteDataHandler(function(err, data) {
+      self.setState({ pendingSessions: false });
+      if (!err) {
+        byInput && self.refs.importRemoteSessions.hide();
+        self.importAnySessions(data);
+      }
+    }));
+  },
   importRemoteSessions: function(e) {
     if (e && e.type !== 'click' && e.keyCode !== 13) {
       return;
@@ -1512,18 +1528,7 @@ var Index = React.createClass({
     var self = this;
     var input = ReactDOM.findDOMNode(self.refs.sessionsRemoteUrl);
     var url = checkUrl(input.value);
-    if (!url) {
-      return;
-    }
-    self.setState({ pendingSessions: true });
-    dataCenter.importRemote({ url: url },  getRemoteDataHandler(function(err, data) {
-      self.setState({ pendingSessions: false });
-      if (err) {
-        return;
-      }
-      self.refs.importRemoteSessions.hide();
-      self.importAnySessions(data);
-    }));
+    self.importSessionsFromUrl(url, true);
   },
   importRules: function(e, data) {
     var self = this;

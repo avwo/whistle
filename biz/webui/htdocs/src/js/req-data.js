@@ -541,6 +541,22 @@ var ReqData = React.createClass({
       settings.setMinWidth(self.minWidth);
       updateTimer = updateTimer || setTimeout(updateUI, 50);
     });
+    var curRemoteUrl;
+    var importRemoteUrl = function() {
+      var hash = location.hash.substring(1);
+      var index = hash.indexOf('?');
+      if (index === -1) {
+        return;
+      }
+      var sessionsUrl = util.parseQueryString(hash.substring(index + 1), null, null, decodeURIComponent).sessionsUrl;
+      if (!/^https?:\/\/[^/]/i.test(sessionsUrl) || sessionsUrl === curRemoteUrl) {
+        return;
+      }
+      curRemoteUrl = sessionsUrl;
+      events.trigger('importSessionsFromUrl', curRemoteUrl);
+    };
+    importRemoteUrl();
+    $(window).on('hashchange', importRemoteUrl);
   },
   onDragStart: function(e) {
     var target = $(e.target).closest('.w-req-data-item');
