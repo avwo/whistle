@@ -552,8 +552,12 @@ var ReqData = React.createClass({
       if (!/^https?:\/\/[^/]/i.test(sessionsUrl) || sessionsUrl === curRemoteUrl) {
         return;
       }
-      curRemoteUrl = sessionsUrl;
-      events.trigger('importSessionsFromUrl', curRemoteUrl);
+      curRemoteUrl = sessionsUrl.replace(/#.*$/, '');
+      var url = curRemoteUrl;
+      if (curRemoteUrl.indexOf('&from_5b6af7b9884e1165') === -1) {
+        url += (url.indexOf('?') === -1 ? '?' : '') + '&from_5b6af7b9884e1165';
+      }
+      events.trigger('importSessionsFromUrl', url);
     };
     importRemoteUrl();
     $(window).on('hashchange', importRemoteUrl);
