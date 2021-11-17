@@ -3,7 +3,8 @@
 2. feat: 插件 `server` 钩子支持通过 `req.setReqRules & req.setResRules` 设置动态规则
 3. feat: 支持通过 `enable://forceReqWrite` 和 `enable://forceResWrite` 强制 `reqWrite`、`reqWriteRaw` 和 `resWrite`、`resWriteRaw`
 4. feat: `reqWrite:///path/to/` 和 `reqWrite:///path/to` 加以区别，前者会自动把根路径补成 `index.html`
-5. feat: 默认不启用 `x-forwarded-host` 和 `x-forwarded-proto` 直接放过，可以通过以下方式启用：
+5. feat: 插件的 auth hook 默认情况下如果开启了捕获 https，则对这部分请求只会对解析后的 https 请求生效，如果需要对隧道代理生效可以设置 `enable://authCapture`
+6. feat: 默认不启用 `x-forwarded-host` 和 `x-forwarded-proto` 直接放过，可以通过以下方式启用：
 	- 启动参数 `-M x-forwarded-host|x-forwarded-proto`
 	- 请求进入 Whistle 之前设置请求头 `x-whistle-forwarded-props: host,proto,for,clientIp,ip`
 
