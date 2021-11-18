@@ -1,3 +1,7 @@
+# v2.8.5
+1. feat: 支持通过 `ignore://-*` 过滤 `ignore://*`
+2. feat: 支持 `proxy` 和 `pac` 配置 `lineProps://proxyHostOnly`，当用户配置了 `host` 代理才会生效
+
 # v2.8.4
 1. fix: 可能无法导入 saz 文件问题
 
