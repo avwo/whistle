@@ -1,3 +1,6 @@
+# v2.8.4
+1. fix: 可能无法导入 saz 文件问题
+
 # v2.8.3
 1. fix: https://github.com/avwo/whistle/pull/657
 2. feat: 插件 `server` 钩子支持通过 `req.setReqRules & req.setResRules` 设置动态规则
