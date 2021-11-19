@@ -199,10 +199,6 @@ var HistoryData = React.createClass({
               <span className="glyphicon glyphicon-question-sign"></span></a>
               Custom Certs
             </h4>
-            <div style={{textAlign: 'right', display: dataCenter.isDiableCustomCerts() ? 'none' : undefined}}>
-              <input ref="uploadCerts" style={{display: 'none'}} type="file" accept=".crt,.key" multiple="multiple" onChange={self.handleChange} />
-              <button type="button" className="btn btn-primary" onClick={self.showUpload}>Upload</button>
-            </div>
              <table className="table">
               <thead>
                 <th className="w-certs-info-order">#</th>
@@ -241,6 +237,8 @@ var HistoryData = React.createClass({
              </table>
           </div>
           <div className="modal-footer">
+            <input ref="uploadCerts" style={{display: 'none'}} type="file" accept=".crt,.key" multiple="multiple" onChange={self.handleChange} />
+            <button type="button" style={{display: dataCenter.isDiableCustomCerts() ? 'none' : undefined}} className="btn btn-primary" onClick={self.showUpload}>Upload</button>
             <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
           </div>
           <TipsDialog ref="tipsDialog" />
