@@ -4,6 +4,8 @@ var React = require('react');
 var util = require('./util');
 var Dialog = require('./dialog');
 var TipsDialog = require('./tips-dialog');
+var win = require('./win');
+var dataCenter = require('./data-center');
 
 var OK_STYLE = { color: '#5bbd72' };
 
@@ -81,7 +83,18 @@ var HistoryData = React.createClass({
     });
   },
   removeCert: function(item) {
-    alert(item.filename);
+    var self = this;
+    win.confirm('Are you sure to delete \'' + item.filename + '\'.', function(sure) {
+      if (!sure) {
+        return;
+      }
+      dataCenter.certs.remove({ filename: item.filename }, function(data, xhr) {
+        if (!data) {
+          return util.showSystemError(xhr);
+        }
+        self.show(data);
+      });
+    });
   },
   shouldComponentUpdate: function() {
     return this._hideDialog === false;

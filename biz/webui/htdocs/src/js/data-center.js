@@ -345,6 +345,11 @@ exports.getCustomCertsInfo = createCgiObj({
   getCustomCertsInfo: 'cgi-bin/get-custom-certs-files'
 }, GET_CONF).getCustomCertsInfo;
 
+exports.certs = createCgiObj({
+  remove: 'cgi-bin/certs/remove',
+  upload: 'cgi-bin/certs/upload'
+}, POST_CONF);
+
 exports.values = createCgiObj({
   recycleList: {
     type: 'get',
