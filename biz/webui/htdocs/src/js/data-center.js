@@ -458,6 +458,13 @@ exports.socket = $.extend(createCgiObj({
   }
 }, POST_CONF));
 
+function updateCertStatus(data) {
+  if (exports.hasInvalidCerts != data.hasInvalidCerts) {
+    exports.hasInvalidCerts = data.hasInvalidCerts;
+    events.trigger('updateUI');
+  }
+}
+
 exports.getInitialData = function (callback) {
   if (!initialDataPromise) {
     initialDataPromise = $.Deferred();
@@ -468,8 +475,8 @@ exports.getInitialData = function (callback) {
           return setTimeout(load, 1000);
         }
         port = data.server && data.server.port;
+        updateCertStatus(data);
         exports.supportH2 = data.supportH2;
-        exports.hasInvalidCerts = data.hasInvalidCerts;
         exports.custom1 = data.custom1;
         exports.custom2 = data.custom2;
         uploadFiles = data.uploadFiles;
@@ -617,8 +624,8 @@ function startLoadData() {
         return;
       }
       port = data.server && data.server.port;
+      updateCertStatus(data);
       exports.supportH2 = data.supportH2;
-      exports.hasInvalidCerts = data.hasInvalidCerts;
       exports.custom1 = data.custom1;
       exports.custom2 = data.custom2;
       if (options.dumpCount > 0) {
