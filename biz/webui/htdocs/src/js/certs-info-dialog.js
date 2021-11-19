@@ -115,56 +115,68 @@ var HistoryData = React.createClass({
     for (var i = 0, len = fileList.length; i < len; i++) {
       var cert = fileList[i];
       if (cert.size > 64 * 1024 || !(cert.size > 0)) {
-        message.error('上传的证书过大，请上传64K以内的证书！');
+        message.error('The uploaded certificate size cannot exceed 64K.');
         return;
       }
       var { name } = cert;
       if (!/\.(crt|key)/.test(name)) {
-        message.error('只支持 .key 或 .crt 后缀的文件！');
+        message.error('Only files with .key or .crt suffixes are supported.');
         return;
       }
       var suffix = RegExp.$1;
       name = name.slice(0, -4);
-      if (!name || /[^\w*.()-]/.test(name)) {
-        message.error('证书名称存在非法字符！');
+      if (!name || name.length > 128) {
+        message.error('The file name cannot be empty and the length cannot exceed 128.');
         return;
       }
       certs = certs || {};
-      var pair = certs[name] || [];
-      pair[suffix === 'key' ? 0 : 1] = cert;
+      var pair = certs[name] || {};
+      pair[suffix == 'key' ? 'key' : 'cert'] = cert;
       certs[name] = pair;
     }
     if (!certs) {
       return;
     }
-    var badCert = Object.values(certs).find((list) => {
-      return !list[0] || !list[1];
+    var result;
+    Object.keys(certs).forEach(function(key) {
+      var cert = certs[key];
+      if (cert.key && cert.cert) {
+        result = result || {};
+        result[key] = cert;
+      }
     });
-    if (badCert) {
-      message.error('上传的 key 文件和 crt 文件的不匹配，请检查后重新上传！');
-      return;
-    }
-    return certs;
+    return result;
   },
   handleChange: function(e) {
     var input = ReactDOM.findDOMNode(this.refs.uploadCerts);
     var files = input.files && this.formatFiles(input.files);
-    var len = files && files.length;
     input.value = '';
-    if (!len) {
+    if (!files) {
       return;
     }
     var handleCallback = function() {
       console.log(files);
     };
-    Object.keys(files).map((name) => {
-      readFile(files[name], function(text) {
-        files[name] = text;
+    var keys = Object.keys(files);
+    var len = keys.length * 2;
+    keys.map((name) => {
+      var file = files[name];
+      readFile(file.key, function(text) {
+        file.key = text;
+        if (--len === 0) {
+          handleCallback();
+        }
+      });
+      readFile(file.cert, function(text) {
+        file.cert = text;
         if (--len === 0) {
           handleCallback();
         }
       });
     });
+  },
+  showUpload: function() {
+    ReactDOM.findDOMNode(this.refs.uploadCerts).click();
   },
   render: function() {
     var self = this;
@@ -186,8 +198,8 @@ var HistoryData = React.createClass({
               Custom Certs
             </h4>
             <div style={{textAlign: 'right', display: dataCenter.isDiableCustomCerts() ? 'none' : undefined}}>
-              <input ref="uploadCerts" type="file" accept=".crt,.key" multiple="multiple" onChange={self.handleChange} />
-              <button type="button" className="btn btn-primary">Upload</button>
+              <input ref="uploadCerts" style={{display: 'none'}} type="file" accept=".crt,.key" multiple="multiple" onChange={self.handleChange} />
+              <button type="button" className="btn btn-primary" onClick={self.showUpload}>Upload</button>
             </div>
              <table className="table">
               <thead>
