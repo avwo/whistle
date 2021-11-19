@@ -347,7 +347,10 @@ exports.getCustomCertsInfo = createCgiObj({
 
 exports.certs = createCgiObj({
   remove: 'cgi-bin/certs/remove',
-  upload: 'cgi-bin/certs/upload'
+  upload: {
+    url: 'cgi-bin/certs/upload',
+    contentType : 'application/json'
+  }
 }, POST_CONF);
 
 exports.values = createCgiObj({

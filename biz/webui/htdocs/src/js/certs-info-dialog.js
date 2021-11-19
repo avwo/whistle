@@ -93,18 +93,19 @@ var HistoryData = React.createClass({
       dir: item.dir
     });
   },
+  handleCgi: function(data, xhr) {
+    if (!data) {
+      return util.showSystemError(xhr);
+    }
+    this.show(data);
+  },
   removeCert: function(item) {
     var self = this;
     win.confirm('Are you sure to delete \'' + item.filename + '\'.', function(sure) {
       if (!sure) {
         return;
       }
-      dataCenter.certs.remove({ filename: item.filename }, function(data, xhr) {
-        if (!data) {
-          return util.showSystemError(xhr);
-        }
-        self.show(data);
-      });
+      dataCenter.certs.remove({ filename: item.filename }, self.handleCgi);
     });
   },
   shouldComponentUpdate: function() {
@@ -148,14 +149,15 @@ var HistoryData = React.createClass({
     return result;
   },
   handleChange: function(e) {
-    var input = ReactDOM.findDOMNode(this.refs.uploadCerts);
-    var files = input.files && this.formatFiles(input.files);
+    var self = this;
+    var input = ReactDOM.findDOMNode(self.refs.uploadCerts);
+    var files = input.files && self.formatFiles(input.files);
     input.value = '';
     if (!files) {
       return;
     }
     var handleCallback = function() {
-      console.log(files);
+      dataCenter.certs.upload(JSON.stringify(files), self.handleCgi);
     };
     var keys = Object.keys(files);
     var len = keys.length * 2;
