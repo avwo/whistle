@@ -40,11 +40,22 @@ var HistoryData = React.createClass({
       if (filename === 'root') {
         item.displayName = 'root (Root CA)';
         rootCA = item;
+        item.readOnly = true;
       } else {
+        if (filename[0] === 'z' && filename[1] === '/') {
+          item.displayName = filename.substring(2);
+          item.readOnly = true;
+        }
         list.push(item);
       }
     });
     list.sort(function(a, b) {
+      if (a.readOnly) {
+        return b.readOnly ? 0 : -1;
+      }
+      if (b.readOnly) {
+        return 1;
+      }
       return util.compare(b.mtime, a.mtime);
     });
     if (rootCA) {
@@ -68,6 +79,9 @@ var HistoryData = React.createClass({
       tips: key + '\n' + crt,
       dir: item.dir
     });
+  },
+  removeCert: function(item) {
+    alert(item.filename);
   },
   shouldComponentUpdate: function() {
     return this._hideDialog === false;
@@ -106,10 +120,13 @@ var HistoryData = React.createClass({
                       <tr className={item.isInvalid ? 'w-cert-invalid' : undefined}>
                         <th className="w-certs-info-order">{i + 1}</th>
                         <td className="w-certs-info-filename" title={item.filename}>
+                          {item.readOnly ? <span className="glyphicon glyphicon-lock" /> : undefined}
                           {item.displayName || item.filename}<br />
                           <a className="w-delete" onClick={function() {
-                            self.showRemoveTips(item);
-                          }} title="">Delete</a>
+                            item.readOnly ? self.showRemoveTips(item) : self.removeCert(item);
+                          }} title="" style={{color: item.readOnly ? '#337ab7' : undefined }}>
+                            {item.readOnly ? 'View path' : 'Delete'}
+                          </a>
                         </td>
                         <td className="w-certs-info-domain" title={item.domain}>{item.domain}</td>
                         <td className="w-certs-info-validity" title={item.validity}>{item.validity}</td>

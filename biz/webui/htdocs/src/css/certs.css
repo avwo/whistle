@@ -20,6 +20,10 @@
   cursor: pointer;
 }
 
+.w-certs-info-filename .glyphicon-lock {
+  margin-right: 5px;
+}
+
 .w-certs-info-dialog td {
   overflow: hidden;
   text-overflow: ellipsis;
