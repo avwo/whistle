@@ -118,6 +118,9 @@ var HistoryData = React.createClass({
               <span className="glyphicon glyphicon-question-sign"></span></a>
               Custom Certs
             </h4>
+            <div style={{textAlign: 'right', display: dataCenter.isDiableCustomCerts() ? 'none' : undefined}}>
+              <button type="button" className="btn btn-primary">Upload</button>
+            </div>
              <table className="table">
               <thead>
                 <th className="w-certs-info-order">#</th>

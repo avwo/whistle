@@ -15,6 +15,10 @@
   color: red;
 }
 
+.w-certs-info-dialog .btn-primary {
+  margin: 0 20px 20px;
+}
+
 .w-certs-info-filename a {
   font-size: 12px;
   cursor: pointer;

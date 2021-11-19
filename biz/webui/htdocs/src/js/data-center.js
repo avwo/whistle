@@ -1034,6 +1034,10 @@ function updateServerInfo(data) {
 
 }
 
+exports.isDiableCustomCerts = function() {
+  return curServerInfo && curServerInfo.dcc;
+};
+
 exports.isMutilEnv = function() {
   return curServerInfo && curServerInfo.multiEnv;
 };
