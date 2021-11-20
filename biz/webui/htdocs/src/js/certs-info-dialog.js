@@ -10,6 +10,7 @@ var dataCenter = require('./data-center');
 var message = require('./message');
 
 var OK_STYLE = { color: '#5bbd72' };
+var MAX_CERT_SIZE = 128 * 1024;
 
 
 function readFile(file, callback) {
@@ -115,8 +116,8 @@ var HistoryData = React.createClass({
     var certs;
     for (var i = 0, len = fileList.length; i < len; i++) {
       var cert = fileList[i];
-      if (cert.size > 64 * 1024 || !(cert.size > 0)) {
-        message.error('The uploaded certificate size cannot exceed 64K.');
+      if (cert.size > MAX_CERT_SIZE || !(cert.size > 0)) {
+        message.error('The uploaded certificate size cannot exceed 128K.');
         return;
       }
       var { name } = cert;
