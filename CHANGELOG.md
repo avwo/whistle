@@ -1,7 +1,7 @@
 # v2.8.5
 1. feat: 支持通过 `ignore://-*` 过滤 `ignore://*`
 2. feat: 支持 `proxy` 和 `pac` 配置 `lineProps://proxyHostOnly`，当用户配置了 `host` 代理才会生效
-3. feat: 非 SNI 请求也支持通过插件自定义证书
+3. feat: 非 SNI 请求也支持通过插件自定义证书，且支持直接上传和删除用户自定义证书
 
 # v2.8.4
 1. fix: 可能无法导入 saz 文件问题
