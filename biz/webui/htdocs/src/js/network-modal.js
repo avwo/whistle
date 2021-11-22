@@ -48,14 +48,18 @@ function parseKeyword(keyword) {
   if (!keyword) {
     return;
   }
+  var not = keyword[0] === '!';
+  if (not) {
+    keyword = keyword.substring(1);
+  }
   var type = 'url';
   if (KW_RE.test(keyword)) {
     type = RegExp.$1.toLowerCase();
     keyword = RegExp.$2.trim();
-  }
-  var not = keyword[0] === '!';
-  if (not) {
-    keyword = keyword.substring(1);
+    if (keyword[0] === '!') {
+      not = true;
+      keyword = keyword.substring(1);
+    }
   }
   if (!keyword && type !== 'mark') {
     return;
