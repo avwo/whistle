@@ -1,3 +1,7 @@
+# v2.8.6
+1. refactor: 禁止通过页面上传根证书 `root.key & root.crt`
+2. refactor: Whistle 自动生成的证书过期时自动续期（有效期一年）
+
 # v2.8.5
 1. feat: 支持通过 `ignore://-*` 过滤 `ignore://*`
 2. feat: 支持 `proxy` 和 `pac` 配置 `lineProps://proxyHostOnly`，当用户配置了 `host` 代理才会生效
