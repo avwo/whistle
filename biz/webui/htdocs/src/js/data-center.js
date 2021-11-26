@@ -341,15 +341,15 @@ function toLowerCase(str) {
   return String(str == null ? '' : str).trim().toLowerCase();
 }
 
-exports.getCustomCertsInfo = createCgiObj({
-  getCustomCertsInfo: 'cgi-bin/get-custom-certs-files'
-}, GET_CONF).getCustomCertsInfo;
-
 exports.certs = createCgiObj({
   remove: 'cgi-bin/certs/remove',
   upload: {
     url: 'cgi-bin/certs/upload',
     contentType : 'application/json'
+  },
+  all: {
+    url: 'cgi-bin/certs/all',
+    type: 'get'
   }
 }, POST_CONF);
 

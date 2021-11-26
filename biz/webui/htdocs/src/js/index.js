@@ -2976,13 +2976,13 @@ var Index = React.createClass({
       return;
     }
     self.loadingCerts = true;
-    dataCenter.getCustomCertsInfo(function(data, xhr) {
+    dataCenter.certs.all(function(data, xhr) {
       self.loadingCerts = false;
       if (!data) {
         util.showSystemError(xhr);
         return;
       }
-      self.refs.certsInfoDialog.show(data);
+      self.refs.certsInfoDialog.show(data.certs, data.dir);
     });
   },
   onContextMenu: function(e) {

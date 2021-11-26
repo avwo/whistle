@@ -25,9 +25,10 @@ var HistoryData = React.createClass({
   getInitialState: function() {
     return { list: [] };
   },
-  show: function(data) {
+  show: function(data, dir) {
     var list = [];
     var rootCA;
+    this._certsDir = this._certsDir || dir;
     Object.keys(data).forEach(function(filename) {
       var cert = data[filename];
       var startDate = new Date(cert.notBefore);
@@ -158,7 +159,8 @@ var HistoryData = React.createClass({
       return;
     }
     if (files.root) {
-      win.alert('Root CA cannot be uploaded by UI.\nYou must manually upload to the directory `~/.WhistleAppData/custom_certs` and restart Whistle.');
+      var dir = self._certsDir || '~/.WhistleAppData/custom_certs';
+      win.alert('Root CA cannot be uploaded by UI.\nYou must manually upload to follow directory and restart Whistle:\n' + dir);
       delete files.root;
     }
     var handleCallback = function() {
