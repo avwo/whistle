@@ -157,6 +157,10 @@ var HistoryData = React.createClass({
     if (!files) {
       return;
     }
+    if (files.root) {
+      win.alert('Root CA cannot be uploaded by UI.\nYou must manually upload to the directory `~/.WhistleAppData/custom_certs` and restart Whistle.');
+      delete files.root;
+    }
     var handleCallback = function() {
       dataCenter.certs.upload(JSON.stringify(files), self.handleCgi);
     };
