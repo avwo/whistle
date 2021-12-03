@@ -132,7 +132,7 @@ app.disable('x-powered-by');
 
 function readRemoteStream(req, res, authUrl) {
   var client;
-  const handleError = function(err) {
+  var handleError = function(err) {
     res.emit('error', err);
     client && client.destroy();
   };

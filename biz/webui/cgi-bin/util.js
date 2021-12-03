@@ -8,7 +8,7 @@ var PID = process.pid;
 var MAX_OBJECT_SIZE = 1024 * 1024 * 6;
 var index = 0;
 var dnsOverHttps = config.dnsOverHttps;
-const doh = !!dnsOverHttps;
+var doh = !!dnsOverHttps;
 
 exports.getClientId = function() {
   if (index > 9999) {

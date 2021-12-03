@@ -14,7 +14,7 @@ var MAX_CERT_SIZE = 128 * 1024;
 
 
 function readFile(file, callback) {
-  const reader = new FileReader();
+  var reader = new FileReader();
   reader.readAsText(file);
   reader.onload = function() {
     callback(reader.result);
