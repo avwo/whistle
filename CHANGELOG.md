@@ -1,3 +1,8 @@
+# v2.8.7
+1. feat: `--httpsPort` 启动的 HTTPS Server 支持从插件获取证书
+2. feat: 支持通过 `excludeFilter://from=httpServer`、`includeFilter://from=httpsServer`、`excludeFilter://from=httpServer`、`includeFilter://from=httpsServer` 过滤请求
+3. style: Composer 里面新增 `+Cookies` 选项，钩上该选项请求会自动添加当前路径的最新 Cookie（合并方式），点击 `Cookies` 可以查看当前浏览器通过 Form 表单方式获取的当前路径的 Cookie + Network 界面最新的 15 条不同 Cookie，且可以进行 Add 及 Copy 操作
+
 # v2.8.6
 1. refactor: 禁止通过页面上传根证书 `root.key & root.crt`
 2. refactor: Whistle 自动生成的证书过期时自动续期（有效期一年）
