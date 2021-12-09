@@ -23,9 +23,9 @@ pattern @clientCert://key=keypath.key&cert=certpath.crt
 pattern @clientCert://key=keypath.pem&cert=certpath.pem
 
 # pfx 或 p12 格式证书
-pattern @clientCert://pwd=passphrase&cert=pfxfilepagh.pfx
+pattern @clientCert://pwd=passphrase&pfx=pfxfilepagh.pfx
 # 或
-pattern @clientCert://pwd=passphrase&cert=p2filepath.p12
+pattern @clientCert://pwd=passphrase&pfx=p2filepath.p12
 ```
 > pattern 详见 [pattern](./pattern.html)
 
