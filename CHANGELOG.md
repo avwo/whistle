@@ -1,5 +1,5 @@
 # v2.8.8
-1. refactor: 支持通过 `enable://useLocalHost` 和 `enable://useSafePort` 修改 log 和 weinre 请求 URL 的域名或端口
+1. feat: 支持通过 `enable://useLocalHost` 和 `enable://useSafePort` 修改 log 和 weinre 请求 URL 的域名或端口
 
 # v2.8.7
 1. feat: `--httpsPort` 启动的 HTTPS Server 支持从插件获取证书
