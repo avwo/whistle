@@ -1,3 +1,6 @@
+# v2.8.8
+1. refactor: log 和 weinre 请求 URL 的端口改成 `8899` ，不在跟页面同端口，可以通过 `enable://sameDomain` 还原为跟页面一样的端口
+
 # v2.8.7
 1. feat: `--httpsPort` 启动的 HTTPS Server 支持从插件获取证书
 2. feat: 支持通过 `excludeFilter://from=httpServer`、`includeFilter://from=httpsServer`、`excludeFilter://from=httpServer`、`includeFilter://from=httpsServer` 过滤请求
