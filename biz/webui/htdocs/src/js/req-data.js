@@ -456,6 +456,11 @@ var ReqData = React.createClass({
     events.on('changeRecordState', function(_, type) {
       self.setState({ record: type }, self.updateList);
     });
+    events.on('selectedIndex', function(_, index) {
+      var list = self.props.modal.getList();
+      var item = list && (list[index] || list[list.length - 1]);
+      item && self.triggerActiveItem(item);
+    });
     events.on('replayTreeView', function(_, dataId, count) {
       var item = self.props.modal.getTreeNode(dataId);
       var parent = item && item.parent;

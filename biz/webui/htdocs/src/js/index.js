@@ -1203,7 +1203,10 @@ var Index = React.createClass({
           url: location.href,
           importSessions: self.importAnySessions,
           importHarSessions: self.importHarSessions,
-          clearSessions: self.clear
+          clearSessions: self.clear,
+          selectIndex: function(index) {
+            events.trigger('selectedIndex', index);
+          }
         });
       }
     } catch(e) {}
