@@ -1,5 +1,7 @@
 # v2.8.8
 1. feat: 支持通过 `enable://useLocalHost` 和 `enable://useSafePort` 修改 log 和 weinre 请求 URL 的域名或端口
+2. style: 界面提供 `api.selectIndex` 选中指定下标的抓包数据
+3. feat: 支持插件获取 `originalReq.remoteAddress` 与 `originalReq.remotePort`
 
 # v2.8.7
 1. feat: `--httpsPort` 启动的 HTTPS Server 支持从插件获取证书
