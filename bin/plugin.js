@@ -95,6 +95,13 @@ function install(cmd, name, argv) {
           removeDir(installPath);
         } catch (e) {}
       }
+      try {
+        var pkgPath = path.join(realPath, 'node_modules', name, 'package.json');
+        if (fs.statSync(pkgPath).mtime.getFullYear() < 2010) {
+          var now = new Date();
+          fs.utimesSync(pkgPath, now, now);
+        }
+      } catch (e) {}
     }
   });
 }
