@@ -324,7 +324,10 @@ app.all(PLUGIN_PATH_RE, function(req, res) {
       return;
     }
     var options = parseurl(req);
-    req.headers[config.PLUGIN_HOOK_NAME_HEADER] = config.PLUGIN_HOOKS.UI;
+    var headers = req.headers;
+    headers[config.PLUGIN_HOOK_NAME_HEADER] = config.PLUGIN_HOOKS.UI;
+    headers['x-whistle-remote-address'] = req._remoteAddr || util.getRemoteAddr(req);
+    headers['x-whistle-remote-port'] = req._remotePort || util.getRemotePort(req);
     req.url = options.path.replace(result[0].slice(0, -1), '');
     util.transformReq(req, res, ports.uiPort);
   });
