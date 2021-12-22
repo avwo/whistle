@@ -7,6 +7,7 @@ var util = require('./util');
 var BtnGroup = require('./btn-group');
 var JSONViewer = require('./json-viewer');
 var Textarea = require('./textarea');
+var dataCenter = require('./data-center');
 var PluginsTabs = require('./plugins-tabs');
 
 var BTNS = [{name: 'Headers'}, {name: 'WebForms'}, {name: 'TextView', display: 'Body'}, {name: 'JSONView'},
@@ -93,6 +94,19 @@ var ReqDetail = React.createClass({
     state.raw = raw;
     state.body = body;
     base64 = base64 || '';
+    var pluginsTab = BTNS[7];
+    var tabs = dataCenter.getReqTabs();
+    var len = tabs.length;
+    pluginsTab.display = undefined;
+    pluginsTab.title = undefined;
+    pluginsTab.className = undefined;
+    if (len) {
+      pluginsTab.hide = false;
+      if (len === 1) {
+        pluginsTab.display = pluginsTab.title = tabs[0].name;
+        pluginsTab.className = 'w-detail-custom-tab w-req';
+      }
+    }
   
     return (
       <div className={'fill orient-vertical-box w-detail-content w-detail-request' + (util.getBoolean(this.props.hide) ? ' hide' : '')}>
@@ -122,7 +136,7 @@ var ReqDetail = React.createClass({
         {state.initedCookies ? <div className={'fill w-detail-request-cookies' + (name == BTNS[5].name ? '' : ' hide')}><Properties modal={cookies} enableViewSource="1" /></div> : undefined}
         {state.initedRaw ? <Textarea defaultName={defaultName} value={raw} headers={headersStr}
           base64={base64} className="fill w-detail-request-raw" hide={name != BTNS[6].name} /> : undefined}
-        {state.initedPlugins ? <PluginsTabs hide={name != BTNS[7].name || BTNS[7].hide} /> : undefined}
+        {state.initedPlugins ? <PluginsTabs hide={name != pluginsTab.name || pluginsTab.hide} /> : undefined}
       </div>
     );
   }

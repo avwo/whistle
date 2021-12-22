@@ -465,6 +465,14 @@ function updateCertStatus(data) {
   }
 }
 
+exports.getReqTabs = function() {
+  return [];
+};
+
+exports.getResTabs = function() {
+  return [];
+};
+
 exports.getInitialData = function (callback) {
   if (!initialDataPromise) {
     initialDataPromise = $.Deferred();

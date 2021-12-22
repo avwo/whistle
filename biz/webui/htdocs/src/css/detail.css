@@ -45,3 +45,10 @@
 .w-req {
   max-width: calc(100% - 450px);
 }
+
+.w-plugins-tabs-list {
+  width: 106px;
+  border-right: 1px solid #ddd;
+  overflow-x: hidden;
+  overflow-y: auto;
+}

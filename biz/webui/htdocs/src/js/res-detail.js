@@ -9,6 +9,7 @@ var BtnGroup = require('./btn-group');
 var Textarea = require('./textarea');
 var ImageView = require('./image-view');
 var JSONViewer = require('./json-viewer');
+var dataCenter = require('./data-center');
 var PluginsTabs = require('./plugins-tabs');
 
 var COOKIE_HEADERS = ['Name', 'Value', 'Domain', 'Path', 'Expires', 'Max-Age', 'HttpOnly', 'Secure', 'SameSite'];
@@ -176,6 +177,20 @@ var ResDetail = React.createClass({
       }
     }
     base64 = base64 || '';
+
+    var pluginsTab = btns[8];
+    var tabs = dataCenter.getResTabs();
+    var len = tabs.length;
+    pluginsTab.display = undefined;
+    pluginsTab.title = undefined;
+    pluginsTab.className = undefined;
+    if (len) {
+      pluginsTab.hide = false;
+      if (len === 1) {
+        pluginsTab.display = pluginsTab.title = tabs[0].name;
+        pluginsTab.className = 'w-detail-custom-tab';
+      }
+    }
     return (
       <div className={'fill orient-vertical-box w-detail-content w-detail-response'
         + (util.getBoolean(this.props.hide) ? ' hide' : '')}>
@@ -189,7 +204,7 @@ var ResDetail = React.createClass({
         {state.initedTrailers ? <div className={'fill w-detail-response-headers' + (name == btns[6].name ? '' : ' hide')}><Properties modal={rawTrailers || trailers} enableViewSource="1" /></div> : undefined}
         {state.initedRaw ? <Textarea defaultName={defaultName} value={raw} headers={headersStr}
           base64={base64} className="fill w-detail-response-raw" hide={name != btns[7].name} /> : undefined}
-        {state.initedPlugins ? <PluginsTabs hide={name != btns[8].name || btns[8].hide} /> : undefined}
+        {state.initedPlugins ? <PluginsTabs hide={name != pluginsTab.name || pluginsTab.hide} /> : undefined}
       </div>
     );
   }
