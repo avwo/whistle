@@ -181,15 +181,14 @@ var ResDetail = React.createClass({
     var pluginsTab = btns[8];
     var tabs = dataCenter.getResTabs();
     var len = tabs.length;
-    pluginsTab.display = undefined;
-    pluginsTab.title = undefined;
-    pluginsTab.className = undefined;
-    if (len) {
-      pluginsTab.hide = false;
-      if (len === 1) {
-        pluginsTab.display = pluginsTab.title = tabs[0].name;
-        pluginsTab.className = 'w-detail-custom-tab';
-      }
+    pluginsTab.hide = !len;
+    if (len && len === 1) {
+      pluginsTab.display = pluginsTab.title = tabs[0].name;
+      pluginsTab.className = 'w-detail-custom-tab';
+    } else {
+      pluginsTab.display = undefined;
+      pluginsTab.title = undefined;
+      pluginsTab.className = undefined;
     }
     return (
       <div className={'fill orient-vertical-box w-detail-content w-detail-response'
@@ -204,7 +203,7 @@ var ResDetail = React.createClass({
         {state.initedTrailers ? <div className={'fill w-detail-response-headers' + (name == btns[6].name ? '' : ' hide')}><Properties modal={rawTrailers || trailers} enableViewSource="1" /></div> : undefined}
         {state.initedRaw ? <Textarea defaultName={defaultName} value={raw} headers={headersStr}
           base64={base64} className="fill w-detail-response-raw" hide={name != btns[7].name} /> : undefined}
-        {state.initedPlugins ? <PluginsTabs hide={name != pluginsTab.name || pluginsTab.hide} /> : undefined}
+        {state.initedPlugins ? <PluginsTabs tabs={tabs} hide={name != pluginsTab.name || pluginsTab.hide} /> : undefined}
       </div>
     );
   }

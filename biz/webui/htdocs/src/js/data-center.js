@@ -41,6 +41,8 @@ var onlyViewOwnData = storage.get('onlyViewOwnData') == 1;
 var pluginsMap = {};
 var disabledPlugins = {};
 var disabledAllPlugins;
+var reqTabList = [];
+var resTabList = [];
 var DEFAULT_CONF = {
   timeout: TIMEOUT,
   xhrFields: {
@@ -466,11 +468,11 @@ function updateCertStatus(data) {
 }
 
 exports.getReqTabs = function() {
-  return [];
+  return reqTabList;
 };
 
 exports.getResTabs = function() {
-  return [];
+  return resTabList;
 };
 
 exports.getInitialData = function (callback) {
@@ -650,6 +652,18 @@ function startLoadData() {
       var len = data.log.length;
       var svrLen = data.svrLog.length;
       pluginsMap = data.plugins || {};
+      reqTabList = [];
+      resTabList = [];
+      if (!disabledAllPlugins) {
+        Object.keys(pluginsMap).forEach(function(name) {
+          if (!disabledPlugins[name.slice(0, -1)]) {
+            var reqTab = pluginsMap[name].reqTab;
+            var resTab = pluginsMap[name].resTab;
+            reqTab && reqTabList.push(reqTab);
+            resTab && resTabList.push(resTab);
+          }
+        });
+      }
       disabledPlugins = data.disabledPlugins || {};
       disabledAllPlugins = data.disabledAllPlugins;
       if (len || svrLen) {

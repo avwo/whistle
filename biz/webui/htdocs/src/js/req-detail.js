@@ -100,12 +100,14 @@ var ReqDetail = React.createClass({
     pluginsTab.display = undefined;
     pluginsTab.title = undefined;
     pluginsTab.className = undefined;
-    if (len) {
-      pluginsTab.hide = false;
-      if (len === 1) {
-        pluginsTab.display = pluginsTab.title = tabs[0].name;
-        pluginsTab.className = 'w-detail-custom-tab w-req';
-      }
+    pluginsTab.hide = !len;
+    if (len && len === 1) {
+      pluginsTab.display = pluginsTab.title = tabs[0].name;
+      pluginsTab.className = 'w-detail-custom-tab w-req';
+    } else {
+      pluginsTab.display = undefined;
+      pluginsTab.title = undefined;
+      pluginsTab.className = undefined;
     }
   
     return (
@@ -136,7 +138,7 @@ var ReqDetail = React.createClass({
         {state.initedCookies ? <div className={'fill w-detail-request-cookies' + (name == BTNS[5].name ? '' : ' hide')}><Properties modal={cookies} enableViewSource="1" /></div> : undefined}
         {state.initedRaw ? <Textarea defaultName={defaultName} value={raw} headers={headersStr}
           base64={base64} className="fill w-detail-request-raw" hide={name != BTNS[6].name} /> : undefined}
-        {state.initedPlugins ? <PluginsTabs hide={name != pluginsTab.name || pluginsTab.hide} /> : undefined}
+        {state.initedPlugins ? <PluginsTabs tabs={tabs} hide={name != pluginsTab.name || pluginsTab.hide} /> : undefined}
       </div>
     );
   }
