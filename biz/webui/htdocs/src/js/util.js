@@ -39,7 +39,12 @@ function compare(v1, v2) {
   return v1 == v2 ? 0 : (v1 > v2 ? -1 : 1);
 }
 
+function comparePlugin(p1, p2) {
+  return compare(p1.priority, p2.priority) || compare(p2.mtime, p1.mtime) || (p1._key > p2._key ? 1 : -1);
+}
+
 exports.compare = compare;
+exports.comparePlugin = comparePlugin;
 
 exports.isString = function(str) {
   return typeof str === 'string';

@@ -683,10 +683,14 @@ function startLoadData() {
             var resTab = plugin.resTab;
             if (reqTab) {
               reqTab.mtime = plugin.mtime;
+              reqTab.priority = plugin.priority;
+              reqTab._key = name;
               reqTabList.push(reqTab);
             }
             if (resTab) {
               resTab.mtime = plugin.mtime;
+              resTab.priority = plugin.priority;
+              resTab._key = name;
               resTabList.push(resTab);
             }
           }
@@ -1191,22 +1195,19 @@ function getMenus(menuName) {
     var plugin = pluginsMap[name];
     var menus = plugin[menuName];
     if (menus) {
-      name = name.slice(0, -1);
-      if (!disabledPlugins[name]) {
+      var simpleName = name.slice(0, -1);
+      if (!disabledPlugins[simpleName]) {
         menus.forEach(function(menu) {
-          menu.title = name + ' extension menu';
+          menu.title = simpleName + ' extension menu';
           menu.mtime = plugin.mtime;
+          menu.priority = plugin.priority;
+          menu._key = name;
           list.push(menu);
         });
       }
     }
   });
-  return list.length > 1 ? list.sort(function(prev, next) {
-    if (prev.mtime === next.mtime) {
-      return 0;
-    }
-    return prev.mtime > next.mtime ? 1 : -1;
-  }) : list;
+  return list.length > 1 ? list.sort(util.comparePlugin) : list;
 }
 
 exports.getNetworkMenus = function() {

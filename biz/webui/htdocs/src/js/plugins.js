@@ -16,7 +16,9 @@ function getPluginComparator(plugins) {
   return function(a, b) {
     var p1 = plugins[a];
     var p2 = plugins[b];
-    return util.compare(p1.priority, p2.priority) || util.compare(p2.mtime, p1.mtime) || (a > b ? 1 : -1);
+    p1._key = a;
+    p2._key = b;
+    return util.comparePlugin(p1, p2);
   };
 }
 
