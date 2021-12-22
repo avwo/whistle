@@ -38,12 +38,14 @@ var BtnGroup = React.createClass({
           {list.map(function(btn, i) {
             btn.disabled = disabled;
             var icon = btn.icon ? <span className={'glyphicon glyphicon-' + btn.icon}></span> : '';
+            var clazz = btn.className ? ' ' + btn.className : '';
             btn.key = btn.key || util.getKey();
 
             return <button onClick={function() {
               self.handleClick(btn);
             }} onDoubleClick={self.onDoubleClick} key={btn.key} type="button"
-                 className={'btn btn-default' + (btn.active && !disabled ? ' active' : '')}>
+                 style={{display: btn.hide ? 'none' : undefined}} title={btn.title}
+                 className={'btn btn-default' + (btn.active && !disabled ? ' active' : '') + clazz}>
                  {icon}{btn.display || btn.name}
                 </button>;
           })}

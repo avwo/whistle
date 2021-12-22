@@ -33,3 +33,15 @@
 .w-detail-bottom.w-detail {
   border-left: none;
 }
+
+.w-detail-custom-tab {
+  max-width: 12.1%;
+  max-width: calc(100% - 492px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.w-req {
+  max-width: calc(100% - 450px);
+}

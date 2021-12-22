@@ -7,9 +7,10 @@ var util = require('./util');
 var BtnGroup = require('./btn-group');
 var JSONViewer = require('./json-viewer');
 var Textarea = require('./textarea');
+var PluginsTabs = require('./plugins-tabs');
 
 var BTNS = [{name: 'Headers'}, {name: 'WebForms'}, {name: 'TextView', display: 'Body'}, {name: 'JSONView'},
-  {name: 'HexView'}, {name: 'Cookies'}, {name: 'Raw'}];
+  {name: 'HexView'}, {name: 'Cookies'}, {name: 'Raw'}, {name: 'Plugins', hide: true}];
 
 var ReqDetail = React.createClass({
   getInitialState: function() {
@@ -20,7 +21,8 @@ var ReqDetail = React.createClass({
       initedWebForms: false,
       initedJSONView: false,
       initedHexView: false,
-      initedRaw: false
+      initedRaw: false,
+      initPlugins: false
     };
   },
   shouldComponentUpdate: function(nextProps) {
@@ -114,12 +116,13 @@ var ReqDetail = React.createClass({
             </div>
           </div>
         </Divider> : ''}
-        {state.initedTextView ? <Textarea defaultName={defaultName} tips={tips} base64={base64} value={body} className="fill w-detail-request-textview" hide={name != BTNS[2].name} /> : ''}
+        {state.initedTextView ? <Textarea defaultName={defaultName} tips={tips} base64={base64} value={body} className="fill w-detail-request-textview" hide={name != BTNS[2].name} /> : undefined}
         {state.initedJSONView ? <JSONViewer defaultName={defaultName} data={json} hide={name != BTNS[3].name} /> : undefined}
-        {state.initedHexView ? <Textarea defaultName={defaultName} isHexView="1" base64={base64} value={bin} className="fill n-monospace w-detail-request-hex" hide={name != BTNS[4].name} /> : ''}
-        {state.initedCookies ? <div className={'fill w-detail-request-cookies' + (name == BTNS[5].name ? '' : ' hide')}><Properties modal={cookies} enableViewSource="1" /></div> : ''}
+        {state.initedHexView ? <Textarea defaultName={defaultName} isHexView="1" base64={base64} value={bin} className="fill n-monospace w-detail-request-hex" hide={name != BTNS[4].name} /> : undefined}
+        {state.initedCookies ? <div className={'fill w-detail-request-cookies' + (name == BTNS[5].name ? '' : ' hide')}><Properties modal={cookies} enableViewSource="1" /></div> : undefined}
         {state.initedRaw ? <Textarea defaultName={defaultName} value={raw} headers={headersStr}
-          base64={base64} className="fill w-detail-request-raw" hide={name != BTNS[6].name} /> : ''}
+          base64={base64} className="fill w-detail-request-raw" hide={name != BTNS[6].name} /> : undefined}
+        {state.initedPlugins ? <PluginsTabs hide={name != BTNS[7].name || BTNS[7].hide} /> : undefined}
       </div>
     );
   }

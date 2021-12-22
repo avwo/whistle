@@ -9,6 +9,8 @@ var BtnGroup = require('./btn-group');
 var Textarea = require('./textarea');
 var ImageView = require('./image-view');
 var JSONViewer = require('./json-viewer');
+var PluginsTabs = require('./plugins-tabs');
+
 var COOKIE_HEADERS = ['Name', 'Value', 'Domain', 'Path', 'Expires', 'Max-Age', 'HttpOnly', 'Secure', 'SameSite'];
 
 var ResDetail = React.createClass({
@@ -22,6 +24,7 @@ var ResDetail = React.createClass({
       initedJSONView: false,
       initedHexView: false,
       initedRaw: false,
+      initPlugins: false,
       btns: [
         {name: 'Headers'},
         {name: 'Preview'},
@@ -30,7 +33,8 @@ var ResDetail = React.createClass({
         {name: 'HexView'},
         {name: 'Cookies'},
         {name: 'Trailers'},
-        {name: 'Raw'}
+        {name: 'Raw'},
+        {name: 'Plugins', hide: true}
       ]
     };
   },
@@ -185,6 +189,7 @@ var ResDetail = React.createClass({
         {state.initedTrailers ? <div className={'fill w-detail-response-headers' + (name == btns[6].name ? '' : ' hide')}><Properties modal={rawTrailers || trailers} enableViewSource="1" /></div> : undefined}
         {state.initedRaw ? <Textarea defaultName={defaultName} value={raw} headers={headersStr}
           base64={base64} className="fill w-detail-response-raw" hide={name != btns[7].name} /> : undefined}
+        {state.initedPlugins ? <PluginsTabs hide={name != btns[8].name || btns[8].hide} /> : undefined}
       </div>
     );
   }
