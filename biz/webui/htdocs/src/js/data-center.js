@@ -550,6 +550,25 @@ function emitValuesChanged(data) {
     events.trigger('valuesChanged');
   }
 }
+
+function emitCustomTabsChange(curList, oldList, name) {
+  var curLen = curList.length;
+  var oldLen = oldList.length;
+  if (!curLen) {
+    oldLen && events.trigger(name);
+    return;
+  }
+  if (curLen === 1) {
+    if (!oldLen || oldLen > 1 || curList[0].name !== oldList[0].name || curList[0].url !== oldList[0].url) {
+      events.trigger(name);
+    }
+    return;
+  }
+  if (!oldLen || oldLen === 1) {
+    events.trigger(name);
+  }
+}
+
 var hiddenTime = Date.now();
 function startLoadData() {
   if (startedLoad) {
@@ -652,18 +671,29 @@ function startLoadData() {
       var len = data.log.length;
       var svrLen = data.svrLog.length;
       pluginsMap = data.plugins || {};
+      var _reqTabList = reqTabList;
+      var _resTabList = resTabList;
       reqTabList = [];
       resTabList = [];
       if (!disabledAllPlugins) {
         Object.keys(pluginsMap).forEach(function(name) {
           if (!disabledPlugins[name.slice(0, -1)]) {
-            var reqTab = pluginsMap[name].reqTab;
-            var resTab = pluginsMap[name].resTab;
-            reqTab && reqTabList.push(reqTab);
-            resTab && resTabList.push(resTab);
+            var plugin = pluginsMap[name];
+            var reqTab = plugin.reqTab;
+            var resTab = plugin.resTab;
+            if (reqTab) {
+              reqTab.mtime = plugin.mtime;
+              reqTabList.push(reqTab);
+            }
+            if (resTab) {
+              resTab.mtime = plugin.mtime;
+              resTabList.push(resTab);
+            }
           }
         });
       }
+      emitCustomTabsChange(reqTabList, _reqTabList, 'reqTabsChange');
+      emitCustomTabsChange(resTabList, _resTabList, 'resTabsChange');
       disabledPlugins = data.disabledPlugins || {};
       disabledAllPlugins = data.disabledAllPlugins;
       if (len || svrLen) {

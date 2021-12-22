@@ -9,6 +9,7 @@ var JSONViewer = require('./json-viewer');
 var Textarea = require('./textarea');
 var dataCenter = require('./data-center');
 var PluginsTabs = require('./plugins-tabs');
+var events = require('./events');
 
 var BTNS = [{name: 'Headers'}, {name: 'WebForms'}, {name: 'TextView', display: 'Body'}, {name: 'JSONView'},
   {name: 'HexView'}, {name: 'Cookies'}, {name: 'Raw'}, {name: 'Plugins', hide: true}];
@@ -25,6 +26,12 @@ var ReqDetail = React.createClass({
       initedRaw: false,
       initPlugins: false
     };
+  },
+  componentDidMount: function() {
+    var self = this;
+    events.on('reqTabsChange', function() {
+      self.setState({});
+    });
   },
   shouldComponentUpdate: function(nextProps) {
     var hide = util.getBoolean(this.props.hide);

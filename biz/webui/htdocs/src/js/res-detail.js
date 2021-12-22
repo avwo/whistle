@@ -11,6 +11,7 @@ var ImageView = require('./image-view');
 var JSONViewer = require('./json-viewer');
 var dataCenter = require('./data-center');
 var PluginsTabs = require('./plugins-tabs');
+var events = require('./events.js');
 
 var COOKIE_HEADERS = ['Name', 'Value', 'Domain', 'Path', 'Expires', 'Max-Age', 'HttpOnly', 'Secure', 'SameSite'];
 
@@ -38,6 +39,12 @@ var ResDetail = React.createClass({
         {name: 'Plugins', hide: true}
       ]
     };
+  },
+  componentDidMount: function() {
+    var self = this;
+    events.on('resTabsChange', function() {
+      self.setState({});
+    });
   },
   shouldComponentUpdate: function(nextProps) {
     var hide = util.getBoolean(this.props.hide);
