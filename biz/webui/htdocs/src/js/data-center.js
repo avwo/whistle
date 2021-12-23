@@ -467,20 +467,12 @@ function updateCertStatus(data) {
   }
 }
 
-function sortTabList(list) {
-  if (!list.__sorted) {
-    list.__sorted;
-    list.sort(util.comparePlugin);
-  }
-  return list;
-}
-
 exports.getReqTabs = function() {
-  return sortTabList(reqTabList);
+  return reqTabList;
 };
 
 exports.getResTabs = function() {
-  return sortTabList(resTabList);
+  return resTabList;
 };
 
 exports.getInitialData = function (callback) {
@@ -556,6 +548,27 @@ function emitRulesChanged(data) {
 function emitValuesChanged(data) {
   if (checkDataChanged(data, 'mvaluesClientId', 'mvaluesTime')) {
     events.trigger('valuesChanged');
+  }
+}
+
+function checkTabList(list1, list2, len) {
+  for (var i = 0; i < len; i++) {
+    var tab1 = list1[i];
+    var tab2 = list2[i];
+    if (tab1.name !== tab2.name || tab1.action !== tab2.action) {
+      return true;
+    }
+  }
+}
+
+function updatePluginTabs(reqList, oldReqList, resList, oldResList) {
+  var reqLen = reqList.length;
+  var oldReqLen = oldReqList.length;
+  var resLen = resList.length;
+  var oldResLen = oldResList.length;
+  if ((reqLen > 1 && oldReqLen > 1 && (reqLen !== oldReqLen || checkTabList(reqList, oldReqList, reqLen))) ||
+    (resLen > 1 && oldResLen > 1 && (resLen !== oldResLen || checkTabList(resList, oldResList, resLen)))) {
+    events.trigger('updatePluginTabs');
   }
 }
 
@@ -709,6 +722,9 @@ function startLoadData() {
       }
       emitCustomTabsChange(reqTabList, _reqTabList, 'reqTabsChange');
       emitCustomTabsChange(resTabList, _resTabList, 'resTabsChange');
+      reqTabList.sort(util.comparePlugin);
+      resTabList.sort(util.comparePlugin);
+      updatePluginTabs(reqTabList, _reqTabList, resTabList, _resTabList);
       disabledPlugins = data.disabledPlugins || {};
       disabledAllPlugins = data.disabledAllPlugins;
       if (len || svrLen) {

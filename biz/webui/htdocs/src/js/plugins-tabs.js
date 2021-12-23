@@ -5,6 +5,8 @@ var util = require('./util');
 var modal = require('./network-modal');
 var TabFrame = require('./tab-frame');
 
+var MAX_IFRAME_COUNT = 6;
+
 
 window.initCustomTabWhistleBridge = function(win) {
   var bridge = getBridge();
@@ -40,9 +42,16 @@ window.initCustomTabWhistleBridge = function(win) {
 var PluginsTabs = React.createClass({
   getInitialState: function() {
     var tab = this.props.tabs[0];
+    this.initedTabs = {};
     return {
       active: tab && tab.plugin
     };
+  },
+  componentDidMount: function() {
+    var self = this;
+    events.on('updatePluginTabs', function() {
+      self.setState({});
+    });
   },
   shouldComponentUpdate: function(nextProps) {
     var hide = util.getBoolean(this.props.hide);
@@ -50,6 +59,33 @@ var PluginsTabs = React.createClass({
   },
   onSelect: function(tab) {
     this.setState({ active: tab.plugin });
+  },
+  isInited: function(tab) {
+    var cache = this.initedTabs;
+    var curInfo = cache[tab.action];
+    if (this.state.active !== tab.plugin) {
+      return curInfo;
+    }
+    if (curInfo) {
+      curInfo.time = Date.now();
+      return true;
+    }
+    var keys = Object.keys(cache);
+    if (keys.length >= MAX_IFRAME_COUNT) {
+      var destoyInfo;
+      keys.forEach(function(key) {
+        var info = cache[key];
+        if (!destoyInfo || destoyInfo.time > info.time) {
+          destoyInfo = info;
+        }
+      });
+      if (destoyInfo) {
+        // TODO: 销毁 iframe 及关联的内存
+        console.log(destoyInfo);
+      }
+    }
+    this.initedTabs[tab.action] = { time: Date.now() };
+    return true;
   },
   render: function() {
     var self = this;
@@ -85,7 +121,7 @@ var PluginsTabs = React.createClass({
           <div className="fill orient-vertical-box w-plugins-tabs-panel">
           {
               tabs.map(function(tab) {
-                return <TabFrame key={tab.plugin} src={tab.action} hide={single ? hide : active !== tab.plugin} />;
+                return self.isInited(tab) && <TabFrame key={tab.plugin} src={tab.action} hide={single ? hide : active !== tab.plugin} />;
               })
             }
           </div>
