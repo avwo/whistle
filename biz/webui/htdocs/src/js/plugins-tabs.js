@@ -37,19 +37,40 @@ window.initCustomTabWhistleBridge = function(win) {
 };
 
 var PluginsTabs = React.createClass({
+  getInitialState: function() {
+    var tab = this.props.tabs[0];
+    return {
+      active: tab && tab.plugin
+    };
+  },
   shouldComponentUpdate: function(nextProps) {
     var hide = util.getBoolean(this.props.hide);
     return hide != util.getBoolean(nextProps.hide) || !hide;
   },
+  onSelect: function(tab) {
+    this.setState({ active: tab.plugin });
+  },
   render: function() {
-    var tabs = this.props.tabs;
-    var hide =  this.props.hide;
+    var self = this;
+    var props = self.props;
+    var tabs = props.tabs;
+    var hide =  props.hide;
+    var active = this.state.active;
+
     return (
         <div className={'fill box w-plugins-tabs' + (hide ? ' hide' : '')}>
           <div className={'w-plugins-tabs-list' + (tabs.length < 2 ? ' hide' : '')}>
             {
               tabs.map(function(tab) {
-                return <button className="btn btn-default" title={'[' + tab.plugin + '] ' + tab.name}>{tab.name}</button>;
+                return (
+                        <button
+                          onClick={function() {
+                            self.onSelect(tab);
+                          }}
+                          className={'btn btn-default' + (active == tab.plugin ? ' active' : '')}
+                          title={'[' + tab.plugin + '] ' + tab.name}
+                        >{tab.name}</button>
+                      );
               })
             }
           </div>
