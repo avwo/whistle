@@ -1187,6 +1187,8 @@ function decodeBase64(base64) {
   return result;
 }
 
+exports.decodeBase64 = decodeBase64;
+
 function getMediaType(res) {
   var type = getRawType(res.headers);
   if (!type || getContentType(type) !== 'IMG') {

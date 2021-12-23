@@ -21,6 +21,7 @@ function getBridge() {
     msgBox: message,
     qrCode: qrCode,
     qrcode: qrCode,
+    decodeBase64: util.decodeBase64,
     alert: mockWin.alert,
     confirm: mockWin.confirm,
     request: function(options, cb) {
