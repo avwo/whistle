@@ -54,7 +54,7 @@
     } catch (e) {}
     var toast = {};
     var modal = {};
-    window.whistleBridge = {
+    var whistleBridge = {
       config: config,
       modal: modal,
       toast: toast,
@@ -107,15 +107,19 @@
         Object.keys(options.msgBox).forEach(function(name) {
           toast[name] = options.msgBox[name];
         });
-        window.whistleBridge.importSessions = options.importSessions;
-        window.whistleBridge.request = options.request;
-        window.whistleBridge.createRequest = options.createRequest;
-        window.whistleBridge.showModal = options.showModal;
-        window.whistleBridge.createModal = options.createModal;
-        window.whistleBridge.importRules = options.importRules;
-        window.whistleBridge.importValues = options.importValues;
+        whistleBridge.importSessions = options.importSessions;
+        whistleBridge.request = options.request;
+        whistleBridge.createRequest = options.createRequest;
+        whistleBridge.showModal = options.showModal;
+        whistleBridge.createModal = options.createModal;
+        whistleBridge.importRules = options.importRules;
+        whistleBridge.importValues = options.importValues;
+        whistleBridge.getServerInfo = options.getServerInfo;
+        whistleBridge.alert = options.alert;
+        whistleBridge.confirm = options.confirm;
       };
       window.parent.onPluginContextMenuReady(window);
     } catch (e) {}
+    window.whistleBridge = whistleBridge;
   })();
 </script>

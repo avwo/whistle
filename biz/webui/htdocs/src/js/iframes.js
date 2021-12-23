@@ -1,4 +1,5 @@
 var qrCode = require('qrcode');
+var $ = require('jquery');
 var message = require('./message');
 var createCgi = require('./cgi').createCgi;
 var dataCenter = require('./data-center');
@@ -81,6 +82,8 @@ function onPluginContextMenuReady(win) {
       msgBox: message,
       qrCode: qrCode,
       qrcode: qrCode,
+      alert: mockWin.alert,
+      confirm: mockWin.confirm,
       request: function(options, cb) {
         var request = createCgi(compatAjax(options));
         return request(options.data, cb);
@@ -89,6 +92,10 @@ function onPluginContextMenuReady(win) {
         return createCgi(compatAjax(options));
       },
       showModal: modal.show,
+      getServerInfo: function() {
+        var serverInfo = dataCenter.getServerInfo();
+        return serverInfo && $.extend(true, {}, serverInfo);
+      },
       createModal: function(options) {
         var dialog = modal.create(options);
         var hide = dialog.hide;
