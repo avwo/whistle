@@ -38,7 +38,9 @@ var UPLOAD_URLS = ['/cgi-bin/values/upload', '/cgi-bin/composer'];
 var proxyEvent, util, pluginMgr;
 var MAX_AGE = 60 * 60 * 24 * 3;
 var MENU_HTML = fs.readFileSync(path.join(__dirname, '../../../assets/menu.html'));
+var INSPECTOR_HTML = fs.readFileSync(path.join(__dirname, '../../../assets/inspector.html'));
 var MENU_URL = '???_WHISTLE_PLUGIN_EXT_CONTEXT_MENU_' + config.port + '???';
+var INSPECTOR_URL = '???_WHISTLE_PLUGIN_INSPECTOR_TAB_' + config.port + '???';
 var UP_PATH_REGEXP = /(?:^|[\\/])\.\.(?:[\\/]|$)/;
 
 function doNotCheckLogin(req) {
@@ -275,6 +277,27 @@ app.all('/cgi-bin/sessions/*', cgiHandler);
 app.all('/favicon.ico', function(req, res) {
   res.sendFile(htdocs.getImgFile('favicon.ico'));
 });
+
+function readPluginPage(req, res, plugin, html, config) {
+  res.type('html');
+  res.write(config);
+  res.write(html);
+  var index = req.path.indexOf('/', 1);
+  if (index === -1) {
+    res.end();
+  } else {
+    var filepath = req.path.substring(index + 1);
+    var reader = fs.createReadStream(path.join(plugin.path, filepath));
+    reader.on('error', function() {
+      if (reader) {
+        reader = null;
+        res.end();
+      }
+    });
+    reader.pipe(res);
+  }
+}
+
 app.all(PLUGIN_PATH_RE, function(req, res) {
   var result = PLUGIN_PATH_RE.exec(req.url);
   var type = result[1];
@@ -286,24 +309,10 @@ app.all(PLUGIN_PATH_RE, function(req, res) {
     return res.status(404).send('Not Found');
   }
   if (req.url.indexOf(MENU_URL) !== -1) {
-    res.type('html');
-    res.write(plugin[util.PLUGIN_MENU_CONFIG]);
-    res.write(MENU_HTML);
-    var index = req.path.indexOf('/', 1);
-    if (index === -1) {
-      res.end();
-    } else {
-      var filepath = req.path.substring(index + 1);
-      var reader = fs.createReadStream(path.join(plugin.path, filepath));
-      reader.on('error', function() {
-        if (reader) {
-          reader = null;
-          res.end();
-        }
-      });
-      reader.pipe(res);
-    }
-    return;
+    return readPluginPage(req, res, plugin, MENU_HTML, plugin[util.PLUGIN_MENU_CONFIG]);
+  }
+  if (req.url.indexOf(INSPECTOR_URL) !== -1) {
+    return readPluginPage(req, res, plugin, INSPECTOR_HTML, plugin[util.PLUGIN_INSPECTOR_CONFIG]);
   }
   var internalId = req.headers['x-whistle-internal-id'];
   if (internalId === util.INTERNAL_ID) {
