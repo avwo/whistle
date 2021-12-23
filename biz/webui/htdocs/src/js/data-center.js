@@ -567,7 +567,7 @@ function emitCustomTabsChange(curList, oldList, name) {
     return;
   }
   if (curLen === 1) {
-    if (!oldLen || oldLen > 1 || curList[0].name !== oldList[0].name || curList[0].url !== oldList[0].url) {
+    if (!oldLen || oldLen > 1 || curList[0].name !== oldList[0].name || curList[0].action !== oldList[0].action) {
       events.trigger(name);
     }
     return;
@@ -685,7 +685,8 @@ function startLoadData() {
       resTabList = [];
       if (!disabledAllPlugins) {
         Object.keys(pluginsMap).forEach(function(name) {
-          if (!disabledPlugins[name.slice(0, -1)]) {
+          var pluginName = name.slice(0, -1);
+          if (!disabledPlugins[pluginName]) {
             var plugin = pluginsMap[name];
             var reqTab = plugin.reqTab;
             var resTab = plugin.resTab;
@@ -693,12 +694,14 @@ function startLoadData() {
               reqTab.mtime = plugin.mtime;
               reqTab.priority = plugin.priority;
               reqTab._key = name;
+              reqTab.plugin = pluginName;
               reqTabList.push(reqTab);
             }
             if (resTab) {
               resTab.mtime = plugin.mtime;
               resTab.priority = plugin.priority;
               resTab._key = name;
+              resTab.plugin = pluginName;
               resTabList.push(resTab);
             }
           }

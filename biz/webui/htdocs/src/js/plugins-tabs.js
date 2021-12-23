@@ -49,7 +49,7 @@ var PluginsTabs = React.createClass({
           <div className={'w-plugins-tabs-list' + (tabs.length < 2 ? ' hide' : '')}>
             {
               tabs.map(function(tab) {
-                return <button className="btn btn-default" title={tab.name}>{tab.name}</button>;
+                return <button className="btn btn-default" title={'[' + tab.plugin + '] ' + tab.name}>{tab.name}</button>;
               })
             }
           </div>
