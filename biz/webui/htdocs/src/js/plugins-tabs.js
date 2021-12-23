@@ -58,7 +58,12 @@ var PluginsTabs = React.createClass({
     var hide =  props.hide;
     var active = this.state.active;
     var single = tabs.length < 2;
-
+    if (single ) {
+      active = tabs[0] && tabs[0].plugin;
+      if (active) {
+        this.state.active = active;
+      }
+    }
     return (
         <div className={'fill box w-plugins-tabs' + (hide ? ' hide' : '')}>
           <div className={'w-plugins-tabs-list' + (single ? ' hide' : '')}>
