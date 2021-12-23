@@ -1,6 +1,7 @@
 var React = require('react');
 var getBridge = require('./bridge');
 var events = require('./events');
+var util = require('./util');
 var modal = require('./network-modal');
 
 
@@ -36,13 +37,21 @@ window.initCustomTabWhistleBridge = function(win) {
 };
 
 var PluginsTabs = React.createClass({
+  shouldComponentUpdate: function(nextProps) {
+    var hide = util.getBoolean(this.props.hide);
+    return hide != util.getBoolean(nextProps.hide) || !hide;
+  },
   render: function() {
     var tabs = this.props.tabs;
     var hide =  this.props.hide;
     return (
         <div className={'fill box w-plugins-tabs' + (hide ? ' hide' : '')}>
           <div className={'w-plugins-tabs-list' + (tabs.length < 2 ? ' hide' : '')}>
-
+            {
+              tabs.map(function(tab) {
+                return <button className="btn btn-default" title={tab.name}>{tab.name}</button>;
+              })
+            }
           </div>
           <div className="fill w-plugins-tabs-panel">
 

@@ -467,12 +467,20 @@ function updateCertStatus(data) {
   }
 }
 
+function sortTabList(list) {
+  if (!list.__sorted) {
+    list.__sorted;
+    list.sort(util.comparePlugin);
+  }
+  return list;
+}
+
 exports.getReqTabs = function() {
-  return reqTabList;
+  return sortTabList(reqTabList);
 };
 
 exports.getResTabs = function() {
-  return resTabList;
+  return sortTabList(resTabList);
 };
 
 exports.getInitialData = function (callback) {

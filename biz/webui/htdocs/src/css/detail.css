@@ -52,3 +52,15 @@
   overflow-x: hidden;
   overflow-y: auto;
 }
+
+.w-plugins-tabs-list .btn {
+  border-radius: 0;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  white-space: normal;
+  word-wrap: break-word;
+  word-break: break-all;
+  width: 106px;
+  font-size: 12px;
+  padding: 3px 5px;
+}
