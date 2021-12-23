@@ -608,6 +608,7 @@ var ReqData = React.createClass({
     item.active = item.selected;
     hm && self.scrollToRow(item);
     events.trigger('networkStateChange');
+    events.trigger('selectedSessionChange', item);
   },
   setSelected: function(item, unselect) {
     if (item.selected) {
