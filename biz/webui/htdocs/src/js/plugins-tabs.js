@@ -57,14 +57,16 @@ var PluginsTabs = React.createClass({
     var tabs = props.tabs;
     var hide =  props.hide;
     var active = this.state.active;
+    var single = tabs.length < 2;
 
     return (
         <div className={'fill box w-plugins-tabs' + (hide ? ' hide' : '')}>
-          <div className={'w-plugins-tabs-list' + (tabs.length < 2 ? ' hide' : '')}>
+          <div className={'w-plugins-tabs-list' + (single ? ' hide' : '')}>
             {
               tabs.map(function(tab) {
                 return (
                         <button
+                          key={tab.plugin}
                           onClick={function() {
                             self.onSelect(tab);
                           }}
@@ -78,7 +80,7 @@ var PluginsTabs = React.createClass({
           <div className="fill orient-vertical-box w-plugins-tabs-panel">
           {
               tabs.map(function(tab) {
-                return <TabFrame hide={active !== tab.plugin} />;
+                return <TabFrame key={tab.plugin} src={tab.action} hide={single ? hide : active !== tab.plugin} />;
               })
             }
           </div>

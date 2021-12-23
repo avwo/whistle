@@ -2,8 +2,8 @@ var React = require('react');
 
 var TabFrame = React.createClass({
   render: function() {
-    var hide = this.props.hide;
-    return <iframe style={{display: hide ? 'none' : undefined}} className="fill w-tab-frame"  />;
+    var props = this.props;
+    return <iframe src={props.src} style={{display: props.hide ? 'none' : undefined}} className="fill w-tab-frame"  />;
   }
 });
 
