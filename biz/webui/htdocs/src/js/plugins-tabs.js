@@ -3,6 +3,7 @@ var getBridge = require('./bridge');
 var events = require('./events');
 var util = require('./util');
 var modal = require('./network-modal');
+var TabFrame = require('./tab-frame');
 
 
 window.initCustomTabWhistleBridge = function(win) {
@@ -74,8 +75,12 @@ var PluginsTabs = React.createClass({
               })
             }
           </div>
-          <div className="fill w-plugins-tabs-panel">
-
+          <div className="fill orient-vertical-box w-plugins-tabs-panel">
+          {
+              tabs.map(function(tab) {
+                return <TabFrame hide={active !== tab.plugin} />;
+              })
+            }
           </div>
         </div>
     );

@@ -51,6 +51,7 @@
   border-right: 1px solid #ddd;
   overflow-x: hidden;
   overflow-y: auto;
+  background-color: #f1f3f4;
 }
 
 .w-plugins-tabs-list .btn {
@@ -60,8 +61,19 @@
   white-space: normal;
   word-wrap: break-word;
   word-break: break-all;
-  width: 106px;
   font-size: 12px;
   padding: 3px 5px;
   line-height: 18px;
+  display: block;
+  width: 100%;
+}
+
+.w-tab-frame {
+  display: block;
+  width: 100%;
+  height: 100%;
+  outline: none;
+  border: none;
+  margin: 0;
+  padding: 0;
 }
