@@ -3,8 +3,9 @@ var ReactDOM = require('react-dom');
 var util = require('./util');
 var dataCenter = require('./data-center');
 var events = require('./events');
-var modal = require('./network-modal');
 var getBridge = require('./bridge');
+
+var modal = dataCenter.networkModal;
 
 function onWhistleInspectorCustomTabReady(init) {
   if (typeof init !== 'function') {

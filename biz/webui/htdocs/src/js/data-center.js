@@ -1081,6 +1081,8 @@ function overflowCount() {
 
 exports.overflowCount = overflowCount;
 
+exports.networkModal = networkModal
+
 function getStartTime() {
   if (!inited) {
     return clearNetwork ? -2 : '';
