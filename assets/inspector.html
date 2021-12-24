@@ -3,6 +3,8 @@
     var config = window.whistleInspectorConfig;
     var activeItem;
     var selectedList;
+    var getActiveSession;
+    var getSelectedSessionList;
     var listeners = [];
 
     window.__pushWhistle5b6af7b9884e1165ActiveSession__ = function(item, list) {
@@ -23,6 +25,8 @@
       addActiveSessionChangeListener: function(l) {
         if (typeof l === 'function') {
           listeners.indexOf(l) === -1 && listeners.push(l);
+          activeItem = getActiveSession();
+          selectedList = getSelectedSessionList();
           l(activeItem, selectedList);
         }
       },
@@ -36,27 +40,25 @@
     };
 
     try {
-      window.initWhistleBridge = function(options) {
-        window.initWhistleBridge = function() {};
+      window.parent.onWhistleInspectorCustomTabReady(function(options) {
         Object.keys(options.msgBox).forEach(function(name) {
           toast[name] = options.msgBox[name];
         });
-        activeItem = options.getActiveSession();
-        selectedList = options.getSelectedSessionList();
+        getActiveSession = options.getActiveSession;
+        getSelectedSessionList = options.getSelectedSessionList;
         whistleBridge.decodeBase64 = options.decodeBase64;
         whistleBridge.importSessions = options.importSessions;
         whistleBridge.request = options.request;
         whistleBridge.createRequest = options.createRequest;
         whistleBridge.showModal = options.showModal;
-        whistleBridge.getSelectedSessionList = options.getSelectedSessionList;
-        whistleBridge.getActiveSession = whistleBridge.getSelectedSession = options.getActiveSession;
+        whistleBridge.getSelectedSessionList = getSelectedSessionList;
+        whistleBridge.getActiveSession = whistleBridge.getSelectedSession = getActiveSession;
         whistleBridge.importRules = options.importRules;
         whistleBridge.importValues = options.importValues;
         whistleBridge.getServerInfo = options.getServerInfo;
         whistleBridge.alert = options.alert;
         whistleBridge.confirm = options.confirm;
-      };
-      window.parent.onPluginContextMenuReady(window);
+      });
     } catch (e) {}
     window.whistleBridge = whistleBridge;
   })();
