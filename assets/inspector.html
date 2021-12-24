@@ -37,7 +37,7 @@
     var whistleBridge = {
       config: config,
       toast: toast,
-      addActiveSessionChangeListener: function(l) {
+      addActiveSessionListener: function(l) {
         if (typeof l === 'function') {
           listeners.indexOf(l) === -1 && listeners.push(l);
           activeItem = getActiveSession();
@@ -45,11 +45,11 @@
           l(activeItem, selectedList);
         }
       },
-      removeActiveSessionChangeListener: function(l) {
+      removeActiveSessionListener: function(l) {
         var index = listeners.indexOf(l);
         index !== -1 && listeners.splice(index, 1);
       },
-      removeActiveSessionChangeListeners: function() {
+      removeActiveSessionListeners: function() {
         listeners = [];
       }
     };
