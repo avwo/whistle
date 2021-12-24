@@ -914,7 +914,7 @@ var Composer = React.createClass({
                     <Properties modal={{ 'Status Code': statusCode == null ? 'aborted' : statusCode }} />
                   </div>
                 ) : undefined}
-                {state.initedResponse ? <ResDetail modal={result} hide={!showResponse} /> : undefined}
+                {state.initedResponse ? <ResDetail inComposer="1" modal={result} hide={!showResponse} /> : undefined}
               </div>
               <div ref="rulesCon" onDoubleClick={this.enableRules} title={isStrictMode ? TIPS : undefined}
                 className="orient-vertical-box fill w-composer-rules">

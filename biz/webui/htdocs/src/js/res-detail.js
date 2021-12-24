@@ -187,7 +187,7 @@ var ResDetail = React.createClass({
 
     var pluginsTab = btns[8];
     var tabs = dataCenter.getResTabs();
-    var len = tabs.length;
+    var len = this.props.inComposer ? 0 : tabs.length;
     pluginsTab.hide = !len;
     if (len && len === 1) {
       pluginsTab.display = pluginsTab.title = tabs[0].name;
