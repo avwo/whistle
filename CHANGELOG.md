@@ -1,3 +1,8 @@
+# v2.8.9
+1. feat: 支持自定义 `inspectors tab`，详见：https://github.com/whistle-plugins/examples/tree/master/whistle.view-md5
+2. feat: 支持通过 `disable://abort` 禁用 `enable://abort`
+3. feat: Whistle 默认显示的抓包数据不超过 1.5m，可以通过 `enable://bigData` 扩大到 `2.5m`
+
 # v2.8.8
 1. feat: 支持通过 `enable://useLocalHost` 和 `enable://useSafePort` 修改 log 和 weinre 请求 URL 的域名或端口
 2. style: 界面提供 `api.selectIndex` 选中指定下标的抓包数据
