@@ -1,115 +1,35 @@
 <script>
   ;(function() {
     var config = window.whistleInspectorConfig;
-    var list = [];
-    var networkListeners = [];
-    var rulesListeners = [];
-    var valuesListeners = [];
-    var handleOnLoad = function() {
-      timer = null;
-      list.forEach(emit);
-      list = null;
-    };
-    var timer = setTimeout(handleOnLoad, 12000);
+    var activeItem;
+    var selectedList;
+    var listeners = [];
 
-    function execListeners(listeners, options) {
-      listeners.forEach(function(fn) {
-        try {
-          fn(options)
-        } catch (e) {
-          console.error(e);
-        }
-      });
-    }
+    window.addActiveSessionChangeListener = function() {
 
-    function emit(options) {
-      switch(options.type) {
-        case 'rules':
-          execListeners(rulesListeners, options);
-          break;
-        case 'values':
-          execListeners(valuesListeners, options);
-          break;
-        default:
-          execListeners(networkListeners, options);
-      }
-    }
-    window.onWhistleContextMenuClick = function(options) {
-      if (list) {
-        list.push(options);
-      } else {
-        emit(options);
-      }
     };
-    var delayOnLoad = function() {
-      if (timer) {
-        setTimeout(handleOnLoad, 100);
-        clearTimeout(timer);
-        timer = null;
-      }
+
+    window.removeActiveSessionChangeListener = function() {
+
     };
-    window.onload = delayOnLoad;
-    try {
-      window.addEventListener('load', delayOnLoad);
-    } catch (e) {}
-    var toast = {};
-    var whistleBridge = {
-      config: config,
-      toast: toast,
-      addNetworkListener: function(l) {
-        if (typeof l === 'function' && networkListeners.indexOf(l) === -1) {
-          networkListeners.push(l);
-        }
-      },
-      removeNetworkListener: function(l) {
-        l = networkListeners.indexOf(l);
-        if (l !== -1) {
-          networkListeners.splice(l, 1);
-        }
-      },
-      removeAllNetworkListeners: function() {
-        networkListeners = [];
-      },
-      addRulesListener: function(l) {
-        if (typeof l === 'function' && rulesListeners.indexOf(l) === -1) {
-          rulesListeners.push(l);
-        }
-      },
-      removeRulesListener: function(l) {
-        l = rulesListeners.indexOf(l);
-        if (l !== -1) {
-          rulesListeners.splice(l, 1);
-        }
-      },
-      removeAllRulesListeners: function() {
-        rulesListeners = [];
-      },
-      addValuesListener: function(l) {
-        if (typeof l === 'function' && valuesListeners.indexOf(l) === -1) {
-          valuesListeners.push(l);
-        }
-      },
-      removeValuesListener: function(l) {
-        l = valuesListeners.indexOf(l);
-        if (l !== -1) {
-          valuesListeners.splice(l, 1);
-        }
-      },
-      removeAllValuesListeners: function() {
-        valuesListeners = [];
-      }
+
+    window.removeActiveSessionChangeListeners = function() {
+      
     };
+
     try {
       window.initWhistleBridge = function(options) {
         window.initWhistleBridge = function() {};
         Object.keys(options.msgBox).forEach(function(name) {
           toast[name] = options.msgBox[name];
         });
+        whistleBridge.decodeBase64 = options.decodeBase64;
         whistleBridge.importSessions = options.importSessions;
         whistleBridge.request = options.request;
         whistleBridge.createRequest = options.createRequest;
         whistleBridge.showModal = options.showModal;
-        whistleBridge.createModal = options.createModal;
+        whistleBridge.getSelectedSessionList = options.getSelectedSessionList;
+        whistleBridge.getActiveSession = whistleBridge.getSelectedSession = options.getActiveSession;
         whistleBridge.importRules = options.importRules;
         whistleBridge.importValues = options.importValues;
         whistleBridge.getServerInfo = options.getServerInfo;
