@@ -2,50 +2,53 @@
   ;(function() {
     var config = window.whistleInspectorConfig;
     var activeItem;
-    var selectedList;
+    var isReady;
     var getActiveSession;
     var getSelectedSessionList;
     var activeListeners = [];
     var readyListeners = [];
+    var isRequest;
 
-    function checkChange(list1, list2) {
-      if (!list1) {
-        return list2 && list2.length;
-      }
-      var len = list1.length;
-      if (!list2 || list2.length !==len) {
-        return true;
-      }
-      for (var i = 0; i < len; i++) {
-        if (list1[i] !== list2[i]) {
-          return true;
-        }
-      }
+    function checkReady(item) {
+      return !item || item.lost || (isRequest ? item.requestTime : item.endTime);
     }
 
-    function getPushEvent(listeners) {
-      return function(item, list) {
-      if (activeItem === item && !checkChange(selectedList, list)) {
+    window.__pushWhistle5b6af7b9884e1165SessionActive__ = function(item, isReq) {
+      isRequest = isRequest || isReq;
+      if (activeItem === item) {
+        if (!isReady && checkReady(item)) {
+          isReady = true;
+          readyListeners.forEach(function(l) {
+            l(activeItem);
+          });
+        }
         return;
       }
+      isReady = checkReady(item);
       activeItem = item;
-      selectedList = list;
-      listeners.forEach(function(l) {
-        l(activeItem, selectedList);
+      activeListeners.forEach(function(l) {
+        l(activeItem);
       });
+      if (isReady) {
+        isReady = true;
+        readyListeners.forEach(function(l) {
+          l(activeItem);
+        });
+      }
     };
-    }
 
-    window.__pushWhistle5b6af7b9884e1165SessionActive__ = getPushEvent(activeListeners);
-    window.__pushWhistle5b6af7b9884e1165SessionReady__ = getPushEvent(readyListeners);
-
-    function getAddEventHandler(listeners) {
+    function getAddEventHandler(listeners, ready) {
       return function(l) {
         if (typeof l === 'function') {
           listeners.indexOf(l) === -1 && listeners.push(l);
-          activeItem = getActiveSession();
-          selectedList = getSelectedSessionList();
-          l(activeItem, selectedList);
+          if (ready) {
+            isReady = isReady || checkReady(activeItem);
+            isReady && l(activeItem);
+          } else {
+            activeItem = getActiveSession();
+            isReady = checkReady(activeItem);
+            l(activeItem);
+          }
         }
       };
     }
@@ -63,7 +66,7 @@
       toast: toast,
       addSessionActiveListener: getAddEventHandler(activeListeners),
       removeSessionActiveListener: getRemoveEventListener(activeListeners),
-      addSessionReadyListener: getAddEventHandler(readyListeners),
+      addSessionReadyListener: getAddEventHandler(readyListeners, true),
       removeSessionReadyListener: getRemoveEventListener(readyListeners),
       removeSessionActiveListeners: function() {
         activeListeners = [];
