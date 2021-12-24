@@ -41,7 +41,7 @@ var TabFrame = React.createClass({
   handlePush: function(_, item) {
     try {
       var win = ReactDOM.findDOMNode(this.refs.iframe).contentWindow;
-      if (win && typeof win.__pushWhistleActiveSession__ === 'function') {
+      if (win && typeof win.__pushWhistle5b6af7b9884e1165ActiveSession__ === 'function') {
         win.__pushWhistle5b6af7b9884e1165ActiveSession__(item, modal.getSelectedList());
       }
     } catch (e) {}
