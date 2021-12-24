@@ -5,7 +5,8 @@
     var selectedList;
     var getActiveSession;
     var getSelectedSessionList;
-    var listeners = [];
+    var activeListeners = [];
+    var readyListeners = [];
 
     function checkChange(list1, list2) {
       if (!list1) {
@@ -22,7 +23,8 @@
       }
     }
 
-    window.__pushWhistle5b6af7b9884e1165ActiveSession__ = function(item, list) {
+    function getPushEvent(listeners) {
+      return function(item, list) {
       if (activeItem === item && !checkChange(selectedList, list)) {
         return;
       }
@@ -32,25 +34,42 @@
         l(activeItem, selectedList);
       });
     };
+    }
 
-    var toast = {};
-    var whistleBridge = {
-      config: config,
-      toast: toast,
-      addActiveSessionListener: function(l) {
+    window.__pushWhistle5b6af7b9884e1165SessionActive__ = getPushEvent(activeListeners);
+    window.__pushWhistle5b6af7b9884e1165SessionReady__ = getPushEvent(readyListeners);
+
+    function getAddEventHandler(listeners) {
+      return function(l) {
         if (typeof l === 'function') {
           listeners.indexOf(l) === -1 && listeners.push(l);
           activeItem = getActiveSession();
           selectedList = getSelectedSessionList();
           l(activeItem, selectedList);
         }
-      },
-      removeActiveSessionListener: function(l) {
+      };
+    }
+
+    function getRemoveEventListener(listeners) {
+      return function(l) {
         var index = listeners.indexOf(l);
         index !== -1 && listeners.splice(index, 1);
+      };
+    }
+
+    var toast = {};
+    var whistleBridge = {
+      config: config,
+      toast: toast,
+      addSessionActiveListener: getAddEventHandler(activeListeners),
+      removeSessionActiveListener: getRemoveEventListener(activeListeners),
+      addSessionReadyListener: getAddEventHandler(readyListeners),
+      removeSessionReadyListener: getRemoveEventListener(readyListeners),
+      removeSessionActiveListeners: function() {
+        activeListeners = [];
       },
-      removeActiveSessionListeners: function() {
-        listeners = [];
+      removeSessionReadyListeners: function() {
+        readyListeners = [];
       }
     };
 
@@ -67,7 +86,7 @@
         whistleBridge.createRequest = options.createRequest;
         whistleBridge.showModal = options.showModal;
         whistleBridge.getSelectedSessionList = getSelectedSessionList;
-        whistleBridge.getActiveSession = whistleBridge.getSelectedSession = getActiveSession;
+        whistleBridge.getActiveSession = whistleBridge.getSession = whistleBridge.getSelectedSession = getActiveSession;
         whistleBridge.importRules = options.importRules;
         whistleBridge.importValues = options.importValues;
         whistleBridge.getServerInfo = options.getServerInfo;

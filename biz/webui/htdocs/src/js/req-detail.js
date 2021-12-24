@@ -145,7 +145,7 @@ var ReqDetail = React.createClass({
         {state.initedCookies ? <div className={'fill w-detail-request-cookies' + (name == BTNS[5].name ? '' : ' hide')}><Properties modal={cookies} enableViewSource="1" /></div> : undefined}
         {state.initedRaw ? <Textarea defaultName={defaultName} value={raw} headers={headersStr}
           base64={base64} className="fill w-detail-request-raw" hide={name != BTNS[6].name} /> : undefined}
-        {state.initedPlugins ? <PluginsTabs tabs={tabs} hide={name != pluginsTab.name || pluginsTab.hide} /> : undefined}
+        {state.initedPlugins ? <PluginsTabs isReq="1" tabs={tabs} hide={name != pluginsTab.name || pluginsTab.hide} /> : undefined}
       </div>
     );
   }

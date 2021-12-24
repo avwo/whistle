@@ -1,5 +1,4 @@
 var React = require('react');
-var events = require('./events');
 var util = require('./util');
 var TabFrame = require('./tab-frame');
 
@@ -54,6 +53,7 @@ var PluginsTabs = React.createClass({
     var props = self.props;
     var tabs = props.tabs;
     var hide =  props.hide;
+    var isReq = props.isReq;
     var active = this.state.active;
     var single = tabs.length < 2;
     if (single ) {
@@ -83,7 +83,7 @@ var PluginsTabs = React.createClass({
           <div className="fill orient-vertical-box w-plugins-tabs-panel">
           {
               tabs.map(function(tab) {
-                return self.isInited(tab) && <TabFrame key={tab.plugin} src={tab.action} hide={single ? hide : active !== tab.plugin} />;
+                return self.isInited(tab) && <TabFrame isReq={isReq} key={tab.plugin} src={tab.action} hide={single ? hide : active !== tab.plugin} />;
               })
             }
           </div>

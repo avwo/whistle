@@ -21,6 +21,10 @@ function onWhistleInspectorCustomTabReady(init) {
   init(bridge);
 }
 
+function checkReady(item, isReq) {
+  return !item || item.lost || (isReq ? item.requestTime : item.endTime);
+}
+
 var TabFrame = React.createClass({
   getInitialState: function() {
     var url = this.props.src;
@@ -40,12 +44,34 @@ var TabFrame = React.createClass({
     return hide != util.getBoolean(nextProps.hide) || !hide;
   },
   handlePush: function(_, item) {
+    var isReq = this.props.isReq;
     try {
       var win = ReactDOM.findDOMNode(this.refs.iframe).contentWindow;
-      if (win && typeof win.__pushWhistle5b6af7b9884e1165ActiveSession__ === 'function') {
-        win.__pushWhistle5b6af7b9884e1165ActiveSession__(item, modal.getSelectedList());
+      if (win && typeof win.__pushWhistle5b6af7b9884e1165SessionActive__ === 'function') {
+        var selectedList = modal.getSelectedList();
+        win.__pushWhistle5b6af7b9884e1165SessionActive__(item, selectedList);
+        if (checkReady(item, isReq)) {
+          win.__pushWhistle5b6af7b9884e1165SessionReady__(item, selectedList);
+          this._sessionReady = true;
+        } else {
+          this._sessionReady = false;
+        }
       }
     } catch (e) {}
+  },
+  componentDidUpdate: function() {
+    if (this._sessionReady === false) {
+      var item = modal.getActive();
+      if (checkReady(item, this.props.isReq)) {
+        try {
+          var win = ReactDOM.findDOMNode(this.refs.iframe).contentWindow;
+          if (win && typeof win.__pushWhistle5b6af7b9884e1165SessionReady__ === 'function') {
+            win.__pushWhistle5b6af7b9884e1165SessionReady__(item, modal.getSelectedList());
+            this._sessionReady = true;
+          }
+        } catch (e) {}
+      }
+    }
   },
   render: function() {
     var display = this.props.hide ? 'none' : undefined;
