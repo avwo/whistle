@@ -7,8 +7,23 @@
     var getSelectedSessionList;
     var listeners = [];
 
+    function checkChange(list1, list2) {
+      if (!list1) {
+        return list2 && list2.length;
+      }
+      var len = list1.length;
+      if (!list2 || list2.length !==len) {
+        return true;
+      }
+      for (var i = 0; i < len; i++) {
+        if (list1[i] !== list2[i]) {
+          return true;
+        }
+      }
+    }
+
     window.__pushWhistle5b6af7b9884e1165ActiveSession__ = function(item, list) {
-      if (activeItem === item && selectedList === list) {
+      if (activeItem === item && !checkChange(selectedList, list)) {
         return;
       }
       activeItem = item;
