@@ -53,10 +53,8 @@
       window.addEventListener('load', delayOnLoad);
     } catch (e) {}
     var toast = {};
-    var modal = {};
     var whistleBridge = {
       config: config,
-      modal: modal,
       toast: toast,
       addNetworkListener: function(l) {
         if (typeof l === 'function' && networkListeners.indexOf(l) === -1) {

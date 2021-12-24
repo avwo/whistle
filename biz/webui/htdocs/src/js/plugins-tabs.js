@@ -28,22 +28,23 @@ var PluginsTabs = React.createClass({
   },
   isInited: function(tab) {
     var cache = this.initedTabs;
-    var curInfo = cache[tab.action];
+    var action = tab.action;
+    var exists = cache[action] != null;
     if (this.state.active !== tab.plugin) {
-      return curInfo;
+      return exists;
     }
-    if (curInfo) {
-      curInfo.time = Date.now();
+    if (exists) {
+      cache[action] = Date.now();
       return true;
     }
     var keys = Object.keys(cache);
     if (keys.length >= MAX_IFRAME_COUNT) {
-      var destoyInfo;
+      var minTime;
       var destroyKey;
       keys.forEach(function(key) {
-        var info = cache[key];
-        if (!destoyInfo || destoyInfo.time > info.time) {
-          destoyInfo = info;
+        var time = cache[key];
+        if (minTime == null || minTime > time) {
+          minTime = time;
           destroyKey = key;
         }
       });
@@ -51,7 +52,7 @@ var PluginsTabs = React.createClass({
         delete cache[destroyKey];
       }
     }
-    this.initedTabs[tab.action] = { time: Date.now() };
+    this.initedTabs[action] = Date.now();
     return true;
   },
   render: function() {
