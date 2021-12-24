@@ -1,43 +1,9 @@
 var React = require('react');
-var getBridge = require('./bridge');
 var events = require('./events');
 var util = require('./util');
-var modal = require('./network-modal');
 var TabFrame = require('./tab-frame');
 
 var MAX_IFRAME_COUNT = 6;
-
-
-window.initCustomTabWhistleBridge = function(win) {
-  var bridge = getBridge();
-  var listeners = [];
-  events.on('selectedSessionChange', function(_, item) {
-    listeners.forEach(function(l) {
-      l(item, modal.getSelectedList());
-    });
-  });
-  bridge.getActiveSession = function() {
-    return modal.getActive();
-  };
-  bridge.getSelectedSessionList = function() {
-    return modal.getSelectedList();
-  };
-  bridge.addActiveSessionListener = bridge.onActiveSessionListener = function(l) {
-    if (typeof l === 'function') {
-      if (listeners.indexOf(l) === -1) {
-        listeners.push(l);
-      }
-      l(modal.getActive(), modal.getSelectedList());
-    }
-  };
-  bridge.removeActiveSessionListener = function(l) {
-    var index = listeners.indexOf(l);
-    index !== -1 && listeners.splice(index, 1);
-  };
-  bridge.removeActiveSessionListeners = function(l) {
-    listeners = [];
-  };
-};
 
 var PluginsTabs = React.createClass({
   getInitialState: function() {
@@ -73,15 +39,16 @@ var PluginsTabs = React.createClass({
     var keys = Object.keys(cache);
     if (keys.length >= MAX_IFRAME_COUNT) {
       var destoyInfo;
+      var destroyKey;
       keys.forEach(function(key) {
         var info = cache[key];
         if (!destoyInfo || destoyInfo.time > info.time) {
           destoyInfo = info;
+          destroyKey = key;
         }
       });
-      if (destoyInfo) {
-        // TODO: 销毁 iframe 及关联的内存
-        console.log(destoyInfo);
+      if (destroyKey) {
+        delete cache[destroyKey];
       }
     }
     this.initedTabs[tab.action] = { time: Date.now() };

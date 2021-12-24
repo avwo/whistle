@@ -1,6 +1,24 @@
 var React = require('react');
+var ReactDOM = require('react-dom');
 var util = require('./util');
 var dataCenter = require('./data-center');
+var events = require('./events');
+var modal = require('./network-modal');
+var getBridge = require('./bridge');
+
+function onWhistleInspectorCustomTabReady(init) {
+  if (typeof init !== 'function') {
+    return;
+  }
+  var bridge = getBridge();
+  bridge.getActiveSession = function() {
+    return modal.getActive();
+  };
+  bridge.getSelectedSessionList = function() {
+    return modal.getSelectedList();
+  };
+  init(bridge);
+}
 
 var TabFrame = React.createClass({
   getInitialState: function() {
@@ -10,12 +28,27 @@ var TabFrame = React.createClass({
       url: url + '???_WHISTLE_PLUGIN_INSPECTOR_TAB_' + dataCenter.getPort() + '???'
     };
   },
+  componentDidMount: function() {
+    events.on('selectedSessionChange', this.handlePush);
+  },
+  componentWillUnmount: function() {
+    events.off('selectedSessionChange', this.handlePush);
+  },
   shouldComponentUpdate: function(nextProps) {
     var hide = util.getBoolean(this.props.hide);
     return hide != util.getBoolean(nextProps.hide) || !hide;
   },
+  handlePush: function(_, item) {
+// item, modal.getSelectedList();
+    try {
+      var win = ReactDOM.findDOMNode(this.refs.iframe).contentWindow;
+    } catch (e) {}
+  },
   render: function() {
-    return <iframe src={this.state.url} style={{display: this.props.hide ? 'none' : undefined}} className="fill w-tab-frame"  />;
+    var display = this.props.hide ? 'none' : undefined;
+    // 防止被改
+    window.onWhistleInspectorCustomTabReady = onWhistleInspectorCustomTabReady;
+    return <iframe ref="iframe" src={this.state.url} style={{display: display}} className="fill w-tab-frame"  />;
   }
 });
 
