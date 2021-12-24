@@ -39,9 +39,11 @@ var TabFrame = React.createClass({
     return hide != util.getBoolean(nextProps.hide) || !hide;
   },
   handlePush: function(_, item) {
-// item, modal.getSelectedList();
     try {
       var win = ReactDOM.findDOMNode(this.refs.iframe).contentWindow;
+      if (win && typeof win.__pushWhistleActiveSession__ === 'function') {
+        win.__pushWhistle5b6af7b9884e1165ActiveSession__(item, modal.getSelectedList());
+      }
     } catch (e) {}
   },
   render: function() {

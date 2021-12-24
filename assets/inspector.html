@@ -5,16 +5,31 @@
     var selectedList;
     var listeners = [];
 
-    window.addActiveSessionChangeListener = function() {
-
+    window.addActiveSessionChangeListener = function(l) {
+      if (typeof l === 'function') {
+        listeners.indexOf(l) === -1 && listeners.push(l);
+        l(activeItem, selectedList);
+      }
     };
 
-    window.removeActiveSessionChangeListener = function() {
-
+    window.removeActiveSessionChangeListener = function(l) {
+      var index = listeners.indexOf(l);
+      index !== -1 && listeners.splice(index, 1);
     };
 
     window.removeActiveSessionChangeListeners = function() {
-      
+      listeners = [];
+    };
+
+    window.__pushWhistle5b6af7b9884e1165ActiveSession__ = function(item, list) {
+      if (activeItem === item && selectedList === list) {
+        return;
+      }
+      activeItem = item;
+      selectedList = list;
+      listeners.forEach(function(l) {
+        l(activeItem, selectedList);
+      });
     };
 
     try {
@@ -23,6 +38,8 @@
         Object.keys(options.msgBox).forEach(function(name) {
           toast[name] = options.msgBox[name];
         });
+        activeItem = options.getActiveSession();
+        selectedList = options.getSelectedSessionList();
         whistleBridge.decodeBase64 = options.decodeBase64;
         whistleBridge.importSessions = options.importSessions;
         whistleBridge.request = options.request;
