@@ -13,12 +13,6 @@ var PluginsTabs = React.createClass({
       active: tab && tab.plugin
     };
   },
-  componentDidMount: function() {
-    var self = this;
-    events.on('updatePluginTabs', function() {
-      self.setState({});
-    });
-  },
   shouldComponentUpdate: function(nextProps) {
     var hide = util.getBoolean(this.props.hide);
     return hide != util.getBoolean(nextProps.hide) || !hide;

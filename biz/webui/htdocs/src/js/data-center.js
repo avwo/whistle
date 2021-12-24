@@ -561,17 +561,6 @@ function checkTabList(list1, list2, len) {
   }
 }
 
-function updatePluginTabs(reqList, oldReqList, resList, oldResList) {
-  var reqLen = reqList.length;
-  var oldReqLen = oldReqList.length;
-  var resLen = resList.length;
-  var oldResLen = oldResList.length;
-  if ((reqLen > 1 && oldReqLen > 1 && (reqLen !== oldReqLen || checkTabList(reqList, oldReqList, reqLen))) ||
-    (resLen > 1 && oldResLen > 1 && (resLen !== oldResLen || checkTabList(resList, oldResList, resLen)))) {
-    events.trigger('updatePluginTabs');
-  }
-}
-
 function emitCustomTabsChange(curList, oldList, name) {
   var curLen = curList.length;
   var oldLen = oldList.length;
@@ -586,6 +575,9 @@ function emitCustomTabsChange(curList, oldList, name) {
     return;
   }
   if (!oldLen || oldLen === 1) {
+    return events.trigger(name);
+  }
+  if (curLen !== oldLen || checkTabList(curList, oldList, curLen)) {
     events.trigger(name);
   }
 }
@@ -720,11 +712,10 @@ function startLoadData() {
           }
         });
       }
-      emitCustomTabsChange(reqTabList, _reqTabList, 'reqTabsChange');
-      emitCustomTabsChange(resTabList, _resTabList, 'resTabsChange');
       reqTabList.sort(util.comparePlugin);
       resTabList.sort(util.comparePlugin);
-      updatePluginTabs(reqTabList, _reqTabList, resTabList, _resTabList);
+      emitCustomTabsChange(reqTabList, _reqTabList, 'reqTabsChange');
+      emitCustomTabsChange(resTabList, _resTabList, 'resTabsChange');
       disabledPlugins = data.disabledPlugins || {};
       disabledAllPlugins = data.disabledAllPlugins;
       if (len || svrLen) {
@@ -1081,7 +1072,7 @@ function overflowCount() {
 
 exports.overflowCount = overflowCount;
 
-exports.networkModal = networkModal
+exports.networkModal = networkModal;
 
 function getStartTime() {
   if (!inited) {
