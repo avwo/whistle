@@ -43,7 +43,7 @@ var TabFrame = React.createClass({
     try {
       var win = ReactDOM.findDOMNode(this.refs.iframe).contentWindow;
       if (win && typeof win.__pushWhistle5b6af7b9884e1165SessionActive__ === 'function') {
-        win.__pushWhistle5b6af7b9884e1165SessionActive__(item, this.props.isReq);
+        win.__pushWhistle5b6af7b9884e1165SessionActive__(item);
       }
     } catch (e) {}
   },

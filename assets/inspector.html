@@ -1,62 +1,82 @@
 <script>
   ;(function() {
     var config = window.whistleInspectorConfig;
-    var activeItem;
-    var isReady;
+    var activeList = [];
+    var stateList = [1];
     var getActiveSession;
     var getSelectedSessionList;
-    var activeListeners = [];
-    var readyListeners = [];
-    var isRequest;
+    var listenersList = [];
 
-    function checkReady(item) {
-      return !item || item.lost || (isRequest ? item.requestTime : item.endTime);
+    function initState(flag) {
+      stateList[1] = flag;
+      stateList[2] = flag;
+      stateList[3] = flag;
     }
 
-    window.__pushWhistle5b6af7b9884e1165SessionActive__ = function(item, isReq) {
-      isRequest = isRequest || isReq;
-      if (activeItem === item) {
-        if (!isReady && checkReady(item)) {
-          isReady = true;
-          readyListeners.forEach(function(l) {
-            l(activeItem);
-          });
-        }
-        return;
+    function updateState(item) {
+      if (!item || item.lost || item.endTime) {
+        return  initState(1);
       }
-      isReady = checkReady(item);
-      activeItem = item;
-      activeListeners.forEach(function(l) {
-        l(activeItem);
-      });
-      if (isReady) {
-        isReady = true;
-        readyListeners.forEach(function(l) {
-          l(activeItem);
+      initState();
+      if (item.responseTime) {
+        stateList[2] = 1;
+      }
+      if (item.requestTime) {
+        stateList[1] = 1;
+      }
+    }
+
+    function emitListeners(item, state) {
+      if (stateList[state] && item !== activeList[state]) {
+        activeList[state] = item;
+        var listeners = listenersList[state];
+        listeners.forEach(function(l) {
+          l(item);
         });
       }
-    };
+    }
 
-    function getAddEventHandler(listeners, ready) {
+    function emitAll(item) {
+      updateState(item);
+      emitListeners(item, 0);
+      emitListeners(item, 1);
+      emitListeners(item, 2);
+      emitListeners(item, 3);
+    }
+
+    window.__pushWhistle5b6af7b9884e1165SessionActive__ = emitAll;
+
+    function getAddEventHandler(state) {
+      state = state || 0;
+      listenersList[state] = [];
       return function(l) {
-        if (typeof l === 'function') {
-          listeners.indexOf(l) === -1 && listeners.push(l);
-          if (ready) {
-            isReady = isReady || checkReady(activeItem);
-            isReady && l(activeItem);
-          } else {
-            activeItem = getActiveSession();
-            isReady = checkReady(activeItem);
-            l(activeItem);
-          }
+        if (typeof l !== 'function') {
+          return;
         }
+        var item = getActiveSession();
+        emitAll(item);
+        activeList[state] = item;
+        if (stateList[state]) {
+          l(item);
+        }
+        var listeners = listenersList[state];
+        listeners.indexOf(l) === -1 && listeners.push(l);
       };
     }
 
-    function getRemoveEventListener(listeners) {
+    function getRemoveEventListener(state) {
+      state = state || 0;
       return function(l) {
+        var listeners = listenersList[state];
         var index = listeners.indexOf(l);
         index !== -1 && listeners.splice(index, 1);
+      };
+    }
+
+    function getRemoveEventListeners(state) {
+      state = state || 0;
+      return function(l) {
+        listenersList[state] = [];
       };
     }
 
@@ -64,16 +84,18 @@
     var whistleBridge = {
       config: config,
       toast: toast,
-      addSessionActiveListener: getAddEventHandler(activeListeners),
-      removeSessionActiveListener: getRemoveEventListener(activeListeners),
-      addSessionReadyListener: getAddEventHandler(readyListeners, true),
-      removeSessionReadyListener: getRemoveEventListener(readyListeners),
-      removeSessionActiveListeners: function() {
-        activeListeners = [];
-      },
-      removeSessionReadyListeners: function() {
-        readyListeners = [];
-      }
+      addSessionActiveListener: getAddEventHandler(),
+      removeSessionActiveListener: getRemoveEventListener(),
+      removeSessionActiveListeners: getRemoveEventListeners(),
+      addSessionRequestListener: getAddEventHandler(1),
+      removeSessionRequestListener: getRemoveEventListener(1),
+      removeSessionRequestListeners: getRemoveEventListeners(1),
+      addSessionResponseListener: getAddEventHandler(2),
+      removeSessionResponseListener: getRemoveEventListener(2),
+      removeSessionResponseListeners: getRemoveEventListeners(2),
+      addSessionCompleteListener: getAddEventHandler(3),
+      removeSessionCompleteListener: getRemoveEventListener(3),
+      removeSessionCompleteListeners: getRemoveEventListeners(3)
     };
 
     try {
