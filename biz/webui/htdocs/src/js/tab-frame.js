@@ -40,6 +40,9 @@ var TabFrame = React.createClass({
     return hide != util.getBoolean(nextProps.hide) || !hide;
   },
   handlePush: function(_, item) {
+    if (this.props.hide) {
+      return;
+    }
     try {
       var win = ReactDOM.findDOMNode(this.refs.iframe).contentWindow;
       if (win && typeof win.__pushWhistle5b6af7b9884e1165SessionActive__ === 'function') {
