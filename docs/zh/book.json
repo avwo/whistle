@@ -2,7 +2,7 @@
   "plugins": ["icp"],
   "pluginsConfig": {
       "icp": {
-          "number": "浙ICP备15019507号"
+          "number": "浙ICP备15019507号-2"
       }
   }
 }
