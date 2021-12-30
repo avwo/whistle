@@ -1,3 +1,7 @@
+# v2.8.10
+1. fix: 插件的 sniCallback 返回 `false` 请求没有重新走 TUNNEL 代理问题
+2. refactor: 如果插件接收到的请求是 https，则 `req.url` 将为完整的路径
+
 # v2.8.9
 1. feat: 支持自定义 `inspectors tab`，详见：https://github.com/whistle-plugins/examples/tree/master/whistle.view-md5
 2. feat: 支持通过 `disable://abort` 禁用 `enable://abort`
