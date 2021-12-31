@@ -27,9 +27,7 @@ if (ver[0] >= 7 && ver[1] >= 7) {
   }
 }
 
-//see: https://github.com/joyent/node/issues/9272
 var env = process.env || '';
-env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 env.WHISTLE_ROOT = __dirname;
 if (typeof tls.checkServerIdentity == 'function') {
   var checkServerIdentity = tls.checkServerIdentity;
