@@ -53,7 +53,14 @@
       window.addEventListener('load', delayOnLoad);
     } catch (e) {}
     var toast = {};
+    var pageId = '';
+    try {
+      if (typeof window.parent.getWhistlePageId === 'function') {
+        pageId = window.parent.getWhistlePageId() || '';
+      }
+    } catch (e) {}
     var whistleBridge = {
+      pageId: pageId,
       config: config,
       toast: toast,
       addNetworkListener: function(l) {

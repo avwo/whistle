@@ -81,7 +81,14 @@
     }
 
     var toast = {};
+    var pageId = '';
+    try {
+      if (typeof window.parent.getWhistlePageId === 'function') {
+        pageId = window.parent.getWhistlePageId() || '';
+      }
+    } catch (e) {}
     var whistleBridge = {
+      pageId,
       config: config,
       toast: toast,
       addSessionActiveListener: getAddEventHandler(),

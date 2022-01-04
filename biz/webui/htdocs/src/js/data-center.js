@@ -850,6 +850,10 @@ function getRawHeaders(headers, rawHeaderNames) {
 
 exports.getRawHeaders = getRawHeaders;
 
+window.getWhistlePageId = function() {
+  return pageId;
+};
+
 exports.getPageId = function() {
   return pageId;
 };
