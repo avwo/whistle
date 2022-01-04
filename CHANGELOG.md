@@ -1,3 +1,7 @@
+# v2.8.11
+1. style: 修复禁用所有插件编辑器对应插件规则无法显示插件已失效的问题
+2. 
+
 # v2.8.10
 1. fix: 插件的 sniCallback 返回 `false` 请求没有重新走 TUNNEL 代理问题
 2. refactor: 如果插件接收到的请求是 https，则 `req.url` 将为完整的路径
