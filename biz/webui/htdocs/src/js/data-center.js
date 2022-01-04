@@ -33,6 +33,7 @@ var inited;
 var logId;
 var uploadFiles;
 var port;
+var pageId;
 var dumpCount = 0;
 var updateCount = 0;
 var MAX_UPDATE_COUNT = 4;
@@ -491,7 +492,8 @@ exports.getInitialData = function (callback) {
         exports.custom2 = data.custom2;
         uploadFiles = data.uploadFiles;
         initialData = data;
-        DEFAULT_CONF.data.clientId = data.clientId;
+        pageId = data.clientId;
+        DEFAULT_CONF.data.clientId = pageId;
         if (data.lastLogId) {
           lastPageLogTime = data.lastLogId;
         }
@@ -502,9 +504,9 @@ exports.getInitialData = function (callback) {
           lastRowId = data.lastDataId;
         }
         exports.upload = createCgiObj({
-          importSessions: 'cgi-bin/sessions/import?clientId=' + data.clientId,
-          importRules: 'cgi-bin/rules/import?clientId=' + data.clientId,
-          importValues: 'cgi-bin/values/import?clientId=' + data.clientId
+          importSessions: 'cgi-bin/sessions/import?clientId=' + pageId,
+          importRules: 'cgi-bin/rules/import?clientId=' + pageId,
+          importValues: 'cgi-bin/values/import?clientId=' + pageId
         }, $.extend({
           type: 'post'
         }, DEFAULT_CONF, {
@@ -847,6 +849,10 @@ function getRawHeaders(headers, rawHeaderNames) {
 }
 
 exports.getRawHeaders = getRawHeaders;
+
+exports.getPageId = function() {
+  return pageId;
+};
 
 function isFrames(item) {
   if (!item) {
