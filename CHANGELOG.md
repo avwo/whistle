@@ -1,6 +1,6 @@
 # v2.8.11
 1. style: 修复禁用所有插件编辑器对应插件规则无法显示插件已失效的问题
-2. 
+2. feat: 将请求匹配的 pattern 传给插件，可以通过 `req.originalReq.isRegExp` 及 `req.originalReq.pattern` 获取
 
 # v2.8.10
 1. fix: 插件的 sniCallback 返回 `false` 请求没有重新走 TUNNEL 代理问题
