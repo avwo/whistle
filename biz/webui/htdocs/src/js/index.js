@@ -1191,7 +1191,8 @@ var Index = React.createClass({
       var pluginsState = {
         plugins: data.plugins,
         disabledPlugins: data.disabledPlugins,
-        pluginsOptions: pluginsOptions
+        pluginsOptions: pluginsOptions,
+        disabledAllPlugins: data.disabledAllPlugins
       };
       protocols.setPlugins(pluginsState);
       self.setState(pluginsState);
