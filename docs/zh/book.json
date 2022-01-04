@@ -2,7 +2,8 @@
   "plugins": ["icp"],
   "pluginsConfig": {
       "icp": {
-          "number": "浙ICP备15019507号-2"
+          "number": "浙ICP备15019507号-2",
+          "link": "https://beian.miit.gov.cn/"
       }
   }
 }
