@@ -87,22 +87,86 @@
         pageId = window.parent.getWhistlePageId() || '';
       }
     } catch (e) {}
+    var addSessionActiveListener = getAddEventHandler();
+    var removeSessionActiveListener = getRemoveEventListener();
+    var removeSessionActiveListeners = getRemoveEventListeners();
+    var addSessionRequestListener = getAddEventHandler(1);
+    var removeSessionRequestListener = getRemoveEventListener(1);
+    var removeSessionRequestListeners = getRemoveEventListeners(1);
+    var addSessionResponseListener = getAddEventHandler(2);
+    var removeSessionResponseListener = getRemoveEventListener(2);
+    var removeSessionResponseListeners = getRemoveEventListeners(2);
+    var addSessionCompleteListener = getAddEventHandler(3);
+    var removeSessionCompleteListener = getRemoveEventListener(3);
+    var removeSessionCompleteListeners = getRemoveEventListeners(3);
+  
+    function on(type, l) {
+      if (typeof l !== 'function') {
+        return;
+      }
+      switch(type) {
+        case 'sessionActive':
+          return addSessionActiveListener(l);
+        case 'sessionRequest':
+          return addSessionRequestListener(l);
+        case 'sessionResponse':
+          return addSessionResponseListener(l);
+        case 'sessionComplete':
+          return addSessionCompleteListener(l);
+      }
+    }
+
+    function off(type, l) {
+      switch(type) {
+        case 'sessionActive':
+          if (l) {
+            removeSessionActiveListener(l);
+          } else {
+            removeSessionActiveListeners();
+          }
+          return;
+        case 'sessionRequest':
+          if (l) {
+            removeSessionRequestListener(l);
+          } else {
+            removeSessionRequestListeners();
+          }
+          return;
+        case 'sessionResponse':
+          if (l) {
+            removeSessionResponseListener(l);
+          } else {
+            removeSessionResponseListeners();
+          }
+          return;
+        case 'sessionComplete':
+          if (l) {
+            removeSessionCompleteListener(l);
+          } else {
+            removeSessionCompleteListeners();
+          }
+          return;
+      }
+    }
+
     var whistleBridge = {
       pageId,
       config: config,
       toast: toast,
-      addSessionActiveListener: getAddEventHandler(),
-      removeSessionActiveListener: getRemoveEventListener(),
-      removeSessionActiveListeners: getRemoveEventListeners(),
-      addSessionRequestListener: getAddEventHandler(1),
-      removeSessionRequestListener: getRemoveEventListener(1),
-      removeSessionRequestListeners: getRemoveEventListeners(1),
-      addSessionResponseListener: getAddEventHandler(2),
-      removeSessionResponseListener: getRemoveEventListener(2),
-      removeSessionResponseListeners: getRemoveEventListeners(2),
-      addSessionCompleteListener: getAddEventHandler(3),
-      removeSessionCompleteListener: getRemoveEventListener(3),
-      removeSessionCompleteListeners: getRemoveEventListeners(3)
+      on: on,
+      off: off,
+      addSessionActiveListener: addSessionActiveListener,
+      removeSessionActiveListener: removeSessionActiveListener,
+      removeSessionActiveListeners: removeSessionActiveListeners,
+      addSessionRequestListener: addSessionRequestListener,
+      removeSessionRequestListener: removeSessionRequestListener,
+      removeSessionRequestListeners: removeSessionRequestListeners,
+      addSessionResponseListener: addSessionResponseListener,
+      removeSessionResponseListener: removeSessionResponseListener,
+      removeSessionResponseListeners: removeSessionResponseListeners,
+      addSessionCompleteListener: addSessionCompleteListener,
+      removeSessionCompleteListener: removeSessionCompleteListener,
+      removeSessionCompleteListeners: removeSessionCompleteListeners
     };
 
     try {

@@ -1203,7 +1203,7 @@ var Index = React.createClass({
       if (typeof onReady === 'function') {
         onReady({
           url: location.href,
-          getPageId: dataCenter.getPageId,
+          pageId: dataCenter.getPageId(),
           importSessions: self.importAnySessions,
           importHarSessions: self.importHarSessions,
           clearSessions: self.clear,
