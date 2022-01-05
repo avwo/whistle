@@ -1,5 +1,5 @@
 # headerReplace
-通过替换字符的方式修改请求或响应投稿，配置方式：
+通过替换字符的方式修改请求或响应头，配置方式：
 
 	# 通过替换的方式修改请求头
 	pattern headerReplace://req.header-name:pattern1=replacement1&pattern2=replacement2
