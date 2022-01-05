@@ -1170,7 +1170,7 @@ var Index = React.createClass({
       var oldDisabledPlugins = self.state.disabledPlugins;
       var disabledAllPlugins = self.state.disabledAllPlugins;
       var disabledPlugins = data.disabledPlugins;
-      if (disabledAllPlugins != data.disabledAllPlugins && pluginsOptions.length == oldPluginsOptions.length) {
+      if (disabledAllPlugins == data.disabledAllPlugins && pluginsOptions.length == oldPluginsOptions.length) {
         var hasUpdate;
         for (var i = 0, len = pluginsOptions.length; i < len; i++) {
           var plugin = pluginsOptions[i];
