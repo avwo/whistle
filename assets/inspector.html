@@ -6,6 +6,8 @@
     var getActiveSession;
     var getSelectedSessionList;
     var listenersList = [];
+    var tabChangeListeners = [];
+    var selected = true;
 
     function initState(flag) {
       stateList[1] = flag;
@@ -26,6 +28,15 @@
       }
     }
 
+    function emitTabChange(_selected) {
+      if (selected !== _selected) {
+        selected = _selected;
+        tabChangeListeners.forEach(function(l) {
+          l(selected);
+        });
+      }
+    }
+
     function emitListeners(item, state) {
       if (stateList[state] && item !== activeList[state]) {
         activeList[state] = item;
@@ -36,7 +47,11 @@
       }
     }
 
-    function emitAll(item) {
+    function emitAll(item, hide) {
+      if (hide) {
+        return emitTabChange(false);
+      }
+      emitTabChange(true);
       updateState(item);
       emitListeners(item, 0);
       emitListeners(item, 1);
@@ -113,6 +128,11 @@
           return addSessionResponseListener(l);
         case 'sessionComplete':
           return addSessionCompleteListener(l);
+        case 'tabChange':
+          if (tabChangeListeners.indexOf(l) === -1) {
+            tabChangeListeners.push(l);
+          }
+          return;
       }
     }
 
@@ -146,6 +166,16 @@
             removeSessionCompleteListeners();
           }
           return;
+        case 'tabChange':
+          if (l) {
+            var index = tabChangeListeners.indexOf(l);
+            if (index !== -1) {
+              tabChangeListeners.splice(index, 1);
+            }
+          } else {
+            tabChangeListeners = [];
+          }
+          return;
       }
     }
 
@@ -155,6 +185,9 @@
       toast: toast,
       on: on,
       off: off,
+      isSelected: function() {
+        return selected;
+      },
       addSessionActiveListener: addSessionActiveListener,
       removeSessionActiveListener: removeSessionActiveListener,
       removeSessionActiveListeners: removeSessionActiveListeners,
