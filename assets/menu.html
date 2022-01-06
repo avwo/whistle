@@ -53,13 +53,6 @@
       window.addEventListener('load', delayOnLoad);
     } catch (e) {}
     var toast = {};
-    var pageId = '';
-    try {
-      if (typeof window.parent.getWhistlePageId === 'function') {
-        pageId = window.parent.getWhistlePageId() || '';
-      }
-    } catch (e) {}
-
     var addNetworkListener = function(l) {
       if (typeof l === 'function' && networkListeners.indexOf(l) === -1) {
         networkListeners.push(l);
@@ -144,7 +137,6 @@
     }
     
     var whistleBridge = {
-      pageId: pageId,
       config: config,
       toast: toast,
       on: on,
@@ -165,6 +157,8 @@
         Object.keys(options.msgBox).forEach(function(name) {
           toast[name] = options.msgBox[name];
         });
+        whistleBridge.pageId = options.pageId;
+        whistleBridge.compose = options.compose;
         whistleBridge.decodeBase64 = options.decodeBase64;
         whistleBridge.importSessions = options.importSessions;
         whistleBridge.request = options.request;

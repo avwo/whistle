@@ -20,11 +20,12 @@ var PROXY_OPTS = {
 };
 
 function parseHeaders(headers, rawHeaderNames, clientId) {
-  if (!headers || typeof headers != 'string') {
+  var type = headers && typeof headers;
+  if (type != 'string' && type !== 'object') {
     return {};
   }
 
-  var reqHeaders = util.parseRawJson(headers);
+  var reqHeaders = type === 'object' ? headers : util.parseRawJson(headers);
   if (reqHeaders) {
     reqHeaders = util.lowerCaseify(reqHeaders, rawHeaderNames);
   } else {

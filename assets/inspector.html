@@ -133,12 +133,6 @@
     }
 
     var toast = {};
-    var pageId = '';
-    try {
-      if (typeof window.parent.getWhistlePageId === 'function') {
-        pageId = window.parent.getWhistlePageId() || '';
-      }
-    } catch (e) {}
     var addSessionActiveListener = getAddEventHandler();
     var removeSessionActiveListener = getRemoveEventListener();
     var removeSessionActiveListeners = getRemoveEventListeners();
@@ -232,7 +226,6 @@
     }
 
     var whistleBridge = {
-      pageId,
       config: config,
       toast: toast,
       on: on,
@@ -264,6 +257,8 @@
         });
         getActiveSession = options.getActiveSession;
         getSelectedSessionList = options.getSelectedSessionList;
+        whistleBridge.pageId = options.pageId;
+        whistleBridge.compose = options.compose;
         whistleBridge.decodeBase64 = options.decodeBase64;
         whistleBridge.importSessions = options.importSessions;
         whistleBridge.request = options.request;

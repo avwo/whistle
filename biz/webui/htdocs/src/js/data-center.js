@@ -428,6 +428,21 @@ exports.log = createCgiObj({
   set: 'cgi-bin/log/set'
 }, POST_CONF);
 
+var compose = createCgiObj({ compose: 'cgi-bin/composer' }, $.extend({
+  type: 'post',
+  contentType: 'application/json',
+  processData: false
+}, DEFAULT_CONF)).compose;
+
+exports.compose = function(data, cb, options) {
+  if (typeof data !== 'string') {
+    data = JSON.stringify(data);
+  }
+  return compose(data, cb, options);
+};
+
+window.compose = exports.compose;
+
 $.extend(exports, createCgiObj({
   composer: {
     url: 'cgi-bin/composer',

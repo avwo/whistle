@@ -17,6 +17,8 @@ function compatAjax(options) {
 
 function getBridge() {
   return {
+    pageId: dataCenter.getPageId(),
+    compose: dataCenter.compose,
     importSessions: dataCenter.importAnySessions,
     msgBox: message,
     qrCode: qrCode,

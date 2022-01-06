@@ -1204,6 +1204,7 @@ var Index = React.createClass({
         onReady({
           url: location.href,
           pageId: dataCenter.getPageId(),
+          compose: dataCenter.compose,
           importSessions: self.importAnySessions,
           importHarSessions: self.importHarSessions,
           clearSessions: self.clear,

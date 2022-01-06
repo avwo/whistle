@@ -9,7 +9,7 @@ var win = require('./win');
 
 var MAX_FILE_SIZE = 1024 * 1024 * 20;
 var MAX_NAME_LEN = 128;
-var MAX_VALUE_LEN = 36 * 1024;
+var MAX_VALUE_LEN = 64 * 1024;
 var MAX_COUNT = 160;
 var index = MAX_COUNT;
 var W2_HEADER_RE = /^x-whistle-/;
