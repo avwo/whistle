@@ -6,8 +6,13 @@
     var getActiveSession;
     var getSelectedSessionList;
     var listenersList = [];
+    var frameChangeListeners = [];
     var tabChangeListeners = [];
+    var curFrames = null;
+    var firstFrame;
+    var lastFrame;
     var selected = true;
+    var frameTimer;
 
     function initState(flag) {
       stateList[1] = flag;
@@ -37,6 +42,33 @@
       }
     }
 
+    function emitFrameChange() {
+      var curItem = getActiveSession();
+      var frames = curItem && curItem.frames || null;
+      var hasChanged;
+      var listenersLen = frameChangeListeners.length;
+      if (curFrames !== frames) {
+        curFrames = frames;
+        hasChanged = listenersLen;
+      } else if (curFrames && listenersLen) {
+        var curLen = curFrames.length;
+        var len = frames.length;
+        hasChanged = curLen !== len || firstFrame != frames[0] || lastFrame != frames[len - 1];
+      }
+      if (hasChanged) {
+        if (curFrames) {
+          firstFrame = curFrames[0];
+          lastFrame = curFrames[curFrames.length - 1];
+        } else {
+          firstFrame = lastFrame = undefined;
+        }
+        frameChangeListeners.forEach(function(l) {
+          l(curFrames);
+        });
+      }
+      frameTimer = setTimeout(emitFrameChange, 1000);
+    }
+
     function emitListeners(item, state) {
       if (stateList[state] && item !== activeList[state]) {
         activeList[state] = item;
@@ -48,6 +80,10 @@
     }
 
     function emitAll(item, hide) {
+      if (frameTimer) {
+        clearTimeout(frameTimer);
+        frameTimer = null;
+      }
       if (hide) {
         return emitTabChange(false);
       }
@@ -57,6 +93,7 @@
       emitListeners(item, 1);
       emitListeners(item, 2);
       emitListeners(item, 3);
+      emitFrameChange();
     }
 
     window.__pushWhistle5b6af7b9884e1165SessionActive__ = emitAll;
@@ -133,6 +170,11 @@
             tabChangeListeners.push(l);
           }
           return;
+        case 'frameChange':
+          if (frameChangeListeners.indexOf(l) === -1) {
+            frameChangeListeners.push(l);
+          }
+          return;
       }
     }
 
@@ -176,6 +218,16 @@
             tabChangeListeners = [];
           }
           return;
+        case 'frameChange':
+          if (l) {
+            var index = frameChangeListeners.indexOf(l);
+            if (index !== -1) {
+              frameChangeListeners.splice(index, 1);
+            }
+          } else {
+            frameChangeListeners = [];
+          }
+          return;
       }
     }
 
@@ -187,6 +239,9 @@
       off: off,
       isSelected: function() {
         return selected;
+      },
+      getFrames: function() {
+        return curFrames;
       },
       addSessionActiveListener: addSessionActiveListener,
       removeSessionActiveListener: removeSessionActiveListener,
