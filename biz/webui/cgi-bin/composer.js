@@ -1,7 +1,9 @@
 var http = require('http');
 var gzip = require('zlib').gzip;
 var tls = require('tls');
+var crypto = require('crypto');
 var Buffer = require('safe-buffer').Buffer;
+var common = require('../../../lib/util/common');
 var config = require('../../../lib/config');
 var util = require('../../../lib/util');
 var zlib = require('../../../lib/util/zlib');
@@ -14,6 +16,7 @@ var getRawHeaders = hparser.getRawHeaders;
 var getRawHeaderNames = hparser.getRawHeaderNames;
 var parseReq = hparser.parse;
 var MAX_LENGTH = 1024 * 512;
+var TLS_PROTOS = 'https:,wss:,tls:'.split(',');
 var PROXY_OPTS = {
   host: config.host || '127.0.0.1',
   port: config.port
@@ -35,22 +38,6 @@ function parseHeaders(headers, rawHeaderNames, clientId) {
     reqHeaders[config.COMPOSER_CLIENT_ID_HEADER] = clientId;
   }
   return reqHeaders;
-}
-
-function isWebSocket(options) {
-  var p = options.protocol;
-  return p === 'ws:' || p === 'wss:' || options.method === 'UPGRADE';
-}
-
-var crypto = require('crypto');
-var CONNECT_PROTOS = 'connect:,socket:,tunnel:,conn:,tls:,tcp:'.split(',');
-var TLS_PROTOS = 'https:,wss:,tls:'.split(',');
-function isConnect(options) {
-  if (options.method === 'CONNECT') {
-    return true;
-  }
-  var p = options.protocol;
-  return CONNECT_PROTOS.indexOf(p) !== -1;
 }
 
 function drain(socket) {
@@ -228,9 +215,8 @@ module.exports = function(req, res) {
   headers[config.CLIENT_PORT_HEAD] = util.getClientPort(req);
   options.method = util.getMethod(req.body.method);
 
-  var isConn = isConnect(options);
-  var isWs = !isConn && (isWebSocket(options)
-    || (/^\s*upgrade\s*$/i.test(headers.connection) && /^\s*websocket\s*$/i.test(headers.upgrade)));
+  var isConn = common.isConnect(options);
+  var isWs = !isConn && common.isWebSocket(options, headers);
   var useH2 = req.body.useH2 || req.body.isH2;
   req.body.useH2 = false;
   if (isWs) {
