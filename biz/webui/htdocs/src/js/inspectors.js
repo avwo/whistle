@@ -36,13 +36,18 @@ var Inspector = React.createClass({
         </div>
         <Divider vertical="true">
           <div className="fill orient-vertical-box">
-            <div className="w-detail-inspectors-title">
-              <span className="glyphicon glyphicon-arrow-right"></span>Request
+            <div className="w-detail-inspectors-title w-detail-inspectors-tabs">
+              <button type="button" onClick={this.createRules} className="btn btn-default w-spec-active">
+                <span className="glyphicon glyphicon-arrow-right"></span>Request
+              </button>
+              <button type="button" onClick={this.createRules} className="btn btn-default">
+                <span className="glyphicon glyphicon-menu-hamburger"></span>Frames
+              </button>
             </div>
             <ReqDetail modal={modal} />
           </div>
           <div className="fill orient-vertical-box">
-            <div className="w-detail-inspectors-title">
+            <div className="w-detail-inspectors-title w-detail-inspectors-res">
             <span className="glyphicon glyphicon-arrow-left"></span>Response
             </div>
             <ResDetail modal={modal} />

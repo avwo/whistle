@@ -77,3 +77,30 @@
   margin: 0;
   padding: 0;
 }
+
+div.w-detail-inspectors-tabs {
+  padding: 0!important;
+}
+
+.w-detail-inspectors-tabs button {
+  border: none;
+  border-right: 1px solid #ccc;
+  height: 20px;
+  line-height: 16px;
+  font-size: 12px;
+  padding: 0 12px;
+  border-radius: 0;
+  font-weight: bold;
+}
+
+.w-detail-inspectors-tabs .glyphicon-menu-hamburger {
+  color: #ff8000;
+}
+
+.w-detail-inspectors-tabs button.w-spec-active {
+  background-color: transparent;
+}
+
+.w-detail-inspectors-title.w-detail-inspectors-res {
+  padding-left: 12px!important;
+}
