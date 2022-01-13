@@ -5,6 +5,8 @@ var util = require('./util');
 var Inspector = require('./inspector');
 var Frames = require('./frames');
 var LazyInit = require('./lazy-init');
+var dataCenter = require('./data-center');
+var events = require('./events');
 
 var Inspectors = React.createClass({
   getInitialState: function() {
@@ -13,6 +15,12 @@ var Inspectors = React.createClass({
   shouldComponentUpdate: function(nextProps) {
     var hide = util.getBoolean(this.props.hide);
     return hide != util.getBoolean(nextProps.hide) || !hide;
+  },
+  componentDidMount: function() {
+    var self = this;
+    events.on('tabsChange', function() {
+      self.setState({});
+    });
   },
   showTab: function(name) {
     if (this.state.activeName !== name) {
@@ -31,9 +39,11 @@ var Inspectors = React.createClass({
     var modal = props.modal;
     var url = modal && modal.url;
     var hideFrames = !self.isActive('Frames');
+    var hide = util.getBoolean(props.hide);
+    var tabs = dataCenter.getTabs();
   
     return (
-      <div className={'fill orient-vertical-box w-detail-inspectors' + (util.getBoolean(this.props.hide) ? ' hide' : '')}>
+      <div className={'fill orient-vertical-box w-detail-inspectors' + (hide ? ' hide' : '')}>
         <div className="box w-detail-inspectors-url" title={url}>
           <label>Url</label>
           <div className="fill"><ExpandCollapse text={url} /></div>
@@ -58,7 +68,21 @@ var Inspectors = React.createClass({
           <Frames hide={hideFrames} data={modal} frames={props.frames} />
         </LazyInit>
         <div className="fill orient-vertical-box hide">
-
+          {
+            tabs.map(function(tab) {
+              var pluginName = tab.plugin;
+              return (
+                      <button
+                        key={pluginName}
+                        onClick={function() {
+                          self.showTab(pluginName);
+                        }}
+                        className={self.getStyle('Request')}
+                        title={pluginName}
+                      >{tab.name}</button>
+                    );
+            })
+          }
         </div>
       </div>
     );
