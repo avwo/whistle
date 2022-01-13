@@ -38,7 +38,7 @@ var contextMenuList = [
     list: [
       { name: 'Overview' },
       { name: 'Inspectors' },
-      { name: 'Frames' },
+      { name: 'Composer' },
       { name: 'Timeline' },
       { name: 'New Tab'},
       { name: 'QR Code' },
@@ -723,14 +723,11 @@ var ReqData = React.createClass({
       self.triggerActiveItem(item);
       events.trigger('showInspectors');
       break;
-    case 'Frames':
-      self.triggerActiveItem(item);
-      events.trigger('showFrames');
-      break;
     case 'Timeline':
       self.triggerActiveItem(item);
       events.trigger('showTimeline');
       break;
+    case 'Composer':
     case 'Compose':
       events.trigger('composer', item);
       break;
@@ -880,7 +877,7 @@ var ReqData = React.createClass({
     var clickBlank = disabled && !treeNodeData;
     var list0 = contextMenuList[0].list;
     list0[4].disabled = clickBlank || !/^https?:\/\//.test(treeId || item.url);
-    if (disabled) {
+    if (disabled || clickBlank) {
       list0[6].disabled = true;
     } else {
       var type = util.getContentType(item.res.headers);
@@ -888,11 +885,9 @@ var ReqData = React.createClass({
     }
     list0[0].disabled = disabled;
     list0[1].disabled = disabled;
-    list0[2].disabled = (disabled || !item.frames);
+    list0[2].disabled = disabled;
     list0[3].disabled = disabled;
-    list0[4].disabled = clickBlank;
     list0[5].disabled = clickBlank;
-    list0[6].disabled = clickBlank;
     list0[7].disabled = disabled;
     if (modal.isTreeView) {
       list0[8].name = 'List View';
