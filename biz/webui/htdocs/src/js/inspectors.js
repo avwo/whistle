@@ -4,16 +4,7 @@ var ExpandCollapse = require('./expand-collapse');
 var util = require('./util');
 var Inspector = require('./inspector');
 var Frames = require('./frames');
-
-var LazyInited = React.createClass({
-  render: function() {
-    if (this.props.hide && !this._inited) {
-      return null;
-    }
-    this._inited = true;
-    return this.props.children;
-  }
-});
+var LazyInit = require('./lazy-init');
 
 var Inspectors = React.createClass({
   getInitialState: function() {
@@ -63,9 +54,9 @@ var Inspectors = React.createClass({
           </div>
         </div>
         <Inspector hide={!self.isActive('Request')} modal={modal} />
-        <LazyInited hide={hideFrames}>
+        <LazyInit inited={!hideFrames}>
           <Frames hide={hideFrames} data={modal} frames={props.frames} />
-        </LazyInited>
+        </LazyInit>
         <div className="fill orient-vertical-box hide">
 
         </div>

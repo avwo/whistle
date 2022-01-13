@@ -111,3 +111,16 @@ div.w-detail-inspectors-tabs {
   white-space: nowrap;
   height: 20px;
 }
+
+.w-no-frames {
+  position: absolute;
+  width: 100px;
+  height: 20px;
+  line-height: 20px;
+  left: 50%;
+  top: 50%;
+  font-size: 14px;
+  margin: -10px 0 0 -50px;
+  text-align: center;
+  color: #999;
+}
