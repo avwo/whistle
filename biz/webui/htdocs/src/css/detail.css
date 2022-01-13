@@ -112,6 +112,10 @@ div.w-detail-inspectors-tabs {
   height: 20px;
 }
 
+.w-custom-tabs button {
+  font-weight: normal!important;
+}
+
 .w-no-frames {
   position: absolute;
   width: 100px;
