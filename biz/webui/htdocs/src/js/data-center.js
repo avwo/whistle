@@ -44,6 +44,8 @@ var disabledPlugins = {};
 var disabledAllPlugins;
 var reqTabList = [];
 var resTabList = [];
+var tabList = [];
+var comTabList = [];
 var DEFAULT_CONF = {
   timeout: TIMEOUT,
   xhrFields: {
@@ -491,6 +493,14 @@ exports.getResTabs = function() {
   return resTabList;
 };
 
+exports.getTabs = function() {
+  return tabList;
+};
+
+exports.getComTabs = function() {
+  return comTabList;
+};
+
 exports.getInitialData = function (callback) {
   if (!initialDataPromise) {
     initialDataPromise = $.Deferred();
@@ -703,8 +713,9 @@ function startLoadData() {
       pluginsMap = data.plugins || {};
       var _reqTabList = reqTabList;
       var _resTabList = resTabList;
-      reqTabList = [];
-      resTabList = [];
+      var _tabList = tabList;
+      var _comTabList = comTabList;
+      var curTabList = [];
       if (!disabledAllPlugins) {
         Object.keys(pluginsMap).forEach(function(name) {
           var pluginName = name.slice(0, -1);
@@ -712,27 +723,53 @@ function startLoadData() {
             var plugin = pluginsMap[name];
             var reqTab = plugin.reqTab;
             var resTab = plugin.resTab;
-            if (reqTab) {
-              reqTab.mtime = plugin.mtime;
-              reqTab.priority = plugin.priority;
-              reqTab._key = name;
-              reqTab.plugin = pluginName;
-              reqTabList.push(reqTab);
-            }
-            if (resTab) {
-              resTab.mtime = plugin.mtime;
-              resTab.priority = plugin.priority;
-              resTab._key = name;
-              resTab.plugin = pluginName;
-              resTabList.push(resTab);
-            }
+            var tab = plugin.tab;
+            var comTab = plugin.comTab;
+            curTabList.push({
+              mtime: plugin.mtime,
+              priority: plugin.priority,
+              _key: name,
+              plugin: pluginName,
+              reqTab: reqTab,
+              resTab: resTab,
+              tab: tab,
+              comTab: comTab
+            });
           }
         });
       }
-      reqTabList.sort(util.comparePlugin);
-      resTabList.sort(util.comparePlugin);
+      curTabList.sort(util.comparePlugin);
+      reqTabList = [];
+      resTabList = [];
+      tabList = [];
+      comTabList = [];
+      curTabList.forEach(function(info) {
+        var reqTab = info.reqTab;
+        var resTab = info.resTab;
+        var tab = info.tab;
+        var comTab = info.comTab;
+        var plugin = info.plugin;
+        if (reqTab) {
+          reqTab.plugin = plugin;
+          reqTabList.push(reqTab);
+        }
+        if (resTab) {
+          resTab.plugin = plugin;
+          resTabList.push(resTab);
+        }
+        if (tab) {
+          tab.plugin = plugin;
+          tabList.push(tab);
+        }
+        if (comTab) {
+          comTab.plugin = plugin;
+          comTabList.push(comTab);
+        }
+      });
       emitCustomTabsChange(reqTabList, _reqTabList, 'reqTabsChange');
       emitCustomTabsChange(resTabList, _resTabList, 'resTabsChange');
+      emitCustomTabsChange(tabList, _tabList, 'tabsChange');
+      emitCustomTabsChange(comTabList, _comTabList, 'comTabsChange');
       disabledPlugins = data.disabledPlugins || {};
       disabledAllPlugins = data.disabledAllPlugins;
       if (len || svrLen) {
