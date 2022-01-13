@@ -277,3 +277,19 @@
   height: 200px;
   font-size: 14px;
 }
+
+.w-composer-tab-list {
+  border-bottom: 1px solid #ccc;
+  height: 23px;
+  background-color: #f1f3f4;
+}
+
+.w-composer-tab-list button {
+  border: none;
+  border-right: 1px solid #ccc;
+  height: 22px;
+  line-height: 18px;
+  font-size: 12px;
+  padding: 0 12px;
+  border-radius: 0;
+}

@@ -7,7 +7,7 @@ var BtnGroup = require('./btn-group');
 var Overview = require('./overview');
 var Inspectors = require('./inspectors');
 var Timeline = require('./timeline');
-var Composer = require('./composer');
+var ComposerList = require('./composer-list');
 var Tools = require('./tools');
 
 var ReqData = React.createClass({
@@ -205,7 +205,7 @@ var ReqData = React.createClass({
         } onDoubleClick={this.onDoubleClick} onClick={this.toggleTab} tabs={tabs} />
         {this.state.initedOverview ? <Overview modal={overview} hide={name != tabs[0].name} /> : null}
         {this.state.initedInspectors ? <Inspectors modal={activeItem} frames={frames} hide={name != tabs[1].name} /> : null}
-        {this.state.initedComposer ? <Composer modal={this.state.activeItem} hide={name != tabs[2].name} /> : null}
+        {this.state.initedComposer ? <ComposerList modal={this.state.activeItem} hide={name != tabs[2].name} /> : null}
         {this.state.initedTimeline ? <Timeline data={data} modal={modal} hide={name != tabs[3].name} /> : null}
         {this.state.initedTools ? <Tools hide={name != tabs[4].name} /> : null}
       </div>

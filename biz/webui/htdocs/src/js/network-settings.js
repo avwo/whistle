@@ -235,7 +235,7 @@ var Settings = React.createClass({
             </select>
           </label>
           <label className="w-network-settings-own">
-            <input checked={dataCenter.isOnlyViewOwnData()} data-name="viewOwn" type="checkbox" />Only take this machine's request into consideration (IP: {dataCenter.clientIp})
+            <input checked={dataCenter.isOnlyViewOwnData()} data-name="viewOwn" type="checkbox" />Only view the requests of own computer (IP: {dataCenter.clientIp})
           </label>
           <label className="w-network-settings-own">
             <input checked={isTreeView} data-name="treeView" type="checkbox" />

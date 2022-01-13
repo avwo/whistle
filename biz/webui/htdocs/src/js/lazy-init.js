@@ -1,6 +1,6 @@
 var React = require('react');
 
-module.exports = React.createClass({
+var LazyInit = React.createClass({
   render: function() {
     if (!this.props.inited && !this._inited) {
       return null;
@@ -9,3 +9,5 @@ module.exports = React.createClass({
     return this.props.children;
   }
 });
+
+module.exports = LazyInit;
