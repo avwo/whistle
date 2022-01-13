@@ -282,6 +282,7 @@
   border-bottom: 1px solid #ccc;
   height: 23px;
   background-color: #f1f3f4;
+  min-width: 560px;
 }
 
 .w-composer-tab-list button {
@@ -292,8 +293,9 @@
   font-size: 12px;
   padding: 0 12px;
   border-radius: 0;
+  font-weight: bold;
 }
 
 .w-composer-tab-list .glyphicon-edit {
-  color: #000;
+  color:#cf6c40;
 }

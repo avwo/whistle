@@ -59,8 +59,22 @@ var Inspectors = React.createClass({
           }} className={self.getStyle('Frames')}>
             <span className="glyphicon glyphicon-menu-hamburger"></span>Frames
           </button>
-          <div className="fill w-custom-tabs hide">
-
+          <div className="fill w-custom-tabs">
+            {
+              tabs.map(function(tab) {
+                var pluginName = tab.plugin;
+                return (
+                        <button
+                          key={pluginName}
+                          onClick={function() {
+                            self.showTab(pluginName);
+                          }}
+                          className={self.getStyle(pluginName)}
+                          title={pluginName}
+                        >{tab.name}</button>
+                      );
+              })
+            }
           </div>
         </div>
         <Inspector hide={!self.isActive('Request')} modal={modal} />
@@ -68,21 +82,7 @@ var Inspectors = React.createClass({
           <Frames hide={hideFrames} data={modal} frames={props.frames} />
         </LazyInit>
         <div className="fill orient-vertical-box hide">
-          {
-            tabs.map(function(tab) {
-              var pluginName = tab.plugin;
-              return (
-                      <button
-                        key={pluginName}
-                        onClick={function() {
-                          self.showTab(pluginName);
-                        }}
-                        className={self.getStyle('Request')}
-                        title={pluginName}
-                      >{tab.name}</button>
-                    );
-            })
-          }
+          
         </div>
       </div>
     );
