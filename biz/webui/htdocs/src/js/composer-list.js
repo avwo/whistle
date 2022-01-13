@@ -4,10 +4,12 @@ var util = require('./util');
 var LazyInit = require('./lazy-init');
 var dataCenter = require('./data-center');
 var events = require('./events');
+var TabMgr = require('./tab-mgr');
+var storage = require('./storage');
 
 var ComposerList = React.createClass({
   getInitialState: function() {
-    return { activeName: ' ' };
+    return { activeName: storage.get('activeComposerTab') || ' ' };
   },
   shouldComponentUpdate: function(nextProps) {
     var hide = util.getBoolean(this.props.hide);
@@ -21,6 +23,7 @@ var ComposerList = React.createClass({
   },
   showTab: function(name) {
     if (this.state.activeName !== name) {
+      storage.set('activeComposerTab', name);
       this.setState({ activeName: name });
     }
   },
@@ -30,7 +33,30 @@ var ComposerList = React.createClass({
     var modal = self.props.modal;
     var tabs = dataCenter.getComTabs();
     var active = self.state.activeName;
-  
+    var activeDefalut = active === ' ';
+    var hasActive = activeDefalut;
+    var elem = tabs.map(function(tab) {
+      var pluginName = tab.plugin;
+      var activeTab;
+      if (active == tab.plugin) {
+        activeTab = true;
+        hasActive = true;
+      }
+      return (
+              <button
+                key={pluginName}
+                onClick={function() {
+                  self.showTab(pluginName);
+                }}
+                className={'btn btn-default' + (activeTab ? ' active' : '')}
+                title={pluginName}
+              >{tab.name}</button>
+            );
+    });
+    if (!hasActive) {
+      activeDefalut = true;
+      active = self.state.activeName = ' ';
+    }
     return (
       <div className={'fill orient-vertical-box' + (hide ? ' hide' : '')}>
         {
@@ -38,32 +64,19 @@ var ComposerList = React.createClass({
             <div className="box w-composer-tab-list">
               <button type="button" onClick={function() {
                 self.showTab(' ');
-              }} className="btn btn-default active">
+              }} className={'btn btn-default' + (activeDefalut ? ' active' : '')}>
                 <span className="glyphicon glyphicon-edit"></span>Default
               </button>
               <div className="fill w-custom-tabs">
-                {
-                  tabs.map(function(tab) {
-                    var pluginName = tab.plugin;
-                    return (
-                            <button
-                              key={pluginName}
-                              onClick={function() {
-                                self.showTab(pluginName);
-                              }}
-                              className={'btn btn-default' + (active == tab.plugin ? ' active' : '')}
-                              title={pluginName}
-                            >{tab.name}</button>
-                          );
-                  })
-                }
+                { elem }
               </div>
             </div>
           ) : null
         }
         <LazyInit inited={!hide}>
-          <Composer modal={modal} hide={hide} />
+          <Composer modal={modal} hide={hide || !activeDefalut} />
         </LazyInit>
+        <TabMgr active={active} hide={hide} tabs={tabs} />
       </div>
     );
   }
