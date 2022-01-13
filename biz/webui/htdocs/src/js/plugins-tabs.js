@@ -80,7 +80,7 @@ var PluginsTabs = React.createClass({
               })
             }
           </div>
-          <div className="fill orient-vertical-box w-plugins-tabs-panel">
+          <div className="fill orient-vertical-box">
           {
               tabs.map(function(tab) {
                 return self.isInited(tab) && <TabFrame isReq={isReq} key={tab.plugin} src={tab.action} hide={single ? hide : active !== tab.plugin} />;

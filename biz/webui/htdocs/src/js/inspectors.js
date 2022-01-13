@@ -1,61 +1,77 @@
 require('./base-css.js');
 var React = require('react');
-var Divider = require('./divider');
-var ReqDetail = require('./req-detail');
-var ResDetail = require('./res-detail');
 var ExpandCollapse = require('./expand-collapse');
 var util = require('./util');
+var Inspector = require('./inspector');
+var Frames = require('./frames');
 
-var Inspector = React.createClass({
+var LazyInited = React.createClass({
+  render: function() {
+    if (this.props.hide && !this._inited) {
+      return null;
+    }
+    this._inited = true;
+    return this.props.children;
+  }
+});
+
+var Inspectors = React.createClass({
+  getInitialState: function() {
+    return { activeName: 'Request' };
+  },
   shouldComponentUpdate: function(nextProps) {
     var hide = util.getBoolean(this.props.hide);
-    if (hide != util.getBoolean(nextProps.hide)) {
-      return true;
+    return hide != util.getBoolean(nextProps.hide) || !hide;
+  },
+  showTab: function(name) {
+    if (this.state.activeName !== name) {
+      this.setState({ activeName: name });
     }
-    if (hide) {
-      return false;
-    }
-    var modal = this.props.modal;
-    var newModal = nextProps.modal;
-    if (!modal || modal !== newModal) {
-      return true;
-    }
-    
-    return !this.endTime;
+  },
+  isActive: function(name) {
+    return this.state.activeName === name;
+  },
+  getStyle: function(name) {
+    return 'btn btn-default' + (this.isActive(name) ? ' w-spec-active' : '');
   },
   render: function() {
-    var props = this.props;
+    var self = this;
+    var props = self.props;
     var modal = props.modal;
     var url = modal && modal.url;
-    this.endTime = modal && (modal.endTime || modal.lost);
+    var hideFrames = !self.isActive('Frames');
+  
     return (
       <div className={'fill orient-vertical-box w-detail-inspectors' + (util.getBoolean(this.props.hide) ? ' hide' : '')}>
         <div className="box w-detail-inspectors-url" title={url}>
           <label>Url</label>
           <div className="fill"><ExpandCollapse text={url} /></div>
         </div>
-        <Divider vertical="true">
-          <div className="fill orient-vertical-box">
-            <div className="w-detail-inspectors-title w-detail-inspectors-tabs">
-              <button type="button" onClick={this.createRules} className="btn btn-default w-spec-active">
-                <span className="glyphicon glyphicon-arrow-right"></span>Request
-              </button>
-              <button type="button" onClick={this.createRules} className="btn btn-default">
-                <span className="glyphicon glyphicon-menu-hamburger"></span>Frames
-              </button>
-            </div>
-            <ReqDetail modal={modal} />
+        <div className="box w-detail-inspectors-title w-detail-inspectors-tabs">
+          <button type="button" onClick={function() {
+            self.showTab('Request');
+          }} className={self.getStyle('Request')}>
+            <span className="glyphicon glyphicon-arrow-right"></span>Request
+          </button>
+          <button type="button" onClick={function() {
+            self.showTab('Frames');
+          }} className={self.getStyle('Frames')}>
+            <span className="glyphicon glyphicon-menu-hamburger"></span>Frames
+          </button>
+          <div className="fill w-custom-tabs hide">
+
           </div>
-          <div className="fill orient-vertical-box">
-            <div className="w-detail-inspectors-title w-detail-inspectors-res">
-            <span className="glyphicon glyphicon-arrow-left"></span>Response
-            </div>
-            <ResDetail modal={modal} />
-          </div>
-        </Divider>
+        </div>
+        <Inspector hide={!self.isActive('Request')} modal={modal} />
+        <LazyInited hide={hideFrames}>
+          <Frames hide={hideFrames} data={modal} frames={props.frames} />
+        </LazyInited>
+        <div className="fill orient-vertical-box hide">
+
+        </div>
       </div>
     );
   }
 });
 
-module.exports = Inspector;
+module.exports = Inspectors;

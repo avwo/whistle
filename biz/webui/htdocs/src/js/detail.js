@@ -217,12 +217,12 @@ var ReqData = React.createClass({
             <span className={'glyphicon glyphicon-menu-' + (dockToBottom ? 'right' : 'down') + (data ? ' hide' : '')}></span>
           </button>
         } onDoubleClick={this.onDoubleClick} onClick={this.toggleTab} tabs={tabs} />
-        {this.state.initedOverview ? <Overview modal={overview} hide={name != tabs[0].name} /> : ''}
-        {this.state.initedInspectors ? <Inspectors modal={activeItem} frames={frames} hide={name != tabs[1].name} /> : ''}
-        {this.state.initedFrames ? <Frames data={activeItem} frames={frames} hide={name != tabs[2].name} /> : ''}
-        {this.state.initedTimeline ? <Timeline data={data} modal={modal} hide={name != tabs[4].name} /> : ''}
-        {this.state.initedComposer ? <Composer modal={this.state.activeItem} hide={name != tabs[3].name} /> : ''}
-        {this.state.initedTools ? <Tools hide={name != tabs[5].name} /> : ''}
+        {this.state.initedOverview ? <Overview modal={overview} hide={name != tabs[0].name} /> : null}
+        {this.state.initedInspectors ? <Inspectors modal={activeItem} frames={frames} hide={name != tabs[1].name} /> : null}
+        {this.state.initedFrames ? <Frames data={activeItem} frames={frames} hide={name != tabs[2].name} /> : null}
+        {this.state.initedComposer ? <Composer modal={this.state.activeItem} hide={name != tabs[3].name} /> : null}
+        {this.state.initedTimeline ? <Timeline data={data} modal={modal} hide={name != tabs[4].name} /> : null}
+        {this.state.initedTools ? <Tools hide={name != tabs[5].name} /> : null}
       </div>
     );
   }

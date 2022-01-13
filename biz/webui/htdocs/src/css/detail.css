@@ -98,9 +98,16 @@ div.w-detail-inspectors-tabs {
 }
 
 .w-detail-inspectors-tabs button.w-spec-active {
-  background-color: transparent;
+  background-color: #ddd;
 }
 
 .w-detail-inspectors-title.w-detail-inspectors-res {
   padding-left: 12px!important;
+}
+
+.w-custom-tabs {
+  overflow-y: hidden;
+  overflow-x: auto;
+  white-space: nowrap;
+  height: 20px;
 }
