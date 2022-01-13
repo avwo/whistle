@@ -141,7 +141,7 @@ var Composer = React.createClass({
     self.update(self.props.modal);
     this.refs.uploadBody.update(this.uploadBodyData);
     events.on('setComposer', function() {
-      if (self.state.pending) {
+      if (self.state.pending || self.props.disabled) {
         return;
       }
       var activeItem = self.props.modal;

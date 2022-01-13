@@ -74,7 +74,7 @@ var ComposerList = React.createClass({
           ) : null
         }
         <LazyInit inited={!hide}>
-          <Composer modal={modal} hide={hide || !activeDefalut} />
+          <Composer modal={modal} disabled={!activeDefalut} hide={hide || !activeDefalut} />
         </LazyInit>
         <TabMgr active={active} hide={hide} tabs={tabs} />
       </div>
