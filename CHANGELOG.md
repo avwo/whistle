@@ -1,13 +1,17 @@
-# v2.8.11
+# v2.9.0
 1. style: 修复禁用所有插件编辑器对应插件规则无法显示插件已失效的问题
-2. feat: 将请求匹配的 pattern 传给插件，可以通过 `req.originalReq.isRegExp` 及 `req.originalReq.pattern` 获取
+2. style: `Frames` 移入 `Inspectors`
+3. feat: 将请求匹配的 pattern 传给插件，可以通过 `req.originalReq.isRegExp` 及 `req.originalReq.pattern` 获取
+4. feat: 支持自定义 Inspectors tab，详见：https://github.com/whistle-plugins/examples/tree/master/whistle.custom-tabs
+5. feat: 支持自定义 Composer tab，详见：https://github.com/whistle-plugins/examples/tree/master/whistle.custom-tabs
+
 
 # v2.8.10
 1. fix: 插件的 sniCallback 返回 `false` 请求没有重新走 TUNNEL 代理问题
 2. refactor: 如果插件接收到的请求是 https，则 `req.url` 将为完整的路径
 
 # v2.8.9
-1. feat: 支持自定义 `inspectors tab`，详见：https://github.com/whistle-plugins/examples/tree/master/whistle.view-md5
+1. feat: 支持自定义 `inspectors tab`，详见：https://github.com/whistle-plugins/examples/tree/master/whistle.custom-tabs
 2. feat: 支持通过 `disable://abort` 禁用 `enable://abort`
 3. feat: Whistle 默认显示的抓包数据不超过 1.5m，可以通过 `enable://bigData` 扩大到 `2.5m`
 
