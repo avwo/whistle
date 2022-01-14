@@ -1,4 +1,5 @@
 var React = require('react');
+var $ = require('jquery');
 var Composer = require('./composer');
 var util = require('./util');
 var LazyInit = require('./lazy-init');
@@ -20,12 +21,24 @@ var ComposerList = React.createClass({
     events.on('comTabsChange', function() {
       self.setState({});
     });
+    events.on('showMaskIframe', function() {
+      self.showMask();
+    });
+    events.on('hideMaskIframe', function() {
+      self.hideMask();
+    });
   },
   showTab: function(name) {
     if (this.state.activeName !== name) {
       storage.set('activeComposerTab', name);
       this.setState({ activeName: name });
     }
+  },
+  hideMask: function() {
+    $('.w-mask-iframe').hide();
+  },
+  showMask: function() {
+    $('.w-mask-iframe').show();
   },
   render: function() {
     var self = this;
@@ -58,7 +71,7 @@ var ComposerList = React.createClass({
       active = self.state.activeName = ' ';
     }
     return (
-      <div className={'fill orient-vertical-box' + (hide ? ' hide' : '')}>
+      <div className={'fill orient-vertical-box w-composer-list' + (hide ? ' hide' : '')}>
         {
           tabs.length ? (
             <div className="box w-composer-tab-list">
@@ -77,6 +90,7 @@ var ComposerList = React.createClass({
           <Composer modal={modal} disabled={!activeDefalut} hide={hide || !activeDefalut} />
         </LazyInit>
         <TabMgr modal={modal} active={active} hide={hide} tabs={tabs} className="w-custom-tab-panel" />
+        <div className="w-mask-iframe" onClick={this.hideMask} onMouseEnter={this.hideMask} />
       </div>
     );
   }

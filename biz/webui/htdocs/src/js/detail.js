@@ -87,7 +87,7 @@ var ReqData = React.createClass({
       this.state.activeItem = item;
     }
     this.toggleTab(this.state.tabs[2], function() {
-      events.trigger('setComposer');
+      item && events.trigger('setComposer');
     });
   },
   onDragEnter: function(e) {
@@ -100,6 +100,7 @@ var ReqData = React.createClass({
     var modal = this.props.modal;
     var id = e.dataTransfer.getData('reqDataId');
     var list = modal && modal.list;
+    events.trigger('hideMaskIframe');
     if (!id || !list) {
       return;
     }

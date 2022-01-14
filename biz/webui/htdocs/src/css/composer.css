@@ -299,3 +299,16 @@
 .w-composer-tab-list .glyphicon-edit {
   color:#cf6c40;
 }
+
+.w-composer-list {
+  position: relative;
+}
+.w-mask-iframe {
+  background-color: transparent;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 1;
+}

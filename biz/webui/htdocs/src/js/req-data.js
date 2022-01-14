@@ -570,7 +570,10 @@ var ReqData = React.createClass({
   onDragStart: function(e) {
     var target = $(e.target).closest('.w-req-data-item');
     var dataId = target.attr('data-id');
-    dataId && e.dataTransfer.setData('reqDataId', dataId);
+    if (dataId) {
+      events.trigger('showMaskIframe');
+      e.dataTransfer.setData('reqDataId', dataId);
+    }
   },
   getSelectedRows: function (item) {
     var active = this.props.modal.getActive();
