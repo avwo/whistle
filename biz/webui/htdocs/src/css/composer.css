@@ -312,3 +312,7 @@
   bottom: 0;
   z-index: 1;
 }
+
+.w-composer-list .w-custom-tabs {
+  height: 22px;
+}
