@@ -78,6 +78,10 @@
   padding: 0;
 }
 
+.w-custom-tab-panel .w-tab-frame {
+  min-width: 560px;
+}
+
 div.w-detail-inspectors-tabs {
   padding: 0!important;
 }

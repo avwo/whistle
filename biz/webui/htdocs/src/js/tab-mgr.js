@@ -68,7 +68,7 @@ var TabMgr = React.createClass({
       return self.isInited(tab) && <TabFrame ref={tab.plugin} key={tab.plugin} src={tab.action} hide={hideTab} />;
     });
     return (
-      <div className={'fill orient-vertical-box' + (hideAll ? ' hide' : '')}>
+      <div className={'fill orient-vertical-box ' + (props.className || '') + (hideAll ? ' hide' : '')}>
         { tabs }
       </div>
     );

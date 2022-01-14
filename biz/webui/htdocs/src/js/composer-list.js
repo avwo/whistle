@@ -76,7 +76,7 @@ var ComposerList = React.createClass({
         <LazyInit inited={!hide}>
           <Composer modal={modal} disabled={!activeDefalut} hide={hide || !activeDefalut} />
         </LazyInit>
-        <TabMgr modal={modal} active={active} hide={hide} tabs={tabs} />
+        <TabMgr modal={modal} active={active} hide={hide} tabs={tabs} className="w-custom-tab-panel" />
       </div>
     );
   }

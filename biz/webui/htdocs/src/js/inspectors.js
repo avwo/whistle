@@ -83,7 +83,7 @@ var Inspectors = React.createClass({
         <LazyInit inited={!hideFrames}>
           <Frames hide={hideFrames} data={modal} frames={props.frames} />
         </LazyInit>
-        <TabMgr active={active} hide={hide} tabs={tabs} />
+        <TabMgr active={active} hide={hide} tabs={tabs} className="w-custom-tab-panel" />
       </div>
     );
   }
