@@ -1,6 +1,7 @@
 var React = require('react');
 var util = require('./util');
 var TabFrame = require('./tab-frame');
+var events = require('./events');
 
 var MAX_IFRAME_COUNT = 6;
 
@@ -12,6 +13,16 @@ var TabMgr = React.createClass({
   shouldComponentUpdate: function(nextProps) {
     var hide = util.getBoolean(this.props.hide);
     return hide != util.getBoolean(nextProps.hide) || !hide;
+  },
+  componentDidMount: function() {
+    var self = this;
+    events.on('setComposer', function() {
+      var modal = !self.props.hide && self.props.modal;
+      if (modal) {
+        var elem = self.refs[self.props.active];
+        elem && elem.compose(modal);
+      }
+    });
   },
   isInited: function(tab) {
     var cache = this.initedTabs;
@@ -54,7 +65,7 @@ var TabMgr = React.createClass({
       if (!hideTab) {
         hideAll = false;
       }
-      return self.isInited(tab) && <TabFrame key={tab.plugin} src={tab.action} hide={hideTab} />;
+      return self.isInited(tab) && <TabFrame ref={tab.plugin} key={tab.plugin} src={tab.action} hide={hideTab} />;
     });
     return (
       <div className={'fill orient-vertical-box' + (hideAll ? ' hide' : '')}>

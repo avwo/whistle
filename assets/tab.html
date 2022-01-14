@@ -7,11 +7,13 @@
     var getSelectedSessionList;
     var listenersList = [];
     var frameChangeListeners = [];
+    var composeListeners = [];
     var tabChangeListeners = [];
     var curFrames = null;
     var firstFrame;
     var lastFrame;
     var selected = true;
+    var composerItem;
     var frameTimer;
 
     function initState(flag) {
@@ -79,7 +81,14 @@
       }
     }
 
-    function emitAll(item, hide) {
+    function emitAll(item, hide, comItem) {
+      if (comItem) {
+        composerItem = comItem;
+        composeListeners.forEach(function(l) {
+          l(comItem);
+        });
+        return;
+      }
       if (frameTimer) {
         clearTimeout(frameTimer);
         frameTimer = null;
@@ -169,6 +178,12 @@
             frameChangeListeners.push(l);
           }
           return;
+        case 'compose':
+          if (composeListeners.indexOf(l) === -1) {
+            composeListeners.push(l);
+          }
+           composerItem && l(composerItem);
+          return;
       }
     }
 
@@ -220,6 +235,16 @@
             }
           } else {
             frameChangeListeners = [];
+          }
+          return;
+        case 'compose':
+          if (l) {
+            var index = composeListeners.indexOf(l);
+            if (index !== -1) {
+              composeListeners.splice(index, 1);
+            }
+          } else {
+            composeListeners = [];
           }
           return;
       }

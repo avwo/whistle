@@ -39,26 +39,39 @@ var TabFrame = React.createClass({
     var hide = util.getBoolean(this.props.hide);
     return hide != util.getBoolean(nextProps.hide) || !hide;
   },
-  handlePush: function(_, item) {
+  compose: function(item) {
+    this.handlePush(null, null, item);
+  },
+  handlePush: function(_, item, comItem) {
     try {
       var win = ReactDOM.findDOMNode(this.refs.iframe).contentWindow;
       if (win && typeof win.__pushWhistle5b6af7b9884e1165SessionActive__ === 'function') {
-        if (this.props.hide) {
+        if (comItem) {
+          win.__pushWhistle5b6af7b9884e1165SessionActive__(null, null, comItem);
+          comItem = null;
+        } else if (this.props.hide) {
           win.__pushWhistle5b6af7b9884e1165SessionActive__(null, true);
         } else {
           win.__pushWhistle5b6af7b9884e1165SessionActive__(item || modal.getActive());
         }
       }
     } catch (e) {}
+    this.composeItem = comItem;
   },
   componentDidUpdate: function() {
     this.handlePush();
+  },
+  onLoad: function() {
+    if (this.composeItem) {
+      this.handlePush(null, null, this.composeItem);
+      this.composeItem = null;
+    }
   },
   render: function() {
     var display = this.props.hide ? 'none' : undefined;
     // 防止被改
     window.onWhistleInspectorCustomTabReady = onWhistleInspectorCustomTabReady;
-    return <iframe ref="iframe" src={this.state.url} style={{display: display}} className="fill w-tab-frame"  />;
+    return <iframe onLoad={this.onLoad} ref="iframe" src={this.state.url} style={{display: display}} className="fill w-tab-frame"  />;
   }
 });
 
