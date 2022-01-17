@@ -29,6 +29,7 @@
 28. **`w2 start[run] -P uiPort`：** 修改 whistle UI 监听的端口，默认为 `8899` （不建议自己设置）
 29. **`w2 start[run] -m middlewares`：** 通过 express 中间件扩展 whistle 功能（建议用插件形式扩展）
 30. **`w2 start[run] -M mode`：** 设置 whistle 启动模式，同时设置多个用 `|` 分隔开，如 `-M "pureProxy|debug|multiEnv|capture|disableH2|network|rules|plugins"`
+  - **`prod`：** 使用 `w2 run` 默认启动的是开发模式，性能会有些影响，可以通过 `prod` 强制转成生产模式
   - **`pureProxy`：** 纯代理模式，对一些内置界面域名 `local.whistlejs.com` 也当初普通请求
   - **`debug`：** 调试模式，会禁用一些超时设置及 dnsCache（不建议使用）
   - **`multiEnv`：** 除了 Default 其它规则都不能启用，应用参见：** https://github.com/nohosts/nohost

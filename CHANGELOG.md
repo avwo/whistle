@@ -1,3 +1,12 @@
+# v2.9.0
+1. style: 修复禁用所有插件编辑器对应插件规则无法显示插件已失效的问题
+2. style: `Frames` 移入 `Inspectors`
+3. feat: 将请求匹配的 pattern 传给插件，可以通过 `req.originalReq.isRegExp` 及 `req.originalReq.pattern` 获取
+4. feat: 支持自定义 Inspectors tab，详见：https://github.com/whistle-plugins/examples/tree/master/whistle.view-md5
+5. feat: 支持自定义 Composer tab，详见：https://github.com/whistle-plugins/examples/tree/master/whistle.view-md5
+6. refactor: 插件全局异常也会写入启动目录的日志文件 `whistle.log`，且支持插件通过 `process.handleUncaughtPluginErrorMessage = (errMsg) => {}` 获取全局异常信息，且可以通过 `return false` 来禁止插件自动退出
+
+
 # v2.8.10
 1. fix: 插件的 sniCallback 返回 `false` 请求没有重新走 TUNNEL 代理问题
 2. refactor: 如果插件接收到的请求是 https，则 `req.url` 将为完整的路径

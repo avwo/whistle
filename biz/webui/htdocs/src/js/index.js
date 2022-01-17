@@ -57,6 +57,14 @@ if (/[&#?]hideLeft(?:Bar|Menu)=(0|false|1|true)(?:&|$|#)/.test(search)) {
 
 var LEFT_BAR_MENUS = [
   {
+    name: 'Clear',
+    icon: 'remove'
+  },
+  {
+    name: 'Save',
+    icon: 'save-file'
+  },
+  {
     name: 'Tree View',
     multiple: true
   },
@@ -67,14 +75,6 @@ var LEFT_BAR_MENUS = [
   {
     name: 'Plugins',
     multiple: true
-  },
-  {
-    name: 'Clear',
-    icon: 'remove'
-  },
-  {
-    name: 'Save',
-    icon: 'save-file'
   }
 ];
 
@@ -972,8 +972,8 @@ var Index = React.createClass({
         state.drm = server.drm;
         protocols.setPlugins(state);
         var list = LEFT_BAR_MENUS;
-        list[1].checked = !state.disabledAllRules;
-        list[2].checked = !state.disabledAllPlugins;
+        list[3].checked = !state.disabledAllRules;
+        list[4].checked = !state.disabledAllPlugins;
         self.setState({});
         self.refs.contextMenu.update();
       }
@@ -1168,8 +1168,9 @@ var Index = React.createClass({
       var pluginsOptions = self.createPluginsOptions(data.plugins);
       var oldPluginsOptions = self.state.pluginsOptions;
       var oldDisabledPlugins = self.state.disabledPlugins;
+      var disabledAllPlugins = self.state.disabledAllPlugins;
       var disabledPlugins = data.disabledPlugins;
-      if (pluginsOptions.length == oldPluginsOptions.length) {
+      if (disabledAllPlugins == data.disabledAllPlugins && pluginsOptions.length == oldPluginsOptions.length) {
         var hasUpdate;
         for (var i = 0, len = pluginsOptions.length; i < len; i++) {
           var plugin = pluginsOptions[i];
@@ -1191,7 +1192,8 @@ var Index = React.createClass({
       var pluginsState = {
         plugins: data.plugins,
         disabledPlugins: data.disabledPlugins,
-        pluginsOptions: pluginsOptions
+        pluginsOptions: pluginsOptions,
+        disabledAllPlugins: data.disabledAllPlugins
       };
       protocols.setPlugins(pluginsState);
       self.setState(pluginsState);
@@ -1201,6 +1203,8 @@ var Index = React.createClass({
       if (typeof onReady === 'function') {
         onReady({
           url: location.href,
+          pageId: dataCenter.getPageId(),
+          compose: dataCenter.compose,
           importSessions: self.importAnySessions,
           importHarSessions: self.importHarSessions,
           clearSessions: self.clear,
@@ -2991,33 +2995,33 @@ var Index = React.createClass({
   onContextMenu: function(e) {
     var count = 0;
     var list = LEFT_BAR_MENUS;
-    if (list[0].hide) {
-      ++count;
-    }
-    if (list[1].hide) {
-      ++count;
-    }
     if (list[2].hide) {
+      ++count;
+    }
+    if (list[3].hide) {
+      ++count;
+    }
+    if (list[4].hide) {
       ++count;
     }
     if (count < 3) {
       var data = util.getMenuPosition(e, 110, 100 - count * 30);
       var state = this.state;
       data.list = list;
-      list[0].checked = !!state.network.isTreeView;
-      list[1].checked = !state.disabledAllRules;
-      list[2].checked = !state.disabledAllPlugins;
+      list[2].checked = !!state.network.isTreeView;
+      list[3].checked = !state.disabledAllRules;
+      list[4].checked = !state.disabledAllPlugins;
       var target = $(e.target);
-      list[3].hide = true;
-      list[4].hide = true;
+      list[0].hide = true;
+      list[1].hide = true;
       if (target.closest('.w-network-menu').length) {
-        list[3].hide = false;
+        list[0].hide = false;
       } else if (target.closest('.w-save-menu').length) {
-        list[4].hide = false;
+        list[1].hide = false;
         if (target.closest('.w-rules-menu').length) {
-          list[4].disabled = !state.rules.hasChanged();
+          list[1].disabled = !state.rules.hasChanged();
         } else {
-          list[4].disabled = !state.values.hasChanged();
+          list[1].disabled = !state.values.hasChanged();
         }
       }
       this.refs.contextMenu.show(data);
@@ -3030,18 +3034,18 @@ var Index = React.createClass({
     var list = LEFT_BAR_MENUS;
     switch(action) {
     case 'Tree View':
-      list[0].checked = !state.network.isTreeView;
+      list[2].checked = !state.network.isTreeView;
       self.toggleTreeView();
       break;
     case 'Rules':
       self.disableAllRules(null, function(disabled) {
-        list[1].checked = !disabled;
+        list[3].checked = !disabled;
         self.setState({});
       });
       break;
     case 'Plugins':
       self.disableAllPlugins(null, function(disabled) {
-        list[2].checked = !disabled;
+        list[4].checked = !disabled;
         self.setState({});
       });
       break;
@@ -3218,9 +3222,9 @@ var Index = React.createClass({
       forceShowLeftMenu = this.forceShowLeftMenu;
       forceHideLeftMenu = this.forceHideLeftMenu;
     }
-    LEFT_BAR_MENUS[0].hide = rulesMode;
-    LEFT_BAR_MENUS[1].hide = pluginsMode;
-    LEFT_BAR_MENUS[2].hide = rulesOnlyMode;
+    LEFT_BAR_MENUS[2].hide = rulesMode;
+    LEFT_BAR_MENUS[3].hide = pluginsMode;
+    LEFT_BAR_MENUS[4].hide = rulesOnlyMode;
     return (
       <div className={'main orient-vertical-box' + (showLeftMenu ? ' w-show-left-menu' : '')}>
         <div className={'w-menu w-' + name + '-menu-list'}>

@@ -53,51 +53,103 @@
       window.addEventListener('load', delayOnLoad);
     } catch (e) {}
     var toast = {};
+    var addNetworkListener = function(l) {
+      if (typeof l === 'function' && networkListeners.indexOf(l) === -1) {
+        networkListeners.push(l);
+      }
+    };
+    var removeNetworkListener = function(l) {
+      l = networkListeners.indexOf(l);
+      if (l !== -1) {
+        networkListeners.splice(l, 1);
+      }
+    };
+    var removeAllNetworkListeners = function() {
+      networkListeners = [];
+    };
+    var addRulesListener = function(l) {
+      if (typeof l === 'function' && rulesListeners.indexOf(l) === -1) {
+        rulesListeners.push(l);
+      }
+    };
+    var removeRulesListener = function(l) {
+      l = rulesListeners.indexOf(l);
+      if (l !== -1) {
+        rulesListeners.splice(l, 1);
+      }
+    };
+    var removeAllRulesListeners = function() {
+      rulesListeners = [];
+    };
+    var addValuesListener = function(l) {
+      if (typeof l === 'function' && valuesListeners.indexOf(l) === -1) {
+        valuesListeners.push(l);
+      }
+    };
+    var removeValuesListener = function(l) {
+      l = valuesListeners.indexOf(l);
+      if (l !== -1) {
+        valuesListeners.splice(l, 1);
+      }
+    };
+    var removeAllValuesListeners = function() {
+      valuesListeners = [];
+    };
+
+    function on(type, l) {
+      if (typeof l !== 'function') {
+        return;
+      }
+      switch(type) {
+        case 'network':
+          return addNetworkListener(l);
+        case 'rules':
+          return addRulesListener(l);
+        case 'values':
+          return addValuesListener(l);
+      }
+    }
+
+    function off(type, l) {
+      switch(type) {
+        case 'network':
+          if (l) {
+            removeNetworkListener(l);
+          } else {
+            removeAllNetworkListeners();
+          }
+          return;
+        case 'rules':
+          if (l) {
+            removeRulesListener(l);
+          } else {
+            removeAllRulesListeners();
+          }
+          return;
+        case 'values':
+          if (l) {
+            removeValuesListener(l);
+          } else {
+            removeAllValuesListeners();
+          }
+          return;
+      }
+    }
+    
     var whistleBridge = {
       config: config,
       toast: toast,
-      addNetworkListener: function(l) {
-        if (typeof l === 'function' && networkListeners.indexOf(l) === -1) {
-          networkListeners.push(l);
-        }
-      },
-      removeNetworkListener: function(l) {
-        l = networkListeners.indexOf(l);
-        if (l !== -1) {
-          networkListeners.splice(l, 1);
-        }
-      },
-      removeAllNetworkListeners: function() {
-        networkListeners = [];
-      },
-      addRulesListener: function(l) {
-        if (typeof l === 'function' && rulesListeners.indexOf(l) === -1) {
-          rulesListeners.push(l);
-        }
-      },
-      removeRulesListener: function(l) {
-        l = rulesListeners.indexOf(l);
-        if (l !== -1) {
-          rulesListeners.splice(l, 1);
-        }
-      },
-      removeAllRulesListeners: function() {
-        rulesListeners = [];
-      },
-      addValuesListener: function(l) {
-        if (typeof l === 'function' && valuesListeners.indexOf(l) === -1) {
-          valuesListeners.push(l);
-        }
-      },
-      removeValuesListener: function(l) {
-        l = valuesListeners.indexOf(l);
-        if (l !== -1) {
-          valuesListeners.splice(l, 1);
-        }
-      },
-      removeAllValuesListeners: function() {
-        valuesListeners = [];
-      }
+      on: on,
+      off: off,
+      addNetworkListener: addNetworkListener,
+      removeNetworkListener: removeNetworkListener,
+      removeAllNetworkListeners: removeAllNetworkListeners,
+      addRulesListener: addRulesListener,
+      removeRulesListener: removeRulesListener,
+      removeAllRulesListeners: removeAllRulesListeners,
+      addValuesListener: addValuesListener,
+      removeValuesListener: removeValuesListener,
+      removeAllValuesListeners: removeAllValuesListeners
     };
     try {
       window.initWhistleBridge = function(options) {
@@ -105,6 +157,8 @@
         Object.keys(options.msgBox).forEach(function(name) {
           toast[name] = options.msgBox[name];
         });
+        whistleBridge.pageId = options.pageId;
+        whistleBridge.compose = options.compose;
         whistleBridge.decodeBase64 = options.decodeBase64;
         whistleBridge.importSessions = options.importSessions;
         whistleBridge.request = options.request;

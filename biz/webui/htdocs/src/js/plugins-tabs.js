@@ -1,13 +1,10 @@
 var React = require('react');
 var util = require('./util');
-var TabFrame = require('./tab-frame');
-
-var MAX_IFRAME_COUNT = 6;
+var TabMgr = require('./tab-mgr');
 
 var PluginsTabs = React.createClass({
   getInitialState: function() {
     var tab = this.props.tabs[0];
-    this.initedTabs = {};
     return {
       active: tab && tab.plugin
     };
@@ -19,41 +16,11 @@ var PluginsTabs = React.createClass({
   onSelect: function(tab) {
     this.setState({ active: tab.plugin });
   },
-  isInited: function(tab) {
-    var cache = this.initedTabs;
-    var action = tab.action;
-    var exists = cache[action] != null;
-    if (this.state.active !== tab.plugin) {
-      return exists;
-    }
-    if (exists) {
-      cache[action] = Date.now();
-      return true;
-    }
-    var keys = Object.keys(cache);
-    if (keys.length >= MAX_IFRAME_COUNT) {
-      var minTime;
-      var destroyKey;
-      keys.forEach(function(key) {
-        var time = cache[key];
-        if (minTime == null || minTime > time) {
-          minTime = time;
-          destroyKey = key;
-        }
-      });
-      if (destroyKey) {
-        delete cache[destroyKey];
-      }
-    }
-    this.initedTabs[action] = Date.now();
-    return true;
-  },
   render: function() {
     var self = this;
     var props = self.props;
     var tabs = props.tabs;
     var hide =  props.hide;
-    var isReq = props.isReq;
     var active = this.state.active;
     var single = tabs.length < 2;
     if (single ) {
@@ -80,13 +47,7 @@ var PluginsTabs = React.createClass({
               })
             }
           </div>
-          <div className="fill orient-vertical-box w-plugins-tabs-panel">
-          {
-              tabs.map(function(tab) {
-                return self.isInited(tab) && <TabFrame isReq={isReq} key={tab.plugin} src={tab.action} hide={single ? hide : active !== tab.plugin} />;
-              })
-            }
-          </div>
+          <TabMgr active={active} hide={hide} tabs={tabs} />
         </div>
     );
   }

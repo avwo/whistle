@@ -50,5 +50,5 @@
   overflow-y: hidden;
 }
 
-.w-detail-inspectors-url div::-webkit-scrollbar{ width:1px; height:1px; }
-.w-detail-inspectors-url div::-webkit-scrollbar-button{ width:1px;height:1px; }
+.w-detail-inspectors-url div::-webkit-scrollbar, .w-custom-tabs::-webkit-scrollbar { width:1px; height:1px; }
+.w-detail-inspectors-url div::-webkit-scrollbar-button, .w-custom-tabs::-webkit-scrollbar-button { width:1px; height:1px; }

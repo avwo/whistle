@@ -1,0 +1,303 @@
+<script>
+  ;(function() {
+    var config = window.whistleInspectorConfig;
+    var activeList = [];
+    var stateList = [1];
+    var getActiveSession;
+    var getSelectedSessionList;
+    var listenersList = [];
+    var frameChangeListeners = [];
+    var composeListeners = [];
+    var tabChangeListeners = [];
+    var curFrames = null;
+    var firstFrame;
+    var lastFrame;
+    var selected = true;
+    var composerItem;
+    var frameTimer;
+
+    function initState(flag) {
+      stateList[1] = flag;
+      stateList[2] = flag;
+      stateList[3] = flag;
+    }
+
+    function updateState(item) {
+      if (!item || item.lost || item.endTime) {
+        return  initState(1);
+      }
+      initState();
+      if (item.responseTime) {
+        stateList[2] = 1;
+      }
+      if (item.requestTime) {
+        stateList[1] = 1;
+      }
+    }
+
+    function emitTabChange(_selected) {
+      if (selected !== _selected) {
+        selected = _selected;
+        tabChangeListeners.forEach(function(l) {
+          l(selected);
+        });
+      }
+    }
+
+    function emitFrameChange() {
+      var curItem = getActiveSession();
+      var frames = curItem && curItem.frames || null;
+      var hasChanged;
+      var listenersLen = frameChangeListeners.length;
+      if (curFrames !== frames) {
+        curFrames = frames;
+        hasChanged = listenersLen;
+      } else if (curFrames && listenersLen) {
+        var curLen = curFrames.length;
+        var len = frames.length;
+        hasChanged = curLen !== len || firstFrame != frames[0] || lastFrame != frames[len - 1];
+      }
+      if (hasChanged) {
+        if (curFrames) {
+          firstFrame = curFrames[0];
+          lastFrame = curFrames[curFrames.length - 1];
+        } else {
+          firstFrame = lastFrame = undefined;
+        }
+        frameChangeListeners.forEach(function(l) {
+          l(curFrames);
+        });
+      }
+      frameTimer = setTimeout(emitFrameChange, 1000);
+    }
+
+    function emitListeners(item, state) {
+      if (stateList[state] && item !== activeList[state]) {
+        activeList[state] = item;
+        var listeners = listenersList[state];
+        listeners.forEach(function(l) {
+          l(item);
+        });
+      }
+    }
+
+    function emitAll(item, hide, comItem) {
+      if (comItem) {
+        composerItem = comItem;
+        composeListeners.forEach(function(l) {
+          l(comItem);
+        });
+        return;
+      }
+      if (frameTimer) {
+        clearTimeout(frameTimer);
+        frameTimer = null;
+      }
+      if (hide) {
+        return emitTabChange(false);
+      }
+      emitTabChange(true);
+      updateState(item);
+      emitListeners(item, 0);
+      emitListeners(item, 1);
+      emitListeners(item, 2);
+      emitListeners(item, 3);
+      emitFrameChange();
+    }
+
+    window.__pushWhistle5b6af7b9884e1165SessionActive__ = emitAll;
+
+    function getAddEventHandler(state) {
+      state = state || 0;
+      listenersList[state] = [];
+      return function(l) {
+        if (typeof l !== 'function') {
+          return;
+        }
+        var item = getActiveSession();
+        emitAll(item);
+        activeList[state] = item;
+        if (stateList[state]) {
+          l(item);
+        }
+        var listeners = listenersList[state];
+        listeners.indexOf(l) === -1 && listeners.push(l);
+      };
+    }
+
+    function getRemoveEventListener(state) {
+      state = state || 0;
+      return function(l) {
+        var listeners = listenersList[state];
+        var index = listeners.indexOf(l);
+        index !== -1 && listeners.splice(index, 1);
+      };
+    }
+
+    function getRemoveEventListeners(state) {
+      state = state || 0;
+      return function(l) {
+        listenersList[state] = [];
+      };
+    }
+
+    var toast = {};
+    var addSessionActiveListener = getAddEventHandler();
+    var removeSessionActiveListener = getRemoveEventListener();
+    var removeSessionActiveListeners = getRemoveEventListeners();
+    var addSessionRequestListener = getAddEventHandler(1);
+    var removeSessionRequestListener = getRemoveEventListener(1);
+    var removeSessionRequestListeners = getRemoveEventListeners(1);
+    var addSessionResponseListener = getAddEventHandler(2);
+    var removeSessionResponseListener = getRemoveEventListener(2);
+    var removeSessionResponseListeners = getRemoveEventListeners(2);
+    var addSessionCompleteListener = getAddEventHandler(3);
+    var removeSessionCompleteListener = getRemoveEventListener(3);
+    var removeSessionCompleteListeners = getRemoveEventListeners(3);
+  
+    function on(type, l) {
+      if (typeof l !== 'function') {
+        return;
+      }
+      switch(type) {
+        case 'sessionActive':
+          return addSessionActiveListener(l);
+        case 'sessionRequest':
+          return addSessionRequestListener(l);
+        case 'sessionResponse':
+          return addSessionResponseListener(l);
+        case 'sessionComplete':
+          return addSessionCompleteListener(l);
+        case 'tabChange':
+          if (tabChangeListeners.indexOf(l) === -1) {
+            tabChangeListeners.push(l);
+          }
+          return;
+        case 'frameChange':
+          if (frameChangeListeners.indexOf(l) === -1) {
+            frameChangeListeners.push(l);
+          }
+          return;
+        case 'compose':
+          if (composeListeners.indexOf(l) === -1) {
+            composeListeners.push(l);
+          }
+           composerItem && l(composerItem);
+          return;
+      }
+    }
+
+    function off(type, l) {
+      switch(type) {
+        case 'sessionActive':
+          if (l) {
+            removeSessionActiveListener(l);
+          } else {
+            removeSessionActiveListeners();
+          }
+          return;
+        case 'sessionRequest':
+          if (l) {
+            removeSessionRequestListener(l);
+          } else {
+            removeSessionRequestListeners();
+          }
+          return;
+        case 'sessionResponse':
+          if (l) {
+            removeSessionResponseListener(l);
+          } else {
+            removeSessionResponseListeners();
+          }
+          return;
+        case 'sessionComplete':
+          if (l) {
+            removeSessionCompleteListener(l);
+          } else {
+            removeSessionCompleteListeners();
+          }
+          return;
+        case 'tabChange':
+          if (l) {
+            var index = tabChangeListeners.indexOf(l);
+            if (index !== -1) {
+              tabChangeListeners.splice(index, 1);
+            }
+          } else {
+            tabChangeListeners = [];
+          }
+          return;
+        case 'frameChange':
+          if (l) {
+            var index = frameChangeListeners.indexOf(l);
+            if (index !== -1) {
+              frameChangeListeners.splice(index, 1);
+            }
+          } else {
+            frameChangeListeners = [];
+          }
+          return;
+        case 'compose':
+          if (l) {
+            var index = composeListeners.indexOf(l);
+            if (index !== -1) {
+              composeListeners.splice(index, 1);
+            }
+          } else {
+            composeListeners = [];
+          }
+          return;
+      }
+    }
+
+    var whistleBridge = {
+      config: config,
+      toast: toast,
+      on: on,
+      off: off,
+      isSelected: function() {
+        return selected;
+      },
+      getFrames: function() {
+        return curFrames;
+      },
+      addSessionActiveListener: addSessionActiveListener,
+      removeSessionActiveListener: removeSessionActiveListener,
+      removeSessionActiveListeners: removeSessionActiveListeners,
+      addSessionRequestListener: addSessionRequestListener,
+      removeSessionRequestListener: removeSessionRequestListener,
+      removeSessionRequestListeners: removeSessionRequestListeners,
+      addSessionResponseListener: addSessionResponseListener,
+      removeSessionResponseListener: removeSessionResponseListener,
+      removeSessionResponseListeners: removeSessionResponseListeners,
+      addSessionCompleteListener: addSessionCompleteListener,
+      removeSessionCompleteListener: removeSessionCompleteListener,
+      removeSessionCompleteListeners: removeSessionCompleteListeners
+    };
+
+    try {
+      window.parent.onWhistleInspectorCustomTabReady(function(options) {
+        Object.keys(options.msgBox).forEach(function(name) {
+          toast[name] = options.msgBox[name];
+        });
+        getActiveSession = options.getActiveSession;
+        getSelectedSessionList = options.getSelectedSessionList;
+        whistleBridge.pageId = options.pageId;
+        whistleBridge.compose = options.compose;
+        whistleBridge.decodeBase64 = options.decodeBase64;
+        whistleBridge.importSessions = options.importSessions;
+        whistleBridge.request = options.request;
+        whistleBridge.createRequest = options.createRequest;
+        whistleBridge.showModal = options.showModal;
+        whistleBridge.getSelectedSessionList = getSelectedSessionList;
+        whistleBridge.getActiveSession = whistleBridge.getSession = whistleBridge.getSelectedSession = getActiveSession;
+        whistleBridge.importRules = options.importRules;
+        whistleBridge.importValues = options.importValues;
+        whistleBridge.getServerInfo = options.getServerInfo;
+        whistleBridge.alert = options.alert;
+        whistleBridge.confirm = options.confirm;
+      });
+    } catch (e) {}
+    window.whistleBridge = whistleBridge;
+  })();
+</script>

@@ -1,56 +1,92 @@
 require('./base-css.js');
 var React = require('react');
-var Divider = require('./divider');
-var ReqDetail = require('./req-detail');
-var ResDetail = require('./res-detail');
 var ExpandCollapse = require('./expand-collapse');
 var util = require('./util');
+var Inspector = require('./inspector');
+var Frames = require('./frames');
+var LazyInit = require('./lazy-init');
+var dataCenter = require('./data-center');
+var events = require('./events');
+var TabMgr = require('./tab-mgr');
 
-var Inspector = React.createClass({
+var Inspectors = React.createClass({
+  getInitialState: function() {
+    return { activeName: 'Request' };
+  },
   shouldComponentUpdate: function(nextProps) {
     var hide = util.getBoolean(this.props.hide);
-    if (hide != util.getBoolean(nextProps.hide)) {
-      return true;
+    return hide != util.getBoolean(nextProps.hide) || !hide;
+  },
+  componentDidMount: function() {
+    var self = this;
+    events.on('tabsChange', function() {
+      self.setState({});
+    });
+  },
+  showTab: function(name) {
+    if (this.state.activeName !== name) {
+      this.setState({ activeName: name });
     }
-    if (hide) {
-      return false;
-    }
-    var modal = this.props.modal;
-    var newModal = nextProps.modal;
-    if (!modal || modal !== newModal) {
-      return true;
-    }
-    
-    return !this.endTime;
+  },
+  isActive: function(name) {
+    return this.state.activeName === name;
+  },
+  getStyle: function(name) {
+    return 'btn btn-default' + (this.isActive(name) ? ' w-spec-active' : '');
   },
   render: function() {
-    var props = this.props;
+    var self = this;
+    var props = self.props;
     var modal = props.modal;
     var url = modal && modal.url;
-    this.endTime = modal && (modal.endTime || modal.lost);
+    var hideFrames = !self.isActive('Frames');
+    var hide = util.getBoolean(props.hide);
+    var tabs = dataCenter.getTabs();
+    var active = this.state.activeName;
+  
     return (
-      <div className={'fill orient-vertical-box w-detail-inspectors' + (util.getBoolean(this.props.hide) ? ' hide' : '')}>
+      <div className={'fill orient-vertical-box w-detail-inspectors' + (hide ? ' hide' : '')}>
         <div className="box w-detail-inspectors-url" title={url}>
           <label>Url</label>
           <div className="fill"><ExpandCollapse text={url} /></div>
         </div>
-        <Divider vertical="true">
-          <div className="fill orient-vertical-box">
-            <div className="w-detail-inspectors-title">
-              <span className="glyphicon glyphicon-arrow-right"></span>Request
-            </div>
-            <ReqDetail modal={modal} />
+        <div className="box w-detail-inspectors-title w-detail-inspectors-tabs">
+          <button type="button" onClick={function() {
+            self.showTab('Request');
+          }} className={self.getStyle('Request')}>
+            <span className="glyphicon glyphicon-arrow-right"></span>Request
+          </button>
+          <button type="button" onClick={function() {
+            self.showTab('Frames');
+          }} className={self.getStyle('Frames')}>
+            <span className="glyphicon glyphicon-menu-hamburger"></span>Frames
+          </button>
+          <div className="fill w-custom-tabs">
+            {
+              tabs.map(function(tab) {
+                var pluginName = tab.plugin;
+                return (
+                        <button
+                          key={pluginName}
+                          onClick={function() {
+                            self.showTab(pluginName);
+                          }}
+                          className={self.getStyle(pluginName)}
+                          title={pluginName}
+                        >{tab.name}</button>
+                      );
+              })
+            }
           </div>
-          <div className="fill orient-vertical-box">
-            <div className="w-detail-inspectors-title">
-            <span className="glyphicon glyphicon-arrow-left"></span>Response
-            </div>
-            <ResDetail modal={modal} />
-          </div>
-        </Divider>
+        </div>
+        <Inspector hide={!self.isActive('Request')} modal={modal} />
+        <LazyInit inited={!hideFrames}>
+          <Frames hide={hideFrames} data={modal} frames={props.frames} />
+        </LazyInit>
+        <TabMgr active={active} hide={hide} tabs={tabs} className="w-custom-tab-panel" />
       </div>
     );
   }
 });
 
-module.exports = Inspector;
+module.exports = Inspectors;

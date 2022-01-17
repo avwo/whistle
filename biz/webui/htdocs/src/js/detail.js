@@ -6,10 +6,8 @@ var events = require('./events');
 var BtnGroup = require('./btn-group');
 var Overview = require('./overview');
 var Inspectors = require('./inspectors');
-var Frames = require('./frames');
 var Timeline = require('./timeline');
-var Composer = require('./composer');
-var dataCenter = require('./data-center');
+var ComposerList = require('./composer-list');
 var Tools = require('./tools');
 
 var ReqData = React.createClass({
@@ -21,9 +19,6 @@ var ReqData = React.createClass({
       }, {
         name: 'Inspectors',
         icon: 'search'
-      }, {
-        name: 'Frames',
-        icon: 'menu-hamburger'
       }, {
         name: 'Composer',
         icon: 'edit'
@@ -58,23 +53,16 @@ var ReqData = React.createClass({
     }).on('showInspectors', function() {
       self.toggleTab(tabs[1]);
     }).on('toggleInspectors', function() {
-      var modal = self.props.modal;
-      var item = modal && modal.getActive();
-      var isFrames = dataCenter.isFrames(item);
       var tab = self.state.tab;
       if (!tab || tab === tabs[0]) {
         self.toggleTab(tabs[1]);
-      } else if (isFrames && tab === tabs[1]) {
-        self.toggleTab(tabs[2]);
       } else {
         self.toggleTab(tabs[0]);
       }
-    }).on('showFrames', function() {
-      self.toggleTab(tabs[2]);
     }).on('showTimeline', function() {
-      self.toggleTab(tabs[4]);
+      self.toggleTab(tabs[3]);
     }).on('showLog', function() {
-      self.toggleTab(tabs[5]);
+      self.toggleTab(tabs[4]);
     }).on('composer', function(e, item) {
       var modal = self.props.modal;
       self.showComposer(item || (modal && modal.getActive()));
@@ -88,10 +76,8 @@ var ReqData = React.createClass({
       } else if (tab === tabs[0]) {
         self.toggleTab(tabs[1]);
       } else if (tab === tabs[1]) {
-        self.toggleTab(tabs[2]);
-      } else if (tab === tabs[2]) {
-        self.toggleTab(tabs[4]);
-      } else if (tab === tabs[4]) {
+        self.toggleTab(tabs[3]);
+      } else if (tab === tabs[3]) {
         self.toggleTab(tabs[0]);
       }
     });
@@ -100,8 +86,8 @@ var ReqData = React.createClass({
     if (item) {
       this.state.activeItem = item;
     }
-    this.toggleTab(this.state.tabs[3], function() {
-      events.trigger('setComposer');
+    this.toggleTab(this.state.tabs[2], function() {
+      item && events.trigger('setComposer');
     });
   },
   onDragEnter: function(e) {
@@ -114,6 +100,7 @@ var ReqData = React.createClass({
     var modal = this.props.modal;
     var id = e.dataTransfer.getData('reqDataId');
     var list = modal && modal.list;
+    events.trigger('hideMaskIframe');
     if (!id || !list) {
       return;
     }
@@ -217,12 +204,11 @@ var ReqData = React.createClass({
             <span className={'glyphicon glyphicon-menu-' + (dockToBottom ? 'right' : 'down') + (data ? ' hide' : '')}></span>
           </button>
         } onDoubleClick={this.onDoubleClick} onClick={this.toggleTab} tabs={tabs} />
-        {this.state.initedOverview ? <Overview modal={overview} hide={name != tabs[0].name} /> : ''}
-        {this.state.initedInspectors ? <Inspectors modal={activeItem} frames={frames} hide={name != tabs[1].name} /> : ''}
-        {this.state.initedFrames ? <Frames data={activeItem} frames={frames} hide={name != tabs[2].name} /> : ''}
-        {this.state.initedTimeline ? <Timeline data={data} modal={modal} hide={name != tabs[4].name} /> : ''}
-        {this.state.initedComposer ? <Composer modal={this.state.activeItem} hide={name != tabs[3].name} /> : ''}
-        {this.state.initedTools ? <Tools hide={name != tabs[5].name} /> : ''}
+        {this.state.initedOverview ? <Overview modal={overview} hide={name != tabs[0].name} /> : null}
+        {this.state.initedInspectors ? <Inspectors modal={activeItem} frames={frames} hide={name != tabs[1].name} /> : null}
+        {this.state.initedComposer ? <ComposerList modal={this.state.activeItem} hide={name != tabs[2].name} /> : null}
+        {this.state.initedTimeline ? <Timeline data={data} modal={modal} hide={name != tabs[3].name} /> : null}
+        {this.state.initedTools ? <Tools hide={name != tabs[4].name} /> : null}
       </div>
     );
   }
