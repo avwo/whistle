@@ -300,11 +300,13 @@ var Row = React.createClass({
   render: function() {
     var p = this.props;
     var order = p.order;
+    var index = p.index;
     var draggable = p.draggable;
     var columnList = p.columnList;
     var item = p.item;
-    var style = item.style;
-    return (<table  className="table" key={p.key} style={p.style}><tbody>
+    var style = item.style || {};
+    style.backgroundColor = index % 2 ? '#f5f5f5' : '#fff'; // 斑马纹效果
+    return (<table className="table" key={p.key} style={p.style}><tbody>
               <tr tabIndex="-1" draggable={draggable} data-id={item.id} className={getClassName(item)} style={ROW_STYLE}>
                 <th className="order" scope="row" style={style}>{order}</th>
                 {columnList.map(function(col) {
@@ -1269,13 +1271,13 @@ var ReqData = React.createClass({
                 </table>
             </div>
             <div ref="container" tabIndex="0" onContextMenu={self.onContextMenu} onKeyDown={self.onReplay}
-              style={{background: (dataCenter.hashFilterObj || filterText) ? 'lightyellow' : undefined}}
+              style={{}}
               className={'w-req-data-list fill' + (isTreeView ? ' w-tree-view-list' : '')} onDragStart={self.onDragStart}>
                 <RV.AutoSizer ref="content" >{function(size){
                   return (
                       <RV.List
                       ref="list"
-                      rowHeight={isTreeView ? TREE_ROW_HEIGHT : 28}
+                      rowHeight={isTreeView ? TREE_ROW_HEIGHT : 24}
                       width={size.width}
                       height={size.height}
                       rowCount={list.length}
@@ -1291,7 +1293,7 @@ var ReqData = React.createClass({
                         }
                         var order = hasKeyword ? index + 1 : item.order;
                         return <Row style={options.style} key={options.key} order={order}
-                          columnList={columnList} draggable={draggable} item={item} />;
+                          columnList={columnList} draggable={draggable} item={item} index={index} />;
                       }}
                       />);
                 }}

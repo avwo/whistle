@@ -1,5 +1,5 @@
 .w-tabs-sm {border-top: 1px solid #ccc; border-bottom: 1px solid #ccc; width: 100%;}
-.w-tabs-sm .btn {border-radius: 0; border-bottom: none; border-top: none; padding: 4px 10px 3px; overflow: hidden; font-size: 14px;}
+.w-tabs-sm .btn {border-radius: 0; border-bottom: none; border-top: none; overflow: hidden; font-size: 12px;}
 .w-tabs-sm .btn:first-child {border-left: none;}
 
 .w-btn-group-sm {border-bottom: 1px solid #ccc; width: 100%;}
