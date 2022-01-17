@@ -18,6 +18,8 @@ require('codemirror/theme/twilight.css');
 require('codemirror/theme/midnight.css');
 require('codemirror/addon/dialog/dialog.css');
 require('codemirror/addon/search/matchesonscrollbar.css');
+require('codemirror/addon/fold/foldgutter.css');
+
 require('../css/list.css');
 require('../css/editor.css');
 
@@ -38,6 +40,11 @@ require('codemirror/addon/search/searchcursor');
 require('codemirror/addon/search/search');
 require('codemirror/addon/scroll/annotatescrollbar');
 require('codemirror/addon/search/matchesonscrollbar');
+
+require('codemirror/addon/fold/foldcode');
+require('codemirror/addon/fold/foldgutter');
+require('codemirror/addon/fold/brace-fold');
+require('codemirror/addon/fold/comment-fold');
 
 var rulesHint = require('./rules-hint');
 var events = require('./events');
@@ -143,6 +150,16 @@ var Editor = React.createClass({
       });
     }
   },
+
+  // 设置代码折叠
+  setFoldGutter: function(foldGutter) {
+    foldGutter = this._foldGutter = foldGutter === false || foldGutter === 'false' ? false : true;
+    if (this._editor) {
+      this._editor.setOption('foldGutter', foldGutter);
+      this._editor.setOption('gutters', ['CodeMirror-linenumbers', 'CodeMirror-foldgutter', 'CodeMirror-lint-markers' ]);
+    }
+  },
+
   isRulesEditor: function() {
     return this.props.name === 'rules' || this._mode === 'rules';
   },
@@ -362,6 +379,7 @@ var Editor = React.createClass({
     self.showLineWrapping(self.props.lineWrapping || false);
     self.setReadOnly(self.props.readOnly || false);
     self.setAutoComplete();
+    self.setFoldGutter(self.props.foldGutter || true);
   },
   componentDidUpdate: function() {
     this._init();
