@@ -583,8 +583,7 @@ var List = React.createClass({
             <RecycleBinDialog ref="recycleBinDialog" />
           </div>
           <Editor {...self.props} onChange={self.onChange} readOnly={disabledEditor || !activeItem}
-            name={activeItem.name} value={activeItem.value}
-          mode={isRules ? 'rules' : getSuffix(activeItem.name)} />
+            value={activeItem.value} mode={isRules ? 'rules' : getSuffix(activeItem.name)} />
         </Divider>
       </div>
     );

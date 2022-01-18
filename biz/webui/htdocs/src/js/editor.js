@@ -29,6 +29,7 @@ var ReactDOM = require('react-dom');
 var CodeMirror = require('codemirror');
 var message = require('./message');
 var INIT_LENGTH = 1024 * 16;
+var GUTTER_STYLE = ['CodeMirror-linenumbers', 'CodeMirror-foldgutter', 'CodeMirror-lint-markers' ];
 
 require('codemirror/mode/javascript/javascript');
 require('codemirror/mode/css/css');
@@ -77,10 +78,15 @@ var Editor = React.createClass({
     } else if (/^md$/i.test(mode)) {
       mode = 'markdown';
     }
-
-    this._mode = mode;
-    if (this._editor) {
-      this._editor.setOption('mode', mode);
+    if (this._mode !== mode) {
+      this._mode = mode;
+      if (this._editor) {
+        this._editor.setOption('mode', mode);
+      }
+      if (this._foldGutter) {
+        this._editor.setOption('foldGutter', false);
+        this._editor.setOption('foldGutter', true);
+      }
     }
   },
   setValue: function(value) {
@@ -153,15 +159,19 @@ var Editor = React.createClass({
 
   // 设置代码折叠
   setFoldGutter: function(foldGutter) {
-    foldGutter = this._foldGutter = foldGutter === false || foldGutter === 'false' ? false : true;
-    if (this._editor) {
+    if (this.isRulesEditor()) {
+      return;
+    }
+    foldGutter = foldGutter !== false;
+    if (this._foldGutter !== foldGutter && this._editor) {
+      this._foldGutter = foldGutter;
       this._editor.setOption('foldGutter', foldGutter);
-      this._editor.setOption('gutters', ['CodeMirror-linenumbers', 'CodeMirror-foldgutter', 'CodeMirror-lint-markers' ]);
+      this._editor.setOption('gutters', foldGutter ? GUTTER_STYLE : []);
     }
   },
 
   isRulesEditor: function() {
-    return this.props.name === 'rules' || this._mode === 'rules';
+    return this.props.mode === 'rules' || this._mode === 'rules';
   },
   componentDidMount: function() {
     var timeout;
@@ -255,7 +265,7 @@ var Editor = React.createClass({
       var isJS = self._mode == 'javascript';
       if (isRules) {
         var options = {
-          name: self.props.name,
+          name: self.props.mode,
           url: location.href
         };
         if (!e.ctrlKey && !e.metaKey && e.keyCode === 112) {
@@ -360,7 +370,8 @@ var Editor = React.createClass({
   },
   _init: function(init) {
     var self = this;
-    this.setMode(self.props.mode);
+    self.setFoldGutter(self.props.foldGutter);
+    self.setMode(self.props.mode);
     var value = self.props.value;
     if (init && value && value.length > INIT_LENGTH) {
       var elem = message.info('Loading...');
@@ -379,7 +390,6 @@ var Editor = React.createClass({
     self.showLineWrapping(self.props.lineWrapping || false);
     self.setReadOnly(self.props.readOnly || false);
     self.setAutoComplete();
-    self.setFoldGutter(self.props.foldGutter || true);
   },
   componentDidUpdate: function() {
     this._init();

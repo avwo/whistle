@@ -384,6 +384,7 @@ var Index = React.createClass({
     state.showRulesLineNumbers = showRulesLineNumbers === 'true';
     state.showValuesLineNumbers = showValuesLineNumbers === 'true';
     state.autoRulesLineWrapping = !!autoRulesLineWrapping;
+    state.foldGutter = !!storage.get('foldGutter') !== '';
     state.autoValuesLineWrapping = !!autoValuesLineWrapping;
     state.plugins = modal.plugins;
     state.disabledPlugins = modal.disabledPlugins;
@@ -2641,6 +2642,13 @@ var Index = React.createClass({
       showValuesLineNumbers: checked
     });
   },
+  showFoldGutter: function(e) {
+    var checked = e.target.checked;
+    storage.set('foldGutter', checked ? '1' : '');
+    this.setState({
+      foldGutter: checked
+    });
+  },
   onRulesLineWrappingChange: function(e) {
     var checked = e.target.checked;
     storage.set('autoRulesLineWrapping', checked ? 1 : '');
@@ -3388,7 +3396,7 @@ var Index = React.createClass({
             hide={name == 'rules' ? false : true} name="rules" /> : undefined}
           {state.hasValues ? <List theme={valuesTheme} onDoubleClick={this.showEditValuesByDBClick} fontSize={valuesFontSize}
             lineWrapping={autoValuesLineWrapping} lineNumbers={showValuesLineNumbers} onSelect={this.saveValues} onActive={this.activeValues}
-            modal={state.values} hide={name == 'values' ? false : true} className="w-values-list" /> : undefined}
+            modal={state.values} hide={name == 'values' ? false : true} className="w-values-list" foldGutter={state.foldGutter} /> : undefined}
           {state.hasNetwork ? <Network ref="network" hide={name === 'rules' || name === 'values' || name === 'plugins'} modal={modal} /> : undefined}
           {state.hasPlugins ? <Plugins {...state} onOpen={this.activePluginTab} onClose={this.closePluginTab} onActive={this.activePluginTab} onChange={this.disablePlugin} ref="plugins" hide={name == 'plugins' ? false : true} /> : undefined}
         </div>
@@ -3424,6 +3432,8 @@ var Index = React.createClass({
                     onThemeChange={this.onValuesThemeChange}
                     onFontSizeChange={this.onValuesFontSizeChange}
                     onLineNumberChange={this.onValuesLineNumberChange} />
+                    <p className="w-editor-settings-box"><label><input type="checkbox"
+                      checked={state.foldGutter} onChange={this.showFoldGutter} /> Show fold gutter</label></p>
                 </div>
                 <div className="modal-footer">
                   <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
