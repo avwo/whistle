@@ -59,6 +59,7 @@ var DEFAULT_FONT_SIZE = '16px';
 var RULES_COMMENT_RE = /^(\s*)#\s*/;
 var JS_COMMENT_RE = /^(\s*)\/\/+\s?/;
 var NO_SPACE_RE = /\S/;
+var FOLD_MODE = ['javascript', 'htmlmixed', 'markdown', 'css'];
 
 function hasSelector(selector) {
   return document.querySelector ? document.querySelector(selector) : $(selector).length;
@@ -162,7 +163,7 @@ var Editor = React.createClass({
     if (this.isRulesEditor()) {
       return;
     }
-    foldGutter = foldGutter !== false;
+    foldGutter = foldGutter !== false && FOLD_MODE.indexOf(this._mode) !== -1;
     if (this._foldGutter !== foldGutter && this._editor) {
       this._foldGutter = foldGutter;
       this._editor.setOption('foldGutter', foldGutter);
@@ -370,7 +371,6 @@ var Editor = React.createClass({
   },
   _init: function(init) {
     var self = this;
-    self.setFoldGutter(self.props.foldGutter);
     self.setMode(self.props.mode);
     var value = self.props.value;
     if (init && value && value.length > INIT_LENGTH) {
@@ -390,6 +390,7 @@ var Editor = React.createClass({
     self.showLineWrapping(self.props.lineWrapping || false);
     self.setReadOnly(self.props.readOnly || false);
     self.setAutoComplete();
+    self.setFoldGutter(self.props.foldGutter);
   },
   componentDidUpdate: function() {
     this._init();
