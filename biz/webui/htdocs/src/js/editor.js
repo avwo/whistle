@@ -59,7 +59,7 @@ var DEFAULT_FONT_SIZE = '16px';
 var RULES_COMMENT_RE = /^(\s*)#\s*/;
 var JS_COMMENT_RE = /^(\s*)\/\/+\s?/;
 var NO_SPACE_RE = /\S/;
-var FOLD_MODE = ['javascript', 'htmlmixed', 'markdown', 'css'];
+var FOLD_MODE = ['javascript', 'htmlmixed', 'css'];
 
 function hasSelector(selector) {
   return document.querySelector ? document.querySelector(selector) : $(selector).length;
@@ -74,7 +74,7 @@ var Editor = React.createClass({
       mode = RegExp.$1.toLowerCase();
     } else if (/^(js|pac|jsx|json)$/i.test(mode)) {
       mode = 'javascript';
-    } else if (/^(html|wtpl)?$/i.test(mode)) {
+    } else if (/^(html|wtpl)$/i.test(mode)) {
       mode = 'htmlmixed';
     } else if (/^md$/i.test(mode)) {
       mode = 'markdown';
@@ -88,6 +88,7 @@ var Editor = React.createClass({
         this._editor.setOption('foldGutter', false);
         this._editor.setOption('foldGutter', true);
       }
+      this.setFoldGutter(this.props.foldGutter);
     }
   },
   setValue: function(value) {
@@ -160,7 +161,7 @@ var Editor = React.createClass({
 
   // 设置代码折叠
   setFoldGutter: function(foldGutter) {
-    if (this.isRulesEditor()) {
+    if (this.props.mode === 'rules') {
       return;
     }
     foldGutter = foldGutter !== false && FOLD_MODE.indexOf(this._mode) !== -1;
