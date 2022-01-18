@@ -2227,12 +2227,10 @@ var Index = React.createClass({
     dataCenter.rules.rename({name: activeItem.name, newName: name}, function(data, xhr) {
       if (data && data.ec === 0) {
         modal.rename(activeItem.name, name);
-        if (!self.currentFoucsRules) {
-          self.setRulesActive(name);
-        }
+        self.setRulesActive(name);
         target.value = '';
         target.blur();
-        self.setState(self.currentFoucsRules ? {} : {
+        self.setState({
           activeValues: activeItem
         });
         self.triggerRulesChange('rename');
@@ -2266,12 +2264,10 @@ var Index = React.createClass({
     dataCenter.values.rename({name: activeItem.name, newName: name}, function(data, xhr) {
       if (data && data.ec === 0) {
         modal.rename(activeItem.name, name);
-        if (!self.currentFoucsValues) {
-          self.setValuesActive(name);
-        }
+        self.setValuesActive(name);
         target.value = '';
         target.blur();
-        self.setState(self.currentFoucsValues ? {} : {
+        self.setState({
           activeValues: activeItem
         });
         self.triggerValuesChange('rename');
