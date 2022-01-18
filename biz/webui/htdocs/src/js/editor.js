@@ -25,6 +25,7 @@ var $ = require('jquery');
 var React = require('react');
 var ReactDOM = require('react-dom');
 var CodeMirror = require('codemirror');
+var jsBeauty = require('js-beautify');
 var message = require('./message');
 var INIT_LENGTH = 1024 * 16;
 
@@ -80,6 +81,9 @@ var Editor = React.createClass({
     value = this._value = value == null ? '' : value + '';
     if (!this._editor || this._editor.getValue() == value) {
       return;
+    }
+    if (this._mode === 'javascript') {
+      value = jsBeauty(value, { indent_size: 4 });
     }
     this._editor.setValue(value);
   },
