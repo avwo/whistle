@@ -18,6 +18,8 @@ require('codemirror/theme/twilight.css');
 require('codemirror/theme/midnight.css');
 require('codemirror/addon/dialog/dialog.css');
 require('codemirror/addon/search/matchesonscrollbar.css');
+require('codemirror/addon/fold/foldgutter.css');
+
 require('../css/list.css');
 require('../css/editor.css');
 
@@ -27,6 +29,7 @@ var ReactDOM = require('react-dom');
 var CodeMirror = require('codemirror');
 var message = require('./message');
 var INIT_LENGTH = 1024 * 16;
+var GUTTER_STYLE = ['CodeMirror-linenumbers', 'CodeMirror-foldgutter', 'CodeMirror-lint-markers' ];
 
 require('codemirror/mode/javascript/javascript');
 require('codemirror/mode/css/css');
@@ -38,6 +41,11 @@ require('codemirror/addon/search/searchcursor');
 require('codemirror/addon/search/search');
 require('codemirror/addon/scroll/annotatescrollbar');
 require('codemirror/addon/search/matchesonscrollbar');
+
+require('codemirror/addon/fold/foldcode');
+require('codemirror/addon/fold/foldgutter');
+require('codemirror/addon/fold/brace-fold');
+require('codemirror/addon/fold/comment-fold');
 
 var rulesHint = require('./rules-hint');
 var events = require('./events');
@@ -51,6 +59,7 @@ var DEFAULT_FONT_SIZE = '16px';
 var RULES_COMMENT_RE = /^(\s*)#\s*/;
 var JS_COMMENT_RE = /^(\s*)\/\/+\s?/;
 var NO_SPACE_RE = /\S/;
+var FOLD_MODE = ['javascript', 'htmlmixed', 'css'];
 
 function hasSelector(selector) {
   return document.querySelector ? document.querySelector(selector) : $(selector).length;
@@ -65,15 +74,21 @@ var Editor = React.createClass({
       mode = RegExp.$1.toLowerCase();
     } else if (/^(js|pac|jsx|json)$/i.test(mode)) {
       mode = 'javascript';
-    } else if (/^(html|wtpl)?$/i.test(mode)) {
+    } else if (/^(html|wtpl)$/i.test(mode)) {
       mode = 'htmlmixed';
     } else if (/^md$/i.test(mode)) {
       mode = 'markdown';
     }
-
-    this._mode = mode;
-    if (this._editor) {
-      this._editor.setOption('mode', mode);
+    if (this._mode !== mode) {
+      this._mode = mode;
+      if (this._editor) {
+        this._editor.setOption('mode', mode);
+      }
+      if (this._foldGutter) {
+        this._editor.setOption('foldGutter', false);
+        this._editor.setOption('foldGutter', true);
+      }
+      this.setFoldGutter(this.props.foldGutter);
     }
   },
   setValue: function(value) {
@@ -143,8 +158,22 @@ var Editor = React.createClass({
       });
     }
   },
+
+  // 设置代码折叠
+  setFoldGutter: function(foldGutter) {
+    if (this.props.mode === 'rules') {
+      return;
+    }
+    foldGutter = foldGutter !== false && FOLD_MODE.indexOf(this._mode) !== -1;
+    if (this._foldGutter !== foldGutter && this._editor) {
+      this._foldGutter = foldGutter;
+      this._editor.setOption('foldGutter', foldGutter);
+      this._editor.setOption('gutters', foldGutter ? GUTTER_STYLE : []);
+    }
+  },
+
   isRulesEditor: function() {
-    return this.props.name === 'rules' || this._mode === 'rules';
+    return this.props.mode === 'rules' || this._mode === 'rules';
   },
   componentDidMount: function() {
     var timeout;
@@ -238,7 +267,7 @@ var Editor = React.createClass({
       var isJS = self._mode == 'javascript';
       if (isRules) {
         var options = {
-          name: self.props.name,
+          name: self.props.mode,
           url: location.href
         };
         if (!e.ctrlKey && !e.metaKey && e.keyCode === 112) {
@@ -343,7 +372,7 @@ var Editor = React.createClass({
   },
   _init: function(init) {
     var self = this;
-    this.setMode(self.props.mode);
+    self.setMode(self.props.mode);
     var value = self.props.value;
     if (init && value && value.length > INIT_LENGTH) {
       var elem = message.info('Loading...');
@@ -362,6 +391,7 @@ var Editor = React.createClass({
     self.showLineWrapping(self.props.lineWrapping || false);
     self.setReadOnly(self.props.readOnly || false);
     self.setAutoComplete();
+    self.setFoldGutter(self.props.foldGutter);
   },
   componentDidUpdate: function() {
     this._init();
