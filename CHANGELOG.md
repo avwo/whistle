@@ -1,6 +1,7 @@
 # v2.9.1
 1. feat: 支持通过 `pattern enable://clientIp` 让 Whistle 自动设置 `x-forwarded-for` 请求头
 2. style: Values 编辑器支持 JSON 对象折叠，详见：https://github.com/avwo/whistle/pull/683
+3. refactor: Whistle 的日志统一放 `$WHISTLE_PATH/whistle.log` 文件，默认为 `~/.WhistleAppData/whistle.log`
 
 # v2.9.0
 1. style: 修复禁用所有插件编辑器对应插件规则无法显示插件已失效的问题
