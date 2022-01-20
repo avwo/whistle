@@ -29,6 +29,10 @@ function replaceCrLf(char) {
   return char === '\\r' ? '\r' : '\n';
 }
 
+var IS_MACOS = navigator.userAgent.indexOf('Macintosh') >= 0;
+
+exports.IS_MACOS = IS_MACOS;
+
 function noop(_) {
   return _;
 }
@@ -294,7 +298,7 @@ exports.getExtension = function(headers) {
   }
   type = type || getRawType(headers);
   type = type.substring(type.indexOf('/') + 1).toLowerCase();
-  return /\w+/.test(type) ? '.' + RegExp['$&'] : ''; 
+  return /\w+/.test(type) ? '.' + RegExp['$&'] : '';
 };
 
 function getContentType(type) {
