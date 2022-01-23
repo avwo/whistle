@@ -10,16 +10,15 @@ if (minWidth) {
   storage.set('minNetworkWidth', parseInt(minWidth, 10) || '');
 }
 
-exports.getMinWidth = function() {
+exports.getMinWidth = function () {
   return storage.get('minNetworkWidth');
 };
 
-exports.setMinWidth = function(width) {
+exports.setMinWidth = function (width) {
   storage.set('minNetworkWidth', width);
 };
 
 function getDefaultColumns() {
-
   return [
     {
       title: 'Date',
@@ -168,7 +167,7 @@ var curColumns;
 function reset() {
   columnsMap = {};
   curColumns = getDefaultColumns();
-  curColumns.forEach(function(col) {
+  curColumns.forEach(function (col) {
     columnsMap[col.name] = col;
   });
 }
@@ -176,7 +175,7 @@ function reset() {
 reset();
 if (Array.isArray(settings.columns)) {
   var flagMap = {};
-  var checkColumn = function(col) {
+  var checkColumn = function (col) {
     var name = col && col.name;
     if (!name || flagMap[name] || !columnsMap[name]) {
       return false;
@@ -186,7 +185,7 @@ if (Array.isArray(settings.columns)) {
   };
   var columns = settings.columns.filter(checkColumn);
   if (columns.length === curColumns.length) {
-    curColumns = columns.map(function(col) {
+    curColumns = columns.map(function (col) {
       var curCol = columnsMap[col.name];
       curCol.selected = !!col.selected;
       return curCol;
@@ -203,7 +202,7 @@ function save() {
   dataCenter.setNetworkColumns(settings);
 }
 
-exports.getColumn = function(name) {
+exports.getColumn = function (name) {
   return columnsMap[name];
 };
 
@@ -223,24 +222,24 @@ function moveTo(name, targetName) {
   save();
 }
 
-exports.getAllColumns = function() {
+exports.getAllColumns = function () {
   return curColumns;
 };
-exports.reset = function() {
+exports.reset = function () {
   storage.set('minNetworkWidth', '');
   reset();
   save();
 };
-exports.setSelected = function(name, selected) {
+exports.setSelected = function (name, selected) {
   var col = columnsMap[name];
   if (col) {
     col.selected = selected !== false;
     save();
   }
 };
-exports.getSelectedColumns = function() {
+exports.getSelectedColumns = function () {
   var width = 50;
-  var list = curColumns.filter(function(col) {
+  var list = curColumns.filter(function (col) {
     if (col.selected || col.locked) {
       width += col.width || col.minWidth;
       return true;
@@ -287,7 +286,7 @@ function getDragInfo(e) {
 }
 
 function getNameFromTypes(e) {
-  var type = util.findArray(e.dataTransfer.types, function(type) {
+  var type = util.findArray(e.dataTransfer.types, function (type) {
     if (type.indexOf(COLUMN_TYPE_PREFIX) === 0) {
       return true;
     }
@@ -295,36 +294,35 @@ function getNameFromTypes(e) {
   return type && type.substring(COLUMN_TYPE_PREFIX.length);
 }
 
-$(document).on('drop', function() {
+$(document).on('drop', function () {
   if (curTarget) {
     curTarget.style.background = '';
   }
   curTarget = null;
 });
 
-exports.getDragger = function() {
-
+exports.getDragger = function () {
   return {
-    onDragStart: function(e) {
+    onDragStart: function (e) {
       var target = getTarget(e);
       var name = target && target.getAttribute('data-name');
       e.dataTransfer.setData(COLUMN_TYPE_PREFIX + name, 1);
       e.dataTransfer.setData('-' + COLUMN_TYPE_PREFIX, name);
     },
-    onDragEnter: function(e) {
+    onDragEnter: function (e) {
       var info = getDragInfo(e);
       if (info) {
         curTarget = info.target;
         curTarget.style.background = '#ddd';
       }
     },
-    onDragLeave: function(e) {
+    onDragLeave: function (e) {
       var info = getDragInfo(e);
       if (info) {
         info.target.style.background = '';
       }
     },
-    onDrop: function(e) {
+    onDrop: function (e) {
       var info = getDragInfo(e);
       if (info) {
         var fromName = e.dataTransfer.getData('-' + COLUMN_TYPE_PREFIX);

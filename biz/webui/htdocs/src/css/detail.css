@@ -1,15 +1,36 @@
-.w-detail {border-left: 1px solid #ccc; overflow-x: auto; overflow-y: hidden;}
-.w-detail-content {position: relative; overflow: auto;}
-.w-detail-divider {position: absolute; left: 0; top: 0; width: 5px; height: 100%; cursor: ew-resize;}
-.w-detail-content, .w-detail>.w-tabs-sm {min-width: 560px; border-top: none; }
+.w-detail {
+  border-left: 1px solid #ccc;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.w-detail-content {
+  position: relative;
+  overflow: auto;
+}
+.w-detail-divider {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 5px;
+  height: 100%;
+  cursor: ew-resize;
+}
+.w-detail-content,
+.w-detail > .w-tabs-sm {
+  min-width: 560px;
+  border-top: none;
+}
 
-.w-show-history .w-detail-content {min-width: auto;}
+.w-show-history .w-detail-content {
+  min-width: auto;
+}
 
-.w-detail-dialog .modal-dialog, .w-detail-dialog .modal-content {
+.w-detail-dialog .modal-dialog,
+.w-detail-dialog .modal-content {
   width: 900px;
 }
 .w-detail-dialog .modal-body {
-  padding: 0!important;
+  padding: 0 !important;
   position: relative;
 }
 .w-detail-dialog .close {
@@ -83,7 +104,7 @@
 }
 
 div.w-detail-inspectors-tabs {
-  padding: 0!important;
+  padding: 0 !important;
 }
 
 .w-detail-inspectors-tabs button {
@@ -106,7 +127,7 @@ div.w-detail-inspectors-tabs {
 }
 
 .w-detail-inspectors-title.w-detail-inspectors-res {
-  padding-left: 12px!important;
+  padding-left: 12px !important;
 }
 
 .w-custom-tabs {
@@ -117,7 +138,7 @@ div.w-detail-inspectors-tabs {
 }
 
 .w-custom-tabs button {
-  font-weight: normal!important;
+  font-weight: normal !important;
 }
 
 .w-no-frames {

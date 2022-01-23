@@ -26,10 +26,10 @@ var ACTION_OPTIONS = [
 ];
 
 var RecordBtn = React.createClass({
-  getInitialState: function() {
+  getInitialState: function () {
     return { stop: false };
   },
-  onClick: function() {
+  onClick: function () {
     var stop = !this.state.stop;
     this.state.pause = false;
     this.state.stop = stop;
@@ -37,7 +37,7 @@ var RecordBtn = React.createClass({
     this.props.onClick(stop ? 'stop' : 'refresh');
     this.setState({});
   },
-  enable: function(flag) {
+  enable: function (flag) {
     var state = this.state;
     var pause = state.pause;
     var stop = state.stop;
@@ -55,20 +55,20 @@ var RecordBtn = React.createClass({
       }
       return;
     }
-    
+
     this.onClickOption({ id: flag });
   },
-  showActionOptions: function() {
+  showActionOptions: function () {
     this.setState({
       showActionOptions: true
     });
   },
-  hideActionOptions: function() {
+  hideActionOptions: function () {
     this.setState({
       showActionOptions: false
     });
   },
-  onClickOption: function(option) {
+  onClickOption: function (option) {
     if (option.id === 'pause') {
       ACTION_OPTIONS[0] = STOP_OPTION;
       this.state.pause = true;
@@ -81,27 +81,42 @@ var RecordBtn = React.createClass({
     this.props.onClick(option.id);
     this.hideActionOptions();
   },
-  render: function() {
+  render: function () {
     var state = this.state;
     var hide = this.props.hide;
     var pause = state.pause;
     var stop = state.stop;
-    var title = 'Click to ' + ((stop || pause) ? 'start' : 'stop') + ' record';
+    var title = 'Click to ' + (stop || pause ? 'start' : 'stop') + ' record';
 
     return (
-      <div onMouseEnter={this.showActionOptions} onMouseLeave={this.hideActionOptions}
-        className={'w-menu-wrapper w-refresh-menu-list w-menu-auto'
-          + (state.showActionOptions ? ' w-menu-wrapper-show' : '')
-          + (hide ? ' hide' : '')}
+      <div
+        onMouseEnter={this.showActionOptions}
+        onMouseLeave={this.hideActionOptions}
+        className={
+          'w-menu-wrapper w-refresh-menu-list w-menu-auto' +
+          (state.showActionOptions ? ' w-menu-wrapper-show' : '') +
+          (hide ? ' hide' : '')
+        }
       >
-        <a onClick={this.onClick} draggable="false"
-          className={'w-scroll-menu' + (this.props.disabledRecord ? ' w-disabled' : '')}
+        <a
+          onClick={this.onClick}
+          draggable="false"
+          className={
+            'w-scroll-menu' + (this.props.disabledRecord ? ' w-disabled' : '')
+          }
           title={title}
         >
-          <span style={{color: (!pause && stop) ? '#ccc' : '#f66'}}
-            className={'glyphicon glyphicon-' + (pause ? 'minus-sign' : 'stop')}></span>Record
+          <span
+            style={{ color: !pause && stop ? '#ccc' : '#f66' }}
+            className={'glyphicon glyphicon-' + (pause ? 'minus-sign' : 'stop')}
+          ></span>
+          Record
         </a>
-        <MenuItem options={ACTION_OPTIONS} className="w-remove-menu-item" onClickOption={this.onClickOption} />
+        <MenuItem
+          options={ACTION_OPTIONS}
+          className="w-remove-menu-item"
+          onClickOption={this.onClickOption}
+        />
       </div>
     );
   }

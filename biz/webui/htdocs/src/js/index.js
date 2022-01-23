@@ -40,7 +40,11 @@ var MAX_REPLAY_COUNT = 30;
 var LINK_SELECTOR = '.cm-js-type, .cm-js-http-url, .cm-string, .cm-js-at';
 var LINK_RE = /^"(https?:)?(\/\/[^/]\S+)"$/i;
 var AT_LINK_RE = /^@(https?:)?(\/\/[^/]\S+)$/i;
-var OPTIONS_WITH_SELECTED = ['removeSelected', 'exportWhistleFile', 'exportSazFile'];
+var OPTIONS_WITH_SELECTED = [
+  'removeSelected',
+  'exportWhistleFile',
+  'exportSazFile'
+];
 var search = window.location.search;
 var hideLeftMenu;
 var showTreeView;
@@ -141,8 +145,13 @@ function checkJson(item) {
   if (/\.json$/i.test(item.name) && JSON_RE.test(item.value)) {
     try {
       JSON.parse(item.value);
-    } catch(e) {
-      message.warn('Warning: the value of ' + item.name + ' can\`t be parsed into json. ' + e.message);
+    } catch (e) {
+      message.warn(
+        'Warning: the value of ' +
+          item.name +
+          ' can`t be parsed into json. ' +
+          e.message
+      );
     }
   }
 }
@@ -150,7 +159,7 @@ function checkJson(item) {
 function getJsonForm(data, name) {
   data = JSON.stringify(data);
   var form = new FormData();
-  var file = new File([data], 'data.json', { type: 'application/json'});
+  var file = new File([data], 'data.json', { type: 'application/json' });
   form.append(name || 'rules', file);
   return form;
 }
@@ -169,7 +178,7 @@ function checkUrl(url) {
 }
 
 function getRemoteDataHandler(callback) {
-  return function(data, xhr) {
+  return function (data, xhr) {
     if (!data) {
       util.showSystemError(xhr);
       return callback(true);
@@ -185,7 +194,7 @@ function getRemoteDataHandler(callback) {
       } else {
         return callback(false, data);
       }
-    } catch(e) {
+    } catch (e) {
       message.error(e.message);
     }
     callback(true);
@@ -250,14 +259,14 @@ function getKey(url) {
 function getValue(url) {
   if (url.indexOf('(') == 0) {
     var index = url.lastIndexOf(')');
-    return index != -1 && url.substring(1, index) || '';
+    return (index != -1 && url.substring(1, index)) || '';
   }
 
   return false;
 }
 
 var Index = React.createClass({
-  getInitialState: function() {
+  getInitialState: function () {
     var modal = this.props.modal;
     var rules = modal.rules;
     var values = modal.values;
@@ -337,7 +346,7 @@ var Index = React.createClass({
 
       rulesOptions.push(rulesData.Default);
 
-      rules.list.forEach(function(item) {
+      rules.list.forEach(function (item) {
         rulesList.push(item.name);
         item = rulesData[item.name] = {
           name: item.name,
@@ -360,7 +369,7 @@ var Index = React.createClass({
       if (!showValuesLineNumbers) {
         showValuesLineNumbers = values.showLineNumbers ? 'true' : 'false';
       }
-      values.list.forEach(function(item) {
+      values.list.forEach(function (item) {
         valuesList.push(item.name);
         valuesData[item.name] = {
           name: item.name,
@@ -483,59 +492,67 @@ var Index = React.createClass({
       networkModal.setTreeView(showTreeView, true);
     }
     var self = this;
-    events.on('importSessionsFromUrl', function(_, url) {
+    events.on('importSessionsFromUrl', function (_, url) {
       self.importSessionsFromUrl(url);
     });
     return state;
   },
-  getListByName: function(name, type) {
+  getListByName: function (name, type) {
     var list = this.state[name].list;
     var data = this.state[name].data;
     return {
       type: type,
       url: location.href,
-      list: list.map(function(name) {
+      list: list.map(function (name) {
         var item = data[name];
         return {
           name: name,
-          value: item && item.value || ''
+          value: (item && item.value) || ''
         };
       })
     };
   },
-  triggerRulesChange: function(type) {
+  triggerRulesChange: function (type) {
     util.triggerListChange('rules', this.getListByName('rules', type));
   },
-  triggerValuesChange: function(type) {
+  triggerValuesChange: function (type) {
     util.triggerListChange('values', this.getListByName('values', type));
   },
-  createPluginsOptions: function(plugins) {
+  createPluginsOptions: function (plugins) {
     plugins = plugins || {};
-    var pluginsOptions = [{
-      name: 'Home'
-    }];
+    var pluginsOptions = [
+      {
+        name: 'Home'
+      }
+    ];
 
-    Object.keys(plugins).sort(function(a, b) {
-      var p1 = plugins[a];
-      var p2 = plugins[b];
-      return util.compare(p1.priority, p2.priority) || util.compare(p2.mtime, p1.mtime) || (a > b ? 1 : -1);
-    }).forEach(function(name) {
-      var plugin = plugins[name];
-      pluginsOptions.push({
-        name: name.slice(0, -1),
-        icon: 'checkbox',
-        mtime: plugin.mtime,
-        homepage: plugin.homepage,
-        latest: plugin.latest,
-        hideLongProtocol: plugin.hideLongProtocol,
-        hideShortProtocol: plugin.hideShortProtocol,
-        path: plugin.path,
-        pluginVars: plugin.pluginVars
+    Object.keys(plugins)
+      .sort(function (a, b) {
+        var p1 = plugins[a];
+        var p2 = plugins[b];
+        return (
+          util.compare(p1.priority, p2.priority) ||
+          util.compare(p2.mtime, p1.mtime) ||
+          (a > b ? 1 : -1)
+        );
+      })
+      .forEach(function (name) {
+        var plugin = plugins[name];
+        pluginsOptions.push({
+          name: name.slice(0, -1),
+          icon: 'checkbox',
+          mtime: plugin.mtime,
+          homepage: plugin.homepage,
+          latest: plugin.latest,
+          hideLongProtocol: plugin.hideLongProtocol,
+          hideShortProtocol: plugin.hideShortProtocol,
+          path: plugin.path,
+          pluginVars: plugin.pluginVars
+        });
       });
-    });
     return pluginsOptions;
   },
-  reloadRules: function(data) {
+  reloadRules: function (data) {
     var self = this;
     var selectedName = storage.get('activeRules', true) || data.current;
     var rulesList = [];
@@ -549,7 +566,7 @@ var Index = React.createClass({
       isDefault: true,
       active: selectedName === DEFAULT
     };
-    data.list.forEach(function(item) {
+    data.list.forEach(function (item) {
       rulesList.push(item.name);
       item = rulesData[item.name] = {
         name: item.name,
@@ -561,12 +578,12 @@ var Index = React.createClass({
     self.state.rules.reset(rulesList, rulesData);
     self.setState({});
   },
-  reloadValues: function(data) {
+  reloadValues: function (data) {
     var self = this;
     var selectedName = storage.get('activeValues', true) || data.current;
     var valuesList = [];
     var valuesData = {};
-    data.list.forEach(function(item) {
+    data.list.forEach(function (item) {
       valuesList.push(item.name);
       valuesData[item.name] = {
         name: item.name,
@@ -577,12 +594,12 @@ var Index = React.createClass({
     self.state.values.reset(valuesList, valuesData);
     self.setState({});
   },
-  reloadData: function() {
+  reloadData: function () {
     var self = this;
     var dialog = $('.w-reload-data-tips').closest('.w-confirm-reload-dialog');
     var name = dialog.find('.w-reload-data-tips').attr('data-name');
     var isRules = name === 'rules';
-    var handleResponse = function(data, xhr) {
+    var handleResponse = function (data, xhr) {
       if (!data) {
         util.showSystemError(xhr);
         return;
@@ -603,73 +620,80 @@ var Index = React.createClass({
       events.trigger('reloadValuesRecycleBin');
     }
   },
-  showReloadRules: function() {
+  showReloadRules: function () {
     if (this.state.name === 'rules' && this.rulesChanged) {
       this.rulesChanged = false;
       var hasChanged = this.state.rules.hasChanged();
-      this.showReloadDialog('The rules has been modified.<br/>Do you want to reload it.', hasChanged);
+      this.showReloadDialog(
+        'The rules has been modified.<br/>Do you want to reload it.',
+        hasChanged
+      );
     }
   },
-  showReloadValues: function() {
+  showReloadValues: function () {
     if (this.state.name === 'values' && this.valuesChanged) {
       this.valuesChanged = false;
       var hasChanged = this.state.values.hasChanged();
-      this.showReloadDialog('The values has been modified.<br/>Do you want to reload it.', hasChanged);
+      this.showReloadDialog(
+        'The values has been modified.<br/>Do you want to reload it.',
+        hasChanged
+      );
     }
   },
-  componentDidUpdate: function() {
+  componentDidUpdate: function () {
     this.showReloadRules();
     this.showReloadValues();
   },
-  showReloadDialog: function(msg, existsUnsaved) {
+  showReloadDialog: function (msg, existsUnsaved) {
     var confirmReload = this.refs.confirmReload;
     confirmReload.show();
     if (existsUnsaved) {
-      msg += '<p class="w-confim-reload-note">Note: There are unsaved changes.</p>';
+      msg +=
+        '<p class="w-confim-reload-note">Note: There are unsaved changes.</p>';
     }
     $('.w-reload-data-tips').html(msg).attr('data-name', this.state.name);
   },
-  componentDidMount: function() {
+  componentDidMount: function () {
     var self = this;
     var clipboard = new Clipboard('.w-copy-text');
-    clipboard.on('error', function(e) {
+    clipboard.on('error', function (e) {
       win.alert('Copy failed.');
     });
     clipboard = new Clipboard('.w-copy-text-with-tips');
-    clipboard.on('error', function(e) {
+    clipboard.on('error', function (e) {
       message.error('Copy failed.');
     });
-    clipboard.on('success', function(e) {
+    clipboard.on('success', function (e) {
       message.success('Copied clipboard.');
     });
-    var preventDefault = function(e) {
+    var preventDefault = function (e) {
       e.preventDefault();
     };
-    events.on('enableRecord', function() {
+    events.on('enableRecord', function () {
       self.enableRecord();
     });
-    events.on('rulesChanged', function() {
+    events.on('rulesChanged', function () {
       self.rulesChanged = true;
       self.showReloadRules();
     });
-    events.on('switchTreeView', function() {
+    events.on('switchTreeView', function () {
       self.toggleTreeView();
     });
-    events.on('updateGlobal', function() {
+    events.on('updateGlobal', function () {
       self.setState({});
     });
-    events.on('valuesChanged', function() {
+    events.on('valuesChanged', function () {
       self.valuesChanged = true;
       self.showReloadValues();
     });
     events.on('disableAllPlugins', self.disableAllPlugins);
     events.on('disableAllRules', self.disableAllRules);
-    events.on('showFiles', function(_, data) {
+    events.on('showFiles', function (_, data) {
       self.files = self.files || data;
       self.showFiles();
     });
 
-    events.on('activeRules', function() {
+    events.on('activeRules', function () {
       var rulesModal = dataCenter.rulesModal;
       if (rulesModal.exists(dataCenter.activeRulesName)) {
         self.setRulesActive(dataCenter.activeRulesName, rulesModal);
@@ -677,7 +701,7 @@ var Index = React.createClass({
       }
     });
 
-    events.on('activeValues', function() {
+    events.on('activeValues', function () {
       var valuesModal = dataCenter.valuesModal;
       if (valuesModal.exists(dataCenter.activeValuesName)) {
         self.setValuesActive(dataCenter.activeValuesName, valuesModal);
@@ -685,69 +709,81 @@ var Index = React.createClass({
       }
     });
 
-    events.on('recoverRules', function(_, data) {
+    events.on('recoverRules', function (_, data) {
       var modal = self.state.rules;
       var filename = data.filename;
-      var handleRecover = function(sure) {
+      var handleRecover = function (sure) {
         if (!sure) {
           return;
         }
-        dataCenter.rules.add({
-          name: filename,
-          value: data.data,
-          recycleFilename: data.name
-        }, function(result, xhr) {
-          if (result && result.ec === 0) {
-            var item = modal.add(filename, data.data);
-            self.setRulesActive(filename);
-            self.setState({ activeRules: item });
-            self.triggerRulesChange('create');
-            events.trigger('rulesRecycleList', result);
-          } else {
-            util.showSystemError(xhr);
+        dataCenter.rules.add(
+          {
+            name: filename,
+            value: data.data,
+            recycleFilename: data.name
+          },
+          function (result, xhr) {
+            if (result && result.ec === 0) {
+              var item = modal.add(filename, data.data);
+              self.setRulesActive(filename);
+              self.setState({ activeRules: item });
+              self.triggerRulesChange('create');
+              events.trigger('rulesRecycleList', result);
+            } else {
+              util.showSystemError(xhr);
+            }
           }
-        });
+        );
       };
       if (!modal.exists(filename)) {
         return handleRecover(true);
       }
-      win.confirm('The name `' + filename + '`  already exists, whether to overwrite it?', handleRecover);
+      win.confirm(
+        'The name `' + filename + '`  already exists, whether to overwrite it?',
+        handleRecover
+      );
     });
 
-    events.on('recoverValues', function(_, data) {
+    events.on('recoverValues', function (_, data) {
       var modal = self.state.values;
       var filename = data.filename;
-      var handleRecover = function(sure) {
+      var handleRecover = function (sure) {
         if (!sure) {
           return;
         }
-        dataCenter.values.add({
-          name: filename,
-          value: data.data,
-          recycleFilename: data.name
-        }, function(result, xhr) {
-          if (result && result.ec === 0) {
-            var item = modal.add(filename, data.data);
-            self.setValuesActive(filename);
-            self.setState({ activeValues: item });
-            self.triggerValuesChange('create');
-            events.trigger('valuesRecycleList', result);
-          } else {
-            util.showSystemError(xhr);
+        dataCenter.values.add(
+          {
+            name: filename,
+            value: data.data,
+            recycleFilename: data.name
+          },
+          function (result, xhr) {
+            if (result && result.ec === 0) {
+              var item = modal.add(filename, data.data);
+              self.setValuesActive(filename);
+              self.setState({ activeValues: item });
+              self.triggerValuesChange('create');
+              events.trigger('valuesRecycleList', result);
+            } else {
+              util.showSystemError(xhr);
+            }
           }
-        });
+        );
       };
       if (!modal.exists(filename)) {
         return handleRecover(true);
       }
-      win.confirm('The name `' + filename + '`  already exists, whether to overwrite it?', handleRecover);
+      win.confirm(
+        'The name `' + filename + '`  already exists, whether to overwrite it?',
+        handleRecover
+      );
     });
 
     $(document)
-      .on( 'dragleave', preventDefault)
-      .on( 'dragenter', preventDefault)
-      .on( 'dragover', preventDefault)
-      .on('drop', function(e) {
+      .on('dragleave', preventDefault)
+      .on('dragenter', preventDefault)
+      .on('dragover', preventDefault)
+      .on('drop', function (e) {
         e.preventDefault();
         var files = e.originalEvent.dataTransfer.files;
         var file = files && files[0];
@@ -768,7 +804,7 @@ var Index = React.createClass({
             if (file.size > MAX_LOG_SIZE) {
               return win.alert('The file size cannot exceed 2m.');
             }
-            util.readFileAsText(file, function(logs) {
+            util.readFileAsText(file, function (logs) {
               logs = util.parseLogs(logs);
               if (!logs) {
                 return;
@@ -777,14 +813,15 @@ var Index = React.createClass({
                 dataCenter.uploadLogs = logs;
               }
               events.trigger('showLog');
-              events.trigger('uploadLogs', {logs: logs});
+              events.trigger('uploadLogs', { logs: logs });
             });
             return;
           }
           data = new FormData();
           data.append('importSessions', files[0]);
           self.uploadSessionsForm(data);
-        } if (target.closest('.w-divider-left').length) {
+        }
+        if (target.closest('.w-divider-left').length) {
           if (name === 'rules') {
             data = new FormData();
             data.append('rules', files[0]);
@@ -797,92 +834,107 @@ var Index = React.createClass({
             self.refs.confirmImportValues.show();
           }
         }
-      }).on('keydown', function(e) {
+      })
+      .on('keydown', function (e) {
         if ((e.metaKey || e.ctrlKey) && e.keyCode === 82) {
           e.preventDefault();
         }
       });
-    var removeItem = function(e) {
+    var removeItem = function (e) {
       var target = e.target;
-      if ( target.nodeName == 'A'
-          && $(target).parent().hasClass('w-list-data')) {
+      if (
+        target.nodeName == 'A' &&
+        $(target).parent().hasClass('w-list-data')
+      ) {
         self.state.name == 'rules' ? self.removeRules() : self.removeValues();
       }
       e.preventDefault();
     };
-    $(window).on('hashchange', function() {
-      var pageName = getPageName(self.state);
-      if (!pageName || pageName.indexOf('rules') != -1) {
-        self.showRules();
-      } else if (pageName.indexOf('values') != -1) {
-        self.showValues();
-      } else if (pageName.indexOf('plugins') != -1) {
-        self.showPlugins();
-      } else {
-        self.showNetwork();
-      }
-    }).on('keyup', function(e) {
-      if (e.keyCode == 27) {
-        self.setMenuOptionsState();
-        var dialog = $('.modal');
-        if (typeof dialog.modal == 'function') {
-          dialog.modal('hide');
+    $(window)
+      .on('hashchange', function () {
+        var pageName = getPageName(self.state);
+        if (!pageName || pageName.indexOf('rules') != -1) {
+          self.showRules();
+        } else if (pageName.indexOf('values') != -1) {
+          self.showValues();
+        } else if (pageName.indexOf('plugins') != -1) {
+          self.showPlugins();
+        } else {
+          self.showNetwork();
         }
-      }
-    }).on('keydown', function(e) {
-      e.keyCode == 46 && removeItem(e);
-      if (!e.ctrlKey && !e.metaKey) {
-        if (e.keyCode === 112) {
-          e.preventDefault();
-          window.open('https://avwo.github.io/whistle/webui/' + self.state.name + '.html');
-        } else if (e.keyCode === 116) {
-          e.preventDefault();
+      })
+      .on('keyup', function (e) {
+        if (e.keyCode == 27) {
+          self.setMenuOptionsState();
+          var dialog = $('.modal');
+          if (typeof dialog.modal == 'function') {
+            dialog.modal('hide');
+          }
         }
-        return;
-      }
-      if (e.keyCode === 77) {
-        self.toggleLeftMenu();
-        e.preventDefault();
-      } else if (e.keyCode === 66) {
-        self.toggleTreeView();
-        e.preventDefault();
-        events.trigger('toggleTreeViewByAccessKey');
-      }
-      var isNetwork = self.state.name === 'network';
-      if (isNetwork && e.keyCode == 88) {
-        if (!util.isFocusEditor() && !$(e.target).closest('.w-frames-list').length) {
-          self.clear();
-        }
-      }
-      e.keyCode == 68 && removeItem(e);
-      var modal = self.state.network;
-      if (isNetwork && e.keyCode === 83) {
-        e.preventDefault();
-        if ($('.modal.in').length) {
-          if ($(ReactDOM.findDOMNode(self.refs.chooseFileType)).is(':visible')) {
-            self.exportBySave();
+      })
+      .on('keydown', function (e) {
+        e.keyCode == 46 && removeItem(e);
+        if (!e.ctrlKey && !e.metaKey) {
+          if (e.keyCode === 112) {
+            e.preventDefault();
+            window.open(
+              'https://avwo.github.io/whistle/webui/' +
+                self.state.name +
+                '.html'
+            );
+          } else if (e.keyCode === 116) {
+            e.preventDefault();
           }
           return;
         }
-        var nodeName = e.target.nodeName;
-        if (nodeName === 'INPUT' || nodeName === 'TEXTAREA') {
+        if (e.keyCode === 77) {
+          self.toggleLeftMenu();
+          e.preventDefault();
+        } else if (e.keyCode === 66) {
+          self.toggleTreeView();
+          e.preventDefault();
+          events.trigger('toggleTreeViewByAccessKey');
+        }
+        var isNetwork = self.state.name === 'network';
+        if (isNetwork && e.keyCode == 88) {
+          if (
+            !util.isFocusEditor() &&
+            !$(e.target).closest('.w-frames-list').length
+          ) {
+            self.clear();
+          }
+        }
+        e.keyCode == 68 && removeItem(e);
+        var modal = self.state.network;
+        if (isNetwork && e.keyCode === 83) {
+          e.preventDefault();
+          if ($('.modal.in').length) {
+            if (
+              $(ReactDOM.findDOMNode(self.refs.chooseFileType)).is(':visible')
+            ) {
+              self.exportBySave();
+            }
+            return;
+          }
+          var nodeName = e.target.nodeName;
+          if (nodeName === 'INPUT' || nodeName === 'TEXTAREA') {
+            return;
+          }
+          var hasSelected = modal.hasSelected();
+          if (hasSelected) {
+            $(ReactDOM.findDOMNode(self.refs.chooseFileType)).modal('show');
+            setTimeout(function () {
+              ReactDOM.findDOMNode(self.refs.sessionsName).focus();
+            }, 500);
+          }
           return;
         }
-        var hasSelected = modal.hasSelected();
-        if (hasSelected) {
-          $(ReactDOM.findDOMNode(self.refs.chooseFileType)).modal('show');
-          setTimeout(function() {
-            ReactDOM.findDOMNode(self.refs.sessionsName).focus();
-          }, 500);
-        }
-        return;
-      }
 
-      if (isNetwork && e.keyCode === 73) {
-        self.importSessions(e);
-        e.preventDefault();
-      }
-    });
+        if (isNetwork && e.keyCode === 73) {
+          self.importSessions(e);
+          e.preventDefault();
+        }
+      });
 
     function getKey(url) {
       if (!(url = url && url.trim())) {
@@ -899,68 +951,79 @@ var Index = React.createClass({
       return index > 1 ? url.substring(1, index) : null;
     }
 
-    var isEditor = function() {
+    var isEditor = function () {
       var name = self.state.name;
       return name === 'rules' || name === 'values';
     };
 
-    $(document.body).on('mouseenter', LINK_SELECTOR, function(e) {
-      if (!isEditor() || !(e.ctrlKey || e.metaKey)) {
-        return;
-      }
-      var elem = $(this);
-      if (elem.hasClass('cm-js-http-url') || elem.hasClass('cm-string')
-        || elem.hasClass('cm-js-at') || getKey(elem.text())) {
-        elem.addClass('w-is-link');
-      }
-    }).on('mouseleave', LINK_SELECTOR, function(e) {
-      $(this).removeClass('w-is-link');
-    }).on('mousedown', LINK_SELECTOR, function(e) {
-      if (!isEditor() || !(e.ctrlKey || e.metaKey)) {
-        return;
-      }
-      var elem = $(this);
-      var text = elem.text();
-      if (elem.hasClass('cm-js-at')) {
-        if (AT_LINK_RE.test(text)) {
-          window.open((RegExp.$1 || 'http:') + RegExp.$2);
+    $(document.body)
+      .on('mouseenter', LINK_SELECTOR, function (e) {
+        if (!isEditor() || !(e.ctrlKey || e.metaKey)) {
+          return;
         }
-        return;
-      }
-      if (elem.hasClass('cm-string')) {
-        if (LINK_RE.test(text)) {
-          window.open((RegExp.$1 || 'http:') + RegExp.$2);
+        var elem = $(this);
+        if (
+          elem.hasClass('cm-js-http-url') ||
+          elem.hasClass('cm-string') ||
+          elem.hasClass('cm-js-at') ||
+          getKey(elem.text())
+        ) {
+          elem.addClass('w-is-link');
         }
-        return;
-      }
-      if (elem.hasClass('cm-js-http-url')) {
-        if (!/^https?:\/\//i.test(text)) {
-          text = 'http:' + (text[0] === '/' ? '' : '//') + text;
+      })
+      .on('mouseleave', LINK_SELECTOR, function (e) {
+        $(this).removeClass('w-is-link');
+      })
+      .on('mousedown', LINK_SELECTOR, function (e) {
+        if (!isEditor() || !(e.ctrlKey || e.metaKey)) {
+          return;
         }
-        window.open(text);
-        return;
-      }
-      var name = getKey(text);
-      if (name) {
-        self.showAndActiveValues({name: name});
-        return;
-      }
-    });
+        var elem = $(this);
+        var text = elem.text();
+        if (elem.hasClass('cm-js-at')) {
+          if (AT_LINK_RE.test(text)) {
+            window.open((RegExp.$1 || 'http:') + RegExp.$2);
+          }
+          return;
+        }
+        if (elem.hasClass('cm-string')) {
+          if (LINK_RE.test(text)) {
+            window.open((RegExp.$1 || 'http:') + RegExp.$2);
+          }
+          return;
+        }
+        if (elem.hasClass('cm-js-http-url')) {
+          if (!/^https?:\/\//i.test(text)) {
+            text = 'http:' + (text[0] === '/' ? '' : '//') + text;
+          }
+          window.open(text);
+          return;
+        }
+        var name = getKey(text);
+        if (name) {
+          self.showAndActiveValues({ name: name });
+          return;
+        }
+      });
 
     if (self.state.name == 'network') {
       self.startLoadData();
     }
-    dataCenter.on('settings', function(data) {
+    dataCenter.on('settings', function (data) {
       var state = self.state;
       var server = data.server;
-      if (state.interceptHttpsConnects !== data.interceptHttpsConnects
-        || state.enableHttp2 !== data.enableHttp2
-        || state.disabledAllRules !== data.disabledAllRules
-        || state.allowMultipleChoice !== data.allowMultipleChoice
-        || state.disabledAllPlugins !== data.disabledAllPlugins
-        || state.multiEnv != server.multiEnv
-        || state.ndp != server.ndp || state.ndr != server.ndr
-        || state.drb != server.drb || state.drm != server.drm) {
+      if (
+        state.interceptHttpsConnects !== data.interceptHttpsConnects ||
+        state.enableHttp2 !== data.enableHttp2 ||
+        state.disabledAllRules !== data.disabledAllRules ||
+        state.allowMultipleChoice !== data.allowMultipleChoice ||
+        state.disabledAllPlugins !== data.disabledAllPlugins ||
+        state.multiEnv != server.multiEnv ||
+        state.ndp != server.ndp ||
+        state.ndr != server.ndr ||
+        state.drb != server.drb ||
+        state.drm != server.drm
+      ) {
         state.interceptHttpsConnects = data.interceptHttpsConnects;
         state.enableHttp2 = data.enableHttp2;
         state.disabledAllRules = data.disabledAllRules;
@@ -979,10 +1042,13 @@ var Index = React.createClass({
         self.refs.contextMenu.update();
       }
     });
-    dataCenter.on('rules', function(data) {
+    dataCenter.on('rules', function (data) {
       var modal = self.state.rules;
       var newSelectedNames = data.list;
-      if (!data.defaultRulesIsDisabled && newSelectedNames.indexOf('Default') === -1) {
+      if (
+        !data.defaultRulesIsDisabled &&
+        newSelectedNames.indexOf('Default') === -1
+      ) {
         newSelectedNames.unshift('Default');
       }
       var selectedNames = modal.getSelectedNames();
@@ -992,15 +1058,15 @@ var Index = React.createClass({
       self.reselectRules(data, true);
       self.setState({});
     });
-    dataCenter.on('serverInfo', function(data) {
+    dataCenter.on('serverInfo', function (data) {
       self.serverInfo = data;
     });
 
-    events.on('executeComposer', function() {
+    events.on('executeComposer', function () {
       self.autoRefresh && self.autoRefresh();
     });
 
-    var getFocusItemList = function(curItem) {
+    var getFocusItemList = function (curItem) {
       if (Array.isArray(curItem)) {
         return curItem;
       }
@@ -1010,18 +1076,18 @@ var Index = React.createClass({
       return [curItem];
     };
 
-    events.on('updateUI', function() {
+    events.on('updateUI', function () {
       self.setState({});
     });
 
-    events.on('replaySessions', function(e, curItem, shiftKey) {
+    events.on('replaySessions', function (e, curItem, shiftKey) {
       var modal = self.state.network;
       var list = getFocusItemList(curItem) || modal.getSelectedList();
       var len = list && list.length;
       if (shiftKey && len === 1) {
         self.replayList = list;
         self.refs.setReplayCount.show();
-        setTimeout(function() {
+        setTimeout(function () {
           var input = ReactDOM.findDOMNode(self.refs.replayCount);
           input.select();
           input.focus();
@@ -1032,13 +1098,13 @@ var Index = React.createClass({
     });
     events.on('importSessions', self.importSessions);
     events.on('filterSessions', self.showSettings);
-    events.on('exportSessions', function(e, curItem) {
+    events.on('exportSessions', function (e, curItem) {
       self.exportData(e, getFocusItemList(curItem));
     });
-    events.on('abortRequest', function(e, curItem) {
+    events.on('abortRequest', function (e, curItem) {
       self.abort(getFocusItemList(curItem));
     });
-    events.on('uploadSessions', function(e, data) {
+    events.on('uploadSessions', function (e, data) {
       var sessions = getFocusItemList(data && data.curItem);
       var upload = data && data.upload;
       if (typeof upload === 'function') {
@@ -1052,14 +1118,14 @@ var Index = React.createClass({
         sessions && upload(sessions);
       }
     });
-    events.on('removeIt', function(e, item) {
+    events.on('removeIt', function (e, item) {
       var modal = self.state.network;
       if (item && modal) {
         modal.remove(item);
         self.setState({});
       }
     });
-    events.on('removeOthers', function(e, item) {
+    events.on('removeOthers', function (e, item) {
       var modal = self.state.network;
       if (item && modal) {
         if (item.selected) {
@@ -1071,50 +1137,50 @@ var Index = React.createClass({
       }
     });
     events.on('clearAll', self.clear);
-    events.on('removeSelected', function() {
+    events.on('removeSelected', function () {
       var modal = self.state.network;
       if (modal) {
         modal.removeSelectedItems();
         self.setState({});
       }
     });
-    events.on('removeUnselected', function() {
+    events.on('removeUnselected', function () {
       var modal = self.state.network;
       if (modal) {
         modal.removeUnselectedItems();
         self.setState({});
       }
     });
-    events.on('removeUnmarked', function() {
+    events.on('removeUnmarked', function () {
       var modal = self.state.network;
       if (modal) {
         modal.removeUnmarkedItems();
         self.setState({});
       }
     });
-    events.on('saveRules', function(e, item) {
+    events.on('saveRules', function (e, item) {
       if (item.changed || !item.selected) {
         self.selectRules(item);
       } else {
         self.unselectRules(item);
       }
     });
-    events.on('saveValues', function(e, item) {
+    events.on('saveValues', function (e, item) {
       self.saveValues(item);
     });
-    events.on('renameRules', function(e, item) {
+    events.on('renameRules', function (e, item) {
       self.showEditRules(item);
     });
-    events.on('renameValues', function(e, item) {
+    events.on('renameValues', function (e, item) {
       self.showEditValues(item);
     });
-    events.on('deleteRules', function(e, item) {
-      setTimeout(function() {
+    events.on('deleteRules', function (e, item) {
+      setTimeout(function () {
         self.removeRules(item);
       }, 0);
     });
-    events.on('deleteValues', function(e, item) {
-      setTimeout(function() {
+    events.on('deleteValues', function (e, item) {
+      setTimeout(function () {
         self.removeValues(item);
       }, 0);
     });
@@ -1126,62 +1192,74 @@ var Index = React.createClass({
     events.on('exportValues', self.exportData);
     events.on('importRules', self.importRules);
     events.on('importValues', self.importValues);
-    events.on('uploadRules', function(e, data) {
+    events.on('uploadRules', function (e, data) {
       var form = getJsonForm(data);
       form.append('replaceAll', '1');
       self._uploadRules(form, true);
     });
-    events.on('uploadValues', function(e, data) {
+    events.on('uploadValues', function (e, data) {
       var form = getJsonForm(data, 'values');
       form.append('replaceAll', '1');
       self._uploadValues(form, true);
     });
     var timeout;
-    $(document).on('visibilitychange', function() {
+    $(document).on('visibilitychange', function () {
       clearTimeout(timeout);
       if (document.hidden) {
         return;
       }
-      timeout = setTimeout(function() {
+      timeout = setTimeout(function () {
         var atBottom = self.scrollerAtBottom && self.scrollerAtBottom();
-        self.setState({}, function() {
+        self.setState({}, function () {
           atBottom && self.autoRefresh();
         });
       }, 100);
     });
 
-    setTimeout(function() {
-      dataCenter.checkUpdate(function(data) {
+    setTimeout(function () {
+      dataCenter.checkUpdate(function (data) {
         if (data && data.showUpdate) {
-          self.setState({
-            version: data.version,
-            latestVersion: data.latestVersion
-          }, function() {
-            $(ReactDOM.findDOMNode(self.refs.showUpdateTipsDialog)).modal('show');
-          });
+          self.setState(
+            {
+              version: data.version,
+              latestVersion: data.latestVersion
+            },
+            function () {
+              $(ReactDOM.findDOMNode(self.refs.showUpdateTipsDialog)).modal(
+                'show'
+              );
+            }
+          );
         }
       });
     }, 10000);
 
     dataCenter.getLogIdList = this.getLogIdListFromRules;
     dataCenter.importAnySessions = self.importAnySessions;
-    dataCenter.on('plugins', function(data) {
+    dataCenter.on('plugins', function (data) {
       var pluginsOptions = self.createPluginsOptions(data.plugins);
       var oldPluginsOptions = self.state.pluginsOptions;
       var oldDisabledPlugins = self.state.disabledPlugins;
       var disabledAllPlugins = self.state.disabledAllPlugins;
       var disabledPlugins = data.disabledPlugins;
-      if (disabledAllPlugins == data.disabledAllPlugins && pluginsOptions.length == oldPluginsOptions.length) {
+      if (
+        disabledAllPlugins == data.disabledAllPlugins &&
+        pluginsOptions.length == oldPluginsOptions.length
+      ) {
         var hasUpdate;
         for (var i = 0, len = pluginsOptions.length; i < len; i++) {
           var plugin = pluginsOptions[i];
           var oldPlugin = oldPluginsOptions[i];
-          if (plugin.name != oldPlugin.name
-            || plugin.latest !== oldPlugin.latest || plugin.mtime != oldPlugin.mtime
-            || (oldDisabledPlugins[plugin.name] != disabledPlugins[plugin.name])
-            || plugin.hideLongProtocol != oldPlugin.hideLongProtocol
-            || plugin.hideShortProtocol != oldPlugin.hideShortProtocol
-            || plugin.pluginVars != oldPlugin.pluginVars || plugin.path != oldPlugin.path) {
+          if (
+            plugin.name != oldPlugin.name ||
+            plugin.latest !== oldPlugin.latest ||
+            plugin.mtime != oldPlugin.mtime ||
+            oldDisabledPlugins[plugin.name] != disabledPlugins[plugin.name] ||
+            plugin.hideLongProtocol != oldPlugin.hideLongProtocol ||
+            plugin.hideShortProtocol != oldPlugin.hideShortProtocol ||
+            plugin.pluginVars != oldPlugin.pluginVars ||
+            plugin.path != oldPlugin.path
+          ) {
             hasUpdate = true;
             break;
           }
@@ -1209,14 +1287,14 @@ var Index = React.createClass({
           importSessions: self.importAnySessions,
           importHarSessions: self.importHarSessions,
           clearSessions: self.clear,
-          selectIndex: function(index) {
+          selectIndex: function (index) {
             events.trigger('selectedIndex', index);
           }
         });
       }
-    } catch(e) {}
+    } catch (e) {}
   },
-  importAnySessions: function(data) {
+  importAnySessions: function (data) {
     if (data) {
       if (Array.isArray(data)) {
         dataCenter.addNetworkList(data);
@@ -1225,88 +1303,98 @@ var Index = React.createClass({
       }
     }
   },
-  donotShowAgain: function() {
+  donotShowAgain: function () {
     dataCenter.donotShowAgain();
   },
-  hideUpdateTipsDialog: function() {
+  hideUpdateTipsDialog: function () {
     $(ReactDOM.findDOMNode(this.refs.showUpdateTipsDialog)).modal('hide');
   },
-  getAllRulesText: function() {
+  getAllRulesText: function () {
     var text = ' ' + this.getAllRulesValue();
     return text.replace(/#[^\r\n]*[\r\n]/g, '\n');
   },
-  getLogIdListFromRules: function() {
+  getLogIdListFromRules: function () {
     var text = this.getAllRulesText();
-    if (text = text.match(/\slog:\/\/(?:\{[^\s]{1,36}\}|[^/\\{}()<>\s]{1,36})\s/g)) {
+    if (
+      (text = text.match(
+        /\slog:\/\/(?:\{[^\s]{1,36}\}|[^/\\{}()<>\s]{1,36})\s/g
+      ))
+    ) {
       var flags = {};
-      text = text.map(function(logId) {
-        logId = util.removeProtocol(logId.trim());
-        if (logId[0] === '{') {
-          logId = logId.slice(1, -1);
-        }
-        return logId;
-      }).filter(function(logId) {
-        if (!logId) {
+      text = text
+        .map(function (logId) {
+          logId = util.removeProtocol(logId.trim());
+          if (logId[0] === '{') {
+            logId = logId.slice(1, -1);
+          }
+          return logId;
+        })
+        .filter(function (logId) {
+          if (!logId) {
+            return false;
+          }
+          if (!flags[logId]) {
+            flags[logId] = 1;
+            return true;
+          }
           return false;
-        }
-        if (!flags[logId]) {
-          flags[logId] = 1;
-          return true;
-        }
-        return false;
-      });
+        });
     }
     return text;
   },
-  getWeinreFromRules: function() {
+  getWeinreFromRules: function () {
     var values = this.state.values;
     var text = this.getAllRulesText();
-    if (text = text.match(/(?:^|\s)weinre:\/\/[^\s#]+(?:$|\s)/mg)) {
+    if ((text = text.match(/(?:^|\s)weinre:\/\/[^\s#]+(?:$|\s)/gm))) {
       var flags = {};
-      text = text.map(function(weinre) {
-        weinre = util.removeProtocol(weinre.trim());
-        var value = getValue(weinre);
-        if (value !== false) {
-          return value;
-        }
-        var key = getKey(weinre);
-        if (key !== false) {
-          key = values.get(key);
-          return key && key.value;
-        }
+      text = text
+        .map(function (weinre) {
+          weinre = util.removeProtocol(weinre.trim());
+          var value = getValue(weinre);
+          if (value !== false) {
+            return value;
+          }
+          var key = getKey(weinre);
+          if (key !== false) {
+            key = values.get(key);
+            return key && key.value;
+          }
 
-        return weinre;
-      }).filter(function(weinre) {
-        if (!weinre) {
+          return weinre;
+        })
+        .filter(function (weinre) {
+          if (!weinre) {
+            return false;
+          }
+          if (!flags[weinre]) {
+            flags[weinre] = 1;
+            return true;
+          }
           return false;
-        }
-        if (!flags[weinre]) {
-          flags[weinre] = 1;
-          return true;
-        }
-        return false;
-      });
+        });
     }
 
     return text;
   },
-  getValuesFromRules: function() {
+  getValuesFromRules: function () {
     var text = ' ' + this.getAllRulesValue();
-    if (text = text.match(/\s(?:[\w-]+:\/\/)?\{[^\s#]+\}/g)) {
-      text = text.map(function(key) {
-        return getKey(util.removeProtocol(key.trim()));
-      }).filter(function(key) {
-        return !!key;
-      });
+    if ((text = text.match(/\s(?:[\w-]+:\/\/)?\{[^\s#]+\}/g))) {
+      text = text
+        .map(function (key) {
+          return getKey(util.removeProtocol(key.trim()));
+        })
+        .filter(function (key) {
+          return !!key;
+        });
     }
     return text;
   },
-  getAllRulesValue: function() {
+  getAllRulesValue: function () {
     var result = [];
     var activeList = [];
     var selectedList = [];
     var modal = this.state.rules;
-    modal.list.forEach(function(name) {
+    modal.list.forEach(function (name) {
       var item = modal.get(name);
       var value = item.value || '';
       if (item.active) {
@@ -1318,7 +1406,7 @@ var Index = React.createClass({
       }
     });
     modal = this.state.values;
-    modal.list.forEach(function(name) {
+    modal.list.forEach(function (name) {
       if (/\.rules$/.test(name)) {
         result.push(modal.get(name).value);
       }
@@ -1326,26 +1414,28 @@ var Index = React.createClass({
 
     return activeList.concat(selectedList).concat(result).join('\r\n');
   },
-  preventBlur: function(e) {
+  preventBlur: function (e) {
     e.target.nodeName != 'INPUT' && e.preventDefault();
   },
-  startLoadData: function() {
+  startLoadData: function () {
     var self = this;
     if (self._updateNetwork) {
       self._updateNetwork();
       return;
     }
     var scrollTimeout;
-    var baseDom = $('.w-req-data-list .ReactVirtualized__Grid:first').scroll(function() {
-      var modal = self.state.network;
-      scrollTimeout && clearTimeout(scrollTimeout);
-      scrollTimeout = null;
-      if (atBottom()) {
-        scrollTimeout = setTimeout(function() {
-          update(modal, true);
-        }, 1000);
+    var baseDom = $('.w-req-data-list .ReactVirtualized__Grid:first').scroll(
+      function () {
+        var modal = self.state.network;
+        scrollTimeout && clearTimeout(scrollTimeout);
+        scrollTimeout = null;
+        if (atBottom()) {
+          scrollTimeout = setTimeout(function () {
+            update(modal, true);
+          }, 1000);
+        }
       }
-    });
+    );
 
     var timeout;
     var con = baseDom[0];
@@ -1366,7 +1456,7 @@ var Index = React.createClass({
       if (document.hidden) {
         return;
       }
-      self.setState({}, function() {
+      self.setState({}, function () {
         _atBottom && scrollToBottom();
       });
     }
@@ -1377,7 +1467,7 @@ var Index = React.createClass({
       }
     }
 
-    $(document).on('dblclick', '.w-network-menu-list', function(e) {
+    $(document).on('dblclick', '.w-network-menu-list', function (e) {
       if ($(e.target).hasClass('w-network-menu-list')) {
         con.scrollTop = 0;
       }
@@ -1388,14 +1478,16 @@ var Index = React.createClass({
     self.scrollerAtBottom = atBottom;
 
     function atBottom() {
-      var body = baseDom.find('.ReactVirtualized__Grid__innerScrollContainer')[0];
-      if(!body){
+      var body = baseDom.find(
+        '.ReactVirtualized__Grid__innerScrollContainer'
+      )[0];
+      if (!body) {
         return true;
       }
       return con.scrollTop + con.offsetHeight + 5 > body.offsetHeight;
     }
   },
-  showPlugins: function(e) {
+  showPlugins: function (e) {
     if (this.state.name != 'plugins') {
       this.setMenuOptionsState();
       this.hidePluginsOptions();
@@ -1408,7 +1500,7 @@ var Index = React.createClass({
     });
     util.changePageName('plugins');
   },
-  handleAction: function(type) {
+  handleAction: function (type) {
     if (type === 'top') {
       this.container[0].scrollTop = 0;
       return;
@@ -1431,21 +1523,24 @@ var Index = React.createClass({
       return this.autoRefresh();
     }
   },
-  showNetwork: function(e) {
+  showNetwork: function (e) {
     if (this.state.name == 'network') {
-      e  && !this.state.showLeftMenu && this.showNetworkOptions();
+      e && !this.state.showLeftMenu && this.showNetworkOptions();
       return;
     }
     this.setMenuOptionsState();
-    this.setState({
-      hasNetwork: true,
-      name: 'network'
-    }, function() {
-      this.startLoadData();
-    });
+    this.setState(
+      {
+        hasNetwork: true,
+        name: 'network'
+      },
+      function () {
+        this.startLoadData();
+      }
+    );
     util.changePageName('network');
   },
-  handleNetwork: function(item, e) {
+  handleNetwork: function (item, e) {
     var modal = this.state.network;
     if (item.id == 'removeAll') {
       this.clear();
@@ -1464,49 +1559,49 @@ var Index = React.createClass({
     }
     this.hideNetworkOptions();
   },
-  importData: function(e) {
-    switch(this.state.name) {
-    case 'network':
-      this.importSessions(e);
-      break;
-    case 'rules':
-      this.importRules(e);
-      break;
-    case 'values':
-      this.importValues(e);
-      break;
+  importData: function (e) {
+    switch (this.state.name) {
+      case 'network':
+        this.importSessions(e);
+        break;
+      case 'rules':
+        this.importRules(e);
+        break;
+      case 'values':
+        this.importValues(e);
+        break;
     }
   },
-  exportData: function(e, curItem) {
-    switch(this.state.name) {
-    case 'network':
-      var modal = this.state.network;
-      var hasSelected = Array.isArray(curItem) || modal.hasSelected();
-      this.currentFoucsItem = curItem;
-      if (hasSelected) {
-        $(ReactDOM.findDOMNode(this.refs.chooseFileType)).modal('show');
-        var self = this;
-        setTimeout(function() {
-          ReactDOM.findDOMNode(self.refs.sessionsName).focus();
-        }, 500);
-      } else {
-        message.info('Please select the sessions first.');
-      }
-      break;
-    case 'rules':
-      this.showAndActiveRules({ id: 'exportRules' });
-      break;
-    case 'values':
-      this.showAndActiveValues({ id: 'exportValues' });
-      break;
+  exportData: function (e, curItem) {
+    switch (this.state.name) {
+      case 'network':
+        var modal = this.state.network;
+        var hasSelected = Array.isArray(curItem) || modal.hasSelected();
+        this.currentFoucsItem = curItem;
+        if (hasSelected) {
+          $(ReactDOM.findDOMNode(this.refs.chooseFileType)).modal('show');
+          var self = this;
+          setTimeout(function () {
+            ReactDOM.findDOMNode(self.refs.sessionsName).focus();
+          }, 500);
+        } else {
+          message.info('Please select the sessions first.');
+        }
+        break;
+      case 'rules':
+        this.showAndActiveRules({ id: 'exportRules' });
+        break;
+      case 'values':
+        this.showAndActiveValues({ id: 'exportValues' });
+        break;
     }
   },
-  importSessions: function(e, data) {
+  importSessions: function (e, data) {
     var self = this;
     var shiftKey = (e && e.shiftKey) || (data && data.shiftKey);
     if (shiftKey) {
       self.refs.importRemoteSessions.show();
-      setTimeout(function() {
+      setTimeout(function () {
         var input = ReactDOM.findDOMNode(self.refs.sessionsRemoteUrl);
         input.focus();
         input.select();
@@ -1515,21 +1610,24 @@ var Index = React.createClass({
     }
     ReactDOM.findDOMNode(self.refs.importSessions).click();
   },
-  importSessionsFromUrl: function(url, byInput) {
+  importSessionsFromUrl: function (url, byInput) {
     if (!url) {
       return;
     }
     var self = this;
     self.setState({ pendingSessions: true });
-    dataCenter.importRemote({ url: url },  getRemoteDataHandler(function(err, data) {
-      self.setState({ pendingSessions: false });
-      if (!err) {
-        byInput && self.refs.importRemoteSessions.hide();
-        self.importAnySessions(data);
-      }
-    }));
+    dataCenter.importRemote(
+      { url: url },
+      getRemoteDataHandler(function (err, data) {
+        self.setState({ pendingSessions: false });
+        if (!err) {
+          byInput && self.refs.importRemoteSessions.hide();
+          self.importAnySessions(data);
+        }
+      })
+    );
   },
-  importRemoteSessions: function(e) {
+  importRemoteSessions: function (e) {
     if (e && e.type !== 'click' && e.keyCode !== 13) {
       return;
     }
@@ -1538,12 +1636,12 @@ var Index = React.createClass({
     var url = checkUrl(input.value);
     self.importSessionsFromUrl(url, true);
   },
-  importRules: function(e, data) {
+  importRules: function (e, data) {
     var self = this;
     var shiftKey = (e && e.shiftKey) || (data && data.shiftKey);
     if (shiftKey) {
       self.refs.importRemoteRules.show();
-      setTimeout(function() {
+      setTimeout(function () {
         var input = ReactDOM.findDOMNode(self.refs.rulesRemoteUrl);
         input.focus();
         input.select();
@@ -1552,7 +1650,7 @@ var Index = React.createClass({
     }
     ReactDOM.findDOMNode(self.refs.importRules).click();
   },
-  importRemoteRules: function(e) {
+  importRemoteRules: function (e) {
     if (e && e.type !== 'click' && e.keyCode !== 13) {
       return;
     }
@@ -1563,24 +1661,27 @@ var Index = React.createClass({
       return;
     }
     self.setState({ pendingRules: true });
-    dataCenter.importRemote({ url: url },  getRemoteDataHandler(function(err, data) {
-      self.setState({ pendingRules: false });
-      if (err) {
-        return;
-      }
-      self.refs.importRemoteRules.hide();
-      if (data) {
-        self.rulesForm = getJsonForm(data);
-        self.refs.confirmImportRules.show();
-      }
-    }));
+    dataCenter.importRemote(
+      { url: url },
+      getRemoteDataHandler(function (err, data) {
+        self.setState({ pendingRules: false });
+        if (err) {
+          return;
+        }
+        self.refs.importRemoteRules.hide();
+        if (data) {
+          self.rulesForm = getJsonForm(data);
+          self.refs.confirmImportRules.show();
+        }
+      })
+    );
   },
-  importValues: function(e, data) {
+  importValues: function (e, data) {
     var self = this;
     var shiftKey = (e && e.shiftKey) || (data && data.shiftKey);
     if (shiftKey) {
       self.refs.importRemoteValues.show();
-      setTimeout(function() {
+      setTimeout(function () {
         var input = ReactDOM.findDOMNode(self.refs.valuesRemoteUrl);
         input.focus();
         input.select();
@@ -1589,7 +1690,7 @@ var Index = React.createClass({
     }
     ReactDOM.findDOMNode(self.refs.importValues).click();
   },
-  importRemoteValues: function(e) {
+  importRemoteValues: function (e) {
     if (e && e.type !== 'click' && e.keyCode !== 13) {
       return;
     }
@@ -1600,37 +1701,41 @@ var Index = React.createClass({
       return;
     }
     self.setState({ pendingValues: true });
-    dataCenter.importRemote({ url: url },  getRemoteDataHandler(function(err, data) {
-      self.setState({ pendingValues: false });
-      if (err) {
-        return;
-      }
-      self.refs.importRemoteValues.hide();
-      if (data) {
-        self.valuesForm = getJsonForm(data, 'values');
-        self.refs.confirmImportValues.show();
-      }
-    }));
+    dataCenter.importRemote(
+      { url: url },
+      getRemoteDataHandler(function (err, data) {
+        self.setState({ pendingValues: false });
+        if (err) {
+          return;
+        }
+        self.refs.importRemoteValues.hide();
+        if (data) {
+          self.valuesForm = getJsonForm(data, 'values');
+          self.refs.confirmImportValues.show();
+        }
+      })
+    );
   },
-  _uploadRules: function(data, showResult) {
+  _uploadRules: function (data, showResult) {
     var self = this;
-    dataCenter.upload.importRules(data, function(data, xhr) {
+    dataCenter.upload.importRules(data, function (data, xhr) {
       if (!data) {
         util.showSystemError(xhr);
       } else if (data.ec === 0) {
         self.reloadRules(data);
         showResult && message.success('Successful synchronization Rules.');
-      } else  {
+      } else {
         win.alert(data.em);
       }
     });
   },
-  _uploadValues: function(data, showResult) {
+  _uploadValues: function (data, showResult) {
     var self = this;
-    dataCenter.upload.importValues(data, function(data, xhr) {
+    dataCenter.upload.importValues(data, function (data, xhr) {
       if (!data) {
         util.showSystemError(xhr);
-      } if (data.ec === 0) {
+      }
+      if (data.ec === 0) {
         self.reloadValues(data);
         showResult && message.success('Successful synchronization Values.');
       } else {
@@ -1638,7 +1743,7 @@ var Index = React.createClass({
       }
     });
   },
-  uploadRules: function(e) {
+  uploadRules: function (e) {
     var data = this.rulesForm;
     this.rulesForm = null;
     if (!data) {
@@ -1658,7 +1763,7 @@ var Index = React.createClass({
     this._uploadRules(data);
     ReactDOM.findDOMNode(this.refs.importRules).value = '';
   },
-  uploadValues: function(e) {
+  uploadValues: function (e) {
     var data = this.valuesForm;
     this.valuesForm = null;
     if (!data) {
@@ -1678,23 +1783,27 @@ var Index = React.createClass({
     this._uploadValues(data);
     ReactDOM.findDOMNode(this.refs.importValues).value = '';
   },
-  uploadRulesForm: function() {
-    this.rulesForm = new FormData(ReactDOM.findDOMNode(this.refs.importRulesForm));
+  uploadRulesForm: function () {
+    this.rulesForm = new FormData(
+      ReactDOM.findDOMNode(this.refs.importRulesForm)
+    );
     this.refs.confirmImportRules.show();
   },
-  uploadValuesForm: function() {
-    this.valuesForm = new FormData(ReactDOM.findDOMNode(this.refs.importValuesForm));
+  uploadValuesForm: function () {
+    this.valuesForm = new FormData(
+      ReactDOM.findDOMNode(this.refs.importValuesForm)
+    );
     this.refs.confirmImportValues.show();
   },
-  showAndActiveRules: function(item, e) {
+  showAndActiveRules: function (item, e) {
     if (this.state.name === 'rules') {
-      switch(item.id) {
-      case 'exportRules':
-        this.refs.selectRulesDialog.show();
-        break;
-      case 'importRules':
-        this.importRules(e);
-        break;
+      switch (item.id) {
+        case 'exportRules':
+          this.refs.selectRulesDialog.show();
+          break;
+        case 'importRules':
+          this.importRules(e);
+          break;
       }
     } else {
       this.setRulesActive(item.name);
@@ -1702,7 +1811,7 @@ var Index = React.createClass({
     }
     this.hideRulesOptions();
   },
-  showRules: function(e) {
+  showRules: function (e) {
     if (this.state.name != 'rules') {
       this.setMenuOptionsState();
       this.hideRulesOptions();
@@ -1715,23 +1824,23 @@ var Index = React.createClass({
     });
     util.changePageName('rules');
   },
-  showAndActiveValues: function(item, e) {
+  showAndActiveValues: function (item, e) {
     var self = this;
     if (self.state.name === 'values' && item.id) {
-      switch(item.id) {
-      case 'exportValues':
-        self.refs.selectValuesDialog.show();
-        break;
-      case 'importValues':
-        this.importValues(e);
-        break;
+      switch (item.id) {
+        case 'exportValues':
+          self.refs.selectValuesDialog.show();
+          break;
+        case 'importValues':
+          this.importValues(e);
+          break;
       }
     } else {
       var modal = self.state.values;
       var name = item.name;
 
       if (!modal.exists(name)) {
-        dataCenter.values.add({name: name}, function(data, xhr) {
+        dataCenter.values.add({ name: name }, function (data, xhr) {
           if (data && data.ec === 0) {
             var item = modal.add(name);
             self.setValuesActive(name);
@@ -1750,10 +1859,8 @@ var Index = React.createClass({
     }
     self.hideValuesOptions();
   },
-  addValue: function() {
-
-  },
-  showValues: function(e) {
+  addValue: function () {},
+  showValues: function (e) {
     if (this.state.name != 'values') {
       this.setMenuOptionsState();
       this.hideValuesOptions();
@@ -1766,26 +1873,26 @@ var Index = React.createClass({
     });
     util.changePageName('values');
   },
-  showNetworkOptions: function() {
+  showNetworkOptions: function () {
     if (this.state.name == 'network') {
       this.setState({
         showNetworkOptions: true
       });
     }
   },
-  hideNetworkOptions: function() {
+  hideNetworkOptions: function () {
     this.setState({
       showRemoveOptions: false,
       showAbortOptions: false,
       showNetworkOptions: false
     });
   },
-  showRemoveOptions: function() {
+  showRemoveOptions: function () {
     this.setState({
       showRemoveOptions: true
     });
   },
-  showAbortOptions: function() {
+  showAbortOptions: function () {
     var modal = this.state.network;
     var list = modal.getSelectedList();
     ABORT_OPTIONS[0].disabled = !list || !list.filter(util.canAbort).length;
@@ -1793,42 +1900,42 @@ var Index = React.createClass({
       showAbortOptions: true
     });
   },
-  showCreateOptions: function() {
+  showCreateOptions: function () {
     this.setState({
       showCreateOptions: true
     });
   },
-  hideCreateOptions: function() {
+  hideCreateOptions: function () {
     this.setState({
       showCreateOptions: false
     });
   },
-  hideRemoveOptions: function() {
+  hideRemoveOptions: function () {
     this.setState({
       showRemoveOptions: false
     });
   },
-  hideAbortOptions: function() {
+  hideAbortOptions: function () {
     this.setState({
       showAbortOptions: false
     });
   },
-  showHelpOptions: function() {
+  showHelpOptions: function () {
     this.setState({
       showHelpOptions: true
     });
   },
-  hideHelpOptions: function() {
+  hideHelpOptions: function () {
     this.setState({
       showHelpOptions: false
     });
   },
-  showHasNewVersion: function(hasNewVersion) {
+  showHasNewVersion: function (hasNewVersion) {
     this.setState({
       hasNewVersion: hasNewVersion
     });
   },
-  showRulesOptions: function(e) {
+  showRulesOptions: function (e) {
     var self = this;
     var rules = self.state.rules;
     var data = rules.data;
@@ -1841,7 +1948,7 @@ var Index = React.createClass({
       rulesOptions = RULES_ACTIONS;
     } else {
       rulesOptions = [];
-      rulesList.forEach(function(name) {
+      rulesList.forEach(function (name) {
         rulesOptions.push(data[name]);
       });
     }
@@ -1850,12 +1957,12 @@ var Index = React.createClass({
       showRulesOptions: true
     });
   },
-  hideRulesOptions: function() {
+  hideRulesOptions: function () {
     this.setState({
       showRulesOptions: false
     });
   },
-  showValuesOptions: function(e) {
+  showValuesOptions: function (e) {
     var self = this;
     var valuesOptions;
     var valuesList = this.state.values.list;
@@ -1869,7 +1976,7 @@ var Index = React.createClass({
       var list = self.getValuesFromRules() || [];
       list = util.unique(valuesList.concat(list));
       var newValues = [];
-      list.forEach(function(name) {
+      list.forEach(function (name) {
         var exists = valuesList.indexOf(name) != -1;
         var item = {
           name: name,
@@ -1884,17 +1991,17 @@ var Index = React.createClass({
       showValuesOptions: true
     });
   },
-  hideValuesOptions: function() {
+  hideValuesOptions: function () {
     this.setState({
       showValuesOptions: false
     });
   },
-  showAndActivePlugins: function(option) {
+  showAndActivePlugins: function (option) {
     this.hidePluginsOptions();
     this.showPlugins();
     this.showPluginTab(option.name);
   },
-  showPluginTab: function(name) {
+  showPluginTab: function (name) {
     var active = 'Home';
     var tabs = this.state.tabs || [];
     if (name && name != active) {
@@ -1906,10 +2013,14 @@ var Index = React.createClass({
         }
       }
     }
-    var plugin = name &&  this.state.plugins[name + ':'];
+    var plugin = name && this.state.plugins[name + ':'];
     if (plugin) {
       if (tabs.length >= MAX_PLUGINS_TABS) {
-        win.alert('At most ' + MAX_PLUGINS_TABS + ' tabs can be opened at the same time.');
+        win.alert(
+          'At most ' +
+            MAX_PLUGINS_TABS +
+            ' tabs can be opened at the same time.'
+        );
         return this.showPlugins();
       }
       active = name;
@@ -1927,10 +2038,10 @@ var Index = React.createClass({
       tabs: tabs
     });
   },
-  activePluginTab: function(e) {
+  activePluginTab: function (e) {
     this.showPluginTab($(e.target).attr('data-name'));
   },
-  closePluginTab: function(e) {
+  closePluginTab: function (e) {
     var name = $(e.target).attr('data-name');
     var tabs = this.state.tabs || [];
     if (tabs) {
@@ -1950,17 +2061,17 @@ var Index = React.createClass({
       }
     }
   },
-  showPluginsOptions: function(e) {
+  showPluginsOptions: function (e) {
     this.setState({
       showPluginsOptions: true
     });
   },
-  hidePluginsOptions: function() {
+  hidePluginsOptions: function () {
     this.setState({
       showPluginsOptions: false
     });
   },
-  showWeinreOptionsQuick: function(e) {
+  showWeinreOptionsQuick: function (e) {
     var list = this.getWeinreFromRules();
     if (!list || !list.length) {
       this.showAnonymousWeinre();
@@ -1968,10 +2079,10 @@ var Index = React.createClass({
     }
     $(e.target).closest('div').addClass('w-menu-wrapper-show');
   },
-  showWeinreOptions: function(e) {
+  showWeinreOptions: function (e) {
     var self = this;
-    var list = self.state.weinreOptions = self.getWeinreFromRules() || [];
-    self.state.weinreOptions = util.unique(list).map(function(name) {
+    var list = (self.state.weinreOptions = self.getWeinreFromRules() || []);
+    self.state.weinreOptions = util.unique(list).map(function (name) {
       return {
         name: name,
         icon: 'console'
@@ -1981,12 +2092,12 @@ var Index = React.createClass({
       showWeinreOptions: true
     });
   },
-  hideWeinreOptions: function() {
+  hideWeinreOptions: function () {
     this.setState({
       showWeinreOptions: false
     });
   },
-  setMenuOptionsState: function(name, callback) {
+  setMenuOptionsState: function (name, callback) {
     var state = {
       showCreateRules: false,
       showCreateValues: false,
@@ -2001,94 +2112,114 @@ var Index = React.createClass({
     }
     this.setState(state, callback);
   },
-  hideRulesInput: function() {
+  hideRulesInput: function () {
     this.setState({ showCreateRules: false });
   },
-  hideValuesInput: function() {
+  hideValuesInput: function () {
     this.setState({ showCreateValues: false });
   },
-  hideRuleGroup: function() {
+  hideRuleGroup: function () {
     this.setState({ showCreateRuleGroup: false });
   },
-  hideValueGroup: function() {
+  hideValueGroup: function () {
     this.setState({ showCreateValueGroup: false });
   },
-  hideRenameRuleInput: function() {
+  hideRenameRuleInput: function () {
     this.setState({ showEditRules: false });
   },
-  hideRenameValueInput: function() {
+  hideRenameValueInput: function () {
     this.setState({ showEditValues: false });
   },
-  showCreateRules: function() {
+  showCreateRules: function () {
     var createRulesInput = ReactDOM.findDOMNode(this.refs.createRulesInput);
-    this.setState({
-      showCreateRules: true
-    }, function() {
-      createRulesInput.focus();
-    });
+    this.setState(
+      {
+        showCreateRules: true
+      },
+      function () {
+        createRulesInput.focus();
+      }
+    );
   },
-  showCreateValues: function() {
+  showCreateValues: function () {
     var createValuesInput = ReactDOM.findDOMNode(this.refs.createValuesInput);
-    this.setState({
-      showCreateValues: true
-    }, function() {
-      createValuesInput.focus();
-    });
+    this.setState(
+      {
+        showCreateValues: true
+      },
+      function () {
+        createValuesInput.focus();
+      }
+    );
   },
-  showCreateRuleGroup: function() {
+  showCreateRuleGroup: function () {
     var createGroupInput = ReactDOM.findDOMNode(this.refs.createRuleGroupInput);
-    this.setState({
-      showCreateRuleGroup: true
-    }, function() {
-      createGroupInput.focus();
-    });
+    this.setState(
+      {
+        showCreateRuleGroup: true
+      },
+      function () {
+        createGroupInput.focus();
+      }
+    );
   },
-  showCreateValueGroup: function() {
-    var createGroupInput = ReactDOM.findDOMNode(this.refs.createValueGroupInput);
-    this.setState({
-      showCreateValueGroup: true
-    }, function() {
-      createGroupInput.focus();
-    });
+  showCreateValueGroup: function () {
+    var createGroupInput = ReactDOM.findDOMNode(
+      this.refs.createValueGroupInput
+    );
+    this.setState(
+      {
+        showCreateValueGroup: true
+      },
+      function () {
+        createGroupInput.focus();
+      }
+    );
   },
-  showHttpsSettingsDialog: function() {
+  showHttpsSettingsDialog: function () {
     $(ReactDOM.findDOMNode(this.refs.rootCADialog)).modal('show');
   },
-  interceptHttpsConnects: function(e) {
+  interceptHttpsConnects: function (e) {
     var self = this;
     var checked = e.target.checked;
-    dataCenter.interceptHttpsConnects({interceptHttpsConnects: checked ? 1 : 0},
-        function(data, xhr) {
-          if (data && data.ec === 0) {
-            self.state.interceptHttpsConnects = checked;
-          } else {
-            util.showSystemError(xhr);
-          }
-          self.setState({});
-        });
+    dataCenter.interceptHttpsConnects(
+      { interceptHttpsConnects: checked ? 1 : 0 },
+      function (data, xhr) {
+        if (data && data.ec === 0) {
+          self.state.interceptHttpsConnects = checked;
+        } else {
+          util.showSystemError(xhr);
+        }
+        self.setState({});
+      }
+    );
   },
-  enableHttp2: function(e) {
+  enableHttp2: function (e) {
     if (!dataCenter.supportH2) {
       var self = this;
-      win.confirm('The current version of Node.js cannot support HTTP/2.\nPlease upgrade to the latest LTS version.',
-      function(sure) {
-        sure && window.open('https://nodejs.org/');
-        self.setState({});
-      });
+      win.confirm(
+        'The current version of Node.js cannot support HTTP/2.\nPlease upgrade to the latest LTS version.',
+        function (sure) {
+          sure && window.open('https://nodejs.org/');
+          self.setState({});
+        }
+      );
       return;
     }
     var checked = e.target.checked;
-    dataCenter.enableHttp2({enableHttp2: checked ? 1 : 0},
-        function(data, xhr) {
-          if (data && data.ec === 0) {
-            self.state.enableHttp2 = checked;
-          } else {
-            util.showSystemError(xhr);
-          }
-          self.setState({});
-        });
+    dataCenter.enableHttp2(
+      { enableHttp2: checked ? 1 : 0 },
+      function (data, xhr) {
+        if (data && data.ec === 0) {
+          self.state.enableHttp2 = checked;
+        } else {
+          util.showSystemError(xhr);
+        }
+        self.setState({});
+      }
+    );
   },
-  createRules: function(e) {
+  createRules: function (e) {
     if (e.keyCode != 13 && e.type != 'click') {
       return;
     }
@@ -2102,26 +2233,29 @@ var Index = React.createClass({
 
     var modal = self.state.rules;
     if (modal.exists(name)) {
-      message.error('The name \'' + name + '\' already exists.');
+      message.error("The name '" + name + "' already exists.");
       return;
     }
     var addToTop = e && e.target.getAttribute('data-type') === 'top' ? 1 : '';
-    dataCenter.rules.add({name: name, addToTop: addToTop}, function(data, xhr) {
-      if (data && data.ec === 0) {
-        var item = modal[addToTop ? 'unshift' : 'add'](name);
-        self.setRulesActive(name);
-        target.value = '';
-        target.blur();
-        self.setState({
-          activeRules: item
-        });
-        self.triggerRulesChange('create');
-      } else {
-        util.showSystemError(xhr);
+    dataCenter.rules.add(
+      { name: name, addToTop: addToTop },
+      function (data, xhr) {
+        if (data && data.ec === 0) {
+          var item = modal[addToTop ? 'unshift' : 'add'](name);
+          self.setRulesActive(name);
+          target.value = '';
+          target.blur();
+          self.setState({
+            activeRules: item
+          });
+          self.triggerRulesChange('create');
+        } else {
+          util.showSystemError(xhr);
+        }
       }
-    });
+    );
   },
-  createValues: function(e) {
+  createValues: function (e) {
     if (e.keyCode != 13 && e.type != 'click') {
       return;
     }
@@ -2145,11 +2279,11 @@ var Index = React.createClass({
 
     var modal = self.state.values;
     if (modal.exists(name)) {
-      message.error('The name \'' + name + '\' already exists.');
+      message.error("The name '" + name + "' already exists.");
       return;
     }
 
-    dataCenter.values.add({name: name}, function(data, xhr) {
+    dataCenter.values.add({ name: name }, function (data, xhr) {
       if (data && data.ec === 0) {
         var item = modal.add(name);
         self.setValuesActive(name);
@@ -2164,7 +2298,7 @@ var Index = React.createClass({
       }
     });
   },
-  showEditRules: function(item) {
+  showEditRules: function (item) {
     this.currentFoucsRules = item;
     var modal = this.state.rules;
     var activeItem = item || modal.getActive();
@@ -2173,18 +2307,21 @@ var Index = React.createClass({
     }
     var editRulesInput = ReactDOM.findDOMNode(this.refs.editRulesInput);
     editRulesInput.value = activeItem.name;
-    this.setState({
-      showEditRules: true,
-      selectedRule: activeItem
-    }, function() {
-      editRulesInput.select();
-      editRulesInput.focus();
-    });
+    this.setState(
+      {
+        showEditRules: true,
+        selectedRule: activeItem
+      },
+      function () {
+        editRulesInput.select();
+        editRulesInput.focus();
+      }
+    );
   },
-  showEditValuesByDBClick: function(item) {
+  showEditValuesByDBClick: function (item) {
     !item.changed && this.showEditValues();
   },
-  showEditValues: function(item) {
+  showEditValues: function (item) {
     this.currentFoucsValues = item;
     var modal = this.state.values;
     var activeItem = item || modal.getActive();
@@ -2194,15 +2331,18 @@ var Index = React.createClass({
 
     var editValuesInput = ReactDOM.findDOMNode(this.refs.editValuesInput);
     editValuesInput.value = activeItem.name;
-    this.setState({
-      showEditValues: true,
-      selectedValue: activeItem
-    }, function() {
-      editValuesInput.select();
-      editValuesInput.focus();
-    });
+    this.setState(
+      {
+        showEditValues: true,
+        selectedValue: activeItem
+      },
+      function () {
+        editValuesInput.select();
+        editValuesInput.focus();
+      }
+    );
   },
-  editRules: function(e) {
+  editRules: function (e) {
     if (e.keyCode != 13 && e.type != 'click') {
       return;
     }
@@ -2220,26 +2360,29 @@ var Index = React.createClass({
     }
 
     if (modal.exists(name)) {
-      message.error('The name \'' + name + '\' already exists.');
+      message.error("The name '" + name + "' already exists.");
       return;
     }
 
-    dataCenter.rules.rename({name: activeItem.name, newName: name}, function(data, xhr) {
-      if (data && data.ec === 0) {
-        modal.rename(activeItem.name, name);
-        self.setRulesActive(name);
-        target.value = '';
-        target.blur();
-        self.setState({
-          activeValues: activeItem
-        });
-        self.triggerRulesChange('rename');
-      } else {
-        util.showSystemError(xhr);
+    dataCenter.rules.rename(
+      { name: activeItem.name, newName: name },
+      function (data, xhr) {
+        if (data && data.ec === 0) {
+          modal.rename(activeItem.name, name);
+          self.setRulesActive(name);
+          target.value = '';
+          target.blur();
+          self.setState({
+            activeValues: activeItem
+          });
+          self.triggerRulesChange('rename');
+        } else {
+          util.showSystemError(xhr);
+        }
       }
-    });
+    );
   },
-  editValues: function(e) {
+  editValues: function (e) {
     if (e.keyCode != 13 && e.type != 'click') {
       return;
     }
@@ -2257,99 +2400,119 @@ var Index = React.createClass({
     }
 
     if (modal.exists(name)) {
-      message.error('The name \'' + name + '\' already exists.');
+      message.error("The name '" + name + "' already exists.");
       return;
     }
 
-    dataCenter.values.rename({name: activeItem.name, newName: name}, function(data, xhr) {
-      if (data && data.ec === 0) {
-        modal.rename(activeItem.name, name);
-        self.setValuesActive(name);
-        target.value = '';
-        target.blur();
-        self.setState({
-          activeValues: activeItem
-        });
-        self.triggerValuesChange('rename');
-        checkJson(activeItem);
-      } else {
-        util.showSystemError(xhr);
+    dataCenter.values.rename(
+      { name: activeItem.name, newName: name },
+      function (data, xhr) {
+        if (data && data.ec === 0) {
+          modal.rename(activeItem.name, name);
+          self.setValuesActive(name);
+          target.value = '';
+          target.blur();
+          self.setState({
+            activeValues: activeItem
+          });
+          self.triggerValuesChange('rename');
+          checkJson(activeItem);
+        } else {
+          util.showSystemError(xhr);
+        }
       }
-    });
+    );
   },
-  showAnonymousWeinre: function() {
+  showAnonymousWeinre: function () {
     this.openWeinre();
   },
-  showWeinre: function(options) {
+  showWeinre: function (options) {
     this.openWeinre(options.name);
   },
-  openWeinre: function(name) {
+  openWeinre: function (name) {
     window.open('weinre/client/#' + (name || 'anonymous'));
     this.setState({
       showWeinreOptions: false
     });
   },
-  onClickRulesOption: function(item) {
+  onClickRulesOption: function (item) {
     item.selected ? this.unselectRules(item) : this.selectRules(item);
   },
-  selectRules: function(item) {
+  selectRules: function (item) {
     var self = this;
-    dataCenter.rules[item.isDefault ? 'enableDefault' : 'select'](item, function(data, xhr) {
-      if (data && data.ec === 0) {
-        self.reselectRules(data);
-        self.state.rules.setChanged(item.name, false);
-        self.setState({});
-        self.triggerRulesChange('save');
-        if (self.state.disabledAllRules) {
-          win.confirm('Rules has been turn off, do you want to turn on it?', function(sure) {
-            if (sure) {
-              dataCenter.rules.disableAllRules({disabledAllRules: 0}, function(data, xhr) {
-                if (data && data.ec === 0) {
-                  self.state.disabledAllRules = false;
-                  self.setState({});
-                } else {
-                  util.showSystemError(xhr);
+    dataCenter.rules[item.isDefault ? 'enableDefault' : 'select'](
+      item,
+      function (data, xhr) {
+        if (data && data.ec === 0) {
+          self.reselectRules(data);
+          self.state.rules.setChanged(item.name, false);
+          self.setState({});
+          self.triggerRulesChange('save');
+          if (self.state.disabledAllRules) {
+            win.confirm(
+              'Rules has been turn off, do you want to turn on it?',
+              function (sure) {
+                if (sure) {
+                  dataCenter.rules.disableAllRules(
+                    { disabledAllRules: 0 },
+                    function (data, xhr) {
+                      if (data && data.ec === 0) {
+                        self.state.disabledAllRules = false;
+                        self.setState({});
+                      } else {
+                        util.showSystemError(xhr);
+                      }
+                    }
+                  );
                 }
-              });
-            }
-          });
+              }
+            );
+          }
+        } else {
+          util.showSystemError(xhr);
         }
-      } else {
-        util.showSystemError(xhr);
       }
-    });
+    );
     return false;
   },
-  selectRulesByOptions: function(e) {
+  selectRulesByOptions: function (e) {
     var item = this.state.rules.data[$(e.target).attr('data-name')];
     this[e.target.checked ? 'selectRules' : 'unselectRules'](item);
   },
-  unselectRules: function(item) {
+  unselectRules: function (item) {
     var self = this;
-    dataCenter.rules[item.isDefault ? 'disableDefault' : 'unselect'](item, function(data, xhr) {
-      if (data && data.ec === 0) {
-        self.reselectRules(data);
-        self.setState({});
-      } else {
-        util.showSystemError(xhr);
+    dataCenter.rules[item.isDefault ? 'disableDefault' : 'unselect'](
+      item,
+      function (data, xhr) {
+        if (data && data.ec === 0) {
+          self.reselectRules(data);
+          self.setState({});
+        } else {
+          util.showSystemError(xhr);
+        }
       }
-    });
+    );
     return false;
   },
-  reselectRules: function(data, autoUpdate) {
+  reselectRules: function (data, autoUpdate) {
     var self = this;
     self.state.rules.clearAllSelected();
-    self.setSelected(self.state.rules, 'Default', !data.defaultRulesIsDisabled, autoUpdate);
-    data.list.forEach(function(name) {
+    self.setSelected(
+      self.state.rules,
+      'Default',
+      !data.defaultRulesIsDisabled,
+      autoUpdate
+    );
+    data.list.forEach(function (name) {
       self.setSelected(self.state.rules, name, true, autoUpdate);
     });
   },
-  saveValues: function(item) {
+  saveValues: function (item) {
     if (!item.changed) {
       return;
     }
     var self = this;
-    dataCenter.values.add(item, function(data, xhr) {
+    dataCenter.values.add(item, function (data, xhr) {
       if (data && data.ec === 0) {
         self.setSelected(self.state.values, item.name);
         self.triggerValuesChange('save');
@@ -2360,7 +2523,7 @@ var Index = React.createClass({
     });
     return false;
   },
-  setSelected: function(modal, name, selected, autoUpdate) {
+  setSelected: function (modal, name, selected, autoUpdate) {
     if (modal.setSelected(name, selected)) {
       if (!autoUpdate) {
         modal.setChanged(name, false);
@@ -2370,7 +2533,7 @@ var Index = React.createClass({
       });
     }
   },
-  replayCountChange: function(e) {
+  replayCountChange: function (e) {
     var count = e.target.value.replace(/^\s*0*|[^\d]+/, '');
     var replayCount = count.slice(0, 2);
     if (replayCount > MAX_REPLAY_COUNT) {
@@ -2378,26 +2541,26 @@ var Index = React.createClass({
     }
     this.setState({ replayCount: replayCount });
   },
-  clickReplay: function(e) {
+  clickReplay: function (e) {
     if (e.shiftKey) {
       events.trigger('replaySessions', [null, e.shiftKey]);
     } else {
       this.replay(e);
     }
   },
-  replay: function(e, list, count) {
+  replay: function (e, list, count) {
     var modal = this.state.network;
     list = Array.isArray(list) ? list : modal.getSelectedList();
     if (!list || !list.length) {
       return;
     }
     this.enableRecord();
-    var replayReq = function(item) {
+    var replayReq = function (item) {
       var req = item.req;
       dataCenter.compose2({
         useH2: item.useH2 ? 1 : '',
         url: item.url,
-        headers:   util.getOriginalReqHeaders(item),
+        headers: util.getOriginalReqHeaders(item),
         method: req.method,
         base64: req.base64
       });
@@ -2406,12 +2569,12 @@ var Index = React.createClass({
     if (count > 1) {
       count = Math.min(count, MAX_REPLAY_COUNT);
       var reqItem = list[0];
-      for(var i = 0; i < count; i++) {
+      for (var i = 0; i < count; i++) {
         replayReq(reqItem);
       }
     } else {
       map = {};
-      list.slice(0, MAX_REPLAY_COUNT).forEach(function(item) {
+      list.slice(0, MAX_REPLAY_COUNT).forEach(function (item) {
         map[item.id] = 1;
         replayReq(item);
       });
@@ -2430,7 +2593,7 @@ var Index = React.createClass({
         return;
       }
       count = 0;
-      node.children.forEach(function(item) {
+      node.children.forEach(function (item) {
         item = item.data;
         if (item && map[item.id]) {
           ++count;
@@ -2441,41 +2604,45 @@ var Index = React.createClass({
       this.autoRefresh();
     }
   },
-  enableRecord: function() {
+  enableRecord: function () {
     this.refs.recordBtn.enable();
     events.trigger('changeRecordState');
   },
-  composer: function() {
+  composer: function () {
     events.trigger('composer');
   },
-  showFiles: function() {
+  showFiles: function () {
     this.refs.filesDialog.show(this.files);
   },
-  clear: function() {
+  clear: function () {
     var modal = this.state.network;
     this.setState({
       network: modal.clear(),
       showRemoveOptions: false
     });
   },
-  removeRules: function(item) {
+  removeRules: function (item) {
     var self = this;
     var modal = this.state.rules;
     var activeItem = item || modal.getActive();
     if (activeItem && !activeItem.isDefault) {
       var name = activeItem.name;
-      win.confirm('Are you sure to delete \'' + name + '\'.', function(sure) {
+      win.confirm("Are you sure to delete '" + name + "'.", function (sure) {
         if (!sure) {
           return;
         }
-        dataCenter.rules.remove({name: name}, function(data, xhr) {
+        dataCenter.rules.remove({ name: name }, function (data, xhr) {
           if (data && data.ec === 0) {
             var nextItem = item && !item.active ? null : modal.getSibling(name);
             nextItem && self.setRulesActive(nextItem.name);
             modal.remove(name);
-            self.setState(item ? {} : {
-              activeRules: nextItem
-            });
+            self.setState(
+              item
+                ? {}
+                : {
+                    activeRules: nextItem
+                  }
+            );
             self.triggerRulesChange('remove');
           } else {
             util.showSystemError(xhr);
@@ -2484,24 +2651,28 @@ var Index = React.createClass({
       });
     }
   },
-  removeValues: function(item) {
+  removeValues: function (item) {
     var self = this;
     var modal = this.state.values;
     var activeItem = item || modal.getActive();
     if (activeItem && !activeItem.isDefault) {
       var name = activeItem.name;
-      win.confirm('Are you sure to delete \'' + name + '\'.', function(sure) {
+      win.confirm("Are you sure to delete '" + name + "'.", function (sure) {
         if (!sure) {
           return;
         }
-        dataCenter.values.remove({name: name}, function(data, xhr) {
+        dataCenter.values.remove({ name: name }, function (data, xhr) {
           if (data && data.ec === 0) {
             var nextItem = item && !item.active ? null : modal.getSibling(name);
             nextItem && self.setValuesActive(nextItem.name);
             modal.remove(name);
-            self.setState(item ? {} : {
-              activeValues: nextItem
-            });
+            self.setState(
+              item
+                ? {}
+                : {
+                    activeValues: nextItem
+                  }
+            );
             self.triggerValuesChange('remove');
           } else {
             util.showSystemError(xhr);
@@ -2510,41 +2681,43 @@ var Index = React.createClass({
       });
     }
   },
-  setRulesActive: function(name, modal) {
+  setRulesActive: function (name, modal) {
     modal = modal || this.state.rules;
     storage.set('activeRules', name);
     modal.setActive(name);
   },
-  setValuesActive: function(name, modal) {
+  setValuesActive: function (name, modal) {
     modal = modal || this.state.values;
     storage.set('activeValues', name);
     modal.setActive(name);
   },
-  showRulesSettings: function() {
+  showRulesSettings: function () {
     $(ReactDOM.findDOMNode(this.refs.rulesSettingsDialog)).modal('show');
   },
-  showValuesSettings: function() {
+  showValuesSettings: function () {
     $(ReactDOM.findDOMNode(this.refs.valuesSettingsDialog)).modal('show');
   },
-  toggleLeftMenu: function() {
+  toggleLeftMenu: function () {
     var showLeftMenu = !this.state.showLeftMenu;
     this.setState({
       showLeftMenu: showLeftMenu
     });
     storage.set('showLeftMenu', showLeftMenu ? 1 : '');
   },
-  handleCreate: function(item) {
-    this.state.name == 'rules' ? this.showCreateRules() : this.showCreateValues();
+  handleCreate: function (item) {
+    this.state.name == 'rules'
+      ? this.showCreateRules()
+      : this.showCreateValues();
   },
-  saveRulesOrValues: function() {
+  saveRulesOrValues: function () {
     var self = this;
     var state = self.state;
     var list;
     var isRules = state.name == 'rules';
     if (isRules) {
       list = state.rules.getChangedList();
-      if(list.length) {
-        list.forEach(function(item) {
+      if (list.length) {
+        list.forEach(function (item) {
           self.selectRules(item);
         });
         self.setState({});
@@ -2552,14 +2725,14 @@ var Index = React.createClass({
     } else {
       list = state.values.getChangedList();
       if (list.length) {
-        list.forEach(function(item) {
+        list.forEach(function (item) {
           self.saveValues(item);
         });
         self.setState({});
       }
     }
   },
-  onClickMenu: function(e) {
+  onClickMenu: function (e) {
     var target = $(e.target).closest('a');
     var self = this;
     var state = self.state;
@@ -2572,7 +2745,7 @@ var Index = React.createClass({
       self.saveRulesOrValues();
     }
   },
-  showSettings: function(e) {
+  showSettings: function (e) {
     var pageName = this.state.name;
     if (pageName === 'rules') {
       this.showRulesSettings();
@@ -2584,166 +2757,175 @@ var Index = React.createClass({
     }
     this.refs.networkSettings.showDialog();
   },
-  activeRules: function(item) {
+  activeRules: function (item) {
     storage.set('activeRules', item.name);
     this.setState({
       activeRules: item
     });
   },
-  activeValues: function(item) {
+  activeValues: function (item) {
     storage.set('activeValues', item.name);
     this.setState({
       activeValues: item
     });
   },
-  onRulesThemeChange: function(e) {
+  onRulesThemeChange: function (e) {
     var theme = e.target.value;
     storage.set('rulesTheme', theme);
     this.setState({
       rulesTheme: theme
     });
   },
-  onValuesThemeChange: function(e) {
+  onValuesThemeChange: function (e) {
     var theme = e.target.value;
     storage.set('valuesTheme', theme);
     this.setState({
       valuesTheme: theme
     });
   },
-  onRulesFontSizeChange: function(e) {
+  onRulesFontSizeChange: function (e) {
     var fontSize = e.target.value;
     storage.set('rulesFontSize', fontSize);
     this.setState({
       rulesFontSize: fontSize
     });
   },
-  onValuesFontSizeChange: function(e) {
+  onValuesFontSizeChange: function (e) {
     var fontSize = e.target.value;
     storage.set('valuesFontSize', fontSize);
     this.setState({
       valuesFontSize: fontSize
     });
   },
-  onRulesLineNumberChange: function(e) {
+  onRulesLineNumberChange: function (e) {
     var checked = e.target.checked;
     storage.set('showRulesLineNumbers', checked);
     this.setState({
       showRulesLineNumbers: checked
     });
   },
-  onValuesLineNumberChange: function(e) {
+  onValuesLineNumberChange: function (e) {
     var checked = e.target.checked;
     storage.set('showValuesLineNumbers', checked);
     this.setState({
       showValuesLineNumbers: checked
     });
   },
-  showFoldGutter: function(e) {
+  showFoldGutter: function (e) {
     var checked = e.target.checked;
     storage.set('foldGutter', checked ? '1' : '');
     this.setState({
       foldGutter: checked
     });
   },
-  onRulesLineWrappingChange: function(e) {
+  onRulesLineWrappingChange: function (e) {
     var checked = e.target.checked;
     storage.set('autoRulesLineWrapping', checked ? 1 : '');
     this.setState({
       autoRulesLineWrapping: checked
     });
   },
-  onValuesLineWrappingChange: function(e) {
+  onValuesLineWrappingChange: function (e) {
     var checked = e.target.checked;
     storage.set('autoValuesLineWrapping', checked ? 1 : '');
     this.setState({
       autoValuesLineWrapping: checked
     });
   },
-  confirmDisableAllRules: function(e) {
+  confirmDisableAllRules: function (e) {
     var self = this;
     var state = self.state;
     if (state.disabledAllRules) {
       self.disableAllRules();
     } else {
-      win.confirm('Are you sure to disable all rules', function(sure) {
+      win.confirm('Are you sure to disable all rules', function (sure) {
         sure && self.disableAllRules();
       });
     }
     e && e.preventDefault();
   },
-  confirmDisableAllPlugins: function(e) {
+  confirmDisableAllPlugins: function (e) {
     var self = this;
     var state = self.state;
     if (state.disabledAllPlugins) {
       self.disableAllPlugins();
     } else {
-      win.confirm('Are you sure to disable all plugins', function(sure) {
+      win.confirm('Are you sure to disable all plugins', function (sure) {
         sure && self.disableAllPlugins();
       });
     }
     e && e.preventDefault();
   },
-  disableAllRules: function(e, callback) {
+  disableAllRules: function (e, callback) {
     var self = this;
     var state = self.state;
     var checked = !state.disabledAllRules;
-    dataCenter.rules.disableAllRules({disabledAllRules: checked ? 1 : 0}, function(data, xhr) {
-      if (data && data.ec === 0) {
-        state.disabledAllRules = checked;
-        self.setState({});
-        if (typeof callback === 'function') {
-          callback(checked);
+    dataCenter.rules.disableAllRules(
+      { disabledAllRules: checked ? 1 : 0 },
+      function (data, xhr) {
+        if (data && data.ec === 0) {
+          state.disabledAllRules = checked;
+          self.setState({});
+          if (typeof callback === 'function') {
+            callback(checked);
+          }
+        } else {
+          util.showSystemError(xhr);
         }
-      } else {
-        util.showSystemError(xhr);
       }
-    });
+    );
     e && e.preventDefault();
   },
-  disableAllPlugins: function(e, callback) {
+  disableAllPlugins: function (e, callback) {
     var self = this;
     var state = self.state;
     var checked = !state.disabledAllPlugins;
-    dataCenter.plugins.disableAllPlugins({disabledAllPlugins: checked ? 1 : 0}, function(data, xhr) {
-      if (data && data.ec === 0) {
-        state.disabledAllPlugins = checked;
-        protocols.setPlugins(state);
-        self.setState({});
-        if (typeof callback === 'function') {
-          callback(checked);
+    dataCenter.plugins.disableAllPlugins(
+      { disabledAllPlugins: checked ? 1 : 0 },
+      function (data, xhr) {
+        if (data && data.ec === 0) {
+          state.disabledAllPlugins = checked;
+          protocols.setPlugins(state);
+          self.setState({});
+          if (typeof callback === 'function') {
+            callback(checked);
+          }
+        } else {
+          util.showSystemError(xhr);
         }
-      } else {
-        util.showSystemError(xhr);
       }
-    });
+    );
     e && e.preventDefault();
   },
-  disablePlugin: function(e) {
+  disablePlugin: function (e) {
     var self = this;
     var target = e.target;
     if (self.state.ndp) {
       return message.warn('Not allowed disable plugins.');
     }
-    dataCenter.plugins.disablePlugin({
-      name: $(target).attr('data-name'),
-      disabled: target.checked ? 0 : 1
-    }, function(data, xhr) {
-      if (data && data.ec === 0) {
-        self.state.disabledPlugins = data.data;
-        protocols.setPlugins(self.state);
-        self.setState({});
-      } else {
-        util.showSystemError(xhr);
+    dataCenter.plugins.disablePlugin(
+      {
+        name: $(target).attr('data-name'),
+        disabled: target.checked ? 0 : 1
+      },
+      function (data, xhr) {
+        if (data && data.ec === 0) {
+          self.state.disabledPlugins = data.data;
+          protocols.setPlugins(self.state);
+          self.setState({});
+        } else {
+          util.showSystemError(xhr);
+        }
       }
-    });
+    );
   },
-  abort: function(list) {
+  abort: function (list) {
     if (!Array.isArray(list)) {
       var modal = this.state.network;
       list = modal.getSelectedList();
     }
     if (list) {
-      list = list.map(function(item) {
+      list = list.map(function (item) {
         if (util.canAbort(item)) {
           return item.id;
         }
@@ -2754,58 +2936,68 @@ var Index = React.createClass({
     }
     this.hideAbortOptions();
   },
-  allowMultipleChoice: function(e) {
+  allowMultipleChoice: function (e) {
     var self = this;
     var checked = e.target.checked;
-    dataCenter.rules.allowMultipleChoice({allowMultipleChoice: checked ? 1 : 0}, function(data, xhr) {
-      if (data && data.ec === 0) {
-        self.setState({
-          allowMultipleChoice: checked
-        });
-      } else {
-        util.showSystemError(xhr);
+    dataCenter.rules.allowMultipleChoice(
+      { allowMultipleChoice: checked ? 1 : 0 },
+      function (data, xhr) {
+        if (data && data.ec === 0) {
+          self.setState({
+            allowMultipleChoice: checked
+          });
+        } else {
+          util.showSystemError(xhr);
+        }
       }
-    });
+    );
   },
-  enableBackRulesFirst: function(e) {
+  enableBackRulesFirst: function (e) {
     var self = this;
     var checked = e.target.checked;
-    dataCenter.rules.enableBackRulesFirst({backRulesFirst: checked ? 1 : 0}, function(data, xhr) {
-      if (data && data.ec === 0) {
-        self.setState({
-          backRulesFirst: checked
-        });
-      } else {
-        util.showSystemError(xhr);
+    dataCenter.rules.enableBackRulesFirst(
+      { backRulesFirst: checked ? 1 : 0 },
+      function (data, xhr) {
+        if (data && data.ec === 0) {
+          self.setState({
+            backRulesFirst: checked
+          });
+        } else {
+          util.showSystemError(xhr);
+        }
       }
-    });
+    );
   },
-  reinstallAllPlugins: function() {
+  reinstallAllPlugins: function () {
     events.trigger('updateAllPlugins', 'reinstallAllPlugins');
   },
-  chooseFileType: function(e) {
+  chooseFileType: function (e) {
     var value = e.target.value;
     storage.set('exportFileType', value);
     this.setState({
       exportFileType: value
     });
   },
-  uploadSessions: function() {
-    this.uploadSessionsForm(new FormData(ReactDOM.findDOMNode(this.refs.importSessionsForm)));
+  uploadSessions: function () {
+    this.uploadSessionsForm(
+      new FormData(ReactDOM.findDOMNode(this.refs.importSessionsForm))
+    );
     ReactDOM.findDOMNode(this.refs.importSessions).value = '';
   },
-  importHarSessions: function(result) {
+  importHarSessions: function (result) {
     if (!result || typeof result !== 'object') {
       return;
     }
     var entries = result.log.entries;
     var sessions = [];
-    entries.forEach(function(entry) {
+    entries.forEach(function (entry) {
       if (!entry) {
         return;
       }
       var times = entry.whistleTimes || '';
-      var startTime = new Date(times.startTime || entry.startedDateTime).getTime();
+      var startTime = new Date(
+        times.startTime || entry.startedDateTime
+      ).getTime();
       if (isNaN(startTime)) {
         return;
       }
@@ -2856,7 +3048,10 @@ var Index = React.createClass({
       if (text) {
         if (resCtn.base64) {
           res.base64 = resCtn.base64;
-        } else if (util.getContentType(resCtn.mimeType) === 'IMG' || (text.length % 4 === 0 && /^[a-z\d+/]+={0,2}$/i.test(text))) {
+        } else if (
+          util.getContentType(resCtn.mimeType) === 'IMG' ||
+          (text.length % 4 === 0 && /^[a-z\d+/]+={0,2}$/i.test(text))
+        ) {
           res.base64 = text;
         } else {
           res.body = text;
@@ -2883,11 +3078,18 @@ var Index = React.createClass({
         var endTime = Math.round(startTime + util.getTimeFromHar(entry.time));
         startTime = Math.floor(startTime + util.getTimeFromHar(timings.dns));
         session.dnsTime = startTime;
-        startTime = Math.floor(startTime + util.getTimeFromHar(timings.connect)
-        + util.getTimeFromHar(timings.ssl) + util.getTimeFromHar(timings.send)
-        + util.getTimeFromHar(timings.blocked) + util.getTimeFromHar(timings.wait));
+        startTime = Math.floor(
+          startTime +
+            util.getTimeFromHar(timings.connect) +
+            util.getTimeFromHar(timings.ssl) +
+            util.getTimeFromHar(timings.send) +
+            util.getTimeFromHar(timings.blocked) +
+            util.getTimeFromHar(timings.wait)
+        );
         session.requestTime = startTime;
-        startTime = Math.floor(startTime + util.getTimeFromHar(timings.receive));
+        startTime = Math.floor(
+          startTime + util.getTimeFromHar(timings.receive)
+        );
         session.responseTime = startTime;
         session.endTime = Math.max(startTime, endTime);
       }
@@ -2895,7 +3097,7 @@ var Index = React.createClass({
     });
     dataCenter.addNetworkList(sessions);
   },
-  uploadSessionsForm: function(data) {
+  uploadSessionsForm: function (data) {
     var file = data.get('importSessions');
     if (!file || !/\.(txt|json|saz|har)$/i.test(file.name)) {
       return win.alert('Only supports .txt, .json, .saz or .har file.');
@@ -2907,7 +3109,7 @@ var Index = React.createClass({
     var isText = /\.txt$/i.test(file.name);
     if (isText || /\.har$/i.test(file.name)) {
       var self = this;
-      util.readFileAsText(file, function(result) {
+      util.readFileAsText(file, function (result) {
         try {
           result = JSON.parse(result);
           if (isText) {
@@ -2923,11 +3125,14 @@ var Index = React.createClass({
     }
     dataCenter.upload.importSessions(data, dataCenter.addNetworkList);
   },
-  exportSessions: function(type, name) {
+  exportSessions: function (type, name) {
     var modal = this.state.network;
     var sessions = this.currentFoucsItem;
     this.currentFoucsItem = null;
-    if (!sessions || !$(ReactDOM.findDOMNode(this.refs.chooseFileType)).is(':visible')) {
+    if (
+      !sessions ||
+      !$(ReactDOM.findDOMNode(this.refs.chooseFileType)).is(':visible')
+    ) {
       sessions = modal.getSelectedList();
     }
     if (!sessions || !sessions.length) {
@@ -2939,7 +3144,7 @@ var Index = React.createClass({
     if (type === 'har') {
       sessions = {
         log: {
-          version : '1.2',
+          version: '1.2',
           creator: {
             name: 'Whistle',
             version: this.state.version,
@@ -2955,10 +3160,14 @@ var Index = React.createClass({
         }
       };
     }
-    ReactDOM.findDOMNode(this.refs.sessions).value = JSON.stringify(sessions, null, '  ');
+    ReactDOM.findDOMNode(this.refs.sessions).value = JSON.stringify(
+      sessions,
+      null,
+      '  '
+    );
     form.submit();
   },
-  exportBySave: function(e) {
+  exportBySave: function (e) {
     if (e && e.type !== 'click' && e.keyCode !== 13) {
       return;
     }
@@ -2968,7 +3177,7 @@ var Index = React.createClass({
     this.exportSessions(this.state.exportFileType, name);
     $(ReactDOM.findDOMNode(this.refs.chooseFileType)).modal('hide');
   },
-  replayRepeat: function(e) {
+  replayRepeat: function (e) {
     if (e && e.type !== 'click' && e.keyCode !== 13) {
       return;
     }
@@ -2976,18 +3185,18 @@ var Index = React.createClass({
     this.replay('', this.replayList, this.state.replayCount);
     events.trigger('focusNetworkList');
   },
-  showAboutDialog: function(e) {
+  showAboutDialog: function (e) {
     if ($(e.target).closest('.w-menu-enable').length) {
       this.refs.aboutDialog.showAboutInfo();
     }
   },
-  showCustomCertsInfo: function() {
+  showCustomCertsInfo: function () {
     var self = this;
     if (self.loadingCerts) {
       return;
     }
     self.loadingCerts = true;
-    dataCenter.certs.all(function(data, xhr) {
+    dataCenter.certs.all(function (data, xhr) {
       self.loadingCerts = false;
       if (!data) {
         util.showSystemError(xhr);
@@ -2996,7 +3205,7 @@ var Index = React.createClass({
       self.refs.certsInfoDialog.show(data.certs, data.dir);
     });
   },
-  onContextMenu: function(e) {
+  onContextMenu: function (e) {
     var count = 0;
     var list = LEFT_BAR_MENUS;
     if (list[2].hide) {
@@ -3032,68 +3241,68 @@ var Index = React.createClass({
     }
     e.preventDefault();
   },
-  onClickContextMenu: function(action) {
+  onClickContextMenu: function (action) {
     var self = this;
     var state = self.state;
     var list = LEFT_BAR_MENUS;
-    switch(action) {
-    case 'Tree View':
-      list[2].checked = !state.network.isTreeView;
-      self.toggleTreeView();
-      break;
-    case 'Rules':
-      self.disableAllRules(null, function(disabled) {
-        list[3].checked = !disabled;
-        self.setState({});
-      });
-      break;
-    case 'Plugins':
-      self.disableAllPlugins(null, function(disabled) {
-        list[4].checked = !disabled;
-        self.setState({});
-      });
-      break;
-    case 'Clear':
-      self.clear();
-      return;
-    case 'Save':
-      self.saveRulesOrValues();
-      return;
+    switch (action) {
+      case 'Tree View':
+        list[2].checked = !state.network.isTreeView;
+        self.toggleTreeView();
+        break;
+      case 'Rules':
+        self.disableAllRules(null, function (disabled) {
+          list[3].checked = !disabled;
+          self.setState({});
+        });
+        break;
+      case 'Plugins':
+        self.disableAllPlugins(null, function (disabled) {
+          list[4].checked = !disabled;
+          self.setState({});
+        });
+        break;
+      case 'Clear':
+        self.clear();
+        return;
+      case 'Save':
+        self.saveRulesOrValues();
+        return;
     }
     this.refs.contextMenu.show({});
   },
-  forceShowLeftMenu: function() {
+  forceShowLeftMenu: function () {
     var self = this;
     clearTimeout(self.hideTimer);
     clearTimeout(self.showTimer);
-    self.showTimer = setTimeout(function() {
+    self.showTimer = setTimeout(function () {
       self.setState({ forceShowLeftMenu: true });
     }, 200);
   },
-  forceHideLeftMenu: function() {
+  forceHideLeftMenu: function () {
     var self = this;
     clearTimeout(self.hideTimer);
     clearTimeout(self.showTimer);
-    self.hideTimer = setTimeout(function() {
+    self.hideTimer = setTimeout(function () {
       self.setState({ forceShowLeftMenu: false });
     }, 500);
   },
-  toggleTreeView: function() {
+  toggleTreeView: function () {
     var self = this;
     var modal = self.state.network;
     modal.setTreeView(!modal.isTreeView);
-    self.setState({}, function() {
+    self.setState({}, function () {
       if (!modal.isTreeView) {
         self.autoRefresh && self.autoRefresh();
       }
     });
   },
-  toggleTreeViewByIcon: function() {
+  toggleTreeViewByIcon: function () {
     if (this.getTabName() == 'network') {
       this.toggleTreeView();
     }
   },
-  getTabName: function() {
+  getTabName: function () {
     var state = this.state;
     var networkMode = state.networkMode;
     var rulesMode = state.rulesMode;
@@ -3114,7 +3323,7 @@ var Index = React.createClass({
     }
     return name || 'network';
   },
-  render: function() {
+  render: function () {
     var state = this.state;
     var networkMode = state.networkMode;
     var rulesMode = state.rulesMode;
@@ -3149,8 +3358,8 @@ var Index = React.createClass({
     var isTreeView = modal.isTreeView;
     var networkType = isTreeView ? 'tree-conifer' : 'globe';
     if (rulesOptions[0].name === DEFAULT) {
-      rulesOptions.forEach(function(item, i) {
-        item.icon = (!i || !state.multiEnv) ? 'checkbox' : 'edit';
+      rulesOptions.forEach(function (item, i) {
+        item.icon = !i || !state.multiEnv ? 'checkbox' : 'edit';
         if (!item.selected) {
           uncheckedRules[item.name] = 1;
         }
@@ -3184,20 +3393,20 @@ var Index = React.createClass({
     var networkOptions = state.networkOptions;
     var hasUnselected = modal.hasUnselected();
     if (modal.hasSelected()) {
-      networkOptions.forEach(function(option) {
+      networkOptions.forEach(function (option) {
         option.disabled = false;
         if (option.id === 'removeUnselected') {
           option.disabled = !hasUnselected;
         }
       });
-      REMOVE_OPTIONS.forEach(function(option) {
+      REMOVE_OPTIONS.forEach(function (option) {
         option.disabled = false;
         if (option.id === 'removeUnselected') {
           option.disabled = !hasUnselected;
         }
       });
     } else {
-      networkOptions.forEach(function(option) {
+      networkOptions.forEach(function (option) {
         if (OPTIONS_WITH_SELECTED.indexOf(option.id) !== -1) {
           option.disabled = true;
         } else if (option.id === 'removeUnselected') {
@@ -3205,7 +3414,7 @@ var Index = React.createClass({
         }
       });
       networkOptions[0].disabled = !hasUnselected;
-      REMOVE_OPTIONS.forEach(function(option) {
+      REMOVE_OPTIONS.forEach(function (option) {
         if (OPTIONS_WITH_SELECTED.indexOf(option.id) !== -1) {
           option.disabled = true;
         } else if (option.id === 'removeUnselected') {
@@ -3230,402 +3439,1249 @@ var Index = React.createClass({
     LEFT_BAR_MENUS[3].hide = pluginsMode;
     LEFT_BAR_MENUS[4].hide = rulesOnlyMode;
     return (
-      <div className={'main orient-vertical-box' + (showLeftMenu ? ' w-show-left-menu' : '')}>
+      <div
+        className={
+          'main orient-vertical-box' + (showLeftMenu ? ' w-show-left-menu' : '')
+        }
+      >
         <div className={'w-menu w-' + name + '-menu-list'}>
-          <a onClick={this.toggleLeftMenu} draggable="false" className="w-show-left-menu-btn" onMouseEnter={forceShowLeftMenu} onMouseLeave={forceHideLeftMenu}
-            style={{display: networkMode || pluginsOnlyMode ? 'none' : undefined}} title={'Dock to ' + (showLeftMenu ? 'top' : 'left') + ' (Ctrl[Command] + M)'}>
-            <span className={'glyphicon glyphicon-chevron-' + (showLeftMenu ? (mustHideLeftMenu ? 'down' : 'up') : 'left')}></span>
+          <a
+            onClick={this.toggleLeftMenu}
+            draggable="false"
+            className="w-show-left-menu-btn"
+            onMouseEnter={forceShowLeftMenu}
+            onMouseLeave={forceHideLeftMenu}
+            style={{
+              display: networkMode || pluginsOnlyMode ? 'none' : undefined
+            }}
+            title={
+              'Dock to ' +
+              (showLeftMenu ? 'top' : 'left') +
+              ' (Ctrl[Command] + M)'
+            }
+          >
+            <span
+              className={
+                'glyphicon glyphicon-chevron-' +
+                (showLeftMenu ? (mustHideLeftMenu ? 'down' : 'up') : 'left')
+              }
+            ></span>
           </a>
-          <div style={{display: rulesMode ? 'none' : undefined}} onMouseEnter={this.showNetworkOptions} onMouseLeave={this.hideNetworkOptions} className={'w-nav-menu w-menu-wrapper' + (showNetworkOptions ? ' w-menu-wrapper-show' : '')}>
-            <a onClick={this.showNetwork} onDoubleClick={this.toggleTreeView} className={'w-network-menu' + (name == 'network' ? ' w-menu-selected' : '')}
-              title={'Double click to show' + (isTreeView ? ' List View' : ' Tree View')}
-              draggable="false"><span className={'glyphicon glyphicon-' + networkType}></span>Network</a>
-            <MenuItem ref="networkMenuItem" options={state.networkOptions} className="w-network-menu-item" onClickOption={this.handleNetwork} />
+          <div
+            style={{ display: rulesMode ? 'none' : undefined }}
+            onMouseEnter={this.showNetworkOptions}
+            onMouseLeave={this.hideNetworkOptions}
+            className={
+              'w-nav-menu w-menu-wrapper' +
+              (showNetworkOptions ? ' w-menu-wrapper-show' : '')
+            }
+          >
+            <a
+              onClick={this.showNetwork}
+              onDoubleClick={this.toggleTreeView}
+              className={
+                'w-network-menu' + (name == 'network' ? ' w-menu-selected' : '')
+              }
+              title={
+                'Double click to show' +
+                (isTreeView ? ' List View' : ' Tree View')
+              }
+              draggable="false"
+            >
+              <span className={'glyphicon glyphicon-' + networkType}></span>
+              Network
+            </a>
+            <MenuItem
+              ref="networkMenuItem"
+              options={state.networkOptions}
+              className="w-network-menu-item"
+              onClickOption={this.handleNetwork}
+            />
           </div>
-          <div style={{display: pluginsMode ? 'none' : undefined}} onMouseEnter={this.showRulesOptions} onMouseLeave={this.hideRulesOptions}
-            className={'w-nav-menu w-menu-wrapper' + (showRulesOptions ? ' w-menu-wrapper-show' : '') + (isRules ? ' w-menu-auto' : '')}>
-            <a onClick={this.showRules} className={'w-rules-menu' + (name == 'rules' ? ' w-menu-selected' : '')}  draggable="false">
-              <span className={'glyphicon glyphicon-list' + (disabledAllRules ? ' w-disabled' : '')}></span>Rules</a>
-            <MenuItem ref="rulesMenuItem"  name={name == 'rules' ? null : 'Open'} options={rulesOptions} checkedOptions={uncheckedRules} disabled={disabledAllRules}
+          <div
+            style={{ display: pluginsMode ? 'none' : undefined }}
+            onMouseEnter={this.showRulesOptions}
+            onMouseLeave={this.hideRulesOptions}
+            className={
+              'w-nav-menu w-menu-wrapper' +
+              (showRulesOptions ? ' w-menu-wrapper-show' : '') +
+              (isRules ? ' w-menu-auto' : '')
+            }
+          >
+            <a
+              onClick={this.showRules}
+              className={
+                'w-rules-menu' + (name == 'rules' ? ' w-menu-selected' : '')
+              }
+              draggable="false"
+            >
+              <span
+                className={
+                  'glyphicon glyphicon-list' +
+                  (disabledAllRules ? ' w-disabled' : '')
+                }
+              ></span>
+              Rules
+            </a>
+            <MenuItem
+              ref="rulesMenuItem"
+              name={name == 'rules' ? null : 'Open'}
+              options={rulesOptions}
+              checkedOptions={uncheckedRules}
+              disabled={disabledAllRules}
               className="w-rules-menu-item"
               onClick={this.showRules}
               onClickOption={this.showAndActiveRules}
-              onChange={this.selectRulesByOptions} />
+              onChange={this.selectRulesByOptions}
+            />
           </div>
-          <div style={{display: pluginsMode ? 'none' : undefined}} onMouseEnter={this.showValuesOptions} onMouseLeave={this.hideValuesOptions}
-            className={'w-nav-menu w-menu-wrapper' + (showValuesOptions ? ' w-menu-wrapper-show' : '') + (isValues ? ' w-menu-auto' : '')}>
-            <a onClick={this.showValues} className={'w-values-menu' + (name == 'values' ? ' w-menu-selected' : '')}
-              draggable="false"><span className="glyphicon glyphicon-folder-close"></span>Values</a>
-            <MenuItem ref="valuesMenuItem" name={name == 'values' ? null : 'Open'} options={state.valuesOptions} className="w-values-menu-item" onClick={this.showValues} onClickOption={this.showAndActiveValues} />
+          <div
+            style={{ display: pluginsMode ? 'none' : undefined }}
+            onMouseEnter={this.showValuesOptions}
+            onMouseLeave={this.hideValuesOptions}
+            className={
+              'w-nav-menu w-menu-wrapper' +
+              (showValuesOptions ? ' w-menu-wrapper-show' : '') +
+              (isValues ? ' w-menu-auto' : '')
+            }
+          >
+            <a
+              onClick={this.showValues}
+              className={
+                'w-values-menu' + (name == 'values' ? ' w-menu-selected' : '')
+              }
+              draggable="false"
+            >
+              <span className="glyphicon glyphicon-folder-close"></span>Values
+            </a>
+            <MenuItem
+              ref="valuesMenuItem"
+              name={name == 'values' ? null : 'Open'}
+              options={state.valuesOptions}
+              className="w-values-menu-item"
+              onClick={this.showValues}
+              onClickOption={this.showAndActiveValues}
+            />
           </div>
-          <div style={{display: rulesOnlyMode || pluginsOnlyMode ? 'none' : undefined}} ref="pluginsMenu" onMouseEnter={this.showPluginsOptions} onMouseLeave={this.hidePluginsOptions} className={'w-nav-menu w-menu-wrapper' + (showPluginsOptions ? ' w-menu-wrapper-show' : '')}>
-            <a onClick={this.showPlugins} className={'w-plugins-menu' + (name == 'plugins' ? ' w-menu-selected' : '')} draggable="false">
-              <span className={'glyphicon glyphicon-list-alt' + (disabledAllPlugins ? ' w-disabled' : '')}></span>Plugins</a>
-            <MenuItem ref="pluginsMenuItem" name={name == 'plugins' ? null : 'Open'} options={pluginsOptions} checkedOptions={state.disabledPlugins} disabled={disabledAllPlugins}
-              className="w-plugins-menu-item" onClick={this.showPlugins} onChange={this.disablePlugin} onClickOption={this.showAndActivePlugins} />
+          <div
+            style={{
+              display: rulesOnlyMode || pluginsOnlyMode ? 'none' : undefined
+            }}
+            ref="pluginsMenu"
+            onMouseEnter={this.showPluginsOptions}
+            onMouseLeave={this.hidePluginsOptions}
+            className={
+              'w-nav-menu w-menu-wrapper' +
+              (showPluginsOptions ? ' w-menu-wrapper-show' : '')
+            }
+          >
+            <a
+              onClick={this.showPlugins}
+              className={
+                'w-plugins-menu' + (name == 'plugins' ? ' w-menu-selected' : '')
+              }
+              draggable="false"
+            >
+              <span
+                className={
+                  'glyphicon glyphicon-list-alt' +
+                  (disabledAllPlugins ? ' w-disabled' : '')
+                }
+              ></span>
+              Plugins
+            </a>
+            <MenuItem
+              ref="pluginsMenuItem"
+              name={name == 'plugins' ? null : 'Open'}
+              options={pluginsOptions}
+              checkedOptions={state.disabledPlugins}
+              disabled={disabledAllPlugins}
+              className="w-plugins-menu-item"
+              onClick={this.showPlugins}
+              onChange={this.disablePlugin}
+              onClickOption={this.showAndActivePlugins}
+            />
           </div>
-          {!state.ndr && <a onClick={this.confirmDisableAllRules} className="w-enable-rules-menu"
-             title={disabledAllRules ? 'Enable all rules' : 'Disable all rules'}
-            style={{display: isRules ? '' : 'none', color: disabledAllRules ? '#f66' : undefined}}
-            draggable="false">
-            <span className={'glyphicon glyphicon-' + (disabledAllRules ? 'play-circle' : 'off')}/>
-            {disabledAllRules ? 'ON' : 'OFF'}
-          </a>}
-          {!state.ndp && <a onClick={this.confirmDisableAllPlugins} className="w-enable-plugin-menu"
-            title={disabledAllPlugins ? 'Enable all plugins' : 'Disable all plugins'}
-            style={{display: isPlugins ? '' : 'none', color: disabledAllPlugins ? '#f66' : undefined}}
-            draggable="false">
-            <span className={'glyphicon glyphicon-' + (disabledAllPlugins ? 'play-circle' : 'off')}/>
+          {!state.ndr && (
+            <a
+              onClick={this.confirmDisableAllRules}
+              className="w-enable-rules-menu"
+              title={
+                disabledAllRules ? 'Enable all rules' : 'Disable all rules'
+              }
+              style={{
+                display: isRules ? '' : 'none',
+                color: disabledAllRules ? '#f66' : undefined
+              }}
+              draggable="false"
+            >
+              <span
+                className={
+                  'glyphicon glyphicon-' +
+                  (disabledAllRules ? 'play-circle' : 'off')
+                }
+              />
+              {disabledAllRules ? 'ON' : 'OFF'}
+            </a>
+          )}
+          {!state.ndp && (
+            <a
+              onClick={this.confirmDisableAllPlugins}
+              className="w-enable-plugin-menu"
+              title={
+                disabledAllPlugins
+                  ? 'Enable all plugins'
+                  : 'Disable all plugins'
+              }
+              style={{
+                display: isPlugins ? '' : 'none',
+                color: disabledAllPlugins ? '#f66' : undefined
+              }}
+              draggable="false"
+            >
+              <span
+                className={
+                  'glyphicon glyphicon-' +
+                  (disabledAllPlugins ? 'play-circle' : 'off')
+                }
+              />
               {disabledAllPlugins ? 'ON' : 'OFF'}
-          </a>}
+            </a>
+          )}
           <UpdateAllBtn hide={!isPlugins} />
-          <a onClick={this.reinstallAllPlugins} className={'w-plugins-menu' +
-            (isPlugins ? '' : ' hide')} draggable="false">
+          <a
+            onClick={this.reinstallAllPlugins}
+            className={'w-plugins-menu' + (isPlugins ? '' : ' hide')}
+            draggable="false"
+          >
             <span className="glyphicon glyphicon-download-alt" />
             ReinstallAll
           </a>
-          <RecordBtn ref="recordBtn" hide={!isNetwork} onClick={this.handleAction} />
-          <a onClick={this.importData} className="w-import-menu"
-            style={{display: isPlugins ? 'none' : ''}}
-            draggable="false">
+          <RecordBtn
+            ref="recordBtn"
+            hide={!isNetwork}
+            onClick={this.handleAction}
+          />
+          <a
+            onClick={this.importData}
+            className="w-import-menu"
+            style={{ display: isPlugins ? 'none' : '' }}
+            draggable="false"
+          >
             <span className="glyphicon glyphicon-import"></span>Import
           </a>
-          <a onClick={this.exportData} className="w-export-menu"
-          style={{display: isPlugins ? 'none' : ''}} draggable="false">
+          <a
+            onClick={this.exportData}
+            className="w-export-menu"
+            style={{ display: isPlugins ? 'none' : '' }}
+            draggable="false"
+          >
             <span className="glyphicon glyphicon-export"></span>Export
           </a>
-          <div onMouseEnter={this.showRemoveOptions} onMouseLeave={this.hideRemoveOptions}
-            style={{display: isNetwork ? '' : 'none'}}
-            className={'w-menu-wrapper w-remove-menu-list w-menu-auto' + (state.showRemoveOptions ? ' w-menu-wrapper-show' : '')}>
-            <a onClick={this.clear} className="w-remove-menu" title="Ctrl[Command] + X"
-              draggable="false">
+          <div
+            onMouseEnter={this.showRemoveOptions}
+            onMouseLeave={this.hideRemoveOptions}
+            style={{ display: isNetwork ? '' : 'none' }}
+            className={
+              'w-menu-wrapper w-remove-menu-list w-menu-auto' +
+              (state.showRemoveOptions ? ' w-menu-wrapper-show' : '')
+            }
+          >
+            <a
+              onClick={this.clear}
+              className="w-remove-menu"
+              title="Ctrl[Command] + X"
+              draggable="false"
+            >
               <span className="glyphicon glyphicon-remove"></span>Clear
             </a>
-            <MenuItem options={REMOVE_OPTIONS} className="w-remove-menu-item" onClickOption={this.handleNetwork} />
+            <MenuItem
+              options={REMOVE_OPTIONS}
+              className="w-remove-menu-item"
+              onClickOption={this.handleNetwork}
+            />
           </div>
-          <a onClick={this.onClickMenu} className="w-save-menu" style={{display: (isNetwork || isPlugins) ? 'none' : ''}} draggable="false" title="Ctrl[Command] + S"><span className="glyphicon glyphicon-save-file"></span>Save</a>
-          <a className="w-create-menu"
-              style={{display: (isNetwork || isPlugins) ? 'none' : ''}}
-              draggable="false"
-              onClick={this.handleCreate}
-            >
+          <a
+            onClick={this.onClickMenu}
+            className="w-save-menu"
+            style={{ display: isNetwork || isPlugins ? 'none' : '' }}
+            draggable="false"
+            title="Ctrl[Command] + S"
+          >
+            <span className="glyphicon glyphicon-save-file"></span>Save
+          </a>
+          <a
+            className="w-create-menu"
+            style={{ display: isNetwork || isPlugins ? 'none' : '' }}
+            draggable="false"
+            onClick={this.handleCreate}
+          >
             <span className="glyphicon glyphicon-plus"></span>Create
           </a>
-          <a onClick={this.onClickMenu} className={'w-edit-menu' + (disabledEditBtn ? ' w-disabled' : '')} style={{display: (isNetwork || isPlugins) ? 'none' : ''}} draggable="false"><span className="glyphicon glyphicon-edit"></span>Rename</a>
-          <div onMouseEnter={this.showAbortOptions} onMouseLeave={this.hideAbortOptions}
-            style={{display: isNetwork ? '' : 'none'}}
-            className={'w-menu-wrapper w-abort-menu-list w-menu-auto' + (state.showAbortOptions ? ' w-menu-wrapper-show' : '')}>
-            <a onClick={this.clickReplay} className="w-replay-menu"
-              draggable="false">
+          <a
+            onClick={this.onClickMenu}
+            className={'w-edit-menu' + (disabledEditBtn ? ' w-disabled' : '')}
+            style={{ display: isNetwork || isPlugins ? 'none' : '' }}
+            draggable="false"
+          >
+            <span className="glyphicon glyphicon-edit"></span>Rename
+          </a>
+          <div
+            onMouseEnter={this.showAbortOptions}
+            onMouseLeave={this.hideAbortOptions}
+            style={{ display: isNetwork ? '' : 'none' }}
+            className={
+              'w-menu-wrapper w-abort-menu-list w-menu-auto' +
+              (state.showAbortOptions ? ' w-menu-wrapper-show' : '')
+            }
+          >
+            <a
+              onClick={this.clickReplay}
+              className="w-replay-menu"
+              draggable="false"
+            >
               <span className="glyphicon glyphicon-repeat"></span>Replay
             </a>
-            <MenuItem options={ABORT_OPTIONS} className="w-remove-menu-item" onClickOption={this.abort} />
+            <MenuItem
+              options={ABORT_OPTIONS}
+              className="w-remove-menu-item"
+              onClickOption={this.abort}
+            />
           </div>
-          <a onClick={this.composer} className="w-composer-menu" style={{display: isNetwork ? '' : 'none'}} draggable="false"><span className="glyphicon glyphicon-edit"></span>Compose</a>
-          <a onClick={this.onClickMenu} className={'w-delete-menu' + (disabledDeleteBtn ? ' w-disabled' : '')} style={{display: (isNetwork || isPlugins) ? 'none' : ''}} draggable="false"><span className="glyphicon glyphicon-trash"></span>Delete</a>
-          <FilterBtn onClick={this.showSettings} disabledRules={isRules && disabledAllRules} isNetwork={isNetwork} hide={isPlugins} />
-          <a onClick={this.showFiles} className="w-files-menu" draggable="false"><span className="glyphicon glyphicon-upload"></span>Files</a>
-          <div onMouseEnter={this.showWeinreOptions} onMouseLeave={this.hideWeinreOptions} className={'w-menu-wrapper' + (showWeinreOptions ? ' w-menu-wrapper-show' : '')}>
-            <a onClick={this.showWeinreOptionsQuick}
+          <a
+            onClick={this.composer}
+            className="w-composer-menu"
+            style={{ display: isNetwork ? '' : 'none' }}
+            draggable="false"
+          >
+            <span className="glyphicon glyphicon-edit"></span>Compose
+          </a>
+          <a
+            onClick={this.onClickMenu}
+            className={
+              'w-delete-menu' + (disabledDeleteBtn ? ' w-disabled' : '')
+            }
+            style={{ display: isNetwork || isPlugins ? 'none' : '' }}
+            draggable="false"
+          >
+            <span className="glyphicon glyphicon-trash"></span>Delete
+          </a>
+          <FilterBtn
+            onClick={this.showSettings}
+            disabledRules={isRules && disabledAllRules}
+            isNetwork={isNetwork}
+            hide={isPlugins}
+          />
+          <a
+            onClick={this.showFiles}
+            className="w-files-menu"
+            draggable="false"
+          >
+            <span className="glyphicon glyphicon-upload"></span>Files
+          </a>
+          <div
+            onMouseEnter={this.showWeinreOptions}
+            onMouseLeave={this.hideWeinreOptions}
+            className={
+              'w-menu-wrapper' +
+              (showWeinreOptions ? ' w-menu-wrapper-show' : '')
+            }
+          >
+            <a
+              onClick={this.showWeinreOptionsQuick}
               onDoubleClick={this.showAnonymousWeinre}
               className="w-weinre-menu"
-              draggable="false"><span className="glyphicon glyphicon-console"></span>Weinre</a>
-            <MenuItem ref="weinreMenuItem" name="anonymous" options={state.weinreOptions} className="w-weinre-menu-item" onClick={this.showAnonymousWeinre} onClickOption={this.showWeinre} />
+              draggable="false"
+            >
+              <span className="glyphicon glyphicon-console"></span>Weinre
+            </a>
+            <MenuItem
+              ref="weinreMenuItem"
+              name="anonymous"
+              options={state.weinreOptions}
+              className="w-weinre-menu-item"
+              onClick={this.showAnonymousWeinre}
+              onClickOption={this.showWeinre}
+            />
           </div>
-          <a onClick={this.showHttpsSettingsDialog} className="w-https-menu" draggable="false"
-            style={{color: dataCenter.hasInvalidCerts ? 'red' : undefined}}
+          <a
+            onClick={this.showHttpsSettingsDialog}
+            className="w-https-menu"
+            draggable="false"
+            style={{ color: dataCenter.hasInvalidCerts ? 'red' : undefined }}
           >
-            <span className={'glyphicon glyphicon-' + (state.interceptHttpsConnects ? 'ok' : 'lock')}></span>HTTPS
+            <span
+              className={
+                'glyphicon glyphicon-' +
+                (state.interceptHttpsConnects ? 'ok' : 'lock')
+              }
+            ></span>
+            HTTPS
           </a>
-          <div onMouseEnter={this.showHelpOptions} onMouseLeave={this.hideHelpOptions}
-            className={'w-menu-wrapper' + (showHelpOptions ? ' w-menu-wrapper-show' : '')}>
-            <a className={'w-help-menu' + (state.hasNewVersion ? ' w-menu-enable'  : '')}
+          <div
+            onMouseEnter={this.showHelpOptions}
+            onMouseLeave={this.hideHelpOptions}
+            className={
+              'w-menu-wrapper' + (showHelpOptions ? ' w-menu-wrapper-show' : '')
+            }
+          >
+            <a
+              className={
+                'w-help-menu' + (state.hasNewVersion ? ' w-menu-enable' : '')
+              }
               onClick={this.showAboutDialog}
-              title={state.hasNewVersion ? 'There is a new version of whistle' : undefined}
-              href={state.hasNewVersion ? undefined : 'https://github.com/avwo/whistle#whistle'}
-              target={state.hasNewVersion ? undefined : '_blank'}><span className="glyphicon glyphicon-question-sign"></span>Help</a>
-            <MenuItem ref="helpMenuItem" options={state.helpOptions}
-              name={<About ref="aboutDialog" onClick={this.hideHelpOptions} onCheckUpdate={this.showHasNewVersion} />}
-              className="w-help-menu-item" />
+              title={
+                state.hasNewVersion
+                  ? 'There is a new version of whistle'
+                  : undefined
+              }
+              href={
+                state.hasNewVersion
+                  ? undefined
+                  : 'https://github.com/avwo/whistle#whistle'
+              }
+              target={state.hasNewVersion ? undefined : '_blank'}
+            >
+              <span className="glyphicon glyphicon-question-sign"></span>Help
+            </a>
+            <MenuItem
+              ref="helpMenuItem"
+              options={state.helpOptions}
+              name={
+                <About
+                  ref="aboutDialog"
+                  onClick={this.hideHelpOptions}
+                  onCheckUpdate={this.showHasNewVersion}
+                />
+              }
+              className="w-help-menu-item"
+            />
           </div>
           <Online name={name} />
-          <div onMouseDown={this.preventBlur} style={{display: state.showCreateRules ? 'block' : 'none'}} className="shadow w-input-menu-item w-create-rules-input"><input ref="createRulesInput" onKeyDown={this.createRules} onBlur={this.hideRulesInput} type="text" maxLength="64" placeholder="Input the name" /><button type="button" onClick={this.createRules} className="btn btn-primary">+Rule</button><button style={{marginLeft: 1}} type="button" onClick={this.createRules} data-type="top" className="btn btn-default">+Top</button></div>
-          <div onMouseDown={this.preventBlur} style={{display: state.showCreateValues ? 'block' : 'none'}} className="shadow w-input-menu-item w-create-values-input"><input ref="createValuesInput" onKeyDown={this.createValues} onBlur={this.hideValuesInput} type="text" maxLength="64" placeholder="Input the key" /><button type="button" onClick={this.createValues} className="btn btn-primary">+Key</button></div>
-          <div onMouseDown={this.preventBlur} style={{display: state.showCreateRuleGroup ? 'block' : 'none'}} className="shadow w-input-menu-item w-create-rules-input"><input ref="createRuleGroupInput" onKeyDown={this.createRules} onBlur={this.hideRuleGroup} type="text" maxLength="64" placeholder="Input the group name" /><button type="button" onClick={this.createRuleGroup} className="btn btn-primary">+Group</button></div>
-          <div onMouseDown={this.preventBlur} style={{display: state.showCreateValueGroup ? 'block' : 'none'}} className="shadow w-input-menu-item w-create-values-input"><input ref="createValueGroupInput" onKeyDown={this.createValues} onBlur={this.hideValueGroup} type="text" maxLength="64" placeholder="Input the group name" /><button type="button" onClick={this.createValueGroup} className="btn btn-primary">+Group</button></div>
-          <div onMouseDown={this.preventBlur} style={{display: state.showEditRules ? 'block' : 'none'}} className="shadow w-input-menu-item w-edit-rules-input"><input ref="editRulesInput" onKeyDown={this.editRules} onBlur={this.hideRenameRuleInput} type="text" maxLength="64"  /><button type="button" onClick={this.editRules} className="btn btn-primary">OK</button></div>
-          <div onMouseDown={this.preventBlur} style={{display: state.showEditValues ? 'block' : 'none'}} className="shadow w-input-menu-item w-edit-values-input"><input ref="editValuesInput" onKeyDown={this.editValues} onBlur={this.hideRenameValueInput} type="text" maxLength="64" /><button type="button" onClick={this.editValues} className="btn btn-primary">OK</button></div>
+          <div
+            onMouseDown={this.preventBlur}
+            style={{ display: state.showCreateRules ? 'block' : 'none' }}
+            className="shadow w-input-menu-item w-create-rules-input"
+          >
+            <input
+              ref="createRulesInput"
+              onKeyDown={this.createRules}
+              onBlur={this.hideRulesInput}
+              type="text"
+              maxLength="64"
+              placeholder="Input the name"
+            />
+            <button
+              type="button"
+              onClick={this.createRules}
+              className="btn btn-primary"
+            >
+              +Rule
+            </button>
+            <button
+              style={{ marginLeft: 1 }}
+              type="button"
+              onClick={this.createRules}
+              data-type="top"
+              className="btn btn-default"
+            >
+              +Top
+            </button>
+          </div>
+          <div
+            onMouseDown={this.preventBlur}
+            style={{ display: state.showCreateValues ? 'block' : 'none' }}
+            className="shadow w-input-menu-item w-create-values-input"
+          >
+            <input
+              ref="createValuesInput"
+              onKeyDown={this.createValues}
+              onBlur={this.hideValuesInput}
+              type="text"
+              maxLength="64"
+              placeholder="Input the key"
+            />
+            <button
+              type="button"
+              onClick={this.createValues}
+              className="btn btn-primary"
+            >
+              +Key
+            </button>
+          </div>
+          <div
+            onMouseDown={this.preventBlur}
+            style={{ display: state.showCreateRuleGroup ? 'block' : 'none' }}
+            className="shadow w-input-menu-item w-create-rules-input"
+          >
+            <input
+              ref="createRuleGroupInput"
+              onKeyDown={this.createRules}
+              onBlur={this.hideRuleGroup}
+              type="text"
+              maxLength="64"
+              placeholder="Input the group name"
+            />
+            <button
+              type="button"
+              onClick={this.createRuleGroup}
+              className="btn btn-primary"
+            >
+              +Group
+            </button>
+          </div>
+          <div
+            onMouseDown={this.preventBlur}
+            style={{ display: state.showCreateValueGroup ? 'block' : 'none' }}
+            className="shadow w-input-menu-item w-create-values-input"
+          >
+            <input
+              ref="createValueGroupInput"
+              onKeyDown={this.createValues}
+              onBlur={this.hideValueGroup}
+              type="text"
+              maxLength="64"
+              placeholder="Input the group name"
+            />
+            <button
+              type="button"
+              onClick={this.createValueGroup}
+              className="btn btn-primary"
+            >
+              +Group
+            </button>
+          </div>
+          <div
+            onMouseDown={this.preventBlur}
+            style={{ display: state.showEditRules ? 'block' : 'none' }}
+            className="shadow w-input-menu-item w-edit-rules-input"
+          >
+            <input
+              ref="editRulesInput"
+              onKeyDown={this.editRules}
+              onBlur={this.hideRenameRuleInput}
+              type="text"
+              maxLength="64"
+            />
+            <button
+              type="button"
+              onClick={this.editRules}
+              className="btn btn-primary"
+            >
+              OK
+            </button>
+          </div>
+          <div
+            onMouseDown={this.preventBlur}
+            style={{ display: state.showEditValues ? 'block' : 'none' }}
+            className="shadow w-input-menu-item w-edit-values-input"
+          >
+            <input
+              ref="editValuesInput"
+              onKeyDown={this.editValues}
+              onBlur={this.hideRenameValueInput}
+              type="text"
+              maxLength="64"
+            />
+            <button
+              type="button"
+              onClick={this.editValues}
+              className="btn btn-primary"
+            >
+              OK
+            </button>
+          </div>
         </div>
         <div className="w-container box fill">
           <ContextMenu onClick={this.onClickContextMenu} ref="contextMenu" />
-          <div onContextMenu={this.onContextMenu} onDoubleClick={this.onContextMenu}
-            className={'w-left-menu' + (forceShowLeftMenu ? ' w-hover-left-menu' : '')}
-            style={{display: networkMode || mustHideLeftMenu ? 'none' : undefined}}
-            onMouseEnter={forceShowLeftMenu} onMouseLeave={forceHideLeftMenu}>
-            <a onClick={this.showNetwork}
-              className={'w-network-menu' + (name == 'network' ? ' w-menu-selected' : '')}
-              style={{ display: rulesMode ? 'none' : undefined }} draggable="false">
-                <span className={'glyphicon glyphicon-' + networkType}></span>
-                <i className="w-left-menu-name">Network</i>
+          <div
+            onContextMenu={this.onContextMenu}
+            onDoubleClick={this.onContextMenu}
+            className={
+              'w-left-menu' + (forceShowLeftMenu ? ' w-hover-left-menu' : '')
+            }
+            style={{
+              display: networkMode || mustHideLeftMenu ? 'none' : undefined
+            }}
+            onMouseEnter={forceShowLeftMenu}
+            onMouseLeave={forceHideLeftMenu}
+          >
+            <a
+              onClick={this.showNetwork}
+              className={
+                'w-network-menu' + (name == 'network' ? ' w-menu-selected' : '')
+              }
+              style={{ display: rulesMode ? 'none' : undefined }}
+              draggable="false"
+            >
+              <span className={'glyphicon glyphicon-' + networkType}></span>
+              <i className="w-left-menu-name">Network</i>
             </a>
-            <a onClick={this.showRules} className={'w-save-menu w-rules-menu' + (name == 'rules' ? ' w-menu-selected' : '')}
-              style={{ display: pluginsMode ? 'none' : undefined }} draggable="false">
-              <span className={'glyphicon glyphicon-list' + (disabledAllRules ? ' w-disabled' : '')} ></span>
+            <a
+              onClick={this.showRules}
+              className={
+                'w-save-menu w-rules-menu' +
+                (name == 'rules' ? ' w-menu-selected' : '')
+              }
+              style={{ display: pluginsMode ? 'none' : undefined }}
+              draggable="false"
+            >
+              <span
+                className={
+                  'glyphicon glyphicon-list' +
+                  (disabledAllRules ? ' w-disabled' : '')
+                }
+              ></span>
               <i className="w-left-menu-name">Rules</i>
-              <i className="w-menu-changed" style={{display: state.rules.hasChanged() ? undefined : 'none'}}>*</i>
+              <i
+                className="w-menu-changed"
+                style={{
+                  display: state.rules.hasChanged() ? undefined : 'none'
+                }}
+              >
+                *
+              </i>
             </a>
-            <a onClick={this.showValues} className={'w-save-menu w-values-menu' + (name == 'values' ? ' w-menu-selected' : '')}
-              style={{ display: pluginsMode ? 'none' : undefined }} draggable="false">
+            <a
+              onClick={this.showValues}
+              className={
+                'w-save-menu w-values-menu' +
+                (name == 'values' ? ' w-menu-selected' : '')
+              }
+              style={{ display: pluginsMode ? 'none' : undefined }}
+              draggable="false"
+            >
               <span className="glyphicon glyphicon-folder-close"></span>
               <i className="w-left-menu-name">Values</i>
-              <i className="w-menu-changed" style={{display: state.values.hasChanged() ? undefined : 'none'}}>*</i>
+              <i
+                className="w-menu-changed"
+                style={{
+                  display: state.values.hasChanged() ? undefined : 'none'
+                }}
+              >
+                *
+              </i>
             </a>
-            <a onClick={this.showPlugins} className={'w-plugins-menu' + (name == 'plugins' ? ' w-menu-selected' : '')}
-              style={{ display: rulesOnlyMode || pluginsOnlyMode ? 'none' : undefined }} draggable="false">
-              <span className={'glyphicon glyphicon-list-alt' + (disabledAllPlugins ? ' w-disabled' : '')}></span>
+            <a
+              onClick={this.showPlugins}
+              className={
+                'w-plugins-menu' + (name == 'plugins' ? ' w-menu-selected' : '')
+              }
+              style={{
+                display: rulesOnlyMode || pluginsOnlyMode ? 'none' : undefined
+              }}
+              draggable="false"
+            >
+              <span
+                className={
+                  'glyphicon glyphicon-list-alt' +
+                  (disabledAllPlugins ? ' w-disabled' : '')
+                }
+              ></span>
               <i className="w-left-menu-name">Plugins</i>
             </a>
           </div>
-          {state.hasRules ? <List ref="rules" disabled={disabledAllRules} theme={rulesTheme}
-            lineWrapping={autoRulesLineWrapping} fontSize={rulesFontSize} lineNumbers={showRulesLineNumbers} onSelect={this.selectRules}
-            onUnselect={this.unselectRules} onActive={this.activeRules} modal={state.rules}
-            hide={name == 'rules' ? false : true} name="rules" /> : undefined}
-          {state.hasValues ? <List theme={valuesTheme} onDoubleClick={this.showEditValuesByDBClick} fontSize={valuesFontSize}
-            lineWrapping={autoValuesLineWrapping} lineNumbers={showValuesLineNumbers} onSelect={this.saveValues} onActive={this.activeValues}
-            modal={state.values} hide={name == 'values' ? false : true} className="w-values-list" foldGutter={state.foldGutter} /> : undefined}
-          {state.hasNetwork ? <Network ref="network" hide={name === 'rules' || name === 'values' || name === 'plugins'} modal={modal} /> : undefined}
-          {state.hasPlugins ? <Plugins {...state} onOpen={this.activePluginTab} onClose={this.closePluginTab} onActive={this.activePluginTab} onChange={this.disablePlugin} ref="plugins" hide={name == 'plugins' ? false : true} /> : undefined}
+          {state.hasRules ? (
+            <List
+              ref="rules"
+              disabled={disabledAllRules}
+              theme={rulesTheme}
+              lineWrapping={autoRulesLineWrapping}
+              fontSize={rulesFontSize}
+              lineNumbers={showRulesLineNumbers}
+              onSelect={this.selectRules}
+              onUnselect={this.unselectRules}
+              onActive={this.activeRules}
+              modal={state.rules}
+              hide={name == 'rules' ? false : true}
+              name="rules"
+            />
+          ) : undefined}
+          {state.hasValues ? (
+            <List
+              theme={valuesTheme}
+              onDoubleClick={this.showEditValuesByDBClick}
+              fontSize={valuesFontSize}
+              lineWrapping={autoValuesLineWrapping}
+              lineNumbers={showValuesLineNumbers}
+              onSelect={this.saveValues}
+              onActive={this.activeValues}
+              modal={state.values}
+              hide={name == 'values' ? false : true}
+              className="w-values-list"
+              foldGutter={state.foldGutter}
+            />
+          ) : undefined}
+          {state.hasNetwork ? (
+            <Network
+              ref="network"
+              hide={name === 'rules' || name === 'values' || name === 'plugins'}
+              modal={modal}
+            />
+          ) : undefined}
+          {state.hasPlugins ? (
+            <Plugins
+              {...state}
+              onOpen={this.activePluginTab}
+              onClose={this.closePluginTab}
+              onActive={this.activePluginTab}
+              onChange={this.disablePlugin}
+              ref="plugins"
+              hide={name == 'plugins' ? false : true}
+            />
+          ) : undefined}
         </div>
-        <div ref="rulesSettingsDialog" className="modal fade w-rules-settings-dialog">
+        <div
+          ref="rulesSettingsDialog"
+          className="modal fade w-rules-settings-dialog"
+        >
           <div className="modal-dialog">
-              <div className="modal-content">
-                <div className="modal-body">
-                  <button type="button" className="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                  <EditorSettings theme={rulesTheme} fontSize={rulesFontSize} lineNumbers={showRulesLineNumbers}
-                    lineWrapping={autoRulesLineWrapping}
-                    onLineWrappingChange={this.onRulesLineWrappingChange}
-                    onThemeChange={this.onRulesThemeChange}
-                    onFontSizeChange={this.onRulesFontSizeChange}
-                    onLineNumberChange={this.onRulesLineNumberChange} />
-                   {!state.drb && <p className="w-editor-settings-box"><label><input type="checkbox" checked={state.backRulesFirst} onChange={this.enableBackRulesFirst} /> Back rules first</label></p>}
-                   {!state.drm && <p className="w-editor-settings-box"><label style={{color: multiEnv ? '#aaa' : undefined}}><input type="checkbox" disabled={multiEnv}
-                    checked={!multiEnv && state.allowMultipleChoice} onChange={this.allowMultipleChoice} /> Use multiple rules</label></p>}
-                </div>
-                <div className="modal-footer">
-                  <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
-                </div>
+            <div className="modal-content">
+              <div className="modal-body">
+                <button
+                  type="button"
+                  className="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+                <EditorSettings
+                  theme={rulesTheme}
+                  fontSize={rulesFontSize}
+                  lineNumbers={showRulesLineNumbers}
+                  lineWrapping={autoRulesLineWrapping}
+                  onLineWrappingChange={this.onRulesLineWrappingChange}
+                  onThemeChange={this.onRulesThemeChange}
+                  onFontSizeChange={this.onRulesFontSizeChange}
+                  onLineNumberChange={this.onRulesLineNumberChange}
+                />
+                {!state.drb && (
+                  <p className="w-editor-settings-box">
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={state.backRulesFirst}
+                        onChange={this.enableBackRulesFirst}
+                      />{' '}
+                      Back rules first
+                    </label>
+                  </p>
+                )}
+                {!state.drm && (
+                  <p className="w-editor-settings-box">
+                    <label style={{ color: multiEnv ? '#aaa' : undefined }}>
+                      <input
+                        type="checkbox"
+                        disabled={multiEnv}
+                        checked={!multiEnv && state.allowMultipleChoice}
+                        onChange={this.allowMultipleChoice}
+                      />{' '}
+                      Use multiple rules
+                    </label>
+                  </p>
+                )}
               </div>
-          </div>
-        </div>
-        <div ref="valuesSettingsDialog" className="modal fade w-values-settings-dialog">
-          <div className="modal-dialog">
-              <div className="modal-content">
-                <div className="modal-body">
-                  <button type="button" className="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                  <EditorSettings theme={valuesTheme} fontSize={valuesFontSize} lineNumbers={showValuesLineNumbers}
-                    lineWrapping={autoValuesLineWrapping}
-                    onLineWrappingChange={this.onValuesLineWrappingChange}
-                    onThemeChange={this.onValuesThemeChange}
-                    onFontSizeChange={this.onValuesFontSizeChange}
-                    onLineNumberChange={this.onValuesLineNumberChange} />
-                    <p className="w-editor-settings-box"><label><input type="checkbox"
-                      checked={state.foldGutter} onChange={this.showFoldGutter} /> Show fold gutter</label></p>
-                </div>
-                <div className="modal-footer">
-                  <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
-                </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-default"
+                  data-dismiss="modal"
+                >
+                  Close
+                </button>
               </div>
             </div>
+          </div>
+        </div>
+        <div
+          ref="valuesSettingsDialog"
+          className="modal fade w-values-settings-dialog"
+        >
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-body">
+                <button
+                  type="button"
+                  className="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+                <EditorSettings
+                  theme={valuesTheme}
+                  fontSize={valuesFontSize}
+                  lineNumbers={showValuesLineNumbers}
+                  lineWrapping={autoValuesLineWrapping}
+                  onLineWrappingChange={this.onValuesLineWrappingChange}
+                  onThemeChange={this.onValuesThemeChange}
+                  onFontSizeChange={this.onValuesFontSizeChange}
+                  onLineNumberChange={this.onValuesLineNumberChange}
+                />
+                <p className="w-editor-settings-box">
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={state.foldGutter}
+                      onChange={this.showFoldGutter}
+                    />{' '}
+                    Show fold gutter
+                  </label>
+                </p>
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-default"
+                  data-dismiss="modal"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
         <NetworkSettings ref="networkSettings" />
         <div ref="rootCADialog" className="modal fade w-https-dialog">
-        <div className="modal-dialog">
+          <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-body">
-                <button type="button" className="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <button
+                  type="button"
+                  className="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
                 <div>
-                  <a className="w-help-menu"
+                  <a
+                    className="w-help-menu"
                     title="Click here to learn how to install root ca"
-                    href="https://avwo.github.io/whistle/webui/https.html" target="_blank">
+                    href="https://avwo.github.io/whistle/webui/https.html"
+                    target="_blank"
+                  >
                     <span className="glyphicon glyphicon-question-sign"></span>
                   </a>
-                  <a className="w-download-rootca" title="http://rootca.pro/" href="cgi-bin/rootca" target="downloadTargetFrame">Download RootCA</a>
+                  <a
+                    className="w-download-rootca"
+                    title="http://rootca.pro/"
+                    href="cgi-bin/rootca"
+                    target="downloadTargetFrame"
+                  >
+                    Download RootCA
+                  </a>
                 </div>
-                <a title="http://rootca.pro/" href="cgi-bin/rootca" target="downloadTargetFrame"><img src="img/qrcode.png" /></a>
+                <a
+                  title="http://rootca.pro/"
+                  href="cgi-bin/rootca"
+                  target="downloadTargetFrame"
+                >
+                  <img src="img/qrcode.png" />
+                </a>
                 <div className="w-https-settings">
-                  <p><label title={multiEnv ? 'Use `pattern enable://capture` in rules to replace global configuration' : undefined}><input
-                    disabled={multiEnv}
-                    checked={state.interceptHttpsConnects}
-                    onChange={this.interceptHttpsConnects}
-                    type="checkbox" /> Capture TUNNEL CONNECTs</label></p>
-                  <p><label><input checked={dataCenter.supportH2 && state.enableHttp2}
-                    onChange={this.enableHttp2} type="checkbox" /> Enable HTTP/2</label></p>
-                    <a draggable="false" style={{color: dataCenter.hasInvalidCerts ? 'red' : undefined}} onClick={this.showCustomCertsInfo}>View custom certs info</a>
-                    <CertsInfoDialog ref="certsInfoDialog" />
+                  <p>
+                    <label
+                      title={
+                        multiEnv
+                          ? 'Use `pattern enable://capture` in rules to replace global configuration'
+                          : undefined
+                      }
+                    >
+                      <input
+                        disabled={multiEnv}
+                        checked={state.interceptHttpsConnects}
+                        onChange={this.interceptHttpsConnects}
+                        type="checkbox"
+                      />{' '}
+                      Capture TUNNEL CONNECTs
+                    </label>
+                  </p>
+                  <p>
+                    <label>
+                      <input
+                        checked={dataCenter.supportH2 && state.enableHttp2}
+                        onChange={this.enableHttp2}
+                        type="checkbox"
+                      />{' '}
+                      Enable HTTP/2
+                    </label>
+                  </p>
+                  <a
+                    draggable="false"
+                    style={{
+                      color: dataCenter.hasInvalidCerts ? 'red' : undefined
+                    }}
+                    onClick={this.showCustomCertsInfo}
+                  >
+                    View custom certs info
+                  </a>
+                  <CertsInfoDialog ref="certsInfoDialog" />
                 </div>
               </div>
               <div className="modal-footer">
-                <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
+                <button
+                  type="button"
+                  className="btn btn-default"
+                  data-dismiss="modal"
+                >
+                  Close
+                </button>
               </div>
             </div>
           </div>
-      </div>
-      <div ref="chooseFileType" className="modal fade w-choose-filte-type">
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-body">
-              <label className="w-choose-filte-type-label">
-                Save as:
-                <input ref="sessionsName"
-                  onKeyDown={this.exportBySave}
-                  placeholder="Input the filename"
-                  className="form-control" maxLength="64" />
-                <select ref="fileType" className="form-control" value={state.exportFileType} onChange={this.chooseFileType}>
-                  <option value="whistle">*.txt</option>
-                  <option value="Fiddler">*.saz</option>
-                  <option value="har">*.har</option>
-                </select>
-              </label>
-              <a type="button"
-                onKeyDown={this.exportBySave}
-                tabIndex="0" onMouseDown={this.preventBlur}
-                className="btn btn-primary" onClick={this.exportBySave}>Export</a>
-            </div>
-          </div>
         </div>
-      </div>
-      <Dialog ref="setReplayCount" wstyle="w-replay-count-dialog">
-        <div className="modal-body">
-          <label>
-            Count:
-            <input ref="replayCount"
-              onKeyDown={this.replayRepeat}
-              onChange={this.replayCountChange}
-              value={state.replayCount}
-              className="form-control" maxLength="2" />
-          </label>
-          <a type="button"
-            onKeyDown={this.replayRepeat}
-            tabIndex="0" onMouseDown={this.preventBlur}
-            className="btn btn-primary" onClick={this.replayRepeat}>Replay</a>
-        </div>
-      </Dialog>
-      <Dialog ref="importRemoteRules" wstyle="w-import-remote-dialog">
-        <div className="modal-body">
-          <input readOnly={pendingRules} ref="rulesRemoteUrl" maxLength="2048"
-            onKeyDown={this.importRemoteRules}
-            placeholder="Input the url" style={{ 'ime-mode': 'disabled' }} />
-        </div>
-        <div className="modal-footer">
-          <button type="button" className="btn btn-primary" disabled={pendingRules} onMouseDown={this.preventBlur}
-            onClick={this.importRemoteRules}>{pendingRules ? 'Importing rules' : 'Import rules'}</button>
-          <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
-        </div>
-      </Dialog>
-      <Dialog ref="importRemoteSessions" wstyle="w-import-remote-dialog">
-        <div className="modal-body">
-          <input readOnly={pendingSessions} ref="sessionsRemoteUrl" maxLength="2048"
-            onKeyDown={this.importRemoteSessions}
-            placeholder="Input the url" style={{ 'ime-mode': 'disabled' }} />
-        </div>
-        <div className="modal-footer">
-          <button type="button" className="btn btn-primary" disabled={pendingSessions} onMouseDown={this.preventBlur}
-            onClick={this.importRemoteSessions}>{pendingSessions ? 'Importing sessions' : 'Import sessions'}</button>
-          <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
-        </div>
-      </Dialog>
-      <Dialog ref="importRemoteValues" wstyle="w-import-remote-dialog">
-        <div className="modal-body">
-          <input readOnly={pendingValues} ref="valuesRemoteUrl" maxLength="2048"
-            onKeyDown={this.importRemoteValues}
-            placeholder="Input the url" style={{ 'ime-mode': 'disabled' }} />
-        </div>
-        <div className="modal-footer">
-          <button type="button" className="btn btn-primary" disabled={pendingValues} onMouseDown={this.preventBlur}
-            onClick={this.importRemoteValues}>{pendingValues ? 'Importing values' : 'Import values'}</button>
-          <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
-        </div>
-      </Dialog>
-      <div ref="showUpdateTipsDialog" className="modal fade w-show-update-tips-dialog">
-        <div className="modal-dialog">
+        <div ref="chooseFileType" className="modal fade w-choose-filte-type">
+          <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-body">
-                <button type="button" className="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <p className="w-show-update-tips">whistle has important updates, it is recommended that you update to the latest version.</p>
-                <p>Current version: {state.version}</p>
-                <p>The latest stable version: {state.latestVersion}</p>
-                <p>View change: <a title="Change log" href="https://github.com/avwo/whistle/blob/master/CHANGELOG.md" target="_blank">CHANGELOG.md</a></p>
-              </div>
-              <div className="modal-footer">
-                <button type="button" className="btn btn-default" onClick={this.donotShowAgain} data-dismiss="modal">Don't show again</button>
-                <a type="button" className="btn btn-primary" onClick={this.hideUpdateTipsDialog} href="https://avwo.github.io/whistle/update.html" target="_blank">Update now</a>
+                <label className="w-choose-filte-type-label">
+                  Save as:
+                  <input
+                    ref="sessionsName"
+                    onKeyDown={this.exportBySave}
+                    placeholder="Input the filename"
+                    className="form-control"
+                    maxLength="64"
+                  />
+                  <select
+                    ref="fileType"
+                    className="form-control"
+                    value={state.exportFileType}
+                    onChange={this.chooseFileType}
+                  >
+                    <option value="whistle">*.txt</option>
+                    <option value="Fiddler">*.saz</option>
+                    <option value="har">*.har</option>
+                  </select>
+                </label>
+                <a
+                  type="button"
+                  onKeyDown={this.exportBySave}
+                  tabIndex="0"
+                  onMouseDown={this.preventBlur}
+                  className="btn btn-primary"
+                  onClick={this.exportBySave}
+                >
+                  Export
+                </a>
               </div>
             </div>
+          </div>
         </div>
+        <Dialog ref="setReplayCount" wstyle="w-replay-count-dialog">
+          <div className="modal-body">
+            <label>
+              Count:
+              <input
+                ref="replayCount"
+                onKeyDown={this.replayRepeat}
+                onChange={this.replayCountChange}
+                value={state.replayCount}
+                className="form-control"
+                maxLength="2"
+              />
+            </label>
+            <a
+              type="button"
+              onKeyDown={this.replayRepeat}
+              tabIndex="0"
+              onMouseDown={this.preventBlur}
+              className="btn btn-primary"
+              onClick={this.replayRepeat}
+            >
+              Replay
+            </a>
+          </div>
+        </Dialog>
+        <Dialog ref="importRemoteRules" wstyle="w-import-remote-dialog">
+          <div className="modal-body">
+            <input
+              readOnly={pendingRules}
+              ref="rulesRemoteUrl"
+              maxLength="2048"
+              onKeyDown={this.importRemoteRules}
+              placeholder="Input the url"
+              style={{ 'ime-mode': 'disabled' }}
+            />
+          </div>
+          <div className="modal-footer">
+            <button
+              type="button"
+              className="btn btn-primary"
+              disabled={pendingRules}
+              onMouseDown={this.preventBlur}
+              onClick={this.importRemoteRules}
+            >
+              {pendingRules ? 'Importing rules' : 'Import rules'}
+            </button>
+            <button
+              type="button"
+              className="btn btn-default"
+              data-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </Dialog>
+        <Dialog ref="importRemoteSessions" wstyle="w-import-remote-dialog">
+          <div className="modal-body">
+            <input
+              readOnly={pendingSessions}
+              ref="sessionsRemoteUrl"
+              maxLength="2048"
+              onKeyDown={this.importRemoteSessions}
+              placeholder="Input the url"
+              style={{ 'ime-mode': 'disabled' }}
+            />
+          </div>
+          <div className="modal-footer">
+            <button
+              type="button"
+              className="btn btn-primary"
+              disabled={pendingSessions}
+              onMouseDown={this.preventBlur}
+              onClick={this.importRemoteSessions}
+            >
+              {pendingSessions ? 'Importing sessions' : 'Import sessions'}
+            </button>
+            <button
+              type="button"
+              className="btn btn-default"
+              data-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </Dialog>
+        <Dialog ref="importRemoteValues" wstyle="w-import-remote-dialog">
+          <div className="modal-body">
+            <input
+              readOnly={pendingValues}
+              ref="valuesRemoteUrl"
+              maxLength="2048"
+              onKeyDown={this.importRemoteValues}
+              placeholder="Input the url"
+              style={{ 'ime-mode': 'disabled' }}
+            />
+          </div>
+          <div className="modal-footer">
+            <button
+              type="button"
+              className="btn btn-primary"
+              disabled={pendingValues}
+              onMouseDown={this.preventBlur}
+              onClick={this.importRemoteValues}
+            >
+              {pendingValues ? 'Importing values' : 'Import values'}
+            </button>
+            <button
+              type="button"
+              className="btn btn-default"
+              data-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </Dialog>
+        <div
+          ref="showUpdateTipsDialog"
+          className="modal fade w-show-update-tips-dialog"
+        >
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-body">
+                <button
+                  type="button"
+                  className="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+                <p className="w-show-update-tips">
+                  whistle has important updates, it is recommended that you
+                  update to the latest version.
+                </p>
+                <p>Current version: {state.version}</p>
+                <p>The latest stable version: {state.latestVersion}</p>
+                <p>
+                  View change:{' '}
+                  <a
+                    title="Change log"
+                    href="https://github.com/avwo/whistle/blob/master/CHANGELOG.md"
+                    target="_blank"
+                  >
+                    CHANGELOG.md
+                  </a>
+                </p>
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-default"
+                  onClick={this.donotShowAgain}
+                  data-dismiss="modal"
+                >
+                  Don't show again
+                </button>
+                <a
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={this.hideUpdateTipsDialog}
+                  href="https://avwo.github.io/whistle/update.html"
+                  target="_blank"
+                >
+                  Update now
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <Dialog ref="confirmReload" wstyle="w-confirm-reload-dialog">
+          <div className="modal-body w-confirm-reload">
+            <button type="button" className="close" data-dismiss="modal">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <div className="w-reload-data-tips"></div>
+          </div>
+          <div className="modal-footer">
+            <button
+              type="button"
+              className="btn btn-default"
+              data-dismiss="modal"
+            >
+              No
+            </button>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={this.reloadData}
+              data-dismiss="modal"
+            >
+              Yes
+            </button>
+          </div>
+        </Dialog>
+        <Dialog ref="confirmImportRules" wstyle="w-confirm-import-dialog">
+          <div className="modal-body w-confirm-import">
+            <button type="button" className="close" data-dismiss="modal">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            Whether to replace the existing rules?
+          </div>
+          <div className="modal-footer">
+            <button
+              type="button"
+              className="btn btn-danger"
+              onClick={this.uploadRules}
+              data-dismiss="modal"
+            >
+              Replace
+            </button>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={this.uploadRules}
+              data-dismiss="modal"
+            >
+              Reserve
+            </button>
+          </div>
+        </Dialog>
+        <Dialog ref="confirmImportValues" wstyle="w-confirm-import-dialog">
+          <div className="modal-body w-confirm-import">
+            <button type="button" className="close" data-dismiss="modal">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            Whether to replace the existing values?
+          </div>
+          <div className="modal-footer">
+            <button
+              type="button"
+              className="btn btn-danger"
+              onClick={this.uploadValues}
+              data-dismiss="modal"
+            >
+              Replace
+            </button>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={this.uploadValues}
+              data-dismiss="modal"
+            >
+              Reserve
+            </button>
+          </div>
+        </Dialog>
+        <FilesDialog ref="filesDialog" />
+        <ListDialog
+          ref="selectRulesDialog"
+          name="rules"
+          list={state.rules.list}
+        />
+        <ListDialog
+          ref="selectValuesDialog"
+          name="values"
+          list={state.values.list}
+        />
+        <iframe name="downloadTargetFrame" style={{ display: 'none' }} />
+        <form
+          ref="exportSessionsForm"
+          action="cgi-bin/sessions/export"
+          style={{ display: 'none' }}
+          method="post"
+          target="downloadTargetFrame"
+        >
+          <input ref="exportFilename" name="exportFilename" type="hidden" />
+          <input ref="exportFileType" name="exportFileType" type="hidden" />
+          <input ref="sessions" name="sessions" type="hidden" />
+        </form>
+        <form
+          ref="importSessionsForm"
+          encType="multipart/form-data"
+          style={{ display: 'none' }}
+        >
+          <input
+            ref="importSessions"
+            onChange={this.uploadSessions}
+            type="file"
+            name="importSessions"
+            accept=".txt,.json,.saz,.har"
+          />
+        </form>
+        <form
+          ref="importRulesForm"
+          encType="multipart/form-data"
+          style={{ display: 'none' }}
+        >
+          <input
+            ref="importRules"
+            onChange={this.uploadRulesForm}
+            name="rules"
+            type="file"
+            accept=".txt,.json"
+          />
+        </form>
+        <form
+          ref="importValuesForm"
+          encType="multipart/form-data"
+          style={{ display: 'none' }}
+        >
+          <input
+            ref="importValues"
+            onChange={this.uploadValuesForm}
+            name="values"
+            type="file"
+            accept=".txt,.json"
+          />
+        </form>
       </div>
-      <Dialog ref="confirmReload" wstyle="w-confirm-reload-dialog">
-        <div className="modal-body w-confirm-reload">
-          <button type="button" className="close" data-dismiss="modal">
-            <span aria-hidden="true">&times;</span>
-          </button>
-          <div className="w-reload-data-tips"></div>
-        </div>
-        <div className="modal-footer">
-          <button type="button" className="btn btn-default" data-dismiss="modal">No</button>
-          <button type="button" className="btn btn-primary" onClick={this.reloadData}  data-dismiss="modal">Yes</button>
-        </div>
-      </Dialog>
-      <Dialog ref="confirmImportRules" wstyle="w-confirm-import-dialog">
-        <div className="modal-body w-confirm-import">
-          <button type="button" className="close" data-dismiss="modal">
-            <span aria-hidden="true">&times;</span>
-          </button>
-          Whether to replace the existing rules?
-        </div>
-        <div className="modal-footer">
-          <button type="button" className="btn btn-danger"
-            onClick={this.uploadRules} data-dismiss="modal">Replace</button>
-          <button type="button" className="btn btn-primary"
-            onClick={this.uploadRules} data-dismiss="modal">Reserve</button>
-        </div>
-      </Dialog>
-      <Dialog ref="confirmImportValues" wstyle="w-confirm-import-dialog">
-        <div className="modal-body w-confirm-import">
-          <button type="button" className="close" data-dismiss="modal">
-            <span aria-hidden="true">&times;</span>
-          </button>
-          Whether to replace the existing values?
-        </div>
-        <div className="modal-footer">
-          <button type="button" className="btn btn-danger"
-            onClick={this.uploadValues} data-dismiss="modal">Replace</button>
-          <button type="button" className="btn btn-primary"
-            onClick={this.uploadValues} data-dismiss="modal">Reserve</button>
-        </div>
-      </Dialog>
-      <FilesDialog ref="filesDialog" />
-      <ListDialog ref="selectRulesDialog" name="rules" list={state.rules.list} />
-      <ListDialog ref="selectValuesDialog" name="values" list={state.values.list} />
-      <iframe name="downloadTargetFrame" style={{display: 'none'}} />
-      <form ref="exportSessionsForm" action="cgi-bin/sessions/export" style={{display: 'none'}}
-        method="post" target="downloadTargetFrame">
-        <input ref="exportFilename" name="exportFilename" type="hidden" />
-        <input ref="exportFileType" name="exportFileType" type="hidden" />
-        <input ref="sessions" name="sessions" type="hidden" />
-      </form>
-      <form ref="importSessionsForm" encType="multipart/form-data" style={{display: 'none'}}>
-        <input ref="importSessions" onChange={this.uploadSessions} type="file" name="importSessions" accept=".txt,.json,.saz,.har" />
-      </form>
-      <form ref="importRulesForm" encType="multipart/form-data" style={{display: 'none'}}>
-        <input ref="importRules" onChange={this.uploadRulesForm} name="rules" type="file" accept=".txt,.json" />
-      </form>
-      <form ref="importValuesForm" encType="multipart/form-data" style={{display: 'none'}}>
-        <input ref="importValues" onChange={this.uploadValuesForm} name="values" type="file" accept=".txt,.json" />
-      </form>
-    </div>
     );
   }
 });
-dataCenter.getInitialData(function(data) {
+dataCenter.getInitialData(function (data) {
   ReactDOM.render(<Index modal={data} />, document.getElementById('container'));
 });

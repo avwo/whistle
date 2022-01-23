@@ -9,33 +9,33 @@ var dataCenter = require('./data-center');
 var LazyInit = require('./lazy-init');
 
 var Frames = React.createClass({
-  getInitialState: function() {
+  getInitialState: function () {
     return {
       modal: new FrameModal()
     };
   },
-  componentDidMount: function() {
+  componentDidMount: function () {
     var self = this;
-    dataCenter.on('framesUpdate', function() {
+    dataCenter.on('framesUpdate', function () {
       self.setState({});
     });
   },
-  shouldComponentUpdate: function(nextProps) {
+  shouldComponentUpdate: function (nextProps) {
     var hide = util.getBoolean(this.props.hide);
     return hide != util.getBoolean(nextProps.hide) || !hide;
   },
-  onClickFrame: function(frame) {
+  onClickFrame: function (frame) {
     var modal = this.state.modal;
     modal.setActive(frame);
     this.setState({});
   },
-  onUpdate: function() {
+  onUpdate: function () {
     this.setState({});
   },
-  onDOMReady: function() {
+  onDOMReady: function () {
     this.refs.frameList.autoRefresh();
   },
-  render: function() {
+  render: function () {
     var props = this.props;
     var modal = this.state.modal;
     var frames = modal.reset(props.frames);
@@ -46,17 +46,29 @@ var Frames = React.createClass({
       curFrame = null;
     }
     return (
-      <div className={'fill orient-vertical-box w-frames' + (props.hide ? ' hide' : '')}>
+      <div
+        className={
+          'fill orient-vertical-box w-frames' + (props.hide ? ' hide' : '')
+        }
+      >
         <LazyInit inited={!hide}>
-          <Divider hide={hide} vertical="true" rightWidth="250" onDOMReady={this.onDOMReady}>
-            <FrameList ref="frameList" reqData={reqData} modal={modal}
-              onUpdate={this.onUpdate} onClickFrame={this.onClickFrame} />
+          <Divider
+            hide={hide}
+            vertical="true"
+            rightWidth="250"
+            onDOMReady={this.onDOMReady}
+          >
+            <FrameList
+              ref="frameList"
+              reqData={reqData}
+              modal={modal}
+              onUpdate={this.onUpdate}
+              onClickFrame={this.onClickFrame}
+            />
             <FrameData data={reqData} frame={curFrame} />
           </Divider>
         </LazyInit>
-        <div className={'w-no-frames' + (frames ? ' hide' : '')}>
-          No Frames
-        </div>
+        <div className={'w-no-frames' + (frames ? ' hide' : '')}>No Frames</div>
       </div>
     );
   }

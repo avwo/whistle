@@ -14,30 +14,36 @@ var MAX_COUNT = 160;
 var index = MAX_COUNT;
 var W2_HEADER_RE = /^x-whistle-/;
 
-var highlight = function(name) {
+var highlight = function (name) {
   return name === 'x-forwarded-for' || W2_HEADER_RE.test(name);
 };
 var PropsEditor = React.createClass({
-  getInitialState: function() {
+  getInitialState: function () {
     return {};
   },
-  getValue: function(name, field) {
+  getValue: function (name, field) {
     var isHeader = this.props.isHeader;
     var allowUploadFile = this.props.allowUploadFile;
     var decode = isHeader ? util.decodeURIComponentSafe : util.noop;
     var shortName = decode(name.substring(0, MAX_NAME_LEN), isHeader);
     var result = { name: shortName };
     if (allowUploadFile && field && field.value != null) {
-      result.value = decode(util.toString(field.value).substring(0, MAX_VALUE_LEN), isHeader);
+      result.value = decode(
+        util.toString(field.value).substring(0, MAX_VALUE_LEN),
+        isHeader
+      );
       result.data = field.data;
       result.size = field.data && field.data.length;
       result.type = field.type;
     } else {
-      result.value = decode(util.toString(field).substring(0, MAX_VALUE_LEN), isHeader);
+      result.value = decode(
+        util.toString(field).substring(0, MAX_VALUE_LEN),
+        isHeader
+      );
     }
     return result;
   },
-  update: function(data) {
+  update: function (data) {
     var modal = {};
     var overflow;
     if (data) {
@@ -47,21 +53,21 @@ var PropsEditor = React.createClass({
       if (overflow) {
         keys = keys.slice(0, MAX_COUNT);
       }
-      keys.forEach(function(name) {
+      keys.forEach(function (name) {
         var value = data[name];
         if (!Array.isArray(value)) {
           modal[name + '_0'] = self.getValue(name, value);
           return;
         }
-        value.forEach(function(val, i) {
-          modal[name + '_' + i] =  self.getValue(name, val);
+        value.forEach(function (val, i) {
+          modal[name + '_' + i] = self.getValue(name, val);
         });
       });
     }
     this.setState({ modal: modal });
     return overflow;
   },
-  onAdd: function() {
+  onAdd: function () {
     if (this.props.disabled) {
       return;
     }
@@ -71,7 +77,7 @@ var PropsEditor = React.createClass({
     this.setState({ data: '' });
     this.showDialog();
   },
-  onEdit: function(e) {
+  onEdit: function (e) {
     if (this.props.disabled) {
       return;
     }
@@ -80,7 +86,7 @@ var PropsEditor = React.createClass({
     this.setState({ data: data });
     this.showDialog(data);
   },
-  edit: function() {
+  edit: function () {
     var nameInput = ReactDOM.findDOMNode(this.refs.name);
     var name = nameInput.value.trim();
     if (!name) {
@@ -111,7 +117,7 @@ var PropsEditor = React.createClass({
     this.hideDialog();
     nameInput.value = valueInput.value = '';
   },
-  add: function() {
+  add: function () {
     var nameInput = ReactDOM.findDOMNode(this.refs.name);
     var name = nameInput.value.trim();
     if (!name) {
@@ -122,16 +128,18 @@ var PropsEditor = React.createClass({
     var value = valueInput.value.trim();
     var modal = this.state.modal;
     var state = this.state;
-    modal[name + '_' + ++index] = state.fileData ? {
-      name: name,
-      value: state.filename,
-      size: state.fileSize,
-      data: state.fileData,
-      type: state.fileType
-    } : {
-      name: name,
-      value: value
-    };
+    modal[name + '_' + ++index] = state.fileData
+      ? {
+          name: name,
+          value: state.filename,
+          size: state.fileSize,
+          data: state.fileData,
+          type: state.fileType
+        }
+      : {
+          name: name,
+          value: value
+        };
     this.props.onChange(name);
     this.setState({
       fileData: null,
@@ -142,10 +150,10 @@ var PropsEditor = React.createClass({
     this.hideDialog();
     nameInput.value = valueInput.value = '';
   },
-  hideDialog: function() {
+  hideDialog: function () {
     this.refs.composerDialog.hide();
   },
-  showDialog: function(data) {
+  showDialog: function (data) {
     this.refs.composerDialog.show();
     var nameInput = ReactDOM.findDOMNode(this.refs.name);
     if (data) {
@@ -161,12 +169,12 @@ var PropsEditor = React.createClass({
         ReactDOM.findDOMNode(this.refs.valueInput).value = data.value || '';
       }
     }
-    setTimeout(function() {
+    setTimeout(function () {
       nameInput.select();
       nameInput.focus();
     }, 600);
   },
-  onRemove: function(e) {
+  onRemove: function (e) {
     var self = this;
     if (self.props.disabled) {
       return;
@@ -174,40 +182,51 @@ var PropsEditor = React.createClass({
     var name = e.target.getAttribute('data-name');
     var opName = self.props.isHeader ? 'header' : 'field';
     var item = self.state.modal[name];
-    win.confirm('Are you sure to delete this ' + opName + ' \'' + item.name + '\'.', function(sure) {
-      if (sure) {
-        delete self.state.modal[name];
-        self.props.onChange(item.name);
-        self.setState({});
+    win.confirm(
+      'Are you sure to delete this ' + opName + " '" + item.name + "'.",
+      function (sure) {
+        if (sure) {
+          delete self.state.modal[name];
+          self.props.onChange(item.name);
+          self.setState({});
+        }
       }
-    });
+    );
   },
-  getFields: function() {
+  getFields: function () {
     var modal = this.state.modal || '';
-    return Object.keys(modal).map(function(key) {
+    return Object.keys(modal).map(function (key) {
       return modal[key];
     });
   },
-  toString: function() {
+  toString: function () {
     var modal = this.state.modal || '';
     var keys = Object.keys(modal);
     if (this.props.isHeader) {
-      return keys.map(function(key) {
-        var obj = modal[key];
-        return obj.name + ': ' + util.encodeNonLatin1Char(obj.value);
-      }).join('\r\n');
+      return keys
+        .map(function (key) {
+          var obj = modal[key];
+          return obj.name + ': ' + util.encodeNonLatin1Char(obj.value);
+        })
+        .join('\r\n');
     }
-    return keys.map(function(key) {
-      var obj = modal[key];
-      return util.encodeURIComponent(obj.name) + '=' + util.encodeURIComponent(obj.value);
-    }).join('&');
+    return keys
+      .map(function (key) {
+        var obj = modal[key];
+        return (
+          util.encodeURIComponent(obj.name) +
+          '=' +
+          util.encodeURIComponent(obj.value)
+        );
+      })
+      .join('&');
   },
-  onUpload: function() {
+  onUpload: function () {
     if (!this.reading) {
       ReactDOM.findDOMNode(this.refs.readLocalFile).click();
     }
   },
-  readLocalFile: function() {
+  readLocalFile: function () {
     var form = new FormData(ReactDOM.findDOMNode(this.refs.readLocalFileForm));
     var file = form.get('localFile');
     if (file.size > MAX_FILE_SIZE) {
@@ -215,7 +234,7 @@ var PropsEditor = React.createClass({
     }
     var modal = this.state.modal || '';
     var size = file.size;
-    Object.keys(modal).forEach(function(key) {
+    Object.keys(modal).forEach(function (key) {
       size += modal[key].size;
     });
     if (size > MAX_FILE_SIZE) {
@@ -223,10 +242,10 @@ var PropsEditor = React.createClass({
     }
     var self = this;
     self.reading = true;
-    util.readFile(file, function(data) {
+    util.readFile(file, function (data) {
       self.reading = false;
       self.localFileData = data;
-      self.setState({ 
+      self.setState({
         filename: file.name || 'unknown',
         fileData: data,
         fileSize: file.size,
@@ -235,19 +254,22 @@ var PropsEditor = React.createClass({
     });
     ReactDOM.findDOMNode(this.refs.readLocalFile).value = '';
   },
-  removeLocalFile: function(e) {
+  removeLocalFile: function (e) {
     var self = this;
-    self.setState({ 
-      filename: null,
-      fileData: null
-    }, function() {
-      var valueInput = ReactDOM.findDOMNode(self.refs.valueInput);
-      valueInput.select();
-      valueInput.focus();
-    });
+    self.setState(
+      {
+        filename: null,
+        fileData: null
+      },
+      function () {
+        var valueInput = ReactDOM.findDOMNode(self.refs.valueInput);
+        valueInput.select();
+        valueInput.focus();
+      }
+    );
     e.stopPropagation();
   },
-  render: function() {
+  render: function () {
     var self = this;
     var modal = this.state.modal || '';
     var filename = this.state.filename;
@@ -257,70 +279,155 @@ var PropsEditor = React.createClass({
     var allowUploadFile = this.props.allowUploadFile;
     var data = this.state.data || '';
     var btnText = (data ? 'Modify' : 'Add') + (isHeader ? ' header' : ' field');
-    
+
     return (
-      <div className={'fill orient-vertical-box w-props-editor' + (this.props.hide ? ' hide' : '')} title={this.props.title} onDoubleClick={this.props.onDoubleClick}>
-        {keys.length ? (<table className="table">
-          <tbody>
-            {
-              keys.map(function(name) {
+      <div
+        className={
+          'fill orient-vertical-box w-props-editor' +
+          (this.props.hide ? ' hide' : '')
+        }
+        title={this.props.title}
+        onDoubleClick={this.props.onDoubleClick}
+      >
+        {keys.length ? (
+          <table className="table">
+            <tbody>
+              {keys.map(function (name) {
                 var item = modal[name];
                 return (
                   <tr key={name}>
-                    <th className={isHeader && highlight(item.name) ? 'w-bold' : undefined}>{item.name}</th>
+                    <th
+                      className={
+                        isHeader && highlight(item.name) ? 'w-bold' : undefined
+                      }
+                    >
+                      {item.name}
+                    </th>
                     <td>
                       <pre>
-                        {item.data ? <span className="glyphicon glyphicon-file"></span> : undefined}
-                        {item.data ? ' [' + util.getSize(item.size) + '] ' : undefined}
+                        {item.data ? (
+                          <span className="glyphicon glyphicon-file"></span>
+                        ) : undefined}
+                        {item.data
+                          ? ' [' + util.getSize(item.size) + '] '
+                          : undefined}
                         {item.value}
                       </pre>
                     </td>
                     <td className="w-props-ops">
-                      <a data-name={name} onClick={self.onEdit} className="glyphicon glyphicon-edit" title="Edit"></a>
-                      <a data-name={name} onClick={self.onRemove} className="glyphicon glyphicon-remove" title="Delete"></a>
+                      <a
+                        data-name={name}
+                        onClick={self.onEdit}
+                        className="glyphicon glyphicon-edit"
+                        title="Edit"
+                      ></a>
+                      <a
+                        data-name={name}
+                        onClick={self.onRemove}
+                        className="glyphicon glyphicon-remove"
+                        title="Delete"
+                      ></a>
                     </td>
                   </tr>
                 );
-              })
+              })}
+            </tbody>
+          </table>
+        ) : (
+          <button
+            onClick={this.onAdd}
+            className={
+              'btn btn-primary btn-sm w-add-field' +
+              (this.props.isHeader ? ' w-add-header' : '')
             }
-          </tbody>
-        </table>) : (
-          <button onClick={this.onAdd} className={'btn btn-primary btn-sm w-add-field' + (this.props.isHeader ? ' w-add-header' : '')}>{this.props.isHeader ? 'Add header' : 'Add field'}</button>
+          >
+            {this.props.isHeader ? 'Add header' : 'Add field'}
+          </button>
         )}
         <Dialog ref="composerDialog" wstyle="w-composer-dialog">
-            <div className="modal-body">
-              <button type="button" className="close" data-dismiss="modal">
-                <span aria-hidden="true">&times;</span>
-              </button>
-              <label>
-                Name:
-                <input ref="name" placeholder="Input the name" className="form-control" maxLength="128" />
-              </label>
-              <div>
-                Value:
-                <div className={allowUploadFile ? 'w-props-editor-upload' : 'w-props-editor-form'}>
-                  <div onClick={this.onUpload} className={'w-props-editor-file' + (filename ? '' : ' hide')} title={filename}>
-                    <button onClick={this.removeLocalFile} type="button" className="close" title="Remove file">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                    <span className="glyphicon glyphicon-file"></span>
-                     {' [' + util.getSize(fileSize) + '] '} 
-                    {filename}
-                  </div>
-                  <textarea ref="valueInput" maxLength={MAX_VALUE_LEN} placeholder="Input the value" className={'form-control' + (filename ? ' hide' : '')} />
-                  <button onClick={this.onUpload} className={'btn btn-primary' + (filename ? ' hide' : '')}>Upload file</button>
+          <div className="modal-body">
+            <button type="button" className="close" data-dismiss="modal">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <label>
+              Name:
+              <input
+                ref="name"
+                placeholder="Input the name"
+                className="form-control"
+                maxLength="128"
+              />
+            </label>
+            <div>
+              Value:
+              <div
+                className={
+                  allowUploadFile
+                    ? 'w-props-editor-upload'
+                    : 'w-props-editor-form'
+                }
+              >
+                <div
+                  onClick={this.onUpload}
+                  className={'w-props-editor-file' + (filename ? '' : ' hide')}
+                  title={filename}
+                >
+                  <button
+                    onClick={this.removeLocalFile}
+                    type="button"
+                    className="close"
+                    title="Remove file"
+                  >
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                  <span className="glyphicon glyphicon-file"></span>
+                  {' [' + util.getSize(fileSize) + '] '}
+                  {filename}
                 </div>
+                <textarea
+                  ref="valueInput"
+                  maxLength={MAX_VALUE_LEN}
+                  placeholder="Input the value"
+                  className={'form-control' + (filename ? ' hide' : '')}
+                />
+                <button
+                  onClick={this.onUpload}
+                  className={'btn btn-primary' + (filename ? ' hide' : '')}
+                >
+                  Upload file
+                </button>
               </div>
             </div>
-            <div className="modal-footer">
-              <button type="button" className="btn btn-primary"
-                onClick={data ? self.edit : self.add}>{ btnText }</button>
-              <button type="button" className="btn btn-default" data-dismiss="modal">Cancel</button>
-            </div>
-          </Dialog>
-          <form ref="readLocalFileForm" encType="multipart/form-data" style={{display: 'none'}}>
-            <input ref="readLocalFile" onChange={this.readLocalFile} type="file" name="localFile" />
-          </form>
+          </div>
+          <div className="modal-footer">
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={data ? self.edit : self.add}
+            >
+              {btnText}
+            </button>
+            <button
+              type="button"
+              className="btn btn-default"
+              data-dismiss="modal"
+            >
+              Cancel
+            </button>
+          </div>
+        </Dialog>
+        <form
+          ref="readLocalFileForm"
+          encType="multipart/form-data"
+          style={{ display: 'none' }}
+        >
+          <input
+            ref="readLocalFile"
+            onChange={this.readLocalFile}
+            type="file"
+            name="localFile"
+          />
+        </form>
       </div>
     );
   }

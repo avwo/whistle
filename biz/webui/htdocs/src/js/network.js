@@ -8,7 +8,7 @@ var Divider = require('./divider');
 var ReqData = require('./req-data');
 var Detail = require('./detail');
 
-var getWidth = function(vertical) {
+var getWidth = function (vertical) {
   var docElem = document.documentElement;
   if (vertical) {
     return Math.max(Math.floor(docElem.clientHeight / 2), 360);
@@ -17,64 +17,81 @@ var getWidth = function(vertical) {
 };
 
 var Network = React.createClass({
-  getInitialState: function() {
+  getInitialState: function () {
     var dockToBottom = storage.get('dockToBottom');
     return {
       dockToBottom: dockToBottom,
       rightWidth: getWidth(dockToBottom)
     };
   },
-  componentDidMount: function() {
+  componentDidMount: function () {
     var self = this;
-    $(window).on('keydown', function(e) {
-      if (self.props.hide) {
-        return;
-      }
-      if ((e.ctrlKey || e.metaKey) && e.keyCode == 68) {
-        if (!util.isFocusEditor() && !$(e.target).closest('.w-frames-list').length) {
-          var modal = self.props.modal;
-          if (e.shiftKey) {
-            if (modal && modal.removeUnselectedItems()) {
-              self.setState({});
-            }
-          } else {
-            if (modal && modal.removeSelectedItems()) {
-              self.setState({});
+    $(window)
+      .on('keydown', function (e) {
+        if (self.props.hide) {
+          return;
+        }
+        if ((e.ctrlKey || e.metaKey) && e.keyCode == 68) {
+          if (
+            !util.isFocusEditor() &&
+            !$(e.target).closest('.w-frames-list').length
+          ) {
+            var modal = self.props.modal;
+            if (e.shiftKey) {
+              if (modal && modal.removeUnselectedItems()) {
+                self.setState({});
+              }
+            } else {
+              if (modal && modal.removeSelectedItems()) {
+                self.setState({});
+              }
             }
           }
         }
-      }
-    }).on('keydown', function(e) {
-      if (e.keyCode === 123) {
-        if (!self.props.hide) {
-          self.onDockChange();
+      })
+      .on('keydown', function (e) {
+        if (e.keyCode === 123) {
+          if (!self.props.hide) {
+            self.onDockChange();
+          }
+          e.preventDefault();
         }
-        e.preventDefault();
-      }
-    });
+      });
   },
-  shouldComponentUpdate: function(nextProps) {
+  shouldComponentUpdate: function (nextProps) {
     var hide = util.getBoolean(this.props.hide);
     return hide != util.getBoolean(nextProps.hide) || !hide;
   },
-  onDockChange: function() {
+  onDockChange: function () {
     var self = this;
     var dockToBottom = !self.state.dockToBottom;
     storage.set('dockToBottom', dockToBottom ? 1 : '');
-    self.setState({
-      dockToBottom: dockToBottom,
-      rightWidth: getWidth(dockToBottom)
-    }, function() {
-      self.refs.divider.reset();
-    });
+    self.setState(
+      {
+        dockToBottom: dockToBottom,
+        rightWidth: getWidth(dockToBottom)
+      },
+      function () {
+        self.refs.divider.reset();
+      }
+    );
   },
-  render: function() {
+  render: function () {
     var modal = this.props.modal;
     var dockToBottom = this.state.dockToBottom;
     return (
-      <Divider ref="divider" hide={this.props.hide} vertical={dockToBottom} rightWidth={this.state.rightWidth}>
+      <Divider
+        ref="divider"
+        hide={this.props.hide}
+        vertical={dockToBottom}
+        rightWidth={this.state.rightWidth}
+      >
         <ReqData modal={modal} />
-        <Detail dockToBottom={dockToBottom} onDockChange={this.onDockChange} modal={modal} />
+        <Detail
+          dockToBottom={dockToBottom}
+          onDockChange={this.onDockChange}
+          modal={modal}
+        />
       </Divider>
     );
   }

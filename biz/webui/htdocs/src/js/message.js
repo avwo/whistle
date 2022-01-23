@@ -22,8 +22,8 @@ function showMessage(msg, level) {
   return elem;
 }
 
-['error', 'warn', 'info', 'success'].forEach(function(level) {
-  exports[level] = function(msg) {
+['error', 'warn', 'info', 'success'].forEach(function (level) {
+  exports[level] = function (msg) {
     return showMessage(msg, level);
   };
 });

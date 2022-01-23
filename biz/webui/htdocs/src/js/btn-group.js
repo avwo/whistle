@@ -4,12 +4,12 @@ var React = require('react');
 var util = require('./util');
 
 var BtnGroup = React.createClass({
-  handleClick: function(btn) {
+  handleClick: function (btn) {
     if (btn.active || btn.disabled) {
       return;
     }
     var list = this.props.tabs || this.props.btns;
-    list.forEach(function(btn) {
+    list.forEach(function (btn) {
       btn.active = false;
     });
     btn.active = true;
@@ -19,13 +19,13 @@ var BtnGroup = React.createClass({
       });
     }
   },
-  onDoubleClick: function(e) {
+  onDoubleClick: function (e) {
     if (this.props.onDoubleClick) {
       this.props.onDoubleClick(e);
     }
     e.stopPropagation();
   },
-  render: function() {
+  render: function () {
     var self = this;
     var tabs = self.props.tabs;
     var isSmall = self.props.type === 's';
@@ -33,24 +33,47 @@ var BtnGroup = React.createClass({
     var disabled = util.getBoolean(self.props.disabled);
 
     return (
-        <div onDoubleClick={self.props.onDoubleClickBar}
-          className={'btn-group btn-group-sm ' + (tabs ? 'w-tabs-sm' : 'w-btn-group-sm') + (isSmall ? ' small' : '')}>
-          {list.map(function(btn, i) {
-            btn.disabled = disabled;
-            var icon = btn.icon ? <span className={'glyphicon glyphicon-' + btn.icon}></span> : '';
-            var clazz = btn.className ? ' ' + btn.className : '';
-            btn.key = btn.key || util.getKey();
+      <div
+        onDoubleClick={self.props.onDoubleClickBar}
+        className={
+          'btn-group btn-group-sm ' +
+          (tabs ? 'w-tabs-sm' : 'w-btn-group-sm') +
+          (isSmall ? ' small' : '')
+        }
+      >
+        {list.map(function (btn, i) {
+          btn.disabled = disabled;
+          var icon = btn.icon ? (
+            <span className={'glyphicon glyphicon-' + btn.icon}></span>
+          ) : (
+            ''
+          );
+          var clazz = btn.className ? ' ' + btn.className : '';
+          btn.key = btn.key || util.getKey();
 
-            return <button onClick={function() {
-              self.handleClick(btn);
-            }} onDoubleClick={self.onDoubleClick} key={btn.key} type="button"
-                 style={{display: btn.hide ? 'none' : undefined}} title={btn.title}
-                 className={'btn btn-default' + (btn.active && !disabled ? ' active' : '') + clazz}>
-                 {icon}{btn.display || btn.name}
-                </button>;
-          })}
-          {self.props.dockBtn}
-        </div>
+          return (
+            <button
+              onClick={function () {
+                self.handleClick(btn);
+              }}
+              onDoubleClick={self.onDoubleClick}
+              key={btn.key}
+              type="button"
+              style={{ display: btn.hide ? 'none' : undefined }}
+              title={btn.title}
+              className={
+                'btn btn-default' +
+                (btn.active && !disabled ? ' active' : '') +
+                clazz
+              }
+            >
+              {icon}
+              {btn.display || btn.name}
+            </button>
+          );
+        })}
+        {self.props.dockBtn}
+      </div>
     );
   }
 });

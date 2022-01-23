@@ -12,7 +12,9 @@ var _solarized = require('./themes/solarized');
 
 var _solarized2 = _interopRequireDefault(_solarized);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
 
 var colorMap = function colorMap(theme) {
   return {
@@ -151,7 +153,13 @@ var getDefaultThemeStyling = function getDefaultThemeStyling(theme) {
       left: '-0.4em'
     },
 
-    nestedNode: function nestedNode(_ref5, keyPath, nodeType, expanded, expandable) {
+    nestedNode: function nestedNode(
+      _ref5,
+      keyPath,
+      nodeType,
+      expanded,
+      expandable
+    ) {
       var style = _ref5.style;
       return {
         style: (0, _extends3['default'])({}, style, {
@@ -168,7 +176,13 @@ var getDefaultThemeStyling = function getDefaultThemeStyling(theme) {
       margin: 0
     },
 
-    nestedNodeLabel: function nestedNodeLabel(_ref6, keyPath, nodeType, expanded, expandable) {
+    nestedNodeLabel: function nestedNodeLabel(
+      _ref6,
+      keyPath,
+      nodeType,
+      expanded,
+      expandable
+    ) {
       var style = _ref6.style;
       return {
         style: (0, _extends3['default'])({}, style, {
@@ -181,13 +195,20 @@ var getDefaultThemeStyling = function getDefaultThemeStyling(theme) {
       };
     },
 
-    nestedNodeItemString: function nestedNodeItemString(_ref7, keyPath, nodeType, expanded) {
+    nestedNodeItemString: function nestedNodeItemString(
+      _ref7,
+      keyPath,
+      nodeType,
+      expanded
+    ) {
       var style = _ref7.style;
       return {
         style: (0, _extends3['default'])({}, style, {
           paddingLeft: '0.5em',
           cursor: 'default',
-          color: expanded ? colors.ITEM_STRING_EXPANDED_COLOR : colors.ITEM_STRING_COLOR
+          color: expanded
+            ? colors.ITEM_STRING_EXPANDED_COLOR
+            : colors.ITEM_STRING_COLOR
         })
       };
     },
@@ -217,6 +238,9 @@ var getDefaultThemeStyling = function getDefaultThemeStyling(theme) {
   };
 };
 
-exports['default'] = (0, _reactBase16Styling.createStyling)(getDefaultThemeStyling, {
-  defaultBase16: _solarized2['default']
-});
+exports['default'] = (0, _reactBase16Styling.createStyling)(
+  getDefaultThemeStyling,
+  {
+    defaultBase16: _solarized2['default']
+  }
+);

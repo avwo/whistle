@@ -4,10 +4,11 @@
 .w-kv-name {
   width: 400px;
 }
-.w-kv-operation a:nth-child(2)  {
+.w-kv-operation a:nth-child(2) {
   color: #f66;
   margin: 0 20px;
 }
-.w-kv-conflict th, .w-kv-operation strong {
+.w-kv-conflict th,
+.w-kv-operation strong {
   color: #f66;
 }

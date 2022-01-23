@@ -4,7 +4,9 @@ exports.__esModule = true;
 
 var _objectWithoutProperties2 = require('babel-runtime/helpers/objectWithoutProperties');
 
-var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
+var _objectWithoutProperties3 = _interopRequireDefault(
+  _objectWithoutProperties2
+);
 
 var _stringify = require('babel-runtime/core-js/json/stringify');
 
@@ -20,7 +22,9 @@ var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 
 var _possibleConstructorReturn2 = require('babel-runtime/helpers/possibleConstructorReturn');
 
-var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+var _possibleConstructorReturn3 = _interopRequireDefault(
+  _possibleConstructorReturn2
+);
 
 var _inherits2 = require('babel-runtime/helpers/inherits');
 
@@ -56,7 +60,9 @@ var _contextMenu = require('../../context-menu');
 
 var _contextMenu2 = _interopRequireDefault(_contextMenu);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
 
 /* eslint-disable react/no-string-refs */
 // ES6 + inline style port of JSONViewer https://bitbucket.org/davevedder/react-json-viewer/
@@ -64,14 +70,23 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 // Dave Vedder <veddermatic@gmail.com> http://www.eskimospy.com/
 // port by Daniele Zannotti http://www.github.com/dzannotti <dzannotti@me.com>
 
-var contextMenuList = [{ name: 'Copy Key' }, { name: 'Copy Value' }, { name: 'Collapse Parent' }];
+var contextMenuList = [
+  { name: 'Copy Key' },
+  { name: 'Copy Value' },
+  { name: 'Collapse Parent' }
+];
 var identity = function identity(value) {
   return value;
 };
 var expandRootNode = function expandRootNode(keyName, data, level) {
   return level === 0;
 };
-var defaultItemString = function defaultItemString(type, data, itemType, itemString) {
+var defaultItemString = function defaultItemString(
+  type,
+  data,
+  itemType,
+  itemString
+) {
   return _react2['default'].createElement(
     'span',
     null,
@@ -82,12 +97,7 @@ var defaultItemString = function defaultItemString(type, data, itemType, itemStr
 };
 var defaultLabelRenderer = function defaultLabelRenderer(_ref) {
   var label = _ref[0];
-  return _react2['default'].createElement(
-    'span',
-    null,
-    label,
-    ':'
-  );
+  return _react2['default'].createElement('span', null, label, ':');
 };
 var noCustomNode = function noCustomNode() {
   return false;
@@ -102,7 +112,9 @@ function checkLegacyTheming(theme, props) {
     getValueStyle: 'valueText'
   };
 
-  var deprecatedStylingMethods = (0, _keys2['default'])(deprecatedStylingMethodsMap).filter(function (name) {
+  var deprecatedStylingMethods = (0, _keys2['default'])(
+    deprecatedStylingMethodsMap
+  ).filter(function (name) {
     return props[name];
   });
 
@@ -117,16 +129,30 @@ function checkLegacyTheming(theme, props) {
 
     deprecatedStylingMethods.forEach(function (name) {
       // eslint-disable-next-line no-console
-      console.error('Styling method "' + name + '" is deprecated, use "theme" property instead');
+      console.error(
+        'Styling method "' +
+          name +
+          '" is deprecated, use "theme" property instead'
+      );
 
       theme[deprecatedStylingMethodsMap[name]] = function (_ref2) {
-        for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        for (
+          var _len = arguments.length,
+            args = Array(_len > 1 ? _len - 1 : 0),
+            _key = 1;
+          _key < _len;
+          _key++
+        ) {
           args[_key - 1] = arguments[_key];
         }
 
         var style = _ref2.style;
         return {
-          style: (0, _extends3['default'])({}, style, props[name].apply(props, args))
+          style: (0, _extends3['default'])(
+            {},
+            style,
+            props[name].apply(props, args)
+          )
         };
       };
     });
@@ -142,9 +168,13 @@ function getStateFromProps(props) {
       theme = theme + ':inverted';
     } else if (theme && theme.extend) {
       if (typeof theme === 'string') {
-        theme = (0, _extends3['default'])({}, theme, { extend: theme.extend + ':inverted' });
+        theme = (0, _extends3['default'])({}, theme, {
+          extend: theme.extend + ':inverted'
+        });
       } else {
-        theme = (0, _extends3['default'])({}, theme, { extend: (0, _reactBase16Styling.invertTheme)(theme.extend) });
+        theme = (0, _extends3['default'])({}, theme, {
+          extend: (0, _reactBase16Styling.invertTheme)(theme.extend)
+        });
       }
     } else if (theme) {
       theme = (0, _reactBase16Styling.invertTheme)(theme);
@@ -155,13 +185,16 @@ function getStateFromProps(props) {
   };
 }
 
-var JSONTree = function (_React$Component) {
+var JSONTree = (function (_React$Component) {
   (0, _inherits3['default'])(JSONTree, _React$Component);
 
   function JSONTree(props) {
     (0, _classCallCheck3['default'])(this, JSONTree);
 
-    var _this = (0, _possibleConstructorReturn3['default'])(this, _React$Component.call(this, props));
+    var _this = (0, _possibleConstructorReturn3['default'])(
+      this,
+      _React$Component.call(this, props)
+    );
 
     _this.onContextMenu = function (e) {
       var target = (0, _contextMenu.$)(e.target).closest('label');
@@ -180,13 +213,19 @@ var JSONTree = function (_React$Component) {
       ctxMenu.list = contextMenuList;
       ctxMenu.className = 'w-inspectors-ctx-menu';
       contextMenuList[0].copyText = keyPath[0];
-      if (data && (typeof data === 'undefined' ? 'undefined' : (0, _typeof3['default'])(data)) === 'object' && !(data instanceof String)) {
+      if (
+        data &&
+        (typeof data === 'undefined'
+          ? 'undefined'
+          : (0, _typeof3['default'])(data)) === 'object' &&
+        !(data instanceof String)
+      ) {
         try {
           data = (0, _stringify2['default'])(data, null, '  ');
         } catch (e) {} // eslint-disable-line
       }
       contextMenuList[1].copyText = data + '';
-      contextMenuList[2].onClick = function() {
+      contextMenuList[2].onClick = function () {
         target.closest('li').parent().closest('li').find('div:first').click();
       };
       contextMenuList[2].hide = isRoot;
@@ -198,58 +237,103 @@ var JSONTree = function (_React$Component) {
     return _this;
   }
 
-  JSONTree.prototype.componentWillReceiveProps = function componentWillReceiveProps(nextProps) {
-    var _this2 = this;
+  JSONTree.prototype.componentWillReceiveProps =
+    function componentWillReceiveProps(nextProps) {
+      var _this2 = this;
 
-    if (['theme', 'invertTheme'].find(function (k) {
-      return nextProps[k] !== _this2.props[k];
-    })) {
-      this.setState(getStateFromProps(nextProps));
-    }
-  };
+      if (
+        ['theme', 'invertTheme'].find(function (k) {
+          return nextProps[k] !== _this2.props[k];
+        })
+      ) {
+        this.setState(getStateFromProps(nextProps));
+      }
+    };
 
-  JSONTree.prototype.shouldComponentUpdate = function shouldComponentUpdate(nextProps) {
+  JSONTree.prototype.shouldComponentUpdate = function shouldComponentUpdate(
+    nextProps
+  ) {
     var _this3 = this;
 
     return !!(0, _keys2['default'])(nextProps).find(function (k) {
-      return k === 'keyPath' ? nextProps[k].join('/') !== _this3.props[k].join('/') : nextProps[k] !== _this3.props[k];
+      return k === 'keyPath'
+        ? nextProps[k].join('/') !== _this3.props[k].join('/')
+        : nextProps[k] !== _this3.props[k];
     });
   };
 
   JSONTree.prototype.render = function render() {
     var _props = this.props,
-        value = _props.data,
-        keyPath = _props.keyPath,
-        postprocessValue = _props.postprocessValue,
-        hideRoot = _props.hideRoot,
-        theme = _props.theme,
-        _ = _props.invertTheme,
-        rest = (0, _objectWithoutProperties3['default'])(_props, ['data', 'keyPath', 'postprocessValue', 'hideRoot', 'theme', 'invertTheme']);
+      value = _props.data,
+      keyPath = _props.keyPath,
+      postprocessValue = _props.postprocessValue,
+      hideRoot = _props.hideRoot,
+      theme = _props.theme,
+      _ = _props.invertTheme,
+      rest = (0, _objectWithoutProperties3['default'])(_props, [
+        'data',
+        'keyPath',
+        'postprocessValue',
+        'hideRoot',
+        'theme',
+        'invertTheme'
+      ]);
     var styling = this.state.styling;
-
 
     return _react2['default'].createElement(
       'ul',
-      (0, _extends3['default'])({}, styling('tree'), { onContextMenu: this.onContextMenu }),
-      _react2['default'].createElement(_JSONNode2['default'], (0, _extends3['default'])({}, (0, _extends3['default'])({ postprocessValue: postprocessValue, hideRoot: hideRoot, styling: styling }, rest), {
-        keyPath: hideRoot ? [] : keyPath,
-        value: postprocessValue(value)
-      })),
-      _react2['default'].createElement(_contextMenu2['default'], { ref: 'contextMenu' })
+      (0, _extends3['default'])({}, styling('tree'), {
+        onContextMenu: this.onContextMenu
+      }),
+      _react2['default'].createElement(
+        _JSONNode2['default'],
+        (0, _extends3['default'])(
+          {},
+          (0, _extends3['default'])(
+            {
+              postprocessValue: postprocessValue,
+              hideRoot: hideRoot,
+              styling: styling
+            },
+            rest
+          ),
+          {
+            keyPath: hideRoot ? [] : keyPath,
+            value: postprocessValue(value)
+          }
+        )
+      ),
+      _react2['default'].createElement(_contextMenu2['default'], {
+        ref: 'contextMenu'
+      })
     );
   };
 
   return JSONTree;
-}(_react2['default'].Component);
+})(_react2['default'].Component);
 
 JSONTree.propTypes = {
-  data: _propTypes2['default'].oneOfType([_propTypes2['default'].array, _propTypes2['default'].object]).isRequired,
+  data: _propTypes2['default'].oneOfType([
+    _propTypes2['default'].array,
+    _propTypes2['default'].object
+  ]).isRequired,
   hideRoot: _propTypes2['default'].bool,
-  theme: _propTypes2['default'].oneOfType([_propTypes2['default'].object, _propTypes2['default'].string]),
+  theme: _propTypes2['default'].oneOfType([
+    _propTypes2['default'].object,
+    _propTypes2['default'].string
+  ]),
   invertTheme: _propTypes2['default'].bool,
-  keyPath: _propTypes2['default'].arrayOf(_propTypes2['default'].oneOfType([_propTypes2['default'].string, _propTypes2['default'].number])),
+  keyPath: _propTypes2['default'].arrayOf(
+    _propTypes2['default'].oneOfType([
+      _propTypes2['default'].string,
+      _propTypes2['default'].number
+    ])
+  ),
   postprocessValue: _propTypes2['default'].func,
-  sortObjectKeys: _propTypes2['default'].oneOfType([_propTypes2['default'].func, _propTypes2['default'].bool])
+  sortObjectKeys: _propTypes2['default'].oneOfType([
+    _propTypes2['default'].func,
+    _propTypes2['default'].bool
+  ])
 };
 JSONTree.defaultProps = {
   shouldExpandNode: expandRootNode,

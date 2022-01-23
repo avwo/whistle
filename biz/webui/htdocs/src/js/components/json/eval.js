@@ -1,7 +1,7 @@
 var JSON_RE = /^\s*(?:\{[\w\W]*\}|\[[\w\W]*\])\s*$/;
 var ctx = {};
 var throwError = {
-  get: function() {
+  get: function () {
     throw new Error('undefined');
   }
 };
@@ -18,10 +18,10 @@ function evalJson(str) {
   if (!JSON_RE.test(str)) {
     return;
   }
-  with(ctx) {
+  with (ctx) {
     try {
       return eval('(' + str + ')');
-    } catch(e) {}
+    } catch (e) {}
   }
 }
 

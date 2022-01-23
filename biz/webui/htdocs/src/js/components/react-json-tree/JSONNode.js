@@ -8,7 +8,9 @@ var _extends3 = _interopRequireDefault(_extends2);
 
 var _objectWithoutProperties2 = require('babel-runtime/helpers/objectWithoutProperties');
 
-var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
+var _objectWithoutProperties3 = _interopRequireDefault(
+  _objectWithoutProperties2
+);
 
 var _react = require('react');
 
@@ -42,19 +44,31 @@ var _expandCollapse = require('../../expand-collapse');
 
 var _expandCollapse2 = _interopRequireDefault(_expandCollapse);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
 
 var JSONNode = function JSONNode(_ref) {
   var getItemString = _ref.getItemString,
-      keyPath = _ref.keyPath,
-      labelRenderer = _ref.labelRenderer,
-      styling = _ref.styling,
-      value = _ref.value,
-      valueRenderer = _ref.valueRenderer,
-      isCustomNode = _ref.isCustomNode,
-      rest = (0, _objectWithoutProperties3['default'])(_ref, ['getItemString', 'keyPath', 'labelRenderer', 'styling', 'value', 'valueRenderer', 'isCustomNode']);
+    keyPath = _ref.keyPath,
+    labelRenderer = _ref.labelRenderer,
+    styling = _ref.styling,
+    value = _ref.value,
+    valueRenderer = _ref.valueRenderer,
+    isCustomNode = _ref.isCustomNode,
+    rest = (0, _objectWithoutProperties3['default'])(_ref, [
+      'getItemString',
+      'keyPath',
+      'labelRenderer',
+      'styling',
+      'value',
+      'valueRenderer',
+      'isCustomNode'
+    ]);
 
-  var nodeType = isCustomNode(value) ? 'Custom' : (0, _objType2['default'])(value);
+  var nodeType = isCustomNode(value)
+    ? 'Custom'
+    : (0, _objType2['default'])(value);
 
   if (nodeType === 'BigNumber') {
     nodeType = 'Number';
@@ -82,63 +96,112 @@ var JSONNode = function JSONNode(_ref) {
     case 'Error':
     case 'WeakMap':
     case 'WeakSet':
-      return _react2['default'].createElement(_JSONObjectNode2['default'], nestedNodeProps);
+      return _react2['default'].createElement(
+        _JSONObjectNode2['default'],
+        nestedNodeProps
+      );
     case 'Array':
-      return _react2['default'].createElement(_JSONArrayNode2['default'], nestedNodeProps);
+      return _react2['default'].createElement(
+        _JSONArrayNode2['default'],
+        nestedNodeProps
+      );
     case 'Iterable':
     case 'Map':
     case 'Set':
-      return _react2['default'].createElement(_JSONIterableNode2['default'], nestedNodeProps);
+      return _react2['default'].createElement(
+        _JSONIterableNode2['default'],
+        nestedNodeProps
+      );
     case 'String':
-      return _react2['default'].createElement(_JSONValueNode2['default'], (0, _extends3['default'])({}, simpleNodeProps, {
-        valueGetter: function valueGetter(raw) {
-          raw = '"' + raw + '"';
-          return raw.length > 1024 ? _react2['default'].createElement(_expandCollapse2['default'], { text: raw }) : raw;
-        }
-      }));
+      return _react2['default'].createElement(
+        _JSONValueNode2['default'],
+        (0, _extends3['default'])({}, simpleNodeProps, {
+          valueGetter: function valueGetter(raw) {
+            raw = '"' + raw + '"';
+            return raw.length > 1024
+              ? _react2['default'].createElement(_expandCollapse2['default'], {
+                  text: raw
+                })
+              : raw;
+          }
+        })
+      );
     case 'Number':
-      return _react2['default'].createElement(_JSONValueNode2['default'], simpleNodeProps);
+      return _react2['default'].createElement(
+        _JSONValueNode2['default'],
+        simpleNodeProps
+      );
     case 'Boolean':
-      return _react2['default'].createElement(_JSONValueNode2['default'], (0, _extends3['default'])({}, simpleNodeProps, {
-        valueGetter: function valueGetter(raw) {
-          return raw ? 'true' : 'false';
-        }
-      }));
+      return _react2['default'].createElement(
+        _JSONValueNode2['default'],
+        (0, _extends3['default'])({}, simpleNodeProps, {
+          valueGetter: function valueGetter(raw) {
+            return raw ? 'true' : 'false';
+          }
+        })
+      );
     case 'Date':
-      return _react2['default'].createElement(_JSONValueNode2['default'], (0, _extends3['default'])({}, simpleNodeProps, {
-        valueGetter: function valueGetter(raw) {
-          return raw.toISOString();
-        }
-      }));
+      return _react2['default'].createElement(
+        _JSONValueNode2['default'],
+        (0, _extends3['default'])({}, simpleNodeProps, {
+          valueGetter: function valueGetter(raw) {
+            return raw.toISOString();
+          }
+        })
+      );
     case 'Null':
-      return _react2['default'].createElement(_JSONValueNode2['default'], (0, _extends3['default'])({}, simpleNodeProps, { valueGetter: function valueGetter() {
-          return 'null';
-        } }));
+      return _react2['default'].createElement(
+        _JSONValueNode2['default'],
+        (0, _extends3['default'])({}, simpleNodeProps, {
+          valueGetter: function valueGetter() {
+            return 'null';
+          }
+        })
+      );
     case 'Undefined':
-      return _react2['default'].createElement(_JSONValueNode2['default'], (0, _extends3['default'])({}, simpleNodeProps, { valueGetter: function valueGetter() {
-          return 'undefined';
-        } }));
+      return _react2['default'].createElement(
+        _JSONValueNode2['default'],
+        (0, _extends3['default'])({}, simpleNodeProps, {
+          valueGetter: function valueGetter() {
+            return 'undefined';
+          }
+        })
+      );
     case 'Function':
     case 'Symbol':
-      return _react2['default'].createElement(_JSONValueNode2['default'], (0, _extends3['default'])({}, simpleNodeProps, {
-        valueGetter: function valueGetter(raw) {
-          return raw.toString();
-        }
-      }));
+      return _react2['default'].createElement(
+        _JSONValueNode2['default'],
+        (0, _extends3['default'])({}, simpleNodeProps, {
+          valueGetter: function valueGetter(raw) {
+            return raw.toString();
+          }
+        })
+      );
     case 'Custom':
-      return _react2['default'].createElement(_JSONValueNode2['default'], simpleNodeProps);
+      return _react2['default'].createElement(
+        _JSONValueNode2['default'],
+        simpleNodeProps
+      );
     default:
-      return _react2['default'].createElement(_JSONValueNode2['default'], (0, _extends3['default'])({}, simpleNodeProps, {
-        valueGetter: function valueGetter(raw) {
-          return '<' + nodeType + '>';
-        }
-      }));
+      return _react2['default'].createElement(
+        _JSONValueNode2['default'],
+        (0, _extends3['default'])({}, simpleNodeProps, {
+          valueGetter: function valueGetter(raw) {
+            return '<' + nodeType + '>';
+          }
+        })
+      );
   }
 };
 
 JSONNode.propTypes = {
   getItemString: _propTypes2['default'].func.isRequired,
-  keyPath: _propTypes2['default'].arrayOf(_propTypes2['default'].oneOfType([_propTypes2['default'].string, _propTypes2['default'].number])).isRequired,
+  keyPath: _propTypes2['default'].arrayOf(
+    _propTypes2['default'].oneOfType([
+      _propTypes2['default'].string,
+      _propTypes2['default'].number
+    ])
+  ).isRequired,
   labelRenderer: _propTypes2['default'].func.isRequired,
   styling: _propTypes2['default'].func.isRequired,
   value: _propTypes2['default'].any,

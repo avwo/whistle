@@ -11,7 +11,8 @@
   overflow: auto;
 }
 
-.w-detail-inspectors-title, .w-detail-webforms-title {
+.w-detail-inspectors-title,
+.w-detail-webforms-title {
   line-height: 18px;
   background: #f1f3f4;
   font-size: 12px;
@@ -19,13 +20,13 @@
   border-bottom: 1px solid #ccc;
 }
 .w-detail-inspectors-title {
-  padding: 0 5px!important;
+  padding: 0 5px !important;
 }
 .w-detail-inspectors-title {
   font-weight: bold;
 }
 .w-detail-webforms-title {
-  line-height: 16px!important;
+  line-height: 16px !important;
 }
 .w-detail-inspectors-url {
   white-space: nowrap;
@@ -37,7 +38,7 @@
 .w-detail-inspectors-url label {
   line-height: 18px;
   padding: 3px 8px;
-  font-weight: normal!important;
+  font-weight: normal !important;
   width: 68px;
   background: #e1e3e6;
   display: inline-block;
@@ -50,5 +51,13 @@
   overflow-y: hidden;
 }
 
-.w-detail-inspectors-url div::-webkit-scrollbar, .w-custom-tabs::-webkit-scrollbar { width:1px; height:1px; }
-.w-detail-inspectors-url div::-webkit-scrollbar-button, .w-custom-tabs::-webkit-scrollbar-button { width:1px; height:1px; }
+.w-detail-inspectors-url div::-webkit-scrollbar,
+.w-custom-tabs::-webkit-scrollbar {
+  width: 1px;
+  height: 1px;
+}
+.w-detail-inspectors-url div::-webkit-scrollbar-button,
+.w-custom-tabs::-webkit-scrollbar-button {
+  width: 1px;
+  height: 1px;
+}

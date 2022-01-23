@@ -1,38 +1,147 @@
-.w-network-settings-dialog fieldset { border: 1px solid #ddd; padding-bottom: 10px; }
-.w-network-settings-dialog legend { border: none;  margin: 0 10px; padding: 0 10px; width: auto; }
-.w-network-settings-dialog legend label { font-size: 13px; width: auto; padding: 0; }
-.w-network-settings-dialog label {
-  font-size: 13px; font-weight: normal; line-height: 30px; height: 30px;
-  display: inline-block; width: 96px; margin-right: 10px; font-weight: bold; text-align: right;
+.w-network-settings-dialog fieldset {
+  border: 1px solid #ddd;
+  padding-bottom: 10px;
 }
-.network-settings-columns { margin-top: 10px; }
-.network-settings-filter { border: none!important; }
-.network-settings-filter legend { margin: 0; padding: 0; }
-.network-settings-filter legend label { margin-right: 5px; }
-.network-settings-filter textarea[disabled] { background: #f5f5f5; }
-.network-settings-columns label { white-space: nowrap; padding-left: 10px; margin-left: 10px; text-align: left; width: 120px; }
-.network-settings-columns label .glyphicon-edit { margin-left: 5px; cursor: pointer; }
-.network-settings-columns label .glyphicon-edit:hover { color: #337ab7;}
-.network-settings-columns .btn { margin-right: 0; text-align: center; color: #666; width: 72px;}
-.network-settings-columns legend label { margin-left: 0; }
-.w-network-settings-dialog .modal-dialog {width: 600px;}
-.w-network-settings-dialog input[type=checkbox] { margin-right: 5px; }
-.w-network-settings-dialog textarea { width: 578px; height: 90px; border: 1px solid #ddd; overflow: auto; margin: 0; padding: 5px 10px; }
-.w-network-settings-dialog .w-help-menu { color: #000; font-size: 14px; }
-.w-network-settings-dialog .w-help-menu:hover, .w-https-dialog .w-help-menu:hover,
-.w-certs-info-dialog .w-help-menu:hover, .w-files-dialog .w-help-menu:hover { color: #337ab7 }
-.w-https-dialog .w-help-menu, .w-files-dialog .w-help-menu, .w-certs-info-dialog .w-help-menu { margin-right: 5px; color: #000; font-size: 14px; }
-.w-network-settings-dialog div input[type=text] { width: 436px; }
-.w-network-settings-own { width: auto!important; margin: 15px 0 0; white-space: nowrap; }
-.w-network-settings-own select { margin-left: 20px; width: 160px; display: inline-block; }
-.w-network-custom-col { display: inline-block; max-width: 90px; text-overflow: ellipsis; white-space: nowrap; }
-.network-settings-columns label span { vertical-align: middle; overflow: hidden; font-weight: normal; }
-.w-network-settings-edit label { white-space: nowrap; }
-.w-network-settings-edit label .form-control { display: inline-block; margin: 0 10px; font-weight: normal; }
-.w-network-settings-edit label select { width: 150px; }
-.w-network-settings-edit label input { width: 330px; }
-.w-network-settings-edit .modal-dialog {width: 530px;}
-.network-settings-columns legend .btn-primary { width: auto; margin-right: 10px; padding: 0 8px; color: #fff; font-weight: normal; }
+.w-network-settings-dialog legend {
+  border: none;
+  margin: 0 10px;
+  padding: 0 10px;
+  width: auto;
+}
+.w-network-settings-dialog legend label {
+  font-size: 13px;
+  width: auto;
+  padding: 0;
+}
+.w-network-settings-dialog label {
+  font-size: 13px;
+  font-weight: normal;
+  line-height: 30px;
+  height: 30px;
+  display: inline-block;
+  width: 96px;
+  margin-right: 10px;
+  font-weight: bold;
+  text-align: right;
+}
+.network-settings-columns {
+  margin-top: 10px;
+}
+.network-settings-filter {
+  border: none !important;
+}
+.network-settings-filter legend {
+  margin: 0;
+  padding: 0;
+}
+.network-settings-filter legend label {
+  margin-right: 5px;
+}
+.network-settings-filter textarea[disabled] {
+  background: #f5f5f5;
+}
+.network-settings-columns label {
+  white-space: nowrap;
+  padding-left: 10px;
+  margin-left: 10px;
+  text-align: left;
+  width: 120px;
+}
+.network-settings-columns label .glyphicon-edit {
+  margin-left: 5px;
+  cursor: pointer;
+}
+.network-settings-columns label .glyphicon-edit:hover {
+  color: #337ab7;
+}
+.network-settings-columns .btn {
+  margin-right: 0;
+  text-align: center;
+  color: #666;
+  width: 72px;
+}
+.network-settings-columns legend label {
+  margin-left: 0;
+}
+.w-network-settings-dialog .modal-dialog {
+  width: 600px;
+}
+.w-network-settings-dialog input[type='checkbox'] {
+  margin-right: 5px;
+}
+.w-network-settings-dialog textarea {
+  width: 578px;
+  height: 90px;
+  border: 1px solid #ddd;
+  overflow: auto;
+  margin: 0;
+  padding: 5px 10px;
+}
+.w-network-settings-dialog .w-help-menu {
+  color: #000;
+  font-size: 14px;
+}
+.w-network-settings-dialog .w-help-menu:hover,
+.w-https-dialog .w-help-menu:hover,
+.w-certs-info-dialog .w-help-menu:hover,
+.w-files-dialog .w-help-menu:hover {
+  color: #337ab7;
+}
+.w-https-dialog .w-help-menu,
+.w-files-dialog .w-help-menu,
+.w-certs-info-dialog .w-help-menu {
+  margin-right: 5px;
+  color: #000;
+  font-size: 14px;
+}
+.w-network-settings-dialog div input[type='text'] {
+  width: 436px;
+}
+.w-network-settings-own {
+  width: auto !important;
+  margin: 15px 0 0;
+  white-space: nowrap;
+}
+.w-network-settings-own select {
+  margin-left: 20px;
+  width: 160px;
+  display: inline-block;
+}
+.w-network-custom-col {
+  display: inline-block;
+  max-width: 90px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.network-settings-columns label span {
+  vertical-align: middle;
+  overflow: hidden;
+  font-weight: normal;
+}
+.w-network-settings-edit label {
+  white-space: nowrap;
+}
+.w-network-settings-edit label .form-control {
+  display: inline-block;
+  margin: 0 10px;
+  font-weight: normal;
+}
+.w-network-settings-edit label select {
+  width: 150px;
+}
+.w-network-settings-edit label input {
+  width: 330px;
+}
+.w-network-settings-edit .modal-dialog {
+  width: 530px;
+}
+.network-settings-columns legend .btn-primary {
+  width: auto;
+  margin-right: 10px;
+  padding: 0 8px;
+  color: #fff;
+  font-weight: normal;
+}
 .w-certs-info-title {
   margin-bottom: 20px;
 }
