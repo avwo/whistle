@@ -29,7 +29,11 @@ var ReactDOM = require('react-dom');
 var CodeMirror = require('codemirror');
 var message = require('./message');
 var INIT_LENGTH = 1024 * 16;
-var GUTTER_STYLE = ['CodeMirror-linenumbers', 'CodeMirror-foldgutter', 'CodeMirror-lint-markers' ];
+var GUTTER_STYLE = [
+  'CodeMirror-linenumbers',
+  'CodeMirror-foldgutter',
+  'CodeMirror-lint-markers'
+];
 
 require('codemirror/mode/javascript/javascript');
 require('codemirror/mode/css/css');
@@ -50,9 +54,27 @@ require('codemirror/addon/fold/comment-fold');
 var rulesHint = require('./rules-hint');
 var events = require('./events');
 
-var themes = ['default', 'neat', 'elegant', 'erlang-dark', 'night', 'monokai', 'cobalt', 'eclipse'
-              , 'rubyblue', 'lesser-dark', 'xq-dark', 'xq-light', 'ambiance'
-              , 'blackboard', 'vibrant-ink', 'solarized dark', 'solarized light', 'twilight', 'midnight'];
+var themes = [
+  'default',
+  'neat',
+  'elegant',
+  'erlang-dark',
+  'night',
+  'monokai',
+  'cobalt',
+  'eclipse',
+  'rubyblue',
+  'lesser-dark',
+  'xq-dark',
+  'xq-light',
+  'ambiance',
+  'blackboard',
+  'vibrant-ink',
+  'solarized dark',
+  'solarized light',
+  'twilight',
+  'midnight'
+];
 require('./rules-mode');
 var DEFAULT_THEME = 'cobalt';
 var DEFAULT_FONT_SIZE = '16px';
@@ -62,14 +84,16 @@ var NO_SPACE_RE = /\S/;
 var FOLD_MODE = ['javascript', 'htmlmixed', 'css'];
 
 function hasSelector(selector) {
-  return document.querySelector ? document.querySelector(selector) : $(selector).length;
+  return document.querySelector
+    ? document.querySelector(selector)
+    : $(selector).length;
 }
 
 var Editor = React.createClass({
-  getThemes: function() {
+  getThemes: function () {
     return themes;
   },
-  setMode: function(mode) {
+  setMode: function (mode) {
     if (/^(javascript|css|xml|rules|markdown)$/i.test(mode)) {
       mode = RegExp.$1.toLowerCase();
     } else if (/^(js|pac|jsx|json)$/i.test(mode)) {
@@ -91,48 +115,49 @@ var Editor = React.createClass({
       this.setFoldGutter(this.props.foldGutter);
     }
   },
-  setValue: function(value) {
+  setValue: function (value) {
     value = this._value = value == null ? '' : value + '';
     if (!this._editor || this._editor.getValue() == value) {
       return;
     }
     this._editor.setValue(value);
   },
-  getValue: function() {
+  getValue: function () {
     return this._editor ? '' : this._editor.getValue();
   },
-  setTheme: function(theme) {
+  setTheme: function (theme) {
     theme = this._theme = theme || DEFAULT_THEME;
     if (!this._editor) {
       return;
     }
     this._editor.setOption('theme', theme);
   },
-  setFontSize: function(fontSize) {
+  setFontSize: function (fontSize) {
     fontSize = this._fontSize = fontSize || DEFAULT_FONT_SIZE;
     if (this._editor) {
       ReactDOM.findDOMNode(this.refs.editor).style.fontSize = fontSize;
     }
   },
-  showLineNumber: function(show) {
+  showLineNumber: function (show) {
     show = this._showLineNumber = show === false ? false : true;
     if (this._editor) {
       this._editor.setOption('lineNumbers', show);
     }
   },
-  showLineWrapping: function(show) {
+  showLineWrapping: function (show) {
     show = this._showLineNumber = show === false ? false : true;
     if (this._editor) {
       this._editor.setOption('lineWrapping', show);
     }
   },
-  setReadOnly: function(readOnly) {
-    readOnly = this._readOnly = readOnly === false || readOnly === 'false' ? false : true;
+  setReadOnly: function (readOnly) {
+    readOnly = this._readOnly =
+      readOnly === false || readOnly === 'false' ? false : true;
     if (this._editor) {
       this._editor.setOption('readOnly', readOnly);
     }
   },
-  setAutoComplete: function() {
+  setAutoComplete: function () {
     var isRules = this.isRulesEditor();
     var option = isRules ? rulesHint.getExtraKeys() : {};
     if (!/\(Macintosh;/i.test(window.navigator.userAgent)) {
@@ -143,11 +168,11 @@ var Editor = React.createClass({
     editor.setOption('extraKeys', option);
     var timer;
     if (isRules) {
-      editor.on('keyup', function(_, e) {
+      editor.on('keyup', function (_, e) {
         clearTimeout(timer);
         var _byDelete = e.keyCode === 8;
         if (_byDelete || e.keyCode === 13) {
-          timer = setTimeout(function() {
+          timer = setTimeout(function () {
             if (!hasSelector('.CodeMirror-hints')) {
               editor._byDelete = true;
               editor._byEnter = !_byDelete;
@@ -160,7 +185,7 @@ var Editor = React.createClass({
   },
 
   // 设置代码折叠
-  setFoldGutter: function(foldGutter) {
+  setFoldGutter: function (foldGutter) {
     if (this.props.mode === 'rules') {
       return;
     }
@@ -172,32 +197,39 @@ var Editor = React.createClass({
     }
   },
 
-  isRulesEditor: function() {
+  isRulesEditor: function () {
     return this.props.mode === 'rules' || this._mode === 'rules';
   },
-  componentDidMount: function() {
+  componentDidMount: function () {
     var timeout;
     var self = this;
     var elem = ReactDOM.findDOMNode(self.refs.editor);
-    var editor = self._editor = CodeMirror(elem);
-    editor.on('change', function(e) {
-      if (typeof self.props.onChange == 'function' && editor.getValue() !== (self.props.value || '')) {
+    var editor = (self._editor = CodeMirror(elem));
+    editor.on('change', function (e) {
+      if (
+        typeof self.props.onChange == 'function' &&
+        editor.getValue() !== (self.props.value || '')
+      ) {
         self.props.onChange.call(self, e);
       }
     });
-    editor.on('mousedown', function(_, e) {
+    editor.on('mousedown', function (_, e) {
       if (!(e.ctrlKey || e.metaKey)) {
         return;
       }
       var target = $(e.target);
-      if (target.hasClass('cm-js-type') || target.hasClass('cm-js-at') || target.hasClass('cm-js-http-url')) {
+      if (
+        target.hasClass('cm-js-type') ||
+        target.hasClass('cm-js-at') ||
+        target.hasClass('cm-js-http-url')
+      ) {
         e.preventDefault();
       }
     });
     self._init(true);
     $(elem).find('.CodeMirror').addClass('fill');
     resize();
-    $(window).on('resize', function() {
+    $(window).on('resize', function () {
       timeout && clearTimeout(timeout);
       timeout = null;
       timeout = setTimeout(resize, 30);
@@ -211,12 +243,12 @@ var Editor = React.createClass({
         editor.setSize(null, height);
       }
     }
-    var getCh = function(ch, dis) {
+    var getCh = function (ch, dis) {
       return Math.max(0, ch + dis);
     };
-    $(elem).on('dblclick', '.CodeMirror-linenumber', function(e) {
+    $(elem).on('dblclick', '.CodeMirror-linenumber', function (e) {
       var num = parseInt($(e.target).text(), 10);
-      if (!(num > 0)){
+      if (!(num > 0)) {
         return;
       }
       var lineNum = num - 1;
@@ -256,13 +288,17 @@ var Editor = React.createClass({
           }
         }
       }
-      editor.replaceRange(line + '\n', {line: lineNum, ch: 0}, {line: num, ch: 0});
+      editor.replaceRange(
+        line + '\n',
+        { line: lineNum, ch: 0 },
+        { line: num, ch: 0 }
+      );
       if (resetRange) {
         editor.setSelections(list);
       }
       events.trigger('toggleCommentInEditor');
     });
-    $(elem).on('keydown', function(e) {
+    $(elem).on('keydown', function (e) {
       var isRules = self.isRulesEditor();
       var isJS = self._mode == 'javascript';
       if (isRules) {
@@ -279,14 +315,21 @@ var Editor = React.createClass({
         }
         try {
           var onKeyDown = window.parent.onWhistleRulesEditorKeyDown;
-          if (typeof onKeyDown === 'function' && onKeyDown(e, options) === false) {
+          if (
+            typeof onKeyDown === 'function' &&
+            onKeyDown(e, options) === false
+          ) {
             e.stopPropagation();
             e.preventDefault();
             return true;
           }
-        } catch(e) {}
+        } catch (e) {}
       }
-      if ((!isRules && !isJS) || !(e.ctrlKey || e.metaKey) || e.keyCode != 191) {
+      if (
+        (!isRules && !isJS) ||
+        !(e.ctrlKey || e.metaKey) ||
+        e.keyCode != 191
+      ) {
         return;
       }
 
@@ -298,7 +341,7 @@ var Editor = React.createClass({
       var isShiftKey = e.shiftKey;
       var isEmpty;
       var ranges = [];
-      list.forEach(function(range) {
+      list.forEach(function (range) {
         var anchor = range.anchor;
         var head = range.head;
         var lines = [];
@@ -320,7 +363,7 @@ var Editor = React.createClass({
           lines.push(line);
         }
 
-        if (isEmpty = !hasComment && !hasRule) {
+        if ((isEmpty = !hasComment && !hasRule)) {
           return;
         }
         var lastIndex, firstLine, lastLine;
@@ -328,7 +371,7 @@ var Editor = React.createClass({
           lastIndex = lines.length - 1;
           firstLine = lines[0];
           lastLine = lines[lastIndex];
-          lines = lines.map(function(line) {
+          lines = lines.map(function (line) {
             if (!NO_SPACE_RE.test(line)) {
               return line;
             }
@@ -341,12 +384,12 @@ var Editor = React.createClass({
           firstLine = lines[0];
           lastIndex = lines.length - 1;
           lastLine = lines[lastIndex];
-          lines = lines.map(function(line) {
+          lines = lines.map(function (line) {
             return line.replace(commentRE, '$1');
           });
         }
         if (anchor.ch != 0) {
-          anchor.ch +=  lines[0].length - firstLine.length;
+          anchor.ch += lines[0].length - firstLine.length;
           if (anchor.ch < 0) {
             anchor.ch = 0;
           }
@@ -358,11 +401,19 @@ var Editor = React.createClass({
           }
         }
         if (revert) {
-          editor.replaceRange(lines.join('\n') + '\n', {line: head.line + 1, ch: 0}, {line: anchor.line, ch: 0});
-          ranges.push({anchor: head, head: anchor});
+          editor.replaceRange(
+            lines.join('\n') + '\n',
+            { line: head.line + 1, ch: 0 },
+            { line: anchor.line, ch: 0 }
+          );
+          ranges.push({ anchor: head, head: anchor });
         } else {
-          editor.replaceRange(lines.join('\n') + '\n', {line: anchor.line, ch: 0}, {line: head.line + 1, ch: 0});
-          ranges.push({anchor: anchor, head: head});
+          editor.replaceRange(
+            lines.join('\n') + '\n',
+            { line: anchor.line, ch: 0 },
+            { line: head.line + 1, ch: 0 }
+          );
+          ranges.push({ anchor: anchor, head: head });
         }
       });
       if (!isEmpty) {
@@ -370,13 +421,13 @@ var Editor = React.createClass({
       }
     });
   },
-  _init: function(init) {
+  _init: function (init) {
     var self = this;
     self.setMode(self.props.mode);
     var value = self.props.value;
     if (init && value && value.length > INIT_LENGTH) {
       var elem = message.info('Loading...');
-      self.timer = setTimeout(function() {
+      self.timer = setTimeout(function () {
         elem.hide();
         self.timer = null;
         self.setValue(self.props.value); // 节流
@@ -393,13 +444,16 @@ var Editor = React.createClass({
     self.setAutoComplete();
     self.setFoldGutter(self.props.foldGutter);
   },
-  componentDidUpdate: function() {
+  componentDidUpdate: function () {
     this._init();
   },
-  render: function() {
-
+  render: function () {
     return (
-      <div tabIndex="0" ref="editor" className="fill orient-vertical-box w-list-content"></div>
+      <div
+        tabIndex="0"
+        ref="editor"
+        className="fill orient-vertical-box w-list-content"
+      ></div>
     );
   }
 });

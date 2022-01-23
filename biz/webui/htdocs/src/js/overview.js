@@ -10,9 +10,44 @@ var Properties = require('./properties');
 var dataCenter = require('./data-center');
 var getHelpUrl = require('./protocols').getHelpUrl;
 
-var OVERVIEW = ['Url', 'Final Url', 'Method', 'Http Version', 'Status Code', 'Status Message', 'Client IP', 'Client Port', 'Client ID', 'Server IP', 'Server Port', 'Request Body', 'Response Body'
-                      , 'Content Encoding', 'Start Date', 'DNS Lookup', 'Request Sent', 'Response Headers', 'Content Loaded', 'Total'];
-var OVERVIEW_PROPS = ['url', 'realUrl', 'req.method', 'req.httpVersion', 'res.statusCode', 'res.statusMessage', 'req.ip', 'req.port', 'clientId', 'res.ip', 'res.port', 'req.size', 'res.size', 'contentEncoding'];
+var OVERVIEW = [
+  'Url',
+  'Final Url',
+  'Method',
+  'Http Version',
+  'Status Code',
+  'Status Message',
+  'Client IP',
+  'Client Port',
+  'Client ID',
+  'Server IP',
+  'Server Port',
+  'Request Body',
+  'Response Body',
+  'Content Encoding',
+  'Start Date',
+  'DNS Lookup',
+  'Request Sent',
+  'Response Headers',
+  'Content Loaded',
+  'Total'
+];
+var OVERVIEW_PROPS = [
+  'url',
+  'realUrl',
+  'req.method',
+  'req.httpVersion',
+  'res.statusCode',
+  'res.statusMessage',
+  'req.ip',
+  'req.port',
+  'clientId',
+  'res.ip',
+  'res.port',
+  'req.size',
+  'res.size',
+  'contentEncoding'
+];
 /**
  * statusCode://, redirect://[statusCode:]url, [req, res]speed://,
  * [req, res]delay://, method://, [req, res][content]Type://自动lookup,
@@ -49,17 +84,17 @@ function getRuleStr(rule) {
     }
     matcher = matcher + ':' + rule.port;
   }
-  return rule.rawPattern + ' ' +  matcher + getStr(props) + getStr(rule.filter);
+  return rule.rawPattern + ' ' + matcher + getStr(props) + getStr(rule.filter);
 }
 
 function getTime(time) {
   return time === '-' ? '' : time;
 }
 
-OVERVIEW.forEach(function(name) {
+OVERVIEW.forEach(function (name) {
   DEFAULT_OVERVIEW_MODAL[name] = '';
 });
-PROTOCOLS.forEach(function(name) {
+PROTOCOLS.forEach(function (name) {
   if (PROXY_PROTOCOLS.indexOf(name) !== -1 || /^x/.test(name)) {
     return;
   }
@@ -67,36 +102,38 @@ PROTOCOLS.forEach(function(name) {
 });
 
 function formatSize(value) {
-  return value >= 1024 ? value + '(' + Number(value / 1024).toFixed(2) + 'k)' : value;
+  return value >= 1024
+    ? value + '(' + Number(value / 1024).toFixed(2) + 'k)'
+    : value;
 }
 
 var Overview = React.createClass({
-  getInitialState: function() {
+  getInitialState: function () {
     return {
       showOnlyMatchRules: storage.get('showOnlyMatchRules') == 1
     };
   },
-  shouldComponentUpdate: function(nextProps) {
+  shouldComponentUpdate: function (nextProps) {
     var hide = util.getBoolean(this.props.hide);
     return hide != util.getBoolean(nextProps.hide) || !hide;
   },
-  componentDidMount: function() {
+  componentDidMount: function () {
     var self = this;
     var container = ReactDOM.findDOMNode(self.refs.container);
-    events.on('overviewScrollTop', function() {
+    events.on('overviewScrollTop', function () {
       if (!util.getBoolean(self.props.hide)) {
         container.scrollTop = 0;
       }
     });
   },
-  showOnlyMatchRules: function(e) {
+  showOnlyMatchRules: function (e) {
     var showOnlyMatchRules = e.target.checked;
     storage.set('showOnlyMatchRules', showOnlyMatchRules ? 1 : 0);
     this.setState({
       showOnlyMatchRules: showOnlyMatchRules
     });
   },
-  onHelp: function(e) {
+  onHelp: function (e) {
     var name = e.target.getAttribute('data-name');
     var helpUrl = getHelpUrl(name);
     if (!helpUrl) {
@@ -104,7 +141,7 @@ var Overview = React.createClass({
     }
     window.open(name === 'rule' ? helpUrl + 'rule/' : helpUrl);
   },
-  render: function() {
+  render: function () {
     var overviewModal = DEFAULT_OVERVIEW_MODAL;
     var rulesModal = DEFAULT_RULES_MODAL;
     var modal = this.props.modal;
@@ -114,7 +151,7 @@ var Overview = React.createClass({
     if (modal) {
       overviewModal = {};
       var rawUrl = util.getRawUrl(modal);
-      OVERVIEW.forEach(function(name, i) {
+      OVERVIEW.forEach(function (name, i) {
         var prop = OVERVIEW_PROPS[i];
         if (prop) {
           var value = util.getProperty(modal, prop);
@@ -127,9 +164,16 @@ var Overview = React.createClass({
             if (prop == 'req.size' || prop == 'res.size') {
               var size = value;
               value = formatSize(size);
-              var unzipSize = value ? util.getProperty(modal, prop.substring(0, 4) + 'unzipSize') : -1;
+              var unzipSize = value
+                ? util.getProperty(modal, prop.substring(0, 4) + 'unzipSize')
+                : -1;
               if (unzipSize >= 0 && unzipSize != size) {
-                value += ' / ' + formatSize(unzipSize) + (unzipSize ? ' = ' + Number(size * 100 / unzipSize).toFixed(2) + '%' : '');
+                value +=
+                  ' / ' +
+                  formatSize(unzipSize) +
+                  (unzipSize
+                    ? ' = ' + Number((size * 100) / unzipSize).toFixed(2) + '%'
+                    : '');
               }
             } else if (prop == 'realUrl') {
               if (value == modal.url) {
@@ -148,37 +192,47 @@ var Overview = React.createClass({
         } else {
           var lastIndex = OVERVIEW.length - 1;
           var time;
-          switch(name) {
-          case OVERVIEW[lastIndex - 5]:
-            time = util.toLocaleString(new Date(modal.startTime));
-            break;
-          case OVERVIEW[lastIndex - 4]:
-            time = getTime(modal.dns);
-            break;
-          case OVERVIEW[lastIndex - 3]:
-            if (modal.requestTime) {
-              time = getTime(modal.request);
-              var protocol = modal.protocol;
-              if (typeof protocol === 'string' && protocol.indexOf('>') !== -1) {
-                var diffTime =  modal.httpsTime - modal.dnsTime;
-                if (diffTime > 0) {
-                  time += ' - ' + diffTime + 'ms(' + protocol + ') = ' + (modal.requestTime - modal.httpsTime) + 'ms';
+          switch (name) {
+            case OVERVIEW[lastIndex - 5]:
+              time = util.toLocaleString(new Date(modal.startTime));
+              break;
+            case OVERVIEW[lastIndex - 4]:
+              time = getTime(modal.dns);
+              break;
+            case OVERVIEW[lastIndex - 3]:
+              if (modal.requestTime) {
+                time = getTime(modal.request);
+                var protocol = modal.protocol;
+                if (
+                  typeof protocol === 'string' &&
+                  protocol.indexOf('>') !== -1
+                ) {
+                  var diffTime = modal.httpsTime - modal.dnsTime;
+                  if (diffTime > 0) {
+                    time +=
+                      ' - ' +
+                      diffTime +
+                      'ms(' +
+                      protocol +
+                      ') = ' +
+                      (modal.requestTime - modal.httpsTime) +
+                      'ms';
+                  }
                 }
               }
-            }
-            break;
-          case OVERVIEW[lastIndex - 2]:
-            time = getTime(modal.response);
-            break;
-          case OVERVIEW[lastIndex - 1]:
-            time = getTime(modal.download);
-            break;
-          case OVERVIEW[lastIndex]:
-            time = getTime(modal.time);
-            if (modal.endTime) {
-              time = modal.endTime - modal.startTime + 'ms';
-            }
-            break;
+              break;
+            case OVERVIEW[lastIndex - 2]:
+              time = getTime(modal.response);
+              break;
+            case OVERVIEW[lastIndex - 1]:
+              time = getTime(modal.download);
+              break;
+            case OVERVIEW[lastIndex]:
+              time = getTime(modal.time);
+              if (modal.endTime) {
+                time = modal.endTime - modal.startTime + 'ms';
+              }
+              break;
           }
           overviewModal[name] = time;
         }
@@ -210,7 +264,7 @@ var Overview = React.createClass({
         }
         var pList = rules.P;
         if (pList) {
-          pList.forEach(function(item) {
+          pList.forEach(function (item) {
             atCtn = atCtn || [];
             atCtn.push(getVarRule(item));
             atTitle = [item.raw];
@@ -226,7 +280,7 @@ var Overview = React.createClass({
           rulesModal['@'] = atCtn.join('\n');
           titleModal['@'] = atTitle.join('\n');
         }
-        PROTOCOLS.forEach(function(name) {
+        PROTOCOLS.forEach(function (name) {
           if (PROXY_PROTOCOLS.indexOf(name) !== -1 || /^x/.test(name)) {
             return;
           }
@@ -241,21 +295,29 @@ var Overview = React.createClass({
           var rule = rules[key];
           if (name === 'plugin' && rules._pluginRule) {
             hasPluginRule = true;
-            var ruleList = [ rules._pluginRule.rawPattern + ' ' + rules._pluginRule.matcher ];
+            var ruleList = [
+              rules._pluginRule.rawPattern + ' ' + rules._pluginRule.matcher
+            ];
             var titleList = [rules._pluginRule.raw];
-            rule && rule.list && rule.list.forEach(function(item) {
-              ruleList.push(item.rawPattern + ' ' + item.matcher);
-              titleList.push(item.raw);
-            });
+            rule &&
+              rule.list &&
+              rule.list.forEach(function (item) {
+                ruleList.push(item.rawPattern + ' ' + item.matcher);
+                titleList.push(item.raw);
+              });
             rulesModal[name] = ruleList.join('\n');
             titleModal[name] = titleList.join('\n');
           } else if (rule && rule.list) {
-            rulesModal[name] = rule.list.map(function(rule) {
-              return rule.rawPattern + ' ' + rule.matcher;
-            }).join('\n');
-            titleModal[name] = rule.list.map(function(rule) {
-              return rule.raw;
-            }).join('\n');
+            rulesModal[name] = rule.list
+              .map(function (rule) {
+                return rule.rawPattern + ' ' + rule.matcher;
+              })
+              .join('\n');
+            titleModal[name] = rule.list
+              .map(function (rule) {
+                return rule.raw;
+              })
+              .join('\n');
           } else {
             var ruleStr = getRuleStr(rule);
             rulesModal[name] = ruleStr;
@@ -270,7 +332,12 @@ var Overview = React.createClass({
                 result.push(ruleStr + (realUrl ? ' (' + realUrl + ')' : ''));
               }
               if (rules.proxy && rules.proxy.host) {
-                result.push(getRuleStr(rules.proxy.host) + ' (' + rules.proxy.matcher + ')');
+                result.push(
+                  getRuleStr(rules.proxy.host) +
+                    ' (' +
+                    rules.proxy.matcher +
+                    ')'
+                );
               }
               rulesModal[name] = result.join('\n');
             }
@@ -280,14 +347,44 @@ var Overview = React.createClass({
     }
 
     return (
-      <div ref="container" className={'fill orient-vertical-box w-detail-content w-detail-overview' + (util.getBoolean(this.props.hide) ? ' hide' : '')}>
-        <Properties modal={overviewModal} rawName="Original Url" rawValue={rawUrl} />
-        <p className="w-detail-overview-title" style={{ background: showOnlyMatchRules ? 'lightyellow' : undefined }}>
-          <a href="https://avwo.github.io/whistle/rules/" target="_blank"><span className="glyphicon glyphicon-question-sign"></span></a>All Rules:
-          <label><input checked={showOnlyMatchRules} onChange={this.showOnlyMatchRules} type="checkbox" />Only show matching rules</label>
+      <div
+        ref="container"
+        className={
+          'fill orient-vertical-box w-detail-content w-detail-overview' +
+          (util.getBoolean(this.props.hide) ? ' hide' : '')
+        }
+      >
+        <Properties
+          modal={overviewModal}
+          rawName="Original Url"
+          rawValue={rawUrl}
+        />
+        <p
+          className="w-detail-overview-title"
+          style={{ background: showOnlyMatchRules ? 'lightyellow' : undefined }}
+        >
+          <a href="https://avwo.github.io/whistle/rules/" target="_blank">
+            <span className="glyphicon glyphicon-question-sign"></span>
+          </a>
+          All Rules:
+          <label>
+            <input
+              checked={showOnlyMatchRules}
+              onChange={this.showOnlyMatchRules}
+              type="checkbox"
+            />
+            Only show matching rules
+          </label>
         </p>
-        <Properties onHelp={this.onHelp} className={showOnlyMatchRules ? 'w-hide-no-value' : undefined}
-          modal={rulesModal} title={titleModal} enableCopyValue name="Rules" hasPluginRule={hasPluginRule} />
+        <Properties
+          onHelp={this.onHelp}
+          className={showOnlyMatchRules ? 'w-hide-no-value' : undefined}
+          modal={rulesModal}
+          title={titleModal}
+          enableCopyValue
+          name="Rules"
+          hasPluginRule={hasPluginRule}
+        />
       </div>
     );
   }

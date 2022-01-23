@@ -8,7 +8,9 @@ var _iterator2 = _interopRequireDefault(_iterator);
 
 exports['default'] = objType;
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
 
 function objType(obj) {
   var type = Object.prototype.toString.call(obj).slice(8, -1);
@@ -20,7 +22,11 @@ function objType(obj) {
     return 'BigNumber';
   }
 
-  if (type === 'Custom' && obj.constructor !== Object && obj instanceof Object) {
+  if (
+    type === 'Custom' &&
+    obj.constructor !== Object &&
+    obj instanceof Object
+  ) {
     // For projects implementing objects overriding `.prototype[Symbol.toStringTag]`
     return 'Object';
   }

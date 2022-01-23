@@ -21,7 +21,7 @@
 
 .w-frames-action a {
   margin-left: 15px;
-  text-decoration: none!important;
+  text-decoration: none !important;
   color: #000;
   vertical-align: super;
 }
@@ -104,8 +104,8 @@
   color: red;
 }
 .w-frames-list .w-frames-selected {
-  background: #337ab7!important;
-  color: #fff!important;
+  background: #337ab7 !important;
+  color: #fff !important;
 }
 
 .w-frames-list .glyphicon-send {
@@ -135,13 +135,14 @@
   color: #0d8f0d;
 }
 
-.w-frames-composer-action .btn-group, .w-frames-composer-action .w-format-json-btn {
+.w-frames-composer-action .btn-group,
+.w-frames-composer-action .w-format-json-btn {
   margin: 1px 15px 1px 0;
   float: right;
-  font-size: 12px!important;
+  font-size: 12px !important;
 }
 .w-frames-composer-action .btn {
-  padding: 0 5px!important;
+  padding: 0 5px !important;
   height: 20px;
   line-height: 19px;
 }
@@ -168,14 +169,15 @@
   border: none;
 }
 
-.w-frames-list .w-frames-ignore, .w-frames-list .w-frames-ignore .glyphicon {
-  color: #aaa!important;
-  font-style: italic!important;
+.w-frames-list .w-frames-ignore,
+.w-frames-list .w-frames-ignore .glyphicon {
+  color: #aaa !important;
+  font-style: italic !important;
 }
 
 .w-frames-list .w-frames-ignore.w-frames-selected,
 .w-frames-list .w-frames-ignore.w-frames-selected .glyphicon {
-  color: #fff!important;
+  color: #fff !important;
 }
 .w-frames-composer-action .w-frames-hex-data {
   margin-left: -10px;
@@ -189,7 +191,7 @@
 .w-frames-composer-action .w-frames-checked {
   font-weight: bold;
 }
-.w-frames-composer-action input[type=checkbox] {
+.w-frames-composer-action input[type='checkbox'] {
   vertical-align: text-bottom;
   margin-right: 5px;
 }

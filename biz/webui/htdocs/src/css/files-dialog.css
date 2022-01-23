@@ -2,7 +2,7 @@
   width: 900px;
 }
 
-.w-files-dialog h4  {
+.w-files-dialog h4 {
   margin-top: 10px;
 }
 
@@ -80,7 +80,7 @@
   margin-right: 20px;
   font-weight: normal;
 }
- label:first-child {
+label:first-child {
   font-weight: bold;
 }
 .w-files-save-in input {

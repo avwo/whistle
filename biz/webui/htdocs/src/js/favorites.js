@@ -1,12 +1,9 @@
 var React = require('react');
 
 var Favorites = React.createClass({
-
-  render: function() {
+  render: function () {
     return (
-      <div className={this.props.hide ? 'hide' : undefined}>
-        Favorites
-      </div>
+      <div className={this.props.hide ? 'hide' : undefined}>Favorites</div>
     );
   }
 });

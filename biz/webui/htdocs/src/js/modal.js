@@ -3,7 +3,12 @@ var ReactDOM = require('react-dom');
 var Dialog = require('./dialog');
 require('../css/modal.css');
 
-var GLOBAL_VAR = '__WHISTLE_MODAL_' + Date.now() + '_' + Math.floor(Math.random() * 1000) + '_';
+var GLOBAL_VAR =
+  '__WHISTLE_MODAL_' +
+  Date.now() +
+  '_' +
+  Math.floor(Math.random() * 1000) +
+  '_';
 var flag = 0;
 
 function getFlag() {
@@ -27,31 +32,40 @@ function createModal(options, callback, gVarName) {
   if (options.methods) {
     window[gVarName] = options.methods;
   }
-  ReactDOM.render((<Dialog width={options.width} height={options.height}
-    wclassName="w-dialog-for-plguin"
-    customRef={function(d) {
-      document.body.removeChild(container);
-      initModal(d, options, gVarName);
-      callback(d);
-    }} onClose={options.onClose}>
-    <div className="modal-header">
-      <h4></h4>
-      <button type="button" className="close" data-dismiss="modal">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-    <div className="modal-body"></div>
-    <div className="modal-footer">
-      <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
-    </div>
-  </Dialog>), container);
+  ReactDOM.render(
+    <Dialog
+      width={options.width}
+      height={options.height}
+      wclassName="w-dialog-for-plguin"
+      customRef={function (d) {
+        document.body.removeChild(container);
+        initModal(d, options, gVarName);
+        callback(d);
+      }}
+      onClose={options.onClose}
+    >
+      <div className="modal-header">
+        <h4></h4>
+        <button type="button" className="close" data-dismiss="modal">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div className="modal-body"></div>
+      <div className="modal-footer">
+        <button type="button" className="btn btn-default" data-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </Dialog>,
+    container
+  );
 }
 
 function addEvents(html, gVarName) {
   if (!html || typeof html !== 'string') {
     return html;
   }
-  return html.replace(/\s(on[a-z]+=)"([^"]+)"/g, function(all, name, handle) {
+  return html.replace(/\s(on[a-z]+=)"([^"]+)"/g, function (all, name, handle) {
     var index = handle.indexOf('(');
     var args;
     if (index === -1) {
@@ -60,7 +74,7 @@ function addEvents(html, gVarName) {
       args = handle.substring(index);
       handle = handle.substring(0, index);
     }
-    handle = gVarName + '[\'' + handle + '\']' + args;
+    handle = gVarName + "['" + handle + "']" + args;
     return ' ' + name + '"' + handle + '"';
   });
 }
@@ -92,11 +106,11 @@ function initModal(dialog, options, gVarName) {
   updateCtn(con, footer, 'footer');
 }
 
-exports.show = function(options) {
+exports.show = function (options) {
   var destroyed, dialog;
   var onClose = options.onClose;
   var gVarName = GLOBAL_VAR + getFlag();
-  options.onClose = function() {
+  options.onClose = function () {
     removeWinField(gVarName);
     dialog && dialog.destroy();
     dialog = null;
@@ -104,15 +118,19 @@ exports.show = function(options) {
       onClose.call(options);
     }
   };
-  createModal(options, function(d) {
-    dialog = d;
-    if (destroyed) {
-      d.hide();
-    } else {
-      d.show();
-    }
-  }, gVarName);
-  return function() {
+  createModal(
+    options,
+    function (d) {
+      dialog = d;
+      if (destroyed) {
+        d.hide();
+      } else {
+        d.show();
+      }
+    },
+    gVarName
+  );
+  return function () {
     if (!destroyed && dialog) {
       destroyed = true;
       dialog.hide();
@@ -120,11 +138,11 @@ exports.show = function(options) {
   };
 };
 
-exports.create = function(options) {
+exports.create = function (options) {
   var destroyed, dialog;
   var onClose = options.onClose;
   var gVarName = GLOBAL_VAR + getFlag();
-  options.onClose = function() {
+  options.onClose = function () {
     removeWinField(gVarName);
     if (destroyed) {
       dialog && dialog.destroy();
@@ -134,14 +152,18 @@ exports.create = function(options) {
       onClose.call(options);
     }
   };
-  createModal(options, function(d) {
-    dialog = d;
-    if (destroyed) {
-      d.destroy();
-    }
-  }, gVarName);
+  createModal(
+    options,
+    function (d) {
+      dialog = d;
+      if (destroyed) {
+        d.destroy();
+      }
+    },
+    gVarName
+  );
   return {
-    show: function(options) {
+    show: function (options) {
       if (dialog) {
         if (options && options.methods) {
           window[gVarName] = options.methods;
@@ -150,7 +172,7 @@ exports.create = function(options) {
         initModal(dialog, options, gVarName);
       }
     },
-    hide: function(destroy) {
+    hide: function (destroy) {
       destroyed = destroy;
       if (dialog) {
         if (dialog.container.is(':visible')) {

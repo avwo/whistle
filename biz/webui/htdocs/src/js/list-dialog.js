@@ -6,13 +6,13 @@ var ReactDOM = require('react-dom');
 var Dialog = require('./dialog');
 
 var ListDialog = React.createClass({
-  getInitialState: function() {
+  getInitialState: function () {
     return {
       checkedItems: {},
       selectedCount: 0
     };
   },
-  onChange: function(e) {
+  onChange: function (e) {
     var target = e.target;
     var name = target.parentNode.title;
     var checkedItems = this.state.checkedItems;
@@ -23,7 +23,7 @@ var ListDialog = React.createClass({
     }
     this.setState({ selectedCount: Object.keys(checkedItems).length });
   },
-  onConfirm: function(e) {
+  onConfirm: function (e) {
     if (e.target.disabled) {
       return;
     }
@@ -37,25 +37,25 @@ var ListDialog = React.createClass({
     form.submit();
     input.value = '';
   },
-  getAllItems: function() {
+  getAllItems: function () {
     var list = this.props.list || [];
     var result = {};
-    list.forEach(function(name) {
+    list.forEach(function (name) {
       result[name] = 1;
     });
     return result;
   },
-  show: function() {
+  show: function () {
     var self = this;
     self.refs.dialog.show();
-    setTimeout(function() {
+    setTimeout(function () {
       ReactDOM.findDOMNode(self.refs.filename).focus();
     }, 500);
   },
-  preventDefault: function(e) {
+  preventDefault: function (e) {
     e.preventDefault();
   },
-  render: function() {
+  render: function () {
     var self = this;
     var list = self.props.list || [];
     var checkedItems = self.state.checkedItems;
@@ -70,20 +70,21 @@ var ListDialog = React.createClass({
           </button>
           <p>
             Filename:
-            <input ref="filename"
-              style={{width: 390, display: 'inline-block', marginLeft: 5}}
+            <input
+              ref="filename"
+              style={{ width: 390, display: 'inline-block', marginLeft: 5 }}
               className="form-control"
               placeholder="Input the filename"
             />
           </p>
-          {list.map(function(name) {
+          {list.map(function (name) {
             return (
               <label title={name}>
                 <input
                   onChange={self.onChange}
                   type="checkbox"
                   checked={!!checkedItems[name]}
-                   />
+                />
                 {name}
               </label>
             );
@@ -93,16 +94,37 @@ var ListDialog = React.createClass({
           <div className="w-list-counter">
             Selected: {selectedCount} / {list.length}
           </div>
-          <button type="button" className="btn btn-default" data-dismiss="modal">Cancel</button>
-          <button type="button" className="btn btn-warning"
+          <button
+            type="button"
+            className="btn btn-default"
+            data-dismiss="modal"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            className="btn btn-warning"
             onMouseDown={this.preventDefault}
-            onClick={this.onConfirm}>Export All</button>
-          <button type="button" className="btn btn-primary"
+            onClick={this.onConfirm}
+          >
+            Export All
+          </button>
+          <button
+            type="button"
+            className="btn btn-primary"
             disabled={!Object.keys(checkedItems).length}
             onMouseDown={this.preventDefault}
-            onClick={this.onConfirm}>Export Selected</button>
+            onClick={this.onConfirm}
+          >
+            Export Selected
+          </button>
         </div>
-        <form action={'cgi-bin/' + pageName + '/export'} ref="exportData" style={{display: 'none'}} target="downloadTargetFrame">
+        <form
+          action={'cgi-bin/' + pageName + '/export'}
+          ref="exportData"
+          style={{ display: 'none' }}
+          target="downloadTargetFrame"
+        >
           <input ref="exportName" type="hidden" name="filename" />
           <input ref="data" type="hidden" name={pageName} />
         </form>

@@ -9,7 +9,7 @@ var win = require('./win');
 
 var MAX_LEN = 128;
 var FilterInput = React.createClass({
-  getInitialState: function() {
+  getInitialState: function () {
     var hintKey = this.props.hintKey;
     this.allHintList = [];
     if (hintKey) {
@@ -17,24 +17,27 @@ var FilterInput = React.createClass({
         var hintList = JSON.parse(storage.get(hintKey));
         if (Array.isArray(hintList)) {
           var map = {};
-          this.allHintList = hintList.map(function(key) {
-            return typeof key === 'string' ? key.substring(0, MAX_LEN) : null;
-          }).filter(function(key) {
-            if (!key || map[key]) {
-              return false;
-            }
-            map[key] = 1;
-            return true;
-          }).slice(0, MAX_LEN);
+          this.allHintList = hintList
+            .map(function (key) {
+              return typeof key === 'string' ? key.substring(0, MAX_LEN) : null;
+            })
+            .filter(function (key) {
+              if (!key || map[key]) {
+                return false;
+              }
+              map[key] = 1;
+              return true;
+            })
+            .slice(0, MAX_LEN);
         }
       } catch (e) {}
     }
     return { hintList: [] };
   },
-  componentDidMount: function() {
+  componentDidMount: function () {
     this.hintElem = $(ReactDOM.findDOMNode(this.refs.hints));
   },
-  addHint: function() {
+  addHint: function () {
     var value = this.state.filterText;
     value = value && value.trim();
     if (value) {
@@ -52,7 +55,7 @@ var FilterInput = React.createClass({
       } catch (e) {}
     }
   },
-  filterHints: function(keyword) {
+  filterHints: function (keyword) {
     keyword = keyword && keyword.trim();
     var count = 12;
     if (!keyword) {
@@ -72,33 +75,33 @@ var FilterInput = React.createClass({
     }
     return list;
   },
-  onFilterChange: function(e) {
+  onFilterChange: function (e) {
     this.changeInput(e.target.value);
   },
-  changeInput: function(value) {
+  changeInput: function (value) {
     var self = this;
     self.props.onChange && self.props.onChange(value);
     var hintKey = self.props.hintKey;
     hintKey && clearTimeout(self.timer);
     this.state.filterText = value;
-    self.setState({ hintList: this.filterHints(value) }, function() {
+    self.setState({ hintList: this.filterHints(value) }, function () {
       if (hintKey) {
         self.timer = setTimeout(this.addHint, 10000);
       }
     });
   },
-  onClick: function(e) {
+  onClick: function (e) {
     this.changeInput(e.target.title);
     this.hideHints();
   },
-  hideHints: function() {
+  hideHints: function () {
     this.setState({ hintList: null });
     this.addHint();
   },
-  showHints: function() {
+  showHints: function () {
     this.setState({ hintList: this.filterHints(this.state.filterText) });
   },
-  onFilterKeyDown: function(e) {
+  onFilterKeyDown: function (e) {
     var elem;
     if (e.keyCode === 27) {
       var hintList = this.state.hintList;
@@ -107,7 +110,8 @@ var FilterInput = React.createClass({
       } else {
         this.hideHints();
       }
-    } else if (e.keyCode === 38) { // up
+    } else if (e.keyCode === 38) {
+      // up
       elem = this.hintElem.find('.w-active');
       if (this.state.hintList === null) {
         this.showHints();
@@ -122,7 +126,8 @@ var FilterInput = React.createClass({
         elem.addClass('w-active');
       }
       e.preventDefault();
-    } else if (e.keyCode === 40) { // down
+    } else if (e.keyCode === 40) {
+      // down
       elem = this.hintElem.find('.w-active');
       if (this.state.hintList === null) {
         this.showHints();
@@ -144,7 +149,7 @@ var FilterInput = React.createClass({
         this.changeInput(value);
         this.hideHints();
       }
-    } else if ((e.ctrlKey || e.metaKey)) {
+    } else if (e.ctrlKey || e.metaKey) {
       if (e.keyCode == 68) {
         this.clearFilterText();
         e.preventDefault();
@@ -156,11 +161,10 @@ var FilterInput = React.createClass({
     if (typeof this.props.onKeyDown === 'function') {
       this.props.onKeyDown(e);
     }
-
   },
-  clear: function() {
+  clear: function () {
     var self = this;
-    win.confirm('Confirm to clear history?', function(sure) {
+    win.confirm('Confirm to clear history?', function (sure) {
       if (sure) {
         storage.set(self.props.hintKey, '');
         self.allHintList = [];
@@ -168,45 +172,68 @@ var FilterInput = React.createClass({
       }
     });
   },
-  clearFilterText: function() {
+  clearFilterText: function () {
     this.props.onChange && this.props.onChange('');
-    this.setState({filterText: '', hintList: this.filterHints()});
+    this.setState({ filterText: '', hintList: this.filterHints() });
   },
-  render: function() {
+  render: function () {
     var self = this;
     var filterText = self.state.filterText || '';
     var hintKey = self.props.hintKey;
     var hintList = self.state.hintList;
     return (
-        <div className="w-filter-con" style={self.props.wStyle}>
-          {hintKey ? <div className="w-filter-hint" style={{ display: hintList && hintList.length ? '' : 'none' }} onMouseDown={util.preventBlur}>
+      <div className="w-filter-con" style={self.props.wStyle}>
+        {hintKey ? (
+          <div
+            className="w-filter-hint"
+            style={{ display: hintList && hintList.length ? '' : 'none' }}
+            onMouseDown={util.preventBlur}
+          >
             <div className="w-filter-bar">
               <a onClick={this.clear}>
                 <span className="glyphicon glyphicon-trash"></span>
                 Clear history
               </a>
-              <span onClick={self.hideHints} aria-hidden="true">&times;</span>
+              <span onClick={self.hideHints} aria-hidden="true">
+                &times;
+              </span>
             </div>
             <ul ref="hints">
-              {
-                hintList && hintList.map(function(key) {
-                  return <li key={key} onClick={self.onClick} title={key}>{key}</li>;
-                })
-              }
+              {hintList &&
+                hintList.map(function (key) {
+                  return (
+                    <li key={key} onClick={self.onClick} title={key}>
+                      {key}
+                    </li>
+                  );
+                })}
             </ul>
-          </div> : undefined}
-          <input type="text" value={filterText}
-            onChange={self.onFilterChange}
-            onKeyDown={self.onFilterKeyDown}
-            onFocus={self.showHints}
-            onDoubleClick={self.showHints}
-            onBlur={self.hideHints}
-            style={{background: filterText.trim() ? '#000' : undefined}}
-            className="w-filter-input" maxLength={MAX_LEN} placeholder="type filter text" />
-          <button onMouseDown={util.preventBlur}
-            onClick={self.clearFilterText}
-            style={{display: self.state.filterText ? 'block' :  'none'}} type="button" className="close" title="Ctrl[Command]+D"><span aria-hidden="true">&times;</span></button>
-        </div>
+          </div>
+        ) : undefined}
+        <input
+          type="text"
+          value={filterText}
+          onChange={self.onFilterChange}
+          onKeyDown={self.onFilterKeyDown}
+          onFocus={self.showHints}
+          onDoubleClick={self.showHints}
+          onBlur={self.hideHints}
+          style={{ background: filterText.trim() ? '#000' : undefined }}
+          className="w-filter-input"
+          maxLength={MAX_LEN}
+          placeholder="type filter text"
+        />
+        <button
+          onMouseDown={util.preventBlur}
+          onClick={self.clearFilterText}
+          style={{ display: self.state.filterText ? 'block' : 'none' }}
+          type="button"
+          className="close"
+          title="Ctrl[Command]+D"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
     );
   }
 });

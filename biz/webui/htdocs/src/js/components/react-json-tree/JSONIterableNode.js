@@ -8,7 +8,9 @@ var _extends3 = _interopRequireDefault(_extends2);
 
 var _objectWithoutProperties2 = require('babel-runtime/helpers/objectWithoutProperties');
 
-var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
+var _objectWithoutProperties3 = _interopRequireDefault(
+  _objectWithoutProperties2
+);
 
 var _getIterator2 = require('babel-runtime/core-js/get-iterator');
 
@@ -28,7 +30,9 @@ var _JSONNestedNode = require('./JSONNestedNode');
 
 var _JSONNestedNode2 = _interopRequireDefault(_JSONNestedNode);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
 
 // Returns the "n Items" string for this node,
 // generating and caching it if it hasn't been created yet.
@@ -39,7 +43,16 @@ function createItemString(data, limit) {
     count = data.size;
   } else {
     // eslint-disable-next-line no-unused-vars
-    for (var _iterator = data, _isArray = Array.isArray(_iterator), _i = 0, _iterator = _isArray ? _iterator : (0, _getIterator3['default'])(_iterator);;) {
+    for (
+      var _iterator = data,
+        _isArray = Array.isArray(_iterator),
+        _i = 0,
+        _iterator = _isArray
+          ? _iterator
+          : (0, _getIterator3['default'])(_iterator);
+      ;
+
+    ) {
       var _ref;
 
       if (_isArray) {
@@ -60,16 +73,25 @@ function createItemString(data, limit) {
       count += 1;
     }
   }
-  return '' + (hasMore ? '>' : '') + count + ' ' + (count !== 1 ? 'entries' : 'entry');
+  return (
+    '' +
+    (hasMore ? '>' : '') +
+    count +
+    ' ' +
+    (count !== 1 ? 'entries' : 'entry')
+  );
 }
 
 // Configures <JSONNestedNode> to render an iterable
 function JSONIterableNode(_ref2) {
   var props = (0, _objectWithoutProperties3['default'])(_ref2, []);
 
-  return _react2['default'].createElement(_JSONNestedNode2['default'], (0, _extends3['default'])({}, props, {
-    nodeType: 'Iterable',
-    nodeTypeIndicator: '()',
-    createItemString: createItemString
-  }));
+  return _react2['default'].createElement(
+    _JSONNestedNode2['default'],
+    (0, _extends3['default'])({}, props, {
+      nodeType: 'Iterable',
+      nodeTypeIndicator: '()',
+      createItemString: createItemString
+    })
+  );
 }

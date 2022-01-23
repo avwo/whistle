@@ -26,27 +26,27 @@ function getBridge() {
     decodeBase64: util.decodeBase64,
     alert: mockWin.alert,
     confirm: mockWin.confirm,
-    request: function(options, cb) {
+    request: function (options, cb) {
       var request = createCgi(compatAjax(options));
       return request(options.data, cb);
     },
-    createRequest: function(options) {
+    createRequest: function (options) {
       return createCgi(compatAjax(options));
     },
     showModal: modal.show,
-    getServerInfo: function() {
+    getServerInfo: function () {
       var serverInfo = dataCenter.getServerInfo();
       return serverInfo && $.extend(true, {}, serverInfo);
     },
-    importRules: function(data) {
+    importRules: function (data) {
       if (!data) {
         return;
       }
       var list = util.parseImportData(data, dataCenter.rulesModal);
-      var handleImport = function(sure) {
+      var handleImport = function (sure) {
         if (sure) {
           data = {};
-          list.forEach(function(item) {
+          list.forEach(function (item) {
             data[item.name] = item.value;
           });
           events.trigger('uploadRules', data);
@@ -55,17 +55,20 @@ function getBridge() {
       if (!list.hasConflict) {
         return handleImport(true);
       }
-      mockWin.confirm('Conflict with existing content, whether to continue to overwrite them?', handleImport);
+      mockWin.confirm(
+        'Conflict with existing content, whether to continue to overwrite them?',
+        handleImport
+      );
     },
-    importValues: function(data) {
+    importValues: function (data) {
       if (!data) {
         return;
       }
       var list = util.parseImportData(data, dataCenter.valuesModal, true);
-      var handleImport = function(sure) {
+      var handleImport = function (sure) {
         if (sure) {
           data = {};
-          list.forEach(function(item) {
+          list.forEach(function (item) {
             data[item.name] = item.value;
           });
           events.trigger('uploadValues', data);
@@ -74,7 +77,10 @@ function getBridge() {
       if (!list.hasConflict) {
         return handleImport(true);
       }
-      mockWin.confirm('Conflict with existing content, whether to continue to overwrite them?', handleImport);
+      mockWin.confirm(
+        'Conflict with existing content, whether to continue to overwrite them?',
+        handleImport
+      );
     }
   };
 }

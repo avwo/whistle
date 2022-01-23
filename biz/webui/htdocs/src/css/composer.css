@@ -1,13 +1,43 @@
-.w-detail-composer {overflow-x: hidden; overflow-y: auto;}
-.w-detail-composer textarea {display: block; width: 100%; resize: none; border: none; padding: 5px;}
-.w-composer-url {padding: 2px 2px 2px 0; border-bottom: 1px solid #ccc;}
-.w-composer-input, .w-composer-method, .w-composer-execute {height: 26px;}
-.w-composer-input {padding: 0 5px; display: block; border: 1px solid #ccc; margin-left: 2px;}
-.w-composer-method {display: block; width: 100px; margin: 0 2px; padding: 0;}
-.w-composer-execute {padding: 0 8px; line-height: 24px; margin-left: 4px;}
+.w-detail-composer {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.w-detail-composer textarea {
+  display: block;
+  width: 100%;
+  resize: none;
+  border: none;
+  padding: 5px;
+}
+.w-composer-url {
+  padding: 2px 2px 2px 0;
+  border-bottom: 1px solid #ccc;
+}
+.w-composer-input,
+.w-composer-method,
+.w-composer-execute {
+  height: 26px;
+}
+.w-composer-input {
+  padding: 0 5px;
+  display: block;
+  border: 1px solid #ccc;
+  margin-left: 2px;
+}
+.w-composer-method {
+  display: block;
+  width: 100px;
+  margin: 0 2px;
+  padding: 0;
+}
+.w-composer-execute {
+  padding: 0 8px;
+  line-height: 24px;
+  margin-left: 4px;
+}
 .w-composer-tabs {
   position: relative;
-  padding: 0!important;
+  padding: 0 !important;
 }
 .w-composer-tabs .btn {
   position: absolute;
@@ -18,7 +48,7 @@
 }
 .w-composer-tabs button {
   line-height: 16px;
-  padding: 0 10px!important;
+  padding: 0 10px !important;
 }
 .w-composer-tabs .w-tab-btn {
   outline: none;
@@ -32,19 +62,21 @@
   background: #ddd;
 }
 .w-composer-tabs .w-tab-btn:disabled {
-  color: #aaa!important;
+  color: #aaa !important;
   cursor: not-allowed;
 }
 .w-detail-composer .w-properties pre {
   max-height: 90px;
 }
 
-.w-composer-res-forbidden th, .w-composer-res-forbidden pre {
-  color: #808000!important;
+.w-composer-res-forbidden th,
+.w-composer-res-forbidden pre {
+  color: #808000 !important;
 }
 
-.w-composer-res-error th, .w-composer-res-error pre {
-  color: #ff3a90!important;
+.w-composer-res-error th,
+.w-composer-res-error pre {
+  color: #ff3a90 !important;
 }
 .w-composer-bar {
   border-bottom: 1px solid #ddd;
@@ -75,7 +107,8 @@
   text-align: right;
   height: 19px;
 }
-.w-composer-bar, .w-composer-bar label {
+.w-composer-bar,
+.w-composer-bar label {
   font-size: 12px;
   font-weight: normal;
 }
@@ -84,7 +117,8 @@
   cursor: pointer;
   vertical-align: middle;
 }
-.w-composer-bar input, .w-composer-rules .w-detail-inspectors-title input {
+.w-composer-bar input,
+.w-composer-rules .w-detail-inspectors-title input {
   margin: 0 5px 0 0;
   padding: 0;
 }
@@ -100,15 +134,15 @@
   padding: 0 0 0 15px;
   border-left: 1px solid #ddd;
   cursor: default;
-  color: #000!important;
+  color: #000 !important;
 }
 .w-composer-body .w-composer-encoding {
   position: absolute;
   top: 1px;
   left: 60px;
 }
-.w-composer-body>.w-composer-bar>.w-composer-label {
-  padding: 0 15px 0 10px!important;
+.w-composer-body > .w-composer-bar > .w-composer-label {
+  padding: 0 15px 0 10px !important;
   position: absolute;
   left: 0;
   top: 1px;
@@ -119,29 +153,31 @@
   border-right: 1px solid #ddd;
 }
 .w-composer-rules .w-detail-inspectors-title {
-  padding-left: 10px!important;
+  padding-left: 10px !important;
 }
 .w-composer-rules .w-detail-inspectors-title label {
   margin: 0;
 }
 
 .w-custom-type {
-  cursor: not-allowed!important;
-  color: #333!important;
+  cursor: not-allowed !important;
+  color: #333 !important;
 }
 
-.w-composer-headers textarea:read-only, .w-composer-body textarea:read-only,
-.w-detail-composer input:read-only, .w-detail-composer textarea:disabled {
-  background: #fefefe!important;
-  color: #999!important;
+.w-composer-headers textarea:read-only,
+.w-composer-body textarea:read-only,
+.w-detail-composer input:read-only,
+.w-detail-composer textarea:disabled {
+  background: #fefefe !important;
+  color: #999 !important;
 }
 
 .w-composer-tips {
-    color: red;
-    font-size: 12px;
-    position: absolute;
-    top: 0;
-    left: 210px;
+  color: red;
+  font-size: 12px;
+  position: absolute;
+  top: 0;
+  left: 210px;
 }
 
 .w-history-data {
@@ -155,10 +191,10 @@
   padding-left: 10px;
   border-bottom: 1px solid #ccc;
   background-color: #f1f3f4;
-  padding: 0!important;
+  padding: 0 !important;
 }
 
-.w-history-bar>a:first-child {
+.w-history-bar > a:first-child {
   margin-right: 15px;
 }
 
@@ -179,9 +215,9 @@
   cursor: default;
 }
 
-.w-history-list div.w-selected{
-  background-color: #337ab7!important;
-  color: #fff!important;
+.w-history-list div.w-selected {
+  background-color: #337ab7 !important;
+  color: #fff !important;
 }
 
 .w-history-list div:hover {
@@ -189,7 +225,7 @@
 }
 
 .w-composer-history-operation .btn {
-  padding: 2px 10px!important;
+  padding: 2px 10px !important;
   margin-right: 20px;
 }
 .w-composer-history-dialog .modal-dialog {
@@ -229,7 +265,9 @@
   background-color: lightyellow;
 }
 
-.w-composer-use-h2, .w-composer-enable-rules, .w-composer-enable-body {
+.w-composer-use-h2,
+.w-composer-enable-rules,
+.w-composer-enable-body {
   position: absolute;
   top: 0;
 }
@@ -270,7 +308,9 @@
   margin-right: 5px;
 }
 
-.w-composer-methods .modal-dialog { width: 500px; }
+.w-composer-methods .modal-dialog {
+  width: 500px;
+}
 
 .w-composer-methods textarea {
   width: 100%;
@@ -297,7 +337,7 @@
 }
 
 .w-composer-tab-list .glyphicon-edit {
-  color:#cf6c40;
+  color: #cf6c40;
 }
 
 .w-composer-list {

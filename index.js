@@ -8,7 +8,7 @@ var os = require('os');
 
 var ver = process.version.substring(1).split('.');
 var PROD_RE = /(^|\|)prod(uction)?($|\|)/;
-var noop = function() {};
+var noop = function () {};
 var state = {};
 var INTERVAL = 1000;
 var TIMEOUT = 10000;
@@ -18,7 +18,7 @@ if (ver[0] >= 7 && ver[1] >= 7) {
   var connect = net.Socket.prototype.connect;
   if (typeof connect === 'function') {
     //fix: Node v7.7.0+引入的 `"listener" argument must be a function` 问题
-    net.Socket.prototype.connect = function(options, cb) {
+    net.Socket.prototype.connect = function (options, cb) {
       if (options && typeof options === 'object' && typeof cb !== 'function') {
         return connect.call(this, options, null);
       }
@@ -31,10 +31,10 @@ var env = process.env || '';
 env.WHISTLE_ROOT = __dirname;
 if (typeof tls.checkServerIdentity == 'function') {
   var checkServerIdentity = tls.checkServerIdentity;
-  tls.checkServerIdentity = function() {
+  tls.checkServerIdentity = function () {
     try {
       return checkServerIdentity.apply(this, arguments);
-    } catch(err) {
+    } catch (err) {
       return err;
     }
   };
@@ -101,7 +101,7 @@ function forkWorker(index) {
   var reforked;
   var refork = () => {
     if (!state[index]) {
-      setTimeout(function() {
+      setTimeout(function () {
         process.exit(1);
       }, INTERVAL);
       return;
@@ -113,7 +113,7 @@ function forkWorker(index) {
     killWorker(worker);
     clearInterval(worker.timer);
     clearTimeout(worker.activeTimer);
-    setTimeout(function() {
+    setTimeout(function () {
       forkWorker(index);
     }, 600);
   };
@@ -140,32 +140,37 @@ function forkWorker(index) {
   });
 }
 
-module.exports = function(options, callback) {
+module.exports = function (options, callback) {
   if (typeof options === 'function') {
     callback = options;
     options = null;
   }
-  var startWhistle = function() {
+  var startWhistle = function () {
     var workerIndex = env.workerIndex;
     if (options && options.cluster && workerIndex >= 0) {
-      options.storage = '.' + (options.storage || '') + '__cluster_worker.' + workerIndex + '_5b6af7b9884e1165__';
+      options.storage =
+        '.' +
+        (options.storage || '') +
+        '__cluster_worker.' +
+        workerIndex +
+        '_5b6af7b9884e1165__';
     }
     var conf = require('./lib/config').extend(options);
     if (!conf.cluster) {
       return require('./lib')(callback);
     }
     var timer;
-    var activeTimeout = function() {
+    var activeTimeout = function () {
       clearTimeout(timer);
-      timer = setTimeout(function() {
+      timer = setTimeout(function () {
         process.exit(1);
       }, TIMEOUT);
     };
-    process.once('SIGTERM', function() {
+    process.once('SIGTERM', function () {
       process.exit(0);
     });
 
-    require('./lib')(function() {
+    require('./lib')(function () {
       activeTimeout();
       process.on('message', activeTimeout);
       process.send('1', noop);
@@ -197,15 +202,15 @@ module.exports = function(options, callback) {
     }
     var config = loadConfig(options);
     if (typeof config === 'function') {
-      var handleCallback = function(opts) {
+      var handleCallback = function (opts) {
         opts && extend(options, opts);
         return startWhistle();
       };
       if (config.length < 2) {
         config = config(options);
         if (likePromise(config)) {
-          return config.then(handleCallback).catch(function(err) {
-            process.nextTick(function() {
+          return config.then(handleCallback).catch(function (err) {
+            process.nextTick(function () {
               throw err;
             });
           });

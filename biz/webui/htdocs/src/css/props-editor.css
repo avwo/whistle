@@ -6,41 +6,42 @@
   overflow-x: hidden;
 }
 
-.w-props-editor th, .w-props-editor td {
+.w-props-editor th,
+.w-props-editor td {
   border: none;
   border-bottom: 1px solid #ddd;
-  border-top: none!important;
-  padding: 0!important;
+  border-top: none !important;
+  padding: 0 !important;
   font-weight: normal;
   font-size: 12px;
   word-break: break-word;
 }
 .w-props-editor th {
   width: 125px;
-  line-height: 22px!important;
+  line-height: 22px !important;
   background: #e1e3e6;
   text-align: right;
-  padding: 0 8px!important;
+  padding: 0 8px !important;
 }
 .w-props-editor .w-props-ops {
   width: 75px;
-  padding: 4px 0 0 8px!important;
-  padding-left: 0!important;
+  padding: 4px 0 0 8px !important;
+  padding-left: 0 !important;
   background: #fafafa;
 }
 .w-props-editor .w-props-ops a {
-  margin-left: 15px!important;
+  margin-left: 15px !important;
   color: #333;
-  text-decoration: none!important;
+  text-decoration: none !important;
 }
 .w-props-ops a:hover {
   color: #337ab7;
 }
 .w-props-editor pre {
   overflow: auto;
-  line-height: 22px!important;
+  line-height: 22px !important;
   max-height: 350px;
-  padding: 0 8px!important;
+  padding: 0 8px !important;
 }
 
 .w-props-editor .w-props-ops .glyphicon-remove {
@@ -51,7 +52,7 @@
 }
 
 .w-add-field {
-  font-size: 14px!important;
+  font-size: 14px !important;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -88,7 +89,8 @@
 .w-props-editor-form button {
   display: none;
 }
-.w-composer-dialog label input, .w-composer-dialog label textarea {
+.w-composer-dialog label input,
+.w-composer-dialog label textarea {
   font-weight: normal;
 }
 

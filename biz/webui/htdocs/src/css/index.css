@@ -1,76 +1,234 @@
 .w-menu {
-  height: 30px; border-top: 1px solid #fcfcfc; border-bottom: 1px solid #ccc;
-  background: #f1f3f4; padding-right: 80px; position: relative; z-index: 1001;
+  height: 30px;
+  border-top: 1px solid #fcfcfc;
+  border-bottom: 1px solid #ccc;
+  background: #f1f3f4;
+  padding-right: 80px;
+  position: relative;
+  z-index: 1001;
 }
-.w-menu a, .w-history-bar a {text-decoration: none!important; color: #000; padding: 0 5px; line-height: 26px; height: 26px; margin-right: 5px; display: inline-block;}
+.w-menu a,
+.w-history-bar a {
+  text-decoration: none !important;
+  color: #000;
+  padding: 0 5px;
+  line-height: 26px;
+  height: 26px;
+  margin-right: 5px;
+  display: inline-block;
+}
 .w-menu a {
   height: 27px;
   line-height: 28px;
 }
-.w-menu .glyphicon, .w-detail .glyphicon {margin-right: 3px;}
-.w-menu .glyphicon-folder-open, .w-menu .glyphicon-folder-close {margin-right: 6px;}
-.w-menu .w-online {position: absolute; right: 0;}
-.w-menu .w-online, .w-menu a:hover, .w-left-menu a:hover, .w-left-menu a:hover .w-disabled {color: #337ab7;}
-.w-menu .w-offline {color: #ccc!important; cursor: default;}
-.w-menu .w-disabled, .w-frames-action .w-disabled, .w-history-bar .w-disabled {color: #aaa!important; cursor: not-allowed!important;}
-.w-left-menu .w-disabled { color: #aaa; }
-.w-menu .w-menu-enable {color: #ff6666!important;}
-.w-menu .w-menu-wrapper {display: inline-block; position: relative; height: 30px;}
-
-.w-show-update-tips {font-weight: bold;}
-
-.w-input-menu-item {display: block; position: absolute; background: #fff; border: 1px solid #ccc; border-radius: 2px; z-index: 101; top: 30px; display: none; white-space: nowrap;}
-.w-input-menu-item input {width: 246px; height: 32px; border: 1px solid #ccc; border-radius: 2px; padding: 0 5px; vertical-align: middle;}
-.w-input-menu-item .btn {height: 32px; padding: 0 12px; vertical-align: middle; border-radius: 0; border-top-right-radius: 2px; border-bottom-right-radius: 2px;}
-
-.w-create-rules-input {left: 310px;}
-.w-create-values-input {left: 300px;}
-.w-edit-rules-input {left: 382px;}
-.w-edit-values-input {left: 372px;}
-
-.w-show-left-menu .w-create-rules-input {left: 210px;}
-.w-show-left-menu .w-create-values-input {left: 200px;}
-.w-show-left-menu .w-edit-rules-input {left: 282px;}
-.w-show-left-menu .w-edit-values-input {left: 272px;}
-
-.w-menu-wrapper .w-menu-item {display: none!important;}
-.w-menu-wrapper-show .w-menu-item {display: block!important;}
-
-.w-values-list .glyphicon {display: none!important;}
-.w-values-list a {font-weight: normal!important;}
-.w-disabled .glyphicon-ok, .w-disabled .glyphicon-stop {color: #ccc!important;}
-
-.w-rules-settings-dialog .modal-dialog {width: 400px;}
-.w-values-settings-dialog .modal-dialog {width: 300px;}
-.w-show-update-tips-dialog .modal-dialog {width: 336px;}
-.w-show-update-tips-dialog .modal-body p {margin-bottom: 5px;}
-.w-https-dialog .modal-dialog {width: 340px;}
-.w-https-help {margin-left: 150px;}
-.w-https-dialog .modal-dialog div {white-space: nowrap;}
-.w-https-dialog a {display: inline-block;}
-.w-download-rootca, .w-https-help { line-height: 30px;}
-.w-https-settings label {font-weight: normal;}
-.w-https-settings p {margin: 10px 0;}
-
-.w-is-link {cursor: pointer; text-decoration: underline;}
-
-.w-choose-filte-type .modal-dialog {width: 456px}
-.w-choose-filte-type-label {white-space: nowrap;}
-.w-choose-filte-type-label .form-control { margin-left: 10px; width: 200px; display: inline-block; font-weight: normal; }
-.w-choose-filte-type-label select.form-control { margin: 0 5px; width: 80px;}
-
-.w-confirm-import-dialog .modal-dialog { width: 320px; font-weight: bold; }
-
-.w-show-left-menu-btn { padding: 0 15px!important; margin-right: 0!important; }
-.w-left-menu {
-  background: #f1f3f4; border-left: 1px solid #ccc;
-  border-right: 1px solid #ccc; display: none;
+.w-menu .glyphicon,
+.w-detail .glyphicon {
+  margin-right: 3px;
 }
-.w-show-left-menu .w-left-menu { display: block; border-left: none; }
-.w-show-left-menu .w-nav-menu { display: none; }
-.w-left-menu a { display: block; position: relative; padding: 10px 0 8px; width: 47px; overflow: hidden; text-align: center;
-  text-decoration: none!important; color: #000; }
-.w-left-menu a span { margin-right: 5px; }
+.w-menu .glyphicon-folder-open,
+.w-menu .glyphicon-folder-close {
+  margin-right: 6px;
+}
+.w-menu .w-online {
+  position: absolute;
+  right: 0;
+}
+.w-menu .w-online,
+.w-menu a:hover,
+.w-left-menu a:hover,
+.w-left-menu a:hover .w-disabled {
+  color: #337ab7;
+}
+.w-menu .w-offline {
+  color: #ccc !important;
+  cursor: default;
+}
+.w-menu .w-disabled,
+.w-frames-action .w-disabled,
+.w-history-bar .w-disabled {
+  color: #aaa !important;
+  cursor: not-allowed !important;
+}
+.w-left-menu .w-disabled {
+  color: #aaa;
+}
+.w-menu .w-menu-enable {
+  color: #ff6666 !important;
+}
+.w-menu .w-menu-wrapper {
+  display: inline-block;
+  position: relative;
+  height: 30px;
+}
+
+.w-show-update-tips {
+  font-weight: bold;
+}
+
+.w-input-menu-item {
+  display: block;
+  position: absolute;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  z-index: 101;
+  top: 30px;
+  display: none;
+  white-space: nowrap;
+}
+.w-input-menu-item input {
+  width: 246px;
+  height: 32px;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  padding: 0 5px;
+  vertical-align: middle;
+}
+.w-input-menu-item .btn {
+  height: 32px;
+  padding: 0 12px;
+  vertical-align: middle;
+  border-radius: 0;
+  border-top-right-radius: 2px;
+  border-bottom-right-radius: 2px;
+}
+
+.w-create-rules-input {
+  left: 310px;
+}
+.w-create-values-input {
+  left: 300px;
+}
+.w-edit-rules-input {
+  left: 382px;
+}
+.w-edit-values-input {
+  left: 372px;
+}
+
+.w-show-left-menu .w-create-rules-input {
+  left: 210px;
+}
+.w-show-left-menu .w-create-values-input {
+  left: 200px;
+}
+.w-show-left-menu .w-edit-rules-input {
+  left: 282px;
+}
+.w-show-left-menu .w-edit-values-input {
+  left: 272px;
+}
+
+.w-menu-wrapper .w-menu-item {
+  display: none !important;
+}
+.w-menu-wrapper-show .w-menu-item {
+  display: block !important;
+}
+
+.w-values-list .glyphicon {
+  display: none !important;
+}
+.w-values-list a {
+  font-weight: normal !important;
+}
+.w-disabled .glyphicon-ok,
+.w-disabled .glyphicon-stop {
+  color: #ccc !important;
+}
+
+.w-rules-settings-dialog .modal-dialog {
+  width: 400px;
+}
+.w-values-settings-dialog .modal-dialog {
+  width: 300px;
+}
+.w-show-update-tips-dialog .modal-dialog {
+  width: 336px;
+}
+.w-show-update-tips-dialog .modal-body p {
+  margin-bottom: 5px;
+}
+.w-https-dialog .modal-dialog {
+  width: 340px;
+}
+.w-https-help {
+  margin-left: 150px;
+}
+.w-https-dialog .modal-dialog div {
+  white-space: nowrap;
+}
+.w-https-dialog a {
+  display: inline-block;
+}
+.w-download-rootca,
+.w-https-help {
+  line-height: 30px;
+}
+.w-https-settings label {
+  font-weight: normal;
+}
+.w-https-settings p {
+  margin: 10px 0;
+}
+
+.w-is-link {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.w-choose-filte-type .modal-dialog {
+  width: 456px;
+}
+.w-choose-filte-type-label {
+  white-space: nowrap;
+}
+.w-choose-filte-type-label .form-control {
+  margin-left: 10px;
+  width: 200px;
+  display: inline-block;
+  font-weight: normal;
+}
+.w-choose-filte-type-label select.form-control {
+  margin: 0 5px;
+  width: 80px;
+}
+
+.w-confirm-import-dialog .modal-dialog {
+  width: 320px;
+  font-weight: bold;
+}
+
+.w-show-left-menu-btn {
+  padding: 0 15px !important;
+  margin-right: 0 !important;
+}
+.w-left-menu {
+  background: #f1f3f4;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  display: none;
+}
+.w-show-left-menu .w-left-menu {
+  display: block;
+  border-left: none;
+}
+.w-show-left-menu .w-nav-menu {
+  display: none;
+}
+.w-left-menu a {
+  display: block;
+  position: relative;
+  padding: 10px 0 8px;
+  width: 47px;
+  overflow: hidden;
+  text-align: center;
+  text-decoration: none !important;
+  color: #000;
+}
+.w-left-menu a span {
+  margin-right: 5px;
+}
 .w-left-menu a .w-left-menu-name {
   display: block;
   font-style: normal;
@@ -82,15 +240,34 @@
   white-space: nowrap;
 }
 .w-left-menu-tips {
-  padding: 6px 10px; display: none; left: 47px; top: 3px; position: absolute;
-  z-index: 1; border-radius: 4px;
+  padding: 6px 10px;
+  display: none;
+  left: 47px;
+  top: 3px;
+  position: absolute;
+  z-index: 1;
+  border-radius: 4px;
 }
-.w-left-menu a:hover .w-left-menu-tips { display: block; color: #000; background-color: #f1f3f4;
-  font-weight: bold;  border: 1px solid #ccc;}
-.w-left-menu a .w-left-menu-tips:hover { display: none; }
-.w-menu .w-import-menu, .w-menu .w-export-menu, .w-menu .w-remove-menu-list { display: none; }
-.w-show-left-menu .w-import-menu, .w-show-left-menu .w-export-menu,
-  .w-show-left-menu .w-remove-menu-list { display: inline-block; }
+.w-left-menu a:hover .w-left-menu-tips {
+  display: block;
+  color: #000;
+  background-color: #f1f3f4;
+  font-weight: bold;
+  border: 1px solid #ccc;
+}
+.w-left-menu a .w-left-menu-tips:hover {
+  display: none;
+}
+.w-menu .w-import-menu,
+.w-menu .w-export-menu,
+.w-menu .w-remove-menu-list {
+  display: none;
+}
+.w-show-left-menu .w-import-menu,
+.w-show-left-menu .w-export-menu,
+.w-show-left-menu .w-remove-menu-list {
+  display: inline-block;
+}
 
 .w-menu-changed {
   position: absolute;
