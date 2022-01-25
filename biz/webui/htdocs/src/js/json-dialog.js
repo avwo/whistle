@@ -4,10 +4,10 @@ var JSONView = require('./json-viewer');
 var util = require('./util');
 
 var JSONDialog = React.createClass({
-  getInitialState: function() {
+  getInitialState: function () {
     return {};
   },
-  show: function(text) {
+  show: function (text) {
     if (!text) {
       return;
     }
@@ -33,23 +33,32 @@ var JSONDialog = React.createClass({
     } else {
       return util.parseRawJson(text);
     }
-    this.setState({data: data}, function() {
+    this.setState({ data: data }, function () {
       self.refs.jsonDialog.show();
     });
   },
-  render: function() {
+  render: function () {
     return (
       <Dialog ref="jsonDialog" wstyle="w-json-dialog">
         <div className="modal-body">
           <button type="button" className="close" data-dismiss="modal">
             <span aria-hidden="true">&times;</span>
           </button>
-          <div className="orient-vertical-box" style={{width: 720, height: 520, marginTop: 22}}>
+          <div
+            className="orient-vertical-box"
+            style={{ width: 720, height: 520, marginTop: 22 }}
+          >
             <JSONView data={this.state.data} viewSource={true} />
           </div>
         </div>
         <div className="modal-footer">
-          <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
+          <button
+            type="button"
+            className="btn btn-default"
+            data-dismiss="modal"
+          >
+            Close
+          </button>
         </div>
       </Dialog>
     );
@@ -57,13 +66,13 @@ var JSONDialog = React.createClass({
 });
 
 var JSONDialogWrap = React.createClass({
-  shouldComponentUpdate: function() {
+  shouldComponentUpdate: function () {
     return false;
   },
-  show: function(text) {
+  show: function (text) {
     this.refs.jsonDialog.show(text);
   },
-  render: function() {
+  render: function () {
     return <JSONDialog ref="jsonDialog" />;
   }
 });

@@ -54,17 +54,16 @@
 */
 
 module.exports = (function () {
+  // This is a function that can parse a JSON text, producing a JavaScript
+  // data structure. It is a simple, recursive descent parser. It does not use
+  // eval or regular expressions, so it can be used as a model for implementing
+  // a JSON parser in other languages.
 
-// This is a function that can parse a JSON text, producing a JavaScript
-// data structure. It is a simple, recursive descent parser. It does not use
-// eval or regular expressions, so it can be used as a model for implementing
-// a JSON parser in other languages.
+  // We are defining the function inside of another function to avoid creating
+  // global variables.
 
-// We are defining the function inside of another function to avoid creating
-// global variables.
-
-  var at;     // The index of the current character
-  var ch;     // The current character
+  var at; // The index of the current character
+  var ch; // The current character
   var escapee = {
     '"': '"',
     '\\': '\\',
@@ -78,8 +77,7 @@ module.exports = (function () {
   var text;
 
   var error = function (m) {
-
-// Call error when something is wrong.
+    // Call error when something is wrong.
 
     throw {
       name: 'SyntaxError',
@@ -90,15 +88,14 @@ module.exports = (function () {
   };
 
   var next = function (c) {
-
-// If a c parameter is provided, verify that it matches the current character.
+    // If a c parameter is provided, verify that it matches the current character.
 
     if (c && c !== ch) {
-      error('Expected \'' + c + '\' instead of \'' + ch + '\'');
+      error("Expected '" + c + "' instead of '" + ch + "'");
     }
 
-// Get the next character. When there are no more characters,
-// return the empty string.
+    // Get the next character. When there are no more characters,
+    // return the empty string.
 
     ch = text.charAt(at);
     at += 1;
@@ -106,8 +103,7 @@ module.exports = (function () {
   };
 
   var number = function () {
-
-// Parse a number value.
+    // Parse a number value.
 
     var value;
     var string = '';
@@ -152,15 +148,14 @@ module.exports = (function () {
   };
 
   var string = function () {
-
-// Parse a string value.
+    // Parse a string value.
 
     var hex;
     var i;
     var value = '';
     var uffff;
 
-// When parsing for string values, we must look for " and \ characters.
+    // When parsing for string values, we must look for " and \ characters.
 
     if (ch === '"') {
       while (next()) {
@@ -194,8 +189,7 @@ module.exports = (function () {
   };
 
   var white = function () {
-
-// Skip whitespace.
+    // Skip whitespace.
 
     while (ch && ch <= ' ') {
       next();
@@ -203,38 +197,36 @@ module.exports = (function () {
   };
 
   var word = function () {
-
-// true, false, or null.
+    // true, false, or null.
 
     switch (ch) {
-    case 't':
-      next('t');
-      next('r');
-      next('u');
-      next('e');
-      return true;
-    case 'f':
-      next('f');
-      next('a');
-      next('l');
-      next('s');
-      next('e');
-      return false;
-    case 'n':
-      next('n');
-      next('u');
-      next('l');
-      next('l');
-      return null;
+      case 't':
+        next('t');
+        next('r');
+        next('u');
+        next('e');
+        return true;
+      case 'f':
+        next('f');
+        next('a');
+        next('l');
+        next('s');
+        next('e');
+        return false;
+      case 'n':
+        next('n');
+        next('u');
+        next('l');
+        next('l');
+        return null;
     }
-    error('Unexpected \'' + ch + '\'');
+    error("Unexpected '" + ch + "'");
   };
 
-  var value;  // Place holder for the value function.
+  var value; // Place holder for the value function.
 
   var array = function () {
-
-// Parse an array value.
+    // Parse an array value.
 
     var arr = [];
 
@@ -243,7 +235,7 @@ module.exports = (function () {
       white();
       if (ch === ']') {
         next(']');
-        return arr;   // empty array
+        return arr; // empty array
       }
       while (ch) {
         arr.push(value());
@@ -260,8 +252,7 @@ module.exports = (function () {
   };
 
   var object = function () {
-
-// Parse an object value.
+    // Parse an object value.
 
     var key;
     var obj = {};
@@ -271,14 +262,14 @@ module.exports = (function () {
       white();
       if (ch === '}') {
         next('}');
-        return obj;   // empty object
+        return obj; // empty object
       }
       while (ch) {
         key = string();
         white();
         next(':');
         if (Object.hasOwnProperty.call(obj, key)) {
-          error('Duplicate key \'' + key + '\'');
+          error("Duplicate key '" + key + "'");
         }
         obj[key] = value();
         white();
@@ -294,29 +285,26 @@ module.exports = (function () {
   };
 
   value = function () {
-
-// Parse a JSON value. It could be an object, an array, a string, a number,
-// or a word.
+    // Parse a JSON value. It could be an object, an array, a string, a number,
+    // or a word.
 
     white();
     switch (ch) {
-    case '{':
-      return object();
-    case '[':
-      return array();
-    case '"':
-      return string();
-    case '-':
-      return number();
-    default:
-      return (ch >= '0' && ch <= '9')
-              ? number()
-              : word();
+      case '{':
+        return object();
+      case '[':
+        return array();
+      case '"':
+        return string();
+      case '-':
+        return number();
+      default:
+        return ch >= '0' && ch <= '9' ? number() : word();
     }
   };
 
-// Return the json_parse function. It will have access to all of the above
-// functions and variables.
+  // Return the json_parse function. It will have access to all of the above
+  // functions and variables.
 
   return function (source, reviver) {
     var result;
@@ -330,31 +318,31 @@ module.exports = (function () {
       error('Syntax error');
     }
 
-// If there is a reviver function, we recursively walk the new structure,
-// passing each name/value pair to the reviver function for possible
-// transformation, starting with a temporary root object that holds the result
-// in an empty key. If there is not a reviver function, we simply return the
-// result.
+    // If there is a reviver function, we recursively walk the new structure,
+    // passing each name/value pair to the reviver function for possible
+    // transformation, starting with a temporary root object that holds the result
+    // in an empty key. If there is not a reviver function, we simply return the
+    // result.
 
-    return (typeof reviver === 'function')
-          ? (function walk(holder, key) {
-            var k;
-            var v;
-            var val = holder[key];
-            if (val && typeof val === 'object') {
-              for (k in val) {
-                if (Object.prototype.hasOwnProperty.call(val, k)) {
-                  v = walk(val, k);
-                  if (v !== undefined) {
-                    val[k] = v;
-                  } else {
-                    delete val[k];
-                  }
+    return typeof reviver === 'function'
+      ? (function walk(holder, key) {
+          var k;
+          var v;
+          var val = holder[key];
+          if (val && typeof val === 'object') {
+            for (k in val) {
+              if (Object.prototype.hasOwnProperty.call(val, k)) {
+                v = walk(val, k);
+                if (v !== undefined) {
+                  val[k] = v;
+                } else {
+                  delete val[k];
                 }
               }
             }
-            return reviver.call(holder, key, val);
-          }({'': result}, ''))
-          : result;
+          }
+          return reviver.call(holder, key, val);
+        })({ '': result }, '')
+      : result;
   };
-}());
+})();

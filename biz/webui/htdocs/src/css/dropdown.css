@@ -6,15 +6,15 @@
   cursor: pointer;
 }
 .w-dropdown .dropdown-menu .divider {
-  margin: 0!important;
+  margin: 0 !important;
 }
 .w-dropdown .dropdown-menu {
-  width: auto!important;
+  width: auto !important;
   max-width: 300px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  min-width: auto!important;
+  min-width: auto !important;
   display: none;
   max-height: 360px;
   overflow-x: hidden;

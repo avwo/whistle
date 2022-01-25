@@ -8,11 +8,11 @@ var events = require('./events');
 var Properties = require('./properties');
 
 var BTNS = [
-  {name: 'Overview'},
-  {name: 'TextView'},
-  {name: 'JSONView'},
-  {name: 'HexView'},
-  {name: 'Composer'}
+  { name: 'Overview' },
+  { name: 'TextView' },
+  { name: 'JSONView' },
+  { name: 'HexView' },
+  { name: 'Composer' }
 ];
 
 function findActive(btn) {
@@ -20,26 +20,26 @@ function findActive(btn) {
 }
 
 var FrameClient = React.createClass({
-  getInitialState: function() {
+  getInitialState: function () {
     return {};
   },
-  showTab: function(i) {
-    BTNS.forEach(function(btn) {
+  showTab: function (i) {
+    BTNS.forEach(function (btn) {
       btn.active = false;
     });
     this.selectBtn(BTNS[i]);
     this.setState({});
   },
-  componentDidMount: function() {
+  componentDidMount: function () {
     var self = this;
-    events.on('composeFrame', function(e, frame) {
+    events.on('composeFrame', function (e, frame) {
       if (frame) {
         self.showTab(4);
       }
     });
-    events.on('toggleFramesInspectors', function() {
+    events.on('toggleFramesInspectors', function () {
       var btn = self.state.btn;
-      BTNS.forEach(function(b) {
+      BTNS.forEach(function (b) {
         b.active = false;
       });
       if (!btn || btn === BTNS[0]) {
@@ -53,25 +53,25 @@ var FrameClient = React.createClass({
       }
     });
   },
-  onDragEnter: function(e) {
+  onDragEnter: function (e) {
     if (e.dataTransfer.types.indexOf('framedataid') != -1) {
       this.showTab(4);
       e.preventDefault();
     }
   },
-  onDrop: function(e) {
+  onDrop: function (e) {
     var id = e.dataTransfer.getData('frameDataId');
     id && events.trigger('composeFrameId', id);
   },
-  onClickBtn: function(btn) {
+  onClickBtn: function (btn) {
     this.selectBtn(btn);
     this.setState({});
   },
-  selectBtn: function(btn) {
+  selectBtn: function (btn) {
     btn.active = true;
     this.state.btn = btn;
   },
-  render: function() {
+  render: function () {
     var state = this.state;
     var btn = state.btn;
     if (BTNS.indexOf(btn) === -1) {
@@ -90,7 +90,12 @@ var FrameClient = React.createClass({
           Type: frame.opcode == 1 ? 'Text' : 'Binary',
           Compressed: frame.compressed ? 'Yes' : 'No',
           Mask: frame.mask ? 'Yes' : 'No',
-          Length: len >= 1024 ? len + '(' + Number(len / 1024).toFixed(2) + 'k)' : (len >= 0 ? len : '')
+          Length:
+            len >= 1024
+              ? len + '(' + Number(len / 1024).toFixed(2) + 'k)'
+              : len >= 0
+              ? len
+              : ''
         };
       } else {
         overview = {
@@ -104,12 +109,30 @@ var FrameClient = React.createClass({
     }
     base64 = base64 || '';
     return (
-      <div className={'fill orient-vertical-box w-frames-data' + (this.props.hide ? ' hide' : '')} onDragEnter={this.onDragEnter} onDrop={this.onDrop}>
+      <div
+        className={
+          'fill orient-vertical-box w-frames-data' +
+          (this.props.hide ? ' hide' : '')
+        }
+        onDragEnter={this.onDragEnter}
+        onDrop={this.onDrop}
+      >
         <BtnGroup onClick={this.onClickBtn} btns={BTNS} />
         <Properties modal={overview} hide={btn.name !== 'Overview'} />
-        <Textarea className="fill" base64={base64} value={text} hide={btn.name !== 'TextView'} />
+        <Textarea
+          className="fill"
+          base64={base64}
+          value={text}
+          hide={btn.name !== 'TextView'}
+        />
         <JSONViewer data={json} hide={btn.name !== 'JSONView'} />
-        <Textarea className="fill n-monospace" isHexView="1" base64={base64} value={bin} hide={btn.name !== 'HexView'} />
+        <Textarea
+          className="fill n-monospace"
+          isHexView="1"
+          base64={base64}
+          value={bin}
+          hide={btn.name !== 'HexView'}
+        />
         <FrameComposer data={this.props.data} hide={btn.name !== 'Composer'} />
       </div>
     );

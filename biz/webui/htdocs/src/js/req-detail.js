@@ -11,11 +11,19 @@ var dataCenter = require('./data-center');
 var PluginsTabs = require('./plugins-tabs');
 var events = require('./events');
 
-var BTNS = [{name: 'Headers'}, {name: 'WebForms'}, {name: 'TextView', display: 'Body'}, {name: 'JSONView'},
-  {name: 'HexView'}, {name: 'Cookies'}, {name: 'Raw'}, {name: 'Plugins', hide: true}];
+var BTNS = [
+  { name: 'Headers' },
+  { name: 'WebForms' },
+  { name: 'TextView', display: 'Body' },
+  { name: 'JSONView' },
+  { name: 'HexView' },
+  { name: 'Cookies' },
+  { name: 'Raw' },
+  { name: 'Plugins', hide: true }
+];
 
 var ReqDetail = React.createClass({
-  getInitialState: function() {
+  getInitialState: function () {
     return {
       initedHeaders: false,
       initedTextView: false,
@@ -27,26 +35,26 @@ var ReqDetail = React.createClass({
       initPlugins: false
     };
   },
-  componentDidMount: function() {
+  componentDidMount: function () {
     var self = this;
-    events.on('reqTabsChange', function() {
+    events.on('reqTabsChange', function () {
       self.setState({});
     });
   },
-  shouldComponentUpdate: function(nextProps) {
+  shouldComponentUpdate: function (nextProps) {
     var hide = util.getBoolean(this.props.hide);
     return hide != util.getBoolean(nextProps.hide) || !hide;
   },
-  onClickBtn: function(btn) {
+  onClickBtn: function (btn) {
     this.selectBtn(btn);
     this.setState({});
   },
-  selectBtn: function(btn) {
+  selectBtn: function (btn) {
     btn.active = true;
     this.state.btn = btn;
     this.state['inited' + btn.name] = true;
   },
-  render: function() {
+  render: function () {
     var state = this.state;
     var btn = state.btn;
     if (!btn) {
@@ -55,7 +63,20 @@ var ReqDetail = React.createClass({
     }
     var name = btn && btn.name;
     var modal = this.props.modal;
-    var req, headers, headersStr, rawHeaders, cookies, body, raw, query, form, tips, json, defaultName, bin, base64;
+    var req,
+      headers,
+      headersStr,
+      rawHeaders,
+      cookies,
+      body,
+      raw,
+      query,
+      form,
+      tips,
+      json,
+      defaultName,
+      bin,
+      base64;
     body = raw = '';
     if (modal) {
       req = modal.req;
@@ -67,32 +88,58 @@ var ReqDetail = React.createClass({
       headers = req.headers;
       json = util.getJson(req, true, decodeURIComponent);
       delete headers.Host;
-      cookies = util.parseQueryString(headers.cookie, /;\s*/g, null, decodeURIComponent);
+      cookies = util.parseQueryString(
+        headers.cookie,
+        /;\s*/g,
+        null,
+        decodeURIComponent
+      );
       var url = modal.url;
       var realUrl = modal.realUrl;
       if (!realUrl || !/^(?:http|wss)s?:\/\//.test(realUrl)) {
         realUrl = url;
       }
       var index = realUrl.indexOf('?');
-      query = util.parseQueryString(index == -1 ? '' : realUrl.substring(index + 1), null, null, decodeURIComponent);
+      query = util.parseQueryString(
+        index == -1 ? '' : realUrl.substring(index + 1),
+        null,
+        null,
+        decodeURIComponent
+      );
       if (util.isUrlEncoded(req)) {
-        form = util.parseQueryString(util.getBody(req, true), null, null, decodeURIComponent);
+        form = util.parseQueryString(
+          util.getBody(req, true),
+          null,
+          null,
+          decodeURIComponent
+        );
         if (!window.___hasFormData) {
           form = null;
         }
       }
       headersStr = util.objectToString(headers, req.rawHeaderNames);
-      headersStr = [req.method, req.method == 'CONNECT' ? headers.host : util.getPath(realUrl), 'HTTP/' + (req.httpVersion || '1.1')].join(' ')
-      + '\r\n' + headersStr;
+      headersStr =
+        [
+          req.method,
+          req.method == 'CONNECT' ? headers.host : util.getPath(realUrl),
+          'HTTP/' + (req.httpVersion || '1.1')
+        ].join(' ') +
+        '\r\n' +
+        headersStr;
       raw = headersStr + '\r\n\r\n' + body;
       if (modal.useFrames) {
         tips = { isFrames: true };
       } else if (modal.isHttps) {
         tips = { isHttps: true };
-      } else if (modal.requestTime && modal.useFrames !== false && !body && !/^ws/.test(modal.url)) {
+      } else if (
+        modal.requestTime &&
+        modal.useFrames !== false &&
+        !body &&
+        !/^ws/.test(modal.url)
+      ) {
         if (req.size < 5120) {
           tips = { message: 'No request body data' };
-        }  else {
+        } else {
           raw += '(Request data too large to show)';
           tips = { message: 'Request data too large to show' };
         }
@@ -116,41 +163,108 @@ var ReqDetail = React.createClass({
       pluginsTab.title = undefined;
       pluginsTab.className = undefined;
     }
-  
+
     return (
-      <div className={'fill orient-vertical-box w-detail-content w-detail-request' + (util.getBoolean(this.props.hide) ? ' hide' : '')}>
+      <div
+        className={
+          'fill orient-vertical-box w-detail-content w-detail-request' +
+          (util.getBoolean(this.props.hide) ? ' hide' : '')
+        }
+      >
         <BtnGroup onClick={this.onClickBtn} btns={BTNS} />
-        {state.initedHeaders ? <div className={'fill w-detail-request-headers' + (name == BTNS[0].name ? '' : ' hide')}><Properties modal={rawHeaders || headers} enableViewSource="1" /></div> : ''}
-        {state.initedWebForms ? <Divider vertical="true" hideRight={!form} className={'w-detail-request-webforms' + (name == BTNS[1].name ? '' : ' hide')}>
-          <div className="fill orient-vertical-box">
-            <div className="w-detail-webforms-title">
-              Query
-            </div>
-            <div className="fill orient-vertical-box w-detail-request-query">
-              <Properties modal={query} enableViewSource="1" />
-            </div>
+        {state.initedHeaders ? (
+          <div
+            className={
+              'fill w-detail-request-headers' +
+              (name == BTNS[0].name ? '' : ' hide')
+            }
+          >
+            <Properties modal={rawHeaders || headers} enableViewSource="1" />
           </div>
-          <div className="fill orient-vertical-box">
-            <div className="w-detail-webforms-title">
-              Body
+        ) : (
+          ''
+        )}
+        {state.initedWebForms ? (
+          <Divider
+            vertical="true"
+            hideRight={!form}
+            className={
+              'w-detail-request-webforms' +
+              (name == BTNS[1].name ? '' : ' hide')
+            }
+          >
+            <div className="fill orient-vertical-box">
+              <div className="w-detail-webforms-title">Query</div>
+              <div className="fill orient-vertical-box w-detail-request-query">
+                <Properties modal={query} enableViewSource="1" />
+              </div>
             </div>
-            <div className="fill orient-vertical-box w-detail-request-form">
-              <Properties modal={form} enableViewSource="1" />
+            <div className="fill orient-vertical-box">
+              <div className="w-detail-webforms-title">Body</div>
+              <div className="fill orient-vertical-box w-detail-request-form">
+                <Properties modal={form} enableViewSource="1" />
+              </div>
             </div>
+          </Divider>
+        ) : (
+          ''
+        )}
+        {state.initedTextView ? (
+          <Textarea
+            defaultName={defaultName}
+            tips={tips}
+            base64={base64}
+            value={body}
+            className="fill w-detail-request-textview"
+            hide={name != BTNS[2].name}
+          />
+        ) : undefined}
+        {state.initedJSONView ? (
+          <JSONViewer
+            defaultName={defaultName}
+            data={json}
+            hide={name != BTNS[3].name}
+          />
+        ) : undefined}
+        {state.initedHexView ? (
+          <Textarea
+            defaultName={defaultName}
+            isHexView="1"
+            base64={base64}
+            value={bin}
+            className="fill n-monospace w-detail-request-hex"
+            hide={name != BTNS[4].name}
+          />
+        ) : undefined}
+        {state.initedCookies ? (
+          <div
+            className={
+              'fill w-detail-request-cookies' +
+              (name == BTNS[5].name ? '' : ' hide')
+            }
+          >
+            <Properties modal={cookies} enableViewSource="1" />
           </div>
-        </Divider> : ''}
-        {state.initedTextView ? <Textarea defaultName={defaultName} tips={tips} base64={base64} value={body} className="fill w-detail-request-textview" hide={name != BTNS[2].name} /> : undefined}
-        {state.initedJSONView ? <JSONViewer defaultName={defaultName} data={json} hide={name != BTNS[3].name} /> : undefined}
-        {state.initedHexView ? <Textarea defaultName={defaultName} isHexView="1" base64={base64} value={bin} className="fill n-monospace w-detail-request-hex" hide={name != BTNS[4].name} /> : undefined}
-        {state.initedCookies ? <div className={'fill w-detail-request-cookies' + (name == BTNS[5].name ? '' : ' hide')}><Properties modal={cookies} enableViewSource="1" /></div> : undefined}
-        {state.initedRaw ? <Textarea defaultName={defaultName} value={raw} headers={headersStr}
-          base64={base64} className="fill w-detail-request-raw" hide={name != BTNS[6].name} /> : undefined}
-        {state.initedPlugins ? <PluginsTabs tabs={tabs} hide={name != pluginsTab.name || pluginsTab.hide} /> : undefined}
+        ) : undefined}
+        {state.initedRaw ? (
+          <Textarea
+            defaultName={defaultName}
+            value={raw}
+            headers={headersStr}
+            base64={base64}
+            className="fill w-detail-request-raw"
+            hide={name != BTNS[6].name}
+          />
+        ) : undefined}
+        {state.initedPlugins ? (
+          <PluginsTabs
+            tabs={tabs}
+            hide={name != pluginsTab.name || pluginsTab.hide}
+          />
+        ) : undefined}
       </div>
     );
   }
 });
 
 module.exports = ReqDetail;
-
-

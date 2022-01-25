@@ -3,20 +3,20 @@ var ReactDOM = require('react-dom');
 var util = require('./util');
 
 var TextView = React.createClass({
-  componentDidMount: function() {
+  componentDidMount: function () {
     this.updateValue();
   },
-  componentDidUpdate: function() {
+  componentDidUpdate: function () {
     this.updateValue();
   },
-  shouldComponentUpdate: function(nextProps) {
+  shouldComponentUpdate: function (nextProps) {
     if (this.props.value !== nextProps.value) {
       this.props.value = nextProps.value;
       this.updateValue();
     }
     return this.props.className !== nextProps.className;
   },
-  updateValue: function() {
+  updateValue: function () {
     var self = this;
     var value = self.props.value || '';
     var textarea = ReactDOM.findDOMNode(self.refs.textarea);
@@ -39,11 +39,11 @@ var TextView = React.createClass({
       return;
     }
     self.curValue = value;
-    self._timeout = setTimeout(function() {
+    self._timeout = setTimeout(function () {
       textarea.value = value;
     }, 360);
   },
-  render: function() {
+  render: function () {
     return (
       <textarea
         ref="textarea"

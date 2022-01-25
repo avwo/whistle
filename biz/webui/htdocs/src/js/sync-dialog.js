@@ -14,10 +14,10 @@ function getCgiUrl(moduleName, url) {
 }
 
 var SyncDialog = React.createClass({
-  getInitialState: function() {
+  getInitialState: function () {
     return {};
   },
-  show: function(options, rulesModal, valuesModal) {
+  show: function (options, rulesModal, valuesModal) {
     var self = this;
     self.rulesModal = rulesModal;
     self.valuesModal = valuesModal;
@@ -27,19 +27,21 @@ var SyncDialog = React.createClass({
     if (!util.isString(options.valuesUrl)) {
       options.valuesUrl = null;
     }
-    self.setState(options, function() {
+    self.setState(options, function () {
       self.refs.syncDialog.show();
     });
   },
-  syncRules: function() {
+  syncRules: function () {
     var self = this;
     var rulesUrl = self.state.rulesUrl;
     if (self.loadingRules || !util.isString(rulesUrl)) {
       return;
     }
     self.loadingRules = true;
-    var loadRules = dataCenter.createCgi(getCgiUrl(self.state.moduleName, rulesUrl));
-    loadRules(function(data, xhr) {
+    var loadRules = dataCenter.createCgi(
+      getCgiUrl(self.state.moduleName, rulesUrl)
+    );
+    loadRules(function (data, xhr) {
       self.loadingRules = false;
       self.setState({});
       if (!data) {
@@ -49,15 +51,17 @@ var SyncDialog = React.createClass({
     });
     self.setState({});
   },
-  syncValues: function() {
+  syncValues: function () {
     var self = this;
     var valuesUrl = self.state.valuesUrl;
     if (self.loadingValues || !util.isString(valuesUrl)) {
       return;
     }
     self.loadingValues = true;
-    var loadValues = dataCenter.createCgi(getCgiUrl(self.state.moduleName, valuesUrl));
-    loadValues(function(data, xhr) {
+    var loadValues = dataCenter.createCgi(
+      getCgiUrl(self.state.moduleName, valuesUrl)
+    );
+    loadValues(function (data, xhr) {
       self.loadingValues = false;
       self.setState({});
       if (!data) {
@@ -67,20 +71,38 @@ var SyncDialog = React.createClass({
     });
     self.setState({});
   },
-  render: function() {
+  render: function () {
     var state = this.state;
     return (
       <Dialog ref="syncDialog" wstyle="w-sync-dialog">
         <div className="modal-body">
-          <button onClick={this.syncRules} disabled={this.loadingRules || !util.isString(state.rulesUrl)} type="button" className="btn btn-primary">
-            <span className="glyphicon glyphicon-list" /> {this.loadingRules ? 'Loading' : 'Sync'} Rules
+          <button
+            onClick={this.syncRules}
+            disabled={this.loadingRules || !util.isString(state.rulesUrl)}
+            type="button"
+            className="btn btn-primary"
+          >
+            <span className="glyphicon glyphicon-list" />{' '}
+            {this.loadingRules ? 'Loading' : 'Sync'} Rules
           </button>
-          <button onClick={this.syncValues} disabled={this.loadingValues || !util.isString(state.valuesUrl)} type="button" className="btn btn-default">
-            <span className="glyphicon glyphicon-folder-close" /> {this.loadingValues ? 'Loading' : 'Sync'} Values
+          <button
+            onClick={this.syncValues}
+            disabled={this.loadingValues || !util.isString(state.valuesUrl)}
+            type="button"
+            className="btn btn-default"
+          >
+            <span className="glyphicon glyphicon-folder-close" />{' '}
+            {this.loadingValues ? 'Loading' : 'Sync'} Values
           </button>
         </div>
         <div className="modal-footer">
-          <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
+          <button
+            type="button"
+            className="btn btn-default"
+            data-dismiss="modal"
+          >
+            Close
+          </button>
         </div>
         <KVDialog ref="kvDialog" />
       </Dialog>
@@ -89,13 +111,13 @@ var SyncDialog = React.createClass({
 });
 
 var SyncDialogWrap = React.createClass({
-  shouldComponentUpdate: function() {
+  shouldComponentUpdate: function () {
     return false;
   },
-  show: function(options, rulesModal, valuesModal) {
+  show: function (options, rulesModal, valuesModal) {
     this.refs.syncDialog.show(options, rulesModal, valuesModal);
   },
-  render: function() {
+  render: function () {
     return <SyncDialog ref="syncDialog" />;
   }
 });

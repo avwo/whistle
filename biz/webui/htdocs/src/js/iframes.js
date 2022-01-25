@@ -15,19 +15,19 @@ function destroy(item) {
   try {
     document.body.removeChild(item.iframe);
     item.destroyed = true;
-    item.dialogs.forEach(function(dialog) {
+    item.dialogs.forEach(function (dialog) {
       dialog.hide(true);
     });
     item.dialogs = [];
     delete cache[item.page];
-  } catch(e) {}
+  } catch (e) {}
 }
 
-var detectTimeout = function() {
+var detectTimeout = function () {
   detectTimeout = util.noop;
-  setInterval(function() {
+  setInterval(function () {
     var now = Date.now();
-    Object.keys(cache).forEach(function(key) {
+    Object.keys(cache).forEach(function (key) {
       var item = cache[key];
       if (now - item.mtime > MAX_CACHE_TIME) {
         destroy(item);
@@ -65,10 +65,10 @@ function onPluginContextMenuReady(win) {
   }
   try {
     var bridge = getBridge();
-    bridge.createModal = function(options) {
+    bridge.createModal = function (options) {
       var dialog = modal.create(options);
       var hide = dialog.hide;
-      dialog.hide = function(_destroy) {
+      dialog.hide = function (_destroy) {
         if (_destroy) {
           var index = item.dialogs.indexOf(dialog);
           index !== -1 && item.dialogs.splice(index, 1);
@@ -101,13 +101,13 @@ function removeOldest() {
   destroy(oldest);
 }
 
-exports.fork = function(page, options) {
+exports.fork = function (page, options) {
   try {
     // 保持状态
     options = JSON.parse(JSON.stringify(options));
   } catch (e) {}
   page += '???_WHISTLE_PLUGIN_EXT_CONTEXT_MENU_' + options.port + '???';
-  var item = latestItem = cache[page];
+  var item = (latestItem = cache[page]);
   if (item) {
     item.mtime = Date.now();
     if (item.emit) {
@@ -125,16 +125,19 @@ exports.fork = function(page, options) {
   window.onPluginContextMenuReady = onPluginContextMenuReady;
   var iframe = document.createElement('iframe');
   iframe.style.display = 'none';
-  cache[page] = latestItem = item = {
-    page: page,
-    list: [options],
-    mtime: Date.now(),
-    iframe: iframe,
-    dialogs: []
-  };
+  cache[page] =
+    latestItem =
+    item =
+      {
+        page: page,
+        list: [options],
+        mtime: Date.now(),
+        iframe: iframe,
+        dialogs: []
+      };
   document.body.appendChild(iframe);
   iframe.src = page + page.length;
-  setTimeout(function() {
+  setTimeout(function () {
     !item.emit && destroy(item);
   }, TIMEOUT);
 };

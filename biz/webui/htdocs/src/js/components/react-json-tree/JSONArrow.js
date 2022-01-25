@@ -14,26 +14,31 @@ var _propTypes = require('prop-types');
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
 
 var JSONArrow = function JSONArrow(_ref) {
   var styling = _ref.styling,
-      arrowStyle = _ref.arrowStyle,
-      expanded = _ref.expanded,
-      nodeType = _ref.nodeType,
-      onClick = _ref.onClick;
+    arrowStyle = _ref.arrowStyle,
+    expanded = _ref.expanded,
+    nodeType = _ref.nodeType,
+    onClick = _ref.onClick;
   return _react2['default'].createElement(
     'div',
-    (0, _extends3['default'])({}, styling('arrowContainer', arrowStyle), { onClick: onClick }),
+    (0, _extends3['default'])({}, styling('arrowContainer', arrowStyle), {
+      onClick: onClick
+    }),
     _react2['default'].createElement(
       'div',
       styling(['arrow', 'arrowSign'], nodeType, expanded, arrowStyle),
       '\u25B6',
-      arrowStyle === 'double' && _react2['default'].createElement(
-        'div',
-        styling(['arrowSign', 'arrowSignInner']),
-        '\u25B6'
-      )
+      arrowStyle === 'double' &&
+        _react2['default'].createElement(
+          'div',
+          styling(['arrowSign', 'arrowSignInner']),
+          '\u25B6'
+        )
     )
   );
 };

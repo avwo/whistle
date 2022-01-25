@@ -6,7 +6,7 @@ var ResDetail = require('./res-detail');
 var util = require('./util');
 
 var Inspector = React.createClass({
-  shouldComponentUpdate: function(nextProps) {
+  shouldComponentUpdate: function (nextProps) {
     var hide = util.getBoolean(this.props.hide);
     if (hide != util.getBoolean(nextProps.hide)) {
       return true;
@@ -19,10 +19,10 @@ var Inspector = React.createClass({
     if (!modal || modal !== newModal) {
       return true;
     }
-    
+
     return !this.endTime;
   },
-  render: function() {
+  render: function () {
     var props = this.props;
     var modal = props.modal;
     this.endTime = modal && (modal.endTime || modal.lost);
@@ -33,7 +33,7 @@ var Inspector = React.createClass({
         </div>
         <div className="fill orient-vertical-box">
           <div className="w-detail-inspectors-title w-detail-inspectors-res">
-          <span className="glyphicon glyphicon-arrow-left"></span>Response
+            <span className="glyphicon glyphicon-arrow-left"></span>Response
           </div>
           <ResDetail modal={modal} />
         </div>

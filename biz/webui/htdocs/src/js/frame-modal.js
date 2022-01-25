@@ -3,7 +3,7 @@ var MAX_FRAMES_LENGTH = require('./data-center').MAX_FRAMES_LENGTH;
 
 var lowerBody;
 
-var filterItem = function(keyword, item) {
+var filterItem = function (keyword, item) {
   if (!keyword) {
     return true;
   }
@@ -19,38 +19,44 @@ function FramesModal() {
 
 var proto = FramesModal.prototype;
 
-proto.search = function(keyword) {
+proto.search = function (keyword) {
   keyword = typeof keyword !== 'string' ? '' : keyword.trim().toLowerCase();
   if (keyword) {
-    var k = this._keyword = {};
+    var k = (this._keyword = {});
     var i = 0;
-    keyword.split(/\s+/g).slice(0, 3).forEach(function(key) {
-      if (/^(c|s):(\S*)$/i.test(key)) {
-        k[RegExp.$1.toLowerCase()] = RegExp.$2;
-      } else {
-        k['k' + i++] = key;
-      }
-    });
+    keyword
+      .split(/\s+/g)
+      .slice(0, 3)
+      .forEach(function (key) {
+        if (/^(c|s):(\S*)$/i.test(key)) {
+          k[RegExp.$1.toLowerCase()] = RegExp.$2;
+        } else {
+          k['k' + i++] = key;
+        }
+      });
   } else {
     this._keyword = '';
   }
 };
 
-proto.filter = function() {
+proto.filter = function () {
   var keyword = this._keyword;
   var list = this.list;
   if (!keyword) {
-    list.forEach(function(item) {
+    list.forEach(function (item) {
       item.hide = false;
     });
     return;
   }
 
-  list.forEach(function(item) {
+  list.forEach(function (item) {
     item.hide = false;
     lowerBody = null;
-    if (!filterItem(keyword.k0, item) || !filterItem(keyword.k1, item)
-      || !filterItem(keyword.k2, item)) {
+    if (
+      !filterItem(keyword.k0, item) ||
+      !filterItem(keyword.k1, item) ||
+      !filterItem(keyword.k2, item)
+    ) {
       item.hide = true;
       return;
     }
@@ -71,8 +77,8 @@ proto.filter = function() {
   });
 };
 
-proto.setActive = function(item, active) {
-  this.list.forEach(function(item) {
+proto.setActive = function (item, active) {
+  this.list.forEach(function (item) {
     item.active = false;
   });
   item.active = active !== false;
@@ -95,16 +101,16 @@ function updateList(list, len) {
   }
 }
 
-proto.getActive = function() {
+proto.getActive = function () {
   return getActive(this.list);
 };
 
-proto.getList = function() {
+proto.getList = function () {
   this.filter();
   return this.list;
 };
 
-proto.update = function() {
+proto.update = function () {
   if (this._keyword) {
     return;
   }
@@ -127,12 +133,12 @@ proto.update = function() {
   }
 };
 
-proto.clear = function() {
+proto.clear = function () {
   this.list.splice(0, this.list.length);
   return this;
 };
 
-proto.reset = function(list) {
+proto.reset = function (list) {
   if (!list || this.list === list) {
     return list;
   }
@@ -142,4 +148,3 @@ proto.reset = function(list) {
 };
 
 module.exports = FramesModal;
-
