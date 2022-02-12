@@ -4,7 +4,7 @@
 
 1. 安装 gitboock-cli
   ```sh
-  npm i -g gitbook-cli --registry=http://registry.npm.taobao.org/
+  npm i -g gitbook-cli --registry=https://registry.npmmirror.com/
   ```
 2. 启动 gitbook 本地服务器
   ```sh
