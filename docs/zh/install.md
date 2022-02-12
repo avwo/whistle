@@ -35,11 +35,11 @@ $ npm install -g whistle
 npm默认镜像是在国外，有时候安装速度很慢或者出现安装不了的情况，如果无法安装或者安装很慢，可以使用taobao的镜像安装：
 
 ```sh
-$ npm install cnpm -g --registry=https://registry.npm.taobao.org
+$ npm install cnpm -g --registry=https://registry.npmmirror.com
 $ cnpm install -g whistle
 
 或者直接指定镜像安装：
-$ npm install whistle -g --registry=https://registry.npm.taobao.org
+$ npm install whistle -g --registry=https://registry.npmmirror.com
 ```
 
 whistle安装完成后，执行命令 `whistle help` 或 `w2 help`，查看whistle的帮助信息
