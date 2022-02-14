@@ -44,8 +44,8 @@ var CHARS = [
   'Shift-8',
   '=',
   'Shift-=',
-  "'",
-  "Shift-'",
+  '\'',
+  'Shift-\'',
   ';',
   'Shift-;',
   '\\',
@@ -59,12 +59,12 @@ var CHARS = [
   'Shift-0'
 ];
 for (var i = 0; i < 10; i++) {
-  CHARS.push("'" + i + "'");
+  CHARS.push('\'' + i + '\'');
 }
 for (var a = 'a'.charCodeAt(), z = 'z'.charCodeAt(); a <= z; a++) {
   var ch = String.fromCharCode(a);
-  CHARS.push("'" + ch.toUpperCase() + "'");
-  CHARS.push("'" + ch + "'");
+  CHARS.push('\'' + ch.toUpperCase() + '\'');
+  CHARS.push('\'' + ch + '\'');
 }
 
 $(window).on('hashchange', function () {
@@ -271,9 +271,9 @@ function handleRemoteHints(data, editor, plugin, protoName, value, cgi, isVar) {
         curHintList.push(
           label && label !== curVal
             ? {
-                displayText: label,
-                text: curVal
-              }
+              displayText: label,
+              text: curVal
+            }
             : curVal
         );
         curHintMap[label || curVal] = getRuleHelp(plugin, item.help);

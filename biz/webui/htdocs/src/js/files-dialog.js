@@ -200,7 +200,7 @@ var FilesDialog = React.createClass({
   remove: function (e) {
     var name = e.target.getAttribute('data-name');
     var self = this;
-    win.confirm("Are you sure to delete '" + name + "'.", function (sure) {
+    win.confirm('Are you sure to delete \'' + name + '\'.', function (sure) {
       if (!sure) {
         return;
       }

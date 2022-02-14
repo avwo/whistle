@@ -74,7 +74,7 @@ function addEvents(html, gVarName) {
       args = handle.substring(index);
       handle = handle.substring(0, index);
     }
-    handle = gVarName + "['" + handle + "']" + args;
+    handle = gVarName + '[\'' + handle + '\']' + args;
     return ' ' + name + '"' + handle + '"';
   });
 }

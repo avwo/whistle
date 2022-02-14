@@ -193,23 +193,23 @@ var Overview = React.createClass({
           var lastIndex = OVERVIEW.length - 1;
           var time;
           switch (name) {
-            case OVERVIEW[lastIndex - 5]:
-              time = util.toLocaleString(new Date(modal.startTime));
-              break;
-            case OVERVIEW[lastIndex - 4]:
-              time = getTime(modal.dns);
-              break;
-            case OVERVIEW[lastIndex - 3]:
-              if (modal.requestTime) {
-                time = getTime(modal.request);
-                var protocol = modal.protocol;
-                if (
+          case OVERVIEW[lastIndex - 5]:
+            time = util.toLocaleString(new Date(modal.startTime));
+            break;
+          case OVERVIEW[lastIndex - 4]:
+            time = getTime(modal.dns);
+            break;
+          case OVERVIEW[lastIndex - 3]:
+            if (modal.requestTime) {
+              time = getTime(modal.request);
+              var protocol = modal.protocol;
+              if (
                   typeof protocol === 'string' &&
                   protocol.indexOf('>') !== -1
                 ) {
-                  var diffTime = modal.httpsTime - modal.dnsTime;
-                  if (diffTime > 0) {
-                    time +=
+                var diffTime = modal.httpsTime - modal.dnsTime;
+                if (diffTime > 0) {
+                  time +=
                       ' - ' +
                       diffTime +
                       'ms(' +
@@ -217,22 +217,22 @@ var Overview = React.createClass({
                       ') = ' +
                       (modal.requestTime - modal.httpsTime) +
                       'ms';
-                  }
                 }
               }
-              break;
-            case OVERVIEW[lastIndex - 2]:
-              time = getTime(modal.response);
-              break;
-            case OVERVIEW[lastIndex - 1]:
-              time = getTime(modal.download);
-              break;
-            case OVERVIEW[lastIndex]:
-              time = getTime(modal.time);
-              if (modal.endTime) {
-                time = modal.endTime - modal.startTime + 'ms';
-              }
-              break;
+            }
+            break;
+          case OVERVIEW[lastIndex - 2]:
+            time = getTime(modal.response);
+            break;
+          case OVERVIEW[lastIndex - 1]:
+            time = getTime(modal.download);
+            break;
+          case OVERVIEW[lastIndex]:
+            time = getTime(modal.time);
+            if (modal.endTime) {
+              time = modal.endTime - modal.startTime + 'ms';
+            }
+            break;
           }
           overviewModal[name] = time;
         }

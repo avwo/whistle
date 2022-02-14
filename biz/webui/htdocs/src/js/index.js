@@ -1561,39 +1561,39 @@ var Index = React.createClass({
   },
   importData: function (e) {
     switch (this.state.name) {
-      case 'network':
-        this.importSessions(e);
-        break;
-      case 'rules':
-        this.importRules(e);
-        break;
-      case 'values':
-        this.importValues(e);
-        break;
+    case 'network':
+      this.importSessions(e);
+      break;
+    case 'rules':
+      this.importRules(e);
+      break;
+    case 'values':
+      this.importValues(e);
+      break;
     }
   },
   exportData: function (e, curItem) {
     switch (this.state.name) {
-      case 'network':
-        var modal = this.state.network;
-        var hasSelected = Array.isArray(curItem) || modal.hasSelected();
-        this.currentFoucsItem = curItem;
-        if (hasSelected) {
-          $(ReactDOM.findDOMNode(this.refs.chooseFileType)).modal('show');
-          var self = this;
-          setTimeout(function () {
-            ReactDOM.findDOMNode(self.refs.sessionsName).focus();
-          }, 500);
-        } else {
-          message.info('Please select the sessions first.');
-        }
-        break;
-      case 'rules':
-        this.showAndActiveRules({ id: 'exportRules' });
-        break;
-      case 'values':
-        this.showAndActiveValues({ id: 'exportValues' });
-        break;
+    case 'network':
+      var modal = this.state.network;
+      var hasSelected = Array.isArray(curItem) || modal.hasSelected();
+      this.currentFoucsItem = curItem;
+      if (hasSelected) {
+        $(ReactDOM.findDOMNode(this.refs.chooseFileType)).modal('show');
+        var self = this;
+        setTimeout(function () {
+          ReactDOM.findDOMNode(self.refs.sessionsName).focus();
+        }, 500);
+      } else {
+        message.info('Please select the sessions first.');
+      }
+      break;
+    case 'rules':
+      this.showAndActiveRules({ id: 'exportRules' });
+      break;
+    case 'values':
+      this.showAndActiveValues({ id: 'exportValues' });
+      break;
     }
   },
   importSessions: function (e, data) {
@@ -1798,12 +1798,12 @@ var Index = React.createClass({
   showAndActiveRules: function (item, e) {
     if (this.state.name === 'rules') {
       switch (item.id) {
-        case 'exportRules':
-          this.refs.selectRulesDialog.show();
-          break;
-        case 'importRules':
-          this.importRules(e);
-          break;
+      case 'exportRules':
+        this.refs.selectRulesDialog.show();
+        break;
+      case 'importRules':
+        this.importRules(e);
+        break;
       }
     } else {
       this.setRulesActive(item.name);
@@ -1828,12 +1828,12 @@ var Index = React.createClass({
     var self = this;
     if (self.state.name === 'values' && item.id) {
       switch (item.id) {
-        case 'exportValues':
-          self.refs.selectValuesDialog.show();
-          break;
-        case 'importValues':
-          this.importValues(e);
-          break;
+      case 'exportValues':
+        self.refs.selectValuesDialog.show();
+        break;
+      case 'importValues':
+        this.importValues(e);
+        break;
       }
     } else {
       var modal = self.state.values;
@@ -2233,7 +2233,7 @@ var Index = React.createClass({
 
     var modal = self.state.rules;
     if (modal.exists(name)) {
-      message.error("The name '" + name + "' already exists.");
+      message.error('The name \'' + name + '\' already exists.');
       return;
     }
     var addToTop = e && e.target.getAttribute('data-type') === 'top' ? 1 : '';
@@ -2279,7 +2279,7 @@ var Index = React.createClass({
 
     var modal = self.state.values;
     if (modal.exists(name)) {
-      message.error("The name '" + name + "' already exists.");
+      message.error('The name \'' + name + '\' already exists.');
       return;
     }
 
@@ -2360,7 +2360,7 @@ var Index = React.createClass({
     }
 
     if (modal.exists(name)) {
-      message.error("The name '" + name + "' already exists.");
+      message.error('The name \'' + name + '\' already exists.');
       return;
     }
 
@@ -2400,7 +2400,7 @@ var Index = React.createClass({
     }
 
     if (modal.exists(name)) {
-      message.error("The name '" + name + "' already exists.");
+      message.error('The name \'' + name + '\' already exists.');
       return;
     }
 
@@ -2627,7 +2627,7 @@ var Index = React.createClass({
     var activeItem = item || modal.getActive();
     if (activeItem && !activeItem.isDefault) {
       var name = activeItem.name;
-      win.confirm("Are you sure to delete '" + name + "'.", function (sure) {
+      win.confirm('Are you sure to delete \'' + name + '\'.', function (sure) {
         if (!sure) {
           return;
         }
@@ -2640,8 +2640,8 @@ var Index = React.createClass({
               item
                 ? {}
                 : {
-                    activeRules: nextItem
-                  }
+                  activeRules: nextItem
+                }
             );
             self.triggerRulesChange('remove');
           } else {
@@ -2657,7 +2657,7 @@ var Index = React.createClass({
     var activeItem = item || modal.getActive();
     if (activeItem && !activeItem.isDefault) {
       var name = activeItem.name;
-      win.confirm("Are you sure to delete '" + name + "'.", function (sure) {
+      win.confirm('Are you sure to delete \'' + name + '\'.', function (sure) {
         if (!sure) {
           return;
         }
@@ -2670,8 +2670,8 @@ var Index = React.createClass({
               item
                 ? {}
                 : {
-                    activeValues: nextItem
-                  }
+                  activeValues: nextItem
+                }
             );
             self.triggerValuesChange('remove');
           } else {
@@ -3246,28 +3246,28 @@ var Index = React.createClass({
     var state = self.state;
     var list = LEFT_BAR_MENUS;
     switch (action) {
-      case 'Tree View':
-        list[2].checked = !state.network.isTreeView;
-        self.toggleTreeView();
-        break;
-      case 'Rules':
-        self.disableAllRules(null, function (disabled) {
-          list[3].checked = !disabled;
-          self.setState({});
-        });
-        break;
-      case 'Plugins':
-        self.disableAllPlugins(null, function (disabled) {
-          list[4].checked = !disabled;
-          self.setState({});
-        });
-        break;
-      case 'Clear':
-        self.clear();
-        return;
-      case 'Save':
-        self.saveRulesOrValues();
-        return;
+    case 'Tree View':
+      list[2].checked = !state.network.isTreeView;
+      self.toggleTreeView();
+      break;
+    case 'Rules':
+      self.disableAllRules(null, function (disabled) {
+        list[3].checked = !disabled;
+        self.setState({});
+      });
+      break;
+    case 'Plugins':
+      self.disableAllPlugins(null, function (disabled) {
+        list[4].checked = !disabled;
+        self.setState({});
+      });
+      break;
+    case 'Clear':
+      self.clear();
+      return;
+    case 'Save':
+      self.saveRulesOrValues();
+      return;
     }
     this.refs.contextMenu.show({});
   },

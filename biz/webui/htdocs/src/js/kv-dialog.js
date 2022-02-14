@@ -56,7 +56,7 @@ var KVDialog = React.createClass({
   },
   remove: function (item) {
     var self = this;
-    win.confirm("Are you sure to delete '" + item.name + "'.", function (sure) {
+    win.confirm('Are you sure to delete \'' + item.name + '\'.', function (sure) {
       if (sure) {
         var index = self.state.list.indexOf(item);
         if (index !== -1) {

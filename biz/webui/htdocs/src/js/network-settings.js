@@ -60,28 +60,28 @@ var Settings = React.createClass({
     var filterTextChanged;
     var columnsChanged;
     switch (name) {
-      case 'filter':
-        settings.disabledFilterText = !target.checked;
-        filterTextChanged = true;
-        break;
-      case 'excludeFilter':
-        settings.disabledExcludeText = !target.checked;
-        filterTextChanged = true;
-        break;
-      case 'filterText':
-        filterTextChanged = true;
-        settings.filterText = target.value;
-        break;
-      case 'excludeText':
-        filterTextChanged = true;
-        settings.excludeText = target.value;
-        break;
-      case 'networkColumns':
-        columnsChanged = true;
-        break;
-      default:
-        columns.setSelected(name, target.checked);
-        columnsChanged = true;
+    case 'filter':
+      settings.disabledFilterText = !target.checked;
+      filterTextChanged = true;
+      break;
+    case 'excludeFilter':
+      settings.disabledExcludeText = !target.checked;
+      filterTextChanged = true;
+      break;
+    case 'filterText':
+      filterTextChanged = true;
+      settings.filterText = target.value;
+      break;
+    case 'excludeText':
+      filterTextChanged = true;
+      settings.excludeText = target.value;
+      break;
+    case 'networkColumns':
+      columnsChanged = true;
+      break;
+    default:
+      columns.setSelected(name, target.checked);
+      columnsChanged = true;
     }
     if (filterTextChanged) {
       dataCenter.setFilterText(settings);

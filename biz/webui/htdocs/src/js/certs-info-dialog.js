@@ -105,7 +105,7 @@ var HistoryData = React.createClass({
   removeCert: function (item) {
     var self = this;
     win.confirm(
-      "Are you sure to delete '" + item.filename + "'.",
+      'Are you sure to delete \'' + item.filename + '\'.',
       function (sure) {
         if (!sure) {
           return;

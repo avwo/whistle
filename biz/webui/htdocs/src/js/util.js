@@ -609,7 +609,7 @@ function parseLinesJSON(text) {
         var fv = value[0];
         var lv = value[value.length - 1];
         if (fv === lv) {
-          if (fv === '"' || fv === "'" || fv === '`') {
+          if (fv === '"' || fv === '\'' || fv === '`') {
             value = value.slice(1, -1);
           }
           if (
@@ -805,7 +805,7 @@ var STATUS_CODES = {
   415: 'Unsupported Media Type',
   416: 'Requested Range Not Satisfiable',
   417: 'Expectation Failed',
-  418: "I'm a teapot", // RFC 2324
+  418: 'I\'m a teapot', // RFC 2324
   422: 'Unprocessable Entity', // RFC 4918
   423: 'Locked', // RFC 4918
   424: 'Failed Dependency', // RFC 4918
@@ -880,7 +880,7 @@ var entities = {
   '>': '&gt;',
   '&': '&amp;',
   ' ': '&nbsp;',
-  "'": '&#39;'
+  '\'': '&#39;'
 };
 var rlf = /\r?\n/g;
 var rspace = /\s/g;
@@ -1328,14 +1328,14 @@ exports.getJson = function (data, isReq, decode) {
     body = body && resolveJSON(body, decode);
     data[JSON_KEY] = body
       ? {
-          json: body,
-          isJSONText: isJSONText,
-          str: (window._$hasBigNumberJson ? json2 : JSON).stringify(
+        json: body,
+        isJSONText: isJSONText,
+        str: (window._$hasBigNumberJson ? json2 : JSON).stringify(
             body,
             null,
             '    '
           )
-        }
+      }
       : '';
   }
   return data[JSON_KEY];
@@ -2027,36 +2027,36 @@ function parseResCookie(cookie) {
   };
   for (var i in cookie) {
     switch (i.toLowerCase()) {
-      case 'domain':
-        result.domain = cookie[i];
-        break;
-      case 'path':
-        result.path = cookie[i];
-        break;
-      case 'expires':
-        result.expires = cookie[i];
-        break;
-      case 'max-age':
-        result['max-age'] = cookie[i];
-        result.maxAge = cookie[i];
-        result.maxage = cookie[i];
-        break;
-      case 'httponly':
-        result.httpOnly = true;
-        result.httponly = true;
-        break;
-      case 'secure':
-        result.secure = true;
-        break;
-      case 'samesite':
-        result.sameSite = cookie[i];
-        result.samesite = cookie[i];
-        break;
-      default:
-        if (!result[0]) {
-          result.name = i;
-          result.value = cookie[i];
-        }
+    case 'domain':
+      result.domain = cookie[i];
+      break;
+    case 'path':
+      result.path = cookie[i];
+      break;
+    case 'expires':
+      result.expires = cookie[i];
+      break;
+    case 'max-age':
+      result['max-age'] = cookie[i];
+      result.maxAge = cookie[i];
+      result.maxage = cookie[i];
+      break;
+    case 'httponly':
+      result.httpOnly = true;
+      result.httponly = true;
+      break;
+    case 'secure':
+      result.secure = true;
+      break;
+    case 'samesite':
+      result.sameSite = cookie[i];
+      result.samesite = cookie[i];
+      break;
+    default:
+      if (!result[0]) {
+        result.name = i;
+        result.value = cookie[i];
+      }
     }
   }
 

@@ -143,7 +143,7 @@ var Textarea = React.createClass({
       return handleSubmit(true);
     }
     win.confirm(
-      "The key '" + name + "' already exists.\nDo you want to override it.",
+      'The key \'' + name + '\' already exists.\nDo you want to override it.',
       handleSubmit
     );
   },

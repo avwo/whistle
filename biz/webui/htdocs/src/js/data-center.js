@@ -183,19 +183,19 @@ function getFilterText() {
   var settings = util.parseJSON(storage.get('filterText'));
   return settings
     ? {
-        disabledFilterText: settings.disabledFilterText,
-        filterText: util
+      disabledFilterText: settings.disabledFilterText,
+      filterText: util
           .toString(settings.filterText)
           .substring(0, MAX_INCLUDE_LEN),
-        disabledExcludeText: settings.disabledExcludeText,
-        excludeText: util
+      disabledExcludeText: settings.disabledExcludeText,
+      excludeText: util
           .toString(settings.excludeText)
           .substring(0, MAX_EXCLUDE_LEN)
-      }
+    }
     : {
-        filterText: '',
-        excludeText: ''
-      };
+      filterText: '',
+      excludeText: ''
+    };
 }
 exports.getFilterText = getFilterText;
 
@@ -233,8 +233,8 @@ function getFilterCache(text) {
   var len = filterCache.length;
   var result = len
     ? util.findArray(filterCache, function (item) {
-        return item.text === text;
-      })
+      return item.text === text;
+    })
     : null;
   len -= 10;
   if (len > 2) {
@@ -314,44 +314,44 @@ function checkFilter(item, list) {
   for (var i = 0, len = list.length; i < len; i++) {
     var filter = list[i];
     switch (filter.type) {
-      case 'method':
-        if (checkFilterField(item.req.method, filter)) {
-          return true;
-        }
-        break;
-      case 'ip':
-        if (checkFilterField(item.req.ip || '127.0.0.1', filter)) {
-          return true;
-        }
-        break;
-      case 'headers':
-        if (
+    case 'method':
+      if (checkFilterField(item.req.method, filter)) {
+        return true;
+      }
+      break;
+    case 'ip':
+      if (checkFilterField(item.req.ip || '127.0.0.1', filter)) {
+        return true;
+      }
+      break;
+    case 'headers':
+      if (
           checkFilterField(util.objectToString(item.req.headers), filter, true)
         ) {
-          return true;
-        }
-        break;
-      case 'host':
-        if (
+        return true;
+      }
+      break;
+    case 'host':
+      if (
           checkFilterField(
             item.isHttps ? item.url : util.getHost(item.url),
             filter
           )
         ) {
-          return true;
-        }
-        break;
-      case 'body':
-        if (checkFilterField(util.getBody(item.req, true), filter)) {
-          return true;
-        }
-        break;
-      default:
-        if (
+        return true;
+      }
+      break;
+    case 'body':
+      if (checkFilterField(util.getBody(item.req, true), filter)) {
+        return true;
+      }
+      break;
+    default:
+      if (
           checkFilterField((item.isHttps ? 'tunnel://' : '') + item.url, filter)
         ) {
-          return true;
-        }
+        return true;
+      }
     }
   }
   return false;

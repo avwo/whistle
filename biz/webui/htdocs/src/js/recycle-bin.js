@@ -113,7 +113,7 @@ var RecycleBinDialog = React.createClass({
     var origName = decode(name.substring(name.indexOf('.') + 1));
     var self = this;
     win.confirm(
-      "Are you sure to delete '" + origName + "' completely.",
+      'Are you sure to delete \'' + origName + '\' completely.',
       function (sure) {
         if (sure) {
           dataCenter[this.state.name.toLowerCase()].recycleRemove(

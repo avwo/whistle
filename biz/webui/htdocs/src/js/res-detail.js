@@ -122,32 +122,32 @@ var ResDetail = React.createClass({
           var row = ['', '', '', '', '', '', '', '', ''];
           for (var i in cookie) {
             switch (i.toLowerCase()) {
-              case 'domain':
-                row[2] = cookie[i];
-                break;
-              case 'path':
-                row[3] = cookie[i];
-                break;
-              case 'expires':
-                row[4] = cookie[i];
-                break;
-              case 'max-age':
-                row[5] = cookie[i];
-                break;
-              case 'httponly':
-                row[6] = '√';
-                break;
-              case 'secure':
-                row[7] = '√';
-                break;
-              case 'samesite':
-                row[8] = cookie[i];
-                break;
-              default:
-                if (!row[0]) {
-                  row[0] = i;
-                  row[1] = cookie[i];
-                }
+            case 'domain':
+              row[2] = cookie[i];
+              break;
+            case 'path':
+              row[3] = cookie[i];
+              break;
+            case 'expires':
+              row[4] = cookie[i];
+              break;
+            case 'max-age':
+              row[5] = cookie[i];
+              break;
+            case 'httponly':
+              row[6] = '√';
+              break;
+            case 'secure':
+              row[7] = '√';
+              break;
+            case 'samesite':
+              row[8] = cookie[i];
+              break;
+            default:
+              if (!row[0]) {
+                row[0] = i;
+                row[1] = cookie[i];
+              }
             }
           }
 

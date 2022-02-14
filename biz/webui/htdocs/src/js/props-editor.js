@@ -130,16 +130,16 @@ var PropsEditor = React.createClass({
     var state = this.state;
     modal[name + '_' + ++index] = state.fileData
       ? {
-          name: name,
-          value: state.filename,
-          size: state.fileSize,
-          data: state.fileData,
-          type: state.fileType
-        }
+        name: name,
+        value: state.filename,
+        size: state.fileSize,
+        data: state.fileData,
+        type: state.fileType
+      }
       : {
-          name: name,
-          value: value
-        };
+        name: name,
+        value: value
+      };
     this.props.onChange(name);
     this.setState({
       fileData: null,
@@ -183,7 +183,7 @@ var PropsEditor = React.createClass({
     var opName = self.props.isHeader ? 'header' : 'field';
     var item = self.state.modal[name];
     win.confirm(
-      'Are you sure to delete this ' + opName + " '" + item.name + "'.",
+      'Are you sure to delete this ' + opName + ' \'' + item.name + '\'.',
       function (sure) {
         if (sure) {
           delete self.state.modal[name];

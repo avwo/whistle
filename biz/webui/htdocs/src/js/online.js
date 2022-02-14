@@ -259,21 +259,21 @@ var Online = React.createClass({
           .parent()
           .attr(
             'title',
-            [
-              'HTTP[s]: ' + util.getQps(pInfo.httpQps),
-              'WS[S]: ' + util.getQps(pInfo.wsQps),
-              'TUNNEL: ' + util.getQps(pInfo.tunnelQps)
-            ].join('\n')
+        [
+          'HTTP[s]: ' + util.getQps(pInfo.httpQps),
+          'WS[S]: ' + util.getQps(pInfo.wsQps),
+          'TUNNEL: ' + util.getQps(pInfo.tunnelQps)
+        ].join('\n')
           );
         uiQpsElem
           .parent()
           .attr(
             'title',
-            [
-              'HTTP[s]: ' + util.getQps(pInfo.allHttpQps),
-              'WS[S]: ' + util.getQps(pInfo.allWsQps),
-              'TUNNEL: ' + util.getQps(pInfo.tunnelQps)
-            ].join('\n')
+        [
+          'HTTP[s]: ' + util.getQps(pInfo.allHttpQps),
+          'WS[S]: ' + util.getQps(pInfo.allWsQps),
+          'TUNNEL: ' + util.getQps(pInfo.tunnelQps)
+        ].join('\n')
           );
         var totalCount =
           pInfo.httpRequests + pInfo.wsRequests + pInfo.tunnelRequests;

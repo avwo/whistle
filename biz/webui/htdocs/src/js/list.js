@@ -365,77 +365,77 @@ var List = React.createClass({
     var self = this;
     var name = self.props.name === 'rules' ? 'Rules' : 'Values';
     switch (parentAction || action) {
-      case 'Save':
-        events.trigger('save' + name, self.currentFocusItem);
-        break;
-      case 'Rename':
-        events.trigger('rename' + name, self.currentFocusItem);
-        break;
-      case 'Delete':
-        events.trigger('delete' + name, self.currentFocusItem);
-        break;
-      case 'Rule':
-        events.trigger('createRules');
-        break;
-      case 'Key':
-        events.trigger('createValues');
-        break;
-      case 'ruleGroup':
-        events.trigger('createRuleGroup');
-        break;
-      case 'valueGroup':
-        events.trigger('createValueGroup');
-        break;
-      case 'Export':
-        events.trigger('export' + name);
-        break;
-      case 'Import':
-        events.trigger('import' + name, e);
-        break;
-      case 'Trash':
-        self.showRecycleBin(name);
-        break;
-      case 'Validate':
-        var item = self.currentFocusItem;
-        if (item) {
-          if (JSON_RE.test(item.value)) {
-            try {
-              JSON.parse(item.value);
-              message.success('Good JSON Object.');
-            } catch (e) {
-              message.error(
+    case 'Save':
+      events.trigger('save' + name, self.currentFocusItem);
+      break;
+    case 'Rename':
+      events.trigger('rename' + name, self.currentFocusItem);
+      break;
+    case 'Delete':
+      events.trigger('delete' + name, self.currentFocusItem);
+      break;
+    case 'Rule':
+      events.trigger('createRules');
+      break;
+    case 'Key':
+      events.trigger('createValues');
+      break;
+    case 'ruleGroup':
+      events.trigger('createRuleGroup');
+      break;
+    case 'valueGroup':
+      events.trigger('createValueGroup');
+      break;
+    case 'Export':
+      events.trigger('export' + name);
+      break;
+    case 'Import':
+      events.trigger('import' + name, e);
+      break;
+    case 'Trash':
+      self.showRecycleBin(name);
+      break;
+    case 'Validate':
+      var item = self.currentFocusItem;
+      if (item) {
+        if (JSON_RE.test(item.value)) {
+          try {
+            JSON.parse(item.value);
+            message.success('Good JSON Object.');
+          } catch (e) {
+            message.error(
                 'Warning: the value of ' +
                   item.name +
                   ' can`t be parsed into json. ' +
                   e.message
               );
-            }
-          } else {
-            message.error('Bad JSON Object.');
           }
+        } else {
+          message.error('Bad JSON Object.');
         }
-        break;
-      case 'Format':
-        self.formatJson(self.currentFocusItem);
-        break;
-      case 'Help':
-        window.open(
+      }
+      break;
+    case 'Format':
+      self.formatJson(self.currentFocusItem);
+      break;
+    case 'Help':
+      window.open(
           'https://avwo.github.io/whistle/webui/' +
             (self.props.name || 'values') +
             '.html'
         );
-        break;
-      case 'Plugins':
-        var modal = self.props.modal;
-        iframes.fork(action, {
-          port: dataCenter.getPort(),
-          type: self.props.name === 'rules' ? 'rules' : 'values',
-          name: menuName,
-          list: modal && modal.getList(),
-          activeItem: self.currentFocusItem,
-          selectedItem: modal && modal.getActive()
-        });
-        break;
+      break;
+    case 'Plugins':
+      var modal = self.props.modal;
+      iframes.fork(action, {
+        port: dataCenter.getPort(),
+        type: self.props.name === 'rules' ? 'rules' : 'values',
+        name: menuName,
+        list: modal && modal.getList(),
+        activeItem: self.currentFocusItem,
+        selectedItem: modal && modal.getActive()
+      });
+      break;
     }
   },
   triggerChange: function (type) {
