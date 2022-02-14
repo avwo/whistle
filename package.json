@@ -32,14 +32,6 @@
     "type": "git",
     "url": "https://github.com/avwo/whistle.git"
   },
-  "gitHooks": {
-    "pre-commit": "lint-staged"
-  },
-  "lint-staged": {
-    "*.{js,jsx,less,md,json}": [
-      "prettier --write"
-    ]
-  },
   "dependencies": {
     "adm-zip": "0.5.9",
     "async-limiter": "2.0.0",
@@ -78,7 +70,6 @@
     "test": "node test/index.test.js",
     "lint": "eslint *.js ./lib ./bin ./biz ./test ./docs/script",
     "lintfix": "eslint --fix *.js ./lib ./bin ./biz ./test ./docs/script",
-    "prettier": "prettier --write ./biz/webui/htdocs/src/ ./lib",
     "cov": "node_modules/istanbul/lib/cli.js cover node_modules/.bin/tape -- test/index.test.js",
     "docs": "gitbook build ./docs/zh ../avwo.github.io/whistle",
     "docs:build": "vuepress build docs",
@@ -102,20 +93,16 @@
     "codemirror": "5.5.0",
     "coveralls": "^2.11.12",
     "css-loader": "0.16.0",
-    "eslint": "^8.7.0",
-    "eslint-config-airbnb": "^19.0.4",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-prettier": "^4.0.0",
-    "eslint-plugin-react": "^7.28.0",
+    "eslint": "^2.8.0",
+    "eslint-plugin-react": "^4.3.0",
     "file-loader": "0.8.4",
     "glob": "^7.1.2",
     "istanbul": "^0.4.4",
     "jquery": "3.3.1",
     "js-base64": "^2.4.5",
     "lodash.startcase": "^4.4.0",
-    "prettier": "^2.5.1",
     "prop-types": "^15.5.8",
-    "qrcode": "^1.5.0",
+    "qrcode": "^1.2.0",
     "react": "^15.6.2",
     "react-base16-styling": "^0.5.1",
     "react-dom": "^15.6.2",
