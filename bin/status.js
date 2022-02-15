@@ -33,6 +33,7 @@ function showAll(byStop) {
         tips.push('  ' + i + '. port: ' + (options.port || pkg.port)
           + (options.host ? ', host: ' + options.host : '')
           + (options.storage ? ', storage: ' + options.storage : '')
+          + (conf.pid ? ', pid: ' + conf.pid : '')
           + (byStop ? colors.red(' (stop cmd: ' + (options.storage ? 'w2 stop -S ' + options.storage : 'w2 stop') + ')') : ''));
       });
       byStop && warn('[!] This whistle is not running.');
