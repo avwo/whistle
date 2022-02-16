@@ -5,6 +5,7 @@ var extend = require('extend');
 var path = require('path');
 var cluster = require('cluster');
 var os = require('os');
+var assert = require('assert');
 
 var ver = process.version.substring(1).split('.');
 var PROD_RE = /(^|\|)prod(uction)?($|\|)/;
@@ -145,7 +146,7 @@ module.exports = function (options, callback) {
     callback = options;
     options = null;
   }
-  var startWhistle = function () {
+  var startWhistle = function (server) {
     var workerIndex = env.workerIndex;
     if (options && options.cluster && workerIndex >= 0) {
       options.storage =
@@ -157,7 +158,7 @@ module.exports = function (options, callback) {
     }
     var conf = require('./lib/config').extend(options);
     if (!conf.cluster) {
-      return require('./lib')(callback);
+      return require('./lib')(callback, server);
     }
     var timer;
     var activeTimeout = function () {
@@ -188,6 +189,7 @@ module.exports = function (options, callback) {
       options.cluster = Math.min(os.cpus().length, 999);
     }
     if (options.cluster && cluster.isMaster) {
+      assert(!options.server, 'cannot exist options.server in cluster mode');
       for (var i = 0; i < options.cluster; i++) {
         forkWorker(i);
       }
@@ -204,7 +206,7 @@ module.exports = function (options, callback) {
     if (typeof config === 'function') {
       var handleCallback = function (opts) {
         opts && extend(options, opts);
-        return startWhistle();
+        return startWhistle(options.server);
       };
       if (config.length < 2) {
         config = config(options);
@@ -221,5 +223,5 @@ module.exports = function (options, callback) {
     }
     config && extend(options, config);
   }
-  return startWhistle();
+  return startWhistle(options.server);
 };
