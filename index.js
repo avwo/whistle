@@ -146,7 +146,9 @@ module.exports = function (options, callback) {
     callback = options;
     options = null;
   }
-  var startWhistle = function (server) {
+  var startWhistle = function () {
+    var server = options.server;
+    assert(!server || options.storage, 'options.storage is required if options.server exists (you can use package.name as options.storage)');
     var workerIndex = env.workerIndex;
     if (options && options.cluster && workerIndex >= 0) {
       options.storage =
@@ -206,7 +208,7 @@ module.exports = function (options, callback) {
     if (typeof config === 'function') {
       var handleCallback = function (opts) {
         opts && extend(options, opts);
-        return startWhistle(options.server);
+        return startWhistle();
       };
       if (config.length < 2) {
         config = config(options);
@@ -223,5 +225,5 @@ module.exports = function (options, callback) {
     }
     config && extend(options, config);
   }
-  return startWhistle(options.server);
+  return startWhistle();
 };
