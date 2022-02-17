@@ -1,3 +1,7 @@
+# v2.9.2
+1. feat: 支持启动参数设置 `options.server` 方便第三方服务集成，用法可以参考：https://github.com/whistle-plugins/examples/web-dev-server
+2. refactor: 优化错误日志路径 & `w2 status --all` 显示进程 id
+
 # v2.9.1
 1. feat: 支持通过 `pattern enable://clientIp` 让 Whistle 自动设置 `x-forwarded-for` 请求头
 2. style: Values 编辑器支持 JSON 对象折叠，详见：https://github.com/avwo/whistle/pull/683
