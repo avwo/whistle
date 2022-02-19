@@ -148,7 +148,8 @@ module.exports = function (options, callback) {
   }
   var startWhistle = function () {
     var server = options.server;
-    assert(!server || options.storage, 'options.storage is required if options.server exists (you can use package.name as options.storage)');
+    assert(!server || options.port > 0, 'options.port of the custom server is required');
+    options.storage = options.storage || '.custom_server_' + options.port;
     var workerIndex = env.workerIndex;
     if (options && options.cluster && workerIndex >= 0) {
       options.storage =
