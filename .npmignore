@@ -65,6 +65,7 @@ assets/launcher
 /.history
 CHANGELOG.md
 Dockerfile
+/README-zh_CN.md
 
 
 # Coveralls
