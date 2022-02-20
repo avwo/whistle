@@ -150,7 +150,7 @@ module.exports = function (options, callback) {
     var server = options.server;
     assert(!server || options.port > 0, 'options.port of the custom server is required');
     if (server && !options.storage && options.storage !== false) {
-      options.storage = '.custom_server_' + options.port;
+      options.storage = '__custom_server_5b6af7b9884e1165__' + options.port;
     }
     var workerIndex = env.workerIndex;
     if (options && options.cluster && workerIndex >= 0) {
