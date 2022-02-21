@@ -1,5 +1,6 @@
 # v2.9.2
-1. feat: 支持启动参数设置 `options.server` 方便第三方服务集成，用法可以参考：https://github.com/whistle-plugins/examples/web-dev-server
+1. feat: 支持启动参数设置 `options.server` 方便第三方服务集成
+	> `server` 可以为 `http.Server` 或 `events.EventEmitter` 对象，在第三方应用中可以通过 `server.emit('request'| 'upgrade' | 'connect', req, res)` 将请求交给 Whistle 处理
 2. refactor: 优化错误日志路径 & `w2 status --all` 显示进程 id
 3. fix: https://github.com/avwo/whistle/issues/697
 
