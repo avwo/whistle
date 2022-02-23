@@ -3,7 +3,8 @@
 	> `server` 可以为 `http.Server` 或 `events.EventEmitter` 对象，在第三方应用中可以通过 `server.emit('request'| 'upgrade' | 'connect', req, res)` 将请求交给 Whistle 处理
 2. feat: 支持通过插件引入远程 Value：`protocol://$plugin/xxx`，这种配置会自动从插件 whistle.plugin uiServer 的 `/api/key/value?key=xxx` 获取对应的值
 3. refactor: 优化错误日志路径 & `w2 status --all` 显示进程 id
-4. fix: https://github.com/avwo/whistle/issues/697
+4. refactor: 支持 HTTP2 的 Node 最低版本有 12 调整为 14（低版本的 HTTP2 模块存在一些 bug） 
+5. fix: https://github.com/avwo/whistle/issues/697
 
 # v2.9.1
 1. feat: 支持通过 `pattern enable://clientIp` 让 Whistle 自动设置 `x-forwarded-for` 请求头
