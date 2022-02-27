@@ -186,4 +186,6 @@ export interface WhistleResult {
  [propName: string]: any;
 }
 
-export default function(options?: WhistleOptions, callback?: Function): WhistleResult;
+export type WhistleCallback = (result?: WhistleResult) => void;
+
+export default function(options?: WhistleOptions | WhistleCallback, callback?: WhistleCallback): WhistleResult;
