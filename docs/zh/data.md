@@ -196,4 +196,10 @@ www.test.com/index.html redirect://`https://ke.qq.com/test${query}`
 
 # 需要追加参数
 www.test.com/index.html redirect://`https://ke.qq.com/test${queryString}&test=1`
+
+# 追加参数
+www.test.com redirect://`https://ke.qq.com${url.path}`
+
+# 修改为 301
+www.test.com redirect://`https://ke.qq.com${url.path}` replaceStatus://301
 ```
