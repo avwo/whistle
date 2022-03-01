@@ -30,7 +30,6 @@ var PROTOCOLS = [
   'auth',
   'ua',
   'cache',
-  'redirect',
   'attachment',
   'forwardedFor',
   'responseFor',
@@ -86,6 +85,7 @@ var innerRules = [
   'xtpl',
   'rawfile',
   'xrawfile',
+  'redirect',
   'statusCode'
 ];
 var pluginRules = [];

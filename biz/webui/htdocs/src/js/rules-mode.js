@@ -65,7 +65,7 @@ CodeMirror.defineMode('rules', function () {
   }
 
   function isRes(str) {
-    return /^(?:resScript|resRules|responseFor|resCookies|resHeaders|trailers|replaceStatus|redirect|resDelay|resSpeed|resCors|resType|resCharset|cache|attachment|download|resBody|resPrepend|resAppend|css(?:Append|Prepend|Body)?|html(?:Append|Prepend|Body)?|js(?:Append|Prepend|Body)?|resReplace|resMerge|resWrite|resWriteRaw):\/\//.test(
+    return /^(?:resScript|resRules|responseFor|resCookies|resHeaders|trailers|replaceStatus|resDelay|resSpeed|resCors|resType|resCharset|cache|attachment|download|resBody|resPrepend|resAppend|css(?:Append|Prepend|Body)?|html(?:Append|Prepend|Body)?|js(?:Append|Prepend|Body)?|resReplace|resMerge|resWrite|resWriteRaw):\/\//.test(
       str
     );
   }
