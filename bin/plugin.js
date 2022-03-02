@@ -5,7 +5,7 @@ var path = require('path');
 var fse = require('fs-extra2');
 
 var CMD_SUFFIX = process.platform === 'win32' ? '.cmd' : '';
-var WHISLTE_PLUGIN_RE = /^(@[\w\-]+\/)?whistle\.[a-z\d_\-]+$/;
+var WHISLTE_PLUGIN_RE = /^((?:@[\w-]+\/)?whistle\.[a-z\d_-]+)(?:\@([\w.^~*-]*))?$/;
 var PLUGIN_PATH = path.join(getWhistlePath(), 'plugins');
 var CUSTOM_PLUGIN_PATH = path.join(getWhistlePath(), 'custom_plugins');
 var PACKAGE_JSON = '{"repository":"https://github.com/avwo/whistle","license":"MIT"}';
@@ -67,14 +67,18 @@ function getInstallDir(argv) {
   return result;
 }
 
-function install(cmd, name, argv) {
+function install(cmd, name, argv, ver) {
   argv = argv.slice();
   var result = getInstallDir(argv);
   argv = result.argv;
   var installPath = getInstallPath(getTempName(name), result.dir);
   fse.ensureDirSync(installPath);
   fse.emptyDirSync(installPath);
-  fs.writeFileSync(path.join(installPath, 'package.json'), PACKAGE_JSON);
+  var pkgJson = PACKAGE_JSON;
+  if (ver) {
+    pkgJson = pkgJson.replace(',', ',"dependencies":{"' + name + '":"' + ver + '"},')
+  }
+  fs.writeFileSync(path.join(installPath, 'package.json'), pkgJson);
   fs.writeFileSync(path.join(installPath, 'LICENSE'), LICENSE);
   fs.writeFileSync(path.join(installPath, 'README.md'), RESP_URL);
   argv.unshift('install', name);
@@ -118,8 +122,12 @@ exports.install = function(cmd, argv) {
   cmd += CMD_SUFFIX;
   argv.push('--no-package-lock');
   plugins.forEach(function(name) {
-    removeOldPlugin(name);
-    install(cmd, name, argv);
+    if (WHISLTE_PLUGIN_RE.test(name)) {
+      name = RegExp.$1;
+      var ver = RegExp.$2;
+      removeOldPlugin(name);
+      install(cmd, name, argv, ver);
+    }
   });
 };
 
@@ -127,8 +135,11 @@ exports.uninstall = function(plugins) {
   var result = getInstallDir(plugins);
   plugins = result.argv;
   getPlugins(plugins).forEach(function(name) {
-    !result.dir && removeOldPlugin(name);
-    removeDir(getInstallPath(name, result.dir));
+    if (WHISLTE_PLUGIN_RE.test(name)) {
+      name = RegExp.$1;
+      !result.dir && removeOldPlugin(name);
+      removeDir(getInstallPath(name, result.dir));
+    }
   });
 };
 
