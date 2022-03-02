@@ -1,0 +1,1 @@
+{callback}({ec: 0})

@@ -1,0 +1,8 @@
+{
+    "headers": {
+        "Content-type": "text/plain"
+    },
+    "top": "top",
+    "body": "body",
+    "bottom": "bottom"
+}

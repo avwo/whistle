@@ -1,0 +1,5 @@
+origin: * 
+methods: POST
+headers: x-test 
+credentials: true 
+maxAge: 300000
