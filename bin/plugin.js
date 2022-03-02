@@ -76,7 +76,7 @@ function install(cmd, name, argv, ver) {
   fse.emptyDirSync(installPath);
   var pkgJson = PACKAGE_JSON;
   if (ver) {
-    pkgJson = pkgJson.replace(',', ',"dependencies":{"' + name + '":"' + ver + '"},')
+    pkgJson = pkgJson.replace(',', ',"dependencies":{"' + name + '":"' + ver + '"},');
   }
   fs.writeFileSync(path.join(installPath, 'package.json'), pkgJson);
   fs.writeFileSync(path.join(installPath, 'LICENSE'), LICENSE);
