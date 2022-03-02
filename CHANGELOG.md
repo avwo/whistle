@@ -1,5 +1,8 @@
 # v2.9.3
 1. feat: `redirect` 归类为 `rule` 与 `file`、`statusCode` 等协议同级别
+2. refactor: 添加 ts 描述文件
+3. refactor:`w2 i plugin` 支持 `w2 i plugin@version`
+4. fix: Node 16 引入 `req.filter` 方法引发的问题
 
 # v2.9.2
 1. feat: 支持启动参数设置 `options.server` 方便第三方服务集成
