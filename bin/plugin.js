@@ -112,26 +112,34 @@ function install(cmd, name, argv, ver, callback) {
   });
 }
 
+function readJson(pkgPath) {
+  try {
+    return fse.readJsonSync(pkgPath);
+  } catch (e) {
+    try {
+      return fse.readJsonSync(pkgPath);
+    } catch (e) {}
+  }
+}
+
 function installPlugins(cmd, plugins, argv, deep) {
   deep = deep || 0;
   var count = 0;
   var peerPlugins = [];
   var callback = function(pkgPath) {
     if (pkgPath) {
-      try {
-        var pkg = fse.readJsonSync(pkgPath);
-        var list = pkg.whistleConfig && pkg.whistleConfig.peerPluginList;
-        if (Array.isArray(list)) {
-          list.forEach(function(name) {
-            if (typeof name === 'string' && WHISTLE_PLUGIN_RE.test(name.trim())) {
-              name = RegExp.$1;
-              if (peerPlugins.indexOf(name) === -1) {
-                peerPlugins.push(name);
-              }
+      var pkg = readJson(pkgPath) || {};
+      var list = pkg.whistleConfig && pkg.whistleConfig.peerPluginList;
+      if (Array.isArray(list)) {
+        list.forEach(function(name) {
+          if (typeof name === 'string' && WHISTLE_PLUGIN_RE.test(name.trim())) {
+            name = RegExp.$1;
+            if (peerPlugins.indexOf(name) === -1) {
+              peerPlugins.push(name);
             }
-          });
-        }
-      } catch (e) {}
+          }
+        });
+      }
     }
     if (--count <= 0 && deep < 16) {
       var dir = getInstallDir(argv).dir;
