@@ -5,7 +5,7 @@ var path = require('path');
 var fse = require('fs-extra2');
 
 var CMD_SUFFIX = process.platform === 'win32' ? '.cmd' : '';
-var WHISLTE_PLUGIN_RE = /^((?:@[\w-]+\/)?whistle\.[a-z\d_-]+)(?:\@([\w.^~*-]*))?$/;
+var WHISTLE_PLUGIN_RE = /^((?:@[\w-]+\/)?whistle\.[a-z\d_-]+)(?:\@([\w.^~*-]*))?$/;
 var PLUGIN_PATH = path.join(getWhistlePath(), 'plugins');
 var CUSTOM_PLUGIN_PATH = path.join(getWhistlePath(), 'custom_plugins');
 var PACKAGE_JSON = '{"repository":"https://github.com/avwo/whistle","license":"MIT"}';
@@ -28,7 +28,7 @@ function getWhistlePath() {
 
 function getPlugins(argv) {
   return argv.filter(function(name) {
-    return WHISLTE_PLUGIN_RE.test(name);
+    return WHISTLE_PLUGIN_RE.test(name);
   });
 }
 
@@ -67,7 +67,7 @@ function getInstallDir(argv) {
   return result;
 }
 
-function install(cmd, name, argv, ver) {
+function install(cmd, name, argv, ver, callback) {
   argv = argv.slice();
   var result = getInstallDir(argv);
   argv = result.argv;
@@ -88,6 +88,7 @@ function install(cmd, name, argv, ver) {
   }).on('exit', function(code) {
     if (code) {
       removeDir(installPath);
+      callback();
     } else {
       var realPath = getInstallPath(name, result.dir);
       removeDir(realPath);
@@ -99,13 +100,62 @@ function install(cmd, name, argv, ver) {
           removeDir(installPath);
         } catch (e) {}
       }
+      var pkgPath = path.join(realPath, 'node_modules', name, 'package.json');
       try {
-        var pkgPath = path.join(realPath, 'node_modules', name, 'package.json');
         if (fs.statSync(pkgPath).mtime.getFullYear() < 2010) {
           var now = new Date();
           fs.utimesSync(pkgPath, now, now);
         }
       } catch (e) {}
+      callback(pkgPath);
+    }
+  });
+}
+
+function installPlugins(cmd, plugins, argv, deep) {
+  deep = deep || 0;
+  var count = 0;
+  var peerPlugins = [];
+  var callback = function(pkgPath) {
+    if (pkgPath) {
+      try {
+        var pkg = fse.readJsonSync(pkgPath);
+        var list = pkg.whistleConfig && pkg.whistleConfig.peerPluginList;
+        if (Array.isArray(list)) {
+          list.forEach(function(name) {
+            if (typeof name === 'string' && WHISTLE_PLUGIN_RE.test(name.trim())) {
+              name = RegExp.$1;
+              if (peerPlugins.indexOf(name) === -1) {
+                peerPlugins.push(name);
+              }
+            }
+          });
+        }
+      } catch (e) {}
+    }
+    if (--count <= 0 && deep < 16) {
+      var dir = getInstallDir(argv).dir;
+      peerPlugins = peerPlugins.filter(function(name) {
+        var realPath = getInstallPath(name, dir);
+        pkgPath = path.join(realPath, 'node_modules', name, 'package.json');
+        try {
+          return !fs.existsSync(pkgPath);
+        } catch (e) {
+          try {
+            return !fs.existsSync(pkgPath);
+          } catch (e) {}
+        }
+      });
+      peerPlugins.length && installPlugins(cmd, peerPlugins, argv, ++deep);
+    }
+  };
+  plugins.forEach(function(name) {
+    if (WHISTLE_PLUGIN_RE.test(name)) {
+      ++count;
+      name = RegExp.$1;
+      var ver = RegExp.$2;
+      removeOldPlugin(name);
+      install(cmd, name, argv, ver, callback);
     }
   });
 }
@@ -121,21 +171,14 @@ exports.install = function(cmd, argv) {
   
   cmd += CMD_SUFFIX;
   argv.push('--no-package-lock');
-  plugins.forEach(function(name) {
-    if (WHISLTE_PLUGIN_RE.test(name)) {
-      name = RegExp.$1;
-      var ver = RegExp.$2;
-      removeOldPlugin(name);
-      install(cmd, name, argv, ver);
-    }
-  });
+  installPlugins(cmd, plugins, argv);
 };
 
 exports.uninstall = function(plugins) {
   var result = getInstallDir(plugins);
   plugins = result.argv;
   getPlugins(plugins).forEach(function(name) {
-    if (WHISLTE_PLUGIN_RE.test(name)) {
+    if (WHISTLE_PLUGIN_RE.test(name)) {
       name = RegExp.$1;
       !result.dir && removeOldPlugin(name);
       removeDir(getInstallPath(name, result.dir));
