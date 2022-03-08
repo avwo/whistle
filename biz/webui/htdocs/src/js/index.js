@@ -3066,7 +3066,9 @@ var Index = React.createClass({
         res: res,
         fwdHost: entry.whistleFwdHost,
         sniPlugin: entry.whistleSniPlugin,
-        rules: entry.whistleRules || {}
+        rules: entry.whistleRules || {},
+        version: entry.whistleVersion,
+        nodeVersion: entry.whistleNodeVersion
       };
       if (times && times.startTime) {
         session.dnsTime = times.dnsTime;
