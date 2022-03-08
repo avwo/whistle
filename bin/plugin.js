@@ -129,7 +129,7 @@ function installPlugins(cmd, plugins, argv, deep) {
   var callback = function(pkgPath) {
     if (pkgPath) {
       var pkg = readJson(pkgPath) || {};
-      var list = pkg.whistleConfig && pkg.whistleConfig.peerPluginList;
+      var list = pkg.whistleConfig && (pkg.whistleConfig.peerPluginList || pkg.whistleConfig.peerPlugins);
       if (Array.isArray(list) && list.length < 6) {
         list.forEach(function(name) {
           if (typeof name === 'string' && WHISTLE_PLUGIN_RE.test(name.trim())) {
