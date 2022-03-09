@@ -79,7 +79,6 @@ export interface WhistleOptions {
   httpPort?: number | string;
   httpsPort?: number | string;
   host?: string;
-  addon?: string;
   authKey?: string;
   guestAuthKey?: string;
   reqCacheSize?: number;
@@ -102,9 +101,10 @@ export interface WhistleOptions {
   uiMiddleware?: string;
   cmdName?: string;
   dnsServer?: string;
-  projectPluginsPath?: string;
-  customPluginsPath?: string;
-  pluginsPath?: string;
+  projectPluginsPath?: string | string[];
+  customPluginsPath?: string | string[];
+  pluginsPath?: string | string[];
+  addonsPath?: string | string[];
   inspect?: boolean;
   inspectBrk?: boolean;
   secureFilter?: WhistleSecureFilter;
