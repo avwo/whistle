@@ -3,6 +3,7 @@ var cp = require('child_process');
 var fs = require('fs');
 var path = require('path');
 var fse = require('fs-extra2');
+var getWhistlePath = require('../lib/util/common').getWhistlePath;
 
 var CMD_SUFFIX = process.platform === 'win32' ? '.cmd' : '';
 var WHISTLE_PLUGIN_RE = /^((?:@[\w-]+\/)?whistle\.[a-z\d_-]+)(?:\@([\w.^~*-]*))?$/;
@@ -14,16 +15,6 @@ var RESP_URL = 'https://github.com/avwo/whistle';
 
 function getInstallPath(name, dir) {
   return path.join(dir || CUSTOM_PLUGIN_PATH, name);
-}
-
-function getHomedir() {
-  //默认设置为`~`，防止Linux在开机启动时Node无法获取homedir
-  return (typeof os.homedir == 'function' ? os.homedir() :
-  process.env[process.platform == 'win32' ? 'USERPROFILE' : 'HOME']) || '~';
-}
-
-function getWhistlePath() {
-  return process.env.WHISTLE_PATH || path.join(getHomedir(), '.WhistleAppData');
 }
 
 function getPlugins(argv) {
@@ -167,6 +158,8 @@ function installPlugins(cmd, plugins, argv, deep) {
     }
   });
 }
+
+exports.getWhistlePath = getWhistlePath;
 
 exports.install = function(cmd, argv) {
   var plugins = getPlugins(argv);
