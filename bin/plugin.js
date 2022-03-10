@@ -78,7 +78,7 @@ function install(cmd, name, argv, ver, pluginsCache, callback) {
   cp.spawn(cmd, argv, {
     stdio: 'inherit',
     cwd: installPath
-  }).on('exit', function(code) {
+  }).once('exit', function(code) {
     if (code) {
       removeDir(installPath);
       delete pluginsCache[name];
