@@ -59,7 +59,7 @@ function getInstallDir(argv) {
   return result;
 }
 
-function install(cmd, name, argv, ver, callback) {
+function install(cmd, name, argv, ver, pluginsCache, callback) {
   argv = argv.slice();
   var result = getInstallDir(argv);
   argv = result.argv;
@@ -74,12 +74,14 @@ function install(cmd, name, argv, ver, callback) {
   fs.writeFileSync(path.join(installPath, 'LICENSE'), LICENSE);
   fs.writeFileSync(path.join(installPath, 'README.md'), RESP_URL);
   argv.unshift('install', name);
+  pluginsCache[name] = 1;
   cp.spawn(cmd, argv, {
     stdio: 'inherit',
     cwd: installPath
   }).on('exit', function(code) {
     if (code) {
       removeDir(installPath);
+      delete pluginsCache[name];
       callback();
     } else {
       var realPath = getInstallPath(name, result.dir);
@@ -114,7 +116,7 @@ function readJson(pkgPath) {
   }
 }
 
-function installPlugins(cmd, plugins, argv, deep) {
+function installPlugins(cmd, plugins, argv, pluginsCache, deep) {
   deep = deep || 0;
   var count = 0;
   var peerPlugins = [];
@@ -134,19 +136,10 @@ function installPlugins(cmd, plugins, argv, deep) {
       }
     }
     if (--count <= 0 && deep < 16) {
-      var dir = getInstallDir(argv).dir;
       peerPlugins = peerPlugins.filter(function(name) {
-        var realPath = getInstallPath(name, dir);
-        pkgPath = path.join(realPath, 'node_modules', name, 'package.json');
-        try {
-          return !fs.existsSync(pkgPath);
-        } catch (e) {
-          try {
-            return !fs.existsSync(pkgPath);
-          } catch (e) {}
-        }
+        return !pluginsCache[name];
       });
-      peerPlugins.length && installPlugins(cmd, peerPlugins, argv, ++deep);
+      peerPlugins.length && installPlugins(cmd, peerPlugins, argv, pluginsCache, ++deep);
     }
   };
   plugins.forEach(function(name) {
@@ -155,7 +148,7 @@ function installPlugins(cmd, plugins, argv, deep) {
       name = RegExp.$1;
       var ver = RegExp.$2;
       removeOldPlugin(name);
-      install(cmd, name, argv, ver, callback);
+      install(cmd, name, argv, ver, pluginsCache, callback);
     }
   });
 }
@@ -173,7 +166,7 @@ exports.install = function(cmd, argv) {
   
   cmd += CMD_SUFFIX;
   argv.push('--no-package-lock');
-  installPlugins(cmd, plugins, argv);
+  installPlugins(cmd, plugins, argv, {});
 };
 
 exports.uninstall = function(plugins) {
