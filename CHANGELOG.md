@@ -1,7 +1,7 @@
 # v2.9.4
 1. fix: auth 插件钩子可能对被拦截的 tunnel 请求不生效问题
 2. style: 支持导出的数据自带 Node 和 Whistle 的版本号
-3. feat: 插件支持通过 package.whistleConfig.peerPluginList 配置安装插件式自动加载的关联插件列表（最多不超过 5 个插件）
+3. feat: 插件支持通过 package.whistleConfig.peerPluginList 配置安装插件式自动加载的关联插件列表（最多不超过 15 个插件）
 
 # v2.9.3
 1. feat: `redirect` 归类为 `rule` 与 `file`、`statusCode` 等协议同级别
