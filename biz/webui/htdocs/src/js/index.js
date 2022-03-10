@@ -459,6 +459,11 @@ var Index = React.createClass({
         icon: 'import',
         id: 'importSessions',
         title: 'Ctrl + I'
+      },
+      {
+        name: 'Tree View',
+        icon: 'tree-conifer',
+        id: 'toggleView'
       }
     ];
     state.helpOptions = [
@@ -495,7 +500,7 @@ var Index = React.createClass({
     events.on('importSessionsFromUrl', function (_, url) {
       self.importSessionsFromUrl(url);
     });
-    return state;
+    return this.updateMenuView(state);
   },
   getListByName: function (name, type) {
     var list = this.state[name].list;
@@ -1556,6 +1561,8 @@ var Index = React.createClass({
       this.exportSessions('har');
     } else if (item.id == 'importSessions') {
       this.importSessions(e);
+    } else if (item.id === 'toggleView') {
+      this.toggleTreeView();
     }
     this.hideNetworkOptions();
   },
@@ -3289,10 +3296,22 @@ var Index = React.createClass({
       self.setState({ forceShowLeftMenu: false });
     }, 500);
   },
+  updateMenuView: function(state) {
+    var opt = state.networkOptions[state.networkOptions.length - 1];
+    if (state.network.isTreeView) {
+      opt.icon = 'globe';
+      opt.name = 'List View';
+    } else {
+      opt.icon = 'tree-conifer';
+      opt.name = 'Tree View';
+    }
+    return state;
+  },
   toggleTreeView: function () {
     var self = this;
     var modal = self.state.network;
     modal.setTreeView(!modal.isTreeView);
+    self.updateMenuView(self.state);
     self.setState({}, function () {
       if (!modal.isTreeView) {
         self.autoRefresh && self.autoRefresh();
