@@ -100,8 +100,10 @@ export interface WhistleOptions {
   middleware?: string;
   uiMiddleware?: string;
   cmdName?: string;
+  account?: string;
   dnsServer?: string;
   projectPluginsPath?: string | string[];
+  accountPluginsPath?: string | string[];
   customPluginsPath?: string | string[];
   pluginsPath?: string | string[];
   addonsPath?: string | string[];

@@ -49,6 +49,10 @@ window.getWhistleProxyServerInfo = function () {
   return serverInfo && $.extend(true, {}, serverInfo);
 };
 
+function getAccount(plugin) {
+  return plugin.account ? ' --account=' + plugin.account : '';
+}
+
 var Home = React.createClass({
   componentDidMount: function () {
     var self = this;
@@ -68,9 +72,9 @@ var Home = React.createClass({
           ) {
             return;
           }
-          var registry = plugin.registry
+          var registry = (plugin.registry
             ? ' --registry=' + plugin.registry
-            : '';
+            : '') + getAccount(plugin);
           var list = newPlugins[registry] || [];
           list.push(plugin.moduleName);
           newPlugins[registry] = list;
@@ -135,7 +139,7 @@ var Home = React.createClass({
     var registry = plugin.registry ? ' --registry=' + plugin.registry : '';
     this.setState(
       {
-        cmdMsg: getCmd() + plugin.moduleName + registry,
+        cmdMsg: getCmd() + plugin.moduleName + getAccount(plugin) + registry,
         isSys: plugin.isSys,
         uninstall: false
       },
@@ -152,7 +156,7 @@ var Home = React.createClass({
       !isSys && plugin.registry ? ' --registry=' + plugin.registry : '';
     this.setState(
       {
-        cmdMsg: cmdMsg + plugin.moduleName + registry,
+        cmdMsg: cmdMsg + plugin.moduleName + getAccount(plugin) + registry,
         isSys: isSys,
         uninstall: true,
         pluginPath: plugin.path
