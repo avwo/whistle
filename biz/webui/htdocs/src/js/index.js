@@ -461,7 +461,7 @@ var Index = React.createClass({
         title: 'Ctrl + I'
       },
       {
-        name: 'Tree View',
+        name: 'Show Tree View',
         icon: 'tree-conifer',
         id: 'toggleView'
       }
@@ -3300,10 +3300,10 @@ var Index = React.createClass({
     var opt = state.networkOptions[state.networkOptions.length - 1];
     if (state.network.isTreeView) {
       opt.icon = 'globe';
-      opt.name = 'List View';
+      opt.name = 'Show List View';
     } else {
       opt.icon = 'tree-conifer';
-      opt.name = 'Tree View';
+      opt.name = 'Show Tree View';
     }
     return state;
   },
