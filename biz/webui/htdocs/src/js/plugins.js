@@ -66,10 +66,7 @@ var Home = React.createClass({
         .sort(getPluginComparator(plugins))
         .map(function (name) {
           var plugin = plugins[name];
-          if (
-            !byInstall &&
-            !util.compareVersion(plugin.latest, plugin.version)
-          ) {
+          if (plugin.isProj || (!byInstall && !util.compareVersion(plugin.latest, plugin.version))) {
             return;
           }
           var registry = (plugin.registry
