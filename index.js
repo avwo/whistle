@@ -6,6 +6,7 @@ var path = require('path');
 var cluster = require('cluster');
 var os = require('os');
 var assert = require('assert');
+var common = require('./lib/util/common');
 
 var ver = process.version.substring(1).split('.');
 var PROD_RE = /(^|\|)prod(uction)?($|\|)/;
@@ -232,3 +233,5 @@ module.exports = function (options, callback) {
   }
   return startWhistle();
 };
+
+module.exports.getWhistlePath = common.getWhistlePath;

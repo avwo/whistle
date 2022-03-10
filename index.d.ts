@@ -177,6 +177,7 @@ export interface WhistleResult {
    info: WhistleLogFn;
    debug: WhistleLogFn;
  };
+ getWhistlePath(): string;
  setAuth(auth: WhistleAuth): void;
  setUIHost(host: string | string[]): void;
  setPluginUIHost(pluginName: string, host: string | string[]): void;
@@ -187,5 +188,7 @@ export interface WhistleResult {
 }
 
 export type WhistleCallback = (result?: WhistleResult) => void;
+
+export function getWhistlePath(): string;
 
 export default function(options?: WhistleOptions | WhistleCallback, callback?: WhistleCallback): WhistleResult;
