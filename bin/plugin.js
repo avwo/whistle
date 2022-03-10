@@ -45,6 +45,7 @@ function getTempName(name) {
 }
 
 function getInstallDir(argv) {
+  argv = argv.slice();
   var result = { argv: argv };
   for (var i = 0, len = argv.length; i < len; i++) {
     var option = argv[i];
