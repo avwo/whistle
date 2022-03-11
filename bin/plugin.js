@@ -81,7 +81,6 @@ function install(cmd, name, argv, ver, pluginsCache, callback) {
   }).once('exit', function(code) {
     if (code) {
       removeDir(installPath);
-      delete pluginsCache[name];
       callback();
     } else {
       var realPath = getInstallPath(name, result.dir);
