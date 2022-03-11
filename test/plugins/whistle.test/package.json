@@ -1,18 +1,5 @@
 {
   "name": "whistle.test",
-  "version": "0.0.39",
-  "description": "whistle的单元测试用例",
-  "dependencies": {
-    "express": "^4.14.0",
-    "ws": "^1.1.1"
-  },
-  "bugs": {
-    "url": "https://github.com/whistle-plugins/whistle.test/issues"
-  },
-  "homepage": "https://github.com/whistle-plugins/whistle.test",
-  "registry": "http://registry.npmjs.org/whistle.test",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/whistle-plugins/whistle.test.git"
-  }
+  "version": "1.0.0",
+  "description": "whistle的单元测试用例"
 }
