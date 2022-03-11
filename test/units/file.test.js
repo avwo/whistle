@@ -18,6 +18,6 @@ module.exports = function() {
     body: util.getTextBySize(3072)
   }, function(res, data) {
     res.headers['x-test-res'].should.be.equal('456/resHeaders');
-    data.should.equal('x-test-body=测试789/index.html?doNotParseJson/file');
+    data.should.equal('x-test-body=测试789/file');
   });
 };
