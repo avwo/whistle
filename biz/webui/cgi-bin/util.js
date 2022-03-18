@@ -28,6 +28,7 @@ exports.getServerInfo = function(req) {
     dcc: config.disableCustomCerts,
     dns: dnsOverHttps || config.dnsServer,
     doh: doh,
+    bip: config.host,
     df: config.dnsOptional,
     r6: config.resolve6,
     version: config.version,
