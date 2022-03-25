@@ -1167,11 +1167,12 @@ function setReqData(item) {
     item.rules.pipe = item.pipe;
   }
   if (!item.path) {
-    item.protocol = item.isHttps
-      ? 'HTTP'
-      : item.useH2
-      ? 'H2'
-      : util.getProtocol(url);
+    if (item.isHttps) {
+      item.protocol = util.getTransProto(req) || 'HTTP';
+    } else {
+      item.protocol =item.useH2
+        ? 'H2' : util.getProtocol(url);
+    }
     item.hostname = item.isHttps ? 'Tunnel to' : util.getHost(url);
     var pathIndex = url.indexOf('://');
     if (pathIndex !== -1) {

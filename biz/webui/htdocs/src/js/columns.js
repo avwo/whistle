@@ -47,6 +47,7 @@ function getDefaultColumns() {
       name: 'protocol',
       className: 'protocol',
       selected: true,
+      showTitle: true,
       width: 95
     },
     {
