@@ -1168,7 +1168,7 @@ function setReqData(item) {
   }
   if (!item.path) {
     if (item.isHttps) {
-      item.protocol = util.getTransProto(req) || 'HTTP';
+      item.protocol =  util.getTransProto(res) || util.getTransProto(req) || 'HTTP';
     } else {
       item.protocol =item.useH2
         ? 'H2' : util.getProtocol(url);
