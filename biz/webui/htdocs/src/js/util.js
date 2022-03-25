@@ -407,15 +407,17 @@ exports.getProtocol = function getProtocol(url) {
   return index == -1 ? 'TUNNEL' : url.substring(0, index).toUpperCase();
 };
 
-var TRANS_PROTO_RE = /^[\w.-]{1,32}$/;
 
 exports.getTransProto = function(req) {
   var headers = req.headers;
   var proto = headers && headers['x-whistle-transport-protocol'];
-  if (!proto || !TRANS_PROTO_RE.test(proto)) {
+  if (!proto || typeof proto !== 'string' || proto.length > 33) {
     return;
   }
-  return RegExp['$&'].toUpperCase();
+  try {
+    return decodeURIComponent(proto).toUpperCase();
+  } catch (e) {}
+  return proto.toUpperCase();
 };
 
 exports.ensureVisible = function (elem, container, init) {
