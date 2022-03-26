@@ -1,3 +1,7 @@
+# v2.9.5
+1. refactor: 如果启动绑定网卡，将网卡显示到 Online 里面
+2. style: Tunnel 代理，支持通过请求头或响应头的 `x-whistle-transport-protocol` 自定义 `Protocol` 显示，响应头优先
+
 # v2.9.4
 1. fix: auth 插件钩子可能对被拦截的 tunnel 请求不生效问题
 2. style: 支持导出的数据自带 Node 和 Whistle 的版本号
