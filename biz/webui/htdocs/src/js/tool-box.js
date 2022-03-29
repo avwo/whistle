@@ -257,7 +257,7 @@ var ToolBox = React.createClass({
         <div className="box w-generate-cert">
           <input
             className="fill"
-            maxLength="64"
+            maxLength="256"
             placeholder="Input the domain name of the certificate"
             value={domainValue}
             onChange={this.onDomainChange}
