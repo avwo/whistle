@@ -12,6 +12,7 @@ var MAX_HINT_LEN = 512;
 var MAX_VAR_LEN = 100;
 var AT_RE = /^@/;
 var P_RE = /^%/;
+var P_VAR_RE = /^%([a-z\d_-]+)([=.])/;
 var PLUGIN_SPEC_RE = /^(pipe|sniCallback):/;
 var PROTOCOL_RE = /^([^\s:]+):\/\//;
 var HINT_TIMEOUT = 120;
@@ -221,6 +222,13 @@ function getRuleHelp(plugin, helpUrl) {
   );
 }
 
+function getHintText(protoName, text, isVar, isKey) {
+  if (!isVar) {
+    return protoName + '://' + text;
+  }
+  return protoName + (isKey ? '.' : '=') + text;
+}
+
 function handleRemoteHints(data, editor, plugin, protoName, value, cgi, isVar) {
   curHintList = [];
   curHintMap = {};
@@ -242,14 +250,13 @@ function handleRemoteHints(data, editor, plugin, protoName, value, cgi, isVar) {
     curHintOffset = parseInt(data.offset, 10) || 0;
     data = data.list;
   }
-  protoName += isVar ? '=' : '://';
   var maxLen = isVar ? MAX_VAR_LEN : MAX_HINT_LEN;
   data.forEach(function (item) {
     if (len >= 60) {
       return;
     }
     if (typeof item === 'string') {
-      item = protoName + item.trim();
+      item = getHintText(protoName, item.trim(), isVar);
       if (item.length < maxLen && !curHintMap[item]) {
         ++len;
         curHintList.push(item);
@@ -264,7 +271,7 @@ function handleRemoteHints(data, editor, plugin, protoName, value, cgi, isVar) {
         label = item.display.trim();
       }
       if (typeof item.value === 'string') {
-        curVal = protoName + item.value.trim();
+        curVal = getHintText(protoName, item.value.trim(), isVar, item.isKey);
       }
       if (curVal && curVal.length < maxLen && !curHintMap[label || curVal]) {
         ++len;
@@ -317,21 +324,15 @@ CodeMirror.registerHelper('hint', 'rulesHint', function (editor, options) {
   var pluginVars;
   var specProto = PLUGIN_SPEC_RE.test(curWord) && RegExp.$1;
   var isPluginVar = P_RE.test(curWord);
-  if (isPluginVar) {
-    var eqIdx = curWord.indexOf('=');
-    if (eqIdx === -1) {
-      eqIdx = curWord.indexOf('.');
+  if (isPluginVar && P_VAR_RE.test(curWord)) {
+    pluginName = RegExp.$1;
+    plugin = pluginName && dataCenter.getPlugin(pluginName + ':');
+    pluginVars = plugin && plugin.pluginVars;
+    if (!pluginVars) {
+      return;
     }
-    if (eqIdx !== -1) {
-      pluginName = curWord.substring(1, eqIdx);
-      plugin = pluginName && dataCenter.getPlugin(pluginName + ':');
-      pluginVars = plugin && plugin.pluginVars;
-      if (!pluginVars) {
-        return;
-      }
-      value = curWord.substring(eqIdx + 1);
-      isPluginVar = false;
-    }
+    value = curWord.substring(pluginName.length + 2);
+    isPluginVar = false;
   }
   if (isAt || specProto || isPluginVar) {
     if (!byEnter || /^(?:pipe|sniCallback):\/\/$/.test(curWord)) {
@@ -400,11 +401,10 @@ CodeMirror.registerHelper('hint', 'rulesHint', function (editor, options) {
           curHintList = curHintList.map(function (item) {
             var hint;
             var text;
-            var sep = pluginVars ? '=' : '://';
             if (typeof item === 'string') {
-              text = protoName + sep + item;
+              text = getHintText(protoName, item, pluginVars);
             } else {
-              text = protoName + sep + item.text;
+              text = getHintText(protoName, item.text, pluginVars, item.isKey);
               if (item.displayText) {
                 text = item.displayText;
                 hint = {
@@ -641,8 +641,8 @@ exports.getHelpUrl = function (editor, options) {
   ) {
     return url;
   }
-  if (P_RE.test(name)) {
-    name = name.substring(1, name.indexOf('='));
+  if (P_VAR_RE.test(name)) {
+    name = name.substring(1, RegExp.$1.length + 1);
     var plugin = name && protocols.getPlugin(name);
     plugin = plugin && plugin.homepage;
     return (
