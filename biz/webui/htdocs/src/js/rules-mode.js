@@ -11,7 +11,7 @@ var IPV4_PORT_RE =
 var FULL_IPV6_RE = /^[\da-f]{1,4}(?::[\da-f]{1,4}){7}$/;
 var SHORT_IPV6_RE = /^[\da-f]{1,4}(?::[\da-f]{1,4}){0,6}$/;
 var IP_WITH_PORT_RE = /^\[([:\da-f.]+)\](?::(\d+))?$/i;
-var PLUGIN_VAR_RE = /^%([a-z\d_\-]+)(?:\.[\w$-]+)?=/;
+var PLUGIN_VAR_RE = /^%([a-z\d_\-]+)[=.]/;
 
 events.on('updatePlugins', function () {
   forwardRules = protocols.getForwardRules();
