@@ -143,7 +143,7 @@ var ToolBox = React.createClass({
   },
   generateCert: function () {
     window.open(
-      'cgi-bin/create-cert?domain=' + this.state.domainValue,
+      'cgi-bin/create-cert?domain=' + encodeURIComponent(this.state.domainValue),
       'downloadTargetFrame'
     );
   },
