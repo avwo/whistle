@@ -319,6 +319,9 @@ CodeMirror.registerHelper('hint', 'rulesHint', function (editor, options) {
   var isPluginVar = P_RE.test(curWord);
   if (isPluginVar) {
     var eqIdx = curWord.indexOf('=');
+    if (eqIdx === -1) {
+      eqIdx = curWord.indexOf('.');
+    }
     if (eqIdx !== -1) {
       pluginName = curWord.substring(1, eqIdx);
       plugin = pluginName && dataCenter.getPlugin(pluginName + ':');
