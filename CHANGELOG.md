@@ -1,3 +1,6 @@
+# v2.9.6
+1. fix: 长连接里面的帧数据可能展示补全问题
+
 # v2.9.5
 1. refactor: 如果启动绑定网卡，将网卡显示到 Online 里面
 2. style: Tunnel 代理，支持通过请求头或响应头的 `x-whistle-transport-protocol` 自定义 `Protocol` 显示，响应头优先

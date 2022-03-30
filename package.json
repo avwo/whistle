@@ -1,7 +1,7 @@
 {
   "name": "whistle",
   "description": "HTTP, HTTP2, HTTPS, Websocket debugging proxy",
-  "version": "2.9.5",
+  "version": "2.9.6",
   "dataDirname": ".whistle",
   "localUIHost": "local.whistlejs.com",
   "port": 8899,
@@ -61,7 +61,7 @@
     "sockx": "^0.2.0",
     "starting": "^8.0.1",
     "weinre2": "^1.3.1",
-    "ws-parser": "^0.6.1",
+    "ws-parser": "^0.6.2",
     "xml2js": "^0.4.23"
   },
   "scripts": {
