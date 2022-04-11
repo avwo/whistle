@@ -8,6 +8,7 @@ var SyncDialog = require('./sync-dialog');
 var dataCenter = require('./data-center');
 var util = require('./util');
 var win = require('./win');
+var LazyInit = require('./lazy-init');
 
 var CMD_RE = /^([\w]{1,12})(\s+-g)?$/;
 var pendingEnable;
@@ -604,10 +605,12 @@ var Tabs = React.createClass({
             />
             {tabs.map(function (tab) {
               return (
-                <iframe
-                  style={{ display: activeName == tab.name ? '' : 'none' }}
-                  src={tab.url}
-                />
+                <LazyInit inited={activeName == tab.name}>
+                  <iframe
+                    style={{ display: activeName == tab.name ? '' : 'none' }}
+                    src={tab.url}
+                  />
+                </LazyInit>
               );
             })}
           </div>

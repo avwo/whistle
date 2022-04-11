@@ -273,6 +273,7 @@ var Index = React.createClass({
     var multiEnv = !!modal.server.multiEnv;
     var state = {
       replayCount: 1,
+      tabs: [],
       allowMultipleChoice: modal.rules.allowMultipleChoice,
       backRulesFirst: modal.rules.backRulesFirst,
       networkMode: !!modal.server.networkMode,
@@ -408,6 +409,7 @@ var Index = React.createClass({
     dataCenter.valuesModal = state.values = valuesModal;
     state.valuesOptions = valuesOptions;
 
+    this.initPluginTabs(state, modal.plugins);
     if (rulesModal.exists(dataCenter.activeRulesName)) {
       this.setRulesActive(dataCenter.activeRulesName, rulesModal);
     }
@@ -501,6 +503,34 @@ var Index = React.createClass({
       self.importSessionsFromUrl(url);
     });
     return this.updateMenuView(state);
+  },
+  initPluginTabs: function(state, plugins) {
+    plugins = plugins || {};
+    var tabs = state.tabs;
+    var activeTabs;
+    var activeName;
+    try {
+      activeTabs = JSON.parse(storage.get('activePluginTabList'));
+      activeName = storage.get('activePluginTabName');
+    } catch (e) {}
+    if (!Array.isArray(activeTabs)) {
+      return;
+    }
+    Object.keys(plugins)
+      .forEach(function (name) {
+        var plugin = plugins[name];
+        name = name.slice(0, -1);
+        if (activeTabs.indexOf(name) === -1) {
+          return;
+        }
+        if (activeName === name) {
+          state.active = name;
+        }
+        tabs.push({
+          name: name,
+          url: plugin.pluginHomepage || 'plugin.' + name + '/'
+        });
+      });
   },
   getListByName: function (name, type) {
     var list = this.state[name].list;
@@ -2044,6 +2074,14 @@ var Index = React.createClass({
       active: active,
       tabs: tabs
     });
+    this.updatePluginTabInfo(tabs, active);
+  },
+  updatePluginTabInfo: function(tabs, active) {
+    tabs = tabs.map(function(tab) {
+      return tab.name;
+    });
+    storage.set('activePluginTabList', JSON.stringify(tabs));
+    active && storage.set('activePluginTabName', active);
   },
   activePluginTab: function (e) {
     this.showPluginTab($(e.target).attr('data-name'));
@@ -2051,20 +2089,19 @@ var Index = React.createClass({
   closePluginTab: function (e) {
     var name = $(e.target).attr('data-name');
     var tabs = this.state.tabs || [];
-    if (tabs) {
-      for (var i = 0, len = tabs.length; i < len; i++) {
-        if (tabs[i].name == name) {
-          tabs.splice(i, 1);
-          var active = this.state.active;
-          if (active == name) {
-            var plugin = tabs[i] || tabs[i - 1];
-            this.state.active = plugin ? plugin.name : null;
-          }
-
-          return this.setState({
-            tabs: tabs
-          });
+    for (var i = 0, len = tabs.length; i < len; i++) {
+      if (tabs[i].name == name) {
+        tabs.splice(i, 1);
+        var active = this.state.active;
+        if (active == name) {
+          var plugin = tabs[i] || tabs[i - 1];
+          this.state.active = plugin ? plugin.name : null;
         }
+        this.setState({
+          tabs: tabs
+        });
+        this.updatePluginTabInfo(tabs);
+        return;
       }
     }
   },
