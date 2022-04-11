@@ -10,7 +10,7 @@ var error = util.error;
 var warn = util.warn;
 var info = util.info;
 var readConfig = util.readConfig;
-var MAX_RULES_LEN = 1024 * 16;
+var MAX_RULES_LEN = 262144; // 256kb limit of rules
 var DEFAULT_OPTIONS = { host: '127.0.0.1', port: 8899 };
 var options;
 
@@ -113,7 +113,7 @@ function checkDefault(running, storage, callback) {
 module.exports = function(filepath, storage, force) {
   storage = storage || '';
   var config = readConfig(storage) || '';
-  options = config.options; 
+  options = config.options;
   var pid = options && config.pid;
   var addon = options && options.addon;
   var conf = require('../lib/config');
@@ -142,7 +142,7 @@ module.exports = function(filepath, storage, force) {
         }
         var rules = getString(result.rules);
         if (rules.length > MAX_RULES_LEN) {
-          error('The rules cannot be empty and the size cannot exceed 16k.');
+          error('The rules cannot be empty and the size cannot exceed ' + MAX_RULES_LEN + ' bytes.');
           return;
         }
         var setRules = function() {
