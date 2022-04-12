@@ -516,6 +516,7 @@ var Index = React.createClass({
     if (!Array.isArray(activeTabs)) {
       return;
     }
+    var map = {};
     Object.keys(plugins)
       .forEach(function (name) {
         var plugin = plugins[name];
@@ -526,11 +527,15 @@ var Index = React.createClass({
         if (activeName === name) {
           state.active = name;
         }
-        tabs.push({
+        map[name] = {
           name: name,
           url: plugin.pluginHomepage || 'plugin.' + name + '/'
-        });
+        };
       });
+    activeTabs.forEach(function(name) {
+      name = name && map[name];
+      name && tabs.push(name);
+    });
   },
   getListByName: function (name, type) {
     var list = this.state[name].list;
