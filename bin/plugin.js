@@ -12,7 +12,7 @@ var CUSTOM_PLUGIN_PATH = path.join(getWhistlePath(), 'custom_plugins');
 var PACKAGE_JSON = '{"repository":"https://github.com/avwo/whistle","license":"MIT"}';
 var LICENSE = 'Copyright (c) 2019 avwo';
 var RESP_URL = 'https://github.com/avwo/whistle';
-var REMOTE_URL_RE = /^\s*((?:git[+@]|github:|https?:\/\/)[^\s]+[/\\]whistle\.[a-z\d_-]+(?:\.git)?)\s*$/i;
+var REMOTE_URL_RE = /^\s*((?:git[+@]|github:|https?:\/\/)[^\s]+\/whistle\.[a-z\d_-]+(?:\.git)?)\s*$/i;
 
 function getInstallPath(name, dir) {
   return path.join(dir || CUSTOM_PLUGIN_PATH, name);
