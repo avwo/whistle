@@ -1,5 +1,6 @@
 # v2.9.8
 1. fix: TUNNEL 代理的 HTTP 请求被拦截后一些代理请求头的透传问题
+2. feat: 支持通过 `w2 i git-url` 安装插件
 
 # v2.9.7
 1. style: 下次打开 Plugins 页面自动打开之前已打开的插件 Tab
