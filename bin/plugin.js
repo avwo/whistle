@@ -7,7 +7,6 @@ var getWhistlePath = require('../lib/util/common').getWhistlePath;
 
 var CMD_SUFFIX = process.platform === 'win32' ? '.cmd' : '';
 var WHISTLE_PLUGIN_RE = /^((?:@[\w-]+\/)?whistle\.[a-z\d_-]+)(?:\@([\w.^~*-]*))?$/;
-var PLUGIN_PATH = path.join(getWhistlePath(), 'plugins');
 var CUSTOM_PLUGIN_PATH = path.join(getWhistlePath(), 'custom_plugins');
 var PACKAGE_JSON = '{"repository":"https://github.com/avwo/whistle","license":"MIT"}';
 var LICENSE = 'Copyright (c) 2019 avwo';
@@ -31,11 +30,6 @@ function removeDir(installPath) {
   if (fs.existsSync(installPath))  {
     fse.removeSync(installPath);
   }
-}
-
-function removeOldPlugin(name) {
-  removeDir(path.join(PLUGIN_PATH, 'node_modules', name));
-  removeDir(path.join(PLUGIN_PATH, 'node_modules', getTempName(name)));
 }
 
 function getTempName(name) {
@@ -180,7 +174,6 @@ function installPlugins(cmd, plugins, argv, pluginsCache, deep) {
       ++count;
       name = RegExp.$1;
       var ver = RegExp.$2;
-      isPkg && removeOldPlugin(name);
       install(cmd, name, argv, ver, pluginsCache, callback);
     }
   });
@@ -208,7 +201,6 @@ exports.uninstall = function(plugins) {
   getPlugins(plugins).forEach(function(name) {
     if (WHISTLE_PLUGIN_RE.test(name)) {
       name = RegExp.$1;
-      !result.dir && removeOldPlugin(name);
       removeDir(getInstallPath(name, result.dir));
     }
   });
