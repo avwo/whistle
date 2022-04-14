@@ -12,14 +12,18 @@ var CUSTOM_PLUGIN_PATH = path.join(getWhistlePath(), 'custom_plugins');
 var PACKAGE_JSON = '{"repository":"https://github.com/avwo/whistle","license":"MIT"}';
 var LICENSE = 'Copyright (c) 2019 avwo';
 var RESP_URL = 'https://github.com/avwo/whistle';
+var REMOTE_URL_RE = /^\s*((?:git[+@]|github:|https?:\/\/)[^\s]+[/\\]whistle\.[a-z\d_-]+(?:\.git)?)\s*$/i;
 
 function getInstallPath(name, dir) {
   return path.join(dir || CUSTOM_PLUGIN_PATH, name);
 }
 
-function getPlugins(argv) {
+function getPlugins(argv, isInstall) {
   return argv.filter(function(name) {
-    return WHISTLE_PLUGIN_RE.test(name);
+    if (WHISTLE_PLUGIN_RE.test(name)) {
+      return true;
+    }
+    return isInstall && REMOTE_URL_RE.test(name);
   });
 }
 
@@ -59,6 +63,15 @@ function getInstallDir(argv) {
   return result;
 }
 
+function getPluginNameFormDeps(deps) {
+  var keys = Object.keys(deps);
+  for (var i = 0, len = keys.length; i < len; i++) {
+    if (WHISTLE_PLUGIN_RE.test(keys[i])) {
+      return RegExp.$1;
+    }
+  }
+}
+
 function install(cmd, name, argv, ver, pluginsCache, callback) {
   argv = argv.slice();
   var result = getInstallDir(argv);
@@ -83,6 +96,14 @@ function install(cmd, name, argv, ver, pluginsCache, callback) {
       removeDir(installPath);
       callback();
     } else {
+      var deps = fse.readJsonSync(path.join(installPath, 'package.json')).dependencies;
+      name = WHISTLE_PLUGIN_RE.test(name) ? name : getPluginNameFormDeps(deps);
+      if (!name) {
+        try {
+          removeDir(installPath);
+        } catch (e) {}
+        return callback();
+      }
       var realPath = getInstallPath(name, result.dir);
       removeDir(realPath);
       try {
@@ -125,7 +146,8 @@ function installPlugins(cmd, plugins, argv, pluginsCache, deep) {
       var list = pkg.whistleConfig && (pkg.whistleConfig.peerPluginList || pkg.whistleConfig.peerPlugins);
       if (Array.isArray(list) && list.length < 16) {
         list.forEach(function(name) {
-          if (typeof name === 'string' && WHISTLE_PLUGIN_RE.test(name.trim())) {
+          name = typeof name === 'string' ? name.trim() : null;
+          if (name && (WHISTLE_PLUGIN_RE.test(name) || REMOTE_URL_RE.test(name))) {
             name = RegExp.$1;
             if (peerPlugins.indexOf(name) === -1) {
               peerPlugins.push(name);
@@ -142,11 +164,12 @@ function installPlugins(cmd, plugins, argv, pluginsCache, deep) {
     }
   };
   plugins.forEach(function(name) {
-    if (WHISTLE_PLUGIN_RE.test(name)) {
+    var isPkg = WHISTLE_PLUGIN_RE.test(name);
+    if (isPkg || REMOTE_URL_RE.test(name)) {
       ++count;
       name = RegExp.$1;
       var ver = RegExp.$2;
-      removeOldPlugin(name);
+      isPkg && removeOldPlugin(name);
       install(cmd, name, argv, ver, pluginsCache, callback);
     }
   });
@@ -155,7 +178,7 @@ function installPlugins(cmd, plugins, argv, pluginsCache, deep) {
 exports.getWhistlePath = getWhistlePath;
 
 exports.install = function(cmd, argv) {
-  var plugins = getPlugins(argv);
+  var plugins = getPlugins(argv, true);
   if (!plugins.length) {
     return;
   }
