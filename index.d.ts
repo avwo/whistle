@@ -105,6 +105,7 @@ export interface WhistleOptions {
   projectPluginsPath?: string | string[];
   accountPluginsPath?: string | string[];
   customPluginsPath?: string | string[];
+  notUninstallPluginPath?: string | string[];
   pluginsPath?: string | string[];
   addonsPath?: string | string[];
   inspect?: boolean;
