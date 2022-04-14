@@ -329,7 +329,7 @@ var Home = React.createClass({
                             Update
                           </a>
                         )}
-                        {plugin.isProj ? (
+                        {(plugin.isProj || plugin.notUn) ? (
                           <span className="disabled">Uninstall</span>
                         ) : (
                           <a
