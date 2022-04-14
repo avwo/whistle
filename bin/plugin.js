@@ -104,8 +104,10 @@ function install(cmd, name, argv, ver, pluginsCache, callback) {
       removeDir(installPath);
       callback();
     } else {
-      var deps = fse.readJsonSync(path.join(installPath, 'package.json')).dependencies;
-      name = isPkg ? name : getPluginNameFormDeps(deps);
+      if (!isPkg) {
+        var deps = fse.readJsonSync(path.join(installPath, 'package.json')).dependencies;
+        name = deps && getPluginNameFormDeps(deps);
+      }
       if (!name) {
         try {
           removeDir(installPath);
