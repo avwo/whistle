@@ -72,11 +72,19 @@ function getPluginNameFormDeps(deps) {
   }
 }
 
+function getPkgName(name) {
+  if (/[/\\](whistle\.[a-z\d_-]+)(?:\.git)?$/.test(name)) {
+    return RegExp.$1;
+  }
+  return name;
+}
+
 function install(cmd, name, argv, ver, pluginsCache, callback) {
-  argv = argv.slice();
-  var result = getInstallDir(argv);
+  var result = getInstallDir(argv.slice());
+  var isPkg = WHISTLE_PLUGIN_RE.test(name);
+  var pkgName = isPkg ? name : getPkgName(name);
+  var installPath = getInstallPath(getTempName(pkgName), result.dir);
   argv = result.argv;
-  var installPath = getInstallPath(getTempName(name), result.dir);
   fse.ensureDirSync(installPath);
   fse.emptyDirSync(installPath);
   var pkgJson = PACKAGE_JSON;
@@ -87,7 +95,7 @@ function install(cmd, name, argv, ver, pluginsCache, callback) {
   fs.writeFileSync(path.join(installPath, 'LICENSE'), LICENSE);
   fs.writeFileSync(path.join(installPath, 'README.md'), RESP_URL);
   argv.unshift('install', name);
-  pluginsCache[name] = 1;
+  pluginsCache[pkgName] = 1;
   cp.spawn(cmd, argv, {
     stdio: 'inherit',
     cwd: installPath
@@ -97,7 +105,7 @@ function install(cmd, name, argv, ver, pluginsCache, callback) {
       callback();
     } else {
       var deps = fse.readJsonSync(path.join(installPath, 'package.json')).dependencies;
-      name = WHISTLE_PLUGIN_RE.test(name) ? name : getPluginNameFormDeps(deps);
+      name = isPkg ? name : getPluginNameFormDeps(deps);
       if (!name) {
         try {
           removeDir(installPath);
@@ -109,6 +117,7 @@ function install(cmd, name, argv, ver, pluginsCache, callback) {
       try {
         fs.renameSync(installPath, realPath);
       } catch (e) {
+        fse.ensureDirSync(realPath);
         fse.copySync(installPath, realPath);
         try {
           removeDir(installPath);
