@@ -21,6 +21,11 @@ var SyncDialog = React.createClass({
     var self = this;
     self.rulesModal = rulesModal;
     self.valuesModal = valuesModal;
+    if (this.moduleName !== options.moduleName) {
+      this.moduleName = options.moduleName;
+      this.selectedRulesHistory = '';
+      this.selectedValuesHistory = '';
+    }
     if (!util.isString(options.rulesUrl)) {
       options.rulesUrl = null;
     }
