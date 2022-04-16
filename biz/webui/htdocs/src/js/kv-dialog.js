@@ -169,7 +169,7 @@ var KVDialog = React.createClass({
             onClick={this.confirm}
             data-dismiss="modal"
           >
-            Import {this.isValues ? 'Values' : 'Rules'}
+            Add to {this.isValues ? 'Values' : 'Rules'}
           </button>
           <button
             type="button"
