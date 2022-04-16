@@ -341,17 +341,6 @@ var Home = React.createClass({
                             Uninstall
                           </a>
                         )}
-                        {util.isString(plugin.rulesUrl) ||
-                        util.isString(plugin.valuesUrl) ? (
-                          <a
-                            className="w-plugin-btn"
-                            onClick={function () {
-                              self.syncData(plugin);
-                            }}
-                          >
-                            Sync
-                          </a>
-                        ) : undefined}
                         {plugin.homepage ? (
                           <a
                             href={plugin.homepage}
@@ -363,6 +352,17 @@ var Home = React.createClass({
                         ) : (
                           <span className="disabled">Help</span>
                         )}
+                        {util.isString(plugin.rulesUrl) ||
+                        util.isString(plugin.valuesUrl) ? (
+                          <a
+                            className="w-plugin-btn"
+                            onClick={function () {
+                              self.syncData(plugin);
+                            }}
+                          >
+                            Sync
+                          </a>
+                        ) : undefined}
                       </td>
                       <td className="w-plugins-desc" title={plugin.description}>
                         {plugin.description}

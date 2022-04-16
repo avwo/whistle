@@ -126,7 +126,7 @@ var KVDialog = React.createClass({
             onClick={this.confirm}
             data-dismiss="modal"
           >
-            Confirm
+            Import
           </button>
           <button
             type="button"
