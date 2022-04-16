@@ -16,8 +16,10 @@ var KVDialog = React.createClass({
     this._hideDialog = false;
     var history = [];
     if (data && Array.isArray(data.list) && typeof data.data === 'object') {
+      var count = 0;
       data.list.forEach(function(name) {
-        if (name && typeof name === 'string' && name.length <= 256) {
+        if (name && count < 360 && typeof name === 'string' && name.length <= 256) {
+          ++count;
           history.push(name);
         }
       });
