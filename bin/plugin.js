@@ -19,9 +19,12 @@ function getInstallPath(name, dir) {
 }
 
 function getPlugins(argv, isInstall) {
-  return argv.filter(function(name) {
+  return argv.filter(function(name, i) {
     if (WHISTLE_PLUGIN_RE.test(name)) {
       return true;
+    }
+    if (argv[i - 1] === '--registry') {
+      return false;
     }
     return isInstall && REMOTE_URL_RE.test(name);
   });
