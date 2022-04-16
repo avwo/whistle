@@ -44,8 +44,7 @@ var SyncDialog = React.createClass({
     }
     self.loadingRules = true;
     if (history) {
-      history = encodeURIComponent(history);
-      rulesUrl += (rulesUrl.indexOf('?') === -1 ? '?' : '&') + 'history=' + history;
+      rulesUrl += (rulesUrl.indexOf('?') === -1 ? '?' : '&') + 'history=' + encodeURIComponent(history);
     }
     var loadRules = dataCenter.createCgi(
       getCgiUrl(self.state.moduleName, rulesUrl)
@@ -70,8 +69,7 @@ var SyncDialog = React.createClass({
     }
     self.loadingValues = true;
     if (history) {
-      history = encodeURIComponent(history);
-      valuesUrl += (valuesUrl.indexOf('?') === -1 ? '?' : '&') + 'history=' + history;
+      valuesUrl += (valuesUrl.indexOf('?') === -1 ? '?' : '&') + 'history=' + encodeURIComponent(history);
     }
     var loadValues = dataCenter.createCgi(
       getCgiUrl(self.state.moduleName, valuesUrl)
