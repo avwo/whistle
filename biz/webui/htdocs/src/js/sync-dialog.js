@@ -89,26 +89,6 @@ var SyncDialog = React.createClass({
   syncValues: function () {
     this._syncValues(this.selectedValuesHistory);
   },
-  syncPlugins: function() {
-    var self = this;
-    var pluginsUrl = self.state.pluginsUrl;
-    if (self.loadingPlugins || !util.isString(pluginsUrl)) {
-      return;
-    }
-    self.loadingPlugins = true;
-    var loadPlugins = dataCenter.createCgi(
-      getCgiUrl(self.state.moduleName, pluginsUrl)
-    );
-    loadPlugins(function (data, xhr) {
-      self.loadingPlugins = false;
-      self.setState({});
-      if (!data) {
-        return util.showSystemError(xhr);
-      }
-      // self.refs.kvDialog.show(data, self.rulesModal, self.valuesModal, true);
-    });
-    self.setState({});
-  },
   onHistoryChange: function(history, isValues) {
     if (isValues) {
       this._syncValues(history);
@@ -138,15 +118,6 @@ var SyncDialog = React.createClass({
           >
             <span className="glyphicon glyphicon-folder-close" />{' '}
             {this.loadingValues ? 'Loading' : 'Sync'} Values
-          </button>
-          <button
-            onClick={this.syncPlugins}
-            disabled={this.loadingPlugins || !util.isString(state.pluginsUrl)}
-            type="button"
-            className="btn btn-default"
-          >
-            <span className="glyphicon glyphicon-list-alt" />{' '}
-            {this.loadingPlugins ? 'Loading' : 'Sync'} Plugins
           </button>
         </div>
         <div className="modal-footer">
