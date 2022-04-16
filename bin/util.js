@@ -6,6 +6,7 @@ var fse = require('fs-extra2');
 var config = require('../lib/config');
 var colors = require('colors/safe');
 var path = require('path');
+var createHmac = require('crypto').createHmac;
 /*eslint no-console: "off"*/
 var CHECK_RUNNING_CMD = process.platform === 'win32' ? 
   'tasklist /fi "PID eq %s" | findstr /i "node.exe"'
@@ -142,3 +143,7 @@ function readConfigList() {
 
 exports.readConfig = readConfig;
 exports.readConfigList = readConfigList;
+exports.getHash = function(str) {
+  var hmac = createHmac('sha256', 'a secret');
+  return hmac.update(str).digest('hex');
+};
