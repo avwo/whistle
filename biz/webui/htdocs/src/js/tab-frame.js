@@ -7,11 +7,11 @@ var getBridge = require('./bridge');
 
 var modal = dataCenter.networkModal;
 
-function onWhistleInspectorCustomTabReady(init) {
+function onWhistleInspectorCustomTabReady(init, win) {
   if (typeof init !== 'function') {
     return;
   }
-  var bridge = getBridge();
+  var bridge = getBridge(win);
   bridge.getActiveSession = function () {
     return modal.getActive();
   };
