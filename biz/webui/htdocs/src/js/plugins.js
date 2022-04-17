@@ -4,7 +4,6 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var events = require('./events');
 var Dialog = require('./dialog');
-var SyncDialog = require('./sync-dialog');
 var dataCenter = require('./data-center');
 var util = require('./util');
 var win = require('./win');
@@ -105,8 +104,7 @@ var Home = React.createClass({
     e.preventDefault();
   },
   syncData: function (plugin) {
-    var data = this.props.data || '';
-    this.refs.syncDialog.show(plugin, data.rules, data.values);
+    dataCenter.syncData(plugin);
   },
   showDialog: function () {
     this.refs.pluginRulesDialog.show();
@@ -385,7 +383,6 @@ var Home = React.createClass({
             </tbody>
           </table>
         </div>
-        <SyncDialog ref="syncDialog" />
         <Dialog ref="pluginRulesDialog" wstyle="w-plugin-rules-dialog">
           <div className="modal-header">
             <h4>{plugin.name}</h4>

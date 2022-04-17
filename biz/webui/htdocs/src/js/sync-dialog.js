@@ -17,7 +17,7 @@ var SyncDialog = React.createClass({
   getInitialState: function () {
     return {};
   },
-  show: function (options, rulesModal, valuesModal) {
+  show: function (options, rulesModal, valuesModal, cb) {
     var self = this;
     self.rulesModal = rulesModal;
     self.valuesModal = valuesModal;
@@ -32,7 +32,7 @@ var SyncDialog = React.createClass({
     if (!util.isString(options.valuesUrl)) {
       options.valuesUrl = null;
     }
-    self.setState(options, function () {
+    self.setState(options, typeof cb === 'function' ? cb : function () {
       self.refs.syncDialog.show();
     });
   },
@@ -142,8 +142,14 @@ var SyncDialogWrap = React.createClass({
   shouldComponentUpdate: function () {
     return false;
   },
-  show: function (options, rulesModal, valuesModal) {
-    this.refs.syncDialog.show(options, rulesModal, valuesModal);
+  show: function (options, rulesModal, valuesModal, cb) {
+    this.refs.syncDialog.show(options, rulesModal, valuesModal, cb);
+  },
+  syncRules: function() {
+    this.refs.syncDialog.syncRules();
+  },
+  syncValues: function() {
+    this.refs.syncDialog.syncValues();
   },
   render: function () {
     return <SyncDialog ref="syncDialog" />;

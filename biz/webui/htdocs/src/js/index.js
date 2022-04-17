@@ -27,6 +27,7 @@ var message = require('./message');
 var UpdateAllBtn = require('./update-all-btn');
 var ContextMenu = require('./context-menu');
 var CertsInfoDialog = require('./certs-info-dialog');
+var SyncDialog = require('./sync-dialog');
 var win = require('./win');
 
 var H2_RE = /http\/2\.0/i;
@@ -408,6 +409,9 @@ var Index = React.createClass({
     state.pluginsOptions = this.createPluginsOptions(modal.plugins);
     dataCenter.valuesModal = state.values = valuesModal;
     state.valuesOptions = valuesOptions;
+    dataCenter.syncData = this.syncData;
+    dataCenter.syncRules = this.syncRules;
+    dataCenter.syncValues = this.syncValues;
 
     this.initPluginTabs(state, modal.plugins);
     if (rulesModal.exists(dataCenter.activeRulesName)) {
@@ -557,6 +561,22 @@ var Index = React.createClass({
   },
   triggerValuesChange: function (type) {
     util.triggerListChange('values', this.getListByName('values', type));
+  },
+  syncData: function(plugin, cb) {
+    var state = this.state;
+    this.refs.syncDialog.show(plugin, state.rules, state.values, cb);
+  },
+  syncRules: function(plugin) {
+    var self = this;
+    self.syncData(plugin, function() {
+      self.refs.syncDialog.syncRules(plugin);
+    });
+  },
+  syncValues: function(plugin) {
+    var self = this;
+    self.syncData(plugin, function() {
+      self.refs.syncDialog.syncValues(plugin);
+    });
   },
   createPluginsOptions: function (plugins) {
     plugins = plugins || {};
@@ -4741,6 +4761,7 @@ var Index = React.createClass({
             accept=".txt,.json"
           />
         </form>
+        <SyncDialog ref="syncDialog" />
       </div>
     );
   }
