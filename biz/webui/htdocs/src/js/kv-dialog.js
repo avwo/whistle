@@ -10,7 +10,7 @@ var KVDialog = React.createClass({
   getInitialState: function () {
     return { list: [], history: [] };
   },
-  show: function (data, rulesModal, valuesModal, isValues) {
+  show: function (data, rulesModal, valuesModal, isValues, selectedHistory) {
     this.isValues = isValues;
     this.refs.kvDialog.show();
     this._hideDialog = false;
@@ -23,9 +23,13 @@ var KVDialog = React.createClass({
           history.push(name);
         }
       });
+      if (data.selected) {
+        selectedHistory = history.indexOf(data.selected) === -1 ? '' : data.selected;
+      }
       data = data.data;
     }
     this.setState({
+      selectedHistory: selectedHistory,
       history: history,
       list: util.parseImportData(
         data || '',
@@ -37,13 +41,6 @@ var KVDialog = React.createClass({
   hide: function () {
     this.refs.kvDialog.hide();
     this._hideDialog = true;
-  },
-  select: function(history) {
-    var list = this.state.history;
-    if (history && list.indexOf(history) === -1) {
-      list.push(history);
-    }
-    this.setState({ selectedHistory: history });
   },
   shouldComponentUpdate: function () {
     return this._hideDialog === false;

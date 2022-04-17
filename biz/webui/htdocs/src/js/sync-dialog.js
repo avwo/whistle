@@ -53,9 +53,8 @@ var SyncDialog = React.createClass({
       if (!data) {
         return util.showSystemError(xhr);
       }
-      self.refs.kvDialog.show(data, self.rulesModal, self.valuesModal);
       self.plugin.selectedRulesHistory = history;
-      self.refs.kvDialog.select(history);
+      self.refs.kvDialog.show(data, self.rulesModal, self.valuesModal, false, history);
     });
     self.setState({});
   },
@@ -78,9 +77,8 @@ var SyncDialog = React.createClass({
       if (!data) {
         return util.showSystemError(xhr);
       }
-      self.refs.kvDialog.show(data, self.rulesModal, self.valuesModal, true);
       self.plugin.selectedValuesHistory = history;
-      self.refs.kvDialog.select(history);
+      self.refs.kvDialog.show(data, self.rulesModal, self.valuesModal, true, history);
     });
     self.setState({});
   },
