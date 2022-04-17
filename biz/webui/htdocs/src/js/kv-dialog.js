@@ -39,6 +39,10 @@ var KVDialog = React.createClass({
     this._hideDialog = true;
   },
   select: function(history) {
+    var list = this.state.history;
+    if (history && list.indexOf(history) === -1) {
+      list.push(history);
+    }
     this.setState({ selectedHistory: history });
   },
   shouldComponentUpdate: function () {

@@ -1328,6 +1328,16 @@ var Index = React.createClass({
           return;
         }
       }
+      var oldPlugins = self.state.plugins;
+      if (oldPlugins && data.plugins) {
+        Object.keys(data.plugins).forEach(function(name) {
+          var oldP = oldPlugins[name];
+          if (oldP) {
+            data.plugins.selectedRulesHistory = oldP.selectedRulesHistory;
+            data.plugins.selectedValuesHistory = oldP.selectedValuesHistory;
+          }
+        });
+      }
       var pluginsState = {
         plugins: data.plugins,
         disabledPlugins: data.disabledPlugins,

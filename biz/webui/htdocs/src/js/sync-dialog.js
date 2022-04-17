@@ -17,22 +17,18 @@ var SyncDialog = React.createClass({
   getInitialState: function () {
     return {};
   },
-  show: function (options, rulesModal, valuesModal, cb) {
+  show: function (plugin, rulesModal, valuesModal, cb) {
     var self = this;
     self.rulesModal = rulesModal;
     self.valuesModal = valuesModal;
-    if (this.moduleName !== options.moduleName) {
-      this.moduleName = options.moduleName;
-      this.selectedRulesHistory = '';
-      this.selectedValuesHistory = '';
+    self.plugin = plugin;
+    if (!util.isString(plugin.rulesUrl)) {
+      plugin.rulesUrl = null;
     }
-    if (!util.isString(options.rulesUrl)) {
-      options.rulesUrl = null;
+    if (!util.isString(plugin.valuesUrl)) {
+      plugin.valuesUrl = null;
     }
-    if (!util.isString(options.valuesUrl)) {
-      options.valuesUrl = null;
-    }
-    self.setState(options, typeof cb === 'function' ? cb : function () {
+    self.setState(plugin, typeof cb === 'function' ? cb : function () {
       self.refs.syncDialog.show();
     });
   },
@@ -56,7 +52,7 @@ var SyncDialog = React.createClass({
         return util.showSystemError(xhr);
       }
       self.refs.kvDialog.show(data, self.rulesModal, self.valuesModal);
-      self.selectedRulesHistory = history;
+      self.plugin.selectedRulesHistory = history;
       self.refs.kvDialog.select(history);
     });
     self.setState({});
@@ -81,16 +77,16 @@ var SyncDialog = React.createClass({
         return util.showSystemError(xhr);
       }
       self.refs.kvDialog.show(data, self.rulesModal, self.valuesModal, true);
-      self.selectedValuesHistory = history;
+      self.plugin.selectedValuesHistory = history;
       self.refs.kvDialog.select(history);
     });
     self.setState({});
   },
   syncRules: function () {
-    this._syncRules(this.selectedRulesHistory);
+    this._syncRules(this.plugin.selectedRulesHistory);
   },
   syncValues: function () {
-    this._syncValues(this.selectedValuesHistory);
+    this._syncValues(this.plugin.selectedValuesHistory);
   },
   onHistoryChange: function(history, isValues) {
     if (isValues) {
@@ -142,8 +138,8 @@ var SyncDialogWrap = React.createClass({
   shouldComponentUpdate: function () {
     return false;
   },
-  show: function (options, rulesModal, valuesModal, cb) {
-    this.refs.syncDialog.show(options, rulesModal, valuesModal, cb);
+  show: function (plugin, rulesModal, valuesModal, cb) {
+    this.refs.syncDialog.show(plugin, rulesModal, valuesModal, cb);
   },
   syncRules: function() {
     this.refs.syncDialog.syncRules();
