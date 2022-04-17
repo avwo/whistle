@@ -64,7 +64,7 @@ function onPluginContextMenuReady(win) {
     } catch (e) {}
   }
   try {
-    var bridge = getBridge();
+    var bridge = getBridge(win);
     bridge.createModal = function (options) {
       var dialog = modal.create(options);
       var hide = dialog.hide;
