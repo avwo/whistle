@@ -4,15 +4,16 @@ var fs = require('fs');
 var path = require('path');
 var fse = require('fs-extra2');
 var getHash = require('./util').getHash;
-var getWhistlePath = require('../lib/util/common').getWhistlePath;
+var commonUtil = require('../lib/util/common');
 
+var getWhistlePath = commonUtil.getWhistlePath;
+var REMOTE_URL_RE = commonUtil.REMOTE_URL_RE;
 var CMD_SUFFIX = process.platform === 'win32' ? '.cmd' : '';
-var WHISTLE_PLUGIN_RE = /^((?:@[\w-]+\/)?whistle\.[a-z\d_-]+)(?:\@([\w.^~*-]*))?$/;
 var CUSTOM_PLUGIN_PATH = path.join(getWhistlePath(), 'custom_plugins');
 var PACKAGE_JSON = '{"repository":"https://github.com/avwo/whistle","license":"MIT"}';
 var LICENSE = 'Copyright (c) 2019 avwo';
 var RESP_URL = 'https://github.com/avwo/whistle';
-var REMOTE_URL_RE = /^\s*((?:git[+@]|github:)[^\s]+\/whistle\.[a-z\d_-]+(?:\.git)?|https?:\/\/[^\s]+)\s*$/i;
+var WHISTLE_PLUGIN_RE = /^((?:@[\w-]+\/)?whistle\.[a-z\d_-]+)(?:\@([\w.^~*-]*))?$/;
 
 function getInstallPath(name, dir) {
   return path.join(dir || CUSTOM_PLUGIN_PATH, name);

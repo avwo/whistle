@@ -53,6 +53,10 @@ function getAccount(plugin) {
   return plugin.account ? ' --account=' + plugin.account : '';
 }
 
+function getUpdateUrl(plugin) {
+  return plugin.updateUrl || plugin.moduleName;
+}
+
 var Home = React.createClass({
   componentDidMount: function () {
     var self = this;
@@ -73,7 +77,7 @@ var Home = React.createClass({
             ? ' --registry=' + plugin.registry
             : '') + getAccount(plugin);
           var list = newPlugins[registry] || [];
-          list.push(plugin.moduleName);
+          list.push(getUpdateUrl(plugin));
           newPlugins[registry] = list;
         });
       var cmdMsg = Object.keys(newPlugins)
@@ -135,7 +139,7 @@ var Home = React.createClass({
     var registry = plugin.registry ? ' --registry=' + plugin.registry : '';
     this.setState(
       {
-        cmdMsg: getCmd() + plugin.moduleName + getAccount(plugin) + registry,
+        cmdMsg: getCmd() + getUpdateUrl(plugin) + getAccount(plugin) + registry,
         isSys: plugin.isSys,
         uninstall: false
       },
