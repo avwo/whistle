@@ -28,9 +28,11 @@ var SyncDialog = React.createClass({
     if (!util.isString(plugin.valuesUrl)) {
       plugin.valuesUrl = null;
     }
-    self.setState(plugin, typeof cb === 'function' ? cb : function () {
-      self.refs.syncDialog.show();
-    });
+    if (plugin.rulesUrl || plugin.valuesUrl) {
+      self.setState(plugin, typeof cb === 'function' ? cb : function () {
+        self.refs.syncDialog.show();
+      });
+    }
   },
   _syncRules: function(history) {
     var self = this;

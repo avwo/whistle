@@ -1333,8 +1333,9 @@ var Index = React.createClass({
         Object.keys(data.plugins).forEach(function(name) {
           var oldP = oldPlugins[name];
           if (oldP) {
-            data.plugins.selectedRulesHistory = oldP.selectedRulesHistory;
-            data.plugins.selectedValuesHistory = oldP.selectedValuesHistory;
+            var p = data.plugins[name];
+            p.selectedRulesHistory = oldP.selectedRulesHistory;
+            p.selectedValuesHistory = oldP.selectedValuesHistory;
           }
         });
       }
