@@ -1540,7 +1540,11 @@ var Index = React.createClass({
 
     $(document).on('dblclick', '.w-network-menu-list', function (e) {
       if ($(e.target).hasClass('w-network-menu-list')) {
-        con.scrollTop = 0;
+        if (con.scrollTop < 1) {
+          scrollToBottom(true);
+        } else {
+          con.scrollTop = 0;
+        }
       }
     });
 
