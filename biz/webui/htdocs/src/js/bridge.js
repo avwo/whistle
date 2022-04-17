@@ -23,7 +23,7 @@ function getPlugin(win) {
     var pathname = win.location.pathname.split('/');
     for (var i = pathname.length - 1; i >= 0; i--) {
       var name = pathname[i];
-      if (/^plugin(\.[a-z\d_\-]+)$/.test(name)) {
+      if (/^plugin\.([a-z\d_\-]+)$/.test(name)) {
         var plugin = dataCenter.getPlugin(RegExp.$1  + ':');
         if (plugin) {
           return plugin;
