@@ -4,6 +4,12 @@
 pattern ignore://protocol1|protocol2|protocolN
 ```
 
+`v2.9.9` 版本开始支持以下配置：
+```
+pattern ignore://pattern=patternX
+pattern ignore://operator=operatorUri # 等价于 pattern ignore://matcher=operatorUri
+```
+
 其中，`pattern`参见[匹配模式](../pattern.html)，`protocol1`，...，`protocolN` 对应 [协议列表](../rules/.md) 里面的协议，`|` 为分隔符用于同时设置忽略 (过滤) 多个规则。
 
 如果要忽略所有规则：
@@ -41,5 +47,11 @@ www.example.com/test-hosts/yyy ignore://host|socks
 www.example.com/test/abc ignore://*|-socks
 # www.test.com/direct及其子路径不要转发到www.qq.com对应路径
 www.test.com ignore://http
+
+# (v2.9.9+) 忽略所有 pattern 为 www.example.com/test 的规则
+www.example.com ignore://pattern=www.example.com/test
+
+# (v2.9.9+) 忽略所有 operator 为 http://www.qq.com 的规则
+www.test.com ignore://operator=http://www.qq.com
 ```
 
