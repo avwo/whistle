@@ -1,7 +1,8 @@
 # v2.9.9
 1. feat: 支持通过 `w2 i 任意url` 安装插件
 2. feat: 支持插件通过 `options.getPlugins(cb)` 获取当前 Whistle 安装的插件信息
-3. style: 插件 `Sync` 功能支持获取历史记录列表
+3. feat: 支持通过 `ignore://matcher=xxx` （等价于 `ignore://operator=xxx`）、`ignore://pattern=xxx` 删除指定匹配的规则
+4. style: 插件 `Sync` 功能支持获取历史记录列表
 
 # v2.9.8
 1. fix: TUNNEL 代理的 HTTP 请求被拦截后一些代理请求头的透传问题
