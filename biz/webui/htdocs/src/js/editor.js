@@ -205,6 +205,21 @@ var Editor = React.createClass({
     var self = this;
     var elem = ReactDOM.findDOMNode(self.refs.editor);
     var editor = (self._editor = CodeMirror(elem));
+    var timer;
+    events.on('updatePlugins', function() {
+      if (self.isRulesEditor()) {
+        clearTimeout(timer);
+        timer = setTimeout(function() {
+          if (self.props.hide) {
+            self._waitingUpdate = true;
+          } else {
+            self._waitingUpdate = false;
+            editor.setOption('mode', '');
+            editor.setOption('mode', 'rules');
+          }
+        }, 600);
+      }
+    });
     editor.on('change', function (e) {
       if (
         typeof self.props.onChange == 'function' &&
@@ -423,7 +438,14 @@ var Editor = React.createClass({
   },
   _init: function (init) {
     var self = this;
-    self.setMode(self.props.mode);
+    var mode = self.props.mode;
+    if (self._waitingUpdate && mode === 'rules') {
+      self._editor.setOption('mode', '');
+      self._editor.setOption('mode', 'rules');
+    } else {
+      self.setMode(mode);
+    }
+    self._waitingUpdate = false;
     var value = self.props.value;
     if (init && value && value.length > INIT_LENGTH) {
       var elem = message.info('Loading...');
