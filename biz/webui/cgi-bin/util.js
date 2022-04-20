@@ -65,7 +65,7 @@ exports.getServerInfo = function(req) {
       if (iface.internal) {
         return;
       }
-      info[iface.family == 'IPv4' ? 'ipv4' : 'ipv6'].push(iface.address);
+      info[iface.family == 'IPv4' || iface.family === 4 ? 'ipv4' : 'ipv6'].push(iface.address);
     });
   });
 
