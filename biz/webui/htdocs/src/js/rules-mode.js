@@ -135,7 +135,7 @@ CodeMirror.defineMode('rules', function () {
   }
 
   function isIgnore(str) {
-    return /^ignore:\/\//.test(str);
+    return /^(?:ignore|skip):\/\//.test(str);
   }
 
   function isEnable(str) {

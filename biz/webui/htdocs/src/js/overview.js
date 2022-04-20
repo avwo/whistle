@@ -91,11 +91,15 @@ function getTime(time) {
   return time === '-' ? '' : time;
 }
 
+function ignoreProtocol(name) {
+  return PROXY_PROTOCOLS.indexOf(name) !== -1 || name === 'skip' || /^x/.test(name);
+}
+
 OVERVIEW.forEach(function (name) {
   DEFAULT_OVERVIEW_MODAL[name] = '';
 });
 PROTOCOLS.forEach(function (name) {
-  if (PROXY_PROTOCOLS.indexOf(name) !== -1 || /^x/.test(name)) {
+  if (ignoreProtocol(name)) {
     return;
   }
   DEFAULT_RULES_MODAL[name] = '';
@@ -281,7 +285,7 @@ var Overview = React.createClass({
           titleModal['@'] = atTitle.join('\n');
         }
         PROTOCOLS.forEach(function (name) {
-          if (PROXY_PROTOCOLS.indexOf(name) !== -1 || /^x/.test(name)) {
+          if (ignoreProtocol(name)) {
             return;
           }
           var key = name;

@@ -19,6 +19,7 @@ var PROTOCOLS = [
   'log',
   'filter',
   'ignore',
+  'skip',
   'enable',
   'disable',
   'delete',
@@ -183,6 +184,9 @@ exports.getHelpUrl = function (rule) {
   }
   if (rule === 'includeFilter' || rule === 'excludeFilter') {
     return ROOT_HELP_URL + 'filter.html';
+  }
+  if (rule === 'skip') {
+    return ROOT_HELP_URL + 'ignore.html';
   }
   if (rule === 'lineProps') {
     return ROOT_HELP_URL + 'lineProps.html';
