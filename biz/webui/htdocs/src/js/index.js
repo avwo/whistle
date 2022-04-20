@@ -1313,11 +1313,10 @@ var Index = React.createClass({
           if (
             plugin.name != oldPlugin.name ||
             plugin.latest !== oldPlugin.latest ||
-            plugin.mtime != oldPlugin.mtime ||
+            plugin.mtime != oldPlugin.mtime || // 判断时间即可
             oldDisabledPlugins[plugin.name] != disabledPlugins[plugin.name] ||
             plugin.hideLongProtocol != oldPlugin.hideLongProtocol ||
             plugin.hideShortProtocol != oldPlugin.hideShortProtocol ||
-            plugin.pluginVars != oldPlugin.pluginVars ||
             plugin.path != oldPlugin.path
           ) {
             hasUpdate = true;
