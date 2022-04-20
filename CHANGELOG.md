@@ -1,3 +1,7 @@
+# 2.9.10
+1. feat: 添加 `skip` 协议， skip 与 ignore 的区别，ignore 是将匹配的规则删除掉，skip 是跳过指定的规则不做匹配
+2. fix: https://github.com/nodejs/node/issues/42787
+
 # v2.9.9
 1. feat: 支持通过 `w2 i 任意url` 安装插件
 2. feat: 支持插件通过 `options.getPlugins(cb)` 获取当前 Whistle 安装的插件信息
