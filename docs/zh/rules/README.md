@@ -101,7 +101,7 @@
 
 #### 过滤配置
 1. [**filter (excludeFilter|includeFilter)** (过滤规则，隐藏请求等)](filter.html)
-2. [**ignore** (忽略规则)](ignore.html)
+2. [**ignore (skip)** (忽略规则)](ignore.html)
 
 #### 启用或禁用一些配置
 1. [**enable** (设置capture HTTPs，隐藏请求等)](enable.html)
