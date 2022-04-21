@@ -208,16 +208,22 @@ var Editor = React.createClass({
     var timer;
     events.on('updatePlugins', function() {
       if (self.isRulesEditor()) {
-        clearTimeout(timer);
-        timer = setTimeout(function() {
-          if (self.props.hide) {
-            self._waitingUpdate = true;
-          } else {
-            self._waitingUpdate = false;
-            editor.setOption('mode', '');
-            editor.setOption('mode', 'rules');
-          }
-        }, 600);
+        timer && clearTimeout(timer);
+        if (self.props.hide) {
+          timer = null;
+          self._waitingUpdate = true;
+        } else {
+          timer = setTimeout(function() {
+            timer = null;
+            if (self.props.hide) {
+              self._waitingUpdate = true;
+            } else {
+              self._waitingUpdate = false;
+              editor.setOption('mode', '');
+              editor.setOption('mode', 'rules');
+            }
+          }, 600);
+        }
       }
     });
     editor.on('change', function (e) {
@@ -441,10 +447,9 @@ var Editor = React.createClass({
     var mode = self.props.mode;
     if (self._waitingUpdate && mode === 'rules') {
       self._editor.setOption('mode', '');
-      self._editor.setOption('mode', 'rules');
-    } else {
-      self.setMode(mode);
+      self._mode = '';
     }
+    self.setMode(mode);
     self._waitingUpdate = false;
     var value = self.props.value;
     if (init && value && value.length > INIT_LENGTH) {
