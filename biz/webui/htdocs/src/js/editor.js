@@ -215,12 +215,14 @@ var Editor = React.createClass({
         } else {
           timer = setTimeout(function() {
             timer = null;
-            if (self.props.hide) {
-              self._waitingUpdate = true;
-            } else {
-              self._waitingUpdate = false;
-              editor.setOption('mode', '');
-              editor.setOption('mode', 'rules');
+            if (self.isRulesEditor()) {
+              if (self.props.hide) {
+                self._waitingUpdate = true;
+              } else {
+                self._waitingUpdate = false;
+                editor.setOption('mode', '');
+                editor.setOption('mode', 'rules');
+              }
             }
           }, 600);
         }
