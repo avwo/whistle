@@ -1,4 +1,8 @@
-# 2.9.10
+# v2.9.11
+1. fix: 使用 `https2http-proxy://host:port` 时，某些 `post` 请求无法正常发送问题
+2. fix: 确保模板字符串的 `clientId` 优先获取传过来的请求 `clientId`（需要用本地的 `clientId` 可以使用 `localClientId`）
+
+# v2.9.10
 1. feat: 添加 `skip` 协议， skip 与 ignore 的区别，ignore 是将匹配的规则删除掉，skip 是跳过指定的规则不做匹配
 2. fix: https://github.com/nodejs/node/issues/42787
 
