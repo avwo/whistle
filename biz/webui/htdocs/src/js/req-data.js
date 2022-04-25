@@ -175,7 +175,8 @@ function getClassName(data) {
     ' w-req-data-item' +
     (data.isHttps ? ' w-tunnel' : '') +
     (hasRules(data) ? ' w-has-rules' : '') +
-    (data.selected ? ' w-selected' : '')
+    (data.selected ? ' w-selected' : '') +
+    (data.isPR ? ' w-pr' : '')
   );
 }
 

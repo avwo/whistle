@@ -325,3 +325,8 @@
   padding: 0 8px;
   margin-top: -2px;
 }
+
+.w-pr td, .w-pr th {
+  font-style: italic;
+  font-weight: normal!important;
+}
