@@ -52,6 +52,7 @@ exports.getServerInfo = function(req) {
     isWin: util.isWin,
     port: config.port,
     realPort: config.realPort,
+    realHost: config.realHost,
     socksPort: config.socksPort,
     httpPort: config.httpPort,
     httpsPort: config.httpsPort,

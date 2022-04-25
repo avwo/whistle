@@ -134,7 +134,7 @@ var Online = React.createClass({
     }
     var port = server.realPort || server.port;
     if (port) {
-      var bip = server.bip;
+      var bip = server.realHost != null ? server.realHost : server.bip;
       info.push('<h5><strong>Port:</strong> ' + (bip ? bip + ':' + port : port) + '</h5>');
     }
     if (server.socksPort) {

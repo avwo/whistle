@@ -73,6 +73,7 @@ export interface WhistleOptions {
   debugMode?: boolean;
   mode?: string;
   realPort?: number;
+  realHost?: string;
   port?: number | string;
   uiport?: number | string;
   socksPort?: number | string;
