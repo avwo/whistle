@@ -18,7 +18,7 @@ var CUSTOM_REAL_WEBUI_HOST = new RegExp('^/[\\w.-]*\\.whistle-path\\.5b6af7b9884
 var CUSTOM_INTERNAL_APP = new RegExp('^/[\\w.-]*\\.whistle-path\\.5b6af7b9884e1165[\\w.-]*/+(log|weinre|cgi)(?:\\.(\\d{1,5}))?/');
 var CUSTOM_PLUGIN_RE = new RegExp('^/[\\w.-]*\\.whistle-path\\.5b6af7b9884e1165[\\w.-]*/+whistle\\.([a-z\\d_-]+)/');
 var REAL_WEBUI_HOST_PARAM = /_whistleInternalHost_=(__([a-z\d.-]+)(?:__(\d{1,5}))?__)/;
-var OUTER_PLUGIN_RE = /^\/(whistle\.[a-z\\d_-]+)::(\d{1,5})\//;
+var OUTER_PLUGIN_RE = /^(?:\/whistle)?\/((?:whistle|plugin)\.[a-z\\d_-]+)::(\d{1,5})\//;
 
 module.exports = function(req, res, next) {
   var config = this.config;
