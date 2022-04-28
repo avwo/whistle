@@ -1,3 +1,7 @@
+# v2.9.12
+1. fix: https://github.com/avwo/whistle/issues/726
+2. refactor: 优化 `excludeFilter://host=pattern`
+
 # v2.9.11
 1. fix: 使用 `https2http-proxy://host:port` 时，某些 `post` 请求无法正常发送问题
 2. fix: 确保模板字符串的 `clientId` 优先获取传过来的请求 `clientId`（需要用本地的 `clientId` 可以使用 `localClientId`）
