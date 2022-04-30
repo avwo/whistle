@@ -1,3 +1,7 @@
+# v2.9.13
+1. refactor: 内联规则 `protocol://(key1=value1&key2=value2...)` 不再自动 `decodeURIComponent`
+2. refactor: 如果内联规则 `protocol://key1=value1&key2=value2...` 无 `()`，会先检测下对应文件是否存在，不存在就当成 `protocol://(key1=value1&key2=value2...)` 处理
+
 # v2.9.12
 1. fix: https://github.com/avwo/whistle/issues/726
 2. refactor: 优化 `excludeFilter://host=pattern`
