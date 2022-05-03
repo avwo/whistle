@@ -40,7 +40,7 @@
     "colors": "1.1.2",
     "cookie": "^0.3.1",
     "express": "^4.17.1",
-    "extend": "^3.0.1",
+    "extend": "^3.0.2",
     "fs-extra2": "^1.0.0",
     "hagent": "^0.9.0",
     "hparser": "^0.4.0",
