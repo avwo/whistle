@@ -83,12 +83,14 @@ program
   .command('add [filepath]')
   .description('Add rules from local js file (.whistle.js by default)');
 program.command('install')
-  .description('Install a whistle plugin');
+  .description('Install whistle plugin');
 program.command('uninstall')
-  .description('Uninstall a whistle plugin');
+  .description('Uninstall whistle plugin');
 program.command('exec')
-  .description('Exec whistle plugin command');
-  
+  .description('Exec whistle plugin cmd');
+program.command('proxy')
+  .description('Set system proxy');
+
 program
   .option('-D, --baseDir [baseDir]', 'set the configured storage root path', String, undefined)
   .option('-z, --certDir [directory]', 'set custom certificate store directory', String, undefined)
