@@ -80,16 +80,16 @@ program
   .command('status')
   .description('Show the running status');
 program
-  .command('add [filepath]')
+  .command('add')
   .description('Add rules from local js file (.whistle.js by default)');
+program.command('proxy')
+  .description('Set system proxy (127.0.0.1:8899 by default)');
 program.command('install')
   .description('Install whistle plugin');
 program.command('uninstall')
   .description('Uninstall whistle plugin');
 program.command('exec')
   .description('Exec whistle plugin cmd');
-program.command('proxy')
-  .description('Set system proxy');
 
 program
   .option('-D, --baseDir [baseDir]', 'set the configured storage root path', String, undefined)
