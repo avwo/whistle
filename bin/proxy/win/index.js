@@ -4,7 +4,17 @@ var join = require('path').join;
 var REFRESH_PROXY = join(__dirname, 'refresh');
 var REG_PATH = 'reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings" /v';
 
+function disableProxy() {
+  var proxyCmd = REG_PATH + ' ProxyEnable /t REG_DWORD /d 0 /f';
+  var pacCmd = REG_PATH + ' AutoConfigURL /t REG_DWORD /d 0 /f';
+  var detectCmd = REG_PATH + ' AutoDetect /t REG_DWORD /d 0 /f';
+  var result = execSync(proxyCmd + ' & ' + pacCmd + ' & ' + detectCmd);
+  execSync(REFRESH_PROXY);
+  return result;
+}
+
 exports.enableProxy = function(options) {
+  disableProxy();
   var bypass = options.bypass;
   var setCmd = REG_PATH + ' ProxyServer /t REG_SZ /d ' + options.host + ':' + options.port + ' /f';
   var enableCmd = REG_PATH + ' ProxyEnable /t REG_DWORD /d 1 /f';
@@ -19,8 +29,4 @@ exports.enableProxy = function(options) {
   return result;
 };
 
-exports.disableProxy = function() {
-  var result = execSync(REG_PATH + ' /v ProxyEnable /t REG_DWORD /d 0 /f');
-  execSync(REFRESH_PROXY);
-  return result;
-};
+exports.disableProxy = disableProxy;
