@@ -263,14 +263,14 @@ var Home = React.createClass({
                         {util.toLocaleString(new Date(plugin.mtime))}
                       </td>
                       <td className="w-plugins-name" title={plugin.moduleName}>
-                        <a
+                      {plugin.noOpt ? <span>{name}</span> : <a
                           href={url}
                           target="_blank"
                           data-name={name}
                           onClick={openOutside ? null : self.onOpen}
                         >
                           {name}
-                        </a>
+                        </a>}
                       </td>
                       <td className="w-plugins-version">
                         {plugin.homepage ? (
@@ -295,7 +295,7 @@ var Home = React.createClass({
                         ) : undefined}
                       </td>
                       <td className="w-plugins-operation">
-                        <a
+                        {plugin.noOpt ? <span className="disabled">Option</span> : <a
                           href={url}
                           target="_blank"
                           data-name={name}
@@ -303,7 +303,7 @@ var Home = React.createClass({
                           onClick={openOutside ? null : self.onOpen}
                         >
                           Option
-                        </a>
+                        </a>}
                         {plugin.rules || plugin._rules || plugin.resRules ? (
                           <a
                             draggable="false"
