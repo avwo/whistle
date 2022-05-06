@@ -12,7 +12,7 @@ function getBypass(bypass) {
   }
   var map = {};
   bypass = bypass.trim().toLowerCase();
-  return bypass.split(/[\s,;]+/).filter((host) => {
+  return bypass.split(/[\s,;]+/).filter(function(host) {
     if (!map[host] && (host === '<local>' || net.isIP(host) || BYPASS_RE.test(host))) {
       map[host] = 1;
       return true;
@@ -34,9 +34,9 @@ exports.enableProxy = function(options) {
   var enableProxy = getProxyMgr().enableProxy;
   var bypass = getBypass(options.bypass);
   enableProxy({
-    host,
+    host: host,
     port: options.port,
-    bypass
+    bypass: bypass
   });
 };
 
