@@ -99,10 +99,6 @@ var Home = React.createClass({
   componentDidUpdate: function () {
     this.setUpdateAllBtnState();
   },
-  shouldComponentUpdate: function (nextProps) {
-    var hide = util.getBoolean(this.props.hide);
-    return hide != util.getBoolean(nextProps.hide) || !hide;
-  },
   onOpen: function (e) {
     this.props.onOpen && this.props.onOpen(e);
     e.preventDefault();

@@ -2,7 +2,7 @@ var execSync = require('child_process').execSync;
 var join = require('path').join;
 
 var PROXY_HELPER = join(__dirname, 'Whistle');
-// -x "
+
 var enableProxy = (options) => {
   var bypass = options.bypass;
   var port = options.port;
