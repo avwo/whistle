@@ -3,7 +3,7 @@ var join = require('path').join;
 
 var PROXY_HELPER = join(__dirname, 'Whistle');
 
-var enableProxy = (options) => {
+exports.enableProxy = function(options) {
   var bypass = options.bypass;
   var port = options.port;
   if (bypass) {
@@ -14,7 +14,6 @@ var enableProxy = (options) => {
   return execSync('\'' + PROXY_HELPER + '\' -m global -p ' + port + ' -r ' + port + ' -s ' + options.host + bypass);
 };
 
-var disableProxy = () => execSync('\''  + PROXY_HELPER + '\' -m off');
-
-exports.enableProxy = enableProxy;
-exports.disableProxy = disableProxy;
+exports.disableProxy = function() {
+  return execSync('\''  + PROXY_HELPER + '\' -m off');
+};
