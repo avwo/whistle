@@ -1,3 +1,3 @@
 var disableProxy = require('../../bin/proxy').disableProxy;
 
-disableProxy();
+console.log(disableProxy() + '');

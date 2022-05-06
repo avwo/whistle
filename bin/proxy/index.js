@@ -33,7 +33,7 @@ exports.enableProxy = function(options) {
   var host = options.host.toLowerCase();
   var enableProxy = getProxyMgr().enableProxy;
   var bypass = getBypass(options.bypass);
-  enableProxy({
+  return enableProxy({
     host: host,
     port: options.port,
     bypass: bypass
@@ -42,5 +42,5 @@ exports.enableProxy = function(options) {
 
 exports.disableProxy = function() {
   var disableProxy = getProxyMgr().disableProxy;
-  disableProxy();
+  return disableProxy();
 };
