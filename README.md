@@ -179,6 +179,7 @@ Debugging mode:
 For more details, please visit [install and start](https://avwo.github.io/whistle/install.html)
 
 # Proxing Settings
+> https://wproxy.org/whistle/proxy.html
 ##### configuring server & port
 1. proxying server：127.0.0.1(if whistle is deployed in remote server or virtual machine, change this address to corresponding IP address)
 2. default port：8899(if port 8899 is used already, you can specify new port using `-p` when start. More details can be visited by executing `whistle help` or `w2 help` (only supported in `v0.7.0` and higher version)
@@ -321,6 +322,7 @@ Open [Rules](http://local.whistlejs.com/) tab in whistle, and create a group nam
 
 # Documentation
 1. [Install and start](https://avwo.github.io/whistle/install.html)
+1. [Setting proxy](https://wproxy.org/whistle/proxy.html)
 2. [CLI operation](https://avwo.github.io/whistle/cli.html)
 2. [How to update](https://avwo.github.io/whistle/update.html)
 3. [Quickly start](https://avwo.github.io/whistle/quickstart.html)

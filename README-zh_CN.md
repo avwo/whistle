@@ -84,7 +84,7 @@ whistle安装过程需要以下步骤（**缺一不可**）：
 1. 安装Node
 2. 安装whistle
 3. 启动whistle
-4. 配置代理
+4. [设置代理](https://wproxy.org/whistle/proxy.html)
 5. 安装根证书
 
 上述步骤的详细操作分别参见如下文档：
@@ -204,6 +204,7 @@ w2 restart
 
 # 帮助文档
 1. [安装启动](https://avwo.github.io/whistle/install.html)
+1. [设置代理](https://wproxy.org/whistle/proxy.html)
 2. [命令行操作](https://avwo.github.io/whistle/cli.html)
 2. [手动更新](https://avwo.github.io/whistle/update.html)
 3. [快速上手](https://avwo.github.io/whistle/quickstart.html)
