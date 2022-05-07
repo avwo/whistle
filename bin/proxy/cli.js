@@ -1,28 +1,35 @@
 var net = require('net');
 var proxy = require('./index');
+var util = require('../util');
 
+var readConfig = util.readConfig;
 var OFF_RE = /^(?:o|0|-{0,2}off)$/i;
-var HIS_RE = /^(?:-?l|-{0,2}list|-{0,2}history)$/i;
-var HIS_IDX_RE = /^h\d+$/i;
 var BYPASS_RE = /^(?:-{0,2}bypass|-x|-b)$/i;
 var NUM_RE = /^\d+$/;
 var HOST_SUFFIX_RE = /\:(\d+|auto)?$/;
 var HOST_RE = /^[a-z\d_-]+(?:\.[a-z\d_-]+)*$/i;
 
-function disableProxy() {
-
-}
-
 function getDefaultPort() {
-
+  var conf = readConfig();
+  conf = conf && conf.options;
+  var port = conf && conf.port;
+  return port > 0 ? port : 8899;
 }
 
 function enableProxy(options) {
-
+  if (proxy.enableProxy(options)) {
+    util.info('Setting global proxy (' + options.host + ':' + options.port + ') successful.');
+  } else {
+    util.error('Failed to set global proxy (' + options.host + ':' + options.port + ').');
+  }
 }
 
-function showHistory() {
-
+function disableProxy() {
+  if (proxy.disableProxy()) {
+    util.info('Turn off global proxy successful.');
+  } else {
+    util.error('Failed to turn off global proxy.');
+  }
 }
 
 module.exports = function(argv) {
@@ -30,26 +37,23 @@ module.exports = function(argv) {
   if (OFF_RE.test(cmd)) {
     return disableProxy();
   }
-  if (HIS_RE.test(cmd)) {
-    return showHistory();
-  }
-  var opts = {};
+  var options = {};
   var skip;
   argv.forEach(function(arg) {
     if (skip) {
-      opts.bypass = arg;
+      options.bypass = arg;
       skip = false;
     } else if (BYPASS_RE.test(arg)) {
       skip = true;
     } else if (NUM_RE.test(arg)) {
-      opts.port = parseInt(arg, 10) || opts.port;
+      options.port = parseInt(arg, 10) || options.port;
     } else if (net.isIP(arg)) {
-      opts.host = arg || opts.host;
+      options.host = arg || options.host;
     } else if (HOST_SUFFIX_RE.test(arg)) {
       var port = RegExp.$1;
-      delete opts.port;
+      delete options.port;
       if (port > 0) {
-        opts.port = parseInt(port, 10) || opts.port;
+        options.port = parseInt(port, 10) || options.port;
       }
       var host = arg.slice(0, - port.length - 1);
       if (host[0] === '[') {
@@ -60,10 +64,13 @@ module.exports = function(argv) {
         host = host.substring(0, lastIndex);
       }
       if (host && (net.isIP(host) || HOST_RE.test(host))) {
-        opts.host = host || opts.host;
+        options.host = host || options.host;
       }
-    } else if (HIS_IDX_RE.test(arg)) {
-      opts.id = arg;
     }
   });
+  if (!options.port) {
+    options.port = getDefaultPort();
+  }
+  options.host = options.host || '127.0.0.1';
+  enableProxy(options);
 };

@@ -151,7 +151,7 @@ module.exports = function(filepath, storage, force) {
             'rules=' + encodeURIComponent(rules)
           ].join('&');
           request(body, function() {
-            info('Setting whistle[' + (options.host || '127.0.0.1') + ':' + port + '] rules successful.');
+            info('Setting whistle (' + (options.host || '127.0.0.1') + ':' + port + ') rules successful.');
           });
         };
         if (force) {
