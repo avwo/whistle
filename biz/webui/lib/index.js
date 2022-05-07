@@ -251,7 +251,7 @@ function cgiHandler(req, res) {
     try {
       require(filepath)(req, res);
     } catch(err) {
-      var msg = config.debugMode ? '<pre>' + util.getErrorStack(err) + '</pre>' : 'Internal Server Error';
+      var msg = config.debugMode ? '<pre>' + util.encodeHtml(util.getErrorStack(err)) + '</pre>' : 'Internal Server Error';
       res.status(500).send(msg);
     }
   };
@@ -263,7 +263,7 @@ function cgiHandler(req, res) {
       var notFound = err ? err.code === 'ENOENT' : !stat.isFile();
       var msg;
       if (config.debugMode) {
-        msg =  '<pre>' + (err ? util.getErrorStack(err) : 'Not File') + '</pre>';
+        msg =  '<pre>' + (err ? util.encodeHtml(util.getErrorStack(err)) : 'Not File') + '</pre>';
       } else {
         msg = notFound ? 'Not Found' : 'Internal Server Error';
       }
@@ -326,7 +326,7 @@ app.all(PLUGIN_PATH_RE, function(req, res) {
   pluginMgr.loadPlugin(plugin, function(err, ports) {
     if (err || !ports.uiPort) {
       if (err) {
-        res.status(500).send('<pre>' + err + '</pre>');
+        res.status(500).send('<pre>' + util.encodeHtml(err) + '</pre>');
       } else {
         res.status(404).send('Not Found');
       }

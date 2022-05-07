@@ -148,7 +148,7 @@ exports.sendGzip = function(req, res, data) {
         res.json(data);
       } catch (e) {
         res.status(500).send(config.debugMode ?
-          '<pre>' + util.getErrorStack(err) + '</pre>' : 'Internal Server Error');
+          '<pre>' + util.encodeHtml(util.getErrorStack(err)) + '</pre>' : 'Internal Server Error');
       }
       return;
     }
