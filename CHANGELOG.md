@@ -1,3 +1,12 @@
+# v2.9.14
+1. feat: 支持通过命令行 `w2 proxy [off] [port] [host:port] [-x bypass]` 设置系统的全局代理
+	- `w2 proxy`: 设置全局代理 `127.0.0.1:port`，port 为运行的默认实例的端口（`storage` 为空），如果没有默认实例则为 `8899`
+	- `w2 proxy -x "<local>, domain1, domain2"`: 设置全局代理 `127.0.0.1:port`，port 为运行的默认实例的端口（`storage` 为空），如果没有默认实例则为 `8899`，**并设置不代理域名白名单**
+	- `w2 proxy 8899`: 设置指定端口的代理，host 默认为 `127.0.0.1`
+	- `w2 proxy www.test.com:8080` 或 `w2 proxy www.test.com:auto`: 指定代理的 host 和 port
+	- `w2 proxy www.test.com:8080 -x "<local>, domain1, domain2"`: 组合应用
+	- `w2 proxy off`: 关闭全局代理
+
 # v2.9.13
 1. refactor: 内联规则 `protocol://(key1=value1&key2=value2...)` 不再自动 `decodeURIComponent`
 2. refactor: 如果内联规则 `protocol://key1=value1&key2=value2...` 无 `()`，会先检测下对应文件是否存在，不存在就当成 `protocol://(key1=value1&key2=value2...)` 处理
