@@ -29,7 +29,7 @@ function getProxyMgr() {
   if (platform === 'darwin') {
     return mac;
   }
-  throw new Error('Platform ' + platform + ' is unsupported to set global proxy for now!');
+  throw new Error('Platform ' + platform + ' is unsupported to set global proxy for now.');
 }
 
 exports.enableProxy = function(options) {
