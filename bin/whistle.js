@@ -7,6 +7,7 @@ var useRules = require('./use');
 var showStatus = require('./status');
 var util = require('./util');
 var plugin = require('./plugin');
+var setProxy = require('./proxy/cli');
 
 var showUsage = util.showUsage;
 var error = util.error;
@@ -140,6 +141,8 @@ if (cmd === 'status') {
     storage = argv[4];
   }
   showStatus(all, storage);
+} else if (cmd === 'proxy') {
+  setProxy(Array.prototype.slice.call(argv, 3));
 } else if (/^([a-z]{1,2})?uni(nstall)?$/.test(cmd)) {
   plugin.uninstall(Array.prototype.slice.call(argv, 3));
 } else if (/^([a-z]{1,2})?i(nstall)?$/.test(cmd)) {

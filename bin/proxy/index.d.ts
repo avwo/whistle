@@ -1,7 +1,7 @@
 export interface ProxyOptions {
-    host: string;
-    port: number;
-    bypass?: string;
+  host: string;
+  port: number;
+  bypass?: string;
 }
 
 export function enableProxy(options: ProxyOptions): boolean;
