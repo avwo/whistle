@@ -8,9 +8,9 @@ function disableProxy() {
   var proxyCmd = REG_PATH + ' ProxyEnable /t REG_DWORD /d 0 /f';
   var pacCmd = REG_PATH + ' AutoConfigURL /t REG_DWORD /d 0 /f';
   var detectCmd = REG_PATH + ' AutoDetect /t REG_DWORD /d 0 /f';
-  var result = execSync(proxyCmd + ' & ' + pacCmd + ' & ' + detectCmd);
+  execSync(proxyCmd + ' & ' + pacCmd + ' & ' + detectCmd);
   execSync(REFRESH_PROXY);
-  return result;
+  return true;
 }
 
 exports.enableProxy = function(options) {
@@ -24,9 +24,9 @@ exports.enableProxy = function(options) {
     bypass = REG_PATH + ' ProxyOverride /t REG_SZ /d "' + bypass.join(';') + '" /f';
     cmd = cmd + ' & ' + bypass;
   }
-  var result = execSync(cmd);
+  execSync(cmd);
   execSync(REFRESH_PROXY);
-  return result;
+  return true;
 };
 
 exports.disableProxy = disableProxy;
