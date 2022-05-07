@@ -26,7 +26,10 @@ function getProxyMgr() {
   if (platform === 'win32') {
     return win;
   }
-  return mac;
+  if (platform === 'darwin') {
+    return mac;
+  }
+  throw new Error('Platform ' + platform + ' is unsupported to set system proxy for now!');
 }
 
 exports.enableProxy = function(options) {
