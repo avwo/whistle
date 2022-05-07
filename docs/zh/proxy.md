@@ -10,6 +10,6 @@ Whistle v2.9.14 版本开始支持通过命令行 `w2 proxy ...` 设置系统的
 - `w2 proxy www.test.com:8080 -x "<local>, domain1, domain2"`: 组合应用
 - `w2 proxy off`: 关闭全局代理
 
-**一般执行 `w2 proxy` 即可，Mac 平台上可能要输出开机密码**
+**一般执行 `w2 proxy` 即可，Mac 平台上可能要输入开机密码**
 
 如果大家知道其它平台的设置方法可以提 PR 完善功能：https://github.com/avwo/whistle/tree/master/bin/proxy
