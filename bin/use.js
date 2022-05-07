@@ -113,7 +113,7 @@ function checkDefault(running, storage, callback) {
 module.exports = function(filepath, storage, force) {
   storage = storage || '';
   var config = readConfig(storage) || '';
-  options = config.options; 
+  options = config.options;
   var pid = options && config.pid;
   var addon = options && options.addon;
   var conf = require('../lib/config');
