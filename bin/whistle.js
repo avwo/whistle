@@ -84,7 +84,7 @@ program
   .command('add')
   .description('Add rules from local js file (.whistle.js by default)');
 program.command('proxy')
-  .description('Set system proxy (127.0.0.1:8899 by default)');
+  .description('Set global proxy (127.0.0.1:8899 by default)');
 program.command('install')
   .description('Install whistle plugin');
 program.command('uninstall')
