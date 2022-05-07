@@ -44,12 +44,18 @@ exports.enableProxy = function(options) {
     bypass = '';
   }
   execSync('\'' + PROXY_HELPER + '\' -m global -p ' + port + ' -r ' + port + ' -s ' + options.host + bypass);
-  var curProxy = getCurProxy();
-  return checkProxy(curProxy.http, options) && checkProxy(curProxy.https, options);
+  try {
+    var curProxy = getCurProxy();
+    return checkProxy(curProxy.http, options) && checkProxy(curProxy.https, options);
+  } catch (e) {}
+  return true;
 };
 
 exports.disableProxy = function() {
   execSync('\''  + PROXY_HELPER + '\' -m off');
-  var curProxy = getCurProxy();
-  return !curProxy.http.enabled && !curProxy.https.enabled;
+  try {
+    var curProxy = getCurProxy();
+    return !curProxy.http.enabled && !curProxy.https.enabled;
+  } catch (e) {}
+  return true;
 };
