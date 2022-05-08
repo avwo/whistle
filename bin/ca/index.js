@@ -22,6 +22,9 @@ function installMac(certPath) {
 function installWin(certFile) {
   var result = spawnSync('certutil', ['-addstore', '-user', 'Root', certFile]);
   checkSuccess(result);
+  if (/ERROR_CANCELLED/i.test(result.stdout + '')) {
+    throw new Error('ERROR_CANCELLED');
+  }
 }
 
 module.exports = function(certFile) {
