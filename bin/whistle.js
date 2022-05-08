@@ -8,6 +8,7 @@ var showStatus = require('./status');
 var util = require('./util');
 var plugin = require('./plugin');
 var setProxy = require('./proxy/cli');
+var installCA = require('./ca/cli');
 
 var showUsage = util.showUsage;
 var error = util.error;
@@ -85,6 +86,8 @@ program
   .description('Add rules from local js file (.whistle.js by default)');
 program.command('proxy')
   .description('Set global proxy');
+program.command('ca')
+  .description('Install Root CA');
 program.command('install')
   .description('Install whistle plugin');
 program.command('uninstall')
@@ -143,6 +146,8 @@ if (cmd === 'status') {
   showStatus(all, storage);
 } else if (cmd === 'proxy') {
   setProxy(Array.prototype.slice.call(argv, 3));
+} else if (cmd === 'ca') {
+  installCA(Array.prototype.slice.call(argv, 3));
 } else if (/^([a-z]{1,2})?uni(nstall)?$/.test(cmd)) {
   plugin.uninstall(Array.prototype.slice.call(argv, 3));
 } else if (/^([a-z]{1,2})?i(nstall)?$/.test(cmd)) {

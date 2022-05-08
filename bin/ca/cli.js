@@ -1,6 +1,11 @@
-var os = require('os');
 var path = require('path');
 var installRootCA = require('./index');
+var getWhistlePath = require('../../lib/util/common').getWhistlePath;
 
-var rootFile = path.join(os.homedir(), '.WhistleAppData/.whistle/certs/root.crt');
-installRootCA(rootFile);
+function getDefaultCA() {
+  return path.join(getWhistlePath(), '.whistle/certs/root.crt');
+}
+
+module.exports = function(argv) {
+  installRootCA(getDefaultCA());
+};
