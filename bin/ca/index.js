@@ -23,7 +23,7 @@ function installWin(certFile) {
   var result = spawnSync('certutil', ['-addstore', '-user', 'Root', certFile]);
   checkSuccess(result);
   if (/ERROR_CANCELLED/i.test(result.stdout + '')) {
-    throw new Error('ERROR_CANCELLED');
+    throw new Error('The authorization was canceled by the user.');
   }
 }
 
