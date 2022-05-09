@@ -17,7 +17,7 @@ var MAX_LEN = 1024 * 1024;
 function installCert(certFile, url) {
   try {
     installRootCA(fileMgr.convertSlash(certFile));
-    util.info('Install Root CA (' + (url || certFile) + ') successful.');
+    util.info('Install root CA (' + (url || certFile) + ') successful.');
   } catch (e) {
     util.error(e.message);
   }

@@ -97,7 +97,7 @@ program
 program.command('proxy')
   .description('Set global proxy');
 program.command('ca')
-  .description('Install Root CA');
+  .description('Install root CA');
 program.command('install')
   .description('Install whistle plugin');
 program.command('uninstall')
