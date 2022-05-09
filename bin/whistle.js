@@ -15,6 +15,9 @@ var info = util.info;
 
 function handleEnd(err, options, restart) {
   options = util.showUsage(err, options, restart);
+  if (!options) {
+    return;
+  }
   var host = options.host + ':' + options.port;
   var argv = [host];
   if (options.bypass) {

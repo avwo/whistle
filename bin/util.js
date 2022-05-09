@@ -89,10 +89,14 @@ function showUsage(isRunning, options, restart) {
   if (parseInt(process.version.slice(1), 10) < 6) {
     warn(colors.bold('\nWarning: The current Node version is too low, access https://nodejs.org to install the latest version, or may not be able to Capture HTTPS CONNECTs\n'));
   }
+  var bypass = options.init;
+  if (bypass == null) {
+    return;
+  }
   return {
     host: options.host || '127.0.0.1',
     port: port,
-    bypass: options.init
+    bypass: typeof bypass === 'string' ? bypass : undefined
   };
 }
 
