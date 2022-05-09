@@ -9,18 +9,26 @@ var HOST_SUFFIX_RE = /\:(\d+|auto)?$/;
 var HOST_RE = /^[a-z\d_-]+(?:\.[a-z\d_-]+)*$/i;
 
 function enableProxy(options) {
-  if (proxy.enableProxy(options)) {
-    util.info('Setting global proxy (' + options.host + ':' + options.port + ') successful.');
-  } else {
-    util.error('Failed to set global proxy (' + options.host + ':' + options.port + ').');
+  try {
+    if (proxy.enableProxy(options)) {
+      util.info('Setting global proxy (' + options.host + ':' + options.port + ') successful.');
+    } else {
+      util.error('Failed to set global proxy (' + options.host + ':' + options.port + ').');
+    }
+  } catch (e) {
+    util.error(e.message);
   }
 }
 
 function disableProxy() {
-  if (proxy.disableProxy()) {
-    util.info('Turn off global proxy successful.');
-  } else {
-    util.error('Failed to turn off global proxy.');
+  try {
+    if (proxy.disableProxy()) {
+      util.info('Turn off global proxy successful.');
+    } else {
+      util.error('Failed to turn off global proxy.');
+    }
+  } catch (e) {
+    util.error(e.message);
   }
 }
 
