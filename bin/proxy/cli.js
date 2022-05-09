@@ -2,19 +2,11 @@ var net = require('net');
 var proxy = require('./index');
 var util = require('../util');
 
-var readConfig = util.readConfig;
 var OFF_RE = /^(?:o|0|-{0,2}off)$/i;
 var BYPASS_RE = /^(?:-{0,2}bypass|-x|-b)$/i;
 var NUM_RE = /^\d+$/;
 var HOST_SUFFIX_RE = /\:(\d+|auto)?$/;
 var HOST_RE = /^[a-z\d_-]+(?:\.[a-z\d_-]+)*$/i;
-
-function getDefaultPort() {
-  var conf = readConfig();
-  conf = conf && conf.options;
-  var port = conf && conf.port;
-  return port > 0 ? port : 8899;
-}
 
 function enableProxy(options) {
   if (proxy.enableProxy(options)) {
@@ -69,7 +61,7 @@ module.exports = function(argv) {
     }
   });
   if (!options.port) {
-    options.port = getDefaultPort();
+    options.port = util.getDefaultPort();
   }
   options.host = options.host || '127.0.0.1';
   enableProxy(options);

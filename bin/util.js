@@ -12,7 +12,7 @@ var CHECK_RUNNING_CMD = process.platform === 'win32' ?
   'tasklist /fi "PID eq %s" | findstr /i "node.exe"'
   : 'ps -f -p %s | grep "node"';
 var isWin = process.platform === 'win32';
-  
+
 function isRunning(pid, callback) {
   pid ? cp.exec(util.format(CHECK_RUNNING_CMD, pid), 
     function (err, stdout, stderr) {
@@ -146,4 +146,11 @@ exports.readConfigList = readConfigList;
 exports.getHash = function(str) {
   var hmac = createHmac('sha256', 'a secret');
   return hmac.update(str).digest('hex');
+};
+
+exports.getDefaultPort = function () {
+  var conf = readConfig();
+  conf = conf && conf.options;
+  var port = conf && conf.port;
+  return port > 0 ? port : 8899;
 };
