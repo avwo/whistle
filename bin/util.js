@@ -7,6 +7,7 @@ var config = require('../lib/config');
 var colors = require('colors/safe');
 var path = require('path');
 var createHmac = require('crypto').createHmac;
+
 /*eslint no-console: "off"*/
 var CHECK_RUNNING_CMD = process.platform === 'win32' ? 
   'tasklist /fi "PID eq %s" | findstr /i "node.exe"'
@@ -88,6 +89,11 @@ function showUsage(isRunning, options, restart) {
   if (parseInt(process.version.slice(1), 10) < 6) {
     warn(colors.bold('\nWarning: The current Node version is too low, access https://nodejs.org to install the latest version, or may not be able to Capture HTTPS CONNECTs\n'));
   }
+  return {
+    host: options.host || '127.0.0.1',
+    port: port,
+    bypass: options.init
+  };
 }
 
 exports.showUsage = showUsage;

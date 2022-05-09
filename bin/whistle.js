@@ -10,13 +10,23 @@ var plugin = require('./plugin');
 var setProxy = require('./proxy/cli');
 var installCA = require('./ca/cli');
 
-var showUsage = util.showUsage;
 var error = util.error;
 var info = util.info;
 
+function handleEnd(err, options, restart) {
+  options = util.showUsage(err, options, restart);
+  var host = options.host + ':' + options.port;
+  var argv = [host];
+  if (options.bypass) {
+    argv.push('-x', options.bypass);
+  }
+  setProxy(argv);
+  installCA([host]);
+}
+
 function showStartupInfo(err, options, debugMode, restart) {
   if (!err || err === true) {
-    return showUsage(err, options, restart);
+    return handleEnd(err, options, restart);
   }
   if (/listen EADDRINUSE/.test(err)) {
     options = util.formatOptions(options);
@@ -56,7 +66,7 @@ program.setConfig({
       showStartupInfo(err, options, true);
       return;
     }
-    showUsage(false, options);
+    handleEnd(false, options);
     console.log('Press [Ctrl+C] to stop ' + config.name + '...');
   },
   startCallback: showStartupInfo,
@@ -120,6 +130,7 @@ program
   .option('-R, --reqCacheSize [reqCacheSize]', 'set the cache size of request data (600 by default)', String, undefined)
   .option('-F, --frameCacheSize [frameCacheSize]', 'set the cache size of webSocket and socket\'s frames (512 by default)', String, undefined)
   .option('-A, --addon [pluginPaths]', 'add custom plugin paths', String, undefined)
+  .option('--init [bypass]', 'auto set global proxy (and bypass) and install root CA')
   .option('--config [workers]', 'start the cluster server and set worker number (os.cpus().length by default)', String, undefined)
   .option('--cluster [config]', 'load the startup config from a local file', String, undefined)
   .option('--dnsServer [dnsServer]', 'set custom dns servers', String, undefined)
