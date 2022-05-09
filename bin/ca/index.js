@@ -16,6 +16,10 @@ function getKeyChain() {
 function installMac(certPath) {
   var result = spawnSync('security', ['add-trusted-cert', '-k', getKeyChain(), certPath]);
   checkSuccess(result);
+  var msg = result.stdout + '';
+  if (/Error:/i.test(msg)) {
+    throw new Error(msg);
+  }
 }
 
 
