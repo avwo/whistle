@@ -47,6 +47,7 @@ var HistoryData = React.createClass({
         filename: filename,
         domain: cert.dnsName,
         mtime: cert.mtime,
+        type: cert.type,
         validity: startDate.toLocaleString() + ' ~ ' + endDate.toLocaleString(),
         status: status || (
           <span className="glyphicon glyphicon-ok" style={OK_STYLE} />
@@ -59,9 +60,10 @@ var HistoryData = React.createClass({
         item.readOnly = true;
       } else {
         if (filename[0] === 'z' && filename[1] === '/') {
-          item.displayName = filename.substring(2);
+          filename = filename.substring(2);
           item.readOnly = true;
         }
+        item.displayName = filename + '.' + (item.type || 'crt');
         list.push(item);
       }
     });
@@ -88,7 +90,7 @@ var HistoryData = React.createClass({
   showRemoveTips: function (item) {
     var dir = (item.dir || '').replace(/\\/g, '/');
     dir = dir + (/\/$/.test(dir) ? '' : '/') + item.filename;
-    var crt = dir + '.crt';
+    var crt = dir + '.' + (item.type || 'crt');
     var key = dir + '.key';
     this.refs.tipsDialog.show({
       title: 'Delete the following files and restart whistle:',
@@ -110,7 +112,7 @@ var HistoryData = React.createClass({
         if (!sure) {
           return;
         }
-        dataCenter.certs.remove({ filename: item.filename }, self.handleCgi);
+        dataCenter.certs.remove({ filename: item.filename, type: item.type }, self.handleCgi);
       }
     );
   },
@@ -141,6 +143,9 @@ var HistoryData = React.createClass({
       certs = certs || {};
       var pair = certs[name] || {};
       pair[suffix == 'key' ? 'key' : 'cert'] = cert;
+      if (suffix !== 'key') {
+        pair.type = suffix;
+      }
       certs[name] = pair;
     }
     if (!certs) {
