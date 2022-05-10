@@ -13,7 +13,7 @@ var OK_STYLE = { color: '#5bbd72' };
 var MAX_CERT_SIZE = 128 * 1024;
 
 function getCertName(cert, filename) {
-  filename = filename || item.filename;
+  filename = filename || cert.filename;
   return filename + '.' + (cert.type || 'crt');
 }
 
