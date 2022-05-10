@@ -317,3 +317,14 @@
 .w-menu-selected {
   background-color: #ddd;
 }
+
+.w-root-ca-type {
+  width: 100px;
+  float: right;
+  margin: 3px 15px 0 0;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  height: 24px;
+  font-size: 12px;
+  padding-left: 8px;
+}

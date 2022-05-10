@@ -272,9 +272,14 @@ var Index = React.createClass({
     var rules = modal.rules;
     var values = modal.values;
     var multiEnv = !!modal.server.multiEnv;
+    var caType = storage.get('caType');
+    if (caType !== 'cer' && caType !== 'pem') {
+      caType = 'crt';
+    }
     var state = {
       replayCount: 1,
       tabs: [],
+      caType: caType,
       allowMultipleChoice: modal.rules.allowMultipleChoice,
       backRulesFirst: modal.rules.backRulesFirst,
       networkMode: !!modal.server.networkMode,
@@ -3364,6 +3369,14 @@ var Index = React.createClass({
       self.setState({ forceShowLeftMenu: true });
     }, 200);
   },
+  selectCAType: function(e) {
+    var caType = e.target.value;
+    if (caType !== 'cer' && caType !== 'pem') {
+      caType = 'crt';
+    }
+    this.setState({ caType: caType });
+    storage.set('caType', caType);
+  },
   forceHideLeftMenu: function () {
     var self = this;
     clearTimeout(self.hideTimer);
@@ -3535,6 +3548,18 @@ var Index = React.createClass({
     LEFT_BAR_MENUS[2].hide = rulesMode;
     LEFT_BAR_MENUS[3].hide = pluginsMode;
     LEFT_BAR_MENUS[4].hide = rulesOnlyMode;
+
+    var caType = state.caType || 'crt';
+    var qrCode = 'img/qrcode.png';
+    var caUrl = 'cgi-bin/rootca';
+    var caShortUrl = 'http://rootca.pro/';
+
+    if (caType !== 'crt') {
+      qrCode = 'img/qrcode-' + caType + '.png';
+      caUrl += '?type=' + caType;
+      caShortUrl += caType;
+    }
+
     return (
       <div
         className={
@@ -4363,19 +4388,24 @@ var Index = React.createClass({
                   </a>
                   <a
                     className="w-download-rootca"
-                    title="http://rootca.pro/"
-                    href="cgi-bin/rootca"
+                    title={caShortUrl}
+                    href={caUrl}
                     target="downloadTargetFrame"
                   >
                     Download RootCA
                   </a>
+                  <select className="w-root-ca-type" value={caType} onChange={this.selectCAType}>
+                    <option value="crt">rootCA.crt</option>
+                    <option value="cer">rootCA.cer</option>
+                    <option value="pem">rootCA.pem</option>
+                  </select>
                 </div>
                 <a
-                  title="http://rootca.pro/"
-                  href="cgi-bin/rootca"
+                  title={caShortUrl}
+                  href={caUrl}
                   target="downloadTargetFrame"
                 >
-                  <img src="img/qrcode.png" />
+                  <img src={qrCode} width="320" />
                 </a>
                 <div className="w-https-settings">
                   <p>
