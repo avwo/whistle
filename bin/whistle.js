@@ -153,7 +153,7 @@ var removeItem = function(list, name) {
   i !== -1 && list.splice(i, 1);
 };
 if (argv.indexOf('--init') !== -1) {
-  process.env.WHISTLE_MODE = (process.env.WHISTLE_MODE || '') + '|capture';
+  process.env.WHISTLE_MODE = (process.env.WHISTLE_MODE || '') + '|persistentCapture';
 }
 if (cmd === 'status') {
   var all = argv[3] === '--all' || argv[3] === '-l';
