@@ -1,7 +1,9 @@
 # v2.9.15
 1. feat: 支持通过 `w2 ca [host:port]` 安装对应 Whistle 代理的根证书（不填参数，默认加载当前本机运行版本）
-2. feat: 支持通过 `w2 start[restart|run] --init [bypass]` 启动时同时设置代理和安装根证书
-3. feat: 支持 `npm i -g whistle && w2 restart --init` 一键安装 Whistle
+2. feat: 支持通过 `w2 start[restart|run] --init [bypass]` 启动时同时设置代理和安装根证书，利用此特性可以实现通过 `npm i -g whistle && w2 restart --init` 一键安装 Whistle
+3. feat: 支持上传 `.cer` 及 `.pem` 证书
+4. feat: 支持通过 `process.env.WHISTLE_MODE` 定义启动参数 `-M xxx`
+5. fix: `utf8` 编码不支持 `0x7f` 字符问题
 
 # v2.9.14
 1. feat: 支持通过命令行 `w2 proxy [off] [port] [host:port] [-x bypass]` 设置系统的全局代理
