@@ -12,10 +12,11 @@ var installCA = require('./ca/cli');
 
 var error = util.error;
 var info = util.info;
+var hasInit;
 
 function handleEnd(err, options, restart) {
   options = util.showUsage(err, options, restart);
-  if (!options) {
+  if (!options || !hasInit) {
     return;
   }
   var host = options.host + ':' + options.port;
@@ -153,6 +154,7 @@ var removeItem = function(list, name) {
   i !== -1 && list.splice(i, 1);
 };
 if (argv.indexOf('--init') !== -1) {
+  hasInit = true;
   process.env.WHISTLE_MODE = (process.env.WHISTLE_MODE || '') + '|persistentCapture';
 }
 if (cmd === 'status') {
