@@ -12,6 +12,11 @@ var message = require('./message');
 var OK_STYLE = { color: '#5bbd72' };
 var MAX_CERT_SIZE = 128 * 1024;
 
+function getCertName(cert, filename) {
+  filename = filename || item.filename;
+  return filename + '.' + (cert.type || 'crt');
+}
+
 function readFile(file, callback) {
   var reader = new FileReader();
   reader.readAsText(file);
@@ -63,7 +68,7 @@ var HistoryData = React.createClass({
           filename = filename.substring(2);
           item.readOnly = true;
         }
-        item.displayName = filename + '.' + (item.type || 'crt');
+        item.displayName = getCertName(item, filename);
         list.push(item);
       }
     });
@@ -89,9 +94,9 @@ var HistoryData = React.createClass({
   },
   showRemoveTips: function (item) {
     var dir = (item.dir || '').replace(/\\/g, '/');
-    dir = dir + (/\/$/.test(dir) ? '' : '/') + item.filename;
-    var crt = dir + '.' + (item.type || 'crt');
-    var key = dir + '.key';
+    dir = dir + (/\/$/.test(dir) ? '' : '/');
+    var crt = dir + getCertName(item);
+    var key = dir + item.filename + '.key';
     this.refs.tipsDialog.show({
       title: 'Delete the following files and restart whistle:',
       tips: key + '\n' + crt,
@@ -107,7 +112,7 @@ var HistoryData = React.createClass({
   removeCert: function (item) {
     var self = this;
     win.confirm(
-      'Are you sure to delete \'' + item.filename + '\'.',
+      'Are you sure to delete \'' + getCertName(item) + '\'.',
       function (sure) {
         if (!sure) {
           return;
