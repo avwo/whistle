@@ -235,7 +235,13 @@ app.use(function(req, res, next) {
   if (req.headers.host !== 'rootca.pro') {
     return next();
   }
-  res.download(getRootCAFile(), 'rootCA.' + (req.path.indexOf('/cer') ? 'crt' : 'cer'));
+  var type = 'crt';
+  if (req.path.indexOf('/cer') !== -1) {
+    type = 'cer';
+  } else if (req.path.indexOf('/pem') !== -1) {
+    type = 'pem';
+  }
+  res.download(getRootCAFile(), 'rootCA.' + type);
 });
 
 function cgiHandler(req, res) {
