@@ -126,8 +126,8 @@ var HistoryData = React.createClass({
         return;
       }
       var { name } = cert;
-      if (!/\.(crt|key)/.test(name)) {
-        message.error('Only files with .key or .crt suffixes are supported.');
+      if (!/\.(crt|cer|pem|key)/.test(name)) {
+        message.error('Only files with .key, .crt, .cer, .pem suffixes are supported.');
         return;
       }
       var suffix = RegExp.$1;
@@ -284,7 +284,7 @@ var HistoryData = React.createClass({
             ref="uploadCerts"
             style={{ display: 'none' }}
             type="file"
-            accept=".crt,.key"
+            accept=".crt,.cer,.pem,.key"
             multiple="multiple"
             onChange={self.handleChange}
           />
