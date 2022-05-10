@@ -236,9 +236,9 @@ app.use(function(req, res, next) {
     return next();
   }
   var type = 'crt';
-  if (req.path.indexOf('/cer') !== -1) {
+  if (!req.path.indexOf('/cer')) {
     type = 'cer';
-  } else if (req.path.indexOf('/pem') !== -1) {
+  } else if (!req.path.indexOf('/pem')) {
     type = 'pem';
   }
   res.download(getRootCAFile(), 'rootCA.' + type);
