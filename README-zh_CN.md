@@ -80,6 +80,8 @@ operatorURI pattern pattern2 patternN
 
 # 安装启动
 
+Mac 或 Windows 系统可以采用一键安装：https://juejin.cn/post/7096345607740063775
+
 whistle安装过程需要以下步骤（**缺一不可**）：
 1. 安装Node
 2. 安装whistle
