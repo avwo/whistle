@@ -37,7 +37,7 @@ var MAX_PLUGINS_TABS = 7;
 var MAX_FILE_SIZE = 1024 * 1024 * 128;
 var MAX_OBJECT_SIZE = 1024 * 1024 * 6;
 var MAX_LOG_SIZE = 1024 * 1024 * 2;
-var MAX_REPLAY_COUNT = 30;
+var MAX_REPLAY_COUNT = 100;
 var LINK_SELECTOR = '.cm-js-type, .cm-js-http-url, .cm-string, .cm-js-at';
 var LINK_RE = /^"(https?:)?(\/\/[^/]\S+)"$/i;
 var AT_LINK_RE = /^@(https?:)?(\/\/[^/]\S+)$/i;
@@ -2623,7 +2623,7 @@ var Index = React.createClass({
   },
   replayCountChange: function (e) {
     var count = e.target.value.replace(/^\s*0*|[^\d]+/, '');
-    var replayCount = count.slice(0, 2);
+    var replayCount = count.slice(0, 3);
     if (replayCount > MAX_REPLAY_COUNT) {
       replayCount = MAX_REPLAY_COUNT;
     }
@@ -4507,7 +4507,7 @@ var Index = React.createClass({
                 onChange={this.replayCountChange}
                 value={state.replayCount}
                 className="form-control"
-                maxLength="2"
+                maxLength="3"
               />
             </label>
             <a
