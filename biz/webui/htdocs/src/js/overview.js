@@ -328,7 +328,7 @@ var Overview = React.createClass({
             titleModal[name] = rule ? rule.raw : undefined;
             if (name === 'proxy') {
               if (realUrl && ruleStr) {
-                rulesModal[name] += ruleStr + ' (' + realUrl + ')';
+                rulesModal[name] += ' (' + realUrl + ')';
               }
             } else if (name === 'host') {
               var result = [];
@@ -337,10 +337,7 @@ var Overview = React.createClass({
               }
               if (rules.proxy && rules.proxy.host) {
                 result.push(
-                  getRuleStr(rules.proxy.host) +
-                    ' (' +
-                    rules.proxy.matcher +
-                    ')'
+                  getRuleStr(rules.proxy.host) + ' (' + rules.proxy.matcher + ')'
                 );
               }
               rulesModal[name] = result.join('\n');
