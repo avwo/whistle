@@ -207,7 +207,7 @@
 
 .w-history-list div {
   line-height: 22px;
-  padding: 0 10px;
+  padding: 0 5px;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;

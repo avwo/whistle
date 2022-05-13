@@ -946,7 +946,7 @@ var Composer = React.createClass({
           (util.getBoolean(self.props.hide) ? ' hide' : '')
         }
       >
-        <Divider hideLeft={!showHistory} leftWidth="160">
+        <Divider hideLeft={!showHistory} leftWidth="150">
           <div
             className="fill orient-vertical-box w-history-data"
             onMouseDown={util.preventBlur}

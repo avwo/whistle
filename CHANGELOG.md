@@ -1,3 +1,7 @@
+# v2.9.26
+1. style: 添加 `Replay Times` 和 `Repeat Times` 菜单，最多可以重放请求 100 次
+2. refactor: `compose` cgi 支持设置 `repeatTimes`（不能超过 100 次）
+
 # v2.9.15
 1. feat: 支持通过 `w2 ca [host:port]` 安装对应 Whistle 代理的根证书（不填参数，默认加载当前本机运行版本）
 2. feat: 支持通过 `w2 start[restart|run] --init [bypass]` 启动时同时设置代理和安装根证书，利用此特性可以实现通过 `npm i -g whistle && w2 restart --init` 一键安装 Whistle
