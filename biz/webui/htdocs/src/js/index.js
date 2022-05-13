@@ -2643,9 +2643,10 @@ var Index = React.createClass({
       return;
     }
     this.enableRecord();
-    var replayReq = function (item) {
+    var replayReq = function (item, repeatCount) {
       var req = item.req;
       dataCenter.compose2({
+        repeatCount: repeatCount,
         useH2: item.useH2 ? 1 : '',
         url: item.url,
         headers: util.getOriginalReqHeaders(item),
@@ -2655,11 +2656,7 @@ var Index = React.createClass({
     };
     var map;
     if (count > 1) {
-      count = Math.min(count, MAX_REPLAY_COUNT);
-      var reqItem = list[0];
-      for (var i = 0; i < count; i++) {
-        replayReq(reqItem);
-      }
+      replayReq(list[0], Math.min(count, MAX_REPLAY_COUNT));
     } else {
       map = {};
       list.slice(0, MAX_REPLAY_COUNT).forEach(function (item) {

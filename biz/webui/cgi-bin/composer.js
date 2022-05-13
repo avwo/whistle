@@ -125,7 +125,7 @@ function handleWebSocket(options, cb, count) {
       } else {
         socket.write(getReqRaw(options));
         var data = options.body;
-        if ((!data || !data.length) && !execCb) {
+        if ((!data || !data.length) && !cb) {
           return drain(socket);
         }
         parseReq(socket, function(e) {
