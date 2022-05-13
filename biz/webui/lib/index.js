@@ -15,6 +15,7 @@ var extend = require('extend');
 var htdocs = require('../htdocs');
 var handleWeinreReq = require('../../weinre');
 var setProxy = require('./proxy');
+var rulesUtil = require('../../../lib/rules/util');
 var getRootCAFile = require('../../../lib/https/ca').getRootCAFile;
 var config = require('../../../lib/config');
 var loadAuthPlugins = require('../../../lib/plugins').loadAuthPlugins;
@@ -373,6 +374,32 @@ app.use(function(req, res, next) {
   if (checkAuth(req, res)) {
     next();
   }
+});
+
+function decodeQuery(req, res, next) {
+  return urlencodedParser(req, res, next);
+}
+
+function sendText(res, text) {
+  res.writeHead(200, {
+    'Content-Type': 'text/plain; charset=utf-8'
+  });
+  res.end(typeof text === 'string' ? text : '');
+}
+
+app.get('/rules', decodeQuery, function(req, res) {
+  var name = req.query.name || req.query.key;
+  if (name === 'Default') {
+    name = rulesUtil.rules.getDefault();
+  } else {
+    name = rulesUtil.rules.get(name);
+  }
+  sendText(res, name);
+});
+
+app.get('/values', decodeQuery, function(req, res) {
+  var name = req.query.name || req.query.key;
+  sendText(res, rulesUtil.values.get(name));
 });
 
 app.all('/cgi-bin/*', function(req, res, next) {
