@@ -98,6 +98,7 @@ var contextMenuList = [
     list: [
       { name: 'Abort' },
       { name: 'Replay' },
+      { name: 'Replay Times', action: "replayTimes" },
       { name: 'Compose' },
       { name: 'Mark' },
       { name: 'Unmark' }
@@ -820,6 +821,9 @@ var ReqData = React.createClass({
     case 'Replay':
       events.trigger('replaySessions', [item, e.shiftKey]);
       break;
+    case 'replayTimes':
+      events.trigger('replaySessions', [item, true]);
+      break;
     case 'Export':
       if (self.treeTarget && !self.isTreeLeafNode) {
         events.trigger('exportSessions', [
@@ -1074,34 +1078,38 @@ var ReqData = React.createClass({
     contextMenuList[5].disabled = disabled;
     var list5 = contextMenuList[5].list;
     if (item) {
-      list5[2].disabled = false;
+      list5[3].disabled = false;
       if (item.selected) {
-        list5[3].disabled = true;
         list5[4].disabled = true;
+        list5[5].disabled = true;
         selectedList.forEach(function (selectedItem) {
           if (selectedItem.mark) {
-            list5[4].disabled = false;
+            list5[5].disabled = false;
           } else {
-            list5[3].disabled = false;
+            list5[4].disabled = false;
           }
         });
       } else {
         var unmark = !item.mark;
-        list5[3].disabled = !unmark;
-        list5[4].disabled = unmark;
+        list5[4].disabled = !unmark;
+        list5[5].disabled = unmark;
       }
       if (item.selected) {
-        list5[1].disabled = !selectedList.length;
+        var len = selectedList.length;
         list5[0].disabled = !selectedList.filter(util.canAbort).length;
+        list5[1].disabled = !len;
+        list5[2].disabled = !len || len > 1;
       } else {
-        list5[1].disabled = false;
         list5[0].disabled = !util.canAbort(item);
+        list5[1].disabled = false;
+        list5[2].disabled = false;
       }
     } else {
       list5[0].disabled = true;
       list5[1].disabled = true;
       list5[2].disabled = true;
       list5[3].disabled = true;
+      list5[4].disabled = true;
     }
     var treeItem = contextMenuList[6];
     var treeList = treeItem.list;

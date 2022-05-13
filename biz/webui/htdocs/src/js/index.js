@@ -4503,6 +4503,7 @@ var Index = React.createClass({
               Count:
               <input
                 ref="replayCount"
+                placeholder={'<= ' + MAX_REPLAY_COUNT}
                 onKeyDown={this.replayRepeat}
                 onChange={this.replayCountChange}
                 value={state.replayCount}

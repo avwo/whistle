@@ -337,11 +337,11 @@ module.exports = function(req, res) {
     }
     if (isWs) {
       options.method = 'GET';
-      handleWebSocket(options, handleResponse);
+      handleWebSocket(options, handleResponse, req.body.repeatCount);
     } else if (isConn) {
-      handleConnect(options, handleResponse);
+      handleConnect(options, handleResponse, req.body.repeatCount);
     } else  {
-      handleHttp(options, handleResponse);
+      handleHttp(options, handleResponse, req.body.repeatCount);
     }
     if (!handleResponse) {
       res.json({ec: 0, em: 'success'});
