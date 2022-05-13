@@ -276,8 +276,11 @@
   color: red;
 }
 .w-replay-count-dialog .modal-content {
-  width: 236px;
+  width: 236px!important;
   white-space: nowrap;
+}
+.w-replay-count-dialog .modal-dialog {
+  width: 236px!important;
 }
 .w-replay-count-dialog .modal-content label {
   width: auto;

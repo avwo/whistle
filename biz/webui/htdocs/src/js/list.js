@@ -592,9 +592,11 @@ var List = React.createClass({
                     onClick={function () {
                       self.onClick(item);
                     }}
-                    onDoubleClick={function () {
+                    onDoubleClick={function (e) {
                       self.onDoubleClick(item);
+                      e.preventDefault();
                     }}
+                    onMouseDown={util.preventBlur}
                     className={util.getClasses({
                       'w-active': item.active,
                       'w-changed': item.changed,

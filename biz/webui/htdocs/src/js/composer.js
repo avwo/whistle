@@ -1369,7 +1369,7 @@ var Composer = React.createClass({
                 maxLength="3"
               />
             </label>
-            <a
+            <button
               type="button"
               ref="repeatBtn"
               onKeyDown={this.sendRepeat}
@@ -1377,9 +1377,10 @@ var Composer = React.createClass({
               onMouseDown={util.preventBlur}
               className="btn btn-primary"
               onClick={this.sendRepeat}
+              disabled={!state.repeatTimes}
             >
               Send
-            </a>
+            </button>
           </div>
         </Dialog>
       </div>

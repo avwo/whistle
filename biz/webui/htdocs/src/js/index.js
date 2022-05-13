@@ -4508,16 +4508,17 @@ var Index = React.createClass({
                 maxLength="3"
               />
             </label>
-            <a
+            <button
               type="button"
               onKeyDown={this.replayRepeat}
               tabIndex="0"
               onMouseDown={this.preventBlur}
               className="btn btn-primary"
+              disabled={!state.replayCount}
               onClick={this.replayRepeat}
             >
               Replay
-            </a>
+            </button>
           </div>
         </Dialog>
         <Dialog ref="importRemoteRules" wstyle="w-import-remote-dialog">
