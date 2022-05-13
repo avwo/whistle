@@ -11,6 +11,8 @@ var ResDetail = require('./res-detail');
 var Properties = require('./properties');
 var PropsEditor = require('./props-editor');
 var message = require('./message');
+var ContextMenu = require('./context-menu');
+var Dialog = require('./dialog');
 var win = require('./win');
 
 var METHODS = [
@@ -51,6 +53,15 @@ var METHODS = [
   'UNLINK',
   'UNSUBSCRIBE'
 ];
+var SEND_CTX_MENU = [
+  { name: 'Repeat Times' },
+  { name: 'Show History', action: 'history' }
+];
+var HISTORY_CTX_MENU = [
+  { name: 'Replay' },
+  { name: 'Replay Times' },
+  { name: 'Compose' }
+];
 var TYPES = {
   form: 'application/x-www-form-urlencoded',
   upload: 'multipart/form-data',
@@ -68,6 +79,7 @@ var MAX_HEADERS_SIZE = 1024 * 64;
 var MAX_BODY_SIZE = 1024 * 128;
 var MAX_COUNT = 64;
 var ONE_MINS = 1000 * 60;
+var MAX_REPEAT_TIMES = 100;
 Object.keys(TYPES).forEach(function (name) {
   REV_TYPES[TYPES[name]] = name;
 });
@@ -157,6 +169,7 @@ var Composer = React.createClass({
     }
     return {
       loading: true,
+      repeatTimes: 1,
       historyData: [],
       showHistory: !!storage.get('showHistory'),
       disableBody: !!storage.get('disableComposerBody'),
@@ -229,6 +242,25 @@ var Composer = React.createClass({
     });
     self.updatePrettyData();
     self.state.showHistory && self.loadHistory();
+  },
+  repeatTimesChange: function (e) {
+    var count = e.target.value.replace(/^\s*0*|[^\d]+/, '');
+    var repeatTimes = count.slice(0, 3);
+    if (repeatTimes > MAX_REPEAT_TIMES) {
+      repeatTimes = MAX_REPEAT_TIMES;
+    }
+    this.setState({ repeatTimes: repeatTimes });
+  },
+  sendRepeat: function(e) {
+    if (e && e.type !== 'click' && e.keyCode !== 13) {
+      return;
+    }
+    this.refs.setRepeatTimes.hide();
+    if (this._isReplay) {
+      this.onReplay(this.state.repeatTimes);
+    } else {
+      this.execute(null, this.state.repeatTimes);
+    }
   },
   loadHistory: function () {
     var self = this;
@@ -444,10 +476,10 @@ var Composer = React.createClass({
     this.onComposerChange(true);
     storage.set('useH2InComposer', item.useH2 ? 1 : '');
   },
-  onReplay: function () {
+  onReplay: function (times) {
     this.onCompose();
     if (this._selectedItem) {
-      this.execute();
+      this.execute(null, times);
       ReactDOM.findDOMNode(this.refs.historyList).scrollTop = 0;
     }
   },
@@ -585,9 +617,24 @@ var Composer = React.createClass({
       this.setRulesDisable(false);
     }
   },
-  execute: function (e) {
-    if (e && e.target.nodeName === 'INPUT' && e.keyCode !== 13) {
+  showRepeatTimes: function(isReplay) {
+    var self = this;
+    self.refs.setRepeatTimes.show();
+    self._isReplay = isReplay;
+    ReactDOM.findDOMNode(self.refs.repeatBtn).innerHTML = isReplay ? 'Replay' : 'Send';
+    setTimeout(function () {
+      var input = ReactDOM.findDOMNode(self.refs.repeatTimes);
+      input.select();
+      input.focus();
+    }, 300);
+  },
+  execute: function (e, times) {
+    times = times > 0 ? Math.min(MAX_REPEAT_TIMES, times) : undefined;
+    if (e && !times && e.target.nodeName === 'INPUT' && e.keyCode !== 13) {
       return;
+    }
+    if (e && e.shiftKey) {
+      return this.showRepeatTimes();
     }
     var refs = this.refs;
     var url = ReactDOM.findDOMNode(refs.url).value.trim();
@@ -710,6 +757,7 @@ var Composer = React.createClass({
       method: method,
       body: body,
       base64: base64,
+      repeatCount: times,
       isHexText: isHexText
     };
     clearTimeout(self.comTimer);
@@ -809,6 +857,36 @@ var Composer = React.createClass({
     }
     this.setState({ tabName: tabName, initedResponse: true });
   },
+  onContextMenu: function(e) {
+    e.preventDefault();
+    var data = util.getMenuPosition(e, 125);
+    data.list = SEND_CTX_MENU;
+    SEND_CTX_MENU[1].name = this.state.showHistory ? 'Hide History' : 'Show History';
+    this.refs.contextMenu.show(data);
+  },
+  showHistoryMenu: function(e) {
+    e.preventDefault();
+    if (this.state.pending) {
+      return;
+    }
+    var data = util.getMenuPosition(e);
+    data.list = HISTORY_CTX_MENU;
+    this.refs.contextMenu.show(data);
+  },
+  onClickContextMenu: function (action) {
+    switch (action) {
+    case 'Repeat Times':
+      return this.showRepeatTimes();
+    case 'history':
+      return this.toggleHistory();
+    case 'Replay':
+      return this.onReplay();
+    case 'Replay Times':
+      return this.showRepeatTimes(true);
+    case 'Compose':
+      return this.onCompose();
+    }
+  },
   onBodyStateChange: function (e) {
     var disableBody = !e.target.checked;
     this.setState({ disableBody: disableBody });
@@ -858,7 +936,6 @@ var Composer = React.createClass({
     var lockBody = pending || disableBody;
     var showHistory = state.showHistory;
     var historyData = state.historyData;
-    var disabledClass = self._selectedItem && !pending ? null : 'w-disabled';
     self.hasBody = hasBody;
 
     return (
@@ -879,24 +956,6 @@ var Composer = React.createClass({
                 {state.loading ? 'Loading' : 'No history data'}
               </div>
             )}
-            {historyData.length ? (
-              <div className="w-history-bar">
-                <a
-                  onClick={this.onReplay}
-                  className={disabledClass}
-                  draggable="false"
-                >
-                  <span className="glyphicon glyphicon-repeat"></span>Replay
-                </a>
-                <a
-                  onClick={this.onCompose}
-                  className={disabledClass}
-                  draggable="false"
-                >
-                  <span className="glyphicon glyphicon-edit"></span>Compose
-                </a>
-              </div>
-            ) : null}
             <div className="fill w-history-list" ref="historyList">
               {historyData.map(function (item) {
                 if (!item.url) {
@@ -907,7 +966,11 @@ var Composer = React.createClass({
                     onClick={function () {
                       self.selectItem(item);
                     }}
-                    onDoubleClick={self.onCompose}
+                    onDoubleClick={self.showHistoryMenu}
+                    onContextMenu={function(e) {
+                      self.selectItem(item);
+                      self.showHistoryMenu(e);
+                    }}
                     title={item.title}
                     className={item.selected ? 'w-selected' : null}
                   >
@@ -946,6 +1009,7 @@ var Composer = React.createClass({
               <button
                 disabled={pending}
                 onClick={this.execute}
+                onContextMenu={self.onContextMenu}
                 className="btn btn-primary w-composer-execute"
               >
                 <span className="glyphicon glyphicon-send" />
@@ -1290,6 +1354,34 @@ var Composer = React.createClass({
             </Divider>
           </div>
         </Divider>
+        <ContextMenu onClick={this.onClickContextMenu} ref="contextMenu" />
+        <Dialog ref="setRepeatTimes" wstyle="w-replay-count-dialog">
+          <div className="modal-body">
+            <label>
+              Times:
+              <input
+                ref="repeatTimes"
+                placeholder={'<= ' + MAX_REPEAT_TIMES}
+                onKeyDown={this.sendRepeat}
+                onChange={this.repeatTimesChange}
+                value={state.repeatTimes}
+                className="form-control"
+                maxLength="3"
+              />
+            </label>
+            <a
+              type="button"
+              ref="repeatBtn"
+              onKeyDown={this.sendRepeat}
+              tabIndex="0"
+              onMouseDown={util.preventBlur}
+              className="btn btn-primary"
+              onClick={this.sendRepeat}
+            >
+              Send
+            </a>
+          </div>
+        </Dialog>
       </div>
     );
   }

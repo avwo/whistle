@@ -4497,7 +4497,7 @@ var Index = React.createClass({
         <Dialog ref="setReplayCount" wstyle="w-replay-count-dialog">
           <div className="modal-body">
             <label>
-              Count:
+              Times:
               <input
                 ref="replayCount"
                 placeholder={'<= ' + MAX_REPLAY_COUNT}

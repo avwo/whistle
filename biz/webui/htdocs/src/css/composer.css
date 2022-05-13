@@ -283,6 +283,7 @@
 .w-history-list {
   overflow-y: auto;
   overflow-x: hidden;
+  background-color: #fdfdfd;
 }
 
 .w-history-data .w-tips {

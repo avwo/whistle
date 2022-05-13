@@ -335,13 +335,15 @@ module.exports = function(req, res) {
     if (err) {
       return handleResponse && handleResponse(err);
     }
+    var count = req.body.repeatCount;
+    count = count > 0 ? count : req.body.repeatTimes;
     if (isWs) {
       options.method = 'GET';
-      handleWebSocket(options, handleResponse, req.body.repeatCount);
+      handleWebSocket(options, handleResponse, count);
     } else if (isConn) {
-      handleConnect(options, handleResponse, req.body.repeatCount);
+      handleConnect(options, handleResponse, count);
     } else  {
-      handleHttp(options, handleResponse, req.body.repeatCount);
+      handleHttp(options, handleResponse, count);
     }
     if (!handleResponse) {
       res.json({ec: 0, em: 'success'});

@@ -98,7 +98,7 @@ var contextMenuList = [
     list: [
       { name: 'Abort' },
       { name: 'Replay' },
-      { name: 'Replay Times', action: "replayTimes" },
+      { name: 'Replay Times', action: 'replayTimes' },
       { name: 'Compose' },
       { name: 'Mark' },
       { name: 'Unmark' }
