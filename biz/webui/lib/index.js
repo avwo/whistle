@@ -102,6 +102,9 @@ function verifyLogin(req, res, auth) {
   if (correctKey === lkey) {
     return true;
   }
+  if (req.query.authorization && !req.headers.authorization) {
+    req.headers.authorization = 'Basic ' + req.query.authorization;
+  }
   auth = getAuth(req) || {};
   if (!isGuest && config.encrypted) {
     auth.pass = shasum(auth.pass);
