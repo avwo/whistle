@@ -1,6 +1,7 @@
 # v2.9.26
 1. style: 添加 `Replay Times` 和 `Repeat Times` 菜单，最多可以重放请求 100 次
 2. refactor: `compose` cgi 支持设置 `repeatTimes`（不能超过 100 次）
+3. feat: 新增 CGI `/rules` `/values` `/rules?name=xxx` `/values?name=xxx` 获取 Whistle 的当前启用的规则和指定规则
 
 # v2.9.15
 1. feat: 支持通过 `w2 ca [host:port]` 安装对应 Whistle 代理的根证书（不填参数，默认加载当前本机运行版本）
