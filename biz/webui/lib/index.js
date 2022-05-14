@@ -376,10 +376,6 @@ app.use(function(req, res, next) {
   }
 });
 
-function decodeQuery(req, res, next) {
-  return urlencodedParser(req, res, next);
-}
-
 function sendText(res, text) {
   res.writeHead(200, {
     'Content-Type': 'text/plain; charset=utf-8'
@@ -387,17 +383,19 @@ function sendText(res, text) {
   res.end(typeof text === 'string' ? text : '');
 }
 
-app.get('/rules', decodeQuery, function(req, res) {
+app.get('/rules', function(req, res) {
   var name = req.query.name || req.query.key;
   if (name === 'Default') {
     name = rulesUtil.rules.getDefault();
+  } else if (!name) {
+    name = rulesUtil.rules.getRawRulesText();
   } else {
     name = rulesUtil.rules.get(name);
   }
   sendText(res, name);
 });
 
-app.get('/values', decodeQuery, function(req, res) {
+app.get('/values', function(req, res) {
   var name = req.query.name || req.query.key;
   sendText(res, rulesUtil.values.get(name));
 });
