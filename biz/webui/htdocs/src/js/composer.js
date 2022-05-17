@@ -664,7 +664,10 @@ var Composer = React.createClass({
             delete obj[key];
           }
         });
-        obj['x-whistle-rule-value'] = removeDuplicateRules(rules);
+        var customRules = removeDuplicateRules(rules);
+        if (customRules) {
+          obj['x-whistle-rule-value'] = customRules;
+        }
         headers = JSON.stringify(obj);
       } else {
         headers.split(/\r\n|\r|\n/).forEach(function (line) {
@@ -684,7 +687,10 @@ var Composer = React.createClass({
             result.push(line);
           }
         });
-        result.push('x-whistle-rule-value: ' + removeDuplicateRules(rules));
+        var customRules = removeDuplicateRules(rules);
+        if (customRules) {
+          result.push('x-whistle-rule-value: ' + customRules);
+        }
         headers = result.join('\n');
       }
     }
