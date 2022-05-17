@@ -34,7 +34,7 @@ Whistle 是基于 Node 实现的跨平台抓包调试工具，其主要特点：
 3. 一键安装过程中注意事项：
 	* Mac 需要两次输入开机密码或指纹验证
 
-		<img alt="输入开机密码" width="300" src="https://user-images.githubusercontent.com/11450939/168847149-c0765e81-2ce4-4ed4-b7d3-a958d8c0cf08.png">
+		<img alt="输入开机密码" width="235" src="https://user-images.githubusercontent.com/11450939/168847149-c0765e81-2ce4-4ed4-b7d3-a958d8c0cf08.png">
 		<img alt="输入指纹" width="300" src="https://user-images.githubusercontent.com/11450939/168847123-e66845d0-6002-4f24-874f-b6943f7f376b.png">
 
 	* Windows 需要最后点击 “** 是(Y)**” 确认
