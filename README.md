@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://avwo.github.io/whistle/">
-    <img alt="whistle logo" src="https://raw.githubusercontent.com/avwo/whistle/master/biz/webui/htdocs/img/whistle.png">
+    <img alt="whistle logo" src="https://user-images.githubusercontent.com/11450939/168828068-99e38862-d5fc-42bc-b5ab-6262b2ca27d6.png">
   </a>
 </p>
 
