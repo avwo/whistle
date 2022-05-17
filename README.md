@@ -33,19 +33,29 @@ Whistle 是基于 Node 实现的跨平台抓包调试工具，其主要特点：
 	> 上述命令会先全局安装 Whistle 的 npm 包后，启动 Whistle 并设置系统全局代理，以及安装系统根证书，目前一键安装只支持 Mac & WIndows 系统，其它系统按照下面 **手动安装** 的方式操作。
 3. 一键安装过程中注意事项：
 	* Mac 需要两次输入开机密码或指纹验证
+
+		<img alt="输入开机密码" width="300" src="https://user-images.githubusercontent.com/11450939/168847149-c0765e81-2ce4-4ed4-b7d3-a958d8c0cf08.png">
+		<img alt="输入指纹" width="300" src="https://user-images.githubusercontent.com/11450939/168847123-e66845d0-6002-4f24-874f-b6943f7f376b.png">
+
 	* Windows 需要最后点击 “** 是(Y)**” 确认
 
-上述一键安装过程中出现问题或者需要自己定制（如果代理白名单等）可以通过以下命令行实现：
-1. `w2 proxy` 设置系统全局代理：
-2. `w2 ca` 设置系统根证书：
-3. 也可以按下面的方式 **手动安装**
-# 手动安装
-1. 设置代理：
-2. 安装根证书：
+		<img alt="点击 是(Y)" width="420" src="https://user-images.githubusercontent.com/11450939/168846905-384e0540-e02f-46de-81d7-e395a496f032.jpeg">
 
+上述一键安装过程中出现问题或者需要自己定制（如果代理白名单等）可以通过以下命令行实现：
+1. `w2 proxy` 设置系统全局代理：https://wproxy.org/whistle/proxy.html
+2. `w2 ca` 设置系统根证书：https://wproxy.org/whistle/proxy.html
+3. 也可以按下面的方式 **手动安装**
+### 手动安装
+非 Mac & WIndows 系统可以按下面方式设置代理和安装根证书：
+
+1. 设置代理：https://wproxy.org/whistle/install.html
+2. 安装根证书：https://wproxy.org/whistle/webui/https.html
+
+# 快速上手
 安装成功后，用 Chrome 打开链接 http://local.whistlejs.com 即可看到 Whistle 的抓包配置界面：
 
+<img alt="点击确定" width="800" src="https://user-images.githubusercontent.com/11450939/168854755-03b23120-697f-4c1e-8ee0-624bbc119b96.png">
 
-详细用户参见：[Whistle 帮助文档]()
+详细用法参见：[Whistle 帮助文档](https://wproxy.org/whistle/)
 # License
-[MIT](https://github.com/avwo/whistle/blob/master/LICENSE)
+[MIT](./LICENSE)
