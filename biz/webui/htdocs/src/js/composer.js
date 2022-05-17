@@ -651,6 +651,7 @@ var Composer = React.createClass({
     if (typeof rules === 'string' && (rules = rules.trim())) {
       var obj = util.parseJSON(headers);
       var result = [];
+      var customRules;
       rules = [rules];
       if (obj) {
         Object.keys(obj).forEach(function (key) {
@@ -664,7 +665,7 @@ var Composer = React.createClass({
             delete obj[key];
           }
         });
-        var customRules = removeDuplicateRules(rules);
+        customRules = removeDuplicateRules(rules);
         if (customRules) {
           obj['x-whistle-rule-value'] = customRules;
         }
@@ -687,7 +688,7 @@ var Composer = React.createClass({
             result.push(line);
           }
         });
-        var customRules = removeDuplicateRules(rules);
+        customRules = removeDuplicateRules(rules);
         if (customRules) {
           result.push('x-whistle-rule-value: ' + customRules);
         }
