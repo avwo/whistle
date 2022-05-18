@@ -33,7 +33,7 @@ Whistle 是基于 Node 实现的跨平台抓包调试工具，其主要特点：
 	``` sh
 	npm i -g whistle && w2 start --init
 	```
-	> 上述命令会先全局安装 Whistle 的 npm 包后，启动 Whistle 并设置系统全局代理，以及安装系统根证书，目前一键安装只支持 Mac & WIndows 系统，其它系统按照下面 **手动安装** 的方式操作。
+	> 上述命令会先全局安装 Whistle 的 npm 包后，启动 Whistle 并设置系统全局代理，以及安装系统根证书，目前一键安装只支持 Mac & Windows 系统，其它系统按照下面 **手动安装** 的方式操作。
 3. 一键安装过程中注意事项：
 	* Mac 需要两次输入开机密码或指纹验证
 
@@ -50,7 +50,7 @@ Whistle 是基于 Node 实现的跨平台抓包调试工具，其主要特点：
 
 也可以用下面 **手动安装** 方式。
 ### 手动安装
-非 Mac & WIndows 系统或一键安装失败可以按下面方式设置代理和安装根证书：
+非 Mac & Windows 系统或一键安装失败可以按下面方式设置代理和安装根证书：
 
 1. 设置代理：https://wproxy.org/whistle/install.html
 2. 安装根证书：https://wproxy.org/whistle/webui/https.html
@@ -58,7 +58,7 @@ Whistle 是基于 Node 实现的跨平台抓包调试工具，其主要特点：
 # 快速上手
 安装成功后，用 Chrome 打开链接 http://local.whistlejs.com 即可看到 Whistle 的抓包配置界面：
 
-<img alt="点击确定" width="800" src="https://user-images.githubusercontent.com/11450939/168854755-03b23120-697f-4c1e-8ee0-624bbc119b96.png">
+<img alt="Whistle 抓包界面" width="800" src="https://user-images.githubusercontent.com/11450939/168854755-03b23120-697f-4c1e-8ee0-624bbc119b96.png">
 
 详细用法参见：[Whistle 帮助文档](https://wproxy.org/whistle/quickstart.html)
 
