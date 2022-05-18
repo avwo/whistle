@@ -62,6 +62,8 @@ Whistle 是基于 Node 实现的跨平台抓包调试工具，其主要特点：
 
 详细用法参见：[Whistle 帮助文档](https://wproxy.org/whistle/quickstart.html)
 
+> Whistle 文档在重写中...，有什么建议或想法可以提 [Issue](https://github.com/avwo/whistle/issues/new) 或 [PR](https://github.com/avwo/whistle/compare)。
+
 # 支持作者
 <p align="center">
 	<img alt="微信二维码" height="300" src="https://user-images.githubusercontent.com/11450939/168964364-34c0e724-7585-49aa-979b-2d4d8104df7c.jpeg" >

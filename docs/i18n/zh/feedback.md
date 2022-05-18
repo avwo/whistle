@@ -1,11 +1,11 @@
 # 用户反馈
 遇到问题解决步骤：
-1. 优先查找文档：
-2. 查找常见问题：
-3. 查找 Issue：
-4. 提 Issue：
-5. 提 PR：
-6. 加群：
+1. 优先查文档：https://wproxy.org/docs/
+2. 查常见问题：https://github.com/avwo/help
+3. 查 Issue：https://github.com/avwo/whistle/issues
+4. 提 Issue：https://github.com/avwo/whistle/issues/new
+5. 提 PR：https://github.com/avwo/whistle/compare
+6. 加 QQ 群：462558941
 
 # 支持作者
 <p align="center">
