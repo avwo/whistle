@@ -29,7 +29,7 @@ Whistle 是基于 Node 实现的跨平台抓包调试工具，其主要特点：
 
 # 一键安装
 1. 安装 Node（建议安装**最新的 LTS 版本**，如已安装忽略此步骤）：https://nodejs.org/
-2. 一键安装命令，在命令行执行以下命令：
+2. 一键安装，在命令行执行以下命令：
 	``` sh
 	npm i -g whistle && w2 start --init
 	```
@@ -44,7 +44,7 @@ Whistle 是基于 Node 实现的跨平台抓包调试工具，其主要特点：
 
 		<img alt="点击 是(Y)" width="420" src="https://user-images.githubusercontent.com/11450939/168846905-384e0540-e02f-46de-81d7-e395a496f032.jpeg">
 
-如果需要定制代理配置或根证书（如设置其它代理，根证书或代理白名单等）可以通过以下命令实现：
+如果需要自定义代理配置或根证书（如设置其它代理，根证书或代理白名单等）可以通过以下命令实现：
 1. `w2 proxy` 设置系统全局代理：https://wproxy.org/whistle/proxy.html
 2. `w2 ca` 设置系统根证书：https://wproxy.org/whistle/proxy.html
 
