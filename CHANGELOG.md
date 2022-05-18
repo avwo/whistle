@@ -1,4 +1,9 @@
-# v2.9.26
+# v2.9.17
+1. fix: 规则列表无法拖动排序问题
+2. refactor: `enable://clientId` 对所有请求生效（之前只对批评设置代理规则的请求生效）
+3. docs: 调整 README
+
+# v2.9.16
 1. style: 添加 `Replay Times` 和 `Repeat Times` 菜单，最多可以重放请求 100 次
 2. refactor: `compose` cgi 支持设置 `repeatTimes`（不能超过 100 次）
 3. feat: 新增 CGI `/rules` `/values` `/rules?name=xxx` `/values?name=xxx` 获取 Whistle 的当前启用的规则和指定规则
