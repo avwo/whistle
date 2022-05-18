@@ -9,6 +9,7 @@
 
 # 支持作者
 <p align="center">
-	<img alt="微信二维码" height="300" src="https://user-images.githubusercontent.com/11450939/168945424-38f3ee93-e599-4adb-b422-68910bfdd2a9.jpeg" style="margin: 0 30px;">
-	<img alt="支付宝二维码" height="300" src="https://user-images.githubusercontent.com/11450939/168945439-e0b2bc6b-afb9-48ce-a155-69ae5448a85d.jpeg" style="margin: 0 30px;">
+	<img alt="微信二维码" height="300" src="https://user-images.githubusercontent.com/11450939/168964364-34c0e724-7585-49aa-979b-2d4d8104df7c.jpeg" >
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	<img alt="支付宝二维码" height="300" src="https://user-images.githubusercontent.com/11450939/168964381-af8fdd51-19ea-4417-addf-0f5050297052.jpeg">
 </p>
