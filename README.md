@@ -14,15 +14,18 @@
 [![License](https://img.shields.io/npm/l/whistle.svg?style=flat-square)](https://www.npmjs.com/package/whistle)
 
 Whistle 是基于 Node 实现的跨平台抓包调试工具，其主要特点：
-1. 完全跨平台：支持 Mac、Windows 等桌面系统，且支持部署在服务端等命令行系统
+1. 完全跨平台：支持 Mac、Windows 等桌面系统，且支持服务端等命令行系统
 2. 功能强大
+	* 支持作为 HTTP、HTTPS、SOCKS 代理及反向代理
 	* 支持抓包及修改 HTTP、HTTPS、HTTP2、WebSocket、TCP 请求
 	* 支持重放及构造 HTTP、HTTPS、HTTP2、WebSocket、TCP 请求
-	* 支持用 Node 开发插件组合现有功能或扩展功能，也可以作为独立 npm 包引用
+	* 支持设置上游代理、PAC 脚本、Hosts、延迟（限速）请求响应等
+	* 支持查看远程页面的 console 日志及 DOM 节点
+	* 支持用 Node 开发插件扩展功能，也可以作为独立 npm 包引用
 3. 操作简单
-	* 可以直接用浏览器查看抓包、修改请求
-	* 所有修改操作都可以通过类似配置 Hosts 的方式实现，并支持分组管理
-	* 支持项目自带代理规则配置，并支持一键设置到本地 Whistle 代理
+	* 直接通过浏览器查看抓包、修改请求
+	* 所有修改操作都可以通过配置方式实现（类似系统 Hosts），并支持分组管理
+	* 支持项目自带代理规则配置及一键设置到本地 Whistle 代理
 
 # 一键安装
 1. 安装 Node（建议安装**最新的 LTS 版本**，如已安装忽略此步骤）：https://nodejs.org/
