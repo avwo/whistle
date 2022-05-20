@@ -58,7 +58,9 @@ Whistle 是基于 Node 实现的跨平台抓包调试工具，其主要特点：
 # 快速上手
 安装成功后，用 Chrome 打开链接 http://local.whistlejs.com 即可看到 Whistle 的抓包配置界面：
 
-<img alt="Whistle 抓包界面" width="800" src="https://user-images.githubusercontent.com/11450939/168854755-03b23120-697f-4c1e-8ee0-624bbc119b96.png">
+<img width="800" alt="抓包界面" src="https://user-images.githubusercontent.com/11450939/169521501-58e59e1b-1970-477c-a213-f28234628e4b.png">
+
+<img width="800" alt="配置界面" src="https://user-images.githubusercontent.com/11450939/169521554-c62e9091-012a-4467-bb23-9c5e77ea3bb0.png">
 
 详细用法参见：[Whistle 帮助文档](https://wproxy.org/whistle/quickstart.html)
 
