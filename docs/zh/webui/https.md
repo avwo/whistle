@@ -1,8 +1,5 @@
 # Https
 
-> 建议使用 `Node v12` 或以上版本。
-
-
 下载根证书，开启捕获HTTPS请求：
 
 ![Https](https://user-images.githubusercontent.com/11450939/83850712-e384cc80-a743-11ea-9cf4-c5c3f4cbf0c8.png)

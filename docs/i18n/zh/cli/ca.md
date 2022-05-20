@@ -29,6 +29,7 @@
     > 可以用来安装其它代理服务的证书
 
 注意，Mac 系统需要指纹验证或输入开机密码：
+
 <img alt="输入指纹" width="300" src="https://user-images.githubusercontent.com/11450939/168847123-e66845d0-6002-4f24-874f-b6943f7f376b.png">
 
 如果上述命令系统不支持或安装失败，也可以：[手动安装](../manual/)

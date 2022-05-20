@@ -1,7 +1,10 @@
-# 启停 Whistle
-Whistle 是通过命令行进行启停操作的，并支持在一台电脑上启动多个实例。
+# w2 start & restart & stop
+启动（重启）、关闭 Whistle 命令，Whistle 提供了丰富的启动参数以满足各种应用场景。
 
-## 启动
+## w2 start
+
+
+## w2 restart
 
 ## 停止
 1. 停止默认运行的 Whistle 实例
