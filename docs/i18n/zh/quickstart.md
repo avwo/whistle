@@ -80,11 +80,12 @@ ke.qq.com log://
 
 完整内容参见：[log 协议](./rules/tools/log.md)
 
-# 其它内容
+# 帮助文档
+
 1. [规则详解](./rules/)
 2. [命令行操作](./cli/)
-3. [界面操作](./webui/)
-4. [手动操作](./manual/)
-5. [更新 Whistle](./update.md)
-6. [扩展功能](./extensions/)
+3. [代理与证书](./manual/)
+4. [界面操作](./webui/)
+5. [扩展功能](./extensions/)
+6. [更新版本](./update.md)
 7. [用户反馈](./feedback.md)
