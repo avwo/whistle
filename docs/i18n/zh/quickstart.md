@@ -8,7 +8,7 @@
 
 <img height="440" alt="image" src="https://user-images.githubusercontent.com/11450939/169634452-64e7bf4b-4cb1-4289-9ba2-3c1913d6c2dd.png">
 
-# 下面看下在 **Rules** 设置规则的一些效果
+# 下面如何设置 **Rules** 操作请求
 ## 设置 Hosts
 1. 普通的 Hosts 配置：
     ``` txt
@@ -75,6 +75,17 @@ ke.qq.com log://
 ```
 
 <img width="600" alt="image" src="https://user-images.githubusercontent.com/11450939/169571624-f0cecc99-15a2-4780-bdfa-aa372cd2c667.png">
+
+## 修改响应状态码
+``` txt
+# 模拟响应 500（请求不会到后台服务）
+test3.wproxy.org/path/to statusCode://500
+
+# 修改响应状态码（请求会到后台服务）
+
+test4.wproxy.org/path/to replaceStatus://500
+
+```
 
 # 更多内容
 
