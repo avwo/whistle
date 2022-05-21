@@ -4,11 +4,11 @@
 安装成功后，打开 Whistle 管理界面 http://local.whistlejs.com ：
 
 ## 界面操作
-<img width="800" alt="抓包界面" src="https://user-images.githubusercontent.com/11450939/169522482-92ebb644-c0ae-49d5-8934-a8652cc1544b.gif">
+<img height="440" alt="抓包界面" src="https://user-images.githubusercontent.com/11450939/169522482-92ebb644-c0ae-49d5-8934-a8652cc1544b.gif">
 
-更多功能参见：[界面操作文档](./webui/)
+<img height="440" alt="image" src="https://user-images.githubusercontent.com/11450939/169634452-64e7bf4b-4cb1-4289-9ba2-3c1913d6c2dd.png">
 
-下面看下在 **Rules** 设置规则的效果：
+# 下面看下在 **Rules** 设置规则的一些效果
 ## 设置 Hosts
 1. 普通的 Hosts 配置：
     ``` txt
@@ -23,11 +23,12 @@
     ``` txt
     test1.wproxy.org/path/to 127.0.0.1:6001
     https://test2.wproxy.org/path1/to1 127.0.0.1:6001
-    /host=([\w.-]+)/ 127.0.0.1:6001
+    # 根据请求参数设置 host
+    /google/ 127.0.0.1:6001
 
     # 或
 
-    127.0.0.1:6001 test1.wproxy.org/path/to https://test2.wproxy.org/path1/to1 /host=([\w.-]+)/
+    127.0.0.1:6001 test1.wproxy.org/path/to https://test2.wproxy.org/path1/to1 /google/
     ```
 3. 支持 cname：
     ``` txt
@@ -42,7 +43,6 @@
     <img width="360" alt="image" src="https://user-images.githubusercontent.com/11450939/169552835-b4a44f5d-5e8f-4204-ab37-a8e39ce15db0.png">
 
     <img width="600" alt="image" src="https://user-images.githubusercontent.com/11450939/169554406-14ad35be-4897-4f0e-b323-2840d6196cfc.png">
-5. 完整内容参见：[host 协议](./rules/transform/host.md)
 
 ## 修改请求 Cookie
 ``` txt
@@ -51,7 +51,6 @@ www.qq.com reqCookies://custom_key1=123&custom_key2=789
 
 <img width="600" alt="image" src="https://user-images.githubusercontent.com/11450939/169558680-8d634612-60cc-4ca0-b50d-5ce8a9defc01.png">
 
-完整内容参见：[reqCookies 协议](./rules/modify/reqCookies.md)
 
 ## 请求替换
 1. 替换本地内容
@@ -68,7 +67,6 @@ www.qq.com reqCookies://custom_key1=123&custom_key2=789
     <img width="600" alt="image" src="https://user-images.githubusercontent.com/11450939/169570448-811c0593-006c-4ff9-85b3-cd295be87fc2.png">
 
     <img width="600" alt="image" src="https://user-images.githubusercontent.com/11450939/169570315-b6f19992-f822-4318-9aa3-b83ea5092f3c.png">
-3. 完整内容参见：[请求替换协议](./rules/transform/rule/)
 
 
 ## 查看 JS 报错及页面 `console.log`
@@ -78,9 +76,7 @@ ke.qq.com log://
 
 <img width="600" alt="image" src="https://user-images.githubusercontent.com/11450939/169571624-f0cecc99-15a2-4780-bdfa-aa372cd2c667.png">
 
-完整内容参见：[log 协议](./rules/tools/log.md)
-
-# 帮助文档
+# 更多内容
 
 1. [规则详解](./rules/)
 2. [命令行操作](./cli/)
