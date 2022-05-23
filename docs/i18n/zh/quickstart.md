@@ -8,7 +8,7 @@
 
 <img height="440" alt="image" src="https://user-images.githubusercontent.com/11450939/169634452-64e7bf4b-4cb1-4289-9ba2-3c1913d6c2dd.png">
 
-# 下面如何设置 **Rules** 操作请求
+**切到  Rules 并点击 `Create` 新建一个 测试环境 接下来看下如何通过设置规则操作请求。**
 ## 设置 Hosts
 1. 普通的 Hosts 配置：
     ``` txt
@@ -82,17 +82,23 @@ ke.qq.com log://
 test3.wproxy.org/path/to statusCode://500
 
 # 修改响应状态码（请求会到后台服务）
+test4.wproxy.org/path/to replaceStatus://400
 
-test4.wproxy.org/path/to replaceStatus://500
+# 302 重定向
+test5.wproxy.org/path redirect://https://ke.qq.com/
 
+# 301 重定向
+test6.wproxy.org/path redirect://https://ke.qq.com/ replaceStatus://301
 ```
+
+<img width="800" alt="image" src="https://user-images.githubusercontent.com/11450939/169640506-4c8c2777-faab-4f08-80d1-bfb4d6c280e0.png">
 
 # 更多内容
 
-1. [规则详解](./rules/)
-2. [命令行操作](./cli/)
-3. [代理与证书](./manual/)
-4. [界面操作](./webui/)
-5. [扩展功能](./extensions/)
-6. [更新版本](./update.md)
-7. [用户反馈](./feedback.md)
+1. [规则详解](./rules/README.md)
+2. [命令行操作](./cli/README.md)
+3. [代理与证书](./manual/README.md)
+4. [界面操作](./webui/README.md)
+5. [扩展功能](./extensions/README.md)
+6. [更新版本](./update.mdREADME.md)
+7. [用户反馈](./feedback.mdREADME.md)
