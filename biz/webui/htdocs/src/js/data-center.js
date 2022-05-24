@@ -827,19 +827,16 @@ function startLoadData() {
           var pluginName = name.slice(0, -1);
           if (!disabledPlugins[pluginName]) {
             var plugin = pluginsMap[name];
-            var reqTab = plugin.reqTab;
-            var resTab = plugin.resTab;
-            var tab = plugin.tab;
-            var comTab = plugin.comTab;
             curTabList.push({
               mtime: plugin.mtime,
               priority: plugin.priority,
               _key: name,
               plugin: pluginName,
-              reqTab: reqTab,
-              resTab: resTab,
-              tab: tab,
-              comTab: comTab
+              reqTab: plugin.reqTab,
+              resTab: plugin.resTab,
+              tab: plugin.tab,
+              comTab: plugin.comTab,
+              toolTab: plugin.toolTab
             });
           }
         });
