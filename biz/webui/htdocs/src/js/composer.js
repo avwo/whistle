@@ -876,7 +876,7 @@ var Composer = React.createClass({
     if (this.state.pending) {
       return;
     }
-    var data = util.getMenuPosition(e);
+    var data = util.getMenuPosition(e, 120, 96);
     data.list = HISTORY_CTX_MENU;
     this.refs.contextMenu.show(data);
   },
