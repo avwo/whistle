@@ -7,6 +7,7 @@ var ToolBox = require('./tool-box');
 var events = require('./events');
 var LazyInit = require('./lazy-init');
 var dataCenter = require('./data-center');
+var TabMgr = require('./tab-mgr');
 
 var BtnGroup = require('./btn-group');
 var util = require('./util');
@@ -135,6 +136,12 @@ var Tools = React.createClass({
         <LazyInit inited={name === BTNS[2].name}>
           <ToolBox hide={!BTNS[2].active} />
         </LazyInit>
+        <TabMgr
+          active={state.plugin && state.plugin.plugin}
+          hide={util.getBoolean(this.props.hide)}
+          tabs={dataCenter.getToolTabs()}
+          className="w-custom-tab-panel"
+        />
       </div>
     );
   }
