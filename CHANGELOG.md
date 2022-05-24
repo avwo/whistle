@@ -1,3 +1,6 @@
+# v2.9.18
+1. fix: 请求经过代理后 `x-whistle-client-id` 丢失问题
+
 # v2.9.17
 1. fix: 规则列表无法拖动排序问题
 2. refactor: `enable://clientId` 对所有请求生效（之前只对批评设置代理规则的请求生效）
