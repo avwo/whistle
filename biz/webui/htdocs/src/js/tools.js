@@ -64,9 +64,17 @@ var Tools = React.createClass({
   },
   onDoubleClickBar: function () {
     if (BTNS[0].active) {
-      this.refs.console.scrollTop();
+      if (this.refs.console.container.scrollTop < 5) {
+        this.refs.console.autoRefresh();
+      } else {
+        this.refs.console.scrollTop();
+      }
     } else if (BTNS[1].active) {
-      this.refs.serverLog.scrollTop();
+      if (this.refs.serverLog.container.scrollTop < 5) {
+        this.refs.serverLog.autoRefresh();
+      } else {
+        this.refs.serverLog.scrollTop();
+      }
     }
   },
   isActive: function (name) {
