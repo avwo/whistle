@@ -63,7 +63,7 @@ Whistle 是基于 Node 实现的跨平台抓包调试工具，其主要特点：
 <img width="800" alt="image" src="https://user-images.githubusercontent.com/11450939/169634452-64e7bf4b-4cb1-4289-9ba2-3c1913d6c2dd.png">
 
 
-## 详细用法参见：[Whistle 帮助文档](https://wproxy.org/whistle/quickstart.html)
+### 详细用法参见：[Whistle 帮助文档](https://wproxy.org/whistle/quickstart.html)
 
 # License
 [MIT](./LICENSE)
