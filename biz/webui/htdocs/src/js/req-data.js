@@ -36,12 +36,12 @@ var contextMenuList = [
   {
     name: 'Open',
     list: [
-      { name: 'Overview' },
-      { name: 'Inspectors' },
-      { name: 'Composer' },
-      { name: 'Timeline' },
       { name: 'New Tab' },
       { name: 'QR Code' },
+      { name: 'Overview' },
+      { name: 'Inspectors' },
+      { name: 'Timeline' },
+      { name: 'Composer' },
       { name: 'Preview' },
       { name: 'Source' },
       { name: 'Tree View', action: 'toggleView' }
@@ -536,11 +536,7 @@ var ReqData = React.createClass({
     self.content = ReactDOM.findDOMNode(self.refs.content);
     self.$content = $(self.content)
       .on('dblclick', 'tr', function (e) {
-        if (e.shiftKey) {
-          events.trigger('toggleDetailTab');
-        } else {
-          events.trigger('toggleInspectors');
-        }
+        events.trigger('toggleDetailTab');
       })
       .on('click', 'tr', function (e) {
         var id = this.getAttribute('data-id');
