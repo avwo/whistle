@@ -45,6 +45,7 @@ var disabledAllPlugins;
 var reqTabList = [];
 var resTabList = [];
 var tabList = [];
+var toolTabList = [];
 var comTabList = [];
 var DEFAULT_CONF = {
   timeout: TIMEOUT,
@@ -582,6 +583,10 @@ exports.getTabs = function () {
   return tabList;
 };
 
+exports.getToolTabs = function() {
+  return toolTabList;
+};
+
 exports.getComTabs = function () {
   return comTabList;
 };
@@ -815,6 +820,7 @@ function startLoadData() {
       var _resTabList = resTabList;
       var _tabList = tabList;
       var _comTabList = comTabList;
+      var _toolTabList = toolTabList;
       var curTabList = [];
       if (!disabledAllPlugins) {
         Object.keys(pluginsMap).forEach(function (name) {
@@ -843,10 +849,12 @@ function startLoadData() {
       resTabList = [];
       tabList = [];
       comTabList = [];
+      toolTabList = [];
       curTabList.forEach(function (info) {
         var reqTab = info.reqTab;
         var resTab = info.resTab;
         var tab = info.tab;
+        var toolTab = info.toolTab;
         var comTab = info.comTab;
         var plugin = info.plugin;
         if (reqTab) {
@@ -865,11 +873,16 @@ function startLoadData() {
           comTab.plugin = plugin;
           comTabList.push(comTab);
         }
+        if (toolTab) {
+          toolTab.plugin = plugin;
+          toolTabList.push(toolTab);
+        }
       });
       emitCustomTabsChange(reqTabList, _reqTabList, 'reqTabsChange');
       emitCustomTabsChange(resTabList, _resTabList, 'resTabsChange');
       emitCustomTabsChange(tabList, _tabList, 'tabsChange');
       emitCustomTabsChange(comTabList, _comTabList, 'comTabsChange');
+      emitCustomTabsChange(toolTabList, _toolTabList, 'toolTabsChange');
       disabledPlugins = data.disabledPlugins || {};
       disabledAllPlugins = data.disabledAllPlugins;
       if (len || svrLen) {

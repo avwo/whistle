@@ -4,7 +4,8 @@ var React = require('react');
 var Console = require('./console');
 var ServerLog = require('./server-log');
 var ToolBox = require('./tool-box');
-var Favorites = require('./favorites');
+var events = require('./events');
+var LazyInit = require('./lazy-init');
 
 var BtnGroup = require('./btn-group');
 var util = require('./util');
@@ -22,16 +23,18 @@ var BTNS = [
   {
     name: 'Toolbox',
     icon: 'wrench'
-  } /* ,
-  {
-    name: 'Favorites',
-    icon: 'heart'
-  } */
+  }
 ];
 
 var Tools = React.createClass({
   getInitialState: function () {
-    return { initedConsole: true, name: Console };
+    return { name: 'Console' };
+  },
+  componentDidMount: function() {
+    var self = this;
+    events.on('toolTabsChange', function () {
+      self.setState({});
+    });
   },
   shouldComponentUpdate: function (nextProps) {
     var hide = util.getBoolean(this.props.hide);
@@ -47,7 +50,6 @@ var Tools = React.createClass({
   },
   toggleTabs: function (btn) {
     this.changeTab = true;
-    this.state['inited' + btn.name] = true;
     this.setState({ name: btn.name });
   },
   clearLogs: function (btn) {
@@ -61,6 +63,7 @@ var Tools = React.createClass({
   },
   render: function () {
     var state = this.state;
+    var name = state.name;
     return (
       <div
         className={
@@ -74,16 +77,15 @@ var Tools = React.createClass({
           onDoubleClick={this.clearLogs}
           btns={BTNS}
         />
-        {state.initedConsole ? (
+        <LazyInit inited={name === BTNS[0].name}>
           <Console ref="console" hide={!BTNS[0].active} />
-        ) : undefined}
-        {state.initedServer ? (
-          <ServerLog ref="serverLog" hide={!BTNS[1].active} />
-        ) : undefined}
-        {state.initedToolbox ? <ToolBox hide={!BTNS[2].active} /> : undefined}
-        {state.initedFavorites ? (
-          <Favorites hide={!BTNS[3].active} />
-        ) : undefined}
+        </LazyInit>
+        <LazyInit inited={name === BTNS[1].name}>
+        <ServerLog ref="serverLog" hide={!BTNS[1].active} />
+        </LazyInit>
+        <LazyInit inited={name === BTNS[2].name}>
+          <ToolBox hide={!BTNS[2].active} />
+        </LazyInit>
       </div>
     );
   }

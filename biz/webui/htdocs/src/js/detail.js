@@ -77,7 +77,6 @@ var ReqData = React.createClass({
       })
       .on('toggleDetailTab', function () {
         var tab = self.state.tab;
-        console.log(tab, '========');
         if (!tab) {
           self.toggleTab(tabs[0]);
         } else if (tab === tabs[0]) {
