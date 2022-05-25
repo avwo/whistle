@@ -43,6 +43,7 @@ var INSPECTOR_HTML = fs.readFileSync(path.join(__dirname, '../../../assets/tab.h
 var MENU_URL = '???_WHISTLE_PLUGIN_EXT_CONTEXT_MENU_' + config.port + '???';
 var INSPECTOR_URL = '???_WHISTLE_PLUGIN_INSPECTOR_TAB_' + config.port + '???';
 var UP_PATH_REGEXP = /(?:^|[\\/])\.\.(?:[\\/]|$)/;
+var KEY_RE_G = /\${[^{}\s]+}|{\S+}/g;
 
 function doNotCheckLogin(req) {
   var path = req.path;
@@ -386,14 +387,30 @@ function sendText(res, text) {
   res.end(typeof text === 'string' ? text : '');
 }
 
+function parseKey(key) {
+  return key[0] === '$' ? key.slice(2, -1) : key.slice(1, -1);
+}
+
 app.get('/rules', function(req, res) {
-  var name = req.query.name || req.query.key;
+  var query = req.query;
+  var name = query.name || query.key;
   if (name === 'Default') {
     name = rulesUtil.rules.getDefault();
   } else if (!name) {
     name = rulesUtil.rules.getRawRulesText();
   } else {
     name = rulesUtil.rules.get(name);
+  }
+  if (name && query.values !== 'false' && !(query.values <= 0)) {
+    var keys = name.match(KEY_RE_G);
+    if (keys) {
+      keys = keys.map(parseKey).map(function (key) {
+        return util.wrapRuleValue(key, rulesUtil.values.get(key), query.values, query.policy);
+      }).join('');
+      if (keys) {
+        name += '\n' + keys;
+      }
+    }
   }
   sendText(res, name);
 });
