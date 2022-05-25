@@ -44,6 +44,7 @@ var MENU_URL = '???_WHISTLE_PLUGIN_EXT_CONTEXT_MENU_' + config.port + '???';
 var INSPECTOR_URL = '???_WHISTLE_PLUGIN_INSPECTOR_TAB_' + config.port + '???';
 var UP_PATH_REGEXP = /(?:^|[\\/])\.\.(?:[\\/]|$)/;
 var KEY_RE_G = /\${[^{}\s]+}|{\S+}/g;
+var COMMENT_RE = /#[^\r\n]*$/mg;
 
 function doNotCheckLogin(req) {
   var path = req.path;
@@ -402,7 +403,7 @@ app.get('/rules', function(req, res) {
     name = rulesUtil.rules.get(name);
   }
   if (name && query.values !== 'false' && !(query.values <= 0)) {
-    var keys = name.match(KEY_RE_G);
+    var keys = name.replace(COMMENT_RE, '').match(KEY_RE_G);
     if (keys) {
       keys = keys.map(parseKey).map(function (key) {
         return util.wrapRuleValue(key, rulesUtil.values.get(key), query.values, query.policy);
