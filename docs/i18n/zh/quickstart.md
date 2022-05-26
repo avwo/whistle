@@ -96,9 +96,10 @@ test6.wproxy.org/path redirect://https://ke.qq.com/ replaceStatus://301
 # 更多内容
 
 1. [规则详解](./rules/README.md)
-2. [命令行操作](./cli/README.md)
-3. [代理与证书](./manual/README.md)
-4. [界面操作](./webui/README.md)
-5. [扩展功能](./extensions/README.md)
-6. [更新版本](./update.mdREADME.md)
-7. [用户反馈](./feedback.mdREADME.md)
+2. [PC 访问](./pc/README.md)
+3. [手机访问](./phone/README.md)
+4. [命令行操作](./cli/README.md)
+5. [界面操作](./webui/README.md)
+6. [扩展功能](./extensions/README.md)
+7. [更新版本](./update.mdREADME.md)
+8. [用户反馈](./feedback.mdREADME.md)
