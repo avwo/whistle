@@ -1,5 +1,3 @@
-Firefox 有自己的代理设置入口及根证书管理系统，需要独立设置。
-
 # 设置 Firefox 代理
 地址栏输入访问 about:preferences，找到 Network Proxy，选择 手动代理配置(Manual proxy configuration)，输入代理服务器地址、端口，保存。
 
