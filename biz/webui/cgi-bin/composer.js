@@ -255,12 +255,12 @@ module.exports = function(req, res) {
   options.method = util.getMethod(req.body.method);
 
   var isConn = common.isConnect(options);
-  var isWs = !isConn && common.isWebSocket(options, headers);
+  var isWs = !isConn && common.isUpgrade(options, headers);
   var useH2 = req.body.useH2 || req.body.isH2;
   req.body.useH2 = false;
   if (isWs) {
     headers.connection = 'Upgrade';
-    headers.upgrade = 'websocket';
+    headers.upgrade = headers.upgrade || 'websocket';
     headers['sec-websocket-version'] = 13;
     headers['sec-websocket-key'] = crypto.randomBytes(16).toString('base64');
   } else {
