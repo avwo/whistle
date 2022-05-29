@@ -25,6 +25,7 @@ var METHODS = [
   'SEARCH',
   'CONNECT',
   'UPGRADE',
+  'WEBSOCKET',
   'PROPFIND',
   'PROPPATCH',
   'MKCOL',

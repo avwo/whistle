@@ -243,6 +243,8 @@ module.exports = function(req, res) {
   var rawHeaderNames = {};
   var clientId = req.headers[config.CLIENT_ID_HEADER];
   var headers = parseHeaders(req.body.headers, rawHeaderNames, clientId);
+  var method = util.getMethod(req.body.method);
+  var isWebSocket = method === 'WEBSOCKET';
   delete headers[config.WEBUI_HEAD];
   headers[config.REQ_FROM_HEADER] = 'W2COMPOSER';
   headers.host = options.host;
@@ -252,17 +254,17 @@ module.exports = function(req, res) {
     headers[config.CLIENT_IP_HEAD] = clientIp;
   }
   headers[config.CLIENT_PORT_HEAD] = util.getClientPort(req);
-  options.method = util.getMethod(req.body.method);
+  options.method = method;
 
   var isConn = common.isConnect(options);
-  var isWs = !isConn && common.isUpgrade(options, headers);
+  var isWs = !isConn && (isWebSocket || common.isUpgrade(options, headers));
   var useH2 = req.body.useH2 || req.body.isH2;
   req.body.useH2 = false;
   if (isWs) {
     headers.connection = 'Upgrade';
-    headers.upgrade = headers.upgrade || 'websocket';
+    headers.upgrade = (!isWebSocket && headers.upgrade) || 'websocket';
     headers['sec-websocket-version'] = 13;
-    if (common.isWebSocket(headers)) {
+    if (isWebSocket || common.isWebSocket(headers)) {
       headers['sec-websocket-key'] = crypto.randomBytes(16).toString('base64');
     }
   } else {
