@@ -1,4 +1,7 @@
 # v2.9.18
+1. feat: 支持自定义 `Upgrade` 请求协议
+
+# v2.9.18
 1. fix: 请求经过代理后 `x-whistle-client-id` 丢失问题
 2. feat: 支持在 `Network / Tools` 里面自定义 Tab，详见：https://github.com/whistle-plugins/examples/tree/master/whistle.view-md5
 
