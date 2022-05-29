@@ -262,7 +262,9 @@ module.exports = function(req, res) {
     headers.connection = 'Upgrade';
     headers.upgrade = headers.upgrade || 'websocket';
     headers['sec-websocket-version'] = 13;
-    headers['sec-websocket-key'] = crypto.randomBytes(16).toString('base64');
+    if (common.isWebSocket(headers)) {
+      headers['sec-websocket-key'] = crypto.randomBytes(16).toString('base64');
+    }
   } else {
     headers.connection = 'close';
     delete headers.upgrade;
