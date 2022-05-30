@@ -135,12 +135,15 @@ function handleWebSocket(options, cb, count) {
           }
           var statusCode = socket.statusCode;
           if (statusCode == 101) {
-            var sender = getSender(socket);
             if (data) {
-              sender.send(data, {
-                mask: true,
-                binary: binary
-              }, util.noop);
+              if (common.isWebSocket(socket.headers)) {
+                getSender(socket).send(data, {
+                  mask: true,
+                  binary: binary
+                }, util.noop);
+              } else {
+                socket.write(data);
+              }
               options.body = data = null;
             }
             socket.body = '';
