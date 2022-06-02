@@ -1,4 +1,5 @@
 var cp = require('child_process');
+var program = require('starting');
 var util = require('util');
 var os = require('os');
 var fs = require('fs');
@@ -89,7 +90,7 @@ function showUsage(isRunning, options, restart) {
   if (parseInt(process.version.slice(1), 10) < 6) {
     warn(colors.bold('\nWarning: The current Node version is too low, access https://nodejs.org to install the latest version, or may not be able to Capture HTTPS CONNECTs\n'));
   }
-  var bypass = options.init;
+  var bypass = program.init;
   if (bypass == null) {
     return;
   }
