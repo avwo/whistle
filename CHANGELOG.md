@@ -1,5 +1,6 @@
-# v2.9.18
+# v2.9.19
 1. feat: 支持自定义 `Upgrade` 请求协议
+2. fix: `enable://proxyFirst` 可能出现重复请求问题
 
 # v2.9.18
 1. fix: 请求经过代理后 `x-whistle-client-id` 丢失问题
