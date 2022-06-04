@@ -1141,7 +1141,7 @@ function setReqData(item) {
   item.body = reqSize + ' + ' + resSize;
   var result = res.statusCode == null ? defaultValue : res.statusCode;
   item.result = (/^[1-9]/.test(result) && parseInt(result, 10)) || result;
-  item.type = (resHeaders['content-type'] || defaultValue)
+  item.type = (resHeaders['content-type'] || '')
     .split(';')[0]
     .toLowerCase();
   item.dns =
