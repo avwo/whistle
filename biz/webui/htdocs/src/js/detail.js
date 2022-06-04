@@ -77,13 +77,11 @@ var ReqData = React.createClass({
       })
       .on('toggleDetailTab', function () {
         var tab = self.state.tab;
-        if (!tab) {
-          self.toggleTab(tabs[0]);
-        } else if (tab === tabs[0]) {
+        if (tab === tabs[0]) {
           self.toggleTab(tabs[1]);
         } else if (tab === tabs[1]) {
           self.toggleTab(tabs[2]);
-        } else if (tab === tabs[2]) {
+        } else {
           self.toggleTab(tabs[0]);
         }
       });
