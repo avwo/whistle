@@ -195,10 +195,12 @@ function hasRules(data) {
   if (!rules) {
     return false;
   }
-  var keys = Object.keys(data.rules);
+  var keys = Object.keys(rules);
   if (keys && keys.length) {
     for (var i = 0, len = keys.length; i < len; i++) {
-      if (rules[keys[i]] && !NOT_BOLD_RULES[keys[i]]) {
+      var rule = rules[keys[i]];
+      var enable = rule && rule.list && rule.list.length === 1 && rule.list[0].matcher;
+      if (rule && !NOT_BOLD_RULES[keys[i]] && enable !== 'enable://capture' &&  enable !== 'enable://intercept') {
         return true;
       }
     }
