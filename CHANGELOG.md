@@ -1,3 +1,6 @@
+# v2.9.20
+1. fix: `resCors://*` 失效问题
+
 # v2.9.19
 1. feat: 支持自定义 `Upgrade` 请求协议
 2. fix: `enable://proxyFirst` 可能出现重复请求问题
