@@ -26,6 +26,7 @@
   line-height: 28px;
   font-size: 10px;
   margin-left: 10px;
+  transform: scale(.8);
 }
 
 .w-ctx-menu-list label {
