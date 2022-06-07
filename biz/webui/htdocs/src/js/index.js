@@ -3998,13 +3998,20 @@ var Index = React.createClass({
               +Rule
             </button>
             <button
-              style={{ marginLeft: 1 }}
               type="button"
               onClick={this.createRules}
               data-type="top"
               className="btn btn-default"
             >
               +Top
+            </button>
+            <button
+              type="button"
+              onClick={this.createRules}
+              data-type="top"
+              className="btn btn-default"
+            >
+              +Group
             </button>
           </div>
           <div
@@ -4018,7 +4025,7 @@ var Index = React.createClass({
               onBlur={this.hideValuesInput}
               type="text"
               maxLength="64"
-              placeholder="Input the key"
+              placeholder="Input the name"
             />
             <button
               type="button"
@@ -4026,6 +4033,13 @@ var Index = React.createClass({
               className="btn btn-primary"
             >
               +Key
+            </button>
+            <button
+              type="button"
+              onClick={this.createValues}
+              className="btn"
+            >
+              +Group
             </button>
           </div>
           <div

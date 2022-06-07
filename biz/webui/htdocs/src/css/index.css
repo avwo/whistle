@@ -80,6 +80,7 @@
   width: 246px;
   height: 32px;
   border: 1px solid #ccc;
+  border-radius: 0!important;
   border-radius: 2px;
   padding: 0 5px;
   vertical-align: middle;
@@ -91,6 +92,8 @@
   border-radius: 0;
   border-top-right-radius: 2px;
   border-bottom-right-radius: 2px;
+  margin-left: 1px;
+  border-color: #ccc;
 }
 
 .w-create-rules-input {
