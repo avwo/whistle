@@ -4037,7 +4037,7 @@ var Index = React.createClass({
             <button
               type="button"
               onClick={this.createValues}
-              className="btn"
+              className="btn btn-default"
             >
               +Group
             </button>
