@@ -12,6 +12,7 @@ var ContextMenu = require('./context-menu');
 var dataCenter = require('./data-center');
 var events = require('./events');
 var iframes = require('./iframes');
+var storage = require('./storage');
 var RecycleBinDialog = require('./recycle-bin');
 
 var disabledEditor = window.location.href.indexOf('disabledEditor=1') !== -1;
@@ -129,6 +130,13 @@ function getSuffix(name) {
 }
 
 var List = React.createClass({
+  getInitialState: function() {
+    var nodes = util.parseJSON(storage.get('collapseNodes'));
+    this.collapseNodes = Array.isArray(nodes) ? nodes.filter(function(name) {
+      return typeof name === 'string' && name[0] === '\r' && name[1];
+    }) : [];
+    return {};
+  },
   componentDidMount: function () {
     var self = this;
     var visible = !self.props.hide;
@@ -224,7 +232,14 @@ var List = React.createClass({
     }
   },
   toggleGroup: function (item) {
-
+    var index = this.collapseNodes.indexOf(item.name);
+    if (index === -1) {
+      this.collapseNodes.push(item.name);
+    } else {
+      this.collapseNodes.splice(index, 1);
+    }
+    storage.set('collapseNodes', JSON.stringify(this.collapseNodes));
+    this.setState({});
   },
   onClickGroup: function (e) {
     var name = e.target.getAttribute('data-group');
@@ -531,6 +546,7 @@ var List = React.createClass({
     var data = modal.data;
     var props = self.props;
     var activeItem = modal.getActive() || '';
+    var isSub, isHide;
     if (!activeItem && list[0] && (activeItem = data[list[0]])) {
       activeItem.active = true;
     }
@@ -571,8 +587,12 @@ var List = React.createClass({
               {list.map(function (name, i) {
                 var item = data[name];
                 var isDefaultRule = isRules && i === 0;
-                var isGroup = !isDefaultRule && item.isGroup;
-
+                var isGroup = !isDefaultRule && item.name[0] === '\r';
+                var title = isGroup ? name.substring(1) : name;
+                isSub = isSub || isGroup;
+                if (isGroup) {
+                  isHide = self.collapseNodes.indexOf(name) !== -1;
+                }
                 return (
                   <a
                     tabIndex="0"
@@ -585,7 +605,7 @@ var List = React.createClass({
                     style={{ display: item.hide ? 'none' : null }}
                     key={item.key}
                     data-key={item.key}
-                    title={name}
+                    title={title}
                     draggable={isDefaultRule ? false : draggable}
                     onClick={function () {
                       isGroup ? self.toggleGroup(item) : self.onClick(item);
@@ -598,11 +618,13 @@ var List = React.createClass({
                       'w-active': !isGroup && item.active,
                       'w-changed': item.changed,
                       'w-selected': !isGroup && item.selected,
-                      'w-list-group': isGroup
+                      'w-list-group': isGroup,
+                      'w-list-sub': !isGroup && isSub,
+                      'w-hide': !isGroup && isHide
                     })}
                   >
-                    {isGroup ? <span className="glyphicon glyphicon-triangle-bottom" /> : null}
-                    {name}
+                    {isGroup ? <span className={'glyphicon glyphicon-triangle-' + (isHide ? 'right' : 'bottom')} /> : null}
+                    {title}
                     {isGroup ? <span className="w-group-child-num">(5)</span> : <span className="glyphicon glyphicon-ok"></span>}
                   </a>
                 );

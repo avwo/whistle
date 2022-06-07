@@ -64,7 +64,7 @@
 }
 
 .w-list-data .w-list-group {
-  background: rgba(241, 243, 244, .6);
+  background: #eee;
   color: #333;
   cursor: default;
   padding-left: 5px;
@@ -91,6 +91,7 @@
   top: -1px;
   font-size: 10px;
   font-weight: 500;
+  color: #666;
 }
 
 .w-list-group .w-exists-selected {
