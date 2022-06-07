@@ -64,7 +64,7 @@
 }
 
 .w-list-data .w-list-group {
-  background: #f1f3f4;
+  background: rgba(241, 243, 244, .6);
   color: #333;
   cursor: default;
   padding-left: 5px;
@@ -74,14 +74,25 @@
   color: #000;
 }
 
-.w-list-group .glyphicon-triangle-right,
-.w-list-group .glyphicon-triangle-bottom {
+.w-list-group .glyphicon {
   font-size: 10px;
   opacity: .5;
   transform: scale(0.8);
   margin-right: 2px;
 }
 
-.w-list-sub-item {
+.w-list-sub {
   padding-left: 20px!important;
-} 
+}
+
+.w-list-group .w-group-child-num {
+  position: absolute;
+  right: 5px;
+  top: -1px;
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.w-list-group .w-exists-selected {
+  color: #5bbd72;
+}

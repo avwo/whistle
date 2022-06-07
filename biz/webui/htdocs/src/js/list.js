@@ -223,6 +223,9 @@ var List = React.createClass({
       self.setState({ activeItem: item });
     }
   },
+  toggleGroup: function (item) {
+
+  },
   onClickGroup: function (e) {
     var name = e.target.getAttribute('data-group');
     var groups = this.props.modal.groups;
@@ -574,6 +577,7 @@ var List = React.createClass({
               {list.map(function (name, i) {
                 var item = data[name];
                 var isDefaultRule = isRules && i === 0;
+                var isGroup = !isDefaultRule && item.isGroup;
 
                 return (
                   <a
@@ -590,20 +594,22 @@ var List = React.createClass({
                     title={name}
                     draggable={isDefaultRule ? false : draggable}
                     onClick={function () {
-                      self.onClick(item);
+                      isGroup ? self.toggleGroup(item) : self.onClick(item);
                     }}
-                    onDoubleClick={function (e) {
+                    onDoubleClick={isGroup ? null : function (e) {
                       self.onDoubleClick(item);
                       e.preventDefault();
                     }}
                     className={util.getClasses({
-                      'w-active': item.active,
+                      'w-active': !isGroup && item.active,
                       'w-changed': item.changed,
-                      'w-selected': item.selected
+                      'w-selected': !isGroup && item.selected,
+                      'w-list-group': isGroup
                     })}
                   >
+                    {isGroup ? <span className="glyphicon glyphicon-triangle-bottom" /> : null}
                     {name}
-                    <span className="glyphicon glyphicon-ok"></span>
+                    {isGroup ? <span className="w-group-child-num">(5)</span> : <span className="glyphicon glyphicon-ok"></span>}
                   </a>
                 );
               })}
