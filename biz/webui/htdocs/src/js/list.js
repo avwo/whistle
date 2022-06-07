@@ -383,12 +383,6 @@ var List = React.createClass({
     case 'Key':
       events.trigger('createValues');
       break;
-    case 'ruleGroup':
-      events.trigger('createRuleGroup');
-      break;
-    case 'valueGroup':
-      events.trigger('createValueGroup');
-      break;
     case 'Export':
       events.trigger('export' + name);
       break;

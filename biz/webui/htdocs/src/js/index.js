@@ -1251,8 +1251,6 @@ var Index = React.createClass({
     });
     events.on('createRules', self.showCreateRules);
     events.on('createValues', self.showCreateValues);
-    events.on('createRuleGroup', self.showCreateRuleGroup);
-    events.on('createValueGroup', self.showCreateValueGroup);
     events.on('exportRules', self.exportData);
     events.on('exportValues', self.exportData);
     events.on('importRules', self.importRules);
@@ -2189,8 +2187,6 @@ var Index = React.createClass({
     var state = {
       showCreateRules: false,
       showCreateValues: false,
-      showCreateRuleGroup: false,
-      showCreateValueGroup: false,
       showEditRules: false,
       showEditValues: false,
       showCreateOptions: false
@@ -2205,12 +2201,6 @@ var Index = React.createClass({
   },
   hideValuesInput: function () {
     this.setState({ showCreateValues: false });
-  },
-  hideRuleGroup: function () {
-    this.setState({ showCreateRuleGroup: false });
-  },
-  hideValueGroup: function () {
-    this.setState({ showCreateValueGroup: false });
   },
   hideRenameRuleInput: function () {
     this.setState({ showEditRules: false });
@@ -2237,30 +2227,6 @@ var Index = React.createClass({
       },
       function () {
         createValuesInput.focus();
-      }
-    );
-  },
-  showCreateRuleGroup: function () {
-    var createGroupInput = ReactDOM.findDOMNode(this.refs.createRuleGroupInput);
-    this.setState(
-      {
-        showCreateRuleGroup: true
-      },
-      function () {
-        createGroupInput.focus();
-      }
-    );
-  },
-  showCreateValueGroup: function () {
-    var createGroupInput = ReactDOM.findDOMNode(
-      this.refs.createValueGroupInput
-    );
-    this.setState(
-      {
-        showCreateValueGroup: true
-      },
-      function () {
-        createGroupInput.focus();
       }
     );
   },
@@ -4038,48 +4004,6 @@ var Index = React.createClass({
               type="button"
               onClick={this.createValues}
               className="btn btn-default"
-            >
-              +Group
-            </button>
-          </div>
-          <div
-            onMouseDown={this.preventBlur}
-            style={{ display: state.showCreateRuleGroup ? 'block' : 'none' }}
-            className="shadow w-input-menu-item w-create-rules-input"
-          >
-            <input
-              ref="createRuleGroupInput"
-              onKeyDown={this.createRules}
-              onBlur={this.hideRuleGroup}
-              type="text"
-              maxLength="64"
-              placeholder="Input the group name"
-            />
-            <button
-              type="button"
-              onClick={this.createRuleGroup}
-              className="btn btn-primary"
-            >
-              +Group
-            </button>
-          </div>
-          <div
-            onMouseDown={this.preventBlur}
-            style={{ display: state.showCreateValueGroup ? 'block' : 'none' }}
-            className="shadow w-input-menu-item w-create-values-input"
-          >
-            <input
-              ref="createValueGroupInput"
-              onKeyDown={this.createValues}
-              onBlur={this.hideValueGroup}
-              type="text"
-              maxLength="64"
-              placeholder="Input the group name"
-            />
-            <button
-              type="button"
-              onClick={this.createValueGroup}
-              className="btn btn-primary"
             >
               +Group
             </button>
