@@ -67,7 +67,7 @@
   background: #f1f3f4;
   color: #333;
   cursor: default;
-  padding-left: 2px;
+  padding-left: 5px;
 }
 
 .w-list-data .w-list-group:hover, .w-list-data .w-list-group:active {
@@ -79,4 +79,9 @@
   font-size: 10px;
   opacity: .5;
   transform: scale(0.8);
+  margin-right: 2px;
 }
+
+.w-list-sub-item {
+  padding-left: 20px!important;
+} 

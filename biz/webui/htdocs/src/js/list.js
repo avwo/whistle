@@ -559,7 +559,7 @@ var List = React.createClass({
             </button>
           </div>
         ) : null}
-        <Divider leftWidth="220">
+        <Divider leftWidth="230">
           <div className="fill orient-vertical-box w-list-left">
             <div
               ref="list"
