@@ -36,6 +36,10 @@
 .w-list-data .w-changed:before {
   content: '*';
   color: red;
+  margin-right: 2px;
+}
+.w-list-data .w-list-group.w-changed:before {
+  margin-right: 0;
 }
 .w-list-data a:hover {
   color: #337ab7;
