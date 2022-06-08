@@ -2423,11 +2423,11 @@ var Index = React.createClass({
       function (data, xhr) {
         if (data && data.ec === 0) {
           modal.rename(activeItem.name, name);
-          self.setRulesActive(name);
           target.value = '';
           target.blur();
+          self.setRulesActive(name);
           self.setState({
-            activeValues: activeItem
+            activeRules: activeItem
           });
           self.triggerRulesChange('rename');
         } else {
@@ -2463,9 +2463,9 @@ var Index = React.createClass({
       function (data, xhr) {
         if (data && data.ec === 0) {
           modal.rename(activeItem.name, name);
-          self.setValuesActive(name);
           target.value = '';
           target.blur();
+          self.setValuesActive(name);
           self.setState({
             activeValues: activeItem
           });
@@ -2717,13 +2717,7 @@ var Index = React.createClass({
             var nextItem = item && !item.active ? null : modal.getSibling(name);
             nextItem && self.setValuesActive(nextItem.name);
             modal.remove(name);
-            self.setState(
-              item
-                ? {}
-                : {
-                  activeValues: nextItem
-                }
-            );
+            self.setState(item ? {} : { activeValues: nextItem });
             self.triggerValuesChange('remove');
           } else {
             util.showSystemError(xhr);
@@ -2810,15 +2804,11 @@ var Index = React.createClass({
   },
   activeRules: function (item) {
     storage.set('activeRules', item.name);
-    this.setState({
-      activeRules: item
-    });
+    this.setState({ activeRules: item });
   },
   activeValues: function (item) {
     storage.set('activeValues', item.name);
-    this.setState({
-      activeValues: item
-    });
+    this.setState({ activeValues: item });
   },
   onRulesThemeChange: function (e) {
     var theme = e.target.value;
@@ -2865,9 +2855,7 @@ var Index = React.createClass({
   showFoldGutter: function (e) {
     var checked = e.target.checked;
     storage.set('foldGutter', checked ? '1' : '');
-    this.setState({
-      foldGutter: checked
-    });
+    this.setState({ foldGutter: checked });
   },
   onRulesLineWrappingChange: function (e) {
     var checked = e.target.checked;

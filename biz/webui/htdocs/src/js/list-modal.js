@@ -92,7 +92,7 @@ function add(name, value, isPre) {
   }
   var item = (this.data[name] = {
     key: util.getKey(),
-    name: name.trim,
+    name: name,
     value: value
   });
   this.filter();
