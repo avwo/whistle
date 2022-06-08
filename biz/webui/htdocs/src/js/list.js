@@ -550,26 +550,29 @@ var List = React.createClass({
     var group;
     var childCount = 0;
     var selectedCount = 0;
+    var changed;
+    var setStatus = function() {
+      if (group) {
+        group.changed = changed;
+        group.childCount = childCount;
+        group.selectedCount = selectedCount;
+      }
+    };
     list.forEach(function(name, i) {
       var item = data[name];
       if (item.name[0] === '\r') {
-        if (group) {
-          group.childCount = childCount;
-          group.selectedCount = selectedCount;
-        }
+        setStatus();
         item.isGroup = true;
         group = item;
       } else if (group) {
         ++childCount;
+        changed = changed || item.changed;
         if (isRules && item.selected) {
           ++selectedCount;
         }
       }
     });
-    if (group) {
-      group.childCount = childCount;
-      group.selectedCount = selectedCount;
-    }
+    setStatus();
     return list;
   },
   render: function () {
