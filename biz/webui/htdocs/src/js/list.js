@@ -532,7 +532,7 @@ var List = React.createClass({
     if (!isRules) {
       valuesCtxMenuList[0].list[0].name = name && util.isGroup(name) ? 'Name' : 'Key';
     }
-    var height = (isRules ? 280 : 310) - (pluginItem.hide ? 30 : 0);
+    var height = (isRules ? 280 : 313) - (pluginItem.hide ? 30 : 0);
     pluginItem.maxHeight = height + 30;
     var data = util.getMenuPosition(e, 110, height);
     data.className = 'w-contenxt-menu-list';
