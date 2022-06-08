@@ -227,7 +227,7 @@ proto.clearAllSelected = function () {
 
 proto.setActive = function (name, active) {
   var item = this.get(name);
-  if (item) {
+  if (item && !util.isGroup(item.name)) {
     active = active !== false;
     active && this.clearAllActive();
     item.active = active;
