@@ -46,7 +46,7 @@ proto.hasChanged = function () {
   var data = this.data;
   return Object.keys(data).some(function (name) {
     var item = data[name];
-    return item && item.changed;
+    return item && item.changed && !util.isGroup(item.name);
   });
 };
 

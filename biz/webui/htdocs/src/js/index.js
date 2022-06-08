@@ -2377,7 +2377,7 @@ var Index = React.createClass({
     });
   },
   showEditRules: function (item) {
-    this.currentFoucsRules = item;
+    this.currentFocusRules = item;
     var modal = this.state.rules;
     var activeItem = item || modal.getActive();
     if (!activeItem || activeItem.isDefault) {
@@ -2400,7 +2400,7 @@ var Index = React.createClass({
     !item.changed && this.showEditValues();
   },
   showEditValues: function (item) {
-    this.currentFoucsValues = item;
+    this.currentFocusValues = item;
     var modal = this.state.values;
     var activeItem = item || modal.getActive();
     if (!activeItem || activeItem.isDefault) {
@@ -2426,12 +2426,13 @@ var Index = React.createClass({
     }
     var self = this;
     var modal = self.state.rules;
-    var activeItem = this.currentFoucsRules || modal.getActive();
+    var activeItem = this.currentFocusRules || modal.getActive();
     if (!activeItem) {
       return;
     }
     var target = ReactDOM.findDOMNode(self.refs.editRulesInput);
-    var name = $.trim(target.value);
+    var isGroup = util.isGroup(activeItem.name);
+    var name = (isGroup ? '\r' : '') + target.value.trim();
     if (!name) {
       message.error('The name cannot be empty.');
       return;
@@ -2449,10 +2450,8 @@ var Index = React.createClass({
           modal.rename(activeItem.name, name);
           target.value = '';
           target.blur();
-          self.setRulesActive(name);
-          self.setState({
-            activeRules: activeItem
-          });
+          !isGroup && self.setRulesActive(name);
+          self.setState({ activeRules: modal.getActive() });
           self.triggerRulesChange('rename');
         } else {
           util.showSystemError(xhr);
@@ -2466,12 +2465,13 @@ var Index = React.createClass({
     }
     var self = this;
     var modal = self.state.values;
-    var activeItem = this.currentFoucsValues || modal.getActive();
+    var activeItem = this.currentFocusValues || modal.getActive();
     if (!activeItem) {
       return;
     }
     var target = ReactDOM.findDOMNode(self.refs.editValuesInput);
-    var name = $.trim(target.value);
+    var isGroup = util.isGroup(activeItem.name);
+    var name = (isGroup ? '\r' : '') + target.value.trim();
     if (!name) {
       message.error('The name cannot be empty.');
       return;
@@ -2489,10 +2489,8 @@ var Index = React.createClass({
           modal.rename(activeItem.name, name);
           target.value = '';
           target.blur();
-          self.setValuesActive(name);
-          self.setState({
-            activeValues: activeItem
-          });
+          !isGroup && self.setValuesActive(name);
+          self.setState({ activeValues: modal.getActive() });
           self.triggerValuesChange('rename');
           checkJson(activeItem);
         } else {
