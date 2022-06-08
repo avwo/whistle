@@ -159,6 +159,7 @@ var RecycleBinDialog = React.createClass({
                       <th className="w-files-order">{i + 1}</th>
                       <td className="w-files-date">{item.date}</td>
                       <td className="w-files-path" title={item.filename}>
+                        {util.isGroup(item.filename) ? <span className="glyphicon glyphicon-triangle-right" /> : null}
                         {item.filename}
                       </td>
                       <td className="w-files-operation">

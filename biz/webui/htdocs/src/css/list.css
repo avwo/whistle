@@ -76,7 +76,7 @@
   color: #000;
 }
 
-.w-list-group .glyphicon {
+.w-list-group .glyphicon, .w-files-path .glyphicon-triangle-right {
   font-size: 10px;
   opacity: .5;
   transform: scale(0.8);
