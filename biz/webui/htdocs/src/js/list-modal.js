@@ -177,6 +177,28 @@ proto.moveTo = function (fromName, toName, group) {
   }
 };
 
+proto.moveToGroup = function(name, groupName, isTop) {
+  if (!groupName) {
+    return;
+  }
+  var list = this.list;
+  var index = list.indexOf(name);
+  if (index === -1 || list.indexOf(groupName) === -1) {
+    return;
+  }
+  list.splice(index, 1);
+  index = list.indexOf(groupName) + 1;
+  if (isTop) {
+    return list.splice(index, 0, name);
+  }
+  for (var len = list.length; index < len; index++) {
+    if (util.isGroup(list[index])) {
+      return list.splice(index, 0, name);
+    }
+  }
+  list.splice(index, 0, name);
+};
+
 proto.getSelectedList = function () {
   return this._getList('selected');
 };
@@ -216,7 +238,7 @@ proto.setActive = function (name, active) {
 proto.getActive = function () {
   for (var i in this.data) {
     var item = this.data[i];
-    if (item.active) {
+    if (item.active && !util.isGroup(item.name)) {
       return item;
     }
   }
@@ -254,8 +276,19 @@ proto.getIndex = function (name) {
 
 proto.getSibling = function (name) {
   var index = this.getIndex(name);
-  name = this.list[index + 1] || this.list[index - 1];
-  return name && this.data[name];
+  var list = this.list;
+  for (var i = index + 1, len = list.length; i < len; i++) {
+    name = list[i];
+    if (!util.isGroup(name)) {
+      return this.data[name];
+    }
+  }
+  for (i = index - 1; i >= 0; i--) {
+    name = list[i];
+    if (!util.isGroup(name)) {
+      return this.data[name];
+    }
+  }
 };
 
 /**
@@ -341,6 +374,10 @@ proto.down = function () {
   return activeItem;
 };
 
+function isVisibleItem(item) {
+  return !item.hide && !util.isGroup(item.name);
+}
+
 proto.prev = function () {
   var list = this.list;
   var len = list.length;
@@ -353,14 +390,14 @@ proto.prev = function () {
   var i, item;
   for (i = index - 1; i >= 0; i--) {
     item = data[list[i]];
-    if (!item.hide) {
+    if (isVisibleItem(item)) {
       return item;
     }
   }
 
   for (i = len - 1; i > index; i--) {
     item = data[list[i]];
-    if (!item.hide) {
+    if (isVisibleItem(item)) {
       return item;
     }
   }
@@ -378,14 +415,14 @@ proto.next = function () {
   var i, item;
   for (i = index + 1; i < len; i++) {
     item = data[list[i]];
-    if (!item.hide) {
+    if (isVisibleItem(item)) {
       return item;
     }
   }
 
   for (i = 0; i < index; i++) {
     item = data[list[i]];
-    if (!item.hide) {
+    if (isVisibleItem(item)) {
       return item;
     }
   }

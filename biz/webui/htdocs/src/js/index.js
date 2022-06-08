@@ -2208,8 +2208,9 @@ var Index = React.createClass({
   hideRenameValueInput: function () {
     this.setState({ showEditValues: false });
   },
-  showCreateRules: function () {
+  showCreateRules: function (_, item) {
     var createRulesInput = ReactDOM.findDOMNode(this.refs.createRulesInput);
+    this._curFocusRulesItem = item;
     this.setState(
       {
         showCreateRules: true
@@ -2219,8 +2220,9 @@ var Index = React.createClass({
       }
     );
   },
-  showCreateValues: function () {
+  showCreateValues: function (_, item) {
     var createValuesInput = ReactDOM.findDOMNode(this.refs.createValuesInput);
+    this._curFocusValuesItem = item;
     this.setState(
       {
         showCreateValues: true
@@ -2296,22 +2298,27 @@ var Index = React.createClass({
       return;
     }
     var addToTop = type === 'top' ? 1 : '';
-    dataCenter.rules.add(
-      { name: name, addToTop: addToTop },
-      function (data, xhr) {
-        if (data && data.ec === 0) {
-          var item = modal[addToTop ? 'unshift' : 'add'](name);
-          !isGroup && self.setRulesActive(name);
-          target.value = '';
-          target.blur();
-          self.setState(isGroup ? {} : {
-            activeRules: item
-          });
-          self.triggerRulesChange('create');
-        } else {
-          util.showSystemError(xhr);
-        }
+    var curItem = self._curFocusRulesItem;
+    var params = { name: name, addToTop: addToTop };
+    if (curItem) {
+      params.groupName = curItem.name;
+    }
+    dataCenter.rules.add(params, function (data, xhr) {
+      if (data && data.ec === 0) {
+        var item = modal[addToTop ? 'unshift' : 'add'](name);
+        !isGroup && self.setRulesActive(name);
+        target.value = '';
+        target.blur();
+        modal.moveToGroup(name, params.groupName, addToTop);
+        params.groupName && events.trigger('expandRulesGroup', params.groupName);
+        self.setState(isGroup ? {} : {
+          activeRules: item
+        });
+        self.triggerRulesChange('create');
+      } else {
+        util.showSystemError(xhr);
       }
+    }
     );
   },
   createValues: function (e) {
@@ -2347,13 +2354,19 @@ var Index = React.createClass({
       message.error('The name \'' + name + '\' already exists.');
       return;
     }
-
-    dataCenter.values.add({ name: name }, function (data, xhr) {
+    var curItem = self._curFocusValuesItem;
+    var params = { name: name };
+    if (curItem) {
+      params.groupName = curItem.name;
+    }
+    dataCenter.values.add(params, function (data, xhr) {
       if (data && data.ec === 0) {
         var item = modal.add(name);
         !isGroup && self.setValuesActive(name);
         target.value = '';
         target.blur();
+        modal.moveToGroup(name, params.groupName);
+        params.groupName && events.trigger('expandValuesGroup', params.groupName);
         self.setState(isGroup ? {} : {
           activeValues: item
         });
@@ -2696,8 +2709,11 @@ var Index = React.createClass({
         dataCenter.rules.remove({ name: name }, function (data, xhr) {
           if (data && data.ec === 0) {
             var nextItem = item && !item.active ? null : modal.getSibling(name);
-            nextItem && self.setRulesActive(nextItem.name);
             modal.remove(name);
+            if (nextItem) {
+              self.setRulesActive(nextItem.name);
+              events.trigger('expandRulesGroup', nextItem.name);
+            }
             self.setState(
               item
                 ? {}
@@ -2726,8 +2742,11 @@ var Index = React.createClass({
         dataCenter.values.remove({ name: name }, function (data, xhr) {
           if (data && data.ec === 0) {
             var nextItem = item && !item.active ? null : modal.getSibling(name);
-            nextItem && self.setValuesActive(nextItem.name);
             modal.remove(name);
+            if (nextItem) {
+              self.setValuesActive(nextItem.name);
+              events.trigger('expandValuesGroup', nextItem.name);
+            }
             self.setState(item ? {} : { activeValues: nextItem });
             self.triggerValuesChange('remove');
           } else {
@@ -2760,7 +2779,7 @@ var Index = React.createClass({
     });
     storage.set('showLeftMenu', showLeftMenu ? 1 : '');
   },
-  handleCreate: function (item) {
+  handleCreate: function () {
     this.state.name == 'rules'
       ? this.showCreateRules()
       : this.showCreateValues();

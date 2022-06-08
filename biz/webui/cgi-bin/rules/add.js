@@ -5,7 +5,7 @@ var isGroup = require('../../../../lib/util/common').isGroup;
 module.exports = function(req, res) {
   var body = req.body;
   var list;
-  if (rules.add(body.name, body.value, body.clientId, body.groupName) && isGroup(body.name)) {
+  if (rules.add(body.name, body.value, body.clientId, body.groupName) && !isGroup(body.name)) {
     if (body.addToTop) {
       rules.moveToTop(body.name, body.clientId);
     } else {

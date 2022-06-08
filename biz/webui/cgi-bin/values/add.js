@@ -5,7 +5,7 @@ var isGroup = require('../../../../lib/util/common').isGroup;
 module.exports = function(req, res) {
   var body = req.body;
   var list;
-  if (values.add(body.name, body.value, body.clientId, body.groupName) && isGroup(body)) {
+  if (values.add(body.name, body.value, body.clientId, body.groupName) && !isGroup(body.name)) {
     var group = values.getFirstGroup();
     group && values.moveTo(body.name, group.name, body.clientId);
   }

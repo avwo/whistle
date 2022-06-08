@@ -131,8 +131,8 @@ function getSuffix(name) {
 
 var List = React.createClass({
   getInitialState: function() {
-    var nodes = util.parseJSON(storage.get('collapseNodes'));
-    this.collapseNodes = Array.isArray(nodes) ? nodes.filter(function(name) {
+    var nodes = util.parseJSON(storage.get('collapseGroups'));
+    this.collapseGroups = Array.isArray(nodes) ? nodes.filter(function(name) {
       return util.isGroup(name) && name[1];
     }) : [];
     return {};
@@ -175,9 +175,13 @@ var List = React.createClass({
           //down
           item = modal.next();
         }
-
         if (item) {
+          var group = self.getCurGroup(item);
+          group && self.expandGroup(group.name);
           e.shiftKey ? self.setState({}) : self.onClick(item);
+          if (self.props.name === 'rules') {
+            events.trigger('updateUI');
+          }
           e.preventDefault();
         }
       });
@@ -194,7 +198,20 @@ var List = React.createClass({
     events.on('reloadValuesRecycleBin', function () {
       self.reloadRecycleBin('Values');
     });
+    events.on('expandRulesGroup', function(_, groupName) {
+      self.props.name == 'rules' && self.expandGroup(self.getGroupByName(groupName));
+    });
+    events.on('expandValuesGroup', function(_, groupName) {
+      self.props.name !== 'rules' && self.expandGroup(self.getGroupByName(groupName));
+    });
     this.ensureVisible(true);
+  },
+  expandGroup: function(groupName) {
+    var index = this.collapseGroups.indexOf(groupName);
+    if (index !== -1) {
+      this.collapseGroups.splice(index, 1);
+      storage.set('collapseGroups', JSON.stringify(this.collapseGroups));
+    }
   },
   shouldComponentUpdate: function (nextProps) {
     var hide = util.getBoolean(this.props.hide);
@@ -232,13 +249,13 @@ var List = React.createClass({
     }
   },
   toggleGroup: function (item) {
-    var index = this.collapseNodes.indexOf(item.name);
+    var index = this.collapseGroups.indexOf(item.name);
     if (index === -1) {
-      this.collapseNodes.push(item.name);
+      this.collapseGroups.push(item.name);
     } else {
-      this.collapseNodes.splice(index, 1);
+      this.collapseGroups.splice(index, 1);
     }
-    storage.set('collapseNodes', JSON.stringify(this.collapseNodes));
+    storage.set('collapseGroups', JSON.stringify(this.collapseGroups));
     this.setState({});
   },
   onClickGroup: function (e) {
@@ -318,7 +335,7 @@ var List = React.createClass({
     var info = getDragInfo(e);
     if (info) {
       var fromName = getName(e.dataTransfer.getData('-' + NAME_PREFIX));
-      var group = this.collapseNodes.indexOf(fromName) !== -1;
+      var group = this.collapseGroups.indexOf(fromName) !== -1;
       info.target.style.background = '';
       if (this.props.modal.moveTo(fromName, info.toName, group)) {
         var name = this.props.name === 'rules' ? 'rules' : 'values';
@@ -381,6 +398,24 @@ var List = React.createClass({
       self.refs.recycleBinDialog.show({ name: name, list: data.list });
     });
   },
+  getGroupByName: function(name) {
+    var modal = this.props.modal;
+    var item = modal.data[name];
+    if (!item || util.isGroup(item.name)) {
+      return item;
+    }
+    var i = modal.list.indexOf(name) - 1;
+    for (; i >= 0; i--) {
+      item = modal.data[modal.list[i]];
+      if (util.isGroup(item.name)) {
+        return item;
+      }
+    }
+  },
+  getCurGroup: function(item) {
+    item = item || this.currentFocusItem;
+    return item && this.getGroupByName(item.name);
+  },
   onClickContextMenu: function (action, e, parentAction, menuName) {
     var self = this;
     var name = self.props.name === 'rules' ? 'Rules' : 'Values';
@@ -395,10 +430,10 @@ var List = React.createClass({
       events.trigger('delete' + name, self.currentFocusItem);
       break;
     case 'Rule':
-      events.trigger('createRules');
+      events.trigger('createRules', self.getCurGroup());
       break;
     case 'Key':
-      events.trigger('createValues');
+      events.trigger('createValues', self.getCurGroup());
       break;
     case 'Export':
       events.trigger('export' + name);
@@ -632,7 +667,7 @@ var List = React.createClass({
                 var title = isGroup ? name.substring(1) : name;
                 isSub = isSub || isGroup;
                 if (isGroup) {
-                  isHide = self.collapseNodes.indexOf(name) !== -1;
+                  isHide = self.collapseGroups.indexOf(name) !== -1;
                 }
                 return (
                   <a
