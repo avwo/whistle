@@ -204,6 +204,15 @@ var List = React.createClass({
     events.on('expandValuesGroup', function(_, groupName) {
       self.props.name !== 'rules' && self.expandGroup(self.getGroupByName(groupName));
     });
+    var scrollToBottom = function() {
+      ReactDOM.findDOMNode(self.refs.list).scrollTop = 1000000000;
+    };
+    events.on('scrollRulesBottom', function() {
+      self.props.name == 'rules' && scrollToBottom();
+    });
+    events.on('scrollValuesBottom', function() {
+      self.props.name !== 'rules' && scrollToBottom();
+    });
     this.ensureVisible(true);
   },
   expandGroup: function(groupName) {

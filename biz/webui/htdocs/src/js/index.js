@@ -2313,6 +2313,8 @@ var Index = React.createClass({
         params.groupName && events.trigger('expandRulesGroup', params.groupName);
         self.setState(isGroup ? {} : {
           activeRules: item
+        }, function() {
+          isGroup && events.trigger('scrollRulesBottom');
         });
         self.triggerRulesChange('create');
       } else {
@@ -2369,6 +2371,8 @@ var Index = React.createClass({
         params.groupName && events.trigger('expandValuesGroup', params.groupName);
         self.setState(isGroup ? {} : {
           activeValues: item
+        }, function() {
+          isGroup && events.trigger('scrollValuesBottom');
         });
         self.triggerValuesChange('create');
       } else {
