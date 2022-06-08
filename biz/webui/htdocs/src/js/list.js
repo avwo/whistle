@@ -133,7 +133,7 @@ var List = React.createClass({
   getInitialState: function() {
     var nodes = util.parseJSON(storage.get('collapseNodes'));
     this.collapseNodes = Array.isArray(nodes) ? nodes.filter(function(name) {
-      return typeof name === 'string' && name[0] === '\r' && name[1];
+      return util.isGroup(name) && name[1];
     }) : [];
     return {};
   },
@@ -319,7 +319,7 @@ var List = React.createClass({
     if (info) {
       var fromName = getName(e.dataTransfer.getData('-' + NAME_PREFIX));
       info.target.style.background = '';
-      if (this.props.modal.moveTo(fromName, info.toName)) {
+      if (this.props.modal.moveTo(fromName, info.toName, this.collapseNodes.indexOf(fromName) !== -1)) {
         var name = this.props.name === 'rules' ? 'rules' : 'values';
         dataCenter[name].moveTo(
           {
@@ -484,7 +484,7 @@ var List = React.createClass({
       isRules ? 7 : 8
     );
     if (!isRules) {
-      valuesCtxMenuList[0].list[0].name = name && name[0] === '\r' ? 'Name' : 'Key';
+      valuesCtxMenuList[0].list[0].name = name && util.isGroup(name) ? 'Name' : 'Key';
     }
     var height = (isRules ? 280 : 310) - (pluginItem.hide ? 30 : 0);
     pluginItem.maxHeight = height + 30;
@@ -563,7 +563,7 @@ var List = React.createClass({
     };
     list.forEach(function(name, i) {
       var item = data[name];
-      if (item.name[0] === '\r') {
+      if (util.isGroup(item.name)) {
         setStatus();
         item.isGroup = true;
         group = item;

@@ -1,10 +1,11 @@
 var rules = require('../../../../lib/rules/util').rules;
 var recycleBin = require('../../../../lib/rules/util').rules.recycleBin;
+var isGroup = require('../../../../lib/util/common').isGroup;
 
 module.exports = function(req, res) {
   var body = req.body;
   var list;
-  if (rules.add(body.name, body.value, body.clientId) && body.name[0] !== '\r') {
+  if (rules.add(body.name, body.value, body.clientId) && isGroup(body.name)) {
     if (body.addToTop) {
       rules.moveToTop(body.name, body.clientId);
     } else {

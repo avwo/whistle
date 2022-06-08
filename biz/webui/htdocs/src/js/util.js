@@ -2296,3 +2296,7 @@ var PROTO_RE = /^((?:http|ws)s?:\/\/)[^/?]*/;
 exports.getRawUrl = function (item) {
   return item.fwdHost && item.url.replace(PROTO_RE, '$1' + item.fwdHost);
 };
+
+exports.isGroup = function(name) {
+  return name && name[0] === '\r';
+};

@@ -2689,7 +2689,7 @@ var Index = React.createClass({
     var activeItem = item || modal.getActive();
     if (activeItem && !activeItem.isDefault) {
       var name = activeItem.name;
-      win.confirm('Are you sure to delete \'' + name + '\'.', function (sure) {
+      win.confirm('Are you sure to delete ' + (util.isGroup(name) ? 'group ' : '') + '\'' + name + '\'.', function (sure) {
         if (!sure) {
           return;
         }
@@ -2719,7 +2719,7 @@ var Index = React.createClass({
     var activeItem = item || modal.getActive();
     if (activeItem && !activeItem.isDefault) {
       var name = activeItem.name;
-      win.confirm('Are you sure to delete \'' + name + '\'.', function (sure) {
+      win.confirm('Are you sure to delete ' + (util.isGroup(name) ? 'group ' : '') + '\'' + name + '\'.', function (sure) {
         if (!sure) {
           return;
         }

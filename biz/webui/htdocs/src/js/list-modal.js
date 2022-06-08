@@ -76,9 +76,9 @@ proto.exists = function (name) {
 };
 
 function push(list, name) {
-  if (name[0] !== '\r') {
+  if (!util.isGroup(name)) {
     for (var i = 0, len = list.length; i < len; i++) {
-      if (list[i][0] === '\r') {
+      if (util.isGroup(list[i])) {
         return list.splice(i, 0, name);
       }
     }
@@ -146,13 +146,29 @@ proto.setSelected = function (name, selected) {
   return this._setBoolProp(name, 'selected', selected);
 };
 
-proto.moveTo = function (fromName, toName) {
+proto.moveTo = function (fromName, toName, group) {
   var list = this.list;
   var fromIndex = list.indexOf(fromName);
   var toIndex = list.indexOf(toName);
   if (fromIndex !== -1 && toIndex !== -1) {
-    list.splice(fromIndex, 1);
-    list.splice(toIndex, 0, fromName);
+    group = group && util.isGroup(fromName);
+    if (group) {
+      var data = this.data;
+      var children = [fromName];
+      for (var i = fromIndex + 1, len = list.length; i < len; i++) {
+        var name = data[list[i]].name;
+        if (util.isGroup(name)) {
+          break;
+        }
+        children.push(name);
+      }
+      list.splice(fromIndex, children.length);
+      children.unshift(toIndex, 0);
+      list.splice.apply(list, children);
+    } else {
+      list.splice(fromIndex, 1);
+      list.splice(toIndex, 0, fromName);
+    }
     return true;
   }
 };
