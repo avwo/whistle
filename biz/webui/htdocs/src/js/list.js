@@ -556,6 +556,9 @@ var List = React.createClass({
         group.changed = changed;
         group.childCount = childCount;
         group.selectedCount = selectedCount;
+        childCount = 0;
+        selectedCount = 0;
+        changed = false;
       }
     };
     list.forEach(function(name, i) {

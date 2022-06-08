@@ -2279,27 +2279,32 @@ var Index = React.createClass({
     }
     var self = this;
     var target = ReactDOM.findDOMNode(self.refs.createRulesInput);
-    var name = $.trim(target.value);
+    var name = target.value.trim();
     if (!name) {
       message.error('The name cannot be empty.');
       return;
     }
-
     var modal = self.state.rules;
+    var type = e && e.target.getAttribute('data-type');
+    var isGroup;
+    if (type === 'group') {
+      isGroup = true;
+      name = '\r' + name;
+    }
     if (modal.exists(name)) {
       message.error('The name \'' + name + '\' already exists.');
       return;
     }
-    var addToTop = e && e.target.getAttribute('data-type') === 'top' ? 1 : '';
+    var addToTop = type === 'top' ? 1 : '';
     dataCenter.rules.add(
       { name: name, addToTop: addToTop },
       function (data, xhr) {
         if (data && data.ec === 0) {
           var item = modal[addToTop ? 'unshift' : 'add'](name);
-          self.setRulesActive(name);
+          !isGroup && self.setRulesActive(name);
           target.value = '';
           target.blur();
-          self.setState({
+          self.setState(isGroup ? {} : {
             activeRules: item
           });
           self.triggerRulesChange('create');
@@ -2315,7 +2320,7 @@ var Index = React.createClass({
     }
     var self = this;
     var target = ReactDOM.findDOMNode(self.refs.createValuesInput);
-    var name = $.trim(target.value);
+    var name = target.value.trim();
     if (!name) {
       message.error('The name cannot be empty.');
       return;
@@ -2332,6 +2337,12 @@ var Index = React.createClass({
     }
 
     var modal = self.state.values;
+    var type = e && e.target.getAttribute('data-type');
+    var isGroup;
+    if (type === 'group') {
+      isGroup = true;
+      name = '\r' + name;
+    }
     if (modal.exists(name)) {
       message.error('The name \'' + name + '\' already exists.');
       return;
@@ -2340,10 +2351,10 @@ var Index = React.createClass({
     dataCenter.values.add({ name: name }, function (data, xhr) {
       if (data && data.ec === 0) {
         var item = modal.add(name);
-        self.setValuesActive(name);
+        !isGroup && self.setValuesActive(name);
         target.value = '';
         target.blur();
-        self.setState({
+        self.setState(isGroup ? {} : {
           activeValues: item
         });
         self.triggerValuesChange('create');
@@ -3962,7 +3973,7 @@ var Index = React.createClass({
             <button
               type="button"
               onClick={this.createRules}
-              data-type="top"
+              data-type="group"
               className="btn btn-default"
             >
               +Group
@@ -3991,6 +4002,7 @@ var Index = React.createClass({
             <button
               type="button"
               onClick={this.createValues}
+              data-type="group"
               className="btn btn-default"
             >
               +Group
