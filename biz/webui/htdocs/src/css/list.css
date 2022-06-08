@@ -83,6 +83,10 @@
   margin-right: 2px;
 }
 
+.w-files-path .glyphicon-triangle-right {
+  margin-right: -2px;
+}
+
 .w-list-sub {
   padding-left: 20px!important;
 }
