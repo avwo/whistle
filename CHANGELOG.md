@@ -1,3 +1,7 @@
+# v2.9.21
+1. feat: Rules 与 Values 支持分组
+2. fix: `resCors://origin=xxx` 失效问题
+
 # v2.9.20
 1. fix: `resCors://*` 失效问题
 
