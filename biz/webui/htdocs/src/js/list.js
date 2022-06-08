@@ -318,13 +318,15 @@ var List = React.createClass({
     var info = getDragInfo(e);
     if (info) {
       var fromName = getName(e.dataTransfer.getData('-' + NAME_PREFIX));
+      var group = this.collapseNodes.indexOf(fromName) !== -1;
       info.target.style.background = '';
-      if (this.props.modal.moveTo(fromName, info.toName, this.collapseNodes.indexOf(fromName) !== -1)) {
+      if (this.props.modal.moveTo(fromName, info.toName, group)) {
         var name = this.props.name === 'rules' ? 'rules' : 'values';
         dataCenter[name].moveTo(
           {
             from: fromName,
-            to: info.toName
+            to: info.toName,
+            group: group
           },
           function (data, xhr) {
             if (!data) {

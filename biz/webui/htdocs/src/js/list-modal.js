@@ -162,7 +162,11 @@ proto.moveTo = function (fromName, toName, group) {
         }
         children.push(name);
       }
-      list.splice(fromIndex, children.length);
+      len = children.length;
+      if (len > 1 && fromIndex < toIndex) {
+        toIndex = Math.max(0, toIndex - len + 1);
+      }
+      list.splice(fromIndex, len);
       children.unshift(toIndex, 0);
       list.splice.apply(list, children);
     } else {
