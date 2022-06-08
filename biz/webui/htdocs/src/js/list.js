@@ -542,10 +542,40 @@ var List = React.createClass({
     $('.w-enable-rules-menu').trigger('click');
     events.trigger('disableAllRules');
   },
+  parseList: function() {
+    var isRules = this.props.name == 'rules';
+    var modal = this.props.modal;
+    var list = modal.list;
+    var data = modal.data;
+    var group;
+    var childCount = 0;
+    var selectedCount = 0;
+    list.forEach(function(name, i) {
+      var item = data[name];
+      if (item.name[0] === '\r') {
+        if (group) {
+          group.childCount = childCount;
+          group.selectedCount = selectedCount;
+        }
+        item.isGroup = true;
+        group = item;
+      } else if (group) {
+        ++childCount;
+        if (isRules && item.selected) {
+          ++selectedCount;
+        }
+      }
+    });
+    if (group) {
+      group.childCount = childCount;
+      group.selectedCount = selectedCount;
+    }
+    return list;
+  },
   render: function () {
     var self = this;
     var modal = self.props.modal;
-    var list = modal.list;
+    var list = self.parseList();
     var data = modal.data;
     var props = self.props;
     var activeItem = modal.getActive() || '';
@@ -590,7 +620,7 @@ var List = React.createClass({
               {list.map(function (name, i) {
                 var item = data[name];
                 var isDefaultRule = isRules && i === 0;
-                var isGroup = !isDefaultRule && item.name[0] === '\r';
+                var isGroup = item.isGroup;
                 var title = isGroup ? name.substring(1) : name;
                 isSub = isSub || isGroup;
                 if (isGroup) {
@@ -628,7 +658,10 @@ var List = React.createClass({
                   >
                     {isGroup ? <span className={'glyphicon glyphicon-triangle-' + (isHide ? 'right' : 'bottom')} /> : null}
                     {title}
-                    {isGroup ? <span className="w-group-child-num">(5)</span> : <span className="glyphicon glyphicon-ok"></span>}
+                    {isGroup ? <span className={util.getClasses({
+                      'w-group-child-num': true,
+                      'w-exists-selected': item.selectedCount > 0
+                    })}>({item.selectedCount > 0 ? item.selectedCount + '/' : ''}{item.childCount})</span> : <span className="glyphicon glyphicon-ok"></span>}
                   </a>
                 );
               })}
