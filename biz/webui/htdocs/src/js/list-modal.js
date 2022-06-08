@@ -75,6 +75,17 @@ proto.exists = function (name) {
   return this.list.indexOf(name) != -1;
 };
 
+function push(list, name) {
+  if (name[0] !== '\r') {
+    for (var i = 0, len = list.length; i < len; i++) {
+      if (list[i][0] === '\r') {
+        return list.splice(i, 0, name);
+      }
+    }
+  }
+  list.push(name);
+}
+
 function add(name, value, isPre) {
   if (!name) {
     return false;
@@ -88,7 +99,7 @@ function add(name, value, isPre) {
   if (isPre) {
     this.list.splice(1, 0, name);
   } else {
-    this.list.push(name);
+    push(this.list, name);
   }
   var item = (this.data[name] = {
     key: util.getKey(),
