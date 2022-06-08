@@ -193,7 +193,7 @@ proto.moveToGroup = function(name, groupName, isTop) {
   }
   for (var len = list.length; index < len; index++) {
     if (util.isGroup(list[index])) {
-      return list.splice(index, 0, name);
+      break;
     }
   }
   list.splice(index, 0, name);
