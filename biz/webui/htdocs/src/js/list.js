@@ -131,7 +131,7 @@ function getSuffix(name) {
 
 var List = React.createClass({
   getInitialState: function() {
-    var nodes = util.parseJSON(storage.get('collapseGroups'));
+    var nodes = util.parseJSON(storage.get(this.getCollapseKey()));
     this.collapseGroups = Array.isArray(nodes) ? nodes.filter(function(name) {
       return util.isGroup(name) && name[1];
     }) : [];
@@ -230,7 +230,7 @@ var List = React.createClass({
     var index = this.collapseGroups.indexOf(groupName);
     if (index !== -1) {
       this.collapseGroups.splice(index, 1);
-      storage.set('collapseGroups', JSON.stringify(this.collapseGroups));
+      storage.set(this.getCollapseKey(), JSON.stringify(this.collapseGroups));
     }
   },
   shouldComponentUpdate: function (nextProps) {
@@ -275,7 +275,7 @@ var List = React.createClass({
     } else {
       this.collapseGroups.splice(index, 1);
     }
-    storage.set('collapseGroups', JSON.stringify(this.collapseGroups));
+    storage.set(this.getCollapseKey(), JSON.stringify(this.collapseGroups));
     this.setState({});
   },
   onClickGroup: function (e) {
@@ -530,6 +530,9 @@ var List = React.createClass({
   },
   isRules: function() {
     return this.props.name == 'rules';
+  },
+  getCollapseKey: function() {
+    return this.isRules() ? 'collapseRulesGroups' : 'collapseValuesGroups';
   },
   onContextMenu: function (e) {
     var name = $(e.target).closest('a').attr('data-name');
