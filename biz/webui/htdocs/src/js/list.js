@@ -356,24 +356,30 @@ var List = React.createClass({
     if (info) {
       var fromName = getName(e.dataTransfer.getData('-' + NAME_PREFIX));
       var group = this.collapseGroups.indexOf(fromName) !== -1;
+      var toName = info.toName;
+      var params = {
+        from: fromName,
+        to: toName,
+        group: group
+      };
       info.target.style.background = '';
-      if (this.props.modal.moveTo(fromName, info.toName, group)) {
+      var toTop = this.isRules() && toName === 'Default';
+      if (toTop) {
+        toName = this.props.modal.list[1];
+        params.to = toName;
+        params.toTop = true;
+      }
+      if (this.props.modal.moveTo(fromName, toName, group, toTop)) {
         var name = this.props.name === 'rules' ? 'rules' : 'values';
-        dataCenter[name].moveTo(
-          {
-            from: fromName,
-            to: info.toName,
-            group: group
-          },
-          function (data, xhr) {
-            if (!data) {
-              util.showSystemError(xhr);
-              return;
-            }
-            if (data.ec === 2) {
-              events.trigger(name + 'Changed');
-            }
+        dataCenter[name].moveTo(params, function (data, xhr) {
+          if (!data) {
+            util.showSystemError(xhr);
+            return;
           }
+          if (data.ec === 2) {
+            events.trigger(name + 'Changed');
+          }
+        }
         );
         this.setState({});
         this.triggerChange('move');
@@ -698,9 +704,9 @@ var List = React.createClass({
                     ref={name}
                     data-name={i + '_' + name}
                     onDragStart={isDefaultRule ? undefined : self.onDragStart}
-                    onDragEnter={isDefaultRule ? undefined : self.onDragEnter}
-                    onDragLeave={isDefaultRule ? undefined : self.onDragLeave}
-                    onDrop={isDefaultRule ? undefined : self.onDrop}
+                    onDragEnter={self.onDragEnter}
+                    onDragLeave={self.onDragLeave}
+                    onDrop={self.onDrop}
                     style={{ display: item.hide ? 'none' : null }}
                     key={item.key}
                     data-key={item.key}

@@ -146,7 +146,7 @@ proto.setSelected = function (name, selected) {
   return this._setBoolProp(name, 'selected', selected);
 };
 
-proto.moveTo = function (fromName, toName, group) {
+proto.moveTo = function (fromName, toName, group, toTop) {
   var list = this.list;
   var fromIndex = list.indexOf(fromName);
   var toIndex = list.indexOf(toName);
@@ -169,7 +169,7 @@ proto.moveTo = function (fromName, toName, group) {
       list.splice(fromIndex, len);
       children.unshift(toIndex, 0);
       list.splice.apply(list, children);
-    } else if (util.isGroup(fromName) || !util.isGroup(toName)) {
+    } else if (toTop || util.isGroup(fromName) || !util.isGroup(toName)) {
       list.splice(fromIndex, 1);
       list.splice(toIndex, 0, fromName);
     } else {
