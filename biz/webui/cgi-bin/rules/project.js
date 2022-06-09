@@ -8,13 +8,20 @@ module.exports = function(req, res) {
     if (body.enable == 1) {
       rules.select(name);
     }
-    if (body.top == 1) {
-      rules.moveToTop(name);
-    }
     return res.json({ ec: 0, rules: !!rules.get(name) });
   }
-  rules.add(name, rulesText);
-  rules.select(name);
-  rules.moveToTop(name);
+  if (rules.add(name, rulesText) != null) {
+    var groupName = typeof body.groupName === 'string' ? body.groupName.trim() : '';
+    rules.select(name);
+    if (groupName) {
+      groupName = '\r' + groupName;
+      if (rules.add(groupName) != null) {
+        rules.moveToGroup(name, groupName, true);
+        rules.moveGroupToTop(groupName);
+      }
+    } else {
+      rules.moveToTop(name);
+    }
+  }
   res.json({ ec: 0 });
 };

@@ -145,10 +145,12 @@ module.exports = function(filepath, storage, force) {
           error('The rules cannot be empty and the size cannot exceed 256k.');
           return;
         }
+        var groupName = getString(result.groupName) || getString(result.group);
         var setRules = function() {
           var body = [
             'name=' + encodeURIComponent(name),
-            'rules=' + encodeURIComponent(rules)
+            'rules=' + encodeURIComponent(rules),
+            'groupName=' + encodeURIComponent(groupName.trim())
           ].join('&');
           request(body, function() {
             info('Setting whistle (' + (options.host || '127.0.0.1') + ':' + port + ') rules successful.');
