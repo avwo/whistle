@@ -179,7 +179,7 @@ var List = React.createClass({
           var group = self.getCurGroup(item);
           group && self.expandGroup(group.name);
           e.shiftKey ? self.setState({}) : self.onClick(item);
-          if (self.props.name === 'rules') {
+          if (self.isRules()) {
             events.trigger('updateUI');
           }
           e.preventDefault();
@@ -188,7 +188,7 @@ var List = React.createClass({
     events.on('toggleCommentInEditor', function () {
       var activeItem = modal.getActive();
       if (activeItem) {
-        var name = self.props.name === 'rules' ? 'Rules' : 'Values';
+        var name = self.isRules() ? 'Rules' : 'Values';
         events.trigger('save' + name, activeItem);
       }
     });
@@ -199,19 +199,30 @@ var List = React.createClass({
       self.reloadRecycleBin('Values');
     });
     events.on('expandRulesGroup', function(_, groupName) {
-      self.props.name == 'rules' && self.expandGroup(self.getGroupByName(groupName));
+      var group = self.isRules() && self.getGroupByName(groupName);
+      group && self.expandGroup(group.name);
     });
     events.on('expandValuesGroup', function(_, groupName) {
-      self.props.name !== 'rules' && self.expandGroup(self.getGroupByName(groupName));
+      var group = !self.isRules() && self.getGroupByName(groupName);
+      group && self.expandGroup(group.name);
     });
     var scrollToBottom = function() {
       ReactDOM.findDOMNode(self.refs.list).scrollTop = 1000000000;
     };
+    var focusList = function() {
+      ReactDOM.findDOMNode(self.refs.list).focus();
+    };
     events.on('scrollRulesBottom', function() {
-      self.props.name == 'rules' && scrollToBottom();
+      self.isRules() && scrollToBottom();
     });
     events.on('scrollValuesBottom', function() {
-      self.props.name !== 'rules' && scrollToBottom();
+      !self.isRules() && scrollToBottom();
+    });
+    events.on('focusRulesList', function() {
+      self.isRules() && focusList();
+    });
+    events.on('focusValuesList', function() {
+      !self.isRules() && focusList();
     });
     this.ensureVisible(true);
   },
@@ -511,6 +522,9 @@ var List = React.createClass({
       list: list
     });
   },
+  isRules: function() {
+    return this.props.name == 'rules';
+  },
   onContextMenu: function (e) {
     var name = $(e.target).closest('a').attr('data-name');
     var modal = this.props.modal;
@@ -522,7 +536,7 @@ var List = React.createClass({
     this.currentFocusItem = item;
     var disabled = !name;
     var isDefault;
-    var isRules = this.props.name == 'rules';
+    var isRules = this.isRules();
     var pluginItem = isRules ? rulesCtxMenuList[8] : valuesCtxMenuList[9];
     util.addPluginMenus(
       pluginItem,
@@ -589,7 +603,7 @@ var List = React.createClass({
     events.trigger('disableAllRules');
   },
   parseList: function() {
-    var isRules = this.props.name == 'rules';
+    var isRules = this.isRules();
     var modal = this.props.modal;
     var list = modal.list;
     var data = modal.data;
@@ -635,7 +649,7 @@ var List = React.createClass({
     if (!activeItem && list[0] && (activeItem = data[list[0]])) {
       activeItem.active = true;
     }
-    var isRules = self.props.name == 'rules';
+    var isRules = self.isRules();
     var draggable = false;
     var activeName = activeItem ? activeItem.name : '';
     if (isRules) {
@@ -725,8 +739,8 @@ var List = React.createClass({
           <Editor
             {...self.props}
             onChange={self.onChange}
-            readOnly={disabledEditor || !activeItem}
-            value={activeItem.value}
+            readOnly={!activeItem || activeItem.hide || disabledEditor}
+            value={activeItem.hide ? '' : activeItem.value}
             mode={isRules ? 'rules' : getSuffix(activeItem.name)}
           />
         </Divider>

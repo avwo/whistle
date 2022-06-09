@@ -76,14 +76,14 @@
   color: #000;
 }
 
-.w-list-group .glyphicon, .w-files-path .glyphicon-triangle-right {
+.w-list-group .glyphicon, .w-list-group-icon.glyphicon-triangle-right {
   font-size: 10px;
   opacity: .5;
   transform: scale(0.8);
   margin-right: 2px;
 }
 
-.w-files-path .glyphicon-triangle-right {
+.w-list-group-icon.glyphicon-triangle-right {
   margin-right: -2px;
 }
 

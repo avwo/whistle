@@ -794,6 +794,7 @@ var Index = React.createClass({
               self.setState({ activeRules: item });
               self.triggerRulesChange('create');
               events.trigger('rulesRecycleList', result);
+              events.trigger('focusRulesList');
             } else {
               util.showSystemError(xhr);
             }
@@ -1926,6 +1927,7 @@ var Index = React.createClass({
             self.setState({
               activeValues: item
             });
+            events.trigger('focusValuesList');
           } else {
             util.showSystemError(xhr);
           }
@@ -2724,6 +2726,7 @@ var Index = React.createClass({
                 }
             );
             self.triggerRulesChange('remove');
+            events.trigger('focusRulesList');
           } else {
             util.showSystemError(xhr);
           }
@@ -2751,6 +2754,7 @@ var Index = React.createClass({
             }
             self.setState(item ? {} : { activeValues: nextItem });
             self.triggerValuesChange('remove');
+            events.trigger('focusValuesList');
           } else {
             util.showSystemError(xhr);
           }
