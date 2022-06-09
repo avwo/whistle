@@ -12,7 +12,7 @@
   padding-left: 10px;
   line-height: 32px;
   position: relative;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid #ddd;
   color: #000;
   text-decoration: none;
   white-space: nowrap;
@@ -101,4 +101,9 @@
 
 .w-list-group .w-exists-selected {
   color: #5bbd72;
+}
+
+.w-list-group.w-group-empty {
+  background-color: #F5F5F5;
+  color: #888;
 }

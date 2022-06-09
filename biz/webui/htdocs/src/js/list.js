@@ -719,7 +719,8 @@ var List = React.createClass({
                       'w-selected': !isGroup && item.selected,
                       'w-list-group': isGroup,
                       'w-list-sub': !isGroup && isSub,
-                      'w-hide': !isGroup && isHide
+                      'w-hide': !isGroup && isHide,
+                      'w-group-empty': isGroup && !item.childCount
                     })}
                   >
                     {isGroup ? <span className={'glyphicon glyphicon-triangle-' + (isHide ? 'right' : 'bottom')} /> : null}

@@ -169,9 +169,12 @@ proto.moveTo = function (fromName, toName, group) {
       list.splice(fromIndex, len);
       children.unshift(toIndex, 0);
       list.splice.apply(list, children);
-    } else {
+    } else if (util.isGroup(fromName) || !util.isGroup(toName)) {
       list.splice(fromIndex, 1);
       list.splice(toIndex, 0, fromName);
+    } else {
+      list.splice(fromIndex, 1);
+      list.splice(fromIndex > toIndex ? toIndex + 1 : toIndex, 0, fromName);
     }
     return true;
   }
