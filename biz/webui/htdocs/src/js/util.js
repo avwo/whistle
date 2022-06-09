@@ -22,6 +22,7 @@ var DIG_RE = /^[+-]?[1-9]\d*$/;
 var INDEX_RE = /^\[(\d+)\]$/;
 var ARR_FILED_RE = /(.)?(?:\[(\d+)\])$/;
 var LEVELS = ['fatal', 'error', 'warn', 'info', 'debug'];
+var MAX_CURL_BODY = 1024 * 72;
 var useCustomEditor = window.location.search.indexOf('useCustomEditor') !== -1;
 var isJSONText;
 
@@ -991,8 +992,8 @@ exports.asCURL = function (item) {
       JSON.stringify((rawHeaderNames[key] || key) + ': ' + headers[key])
     );
   });
-  var body = isText(req.headers) || isUrlEncoded(req) ? getBody(req, true) : '';
-  if (body) {
+  var body = getBody(req, true);
+  if (body && (body.length <= MAX_CURL_BODY || isText(req.headers) || isUrlEncoded(req))) {
     result.push('-d', JSON.stringify(body));
   }
   return result.join(' ');
