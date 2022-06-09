@@ -5,10 +5,11 @@ var isGroup = require('../../../../lib/util/common').isGroup;
 module.exports = function(req, res) {
   var body = req.body;
   var list;
+  var oldFile = values.get(body.name);
   if (values.add(body.name, body.value, body.clientId) != null && !isGroup(body.name)) {
     if (body.groupName) {
       values.moveToGroup(body.name, body.groupName);
-    } else {
+    } else if (!oldFile) {
       var group = values.getFirstGroup();
       group && values.moveTo(body.name, group.name, body.clientId);
     }

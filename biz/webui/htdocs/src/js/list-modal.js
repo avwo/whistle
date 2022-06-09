@@ -214,6 +214,26 @@ proto.getChangedList = function () {
   return this._getList('changed');
 };
 
+proto.getChangedGroupList = function(item) {
+  if (!util.isGroup(item.name)) {
+    return [item];
+  }
+  var result = [];
+  var list = this.list;
+  var data = this.data;
+  var i = list.indexOf(item.name) + 1;
+  if (i > 0) {
+    for (var len = list.length; i < len; i++) {
+      item = data[list[i]];
+      if (util.isGroup(item.name)) {
+        break;
+      }
+      item.changed && result.push(item);
+    }
+  }
+  return result;
+};
+
 proto.clearAllActive = function () {
   var data = this.data;
   Object.keys(data).forEach(function (name) {

@@ -5,16 +5,15 @@ var isGroup = require('../../../../lib/util/common').isGroup;
 module.exports = function(req, res) {
   var body = req.body;
   var list;
+  var oldFile = rules.get(body.name);
   if (rules.add(body.name, body.value, body.clientId) != null && !isGroup(body.name)) {
     if (body.groupName) {
       rules.moveToGroup(body.name, body.groupName, body.addToTop);
-    } else {
-      if (body.addToTop) {
-        rules.moveToTop(body.name, body.clientId);
-      } else {
-        var group = rules.getFirstGroup();
-        group && rules.moveTo(body.name, group.name, body.clientId);
-      }
+    } else if (body.addToTop) {
+      rules.moveToTop(body.name, body.clientId);
+    } else if (!oldFile) {
+      var group = rules.getFirstGroup();
+      group && rules.moveTo(body.name, group.name, body.clientId);
     }
   }
   if (req.body.recycleFilename) {

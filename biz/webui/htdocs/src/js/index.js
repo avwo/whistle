@@ -1226,13 +1226,15 @@ var Index = React.createClass({
     });
     events.on('saveRules', function (e, item) {
       if (item.changed || !item.selected) {
-        self.selectRules(item);
+        var list = self.state.rules.getChangedGroupList(item);
+        list.forEach(self.selectRules);
       } else {
         self.unselectRules(item);
       }
     });
     events.on('saveValues', function (e, item) {
-      self.saveValues(item);
+      var list = self.state.values.getChangedGroupList(item);
+      list.forEach(self.saveValues);
     });
     events.on('renameRules', function (e, item) {
       self.showEditRules(item);
