@@ -2450,15 +2450,16 @@ var Index = React.createClass({
       message.error('The name \'' + name + '\' already exists.');
       return;
     }
-
+    var curName = activeItem.name;
     dataCenter.rules.rename(
-      { name: activeItem.name, newName: name },
+      { name: curName, newName: name },
       function (data, xhr) {
         if (data && data.ec === 0) {
-          modal.rename(activeItem.name, name);
+          modal.rename(curName, name);
           target.value = '';
           target.blur();
           !isGroup && self.setRulesActive(name);
+          events.trigger('rulesNameChanged', [curName, name]);
           self.setState({ activeRules: modal.getActive() });
           self.triggerRulesChange('rename');
         } else {
@@ -2489,15 +2490,16 @@ var Index = React.createClass({
       message.error('The name \'' + name + '\' already exists.');
       return;
     }
-
+    var curName = activeItem.name;
     dataCenter.values.rename(
-      { name: activeItem.name, newName: name },
+      { name: curName, newName: name },
       function (data, xhr) {
         if (data && data.ec === 0) {
-          modal.rename(activeItem.name, name);
+          modal.rename(curName, name);
           target.value = '';
           target.blur();
           !isGroup && self.setValuesActive(name);
+          events.trigger('valuesNameChanged', [curName, name]);
           self.setState({ activeValues: modal.getActive() });
           self.triggerValuesChange('rename');
           checkJson(activeItem);

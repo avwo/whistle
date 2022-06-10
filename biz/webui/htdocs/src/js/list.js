@@ -185,25 +185,18 @@ var List = React.createClass({
           e.preventDefault();
         }
       });
+    var comName = self.isRules() ? 'Rules' : 'Values';
     events.on('toggleCommentInEditor', function () {
       var activeItem = modal.getActive();
       if (activeItem) {
-        var name = self.isRules() ? 'Rules' : 'Values';
-        events.trigger('save' + name, activeItem);
+        events.trigger('save' + comName, activeItem);
       }
     });
-    events.on('reloadRulesRecycleBin', function () {
-      self.reloadRecycleBin('Rules');
+    events.on('reload' + comName + 'RecycleBin', function () {
+      self.reloadRecycleBin(comName);
     });
-    events.on('reloadValuesRecycleBin', function () {
-      self.reloadRecycleBin('Values');
-    });
-    events.on('expandRulesGroup', function(_, groupName) {
-      var group = self.isRules() && self.getGroupByName(groupName);
-      group && self.expandGroup(group.name);
-    });
-    events.on('expandValuesGroup', function(_, groupName) {
-      var group = !self.isRules() && self.getGroupByName(groupName);
+    events.on('expand' + comName + 'Group', function(_, groupName) {
+      var group = self.getGroupByName(groupName);
       group && self.expandGroup(group.name);
     });
     var scrollToBottom = function() {
@@ -212,17 +205,17 @@ var List = React.createClass({
     var focusList = function() {
       ReactDOM.findDOMNode(self.refs.list).focus();
     };
-    events.on('scrollRulesBottom', function() {
-      self.isRules() && scrollToBottom();
+    events.on('scroll' + comName + 'Bottom', function() {
+      scrollToBottom();
     });
-    events.on('scrollValuesBottom', function() {
-      !self.isRules() && scrollToBottom();
+    events.on('focus' + comName + 'List', function() {
+      focusList();
     });
-    events.on('focusRulesList', function() {
-      self.isRules() && focusList();
-    });
-    events.on('focusValuesList', function() {
-      !self.isRules() && focusList();
+    events.on(comName.toLowerCase() + 'NameChanged', function(_, name, newName) {
+      var index = this.collapseGroups.indexOf(name);
+      if (index !== -1) {
+        this.collapseGroups[index] = newName;
+      }
     });
     this.ensureVisible(true);
   },
