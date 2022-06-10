@@ -157,31 +157,31 @@ var Editor = React.createClass({
       this._editor.setOption('readOnly', readOnly);
     }
   },
+  handleKeyUp: function(_, e) {
+    clearTimeout(this._timer);
+    var _byDelete = e.keyCode === 8;
+    if (_byDelete || e.keyCode === 13) {
+      var editor = this._editor;
+      this._timer = setTimeout(function () {
+        if (!hasSelector('.CodeMirror-hints')) {
+          editor._byDelete = true;
+          editor._byEnter = !_byDelete;
+          editor.execCommand('autocomplete');
+        }
+      }, 300);
+    }
+  },
   setAutoComplete: function () {
     var isRules = this.isRulesEditor();
-    var option = isRules ? rulesHint.getExtraKeys() : {};
+    var option = isRules && !this.props.readOnly ? rulesHint.getExtraKeys() : {};
     if (!/\(Macintosh;/i.test(window.navigator.userAgent)) {
       option['Ctrl-F'] = 'findPersistent';
     }
     option['Cmd-F'] = 'findPersistent';
     var editor = this._editor;
     editor.setOption('extraKeys', option);
-    var timer;
-    if (isRules) {
-      editor.on('keyup', function (_, e) {
-        clearTimeout(timer);
-        var _byDelete = e.keyCode === 8;
-        if (_byDelete || e.keyCode === 13) {
-          timer = setTimeout(function () {
-            if (!hasSelector('.CodeMirror-hints')) {
-              editor._byDelete = true;
-              editor._byEnter = !_byDelete;
-              editor.execCommand('autocomplete');
-            }
-          }, 300);
-        }
-      });
-    }
+    editor.off('keyup', this.handleKeyUp);
+    isRules && editor.on('keyup', this.handleKeyUp);
   },
 
   // 设置代码折叠
