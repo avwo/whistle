@@ -132,8 +132,12 @@ function getSuffix(name) {
 var List = React.createClass({
   getInitialState: function() {
     var nodes = util.parseJSON(storage.get(this.getCollapseKey()));
+    var map = {};
     this.collapseGroups = Array.isArray(nodes) ? nodes.filter(function(name) {
-      return util.isGroup(name) && name[1];
+      if (util.isGroup(name) && name[1] && !map[name]) {
+        map[name] = 1;
+        return true;
+      }
     }) : [];
     return {};
   },
@@ -212,9 +216,14 @@ var List = React.createClass({
       focusList();
     });
     events.on(comName.toLowerCase() + 'NameChanged', function(_, name, newName) {
-      var index = this.collapseGroups.indexOf(name);
+      var index = name === newName ? - 1 : self.collapseGroups.indexOf(name);
       if (index !== -1) {
-        this.collapseGroups[index] = newName;
+        if (self.collapseGroups.indexOf(newName) !== -1) {
+          self.collapseGroups.splice(index, 1);
+        } else {
+          self.collapseGroups[index] = newName;
+        }
+        storage.set(self.getCollapseKey(), JSON.stringify(self.collapseGroups));
       }
     });
     this.ensureVisible(true);
