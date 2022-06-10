@@ -151,8 +151,7 @@ proto.moveTo = function (fromName, toName, group, toTop) {
   var fromIndex = list.indexOf(fromName);
   var toIndex = list.indexOf(toName);
   if (fromIndex !== -1 && toIndex !== -1) {
-    group = group && util.isGroup(fromName);
-    if (group) {
+    if (group && util.isGroup(fromName)) {
       var data = this.data;
       var children = [fromName];
       for (var i = fromIndex + 1, len = list.length; i < len; i++) {
@@ -161,6 +160,13 @@ proto.moveTo = function (fromName, toName, group, toTop) {
           break;
         }
         children.push(name);
+      }
+      if (fromIndex < toIndex && util.isGroup(toName)) {
+        for (; toIndex < len; toIndex++) {
+          if (util.isGroup(list[toIndex + 1])) {
+            break;
+          }
+        }
       }
       len = children.length;
       if (len > 1 && fromIndex < toIndex) {
