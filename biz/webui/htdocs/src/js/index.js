@@ -2310,10 +2310,10 @@ var Index = React.createClass({
     dataCenter.rules.add(params, function (data, xhr) {
       if (data && data.ec === 0) {
         var item = modal[addToTop ? 'unshift' : 'add'](name);
-        !isGroup && self.setRulesActive(name);
         target.value = '';
         target.blur();
         modal.moveToGroup(name, params.groupName, addToTop);
+        !isGroup && self.setRulesActive(name);
         params.groupName && events.trigger('expandRulesGroup', params.groupName);
         self.setState(isGroup ? {} : {
           activeRules: item
@@ -2368,10 +2368,10 @@ var Index = React.createClass({
     dataCenter.values.add(params, function (data, xhr) {
       if (data && data.ec === 0) {
         var item = modal.add(name);
-        !isGroup && self.setValuesActive(name);
         target.value = '';
         target.blur();
         modal.moveToGroup(name, params.groupName);
+        !isGroup && self.setValuesActive(name);
         params.groupName && events.trigger('expandValuesGroup', params.groupName);
         self.setState(isGroup ? {} : {
           activeValues: item
