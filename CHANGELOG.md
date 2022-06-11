@@ -1,3 +1,6 @@
+# v2.9.22
+1. fix: 修复部分插件规则优先级问题
+
 # v2.9.21
 1. feat: Rules 与 Values 支持分组
 2. fix: `resCors://origin=xxx` 失效问题
