@@ -1,5 +1,6 @@
 # v2.9.22
 1. fix: 修复部分插件规则优先级问题
+2. feat: 支持通过 `pattern operation lineProps://important` 提升规则的优先级
 
 # v2.9.21
 1. feat: Rules 与 Values 支持分组
