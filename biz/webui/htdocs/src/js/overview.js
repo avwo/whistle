@@ -70,10 +70,19 @@ function getStr(str) {
   return str ? ' ' + str : '';
 }
 
+function filterImportant(item) {
+  return item.indexOf('important') !== -1;
+}
 
-function getRawProps(rule) {
+function getRawProps(rule, all) {
   rule = rule.rawProps;
-  return getStr(rule && rule.join(' '));
+  if (!rule) {
+    return '';
+  }
+  if (!all) {
+    rule = rule.filter(filterImportant);
+  }
+  return getStr(rule.join(' '));
 }
 
 function getRuleStr(rule) {
@@ -89,7 +98,7 @@ function getRuleStr(rule) {
     }
     matcher = matcher + ':' + rule.port;
   }
-  return rule.rawPattern + ' ' + matcher + getRawProps(rule) + getStr(rule.filter);
+  return rule.rawPattern + ' ' + matcher + getRawProps(rule, true) + getStr(rule.filter);
 }
 
 function getTime(time) {
