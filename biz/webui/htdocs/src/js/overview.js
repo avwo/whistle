@@ -70,12 +70,17 @@ function getStr(str) {
   return str ? ' ' + str : '';
 }
 
+
+function getRawProps(rule) {
+  rule = rule.rawProps;
+  return getStr(rule && rule.join(' '));
+}
+
 function getRuleStr(rule) {
   if (!rule) {
     return;
   }
   var matcher = rule.matcher;
-  var props = rule.rawProps && rule.rawProps.join(' ');
   if (rule.port) {
     var protoIndex = matcher.indexOf(':') + 3;
     var proto = matcher.substring(0, protoIndex);
@@ -84,7 +89,7 @@ function getRuleStr(rule) {
     }
     matcher = matcher + ':' + rule.port;
   }
-  return rule.rawPattern + ' ' + matcher + getStr(props) + getStr(rule.filter);
+  return rule.rawPattern + ' ' + matcher + getRawProps(rule) + getStr(rule.filter);
 }
 
 function getTime(time) {
@@ -297,16 +302,17 @@ var Overview = React.createClass({
             key = 'urlReplace';
           }
           var rule = rules[key];
-          if (name === 'plugin' && rules._pluginRule) {
+          var pluginRule = name === 'plugin' && rules._pluginRule;
+          if (pluginRule) {
             hasPluginRule = true;
             var ruleList = [
-              rules._pluginRule.rawPattern + ' ' + rules._pluginRule.matcher
+              pluginRule.rawPattern + ' ' + pluginRule.matcher + getRawProps(pluginRule)
             ];
-            var titleList = [rules._pluginRule.raw];
+            var titleList = [pluginRule.raw];
             rule &&
               rule.list &&
               rule.list.forEach(function (item) {
-                ruleList.push(item.rawPattern + ' ' + item.matcher);
+                ruleList.push(item.rawPattern + ' ' + item.matcher + getRawProps(item));
                 titleList.push(item.raw);
               });
             rulesModal[name] = ruleList.join('\n');
@@ -314,7 +320,7 @@ var Overview = React.createClass({
           } else if (rule && rule.list) {
             rulesModal[name] = rule.list
               .map(function (rule) {
-                return rule.rawPattern + ' ' + rule.matcher;
+                return rule.rawPattern + ' ' + rule.matcher + getRawProps(rule);
               })
               .join('\n');
             titleModal[name] = rule.list
