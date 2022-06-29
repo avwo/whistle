@@ -39,6 +39,7 @@ module.exports = function(argv) {
   }
   var options = {};
   var skip;
+  var sudo = true;
   argv.forEach(function(arg) {
     if (skip) {
       options.bypass = arg;
@@ -66,11 +67,14 @@ module.exports = function(argv) {
       if (host && (net.isIP(host) || HOST_RE.test(host))) {
         options.host = host || options.host;
       }
+    } else if (arg === '--no-sudo') {
+      sudo = false;
     }
   });
   if (!options.port) {
     options.port = util.getDefaultPort();
   }
   options.host = options.host || '127.0.0.1';
+  options.sudo = sudo;
   enableProxy(options);
 };
