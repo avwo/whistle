@@ -57,7 +57,7 @@
     "pipestream": "^0.7.3",
     "q": "1.4.1",
     "safe-buffer": "^5.1.2",
-    "set-global-proxy": "^0.1.0",
+    "set-global-proxy": "^0.1.2",
     "sni": "1.0.0",
     "sockx": "^0.2.0",
     "starting": "^8.0.1",
