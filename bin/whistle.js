@@ -7,7 +7,7 @@ var useRules = require('./use');
 var showStatus = require('./status');
 var util = require('./util');
 var plugin = require('./plugin');
-var setProxy = require('./proxy/cli');
+var setProxy = require('./proxy');
 var installCA = require('./ca/cli');
 
 var error = util.error;

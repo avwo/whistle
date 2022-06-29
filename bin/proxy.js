@@ -1,6 +1,6 @@
 var net = require('net');
-var proxy = require('./index');
-var util = require('../util');
+var proxy = require('set-global-proxy');
+var util = require('./util');
 
 var OFF_RE = /^(?:o|0|-{0,2}off)$/i;
 var BYPASS_RE = /^(?:-{0,2}bypass|-x|-b)$/i;
