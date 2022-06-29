@@ -65,6 +65,12 @@ Whistle 是基于 Node 实现的跨平台抓包调试工具，其主要特点：
 
 ### 详细用法参见：[Whistle 帮助文档](https://wproxy.org/whistle/quickstart.html)
 
+# 用 brew 安装
+如果你已安装 [Homebrew](https://brew.sh/)，可以直接使用下面命令安装，无需安装 Node：
+``` sh
+brew install whistle
+```
+
 # 通过 SwitchyOmega 设置代理
 全局代理如果会影响到某些客户端的请求（客户端设置了 ssl pinning），也可以使用 Chrome 插件设置代理（只对 Chrome 生效）：
 > 可以通过 `w2 proxy off` 关闭全局代理
