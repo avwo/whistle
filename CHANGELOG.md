@@ -1,3 +1,7 @@
+# v2.9.23
+1. refactor: 设置代理只需输入一次 root 密码：https://github.com/avwo/whistle/issues/746
+2. fix: M1 Pro 上执行 `brew install whistle` 安装 Whistle 失败问题
+
 # v2.9.22
 1. fix: 修复部分插件规则优先级问题
 2. feat: 支持通过 `pattern operation lineProps://important` 提升规则的优先级
