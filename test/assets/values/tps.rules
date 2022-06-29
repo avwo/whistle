@@ -1,2 +1,0 @@
-# rules
-2.tps.whistlejs.com jsAppend://`{${reqCookie.name}}`

@@ -1,3 +1,0 @@
-/./ whistle.test1://test1 %test1=123
-
-%test1=abc

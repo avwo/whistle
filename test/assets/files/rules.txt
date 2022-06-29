@@ -1,2 +1,0 @@
-str.w2.org/index.html file://`(${search.replace(a,b)})`
-str.w2.org/index2.html file://`(${query.replace(/a/g,b)})`

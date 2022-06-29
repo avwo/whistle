@@ -1,9 +1,0 @@
-{
-    "method": "post",
-    "headers": {
-        "referer": "http://wproxy.org"
-    },
-    "top": "top",
-    "body": "body",
-    "bottom": "bottom"
-}

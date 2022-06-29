@@ -1,2 +1,0 @@
-# rules
-rf2.w2.org file://{test2.json}

@@ -1,9 +1,0 @@
-{
-  "name": "whistle.test1",
-  "version": "0.0.0",
-  "whistleConfig": {
-    "pluginVars": "http://www.test.com"
-  },
-  "description": "test1",
-  "license": "MIT"
-}
