@@ -1,3 +1,9 @@
+
+
+# v2.9.25
+1. refactor: 优化插件开发调试，参见：https://github.com/avwo/lack
+# v2.9.24
+为跟 Homebrew 版本保持一致，跳过此版本
 # v2.9.23
 1. refactor: 设置代理只需输入一次 root 密码：https://github.com/avwo/whistle/issues/746
 2. fix: M1 Pro 上执行 `brew install whistle` 安装 Whistle 失败问题
