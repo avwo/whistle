@@ -8,38 +8,50 @@ var NUM_RE = /^\d+$/;
 var HOST_SUFFIX_RE = /\:(\d+|auto)?$/;
 var HOST_RE = /^[a-z\d_-]+(?:\.[a-z\d_-]+)*$/i;
 
+function showInfo(msg) {
+  process.nextTick(function() {
+    util.info(msg);
+  });
+}
+
+function showError(msg) {
+  process.nextTick(function() {
+    util.error(msg);
+  });
+}
+
 function enableProxy(options) {
   try {
     if (proxy.enableProxy(options)) {
-      util.info('Setting global proxy (' + options.host + ':' + options.port + ') successful.');
+      showInfo('Setting global proxy (' + options.host + ':' + options.port + ') successful.');
     } else {
-      util.error('Failed to set global proxy (' + options.host + ':' + options.port + ').');
+      showError('Failed to set global proxy (' + options.host + ':' + options.port + ').');
     }
   } catch (e) {
-    util.error(e.message);
+    showError(e.message);
   }
 }
 
-function disableProxy() {
+function disableProxy(sudo) {
   try {
-    if (proxy.disableProxy()) {
-      util.info('Turn off global proxy successful.');
+    if (proxy.disableProxy(sudo)) {
+      showInfo('Turn off global proxy successful.');
     } else {
-      util.error('Failed to turn off global proxy.');
+      showError('Failed to turn off global proxy.');
     }
   } catch (e) {
-    util.error(e.message);
+    showError(e.message);
   }
 }
 
 module.exports = function(argv) {
   var cmd = argv[0];
+  var sudo = argv.indexOf('--no-sudo') === -1;
   if (OFF_RE.test(cmd)) {
-    return disableProxy();
+    return disableProxy(sudo);
   }
   var options = {};
   var skip;
-  var sudo = true;
   argv.forEach(function(arg) {
     if (skip) {
       options.bypass = arg;
@@ -67,8 +79,6 @@ module.exports = function(argv) {
       if (host && (net.isIP(host) || HOST_RE.test(host))) {
         options.host = host || options.host;
       }
-    } else if (arg === '--no-sudo') {
-      sudo = false;
     }
   });
   if (!options.port) {
