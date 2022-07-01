@@ -38,7 +38,7 @@ Whistle v2.9.14 版本开始支持通过命令行 `w2 proxy ...` 设置系统的
 
 注意，Mac 系统需要输入开机密码：
 
-<img alt="输入开机密码" width="236" src="https://user-images.githubusercontent.com/11450939/168847149-c0765e81-2ce4-4ed4-b7d3-a958d8c0cf08.png">
+<img alt="输入开机密码" width="300" src="https://user-images.githubusercontent.com/11450939/176977027-4a7b06a0-64f6-4580-b983-312515e9cd4e.png">
 
 # w2 ca
 安装系统根证书命令，目前只支持 Mac 和 Windows 系统：

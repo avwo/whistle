@@ -34,6 +34,6 @@
 
 注意，Mac 系统需要输入开机密码：
 
-<img alt="输入开机密码" width="236" src="https://user-images.githubusercontent.com/11450939/168847149-c0765e81-2ce4-4ed4-b7d3-a958d8c0cf08.png">
+<img alt="输入开机密码" width="300" src="https://user-images.githubusercontent.com/11450939/176977027-4a7b06a0-64f6-4580-b983-312515e9cd4e.png">
 
 如果上述命令系统不支持或安装失败，也可以：[手动安装](../manual/)
