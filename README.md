@@ -28,7 +28,7 @@ Whistle 是基于 Node 实现的跨平台抓包调试工具，其主要特点：
 	* 项目可以自带代理规则配置并一键设置到本地 Whistle 代理，也可以通过定制插件简化操作
 
 # 一键安装
-> 已安装 `brew` 的 PC，可以省略以下 1、2 步骤，直接通过以下方式一键安装：`brew install whistle && w2 start --init`（M1 平台尝试用 `arch -x86_64 brew install whistle && w2 start --init`）
+> 已安装 `brew` 的 PC，可以省略以下 1、2 步骤，直接通过以下方式一键安装：`brew install whistle && w2 start --init`（arm64 平台尝试用 `brew install node && npm i -g whistle && w2 start --init`）
 1. 安装 Node（建议安装**最新的 LTS 版本**，如已安装忽略此步骤）：https://nodejs.org/
 2. 一键安装，在命令行执行以下命令：
 	``` sh
@@ -37,9 +37,10 @@ Whistle 是基于 Node 实现的跨平台抓包调试工具，其主要特点：
 	> 上述命令会先全局安装 Whistle 的 npm 包后，启动 Whistle 并设置系统全局代理，以及安装系统根证书，目前一键安装只支持 Mac & Windows 系统，其它系统按照下面 **手动安装** 的方式操作。
 3. 一键安装过程中注意事项：
 	* Mac 需要两次输入开机密码或指纹验证
-
-		<img alt="输入开机密码" width="300" src="https://user-images.githubusercontent.com/11450939/176977027-4a7b06a0-64f6-4580-b983-312515e9cd4e.png">
-		<img alt="输入指纹" width="300" src="https://user-images.githubusercontent.com/11450939/168847123-e66845d0-6002-4f24-874f-b6943f7f376b.png">
+		<p>
+			<img alt="输入开机密码" width="330" src="https://user-images.githubusercontent.com/11450939/176977027-4a7b06a0-64f6-4580-b983-312515e9cd4e.png">
+		</p>
+		<img alt="输入指纹" width="330" src="https://user-images.githubusercontent.com/11450939/168847123-e66845d0-6002-4f24-874f-b6943f7f376b.png">
 
 	* Windows 需要最后点击 “是(Y)” 确认
 
