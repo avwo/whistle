@@ -174,7 +174,11 @@ var FilterInput = React.createClass({
   },
   clearFilterText: function () {
     this.props.onChange && this.props.onChange('');
-    this.setState({ filterText: '', hintList: this.filterHints() });
+    var hintList = null;
+    if (document.activeElement === ReactDOM.findDOMNode(this.refs.input)) {
+      hintList = this.filterHints();
+    }
+    this.setState({ filterText: '', hintList: hintList });
   },
   render: function () {
     var self = this;
@@ -212,6 +216,7 @@ var FilterInput = React.createClass({
         ) : undefined}
         <input
           type="text"
+          ref="input"
           value={filterText}
           onChange={self.onFilterChange}
           onKeyDown={self.onFilterKeyDown}
