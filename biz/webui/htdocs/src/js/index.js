@@ -3144,6 +3144,7 @@ var Index = React.createClass({
         startTime: startTime,
         frames: entry.frames,
         url: rawReq.url,
+        realUrl: entry.whistleRealUrl,
         req: req,
         res: res,
         fwdHost: entry.whistleFwdHost,

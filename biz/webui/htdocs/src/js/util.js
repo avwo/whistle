@@ -2220,6 +2220,7 @@ exports.toHar = function (item) {
     whistleSniPlugin: item.sniPlugin,
     whistleVersion: item.version,
     whistleNodeVersion: item.nodeVersion,
+    whistleRealUrl: item.realUrl,
     whistleTimes: {
       startTime: item.startTime,
       dnsTime: item.dnsTime,
