@@ -2525,6 +2525,9 @@ var Index = React.createClass({
     item.selected ? this.unselectRules(item) : this.selectRules(item);
   },
   selectRules: function (item) {
+    if (util.isGroup(item.name)) {
+      return;
+    }
     var self = this;
     dataCenter.rules[item.isDefault ? 'enableDefault' : 'select'](
       item,
@@ -2594,7 +2597,7 @@ var Index = React.createClass({
     });
   },
   saveValues: function (item) {
-    if (!item.changed) {
+    if (!item.changed || util.isGroup(item.name)) {
       return;
     }
     var self = this;
