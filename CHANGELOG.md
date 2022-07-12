@@ -1,5 +1,6 @@
 # v2.9.26
 1. fix: 分组状态下保留数据发送两次请求导致无法一直启用规则问题
+2. fix: 导出 saz 后原始 url 可能无法正常显示问题
 
 # v2.9.25
 1. refactor: 优化插件开发调试，参见：https://github.com/avwo/lack
