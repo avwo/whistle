@@ -116,6 +116,8 @@ var ReqDetail = React.createClass({
         if (!window.___hasFormData) {
           form = null;
         }
+      } else if (util.isUploadForm(req)) {
+        form = util.parseUploadBody(req, true);
       }
       headersStr = util.objectToString(headers, req.rawHeaderNames);
       headersStr =

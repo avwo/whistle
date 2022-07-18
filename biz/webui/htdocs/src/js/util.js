@@ -1800,13 +1800,13 @@ exports.isUploadForm = function (req) {
   return UPLOAD_TYPE_RE.test(type);
 };
 
-function parseUploadBody(body, boundary) {
+function parseUploadBody(body, boundary, needObj) {
   var sep = '--' + boundary;
   var start = strToByteArray(sep + '\r\n');
   var end = strToByteArray('\r\n' + sep);
   var len = start.length;
   var index = indexOfList(body, start);
-  var result = [];
+  var result = needObj ? {} : [];
   while (index >= 0) {
     index += len;
     var hIndex = indexOfList(body, BODY_SEP, index);
@@ -1822,14 +1822,35 @@ function parseUploadBody(body, boundary) {
     var data = hIndex >= endIndex ? '' : body.slice(hIndex, endIndex);
     header = parseMultiHeader(header);
     if (header) {
-      if (header.type) {
-        header.data = data;
+      if (needObj) {
+        var name = header.name + (header.type ? ' (' + header.type + ')' : '');
+        var curVal = header.value;
+        if (data) {
+          try {
+            curVal = base64Decode(fromByteArray(data)) || '';
+          } catch (e) {
+            curVal = '[Binary data]';
+          }
+        }
+        var value = result[name];
+        if (value != null) {
+          if (!Array.isArray(value)) {
+            value = result[name] = [ value ];
+          }
+          value.push(curVal);
+        } else {
+          result[name] = curVal;
+        }
       } else {
-        try {
-          header.value = data && base64Decode(fromByteArray(data));
-        } catch (e) {}
+        if (header.type) {
+          header.data = data;
+        } else {
+          try {
+            header.value = data && base64Decode(fromByteArray(data));
+          } catch (e) {}
+        }
+        result.push(header);
       }
-      result.push(header);
     }
     index = indexOfList(body, start, endIndex + 2);
   }
@@ -1837,7 +1858,7 @@ function parseUploadBody(body, boundary) {
   return result;
 }
 
-exports.parseUploadBody = function (req) {
+exports.parseUploadBody = function (req, needObj) {
   if (!req.base64) {
     return;
   }
@@ -1847,7 +1868,7 @@ exports.parseUploadBody = function (req) {
   }
   var boundary = RegExp.$1 || RegExp.$2;
   var body = base64ToByteArray(req.base64);
-  return body && parseUploadBody(body, boundary);
+  return body && parseUploadBody(body, boundary, needObj);
 };
 
 function getMultiPart(part) {
