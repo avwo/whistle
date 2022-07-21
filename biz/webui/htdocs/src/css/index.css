@@ -52,8 +52,17 @@
 .w-left-menu .w-disabled {
   color: #aaa;
 }
-.w-menu .w-menu-enable {
+/* .w-menu .w-menu-enable {
   color: #ff6666 !important;
+} */
+.w-menu .w-new-version-icon {
+  position: absolute;
+  top: 2px;
+  left: 17px;
+  width: 5px;
+  height: 5px;
+  border-radius: 5px;
+  background: red;
 }
 .w-menu .w-menu-wrapper {
   display: inline-block;

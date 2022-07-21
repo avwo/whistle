@@ -75,7 +75,7 @@ var About = React.createClass({
         onClick={self.showAboutInfo}
         className="w-about-menu"
       >
-        <i style={{ display: state.hasUpdate ? 'block' : '' }}></i>
+        {state.hasUpdate ? <i className="w-new-version-icon" /> : null}
         <span className="glyphicon glyphicon-info-sign"></span>About
         <Dialog ref="aboutDialog" wstyle="w-about-dialog">
           <div className="modal-body w-about-has-plugins">

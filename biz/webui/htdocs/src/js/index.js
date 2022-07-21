@@ -3959,6 +3959,7 @@ var Index = React.createClass({
               }
               target={state.hasNewVersion ? undefined : '_blank'}
             >
+              {state.hasNewVersion ? <i className="w-new-version-icon" /> : null}
               <span className="glyphicon glyphicon-question-sign"></span>Help
             </a>
             <MenuItem
