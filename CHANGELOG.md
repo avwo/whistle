@@ -1,5 +1,5 @@
 # v2.9.27
-1. style: 支持在 `Request / WebForms` 显示上传表达数据
+1. style: 支持在 `Request / WebForms` 显示上传表单数据
 2. style: 弱化有新版本时的界面提醒
 3. refactor: 减少安装包体积
 
