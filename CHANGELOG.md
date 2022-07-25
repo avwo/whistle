@@ -1,3 +1,6 @@
+# v2.9.28
+1. fix: https://github.com/avwo/whistle/issues/759
+
 # v2.9.27
 1. style: 支持在 `Request / WebForms` 显示上传表单数据
 2. style: 弱化有新版本时的界面提醒
