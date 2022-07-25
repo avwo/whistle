@@ -201,7 +201,7 @@ var Settings = React.createClass({
               value={state.excludeText}
               data-name="excludeText"
               placeholder="type filter text"
-              style={NOT_EMPTY_RE.test(state.excludeText) ? NOT_EMPTY_STYLE : undefined}
+              style={!state.disabledExcludeText && NOT_EMPTY_RE.test(state.excludeText) ? NOT_EMPTY_STYLE : undefined}
               maxLength={dataCenter.MAX_EXCLUDE_LEN}
             />
           </fieldset>
@@ -230,7 +230,7 @@ var Settings = React.createClass({
               value={state.filterText}
               data-name="filterText"
               placeholder="type filter text"
-              style={NOT_EMPTY_RE.test(state.filterText) ? NOT_EMPTY_STYLE : undefined}
+              style={!state.disabledFilterText && NOT_EMPTY_RE.test(state.filterText) ? NOT_EMPTY_STYLE : undefined}
               maxLength={dataCenter.MAX_INCLUDE_LEN}
             />
           </fieldset>
