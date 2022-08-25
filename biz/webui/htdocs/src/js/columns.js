@@ -25,14 +25,15 @@ function getDefaultColumns() {
       name: 'date',
       className: 'date',
       showTitle: true,
-      width: 160
+      width: 200
     },
     {
       title: 'Result',
       name: 'result',
       className: 'result',
       selected: true,
-      width: 65
+      locked: true,
+      width: 80
     },
     {
       title: 'Method',
@@ -63,7 +64,7 @@ function getDefaultColumns() {
       className: 'hostIp',
       selected: true,
       showTitle: true,
-      width: 110
+      width: 130
     },
     {
       title: 'ClientPort',
@@ -143,7 +144,7 @@ function getDefaultColumns() {
       name: 'time',
       className: 'time',
       selected: true,
-      width: 70
+      width: 110
     },
     {
       title: 'Custom1',

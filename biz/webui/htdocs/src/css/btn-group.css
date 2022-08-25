@@ -7,9 +7,8 @@
   border-radius: 0;
   border-bottom: none;
   border-top: none;
-  padding: 4px 10px 3px;
   overflow: hidden;
-  font-size: 14px;
+  font-size: 12px;
 }
 .w-tabs-sm .btn:first-child {
   border-left: none;

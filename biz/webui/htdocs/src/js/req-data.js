@@ -330,10 +330,12 @@ var Row = React.createClass({
   render: function () {
     var p = this.props;
     var order = p.order;
+    var index = p.index;
     var draggable = p.draggable;
     var columnList = p.columnList;
     var item = p.item;
-    var style = item.style;
+    var style = item.style || {};
+    style.backgroundColor = index % 2 ? '#f5f5f5' : '#fff'; // 斑马纹效果
     return (
       <table className="table" key={p.key} style={p.style}>
         <tbody>
@@ -1269,7 +1271,7 @@ var ReqData = React.createClass({
     }
     try {
       this.refs.content.refs.list.scrollToRow(target);
-    } catch (e) {}
+    } catch (e) { }
     this.container.focus();
   },
   getTreeNode: function (e) {
@@ -1326,23 +1328,21 @@ var ReqData = React.createClass({
       <tr
         key={leaf ? leaf.id : item.path}
         style={style}
-        className={`w-req-data-item tree-node ${
-          leaf ? 'tree-leaf' : ''
-        } ${className}`}
+        className={`w-req-data-item tree-node ${leaf ? 'tree-leaf' : ''
+          } ${className}`}
         data-id={leaf && leaf.id}
         data-tree={item.path}
         draggable={leaf && draggable}
         onClick={leaf ? null : this.toggleNode}
         title={leaf ? util.getUrl(leaf.url) : value}
-        onKeyDown={function () {}}
+        onKeyDown={function () { }}
       >
         {leaf ? (
           getIcon(leaf, className)
         ) : (
           <span
-            className={`icon-fold glyphicon glyphicon-triangle-${
-              item.expand ? 'bottom' : 'right'
-            }`}
+            className={`icon-fold glyphicon glyphicon-triangle-${item.expand ? 'bottom' : 'right'
+              }`}
           ></span>
         )}
         {value.length > 320 ? value.substring(0, 320) + '...' : value}
@@ -1410,12 +1410,7 @@ var ReqData = React.createClass({
             tabIndex="0"
             onContextMenu={self.onContextMenu}
             onKeyDown={self.onReplay}
-            style={{
-              background:
-                dataCenter.hashFilterObj || filterText
-                  ? 'lightyellow'
-                  : undefined
-            }}
+            style={{}}
             className={
               'w-req-data-list fill' + (isTreeView ? ' w-tree-view-list' : '')
             }
@@ -1426,7 +1421,7 @@ var ReqData = React.createClass({
                 return (
                   <RV.List
                     ref="list"
-                    rowHeight={isTreeView ? TREE_ROW_HEIGHT : 28}
+                    rowHeight={isTreeView ? TREE_ROW_HEIGHT : 24}
                     width={size.width}
                     height={size.height}
                     rowCount={list.length}
@@ -1449,6 +1444,7 @@ var ReqData = React.createClass({
                           columnList={columnList}
                           draggable={draggable}
                           item={item}
+                          index={index}
                         />
                       );
                     }}
