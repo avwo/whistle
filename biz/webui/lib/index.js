@@ -355,7 +355,8 @@ app.all(PLUGIN_PATH_RE, function(req, res) {
 });
 
 app.use(function(req, res, next) {
-  if (ALLOW_PLUGIN_PATHS.indexOf(req.path) !== -1) {
+  var pathname = req.path;
+  if (ALLOW_PLUGIN_PATHS.indexOf(pathname) !== -1) {
     var name = req.headers[config.PROXY_ID_HEADER];
     if (name) {
       return pluginMgr.getPlugin(name + ':') ? next() : res.sendStatus(403);
@@ -364,7 +365,7 @@ app.use(function(req, res, next) {
   if (doNotCheckLogin(req)) {
     return next();
   }
-  if (config.disableWebUI && !config.debugMode) {
+  if (config.disableWebUI && !config.debugMode && (!config.captureData || pathname !== '/cgi-bin/get-data')) {
     return res.status(404).end('Not Found');
   }
   if (config.authKey && config.authKey === req.headers['x-whistle-auth-key']) {
@@ -373,7 +374,7 @@ app.use(function(req, res, next) {
   var guestAuthKey = config.guestAuthKey;
   if (((guestAuthKey && guestAuthKey === req.headers['x-whistle-guest-auth-key'])
     || verifyLogin(req, res)) && (!req.method || GET_METHOD_RE.test(req.method)
-    || WEINRE_RE.test(req.path) || GUEST_PATHS.indexOf(req.path) !== -1)) {
+    || WEINRE_RE.test(pathname) || GUEST_PATHS.indexOf(pathname) !== -1)) {
     return next();
   }
   if (checkAuth(req, res)) {
