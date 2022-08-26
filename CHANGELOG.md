@@ -1356,7 +1356,7 @@ TypeError: Cannot read property 'res' of null
 
 ### v1.9.2
 1. refactor: 界面微调，及Log界面的性能优化
-2. refactor: 去掉HTTPS里面 `Hide TUNNEL CONNECTs` 选项 
+2. refactor: 去掉HTTPS里面 `Hide TUNNEL CONNECTS` 选项 
 
 ### v1.9.1
 1. feat: 增强[v1.8.9](v189)版本的 `ignore://allRules`功能，支持双ignore的规则，即：`ignore://allRules|ignore.host|ignore.whistle.script` 或 `ignore://allRules|ignore:host|ignore:whistle.script` 这个时候whistle会忽略 `host` 和 `whistle.script` 以外的所有规则

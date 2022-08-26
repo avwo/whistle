@@ -4391,7 +4391,7 @@ var Index = React.createClass({
                         onChange={this.interceptHttpsConnects}
                         type="checkbox"
                       />{' '}
-                      Capture TUNNEL CONNECTs
+                      Capture TUNNEL CONNECTS
                     </label>
                   </p>
                   <p>
