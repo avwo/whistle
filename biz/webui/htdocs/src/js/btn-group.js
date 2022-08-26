@@ -8,16 +8,19 @@ var BtnGroup = React.createClass({
     if (btn.active || btn.disabled) {
       return;
     }
-    var list = this.props.tabs || this.props.btns;
-    list.forEach(function (btn) {
-      btn.active = false;
-    });
+    this.clearSelection();
     btn.active = true;
     if (!this.props.onClick || this.props.onClick(btn)) {
       this.setState({
         curBtn: btn
       });
     }
+  },
+  clearSelection: function() {
+    var list = this.props.tabs || this.props.btns;
+    list.forEach(function (btn) {
+      btn.active = false;
+    });
   },
   onDoubleClick: function (e) {
     if (this.props.onDoubleClick) {
@@ -41,7 +44,7 @@ var BtnGroup = React.createClass({
           (isSmall ? ' small' : '')
         }
       >
-        {list.map(function (btn, i) {
+        {list.map(function (btn) {
           btn.disabled = disabled;
           var icon = btn.icon ? (
             <span className={'glyphicon glyphicon-' + btn.icon}></span>
@@ -72,6 +75,7 @@ var BtnGroup = React.createClass({
             </button>
           );
         })}
+        {self.props.appendTabs || self.props.appendBtns}
         {self.props.dockBtn}
       </div>
     );

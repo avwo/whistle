@@ -23,12 +23,12 @@ var ReqData = React.createClass({
           icon: 'search'
         },
         {
-          name: 'Composer',
-          icon: 'edit'
-        },
-        {
           name: 'Timeline',
           icon: 'time'
+        },
+        {
+          name: 'Composer',
+          icon: 'edit'
         },
         {
           name: 'Tools',
@@ -61,16 +61,8 @@ var ReqData = React.createClass({
       .on('showInspectors', function () {
         self.toggleTab(tabs[1]);
       })
-      .on('toggleInspectors', function () {
-        var tab = self.state.tab;
-        if (!tab || tab === tabs[0]) {
-          self.toggleTab(tabs[1]);
-        } else {
-          self.toggleTab(tabs[0]);
-        }
-      })
       .on('showTimeline', function () {
-        self.toggleTab(tabs[3]);
+        self.toggleTab(tabs[2]);
       })
       .on('showLog', function () {
         self.toggleTab(tabs[4]);
@@ -85,13 +77,11 @@ var ReqData = React.createClass({
       })
       .on('toggleDetailTab', function () {
         var tab = self.state.tab;
-        if (!tab) {
-          self.toggleTab(tabs[0]);
-        } else if (tab === tabs[0]) {
+        if (tab === tabs[0]) {
           self.toggleTab(tabs[1]);
         } else if (tab === tabs[1]) {
-          self.toggleTab(tabs[3]);
-        } else if (tab === tabs[3]) {
+          self.toggleTab(tabs[2]);
+        } else {
           self.toggleTab(tabs[0]);
         }
       });
@@ -100,7 +90,7 @@ var ReqData = React.createClass({
     if (item) {
       this.state.activeItem = item;
     }
-    this.toggleTab(this.state.tabs[2], function () {
+    this.toggleTab(this.state.tabs[3], function () {
       item && events.trigger('setComposer');
     });
   },
@@ -252,14 +242,14 @@ var ReqData = React.createClass({
             hide={name != tabs[1].name}
           />
         ) : null}
+         {this.state.initedTimeline ? (
+          <Timeline data={data} modal={modal} hide={name != tabs[2].name} />
+        ) : null}
         {this.state.initedComposer ? (
           <ComposerList
             modal={this.state.activeItem}
-            hide={name != tabs[2].name}
+            hide={name != tabs[3].name}
           />
-        ) : null}
-        {this.state.initedTimeline ? (
-          <Timeline data={data} modal={modal} hide={name != tabs[3].name} />
         ) : null}
         {this.state.initedTools ? <Tools hide={name != tabs[4].name} /> : null}
       </div>

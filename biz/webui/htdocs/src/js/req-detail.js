@@ -100,8 +100,9 @@ var ReqDetail = React.createClass({
         realUrl = url;
       }
       var index = realUrl.indexOf('?');
-      query = util.parseQueryString(
-        index == -1 ? '' : realUrl.substring(index + 1),
+      query = index == -1 ? '' : realUrl.substring(index + 1);
+      query = query && util.parseQueryString(
+        query,
         null,
         null,
         decodeURIComponent
@@ -116,6 +117,8 @@ var ReqDetail = React.createClass({
         if (!window.___hasFormData) {
           form = null;
         }
+      } else if (util.isUploadForm(req)) {
+        form = util.parseUploadBody(req, true);
       }
       headersStr = util.objectToString(headers, req.rawHeaderNames);
       headersStr =
@@ -188,6 +191,7 @@ var ReqDetail = React.createClass({
           <Divider
             vertical="true"
             hideRight={!form}
+            hideLeft={!query}
             className={
               'w-detail-request-webforms' +
               (name == BTNS[1].name ? '' : ' hide')

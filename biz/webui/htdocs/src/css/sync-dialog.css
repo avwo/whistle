@@ -13,3 +13,9 @@
 .w-sync-dialog .modal-body .btn span {
   margin-right: 10px;
 }
+
+.w-history-record-list {
+  margin: 25px 0 15px 10px;
+  width: 510px;
+  display: inline-block;
+}

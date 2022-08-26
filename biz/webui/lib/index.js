@@ -15,9 +15,11 @@ var extend = require('extend');
 var htdocs = require('../htdocs');
 var handleWeinreReq = require('../../weinre');
 var setProxy = require('./proxy');
+var rulesUtil = require('../../../lib/rules/util');
 var getRootCAFile = require('../../../lib/https/ca').getRootCAFile;
 var config = require('../../../lib/config');
 var loadAuthPlugins = require('../../../lib/plugins').loadAuthPlugins;
+var version = require('../../../package.json').version;
 
 var PARSE_CONF = { extended: true, limit: '3mb'};
 var UPLOAD_PARSE_CONF = { extended: true, limit: '30mb'};
@@ -42,6 +44,8 @@ var INSPECTOR_HTML = fs.readFileSync(path.join(__dirname, '../../../assets/tab.h
 var MENU_URL = '???_WHISTLE_PLUGIN_EXT_CONTEXT_MENU_' + config.port + '???';
 var INSPECTOR_URL = '???_WHISTLE_PLUGIN_INSPECTOR_TAB_' + config.port + '???';
 var UP_PATH_REGEXP = /(?:^|[\\/])\.\.(?:[\\/]|$)/;
+var KEY_RE_G = /\${[^{}\s]+}|{\S+}/g;
+var COMMENT_RE = /#[^\r\n]*$/mg;
 
 function doNotCheckLogin(req) {
   var path = req.path;
@@ -100,6 +104,9 @@ function verifyLogin(req, res, auth) {
   var correctKey = getLoginKey(req, res, auth);
   if (correctKey === lkey) {
     return true;
+  }
+  if (req.query.authorization && !req.headers.authorization) {
+    req.headers.authorization = 'Basic ' + req.query.authorization;
   }
   auth = getAuth(req) || {};
   if (!isGuest && config.encrypted) {
@@ -235,7 +242,13 @@ app.use(function(req, res, next) {
   if (req.headers.host !== 'rootca.pro') {
     return next();
   }
-  res.download(getRootCAFile(), 'rootCA.' + (req.path.indexOf('/cer') ? 'crt' : 'cer'));
+  var type = 'crt';
+  if (!req.path.indexOf('/cer')) {
+    type = 'cer';
+  } else if (!req.path.indexOf('/pem')) {
+    type = 'pem';
+  }
+  res.download(getRootCAFile(), 'rootCA.' + type);
 });
 
 function cgiHandler(req, res) {
@@ -251,7 +264,7 @@ function cgiHandler(req, res) {
     try {
       require(filepath)(req, res);
     } catch(err) {
-      var msg = config.debugMode ? '<pre>' + util.getErrorStack(err) + '</pre>' : 'Internal Server Error';
+      var msg = config.debugMode ? '<pre>' + util.encodeHtml(util.getErrorStack(err)) + '</pre>' : 'Internal Server Error';
       res.status(500).send(msg);
     }
   };
@@ -263,7 +276,7 @@ function cgiHandler(req, res) {
       var notFound = err ? err.code === 'ENOENT' : !stat.isFile();
       var msg;
       if (config.debugMode) {
-        msg =  '<pre>' + (err ? util.getErrorStack(err) : 'Not File') + '</pre>';
+        msg =  '<pre>' + (err ? util.encodeHtml(util.getErrorStack(err)) : 'Not File') + '</pre>';
       } else {
         msg = notFound ? 'Not Found' : 'Internal Server Error';
       }
@@ -326,7 +339,7 @@ app.all(PLUGIN_PATH_RE, function(req, res) {
   pluginMgr.loadPlugin(plugin, function(err, ports) {
     if (err || !ports.uiPort) {
       if (err) {
-        res.status(500).send('<pre>' + err + '</pre>');
+        res.status(500).send('<pre>' + util.encodeHtml(err) + '</pre>');
       } else {
         res.status(404).send('Not Found');
       }
@@ -369,6 +382,46 @@ app.use(function(req, res, next) {
   }
 });
 
+function sendText(res, text) {
+  res.writeHead(200, {
+    'Content-Type': 'text/plain; charset=utf-8'
+  });
+  res.end(typeof text === 'string' ? text : '');
+}
+
+function parseKey(key) {
+  return key[0] === '$' ? key.slice(2, -1) : key.slice(1, -1);
+}
+
+app.get('/rules', function(req, res) {
+  var query = req.query;
+  var name = query.name || query.key;
+  if (name === 'Default') {
+    name = rulesUtil.rules.getDefault();
+  } else if (!name) {
+    name = rulesUtil.rules.getRawRulesText();
+  } else {
+    name = rulesUtil.rules.get(name);
+  }
+  if (name && query.values !== 'false' && !(query.values <= 0)) {
+    var keys = name.replace(COMMENT_RE, '').match(KEY_RE_G);
+    if (keys) {
+      keys = keys.map(parseKey).map(function (key) {
+        return util.wrapRuleValue(key, rulesUtil.values.get(key), query.values, query.policy);
+      }).join('');
+      if (keys) {
+        name += '\n' + keys;
+      }
+    }
+  }
+  sendText(res, name);
+});
+
+app.get('/values', function(req, res) {
+  var name = req.query.name || req.query.key;
+  sendText(res, rulesUtil.values.get(name));
+});
+
 app.all('/cgi-bin/*', function(req, res, next) {
   req.isUploadReq = UPLOAD_URLS.indexOf(req.path) !== -1;
   return req.isUploadReq ? uploadUrlencodedParser(req, res, next) : urlencodedParser(req, res, next);
@@ -389,7 +442,7 @@ app.use('/preview.html', function(req, res, next) {
 });
 if (!config.debugMode) {
   var indexHtml = fs.readFileSync(htdocs.getHtmlFile('index.html'));
-  var indexJs = fs.readFileSync(htdocs.getJsFile('index.js'));
+  var indexJs = fs.readFileSync(htdocs.getJsFile(`index-${version}.js`));
   var jsETag = shasum(indexJs);
   var gzipIndexJs = zlib.gzipSync(indexJs);
   app.use('/js/index.js', function(req, res) {

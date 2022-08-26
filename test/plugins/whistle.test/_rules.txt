@@ -1,0 +1,52 @@
+/statuscode4/ statusCode://100
+/statuscode5/ statusCode://1000
+
+reqBody://assets/files/body.txt /reqbody/ reqbody.test.whistlejs.com
+resBody://assets/files/body.txt /resbody/ resbody.test.whistlejs.com
+reqAppend://assets/files/append.txt /reqappend/ reqappend.test.whistlejs.com
+resAppend://assets/files/append.txt /resappend/ resappend.test.whistlejs.com
+
+/reqreplace/ reqReplace://assets/values/replace.json reqType://text
+/resreplace/ resReplace://assets/values/replace.json resType://html
+
+/dispatch/ dispatch://assets/dispatch.js host://127.0.0.1:8080
+
+/reqcors/ reqCors://assets/values/reqCors.json
+/rescors/ resCors://assets/values/resCors.json
+
+/reqheaders/ reqHeaders://assets/values/headers.json
+/resheaders/ resHeaders://assets/values/headers.json
+
+forward.test.whistlejs.com host.test.whistlejs.com
+
+log://assets/files/log.js /log2/ /log3/
+
+/hostname/ hostname://xxx
+
+/weinre1/ resType://html weinre://xxx
+/weinre2/ resType://js weinre://xxx
+/weinre3/ resType://css weinre://xxx
+/weinre4/ weinre://xxx 
+
+/tpl/ tpl://<assets/files/tpl.js>
+/raw/  rawfile://assets/files/rawfile.html
+/auth/ auth://xx:oo
+
+/req\./ req://assets/values/req.json reqType://text
+
+/upload/ params://assets/values/upload.json host://127.0.0.1:8080
+
+/params2/ filter://rule
+
+rule.test.whistlejs.com host.test.whistlejs.com
+rule1.test.whistlejs.com host.test.whistlejs.com?test1
+rule2.test.whistlejs.com?abc=1 host.test.whistlejs.com?test2
+rule3.test.whistlejs.com/abc host.test.whistlejs.com?test2
+http://rule4.test.whistlejs.com/abc?abc=1 host.test.whistlejs.com?test2
+
+/prependbin/ reqPrepend://assets/files/bin/top.txt resPrepend://assets/files/bin/top.txt
+/bodybin/ reqBody://assets/files/bin/body.txt resBody://assets/files/bin/body.txt
+/appendbin/ reqAppend://assets/files/bin/bottom.txt resAppend://assets/files/bin/bottom.txt
+
+/plugin.whistlejs.com/ host://127.0.0.1:8080
+$http://ssi-include.whistlejs.com/index.html?doNotParseJson file://assets/files/ssi-include.html

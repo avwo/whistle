@@ -70,12 +70,26 @@ function getStr(str) {
   return str ? ' ' + str : '';
 }
 
+function filterImportant(item) {
+  return item.indexOf('important') !== -1;
+}
+
+function getRawProps(rule, all) {
+  rule = rule.rawProps;
+  if (!rule) {
+    return '';
+  }
+  if (!all) {
+    rule = rule.filter(filterImportant);
+  }
+  return getStr(rule.join(' '));
+}
+
 function getRuleStr(rule) {
   if (!rule) {
     return;
   }
   var matcher = rule.matcher;
-  var props = rule.rawProps && rule.rawProps.join(' ');
   if (rule.port) {
     var protoIndex = matcher.indexOf(':') + 3;
     var proto = matcher.substring(0, protoIndex);
@@ -84,18 +98,22 @@ function getRuleStr(rule) {
     }
     matcher = matcher + ':' + rule.port;
   }
-  return rule.rawPattern + ' ' + matcher + getStr(props) + getStr(rule.filter);
+  return rule.rawPattern + ' ' + matcher + getRawProps(rule, true) + getStr(rule.filter);
 }
 
 function getTime(time) {
   return time === '-' ? '' : time;
 }
 
+function ignoreProtocol(name) {
+  return PROXY_PROTOCOLS.indexOf(name) !== -1 || name === 'skip' || /^x/.test(name);
+}
+
 OVERVIEW.forEach(function (name) {
   DEFAULT_OVERVIEW_MODAL[name] = '';
 });
 PROTOCOLS.forEach(function (name) {
-  if (PROXY_PROTOCOLS.indexOf(name) !== -1 || /^x/.test(name)) {
+  if (ignoreProtocol(name)) {
     return;
   }
   DEFAULT_RULES_MODAL[name] = '';
@@ -193,23 +211,23 @@ var Overview = React.createClass({
           var lastIndex = OVERVIEW.length - 1;
           var time;
           switch (name) {
-            case OVERVIEW[lastIndex - 5]:
-              time = util.toLocaleString(new Date(modal.startTime));
-              break;
-            case OVERVIEW[lastIndex - 4]:
-              time = getTime(modal.dns);
-              break;
-            case OVERVIEW[lastIndex - 3]:
-              if (modal.requestTime) {
-                time = getTime(modal.request);
-                var protocol = modal.protocol;
-                if (
+          case OVERVIEW[lastIndex - 5]:
+            time = util.toLocaleString(new Date(modal.startTime));
+            break;
+          case OVERVIEW[lastIndex - 4]:
+            time = getTime(modal.dns);
+            break;
+          case OVERVIEW[lastIndex - 3]:
+            if (modal.requestTime) {
+              time = getTime(modal.request);
+              var protocol = modal.protocol;
+              if (
                   typeof protocol === 'string' &&
                   protocol.indexOf('>') !== -1
                 ) {
-                  var diffTime = modal.httpsTime - modal.dnsTime;
-                  if (diffTime > 0) {
-                    time +=
+                var diffTime = modal.httpsTime - modal.dnsTime;
+                if (diffTime > 0) {
+                  time +=
                       ' - ' +
                       diffTime +
                       'ms(' +
@@ -217,22 +235,22 @@ var Overview = React.createClass({
                       ') = ' +
                       (modal.requestTime - modal.httpsTime) +
                       'ms';
-                  }
                 }
               }
-              break;
-            case OVERVIEW[lastIndex - 2]:
-              time = getTime(modal.response);
-              break;
-            case OVERVIEW[lastIndex - 1]:
-              time = getTime(modal.download);
-              break;
-            case OVERVIEW[lastIndex]:
-              time = getTime(modal.time);
-              if (modal.endTime) {
-                time = modal.endTime - modal.startTime + 'ms';
-              }
-              break;
+            }
+            break;
+          case OVERVIEW[lastIndex - 2]:
+            time = getTime(modal.response);
+            break;
+          case OVERVIEW[lastIndex - 1]:
+            time = getTime(modal.download);
+            break;
+          case OVERVIEW[lastIndex]:
+            time = getTime(modal.time);
+            if (modal.endTime) {
+              time = modal.endTime - modal.startTime + 'ms';
+            }
+            break;
           }
           overviewModal[name] = time;
         }
@@ -281,7 +299,7 @@ var Overview = React.createClass({
           titleModal['@'] = atTitle.join('\n');
         }
         PROTOCOLS.forEach(function (name) {
-          if (PROXY_PROTOCOLS.indexOf(name) !== -1 || /^x/.test(name)) {
+          if (ignoreProtocol(name)) {
             return;
           }
           var key = name;
@@ -293,16 +311,17 @@ var Overview = React.createClass({
             key = 'urlReplace';
           }
           var rule = rules[key];
-          if (name === 'plugin' && rules._pluginRule) {
+          var pluginRule = name === 'plugin' && rules._pluginRule;
+          if (pluginRule) {
             hasPluginRule = true;
             var ruleList = [
-              rules._pluginRule.rawPattern + ' ' + rules._pluginRule.matcher
+              pluginRule.rawPattern + ' ' + pluginRule.matcher + getRawProps(pluginRule)
             ];
-            var titleList = [rules._pluginRule.raw];
+            var titleList = [pluginRule.raw];
             rule &&
               rule.list &&
               rule.list.forEach(function (item) {
-                ruleList.push(item.rawPattern + ' ' + item.matcher);
+                ruleList.push(item.rawPattern + ' ' + item.matcher + getRawProps(item));
                 titleList.push(item.raw);
               });
             rulesModal[name] = ruleList.join('\n');
@@ -310,7 +329,7 @@ var Overview = React.createClass({
           } else if (rule && rule.list) {
             rulesModal[name] = rule.list
               .map(function (rule) {
-                return rule.rawPattern + ' ' + rule.matcher;
+                return rule.rawPattern + ' ' + rule.matcher + getRawProps(rule);
               })
               .join('\n');
             titleModal[name] = rule.list
@@ -324,7 +343,7 @@ var Overview = React.createClass({
             titleModal[name] = rule ? rule.raw : undefined;
             if (name === 'proxy') {
               if (realUrl && ruleStr) {
-                rulesModal[name] += ruleStr + ' (' + realUrl + ')';
+                rulesModal[name] += ' (' + realUrl + ')';
               }
             } else if (name === 'host') {
               var result = [];
@@ -333,10 +352,7 @@ var Overview = React.createClass({
               }
               if (rules.proxy && rules.proxy.host) {
                 result.push(
-                  getRuleStr(rules.proxy.host) +
-                    ' (' +
-                    rules.proxy.matcher +
-                    ')'
+                  getRuleStr(rules.proxy.host) + ' (' + rules.proxy.matcher + ')'
                 );
               }
               rulesModal[name] = result.join('\n');

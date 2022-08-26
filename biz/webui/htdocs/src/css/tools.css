@@ -239,3 +239,22 @@
 .w-generate-cert button {
   border-radius: 0;
 }
+
+.w-detail-log .w-custom-tabs {
+  height: 22px;
+  background-color: #f1f3f4;
+}
+
+.w-detail-log .w-custom-tabs button.w-spec-active {
+  background-color: #e6e6e6;
+}
+
+.w-detail-log .w-custom-tabs button {
+  border: none;
+  border-right: 1px solid #ccc;
+  height: 22px;
+  line-height: 18px;
+  font-size: 12px;
+  padding: 0 12px;
+  border-radius: 0;
+}

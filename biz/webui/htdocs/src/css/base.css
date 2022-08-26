@@ -140,7 +140,7 @@ textarea {
 .w-expand-collapse {
   margin-left: 5px;
   height: 20px;
-  line-height: 16px;
+  line-height: 14px;
   font-size: 12px;
   color: #000;
 }
@@ -242,6 +242,10 @@ textarea {
 .cm-s-vibrant-ink ::-webkit-scrollbar-track:hover,
 .cm-s-xq-dark ::-webkit-scrollbar-track:hover {
   background-color: rgba(255, 255, 255, 0.15);
+}
+
+.w-hide {
+  display: none!important;
 }
 
 .w-offline-status .w-menu a,

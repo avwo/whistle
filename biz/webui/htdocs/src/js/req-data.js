@@ -36,12 +36,12 @@ var contextMenuList = [
   {
     name: 'Open',
     list: [
-      { name: 'Overview' },
-      { name: 'Inspectors' },
-      { name: 'Composer' },
-      { name: 'Timeline' },
       { name: 'New Tab' },
       { name: 'QR Code' },
+      { name: 'Overview' },
+      { name: 'Inspectors' },
+      { name: 'Timeline' },
+      { name: 'Composer' },
       { name: 'Preview' },
       { name: 'Source' },
       { name: 'Tree View', action: 'toggleView' }
@@ -98,6 +98,7 @@ var contextMenuList = [
     list: [
       { name: 'Abort' },
       { name: 'Replay' },
+      { name: 'Replay Times', action: 'replayTimes' },
       { name: 'Compose' },
       { name: 'Mark' },
       { name: 'Unmark' }
@@ -175,7 +176,8 @@ function getClassName(data) {
     ' w-req-data-item' +
     (data.isHttps ? ' w-tunnel' : '') +
     (hasRules(data) ? ' w-has-rules' : '') +
-    (data.selected ? ' w-selected' : '')
+    (data.selected ? ' w-selected' : '') +
+    (data.isPR ? ' w-pr' : '')
   );
 }
 
@@ -193,10 +195,12 @@ function hasRules(data) {
   if (!rules) {
     return false;
   }
-  var keys = Object.keys(data.rules);
+  var keys = Object.keys(rules);
   if (keys && keys.length) {
     for (var i = 0, len = keys.length; i < len; i++) {
-      if (rules[keys[i]] && !NOT_BOLD_RULES[keys[i]]) {
+      var rule = rules[keys[i]];
+      var enable = rule && rule.list && rule.list.length === 1 && rule.list[0].matcher;
+      if (rule && !NOT_BOLD_RULES[keys[i]] && enable !== 'enable://capture' &&  enable !== 'enable://intercept') {
         return true;
       }
     }
@@ -209,24 +213,24 @@ function getStatusClass(data) {
   var type = '';
   var headers = data.res.headers;
   switch (util.getContentType(headers)) {
-    case 'JS':
-      type = 'warning';
-      break;
-    case 'CSS':
-      type = 'info';
-      break;
-    case 'HTML':
-      type = 'success';
-      break;
-    case 'IMG':
-      type = 'active';
-      break;
-    case 'JSON':
-      type = '_json';
-      break;
-    case 'XML':
-      type = '_xml';
-      break;
+  case 'JS':
+    type = 'warning';
+    break;
+  case 'CSS':
+    type = 'info';
+    break;
+  case 'HTML':
+    type = 'success';
+    break;
+  case 'IMG':
+    type = 'active';
+    break;
+  case 'JSON':
+    type = '_json';
+    break;
+  case 'XML':
+    type = '_xml';
+    break;
   }
 
   var statusCode = data.res && data.res.statusCode;
@@ -536,11 +540,7 @@ var ReqData = React.createClass({
     self.content = ReactDOM.findDOMNode(self.refs.content);
     self.$content = $(self.content)
       .on('dblclick', 'tr', function (e) {
-        if (e.shiftKey) {
-          events.trigger('toggleDetailTab');
-        } else {
-          events.trigger('toggleInspectors');
-        }
+        events.trigger('toggleDetailTab');
       })
       .on('click', 'tr', function (e) {
         var id = this.getAttribute('data-id');
@@ -776,181 +776,184 @@ var ReqData = React.createClass({
     var curUrl = (item && item.url) || (treeId && treeId + '/');
     self.currentFocusItem = null;
     switch (parentAction || action) {
-      case 'New Tab':
-        curUrl && window.open(curUrl);
-        break;
-      case 'QR Code':
-        self.refs.qrcodeDialog.show(curUrl);
-        break;
-      case 'Preview':
-        util.openPreview(item);
-        break;
-      case 'Source':
-        util.openEditor(JSON.stringify(item, null, '  '));
-        break;
-      case 'toggleView':
-        events.trigger('switchTreeView');
-        break;
-      case 'Overview':
-        self.triggerActiveItem(item);
-        events.trigger('showOverview');
-        break;
-      case 'Inspectors':
-        self.triggerActiveItem(item);
-        events.trigger('showInspectors');
-        break;
-      case 'Timeline':
-        self.triggerActiveItem(item);
-        events.trigger('showTimeline');
-        break;
-      case 'Composer':
-      case 'Compose':
-        events.trigger('composer', item);
-        break;
-      case 'Mark':
-      case 'Unmark':
-        var list = getFocusItemList(item) || (modal && modal.getSelectedList());
-        if (list) {
-          var isMark = action === 'Mark';
-          list.forEach(function (item) {
-            item.mark = isMark;
-          });
-        }
-        this.setState({});
-        break;
-      case 'Replay':
-        events.trigger('replaySessions', [item, e.shiftKey]);
-        break;
-      case 'Export':
-        if (self.treeTarget && !self.isTreeLeafNode) {
-          events.trigger('exportSessions', [
-            modal.getListByPath(self.treeTarget)
-          ]);
-        } else {
-          events.trigger('exportSessions', item);
-        }
-        break;
-      case 'Abort':
-        events.trigger('abortRequest', item);
-        break;
-      case 'Req Body':
-        events.trigger('showFilenameInput', {
-          title: 'Set the filename of request body',
-          base64: item.req.base64,
-          name: getFilename(item, 'req_body')
+    case 'New Tab':
+      curUrl && window.open(curUrl);
+      break;
+    case 'QR Code':
+      self.refs.qrcodeDialog.show(curUrl);
+      break;
+    case 'Preview':
+      util.openPreview(item);
+      break;
+    case 'Source':
+      util.openEditor(JSON.stringify(item, null, '  '));
+      break;
+    case 'toggleView':
+      events.trigger('switchTreeView');
+      break;
+    case 'Overview':
+      self.triggerActiveItem(item);
+      events.trigger('showOverview');
+      break;
+    case 'Inspectors':
+      self.triggerActiveItem(item);
+      events.trigger('showInspectors');
+      break;
+    case 'Timeline':
+      self.triggerActiveItem(item);
+      events.trigger('showTimeline');
+      break;
+    case 'Composer':
+    case 'Compose':
+      events.trigger('composer', item);
+      break;
+    case 'Mark':
+    case 'Unmark':
+      var list = getFocusItemList(item) || (modal && modal.getSelectedList());
+      if (list) {
+        var isMark = action === 'Mark';
+        list.forEach(function (item) {
+          item.mark = isMark;
         });
-        break;
-      case 'Res Body':
-        events.trigger('showFilenameInput', {
-          title: 'Set the filename of response body',
-          base64: item.res.base64,
-          name: getFilename(item, 'res_body')
-        });
-        break;
-      case 'Req Raw':
-        var req = item.req;
-        var realUrl = item.realUrl;
-        if (!realUrl || !/^(?:http|wss)s?:\/\//.test(realUrl)) {
-          realUrl = item.url;
-        }
-        var reqLine = [
-          req.method,
-          req.method == 'CONNECT' ? req.headers.host : util.getPath(realUrl),
-          'HTTP/' + (req.httpVersion || '1.1')
-        ].join(' ');
-        events.trigger('showFilenameInput', {
-          title: 'Set the filename of request raw data',
-          headers:
+      }
+      this.setState({});
+      break;
+    case 'Replay':
+      events.trigger('replaySessions', [item, e.shiftKey]);
+      break;
+    case 'replayTimes':
+      events.trigger('replaySessions', [item, true]);
+      break;
+    case 'Export':
+      if (self.treeTarget && !self.isTreeLeafNode) {
+        events.trigger('exportSessions', [
+          modal.getListByPath(self.treeTarget)
+        ]);
+      } else {
+        events.trigger('exportSessions', item);
+      }
+      break;
+    case 'Abort':
+      events.trigger('abortRequest', item);
+      break;
+    case 'Req Body':
+      events.trigger('showFilenameInput', {
+        title: 'Set the filename of request body',
+        base64: item.req.base64,
+        name: getFilename(item, 'req_body')
+      });
+      break;
+    case 'Res Body':
+      events.trigger('showFilenameInput', {
+        title: 'Set the filename of response body',
+        base64: item.res.base64,
+        name: getFilename(item, 'res_body')
+      });
+      break;
+    case 'Req Raw':
+      var req = item.req;
+      var realUrl = item.realUrl;
+      if (!realUrl || !/^(?:http|wss)s?:\/\//.test(realUrl)) {
+        realUrl = item.url;
+      }
+      var reqLine = [
+        req.method,
+        req.method == 'CONNECT' ? req.headers.host : util.getPath(realUrl),
+        'HTTP/' + (req.httpVersion || '1.1')
+      ].join(' ');
+      events.trigger('showFilenameInput', {
+        title: 'Set the filename of request raw data',
+        headers:
             reqLine +
             '\r\n' +
             util.objectToString(req.headers, req.rawHeaderNames, true),
-          base64: req.base64,
-          name: getFilename(item, 'req_raw')
-        });
-        break;
-      case 'Res Raw':
-        var res = item.res;
-        var statusLine = [
-          'HTTP/' + (item.req.httpVersion || '1.1'),
-          res.statusCode,
-          util.getStatusMessage(res)
-        ].join(' ');
-        events.trigger('showFilenameInput', {
-          title: 'Set the filename of response raw data',
-          headers:
+        base64: req.base64,
+        name: getFilename(item, 'req_raw')
+      });
+      break;
+    case 'Res Raw':
+      var res = item.res;
+      var statusLine = [
+        'HTTP/' + (item.req.httpVersion || '1.1'),
+        res.statusCode,
+        util.getStatusMessage(res)
+      ].join(' ');
+      events.trigger('showFilenameInput', {
+        title: 'Set the filename of response raw data',
+        headers:
             statusLine +
             '\r\n' +
             util.objectToString(res.headers, res.rawHeaderNames, true),
-          base64: item.res.base64,
-          name: getFilename(item, 'res_raw')
-        });
-        break;
-      case 'Import':
-        events.trigger('importSessions', e);
-        break;
-      case 'Edit':
-        events.trigger('filterSessions', e);
-        break;
-      case 'removeAllSuchHost':
-        curUrl && self.removeAllSuchHost(item, true);
-        break;
-      case 'removeAllSuchURL':
-        curUrl && self.removeAllSuchURL(item || curUrl, true);
-        break;
-      case 'excludeHost':
-        curUrl && self.removeAllSuchHost(item);
-        break;
-      case 'excludeUrl':
-        curUrl && self.removeAllSuchURL(item || curUrl);
-        break;
-      case 'This':
-        if (treeId) {
-          self.removeTreeNode(treeId);
-        } else {
-          events.trigger('removeIt', item);
-        }
-        break;
-      case 'All':
-        events.trigger('clearAll');
-        break;
-      case 'Others':
-        if (treeId) {
-          self.removeTreeNode(treeId, true);
-        } else {
-          events.trigger('removeOthers', item);
-        }
-        break;
-      case 'Selected':
-        events.trigger('removeSelected');
-        break;
-      case 'Unselected':
-        events.trigger('removeUnselected');
-        break;
-      case 'Unmarked':
-        events.trigger('removeUnmarked');
-        break;
-      case 'Help':
-        window.open('https://avwo.github.io/whistle/webui/network.html');
-        break;
-      case 'Plugins':
-        iframes.fork(action, {
-          port: dataCenter.getPort(),
-          type: 'network',
-          name: name,
-          activeItem: item,
-          selectedList: self.props.modal.getSelectedList()
-        });
-        break;
-      case 'Expand':
-      case 'Collapse':
-        self.toggleNode(treeId);
-        break;
-      case 'Expand All':
-        self.expandAll(treeId);
-        break;
-      case 'Collapse All':
-        self.collapseAll(treeId);
-        break;
+        base64: item.res.base64,
+        name: getFilename(item, 'res_raw')
+      });
+      break;
+    case 'Import':
+      events.trigger('importSessions', e);
+      break;
+    case 'Edit':
+      events.trigger('filterSessions', e);
+      break;
+    case 'removeAllSuchHost':
+      curUrl && self.removeAllSuchHost(item, true);
+      break;
+    case 'removeAllSuchURL':
+      curUrl && self.removeAllSuchURL(item || curUrl, true);
+      break;
+    case 'excludeHost':
+      curUrl && self.removeAllSuchHost(item);
+      break;
+    case 'excludeUrl':
+      curUrl && self.removeAllSuchURL(item || curUrl);
+      break;
+    case 'This':
+      if (treeId) {
+        self.removeTreeNode(treeId);
+      } else {
+        events.trigger('removeIt', item);
+      }
+      break;
+    case 'All':
+      events.trigger('clearAll');
+      break;
+    case 'Others':
+      if (treeId) {
+        self.removeTreeNode(treeId, true);
+      } else {
+        events.trigger('removeOthers', item);
+      }
+      break;
+    case 'Selected':
+      events.trigger('removeSelected');
+      break;
+    case 'Unselected':
+      events.trigger('removeUnselected');
+      break;
+    case 'Unmarked':
+      events.trigger('removeUnmarked');
+      break;
+    case 'Help':
+      window.open('https://avwo.github.io/whistle/webui/network.html');
+      break;
+    case 'Plugins':
+      iframes.fork(action, {
+        port: dataCenter.getPort(),
+        type: 'network',
+        name: name,
+        activeItem: item,
+        selectedList: self.props.modal.getSelectedList()
+      });
+      break;
+    case 'Expand':
+    case 'Collapse':
+      self.toggleNode(treeId);
+      break;
+    case 'Expand All':
+      self.expandAll(treeId);
+      break;
+    case 'Collapse All':
+      self.collapseAll(treeId);
+      break;
     }
   },
   onContextMenu: function (e) {
@@ -991,54 +994,54 @@ var ReqData = React.createClass({
     contextMenuList[1].list.forEach(function (menu) {
       menu.disabled = disabled;
       switch (menu.name) {
-        case 'URL':
-          menu.copyText = util.getUrl(
+      case 'URL':
+        menu.copyText = util.getUrl(
             (item && item.url.replace(/[?#].*$/, '')) || treeUrl
           );
-          menu.disabled = isTreeNode;
-          break;
-        case 'Host':
-          menu.copyText =
+        menu.disabled = isTreeNode;
+        break;
+      case 'Host':
+        menu.copyText =
             (item && (item.isHttps ? item.path : item.hostname)) ||
             util.getHost(treeUrl);
-          menu.disabled = isTreeNode;
-          break;
-        case 'Path':
-          menu.copyText = (item && item.path) || util.getPath(treeUrl);
-          menu.disabled = isTreeNode;
-          break;
-        case 'Full URL':
-          menu.copyText = util.getUrl((item && item.url) || treeUrl);
-          menu.disabled = isTreeNode;
-          break;
-        case 'As CURL':
-          menu.copyText = util.asCURL(item);
-          break;
-        case 'Client IP':
-          menu.copyText = item && item.clientIp;
-          break;
-        case 'Server IP':
-          var serverIp = item && util.getServerIp(item);
-          menu.disabled = !serverIp;
-          menu.copyText = serverIp;
-          break;
-        case 'Req Headers':
-          menu.copyText =
+        menu.disabled = isTreeNode;
+        break;
+      case 'Path':
+        menu.copyText = (item && item.path) || util.getPath(treeUrl);
+        menu.disabled = isTreeNode;
+        break;
+      case 'Full URL':
+        menu.copyText = util.getUrl((item && item.url) || treeUrl);
+        menu.disabled = isTreeNode;
+        break;
+      case 'As CURL':
+        menu.copyText = util.asCURL(item);
+        break;
+      case 'Client IP':
+        menu.copyText = item && item.clientIp;
+        break;
+      case 'Server IP':
+        var serverIp = item && util.getServerIp(item);
+        menu.disabled = !serverIp;
+        menu.copyText = serverIp;
+        break;
+      case 'Req Headers':
+        menu.copyText =
             item &&
             util.objectToString(item.req.rawHeaders || item.req.headers);
-          menu.disabled = !menu.copyText;
-          break;
-        case 'Res Headers':
-          menu.copyText =
+        menu.disabled = !menu.copyText;
+        break;
+      case 'Res Headers':
+        menu.copyText =
             item &&
             util.objectToString(item.res.rawHeaders || item.res.headers);
-          menu.disabled = !menu.copyText;
-          break;
-        case 'Cookie':
-          var cookie = item && item.req.headers.cookie;
-          menu.disabled = !cookie;
-          menu.copyText = cookie;
-          break;
+        menu.disabled = !menu.copyText;
+        break;
+      case 'Cookie':
+        var cookie = item && item.req.headers.cookie;
+        menu.disabled = !cookie;
+        menu.copyText = cookie;
+        break;
       }
     });
 
@@ -1075,34 +1078,38 @@ var ReqData = React.createClass({
     contextMenuList[5].disabled = disabled;
     var list5 = contextMenuList[5].list;
     if (item) {
-      list5[2].disabled = false;
+      list5[3].disabled = false;
       if (item.selected) {
-        list5[3].disabled = true;
         list5[4].disabled = true;
+        list5[5].disabled = true;
         selectedList.forEach(function (selectedItem) {
           if (selectedItem.mark) {
-            list5[4].disabled = false;
+            list5[5].disabled = false;
           } else {
-            list5[3].disabled = false;
+            list5[4].disabled = false;
           }
         });
       } else {
         var unmark = !item.mark;
-        list5[3].disabled = !unmark;
-        list5[4].disabled = unmark;
+        list5[4].disabled = !unmark;
+        list5[5].disabled = unmark;
       }
       if (item.selected) {
-        list5[1].disabled = !selectedList.length;
+        var len = selectedList.length;
         list5[0].disabled = !selectedList.filter(util.canAbort).length;
+        list5[1].disabled = !len;
+        list5[2].disabled = !len || len > 1;
       } else {
-        list5[1].disabled = false;
         list5[0].disabled = !util.canAbort(item);
+        list5[1].disabled = false;
+        list5[2].disabled = false;
       }
     } else {
       list5[0].disabled = true;
       list5[1].disabled = true;
       list5[2].disabled = true;
       list5[3].disabled = true;
+      list5[4].disabled = true;
     }
     var treeItem = contextMenuList[6];
     var treeList = treeItem.list;

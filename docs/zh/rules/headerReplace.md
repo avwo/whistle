@@ -16,11 +16,14 @@
 	```
 	pattern headerReplace://{replacement.json}
 
+	# 内联 JSON
+	pattern headerReplace://({"res.header-name:pattern3":"replacement3"})
+
 版本要求：`>= v2.5.18`，pattern参见[匹配模式](../pattern.html)，更多模式请参考[配置方式](../mode.html)。
 
 例子：
 
-	www.test.com headerReplace://req.cookie:/a(.)/=$1&test=a%20bc headerReplace://res.set-cookie:/\bdomain=[^;]%2b(;|\s*$)/=
+	www.test.com headerReplace://req.cookie:/a(.)/=$1 headerReplace://({"res.set-cookie:/\bdomain=[^;]%2b(;|\s*$)/":""})
 
 > 上述是将所有 `www.test.com` 的请求头cookie字段里面的值的 ax 替换成 x 、test替换成 a bc
 > 注意：同时多个 str.replace(p1, r1).replace(p2, r2) 通过 `&` 分开，whistle会通过 querystring.parse的方式转成相应的对象 (会对 `%xx` 进行转义)

@@ -5,6 +5,8 @@ var extend = require('extend');
 var path = require('path');
 var cluster = require('cluster');
 var os = require('os');
+var assert = require('assert');
+var common = require('./lib/util/common');
 
 var ver = process.version.substring(1).split('.');
 var PROD_RE = /(^|\|)prod(uction)?($|\|)/;
@@ -146,6 +148,13 @@ module.exports = function (options, callback) {
     options = null;
   }
   var startWhistle = function () {
+    var server = options.server;
+    if (server) {
+      assert(options.port > 0, 'options.port of the custom server is required');
+      if (!options.storage && options.storage !== false) {
+        options.storage = '__custom_server_5b6af7b9884e1165__' + options.port;
+      }
+    }
     var workerIndex = env.workerIndex;
     if (options && options.cluster && workerIndex >= 0) {
       options.storage =
@@ -157,7 +166,7 @@ module.exports = function (options, callback) {
     }
     var conf = require('./lib/config').extend(options);
     if (!conf.cluster) {
-      return require('./lib')(callback);
+      return require('./lib')(callback, server);
     }
     var timer;
     var activeTimeout = function () {
@@ -188,6 +197,7 @@ module.exports = function (options, callback) {
       options.cluster = Math.min(os.cpus().length, 999);
     }
     if (options.cluster && cluster.isMaster) {
+      assert(!options.server, 'cannot exist options.server in cluster mode');
       for (var i = 0; i < options.cluster; i++) {
         forkWorker(i);
       }
@@ -223,3 +233,5 @@ module.exports = function (options, callback) {
   }
   return startWhistle();
 };
+
+module.exports.getWhistlePath = common.getWhistlePath;

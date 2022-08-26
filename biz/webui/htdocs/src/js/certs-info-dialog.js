@@ -12,6 +12,11 @@ var message = require('./message');
 var OK_STYLE = { color: '#5bbd72' };
 var MAX_CERT_SIZE = 128 * 1024;
 
+function getCertName(cert, filename) {
+  filename = filename || cert.filename;
+  return filename + '.' + (cert.type || 'crt');
+}
+
 function readFile(file, callback) {
   var reader = new FileReader();
   reader.readAsText(file);
@@ -47,6 +52,7 @@ var HistoryData = React.createClass({
         filename: filename,
         domain: cert.dnsName,
         mtime: cert.mtime,
+        type: cert.type,
         validity: startDate.toLocaleString() + ' ~ ' + endDate.toLocaleString(),
         status: status || (
           <i className="bi bi-check-lg" style={OK_STYLE}></i>
@@ -59,9 +65,10 @@ var HistoryData = React.createClass({
         item.readOnly = true;
       } else {
         if (filename[0] === 'z' && filename[1] === '/') {
-          item.displayName = filename.substring(2);
+          filename = filename.substring(2);
           item.readOnly = true;
         }
+        item.displayName = getCertName(item, filename);
         list.push(item);
       }
     });
@@ -87,9 +94,9 @@ var HistoryData = React.createClass({
   },
   showRemoveTips: function (item) {
     var dir = (item.dir || '').replace(/\\/g, '/');
-    dir = dir + (/\/$/.test(dir) ? '' : '/') + item.filename;
-    var crt = dir + '.crt';
-    var key = dir + '.key';
+    dir = dir + (/\/$/.test(dir) ? '' : '/');
+    var crt = dir + getCertName(item);
+    var key = dir + item.filename + '.key';
     this.refs.tipsDialog.show({
       title: 'Delete the following files and restart whistle:',
       tips: key + '\n' + crt,
@@ -105,12 +112,12 @@ var HistoryData = React.createClass({
   removeCert: function (item) {
     var self = this;
     win.confirm(
-      "Are you sure to delete '" + item.filename + "'.",
+      'Are you sure to delete \'' + getCertName(item) + '\'.',
       function (sure) {
         if (!sure) {
           return;
         }
-        dataCenter.certs.remove({ filename: item.filename }, self.handleCgi);
+        dataCenter.certs.remove({ filename: item.filename, type: item.type }, self.handleCgi);
       }
     );
   },
@@ -126,8 +133,8 @@ var HistoryData = React.createClass({
         return;
       }
       var { name } = cert;
-      if (!/\.(crt|key)/.test(name)) {
-        message.error('Only files with .key or .crt suffixes are supported.');
+      if (!/\.(crt|cer|pem|key)/.test(name)) {
+        message.error('Only files with .key, .crt, .cer, .pem suffixes are supported.');
         return;
       }
       var suffix = RegExp.$1;
@@ -141,6 +148,9 @@ var HistoryData = React.createClass({
       certs = certs || {};
       var pair = certs[name] || {};
       pair[suffix == 'key' ? 'key' : 'cert'] = cert;
+      if (suffix !== 'key') {
+        pair.type = suffix;
+      }
       certs[name] = pair;
     }
     if (!certs) {
@@ -284,7 +294,7 @@ var HistoryData = React.createClass({
             ref="uploadCerts"
             style={{ display: 'none' }}
             type="file"
-            accept=".crt,.key"
+            accept=".crt,.cer,.pem,.key"
             multiple="multiple"
             onChange={self.handleChange}
           />

@@ -15,7 +15,26 @@ function compatAjax(options) {
   return options;
 }
 
-function getBridge() {
+function getPlugin(win) {
+  if (!win) {
+    return;
+  }
+  try {
+    var pathname = win.location.pathname.split('/');
+    for (var i = pathname.length - 1; i >= 0; i--) {
+      var name = pathname[i];
+      if (/^plugin\.([a-z\d_\-]+)$/.test(name)) {
+        var plugin = dataCenter.getPlugin(RegExp.$1  + ':');
+        if (plugin) {
+          return plugin;
+        }
+      }
+    }
+  } catch (e) {}
+}
+
+function getBridge(win) {
+  var plugin = getPlugin(win);
   return {
     pageId: dataCenter.getPageId(),
     compose: dataCenter.compose,
@@ -26,6 +45,15 @@ function getBridge() {
     decodeBase64: util.decodeBase64,
     alert: mockWin.alert,
     confirm: mockWin.confirm,
+    syncData: function(cb) {
+      plugin && dataCenter.syncData(plugin, cb);
+    },
+    syncRules: function() {
+      plugin && dataCenter.syncRules(plugin);
+    },
+    syncValues: function() {
+      plugin && dataCenter.syncValues(plugin);
+    },
     request: function (options, cb) {
       var request = createCgi(compatAjax(options));
       return request(options.data, cb);

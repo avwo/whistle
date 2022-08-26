@@ -66,7 +66,6 @@
 4. [**resCookies** (修改响应cookies)](resCookies.html)
 5. [**resCors** (修改响应cors)](resCors.html)
 6. [**attachment** (设置下载头部)](attachment.html)
-7. [**redirect** (302重定向)](redirect.html)
 
 #### 修改响应内容
 > 根据不同的数据类型采用不同的协议
@@ -79,6 +78,7 @@
     * [**xtpl** (替换本地目标文件，如果本地文件找不到会继续请求线上，可用于模拟jsonp请求)](rule/xtpl.html)
     * [**rawfile** (替换本地http响应内容格式的文件)](rule/rawfile.html)
     * [**xrawfile** (替换本地http响应内容格式的文件，如果本地文件找不到会继续请求线上)](rule/xrawfile.html)
+    * [**redirect** (302 重定向))](rule/redirect.html)
     * [**statusCode** (直接响应)](rule/statusCode.html)
     * [**自定义**](rule/custom.html)
 2. [**resMerge** (修改响应参数)](resMerge.html)
@@ -101,7 +101,7 @@
 
 #### 过滤配置
 1. [**filter (excludeFilter|includeFilter)** (过滤规则，隐藏请求等)](filter.html)
-2. [**ignore** (忽略规则)](ignore.html)
+2. [**ignore (skip)** (忽略规则)](ignore.html)
 
 #### 启用或禁用一些配置
 1. [**enable** (设置capture HTTPs，隐藏请求等)](enable.html)

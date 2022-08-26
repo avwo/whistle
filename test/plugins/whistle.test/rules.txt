@@ -1,0 +1,58 @@
+/test.whistlejs.com/ test://none host://127.0.0.1:8080 filter://https
+/reqdelay/ reqDelay://1000
+/resdelay/ resDelay://1000
+/ua/ ua://xxx
+/reqcharset/ reqCharset://utf8 
+/rescharset/ resCharset://utf8
+/etag/ etag://xxx
+/accept/ accept://xxx
+/cache/ cache://60000
+/statuscode1/ statusCode://999
+/statuscode2/ statusCode://101
+/statuscode3/ statusCode://500
+/redirect/ redirect://http://test.whistlejs.com
+/replacestatus/ replaceStatus://500
+
+/log1/ log://assets/files/log.js
+
+/proxy/ proxy://127.0.0.1:8080
+
+/connect/ host://127.0.0.1:8081
+/testrule5\.([^\/]+)\/([^?]*\/?)\?.*test=([^&]+)/ host.$1/$2?test=$3
+/testrule6\.([^\/]+)\/([^?]*\/?)\?.*test=([^&]+)/ $1/$2?test=$3
+
+/urlreplace/ urlReplace://assets/values/urlReplace.json
+
+/plugin/ plugin://test
+
+/321/ test://abc filter://https
+
+tnl1.whistlejs.com host://127.0.0.1:8080 filter://https
+tnl2.whistlejs.com 127.0.0.1 plugin://test filter://tunnel
+tnl3.whistlejs.com test://none filter://tunnel
+tnl4.whistlejs.com proxy://127.0.0.1:8080
+/tnl5.whistlejs.com/ plugin://test
+/tnl6.whistlejs.com/ test://test
+break.whistlejs.com test://test
+ts.whistlejs.com test://none
+/values1/ test://none
+/values2/ test://none
+pac.test.com pac://assets/files/pac.js
+$ssi-include.whistlejs.com/index.html?doNotParseJson test://none
+
+https.w2.org host://127.0.0.1:5566
+https1.w2.org proxy://127.0.0.1:7788 
+http://https2.w2.org https1.w2.org:8080
+https2.w2.org https://https1.w2.org:5566
+
+socks1.w2.org socks://127.0.0.1
+socks2.w2.org socks://test:hello1234@127.0.0.1:1118
+socks3.w2.org socks://127.0.0.1 filter://https
+socks4.w2.org socks://test:hello1234@127.0.0.1:1118 filter://https
+
+socks5.w2.org socks1.w2.org
+socks6.w2.org socks2.w2.org
+socks7.w2.org socks3.w2.org
+socks8.w2.org socks4.w2.org
+
+mp1.w2.org test://123

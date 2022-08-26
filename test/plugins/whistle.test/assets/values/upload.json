@@ -1,0 +1,11 @@
+ {
+     "name1": "value1",
+     "name2": "value2",
+     "file1": {
+         "filename": "text.txt",
+         "content": "xxxxxxxxxxxxxxx"
+     },
+     "file2": {
+         "value": "1234567890"
+     }
+ }

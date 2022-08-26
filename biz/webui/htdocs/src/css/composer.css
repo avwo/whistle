@@ -29,6 +29,7 @@
   width: 100px;
   margin: 0 2px;
   padding: 0;
+  font-size: 13px;
 }
 .w-composer-execute {
   padding: 0 8px;
@@ -88,7 +89,7 @@
 }
 
 .w-composer-bar .btn {
-  line-height: 15px;
+  line-height: 13px;
   height: 15px;
   padding: 0 5px;
   font-weight: normal;
@@ -207,7 +208,7 @@
 
 .w-history-list div {
   line-height: 22px;
-  padding: 0 10px;
+  padding: 0 5px;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -283,6 +284,7 @@
 .w-history-list {
   overflow-y: auto;
   overflow-x: hidden;
+  background-color: #fdfdfd;
 }
 
 .w-history-data .w-tips {

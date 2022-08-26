@@ -7,14 +7,29 @@ var useRules = require('./use');
 var showStatus = require('./status');
 var util = require('./util');
 var plugin = require('./plugin');
+var setProxy = require('./proxy');
+var installCA = require('./ca/cli');
 
-var showUsage = util.showUsage;
 var error = util.error;
 var info = util.info;
 
+function handleEnd(err, options, restart) {
+  options = util.showUsage(err, options, restart);
+  if (!options) {
+    return;
+  }
+  var host = options.host + ':' + options.port;
+  var argv = [host];
+  if (options.bypass) {
+    argv.push('-x', options.bypass);
+  }
+  setProxy(argv);
+  installCA([host]);
+}
+
 function showStartupInfo(err, options, debugMode, restart) {
   if (!err || err === true) {
-    return showUsage(err, options, restart);
+    return handleEnd(err, options, restart);
   }
   if (/listen EADDRINUSE/.test(err)) {
     options = util.formatOptions(options);
@@ -54,7 +69,7 @@ program.setConfig({
       showStartupInfo(err, options, true);
       return;
     }
-    showUsage(false, options);
+    handleEnd(false, options);
     console.log('Press [Ctrl+C] to stop ' + config.name + '...');
   },
   startCallback: showStartupInfo,
@@ -80,15 +95,19 @@ program
   .command('status')
   .description('Show the running status');
 program
-  .command('add [filepath]')
+  .command('add')
   .description('Add rules from local js file (.whistle.js by default)');
+program.command('proxy')
+  .description('Set global proxy');
+program.command('ca')
+  .description('Install root CA');
 program.command('install')
-  .description('Install a whistle plugin');
+  .description('Install whistle plugin');
 program.command('uninstall')
-  .description('Uninstall a whistle plugin');
+  .description('Uninstall whistle plugin');
 program.command('exec')
-  .description('Exec whistle plugin command');
-  
+  .description('Exec whistle plugin cmd');
+
 program
   .option('-D, --baseDir [baseDir]', 'set the configured storage root path', String, undefined)
   .option('-z, --certDir [directory]', 'set custom certificate store directory', String, undefined)
@@ -114,6 +133,7 @@ program
   .option('-R, --reqCacheSize [reqCacheSize]', 'set the cache size of request data (600 by default)', String, undefined)
   .option('-F, --frameCacheSize [frameCacheSize]', 'set the cache size of webSocket and socket\'s frames (512 by default)', String, undefined)
   .option('-A, --addon [pluginPaths]', 'add custom plugin paths', String, undefined)
+  .option('--init [bypass]', 'auto set global proxy (and bypass) and install root CA')
   .option('--config [workers]', 'start the cluster server and set worker number (os.cpus().length by default)', String, undefined)
   .option('--cluster [config]', 'load the startup config from a local file', String, undefined)
   .option('--dnsServer [dnsServer]', 'set custom dns servers', String, undefined)
@@ -132,12 +152,19 @@ var removeItem = function(list, name) {
   var i = list.indexOf(name);
   i !== -1 && list.splice(i, 1);
 };
+if (argv.indexOf('--init') !== -1) {
+  process.env.WHISTLE_MODE = (process.env.WHISTLE_MODE || '') + '|persistentCapture';
+}
 if (cmd === 'status') {
   var all = argv[3] === '--all' || argv[3] === '-l';
   if (argv[3] === '-S') {
     storage = argv[4];
   }
   showStatus(all, storage);
+} else if (cmd === 'proxy') {
+  setProxy(Array.prototype.slice.call(argv, 3));
+} else if (cmd === 'ca') {
+  installCA(Array.prototype.slice.call(argv, 3));
 } else if (/^([a-z]{1,2})?uni(nstall)?$/.test(cmd)) {
   plugin.uninstall(Array.prototype.slice.call(argv, 3));
 } else if (/^([a-z]{1,2})?i(nstall)?$/.test(cmd)) {

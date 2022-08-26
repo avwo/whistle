@@ -19,6 +19,7 @@ var PROTOCOLS = [
   'log',
   'filter',
   'ignore',
+  'skip',
   'enable',
   'disable',
   'delete',
@@ -30,7 +31,6 @@ var PROTOCOLS = [
   'auth',
   'ua',
   'cache',
-  'redirect',
   'attachment',
   'forwardedFor',
   'responseFor',
@@ -86,6 +86,7 @@ var innerRules = [
   'xtpl',
   'rawfile',
   'xrawfile',
+  'redirect',
   'statusCode'
 ];
 var pluginRules = [];
@@ -183,6 +184,9 @@ exports.getHelpUrl = function (rule) {
   }
   if (rule === 'includeFilter' || rule === 'excludeFilter') {
     return ROOT_HELP_URL + 'filter.html';
+  }
+  if (rule === 'skip') {
+    return ROOT_HELP_URL + 'ignore.html';
   }
   if (rule === 'lineProps') {
     return ROOT_HELP_URL + 'lineProps.html';

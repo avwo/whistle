@@ -17,27 +17,33 @@ var SyncDialog = React.createClass({
   getInitialState: function () {
     return {};
   },
-  show: function (options, rulesModal, valuesModal) {
+  show: function (plugin, rulesModal, valuesModal, cb) {
     var self = this;
     self.rulesModal = rulesModal;
     self.valuesModal = valuesModal;
-    if (!util.isString(options.rulesUrl)) {
-      options.rulesUrl = null;
+    self.plugin = plugin;
+    if (!util.isString(plugin.rulesUrl)) {
+      plugin.rulesUrl = null;
     }
-    if (!util.isString(options.valuesUrl)) {
-      options.valuesUrl = null;
+    if (!util.isString(plugin.valuesUrl)) {
+      plugin.valuesUrl = null;
     }
-    self.setState(options, function () {
-      self.refs.syncDialog.show();
-    });
+    if (plugin.rulesUrl || plugin.valuesUrl) {
+      self.setState(plugin, typeof cb === 'function' ? cb : function () {
+        self.refs.syncDialog.show();
+      });
+    }
   },
-  syncRules: function () {
+  _syncRules: function(history) {
     var self = this;
     var rulesUrl = self.state.rulesUrl;
     if (self.loadingRules || !util.isString(rulesUrl)) {
       return;
     }
     self.loadingRules = true;
+    if (history) {
+      rulesUrl += (rulesUrl.indexOf('?') === -1 ? '?' : '&') + 'history=' + encodeURIComponent(history);
+    }
     var loadRules = dataCenter.createCgi(
       getCgiUrl(self.state.moduleName, rulesUrl)
     );
@@ -47,17 +53,21 @@ var SyncDialog = React.createClass({
       if (!data) {
         return util.showSystemError(xhr);
       }
-      self.refs.kvDialog.show(data, self.rulesModal, self.valuesModal);
+      self.plugin.selectedRulesHistory = history;
+      self.refs.kvDialog.show(data, self.rulesModal, self.valuesModal, false, history);
     });
     self.setState({});
   },
-  syncValues: function () {
+  _syncValues: function (history) {
     var self = this;
     var valuesUrl = self.state.valuesUrl;
     if (self.loadingValues || !util.isString(valuesUrl)) {
       return;
     }
     self.loadingValues = true;
+    if (history) {
+      valuesUrl += (valuesUrl.indexOf('?') === -1 ? '?' : '&') + 'history=' + encodeURIComponent(history);
+    }
     var loadValues = dataCenter.createCgi(
       getCgiUrl(self.state.moduleName, valuesUrl)
     );
@@ -67,9 +77,23 @@ var SyncDialog = React.createClass({
       if (!data) {
         return util.showSystemError(xhr);
       }
-      self.refs.kvDialog.show(data, self.rulesModal, self.valuesModal, true);
+      self.plugin.selectedValuesHistory = history;
+      self.refs.kvDialog.show(data, self.rulesModal, self.valuesModal, true, history);
     });
     self.setState({});
+  },
+  syncRules: function () {
+    this._syncRules(this.plugin.selectedRulesHistory);
+  },
+  syncValues: function () {
+    this._syncValues(this.plugin.selectedValuesHistory);
+  },
+  onHistoryChange: function(history, isValues) {
+    if (isValues) {
+      this._syncValues(history);
+    } else {
+      this._syncRules(history);
+    }
   },
   render: function () {
     var state = this.state;
@@ -104,7 +128,7 @@ var SyncDialog = React.createClass({
             Close
           </button>
         </div>
-        <KVDialog ref="kvDialog" />
+        <KVDialog onHistoryChange={this.onHistoryChange} ref="kvDialog" />
       </Dialog>
     );
   }
@@ -114,8 +138,14 @@ var SyncDialogWrap = React.createClass({
   shouldComponentUpdate: function () {
     return false;
   },
-  show: function (options, rulesModal, valuesModal) {
-    this.refs.syncDialog.show(options, rulesModal, valuesModal);
+  show: function (plugin, rulesModal, valuesModal, cb) {
+    this.refs.syncDialog.show(plugin, rulesModal, valuesModal, cb);
+  },
+  syncRules: function() {
+    this.refs.syncDialog.syncRules();
+  },
+  syncValues: function() {
+    this.refs.syncDialog.syncValues();
   },
   render: function () {
     return <SyncDialog ref="syncDialog" />;

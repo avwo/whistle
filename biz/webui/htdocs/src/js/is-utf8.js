@@ -8,7 +8,7 @@ function isUtf8(buf, i) {
       byte == 0x09 ||
       byte == 0x0a ||
       byte == 0x0d ||
-      (0x20 <= byte && byte <= 0x7e)
+      (0x20 <= byte && byte <= 0x7f)
     ) {
       continue;
     }

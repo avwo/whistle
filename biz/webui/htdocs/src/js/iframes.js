@@ -64,7 +64,7 @@ function onPluginContextMenuReady(win) {
     } catch (e) {}
   }
   try {
-    var bridge = getBridge();
+    var bridge = getBridge(win);
     bridge.createModal = function (options) {
       var dialog = modal.create(options);
       var hide = dialog.hide;
@@ -128,13 +128,13 @@ exports.fork = function (page, options) {
   cache[page] =
     latestItem =
     item =
-      {
-        page: page,
-        list: [options],
-        mtime: Date.now(),
-        iframe: iframe,
-        dialogs: []
-      };
+    {
+      page: page,
+      list: [options],
+      mtime: Date.now(),
+      iframe: iframe,
+      dialogs: []
+    };
   document.body.appendChild(iframe);
   iframe.src = page + page.length;
   setTimeout(function () {

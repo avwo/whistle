@@ -52,6 +52,7 @@ node_modules
 *.log
 *.gz
 .gitignore
+.gitattributes
 .npmignore
 .travis.yml
 .eslintrc
@@ -65,6 +66,7 @@ assets/launcher
 /.history
 CHANGELOG.md
 Dockerfile
+/README-zh_CN.md
 
 
 # Coveralls

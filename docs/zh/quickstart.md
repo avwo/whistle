@@ -1,113 +1,99 @@
 # 快速上手
+> 如未安装 Whistle，请先参考 README 安装：https://github.com/avwo/whistle#readme
 
-> 推荐看这篇文章：[whistle工具全程入门](http://imweb.io/topic/596480af33d7f9a94951744c)
+安装成功后，打开 Whistle 管理界面 http://local.whistlejs.com ：
 
-按[上述方法](install.html)安装好whistle后，用Chrome浏览器打开配置页面: [http://local.whistlejs.com](http://local.whistlejs.com/)
+## 界面操作
+<img height="440" alt="抓包界面" src="https://user-images.githubusercontent.com/11450939/169522482-92ebb644-c0ae-49d5-8934-a8652cc1544b.gif">
 
-如图[Rules](webui/rules.html)，whistle的Rules配置页面有一个默认分组`Default`，用户也可以通过上面的菜单栏按钮`Create`、`Edit`、`Delete`分别创建、重命名、删除自定义分组，whistle先在选中的用户自定义分组中从上到下依次匹配，然后再到`Default`中匹配(如果`Default`分组被启用的情况下)。
+<img height="440" alt="image" src="https://user-images.githubusercontent.com/11450939/169634452-64e7bf4b-4cb1-4289-9ba2-3c1913d6c2dd.png">
 
-点击页面上方菜单栏的`Create`按钮，新建一个名为`test`的分组，并参照下面例子输入对应的规则配置。
+**切到  Rules 并点击 `Create` 新建一个 测试环境 接下来看下如何通过设置规则操作请求。**
+## 设置 Hosts
+1. 普通的 Hosts 配置：
+    ``` txt
+    test1.wproxy.org 127.0.0.1
+    test2.wproxy.org 127.0.0.1
 
-1. 设置hosts
+    # 或
 
-	指定[www.ifeng.com](http://www.ifeng.com/)的ip:
-	```
-  www.ifeng.com 127.0.0.1
-  # or
-  127.0.0.1 www.ifeng.com
-	```
+    127.0.0.1 test1.wproxy.org test2.wproxy.org
+    ```
+2. 也支持带端口，匹配路径、协议、正则、通配符等：
+    ``` txt
+    test1.wproxy.org/path/to 127.0.0.1:6001
+    https://test2.wproxy.org/path1/to1 127.0.0.1:6001
+    # 根据请求参数设置 host
+    /google/ 127.0.0.1:6001
 
-  指定[www.ifeng.com](http://www.ifeng.com/)的ip和端口，把请求转发到本地8080端口，这个在平时开发中可以用来去掉url中的端口号:
+    # 或
 
-	```
-  # www.ifeng.com 127.0.0.1
-  www.ifeng.com 127.0.0.1:8080
-  # or
-  127.0.0.1:8080 www.ifeng.com
-  ```
+    127.0.0.1:6001 test1.wproxy.org/path/to https://test2.wproxy.org/path1/to1 /google/
+    ```
+3. 支持 cname：
+    ``` txt
+    test1.wproxy.org/path/to host://www.qq.com:8080
+    ```
+4. 支持通过请求参数设置 Hosts：
+    ``` txt
+    /host=([\w.:-]+)/ host://$1
+    ```
+    <img width="360" alt="image" src="https://user-images.githubusercontent.com/11450939/169552975-131981da-9fd8-4a91-ba6c-20ea115be1f2.png">
 
-	也可以用某个域名的ip设置hosts
+    <img width="360" alt="image" src="https://user-images.githubusercontent.com/11450939/169552835-b4a44f5d-5e8f-4204-ab37-a8e39ce15db0.png">
 
-  ```
-  www.ifeng.com host://www.qq.com:8080
-  # or
-  host://www.qq.com:8080 www.ifeng.com
-	```
- 更多匹配模式参考：[匹配模式](pattern.html)
+    <img width="600" alt="image" src="https://user-images.githubusercontent.com/11450939/169554406-14ad35be-4897-4f0e-b323-2840d6196cfc.png">
 
-2. 本地替换
+## 修改请求 Cookie
+``` txt
+www.qq.com reqCookies://custom_key1=123&custom_key2=789
+```
 
-	平时开发中经常会用到这个功能，把响应替换成本地文件内容。
+<img width="600" alt="image" src="https://user-images.githubusercontent.com/11450939/169558680-8d634612-60cc-4ca0-b50d-5ce8a9defc01.png">
 
-	```
-  # Mac、Linux
-  www.ifeng.com file:///User/username/test
-  # or www.ifeng.com file:///User/username/test/index.html
 
-  # Windows的路径分隔符可以用 \ 或者 /
-  www.ifeng.com file://E:\xx\test
-  # or www.ifeng.com file://E:\xx\test\index.html
-	```
+## 请求替换
+1. 替换本地内容
+    ``` txt
+    test.wproxy.org/test file:///Users/xx/statics
+    ```
+    > `test.wproxy.org/test` 及其子路径 `test.wproxy.org/test/path/to` 请求 会尝试读取本地文件 `/Users/xx/statics/path/to`
+2. 替换其它请求
+    ``` txt
+    test.wproxy.org/test https://ke.qq.com
+    ```
+    > `test.wproxy.org/test` 及其子路径 `test.wproxy.org/test/xxx` 请求会用 ` https://ke.qq.com/xxx` 响应头和内容替换
 
-	[http://www.ifeng.com/](http://www.ifeng.com/)会先尝试加载`/User/username/test`这个文件，如果不存在，则会加载`/User/username/test/index.html`，如果没有对应的文件则返回404。
+    <img width="600" alt="image" src="https://user-images.githubusercontent.com/11450939/169570448-811c0593-006c-4ff9-85b3-cd295be87fc2.png">
 
-	[http://www.ifeng.com/xxx](#)会先尝试加载`/User/username/test/xxx`这个文件，如果不存在，则会加载`/User/username/test/xxx/index.html`，如果没有对应的文件则返回404。
+    <img width="600" alt="image" src="https://user-images.githubusercontent.com/11450939/169570315-b6f19992-f822-4318-9aa3-b83ea5092f3c.png">
 
-	也可以替换jsonp请求，具体参见[tpl](rules/rule/tpl.html)
 
-  更多匹配模式参考：[匹配模式](pattern.html)
-3. 请求转发
+## 查看 JS 报错及页面 `console.log`
+``` txt
+ke.qq.com log://
+```
 
-	[www.ifeng.com](http://www.ifeng.com/)域名下的请求都替换成对应的www.aliexpress.com域名
+<img width="600" alt="image" src="https://user-images.githubusercontent.com/11450939/169571624-f0cecc99-15a2-4780-bdfa-aa372cd2c667.png">
 
-  ```
-	www.ifeng.com www.aliexpress.com
-	```
+## 修改响应状态码
+``` txt
+# 模拟响应 500（请求不会到后台服务）
+test3.wproxy.org/path/to statusCode://500
 
-	更多匹配模式参考：[匹配模式](pattern.html)
-4. 注入html、js、css
+# 修改响应状态码（请求会到后台服务）
+test4.wproxy.org/path/to replaceStatus://400
 
-	whistle会自动根据响应内容的类型，判断是否注入相应的文本及如何注入(是否要用标签包裹起来)。
+# 302 重定向
+test5.wproxy.org/path redirect://https://ke.qq.com/
 
-  ```
-  # Mac、Linux
-  www.ifeng.com html:///User/xxx/test/test.html
-  www.ifeng.com js:///User/xxx/test/test.js
-  www.ifeng.com css:///User/xxx/test/test.css
+# 301 重定向
+test6.wproxy.org/path redirect://https://ke.qq.com/ replaceStatus://301
+```
 
-  # Windows的路径分隔符可以用`\`和`/`
-  www.ifeng.com html://E:\xx\test\test.html
-  www.ifeng.com js://E:\xx\test\test.js
-  www.ifeng.com css://E:\xx\test\test.css
-	```
+<img width="800" alt="image" src="https://user-images.githubusercontent.com/11450939/169640506-4c8c2777-faab-4f08-80d1-bfb4d6c280e0.png">
 
-  所有www.ifeng.com域名下的请求，whistle都会根据响应类型，将处理好的文本注入到响应内容里面，如是html请求，js和css会分别自动加上`script`和`style`标签后追加到内容后面。
-
-  更多匹配模式参考：[匹配模式](pattern.html)
-5. 调试远程页面
-
-	利用whistle提供的[weinre](rules/weinre.html)和[log](rules/log.html)两个协议，可以实现修改远程页面DOM结构及自动捕获页面js错误及console打印的信息，还可以在页面顶部或js文件底部注入指定的脚步调试页面信息。
-
-	使用whistle的功能前，先把要相应的系统代理或浏览器代理指向whistle，如何设置可以参考：[安装启动](install.html)
-
-	weinre：
-
-	```
-  www.ifeng.com weinre://test
-	```
-
-	配置后保存，打开[www.ifeng.com](http://www.ifeng.com/)，鼠标放在菜单栏的weinre按钮上会显示一个列表，并点击其中的`test`项打开weinre的调试页面选择对应的url切换到Elements即可。
-
-	log:
-
-	```
-	www.ifeng.com log://{test.js}
-	```
-
-	配置后保存，鼠标放在菜单栏的weinre按钮上会显示一个列表，并点击其中的`test.js`项，whistle会自动在Values上建立一个test.js分组，在里面填入`console.log(1, 2, 3, {a: 123})`保存，打开Network -> 右侧Log -> Page，再打开[www.ifeng.com](http://www.ifeng.com/)，即可看到Log下面的Page输出的信息。
-
-  更多匹配模式参考：[匹配模式](pattern.html)
-6. 手机设置代理
+### 手机设置代理
 
 <div style="display:-webkit-box;display:flex;">
   <div style="display:inline-block;width:40%;margin-left:5%;">

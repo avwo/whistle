@@ -134,7 +134,8 @@ var Online = React.createClass({
     }
     var port = server.realPort || server.port;
     if (port) {
-      info.push('<h5><strong>Port:</strong> ' + port + '</h5>');
+      var bip = server.realHost != null ? server.realHost : server.bip;
+      info.push('<h5><strong>Port:</strong> ' + (bip ? bip + ':' + port : port) + '</h5>');
     }
     if (server.socksPort) {
       info.push(
@@ -259,21 +260,21 @@ var Online = React.createClass({
           .parent()
           .attr(
             'title',
-            [
-              'HTTP[s]: ' + util.getQps(pInfo.httpQps),
-              'WS[S]: ' + util.getQps(pInfo.wsQps),
-              'TUNNEL: ' + util.getQps(pInfo.tunnelQps)
-            ].join('\n')
+        [
+          'HTTP[s]: ' + util.getQps(pInfo.httpQps),
+          'WS[S]: ' + util.getQps(pInfo.wsQps),
+          'TUNNEL: ' + util.getQps(pInfo.tunnelQps)
+        ].join('\n')
           );
         uiQpsElem
           .parent()
           .attr(
             'title',
-            [
-              'HTTP[s]: ' + util.getQps(pInfo.allHttpQps),
-              'WS[S]: ' + util.getQps(pInfo.allWsQps),
-              'TUNNEL: ' + util.getQps(pInfo.tunnelQps)
-            ].join('\n')
+        [
+          'HTTP[s]: ' + util.getQps(pInfo.allHttpQps),
+          'WS[S]: ' + util.getQps(pInfo.allWsQps),
+          'TUNNEL: ' + util.getQps(pInfo.tunnelQps)
+        ].join('\n')
           );
         var totalCount =
           pInfo.httpRequests + pInfo.wsRequests + pInfo.tunnelRequests;

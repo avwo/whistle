@@ -1,4 +1,5 @@
 var cp = require('child_process');
+var program = require('starting');
 var util = require('util');
 var os = require('os');
 var fs = require('fs');
@@ -6,12 +7,14 @@ var fse = require('fs-extra2');
 var config = require('../lib/config');
 var colors = require('colors/safe');
 var path = require('path');
+var createHmac = require('crypto').createHmac;
+
 /*eslint no-console: "off"*/
 var CHECK_RUNNING_CMD = process.platform === 'win32' ? 
   'tasklist /fi "PID eq %s" | findstr /i "node.exe"'
   : 'ps -f -p %s | grep "node"';
 var isWin = process.platform === 'win32';
-  
+
 function isRunning(pid, callback) {
   pid ? cp.exec(util.format(CHECK_RUNNING_CMD, pid), 
     function (err, stdout, stderr) {
@@ -26,7 +29,7 @@ function getIpList() {
   var ifaces = os.networkInterfaces();
   Object.keys(ifaces).forEach(function(ifname) {
     ifaces[ifname].forEach(function (iface) {
-      if (iface.family == 'IPv4') {
+      if (iface.family == 'IPv4' || iface.family === 4) {
         ipList.push(iface.address);
       }
     });
@@ -87,6 +90,15 @@ function showUsage(isRunning, options, restart) {
   if (parseInt(process.version.slice(1), 10) < 6) {
     warn(colors.bold('\nWarning: The current Node version is too low, access https://nodejs.org to install the latest version, or may not be able to Capture HTTPS CONNECTs\n'));
   }
+  var bypass = program.init;
+  if (bypass == null) {
+    return;
+  }
+  return {
+    host: options.host || '127.0.0.1',
+    port: port,
+    bypass: typeof bypass === 'string' ? bypass : undefined
+  };
 }
 
 exports.showUsage = showUsage;
@@ -142,3 +154,14 @@ function readConfigList() {
 
 exports.readConfig = readConfig;
 exports.readConfigList = readConfigList;
+exports.getHash = function(str) {
+  var hmac = createHmac('sha256', 'a secret');
+  return hmac.update(str).digest('hex');
+};
+
+exports.getDefaultPort = function () {
+  var conf = readConfig();
+  conf = conf && conf.options;
+  var port = conf && conf.port;
+  return port > 0 ? port : 8899;
+};

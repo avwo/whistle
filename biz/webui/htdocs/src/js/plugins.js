@@ -4,10 +4,10 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var events = require('./events');
 var Dialog = require('./dialog');
-var SyncDialog = require('./sync-dialog');
 var dataCenter = require('./data-center');
 var util = require('./util');
 var win = require('./win');
+var LazyInit = require('./lazy-init');
 
 var CMD_RE = /^([\w]{1,12})(\s+-g)?$/;
 var pendingEnable;
@@ -49,6 +49,14 @@ window.getWhistleProxyServerInfo = function () {
   return serverInfo && $.extend(true, {}, serverInfo);
 };
 
+function getAccount(plugin) {
+  return plugin.account ? ' --account=' + plugin.account : '';
+}
+
+function getUpdateUrl(plugin) {
+  return plugin.updateUrl || plugin.moduleName;
+}
+
 var Home = React.createClass({
   componentDidMount: function () {
     var self = this;
@@ -62,17 +70,14 @@ var Home = React.createClass({
         .sort(getPluginComparator(plugins))
         .map(function (name) {
           var plugin = plugins[name];
-          if (
-            !byInstall &&
-            !util.compareVersion(plugin.latest, plugin.version)
-          ) {
+          if (plugin.isProj || (!byInstall && !util.compareVersion(plugin.latest, plugin.version))) {
             return;
           }
-          var registry = plugin.registry
+          var registry = (plugin.registry
             ? ' --registry=' + plugin.registry
-            : '';
+            : '') + getAccount(plugin);
           var list = newPlugins[registry] || [];
-          list.push(plugin.moduleName);
+          list.push(getUpdateUrl(plugin));
           newPlugins[registry] = list;
         });
       var cmdMsg = Object.keys(newPlugins)
@@ -94,17 +99,12 @@ var Home = React.createClass({
   componentDidUpdate: function () {
     this.setUpdateAllBtnState();
   },
-  shouldComponentUpdate: function (nextProps) {
-    var hide = util.getBoolean(this.props.hide);
-    return hide != util.getBoolean(nextProps.hide) || !hide;
-  },
   onOpen: function (e) {
     this.props.onOpen && this.props.onOpen(e);
     e.preventDefault();
   },
   syncData: function (plugin) {
-    var data = this.props.data || '';
-    this.refs.syncDialog.show(plugin, data.rules, data.values);
+    dataCenter.syncData(plugin);
   },
   showDialog: function () {
     this.refs.pluginRulesDialog.show();
@@ -135,7 +135,7 @@ var Home = React.createClass({
     var registry = plugin.registry ? ' --registry=' + plugin.registry : '';
     this.setState(
       {
-        cmdMsg: getCmd() + plugin.moduleName + registry,
+        cmdMsg: getCmd() + getUpdateUrl(plugin) + getAccount(plugin) + registry,
         isSys: plugin.isSys,
         uninstall: false
       },
@@ -152,7 +152,7 @@ var Home = React.createClass({
       !isSys && plugin.registry ? ' --registry=' + plugin.registry : '';
     this.setState(
       {
-        cmdMsg: cmdMsg + plugin.moduleName + registry,
+        cmdMsg: cmdMsg + plugin.moduleName + getAccount(plugin) + registry,
         isSys: isSys,
         uninstall: true,
         pluginPath: plugin.path
@@ -263,14 +263,14 @@ var Home = React.createClass({
                         {util.toLocaleString(new Date(plugin.mtime))}
                       </td>
                       <td className="w-plugins-name" title={plugin.moduleName}>
-                        <a
+                      {plugin.noOpt ? <span>{name}</span> : <a
                           href={url}
                           target="_blank"
                           data-name={name}
                           onClick={openOutside ? null : self.onOpen}
                         >
                           {name}
-                        </a>
+                        </a>}
                       </td>
                       <td className="w-plugins-version">
                         {plugin.homepage ? (
@@ -295,7 +295,7 @@ var Home = React.createClass({
                         ) : undefined}
                       </td>
                       <td className="w-plugins-operation">
-                        <a
+                        {plugin.noOpt ? <span className="disabled">Option</span> : <a
                           href={url}
                           target="_blank"
                           data-name={name}
@@ -303,7 +303,7 @@ var Home = React.createClass({
                           onClick={openOutside ? null : self.onOpen}
                         >
                           Option
-                        </a>
+                        </a>}
                         {plugin.rules || plugin._rules || plugin.resRules ? (
                           <a
                             draggable="false"
@@ -327,7 +327,7 @@ var Home = React.createClass({
                             Update
                           </a>
                         )}
-                        {plugin.isProj ? (
+                        {(plugin.isProj || plugin.notUn) ? (
                           <span className="disabled">Uninstall</span>
                         ) : (
                           <a
@@ -338,6 +338,17 @@ var Home = React.createClass({
                           >
                             Uninstall
                           </a>
+                        )}
+                        {plugin.homepage ? (
+                          <a
+                            href={plugin.homepage}
+                            className="w-plugin-btn"
+                            target="_blank"
+                          >
+                            Help
+                          </a>
+                        ) : (
+                          <span className="disabled">Help</span>
                         )}
                         {util.isString(plugin.rulesUrl) ||
                         util.isString(plugin.valuesUrl) ? (
@@ -350,17 +361,6 @@ var Home = React.createClass({
                             Sync
                           </a>
                         ) : undefined}
-                        {plugin.homepage ? (
-                          <a
-                            href={plugin.homepage}
-                            className="w-plugin-btn"
-                            target="_blank"
-                          >
-                            Help
-                          </a>
-                        ) : (
-                          <span className="disabled">Help</span>
-                        )}
                       </td>
                       <td className="w-plugins-desc" title={plugin.description}>
                         {plugin.description}
@@ -383,7 +383,6 @@ var Home = React.createClass({
             </tbody>
           </table>
         </div>
-        <SyncDialog ref="syncDialog" />
         <Dialog ref="pluginRulesDialog" wstyle="w-plugin-rules-dialog">
           <div className="modal-header">
             <h4>{plugin.name}</h4>
@@ -603,10 +602,12 @@ var Tabs = React.createClass({
             />
             {tabs.map(function (tab) {
               return (
-                <iframe
-                  style={{ display: activeName == tab.name ? '' : 'none' }}
-                  src={tab.url}
-                />
+                <LazyInit inited={activeName == tab.name}>
+                  <iframe
+                    style={{ display: activeName == tab.name ? '' : 'none' }}
+                    src={tab.url}
+                  />
+                </LazyInit>
               );
             })}
           </div>

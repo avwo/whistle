@@ -22,6 +22,7 @@ var DIG_RE = /^[+-]?[1-9]\d*$/;
 var INDEX_RE = /^\[(\d+)\]$/;
 var ARR_FILED_RE = /(.)?(?:\[(\d+)\])$/;
 var LEVELS = ['fatal', 'error', 'warn', 'info', 'debug'];
+var MAX_CURL_BODY = 1024 * 72;
 var useCustomEditor = window.location.search.indexOf('useCustomEditor') !== -1;
 var isJSONText;
 
@@ -407,6 +408,19 @@ exports.getProtocol = function getProtocol(url) {
   return index == -1 ? 'TUNNEL' : url.substring(0, index).toUpperCase();
 };
 
+
+exports.getTransProto = function(req) {
+  var headers = req.headers;
+  var proto = headers && headers['x-whistle-transport-protocol'];
+  if (!proto || typeof proto !== 'string' || proto.length > 33) {
+    return;
+  }
+  try {
+    return decodeURIComponent(proto).toUpperCase();
+  } catch (e) {}
+  return proto.toUpperCase();
+};
+
 exports.ensureVisible = function (elem, container, init) {
   elem = $(elem);
   container = $(container);
@@ -609,7 +623,7 @@ function parseLinesJSON(text) {
         var fv = value[0];
         var lv = value[value.length - 1];
         if (fv === lv) {
-          if (fv === '"' || fv === "'" || fv === '`') {
+          if (fv === '"' || fv === '\'' || fv === '`') {
             value = value.slice(1, -1);
           }
           if (
@@ -805,7 +819,7 @@ var STATUS_CODES = {
   415: 'Unsupported Media Type',
   416: 'Requested Range Not Satisfiable',
   417: 'Expectation Failed',
-  418: "I'm a teapot", // RFC 2324
+  418: 'I\'m a teapot', // RFC 2324
   422: 'Unprocessable Entity', // RFC 4918
   423: 'Locked', // RFC 4918
   424: 'Failed Dependency', // RFC 4918
@@ -880,7 +894,7 @@ var entities = {
   '>': '&gt;',
   '&': '&amp;',
   ' ': '&nbsp;',
-  "'": '&#39;'
+  '\'': '&#39;'
 };
 var rlf = /\r?\n/g;
 var rspace = /\s/g;
@@ -978,8 +992,8 @@ exports.asCURL = function (item) {
       JSON.stringify((rawHeaderNames[key] || key) + ': ' + headers[key])
     );
   });
-  var body = isText(req.headers) || isUrlEncoded(req) ? getBody(req, true) : '';
-  if (body) {
+  var body = getBody(req, true);
+  if (body && (body.length <= MAX_CURL_BODY || isText(req.headers) || isUrlEncoded(req))) {
     result.push('-d', JSON.stringify(body));
   }
   return result.join(' ');
@@ -1328,14 +1342,14 @@ exports.getJson = function (data, isReq, decode) {
     body = body && resolveJSON(body, decode);
     data[JSON_KEY] = body
       ? {
-          json: body,
-          isJSONText: isJSONText,
-          str: (window._$hasBigNumberJson ? json2 : JSON).stringify(
+        json: body,
+        isJSONText: isJSONText,
+        str: (window._$hasBigNumberJson ? json2 : JSON).stringify(
             body,
             null,
             '    '
           )
-        }
+      }
       : '';
   }
   return data[JSON_KEY];
@@ -1786,13 +1800,13 @@ exports.isUploadForm = function (req) {
   return UPLOAD_TYPE_RE.test(type);
 };
 
-function parseUploadBody(body, boundary) {
+function parseUploadBody(body, boundary, needObj) {
   var sep = '--' + boundary;
   var start = strToByteArray(sep + '\r\n');
   var end = strToByteArray('\r\n' + sep);
   var len = start.length;
   var index = indexOfList(body, start);
-  var result = [];
+  var result = needObj ? {} : [];
   while (index >= 0) {
     index += len;
     var hIndex = indexOfList(body, BODY_SEP, index);
@@ -1808,14 +1822,35 @@ function parseUploadBody(body, boundary) {
     var data = hIndex >= endIndex ? '' : body.slice(hIndex, endIndex);
     header = parseMultiHeader(header);
     if (header) {
-      if (header.type) {
-        header.data = data;
+      if (needObj) {
+        var name = header.name + (header.type ? ' (' + header.type + ')' : '');
+        var curVal = header.value;
+        if (data) {
+          try {
+            curVal = base64Decode(fromByteArray(data)) || '';
+          } catch (e) {
+            curVal = '[Binary data]';
+          }
+        }
+        var value = result[name];
+        if (value != null) {
+          if (!Array.isArray(value)) {
+            value = result[name] = [ value ];
+          }
+          value.push(curVal);
+        } else {
+          result[name] = curVal;
+        }
       } else {
-        try {
-          header.value = data && base64Decode(fromByteArray(data));
-        } catch (e) {}
+        if (header.type) {
+          header.data = data;
+        } else {
+          try {
+            header.value = data && base64Decode(fromByteArray(data));
+          } catch (e) {}
+        }
+        result.push(header);
       }
-      result.push(header);
     }
     index = indexOfList(body, start, endIndex + 2);
   }
@@ -1823,7 +1858,7 @@ function parseUploadBody(body, boundary) {
   return result;
 }
 
-exports.parseUploadBody = function (req) {
+exports.parseUploadBody = function (req, needObj) {
   if (!req.base64) {
     return;
   }
@@ -1833,7 +1868,7 @@ exports.parseUploadBody = function (req) {
   }
   var boundary = RegExp.$1 || RegExp.$2;
   var body = base64ToByteArray(req.base64);
-  return body && parseUploadBody(body, boundary);
+  return body && parseUploadBody(body, boundary, needObj);
 };
 
 function getMultiPart(part) {
@@ -2027,36 +2062,36 @@ function parseResCookie(cookie) {
   };
   for (var i in cookie) {
     switch (i.toLowerCase()) {
-      case 'domain':
-        result.domain = cookie[i];
-        break;
-      case 'path':
-        result.path = cookie[i];
-        break;
-      case 'expires':
-        result.expires = cookie[i];
-        break;
-      case 'max-age':
-        result['max-age'] = cookie[i];
-        result.maxAge = cookie[i];
-        result.maxage = cookie[i];
-        break;
-      case 'httponly':
-        result.httpOnly = true;
-        result.httponly = true;
-        break;
-      case 'secure':
-        result.secure = true;
-        break;
-      case 'samesite':
-        result.sameSite = cookie[i];
-        result.samesite = cookie[i];
-        break;
-      default:
-        if (!result[0]) {
-          result.name = i;
-          result.value = cookie[i];
-        }
+    case 'domain':
+      result.domain = cookie[i];
+      break;
+    case 'path':
+      result.path = cookie[i];
+      break;
+    case 'expires':
+      result.expires = cookie[i];
+      break;
+    case 'max-age':
+      result['max-age'] = cookie[i];
+      result.maxAge = cookie[i];
+      result.maxage = cookie[i];
+      break;
+    case 'httponly':
+      result.httpOnly = true;
+      result.httponly = true;
+      break;
+    case 'secure':
+      result.secure = true;
+      break;
+    case 'samesite':
+      result.sameSite = cookie[i];
+      result.samesite = cookie[i];
+      break;
+    default:
+      if (!result[0]) {
+        result.name = i;
+        result.value = cookie[i];
+      }
     }
   }
 
@@ -2204,6 +2239,9 @@ exports.toHar = function (item) {
     whistleRules: item.rules,
     whistleFwdHost: item.fwdHost,
     whistleSniPlugin: item.sniPlugin,
+    whistleVersion: item.version,
+    whistleNodeVersion: item.nodeVersion,
+    whistleRealUrl: item.realUrl,
     whistleTimes: {
       startTime: item.startTime,
       dnsTime: item.dnsTime,
@@ -2280,4 +2318,8 @@ exports.collapse = collapse;
 var PROTO_RE = /^((?:http|ws)s?:\/\/)[^/?]*/;
 exports.getRawUrl = function (item) {
   return item.fwdHost && item.url.replace(PROTO_RE, '$1' + item.fwdHost);
+};
+
+exports.isGroup = function(name) {
+  return name && name[0] === '\r';
 };

@@ -8,13 +8,29 @@ var win = require('./win');
 
 var KVDialog = React.createClass({
   getInitialState: function () {
-    return { list: [] };
+    return { list: [], history: [] };
   },
-  show: function (data, rulesModal, valuesModal, isValues) {
+  show: function (data, rulesModal, valuesModal, isValues, selectedHistory) {
     this.isValues = isValues;
     this.refs.kvDialog.show();
     this._hideDialog = false;
+    var history = [];
+    if (data && Array.isArray(data.list) && typeof data.data === 'object') {
+      var count = 0;
+      data.list.forEach(function(name) {
+        if (name && count < 360 && typeof name === 'string' && name.length <= 256) {
+          ++count;
+          history.push(name);
+        }
+      });
+      if (data.selected) {
+        selectedHistory = history.indexOf(data.selected) === -1 ? '' : data.selected;
+      }
+      data = data.data;
+    }
     this.setState({
+      selectedHistory: selectedHistory,
+      history: history,
       list: util.parseImportData(
         data || '',
         isValues ? valuesModal : rulesModal,
@@ -28,6 +44,10 @@ var KVDialog = React.createClass({
   },
   shouldComponentUpdate: function () {
     return this._hideDialog === false;
+  },
+  selectHistory: function(e) {
+    var onHistoryChange = this.props.onHistoryChange;
+    onHistoryChange && onHistoryChange(e.target.value, this.isValues);
   },
   viewContent: function (e) {
     util.openEditor(e.target.title);
@@ -56,7 +76,7 @@ var KVDialog = React.createClass({
   },
   remove: function (item) {
     var self = this;
-    win.confirm("Are you sure to delete '" + item.name + "'.", function (sure) {
+    win.confirm('Are you sure to delete \'' + item.name + '\'.', function (sure) {
       if (sure) {
         var index = self.state.list.indexOf(item);
         if (index !== -1) {
@@ -68,7 +88,10 @@ var KVDialog = React.createClass({
   },
   render: function () {
     var self = this;
-    var list = self.state.list || [];
+    var state = self.state;
+    var list = state.list || [];
+    var history = state.history;
+    var selectedHistory = state.selectedHistory || '';
     var noData = !list.length;
     return (
       <Dialog ref="kvDialog" wstyle="w-kv-dialog">
@@ -76,6 +99,27 @@ var KVDialog = React.createClass({
           <button type="button" className="close" onClick={self.hide}>
             <span aria-hidden="true">&times;</span>
           </button>
+          {history.length ? <label>
+            {this.isValues ? 'Values' : 'Rules'} History:
+            <select
+              value={selectedHistory}
+              onChange={this.selectHistory}
+              className="form-control w-history-record-list"
+            >
+              <option value="">
+                Select history
+              </option>
+              {
+                history.map(function(item) {
+                  return (
+                    <option value={item}>
+                      {item}
+                    </option>
+                  );
+                })
+              }
+            </select>
+          </label> : undefined}
           <table className="table">
             <thead>
               <th className="w-kv-name">Name</th>
@@ -126,7 +170,7 @@ var KVDialog = React.createClass({
             onClick={this.confirm}
             data-dismiss="modal"
           >
-            Confirm
+            Add to {this.isValues ? 'Values' : 'Rules'}
           </button>
           <button
             type="button"

@@ -11,7 +11,7 @@ var IPV4_PORT_RE =
 var FULL_IPV6_RE = /^[\da-f]{1,4}(?::[\da-f]{1,4}){7}$/;
 var SHORT_IPV6_RE = /^[\da-f]{1,4}(?::[\da-f]{1,4}){0,6}$/;
 var IP_WITH_PORT_RE = /^\[([:\da-f.]+)\](?::(\d+))?$/i;
-var PLUGIN_VAR_RE = /^%([a-z\d_\-]+)=/;
+var PLUGIN_VAR_RE = /^%([a-z\d_\-]+)[=.]/;
 
 events.on('updatePlugins', function () {
   forwardRules = protocols.getForwardRules();
@@ -65,7 +65,7 @@ CodeMirror.defineMode('rules', function () {
   }
 
   function isRes(str) {
-    return /^(?:resScript|resRules|responseFor|resCookies|resHeaders|trailers|replaceStatus|redirect|resDelay|resSpeed|resCors|resType|resCharset|cache|attachment|download|resBody|resPrepend|resAppend|css(?:Append|Prepend|Body)?|html(?:Append|Prepend|Body)?|js(?:Append|Prepend|Body)?|resReplace|resMerge|resWrite|resWriteRaw):\/\//.test(
+    return /^(?:resScript|resRules|responseFor|resCookies|resHeaders|trailers|replaceStatus|resDelay|resSpeed|resCors|resType|resCharset|cache|attachment|download|resBody|resPrepend|resAppend|css(?:Append|Prepend|Body)?|html(?:Append|Prepend|Body)?|js(?:Append|Prepend|Body)?|resReplace|resMerge|resWrite|resWriteRaw):\/\//.test(
       str
     );
   }
@@ -135,7 +135,7 @@ CodeMirror.defineMode('rules', function () {
   }
 
   function isIgnore(str) {
-    return /^ignore:\/\//.test(str);
+    return /^(?:ignore|skip):\/\//.test(str);
   }
 
   function isEnable(str) {

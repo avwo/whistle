@@ -143,7 +143,7 @@ var ToolBox = React.createClass({
   },
   generateCert: function () {
     window.open(
-      'cgi-bin/create-cert?domain=' + this.state.domainValue,
+      'cgi-bin/create-cert?domain=' + encodeURIComponent(this.state.domainValue),
       'downloadTargetFrame'
     );
   },
@@ -179,7 +179,7 @@ var ToolBox = React.createClass({
           value={qrcodeValue}
           className="w-tool-box-ctn"
           maxLength={MAX_QRCODE_LEN}
-          placeholder="Input the URL"
+          placeholder="Input the URL or text"
         />
         <div className="w-detail-inspectors-title">
           <i className="bi bi-pencil-fill"></i>JSONView
@@ -257,7 +257,7 @@ var ToolBox = React.createClass({
         <div className="box w-generate-cert">
           <input
             className="fill"
-            maxLength="64"
+            maxLength="256"
             placeholder="Input the domain name of the certificate"
             value={domainValue}
             onChange={this.onDomainChange}

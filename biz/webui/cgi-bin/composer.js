@@ -3,6 +3,7 @@ var gzip = require('zlib').gzip;
 var tls = require('tls');
 var crypto = require('crypto');
 var Buffer = require('safe-buffer').Buffer;
+var extend = require('extend');
 var common = require('../../../lib/util/common');
 var config = require('../../../lib/config');
 var util = require('../../../lib/util');
@@ -16,6 +17,7 @@ var getRawHeaders = hparser.getRawHeaders;
 var getRawHeaderNames = hparser.getRawHeaderNames;
 var parseReq = hparser.parse;
 var MAX_LENGTH = 1024 * 512;
+var MAX_REQ_COUNT = 100;
 var TLS_PROTOS = 'https:,wss:,tls:'.split(',');
 var PROXY_OPTS = {
   host: config.host || '127.0.0.1',
@@ -45,38 +47,53 @@ function drain(socket) {
   socket.on('data', util.noop);
 }
 
-function handleConnect(options, cb) {
+function getReqCount(count) {
+  return count > 0 ? Math.min(count, MAX_REQ_COUNT) : 1;
+}
+
+function handleConnect(options, cb, count) {
+  count = getReqCount(count);
   options.headers['x-whistle-policy'] = 'tunnel';
-  config.connect({
-    host: options.hostname,
-    port: options.port || 443,
-    proxyHost: PROXY_OPTS.host,
-    proxyPort: PROXY_OPTS.port,
-    headers: options.headers
-  }, function(socket, svrRes, err) {
-    if (err) {
-      return cb && cb(err);
+  var origOpts = options;
+  var lastIndex = count - 1;
+  for (var i = 0; i < count; i++) {
+    var execCb;
+    if (i === lastIndex) {
+      execCb = cb;
+    } else {
+      options = extend({}, origOpts);
     }
-    if (!err) {
-      if (TLS_PROTOS.indexOf(options.protocol) !== -1) {
-        socket = tls.connect({
-          rejectUnauthorized: config.rejectUnauthorized,
-          socket: socket,
-          servername: options.hostname
-        });
+    config.connect({
+      host: options.hostname,
+      port: options.port || 443,
+      proxyHost: PROXY_OPTS.host,
+      proxyPort: PROXY_OPTS.port,
+      headers: options.headers
+    }, function(socket, svrRes, err) {
+      if (err) {
+        return execCb && execCb(err);
       }
-      drain(socket);
-      var data = options.body;
-      if (data && data.length) {
-        socket.write(data);
-        options.body = data = null;
+      if (!err) {
+        if (TLS_PROTOS.indexOf(options.protocol) !== -1) {
+          socket = tls.connect({
+            rejectUnauthorized: config.rejectUnauthorized,
+            socket: socket,
+            servername: options.hostname
+          });
+        }
+        drain(socket);
+        var data = options.body;
+        if (data && data.length) {
+          socket.write(data);
+          options.body = data = null;
+        }
       }
-    }
-    cb && cb(null, {
-      statusCode: svrRes.statusCode,
-      headers: svrRes.headers
-    });
-  }).on('error', cb || util.noop);
+      execCb && execCb(null, {
+        statusCode: svrRes.statusCode,
+        headers: svrRes.headers
+      });
+    }).on('error', execCb || util.noop);
+  }
 }
 
 function getReqRaw(options) {
@@ -86,52 +103,67 @@ function getReqRaw(options) {
   return raw.join('\r\n') + '\r\n\r\n';
 }
 
-function handleWebSocket(options, cb) {
+function handleWebSocket(options, cb, count) {
+  count = getReqCount(count);
   if (options.protocol === 'https:' || options.protocol === 'wss:') {
     options.headers[config.HTTPS_FIELD] = 1;
   }
   var binary = !!options.headers['x-whistle-frame-binary'];
   delete options.headers['x-whistle-frame-binary'];
-  util.connect(PROXY_OPTS, function(err, socket) {
-    if (err) {
-      cb && cb(err);
+  var origOpts = options;
+  var lastIndex = count - 1;
+  for (var i = 0; i < count; i++) {
+    var execCb;
+    if (i === lastIndex) {
+      execCb = cb;
     } else {
-      socket.write(getReqRaw(options));
-      var data = options.body;
-      if ((!data || !data.length) && !cb) {
-        return drain(socket);
-      }
-      parseReq(socket, function(e) {
-        if (e) {
-          socket.destroy();
-          return cb && cb(e);
-        }
-        var statusCode = socket.statusCode;
-        if (statusCode == 101) {
-          var sender = getSender(socket);
-          if (data) {
-            sender.send(data, {
-              mask: true,
-              binary: binary
-            }, util.noop);
-            options.body = data = null;
-          }
-          socket.body = '';
-          drain(socket);
-        } else {
-          socket.destroy();
-        }
-        cb && cb(null, {
-          statusCode: statusCode,
-          headers: socket.headers || {},
-          body: socket.body || ''
-        });
-      }, true);
+      options = extend({}, origOpts);
     }
-  });
+    util.connect(PROXY_OPTS, function(err, socket) {
+      if (err) {
+        execCb && execCb(err);
+      } else {
+        socket.write(getReqRaw(options));
+        var data = options.body;
+        if ((!data || !data.length) && !cb) {
+          return drain(socket);
+        }
+        parseReq(socket, function(e) {
+          if (e) {
+            socket.destroy();
+            return execCb && execCb(e);
+          }
+          var statusCode = socket.statusCode;
+          if (statusCode == 101) {
+            if (data) {
+              if (common.isWebSocket(socket.headers)) {
+                getSender(socket).send(data, {
+                  mask: true,
+                  binary: binary
+                }, util.noop);
+              } else {
+                socket.write(data);
+              }
+              options.body = data = null;
+            }
+            socket.body = '';
+            drain(socket);
+          } else {
+            socket.destroy();
+          }
+          execCb && execCb(null, {
+            statusCode: statusCode,
+            headers: socket.headers || {},
+            body: socket.body || ''
+          });
+        }, true);
+      }
+    });
+  }
 }
 
-function handleHttp(options, cb) {
+function handleHttp(options, cb, count) {
+  count = getReqCount(count);
   if (options.protocol === 'https:') {
     options.headers[config.HTTPS_FIELD] = 1;
   }
@@ -139,46 +171,56 @@ function handleHttp(options, cb) {
   options.hostname = null;
   options.host = PROXY_OPTS.host;
   options.port = PROXY_OPTS.port;
-  var client = http.request(options, function(res) {
-    if (cb) {
-      res.on('error', cb);
-      var buffer;
-      res.on('data', function(data) {
-        if (buffer !== null) {
-          buffer = buffer ? Buffer.concat([buffer, data]) : data;
-          if (buffer.length > MAX_LENGTH) {
-            buffer = null;
-          }
-        }
-      });
-      res.on('end', function() {
-        zlib.unzip(res.headers['content-encoding'], buffer, function(err, body) {
-          var headers = res.headers;
-          if (typeof headers.trailer === 'string' && headers.trailer.indexOf(',') !== -1) {
-            headers.trailer = headers.trailer.split(',');
-          }
-          var result = {
-            statusCode: res.statusCode,
-            headers: headers,
-            trailers: res.trailers,
-            rawHeaderNames: getRawHeaderNames(res.rawHeaders),
-            rawTrailerNames: getRawHeaderNames(res.rawTrailers)
-          };
-          if (err) {
-            result.body = err.stack;
-          } else if (body) {
-            result.base64 = body.toString('base64');
-          }
-          cb(null, result);
-        });
-      });
+  var origOpts = options;
+  var lastIndex = count - 1;
+  for (var i = 0; i < count; i++) {
+    var execCb;
+    if (i === lastIndex) {
+      execCb = cb;
     } else {
-      drain(res);
+      options = extend({}, origOpts);
     }
-  });
-  client.on('error', cb || util.noop);
-  client.end(options.body);
-  options.body = null;
+    var client = http.request(options, function(res) {
+      if (execCb) {
+        res.on('error', execCb);
+        var buffer;
+        res.on('data', function(data) {
+          if (buffer !== null) {
+            buffer = buffer ? Buffer.concat([buffer, data]) : data;
+            if (buffer.length > MAX_LENGTH) {
+              buffer = null;
+            }
+          }
+        });
+        res.on('end', function() {
+          zlib.unzip(res.headers['content-encoding'], buffer, function(err, body) {
+            var headers = res.headers;
+            if (typeof headers.trailer === 'string' && headers.trailer.indexOf(',') !== -1) {
+              headers.trailer = headers.trailer.split(',');
+            }
+            var result = {
+              statusCode: res.statusCode,
+              headers: headers,
+              trailers: res.trailers,
+              rawHeaderNames: getRawHeaderNames(res.rawHeaders),
+              rawTrailerNames: getRawHeaderNames(res.rawTrailers)
+            };
+            if (err) {
+              result.body = err.stack;
+            } else if (body) {
+              result.base64 = body.toString('base64');
+            }
+            execCb(null, result);
+          });
+        });
+      } else {
+        drain(res);
+      }
+    });
+    client.on('error', execCb || util.noop);
+    client.end(options.body);
+    options.body = null;
+  }
 }
 
 function getCharset(headers) {
@@ -204,6 +246,8 @@ module.exports = function(req, res) {
   var rawHeaderNames = {};
   var clientId = req.headers[config.CLIENT_ID_HEADER];
   var headers = parseHeaders(req.body.headers, rawHeaderNames, clientId);
+  var method = util.getMethod(req.body.method);
+  var isWebSocket = method === 'WEBSOCKET';
   delete headers[config.WEBUI_HEAD];
   headers[config.REQ_FROM_HEADER] = 'W2COMPOSER';
   headers.host = options.host;
@@ -213,17 +257,19 @@ module.exports = function(req, res) {
     headers[config.CLIENT_IP_HEAD] = clientIp;
   }
   headers[config.CLIENT_PORT_HEAD] = util.getClientPort(req);
-  options.method = util.getMethod(req.body.method);
+  options.method = method;
 
   var isConn = common.isConnect(options);
-  var isWs = !isConn && common.isWebSocket(options, headers);
+  var isWs = !isConn && (isWebSocket || common.isUpgrade(options, headers));
   var useH2 = req.body.useH2 || req.body.isH2;
   req.body.useH2 = false;
   if (isWs) {
     headers.connection = 'Upgrade';
-    headers.upgrade = 'websocket';
+    headers.upgrade = (!isWebSocket && headers.upgrade) || 'websocket';
     headers['sec-websocket-version'] = 13;
-    headers['sec-websocket-key'] = crypto.randomBytes(16).toString('base64');
+    if (isWebSocket || common.isWebSocket(headers)) {
+      headers['sec-websocket-key'] = crypto.randomBytes(16).toString('base64');
+    }
   } else {
     headers.connection = 'close';
     delete headers.upgrade;
@@ -296,13 +342,15 @@ module.exports = function(req, res) {
     if (err) {
       return handleResponse && handleResponse(err);
     }
+    var count = req.body.repeatCount;
+    count = count > 0 ? count : req.body.repeatTimes;
     if (isWs) {
       options.method = 'GET';
-      handleWebSocket(options, handleResponse);
+      handleWebSocket(options, handleResponse, count);
     } else if (isConn) {
-      handleConnect(options, handleResponse);
+      handleConnect(options, handleResponse, count);
     } else  {
-      handleHttp(options, handleResponse);
+      handleHttp(options, handleResponse, count);
     }
     if (!handleResponse) {
       res.json({ec: 0, em: 'success'});

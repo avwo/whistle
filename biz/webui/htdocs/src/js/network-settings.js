@@ -11,6 +11,9 @@ var events = require('./events');
 var util = require('./util');
 var storage = require('./storage');
 
+var NOT_EMPTY_STYLE = { backgroundColor: 'lightyellow' };
+var NOT_EMPTY_RE = /[^\s]/;
+
 var Settings = React.createClass({
   getInitialState: function () {
     var dragger = columns.getDragger();
@@ -60,28 +63,28 @@ var Settings = React.createClass({
     var filterTextChanged;
     var columnsChanged;
     switch (name) {
-      case 'filter':
-        settings.disabledFilterText = !target.checked;
-        filterTextChanged = true;
-        break;
-      case 'excludeFilter':
-        settings.disabledExcludeText = !target.checked;
-        filterTextChanged = true;
-        break;
-      case 'filterText':
-        filterTextChanged = true;
-        settings.filterText = target.value;
-        break;
-      case 'excludeText':
-        filterTextChanged = true;
-        settings.excludeText = target.value;
-        break;
-      case 'networkColumns':
-        columnsChanged = true;
-        break;
-      default:
-        columns.setSelected(name, target.checked);
-        columnsChanged = true;
+    case 'filter':
+      settings.disabledFilterText = !target.checked;
+      filterTextChanged = true;
+      break;
+    case 'excludeFilter':
+      settings.disabledExcludeText = !target.checked;
+      filterTextChanged = true;
+      break;
+    case 'filterText':
+      filterTextChanged = true;
+      settings.filterText = target.value;
+      break;
+    case 'excludeText':
+      filterTextChanged = true;
+      settings.excludeText = target.value;
+      break;
+    case 'networkColumns':
+      columnsChanged = true;
+      break;
+    default:
+      columns.setSelected(name, target.checked);
+      columnsChanged = true;
     }
     if (filterTextChanged) {
       dataCenter.setFilterText(settings);
@@ -198,6 +201,7 @@ var Settings = React.createClass({
               value={state.excludeText}
               data-name="excludeText"
               placeholder="type filter text"
+              style={!state.disabledExcludeText && NOT_EMPTY_RE.test(state.excludeText) ? NOT_EMPTY_STYLE : undefined}
               maxLength={dataCenter.MAX_EXCLUDE_LEN}
             />
           </fieldset>
@@ -226,6 +230,7 @@ var Settings = React.createClass({
               value={state.filterText}
               data-name="filterText"
               placeholder="type filter text"
+              style={!state.disabledFilterText && NOT_EMPTY_RE.test(state.filterText) ? NOT_EMPTY_STYLE : undefined}
               maxLength={dataCenter.MAX_INCLUDE_LEN}
             />
           </fieldset>

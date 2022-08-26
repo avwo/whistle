@@ -5,8 +5,8 @@
     "es6": true
   },
   "extends": [
-    "airbnb-base",
-    "prettier"
+    "eslint:recommended",
+    "plugin:react/recommended"
   ],
   "parser": "babel-eslint",
   "parserOptions": {
@@ -16,7 +16,6 @@
     }
   },
   "plugins": [
-    "prettier",
     "react"
   ],
   "rules": {

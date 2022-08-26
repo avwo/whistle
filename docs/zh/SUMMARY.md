@@ -2,6 +2,7 @@
 
 * [关于whistle](README.md)
 * [安装启动](install.md)
+* [代理与证书](proxy.md)
 * [命令行参数](options.md)
 * [命令行操作](cli.md)
 * [手动更新](update.md)
@@ -40,6 +41,7 @@
     * [xtpl](rules/rule/xtpl.md)
     * [rawfile](rules/rule/rawfile.md)
     * [xrawfile](rules/rule/xrawfile.md)
+    * [redirect](rules/rule/redirect.md)
     * [statusCode](rules/rule/statusCode.md)
     * [自定义](rules/rule/custom.md)
   * [style](rules/style.md)
@@ -64,7 +66,6 @@
   * [auth](rules/auth.md)
   * [ua](rules/ua.md)
   * [cache](rules/cache.md)
-  * [redirect](rules/redirect.md)
   * [attachment](rules/attachment.md)
   * [forwardedFor](rules/forwardedFor.md)
   * [responseFor](rules/responseFor.md)

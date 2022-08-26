@@ -141,52 +141,52 @@ function setNot(flag, not) {
 
 function checkItem(item, opts) {
   switch (opts.type) {
-    case 'mark':
-      return !item.mark || setNot(!checkUrl(item, opts), opts.not);
-    case 'c':
-    case 'content':
-    case 'b':
-    case 'body':
-      var reqBody = util.getBody(item.req, true);
-      var resBody = util.getBody(item.res);
-      return setNot(
+  case 'mark':
+    return !item.mark || setNot(!checkUrl(item, opts), opts.not);
+  case 'c':
+  case 'content':
+  case 'b':
+  case 'body':
+    var reqBody = util.getBody(item.req, true);
+    var resBody = util.getBody(item.res);
+    return setNot(
         !checkKeywork(reqBody, opts) && !checkKeywork(resBody, opts),
         opts.not
       );
-    case 'headers':
-    case 'h':
-      return setNot(
+  case 'headers':
+  case 'h':
+    return setNot(
         !inObject(item.req.headers, opts) && !inObject(item.res.headers, opts),
         opts.not
       );
-    case 'type':
-    case 't':
-      var type = item.res.headers;
-      type = type && type['content-type'];
-      return setNot(
+  case 'type':
+  case 't':
+    var type = item.res.headers;
+    type = type && type['content-type'];
+    return setNot(
         !(typeof type == 'string' && checkKeywork(type, opts)),
         opts.not
       );
-    case 'ip':
-    case 'i':
-      return setNot(
+  case 'ip':
+  case 'i':
+    return setNot(
         !checkKeywork(item.req.ip, opts) && !checkKeywork(item.res.ip, opts),
         opts.not
       );
-    case 'status':
-    case 's':
-    case 'result':
-    case 'r':
-      var status = item.res.statusCode;
-      return setNot(
+  case 'status':
+  case 's':
+  case 'result':
+  case 'r':
+    var status = item.res.statusCode;
+    return setNot(
         !checkKeywork(status == null ? '-' : String(status), opts),
         opts.not
       );
-    case 'method':
-    case 'm':
-      return setNot(!checkKeywork(item.req.method, opts), opts.not);
-    default:
-      return setNot(!checkUrl(item, opts), opts.not);
+  case 'method':
+  case 'm':
+    return setNot(!checkKeywork(item.req.method, opts), opts.not);
+  default:
+    return setNot(!checkUrl(item, opts), opts.not);
   }
 }
 

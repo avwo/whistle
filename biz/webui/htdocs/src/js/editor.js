@@ -157,31 +157,31 @@ var Editor = React.createClass({
       this._editor.setOption('readOnly', readOnly);
     }
   },
+  handleKeyUp: function(_, e) {
+    clearTimeout(this._timer);
+    var _byDelete = e.keyCode === 8;
+    if (_byDelete || e.keyCode === 13) {
+      var editor = this._editor;
+      this._timer = setTimeout(function () {
+        if (!hasSelector('.CodeMirror-hints')) {
+          editor._byDelete = true;
+          editor._byEnter = !_byDelete;
+          editor.execCommand('autocomplete');
+        }
+      }, 300);
+    }
+  },
   setAutoComplete: function () {
     var isRules = this.isRulesEditor();
-    var option = isRules ? rulesHint.getExtraKeys() : {};
+    var option = isRules && !this.props.readOnly ? rulesHint.getExtraKeys() : {};
     if (!/\(Macintosh;/i.test(window.navigator.userAgent)) {
       option['Ctrl-F'] = 'findPersistent';
     }
     option['Cmd-F'] = 'findPersistent';
     var editor = this._editor;
     editor.setOption('extraKeys', option);
-    var timer;
-    if (isRules) {
-      editor.on('keyup', function (_, e) {
-        clearTimeout(timer);
-        var _byDelete = e.keyCode === 8;
-        if (_byDelete || e.keyCode === 13) {
-          timer = setTimeout(function () {
-            if (!hasSelector('.CodeMirror-hints')) {
-              editor._byDelete = true;
-              editor._byEnter = !_byDelete;
-              editor.execCommand('autocomplete');
-            }
-          }, 300);
-        }
-      });
-    }
+    editor.off('keyup', this.handleKeyUp);
+    isRules && editor.on('keyup', this.handleKeyUp);
   },
 
   // 设置代码折叠
@@ -205,6 +205,29 @@ var Editor = React.createClass({
     var self = this;
     var elem = ReactDOM.findDOMNode(self.refs.editor);
     var editor = (self._editor = CodeMirror(elem));
+    var timer;
+    events.on('updatePlugins', function() {
+      if (self.isRulesEditor()) {
+        timer && clearTimeout(timer);
+        if (self.props.hide) {
+          timer = null;
+          self._waitingUpdate = true;
+        } else {
+          timer = setTimeout(function() {
+            timer = null;
+            if (self.isRulesEditor()) {
+              if (self.props.hide) {
+                self._waitingUpdate = true;
+              } else {
+                self._waitingUpdate = false;
+                editor.setOption('mode', '');
+                editor.setOption('mode', 'rules');
+              }
+            }
+          }, 600);
+        }
+      }
+    });
     editor.on('change', function (e) {
       if (
         typeof self.props.onChange == 'function' &&
@@ -423,7 +446,13 @@ var Editor = React.createClass({
   },
   _init: function (init) {
     var self = this;
-    self.setMode(self.props.mode);
+    var mode = self.props.mode;
+    if (self._waitingUpdate && mode === 'rules') {
+      self._editor.setOption('mode', '');
+      self._mode = '';
+    }
+    self.setMode(mode);
+    self._waitingUpdate = false;
     var value = self.props.value;
     if (init && value && value.length > INIT_LENGTH) {
       var elem = message.info('Loading...');

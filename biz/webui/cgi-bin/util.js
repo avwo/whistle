@@ -28,6 +28,7 @@ exports.getServerInfo = function(req) {
     dcc: config.disableCustomCerts,
     dns: dnsOverHttps || config.dnsServer,
     doh: doh,
+    bip: config.host,
     df: config.dnsOptional,
     r6: config.resolve6,
     version: config.version,
@@ -51,6 +52,7 @@ exports.getServerInfo = function(req) {
     isWin: util.isWin,
     port: config.port,
     realPort: config.realPort,
+    realHost: config.realHost,
     socksPort: config.socksPort,
     httpPort: config.httpPort,
     httpsPort: config.httpsPort,
@@ -64,7 +66,7 @@ exports.getServerInfo = function(req) {
       if (iface.internal) {
         return;
       }
-      info[iface.family == 'IPv4' ? 'ipv4' : 'ipv6'].push(iface.address);
+      info[iface.family == 'IPv4' || iface.family === 4 ? 'ipv4' : 'ipv6'].push(iface.address);
     });
   });
 
@@ -146,7 +148,7 @@ exports.sendGzip = function(req, res, data) {
         res.json(data);
       } catch (e) {
         res.status(500).send(config.debugMode ?
-          '<pre>' + util.getErrorStack(err) + '</pre>' : 'Internal Server Error');
+          '<pre>' + util.encodeHtml(util.getErrorStack(err)) + '</pre>' : 'Internal Server Error');
       }
       return;
     }

@@ -1,5 +1,7 @@
 # 安装启动
 
+Mac 或 Windows 系统可以采用一键安装：https://juejin.cn/post/7096345607740063775
+
 whistle安装过程需要以下步骤(缺一不可)：
 1. **安装Node**
 2. **安装whistle**
@@ -35,11 +37,11 @@ $ npm install -g whistle
 npm默认镜像是在国外，有时候安装速度很慢或者出现安装不了的情况，如果无法安装或者安装很慢，可以使用taobao的镜像安装：
 
 ```sh
-$ npm install cnpm -g --registry=https://registry.npm.taobao.org
+$ npm install cnpm -g --registry=https://registry.npmmirror.com
 $ cnpm install -g whistle
 
 或者直接指定镜像安装：
-$ npm install whistle -g --registry=https://registry.npm.taobao.org
+$ npm install whistle -g --registry=https://registry.npmmirror.com
 ```
 
 whistle安装完成后，执行命令 `whistle help` 或 `w2 help`，查看whistle的帮助信息
@@ -137,7 +139,7 @@ $ w2 run
 
 ##### 代理配置方式(把上面配置信息配置上即可)
 
-1. 全局代理：直接配置系统代理：
+1. 全局代理 (**推荐**)，**可通过命令行设置参考[设置代理](./proxy.html)**，也可以手动配置：
   * [Windows](http://jingyan.baidu.com/article/0aa22375866c8988cc0d648c.html) 
   * [Mac](http://jingyan.baidu.com/article/a378c960849144b3282830dc.html): System Preferences > Network > Advanced > Proxies > HTTP or HTTPS
     <div>
@@ -151,7 +153,7 @@ $ w2 run
       <img src='./img/linux-proxy-2.jpg' width='48%' />
     </div>
 
-2. 浏览器代理：安装浏览器代理插件 (**推荐**)
+2. 浏览器代理 (**推荐**)：安装浏览器代理插件
 
 	* 安装Chrome代理插件：推荐安装[SwitchyOmega](https://chrome.google.com/webstore/detail/padekgcemlokbadohgkifijomclgjgif)
 

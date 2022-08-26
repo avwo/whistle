@@ -54,7 +54,7 @@ var FrameList = React.createClass({
     self.filterTimer = setTimeout(function () {
       self.filterTimer = null;
       self.setState({ keyword: keyword.trim() });
-    }, 600);
+    }, 500);
   },
   componentDidMount: function () {
     var self = this;

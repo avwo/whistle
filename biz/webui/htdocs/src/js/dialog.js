@@ -55,9 +55,9 @@ var Dialog = React.createClass({
     this.container.modal(
       this.props.disableBackdrop
         ? {
-            show: true,
-            backdrop: false
-          }
+          show: true,
+          backdrop: false
+        }
         : 'show'
     );
   },
