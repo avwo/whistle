@@ -41,8 +41,8 @@ var JSONDialog = React.createClass({
     return (
       <Dialog ref="jsonDialog" wstyle="w-json-dialog">
         <div className="modal-body">
-          <button type="button" className="close" data-dismiss="modal">
-            <span aria-hidden="true">&times;</span>
+          <button type="button" className="btn-close" data-bs-dismiss="modal">
+
           </button>
           <div
             className="orient-vertical-box"
@@ -55,7 +55,7 @@ var JSONDialog = React.createClass({
           <button
             type="button"
             className="btn btn-default"
-            data-dismiss="modal"
+            data-bs-dismiss="modal"
           >
             Close
           </button>

@@ -46,6 +46,21 @@ body::-webkit-scrollbar {
   height: 0;
 }
 
+/* iconfont */
+.bi {
+  margin-right: 3px;
+}
+
+/* start custom theme */
+.modal {
+  --bs-modal-width: auto;
+}
+.modal-body .btn-close {
+  float: right;
+}
+/* end custom theme */
+
+
 .cm-error-rule {
   text-decoration: line-through !important;
   color: #af2018 !important;

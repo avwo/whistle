@@ -63,28 +63,28 @@ var Settings = React.createClass({
     var filterTextChanged;
     var columnsChanged;
     switch (name) {
-    case 'filter':
-      settings.disabledFilterText = !target.checked;
-      filterTextChanged = true;
-      break;
-    case 'excludeFilter':
-      settings.disabledExcludeText = !target.checked;
-      filterTextChanged = true;
-      break;
-    case 'filterText':
-      filterTextChanged = true;
-      settings.filterText = target.value;
-      break;
-    case 'excludeText':
-      filterTextChanged = true;
-      settings.excludeText = target.value;
-      break;
-    case 'networkColumns':
-      columnsChanged = true;
-      break;
-    default:
-      columns.setSelected(name, target.checked);
-      columnsChanged = true;
+      case 'filter':
+        settings.disabledFilterText = !target.checked;
+        filterTextChanged = true;
+        break;
+      case 'excludeFilter':
+        settings.disabledExcludeText = !target.checked;
+        filterTextChanged = true;
+        break;
+      case 'filterText':
+        filterTextChanged = true;
+        settings.filterText = target.value;
+        break;
+      case 'excludeText':
+        filterTextChanged = true;
+        settings.excludeText = target.value;
+        break;
+      case 'networkColumns':
+        columnsChanged = true;
+        break;
+      default:
+        columns.setSelected(name, target.checked);
+        columnsChanged = true;
     }
     if (filterTextChanged) {
       dataCenter.setFilterText(settings);
@@ -168,14 +168,7 @@ var Settings = React.createClass({
     return (
       <Dialog ref="networkSettingsDialog" wstyle="w-network-settings-dialog">
         <div onChange={self.onNetworkSettingsChange} className="modal-body">
-          <button
-            type="button"
-            className="close"
-            data-dismiss="modal"
-            aria-label="Close"
-          >
-            <span aria-hidden="true">&times;</span>
-          </button>
+          <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           <fieldset className="network-settings-filter">
             <legend>
               <label>
@@ -324,8 +317,8 @@ var Settings = React.createClass({
         <div className="modal-footer">
           <button
             type="button"
-            className="btn btn-default"
-            data-dismiss="modal"
+            className="btn btn-light"
+            data-bs-dismiss="modal"
           >
             Close
           </button>
@@ -334,11 +327,11 @@ var Settings = React.createClass({
           <div onChange={self.onNetworkSettingsChange} className="modal-body">
             <button
               type="button"
-              className="close"
-              data-dismiss="modal"
+              className="btn-close"
+              data-bs-dismiss="modal"
               aria-label="Close"
             >
-              <span aria-hidden="true">&times;</span>
+
             </button>
             <label>
               New {state.name} Name:
@@ -364,7 +357,7 @@ var Settings = React.createClass({
             <button
               type="button"
               className="btn btn-default"
-              data-dismiss="modal"
+              data-bs-dismiss="modal"
             >
               Cancel
             </button>

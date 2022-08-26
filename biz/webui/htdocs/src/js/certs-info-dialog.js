@@ -212,8 +212,8 @@ var HistoryData = React.createClass({
     return (
       <Dialog ref="certsInfoDialog" wstyle="w-certs-info-dialog">
         <div className="modal-body">
-          <button type="button" className="close" onClick={self.hide}>
-            <span aria-hidden="true">&times;</span>
+          <button type="button" className="btn-close" onClick={self.hide}>
+
           </button>
           <h4 className="w-certs-info-title">
             <a
@@ -311,7 +311,7 @@ var HistoryData = React.createClass({
           <button
             type="button"
             className="btn btn-default"
-            data-dismiss="modal"
+            data-bs-dismiss="modal"
           >
             Close
           </button>

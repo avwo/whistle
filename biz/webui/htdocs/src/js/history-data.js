@@ -33,8 +33,8 @@ var HistoryData = React.createClass({
     return (
       <Dialog ref="historyDialog" wstyle="w-composer-history-dialog">
         <div className="modal-body w-composer-history">
-          <button type="button" className="close" onClick={self.hide}>
-            <span aria-hidden="true">&times;</span>
+          <button type="button" className="btn-close" onClick={self.hide}>
+
           </button>
           <table className="table">
             <thead>

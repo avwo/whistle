@@ -34,9 +34,7 @@ var DetailDialog = React.createClass({
     return (
       <Dialog ref="detail" wstyle="w-detail-dialog">
         <div className="modal-body">
-          <button type="button" className="close" data-dismiss="modal">
-            <span aria-hidden="true">&times;</span>
-          </button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           <div className="w-detail-wrap box" style={{ height: height }}>
             {state ? <Detail data={state.data} /> : undefined}
           </div>
@@ -45,7 +43,7 @@ var DetailDialog = React.createClass({
           <button
             type="button"
             className="btn btn-default"
-            data-dismiss="modal"
+            data-bs-dismiss="modal"
           >
             Close
           </button>

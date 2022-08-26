@@ -65,7 +65,7 @@ var DropDown = React.createClass({
           }
         >
           {selectedOption.icon ? (
-            <span className={'glyphicon glyphicon-' + selectedOption.icon} />
+            <span className={'bi ' + selectedOption.icon} />
           ) : undefined}
           {selectedOption.text}
           <span className="caret"></span>
@@ -92,7 +92,7 @@ var DropDown = React.createClass({
                 }}
               >
                 {option.icon ? (
-                  <span className={'glyphicon glyphicon-' + option.icon} />
+                  <span className={'bi ' + option.icon} />
                 ) : undefined}
                 {option.text}
               </li>

@@ -47,7 +47,7 @@ var BtnGroup = React.createClass({
         {list.map(function (btn) {
           btn.disabled = disabled;
           var icon = btn.icon ? (
-            <span className={'glyphicon glyphicon-' + btn.icon}></span>
+            <span className={'bi ' + btn.icon}></span>
           ) : (
             ''
           );

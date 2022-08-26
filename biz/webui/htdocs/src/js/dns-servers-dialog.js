@@ -52,15 +52,15 @@ var DNSDialog = React.createClass({
       <Dialog ref="dnsServersDialog" wstyle="w-dns-servers-dialog">
         <div className="modal-header">
           {title}
-          <button type="button" className="close" data-dismiss="modal">
-            <span aria-hidden="true">&times;</span>
+          <button type="button" className="btn-close" data-bs-dismiss="modal">
+
           </button>
         </div>
         <pre className="modal-body">{state.servers}</pre>
         <div className="modal-footer">
           <button
             type="button"
-            data-dismiss="modal"
+            data-bs-dismiss="modal"
             className="btn btn-primary w-copy-text-with-tips"
             data-clipboard-text={state.servers}
           >
@@ -69,7 +69,7 @@ var DNSDialog = React.createClass({
           <button
             type="button"
             className="btn btn-default"
-            data-dismiss="modal"
+            data-bs-dismiss="modal"
           >
             Close
           </button>

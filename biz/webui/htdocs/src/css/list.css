@@ -21,6 +21,14 @@
   background: #fff;
   outline: none;
 }
+.w-list-data a .bi-check-lg {
+  position: absolute;
+  top: 0;
+  right: 10px;
+  color: #5bbd72;
+  font-size: 16px;
+  display: none;
+}
 .w-list-content {
   border-bottom: 1px solid #ccc;
   border-right: 1px solid #ccc;
@@ -40,9 +48,14 @@
   background: #337ab7;
   color: #fff !important;
 }
+
 .w-list-data .w-selected {
   font-weight: 500;
 }
+.w-list-data .w-selected .bi-check-lg {
+  display: inline-block;
+}
+
 .w-list-data span.w-whistle-tpl {
   display: block;
   width: 8px;
@@ -84,4 +97,11 @@
 .w-list-group.w-group-empty {
   background-color: #F5F5F5;
   color: #888;
+}
+
+.w-list-group .bi-caret-right-fill,
+.w-list-group .bi-caret-bottom-fill {
+  font-size: 12px;
+  margin-right: 3px;
+  display: inline-block !important;
 }

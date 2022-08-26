@@ -76,11 +76,11 @@ if (/[&#?]hideLeft(?:Bar|Menu)=(0|false|1|true)(?:&|$|#)/.test(search)) {
 var LEFT_BAR_MENUS = [
   {
     name: 'Clear',
-    icon: 'remove'
+    icon: 'bi-x-lg'
   },
   {
     name: 'Save',
-    icon: 'save-file'
+    icon: 'bi-save'
   },
   {
     name: 'Tree View',
@@ -99,7 +99,7 @@ var LEFT_BAR_MENUS = [
 var RULES_ACTIONS = [
   {
     name: 'Export Selected',
-    icon: 'export',
+    icon: 'bi-download',
     id: 'exportRules'
   },
   {
@@ -110,14 +110,14 @@ var RULES_ACTIONS = [
   },
   {
     name: 'Import',
-    icon: 'import',
+    icon: 'bi-upload',
     id: 'importRules'
   }
 ];
 var VALUES_ACTIONS = [
   {
     name: 'Export Selected',
-    icon: 'export',
+    icon: 'bi-download',
     id: 'exportValues'
   },
   {
@@ -128,14 +128,14 @@ var VALUES_ACTIONS = [
   },
   {
     name: 'Import',
-    icon: 'import',
+    icon: 'bi-upload',
     id: 'importValues'
   }
 ];
 var REMOVE_OPTIONS = [
   {
     name: 'Remove Selected Sessions',
-    icon: 'remove',
+    icon: 'bi-x-lg',
     id: 'removeSelected',
     disabled: true,
     title: 'Ctrl[Command] + D'
@@ -150,7 +150,7 @@ var REMOVE_OPTIONS = [
 var ABORT_OPTIONS = [
   {
     name: 'Abort',
-    icon: 'ban-circle',
+    icon: 'bi-slash-circle-fill',
     id: 'abort'
   }
 ];
@@ -4244,11 +4244,11 @@ var Index = React.createClass({
               <div className="modal-body">
                 <button
                   type="button"
-                  className="close"
-                  data-dismiss="modal"
+                  className="btn-close"
+                  data-bs-dismiss="modal"
                   aria-label="Close"
                 >
-                  <span aria-hidden="true">&times;</span>
+
                 </button>
                 <EditorSettings
                   theme={rulesTheme}
@@ -4290,7 +4290,7 @@ var Index = React.createClass({
                 <button
                   type="button"
                   className="btn btn-default"
-                  data-dismiss="modal"
+                  data-bs-dismiss="modal"
                 >
                   Close
                 </button>
@@ -4307,11 +4307,11 @@ var Index = React.createClass({
               <div className="modal-body">
                 <button
                   type="button"
-                  className="close"
-                  data-dismiss="modal"
+                  className="btn-close"
+                  data-bs-dismiss="modal"
                   aria-label="Close"
                 >
-                  <span aria-hidden="true">&times;</span>
+
                 </button>
                 <EditorSettings
                   theme={valuesTheme}
@@ -4338,7 +4338,7 @@ var Index = React.createClass({
                 <button
                   type="button"
                   className="btn btn-default"
-                  data-dismiss="modal"
+                  data-bs-dismiss="modal"
                 >
                   Close
                 </button>
@@ -4353,11 +4353,11 @@ var Index = React.createClass({
               <div className="modal-body">
                 <button
                   type="button"
-                  className="close"
-                  data-dismiss="modal"
+                  className="btn-close"
+                  data-bs-dismiss="modal"
                   aria-label="Close"
                 >
-                  <span aria-hidden="true">&times;</span>
+
                 </button>
                 <div>
                   <a
@@ -4433,7 +4433,7 @@ var Index = React.createClass({
                 <button
                   type="button"
                   className="btn btn-default"
-                  data-dismiss="modal"
+                  data-bs-dismiss="modal"
                 >
                   Close
                 </button>
@@ -4530,7 +4530,7 @@ var Index = React.createClass({
             <button
               type="button"
               className="btn btn-default"
-              data-dismiss="modal"
+              data-bs-dismiss="modal"
             >
               Close
             </button>
@@ -4560,7 +4560,7 @@ var Index = React.createClass({
             <button
               type="button"
               className="btn btn-default"
-              data-dismiss="modal"
+              data-bs-dismiss="modal"
             >
               Close
             </button>
@@ -4590,7 +4590,7 @@ var Index = React.createClass({
             <button
               type="button"
               className="btn btn-default"
-              data-dismiss="modal"
+              data-bs-dismiss="modal"
             >
               Close
             </button>
@@ -4606,10 +4606,10 @@ var Index = React.createClass({
                 <button
                   type="button"
                   className="close"
-                  data-dismiss="modal"
+                  data-bs-dismiss="modal"
                   aria-label="Close"
                 >
-                  <span aria-hidden="true">&times;</span>
+
                 </button>
                 <p className="w-show-update-tips">
                   whistle has important updates, it is recommended that you
@@ -4633,7 +4633,7 @@ var Index = React.createClass({
                   type="button"
                   className="btn btn-default"
                   onClick={this.donotShowAgain}
-                  data-dismiss="modal"
+                  data-bs-dismiss="modal"
                 >
                   Don't show again
                 </button>
@@ -4652,8 +4652,8 @@ var Index = React.createClass({
         </div>
         <Dialog ref="confirmReload" wstyle="w-confirm-reload-dialog">
           <div className="modal-body w-confirm-reload">
-            <button type="button" className="close" data-dismiss="modal">
-              <span aria-hidden="true">&times;</span>
+            <button type="button" className="btn-close" data-bs-dismiss="modal">
+
             </button>
             <div className="w-reload-data-tips"></div>
           </div>
@@ -4661,7 +4661,7 @@ var Index = React.createClass({
             <button
               type="button"
               className="btn btn-default"
-              data-dismiss="modal"
+              data-bs-dismiss="modal"
             >
               No
             </button>
@@ -4669,7 +4669,7 @@ var Index = React.createClass({
               type="button"
               className="btn btn-primary"
               onClick={this.reloadData}
-              data-dismiss="modal"
+              data-bs-dismiss="modal"
             >
               Yes
             </button>
@@ -4677,8 +4677,8 @@ var Index = React.createClass({
         </Dialog>
         <Dialog ref="confirmImportRules" wstyle="w-confirm-import-dialog">
           <div className="modal-body w-confirm-import">
-            <button type="button" className="close" data-dismiss="modal">
-              <span aria-hidden="true">&times;</span>
+            <button type="button" className="btn-close" data-bs-dismiss="modal">
+
             </button>
             Whether to replace the existing rules?
           </div>
@@ -4687,7 +4687,7 @@ var Index = React.createClass({
               type="button"
               className="btn btn-danger"
               onClick={this.uploadRules}
-              data-dismiss="modal"
+              data-bs-dismiss="modal"
             >
               Replace
             </button>
@@ -4695,7 +4695,7 @@ var Index = React.createClass({
               type="button"
               className="btn btn-primary"
               onClick={this.uploadRules}
-              data-dismiss="modal"
+              data-bs-dismiss="modal"
             >
               Reserve
             </button>
@@ -4703,8 +4703,8 @@ var Index = React.createClass({
         </Dialog>
         <Dialog ref="confirmImportValues" wstyle="w-confirm-import-dialog">
           <div className="modal-body w-confirm-import">
-            <button type="button" className="close" data-dismiss="modal">
-              <span aria-hidden="true">&times;</span>
+            <button type="button" className="btn-close" data-bs-dismiss="modal">
+
             </button>
             Whether to replace the existing values?
           </div>
@@ -4713,7 +4713,7 @@ var Index = React.createClass({
               type="button"
               className="btn btn-danger"
               onClick={this.uploadValues}
-              data-dismiss="modal"
+              data-bs-dismiss="modal"
             >
               Replace
             </button>
@@ -4721,7 +4721,7 @@ var Index = React.createClass({
               type="button"
               className="btn btn-primary"
               onClick={this.uploadValues}
-              data-dismiss="modal"
+              data-bs-dismiss="modal"
             >
               Reserve
             </button>

@@ -226,8 +226,8 @@ var FilesDialog = React.createClass({
     return (
       <Dialog wstyle="w-files-dialog" ref="filesDialog">
         <div className="modal-body">
-          <button type="button" className="close" data-dismiss="modal">
-            <span aria-hidden="true">&times;</span>
+          <button type="button" className="btn-close" data-bs-dismiss="modal">
+
           </button>
           <h4>
             <a
@@ -286,7 +286,7 @@ var FilesDialog = React.createClass({
           <button
             type="button"
             className="btn btn-default"
-            data-dismiss="modal"
+            data-bs-dismiss="modal"
           >
             Close
           </button>
@@ -306,8 +306,8 @@ var FilesDialog = React.createClass({
         <Dialog ref="filenameDialog" wstyle="w-files-info-dialog">
           <div className="modal-header">
             {title || 'Modify the filename'}
-            <button type="button" className="close" data-dismiss="modal">
-              <span aria-hidden="true">&times;</span>
+            <button type="button" className="btn-close" data-bs-dismiss="modal">
+
             </button>
           </div>
           <div className="modal-body">
@@ -340,7 +340,7 @@ var FilesDialog = React.createClass({
             <button
               type="button"
               className="btn btn-default"
-              data-dismiss="modal"
+              data-bs-dismiss="modal"
             >
               Close
             </button>

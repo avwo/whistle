@@ -79,8 +79,8 @@ var About = React.createClass({
         <i className="bi bi-exclamation-circle-fill"></i> About
         <Dialog ref="aboutDialog" wstyle="w-about-dialog">
           <div className="modal-body w-about-has-plugins">
-            <button type="button" className="close" data-dismiss="modal">
-              <span aria-hidden="true">&times;</span>
+            <button type="button" className="btn-close" data-bs-dismiss="modal">
+
             </button>
             <img alt="logo" src="img/whistle.png?v=2016" />
             <span className="w-about-dialog-ctn">
@@ -126,7 +126,7 @@ var About = React.createClass({
             <button
               type="button"
               className="btn btn-default"
-              data-dismiss="modal"
+              data-bs-dismiss="modal"
             >
               Close
             </button>

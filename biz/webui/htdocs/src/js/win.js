@@ -14,7 +14,7 @@ function createAlert() {
         '<pre class="alert alert-danger"></pre>' +
         '</div>' +
         '<div class="modal-footer">' +
-        '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>' +
+        '<button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>' +
         '</div>' +
         '</div>' +
         '</div>' +
@@ -34,8 +34,8 @@ function createConfirm() {
         '<pre></pre>' +
         '</div>' +
         '<div class="modal-footer">' +
-        '<button type="button" class="btn btn-default w-win-cancel" data-dismiss="modal">Cancel</button>' +
-        '<button type="button" class="btn btn-primary w-win-confirm" data-dismiss="modal">Confirm</button>' +
+        '<button type="button" class="btn btn-default w-win-cancel" data-bs-dismiss="modal">Cancel</button>' +
+        '<button type="button" class="btn btn-primary w-win-confirm" data-bs-dismiss="modal">Confirm</button>' +
         '</div>' +
         '</div>' +
         '</div>' +

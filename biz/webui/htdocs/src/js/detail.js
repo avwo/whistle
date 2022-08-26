@@ -16,23 +16,23 @@ var ReqData = React.createClass({
       tabs: [
         {
           name: 'Overview',
-          icon: 'eye-open'
+          icon: 'bi-eye'
         },
         {
           name: 'Inspectors',
-          icon: 'search'
+          icon: 'bi-search'
         },
         {
           name: 'Timeline',
-          icon: 'time'
+          icon: 'bi-stopwatch'
         },
         {
           name: 'Composer',
-          icon: 'edit'
+          icon: 'bi-pencil-square'
         },
         {
           name: 'Tools',
-          icon: 'wrench'
+          icon: 'bi-tools'
         }
       ],
       initedOverview: false,

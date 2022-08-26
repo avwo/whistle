@@ -236,7 +236,7 @@ var FilterInput = React.createClass({
           className="close"
           title="Ctrl[Command]+D"
         >
-          <span aria-hidden="true">&times;</span>
+
         </button>
       </div>
     );
