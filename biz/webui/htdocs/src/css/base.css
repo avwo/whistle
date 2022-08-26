@@ -76,9 +76,7 @@ input[type='radio'] {
   margin: 0;
   vertical-align: text-bottom;
 }
-.glyphicon-ban-circle {
-  color: #f66;
-}
+
 
 .w-filter-input {
   width: 100%;
@@ -269,9 +267,7 @@ body .cm-s-cobalt span.cm-number {
   top: 0;
   outline: none;
 }
-.w-detail .w-dock-btn .glyphicon {
-  margin: 0 !important;
-}
+
 
 .btn.active,
 .btn:active {

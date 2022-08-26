@@ -44,13 +44,6 @@
   padding: 0 8px !important;
 }
 
-.w-props-editor .w-props-ops .glyphicon-remove {
-  color: #f5222d;
-}
-.w-props-editor .w-props-ops .glyphicon-remove:hover {
-  color: #ff0000;
-}
-
 .w-add-field {
   font-size: 14px !important;
   position: absolute;

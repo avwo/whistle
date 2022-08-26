@@ -82,7 +82,7 @@ var SyncDialog = React.createClass({
             type="button"
             className="btn btn-primary"
           >
-            <span className="glyphicon glyphicon-list" />{' '}
+            <i className="bi bi-list-ul" />{' '}
             {this.loadingRules ? 'Loading' : 'Sync'} Rules
           </button>
           <button
@@ -91,7 +91,7 @@ var SyncDialog = React.createClass({
             type="button"
             className="btn btn-default"
           >
-            <span className="glyphicon glyphicon-folder-close" />{' '}
+            <i className="bi bi-folder2" />{' '}
             {this.loadingValues ? 'Loading' : 'Sync'} Values
           </button>
         </div>

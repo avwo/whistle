@@ -2,7 +2,7 @@ require('./base-css.js');
 require('../css/list-dialog.css');
 var React = require('react');
 var ReactDOM = require('react-dom');
-
+var util = require('./util');
 var Dialog = require('./dialog');
 
 var ListDialog = React.createClass({
@@ -85,6 +85,7 @@ var ListDialog = React.createClass({
                   type="checkbox"
                   checked={!!checkedItems[name]}
                 />
+                {util.isGroup(name) ? <i class="bi bi-caret-right-fill w-list-group-icon"></i> : null}
                 {name}
               </label>
             );

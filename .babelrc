@@ -1,11 +1,7 @@
 {
   "presets": [
-    "env",
-    "react"
-  ],
-  "plugins": [
-    "transform-class-properties",
-    "transform-object-rest-spread"
+    "@babel/preset-env",
+    "@babel/preset-react"
   ],
   "ignore": [
     "./biz/webui/htdocs/src/js/components/json/eval.js"

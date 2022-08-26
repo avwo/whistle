@@ -22,7 +22,7 @@ var UpdateAllBtn = React.createClass({
         className={'w-plugins-menu w-plugin-update-btn' + (hide ? ' hide' : '')}
         draggable="false"
       >
-        <span className="glyphicon glyphicon-refresh" />
+        <i className="bi bi-arrow-clockwise" />
         UpdateAll
       </a>
     );

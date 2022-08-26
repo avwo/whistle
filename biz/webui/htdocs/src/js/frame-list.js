@@ -265,7 +265,7 @@ var FrameList = React.createClass({
             disabledRecord={reqData.closed}
           />
           <a onClick={self.clear} className="w-remove-menu" draggable="false">
-            <span className="glyphicon glyphicon-remove"></span>Clear
+            <i className="bi bi-x-lg"></i>Clear
           </a>
           <a
             onClick={self.replay}
@@ -275,21 +275,21 @@ var FrameList = React.createClass({
             }
             draggable="false"
           >
-            <span className="glyphicon glyphicon-repeat"></span>Replay
+            <i className="bi bi-arrow-repeat"></i>Replay
           </a>
           <a
             onClick={self.compose}
             className={'w-remove-menu' + (activeItem ? '' : ' w-disabled')}
             draggable="false"
           >
-            <span className="glyphicon glyphicon-edit"></span>Compose
+            <i className="bi bi-pencil-square"></i>Compose
           </a>
           <a
             onClick={self.abort}
             className={'w-remove-menu' + (reqData.closed ? ' w-disabled' : '')}
             draggable="false"
           >
-            <span className="glyphicon glyphicon-ban-circle"></span>Abort
+            <i className="bi bi-slash-circle-fill"></i>Abort
           </a>
           <DropDown
             disabled={reqData.closed}
@@ -359,11 +359,11 @@ var FrameList = React.createClass({
                   item.title += '\nLength: ' + length;
                 }
               }
-              var icon = 'arrow-left';
+              var icon = 'bi bi-arrow-left-circle';
               if (item.closed) {
-                icon = 'minus-sign';
+                icon = 'bi bi-dash-circle';
               } else if (item.isClient) {
-                icon = 'arrow-right';
+                icon = 'bi bi-arrow-right-circle';
               }
               return (
                 <li
@@ -384,7 +384,7 @@ var FrameList = React.createClass({
                     statusClass
                   }
                 >
-                  <span className={'glyphicon glyphicon-' + icon}></span>
+                  <span className={icon}></span>
                   {item.data}
                 </li>
               );

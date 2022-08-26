@@ -60,18 +60,6 @@
 .w-properties-btn:hover {
   color: #337ab7;
 }
-.w-properties th .glyphicon-question-sign {
-  display: none;
-}
-
-.w-properties th:hover .glyphicon-question-sign {
-  display: inline-block;
-  vertical-align: text-top;
-  margin-right: 5px;
-  cursor: pointer;
-  font-size: 13px;
-}
-
 .w-prop-raw-data {
   white-space: nowrap;
   overflow: hidden;

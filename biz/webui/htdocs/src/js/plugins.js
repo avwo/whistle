@@ -577,7 +577,7 @@ var Tabs = React.createClass({
                   className={disd ? 'w-plugin-tab-disabled' : undefined}
                 >
                   {disd ? (
-                    <span className="glyphicon glyphicon-ban-circle"></span>
+                    <i className="bi bi-slash-circle-fill"></i>
                   ) : undefined}
                   {tab.name}
                   <span

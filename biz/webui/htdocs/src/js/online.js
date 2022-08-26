@@ -444,7 +444,7 @@ var Online = React.createClass({
         className={'w-online-menu w-online' + (server ? '' : ' w-offline')}
         onClick={this.showServerInfo}
       >
-        <span className="glyphicon glyphicon-stats"></span>
+        <i className="bi bi-bar-chart-fill"></i>
         {server ? 'Online' : 'Offline'}
         {server && server.dns ? (
           <span>{server.doh ? '(DOH)' : server.r6 ? '(IPv6)' : '(IPv4)'}</span>

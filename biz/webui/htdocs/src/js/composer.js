@@ -886,14 +886,14 @@ var Composer = React.createClass({
                   className={disabledClass}
                   draggable="false"
                 >
-                  <span className="glyphicon glyphicon-repeat"></span>Replay
+                  <span className="bi bi-arrow-repeat"></span>Replay
                 </a>
                 <a
                   onClick={this.onCompose}
                   className={disabledClass}
                   draggable="false"
                 >
-                  <span className="glyphicon glyphicon-edit"></span>Compose
+                  <span className="bi bi-pencil-square"></span>Compose
                 </a>
               </div>
             ) : null}
@@ -948,7 +948,7 @@ var Composer = React.createClass({
                 onClick={this.execute}
                 className="btn btn-primary w-composer-execute"
               >
-                <span className="glyphicon glyphicon-send" />
+                <i className="bi bi-send-fill"></i>
               </button>
             </div>
             <div className="w-detail-inspectors-title w-composer-tabs">
@@ -1238,7 +1238,7 @@ var Composer = React.createClass({
                       className="btn btn-default w-composer-back-btn"
                       title="Back to Request"
                     >
-                      <span className="glyphicon glyphicon-menu-left"></span>
+                      <i className="bi bi-chevron-left"></i>
                     </button>
                     <Properties
                       modal={{

@@ -231,7 +231,7 @@ var ReqData = React.createClass({
             >
               <span
                 className={
-                  'glyphicon glyphicon-menu-' +
+                  'bi bi-chevron-' +
                   (dockToBottom ? 'right' : 'down') +
                   (data ? ' hide' : '')
                 }

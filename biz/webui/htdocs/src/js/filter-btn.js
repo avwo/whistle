@@ -31,7 +31,7 @@ var FilterBtn = React.createClass({
         style={{ display: hide ? 'none' : '' }}
         draggable="false"
       >
-        <span className="glyphicon glyphicon-cog" />
+        <i className="bi bi-gear-fill"></i>
         Settings
       </a>
     );

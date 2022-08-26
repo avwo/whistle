@@ -118,10 +118,6 @@ div.w-detail-inspectors-tabs {
   font-weight: bold;
 }
 
-.w-detail-inspectors-tabs .glyphicon-menu-hamburger {
-  color: #ff8000;
-}
-
 .w-detail-inspectors-tabs button.w-spec-active {
   background-color: #ddd;
 }

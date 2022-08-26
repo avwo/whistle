@@ -148,13 +148,13 @@ var Spinner = React.createClass({
       <div className="w-spinner">
         <span
           className={
-            'glyphicon glyphicon-triangle-top' +
+            'bi bi-caret-top-fill' +
             (order ? ' spinner-' + order : '')
           }
         ></span>
         <span
           className={
-            'glyphicon glyphicon-triangle-bottom' +
+            'bi bi-caret-bottom-fill' +
             (order ? ' spinner-' + order : '')
           }
         ></span>
@@ -272,13 +272,13 @@ function getType(className) {
 
 function getIcon(data, className) {
   if (className.indexOf('danger') !== -1) {
-    return <span className="icon-leaf glyphicon glyphicon-remove-circle" />;
+    return <i className="icon-leaf bi bi-x-circle-fill" />;
   }
   if (className.indexOf('w-forbidden') !== -1) {
-    return <span className="icon-leaf glyphicon glyphicon-ban-circle" />;
+    return <i className="icon-leaf bi bi-slash-circle-fill" />;
   }
   if (data && !data.endTime && !data.lost) {
-    return <span className="icon-leaf glyphicon glyphicon-hourglass" />;
+    return <i className="icon-leaf bi bi-hourglass-split" />;
   }
   var type = getType(className);
   var status = data.res && data.res.statusCode;
@@ -287,7 +287,7 @@ function getIcon(data, className) {
   }
   return (
     <span
-      className={status || type ? 'w-type-icon' : 'glyphicon glyphicon-file'}
+      className={status || type ? 'w-type-icon' : 'bi bi-file-earmark-text-fill'}
     >
       {status || type || null}
     </span>
@@ -1334,8 +1334,8 @@ var ReqData = React.createClass({
           getIcon(leaf, className)
         ) : (
           <span
-            className={`icon-fold glyphicon glyphicon-triangle-${item.expand ? 'bottom' : 'right'
-              }`}
+            className={`icon-fold bi bi-caret-${item.expand ? 'bottom' : 'right'
+          }-fill`}
           ></span>
         )}
         {value.length > 320 ? value.substring(0, 320) + '...' : value}

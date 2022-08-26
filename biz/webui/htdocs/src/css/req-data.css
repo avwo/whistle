@@ -134,14 +134,6 @@
   color: #fff !important;
 }
 
-.w-req-data-list .tree-leaf .glyphicon {
-  color: #666 !important;
-  font-size: 12px;
-  display: inline-block;
-  margin-right: 5px;
-  overflow: hidden;
-  font-weight: normal !important;
-}
 .w-req-data-list .tree-leaf .w-type-icon {
   transform: scale(0.7);
   display: inline-block;
@@ -235,13 +227,6 @@
 .w-spinner span {
   display: block;
 }
-.w-spinner .glyphicon-triangle-top.spinner-desc {
-  visibility: hidden;
-}
-.w-spinner .glyphicon-triangle-bottom.spinner-asc {
-  visibility: hidden;
-}
-
 .w-header-drag-block {
   position: absolute;
   top: 0;

@@ -27,6 +27,7 @@ var message = require('./message');
 var UpdateAllBtn = require('./update-all-btn');
 var ContextMenu = require('./context-menu');
 var CertsInfoDialog = require('./certs-info-dialog');
+var SyncDialog = require('./sync-dialog');
 var win = require('./win');
 
 var H2_RE = /http\/2\.0/i;
@@ -36,7 +37,7 @@ var MAX_PLUGINS_TABS = 7;
 var MAX_FILE_SIZE = 1024 * 1024 * 128;
 var MAX_OBJECT_SIZE = 1024 * 1024 * 6;
 var MAX_LOG_SIZE = 1024 * 1024 * 2;
-var MAX_REPLAY_COUNT = 30;
+var MAX_REPLAY_COUNT = 100;
 var LINK_SELECTOR = '.cm-js-type, .cm-js-http-url, .cm-string, .cm-js-at';
 var LINK_RE = /^"(https?:)?(\/\/[^/]\S+)"$/i;
 var AT_LINK_RE = /^@(https?:)?(\/\/[^/]\S+)$/i;
@@ -48,6 +49,19 @@ var OPTIONS_WITH_SELECTED = [
 var search = window.location.search;
 var hideLeftMenu;
 var showTreeView;
+
+// if ('serviceWorker' in navigator) {
+//   window.addEventListener('load', () => {
+//     navigator.serviceWorker
+//       .register('/js/service-worker.js')
+//       .then((registration) => {
+//         console.log('SW registered: ', registration);
+//       })
+//       .catch((registrationError) => {
+//         console.log('SW registration failed: ', registrationError);
+//       });
+//   });
+// }
 
 if (/[&#?]showTreeView=(0|false|1|true)(?:&|$|#)/.test(search)) {
   showTreeView = RegExp.$1 === '1' || RegExp.$1 === 'true';
@@ -271,8 +285,14 @@ var Index = React.createClass({
     var rules = modal.rules;
     var values = modal.values;
     var multiEnv = !!modal.server.multiEnv;
+    var caType = storage.get('caType');
+    if (caType !== 'cer' && caType !== 'pem') {
+      caType = 'crt';
+    }
     var state = {
       replayCount: 1,
+      tabs: [],
+      caType: caType,
       allowMultipleChoice: modal.rules.allowMultipleChoice,
       backRulesFirst: modal.rules.backRulesFirst,
       networkMode: !!modal.server.networkMode,
@@ -407,7 +427,11 @@ var Index = React.createClass({
     state.pluginsOptions = this.createPluginsOptions(modal.plugins);
     dataCenter.valuesModal = state.values = valuesModal;
     state.valuesOptions = valuesOptions;
+    dataCenter.syncData = this.syncData;
+    dataCenter.syncRules = this.syncRules;
+    dataCenter.syncValues = this.syncValues;
 
+    this.initPluginTabs(state, modal.plugins);
     if (rulesModal.exists(dataCenter.activeRulesName)) {
       this.setRulesActive(dataCenter.activeRulesName, rulesModal);
     }
@@ -459,6 +483,11 @@ var Index = React.createClass({
         icon: 'import',
         id: 'importSessions',
         title: 'Ctrl + I'
+      },
+      {
+        name: 'Show Tree View',
+        icon: 'tree-conifer',
+        id: 'toggleView'
       }
     ];
     state.helpOptions = [
@@ -495,7 +524,40 @@ var Index = React.createClass({
     events.on('importSessionsFromUrl', function (_, url) {
       self.importSessionsFromUrl(url);
     });
-    return state;
+    return this.updateMenuView(state);
+  },
+  initPluginTabs: function(state, plugins) {
+    plugins = plugins || {};
+    var tabs = state.tabs;
+    var activeTabs;
+    var activeName;
+    try {
+      activeTabs = JSON.parse(storage.get('activePluginTabList'));
+      activeName = storage.get('activePluginTabName');
+    } catch (e) {}
+    if (!Array.isArray(activeTabs)) {
+      return;
+    }
+    var map = {};
+    Object.keys(plugins)
+      .forEach(function (name) {
+        var plugin = plugins[name];
+        name = name.slice(0, -1);
+        if (activeTabs.indexOf(name) === -1) {
+          return;
+        }
+        if (activeName === name) {
+          state.active = name;
+        }
+        map[name] = {
+          name: name,
+          url: plugin.pluginHomepage || 'plugin.' + name + '/'
+        };
+      });
+    activeTabs.forEach(function(name) {
+      name = name && map[name];
+      name && tabs.push(name);
+    });
   },
   getListByName: function (name, type) {
     var list = this.state[name].list;
@@ -517,6 +579,22 @@ var Index = React.createClass({
   },
   triggerValuesChange: function (type) {
     util.triggerListChange('values', this.getListByName('values', type));
+  },
+  syncData: function(plugin, cb) {
+    var state = this.state;
+    this.refs.syncDialog.show(plugin, state.rules, state.values, cb);
+  },
+  syncRules: function(plugin) {
+    var self = this;
+    self.syncData(plugin, function() {
+      self.refs.syncDialog.syncRules(plugin);
+    });
+  },
+  syncValues: function(plugin) {
+    var self = this;
+    self.syncData(plugin, function() {
+      self.refs.syncDialog.syncValues(plugin);
+    });
   },
   createPluginsOptions: function (plugins) {
     plugins = plugins || {};
@@ -729,6 +807,7 @@ var Index = React.createClass({
               self.setState({ activeRules: item });
               self.triggerRulesChange('create');
               events.trigger('rulesRecycleList', result);
+              events.trigger('focusRulesList');
             } else {
               util.showSystemError(xhr);
             }
@@ -1160,13 +1239,15 @@ var Index = React.createClass({
     });
     events.on('saveRules', function (e, item) {
       if (item.changed || !item.selected) {
-        self.selectRules(item);
+        var list = self.state.rules.getChangedGroupList(item);
+        list.forEach(self.selectRules);
       } else {
         self.unselectRules(item);
       }
     });
     events.on('saveValues', function (e, item) {
-      self.saveValues(item);
+      var list = self.state.values.getChangedGroupList(item);
+      list.forEach(self.saveValues);
     });
     events.on('renameRules', function (e, item) {
       self.showEditRules(item);
@@ -1186,8 +1267,6 @@ var Index = React.createClass({
     });
     events.on('createRules', self.showCreateRules);
     events.on('createValues', self.showCreateValues);
-    events.on('createRuleGroup', self.showCreateRuleGroup);
-    events.on('createValueGroup', self.showCreateValueGroup);
     events.on('exportRules', self.exportData);
     events.on('exportValues', self.exportData);
     events.on('importRules', self.importRules);
@@ -1253,11 +1332,10 @@ var Index = React.createClass({
           if (
             plugin.name != oldPlugin.name ||
             plugin.latest !== oldPlugin.latest ||
-            plugin.mtime != oldPlugin.mtime ||
+            plugin.mtime != oldPlugin.mtime || // 判断时间即可
             oldDisabledPlugins[plugin.name] != disabledPlugins[plugin.name] ||
             plugin.hideLongProtocol != oldPlugin.hideLongProtocol ||
             plugin.hideShortProtocol != oldPlugin.hideShortProtocol ||
-            plugin.pluginVars != oldPlugin.pluginVars ||
             plugin.path != oldPlugin.path
           ) {
             hasUpdate = true;
@@ -1267,6 +1345,17 @@ var Index = React.createClass({
         if (!hasUpdate) {
           return;
         }
+      }
+      var oldPlugins = self.state.plugins;
+      if (oldPlugins && data.plugins) {
+        Object.keys(data.plugins).forEach(function(name) {
+          var oldP = oldPlugins[name];
+          if (oldP) {
+            var p = data.plugins[name];
+            p.selectedRulesHistory = oldP.selectedRulesHistory;
+            p.selectedValuesHistory = oldP.selectedValuesHistory;
+          }
+        });
       }
       var pluginsState = {
         plugins: data.plugins,
@@ -1469,7 +1558,11 @@ var Index = React.createClass({
 
     $(document).on('dblclick', '.w-network-menu-list', function (e) {
       if ($(e.target).hasClass('w-network-menu-list')) {
-        con.scrollTop = 0;
+        if (con.scrollTop < 1) {
+          scrollToBottom(true);
+        } else {
+          con.scrollTop = 0;
+        }
       }
     });
 
@@ -1556,44 +1649,46 @@ var Index = React.createClass({
       this.exportSessions('har');
     } else if (item.id == 'importSessions') {
       this.importSessions(e);
+    } else if (item.id === 'toggleView') {
+      this.toggleTreeView();
     }
     this.hideNetworkOptions();
   },
   importData: function (e) {
     switch (this.state.name) {
-      case 'network':
-        this.importSessions(e);
-        break;
-      case 'rules':
-        this.importRules(e);
-        break;
-      case 'values':
-        this.importValues(e);
-        break;
+    case 'network':
+      this.importSessions(e);
+      break;
+    case 'rules':
+      this.importRules(e);
+      break;
+    case 'values':
+      this.importValues(e);
+      break;
     }
   },
   exportData: function (e, curItem) {
     switch (this.state.name) {
-      case 'network':
-        var modal = this.state.network;
-        var hasSelected = Array.isArray(curItem) || modal.hasSelected();
-        this.currentFoucsItem = curItem;
-        if (hasSelected) {
-          $(ReactDOM.findDOMNode(this.refs.chooseFileType)).modal('show');
-          var self = this;
-          setTimeout(function () {
-            ReactDOM.findDOMNode(self.refs.sessionsName).focus();
-          }, 500);
-        } else {
-          message.info('Please select the sessions first.');
-        }
-        break;
-      case 'rules':
-        this.showAndActiveRules({ id: 'exportRules' });
-        break;
-      case 'values':
-        this.showAndActiveValues({ id: 'exportValues' });
-        break;
+    case 'network':
+      var modal = this.state.network;
+      var hasSelected = Array.isArray(curItem) || modal.hasSelected();
+      this.currentFoucsItem = curItem;
+      if (hasSelected) {
+        $(ReactDOM.findDOMNode(this.refs.chooseFileType)).modal('show');
+        var self = this;
+        setTimeout(function () {
+          ReactDOM.findDOMNode(self.refs.sessionsName).focus();
+        }, 500);
+      } else {
+        message.info('Please select the sessions first.');
+      }
+      break;
+    case 'rules':
+      this.showAndActiveRules({ id: 'exportRules' });
+      break;
+    case 'values':
+      this.showAndActiveValues({ id: 'exportValues' });
+      break;
     }
   },
   importSessions: function (e, data) {
@@ -1798,12 +1893,12 @@ var Index = React.createClass({
   showAndActiveRules: function (item, e) {
     if (this.state.name === 'rules') {
       switch (item.id) {
-        case 'exportRules':
-          this.refs.selectRulesDialog.show();
-          break;
-        case 'importRules':
-          this.importRules(e);
-          break;
+      case 'exportRules':
+        this.refs.selectRulesDialog.show();
+        break;
+      case 'importRules':
+        this.importRules(e);
+        break;
       }
     } else {
       this.setRulesActive(item.name);
@@ -1828,12 +1923,12 @@ var Index = React.createClass({
     var self = this;
     if (self.state.name === 'values' && item.id) {
       switch (item.id) {
-        case 'exportValues':
-          self.refs.selectValuesDialog.show();
-          break;
-        case 'importValues':
-          this.importValues(e);
-          break;
+      case 'exportValues':
+        self.refs.selectValuesDialog.show();
+        break;
+      case 'importValues':
+        this.importValues(e);
+        break;
       }
     } else {
       var modal = self.state.values;
@@ -1847,6 +1942,7 @@ var Index = React.createClass({
             self.setState({
               activeValues: item
             });
+            events.trigger('focusValuesList');
           } else {
             util.showSystemError(xhr);
           }
@@ -2037,6 +2133,14 @@ var Index = React.createClass({
       active: active,
       tabs: tabs
     });
+    this.updatePluginTabInfo(tabs, active);
+  },
+  updatePluginTabInfo: function(tabs, active) {
+    tabs = tabs.map(function(tab) {
+      return tab.name;
+    });
+    storage.set('activePluginTabList', JSON.stringify(tabs));
+    active && storage.set('activePluginTabName', active);
   },
   activePluginTab: function (e) {
     this.showPluginTab($(e.target).attr('data-name'));
@@ -2044,20 +2148,19 @@ var Index = React.createClass({
   closePluginTab: function (e) {
     var name = $(e.target).attr('data-name');
     var tabs = this.state.tabs || [];
-    if (tabs) {
-      for (var i = 0, len = tabs.length; i < len; i++) {
-        if (tabs[i].name == name) {
-          tabs.splice(i, 1);
-          var active = this.state.active;
-          if (active == name) {
-            var plugin = tabs[i] || tabs[i - 1];
-            this.state.active = plugin ? plugin.name : null;
-          }
-
-          return this.setState({
-            tabs: tabs
-          });
+    for (var i = 0, len = tabs.length; i < len; i++) {
+      if (tabs[i].name == name) {
+        tabs.splice(i, 1);
+        var active = this.state.active;
+        if (active == name) {
+          var plugin = tabs[i] || tabs[i - 1];
+          this.state.active = plugin ? plugin.name : null;
         }
+        this.setState({
+          tabs: tabs
+        });
+        this.updatePluginTabInfo(tabs);
+        return;
       }
     }
   },
@@ -2101,8 +2204,6 @@ var Index = React.createClass({
     var state = {
       showCreateRules: false,
       showCreateValues: false,
-      showCreateRuleGroup: false,
-      showCreateValueGroup: false,
       showEditRules: false,
       showEditValues: false,
       showCreateOptions: false
@@ -2118,20 +2219,15 @@ var Index = React.createClass({
   hideValuesInput: function () {
     this.setState({ showCreateValues: false });
   },
-  hideRuleGroup: function () {
-    this.setState({ showCreateRuleGroup: false });
-  },
-  hideValueGroup: function () {
-    this.setState({ showCreateValueGroup: false });
-  },
   hideRenameRuleInput: function () {
     this.setState({ showEditRules: false });
   },
   hideRenameValueInput: function () {
     this.setState({ showEditValues: false });
   },
-  showCreateRules: function () {
+  showCreateRules: function (_, item) {
     var createRulesInput = ReactDOM.findDOMNode(this.refs.createRulesInput);
+    this._curFocusRulesItem = item;
     this.setState(
       {
         showCreateRules: true
@@ -2141,38 +2237,15 @@ var Index = React.createClass({
       }
     );
   },
-  showCreateValues: function () {
+  showCreateValues: function (_, item) {
     var createValuesInput = ReactDOM.findDOMNode(this.refs.createValuesInput);
+    this._curFocusValuesItem = item;
     this.setState(
       {
         showCreateValues: true
       },
       function () {
         createValuesInput.focus();
-      }
-    );
-  },
-  showCreateRuleGroup: function () {
-    var createGroupInput = ReactDOM.findDOMNode(this.refs.createRuleGroupInput);
-    this.setState(
-      {
-        showCreateRuleGroup: true
-      },
-      function () {
-        createGroupInput.focus();
-      }
-    );
-  },
-  showCreateValueGroup: function () {
-    var createGroupInput = ReactDOM.findDOMNode(
-      this.refs.createValueGroupInput
-    );
-    this.setState(
-      {
-        showCreateValueGroup: true
-      },
-      function () {
-        createGroupInput.focus();
       }
     );
   },
@@ -2225,34 +2298,46 @@ var Index = React.createClass({
     }
     var self = this;
     var target = ReactDOM.findDOMNode(self.refs.createRulesInput);
-    var name = $.trim(target.value);
+    var name = target.value.trim();
     if (!name) {
       message.error('The name cannot be empty.');
       return;
     }
-
     var modal = self.state.rules;
+    var type = e && e.target.getAttribute('data-type');
+    var isGroup;
+    if (type === 'group') {
+      isGroup = true;
+      name = '\r' + name;
+    }
     if (modal.exists(name)) {
-      message.error("The name '" + name + "' already exists.");
+      message.error('The name \'' + name + '\' already exists.');
       return;
     }
-    var addToTop = e && e.target.getAttribute('data-type') === 'top' ? 1 : '';
-    dataCenter.rules.add(
-      { name: name, addToTop: addToTop },
-      function (data, xhr) {
-        if (data && data.ec === 0) {
-          var item = modal[addToTop ? 'unshift' : 'add'](name);
-          self.setRulesActive(name);
-          target.value = '';
-          target.blur();
-          self.setState({
-            activeRules: item
-          });
-          self.triggerRulesChange('create');
-        } else {
-          util.showSystemError(xhr);
-        }
+    var addToTop = type === 'top' ? 1 : '';
+    var curItem = self._curFocusRulesItem;
+    var params = { name: name, addToTop: addToTop };
+    if (curItem) {
+      params.groupName = curItem.name;
+    }
+    dataCenter.rules.add(params, function (data, xhr) {
+      if (data && data.ec === 0) {
+        var item = modal[addToTop ? 'unshift' : 'add'](name);
+        target.value = '';
+        target.blur();
+        modal.moveToGroup(name, params.groupName, addToTop);
+        !isGroup && self.setRulesActive(name);
+        params.groupName && events.trigger('expandRulesGroup', params.groupName);
+        self.setState(isGroup ? {} : {
+          activeRules: item
+        }, function() {
+          isGroup && events.trigger('scrollRulesBottom');
+        });
+        self.triggerRulesChange('create');
+      } else {
+        util.showSystemError(xhr);
       }
+    }
     );
   },
   createValues: function (e) {
@@ -2261,7 +2346,7 @@ var Index = React.createClass({
     }
     var self = this;
     var target = ReactDOM.findDOMNode(self.refs.createValuesInput);
-    var name = $.trim(target.value);
+    var name = target.value.trim();
     if (!name) {
       message.error('The name cannot be empty.');
       return;
@@ -2278,19 +2363,33 @@ var Index = React.createClass({
     }
 
     var modal = self.state.values;
+    var type = e && e.target.getAttribute('data-type');
+    var isGroup;
+    if (type === 'group') {
+      isGroup = true;
+      name = '\r' + name;
+    }
     if (modal.exists(name)) {
-      message.error("The name '" + name + "' already exists.");
+      message.error('The name \'' + name + '\' already exists.');
       return;
     }
-
-    dataCenter.values.add({ name: name }, function (data, xhr) {
+    var curItem = self._curFocusValuesItem;
+    var params = { name: name };
+    if (curItem) {
+      params.groupName = curItem.name;
+    }
+    dataCenter.values.add(params, function (data, xhr) {
       if (data && data.ec === 0) {
         var item = modal.add(name);
-        self.setValuesActive(name);
         target.value = '';
         target.blur();
-        self.setState({
+        modal.moveToGroup(name, params.groupName);
+        !isGroup && self.setValuesActive(name);
+        params.groupName && events.trigger('expandValuesGroup', params.groupName);
+        self.setState(isGroup ? {} : {
           activeValues: item
+        }, function() {
+          isGroup && events.trigger('scrollValuesBottom');
         });
         self.triggerValuesChange('create');
       } else {
@@ -2299,7 +2398,7 @@ var Index = React.createClass({
     });
   },
   showEditRules: function (item) {
-    this.currentFoucsRules = item;
+    this.currentFocusRules = item;
     var modal = this.state.rules;
     var activeItem = item || modal.getActive();
     if (!activeItem || activeItem.isDefault) {
@@ -2322,7 +2421,7 @@ var Index = React.createClass({
     !item.changed && this.showEditValues();
   },
   showEditValues: function (item) {
-    this.currentFoucsValues = item;
+    this.currentFocusValues = item;
     var modal = this.state.values;
     var activeItem = item || modal.getActive();
     if (!activeItem || activeItem.isDefault) {
@@ -2348,33 +2447,33 @@ var Index = React.createClass({
     }
     var self = this;
     var modal = self.state.rules;
-    var activeItem = this.currentFoucsRules || modal.getActive();
+    var activeItem = this.currentFocusRules || modal.getActive();
     if (!activeItem) {
       return;
     }
     var target = ReactDOM.findDOMNode(self.refs.editRulesInput);
-    var name = $.trim(target.value);
+    var isGroup = util.isGroup(activeItem.name);
+    var name = (isGroup ? '\r' : '') + target.value.trim();
     if (!name) {
       message.error('The name cannot be empty.');
       return;
     }
 
     if (modal.exists(name)) {
-      message.error("The name '" + name + "' already exists.");
+      message.error('The name \'' + name + '\' already exists.');
       return;
     }
-
+    var curName = activeItem.name;
     dataCenter.rules.rename(
-      { name: activeItem.name, newName: name },
+      { name: curName, newName: name },
       function (data, xhr) {
         if (data && data.ec === 0) {
-          modal.rename(activeItem.name, name);
-          self.setRulesActive(name);
+          modal.rename(curName, name);
           target.value = '';
           target.blur();
-          self.setState({
-            activeValues: activeItem
-          });
+          !isGroup && self.setRulesActive(name);
+          events.trigger('rulesNameChanged', [curName, name]);
+          self.setState({ activeRules: modal.getActive() });
           self.triggerRulesChange('rename');
         } else {
           util.showSystemError(xhr);
@@ -2388,33 +2487,33 @@ var Index = React.createClass({
     }
     var self = this;
     var modal = self.state.values;
-    var activeItem = this.currentFoucsValues || modal.getActive();
+    var activeItem = this.currentFocusValues || modal.getActive();
     if (!activeItem) {
       return;
     }
     var target = ReactDOM.findDOMNode(self.refs.editValuesInput);
-    var name = $.trim(target.value);
+    var isGroup = util.isGroup(activeItem.name);
+    var name = (isGroup ? '\r' : '') + target.value.trim();
     if (!name) {
       message.error('The name cannot be empty.');
       return;
     }
 
     if (modal.exists(name)) {
-      message.error("The name '" + name + "' already exists.");
+      message.error('The name \'' + name + '\' already exists.');
       return;
     }
-
+    var curName = activeItem.name;
     dataCenter.values.rename(
-      { name: activeItem.name, newName: name },
+      { name: curName, newName: name },
       function (data, xhr) {
         if (data && data.ec === 0) {
-          modal.rename(activeItem.name, name);
-          self.setValuesActive(name);
+          modal.rename(curName, name);
           target.value = '';
           target.blur();
-          self.setState({
-            activeValues: activeItem
-          });
+          !isGroup && self.setValuesActive(name);
+          events.trigger('valuesNameChanged', [curName, name]);
+          self.setState({ activeValues: modal.getActive() });
           self.triggerValuesChange('rename');
           checkJson(activeItem);
         } else {
@@ -2439,6 +2538,9 @@ var Index = React.createClass({
     item.selected ? this.unselectRules(item) : this.selectRules(item);
   },
   selectRules: function (item) {
+    if (util.isGroup(item.name)) {
+      return;
+    }
     var self = this;
     dataCenter.rules[item.isDefault ? 'enableDefault' : 'select'](
       item,
@@ -2508,7 +2610,7 @@ var Index = React.createClass({
     });
   },
   saveValues: function (item) {
-    if (!item.changed) {
+    if (!item.changed || util.isGroup(item.name)) {
       return;
     }
     var self = this;
@@ -2535,7 +2637,7 @@ var Index = React.createClass({
   },
   replayCountChange: function (e) {
     var count = e.target.value.replace(/^\s*0*|[^\d]+/, '');
-    var replayCount = count.slice(0, 2);
+    var replayCount = count.slice(0, 3);
     if (replayCount > MAX_REPLAY_COUNT) {
       replayCount = MAX_REPLAY_COUNT;
     }
@@ -2555,9 +2657,10 @@ var Index = React.createClass({
       return;
     }
     this.enableRecord();
-    var replayReq = function (item) {
+    var replayReq = function (item, repeatCount) {
       var req = item.req;
       dataCenter.compose2({
+        repeatCount: repeatCount,
         useH2: item.useH2 ? 1 : '',
         url: item.url,
         headers: util.getOriginalReqHeaders(item),
@@ -2567,11 +2670,7 @@ var Index = React.createClass({
     };
     var map;
     if (count > 1) {
-      count = Math.min(count, MAX_REPLAY_COUNT);
-      var reqItem = list[0];
-      for (var i = 0; i < count; i++) {
-        replayReq(reqItem);
-      }
+      replayReq(list[0], Math.min(count, MAX_REPLAY_COUNT));
     } else {
       map = {};
       list.slice(0, MAX_REPLAY_COUNT).forEach(function (item) {
@@ -2627,23 +2726,27 @@ var Index = React.createClass({
     var activeItem = item || modal.getActive();
     if (activeItem && !activeItem.isDefault) {
       var name = activeItem.name;
-      win.confirm("Are you sure to delete '" + name + "'.", function (sure) {
+      win.confirm('Are you sure to delete ' + (util.isGroup(name) ? 'group ' : '') + '\'' + name + '\'.', function (sure) {
         if (!sure) {
           return;
         }
         dataCenter.rules.remove({ name: name }, function (data, xhr) {
           if (data && data.ec === 0) {
             var nextItem = item && !item.active ? null : modal.getSibling(name);
-            nextItem && self.setRulesActive(nextItem.name);
             modal.remove(name);
+            if (nextItem) {
+              self.setRulesActive(nextItem.name);
+              events.trigger('expandRulesGroup', nextItem.name);
+            }
             self.setState(
               item
                 ? {}
                 : {
-                    activeRules: nextItem
-                  }
+                  activeRules: nextItem
+                }
             );
             self.triggerRulesChange('remove');
+            events.trigger('focusRulesList');
           } else {
             util.showSystemError(xhr);
           }
@@ -2657,23 +2760,21 @@ var Index = React.createClass({
     var activeItem = item || modal.getActive();
     if (activeItem && !activeItem.isDefault) {
       var name = activeItem.name;
-      win.confirm("Are you sure to delete '" + name + "'.", function (sure) {
+      win.confirm('Are you sure to delete ' + (util.isGroup(name) ? 'group ' : '') + '\'' + name + '\'.', function (sure) {
         if (!sure) {
           return;
         }
         dataCenter.values.remove({ name: name }, function (data, xhr) {
           if (data && data.ec === 0) {
             var nextItem = item && !item.active ? null : modal.getSibling(name);
-            nextItem && self.setValuesActive(nextItem.name);
             modal.remove(name);
-            self.setState(
-              item
-                ? {}
-                : {
-                    activeValues: nextItem
-                  }
-            );
+            if (nextItem) {
+              self.setValuesActive(nextItem.name);
+              events.trigger('expandValuesGroup', nextItem.name);
+            }
+            self.setState(item ? {} : { activeValues: nextItem });
             self.triggerValuesChange('remove');
+            events.trigger('focusValuesList');
           } else {
             util.showSystemError(xhr);
           }
@@ -2704,7 +2805,7 @@ var Index = React.createClass({
     });
     storage.set('showLeftMenu', showLeftMenu ? 1 : '');
   },
-  handleCreate: function (item) {
+  handleCreate: function () {
     this.state.name == 'rules'
       ? this.showCreateRules()
       : this.showCreateValues();
@@ -2759,15 +2860,11 @@ var Index = React.createClass({
   },
   activeRules: function (item) {
     storage.set('activeRules', item.name);
-    this.setState({
-      activeRules: item
-    });
+    this.setState({ activeRules: item });
   },
   activeValues: function (item) {
     storage.set('activeValues', item.name);
-    this.setState({
-      activeValues: item
-    });
+    this.setState({ activeValues: item });
   },
   onRulesThemeChange: function (e) {
     var theme = e.target.value;
@@ -2814,9 +2911,7 @@ var Index = React.createClass({
   showFoldGutter: function (e) {
     var checked = e.target.checked;
     storage.set('foldGutter', checked ? '1' : '');
-    this.setState({
-      foldGutter: checked
-    });
+    this.setState({ foldGutter: checked });
   },
   onRulesLineWrappingChange: function (e) {
     var checked = e.target.checked;
@@ -3062,11 +3157,14 @@ var Index = React.createClass({
         startTime: startTime,
         frames: entry.frames,
         url: rawReq.url,
+        realUrl: entry.whistleRealUrl,
         req: req,
         res: res,
         fwdHost: entry.whistleFwdHost,
         sniPlugin: entry.whistleSniPlugin,
-        rules: entry.whistleRules || {}
+        rules: entry.whistleRules || {},
+        version: entry.whistleVersion,
+        nodeVersion: entry.whistleNodeVersion
       };
       if (times && times.startTime) {
         session.dnsTime = times.dnsTime;
@@ -3246,28 +3344,28 @@ var Index = React.createClass({
     var state = self.state;
     var list = LEFT_BAR_MENUS;
     switch (action) {
-      case 'Tree View':
-        list[2].checked = !state.network.isTreeView;
-        self.toggleTreeView();
-        break;
-      case 'Rules':
-        self.disableAllRules(null, function (disabled) {
-          list[3].checked = !disabled;
-          self.setState({});
-        });
-        break;
-      case 'Plugins':
-        self.disableAllPlugins(null, function (disabled) {
-          list[4].checked = !disabled;
-          self.setState({});
-        });
-        break;
-      case 'Clear':
-        self.clear();
-        return;
-      case 'Save':
-        self.saveRulesOrValues();
-        return;
+    case 'Tree View':
+      list[2].checked = !state.network.isTreeView;
+      self.toggleTreeView();
+      break;
+    case 'Rules':
+      self.disableAllRules(null, function (disabled) {
+        list[3].checked = !disabled;
+        self.setState({});
+      });
+      break;
+    case 'Plugins':
+      self.disableAllPlugins(null, function (disabled) {
+        list[4].checked = !disabled;
+        self.setState({});
+      });
+      break;
+    case 'Clear':
+      self.clear();
+      return;
+    case 'Save':
+      self.saveRulesOrValues();
+      return;
     }
     this.refs.contextMenu.show({});
   },
@@ -3279,6 +3377,14 @@ var Index = React.createClass({
       self.setState({ forceShowLeftMenu: true });
     }, 200);
   },
+  selectCAType: function(e) {
+    var caType = e.target.value;
+    if (caType !== 'cer' && caType !== 'pem') {
+      caType = 'crt';
+    }
+    this.setState({ caType: caType });
+    storage.set('caType', caType);
+  },
   forceHideLeftMenu: function () {
     var self = this;
     clearTimeout(self.hideTimer);
@@ -3287,10 +3393,22 @@ var Index = React.createClass({
       self.setState({ forceShowLeftMenu: false });
     }, 500);
   },
+  updateMenuView: function(state) {
+    var opt = state.networkOptions[state.networkOptions.length - 1];
+    if (state.network.isTreeView) {
+      opt.icon = 'globe';
+      opt.name = 'Show List View';
+    } else {
+      opt.icon = 'tree-conifer';
+      opt.name = 'Show Tree View';
+    }
+    return state;
+  },
   toggleTreeView: function () {
     var self = this;
     var modal = self.state.network;
     modal.setTreeView(!modal.isTreeView);
+    self.updateMenuView(self.state);
     self.setState({}, function () {
       if (!modal.isTreeView) {
         self.autoRefresh && self.autoRefresh();
@@ -3356,7 +3474,7 @@ var Index = React.createClass({
     var showHelpOptions = state.showHelpOptions;
     var modal = state.network;
     var isTreeView = modal.isTreeView;
-    var networkType = isTreeView ? 'tree-conifer' : 'globe';
+    var networkType = isTreeView ? 'bi bi-tree-fill' : 'bi bi-globe2';
     if (rulesOptions[0].name === DEFAULT) {
       rulesOptions.forEach(function (item, i) {
         item.icon = !i || !state.multiEnv ? 'checkbox' : 'edit';
@@ -3438,6 +3556,18 @@ var Index = React.createClass({
     LEFT_BAR_MENUS[2].hide = rulesMode;
     LEFT_BAR_MENUS[3].hide = pluginsMode;
     LEFT_BAR_MENUS[4].hide = rulesOnlyMode;
+
+    var caType = state.caType || 'crt';
+    var qrCode = 'img/qrcode.png';
+    var caUrl = 'cgi-bin/rootca';
+    var caShortUrl = 'http://rootca.pro/';
+
+    if (caType !== 'crt') {
+      qrCode = 'img/qrcode-' + caType + '.png';
+      caUrl += '?type=' + caType;
+      caShortUrl += caType;
+    }
+
     return (
       <div
         className={
@@ -3462,7 +3592,7 @@ var Index = React.createClass({
           >
             <span
               className={
-                'glyphicon glyphicon-chevron-' +
+                'bi bi-chevron-' +
                 (showLeftMenu ? (mustHideLeftMenu ? 'down' : 'up') : 'left')
               }
             ></span>
@@ -3488,7 +3618,7 @@ var Index = React.createClass({
               }
               draggable="false"
             >
-              <span className={'glyphicon glyphicon-' + networkType}></span>
+              <span className={networkType}></span>
               Network
             </a>
             <MenuItem
@@ -3517,7 +3647,7 @@ var Index = React.createClass({
             >
               <span
                 className={
-                  'glyphicon glyphicon-list' +
+                  'bi bi-list-ul' +
                   (disabledAllRules ? ' w-disabled' : '')
                 }
               ></span>
@@ -3552,7 +3682,7 @@ var Index = React.createClass({
               }
               draggable="false"
             >
-              <span className="glyphicon glyphicon-folder-close"></span>Values
+              <i className="bi bi-archive-fill"></i>Values
             </a>
             <MenuItem
               ref="valuesMenuItem"
@@ -3584,7 +3714,7 @@ var Index = React.createClass({
             >
               <span
                 className={
-                  'glyphicon glyphicon-list-alt' +
+                  'bi bi-card-list' +
                   (disabledAllPlugins ? ' w-disabled' : '')
                 }
               ></span>
@@ -3617,8 +3747,8 @@ var Index = React.createClass({
             >
               <span
                 className={
-                  'glyphicon glyphicon-' +
-                  (disabledAllRules ? 'play-circle' : 'off')
+                  'bi ' +
+                  (disabledAllRules ? 'bi-play-circle-fill' : 'bi bi-stop-circle-fill')
                 }
               />
               {disabledAllRules ? 'ON' : 'OFF'}
@@ -3641,8 +3771,8 @@ var Index = React.createClass({
             >
               <span
                 className={
-                  'glyphicon glyphicon-' +
-                  (disabledAllPlugins ? 'play-circle' : 'off')
+                  'bi ' +
+                  (disabledAllPlugins ? 'bi-play-circle-fill' : 'bi-stop-circle-fill')
                 }
               />
               {disabledAllPlugins ? 'ON' : 'OFF'}
@@ -3654,7 +3784,7 @@ var Index = React.createClass({
             className={'w-plugins-menu' + (isPlugins ? '' : ' hide')}
             draggable="false"
           >
-            <span className="glyphicon glyphicon-download-alt" />
+            <i className="bi bi-cloud-arrow-down-fill"></i>
             ReinstallAll
           </a>
           <RecordBtn
@@ -3668,7 +3798,7 @@ var Index = React.createClass({
             style={{ display: isPlugins ? 'none' : '' }}
             draggable="false"
           >
-            <span className="glyphicon glyphicon-import"></span>Import
+            <i className="bi bi-cloud-arrow-up-fill"></i>Import
           </a>
           <a
             onClick={this.exportData}
@@ -3676,7 +3806,7 @@ var Index = React.createClass({
             style={{ display: isPlugins ? 'none' : '' }}
             draggable="false"
           >
-            <span className="glyphicon glyphicon-export"></span>Export
+            <i className="bi bi-cloud-arrow-down-fill"></i>Export
           </a>
           <div
             onMouseEnter={this.showRemoveOptions}
@@ -3693,7 +3823,7 @@ var Index = React.createClass({
               title="Ctrl[Command] + X"
               draggable="false"
             >
-              <span className="glyphicon glyphicon-remove"></span>Clear
+              <i className="bi bi-x-lg"></i>Clear
             </a>
             <MenuItem
               options={REMOVE_OPTIONS}
@@ -3708,7 +3838,7 @@ var Index = React.createClass({
             draggable="false"
             title="Ctrl[Command] + S"
           >
-            <span className="glyphicon glyphicon-save-file"></span>Save
+            <i className="bi bi-save-fill"></i>Save
           </a>
           <a
             className="w-create-menu"
@@ -3716,7 +3846,7 @@ var Index = React.createClass({
             draggable="false"
             onClick={this.handleCreate}
           >
-            <span className="glyphicon glyphicon-plus"></span>Create
+            <i className="bi bi-plus-lg"></i>Create
           </a>
           <a
             onClick={this.onClickMenu}
@@ -3724,7 +3854,7 @@ var Index = React.createClass({
             style={{ display: isNetwork || isPlugins ? 'none' : '' }}
             draggable="false"
           >
-            <span className="glyphicon glyphicon-edit"></span>Rename
+            <i className="bi bi-pencil-square"></i>Rename
           </a>
           <div
             onMouseEnter={this.showAbortOptions}
@@ -3740,7 +3870,7 @@ var Index = React.createClass({
               className="w-replay-menu"
               draggable="false"
             >
-              <span className="glyphicon glyphicon-repeat"></span>Replay
+              <i className="bi bi-arrow-repeat"></i>Replay
             </a>
             <MenuItem
               options={ABORT_OPTIONS}
@@ -3754,7 +3884,7 @@ var Index = React.createClass({
             style={{ display: isNetwork ? '' : 'none' }}
             draggable="false"
           >
-            <span className="glyphicon glyphicon-edit"></span>Compose
+            <i className="bi bi-pencil-square"></i>Compose
           </a>
           <a
             onClick={this.onClickMenu}
@@ -3764,7 +3894,7 @@ var Index = React.createClass({
             style={{ display: isNetwork || isPlugins ? 'none' : '' }}
             draggable="false"
           >
-            <span className="glyphicon glyphicon-trash"></span>Delete
+            <i className="bi bi-trash-fill"></i>Delete
           </a>
           <FilterBtn
             onClick={this.showSettings}
@@ -3777,7 +3907,7 @@ var Index = React.createClass({
             className="w-files-menu"
             draggable="false"
           >
-            <span className="glyphicon glyphicon-upload"></span>Files
+            <i class="bi bi-cloud-arrow-up-fill"></i>Files
           </a>
           <div
             onMouseEnter={this.showWeinreOptions}
@@ -3793,7 +3923,7 @@ var Index = React.createClass({
               className="w-weinre-menu"
               draggable="false"
             >
-              <span className="glyphicon glyphicon-console"></span>Weinre
+              <i className="bi bi-terminal-fill"></i>Weinre
             </a>
             <MenuItem
               ref="weinreMenuItem"
@@ -3812,8 +3942,8 @@ var Index = React.createClass({
           >
             <span
               className={
-                'glyphicon glyphicon-' +
-                (state.interceptHttpsConnects ? 'ok' : 'lock')
+                'bi ' +
+                (state.interceptHttpsConnects ? 'bi-check-lg' : 'bi-shield-lock-fill')
               }
             ></span>
             HTTPS
@@ -3842,7 +3972,8 @@ var Index = React.createClass({
               }
               target={state.hasNewVersion ? undefined : '_blank'}
             >
-              <span className="glyphicon glyphicon-question-sign"></span>Help
+              {state.hasNewVersion ? <i className="w-new-version-icon" /> : null}
+              <i className="bi bi-question-circle-fill"></i>Help
             </a>
             <MenuItem
               ref="helpMenuItem"
@@ -3879,13 +4010,20 @@ var Index = React.createClass({
               +Rule
             </button>
             <button
-              style={{ marginLeft: 1 }}
               type="button"
               onClick={this.createRules}
               data-type="top"
               className="btn btn-default"
             >
               +Top
+            </button>
+            <button
+              type="button"
+              onClick={this.createRules}
+              data-type="group"
+              className="btn btn-default"
+            >
+              +Group
             </button>
           </div>
           <div
@@ -3899,7 +4037,7 @@ var Index = React.createClass({
               onBlur={this.hideValuesInput}
               type="text"
               maxLength="64"
-              placeholder="Input the key"
+              placeholder="Input the name"
             />
             <button
               type="button"
@@ -3908,45 +4046,11 @@ var Index = React.createClass({
             >
               +Key
             </button>
-          </div>
-          <div
-            onMouseDown={this.preventBlur}
-            style={{ display: state.showCreateRuleGroup ? 'block' : 'none' }}
-            className="shadow w-input-menu-item w-create-rules-input"
-          >
-            <input
-              ref="createRuleGroupInput"
-              onKeyDown={this.createRules}
-              onBlur={this.hideRuleGroup}
-              type="text"
-              maxLength="64"
-              placeholder="Input the group name"
-            />
             <button
               type="button"
-              onClick={this.createRuleGroup}
-              className="btn btn-primary"
-            >
-              +Group
-            </button>
-          </div>
-          <div
-            onMouseDown={this.preventBlur}
-            style={{ display: state.showCreateValueGroup ? 'block' : 'none' }}
-            className="shadow w-input-menu-item w-create-values-input"
-          >
-            <input
-              ref="createValueGroupInput"
-              onKeyDown={this.createValues}
-              onBlur={this.hideValueGroup}
-              type="text"
-              maxLength="64"
-              placeholder="Input the group name"
-            />
-            <button
-              type="button"
-              onClick={this.createValueGroup}
-              className="btn btn-primary"
+              onClick={this.createValues}
+              data-type="group"
+              className="btn btn-default"
             >
               +Group
             </button>
@@ -4014,7 +4118,7 @@ var Index = React.createClass({
               style={{ display: rulesMode ? 'none' : undefined }}
               draggable="false"
             >
-              <span className={'glyphicon glyphicon-' + networkType}></span>
+              <span className={networkType}></span>
               <i className="w-left-menu-name">Network</i>
             </a>
             <a
@@ -4028,7 +4132,7 @@ var Index = React.createClass({
             >
               <span
                 className={
-                  'glyphicon glyphicon-list' +
+                  'bi bi-list-ul' +
                   (disabledAllRules ? ' w-disabled' : '')
                 }
               ></span>
@@ -4051,7 +4155,7 @@ var Index = React.createClass({
               style={{ display: pluginsMode ? 'none' : undefined }}
               draggable="false"
             >
-              <span className="glyphicon glyphicon-folder-close"></span>
+              <i className="bi bi-archive-fill"></i>
               <i className="w-left-menu-name">Values</i>
               <i
                 className="w-menu-changed"
@@ -4074,7 +4178,7 @@ var Index = React.createClass({
             >
               <span
                 className={
-                  'glyphicon glyphicon-list-alt' +
+                  'bi bi-card-list' +
                   (disabledAllPlugins ? ' w-disabled' : '')
                 }
               ></span>
@@ -4262,23 +4366,28 @@ var Index = React.createClass({
                     href="https://avwo.github.io/whistle/webui/https.html"
                     target="_blank"
                   >
-                    <span className="glyphicon glyphicon-question-sign"></span>
+                    <i className="bi bi-question-circle-fill"></i>
                   </a>
                   <a
                     className="w-download-rootca"
-                    title="http://rootca.pro/"
-                    href="cgi-bin/rootca"
+                    title={caShortUrl}
+                    href={caUrl}
                     target="downloadTargetFrame"
                   >
                     Download RootCA
                   </a>
+                  <select className="w-root-ca-type" value={caType} onChange={this.selectCAType}>
+                    <option value="crt">rootCA.crt</option>
+                    <option value="cer">rootCA.cer</option>
+                    <option value="pem">rootCA.pem</option>
+                  </select>
                 </div>
                 <a
-                  title="http://rootca.pro/"
-                  href="cgi-bin/rootca"
+                  title={caShortUrl}
+                  href={caUrl}
                   target="downloadTargetFrame"
                 >
-                  <img src="img/qrcode.png" />
+                  <img src={qrCode} width="320" />
                 </a>
                 <div className="w-https-settings">
                   <p>
@@ -4373,26 +4482,28 @@ var Index = React.createClass({
         <Dialog ref="setReplayCount" wstyle="w-replay-count-dialog">
           <div className="modal-body">
             <label>
-              Count:
+              Times:
               <input
                 ref="replayCount"
+                placeholder={'<= ' + MAX_REPLAY_COUNT}
                 onKeyDown={this.replayRepeat}
                 onChange={this.replayCountChange}
                 value={state.replayCount}
                 className="form-control"
-                maxLength="2"
+                maxLength="3"
               />
             </label>
-            <a
+            <button
               type="button"
               onKeyDown={this.replayRepeat}
               tabIndex="0"
               onMouseDown={this.preventBlur}
               className="btn btn-primary"
+              disabled={!state.replayCount}
               onClick={this.replayRepeat}
             >
               Replay
-            </a>
+            </button>
           </div>
         </Dialog>
         <Dialog ref="importRemoteRules" wstyle="w-import-remote-dialog">
@@ -4678,6 +4789,7 @@ var Index = React.createClass({
             accept=".txt,.json"
           />
         </form>
+        <SyncDialog ref="syncDialog" />
       </div>
     );
   }

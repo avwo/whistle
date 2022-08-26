@@ -81,10 +81,7 @@ var HistoryData = React.createClass({
                         onClick={self.onReplay}
                         className="btn btn-primary"
                       >
-                        <span
-                          data-index={i}
-                          className="glyphicon glyphicon-repeat"
-                        ></span>
+                        <i className="bi bi-arrow-repeat" data-index={i}></i>
                       </button>
                       <button
                         title="Compose"
@@ -92,10 +89,7 @@ var HistoryData = React.createClass({
                         onClick={self.onCompose}
                         className="btn btn-default"
                       >
-                        <span
-                          data-index={i}
-                          className="glyphicon glyphicon-edit"
-                        ></span>
+                        <i className="bi bi-pencil-square" data-index={i}></i>
                       </button>
                     </td>
                   </tr>

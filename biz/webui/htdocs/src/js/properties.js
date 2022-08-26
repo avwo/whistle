@@ -112,11 +112,8 @@ var Properties = React.createClass({
                     <tr key={i} className={val ? undefined : 'w-no-value'}>
                       <th>
                         {onHelp ? (
-                          <span
-                            data-name={name}
-                            onClick={onHelp}
-                            className="glyphicon glyphicon-question-sign"
-                          ></span>
+                          <i data-name={name}
+                          onClick={onHelp} className="bi bi-question-circle-fill"></i>
                         ) : undefined}
                         {name && name.length >= 2100 ? (
                           <ExpandCollapse text={name} />
@@ -146,11 +143,9 @@ var Properties = React.createClass({
                 >
                   <th>
                     {onHelp ? (
-                      <span
-                        data-name={name}
-                        onClick={onHelp}
-                        className="glyphicon glyphicon-question-sign"
-                      ></span>
+                      <i data-name={name}
+                      onClick={onHelp}
+                      class="bi bi-question-circle-fill"></i>
                     ) : undefined}
                     {name && name.length >= 2100 ? (
                       <ExpandCollapse text={name} />

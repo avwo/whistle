@@ -21,14 +21,7 @@
   height: 27px;
   line-height: 28px;
 }
-.w-menu .glyphicon,
-.w-detail .glyphicon {
-  margin-right: 3px;
-}
-.w-menu .glyphicon-folder-open,
-.w-menu .glyphicon-folder-close {
-  margin-right: 6px;
-}
+
 .w-menu .w-online {
   position: absolute;
   right: 0;
@@ -52,8 +45,15 @@
 .w-left-menu .w-disabled {
   color: #aaa;
 }
-.w-menu .w-menu-enable {
-  color: #ff6666 !important;
+
+.w-menu .w-new-version-icon {
+  position: absolute;
+  top: 2px;
+  left: 17px;
+  width: 5px;
+  height: 5px;
+  border-radius: 5px;
+  background: red;
 }
 .w-menu .w-menu-wrapper {
   display: inline-block;
@@ -80,6 +80,7 @@
   width: 246px;
   height: 32px;
   border: 1px solid #ccc;
+  border-radius: 0!important;
   border-radius: 2px;
   padding: 0 5px;
   vertical-align: middle;
@@ -91,6 +92,8 @@
   border-radius: 0;
   border-top-right-radius: 2px;
   border-bottom-right-radius: 2px;
+  margin-left: 1px;
+  border-color: #ccc;
 }
 
 .w-create-rules-input {
@@ -126,17 +129,10 @@
   display: block !important;
 }
 
-.w-values-list .glyphicon {
-  display: none !important;
-}
+
 .w-values-list a {
   font-weight: normal !important;
 }
-.w-disabled .glyphicon-ok,
-.w-disabled .glyphicon-stop {
-  color: #ccc !important;
-}
-
 .w-rules-settings-dialog .modal-dialog {
   width: 400px;
 }
@@ -276,8 +272,11 @@
   color: red;
 }
 .w-replay-count-dialog .modal-content {
-  width: 236px;
+  width: 236px!important;
   white-space: nowrap;
+}
+.w-replay-count-dialog .modal-dialog {
+  width: 236px!important;
 }
 .w-replay-count-dialog .modal-content label {
   width: auto;
@@ -298,10 +297,6 @@
   padding: 5px;
 }
 
-.w-https-menu .glyphicon-lock {
-  color: #9e9e26;
-}
-
 .w-hover-left-menu {
   position: absolute;
   z-index: 1;
@@ -316,4 +311,15 @@
 
 .w-menu-selected {
   background-color: #ddd;
+}
+
+.w-root-ca-type {
+  width: 100px;
+  float: right;
+  margin: 3px 15px 0 0;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  height: 24px;
+  font-size: 12px;
+  padding-left: 8px;
 }

@@ -49,7 +49,7 @@ var HistoryData = React.createClass({
         mtime: cert.mtime,
         validity: startDate.toLocaleString() + ' ~ ' + endDate.toLocaleString(),
         status: status || (
-          <span className="glyphicon glyphicon-ok" style={OK_STYLE} />
+          <i className="bi bi-check-lg" style={OK_STYLE}></i>
         ),
         isInvalid: isInvalid
       };
@@ -212,7 +212,7 @@ var HistoryData = React.createClass({
               href="https://avwo.github.io/whistle/custom-certs.html"
               target="_blank"
             >
-              <span className="glyphicon glyphicon-question-sign"></span>
+              <i className="bi bi-question-circle-fill"></i>
             </a>
             Custom Certs
           </h4>
@@ -237,7 +237,7 @@ var HistoryData = React.createClass({
                         title={item.filename}
                       >
                         {item.readOnly ? (
-                          <span className="glyphicon glyphicon-lock" />
+                          <i className="bi bi-shield-lock-fill"></i>
                         ) : undefined}
                         {item.displayName || item.filename}
                         <br />

@@ -189,7 +189,7 @@ var Settings = React.createClass({
                 href="https://avwo.github.io/whistle/webui/filter.html"
                 target="_blank"
               >
-                <span className="glyphicon glyphicon-question-sign"></span>
+                <i className="bi bi-question-circle-fill"></i>
               </a>
             </legend>
             <textarea
@@ -217,7 +217,7 @@ var Settings = React.createClass({
                 href="https://avwo.github.io/whistle/webui/filter.html"
                 target="_blank"
               >
-                <span className="glyphicon glyphicon-question-sign"></span>
+                <i className="bi bi-question-circle-fill"></i>
               </a>
             </legend>
             <textarea
@@ -267,14 +267,9 @@ var Settings = React.createClass({
                     title
                   )}
                   {canEdit ? (
-                    <span
-                      onClick={self.editCustomCol}
-                      data-name={col.title}
-                      title={'Edit ' + col.title}
-                      className="glyphicon glyphicon-edit"
-                    >
-                      {canEdit1 ? 1 : 2}
-                    </span>
+                    <i className="bi bi-pencil-square" onClick={self.editCustomCol}
+                    data-name={col.title}
+                    title={'Edit ' + col.title}>{canEdit1 ? 1 : 2}</i>
                   ) : undefined}
                 </label>
               );
@@ -306,10 +301,7 @@ var Settings = React.createClass({
           </label>
           <label className="w-network-settings-own">
             <input checked={isTreeView} data-name="treeView" type="checkbox" />
-            <span
-              className="glyphicon glyphicon-tree-conifer"
-              style={{ marginRight: 2 }}
-            ></span>
+            <i className="bi bi-tree-fill" style={{ marginRight: 2 }}></i>
             Show Tree View (Ctrl[Command] + B)
           </label>
           {isTreeView ? <br /> : null}

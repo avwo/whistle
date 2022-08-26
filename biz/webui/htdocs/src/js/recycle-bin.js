@@ -113,10 +113,10 @@ var RecycleBinDialog = React.createClass({
     var origName = decode(name.substring(name.indexOf('.') + 1));
     var self = this;
     win.confirm(
-      "Are you sure to delete '" + origName + "' completely.",
+      'Are you sure to delete \'' + origName + '\' completely.',
       function (sure) {
         if (sure) {
-          dataCenter[this.state.name.toLowerCase()].recycleRemove(
+          dataCenter[self.state.name.toLowerCase()].recycleRemove(
             { name: name },
             function (data, xhr) {
               if (!data) {
@@ -159,6 +159,7 @@ var RecycleBinDialog = React.createClass({
                       <th className="w-files-order">{i + 1}</th>
                       <td className="w-files-date">{item.date}</td>
                       <td className="w-files-path" title={item.filename}>
+                        {util.isGroup(item.filename) ? <i className="bi bi-caret-right-fill w-list-group-icon" /> : null}
                         {item.filename}
                       </td>
                       <td className="w-files-operation">

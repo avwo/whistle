@@ -87,7 +87,7 @@ var ComposerList = React.createClass({
               }}
               className={'btn btn-default' + (activeDefalut ? ' active' : '')}
             >
-              <span className="glyphicon glyphicon-edit"></span>Default
+              <i className="bi bi-pencil-square"></i>Default
             </button>
             <div className="fill w-custom-tabs">{elem}</div>
           </div>

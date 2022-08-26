@@ -118,7 +118,7 @@ var ContextMenu = React.createClass({
                   {item.name}
                 </label>
                 {subList ? (
-                  <span className="glyphicon glyphicon-play" />
+                  <i className="bi bi-play-circle-fill"></i>
                 ) : undefined}
                 {subList ? <div className="w-ctx-menu-gap"></div> : undefined}
                 {subList ? (

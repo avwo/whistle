@@ -250,7 +250,7 @@ var FrameComposer = React.createClass({
               type="button"
               className="btn btn-default btn-sm"
             >
-              <span className="glyphicon glyphicon-arrow-left"></span>
+              <i className="bi bi-arrow-left-square-fill"></i>
               Send to client
             </button>
             <button
@@ -291,7 +291,7 @@ var FrameComposer = React.createClass({
               type="button"
               className="btn btn-default btn-sm"
             >
-              <span className="glyphicon glyphicon-arrow-right"></span>
+              <i className="bi bi-arrow-right-square-fill"></i>
               Send to server
             </button>
             <button

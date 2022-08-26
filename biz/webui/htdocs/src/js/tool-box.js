@@ -165,7 +165,7 @@ var ToolBox = React.createClass({
         }
       >
         <div className="w-detail-inspectors-title">
-          <span className="glyphicon glyphicon-qrcode"></span>QRCode
+          <i className="bi bi-qr-code"></i>QRCode
           <button
             className="btn btn-primary"
             disabled={!NOT_EMPTY_RE.test(qrcodeValue)}
@@ -182,7 +182,7 @@ var ToolBox = React.createClass({
           placeholder="Input the URL"
         />
         <div className="w-detail-inspectors-title">
-          <span className="glyphicon glyphicon-pencil"></span>JSONView
+          <i className="bi bi-pencil-fill"></i>JSONView
           <button
             className="btn btn-primary"
             disabled={!NOT_EMPTY_RE.test(jsonValue)}
@@ -239,7 +239,7 @@ var ToolBox = React.createClass({
           placeholder="Input the text"
         />
         <div className="w-detail-inspectors-title">
-          <span className="glyphicon glyphicon-picture"></span>Base64
+          <i className="bi bi-image"></i>Base64
           <button className="btn btn-primary" onClick={this.uploadImg}>
             Upload
           </button>
@@ -248,11 +248,11 @@ var ToolBox = React.createClass({
           className="w-tool-box-ctn w-tool-box-base64"
           onClick={this.uploadImg}
         >
-          <span className="glyphicon glyphicon-arrow-up"></span>
+          <i className="bi bi-arrow-up-square-fill"></i>
           Click here to upload image (size &lt;= 1m)
         </button>
         <div className="w-detail-inspectors-title">
-          <span className="glyphicon glyphicon-certificate"></span>Certificate
+          <i className="bi bi-patch-exclamation-fill"></i>Certificate
         </div>
         <div className="box w-generate-cert">
           <input

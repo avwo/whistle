@@ -306,7 +306,7 @@ var PropsEditor = React.createClass({
                     <td>
                       <pre>
                         {item.data ? (
-                          <span className="glyphicon glyphicon-file"></span>
+                          <i className="bi bi-file-earmark-text-fill"></i>
                         ) : undefined}
                         {item.data
                           ? ' [' + util.getSize(item.size) + '] '
@@ -318,13 +318,13 @@ var PropsEditor = React.createClass({
                       <a
                         data-name={name}
                         onClick={self.onEdit}
-                        className="glyphicon glyphicon-edit"
+                        className="bi bi-pencil-square"
                         title="Edit"
                       ></a>
                       <a
                         data-name={name}
                         onClick={self.onRemove}
-                        className="glyphicon glyphicon-remove"
+                        className="bi bi-x-lg"
                         title="Delete"
                       ></a>
                     </td>
@@ -380,7 +380,7 @@ var PropsEditor = React.createClass({
                   >
                     <span aria-hidden="true">&times;</span>
                   </button>
-                  <span className="glyphicon glyphicon-file"></span>
+                  <i className="bi bi-file-earmark-fill"></i>
                   {' [' + util.getSize(fileSize) + '] '}
                   {filename}
                 </div>

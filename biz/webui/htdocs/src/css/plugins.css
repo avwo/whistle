@@ -24,11 +24,6 @@
 .w-plugin-tab-disabled {
   color: #ccc !important;
 }
-.w-plugin-tab-disabled .glyphicon-ban-circle {
-  vertical-align: text-top;
-  margin-right: 3px;
-  color: #ccc !important;
-}
 .w-nav-tabs iframe {
   border: none;
   display: block;
