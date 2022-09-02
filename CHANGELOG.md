@@ -1,3 +1,8 @@
+# v2.9.29
+1. fix: 导出 har 后再导入改 har 时请求内容可能发生变化问题
+2. feat: headless 模式支持加载插件及抓包数据
+3. feat: 支持通过 `-M agent` 启动复用连接模式
+
 # v2.9.28
 1. fix: https://github.com/avwo/whistle/issues/759
 
