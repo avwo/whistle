@@ -2151,6 +2151,7 @@ function toHarReq(item) {
     var body = getBody(req, true);
     postData = postData || getPostData(req);
     postData.text = body;
+    postData.base64 = req.base64;
     postData.params = stringToArray(body);
   } else if (req.base64) {
     postData = postData || getPostData(req);

@@ -81,7 +81,7 @@
 
 图中的打开的对话框有个checkbox：
 
-1.`Capture HTTPS CONNECTs`：开启Https拦截功能，只有勾上这个checkbox及装好根证书，whistle才能看到HTTPS、Websocket的请求
+1.`Capture HTTPS CONNECTS`：开启Https拦截功能，只有勾上这个checkbox及装好根证书，whistle才能看到HTTPS、Websocket的请求
 2. 也可以通过配置来开启对部分请求的Https拦截功能
   ```plain
   www.test.com enable://intercept

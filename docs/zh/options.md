@@ -33,7 +33,7 @@
   - **`pureProxy`：** 纯代理模式，对一些内置界面域名 `local.whistlejs.com` 也当初普通请求
   - **`debug`：** 调试模式，会禁用一些超时设置及 dnsCache（不建议使用）
   - **`multiEnv`：** 除了 Default 其它规则都不能启用，应用参见：** https://github.com/nohosts/nohost
-  - **`capture`：** 默认开启 `Capture TUNNEL CONNECTs`
+  - **`capture`：** 默认开启 `Capture TUNNEL CONNECTS`
   - **`disableH2`：** 默认禁用 `Enable HTTP/2`
   - **`network`：** 配置界面只显示 Network，支持 `network|rules` 或 `netowrk|plugins`
   - **`rules`：**  配置界面只显示 Rules，支持 `network|rules` 或 `rules|plugins`，
