@@ -1,5 +1,5 @@
 .w-online-dialog .modal-dialog {
-  width: 320px;
+  width: 400px;
 }
 .w-online-dialog-info,
 .w-online-view-dns {
@@ -14,7 +14,8 @@
   overflow: hidden;
 }
 .w-online-dialog-ctn p {
-  margin: -23px 0 5px 36px;
+  margin: -25px 0 5px 44px;
+  font-size: 14px;
 }
 .w-confirm-reload-dialog {
   z-index: 1000000000;

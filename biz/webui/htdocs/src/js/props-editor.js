@@ -375,7 +375,7 @@ var PropsEditor = React.createClass({
                   <button
                     onClick={this.removeLocalFile}
                     type="button"
-                    className="close"
+                    className="btn-close"
                     title="Remove file"
                   >
 

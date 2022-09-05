@@ -28,7 +28,7 @@ function createDialog() {
         '<div class="modal-dialog">' +
         '<div class="modal-content">' +
         '<div class="modal-body">' +
-        '<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"></button>' +
+        '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>' +
         '<div class="w-online-dialog-ctn"></div>' +
         '<div class="w-online-dialog-info">' +
         proxyInfoList.join('') +

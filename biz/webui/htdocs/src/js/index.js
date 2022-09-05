@@ -3907,7 +3907,7 @@ var Index = React.createClass({
             className="w-files-menu"
             draggable="false"
           >
-            <i class="bi bi-cloud-arrow-up-fill"></i>Files
+            <i className="bi bi-file-earmark-text-fill"></i>Files
           </a>
           <div
             onMouseEnter={this.showWeinreOptions}
@@ -4605,7 +4605,7 @@ var Index = React.createClass({
               <div className="modal-body">
                 <button
                   type="button"
-                  className="close"
+                  className="btn-close"
                   data-bs-dismiss="modal"
                   aria-label="Close"
                 >
