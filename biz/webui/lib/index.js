@@ -77,7 +77,7 @@ function getLoginKey (req, res, auth) {
 function requireLogin(res, msg) {
   res.setHeader('WWW-Authenticate', ' Basic realm=User Login');
   res.setHeader('Content-Type', 'text/html; charset=utf8');
-  res.status(401).end(msg || 'Access denied, please <a href="javascript:;" onclick="location.reload()">try again</a>.');
+  res.status(407).end(msg || 'Access denied, please <a href="javascript:;" onclick="location.reload()">try again</a>.');
 }
 
 function verifyLogin(req, res, auth) {
@@ -184,7 +184,7 @@ app.use(function(req, res, next) {
     if (!msg && !authUrl) {
       return res.redirect(status);
     }
-    if (status === 401) {
+    if (status === 407) {
       return requireLogin(res, msg);
     }
     res.set('Content-Type', 'text/html; charset=utf8');
