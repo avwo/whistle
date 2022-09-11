@@ -1,3 +1,6 @@
+# v2.9.30
+1. feat: 支持通过插件设置规则模板，详见：https://wproxy.org/whistle/plugins.html
+
 # v2.9.29
 1. fix: 导出 har 后再导入改 har 时请求内容可能发生变化问题
 2. feat: headless 模式支持加载插件及抓包数据
