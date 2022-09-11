@@ -93,7 +93,7 @@
     "clipboard": "^1.7.1",
     "codemirror": "5.5.0",
     "coveralls": "^2.11.12",
-    "css-loader": "0.16.0",
+    "css-loader": "6.7.1",
     "eslint": "^2.8.0",
     "eslint-plugin-react": "^4.3.0",
     "file-loader": "0.8.4",
