@@ -1,5 +1,6 @@
 # v2.9.30
 1. feat: 支持通过插件设置规则模板，详见：https://wproxy.org/whistle/plugins.html
+2. fix: 修复代理响应 407 问题：https://github.com/avwo/whistle/issues/776
 
 # v2.9.29
 1. fix: 导出 har 后再导入改 har 时请求内容可能发生变化问题
