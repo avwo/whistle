@@ -102,7 +102,7 @@
     "jquery": "3.3.1",
     "js-base64": "^2.4.5",
     "prop-types": "^15.5.8",
-    "qrcode": "1.2.0",
+    "qrcode": "1.5.1",
     "react": "^15.6.2",
     "react-base16-styling": "^0.5.1",
     "react-dom": "^15.6.2",
