@@ -7,7 +7,7 @@ body,
   height: 100%;
 }
 #container {
-  min-width: 1100px;
+  min-width: 1180px;
   min-height: 560px;
 }
 ::-webkit-scrollbar {

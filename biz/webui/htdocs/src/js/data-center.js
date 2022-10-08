@@ -34,6 +34,7 @@ var logId;
 var uploadFiles;
 var port;
 var pageId;
+var account;
 var dumpCount = 0;
 var updateCount = 0;
 var MAX_UPDATE_COUNT = 4;
@@ -591,6 +592,10 @@ exports.getComTabs = function () {
   return comTabList;
 };
 
+exports.getAccount = function() {
+  return account;
+};
+
 exports.getInitialData = function (callback) {
   if (!initialDataPromise) {
     initialDataPromise = $.Deferred();
@@ -600,7 +605,9 @@ exports.getInitialData = function (callback) {
         if (!data) {
           return setTimeout(load, 1000);
         }
-        port = data.server && data.server.port;
+        var server = data.server;
+        port = server && server.port;
+        account = server && server.account;
         updateCertStatus(data);
         exports.supportH2 = data.supportH2;
         exports.custom1 = data.custom1;
@@ -797,7 +804,9 @@ function startLoadData() {
       if (!data || data.ec !== 0) {
         return;
       }
-      port = data.server && data.server.port;
+      var server = data.server;
+      port = server && server.port;
+      account = server && server.account;
       updateCertStatus(data);
       exports.supportH2 = data.supportH2;
       exports.custom1 = data.custom1;
@@ -1425,7 +1434,10 @@ exports.getPlugin = function (name) {
 };
 
 function getMenus(menuName) {
-  var list = [];
+  var list = account && account[menuName];
+  if (!Array.isArray(list)) {
+    list = [];
+  }
   if (disabledAllPlugins) {
     return list;
   }

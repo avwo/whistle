@@ -33,3 +33,21 @@
   font-size: 12px;
   line-height: 16px;
 }
+
+.w-detail .w-addon-btn {
+  max-width: 85px;
+  max-width: calc(100% - 475px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: none;
+}
+
+.w-show-addon .w-addon-btn {
+  display: inline-block!important;
+
+}
+
+.w-show-addon .w-tabs-sm .btn {
+  padding: 4px 9px 3px;
+}
+

@@ -22,7 +22,7 @@ var storage = require('./storage');
 var Dialog = require('./dialog');
 var ListDialog = require('./list-dialog');
 var FilterBtn = require('./filter-btn');
-var FilesDialog = require('./files-dialog');
+// var FilesDialog = require('./files-dialog');
 var message = require('./message');
 var UpdateAllBtn = require('./update-all-btn');
 var ContextMenu = require('./context-menu');
@@ -753,11 +753,6 @@ var Index = React.createClass({
     });
     events.on('disableAllPlugins', self.disableAllPlugins);
     events.on('disableAllRules', self.disableAllRules);
-    events.on('showFiles', function (_, data) {
-      self.files = self.files || data;
-      self.showFiles();
-    });
-
     events.on('activeRules', function () {
       var rulesModal = dataCenter.rulesModal;
       if (rulesModal.exists(dataCenter.activeRulesName)) {
@@ -2697,9 +2692,9 @@ var Index = React.createClass({
   composer: function () {
     events.trigger('composer');
   },
-  showFiles: function () {
-    this.refs.filesDialog.show(this.files);
-  },
+  // showFiles: function () {
+  //   this.refs.filesDialog.show(this.files);
+  // },
   clear: function () {
     var modal = this.state.network;
     this.setState({
@@ -3889,13 +3884,13 @@ var Index = React.createClass({
             isNetwork={isNetwork}
             hide={isPlugins}
           />
-          <a
+          {/* <a
             onClick={this.showFiles}
             className="w-files-menu"
             draggable="false"
           >
             <span className="glyphicon glyphicon-upload"></span>Files
-          </a>
+          </a> */}
           <div
             onMouseEnter={this.showWeinreOptions}
             onMouseLeave={this.hideWeinreOptions}
@@ -3975,6 +3970,14 @@ var Index = React.createClass({
               className="w-help-menu-item"
             />
           </div>
+          <a
+            onClick={this.showHttpsSettingsDialog}
+            className="w-account-menu"
+            draggable="false"
+          >
+            <span className="glyphicon glyphicon-user"></span>
+            Account
+          </a>
           <Online name={name} />
           <div
             onMouseDown={this.preventBlur}
@@ -4714,7 +4717,7 @@ var Index = React.createClass({
             </button>
           </div>
         </Dialog>
-        <FilesDialog ref="filesDialog" />
+        {/* <FilesDialog ref="filesDialog" /> */}
         <ListDialog
           ref="selectRulesDialog"
           name="rules"

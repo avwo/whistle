@@ -6,6 +6,7 @@
   padding-right: 80px;
   position: relative;
   z-index: 1001;
+  white-space: nowrap;
 }
 .w-menu a,
 .w-history-bar a {
@@ -20,6 +21,7 @@
 .w-menu a {
   height: 27px;
   line-height: 28px;
+  overflow: hidden;
 }
 .w-menu .glyphicon,
 .w-detail .glyphicon {
@@ -31,6 +33,7 @@
 }
 .w-menu .w-online {
   position: absolute;
+  top: 0;
   right: 0;
 }
 .w-menu .w-online,
@@ -209,6 +212,20 @@
 .w-confirm-import-dialog .modal-dialog {
   width: 320px;
   font-weight: bold;
+}
+
+.w-account-menu {
+  white-space: nowrap;
+  max-width: 100px;
+  max-width: calc(100% - 1000px);
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: none!important;
+}
+
+.w-show-left-menu .w-account-menu {
+  max-width: 220px;
+  max-width: calc(100% - 900px);
 }
 
 .w-show-left-menu-btn {

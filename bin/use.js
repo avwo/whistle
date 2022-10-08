@@ -24,10 +24,14 @@ function handleRules(filepath, callback, port) {
   if (typeof getRules !== 'function') {
     return callback(getRules);
   }
-  getRules(callback, {
+  var opts = {
     port: port,
     existsPlugin: existsPlugin
-  });
+  };
+  if (options && options.host) {
+    opts.host = options.host;
+  }
+  getRules(callback, opts);
 }
 
 function getString(str) {
@@ -112,15 +116,16 @@ function checkDefault(running, storage, callback) {
 
 module.exports = function(filepath, storage, force) {
   storage = storage || '';
-  var config = readConfig(storage) || '';
-  options = config.options;
+  var dir = encodeURIComponent(storage);
+  var config = readConfig(dir) || '';
+  options = config.options || '';
   var pid = options && config.pid;
   var addon = options && options.addon;
   var conf = require('../lib/config');
   conf.addon = addon && typeof addon === 'string' ? addon.split(/[|,]/) : null;
   conf.noGlobalPlugins = options && options.noGlobalPlugins;
   isRunning(pid, function(running) {
-    checkDefault(running, storage, function(err, port) {
+    checkDefault(running, dir, function(err, port) {
       if (err) {
         return showStartWhistleTips(storage);
       }

@@ -9,9 +9,11 @@ var Inspectors = require('./inspectors');
 var Timeline = require('./timeline');
 var ComposerList = require('./composer-list');
 var Tools = require('./tools');
+var dataCenter = require('./data-center');
 
 var ReqData = React.createClass({
   getInitialState: function () {
+    var account = dataCenter.getAccount();
     return {
       tabs: [
         {
@@ -32,6 +34,11 @@ var ReqData = React.createClass({
         },
         {
           name: 'Tools',
+          icon: 'heart'
+        },
+        {
+          name: 'Addon',
+          className: 'w-addon-btn',
           icon: 'wrench'
         }
       ],
@@ -40,7 +47,8 @@ var ReqData = React.createClass({
       initedFrames: false,
       initedTimeline: false,
       initedComposer: false,
-      initedTools: false
+      initedTools: false,
+      addonTab: account && account.addonTab
     };
   },
   componentDidMount: function () {
@@ -85,6 +93,23 @@ var ReqData = React.createClass({
           self.toggleTab(tabs[0]);
         }
       });
+    dataCenter.on('serverInfo', function(data) {
+      if (!data) {
+        return;
+      }
+      var addonTab = data.account && data.account.addonTab;
+      var curTab = self.state.addonTab;
+      if (!addonTab || !curTab) {
+        if (addonTab !== curTab) {
+          self.setState({ addonTab: addonTab });
+        }
+        return;
+      }
+      if (addonTab.icon !== curTab.icon || addonTab.name !== curTab.name ||
+        addonTab.url !== curTab.url) {
+        self.setState({ addonTab: addonTab });
+      }
+    });
   },
   showComposer: function (item) {
     if (item) {
@@ -143,8 +168,9 @@ var ReqData = React.createClass({
   },
   render: function () {
     var modal = this.props.modal;
+    var state = this.state;
     var data = this.props.data;
-    var tabs = this.state.tabs;
+    var tabs = state.tabs;
     var selectedList = !data && modal && modal.getSelectedList();
     var activeItem;
     var overview;
@@ -189,7 +215,7 @@ var ReqData = React.createClass({
         overview = activeItem = selectedList && selectedList[0];
       }
     }
-    var curTab = this.state.tab;
+    var curTab = state.tab;
     if (!curTab && overview) {
       curTab = tabs[0];
       tabs.forEach(function (tab) {
@@ -198,13 +224,20 @@ var ReqData = React.createClass({
       this.selectTab(curTab);
     }
     var name = curTab && curTab.name;
-
+    var addonTab = state.addonTab || {};
+    var tabUrl = addonTab.url;
     var frames = activeItem && activeItem.frames;
     var dockToBottom = this.props.dockToBottom;
+    var lastTab = tabs[tabs.length - 1];
+    if (tabUrl) {
+      lastTab.icon = addonTab.icon || 'wrench';
+      lastTab.title = lastTab.display = addonTab.name || '';
+    }
     return (
       <div
         className={
           'fill orient-vertical-box w-detail' +
+          (tabUrl ? ' w-show-addon' : '') +
           (dockToBottom ? ' w-detail-bottom' : '')
         }
         onDragEnter={this.onDragEnter}
@@ -232,26 +265,30 @@ var ReqData = React.createClass({
           onClick={this.toggleTab}
           tabs={tabs}
         />
-        {this.state.initedOverview ? (
+        {state.initedOverview ? (
           <Overview modal={overview} hide={name != tabs[0].name} />
         ) : null}
-        {this.state.initedInspectors ? (
+        {state.initedInspectors ? (
           <Inspectors
             modal={activeItem}
             frames={frames}
             hide={name != tabs[1].name}
           />
         ) : null}
-         {this.state.initedTimeline ? (
+         {state.initedTimeline ? (
           <Timeline data={data} modal={modal} hide={name != tabs[2].name} />
         ) : null}
-        {this.state.initedComposer ? (
+        {state.initedComposer ? (
           <ComposerList
-            modal={this.state.activeItem}
+            modal={state.activeItem}
             hide={name != tabs[3].name}
           />
         ) : null}
-        {this.state.initedTools ? <Tools hide={name != tabs[4].name} /> : null}
+        {state.initedTools ? <Tools hide={name != tabs[4].name} /> : null}
+        {state.initedAddon && tabUrl ? <iframe
+          src={tabUrl}
+          className={'fill w-addon-frame' + (name != tabs[5].name ? ' hide' : '')}
+        /> : null}
       </div>
     );
   }
