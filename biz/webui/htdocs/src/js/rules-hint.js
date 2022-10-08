@@ -171,33 +171,24 @@ function getAtValueList(keyword) {
 function getPluginVarHints(keyword, specProto) {
   var list;
   if (specProto) {
-    list = protocols.getAllPluginNameList();
     keyword = keyword.substring(specProto.length + 3);
+    list = protocols.getAllPluginNameList().map(function (name) {
+      return specProto + '://' + name;
+    });
   } else {
     keyword = keyword.substring(1);
-    list = protocols.getPluginNameList();
+    list = protocols.getPluginVarList();
   }
   if (!keyword) {
-    return list.map(function (name) {
-      return specProto ? specProto + '://' + name : name + '=';
-    });
+    return list;
   }
-  var result = [];
   keyword = keyword.toLowerCase();
   if (specProto) {
     keyword = specProto + '://' + keyword;
   }
-  list.forEach(function (name) {
-    if (specProto) {
-      name = specProto + '://' + name;
-    } else {
-      name += '=';
-    }
-    if (name.indexOf(keyword) !== -1) {
-      result.push(name);
-    }
+  return list.filter(function (name) {
+    return name.indexOf(keyword) !== -1;
   });
-  return result;
 }
 
 function getAtHelpUrl(name, options) {
@@ -322,10 +313,12 @@ CodeMirror.registerHelper('hint', 'rulesHint', function (editor, options) {
   var pluginName;
   var value;
   var pluginVars;
+  var sep;
   var specProto = PLUGIN_SPEC_RE.test(curWord) && RegExp.$1;
   var isPluginVar = P_RE.test(curWord);
   if (isPluginVar && P_VAR_RE.test(curWord)) {
     pluginName = RegExp.$1;
+    sep = RegExp.$2;
     plugin = pluginName && dataCenter.getPlugin(pluginName + ':');
     pluginVars = plugin && plugin.pluginVars;
     if (!pluginVars) {
@@ -350,7 +343,7 @@ CodeMirror.registerHelper('hint', 'rulesHint', function (editor, options) {
     }
     return {
       list: list,
-      from: CodeMirror.Pos(cur.line, specProto ? start : start + 1),
+      from: CodeMirror.Pos(cur.line, start),
       to: CodeMirror.Pos(cur.line, end)
     };
   }
@@ -479,11 +472,14 @@ CodeMirror.registerHelper('hint', 'rulesHint', function (editor, options) {
               waitingRemoteHints = false;
             });
           }
-          getRemoteHints(
-            {
-              protocol: protoName,
-              value: value
-            },
+          var hintOpts = {
+            protocol: protoName,
+            value: value
+          };
+          if (sep) {
+            hintOpts.sep = sep;
+          }
+          getRemoteHints(hintOpts,
             function (data) {
               handleRemoteHints(
                 data,
