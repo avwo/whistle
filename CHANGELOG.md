@@ -1,3 +1,7 @@
+# v2.9.31
+1. fix: https://github.com/avwo/whistle/issues/789
+2. refactor: 优化插件的环境变量，支持通过 `hintSuffix` 自定义提示信息
+
 # v2.9.30
 1. feat: 支持通过插件设置规则模板，详见：https://wproxy.org/whistle/plugins.html
 2. fix: 修复代理响应 407 问题：https://github.com/avwo/whistle/issues/776
