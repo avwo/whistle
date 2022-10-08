@@ -3866,7 +3866,7 @@ var Index = React.createClass({
             style={{ display: isNetwork ? '' : 'none' }}
             draggable="false"
           >
-            <span className="glyphicon glyphicon-edit"></span>Compose
+            <span className="glyphicon glyphicon-send"></span>Compose
           </a>
           <a
             onClick={this.onClickMenu}

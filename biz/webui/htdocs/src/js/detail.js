@@ -30,7 +30,7 @@ var ReqData = React.createClass({
         },
         {
           name: 'Composer',
-          icon: 'edit'
+          icon: 'send'
         },
         {
           name: 'Tools',

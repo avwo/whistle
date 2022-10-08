@@ -336,6 +336,7 @@ var PropsEditor = React.createClass({
         ) : (
           <button
             onClick={this.onAdd}
+            disabled={this.props.disabled}
             className={
               'btn btn-primary btn-sm w-add-field' +
               (this.props.isHeader ? ' w-add-header' : '')
