@@ -1,6 +1,7 @@
 # v2.9.32
 1. refactor: 彻底删除 Files 菜单
 2. style: 添加删除整个分组的按钮
+3. style: 优化 Composer 交互及修复界面的一些问题
 
 # v2.9.31
 1. fix: https://github.com/avwo/whistle/issues/789
