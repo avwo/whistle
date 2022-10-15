@@ -59,9 +59,9 @@ var SEND_CTX_MENU = [
   { name: 'Show History', action: 'history' }
 ];
 var HISTORY_CTX_MENU = [
+  { name: 'Compose' },
   { name: 'Replay' },
-  { name: 'Replay Times' },
-  { name: 'Compose' }
+  { name: 'Replay Times' }
 ];
 var TYPES = {
   form: 'application/x-www-form-urlencoded',
