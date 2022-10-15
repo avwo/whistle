@@ -31,7 +31,6 @@ var hashFilterObj;
 var clearNetwork;
 var inited;
 var logId;
-var uploadFiles;
 var port;
 var pageId;
 var account;
@@ -60,10 +59,6 @@ exports.MAX_INCLUDE_LEN = MAX_INCLUDE_LEN;
 exports.MAX_EXCLUDE_LEN = MAX_EXCLUDE_LEN;
 exports.changeLogId = function (id) {
   logId = id;
-};
-
-exports.getUploadFiles = function () {
-  return uploadFiles;
 };
 
 exports.getPort = function () {
@@ -431,10 +426,7 @@ exports.values = createCgiObj(
     },
     add: 'cgi-bin/values/add',
     remove: 'cgi-bin/values/remove',
-    rename: 'cgi-bin/values/rename',
-    upload: 'cgi-bin/values/upload',
-    checkFile: 'cgi-bin/values/check-file',
-    removeFile: 'cgi-bin/values/remove-file'
+    rename: 'cgi-bin/values/rename'
   },
   POST_CONF
 );
@@ -612,7 +604,6 @@ exports.getInitialData = function (callback) {
         exports.supportH2 = data.supportH2;
         exports.custom1 = data.custom1;
         exports.custom2 = data.custom2;
-        uploadFiles = data.uploadFiles;
         initialData = data;
         pageId = data.clientId;
         DEFAULT_CONF.data.clientId = pageId;

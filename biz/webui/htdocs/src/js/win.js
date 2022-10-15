@@ -35,6 +35,7 @@ function createConfirm() {
         '</div>' +
         '<div class="modal-footer">' +
         '<button type="button" class="btn btn-default w-win-cancel" data-dismiss="modal">Cancel</button>' +
+        '<button type="button" class="btn btn-danger w-win-delete-all" data-dismiss="modal">Delete All</button>' +
         '<button type="button" class="btn btn-primary w-win-confirm" data-dismiss="modal">Confirm</button>' +
         '</div>' +
         '</div>' +
@@ -47,9 +48,15 @@ function createConfirm() {
       }
       handleConfirm = null;
     });
+    confirmDialog.on('click', '.w-win-delete-all', function () {
+      if (typeof handleConfirm === 'function') {
+        handleConfirm(2);
+      }
+      handleConfirm = null;
+    });
     confirmDialog.on('click', '.w-win-confirm', function () {
       if (typeof handleConfirm === 'function') {
-        handleConfirm(true);
+        handleConfirm(1);
       }
       handleConfirm = null;
     });
@@ -63,11 +70,12 @@ function mockAlert(msg) {
   alertDialog.modal('show');
 }
 
-function mockConfirm(msg, cb) {
+function mockConfirm(msg, cb, removeAllBtn) {
   createConfirm();
   if (confirmDialog.is(':visible')) {
     return;
   }
+  confirmDialog.find('.w-win-delete-all')[removeAllBtn ? 'show' : 'hide']();
   handleConfirm = cb;
   confirmDialog.find('pre').text(msg);
   confirmDialog.modal('show');

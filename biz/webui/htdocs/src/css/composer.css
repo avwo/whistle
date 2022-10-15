@@ -285,6 +285,7 @@
   overflow-y: auto;
   overflow-x: hidden;
   background-color: #fdfdfd;
+  position: relative;
 }
 
 .w-history-data .w-tips {
@@ -338,7 +339,7 @@
   font-weight: bold;
 }
 
-.w-composer-tab-list .glyphicon-edit {
+.w-composer-tab-list .glyphicon-send {
   color: #cf6c40;
 }
 
@@ -357,4 +358,20 @@
 
 .w-composer-list .w-custom-tabs {
   height: 22px;
+}
+
+.w-hide-history {
+  position: absolute;
+  top: 0;
+  right: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.w-history-title {
+  font-weight: bold;
+  margin-top: 3px;
+  margin-left: 5px;
+  display: inline-block;
 }

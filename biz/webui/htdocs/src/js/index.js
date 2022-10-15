@@ -2712,10 +2712,16 @@ var Index = React.createClass({
         if (!sure) {
           return;
         }
-        dataCenter.rules.remove({ name: name }, function (data, xhr) {
+        var wholeGroup = sure === 2;
+        dataCenter.rules.remove({ name: name, wholeGroup: wholeGroup ? 1 : undefined }, function (data, xhr) {
           if (data && data.ec === 0) {
-            var nextItem = item && !item.active ? null : modal.getSibling(name);
-            modal.remove(name);
+            var nextItem;
+            if (wholeGroup) {
+              nextItem = modal.removeGroup(name);
+            } else {
+              nextItem = item && !item.active ? null : modal.getSibling(name);
+              modal.remove(name);
+            }
             if (nextItem) {
               self.setRulesActive(nextItem.name);
               events.trigger('expandRulesGroup', nextItem.name);
@@ -2733,7 +2739,7 @@ var Index = React.createClass({
             util.showSystemError(xhr);
           }
         });
-      });
+      }, util.isGroup(name));
     }
   },
   removeValues: function (item) {
@@ -2746,10 +2752,16 @@ var Index = React.createClass({
         if (!sure) {
           return;
         }
-        dataCenter.values.remove({ name: name }, function (data, xhr) {
+        var wholeGroup = sure === 2;
+        dataCenter.values.remove({ name: name, wholeGroup: wholeGroup ? 1 : undefined }, function (data, xhr) {
           if (data && data.ec === 0) {
-            var nextItem = item && !item.active ? null : modal.getSibling(name);
-            modal.remove(name);
+            var nextItem;
+            if (wholeGroup) {
+              nextItem = modal.removeGroup(name);
+            } else {
+              nextItem = item && !item.active ? null : modal.getSibling(name);
+              modal.remove(name);
+            }
             if (nextItem) {
               self.setValuesActive(nextItem.name);
               events.trigger('expandValuesGroup', nextItem.name);
@@ -2761,7 +2773,7 @@ var Index = React.createClass({
             util.showSystemError(xhr);
           }
         });
-      });
+      }, util.isGroup(name));
     }
   },
   setRulesActive: function (name, modal) {

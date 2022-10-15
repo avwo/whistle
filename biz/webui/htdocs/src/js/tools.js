@@ -24,7 +24,7 @@ var BTNS = [
   },
   {
     name: 'Toolbox',
-    icon: 'wrench'
+    icon: 'briefcase'
   }
 ];
 

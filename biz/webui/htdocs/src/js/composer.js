@@ -965,20 +965,22 @@ var Composer = React.createClass({
               </div>
             )}
             <div className="fill w-history-list" ref="historyList">
+              <span className="w-history-title">History</span>
+              <span onClick={self.toggleHistory} className="w-hide-history" aria-hidden="true">
+                &times;
+              </span>
               {historyData.map(function (item) {
                 if (!item.url) {
                   return <p>{item.title}</p>;
                 }
+                var showActions = function (e) {
+                  self.selectItem(item);
+                  self.showHistoryMenu(e);
+                };
                 return (
                   <div
-                    onClick={function () {
-                      self.selectItem(item);
-                    }}
-                    onDoubleClick={self.showHistoryMenu}
-                    onContextMenu={function(e) {
-                      self.selectItem(item);
-                      self.showHistoryMenu(e);
-                    }}
+                    onClick={showActions}
+                    onContextMenu={showActions}
                     title={item.title}
                     className={item.selected ? 'w-selected' : null}
                   >

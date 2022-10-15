@@ -7,7 +7,6 @@ var ca = require('../../../lib/https/ca');
 var proxy = require('../lib/proxy');
 
 var properties = rulesUtil.properties;
-var getUploadFiles = rulesUtil.values.getUploadFiles;
 var logger = proxy.logger;
 var pluginMgr = proxy.pluginMgr;
 
@@ -32,7 +31,6 @@ module.exports = function(req, res) {
     mvaluesTime: config.mvaluesTime,
     latestVersion: properties.getLatestVersion('latestVersion'),
     server: util.getServerInfo(req),
-    uploadFiles: getUploadFiles(),
     rules: getRules(),
     values: getValues(),
     interceptHttpsConnects: properties.isEnableCapture(),

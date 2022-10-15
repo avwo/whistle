@@ -10,6 +10,8 @@ var Timeline = require('./timeline');
 var ComposerList = require('./composer-list');
 var Tools = require('./tools');
 var dataCenter = require('./data-center');
+var IFrame = require('./iframe');
+var util = require('./util');
 
 var ReqData = React.createClass({
   getInitialState: function () {
@@ -129,7 +131,7 @@ var ReqData = React.createClass({
     var modal = this.props.modal;
     var id = e.dataTransfer.getData('reqDataId');
     var list = modal && modal.list;
-    events.trigger('hideMaskIframe');
+    util.hideIFrameMask();
     if (!id || !list) {
       return;
     }
@@ -285,9 +287,9 @@ var ReqData = React.createClass({
           />
         ) : null}
         {state.initedTools ? <Tools hide={name != tabs[4].name} /> : null}
-        {state.initedAddon && tabUrl ? <iframe
+        {state.initedAddon && tabUrl ? <IFrame
           src={tabUrl}
-          className={'fill w-addon-frame' + (name != tabs[5].name ? ' hide' : '')}
+          className={name != tabs[5].name ? ' hide' : ''}
         /> : null}
       </div>
     );
