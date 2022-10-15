@@ -1,3 +1,7 @@
+# v2.9.32
+1. refactor: 彻底删除 Files 菜单
+2. style: 添加删除整个分组的按钮
+
 # v2.9.31
 1. fix: https://github.com/avwo/whistle/issues/789
 2. refactor: 优化插件的环境变量，支持通过 `hintSuffix` 自定义提示信息
