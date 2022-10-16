@@ -1155,7 +1155,7 @@ var Composer = React.createClass({
                         }
                         onClick={this.addHeader}
                       >
-                        Add header
+                        +Header
                       </button>
                     </div>
                     <textarea
@@ -1246,7 +1246,7 @@ var Composer = React.createClass({
                           showUpload ? this.addUploadFiled : this.addField
                         }
                       >
-                        Add field
+                        +Param
                       </button>
                     </div>
                     <textarea

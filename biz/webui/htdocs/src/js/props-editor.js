@@ -342,7 +342,7 @@ var PropsEditor = React.createClass({
               (this.props.isHeader ? ' w-add-header' : '')
             }
           >
-            {this.props.isHeader ? 'Add header' : 'Add field'}
+            {this.props.isHeader ? '+Header' : '+Param'}
           </button>
         )}
         <Dialog ref="composerDialog" wstyle="w-composer-dialog">
