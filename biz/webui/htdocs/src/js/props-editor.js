@@ -278,7 +278,7 @@ var PropsEditor = React.createClass({
     var isHeader = this.props.isHeader;
     var allowUploadFile = this.props.allowUploadFile;
     var data = this.state.data || '';
-    var btnText = (data ? 'Modify' : 'Add') + (isHeader ? ' header' : ' field');
+    var btnText = (data ? 'Modify' : 'Add') + (isHeader ? ' header' : ' param');
 
     return (
       <div
