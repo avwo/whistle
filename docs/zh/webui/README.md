@@ -9,7 +9,6 @@
 1. [WebSocket(WebSocket抓包功能)](websocket.md)
 1. [Filter(设置Network请求列表的过滤条件)](filter.md)
 1. [Settings(设置对话框)](settings.md)
-1. [Files(上传大块内容文件)](files.md)
 1. [Weinre(weinre列表)](weinre.md)
 1. [HTTPS(设置HTTPS拦截及根证书)](https.md)
 1. [Help(帮助文档)](help.md)

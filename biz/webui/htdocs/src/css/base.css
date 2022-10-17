@@ -10,7 +10,7 @@ body,
     'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
 }
 #container {
-  min-width: 1100px;
+  min-width: 1180px;
   min-height: 560px;
 }
 ::-webkit-scrollbar {

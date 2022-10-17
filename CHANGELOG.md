@@ -1,3 +1,16 @@
+# v2.9.32
+1. refactor: 彻底删除 Files 菜单
+2. style: 添加删除整个分组的按钮
+3. style: 优化 Composer 交互及修复界面的一些问题
+
+# v2.9.31
+1. fix: https://github.com/avwo/whistle/issues/789
+2. refactor: 优化插件的环境变量，支持通过 `hintSuffix` 自定义提示信息
+
+# v2.9.30
+1. feat: 支持通过插件设置规则模板，详见：https://wproxy.org/whistle/plugins.html
+2. fix: 修复代理响应 407 问题：https://github.com/avwo/whistle/issues/776
+
 # v2.9.29
 1. fix: 导出 har 后再导入改 har 时请求内容可能发生变化问题
 2. feat: headless 模式支持加载插件及抓包数据

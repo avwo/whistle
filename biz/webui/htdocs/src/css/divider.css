@@ -15,7 +15,7 @@
 }
 .w-divider-con.box > div > .w-divider {
   top: 0;
-  width: 5px;
+  width: 6px;
   height: 100%;
   cursor: ew-resize;
 }

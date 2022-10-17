@@ -51,6 +51,15 @@ var METHODS = [
   'UNLINK',
   'UNSUBSCRIBE'
 ];
+var SEND_CTX_MENU = [
+  { name: 'Repeat Times' },
+  { name: 'Show History', action: 'history' }
+];
+var HISTORY_CTX_MENU = [
+  { name: 'Compose' },
+  { name: 'Replay' },
+  { name: 'Replay Times' }
+];
 var TYPES = {
   form: 'application/x-www-form-urlencoded',
   upload: 'multipart/form-data',
@@ -898,16 +907,22 @@ var Composer = React.createClass({
               </div>
             ) : null}
             <div className="fill w-history-list" ref="historyList">
+              <span className="w-history-title">History</span>
+              <span onClick={self.toggleHistory} className="w-hide-history" aria-hidden="true">
+                &times;
+              </span>
               {historyData.map(function (item) {
                 if (!item.url) {
                   return <p>{item.title}</p>;
                 }
+                var showActions = function (e) {
+                  self.selectItem(item);
+                  self.showHistoryMenu(e);
+                };
                 return (
                   <div
-                    onClick={function () {
-                      self.selectItem(item);
-                    }}
-                    onDoubleClick={self.onCompose}
+                    onClick={showActions}
+                    onContextMenu={showActions}
                     title={item.title}
                     className={item.selected ? 'w-selected' : null}
                   >
@@ -1081,7 +1096,7 @@ var Composer = React.createClass({
                         }
                         onClick={this.addHeader}
                       >
-                        Add header
+                        +Header
                       </button>
                     </div>
                     <textarea
@@ -1172,7 +1187,7 @@ var Composer = React.createClass({
                           showUpload ? this.addUploadFiled : this.addField
                         }
                       >
-                        Add field
+                        +Param
                       </button>
                     </div>
                     <textarea

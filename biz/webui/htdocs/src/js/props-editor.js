@@ -278,7 +278,7 @@ var PropsEditor = React.createClass({
     var isHeader = this.props.isHeader;
     var allowUploadFile = this.props.allowUploadFile;
     var data = this.state.data || '';
-    var btnText = (data ? 'Modify' : 'Add') + (isHeader ? ' header' : ' field');
+    var btnText = (data ? 'Modify' : 'Add') + (isHeader ? ' header' : ' param');
 
     return (
       <div
@@ -336,12 +336,13 @@ var PropsEditor = React.createClass({
         ) : (
           <button
             onClick={this.onAdd}
+            disabled={this.props.disabled}
             className={
               'btn btn-primary btn-sm w-add-field' +
               (this.props.isHeader ? ' w-add-header' : '')
             }
           >
-            {this.props.isHeader ? 'Add header' : 'Add field'}
+            {this.props.isHeader ? '+Header' : '+Param'}
           </button>
         )}
         <Dialog ref="composerDialog" wstyle="w-composer-dialog">

@@ -125,7 +125,20 @@ exports.getBase64FromHexText = function (str, check) {
 
 function stopDrag() {
   dragCallback = dragTarget = dragOffset = null;
+  hideIFrameMask();
 }
+
+function showIFrameMask(hideByHover) {
+  var mask = $('.w-iframe-mask').show();
+  hideByHover && mask.parent().attr('allow-dragover', 1);
+}
+
+function hideIFrameMask() {
+  $('.w-iframe-mask').hide().parent().removeAttr('allow-dragover');
+}
+
+exports.showIFrameMask = showIFrameMask;
+exports.hideIFrameMask = hideIFrameMask;
 
 $(document)
   .on('mousedown', function (e) {
@@ -144,6 +157,7 @@ $(document)
       return;
     }
     dragOffset = e;
+    showIFrameMask();
     e.preventDefault();
   })
   .on('mousemove', function (e) {
