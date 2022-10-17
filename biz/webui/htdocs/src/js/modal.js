@@ -46,13 +46,13 @@ function createModal(options, callback, gVarName) {
     >
       <div className="modal-header">
         <h4></h4>
-        <button type="button" className="close" data-dismiss="modal">
-          <span aria-hidden="true">&times;</span>
+        <button type="button" className="btn-close" data-bs-dismiss="modal">
+
         </button>
       </div>
       <div className="modal-body"></div>
       <div className="modal-footer">
-        <button type="button" className="btn btn-default" data-dismiss="modal">
+        <button type="button" className="btn btn-default" data-bs-dismiss="modal">
           Close
         </button>
       </div>

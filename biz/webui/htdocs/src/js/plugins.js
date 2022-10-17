@@ -386,8 +386,8 @@ var Home = React.createClass({
         <Dialog ref="pluginRulesDialog" wstyle="w-plugin-rules-dialog">
           <div className="modal-header">
             <h4>{plugin.name}</h4>
-            <button type="button" className="close" data-dismiss="modal">
-              <span aria-hidden="true">&times;</span>
+            <button type="button" className="btn-close" data-bs-dismiss="modal">
+
             </button>
           </div>
           <div className="modal-body">
@@ -416,7 +416,7 @@ var Home = React.createClass({
             <button
               type="button"
               className="btn btn-default"
-              data-dismiss="modal"
+              data-bs-dismiss="modal"
             >
               Close
             </button>
@@ -426,7 +426,7 @@ var Home = React.createClass({
           <div className="modal-body">
             <h5>
               <a
-                data-dismiss="modal"
+                data-bs-dismiss="modal"
                 className="w-copy-text-with-tips"
                 data-clipboard-text={cmdMsg}
               >
@@ -450,7 +450,7 @@ var Home = React.createClass({
               If uninstall failed, delete the following directory instead:
               <a
                 className="w-copy-text-with-tips"
-                data-dismiss="modal"
+                data-bs-dismiss="modal"
                 data-clipboard-text={state.pluginPath}
                 style={{ marginLeft: 5, cursor: 'pointer' }}
               >
@@ -461,7 +461,7 @@ var Home = React.createClass({
           <div className="modal-footer">
             <button
               type="button"
-              data-dismiss="modal"
+              data-bs-dismiss="modal"
               className="btn btn-primary w-copy-text-with-tips"
               data-clipboard-text={cmdMsg}
             >
@@ -470,7 +470,7 @@ var Home = React.createClass({
             <button
               type="button"
               className="btn btn-default"
-              data-dismiss="modal"
+              data-bs-dismiss="modal"
             >
               Close
             </button>
@@ -576,7 +576,7 @@ var Tabs = React.createClass({
                   className={disd ? 'w-plugin-tab-disabled' : undefined}
                 >
                   {disd ? (
-                    <span className="glyphicon glyphicon-ban-circle"></span>
+                    <i className="bi bi-slash-circle-fill"></i>
                   ) : undefined}
                   {tab.name}
                   <span

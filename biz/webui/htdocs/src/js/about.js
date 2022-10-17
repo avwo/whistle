@@ -23,7 +23,7 @@ var About = React.createClass({
       self.setState({
         version: data.version,
         latestVersion: data.latestVersion,
-        hasUpdate: self.checkUpdate(hasNewVersion(data))
+        hasUpdate: self.checkUpdate(hasNewVersion(data)),
       });
     });
   },
@@ -52,7 +52,7 @@ var About = React.createClass({
         self.setState({
           version: data.version,
           latestVersion: data.latestVersion,
-          hasUpdate: self.checkUpdate(hasNewVersion(data))
+          hasUpdate: self.checkUpdate(hasNewVersion(data)),
         });
       }
     });
@@ -70,23 +70,15 @@ var About = React.createClass({
     var latest = state.latestVersion;
 
     return (
-      <a
-        draggable="false"
-        onClick={self.showAboutInfo}
-        className="w-about-menu"
-      >
+      <a draggable="false" onClick={self.showAboutInfo} className="w-about-menu">
         {state.hasUpdate ? <i className="w-new-version-icon" /> : null}
-        <span className="glyphicon glyphicon-info-sign"></span>About
+        <i className="bi bi-exclamation-circle-fill"></i> About
         <Dialog ref="aboutDialog" wstyle="w-about-dialog">
           <div className="modal-body w-about-has-plugins">
-            <button type="button" className="close" data-dismiss="modal">
-              <span aria-hidden="true">&times;</span>
-            </button>
+            <button type="button" className="btn-close" data-bs-dismiss="modal"></button>
             <img alt="logo" src="img/whistle.png?v=2016" />
             <span className="w-about-dialog-ctn">
-              <span className="w-about-dialog-title">
-                Whistle for Web Developers.
-              </span>
+              <span className="w-about-dialog-title">Whistle for Web Developers.</span>
               Version:{' '}
               <a
                 className="w-about-version"
@@ -123,18 +115,14 @@ var About = React.createClass({
             </span>
           </div>
           <div className="modal-footer">
-            <button
-              type="button"
-              className="btn btn-default"
-              data-dismiss="modal"
-            >
+            <button type="button" className="btn btn-default" data-bs-dismiss="modal">
               Close
             </button>
           </div>
         </Dialog>
       </a>
     );
-  }
+  },
 });
 
 module.exports = About;

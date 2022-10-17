@@ -28,8 +28,8 @@ var EditorDialog = React.createClass({
       <Dialog ref="editorDialog" wstyle="w-editor-dialog">
         <div className="modal-header">
           Edit the copied text
-          <button type="button" className="close" data-dismiss="modal">
-            <span aria-hidden="true">&times;</span>
+          <button type="button" className="btn-close" data-bs-dismiss="modal">
+
           </button>
         </div>
         <div className="modal-body">
@@ -38,7 +38,7 @@ var EditorDialog = React.createClass({
         <div className="modal-footer">
           <button
             type="button"
-            data-dismiss="modal"
+            data-bs-dismiss="modal"
             className="btn btn-primary w-copy-text-with-tips"
             data-clipboard-text={state.value}
             disabled={!value}
@@ -48,7 +48,7 @@ var EditorDialog = React.createClass({
           <button
             type="button"
             className="btn btn-default"
-            data-dismiss="modal"
+            data-bs-dismiss="modal"
           >
             Close
           </button>

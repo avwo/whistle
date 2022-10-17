@@ -10,8 +10,8 @@
   padding: 0;
   width: 100%;
   box-sizing: border-box;
-  border: 1px solid #ccc;
-  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+  /* border: 1px solid #ccc; */
+  box-shadow: 0 0 10px #ccc;
   background: #fff;
   min-width: 110px;
   border-radius: 2px;
@@ -20,13 +20,6 @@
 .w-ctx-menu-list .w-ctx-item-tt input {
   margin-right: 5px;
   vertical-align: text-top;
-}
-
-.w-ctx-menu-list .glyphicon-play {
-  line-height: 28px;
-  font-size: 10px;
-  margin-left: 10px;
-  transform: scale(.8);
 }
 
 .w-ctx-menu-list label {

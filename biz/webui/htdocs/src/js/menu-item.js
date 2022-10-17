@@ -70,8 +70,8 @@ var MenuItem = React.createClass({
                     />
                   ) : option.icon === false ? undefined : (
                     <span
-                      className={
-                        'glyphicon glyphicon-' + (option.icon || 'asterisk')
+                      className={ //TODO
+                        'bi ' + (option.icon || 'bi-asterisk')
                       }
                       style={{ visibility: option.icon ? '' : 'hidden' }}
                     ></span>
@@ -87,7 +87,7 @@ var MenuItem = React.createClass({
         {name ? (
           typeof name === 'string' ? (
             <a onClick={onClick} className="w-menu-open" draggable="false">
-              <span className="glyphicon glyphicon-folder-open"></span>
+              <i className="bi bi-folder2-open"></i>
               {name}
             </a>
           ) : (

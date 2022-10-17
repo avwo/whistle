@@ -65,8 +65,8 @@ var ListDialog = React.createClass({
     return (
       <Dialog ref="dialog" wclassName=" w-list-dialog">
         <div className="modal-body">
-          <button type="button" className="close" data-dismiss="modal">
-            <span aria-hidden="true">&times;</span>
+          <button type="button" className="btn-close" data-bs-dismiss="modal">
+
           </button>
           <p>
             Filename:
@@ -85,7 +85,7 @@ var ListDialog = React.createClass({
                   type="checkbox"
                   checked={!!checkedItems[name]}
                 />
-                {util.isGroup(name) ? <span className="glyphicon glyphicon-triangle-right w-list-group-icon" /> : null}
+                {util.isGroup(name) ? <i class="bi bi-caret-right-fill w-list-group-icon"></i> : null}
                 {name}
               </label>
             );
@@ -98,7 +98,7 @@ var ListDialog = React.createClass({
           <button
             type="button"
             className="btn btn-default"
-            data-dismiss="modal"
+            data-bs-dismiss="modal"
           >
             Cancel
           </button>

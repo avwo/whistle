@@ -1,6 +1,5 @@
 var React = require('react');
 var MenuItem = require('./menu-item');
-require('../css/record-btn.css');
 var PAUSE_OPTION = {
   name: 'Pause Record',
   icon: 'minus-sign',
@@ -108,7 +107,7 @@ var RecordBtn = React.createClass({
         >
           <span
             style={{ color: !pause && stop ? '#ccc' : '#f66' }}
-            className={'glyphicon glyphicon-' + (pause ? 'minus-sign' : 'stop')}
+            className={'bi ' + (pause ? 'bi-dash-circle-fill' : 'bi-stop-circle-fill')}
           ></span>
           Record
         </a>

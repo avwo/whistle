@@ -68,7 +68,7 @@ export type WhistleSecureFilter = ((item: WhistleSession, clientIp?: string, fil
 
 export interface WhistleOptions {
   config?: string;
-  cluster?: number;
+  cluster?: number | string;
   server?: EventEmitter | Server;
   debugMode?: boolean;
   mode?: string;

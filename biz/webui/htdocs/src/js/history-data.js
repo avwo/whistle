@@ -33,8 +33,8 @@ var HistoryData = React.createClass({
     return (
       <Dialog ref="historyDialog" wstyle="w-composer-history-dialog">
         <div className="modal-body w-composer-history">
-          <button type="button" className="close" onClick={self.hide}>
-            <span aria-hidden="true">&times;</span>
+          <button type="button" className="btn-close" onClick={self.hide}>
+
           </button>
           <table className="table">
             <thead>
@@ -81,10 +81,7 @@ var HistoryData = React.createClass({
                         onClick={self.onReplay}
                         className="btn btn-primary"
                       >
-                        <span
-                          data-index={i}
-                          className="glyphicon glyphicon-repeat"
-                        ></span>
+                        <i className="bi bi-arrow-repeat" data-index={i}></i>
                       </button>
                       <button
                         title="Compose"
@@ -92,10 +89,7 @@ var HistoryData = React.createClass({
                         onClick={self.onCompose}
                         className="btn btn-default"
                       >
-                        <span
-                          data-index={i}
-                          className="glyphicon glyphicon-edit"
-                        ></span>
+                        <i className="bi bi-pencil-square" data-index={i}></i>
                       </button>
                     </td>
                   </tr>

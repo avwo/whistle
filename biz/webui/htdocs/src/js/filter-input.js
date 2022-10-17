@@ -195,7 +195,7 @@ var FilterInput = React.createClass({
           >
             <div className="w-filter-bar">
               <a onClick={this.clear}>
-                <span className="glyphicon glyphicon-trash"></span>
+                <i className="bi bi-trash-fill"></i>
                 Clear history
               </a>
               <span onClick={self.hideHints} aria-hidden="true">
@@ -236,7 +236,7 @@ var FilterInput = React.createClass({
           className="close"
           title="Ctrl[Command]+D"
         >
-          <span aria-hidden="true">&times;</span>
+
         </button>
       </div>
     );

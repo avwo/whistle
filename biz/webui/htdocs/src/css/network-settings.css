@@ -47,13 +47,6 @@
   text-align: left;
   width: 120px;
 }
-.network-settings-columns label .glyphicon-edit {
-  margin-left: 5px;
-  cursor: pointer;
-}
-.network-settings-columns label .glyphicon-edit:hover {
-  color: #337ab7;
-}
 .network-settings-columns .btn {
   margin-right: 0;
   text-align: center;

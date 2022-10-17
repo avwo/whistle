@@ -28,7 +28,7 @@ function createDialog() {
         '<div class="modal-dialog">' +
         '<div class="modal-content">' +
         '<div class="modal-body">' +
-        '<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
+        '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>' +
         '<div class="w-online-dialog-ctn"></div>' +
         '<div class="w-online-dialog-info">' +
         proxyInfoList.join('') +
@@ -36,7 +36,7 @@ function createDialog() {
         '<a class="w-online-view-dns">View custom DNS servers</a>' +
         '</div>' +
         '<div class="modal-footer">' +
-        '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>' +
+        '<button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>' +
         '</div>' +
         '</div>' +
         '</div>' +
@@ -445,7 +445,7 @@ var Online = React.createClass({
         className={'w-online-menu w-online' + (server ? '' : ' w-offline')}
         onClick={this.showServerInfo}
       >
-        <span className="glyphicon glyphicon-stats"></span>
+        <i className="bi bi-bar-chart-fill"></i>
         {server ? 'Online' : 'Offline'}
         {server && server.dns ? (
           <span>{server.doh ? '(DOH)' : server.r6 ? '(IPv6)' : '(IPv4)'}</span>
@@ -455,8 +455,8 @@ var Online = React.createClass({
           wstyle="w-confirm-reload-dialog w-confirm-reload-global"
         >
           <div className="modal-body w-confirm-reload">
-            <button type="button" className="close" data-dismiss="modal">
-              <span aria-hidden="true">&times;</span>
+            <button type="button" className="btn-close" data-bs-dismiss="modal">
+
             </button>
             The proxy has been modified.
             <br />
@@ -466,7 +466,7 @@ var Online = React.createClass({
             <button
               type="button"
               className="btn btn-default"
-              data-dismiss="modal"
+              data-bs-dismiss="modal"
             >
               Cancel
             </button>

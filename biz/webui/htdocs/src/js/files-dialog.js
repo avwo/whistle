@@ -226,8 +226,8 @@ var FilesDialog = React.createClass({
     return (
       <Dialog wstyle="w-files-dialog" ref="filesDialog">
         <div className="modal-body">
-          <button type="button" className="close" data-dismiss="modal">
-            <span aria-hidden="true">&times;</span>
+          <button type="button" className="btn-close" data-bs-dismiss="modal">
+
           </button>
           <h4>
             <a
@@ -236,12 +236,12 @@ var FilesDialog = React.createClass({
               href="https://avwo.github.io/whistle/webui/files.html"
               target="_blank"
             >
-              <span className="glyphicon glyphicon-question-sign"></span>
+              <i className="bi bi-question-circle-fill"></i>
             </a>
             System Files
           </h4>
           <button className="w-files-upload-btn" onClick={self.selectFile}>
-            <span className="glyphicon glyphicon-arrow-up"></span>
+            <i className="bi bi-arrow-up-square-fill"></i>
             Drop file here or click to browse (size &lt;= 20m)
           </button>
           <table
@@ -286,7 +286,7 @@ var FilesDialog = React.createClass({
           <button
             type="button"
             className="btn btn-default"
-            data-dismiss="modal"
+            data-bs-dismiss="modal"
           >
             Close
           </button>
@@ -306,8 +306,8 @@ var FilesDialog = React.createClass({
         <Dialog ref="filenameDialog" wstyle="w-files-info-dialog">
           <div className="modal-header">
             {title || 'Modify the filename'}
-            <button type="button" className="close" data-dismiss="modal">
-              <span aria-hidden="true">&times;</span>
+            <button type="button" className="btn-close" data-bs-dismiss="modal">
+
             </button>
           </div>
           <div className="modal-body">
@@ -340,7 +340,7 @@ var FilesDialog = React.createClass({
             <button
               type="button"
               className="btn btn-default"
-              data-dismiss="modal"
+              data-bs-dismiss="modal"
             >
               Close
             </button>

@@ -64,15 +64,6 @@ var contextMenuList = [
     ]
   },
   {
-    name: '+File',
-    list: [
-      { name: 'Req Body' },
-      { name: 'Res Body' },
-      { name: 'Req Raw' },
-      { name: 'Res Raw' }
-    ]
-  },
-  {
     name: 'Remove',
     list: [
       { name: 'All' },
@@ -149,13 +140,13 @@ var Spinner = React.createClass({
       <div className="w-spinner">
         <span
           className={
-            'glyphicon glyphicon-triangle-top' +
+            'bi bi-caret-top-fill' +
             (order ? ' spinner-' + order : '')
           }
         ></span>
         <span
           className={
-            'glyphicon glyphicon-triangle-bottom' +
+            'bi bi-caret-bottom-fill' +
             (order ? ' spinner-' + order : '')
           }
         ></span>
@@ -276,13 +267,13 @@ function getType(className) {
 
 function getIcon(data, className) {
   if (className.indexOf('danger') !== -1) {
-    return <span className="icon-leaf glyphicon glyphicon-remove-circle" />;
+    return <i className="icon-leaf bi bi-x-circle-fill" />;
   }
   if (className.indexOf('w-forbidden') !== -1) {
-    return <span className="icon-leaf glyphicon glyphicon-ban-circle" />;
+    return <i className="icon-leaf bi bi-slash-circle-fill" />;
   }
   if (data && !data.endTime && !data.lost) {
-    return <span className="icon-leaf glyphicon glyphicon-hourglass" />;
+    return <i className="icon-leaf bi bi-hourglass-split" />;
   }
   var type = getType(className);
   var status = data.res && data.res.statusCode;
@@ -291,35 +282,11 @@ function getIcon(data, className) {
   }
   return (
     <span
-      className={status || type ? 'w-type-icon' : 'glyphicon glyphicon-file'}
+      className={status || type ? 'w-type-icon' : 'bi bi-file-earmark-text-fill'}
     >
       {status || type || null}
     </span>
   );
-}
-
-function getFilename(item, type) {
-  var url = util.removeProtocol(item.url.replace(/[?#].*/, ''));
-  var index = url.lastIndexOf('/');
-  var name = index != -1 && url.substring(index + 1);
-  var isRaw = type[4] === 'r';
-  if (name) {
-    index = name.lastIndexOf('.');
-    if (index !== -1 && index < name.length - 1) {
-      return (
-        name.substring(0, index) +
-        '_' +
-        type +
-        (isRaw ? '.txt' : '.' + name.substring(index + 1))
-      );
-    }
-  } else {
-    name = url.substring(0, url.indexOf('/'));
-  }
-  var suffix = isRaw
-    ? ''
-    : util.getExtension(type[2] === 'q' ? item.req.headers : item.res.headers);
-  return name + '_' + type + suffix;
 }
 
 function removeLighhight(elem) {
@@ -330,10 +297,12 @@ var Row = React.createClass({
   render: function () {
     var p = this.props;
     var order = p.order;
+    var index = p.index;
     var draggable = p.draggable;
     var columnList = p.columnList;
     var item = p.item;
-    var style = item.style;
+    var style = item.style || {};
+    style.backgroundColor = index % 2 ? '#f5f5f5' : '#fff'; // 斑马纹效果
     return (
       <table className="table" key={p.key} style={p.style}>
         <tbody>
@@ -638,7 +607,7 @@ var ReqData = React.createClass({
     var target = $(e.target).closest('.w-req-data-item');
     var dataId = target.attr('data-id');
     if (dataId) {
-      events.trigger('showMaskIframe');
+      util.showIFrameMask(true);
       e.dataTransfer.setData('reqDataId', dataId);
     }
   },
@@ -834,58 +803,6 @@ var ReqData = React.createClass({
     case 'Abort':
       events.trigger('abortRequest', item);
       break;
-    case 'Req Body':
-      events.trigger('showFilenameInput', {
-        title: 'Set the filename of request body',
-        base64: item.req.base64,
-        name: getFilename(item, 'req_body')
-      });
-      break;
-    case 'Res Body':
-      events.trigger('showFilenameInput', {
-        title: 'Set the filename of response body',
-        base64: item.res.base64,
-        name: getFilename(item, 'res_body')
-      });
-      break;
-    case 'Req Raw':
-      var req = item.req;
-      var realUrl = item.realUrl;
-      if (!realUrl || !/^(?:http|wss)s?:\/\//.test(realUrl)) {
-        realUrl = item.url;
-      }
-      var reqLine = [
-        req.method,
-        req.method == 'CONNECT' ? req.headers.host : util.getPath(realUrl),
-        'HTTP/' + (req.httpVersion || '1.1')
-      ].join(' ');
-      events.trigger('showFilenameInput', {
-        title: 'Set the filename of request raw data',
-        headers:
-            reqLine +
-            '\r\n' +
-            util.objectToString(req.headers, req.rawHeaderNames, true),
-        base64: req.base64,
-        name: getFilename(item, 'req_raw')
-      });
-      break;
-    case 'Res Raw':
-      var res = item.res;
-      var statusLine = [
-        'HTTP/' + (item.req.httpVersion || '1.1'),
-        res.statusCode,
-        util.getStatusMessage(res)
-      ].join(' ');
-      events.trigger('showFilenameInput', {
-        title: 'Set the filename of response raw data',
-        headers:
-            statusLine +
-            '\r\n' +
-            util.objectToString(res.headers, res.rawHeaderNames, true),
-        base64: item.res.base64,
-        name: getFilename(item, 'res_raw')
-      });
-      break;
     case 'Import':
       events.trigger('importSessions', e);
       break;
@@ -1058,58 +975,58 @@ var ReqData = React.createClass({
     var selectedList = modal.getSelectedList();
     var selectedCount = selectedList.length;
     var hasData = modal.list.length;
-    var list3 = contextMenuList[3].list;
-    contextMenuList[3].disabled = !hasData;
-    list3[0].disabled = !hasData;
-    list3[1].disabled = clickBlank;
-    list3[2].disabled = disabled || selectedCount === hasData;
-    list3[3].disabled = !selectedCount;
-    list3[4].disabled = selectedCount === hasData;
-    list3[5].disabled = !modal.hasUnmarked();
-    list3[6].disabled = clickBlank;
-    list3[7].disabled = clickBlank;
+    var removeItem = contextMenuList[2].list;
+    contextMenuList[2].disabled = !hasData;
+    removeItem[0].disabled = !hasData;
+    removeItem[1].disabled = clickBlank;
+    removeItem[2].disabled = disabled || selectedCount === hasData;
+    removeItem[3].disabled = !selectedCount;
+    removeItem[4].disabled = selectedCount === hasData;
+    removeItem[5].disabled = !modal.hasUnmarked();
+    removeItem[6].disabled = clickBlank;
+    removeItem[7].disabled = clickBlank;
 
-    var list4 = contextMenuList[4].list;
-    list4[1].disabled = clickBlank;
-    list4[2].disabled = clickBlank;
+    var filterItem = contextMenuList[3].list;
+    filterItem[1].disabled = clickBlank;
+    filterItem[2].disabled = clickBlank;
 
-    contextMenuList[5].disabled = disabled;
-    var list5 = contextMenuList[5].list;
+    var actionItem = contextMenuList[4].list;
+    contextMenuList[4].disabled = disabled;
     if (item) {
-      list5[3].disabled = false;
+      actionItem[3].disabled = false;
       if (item.selected) {
-        list5[4].disabled = true;
-        list5[5].disabled = true;
+        actionItem[4].disabled = true;
+        actionItem[5].disabled = true;
         selectedList.forEach(function (selectedItem) {
           if (selectedItem.mark) {
-            list5[5].disabled = false;
+            actionItem[5].disabled = false;
           } else {
-            list5[4].disabled = false;
+            actionItem[4].disabled = false;
           }
         });
       } else {
         var unmark = !item.mark;
-        list5[4].disabled = !unmark;
-        list5[5].disabled = unmark;
+        actionItem[4].disabled = !unmark;
+        actionItem[5].disabled = unmark;
       }
       if (item.selected) {
         var len = selectedList.length;
-        list5[0].disabled = !selectedList.filter(util.canAbort).length;
-        list5[1].disabled = !len;
-        list5[2].disabled = !len || len > 1;
+        actionItem[0].disabled = !selectedList.filter(util.canAbort).length;
+        actionItem[1].disabled = !len;
+        actionItem[2].disabled = !len || len > 1;
       } else {
-        list5[0].disabled = !util.canAbort(item);
-        list5[1].disabled = false;
-        list5[2].disabled = false;
+        actionItem[0].disabled = !util.canAbort(item);
+        actionItem[1].disabled = false;
+        actionItem[2].disabled = false;
       }
     } else {
-      list5[0].disabled = true;
-      list5[1].disabled = true;
-      list5[2].disabled = true;
-      list5[3].disabled = true;
-      list5[4].disabled = true;
+      actionItem[0].disabled = true;
+      actionItem[1].disabled = true;
+      actionItem[2].disabled = true;
+      actionItem[3].disabled = true;
+      actionItem[4].disabled = true;
     }
-    var treeItem = contextMenuList[6];
+    var treeItem = contextMenuList[5];
     var treeList = treeItem.list;
     treeItem.hide = !modal.isTreeView;
     treeItem.disabled = !treeNodeData && !hasData;
@@ -1124,14 +1041,14 @@ var ReqData = React.createClass({
       treeList[2].disabled = isLeaf;
       treeList[3].disabled = isLeaf;
       var count = (treeNodeData.parent || modal.root).children.length;
-      list3[2].disabled = count <= 1;
+      removeItem[2].disabled = count <= 1;
     } else if (modal.isTreeView) {
       treeList[0].disabled = true;
       treeList[1].disabled = true;
       treeList[2].disabled = !hasData;
       treeList[3].disabled = !hasData;
     }
-    var pluginItem = contextMenuList[9];
+    var pluginItem = contextMenuList[8];
     pluginItem.disabled = disabled && !selectedCount;
     util.addPluginMenus(
       pluginItem,
@@ -1139,7 +1056,7 @@ var ReqData = React.createClass({
       treeItem.hide ? 8 : 9,
       disabled
     );
-    var height = (treeItem.hide ? 310 : 340) - (pluginItem.hide ? 30 : 0);
+    var height = (treeItem.hide ? 280 : 310) - (pluginItem.hide ? 30 : 0);
     pluginItem.maxHeight = height;
     var data = util.getMenuPosition(e, 110, height);
     data.list = contextMenuList;
@@ -1269,7 +1186,7 @@ var ReqData = React.createClass({
     }
     try {
       this.refs.content.refs.list.scrollToRow(target);
-    } catch (e) {}
+    } catch (e) { }
     this.container.focus();
   },
   getTreeNode: function (e) {
@@ -1326,23 +1243,21 @@ var ReqData = React.createClass({
       <tr
         key={leaf ? leaf.id : item.path}
         style={style}
-        className={`w-req-data-item tree-node ${
-          leaf ? 'tree-leaf' : ''
-        } ${className}`}
+        className={`w-req-data-item tree-node ${leaf ? 'tree-leaf' : ''
+          } ${className}`}
         data-id={leaf && leaf.id}
         data-tree={item.path}
         draggable={leaf && draggable}
         onClick={leaf ? null : this.toggleNode}
         title={leaf ? util.getUrl(leaf.url) : value}
-        onKeyDown={function () {}}
+        onKeyDown={function () { }}
       >
         {leaf ? (
           getIcon(leaf, className)
         ) : (
           <span
-            className={`icon-fold glyphicon glyphicon-triangle-${
-              item.expand ? 'bottom' : 'right'
-            }`}
+            className={`icon-fold bi bi-caret-${item.expand ? 'bottom' : 'right'
+          }-fill`}
           ></span>
         )}
         {value.length > 320 ? value.substring(0, 320) + '...' : value}
@@ -1410,12 +1325,7 @@ var ReqData = React.createClass({
             tabIndex="0"
             onContextMenu={self.onContextMenu}
             onKeyDown={self.onReplay}
-            style={{
-              background:
-                dataCenter.hashFilterObj || filterText
-                  ? 'lightyellow'
-                  : undefined
-            }}
+            style={{}}
             className={
               'w-req-data-list fill' + (isTreeView ? ' w-tree-view-list' : '')
             }
@@ -1426,7 +1336,7 @@ var ReqData = React.createClass({
                 return (
                   <RV.List
                     ref="list"
-                    rowHeight={isTreeView ? TREE_ROW_HEIGHT : 28}
+                    rowHeight={isTreeView ? TREE_ROW_HEIGHT : 24}
                     width={size.width}
                     height={size.height}
                     rowCount={list.length}
@@ -1449,6 +1359,7 @@ var ReqData = React.createClass({
                           columnList={columnList}
                           draggable={draggable}
                           item={item}
+                          index={index}
                         />
                       );
                     }}

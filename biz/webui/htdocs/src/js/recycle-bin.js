@@ -140,8 +140,8 @@ var RecycleBinDialog = React.createClass({
     return (
       <Dialog ref="recycleBinDialog" wstyle="w-files-dialog">
         <div className="modal-body" ref="recycleBinBody">
-          <button type="button" className="close" data-dismiss="modal">
-            <span aria-hidden="true">&times;</span>
+          <button type="button" className="btn-close" data-bs-dismiss="modal">
+
           </button>
           <h4>{state.name} Trash</h4>
           <table className="table">
@@ -159,7 +159,7 @@ var RecycleBinDialog = React.createClass({
                       <th className="w-files-order">{i + 1}</th>
                       <td className="w-files-date">{item.date}</td>
                       <td className="w-files-path" title={item.filename}>
-                        {util.isGroup(item.filename) ? <span className="glyphicon glyphicon-triangle-right w-list-group-icon" /> : null}
+                        {util.isGroup(item.filename) ? <i className="bi bi-caret-right-fill w-list-group-icon" /> : null}
                         {item.filename}
                       </td>
                       <td className="w-files-operation">
@@ -194,7 +194,7 @@ var RecycleBinDialog = React.createClass({
           <button
             type="button"
             className="btn btn-default"
-            data-dismiss="modal"
+            data-bs-dismiss="modal"
           >
             Close
           </button>

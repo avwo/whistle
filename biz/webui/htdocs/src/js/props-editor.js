@@ -278,7 +278,7 @@ var PropsEditor = React.createClass({
     var isHeader = this.props.isHeader;
     var allowUploadFile = this.props.allowUploadFile;
     var data = this.state.data || '';
-    var btnText = (data ? 'Modify' : 'Add') + (isHeader ? ' header' : ' field');
+    var btnText = (data ? 'Modify' : 'Add') + (isHeader ? ' header' : ' param');
 
     return (
       <div
@@ -306,7 +306,7 @@ var PropsEditor = React.createClass({
                     <td>
                       <pre>
                         {item.data ? (
-                          <span className="glyphicon glyphicon-file"></span>
+                          <i className="bi bi-file-earmark-text-fill"></i>
                         ) : undefined}
                         {item.data
                           ? ' [' + util.getSize(item.size) + '] '
@@ -318,13 +318,13 @@ var PropsEditor = React.createClass({
                       <a
                         data-name={name}
                         onClick={self.onEdit}
-                        className="glyphicon glyphicon-edit"
+                        className="bi bi-pencil-square"
                         title="Edit"
                       ></a>
                       <a
                         data-name={name}
                         onClick={self.onRemove}
-                        className="glyphicon glyphicon-remove"
+                        className="bi bi-x-lg"
                         title="Delete"
                       ></a>
                     </td>
@@ -336,18 +336,19 @@ var PropsEditor = React.createClass({
         ) : (
           <button
             onClick={this.onAdd}
+            disabled={this.props.disabled}
             className={
               'btn btn-primary btn-sm w-add-field' +
               (this.props.isHeader ? ' w-add-header' : '')
             }
           >
-            {this.props.isHeader ? 'Add header' : 'Add field'}
+            {this.props.isHeader ? '+Header' : '+Param'}
           </button>
         )}
         <Dialog ref="composerDialog" wstyle="w-composer-dialog">
           <div className="modal-body">
-            <button type="button" className="close" data-dismiss="modal">
-              <span aria-hidden="true">&times;</span>
+            <button type="button" className="btn-close" data-bs-dismiss="modal">
+
             </button>
             <label>
               Name:
@@ -375,12 +376,12 @@ var PropsEditor = React.createClass({
                   <button
                     onClick={this.removeLocalFile}
                     type="button"
-                    className="close"
+                    className="btn-close"
                     title="Remove file"
                   >
-                    <span aria-hidden="true">&times;</span>
+
                   </button>
-                  <span className="glyphicon glyphicon-file"></span>
+                  <i className="bi bi-file-earmark-fill"></i>
                   {' [' + util.getSize(fileSize) + '] '}
                   {filename}
                 </div>
@@ -410,7 +411,7 @@ var PropsEditor = React.createClass({
             <button
               type="button"
               className="btn btn-default"
-              data-dismiss="modal"
+              data-bs-dismiss="modal"
             >
               Cancel
             </button>

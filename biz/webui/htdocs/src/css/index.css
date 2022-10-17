@@ -6,6 +6,7 @@
   padding-right: 80px;
   position: relative;
   z-index: 1001;
+  white-space: nowrap;
 }
 .w-menu a,
 .w-history-bar a {
@@ -20,17 +21,12 @@
 .w-menu a {
   height: 27px;
   line-height: 28px;
+  overflow: hidden;
 }
-.w-menu .glyphicon,
-.w-detail .glyphicon {
-  margin-right: 3px;
-}
-.w-menu .glyphicon-folder-open,
-.w-menu .glyphicon-folder-close {
-  margin-right: 6px;
-}
+
 .w-menu .w-online {
   position: absolute;
+  top: 0;
   right: 0;
 }
 .w-menu .w-online,
@@ -52,9 +48,7 @@
 .w-left-menu .w-disabled {
   color: #aaa;
 }
-.w-menu .w-menu-enable .glyphicon-cog {
-  color: #ff6666 !important;
-}
+
 .w-menu .w-new-version-icon {
   position: absolute;
   top: 2px;
@@ -138,17 +132,10 @@
   display: block !important;
 }
 
-.w-values-list .glyphicon-ok {
-  display: none !important;
-}
+
 .w-values-list a {
   font-weight: normal !important;
 }
-.w-disabled .glyphicon-ok,
-.w-disabled .glyphicon-stop {
-  color: #ccc !important;
-}
-
 .w-rules-settings-dialog .modal-dialog {
   width: 400px;
 }
@@ -211,12 +198,26 @@
   font-weight: bold;
 }
 
+.w-account-menu {
+  white-space: nowrap;
+  max-width: 100px;
+  max-width: calc(100% - 1000px);
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: none!important;
+}
+
+.w-show-left-menu .w-account-menu {
+  max-width: 220px;
+  max-width: calc(100% - 900px);
+}
+
 .w-show-left-menu-btn {
   padding: 0 15px !important;
   margin-right: 0 !important;
 }
 .w-left-menu {
-  background: #f1f3f4;
+  background: #eee;
   border-left: 1px solid #ccc;
   border-right: 1px solid #ccc;
   display: none;
@@ -311,10 +312,6 @@
   height: 30px;
   line-height: 30px;
   padding: 5px;
-}
-
-.w-https-menu .glyphicon-lock {
-  color: #9e9e26;
 }
 
 .w-hover-left-menu {

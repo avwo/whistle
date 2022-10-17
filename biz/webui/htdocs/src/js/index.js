@@ -22,7 +22,7 @@ var storage = require('./storage');
 var Dialog = require('./dialog');
 var ListDialog = require('./list-dialog');
 var FilterBtn = require('./filter-btn');
-var FilesDialog = require('./files-dialog');
+// var FilesDialog = require('./files-dialog');
 var message = require('./message');
 var UpdateAllBtn = require('./update-all-btn');
 var ContextMenu = require('./context-menu');
@@ -50,6 +50,19 @@ var search = window.location.search;
 var hideLeftMenu;
 var showTreeView;
 
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker
+      .register('/js/service-worker.js')
+      .then((registration) => {
+        console.log('SW registered: ', registration);
+      })
+      .catch((registrationError) => {
+        console.log('SW registration failed: ', registrationError);
+      });
+  });
+}
+
 if (/[&#?]showTreeView=(0|false|1|true)(?:&|$|#)/.test(search)) {
   showTreeView = RegExp.$1 === '1' || RegExp.$1 === 'true';
 }
@@ -63,11 +76,11 @@ if (/[&#?]hideLeft(?:Bar|Menu)=(0|false|1|true)(?:&|$|#)/.test(search)) {
 var LEFT_BAR_MENUS = [
   {
     name: 'Clear',
-    icon: 'remove'
+    icon: 'bi-x-lg'
   },
   {
     name: 'Save',
-    icon: 'save-file'
+    icon: 'bi-save'
   },
   {
     name: 'Tree View',
@@ -86,7 +99,7 @@ var LEFT_BAR_MENUS = [
 var RULES_ACTIONS = [
   {
     name: 'Export Selected',
-    icon: 'export',
+    icon: 'bi-download',
     id: 'exportRules'
   },
   {
@@ -97,14 +110,14 @@ var RULES_ACTIONS = [
   },
   {
     name: 'Import',
-    icon: 'import',
+    icon: 'bi-upload',
     id: 'importRules'
   }
 ];
 var VALUES_ACTIONS = [
   {
     name: 'Export Selected',
-    icon: 'export',
+    icon: 'bi-download',
     id: 'exportValues'
   },
   {
@@ -115,14 +128,14 @@ var VALUES_ACTIONS = [
   },
   {
     name: 'Import',
-    icon: 'import',
+    icon: 'bi-upload',
     id: 'importValues'
   }
 ];
 var REMOVE_OPTIONS = [
   {
     name: 'Remove Selected Sessions',
-    icon: 'remove',
+    icon: 'bi-x-lg',
     id: 'removeSelected',
     disabled: true,
     title: 'Ctrl[Command] + D'
@@ -137,7 +150,7 @@ var REMOVE_OPTIONS = [
 var ABORT_OPTIONS = [
   {
     name: 'Abort',
-    icon: 'ban-circle',
+    icon: 'bi-slash-circle-fill',
     id: 'abort'
   }
 ];
@@ -753,11 +766,6 @@ var Index = React.createClass({
     });
     events.on('disableAllPlugins', self.disableAllPlugins);
     events.on('disableAllRules', self.disableAllRules);
-    events.on('showFiles', function (_, data) {
-      self.files = self.files || data;
-      self.showFiles();
-    });
-
     events.on('activeRules', function () {
       var rulesModal = dataCenter.rulesModal;
       if (rulesModal.exists(dataCenter.activeRulesName)) {
@@ -2697,9 +2705,9 @@ var Index = React.createClass({
   composer: function () {
     events.trigger('composer');
   },
-  showFiles: function () {
-    this.refs.filesDialog.show(this.files);
-  },
+  // showFiles: function () {
+  //   this.refs.filesDialog.show(this.files);
+  // },
   clear: function () {
     var modal = this.state.network;
     this.setState({
@@ -2717,10 +2725,16 @@ var Index = React.createClass({
         if (!sure) {
           return;
         }
-        dataCenter.rules.remove({ name: name }, function (data, xhr) {
+        var wholeGroup = sure === 2;
+        dataCenter.rules.remove({ name: name, wholeGroup: wholeGroup ? 1 : undefined }, function (data, xhr) {
           if (data && data.ec === 0) {
-            var nextItem = item && !item.active ? null : modal.getSibling(name);
-            modal.remove(name);
+            var nextItem;
+            if (wholeGroup) {
+              nextItem = modal.removeGroup(name);
+            } else {
+              nextItem = item && !item.active ? null : modal.getSibling(name);
+              modal.remove(name);
+            }
             if (nextItem) {
               self.setRulesActive(nextItem.name);
               events.trigger('expandRulesGroup', nextItem.name);
@@ -2738,7 +2752,7 @@ var Index = React.createClass({
             util.showSystemError(xhr);
           }
         });
-      });
+      }, util.isGroup(name));
     }
   },
   removeValues: function (item) {
@@ -2751,10 +2765,16 @@ var Index = React.createClass({
         if (!sure) {
           return;
         }
-        dataCenter.values.remove({ name: name }, function (data, xhr) {
+        var wholeGroup = sure === 2;
+        dataCenter.values.remove({ name: name, wholeGroup: wholeGroup ? 1 : undefined }, function (data, xhr) {
           if (data && data.ec === 0) {
-            var nextItem = item && !item.active ? null : modal.getSibling(name);
-            modal.remove(name);
+            var nextItem;
+            if (wholeGroup) {
+              nextItem = modal.removeGroup(name);
+            } else {
+              nextItem = item && !item.active ? null : modal.getSibling(name);
+              modal.remove(name);
+            }
             if (nextItem) {
               self.setValuesActive(nextItem.name);
               events.trigger('expandValuesGroup', nextItem.name);
@@ -2766,7 +2786,7 @@ var Index = React.createClass({
             util.showSystemError(xhr);
           }
         });
-      });
+      }, util.isGroup(name));
     }
   },
   setRulesActive: function (name, modal) {
@@ -3461,7 +3481,7 @@ var Index = React.createClass({
     var showHelpOptions = state.showHelpOptions;
     var modal = state.network;
     var isTreeView = modal.isTreeView;
-    var networkType = isTreeView ? 'tree-conifer' : 'globe';
+    var networkType = isTreeView ? 'bi bi-tree-fill' : 'bi bi-globe2';
     if (rulesOptions[0].name === DEFAULT) {
       rulesOptions.forEach(function (item, i) {
         item.icon = !i || !state.multiEnv ? 'checkbox' : 'edit';
@@ -3579,7 +3599,7 @@ var Index = React.createClass({
           >
             <span
               className={
-                'glyphicon glyphicon-chevron-' +
+                'bi bi-chevron-' +
                 (showLeftMenu ? (mustHideLeftMenu ? 'down' : 'up') : 'left')
               }
             ></span>
@@ -3605,7 +3625,7 @@ var Index = React.createClass({
               }
               draggable="false"
             >
-              <span className={'glyphicon glyphicon-' + networkType}></span>
+              <span className={networkType}></span>
               Network
             </a>
             <MenuItem
@@ -3634,7 +3654,7 @@ var Index = React.createClass({
             >
               <span
                 className={
-                  'glyphicon glyphicon-list' +
+                  'bi bi-list-ul' +
                   (disabledAllRules ? ' w-disabled' : '')
                 }
               ></span>
@@ -3669,7 +3689,7 @@ var Index = React.createClass({
               }
               draggable="false"
             >
-              <span className="glyphicon glyphicon-folder-close"></span>Values
+              <i className="bi bi-archive-fill"></i>Values
             </a>
             <MenuItem
               ref="valuesMenuItem"
@@ -3701,7 +3721,7 @@ var Index = React.createClass({
             >
               <span
                 className={
-                  'glyphicon glyphicon-list-alt' +
+                  'bi bi-card-list' +
                   (disabledAllPlugins ? ' w-disabled' : '')
                 }
               ></span>
@@ -3734,8 +3754,8 @@ var Index = React.createClass({
             >
               <span
                 className={
-                  'glyphicon glyphicon-' +
-                  (disabledAllRules ? 'play-circle' : 'off')
+                  'bi ' +
+                  (disabledAllRules ? 'bi-play-circle-fill' : 'bi bi-stop-circle-fill')
                 }
               />
               {disabledAllRules ? 'ON' : 'OFF'}
@@ -3758,8 +3778,8 @@ var Index = React.createClass({
             >
               <span
                 className={
-                  'glyphicon glyphicon-' +
-                  (disabledAllPlugins ? 'play-circle' : 'off')
+                  'bi ' +
+                  (disabledAllPlugins ? 'bi-play-circle-fill' : 'bi-stop-circle-fill')
                 }
               />
               {disabledAllPlugins ? 'ON' : 'OFF'}
@@ -3771,7 +3791,7 @@ var Index = React.createClass({
             className={'w-plugins-menu' + (isPlugins ? '' : ' hide')}
             draggable="false"
           >
-            <span className="glyphicon glyphicon-download-alt" />
+            <i className="bi bi-cloud-arrow-down-fill"></i>
             ReinstallAll
           </a>
           <RecordBtn
@@ -3785,7 +3805,7 @@ var Index = React.createClass({
             style={{ display: isPlugins ? 'none' : '' }}
             draggable="false"
           >
-            <span className="glyphicon glyphicon-import"></span>Import
+            <i className="bi bi-cloud-arrow-up-fill"></i>Import
           </a>
           <a
             onClick={this.exportData}
@@ -3793,7 +3813,7 @@ var Index = React.createClass({
             style={{ display: isPlugins ? 'none' : '' }}
             draggable="false"
           >
-            <span className="glyphicon glyphicon-export"></span>Export
+            <i className="bi bi-cloud-arrow-down-fill"></i>Export
           </a>
           <div
             onMouseEnter={this.showRemoveOptions}
@@ -3810,7 +3830,7 @@ var Index = React.createClass({
               title="Ctrl[Command] + X"
               draggable="false"
             >
-              <span className="glyphicon glyphicon-remove"></span>Clear
+              <i className="bi bi-x-lg"></i>Clear
             </a>
             <MenuItem
               options={REMOVE_OPTIONS}
@@ -3825,7 +3845,7 @@ var Index = React.createClass({
             draggable="false"
             title="Ctrl[Command] + S"
           >
-            <span className="glyphicon glyphicon-save-file"></span>Save
+            <i className="bi bi-save-fill"></i>Save
           </a>
           <a
             className="w-create-menu"
@@ -3833,7 +3853,7 @@ var Index = React.createClass({
             draggable="false"
             onClick={this.handleCreate}
           >
-            <span className="glyphicon glyphicon-plus"></span>Create
+            <i className="bi bi-plus-lg"></i>Create
           </a>
           <a
             onClick={this.onClickMenu}
@@ -3841,7 +3861,7 @@ var Index = React.createClass({
             style={{ display: isNetwork || isPlugins ? 'none' : '' }}
             draggable="false"
           >
-            <span className="glyphicon glyphicon-edit"></span>Rename
+            <i className="bi bi-pencil-square"></i>Rename
           </a>
           <div
             onMouseEnter={this.showAbortOptions}
@@ -3857,7 +3877,7 @@ var Index = React.createClass({
               className="w-replay-menu"
               draggable="false"
             >
-              <span className="glyphicon glyphicon-repeat"></span>Replay
+              <i className="bi bi-arrow-repeat"></i>Replay
             </a>
             <MenuItem
               options={ABORT_OPTIONS}
@@ -3871,7 +3891,7 @@ var Index = React.createClass({
             style={{ display: isNetwork ? '' : 'none' }}
             draggable="false"
           >
-            <span className="glyphicon glyphicon-edit"></span>Compose
+            <i className="bi bi-pencil-square"></i>Compose
           </a>
           <a
             onClick={this.onClickMenu}
@@ -3881,7 +3901,7 @@ var Index = React.createClass({
             style={{ display: isNetwork || isPlugins ? 'none' : '' }}
             draggable="false"
           >
-            <span className="glyphicon glyphicon-trash"></span>Delete
+            <i className="bi bi-trash-fill"></i>Delete
           </a>
           <FilterBtn
             onClick={this.showSettings}
@@ -3889,12 +3909,12 @@ var Index = React.createClass({
             isNetwork={isNetwork}
             hide={isPlugins}
           />
-          <a
+          {/* <a
             onClick={this.showFiles}
             className="w-files-menu"
             draggable="false"
           >
-            <span className="glyphicon glyphicon-upload"></span>Files
+            <i className="bi bi-file-earmark-text-fill"></i>Files
           </a>
           <div
             onMouseEnter={this.showWeinreOptions}
@@ -3910,7 +3930,7 @@ var Index = React.createClass({
               className="w-weinre-menu"
               draggable="false"
             >
-              <span className="glyphicon glyphicon-console"></span>Weinre
+              <i className="bi bi-terminal-fill"></i>Weinre
             </a>
             <MenuItem
               ref="weinreMenuItem"
@@ -3929,8 +3949,8 @@ var Index = React.createClass({
           >
             <span
               className={
-                'glyphicon glyphicon-' +
-                (state.interceptHttpsConnects ? 'ok' : 'lock')
+                'bi ' +
+                (state.interceptHttpsConnects ? 'bi-check-lg' : 'bi-shield-lock-fill')
               }
             ></span>
             HTTPS
@@ -3960,7 +3980,7 @@ var Index = React.createClass({
               target={state.hasNewVersion ? undefined : '_blank'}
             >
               {state.hasNewVersion ? <i className="w-new-version-icon" /> : null}
-              <span className="glyphicon glyphicon-question-sign"></span>Help
+              <i className="bi bi-question-circle-fill"></i>Help
             </a>
             <MenuItem
               ref="helpMenuItem"
@@ -3975,6 +3995,14 @@ var Index = React.createClass({
               className="w-help-menu-item"
             />
           </div>
+          <a
+            onClick={this.showHttpsSettingsDialog}
+            className="w-account-menu"
+            draggable="false"
+          >
+            <span className="glyphicon glyphicon-user"></span>
+            Account
+          </a>
           <Online name={name} />
           <div
             onMouseDown={this.preventBlur}
@@ -4105,7 +4133,7 @@ var Index = React.createClass({
               style={{ display: rulesMode ? 'none' : undefined }}
               draggable="false"
             >
-              <span className={'glyphicon glyphicon-' + networkType}></span>
+              <span className={networkType}></span>
               <i className="w-left-menu-name">Network</i>
             </a>
             <a
@@ -4119,7 +4147,7 @@ var Index = React.createClass({
             >
               <span
                 className={
-                  'glyphicon glyphicon-list' +
+                  'bi bi-list-ul' +
                   (disabledAllRules ? ' w-disabled' : '')
                 }
               ></span>
@@ -4142,7 +4170,7 @@ var Index = React.createClass({
               style={{ display: pluginsMode ? 'none' : undefined }}
               draggable="false"
             >
-              <span className="glyphicon glyphicon-folder-close"></span>
+              <i className="bi bi-archive-fill"></i>
               <i className="w-left-menu-name">Values</i>
               <i
                 className="w-menu-changed"
@@ -4165,7 +4193,7 @@ var Index = React.createClass({
             >
               <span
                 className={
-                  'glyphicon glyphicon-list-alt' +
+                  'bi bi-card-list' +
                   (disabledAllPlugins ? ' w-disabled' : '')
                 }
               ></span>
@@ -4231,11 +4259,11 @@ var Index = React.createClass({
               <div className="modal-body">
                 <button
                   type="button"
-                  className="close"
-                  data-dismiss="modal"
+                  className="btn-close"
+                  data-bs-dismiss="modal"
                   aria-label="Close"
                 >
-                  <span aria-hidden="true">&times;</span>
+
                 </button>
                 <EditorSettings
                   theme={rulesTheme}
@@ -4277,7 +4305,7 @@ var Index = React.createClass({
                 <button
                   type="button"
                   className="btn btn-default"
-                  data-dismiss="modal"
+                  data-bs-dismiss="modal"
                 >
                   Close
                 </button>
@@ -4294,11 +4322,11 @@ var Index = React.createClass({
               <div className="modal-body">
                 <button
                   type="button"
-                  className="close"
-                  data-dismiss="modal"
+                  className="btn-close"
+                  data-bs-dismiss="modal"
                   aria-label="Close"
                 >
-                  <span aria-hidden="true">&times;</span>
+
                 </button>
                 <EditorSettings
                   theme={valuesTheme}
@@ -4325,7 +4353,7 @@ var Index = React.createClass({
                 <button
                   type="button"
                   className="btn btn-default"
-                  data-dismiss="modal"
+                  data-bs-dismiss="modal"
                 >
                   Close
                 </button>
@@ -4340,11 +4368,11 @@ var Index = React.createClass({
               <div className="modal-body">
                 <button
                   type="button"
-                  className="close"
-                  data-dismiss="modal"
+                  className="btn-close"
+                  data-bs-dismiss="modal"
                   aria-label="Close"
                 >
-                  <span aria-hidden="true">&times;</span>
+
                 </button>
                 <div>
                   <a
@@ -4353,7 +4381,7 @@ var Index = React.createClass({
                     href="https://avwo.github.io/whistle/webui/https.html"
                     target="_blank"
                   >
-                    <span className="glyphicon glyphicon-question-sign"></span>
+                    <i className="bi bi-question-circle-fill"></i>
                   </a>
                   <a
                     className="w-download-rootca"
@@ -4420,7 +4448,7 @@ var Index = React.createClass({
                 <button
                   type="button"
                   className="btn btn-default"
-                  data-dismiss="modal"
+                  data-bs-dismiss="modal"
                 >
                   Close
                 </button>
@@ -4517,7 +4545,7 @@ var Index = React.createClass({
             <button
               type="button"
               className="btn btn-default"
-              data-dismiss="modal"
+              data-bs-dismiss="modal"
             >
               Close
             </button>
@@ -4547,7 +4575,7 @@ var Index = React.createClass({
             <button
               type="button"
               className="btn btn-default"
-              data-dismiss="modal"
+              data-bs-dismiss="modal"
             >
               Close
             </button>
@@ -4577,7 +4605,7 @@ var Index = React.createClass({
             <button
               type="button"
               className="btn btn-default"
-              data-dismiss="modal"
+              data-bs-dismiss="modal"
             >
               Close
             </button>
@@ -4592,11 +4620,11 @@ var Index = React.createClass({
               <div className="modal-body">
                 <button
                   type="button"
-                  className="close"
-                  data-dismiss="modal"
+                  className="btn-close"
+                  data-bs-dismiss="modal"
                   aria-label="Close"
                 >
-                  <span aria-hidden="true">&times;</span>
+
                 </button>
                 <p className="w-show-update-tips">
                   whistle has important updates, it is recommended that you
@@ -4620,7 +4648,7 @@ var Index = React.createClass({
                   type="button"
                   className="btn btn-default"
                   onClick={this.donotShowAgain}
-                  data-dismiss="modal"
+                  data-bs-dismiss="modal"
                 >
                   Don't show again
                 </button>
@@ -4639,8 +4667,8 @@ var Index = React.createClass({
         </div>
         <Dialog ref="confirmReload" wstyle="w-confirm-reload-dialog">
           <div className="modal-body w-confirm-reload">
-            <button type="button" className="close" data-dismiss="modal">
-              <span aria-hidden="true">&times;</span>
+            <button type="button" className="btn-close" data-bs-dismiss="modal">
+
             </button>
             <div className="w-reload-data-tips"></div>
           </div>
@@ -4648,7 +4676,7 @@ var Index = React.createClass({
             <button
               type="button"
               className="btn btn-default"
-              data-dismiss="modal"
+              data-bs-dismiss="modal"
             >
               No
             </button>
@@ -4656,7 +4684,7 @@ var Index = React.createClass({
               type="button"
               className="btn btn-primary"
               onClick={this.reloadData}
-              data-dismiss="modal"
+              data-bs-dismiss="modal"
             >
               Yes
             </button>
@@ -4664,8 +4692,8 @@ var Index = React.createClass({
         </Dialog>
         <Dialog ref="confirmImportRules" wstyle="w-confirm-import-dialog">
           <div className="modal-body w-confirm-import">
-            <button type="button" className="close" data-dismiss="modal">
-              <span aria-hidden="true">&times;</span>
+            <button type="button" className="btn-close" data-bs-dismiss="modal">
+
             </button>
             Whether to replace the existing rules?
           </div>
@@ -4674,7 +4702,7 @@ var Index = React.createClass({
               type="button"
               className="btn btn-danger"
               onClick={this.uploadRules}
-              data-dismiss="modal"
+              data-bs-dismiss="modal"
             >
               Replace
             </button>
@@ -4682,7 +4710,7 @@ var Index = React.createClass({
               type="button"
               className="btn btn-primary"
               onClick={this.uploadRules}
-              data-dismiss="modal"
+              data-bs-dismiss="modal"
             >
               Reserve
             </button>
@@ -4690,8 +4718,8 @@ var Index = React.createClass({
         </Dialog>
         <Dialog ref="confirmImportValues" wstyle="w-confirm-import-dialog">
           <div className="modal-body w-confirm-import">
-            <button type="button" className="close" data-dismiss="modal">
-              <span aria-hidden="true">&times;</span>
+            <button type="button" className="btn-close" data-bs-dismiss="modal">
+
             </button>
             Whether to replace the existing values?
           </div>
@@ -4700,7 +4728,7 @@ var Index = React.createClass({
               type="button"
               className="btn btn-danger"
               onClick={this.uploadValues}
-              data-dismiss="modal"
+              data-bs-dismiss="modal"
             >
               Replace
             </button>
@@ -4708,13 +4736,13 @@ var Index = React.createClass({
               type="button"
               className="btn btn-primary"
               onClick={this.uploadValues}
-              data-dismiss="modal"
+              data-bs-dismiss="modal"
             >
               Reserve
             </button>
           </div>
         </Dialog>
-        <FilesDialog ref="filesDialog" />
+        {/* <FilesDialog ref="filesDialog" /> */}
         <ListDialog
           ref="selectRulesDialog"
           name="rules"

@@ -15,16 +15,16 @@ var util = require('./util');
 var BTNS = [
   {
     name: 'Console',
-    icon: 'file',
+    icon: 'bi-file-earmark-text',
     active: true
   },
   {
     name: 'Server',
-    icon: 'exclamation-sign'
+    icon: 'bi-exclamation-circle-fill'
   },
   {
     name: 'Toolbox',
-    icon: 'wrench'
+    icon: 'bi-tools'
   }
 ];
 

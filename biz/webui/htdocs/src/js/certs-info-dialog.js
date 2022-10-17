@@ -55,7 +55,7 @@ var HistoryData = React.createClass({
         type: cert.type,
         validity: startDate.toLocaleString() + ' ~ ' + endDate.toLocaleString(),
         status: status || (
-          <span className="glyphicon glyphicon-ok" style={OK_STYLE} />
+          <i className="bi bi-check-lg" style={OK_STYLE}></i>
         ),
         isInvalid: isInvalid
       };
@@ -212,8 +212,8 @@ var HistoryData = React.createClass({
     return (
       <Dialog ref="certsInfoDialog" wstyle="w-certs-info-dialog">
         <div className="modal-body">
-          <button type="button" className="close" onClick={self.hide}>
-            <span aria-hidden="true">&times;</span>
+          <button type="button" className="btn-close" onClick={self.hide}>
+
           </button>
           <h4 className="w-certs-info-title">
             <a
@@ -222,7 +222,7 @@ var HistoryData = React.createClass({
               href="https://avwo.github.io/whistle/custom-certs.html"
               target="_blank"
             >
-              <span className="glyphicon glyphicon-question-sign"></span>
+              <i className="bi bi-question-circle-fill"></i>
             </a>
             Custom Certs
           </h4>
@@ -247,7 +247,7 @@ var HistoryData = React.createClass({
                         title={item.filename}
                       >
                         {item.readOnly ? (
-                          <span className="glyphicon glyphicon-lock" />
+                          <i className="bi bi-shield-lock-fill"></i>
                         ) : undefined}
                         {item.displayName || item.filename}
                         <br />
@@ -311,7 +311,7 @@ var HistoryData = React.createClass({
           <button
             type="button"
             className="btn btn-default"
-            data-dismiss="modal"
+            data-bs-dismiss="modal"
           >
             Close
           </button>

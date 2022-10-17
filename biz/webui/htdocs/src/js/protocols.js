@@ -91,6 +91,7 @@ var innerRules = [
 ];
 var pluginRules = [];
 var pluginNameList = [];
+var pluginVarList = [];
 var allPluginNameList = [];
 var forwardRules = innerRules.slice();
 var webProtocols = ['http', 'https', 'ws', 'wss', 'tunnel'];
@@ -116,6 +117,7 @@ exports.setPlugins = function (pluginsState) {
   pluginsOptions = pluginsState.pluginsOptions;
   pluginRules = [];
   pluginNameList = [];
+  pluginVarList = [];
   allPluginNameList = [];
   forwardRules = innerRules.slice();
   allRules = allInnerRules.slice();
@@ -127,8 +129,17 @@ exports.setPlugins = function (pluginsState) {
       }
       var name = plugin.name;
       if (!disabledPlugins[name]) {
-        if (plugin.pluginVars) {
+        var vars = plugin.pluginVars;
+        if (vars) {
           pluginNameList.push(name);
+          var hintSuffix = vars.hintSuffix;
+          if (hintSuffix) {
+            hintSuffix.forEach(function(suffix) {
+              pluginVarList.push('%' + name + suffix);
+            });
+          } else {
+            pluginVarList.push('%' + name + '=');
+          }
         }
         allPluginNameList.push(name);
         if (!plugin.hideShortProtocol && name.indexOf('_') === -1) {
@@ -157,6 +168,10 @@ exports.getPluginRules = function () {
 
 exports.getPluginNameList = function () {
   return pluginNameList;
+};
+
+exports.getPluginVarList = function() {
+  return pluginVarList;
 };
 
 exports.getAllPluginNameList = function () {

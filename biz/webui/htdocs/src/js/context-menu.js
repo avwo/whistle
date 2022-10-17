@@ -109,7 +109,7 @@ var ContextMenu = React.createClass({
                   {item.icon ? (
                     <span
                       style={{ marginRight: '5px' }}
-                      className={'glyphicon glyphicon-' + item.icon}
+                      className={'bi ' + item.icon}
                     />
                   ) : null}
                   {multiple ? (
@@ -118,7 +118,7 @@ var ContextMenu = React.createClass({
                   {item.name}
                 </label>
                 {subList ? (
-                  <span className="glyphicon glyphicon-play" />
+                  <i className="bi bi-chevron-right"></i>
                 ) : undefined}
                 {subList ? <div className="w-ctx-menu-gap"></div> : undefined}
                 {subList ? (

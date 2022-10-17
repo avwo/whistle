@@ -89,16 +89,6 @@
   width: 100%;
 }
 
-.w-tab-frame {
-  display: block;
-  width: 100%;
-  height: 100%;
-  outline: none;
-  border: none;
-  margin: 0;
-  padding: 0;
-}
-
 .w-custom-tab-panel .w-tab-frame {
   min-width: 560px;
 }
@@ -116,10 +106,6 @@ div.w-detail-inspectors-tabs {
   padding: 0 12px;
   border-radius: 0;
   font-weight: bold;
-}
-
-.w-detail-inspectors-tabs .glyphicon-menu-hamburger {
-  color: #ff8000;
 }
 
 .w-detail-inspectors-tabs button.w-spec-active {

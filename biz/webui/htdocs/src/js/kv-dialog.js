@@ -96,8 +96,8 @@ var KVDialog = React.createClass({
     return (
       <Dialog ref="kvDialog" wstyle="w-kv-dialog">
         <div className="modal-body">
-          <button type="button" className="close" onClick={self.hide}>
-            <span aria-hidden="true">&times;</span>
+          <button type="button" className="btn-close" onClick={self.hide}>
+
           </button>
           {history.length ? <label>
             {this.isValues ? 'Values' : 'Rules'} History:
@@ -168,14 +168,14 @@ var KVDialog = React.createClass({
             className="btn btn-primary"
             disabled={noData}
             onClick={this.confirm}
-            data-dismiss="modal"
+            data-bs-dismiss="modal"
           >
             Add to {this.isValues ? 'Values' : 'Rules'}
           </button>
           <button
             type="button"
             className="btn btn-default"
-            data-dismiss="modal"
+            data-bs-dismiss="modal"
           >
             Close
           </button>

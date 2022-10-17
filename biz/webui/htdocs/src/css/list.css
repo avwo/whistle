@@ -21,12 +21,12 @@
   background: #fff;
   outline: none;
 }
-.w-list-data a .glyphicon-ok {
+.w-list-data a .bi-check-lg {
   position: absolute;
-  top: 50%;
+  top: 0;
   right: 10px;
-  margin-top: -8px;
   color: #5bbd72;
+  font-size: 16px;
   display: none;
 }
 .w-list-content {
@@ -48,12 +48,14 @@
   background: #337ab7;
   color: #fff !important;
 }
+
 .w-list-data .w-selected {
   font-weight: 500;
 }
-.w-list-data .w-selected .glyphicon-ok {
+.w-list-data .w-selected .bi-check-lg {
   display: inline-block;
 }
+
 .w-list-data span.w-whistle-tpl {
   display: block;
   width: 8px;
@@ -76,17 +78,6 @@
   color: #000;
 }
 
-.w-list-group .glyphicon, .w-list-group-icon.glyphicon-triangle-right {
-  font-size: 10px;
-  opacity: .5;
-  transform: scale(0.8);
-  margin-right: 2px;
-}
-
-.w-list-group-icon.glyphicon-triangle-right {
-  margin-right: -2px;
-}
-
 .w-list-sub {
   padding-left: 20px!important;
 }
@@ -106,4 +97,11 @@
 .w-list-group.w-group-empty {
   background-color: #F5F5F5;
   color: #888;
+}
+
+.w-list-group .bi-caret-right-fill,
+.w-list-group .bi-caret-bottom-fill {
+  font-size: 12px;
+  margin-right: 3px;
+  display: inline-block !important;
 }

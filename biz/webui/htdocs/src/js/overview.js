@@ -380,7 +380,7 @@ var Overview = React.createClass({
           style={{ background: showOnlyMatchRules ? 'lightyellow' : undefined }}
         >
           <a href="https://avwo.github.io/whistle/rules/" target="_blank">
-            <span className="glyphicon glyphicon-question-sign"></span>
+            <i className="bi bi-question-circle-fill"></i>
           </a>
           All Rules:
           <label>

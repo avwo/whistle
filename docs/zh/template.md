@@ -1,4 +1,6 @@
 # 规则模板
+> Added in: v2.9.30
+
 每个插件都可以生成以下三种规则：
 1. `whistle.xxx://ruleValue`：可以触发非 `server` 的其它所有 hooks
 2. `xxx://ruleValue`：可以触发所有 hooks

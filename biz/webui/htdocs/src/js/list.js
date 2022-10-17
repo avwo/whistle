@@ -1,5 +1,6 @@
 require('./base-css.js');
 require('../css/list.css');
+require('../css/files-dialog.css');
 var $ = require('jquery');
 var util = require('./util');
 var React = require('react');
@@ -734,12 +735,12 @@ var List = React.createClass({
                       'w-group-empty': isGroup && !item.childCount
                     })}
                   >
-                    {isGroup ? <span className={'glyphicon glyphicon-triangle-' + (isHide ? 'right' : 'bottom')} /> : null}
+                    {isGroup ? <span className={`bi bi-caret-${isHide ? 'right' : 'bottom'}-fill`} /> : null}
                     {title}
                     {isGroup ? <span className={util.getClasses({
                       'w-group-child-num': true,
                       'w-exists-selected': item.selectedCount > 0
-                    })}>({item.selectedCount > 0 ? item.selectedCount + '/' : ''}{item.childCount})</span> : <span className="glyphicon glyphicon-ok"></span>}
+                    })}>({item.selectedCount > 0 ? item.selectedCount + '/' : ''}{item.childCount})</span> : <i className="bi bi-check-lg"></i>}
                   </a>
                 );
               })}

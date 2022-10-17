@@ -282,6 +282,31 @@ proto.remove = function (name) {
   }
 };
 
+proto.removeGroup = function (name) {
+  var list = this.list;
+  var index = list.indexOf(name) + 1;
+  if (!index) {
+    return;
+  }
+  var result = [name];
+  var data = this.data;
+  var hasActive;
+  for (var len = list.length; index < len; index++) {
+    name = list[index];
+    if (util.isGroup(name)) {
+      break;
+    }
+    result.push(name);
+    var item = data[name];
+    hasActive = hasActive || (item && item.active);
+  }
+  result.forEach(function(file) {
+    list.splice(list.indexOf(file), 1);
+    delete data[file];
+  });
+  return hasActive && this.getSibling(name); 
+};
+
 proto.rename = function (name, newName) {
   if (!name || !newName || name == newName) {
     return;

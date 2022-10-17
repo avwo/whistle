@@ -19,6 +19,7 @@ var rulesUtil = require('../../../lib/rules/util');
 var getRootCAFile = require('../../../lib/https/ca').getRootCAFile;
 var config = require('../../../lib/config');
 var loadAuthPlugins = require('../../../lib/plugins').loadAuthPlugins;
+var version = require('../../../package.json').version;
 
 var PARSE_CONF = { extended: true, limit: '3mb'};
 var UPLOAD_PARSE_CONF = { extended: true, limit: '30mb'};
@@ -442,7 +443,7 @@ app.use('/preview.html', function(req, res, next) {
 });
 if (!config.debugMode) {
   var indexHtml = fs.readFileSync(htdocs.getHtmlFile('index.html'));
-  var indexJs = fs.readFileSync(htdocs.getJsFile('index.js'));
+  var indexJs = fs.readFileSync(htdocs.getJsFile(`index-${version}.js`));
   var jsETag = shasum(indexJs);
   var gzipIndexJs = zlib.gzipSync(indexJs);
   app.use('/js/index.js', function(req, res) {
