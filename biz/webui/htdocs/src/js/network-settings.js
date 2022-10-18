@@ -277,9 +277,7 @@ var Settings = React.createClass({
                       data-name={col.title}
                       title={'Edit ' + col.title}
                       className="glyphicon glyphicon-edit"
-                    >
-                      {canEdit1 ? 1 : 2}
-                    </span>
+                    />
                   ) : undefined}
                 </label>
               );
