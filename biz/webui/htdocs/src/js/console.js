@@ -217,9 +217,9 @@ var Console = React.createClass({
   onConsoleFilterChange: function (keyword) {
     var self = this;
     keyword = keyword.trim();
-    self.keyword = keyword;
     var logs = self.state.logs;
     var consoleKeyword = util.parseKeyword(keyword);
+    self.keyword = keyword && consoleKeyword;
     util.filterLogList(logs, consoleKeyword);
     if (!keyword) {
       var len = logs && logs.length - MAX_COUNT;

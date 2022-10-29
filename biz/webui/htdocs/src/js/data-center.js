@@ -442,6 +442,7 @@ exports.plugins = createCgiObj(
 exports.rules = createCgiObj(
   {
     disableAllRules: 'cgi-bin/rules/disable-all-rules',
+    accountRules: 'cgi-bin/rules/account',
     recycleList: {
       type: 'get',
       url: 'cgi-bin/rules/recycle/list'
@@ -604,6 +605,7 @@ exports.getInitialData = function (callback) {
         exports.supportH2 = data.supportH2;
         exports.custom1 = data.custom1;
         exports.custom2 = data.custom2;
+        exports.hasAccountRules = data.hasARules;
         initialData = data;
         pageId = data.clientId;
         DEFAULT_CONF.data.clientId = pageId;
@@ -802,6 +804,10 @@ function startLoadData() {
       exports.supportH2 = data.supportH2;
       exports.custom1 = data.custom1;
       exports.custom2 = data.custom2;
+      if (exports.hasAccountRules !== data.hasARules) {
+        exports.hasAccountRules = data.hasARules;
+        events.trigger('accountRulesChanged');
+      }
       if (options.dumpCount > 0) {
         dumpCount = 0;
       }

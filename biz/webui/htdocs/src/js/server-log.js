@@ -155,9 +155,9 @@ var ServerLog = React.createClass({
   onServerFilterChange: function (keyword) {
     var self = this;
     keyword = keyword.trim();
-    self.keyword = keyword;
     var serverKeyword = util.parseKeyword(keyword);
     var logs = self.state.logs;
+    self.keyword = keyword && serverKeyword;
     util.filterLogList(logs, serverKeyword);
     if (!keyword) {
       var len = logs && logs.length - MAX_COUNT;

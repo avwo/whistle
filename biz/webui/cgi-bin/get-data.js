@@ -33,6 +33,7 @@ module.exports = function(req, res) {
     mvaluesClientId: config.mvaluesClientId,
     mvaluesTime: config.mvaluesTime,
     server: util.getServerInfo(req),
+    hasARules: rulesUtil.hasAccountRules ? 1 : undefined,
     lastLogId: stopRecordConsole ? proxy.getLatestId() : undefined,
     lastSvrLogId: stopRecordSvrLog ? logger.getLatestId() : undefined,
     log: stopRecordConsole ? [] : proxy.getLogs(data.startLogTime, data.count, data.logId),

@@ -238,7 +238,7 @@
       }
     }
     img.src ='$LOG_CGI?id=$LOG_ID&level=' + level + '&text=' + logStr
-      + '&' + new Date().getTime() + '-' + ++index;
+      + '&t=' + new Date().getTime() + '&' + ++index;
     var preventGC = function() {
       img.onload = img.onerror = null;
       clearTimeout(timer);

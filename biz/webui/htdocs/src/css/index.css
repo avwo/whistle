@@ -220,7 +220,6 @@
   max-width: calc(100% - 1000px);
   text-overflow: ellipsis;
   overflow: hidden;
-  display: none!important;
 }
 
 .w-show-left-menu .w-account-menu {
@@ -359,4 +358,27 @@
   height: 24px;
   font-size: 12px;
   padding-left: 8px;
+}
+
+
+.w-fieldset pre {
+  max-height: 220px;
+  overflow: auto;
+  padding: 10px;
+}
+.w-fieldset {
+  border: 1px solid #ddd;
+}
+.w-fieldset legend {
+  font-size: 12px;
+  padding: 0 5px;
+  border: none;
+  width: auto;
+  margin: 0 10px;
+  font-weight: bold;
+}
+
+.w-fieldset legend .glyphicon {
+  margin-left: 5px;
+  cursor: pointer;
 }

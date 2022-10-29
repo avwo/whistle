@@ -28,6 +28,7 @@ var UpdateAllBtn = require('./update-all-btn');
 var ContextMenu = require('./context-menu');
 var CertsInfoDialog = require('./certs-info-dialog');
 var SyncDialog = require('./sync-dialog');
+var AccountDialog = require('./account-dialog');
 var win = require('./win');
 
 var H2_RE = /http\/2\.0/i;
@@ -271,7 +272,8 @@ var Index = React.createClass({
     var modal = this.props.modal;
     var rules = modal.rules;
     var values = modal.values;
-    var multiEnv = !!modal.server.multiEnv;
+    var server = modal.server;
+    var multiEnv = !!server.multiEnv;
     var caType = storage.get('caType');
     if (caType !== 'cer' && caType !== 'pem') {
       caType = 'crt';
@@ -282,20 +284,21 @@ var Index = React.createClass({
       caType: caType,
       allowMultipleChoice: modal.rules.allowMultipleChoice,
       backRulesFirst: modal.rules.backRulesFirst,
-      networkMode: !!modal.server.networkMode,
-      rulesMode: !!modal.server.rulesMode,
-      pluginsMode: !!modal.server.pluginsMode,
-      rulesOnlyMode: !!modal.server.rulesOnlyMode,
-      multiEnv: modal.server.multiEnv,
-      isWin: modal.server.isWin,
-      ndr: modal.server.ndr,
-      ndp: modal.server.ndp,
-      drb: modal.server.drb,
-      drm: modal.server.drm,
-      version: modal.version
+      networkMode: !!server.networkMode,
+      rulesMode: !!server.rulesMode,
+      pluginsMode: !!server.pluginsMode,
+      rulesOnlyMode: !!server.rulesOnlyMode,
+      multiEnv: server.multiEnv,
+      isWin: server.isWin,
+      ndr: server.ndr,
+      ndp: server.ndp,
+      drb: server.drb,
+      drm: server.drm,
+      version: modal.version,
+      accountUrl: server.account && server.account.url
     };
     if (hideLeftMenu !== false) {
-      hideLeftMenu = hideLeftMenu || modal.server.hideLeftMenu;
+      hideLeftMenu = hideLeftMenu || server.hideLeftMenu;
     }
     var pageName = getPageName(state);
     if (!pageName || pageName.indexOf('rules') != -1) {
@@ -1073,6 +1076,7 @@ var Index = React.createClass({
     dataCenter.on('settings', function (data) {
       var state = self.state;
       var server = data.server;
+      var accountUrl = server.account && server.account.url;
       if (
         state.interceptHttpsConnects !== data.interceptHttpsConnects ||
         state.enableHttp2 !== data.enableHttp2 ||
@@ -1099,8 +1103,12 @@ var Index = React.createClass({
         var list = LEFT_BAR_MENUS;
         list[3].checked = !state.disabledAllRules;
         list[4].checked = !state.disabledAllPlugins;
-        self.setState({});
+        self.setState({ accountUrl: accountUrl });
         self.refs.contextMenu.update();
+        return;
+      }
+      if (state.accountUrl !== accountUrl) {
+        self.setState({ accountUrl: accountUrl });
       }
     });
     dataCenter.on('rules', function (data) {
@@ -2234,6 +2242,9 @@ var Index = React.createClass({
   showHttpsSettingsDialog: function () {
     $(ReactDOM.findDOMNode(this.refs.rootCADialog)).modal('show');
   },
+  showAccountDialog: function() {
+    this.refs.accountDialog.show(this.state.accountUrl);
+  },
   interceptHttpsConnects: function (e) {
     var self = this;
     var checked = e.target.checked;
@@ -2787,7 +2798,15 @@ var Index = React.createClass({
     modal.setActive(name);
   },
   showRulesSettings: function () {
-    $(ReactDOM.findDOMNode(this.refs.rulesSettingsDialog)).modal('show');
+    var self = this;
+    $(ReactDOM.findDOMNode(self.refs.rulesSettingsDialog)).modal('show');
+    dataCenter.rules.accountRules(function (data, xhr) {
+      if (data && data.ec === 0) {
+        self.setState({ accountRules: data.rules });
+      } else {
+        util.showSystemError(xhr);
+      }
+    });
   },
   showValuesSettings: function () {
     $(ReactDOM.findDOMNode(this.refs.valuesSettingsDialog)).modal('show');
@@ -3537,6 +3556,8 @@ var Index = React.createClass({
     var pendingSessions = state.pendingSessions;
     var pendingRules = state.pendingRules;
     var pendingValues = state.pendingValues;
+    var accountRules = state.accountRules;
+    var accountUrl = state.accountUrl;
     var mustHideLeftMenu = hideLeftMenu && !state.forceShowLeftMenu;
     var pluginsOnlyMode = pluginsMode && rulesMode;
     var showLeftMenu = (networkMode || state.showLeftMenu) && !pluginsOnlyMode;
@@ -3983,9 +4004,10 @@ var Index = React.createClass({
             />
           </div>
           <a
-            onClick={this.showHttpsSettingsDialog}
+            onClick={this.showAccountDialog}
             className="w-account-menu"
             draggable="false"
+            style={{display: accountUrl ? null : 'none'}}
           >
             <span className="glyphicon glyphicon-user"></span>
             Account
@@ -4287,6 +4309,13 @@ var Index = React.createClass({
                     </label>
                   </p>
                 )}
+                {accountRules && accountRules.trim() ? <fieldset className="w-fieldset">
+                  <legend>
+                    Account Rules
+                    <span className="glyphicon glyphicon-edit" />
+                  </legend>
+                  <pre>{accountRules}</pre>
+                </fieldset> : null }
               </div>
               <div className="modal-footer">
                 <button
@@ -4481,6 +4510,7 @@ var Index = React.createClass({
             </div>
           </div>
         </div>
+        <AccountDialog ref="accountDialog" />
         <Dialog ref="setReplayCount" wstyle="w-replay-count-dialog">
           <div className="modal-body">
             <label>
