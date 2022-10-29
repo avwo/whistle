@@ -1,3 +1,6 @@
+# v2.9.34
+1. fix: `Network / Tools / Console` 的 Filter 问题，及 Console 采用浏览器的时间
+
 # v2.9.33
 1. fix: 路径有特殊字符的域名通配规则可能导致启动失败
 
