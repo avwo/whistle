@@ -14,6 +14,10 @@ pattern参见[匹配模式](../pattern.html)，更多模式请参考[配置方�
 4. `body`: 删除请求和响应内容 (`版本 >= v2.5.14`)
 5. `req.body`: 删除请求内容 (`版本 >= v2.5.14`)
 6. `res.body`: 删除响应内容 (`版本 >= v2.5.14`)
+7. `reqCookie.xxx`: 删除请求头的里面名为 `xxx` 的 cookie (`版本 >= v2.9.34`)
+8. `resCookie.xxx`: 删除响应头的里面名为 `xxx` 的 cookie (`版本 >= v2.9.34`)
+9. `cookie.xxx`: 删除请求及响应头的里面名为 `xxx` 的 cookie (`版本 >= v2.9.34`)
+		> 上述删除 cookie 操作只会上述请求或响应阶段的 cookie，不会影响已存在浏览器的 cookie
 
 #### 过滤规则
 需要确保whistle是最新版本：[更新whistle](../update.html)
