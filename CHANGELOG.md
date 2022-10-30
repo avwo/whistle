@@ -1,5 +1,10 @@
 # v2.9.34
 1. fix: `Network / Tools / Console` 的 Filter 问题，及 Console 采用浏览器的时间
+2. feat: 支持通过 `delete://urlParams.xxx` 删除名称为 `xxx` 的请求参数
+3. feat: 支持通过 `delete://reqCookie.xxx` 删除名称为 `xxx` 的请求 cookie
+4. feat: 支持通过 `delete://resCookie.xxx` 删除名称为 `xxx` 的响应 cookie
+5. feat: 支持通过 `delete://cookie.xxx` 删除名称为 `xxx` 的请求及响应 cookie
+   > 上述删除 cookie 操作只会上述请求或响应阶段的 cookie，不会影响已存在浏览器的 cookie
 
 # v2.9.33
 1. fix: 路径有特殊字符的域名通配规则可能导致启动失败
