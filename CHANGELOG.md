@@ -1,5 +1,6 @@
 # v2.9.34
 1. fix: `Network / Tools / Console` 的 Filter 问题，及 Console 采用浏览器的时间
+2. refactor: 远程 rulesValue 加载异常记录日志
 2. feat: 支持通过 `delete://urlParams.xxx` 删除名称为 `xxx` 的请求参数
 3. feat: 支持通过 `delete://reqCookie.xxx` 删除名称为 `xxx` 的请求 cookie
 4. feat: 支持通过 `delete://resCookie.xxx` 删除名称为 `xxx` 的响应 cookie
