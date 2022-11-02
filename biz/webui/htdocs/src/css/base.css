@@ -103,6 +103,9 @@ textarea {
 .hide {
   display: none !important;
 }
+.visible {
+  visibility: visible!important;
+}
 .box {
   display: -webkit-box;
   display: -moz-box;

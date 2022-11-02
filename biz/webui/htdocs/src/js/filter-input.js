@@ -226,7 +226,7 @@ var FilterInput = React.createClass({
           style={{ background: filterText.trim() ? '#000' : undefined }}
           className="w-filter-input"
           maxLength={MAX_LEN}
-          placeholder="type filter text"
+          placeholder="Type filter text"
         />
         <button
           onMouseDown={util.preventBlur}

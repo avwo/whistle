@@ -22,7 +22,16 @@ textarea {resize: none; display: block; padding: 6px; font-size: 12px; width: 10
 </div>
 <script>
 	var editor = document.getElementById('editor');
-	if (window.getValue) {
+	var getInitCallback = function() {
+		try {
+			var cb = window.parent._initWhistleTextEditor_;
+			if (typeof cb === 'function') {
+				return cb;
+			}
+		} catch (e) {}
+	};
+	var init = getInitCallback();
+	if (!init && window.getValue) {
 	  var value = getValue();
 	  if (value) {
 	    editor.value = window.name = value;
@@ -34,6 +43,7 @@ textarea {resize: none; display: block; padding: 6px; font-size: 12px; width: 10
 		window.setValue = function(value) {
 			editor.value = value;
 		};
+		init && init(window);
 	}
 </script>
 </body>

@@ -1,22 +1,9 @@
 var $ = require('jquery');
 var dataCenter = require('./data-center');
-var util = require('./util');
 var storage = require('./storage');
+var util = require('./util');
 
 var settings = dataCenter.getNetworkColumns();
-
-var minWidth = storage.get('minNetworkWidth');
-if (minWidth) {
-  storage.set('minNetworkWidth', parseInt(minWidth, 10) || '');
-}
-
-exports.getMinWidth = function () {
-  return storage.get('minNetworkWidth');
-};
-
-exports.setMinWidth = function (width) {
-  storage.set('minNetworkWidth', width);
-};
 
 function getDefaultColumns() {
   return [
@@ -164,16 +151,48 @@ function getDefaultColumns() {
 
 var columnsMap;
 var curColumns;
+var colWidthData;
 
-function reset() {
+function reset(init) {
   columnsMap = {};
+  if (init) {
+    try {
+      colWidthData = JSON.parse(storage.get('networkColumnsWidth'));
+    } catch (e) {}
+    colWidthData = colWidthData || {};
+  } else {
+    colWidthData = {};
+  }
+  
   curColumns = getDefaultColumns();
   curColumns.forEach(function (col) {
+    var menus = [];
+    var curWidth = colWidthData[col.name];
+    var hasSelected;
+    var width = col.minWidth || col.width;
+    var icon = col.minWidth ? '>= ' : '';
+    var round = width % 2 ? 5 : 0;
+    for (var i = 0; i < 11; i++) {
+      var w = width + i * 60 + round;
+      var selected = curWidth === w;
+      hasSelected = hasSelected || selected;
+      if (i) {
+        menus.push({ name: icon + w + 'px', action: w, selected: selected });
+      } else {
+        menus.push({ name: icon + width + 'px (Default)', action: w, selected: selected });
+      }
+    }
     columnsMap[col.name] = col;
+    col.menus = menus;
+    if (!hasSelected) {
+      menus[0].selected = true;
+      colWidthData[col.name] = menus[0].action;
+    }
   });
+  !init && storage.set('networkColumnsWidth');
 }
 
-reset();
+reset(true);
 if (Array.isArray(settings.columns)) {
   var flagMap = {};
   var checkColumn = function (col) {
@@ -227,7 +246,6 @@ exports.getAllColumns = function () {
   return curColumns;
 };
 exports.reset = function () {
-  storage.set('minNetworkWidth', '');
   reset();
   save();
 };
@@ -242,7 +260,7 @@ exports.getSelectedColumns = function () {
   var width = 50;
   var list = curColumns.filter(function (col) {
     if (col.selected || col.locked) {
-      width += col.width || col.minWidth;
+      width += colWidthData[col.name] || col.width || col.minWidth;
       return true;
     }
   });
@@ -335,4 +353,13 @@ exports.getDragger = function () {
       }
     }
   };
+};
+
+exports.setWidth = function(name, width) {
+  colWidthData[name] = parseInt(width);
+  storage.set('networkColumnsWidth', JSON.stringify(colWidthData));
+};
+
+exports.getWidth = function(col) {
+  return colWidthData[col.name] || col.width || col.minWidth;
 };

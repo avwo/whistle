@@ -605,6 +605,8 @@ exports.getInitialData = function (callback) {
         exports.supportH2 = data.supportH2;
         exports.custom1 = data.custom1;
         exports.custom2 = data.custom2;
+        exports.custom1Key = data.custom1Key;
+        exports.custom2Key = data.custom2Key;
         exports.hasAccountRules = data.hasARules;
         initialData = data;
         pageId = data.clientId;
@@ -804,6 +806,8 @@ function startLoadData() {
       exports.supportH2 = data.supportH2;
       exports.custom1 = data.custom1;
       exports.custom2 = data.custom2;
+      exports.custom1Key = data.custom1Key;
+      exports.custom2Key = data.custom2Key;
       if (exports.hasAccountRules !== data.hasARules) {
         exports.hasAccountRules = data.hasARules;
         events.trigger('accountRulesChanged');
@@ -1122,8 +1126,14 @@ function setStyle(item) {
       backgroundColor: bgColor
     };
   }
-  item.custom1 = getCustomValue(style, true);
-  item.custom2 = getCustomValue(style);
+  var key1 = exports.custom1Key;
+  var key2 = exports.custom2Key;
+  if (!util.notEStr(key1)) {
+    item.custom1 = getCustomValue(style, true);
+  }
+  if (!util.notEStr(key2)) {
+    item.custom2 = getCustomValue(style);
+  }
 }
 
 function setReqData(item) {

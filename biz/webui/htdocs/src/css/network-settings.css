@@ -120,6 +120,11 @@
 }
 .w-network-settings-edit label {
   white-space: nowrap;
+  margin-bottom: 10px;
+}
+.w-network-settings-edit label span {
+  display: inline-block;
+  width: 100px;
 }
 .w-network-settings-edit label .form-control {
   display: inline-block;
@@ -130,10 +135,10 @@
   width: 150px;
 }
 .w-network-settings-edit label input {
-  width: 330px;
+  width: 345px;
 }
 .w-network-settings-edit .modal-dialog {
-  width: 530px;
+  width: 500px;
 }
 .network-settings-columns legend .btn-primary {
   width: auto;

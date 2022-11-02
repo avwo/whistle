@@ -771,6 +771,21 @@ var Index = React.createClass({
         self.setState({});
       }
     });
+    var editorWin;
+    events.on('openEditor', function(_, text) {
+      try {
+        if (editorWin && typeof editorWin.setValue === 'function') {
+          window.getTextFromWhistle_ = null;
+          self.refs.editorWin.show();
+          return editorWin.setValue(text);
+        }
+        window._initWhistleTextEditor_ = function(win) {
+          editorWin = win;
+          editorWin.setValue(text);
+        };
+        self.refs.editorWin.show('editor.html');
+      } catch (e) {}
+    });
 
     events.on('recoverRules', function (_, data) {
       var modal = self.state.rules;
@@ -4511,6 +4526,7 @@ var Index = React.createClass({
           </div>
         </div>
         <AccountDialog ref="accountDialog" />
+        <AccountDialog ref="editorWin" className="w-editor-win" />
         <Dialog ref="setReplayCount" wstyle="w-replay-count-dialog">
           <div className="modal-body">
             <label>

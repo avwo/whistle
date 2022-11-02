@@ -1,7 +1,17 @@
 .w-account-dialog .modal-dialog {
-  width: calc(100% - 16px);
-  height: calc(100% - 16px);
-  margin: 8px;
+  width: calc(100% - 30px);
+  height: calc(100% - 30px);
+  margin: 15px;
+}
+
+.w-editor-win .modal-dialog {
+  width: calc(100% - 60px);
+  height: calc(100% - 60px);
+  margin: 30px;
+}
+
+.w-editor-win {
+  z-index: 99999;
 }
 
 .w-account-dialog button.close {
@@ -20,9 +30,13 @@
 }
 
 .w-account-dialog .modal-content {
-  border-radius: 3px;
+  border-radius: 5px;
   height: 100%;
   padding: 0;
+}
+
+.w-account-dialog iframe {
+  border-radius: 5px;
 }
 
 .w-account-dialog .modal-body {

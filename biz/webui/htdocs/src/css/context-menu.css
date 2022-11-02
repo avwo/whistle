@@ -28,12 +28,21 @@
   margin-left: 10px;
   transform: scale(.8);
 }
-
 .w-ctx-menu-list label {
   margin: 0 !important;
   font-weight: normal !important;
   display: block;
 }
+.w-ctx-menu-list .w-ctx-selected {
+  font-weight: bold!important;
+}
+
+.w-ctx-menu-list .w-ctx-checked {
+  display: inline-block;
+  width: 20px;
+  visibility: hidden;
+} 
+
 body .w-ctx-menu-list .w-ctx-menu-list {
   margin-left: 3px;
   display: none;
@@ -104,4 +113,8 @@ body .w-ctx-menu-list .w-ctx-menu-gap {
 
 .w-ctx-menu-left .w-ctx-menu-list .w-ctx-menu-gap {
   left: -3px;
+}
+
+.w-ctx-radio-list {
+  min-width: 165px;
 }

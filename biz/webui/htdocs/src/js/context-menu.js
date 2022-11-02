@@ -55,10 +55,12 @@ var ContextMenu = React.createClass({
     ) {
       return;
     }
-    !target.hasClass('w-ctx-item-multi') && this.hide();
+    var data = this.state;
+    !target.hasClass('w-ctx-item-multi') && !data.radio && this.hide();
+    var action = target.attr('data-menu-action');
     if (this.props.onClick) {
       this.props.onClick(
-        target.attr('data-menu-action'),
+        action,
         e,
         target.attr('data-parent-action'),
         target.attr('data-name')
@@ -69,11 +71,18 @@ var ContextMenu = React.createClass({
         value: target.attr('data-clipboard-text')
       });
     }
+    if (data.radio) {
+      data.list.forEach(item => {
+        item.selected = item.action == action;
+      });
+      this.setState({});
+    }
   },
   getDialogElement: function () {
     var self = this;
     var data = self.state;
     var list = data.list || [];
+    var radio = data.radio;
     return (
       <div
         onClick={self.onClick}
@@ -105,7 +114,8 @@ var ContextMenu = React.createClass({
                 style={{ display: item.hide ? 'none' : undefined }}
                 onClick={item.onClick}
               >
-                <label className="w-ctx-item-tt">
+                <label className={'w-ctx-item-tt' + (item.selected ? ' w-ctx-selected' : '')}>
+                  {radio ? <span className={'w-ctx-checked' + (item.selected ? ' visible' : '')}>✔️</span> : undefined}
                   {item.icon ? (
                     <span
                       style={{ marginRight: '5px' }}

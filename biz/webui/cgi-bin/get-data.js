@@ -25,6 +25,8 @@ module.exports = function(req, res) {
     version: config.version,
     custom1: properties.get('Custom1'),
     custom2: properties.get('Custom2'),
+    custom1Key: properties.get('Custom1Key'),
+    custom2Key: properties.get('Custom2Key'),
     supportH2: config.enableH2,
     hasInvalidCerts: ca.hasInvalidCerts,
     clientIp: clientIp,

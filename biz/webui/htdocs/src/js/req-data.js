@@ -114,14 +114,6 @@ var contextMenuList = [
   { name: 'Help', sep: true }
 ];
 
-function stopPropagation(e) {
-  if (!$(e.target).closest('th').next('th').length) {
-    return;
-  }
-  e.stopPropagation();
-  e.preventDefault();
-}
-
 var getFocusItemList = function (curItem) {
   if (!curItem || curItem.selected) {
     return;
@@ -157,7 +149,7 @@ var Spinner = React.createClass({
 
 function getColStyle(col, style) {
   style = style ? $.extend({}, style) : {};
-  style.width = col.minWidth ? Math.max(col.width, col.minWidth) : col.width;
+  style[col.minWidth ? 'minWidth' : 'width'] = settings.getWidth(col);
   return style;
 }
 
@@ -301,6 +293,7 @@ var Row = React.createClass({
     var columnList = p.columnList;
     var item = p.item;
     var style = item.style;
+    
     return (
       <table className="table" key={p.key} style={p.style}>
         <tbody>
@@ -316,6 +309,17 @@ var Row = React.createClass({
             </th>
             {columnList.map(function (col) {
               var name = col.name;
+              if (name === 'custom1') {
+                var key1 = dataCenter.custom1Key;
+                if (util.notEStr(key1)) {
+                  item.custom1 = util.getValue(item, key1);
+                }
+              } else if (name === 'custom2') {
+                var key2 = dataCenter.custom2Key;
+                if (util.notEStr(key2)) {
+                  item.custom2 = util.getValue(item, key2);
+                }
+              }
               var className = col.className;
               var value =
                 name === 'hostIp' ? util.getServerIp(item) : item[name];
@@ -561,17 +565,6 @@ var ReqData = React.createClass({
     events.on('focusNetworkList', function () {
       self.container.focus();
     });
-    var wrapper = ReactDOM.findDOMNode(self.refs.wrapper);
-    var updateTimer;
-    var updateUI = function () {
-      updateTimer = null;
-      self.setState({ columns: settings.getSelectedColumns() });
-    };
-    util.addDragEvent('.w-header-drag-block', function (_, x) {
-      self.minWidth = wrapper.offsetWidth + x;
-      settings.setMinWidth(self.minWidth);
-      updateTimer = updateTimer || setTimeout(updateUI, 50);
-    });
     var curRemoteUrl;
     var importRemoteUrl = function () {
       var hash = location.hash.substring(1);
@@ -733,6 +726,13 @@ var ReqData = React.createClass({
     this.onClick('', item, true);
     events.trigger('networkStateChange');
   },
+  onClickHeadMenu: function(action) {
+    var col = this.curHeadCol;
+    if (col) {
+      settings.setWidth(col.name, action);
+      this.setState({columns: settings.getSelectedColumns()});
+    }
+  },
   onClickContextMenu: function (action, e, parentAction, name) {
     var self = this;
     var item = self.currentFocusItem;
@@ -868,6 +868,21 @@ var ReqData = React.createClass({
       self.collapseAll(treeId);
       break;
     }
+  },
+  onHeadCtxMenu: function(e) {
+    e.preventDefault();
+    var name = $(e.target).closest('th').attr('data-name');
+    var col = settings.getColumn(name);
+    var menus = col && col.menus;
+    if (!menus) {
+      return;
+    }
+    this.curHeadCol = col;
+    var data = util.getMenuPosition(e, 130, 310);
+    data.list = menus;
+    data.radio = true;
+    data.className = 'w-ctx-radio-list';
+    this.refs.headContextMenu.show(data);
   },
   onContextMenu: function (e) {
     var el = $(e.target).closest('.w-req-data-item');
@@ -1162,13 +1177,6 @@ var ReqData = React.createClass({
         className={col.className}
         style={style}
       >
-        {name === 'path' ? (
-          <div
-            onDragStart={stopPropagation}
-            draggable={true}
-            className="w-header-drag-block"
-          />
-        ) : undefined}
         {title}
         <Spinner order={columnState[name]} />
       </th>
@@ -1282,15 +1290,9 @@ var ReqData = React.createClass({
     var hasKeyword = modal.hasKeyword();
     var draggable = state.draggable;
     var columnList = state.columns.list;
-    var width = state.columns.width;
     var colStyle = state.columns.style;
     var filterText = (state.filterText || '').trim();
-    var minWidth = settings.getMinWidth();
     var record = state.record;
-    if (minWidth && minWidth > width) {
-      width = minWidth;
-      colStyle.minWidth = width;
-    }
     self.startIndex = null;
     self.endIndex = null;
     self.visibleList = list;
@@ -1313,8 +1315,8 @@ var ReqData = React.createClass({
           <div className={'w-req-data-headers' + (isTreeView ? ' hide' : '')}>
             <table className="table">
               <thead>
-                <tr onClick={self.orderBy}>
-                  <th className="order">#</th>
+                <tr onClick={self.orderBy} onContextMenu={self.onHeadCtxMenu}>
+                  <th className="order" data-name="order">#</th>
                   {columnList.map(self.renderColumn)}
                 </tr>
               </thead>
@@ -1381,6 +1383,7 @@ var ReqData = React.createClass({
           hintKey="networkHintList"
         />
         <ContextMenu onClick={this.onClickContextMenu} ref="contextMenu" />
+        <ContextMenu onClick={this.onClickHeadMenu} ref="headContextMenu" />
         <QRCodeDialog ref="qrcodeDialog" />
       </div>
     );

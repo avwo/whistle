@@ -7,6 +7,7 @@ var base64Encode = jsBase64.encode;
 var toBase64 = jsBase64.toBase64;
 var json2 = require('./components/json');
 var evalJson = require('./components/json/eval');
+const events = require('./events');
 var isUtf8 = require('./is-utf8');
 var message = require('./message');
 var win = require('./win');
@@ -58,6 +59,8 @@ exports.isString = function (str) {
 function notEStr(str) {
   return str && typeof str === 'string';
 }
+
+exports.notEStr = notEStr;
 
 exports.parseLogs = function (str) {
   try {
@@ -882,6 +885,32 @@ function toString(value) {
 
 exports.toString = toString;
 
+exports.getValue = function(item, key) {
+  key = key.split('.');
+  var len = key.length;
+  var value;
+  if (len > 1) {
+    value = item;
+    for (var i = 0; i < len; i++) {
+      var origVal = value;
+      value = origVal[key[i]];
+      if (value == null) {
+        value = origVal[key[i].toLowerCase()];
+        if (value == null) {
+          break;
+        }
+      }
+    }
+  } else {
+    value = item[key[0]];
+  }
+  if (value == null) {
+    return '';
+  }
+  value = String(value);
+  return value.length > 1690 ? value.substring(0, 1680) + '...' : value;
+};
+
 function openEditor(value) {
   if (
     useCustomEditor &&
@@ -890,13 +919,7 @@ function openEditor(value) {
   ) {
     return;
   }
-  var win = window.open('editor.html');
-  win.getValue = function () {
-    return value;
-  };
-  if (win.setValue) {
-    win.setValue(value);
-  }
+  events.trigger('openEditor', value);
 }
 
 exports.openEditor = openEditor;
@@ -983,6 +1006,13 @@ exports.canAbort = function (item) {
   return !!item.frames && !socketIsClosed(item);
 };
 
+function formatBody(body) {
+  if (body.indexOf('\'') === -1) {
+    return '\'' + body + '\'';
+  }
+  return '"' + body.replace(/"/g, '\\"') + '"';
+}
+
 exports.asCURL = function (item) {
   if (!item) {
     return item;
@@ -1008,7 +1038,7 @@ exports.asCURL = function (item) {
   });
   var body = getBody(req, true);
   if (body && (body.length <= MAX_CURL_BODY || isText(req.headers) || isUrlEncoded(req))) {
-    result.push('-d', JSON.stringify(body));
+    result.push('-d', formatBody(body));
   }
   return result.join(' ');
 };
