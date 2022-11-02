@@ -1,3 +1,9 @@
+# v2.9.35
+1. feat: Netwok 的 table 表头支持通过右键调整列宽度
+2. feat: Network / Settings 自定义列支持设置关联的 `Data Key`，可以在界面获取抓包数据，无需配置 `style`
+		> 可以通过 Network 抓包列表右键菜单 / Open / Source 获取想要的 `Data Key`
+3. fix: 复制 curl 命令是请求内容换行符处理有误的问题
+
 # v2.9.34
 1. fix: `Network / Tools / Console` 的 Filter 问题，及 Console 采用浏览器的时间
 2. refactor: 远程 rulesValue 加载异常记录日志
