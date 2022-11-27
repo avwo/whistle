@@ -1,7 +1,21 @@
 # v2.9.36
 1. feat: 支持通过插件的配置 `whistleConfig.networkColumn: { title: 'xxx', key: 'xxx', width: 90 }` 扩展 Network 表格的列
 2. feat: 支持通过插件的配置 `whistleConfig.webWorker: path` 自定义脚本在界面中执行，可以结合自定义列的功能实现查看接口返回错误码（后续补例子）
-3. refactor: `delete://resCookie.xxx` 和 `delete://cookie.xxx`  可以删除浏览器中的 cookie（只支持 `path: /` 及 `Domain=父代` 或本域名）
+3. feat: 插件处理非 WebSocket 及 Socket 请求的 `req.passThrough(handleReq?, handleRes?)` 支持传人两个方法（可选）获取请求或响应内容并返回请求内容及规则
+	``` js
+	req.passThrough(function(buffer, next) {
+		next({
+			body: buffer,
+			rules: '* file://(abc)'
+		});
+	}, function(buffer, next) {
+		next({
+			body: buffer,
+			rules: '* resCookies://x-test=123'
+		});
+	});
+	```
+4. refactor: `delete://resCookie.xxx` 和 `delete://cookie.xxx`  可以删除浏览器中的 cookie（只支持 `path: /` 及 `Domain=父代` 或本域名）
 
 # v2.9.35
 1. feat: Netwok 的 table 表头支持通过右键调整列宽度
