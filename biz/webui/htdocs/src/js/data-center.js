@@ -4,7 +4,9 @@ var util = require('./util');
 var NetworkModal = require('./network-modal');
 var storage = require('./storage');
 var events = require('./events');
+var workers = require('./workers');
 
+var updateWorkers = workers.updateWorkers;
 var createCgi = createCgiObj.createCgi;
 var MAX_INCLUDE_LEN = 5120;
 var MAX_EXCLUDE_LEN = 5120;
@@ -47,6 +49,8 @@ var resTabList = [];
 var tabList = [];
 var toolTabList = [];
 var comTabList = [];
+var pluginColumns = [];
+var webWorkerList = [];
 var DEFAULT_CONF = {
   timeout: TIMEOUT,
   xhrFields: {
@@ -690,6 +694,20 @@ function checkTabList(list1, list2, len) {
   }
 }
 
+function hasPluginColsChange(curCols, oldClos) {
+  var len = curCols.length;
+  if (len !== oldClos.length) {
+    return true;
+  }
+  for (var i = 0; i < len; i++) {
+    var cur = curCols[i];
+    var old = oldClos[i];
+    if (cur.title !== old.title || cur.key !== old.key || cur.width !== old.width) {
+      return true;
+    }
+  }
+}
+
 function emitCustomTabsChange(curList, oldList, name) {
   var curLen = curList.length;
   var oldLen = oldList.length;
@@ -831,6 +849,9 @@ function startLoadData() {
       var _tabList = tabList;
       var _comTabList = comTabList;
       var _toolTabList = toolTabList;
+      var _pluginCols = [];
+      var _workers = [];
+      var hasWorkerChanged;
       var curTabList = [];
       if (!disabledAllPlugins) {
         Object.keys(pluginsMap).forEach(function (name) {
@@ -846,8 +867,14 @@ function startLoadData() {
               resTab: plugin.resTab,
               tab: plugin.tab,
               comTab: plugin.comTab,
-              toolTab: plugin.toolTab
+              toolTab: plugin.toolTab,
+              col: plugin.networkColumn
             });
+            var worker = plugin.webWorker;
+            if (worker && _workers.indexOf(worker) === -1) {
+              _workers.push(worker);
+              hasWorkerChanged = hasWorkerChanged ||  webWorkerList.indexOf(worker) === -1;
+            }
           }
         });
       }
@@ -864,6 +891,7 @@ function startLoadData() {
         var toolTab = info.toolTab;
         var comTab = info.comTab;
         var plugin = info.plugin;
+        var col = info.col;
         if (reqTab) {
           reqTab.plugin = plugin;
           reqTabList.push(reqTab);
@@ -884,12 +912,25 @@ function startLoadData() {
           toolTab.plugin = plugin;
           toolTabList.push(toolTab);
         }
+        if (col) {
+          col.name = col.className = 'whistle.' + info.plugin;
+          col.isPlugin = true;
+          _pluginCols.push(col);
+        }
       });
       emitCustomTabsChange(reqTabList, _reqTabList, 'reqTabsChange');
       emitCustomTabsChange(resTabList, _resTabList, 'resTabsChange');
       emitCustomTabsChange(tabList, _tabList, 'tabsChange');
       emitCustomTabsChange(comTabList, _comTabList, 'comTabsChange');
       emitCustomTabsChange(toolTabList, _toolTabList, 'toolTabsChange');
+      if (hasPluginColsChange(_pluginCols, pluginColumns)) {
+        pluginColumns = _pluginCols;
+        events.trigger('pluginColumnsChange');
+      }
+      if (hasWorkerChanged || webWorkerList.length !== _workers.length) {
+        webWorkerList = _workers;
+        updateWorkers(webWorkerList);
+      }
       disabledPlugins = data.disabledPlugins || {};
       disabledAllPlugins = data.disabledAllPlugins;
       if (len || svrLen) {
@@ -981,8 +1022,12 @@ function startLoadData() {
         if (newItem) {
           $.extend(item, newItem);
           setReqData(item);
+          workers.postMessage(item);
         } else {
           item.lost = true;
+          if (!item.endTime) {
+            workers.postMessage(item);
+          }
         }
         var realIp = tunnelIps[item.id];
         if (realIp) {
@@ -1001,6 +1046,7 @@ function startLoadData() {
         exports.curNewIdList = ids.filter(function (id) {
           var item = data[id];
           if (item) {
+            workers.postMessage(item);
             if (
               (!excludeFilter || !checkFilter(item, excludeFilter)) &&
               (!includeFilter || checkFilter(item, includeFilter))
@@ -1280,6 +1326,7 @@ exports.addNetworkList = function (list) {
     dataList.push(data);
     curNewIdList.push(data.id);
     hasData = true;
+    workers.postMessage(data);
   });
   if (hasData) {
     exports.curNewIdList = curNewIdList;
@@ -1478,3 +1525,9 @@ exports.getRulesMenus = function () {
 exports.getValuesMenus = function () {
   return getMenus('valuesMenus');
 };
+
+exports.getPluginColumns = function() {
+  return pluginColumns;
+};
+
+workers.setup(networkModal);

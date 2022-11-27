@@ -18,6 +18,7 @@ var setProxy = require('./proxy');
 var rulesUtil = require('../../../lib/rules/util');
 var getRootCAFile = require('../../../lib/https/ca').getRootCAFile;
 var config = require('../../../lib/config');
+var getWorker = require('../../../lib/plugins/util').getWorker;
 var loadAuthPlugins = require('../../../lib/plugins').loadAuthPlugins;
 
 var PARSE_CONF = { extended: true, limit: '3mb'};
@@ -420,6 +421,17 @@ app.get('/rules', function(req, res) {
 app.get('/values', function(req, res) {
   var name = req.query.name || req.query.key;
   sendText(res, rulesUtil.values.get(name));
+});
+
+app.get('/web-worker.js', urlencodedParser, function(req, res) {
+  var body = getWorker(req.query.id);
+  if (!body) {
+    return res.status(404).end('Not Found');
+  }
+  res.writeHead(200, {
+    'Content-Type': 'application/javascript; charset=utf-8'
+  });
+  res.end(body);
 });
 
 app.all('/cgi-bin/*', function(req, res, next) {

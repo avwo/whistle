@@ -9,7 +9,7 @@ var MAX_COUNT = MAX_LENGTH + 100;
 var WIN_NAME_PRE =
   '__whistle_' + location.href.replace(/\/[^/]*([#?].*)?$/, '/') + '__';
 var KW_RE =
-  /^(url|u|content|c|b|body|headers|h|ip|i|status|result|s|r|method|m|mark|type|t):(.*)$/i;
+  /^(e|error|url|u|content|c|b|body|headers|h|ip|i|status|result|s|r|method|m|mark|type|t):(.*)$/i;
 var KW_LIST_RE = /([^\s]+)(?:\s+([^\s]+)(?:\s+([\S\s]+))?)?/;
 
 function NetworkModal(list) {
@@ -185,6 +185,12 @@ function checkItem(item, opts) {
   case 'method':
   case 'm':
     return setNot(!checkKeywork(item.req.method, opts), opts.not);
+  case 'e':
+  case 'error':
+    var statusCode = item.res && item.res.statusCode;
+    var isError = item.reqError || item.resError || (item.customData && item.customData.error) ||
+    (statusCode && (!/^\d+$/.test(statusCode) || statusCode >= 400));
+    return setNot(!(isError && checkUrl(item, opts)), opts.not);
   default:
     return setNot(!checkUrl(item, opts), opts.not);
   }
@@ -202,6 +208,13 @@ proto.hasUnmarked = function () {
 proto.getList = function () {
   return this._list || this.list;
 };
+
+function toStr(val) {
+  if (val == null) {
+    return '';
+  }
+  return val + '';
+}
 
 proto.filter = function () {
   var self = this;
@@ -224,8 +237,12 @@ proto.filter = function () {
     self._list = self.list.slice().sort(function (prev, next) {
       for (var i = 0; i < len; i++) {
         var column = columns[i];
-        var prevVal = prev[column.name];
-        var nextVal = next[column.name];
+        var prevVal = util.getCellValue(prev, column);
+        var nextVal = util.getCellValue(next, column);
+        if (column.key) {
+          prevVal = toStr(prevVal);
+          nextVal = toStr(nextVal);
+        }
         var result = compare(prevVal, nextVal, column.order, column.name);
         if (result) {
           return result;

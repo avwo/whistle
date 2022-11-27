@@ -3,7 +3,8 @@ var path = require('path');
 
 module.exports = {
   entry: {
-    index: path.join(__dirname, './js/index')
+    index: path.join(__dirname, './js/index'),
+    decode: path.join(__dirname, './js/decode')
   },
   output: {
     path: path.join(__dirname, '../js'),

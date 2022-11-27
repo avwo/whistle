@@ -19,6 +19,7 @@ var storage = require('./storage');
 var TREE_ROW_HEIGHT = 24;
 var ROW_STYLE = { outline: 'none' };
 var columnState = {};
+var columnKeys = {};
 var CMD_RE = /^:dump\s+(\d{1,15})\s*$/;
 var NOT_BOLD_RULES = {
   plugin: 1,
@@ -217,7 +218,7 @@ function getStatusClass(data) {
   }
 
   var statusCode = data.res && data.res.statusCode;
-  if (data.reqError || data.resError) {
+  if (data.reqError || data.resError || (data.customData && data.customData.error)) {
     type += ' danger w-error-status';
   } else if (statusCode == 403) {
     type += ' w-forbidden';
@@ -320,14 +321,12 @@ var Row = React.createClass({
                   item.custom2 = util.getValue(item, key2);
                 }
               }
-              var className = col.className;
-              var value =
-                name === 'hostIp' ? util.getServerIp(item) : item[name];
+              var value = util.getCellValue(item, col);
               var colStyle = getColStyle(col, style);
               return (
                 <td
                   key={name}
-                  className={className}
+                  className={col.className}
                   style={colStyle}
                   title={col.showTitle ? value : undefined}
                 >
@@ -1112,8 +1111,10 @@ var ReqData = React.createClass({
     var order;
     if (name == 'order') {
       columnState = {};
+      columnKeys = {};
     } else {
       order = columnState[name];
+      columnKeys[name] = target.getAttribute('data-key');
       if (order == 'desc') {
         columnState[name] = 'asc';
       } else if (order == 'asc') {
@@ -1128,7 +1129,8 @@ var ReqData = React.createClass({
       if ((order = columnState[name])) {
         sortColumns.push({
           name: name,
-          order: order
+          order: order,
+          key: columnKeys[name]
         });
       }
     });
@@ -1174,6 +1176,7 @@ var ReqData = React.createClass({
         data-name={name}
         draggable={true}
         key={name}
+        data-key={col.key}
         className={col.className}
         style={style}
       >

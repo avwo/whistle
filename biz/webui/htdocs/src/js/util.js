@@ -286,6 +286,16 @@ function getServerIp(modal) {
   return modal.serverIp || ip;
 }
 
+function getCellValue(item, col) {
+  var name = col.name;
+  if (name === 'hostIp') {
+    return getServerIp(item);
+  }
+  return col.key ? getProperty(item, col.key) : item[name];
+}
+
+exports.getCellValue = getCellValue;
+
 exports.getServerIp = getServerIp;
 
 function getBoolean(val) {

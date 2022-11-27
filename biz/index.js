@@ -28,6 +28,7 @@ module.exports = function(req, res, next) {
   var port = host[1] || (req.isHttps ? 443 : 80);
   var bypass;
   host = host[0];
+  req._w2hostname = host;
   var transformPort, isProxyReq, isWeinre, isOthers;
   var webUI = WEBUI_PATH;
   var realHostRe = REAL_WEBUI_HOST;
