@@ -67,6 +67,7 @@ assets/launcher
 CHANGELOG.md
 Dockerfile
 /README-zh_CN.md
+/biz/webui/htdocs/js/decode.js
 
 
 # Coveralls
