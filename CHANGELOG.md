@@ -1,3 +1,8 @@
+# v2.9.36
+1. feat: 支持通过插件的配置 `whistleConfig.networkColumn: { title: 'xxx', key: 'xxx', width: 90 }` 扩展 Network 表格的列
+2. feat: 支持通过插件的配置 `whistleConfig.webWorker: path` 自定义脚本在界面中执行，可以结合自定义列的功能实现查看接口返回错误码（后续补例子）
+3. refactor: `delete://resCookie.xxx` 和 `delete://cookie.xxx`  可以删除浏览器中的 cookie（只支持 `path: /` 及 `Domain=父代` 或本域名）
+
 # v2.9.35
 1. feat: Netwok 的 table 表头支持通过右键调整列宽度
 2. feat: Network / Settings 自定义列支持设置关联的 `Data Key`，可以在界面获取抓包数据，无需配置 `style`
