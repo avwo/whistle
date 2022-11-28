@@ -4,9 +4,15 @@ var module = { exports: exports };
 
 ;(function() {
   var self = null;
-  (function() {
-    /*sourcecode*/
-  })();
+  try {
+    (function() {
+      /*sourcecode*/
+    })();
+  } catch (e) {
+    setTimeout(function() {
+      throw e;
+    }, 1);
+  }
 })();
 
 ;(function() {
