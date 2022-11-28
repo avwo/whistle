@@ -11,7 +11,7 @@ var module = { exports: exports };
   } catch (e) {
     setTimeout(function() {
       throw e;
-    }, 1);
+    }, 20);
   }
 })();
 
