@@ -16,6 +16,7 @@
 	});
 	```
 4. refactor: `delete://resCookie.xxx` 和 `delete://cookie.xxx`  可以删除浏览器中的 cookie（只支持 `path: /` 及 `Domain=父代` 或本域名）
+5. style: Network 右键菜单支持 `Copy Cell Text`
 
 # v2.9.35
 1. feat: Netwok 的 table 表头支持通过右键调整列宽度
@@ -630,7 +631,7 @@
 # v2.4.7
 1. fix: https://github.com/avwo/whistle/pull/383
 2. refactor: HTTP/2 支持 delete 请求携带 body
-3. style: `HTTPS > View custom certs info` 支持高亮显示过期证书，且支持 copy 证书安装路径
+3. style: `HTTPS > View all custom certificates` 支持高亮显示过期证书，且支持 copy 证书安装路径
 3. fix: 设置 `reqBody://(xxxx) method://post` 无法同时生效问题
 
 # v2.4.6
@@ -864,7 +865,7 @@
 
 # v1.16.0
 1. feat: 支持插件通过 `options.getRules(cb), options.getValues(cb), options.getCustomCertsInfo(cb)`，分别获取插件Rules、Values、自定义证书信息
-2. style: HTTPS菜单的对话框添加 `View custom certs info` 按钮，用于查看自定义证书状态（是否过期等）
+2. style: HTTPS菜单的对话框添加 `View all custom certificates` 按钮，用于查看自定义证书状态（是否过期等）
 3. fix: WebSocket请求无法设置 `reqDelay://msNum` 的问题
 
 # v1.15.16
