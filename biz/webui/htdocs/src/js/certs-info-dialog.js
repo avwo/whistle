@@ -224,7 +224,7 @@ var HistoryData = React.createClass({
             >
               <span className="glyphicon glyphicon-question-sign"></span>
             </a>
-            Custom Certs
+            Custom Certificates
           </h4>
           <table className="table">
             <thead>

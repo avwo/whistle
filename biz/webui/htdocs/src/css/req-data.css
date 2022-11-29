@@ -192,7 +192,7 @@
 }
 
 .w-context-menu li[data-menu-action='Copy'] ul {
-  top: -61px !important;
+  top: -31px !important;
 }
 
 .w-context-menu.w-contenxt-menu-list li[data-menu-action='Copy'] ul {

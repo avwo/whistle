@@ -9,7 +9,7 @@ var MAX_COUNT = MAX_LENGTH + 100;
 var WIN_NAME_PRE =
   '__whistle_' + location.href.replace(/\/[^/]*([#?].*)?$/, '/') + '__';
 var KW_RE =
-  /^(e|error|url|u|content|c|b|body|headers|h|ip|i|status|result|s|r|method|m|mark|type|t):(.*)$/i;
+  /^(e|error|style|url|u|content|c|b|body|headers|h|ip|i|status|result|s|r|method|m|mark|type|t):(.*)$/i;
 var KW_LIST_RE = /([^\s]+)(?:\s+([^\s]+)(?:\s+([\S\s]+))?)?/;
 
 function NetworkModal(list) {
@@ -64,7 +64,7 @@ function parseKeyword(keyword) {
       keyword = keyword.substring(1);
     }
   }
-  if (!keyword && type !== 'mark') {
+  if (!keyword && !type) {
     return;
   }
   return {
@@ -191,6 +191,8 @@ function checkItem(item, opts) {
     var isError = item.reqError || item.resError || (item.customData && item.customData.error) ||
     (statusCode && (!/^\d+$/.test(statusCode) || statusCode >= 400));
     return setNot(!(isError && checkUrl(item, opts)), opts.not);
+  case 'style':
+    return setNot(!(item.style && checkUrl(item, opts)), opts.not);
   default:
     return setNot(!checkUrl(item, opts), opts.not);
   }

@@ -8,15 +8,39 @@ function isEnd(item) {
   return item.endTime || item.lost;
 }
 
+function assign(o1, o2) {
+  if (typeof Object.assign === 'function') {
+    Object.assign(o1, o2);
+  } else {
+    Object.keys(o2).forEach(function(key) {
+      o1[key] = o2[key];
+    });
+  }
+}
+
+function getString(str) {
+  if (!str || typeof str !== 'string') {
+    return;
+  }
+  return str;
+}
+
 function setCustomData(item, newData) {
   var data = item.customData || {};
   item.customData = data;
-  if (typeof Object.assign === 'function') {
-    Object.assign(data, newData);
-  } else {
-    Object.keys(newData).forEach(function(key) {
-      data[key] = newData[key];
-    });
+  assign(data, newData);
+  var style = data.style;
+  if (style) {
+    var color = getString(style.color);
+    var fontStyle = getString(style.fontStyle);
+    var backgroundColor = getString(style.backgroundColor || style.bgColor);
+    if (color || fontStyle || backgroundColor) {
+      style = item.style || {};
+      item.style = style;
+      style.color = style.color || color;
+      style.fontStyle = style.fontStyle || fontStyle;
+      style.backgroundColor = style.backgroundColor || backgroundColor;
+    }
   }
 }
 

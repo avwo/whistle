@@ -4470,7 +4470,7 @@ var Index = React.createClass({
                     }}
                     onClick={this.showCustomCertsInfo}
                   >
-                    View custom certs info
+                    View all custom certificates
                   </a>
                   <CertsInfoDialog ref="certsInfoDialog" />
                 </div>
