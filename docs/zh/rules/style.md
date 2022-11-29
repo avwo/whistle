@@ -1,6 +1,24 @@
 # style
 > 该协议 v1.15.11 及以上版本才支持
 
+设置Network列表行样式：
+
+	pattern style://color=@fff&fontStyle=italic&bgColor=red
+
+pattern参见[匹配模式](../pattern.html)，更多模式请参考[配置方式](../mode.html)；style可以设置：
+
+1. color: 字体颜色，跟css的color属性一致，但由于 `#` 为whistle但注释符号，这里可以用 `@` 代替
+2. fontStyle: 字体样式，可以设置为 `normal`、`italic`、`oblique` 等 
+3. bgColor: 对应列表行的背景颜色，具体设置同 `color`
+
+例子：
+``` txt
+www.test.com style://color=@fff&fontStyle=italic&bgColor=red
+```
+
+![效果](https://user-images.githubusercontent.com/11450939/61267997-a8e11100-a7cc-11e9-9c24-fbbba591ae9b.png)
+
+可以同时设置多个 `style` ，后面的会覆盖前面，如果先把前面的属性覆盖掉，可以用 `style://color=`。
 #### 过滤规则
 需要确保whistle是最新版本：[更新whistle](../update.html)
 

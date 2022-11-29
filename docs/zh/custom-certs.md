@@ -5,10 +5,10 @@
   1. 把普通证书对 (如：`test.crt` 和 `test.key`、`test2.crt` 和 `test2.key` 等等) 或根证书 (名字必须为 `root.crt` 和 `root.key`)，放在系统的某个目录，如 `/data/ssl`，并在启动时添加启动参数 `w2 start -z /data/ssl` ，whistle会自动加里面的证书
   2. 把上述证书或根证书放在固定目录 `~/.WhistleAppData/custom_certs/`里面，whistle会自动加里面的证书
       > 优先级 `-z dir` > `~/.WhistleAppData/custom_certs/` > 自动生成的证书
-  3. 普通证书对也可以通过抓包界面上方 `HTTPS` 菜单按钮 > `View custom certs info` 直接上传
+  3. 普通证书对也可以通过抓包界面上方 `HTTPS` 菜单按钮 > `View all custom certificates` 直接上传
 
 ### 查看或删除自定义证书
-顶部菜单 `HTTPS` > `View custom certs info`。
+顶部菜单 `HTTPS` > `View all custom certificates`。
 
 # 自定义客户端证书
 有些网站需要客户端和服务端双向验证，可以在 whistle 里面配置:
