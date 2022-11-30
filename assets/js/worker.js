@@ -72,7 +72,7 @@ var module = { exports: exports };
     data.req.headers = data.req.headers || {};
     data.res.headers = data.res.headers || {};
     handle(data, function(result) {
-      self.postMessage({
+      result && self.postMessage({
         id: id,
         data: result
       });

@@ -46,3 +46,66 @@ www.test.com style://color=@fff&fontStyle=italic&bgColor=red
 
 
 可以通过 Network 抓包列表右键菜单 / Open / Source 获取想要的 `Data Key`，如：`req.headers.accept` 获取请求头 `accept` 的值，`res.headers.x-server` 获取响应头 `x-server` 的值
+
+# 通过插件自定义列
+> 该功能需要 `v2.9.36` 及以上版本才支持，请及时更新 whistle
+
+最新版本支持插件添加一个 Network 的自定义列，具体步骤如下：
+1. 在插件的 `package.json` 设置列的名称、列宽度（默认为 `70px`）、从抓包对象里面取值的 `key`（如：`statusCode`、`req.headers.x-test` 等等），是否显示 tips：
+
+	``` json
+	{
+		...
+		"whistleConfig": {
+			"networkColumn": {
+				"name": "RetCode",
+				"width": 90,
+				"showTips": true,
+				"key": "customData.jtenv.ret"
+			}
+		},
+		...
+	}
+	```
+2. 通过自定义 `webWorker` 自定义 `customData`
+
+	``` json
+	{
+		...
+		"whistleConfig": {
+			"networkColumn": {
+				"name": "RetCode",
+				"width": 90,
+				"showTips": true,
+				"key": "customData.abc.ret"
+			},
+			"webWorker": "assets/webWorker.js"
+		},
+		...
+	}
+	```
+	代码示例：
+	``` js
+	var URL_RE = /^https?:\/\/[^/?#]+.xxx.com\/fcgi\/common.fcgi\?/;
+
+	module.exports = function(data, next) {
+		data = URL_RE.test(data.url) && data.res.json;
+		if (!data) {
+			return;
+		}
+		var error = data.ret !== 0;
+		var ret = data.ret + (error && data.msg ? '(' + data.msg + ')' : '');
+		next({
+			abc: { ret: ret }, // 对应上面的 dataKey： customData.abc.ret
+			error: error, // 可选，是否显示错误样式
+			style: error ? { // 可选，自动样式
+				color: '#fff',
+				fontStyle: 'italic',
+				bgColor: 'red'
+			} : undefined
+		})
+	};
+	```
+	效果：
+
+	<img width="800" alt="image" src="https://user-images.githubusercontent.com/11450939/204819477-d6e831fb-2269-4a97-a6ad-63b773068a2b.png">
