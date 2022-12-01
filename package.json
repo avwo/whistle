@@ -82,7 +82,7 @@
   "devDependencies": {
     "babel-core": "^6.7.6",
     "babel-eslint": "^6.1.2",
-    "babel-loader": "^6.2.4",
+    "babel-loader": "^9.1.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.7.0",
@@ -93,10 +93,10 @@
     "clipboard": "^1.7.1",
     "codemirror": "5.5.0",
     "coveralls": "^2.11.12",
-    "css-loader": "0.16.0",
+    "css-loader": "6.7.2",
     "eslint": "^2.8.0",
     "eslint-plugin-react": "^4.3.0",
-    "file-loader": "0.8.4",
+    "file-loader": "6.2.0",
     "glob": "^7.1.2",
     "istanbul": "^0.4.4",
     "jquery": "3.3.1",
@@ -110,9 +110,9 @@
     "request": "^2.74.0",
     "should": "^10.0.0",
     "should-http": "0.0.4",
-    "style-loader": "0.12.3",
+    "style-loader": "3.3.1",
     "tape": "^4.6.0",
-    "url-loader": "0.5.6",
+    "url-loader": "0.5.9",
     "webpack": "1.11.0",
     "ws": "^1.1.4"
   }
