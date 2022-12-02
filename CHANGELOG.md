@@ -1,3 +1,31 @@
+# v2.9.38
+1. refactor: `req.passThrough(handleReq?, handleRes?)` 提供更多功能
+	``` js
+	req.passThrough(function(rawBuffer, next, options) {
+		options.getText((err, text) => {
+			console.log(err, text);
+		}, encoding?); // 自动 unzip 并转成字符串，字符编码 encoding 可选
+		options.getJson((err, text) => {
+			console.log(err, text);
+			next({
+				body: rawBuffer,
+				rules: '* file://(abc)'
+			});
+		}, encoding?); // 自动 unzip 并转成json
+	}, function(rawBuffer, next, options) {
+		options.getText((err, text) => {
+			console.log(err, text);
+		}, encoding?); // 自动 unzip 并转成字符串，字符编码 encoding 可选
+		options.getJson((err, text) => {
+			console.log(err, text);
+			next({
+				body: rawBuffer,
+				rules: '* file://(abc)'
+			});
+		}, encoding?); // 自动 unzip 并转成json
+	});
+	```
+
 # v2.9.37
 1. fix: `resCookies://` 设置失败问题
 
