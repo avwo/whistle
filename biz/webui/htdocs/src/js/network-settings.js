@@ -261,6 +261,9 @@ var Settings = React.createClass({
               </label>
             </legend>
             {columnList.map(function (col) {
+              if (col.isPlugin) {
+                return;
+              }
               var name = col.name;
               var canEdit1 = name === 'custom1';
               var canEdit = canEdit1 || name === 'custom2';

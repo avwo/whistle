@@ -45,7 +45,7 @@ function comparePlugin(p1, p2) {
   return (
     compare(p1.priority, p2.priority) ||
     compare(p2.mtime, p1.mtime) ||
-    (p1._key > p2._key ? 1 : -1)
+    (p1._key > p2._key ? 1 : (p1._key == p2._key ? 0 : -1))
   );
 }
 
