@@ -843,7 +843,6 @@ function startLoadData() {
       });
       var len = data.log.length;
       var svrLen = data.svrLog.length;
-      pluginsMap = data.plugins || {};
       var _reqTabList = reqTabList;
       var _resTabList = resTabList;
       var _tabList = tabList;
@@ -853,6 +852,8 @@ function startLoadData() {
       var _workers = [];
       var hasWorkerChanged;
       var curTabList = [];
+      pluginsMap = data.plugins || {};
+      disabledPlugins = data.disabledPlugins || {};
       if (!disabledAllPlugins) {
         Object.keys(pluginsMap).forEach(function (name) {
           var pluginName = name.slice(0, -1);
@@ -931,7 +932,6 @@ function startLoadData() {
         webWorkerList = _workers;
         updateWorkers(webWorkerList);
       }
-      disabledPlugins = data.disabledPlugins || {};
       disabledAllPlugins = data.disabledAllPlugins;
       if (len || svrLen) {
         if (len) {

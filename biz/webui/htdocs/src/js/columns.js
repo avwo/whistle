@@ -210,26 +210,21 @@ function reset(init) {
 }
 
 function sortColumns() {
-  var flagMap = {};
-  var checkColumn = function (col) {
+  var columns = [];
+  sortedCols.forEach(function(col) {
     var name = col && col.name;
-    if (!name || flagMap[name] || !columnsMap[name]) {
-      return false;
+    col = name && columnsMap[name];
+    if (col && curColumns.indexOf(col) !== -1 && columns.indexOf(col) === -1) {
+      columns.push(col);
     }
-    flagMap[name] = 1;
-    return true;
-  };
-  var columns = sortedCols.filter(checkColumn);
-  if (columns.length === curColumns.length) {
-    curColumns = columns.map(function (col) {
-      var curCol = columnsMap[col.name];
-      curCol.selected = !!col.selected;
-      return curCol;
-    });
-  }
-  settings = {
-    columns: curColumns
-  };
+  });
+  curColumns.forEach(function(col) {
+    if (columns.indexOf(col) === -1) {
+      columns.push(col);
+    }
+  });
+  curColumns = columns;
+  settings = { columns: curColumns };
 }
 
 reset(true);
@@ -387,7 +382,7 @@ events.on('pluginColumnsChange', function() {
       oldCol.title = col.title;
       oldCol.key = col.key;
       oldCol.width = col.width;
-      col = oldCol;
+      return oldCol;
     }
     return col;
   });

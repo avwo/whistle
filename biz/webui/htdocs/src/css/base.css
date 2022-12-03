@@ -7,7 +7,7 @@ body,
   height: 100%;
 }
 #container {
-  min-width: 1180px;
+  min-width: 1075px; /* 兼容竖屏 */
   min-height: 560px;
 }
 ::-webkit-scrollbar {
