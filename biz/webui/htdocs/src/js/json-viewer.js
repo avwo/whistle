@@ -10,6 +10,7 @@ var win = require('./win');
 var JSONTree = require('./components/react-json-tree')['default'];
 var dataCenter = require('./data-center');
 var util = require('./util');
+var events = require('./events');
 var MAX_LENGTH = 1024 * 16;
 var STR_SELECTOR = 'span[style="color: rgb(133, 153, 0);"]';
 var LINK_RE = /^"(https?:)?(\/\/[^/]\S+)"$/i;
@@ -29,11 +30,20 @@ var JsonViewer = React.createClass({
   preventBlur: function (e) {
     e.target.nodeName != 'INPUT' && e.preventDefault();
   },
-  edit: function () {
+  getCurStr: function() {
     var data = this.props.data;
-    var str = data && data.str;
+    return data && data.str;
+  },
+  edit: function () {
+    var str = this.getCurStr();
     if (str) {
       util.openEditor(str);
+    }
+  },
+  search: function() {
+    var str = this.getCurStr();
+    if (str) {
+      events.trigger('showJsonViewDialog', str);
     }
   },
   showNameInput: function (e) {
@@ -191,7 +201,9 @@ var JsonViewer = React.createClass({
             <a className="w-edit" onClick={this.edit} draggable="false">
               ViewAll
             </a>
-          ) : undefined}
+          ) : (props.dialog ? undefined : <a className="w-edit" onClick={this.search} draggable="false">
+                Search
+              </a>)}
           <a onClick={this.toggle} className="w-properties-btn">
             {viewSource ? 'JSON' : 'Text'}
           </a>
