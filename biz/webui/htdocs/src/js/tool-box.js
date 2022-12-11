@@ -4,9 +4,9 @@ var $ = require('jquery');
 var util = require('./util');
 var QRCodeDialog = require('./qrcode-dialog');
 var TextDialog = require('./text-dialog');
-var JSONDialog = require('./json-dialog');
 var storage = require('./storage');
 var win = require('./win');
+var events = require('./events');
 
 var URL_RE = /^(?:(?:[\w.-]+:)?\/\/)?([\w.-]+)/i;
 var NOT_EMPTY_RE = /[^\s]/;
@@ -77,7 +77,7 @@ var ToolBox = React.createClass({
     this.refs.qrcodeDialog.show(this.state.qrcodeValue);
   },
   parseJSON: function () {
-    this.refs.jsonDialog.show(this.state.jsonValue);
+    events.trigger('showJsonViewDialog', this.state.jsonValue);
   },
   encode: function () {
     try {
@@ -272,7 +272,6 @@ var ToolBox = React.createClass({
         </div>
         <QRCodeDialog ref="qrcodeDialog" />
         <TextDialog ref="textDialog" />
-        <JSONDialog ref="jsonDialog" />
         <form
           ref="uploadImgForm"
           encType="multipart/form-data"

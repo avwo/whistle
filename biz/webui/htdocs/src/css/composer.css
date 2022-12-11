@@ -30,6 +30,7 @@
   margin: 0 2px;
   padding: 0;
   font-size: 13px;
+  border-radius: 0;
 }
 .w-composer-execute {
   padding: 0 8px;

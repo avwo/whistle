@@ -56,7 +56,7 @@ var MenuItem = React.createClass({
                     onDoubleClickOption(option);
                   }}
                   href={option.href || undefined}
-                  target={option.href ? option.target || 'blank' : undefined}
+                  target={option.href ? option.target || '_blank' : undefined}
                   draggable="false"
                 >
                   {option.icon == 'checkbox' ? (

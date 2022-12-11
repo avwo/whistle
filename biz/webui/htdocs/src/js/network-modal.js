@@ -6,6 +6,7 @@ var NUM_OPTIONS = [500, 1000, 1500, 2000, 2500, 3000];
 var curLength = parseInt(storage.get('maxNetworkRows'), 10) || 1500;
 var MAX_LENGTH = NUM_OPTIONS.indexOf(curLength) === -1 ? 1500 : curLength;
 var MAX_COUNT = MAX_LENGTH + 100;
+var dataCenter;
 var WIN_NAME_PRE =
   '__whistle_' + location.href.replace(/\/[^/]*([#?].*)?$/, '/') + '__';
 var KW_RE =
@@ -126,6 +127,23 @@ function checkUrl(item, opts) {
   return checkKeywork(rawUrl, opts);
 }
 
+function checkData(item, opts) {
+  if (setNot(checkUrl(item, opts), opts.not)) {
+    return false;
+  }
+  var keys = dataCenter && dataCenter.getDataKeys();
+  var len = keys && keys.length;
+  if (len) {
+    for (var i = 0; i < len; i++) {
+      var value = util.getProperty(item, keys[i]);
+      if (value != null && setNot(checkKeywork(String(value), opts), opts.not)) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
 proto.hasKeyword = function () {
   return this._keyword;
 };
@@ -142,7 +160,7 @@ function setNot(flag, not) {
 function checkItem(item, opts) {
   switch (opts.type) {
   case 'mark':
-    return !item.mark || setNot(!checkUrl(item, opts), opts.not);
+    return !item.mark || checkData(item, opts);
   case 'c':
   case 'content':
   case 'b':
@@ -190,11 +208,11 @@ function checkItem(item, opts) {
     var statusCode = item.res && item.res.statusCode;
     var isError = item.reqError || item.resError || (item.customData && item.customData.error) ||
     (statusCode && (!/^\d+$/.test(statusCode) || statusCode >= 400));
-    return setNot(!(isError && checkUrl(item, opts)), opts.not);
+    return !isError || checkData(item, opts);
   case 'style':
-    return setNot(!(item.style && checkUrl(item, opts)), opts.not);
+    return !item.style ||  checkData(item, opts);
   default:
-    return setNot(!checkUrl(item, opts), opts.not);
+    return checkData(item, opts);
   }
 }
 
@@ -881,5 +899,9 @@ function updateOrder(list, force) {
 
   return list;
 }
+
+NetworkModal.setDataCenter = function(dc) {
+  dataCenter = dc;
+};
 
 module.exports = NetworkModal;

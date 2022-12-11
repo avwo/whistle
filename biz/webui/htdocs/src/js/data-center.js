@@ -20,6 +20,7 @@ var directCallbacks = [];
 var dataList = [];
 var logList = [];
 var svrLogList = [];
+var setDataCenter = NetworkModal.setDataCenter;
 var networkModal = new NetworkModal(dataList);
 var curServerInfo;
 var initialDataPromise, initialData, startedLoad;
@@ -36,6 +37,7 @@ var logId;
 var port;
 var pageId;
 var account;
+var dataKeys = [];
 var dumpCount = 0;
 var updateCount = 0;
 var MAX_UPDATE_COUNT = 4;
@@ -438,7 +440,8 @@ exports.values = createCgiObj(
 exports.plugins = createCgiObj(
   {
     disablePlugin: 'cgi-bin/plugins/disable-plugin',
-    disableAllPlugins: 'cgi-bin/plugins/disable-all-plugins'
+    disableAllPlugins: 'cgi-bin/plugins/disable-all-plugins',
+    getRegistryList: 'cgi-bin/plugins/registry-list'
   },
   POST_CONF
 );
@@ -885,6 +888,7 @@ function startLoadData() {
       tabList = [];
       comTabList = [];
       toolTabList = [];
+      dataKeys = [];
       curTabList.forEach(function (info) {
         var reqTab = info.reqTab;
         var resTab = info.resTab;
@@ -917,6 +921,7 @@ function startLoadData() {
           col.name = col.className = 'whistle.' + info.plugin;
           col.isPlugin = true;
           _pluginCols.push(col);
+          dataKeys.push(col.key);
         }
       });
       emitCustomTabsChange(reqTabList, _reqTabList, 'reqTabsChange');
@@ -1529,5 +1534,29 @@ exports.getValuesMenus = function () {
 exports.getPluginColumns = function() {
   return pluginColumns;
 };
+
+exports.getPluginRegistry = function() {
+  var result = [];
+  Object.keys(pluginsMap).forEach(function(key) {
+    var registry = pluginsMap[key].registry;
+    if (registry && result.indexOf(registry) === -1) {
+      result.push(registry);
+    }
+  });
+  return result;
+};
+
+exports.getDataKeys = function() {
+  var result = [];
+  if (exports.custom1Key) {
+    result.push('custom1');
+  }
+  if (exports.custom2Key) {
+    result.push('custom2');
+  }
+  return result.concat(dataKeys);
+};
+
+setDataCenter(exports);
 
 workers.setup(networkModal);

@@ -1,4 +1,4 @@
-const events = require('./events');
+var events = require('./events');
 
 var workers = {};
 var modal;

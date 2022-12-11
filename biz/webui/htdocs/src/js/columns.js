@@ -1,6 +1,6 @@
 var $ = require('jquery');
 var dataCenter = require('./data-center');
-const events = require('./events');
+var events = require('./events');
 var storage = require('./storage');
 var util = require('./util');
 

@@ -327,6 +327,7 @@
   height: 30px;
   line-height: 30px;
   padding: 5px;
+  border: 1px solid #ccc;
 }
 
 .w-https-menu .glyphicon-lock {

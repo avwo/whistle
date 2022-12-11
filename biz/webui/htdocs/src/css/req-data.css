@@ -109,6 +109,14 @@
   font-weight: 500;
   color: #000093;
 }
+
+.w-req-data-list .w-has-local th,
+.w-req-data-list .w-has-local td,
+.w-req-data-list .tree-leaf.w-has-local {
+  font-weight: 500;
+  color: #000;
+}
+
 .w-req-data-list .w-error-status th,
 .w-req-data-list .w-error-status td {
   color: #ff3a90;

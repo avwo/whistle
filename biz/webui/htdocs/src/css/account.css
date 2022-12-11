@@ -5,9 +5,9 @@
 }
 
 .w-editor-win .modal-dialog {
-  width: calc(100% - 60px);
-  height: calc(100% - 60px);
-  margin: 30px;
+  width: calc(100% - 120px);
+  height: calc(100% - 100px);
+  margin: 50px 60px;
 }
 
 .w-editor-win {

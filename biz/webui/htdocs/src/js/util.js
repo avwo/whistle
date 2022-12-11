@@ -7,7 +7,7 @@ var base64Encode = jsBase64.encode;
 var toBase64 = jsBase64.toBase64;
 var json2 = require('./components/json');
 var evalJson = require('./components/json/eval');
-const events = require('./events');
+var events = require('./events');
 var isUtf8 = require('./is-utf8');
 var message = require('./message');
 var win = require('./win');
@@ -2377,4 +2377,50 @@ exports.getRawUrl = function (item) {
 
 exports.isGroup = function(name) {
   return name && name[0] === '\r';
+};
+
+function filterJson(obj, keyword, filterType) {
+  if (obj == null) {
+    return false;
+  }
+  var type = typeof obj;
+  var isKey = filterType === 1;
+  if (type === 'string' || type === 'number' || type === 'boolean') {
+    return !isKey && String(obj).toLowerCase().indexOf(keyword) !== -1;
+  }
+  if (type !== 'object') {
+    return false;
+  }
+  if (Array.isArray(obj)) {
+    for (var i = obj.length - 1; i >=0; i--) {
+      if (!filterJson(obj[i], keyword, filterType)) {
+        obj.splice(i, 1);
+      }
+    }
+    return obj.length;
+  }
+  Object.keys(obj).forEach(function(key) {
+    var isVal = filterType > 1;
+    var hasKey = !isVal && key.toLowerCase().indexOf(keyword) !== -1;
+    if (isKey && hasKey) {
+      return true;
+    }
+    if (!filterJson(obj[key], keyword, filterType) && !hasKey) {
+      delete obj[key];
+    }
+  });
+  return Object.keys(obj).length;
+}
+
+exports.filterJsonText = function(str, keyword, filterType) {
+  keyword = keyword.trim().toLowerCase();
+  var obj;
+  if (keyword) {
+    if (str.toLowerCase().indexOf(keyword) === -1) {
+      return {};
+    }
+    obj = JSON.parse(str);
+    filterJson(obj, keyword, filterType);
+  }
+  return obj;
 };

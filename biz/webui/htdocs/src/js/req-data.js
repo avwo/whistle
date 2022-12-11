@@ -153,12 +153,24 @@ function getColStyle(col, style) {
   return style;
 }
 
+function getRuleStyle(data) {
+  var rules = data.rules;
+  if (!rules) {
+    return '';
+  }
+  var rule = rules.rule;
+  if (rule && (rule.isLoc || rule.isSpec)) {
+    return ' w-has-local';
+  }
+  return hasRules(rules) ? ' w-has-rules' : '';
+}
+
 function getClassName(data) {
   return (
     getStatusClass(data) +
     ' w-req-data-item' +
     (data.isHttps ? ' w-tunnel' : '') +
-    (hasRules(data) ? ' w-has-rules' : '') +
+    getRuleStyle(data) +
     (data.selected ? ' w-selected' : '') +
     (data.isPR ? ' w-pr' : '')
   );
@@ -173,11 +185,7 @@ function isVisibleInTree(item) {
   return !parent || (parent.expand && parent.pExpand);
 }
 
-function hasRules(data) {
-  var rules = data.rules;
-  if (!rules) {
-    return false;
-  }
+function hasRules(rules) {
   var keys = Object.keys(rules);
   if (keys && keys.length) {
     for (var i = 0, len = keys.length; i < len; i++) {

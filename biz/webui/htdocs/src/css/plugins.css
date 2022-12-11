@@ -179,3 +179,18 @@
 .w-plugin-btn:hover {
   color: #23527c !important;
 }
+.w-plugin-update-dialog .modal-footer {
+  white-space: nowrap;
+}
+.w-registry-list {
+  margin-right: 25px;
+}
+.w-registry-list select {
+  border-radius: 0;
+  display: inline-block;
+  font-size: 12px;
+  line-height: 28px;
+  height: 30px;
+  padding: 0 5px;
+  width: 360px;
+}
