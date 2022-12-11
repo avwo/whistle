@@ -1,3 +1,10 @@
+# v2.9.39
+1. feat: JSON View 支持搜索
+2. feat: 自动记录用过的 npm registry
+3. feat: 模板字符串支持 `${env.xxx}` 获取环境变量 `xxx` 对应的值
+4. feat: 支持通过环境变量 `excludeFilter://env.xxx=pattern`
+5. style: 匹配 map local 的抓包字体颜色显示成黑色
+
 # v2.9.38
 1. refactor: `req.passThrough(handleReq?, handleRes?)` 提供更多功能
 	``` js
