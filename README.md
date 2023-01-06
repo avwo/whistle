@@ -78,6 +78,9 @@ Whistle 是基于 Node 实现的跨平台抓包调试工具，其主要特点：
 
     <img width="180" alt="image" src="https://user-images.githubusercontent.com/11450939/173984519-143615b2-2a99-4486-a22a-fec71fe00423.png">
 
+# 安全设置
+1. 通过启动参数给管理界面设置用户名密码：`w2 restart -n yourusername -w yourpassword`
+2. 通过插件给经过代理的请求设置用户名密码：https://github.com/whistle-plugins/whistle.proxyauth
 
 # License
 [MIT](./LICENSE)
