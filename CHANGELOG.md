@@ -1,3 +1,8 @@
+# v2.9.40
+1. refactor: `Network / Tools / Console & Server` 支持捕获 `unhandledrejection` 的错误信息，且`Console & Server` 最大缓存日志条数调整为 230
+2. feat: 支持 earlyHints
+3. feat: JSONView 右键支持 `Expand All` 及 `Collapse All`
+
 # v2.9.39
 1. feat: JSON View 支持搜索
 2. feat: 自动记录用过的 npm registry
