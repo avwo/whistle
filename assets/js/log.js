@@ -387,4 +387,15 @@
     setTimeout(attachOnError, 600);
   };
   attachOnError();
+
+  if (typeof  window.addEventListener === 'function') {
+    window.addEventListener('unhandledrejection', function(e) {
+      var reason = 'UnhandledRejection';
+      if (e) {
+         e = e.reason || stringifyObj(e) || String(e);
+         reason += (/^[\w.-]*:/.test(e) ? ' ' : ': ') + e;
+      }
+      wConsole.error(reason);
+    });
+  }
 })();
