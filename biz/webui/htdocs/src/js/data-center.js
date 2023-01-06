@@ -28,6 +28,7 @@ var lastPageLogTime = -2;
 var lastSvrLogTime = -2;
 var dataIndex = 1000000;
 var MAX_PATH_LENGTH = 1024;
+var MAX_LOG_LENGTH = 250;
 var lastRowId;
 var endId;
 var hashFilterObj;
@@ -63,6 +64,7 @@ var DEFAULT_CONF = {
 exports.clientIp = '127.0.0.1';
 exports.MAX_INCLUDE_LEN = MAX_INCLUDE_LEN;
 exports.MAX_EXCLUDE_LEN = MAX_EXCLUDE_LEN;
+exports.MAX_LOG_LENGTH = MAX_LOG_LENGTH - 20;
 exports.changeLogId = function (id) {
   logId = id;
 };
@@ -774,11 +776,11 @@ function startLoadData() {
       }
     });
 
-    if (!exports.pauseConsoleRefresh && len < 100) {
+    if (!exports.pauseConsoleRefresh && len < MAX_LOG_LENGTH) {
       startLogTime = lastPageLogTime;
     }
 
-    if (!exports.pauseServerLogRefresh && svrLen < 70) {
+    if (!exports.pauseServerLogRefresh && svrLen < MAX_LOG_LENGTH) {
       startSvrLogTime = lastSvrLogTime;
     }
 

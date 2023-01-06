@@ -12,7 +12,7 @@ var events = require('./events');
 var DropDown = require('./dropdown');
 var win = require('./win');
 
-var MAX_COUNT = 90;
+var MAX_COUNT = dataCenter.MAX_LOG_LENGTH;
 var MAX_FILE_SIZE = 1024 * 1024 * 2;
 
 var ServerLog = React.createClass({

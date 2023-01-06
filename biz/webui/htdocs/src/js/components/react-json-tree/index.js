@@ -70,11 +70,6 @@ function _interopRequireDefault(obj) {
 // Dave Vedder <veddermatic@gmail.com> http://www.eskimospy.com/
 // port by Daniele Zannotti http://www.github.com/dzannotti <dzannotti@me.com>
 
-var contextMenuList = [
-  { name: 'Copy Key' },
-  { name: 'Copy Value' },
-  { name: 'Collapse Parent' }
-];
 var identity = function identity(value) {
   return value;
 };
@@ -190,6 +185,18 @@ var JSONTree = (function (_React$Component) {
 
   function JSONTree(props) {
     (0, _classCallCheck3['default'])(this, JSONTree);
+    var contextMenuList = [
+      { name: 'Copy Key' },
+      { name: 'Copy Value' },
+      { name: 'Collapse Parent' }
+    ];
+
+    if (props.expandAll) {
+      contextMenuList.push({ name: 'Expand All' });
+    }
+    if (props.collapseAll) {
+      contextMenuList.push({ name: 'Collapse All' });
+    }
 
     var _this = (0, _possibleConstructorReturn3['default'])(
       this,
@@ -197,9 +204,13 @@ var JSONTree = (function (_React$Component) {
     );
 
     _this.onContextMenu = function (e) {
-      var target = (0, _contextMenu.$)(e.target).closest('label');
-      var keyPath = _contextMenu.util.parseJSON(target.attr('data-key-path'));
+      var target = (0, _contextMenu.$)(e.target);
+      var label = target.closest('label');
+      var keyPath = _contextMenu.util.parseJSON(label.attr('data-key-path'));
       if (!Array.isArray(keyPath)) {
+        if (e.target.nodeName === 'SPAN' && !target.find('span').length && e.target.parentNode.nodeName !== 'SPAN') {
+          e.stopPropagation();
+        }
         return;
       }
       var data = _this.props.data;
@@ -208,8 +219,17 @@ var JSONTree = (function (_React$Component) {
           data = data && data[keyPath[i]];
         }
       }
+      var expandMenu = contextMenuList[3];
+      var collapseMenu = contextMenuList[4];
+      var height = isRoot ? 60 : 90;
+      if (expandMenu) {
+        height += 30;
+      }
+      if (collapseMenu) {
+        height += 30;
+      }
       var isRoot = keyPath.length === 1;
-      var ctxMenu = _contextMenu.util.getMenuPosition(e, 110, isRoot ? 60 : 90);
+      var ctxMenu = _contextMenu.util.getMenuPosition(e, 110, height);
       ctxMenu.list = contextMenuList;
       ctxMenu.className = 'w-inspectors-ctx-menu';
       contextMenuList[0].copyText = keyPath[0];
@@ -226,11 +246,22 @@ var JSONTree = (function (_React$Component) {
       }
       contextMenuList[1].copyText = data + '';
       contextMenuList[2].onClick = function () {
-        target.closest('li').parent().closest('li').find('div:first').click();
+        label.closest('li').parent().closest('li').find('div:first').click();
       };
       contextMenuList[2].hide = isRoot;
+      if (expandMenu) {
+        expandMenu.onClick = function () {
+          props.expandAll();
+        };
+      }
+      if (collapseMenu) {
+        collapseMenu.onClick = function () {
+          props.collapseAll();
+        };
+      }
       _this.refs.contextMenu.show(ctxMenu); // eslint-disable-line
       e.preventDefault();
+      e.stopPropagation();
     };
 
     _this.state = getStateFromProps(props);

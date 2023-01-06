@@ -36,6 +36,7 @@ function createModal(options, callback, gVarName) {
     <Dialog
       width={options.width}
       height={options.height}
+      fullCustom={options.fullCustom}
       wclassName="w-dialog-for-plguin"
       customRef={function (d) {
         document.body.removeChild(container);
@@ -44,18 +45,26 @@ function createModal(options, callback, gVarName) {
       }}
       onClose={options.onClose}
     >
-      <div className="modal-header">
-        <h4></h4>
+      {options.fullCustom ? (
         <button type="button" className="close" data-dismiss="modal">
           <span aria-hidden="true">&times;</span>
         </button>
-      </div>
+      ) : (
+        <div className="modal-header">
+          <h4></h4>
+          <button type="button" className="close" data-dismiss="modal">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      )}
       <div className="modal-body"></div>
-      <div className="modal-footer">
-        <button type="button" className="btn btn-default" data-dismiss="modal">
-          Close
-        </button>
-      </div>
+      {options.fullCustom ? undefined :
+        <div className="modal-footer">
+          <button type="button" className="btn btn-default" data-dismiss="modal">
+            Close
+          </button>
+        </div>
+      }
     </Dialog>,
     container
   );

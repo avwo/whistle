@@ -8,8 +8,9 @@ var Dialog = React.createClass({
   },
   componentDidMount: function () {
     this.container = $(document.createElement('div'));
+    var clazz = this.props.fullCustom ? ' w-custom-dialog' : '';
     this.container.addClass(
-      'modal fade' + (this.props.wstyle ? ' ' + this.props.wstyle : '')
+      'modal fade' + clazz + (this.props.wstyle ? ' ' + this.props.wstyle : '')
     );
     document.body.appendChild(this.container[0]);
     this.componentDidUpdate();
@@ -31,9 +32,13 @@ var Dialog = React.createClass({
     var props = this.props;
     var className = props.wclassName;
     var style;
-    if (props.width > 0) {
+    if (props.width) {
       style = style || {};
       style.width = props.width;
+    }
+    if (props.fullCustom && props.height) {
+      style = style || {};
+      style.height = props.height;
     }
     return (
       <div

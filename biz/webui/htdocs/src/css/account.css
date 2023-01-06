@@ -14,7 +14,7 @@
   z-index: 99999;
 }
 
-.w-account-dialog button.close {
+.w-account-dialog button.close, .w-custom-dialog button.close {
   font-size: 20px;
   line-height: 6px;
   padding: 2px 2px 8px 3px;
@@ -29,17 +29,17 @@
   z-index: 1;
 }
 
-.w-account-dialog .modal-content {
+.w-account-dialog .modal-content, .w-custom-dialog .modal-content {
   border-radius: 5px;
   height: 100%;
   padding: 0;
 }
 
-.w-account-dialog iframe {
+.w-account-dialog iframe, .w-custom-dialog iframe {
   border-radius: 5px;
 }
 
-.w-account-dialog .modal-body {
+.w-account-dialog .modal-body, .w-custom-dialog .modal-body {
   display: block;
   width: 100%;
   height: 100%;
