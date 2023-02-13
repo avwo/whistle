@@ -4,6 +4,7 @@ var React = require('react');
 var util = require('./util');
 var CopyBtn = require('./copy-btn');
 var ExpandCollapse = require('./expand-collapse');
+var JSONTree = require('./components/react-json-tree')['default'];
 
 var Properties = React.createClass({
   getInitialState: function () {
@@ -20,6 +21,7 @@ var Properties = React.createClass({
     var viewSource = this.state.viewSource;
     var onHelp = props.onHelp;
     var rawName = props.rawName;
+    var showJsonView = props.showJsonView;
     var rawValue = props.rawValue;
     var modal = props.modal || {};
     var title = props.title || {};
@@ -108,6 +110,7 @@ var Properties = React.createClass({
               if (Array.isArray(value)) {
                 return value.map(function (val, i) {
                   val = util.toString(val);
+                  var json = showJsonView && util.likeJson(val) && util.parseJSON(val);
                   return (
                     <tr key={i} className={val ? undefined : 'w-no-value'}>
                       <th>
@@ -124,20 +127,23 @@ var Properties = React.createClass({
                           name
                         )}
                       </th>
-                      <td>
-                        <pre>
-                          {val && val.length >= 2100 ? (
-                            <ExpandCollapse text={val} />
-                          ) : (
-                            val
-                          )}
-                        </pre>
+                      <td className={json ? 'w-properties-json' : undefined}>
+                        {
+                          json ? <JSONTree data={json} /> : <pre>
+                            {val && val.length >= 2100 ? (
+                              <ExpandCollapse text={val} />
+                            ) : (
+                              val
+                            )}
+                          </pre>
+                        }
                       </td>
                     </tr>
                   );
                 });
               }
               value = util.toString(value);
+              var json = showJsonView && util.likeJson(value) && util.parseJSON(value);
               return (
                 <tr
                   key={name}
@@ -158,14 +164,16 @@ var Properties = React.createClass({
                       name
                     )}
                   </th>
-                  <td>
-                    <pre>
-                      {value && value.length >= 2100 ? (
-                        <ExpandCollapse text={value} />
-                      ) : (
-                        value
-                      )}
-                    </pre>
+                  <td className={json ? 'w-properties-json' : undefined}>
+                    {
+                      json ? <JSONTree data={json} /> : <pre>
+                        {value && value.length >= 2100 ? (
+                          <ExpandCollapse text={value} />
+                        ) : (
+                          value
+                        )}
+                      </pre>
+                    }
                   </td>
                 </tr>
               );

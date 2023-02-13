@@ -200,13 +200,13 @@ var ReqDetail = React.createClass({
             <div className="fill orient-vertical-box">
               <div className="w-detail-webforms-title">Query</div>
               <div className="fill orient-vertical-box w-detail-request-query">
-                <Properties modal={query} enableViewSource="1" />
+                <Properties modal={query} enableViewSource="1" showJsonView="1" />
               </div>
             </div>
             <div className="fill orient-vertical-box">
               <div className="w-detail-webforms-title">Body</div>
               <div className="fill orient-vertical-box w-detail-request-form">
-                <Properties modal={form} enableViewSource="1" />
+                <Properties modal={form} enableViewSource="1" showJsonView="1" />
               </div>
             </div>
           </Divider>

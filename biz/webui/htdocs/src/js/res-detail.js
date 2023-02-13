@@ -182,7 +182,7 @@ var ResDetail = React.createClass({
         } else if (type === 'IMG') {
           imgSrc = body || (res.size ? modal.url : undefined);
           isText = false;
-        } else if (showImg && res.base64 && type === 'HTML') {
+        } else if (showImg && res.base64 && (type === 'HTML' || (json && json.isJSONText && util.likeJson(body)))) {
           if (json && json.isJSONText) {
             isJson = true;
           } else if (

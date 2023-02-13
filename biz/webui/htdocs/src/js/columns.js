@@ -159,7 +159,7 @@ var curColumns;
 var buildInCols;
 var colWidthData;
 
-function updateColumns(reseted) {
+function updateColumns(reseted, init) {
   buildInCols = buildInCols || getDefaultColumns();
   curColumns = buildInCols.concat(pluginColList);
   curColumns.forEach(function (col) {
@@ -189,7 +189,7 @@ function updateColumns(reseted) {
   if (reseted) {
     sortedCols = curColumns;
   }
-  sortColumns();
+  sortColumns(init);
 }
 
 function reset(init) {
@@ -200,22 +200,26 @@ function reset(init) {
     } catch (e) {}
     colWidthData = colWidthData || {};
   } else {
+    buildInCols = null;
     colWidthData = {};
   }
-  updateColumns(!init);
+  updateColumns(!init, init);
   if (!init) {
     save();
     storage.set('networkColumnsWidth');
   }
 }
 
-function sortColumns() {
+function sortColumns(init) {
   var columns = [];
   sortedCols.forEach(function(col) {
     var name = col && col.name;
-    col = name && columnsMap[name];
-    if (col && curColumns.indexOf(col) !== -1 && columns.indexOf(col) === -1) {
-      columns.push(col);
+    var curCol = name && columnsMap[name];
+    if (init && curCol) {
+      curCol.selected = !!col.selected;
+    }
+    if (curCol && curColumns.indexOf(curCol) !== -1 && columns.indexOf(curCol) === -1) {
+      columns.push(curCol);
     }
   });
   curColumns.forEach(function(col) {
