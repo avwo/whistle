@@ -1,3 +1,8 @@
+# v2.9.41
+1. fix: Network Settings 列设置刷新失效问题
+2. style: WebForm 支持显示 JSON 对象
+3. style: Preview 优先显示 JSON View
+
 # v2.9.40
 1. refactor: `Network / Tools / Console & Server` 支持捕获 `unhandledrejection` 的错误信息，且`Console & Server` 最大缓存日志条数调整为 230
 2. feat: 支持 earlyHints
