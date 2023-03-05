@@ -123,7 +123,7 @@ var ListDialog = React.createClass({
                 );
               })
             }
-          </div> : <p style={{marginTop: 10}}>
+          </div> : (onConfirm ? null : <p style={{marginTop: 10}}>
               Filename:
               <input
                 ref="filename"
@@ -131,7 +131,7 @@ var ListDialog = React.createClass({
                 className="form-control"
                 placeholder="Input the filename"
               />
-            </p>}
+            </p>)}
         </div>
         <div className="modal-footer">
           {
