@@ -45,22 +45,47 @@ var ListDialog = React.createClass({
     });
     return result;
   },
-  show: function () {
+  show: function (selectedList) {
     var self = this;
     self.refs.dialog.show();
-    setTimeout(function () {
+    if (selectedList) {
+      if (selectedList && typeof selectedList === 'string') {
+        selectedList = [selectedList];
+      }
+      var checkedItems = {};
+      if (Array.isArray(selectedList)) {
+        var list = self.props.list || [];
+        selectedList.forEach(function(name) {
+          if (list.indexOf(name) !== -1) {
+            checkedItems[name] = 1;
+          }
+        });
+      }
+      self.setState({ checkedItems: checkedItems });
+    }
+    !this.props.onConfirm && setTimeout(function () {
       ReactDOM.findDOMNode(self.refs.filename).focus();
     }, 500);
+  },
+  hide: function() {
+    this.refs.dialog.hide();
   },
   preventDefault: function (e) {
     e.preventDefault();
   },
   render: function () {
     var self = this;
-    var list = self.props.list || [];
-    var checkedItems = self.state.checkedItems;
-    var selectedCount = self.state.selectedCount;
-    var pageName = this.props.name;
+    var state = self.state;
+    var props = self.props;
+    var list = props.list || [];
+    var checkedItems = state.checkedItems;
+    var selectedCount = state.selectedCount;
+    var pageName = props.name;
+    var checkedNames = Object.keys(checkedItems);
+    var hasChecked = checkedNames.length;
+    var tips = hasChecked ? props.tips : null;
+    var onConfirm = props.onConfirm;
+    var isRules = props.isRules;
 
     return (
       <Dialog ref="dialog" wclassName=" w-list-dialog">
@@ -68,33 +93,52 @@ var ListDialog = React.createClass({
           <button type="button" className="close" data-dismiss="modal">
             <span aria-hidden="true">&times;</span>
           </button>
-          <p>
-            Filename:
-            <input
-              ref="filename"
-              style={{ width: 390, display: 'inline-block', marginLeft: 5 }}
-              className="form-control"
-              placeholder="Input the filename"
-            />
-          </p>
-          {list.map(function (name) {
-            return (
-              <label title={name}>
-                <input
-                  onChange={self.onChange}
-                  type="checkbox"
-                  checked={!!checkedItems[name]}
-                />
-                {util.isGroup(name) ? <span className="glyphicon glyphicon-triangle-right w-list-group-icon" /> : null}
-                {name}
-              </label>
-            );
-          })}
+          <div className="w-list-wrapper">
+            {list.map(function (name, i) {
+              if (!i && isRules) {
+                return;
+              }
+              return (
+                <label title={name} key={name}>
+                  <input
+                    onChange={self.onChange}
+                    type="checkbox"
+                    checked={!!checkedItems[name]}
+                  />
+                  {util.isGroup(name) ? <span className="glyphicon glyphicon-triangle-right w-list-group-icon" /> : null}
+                  {name}
+                </label>
+              );
+            })}
+          </div>
+          {tips ? <h5 className="w-list-tips-title">{tips}</h5> : null}
+          {tips ? <div className="w-list-tips">
+            {
+              checkedNames.map(function(name) {
+                return (
+                  <span key={name}>
+                    {util.isGroup(name) ? <span className="glyphicon glyphicon-triangle-right w-list-group-icon" /> : null}
+                    {name}
+                  </span>
+                );
+              })
+            }
+          </div> : <p style={{marginTop: 10}}>
+              Filename:
+              <input
+                ref="filename"
+                style={{ width: 390, display: 'inline-block', marginLeft: 5 }}
+                className="form-control"
+                placeholder="Input the filename"
+              />
+            </p>}
         </div>
         <div className="modal-footer">
-          <div className="w-list-counter">
-            Selected: {selectedCount} / {list.length}
-          </div>
+          {
+            onConfirm ? null : <div className="w-list-counter">
+              Selected: {selectedCount} / {list.length}
+            </div>
+          }
           <button
             type="button"
             className="btn btn-default"
@@ -102,22 +146,24 @@ var ListDialog = React.createClass({
           >
             Cancel
           </button>
-          <button
+          {onConfirm ? null : <button
             type="button"
             className="btn btn-warning"
             onMouseDown={this.preventDefault}
             onClick={this.onConfirm}
           >
             Export All
-          </button>
+          </button>}
           <button
             type="button"
             className="btn btn-primary"
-            disabled={!Object.keys(checkedItems).length}
+            disabled={!hasChecked}
             onMouseDown={this.preventDefault}
-            onClick={this.onConfirm}
+            onClick={onConfirm ? function() {
+              onConfirm(checkedNames);
+            } : this.onConfirm}
           >
-            Export Selected
+            {onConfirm ? 'Confirm' : 'Export Selected'}
           </button>
         </div>
         <form

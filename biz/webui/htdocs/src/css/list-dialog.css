@@ -10,7 +10,27 @@
   margin-right: 5px;
 }
 .w-list-dialog {
-  width: 500px;
+  width: 530px;
+}
+.w-list-dialog .w-list-wrapper {
+  max-height: 360px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.w-list-dialog .w-list-tips {
+  max-height: 120px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.w-list-tips > span {
+  display: inline-block;
+  background: #eee;
+  padding: 3px 6px;
+  border-radius: 3px;
+  margin: 0 0 10px 10px;
+}
+.w-list-tips-title {
+  color: red;
 }
 .w-list-dialog .modal-footer {
   position: relative;

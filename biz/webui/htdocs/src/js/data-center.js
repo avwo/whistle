@@ -1548,6 +1548,16 @@ exports.getPluginRegistry = function() {
   return result;
 };
 
+var valuesModal;
+
+exports.setValuesModal = function(modal) {
+  valuesModal = modal;
+};
+
+exports.getValuesModal = function() {
+  return valuesModal;
+};
+
 exports.getDataKeys = function() {
   var result = [];
   if (exports.custom1Key) {

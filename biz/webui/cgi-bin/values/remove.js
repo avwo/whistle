@@ -1,6 +1,6 @@
-var values = require('../../../../lib/rules/util').values;
+var util = require('../../../../lib/rules/util');
 
 module.exports = function(req, res) {
-  values.remove(req.body.name, req.body.clientId, req.body.wholeGroup);
+  util.removeBatch(util.values, req.body);
   res.json({ec: 0, em: 'success'});
 };
