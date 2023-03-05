@@ -7,13 +7,14 @@ var dataCenter = require('./data-center');
 
 var disabledEditor = window.location.href.indexOf('disabledEditor=1') !== -1;
 var NON_SPECAIL_RE = /[^:/]/;
-var PLUGIN_NAME_RE = /^((?:whistle\.)?([a-z\d_\-]+:))(\/?$|\/\/)/;
+var PLUGIN_NAME_RE = /^((?:whistle\.)?([a-z\d_-]+:))(\/?$|\/\/)/;
 var MAX_HINT_LEN = 512;
 var MAX_VAR_LEN = 100;
 var AT_RE = /^@/;
 var P_RE = /^%/;
 var P_VAR_RE = /^%([a-z\d_-]+)([=.])/;
 var PLUGIN_SPEC_RE = /^(pipe|sniCallback):/;
+var VAL_RE = /^([a-z\d_.-]+:\/\/)?\{([^\s]*?)\}?$/i;
 var PROTOCOL_RE = /^([^\s:]+):\/\//;
 var HINT_TIMEOUT = 120;
 var curHintMap = {};
@@ -287,6 +288,9 @@ function handleRemoteHints(data, editor, plugin, protoName, value, cgi, isVar) {
 var WORD = /\S+/;
 var showAtHint;
 var showVarHint;
+var toValKey = function(key) {
+  return '{' + key + '}';
+};
 CodeMirror.registerHelper('hint', 'rulesHint', function (editor, options) {
   showAtHint = false;
   showVarHint = false;
@@ -348,6 +352,37 @@ CodeMirror.registerHelper('hint', 'rulesHint', function (editor, options) {
     };
   }
   if (curWord) {
+    if (VAL_RE.test(curWord)) {
+      var protoLen = RegExp.$1.length;
+      var valKeyword = RegExp.$2;
+      var valuesModal = dataCenter.getValuesModal();
+      var valuesKeys = valuesModal && valuesModal.list;
+      if (valuesKeys && valuesKeys.length) {
+        if (valKeyword) {
+          list = [];
+          var lowerKey = valKeyword.toLowerCase();
+          valuesKeys.forEach(function(key) {
+            if (key.toLowerCase().indexOf(lowerKey) !== -1) {
+              list.push(toValKey(key));
+            }
+          });
+        } else {
+          list = valuesKeys.map(toValKey);
+        }
+        var valLen = list && list.length;
+        if (valLen) {
+          if (valLen === 1 && list[0] === curWord.substring(protoLen)) {
+            return;
+          }
+          curLine = curLine.substring(start).split(/\s/, 1)[0] || '';
+          return {
+            list: list,
+            from: CodeMirror.Pos(cur.line, start + protoLen),
+            to: CodeMirror.Pos(cur.line, start + curLine.length)
+          };
+        }
+      }
+    }
     if (plugin || PLUGIN_NAME_RE.test(curWord)) {
       plugin = plugin || dataCenter.getPlugin(RegExp.$2);
       var pluginConf = pluginVars || plugin;
@@ -423,7 +458,7 @@ CodeMirror.registerHelper('hint', 'rulesHint', function (editor, options) {
           if (commentIndex !== -1) {
             curLine = curLine.substring(0, commentIndex);
           }
-          curLine = curLine.substring(start).split(/\s/, 1)[0];
+          curLine = curLine.substring(start).split(/\s/, 1)[0] || '';
           curFocusProto = protoName;
           end = start + curLine.trim().length;
           var from = CodeMirror.Pos(cur.line, start);
