@@ -992,6 +992,11 @@ var Composer = React.createClass({
           </div>
           <div className="fill orient-vertical-box">
             <div className="w-composer-url box">
+              <span className={'glyphicon glyphicon-menu-' +
+                (showHistory ? 'left' : 'right') + ' w-composer-history-btn'}
+                title={(showHistory ? 'Hide' : 'Show') + ' history list'}
+                onClick={this.toggleHistory}
+              />
               <select
                 disabled={pending}
                 value={method}
@@ -1067,15 +1072,6 @@ var Composer = React.createClass({
                   checked={dataCenter.supportH2 && useH2}
                 />
                 Use H2
-              </label>
-              <label className="w-composer-history">
-                <input
-                  disabled={pending}
-                  type="checkbox"
-                  onChange={this.toggleHistory}
-                  checked={showHistory}
-                />
-                History
               </label>
             </div>
             <Divider vertical="true" rightWidth="120">

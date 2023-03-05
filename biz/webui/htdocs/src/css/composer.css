@@ -24,6 +24,13 @@
   border: 1px solid #ccc;
   margin-left: 2px;
 }
+.w-composer-history-btn {
+  height: 24px;
+  width: 18px;
+  text-align: center;
+  line-height: 24px;
+  cursor: pointer;
+}
 .w-composer-method {
   display: block;
   width: 100px;
@@ -274,7 +281,7 @@
   top: 0;
 }
 .w-composer-use-h2 {
-  right: 75px;
+  right: 5px;
 }
 
 .w-composer-history {
@@ -301,11 +308,11 @@
 }
 
 .w-composer-enable-rules {
-  right: 145px;
+  right: 80px;
 }
 
 .w-composer-enable-body {
-  right: 208px;
+  right: 146px;
 }
 
 .w-composer-tabs input {
