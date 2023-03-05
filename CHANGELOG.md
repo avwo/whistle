@@ -1,3 +1,8 @@
+# v2.9.42
+1. style: 支持自动提示 Values 的 Key
+2. style: Composer 的 History 选项改成箭头按钮
+3. feat: 支持批量删除 Rules & Values
+
 # v2.9.41
 1. fix: Network Settings 列设置刷新失效问题
 2. style: WebForm 支持显示 JSON 对象
