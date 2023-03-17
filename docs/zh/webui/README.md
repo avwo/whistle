@@ -14,3 +14,4 @@
 1. [Help(帮助文档)](help.md)
 1. [About(whistle版本信息)](about.md)
 1. [Online(在线状态及服务器信息)](online.md)
+1. [Mock(快速设置规则)](mock.md)

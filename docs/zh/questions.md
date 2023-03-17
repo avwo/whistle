@@ -45,8 +45,8 @@
 12. iOS安装根证书时提示无法连接后台服务器，检查下是否开启了**Https拦截功能**，如果已开启，请暂时关闭，根证书安装成功再开启。
 13. 如何过滤Network上的请求？
   有三种方式：
-  - 界面过滤：[Network > Settings](webui/settings.html)
-  - 搜索过滤：[Network > 下方搜索过滤框](webui/network.html)
+  - 界面过滤：[Networ > Settings](webui/settings.html)
+  - 搜索过滤：[Networ > 下方搜索过滤框](webui/network.html)
   - 后台过滤，参见：[enable](enable.html)
 14. 安装iOS根证书后，还是提示证书错误？
   `iOS SSLHandshake: Received fatal alert: unknown_ca`，出现这个错误是因为 iOS 10.3 之后需要手动信任自定义根证书，设置路径：`Settings > General > About > Certificate Trust Testings`

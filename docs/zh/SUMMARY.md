@@ -30,6 +30,7 @@
   * [Weinre](webui/weinre.md)
   * [Https](webui/https.md)
   * [Online](webui/online.md)
+  * [Mock](webui/mock.md)
 * [协议列表](rules/README.md)
   * [@](rules/@.md)
   * [host](rules/host.md)
