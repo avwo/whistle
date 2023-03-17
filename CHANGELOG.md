@@ -1,3 +1,7 @@
+# v2.9.43
+1. feat: 允许通过 `enable://capture` 解析 socks 代理的 HTTPS 请求
+2. feat: 支持通过 Network 右键菜单 `Mock` 按钮快速创建规则：http://wproxy.org/whistle/webui/mock.html
+
 # v2.9.42
 1. style: 支持自动提示 Values 的 Key
 2. style: Composer 的 History 选项改成箭头按钮
