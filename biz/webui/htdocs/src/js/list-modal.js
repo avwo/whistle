@@ -42,6 +42,10 @@ proto._getList = function (prop) {
   return list;
 };
 
+proto.getItem = function(name) {
+  return this.data[name];
+};
+
 proto.hasChanged = function () {
   var data = this.data;
   return Object.keys(data).some(function (name) {

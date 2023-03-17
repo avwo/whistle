@@ -529,7 +529,11 @@ $.extend(
       interceptHttpsConnects: 'cgi-bin/intercept-https-connects',
       enableHttp2: 'cgi-bin/enable-http2',
       abort: 'cgi-bin/abort',
-      setCustomColumn: 'cgi-bin/set-custom-column'
+      setCustomColumn: 'cgi-bin/set-custom-column',
+      addRulesAndValues: {
+        url: 'cgi-bin/add-rules-values',
+        contentType: 'application/json'
+      }
     },
     POST_CONF
   )
@@ -612,6 +616,7 @@ exports.getInitialData = function (callback) {
         account = server && server.account;
         updateCertStatus(data);
         exports.supportH2 = data.supportH2;
+        exports.backRulesFirst = data.rules.backRulesFirst;
         exports.custom1 = data.custom1;
         exports.custom2 = data.custom2;
         exports.custom1Key = data.custom1Key;
@@ -827,6 +832,7 @@ function startLoadData() {
       account = server && server.account;
       updateCertStatus(data);
       exports.supportH2 = data.supportH2;
+      exports.backRulesFirst = data.backRulesFirst;
       exports.custom1 = data.custom1;
       exports.custom2 = data.custom2;
       exports.custom1Key = data.custom1Key;
@@ -1556,6 +1562,10 @@ exports.setValuesModal = function(modal) {
 
 exports.getValuesModal = function() {
   return valuesModal;
+};
+
+exports.getRulesModal = function() {
+  return exports.rulesModal;
 };
 
 exports.getDataKeys = function() {

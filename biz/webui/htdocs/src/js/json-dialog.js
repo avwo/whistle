@@ -91,7 +91,7 @@ var JSONDialog = React.createClass({
           </button>
           <div
             className="orient-vertical-box"
-            style={{ width: 720, height: 520, marginTop: 22, background: this._keyword ? 'lightyellow' : undefined }}
+            style={{ width: 880, height: 560, marginTop: 22, background: this._keyword ? 'lightyellow' : undefined }}
           >
             <JSONView dialog data={state.curData || state.data} viewSource={true} />
           </div>

@@ -43,6 +43,7 @@ module.exports = function(req, res) {
     plugins: pluginMgr.getPlugins(),
     disabledPlugins: !config.notAllowedDisablePlugins && properties.get('disabledPlugins') || {},
     allowMultipleChoice: properties.get('allowMultipleChoice'),
+    backRulesFirst: properties.get('backRulesFirst'),
     disabledAllPlugins: !config.notAllowedDisablePlugins && properties.get('disabledAllPlugins'),
     disabledAllRules: !config.notAllowedDisableRules && properties.get('disabledAllRules'),
     interceptHttpsConnects: properties.isEnableCapture(),

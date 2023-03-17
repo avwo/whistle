@@ -1392,7 +1392,7 @@ function initData(data, isReq) {
   }
 }
 
-exports.getJson = function (data, isReq, decode) {
+function getJson(data, isReq, decode) {
   if (data[JSON_KEY] == null) {
     var body = getBody(data, isReq);
     body = body && resolveJSON(body, decode);
@@ -1409,6 +1409,13 @@ exports.getJson = function (data, isReq, decode) {
       : '';
   }
   return data[JSON_KEY];
+}
+
+exports.getJson = getJson;
+
+exports.getJsonStr = function(data, isReq, decode) {
+  var json = getJson(data, isReq, decode);
+  return json && json.str;
 };
 
 function getBody(data, isReq) {

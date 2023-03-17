@@ -66,11 +66,19 @@ var JsonViewer = React.createClass({
   },
   showNameInput: function (e) {
     var self = this;
+    var props = self.props;
+    var reqData = props.reqData;
+    if (reqData) {
+      return events.trigger('showMockDialog', {
+        type: props.reqType,
+        item: reqData
+      });
+    }
     self.state.showDownloadInput = /w-download/.test(e.target.className);
     self.state.showNameInput = true;
     self.forceUpdate(function () {
       var nameInput = ReactDOM.findDOMNode(self.refs.nameInput);
-      var defaultName = !nameInput.value && self.props.defaultName;
+      var defaultName = !nameInput.value && props.defaultName;
       if (defaultName) {
         nameInput.value = defaultName;
       }
@@ -238,8 +246,8 @@ var JsonViewer = React.createClass({
           >
             Download
           </a>
-          <a className="w-add" onClick={this.showNameInput} draggable="false">
-            +Key
+          <a style={{display: dataCenter.hideMockMenu ? 'none' : null}} className="w-add" onClick={this.showNameInput} draggable="false">
+            { props.reqData ? 'Mock' : '+Key' }
           </a>
           {viewSource ? (
             <a className="w-edit" onClick={this.edit} draggable="false">

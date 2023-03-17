@@ -268,6 +268,8 @@ var ResDetail = React.createClass({
         ) : undefined}
         {state.initedTextView ? (
           <Textarea
+            reqData={modal}
+            reqType="resBody"
             defaultName={defaultName}
             tips={tips}
             base64={base64}
@@ -278,6 +280,8 @@ var ResDetail = React.createClass({
         ) : undefined}
         {state.initedJSONView ? (
           <JSONViewer
+            reqData={modal}
+            reqType="resJson"
             defaultName={defaultName}
             data={json}
             hide={name != btns[3].name}
@@ -285,6 +289,8 @@ var ResDetail = React.createClass({
         ) : undefined}
         {state.initedHexView ? (
           <Textarea
+            reqData={modal}
+            reqType="resBody"
             defaultName={defaultName}
             isHexView="1"
             base64={base64}
@@ -317,6 +323,8 @@ var ResDetail = React.createClass({
         ) : undefined}
         {state.initedRaw ? (
           <Textarea
+            reqData={modal}
+            reqType="resRaw"
             defaultName={defaultName}
             value={raw}
             headers={headersStr}

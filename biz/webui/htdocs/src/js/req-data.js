@@ -15,6 +15,7 @@ var events = require('./events');
 var iframes = require('./iframes');
 var dataCenter = require('./data-center');
 var storage = require('./storage');
+var MockDialog = require('./mock-dialog');
 
 var TREE_ROW_HEIGHT = 24;
 var ROW_STYLE = { outline: 'none' };
@@ -104,6 +105,7 @@ var contextMenuList = [
       { name: 'Collapse All' }
     ]
   },
+  { name: 'Mock' },
   { name: 'Import' },
   { name: 'Export' },
   {
@@ -303,7 +305,7 @@ var Row = React.createClass({
     var style = item.style;
     
     return (
-      <table className="table" key={p.key} style={p.style}>
+      <table className="table w-req-table" key={p.key} style={p.style} data-id={item.id}>
         <tbody>
           <tr
             tabIndex="-1"
@@ -477,6 +479,11 @@ var ReqData = React.createClass({
   componentDidMount: function () {
     var self = this;
     var timer;
+    events.on('showMockDialog', function(_, data) {
+      if (data) {
+        self.refs.mockDialog.show(data.item, data.type);
+      }
+    });
     events.on('hashFilterChange', function () {
       self.setState({});
     });
@@ -873,6 +880,9 @@ var ReqData = React.createClass({
     case 'Collapse All':
       self.collapseAll(treeId);
       break;
+    case 'Mock':
+      self.refs.mockDialog.show(item);
+      break;
     }
   },
   onHeadCtxMenu: function(e) {
@@ -894,6 +904,9 @@ var ReqData = React.createClass({
     var target = $(e.target);
     var nodeName =  target.prop('nodeName');
     var el = target.closest('.w-req-data-item');
+    if (!el.length) {
+      el = target.closest('.w-req-table');
+    }
     var dataId = el.attr('data-id');
     var treeId = el.attr('data-tree');
     var modal = this.props.modal;
@@ -1062,7 +1075,10 @@ var ReqData = React.createClass({
       treeList[2].disabled = !hasData;
       treeList[3].disabled = !hasData;
     }
-    var pluginItem = contextMenuList[8];
+    var mockItem = contextMenuList[6];
+    mockItem.disabled = disabled;
+    mockItem.hide = dataCenter.hideMockMenu;
+    var pluginItem = contextMenuList[9];
     pluginItem.disabled = disabled && !selectedCount;
     util.addPluginMenus(
       pluginItem,
@@ -1070,7 +1086,7 @@ var ReqData = React.createClass({
       treeItem.hide ? 8 : 9,
       disabled
     );
-    var height = (treeItem.hide ? 280 : 310) - (pluginItem.hide ? 30 : 0);
+    var height = (treeItem.hide ? 310 : 340) - (pluginItem.hide ? 30 : 0) - (mockItem.hide ? 30 : 0);
     pluginItem.maxHeight = height;
     var data = util.getMenuPosition(e, 110, height);
     data.list = contextMenuList;
@@ -1390,6 +1406,7 @@ var ReqData = React.createClass({
         <ContextMenu onClick={this.onClickContextMenu} ref="contextMenu" />
         <ContextMenu onClick={this.onClickHeadMenu} ref="headContextMenu" />
         <QRCodeDialog ref="qrcodeDialog" />
+        <MockDialog ref="mockDialog" />
       </div>
     );
   }

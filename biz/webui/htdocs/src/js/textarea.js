@@ -75,11 +75,19 @@ var Textarea = React.createClass({
   },
   showNameInput: function (e) {
     var self = this;
+    var props = self.props;
+    var reqData = props.reqData;
+    if (reqData) {
+      return events.trigger('showMockDialog', {
+        type: props.reqType,
+        item: reqData
+      });
+    }
     self.state.showDownloadInput = /w-download/.test(e.target.className);
     self.state.showNameInput = true;
     self.forceUpdate(function () {
       var nameInput = ReactDOM.findDOMNode(self.refs.nameInput);
-      var defaultName = !nameInput.value && self.props.defaultName;
+      var defaultName = !nameInput.value && props.defaultName;
       if (defaultName) {
         nameInput.value = defaultName;
       }
@@ -158,31 +166,29 @@ var Textarea = React.createClass({
     });
   },
   render: function () {
-    var value = this.props.value || '';
+    var props = this.props;
+    var value = props.value || '';
     var exceed = value.length - MAX_LENGTH;
-    var showAddToValuesBtn = /\S/.test(value);
     if (exceed > 512) {
-      showAddToValuesBtn = false;
-      value =
-        value.substring(0, MAX_LENGTH) +
+      value = value.substring(0, MAX_LENGTH) +
         '...\r\n\r\n(' +
         exceed +
         ' characters left, you can click on the ViewAll button in the upper right corner to view all)\r\n';
     }
-    var isHexView = this.props.isHexView;
+    var isHexView = props.isHexView;
     this.state.value = value;
     return (
       <div
         className={
           'fill orient-vertical-box w-textarea' +
-          (this.props.hide ? ' hide' : '')
+          (props.hide ? ' hide' : '')
         }
       >
-        <Tips data={this.props.tips} />
+        <Tips data={props.tips} />
         <div className={'w-textarea-bar' + (value ? '' : ' hide')}>
-          <CopyBtn value={this.props.value} />
+          <CopyBtn value={props.value} />
           {isHexView ? (
-            <CopyBtn name="AsHex" value={util.getHexText(this.props.value)} />
+            <CopyBtn name="AsHex" value={util.getHexText(props.value)} />
           ) : undefined}
           <a
             className="w-download"
@@ -192,13 +198,9 @@ var Textarea = React.createClass({
           >
             Download
           </a>
-          {showAddToValuesBtn ? (
-            <a className="w-add" onClick={this.showNameInput} draggable="false">
-              +Key
-            </a>
-          ) : (
-            ''
-          )}
+          <a style={{display: dataCenter.hideMockMenu ? 'none' : null}} className="w-add" onClick={this.showNameInput} draggable="false">
+            { props.reqData ? 'Mock' : '+Key' }
+          </a>
           <a className="w-edit" onClick={this.edit} draggable="false">
             ViewAll
           </a>
@@ -228,7 +230,7 @@ var Textarea = React.createClass({
             </button>
           </div>
         </div>
-        <TextView className={this.props.className || ''} value={value} />
+        <TextView className={props.className || ''} value={value} />
         <form
           ref="downloadForm"
           action="cgi-bin/download"

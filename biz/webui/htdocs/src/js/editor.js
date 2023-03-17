@@ -251,7 +251,7 @@ var Editor = React.createClass({
     });
     self._init(true);
     $(elem).find('.CodeMirror').addClass('fill');
-    resize();
+    setTimeout(resize, 10);
     $(window).on('resize', function () {
       timeout && clearTimeout(timeout);
       timeout = null;
@@ -259,11 +259,12 @@ var Editor = React.createClass({
     });
     function resize() {
       var height = elem.offsetHeight || 0;
-      if (height < 10) {
+      var width = elem.offsetWidth || 0;
+      if (height < 10 || width < 10) {
         timeout && clearTimeout(timeout);
         timeout = setTimeout(resize, 300);
       } else {
-        editor.setSize(null, height);
+        editor.setSize(width, height);
       }
     }
     var getCh = function (ch, dis) {

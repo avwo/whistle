@@ -792,6 +792,21 @@ var Index = React.createClass({
       } catch (e) {}
     });
 
+    events.on('addNewRulesFile', function(_, data) {
+      var filename = data.filename;
+      var item = self.state.rules.add(filename, data.data);
+      self.setRulesActive(filename);
+      self.setState({ activeRules: item });
+      self.triggerRulesChange('create');
+    });
+    events.on('addNewValuesFile', function(_, data) {
+      var filename = data.filename;
+      var item = self.state.values.add(filename, data.data);
+      self.setValuesActive(filename);
+      self.setState({ activeValues: item });
+      self.triggerValuesChange('create');
+    });
+
     events.on('recoverRules', function (_, data) {
       var modal = self.state.rules;
       var filename = data.filename;
@@ -1103,6 +1118,7 @@ var Index = React.createClass({
         state.disabledAllRules !== data.disabledAllRules ||
         state.allowMultipleChoice !== data.allowMultipleChoice ||
         state.disabledAllPlugins !== data.disabledAllPlugins ||
+        state.backRulesFirst !== data.backRulesFirst ||
         state.multiEnv != server.multiEnv ||
         state.ndp != server.ndp ||
         state.ndr != server.ndr ||
@@ -1113,6 +1129,7 @@ var Index = React.createClass({
         state.enableHttp2 = data.enableHttp2;
         state.disabledAllRules = data.disabledAllRules;
         state.allowMultipleChoice = data.allowMultipleChoice;
+        state.backRulesFirst = data.backRulesFirst;
         state.disabledAllPlugins = data.disabledAllPlugins;
         state.multiEnv = server.multiEnv;
         state.ndp = server.ndp;
@@ -3096,6 +3113,7 @@ var Index = React.createClass({
           self.setState({
             backRulesFirst: checked
           });
+          dataCenter.backRulesFirst = checked;
         } else {
           util.showSystemError(xhr);
         }
@@ -3461,18 +3479,15 @@ var Index = React.createClass({
   },
   getTabName: function () {
     var state = this.state;
-    var networkMode = state.networkMode;
     var rulesMode = state.rulesMode;
-    var rulesOnlyMode = state.rulesOnlyMode;
     var pluginsMode = state.pluginsMode;
     var name = state.name;
-    if (networkMode) {
+    if (state.networkMode) {
       name = 'network';
-    } else if (rulesOnlyMode) {
+    } else if (state.rulesOnlyMode) {
       name = name === 'values' ? 'values' : 'rules';
     } else if (rulesMode && pluginsMode) {
       name = 'plugins';
-      networkMode = true;
     } else if (rulesMode) {
       name = name === 'network' ? 'rules' : name;
     } else if (pluginsMode) {
@@ -3608,6 +3623,8 @@ var Index = React.createClass({
       caUrl += '?type=' + caType;
       caShortUrl += caType;
     }
+
+    dataCenter.hideMockMenu = pluginsMode || networkMode;
 
     return (
       <div
