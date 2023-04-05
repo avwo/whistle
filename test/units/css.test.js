@@ -2,14 +2,14 @@ var util = require('../util.test');
 
 module.exports = function() {
   util.request('http://css1.test.whistlejs.com/index.html?resBody=_', function(res, body) {
-    body.should.equal('_\r\n<style>css</style>');
+    body.should.equal('_<style>css</style>');
   });
 
   util.request({
     method: 'post',
     url: 'https://css2.test.whistlejs.com/index.html?resBody=_'
   }, function(res, body) {
-    body.should.equal('_\r\ncss');
+    body.should.equal('_css');
   });
 
   util.request({
