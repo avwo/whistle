@@ -157,6 +157,7 @@
         Object.keys(options.msgBox).forEach(function(name) {
           toast[name] = options.msgBox[name];
         });
+        whistleBridge.copyText = options.copyText;
         whistleBridge.pageId = options.pageId;
         whistleBridge.compose = options.compose;
         whistleBridge.decodeBase64 = options.decodeBase64;
