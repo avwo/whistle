@@ -4881,6 +4881,7 @@ var Index = React.createClass({
         </form>
         <SyncDialog ref="syncDialog" />
         <JSONDialog ref="jsonDialog" />
+        <div id="copyTextBtn" style={{display: 'none'}} />
       </div>
     );
   }

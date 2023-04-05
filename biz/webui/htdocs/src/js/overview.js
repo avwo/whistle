@@ -85,6 +85,24 @@ function getRawProps(rule, all) {
   return getStr(rule.join(' '));
 }
 
+function getInjectProps(rule) {
+  if (rule.strictHtml) {
+    return ' enable://strictHtml';
+  }
+
+  return rule.safeHtml ? ' enable://safeHtml' : '';
+}
+
+function getLineProps(rule) {
+  if (rule.lineStrict) {
+    return ' lineProps://strictHtml';
+  }
+  if (rule.lineSafe) {
+    return ' lineProps://safeHtml';
+  }
+  return '';
+}
+
 function getRuleStr(rule) {
   if (!rule) {
     return;
@@ -327,9 +345,10 @@ var Overview = React.createClass({
             rulesModal[name] = ruleList.join('\n');
             titleModal[name] = titleList.join('\n');
           } else if (rule && rule.list) {
+            var prop = getInjectProps(rule);
             rulesModal[name] = rule.list
               .map(function (rule) {
-                return rule.rawPattern + ' ' + rule.matcher + getRawProps(rule);
+                return rule.rawPattern + ' ' + rule.matcher + getRawProps(rule) + prop + getLineProps(rule);
               })
               .join('\n');
             titleModal[name] = rule.list

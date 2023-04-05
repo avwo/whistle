@@ -37,6 +37,7 @@ function getBridge(win) {
   var plugin = getPlugin(win);
   return {
     pageId: dataCenter.getPageId(),
+    escapeHtml: util.escape,
     compose: dataCenter.compose,
     importSessions: dataCenter.importAnySessions,
     msgBox: message,
@@ -45,6 +46,12 @@ function getBridge(win) {
     decodeBase64: util.decodeBase64,
     alert: mockWin.alert,
     confirm: mockWin.confirm,
+    copyText: function(text, tips) {
+      var btn = $('#copyTextBtn');
+      btn.attr('data-clipboard-text', text);
+      btn.removeClass().addClass('w-copy-text' + (tips ? '-with-tips' : ''));
+      btn.trigger('click');
+    },
     syncData: function(cb) {
       plugin && dataCenter.syncData(plugin, cb);
     },

@@ -233,7 +233,7 @@ var MockDialog = React.createClass({
       sure && self.setState({ pattern: '' }, self.updateRules);
     });
   },
-  save: function() {
+  save: function(force) {
     var self = this;
     var rules = self.state.rules;
     var keyName = self.getKeyName();
@@ -242,7 +242,7 @@ var MockDialog = React.createClass({
       if (!sure) {
         return;
       }
-      if (rules) {
+      if (rules && force !== true) {
         return self.refs.rulesDialog.show(rules, showKeyValue ? {
           name: keyName,
           value: self._textarea.value
@@ -267,6 +267,9 @@ var MockDialog = React.createClass({
       return state.dataSrc.slice(1, -1);
     }
     return state.keyName;
+  },
+  saveValueOnly: function() {
+    this.save(true);
   },
   saveValue: function() {
     var self = this;
@@ -386,7 +389,7 @@ var MockDialog = React.createClass({
             <iframe ref="iframe" src={fakeIframe} style={iframeStyle}/>
           </div>
           <div className="w-mock-row" style={preStyle}>
-              <span>
+              <span style={{marginTop: 8}}>
                 Rules:
               </span>
               <pre className="w-mock-preview">
@@ -406,13 +409,23 @@ var MockDialog = React.createClass({
           >
             Cancel
           </button>
+          {
+            rules && showKeyValue ? <button
+              type="button"
+              className="btn btn-default"
+              onClick={this.saveValueOnly}
+              disabled={this.valueNotChanged()}
+            >
+              Save Value
+            </button> : null
+          }
           <button
             type="button"
             className="btn btn-primary"
             onClick={this.save}
             disabled={!rules && this.valueNotChanged()}
           >
-            {rules ? 'Select Rules File' : 'Save'}
+            {rules ? 'Select Rules File' : 'Save Value'}
           </button>
         </div>
         <RulesDialog ref="rulesDialog" />
