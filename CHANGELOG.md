@@ -1,3 +1,11 @@
+# v2.9.45
+1. feat: 插件界面提供 `copyText` 方法
+2. feat: 支持 `lineProps://strictHtml` 和 `lineProsy://safeHtml` 只对当前行的规则生效
+3. style: Mock Dialog 支持直接保存 Value
+
+# v2.9.44
+1. fix: 解决 `qs` 模块不存在问题
+
 # v2.9.43
 1. feat: 允许通过 `enable://capture` 解析 socks 代理的 HTTPS 请求
 2. feat: 支持通过 Network 右键菜单 `Mock` 按钮快速创建规则：http://wproxy.org/whistle/webui/mock.html
