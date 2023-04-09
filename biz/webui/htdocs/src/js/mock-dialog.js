@@ -416,7 +416,7 @@ var MockDialog = React.createClass({
               onClick={this.saveValueOnly}
               disabled={this.valueNotChanged()}
             >
-              Save Value
+              Save As Values
             </button> : null
           }
           <button
@@ -425,7 +425,7 @@ var MockDialog = React.createClass({
             onClick={this.save}
             disabled={!rules && this.valueNotChanged()}
           >
-            {rules ? 'Select Rules File' : 'Save Value'}
+            {rules ? 'Save As Rules' + (!state.showKeyValue || this.valueNotChanged()  ? '' : ' & Values') : 'Save As Values'}
           </button>
         </div>
         <RulesDialog ref="rulesDialog" />

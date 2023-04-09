@@ -2,6 +2,7 @@ require('./base-css.js');
 require('../css/composer.css');
 var React = require('react');
 var ReactDOM = require('react-dom');
+var $ = require('jquery');
 var dataCenter = require('./data-center');
 var util = require('./util');
 var events = require('./events');
@@ -192,6 +193,7 @@ var Composer = React.createClass({
     var self = this;
     self.update(self.props.modal);
     this.refs.uploadBody.update(this.uploadBodyData);
+    this.hintElem = $(ReactDOM.findDOMNode(this.refs.hints));
     events.on('setComposer', function () {
       if (self.state.pending || self.props.disabled) {
         return;
@@ -400,10 +402,14 @@ var Composer = React.createClass({
   },
   formatHistory: function (historyData) {
     var result = [];
+    var histroyUrls = [];
     var curHours;
     historyData.forEach(function (item) {
       if (!item.url) {
         return;
+      }
+      if (histroyUrls.indexOf(item.url) === -1 && typeof item.url === 'string') {
+        histroyUrls.push(item.url);
       }
       var time = Math.floor(item.date / ONE_MINS);
       if (curHours !== time) {
@@ -434,6 +440,10 @@ var Composer = React.createClass({
       }
       result.push(item);
     });
+    this._histroyUrls = histroyUrls;
+    if (this.state.showHints) {
+      this.showHints();
+    }
     return result;
   },
   onHexTextChange: function (e) {
@@ -483,6 +493,16 @@ var Composer = React.createClass({
       this.execute(null, times);
       ReactDOM.findDOMNode(this.refs.historyList).scrollTop = 0;
     }
+  },
+  handleUrlKeyUp: function(e) {
+    if (e.keyCode === 27) {
+      this.hideHints();
+    }
+  },
+  onUrlChange: function(e) {
+    this.onComposerChange(e);
+    clearTimeout(this._urlTimer);
+    this._urlTimer = setTimeout(this.showHints, 300);
   },
   onComposerChange: function (e) {
     var self = this;
@@ -605,6 +625,7 @@ var Composer = React.createClass({
     this.setState({ showHistory: showHistory });
     storage.set('showHistory', showHistory ? '1' : '');
     showHistory && this.loadHistory();
+    this.hideHints();
   },
   setRulesDisable: function (disableComposerRules) {
     storage.set('disableComposerRules', disableComposerRules ? 1 : 0);
@@ -825,6 +846,7 @@ var Composer = React.createClass({
   },
   selectAll: function (e) {
     e.target.select();
+    this.showHints();
   },
   saveRules: function () {
     var rules = ReactDOM.findDOMNode(this.refs.composerRules).value;
@@ -858,6 +880,64 @@ var Composer = React.createClass({
       }
     }
   },
+  setUrl: function(value) {
+    ReactDOM.findDOMNode(this.refs.url).value = value || '';
+    this.hideHints();
+    this.onComposerChange();
+  },
+  clickHints: function(e) {
+    var value = e.target.title;
+    value && this.setUrl(value);
+  },
+  onUrlKeyDown: function(e) {
+    var elem;
+    if (e.keyCode === 38) {
+      // up
+      elem = this.hintElem.find('.w-active');
+      if (!this.state.showHints) {
+        this.showHints();
+      }
+      if (elem.length) {
+        elem.removeClass('w-active');
+        elem = elem.prev('li').addClass('w-active');
+      }
+
+      if (!elem.length) {
+        elem = this.hintElem.find('li:last');
+        elem.addClass('w-active');
+      }
+      util.ensureVisible(elem, this.hintElem);
+      e.preventDefault();
+    } else if (e.keyCode === 40) {
+      // down
+      elem = this.hintElem.find('.w-active');
+      if (!this.state.showHints) {
+        this.showHints();
+      }
+      if (elem.length) {
+        elem.removeClass('w-active');
+        elem = elem.next('li').addClass('w-active');
+      }
+
+      if (!elem.length) {
+        elem = this.hintElem.find('li:first');
+        elem.addClass('w-active');
+      }
+      util.ensureVisible(elem, this.hintElem);
+      e.preventDefault();
+    } else if (e.keyCode === 13) {
+      elem = this.hintElem.find('.w-active');
+      var value = elem.attr('title');
+      value && this.setUrl(value);
+    } else {
+      var curUrl = e.target.value;
+      this.onKeyDown(e);
+      if (curUrl && !e.target.value) {
+        this.showHints();
+        this.setUrl();
+      }
+    }
+  },
   onTabChange: function (e) {
     var tabName = e.target.name || 'Request';
     if (tabName === this.state.tabName) {
@@ -871,6 +951,7 @@ var Composer = React.createClass({
     data.list = SEND_CTX_MENU;
     SEND_CTX_MENU[1].name = this.state.showHistory ? 'Hide History' : 'Show History';
     this.refs.contextMenu.show(data);
+    this.hideHints();
   },
   showHistoryMenu: function(e) {
     e.preventDefault();
@@ -880,6 +961,29 @@ var Composer = React.createClass({
     var data = util.getMenuPosition(e, 120, 96);
     data.list = HISTORY_CTX_MENU;
     this.refs.contextMenu.show(data);
+    this.hideHints();
+  },
+  showHints: function() {
+    var list = this._histroyUrls;
+    if (!list || !list.length) {
+      this.state.showHints = true;
+      return this.loadHistory();
+    }
+    var curUrl = ReactDOM.findDOMNode(this.refs.url).value.trim();
+    var keyword = curUrl.toLowerCase();
+    var urlHints = keyword ? list.filter(function(url) {
+      return url.toLowerCase().indexOf(keyword) !== -1;
+    }) : list;
+    if (urlHints.length === 1 && curUrl === urlHints[0]) {
+      urlHints = null;
+    }
+    this.setState({ showHints: true, urlHints: urlHints });
+  },
+  hideHints: function() {
+    if (this.state.showHints) {
+      $(this.refs.hints).find('.w-active').removeClass('w-active');
+    }
+    this.setState({ showHints: false });
   },
   onClickContextMenu: function (action) {
     switch (action) {
@@ -944,6 +1048,7 @@ var Composer = React.createClass({
     var lockBody = pending || disableBody;
     var showHistory = state.showHistory;
     var historyData = state.historyData;
+    var urlHints = state.urlHints;
     self.hasBody = hasBody;
 
     return (
@@ -1011,10 +1116,12 @@ var Composer = React.createClass({
               <input
                 readOnly={pending}
                 defaultValue={state.url}
-                onKeyUp={this.execute}
-                onChange={this.onComposerChange}
-                onKeyDown={this.onKeyDown}
+                onChange={this.onUrlChange}
+                onKeyUp={this.handleUrlKeyUp}
+                onKeyDown={this.onUrlKeyDown}
                 onFocus={this.selectAll}
+                onDoubleClick={this.showHints}
+                onBlur={this.hideHints}
                 ref="url"
                 type="text"
                 maxLength="8192"
@@ -1029,6 +1136,27 @@ var Composer = React.createClass({
               >
                 <span className="glyphicon glyphicon-send" />
               </button>
+              <div
+                className="w-filter-hint"
+                style={{ display: state.showHints && urlHints && urlHints.length ? '' : 'none' }}
+                onMouseDown={util.preventBlur}
+              >
+                <div className="w-filter-bar">
+                  <a onClick={this.toggleHistory}>
+                    {showHistory ? 'Hide' : 'Show'} history
+                  </a>
+                  <span onClick={self.hideHints} aria-hidden="true">
+                    &times;
+                  </span>
+                </div>
+                <ul ref="hints" onClick={this.clickHints}>
+                  {
+                    urlHints ? urlHints.map(function(item) {
+                      return <li title={item}>{item}</li>;
+                    }) : null
+                  }
+                </ul>
+              </div>
             </div>
             <div className="w-detail-inspectors-title w-composer-tabs">
               <button

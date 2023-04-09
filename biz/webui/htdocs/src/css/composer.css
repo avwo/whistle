@@ -12,7 +12,33 @@
 .w-composer-url {
   padding: 2px 2px 2px 0;
   border-bottom: 1px solid #ccc;
+  position: relative;
 }
+
+.w-composer-url .w-filter-hint {
+  width: calc(100% - 168px);
+  z-index: 1;
+  top: 30px;
+  bottom: unset;
+  left: 125px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.w-filter-hint > ul {
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-height: 240px;
+}
+
+.w-filter-hint > ul li {
+  cursor: default;
+}
+
+.w-composer-url .w-filter-hint a {
+  text-decoration: none;
+  left: 2px;
+}
+
 .w-composer-input,
 .w-composer-method,
 .w-composer-execute {

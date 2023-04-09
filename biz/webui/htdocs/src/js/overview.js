@@ -59,11 +59,11 @@ var DEFAULT_RULES_MODAL = {};
 var PROXY_PROTOCOLS = ['socks', 'http-proxy', 'https-proxy'];
 
 function getAtRule(rule) {
-  return rule.rawPattern + ' @' + rule.matcher.substring(4);
+  return rule.rawPattern + ' @' + rule.matcher.substring(4) + getPluginName(rule);
 }
 
 function getVarRule(rule) {
-  return rule.rawPattern + ' %' + rule.matcher.substring(4);
+  return rule.rawPattern + ' %' + rule.matcher.substring(4) + getPluginName(rule);
 }
 
 function getStr(str) {
@@ -72,6 +72,11 @@ function getStr(str) {
 
 function filterImportant(item) {
   return item.indexOf('important') !== -1;
+}
+
+function getPluginName(rule) {
+  var root = rule && rule.root;
+  return root && /[\\/]whistle\.([a-z\d_\-]+)$/.test(root) ? ' (From: ' + RegExp.$1 + ')' : '';
 }
 
 function getRawProps(rule, all) {
@@ -333,13 +338,13 @@ var Overview = React.createClass({
           if (pluginRule) {
             hasPluginRule = true;
             var ruleList = [
-              pluginRule.rawPattern + ' ' + pluginRule.matcher + getRawProps(pluginRule)
+              pluginRule.rawPattern + ' ' + pluginRule.matcher + getRawProps(pluginRule) + getPluginName(pluginRule)
             ];
             var titleList = [pluginRule.raw];
             rule &&
               rule.list &&
               rule.list.forEach(function (item) {
-                ruleList.push(item.rawPattern + ' ' + item.matcher + getRawProps(item));
+                ruleList.push(item.rawPattern + ' ' + item.matcher + getRawProps(item) + getPluginName(item));
                 titleList.push(item.raw);
               });
             rulesModal[name] = ruleList.join('\n');
@@ -348,7 +353,7 @@ var Overview = React.createClass({
             var prop = getInjectProps(rule);
             rulesModal[name] = rule.list
               .map(function (rule) {
-                return rule.rawPattern + ' ' + rule.matcher + getRawProps(rule) + prop + getLineProps(rule);
+                return rule.rawPattern + ' ' + rule.matcher + getRawProps(rule) + prop + getLineProps(rule) + getPluginName(rule);
               })
               .join('\n');
             titleModal[name] = rule.list
@@ -360,21 +365,26 @@ var Overview = React.createClass({
             var ruleStr = getRuleStr(rule);
             rulesModal[name] = ruleStr;
             titleModal[name] = rule ? rule.raw : undefined;
-            if (name === 'proxy') {
-              if (realUrl && ruleStr) {
-                rulesModal[name] += ' (' + realUrl + ')';
-              }
-            } else if (name === 'host') {
+            if (name === 'host') {
               var result = [];
               if (ruleStr) {
-                result.push(ruleStr + (realUrl ? ' (' + realUrl + ')' : ''));
+                result.push(ruleStr + (realUrl ? ' (Url: ' + realUrl + ')' : '') + getPluginName(rule));
               }
               if (rules.proxy && rules.proxy.host) {
                 result.push(
-                  getRuleStr(rules.proxy.host) + ' (' + rules.proxy.matcher + ')'
+                  getRuleStr(rules.proxy.host) + ' (Url: ' + rules.proxy.matcher + ')' + getPluginName(rule)
                 );
               }
               rulesModal[name] = result.join('\n');
+            } else {
+              if (name === 'proxy') {
+                if (realUrl && ruleStr) {
+                  rulesModal[name] += ' (Url: ' + realUrl + ')';
+                }
+              }
+              if (rulesModal[name]) {
+                rulesModal[name] += getPluginName(rule);
+              }
             }
           }
         });

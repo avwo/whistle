@@ -130,6 +130,7 @@ var FilterInput = React.createClass({
         elem = this.hintElem.find('li:last');
         elem.addClass('w-active');
       }
+      util.ensureVisible(elem, this.hintElem);
       e.preventDefault();
     } else if (e.keyCode === 40) {
       // down
@@ -146,6 +147,7 @@ var FilterInput = React.createClass({
         elem = this.hintElem.find('li:first');
         elem.addClass('w-active');
       }
+      util.ensureVisible(elem, this.hintElem);
       e.preventDefault();
     } else if (e.keyCode === 13) {
       elem = this.hintElem.find('.w-active');
