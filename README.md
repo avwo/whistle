@@ -35,6 +35,8 @@ Whistle 是基于 Node 实现的跨平台抓包调试工具，其主要特点：
 	npm i -g whistle && w2 start --init
 	```
 	> 上述命令会先全局安装 Whistle 的 npm 包后，启动 Whistle 并设置系统全局代理，以及安装系统根证书，目前一键安装只支持 Mac & Windows 系统，其它系统按照下面 **手动安装** 的方式操作。
+	>
+	> 如果安装过程时报错 `Bad CPU type in executable`，在命令执行 `arch -x86_64 zsh` 再重新执行一键安装命令。
 3. 一键安装过程中注意事项：
 	* Mac 需要两次输入开机密码或指纹验证
 		<p>
