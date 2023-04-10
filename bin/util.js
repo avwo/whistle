@@ -64,6 +64,10 @@ function showKillError() {
 
 exports.showKillError = showKillError;
 
+function getIpHost(ip) {
+  return ip.indexOf(':') === -1 ? ip : '[' + ip + ']';
+}
+
 function showUsage(isRunning, options, restart) {
   options = formatOptions(options);
   if (isRunning) {
@@ -79,7 +83,7 @@ function showUsage(isRunning, options, restart) {
   var list = options.host ? [options.host] : getIpList();
   info('[i] 1. use your device to visit the following URL list, gets the ' + colors.bold('IP') + ' of the URL you can access:');
   info(list.map(function(ip) {
-    return '       http://' + colors.bold(ip) + (port && port != 80 ? ':' + port : '') + '/';
+    return '       http://' + colors.bold(getIpHost(ip)) + (port && port != 80 ? ':' + port : '') + '/';
   }).join('\n'));
 
   warn('       Note: If all the above URLs are unable to access, check the firewall settings');
@@ -108,7 +112,8 @@ function getDataDir() {
 }
 
 function formatOptions(options) {
-  if (!options || !/^(?:([\w.-]+):)?([1-9]\d{0,4})$/.test(options.port)) {
+  if (!options || (!/^(?:([\w.-]+):)?([1-9]\d{0,4})$/.test(options.port) &&
+    !/^\[([\w.:]+)\]:([1-9]\d{0,4})$/.test(options.port))) {
     return options;
   }
   options.host = options.host || RegExp.$1;
