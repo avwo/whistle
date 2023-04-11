@@ -70,6 +70,10 @@ Whistle 是基于 Node 实现的跨平台抓包调试工具，其主要特点：
 ### 详细用法参见：[Whistle 帮助文档](https://wproxy.org/whistle/quickstart.html)
 
 # 通过 SwitchyOmega 设置代理
+### 安装 SwitchyOmega
+1. 打开 Chrome 扩展商店进行安装 https://chrome.google.com/webstore/detail/proxy-switchyomega/padekgcemlokbadohgkifijomclgjgif
+
+### 配置 SwitchyOmega
 全局代理如果会影响到某些客户端的请求（客户端设置了 ssl pinning），也可以使用 Chrome 插件设置代理（只对 Chrome 生效）：
 > 可以通过 `w2 proxy off` 关闭全局代理
 
