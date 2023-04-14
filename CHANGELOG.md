@@ -1,3 +1,7 @@
+# v2.9.46
+1. feat: 扩展 Tab 支持 `copyText` 方法
+2. feat: `tpl` 协议支持模板字符串语法
+
 # v2.9.45
 1. feat: 插件界面提供 `copyText` 方法
 2. feat: 支持 `lineProps://strictHtml` 和 `lineProsy://safeHtml` 只对当前行的规则生效
