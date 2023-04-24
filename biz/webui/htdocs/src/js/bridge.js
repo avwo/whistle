@@ -36,6 +36,9 @@ function getPlugin(win) {
 function getBridge(win) {
   var plugin = getPlugin(win);
   return {
+    updateUI: function() {
+      events.trigger('updateUIThrottle');
+    },
     pageId: dataCenter.getPageId(),
     escapeHtml: util.escape,
     compose: dataCenter.compose,

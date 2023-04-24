@@ -44,6 +44,7 @@ function createModal(options, callback, gVarName) {
         callback(d);
       }}
       onClose={options.onClose}
+      onShow={options.onShow}
     >
       {options.fullCustom ? (
         <button type="button" className="close" data-dismiss="modal">

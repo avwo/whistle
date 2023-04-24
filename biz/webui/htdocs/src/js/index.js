@@ -792,6 +792,17 @@ var Index = React.createClass({
       } catch (e) {}
     });
 
+    var updateTimer;
+    events.on('updateUIThrottle', function() {
+      if (updateTimer) {
+        return;
+      }
+      updateTimer = setTimeout(function() {
+        updateTimer = null;
+        self.setState({});
+      }, 200);
+    });
+
     events.on('addNewRulesFile', function(_, data) {
       var filename = data.filename;
       var item = self.state.rules.add(filename, data.data);
@@ -3217,6 +3228,7 @@ var Index = React.createClass({
         realUrl: entry.whistleRealUrl,
         req: req,
         res: res,
+        customData: entry.whistleCustomData,
         fwdHost: entry.whistleFwdHost,
         sniPlugin: entry.whistleSniPlugin,
         rules: entry.whistleRules || {},

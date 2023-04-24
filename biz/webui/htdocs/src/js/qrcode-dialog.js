@@ -2,7 +2,6 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var Dialog = require('./dialog');
 var QRCode = require('qrcode');
-var events = require('./events');
 var win = require('./win');
 
 var QRCodeDialog = React.createClass({
@@ -34,12 +33,6 @@ var QRCodeDialog = React.createClass({
       }
     );
   },
-  download: function () {
-    events.trigger('download', {
-      base64: this.result,
-      name: 'qrcode.png'
-    });
-  },
   render: function () {
     return (
       <Dialog ref="qrcodeDialog" wstyle="w-qrcode-dialog">
@@ -50,18 +43,10 @@ var QRCodeDialog = React.createClass({
           <input readOnly ref="qrcodeUrl" />
           <img
             ref="qrcodeImg"
-            onDoubleClick={this.download}
             style={{ width: 320, height: 320 }}
           />
         </div>
         <div className="modal-footer">
-          <button
-            type="button"
-            className="btn btn-primary"
-            onClick={this.download}
-          >
-            Download
-          </button>
           <button
             type="button"
             className="btn btn-default"

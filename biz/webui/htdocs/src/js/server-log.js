@@ -119,6 +119,7 @@ var ServerLog = React.createClass({
   clearLogs: function () {
     var data = this.state.logs;
     data && data.splice(0, data.length);
+    dataCenter.clearedSvrLogs = true;
     this.setState({});
   },
   stopAutoRefresh: function () {

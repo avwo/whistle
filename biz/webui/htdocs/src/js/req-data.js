@@ -867,6 +867,7 @@ var ReqData = React.createClass({
         type: 'network',
         name: name,
         activeItem: item,
+        activeList: modal.getTreeLeafs(treeId),
         selectedList: self.props.modal.getSelectedList()
       });
       break;
@@ -927,11 +928,12 @@ var ReqData = React.createClass({
       list0[6].disabled =
         !item.res.base64 || (type !== 'HTML' && type !== 'IMG');
     }
-    list0[0].disabled = disabled;
-    list0[1].disabled = disabled;
+    list0[0].disabled = clickBlank;
+    list0[1].disabled = clickBlank;
     list0[2].disabled = disabled;
     list0[3].disabled = disabled;
-    list0[5].disabled = clickBlank;
+    list0[4].disabled = disabled;
+    list0[5].disabled = disabled;
     list0[7].disabled = disabled;
     if (modal.isTreeView) {
       list0[8].name = 'List View';
@@ -1084,7 +1086,8 @@ var ReqData = React.createClass({
       pluginItem,
       dataCenter.getNetworkMenus(),
       treeItem.hide ? 8 : 9,
-      disabled
+      disabled,
+      treeId
     );
     var height = (treeItem.hide ? 310 : 340) - (pluginItem.hide ? 30 : 0) - (mockItem.hide ? 30 : 0);
     pluginItem.maxHeight = height;

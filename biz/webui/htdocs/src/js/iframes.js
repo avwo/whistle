@@ -102,10 +102,6 @@ function removeOldest() {
 }
 
 exports.fork = function (page, options) {
-  try {
-    // 保持状态
-    options = JSON.parse(JSON.stringify(options));
-  } catch (e) {}
   page += '???_WHISTLE_PLUGIN_EXT_CONTEXT_MENU_' + options.port + '???';
   var item = (latestItem = cache[page]);
   if (item) {

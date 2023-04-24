@@ -2,7 +2,6 @@ var events = require('./events');
 
 var workers = {};
 var modal;
-var updateTimer;
 
 function isEnd(item) {
   return item.endTime || item.lost;
@@ -44,16 +43,6 @@ function setCustomData(item, newData) {
   }
 }
 
-function updateUI() {
-  if (updateTimer) {
-    return;
-  }
-  updateTimer = setTimeout(function() {
-    updateTimer = null;
-    events.trigger('updateUI');
-  }, 300);
-}
-
 function setWorker(id) {
   if (workers[id] || !window.Worker) {
     return;
@@ -87,7 +76,7 @@ function setWorker(id) {
       var item = modal.getItem(data.id);
       if (item) {
         setCustomData(item, data.data);
-        updateUI();
+        events.trigger('updateUIThrottle');
       }
     }
   };

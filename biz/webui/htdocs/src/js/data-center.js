@@ -26,6 +26,8 @@ var curServerInfo;
 var initialDataPromise, initialData, startedLoad;
 var lastPageLogTime = -2;
 var lastSvrLogTime = -2;
+var curLogId;
+var curSvrLogId;
 var dataIndex = 1000000;
 var MAX_PATH_LENGTH = 1024;
 var MAX_LOG_LENGTH = 250;
@@ -631,6 +633,8 @@ exports.getInitialData = function (callback) {
         if (data.lastSvrLogId) {
           lastSvrLogTime = data.lastSvrLogId;
         }
+        curLogId = data.curLogId;
+        curSvrLogId = data.curSvrLogId;
         if (data.lastDataId) {
           lastRowId = data.lastDataId;
         }
@@ -780,13 +784,15 @@ function startLoadData() {
         tunnelIds.push(item.id);
       }
     });
-
+    var clearedLogs = exports.clearedLogs;
+    var clearedSvrLogs = exports.clearedSvrLogs;
+    exports.clearedLogs = exports.clearedSvrLogs = false;
     if (!exports.pauseConsoleRefresh && len < MAX_LOG_LENGTH) {
-      startLogTime = lastPageLogTime;
+      startLogTime = (clearedLogs && curLogId) || lastPageLogTime;
     }
 
     if (!exports.pauseServerLogRefresh && svrLen < MAX_LOG_LENGTH) {
-      startSvrLogTime = lastSvrLogTime;
+      startSvrLogTime =  (clearedSvrLogs && curSvrLogId) || lastSvrLogTime;
     }
 
     var curActiveItem = networkModal.getActive();

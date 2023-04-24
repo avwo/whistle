@@ -7,6 +7,7 @@ var Dialog = React.createClass({
     return {};
   },
   componentDidMount: function () {
+    var self = this;
     this.container = $(document.createElement('div'));
     var clazz = this.props.fullCustom ? ' w-custom-dialog' : '';
     this.container.addClass(
@@ -19,6 +20,11 @@ var Dialog = React.createClass({
     }
     if (typeof this.props.onClose === 'function') {
       this.container.on('hidden.bs.modal', this.props.onClose);
+    }
+    if (typeof self.props.onShow === 'function') {
+      this.container.on('shown.bs.modal', function() {
+        self.props.onShow(self);
+      });
     }
   },
   componentDidUpdate: function () {
