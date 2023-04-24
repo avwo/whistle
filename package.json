@@ -1,7 +1,7 @@
 {
   "name": "whistle",
   "description": "HTTP, HTTP2, HTTPS, Websocket debugging proxy",
-  "version": "2.9.46",
+  "version": "2.9.47",
   "dataDirname": ".whistle",
   "localUIHost": "local.whistlejs.com",
   "port": 8899,
@@ -49,7 +49,7 @@
     "lru-cache": "^4.1.1",
     "mime": "^1.6.0",
     "multer2": "^1.1.0",
-    "node-forge": "^1.3.0",
+    "node-forge": "^1.3.1",
     "node-native-zip2": "^1.0.0",
     "node-pac": "^0.5.0",
     "parseurl": "^1.3.1",
@@ -63,7 +63,7 @@
     "starting": "^8.0.1",
     "weinre2": "^1.3.2",
     "ws-parser": "^0.6.2",
-    "xml2js": "^0.4.23"
+    "xml2js": "0.5.0"
   },
   "scripts": {
     "dev": "webpack --config ./biz/webui/htdocs/src/webpack.config -w",
