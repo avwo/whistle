@@ -239,9 +239,10 @@ proto.getTreeLeafs = function(treeId) {
   } else {
     treeId += '/';
   }
-  return this.list.filter(function (item) {
+  var result = this.list.filter(function (item) {
     return isTunnel ? item.url === treeId : !item.url.indexOf(treeId);
   });
+  return result.length ? result : undefined;
 };
 
 function toStr(val) {
