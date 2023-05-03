@@ -79,7 +79,7 @@ $(window).on('hashchange', function () {
 var curKeys;
 var curRules;
 var MULTI_LINE_VALUE_RE =
-  /^[^\n\r\S]*(```+)[^\n\r\S]*(\S+)[^\n\r\S]*[\r\n]([\s\S]+?)[\r\n][^\n\r\S]*\1\s*$/gm;
+  /^[^\n\r\S]*(```+)[^\n\r\S]*(\S+)[^\n\r\S]*[\r\n]([\s\S]*?)[\r\n][^\n\r\S]*\1\s*$/gm;
 
 function getInlineKeys() {
   var rulesModal = dataCenter.rulesModal;

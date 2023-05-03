@@ -282,7 +282,7 @@ var FrameList = React.createClass({
             className={'w-remove-menu' + (activeItem ? '' : ' w-disabled')}
             draggable="false"
           >
-            <span className="glyphicon glyphicon-edit"></span>Compose
+            <span className="glyphicon glyphicon-edit"></span>Edit
           </a>
           <a
             onClick={self.abort}

@@ -80,7 +80,7 @@ var contextMenuList = [
   {
     name: 'Filter',
     list: [
-      { name: 'Edit' },
+      { name: 'Edit Settings' },
       { name: 'Exclude All Such Host', action: 'excludeHost' },
       { name: 'Exclude All Such URL', action: 'excludeUrl' }
     ]
@@ -91,7 +91,7 @@ var contextMenuList = [
       { name: 'Abort' },
       { name: 'Replay' },
       { name: 'Replay Times', action: 'replayTimes' },
-      { name: 'Compose' },
+      { name: 'Edit Request' },
       { name: 'Mark' },
       { name: 'Unmark' }
     ]
@@ -782,7 +782,7 @@ var ReqData = React.createClass({
       events.trigger('showTimeline');
       break;
     case 'Composer':
-    case 'Compose':
+    case 'Edit Request':
       events.trigger('composer', item);
       break;
     case 'Mark':
@@ -817,7 +817,7 @@ var ReqData = React.createClass({
     case 'Import':
       events.trigger('importSessions', e);
       break;
-    case 'Edit':
+    case 'Edit Settings':
       events.trigger('filterSessions', e);
       break;
     case 'removeAllSuchHost':
@@ -1080,8 +1080,8 @@ var ReqData = React.createClass({
     var mockItem = contextMenuList[6];
     mockItem.disabled = disabled;
     mockItem.hide = dataCenter.hideMockMenu;
+    contextMenuList[8].disabled = clickBlank && !selectedCount;
     var pluginItem = contextMenuList[9];
-    pluginItem.disabled = disabled && !selectedCount;
     util.addPluginMenus(
       pluginItem,
       dataCenter.getNetworkMenus(),

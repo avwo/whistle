@@ -31,6 +31,9 @@ var FrameComposer = React.createClass({
           body = util.getBody(frame, true);
         }
         self.setTextarea(body);
+        setTimeout(function() {
+          ReactDOM.findDOMNode(self.refs.textarea).focus();
+        }, 60);
       }
     });
     events.on('replayFrame', function (e, frame) {
@@ -335,6 +338,7 @@ var FrameComposer = React.createClass({
           </button>
         </div>
         <textarea
+          ref="textarea"
           style={{ fontFamily: isHexText ? 'monospace' : undefined }}
           maxLength={MAX_LENGTH}
           value={text}

@@ -60,7 +60,7 @@ var SEND_CTX_MENU = [
   { name: 'Show History', action: 'history' }
 ];
 var HISTORY_CTX_MENU = [
-  { name: 'Compose' },
+  { name: 'Edit' },
   { name: 'Replay' },
   { name: 'Replay Times' }
 ];
@@ -995,7 +995,7 @@ var Composer = React.createClass({
       return this.onReplay();
     case 'Replay Times':
       return this.showRepeatTimes(true);
-    case 'Compose':
+    case 'Edit':
       return this.onCompose();
     }
   },

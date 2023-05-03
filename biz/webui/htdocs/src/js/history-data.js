@@ -87,7 +87,7 @@ var HistoryData = React.createClass({
                         ></span>
                       </button>
                       <button
-                        title="Compose"
+                        title="Edit"
                         data-index={i}
                         onClick={self.onCompose}
                         className="btn btn-default"

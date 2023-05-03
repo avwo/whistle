@@ -214,17 +214,8 @@
   font-weight: bold;
 }
 
-.w-account-menu {
-  white-space: nowrap;
-  max-width: 100px;
-  max-width: calc(100% - 1000px);
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
-
-.w-show-left-menu .w-account-menu {
-  max-width: 220px;
-  max-width: calc(100% - 900px);
+.w-show-left-menu .w-menu  .w-account-menu {
+  display: none!important;
 }
 
 .w-show-left-menu-btn {
@@ -382,4 +373,28 @@
 .w-fieldset legend .glyphicon {
   margin-left: 5px;
   cursor: pointer;
+}
+
+@media screen and (max-width: 1160px) {
+  .w-show-account .w-help-name {
+      display: none;
+  }
+}
+
+@media screen and (max-width: 1130px) {
+  .w-show-account .w-https-name {
+      display: none;
+  }
+}
+
+.w-show-left-menu .w-help-name, .w-show-left-menu .w-https-name {
+  display: inline!important;
+}
+
+.w-account-menu {
+  display: none!important;
+}
+
+.w-show-account .w-account-menu {
+  display: inline-block!important;
 }

@@ -43,6 +43,7 @@ function getBridge(win) {
     escapeHtml: util.escape,
     compose: dataCenter.compose,
     importSessions: dataCenter.importAnySessions,
+    exportSessions:  dataCenter.exportSessions,
     msgBox: message,
     qrCode: qrCode,
     qrcode: qrCode,
