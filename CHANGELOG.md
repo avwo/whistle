@@ -1,3 +1,10 @@
+# v2.9.48
+1. feat: 插件扩展的右键菜单和 Tab 添加 `exportSessions(sessions, type, name)` 方法
+2. feat: 插件 server 的 options 添加 `generateSaz(sessions): Buffer` 和 `extract(saz: Buffer, cb(sessions))` 方法
+3. refactor: 兼容 saz 的 comment，需要配合插件使用：https://github.com/whistle-plugins/whistle.comment.git
+4. fix: 修复访问 socks 代理可能出现 pending 的问题
+5. style: 界面优化
+
 # v2.9.47
 1. refactor: 解决安装时依赖包安全警告问题
 2. feat: 支持自定义右键菜单获取树结点下的所有抓包数据
