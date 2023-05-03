@@ -18,5 +18,6 @@
     <SessionFlag N="x-hostip" V="${hostip}" />
     <SessionFlag N="x-clientport" V="${clientport}" />
     <SessionFlag N="x-serverport" V="${serverport}" />
+    <SessionFlag N="ui-comments" V="${ui-comments}" />
   </SessionFlags>
 </Session>
