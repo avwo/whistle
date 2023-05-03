@@ -122,6 +122,24 @@ var Editor = React.createClass({
     }
     this._editor.setValue(value);
   },
+  setHistory: function(init, history) {
+    var activeItem = this.props.modal && this.props.modal.getActive();
+    if(!activeItem) return;
+
+    if(init) {
+      this._editorCurrentHistoryKey = activeItem.key;
+      this._editorHistoryMap = {};
+    } else {
+      if(this._editorCurrentHistoryKey !== activeItem.key) {
+        this._editorHistoryMap[this._editorCurrentHistoryKey] = history;
+        this._editorCurrentHistoryKey = activeItem.key;
+        this._editor.clearHistory();
+        if(this._editorHistoryMap[activeItem.key]) {
+          this._editor.setHistory(this._editorHistoryMap[activeItem.key]);
+        }
+      }
+    }
+  },
   getValue: function () {
     return this._editor ? '' : this._editor.getValue();
   },
@@ -455,15 +473,18 @@ var Editor = React.createClass({
     self.setMode(mode);
     self._waitingUpdate = false;
     var value = self.props.value;
+    var history = self._editor.getHistory();
     if (init && value && value.length > INIT_LENGTH) {
       var elem = message.info('Loading...');
       self.timer = setTimeout(function () {
         elem.hide();
         self.timer = null;
         self.setValue(self.props.value); // 节流
+        self.setHistory(init, history);
       }, 500);
     } else if (!self.timer) {
       self.setValue(value);
+      self.setHistory(init, history);
     }
     self.setTheme(self.props.theme);
     self.setFontSize(self.props.fontSize);
