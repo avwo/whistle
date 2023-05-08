@@ -127,18 +127,25 @@ var Editor = React.createClass({
     if(!activeItem) {
       return;
     }
-
+    var name = activeItem.name;
     if(init) {
-      this._editorCurrentHistoryKey = activeItem.key;
+      this._editorCurrentHistoryKey = name;
       this._editorHistoryMap = {};
     } else {
-      if(this._editorCurrentHistoryKey !== activeItem.key) {
-        this._editorHistoryMap[this._editorCurrentHistoryKey] = history;
-        this._editorCurrentHistoryKey = activeItem.key;
+      if(this._editorCurrentHistoryKey !== name) {
+        var list = this.props.modal.list;
+        var map = this._editorHistoryMap;
+        map[this._editorCurrentHistoryKey] = history;
+        this._editorCurrentHistoryKey = name;
         this._editor.clearHistory();
-        if(this._editorHistoryMap[activeItem.key]) {
-          this._editor.setHistory(this._editorHistoryMap[activeItem.key]);
+        if(map[name]) {
+          this._editor.setHistory(map[name]);
         }
+        Object.keys(map).forEach(function(key) {
+          if (list.indexOf(key) === -1) {
+            delete map[key];
+          }
+        });
       }
     }
   },
