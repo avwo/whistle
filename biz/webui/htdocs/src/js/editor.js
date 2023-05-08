@@ -124,7 +124,9 @@ var Editor = React.createClass({
   },
   setHistory: function(init, history) {
     var activeItem = this.props.modal && this.props.modal.getActive();
-    if(!activeItem) return;
+    if(!activeItem) {
+      return;
+    }
 
     if(init) {
       this._editorCurrentHistoryKey = activeItem.key;
