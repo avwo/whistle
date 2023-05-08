@@ -136,9 +136,10 @@ var Editor = React.createClass({
       return;
     }
     var name = activeItem.name;
+    var map = this._editorHistoryMap || {};
+    this._editorHistoryMap = map;
     if(init) {
       this._editorCurrentHistoryKey = name;
-      this._editorHistoryMap = {};
     } else {
       if(this._editorCurrentHistoryKey !== name) {
         var map = this._editorHistoryMap;
