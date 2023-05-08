@@ -124,6 +124,10 @@ var Editor = React.createClass({
   },
   setHistory: function(init, history) {
     var activeItem = this.props.modal && this.props.modal.getActive();
+    var list = this.props.modal.list;
+    if (!list.length) {
+      this._editorHistoryMap = {};
+    }
     if(!activeItem) {
       return;
     }
@@ -133,7 +137,6 @@ var Editor = React.createClass({
       this._editorHistoryMap = {};
     } else {
       if(this._editorCurrentHistoryKey !== name) {
-        var list = this.props.modal.list;
         var map = this._editorHistoryMap;
         map[this._editorCurrentHistoryKey] = history;
         this._editorCurrentHistoryKey = name;
