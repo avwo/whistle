@@ -123,8 +123,12 @@ var Editor = React.createClass({
     this._editor.setValue(value);
   },
   setHistory: function(init, history) {
-    var activeItem = this.props.modal && this.props.modal.getActive();
-    var list = this.props.modal.list;
+    var modal = this.props.modal;
+    if (!modal) {
+      return;
+    }
+    var activeItem = modal.getActive();
+    var list = modal.list;
     if (!list.length) {
       this._editorHistoryMap = {};
     }
