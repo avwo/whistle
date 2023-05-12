@@ -1,6 +1,9 @@
 .w-nav-tabs {
-  padding-top: 10px;
+  padding-top: 5px;
   font-size: 13px;
+}
+.w-nav-tabs > .nav-tabs {
+  padding-left: 2px;
 }
 .w-nav-tabs > .nav > li > a {
   padding: 5px 20px 5px 10px;
@@ -8,6 +11,8 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   max-width: 120px;
+  min-width: 40px;
+  min-height: 30px;
   position: relative;
 }
 .w-nav-tabs > .nav > li > a > .w-close-icon {

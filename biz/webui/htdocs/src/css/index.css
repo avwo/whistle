@@ -375,15 +375,42 @@
   cursor: pointer;
 }
 
-@media screen and (max-width: 1160px) {
-  .w-show-account .w-help-name {
+@media screen and (max-width: 1210px) {
+  .w-show-account.w-show-editor .w-help-name {
+    display: none;
+  }
+}
+@media screen and (max-width: 1190px) {
+  .w-show-account.w-show-rules .w-https-name {
       display: none;
+  }
+  .w-show-account.w-show-rules-mode span.w-help-name,
+  .w-show-account.w-show-rules-mode span.w-https-name,
+  .w-show-account.w-show-rules-mode span.w-weinre-name {
+    display: inline;
+  }
+}
+
+@media screen and (max-width: 1160px) {
+  .w-show-account.w-show-editor span.w-help-name {
+    display: none;
+  }
+  .w-show-account.w-show-editor .w-https-name {
+    display: none;
   }
 }
 
 @media screen and (max-width: 1130px) {
-  .w-show-account .w-https-name {
-      display: none;
+  .w-show-account.w-show-rules .w-weinre-name {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 1090px) {
+  .w-show-account.w-show-rules .w-weinre-menu,
+  .w-show-account.w-show-rules .w-https-menu,
+  .w-show-account.w-show-rules .w-help-menu {
+    padding: 0 3px;
   }
 }
 

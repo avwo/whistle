@@ -129,31 +129,34 @@ var Editor = React.createClass({
     }
     var activeItem = modal.getActive();
     var list = modal.list;
-    if (!list.length) {
+    var len = list.length;
+    var map = this._editorHistoryMap || {};
+    if (!len) {
       this._editorHistoryMap = {};
+    } else if (len !== this._listLen) {
+      Object.keys(map).forEach(function(key) {
+        if (list.indexOf(key) === -1) {
+          delete map[key];
+        }
+      });
     }
+    this._listLen = len;
     if(!activeItem) {
       return;
     }
     var name = activeItem.name;
-    var map = this._editorHistoryMap || {};
     this._editorHistoryMap = map;
     if(init) {
       this._editorCurrentHistoryKey = name;
     } else {
       if(this._editorCurrentHistoryKey !== name) {
-        var map = this._editorHistoryMap;
         map[this._editorCurrentHistoryKey] = history;
         this._editorCurrentHistoryKey = name;
         this._editor.clearHistory();
         if(map[name]) {
           this._editor.setHistory(map[name]);
+          delete map[name];
         }
-        Object.keys(map).forEach(function(key) {
-          if (list.indexOf(key) === -1) {
-            delete map[key];
-          }
-        });
       }
     }
   },
