@@ -1,3 +1,8 @@
+# v2.9.49
+1. fix: `headerReplace://req.host:pattern=value` 无效问题
+2. feat: 插件添加 `sharedStorage` 方便插件在不同实例中共享存储数据
+3. style: https://github.com/avwo/whistle/pull/898
+
 # v2.9.48
 1. feat: 插件扩展的右键菜单和 Tab 添加 `exportSessions(sessions, type, name)` 方法
 2. feat: 插件 server 的 options 添加 `generateSaz(sessions): Buffer` 和 `extract(saz: Buffer, cb(sessions))` 方法
