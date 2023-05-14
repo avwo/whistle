@@ -3560,7 +3560,7 @@ var Index = React.createClass({
     var isPlugins = name == 'plugins';
     var isEditor = isRules || isValues;
     var editMenuStyle = isEditor ? null : HIDE_STYLE;
-    var importMenuStyle = isAccount || isPlugins ? HIDE_STYLE : null;
+    var importMenuStyle = isPlugins ? HIDE_STYLE : null;
     var accountMenuStyle = isAccount ? null : HIDE_STYLE;
     var disabledEditBtn = true;
     var disabledDeleteBtn = true;
