@@ -47,3 +47,152 @@
   outline: none;
   padding: 0;
 }
+
+.w-account-ctn {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.w-account-home {
+  padding: 20px 0 10px;
+  margin: 0 auto;
+  width: 1450px;
+}
+
+.w-card {
+  width: 330px;
+  height: 150px;
+  box-shadow: rgba(60, 64, 67, .3) 0 1px 2px 0, rgba(60, 64, 67, .15) 0 2px 6px 2px;
+  border-radius: 6px;
+  padding: 12px 16px;
+  box-sizing: border-box;
+  margin: 0 15px 15px;
+  text-align: left;
+  display: inline-block;
+}
+
+.w-account-tabs img, .w-account-tabs .glyphicon {
+  width: 13px;
+  height: 13px;
+  font-size: 13px;
+  margin-right: 5px;
+}
+
+@media screen and (max-width: 1560px) {
+  .w-account-home {
+    width: 1400px;
+  }
+  .w-card {
+    margin: 0 10px 15px;
+  }
+}
+
+@media screen and (max-width: 1460px) {
+  .w-account-home {
+    width: 1360px;
+  }
+  .w-card {
+    margin:  0 5px 10px;
+  }
+}
+
+@media screen and (max-width: 1420px) {
+  .w-account-home {
+    width: 1180px;
+  }
+  .w-card {
+    margin:  0 30px 10px;
+  }
+}
+
+@media screen and (max-width: 1360px) {
+  .w-card {
+    margin:  0 25px 10px;
+  }
+}
+
+@media screen and (max-width: 1300px) {
+  .w-account-home {
+    width: 1120px;
+  }
+  .w-card {
+    margin:  0 20px 10px;
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .w-account-home {
+    width: 1080px;
+  }
+  .w-card {
+    margin:  0 15px 10px;
+  }
+}
+
+@media screen and (max-width: 1120px) {
+  .w-account-home {
+    width: 1020px;
+  }
+  .w-card {
+    margin:  0 5px 10px;
+  }
+}
+
+.w-card-wrapper {
+  display: flex;
+}
+.w-card-wrapper img, .w-card-wrapper .glyphicon {
+  width: 50px;
+  height: 50px;
+  margin-right: 20px;
+  font-size: 50px;
+}
+.w-card-ctn {
+  flex: 1;
+}
+.w-card-name {
+  color: #202124;
+  vertical-align: top;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.w-card-desc {
+  color: #606367;
+  height: 55px;
+  margin-top: 3px;
+  overflow: hidden;
+  word-wrap: break-word;
+  word-break: break-all;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.w-card-footer {
+  margin-top: 15px;
+  white-space: nowrap;
+  text-align: right;
+  overflow: hidden;
+}
+.w-card-footer a {
+  display: inline-block;
+  line-height: 26px;
+  padding: 3px 10px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  text-align: center;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 13px;
+}
+.w-card-footer a span {
+  margin-right: 6px;
+}
+.w-card-footer a:last-child {
+  font-weight: 500;
+}
+
+.w-card-edit {
+  color: #202124!important;
+  float: left;
+}

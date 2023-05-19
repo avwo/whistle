@@ -10,8 +10,8 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  max-width: 120px;
-  min-width: 40px;
+  max-width: 160px;
+  min-width: 60px;
   min-height: 30px;
   position: relative;
 }
@@ -49,6 +49,10 @@
 }
 .w-nav-tabs > .nav > .w-nav-home-tab > a {
   padding-right: 10px !important;
+}
+
+.w-nav-tabs > .nav > .w-nav-home-tab > a span {
+  margin-right: 5px;
 }
 
 .w-plugins th,

@@ -796,6 +796,18 @@ var Index = React.createClass({
       self.valuesChanged = true;
       self.showReloadValues();
     });
+    events.on('showNetwork', function () {
+      self.showNetwork();
+    });
+    events.on('showRules', function () {
+      self.showRules();
+    });
+    events.on('showValues', function () {
+      self.showValues();
+    });
+    events.on('showPlugins', function () {
+      self.showPlugins();
+    });
     events.on('disableAllPlugins', self.disableAllPlugins);
     events.on('disableAllRules', self.disableAllRules);
     events.on('activeRules', function () {
@@ -3560,7 +3572,7 @@ var Index = React.createClass({
     var isPlugins = name == 'plugins';
     var isEditor = isRules || isValues;
     var editMenuStyle = isEditor ? null : HIDE_STYLE;
-    var importMenuStyle = isPlugins ? HIDE_STYLE : null;
+    var importMenuStyle = isPlugins || isAccount ? HIDE_STYLE : null;
     var accountMenuStyle = isAccount ? null : HIDE_STYLE;
     var disabledEditBtn = true;
     var disabledDeleteBtn = true;
@@ -4025,14 +4037,6 @@ var Index = React.createClass({
             draggable="false"
           >
             <span className="glyphicon glyphicon-plus"></span>Widget
-          </a>
-          <a
-            onClick={this.editWidgets}
-            className="w-edit-widget"
-            style={accountMenuStyle}
-            draggable="false"
-          >
-            <span className="glyphicon glyphicon-edit" />Edit
           </a>
           <FilterBtn
             onClick={this.showSettings}
@@ -4634,7 +4638,6 @@ var Index = React.createClass({
             </div>
           </div>
         </div>
-        <AccountDialog ref="accountDialog" />
         <AccountDialog ref="editorWin" className="w-editor-win" />
         <Dialog ref="setReplayCount" wstyle="w-replay-count-dialog">
           <div className="modal-body">

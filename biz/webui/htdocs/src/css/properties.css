@@ -78,6 +78,15 @@
   text-overflow: ellipsis;
 }
 
+.w-user-select-none {
+  user-select: none;
+}
+
+.w-user-select-none > pre, .w-user-select-none > span  {
+  user-select: text;
+  display: block;
+}
+
 .w-properties .w-properties-json {
   padding-top: 0!important;
   padding-bottom: 0!important;

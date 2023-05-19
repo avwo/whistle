@@ -13,12 +13,16 @@ var Properties = React.createClass({
   toggle: function () {
     this.setState({ viewSource: !this.state.viewSource });
   },
+  renderValue: function(val) {
+    return val && val.length >= 2100 ? <ExpandCollapse text={val} /> : val;
+  },
   render: function () {
-    var props = this.props;
+    var self = this;
+    var props = self.props;
     var sourceText = props.enableViewSource;
     var copyValue = props.enableCopyValue;
     var hasPluginRule = props.hasPluginRule;
-    var viewSource = this.state.viewSource;
+    var viewSource = self.state.viewSource;
     var onHelp = props.onHelp;
     var rawName = props.rawName;
     var showJsonView = props.showJsonView;
@@ -47,12 +51,12 @@ var Properties = React.createClass({
       sourceText = sourceText && result.join('\n');
       copyValue = copyValue && result.filter(util.noop).join('\n').trim();
     }
-    if (this.textStr !== sourceText) {
-      this.textStr = sourceText;
+    if (self.textStr !== sourceText) {
+      self.textStr = sourceText;
       try {
-        this.jsonStr = JSON.stringify(modal, null, '  ');
+        self.jsonStr = JSON.stringify(modal, null, '  ');
       } catch (e) {
-        this.jsonStr = undefined;
+        self.jsonStr = undefined;
       }
     }
 
@@ -69,10 +73,10 @@ var Properties = React.createClass({
         {sourceText ? (
           <div className="w-textarea-bar">
             <CopyBtn value={sourceText} name="AsText" />
-            {this.jsonStr ? (
-              <CopyBtn value={this.jsonStr} name="AsJSON" />
+            {self.jsonStr ? (
+              <CopyBtn value={self.jsonStr} name="AsJSON" />
             ) : undefined}
-            <a onClick={this.toggle}>{viewSource ? 'Form' : 'Text'}</a>
+            <a onClick={self.toggle}>{viewSource ? 'Form' : 'Text'}</a>
           </div>
         ) : undefined}
         {copyValue ? (
@@ -82,11 +86,7 @@ var Properties = React.createClass({
         ) : undefined}
         {sourceText ? (
           <pre className="w-properties-source">
-            {sourceText.length >= 2100 ? (
-              <ExpandCollapse text={sourceText} />
-            ) : (
-              sourceText
-            )}
+            {self.renderValue(sourceText)}
           </pre>
         ) : undefined}
         <table
@@ -98,10 +98,10 @@ var Properties = React.createClass({
             {rawValue ? (
               <tr key="raw" className={rawValue ? undefined : 'w-no-value'}>
                 <th>{rawName}</th>
-                <td className="w-prop-raw-data" title={rawValue}>
-                  {rawValue.length > 2100
-                    ? rawValue.substring(2100) + '...'
-                    : rawValue}
+                <td className="w-prop-raw-data w-user-select-none" title={rawValue}>
+                  <pre>
+                    {self.renderValue(rawValue)}
+                  </pre>
                 </td>
               </tr>
             ) : null}
@@ -121,21 +121,11 @@ var Properties = React.createClass({
                             className="glyphicon glyphicon-question-sign"
                           ></span>
                         ) : undefined}
-                        {name && name.length >= 2100 ? (
-                          <ExpandCollapse text={name} />
-                        ) : (
-                          name
-                        )}
+                        {self.renderValue(name)}
                       </th>
-                      <td className={json ? 'w-properties-json' : undefined}>
+                      <td className={json ? 'w-properties-json' : 'w-user-select-none'}>
                         {
-                          json ? <JSONTree data={json} /> : <pre>
-                            {val && val.length >= 2100 ? (
-                              <ExpandCollapse text={val} />
-                            ) : (
-                              val
-                            )}
-                          </pre>
+                          json ? <JSONTree data={json} /> : <pre>{self.renderValue(val)}</pre>
                         }
                       </td>
                     </tr>
@@ -158,21 +148,11 @@ var Properties = React.createClass({
                         className="glyphicon glyphicon-question-sign"
                       ></span>
                     ) : undefined}
-                    {name && name.length >= 2100 ? (
-                      <ExpandCollapse text={name} />
-                    ) : (
-                      name
-                    )}
+                    {self.renderValue(name)}
                   </th>
-                  <td className={json ? 'w-properties-json' : undefined}>
+                  <td className={json ? 'w-properties-json' : 'w-user-select-none'}>
                     {
-                      json ? <JSONTree data={json} /> : <pre>
-                        {value && value.length >= 2100 ? (
-                          <ExpandCollapse text={value} />
-                        ) : (
-                          value
-                        )}
-                      </pre>
+                      json ? <JSONTree data={json} /> : <pre>{self.renderValue(value)}</pre>
                     }
                   </td>
                 </tr>

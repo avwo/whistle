@@ -8,6 +8,7 @@ var dataCenter = require('./data-center');
 var util = require('./util');
 var win = require('./win');
 var LazyInit = require('./lazy-init');
+var storage = require('./storage');
 
 var CMD_RE = /^([\w]{1,12})(\s+-g)?$/;
 var pendingEnable;
@@ -62,13 +63,17 @@ function getRegistryList(cb) {
     if (!data) {
       util.showSystemError(xhr);
     } else if (data.ec === 0) {
+      var registry = storage.get('pluginsRegistry');
       var result = dataCenter.getPluginRegistry();
       data.list.forEach(function(url) {
         if (result.indexOf(url) === -1) {
           result.push(url);
         }
       });
-      cb(result);
+      if (result.indexOf(registry) === -1) {
+        registry = '';
+      }
+      cb(result, registry);
     } else {
       win.alert(data.em);
     }
@@ -104,11 +109,11 @@ var Home = React.createClass({
           return getCmd() + list + registry;
         })
         .join('\n\n');
-      cmdMsg && getRegistryList(function(result) {
+      cmdMsg && getRegistryList(function(result, r) {
         self.setState({
           cmdMsg: cmdMsg,
           uninstall: false,
-          registry: registry || '',
+          registry: r || registry || '',
           registryList: result
         }, self.showMsgDialog);
       });
@@ -150,18 +155,19 @@ var Home = React.createClass({
   onRegistry: function(e) {
     var registry = e.target.value;
     this.setState({ registry: registry });
+    storage.set('pluginsRegistry', registry);
   },
   showUpdate: function (e) {
     var self = this;
     var name = $(e.target).attr('data-name');
     var plugin = self.props.data.plugins[name + ':'];
-    getRegistryList(function(result) {
+    getRegistryList(function(result, r) {
       self.setState(
         {
           cmdMsg: getCmd() + getUpdateUrl(plugin) + getAccount(plugin),
           isSys: plugin.isSys,
           uninstall: false,
-          registry: plugin.registry || '',
+          registry: r || plugin.registry || '',
           registryList: result
         },
         self.showMsgDialog
@@ -194,8 +200,9 @@ var Home = React.createClass({
     if (isSys) {
       update();
     } else {
-      getRegistryList(function(result) {
+      getRegistryList(function(result, r) {
         registryList = result;
+        registry = r || registry;
         update();
       });
     }
@@ -216,7 +223,7 @@ var Home = React.createClass({
   render: function () {
     var self = this;
     var data = self.props.data || {};
-    var plugins = data.plugins || [];
+    var plugins = data.plugins || {};
     var state = self.state || {};
     var plugin = state.plugin || {};
     var cmdMsg = state.cmdMsg;
@@ -628,7 +635,10 @@ var Tabs = React.createClass({
             data-name="Home"
             onClick={self.props.onActive}
           >
-            <a draggable="false">Home</a>
+            <a draggable="false">
+              <span className="glyphicon glyphicon-list-alt" />
+              Plugins
+            </a>
           </li>
           {tabs.map(function (tab) {
             var disd = !ndp && (disabled || disabledPlugins[tab.name]);
@@ -642,7 +652,7 @@ var Tabs = React.createClass({
                   className={disd ? 'w-plugin-tab-disabled' : undefined}
                 >
                   {disd ? (
-                    <span className="glyphicon glyphicon-ban-circle"></span>
+                    <span data-name={tab.name} className="glyphicon glyphicon-ban-circle" />
                   ) : undefined}
                   {tab.name}
                   <span

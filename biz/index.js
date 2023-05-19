@@ -20,6 +20,14 @@ var CUSTOM_PLUGIN_RE = new RegExp('^/[\\w.-]*\\.whistle-path\\.5b6af7b9884e1165[
 var REAL_WEBUI_HOST_PARAM = /_whistleInternalHost_=(__([a-z\d.-]+)(?:__(\d{1,5}))?__)/;
 var OUTER_PLUGIN_RE = /^(?:\/whistle)?\/((?:whistle|plugin)\.[a-z\\d_-]+)::(\d{1,5})\//;
 
+
+function transformUI(req, res) {
+  if (config.customUIHost && !config.keepProxyUI) {
+    return res.status(404).end();
+  }
+  return handleUIReq(req, res);
+}
+
 module.exports = function(req, res, next) {
   var config = this.config;
   var pluginMgr = this.pluginMgr;
@@ -133,7 +141,7 @@ module.exports = function(req, res, next) {
       if (isWeinre) {
         handleWeinreReq(req, res);
       } else {
-        handleUIReq(req, res);
+        transformUI(req, res);
       }
     }
   } else if (localRule = rules.resolveLocalRule(req)) {
@@ -142,7 +150,7 @@ module.exports = function(req, res, next) {
       req.headers.host = '127.0.0.1:' + localRule.realPort;
       util.transformReq(req, res, localRule.realPort);
     } else {
-      handleUIReq(req, res);
+      transformUI(req, res);
     }
   } else {
     next();

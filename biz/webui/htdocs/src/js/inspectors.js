@@ -52,7 +52,7 @@ var Inspectors = React.createClass({
       >
         <div className="box w-detail-inspectors-url" title={url}>
           <label>Url</label>
-          <div className="fill">
+          <div className="fill w-user-select-none">
             <ExpandCollapse text={url} />
           </div>
         </div>

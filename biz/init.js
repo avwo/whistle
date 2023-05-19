@@ -10,6 +10,7 @@ module.exports = function init(proxy, callback) {
     ui.setupServer(server);
     util.getBoundIp(config.uihost, function(host) {
       if (host) {
+        config.customUIHost = host;
         server.listen(config.uiport, host, callback);
       } else {
         server.listen(config.uiport, callback);
