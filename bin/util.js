@@ -80,7 +80,7 @@ function showUsage(isRunning, options, restart) {
     info('[i] ' + config.name + '@' + config.version + (restart ? ' restarted' : ' started'));
   }
   var port = /^\d+$/.test(options.port) && options.port > 0 ?  options.port : config.port;
-  var list = options.host ? [options.host] : getIpList();
+  var list = options.host && typeof options.host === 'string' ? [options.host] : getIpList();
   info('[i] 1. use your device to visit the following URL list, gets the ' + colors.bold('IP') + ' of the URL you can access:');
   info(list.map(function(ip) {
     return '       http://' + colors.bold(getIpHost(ip)) + (port && port != 80 ? ':' + port : '') + '/';
