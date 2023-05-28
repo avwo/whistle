@@ -1,3 +1,5 @@
+# v2.9.51
+1. fix: https://github.com/avwo/whistle/issues/912
 # v2.9.50
 1. fix: Node 20.1.0 版本 `http.request` 只支持通过 `options.search` 设置参数问题
 2. feat: 支持通过 `--uiport "127.0.0.1:8080"` 限制 WebUI 只能通过指定网卡和端口访问
