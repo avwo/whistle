@@ -3725,14 +3725,6 @@ var Index = React.createClass({
               }
             ></span>
           </a>
-          <a
-            onClick={this.showAccount}
-            className={'w-account-menu' + (isAccount ? ' w-menu-selected' : '')}
-            draggable="false"
-          >
-            <span className="glyphicon glyphicon-user" />
-            Account
-          </a>
           <div
             style={{ display: rulesMode ? 'none' : undefined }}
             onMouseEnter={this.showNetworkOptions}
@@ -3866,6 +3858,14 @@ var Index = React.createClass({
               onClickOption={this.showAndActivePlugins}
             />
           </div>
+          <a
+            onClick={this.showAccount}
+            className={'w-account-menu' + (isAccount ? ' w-menu-selected' : '')}
+            draggable="false"
+          >
+            <span className="glyphicon glyphicon-user" />
+            Account
+          </a>
           {!state.ndr && (
             <a
               onClick={this.confirmDisableAllRules}
@@ -4254,14 +4254,6 @@ var Index = React.createClass({
             onMouseLeave={forceHideLeftMenu}
           >
             <a
-              onClick={this.showAccount}
-              className={'w-account-menu' + (isAccount ? ' w-menu-selected' : '')}
-              draggable="false"
-            >
-              <span className="glyphicon glyphicon-user" />
-              <i className="w-left-menu-name">Account</i>
-            </a>
-            <a
               onClick={this.showNetwork}
               className={
                 'w-network-menu' + (isNetwork ? ' w-menu-selected' : '')
@@ -4332,6 +4324,14 @@ var Index = React.createClass({
                 }
               ></span>
               <i className="w-left-menu-name">Plugins</i>
+            </a>
+            <a
+              onClick={this.showAccount}
+              className={'w-account-menu' + (isAccount ? ' w-menu-selected' : '')}
+              draggable="false"
+            >
+              <span className="glyphicon glyphicon-user" />
+              <i className="w-left-menu-name">Account</i>
             </a>
           </div>
           {state.hasRules ? (

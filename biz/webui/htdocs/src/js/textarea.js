@@ -73,7 +73,7 @@ var Textarea = React.createClass({
   edit: function () {
     util.openEditor(this.props.value);
   },
-  showNameInput: function (e) {
+  showMockDialog: function(e) {
     var self = this;
     var props = self.props;
     var reqData = props.reqData;
@@ -83,11 +83,15 @@ var Textarea = React.createClass({
         item: reqData
       });
     }
+    self.showNameInput(e);
+  },
+  showNameInput: function (e) {
+    var self = this;
     self.state.showDownloadInput = /w-download/.test(e.target.className);
     self.state.showNameInput = true;
     self.forceUpdate(function () {
       var nameInput = ReactDOM.findDOMNode(self.refs.nameInput);
-      var defaultName = !nameInput.value && props.defaultName;
+      var defaultName = !nameInput.value && self.props.defaultName;
       if (defaultName) {
         nameInput.value = defaultName;
       }
@@ -198,7 +202,7 @@ var Textarea = React.createClass({
           >
             Download
           </a>
-          <a style={{display: dataCenter.hideMockMenu ? 'none' : null}} className="w-add" onClick={this.showNameInput} draggable="false">
+          <a style={{display: dataCenter.hideMockMenu ? 'none' : null}} className="w-add" onClick={this.showMockDialog} draggable="false">
             { props.reqData ? 'Mock' : '+Key' }
           </a>
           <a className="w-edit" onClick={this.edit} draggable="false">
