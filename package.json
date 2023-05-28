@@ -91,7 +91,7 @@
     "base64-js": "^1.3.0",
     "bootstrap": "3.3.5",
     "clipboard": "^1.7.1",
-    "codemirror": "5.5.0",
+    "codemirror": "5.58.2",
     "coveralls": "^2.11.12",
     "css-loader": "0.16.0",
     "eslint": "^2.8.0",
