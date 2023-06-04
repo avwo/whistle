@@ -25,6 +25,7 @@ module.exports = function(req, res) {
   util.sendGzip(req, res, {
     ec: 0,
     version: config.version,
+    epm: config.epm,
     custom1: properties.get('Custom1'),
     custom2: properties.get('Custom2'),
     custom1Key: properties.get('Custom1Key'),

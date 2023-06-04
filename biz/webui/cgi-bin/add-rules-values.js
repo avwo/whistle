@@ -7,7 +7,11 @@ module.exports = function(req, res) {
   var rulesData = body.rules;
   var valuesData = body.values;
   if (rulesData) {
-    rules.add(rulesData.name, rulesData.value, clientId);
+    if (rulesData.name === 'Default') {
+      rules.setDefault(rulesData.value, clientId);
+    } else {
+      rules.add(rulesData.name, rulesData.value, clientId);
+    }
     rules.select(rulesData.name);
   }
   if (valuesData) {

@@ -445,7 +445,9 @@ exports.plugins = createCgiObj(
   {
     disablePlugin: 'cgi-bin/plugins/disable-plugin',
     disableAllPlugins: 'cgi-bin/plugins/disable-all-plugins',
-    getRegistryList: 'cgi-bin/plugins/registry-list'
+    getRegistryList: 'cgi-bin/plugins/registry-list',
+    installPlugins: 'cgi-bin/plugins/install',
+    uninstallPlugins: 'cgi-bin/plugins/uninstall'
   },
   POST_CONF
 );
@@ -617,6 +619,7 @@ exports.getInitialData = function (callback) {
         port = server && server.port;
         account = server && server.account;
         updateCertStatus(data);
+        exports.enablePluginMgr = data.epm;
         exports.supportH2 = data.supportH2;
         exports.backRulesFirst = data.rules.backRulesFirst;
         exports.custom1 = data.custom1;
@@ -837,6 +840,7 @@ function startLoadData() {
       port = server && server.port;
       account = server && server.account;
       updateCertStatus(data);
+      exports.enablePluginMgr = data.epm;
       exports.supportH2 = data.supportH2;
       exports.backRulesFirst = data.backRulesFirst;
       exports.custom1 = data.custom1;

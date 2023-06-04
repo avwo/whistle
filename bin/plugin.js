@@ -8,6 +8,8 @@ var commonUtil = require('../lib/util/common');
 
 var getWhistlePath = commonUtil.getWhistlePath;
 var REMOTE_URL_RE = commonUtil.REMOTE_URL_RE;
+var WHISTLE_PLUGIN_RE = commonUtil.WHISTLE_PLUGIN_RE;
+const getPlugins = commonUtil.getPlugins;
 var CMD_SUFFIX = process.platform === 'win32' ? '.cmd' : '';
 var CUSTOM_PLUGIN_PATH = path.join(getWhistlePath(), 'custom_plugins');
 var DEFAULT_PATH = commonUtil.getDefaultWhistlePath();
@@ -15,23 +17,10 @@ var REGISTRY_LIST = path.join(DEFAULT_PATH, '.registry.list');
 var PACKAGE_JSON = '{"repository":"https://github.com/avwo/whistle","license":"MIT"}';
 var LICENSE = 'Copyright (c) 2019 avwo';
 var RESP_URL = 'https://github.com/avwo/whistle';
-var WHISTLE_PLUGIN_RE = /^((?:@[\w-]+\/)?whistle\.[a-z\d_-]+)(?:\@([\w.^~*-]*))?$/;
 var MAX_REG_COUNT = 100;
 
 function getInstallPath(name, dir) {
   return path.join(dir || CUSTOM_PLUGIN_PATH, name);
-}
-
-function getPlugins(argv, isInstall) {
-  return argv.filter(function(name, i) {
-    if (WHISTLE_PLUGIN_RE.test(name)) {
-      return true;
-    }
-    if (argv[i - 1] === '--registry') {
-      return false;
-    }
-    return isInstall && REMOTE_URL_RE.test(name);
-  });
 }
 
 function removeDir(installPath) {

@@ -3178,7 +3178,11 @@ var Index = React.createClass({
     );
   },
   reinstallAllPlugins: function () {
-    events.trigger('updateAllPlugins', 'reinstallAllPlugins');
+    if (dataCenter.enablePluginMgr) {
+      events.trigger('installPlugins');
+    } else {
+      events.trigger('updateAllPlugins', 'reinstallAllPlugins');
+    }
   },
   chooseFileType: function (e) {
     var value = e.target.value;
@@ -3919,7 +3923,7 @@ var Index = React.createClass({
             draggable="false"
           >
             <span className="glyphicon glyphicon-download-alt" />
-            ReinstallAll
+            {dataCenter.enablePluginMgr ? 'Install' : 'ReinstallAll'}
           </a>
           <RecordBtn
             ref="recordBtn"
