@@ -1,3 +1,6 @@
+# v2.9.52
+1. feat: 跨域请求本地替换自动设置 cors，可以通过 `disable://autoCors` 或 `lineProps://disableAutoCors` 关闭
+
 # v2.9.51
 1. fix: https://github.com/avwo/whistle/issues/912
 # v2.9.50
