@@ -1,4 +1,9 @@
 # v2.9.52
+1. feat: 支持通过 `enable://forHttp|forHttps` 设置 `enable://capture` 只对 http 或 https 生效
+2. feat: 支持通过请求参数设置登录态
+3. feat: 支持 `Dark Mode`，且可以通过界面 `Online -> 打开对话框 -> Disable dark mode` 关闭自动切换 `Dark Mode`
+
+# v2.9.52
 1. feat: 跨域请求本地替换自动设置 cors，可以通过 `disable://autoCors` 或 `lineProps://disableAutoCors` 关闭
 
 # v2.9.51

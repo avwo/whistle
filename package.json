@@ -1,13 +1,13 @@
 {
   "name": "whistle",
   "description": "HTTP, HTTP2, HTTPS, Websocket debugging proxy",
-  "version": "2.9.52",
+  "version": "2.9.53",
   "dataDirname": ".whistle",
   "localUIHost": "local.whistlejs.com",
   "port": 8899,
   "sockets": 256,
   "timeout": 360000,
-  "author": "avenwu <avenwu@vip.qq.com>",
+  "author": "avenwu <avwu@qq.com>",
   "contributors": [],
   "license": "MIT",
   "bugs": {
@@ -35,7 +35,6 @@
   "dependencies": {
     "adm-zip": "0.5.9",
     "async-limiter": "2.0.0",
-    "basic-auth": "1.0.0",
     "body-parser": "^1.19.0",
     "colors": "1.1.2",
     "cookie": "^0.3.1",
