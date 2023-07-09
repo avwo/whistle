@@ -1,4 +1,7 @@
 var $ = require('jquery');
+var util = require('./util');
+
+var auth = util.getQuery().authorization;
 
 function createCgi(url, settings) {
   var self = this;
@@ -45,8 +48,12 @@ function createCgi(url, settings) {
     options.error = function (xhr, em) {
       execCallback.call(this, false, xhr, em);
     };
-
-    return (jqXhr = $.ajax(options));
+    opts = options;
+    if (auth && typeof opts.url === 'string') {
+      opts = $.extend({}, opts);
+      opts.url += (opts.url.indexOf('?') === -1 ? '?' : '&') + 'authorization=' + auth;
+    }
+    return (jqXhr = $.ajax(opts));
   }
 
   return cgiFn;

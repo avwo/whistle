@@ -51,6 +51,7 @@ var OPTIONS_WITH_SELECTED = [
 ];
 var HIDE_STYLE = { display: 'none' };
 var search = window.location.search;
+var isClient = util.getQuery().mode === 'client';
 var hideLeftMenu;
 var showTreeView;
 
@@ -232,7 +233,9 @@ function getPageName(options) {
   if (options.pluginsMode) {
     return hash !== 'plugins' ? 'network' : hash;
   }
-
+  if (isClient && !hash) {
+    return storage.get('pageName') || 'network';
+  }
   return hash;
 }
 
@@ -759,6 +762,7 @@ var Index = React.createClass({
     } else {
       this.showNetwork();
     }
+    storage.set('pageName', pageName || '');
   },
   componentDidMount: function () {
     var self = this;
@@ -1189,7 +1193,7 @@ var Index = React.createClass({
         list[3].checked = !state.disabledAllRules;
         list[4].checked = !state.disabledAllPlugins;
         self.refs.contextMenu.update();
-        return;
+        return self.setState({});
       }
     });
     dataCenter.on('rules', function (data) {
@@ -4808,7 +4812,7 @@ var Index = React.createClass({
                   href="https://avwo.github.io/whistle/update.html"
                   target="_blank"
                 >
-                  Update now
+                  View Update Guide
                 </a>
               </div>
             </div>

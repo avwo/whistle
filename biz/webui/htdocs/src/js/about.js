@@ -9,6 +9,9 @@ var dataCenter = require('./data-center');
 var storage = require('./storage');
 var util = require('./util');
 
+var isElectron = /Electron\//i.test(window.navigator.userAgent);
+var clientName = isElectron ? 'electron' : 'nodejs';
+
 function hasNewVersion(data) {
   return (
     util.compareVersion(data.latestVersion, data.version) &&
@@ -115,7 +118,7 @@ var About = React.createClass({
               Visit{' '}
               <a
                 className="w-about-url"
-                href={'http://wproxy.org/?type=nodejs&version=' + version}
+                href={'http://wproxy.org/?type=' + clientName + '&version=' + version}
                 target="_blank"
               >
                 http://wproxy.org

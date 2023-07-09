@@ -19,6 +19,9 @@ var getWidth = function (vertical) {
 var Network = React.createClass({
   getInitialState: function () {
     var dockToBottom = storage.get('dockToBottom');
+    if (dockToBottom == null && /[&#?]dockToBottom=true(?:&|$|#)/.test(window.location.search)) {
+      dockToBottom = true;
+    }
     return {
       dockToBottom: dockToBottom,
       rightWidth: getWidth(dockToBottom)

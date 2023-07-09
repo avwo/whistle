@@ -6,6 +6,11 @@ body,
   width: 100%;
   height: 100%;
 }
+@media (prefers-color-scheme: dark) {
+  .w-allow-dark-mode {
+    filter: invert(1) hue-rotate(-180deg);
+  }
+}
 #container {
   min-width: 1075px; /* 兼容竖屏 */
   min-height: 560px;

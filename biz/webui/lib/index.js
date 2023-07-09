@@ -4,7 +4,6 @@ var path = require('path');
 var url = require('url');
 var http = require('http');
 var https = require('https');
-var getAuth = require('basic-auth');
 var parseurl = require('parseurl');
 var bodyParser = require('body-parser');
 var crypto = require('crypto');
@@ -18,6 +17,7 @@ var setProxy = require('./proxy');
 var rulesUtil = require('../../../lib/rules/util');
 var getRootCAFile = require('../../../lib/https/ca').getRootCAFile;
 var config = require('../../../lib/config');
+var parseAuth = require('../../../lib/util/common').parseAuth;
 var getWorker = require('../../../lib/plugins/util').getWorker;
 var loadAuthPlugins = require('../../../lib/plugins').loadAuthPlugins;
 
@@ -76,9 +76,16 @@ function getLoginKey (req, res, auth) {
 }
 
 function requireLogin(res, msg) {
+  if (config.client) {
+    return res.status(404).end();
+  }
   res.setHeader('WWW-Authenticate', ' Basic realm=User Login');
   res.setHeader('Content-Type', 'text/html; charset=utf8');
   res.status(401).end(msg || 'Access denied, please <a href="javascript:;" onclick="location.reload()">try again</a>.');
+}
+
+function equalAuth(auth, src) {
+  return auth.name === src.username && auth.pass === src.password;
 }
 
 function verifyLogin(req, res, auth) {
@@ -105,14 +112,13 @@ function verifyLogin(req, res, auth) {
   if (correctKey === lkey) {
     return true;
   }
-  if (req.query.authorization && !req.headers.authorization) {
-    req.headers.authorization = 'Basic ' + req.query.authorization;
-  }
-  auth = getAuth(req) || {};
+  var headerAuth = parseAuth(req.headers.authorization);
+  var queryAuth = parseAuth(req.query.authorization);
   if (!isGuest && config.encrypted) {
-    auth.pass = shasum(auth.pass);
+    headerAuth.pass = headerAuth.pass && shasum(headerAuth.pass);
+    queryAuth.pass = queryAuth.pass && shasum(queryAuth.pass);
   }
-  if (auth.name === username && auth.pass === password) {
+  if (equalAuth(headerAuth, auth) || equalAuth(queryAuth, auth)) {
     var options = {
       expires: new Date(Date.now() + (MAX_AGE * 1000)),
       maxAge: MAX_AGE,

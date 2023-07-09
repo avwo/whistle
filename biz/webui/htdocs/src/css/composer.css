@@ -27,7 +27,7 @@
 .w-filter-hint > ul {
   overflow-x: hidden;
   overflow-y: auto;
-  max-height: 240px;
+  max-height: 360px;
 }
 
 .w-filter-hint > ul li {

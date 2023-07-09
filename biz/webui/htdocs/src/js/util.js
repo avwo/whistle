@@ -23,7 +23,8 @@ var INDEX_RE = /^\[(\d+)\]$/;
 var ARR_FILED_RE = /(.)?(?:\[(\d+)\])$/;
 var LEVELS = ['fatal', 'error', 'warn', 'info', 'debug'];
 var MAX_CURL_BODY = 1024 * 72;
-var useCustomEditor = window.location.search.indexOf('useCustomEditor') !== -1;
+var search = (window.location.search || '').substring(1);
+var useCustomEditor = search.indexOf('useCustomEditor') !== -1;
 var JSON_RE = /^\s*(?:\{[\w\W]*\}|\[[\w\W]*\])\s*$/;
 var isJSONText;
 
@@ -36,6 +37,13 @@ function noop(_) {
 }
 
 exports.noop = noop;
+
+exports.getQuery = function() {
+  if (typeof search === 'string') {
+    search = parseQueryString(search);
+  }
+  return search;
+};
 
 function likeJson(str) {
   return str && JSON_RE.test(str);

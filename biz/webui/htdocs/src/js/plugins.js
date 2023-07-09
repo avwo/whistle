@@ -25,6 +25,14 @@ function getPluginComparator(plugins) {
   };
 }
 
+function handlePlugins(data, xhr) {
+  if (!data) {
+    util.showSystemError(xhr);
+    return;
+  }
+  message.success('Request successful, the list of plugins will update itself.');
+}
+
 function enableAllPlugins(e) {
   if (pendingEnable) {
     return;
@@ -133,19 +141,13 @@ var Home = React.createClass({
     if (!cmd) {
       return;
     }
-    if (install && state.registry) {
+    if (state.registryList && state.registry) {
       cmd += ' --registry=' + state.registry;
     }
     var isInstall = install || cmd.indexOf('w2 install ') === 0;
     dataCenter.plugins[(isInstall ? '' : 'un' ) + 'installPlugins']({
       cmd: cmd
-    }, function (data, xhr) {
-      if (!data) {
-        util.showSystemError(xhr);
-        return;
-      }
-      message.success('Request successful, please wait patiently for the result.');
-    });
+    }, handlePlugins);
   },
   onOpen: function (e) {
     this.props.onOpen && this.props.onOpen(e);
@@ -231,6 +233,15 @@ var Home = React.createClass({
     var registry = isSys ? null : plugin.registry;
     var registryList = null;
     var registryCmd = registry ? ' --registry=' + registry : '';
+    if (dataCenter.enablePluginMgr) {
+      const cmd = plugin.moduleName;
+      win.confirm('Are you sure to uninstall plugin \'' + cmd + '\'.', function(ok) {
+        if (ok) {
+          dataCenter.plugins.uninstallPlugins({ cmd: cmd }, handlePlugins);
+        }
+      });
+      return;
+    }
     var update = function() {
       self.setState(
         {
@@ -549,8 +560,8 @@ var Home = React.createClass({
               ref="textarea"
               value={cmdMsg || ''}
               readOnly={!install}
-              placeholder={install ? 'e.g.: whistle.inspect whistle.abc@1.0.0 @org/whistle.xxx' : undefined}
-              className="w-plugin-update-cmd"
+              placeholder={install ? 'Such as: whistle.inspect whistle.abc@1.0.0 @org/whistle.xxx' : undefined}
+              className={'w-plugin-update-cmd' + (install ? ' w-plugin-install' : '')}
               maxLength={install ? 360 : undefined}
               onChange={this.onCmdChange}
             />
@@ -595,7 +606,7 @@ var Home = React.createClass({
               onClick={dataCenter.enablePluginMgr ? self.execCmd : null}
               disabled={install && !WHISTLE_PLUGIN_RE.test(cmdMsg)}
             >
-              {dataCenter.enablePluginMgr ? (install ? 'Install' : 'Exec') : 'Copy'}
+              {dataCenter.enablePluginMgr ? (install ? 'Install' : 'Update') : 'Copy'}
             </button>
             <button
               type="button"

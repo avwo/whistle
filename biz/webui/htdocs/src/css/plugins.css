@@ -175,12 +175,15 @@
 .w-plugin-update-cmd {
   background: #002240;
   color: #ddd;
-  padding: 15px;
+  padding: 10px;
   margin-top: 10px;
   font-size: 14px;
   display: block;
   width: 578px;
   height: 220px;
+}
+.w-plugin-install {
+  padding: 5px;
 }
 .w-plugin-btn {
   color: #337ab7 !important;

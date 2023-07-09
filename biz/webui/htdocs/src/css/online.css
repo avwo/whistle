@@ -65,3 +65,12 @@
   font-size: 13px;
   font-weight: normal;
 }
+
+.w-dark-mode-option {
+  font-weight: normal!important;
+  margin-right: 30px;
+}
+
+.w-dark-mode-option input, .w-dark-mode-option span {
+  vertical-align: middle;
+}

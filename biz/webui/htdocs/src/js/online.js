@@ -9,8 +9,19 @@ var Dialog = require('./dialog');
 var dataCenter = require('./data-center');
 var util = require('./util');
 var DNSDialog = require('./dns-servers-dialog');
+var storage = require('./storage');
 
 var dialog;
+var disabledDarkMode = storage.get('disabledDarkMode');
+disabledDarkMode = !!disabledDarkMode || (disabledDarkMode == null && util.getQuery().mode !== 'client');
+
+function setDiableDarkMode(flag) {
+  disabledDarkMode = flag;
+  try {
+    document.documentElement.className = flag ? '' : 'w-allow-dark-mode';
+  } catch (e) {}
+}
+setDiableDarkMode(disabledDarkMode);
 
 function createDialog() {
   if (!dialog) {
@@ -36,12 +47,20 @@ function createDialog() {
         '<a class="w-online-view-dns">View custom DNS servers</a>' +
         '</div>' +
         '<div class="modal-footer">' +
+        '<label class="w-dark-mode-option"><input type="checkbox" /> <span>Disable dark mode</span></label>' +
         '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>' +
         '</div>' +
         '</div>' +
         '</div>' +
         '</div>'
     ).appendTo(document.body);
+    var box = dialog.find('.w-dark-mode-option input');
+    box.on('change', function(e) {
+      const checked = e.target.checked;
+      setDiableDarkMode(checked);
+      storage.set('disabledDarkMode', checked ? 1 : '');
+    });
+    box.prop('checked', disabledDarkMode);
   }
 
   return dialog;

@@ -20,6 +20,7 @@
   text-overflow: ellipsis;
   background: #fff;
   outline: none;
+  cursor: default;
 }
 .w-list-data a .glyphicon-ok {
   position: absolute;
@@ -32,6 +33,7 @@
 .w-list-content {
   border-bottom: 1px solid #ccc;
   border-right: 1px solid #ccc;
+  cursor: text;
 }
 .w-list-data .w-changed:before {
   content: '*';
