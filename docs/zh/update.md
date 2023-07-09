@@ -1,4 +1,6 @@
 # 更新 Whistle
+> 以下是命令行版本的更新指引，有关 Whistle 客户端的安装与更新请参考：https://github.com/avwo/whistle-client
+
 更新（即于重新安装并重启）命令：
 ``` sh
 npm i -g whistle && w2 restart

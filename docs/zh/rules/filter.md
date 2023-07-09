@@ -28,8 +28,8 @@ pattern operatorURI1  operatorURIx excludeFilter://*/cgi-bin includeFilter:///te
 
 完整匹配条：
 
-1. `b:pattern`：pattern为正则或关键字，表示匹配请求内容
-1. `m:name`：name为方法名称或正则表达式，表示匹配对应方法
+1. `b:pattern`：pattern为正则或关键字，表示匹配请求内容（request body）
+1. `m:name`：name为方法名称或正则表达式，表示匹配对应方法（request method）
 2. `i:ip`：ip表示具体客户(服务)端ip或匹配ip的正则表达式
 3. `clientIp:ip`：ip表示具体客户端ip或匹配ip的正则表达式
 4. `serverIp:ip`：ip表示具体服务端ip或匹配ip的正则表达式
