@@ -10,6 +10,9 @@ body,
   .w-allow-dark-mode {
     filter: invert(1) hue-rotate(-180deg);
   }
+  .w-allow-dark-mode img {
+    filter: invert(1) hue-rotate(180deg);
+  }
 }
 #container {
   min-width: 1075px; /* 兼容竖屏 */
