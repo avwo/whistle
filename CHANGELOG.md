@@ -1,4 +1,8 @@
-# v2.9.52
+# v2.9.54
+1. fix: 修复 Dark Mode 模式下图片显示问题
+2. fix: JSON 过滤搜索时保留数组的 index
+
+# v2.9.53
 1. feat: 支持通过 `enable://forHttp|forHttps` 设置 `enable://capture` 只对 http 或 https 生效
 2. feat: 支持通过请求参数设置登录态
 3. feat: 支持 `Dark Mode`，且可以通过界面 `Online -> 打开对话框 -> Disable dark mode` 关闭自动切换 `Dark Mode`
