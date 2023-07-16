@@ -286,6 +286,7 @@ var Home = React.createClass({
     var state = self.state || {};
     var plugin = state.plugin || {};
     var install = state.install;
+    var epm = dataCenter.enablePluginMgr;
     var cmdMsg = install ? state.installMsg : state.cmdMsg;
     var list = Object.keys(plugins);
     var disabledPlugins = data.disabledPlugins || {};
@@ -295,11 +296,12 @@ var Home = React.createClass({
     var ndp = data.ndp;
     self.hasNewPlugin = false;
 
-    if (!install && cmdMsg && registry) {
+    if (!epm && cmdMsg && registry) {
+      var regCmd = ' --registry=' + registry;
       cmdMsg = cmdMsg.split('\n').map(function(line) {
         line = line.trim();
         if (line) {
-          line += ' --registry=' + registry;
+          line += regCmd;
         }
         return line;
       }).join('\n');
@@ -559,7 +561,7 @@ var Home = React.createClass({
             <textarea
               ref="textarea"
               value={cmdMsg || ''}
-              readOnly={!install}
+              readOnly={!epm}
               placeholder={install ? 'Such as: whistle.inspect whistle.abc@1.0.0 @org/whistle.xxx' : undefined}
               className={'w-plugin-update-cmd' + (install ? ' w-plugin-install' : '')}
               maxLength={install ? 360 : undefined}

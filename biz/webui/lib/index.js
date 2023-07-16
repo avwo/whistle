@@ -75,8 +75,11 @@ function getLoginKey (req, res, auth) {
   return shasum([auth.username, password, ip].join('\n'));
 }
 
-function requireLogin(res, msg) {
+function requireLogin(req, res, msg) {
   if (config.client) {
+    if (config.handleWebReq) {
+      return config.handleWebReq(req, res);
+    }
     return res.status(404).end();
   }
   res.setHeader('WWW-Authenticate', ' Basic realm=User Login');
@@ -139,7 +142,7 @@ function checkAuth(req, res) {
   if (verifyLogin(req, res, auth)) {
     return true;
   }
-  requireLogin(res);
+  requireLogin(req, res);
   return false;
 }
 
@@ -192,7 +195,7 @@ app.use(function(req, res, next) {
       return res.redirect(status);
     }
     if (status === 401) {
-      return requireLogin(res, msg);
+      return requireLogin(req, res, msg);
     }
     res.set('Content-Type', 'text/html; charset=utf8');
     if (authUrl) {

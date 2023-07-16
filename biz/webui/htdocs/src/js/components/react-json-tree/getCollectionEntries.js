@@ -59,9 +59,12 @@ function getEntries(type, collection, sortObjectKeys) {
       })
     };
   } else if (type === 'Array') {
+    var oidx = collection._idx;
     res = {
       entries: collection.slice(from, to + 1).map(function (val, idx) {
-        return { key: idx + from, value: val };
+        idx += from;
+        var i = oidx && oidx[idx];
+        return { key: i >= 0 ? i : idx, value: val };
       })
     };
   } else {

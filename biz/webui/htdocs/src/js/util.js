@@ -2401,6 +2401,7 @@ function filterJson(obj, keyword, filterType) {
   }
   var type = typeof obj;
   var isKey = filterType === 1;
+  var isVal = filterType > 1;
   if (type === 'string' || type === 'number' || type === 'boolean') {
     return !isKey && String(obj).toLowerCase().indexOf(keyword) !== -1;
   }
@@ -2408,15 +2409,18 @@ function filterJson(obj, keyword, filterType) {
     return false;
   }
   if (Array.isArray(obj)) {
+    var idx = [];
     for (var i = obj.length - 1; i >=0; i--) {
-      if (!filterJson(obj[i], keyword, filterType)) {
+      if ((isVal || (i + '').indexOf(keyword) === -1) && !filterJson(obj[i], keyword, filterType)) {
         obj.splice(i, 1);
+      } else {
+        idx.push(i);
       }
     }
+    obj._idx = idx.reverse();
     return obj.length;
   }
   Object.keys(obj).forEach(function(key) {
-    var isVal = filterType > 1;
     var hasKey = !isVal && key.toLowerCase().indexOf(keyword) !== -1;
     if (isKey && hasKey) {
       return true;
