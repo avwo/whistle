@@ -1,3 +1,7 @@
+# v2.9.55
+1. feat: 显示 `captureError`，且可以通过插件获取到这类型错误的抓包数据
+2. fix: 完善 `refreshPlugins` 方法（内部方法）
+
 # v2.9.54
 1. fix: 修复 Dark Mode 模式下图片显示问题
 2. fix: JSON 过滤搜索时保留数组的 index
