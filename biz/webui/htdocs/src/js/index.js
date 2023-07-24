@@ -3286,6 +3286,10 @@ var Index = React.createClass({
         fwdHost: entry.whistleFwdHost,
         sniPlugin: entry.whistleSniPlugin,
         rules: entry.whistleRules || {},
+        captureError: entry.whistleCaptureError,
+        isHttps: entry.whistleIsHttps,
+        reqError: entry.whistleReqError,
+        resError: entry.whistleResError,
         version: entry.whistleVersion,
         nodeVersion: entry.whistleNodeVersion
       };

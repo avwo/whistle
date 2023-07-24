@@ -2313,6 +2313,10 @@ exports.toHar = function (item) {
     whistleVersion: item.version,
     whistleNodeVersion: item.nodeVersion,
     whistleRealUrl: item.realUrl,
+    whistleCaptureError: item.captureError,
+    whistleReqError: item.reqError,
+    whistleIsHttps: item.isHttps,
+    whistleResError: item.resError,
     whistleTimes: {
       startTime: item.startTime,
       dnsTime: item.dnsTime,

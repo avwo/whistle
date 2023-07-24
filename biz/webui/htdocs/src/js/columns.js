@@ -24,7 +24,7 @@ function getDefaultColumns() {
       name: 'result',
       className: 'result',
       selected: true,
-      width: 65
+      width: 75
     },
     {
       title: 'Method',

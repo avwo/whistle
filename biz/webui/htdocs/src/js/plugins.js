@@ -174,12 +174,7 @@ var Home = React.createClass({
     );
   },
   onCmdChange: function (e) {
-    var msg = e.target.value;
-    if (this.state.install) {
-      this.setState({ installMsg: msg });
-    } else {
-      this.setState({ cmdMsg: msg });
-    }
+    this.updateCmdMsg(e.target.value);
   },
   showMsgDialog: function () {
     var self = this;
@@ -190,8 +185,35 @@ var Home = React.createClass({
       }, 600);
     }
   },
+  updateCmdMsg: function(msg, cb) {
+    if (this.state.install) {
+      this.setState({ installMsg: msg }, cb);
+    } else {
+      this.setState({ cmdMsg: msg }, cb);
+    }
+  },
   onRegistry: function(e) {
     var registry = e.target.value;
+    if (registry === '+Add') {
+      var textarea = ReactDOM.findDOMNode(this.refs.textarea);
+      var pkgs = [];
+      var regs = [];
+      var regCmdName = '--registry=';
+      textarea.value.trim().split(/\s+/).forEach(function(cmd) {
+        if (cmd.indexOf(regCmdName)) {
+          pkgs.push(cmd);
+        } else {
+          regs.push(cmd);
+        }
+      });
+      if (!regs.length) {
+        regs.push(regCmdName);
+      }
+      this.updateCmdMsg(pkgs.concat(regs).join(' '), function() {
+        textarea.focus();
+      });
+      return;
+    }
     this.setState({ registry: registry });
     storage.set('pluginsRegistry', registry);
   },
@@ -598,6 +620,7 @@ var Home = React.createClass({
                     );
                   })
                 }
+                {epm ? <option value="+Add">+Add</option> : null}
               </select>
             </label> : null}
             <button
