@@ -12,7 +12,7 @@
 [![NPM count](https://img.shields.io/npm/dt/whistle.svg?style=flat-square)](https://www.npmjs.com/package/whistle)
 [![License](https://img.shields.io/npm/l/whistle.svg?style=flat-square)](https://www.npmjs.com/package/whistle)
 
-<!-- > **Mac 或 Windows 系统推荐使用客户端版本：https://github.com/avwo/whistle-client** -->
+**Mac 或 Windows 系统推荐使用客户端版本：https://github.com/avwo/whistle-client**
 
 Whistle 是基于 Node 实现的跨平台抓包调试工具，其主要特点：
 1. **完全跨平台**：支持 Mac、Windows 等桌面系统，且支持服务端等命令行系统
