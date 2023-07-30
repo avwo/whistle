@@ -1,3 +1,7 @@
+
+# v2.9.56
+1. feat: 支持通过 `Online / IPv6-only network` 强制 dns 获取 ipv6（命令行版本还可以通过 `-M ipv6Only` 开启）
+2. feat: `w2 add` 命令支持 `type: module`
 # v2.9.55
 1. feat: 显示 `captureError`，且可以通过插件获取到这类型错误的抓包数据
 2. fix: 完善 `refreshPlugins` 方法（内部方法）
