@@ -2,8 +2,11 @@ var path = require('path');
 var fs = require('fs');
 var http = require('http');
 var url = require('url');
+var Buffer = require('safe-buffer').Buffer;
 var util = require('./util');
+var importModule = require('./import');
 var pkg = require('../package.json');
+var getHomedir = require('../lib/util/common').getHomedir;
 
 var isRunning = util.isRunning;
 var error = util.error;
@@ -14,24 +17,28 @@ var MAX_RULES_LEN = 1024 * 256;
 var DEFAULT_OPTIONS = { host: '127.0.0.1', port: 8899 };
 var options;
 
-function showStartWhistleTips(storage) {
-  error('No running whistle, execute `w2 start' + (storage ? ' -S ' + storage : '')
-    + '` to start whistle on the cli.');
+function showStartWhistleTips(storage, isClient) {
+  if (isClient) {
+    error('No running whistle client, please install and start the latest whistle client: https://github.com/avwo/whistle-client');
+  } else {
+    error('No running whistle, execute `w2 start' + (storage ? ' -S ' + storage : '') + '` to start whistle on the cli.');
+  }
 }
 
 function handleRules(filepath, callback, port) {
-  var getRules = require(filepath);
-  if (typeof getRules !== 'function') {
-    return callback(getRules);
-  }
-  var opts = {
-    port: port,
-    existsPlugin: existsPlugin
-  };
-  if (options && options.host) {
-    opts.host = options.host;
-  }
-  getRules(callback, opts);
+  importModule(filepath, function(getRules) {
+    if (typeof getRules !== 'function') {
+      return callback(getRules);
+    }
+    var opts = {
+      port: port,
+      existsPlugin: existsPlugin
+    };
+    if (options && options.host) {
+      opts.host = options.host;
+    }
+    getRules(callback, opts);
+  });
 }
 
 function getString(str) {
@@ -75,10 +82,13 @@ function request(body, callback) {
     reqOptions.headers = {
       'content-type': 'application/x-www-form-urlencoded'
     };
+    if (options.specialAuth) {
+      reqOptions.headers['x-whistle-special-auth'] = options.specialAuth;
+    }
     reqOptions.method = 'POST';
     if (options.username || options.password) {
       var auth = [options.username || '', options.password || ''].join(':');
-      reqOptions.headers.authorization = 'Basic ' + new Buffer(auth).toString('base64');
+      reqOptions.headers.authorization = 'Basic ' + new Buffer.from(auth).toString('base64');
     }
   }
   var req = http.request(reqOptions, function(res) {
@@ -93,9 +103,12 @@ function request(body, callback) {
   req.end(body);
 }
 
-function checkDefault(running, storage, callback) {
+function checkDefault(running, storage, isClient, callback) {
   if (running) {
     return callback();
+  }
+  if (isClient) {
+    return callback(true);
   }
   var execCallback = function(err) {
     callback && callback(err);
@@ -114,20 +127,42 @@ function checkDefault(running, storage, callback) {
   req.end();
 }
 
-module.exports = function(filepath, storage, force) {
-  storage = storage || '';
-  var dir = encodeURIComponent(storage);
-  var config = readConfig(dir) || '';
+function readClientConfig() {
+  var procPath = path.join(getHomedir(), '.whistle_client.pid');
+  try {
+    var info = fs.readFileSync(procPath, { encoding: 'utf-8' }).split(',');
+    if (info.length === 4) {
+      return {
+        pid: info[0],
+        options: {
+          host: info[1],
+          port: info[2],
+          specialAuth: info[3]
+        }
+      };
+    }
+  } catch (e) {}
+}
+
+module.exports = function(filepath, storage, force, isClient) {
+  var config;
+  var dir = '';
+  if (isClient) {
+    storage = '';
+    config = readClientConfig() || '';
+  } else {
+    storage = storage || '';
+    dir = encodeURIComponent(storage);
+    config = readConfig(dir) || '';
+    if (config.options) {
+      delete config.options.specialAuth;
+    }
+  }
   options = config.options || '';
-  var pid = options && config.pid;
-  var addon = options && options.addon;
-  var conf = require('../lib/config');
-  conf.addon = addon && typeof addon === 'string' ? addon.split(/[|,]/) : null;
-  conf.noGlobalPlugins = options && options.noGlobalPlugins;
-  isRunning(pid, function(running) {
-    checkDefault(running, dir, function(err, port) {
+  isRunning(options && config.pid, function(running) {
+    checkDefault(running, dir, isClient, function(err, port) {
       if (err) {
-        return showStartWhistleTips(storage);
+        return showStartWhistleTips(storage, isClient);
       }
       filepath = path.resolve(filepath || '.whistle.js');
       if (port) {
@@ -158,7 +193,7 @@ module.exports = function(filepath, storage, force) {
             'groupName=' + encodeURIComponent(groupName.trim())
           ].join('&');
           request(body, function() {
-            info('Setting whistle (' + (options.host || '127.0.0.1') + ':' + port + ') rules successful.');
+            info('Setting whistle' + (isClient ? ' client' : '') + ' (' + (options.host || '127.0.0.1') + ':' + port + ') rules successful.');
           });
         };
         if (force) {
