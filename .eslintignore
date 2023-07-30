@@ -3,3 +3,4 @@ node_modules
 /biz/webui/htdocs/src/js/components
 /test/assets/values
 /test/plugins/whistle.test/assets
+/bin/import.js
