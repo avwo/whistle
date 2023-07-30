@@ -25,6 +25,7 @@ exports.getServerInfo = function(req) {
   var info = {
     pid: PID,
     pInfo: proc,
+    ipv6Only: config.ipv6Only,
     dcc: config.disableCustomCerts,
     dns: dnsOverHttps || config.dnsServer,
     doh: doh,
@@ -138,6 +139,13 @@ exports.formatDate = formatDate;
 
 exports.getClientIp = util.getClientIp;
 
+function sendError(res, err) {
+  res.status(500).send(config.debugMode ?
+    '<pre>' + util.encodeHtml(util.getErrorStack(err)) + '</pre>' : 'Internal Server Error');
+}
+
+exports.sendError = sendError;
+
 exports.sendGzip = function(req, res, data) {
   if (!util.canGzip(req)) {
     return res.json(data);
@@ -147,8 +155,7 @@ exports.sendGzip = function(req, res, data) {
       try {
         res.json(data);
       } catch (e) {
-        res.status(500).send(config.debugMode ?
-          '<pre>' + util.encodeHtml(util.getErrorStack(err)) + '</pre>' : 'Internal Server Error');
+        sendError(e);
       }
       return;
     }

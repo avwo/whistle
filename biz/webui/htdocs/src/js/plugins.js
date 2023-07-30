@@ -609,7 +609,7 @@ var Home = React.createClass({
             </div>
           </div>
           <div className="modal-footer">
-            {registryList.length ?<label className="w-registry-list">
+            {registryList.length ? <label className="w-registry-list">
               <strong>--registry=</strong>
               <select className="form-control" value={registry} onChange={this.onRegistry}>
                 <option value="">None</option>
@@ -622,7 +622,13 @@ var Home = React.createClass({
                 }
                 {epm ? <option value="+Add">+Add</option> : null}
               </select>
-            </label> : null}
+            </label> : (epm ? <label className="w-registry-list">
+              <strong>--registry=</strong>
+              <select className="form-control" value={registry} onChange={this.onRegistry}>
+                <option value="">None</option>
+                <option value="+Add">+Add</option>
+              </select>
+            </label> : null)}
             <button
               type="button"
               className="btn btn-primary w-copy-text-with-tips"

@@ -1,7 +1,8 @@
-var Zip = require('node-native-zip2');
+var Zip = require('adm-zip');
 var Buffer = require('safe-buffer').Buffer;
 var qs = require('querystring');
 var ca = require('../../../lib/https/ca');
+var sendError = require('./util').sendError;
 
 var URL_RE = /^(?:([\w.-]+:)?\/\/)?([\w.=&!~*'()%-]+)/i;
 var ILLEGAL_CHARS_RE = /[=&!~*'()%]/;
@@ -28,7 +29,11 @@ module.exports = function(req, res) {
   var zip = new Zip();
   domain = isStr ? domain : 'root';
   var dir = domain + '/' + domain;
-  zip.add(dir + '.crt', Buffer.from(cert.cert));
-  zip.add(dir + '.key', Buffer(cert.key));
-  res.attachment(domain + '.zip').send(zip.toBuffer());
+  zip.addFile(dir + '.crt', Buffer.from(cert.cert));
+  zip.addFile(dir + '.key', Buffer(cert.key));
+  zip.toBuffer(function(body) {
+    res.attachment(domain + '.zip').send(body);
+  }, function(err) {
+    sendError(res, err);
+  });
 };

@@ -6,6 +6,7 @@ module.exports = function(req, res) {
   res.json({
     pid: pid,
     storage: config.storage || '',
+    client: config.client,
     name: config.name,
     version: config.version
   });

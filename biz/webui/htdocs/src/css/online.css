@@ -66,11 +66,11 @@
   font-weight: normal;
 }
 
-.w-dark-mode-option {
+.w-online-option {
   font-weight: normal!important;
-  margin-right: 30px;
+  display: block;
 }
 
-.w-dark-mode-option input, .w-dark-mode-option span {
+.w-online-option input, .w-online-option span {
   vertical-align: middle;
 }

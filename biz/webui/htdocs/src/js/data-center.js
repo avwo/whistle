@@ -537,7 +537,8 @@ $.extend(
       addRulesAndValues: {
         url: 'cgi-bin/add-rules-values',
         contentType: 'application/json'
-      }
+      },
+      setIPv6Only: 'cgi-bin/set-ipv6-only'
     },
     POST_CONF
   )
