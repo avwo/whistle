@@ -550,7 +550,8 @@ $.extend(
       donotShowAgain: 'cgi-bin/do-not-show-again',
       checkUpdate: 'cgi-bin/check-update',
       importRemote: 'cgi-bin/import-remote',
-      getHistory: 'cgi-bin/history'
+      getHistory: 'cgi-bin/history',
+      getCookies: 'cgi-bin/sessions/cookies'
     },
     GET_CONF
   )

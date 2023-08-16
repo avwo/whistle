@@ -256,7 +256,7 @@ var Home = React.createClass({
     var registryList = null;
     var registryCmd = registry ? ' --registry=' + registry : '';
     if (dataCenter.enablePluginMgr) {
-      const cmd = plugin.moduleName;
+      var cmd = plugin.moduleName;
       win.confirm('Are you sure to uninstall plugin \'' + cmd + '\'.', function(ok) {
         if (ok) {
           dataCenter.plugins.uninstallPlugins({ cmd: cmd }, handlePlugins);

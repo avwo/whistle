@@ -16,11 +16,11 @@
 }
 
 .w-composer-url .w-filter-hint {
-  width: calc(100% - 168px);
+  width: calc(100% - 210px);
   z-index: 1;
   top: 30px;
   bottom: unset;
-  left: 125px;
+  left: 105px;
   overflow-x: hidden;
   overflow-y: auto;
 }
@@ -48,28 +48,79 @@
   padding: 0 5px;
   display: block;
   border: 1px solid #ccc;
-  margin-left: 2px;
+  border-left: none;
+  border-right: none;
+  background-color: #f6f6f6;
 }
 .w-composer-history-btn {
   height: 24px;
-  width: 18px;
+  width: 24px;
   text-align: center;
+  margin-left: 3px;
   line-height: 24px;
   cursor: pointer;
 }
+.w-status-show {
+  background: #f0f0f0;
+  border-radius: 3px;
+}
 .w-composer-method {
   display: block;
-  width: 100px;
-  margin: 0 2px;
+  width: 85px;
+  margin: 0 0 0 2px;
   padding: 0;
-  font-size: 13px;
+  font-size: 12px;
+  font-weight: bold;
   border-radius: 0;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+  background-color: #f6f6f6;
 }
-.w-composer-execute {
+.w-composer-execute, .w-composer-params {
   padding: 0 8px;
   line-height: 24px;
   margin-left: 4px;
 }
+
+.w-composer-params {
+  border-radius: 0;
+  margin-left: 0;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+  background-color: #f6f6f6;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.w-composer-params-editor {
+  position: absolute;
+  width: 500px;
+  max-width: calc(100% - 40px);
+  height: 240px;
+  z-index: 10;
+  top: 30px;
+  right: 40px;
+}
+
+.w-composer-params-editor .w-filter-bar {
+  border-bottom: 1px solid #ddd;
+}
+
+.w-composer-params-editor .w-filter-bar a {
+  left: unset;
+  right: 5px;
+  top: 1px;
+}
+
+.w-composer-rules-label {
+  padding-right: 12px;
+  border-right: 1px solid #ddd;
+}
+
+.w-composer-params-editor .w-filter-bar {
+  text-align: left;
+}
+
 .w-composer-tabs {
   position: relative;
   padding: 0 !important;
@@ -80,6 +131,9 @@
   right: 10px;
   font-size: 13px;
   line-height: 14px;
+}
+.w-composer-add-header {
+  right: 66px!important;
 }
 .w-composer-tabs button {
   line-height: 16px;
@@ -102,6 +156,10 @@
 }
 .w-detail-composer .w-properties pre {
   max-height: 90px;
+}
+
+.w-composer-res {
+  position: relative;
 }
 
 .w-composer-res-forbidden th,
@@ -131,12 +189,13 @@
   border-radius: 3px;
   position: absolute;
   top: 1px;
-  right: 10px;
+  right: 5px;
   overflow: hidden;
 }
 .w-composer-body .w-composer-bar .btn {
   position: static;
-  margin-right: 10px;
+  margin-right: 5px;
+  margin-bottom: 1px;
 }
 .w-composer-body .w-composer-bar {
   text-align: right;
@@ -156,6 +215,14 @@
 .w-composer-rules .w-detail-inspectors-title input {
   margin: 0 5px 0 0;
   padding: 0;
+}
+
+.w-composer-res {
+  position: relative;
+}
+textarea.w-composer-rules {
+  margin-bottom: 2px;
+  background-color: #f9f9f9;
 }
 .w-composer-bar label:first-child {
   font-weight: bold;
@@ -258,13 +325,30 @@
 .w-history-list div:hover {
   color: #337ab7;
 }
-
-.w-composer-history-operation .btn {
+.w-composer-cookies-dialog table th {
+  padding-left: 8px;
+}
+.w-composer-cookie-order {
+  width: 50px;
+}
+.w-composer-cookie-value {
+  white-space: break-spaces;
+  word-break: break-all;
+}
+.w-composer-cookie-operation {
+  width: 160px;
+}
+.w-composer-history-operation .btn, .w-composer-cookie-operation a {
   padding: 2px 10px !important;
-  margin-right: 20px;
+  margin-right: 10px;
+  display: inline-block;
 }
 .w-composer-history-dialog .modal-dialog {
   width: 1060px;
+}
+
+.w-composer-cookies-dialog .modal-dialog {
+  width: 720px;
 }
 
 .w-composer-bar .w-composer-hex-text {
@@ -300,9 +384,7 @@
   background-color: lightyellow;
 }
 
-.w-composer-use-h2,
-.w-composer-enable-rules,
-.w-composer-enable-body {
+.w-composer-use-h2, .w-composer-enable-body {
   position: absolute;
   top: 0;
 }
@@ -333,12 +415,8 @@
   font-size: 13px;
 }
 
-.w-composer-enable-rules {
-  right: 80px;
-}
-
 .w-composer-enable-body {
-  right: 146px;
+  right: 80px;
 }
 
 .w-composer-tabs input {
@@ -404,8 +482,116 @@
 }
 
 .w-history-title {
-  font-weight: bold;
-  margin-top: 3px;
-  margin-left: 5px;
+  background: #eee;
+  padding: 8px 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: sticky;
+  top: 0;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.w-history-item, .w-history-title {
+  border-bottom: 1px solid #ddd;
+}
+
+.w-history-item {
+  padding: 6px 5px 8px 15px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: default;
+  white-space: nowrap;
+}
+
+.w-history-item p {
+  margin: 0;
+  padding: 2px 0 0;
+}
+
+.w-history-item i {
   display: inline-block;
+  font-style: normal;
+  padding: 0 5px;
+  line-height: 16px;
+  margin-right: 5px;
+  font-size: 10px;
+  border-radius: 3px;
+  font-weight: normal;
+  line-height: 14px;
+}
+
+.w-history-item i:last-child {
+  margin-right: 0;
+}
+
+.w-history-item:hover,
+.w-history-item.w-selected {
+  background: rgba(0,0,0,.1);
+}
+
+.w-req-protocol-tag {
+  border: 1px solid #46b8da;
+}
+
+.w-req-method-tag {
+  border: 1px solid #4cae4c;
+}
+
+.w-req-type-tag {
+  border: 1px solid #eea236;
+}
+
+.w-composer-history-data {
+  position: absolute;
+  top: 30px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9;
+  border-top: 1px solid #ddd;
+}
+
+.w-composer-history-data .w-close {
+  position: absolute;
+  right: 10px;
+  top: 5px;
+  cursor: pointer;
+  z-index: 1;
+  font-size: 20px;
+}
+
+.w-composer-history-list {
+  border-right: 1px solid #ddd;
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: 100%;
+  background: #fafafa;
+  position: relative;
+  font-size: 12px;
+}
+
+.w-composer-history-ctn pre {
+  display: block;
+  height: calc(100% - 47px);
+  padding: 0 5px;
+  overflow: auto;
+  white-space: pre;
+  background-color: lightyellow;
+}
+
+.w-composer-history-footer {
+  line-height: 33px;
+  white-space: nowrap;
+  overflow: hidden;
+  border-bottom: 1px solid #ddd;
+  padding: 5px 0 7px;
+  position: relative;
+}
+
+.w-composer-history-footer .btn {
+  height: 26px;
+  line-height: 24px;
+  padding: 0 8px;
+  margin-left: 10px;
 }

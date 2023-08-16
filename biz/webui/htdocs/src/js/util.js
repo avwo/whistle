@@ -420,6 +420,9 @@ function getHost(url) {
   start = start == -1 ? 0 : start + 3;
   var end = url.indexOf('/', start);
   url = end == -1 ? url.substring(start) : url.substring(start, end);
+  if (url && (url.indexOf('?') !== -1 || url.indexOf('#') !== -1)) {
+    url = url.replace(/[?#].*$/, '');
+  }
   return url;
 }
 
@@ -573,9 +576,9 @@ function getContentEncoding(headers) {
   return encoding === 'gzip' || encoding === 'deflate' ? encoding : null;
 }
 
-exports.getOriginalReqHeaders = function (item) {
+exports.getOriginalReqHeaders = function (item, rulesHeaders) {
   var req = item.req;
-  var headers = $.extend({}, req.headers, item.rulesHeaders, true);
+  var headers = $.extend({}, req.headers, rulesHeaders || item.rulesHeaders, true);
   if (item.clientId && !headers['x-whistle-client-id']) {
     headers['x-whistle-client-id'] = item.clientId;
   }
@@ -2448,3 +2451,41 @@ exports.filterJsonText = function(str, keyword, filterType) {
   }
   return obj;
 };
+
+
+var URL_RE = /^(?:([a-z0-9.+-]+:)?\/\/)?([^/?#]+)(\/[^?#]*)?(\?[^#]*)?(#.*)?$/i;
+var HOST_RE = /^(.+)(?::(\d*))$/;
+var BRACKET_RE = /^\[|\]$/g;
+
+exports.parseUrl = function (url) {
+  if (!URL_RE.test(url)) {
+    return;
+  }
+  var protocol = RegExp.$1 || 'http:';
+  var host = RegExp.$2;
+  var pathname = RegExp.$3 || '/';
+  var search = RegExp.$4;
+  var hash = RegExp.$5 || null;
+  var port = null;
+  var hostname = host;
+  if (HOST_RE.test(host)) {
+    hostname = RegExp.$1;
+    port = RegExp.$2;
+  }
+
+  return {
+    protocol: protocol,
+    slashes: true,
+    auth: null,
+    host: host,
+    port: port,
+    hostname: hostname.replace(BRACKET_RE, ''),
+    hash: hash,
+    search: search || null,
+    query: search ? search.substring(1) : null,
+    pathname: pathname,
+    path: pathname + search,
+    href: url
+  };
+};
+

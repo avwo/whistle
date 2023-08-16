@@ -9,10 +9,11 @@ module.exports = function(req, res) {
   if (rulesData) {
     if (rulesData.name === 'Default') {
       rules.setDefault(rulesData.value, clientId);
+      rules.enableDefault();
     } else {
       rules.add(rulesData.name, rulesData.value, clientId);
+      rules.select(rulesData.name);
     }
-    rules.select(rulesData.name);
   }
   if (valuesData) {
     values.add(valuesData.name, valuesData.value, clientId);

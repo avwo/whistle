@@ -10,6 +10,15 @@
   display: none;
 }
 
+.w-filter-hint, .w-layer {
+  background-color: #fff;
+  border-radius: 3px;
+  -webkit-box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12),
+    0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12),
+    0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
+}
+
 .w-filter-hint {
   margin: 0 3px;
   bottom: 35px;
@@ -20,12 +29,6 @@
   position: absolute;
   overflow: hidden;
   font-size: 14px;
-  background-color: #fff;
-  border-radius: 3px;
-  -webkit-box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12),
-    0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
-  box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12),
-    0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
 }
 
 .w-filter-hint ul,
@@ -52,7 +55,7 @@
 }
 
 .w-filter-bar span {
-  line-height: 20px;
+  line-height: 18px;
   width: 28px;
   text-align: center;
   display: inline-block;

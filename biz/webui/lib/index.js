@@ -17,6 +17,7 @@ var setProxy = require('./proxy');
 var rulesUtil = require('../../../lib/rules/util');
 var getRootCAFile = require('../../../lib/https/ca').getRootCAFile;
 var config = require('../../../lib/config');
+var sendError = require('../cgi-bin/util').sendError;
 var parseAuth = require('../../../lib/util/common').parseAuth;
 var getWorker = require('../../../lib/plugins/util').getWorker;
 var loadAuthPlugins = require('../../../lib/plugins').loadAuthPlugins;
@@ -278,8 +279,7 @@ function cgiHandler(req, res) {
     try {
       require(filepath)(req, res);
     } catch(err) {
-      var msg = config.debugMode ? '<pre>' + util.encodeHtml(util.getErrorStack(err)) + '</pre>' : 'Internal Server Error';
-      res.status(500).send(msg);
+      sendError(res, err);
     }
   };
   if (require.cache[filepath]) {
@@ -466,9 +466,27 @@ app.use('/preview.html', function(req, res, next) {
     res.set('content-type', 'text/html;charset=' + charset);
   }
 });
+
+var uiExt = config.uiExt || {};
+var htmlPrepend = uiExt.htmlPrepend;
+var htmlAppend = uiExt.htmlAppend;
+var jsPrepend = uiExt.jsPrepend;
+var jsAppend = uiExt.jsAppend;
+
+function concat(a, b, c) {
+  if (!a && !c) {
+    return b;
+  }
+  var list = [];
+  a && list.push(a);
+  list.push(b);
+  c && list.push(c);
+  return Buffer.concat(list);
+}
+
 if (!config.debugMode) {
-  var indexHtml = fs.readFileSync(htdocs.getHtmlFile('index.html'));
-  var indexJs = fs.readFileSync(htdocs.getJsFile('index.js'));
+  var indexHtml = concat(htmlPrepend, fs.readFileSync(htdocs.getHtmlFile('index.html')), htmlAppend);
+  var indexJs = concat(jsPrepend, fs.readFileSync(htdocs.getJsFile('index.js')), jsAppend);
   var jsETag = shasum(indexJs);
   var gzipIndexJs = zlib.gzipSync(indexJs);
   app.use('/js/index.js', function(req, res) {
@@ -497,6 +515,37 @@ if (!config.debugMode) {
   };
   app.get('/', sendIndex);
   app.get('/index.html', sendIndex);
+} else {
+  if (htmlPrepend || htmlAppend) {
+    var htmlFile = htdocs.getHtmlFile('index.html');
+    var injectHtml = function(req, res) {
+      fs.readFile(htmlFile, function(err, ctn) {
+        if (err) {
+          return sendError(res, err);
+        }
+        res.writeHead(200, {
+          'Content-Type': 'text/html; charset=utf-8'
+        });
+        res.end(concat(htmlPrepend, ctn, htmlAppend));
+      });
+    };
+    app.get('/', injectHtml);
+    app.get('/index.html', injectHtml);
+  }
+  if (jsPrepend || jsAppend) {
+    var jsFile = htdocs.getHtmlFile('js/index.js');
+    app.get('/js/index.js', function(req, res) {
+      fs.readFile(jsFile, function(err, ctn) {
+        if (err) {
+          return sendError(res, err);
+        }
+        res.writeHead(200, {
+          'Content-Type': 'application/javascript; charset=utf-8'
+        });
+        res.end(concat(jsPrepend, ctn, jsAppend));
+      });
+    });
+  }
 }
 
 app.get('/', function(req, res) {

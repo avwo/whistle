@@ -57,7 +57,7 @@ function createDialog() {
     ).appendTo(document.body);
     var box = dialog.find('.w-dark-mode-option input');
     box.on('change', function(e) {
-      const checked = e.target.checked;
+      var checked = e.target.checked;
       setDiableDarkMode(checked);
       storage.set('disabledDarkMode', checked ? 1 : '');
     });

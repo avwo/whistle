@@ -155,7 +155,7 @@ exports.sendGzip = function(req, res, data) {
       try {
         res.json(data);
       } catch (e) {
-        sendError(e);
+        sendError(res, e);
       }
       return;
     }

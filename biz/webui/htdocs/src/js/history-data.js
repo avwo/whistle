@@ -1,110 +1,109 @@
 require('./base-css.js');
 require('../css/composer.css');
 var React = require('react');
-var Dialog = require('./dialog');
-var util = require('./util');
+var ReactDOM = require('react-dom');
+var Divider = require('./divider');
 
 var HistoryData = React.createClass({
-  show: function () {
-    this.refs.historyDialog.show();
-    this._hideDialog = false;
+  getInitialState: function() {
+    return {};
+  },
+  shouldComponentUpdate: function (nextProps) {
+    return this.props.show || nextProps.show !== this.props.show;
+  },
+  getItem: function () {
+    var list = this.props.data;
+    for (var i = 0, len = list.length; i < len; i++) {
+      var item = list[i];
+      if (item.selected) {
+        return item;
+      }
+    }
+  },
+  scrollToTop: function() {
+    ReactDOM.findDOMNode(this.refs.list).scrollTop = 0;
+  },
+  onEdit: function () {
+    this.props.onEdit(this.getItem());
+  },
+  onReplay: function () {
+    this.props.onReplay(this.getItem());
+    this.scrollToTop();
+  },
+  onReplayTimes: function() {
+    this.props.onReplay(this.getItem(), true);
+    this.scrollToTop();
+  },
+  handleClick: function(item) {
+    this.props.data.forEach(function(item) {
+      item.selected = false;
+    });
+    item.selected = true;
     this.setState({});
-  },
-  hide: function () {
-    this.refs.historyDialog.hide();
-    this._hideDialog = true;
-  },
-  shouldComponentUpdate: function () {
-    return this._hideDialog === false;
-  },
-  getItem: function (e) {
-    var i = e.target.getAttribute('data-index');
-    return this.props.data[i];
-  },
-  onCompose: function (e) {
-    this.props.onCompose(this.getItem(e), true);
-  },
-  onReplay: function (e) {
-    this.props.onReplay(this.getItem(e), true);
   },
   render: function () {
     var self = this;
-    var data = self.props.data;
+    var props = self.props;
+    var show = props.show;
+    var data = props.data || [];
+    var groupList = data._groupList || [];
+    var selectedItem;
     return (
-      <Dialog ref="historyDialog" wstyle="w-composer-history-dialog">
-        <div className="modal-body w-composer-history">
-          <button type="button" className="close" onClick={self.hide}>
-            <span aria-hidden="true">&times;</span>
-          </button>
-          <table className="table">
-            <thead>
-              <th className="w-composer-history-order">#</th>
-              <th className="w-composer-history-date">Date</th>
-              <th className="w-composer-history-method">Method</th>
-              <th className="w-composer-history-url">URL</th>
-              <th className="w-composer-history-body">Body</th>
-              <th className="w-composer-history-operation">Operation</th>
-            </thead>
-            <tbody>
-              {data.map(function (item, i) {
-                var date = (item.dateStr =
-                  item.dateStr || util.toLocaleString(new Date(item.date)));
-                if (item.bodyStr == null) {
-                  item.bodyStr =
-                    item.body && typeof item.body === 'string'
-                      ? item.body.substring(0, 100)
-                      : '';
-                }
-                return (
-                  <tr>
-                    <th className="w-composer-history-order">{i + 1}</th>
-                    <td className="w-composer-history-date" title={date}>
-                      {date}
-                    </td>
-                    <td
-                      className="w-composer-history-method"
-                      title={item.method}
-                    >
-                      {item.method}
-                    </td>
-                    <td className="w-composer-history-url" title={item.url}>
-                      <strong>{item.useH2 ? '[H2]' : undefined}</strong>
-                      {item.url}
-                    </td>
-                    <td className="w-composer-history-body" title={item.body}>
-                      {item.bodyStr}
-                    </td>
-                    <td className="w-composer-history-operation">
-                      <button
-                        title="Replay"
-                        data-index={i}
-                        onClick={self.onReplay}
-                        className="btn btn-primary"
-                      >
-                        <span
-                          data-index={i}
-                          className="glyphicon glyphicon-repeat"
-                        ></span>
-                      </button>
-                      <button
-                        title="Edit"
-                        data-index={i}
-                        onClick={self.onCompose}
-                        className="btn btn-default"
-                      >
-                        <span
-                          data-index={i}
-                          className="glyphicon glyphicon-edit"
-                        ></span>
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      </Dialog>
+      <div ref="historyDialog" className={'w-layer box w-composer-history-data' + (show ? '' : ' hide')}>
+        {data.length ?
+        <Divider leftWidth="170">
+          <div ref="list" className="w-composer-history-list">
+            {groupList.map(function(item) {
+              if (item.title) {
+                return <div className="w-history-title" title={item.title}>{item.title}</div>;
+              }
+              if (item.selected) {
+                selectedItem = item;
+              }
+              return (
+                <div className={'w-history-item' + (item.selected ? ' w-selected' : '')}
+                  title={item.url} onClick={() => self.handleClick(item)}>
+                  {item.path}
+                  <p>
+                    <i className="w-req-protocol-tag">{item.protocol}</i>
+                    <i className="w-req-method-tag">{item.method}</i>
+                    {item.body ? <i className="w-req-type-tag">Body</i> : null}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+          <div className="fill w-composer-history-ctn">
+            {selectedItem ? <div className="w-composer-history-footer">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={this.onEdit}
+                >
+                  Edit
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-warning"
+                  onClick={this.onReplay}
+                >
+                  Replay
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-default"
+                  onClick={this.onReplayTimes}
+                >
+                  Replay Times
+                </button>
+                <span onClick={props.onClose} aria-hidden="true" className="w-close">&times;</span>
+              </div> : null}
+            {selectedItem ? <pre>{selectedItem.raw}</pre> : null}
+          </div>
+        </Divider> : <div className="w-empty-data">
+            Empty
+          </div>}
+      </div>
     );
   }
 });

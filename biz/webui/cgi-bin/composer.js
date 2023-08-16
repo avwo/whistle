@@ -11,6 +11,7 @@ var zlib = require('../../../lib/util/zlib');
 var properties = require('../../../lib/rules/util').properties;
 var getSender = require('ws-parser').getSender;
 var hparser = require('hparser');
+var sendGzip = require('./util').sendGzip;
 
 var formatHeaders = hparser.formatHeaders;
 var getRawHeaders = hparser.getRawHeaders;
@@ -337,7 +338,7 @@ module.exports = function(req, res) {
         }});
         return;
       }
-      res.json({ec: 0, em: 'success', res: data || ''});
+      sendGzip(req, res, {ec: 0, em: 'success', res: data || ''});
     } : null;
     if (err) {
       return handleResponse && handleResponse(err);
