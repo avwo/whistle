@@ -502,6 +502,7 @@ textarea.w-composer-rules {
   text-overflow: ellipsis;
   cursor: default;
   white-space: nowrap;
+  background-color: #fff;
 }
 
 .w-history-item p {
