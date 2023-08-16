@@ -130,6 +130,13 @@ export interface WhistleOptions {
   customHandler?: (req: IncomingMessage, res: ServerResponse, next?: Function) => void;
   pluginHost?: string;
   copy?: string;
+  uiExt?: {
+    required?: boolean;
+    htmlPrepend?: string;
+    htmlAppend?: string;
+    jsPrepend?: string;
+    jsAppend?: string;
+  };
   [propName: string]: any;
 }
 
