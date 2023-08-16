@@ -1,4 +1,19 @@
 
+# v2.9.57
+1. feat: Composer 添加修改请求参数按钮 `Params`
+2. feat: Composer 面板优化
+3. feat: Composer 添加 Cookies 按钮方便获取当前抓包记录里面对应域名的 Cookie
+4. feat: 支持通过启动参数 `uiExt` 往页面注入 js 或 html （把 Whistle 作为第三方 npm 包使用时可用）
+	``` js
+	uiExt?: {
+    required?: boolean;
+    htmlPrepend?: string;
+    htmlAppend?: string;
+    jsPrepend?: string;
+    jsAppend?: string;
+  };
+	```
+
 # v2.9.56
 1. feat: 支持通过 `Online / IPv6-only network` 强制 dns 获取 ipv6（命令行版本还可以通过 `-M ipv6Only` 开启）
 2. feat: `w2 add` 命令支持 `type: module`
