@@ -279,6 +279,9 @@
   }
 
   function stringifyObj(obj) {
+    if (typeof obj === 'string') {
+      return obj;
+    }
     try {
       return JSON.stringify(obj);
     } catch(e) {}
@@ -392,7 +395,7 @@
     window.addEventListener('unhandledrejection', function(e) {
       var reason = 'UnhandledRejection';
       if (e) {
-         e = e.reason || stringifyObj(e) || String(e);
+         e = stringifyObj(e.reason || e) || String(e);
          reason += (/^[\w.-]*:/.test(e) ? ' ' : ': ') + e;
       }
       wConsole.error(reason);
