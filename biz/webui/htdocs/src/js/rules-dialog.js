@@ -8,13 +8,22 @@ var events = require('./events');
 var util = require('./util');
 var win = require('./win');
 
+var TEMP_FILE_RE = /\btemp\/current_file_hash_placeholder\b/;
+var TEMP_FILE_RE_G = /\btemp\/current_file_hash_placeholder\b/g;
 var LINE__RE = /^(?:[^\n\r\S]*(```+)[^\n\r\S]*(\S+)[^\n\r\S]*[\r\n]([\s\S]+?)[\r\n][^\n\r\S]*\1\s*|[^\r\n]*)$/gm;
 
 function getName(name) {
   name = name || storage.get('previewRulesName');
+  var rulesModal = dataCenter.getRulesModal();
   if (name) {
-    var rulesModal = dataCenter.getRulesModal();
     if (rulesModal.getItem(name)) {
+      return name;
+    }
+  }
+  const names = rulesModal.getSelectedNames();
+  for (var i = 0, len = names.length; i < len; i++) {
+    name = names[i];
+    if (name !== 'Default') {
       return name;
     }
   }
@@ -82,43 +91,124 @@ var RulesDialog = React.createClass({
       }
     });
   },
+  createTempFile: function(cb) {
+    var self = this;
+    var state = self.state;
+    var values = self._values;
+    var rulesValue = state.rulesValue;
+    if (!values || !values.isFile || !TEMP_FILE_RE.test(rulesValue)) {
+      return self.saveValue(cb);
+    }
+    dataCenter.createTempFile(JSON.stringify({
+      clientId: dataCenter.getPageId(),
+      value: values.value,
+      base64: values.base64
+    }), function (result, xhr) {
+      if (result && result.ec === 0) {
+        cb(result.filepath);
+      } else {
+        util.showSystemError(xhr);
+      }
+    });
+  },
+  saveValue: function(cb) {
+    var self = this;
+    var values = self._values;
+    var name = values && values.name;
+    var value = values && values.value;
+    if (!name || values.isFile || !util.isString(name) || !util.isString(value)) {
+      return cb();
+    }
+    var next = function(sure) {
+      if (sure) {
+        dataCenter.values.add({
+          name: name,
+          value: value
+        }, function (data, xhr) {
+          if (data && data.ec === 0) {
+            events.trigger('addNewValuesFile', {
+              filename: name,
+              data: value
+            });
+            cb();
+          } else {
+            util.showSystemError(xhr);
+          }
+        });
+      }
+    };
+    var item = dataCenter.getValuesModal().getItem(name);
+    if (item && item.value !== value) {
+      return win.confirm('The name `' + name + '`  already exists, whether to overwrite it?', next);
+    }
+    next(true);
+  },
   save: function() {
     var self = this;
     var state = self.state;
     var rulesValue = state.rulesValue;
     var filename = state.rulesName;
-    var values = self._values;
-    dataCenter.addRulesAndValues(JSON.stringify({
-      clientId: dataCenter.getPageId(),
-      rules: {
-        name: filename,
-        value: rulesValue
-      },
-      values: values
-    }), function (result, xhr) {
-      if (result && result.ec === 0) {
-        events.trigger('addNewRulesFile', {
-          filename: filename,
-          data: rulesValue
-        });
-        if (values) {
-          events.trigger('addNewValuesFile', {
-            filename: values.name,
-            data: values.value
+    self.createTempFile(function(filepath) {
+      var values;
+      if (filepath) {
+        values = null;
+        rulesValue = rulesValue.replace(TEMP_FILE_RE_G, filepath);
+        var curRules = (self._rules || '').replace(TEMP_FILE_RE_G, filepath);
+        if (curRules) {
+          var hasRule;
+          rulesValue = rulesValue.replace(LINE__RE, function(line, _, key) {
+            if (key) {
+              return line;
+            }
+            if (line === curRules || line.trim().split(/\s+/).join(' ') === curRules) {
+              hasRule = true;
+              return '';
+            }
+            return line;
           });
+          if (hasRule) {
+            if (dataCenter.backRulesFirst) {
+              rulesValue = rulesValue.replace(/\s+$/, '') + '\n\n' + curRules + '\n';
+            } else {
+              rulesValue = curRules + '\n\n' + rulesValue.replace(/^\s+/, '');
+            }
+          }
         }
-        self.refs.rulesDialog.hide();
-        events.trigger('hideMockDialog');
       } else {
-        util.showSystemError(xhr);
+        values = self._values;
       }
+      dataCenter.addRulesAndValues(JSON.stringify({
+        clientId: dataCenter.getPageId(),
+        rules: {
+          name: filename,
+          value: rulesValue
+        },
+        values: values
+      }), function (result, xhr) {
+        if (result && result.ec === 0) {
+          events.trigger('addNewRulesFile', {
+            filename: filename,
+            data: rulesValue
+          });
+          if (values) {
+            events.trigger('addNewValuesFile', {
+              filename: values.name,
+              data: values.value
+            });
+          }
+          self.refs.rulesDialog.hide();
+          events.trigger('hideMockDialog');
+        } else {
+          util.showSystemError(xhr);
+        }
+      });
     });
   },
   setValue: function(name, immediate) {
     if (name) {
       storage.set('previewRulesName', name);
     } else {
-      name = storage.get('previewRulesName') || 'Default';
+      name = getName();
     }
     var rulesModal = dataCenter.getRulesModal();
     var item = rulesModal.getItem(name);
@@ -153,7 +243,7 @@ var RulesDialog = React.createClass({
     if (immediate) {
       setTimeout(handleEnd, 100);
     } else {
-      setTimeout(handleEnd, 300);
+      setTimeout(handleEnd, 360);
     }
     self.setState({ rulesName: getName(name) });
   },

@@ -538,7 +538,11 @@ $.extend(
         url: 'cgi-bin/add-rules-values',
         contentType: 'application/json'
       },
-      setIPv6Only: 'cgi-bin/set-ipv6-only'
+      setIPv6Only: 'cgi-bin/set-ipv6-only',
+      createTempFile: {
+        url: 'cgi-bin/sessions/create-temp-file',
+        contentType: 'application/json'
+      }
     },
     POST_CONF
   )
@@ -1531,6 +1535,7 @@ function getMenus(menuName) {
           menu.mtime = plugin.mtime;
           menu.priority = plugin.priority;
           menu._key = name;
+          menu._urlPattern = util.toRegExp(menu.urlPattern);
           list.push(menu);
         });
       }

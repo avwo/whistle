@@ -2,6 +2,7 @@ require('../css/account.css');
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Dialog = require('./dialog');
+var events = require('./events');
 
 var AccountDialog = React.createClass({
   show: function(url) {
@@ -16,10 +17,14 @@ var AccountDialog = React.createClass({
   shouldComponentUpdate: function() {
     return false;
   },
+  openInNewWin: function() {
+    events.trigger('openInNewWin');
+  },
   render: function() {
     var className = this.props.className;
     return (
       <Dialog ref="dialog" wstyle={'w-account-dialog' + (className ? ' ' + className : '')}>
+        <a className="w-open-win-btn" onClick={this.openInNewWin}>Open In New Window</a>
         <button
           type="button"
           className="close"

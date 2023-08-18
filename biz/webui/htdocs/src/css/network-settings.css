@@ -99,8 +99,10 @@
 }
 .w-network-settings-own {
   width: auto !important;
-  margin: 15px 0 0;
+  margin: 10px 0 0;
   white-space: nowrap;
+  display: block!important;
+  text-align: left!important;
 }
 .w-network-settings-own select {
   margin-left: 20px;

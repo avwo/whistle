@@ -15,7 +15,6 @@ var events = require('./events');
 var iframes = require('./iframes');
 var dataCenter = require('./data-center');
 var storage = require('./storage');
-var MockDialog = require('./mock-dialog');
 
 var TREE_ROW_HEIGHT = 24;
 var ROW_STYLE = { outline: 'none' };
@@ -479,11 +478,6 @@ var ReqData = React.createClass({
   componentDidMount: function () {
     var self = this;
     var timer;
-    events.on('showMockDialog', function(_, data) {
-      if (data) {
-        self.refs.mockDialog.show(data.item, data.type);
-      }
-    });
     events.on('hashFilterChange', function () {
       self.setState({});
     });
@@ -882,7 +876,7 @@ var ReqData = React.createClass({
       self.collapseAll(treeId);
       break;
     case 'Mock':
-      self.refs.mockDialog.show(item);
+      events.trigger('showMockDialog', {item: item});
       break;
     }
   },
@@ -1087,7 +1081,8 @@ var ReqData = React.createClass({
       dataCenter.getNetworkMenus(),
       treeItem.hide ? 8 : 9,
       disabled,
-      treeId
+      treeId,
+      item && item.url
     );
     var height = (treeItem.hide ? 310 : 340) - (pluginItem.hide ? 30 : 0) - (mockItem.hide ? 30 : 0);
     pluginItem.maxHeight = height;
@@ -1409,7 +1404,6 @@ var ReqData = React.createClass({
         <ContextMenu onClick={this.onClickContextMenu} ref="contextMenu" />
         <ContextMenu onClick={this.onClickHeadMenu} ref="headContextMenu" />
         <QRCodeDialog ref="qrcodeDialog" />
-        <MockDialog ref="mockDialog" />
       </div>
     );
   }

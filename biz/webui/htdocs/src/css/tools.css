@@ -231,6 +231,10 @@
   width: 1000px;
 }
 
+.w-mock-dialog .modal-dialog select {
+  background-color: #f6f6f6;
+}
+
 .w-rules-dialog .modal-dialog {
   width: 1020px;
 }
@@ -321,7 +325,14 @@
 }
 
 .w-url-pattern {
-  width: 840px;
+  width: 778px;
+  border-top-right-radius: 0!important;
+  border-bottom-right-radius: 0!important;
+}
+
+.w-mock-row .w-composer-params {
+  line-height: 30px;
+  border-left: none;
 }
 
 .w-mock-protocol {
@@ -338,11 +349,17 @@
 .w-mock-key-name {
   width: 375px;
   margin: 0 10px 0 0;
+  margin-left: 10px;
+  font-weight: bold;
 }
 
 .w-mock-value-type {
   width: 170px;
   padding-right: 10px;
+}
+
+.w-mock-file .w-mock-value-type {
+  width: 555px;
 }
 
 .w-mock-dialog .modal-footer select {
@@ -418,7 +435,7 @@
   font-size: 13px;
 }
 
-.w-mock-dialog .glyphicon-trash {
+.w-mock-dialog .w-mock-row .glyphicon-trash {
   position: absolute;
   display: inline-block;
   width: 16px;
@@ -426,4 +443,15 @@
   right: 18px;
   color: #747474;
   cursor: pointer;
+}
+
+.w-mock-dialog .w-composer-params-editor {
+  top: 60px;
+  right: 30px;
+  width: 840px;
+}
+
+.w-composer-params-editor .w-params-clear-btn .glyphicon-trash {
+  width: 16px;
+  margin-right: 0;
 }

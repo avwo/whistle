@@ -29,6 +29,25 @@
   z-index: 1;
 }
 
+.w-account-dialog .w-open-win-btn {
+  position: absolute;
+  top: -23px;
+  right: 15px;
+  z-index: 1;
+  font-size: 12px;
+  padding: 3px 10px;
+  display: inline-block;
+  background: #eee;
+  color: #747474;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  text-decoration: none;
+}
+
+.w-account-dialog .w-open-win-btn:hover {
+  color: #333373;
+}
+
 .w-account-dialog .modal-content, .w-custom-dialog .modal-content {
   border-radius: 5px;
   height: 100%;

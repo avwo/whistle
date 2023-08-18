@@ -77,6 +77,12 @@ var PropsEditor = React.createClass({
     this.setState({ data: '' });
     this.showDialog();
   },
+  clear: function() {
+    if (!Object.keys(this.state.modal || '').length) {
+      return;
+    }
+    this.setState({ modal: {} }, this.props.onChange);
+  },
   onEdit: function (e) {
     if (this.props.disabled) {
       return;
@@ -180,7 +186,7 @@ var PropsEditor = React.createClass({
       return;
     }
     var name = e.target.getAttribute('data-name');
-    var opName = self.props.isHeader ? 'header' : 'field';
+    var opName = self.props.isHeader ? 'header' : 'param';
     var item = self.state.modal[name];
     win.confirm(
       'Are you sure to delete this ' + opName + ' \'' + item.name + '\'.',

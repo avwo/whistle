@@ -45,6 +45,9 @@ textarea {resize: none; display: block; padding: 6px; font-size: 12px; width: 10
 		};
 		init && init(window);
 	}
+	window.getEditorValue = function() {
+		return editor.value;
+	};
 </script>
 </body>
 </html>

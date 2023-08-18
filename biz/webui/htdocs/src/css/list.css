@@ -30,6 +30,10 @@
   color: #5bbd72;
   display: none;
 }
+.w-values-list a {
+  background: #f7f7f7;
+}
+
 .w-list-content {
   border-bottom: 1px solid #ccc;
   border-right: 1px solid #ccc;

@@ -10,13 +10,15 @@ module.exports = function(req, res) {
   var suffix = '.txt';
   if (type === 'log') {
     suffix = '.log';
+  } else if (type === 'mock') {
+    suffix = '.json';
   } else if (type === 'rawBase64') {
     type = 'base64';
     suffix = '';
   }
 
   if (!filename || typeof filename !== 'string') {
-    filename = 'text_' + util.formatDate() + suffix;
+    filename = (type === 'mock' ? 'mock_' : 'text_') + util.formatDate() + suffix;
   } else if (!/\.\w+$/.test(filename)) {
     filename += suffix;
   }

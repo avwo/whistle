@@ -66,9 +66,17 @@ function comparePlugin(p1, p2) {
 exports.compare = compare;
 exports.comparePlugin = comparePlugin;
 
-exports.isString = function (str) {
+function isString(str) {
   return typeof str === 'string';
-};
+}
+
+exports.isString = isString;
+
+function getString(str) {
+  return isString(str) ? str : '';
+}
+
+exports.getString = getString;
 
 function notEStr(str) {
   return str && typeof str === 'string';
@@ -947,6 +955,44 @@ function openEditor(value) {
 
 exports.openEditor = openEditor;
 
+exports.openInNewWin = function(value) {
+  var win = window.open('editor.html');
+  win.getValue = function () {
+    return value;
+  };
+  if (win.setValue) {
+    win.setValue(value);
+  }
+};
+
+function getMockValues(values) {
+  if (!values || (!isString(values.value) && !isString(values.base64)) ||
+    (!values.isFile && !notEStr(values.name))) {
+    return;
+  }
+  return values;
+}
+
+function getMockData(data) {
+  if (!Array.isArray(data) || data.length > 2 || !notEStr(data[0])) {
+    return;
+  }
+  return {
+    rules: data[0].substring(0, 3000),
+    values: getMockValues(data[1])
+  };
+}
+
+function handleMockData(data) {
+  var mockData = getMockData(data);
+  if (mockData) {
+    events.trigger('showRulesDialog', mockData);
+  }
+  return mockData;
+}
+
+exports.handleMockData = handleMockData;
+
 var rentity = /['<> "&]/g;
 var entities = {
   '"': '&quot;',
@@ -1063,7 +1109,7 @@ exports.asCURL = function (item) {
   if (body && (body.length <= MAX_CURL_BODY || isText(req.headers) || isUrlEncoded(req))) {
     result.push('-d', formatBody(body));
   }
-  return result.join(' ');
+  return result.join(' ').replace(/!/g, '\\!');
 };
 
 exports.parseHeadersFromHar = function (list) {
@@ -1215,18 +1261,13 @@ exports.triggerListChange = function (name, data) {
   } catch (e) {}
 };
 
-var REG_EXP = /^\/(.+)\/(i?m?|m?i)$/;
+var REG_EXP = /^\/(.+)\/([miu]{0,3})$/;
 exports.toRegExp = function (regExp) {
-  if (!regExp) {
-    return;
+  if (regExp && REG_EXP.test(regExp)) {
+    try {
+      return new RegExp(RegExp.$1, RegExp.$2);
+    } catch (e) {}
   }
-  regExp = REG_EXP.test(regExp);
-  try {
-    regExp = regExp && new RegExp(RegExp.$1, RegExp.$2);
-  } catch (e) {
-    return;
-  }
-  return regExp;
 };
 
 function getPadding(len) {
@@ -1695,20 +1736,27 @@ exports.readFileAsText = function (file, callback) {
   return readFile(file, callback, 'text');
 };
 
-exports.addPluginMenus = function (item, list, maxTop, disabled, treeId) {
+exports.addPluginMenus = function (item, list, maxTop, disabled, treeId, url) {
   var pluginsList = (item.list = list);
   var count = pluginsList.length;
   if (count) {
     item.hide = false;
     var disabledOthers = disabled;
+    var curUrl = treeId || url;
     for (var j = 0; j < count; j++) {
       var plugin = pluginsList[j];
+      var pattern = plugin._urlPattern;
       if (plugin.required || plugin.requiredTreeNode) {
         var disd = disabled && (!plugin.requiredTreeNode || !treeId);
+        if (!disd && (pattern && (!curUrl || !pattern.test(curUrl)))) {
+          disd = true;
+        }
         plugin.disabled = disd;
         if (!disd) {
           disabledOthers = false;
         }
+      } else if (pattern && (!curUrl || !pattern.test(curUrl))) {
+        plugin.disabled = true;
       } else {
         disabledOthers = plugin.disabled = false;
       }
@@ -2487,5 +2535,22 @@ exports.parseUrl = function (url) {
     path: pathname + search,
     href: url
   };
+};
+
+exports.replacQuery = function(url, query) {
+  var index = url.indexOf('#');
+  var hash = '';
+  if (index !== -1) {
+    hash = url.substring(index);
+    url = url.substring(0, index);
+  }
+  if (query) {
+    query = '?' + query;
+  }
+  index = url.indexOf('?');
+  if (index !== -1) {
+    url = url.substring(0, index);
+  }
+  return url + query + hash;
 };
 

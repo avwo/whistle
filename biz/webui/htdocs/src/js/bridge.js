@@ -43,13 +43,19 @@ function getBridge(win) {
     escapeHtml: util.escape,
     compose: dataCenter.compose,
     importSessions: dataCenter.importAnySessions,
-    exportSessions:  dataCenter.exportSessions,
+    exportSessions: dataCenter.exportSessions,
     msgBox: message,
     qrCode: qrCode,
     qrcode: qrCode,
     decodeBase64: util.decodeBase64,
     alert: mockWin.alert,
     confirm: mockWin.confirm,
+    importMockData: function(data) {
+      return util.handleMockData(data);
+    },
+    download: function(data) {
+      events.trigger('download', data);
+    },
     copyText: function(text, tips) {
       var btn = $('#copyTextBtn');
       btn.attr('data-clipboard-text', text);

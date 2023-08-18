@@ -112,6 +112,16 @@
   top: 1px;
 }
 
+.w-composer-params-editor .w-filter-bar .w-params-clear-btn {
+  right: 60px;
+  white-space: nowrap;
+  top: -1px;
+}
+
+.w-composer-params-editor .w-filter-bar .w-composer-params-clear {
+  right: 60px;
+}
+
 .w-composer-rules-label {
   padding-right: 12px;
   border-right: 1px solid #ddd;

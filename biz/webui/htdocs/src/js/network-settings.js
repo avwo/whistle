@@ -61,6 +61,10 @@ var Settings = React.createClass({
       events.trigger('switchTreeView');
       return;
     }
+    if (name === 'viewAllInNewWindow') {
+      storage.set('viewAllInNewWindow', target.checked ? '1' : '');
+      return this.setState({});
+    }
     if (name === 'disabledHNR') {
       storage.set('disabledHNR', target.checked ? '' : '1');
       return this.setState({});
@@ -183,6 +187,7 @@ var Settings = React.createClass({
     var state = self.state;
     var columnList = state.columns;
     var isTreeView = storage.get('isTreeView') === '1';
+    var viewAllInNewWindow = storage.get('viewAllInNewWindow') === '1';
 
     return (
       <Dialog ref="networkSettingsDialog" wstyle="w-network-settings-dialog">
@@ -330,6 +335,10 @@ var Settings = React.createClass({
             Only view the requests of own computer (IP: {dataCenter.clientIp})
           </label>
           <label className="w-network-settings-own">
+            <input checked={viewAllInNewWindow} data-name="viewAllInNewWindow" type="checkbox" />
+            ViewAll in a new window
+          </label>
+          <label className="w-network-settings-own">
             <input checked={isTreeView} data-name="treeView" type="checkbox" />
             <span
               className="glyphicon glyphicon-tree-conifer"
@@ -337,9 +346,8 @@ var Settings = React.createClass({
             ></span>
             Show Tree View (Ctrl[Command] + B)
           </label>
-          {isTreeView ? <br /> : null}
           {isTreeView ? (
-            <label className="w-network-settings-own">
+            <label style={{textIndent: 20}} className="w-network-settings-own">
               <input
                 checked={storage.get('disabledHNR') !== '1'}
                 data-name="disabledHNR"

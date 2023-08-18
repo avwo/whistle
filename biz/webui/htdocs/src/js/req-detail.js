@@ -119,6 +119,8 @@ var ReqDetail = React.createClass({
         }
       } else if (util.isUploadForm(req)) {
         form = util.parseUploadBody(req, true);
+      } else if (json && json.isJSONText) {
+        form = json;
       }
       headersStr = util.objectToString(headers, req.rawHeaderNames);
       headersStr =
@@ -206,7 +208,8 @@ var ReqDetail = React.createClass({
             <div className="fill orient-vertical-box">
               <div className="w-detail-webforms-title">Body</div>
               <div className="fill orient-vertical-box w-detail-request-form">
-                <Properties modal={form} enableViewSource="1" showJsonView="1" />
+                {!json || !json.isJSONText ? <Properties modal={form} enableViewSource="1" showJsonView="1" /> :
+                <JSONViewer reqData={modal} data={json} />}
               </div>
             </div>
           </Divider>

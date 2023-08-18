@@ -1104,11 +1104,14 @@ var Composer = React.createClass({
   showParams: function() {
     var url = ReactDOM.findDOMNode(this.refs.url).value.replace(/#.*$/, '');
     var index = url.indexOf('?');
-    var query = index === -1 ? '' : url.substring(index + 1);
+    var hasQuery = index !== -1;
+    var query = hasQuery ? url.substring(index + 1) : '';
     var params = util.parseQueryString(query, null, null, decodeURIComponent);
     this.refs.paramsEditor.update(params);
-    if (!this.state.showParams) {
-      this.setState({ showParams: true });
+    if (this.state.showParams) {
+      this.setState({ hasQuery: hasQuery });
+    } else {
+      this.setState({ showParams: true, hasQuery: hasQuery });
     }
   },
   hideParams: function() {
@@ -1123,28 +1126,21 @@ var Composer = React.createClass({
       this.showParams();
     }
   },
+  clearQuery: function() {
+    var self = this;
+    win.confirm('Are you sure to delete all params?', function(sure) {
+      sure && self.refs.paramsEditor.clear();
+    });
+  },
   addQueryParam: function() {
     this.refs.paramsEditor.onAdd();
   },
   onParamsChange: function () {
     var query = this.refs.paramsEditor.toString();
     var elem = ReactDOM.findDOMNode(this.refs.url);
-    var url = elem.value;
-    var index = url.indexOf('#');
-    var hash = '';
-    if (index !== -1) {
-      hash = url.substring(index);
-      url = url.substring(0, index);
-    }
-    if (query) {
-      query = '?' + query;
-    }
-    index = url.indexOf('?');
-    if (index !== -1) {
-      url = url.substring(0, index);
-    }
-    elem.value = url + query + hash;
+    elem.value = util.replacQuery(elem.value, query);
     this.saveComposer();
+    this.setState({ hasQuery: !!query });
   },
   onClickContextMenu: function (action) {
     switch (action) {
@@ -1193,6 +1189,7 @@ var Composer = React.createClass({
     var lockBody = pending || disableBody;
     var showHistory = state.showHistory;
     var urlHints = state.urlHints;
+    var hasQuery = state.hasQuery;
     self.hasBody = hasBody;
 
     return (
@@ -1279,6 +1276,9 @@ var Composer = React.createClass({
               <span onClick={self.hideParams} aria-hidden="true">
                 &times;
               </span>
+              <a style={{display: hasQuery ? null : 'none'}} className="w-params-clear-btn" onClick={this.clearQuery}>
+                <span className="glyphicon glyphicon-trash" />Clear
+              </a>
               <a onClick={this.addQueryParam}>
                 +Param
               </a>
