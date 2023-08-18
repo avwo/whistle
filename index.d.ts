@@ -109,6 +109,8 @@ export interface WhistleOptions {
   notUninstallPluginPath?: string | string[];
   pluginsPath?: string | string[];
   addonsPath?: string | string[];
+  specialAuth?: string;
+  specialPath?: string;
   inspect?: boolean;
   inspectBrk?: boolean;
   secureFilter?: WhistleSecureFilter;
