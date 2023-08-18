@@ -1,4 +1,9 @@
 
+# v2.9.58
+1. feat: Network 右键菜单 Mock > Export，通过插件或拖拽导入 Mock 数据
+2. feat: 插件支持 `window.whistleBridge.download({name, value[, base64]})` 下载指定数据
+3. feat: 新增特殊路径 `/_WHISTLE_5b6af7b9884e1165_/`，Whistle 会自动将url 里面第一个此路径片段替换成 `/`
+
 # v2.9.57
 1. feat: Composer 添加修改请求参数按钮 `Params`
 2. feat: Composer 面板优化
