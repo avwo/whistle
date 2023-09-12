@@ -980,7 +980,7 @@ function startLoadData() {
         lastSvrLogTime = data.lastSvrLogId;
       }
       data = data.data;
-      var hasChhanged;
+      var hasChanged;
       var framesLen = data.frames && data.frames.length;
 
       if (framesLen) {
@@ -994,18 +994,18 @@ function startLoadData() {
         if (status) {
           curActiveItem.closed = undefined;
           if (status.sendStatus > -1) {
-            hasChhanged = curActiveItem.sendStatus !== status.sendStatus;
+            hasChanged = curActiveItem.sendStatus !== status.sendStatus;
             curActiveItem.sendStatus = status.sendStatus;
           }
           if (status.receiveStatus > -1) {
-            hasChhanged =
-              hasChhanged ||
+            hasChanged =
+              hasChanged ||
               curActiveItem.receiveStatus !== status.receiveStatus;
             curActiveItem.receiveStatus = status.receiveStatus;
           }
         } else {
           if (!curActiveItem.closed) {
-            hasChhanged = true;
+            hasChanged = true;
             curActiveItem.closed = true;
           }
         }
@@ -1021,7 +1021,7 @@ function startLoadData() {
         (!data.ids.length && !data.newIds.length) ||
         networkModal.clearNetwork
       ) {
-        if (hasChhanged || framesLen) {
+        if (hasChanged || framesLen) {
           framesUpdateCallbacks.forEach(function (cb) {
             cb();
           });
