@@ -1,0 +1,7 @@
+func TestAbout_Get(t *testing.T) {
+    doc := request(t).
+        setRoute("about").
+        get().
+        assertStatusCode(http.StatusOK).
+        toDoc()
+}
