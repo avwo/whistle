@@ -194,6 +194,9 @@ var ResDetail = React.createClass({
           }
         }
       }
+      if (imgSrc) {
+        data = modal;
+      }
       if (modal.useFrames) {
         tips = { isFrames: true };
       } else if (modal.isHttps) {

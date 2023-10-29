@@ -180,6 +180,18 @@ function readRemoteStream(req, res, authUrl) {
   client.end();
 }
 
+function injectFile(res, filepath, prepend, append, isJs) {
+  fs.readFile(filepath, function(err, ctn) {
+    if (err) {
+      return sendError(res, err);
+    }
+    res.writeHead(200, {
+      'Content-Type': (isJs ? 'application/javascript' : 'text/html') + '; charset=utf-8'
+    });
+    res.end(concat(prepend, ctn, append));
+  });
+}
+
 app.use(function(req, res, next) {
   proxyEvent.emit('_request', req.url);
   var aborted;
@@ -519,15 +531,7 @@ if (!config.debugMode) {
   if (htmlPrepend || htmlAppend) {
     var htmlFile = htdocs.getHtmlFile('index.html');
     var injectHtml = function(req, res) {
-      fs.readFile(htmlFile, function(err, ctn) {
-        if (err) {
-          return sendError(res, err);
-        }
-        res.writeHead(200, {
-          'Content-Type': 'text/html; charset=utf-8'
-        });
-        res.end(concat(htmlPrepend, ctn, htmlAppend));
-      });
+      injectFile(res, htmlFile, htmlPrepend, htmlAppend);
     };
     app.get('/', injectHtml);
     app.get('/index.html', injectHtml);
@@ -535,15 +539,7 @@ if (!config.debugMode) {
   if (jsPrepend || jsAppend) {
     var jsFile = htdocs.getHtmlFile('js/index.js');
     app.get('/js/index.js', function(req, res) {
-      fs.readFile(jsFile, function(err, ctn) {
-        if (err) {
-          return sendError(res, err);
-        }
-        res.writeHead(200, {
-          'Content-Type': 'application/javascript; charset=utf-8'
-        });
-        res.end(concat(jsPrepend, ctn, jsAppend));
-      });
+      injectFile(res, jsFile, jsPrepend, jsAppend, true);
     });
   }
 }

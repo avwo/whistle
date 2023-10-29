@@ -7,10 +7,14 @@
   padding-bottom: 10px;
   position: relative;
 }
+.w-image-view.w-image-webview {
+  padding: 0;
+  display: flex;
+}
 .w-image-view img {
   max-width: 100%;
 }
-.w-image-view a {
+.w-image-view .w-image-link {
   display: inline-block;
   width: 300px;
   line-height: 30px;
@@ -19,4 +23,8 @@
   left: 50%;
   margin: -15px 0 0 -150px;
   font-size: 14px;
+}
+
+.w-image-view:hover .w-textarea-bar {
+  display: block;
 }

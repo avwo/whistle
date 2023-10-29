@@ -1492,7 +1492,7 @@ function getCharset(res) {
   return 'UTF8';
 }
 
-exports.openPreview = function (data) {
+function getPreviewUrl(data) {
   if (!data) {
     return;
   }
@@ -1515,8 +1515,15 @@ exports.openPreview = function (data) {
       (url.indexOf('?') === -1 ? '' : '&') +
       '???WHISTLE_PREVIEW_CHARSET=' +
       charset;
-    window.open(url + '???#' + (isImg ? getBody(res) : res.base64));
+    return url + '???#' + (isImg ? getBody(res) : res.base64);
   }
+}
+
+exports.getPreviewUrl = getPreviewUrl;
+
+exports.openPreview = function (data) {
+  var url = getPreviewUrl(data);
+  url && window.open(url);
 };
 
 function parseRawJson(str, quite) {
