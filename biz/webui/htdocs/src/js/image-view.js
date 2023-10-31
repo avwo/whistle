@@ -28,7 +28,7 @@ var ImageView = React.createClass({
   },
   getPreviewElem: function(previewUrl) {
     if (previewUrl) {
-      return <webview src={previewUrl} className="w-flex fill" />;
+      return <webview src={previewUrl} className="fill" />;
     }
     var props = this.props;
     if (props.imgSrc) {

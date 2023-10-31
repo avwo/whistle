@@ -114,10 +114,7 @@ textarea {
 .visible {
   visibility: visible!important;
 }
-.w-flex {
-  display: flex;
-  width: 100%;
-}
+
 .box {
   display: -webkit-box;
   display: -moz-box;

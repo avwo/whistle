@@ -28,3 +28,7 @@
 .w-image-view:hover .w-textarea-bar {
   display: block;
 }
+
+.w-image-webview .fill {
+  width: 100%;
+}
