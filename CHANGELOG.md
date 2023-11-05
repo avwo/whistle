@@ -1,3 +1,7 @@
+# v2.9.59
+1. feat: 支持 https://github.com/avwo/whistle/issues/978
+2. feat: 客户端支持直接使用 WebView 预览抓包内容
+
 
 # v2.9.58
 1. feat: Network 右键菜单 Mock > Export，通过插件或拖拽导入 Mock 数据
