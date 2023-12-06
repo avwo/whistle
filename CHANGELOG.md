@@ -1,3 +1,6 @@
+# v2.9.60
+1. fix: https://github.com/avwo/whistle/issues/1012
+
 # v2.9.59
 1. feat: 支持 https://github.com/avwo/whistle/issues/978
 2. feat: 客户端支持直接使用 WebView 预览抓包内容

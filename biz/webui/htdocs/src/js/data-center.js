@@ -30,7 +30,7 @@ var curLogId;
 var curSvrLogId;
 var dataIndex = 1000000;
 var MAX_PATH_LENGTH = 1024;
-var MAX_LOG_LENGTH = 250;
+var MAX_LOG_LENGTH = 256;
 var lastRowId;
 var endId;
 var hashFilterObj;
