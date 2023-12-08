@@ -76,7 +76,7 @@ var WS_CONNNECT_RE = /^\s*connection\s*:\s*upgrade\s*$/im;
 var WS_UPGRADE_RE = /^\s*upgrade\s*:\s*websocket\s*$/im;
 var REV_TYPES = {};
 var MAX_HEADERS_SIZE = 1024 * 64;
-var MAX_BODY_SIZE = 1024 * 128;
+var MAX_BODY_SIZE = 1024 * 256;
 var MAX_COUNT = 64;
 var MAX_REPEAT_TIMES = 100;
 var RULES_HEADER = 'x-whistle-rule-value';
@@ -1304,6 +1304,14 @@ var Composer = React.createClass({
                     type="checkbox"
                   />
                   Rules
+                </label>
+                <label className="w-composer-pretty">
+                  <input
+                    onChange={this.onShowPretty}
+                    type="checkbox"
+                    checked={showPretty}
+                  />
+                  Pretty
                 </label>
                 <label className="w-composer-enable-body">
                   <input

@@ -425,6 +425,11 @@ textarea.w-composer-rules {
   font-size: 13px;
 }
 
+.w-composer-pretty {
+  right: 146px;
+  position: absolute;
+}
+
 .w-composer-enable-body {
   right: 80px;
 }
