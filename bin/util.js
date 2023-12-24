@@ -160,7 +160,7 @@ function readConfigList() {
 exports.readConfig = readConfig;
 exports.readConfigList = readConfigList;
 exports.getHash = function(str) {
-  var hmac = createHmac('sha256', 'a secret');
+  var hmac = createHmac('sha256', '5b6af7b9884e1165');
   return hmac.update(str).digest('hex');
 };
 
