@@ -1,3 +1,7 @@
+# v2.9.62
+1. chore: 更新 CodeMirror 版本
+2. feat: Network Settings 支持导入导出
+
 # v2.9.61
 1. fix: 在新版本 Node 可能存在 [pipe](https://wproxy.org/whistle/rules/pipe.html) 功能失效问题
 2. fix: https://github.com/avwo/whistle/issues/1017
