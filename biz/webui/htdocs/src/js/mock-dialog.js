@@ -5,7 +5,7 @@ var Dialog = require('./dialog');
 var CopyBtn = require('./copy-btn');
 var util = require('./util');
 var dataCenter = require('./data-center');
-var getAllRules = require('./protocols').getAllRules;
+var getSortedRules = require('./protocols').getSortedRules;
 var win = require('./win');
 var message = require('./message');
 var events = require('./events');
@@ -461,7 +461,7 @@ var MockDialog = React.createClass({
     var hasQuery = state.hasQuery;
     var dataSrc = state.dataSrc || '';
     var preStyle = rules ? null : HIDE_STYLE;
-    var protoList = getAllRules();
+    var protoList = getSortedRules();
     var valuesModal = dataCenter.getValuesModal();
 
     return (

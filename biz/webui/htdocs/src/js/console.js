@@ -344,6 +344,7 @@ var Console = React.createClass({
             Expand JSON Root
           </label>
           <div className="w-textarea-bar">
+            <RecordBtn onClick={this.handleAction} />
             <a className="w-import" onClick={this.selectFile} draggable="false">
               Import
             </a>
@@ -355,7 +356,6 @@ var Console = React.createClass({
             >
               Export
             </a>
-            <RecordBtn onClick={this.handleAction} />
             <a
               className={'w-clear' + (disabled ? ' w-disabled' : '')}
               onClick={disabled ? undefined : this.clearLogs}

@@ -77,14 +77,14 @@ var HistoryData = React.createClass({
             {selectedItem ? <div className="w-composer-history-footer">
                 <button
                   type="button"
-                  className="btn btn-primary"
+                  className="btn btn-warning"
                   onClick={this.onEdit}
                 >
                   Edit
                 </button>
                 <button
                   type="button"
-                  className="btn btn-warning"
+                  className="btn btn-default"
                   onClick={this.onReplay}
                 >
                   Replay

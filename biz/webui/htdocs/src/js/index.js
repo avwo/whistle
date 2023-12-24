@@ -244,7 +244,7 @@ function readFileJson(file, cb) {
 
 function handleImportData(file, cb, name) {
   readFileJson(file, function(data) {
-    if (!data || util.handleMockData(data)) {
+    if (!data || util.handleImportData(data)) {
       return cb();
     }
     cb(data);
@@ -1556,7 +1556,7 @@ var Index = React.createClass({
     return true;
   },
   importAnySessions: function (data) {
-    if (data && !util.handleMockData(data)) {
+    if (data && !util.handleImportData(data)) {
       if (Array.isArray(data)) {
         dataCenter.addNetworkList(data);
       } else {
@@ -1956,7 +1956,7 @@ var Index = React.createClass({
           return;
         }
         self.refs.importRemoteRules.hide();
-        if (data && !util.handleMockData(data)) {
+        if (data && !util.handleImportData(data)) {
           self.handleImportRules(data);
         }
       })
@@ -1995,7 +1995,7 @@ var Index = React.createClass({
           return;
         }
         self.refs.importRemoteValues.hide();
-        if (data && !util.handleMockData(data)) {
+        if (data && !util.handleImportData(data)) {
           self.handleImportValues(data);
         }
       })
@@ -3422,7 +3422,7 @@ var Index = React.createClass({
             self.importHarSessions(result);
           }
         } catch (e) {
-          win.alert('Unrecognized format.');
+          win.alert('Format error.');
         }
       });
       return;

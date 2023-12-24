@@ -44,6 +44,16 @@ var Settings = React.createClass({
     events.on('toggleTreeView', function () {
       self.setState({});
     });
+    events.on('setNetworkSettings', function(_, settings) {
+      if (!settings) {
+        return;
+      }
+      win.confirm('Are you sure to modify network settings?', function(sure) {
+        if (sure) {
+          self.setSettings(settings);
+        }
+      });
+    });
   },
   onNetworkSettingsChange: function (e) {
     var target = e.target;
@@ -156,12 +166,8 @@ var Settings = React.createClass({
       nameChanged: true
     });
   },
-  changeName: function () {
+  setCustomColumn: function(name, key, value) {
     var self = this;
-    var state = self.state;
-    var name = state.name;
-    var value = state.value;
-    var key = state.key;
     dataCenter.setCustomColumn(
       {
         name: name,
@@ -174,13 +180,142 @@ var Settings = React.createClass({
           return;
         }
         self.refs.editCustomColumn.hide();
-        name = name.toLowerCase();
-        dataCenter[name] = value;
-        dataCenter[name + 'Key'] = key;
+        var lname = name.toLowerCase();
+        dataCenter[lname] = value || name;
+        dataCenter[lname + 'Key'] = key;
         self.setState({});
         events.trigger('onColumnTitleChange');
       }
     );
+  },
+  changeName: function () {
+    var state = this.state;
+    this.setCustomColumn(state.name, state.key, state.value);
+  },
+  setSettings: function(settings) {
+    if (!settings) {
+      return;
+    }
+    var self = this;
+    var state = self.state;
+    var filterTextChanged;
+    var filterChanged;
+    var columnsChanged;
+    var viewOwn = settings.viewOwn;
+    if (util.isBool(viewOwn) && dataCenter.isOnlyViewOwnData() !== viewOwn) {
+      dataCenter.setOnlyViewOwnData(viewOwn);
+      filterChanged = true;
+    }
+    var treeView = settings.treeView;
+    if (util.isBool(treeView) && treeView !== (storage.get('isTreeView') === '1')) {
+      events.trigger('switchTreeView');
+    }
+
+    var viewInWin = settings.viewAllInWindow;
+    if (util.isBool(viewInWin) && viewInWin !== (storage.get('viewAllInNewWindow') === '1')) {
+      storage.set('viewAllInNewWindow', viewInWin ? '1' : '');
+    }
+
+    var disabledHNR = settings.disabledHNR;
+    if (util.isBool(disabledHNR) && disabledHNR !== (storage.get('disabledHNR') === '1')) {
+      storage.set('disabledHNR', disabledHNR ? '1' : '');
+    }
+    
+    var disabledFilterText = settings.disabledFilterText;
+    if (util.isBool(disabledFilterText) && disabledFilterText !== !!state.disabledFilterText) {
+      state.disabledFilterText = disabledFilterText;
+      filterTextChanged = true;
+    }
+
+    var disabledExcludeText = settings.disabledExcludeText;
+    if (util.isBool(disabledExcludeText) && disabledExcludeText !== !!state.disabledExcludeText) {
+      state.disabledExcludeText = disabledExcludeText;
+      filterTextChanged = true;
+    }
+
+    var excludeText = settings.excludeText;
+    if (util.isString(excludeText) && excludeText !== state.excludeText) {
+      state.excludeText = excludeText;
+      filterTextChanged = true;
+    }
+  
+    var filterText = settings.filterText;
+    if (util.isString(filterText) && filterText !== state.filterText) {
+      state.filterText = filterText;
+      filterTextChanged = true;
+    }
+
+
+    var list = settings.columns;
+    if (Array.isArray(list)) {
+      state.columns.forEach(function(col) {
+        var selected = list.indexOf(col.name) !== -1;
+        if (col.selected !== selected) {
+          columnsChanged = true;
+          columns.setSelected(col.name, selected);
+        }
+      });
+    }
+    if (settings.maxRows > 0) {
+      NetworkModal.setMaxRows(settings.maxRows);
+    }
+
+    if (filterTextChanged || filterChanged) {
+      if (filterTextChanged) {
+        dataCenter.setFilterText(state);
+      }
+      events.trigger('filterChanged');
+    } else if (columnsChanged) {
+      events.trigger('onColumnsChanged');
+    }
+    this.setState({});
+    
+    ['Custom1', 'Custom2'].forEach(function(name) {
+      var lname = name.toLowerCase();
+      var keyName = lname + 'Key';
+      var value = settings[lname];
+      var key = settings[keyName] || '';
+      if (util.isString(value) && util.isString(key)) {
+        value = value.trim();
+        key = key.trim();
+        if (value && (dataCenter[lname] !== value || (dataCenter[keyName] || '') !== key)) {
+          self.setCustomColumn(name, key, value);
+        }
+      }
+    });
+  },
+  import: function(e) {
+    events.trigger('importSessions', e);
+  },
+  export: function() {
+    var state = this.state;
+    var columns = [];
+    state.columns.forEach(function(col) {
+      if (col.selected) {
+        columns.push(col.name);
+      }
+    });
+    var settings = {
+      type: 'setNetworkSettings',
+      disabledExcludeText: state.disabledExcludeText,
+      excludeText: state.excludeText,
+      disabledFilterText: state.disabledFilterText,
+      filterText:  state.filterText,
+      columns: columns,
+      custom1: dataCenter.custom1 || 'Custom1',
+      custom1Key: dataCenter.custom1Key,
+      custom2: dataCenter.custom2 || 'Custom2',
+      custom2Key: dataCenter.custom2Key,
+      maxRows: NetworkModal.getMaxRows(),
+      viewOwn: dataCenter.isOnlyViewOwnData(),
+      viewAllInWindow: storage.get('viewAllInNewWindow') === '1',
+      treeView: storage.get('isTreeView') === '1',
+      disabledHNR: storage.get('disabledHNR') === '1'
+    };
+    events.trigger('download', {
+      name: 'network_settings_' + Date.now() + '.txt',
+      value: JSON.stringify(settings, null, '  ')
+    });
   },
   render: function () {
     var self = this;
@@ -316,7 +451,7 @@ var Settings = React.createClass({
             <select
               className="form-control"
               onChange={self.onRowsChange}
-              defaultValue={NetworkModal.getMaxRows()}
+              value={NetworkModal.getMaxRows()}
             >
               <option value="500">500</option>
               <option value="1000">1000</option>
@@ -358,6 +493,20 @@ var Settings = React.createClass({
           ) : null}
         </div>
         <div className="modal-footer">
+          <button
+            type="button"
+            className="btn btn-default"
+            onClick={self.import}
+          >
+            Import
+          </button>
+          <button
+            type="button"
+            className="btn btn-info"
+            onClick={self.export}
+          >
+            Export
+          </button>
           <button
             type="button"
             className="btn btn-default"

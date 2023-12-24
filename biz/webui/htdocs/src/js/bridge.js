@@ -51,10 +51,13 @@ function getBridge(win) {
     alert: mockWin.alert,
     confirm: mockWin.confirm,
     importMockData: function(data) {
-      return util.handleMockData(data);
+      return util.handleImportData(data);
     },
     download: function(data) {
       events.trigger('download', data);
+    },
+    setNetworkSettings: function(data) {
+      events.trigger('setNetworkSettings', data);
     },
     copyText: function(text, tips) {
       var btn = $('#copyTextBtn');

@@ -271,6 +271,7 @@ var ServerLog = React.createClass({
         <div className="w-log-action-bar">
           <DropDown onChange={this.changeLevel} options={state.levels} />
           <div className="w-textarea-bar">
+            <RecordBtn onClick={this.handleAction} />
             <a className="w-import" onClick={this.selectFile} draggable="false">
               Import
             </a>
@@ -282,7 +283,6 @@ var ServerLog = React.createClass({
             >
               Export
             </a>
-            <RecordBtn onClick={this.handleAction} />
             <a
               className={'w-clear' + (disabled ? ' w-disabled' : '')}
               onClick={disabled ? undefined : this.clearLogs}

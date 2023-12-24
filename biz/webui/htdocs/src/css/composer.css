@@ -280,7 +280,7 @@ textarea.w-composer-rules {
 .w-composer-body textarea:read-only,
 .w-detail-composer input:read-only,
 .w-detail-composer textarea:disabled {
-  background: #fefefe !important;
+  background: #eee !important;
   color: #999 !important;
 }
 
@@ -512,7 +512,7 @@ textarea.w-composer-rules {
 }
 
 .w-history-item {
-  padding: 6px 5px 8px 15px;
+  padding: 6px 5px 8px 10px;
   overflow: hidden;
   text-overflow: ellipsis;
   cursor: default;
@@ -541,7 +541,9 @@ textarea.w-composer-rules {
   margin-right: 0;
 }
 
-.w-history-item:hover,
+.w-history-item:hover {
+  background: rgba(0,0,0,.03);
+}
 .w-history-item.w-selected {
   background: rgba(0,0,0,.1);
 }
@@ -571,7 +573,7 @@ textarea.w-composer-rules {
 .w-composer-history-data .w-close {
   position: absolute;
   right: 10px;
-  top: 5px;
+  top: 0;
   cursor: pointer;
   z-index: 1;
   font-size: 20px;
@@ -601,7 +603,7 @@ textarea.w-composer-rules {
   white-space: nowrap;
   overflow: hidden;
   border-bottom: 1px solid #ddd;
-  padding: 5px 0 7px;
+  padding: 0 0 2px;
   position: relative;
 }
 

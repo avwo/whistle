@@ -159,7 +159,10 @@
 
 .w-detail-log .w-textarea-bar .w-menu-item {
   top: 21px;
-  right: 0;
+}
+
+.w-detail-log .w-textarea-bar .w-refresh-menu-list {
+  padding-bottom: 2px;
 }
 
 .w-detail-log .w-textarea-bar a {

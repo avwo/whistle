@@ -110,6 +110,7 @@ allInnerRules.splice(
 );
 allInnerRules.push('lineProps://');
 var allRules = allInnerRules;
+var sortedRules = allRules.slice().sort();
 var pluginsOptions = [];
 
 exports.setPlugins = function (pluginsState) {
@@ -153,6 +154,7 @@ exports.setPlugins = function (pluginsState) {
       }
     });
   }
+  sortedRules = allRules.slice().sort();
   events.trigger('updatePlugins');
 };
 
@@ -180,6 +182,10 @@ exports.getAllPluginNameList = function () {
 
 exports.getAllRules = function () {
   return allRules;
+};
+
+exports.getSortedRules = function() {
+  return sortedRules;
 };
 
 function getPlugin(rule) {

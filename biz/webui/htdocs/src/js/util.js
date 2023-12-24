@@ -84,6 +84,12 @@ function notEStr(str) {
 
 exports.notEStr = notEStr;
 
+function isBool(b) {
+  return typeof b === 'boolean';
+}
+
+exports.isBool = isBool;
+
 exports.parseLogs = function (str) {
   try {
     str = JSON.parse(str);
@@ -983,15 +989,17 @@ function getMockData(data) {
   };
 }
 
-function handleMockData(data) {
+exports.handleImportData = function(data) {
+  if (data && data.type === 'setNetworkSettings') {
+    events.trigger('setNetworkSettings', data);
+    return true;
+  }
   var mockData = getMockData(data);
   if (mockData) {
     events.trigger('showRulesDialog', mockData);
   }
   return mockData;
-}
-
-exports.handleMockData = handleMockData;
+};
 
 var rentity = /['<> "&]/g;
 var entities = {

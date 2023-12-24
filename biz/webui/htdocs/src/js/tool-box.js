@@ -188,7 +188,7 @@ var ToolBox = React.createClass({
             disabled={!NOT_EMPTY_RE.test(jsonValue)}
             onClick={this.parseJSON}
           >
-            View
+            Inspect
           </button>
         </div>
         <textarea
