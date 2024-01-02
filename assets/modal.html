@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<script>
+  ;(function() {
+    var toast = {};
+    var whistleBridge = {
+      toast: toast
+    };
+    try {
+      window.parent.onWhistlePluginOptionModalReady(function(options) {
+        Object.keys(options.msgBox).forEach(function(name) {
+          toast[name] = options.msgBox[name];
+        });
+        whistleBridge.getSelectedSessionList = options.getSelectedSessionList;
+        whistleBridge.getActiveSession = whistleBridge.getSession = whistleBridge.getSelectedSession = options.getActiveSession;
+        whistleBridge.showOption = options.showOption;
+        whistleBridge.hideOption = options.hideOption;
+        whistleBridge.updateUI = options.updateUI;
+        whistleBridge.copyText = options.copyText;
+        whistleBridge.pageId = options.pageId;
+        whistleBridge.compose = options.compose;
+        whistleBridge.decodeBase64 = options.decodeBase64;
+        whistleBridge.importSessions = options.importSessions;
+        whistleBridge.exportSessions = options.exportSessions;
+        whistleBridge.importMockData = options.importMockData;
+        whistleBridge.download = options.download;
+        whistleBridge.setNetworkSettings = options.setNetworkSettings;
+        whistleBridge.setComposerData = options.setComposerData;
+        whistleBridge.request = options.request;
+        whistleBridge.createRequest = options.createRequest;
+        whistleBridge.showModal = options.showModal;
+        whistleBridge.importRules = options.importRules;
+        whistleBridge.importValues = options.importValues;
+        whistleBridge.getServerInfo = options.getServerInfo;
+        whistleBridge.alert = options.alert;
+        whistleBridge.confirm = options.confirm;
+        whistleBridge.syncData = options.syncData;
+        whistleBridge.syncRules = options.syncRules;
+        whistleBridge.syncValues = options.syncValues;
+      }, window);
+    } catch (e) {}
+    window.whistleBridge = whistleBridge;
+  })();
+</script>
