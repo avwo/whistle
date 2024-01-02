@@ -1,6 +1,10 @@
 # v2.9.62
 1. chore: 更新 CodeMirror 版本
 2. feat: Network Settings 支持导入导出
+3. feat: Rules & Values 支持通过 `b:keyword` 搜索内容
+4. feat: Composer 支持导入导出
+5. feat: 插件 Option 支持设置 `openInModal` 以对话框形式打开
+6. feat: Network 列表新增 `Back to the bottom` 按钮
 
 # v2.9.61
 1. fix: 在新版本 Node 可能存在 [pipe](https://wproxy.org/whistle/rules/pipe.html) 功能失效问题
