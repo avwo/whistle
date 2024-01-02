@@ -81,6 +81,9 @@ var ReqData = React.createClass({
         var modal = self.props.modal;
         self.showComposer(item || (modal && modal.getActive()));
       })
+      .on('showComposerTab', function() {
+        self.showComposer();
+      })
       .on('networkStateChange', function () {
         clearTimeout(timer);
         timer = setTimeout(update, 100);

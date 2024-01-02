@@ -33,6 +33,7 @@ var AccountDialog = require('./account-dialog');
 var JSONDialog = require('./json-dialog');
 var Account = require('./account');
 var MockDialog = require('./mock-dialog');
+var IframeDialog = require('./iframe-dialog');
 var win = require('./win');
 
 var H2_RE = /http\/2\.0/i;
@@ -838,6 +839,59 @@ var Index = React.createClass({
         self.refs.rulesDialog.show(data.rules, data.values);
       }
     });
+
+    var composerDidMount;
+    var composerData;
+
+    events.one('composerDidMount', function() {
+      composerDidMount = true;
+      if (composerData) {
+        events.trigger('_setComposerData', composerData);
+        composerData = null;
+      }
+    });
+
+    events.on('setComposerData', function(_, data) {
+      if (!data || self.state.rulesMode) {
+        return;
+      }
+      if (self.state.name !== 'network') {
+        self.showNetwork();
+      }
+      events.trigger('showComposerTab');
+      if (composerDidMount) {
+        events.trigger('_setComposerData', data);
+      } else {
+        composerData = data;
+      }
+    });
+   
+    events.on('showPluginOption', function(_, plugin) {
+      if (!plugin) {
+        return;
+      }
+      var name = plugin.moduleName.substring(plugin.moduleName.lastIndexOf('.') + 1);
+      var url =  plugin.pluginHomepage || 'plugin.' + name + '/';
+      if ((plugin.pluginHomepage || plugin.openExternal) && !plugin.openInPlugins && !plugin.openInModal) {
+        return window.open(url);
+      }
+      var modal = plugin.openInModal || '';
+      if (modal && !plugin.pluginHomepage) {
+        url += '?openInModal=5b6af7b9884e1165';
+      }
+      self.refs.iframeDialog.show({
+        name: name,
+        url: url,
+        homepage: plugin.homepage,
+        disabled: util.pluginIsDisabled(self.state, name),
+        width: modal.width,
+        height: modal.height
+      });
+    });
+    events.on('hidePluginOption', function() {
+      self.refs.iframeDialog.hide();
+    });
+  
     events.on('download', function(_, data) {
       self.download(data);
     });
@@ -1240,7 +1294,7 @@ var Index = React.createClass({
       });
 
     if (self.state.name == 'network') {
-      self.startLoadData();
+      self.startLoadData(true);
     }
     dataCenter.on('settings', function (data) {
       var state = self.state;
@@ -1678,10 +1732,14 @@ var Index = React.createClass({
   preventBlur: function (e) {
     e.target.nodeName != 'INPUT' && e.preventDefault();
   },
-  startLoadData: function () {
+  startLoadData: function (init) {
     var self = this;
     if (self._updateNetwork) {
-      self._updateNetwork();
+      if (init) {
+        self._updateNetwork();
+      } else {
+        setTimeout(self._updateNetwork, 30);
+      }
       return;
     }
     var scrollTimeout;
@@ -1742,15 +1800,22 @@ var Index = React.createClass({
     self.autoRefresh = scrollToBottom;
     self.scrollerAtBottom = atBottom;
 
-    function atBottom() {
-      var body = baseDom.find(
-        '.ReactVirtualized__Grid__innerScrollContainer'
-      )[0];
+    function atBottom(force) {
+      var body = baseDom.find('.ReactVirtualized__Grid__innerScrollContainer')[0];
       if (!body) {
+        if (force) {
+          events.trigger('toggleBackToBottomBtn', false);
+        }
         return true;
       }
-      return con.scrollTop + con.offsetHeight + 5 > body.offsetHeight;
+      var height = con.offsetHeight + 5;
+      var ctnHeight = body.offsetHeight;
+      var isBottom = con.scrollTop + height > ctnHeight;
+      events.trigger('toggleBackToBottomBtn', !isBottom && ctnHeight >= height);
+      return isBottom;
     }
+
+    events.on('checkAtBottom', atBottom);
   },
   showPlugins: function (e) {
     if (this.state.name != 'plugins') {
@@ -4610,7 +4675,7 @@ var Index = React.createClass({
             </div>
           </div>
         </div>
-        <NetworkSettings ref="networkSettings" />
+        {rulesMode ? null : <NetworkSettings ref="networkSettings" />}
         <div ref="rootCADialog" className="modal fade w-https-dialog">
           <div className="modal-dialog">
             <div className="modal-content">
@@ -5084,6 +5149,7 @@ var Index = React.createClass({
           <input ref="filename" name="filename" type="hidden" />
           <input ref="content" name="content" type="hidden" />
         </form>
+        <IframeDialog ref="iframeDialog" />
       </div>
     );
   }

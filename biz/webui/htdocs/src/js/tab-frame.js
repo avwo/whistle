@@ -8,17 +8,9 @@ var IFrame = require('./iframe');
 var modal = dataCenter.networkModal;
 
 function onWhistleInspectorCustomTabReady(init, win) {
-  if (typeof init !== 'function') {
-    return;
+  if (typeof init === 'function') {
+    init(getBridge(win));
   }
-  var bridge = getBridge(win);
-  bridge.getActiveSession = function () {
-    return modal.getActive();
-  };
-  bridge.getSelectedSessionList = function () {
-    return modal.getSelectedList();
-  };
-  init(bridge);
 }
 
 var TabFrame = React.createClass({

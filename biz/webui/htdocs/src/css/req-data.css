@@ -4,6 +4,7 @@
 .w-req-data-content {
   overflow-x: auto;
   overflow-y: hidden;
+  position: relative;
 }
 .w-req-data-content .order {
   width: 50px;
@@ -337,4 +338,24 @@
 .w-pr td, .w-pr th {
   font-style: italic;
   font-weight: normal!important;
+}
+
+.w-back-to-the-bottom {
+  position: absolute;
+  bottom: 5px;
+  right: 13px;
+  font-size: 10px;
+  color: #417ce8;
+  padding: 5px 8px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  opacity: .85;
+  display: none;
+}
+.w-back-to-the-bottom span {
+  margin-right: 3px;
+}
+.w-back-to-the-bottom:hover {
+  opacity: 1;
 }

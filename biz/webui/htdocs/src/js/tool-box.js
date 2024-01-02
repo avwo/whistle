@@ -49,10 +49,6 @@ var ToolBox = React.createClass({
       storage.set('codecText', value);
     }
   },
-  saveJSONValue: function () {
-    clearTimeout(this.jsonTimer);
-    this.jsonTimer = setTimeout(this._saveJSONValue, 1000);
-  },
   saveCodecText: function () {
     clearTimeout(this.codecTimer);
     this.codecTimer = setTimeout(this._saveCodecText, 1000);
@@ -78,6 +74,16 @@ var ToolBox = React.createClass({
   },
   parseJSON: function () {
     events.trigger('showJsonViewDialog', this.state.jsonValue);
+  },
+  formatJSON: function() {
+    var value = this.state.jsonValue;
+    value = value && util.parseRawJson(value);
+    if (!value) {
+      return;
+    }
+    this.setState({
+      jsonValue: JSON.stringify(value, null, '  ')
+    }, this._saveJSONValue);
   },
   encode: function () {
     try {
@@ -157,6 +163,8 @@ var ToolBox = React.createClass({
     var jsonValue = state.jsonValue;
     var domainValue = state.domainValue;
     var codecText = state.codecText;
+    var emptyJson = !NOT_EMPTY_RE.test(jsonValue);
+
     return (
       <div
         className={
@@ -185,10 +193,18 @@ var ToolBox = React.createClass({
           <span className="glyphicon glyphicon-pencil"></span>JSONView
           <button
             className="btn btn-primary"
-            disabled={!NOT_EMPTY_RE.test(jsonValue)}
+            disabled={emptyJson}
             onClick={this.parseJSON}
+            style={{marginLeft: 10}}
           >
             Inspect
+          </button>
+          <button
+            className="btn btn-default"
+            disabled={emptyJson}
+            onClick={this.formatJSON}
+          >
+            Format
           </button>
         </div>
         <textarea

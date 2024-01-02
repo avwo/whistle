@@ -3,6 +3,10 @@ require('../css/composer.css');
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Divider = require('./divider');
+var events = require('./events');
+var util = require('./util');
+
+var RULES_KEY = /^\s*x-whistle-rule-value:/mi;
 
 var HistoryData = React.createClass({
   getInitialState: function() {
@@ -41,6 +45,45 @@ var HistoryData = React.createClass({
     item.selected = true;
     this.setState({});
   },
+  export: function() {
+    var groupList = this.props.data && this.props.data._groupList;
+    if (!groupList) {
+      return;
+    }
+    var len = groupList.length;
+    for (var i = 0; i < len; i++) {
+      var item = groupList[i];
+      if (item && item.selected) {
+        var headers = item.headers;
+        var rules = [];
+        if (typeof headers === 'string' && RULES_KEY.test(headers)) {
+          headers = headers.split(/\r\n|\r|\n/).filter(function(line) {
+            if (RULES_KEY.test(line)) {
+              line = line.substring(line.indexOf(':') + 1).trim();
+              line = util.decodeURIComponentSafe(line).trim();
+              line && rules.push(line);
+              return false;
+            }
+            return true;
+          }).join('\r\n');
+        }
+        events.trigger('download', {
+          name: 'composer_' + Date.now() + '.txt',
+          value: JSON.stringify({
+            type: 'setComposerData',
+            useH2: item.useH2,
+            rules: rules.join('\n'),
+            url: item.url,
+            method: item.method,
+            headers: headers,
+            body: item.body,
+            base64: item.base64,
+            isHexText: item.isHexText
+          }, null, '  ')
+        });
+      }
+    }
+  },
   render: function () {
     var self = this;
     var props = self.props;
@@ -77,10 +120,10 @@ var HistoryData = React.createClass({
             {selectedItem ? <div className="w-composer-history-footer">
                 <button
                   type="button"
-                  className="btn btn-warning"
-                  onClick={this.onEdit}
+                  className="btn btn-info"
+                  onClick={this.export}
                 >
-                  Edit
+                  Export
                 </button>
                 <button
                   type="button"
@@ -95,6 +138,13 @@ var HistoryData = React.createClass({
                   onClick={this.onReplayTimes}
                 >
                   Replay Times
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={this.onEdit}
+                >
+                  Edit
                 </button>
                 <span onClick={props.onClose} aria-hidden="true" className="w-close">&times;</span>
               </div> : null}

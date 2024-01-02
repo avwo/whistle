@@ -1,10 +1,9 @@
 var express = require('express');
 var app = express();
 var path = require('path');
-var url = require('url');
 var http = require('http');
 var https = require('https');
-var parseurl = require('parseurl');
+var parseReqUrl = require('parseurl');
 var bodyParser = require('body-parser');
 var crypto = require('crypto');
 var cookie = require('cookie');
@@ -21,6 +20,7 @@ var sendError = require('../cgi-bin/util').sendError;
 var parseAuth = require('../../../lib/util/common').parseAuth;
 var getWorker = require('../../../lib/plugins/util').getWorker;
 var loadAuthPlugins = require('../../../lib/plugins').loadAuthPlugins;
+var parseUrl = require('../../../lib/util/parse-url-safe');
 
 var PARSE_CONF = { extended: true, limit: '3mb'};
 var UPLOAD_PARSE_CONF = { extended: true, limit: '30mb'};
@@ -43,6 +43,7 @@ var proxyEvent, util, pluginMgr;
 var MAX_AGE = 60 * 60 * 24 * 3;
 var MENU_HTML = fs.readFileSync(path.join(__dirname, '../../../assets/menu.html'));
 var INSPECTOR_HTML = fs.readFileSync(path.join(__dirname, '../../../assets/tab.html'));
+var MODAL_HTML = fs.readFileSync(path.join(__dirname, '../../../assets/modal.html'));
 var MENU_URL = '???_WHISTLE_PLUGIN_EXT_CONTEXT_MENU_' + config.port + '???';
 var INSPECTOR_URL = '???_WHISTLE_PLUGIN_INSPECTOR_TAB_' + config.port + '???';
 var UP_PATH_REGEXP = /(?:^|[\\/])\.\.(?:[\\/]|$)/;
@@ -165,7 +166,7 @@ function readRemoteStream(req, res, authUrl) {
     stream.on('error', handleError);
     return stream.pipe(res);
   }
-  var options = url.parse(authUrl);
+  var options = parseUrl(authUrl);
   options.rejectUnauthorized = false;
   var httpModule = options.protocol === 'https:' ? https : http;
   var headers = extend({}, req.headers);
@@ -232,7 +233,7 @@ if (typeof config.uiMiddleware === 'function') {
 
 app.use(function(req, res, next) {
   var referer = req.headers.referer;
-  var options = parseurl(req);
+  var options = parseReqUrl(req);
   var path = options.path;
   var index = path.indexOf('/whistle/');
   req.url = path;
@@ -249,7 +250,7 @@ app.use(function(req, res, next) {
   } else {
     pluginName = config.getPluginNameByHost(req.headers.host);
     if (!pluginName && referer) {
-      var refOpts = url.parse(referer);
+      var refOpts = parseUrl(referer);
       var pathname = refOpts.pathname;
       if (PLUGIN_PATH_RE.test(pathname) && RegExp.$3) {
         req.url = '/' + RegExp.$1 + '.' + RegExp.$2 + path;
@@ -319,6 +320,7 @@ app.all('/favicon.ico', function(req, res) {
 
 function readPluginPage(req, res, plugin, html, config) {
   res.type('html');
+  res.write('<!DOCTYPE html>\n');
   res.write(config);
   res.write(html);
   var index = req.path.indexOf('/', 1);
@@ -371,13 +373,14 @@ app.all(PLUGIN_PATH_RE, function(req, res) {
       }
       return;
     }
-    var options = parseurl(req);
+    var options = parseReqUrl(req);
     var headers = req.headers;
     headers[config.PLUGIN_HOOK_NAME_HEADER] = config.PLUGIN_HOOKS.UI;
     headers['x-whistle-remote-address'] = req._remoteAddr || util.getRemoteAddr(req);
     headers['x-whistle-remote-port'] = req._remotePort || util.getRemotePort(req);
     req.url = options.path.replace(result[0].slice(0, -1), '');
-    util.transformReq(req, res, ports.uiPort);
+    var openInModal = req.url.indexOf('?openInModal=5b6af7b9884e1165') !== -1;
+    util.transformReq(req, res, ports.uiPort, null, openInModal ? MODAL_HTML : null);
   });
 });
 
@@ -549,7 +552,7 @@ app.get('/', function(req, res) {
 });
 
 app.all(WEINRE_RE, function(req, res) {
-  var options = parseurl(req);
+  var options = parseReqUrl(req);
   if (options.pathname === '/weinre/client') {
     return res.redirect('client/' + (options.search || ''));
   }

@@ -7,9 +7,11 @@ var events = require('./events');
 var TabMgr = require('./tab-mgr');
 var storage = require('./storage');
 
+var DEFAULT_TAB = ' ';
+
 var ComposerList = React.createClass({
   getInitialState: function () {
-    return { activeName: storage.get('activeComposerTab') || ' ' };
+    return { activeName: storage.get('activeComposerTab') || DEFAULT_TAB };
   },
   shouldComponentUpdate: function (nextProps) {
     var hide = util.getBoolean(this.props.hide);
@@ -19,6 +21,9 @@ var ComposerList = React.createClass({
     var self = this;
     events.on('comTabsChange', function () {
       self.setState({});
+    });
+    events.on('_setComposerData', function() {
+      self.showTab(DEFAULT_TAB);
     });
   },
   showTab: function (name) {
@@ -33,7 +38,7 @@ var ComposerList = React.createClass({
     var modal = self.props.modal;
     var tabs = dataCenter.getComTabs();
     var active = self.state.activeName;
-    var activeDefalut = active === ' ';
+    var activeDefalut = active === DEFAULT_TAB;
     var hasActive = activeDefalut;
     var elem = tabs.map(function (tab) {
       var pluginName = tab.plugin;
@@ -57,7 +62,7 @@ var ComposerList = React.createClass({
     });
     if (!hasActive) {
       activeDefalut = true;
-      active = self.state.activeName = ' ';
+      active = self.state.activeName = DEFAULT_TAB;
     }
     return (
       <div
@@ -70,7 +75,7 @@ var ComposerList = React.createClass({
             <button
               type="button"
               onClick={function () {
-                self.showTab(' ');
+                self.showTab(DEFAULT_TAB);
               }}
               className={'btn btn-default' + (activeDefalut ? ' active' : '')}
             >

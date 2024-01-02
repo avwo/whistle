@@ -8,6 +8,8 @@ var modal = require('./modal');
 var events = require('./events');
 var mockWin = require('./win');
 
+var dataModal = dataCenter.networkModal;
+
 function compatAjax(options) {
   if (typeof options !== 'string') {
     options.type = options.type || options.method;
@@ -50,14 +52,29 @@ function getBridge(win) {
     decodeBase64: util.decodeBase64,
     alert: mockWin.alert,
     confirm: mockWin.confirm,
+    getActiveSession: function () {
+      return dataModal.getActive();
+    },
+    getSelectedSessionList: function () {
+      return dataModal.getSelectedList();
+    },
     importMockData: function(data) {
       return util.handleImportData(data);
     },
     download: function(data) {
       events.trigger('download', data);
     },
+    showOption: function() {
+      events.trigger('showPluginOption', plugin);
+    },
+    hideOption: function() {
+      events.trigger('hidePluginOption', plugin);
+    },
     setNetworkSettings: function(data) {
       events.trigger('setNetworkSettings', data);
+    },
+    setComposerData: function(data) {
+      events.trigger('setComposerData', data);
     },
     copyText: function(text, tips) {
       var btn = $('#copyTextBtn');

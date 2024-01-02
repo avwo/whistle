@@ -394,10 +394,6 @@ textarea.w-composer-rules {
   background-color: lightyellow;
 }
 
-.w-composer-use-h2, .w-composer-enable-body {
-  position: absolute;
-  top: 0;
-}
 .w-composer-use-h2 {
   right: 5px;
 }
@@ -425,13 +421,8 @@ textarea.w-composer-rules {
   font-size: 13px;
 }
 
-.w-composer-pretty {
-  right: 146px;
-  position: absolute;
-}
-
-.w-composer-enable-body {
-  right: 80px;
+.w-composer-pretty, .w-composer-use-h2, .w-composer-enable-body {
+  margin-left: 20px!important;
 }
 
 .w-composer-tabs input {
@@ -500,7 +491,6 @@ textarea.w-composer-rules {
   background: #eee;
   padding: 8px 5px;
   overflow: hidden;
-  text-overflow: ellipsis;
   position: sticky;
   top: 0;
   font-weight: 600;
@@ -514,7 +504,6 @@ textarea.w-composer-rules {
 .w-history-item {
   padding: 6px 5px 8px 10px;
   overflow: hidden;
-  text-overflow: ellipsis;
   cursor: default;
   white-space: nowrap;
   background-color: #fff;
@@ -612,4 +601,21 @@ textarea.w-composer-rules {
   line-height: 24px;
   padding: 0 8px;
   margin-left: 10px;
+}
+
+.w-composer-btns {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.w-composer-btns a {
+  color: #000;
+  font-weight: normal;
+  margin-right: 10px;
+  text-decoration: none;
+}
+
+.w-composer-btns a:hover {
+  color: #337ab7;
 }

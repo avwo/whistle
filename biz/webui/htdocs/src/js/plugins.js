@@ -150,7 +150,14 @@ var Home = React.createClass({
     }, handlePlugins);
   },
   onOpen: function (e) {
-    this.props.onOpen && this.props.onOpen(e);
+    var name = e.target.getAttribute('data-name');
+    var data = this.props.data;
+    var plugin = data && data.plugins && data.plugins[name + ':'] || {};
+    if (plugin.openInModal) {
+      events.trigger('showPluginOption', plugin);
+    } else {
+      this.props.onOpen && this.props.onOpen(e);
+    }
     e.preventDefault();
   },
   syncData: function (plugin) {
@@ -357,9 +364,10 @@ var Home = React.createClass({
                   var plugin = plugins[name];
                   name = name.slice(0, -1);
                   var checked = !disabledPlugins[name];
-                  var openOutside =
-                    plugin.pluginHomepage && !plugin.openInPlugins;
+                  var openInModal = plugin.openInModal;
+                  var openExternal = (plugin.pluginHomepage || plugin.openExternal) && !plugin.openInPlugins && !openInModal;
                   var url = plugin.pluginHomepage || 'plugin.' + name + '/';
+                  var homepage = plugin.homepage;
                   var hasNew = util.compareVersion(
                     plugin.latest,
                     plugin.version
@@ -407,27 +415,27 @@ var Home = React.createClass({
                       </td>
                       <td className="w-plugins-name" title={plugin.moduleName}>
                       {plugin.noOpt ? <span>{name}</span> : <a
-                          href={url}
+                          href={openInModal ? null : url}
                           target="_blank"
                           data-name={name}
-                          onClick={openOutside ? null : self.onOpen}
+                          onClick={openExternal ? null : self.onOpen}
                         >
                           {name}
                         </a>}
                       </td>
                       <td className="w-plugins-version">
-                        {plugin.homepage ? (
-                          <a href={plugin.homepage} target="_blank">
+                        {homepage ? (
+                          <a href={homepage} target="_blank">
                             {plugin.version}
                           </a>
                         ) : (
                           plugin.version
                         )}
                         {hasNew ? (
-                          plugin.homepage ? (
+                          homepage ? (
                             <a
                               className="w-new-version"
-                              href={plugin.homepage}
+                              href={homepage}
                               target="_blank"
                             >
                               {hasNew}
@@ -439,11 +447,11 @@ var Home = React.createClass({
                       </td>
                       <td className="w-plugins-operation">
                         {plugin.noOpt ? <span className="disabled">Option</span> : <a
-                          href={url}
+                          href={openInModal ? null : url}
                           target="_blank"
                           data-name={name}
                           className="w-plugin-btn"
-                          onClick={openOutside ? null : self.onOpen}
+                          onClick={openExternal ? null : self.onOpen}
                         >
                           Option
                         </a>}
@@ -482,9 +490,9 @@ var Home = React.createClass({
                             Uninstall
                           </a>
                         )}
-                        {plugin.homepage ? (
+                        {homepage ? (
                           <a
-                            href={plugin.homepage}
+                            href={homepage}
                             className="w-plugin-btn"
                             target="_blank"
                           >
@@ -696,9 +704,7 @@ var Tabs = React.createClass({
     var props = self.props;
     var tabs = props.tabs || [];
     var activeName = 'Home';
-    var disabledPlugins = props.disabledPlugins || {};
     var disabled = props.disabledAllPlugins;
-    var ndp = props.ndp;
     var active = self.props.active;
     if (active && active != activeName) {
       for (var i = 0, len = tabs.length; i < len; i++) {
@@ -740,7 +746,7 @@ var Tabs = React.createClass({
             </a>
           </li>
           {tabs.map(function (tab) {
-            var disd = !ndp && (disabled || disabledPlugins[tab.name]);
+            var disd = util.pluginIsDisabled(props, tab.name);
             return (
               <li className={activeName == tab.name ? ' active' : ''}>
                 <a

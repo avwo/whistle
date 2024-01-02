@@ -1,0 +1,19 @@
+
+.w-iframe-dialog .modal-dialog {
+  width: max(calc(100% - 240px), 720px);
+}
+
+.w-iframe-dialog .modal-body {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: max(calc(100vh - 120px), 600px);
+}
+
+.w-iframe-dialog .modal-body iframe {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border: none;
+  outline: none;
+}

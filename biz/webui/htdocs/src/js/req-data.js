@@ -21,6 +21,7 @@ var ROW_STYLE = { outline: 'none' };
 var columnState = {};
 var columnKeys = {};
 var CMD_RE = /^:dump\s+(\d{1,15})\s*$/;
+var BODY_FILTER = /(^\s*|\s+)(content|c|b|body):/i;
 var NOT_BOLD_RULES = {
   plugin: 1,
   pac: 1,
@@ -360,6 +361,7 @@ var ReqData = React.createClass({
     };
   },
   componentDidUpdate: function () {
+    this.isShownBtn && events.trigger('checkAtBottom');
     if (storage.get('disabledHNR') === '1') {
       return;
     }
@@ -514,14 +516,21 @@ var ReqData = React.createClass({
     };
     self.container = $(ReactDOM.findDOMNode(self.refs.container));
     self.content = ReactDOM.findDOMNode(self.refs.content);
+    var clickedCount = 0;
     self.$content = $(self.content)
       .on('dblclick', 'tr', function (e) {
-        events.trigger('toggleDetailTab');
+        if (clickedCount > 2) {
+          events.trigger('toggleDetailTab');
+        }
       })
       .on('click', 'tr', function (e) {
         var id = this.getAttribute('data-id');
         if (id) {
-          dataCenter.lastSelectedDataId = id;
+          if (dataCenter.lastSelectedDataId != id) {
+            clickedCount = 0;
+            dataCenter.lastSelectedDataId = id;
+          }
+          ++clickedCount;
           var item = self.props.modal.getItem(id);
           self.onClick(e, item);
         }
@@ -600,6 +609,25 @@ var ReqData = React.createClass({
     };
     importRemoteUrl();
     $(window).on('hashchange', importRemoteUrl);
+    var backBtn = $(ReactDOM.findDOMNode(self.refs.backBtn));
+    var hideBackBtn = function() {
+      if (self.isShownBtn) {
+        self.isShownBtn = false;
+        backBtn.hide();
+      }
+    };
+    self.hideBackBtn = hideBackBtn;
+    self.isShownBtn = false;
+    events.on('toggleBackToBottomBtn', function(_, show) {
+      if (show) {
+        if (!self.isShownBtn) {
+          self.isShownBtn = true;
+          backBtn.show();
+        }
+      } else {
+        hideBackBtn();
+      }
+    });
   },
   onDragStart: function (e) {
     var target = $(e.target).closest('.w-req-data-item');
@@ -1096,9 +1124,11 @@ var ReqData = React.createClass({
   },
   onFilterChange: function (keyword) {
     var self = this;
-    self.props.modal.search(keyword);
+    var filterBody = BODY_FILTER.test(keyword);
     clearTimeout(self.networkStateChangeTimer);
+    !filterBody && self.props.modal.search(keyword);
     self.networkStateChangeTimer = setTimeout(function () {
+      filterBody && self.props.modal.search(keyword);
       self.setState({ filterText: keyword }, self.updateList);
       events.trigger('networkStateChange');
     }, 600);
@@ -1112,11 +1142,8 @@ var ReqData = React.createClass({
     this.refs.filterInput.clearFilterText();
   },
   autoRefresh: function () {
-    if (this.container) {
-      this.container.find(
-        '.ReactVirtualized__Grid:first'
-      ).scrollTop = 100000000;
-    }
+    this.container.find('.ReactVirtualized__Grid:first')[0].scrollTop = 100000000;
+    this.hideBackBtn();
   },
   orderBy: function (e) {
     var target = this.willResort && $(e.target).closest('th')[0];
@@ -1319,7 +1346,6 @@ var ReqData = React.createClass({
     return (
       <div className="fill w-req-data-con orient-vertical-box">
         <div
-          ref="wrapper"
           className="w-req-data-content fill orient-vertical-box"
           style={colStyle}
         >
@@ -1392,6 +1418,10 @@ var ReqData = React.createClass({
                 );
               }}
             </RV.AutoSizer>
+          </div>
+          <div className="w-back-to-the-bottom" ref="backBtn" onClick={this.autoRefresh}>
+            <span className="glyphicon glyphicon-arrow-down" />
+            Back to the bottom
           </div>
         </div>
         <FilterInput

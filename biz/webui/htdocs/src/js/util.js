@@ -989,10 +989,21 @@ function getMockData(data) {
   };
 }
 
+exports.pluginIsDisabled = function(props, name) {
+  var disabledPlugins = props.disabledPlugins || {};
+  return !props.ndp && (props.disabledAllPlugins || disabledPlugins[name]);
+};
+
 exports.handleImportData = function(data) {
-  if (data && data.type === 'setNetworkSettings') {
-    events.trigger('setNetworkSettings', data);
-    return true;
+  if (data) {
+    if (data.type === 'setNetworkSettings') {
+      events.trigger('setNetworkSettings', data);
+      return true;
+    }
+    if (data.type === 'setComposerData') {
+      events.trigger('setComposerData', data);
+      return true;
+    }
   }
   var mockData = getMockData(data);
   if (mockData) {

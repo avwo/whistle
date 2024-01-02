@@ -354,38 +354,37 @@ proto.getSibling = function (name) {
  * selected[s, active, a]: 根据激活的过滤
  */
 proto.search = function (keyword, disabledType) {
-  this._type = '';
-  this._keyword = typeof keyword != 'string' ? '' : keyword.trim();
-  if (
-    !disabledType &&
-    this._keyword &&
-    /^(selected|s|active|a):(.*)$/.test(keyword)
-  ) {
+  keyword = typeof keyword === 'string' ? keyword.trim() : '';
+  if (keyword &&(disabledType ? /^(b|v):(.*)$/ : /^(selected|s|active|a|b|v):(.*)$/).test(keyword)) {
     this._type = RegExp.$1;
-    this._keyword = RegExp.$2.trim();
+    keyword = RegExp.$2.trim();
+  } else {
+    this._type = ''; // reset
   }
+  this._keyword = keyword.toLowerCase();
   this.filter();
-  return !this._keyword;
+  return !keyword;
 };
 
 proto.filter = function () {
   var keyword = this._keyword;
   var list = this.list;
-  var hasFilterType = !!this._type;
+  var filterBody = this._type === 'b' || this._type === 'v';
+  var filterSelected = !!this._type && !filterBody;
   var data = this.data;
-
-  if (!keyword) {
-    list.forEach(function (name) {
-      var item = data[name];
-      item.hide = hasFilterType && !item.selected;
-    });
-    return;
-  }
 
   list.forEach(function (name) {
     var item = data[name];
-    item.hide =
-      (hasFilterType && !item.selected) || (name || '').indexOf(keyword) == -1;
+    var hideSelected = filterSelected && !item.selected;
+    if (!keyword || hideSelected) {
+      item.hide = hideSelected;
+      return;
+    }
+    if (filterBody) {
+      item.hide = !item.value || item.value.toLowerCase().indexOf(keyword) == -1;
+    } else {
+      item.hide = !name || name.toLowerCase().indexOf(keyword) == -1;
+    }
   });
   return list;
 };

@@ -18,7 +18,7 @@ var iframeStyle = {
   padding: 0,
   border: 'none',
   width: 840,
-  height: 320,
+  height: 360,
   margin: 0,
   verticalAlign: 'top'
 };
