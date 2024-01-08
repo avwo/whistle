@@ -2229,6 +2229,9 @@ function parseResCookie(cookie) {
     case 'secure':
       result.secure = true;
       break;
+    case 'partitioned':
+      result.partitioned = true;
+      break;
     case 'samesite':
       result.sameSite = cookie[i];
       result.samesite = cookie[i];
