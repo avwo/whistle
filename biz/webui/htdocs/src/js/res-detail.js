@@ -22,7 +22,8 @@ var COOKIE_HEADERS = [
   'Max-Age',
   'HttpOnly',
   'Secure',
-  'SameSite'
+  'SameSite',
+  'Partitioned'
 ];
 
 var ResDetail = React.createClass({
@@ -119,7 +120,7 @@ var ResDetail = React.createClass({
             decodeURIComponent,
             true
           );
-          var row = ['', '', '', '', '', '', '', '', ''];
+          var row = ['', '', '', '', '', '', '', '', '', ''];
           for (var i in cookie) {
             switch (i.toLowerCase()) {
             case 'domain':
@@ -142,6 +143,9 @@ var ResDetail = React.createClass({
               break;
             case 'samesite':
               row[8] = cookie[i];
+              break;
+            case 'partitioned':
+              row[9] = '√';
               break;
             default:
               if (!row[0]) {
