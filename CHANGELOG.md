@@ -1,3 +1,8 @@
+# v2.9.63
+1. feat: 支持 Cookie 的 `Partitioned` 属性（该属性需要跟 `Secure`、`SameSite=None` 一起使用）
+2. feat: Composer 添加 `CopyAsCURL` 按钮
+3. feat: Composer 添加 `ProxyRules` 选项，去选后可以禁用 Proxy (Whistle) 设置的所有规则（Proxy 里面的规则优先级高于 Composer Rules）
+
 # v2.9.62
 1. chore: 更新 CodeMirror 版本
 2. feat: Network Settings 支持导入导出
