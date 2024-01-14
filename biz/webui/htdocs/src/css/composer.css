@@ -50,7 +50,6 @@
   border: 1px solid #ccc;
   border-left: none;
   border-right: none;
-  background-color: #f6f6f6;
 }
 .w-composer-history-btn {
   height: 24px;
@@ -190,13 +189,21 @@
   position: relative;
 }
 
-.w-composer-bar .btn {
+.w-composer-bar .btn, .w-copy-as-curl {
   line-height: 13px;
   height: 15px;
   padding: 0 5px;
   font-weight: normal;
   font-size: 12px;
   border-radius: 3px;
+}
+
+.w-copy-as-curl {
+  margin-left: 15px;
+  margin-top: -3px;
+}
+
+.w-composer-bar .btn {
   position: absolute;
   top: 1px;
   right: 5px;
@@ -421,8 +428,10 @@ textarea.w-composer-rules {
   font-size: 13px;
 }
 
-.w-composer-pretty, .w-composer-use-h2, .w-composer-enable-body {
-  margin-left: 20px!important;
+.w-composer-proxy-rules, .w-composer-pretty,
+.w-composer-use-h2, .w-composer-enable-body {
+  margin-left: 15px!important;
+  font-weight: normal;
 }
 
 .w-composer-tabs input {
@@ -597,10 +606,11 @@ textarea.w-composer-rules {
 }
 
 .w-composer-history-footer .btn {
-  height: 26px;
-  line-height: 24px;
-  padding: 0 8px;
+  height: 24px;
+  line-height: 22px;
+  padding: 0 6px;
   margin-left: 10px;
+  font-size: 13px;
 }
 
 .w-composer-btns {
@@ -614,6 +624,10 @@ textarea.w-composer-rules {
   font-weight: normal;
   margin-right: 10px;
   text-decoration: none;
+}
+
+.w-composer-btns a:last-child {
+  margin-right: 5px;
 }
 
 .w-composer-btns a:hover {

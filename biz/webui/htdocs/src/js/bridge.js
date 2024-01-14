@@ -76,12 +76,7 @@ function getBridge(win) {
     setComposerData: function(data) {
       events.trigger('setComposerData', data);
     },
-    copyText: function(text, tips) {
-      var btn = $('#copyTextBtn');
-      btn.attr('data-clipboard-text', text);
-      btn.removeClass().addClass('w-copy-text' + (tips ? '-with-tips' : ''));
-      btn.trigger('click');
-    },
+    copyText: util.copyText,
     syncData: function(cb) {
       plugin && dataCenter.syncData(plugin, cb);
     },

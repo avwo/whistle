@@ -122,6 +122,13 @@ exports.parseLogs = function (str) {
   return result;
 };
 
+exports.copyText = function(text, tips) {
+  var btn = $('#copyTextBtn');
+  btn.attr('data-clipboard-text', text);
+  btn.removeClass().addClass('w-copy-text' + (tips ? '-with-tips' : ''));
+  btn.trigger('click');
+};
+
 exports.preventDefault = function preventDefault(e) {
   e.keyCode == 8 && e.preventDefault();
 };

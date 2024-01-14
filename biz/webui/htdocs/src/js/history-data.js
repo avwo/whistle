@@ -27,6 +27,29 @@ var HistoryData = React.createClass({
   scrollToTop: function() {
     ReactDOM.findDOMNode(this.refs.list).scrollTop = 0;
   },
+  copyAsCURL: function() {
+    var item = this.getItem();
+    if (!item) {
+      return;
+    }
+    var headers = item.headers;
+    if (typeof headers === 'string') {
+      headers = RULES_KEY.test(headers) ? headers.split(/\r\n|\r|\n/).filter(function(line) {
+        return !RULES_KEY.test(line);
+      }).join('\r\n') : headers;
+      headers = util.parseHeaders(headers);
+    }
+    var text = util.asCURL({
+      url: item.url || '',
+      req: {
+        method: item.method,
+        headers: headers,
+        base64: item.base64 || '',
+        body: item.body || ''
+      }
+    });
+    util.copyText(text, true);
+  },
   onEdit: function () {
     this.props.onEdit(this.getItem());
   },
@@ -124,6 +147,13 @@ var HistoryData = React.createClass({
                   onClick={this.export}
                 >
                   Export
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-default"
+                  onClick={this.copyAsCURL}
+                >
+                  As CURL
                 </button>
                 <button
                   type="button"

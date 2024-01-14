@@ -251,6 +251,9 @@ module.exports = function(req, res) {
   var isWebSocket = method === 'WEBSOCKET';
   delete headers[config.WEBUI_HEAD];
   headers[config.REQ_FROM_HEADER] = 'W2COMPOSER';
+  if (req.body.enableProxyRules === false) {
+    headers[config.DISABLE_RULES_HEADER] = '1';
+  }
   headers.host = options.host;
   options.clientId = clientId;
   var clientIp = util.getClientIp(req);
