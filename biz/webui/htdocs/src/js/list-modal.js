@@ -154,7 +154,7 @@ proto.moveTo = function (fromName, toName, group, toTop) {
   var list = this.list;
   var fromIndex = list.indexOf(fromName);
   var toIndex = list.indexOf(toName);
-  if (fromIndex !== -1 && toIndex !== -1) {
+  if (fromIndex !== -1 && toIndex !== -1 && fromIndex !== toIndex) {
     if (group && util.isGroup(fromName)) {
       var data = this.data;
       var children = [fromName];
@@ -184,7 +184,7 @@ proto.moveTo = function (fromName, toName, group, toTop) {
       list.splice(toIndex, 0, fromName);
     } else {
       list.splice(fromIndex, 1);
-      list.splice(fromIndex > toIndex ? toIndex + 1 : toIndex, 0, fromName);
+      list.splice(fromIndex > toIndex + 1 ? toIndex + 1 : toIndex, 0, fromName);
     }
     return true;
   }
@@ -268,13 +268,48 @@ proto.setActive = function (name, active) {
   return item;
 };
 
-proto.getActive = function () {
+proto.getActiveObj = function() {
+  var obj = {};
   for (var i in this.data) {
     var item = this.data[i];
-    if (item.active && !util.isGroup(item.name)) {
-      return item;
+    if (util.isGroup(item.name)) {
+      if (item._isNewGroup) {
+        delete item._isNewGroup;
+        obj.groupItem = item;
+        if (obj.activeItem) {
+          return obj;
+        }
+      }
+    } else {
+      if (item.active) {
+        obj.activeItem = item;
+        if (obj.groupItem) {
+          return obj;
+        }
+      }
     }
   }
+  return obj;
+};
+
+proto.getActive = function (ensure) {
+  var first;
+  ensure = ensure === true;
+  for (var i in this.data) {
+    var item = this.data[i];
+    if (!util.isGroup(item.name)) {
+      if (item.active) {
+        return item;
+      }
+      if (ensure) {
+        first = first || item;
+      }
+    }
+  }
+  if (first) {
+    first.active = true;
+  }
+  return first;
 };
 
 proto.remove = function (name) {

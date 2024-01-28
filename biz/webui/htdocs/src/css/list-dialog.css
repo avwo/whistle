@@ -1,6 +1,6 @@
 .w-list-dialog label {
   line-height: 26px;
-  width: 226px;
+  width: 200px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -10,7 +10,7 @@
   margin-right: 5px;
 }
 .w-list-dialog {
-  width: 750px;
+  width: 880px;
 }
 .w-list-dialog .w-list-wrapper {
   max-height: 360px;

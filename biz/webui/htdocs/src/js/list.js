@@ -91,8 +91,11 @@ function getName(name) {
   return name.substring(name.indexOf('_') + 1);
 }
 
-function getDragInfo(e) {
+function getDragInfo(e, list) {
   var target = getTarget(e);
+  if (list && !target) {
+    target = $(ReactDOM.findDOMNode(list)).find('a:last')[0];
+  }
   var name = target && target.getAttribute('data-name');
   if (!name) {
     return;
@@ -243,8 +246,12 @@ var List = React.createClass({
   componentDidUpdate: function () {
     var modal = this.props.modal;
     var curListLen = modal.list.length;
-    var curActiveItem = modal.getActive();
-    if (curListLen > this.curListLen || curActiveItem !== this.curActiveItem) {
+    var obj = modal.getActiveObj();
+    var curActiveItem = obj.curActiveItem;
+    var groupItem = obj.groupItem;
+    if (groupItem) {
+      this.ensureVisible(false, groupItem);
+    } else if (curListLen > this.curListLen || curActiveItem !== this.curActiveItem) {
       this.ensureVisible();
     }
     this.curListLen = curListLen;
@@ -253,8 +260,8 @@ var List = React.createClass({
       this.refs.recycleBinDialog.hide();
     }
   },
-  ensureVisible: function (init) {
-    var activeItem = this.props.modal.getActive();
+  ensureVisible: function (init, activeItem) {
+    activeItem = activeItem || this.props.modal.getActive();
     if (activeItem) {
       var elem = ReactDOM.findDOMNode(this.refs[activeItem.name]);
       var con = ReactDOM.findDOMNode(this.refs.list);
@@ -355,7 +362,8 @@ var List = React.createClass({
     }
   },
   onDrop: function (e) {
-    var info = getDragInfo(e);
+    var info = getDragInfo(e, this.refs.list);
+    e.stopPropagation();
     if (info) {
       var fromName = getName(e.dataTransfer.getData('-' + NAME_PREFIX));
       var group = this.collapseGroups.indexOf(fromName) !== -1;
@@ -459,10 +467,10 @@ var List = React.createClass({
       events.trigger('delete' + name, self.currentFocusItem);
       break;
     case 'Rule':
-      events.trigger('createRules', self.getCurGroup());
+      events.trigger('createRules', [self.getCurGroup(), self.currentFocusItem]);
       break;
     case 'Key':
-      events.trigger('createValues', self.getCurGroup());
+      events.trigger('createValues', [self.getCurGroup(), self.currentFocusItem]);
       break;
     case 'Export':
       events.trigger('export' + name);
@@ -632,6 +640,7 @@ var List = React.createClass({
     var childCount = 0;
     var selectedCount = 0;
     var changed;
+    var active;
     var setStatus = function() {
       if (group) {
         group.changed = changed;
@@ -647,32 +656,39 @@ var List = React.createClass({
       if (util.isGroup(item.name)) {
         setStatus();
         item.isGroup = true;
+        if (group) {
+          group.activeGroup = active;
+        }
         group = item;
+        active = false;
+        group.activeGroup = false;
       } else if (group) {
         ++childCount;
         changed = changed || item.changed;
+        active = active || item.active;
         if (isRules && item.selected) {
           ++selectedCount;
         }
       }
     });
+    if (group) {
+      group.activeGroup = active;
+    }
     setStatus();
     return list;
   },
   render: function () {
     var self = this;
     var modal = self.props.modal;
-    var list = self.parseList();
+    var list = modal.list;
     var data = modal.data;
     var props = self.props;
-    var activeItem = modal.getActive() || '';
+    var activeItem = modal.getActive(true) || '';
     var isSub, isHide;
-    if (!activeItem && list[0] && (activeItem = data[list[0]])) {
-      activeItem.active = true;
-    }
     var isRules = self.isRules();
     var draggable = false;
     var activeName = activeItem ? activeItem.name : '';
+    list = self.parseList();
     if (isRules) {
       draggable = list.length > 2;
       util.triggerRulesActiveChange(activeName);
@@ -698,6 +714,7 @@ var List = React.createClass({
               ref="list"
               tabIndex="0"
               onContextMenu={this.onContextMenu}
+              onDrop={self.onDrop}
               className={
                 'fill orient-vertical-box w-list-data ' +
                 (props.className || '') +
@@ -740,6 +757,7 @@ var List = React.createClass({
                       'w-selected': !isGroup && item.selected,
                       'w-list-group': isGroup,
                       'w-list-sub': !isGroup && isSub,
+                      'w-list-group-active': isGroup && item.activeGroup,
                       'w-hide': !isGroup && isHide,
                       'w-group-empty': isGroup && !item.childCount
                     })}

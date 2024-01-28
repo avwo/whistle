@@ -2480,9 +2480,10 @@ var Index = React.createClass({
   hideRenameValueInput: function () {
     this.setState({ showEditValues: false });
   },
-  showCreateRules: function (_, item) {
+  showCreateRules: function (_, group, focusItem) {
     var createRulesInput = ReactDOM.findDOMNode(this.refs.createRulesInput);
-    this._curFocusRulesItem = item;
+    this._curFocusRulesGroup = group;
+    this._curFocusRulesItem = focusItem;
     this.setState(
       {
         showCreateRules: true
@@ -2492,9 +2493,10 @@ var Index = React.createClass({
       }
     );
   },
-  showCreateValues: function (_, item) {
+  showCreateValues: function (_, group, focusItem) {
     var createValuesInput = ReactDOM.findDOMNode(this.refs.createValuesInput);
-    this._curFocusValuesItem = item;
+    this._curFocusValuesGroup = group;
+    this._curFocusValuesItem = focusItem;
     this.setState(
       {
         showCreateValues: true
@@ -2570,23 +2572,41 @@ var Index = React.createClass({
       return;
     }
     var addToTop = type === 'top' ? 1 : '';
-    var curItem = self._curFocusRulesItem;
+    var groupItem = self._curFocusRulesGroup;
+    var focusItem = self._curFocusRulesItem;
     var params = { name: name, addToTop: addToTop };
-    if (curItem) {
-      params.groupName = curItem.name;
+    if (isGroup) {
+      var focusName = focusItem && focusItem.name;
+      if (focusName) {
+        if (focusName === 'Default') {
+          focusName = self.state.rules.list[1];
+        }
+        params.focusName = focusName;
+      }
+    } else if (groupItem) {
+      params.groupName = groupItem.name;
     }
     dataCenter.rules.add(params, function (data, xhr) {
       if (data && data.ec === 0) {
         var item = modal[addToTop ? 'unshift' : 'add'](name);
         target.value = '';
         target.blur();
-        modal.moveToGroup(name, params.groupName, addToTop);
-        !isGroup && self.setRulesActive(name);
+        var toName = params.focusName;
+        if (toName) {
+          modal.moveTo(name, toName);
+        } else {
+          modal.moveToGroup(name, params.groupName, addToTop);
+        }
+        if (isGroup) {
+          if (item) {
+            item._isNewGroup = true;
+          }
+        } else {
+          self.setRulesActive(name);
+        }
         params.groupName && events.trigger('expandRulesGroup', params.groupName);
         self.setState(isGroup ? {} : {
           activeRules: item
-        }, function() {
-          isGroup && events.trigger('scrollRulesBottom');
         });
         self.triggerRulesChange('create');
       } else {
@@ -2628,23 +2648,37 @@ var Index = React.createClass({
       message.error('The name \'' + name + '\' already exists.');
       return;
     }
-    var curItem = self._curFocusValuesItem;
+    var groupItem = self._curFocusValuesGroup;
+    var focusItem = self._curFocusValuesItem;
     var params = { name: name };
-    if (curItem) {
-      params.groupName = curItem.name;
+    if (isGroup) {
+      if (focusItem) {
+        params.focusName = focusItem.name;
+      }
+    } else if (groupItem) {
+      params.groupName = groupItem.name;
     }
     dataCenter.values.add(params, function (data, xhr) {
       if (data && data.ec === 0) {
         var item = modal.add(name);
         target.value = '';
         target.blur();
-        modal.moveToGroup(name, params.groupName);
-        !isGroup && self.setValuesActive(name);
+        var toName = params.focusName;
+        if (toName) {
+          modal.moveTo(name, toName);
+        } else {
+          modal.moveToGroup(name, params.groupName);
+        }
+        if (isGroup) {
+          if (item) {
+            item._isNewGroup = true;
+          }
+        } else {
+          self.setValuesActive(name);
+        }
         params.groupName && events.trigger('expandValuesGroup', params.groupName);
         self.setState(isGroup ? {} : {
           activeValues: item
-        }, function() {
-          isGroup && events.trigger('scrollValuesBottom');
         });
         self.triggerValuesChange('create');
       } else {

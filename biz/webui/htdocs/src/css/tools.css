@@ -361,9 +361,22 @@
   padding-right: 10px;
 }
 
-.w-mock-file .w-mock-value-type {
-  width: 555px;
+.w-mock-comment {
+  display: none;
 }
+
+.w-mock-file .w-mock-comment {
+  margin-left: 20px;
+  display: inline-block;
+  color: #555;
+}
+
+.w-mock-file .w-mock-comment input {
+  margin-left: 5px;
+  width: 300px;
+  font-weight: normal;
+  font-size: 12px;
+ }
 
 .w-mock-dialog .modal-footer select {
   width: 220px;

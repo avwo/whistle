@@ -78,6 +78,10 @@
   padding-left: 5px;
 }
 
+.w-list-data .w-list-group.w-list-group-active {
+  background: #e0e0e0;
+}
+
 .w-list-data .w-list-group:hover, .w-list-data .w-list-group:active {
   color: #000;
 }

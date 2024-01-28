@@ -6,8 +6,12 @@ module.exports = function(req, res) {
   var body = req.body;
   var list;
   var exists = values.exists(body.name);
-  if (values.add(body.name, body.value, body.clientId) != null && !isGroup(body.name)) {
-    if (body.groupName) {
+  if (values.add(body.name, body.value, body.clientId) != null) {
+    if (isGroup(body.name)) {
+      if (body.focusName) {
+        values.moveTo(body.name, body.focusName, body.clientId);
+      }
+    } else if (body.groupName) {
       values.moveToGroup(body.name, body.groupName);
     } else if (!exists) {
       var group = values.getFirstGroup();

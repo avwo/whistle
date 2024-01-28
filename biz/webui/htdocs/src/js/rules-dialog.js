@@ -190,6 +190,7 @@ var RulesDialog = React.createClass({
             filename: filename,
             data: rulesValue
           });
+          events.trigger('addMockRulesSuccess');
           if (values) {
             events.trigger('addNewValuesFile', {
               filename: values.name,
