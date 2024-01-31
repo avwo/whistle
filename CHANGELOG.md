@@ -1,6 +1,7 @@
 # v2.9.64
 1. feat: Mock 功能支持对临时文件添加注释
 2. feat: 优化 Rules & Values 的拖拽功能
+3. fix: https://github.com/avwo/whistle/issues/1040
 
 # v2.9.63
 1. feat: 支持 Cookie 的 `Partitioned` 属性（该属性需要跟 `Secure`、`SameSite=None` 一起使用）
