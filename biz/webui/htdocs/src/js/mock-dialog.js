@@ -156,8 +156,7 @@ var MockDialog = React.createClass({
   getValues: function() {
     var valueType = this.getValueType();
     var isFile = valueType === 'file';
-    var showKeyValue = isFile || valueType === 'key';
-    if (!showKeyValue) {
+    if (!isFile && valueType !== 'key') {
       return;
     }
     var values = {
@@ -167,7 +166,7 @@ var MockDialog = React.createClass({
     var value = this._textarea.value;
     var dataSrc = this.state.dataSrc;
     var item = this.state.item;
-    if (value === getValue(item, dataSrc)) {
+    if (isFile && value === getValue(item, dataSrc)) {
       if (dataSrc === 'reqBody') {
         values.base64 = item.req.base64;
       } else if (dataSrc === 'resBody') {
