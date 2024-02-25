@@ -64,3 +64,4 @@ coverage
 _book
 dist
 /.history
+/test/temp_files
