@@ -319,6 +319,8 @@ var Row = React.createClass({
             </th>
             {columnList.map(function (col) {
               var name = col.name;
+              var value;
+              var url;
               if (name === 'custom1') {
                 var key1 = dataCenter.custom1Key;
                 if (util.notEStr(key1)) {
@@ -329,15 +331,18 @@ var Row = React.createClass({
                 if (util.notEStr(key2)) {
                   item.custom2 = util.getValue(item, key2);
                 }
+              } else if (name === 'path') {
+                value = item.shortPath;
+                url = item.url;
               }
-              var value = util.getCellValue(item, col);
+              value = value || util.getCellValue(item, col);
               var colStyle = getColStyle(col, style);
               return (
                 <td
                   key={name}
                   className={col.className}
                   style={colStyle}
-                  title={col.showTitle ? value : undefined}
+                  title={col.showTitle ? (url || value) : undefined}
                 >
                   {value}
                 </td>
@@ -1200,7 +1205,7 @@ var ReqData = React.createClass({
       events.trigger('composer');
     }
   },
-  renderColumn: function (col, i) {
+  renderColumn: function (col) {
     var name = col.name;
     var style = getColStyle(col);
     if (columnState[name]) {

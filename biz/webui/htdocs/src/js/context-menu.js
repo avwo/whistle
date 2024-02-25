@@ -49,6 +49,7 @@ var ContextMenu = React.createClass({
   },
   onClick: function (e) {
     var target = $(e.target).closest('li');
+    e.preventDefault();
     if (
       target.hasClass('w-ctx-sub-menu-list') ||
       target.hasClass('w-ctx-item-disabled')
@@ -66,7 +67,7 @@ var ContextMenu = React.createClass({
         target.attr('data-name')
       );
     }
-    if (e.shiftKey && target.attr('data-shift-to-edit')) {
+    if ((e.shiftKey || e.ctrlKey || e.metaKey) && target.attr('data-shift-to-edit')) {
       this.refs.editorDialog.show({
         value: target.attr('data-clipboard-text')
       });
@@ -87,7 +88,7 @@ var ContextMenu = React.createClass({
       <div
         onClick={self.onClick}
         className={'w-context-menu ' + (data.className || '')}
-        onContextMenu={self.preventDefault}
+        onContextMenu={self.onClick}
         style={{
           left: data.left,
           top: data.top,

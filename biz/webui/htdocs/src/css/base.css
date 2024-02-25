@@ -335,13 +335,24 @@ a {
 }
 
 .w-editor-dialog .modal-dialog {
-  width: 720px;
+  width: 960px;
 }
 
 .w-editor-dialog textarea {
-  width: 700px;
-  height: 320px;
+  width: 940px;
+  height: 520px;
   padding: 5px;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+}
+
+.w-big-editor-dialog .modal-dialog {
+  width: 1060px;
+}
+
+.w-big-editor-dialog textarea {
+  width: 1040px;
+  height: 600px;
 }
 
 .w-win-dialog .modal-dialog {

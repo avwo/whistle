@@ -117,3 +117,11 @@
   background-color: #F5F5F5;
   color: #888;
 }
+
+.w-has-selected-rules .CodeMirror {
+  border-top: 3px solid #75bb79;
+}
+
+.w-has-selected-rules.w-has-selected-disabled .CodeMirror {
+  border-top-color: #ccc;
+}

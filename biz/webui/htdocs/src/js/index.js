@@ -22,7 +22,7 @@ var storage = require('./storage');
 var Dialog = require('./dialog');
 var ListDialog = require('./list-dialog');
 var FilterBtn = require('./filter-btn');
-// var FilesDialog = require('./files-dialog');
+var EditorDialog = require('./editor-dialog');
 var message = require('./message');
 var UpdateAllBtn = require('./update-all-btn');
 var ContextMenu = require('./context-menu');
@@ -36,6 +36,7 @@ var MockDialog = require('./mock-dialog');
 var IframeDialog = require('./iframe-dialog');
 var win = require('./win');
 
+var TEMP_LINK_RE = /^(?:[\w-]+:\/\/)?temp\/([\da-z]{64}|blank)(?:\.[\w-]+)?$/;
 var H2_RE = /http\/2\.0/i;
 var JSON_RE = /^\s*(?:[\{｛][\w\W]+[\}｝]|\[[\w\W]+\])\s*$/;
 var DEFAULT = 'Default';
@@ -992,16 +993,22 @@ var Index = React.createClass({
       modal.setChanged(filename, false);
       self.setRulesActive(filename);
       self.setState({ activeRules: item });
-      self.triggerRulesChange('create');
+      if (!data.update) {
+        self.triggerRulesChange('create');
+      }
     });
     events.on('addNewValuesFile', function(_, data) {
       var filename = data.filename;
       var modal = self.state.values;
       var item = modal.add(filename, data.data);
       modal.setChanged(filename, false);
-      self.setValuesActive(filename);
-      self.setState({ activeValues: item });
-      self.triggerValuesChange('create');
+      if (data.update) {
+        self.setState({});
+      } else {
+        self.setValuesActive(filename);
+        self.setState({ activeValues: item });
+        self.triggerValuesChange('create');
+      }
     });
 
     events.on('recoverRules', function (_, data) {
@@ -1117,8 +1124,8 @@ var Index = React.createClass({
           data.append('importSessions', files[0]);
           self.uploadSessionsForm(data);
         }
-        const overLeftBar = target.closest('.w-divider-left').length;
-        const overPlugins = name === 'plugins';
+        var overLeftBar = target.closest('.w-divider-left').length;
+        var overPlugins = name === 'plugins';
         if ((!overLeftBar && !overPlugins) || self.isHideRules()) {
           return;
         }
@@ -1249,11 +1256,13 @@ var Index = React.createClass({
           return;
         }
         var elem = $(this);
+        var text;
         if (
           elem.hasClass('cm-js-http-url') ||
           elem.hasClass('cm-string') ||
           elem.hasClass('cm-js-at') ||
-          getKey(elem.text())
+          TEMP_LINK_RE.test(text = elem.text()) ||
+          getKey(text)
         ) {
           elem.addClass('w-is-link');
         }
@@ -1286,10 +1295,19 @@ var Index = React.createClass({
           window.open(text);
           return;
         }
-        var name = getKey(text);
-        if (name) {
-          self.showAndActiveValues({ name: name });
-          return;
+        if (TEMP_LINK_RE.test(text)) {
+          var tempFile = RegExp.$1;
+          return events.trigger('showEditorDialog', [{
+            ruleName: self.getActiveRuleName(),
+            tempFile: tempFile
+          }, elem]);
+        } else {
+          var name = getKey(text);
+          if (name) {
+            return events.trigger('showEditorDialog', {
+              name: name
+            });
+          }
         }
       });
 
@@ -2810,6 +2828,11 @@ var Index = React.createClass({
         }
       }
     );
+  },
+  getActiveRuleName: function() {
+    var modal = this.state.rules;
+    var activeItem = modal.getActive();
+    return activeItem ? activeItem.name : '';
   },
   showAnonymousWeinre: function () {
     this.openWeinre();
@@ -5184,6 +5207,7 @@ var Index = React.createClass({
           <input ref="content" name="content" type="hidden" />
         </form>
         <IframeDialog ref="iframeDialog" />
+        <EditorDialog textEditor />
       </div>
     );
   }

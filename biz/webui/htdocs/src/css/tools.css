@@ -318,12 +318,12 @@
   text-align: right;
 }
 
-.w-mock-row a {
+.w-mock-row a, .w-big-editor-dialog .w-mock-inline-action a {
   color: #000;
   text-decoration: none;
 }
 
-.w-mock-row a:hover {
+.w-mock-row a:hover, .w-big-editor-dialog .w-mock-inline-action a:hover {
   color: #23527c;
 }
 
@@ -373,7 +373,7 @@
 
 .w-mock-file .w-mock-comment input {
   margin-left: 5px;
-  width: 300px;
+  width: 291px;
   font-weight: normal;
   font-size: 12px;
  }
@@ -402,7 +402,9 @@
   z-index: 1;
 }
 
-.w-mock-row .w-mock-rules-action a, .w-mock-row .w-mock-inline-action a {
+.w-mock-row .w-mock-rules-action a,
+.w-mock-row .w-mock-inline-action a,
+.w-big-editor-dialog .modal-body .w-mock-inline-action a {
   padding: 0 6px;
   border-radius: 2px;
   background-color: #f0f0f0;
@@ -441,7 +443,13 @@
   display: none;
 }
 
-.w-mock-row:hover .w-mock-inline-action {
+.w-big-editor-dialog .modal-body .w-mock-inline-action {
+  top: 12px;
+  right: 11px;
+  font-size: 12px;
+}
+
+.w-mock-row:hover .w-mock-inline-action, .w-big-editor-dialog .modal-body:hover .w-mock-inline-action {
   display: block;
   background: #f0f0f0;
   border-radius: 3px;

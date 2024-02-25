@@ -555,7 +555,8 @@ $.extend(
       checkUpdate: 'cgi-bin/check-update',
       importRemote: 'cgi-bin/import-remote',
       getHistory: 'cgi-bin/history',
-      getCookies: 'cgi-bin/sessions/cookies'
+      getCookies: 'cgi-bin/sessions/cookies',
+      getTempFile: 'cgi-bin/sessions/get-temp-file'
     },
     GET_CONF
   )
@@ -1283,7 +1284,7 @@ function setReqData(item) {
       item.path = url;
     }
     if (item.path.length > MAX_PATH_LENGTH) {
-      item.path = item.path.substring(0, MAX_PATH_LENGTH) + '...';
+      item.shortPath = item.path.substring(0, MAX_PATH_LENGTH) + '...';
     }
   } else if (item.useH2) {
     item.protocol = 'H2';

@@ -53,7 +53,11 @@ var valuesCtxMenuList = [
   { name: 'Delete' },
   {
     name: 'JSON',
-    list: [{ name: 'Validate' }, { name: 'Format' }]
+    list: [
+      { name: 'Validate' },
+      { name: 'Format' },
+      { name: 'Inspect' }
+    ]
   },
   { name: 'Export' },
   { name: 'Import' },
@@ -504,6 +508,11 @@ var List = React.createClass({
     case 'Format':
       self.formatJson(self.currentFocusItem);
       break;
+    case 'Inspect':
+      if (self.currentFocusItem) {
+        events.trigger('showJsonViewDialog', self.currentFocusItem.value);
+      }
+      break;
     case 'Help':
       window.open(
           'https://avwo.github.io/whistle/webui/' +
@@ -688,6 +697,7 @@ var List = React.createClass({
     var isRules = self.isRules();
     var draggable = false;
     var activeName = activeItem ? activeItem.name : '';
+    var selected = activeItem.selected;
     list = self.parseList();
     if (isRules) {
       draggable = list.length > 2;
@@ -699,7 +709,10 @@ var List = React.createClass({
 
     //不设置height为0，滚动会有问题
     return (
-      <div className={'orient-vertical-box fill' + (props.hide ? ' hide' : '')}>
+      <div className={'orient-vertical-box fill' +
+        (selected ? ' w-has-selected-rules' : '') +
+        (props.disabled ? ' w-has-selected-disabled' : '') +
+        (props.hide ? ' hide' : '')}>
         {props.disabled ? (
           <div className="w-record-status">
             All rules is disabled

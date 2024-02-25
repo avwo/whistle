@@ -82,6 +82,7 @@ function getDefaultColumns() {
       name: 'path',
       className: 'path',
       selected: true,
+      showTitle: true,
       locked: true,
       minWidth: 60
     },

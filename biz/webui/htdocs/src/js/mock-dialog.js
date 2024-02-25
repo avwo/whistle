@@ -537,7 +537,7 @@ var MockDialog = React.createClass({
               }
             </select>
             <label className="w-mock-comment">
-              Comment:
+              # Comment:
               <input
                 className="form-control"
                 placeholder="Input the comment of rules"

@@ -20,7 +20,7 @@ function getName(name) {
       return name;
     }
   }
-  const names = rulesModal.getSelectedNames();
+  var names = rulesModal.getSelectedNames();
   for (var i = 0, len = names.length; i < len; i++) {
     name = names[i];
     if (name !== 'Default') {
