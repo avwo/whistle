@@ -1,3 +1,9 @@
+# v2.9.65
+1. feat: 支持 Rules 里面的 Values 和临时文件通过 Ctrl[Command] + 鼠标点击快速修改
+2. feat: 新增默认临时空白文件 `temp/blank`（支持自定义后缀 `temp/blank.xxx`）
+   > 可以通过在 Rules 新建文件 `protocol://temp/blank.xxx` 再通过Ctrl[Command] + 鼠标点击快速修改生成新的临时文件
+3. feat: Values 右键菜单新增 JSON / Inspect 查看 JSON 数据对象
+
 # v2.9.64
 1. feat: Mock 功能支持对临时文件添加注释
 2. feat: 优化 Rules & Values 的拖拽功能
