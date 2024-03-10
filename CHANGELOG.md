@@ -1,3 +1,7 @@
+# v2.9.66
+1. feat: 支持通过正则表达式搜索日志
+2. feat: 支持通过 `disable://captureHttp disable://captureHttps`  关闭 http 或 https 的 TUNNEL 请求
+
 # v2.9.65
 1. feat: 支持 Rules 里面的 Values 和临时文件通过 Ctrl[Command] + 鼠标点击快速修改
 2. feat: 新增默认临时空白文件 `temp/blank`（支持自定义后缀 `temp/blank.xxx`）
