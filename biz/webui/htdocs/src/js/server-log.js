@@ -167,7 +167,7 @@ var ServerLog = React.createClass({
     clearTimeout(self.filterTimer);
     self.filterTimer = setTimeout(function () {
       self.filterTimer = null;
-      self.setState({ serverKeyword: serverKeyword });
+      self.setState({});
     }, 500);
   },
   showNameInput: function (e) {

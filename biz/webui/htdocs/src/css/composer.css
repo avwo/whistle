@@ -284,11 +284,16 @@ textarea.w-composer-rules {
 }
 
 .w-composer-headers textarea:read-only,
+.w-composer-headers textarea[readonly],
 .w-composer-body textarea:read-only,
+.w-composer-body textarea[readonly],
 .w-detail-composer input:read-only,
-.w-detail-composer textarea:disabled {
+.w-detail-composer input[readonly],
+.w-detail-composer textarea:disabled,
+.w-detail-composer textarea[readonly] {
   background: #eee !important;
   color: #999 !important;
+  cursor: default;
 }
 
 .w-composer-tips {
@@ -430,7 +435,7 @@ textarea.w-composer-rules {
 
 .w-composer-proxy-rules, .w-composer-pretty,
 .w-composer-use-h2, .w-composer-enable-body {
-  margin-left: 15px!important;
+  margin-left: 13px!important;
   font-weight: normal;
 }
 

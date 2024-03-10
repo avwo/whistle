@@ -1123,6 +1123,9 @@ var Index = React.createClass({
           data = new FormData();
           data.append('importSessions', files[0]);
           self.uploadSessionsForm(data);
+          if (!/\.(txt|json)$/i.test(file && file.name)) {
+            return;
+          }
         }
         var overLeftBar = target.closest('.w-divider-left').length;
         var overPlugins = name === 'plugins';

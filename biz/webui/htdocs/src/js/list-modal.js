@@ -408,7 +408,7 @@ proto.search = function (keyword, disabledType) {
   } else {
     this._type = ''; // reset
   }
-  this._keyword = keyword.toLowerCase();
+  this._keyword = keyword && (util.toRegExp(keyword) || keyword.toLowerCase());
   this.filter();
   return !keyword;
 };
@@ -428,9 +428,9 @@ proto.filter = function () {
       return;
     }
     if (filterBody) {
-      item.hide = !item.value || item.value.toLowerCase().indexOf(keyword) == -1;
+      item.hide = !item.value || util.checkKey(item.value, item.value.toLowerCase(), keyword);
     } else {
-      item.hide = !name || name.toLowerCase().indexOf(keyword) == -1;
+      item.hide = !name || util.checkKey(name, name.toLowerCase(), keyword);
     }
   });
   return list;

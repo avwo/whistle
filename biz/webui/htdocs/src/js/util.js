@@ -1160,33 +1160,43 @@ exports.getTimeFromHar = function (time) {
 };
 
 exports.parseKeyword = function (keyword) {
-  keyword = keyword.toLowerCase().split(/\s+/g);
+  keyword = keyword.split(/\s+/);
   var result = {};
   var index = 0;
   for (var i = 0; i <= 3; i++) {
     var key = keyword[i];
     if (key && key.indexOf('level:') === 0) {
-      result.level = key.substring(6);
+      result.level = key.substring(6).toLowerCase();
     } else if (index < 3) {
       ++index;
-      result['key' + index] = key;
+      result['key' + index] = key && (toRegExp(key) || key.toLowerCase());
     }
   }
   return result;
 };
 
+function checkKey(raw, text, key) {
+  if (key.test) {
+    return !key.test(raw);
+  }
+  return text.indexOf(key) === -1;
+}
+
+exports.checkKey = checkKey;
+
 function checkLogText(text, keyword) {
   if (!keyword.key1) {
     return '';
   }
+  var raw = text;
   text = text.toLowerCase();
-  if (text.indexOf(keyword.key1) === -1) {
+  if (checkKey(raw, text, keyword.key1)) {
     return ' hide';
   }
-  if (keyword.key2 && text.indexOf(keyword.key2) === -1) {
+  if (keyword.key2 && checkKey(raw, text, keyword.key2)) {
     return ' hide';
   }
-  if (keyword.key3 && text.indexOf(keyword.key3) === -1) {
+  if (keyword.key3 && checkKey(raw, text, keyword.key3)) {
     return ' hide';
   }
   return '';
@@ -1288,13 +1298,14 @@ exports.triggerListChange = function (name, data) {
 };
 
 var REG_EXP = /^\/(.+)\/([miu]{0,3})$/;
-exports.toRegExp = function (regExp) {
+function toRegExp(regExp) {
   if (regExp && REG_EXP.test(regExp)) {
     try {
       return new RegExp(RegExp.$1, RegExp.$2);
     } catch (e) {}
   }
-};
+}
+exports.toRegExp = toRegExp;
 
 function getPadding(len) {
   return len > 0 ? new Array(len + 1).join('0') : '';

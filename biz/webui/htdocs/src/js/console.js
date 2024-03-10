@@ -229,7 +229,7 @@ var Console = React.createClass({
     clearTimeout(self.filterTimer);
     self.filterTimer = setTimeout(function () {
       self.filterTimer = null;
-      self.setState({ consoleKeyword: consoleKeyword });
+      self.setState({});
     }, 500);
   },
   showNameInput: function (e) {
