@@ -686,6 +686,17 @@ var List = React.createClass({
     setStatus();
     return list;
   },
+  onFormat: function(e) {
+    this.formatJson(this.props.modal.getActive());
+    e.preventDefault();
+  },
+  onInspect: function(e) {
+    var item = this.props.modal.getActive();
+    if (item) {
+      events.trigger('showJsonViewDialog', item.value);
+      e.preventDefault();
+    }
+  },
   render: function () {
     var self = this;
     var modal = self.props.modal;
@@ -795,6 +806,8 @@ var List = React.createClass({
             readOnly={!activeItem || activeItem.hide || disabledEditor}
             value={activeItem.hide ? '' : activeItem.value}
             mode={isRules ? 'rules' : getSuffix(activeItem.name)}
+            onFormat={isRules ? null : this.onFormat}
+            onInspect={isRules ? null : this.onInspect}
           />
         </Divider>
       </div>

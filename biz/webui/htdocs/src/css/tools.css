@@ -121,6 +121,9 @@
 .w-detail-log-content {
   overflow: auto;
 }
+.w-detail-log-content strong {
+  margin-right: 5px;
+}
 .w-log-action-bar {
   background: #f1f3f4;
   line-height: 20px;

@@ -10,6 +10,9 @@
   line-height: 20px;
   min-width: 560px;
 }
+.w-frames-action > .w-menu-wrapper:first-child > a:first-child {
+  margin-left: 10px;
+}
 .w-frames-action label {
   font-weight: normal;
   margin-left: 10px;
@@ -82,6 +85,15 @@
 
 .w-frames-action .w-dropdown {
   margin-left: 15px;
+}
+
+.w-not-decompressed {
+  font-style: italic;
+}
+
+.w-not-decompressed em {
+  color: red;
+  margin-right: 5px;
 }
 
 .w-frames-action .w-filter-con {

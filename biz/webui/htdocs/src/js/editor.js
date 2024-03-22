@@ -389,6 +389,15 @@ var Editor = React.createClass({
           }
         } catch (e) {}
       }
+      if (e.shiftKey && (e.metaKey || e.ctrlKey)) {
+        var onFormat = self.props.onFormat;
+        var onInspect = self.props.onInspect;
+        if (typeof onFormat === 'function' && e.keyCode === 70) {
+          onFormat(e);
+        } else if (typeof onInspect === 'function' && e.keyCode === 73) {
+          onInspect(e);
+        }
+      }
       if (
         (!isRules && !isJS) ||
         !(e.ctrlKey || e.metaKey) ||

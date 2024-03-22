@@ -1084,6 +1084,7 @@ function socketIsClosed(reqData) {
     var lastItem = reqData.frames[reqData.frames.length - 1];
     if (lastItem && (lastItem.closed || lastItem.err)) {
       reqData.closed = true;
+      reqData.lastErr = lastItem.err;
     }
   }
   return reqData.closed;
@@ -1202,10 +1203,6 @@ function checkLogText(text, keyword) {
   return '';
 }
 
-function showLog(item) {
-  item.hide = false;
-}
-
 exports.hasVisibleLog = function (list) {
   var len = list.length;
   if (!len) {
@@ -1230,7 +1227,6 @@ exports.trimLogList = function (list, overflow, hasKeyword) {
         ++i;
       }
     }
-    overflow = list.length - 100;
   }
   overflow > 0 && list.splice(0, overflow);
   return list;
@@ -1255,13 +1251,29 @@ function toLocaleString(date) {
 
 exports.toLocaleString = toLocaleString;
 
-exports.filterLogList = function (list, keyword) {
+exports.filterLogList = function (list, keyword, init) {
   if (!list) {
-    return;
+    return list;
+  }
+  var map;
+  var result;
+  var addLog;
+  if (init) {
+    map = {};
+    result = [];
+    addLog = function(log) {
+      if (!map[log.id]) {
+        result.push(log);
+        map[log.id] = 1;
+      }
+    };
   }
   if (!keyword) {
-    list.forEach(showLog);
-    return;
+    list.forEach(function(item) {
+      item.hide = false;
+      addLog && addLog(item);
+    });
+    return result || list;
   }
   list.forEach(function (log) {
     var level = keyword.level;
@@ -1276,7 +1288,9 @@ exports.filterLogList = function (list, keyword) {
         log.text;
       log.hide = checkLogText(text, keyword);
     }
+    addLog && addLog(log);
   });
+  return result || list;
 };
 
 exports.checkLogText = checkLogText;
@@ -2599,5 +2613,21 @@ exports.replacQuery = function(url, query) {
     url = url.substring(0, index);
   }
   return url + query + hash;
+};
+
+
+function formatSize(value) {
+  return value >= 1024
+    ? value + ' (' + Number(value / 1024).toFixed(2) + 'k)'
+    : value;
+}
+
+exports.formatSize = function(size, unzipSize) {
+  var value = formatSize(size);
+  if (size && unzipSize >= 0 && unzipSize != size) {
+    value += ' / ' + formatSize(unzipSize);
+    value += (unzipSize ? ' = ' + Number((size * 100) / unzipSize).toFixed(2) + '%' : '');
+  }
+  return value;
 };
 

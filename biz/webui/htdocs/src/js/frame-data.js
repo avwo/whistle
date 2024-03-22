@@ -90,12 +90,7 @@ var FrameClient = React.createClass({
           Type: frame.opcode == 1 ? 'Text' : 'Binary',
           Compressed: frame.compressed ? 'Yes' : 'No',
           Mask: frame.mask ? 'Yes' : 'No',
-          Length:
-            len >= 1024
-              ? len + '(' + Number(len / 1024).toFixed(2) + 'k)'
-              : len >= 0
-              ? len
-              : ''
+          Length: len >= 0 ? util.formatSize(len, frame.unzipLen) : ''
         };
       } else {
         overview = {

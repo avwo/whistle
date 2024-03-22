@@ -35,7 +35,13 @@ var FilterInput = React.createClass({
     return { hintList: [] };
   },
   componentDidMount: function () {
-    this.hintElem = $(ReactDOM.findDOMNode(this.refs.hints));
+    var self = this;
+    self.hintElem = $(ReactDOM.findDOMNode(this.refs.hints));
+    $(document.body).on('mousedown', function(e) {
+      if (self.state.hintList !== null && !$(e.target).closest('.w-filter-con').length) {
+        self.hideHints();
+      }
+    });
   },
   focus: function() {
     var input = ReactDOM.findDOMNode(this.refs.input);
@@ -81,7 +87,7 @@ var FilterInput = React.createClass({
     return list;
   },
   onFilterChange: function (e) {
-    this.changeInput(e.target.value);
+    this.changeInput(e ? e.target.value : '');
   },
   changeInput: function (value) {
     var self = this;
@@ -185,7 +191,13 @@ var FilterInput = React.createClass({
     if (document.activeElement === ReactDOM.findDOMNode(this.refs.input)) {
       hintList = this.filterHints();
     }
-    this.setState({ filterText: '', hintList: hintList });
+    var hasChanged = this.state.filterText;
+    var self = this;
+    this.setState({ filterText: '', hintList: hintList }, function() {
+      if (hasChanged) {
+        self.onFilterChange();
+      }
+    });
   },
   render: function () {
     var self = this;

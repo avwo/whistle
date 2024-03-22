@@ -30,7 +30,7 @@ var curLogId;
 var curSvrLogId;
 var dataIndex = 1000000;
 var MAX_PATH_LENGTH = 1024;
-var MAX_LOG_LENGTH = 256;
+var MAX_LOG_LENGTH = 360;
 var lastRowId;
 var endId;
 var hashFilterObj;
@@ -1346,6 +1346,7 @@ exports.addNetworkList = function (list) {
       data.frames = data.frames.filter(function (frame) {
         if (frame) {
           delete frame.json;
+          delete frame.data;
         }
         return frame;
       });

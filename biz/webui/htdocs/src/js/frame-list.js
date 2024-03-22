@@ -7,6 +7,7 @@ var DropDown = require('./dropdown');
 var dataCenter = require('./data-center');
 var events = require('./events');
 var RecordBtn = require('./record-btn');
+var ContextMenu = require('./context-menu');
 
 var SEND_PERATORS = [
   {
@@ -43,6 +44,22 @@ var RECEIVE_PERATORS = [
   }
 ];
 
+var contextMenuList = [
+  { name: 'Copy' },
+  { name: 'Replay' },
+  { name: 'Edit' },
+  { name: 'Abort' },
+  { name: 'Clear' }
+];
+
+var COMPRESSED_ERR = 'invalid compressed data';
+var isClosed = function(reqData) {
+  if (reqData.closed) {
+    return reqData.lastErr !== COMPRESSED_ERR;
+  }
+  return reqData.err && reqData.err !== COMPRESSED_ERR;
+};
+
 var FrameList = React.createClass({
   getInitialState: function () {
     return {};
@@ -74,10 +91,6 @@ var FrameList = React.createClass({
     events.on('enableRecordFrame', function () {
       self.refs.recordBtn.enable();
     });
-  },
-  shouldComponentUpdate: function () {
-    clearTimeout(this.filterTimer);
-    return true;
   },
   onDoubleClick: function () {
     events.trigger('toggleFramesInspectors');
@@ -134,8 +147,8 @@ var FrameList = React.createClass({
   },
   abort: function () {
     var self = this;
-    var reqData = this.checkActive();
-    if (!reqData) {
+    var reqData = self.props.reqData;
+    if (!reqData || isClosed(reqData)) {
       return;
     }
     dataCenter.socket.abort(
@@ -146,8 +159,10 @@ var FrameList = React.createClass({
         if (!data) {
           util.showSystemError(xhr);
         } else {
+          delete reqData.lastErr;
           reqData.closed = true;
           self.autoRefresh();
+          self.setState({});
         }
       }
     );
@@ -244,6 +259,41 @@ var FrameList = React.createClass({
     }
     e.dataTransfer.setData('frameDataId', dataId);
   },
+  onContextMenu: function (e) {
+    e.preventDefault();
+    var frameId = $(e.target).closest('li').attr('data-id');
+    var modal = this.props.modal;
+    var item = modal.getItem(frameId);
+    var hasClosed = !!isClosed(this.props.reqData);
+    this.currentFocusItem = item;
+    contextMenuList[0].disabled = !item;
+    contextMenuList[0].copyText = (item && item.data) || '';
+    contextMenuList[1].disabled = (!item || hasClosed);
+    contextMenuList[2].disabled = !item;
+    contextMenuList[3].disabled = hasClosed;
+    contextMenuList[4].disabled = !modal.list.length;
+    var data = util.getMenuPosition(e, 130, 130);
+    data.list = contextMenuList;
+    this.refs.contextMenu.show(data);
+  },
+  onClickContextMenu: function (action) {
+    var item = this.currentFocusItem;
+    this.currentFocusItem = null;
+    switch (action) {
+    case 'Replay':
+      item &&  events.trigger('replayFrame', item);
+      break;
+    case 'Edit':
+      item && events.trigger('composeFrame', item);
+      break;
+    case 'Abort':
+      this.abort();
+      break;
+    case 'Clear':
+      this.clear();
+      break;
+    }
+  },
   render: function () {
     var self = this;
     var props = self.props;
@@ -257,7 +307,6 @@ var FrameList = React.createClass({
     util.socketIsClosed(reqData);
     return (
       <div className="fill orient-vertical-box w-frames-list">
-        <FilterInput onChange={self.onFilterChange} />
         <div className="w-frames-action" onMouseDown={util.preventBlur}>
           <RecordBtn
             ref="recordBtn"
@@ -286,7 +335,7 @@ var FrameList = React.createClass({
           </a>
           <a
             onClick={self.abort}
-            className={'w-remove-menu' + (reqData.closed ? ' w-disabled' : '')}
+            className={'w-remove-menu' + (isClosed(reqData) ? ' w-disabled' : '')}
             draggable="false"
           >
             <span className="glyphicon glyphicon-ban-circle"></span>Abort
@@ -311,12 +360,13 @@ var FrameList = React.createClass({
           onScroll={self.shouldScrollToBottom}
           ref={self.setContainer}
           className="fill w-frames-list"
+          onContextMenu={this.onContextMenu}
         >
           <ul ref={self.setContent} onDragStart={self.onDragStart}>
             {list.map(function (item) {
               var statusClass = '';
               if (item.closed || item.err || item.isError) {
-                reqData.closed = item.closed;
+                reqData.closed = reqData.closed || item.closed;
                 reqData.err = item.err || item.data;
                 if (item.closed) {
                   statusClass = ' w-connection-closed';
@@ -338,25 +388,22 @@ var FrameList = React.createClass({
                 item.title =
                   'Date: ' +
                   util.toLocaleString(new Date(parseInt(item.frameId, 10))) +
-                  '\nFrom: ' +
-                  (item.isClient ? 'Client' : 'Server');
+                  '\nPath: ' +
+                  (item.isClient ? 'Client -> Server' : 'Server -> Client');
                 if (item.opcode) {
                   item.title += '\nOpcode: ' + item.opcode;
                   item.title +=
                     '\nType: ' + (item.opcode == 1 ? 'Text' : 'Binary');
                 }
                 if (item.compressed) {
-                  item.title += '\nCompressed: ' + item.compressed;
+                  item.title += '\nCompressed: ' + (item.compressed ? 'Yes' : 'No');
                 }
                 if (item.mask) {
-                  item.title += '\nMask: ' + item.mask;
+                  item.title += '\nMask: ' + (item.mask ? 'Yes' : 'No');
                 }
                 var length = item.length;
                 if (length >= 0) {
-                  if (length >= 1024) {
-                    length += '(' + Number(length / 1024).toFixed(2) + 'k)';
-                  }
-                  item.title += '\nLength: ' + length;
+                  item.title += '\nLength: ' + util.formatSize(length, item.unzipLen);
                 }
               }
               var icon = 'arrow-left';
@@ -365,6 +412,7 @@ var FrameList = React.createClass({
               } else if (item.isClient) {
                 icon = 'arrow-right';
               }
+              var notDec = item.notDecompressed && item.compressed;
               return (
                 <li
                   draggable
@@ -381,16 +429,20 @@ var FrameList = React.createClass({
                     (item.ignore ? ' w-frames-ignore' : '') +
                     (item.active ? '  w-frames-selected' : '') +
                     (item.opcode == 2 ? ' w-frames-bin' : '') +
+                    (notDec ? ' w-not-decompressed' : '') +
                     statusClass
                   }
                 >
                   <span className={'glyphicon glyphicon-' + icon}></span>
+                  {notDec ? <em>[Not decompressed]</em> : null}
                   {item.data}
                 </li>
               );
             })}
           </ul>
         </div>
+        <FilterInput onChange={self.onFilterChange} />
+        <ContextMenu onClick={this.onClickContextMenu} ref="contextMenu" />
       </div>
     );
   }

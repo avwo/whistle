@@ -19,6 +19,17 @@ function FramesModal() {
 
 var proto = FramesModal.prototype;
 
+proto.getItem = function(frameId) {
+  if (frameId) {
+    for (var i = 0, len = this.list.length; i < len; i++) {
+      var item = this.list[i];
+      if (item.frameId === frameId) {
+        return item;
+      }
+    }
+  }
+};
+
 proto.search = function (keyword) {
   keyword = typeof keyword !== 'string' ? '' : keyword.trim().toLowerCase();
   if (keyword) {
@@ -111,24 +122,25 @@ proto.getList = function () {
 };
 
 proto.update = function () {
-  if (this._keyword) {
-    return;
-  }
   var list = this.list;
-  var len = list.length - MAX_FRAMES_LENGTH;
-  if (len > 0) {
+  var len = list.length;
+  var overflow = len - MAX_FRAMES_LENGTH;
+  if (overflow > 0) {
     if (this._keyword) {
-      for (var i = 0; i < len; i++) {
+      var i = 0;
+      while (i < len && overflow > 0) {
         var item = list[i];
-        if (!item.hide) {
-          if (i > 0) {
-            updateList(list, i);
-          }
-          break;
+        if (item.hide && !item.active) {
+          --len;
+          --overflow;
+          list.splice(i, 1);
+        } else {
+          ++i;
         }
       }
-    } else {
-      updateList(list, len);
+    }
+    if (overflow > 0) {
+      updateList(list, overflow);
     }
   }
 };
