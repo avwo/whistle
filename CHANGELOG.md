@@ -1,3 +1,10 @@
+# v2.9.67
+1. feat: 新增 `enable://requestWithMatchedRules` 及 `enable://responseWithMatchedRules` 支持在请求头或响应头带上当前匹配的规则
+2. feat: 调整 Tools/Console 日志的缓存大小
+3. feat: Values 的编辑器添加快捷键 `Shift + Ctrl[Command] + F`、`Shift + Ctrl[Command] + I` 分别用来格式化和通过 JSONView 查看 JSON 数据
+4. feat: Whistle 默认会对 WebSocket 压缩包进行解压，有[用户反馈存在解压bug][https://github.com/avwo/whistle/issues/1048]，故新增 `wss://xxx disable://wsDecompress` 禁止解压数据包
+5. feat: WebSocket Frames 列表添加右键功能
+
 # v2.9.66
 1. feat: 支持通过正则表达式搜索日志
 2. feat: 支持通过 `disable://captureHttp disable://captureHttps`  关闭 http 或 https 的 TUNNEL 请求
