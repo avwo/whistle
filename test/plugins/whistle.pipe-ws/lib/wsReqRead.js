@@ -1,8 +1,8 @@
 
 module.exports = function(server) {
   server.on('connect', function(_, socket) {
-    socket.on('data', (data) => {
-      socket.write(data);
+    socket.on('data', (data, opts) => {
+      socket.write(data, opts);
     });
   });
 };
