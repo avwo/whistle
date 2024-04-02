@@ -1,5 +1,5 @@
 # websocket
-whistle v1.6.0开始支持WebSocket及一般Socket请求的抓包及构造请求，点击建立连接的WebSocket(Socket)请求，打开 右侧 `Response / Frames` 即可看到WebSocket的请求贞数据：
+whistle v1.6.0开始支持WebSocket及一般Socket请求的抓包及构造请求，点击建立连接的WebSocket(Socket)请求，打开 右侧 `Response / Frames` 即可看到WebSocket的请求帧数据：
 
 ![WebSocket](https://user-images.githubusercontent.com/11450939/122701249-6610f900-d27f-11eb-945d-eca29d163063.gif)
 
