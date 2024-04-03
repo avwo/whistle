@@ -190,7 +190,7 @@
 .w-tool-box-ctn {
   display: block;
   width: 100%;
-  height: 200px;
+  height: 160px;
   border: 1px solid #ccc;
   padding: 5px;
 }
@@ -215,8 +215,8 @@
 }
 
 .w-tool-box-base64 {
-  height: 120px;
-  line-height: 112px;
+  height: 100px;
+  line-height: 92px;
   text-align: center;
   border: 1px solid #ccc;
   color: #aaa;

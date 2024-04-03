@@ -38,7 +38,7 @@ var EditorSettings = React.createClass({
         </p>
         <p>
           <label>
-            <span className="w-label">Font size:</span>
+            <span className="w-label">Font Size:</span>
             <select
               value={this.props.fontSize}
               onChange={this.props.onFontSizeChange}

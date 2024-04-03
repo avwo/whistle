@@ -54,8 +54,9 @@ var Divider = React.createClass({
     var rightWidth = parseInt(self.props.rightWidth, 10);
     if (!(rightWidth > 0)) {
       setTimeout(function () {
+        var ratio = self.props.splitRatio;
         rightWidth =
-          (vertical ? divider.offsetHeight : divider.offsetWidth) / 2;
+          (vertical ? divider.offsetHeight : divider.offsetWidth) * (ratio > 0 ? ratio : 1 / 2);
         rightElem[prop](Math.max(rightWidth, 5));
         self.triggerDOMReady();
       }, 10);

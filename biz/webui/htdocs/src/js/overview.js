@@ -80,14 +80,15 @@ function getPluginName(rule) {
 }
 
 function getRawProps(rule, all) {
+  var filter = getStr(rule.filter);
   rule = rule.rawProps;
   if (!rule) {
-    return '';
+    return filter;
   }
   if (!all) {
     rule = rule.filter(filterImportant);
   }
-  return getStr(rule.join(' '));
+  return getStr(rule.join(' ')) + filter;
 }
 
 function getInjectProps(rule) {
@@ -121,7 +122,7 @@ function getRuleStr(rule) {
     }
     matcher = matcher + ':' + rule.port;
   }
-  return rule.rawPattern + ' ' + matcher + getRawProps(rule, true) + getStr(rule.filter);
+  return rule.rawPattern + ' ' + matcher + getRawProps(rule, true);
 }
 
 function getTime(time) {
@@ -195,10 +196,11 @@ var Overview = React.createClass({
           } else if (!value && prop === 'clientId') {
             value = util.getProperty(modal, 'req.headers.x-whistle-client-id');
           }
+          var isFinalUrl = prop == 'realUrl';
           if (value != null) {
             if (prop == 'req.size' || prop == 'res.size') {
               value = util.formatSize(value, value ? util.getProperty(modal, prop.substring(0, 4) + 'unzipSize') : -1);
-            } else if (prop == 'realUrl') {
+            } else if (isFinalUrl) {
               if (value == modal.url) {
                 value = '';
               } else if (modal.isHttps) {
@@ -210,6 +212,14 @@ var Overview = React.createClass({
             }
           } else if (prop == 'res.statusMessage') {
             value = util.getStatusMessage(modal.res);
+          }
+          var loc = isFinalUrl && util.getProperty(modal, 'res.headers.location');
+          if (loc) {
+            var statusCode = util.getProperty(modal, 'res.statusCode');
+            if (loc && (statusCode == 301 || statusCode == 302  || statusCode == 303 ||
+              statusCode == 307 || statusCode == 308)) {
+              overviewModal['Redirect Url'] = loc;
+            }
           }
           overviewModal[name] = value;
         } else {

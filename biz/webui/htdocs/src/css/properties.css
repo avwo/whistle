@@ -89,7 +89,7 @@
 
 .w-properties .w-properties-json {
   padding-top: 0!important;
-  padding-bottom: 0!important;
+  padding-bottom: 5px!important;
 }
 
 .w-properties .w-properties-json>ul {

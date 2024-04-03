@@ -194,6 +194,7 @@ var ReqDetail = React.createClass({
             vertical="true"
             hideRight={!form}
             hideLeft={!query}
+            splitRatio={0.6}
             className={
               'w-detail-request-webforms' +
               (name == BTNS[1].name ? '' : ' hide')

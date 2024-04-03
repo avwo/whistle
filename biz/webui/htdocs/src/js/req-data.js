@@ -579,8 +579,6 @@ var ReqData = React.createClass({
       }
       if (selected) {
         self.scrollToRow(selected);
-      } else {
-        self.scrollToRow(0);
       }
     });
     events.on('focusNetworkList', function () {

@@ -69,6 +69,21 @@ if (/[&#?]hideLeft(?:Bar|Menu)=(0|false|1|true)(?:&|$|#)/.test(search)) {
   hideLeftMenu = RegExp.$1 === '0' || RegExp.$1 === 'false';
 }
 
+var TOP_BAR_MENUS = [
+  {
+    name: 'Scroll To Top',
+    action: 'top'
+  },
+  {
+    name: 'Scroll To Selected',
+    action: 'selected'
+  },
+  {
+    name: 'Scroll To Bottom',
+    action: 'bottom'
+  }
+];
+
 var LEFT_BAR_MENUS = [
   {
     name: 'Clear',
@@ -3635,6 +3650,15 @@ var Index = React.createClass({
       self.refs.certsInfoDialog.show(data.certs, data.dir);
     });
   },
+  onTopContextMenu: function(e) {
+    if (this.getTabName() !== 'network') {
+      return;
+    }
+    e.preventDefault();
+    var data = util.getMenuPosition(e, 110, 100);
+    data.list = TOP_BAR_MENUS;
+    this.refs.topContextMenu.show(data);
+  },
   onContextMenu: function (e) {
     var count = 0;
     var list = LEFT_BAR_MENUS;
@@ -3671,6 +3695,23 @@ var Index = React.createClass({
     }
     e.preventDefault();
   },
+  onClickTopMenu: function(action) {
+    switch(action) {
+    case 'top':
+      if (this.container) {
+        this.container[0].scrollTop = 0;
+      }
+      break;
+    case 'selected':
+      events.trigger('ensureSelectedItemVisible');
+      break;
+    case 'bottom':
+      if (this.container) {
+        this.container[0].scrollTop = 10000000;
+      }
+      break;
+    }
+  },
   onClickContextMenu: function (action) {
     var self = this;
     var state = self.state;
@@ -3678,7 +3719,7 @@ var Index = React.createClass({
     switch (action) {
     case 'Tree View':
       list[2].checked = !state.network.isTreeView;
-      self.toggleTreeView();
+      setTimeout(self.toggleTreeView, 0);
       break;
     case 'Rules':
       self.disableAllRules(null, function (disabled) {
@@ -3934,7 +3975,7 @@ var Index = React.createClass({
           + (rulesOnlyMode || rulesMode ? ' w-show-rules-mode' : '')
         }
       >
-        <div className={'w-menu w-' + name + '-menu-list'}>
+        <div className={'w-menu w-' + name + '-menu-list'} onContextMenu={this.onTopContextMenu}>
           <a
             onClick={this.toggleLeftMenu}
             draggable="false"
@@ -4473,6 +4514,7 @@ var Index = React.createClass({
         </div>
         <div className="w-container box fill">
           <ContextMenu onClick={this.onClickContextMenu} ref="contextMenu" />
+          <ContextMenu onClick={this.onClickTopMenu} ref="topContextMenu" />
           <div
             onContextMenu={this.onContextMenu}
             onDoubleClick={this.onContextMenu}
