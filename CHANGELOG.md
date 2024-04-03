@@ -1,3 +1,7 @@
+# v2.9.68
+1. feat: 新增 `enable://abortRes` 在响应阶段中断请求
+2. feat: 优化界面展示
+
 # v2.9.67
 1. feat: 新增 `enable://requestWithMatchedRules` 及 `enable://responseWithMatchedRules` 支持在请求头或响应头带上当前匹配的规则
 2. feat: 调整 Tools/Console 日志的缓存大小
