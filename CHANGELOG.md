@@ -1,3 +1,7 @@
+# v2.9.69
+1. fix: https://github.com/avwo/whistle/issues/1064
+2. feat: 支持通过 `http://local.whistlejs.com/?dataUrl=encodeURIComponent(dataUrl)` 导入 `dataUrl` 返回的数据
+
 # v2.9.68
 1. feat: 新增 `enable://abortRes` 在响应阶段中断请求
 2. feat: 优化界面展示
