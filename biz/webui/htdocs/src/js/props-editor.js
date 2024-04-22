@@ -92,7 +92,12 @@ var PropsEditor = React.createClass({
     this.setState({ data: data });
     this.showDialog(data);
   },
-  edit: function () {
+  execCallback: function(e) {
+    if (e.target.getAttribute('data-action') === 'callback') {
+      this.props.callback();
+    }
+  },
+  edit: function (e) {
     var nameInput = ReactDOM.findDOMNode(this.refs.name);
     var name = nameInput.value.trim();
     if (!name) {
@@ -122,8 +127,9 @@ var PropsEditor = React.createClass({
     });
     this.hideDialog();
     nameInput.value = valueInput.value = '';
+    this.execCallback(e);
   },
-  add: function () {
+  add: function (e) {
     var nameInput = ReactDOM.findDOMNode(this.refs.name);
     var name = nameInput.value.trim();
     if (!name) {
@@ -155,6 +161,7 @@ var PropsEditor = React.createClass({
     });
     this.hideDialog();
     nameInput.value = valueInput.value = '';
+    this.execCallback(e);
   },
   hideDialog: function () {
     this.refs.composerDialog.hide();
@@ -284,7 +291,9 @@ var PropsEditor = React.createClass({
     var isHeader = this.props.isHeader;
     var allowUploadFile = this.props.allowUploadFile;
     var data = this.state.data || '';
-    var btnText = (data ? 'Modify' : 'Add') + (isHeader ? ' header' : ' param');
+    var text = data ? 'Modify' : 'Add';
+    var btnText = text + (isHeader ? ' header' : ' param');
+    var cbBtnText = this.props.callback ? text + ' & Send' : null;
 
     return (
       <div
@@ -407,6 +416,17 @@ var PropsEditor = React.createClass({
             </div>
           </div>
           <div className="modal-footer">
+            {
+              cbBtnText ?
+              <button
+                type="button"
+                className="btn btn-default"
+                data-action="callback"
+                onClick={data ? self.edit : self.add}
+              >
+                {cbBtnText}
+              </button> : null
+            }
             <button
               type="button"
               className="btn btn-primary"

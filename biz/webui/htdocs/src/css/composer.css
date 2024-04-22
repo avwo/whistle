@@ -289,8 +289,8 @@ textarea.w-composer-rules {
 .w-composer-body textarea[readonly],
 .w-detail-composer input:read-only,
 .w-detail-composer input[readonly],
-.w-detail-composer textarea:disabled,
-.w-detail-composer textarea[readonly] {
+.w-composer-rules textarea:disabled,
+.w-composer-rules textarea[readonly] {
   background: #eee !important;
   color: #999 !important;
   cursor: default;

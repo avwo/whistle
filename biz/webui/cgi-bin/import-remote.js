@@ -1,7 +1,7 @@
 var util = require('../../../lib/util');
 
 var MAX_LEN = 1024 * 1024 * 6;
-var HTTP_RE = /https?:\/\//i;
+var HTTP_RE = /https?:\/\/\S/i;
 
 module.exports = function(req, res) {
   var url = req.query.url;

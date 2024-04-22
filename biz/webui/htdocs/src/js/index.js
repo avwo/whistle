@@ -58,6 +58,23 @@ var search = window.location.search;
 var isClient = util.getQuery().mode === 'client';
 var hideLeftMenu;
 var showTreeView;
+var dataUrl;
+
+function isUrl(url) {
+  return /^https?:\/\/[^/]/i.test(url);
+}
+
+window.setWhistleDataUrl = function(url) {
+  if (isUrl(url)) {
+    if (dataCenter.handleDataUrl) {
+      dataCenter.handleDataUrl(url);
+    } else {
+      dataUrl = url;
+    }
+    return true;
+  }
+  return false;
+};
 
 if (/[&#?]showTreeView=(0|false|1|true)(?:&|$|#)/.test(search)) {
   showTreeView = RegExp.$1 === '1' || RegExp.$1 === 'true';
@@ -206,15 +223,16 @@ function checkUrl(url) {
     message.error('The url cannot be empty.');
     return;
   }
-  if (!/^https?:\/\/[^/]/i.test(url)) {
+  if (!isUrl(url)) {
     message.error('Please input the correct url.');
     return;
   }
   return url;
 }
 
-function getRemoteDataHandler(callback) {
-  return function (data, xhr) {
+function getRemoteData(url, callback) {
+  const opts = {  url: url };
+  dataCenter.importRemote(opts,  function (data, xhr) {
     if (!data) {
       util.showSystemError(xhr);
       return callback(true);
@@ -234,7 +252,7 @@ function getRemoteDataHandler(callback) {
       message.error(e.message);
     }
     callback(true);
-  };
+  });
 }
 
 function readFileJson(file, cb) {
@@ -1637,6 +1655,9 @@ var Index = React.createClass({
         });
       }
     } catch (e) {}
+    self.handleDataUrl(dataUrl || util.getDataUrl());
+    dataCenter.handleDataUrl = self.handleDataUrl;
+    dataUrl = null;
   },
   shouldComponentUpdate: function (_, nextSate) {
     var name = this.state.name;
@@ -1644,6 +1665,17 @@ var Index = React.createClass({
       this._isAtBottom = this.scrollerAtBottom && this.scrollerAtBottom();
     }
     return true;
+  },
+  handleDataUrl: function(url) {
+    if (!isUrl(url)) {
+      return;
+    }
+    var self = this;
+    getRemoteData(url, function(err, data) {
+      if (!err) {
+        self.importAnySessions(data);
+      }
+    });
   },
   importAnySessions: function (data) {
     if (data && !util.handleImportData(data)) {
@@ -2004,16 +2036,13 @@ var Index = React.createClass({
     }
     var self = this;
     self.setState({ pendingSessions: true });
-    dataCenter.importRemote(
-      { url: url },
-      getRemoteDataHandler(function (err, data) {
-        self.setState({ pendingSessions: false });
-        if (!err) {
-          byInput && self.refs.importRemoteSessions.hide();
-          self.importAnySessions(data);
-        }
-      })
-    );
+    getRemoteData(url, function (err, data) {
+      self.setState({ pendingSessions: false });
+      if (!err) {
+        byInput && self.refs.importRemoteSessions.hide();
+        self.importAnySessions(data);
+      }
+    });
   },
   importRemoteSessions: function (e) {
     if (e && e.type !== 'click' && e.keyCode !== 13) {
@@ -2049,19 +2078,16 @@ var Index = React.createClass({
       return;
     }
     self.setState({ pendingRules: true });
-    dataCenter.importRemote(
-      { url: url },
-      getRemoteDataHandler(function (err, data) {
-        self.setState({ pendingRules: false });
-        if (err) {
-          return;
-        }
-        self.refs.importRemoteRules.hide();
-        if (data && !util.handleImportData(data)) {
-          self.handleImportRules(data);
-        }
-      })
-    );
+    getRemoteData(url, function (err, data) {
+      self.setState({ pendingRules: false });
+      if (err) {
+        return;
+      }
+      self.refs.importRemoteRules.hide();
+      if (data && !util.handleImportData(data)) {
+        self.handleImportRules(data);
+      }
+    });
   },
   importValues: function (e, data) {
     var self = this;
@@ -2088,19 +2114,16 @@ var Index = React.createClass({
       return;
     }
     self.setState({ pendingValues: true });
-    dataCenter.importRemote(
-      { url: url },
-      getRemoteDataHandler(function (err, data) {
-        self.setState({ pendingValues: false });
-        if (err) {
-          return;
-        }
-        self.refs.importRemoteValues.hide();
-        if (data && !util.handleImportData(data)) {
-          self.handleImportValues(data);
-        }
-      })
-    );
+    getRemoteData(url, function (err, data) {
+      self.setState({ pendingValues: false });
+      if (err) {
+        return;
+      }
+      self.refs.importRemoteValues.hide();
+      if (data && !util.handleImportData(data)) {
+        self.handleImportValues(data);
+      }
+    });
   },
   _uploadRules: function (data, showResult) {
     var self = this;

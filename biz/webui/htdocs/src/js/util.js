@@ -2631,3 +2631,9 @@ exports.formatSize = function(size, unzipSize) {
   return value;
 };
 
+var IMPORT_URL_RE = /[?&#]data(?:_url|Url)=([^&#]+)(?:&|#|$)/;
+exports.getDataUrl = function() {
+  var result = IMPORT_URL_RE.exec(location.href);
+  return result && decodeURIComponentSafe(result[1]).trim();
+};
+

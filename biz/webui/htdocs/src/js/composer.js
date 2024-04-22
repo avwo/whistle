@@ -1376,6 +1376,7 @@ var Composer = React.createClass({
             <PropsEditor
               ref="paramsEditor"
               onChange={this.onParamsChange}
+              callback={this.execute}
             />
           </div>
           <Divider vertical="true" leftWidth="90">
@@ -1574,6 +1575,7 @@ var Composer = React.createClass({
                     isHeader="1"
                     hide={!showPretty}
                     onChange={this.onHeaderChange}
+                    callback={this.execute}
                   />
                 </div>
                 <div className="fill orient-vertical-box w-composer-body">
@@ -1682,6 +1684,7 @@ var Composer = React.createClass({
                     ref="prettyBody"
                     hide={!showPrettyBody || isHexText || showUpload}
                     onChange={this.onFieldChange}
+                    callback={this.execute}
                   />
                   <PropsEditor
                     onDoubleClick={this.focusEnableBody}
@@ -1689,6 +1692,7 @@ var Composer = React.createClass({
                     ref="uploadBody"
                     hide={!showUpload}
                     onChange={this.onUploadFieldChange}
+                    callback={this.execute}
                     allowUploadFile
                     title={
                       hasBody

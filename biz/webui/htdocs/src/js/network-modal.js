@@ -437,7 +437,7 @@ proto.removeSelectedItems = function () {
 
   for (var i = list.length - 1; i >= 0; i--) {
     var item = list[i];
-    if (item.selected) {
+    if (item.selected && !item.hide) {
       hasSelectedItem = true;
       if (endIndex == -1) {
         endIndex = i;
