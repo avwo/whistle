@@ -11,7 +11,6 @@ var config = require('../../lib/config');
 var NUM_RE = /^\d+$/;
 var HOST_SUFFIX_RE = /\:(\d+|auto)?$/;
 var HOST_RE = /^[a-z\d_-]+(?:\.[a-z\d_-]+)*$/i;
-var URL_RE = /^https?:\/\/./i;
 var MAX_LEN = 1024 * 1024;
 
 function installCert(certFile, url) {
@@ -79,7 +78,7 @@ module.exports = function(argv) {
     } else {
       delete options.port;
       delete options.host;
-      if (URL_RE.test(arg)) {
+      if (commonUtil.isUrl(arg)) {
         options.addr = { url: arg };
       } else {
         options.addr = { file: arg };
