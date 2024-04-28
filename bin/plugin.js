@@ -9,7 +9,7 @@ var commonUtil = require('../lib/util/common');
 var getWhistlePath = commonUtil.getWhistlePath;
 var REMOTE_URL_RE = commonUtil.REMOTE_URL_RE;
 var WHISTLE_PLUGIN_RE = commonUtil.WHISTLE_PLUGIN_RE;
-const getPlugins = commonUtil.getPlugins;
+var getPlugins = commonUtil.getPlugins;
 var CMD_SUFFIX = process.platform === 'win32' ? '.cmd' : '';
 var CUSTOM_PLUGIN_PATH = path.join(getWhistlePath(), 'custom_plugins');
 var DEFAULT_PATH = commonUtil.getDefaultWhistlePath();
