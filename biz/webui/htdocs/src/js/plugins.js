@@ -734,6 +734,19 @@ var Home = React.createClass({
   }
 });
 
+function getPluginInfo(plugin) {
+  if (!plugin) {
+    return '';
+  }
+  var copyText = [];
+  copyText.push('Name: ' + plugin.moduleName);
+  copyText.push('Version: ' + plugin.version);
+  if (plugin.homepage) {
+    copyText.push('Homepage: ' + plugin.homepage);
+  }
+  return copyText.join('\n');
+}
+
 var Tabs = React.createClass({
   componentDidMount: function () {
     var self = this;
@@ -781,22 +794,20 @@ var Tabs = React.createClass({
       active = target.parent().hasClass('active');
       row = target.closest('.w-plugins-tab');
     }
-    var name = row.attr('data-name');
+    var name = row.attr('data-name') || '';
     var props = this.props;
     var plugin = props.plugins[name + ':'];
     var disabledPlugins = props.disabledPlugins || {};
     var disabled = !plugin;
     this._curPlugin = plugin;
-    CTX_MENU_LIST[0].disabled = disabled;
-    var copyText = [];
+    var copyText;
     if (plugin) {
-      copyText.push('Name: ' + plugin.moduleName);
-      copyText.push('Version: ' + plugin.version);
-      if (plugin.homepage) {
-        copyText.push('Homepage: ' + plugin.homepage);
-      }
+      copyText = getPluginInfo(plugin);
+    } else if (name === 'Plugins') {
+      copyText = getPluginList(props.plugins).map(getPluginInfo).join('\n\n');
     }
-    CTX_MENU_LIST[0].copyText = copyText.join('\n');
+    CTX_MENU_LIST[0].disabled = !copyText;
+    CTX_MENU_LIST[0].copyText = copyText;
     CTX_MENU_LIST[1].name = name && disabledPlugins[name] ? 'Enable' : 'Disable';
     CTX_MENU_LIST[1].disabled = disabled || props.ndp;
     CTX_MENU_LIST[2].disabled = disabled || plugin.noOpt || active;
@@ -891,7 +902,7 @@ var Tabs = React.createClass({
             data-name="Home"
             onClick={self.props.onActive}
           >
-            <a draggable="false">
+            <a draggable="false" data-name="Plugins" className="w-plugins-tab">
               <span className="glyphicon glyphicon-list-alt" />
               Plugins
             </a>
