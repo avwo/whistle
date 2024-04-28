@@ -1,3 +1,7 @@
+# v2.9.70
+1. feat: 插件列表添加自定义右键菜单
+2. feat: 支持通过 `pattern jsAppend://[value|file|url] linePropslineProps://nomodule lineProps://module lineProps://defer lineProps://async lineProps://crossorigin`  设置标签属性
+
 # v2.9.69
 1. fix: https://github.com/avwo/whistle/issues/1064
 2. feat: 支持通过 `http://local.whistlejs.com/?dataUrl=encodeURIComponent(dataUrl)` 导入 `dataUrl` 返回的数据
