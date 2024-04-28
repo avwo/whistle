@@ -5,6 +5,7 @@
     var networkListeners = [];
     var rulesListeners = [];
     var valuesListeners = [];
+    var pluginsListeners = [];
     var handleOnLoad = function() {
       timer = null;
       list.forEach(emit);
@@ -29,6 +30,9 @@
           break;
         case 'values':
           execListeners(valuesListeners, options);
+          break;
+        case 'plugins':
+          execListeners(pluginsListeners, options);
           break;
         default:
           execListeners(networkListeners, options);
@@ -95,6 +99,20 @@
     var removeAllValuesListeners = function() {
       valuesListeners = [];
     };
+    var addPluginsListener = function(l) {
+      if (typeof l === 'function' && pluginsListeners.indexOf(l) === -1) {
+        pluginsListeners.push(l);
+      }
+    };
+    var removePluginsListener = function(l) {
+      l = pluginsListeners.indexOf(l);
+      if (l !== -1) {
+        pluginsListeners.splice(l, 1);
+      }
+    };
+    var removeAllPluginsListeners = function(l) {
+      pluginsListeners = [];
+    };
 
     function on(type, l) {
       if (typeof l !== 'function') {
@@ -107,6 +125,8 @@
           return addRulesListener(l);
         case 'values':
           return addValuesListener(l);
+        case 'plugins':
+          return addPluginsListener(l);
       }
     }
 
@@ -133,6 +153,13 @@
             removeAllValuesListeners();
           }
           return;
+        case 'plugins':
+          if (l) {
+            removePluginsListener(l);
+          } else {
+            removeAllPluginsListeners();
+          }
+          return;
       }
     }
     
@@ -149,7 +176,10 @@
       removeAllRulesListeners: removeAllRulesListeners,
       addValuesListener: addValuesListener,
       removeValuesListener: removeValuesListener,
-      removeAllValuesListeners: removeAllValuesListeners
+      removeAllValuesListeners: removeAllValuesListeners,
+      addPluginsListener: addPluginsListener,
+      removePluginsListener: removePluginsListener,
+      removeAllPluginsListeners: removeAllPluginsListeners
     };
     try {
       window.initWhistleBridge = function(options) {

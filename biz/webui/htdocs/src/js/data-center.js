@@ -648,6 +648,7 @@ exports.getInitialData = function (callback) {
         if (data.lastDataId) {
           lastRowId = data.lastDataId;
         }
+        exports.pluginsRoot = data.pluginsRoot;
         exports.upload = createCgiObj(
           {
             importSessions: 'cgi-bin/sessions/import?clientId=' + pageId,
@@ -846,6 +847,7 @@ function startLoadData() {
       var server = data.server;
       port = server && server.port;
       account = server && server.account;
+      exports.pluginsRoot = data.pluginsRoot;
       updateCertStatus(data);
       exports.enablePluginMgr = data.epm;
       exports.supportH2 = data.supportH2;
@@ -1518,6 +1520,10 @@ exports.getPlugin = function (name) {
   return pluginsMap[name];
 };
 
+exports.setDisabledPlugins = function(plugins) {
+  disabledPlugins = plugins;
+};
+
 function getMenus(menuName) {
   var list = account && account[menuName];
   if (!Array.isArray(list)) {
@@ -1537,7 +1543,7 @@ function getMenus(menuName) {
           menu.mtime = plugin.mtime;
           menu.priority = plugin.priority;
           menu._key = name;
-          menu._urlPattern = util.toRegExp(menu.urlPattern);
+          menu._urlPattern = util.toRegExp(menu.urlPattern) || util.toRegExp(menu.namePattern);
           list.push(menu);
         });
       }
@@ -1556,6 +1562,10 @@ exports.getRulesMenus = function () {
 
 exports.getValuesMenus = function () {
   return getMenus('valuesMenus');
+};
+
+exports.getPluginsMenus = function () {
+  return getMenus('pluginsMenus');
 };
 
 exports.getPluginColumns = function() {

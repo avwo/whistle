@@ -38,6 +38,7 @@ module.exports = function(req, res) {
     interceptHttpsConnects: properties.isEnableCapture(),
     enableHttp2: properties.isEnableHttp2(),
     plugins: pluginMgr.getPlugins(),
+    pluginsRoot: config.PLUGIN_INSTALL_ROOT,
     disabledPlugins: !config.notAllowedDisablePlugins && properties.get('disabledPlugins') || {},
     disabledAllPlugins: !config.notAllowedDisablePlugins && properties.get('disabledAllPlugins'),
     disabledAllRules: !config.notAllowedDisableRules && properties.get('disabledAllRules'),

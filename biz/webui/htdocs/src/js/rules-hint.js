@@ -4,6 +4,7 @@ var $ = require('jquery');
 var CodeMirror = require('codemirror');
 var protocols = require('./protocols');
 var dataCenter = require('./data-center');
+var util = require('./util');
 
 var disabledEditor = window.location.href.indexOf('disabledEditor=1') !== -1;
 var NON_SPECAIL_RE = /[^:/]/;
@@ -115,7 +116,7 @@ function getInlineKeys() {
 function getHintCgi(plugin, pluginVars) {
   var moduleName = plugin.moduleName;
   var url = (pluginVars && pluginVars.hintUrl) || plugin.hintUrl || '';
-  var pluginName = 'plugin.' + moduleName.substring(8);
+  var pluginName = 'plugin.' + util.getSimplePluginName(plugin);
   if (url.indexOf(moduleName) !== 0 && url.indexOf(pluginName) !== 0) {
     url = pluginName + '/' + url;
   }

@@ -46,6 +46,7 @@ module.exports = function(req, res) {
     log: stopRecordConsole ? [] : proxy.getLogs(data.startLogTime, data.count, data.logId),
     svrLog: stopRecordSvrLog ? [] : logger.getLogs(data.startSvrLogTime, data.count),
     plugins: pluginMgr.getPlugins(),
+    pluginsRoot: config.PLUGIN_INSTALL_ROOT,
     disabledPlugins: !config.notAllowedDisablePlugins && properties.get('disabledPlugins') || {},
     allowMultipleChoice: properties.get('allowMultipleChoice'),
     backRulesFirst: properties.get('backRulesFirst'),

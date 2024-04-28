@@ -231,7 +231,7 @@ function checkUrl(url) {
 }
 
 function getRemoteData(url, callback) {
-  const opts = {  url: url };
+  var opts = {  url: url };
   dataCenter.importRemote(opts,  function (data, xhr) {
     if (!data) {
       util.showSystemError(xhr);
@@ -885,6 +885,14 @@ var Index = React.createClass({
       }
     });
 
+    events.on('showPluginOptionTab', function(_, plugin) {
+      plugin && self.showPluginTab(util.getSimplePluginName(plugin));
+    });
+
+    events.on('disablePlugin', function(_, plugin, disabled) {
+      self.setPluginState(util.getSimplePluginName(plugin), disabled);
+    });
+
     events.on('setComposerData', function(_, data) {
       if (!data || self.state.rulesMode) {
         return;
@@ -904,7 +912,7 @@ var Index = React.createClass({
       if (!plugin) {
         return;
       }
-      var name = plugin.moduleName.substring(plugin.moduleName.lastIndexOf('.') + 1);
+      var name = util.getSimplePluginName(plugin);
       var url =  plugin.pluginHomepage || 'plugin.' + name + '/';
       if ((plugin.pluginHomepage || plugin.openExternal) && !plugin.openInPlugins && !plugin.openInModal) {
         return window.open(url);
@@ -3351,20 +3359,20 @@ var Index = React.createClass({
     );
     e && e.preventDefault();
   },
-  disablePlugin: function (e) {
+  setPluginState: function(name, disabled) {
     var self = this;
-    var target = e.target;
     if (self.state.ndp) {
       return message.warn('Not allowed disable plugins.');
     }
     dataCenter.plugins.disablePlugin(
       {
-        name: $(target).attr('data-name'),
-        disabled: target.checked ? 0 : 1
+        name: name,
+        disabled: disabled ? 1 : 0
       },
       function (data, xhr) {
         if (data && data.ec === 0) {
           self.state.disabledPlugins = data.data;
+          dataCenter.setDisabledPlugins(data.data);
           protocols.setPlugins(self.state);
           self.setState({});
         } else {
@@ -3372,6 +3380,10 @@ var Index = React.createClass({
         }
       }
     );
+  },
+  disablePlugin: function (e) {
+    var target = e.target;
+    this.setPluginState($(target).attr('data-name'), !target.checked);
   },
   abort: function (list) {
     if (!Array.isArray(list)) {

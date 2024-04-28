@@ -99,16 +99,6 @@ function getInjectProps(rule) {
   return rule.safeHtml ? ' enable://safeHtml' : '';
 }
 
-function getLineProps(rule) {
-  if (rule.lineStrict) {
-    return ' lineProps://strictHtml';
-  }
-  if (rule.lineSafe) {
-    return ' lineProps://safeHtml';
-  }
-  return '';
-}
-
 function getRuleStr(rule) {
   if (!rule) {
     return;
@@ -345,7 +335,7 @@ var Overview = React.createClass({
             var prop = getInjectProps(rule);
             rulesModal[name] = rule.list
               .map(function (rule) {
-                return rule.rawPattern + ' ' + rule.matcher + getRawProps(rule) + prop + getLineProps(rule) + getPluginName(rule);
+                return rule.rawPattern + ' ' + rule.matcher + getRawProps(rule, true) + prop + getPluginName(rule);
               })
               .join('\n');
             titleModal[name] = rule.list

@@ -2637,3 +2637,7 @@ exports.getDataUrl = function() {
   return result && decodeURIComponentSafe(result[1]).trim();
 };
 
+exports.getSimplePluginName = function(plugin) {
+  var name = typeof plugin === 'string' ? plugin : plugin.moduleName;
+  return name.substring(name.lastIndexOf('.') + 1);
+};

@@ -6,7 +6,7 @@ var dataCenter = require('./data-center');
 var KVDialog = require('./kv-dialog');
 
 function getCgiUrl(moduleName, url) {
-  var pluginName = 'plugin.' + moduleName.substring(8);
+  var pluginName = 'plugin.' + util.getSimplePluginName(moduleName);
   if (url.indexOf(moduleName) === 0 || url.indexOf(pluginName) === 0) {
     return url;
   }

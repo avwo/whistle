@@ -10,10 +10,28 @@ var win = require('./win');
 var LazyInit = require('./lazy-init');
 var storage = require('./storage');
 var message = require('./message');
+var ContextMenu = require('./context-menu');
+var iframes = require('./iframes');
 
 var CMD_RE = /^([\w]{1,12})(\s+-g)?$/;
 var WHISTLE_PLUGIN_RE = /(?:^|[\s,;|])(?:@[\w-]+\/)?whistle\.[a-z\d_-]+(?:\@[\w.^~*-]*)?(?:$|[\s,;|])/;
 var pendingEnable;
+var registryCache;
+
+var CTX_MENU_LIST = [
+  { name: 'Copy' },
+  { name: 'Disable' },
+  { name: 'Option' },
+  { name: 'Rules' },
+  { name: 'Update' },
+  { name: 'Uninstall' },
+  {
+    name: 'Others',
+    action: 'Plugins',
+    list: []
+  },
+  { name: 'Help', sep: true }
+];
 
 function getPluginComparator(plugins) {
   return function (a, b) {
@@ -23,6 +41,16 @@ function getPluginComparator(plugins) {
     p2._key = b;
     return util.comparePlugin(p1, p2);
   };
+}
+
+function getPluginList(plugins) {
+  if (!plugins) {
+    return [];
+  }
+  return Object.keys(plugins).sort(getPluginComparator(plugins))
+        .map(function (name) {
+          return plugins[name];
+        });
 }
 
 function handlePlugins(data, xhr) {
@@ -68,25 +96,40 @@ function getUpdateUrl(plugin) {
   return plugin.updateUrl || plugin.moduleName;
 }
 
+function hasRules(plugin) {
+  return plugin.rules || plugin._rules || plugin.resRules;
+}
+
+function isOpenExternal(plugin) {
+  return (plugin.pluginHomepage || plugin.openExternal) && !plugin.openInPlugins && !plugin.openInModal;
+}
+
+function getHomePage(plugin) {
+  return plugin.pluginHomepage || 'plugin.' + util.getSimplePluginName(plugin) + '/';
+}
+
 function getRegistryList(cb) {
   dataCenter.plugins.getRegistryList(function(data, xhr) {
+    var registry = storage.get('pluginsRegistry');
     if (!data) {
       util.showSystemError(xhr);
-    } else if (data.ec === 0) {
-      var registry = storage.get('pluginsRegistry');
-      var result = dataCenter.getPluginRegistry();
+    } else if (data.ec !== 0) {
+      win.alert(data.em);
+    } else {
+      registryCache = dataCenter.getPluginRegistry();
       data.list.forEach(function(url) {
-        if (result.indexOf(url) === -1) {
-          result.push(url);
+        if (registryCache.indexOf(url) === -1) {
+          registryCache.push(url);
         }
       });
-      if (result.indexOf(registry) === -1) {
-        registry = '';
-      }
-      cb(result, registry);
-    } else {
-      win.alert(data.em);
     }
+    if (!registryCache) {
+      return;
+    }
+    if (registryCache.indexOf(registry) === -1) {
+      registry = '';
+    }
+    cb(registryCache, registry);
   });
 }
 
@@ -94,6 +137,28 @@ var Home = React.createClass({
   componentDidMount: function () {
     var self = this;
     self.setUpdateAllBtnState();
+    events.on('openPluginOption', function(_, plugin) {
+      if (!plugin) {
+        return;
+      }
+      if (plugin.openInModal) {
+        return events.trigger('showPluginOption', plugin);
+      }
+      var url = getHomePage(plugin);
+      if (isOpenExternal(plugin)) {
+        return window.open(url);
+      }
+      events.trigger('showPluginOptionTab', plugin);
+    });
+    events.on('showUninstallPlugin', function(_, plugin) {
+      self.showUninstall(plugin);
+    });
+    events.on('showInstallPlugin', function(_, plugin) {
+      self.showUpdate(plugin);
+    });
+    events.on('showPluginRules', function(_, plugin) {
+      self.onShowRules(util.getSimplePluginName(plugin));
+    });
     events.on('installPlugins', self.showInstall);
     events.on('updateAllPlugins', function (_, byInstall) {
       byInstall = byInstall === 'reinstallAllPlugins';
@@ -101,19 +166,17 @@ var Home = React.createClass({
       var plugins = data.plugins || {};
       var newPlugins = {};
       var registry;
-      Object.keys(plugins)
-        .sort(getPluginComparator(plugins))
-        .map(function (name) {
-          var plugin = plugins[name];
-          if (plugin.isProj || (!byInstall && !util.compareVersion(plugin.latest, plugin.version))) {
-            return;
-          }
-          registry = registry || plugin.registry;
-          var account = getAccount(plugin);
-          var list = newPlugins[account] || [];
-          list.push(getUpdateUrl(plugin));
-          newPlugins[account] = list;
-        });
+      getPluginList(plugins).forEach(function (name) {
+        var plugin = plugins[name];
+        if (plugin.isProj || (!byInstall && !util.compareVersion(plugin.latest, plugin.version))) {
+          return;
+        }
+        registry = registry || plugin.registry;
+        var account = getAccount(plugin);
+        var list = newPlugins[account] || [];
+        list.push(getUpdateUrl(plugin));
+        newPlugins[account] = list;
+      });
       var cmdMsg = Object.keys(newPlugins)
         .map(function (registry) {
           var list = newPlugins[registry].join(' ');
@@ -169,8 +232,7 @@ var Home = React.createClass({
   hideDialog: function () {
     this.refs.pluginRulesDialog.hide();
   },
-  showRules: function (e) {
-    var name = $(e.target).attr('data-name');
+  onShowRules: function(name) {
     var plugin = this.props.data.plugins[name + ':'];
     plugin.name = name;
     this.setState(
@@ -179,6 +241,10 @@ var Home = React.createClass({
       },
       this.showDialog
     );
+  },
+  showRules: function (e) {
+    var name = $(e.target).attr('data-name');
+    this.onShowRules(name);
   },
   onCmdChange: function (e) {
     this.updateCmdMsg(e.target.value);
@@ -224,10 +290,13 @@ var Home = React.createClass({
     this.setState({ registry: registry });
     storage.set('pluginsRegistry', registry);
   },
-  showUpdate: function (e) {
-    var self = this;
+  onShowUpdate: function(e) {
     var name = $(e.target).attr('data-name');
-    var plugin = self.props.data.plugins[name + ':'];
+    var plugin = this.props.data.plugins[name + ':'];
+    this.showUpdate(plugin);
+  },
+  showUpdate: function (plugin) {
+    var self = this;
     getRegistryList(function(result, r) {
       self.setState(
         {
@@ -252,10 +321,13 @@ var Home = React.createClass({
       }, self.showMsgDialog);
     });
   },
-  showUninstall: function (e) {
-    var self = this;
+  onShowUninstall: function(e) {
     var name = $(e.target).attr('data-name');
-    var plugin = self.props.data.plugins[name + ':'];
+    var plugin = this.props.data.plugins[name + ':'];
+    this.showUninstall(plugin);
+  },
+  showUninstall: function (plugin) {
+    var self = this;
     var sudo = self.props.data.isWin ? '' : 'sudo ';
     var isSys = plugin.isSys || dataCenter.enablePluginMgr;
     var cmdMsg = isSys ? getCmd(true) : sudo + 'npm uninstall -g ';
@@ -317,7 +389,7 @@ var Home = React.createClass({
     var install = state.install;
     var epm = dataCenter.enablePluginMgr;
     var cmdMsg = install ? state.installMsg : state.cmdMsg;
-    var list = Object.keys(plugins);
+    var list = getPluginList(plugins);
     var disabledPlugins = data.disabledPlugins || {};
     var registryList = state.registryList || [];
     var registry = state.registry || '';
@@ -360,13 +432,12 @@ var Home = React.createClass({
           <table className="table table-hover">
             <tbody>
               {list.length ? (
-                list.sort(getPluginComparator(plugins)).map(function (name, i) {
-                  var plugin = plugins[name];
-                  name = name.slice(0, -1);
+                list.map(function (plugin, i) {
+                  var name = util.getSimplePluginName(plugin);
                   var checked = !disabledPlugins[name];
                   var openInModal = plugin.openInModal;
-                  var openExternal = (plugin.pluginHomepage || plugin.openExternal) && !plugin.openInPlugins && !openInModal;
-                  var url = plugin.pluginHomepage || 'plugin.' + name + '/';
+                  var openExternal = isOpenExternal(plugin);
+                  var url = getHomePage(plugin);
                   var homepage = plugin.homepage;
                   var hasNew = util.compareVersion(
                     plugin.latest,
@@ -379,8 +450,10 @@ var Home = React.createClass({
                   return (
                     <tr
                       key={name}
+                      data-name={name}
                       className={
-                        (!disabled && checked ? '' : 'w-plugins-disable') +
+                        'w-plugins-item' +
+                        (!disabled && checked ? '' : ' w-plugins-disable') +
                         (hasNew ? ' w-has-new-version' : '')
                       }
                     >
@@ -455,7 +528,7 @@ var Home = React.createClass({
                         >
                           Option
                         </a>}
-                        {plugin.rules || plugin._rules || plugin.resRules ? (
+                        {hasRules(plugin) ? (
                           <a
                             draggable="false"
                             data-name={name}
@@ -473,7 +546,7 @@ var Home = React.createClass({
                             draggable="false"
                             className="w-plugin-btn w-plugin-update-btn"
                             data-name={name}
-                            onClick={self.showUpdate}
+                            onClick={self.onShowUpdate}
                           >
                             Update
                           </a>
@@ -485,7 +558,7 @@ var Home = React.createClass({
                             draggable="false"
                             className="w-plugin-btn"
                             data-name={name}
-                            onClick={self.showUninstall}
+                            onClick={self.onShowUninstall}
                           >
                             Uninstall
                           </a>
@@ -687,10 +760,10 @@ var Tabs = React.createClass({
     resizeHandler();
     $(window).on('resize', resizeHandler);
   },
-  shouldComponentUpdate: function (nextProps, nextState) {
+  shouldComponentUpdate: function (nextProps) {
     return !this.props.hide || !nextProps.hide;
   },
-  componentDidUpdate: function (prevProps, prevState) {
+  componentDidUpdate: function (prevProps) {
     if (prevProps.hide && !this.props.hide) {
       this._resizeHandler();
     }
@@ -698,6 +771,83 @@ var Tabs = React.createClass({
   onClose: function (e) {
     this.props.onClose && this.props.onClose(e);
     e.stopPropagation();
+  },
+  onContextMenu: function(e) {
+    e.preventDefault();
+    var target = $(e.target);
+    var row = target.closest('.w-plugins-item');
+    var active;
+    if (!row.length) {
+      active = target.parent().hasClass('active');
+      row = target.closest('.w-plugins-tab');
+    }
+    var name = row.attr('data-name');
+    var props = this.props;
+    var plugin = props.plugins[name + ':'];
+    var disabledPlugins = props.disabledPlugins || {};
+    var disabled = !plugin;
+    this._curPlugin = plugin;
+    CTX_MENU_LIST[0].disabled = disabled;
+    var copyText = [];
+    if (plugin) {
+      copyText.push('Name: ' + plugin.moduleName);
+      copyText.push('Version: ' + plugin.version);
+      if (plugin.homepage) {
+        copyText.push('Homepage: ' + plugin.homepage);
+      }
+    }
+    CTX_MENU_LIST[0].copyText = copyText.join('\n');
+    CTX_MENU_LIST[1].name = name && disabledPlugins[name] ? 'Enable' : 'Disable';
+    CTX_MENU_LIST[1].disabled = disabled || props.ndp;
+    CTX_MENU_LIST[2].disabled = disabled || plugin.noOpt || active;
+    CTX_MENU_LIST[3].disabled = disabled || !hasRules(plugin);
+    CTX_MENU_LIST[4].disabled = disabled || plugin.isProj;
+    CTX_MENU_LIST[5].disabled = disabled || plugin.isProj || plugin.notUn;
+    CTX_MENU_LIST[7].disabled = plugin && !plugin.homepage;
+    var pluginItem = CTX_MENU_LIST[6];
+    util.addPluginMenus(
+      pluginItem,
+      dataCenter.getPluginsMenus(),
+      6,
+      disabled,
+      null,
+      plugin && util.getSimplePluginName(plugin)
+    );
+    var data = util.getMenuPosition(e, 110, 250 - (pluginItem.hide ? 0 : 30));
+    data.list = CTX_MENU_LIST;
+    this.refs.contextMenu.show(data);
+  },
+  onClickContextMenu: function(action, _, parentAction, name) {
+    var plugin = this._curPlugin;
+    var props = this.props;
+    switch (parentAction || action) {
+    case 'Option':
+      return events.trigger('openPluginOption', plugin);
+    case 'Rules':
+      return events.trigger('showPluginRules', plugin);
+    case 'Disable':
+      return events.trigger('disablePlugin', [plugin, true]);
+    case 'Enable':
+      return events.trigger('disablePlugin', [plugin, false]);
+    case 'Update':
+      return events.trigger('showInstallPlugin', plugin);
+    case 'Uninstall':
+      return events.trigger('showUninstallPlugin', plugin);
+    case 'Help':
+      var homepage = plugin && plugin.homepage;
+      return window.open(homepage || 'https://wproxy.org/whistle/plugins.html');
+    case 'Plugins':
+      iframes.fork(action, {
+        port: dataCenter.getPort(),
+        type: 'plugins',
+        name: name,
+        plugin: plugin,
+        plugins: getPluginList(props.plugins),
+        pluginsRoot: dataCenter.pluginsRoot,
+        getRegistryList: getRegistryList
+      });
+      return;
+    }
   },
   render: function () {
     var self = this;
@@ -723,6 +873,7 @@ var Tabs = React.createClass({
           display: self.props.hide ? 'none' : '',
           paddingTop: disabled ? 0 : undefined
         }}
+        onContextMenu={self.onContextMenu}
       >
         {disabled ? (
           <div className="w-record-status" style={{ marginBottom: 5 }}>
@@ -754,7 +905,7 @@ var Tabs = React.createClass({
                   title={tab.name}
                   onClick={self.props.onActive}
                   draggable="false"
-                  className={disd ? 'w-plugin-tab-disabled' : undefined}
+                  className={'w-plugins-tab' + (disd ? ' w-plugin-tab-disabled' : '')}
                 >
                   {disd ? (
                     <span data-name={tab.name} className="glyphicon glyphicon-ban-circle" />
@@ -793,6 +944,7 @@ var Tabs = React.createClass({
             })}
           </div>
         </div>
+        <ContextMenu onClick={this.onClickContextMenu} ref="contextMenu" />
       </div>
     );
   }
