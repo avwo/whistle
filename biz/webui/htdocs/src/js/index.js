@@ -364,6 +364,52 @@ function getValue(url) {
   return false;
 }
 
+function appendList(list, _list) {
+  if (!_list.length) {
+    return;
+  }
+  for (var i = 0, len = list.length; i < len; i++) {
+    if (util.isGroup(list[i])) {
+      _list.unshift(i, 0);
+      list.splice.apply(list, _list);
+      return;
+    }
+  }
+  list.push.apply(list, _list);
+}
+
+function updateData(list, data, modal) {
+  var changedList = modal.getChangedList();
+  if (!changedList.length) {
+    return;
+  }
+  var hasChanged;
+  var _list = [];
+  var activeItem;
+  changedList.forEach(function(item) {
+    var name = item.name;
+    var curItem = data[name];
+    if (!curItem) {
+      data[name] = item;
+      _list.push(name);
+      if (item.active) {
+        activeItem = item;
+      }
+    } else if (curItem.value != item.value) {
+      hasChanged = true;
+      data[name] = item;
+    }
+  });
+  appendList(list, _list);
+  if (activeItem) {
+    list.forEach(function(name) {
+      data[name].active = false;
+    });
+    activeItem.active = true;
+  }
+  return hasChanged;
+}
+
 var Index = React.createClass({
   getInitialState: function () {
     var self = this;
@@ -736,7 +782,7 @@ var Index = React.createClass({
       });
     return pluginsOptions;
   },
-  reloadRules: function (data) {
+  reloadRules: function (data, quite) {
     var self = this;
     var selectedName = storage.get('activeRules', true) || data.current;
     var rulesList = [];
@@ -759,10 +805,12 @@ var Index = React.createClass({
         active: selectedName === item.name
       };
     });
+    var changed = quite && updateData(rulesList, rulesData, self.state.rules);
     self.state.rules.reset(rulesList, rulesData);
     self.setState({});
+    return changed;
   },
-  reloadValues: function (data) {
+  reloadValues: function (data, quite) {
     var self = this;
     var selectedName = storage.get('activeValues', true) || data.current;
     var valuesList = [];
@@ -775,24 +823,36 @@ var Index = React.createClass({
         active: selectedName === item.name
       };
     });
+    var changed = quite && updateData(valuesList, valuesData, self.state.values);
     self.state.values.reset(valuesList, valuesData);
     self.setState({});
+    return changed;
   },
-  reloadData: function () {
+  reloadDataQuite: function() {
+    this.reloadData(true);
+  },
+  reloadData: function (quite) {
     var self = this;
     var dialog = $('.w-reload-data-tips').closest('.w-confirm-reload-dialog');
     var name = dialog.find('.w-reload-data-tips').attr('data-name');
     var isRules = name === 'rules';
+    quite = quite === true;
     var handleResponse = function (data, xhr) {
       if (!data) {
-        util.showSystemError(xhr);
-        return;
+        !quite && util.showSystemError(xhr, true);
+        return setTimeout(function() {
+          events.trigger(isRules ? 'rulesChanged' : 'valuesChanged', true);
+        }, 2000);
       }
       if (isRules) {
-        self.reloadRules(data);
+        if (self.reloadRules(data, quite)) {
+          events.trigger('rulesChanged', true);
+        }
         self.triggerRulesChange('reload');
       } else {
-        self.reloadValues(data);
+        if (self.reloadValues(data, quite)) {
+          events.trigger('valuesChanged', true);
+        }
         self.triggerValuesChange('reload');
       }
     };
@@ -804,23 +864,25 @@ var Index = React.createClass({
       events.trigger('reloadValuesRecycleBin');
     }
   },
-  showReloadRules: function () {
-    if (this.state.name === 'rules' && this.rulesChanged) {
+  showReloadRules: function (force) {
+    if (this.rulesChanged && this.state.name === 'rules') {
       this.rulesChanged = false;
       var hasChanged = this.state.rules.hasChanged();
       this.showReloadDialog(
         'The rules has been modified.<br/>Do you want to reload it.',
-        hasChanged
+        hasChanged,
+        force
       );
     }
   },
-  showReloadValues: function () {
-    if (this.state.name === 'values' && this.valuesChanged) {
+  showReloadValues: function (force) {
+    if (this.valuesChanged && this.state.name === 'values') {
       this.valuesChanged = false;
       var hasChanged = this.state.values.hasChanged();
       this.showReloadDialog(
         'The values has been modified.<br/>Do you want to reload it.',
-        hasChanged
+        hasChanged,
+        force
       );
     }
   },
@@ -828,14 +890,21 @@ var Index = React.createClass({
     this.showReloadRules();
     this.showReloadValues();
   },
-  showReloadDialog: function (msg, existsUnsaved) {
-    var confirmReload = this.refs.confirmReload;
-    confirmReload.show();
+  showReloadDialog: function (msg, existsUnsaved, force) {
+    var dialog = this.refs.confirmReload;
+    clearTimeout(this.reloadTimer);
+    var tips = $('.w-reload-data-tips');
+    tips.attr('data-name', this.state.name);
+    if (!force && !dialog.isVisible()) {
+      this.reloadTimer = setTimeout(this.reloadDataQuite, 1000);
+      return;
+    }
+    dialog.show();
     if (existsUnsaved) {
       msg +=
         '<p class="w-confim-reload-note">Note: There are unsaved changes.</p>';
     }
-    $('.w-reload-data-tips').html(msg).attr('data-name', this.state.name);
+    tips.html(msg);
   },
   showTab: function() {
     var pageName = getPageName(this.state);
@@ -948,9 +1017,9 @@ var Index = React.createClass({
     events.on('showJsonViewDialog', function(_, data) {
       self.refs.jsonDialog.show(data);
     });
-    events.on('rulesChanged', function () {
+    events.on('rulesChanged', function (_, force) {
       self.rulesChanged = true;
-      self.showReloadRules();
+      self.showReloadRules(force === true);
     });
     events.on('switchTreeView', function () {
       self.toggleTreeView();
@@ -958,9 +1027,9 @@ var Index = React.createClass({
     events.on('updateGlobal', function () {
       self.setState({});
     });
-    events.on('valuesChanged', function () {
+    events.on('valuesChanged', function (_, force) {
       self.valuesChanged = true;
-      self.showReloadValues();
+      self.showReloadValues(force === true);
     });
     events.on('showNetwork', function () {
       self.showNetwork();
@@ -2911,6 +2980,9 @@ var Index = React.createClass({
           self.state.rules.setChanged(item.name, false);
           self.setState({});
           self.triggerRulesChange('save');
+          if (data.changed) {
+            events.trigger('rulesChanged');
+          }
           if (self.state.disabledAllRules) {
             win.confirm(
               'Rules has been turn off, do you want to turn on it?',
@@ -4347,6 +4419,7 @@ var Index = React.createClass({
           <FilterBtn
             onClick={this.showSettings}
             disabledRules={isRules && disabledAllRules}
+            backRulesFirst={isRules && state.backRulesFirst}
             isNetwork={isNetwork}
             hide={isPlugins}
           />
@@ -4719,18 +4792,6 @@ var Index = React.createClass({
                   onFontSizeChange={this.onRulesFontSizeChange}
                   onLineNumberChange={this.onRulesLineNumberChange}
                 />
-                {!state.drb && (
-                  <p className="w-editor-settings-box">
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={state.backRulesFirst}
-                        onChange={this.enableBackRulesFirst}
-                      />{' '}
-                      Back rules first
-                    </label>
-                  </p>
-                )}
                 {!state.drm && (
                   <p className="w-editor-settings-box">
                     <label style={{ color: multiEnv ? '#aaa' : undefined }}>
@@ -4741,6 +4802,18 @@ var Index = React.createClass({
                         onChange={this.allowMultipleChoice}
                       />{' '}
                       Use multiple rules
+                    </label>
+                  </p>
+                )}
+                {!state.drb && (
+                  <p className="w-editor-settings-box">
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={state.backRulesFirst}
+                        onChange={this.enableBackRulesFirst}
+                      />{' '}
+                     The later rules first
                     </label>
                   </p>
                 )}

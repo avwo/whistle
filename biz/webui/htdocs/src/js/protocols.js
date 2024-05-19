@@ -110,7 +110,27 @@ allInnerRules.splice(
 );
 allInnerRules.push('lineProps://');
 var allRules = allInnerRules;
-var sortedRules = allRules.slice().sort();
+var groupRules = [
+  ['Map Local', ['file://', 'xfile://', 'tpl://', 'xtpl://', 'rawfile://', 'xrawfile://']],
+  ['Map Remote', ['https://', 'http://', 'wss://', 'ws://', 'tunnel://']],
+  ['DNS Spoofing', ['host://', 'xhost://', 'proxy://', 'xproxy://', 'http-proxy://', 'xhttp-proxy://',
+    'https-proxy://', 'xhttps-proxy://', 'socks://', 'xsocks://', 'pac://']],
+  ['Rewrite Request', ['urlParams://', 'pathReplace://','sniCallback://', 'method://', 'cipher://', 'reqHeaders://', 'forwardedFor://',
+    'referer://', 'auth://', 'ua://', 'cache://', 'attachment://', 'reqType://', 'reqCharset://', 'reqCookies://',
+    'reqCors://', 'reqMerge://', 'reqPrepend://', 'reqBody://', 'reqAppend://', 'reqReplace://', 'reqWrite://',
+    'reqWriteRaw://', 'trailers://']],
+  ['Rewrite Response', ['statusCode://', 'replaceStatus://', 'redirect://', 'resHeaders://', 'responseFor://', 'resType://',
+    'resCharset://', 'resCookies://', 'resCors://', 'resMerge://', 'resPrepend://', 'resBody://', 'resAppend://', 'resReplace://',
+    'htmlPrepend://', 'htmlBody://', 'htmlAppend://', 'cssPrepend://', 'cssBody://', 'cssAppend://', 'jsPrepend://', 'jsBody://',
+    'jsAppend://', 'resWrite://', 'resWriteRaw://']],
+  ['Common', ['pipe://', 'delete://', 'headerReplace://', 'reqScript://', 'resScript://', 'reqRules://', 'resRules://']],
+  ['Throttle', ['reqDelay://', 'resDelay://', 'reqSpeed://', 'resSpeed://']],
+  ['Tools', ['weinre://', 'log://']],
+  ['Settings', ['style://', 'lineProps://', 'enable://', 'disable://']],
+  ['Filters', ['ignore://', 'skip://', 'excludeFilter://', 'includeFilter://']],
+  ['Plugins', []]
+];
+
 var pluginsOptions = [];
 
 exports.setPlugins = function (pluginsState) {
@@ -122,6 +142,8 @@ exports.setPlugins = function (pluginsState) {
   allPluginNameList = [];
   forwardRules = innerRules.slice();
   allRules = allInnerRules.slice();
+  var pluginsProtos = [];
+  groupRules[groupRules.length - 1][1] = pluginsProtos;
 
   if (!pluginsState.disabledAllPlugins) {
     pluginsOptions.forEach(function (plugin, i) {
@@ -143,22 +165,30 @@ exports.setPlugins = function (pluginsState) {
           }
         }
         allPluginNameList.push(name);
+        var proto;
         if (!plugin.hideShortProtocol && name.indexOf('_') === -1) {
           forwardRules.push(name);
-          allRules.push(name + '://');
+          proto = name + '://';
+          allRules.push(proto);
+          pluginsProtos.push(proto);
         }
         if (!plugin.hideLongProtocol) {
           pluginRules.push('whistle.' + name, 'plugin.' + name);
-          allRules.push('whistle.' + name + '://');
+          proto = 'whistle.' + name + '://';
+          allRules.push(proto);
+          pluginsProtos.push(proto);
         }
       }
     });
   }
-  sortedRules = allRules.slice().sort();
   events.trigger('updatePlugins');
 };
 
 exports.PROTOCOLS = PROTOCOLS;
+
+exports.getGroupRules = function() {
+  return groupRules;
+};
 
 exports.getForwardRules = function () {
   return forwardRules;
@@ -167,6 +197,7 @@ exports.getForwardRules = function () {
 exports.getPluginRules = function () {
   return pluginRules;
 };
+
 
 exports.getPluginNameList = function () {
   return pluginNameList;
@@ -182,10 +213,6 @@ exports.getAllPluginNameList = function () {
 
 exports.getAllRules = function () {
   return allRules;
-};
-
-exports.getSortedRules = function() {
-  return sortedRules;
 };
 
 function getPlugin(rule) {

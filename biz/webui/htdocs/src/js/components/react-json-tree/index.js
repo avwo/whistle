@@ -197,6 +197,9 @@ var JSONTree = (function (_React$Component) {
     if (props.collapseAll) {
       contextMenuList.push({ name: 'Collapse All' });
     }
+    if (props.onSearch) {
+      contextMenuList.push({ name: 'Search Object' });
+    }
 
     var _this = (0, _possibleConstructorReturn3['default'])(
       this,
@@ -205,12 +208,9 @@ var JSONTree = (function (_React$Component) {
 
     _this.onContextMenu = function (e) {
       var target = (0, _contextMenu.$)(e.target);
-      var label = target.closest('label');
+      var label = target.closest('li').find('>label[data-key-path]:first');
       var keyPath = _contextMenu.util.parseJSON(label.attr('data-key-path'));
       if (!Array.isArray(keyPath)) {
-        if (e.target.nodeName === 'SPAN' && !target.find('span').length && e.target.parentNode.nodeName !== 'SPAN') {
-          e.stopPropagation();
-        }
         return;
       }
       var data = _this.props.data;
@@ -221,11 +221,19 @@ var JSONTree = (function (_React$Component) {
       }
       var expandMenu = contextMenuList[3];
       var collapseMenu = contextMenuList[4];
+      var searchMenu = contextMenuList[5];
       var height = isRoot ? 60 : 90;
+      if (props.onSearch && !searchMenu) {
+        searchMenu = expandMenu;
+        expandMenu = null;
+      }
       if (expandMenu) {
         height += 30;
       }
       if (collapseMenu) {
+        height += 30;
+      }
+      if (searchMenu) {
         height += 30;
       }
       var isRoot = keyPath.length === 1;
@@ -257,6 +265,11 @@ var JSONTree = (function (_React$Component) {
       if (collapseMenu) {
         collapseMenu.onClick = function () {
           props.collapseAll();
+        };
+      }
+      if (searchMenu) {
+        searchMenu.onClick = function () {
+          props.onSearch();
         };
       }
       _this.refs.contextMenu.show(ctxMenu); // eslint-disable-line

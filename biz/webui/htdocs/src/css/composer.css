@@ -290,7 +290,8 @@ textarea.w-composer-rules {
 .w-detail-composer input:read-only,
 .w-detail-composer input[readonly],
 .w-composer-rules textarea:disabled,
-.w-composer-rules textarea[readonly] {
+.w-composer-rules textarea[readonly],
+.w-mock-key-name[readonly] {
   background: #eee !important;
   color: #999 !important;
   cursor: default;

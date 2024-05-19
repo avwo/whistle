@@ -26,7 +26,7 @@ var FilterBtn = React.createClass({
     var props = this.props;
     var hide = props.hide;
     var isNetwork = props.isNetwork;
-    var className =
+    var className = props.backRulesFirst ||
       (isNetwork ? this.state.hasFilterText : dataCenter.hasAccountRules) ? ' w-menu-enable' : '';
     return (
       <a

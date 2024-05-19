@@ -56,8 +56,11 @@ var RulesDialog = React.createClass({
       });
       return;
     }
-    self.refs.createRules.show();
-    var input = ReactDOM.findDOMNode(self.refs.rulesName);
+    self.showCreateRules();
+  },
+  showCreateRules: function() {
+    this.refs.createRules.show();
+    var input = ReactDOM.findDOMNode(this.refs.rulesName);
     setTimeout(function() {
       input.select();
       input.focus();
@@ -267,6 +270,7 @@ var RulesDialog = React.createClass({
               })}
               <option value="">+Create</option>
             </select>
+            <button className="btn btn-default" onClick={this.showCreateRules}>+Create</button>
           </div>
           <Editor
             value={state.rulesValue}

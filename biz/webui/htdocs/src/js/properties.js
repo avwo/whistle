@@ -125,7 +125,11 @@ var Properties = React.createClass({
                       </th>
                       <td className={json ? 'w-properties-json' : 'w-user-select-none'}>
                         {
-                          json ? <JSONTree data={json} /> : <pre>{self.renderValue(val)}</pre>
+                          json ? <JSONTree data={json}
+                            onSearch={function() {
+                              util.showJSONDialog(json);
+                            }}
+                          /> : <pre>{self.renderValue(val)}</pre>
                         }
                       </td>
                     </tr>
@@ -152,7 +156,9 @@ var Properties = React.createClass({
                   </th>
                   <td className={json ? 'w-properties-json' : 'w-user-select-none'}>
                     {
-                      json ? <JSONTree data={json} /> : <pre>{self.renderValue(value)}</pre>
+                      json ? <JSONTree data={json} onSearch={function() {
+                        util.showJSONDialog(json);
+                      }} /> : <pre>{self.renderValue(value)}</pre>
                     }
                   </td>
                 </tr>

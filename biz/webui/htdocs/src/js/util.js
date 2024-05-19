@@ -339,19 +339,18 @@ function getBoolean(val) {
 
 exports.getBoolean = getBoolean;
 
-exports.showSystemError = function (xhr) {
+exports.showSystemError = function (xhr, useToast) {
   xhr = xhr || {};
   var status = xhr.status;
+  var showTips = useToast ? message.error : win.alert;
   if (!status) {
-    return win.alert(
-      'Please check the proxy settings or whether whistle has been started.'
-    );
+    return showTips('Please check the proxy settings or whether whistle has been started.');
   }
   var msg = STATUS_CODES[status];
   if (msg) {
-    return win.alert('[' + status + '] ' + msg + '.');
+    return showTips('[' + status + '] ' + msg + '.');
   }
-  win.alert('[' + status + '] Unknown error, try again later.');
+  showTips('[' + status + '] Unknown error, try again later.');
 };
 
 exports.getClasses = function getClasses(obj) {
@@ -594,7 +593,7 @@ function getContentEncoding(headers) {
   var encoding = toLowerCase(
     (headers && headers['content-encoding']) || headers
   );
-  return encoding === 'gzip' || encoding === 'deflate' ? encoding : null;
+  return encoding === 'gzip' || encoding === 'br' || encoding === 'deflate' ? encoding : null;
 }
 
 exports.getOriginalReqHeaders = function (item, rulesHeaders) {
@@ -2615,6 +2614,18 @@ exports.replacQuery = function(url, query) {
   return url + query + hash;
 };
 
+function getDisplaySize(size) {
+  if (!(size > 1024)) {
+    return size;
+  }
+  return Number(size / 1024).toFixed(2) + 'k';
+}
+
+exports.getDisplaySize = function(size, unzipSize) {
+  unzipSize = size == unzipSize ? '' : getDisplaySize(unzipSize);
+  size = getDisplaySize(size);
+  return unzipSize ? size + ' / ' + unzipSize : size;
+};
 
 function formatSize(value) {
   return value >= 1024
@@ -2640,4 +2651,11 @@ exports.getDataUrl = function() {
 exports.getSimplePluginName = function(plugin) {
   var name = typeof plugin === 'string' ? plugin : plugin.moduleName;
   return name.substring(name.lastIndexOf('.') + 1);
+};
+
+exports.showJSONDialog = function(data) {
+  var str = data && JSON.stringify(data);
+  if (str) {
+    events.trigger('showJsonViewDialog', str);
+  }
 };

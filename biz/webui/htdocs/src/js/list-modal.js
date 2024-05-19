@@ -150,8 +150,10 @@ proto.get = function (name) {
 };
 
 proto.getByKey = function (key) {
-  for (var i in this.data) {
-    var item = this.data[i];
+  var list = this.list;
+  var data = this.data;
+  for (var i = 0, len = list.length; i < len; i++) {
+    var item = data[list[i]];
     if (item.key == key) {
       return item;
     }
@@ -282,8 +284,10 @@ proto.setActive = function (name, active) {
 
 proto.getActiveObj = function() {
   var obj = {};
-  for (var i in this.data) {
-    var item = this.data[i];
+  var list = this.list;
+  var data = this.data;
+  for (var i = 0, len = list.length; i < len; i++) {
+    var item = data[list[i]];
     if (util.isGroup(item.name)) {
       if (item._isNewGroup) {
         delete item._isNewGroup;
@@ -307,8 +311,9 @@ proto.getActiveObj = function() {
 proto.getActive = function (ensure) {
   var first;
   ensure = ensure === true;
-  for (var i in this.data) {
-    var item = this.data[i];
+  var list = this.list;
+  for (var i = 0, len = list.length; i < len; i++) {
+    var item = this.data[list[i]];
     if (!util.isGroup(item.name)) {
       if (item.active) {
         return item;
@@ -382,6 +387,11 @@ proto.getIndex = function (name) {
 proto.getSibling = function (name) {
   var index = this.getIndex(name);
   var list = this.list;
+  name = list[index + 1];
+  name = util.isGroup(name) && list[index - 1];
+  if (name && !util.isGroup(name)) {
+    return this.data[name];
+  }
   for (var i = index + 1, len = list.length; i < len; i++) {
     name = list[i];
     if (!util.isGroup(name)) {

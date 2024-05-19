@@ -5,7 +5,7 @@ var Dialog = require('./dialog');
 var CopyBtn = require('./copy-btn');
 var util = require('./util');
 var dataCenter = require('./data-center');
-var getSortedRules = require('./protocols').getSortedRules;
+var getGroupRules = require('./protocols').getGroupRules;
 var win = require('./win');
 var message = require('./message');
 var events = require('./events');
@@ -29,6 +29,29 @@ var INLINE_PROTOCOLS = ['http://', 'https://', 'ws://', 'wss://', 'tunnel://', '
 'disable://', 'delete://', 'method://', 'replaceStatus://', 'referer://', 'auth://', 'ua://', 'cache://', 'attachment://', 'forwardedFor://',
 'responseFor://', 'reqDelay://', 'resDelay://', 'reqSpeed://', 'resSpeed://', 'reqType://', 'resType://', 'reqCharset://', 'resCharset://', 
 'reqWrite://', 'resWrite://', 'reqWriteRaw://', 'resWriteRaw://', 'cipher://', 'sniCallback://', 'lineProps://'];
+var COMMON_OPS = ['Map Local', 'Map Remote', 'DNS Spoofing', 'Modify URL', 'Modify Method', 'Request Headers', 'Response Headers',
+  'Request Body', 'Response Body', 'Response 404', 'Response 500', 'Abort Request', 'Abort Response', 'Delay Request', 'Delay Response'];
+var HTTP_PROTOCOLS = ['http://', 'https://', 'ws://', 'wss://'];
+var HTTP_RE = /^(?:http|ws)s?:\/\//;
+var JSON_STR = '{\n  \n}';
+var IPV6_RE = /^\[([\w:]+)\](:\d{1,5})?$/;
+var HOST_RE = /^[a-z][a-z\d_:-]+(?:\.[a-z][a-z\d_:-]+)+?$/;
+
+function getDefaultValue(value) {
+  var val = value && value.trim();
+  if (!val || val[0] !== '{' || val[val.length - 1] !== '}') {
+    return JSON_STR;
+  }
+  return value;
+}
+
+function getDefaultHost(value) {
+  value = value && value.trim() || '';
+  if (value === 'localhost' || HOST_RE.test(value) || IPV6_RE.test(value)) {
+    return value;
+  }
+  return '127.0.0.1:8080';
+}
 
 function trim(str) {
   return str ? str.trim() : '';
@@ -144,14 +167,125 @@ var MockDialog = React.createClass({
   },
   onValueTypeChange: function(e) {
     var value = e.target.value;
+    var protocol = this.state.protocol;
     this.setState({
-      valueType: value
+      valueType: INLINE_PROTOCOLS.indexOf(protocol) === -1 ? value : 'inline'
     }, this.updateRules);
   },
   onProtoChange: function(e) {
-    this.setState({
-      protocol: e.target.value
-    }, this.updateRules);
+    var protocol = e.target.value;
+    var curValue = this.state.inlineValue;
+    switch (protocol) {
+    case 'Abort Request':
+      this.setState({
+        protocol: 'enable://',
+        valueType: 'inline',
+        inlineValue: 'abort'
+      }, this.updateRules);
+      break;
+    case 'Abort Response':
+      this.setState({
+        protocol: 'enable://',
+        valueType: 'inline',
+        inlineValue: 'abortRes'
+      }, this.updateRules);
+      break;
+    case 'Delay Request':
+      this.setState({
+        protocol: 'reqDelay://',
+        valueType: 'inline',
+        inlineValue: curValue > 0 ? curValue : '5000'
+      }, this.updateRules);
+      break;
+    case 'Delay Response':
+      this.setState({
+        protocol: 'resDelay://',
+        valueType: 'inline',
+        inlineValue: curValue > 0 ? curValue : '5000'
+      }, this.updateRules);
+      break;
+    case 'Modify URL':
+      this.setState({
+        protocol: 'urlParams://',
+        valueType: 'inline',
+        inlineValue: getDefaultValue(curValue)
+      }, this.updateRules);
+      break;
+    case 'Request Headers':
+      this.setState({
+        protocol: 'reqHeaders://',
+        valueType: 'inline',
+        inlineValue: getDefaultValue(curValue)
+      }, this.updateRules);
+      break;
+    case 'Response Headers':
+      this.setState({
+        protocol: 'resHeaders://',
+        valueType: 'inline',
+        inlineValue: getDefaultValue(curValue)
+      }, this.updateRules);
+      break;
+    case 'Request Body':
+      this.setState({
+        protocol: 'reqMerge://',
+        valueType: 'inline',
+        inlineValue: getDefaultValue(curValue)
+      }, this.updateRules);
+      break;
+    case 'Response Body':
+      this.setState({
+        protocol: 'resMerge://',
+        valueType: 'inline',
+        inlineValue: getDefaultValue(curValue)
+      }, this.updateRules);
+      break;
+    case 'Response 404':
+      this.setState({
+        protocol: 'statusCode://',
+        valueType: 'inline',
+        inlineValue: '404'
+      }, this.updateRules);
+      break;
+    case 'Response 500':
+      this.setState({
+        protocol: 'statusCode://',
+        valueType: 'inline',
+        inlineValue: '500'
+      }, this.updateRules);
+      break;
+    case 'DNS Spoofing':
+      this.setState({
+        protocol: 'host://',
+        valueType: 'inline',
+        inlineValue: getDefaultHost(curValue)
+      }, this.updateRules);
+      break;
+    case 'Map Remote':
+      this.setState({
+        protocol: 'https://',
+        valueType: 'inline',
+        inlineValue: ''
+      }, this.updateRules);
+      break;
+    case 'Modify Method':
+      this.setState({
+        protocol: 'method://',
+        valueType: 'inline',
+        inlineValue: ''
+      }, this.updateRules);
+      break;
+    case 'Map Local':
+      this.setState({
+        protocol: 'file://',
+        valueType: 'inline',
+        inlineValue: ''
+      }, this.updateRules);
+      break;
+    default:
+      this.setState({
+        protocol: protocol
+      }, this.updateRules);
+    }
   },
   getValues: function() {
     var valueType = this.getValueType();
@@ -210,7 +344,11 @@ var MockDialog = React.createClass({
     } else {
       var inlineValue = state.inlineValue;
       if (!/\s/.test(inlineValue)) {
-        rules += inlineValue;
+        if (HTTP_PROTOCOLS.indexOf(protocol) !== -1 && HTTP_RE.test(inlineValue)) {
+          rules = pattern + ' ' + inlineValue;
+        } else {
+          rules += inlineValue;
+        }
       } else {
         inlineValue = getInlineValue(state.inlineKey, inlineValue);
         rules += (inlineValue ? '{' + state.inlineKey + '}' : '') + inlineValue;
@@ -317,7 +455,10 @@ var MockDialog = React.createClass({
   removeRules: function() {
     var self = this;
     win.confirm('Are you sure to delete the rules?', function(sure) {
-      sure && self.setState({ pattern: '' }, self.updateRules);
+      if (sure) {
+        self.setState({ pattern: '' }, self.updateRules);
+        ReactDOM.findDOMNode(self.refs.url).focus();
+      }
     });
   },
   showParams: function() {
@@ -348,7 +489,10 @@ var MockDialog = React.createClass({
   clearQuery: function() {
     var self = this;
     win.confirm('Are you sure to delete all params?', function(sure) {
-      sure && self.refs.paramsEditor.clear();
+      if (sure) {
+        self.refs.paramsEditor.clear();
+        self.hideParams();
+      }
     });
   },
   addQueryParam: function() {
@@ -477,7 +621,7 @@ var MockDialog = React.createClass({
     var hasQuery = state.hasQuery;
     var dataSrc = state.dataSrc || '';
     var preStyle = rules ? null : HIDE_STYLE;
-    var protoList = getSortedRules();
+    var protoList = getGroupRules();
     var valuesModal = dataCenter.getValuesModal();
     rules = this.wrapComment();
 
@@ -504,11 +648,21 @@ var MockDialog = React.createClass({
           <div className="w-mock-row">
             <span>Operation:</span>
             <select className="form-control w-mock-protocol" onChange={this.onProtoChange} value={state.protocol}>
-              {protoList.map(function(proto) {
-                if (proto === 'includeFilter://' || proto === 'excludeFilter://') {
-                  return;
-                }
-                return <option value={proto}>{proto}</option>;
+              {
+                COMMON_OPS.map(function(proto) {
+                  return <option value={proto}>{proto}</option>;
+                })
+              }
+              <option disabled>─────────</option>
+              {protoList.map(function(item) {
+                var list = item[1];
+                return list.length ? <optgroup label={item[0]}>
+                  {
+                    list.map(function(proto) {
+                      return <option value={proto}>{proto}</option>;
+                    })
+                  }
+                </optgroup> : null;
               })}
             </select>
             <select onChange={this.onValueTypeChange} value={valueType} className="form-control w-mock-value-options">

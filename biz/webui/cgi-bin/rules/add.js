@@ -21,7 +21,7 @@ module.exports = function(req, res) {
         rules.moveToTop(body.name, body.clientId);
       } else if (!exists) {
         var group = rules.getFirstGroup();
-        group && rules.moveTo(body.name, group.name, body.clientId);
+        group && rules.moveTo(body.name, group.name, body.clientId, null, true);
       }
     }
     body.selected && rules.select(body.name);

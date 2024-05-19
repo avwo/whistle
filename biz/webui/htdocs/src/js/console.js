@@ -47,6 +47,9 @@ function parseLog(log, expandRoot) {
       return (
         <JSONTree
           data={data}
+          onSearch={function() {
+            util.showJSONDialog(data);
+          }}
           shouldExpandNode={expandRoot ? undefined : false}
         />
       );

@@ -19,6 +19,7 @@ var contextMenuList = [
   { name: 'Expand All' },
   { name: 'Collapse All' }
 ];
+var SEARCH_MENU = [{name: 'Search Object'}];
 
 function compare(a, b) {
   return a > b ? 1 : -1;
@@ -46,8 +47,9 @@ var JsonViewer = React.createClass({
     }
   },
   onContextMenu: function(e) {
-    var ctxMenu = util.getMenuPosition(e, 110, 60);
-    ctxMenu.list = contextMenuList;
+    var isDialog = this.props.dialog;
+    var ctxMenu = util.getMenuPosition(e, 110, isDialog ? 60 : 90);
+    ctxMenu.list = isDialog ? contextMenuList : contextMenuList.concat(SEARCH_MENU);
     this.refs.contextMenu.show(ctxMenu);
     e.preventDefault();
   },
@@ -56,6 +58,8 @@ var JsonViewer = React.createClass({
       this.expandAll();
     } else if (action === 'Collapse All') {
       this.collapseAll();
+    } else if (action === 'Search Object') {
+      this.search();
     }
   },
   search: function() {
@@ -307,7 +311,7 @@ var JsonViewer = React.createClass({
           className={'fill w-json-viewer-tree' + (viewSource ? ' hide' : '')}
         >
           <JSONTree data={data.json} sortObjectKeys={compare} shouldExpandNode={state.shouldExpandNode}
-            expandAll={this.expandAll} collapseAll={this.collapseAll} />
+            expandAll={this.expandAll} collapseAll={this.collapseAll} onSearch={props.dialog ? null : this.search} />
         </div>
         <ContextMenu onClick={this.onClickContextMenu} ref="contextMenu" />
       </div>

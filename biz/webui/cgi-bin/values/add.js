@@ -15,7 +15,7 @@ module.exports = function(req, res) {
       values.moveToGroup(body.name, body.groupName);
     } else if (!exists) {
       var group = values.getFirstGroup();
-      group && values.moveTo(body.name, group.name, body.clientId);
+      group && values.moveTo(body.name, group.name, body.clientId, null, true);
     }
   }
   if (req.body.recycleFilename) {

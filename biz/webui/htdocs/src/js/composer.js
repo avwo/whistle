@@ -919,8 +919,7 @@ var Composer = React.createClass({
             em = status;
             util.showSystemError(xhr);
           } else if (!em || typeof em !== 'string' || em === 'error') {
-            em =
-              'Please check the proxy settings or whether whistle has been started.';
+            em = 'Please check the proxy settings or whether whistle has been started.';
           }
           state.result = { url: params.url, req: '', res: { statusCode: em } };
         } else {
@@ -1181,7 +1180,10 @@ var Composer = React.createClass({
   clearQuery: function() {
     var self = this;
     win.confirm('Are you sure to delete all params?', function(sure) {
-      sure && self.refs.paramsEditor.clear();
+      if (sure) {
+        self.refs.paramsEditor.clear();
+        self.hideParams();
+      }
     });
   },
   addQueryParam: function() {
