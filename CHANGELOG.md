@@ -1,3 +1,8 @@
+# v2.9.71
+1. feat: 自动更新 Rules & Values
+2. feat: Mock 对话框新增 Create 按钮
+
+
 # v2.9.70
 1. feat: 插件列表添加自定义右键菜单
 2. feat: 支持通过 `pattern jsAppend://[value|file|url] linePropslineProps://nomodule lineProps://module lineProps://defer lineProps://async lineProps://crossorigin`  设置标签属性
@@ -966,7 +971,7 @@
 	}]}}
 	```
 	> 如果不希望进行自动转义，可以使用双引号 `"[xxx.yyy[n]]"`
-	2. feat: 添加在域名中 `.` 匹配模式
+	2. feat: 添加在域名中 `.` 匹配方式
 		``` txt
 		.test.com 表示匹配 x.test.com 与 test.com
 		*.test.com 表示匹配 x.test.com，不匹配 test.com
