@@ -1,5 +1,5 @@
 # host
-> whistle的host转发功能，在保留传统hosts语法规则的同时，提供了更加灵活强大的匹配模式来满足不同场景的开发、调试需要。
+> whistle的host转发功能，在保留传统hosts语法规则的同时，提供了更加灵活强大的匹配方式来满足不同场景的开发、调试需要。
 
 ### 保留传统的hosts语法规则
 
@@ -11,17 +11,17 @@
 
 ----
 
-### 灵活强大的whistle匹配模式
+### 灵活强大的whistle匹配方式
 
 ![Demo2](../img/host02.png)
 
-除了保留hosts文件单一的语法规则来支持域名匹配外，whistle还提供给开发者更加灵活强大的端口映射(即支持ip带端口)、CNAME、路径匹配、精确匹配、正则表达式、组合等host匹配模式。语法规则的一般描述如下：
+除了保留hosts文件单一的语法规则来支持域名匹配外，whistle还提供给开发者更加灵活强大的端口映射(即支持ip带端口)、CNAME、路径匹配、精确匹配、正则表达式、组合等host匹配方式。语法规则的一般描述如下：
 
 ```
 host pattern1 pattern2 patternN
 ```
 
-> host为计划转发到`ip:port`，pattern1-N为匹配请求url的表达式。当pattern只有一个时，host和pattern的顺序往往可以互换，具体可参考[匹配模式](../pattern.html)。
+> host为计划转发到`ip:port`，pattern1-N为匹配请求url的表达式。当pattern只有一个时，host和pattern的顺序往往可以互换，具体可参考[匹配方式](../pattern.html)。
 
 ### 例子
 

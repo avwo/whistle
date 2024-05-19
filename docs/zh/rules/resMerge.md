@@ -11,14 +11,14 @@ filepath为[Values](http://local.whistlejs.com/#values)里面的{key}或者本�
 	field2: value2
 	filedN: valueN
 
-pattern参见[匹配模式](../pattern.html)，更多模式请参考[配置方式](../mode.html)，json格式参考[操作值](../data.html)。
+pattern参见[匹配方式](../pattern.html)，更多模式请参考[配置方式](../mode.html)，json格式参考[操作值](../data.html)。
 
 ### 例子
 1. 普通的返回JSON对象的请求：
 ```
 www.test.com/cgi-bin/get-data resMerge://(name=1&value=2)
 ```
-> 一般配置左边是pattern、右边是operator，如果pattern和operator可以区分开来则位置可以调换(高亮显示的颜色不一样)，有关pattern可以参考：[匹配模式](../pattern.html)
+> 一般配置左边是pattern、右边是operator，如果pattern和operator可以区分开来则位置可以调换(高亮显示的颜色不一样)，有关pattern可以参考：[匹配方式](../pattern.html)
 
 上述配置，请求 `https://www.test.com/cgi-bin/get-data?xxx` 如果响应类型为 `application/json`，且返回内容为json格式：
 ```

@@ -4,7 +4,7 @@
 
 	pattern forwardedFor://ip
 
-pattern参见[匹配模式](../pattern.html)，更多模式请参考[配置方式](../mode.html)。
+pattern参见[匹配方式](../pattern.html)，更多模式请参考[配置方式](../mode.html)。
 
 例子：
 

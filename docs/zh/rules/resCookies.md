@@ -18,7 +18,7 @@ filepath为[Values](http://local.whistlejs.com/#values)里面的{key}或者本�
         }
 	}
 
-pattern参见[匹配模式](../pattern.html)，更多模式请参考[配置方式](../mode.html)，json格式参考[操作值](../data.html)。
+pattern参见[匹配方式](../pattern.html)，更多模式请参考[配置方式](../mode.html)，json格式参考[操作值](../data.html)。
 
 > `v1.12.8` 版本开始支持设置 `sameSite`，有关 SameSite属性自行网上搜索
 

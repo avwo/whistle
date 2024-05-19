@@ -5,7 +5,7 @@
 	pattern enable://https|intercept|hide|abort|gzip|proxyHost|proxyTunnel|h2|safeHtml|strictHtml|clientIp|bigData|useLocalHost|useSafePort|forceReqWrite|forceResWrite|authCapture
 ```
 
-其中，`pattern`参见[匹配模式](../pattern.html)，`https`或`intercept`(或 `capture`)表示拦截pattern匹配的tunnel请求(如果是https或wss请求需要安装whistle的根证书：[点击这里](../webui/https.html)，拦截后可以查看https请求的具体内容)；`hide`表示隐藏pattern匹配的所有请求，将不显示在[Network](../webui/network.html)上；通过`|`可以同时设置多个操作。
+其中，`pattern`参见[匹配方式](../pattern.html)，`https`或`intercept`(或 `capture`)表示拦截pattern匹配的tunnel请求(如果是https或wss请求需要安装whistle的根证书：[点击这里](../webui/https.html)，拦截后可以查看https请求的具体内容)；`hide`表示隐藏pattern匹配的所有请求，将不显示在[Network](../webui/network.html)上；通过`|`可以同时设置多个操作。
 
 例子：
 ```javascript

@@ -32,7 +32,7 @@ whistle的所有操作都可以通过类似如下配置方式实现：
 		# 通配符匹配
 		^www.example.com/test/*** referer://http://www.test.com/$1
 
-	完整内容参见：[匹配模式](./pattern.html)
+	完整内容参见：[匹配方式](./pattern.html)
 2. **operatorURI** 为对应的操作，由操作协议+操作值组成(`operatorURI = opProtocol://opValue`)：
 
 	**opProtocol**(操作协议)， 对应某类操作，如：
@@ -62,7 +62,7 @@ whistle的所有操作都可以通过类似如下配置方式实现：
 * [手动更新](update.md)
 * [快速上手](quickstart.md)
 * [配置方式](mode.md)
-* [匹配模式](pattern.md)
+* [匹配方式](pattern.md)
 * [操作值](data.md)
 * [常用功能](frequet.md)
 * [插件开发](plugins.md)

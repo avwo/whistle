@@ -8,7 +8,7 @@
 * [手动更新](update.md)
 * [快速上手](quickstart.md)
 * [配置方式](mode.md)
-* [匹配模式](pattern.md)
+* [匹配方式](pattern.md)
 * [操作值](data.md)
 * [匹配原则](principle.md)
 * [常用功能](frequet.md)

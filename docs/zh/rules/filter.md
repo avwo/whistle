@@ -9,7 +9,7 @@ excludeFilter和includeFilter是作为二级条件，用来过滤匹配已匹配
 ```
 pattern operatorURI excludeFilter://p1 includeFilter://p2 includeFilter://p3
 ```
-其中：p1、p2、... 可以为匹配模式里面的正则表达式、通配符、通配路径，具体参见：[匹配模式](../pattern.html)，且支持匹配请求头、请求方法、请求IP等
+其中：p1、p2、... 可以为匹配方式里面的正则表达式、通配符、通配路径，具体参见：[匹配方式](../pattern.html)，且支持匹配请求头、请求方法、请求IP等
 
 ```
 pattern operatorURI excludeFilter://p0 excludeFilter://p1 includeFilter://p2 includeFilter://p3

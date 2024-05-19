@@ -3,7 +3,7 @@
 
 	pattern cache://maxAge
 
-maxAge为缓存的秒数，也可以代表一些关键字: `no`、`no-cache`、`no-store`，pattern参见[匹配模式](../pattern.html)，更多模式请参考[配置方式](../mode.html)。
+maxAge为缓存的秒数，也可以代表一些关键字: `no`、`no-cache`、`no-store`，pattern参见[匹配方式](../pattern.html)，更多模式请参考[配置方式](../mode.html)。
 
 例子：
 

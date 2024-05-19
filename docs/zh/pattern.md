@@ -1,4 +1,4 @@
-# 匹配模式
+# 匹配方式
 
 > HTTPS、Websocket需要[开启HTTPS拦截](webui/https.html)才可以正常抓包及使用所有匹配模式，否则只能用域名匹配
 

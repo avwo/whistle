@@ -20,7 +20,7 @@
 
 	pattern style://color=@fff&fontStyle=italic&bgColor=red
 
-pattern参见[匹配模式](../pattern.html)，更多模式请参考[配置方式](../mode.html)；style可以设置：
+pattern参见[匹配方式](../pattern.html)，更多模式请参考[配置方式](../mode.html)；style可以设置：
 
 1. color: 字体颜色，跟css的color属性一致，但由于 `#` 为whistle但注释符号，这里可以用 `@` 代替
 2. fontStyle: 字体样式，可以设置为 `normal`、`italic`、`oblique` 等 

@@ -10,7 +10,7 @@ filepath为[Values](http://local.whistlejs.com/#values)里面的{key}或者本�
 	method: POST
 	headers: x-test
 
-pattern参见[匹配模式](../pattern.html)，更多模式请参考[配置方式](../mode.html)，json格式参考[操作值](../data.html)。
+pattern参见[匹配方式](../pattern.html)，更多模式请参考[配置方式](../mode.html)，json格式参考[操作值](../data.html)。
 
 例子：
 

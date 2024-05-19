@@ -12,7 +12,7 @@ filepath为[Values](http://local.whistlejs.com/#values)里面的{key}或者本�
 	credentials: true
 	maxAge: 300000
 
-pattern参见[匹配模式](../pattern.html)，更多模式请参考[配置方式](../mode.html)，json格式参考[操作值](../data.html)。
+pattern参见[匹配方式](../pattern.html)，更多模式请参考[配置方式](../mode.html)，json格式参考[操作值](../data.html)。
 
 一些特性且常用的情形可以用这种方式配置：
 

@@ -19,7 +19,7 @@
 	# 内联 JSON
 	pattern headerReplace://({"res.header-name:pattern3":"replacement3"})
 
-版本要求：`>= v2.5.18`，pattern参见[匹配模式](../pattern.html)，更多模式请参考[配置方式](../mode.html)。
+版本要求：`>= v2.5.18`，pattern参见[匹配方式](../pattern.html)，更多模式请参考[配置方式](../mode.html)。
 
 例子：
 

@@ -17,7 +17,7 @@ pattern skip://operator=operatorUri # 等价于 pattern skip://matcher=operatorU
 ```
 > skip 与 ignore 的区别，ignore 是将匹配的规则删除掉，skip 是跳过指定的规则不做匹配
 
-其中，`pattern`参见[匹配模式](../pattern.html)，`protocol1`，...，`protocolN` 对应 [协议列表](../rules/.md) 里面的协议，`|` 为分隔符用于同时设置忽略 (过滤) 多个规则。
+其中，`pattern`参见[匹配方式](../pattern.html)，`protocol1`，...，`protocolN` 对应 [协议列表](../rules/.md) 里面的协议，`|` 为分隔符用于同时设置忽略 (过滤) 多个规则。
 
 如果要忽略所有规则：
 ```
@@ -42,7 +42,7 @@ www.example.com/test file:///User/xxx/dir
 www.example.com socks://127.0.0.1:1080
 www.test.com http://www.qq.com
 ```
-> host的优先级高于socks/proxy，更多匹配模式参考：[pattern](../pattern.html)。
+> host的优先级高于socks/proxy，更多匹配方式参考：[pattern](../pattern.html)。
 
 **忽略规则：**
 ```

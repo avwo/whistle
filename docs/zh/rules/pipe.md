@@ -6,7 +6,7 @@
 ``` txt
 pattern pipe://plugin-name
 ```
-其中，`plugin-name` 为对应插件名称，pattern参见[匹配模式](../pattern.html)，更多模式请参考[配置方式](../mode.html)。
+其中，`plugin-name` 为对应插件名称，pattern参见[匹配方式](../pattern.html)，更多模式请参考[配置方式](../mode.html)。
 
 具体应用及实现方式，参见[插件开发](../plugins.html)。
 

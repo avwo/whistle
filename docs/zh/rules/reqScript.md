@@ -4,7 +4,7 @@
 
 	pattern reqScript://filepath reqRules://filepath1 reqRules://filepath2 reqRules://filepath3
 
-filepath为[Values](http://local.whistlejs.com/#values)里面的{key}或者本地js文件(如：`e:\test\xxx`、`e:/test/xxx`、`/User/username/test/xxx`等)，pattern参见[匹配模式](../pattern.html)，更多模式请参考[配置方式](../mode.html)。
+filepath为[Values](http://local.whistlejs.com/#values)里面的{key}或者本地js文件(如：`e:\test\xxx`、`e:/test/xxx`、`/User/username/test/xxx`等)，pattern参见[匹配方式](../pattern.html)，更多模式请参考[配置方式](../mode.html)。
 
 > `reqScript` 可以设置规则或者脚本，但只能设置一个，`reqRules` 可以同时设置多个，但只能设置规则，不能设置脚本
 

@@ -4,7 +4,7 @@
 
 	pattern statusCode://code
 
-其中：code >= 100 && code <= 999，pattern参见[匹配模式](../pattern.html)，更多模式请参考[配置方式](../mode.html)。
+其中：code >= 100 && code <= 999，pattern参见[匹配方式](../pattern.html)，更多模式请参考[配置方式](../mode.html)。
 
 
 例子：
