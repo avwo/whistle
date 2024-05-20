@@ -1,3 +1,6 @@
+# v2.9.72
+1. fix: socks 代理无法获取 clientIp 及 IPv6 转发问题
+
 # v2.9.71
 1. feat: 自动更新 Rules & Values
 2. feat: Mock 对话框新增 Create 按钮
