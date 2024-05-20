@@ -1232,7 +1232,10 @@ function setReqData(item) {
     (item.res.hasGzipError ? ' (Incorrect header)' : '');
   var reqSize = req.size == null ? defaultValue : req.size; 
   var resSize = res.size == null ? defaultValue : res.size;
-  item.body = util.getDisplaySize(reqSize, req.unzipSize) + ', ' + util.getDisplaySize(resSize, res.unzipSize);
+  var reqSizeStr = util.getDisplaySize(reqSize, req.unzipSize);
+  var resSizeStr = util.getDisplaySize(resSize, res.unzipSize);
+  item.body =  reqSizeStr === '' && resSizeStr === '' ? '' : reqSizeStr  + ', ' + resSizeStr;
+  item.bodySize = (req.size || 0) + (res.size || 0);
   var result = res.statusCode == null ? defaultValue : res.statusCode;
   item.result = (/^[1-9]/.test(result) && parseInt(result, 10)) || result;
   item.type = (resHeaders['content-type'] || '')

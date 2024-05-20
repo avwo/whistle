@@ -273,8 +273,16 @@ proto.filter = function () {
     self._list = self.list.slice().sort(function (prev, next) {
       for (var i = 0; i < len; i++) {
         var column = columns[i];
-        var prevVal = util.getCellValue(prev, column);
-        var nextVal = util.getCellValue(next, column);
+        var isBody = column.name === 'body';
+        var prevVal = isBody ? prev.bodySize : util.getCellValue(prev, column);
+        var nextVal = isBody ? next.bodySize : util.getCellValue(next, column);
+        if (isBody) {
+          if (prevVal === nextVal) {
+            return 0;
+          }
+          var flag = prevVal > nextVal ? 1 : -1;
+          return column.order == 'asc' ? flag : -flag;
+        }
         if (column.key) {
           prevVal = toStr(prevVal);
           nextVal = toStr(nextVal);
