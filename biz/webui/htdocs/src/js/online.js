@@ -23,6 +23,39 @@ function setDiableDarkMode(flag) {
 }
 setDiableDarkMode(disabledDarkMode);
 
+var curOrder;
+var dnsTimer;
+
+function selectDnsOption(order) {
+  if (dnsTimer) {
+    clearTimeout(dnsTimer);
+    dnsTimer = null;
+  }
+  if (!dialog) {
+    return;
+  }
+  var list = dialog.find('.w-dns-options').find('input');
+  order = order || curOrder;
+  if (list.filter(':checked').val() != order) {
+    list.prop('checked', false)
+      .eq(order - 1).prop('checked', true);
+  }
+}
+
+function getDnsOrder(verbatim) {
+  if (!verbatim) {
+    return '';
+  }
+  var result = [
+    '<label class="w-online-option w-dns-verbatim"><input type="radio" value="1" name="dnsOrder" /> <span>Verbatim</span></label>',
+    '<label class="w-online-option w-dns-ipv4first"><input type="radio" value="2" name="dnsOrder" /> <span>IPv4-first</span></label>'
+  ];
+  if (verbatim === 2) {
+    result.push('<label class="w-online-option w-dns-ipv6first"><input type="radio" value="3" name="dnsOrder" /> <span>IPv6-first</span></label>');
+  }
+  return result.join('');
+}
+
 function createDialog() {
   if (!dialog) {
     var proxyInfoList = [
@@ -46,6 +79,7 @@ function createDialog() {
         '</div>' +
         '<label class="w-online-option w-dark-mode-option"><input type="checkbox" /> <span>Disable dark mode</span></label>' +
         '<label class="w-online-option w-ipv6-option"><input type="checkbox" /> <span>IPv6-only network</span></label>' +
+        '<div class="w-dns-options"></div>' +
         '<a class="w-online-view-dns">View custom DNS servers</a>' +
         '</div>' +
         '<div class="modal-footer">' +
@@ -62,6 +96,19 @@ function createDialog() {
       storage.set('disabledDarkMode', checked ? 1 : '');
     });
     box.prop('checked', disabledDarkMode);
+    dialog.find('.w-dns-options').on('change', function(e) {
+      var target = e.target;
+      if (target.nodeName !== 'INPUT') {
+        return;
+      }
+      dataCenter.setDnsOrder({ order: +target.value }, function (data, xhr) {
+        if (!data) {
+          util.showSystemError(xhr);
+          return;
+        }
+        selectDnsOption(data.order);
+      });
+    });
   }
 
   return dialog;
@@ -96,6 +143,14 @@ var Online = React.createClass({
       self.setState({ server: data });
     });
   },
+  componentDidMount: function() {
+    var self = this;
+    dataCenter.setServerInfo = function(info) {
+      curOrder = info.dnsOrder;
+      dnsTimer = dnsTimer || setTimeout(selectDnsOption, 300);
+      self.setIPv6Only(info.ipv6Only);
+    };
+  },
   checkServerChanged: function (data) {
     data.mac = data.mac || '';
     if (this.macAddr === undefined) {
@@ -123,19 +178,29 @@ var Online = React.createClass({
     }
   },
   showServerInfo: function () {
-    if (!this.state.server) {
+    if (this.state.server) {
+      this.updateServerInfo(dataCenter.getServerInfo());
+      dialog.modal('show');
+    }
+  },
+  setIPv6Only: function(ipv6Only, imd) {
+    if ((!imd && this._pendingIPv6Only) || !dialog) {
       return;
     }
-    this.updateServerInfo(this.state.server);
-    dialog.modal('show');
-  },
-  setIPv6Only: function(ipv6Only) {
     ipv6Only = !!ipv6Only;
     this.ipv6Only = !!this.ipv6Only;
     if (this.ipv6Only !== ipv6Only) {
       this.ipv6Only = ipv6Only;
       dialog.find('.w-ipv6-option input').prop('checked', ipv6Only);
       this.setState({});
+      if (dialog) {
+        var opts = dialog.find('.w-dns-options');
+        if (ipv6Only) {
+          opts.hide();
+        } else {
+          opts.show();
+        }
+      }
     }
   },
   updateServerInfo: function (server) {
@@ -187,9 +252,21 @@ var Online = React.createClass({
       info.push('<h5><strong>IPv6:</strong></h5>');
       info.push('<p>' + server.ipv6.join('<br/>') + '</p>');
     }
-    var ctn = createDialog().find('.w-online-dialog-ctn').html(info.join(''));
+    createDialog(server.verbatim);
+    var ctn = dialog.find('.w-online-dialog-ctn').html(info.join(''));
+    if (server.dnsOrder) {
+      if (this.verbatim !== server.verbatim) {
+        this.verbatim = server.verbatim;
+        var dnsOptHtml = getDnsOrder(server.verbatim);
+        if (dnsOptHtml) {
+          dialog.find('.w-dns-options').html(dnsOptHtml);
+        }
+      }
+      selectDnsOption(server.dnsOrder);
+    } else {
+      dialog.find('.w-dns-options').html('');
+    }
     ctn.find('h5:first').attr('title', server.host);
-    this.setIPv6Only(server.ipv6Only);
     if (!this._initProxyInfo) {
       this._initProxyInfo = true;
       var curServerInfo;
@@ -219,7 +296,6 @@ var Online = React.createClass({
         var info = dataCenter.getServerInfo();
         var pInfo = info && info.pInfo;
         toggleDns(info);
-        info && self.setIPv6Only(info.ipv6Only);
         if (!pInfo) {
           if (isHide) {
             isHide = true;
@@ -390,23 +466,22 @@ var Online = React.createClass({
         }
         curServerInfo = info;
       }, 1000);
-      var pending;
       dialog.find('.w-ipv6-option input').on('change', function(e) {
-        if (pending) {
+        if (self._pendingIPv6Only) {
           return;
         }
-        pending = true;
+        self._pendingIPv6Only = true;
         var checked = e.target.checked;
         e.target.checked = !checked;
         dataCenter.setIPv6Only({ checked: checked ? 1 : '' }, function(data, xhr) {
+          setTimeout(function() {
+            self._pendingIPv6Only = false;
+          }, 300);
           if (!data) {
             util.showSystemError(xhr);
             return;
           }
-          setTimeout(function() {
-            pending = false;
-            self.setIPv6Only(data.ipv6Only);
-          }, 300);
+          self.setIPv6Only(data.ipv6Only, true);
         });
       });
     }

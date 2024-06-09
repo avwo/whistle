@@ -542,7 +542,8 @@ $.extend(
       createTempFile: {
         url: 'cgi-bin/sessions/create-temp-file',
         contentType: 'application/json'
-      }
+      },
+      setDnsOrder: 'cgi-bin/set-dns-order'
     },
     POST_CONF
   )
@@ -1407,6 +1408,9 @@ function updateServerInfo(data) {
     return;
   }
   updateCount = 0;
+  if (exports.setServerInfo) {
+    exports.setServerInfo(data);
+  }
   if (curServerInfo && curServerInfo.strictMode != data.strictMode) {
     curServerInfo.strictMode = data.strictMode;
     events.trigger('updateStrictMode');
