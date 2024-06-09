@@ -4943,7 +4943,7 @@ var Index = React.createClass({
                         onChange={this.interceptHttpsConnects}
                         type="checkbox"
                       />{' '}
-                      Capture TUNNEL CONNECTS
+                      Enable HTTPS
                     </label>
                   </p>
                   <p>

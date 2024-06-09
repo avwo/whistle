@@ -412,6 +412,11 @@ var MockDialog = React.createClass({
           self.setState({ hasChanged: true });
         });
         textarea.addEventListener('focus', self.hideParams);
+        textarea.onkeydown = function(e) {
+          if ((e.ctrlKey || e.metaKey) && e.keyCode === 83) {
+            e.preventDefault();
+          }
+        };
       }
     };
     iframe.onload = initTextArea;

@@ -79,6 +79,12 @@ var EditorDialog = React.createClass({
         style.borderRadius = '3px';
         textarea.maxLength = MAX_LEN;
         textarea.placeholder='Input the text';
+        textarea.onkeydown = function(e) {
+          if ((e.ctrlKey || e.metaKey) && e.keyCode === 83) {
+            e.preventDefault();
+            self.props.textEditor && self.onSave();
+          }
+        };
       }
     };
     iframe.onload = initTextArea;
