@@ -1,3 +1,9 @@
+# v2.9.73
+1. feat: 新增启动参数 `-M ipv4first|ipv6first` 用于设置 [dns.lookup的 options.order 参数](https://nodejs.org/docs/latest/api/dns.html#dnslookuphostname-options-callback)
+2. feat: `localhost` 的 dns.lookup 默认使用 `ipv4first`
+3. feat: Online 支持设置 `Verbatim`、`IPv4-first`、`IPv6-first`
+4. feat: 支持 `delete://query.xxx` 删除请求 url 里面的参数
+
 # v2.9.72
 1. fix: socks 代理无法获取 clientIp 及 IPv6 转发问题
 
