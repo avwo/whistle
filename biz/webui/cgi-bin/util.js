@@ -25,6 +25,8 @@ exports.getServerInfo = function(req) {
   var info = {
     pid: PID,
     pInfo: proc,
+    verbatim: config.verbatim,
+    dnsOrder: config.dnsOrder,
     ipv6Only: config.ipv6Only,
     dcc: config.disableCustomCerts,
     dns: dnsOverHttps || config.dnsServer,
