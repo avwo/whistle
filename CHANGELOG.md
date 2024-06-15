@@ -1,3 +1,6 @@
+# v2.9.74
+1.fix: https://github.com/avwo/whistle/issues/1098
+
 # v2.9.73
 1. feat: 新增启动参数 `-M ipv4first|ipv6first` 用于设置 [dns.lookup的 options.order 参数](https://nodejs.org/docs/latest/api/dns.html#dnslookuphostname-options-callback)
 2. feat: `localhost` 的 dns.lookup 默认使用 `ipv4first`
