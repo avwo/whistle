@@ -1,5 +1,3 @@
-var Q = require('q');
-
 var util = require('./util');
 var pkg = require('../package.json');
 var colors = require('colors/safe');
@@ -12,13 +10,13 @@ var info = util.info;
 
 function showAll(byStop) {
   var list = readConfigList().map(function(config) {
-    var deferred = Q.defer();
-    isRunning(config.pid, function(running) {
-      deferred.resolve(running && config);
+    return new Promise(function(resolve) {
+      isRunning(config.pid, function(running) {
+        resolve(running && config);
+      });
     });
-    return deferred.promise;
   });
-  Q.all(list).then(function(confList) {
+  Promise.all(list).then(function(confList) {
     confList = confList.filter(function(conf) {
       return conf;
     });
