@@ -1,3 +1,6 @@
+# v2.9.76
+1. refactor: 删除所有 q 模块，解决安装告警问题
+
 # v2.9.75
 1. refactor: 优化 sse 请求的 `resReplace` 逻辑
 2. fix: 界面 `Enable HTTP/2` 报错问题
