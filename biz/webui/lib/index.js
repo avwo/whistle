@@ -6,7 +6,6 @@ var https = require('https');
 var parseReqUrl = require('parseurl');
 var bodyParser = require('body-parser');
 var crypto = require('crypto');
-var cookie = require('cookie');
 var fs = require('fs');
 var zlib = require('zlib');
 var extend = require('extend');
@@ -69,6 +68,26 @@ function shasum(str) {
   return shasum.digest('hex');
 }
 
+function parseCookie(str) {
+  var result = {};
+  str && str.split(';').forEach(function(pair) {
+    var index = pair.indexOf('=');
+    if (index === -1) {
+      return;
+    }
+    var key = pair.substring(0, index).trim();
+    var val = pair.substring(index + 1).trim();
+    if (result[key] == null) {
+      try {
+        result[key] = decodeURIComponent(val);
+      } catch (e) {
+        result[key] = val;
+      }
+    }
+  });
+  return result;
+}
+
 function getLoginKey (req, res, auth) {
   var ip = util.getClientIp(req);
   var password = auth.password;
@@ -112,7 +131,7 @@ function verifyLogin(req, res, auth) {
     return true;
   }
   var authKey = auth.authKey;
-  var cookies = cookie.parse(req.headers.cookie || '');
+  var cookies = parseCookie(req.headers.cookie);
   var lkey = cookies[authKey];
   var correctKey = getLoginKey(req, res, auth);
   if (correctKey === lkey) {
@@ -125,12 +144,12 @@ function verifyLogin(req, res, auth) {
     queryAuth.pass = queryAuth.pass && shasum(queryAuth.pass);
   }
   if (equalAuth(headerAuth, auth) || equalAuth(queryAuth, auth)) {
-    var options = {
-      expires: new Date(Date.now() + (MAX_AGE * 1000)),
-      maxAge: MAX_AGE,
-      path: '/'
-    };
-    res.setHeader('Set-Cookie', cookie.serialize(authKey, correctKey, options));
+    res.setHeader('Set-Cookie', [
+      authKey + '=' + util.encodeURIComponent(correctKey),
+      'Max-Age=' + MAX_AGE,
+      'Path=/',
+      'Expires=' + new Date(Date.now() + (MAX_AGE * 1000)).toUTCString()
+    ].join('; '));
     return true;
   }
 }

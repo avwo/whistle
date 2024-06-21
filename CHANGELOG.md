@@ -1,3 +1,8 @@
+# v2.9.75
+1. refactor: 优化 sse 请求的 `resReplace` 逻辑
+2. fix: 界面 `Enable HTTP/2` 报错问题
+3. feat: 新增 `locationHref://url` 和 `locationHref://js:url` 协议，相当于在 html 页面或 js 文件返回 `window.location.href = url`
+
 # v2.9.74
 1.fix: https://github.com/avwo/whistle/issues/1098
 
