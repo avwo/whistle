@@ -79,6 +79,7 @@
     * [**rawfile** (替换本地http响应内容格式的文件)](rule/rawfile.html)
     * [**xrawfile** (替换本地http响应内容格式的文件，如果本地文件找不到会继续请求线上)](rule/xrawfile.html)
     * [**redirect** (302 重定向))](rule/redirect.html)
+    * [**locationHref** (浏览器重定向))](rule/locationHref.html)
     * [**statusCode** (直接响应)](rule/statusCode.html)
     * [**自定义**](rule/custom.html)
 2. [**resMerge** (修改响应参数)](resMerge.html)

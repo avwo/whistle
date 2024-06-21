@@ -43,6 +43,7 @@
     * [rawfile](rules/rule/rawfile.md)
     * [xrawfile](rules/rule/xrawfile.md)
     * [redirect](rules/rule/redirect.md)
+    * [locationHref](rules/rule/locationHref.md)
     * [statusCode](rules/rule/statusCode.md)
     * [自定义](rules/rule/custom.md)
   * [style](rules/style.md)

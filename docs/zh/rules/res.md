@@ -10,11 +10,12 @@
 对一些需要特殊处理或可能修改比较多的响应头提供了简便的配置方式：
 1. 设置缓存头：[cache](./cache.html)
 2. 302重定向：[redirect](./redirect.html)
-3. 设置下载：[attachment](./attachment.html)
-4. 修改响应cookie：[resCookies](./resCookies.html)
-5. 修改响应编码：[resCharset](./resCharset.html)
-6. 修改响应头的类型：[resType](./resType.html)
-7. 设置响应头的cors：[resCors](./resCors.html)
+3. 浏览器重定向：[locationHref](./locationHref.html)
+4. 设置下载：[attachment](./attachment.html)
+5. 修改响应cookie：[resCookies](./resCookies.html)
+6. 修改响应编码：[resCharset](./resCharset.html)
+7. 修改响应头的类型：[resType](./resType.html)
+8. 设置响应头的cors：[resCors](./resCors.html)
 
 #### 修改响应内容
 whistle可以修改任意响应内容，同时也对一些特殊的响应类型提供了简便的配置方式：
