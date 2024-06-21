@@ -342,8 +342,9 @@ var Settings = React.createClass({
                   checked={!state.disabledExcludeText}
                   data-name="excludeFilter"
                   type="checkbox"
+                  className="w-va-mdl"
                 />
-                Exclude Filter
+                <span className="w-va-mdl">Exclude Filter</span>
               </label>
               <a
                 className="w-help-menu"
@@ -371,8 +372,9 @@ var Settings = React.createClass({
                   checked={!state.disabledFilterText}
                   data-name="filter"
                   type="checkbox"
+                  className="w-va-mdl"
                 />
-                Include Filter
+                <span className="w-va-mdl">Include Filter</span>
               </label>
               <a
                 className="w-help-menu"
@@ -466,20 +468,27 @@ var Settings = React.createClass({
               checked={dataCenter.isOnlyViewOwnData()}
               data-name="viewOwn"
               type="checkbox"
+              className="w-va-mdl"
             />
-            Only view the requests of own computer (IP: {dataCenter.clientIp})
+            <span className="w-va-mdl">
+              Only view the requests of own computer (IP: {dataCenter.clientIp})
+            </span>
           </label>
           <label className="w-network-settings-own">
-            <input checked={viewAllInNewWindow} data-name="viewAllInNewWindow" type="checkbox" />
+            <input checked={viewAllInNewWindow} data-name="viewAllInNewWindow" type="checkbox" className="w-va-mdl" />
+            <span className="w-va-mdl">
             ViewAll in a new window
+            </span>
           </label>
           <label className="w-network-settings-own">
-            <input checked={isTreeView} data-name="treeView" type="checkbox" />
+            <input checked={isTreeView} data-name="treeView" type="checkbox"className="w-va-mdl" />
             <span
-              className="glyphicon glyphicon-tree-conifer"
+              className="glyphicon glyphicon-tree-conifer w-va-mdl"
               style={{ marginRight: 2 }}
             ></span>
+            <span className="w-va-mdl">
             Show Tree View (Ctrl[Command] + B)
+            </span>
           </label>
           {isTreeView ? (
             <label style={{textIndent: 20}} className="w-network-settings-own">
@@ -487,8 +496,11 @@ var Settings = React.createClass({
                 checked={storage.get('disabledHNR') !== '1'}
                 data-name="disabledHNR"
                 type="checkbox"
+                className="w-va-mdl"
               />
+              <span className="w-va-mdl">
               Highlight new requests
+              </span>
             </label>
           ) : null}
         </div>

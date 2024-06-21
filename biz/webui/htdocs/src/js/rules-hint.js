@@ -162,6 +162,12 @@ function getHints(keyword) {
     list.push('xproxy://');
   } else if ('extend'.indexOf(keyword) !== -1) {
     list.push('reqMerge://', 'resMerge://');
+  } else if (keyword.length > 2) {
+    if (!'redirect://'.indexOf(keyword)) {
+      list.push('locationHref://');
+    } else if (!'locationHref://'.indexOf(keyword)) {
+      list.push('redirect://');
+    }
   }
   return list;
 }

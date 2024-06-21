@@ -183,6 +183,7 @@
 .w-https-settings label {
   font-weight: normal;
 }
+
 .w-https-settings p {
   margin: 10px 0;
 }
@@ -424,4 +425,12 @@
 
 .w-show-account .w-account-menu {
   display: inline-block!important;
+}
+
+.w-va-mdl {
+  vertical-align: middle;
+}
+
+.w-mrl-5 {
+  margin-left: 5px;
 }

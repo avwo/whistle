@@ -2661,8 +2661,8 @@ var Index = React.createClass({
     );
   },
   enableHttp2: function (e) {
+    var self = this;
     if (!dataCenter.supportH2) {
-      var self = this;
       win.confirm(
         'The current version of Node.js cannot support HTTP/2.\nPlease upgrade to the latest LTS version.',
         function (sure) {
@@ -4942,8 +4942,11 @@ var Index = React.createClass({
                         checked={state.interceptHttpsConnects}
                         onChange={this.interceptHttpsConnects}
                         type="checkbox"
-                      />{' '}
-                      Enable HTTPS
+                         className="w-va-mdl"
+                      />
+                      <span className="w-va-mdl w-mrl-5">
+                        Enable HTTPS (Capture Tunnel Connects)
+                      </span>
                     </label>
                   </p>
                   <p>
@@ -4952,8 +4955,11 @@ var Index = React.createClass({
                         checked={dataCenter.supportH2 && state.enableHttp2}
                         onChange={this.enableHttp2}
                         type="checkbox"
-                      />{' '}
+                        className="w-va-mdl"
+                      />
+                    <span className="w-va-mdl w-mrl-5">
                       Enable HTTP/2
+                    </span>
                     </label>
                   </p>
                   <a

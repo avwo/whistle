@@ -87,6 +87,7 @@ var innerRules = [
   'rawfile',
   'xrawfile',
   'redirect',
+  'locationHref',
   'statusCode'
 ];
 var pluginRules = [];
@@ -119,7 +120,7 @@ var groupRules = [
     'referer://', 'auth://', 'ua://', 'cache://', 'attachment://', 'reqType://', 'reqCharset://', 'reqCookies://',
     'reqCors://', 'reqMerge://', 'reqPrepend://', 'reqBody://', 'reqAppend://', 'reqReplace://', 'reqWrite://',
     'reqWriteRaw://', 'trailers://']],
-  ['Rewrite Response', ['statusCode://', 'replaceStatus://', 'redirect://', 'resHeaders://', 'responseFor://', 'resType://',
+  ['Rewrite Response', ['statusCode://', 'replaceStatus://', 'redirect://', 'locationHref://', 'resHeaders://', 'responseFor://', 'resType://',
     'resCharset://', 'resCookies://', 'resCors://', 'resMerge://', 'resPrepend://', 'resBody://', 'resAppend://', 'resReplace://',
     'htmlPrepend://', 'htmlBody://', 'htmlAppend://', 'cssPrepend://', 'cssBody://', 'cssAppend://', 'jsPrepend://', 'jsBody://',
     'jsAppend://', 'resWrite://', 'resWriteRaw://']],

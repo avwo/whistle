@@ -23,7 +23,7 @@ var iframeStyle = {
   verticalAlign: 'top'
 };
 var VAL_SEP_RE = /^\s*?`{3,}\s*?$/mg;
-var INLINE_PROTOCOLS = ['http://', 'https://', 'ws://', 'wss://', 'tunnel://', 'redirect://', 'statusCode://', 'style://',
+var INLINE_PROTOCOLS = ['http://', 'https://', 'ws://', 'wss://', 'tunnel://', 'redirect://', 'locationHref://', 'statusCode://', 'style://',
 'pipe://', 'host://', 'xhost://', 'proxy://', 'xproxy://', 'http-proxy://', 'xhttp-proxy://', 'https-proxy://', 'xhttps-proxy://',
 'socks://', 'xsocks://', 'pac://', 'weinre://', 'log://', 'excludeFilter://', 'includeFilter://', 'ignore://', 'skip://', 'enable://',
 'disable://', 'delete://', 'method://', 'replaceStatus://', 'referer://', 'auth://', 'ua://', 'cache://', 'attachment://', 'forwardedFor://',
