@@ -29,7 +29,8 @@ Whistle 是基于 Node 实现的跨平台抓包调试工具，其主要特点：
 	* 项目可以自带代理规则配置并一键设置到本地 Whistle 代理，也可以通过定制插件简化操作
 
 # 一键安装
-> 已安装 `brew` 的 PC，可以省略以下 1、2 步骤，直接通过以下方式一键安装：`brew install whistle && w2 start --init`（arm64 平台尝试用 `brew install node && npm i -g whistle && w2 start --init`）
+> 已安装 `brew` 的 PC，可以省略以下 1、2 步骤，直接通过以下方式一键安装：`brew install whistle && w2 start --init`
+
 1. 安装 Node（建议安装**最新的 LTS 版本**，如已安装忽略此步骤）：https://nodejs.org/
 2. 一键安装，在命令行执行以下命令：
 	``` sh
