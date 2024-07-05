@@ -220,6 +220,22 @@
 
     return obj === undefined ? 'undefined' : obj;
   }
+  var prefixPath;
+  function getPathPrefix() {
+    if (prefixPath) {
+      return prefixPath;
+    }
+    prefixPath = window.__WHISTLE_PATH_PREFIX__;
+    if (/^\/[\w./-]+$/.test(prefixPath) && prefixPath.length <= 128) {
+      var len = prefixPath.length - 1;
+      if (prefixPath[len] === '/') {
+        prefixPath = prefixPath.substring(0, len);
+      }
+    } else {
+      prefixPath = '';
+    }
+    return prefixPath;
+  }
 
   var index = 0;
   var MAX_LEN = 1024 * 56;
@@ -237,7 +253,8 @@
         logStr = logStr.substring(0, percIndex);
       }
     }
-    img.src ='$LOG_CGI?id=$LOG_ID&level=' + level + '&text=' + logStr
+    var baseUrl = '$BASE_URL' + getPathPrefix();
+    img.src = baseUrl + '$LOG_CGI?id=$LOG_ID&level=' + level + '&text=' + logStr
       + '&t=' + new Date().getTime() + '&' + ++index;
     var preventGC = function() {
       img.onload = img.onerror = null;
