@@ -1,3 +1,8 @@
+# v2.9.78
+1. feat: 保留无法识别的 `accept-encoding` 请求头
+2. feat: Rules 里面的规则如果未发生改变，点击 Save 也可以启用规则
+3. feat: `statusCode://401` 默认会弹出输入用户名和密码的登录框，可以通过 `disable://userLogin` 或 `lineProps://disableUserLogin` 去掉登录框
+
 # v2.9.77
 1. feat: `locationHref://url` 和 `redirect://url` 自动去重
 2. feat: 支持通过 `jsPrepend://` 设置 `window.__WHISTLE_PATH_PREFIX__ = '/path/to';`（可以配置规则或集成在插件） 修改 Whistle 内部路径 `/.whistle-path.5b6af7b9884e1165/` 改成 `${window.__WHISTLE_PATH_PREFIX__}/.whistle-path.5b6af7b9884e1165/`，方便通过 ngnix 转发（ngnix 可以把 `/path/to` 路径去掉再发送给 Whistle）
