@@ -12,8 +12,7 @@ var DNSDialog = require('./dns-servers-dialog');
 var storage = require('./storage');
 
 var dialog;
-var disabledDarkMode = storage.get('disabledDarkMode');
-disabledDarkMode = !!disabledDarkMode || (disabledDarkMode == null && util.getQuery().mode !== 'client');
+var disabledDarkMode = !!storage.get('disabledDarkMode');
 
 function setDiableDarkMode(flag) {
   disabledDarkMode = flag;

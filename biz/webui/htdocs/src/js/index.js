@@ -3256,6 +3256,10 @@ var Index = React.createClass({
     var isRules = state.name == 'rules';
     if (isRules) {
       list = state.rules.getChangedList();
+      const active = state.rules.getActive();
+      if (active && !active.selected && list.indexOf(active) === -1) {
+        list.push(active);
+      }
       if (list.length) {
         list.forEach(function (item) {
           self.selectRules(item);
