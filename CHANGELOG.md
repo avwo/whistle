@@ -1,3 +1,6 @@
+# v2.7.79
+1. feat: 优化 Dark 模式样式，并重新调整为默认不跟随系统的 Dark 模式
+
 # v2.9.78
 1. feat: 保留无法识别的 `accept-encoding` 请求头
 2. feat: Rules 里面的规则如果未发生改变，点击 Save 也可以启用规则
