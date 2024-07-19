@@ -128,7 +128,6 @@
 }
 .w-req-data-list tr {
   cursor: default;
-  background: #fff;
 }
 .w-req-data-list tr.w-selected th,
 .w-req-data-list tr.w-selected td {
@@ -267,7 +266,7 @@
 .tree-node:hover,
 .tree-node.w-selected {
   background-color: darkseagreen;
-  color: white;
+  color: #fff;
 }
 
 .highlight {
