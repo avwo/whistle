@@ -1,0 +1,221 @@
+html, body {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  font-size: 13px;
+}
+#container, .w-h5-wrap {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
+.w-h5-tabs {
+  display: flex;
+}
+
+.w-h5-tabs > div {
+  flex: 1;
+  line-height: 40px;
+  font-size: 15px;
+  text-align: center;
+  background: #ededed;
+  border-bottom: 1px solid #ddd;
+}
+
+.w-h5-tabs > .w-active {
+  background: #e2e6ec;
+  border-bottom: 2px solid #3e6ecb;
+}
+
+.w-h5-tab-ctn {
+  flex: 1;
+  height: calc(100% - 40px);
+  position: relative;
+  display: none;
+}
+
+.w-h5-tab-ctn.w-active {
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+}
+
+.w-h5-detail {
+  position: absolute;
+  background: red;
+  top: 0;
+  bottom: 0;
+  left: 15%;
+  right: 0;
+}
+
+.w-h5-menu-bar {
+  position: relative;
+  border-bottom: 1px solid #ddd;
+  white-space: nowrap;
+  background: #f6f6f6;
+}
+
+.w-h5-menu-bar > .glyphicon {
+  font-size: 14px;
+  line-height: 26px;
+  height: 30px;
+  margin: 0 5px 0 10px;
+}
+
+.w-h5-menu-bar > .glyphicon:last-child {
+  margin: 0;
+  position: absolute;
+  right: 0;
+  color: #337ab7;
+  display: block;
+  height: 100%;
+  width: 30px;
+  text-align: center;
+}
+
+.w-h5-menu-bar > .glyphicon::before {
+  vertical-align: middle;
+  margin-right: 5px;
+}
+
+.w-h5-network-list, .w-h5-network-list li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.w-h5-network-list li {
+  display: flex;
+  border-bottom: 1px solid #ddd;
+}
+
+.w-h5-network-list li:last-child {
+  border-bottom: none;
+}
+
+.w-h5-network-list li > div {
+  line-height: 32px;
+  overflow: hidden;
+  margin-right: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.w-h5-network-list li > div:last-child {
+  margin-right: 0;
+}
+
+.w-h5-order {
+  width: 30px;
+  padding-left: 3px;
+}
+
+.w-h5-status {
+  width: 50px;
+}
+
+.w-h5-method {
+  width: 70px;
+}
+
+.w-h5-url {
+  flex: 1;
+}
+
+.w-h5-select {
+  display: inline-block;
+  width: 80px;
+  padding-left: 10px;
+  position: relative;
+  line-height: 32px;
+  background: #dedede;
+}
+
+.w-h5-select .glyphicon {
+  position: absolute;
+  right: 3px;
+  top: 10px;
+  line-height: 14px;
+  height: 14px;
+  width: 14px;
+  margin: 0;
+  padding: 0;
+  color: #000;
+}
+
+.w-h5-list {
+  flex: 1;
+  overflow: auto;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.w-h5-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-style: italic;
+  color: #ccc;
+  height: 100%;
+  font-size: 14px;
+}
+
+.w-h5-card {
+  height: 138px;
+  box-shadow: rgba(60, 64, 67, .3) 0 1px 2px 0, rgba(60, 64, 67, .15) 0 2px 6px 2px;
+  border-radius: 6px;
+  padding: 12px 16px;
+  box-sizing: border-box;
+  display: block;
+  margin: 16px;
+}
+
+
+.w-h5-card label input, .w-h5-card label span {
+  vertical-align: middle;
+  margin: 0 6px 0 0;
+}
+
+.w-h5-card label {
+  display: block;
+  font-size: 14px;
+  line-height: 2;
+  white-space: nowrap;
+}
+
+.w-h5-card .w-h5-desc {
+  color: #454746;
+  line-height: 20px;
+  height: 42px;
+  margin-bottom: 8px;
+  overflow : hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.w-h5-card a {
+  display: inline-block;
+  line-height: 30px;
+  margin-right: 15px;
+  padding: 0 5px;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.w-h5-card a:last-child {
+  margin-right: 0;
+}
+
+.w-h5-card.w-disabled, .w-h5-card.w-disabled .w-h5-desc, .w-h5-card.w-disabled .w-h5-card-rules {
+  color: #aaa;
+}
+
+.glyphicon.w-record::before {
+  color: #ff6666;
+}
