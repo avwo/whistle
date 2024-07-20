@@ -599,7 +599,7 @@ textarea.w-composer-rules {
   padding: 0 5px;
   overflow: auto;
   white-space: pre;
-  background-color: lightyellow;
+  background-color: #efefef;
 }
 
 .w-composer-history-footer {

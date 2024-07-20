@@ -233,6 +233,16 @@
   width: 905px;
 }
 
+.w-mock-file button.close {
+  top: 3px;
+  right: 5px;
+  height: 22px;
+  line-height: 1;
+  padding: 0;
+  position: absolute;
+  width: 22px;
+}
+
 .w-mock-dialog .modal-dialog {
   width: 1000px;
 }
@@ -283,7 +293,7 @@
   max-height: 120px;
   padding: 10px;
   overflow: auto;
-  background-color: #f6f6f6;
+  background-color: #efefef;
   display: inline-block;
   width: 820px;
   vertical-align: top;
