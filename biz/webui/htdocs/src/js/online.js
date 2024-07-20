@@ -46,11 +46,11 @@ function getDnsOrder(verbatim) {
     return '';
   }
   var result = [
-    '<label class="w-online-option w-dns-verbatim"><input type="radio" value="1" name="dnsOrder" /> <span>Verbatim</span></label>',
-    '<label class="w-online-option w-dns-ipv4first"><input type="radio" value="2" name="dnsOrder" /> <span>IPv4-first</span></label>'
+    '<label class="w-online-option w-dns-verbatim"><input type="radio" value="1" name="dnsOrder" /> <span>Verbatim network</span></label>',
+    '<label class="w-online-option w-dns-ipv4first"><input type="radio" value="2" name="dnsOrder" /> <span>IPv4-first network</span></label>'
   ];
   if (verbatim === 2) {
-    result.push('<label class="w-online-option w-dns-ipv6first"><input type="radio" value="3" name="dnsOrder" /> <span>IPv6-first</span></label>');
+    result.push('<label class="w-online-option w-dns-ipv6first"><input type="radio" value="3" name="dnsOrder" /> <span>IPv6-first network</span></label>');
   }
   return result.join('');
 }
