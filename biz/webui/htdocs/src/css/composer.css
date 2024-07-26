@@ -16,11 +16,11 @@
 }
 
 .w-composer-url .w-filter-hint {
-  width: calc(100% - 210px);
-  z-index: 1;
+  width: calc(100% - 218px);
+  z-index: 2;
   top: 30px;
   bottom: unset;
-  left: 105px;
+  left: 113px;
   overflow-x: hidden;
   overflow-y: auto;
 }

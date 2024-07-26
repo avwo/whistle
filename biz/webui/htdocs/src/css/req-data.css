@@ -128,6 +128,7 @@
 }
 .w-req-data-list tr {
   cursor: default;
+  background-color: #fff;
 }
 .w-req-data-list tr.w-selected th,
 .w-req-data-list tr.w-selected td {
