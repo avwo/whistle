@@ -152,3 +152,12 @@
 .w-certs-info-title {
   margin-bottom: 20px;
 }
+
+.w-query-select {
+  font-size: 12px;
+  width: 64px;
+  text-align: center;
+  height: 20px;
+  color: #555;
+  margin-left: 5px;
+}

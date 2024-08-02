@@ -18,8 +18,9 @@ var NOT_EMPTY_RE = /[^\s]/;
 var Settings = React.createClass({
   getInitialState: function () {
     var dragger = columns.getDragger();
+    var urlType = storage.get('urlType');
     dragger.onDrop = dragger.onDrop.bind(this);
-    return $.extend(this.getNetworkSettings(), { dragger: dragger });
+    return $.extend(this.getNetworkSettings(), { dragger: dragger, urlType: urlType === '-' ? '-' : '' });
   },
   getNetworkSettings: function () {
     return $.extend(dataCenter.getFilterText(), {
@@ -34,6 +35,8 @@ var Settings = React.createClass({
     var self = this;
     win.confirm('Are you sure to reset the columns of network table?', function(sure) {
       if (sure) {
+        self.setState({ urlType: '' });
+        storage.set('urlType', '');
         columns.reset();
         self.onColumnsResort();
       }
@@ -317,6 +320,11 @@ var Settings = React.createClass({
       value: JSON.stringify(settings, null, '  ')
     });
   },
+  onUrlType: function(e) {
+    const urlType = e.target.value;
+    storage.set('urlType', urlType);
+    this.setState({ urlType: urlType });
+  },
   render: function () {
     var self = this;
     var state = self.state;
@@ -435,6 +443,17 @@ var Settings = React.createClass({
                   ) : (
                     title
                   )}
+                  {
+                    name === 'path' ?
+                    <select
+                      className="w-query-select"
+                      value={state.urlType || ''}
+                      onChange={self.onUrlType}
+                    >
+                      <option value="">+Query</option>
+                      <option value="-">-Query</option>
+                    </select> : null
+                  }
                   {canEdit ? (
                     <span
                       onClick={self.editCustomCol}

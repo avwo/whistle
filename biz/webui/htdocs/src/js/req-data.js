@@ -299,6 +299,7 @@ var Row = React.createClass({
   render: function () {
     var p = this.props;
     var order = p.order;
+    var notQuery = p.notQuery;
     var draggable = p.draggable;
     var columnList = p.columnList;
     var item = p.item;
@@ -336,6 +337,12 @@ var Row = React.createClass({
                 url = item.url;
               }
               value = value || util.getCellValue(item, col);
+              if (value && notQuery && name === 'path') {
+                var index = value.indexOf('?');
+                if (index !== -1) {
+                  value = value.substring(0, index);
+                }
+              }
               var colStyle = getColStyle(col, style);
               return (
                 <td
@@ -1342,6 +1349,7 @@ var ReqData = React.createClass({
     var colStyle = state.columns.style;
     var filterText = (state.filterText || '').trim();
     var record = state.record;
+    var notQuery = storage.get('urlType') === '-';
     self.startIndex = null;
     self.endIndex = null;
     self.visibleList = list;
@@ -1413,6 +1421,7 @@ var ReqData = React.createClass({
                           order={order}
                           columnList={columnList}
                           draggable={draggable}
+                          notQuery={notQuery}
                           item={item}
                         />
                       );
