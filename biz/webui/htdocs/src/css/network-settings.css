@@ -160,4 +160,6 @@
   height: 20px;
   color: #555;
   margin-left: 5px;
+  border: 1px solid #bbb;
+  border-radius: 3px;
 }
