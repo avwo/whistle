@@ -166,9 +166,8 @@ var Home = React.createClass({
       var plugins = data.plugins || {};
       var newPlugins = {};
       var registry;
-      getPluginList(plugins).forEach(function (name) {
-        var plugin = plugins[name];
-        if (plugin.isProj || (!byInstall && !util.compareVersion(plugin.latest, plugin.version))) {
+      getPluginList(plugins).forEach(function (plugin) {
+        if (!plugin || plugin.isProj || (!byInstall && !util.compareVersion(plugin.latest, plugin.version))) {
           return;
         }
         registry = registry || plugin.registry;
