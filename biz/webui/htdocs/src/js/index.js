@@ -4301,7 +4301,7 @@ var Index = React.createClass({
             draggable="false"
           >
             <span className="glyphicon glyphicon-download-alt" />
-            {dataCenter.enablePluginMgr ? 'Install' : 'ReinstallAll'}
+            {dataCenter.enablePluginMgr ? 'Install' : 'Commands'}
           </a>
           <RecordBtn
             ref="recordBtn"
