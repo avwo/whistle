@@ -1,40 +1,11 @@
 require('./base-css.js');
 require('../css/properties.css');
 var React = require('react');
-var $ = require('jquery');
 var util = require('./util');
 var CopyBtn = require('./copy-btn');
 var ExpandCollapse = require('./expand-collapse');
 var ContextMenu = require('./context-menu');
 var JSONTree = require('./components/react-json-tree')['default'];
-
-var PROPS_MENUS = [
-  {
-    name: 'Copy'
-  },
-  {
-    name: 'Copy Key'
-  },
-  {
-    name: 'Copy Value'
-  }
-];
-
-function getSelectedText(x, y) {
-  try {
-    var selection = window.getSelection();
-    for (var i = 0, len = selection.rangeCount; i < len; i++) {
-      var range = selection.getRangeAt(i);
-      var pos = range.getBoundingClientRect();
-      x -= pos.x;
-      y -= pos.y;
-      if (x >= 0 && y >= 0 && x <= pos.width && y <= pos.height) {
-        return selection.toString();
-      }
-    }
-    selection.removeAllRanges();
-  } catch (e) {}
-}
 
 var Properties = React.createClass({
   getInitialState: function () {
@@ -47,27 +18,7 @@ var Properties = React.createClass({
     return val && val.length >= 2100 ? <ExpandCollapse text={val} /> : val;
   },
   onContextMenu: function(e) {
-    var target = $(e.target).closest('tr');
-    if (!target.length) {
-      return;
-    }
-    const text = getSelectedText(e.clientX, e.clientY);
-    var key = target.attr('data-name');
-    var value = target.attr('data-value');
-    if (!text && !key && !value) {
-      return;
-    }
-    PROPS_MENUS[0].hide = !text;
-    PROPS_MENUS[1].hide = !key;
-    PROPS_MENUS[2].hide = !value;
-    PROPS_MENUS[0].copyText = text;
-    PROPS_MENUS[1].copyText = key;
-    PROPS_MENUS[2].copyText = value;
-    var height = 10 + (text ? 30 : 0) + (key ? 30 : 0) + (value ? 30 : 0);
-    var data = util.getMenuPosition(e, 110, height);
-    data.list = PROPS_MENUS;
-    e.preventDefault();
-    this.refs.contextMenu.show(data);
+    util.handlePropsContextMenu(e, this.refs.contextMenu);
   },
   render: function () {
     var self = this;
