@@ -1,3 +1,7 @@
+# v2.9.82
+1. feat: Overview、Inpsectors 支持自定义右键菜单
+2. refactor: 优化界面
+
 # v2.9.81
 1. feat: 支持设置 URL 列不显示请求参数
 2. feat: 域名为 IP 的 HTTPS 请求不解包
