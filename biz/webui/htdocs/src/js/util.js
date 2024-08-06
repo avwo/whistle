@@ -339,6 +339,12 @@ function getBoolean(val) {
 
 exports.getBoolean = getBoolean;
 
+function stopPropagation(e) {
+  e.stopPropagation();
+}
+
+exports.stopPropagation = stopPropagation;
+
 exports.showSystemError = function (xhr, useToast) {
   xhr = xhr || {};
   var status = xhr.status;

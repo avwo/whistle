@@ -1257,6 +1257,9 @@ var Index = React.createClass({
         if ((e.metaKey || e.ctrlKey) && e.keyCode === 82) {
           e.preventDefault();
         }
+      })
+      .on('contextmenu', '.w-textarea-bar', function(e) {
+        e.preventDefault();
       });
     var removeItem = function (e) {
       var target = e.target;

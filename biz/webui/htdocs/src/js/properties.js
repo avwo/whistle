@@ -1,10 +1,40 @@
 require('./base-css.js');
 require('../css/properties.css');
 var React = require('react');
+var $ = require('jquery');
 var util = require('./util');
 var CopyBtn = require('./copy-btn');
 var ExpandCollapse = require('./expand-collapse');
+var ContextMenu = require('./context-menu');
 var JSONTree = require('./components/react-json-tree')['default'];
+
+var PROPS_MENUS = [
+  {
+    name: 'Copy'
+  },
+  {
+    name: 'Copy Key'
+  },
+  {
+    name: 'Copy Value'
+  }
+];
+
+function getSelectedText(x, y) {
+  try {
+    var selection = window.getSelection();
+    for (var i = 0, len = selection.rangeCount; i < len; i++) {
+      var range = selection.getRangeAt(i);
+      var pos = range.getBoundingClientRect();
+      x -= pos.x;
+      y -= pos.y;
+      if (x >= 0 && y >= 0 && x <= pos.width && y <= pos.height) {
+        return selection.toString();
+      }
+    }
+    selection.removeAllRanges();
+  } catch (e) {}
+}
 
 var Properties = React.createClass({
   getInitialState: function () {
@@ -15,6 +45,29 @@ var Properties = React.createClass({
   },
   renderValue: function(val) {
     return val && val.length >= 2100 ? <ExpandCollapse text={val} /> : val;
+  },
+  onContextMenu: function(e) {
+    var target = $(e.target).closest('tr');
+    if (!target.length) {
+      return;
+    }
+    const text = getSelectedText(e.clientX, e.clientY);
+    var key = target.attr('data-name');
+    var value = target.attr('data-value');
+    if (!text && !key && !value) {
+      return;
+    }
+    PROPS_MENUS[0].hide = !text;
+    PROPS_MENUS[1].hide = !key;
+    PROPS_MENUS[2].hide = !value;
+    PROPS_MENUS[0].copyText = text;
+    PROPS_MENUS[1].copyText = key;
+    PROPS_MENUS[2].copyText = value;
+    var height = 10 + (text ? 30 : 0) + (key ? 30 : 0) + (value ? 30 : 0);
+    var data = util.getMenuPosition(e, 110, height);
+    data.list = PROPS_MENUS;
+    e.preventDefault();
+    this.refs.contextMenu.show(data);
   },
   render: function () {
     var self = this;
@@ -93,10 +146,12 @@ var Properties = React.createClass({
           className={
             'table w-properties w-properties-parsed ' + (props.className || '')
           }
+          onContextMenu={self.onContextMenu}
         >
           <tbody>
             {rawValue ? (
-              <tr key="raw" className={rawValue ? undefined : 'w-no-value'}>
+              <tr key="raw" className={rawValue ? undefined : 'w-no-value'}
+                data-name={rawName}  data-value={rawValue}>
                 <th>{rawName}</th>
                 <td className="w-prop-raw-data w-user-select-none" title={rawValue}>
                   <pre>
@@ -112,7 +167,8 @@ var Properties = React.createClass({
                   val = util.toString(val);
                   var json = showJsonView && util.likeJson(val) && util.parseJSON(val);
                   return (
-                    <tr key={i} className={val ? undefined : 'w-no-value'}>
+                    <tr key={i} className={val ? undefined : 'w-no-value'}
+                    data-name={name}  data-value={val}>
                       <th>
                         {onHelp ? (
                           <span
@@ -123,7 +179,10 @@ var Properties = React.createClass({
                         ) : undefined}
                         {self.renderValue(name)}
                       </th>
-                      <td className={json ? 'w-properties-json' : 'w-user-select-none'}>
+                      <td
+                        className={json ? 'w-properties-json' : 'w-user-select-none'}
+                        onContextMenu={json ? util.stopPropagation : null}
+                      >
                         {
                           json ? <JSONTree data={json}
                             onSearch={function() {
@@ -143,6 +202,7 @@ var Properties = React.createClass({
                   key={name}
                   title={title[name]}
                   className={value ? undefined : 'w-no-value'}
+                  data-name={name}  data-value={value}
                 >
                   <th>
                     {onHelp ? (
@@ -154,7 +214,10 @@ var Properties = React.createClass({
                     ) : undefined}
                     {self.renderValue(name)}
                   </th>
-                  <td className={json ? 'w-properties-json' : 'w-user-select-none'}>
+                  <td
+                    className={json ? 'w-properties-json' : 'w-user-select-none'}
+                    onContextMenu={json ? util.stopPropagation : null}
+                  >
                     {
                       json ? <JSONTree data={json} onSearch={function() {
                         util.showJSONDialog(json);
@@ -166,6 +229,7 @@ var Properties = React.createClass({
             })}
           </tbody>
         </table>
+        <ContextMenu ref="contextMenu" />
       </div>
     );
   }
