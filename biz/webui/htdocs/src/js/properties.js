@@ -4,6 +4,7 @@ var React = require('react');
 var util = require('./util');
 var CopyBtn = require('./copy-btn');
 var ExpandCollapse = require('./expand-collapse');
+var ContextMenu = require('./context-menu');
 var JSONTree = require('./components/react-json-tree')['default'];
 
 var Properties = React.createClass({
@@ -15,6 +16,9 @@ var Properties = React.createClass({
   },
   renderValue: function(val) {
     return val && val.length >= 2100 ? <ExpandCollapse text={val} /> : val;
+  },
+  onContextMenu: function(e) {
+    util.handlePropsContextMenu(e, this.refs.contextMenu);
   },
   render: function () {
     var self = this;
@@ -93,10 +97,12 @@ var Properties = React.createClass({
           className={
             'table w-properties w-properties-parsed ' + (props.className || '')
           }
+          onContextMenu={self.onContextMenu}
         >
           <tbody>
             {rawValue ? (
-              <tr key="raw" className={rawValue ? undefined : 'w-no-value'}>
+              <tr key="raw" className={rawValue ? undefined : 'w-no-value'}
+                data-name={rawName}  data-value={rawValue}>
                 <th>{rawName}</th>
                 <td className="w-prop-raw-data w-user-select-none" title={rawValue}>
                   <pre>
@@ -112,7 +118,8 @@ var Properties = React.createClass({
                   val = util.toString(val);
                   var json = showJsonView && util.likeJson(val) && util.parseJSON(val);
                   return (
-                    <tr key={i} className={val ? undefined : 'w-no-value'}>
+                    <tr key={i} className={val ? undefined : 'w-no-value'}
+                    data-name={name}  data-value={val}>
                       <th>
                         {onHelp ? (
                           <span
@@ -123,7 +130,10 @@ var Properties = React.createClass({
                         ) : undefined}
                         {self.renderValue(name)}
                       </th>
-                      <td className={json ? 'w-properties-json' : 'w-user-select-none'}>
+                      <td
+                        className={json ? 'w-properties-json' : 'w-user-select-none'}
+                        onContextMenu={json ? util.stopPropagation : null}
+                      >
                         {
                           json ? <JSONTree data={json}
                             onSearch={function() {
@@ -143,6 +153,7 @@ var Properties = React.createClass({
                   key={name}
                   title={title[name]}
                   className={value ? undefined : 'w-no-value'}
+                  data-name={name}  data-value={value}
                 >
                   <th>
                     {onHelp ? (
@@ -154,7 +165,10 @@ var Properties = React.createClass({
                     ) : undefined}
                     {self.renderValue(name)}
                   </th>
-                  <td className={json ? 'w-properties-json' : 'w-user-select-none'}>
+                  <td
+                    className={json ? 'w-properties-json' : 'w-user-select-none'}
+                    onContextMenu={json ? util.stopPropagation : null}
+                  >
                     {
                       json ? <JSONTree data={json} onSearch={function() {
                         util.showJSONDialog(json);
@@ -166,6 +180,7 @@ var Properties = React.createClass({
             })}
           </tbody>
         </table>
+        <ContextMenu ref="contextMenu" />
       </div>
     );
   }

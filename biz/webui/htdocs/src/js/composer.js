@@ -246,7 +246,8 @@ var Composer = React.createClass({
       if (!(target.closest('.w-composer-params').length ||
         target.closest('.w-composer-params-editor').length ||
         target.closest('.w-composer-dialog').length ||
-        target.closest('.w-win-dialog').length)) {
+        target.closest('.w-win-dialog').length ||
+        target.closest('.w-context-menu').length)) {
         self.hideParams();
       }
       if (!(target.closest('.w-composer-history-data').length ||

@@ -137,6 +137,60 @@ exports.preventBlur = function preventDefault(e) {
   e.preventDefault();
 };
 
+function getSelectedText(x, y) {
+  try {
+    var selection = window.getSelection();
+    for (var i = 0, len = selection.rangeCount; i < len; i++) {
+      var range = selection.getRangeAt(i);
+      var pos = range.getBoundingClientRect();
+      x -= pos.x;
+      y -= pos.y;
+      if (x >= 0 && y >= 0 && x <= pos.width && y <= pos.height) {
+        return selection.toString();
+      }
+    }
+    selection.removeAllRanges();
+  } catch (e) {}
+}
+
+exports.getSelectedText = getSelectedText;
+
+var PROPS_MENUS = [
+  {
+    name: 'Copy'
+  },
+  {
+    name: 'Copy Key'
+  },
+  {
+    name: 'Copy Value'
+  }
+];
+
+exports.handlePropsContextMenu = function(e, ctxMenu) {
+  var target = $(e.target).closest('tr');
+  if (!target.length) {
+    return;
+  }
+  const text = getSelectedText(e.clientX, e.clientY);
+  var key = target.attr('data-name');
+  var value = target.attr('data-value');
+  if (!text && !key && !value) {
+    return;
+  }
+  PROPS_MENUS[0].hide = !text;
+  PROPS_MENUS[1].hide = !key;
+  PROPS_MENUS[2].hide = !value;
+  PROPS_MENUS[0].copyText = text;
+  PROPS_MENUS[1].copyText = key;
+  PROPS_MENUS[2].copyText = value;
+  var height = 10 + (text ? 30 : 0) + (key ? 30 : 0) + (value ? 30 : 0);
+  var data = getMenuPosition(e, 110, height);
+  data.list = PROPS_MENUS;
+  e.preventDefault();
+  ctxMenu.show(data);
+};
+
 exports.getBase64FromHexText = function (str, check) {
   if (!str) {
     return '';
@@ -338,6 +392,12 @@ function getBoolean(val) {
 }
 
 exports.getBoolean = getBoolean;
+
+function stopPropagation(e) {
+  e.stopPropagation();
+}
+
+exports.stopPropagation = stopPropagation;
 
 exports.showSystemError = function (xhr, useToast) {
   xhr = xhr || {};
@@ -1064,7 +1124,7 @@ exports.isFocusEditor = function () {
   return !activeElement.readOnly && !activeElement.disabled;
 };
 
-exports.getMenuPosition = function (e, menuWidth, menuHeight) {
+function getMenuPosition(e, menuWidth, menuHeight) {
   var left = e.pageX;
   var top = e.pageY;
   var docElem = document.documentElement;
@@ -1076,7 +1136,9 @@ exports.getMenuPosition = function (e, menuWidth, menuHeight) {
     top = Math.max(top - menuHeight, window.scrollY + 1);
   }
   return { top: top, left: left, marginRight: clientWidth - left };
-};
+}
+
+exports.getMenuPosition = getMenuPosition;
 
 function socketIsClosed(reqData) {
   if (!reqData.closed && reqData.frames) {

@@ -55,7 +55,9 @@ var OPTIONS_WITH_SELECTED = [
 ];
 var HIDE_STYLE = { display: 'none' };
 var search = window.location.search;
-var isClient = util.getQuery().mode === 'client';
+var query = util.getQuery();
+var isClient = query.mode === 'client';
+var hideMenus = !!(query.hideMenus || query.hideMenu);
 var hideLeftMenu;
 var showTreeView;
 var dataUrl;
@@ -1257,6 +1259,9 @@ var Index = React.createClass({
         if ((e.metaKey || e.ctrlKey) && e.keyCode === 82) {
           e.preventDefault();
         }
+      })
+      .on('contextmenu', '.w-textarea-bar', function(e) {
+        e.preventDefault();
       });
     var removeItem = function (e) {
       var target = e.target;
@@ -4075,6 +4080,7 @@ var Index = React.createClass({
     }
     var hideEditor = this.isHideRules();
     var hideEditorStyle = hideEditor ? HIDE_STYLE : null;
+    var hideStyle = hideMenus ? ' hide' : '';
     dataCenter.hideMockMenu = hideEditor;
 
     return (
@@ -4086,7 +4092,7 @@ var Index = React.createClass({
           + (rulesOnlyMode || rulesMode ? ' w-show-rules-mode' : '')
         }
       >
-        <div className={'w-menu w-' + name + '-menu-list'} onContextMenu={this.onTopContextMenu}>
+        <div className={'w-menu w-' + name + '-menu-list' + hideStyle} onContextMenu={this.onTopContextMenu}>
           <a
             onClick={this.toggleLeftMenu}
             draggable="false"
@@ -4301,7 +4307,7 @@ var Index = React.createClass({
             draggable="false"
           >
             <span className="glyphicon glyphicon-download-alt" />
-            {dataCenter.enablePluginMgr ? 'Install' : 'ReinstallAll'}
+            {dataCenter.enablePluginMgr ? 'Install' : 'Commands'}
           </a>
           <RecordBtn
             ref="recordBtn"
@@ -4631,7 +4637,7 @@ var Index = React.createClass({
             onContextMenu={this.onContextMenu}
             onDoubleClick={this.onContextMenu}
             className={
-              'w-left-menu' + (forceShowLeftMenu ? ' w-hover-left-menu' : '')
+              'w-left-menu' + (forceShowLeftMenu ? ' w-hover-left-menu' : '') + hideStyle
             }
             style={(!showAccount && networkMode) || mustHideLeftMenu ? HIDE_STYLE : null}
             onMouseEnter={forceShowLeftMenu}

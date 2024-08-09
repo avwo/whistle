@@ -6,6 +6,7 @@ var Dialog = require('./dialog');
 var util = require('./util');
 var message = require('./message');
 var win = require('./win');
+var ContextMenu = require('./context-menu');
 
 var MAX_FILE_SIZE = 1024 * 1024 * 20;
 var MAX_NAME_LEN = 128;
@@ -282,6 +283,9 @@ var PropsEditor = React.createClass({
     );
     e.stopPropagation();
   },
+  onContextMenu: function(e) {
+    util.handlePropsContextMenu(e, this.refs.contextMenu);
+  },
   render: function () {
     var self = this;
     var modal = this.state.modal || '';
@@ -306,11 +310,11 @@ var PropsEditor = React.createClass({
       >
         {keys.length ? (
           <table className="table">
-            <tbody>
+            <tbody onContextMenu={this.onContextMenu}>
               {keys.map(function (name) {
                 var item = modal[name];
                 return (
-                  <tr key={name}>
+                  <tr key={name} data-name={item.name} data-value={item.value}>
                     <th
                       className={
                         isHeader && highlight(item.name) ? 'w-bold' : undefined
@@ -455,6 +459,7 @@ var PropsEditor = React.createClass({
             name="localFile"
           />
         </form>
+        <ContextMenu ref="contextMenu" />
       </div>
     );
   }
