@@ -1,3 +1,9 @@
+# v2.9.83
+1. fix: https://github.com/nodejs/node/issues/52681
+2. fix: https://github.com/avwo/whistle/issues/1137
+3. feat: 新增参数 `--allowOrigin` 用于设置允许哪些第三方页面访问 Whistle 的内部接口
+4. feat: 插件的 rules.txt 文件支持引入 3 个远程规则 `@path`，之前版本只支持1个
+
 # v2.9.82
 1. feat: Overview、Inpsectors 支持自定义右键菜单
 2. feat: 支持通过 `-M` `dnsResolve`、`dnsResolve4`、`dnsResolve6` 改 dns 方法
