@@ -78,7 +78,7 @@ function getBody(res, callback) {
 var reqOptions;
 function request(body, callback) {
   if (!reqOptions) {
-    reqOptions = url.parse('http://' + (options.host || '127.0.0.1') + ':' + options.port + '/cgi-bin/rules/project');
+    reqOptions = url.parse('http://' + util.joinIpPort(options.host || '127.0.0.1', options.port) + '/cgi-bin/rules/project');
     reqOptions.headers = {
       'content-type': 'application/x-www-form-urlencoded'
     };
@@ -193,7 +193,7 @@ module.exports = function(filepath, storage, force, isClient) {
             'groupName=' + encodeURIComponent(groupName.trim())
           ].join('&');
           request(body, function() {
-            info('Setting whistle' + (isClient ? ' client' : '') + ' (' + (options.host || '127.0.0.1') + ':' + port + ') rules successful.');
+            info('Setting whistle' + (isClient ? ' client' : '') + ' (' + util.joinIpPort(options.host || '127.0.0.1', port) + ') rules successful.');
           });
         };
         if (force) {

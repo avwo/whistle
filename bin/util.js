@@ -5,10 +5,14 @@ var os = require('os');
 var fs = require('fs');
 var fse = require('fs-extra2');
 var config = require('../lib/config');
+var common = require('../lib/util/common');
 var colors = require('colors/safe');
 var path = require('path');
 var createHmac = require('crypto').createHmac;
 
+var joinIpPort = common.joinIpPort;
+
+exports.joinIpPort = joinIpPort;
 /*eslint no-console: "off"*/
 var CHECK_RUNNING_CMD = process.platform === 'win32' ? 
   'tasklist /fi "PID eq %s" | findstr /i "node.exe"'
@@ -23,6 +27,7 @@ function isRunning(pid, callback) {
 }
 
 exports.isRunning = isRunning;
+
 
 function getIpList() {
   var ipList = [];
@@ -64,10 +69,6 @@ function showKillError() {
 
 exports.showKillError = showKillError;
 
-function getIpHost(ip) {
-  return ip.indexOf(':') === -1 ? ip : '[' + ip + ']';
-}
-
 function showUsage(isRunning, options, restart) {
   options = formatOptions(options);
   if (isRunning) {
@@ -83,7 +84,7 @@ function showUsage(isRunning, options, restart) {
   var list = options.host && typeof options.host === 'string' ? [options.host] : getIpList();
   info('[i] 1. use your device to visit the following URL list, gets the ' + colors.bold('IP') + ' of the URL you can access:');
   info(list.map(function(ip) {
-    return '       http://' + colors.bold(getIpHost(ip)) + (port && port != 80 ? ':' + port : '') + '/';
+    return '       http://' + colors.bold(joinIpPort(ip, port != 80 && port)) + '/';
   }).join('\n'));
 
   warn('       Note: If all the above URLs are unable to access, check the firewall settings');

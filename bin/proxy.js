@@ -22,10 +22,11 @@ function showError(msg) {
 
 function enableProxy(options) {
   try {
+    var host = util.joinIpPort(options.host, options.port);
     if (proxy.enableProxy(options)) {
-      showInfo('Setting global proxy (' + options.host + ':' + options.port + ') successful.');
+      showInfo('Setting global proxy (' + host + ') successful.');
     } else {
-      showError('Failed to set global proxy (' + options.host + ':' + options.port + ').');
+      showError('Failed to set global proxy (' + host + ').');
     }
   } catch (e) {
     showError(e.message);

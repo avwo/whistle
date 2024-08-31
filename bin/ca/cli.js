@@ -88,7 +88,7 @@ module.exports = function(argv) {
   if (!options.addr) {
     var host = options.host || '127.0.0.1';
     var port = options.port || util.getDefaultPort();
-    options.addr = { url: 'http://' + host + ':' + port + '/cgi-bin/rootca' };
+    options.addr = { url: 'http://' + util.joinIpPort(host, + port) + '/cgi-bin/rootca' };
   }
   install(options.addr);
 };
