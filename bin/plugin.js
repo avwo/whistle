@@ -1,4 +1,3 @@
-var os = require('os');
 var cp = require('child_process');
 var fs = require('fs');
 var path = require('path');
@@ -37,6 +36,13 @@ function getTempName(name) {
   var lastIndex = name.length - 1;
   name[lastIndex] = '.' + name[lastIndex];
   return name.join('/');
+}
+
+function formatCmdOpions(options) {
+  if (CMD_SUFFIX) {
+    options.shell = true;
+  }
+  return options;
 }
 
 function getInstallDir(argv) {
@@ -87,10 +93,10 @@ function install(cmd, name, argv, ver, pluginsCache, callback) {
   fs.writeFileSync(path.join(installPath, 'README.md'), RESP_URL);
   argv.unshift('install', name);
   pluginsCache[pkgName] = 1;
-  cp.spawn(cmd, argv, {
+  cp.spawn(cmd, argv, formatCmdOpions({
     stdio: 'inherit',
     cwd: installPath
-  }).once('exit', function(code) {
+  })).once('exit', function(code) {
     if (code) {
       removeDir(installPath);
       callback();
@@ -248,10 +254,10 @@ exports.run = function(cmd, argv) {
     }
   });
   process.env.PATH && newPath.push(process.env.PATH);
-  newPath = newPath.join(os.platform() === 'win32' ? ';' : ':');
+  newPath = newPath.join(CMD_SUFFIX ? ';' : ':');
   process.env.PATH = newPath;
-  cp.spawn(cmd + CMD_SUFFIX, argv, {
+  cp.spawn(cmd + CMD_SUFFIX, argv, formatCmdOpions({
     stdio: 'inherit',
     env: process.env
-  });
+  }));
 };
