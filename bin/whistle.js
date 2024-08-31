@@ -140,6 +140,7 @@ program
   .option('--socksPort [socksPort]', 'set the socksv5 server port', String, undefined)
   .option('--httpPort [httpPort]', 'set the http server port', String, undefined)
   .option('--httpsPort [httpsPort]', 'set the https server port', String, undefined)
+  .option('--allowOrigin [originList]', 'list of cross origin allowed to access webui (as: a.b.c,x.y.z or *)', String, undefined)
   .option('--no-global-plugins', 'do not load any globally installed plugins')
   .option('--no-prev-options', 'do not reuse the previous options when restarting')
   .option('--inspect [[host:]port]', 'activate inspector on host:port (127.0.0.1:9229 by default)')
