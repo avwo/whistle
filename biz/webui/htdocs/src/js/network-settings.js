@@ -321,7 +321,7 @@ var Settings = React.createClass({
     });
   },
   onUrlType: function(e) {
-    const urlType = e.target.value;
+    var urlType = e.target.value;
     storage.set('urlType', urlType);
     this.setState({ urlType: urlType });
   },

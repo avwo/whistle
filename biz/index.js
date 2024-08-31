@@ -88,6 +88,13 @@ module.exports = function(req, res, next) {
         req.isPluginReq = true;
         req._isProxyReq = true;
       }
+      if (isWebUI) {
+        req.fromInternalPath = true;
+        if (!req.headers.origin) {
+          var hostname = (req._fwdHost && util.parseHost(req._fwdHost)[0]) || host;
+          req.headers['x-whistle-origin-host'] = hostname || '*';
+        }
+      }
     }
   } else {
     isWebUI = req.headers[config.WEBUI_HEAD];

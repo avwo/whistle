@@ -38,6 +38,8 @@ var GUEST_PATHS = ['/cgi-bin/composer', '/cgi-bin/socket/data', '/cgi-bin/abort'
 var PLUGIN_PATH_RE = /^\/(whistle|plugin)\.([^/?#]+)(\/)?/;
 var STATIC_SRC_RE = /\.(?:ico|js|css|png)$/i;
 var UPLOAD_URLS = ['/cgi-bin/values/upload', '/cgi-bin/composer', '/cgi-bin/download'];
+var ALLOW_CROSS_URLS = ['/cgi-bin/top', '/cgi-bin/status', '/cgi-bin/server-info',
+    '/cgi-bin/rootca', '/cgi-bin/check-update', '/cgi-bin/log/set'];
 var proxyEvent, util, pluginMgr;
 var MAX_AGE = 60 * 60 * 24 * 3;
 var MENU_HTML = fs.readFileSync(path.join(__dirname, '../../../assets/menu.html'));
@@ -298,8 +300,42 @@ app.use(function(req, res, next) {
   res.download(getRootCAFile(), 'rootCA.' + type);
 });
 
+function checkAllowOrigin(req) {
+  if (config.allowAllOrigin ||
+    req.headers['sec-fetch-site'] === 'same-origin' ||
+    ALLOW_CROSS_URLS.indexOf(req.path) !== -1) {
+    return true;
+  }
+  var host = req.headers['x-whistle-origin-host'];
+  var list = config.allowOrigin;
+  if (!host) {
+    host = req.headers.origin;
+    if (!host || typeof host !== 'string') {
+      return true;
+    }
+    if (!list) {
+      return false;
+    }
+    var index = host.indexOf('://');
+    if (index !== -1) {
+      host = host.substring(index + 3);
+    }
+    host = util.parseHost(host)[0] || '*';
+  }
+  if (host === '*') {
+    return false;
+  }
+  if (list) {
+    for (var i = 0, len = list.length; i < len; i++) {
+      var h = list[i];
+      return typeof h === 'string' ? host === h : h.test(host);
+    }
+  }
+  return false;
+}
+
 function cgiHandler(req, res) {
-  if (UP_PATH_REGEXP.test(req.path)) {
+  if (UP_PATH_REGEXP.test(req.path) || !checkAllowOrigin(req)) {
     return res.status(403).end('Forbidden');
   }
   if (req.headers.origin) {

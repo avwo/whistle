@@ -172,7 +172,7 @@ exports.handlePropsContextMenu = function(e, ctxMenu) {
   if (!target.length) {
     return;
   }
-  const text = getSelectedText(e.clientX, e.clientY);
+  var text = getSelectedText(e.clientX, e.clientY);
   var key = target.attr('data-name');
   var value = target.attr('data-value');
   if (!text && !key && !value) {
