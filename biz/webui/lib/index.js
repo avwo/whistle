@@ -328,8 +328,14 @@ function checkAllowOrigin(req) {
   if (list) {
     for (var i = 0, len = list.length; i < len; i++) {
       var h = list[i];
-      return typeof h === 'string' ? host === h : h.test(host);
+      if (typeof h === 'string' ? host === h : h.test(host)) {
+        return true;
+      }
     }
+  }
+  if (config.isWebUIHost(host)) {
+    req._isWebUIHost = true;
+    return true;
   }
   return false;
 }
@@ -338,7 +344,7 @@ function cgiHandler(req, res) {
   if (UP_PATH_REGEXP.test(req.path) || !checkAllowOrigin(req)) {
     return res.status(403).end('Forbidden');
   }
-  if (req.headers.origin) {
+  if (!req._isWebUIHost && req.headers.origin) {
     res.setHeader('access-control-allow-origin', req.headers.origin);
     res.setHeader('access-control-allow-credentials', true);
   }
