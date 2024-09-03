@@ -313,14 +313,21 @@ function checkAllowOrigin(req) {
     if (!host || typeof host !== 'string') {
       return true;
     }
-    if (!list) {
-      return false;
-    }
     var index = host.indexOf('://');
     if (index !== -1) {
       host = host.substring(index + 3);
     }
-    host = util.parseHost(host)[0] || '*';
+    host = util.parseHost(host)[0];
+    if (!host) {
+      return false;
+    }
+    if (!list) {
+      if (config.isWebUIHost(host)) {
+        req._isWebUIHost = true;
+        return true;
+      }
+      return false;
+    }
   }
   if (host === '*') {
     return false;
