@@ -77,6 +77,8 @@
     ```
     这主要是因为android 6.0之后的版本默认配置发生了变化，[更多请看Android开发文档](https://developer.android.com/training/articles/security-config#base-config)。
 
+    小米等支持 Magisk 模块的手机还可以尝试链接中的方式绕开 `ssl pinning`：https://blog.csdn.net/chiehfeng/article/details/134033846 
+
 ## 开启拦截HTTPS
 
 图中的打开的对话框有个checkbox：

@@ -10,3 +10,4 @@ Linux: Settings > Network > VPN > Network Proxy > Manual
     - Fedora: 将下载的 rootCA.crt 复制到 /etc/pki/ca-trust/source/anchors 然后执行 trust extract-compat
     - Ubuntu/Debian: 将下载的 rootCA.crt 复制到 /usr/share/ca-certificates/ 然后执行 echo "rootCA.crt" >> /etc/ca-certificates.conf && update-ca-certificates
     - 如果成功安装，命令 trust list | grep -i whistle 输出不为空。
+3. 小米等支持 Magisk 模块的手机还可以尝试链接中的方式绕开 `ssl pinning`：https://blog.csdn.net/chiehfeng/article/details/134033846 
