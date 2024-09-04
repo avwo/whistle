@@ -412,6 +412,13 @@ function updateData(list, data, modal) {
   return hasChanged;
 }
 
+function getCAType(type) {
+  if (type === 'crt' || type === 'pem') {
+    return type;
+  }
+  return 'cer';
+}
+
 var Index = React.createClass({
   getInitialState: function () {
     var self = this;
@@ -420,14 +427,10 @@ var Index = React.createClass({
     var values = modal.values;
     var server = modal.server;
     var multiEnv = !!server.multiEnv;
-    var caType = storage.get('caType');
-    if (caType !== 'cer' && caType !== 'pem') {
-      caType = 'crt';
-    }
     var state = {
       replayCount: 1,
       tabs: [],
-      caType: caType,
+      caType: getCAType(storage.get('caType')),
       allowMultipleChoice: modal.rules.allowMultipleChoice,
       backRulesFirst: modal.rules.backRulesFirst,
       networkMode: !!server.networkMode,
@@ -3867,10 +3870,7 @@ var Index = React.createClass({
     }, 200);
   },
   selectCAType: function(e) {
-    var caType = e.target.value;
-    if (caType !== 'cer' && caType !== 'pem') {
-      caType = 'crt';
-    }
+    var caType = getCAType(e.target.value);
     this.setState({ caType: caType });
     storage.set('caType', caType);
   },
@@ -4069,12 +4069,11 @@ var Index = React.createClass({
     LEFT_BAR_MENUS[4].hide = rulesOnlyMode;
 
     var caType = state.caType || 'crt';
-    var qrCode = 'img/qrcode.png';
+    var qrCode = 'img/qrcode-' + caType + '.png';
     var caUrl = 'cgi-bin/rootca';
     var caShortUrl = 'http://rootca.pro/';
 
-    if (caType !== 'crt') {
-      qrCode = 'img/qrcode-' + caType + '.png';
+    if (caType !== 'cer') {
       caUrl += '?type=' + caType;
       caShortUrl += caType;
     }
@@ -4936,7 +4935,7 @@ var Index = React.createClass({
                   href={caUrl}
                   target="downloadTargetFrame"
                 >
-                  <img src={qrCode} width="320" />
+                  <img src={qrCode} width="300" style={{margin: 10}} />
                 </a>
                 <div className="w-https-settings">
                   <p>
