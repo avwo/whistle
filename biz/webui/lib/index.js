@@ -291,47 +291,17 @@ app.use(function(req, res, next) {
   if (req.headers.host !== 'rootca.pro') {
     return next();
   }
-  var type = 'crt';
-  if (!req.path.indexOf('/cer')) {
-    type = 'cer';
+  var type = 'cer';
+  if (!req.path.indexOf('/crt')) {
+    type = 'crt';
   } else if (!req.path.indexOf('/pem')) {
     type = 'pem';
   }
   res.download(getRootCAFile(), 'rootCA.' + type);
 });
 
-function checkAllowOrigin(req) {
-  if (config.allowAllOrigin ||
-    req.headers['sec-fetch-site'] === 'same-origin' ||
-    ALLOW_CROSS_URLS.indexOf(req.path) !== -1) {
-    return true;
-  }
-  var host = req.headers['x-whistle-origin-host'];
+function isAllowHost(host) {
   var list = config.allowOrigin;
-  if (!host) {
-    host = req.headers.origin;
-    if (!host || typeof host !== 'string') {
-      return true;
-    }
-    var index = host.indexOf('://');
-    if (index !== -1) {
-      host = host.substring(index + 3);
-    }
-    host = util.parseHost(host)[0];
-    if (!host) {
-      return false;
-    }
-    if (!list) {
-      if (config.isWebUIHost(host)) {
-        req._isWebUIHost = true;
-        return true;
-      }
-      return false;
-    }
-  }
-  if (host === '*') {
-    return false;
-  }
   if (list) {
     for (var i = 0, len = list.length; i < len; i++) {
       var h = list[i];
@@ -340,18 +310,41 @@ function checkAllowOrigin(req) {
       }
     }
   }
-  if (config.isWebUIHost(host)) {
-    req._isWebUIHost = true;
+}
+
+function checkInternalPath(req) {
+  if (config.allowAllOrigin || ALLOW_CROSS_URLS.indexOf(req.path) !== -1) {
     return true;
   }
-  return false;
+  var host = req.headers['x-whistle-origin-host'];
+  return !host || isAllowHost(host);
+}
+
+function checkAllowOrigin(req) {
+  var host = req.headers.origin;
+  if (!host || typeof host !== 'string' ||
+    req.headers['sec-fetch-site'] === 'same-origin') {
+    return false;
+  }
+  if (config.allowAllOrigin) {
+    return true;
+  }
+  if (!config.allowOrigin) {
+    return false;
+  }
+  var index = host.indexOf('://');
+  if (index !== -1) {
+    host = host.substring(index + 3);
+  }
+  host = util.parseHost(host)[0];
+  return host && isAllowHost(host);
 }
 
 function cgiHandler(req, res) {
-  if (UP_PATH_REGEXP.test(req.path) || !checkAllowOrigin(req)) {
+  if (UP_PATH_REGEXP.test(req.path) || !checkInternalPath(req)) {
     return res.status(403).end('Forbidden');
   }
-  if (!req._isWebUIHost && req.headers.origin) {
+  if (checkAllowOrigin(req)) {
     res.setHeader('access-control-allow-origin', req.headers.origin);
     res.setHeader('access-control-allow-credentials', true);
   }
