@@ -275,7 +275,6 @@ module.exports = function(req, res) {
       headers['sec-websocket-key'] = crypto.randomBytes(16).toString('base64');
     }
   } else {
-    headers.connection = 'close';
     delete headers.upgrade;
     if (!isConn && ((useH2 && (protocol === 'https:' || protocol === 'http:')) || protocol === 'h2:' || protocol === 'http2:')) {
       req.body.useH2 = true;
