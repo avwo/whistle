@@ -17,7 +17,7 @@
 .w-account-dialog button.close, .w-custom-dialog button.close {
   font-size: 20px;
   line-height: 6px;
-  padding: 2px 2px 8px 3px;
+  padding: 4px 3px 8px;
   border-radius: 20px;
   border: 1px solid #ccc;
   background: #fff;

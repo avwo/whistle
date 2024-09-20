@@ -1504,6 +1504,10 @@ if (window.Symbol) {
   JSON_KEY = window.Symbol.for(JSON_KEY);
 }
 
+exports.BODY_KEY = BODY_KEY;
+exports.HEX_KEY = HEX_KEY;
+exports.JSON_KEY = JSON_KEY;
+
 function getHexFromBase64(base64) {
   if (base64) {
     try {
@@ -1926,8 +1930,8 @@ exports.parseImportData = function (data, modal, isValues) {
   return list;
 };
 
-exports.getSize = function (size) {
-  if (size < 1024) {
+function getSize(size) {
+  if (!(size >= 1024)) {
     return size;
   }
   size = (size / 1024).toFixed(2);
@@ -1939,7 +1943,9 @@ exports.getSize = function (size) {
     return size + 'm';
   }
   return (size / 1024).toFixed(2) + 'G';
-};
+}
+
+exports.getSize = getSize;
 
 function getQps(num) {
   if (!num) {
@@ -2676,23 +2682,14 @@ exports.replacQuery = function(url, query) {
   return url + query + hash;
 };
 
-function getDisplaySize(size) {
-  if (!(size > 1024)) {
-    return size;
-  }
-  return Number(size / 1024).toFixed(2) + 'k';
-}
-
 exports.getDisplaySize = function(size, unzipSize) {
-  unzipSize = size == unzipSize ? '' : getDisplaySize(unzipSize);
-  size = getDisplaySize(size);
+  unzipSize = size == unzipSize ? '' : getSize(unzipSize);
+  size = getSize(size);
   return unzipSize ? size + ' / ' + unzipSize : size;
 };
 
 function formatSize(value) {
-  return value >= 1024
-    ? value + ' (' + Number(value / 1024).toFixed(2) + 'k)'
-    : value;
+  return value >= 1024 ? value + ' (' + getSize(value) + ')' : value;
 }
 
 exports.formatSize = function(size, unzipSize) {

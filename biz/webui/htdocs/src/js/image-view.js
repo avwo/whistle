@@ -16,7 +16,7 @@ var ImageView = React.createClass({
     util.openPreview(this.props.data);
   },
   getPreviewUrl: function() {
-    var data = hasWebView() && this.props.data;
+    var data = !this.props.imgSrc && hasWebView() && this.props.data;
     if (!data || !data.res.base64) {
       return;
     }

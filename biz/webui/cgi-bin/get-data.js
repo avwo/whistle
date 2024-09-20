@@ -13,6 +13,11 @@ module.exports = function(req, res) {
   var data = req.query;
   if (data.ids && typeof data.ids == 'string') {
     data.ids = data.ids.split(',');
+    if (data.status && typeof data.status == 'string') {
+      data.status = data.status.split(',');
+    } else {
+      data.status = null;
+    }
   } else {
     data.ids = null;
   }

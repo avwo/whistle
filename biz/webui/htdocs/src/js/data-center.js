@@ -760,6 +760,58 @@ function emitCustomTabsChange(curList, oldList, name) {
   }
 }
 
+function getBase64Len(base64) {
+  if (!base64) {
+    return 0;
+  }
+  var len = base64.length;
+  if (base64[len - 1] === '=') {
+    len -= 2;
+    if (base64[len] === '=') {
+      --len;
+    }
+  }
+  return len;
+}
+
+function updateItem(item, newItem) {
+  Object.keys(newItem).forEach(function(key) {
+    var data = newItem[key];
+    if (key === 'rules' || key === 'rulesHeaders' || key === 'url') {
+      data = data || item[key];
+    } else if (key === 'req' || key === 'res') {
+      var oldData = item[key];
+      var base64 = oldData.base64;
+      data.headers = data.headers || oldData.headers;
+      data.rawHeaderNames = data.rawHeaderNames || oldData.rawHeaderNames;
+      if (data.base64) {
+        if (data.frag) {
+          var len = getBase64Len(base64);
+          data.base64 = (base64 ? base64.substring(0, len) : '') + data.base64;
+        }
+      } else {
+        data.base64 = base64;
+        data[util.BODY_KEY] = oldData[util.BODY_KEY];
+        data[util.HEX_KEY] = oldData[util.HEX_KEY];
+        data[util.JSON_KEY] = oldData[util.JSON_KEY];
+      }
+    }
+    item[key] = data;
+  });
+}
+
+function getStatus(item) {
+  var result = [''];
+  // 跟后台联动，不能改成 &
+  if (!item.requestTime || util.hasRequestBody(item.req.method)) {
+    result[0] = getBase64Len(item.req.base64);
+  }
+  if (!item.endTime) {
+    result[1] = getBase64Len(item.res.base64);
+  }
+  return result.join('-');
+}
+
 var hiddenTime = Date.now();
 function startLoadData() {
   if (startedLoad) {
@@ -786,10 +838,12 @@ function startLoadData() {
     var startLogTime = -1;
     var startSvrLogTime = -1;
     var pendingIds = [];
+    var statusIds = [];
     var tunnelIds = [];
     dataList.forEach(function (item) {
       if (!item.endTime && !item.lost) {
         pendingIds.push(item.id);
+        statusIds.push(getStatus(item));
       }
       if (item.reqPlugin > 0 && item.reqPlugin < 10) {
         ++item.reqPlugin;
@@ -824,6 +878,7 @@ function startLoadData() {
       startLogTime: exports.stopConsoleRefresh ? -3 : startLogTime,
       startSvrLogTime: exports.stopServerLogRefresh ? -3 : startSvrLogTime,
       ids: pendingIds.join(),
+      status: statusIds.join(),
       startTime: startTime,
       dumpCount: dumpCount,
       lastRowId: inited || !count ? lastRowId : undefined,
@@ -1053,7 +1108,7 @@ function startLoadData() {
       dataList.forEach(function (item) {
         var newItem = data[item.id];
         if (newItem) {
-          $.extend(item, newItem);
+          updateItem(item, newItem);
           setReqData(item);
           workers.postMessage(item);
         } else {
