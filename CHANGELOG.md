@@ -1,3 +1,8 @@
+# v2.9.85
+1. feat: 支持显示 sse 内容
+2. fix: https://github.com/avwo/whistle-client/issues/60
+3. fix: https://github.com/avwo/whistle/issues/1145
+
 # v2.9.84
 1. feat: 证书默认格式改成 cer 以适配更多机型（涉及：短链接，二维码，点击下载）
 2. fix: 某些浏览器没有发送 `sec-fetch-site` 导致内部请求误判为跨域请求问题
