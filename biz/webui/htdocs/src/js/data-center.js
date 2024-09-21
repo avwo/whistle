@@ -785,9 +785,8 @@ function updateItem(item, newItem) {
       data.headers = data.headers || oldData.headers;
       data.rawHeaderNames = data.rawHeaderNames || oldData.rawHeaderNames;
       if (data.base64) {
-        if (data.frag) {
-          var len = getBase64Len(base64);
-          data.base64 = (base64 ? base64.substring(0, len) : '') + data.base64;
+        if (data.preLen > 0) {
+          data.base64 = (base64 ? base64.substring(0, data.preLen) : '') + data.base64;
         }
       } else {
         data.base64 = base64;
