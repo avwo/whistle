@@ -1,5 +1,5 @@
 # v2.9.85
-1. feat: 支持显示 sse 内容
+1. feat: 支持显示 sse 内容（默认只对非 gzip 及 content-length 头小于 2m 的请求生效，其它类型请求可以通过 `enable://captureStream` 强制开启）
 2. fix: https://github.com/avwo/whistle-client/issues/60
 3. fix: https://github.com/avwo/whistle/issues/1145
 
