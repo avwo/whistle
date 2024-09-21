@@ -167,8 +167,8 @@ var PROPS_MENUS = [
   }
 ];
 
-exports.handlePropsContextMenu = function(e, ctxMenu) {
-  var target = $(e.target).closest('tr');
+exports.handlePropsContextMenu = function(e, ctxMenu, target) {
+  target = target ? $(target) : $(e.target).closest('tr');
   if (!target.length) {
     return;
   }

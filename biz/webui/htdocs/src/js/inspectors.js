@@ -1,5 +1,6 @@
 require('./base-css.js');
 var React = require('react');
+var ReactDOM = require('react-dom');
 var ExpandCollapse = require('./expand-collapse');
 var util = require('./util');
 var Inspector = require('./inspector');
@@ -8,6 +9,7 @@ var LazyInit = require('./lazy-init');
 var dataCenter = require('./data-center');
 var events = require('./events');
 var TabMgr = require('./tab-mgr');
+var ContextMenu = require('./context-menu');
 
 var Inspectors = React.createClass({
   getInitialState: function () {
@@ -34,6 +36,9 @@ var Inspectors = React.createClass({
   getStyle: function (name) {
     return 'btn btn-default' + (this.isActive(name) ? ' w-spec-active' : '');
   },
+  onContextMenu: function(e) {
+    util.handlePropsContextMenu(e, this.refs.contextMenu, ReactDOM.findDOMNode(this.refs.urlProp));
+  },
   render: function () {
     var self = this;
     var props = self.props;
@@ -50,7 +55,14 @@ var Inspectors = React.createClass({
           'fill orient-vertical-box w-detail-inspectors' + (hide ? ' hide' : '')
         }
       >
-        <div className="box w-detail-inspectors-url" title={url}>
+        <div
+          ref="urlProp"
+          data-name="Url"
+          data-value={url}
+          className="box w-detail-inspectors-url"
+          title={url}
+          onContextMenu={self.onContextMenu}
+        >
           <label>Url</label>
           <div className="fill w-user-select-none">
             <ExpandCollapse text={url} />
@@ -103,6 +115,7 @@ var Inspectors = React.createClass({
           tabs={tabs}
           className="w-custom-tab-panel"
         />
+        <ContextMenu ref="contextMenu" />
       </div>
     );
   }
