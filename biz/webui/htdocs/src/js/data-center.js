@@ -802,7 +802,7 @@ function updateItem(item, newItem) {
 function getStatus(item) {
   var result = [''];
   // 跟后台联动，不能改成 &
-  if (!item.requestTime || util.hasRequestBody(item.req.method)) {
+  if (!item.requestTime) {
     result[0] = getBase64Len(item.req.base64);
   }
   if (!item.endTime) {
