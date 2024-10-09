@@ -10,7 +10,7 @@ var dataCenter;
 var WIN_NAME_PRE =
   '__whistle_' + location.href.replace(/\/[^/]*([#?].*)?$/, '/') + '__';
 var KW_RE =
-  /^(e|error|style|url|u|content|c|b|body|headers|h|ip|i|status|result|s|r|method|m|mark|type|t):(.*)$/i;
+  /^(e|error|style|url|u|composer|fc|content|c|b|body|headers|h|ip|i|status|result|s|r|method|m|mark|type|t):(.*)$/i;
 var KW_LIST_RE = /([^\s]+)(?:\s+([^\s]+)(?:\s+([\S\s]+))?)?/;
 
 function NetworkModal(list) {
@@ -211,6 +211,9 @@ function checkItem(item, opts) {
     return !isError || checkData(item, opts);
   case 'style':
     return !item.style ||  checkData(item, opts);
+  case 'fc':
+  case 'composer':
+    return !item.fc || checkData(item, opts);
   default:
     return checkData(item, opts);
   }
