@@ -291,7 +291,7 @@ function getIcon(data, className) {
   );
 }
 
-function removeLighhight(elem) {
+function removeHighlight(elem) {
   elem.removeClass('highlight');
 }
 
@@ -317,6 +317,7 @@ var Row = React.createClass({
           >
             <th className="order" scope="row" style={style}>
               {order}
+              {item.fc ? <span className="glyphicon glyphicon-send" /> : null}
             </th>
             {columnList.map(function (col) {
               var name = col.name;
@@ -485,7 +486,7 @@ var ReqData = React.createClass({
       .filter(util.noop);
     if (lightList.length) {
       setTimeout(function () {
-        lightList.forEach(removeLighhight);
+        lightList.forEach(removeHighlight);
       }, 800);
     }
   },
