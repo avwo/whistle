@@ -190,16 +190,39 @@ var JSONTree = (function (_React$Component) {
       { name: 'Copy Value' },
       { name: 'Collapse Parent' }
     ];
-
+    var expandMenu;
+    var collapseMenu;
+    var searchMenu;
     if (props.expandAll) {
-      contextMenuList.push({ name: 'Expand All' });
+      expandMenu = {
+        name: 'Expand All',
+        onClick: function() {
+          props.expandAll();
+        }
+      };
+      contextMenuList.push(expandMenu);
     }
     if (props.collapseAll) {
-      contextMenuList.push({ name: 'Collapse All' });
+      collapseMenu = {
+        name: 'Collapse All',
+        onClick: function() {
+          props.collapseAll();
+        }
+      };
+      contextMenuList.push(collapseMenu);
     }
     if (props.onSearch) {
-      contextMenuList.push({ name: 'Search Object' });
+      searchMenu = {
+        name: 'Search Object',
+        onClick: function () {
+          props.onSearch();
+        }
+      };
+      contextMenuList.push(searchMenu);
     }
+
+    var inspectMenu = { name: 'Inspect Value' };
+    contextMenuList.push(inspectMenu);
 
     var _this = (0, _possibleConstructorReturn3['default'])(
       this,
@@ -219,9 +242,7 @@ var JSONTree = (function (_React$Component) {
           data = data && data[keyPath[i]];
         }
       }
-      var expandMenu = contextMenuList[3];
-      var collapseMenu = contextMenuList[4];
-      var searchMenu = contextMenuList[5];
+
       var height = isRoot ? 60 : 90;
       if (props.onSearch && !searchMenu) {
         searchMenu = expandMenu;
@@ -236,6 +257,12 @@ var JSONTree = (function (_React$Component) {
       if (searchMenu) {
         height += 30;
       }
+      var json = data && (typeof data === 'object' ? data : _contextMenu.util.parseJSON(data));
+      inspectMenu.hide = !json;
+      inspectMenu.onClick = json ? function() {
+        _contextMenu.util.showJSONDialog(json);
+      } : null;
+      height += json ? 30 : 0;
       var isRoot = keyPath.length === 1;
       var ctxMenu = _contextMenu.util.getMenuPosition(e, 110, height);
       ctxMenu.list = contextMenuList;
@@ -257,21 +284,6 @@ var JSONTree = (function (_React$Component) {
         label.closest('li').parent().closest('li').find('div:first').click();
       };
       contextMenuList[2].hide = isRoot;
-      if (expandMenu) {
-        expandMenu.onClick = function () {
-          props.expandAll();
-        };
-      }
-      if (collapseMenu) {
-        collapseMenu.onClick = function () {
-          props.collapseAll();
-        };
-      }
-      if (searchMenu) {
-        searchMenu.onClick = function () {
-          props.onSearch();
-        };
-      }
       _this.refs.contextMenu.show(ctxMenu); // eslint-disable-line
       e.preventDefault();
       e.stopPropagation();
