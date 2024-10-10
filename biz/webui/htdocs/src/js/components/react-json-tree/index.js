@@ -237,8 +237,11 @@ var JSONTree = (function (_React$Component) {
         return;
       }
       var data = _this.props.data;
+      var keyName;
       if (data) {
-        for (var i = keyPath.length - 2; i >= 0; i--) {
+        var i = keyPath.length - 2;
+        keyName = [keyPath[0]];
+        for (; i >= 0; i--) {
           data = data && data[keyPath[i]];
         }
       }
@@ -260,7 +263,7 @@ var JSONTree = (function (_React$Component) {
       var json = data && (typeof data === 'object' ? data : _contextMenu.util.parseJSON(data));
       inspectMenu.hide = !json;
       inspectMenu.onClick = json ? function() {
-        _contextMenu.util.showJSONDialog(json);
+        _contextMenu.util.showJSONDialog(json, keyName);
       } : null;
       height += json ? 30 : 0;
       var isRoot = keyPath.length === 1;

@@ -43,12 +43,13 @@ var JSONDialog = React.createClass({
       str: JSON.stringify(json, null, '  ')
     };
   },
-  show: function (text) {
+  show: function (text, keyPath) {
     if (!text) {
       return;
     }
     var self = this;
     var data = this.state.data;
+    this.setState({ keyPath: Array.isArray(keyPath) ? keyPath : null });
     if (data && data.text === text) {
       self.focus();
       return self.refs.jsonDialog.show();
@@ -93,7 +94,7 @@ var JSONDialog = React.createClass({
             className="orient-vertical-box"
             style={{ width: 880, height: 560, marginTop: 22, background: this._keyword ? 'lightyellow' : undefined }}
           >
-            <JSONView dialog data={state.curData || state.data} viewSource={true} />
+            <JSONView keyPath={state.keyPath} dialog data={state.curData || state.data} viewSource={true} />
           </div>
           <FilterInput ref="filterInput" onChange={this.onFilter} placeholder=" (as: xxx, k:xxx or v:xxx)" />
         </div>
@@ -115,8 +116,8 @@ var JSONDialogWrap = React.createClass({
   shouldComponentUpdate: function () {
     return false;
   },
-  show: function (text) {
-    this.refs.jsonDialog.show(text);
+  show: function (text, keyPath) {
+    this.refs.jsonDialog.show(text, keyPath);
   },
   render: function () {
     return <JSONDialog ref="jsonDialog" />;

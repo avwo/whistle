@@ -1019,8 +1019,8 @@ var Index = React.createClass({
     events.on('enableRecord', function () {
       self.enableRecord();
     });
-    events.on('showJsonViewDialog', function(_, data) {
-      self.refs.jsonDialog.show(data);
+    events.on('showJsonViewDialog', function(_, data, keyPath) {
+      self.refs.jsonDialog.show(data, keyPath);
     });
     events.on('rulesChanged', function (_, force) {
       self.rulesChanged = true;
