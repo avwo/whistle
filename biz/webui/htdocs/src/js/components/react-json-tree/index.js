@@ -237,11 +237,10 @@ var JSONTree = (function (_React$Component) {
         return;
       }
       var data = _this.props.data;
-      var keyName;
+      var keyPathLen = keyPath.length;
+      var showInspect = keyPathLen >= 2 || props.onSearch;
       if (data) {
-        var i = keyPath.length - 2;
-        keyName = [keyPath[0]];
-        for (; i >= 0; i--) {
+        for (var i = keyPathLen - 2; i >= 0; i--) {
           data = data && data[keyPath[i]];
         }
       }
@@ -260,13 +259,13 @@ var JSONTree = (function (_React$Component) {
       if (searchMenu) {
         height += 30;
       }
-      var json = data && (typeof data === 'object' ? data : _contextMenu.util.parseJSON(data));
+      var json = data && showInspect && (typeof data === 'object' ? data : _contextMenu.util.parseJSON(data));
       inspectMenu.hide = !json;
       inspectMenu.onClick = json ? function() {
-        _contextMenu.util.showJSONDialog(json, keyName);
+        _contextMenu.util.showJSONDialog(json, [keyPath[0]]);
       } : null;
       height += json ? 30 : 0;
-      var isRoot = keyPath.length === 1;
+      var isRoot = keyPathLen === 1;
       var ctxMenu = _contextMenu.util.getMenuPosition(e, 110, height);
       ctxMenu.list = contextMenuList;
       ctxMenu.className = 'w-inspectors-ctx-menu';
