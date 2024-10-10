@@ -3,6 +3,7 @@ var Dialog = require('./dialog');
 var JSONView = require('./json-viewer');
 var FilterInput = require('./filter-input');
 var util = require('./util');
+var FbBtn = require('./forward-back-btn');
 
 var KV_RE = /^(k|v):/;
 
@@ -87,6 +88,7 @@ var JSONDialog = React.createClass({
     return (
       <Dialog ref="jsonDialog" wstyle="w-json-dialog">
         <div className="modal-body">
+          <FbBtn />
           <button type="button" className="close" data-dismiss="modal">
             <span aria-hidden="true">&times;</span>
           </button>

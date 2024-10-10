@@ -434,3 +434,33 @@
 .w-mrl-5 {
   margin-left: 5px;
 }
+
+.w-json-history-bar {
+  position: absolute;
+  top: 5px;
+  left: 10px;
+  font-size: 18px;
+  color: #474747;
+}
+
+.w-json-history-bar .w-disabled {
+  color: #ccc!important;
+  background: transparent!important;
+}
+
+.w-json-history-bar .glyphicon-menu-right {
+  margin-left: 15px;
+}
+
+.w-json-history-bar .glyphicon {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+}
+
+.w-json-history-bar .glyphicon:hover {
+  border-radius: 30px;
+  background: #f2f2f2;
+}
