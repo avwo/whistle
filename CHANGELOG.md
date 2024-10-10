@@ -1,3 +1,8 @@
+# v2.9.86
+1. feat: JSON View 右键菜单 `Inspect Value` 查看当前 key 对应的 Value 对象
+2. feat: JSON Dialog 添加前进和后退键查看历史记录
+3. feat: 通过 Whistle 构造的请求会在 Network 的 Order 里面加特殊标识
+
 # v2.9.85
 1. feat: 支持显示 sse 内容（默认只对非 gzip 及 content-length 头小于 2m 的请求生效，其它类型请求可以通过 `enable://captureStream` 强制开启）
 2. fix: https://github.com/avwo/whistle-client/issues/60
