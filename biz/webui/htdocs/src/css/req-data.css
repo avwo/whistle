@@ -8,6 +8,13 @@
 }
 .w-req-data-content .order {
   width: 50px;
+  position: relative;
+}
+.w-req-data-content .order .glyphicon-send {
+  font-size: 6px;
+  position: absolute;
+  top: 2px;
+  left: 1px;
 }
 .w-req-data-content .date {
   width: 150px;
