@@ -9,7 +9,7 @@ var KV_RE = /^(k|v):/;
 
 var JSONDialog = React.createClass({
   getInitialState: function () {
-    return {};
+    return { history: [] };
   },
   onFilter: function(keyword) {
     keyword = keyword.trim();
@@ -44,10 +44,33 @@ var JSONDialog = React.createClass({
       str: JSON.stringify(json, null, '  ')
     };
   },
-  show: function (text, keyPath) {
+  show: function(text, keyPath) {
     if (!text) {
       return;
     }
+    var history = this.state.history;
+    var historyIndex = this.state.historyIndex;
+    var len = history.length;
+    if (historyIndex == null) {
+      historyIndex = len - 1;
+    }
+    var last = historyIndex > -1 && history[historyIndex];
+    var keyName = keyPath ? keyPath[0] : null;
+    if (!last || last[0] !== text || last[1] !== keyName) {
+      ++historyIndex;
+      if (historyIndex !== len) {
+        history.splice(historyIndex, len - historyIndex);
+      }
+      history.push([text, keyName]);
+      var overLen = historyIndex - 35; // max: 36
+      if (overLen > 0) {
+        history.splice(0, overLen);
+      }
+    }
+    this.state.historyIndex = historyIndex;
+    this._show(text, keyPath);
+  },
+  _show: function (text, keyPath) {
     var self = this;
     var data = this.state.data;
     this.setState({ keyPath: Array.isArray(keyPath) ? keyPath : null });
@@ -77,6 +100,24 @@ var JSONDialog = React.createClass({
       self.focus();
     });
   },
+  showHistory: function(index) {
+    this.state.historyIndex = index;
+    var item = this.state.history[index];
+    this._show(item[0], item[1] == null ? null : [item[1]]);
+  },
+  onBack: function() {
+    var historyIndex = this.state.historyIndex;
+    if (historyIndex > 0) {
+      this.showHistory(historyIndex - 1);
+    }
+  },
+  onForward: function() {
+    var history = this.state.history;
+    var historyIndex = this.state.historyIndex + 1;
+    if (historyIndex < history.length) {
+      this.showHistory(historyIndex);
+    }
+  },
   focus: function() {
     var self = this;
     setTimeout(function() {
@@ -85,10 +126,18 @@ var JSONDialog = React.createClass({
   },
   render: function () {
     var state = this.state;
+    var history = state.history;
+    var historyIndex = state.historyIndex;
+
     return (
       <Dialog ref="jsonDialog" wstyle="w-json-dialog">
         <div className="modal-body">
-          <FbBtn />
+          <FbBtn
+            disabledBack={historyIndex <= 0}
+            disabledForward={historyIndex >= history.length - 1}
+            onBack={this.onBack}
+            onForward={this.onForward}
+          />
           <button type="button" className="close" data-dismiss="modal">
             <span aria-hidden="true">&times;</span>
           </button>
