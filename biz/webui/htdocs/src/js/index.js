@@ -1019,8 +1019,8 @@ var Index = React.createClass({
     events.on('enableRecord', function () {
       self.enableRecord();
     });
-    events.on('showJsonViewDialog', function(_, data) {
-      self.refs.jsonDialog.show(data);
+    events.on('showJsonViewDialog', function(_, data, keyPath) {
+      self.refs.jsonDialog.show(data, keyPath);
     });
     events.on('rulesChanged', function (_, force) {
       self.rulesChanged = true;
@@ -1727,6 +1727,16 @@ var Index = React.createClass({
     try {
       var onReady = window.parent.onWhistleReady;
       if (typeof onReady === 'function') {
+        var selectItem = function(item) {
+          var modal = item && self.state.network;
+          var index = modal && modal.getList().indexOf(item);
+          if (index >= 0) {
+            events.trigger('selectedIndex', index);
+          }
+        };
+        var selectIndex = function (index) {
+          events.trigger('selectedIndex', index);
+        };
         onReady({
           url: location.href,
           pageId: dataCenter.getPageId(),
@@ -1734,8 +1744,14 @@ var Index = React.createClass({
           importSessions: self.importAnySessions,
           importHarSessions: self.importHarSessions,
           clearSessions: self.clear,
-          selectIndex: function (index) {
-            events.trigger('selectedIndex', index);
+          selectIndex: selectIndex,
+          selectItem: selectItem,
+          setActive: function(item) {
+            if (item >= 0) {
+              selectIndex(item);
+            } else {
+              selectItem(item);
+            }
           }
         });
       }
