@@ -32,6 +32,7 @@
   overflow-x: hidden;
   overflow-y: auto;
   max-height: 75px;
+  padding-right: 8px;
 }
 
 .w-detail-inspectors-url.w-properties th {
