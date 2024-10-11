@@ -20,6 +20,7 @@ var contextMenuList = [
   { name: 'Collapse All' }
 ];
 var SEARCH_MENU = [{name: 'Search Object'}];
+var KEY_PATH = ['root'];
 
 function compare(a, b) {
   return a > b ? 1 : -1;
@@ -310,7 +311,7 @@ var JsonViewer = React.createClass({
           onContextMenu={this.onContextMenu}
           className={'fill w-json-viewer-tree' + (viewSource ? ' hide' : '')}
         >
-          <JSONTree data={data.json} sortObjectKeys={compare} shouldExpandNode={state.shouldExpandNode}
+          <JSONTree keyPath={props.keyPath || KEY_PATH} data={data.json} sortObjectKeys={compare} shouldExpandNode={state.shouldExpandNode}
             expandAll={this.expandAll} collapseAll={this.collapseAll} onSearch={props.dialog ? null : this.search} />
         </div>
         <ContextMenu onClick={this.onClickContextMenu} ref="contextMenu" />

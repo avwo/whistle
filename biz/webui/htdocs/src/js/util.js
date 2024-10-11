@@ -2712,9 +2712,9 @@ exports.getSimplePluginName = function(plugin) {
   return name.substring(name.lastIndexOf('.') + 1);
 };
 
-exports.showJSONDialog = function(data) {
+exports.showJSONDialog = function(data, keyPath) {
   var str = data && JSON.stringify(data);
   if (str) {
-    events.trigger('showJsonViewDialog', str);
+    events.trigger('showJsonViewDialog', [str, Array.isArray(keyPath) ? keyPath : null]);
   }
 };
