@@ -1,3 +1,6 @@
+# v2.9.87
+1. feat: `delete://reqType|req.type|resType|res.type|reqCharset|req.charset|resCharset|res.charset`
+
 # v2.9.86
 1. feat: JSON View 右键菜单 `Inspect Value` 查看当前 key 对应的 Value 对象
 2. feat: JSON Dialog 添加前进和后退键查看历史记录
