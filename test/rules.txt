@@ -75,10 +75,10 @@ headerreplace.plugin.whistlejs.com headerReplace://req.host:headerreplace.=&/Plu
 ***.test.wildcard5.com file://({"ec":0}) resType://json enable://capture
 
 ``` w1.json
-[list[10]]: `a\rb\nc`
-[list[20]]: 123
-[list[30]]: "123"
-[list[40].a]: "123"
+list[10]: `a\rb\nc`
+list[20]: 123
+list[30]: "123"
+list[40].a: "123"
 ```
 .test.wildcard5.com resMerge://{w1.json}
 
