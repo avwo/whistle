@@ -180,10 +180,9 @@ var Console = React.createClass({
     this.setState({ level: option.value });
   },
   clearLogs: function () {
-    var data = this.state.logs;
-    data && data.splice(0, data.length);
     dataCenter.clearedLogs = true;
-    this.setState({});
+    dataCenter.clearLogList();
+    this.setState({ logs: [] });
   },
   scrollTop: function () {
     this.container.scrollTop = 0;

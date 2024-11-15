@@ -209,7 +209,7 @@ var ReqDetail = React.createClass({
             <div className="fill orient-vertical-box">
               <div className="w-detail-webforms-title">Body</div>
               <div className="fill orient-vertical-box w-detail-request-form">
-                {!json || !json.isJSONText ? <Properties modal={form} enableViewSource="1" showJsonView="1" /> :
+                {!json || !json.isJSONText ? <Properties modal={form} richKey="1" enableViewSource="1" showJsonView="1" /> :
                 <JSONViewer reqData={modal} data={json} />}
               </div>
             </div>

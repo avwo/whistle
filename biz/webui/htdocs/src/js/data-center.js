@@ -79,6 +79,14 @@ exports.setDumpCount = function (count) {
   dumpCount = count > 0 ? count : 0;
 };
 
+exports.clearLogList = function() {
+  logList = [];
+};
+
+exports.clearSvgLogList = function() {
+  svrLogList = [];
+};
+
 exports.setOnlyViewOwnData = function (enable) {
   onlyViewOwnData = enable !== false;
   storage.set('onlyViewOwnData', onlyViewOwnData ? 1 : 0);

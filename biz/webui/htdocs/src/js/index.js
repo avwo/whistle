@@ -1258,9 +1258,14 @@ var Index = React.createClass({
           }
         });
       })
-      .on('keydown', function (e) {
+      .on('keyup', function (e) {
         if ((e.metaKey || e.ctrlKey) && e.keyCode === 82) {
           e.preventDefault();
+        } else if (self.state.name == 'network' &&  e.keyCode === 191) {
+          var nodeName = document.activeElement && document.activeElement.nodeName;
+          if (nodeName !== 'INPUT' && nodeName !== 'TEXTAREA' && !$('.modal.in').length) {
+            events.trigger('focusNetworkFilterInput');
+          }
         }
       })
       .on('contextmenu', '.w-textarea-bar', function(e) {

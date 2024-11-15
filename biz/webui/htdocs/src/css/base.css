@@ -471,3 +471,8 @@ a {
 .w-win-dialog .modal-body {
   margin: 0;
 }
+
+.w-gray {
+  color: #777;
+  margin-left: 5px;
+}

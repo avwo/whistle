@@ -2030,12 +2030,11 @@ function parseMultiHeader(header) {
     name: RegExp.$1 || RegExp.$2,
     value: ''
   };
+  if (FILENAME_RE.test(header[0].replace(RegExp['$&'], '\n'))) {
+    result.value = RegExp.$1 || RegExp.$2;
+  }
   if (TYPE_RE.test(header[1])) {
     result.type = RegExp.$1;
-    var index = header[0].indexOf('name=' + RegExp['$&']);
-    if (FILENAME_RE.test(header[0].substring(index + 1))) {
-      result.value = RegExp.$1 || RegExp.$2;
-    }
   }
   return result;
 }
@@ -2044,6 +2043,18 @@ exports.isUploadForm = function (req) {
   var type = req.headers && req.headers['content-type'];
   return UPLOAD_TYPE_RE.test(type);
 };
+
+function getUploadName(header) {
+  var result = [];
+  if (header.value) {
+    result.push(header.value);
+  }
+  if (header.type) {
+    result.push(header.type);
+  }
+  result = result.join('; ');
+  return header.name + (result ? '\r\u0000(' + result + ')' : '');
+}
 
 function parseUploadBody(body, boundary, needObj) {
   var sep = '--' + boundary;
@@ -2054,7 +2065,7 @@ function parseUploadBody(body, boundary, needObj) {
   var result = needObj ? {} : [];
   while (index >= 0) {
     index += len;
-    var hIndex = indexOfList(body, BODY_SEP, index);
+    var hIndex = indexOfList(body, BODY_SEP, index - 2);
     if (hIndex === -1) {
       return result;
     }
@@ -2065,10 +2076,10 @@ function parseUploadBody(body, boundary, needObj) {
     var header = body.slice(index, hIndex);
     hIndex += 4;
     var data = hIndex >= endIndex ? '' : body.slice(hIndex, endIndex);
-    header = parseMultiHeader(header);
+    header = header && parseMultiHeader(header);
     if (header) {
       if (needObj) {
-        var name = header.name + (header.type ? ' (' + header.type + ')' : '');
+        var name = getUploadName(header);
         var curVal = header.value;
         if (data) {
           try {

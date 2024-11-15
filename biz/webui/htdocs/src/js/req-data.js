@@ -510,6 +510,9 @@ var ReqData = React.createClass({
       var item = list && (list[index] || list[list.length - 1]);
       item && self.triggerActiveItem(item);
     });
+    events.on('focusNetworkFilterInput', function() {
+      self.refs.filterInput.focus();
+    });
     events.on('replayTreeView', function (_, dataId, count) {
       var item = self.props.modal.getTreeNode(dataId);
       var parent = item && item.parent;

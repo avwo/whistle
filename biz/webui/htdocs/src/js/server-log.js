@@ -116,10 +116,9 @@ var ServerLog = React.createClass({
     });
   },
   clearLogs: function () {
-    var data = this.state.logs;
-    data && data.splice(0, data.length);
     dataCenter.clearedSvrLogs = true;
-    this.setState({});
+    dataCenter.clearSvgLogList();
+    this.setState({ logs: [] });
   },
   stopAutoRefresh: function () {
     if (util.scrollAtBottom(this.container, this.content)) {

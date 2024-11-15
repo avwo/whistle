@@ -17,6 +17,20 @@ var Properties = React.createClass({
   renderValue: function(val) {
     return val && val.length >= 2100 ? <ExpandCollapse text={val} /> : val;
   },
+  renderKey: function(name) {
+    var onHelp = this.props.onHelp;
+    var index = this.props.richKey ? name.indexOf('\r\u0000(') : -1;
+    return (<th>
+      {onHelp ? (
+        <span
+          data-name={name}
+          onClick={onHelp}
+          className="glyphicon glyphicon-question-sign" />
+      ) : undefined}
+      {this.renderValue(index === -1 ? name : name.substring(0, index))}
+      {index === -1 ? null : <span className="w-gray">{name.substring(index + 2)}</span>}
+    </th>);
+  },
   onContextMenu: function(e) {
     util.handlePropsContextMenu(e, this.refs.contextMenu);
   },
@@ -27,7 +41,6 @@ var Properties = React.createClass({
     var copyValue = props.enableCopyValue;
     var hasPluginRule = props.hasPluginRule;
     var viewSource = self.state.viewSource;
-    var onHelp = props.onHelp;
     var rawName = props.rawName;
     var showJsonView = props.showJsonView;
     var rawValue = props.rawValue;
@@ -120,16 +133,7 @@ var Properties = React.createClass({
                   return (
                     <tr key={i} className={val ? undefined : 'w-no-value'}
                     data-name={name}  data-value={val}>
-                      <th>
-                        {onHelp ? (
-                          <span
-                            data-name={name}
-                            onClick={onHelp}
-                            className="glyphicon glyphicon-question-sign"
-                          ></span>
-                        ) : undefined}
-                        {self.renderValue(name)}
-                      </th>
+                      {self.renderKey(name)}
                       <td
                         className={json ? 'w-properties-json' : 'w-user-select-none'}
                         onContextMenu={json ? util.stopPropagation : null}
@@ -155,16 +159,7 @@ var Properties = React.createClass({
                   className={value ? undefined : 'w-no-value'}
                   data-name={name}  data-value={value}
                 >
-                  <th>
-                    {onHelp ? (
-                      <span
-                        data-name={name}
-                        onClick={onHelp}
-                        className="glyphicon glyphicon-question-sign"
-                      ></span>
-                    ) : undefined}
-                    {self.renderValue(name)}
-                  </th>
+                  {self.renderKey(name)}
                   <td
                     className={json ? 'w-properties-json' : 'w-user-select-none'}
                     onContextMenu={json ? util.stopPropagation : null}
