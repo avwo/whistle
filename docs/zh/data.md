@@ -5,7 +5,7 @@ whistle的操作值可以分两类，字符串和JSON对象。
 1. 如果**字符串**不包含空格，可以直接写到配置里面：
 
 		pattern opProtocol://(strValue)
-
+	
 		# 有些操作值不能放到本地文件，则可以不用括号，如：proxy、referer等等，具体参见协议列表
 		pattern opProtocol://strValue
 
@@ -13,7 +13,7 @@ whistle的操作值可以分两类，字符串和JSON对象。
 
 		# 在Values里面创建一个key为 test.txt 的 key-value 对
 		pattern opProtocol://{test.txt}
-
+	
 		# 或者放到本地文件 /User/docs/test.txt
 		pattern opProtocol:///User/docs/test.txt
 		# windows
@@ -37,7 +37,7 @@ whistle的操作值可以分两类，字符串和JSON对象。
 			key1: value1
 			key2: value2
 			keyN: valueN
-
+	
 			# 如果没有 `冒号+空格` ，则以第一个冒号分隔，如果没有冒号，则value为空字符串
 			key1: value1
 			key2:value2
@@ -137,7 +137,7 @@ test.json:
 这里 `test.json` 在规则中一定要用模板字符串引入：
 ```
  protocol://`{test.json}`
- ```
+```
 
  如下配置：
  ```
@@ -153,7 +153,7 @@ www.test.com/api http://`${clientIp}:8080`
  通过这两种方式设置的响应规则，除了可以设置上述请求信息，还可以设置如下响应信息：
  ```
 pattern3 protocol://`{test2.json}`
-```
+ ```
 test2.json:
 ```
 {
@@ -191,15 +191,16 @@ protocol://`${search.replace(a,b)}`
 
 `${query}` 和 `${queryString}` 的用途，如配置[redirect](rules/redirect.html) 重定向：
 ``` txt
-# 不需要追加参数
+# 不需要追加新参数（query 可能为空字符串）
 www.test.com/index.html redirect://`https://ke.qq.com/test${query}`
 
-# 需要追加参数
+# 需要追加参数（queryString 相当于 query || '?'）
 www.test.com/index.html redirect://`https://ke.qq.com/test${queryString}&test=1`
 
-# 追加参数
+# 追加 pathname + query
 www.test.com redirect://`https://ke.qq.com${url.path}`
 
 # 修改为 301
 www.test.com redirect://`https://ke.qq.com${url.path}` replaceStatus://301
 ```
+

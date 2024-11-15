@@ -2,21 +2,25 @@
 
 删除指定的请求响应头字段，也可以通过[reqHeaders](reqHeaders.html)、[resHeaders](resHeaders.html)把字段设置为空字符串，配置方式：
 
-	pattern delete://req.headers.xxx|req.headers.x22|res.headers.yyy|headers.zzz
+	pattern delete://req.headers.xxx|req.headers.x22|res.headers.yyy|query.zzz
 
 pattern参见[匹配方式](../pattern.html)，更多模式请参考[配置方式](../mode.html)。
 
 其中：
 
-1. `req.headers.xxx`: 删除req.headers的xxx字段
-2. `res.headers.xxx`: 删除res.headers的xxx字段
-3. `headers.xxx`: 删除res.headers&res.headers的xxx字段
-4. `body`: 删除请求和响应内容 (`版本 >= v2.5.14`)
-5. `req.body`: 删除请求内容 (`版本 >= v2.5.14`)
-6. `res.body`: 删除响应内容 (`版本 >= v2.5.14`)
-7. `reqCookie.xxx`: 删除请求头的里面名为 `xxx` 的 cookie (`版本 >= v2.9.34`)
-8. `resCookie.xxx`: 删除响应头的里面名为 `xxx` 的 cookie (`版本 >= v2.9.34`)
-9. `cookie.xxx`: 删除请求及响应头的里面名为 `xxx` 的 cookie (`版本 >= v2.9.34`)
+1. `urlParams.xxx`: 删除请求 url 的参数里面的 `xxx` 字段（可以通过 `delete://urlParams` 删除 url 的所有请求参数）
+2. `reqHeaders.xxx`: 删除请求头的 `xxx` 字段
+3. `resHeaders.xxx`: 删除响应头的 `xxx` 字段
+4. `reqBody`: 删除请求内容 (`版本 >= v2.5.14`)
+5. `resBody`: 删除响应内容 (`版本 >= v2.5.14`)
+6. `reqBody.xxx.yyy`: 删除请求类型为表单或 JSON 的请求内容里的 `xxx.yyy` 字段  (`版本 >= v2.9.87`)
+7. `resBody.xxx.yyy`: 删除响应类型为 JSONP 或 JSON 的响应内容里的 `xxx.yyy` 字段  (`版本 >= v2.9.87`)
+8. `reqType`: 删除请求头 `content-type` 里的类型，不包含可能存在的 charset (`版本 >= v2.9.87`)
+9. `resType`: 删除响应头 `content-type` 里的类型，不包含可能存在的 charset (`版本 >= v2.9.87`)
+10. `reqCharset`: 删除请求头 `content-type` 里可能存在的 charset (`版本 >= v2.9.87`)
+11. `resCharset`: 删除响应头 `content-type` 里可能存在的 charset (`版本 >= v2.9.87`)
+12. `reqCookies.xxx`: 删除请求头的里面名为 `xxx` 的 cookie (`版本 >= v2.9.34`)
+13. `resCookies.xxx`: 删除响应头的里面名为 `xxx` 的 cookie (`版本 >= v2.9.34`)
 		> 上述删除 cookie 操作只会上述请求或响应阶段的 cookie，不会影响已存在浏览器的 cookie，如果需要修改浏览器上的 cookie 可以通过 [resCookies](./resCookies.html) 设置 cookie 或 [headerReplace](./headerReplace.html) 局部修改
 
 #### 过滤规则

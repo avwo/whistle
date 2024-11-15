@@ -1,6 +1,6 @@
 # reqMerge
 > 修改表单请求的内容，包括普通的表单、上传表单及请求类型为JSON的内容(`Content-Type: application/json`)，
-其功能是通过`reqMerge://jsonData`指定的JSON对象来覆盖请求表单或对应JSON对象字段，如果是`GET`请求的表单，则会直接修改URL参数。
+其功能是通过`reqMerge://jsonData`指定的JSON对象来覆盖请求表单或对应JSON对象字段。
 
 > 修改其它类型的请求内容，可以用[reqReplace](reqReplace.html)
 
