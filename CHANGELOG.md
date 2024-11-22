@@ -1,9 +1,13 @@
+# v2.9.88
+1. perf: 优化 `enable://captureStream`
+2. feat: Composer 支持通过右键发送按钮选择发送文件
+3. fix: 某些情况下解析配置规则里面的数据对象有误（v2.9.87版本引入）
+
 # v2.9.87
 1. feat: `delete://reqType||resType|reqCharset|resCharset`
 2. feat: `delete://resBody.xxx` 删除响应的 JSON 数据可以 key
 3. feat: `delete://reqBody.xxx` 删除请求内容为表单或 JSON 的 JSON 数据对应 key
 4. feat: Network 支持通过 `/` 快速聚集到搜索框
-
 
 # v2.9.86
 1. feat: JSON View 右键菜单 `Inspect Value` 查看当前 key 对应的 Value 对象
