@@ -21,7 +21,10 @@ pattern参见[匹配方式](../pattern.html)，更多模式请参考[配置方�
 11. `resCharset`: 删除响应头 `content-type` 里可能存在的 charset (`版本 >= v2.9.87`)
 12. `reqCookies.xxx`: 删除请求头的里面名为 `xxx` 的 cookie (`版本 >= v2.9.34`)
 13. `resCookies.xxx`: 删除响应头的里面名为 `xxx` 的 cookie (`版本 >= v2.9.34`)
-		> 上述删除 cookie 操作只会上述请求或响应阶段的 cookie，不会影响已存在浏览器的 cookie，如果需要修改浏览器上的 cookie 可以通过 [resCookies](./resCookies.html) 设置 cookie 或 [headerReplace](./headerReplace.html) 局部修改
+
+注意：
+1. 上述删除 cookie 操作只会影响请求或响应过程的 cookie，不会影响已存在浏览器的 cookie如果需要修改浏览器上的 cookie 可以通过 [resCookies](./resCookies.html) 设置 cookie 或 [headerReplace](./headerReplace.html) 局部修改
+2. 修改 url 可以用 [url映射](./rule/replace.html) 或 [pathReplace](./pathReplace.html)
 
 #### 过滤规则
 需要确保whistle是最新版本：[更新whistle](../update.html)

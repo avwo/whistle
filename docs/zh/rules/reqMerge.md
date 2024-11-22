@@ -16,6 +16,8 @@ filepath为[Values](http://local.whistlejs.com/#values)里面的{key}或者本�
 
 pattern参见[匹配方式](../pattern.html)，更多模式请参考[配置方式](../mode.html)，json格式参考[操作值](../data.html)。
 
+删除请求内容可以用：[delete://reqBody.xxx](./delete.html)
+
 ### 例子
 
 1. GET请求：
