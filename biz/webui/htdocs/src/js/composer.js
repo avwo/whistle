@@ -58,9 +58,11 @@ var METHODS = [
   'UNSUBSCRIBE'
 ];
 var SEND_CTX_MENU = [
+  { name: 'Send File', action: 'file' },
   { name: 'Repeat Times' },
   { name: 'Show History', action: 'history' }
 ];
+var MAX_FILE_SIZE = 1024 * 1024 * 20;
 
 var TYPES = {
   form: 'application/x-www-form-urlencoded',
@@ -75,8 +77,9 @@ var WS_RE = /^wss?:\/\//i;
 var WS_CONNNECT_RE = /^\s*connection\s*:\s*upgrade\s*$/im;
 var WS_UPGRADE_RE = /^\s*upgrade\s*:\s*websocket\s*$/im;
 var REV_TYPES = {};
-var MAX_HEADERS_SIZE = 1024 * 64;
+var MAX_HEADERS_SIZE = 1024 * 128;
 var MAX_BODY_SIZE = 1024 * 256;
+var MAX_UPLOAD_SIZE = MAX_BODY_SIZE * 2;
 var MAX_COUNT = 64;
 var MAX_REPEAT_TIMES = 100;
 var RULES_HEADER = 'x-whistle-rule-value';
@@ -99,6 +102,16 @@ function hasReqBody(method, url, headers) {
   return headers && WS_CONNNECT_RE.test(headers) && WS_UPGRADE_RE.test(headers);
 }
 
+function hexToStr(str) {
+  str = util.getBase64FromHexText(str);
+  return util.base64Decode(str);
+}
+
+function strToHex(str) {
+  var base64 = util.toBase64(str);
+  return util.getHexText(util.getHexFromBase64(base64));
+}
+
 function getType(headers) {
   var keys = Object.keys(headers);
   var type;
@@ -117,6 +130,10 @@ function getType(headers) {
     }
   }
   return type || 'custom';
+}
+
+function isUpload(headers) {
+  return headers === 'upload' || getType(headers) === 'upload';
 }
 
 function escapeRules(rules) {
@@ -150,11 +167,27 @@ var Composer = React.createClass({
     var disableComposerRules = storage.get('disableComposerRules') == '1';
     var method = data.method;
     var body = getString(data.body);
-    this.uploadBodyData = util.parseJSON(storage.get('composerUploadBody'));
     if (body && body !== data.body) {
       message.warn(
-        'The length of the body cannot exceed 128k, and the excess will be truncated.'
+        'The length of the body cannot exceed 256k, and the excess will be truncated.'
       );
+    }
+    var headers = util.parseHeaders(data.headers);
+    var type = getType(headers);
+    if (data.base64 && isUpload(type)) {
+      this.uploadBodyData = data.base64 && this.parseUploadModal({ headers: headers, base64: data.base64 });
+    } else {
+      var uploadBodyData = util.parseRawJson(storage.get('composerUploadBody'), true);
+      if (uploadBodyData) {
+        Object.keys(uploadBodyData).forEach(function(name) {
+          var value = uploadBodyData[name];
+          if (value && typeof value === 'object') {
+            value.data = util.base64ToByteArray(value.base64);
+            delete value.base64;
+          }
+        });
+        this.uploadBodyData = uploadBodyData;
+      }
     }
     return {
       loading: true,
@@ -170,7 +203,7 @@ var Composer = React.createClass({
       showPretty: showPretty,
       useH2: useH2,
       rules: typeof rules === 'string' ? rules : '',
-      type: getType(util.parseHeaders(data.headers)),
+      type: type,
       disableComposerRules: disableComposerRules,
       isHexText: !!storage.get('showHexTextBody'),
       isCRLF: !!storage.get('useCRLBody')
@@ -185,7 +218,7 @@ var Composer = React.createClass({
       if (!data) {
         return;
       }
-      win.confirm('Are you sure to modify the composer?', function(sure) {
+      win.confirm('Are you sure to modify the data of composer?', function(sure) {
         if (sure) {
           self.onCompose(data);
         }
@@ -308,6 +341,9 @@ var Composer = React.createClass({
     var prettyHeaders = util.parseHeaders(headers);
     this.refs.prettyHeaders.update(prettyHeaders);
     var body = ReactDOM.findDOMNode(this.refs.body).value;
+    if (body && this.state.isHexText) {
+      body = hexToStr(body);
+    }
     body = util.parseQueryString(body, null, null, decodeURIComponent);
     this.refs.prettyBody.update(body);
   },
@@ -336,32 +372,31 @@ var Composer = React.createClass({
         : util.getBody(req);
       var value = getString(body);
       bodyElem.value = value;
-      if (value !== body) {
-        message.warn(
-          'The length of request body > 128k, and has been truncated.'
-        );
-      }
     }
     this.updatePrettyData();
-    if (util.isUploadForm(req)) {
-      var fields = util.parseUploadBody(req);
-      var uploadModal = {};
-      var result = {};
-      fields &&
-        fields.forEach(function (field) {
-          var name = field.name;
-          var list = uploadModal[name];
-          if (list) {
-            list.push(field);
-            result[name].push(field.value);
-          } else {
-            uploadModal[name] = [field];
-            result[name] = [field.value];
-          }
-        });
-      this.refs.uploadBody.update(uploadModal);
-      storage.set('composerUploadBody', JSON.stringify(result));
+    this.updateUploadForm(req);
+  },
+  parseUploadModal: function(req) {
+    var fields = util.parseUploadBody(req);
+    var uploadModal = {};
+    fields &&
+      fields.forEach(function (field) {
+        var name = field.name;
+        var list = uploadModal[name];
+        if (list) {
+          list.push(field);
+        } else {
+          uploadModal[name] = [field];
+        }
+      });
+    return uploadModal;
+  },
+  updateUploadForm: function(req) {
+    if (!isUpload(req.headers)) {
+      return false;
     }
+    this.refs.uploadBody.update(this.parseUploadModal(req));
+    return true;
   },
   shouldComponentUpdate: function (nextProps) {
     var hide = util.getBoolean(this.props.hide);
@@ -475,11 +510,22 @@ var Composer = React.createClass({
   onHexTextChange: function (e) {
     var isHexText = e.target.checked;
     storage.set('showHexTextBody', isHexText ? 1 : '');
-    this.setState({ isHexText: isHexText });
-    var body = ReactDOM.findDOMNode(this.refs.body).value;
-    if (isHexText && util.getBase64FromHexText(body, true) === false) {
-      message.error('The hex text cannot be converted to binary data.');
+    var elem = ReactDOM.findDOMNode(this.refs.body);
+    var body = elem.value;
+    if (body.trim()) {
+      if (isHexText) {
+        if (this._preBody === body) {
+          elem.value = this._preHex;
+        } else {
+          elem.value = strToHex(body);
+        }
+      } else {
+        this._preBody = hexToStr(body);
+        this._preHex = body;
+        elem.value = this._preBody;
+      }
     }
+    this.setState({ isHexText: isHexText });
   },
   onCRLFChange: function (e) {
     var isCRLF = e.target.checked;
@@ -511,6 +557,7 @@ var Composer = React.createClass({
     if (util.notEStr(item.rules)) {
       rules.push(item.rules);
     }
+    var req = { headers: {}, base64: item.base64 };
     if (util.notEStr(headers)) {
       headers = headers.trim().split(/[\r\n]+/).filter(function(line) {
         line = line.trim();
@@ -521,7 +568,10 @@ var Composer = React.createClass({
           key = line.substring(0, index);
           value = line.substring(index + 1).trim();
         }
-        if (key.toLowerCase() === RULES_HEADER) {
+        key = key.toLowerCase();
+        // 忽略重名的字段
+        req.headers[key] = value;
+        if (key === RULES_HEADER) {
           value && rules.push(value);
           return false;
         }
@@ -570,6 +620,7 @@ var Composer = React.createClass({
       this.state.enableProxyRules = !!item.enableProxyRules;
       storage.set('composerProxyRules', item.enableProxyRules ? 1 : '');
     }
+    this.updateUploadForm(req);
     this.onComposerChange(true);
     storage.set('disableComposerBody', this.state.disableBody ? 1 : '');
     storage.set('useH2InComposer', item.useH2 ? 1 : '');
@@ -619,27 +670,26 @@ var Composer = React.createClass({
     var type = target.getAttribute('data-type');
     if (type) {
       this.setState({ type: type });
-      if ((type = TYPES[type])) {
-        var elem = ReactDOM.findDOMNode(this.refs.headers);
-        var headers = util.parseHeaders(elem.value);
-        Object.keys(headers).forEach(function (name) {
-          if (name.toLowerCase() === 'content-type') {
-            if (type) {
-              var addon = TYPE_CONF_RE.test(headers[name]) ? RegExp['$&'] : '';
-              headers[name] = type + addon;
-              type = null;
-            } else {
-              delete headers[name];
-            }
+      type = TYPES[type];
+      var elem = ReactDOM.findDOMNode(this.refs.headers);
+      var headers = util.parseHeaders(elem.value);
+      Object.keys(headers).forEach(function (name) {
+        if (name.toLowerCase() === 'content-type') {
+          if (type) {
+            var addon = TYPE_CONF_RE.test(headers[name]) ? RegExp['$&'] : '';
+            headers[name] = type + addon;
+            type = null;
+          } else {
+            delete headers[name];
           }
-        });
-        if (type) {
-          headers['Content-Type'] = type;
         }
-        elem.value = util.objectToString(headers);
-        this.updatePrettyData();
-        this.saveComposer();
+      });
+      if (type) {
+        headers['Content-Type'] = type;
       }
+      elem.value = util.objectToString(headers);
+      this.updatePrettyData();
+      this.saveComposer();
     }
   },
   addHeader: function () {
@@ -667,20 +717,34 @@ var Composer = React.createClass({
   },
   onFieldChange: function () {
     var refs = this.refs;
-    ReactDOM.findDOMNode(refs.body).value = refs.prettyBody.toString();
+    var body = refs.prettyBody.toString();
+    if (body && this.state.isHexText) {
+      body = strToHex(body);
+    }
+    ReactDOM.findDOMNode(refs.body).value = body;
     this.saveComposer();
   },
-  onUploadFieldChange: function () {
+  updateUploadData: function () {
     var fields = this.refs.uploadBody.getFields();
     var result = {};
+    var maxLen = MAX_UPLOAD_SIZE;
+    var getValue = function(field) {
+      if (!field.data || field.data.length > maxLen) {
+        return field.value;
+      }
+      maxLen -= field.data.length;
+      return {
+        value: field.value,
+        type: field.type,
+        base64: util.bytesToBase64(field.data)
+      };
+    };
     fields.forEach(function (field) {
       var value = result[field.name];
-      if (value == null) {
-        result[field.name] = field.value;
-      } else if (Array.isArray(value)) {
-        value.push(field.value);
+      if (Array.isArray(value)) {
+        value.push(getValue(field));
       } else {
-        result[field.name] = [value, field.value];
+        result[field.name] = value == null ? getValue(field) : [value, getValue(field)];
       }
     });
     storage.set('composerUploadBody', JSON.stringify(result));
@@ -827,10 +891,14 @@ var Composer = React.createClass({
     var self = this;
     var method = self.getMethod();
     var body, base64, isHexText;
-    if (!self.state.disableBody && hasReqBody(method, url, headersStr)) {
+    if (self.localFileBase64 != null) {
+      if (hasReqBody(method, url, headersStr)) {
+        base64 = self.localFileBase64;
+      }
+      self.localFileBase64 = null;
+    } else if (!self.state.disableBody && hasReqBody(method, url, headersStr)) {
       if (self.state.type === 'upload') {
-        var fields = this.refs.uploadBody.getFields();
-        var uploadData = util.getMultiBody(fields);
+        var uploadData = util.getMultiBody(this.refs.uploadBody.getFields());
         var boundary = uploadData.boundary;
         var ctnLen = uploadData.length;
         base64 = uploadData.base64;
@@ -873,12 +941,6 @@ var Composer = React.createClass({
         isHexText = this.state.isHexText;
         if (isHexText) {
           base64 = util.getBase64FromHexText(body);
-          if (base64 === false) {
-            win.alert(
-              'The hex text cannot be converted to binary data.\nPlease uncheck the checkbox of HexText option.'
-            );
-            return;
-          }
           body = undefined;
         } else if (body && this.state.isCRLF) {
           body = body.replace(/\r\n|\r|\n/g, '\r\n');
@@ -1127,7 +1189,7 @@ var Composer = React.createClass({
     e.preventDefault();
     var data = util.getMenuPosition(e, 125);
     data.list = SEND_CTX_MENU;
-    SEND_CTX_MENU[1].name = this.state.showHistory ? 'Hide History' : 'Show History';
+    SEND_CTX_MENU[2].name = this.state.showHistory ? 'Hide History' : 'Show History';
     this.refs.contextMenu.show(data);
     this.hideHints();
   },
@@ -1203,7 +1265,37 @@ var Composer = React.createClass({
       return this.showRepeatTimes();
     case 'history':
       return this.toggleHistory();
+    case 'file':
+      this.uploadFile();
     }
+  },
+  uploadFile: function() {
+    if (!this.reading) {
+      ReactDOM.findDOMNode(this.refs.readLocalFile).click();
+    }
+  },
+  readLocalFile: function () {
+    var form = new FormData(ReactDOM.findDOMNode(this.refs.readLocalFileForm));
+    var file = form.get('localFile');
+    if (file.size > MAX_FILE_SIZE) {
+      return win.alert('The size of all files cannot exceed 20m.');
+    }
+    var modal = this.state.modal || '';
+    var size = file.size;
+    Object.keys(modal).forEach(function (key) {
+      size += modal[key].size;
+    });
+    if (size > MAX_FILE_SIZE) {
+      return win.alert('The size of all files cannot exceed 20m.');
+    }
+    var self = this;
+    self.reading = true;
+    util.readFile(file, function (data) {
+      self.reading = false;
+      self.localFileBase64 = util.bytesToBase64(data);
+      self.execute();
+    });
+    ReactDOM.findDOMNode(this.refs.readLocalFile).value = '';
   },
   import: function(e) {
     events.trigger('importSessions', e);
@@ -1213,7 +1305,7 @@ var Composer = React.createClass({
     var body = ReactDOM.findDOMNode(this.refs.body).value;
     var base64 = '';
     if (state.isHexText) {
-      base64 = util.getBase64FromHexText(body) || '';
+      base64 = util.getBase64FromHexText(body);
       body = '';
     }
     var text = util.asCURL({
@@ -1399,6 +1491,7 @@ var Composer = React.createClass({
                   />
                   Rules
                 </label>
+                +
                 <label className="w-composer-proxy-rules" title="Whether to use the Rules in Whistle?">
                   <input
                     disabled={pending}
@@ -1529,16 +1622,12 @@ var Composer = React.createClass({
                       />
                       Text
                     </label>
-                    <label
-                      className="w-custom-type"
-                      title="Directly modify Content-Type in the headers"
-                    >
+                    <label>
                       <input
                         data-type="custom"
                         name="type"
                         type="radio"
                         checked={type === 'custom'}
-                        disabled
                       />
                       Raw
                     </label>
@@ -1596,7 +1685,7 @@ var Composer = React.createClass({
                       className={
                         'w-composer-hex-text' +
                         (isHexText ? ' w-checked' : '') +
-                        (showUpload ? ' hide' : '')
+                        (showUpload || showPrettyBody ? ' hide' : '')
                       }
                       onDoubleClick={this.focusEnableBody}
                     >
@@ -1611,7 +1700,7 @@ var Composer = React.createClass({
                     <label
                       className={
                         'w-composer-crlf' +
-                        (isHexText || showUpload ? ' hide' : '') +
+                        (isHexText || showPrettyBody || showUpload ? ' hide' : '') +
                         (isCRLF ? ' w-checked' : '')
                       }
                       onDoubleClick={this.focusEnableBody}
@@ -1634,7 +1723,7 @@ var Composer = React.createClass({
                       }
                       onClick={this.formatJSON}
                     >
-                      Format JSON
+                      Format
                     </button>
                     <button
                       disabled={lockBody}
@@ -1676,7 +1765,7 @@ var Composer = React.createClass({
                     }
                     className={
                       'fill orient-vertical-box' +
-                      ((showPrettyBody && !isHexText) || showUpload
+                      (showPrettyBody  || showUpload
                         ? ' hide'
                         : '')
                     }
@@ -1685,7 +1774,7 @@ var Composer = React.createClass({
                     onDoubleClick={this.focusEnableBody}
                     disabled={lockBody}
                     ref="prettyBody"
-                    hide={!showPrettyBody || isHexText || showUpload}
+                    hide={!showPrettyBody || showUpload}
                     onChange={this.onFieldChange}
                     callback={this.execute}
                   />
@@ -1694,7 +1783,8 @@ var Composer = React.createClass({
                     disabled={lockBody}
                     ref="uploadBody"
                     hide={!showUpload}
-                    onChange={this.onUploadFieldChange}
+                    onChange={this.updateUploadData}
+                    onUpdate={this.updateUploadData}
                     callback={this.execute}
                     allowUploadFile
                     title={
@@ -1773,6 +1863,18 @@ var Composer = React.createClass({
           onReplay={this.handeHistoryReplay}
           onEdit={this.handleHistoryEdit}
         />
+        <form
+          ref="readLocalFileForm"
+          encType="multipart/form-data"
+          style={{ display: 'none' }}
+        >
+          <input
+            ref="readLocalFile"
+            onChange={this.readLocalFile}
+            type="file"
+            name="localFile"
+          />
+        </form>
       </div>
     );
   }

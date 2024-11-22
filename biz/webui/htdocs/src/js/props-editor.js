@@ -34,7 +34,7 @@ var PropsEditor = React.createClass({
         isHeader
       );
       result.data = field.data;
-      result.size = field.data && field.data.length;
+      result.size = (field.data && field.data.length) || 0;
       result.type = field.type;
     } else {
       result.value = decode(
@@ -65,7 +65,7 @@ var PropsEditor = React.createClass({
         });
       });
     }
-    this.setState({ modal: modal });
+    this.setState({ modal: modal }, this.props.onUpdate);
     return overflow;
   },
   onAdd: function () {
@@ -141,6 +141,10 @@ var PropsEditor = React.createClass({
     var value = valueInput.value.trim();
     var modal = this.state.modal;
     var state = this.state;
+    if (!modal) {
+      modal = {};
+      state.modal = modal;
+    }
     modal[name + '_' + ++index] = state.fileData
       ? {
         name: name,

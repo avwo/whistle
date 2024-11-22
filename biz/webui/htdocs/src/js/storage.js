@@ -27,3 +27,9 @@ exports.get = function (key, noCache) {
   } catch (e) {}
   return cache[key];
 };
+
+exports.remove = function(key) {
+  try {
+    localStorage.removeItem(getKey(key));
+  } catch (e) {}
+};

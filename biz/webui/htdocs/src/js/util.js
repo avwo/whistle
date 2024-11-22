@@ -191,28 +191,25 @@ exports.handlePropsContextMenu = function(e, ctxMenu, target) {
   ctxMenu.show(data);
 };
 
-exports.getBase64FromHexText = function (str, check) {
+var NO_HEX_RE = /[^\da-f]+/ig;
+
+exports.getBase64FromHexText = function (str) {
+  str = str && str.trim().replace(NO_HEX_RE, '');
   if (!str) {
     return '';
   }
-  if (/[^\da-f\s]/i.test(str)) {
-    return false;
-  }
-  str = str.replace(/\s+/g, '');
   var len = str.length;
-  if (len % 2 === 1) {
-    return false;
+  if (len % 2) {
+    str += '0';
   }
-  if (check) {
-    return true;
+  var result = [];
+  for (var i = 0; i < len; i += 2) {
+    result.push(parseInt(str.substring(i, i + 2), 16));
   }
-  str = str.match(/../g).map(function (char) {
-    return parseInt(char, 16);
-  });
   try {
-    return fromByteArray(str);
+    return fromByteArray(result);
   } catch (e) {}
-  return false;
+  return '';
 };
 
 function stopDrag() {
@@ -1465,6 +1462,8 @@ function base64toBytes(base64) {
   return [];
 }
 
+exports.base64Decode = base64Decode;
+
 function decodeBase64(base64) {
   var arr = base64toBytes(base64);
   var result = {
@@ -1994,6 +1993,8 @@ function concatByteArray(list1, list2, list3) {
   return result;
 }
 
+exports.toBase64 = toBase64;
+
 function strToByteArray(str) {
   try {
     str = toBase64(str);
@@ -2009,6 +2010,8 @@ function base64ToByteArray(str) {
   return null;
 }
 
+exports.base64ToByteArray = base64ToByteArray;
+
 var UPLOAD_TYPE_RE = /^\s*multipart\//i;
 var BOUNDARY_RE = /boundary=(?:"([^"]+)"|([^;]+))/i;
 var BODY_SEP = strToByteArray('\r\n\r\n');
@@ -2016,6 +2019,7 @@ var NAME_RE = /name=(?:"([^"]+)"|([^;]+))/i;
 var FILENAME_RE = /filename=(?:"([^"]+)"|([^;]+))/i;
 var TYPE_RE = /^\s*content-type:\s*([^\s]+)/i;
 var CRLF_BUF = strToByteArray('\r\n');
+var EMPTY_BUF;
 
 function parseMultiHeader(header) {
   try {
@@ -2099,6 +2103,10 @@ function parseUploadBody(body, boundary, needObj) {
         }
       } else {
         if (header.type) {
+          if (!data) {
+            EMPTY_BUF = EMPTY_BUF || body.slice(0, 0);
+            data = EMPTY_BUF;
+          }
           header.data = data;
         } else {
           try {
@@ -2245,6 +2253,8 @@ function bytesToBase64(bytes) {
   }
   return result;
 }
+
+exports.bytesToBase64 = bytesToBase64;
 
 exports.getMultiBody = function (fields) {
   var result;

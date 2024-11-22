@@ -122,7 +122,12 @@
 }
 
 .w-composer-rules-label {
-  padding-right: 12px;
+  padding-right: 6px;
+}
+
+.w-composer-proxy-rules {
+  padding-left: 6px;
+  padding-right: 10px;
   border-right: 1px solid #ddd;
 }
 
@@ -434,7 +439,7 @@ textarea.w-composer-rules {
   font-size: 13px;
 }
 
-.w-composer-proxy-rules, .w-composer-pretty,
+.w-composer-pretty,
 .w-composer-use-h2, .w-composer-enable-body {
   margin-left: 13px!important;
   font-weight: normal;
@@ -535,7 +540,7 @@ textarea.w-composer-rules {
   padding: 0 5px;
   line-height: 16px;
   margin-right: 5px;
-  font-size: 10px;
+  font-size: 9px;
   border-radius: 3px;
   font-weight: normal;
   line-height: 14px;

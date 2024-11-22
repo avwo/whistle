@@ -126,12 +126,6 @@ var FrameComposer = React.createClass({
     var base64;
     if (this.state.isHexText) {
       base64 = util.getBase64FromHexText(value);
-      if (base64 === false) {
-        win.alert(
-          'The hex text cannot be converted to binary data.\nPlease check the hex text or switch to plain text.'
-        );
-        return;
-      }
       value = undefined;
     } else if (this.state.isCRLF) {
       value = value.replace(/\r\n|\r|\n/g, '\r\n');
@@ -183,12 +177,6 @@ var FrameComposer = React.createClass({
     var isHexText = e.target.checked;
     storage.set('showHexTextFrame', isHexText ? 1 : '');
     this.setState({ isHexText: isHexText });
-    if (
-      isHexText &&
-      util.getBase64FromHexText(this.state.text, true) === false
-    ) {
-      message.error('The hex text cannot be converted to binary data.');
-    }
   },
   onCRLFChange: function (e) {
     var isCRLF = e.target.checked;
@@ -330,7 +318,7 @@ var FrameComposer = React.createClass({
           <button
             disabled={!isJSON}
             type="button"
-            title="Format JSON"
+            title="Format"
             onClick={this.format}
             className="btn btn-default w-format-json-btn"
           >
