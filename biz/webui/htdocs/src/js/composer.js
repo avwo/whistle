@@ -158,6 +158,14 @@ function getStatus(statusCode) {
   return '';
 }
 
+function parseValue(value) {
+  if (value && typeof value === 'object') {
+    value.data = util.base64ToByteArray(value.base64) || util.EMPTY_BUF;
+    delete value.base64;
+  }
+}
+
+
 var Composer = React.createClass({
   getInitialState: function () {
     var rules = storage.get('composerRules');
@@ -181,9 +189,10 @@ var Composer = React.createClass({
       if (uploadBodyData) {
         Object.keys(uploadBodyData).forEach(function(name) {
           var value = uploadBodyData[name];
-          if (value && typeof value === 'object') {
-            value.data = util.base64ToByteArray(value.base64);
-            delete value.base64;
+          if (Array.isArray(value)) {
+            value.forEach(parseValue);
+          } else {
+            parseValue(value);
           }
         });
         this.uploadBodyData = uploadBodyData;
@@ -481,14 +490,8 @@ var Composer = React.createClass({
       group.list.push(item);
       item.path = opts ? opts.path : item.url;
       item.protocol = opts ? opts.protocol.slice(0, -1) : 'HTTP';
-      var raw = [
-        item.method + ' ' + item.url + ' HTTP/' + (item.useH2 ? '2.0' : '1.1')
-      ];
       item.protocol = /^([\w.-]+):\/\//i.test(item.url) ? RegExp.$1.toUpperCase() : 'HTTP';
       item.body = item.body || '';
-      item.headers && raw.push(item.headers);
-      raw.push('\n', item.body);
-      item.raw = raw.join('\n');
       result.push(item);
     });
     if (!hasSelected && result[0]) {
@@ -599,7 +602,6 @@ var Composer = React.createClass({
     var body = isHexText && item.base64
       ? util.getHexText(util.getHexFromBase64(item.base64))
       : item.body || '';
-    ReactDOM.findDOMNode(refs.body).value = body;
     this.state.tabName = 'Request';
     this.state.result = '';
     this.state.isHexText = isHexText;
@@ -620,7 +622,9 @@ var Composer = React.createClass({
       this.state.enableProxyRules = !!item.enableProxyRules;
       storage.set('composerProxyRules', item.enableProxyRules ? 1 : '');
     }
-    this.updateUploadForm(req);
+    if (!this.updateUploadForm(req)) {
+      ReactDOM.findDOMNode(refs.body).value = body;
+    }
     this.onComposerChange(true);
     storage.set('disableComposerBody', this.state.disableBody ? 1 : '');
     storage.set('useH2InComposer', item.useH2 ? 1 : '');

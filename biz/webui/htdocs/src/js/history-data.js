@@ -7,6 +7,22 @@ var events = require('./events');
 var util = require('./util');
 
 var RULES_KEY = /^\s*x-whistle-rule-value:/mi;
+var curItem;
+var curRaw;
+
+function getRaw(item) {
+  if (curItem === item) {
+    return curRaw;
+  }
+  var raw = [
+    item.method + ' ' + item.url + ' HTTP/' + (item.useH2 ? '2.0' : '1.1')
+  ];
+  item.headers && raw.push(item.headers);
+  raw.push('\n', item.body || (item.base64 && util.base64Decode(item.base64))) || '';
+  curRaw = raw.join('\n');
+  curItem = item;
+  return curRaw;
+}
 
 var HistoryData = React.createClass({
   getInitialState: function() {
@@ -178,7 +194,7 @@ var HistoryData = React.createClass({
                 </button>
                 <span onClick={props.onClose} aria-hidden="true" className="w-close">&times;</span>
               </div> : null}
-            {selectedItem ? <pre>{selectedItem.raw}</pre> : null}
+            {selectedItem ? <pre>{getRaw(selectedItem)}</pre> : null}
           </div>
         </Divider> : <div className="w-empty-data">
             Empty
