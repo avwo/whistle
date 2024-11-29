@@ -214,6 +214,9 @@
   right: 5px;
   overflow: hidden;
 }
+.w-composer-body .w-record-status {
+  font-size: 13px;
+}
 .w-composer-body .w-composer-bar .btn {
   position: static;
   margin-right: 5px;
@@ -622,6 +625,27 @@ textarea.w-composer-rules {
   padding: 0 6px;
   margin-left: 10px;
   font-size: 13px;
+}
+
+.w-composer-import {
+  position: absolute;
+  left: -8px;
+  top: 20px;
+  list-style: none;
+  padding: 0;
+  font-weight: normal;
+  background-color: #fff;
+  border-radius: 3px;
+  display: none;
+}
+
+.w-composer-import li {
+  padding: 3px 8px;
+  cursor: pointer;
+}
+
+.w-composer-import li:hover {
+  color: #6294ce;
 }
 
 .w-composer-btns {

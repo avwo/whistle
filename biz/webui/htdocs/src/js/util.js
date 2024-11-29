@@ -1173,7 +1173,7 @@ exports.asCURL = function (item) {
   });
   var body = getBody(req, true);
   if (body && (body.length <= MAX_CURL_BODY || isText(req.headers) || isUrlEncoded(req))) {
-    result.push('-d', formatBody(body));
+    result.push('--data-raw', formatBody(body));
   }
   return result.join(' ').replace(/!/g, '\\!');
 };

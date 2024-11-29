@@ -45,8 +45,12 @@ var EditorDialog = React.createClass({
   show: function (data) {
     this._hideDialog = false;
     this.setState(data);
-    if (this.props.textEditor && this._textarea) {
-      this._textarea.value = (data && data.value) || '';
+    var textarea = this._textarea;
+    if (this.props.textEditor && textarea) {
+      textarea.value = (data && data.value) || '';
+      setTimeout(function() {
+        textarea.focus();
+      }, 600);
     }
     this.refs.editorDialog.show();
   },
@@ -78,7 +82,7 @@ var EditorDialog = React.createClass({
         style.border = '1px solid #ccc';
         style.borderRadius = '3px';
         textarea.maxLength = MAX_LEN;
-        textarea.placeholder='Input the text';
+        textarea.placeholder = self.props.placeholder || 'Input the text';
         textarea.onkeydown = function(e) {
           if ((e.ctrlKey || e.metaKey) && e.keyCode === 83) {
             e.preventDefault();
@@ -120,6 +124,12 @@ var EditorDialog = React.createClass({
   getValue: function() {
     var value = this._textarea ? this._textarea.value : this.state.value;
     return value || '';
+  },
+  onConfirm: function() {
+    var result = this.props.onConfirm(this.getValue());
+    if (result !== false) {
+      this.hide();
+    }
   },
   onSave: function() {
     var self = this;
@@ -210,8 +220,9 @@ var EditorDialog = React.createClass({
   },
   render: function () {
     var state = this.state;
+    var props = this.props;
     var value = state.value;
-    var title = state.title;
+    var title = props.title || state.title;
     var textEditor = this.props.textEditor;
 
     return (
@@ -225,7 +236,7 @@ var EditorDialog = React.createClass({
         <div className="modal-body">
           {
             textEditor ? <div className="w-mock-inline-action">
-              <a onClick={this.formatValue}>Format</a>
+              {props.hideFormat ? null : <a onClick={this.formatValue}>Format</a>}
               <a onClick={this.clearValue}>Clear</a>
             </div> : null
           }
@@ -245,9 +256,9 @@ var EditorDialog = React.createClass({
           <button
             type="button"
             className="btn btn-primary"
-            onClick={this.onSave}
+            onClick={props.onConfirm ? this.onConfirm : this.onSave}
           >
-            Save
+            {props.onConfirm ? 'Confirm' : 'Save'}
           </button>
         </div> : <div className="modal-footer">
           <button

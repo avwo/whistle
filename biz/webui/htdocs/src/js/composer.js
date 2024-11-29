@@ -15,8 +15,10 @@ var message = require('./message');
 var ContextMenu = require('./context-menu');
 var CookiesDialog = require('./cookies-dialog');
 var Dialog = require('./dialog');
+var EditorDialog = require('./editor-dialog');
 var win = require('./win');
 var HistoryData = require('./history-data');
+var parseCurl = require('./parse-curl');
 
 var METHODS = [
   'GET',
@@ -165,6 +167,9 @@ function parseValue(value) {
   }
 }
 
+function replaceCRLF(body) {
+  return body && body.replace(/\r\n|\r|\n/g, '\r\n');
+}
 
 var Composer = React.createClass({
   getInitialState: function () {
@@ -422,7 +427,7 @@ var Composer = React.createClass({
       headers: headers,
       method: method,
       useH2: this.state.useH2 ? 1 : '',
-      body: ReactDOM.findDOMNode(refs.body).value.replace(/\r\n|\r|\n/g, '\r\n')
+      body: replaceCRLF(ReactDOM.findDOMNode(refs.body).value)
     };
   },
   saveComposer: function () {
@@ -517,18 +522,21 @@ var Composer = React.createClass({
     var body = elem.value;
     if (body.trim()) {
       if (isHexText) {
-        if (this._preBody === body) {
+        var isCRLF = this.state.isCRLF;
+        if (this._preBody === body && (!this._isCRLF === !isCRLF)) {
           elem.value = this._preHex;
         } else {
-          elem.value = strToHex(body);
+          elem.value = strToHex(isCRLF ? replaceCRLF(body) : body);
         }
       } else {
         this._preBody = hexToStr(body);
+        this._isCRLF = this.state.isCRLF;
         this._preHex = body;
         elem.value = this._preBody;
       }
     }
     this.setState({ isHexText: isHexText });
+    this.saveComposer();
   },
   onCRLFChange: function (e) {
     var isCRLF = e.target.checked;
@@ -947,7 +955,7 @@ var Composer = React.createClass({
           base64 = util.getBase64FromHexText(body);
           body = undefined;
         } else if (body && this.state.isCRLF) {
-          body = body.replace(/\r\n|\r|\n/g, '\r\n');
+          body = replaceCRLF(body);
         }
       }
     }
@@ -1282,15 +1290,7 @@ var Composer = React.createClass({
     var form = new FormData(ReactDOM.findDOMNode(this.refs.readLocalFileForm));
     var file = form.get('localFile');
     if (file.size > MAX_FILE_SIZE) {
-      return win.alert('The size of all files cannot exceed 20m.');
-    }
-    var modal = this.state.modal || '';
-    var size = file.size;
-    Object.keys(modal).forEach(function (key) {
-      size += modal[key].size;
-    });
-    if (size > MAX_FILE_SIZE) {
-      return win.alert('The size of all files cannot exceed 20m.');
+      return win.alert('The size of file cannot exceed 20m.');
     }
     var self = this;
     self.reading = true;
@@ -1303,6 +1303,32 @@ var Composer = React.createClass({
   },
   import: function(e) {
     events.trigger('importSessions', e);
+    this.hoverOutImport();
+  },
+  showImportCURL: function() {
+    this.hoverOutImport();
+    this.refs.editorDialog.show();
+  },
+  importCURL: function(text) {
+    text = text.trim();
+    if (!text) {
+      message.error('The text cannot be empty.');
+      return false;
+    }
+    try {
+      var result = parseCurl(text);
+      if (!result || !result.url) {
+        message.error('Not CURL text.');
+        return false;
+      }
+      result.isHexText = false;
+      result.headers = util.objectToString(result.headers);
+      this.onCompose(result);
+    } catch (e) {
+      message.error(e.message);
+      return false;
+    }
+
   },
   copyAsCURL: function() {
     var state = this.state;
@@ -1350,6 +1376,21 @@ var Composer = React.createClass({
     this.setState({ disableBody: false });
     storage.set('disableComposerBody', '');
   },
+  _hoverOutImport: function() {
+    
+  },
+  hoverInImport: function() {
+    clearTimeout(this._hoverOutTimer);
+    this._hoverOutTimer = null;
+    this.setState({ overImport: true });
+  },
+  hoverOutImport: function() {
+    var self = this;
+    self._hoverOutTimer = self._hoverOutTimer || setTimeout(function() {
+      self._hoverOutTimer = null;
+      self.setState({ overImport: false });
+    }, 80);
+  },
   render: function () {
     var self = this;
     var state = self.state;
@@ -1374,11 +1415,12 @@ var Composer = React.createClass({
     var isHexText = state.isHexText;
     var isCRLF = state.isCRLF;
     var disableBody = state.disableBody;
-    var lockBody = pending || disableBody;
+    var lockBody = pending || disableBody || !hasBody;
     var showHistory = state.showHistory;
     var urlHints = state.urlHints;
     var hasQuery = state.hasQuery;
     var enableProxyRules = state.enableProxyRules;
+    var tips = hasBody ? null : method + ' method is not allowed to have a request body';
     self.hasBody = hasBody;
 
     return (
@@ -1478,7 +1520,7 @@ var Composer = React.createClass({
               callback={this.execute}
             />
           </div>
-          <Divider vertical="true" leftWidth="90">
+          <Divider vertical="true" leftWidth="72">
             <div
               ref="rulesCon"
               onDoubleClick={this.enableRules}
@@ -1515,8 +1557,8 @@ var Composer = React.createClass({
                 </label>
                 <label className="w-composer-enable-body">
                   <input
-                    disabled={pending}
-                    checked={!disableBody}
+                    disabled={pending || !hasBody}
+                    checked={!disableBody && hasBody}
                     type="checkbox"
                     onChange={this.onBodyStateChange}
                   />
@@ -1532,9 +1574,16 @@ var Composer = React.createClass({
                   HTTP/2
                 </label>
                 <div className="w-composer-btns">
-                  <a draggable="false" onClick={self.import}>Import</a>
+                  <a draggable="false" onClick={self.import}
+                    onMouseEnter={self.hoverInImport} onMouseLeave={self.hoverOutImport}>Import</a>
                   <a draggable="false" onClick={self.export}>Export</a>
                   <a draggable="false" onClick={self.copyAsCURL}>CopyAsCURL</a>
+                  <ul className="shadow w-composer-import"
+                    onMouseEnter={self.hoverInImport} onMouseLeave={self.hoverOutImport}
+                    style={{display: state.overImport ? 'block' : 'none'}}>
+                    <li onClick={self.showImportCURL}>Import CURL</li>
+                    <li onClick={self.import}>Import File</li>
+                  </ul>
                 </div>
               </div>
               <textarea
@@ -1678,8 +1727,8 @@ var Composer = React.createClass({
                   <div className="w-composer-bar">
                     <label className="w-composer-label">
                       <input
-                        disabled={pending}
-                        checked={!disableBody}
+                        disabled={pending || !hasBody}
+                        checked={!disableBody && hasBody}
                         type="checkbox"
                         onChange={this.onBodyStateChange}
                       />
@@ -1744,6 +1793,7 @@ var Composer = React.createClass({
                       +Param
                     </button>
                   </div>
+                  {tips && <div className="w-record-status">{tips}</div>}
                   <textarea
                     readOnly={lockBody}
                     defaultValue={state.body}
@@ -1757,16 +1807,7 @@ var Composer = React.createClass({
                     }}
                     onKeyDown={this.onKeyDown}
                     ref="body"
-                    placeholder={
-                      hasBody
-                        ? 'Input the ' + (isHexText ? 'hex text' : 'body')
-                        : method + ' operations cannot have a request body'
-                    }
-                    title={
-                      hasBody
-                        ? undefined
-                        : method + ' operations cannot have a request body'
-                    }
+                    placeholder={'Input the ' + (isHexText ? 'hex text' : 'body')}
                     className={
                       'fill orient-vertical-box' +
                       (showPrettyBody  || showUpload
@@ -1791,11 +1832,6 @@ var Composer = React.createClass({
                     onUpdate={this.updateUploadData}
                     callback={this.execute}
                     allowUploadFile
-                    title={
-                      hasBody
-                        ? undefined
-                        : method + ' operations cannot have a request body'
-                    }
                   />
                 </div>
               </Divider>
@@ -1879,6 +1915,8 @@ var Composer = React.createClass({
             name="localFile"
           />
         </form>
+        <EditorDialog ref="editorDialog" title="Import CURL" hideFormat="1" placeholder="Input the CURL text"
+          textEditor onConfirm={this.importCURL} />
       </div>
     );
   }
