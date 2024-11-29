@@ -1,3 +1,7 @@
+# v2.9.89
+1. feat: Composer 支持导入 CURL 文本
+2. feat: 优化 Composer
+
 # v2.9.88
 1. perf: 优化 `enable://captureStream`
 2. feat: Composer 支持通过右键发送按钮选择发送文件
