@@ -1872,6 +1872,15 @@ exports.addPluginMenus = function (item, list, maxTop, disabled, treeId, url) {
   }
 };
 
+exports.getText = function(text) {
+  if (text && typeof text === 'object') {
+    try {
+      return JSON.stringify(text, null, '  ');
+    } catch (e) {}
+  }
+  return text == null ? '' : String(text);
+};
+
 exports.parseImportData = function (data, modal, isValues) {
   var list = [];
   var hasConflict;

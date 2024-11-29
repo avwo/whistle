@@ -171,6 +171,15 @@ function replaceCRLF(body) {
   return body && body.replace(/\r\n|\r|\n/g, '\r\n');
 }
 
+function parseJson(text) {
+  if (text[0] !== '{' && text[0] !== '[') {
+    return;
+  }
+  try {
+    return JSON.parse(text);
+  } catch(e) {}
+}
+
 var Composer = React.createClass({
   getInitialState: function () {
     var rules = storage.get('composerRules');
@@ -609,7 +618,7 @@ var Composer = React.createClass({
     }
     var body = isHexText && item.base64
       ? util.getHexText(util.getHexFromBase64(item.base64))
-      : item.body || '';
+      : util.getText(item.body) || '';
     this.state.tabName = 'Request';
     this.state.result = '';
     this.state.isHexText = isHexText;
@@ -1316,7 +1325,7 @@ var Composer = React.createClass({
       return false;
     }
     try {
-      var result = parseCurl(text);
+      var result = parseJson(text) || parseCurl(text);
       if (!result || !result.url) {
         message.error('Not CURL text.');
         return false;
