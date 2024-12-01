@@ -3,9 +3,11 @@
   white-space: nowrap;
   overflow: auto;
   text-align: center;
-  padding-top: 30px;
-  padding-bottom: 10px;
   position: relative;
+  background: #0e0e0e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .w-image-view.w-image-webview {
   padding: 0;
