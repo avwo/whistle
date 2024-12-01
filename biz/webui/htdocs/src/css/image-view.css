@@ -4,10 +4,12 @@
   overflow: auto;
   text-align: center;
   position: relative;
-  background: #0e0e0e;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.w-image-bg {
+  background: #0e0e0e;
 }
 .w-image-view.w-image-webview {
   padding: 0;
