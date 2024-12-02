@@ -1,3 +1,6 @@
+# v2.9.90
+1. feat: 支持 [whistle-client](https://github.com/avwo/whistle-client) 搜索功能
+
 # v2.9.89
 1. feat: Composer 支持导入 CURL 文本
 2. feat: 优化 Composer

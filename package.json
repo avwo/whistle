@@ -1,7 +1,7 @@
 {
   "name": "whistle",
   "description": "HTTP, HTTP2, HTTPS, Websocket debugging proxy",
-  "version": "2.9.89",
+  "version": "2.9.90",
   "dataDirname": ".whistle",
   "localUIHost": "local.whistlejs.com",
   "port": 8899,
@@ -35,9 +35,9 @@
   "dependencies": {
     "adm-zip": "0.5.10",
     "async-limiter": "2.0.0",
-    "body-parser": "^1.19.0",
+    "body-parser": "^1.20.3",
     "colors": "1.1.2",
-    "express": "^4.19.2",
+    "express": "^4.21.1",
     "extend": "^3.0.2",
     "fs-extra2": "^1.0.0",
     "hagent": "^0.9.2",
