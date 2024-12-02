@@ -947,6 +947,15 @@ var Index = React.createClass({
       }
     });
 
+    if (isClient) {
+      var findEditor = function(keyword, prev) {
+        events.editorMatchedCount = 0;
+        events.trigger(prev ? 'findEditorPrev' : 'findEditorNext', keyword);
+        return events.editorMatchedCount;
+      };
+      window.__findWhistleCodeMirrorEditor_ = findEditor;
+    }
+
     var composerDidMount;
     var composerData;
 

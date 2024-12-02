@@ -82,6 +82,7 @@ var RULES_COMMENT_RE = /^(\s*)#\s*/;
 var JS_COMMENT_RE = /^(\s*)\/\/+\s?/;
 var NO_SPACE_RE = /\S/;
 var FOLD_MODE = ['javascript', 'htmlmixed', 'css'];
+var SEARCH_OPTIONS = { caseFold: true, multiline: true };
 
 function hasSelector(selector) {
   return document.querySelector
@@ -240,10 +241,59 @@ var Editor = React.createClass({
   },
   componentDidMount: function () {
     var timeout;
+    var timer;
     var self = this;
     var elem = ReactDOM.findDOMNode(self.refs.editor);
-    var editor = (self._editor = CodeMirror(elem));
-    var timer;
+    var $elem = $(elem);
+    var editor = CodeMirror(elem);
+    var preKeyeord;
+    var preCursor;
+    var find = function(keyword, prev, start) {
+      if (!$elem.is(':visible')) {
+        return;
+      }
+      var cursor = start ? null : editor.getCursor();
+      var value  =editor.getValue();
+      if (keyword !== preKeyeord) {
+        if (cursor && preCursor && preKeyeord && cursor.ch === preCursor.ch && cursor.line === preCursor.line) {
+          cursor.ch = Math.max(cursor.ch + (prev ? preKeyeord.length : -preKeyeord.length), 0);
+        }
+        preKeyeord = keyword;
+      } else if (prev) {
+        if (cursor) {
+          cursor.ch = Math.max(cursor.ch - preKeyeord.length, 0);
+        } else {
+          var len = value.length;
+          cursor = {line: len, ch: len};
+        }
+      }
+      if (keyword) {
+        events.editorMatchedCount = value.toLowerCase().split(keyword.toLowerCase()).length - 1;
+      } else {
+        events.editorMatchedCount = 0;
+      }
+      cursor = editor.getSearchCursor(keyword, cursor, SEARCH_OPTIONS);
+      preCursor = null;
+      var result = prev ? cursor.findPrevious() : cursor.findNext();
+      if(result) {
+        editor.setSelection(cursor.from(), cursor.to());
+        editor.scrollIntoView({from: cursor.from(), to: cursor.to()}, 20);
+      } else if (!start) {
+        find(keyword, prev, true);
+      } else {
+        preCursor = editor.getCursor();
+        preCursor && editor.setSelection(preCursor, preCursor);
+      }
+      preCursor = preCursor || editor.getCursor();
+    };
+    var findEditor = function(e, keyword) {
+      find(keyword, e.type === 'findEditorPrev');
+    };
+    self._editor = editor;
+    
+    events.on('findEditorNext', findEditor);
+    events.on('findEditorPrev', findEditor);
+
     events.on('updatePlugins', function() {
       if (self.isRulesEditor()) {
         timer && clearTimeout(timer);
