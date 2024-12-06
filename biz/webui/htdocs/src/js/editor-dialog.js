@@ -93,14 +93,14 @@ var EditorDialog = React.createClass({
     };
     iframe.onload = initTextArea;
     initTextArea();
-    events.on('showEditorDialog', function(_, data, elem) {
+    this.props.standalone && events.on('showEditorDialog', function(_, data, elem) {
       if (data.name) {
         var item = dataCenter.valuesModal.get(data.name);
         var value = item && item.value || '';
         self._keyName = data.name;
         self.show({
           value: value,
-          title: (item ? 'Modify the' : 'Create a') + ' key `' + data.name + '` of Values',
+          title: (item ? 'Modify the key value' : 'Create a new key') + ' in Values (key: ' + data.name + ')',
           isTempFile: false
         });
       } else {
@@ -110,10 +110,11 @@ var EditorDialog = React.createClass({
           self._tempFile = tempFile;
           self._fileElem = elem;
           self._rulesItem = rulesItem;
+          var isBlank = tempFile === 'blank';
           getTempFile(tempFile, function(value) {
             self.show({
               value: value,
-              title: 'Create a temp file',
+              title: (isBlank ? 'Create a' : 'Modify the') + ' temp file' + (isBlank ? '' : ' (temp/' + tempFile + ')'),
               isTempFile: true
             });
           });

@@ -3,7 +3,7 @@ var $ = require('jquery');
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Clipboard = require('clipboard');
-
+var EditorDialog = require('./editor-dialog');
 var List = require('./list');
 var ListModal = require('./list-modal');
 var Network = require('./network');
@@ -5404,6 +5404,8 @@ var Index = React.createClass({
           <input ref="content" name="content" type="hidden" />
         </form>
         <IframeDialog ref="iframeDialog" />
+        {/* 初始化 EditorDialog 给 Rules 里面的快捷键使用 */}
+        <EditorDialog textEditor standalone />
       </div>
     );
   }
