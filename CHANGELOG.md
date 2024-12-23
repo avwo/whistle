@@ -1,3 +1,6 @@
+# v2.9.92
+1. feat: 优化响应超时机制，关闭 `requestTimeout`
+
 # v2.9.91
 1. fix: https://github.com/avwo/whistle/issues/1183
 2. fix: https://github.com/avwo/whistle/issues/1173
