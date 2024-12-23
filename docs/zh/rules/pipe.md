@@ -5,6 +5,9 @@
 类似Node里面的 `stream.pipe` 方法，把 `http[s]`、`websocket`、`tunnel` 的请求或响应内容pipe到插件对应server，可以在插件动态修改请求响应内容，配置方式：
 ``` txt
 pattern pipe://plugin-name
+
+# 传值给插件，插件里面可以通过 req.originalReq.pipeValue 获取
+pattern pipe://plugin-name(value)
 ```
 其中，`plugin-name` 为对应插件名称，pattern参见[匹配方式](../pattern.html)，更多模式请参考[配置方式](../mode.html)。
 
