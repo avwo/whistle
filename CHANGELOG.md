@@ -1,3 +1,10 @@
+# v2.9.93
+1. feat: 重放请求时保留 http2 session
+2. feat: 添加命令行参数 `--enable-https`：`w2 ca --enable-https`
+3. feat: Composer 添加 QUERY 方法
+4. feat: locationHref 支持通过设置 locationHref://replace:url 改用 location.replace
+5. fix: https://github.com/avwo/whistle/pull/1192
+
 # v2.9.92
 1. feat: 优化响应超时机制，关闭 `requestTimeout`
 
