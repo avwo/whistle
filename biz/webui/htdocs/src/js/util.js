@@ -673,6 +673,9 @@ exports.getOriginalReqHeaders = function (item, rulesHeaders) {
   if (item.clientId && !headers['x-whistle-client-id']) {
     headers['x-whistle-client-id'] = item.clientId;
   }
+  if (item.h2Id) {
+    headers['x-whistle-alpn-protocol'] = item.h2Id;
+  }
   if (getContentEncoding(headers)) {
     delete headers['content-encoding'];
   }

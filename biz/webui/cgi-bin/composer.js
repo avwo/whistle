@@ -280,7 +280,9 @@ module.exports = function(req, res) {
       req.body.useH2 = true;
       var isHttp = protocol === 'http:';
       options.protocol = isHttp ? 'http:' : 'https:';
-      headers[config.ALPN_PROTOCOL_HEADER] = isHttp ? 'httpH2' : 'h2';
+      if (!headers[config.ALPN_PROTOCOL_HEADER]) {
+        headers[config.ALPN_PROTOCOL_HEADER] = (isHttp ? 'httpH2' : 'h2');
+      }
     }
   }
   !req.body.noStore && properties.addHistory(req.body);

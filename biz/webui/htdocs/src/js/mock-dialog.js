@@ -27,7 +27,7 @@ var INLINE_PROTOCOLS = ['http://', 'https://', 'ws://', 'wss://', 'tunnel://', '
 'pipe://', 'host://', 'xhost://', 'proxy://', 'xproxy://', 'http-proxy://', 'xhttp-proxy://', 'https-proxy://', 'xhttps-proxy://',
 'socks://', 'xsocks://', 'pac://', 'weinre://', 'log://', 'excludeFilter://', 'includeFilter://', 'ignore://', 'skip://', 'enable://',
 'disable://', 'delete://', 'method://', 'replaceStatus://', 'referer://', 'auth://', 'ua://', 'cache://', 'attachment://', 'forwardedFor://',
-'responseFor://', 'reqDelay://', 'resDelay://', 'reqSpeed://', 'resSpeed://', 'reqType://', 'resType://', 'reqCharset://', 'resCharset://', 
+'responseFor://', 'reqDelay://', 'resDelay://', 'reqSpeed://', 'resSpeed://', 'reqType://', 'resType://', 'reqCharset://', 'resCharset://',
 'reqWrite://', 'resWrite://', 'reqWriteRaw://', 'resWriteRaw://', 'cipher://', 'sniCallback://', 'lineProps://'];
 var COMMON_OPS = ['Map Local', 'Map Remote', 'DNS Spoofing', 'Modify URL', 'Modify Method', 'Request Headers', 'Response Headers',
   'Request Body', 'Response Body', 'Response 404', 'Response 500', 'Abort Request', 'Abort Response', 'Delay Request', 'Delay Response'];

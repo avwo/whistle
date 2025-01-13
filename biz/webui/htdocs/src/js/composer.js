@@ -28,6 +28,7 @@ var METHODS = [
   'TRACE',
   'DELETE',
   'SEARCH',
+  'QUERY',
   'CONNECT',
   'UPGRADE',
   'WEBSOCKET',
@@ -257,12 +258,20 @@ var Composer = React.createClass({
       }
       var body = util.getBody(activeItem.req);
       var updateComposer = function () {
+        var headers = activeItem.req.headers;
+        if (activeItem.h2Id) {
+          headers = $.extend({}, headers);
+          headers['x-whistle-alpn-protocol'] = activeItem.h2Id;
+          activeItem = $.extend({}, activeItem);
+          activeItem.req = $.extend({}, activeItem.req);
+          activeItem.req.headers = headers;
+        }
         var state = {
           useH2: activeItem.useH2,
           url: activeItem.url,
-          headers: activeItem.headers,
+          headers: headers,
           result: activeItem,
-          type: getType(activeItem.req.headers),
+          type: getType(headers),
           method: activeItem.req.method,
           tabName: 'Request'
         };
@@ -1386,7 +1395,7 @@ var Composer = React.createClass({
     storage.set('disableComposerBody', '');
   },
   _hoverOutImport: function() {
-    
+
   },
   hoverInImport: function() {
     clearTimeout(this._hoverOutTimer);
