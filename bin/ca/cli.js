@@ -50,6 +50,7 @@ function install(addr) {
 
 module.exports = function(argv) {
   var options = {};
+  var enableHttps;
   argv.forEach(function(arg) {
     if (NUM_RE.test(arg)) {
       delete options.addr;
@@ -57,6 +58,8 @@ module.exports = function(argv) {
     } else if (net.isIP(arg)) {
       delete options.addr;
       options.host = arg || options.host;
+    } else if (arg === '--capture' || arg === '--enable-https') {
+      enableHttps = true;
     } else if (HOST_SUFFIX_RE.test(arg)) {
       delete options.port;
       delete options.addr;
@@ -89,6 +92,10 @@ module.exports = function(argv) {
     var host = options.host || '127.0.0.1';
     var port = options.port || util.getDefaultPort();
     options.addr = { url: 'http://' + util.joinIpPort(host, + port) + '/cgi-bin/rootca' };
+  }
+  var url = enableHttps && options.addr && options.addr.url;
+  if (url) {
+    options.addr.url = url.replace(/#.*$/, '') + (url.indexOf('?') === -1 ? '?' : '&') + 'enableHttps=1';
   }
   install(options.addr);
 };
