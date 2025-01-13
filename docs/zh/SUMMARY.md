@@ -49,6 +49,7 @@
   * [style](rules/style.md)
   * [pipe](rules/pipe.md)
   * [plugin](rules/plugin.md)
+  * [sniCallback](rules/sniCallback.md)
   * [weinre](rules/weinre.md)
   * [log](rules/log.md)
   * [proxy(http-proxy)](rules/proxy.md)
