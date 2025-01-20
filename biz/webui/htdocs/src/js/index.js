@@ -989,7 +989,7 @@ var Index = React.createClass({
         composerData = data;
       }
     });
-   
+
     events.on('showPluginOption', function(_, plugin) {
       if (!plugin) {
         return;
@@ -1015,7 +1015,7 @@ var Index = React.createClass({
     events.on('hidePluginOption', function() {
       self.refs.iframeDialog.hide();
     });
-  
+
     events.on('download', function(_, data) {
       self.download(data);
     });
@@ -4335,7 +4335,7 @@ var Index = React.createClass({
             draggable="false"
           >
             <span className="glyphicon glyphicon-download-alt" />
-            {dataCenter.enablePluginMgr ? 'Install' : 'Commands'}
+            Install
           </a>
           <RecordBtn
             ref="recordBtn"

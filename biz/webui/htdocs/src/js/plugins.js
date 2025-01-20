@@ -188,6 +188,7 @@ var Home = React.createClass({
           uninstall: false,
           install: false,
           registry: r || registry || '',
+          registryChanged: true,
           registryList: result
         }, self.showMsgDialog);
       });
@@ -286,7 +287,7 @@ var Home = React.createClass({
       });
       return;
     }
-    this.setState({ registry: registry });
+    this.setState({ registry: registry, registryChanged: true });
     storage.set('pluginsRegistry', registry);
   },
   onShowUpdate: function(e) {
@@ -304,6 +305,7 @@ var Home = React.createClass({
           uninstall: false,
           install: false,
           registry: r || plugin.registry || '',
+          registryChanged: true,
           registryList: result
         },
         self.showMsgDialog
@@ -316,7 +318,8 @@ var Home = React.createClass({
       self.setState({
         install: true,
         registryList: result,
-        registry: r || ''
+        registry: r || '',
+        registryChanged: true
       }, self.showMsgDialog);
     });
   },
@@ -351,6 +354,7 @@ var Home = React.createClass({
           install: false,
           registryList: registryList,
           registry: registry,
+          registryChanged: true,
           pluginPath: plugin.path
         },
         self.showMsgDialog
@@ -396,15 +400,19 @@ var Home = React.createClass({
     var ndp = data.ndp;
     self.hasNewPlugin = false;
 
-    if (!epm && cmdMsg && registry) {
-      var regCmd = ' --registry=' + registry;
+    if (!epm && state.registryChanged && cmdMsg) {
+      state.registryChanged = false;
+      var regCmd = registry ? ' --registry=' + registry : '';
       cmdMsg = cmdMsg.split('\n').map(function(line) {
         line = line.trim();
-        if (line) {
+        line = line.split(/\s+/).filter(function(cmd) {
+          return cmd.indexOf('--registry') !== 0;
+        }).join(' ');
+        if (line && regCmd) {
           line += regCmd;
         }
         return line;
-      }).join('\n');
+      }).filter(util.noop).join('\n');
     }
 
     return (
@@ -655,7 +663,7 @@ var Home = React.createClass({
               >
                 Copy the following command
               </a>{' '}
-              to the CLI to execute:
+              and execute it in the CLI:
             </h5>)}
             {
               install ? <h5>Input the package name of plugins (separated by spaces) and click Install:</h5> : null
@@ -663,7 +671,6 @@ var Home = React.createClass({
             <textarea
               ref="textarea"
               value={cmdMsg || ''}
-              readOnly={!epm}
               placeholder={install ? 'Such as: whistle.inspect whistle.abc@1.0.0 @org/whistle.xxx' : undefined}
               className={'w-plugin-update-cmd' + (install ? ' w-plugin-install' : '')}
               maxLength={install ? 360 : undefined}
