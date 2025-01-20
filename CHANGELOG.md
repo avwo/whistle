@@ -1,3 +1,6 @@
+# v2.9.94
+1. fix: https://github.com/avwo/whistle/pull/1192
+
 # v2.9.93
 1. feat: 重放请求时保留 http2 session
 2. feat: 添加命令行参数 `--enable-https`：`w2 ca --enable-https`
