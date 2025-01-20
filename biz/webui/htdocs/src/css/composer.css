@@ -201,6 +201,7 @@
   font-weight: normal;
   font-size: 12px;
   border-radius: 3px;
+  outline: none;
 }
 
 .w-copy-as-curl {

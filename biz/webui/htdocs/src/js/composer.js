@@ -1067,6 +1067,10 @@ var Composer = React.createClass({
       this.saveComposer();
     }
   },
+  inspectJSON: function() {
+    var body = ReactDOM.findDOMNode(this.refs.body).value;
+    events.trigger('showJsonViewDialog', body.trim());
+  },
   onRulesChange: function () {
     clearTimeout(this.rulesTimer);
     this.rulesTimer = setTimeout(this.saveRules, 600);
@@ -1616,8 +1620,7 @@ var Composer = React.createClass({
                 }}
                 maxLength="8192"
                 className="fill orient-vertical-box w-composer-rules"
-                placeholder={'Input the rules (' + (enableProxyRules ? 'Use the' : 'The') +
-                  ' Rules in Whistle' + (enableProxyRules ? ' first' : ' ignored') + ')'}
+                placeholder="Input the rules (Priority over Whistle Rules)"
               />
             </div>
             <div className="orient-vertical-box fill">
@@ -1784,6 +1787,17 @@ var Composer = React.createClass({
                       />
                       \r\n
                     </label>
+                    <button
+                      className={
+                        'btn btn-default' +
+                        (showPrettyBody || isHexText || showUpload
+                          ? ' hide'
+                          : '')
+                      }
+                      onClick={this.inspectJSON}
+                    >
+                      Inspect
+                    </button>
                     <button
                       disabled={lockBody}
                       className={
