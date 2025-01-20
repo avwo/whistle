@@ -18,7 +18,7 @@ Whistle is a simple and powerful cross-platform packet capture and debugging too
 
 # Installation
 
-**Windows PC or Mac PC recommended client: [https://github.com/avwo/whistle-client](https://github.com/avwo/whistle-client)**.
+**Windows PC or Mac PC recommended client: [https://github.com/avwo/whistle-client](https://github.com/avwo/whistle-client).**
 
 > If you use Whistle client, you can skip this installation step
 
@@ -177,8 +177,8 @@ pattern operation1 operation2 ... includeFilter://filterPattern1 ... excludeFilt
 4. Support position swap (prerequisite: operation and pattern are not URLs or domain names at the same time)
 
 ``` txt
-operation pattern [filters...]
-operation pattern1 pattern2 ... [filters...]
+operation pattern [filters ...]
+operation pattern1 pattern2 ... [filters ...]
 ```
 
 5. Support line breaks
@@ -188,7 +188,7 @@ line`
 operation
 pattern1
 pattern2 ...
-[filters...]
+[filters ...]
 `
 ```
 

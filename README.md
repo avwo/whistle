@@ -19,7 +19,7 @@ Whistle 是基于 Node.JS 实现的操作简单、功能强大的跨平台抓包
 
 # 安装
 
-**Windows PC 或 Mac PC 推荐使用客户端：[https://github.com/avwo/whistle-client](https://github.com/avwo/whistle-client)**。
+**Windows PC 或 Mac PC 推荐使用客户端：[https://github.com/avwo/whistle-client](https://github.com/avwo/whistle-client)。**
 
 >  如果采用 Whistle 客户端可以跳过该安装步骤
 
@@ -178,8 +178,8 @@ Whistle 规则可看成是如下系统 hosts 规则的扩展：
 4. 支持位置调换（前提：operation 与 pattern 不同时为 URL 或域名）
 
    ``` txt
-   operation pattern [filters...]
-   operation pattern1 pattern2 ... [filters...]
+   operation pattern [filters ...]
+   operation pattern1 pattern2 ... [filters ...]
    ```
 
 5. 支持换行
@@ -189,7 +189,7 @@ Whistle 规则可看成是如下系统 hosts 规则的扩展：
    operation
    pattern1
    pattern2 ...
-   [filters...]
+   [filters ...]
    `
    ```
 
