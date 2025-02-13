@@ -48,7 +48,7 @@ whistle的匹配模式(`pattern`)大体可以分成 **域名、路径、正则�
 	#匹配所有请求
 	* operatorURI
 
-	#匹配url里面包含摸个关键字的请求，且忽略大小写
+	#匹配url里面包含某个关键字的请求，且忽略大小写
 	/keyword/i operatorURI
 
 	# 利用子匹配把url里面的参数带到匹配的操作uri
