@@ -124,7 +124,7 @@
 1. [**plugin** (配置匹配的插件)](plugin.html)
 3. [**weinre** (设置weinre，调试手机页面)](weinre.html)
 4. [**log** (打印网页js错误或者调试信息)](log.html)
-5. [**pipe** 把数据流转到插件](rules/pipe.html)
+5. [**pipe** 把数据流转到插件](pipe.html)
 
 
 #### 修改加密算法
