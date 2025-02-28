@@ -519,6 +519,7 @@ textarea.w-composer-rules {
   top: 0;
   font-weight: 600;
   white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .w-history-item, .w-history-title {

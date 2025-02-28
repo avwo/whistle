@@ -316,6 +316,7 @@ var Composer = React.createClass({
         self.hideParams();
       }
       if (!(target.closest('.w-composer-history-data').length ||
+        target.closest('.w-keep-history-data').length ||
         target.closest('.w-replay-count-dialog').length ||
         target.closest('.w-composer-history-btn').length ||
         target.closest('.w-copy-text-with-tips').length)) {
