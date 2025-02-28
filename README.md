@@ -15,7 +15,7 @@
 
 中文 · [English](./README-en_US.md)
 
-Whistle 是基于 Node.JS 实现的操作简单、功能强大的跨平台抓包调试工具，可作为 **HTTP 代理（默认）**、**HTTPS 代理**、**Socks 代理**、**反向代理**等，用于**抓包分析**或**通过配置规则修改** HTTP、HTTPS、HTTP/2、WebSocket、TCP 请求，且内置 **Weinre**、**Log** 、**Composer** 等工具可查看远程页面的 DOM 结构、查看 console 输出内容、重放编辑构造请求等，并支持 **插件扩展功能** 或 **作为 NPM 包被项目引用**。
+Whistle 是一个基于 Node.js 开发的功能强大、操作简单的跨平台抓包调试工具。它支持多种代理模式（如 HTTP、HTTPS、Socks、反向代理等），可用于抓包分析或通过配置规则修改 HTTP、HTTPS、HTTP/2、WebSocket、TCP 请求。Whistle 还内置了 Weinre、Log、Composer 等工具，支持查看远程页面的 DOM 结构、调试 console 输出、重放或编辑请求等。此外，Whistle 支持插件扩展，也可作为 NPM 包被其他项目引用。
 
 # 安装
 

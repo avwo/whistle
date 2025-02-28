@@ -14,7 +14,7 @@
 
 [中文](./README-zh_CN.md) · English
 
-Whistle is a simple and powerful cross-platform packet capture and debugging tool based on Node.JS. It can be used as **HTTP proxy (default)**, **HTTPS proxy**, **Socks proxy**, **reverse proxy**, etc., for **packet capture analysis** or **modification through configuration rules** of HTTP, HTTPS, HTTP/2, WebSocket, TCP requests. It also has built-in **Weinre**, **Log**, **Composer** and other tools to view the DOM structure of remote pages, view console output content, replay and edit construction requests, etc. It also supports **plug-in extension functions** or **referenced by projects as NPM packages**.
+Whistle is a powerful and easy-to-use cross-platform packet capture and debugging tool developed based on Node.js. It supports multiple proxy modes (such as HTTP, HTTPS, Socks, reverse proxy, etc.), which can be used for packet capture analysis or modifying HTTP, HTTPS, HTTP/2, WebSocket, TCP requests through configuration rules. Whistle also has built-in tools such as Weinre, Log, Composer, etc., which support viewing the DOM structure of remote pages, debugging console output, replaying or editing requests, etc. In addition, Whistle supports plug-in extensions and can also be referenced by other projects as NPM packages.
 
 # Installation
 
