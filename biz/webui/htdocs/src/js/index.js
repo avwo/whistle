@@ -4081,6 +4081,7 @@ var Index = React.createClass({
     var pendingRules = state.pendingRules;
     var pendingValues = state.pendingValues;
     var accountRules = state.accountRules;
+    var hasAccount = state.hasAccount;
     var mustHideLeftMenu = hideLeftMenu && !state.forceShowLeftMenu;
     var pluginsOnlyMode = pluginsMode && rulesMode;
     var showAccount = state.showAccount;
@@ -4116,6 +4117,7 @@ var Index = React.createClass({
         className={
           'main orient-vertical-box' + (showLeftMenu ? ' w-show-left-menu' : '')
           + (showAccount ? ' w-show-account' : '')
+          + (hasAccount ? ' w-has-account' : '')
           + (isEditor && !rulesOnlyMode ? ' w-show-editor' : '') + (isRules ? ' w-show-rules' : '')
           + (rulesOnlyMode || rulesMode ? ' w-show-rules-mode' : '')
         }
@@ -4461,6 +4463,14 @@ var Index = React.createClass({
             isNetwork={isNetwork}
             hide={isPlugins}
           />
+          <a
+              onClick={this.showFiles}
+              className="w-files-menu"
+              style={showAccount ? null : HIDE_STYLE}
+              draggable="false"
+            >
+              <span className="glyphicon glyphicon-file" />Files
+          </a>
           <div
             onMouseEnter={this.showWeinreOptions}
             onMouseLeave={this.hideWeinreOptions}
@@ -4469,14 +4479,6 @@ var Index = React.createClass({
               (showWeinreOptions ? ' w-menu-wrapper-show' : '')
             }
           >
-            <a
-              onClick={this.showFiles}
-              className="w-files-menu"
-              style={showAccount ? null : HIDE_STYLE}
-              draggable="false"
-            >
-              <span className="glyphicon glyphicon-file" />Files
-            </a>
             <a
               onClick={this.showWeinreOptionsQuick}
               onDoubleClick={this.showAnonymousWeinre}
@@ -4783,7 +4785,7 @@ var Index = React.createClass({
               foldGutter={state.foldGutter}
             />
           ) : undefined}
-          {state.hasAccount ? (
+          {hasAccount ? (
             <Account hide={!isAccount} />
           ) : undefined}
           {state.hasNetwork ? (

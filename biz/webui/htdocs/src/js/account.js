@@ -18,7 +18,7 @@ var Account = React.createClass({
     var curMap = {};
     var activeName = storage.get('activeAccountTabName') || 'Widgets';
     var tabs = [];
-    this.props.cards.forEach(function(card) {
+    (this.props.cards || []).forEach(function(card) {
       curMap[card.name] = card;
     });
     if (!curMap[activeName]) {
@@ -83,7 +83,7 @@ var Account = React.createClass({
     var cards = self.props.cards;
     var tabs = self.state.tabs;
     var activeName = self.state.activeName;
-    return (cards ? 
+    return (cards ?
       <div className={'fill w-nav-tabs orient-vertical-box w-account' + (util.getBoolean(self.props.hide) ? ' hide' : '')}>
         <ul className="nav nav-tabs w-account-tabs">
           <li

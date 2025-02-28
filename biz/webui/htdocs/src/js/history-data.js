@@ -2,10 +2,20 @@ require('./base-css.js');
 require('../css/composer.css');
 var React = require('react');
 var ReactDOM = require('react-dom');
+var $ = require('jquery');
 var Divider = require('./divider');
+var ContextMenu = require('./context-menu');
 var events = require('./events');
 var util = require('./util');
 
+var contextMenuList = [
+  { name: 'Copy URL' },
+  { name: 'Copy As CURL' },
+  { name: 'Export' },
+  { name: 'Replay' },
+  { name: 'Repeat Times' },
+  { name: 'Edit' }
+];
 var RULES_KEY = /^\s*x-whistle-rule-value:/mi;
 var curItem;
 var curRaw;
@@ -43,8 +53,8 @@ var HistoryData = React.createClass({
   scrollToTop: function() {
     ReactDOM.findDOMNode(this.refs.list).scrollTop = 0;
   },
-  copyAsCURL: function() {
-    var item = this.getItem();
+  copyAsCURL: function(_, item) {
+    item = item || this.getItem();
     if (!item) {
       return;
     }
@@ -84,6 +94,35 @@ var HistoryData = React.createClass({
     item.selected = true;
     this.setState({});
   },
+  exportItem: function(item) {
+    var headers = item.headers;
+    var rules = [];
+    if (typeof headers === 'string' && RULES_KEY.test(headers)) {
+      headers = headers.split(/\r\n|\r|\n/).filter(function(line) {
+        if (RULES_KEY.test(line)) {
+          line = line.substring(line.indexOf(':') + 1).trim();
+          line = util.decodeURIComponentSafe(line).trim();
+          line && rules.push(line);
+          return false;
+        }
+        return true;
+      }).join('\r\n');
+    }
+    events.trigger('download', {
+      name: 'composer_' + Date.now() + '.txt',
+      value: JSON.stringify({
+        type: 'setComposerData',
+        useH2: item.useH2,
+        rules: rules.join('\n'),
+        url: item.url,
+        method: item.method,
+        headers: headers,
+        body: item.body,
+        base64: item.base64,
+        isHexText: item.isHexText
+      }, null, '  ')
+    });
+  },
   export: function() {
     var groupList = this.props.data && this.props.data._groupList;
     if (!groupList) {
@@ -93,34 +132,53 @@ var HistoryData = React.createClass({
     for (var i = 0; i < len; i++) {
       var item = groupList[i];
       if (item && item.selected) {
-        var headers = item.headers;
-        var rules = [];
-        if (typeof headers === 'string' && RULES_KEY.test(headers)) {
-          headers = headers.split(/\r\n|\r|\n/).filter(function(line) {
-            if (RULES_KEY.test(line)) {
-              line = line.substring(line.indexOf(':') + 1).trim();
-              line = util.decodeURIComponentSafe(line).trim();
-              line && rules.push(line);
-              return false;
-            }
-            return true;
-          }).join('\r\n');
-        }
-        events.trigger('download', {
-          name: 'composer_' + Date.now() + '.txt',
-          value: JSON.stringify({
-            type: 'setComposerData',
-            useH2: item.useH2,
-            rules: rules.join('\n'),
-            url: item.url,
-            method: item.method,
-            headers: headers,
-            body: item.body,
-            base64: item.base64,
-            isHexText: item.isHexText
-          }, null, '  ')
-        });
+        this.exportItem(item);
       }
+    }
+  },
+  onContextMenu: function(e) {
+    var isTitle;
+    var elem = $(e.target).closest('div.w-history-item');
+    if (!elem.length) {
+      elem = $(e.target).closest('div.w-history-title');
+      isTitle = true;
+    }
+    e.preventDefault();
+    if (!elem.length) {
+      return;
+    }
+    var groupList = this.props.data && this.props.data._groupList;
+    var item = groupList && groupList[elem.attr('data-index')];
+    if (!item) {
+      return;
+    }
+    this._focusItem = item;
+    contextMenuList[0].name = isTitle ? 'Copy' : 'Copy URL';
+    contextMenuList[0].copyText = elem.attr('title');
+    contextMenuList[1].hide = isTitle;
+    contextMenuList[2].hide = isTitle;
+    contextMenuList[3].hide = isTitle;
+    contextMenuList[4].hide = isTitle;
+    contextMenuList[5].hide = isTitle;
+    var data = util.getMenuPosition(e, 130, 185 - (isTitle ? 150 : 0));
+    data.className = 'w-keep-history-data';
+    data.list = contextMenuList;
+    this.refs.contextMenu.show(data);
+  },
+  onClickContextMenu: function (action) {
+    switch (action) {
+    case 'Copy As CURL':
+      return this.copyAsCURL(null, this._focusItem);
+    case 'Export':
+      return this.exportItem(this._focusItem);
+    case 'Replay':
+      this.props.onReplay(this._focusItem);
+      return this.scrollToTop();
+    case 'Repeat Times':
+      this.props.onReplay(this._focusItem, true);
+      return this.scrollToTop();
+    case 'Edit':
+      return this.props.onEdit(this._focusItem);
     }
   },
   render: function () {
@@ -134,17 +192,17 @@ var HistoryData = React.createClass({
       <div ref="historyDialog" className={'w-layer box w-composer-history-data' + (show ? '' : ' hide')}>
         {data.length ?
         <Divider leftWidth="170">
-          <div ref="list" className="w-composer-history-list">
-            {groupList.map(function(item) {
+          <div ref="list" className="w-composer-history-list" onContextMenu={self.onContextMenu}>
+            {groupList.map(function(item, i) {
               if (item.title) {
-                return <div className="w-history-title" title={item.title}>{item.title}</div>;
+                return <div className="w-history-title" title={item.title} data-index={i}>{item.title}</div>;
               }
               if (item.selected) {
                 selectedItem = item;
               }
               return (
                 <div className={'w-history-item' + (item.selected ? ' w-selected' : '')}
-                  title={item.url} onClick={() => self.handleClick(item)}>
+                  title={item.url} onClick={() => self.handleClick(item)} data-index={i}>
                   {item.path}
                   <p>
                     <i className="w-req-protocol-tag">{item.protocol}</i>
@@ -199,6 +257,7 @@ var HistoryData = React.createClass({
         </Divider> : <div className="w-empty-data">
             Empty
           </div>}
+          <ContextMenu onClick={this.onClickContextMenu} ref="contextMenu" />
       </div>
     );
   }

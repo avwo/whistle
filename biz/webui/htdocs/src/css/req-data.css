@@ -71,6 +71,7 @@
   color: #000;
   position: relative;
   cursor: pointer;
+  background-color: #fafafa;
 }
 .w-req-data-headers .table th:last-child {
   box-sizing: content-box;
