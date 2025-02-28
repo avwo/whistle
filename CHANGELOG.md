@@ -1,3 +1,8 @@
+# v2.9.95
+1. feat: JSON 对下右键菜单支持 Copy 选中的文本
+2. feat: Composer 历史列表添加右键菜单
+3. feat: 优化界面
+
 # v2.9.94
 1. fix: https://github.com/avwo/whistle/pull/1192
 
