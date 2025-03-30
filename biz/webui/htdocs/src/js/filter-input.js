@@ -68,16 +68,20 @@ var FilterInput = React.createClass({
   },
   filterHints: function (keyword) {
     keyword = keyword && keyword.trim();
-    var count = 12;
+    var count = 10;
+    var addonHints = this.props.addonHints || [];
     if (!keyword) {
-      return this.allHintList.slice(-count);
+      return addonHints.concat(this.allHintList.slice(-count));
     }
+    count += addonHints.length;
+    var allHintList = addonHints.concat(this.allHintList);
     var list = [];
-    var index = this.allHintList.indexOf(keyword);
-    keyword = keyword.toLowerCase();
-    for (var i = this.allHintList.length - 1; i >= 0; i--) {
-      var key = this.allHintList[i];
-      if (index !== i && key.toLowerCase().indexOf(keyword) !== -1) {
+    var lk = keyword.toLowerCase();
+    var notColon = keyword.indexOf(':') === -1;
+    for (var i = allHintList.length - 1; i >= 0; i--) {
+      var key = allHintList[i];
+      if (key !== keyword && key.toLowerCase().indexOf(lk) !== -1 &&
+      (addonHints.indexOf(key) === -1 || notColon)) {
         list.unshift(key);
         if (list.length >= count) {
           return list;
@@ -204,6 +208,8 @@ var FilterInput = React.createClass({
     var filterText = self.state.filterText || '';
     var hintKey = self.props.hintKey;
     var hintList = self.state.hintList;
+    var addonHints = this.props.addonHints || [];
+
     return (
       <div className="w-filter-con" style={self.props.wStyle}>
         {hintKey ? (
@@ -224,8 +230,12 @@ var FilterInput = React.createClass({
             <ul ref="hints">
               {hintList &&
                 hintList.map(function (key) {
+                  var title = key;
+                  if (addonHints.indexOf(key) !== -1) {
+                    title = key.substring(0, key.indexOf(':') + 1);
+                  }
                   return (
-                    <li key={key} onClick={self.onClick} title={key}>
+                    <li key={key} onClick={self.onClick} title={title}>
                       {key}
                     </li>
                   );
