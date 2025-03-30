@@ -189,6 +189,7 @@ var JSONTree = (function (_React$Component) {
       { name: 'Copy' },
       { name: 'Copy Key' },
       { name: 'Copy Value' },
+      { name: 'Copy Object' },
       { name: 'Collapse Parent' }
     ];
     var expandMenu;
@@ -240,13 +241,14 @@ var JSONTree = (function (_React$Component) {
       var data = _this.props.data;
       var keyPathLen = keyPath.length;
       var showInspect = keyPathLen >= 2 || props.onSearch;
+      contextMenuList[3].copyText = data ? JSON.stringify(data, null, '  ') : '';
       if (data) {
         for (var i = keyPathLen - 2; i >= 0; i--) {
           data = data && data[keyPath[i]];
         }
       }
 
-      var height = isRoot ? 60 : 90;
+      var height = isRoot ? 90 : 120;
       if (props.onSearch && !searchMenu) {
         searchMenu = expandMenu;
         expandMenu = null;
@@ -270,7 +272,6 @@ var JSONTree = (function (_React$Component) {
       height += selectedText ? 30 : 0;
       var isRoot = keyPathLen === 1;
       var ctxMenu = _contextMenu.util.getMenuPosition(e, 110, height);
-      ctxMenu.list = contextMenuList;
       ctxMenu.className = 'w-inspectors-ctx-menu';
       contextMenuList[0].copyText = selectedText;
       contextMenuList[0].hide = !selectedText;
@@ -287,10 +288,17 @@ var JSONTree = (function (_React$Component) {
         } catch (e) {} // eslint-disable-line
       }
       contextMenuList[2].copyText = data + '';
-      contextMenuList[3].onClick = function () {
+      contextMenuList[4].onClick = function () {
         label.closest('li').parent().closest('li').find('div:first').click();
       };
-      contextMenuList[3].hide = isRoot;
+      contextMenuList[4].hide = isRoot;
+      var menus = contextMenuList;
+      if (!target.closest('label').length) {
+        menus = menus.map(_contextMenu.util.noop);
+        menus[1] = contextMenuList[2];
+        menus[2] = contextMenuList[1];
+      }
+      ctxMenu.list = menus;
       _this.refs.contextMenu.show(ctxMenu); // eslint-disable-line
       e.preventDefault();
       e.stopPropagation();

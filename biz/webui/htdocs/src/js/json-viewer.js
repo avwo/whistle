@@ -16,6 +16,7 @@ var MAX_LENGTH = 1024 * 16;
 var STR_SELECTOR = 'span[style="color: rgb(133, 153, 0);"]';
 var LINK_RE = /^"(https?:)?(\/\/[^/]\S+)"$/i;
 var contextMenuList = [
+  { name: 'Copy Object' },
   { name: 'Expand All' },
   { name: 'Collapse All' }
 ];
@@ -49,7 +50,9 @@ var JsonViewer = React.createClass({
   },
   onContextMenu: function(e) {
     var isDialog = this.props.dialog;
-    var ctxMenu = util.getMenuPosition(e, 110, isDialog ? 60 : 90);
+    var data = this.props.data || {};
+    var ctxMenu = util.getMenuPosition(e, 110, isDialog ? 90 : 120);
+    contextMenuList[0].copyText = data.str || '';
     ctxMenu.list = isDialog ? contextMenuList : contextMenuList.concat(SEARCH_MENU);
     this.refs.contextMenu.show(ctxMenu);
     e.preventDefault();
