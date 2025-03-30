@@ -45,14 +45,43 @@ function formatCmdOpions(options) {
   return options;
 }
 
+function getValue(str) {
+  if (str[0] !== '"') {
+    return str;
+  }
+  var len = str.length - 1;
+  return str[len] === '"' ? str.substring(1, len) : str;
+}
+
+function parseDir(dir) {
+  if (!dir) {
+    return;
+  }
+  dir = getValue(dir);
+  if (/^~(~)?(?:$|[\/])/.test(dir)) {
+    var wave = RegExp.$1;
+    var all = RegExp['$&'];
+    return path.resolve(wave ? getWhistlePath() : commonUtil.getHomedir(), dir.substring(all.length));
+  }
+  if (commonUtil.isWhistleName(dir)) {
+    return path.resolve(getWhistlePath(), 'all_whistles/' + dir + '/custom_plugins');
+  }
+  return path.resolve(dir);
+}
+
 function getInstallDir(argv) {
   argv = argv.slice();
   var result = { argv: argv };
   for (var i = 0, len = argv.length; i < len; i++) {
     var option = argv[i];
+    if (option === '--dir') {
+      result.dir = parseDir(argv[i + 1]);
+      argv.splice(i, 2);
+      return result;
+    }
     if (option && option.indexOf('--dir=') === 0) {
       var dir = option.substring(option.indexOf('=') + 1);
-      result.dir = dir && path.resolve(dir);
+      result.dir = parseDir(dir);
       argv.splice(i, 1);
       return result;
     }
@@ -222,7 +251,7 @@ exports.install = function(cmd, argv) {
   argv = argv.filter(function(name) {
     return plugins.indexOf(name) === -1;
   });
-  
+
   cmd += CMD_SUFFIX;
   argv.push('--no-package-lock');
   installPlugins(cmd, plugins, argv, {});
