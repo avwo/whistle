@@ -6,6 +6,9 @@ var CopyBtn = require('./copy-btn');
 var ExpandCollapse = require('./expand-collapse');
 var ContextMenu = require('./context-menu');
 var JSONTree = require('./components/react-json-tree')['default'];
+var EnableHttpsBtn = require('./enable-https-btn');
+
+var TUNNEL_RE = /^tunnel:\/\//;
 
 var Properties = React.createClass({
   getInitialState: function () {
@@ -17,8 +20,9 @@ var Properties = React.createClass({
   renderValue: function(val) {
     return val && val.length >= 2100 ? <ExpandCollapse text={val} /> : val;
   },
-  renderKey: function(name) {
+  renderKey: function(name, value) {
     var onHelp = this.props.onHelp;
+    var showEnableBtn = this.props.showEnableBtn && name === 'Url' && TUNNEL_RE.test(value);
     var index = this.props.richKey ? name.indexOf('\r\u0000(') : -1;
     return (<th>
       {onHelp ? (
@@ -27,6 +31,7 @@ var Properties = React.createClass({
           onClick={onHelp}
           className="glyphicon glyphicon-question-sign" />
       ) : undefined}
+      {showEnableBtn ? <EnableHttpsBtn /> : null}
       {this.renderValue(index === -1 ? name : name.substring(0, index))}
       {index === -1 ? null : <span className="w-gray">{name.substring(index + 2)}</span>}
     </th>);
@@ -133,7 +138,7 @@ var Properties = React.createClass({
                   return (
                     <tr key={i} className={val ? undefined : 'w-no-value'}
                     data-name={name}  data-value={val}>
-                      {self.renderKey(name)}
+                      {self.renderKey(name, val)}
                       <td
                         className={json ? 'w-properties-json' : 'w-user-select-none'}
                         onContextMenu={json ? util.stopPropagation : null}
@@ -159,7 +164,7 @@ var Properties = React.createClass({
                   className={value ? undefined : 'w-no-value'}
                   data-name={name}  data-value={value}
                 >
-                  {self.renderKey(name)}
+                  {self.renderKey(name, value)}
                   <td
                     className={json ? 'w-properties-json' : 'w-user-select-none'}
                     onContextMenu={json ? util.stopPropagation : null}

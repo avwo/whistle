@@ -300,6 +300,13 @@ var HistoryData = React.createClass({
           />
           <button
             type="button"
+            className="btn btn-default"
+            data-dismiss="modal"
+          >
+            Close
+          </button>
+          <button
+            type="button"
             style={{
               display: dataCenter.isDiableCustomCerts() ? 'none' : undefined
             }}
@@ -307,13 +314,6 @@ var HistoryData = React.createClass({
             onClick={self.showUpload}
           >
             Upload
-          </button>
-          <button
-            type="button"
-            className="btn btn-default"
-            data-dismiss="modal"
-          >
-            Close
           </button>
         </div>
         <TipsDialog ref="tipsDialog" />

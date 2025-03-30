@@ -413,6 +413,7 @@ var PropsEditor = React.createClass({
                   maxLength={MAX_VALUE_LEN}
                   placeholder="Input the value"
                   className={'form-control' + (filename ? ' hide' : '')}
+                  onKeyDown={util.handleTab}
                 />
                 <button
                   onClick={this.onUpload}
@@ -424,6 +425,13 @@ var PropsEditor = React.createClass({
             </div>
           </div>
           <div className="modal-footer">
+            <button
+              type="button"
+              className="btn btn-default"
+              data-dismiss="modal"
+            >
+              Cancel
+            </button>
             {
               cbBtnText ?
               <button
@@ -441,13 +449,6 @@ var PropsEditor = React.createClass({
               onClick={data ? self.edit : self.add}
             >
               {btnText}
-            </button>
-            <button
-              type="button"
-              className="btn btn-default"
-              data-dismiss="modal"
-            >
-              Cancel
             </button>
           </div>
         </Dialog>

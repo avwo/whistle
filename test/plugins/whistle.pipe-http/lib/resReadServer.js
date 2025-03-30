@@ -1,6 +1,6 @@
 module.exports = function(server) {
   server.on('request', function(req, res) {
-    let body;
+    var body;
     req.on('data', (data) => {
       body = body ? Buffer.concat([body, data]) : data;
     });

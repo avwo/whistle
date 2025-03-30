@@ -1087,6 +1087,15 @@ var Composer = React.createClass({
       }
     }
   },
+  formatHeaders: function(e) {
+    util.handleTab(e);
+    this.onKeyDown(e);
+  },
+  onFormat: function(e) {
+    util.handleFormat(e, this.formatJSON);
+    util.handleTab(e);
+    this.onKeyDown(e);
+  },
   showCookiesDialog: function() {
     var self = this;
     var url = ReactDOM.findDOMNode(self.refs.url).value;
@@ -1612,6 +1621,7 @@ var Composer = React.createClass({
               <textarea
                 readOnly={disableComposerRules || pending}
                 defaultValue={rules}
+                onKeyDown={util.handleTab}
                 ref="composerRules"
                 onChange={this.onRulesChange}
                 onDoubleClick={this.enableRules}
@@ -1631,6 +1641,7 @@ var Composer = React.createClass({
                   name="Request"
                   className={showRequest ? 'w-tab-btn w-active' : 'w-tab-btn'}
                 >
+                  <span className="glyphicon glyphicon-arrow-right" />
                   Request
                 </button>
                 <button
@@ -1639,6 +1650,7 @@ var Composer = React.createClass({
                   name="Response"
                   className={showResponse ? 'w-tab-btn w-active' : 'w-tab-btn'}
                 >
+                  <span className="glyphicon glyphicon-arrow-left" />
                   Response
                 </button>
               </div>
@@ -1728,7 +1740,7 @@ var Composer = React.createClass({
                     defaultValue={state.headers}
                     onChange={this.onComposerChange}
                     maxLength={MAX_HEADERS_SIZE}
-                    onKeyDown={this.onKeyDown}
+                    onKeyDown={this.formatHeaders}
                     ref="headers"
                     placeholder="Input the headers"
                     name="headers"
@@ -1838,7 +1850,7 @@ var Composer = React.createClass({
                         hasBody && !disableBody ? 'lightyellow' : undefined,
                       fontFamily: isHexText ? 'monospace' : undefined
                     }}
-                    onKeyDown={this.onKeyDown}
+                    onKeyDown={this.onFormat}
                     ref="body"
                     placeholder={'Input the ' + (isHexText ? 'hex text' : 'body')}
                     className={

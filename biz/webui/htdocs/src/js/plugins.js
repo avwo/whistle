@@ -9,9 +9,10 @@ var util = require('./util');
 var win = require('./win');
 var LazyInit = require('./lazy-init');
 var storage = require('./storage');
-var message = require('./message');
+var PluginsMgr = require('./plugins-mgr');
 var ContextMenu = require('./context-menu');
 var iframes = require('./iframes');
+
 
 var CMD_RE = /^([\w]{1,12})(\s+-g)?$/;
 var WHISTLE_PLUGIN_RE = /(?:^|[\s,;|])(?:@[\w-]+\/)?whistle\.[a-z\d_-]+(?:\@[\w.^~*-]*)?(?:$|[\s,;|])/;
@@ -43,22 +44,18 @@ function getPluginComparator(plugins) {
   };
 }
 
-function getPluginList(plugins) {
+function getPluginList(plugins, installUrls, disabledPlugins) {
   if (!plugins) {
     return [];
   }
   return Object.keys(plugins).sort(getPluginComparator(plugins))
         .map(function (name) {
-          return plugins[name];
+          var plugin = plugins[name];
+          if (plugin && installUrls && disabledPlugins && plugin.installUrl && !disabledPlugins[name.slice(0, -1)]) {
+            installUrls.push(plugin);
+          }
+          return plugin;
         });
-}
-
-function handlePlugins(data, xhr) {
-  if (!data) {
-    util.showSystemError(xhr);
-    return;
-  }
-  message.success('Request successful, the list of plugins will update itself.');
 }
 
 function enableAllPlugins(e) {
@@ -88,8 +85,9 @@ window.getWhistleProxyServerInfo = function () {
   return serverInfo && $.extend(true, {}, serverInfo);
 };
 
-function getAccount(plugin) {
-  return plugin.account ? ' --account=' + plugin.account : '';
+function getParams(plugin) {
+  var params = plugin.account ? ' --account=' + plugin.account : '';
+  return params + (plugin.dir ? ' --dir=' + plugin.dir : '');
 }
 
 function getUpdateUrl(plugin) {
@@ -162,6 +160,9 @@ var Home = React.createClass({
     events.on('installPlugins', self.showInstall);
     events.on('updateAllPlugins', function (_, byInstall) {
       byInstall = byInstall === 'reinstallAllPlugins';
+      if (byInstall && (dataCenter.enableAllPlugins || (self.installUrls && self.installUrls.length))) {
+        return self.showInstall();
+      }
       var data = self.props.data || {};
       var plugins = data.plugins || {};
       var newPlugins = {};
@@ -171,7 +172,7 @@ var Home = React.createClass({
           return;
         }
         registry = registry || plugin.registry;
-        var account = getAccount(plugin);
+        var account = getParams(plugin);
         var list = newPlugins[account] || [];
         list.push(getUpdateUrl(plugin));
         newPlugins[account] = list;
@@ -207,10 +208,7 @@ var Home = React.createClass({
     if (state.registryList && state.registry) {
       cmd += ' --registry=' + state.registry;
     }
-    var isInstall = install || cmd.indexOf('w2 install ') === 0;
-    dataCenter.plugins[(isInstall ? '' : 'un' ) + 'installPlugins']({
-      cmd: cmd
-    }, handlePlugins);
+    this.refs.pluginsMgrDialog.show(cmd, this.installUrls, !install);
   },
   onOpen: function (e) {
     var name = e.target.getAttribute('data-name');
@@ -300,7 +298,7 @@ var Home = React.createClass({
     getRegistryList(function(result, r) {
       self.setState(
         {
-          cmdMsg: getCmd() + getUpdateUrl(plugin) + getAccount(plugin),
+          cmdMsg: getCmd() + getUpdateUrl(plugin) + getParams(plugin),
           isSys: plugin.isSys,
           uninstall: false,
           install: false,
@@ -329,46 +327,22 @@ var Home = React.createClass({
     this.showUninstall(plugin);
   },
   showUninstall: function (plugin) {
-    var self = this;
-    var sudo = self.props.data.isWin ? '' : 'sudo ';
-    var isSys = plugin.isSys || dataCenter.enablePluginMgr;
-    var cmdMsg = isSys ? getCmd(true) : sudo + 'npm uninstall -g ';
-    var registry = isSys ? null : plugin.registry;
-    var registryList = null;
-    var registryCmd = registry ? ' --registry=' + registry : '';
-    if (dataCenter.enablePluginMgr) {
-      var cmd = plugin.moduleName;
-      win.confirm('Are you sure to uninstall plugin \'' + cmd + '\'.', function(ok) {
-        if (ok) {
-          dataCenter.plugins.uninstallPlugins({ cmd: cmd }, handlePlugins);
-        }
-      });
-      return;
-    }
-    var update = function() {
-      self.setState(
-        {
-          cmdMsg: cmdMsg + plugin.moduleName + getAccount(plugin) + registryCmd,
-          isSys: isSys,
-          uninstall: true,
-          install: false,
-          registryList: registryList,
-          registry: registry,
-          registryChanged: true,
-          pluginPath: plugin.path
-        },
-        self.showMsgDialog
-      );
-    };
-    if (isSys) {
-      update();
-    } else {
-      getRegistryList(function(result, r) {
-        registryList = result;
-        registry = r || registry;
-        update();
-      });
-    }
+    var name = plugin.moduleName;
+    win.confirm('Are you sure to uninstall plugin \'' + name + '\'.', function(ok) {
+      if (ok) {
+        dataCenter.plugins.uninstallPlugins({ name: util.getSimplePluginName(plugin) }, function(data, xhr) {
+          if (!data) {
+            return util.showSystemError(xhr);
+          }
+          if (data.ec) {
+            return win.alert((data.em || 'Error') + ', ' + 'try again or delete the directory manually:\n' + plugin.path,
+            plugin.path
+          , 'Copy Directory Path');
+          }
+          util.showHandlePluginInfo(data);
+        });
+      }
+    });
   },
   enableAllPlugins: function (e) {
     var self = this;
@@ -387,20 +361,25 @@ var Home = React.createClass({
     var self = this;
     var data = self.props.data || {};
     var plugins = data.plugins || {};
+    var installUrls = [];
+    var disabledPlugins = data.disabledPlugins || {};
+    var list = getPluginList(plugins, installUrls, disabledPlugins);
     var state = self.state || {};
     var plugin = state.plugin || {};
     var install = state.install;
     var epm = dataCenter.enablePluginMgr;
+    var hasInstaller = epm || installUrls.length;
     var cmdMsg = install ? state.installMsg : state.cmdMsg;
-    var list = getPluginList(plugins);
-    var disabledPlugins = data.disabledPlugins || {};
     var registryList = state.registryList || [];
     var registry = state.registry || '';
     var disabled = data.disabledAllPlugins;
     var ndp = data.ndp;
+    var showCopyBtn = !epm && !install && hasInstaller;
+    var selectStyle = showCopyBtn ? {width: 225} : undefined;
     self.hasNewPlugin = false;
+    self.installUrls = installUrls;
 
-    if (!epm && state.registryChanged && cmdMsg) {
+    if (!epm && !install && state.registryChanged && cmdMsg) {
       state.registryChanged = false;
       var regCmd = registry ? ' --registry=' + registry : '';
       cmdMsg = cmdMsg.split('\n').map(function(line) {
@@ -413,7 +392,10 @@ var Home = React.createClass({
         }
         return line;
       }).filter(util.noop).join('\n');
+      state.cmdMsg = cmdMsg;
     }
+
+    var disabledBtn = !WHISTLE_PLUGIN_RE.test(cmdMsg);
 
     return (
       <div
@@ -563,7 +545,7 @@ var Home = React.createClass({
                         ) : (
                           <a
                             draggable="false"
-                            className="w-plugin-btn"
+                            className="w-delete"
                             data-name={name}
                             onClick={self.onShowUninstall}
                           >
@@ -655,7 +637,7 @@ var Home = React.createClass({
         </Dialog>
         <Dialog ref="operatePluginDialog" wstyle="w-plugin-update-dialog">
           <div className="modal-body">
-            {dataCenter.enablePluginMgr ? null : (<h5>
+            {hasInstaller ? null : (<h5>
               <a
                 data-dismiss="modal"
                 className="w-copy-text-with-tips"
@@ -671,10 +653,11 @@ var Home = React.createClass({
             <textarea
               ref="textarea"
               value={cmdMsg || ''}
-              placeholder={install ? 'Such as: whistle.inspect whistle.abc@1.0.0 @org/whistle.xxx' : undefined}
+              placeholder={install ? 'SUCH AS: whistle.inspect whistle.abc@1.0.0 @org/whistle.xyz' : undefined}
               className={'w-plugin-update-cmd' + (install ? ' w-plugin-install' : '')}
               maxLength={install ? 360 : undefined}
               onChange={this.onCmdChange}
+              onKeyDown={util.handleTab}
             />
             <div
               style={{
@@ -698,7 +681,7 @@ var Home = React.createClass({
           <div className="modal-footer">
             {registryList.length ? <label className="w-registry-list">
               <strong>--registry=</strong>
-              <select className="form-control" value={registry} onChange={this.onRegistry}>
+              <select className="form-control" value={registry} onChange={this.onRegistry} style={selectStyle}>
                 <option value="">None</option>
                 {
                   registryList.map(function(url) {
@@ -707,25 +690,15 @@ var Home = React.createClass({
                     );
                   })
                 }
-                {epm ? <option value="+Add">+Add</option> : null}
+                {hasInstaller ? <option value="+Add">+Add</option> : null}
               </select>
-            </label> : (epm ? <label className="w-registry-list">
+            </label> : (hasInstaller ? <label className="w-registry-list">
               <strong>--registry=</strong>
-              <select className="form-control" value={registry} onChange={this.onRegistry}>
+              <select className="form-control" value={registry} onChange={this.onRegistry} style={selectStyle}>
                 <option value="">None</option>
                 <option value="+Add">+Add</option>
               </select>
             </label> : null)}
-            <button
-              type="button"
-              className="btn btn-primary w-copy-text-with-tips"
-              data-dismiss="modal"
-              data-clipboard-text={dataCenter.enablePluginMgr ? undefined : cmdMsg}
-              onClick={dataCenter.enablePluginMgr ? self.execCmd : null}
-              disabled={install && !WHISTLE_PLUGIN_RE.test(cmdMsg)}
-            >
-              {dataCenter.enablePluginMgr ? (install ? 'Install' : 'Update') : 'Copy'}
-            </button>
             <button
               type="button"
               className="btn btn-default"
@@ -733,8 +706,30 @@ var Home = React.createClass({
             >
               Close
             </button>
+            {showCopyBtn ? (
+              <button
+              type="button"
+                data-dismiss="modal"
+                className="btn btn-info w-copy-text-with-tips"
+                data-clipboard-text={cmdMsg}
+                disabled={disabledBtn}
+              >
+                Copy Command
+              </button>
+            ) : null}
+            <button
+              type="button"
+              className="btn btn-primary w-copy-text-with-tips"
+              data-dismiss="modal"
+              data-clipboard-text={hasInstaller ? undefined : cmdMsg}
+              onClick={hasInstaller ? self.execCmd : null}
+              disabled={disabledBtn}
+            >
+              {hasInstaller ? (install ? 'Install' : 'Update') : 'Copy'}
+            </button>
           </div>
         </Dialog>
+        <PluginsMgr ref="pluginsMgrDialog" />
       </div>
     );
   }

@@ -7,6 +7,7 @@ module.exports = function(req, res) {
     pid: pid,
     storage: config.storage || '',
     client: config.client,
+    whistleName: config.whistleName,
     name: config.name,
     version: config.version
   });

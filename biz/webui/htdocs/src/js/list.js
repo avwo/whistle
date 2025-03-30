@@ -593,7 +593,7 @@ var List = React.createClass({
       data.list[1].disabled = disabled;
       data.list[1].name = 'Save';
       if (item && !item.changed) {
-        if ((dataCenter.isMutilEnv() && name !== 'Default') || util.isGroup(name)) {
+        if ((dataCenter.isMultiEnv() && name !== 'Default') || util.isGroup(name)) {
           data.list[1].disabled = true;
         } else {
           data.list[1].name = item.selected ? 'Disable' : 'Enable';

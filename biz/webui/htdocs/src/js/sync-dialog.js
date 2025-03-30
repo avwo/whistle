@@ -5,14 +5,6 @@ var util = require('./util');
 var dataCenter = require('./data-center');
 var KVDialog = require('./kv-dialog');
 
-function getCgiUrl(moduleName, url) {
-  var pluginName = 'plugin.' + util.getSimplePluginName(moduleName);
-  if (url.indexOf(moduleName) === 0 || url.indexOf(pluginName) === 0) {
-    return url;
-  }
-  return pluginName + '/' + url;
-}
-
 var SyncDialog = React.createClass({
   getInitialState: function () {
     return {};
@@ -45,7 +37,7 @@ var SyncDialog = React.createClass({
       rulesUrl += (rulesUrl.indexOf('?') === -1 ? '?' : '&') + 'history=' + encodeURIComponent(history);
     }
     var loadRules = dataCenter.createCgi(
-      getCgiUrl(self.state.moduleName, rulesUrl)
+      util.getPluginCgiUrl(self.state.moduleName, rulesUrl)
     );
     loadRules(function (data, xhr) {
       self.loadingRules = false;
@@ -69,7 +61,7 @@ var SyncDialog = React.createClass({
       valuesUrl += (valuesUrl.indexOf('?') === -1 ? '?' : '&') + 'history=' + encodeURIComponent(history);
     }
     var loadValues = dataCenter.createCgi(
-      getCgiUrl(self.state.moduleName, valuesUrl)
+      util.getPluginCgiUrl(self.state.moduleName, valuesUrl)
     );
     loadValues(function (data, xhr) {
       self.loadingValues = false;

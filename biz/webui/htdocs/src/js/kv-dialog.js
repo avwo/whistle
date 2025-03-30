@@ -165,19 +165,19 @@ var KVDialog = React.createClass({
         <div className="modal-footer">
           <button
             type="button"
+            className="btn btn-default"
+            data-dismiss="modal"
+          >
+            Close
+          </button>
+          <button
+            type="button"
             className="btn btn-primary"
             disabled={noData}
             onClick={this.confirm}
             data-dismiss="modal"
           >
             Add to {this.isValues ? 'Values' : 'Rules'}
-          </button>
-          <button
-            type="button"
-            className="btn btn-default"
-            data-dismiss="modal"
-          >
-            Close
           </button>
         </div>
       </Dialog>

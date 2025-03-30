@@ -208,11 +208,16 @@
   padding: 10px 15px;
 }
 
+.w-context-menu li[data-menu-action='Remove'] ul,
+.w-context-menu li[data-menu-action='Actions'] ul,
 .w-context-menu li[data-menu-action='Copy'] ul {
   top: -31px !important;
 }
 
-.w-context-menu.w-contenxt-menu-list li[data-menu-action='Copy'] ul {
+.w-context-menu.w-contenxt-menu-list li[data-menu-action='Copy'] ul,
+.w-context-menu.w-ctx-menu-others li[data-menu-action='Remove'] ul,
+.w-context-menu.w-ctx-menu-others li[data-menu-action='Actions'] ul,
+.w-context-menu.w-ctx-menu-others li[data-menu-action='Copy'] ul {
   top: 0 !important;
 }
 

@@ -46,6 +46,9 @@ function createCgi(url, settings) {
       execCallback.call(this, data, xhr);
     };
     options.error = function (xhr, em) {
+      if (xhr && em) {
+        xhr.errMsg = em;
+      }
       execCallback.call(this, false, xhr, em);
     };
     opts = options;

@@ -123,11 +123,11 @@ var ListDialog = React.createClass({
                 );
               })
             }
-          </div> : (onConfirm ? null : <p style={{marginTop: 10}}>
+          </div> : (onConfirm ? null : <p style={{marginTop: 10, whiteSpace: 'nowrap'}}>
               Filename:
               <input
                 ref="filename"
-                style={{ width: 390, display: 'inline-block', marginLeft: 5 }}
+                style={{ width: 812, display: 'inline-block', marginLeft: 5 }}
                 className="form-control"
                 placeholder="Input the filename"
               />

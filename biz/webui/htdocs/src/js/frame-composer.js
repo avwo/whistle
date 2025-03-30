@@ -9,7 +9,6 @@ var win = require('./win');
 
 var MAX_FILE_SIZE = 1024 * 1025;
 var MAX_LENGTH = 1024 * 64;
-var JSON_RE = /^\s*(?:[\{｛][\w\W]+[\}｝]|\[[\w\W]+\])\s*$/;
 
 var FrameComposer = React.createClass({
   getInitialState: function () {
@@ -152,16 +151,16 @@ var FrameComposer = React.createClass({
     var data = util.parseRawJson(this.state.text);
     if (data) {
       this.setState({
-        isJSON: true,
         text: JSON.stringify(data, null, '  ')
       });
     }
   },
+  onForamt: function (e) {
+    util.handleFormat(e, this.format);
+    util.handleTab(e);
+  },
   setTextarea: function (text) {
-    this.setState({
-      text: text,
-      isJSON: JSON_RE.test(text)
-    });
+    this.setState({ text: text });
     clearTimeout(this.timer);
     this.timer = setTimeout(function () {
       storage.set('composeFrameData', text);
@@ -187,7 +186,6 @@ var FrameComposer = React.createClass({
     var data = this.props.data || '';
     util.socketIsClosed(data);
     var state = this.state;
-    var isJSON = state.isJSON;
     var text = state.text || '';
     var isHexText = state.isHexText;
     var isCRLF = state.isCRLF;
@@ -316,7 +314,6 @@ var FrameComposer = React.createClass({
             </ul>
           </div>
           <button
-            disabled={!isJSON}
             type="button"
             title="Format"
             onClick={this.format}
@@ -330,6 +327,7 @@ var FrameComposer = React.createClass({
           style={{ fontFamily: isHexText ? 'monospace' : undefined }}
           maxLength={MAX_LENGTH}
           value={text}
+          onKeyDown={this.onForamt}
           onChange={this.onTextareaChange}
           placeholder={'Input the ' + (isHexText ? 'hex ' : '') + 'text'}
           className="fill"

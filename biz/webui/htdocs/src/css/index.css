@@ -322,8 +322,12 @@
   border: 1px solid #ccc;
 }
 
-.w-https-menu .glyphicon-lock {
+.w-enable-https-btn, .w-https-menu .glyphicon-lock {
   color: #9e9e26;
+}
+
+.w-enable-https-btn {
+  cursor: pointer;
 }
 
 .w-hover-left-menu {

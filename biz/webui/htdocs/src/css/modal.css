@@ -14,7 +14,4 @@
   top: 10px;
   right: 10px;
 }
-.w-context-menu li[data-menu-action='Remove'] ul,
-.w-context-menu li[data-menu-action='Actions'] ul {
-  top: -31px !important;
-}
+

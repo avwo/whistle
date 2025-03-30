@@ -8,6 +8,7 @@ var dataCenter = require('./data-center');
 var message = require('./message');
 var win = require('./win');
 var events = require('./events');
+var EnableHttpsBtn = require('./enable-https-btn');
 
 var MAX_LENGTH = 1024 * 6;
 
@@ -29,7 +30,10 @@ var Tips = React.createClass({
     if (data.isHttps) {
       return (
         <div className={className}>
-          <p>Tunnel</p>
+          <p>
+            <EnableHttpsBtn />
+            Tunnel
+          </p>
           <a
             href="https://avwo.github.io/whistle/webui/https.html"
             target="_blank"
@@ -59,6 +63,10 @@ var Textarea = React.createClass({
   shouldComponentUpdate: function (nextProps) {
     var hide = util.getBoolean(this.props.hide);
     var nextHide = util.getBoolean(nextProps.hide);
+    if (this._isCaptured !== dataCenter.isCapture) {
+      this._isCaptured = dataCenter.isCapture;
+      return true;
+    }
     if (hide !== nextHide || !this.props.value) {
       return true;
     }

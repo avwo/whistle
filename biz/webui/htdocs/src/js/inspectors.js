@@ -44,7 +44,7 @@ var Inspectors = React.createClass({
     var hide = util.getBoolean(props.hide);
     var tabs = dataCenter.getTabs();
     var active = this.state.activeName;
-    urlModal.Url = modal && modal.url;
+    urlModal.Url = modal && ((modal.isHttps ? 'tunnel://' : '') + modal.url);
 
     return (
       <div
@@ -52,7 +52,7 @@ var Inspectors = React.createClass({
           'fill orient-vertical-box w-detail-inspectors' + (hide ? ' hide' : '')
         }
       >
-        <Properties className="w-detail-inspectors-url" modal={urlModal} />
+        <Properties className="w-detail-inspectors-url" modal={urlModal}  showEnableBtn={true} />
         <div className="box w-detail-inspectors-title w-detail-inspectors-tabs">
           <button
             type="button"

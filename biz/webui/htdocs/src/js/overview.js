@@ -385,6 +385,7 @@ var Overview = React.createClass({
           modal={overviewModal}
           rawName="Original Url"
           rawValue={rawUrl}
+          showEnableBtn={true}
         />
         <p
           className="w-detail-overview-title"

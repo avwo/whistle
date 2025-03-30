@@ -11,7 +11,7 @@ var createCgi = createCgiObj.createCgi;
 var MAX_INCLUDE_LEN = 5120;
 var MAX_EXCLUDE_LEN = 5120;
 var MAX_FRAMES_LENGTH = (exports.MAX_FRAMES_LENGTH = 256);
-var TIMEOUT = 20000;
+var TIMEOUT = 30000;
 var dataCallbacks = [];
 var serverInfoCallbacks = [];
 var framesUpdateCallbacks = [];
@@ -392,13 +392,13 @@ var cgi = createCgiObj(
   GET_CONF
 );
 
-exports.createCgi = function (url, cancel) {
+exports.createCgi = function (url, cancel, post) {
   return createCgi(
     {
       url: url,
       mode: cancel ? 'cancel' : null
     },
-    GET_CONF
+    post ? POST_CONF : GET_CONF
   );
 };
 
@@ -455,7 +455,8 @@ exports.plugins = createCgiObj(
     disableAllPlugins: 'cgi-bin/plugins/disable-all-plugins',
     getRegistryList: 'cgi-bin/plugins/registry-list',
     installPlugins: 'cgi-bin/plugins/install',
-    uninstallPlugins: 'cgi-bin/plugins/uninstall'
+    uninstallPlugins: 'cgi-bin/plugins/uninstall',
+    addRegistry: 'cgi-bin/plugins/add-registry'
   },
   POST_CONF
 );
@@ -631,6 +632,7 @@ exports.getInitialData = function (callback) {
         if (!data) {
           return setTimeout(load, 1000);
         }
+        exports.isCapture = !!data.interceptHttpsConnects;
         var server = data.server;
         port = server && server.port;
         account = server && server.account;
@@ -906,6 +908,19 @@ function startLoadData() {
       updateServerInfo(data);
       if (!data || data.ec !== 0) {
         return;
+      }
+      var preCapture = exports.isCapture;
+      if (preCapture === 0) {
+        exports.isCapture = false;
+      } else if (preCapture === 1) {
+        exports.isCapture = true;
+      } else {
+        var capture = !!data.interceptHttpsConnects;
+        if (exports.isCapture !== capture) {
+          exports.isCapture = capture;
+          events.trigger('reqTabsChange');
+          events.trigger('resTabsChange');
+        }
       }
       var server = data.server;
       port = server && server.port;
@@ -1320,7 +1335,7 @@ function setReqData(item) {
   item.contentEncoding =
     (resHeaders['content-encoding'] || '') +
     (item.res.hasGzipError ? ' (Incorrect header)' : '');
-  var reqSize = req.size == null ? defaultValue : req.size; 
+  var reqSize = req.size == null ? defaultValue : req.size;
   var resSize = res.size == null ? defaultValue : res.size;
   var reqSizeStr = util.getDisplaySize(reqSize, req.unzipSize);
   var resSizeStr = util.getDisplaySize(resSize, res.unzipSize);
@@ -1534,9 +1549,10 @@ exports.isDiableCustomCerts = function () {
   return curServerInfo && curServerInfo.dcc;
 };
 
-exports.isMutilEnv = function () {
+exports.isMultiEnv = function () {
   return curServerInfo && curServerInfo.multiEnv;
 };
+
 exports.isStrictMode = function () {
   return (curServerInfo && curServerInfo.strictMode) || false;
 };

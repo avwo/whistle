@@ -416,6 +416,8 @@ var MockDialog = React.createClass({
           if ((e.ctrlKey || e.metaKey) && e.keyCode === 83) {
             e.preventDefault();
           }
+          util.handleFormat(e, self.formatValue);
+          util.handleTab(e);
         };
       }
     };

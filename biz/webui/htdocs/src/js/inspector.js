@@ -33,7 +33,7 @@ var Inspector = React.createClass({
         </div>
         <div className="fill orient-vertical-box">
           <div className="w-detail-inspectors-title w-detail-inspectors-res">
-            <span className="glyphicon glyphicon-arrow-left"></span>Response
+            <span className="glyphicon glyphicon-arrow-left" />Response
           </div>
           <ResDetail modal={modal} />
         </div>

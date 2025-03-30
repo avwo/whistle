@@ -76,6 +76,12 @@ function getBridge(win) {
     setComposerData: function(data) {
       events.trigger('setComposerData', data);
     },
+    showHttpsSettings: function() {
+      events.trigger('showHttpsSettingsDialog');
+    },
+    showCustomCerts: function() {
+      events.trigger('showCustomCerts');
+    },
     copyText: util.copyText,
     syncData: function(cb) {
       plugin && dataCenter.syncData(plugin, cb);

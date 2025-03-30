@@ -181,14 +181,15 @@ var PROPS_MENUS = [
   }
 ];
 
-exports.handlePropsContextMenu = function(e, ctxMenu, target) {
-  target = target ? $(target) : $(e.target).closest('tr');
-  if (!target.length) {
+exports.handlePropsContextMenu = function(e, ctxMenu) {
+  var target = $(e.target);
+  var row = target.closest('tr');
+  if (!row.length) {
     return;
   }
   var text = getSelectedText(e.clientX, e.clientY);
-  var key = target.attr('data-name');
-  var value = target.attr('data-value');
+  var key = row.attr('data-name');
+  var value = row.attr('data-value');
   if (!text && !key && !value) {
     return;
   }
@@ -200,7 +201,13 @@ exports.handlePropsContextMenu = function(e, ctxMenu, target) {
   PROPS_MENUS[2].copyText = value;
   var height = 10 + (text ? 30 : 0) + (key ? 30 : 0) + (value ? 30 : 0);
   var data = getMenuPosition(e, 110, height);
-  data.list = PROPS_MENUS;
+  var list = PROPS_MENUS;
+  if (!target.closest('th').length) {
+    list = list.map(noop);
+    list[1] = PROPS_MENUS[2];
+    list[2] = PROPS_MENUS[1];
+  }
+  data.list = list;
   e.preventDefault();
   ctxMenu.show(data);
 };
@@ -410,19 +417,24 @@ function stopPropagation(e) {
 
 exports.stopPropagation = stopPropagation;
 
-exports.showSystemError = function (xhr, useToast) {
+function showSystemError(xhr, useToast) {
   xhr = xhr || {};
   var status = xhr.status;
   var showTips = useToast ? message.error : win.alert;
   if (!status) {
-    return showTips('Please check the proxy settings or whether whistle has been started.');
+    if (xhr.errMsg === 'timeout') {
+      return showTips('Request timeout.');
+    }
+    return showTips('Please check whether the proxy and server are available.');
   }
-  var msg = STATUS_CODES[status];
+  var msg = xhr.responseText || STATUS_CODES[status];
   if (msg) {
-    return showTips('[' + status + '] ' + msg + '.');
+    return showTips('[' + status + '] ' + String(msg).substring(0, 1024) + '.');
   }
   showTips('[' + status + '] Unknown error, try again later.');
-};
+}
+
+exports.showSystemError = showSystemError;
 
 exports.getClasses = function getClasses(obj) {
   var classes = [];
@@ -2719,14 +2731,53 @@ exports.getDataUrl = function() {
   return result && decodeURIComponentSafe(result[1]).trim();
 };
 
-exports.getSimplePluginName = function(plugin) {
+function getSimplePluginName(plugin) {
   var name = typeof plugin === 'string' ? plugin : plugin.moduleName;
   return name.substring(name.lastIndexOf('.') + 1);
-};
+}
+
+exports.getSimplePluginName = getSimplePluginName;
 
 exports.showJSONDialog = function(data, keyPath) {
   var str = data && JSON.stringify(data);
   if (str) {
     events.trigger('showJsonViewDialog', [str, Array.isArray(keyPath) ? keyPath : null]);
   }
+};
+
+exports.handleFormat = function(e, onFormat) {
+  if (e.shiftKey && e.keyCode === 70  && (e.metaKey || e.ctrlKey)) {
+    onFormat(e);
+    e.preventDefault();
+  }
+};
+
+exports.handleTab = function(e) {
+  var target = e.target;
+  if (e.keyCode !== 9 || e.altKey || target.readOnly || target.disabled) {
+    return;
+  }
+  e.preventDefault();
+  var start = target.selectionStart;
+  var end = target.selectionEnd;
+  var value = target.value;
+  target.value = value.substring(0, start) + '  ' + value.substring(end);
+  target.selectionStart = target.selectionEnd = start + 2;
+};
+
+exports.getPluginCgiUrl = function(moduleName, url) {
+  var pluginName = 'plugin.' + getSimplePluginName(moduleName);
+  if (url.indexOf(moduleName) === 0 || url.indexOf(pluginName) === 0) {
+    return url;
+  }
+  return pluginName + '/' + url;
+};
+
+exports.showHandlePluginInfo = function(data, xhr) {
+  if (!data) {
+    showSystemError(xhr);
+    return false;
+  }
+  message.success('Request successful, the plugin list will be auto updated.');
+  return true;
 };

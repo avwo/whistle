@@ -169,12 +169,14 @@
 }
 
 .w-detail-inspectors .glyphicon-arrow-right,
-.w-frames-list .glyphicon-arrow-right {
+.w-frames-list .glyphicon-arrow-right,
+.w-composer-tabs .glyphicon-arrow-right {
   color: #0d8f0d;
 }
 
 .w-detail-inspectors .glyphicon-arrow-left,
-.w-frames-list .glyphicon-arrow-left {
+.w-frames-list .glyphicon-arrow-left,
+.w-composer-tabs .glyphicon-arrow-left {
   color: #e75b0f;
 }
 .w-frames-data textarea {

@@ -15,6 +15,7 @@ function createAlert() {
         '</div>' +
         '<div class="modal-footer">' +
         '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>' +
+        '<button type="button" class="btn btn-primary w-copy-text-with-tips" data-dismiss="modal"></button>' +
         '</div>' +
         '</div>' +
         '</div>' +
@@ -64,10 +65,17 @@ function createConfirm() {
   return confirmDialog;
 }
 
-function mockAlert(msg) {
+function mockAlert(msg, copyText, btnText) {
   createAlert();
   alertDialog.find('pre').text(msg);
   alertDialog.modal('show');
+  var btn = alertDialog.find('.w-copy-text-with-tips');
+  if (copyText && typeof copyText === 'string') {
+    btn.text(btnText || 'Copy');
+    btn.show().attr('data-clipboard-text', copyText);
+  } else {
+    btn.hide();
+  }
 }
 
 function mockConfirm(msg, cb, removeAllBtn) {

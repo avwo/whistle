@@ -88,6 +88,8 @@ var EditorDialog = React.createClass({
             e.preventDefault();
             self.props.textEditor && self.onSave();
           }
+          util.handleFormat(e, self.formatValue);
+          util.handleTab(e);
         };
       }
     };
@@ -264,19 +266,19 @@ var EditorDialog = React.createClass({
         </div> : <div className="modal-footer">
           <button
             type="button"
+            className="btn btn-default"
+            data-dismiss="modal"
+          >
+            Close
+          </button>
+          <button
+            type="button"
             data-dismiss="modal"
             className="btn btn-primary w-copy-text-with-tips"
             data-clipboard-text={state.value}
             disabled={!value}
           >
             Copy
-          </button>
-          <button
-            type="button"
-            className="btn btn-default"
-            data-dismiss="modal"
-          >
-            Close
           </button>
         </div>}
       </Dialog>
