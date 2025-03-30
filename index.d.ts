@@ -67,6 +67,7 @@ export interface WhistleSession {
 export type WhistleSecureFilter = ((item: WhistleSession, clientIp?: string, filter?: string) => WhistleSession) | string;
 
 export interface WhistleOptions {
+  whistleName?: string;
   config?: string;
   cluster?: number | string;
   server?: EventEmitter | Server;
