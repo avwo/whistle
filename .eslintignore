@@ -4,3 +4,4 @@ node_modules
 /test/assets/values
 /test/plugins/whistle.test/assets
 /bin/import.js
+/test/all_whistles
