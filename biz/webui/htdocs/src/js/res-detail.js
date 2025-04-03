@@ -201,7 +201,7 @@ var ResDetail = React.createClass({
       if (imgSrc) {
         data = modal;
       }
-      if (modal.useFrames) {
+      if (modal.useFrames || dataCenter.isFrames(modal)) {
         tips = { isFrames: true };
       } else if (modal.isHttps) {
         tips = !body && { isHttps: true };

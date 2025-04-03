@@ -660,6 +660,9 @@ exports.getInitialData = function (callback) {
           lastRowId = data.lastDataId;
         }
         exports.pluginsRoot = data.pluginsRoot;
+        exports.whistleName = data.wName;
+        exports.account = data.account;
+        exports.disableInstaller = data.disableInstaller;
         exports.upload = createCgiObj(
           {
             importSessions: 'cgi-bin/sessions/import?clientId=' + pageId,
@@ -926,6 +929,9 @@ function startLoadData() {
       port = server && server.port;
       account = server && server.account;
       exports.pluginsRoot = data.pluginsRoot;
+      exports.whistleName = data.wName;
+      exports.account = data.account;
+      exports.disableInstaller = data.disableInstaller;
       updateCertStatus(data);
       exports.enablePluginMgr = data.epm;
       exports.supportH2 = data.supportH2;

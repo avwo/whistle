@@ -23,6 +23,9 @@ var Inspectors = React.createClass({
     events.on('tabsChange', function () {
       self.setState({});
     });
+    events.on('showFrames', function () {
+      self.showTab('Frames');
+    });
   },
   showTab: function (name) {
     if (this.state.activeName !== name) {

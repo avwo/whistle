@@ -132,7 +132,7 @@ var ReqDetail = React.createClass({
         '\r\n' +
         headersStr;
       raw = headersStr + '\r\n\r\n' + body;
-      if (modal.useFrames) {
+      if (modal.useFrames || dataCenter.isFrames(modal)) {
         tips = { isFrames: true };
       } else if (modal.isHttps) {
         tips = { isHttps: true };

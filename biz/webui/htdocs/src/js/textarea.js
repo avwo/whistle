@@ -23,7 +23,7 @@ var Tips = React.createClass({
     if (data.isFrames) {
       return (
         <a className={className} onClick={showFrames}>
-          View in Frames
+          View Frames
         </a>
       );
     }

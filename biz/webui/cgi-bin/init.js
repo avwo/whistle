@@ -15,6 +15,9 @@ module.exports = function(req, res) {
   var lastSvrLog = logger.getLogs(0, 1)[0];
 
   util.sendGzip(req, res, {
+    wName: config.whistleName,
+    disableInstaller: config.disableInstaller,
+    account: config.account,
     version: config.version,
     epm: config.epm,
     custom1: properties.get('Custom1'),

@@ -51,7 +51,8 @@ function getPluginList(plugins, installUrls, disabledPlugins) {
   return Object.keys(plugins).sort(getPluginComparator(plugins))
         .map(function (name) {
           var plugin = plugins[name];
-          if (plugin && installUrls && disabledPlugins && plugin.installUrl && !disabledPlugins[name.slice(0, -1)]) {
+          if (!dataCenter.disableInstaller && plugin && installUrls && disabledPlugins
+            && plugin.installUrl && !disabledPlugins[name.slice(0, -1)]) {
             installUrls.push(plugin);
           }
           return plugin;
@@ -85,9 +86,13 @@ window.getWhistleProxyServerInfo = function () {
   return serverInfo && $.extend(true, {}, serverInfo);
 };
 
+function getArgvs(account, dir) {
+  var params = account ? ' --account=' + account : '';
+  return params + (dir ? ' --dir=' + dir : '');
+}
+
 function getParams(plugin) {
-  var params = plugin.account ? ' --account=' + plugin.account : '';
-  return params + (plugin.dir ? ' --dir=' + plugin.dir : '');
+  return getArgvs(plugin.account, plugin.dir);
 }
 
 function getUpdateUrl(plugin) {
@@ -104,31 +109,6 @@ function isOpenExternal(plugin) {
 
 function getHomePage(plugin) {
   return plugin.pluginHomepage || 'plugin.' + util.getSimplePluginName(plugin) + '/';
-}
-
-function getRegistryList(cb) {
-  dataCenter.plugins.getRegistryList(function(data, xhr) {
-    var registry = storage.get('pluginsRegistry');
-    if (!data) {
-      util.showSystemError(xhr);
-    } else if (data.ec !== 0) {
-      win.alert(data.em);
-    } else {
-      registryCache = dataCenter.getPluginRegistry();
-      data.list.forEach(function(url) {
-        if (registryCache.indexOf(url) === -1) {
-          registryCache.push(url);
-        }
-      });
-    }
-    if (!registryCache) {
-      return;
-    }
-    if (registryCache.indexOf(registry) === -1) {
-      registry = '';
-    }
-    cb(registryCache, registry);
-  });
 }
 
 var Home = React.createClass({
@@ -183,7 +163,7 @@ var Home = React.createClass({
           return getCmd() + list + registry;
         })
         .join('\n\n');
-      cmdMsg && getRegistryList(function(result, r) {
+      cmdMsg && self.getRegistryList(function(result, r) {
         self.setState({
           cmdMsg: cmdMsg,
           uninstall: false,
@@ -193,6 +173,49 @@ var Home = React.createClass({
           registryList: result
         }, self.showMsgDialog);
       });
+    });
+  },
+  getRegistryList: function(cb) {
+    var list = [];
+    if (this.installUrls) {
+      this.installUrls.forEach(function(plugin) {
+        var reg = plugin.installUrl && plugin.installRegistry;
+        Array.isArray(reg) && reg.forEach(function(r) {
+          if (r && list.indexOf(r) === -1) {
+            list.push(r);
+          }
+        });
+      });
+    }
+    dataCenter.plugins.getRegistryList(function(data, xhr) {
+      var registry = storage.get('pluginsRegistry');
+      if (!data) {
+        util.showSystemError(xhr);
+      } else if (data.ec !== 0) {
+        win.alert(data.em);
+      } else {
+        registryCache = dataCenter.getPluginRegistry();
+        data.list.forEach(function(url) {
+          if (registryCache.indexOf(url) === -1) {
+            registryCache.push(url);
+          }
+        });
+      }
+      if (list.length) {
+        registryCache = registryCache || [];
+        list.forEach(function(url) {
+          if (registryCache.indexOf(url) === -1) {
+            registryCache.push(url);
+          }
+        });
+      }
+      if (!registryCache) {
+        return;
+      }
+      if (registryCache.indexOf(registry) === -1) {
+        registry = '';
+      }
+      cb(registryCache, registry);
     });
   },
   componentDidUpdate: function () {
@@ -295,7 +318,7 @@ var Home = React.createClass({
   },
   showUpdate: function (plugin) {
     var self = this;
-    getRegistryList(function(result, r) {
+    self.getRegistryList(function(result, r) {
       self.setState(
         {
           cmdMsg: getCmd() + getUpdateUrl(plugin) + getParams(plugin),
@@ -312,7 +335,7 @@ var Home = React.createClass({
   },
   showInstall: function() {
     var self = this;
-    getRegistryList(function(result, r) {
+    self.getRegistryList(function(result, r) {
       self.setState({
         install: true,
         registryList: result,
@@ -369,30 +392,36 @@ var Home = React.createClass({
     var install = state.install;
     var epm = dataCenter.enablePluginMgr;
     var hasInstaller = epm || installUrls.length;
-    var cmdMsg = install ? state.installMsg : state.cmdMsg;
+    var cmdMsg = (install ? state.installMsg : state.cmdMsg) || '';
     var registryList = state.registryList || [];
     var registry = state.registry || '';
     var disabled = data.disabledAllPlugins;
     var ndp = data.ndp;
-    var showCopyBtn = !epm && !install && hasInstaller;
+    var showCopyBtn = !epm &&  hasInstaller;
     var selectStyle = showCopyBtn ? {width: 225} : undefined;
     self.hasNewPlugin = false;
     self.installUrls = installUrls;
 
-    if (!epm && !install && state.registryChanged && cmdMsg) {
+    if (state.registryChanged) {
       state.registryChanged = false;
-      var regCmd = registry ? ' --registry=' + registry : '';
-      cmdMsg = cmdMsg.split('\n').map(function(line) {
-        line = line.trim();
-        line = line.split(/\s+/).filter(function(cmd) {
-          return cmd.indexOf('--registry') !== 0;
-        }).join(' ');
-        if (line && regCmd) {
-          line += regCmd;
-        }
-        return line;
-      }).filter(util.noop).join('\n');
+      var regCmd = registry ? ' --registry=' + registry + '  ' : '';
+      if (cmdMsg) {
+        cmdMsg = cmdMsg.split('\n').map(function(line) {
+          line = line.trim();
+          line = line.split(/\s+/).filter(function(cmd) {
+            return cmd.indexOf('--registry') !== 0;
+          }).join(' ');
+          if (line && regCmd) {
+            line += regCmd;
+          }
+          return line;
+        }).filter(util.noop).join('\n');
+      } else {
+        cmdMsg = getCmd() + getArgvs(dataCenter.account, dataCenter.whistleName) + ' ' + (regCmd ?  regCmd : '');
+      }
+
       state.cmdMsg = cmdMsg;
+      state.installMsg = cmdMsg;
     }
 
     var disabledBtn = !WHISTLE_PLUGIN_RE.test(cmdMsg);
@@ -856,7 +885,7 @@ var Tabs = React.createClass({
         plugin: plugin,
         plugins: getPluginList(props.plugins),
         pluginsRoot: dataCenter.pluginsRoot,
-        getRegistryList: getRegistryList
+        getRegistryList: this.getRegistryList
       });
       return;
     }

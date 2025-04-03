@@ -69,6 +69,10 @@
   left: 50%;
   top: 50%;
   margin: -50px 0 0 -260px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 .w-textview-tips p {
   font-size: 14px;

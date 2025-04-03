@@ -17,6 +17,6 @@
 }
 
 .w-plugins-mgr-dialog .plugin-mgr-btn span {
-  color: #666;
+  opacity: 0.66;
   font-weight: 400;
 }

@@ -29,6 +29,9 @@ module.exports = function(req, res) {
   var curSvrLogId = logger.getLatestId();
   util.sendGzip(req, res, {
     ec: 0,
+    wName: config.whistleName,
+    disableInstaller: config.disableInstaller,
+    account: config.account,
     version: config.version,
     epm: config.epm,
     custom1: properties.get('Custom1'),
