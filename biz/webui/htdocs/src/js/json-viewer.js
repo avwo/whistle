@@ -7,6 +7,7 @@ var CopyBtn = require('./copy-btn');
 var message = require('./message');
 var ContextMenu = require('./context-menu');
 var win = require('./win');
+var Tips = require('./panel-tips');
 
 var JSONTree = require('./components/react-json-tree')['default'];
 var dataCenter = require('./data-center');
@@ -224,9 +225,14 @@ var JsonViewer = React.createClass({
     var viewSource = state.viewSource;
     var props = this.props;
     var data = props.data;
+    var tips = props.tips;
+    var className = 'fill orient-vertical-box w-properties-wrap w-json-viewer';
     var noData = !data;
     if (noData) {
       data = state.lastData || {};
+      if (tips) {
+        return <div className={className + (props.hide ? ' hide' : '')}><Tips data={tips} /></div>;
+      }
     } else {
       state.lastData = data;
     }
@@ -243,11 +249,9 @@ var JsonViewer = React.createClass({
     }
     return (
       <div
-        className={
-          'fill orient-vertical-box w-properties-wrap w-json-viewer' +
-          (noData || props.hide ? ' hide' : '')
-        }
+        className={className + (noData || props.hide ? ' hide' : '')}
       >
+        <Tips data={tips} />
         <div className="w-textarea-bar">
           <CopyBtn value={data.str} />
           <a

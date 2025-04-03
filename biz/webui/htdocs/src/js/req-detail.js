@@ -132,7 +132,7 @@ var ReqDetail = React.createClass({
         '\r\n' +
         headersStr;
       raw = headersStr + '\r\n\r\n' + body;
-      if (modal.useFrames || dataCenter.isFrames(modal)) {
+      if (modal.frames) {
         tips = { isFrames: true };
       } else if (modal.isHttps) {
         tips = { isHttps: true };
@@ -235,6 +235,7 @@ var ReqDetail = React.createClass({
             reqType="reqRaw"
             defaultName={defaultName}
             data={json}
+            tips={tips}
             hide={name != BTNS[3].name}
           />
         ) : undefined}
@@ -243,6 +244,7 @@ var ReqDetail = React.createClass({
             reqData={modal}
             reqType="reqBody"
             defaultName={defaultName}
+            tips={tips}
             isHexView="1"
             base64={base64}
             value={bin}

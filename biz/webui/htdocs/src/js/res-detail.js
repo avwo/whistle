@@ -201,7 +201,7 @@ var ResDetail = React.createClass({
       if (imgSrc) {
         data = modal;
       }
-      if (modal.useFrames || dataCenter.isFrames(modal)) {
+      if (modal.frames) {
         tips = { isFrames: true };
       } else if (modal.isHttps) {
         tips = !body && { isHttps: true };
@@ -291,6 +291,7 @@ var ResDetail = React.createClass({
             reqType="resJson"
             defaultName={defaultName}
             data={json}
+            tips={tips}
             hide={name != btns[3].name}
           />
         ) : undefined}
@@ -301,6 +302,7 @@ var ResDetail = React.createClass({
             defaultName={defaultName}
             isHexView="1"
             base64={base64}
+            tips={tips}
             value={bin}
             className="fill n-monospace w-detail-response-hex"
             hide={name != btns[4].name}
