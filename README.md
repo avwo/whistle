@@ -4,7 +4,7 @@
   </a>
 </p>
 
-# Whistle
+# whistle
 
 [![NPM version](https://img.shields.io/npm/v/whistle.svg?style=flat-square)](https://npmjs.org/package/whistle)
 [![node version](https://img.shields.io/badge/node.js->=_8-green.svg?style=flat-square)](http://nodejs.org/download/)
