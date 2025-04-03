@@ -1,8 +1,8 @@
 # v2.9.95
 1. feat: JSON Viewer 的右键菜单支持 Copy 选中的文本
 2. feat: Composer 历史列表添加右键菜单
-3. feat: 优化界面
-4. feat: 支持通过插件安装插件
+3. feat: 优化界面及性能
+4. feat: 支持通过插件安装插件，实现方式参考：https://github.com/whistle-plugins/whistle.installer
 5. feat: 支持通过界面卸载插件
 
 # v2.9.94

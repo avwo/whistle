@@ -53,7 +53,7 @@
     "pfork": "^0.6.2",
     "pipestream": "^0.7.4",
     "safe-buffer": "^5.1.2",
-    "set-global-proxy": "^0.2.1",
+    "set-global-proxy": "^0.2.2",
     "sni": "1.0.0",
     "sockx": "^0.2.2",
     "starting": "^8.0.3",
