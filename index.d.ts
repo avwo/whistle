@@ -130,6 +130,7 @@ export interface WhistleOptions {
   shadowRules?: string;
   dnsCache?: number;
   allowDisableShadowRules?: boolean;
+  disableInstaller?: boolean;
   customHandler?: (req: IncomingMessage, res: ServerResponse, next?: Function) => void;
   pluginHost?: string;
   copy?: string;
