@@ -149,6 +149,7 @@ var Editor = React.createClass({
     this._editorHistoryMap = map;
     if(init) {
       this._editorCurrentHistoryKey = name;
+      this._editor.clearHistory();
     } else {
       if(this._editorCurrentHistoryKey !== name) {
         map[this._editorCurrentHistoryKey] = history;
@@ -290,7 +291,7 @@ var Editor = React.createClass({
       find(keyword, e.type === 'findEditorPrev');
     };
     self._editor = editor;
-    
+
     events.on('findEditorNext', findEditor);
     events.on('findEditorPrev', findEditor);
 
