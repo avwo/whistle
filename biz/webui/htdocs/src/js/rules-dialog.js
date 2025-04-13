@@ -99,19 +99,29 @@ var RulesDialog = React.createClass({
     var state = self.state;
     var values = self._values;
     var rulesValue = state.rulesValue;
-    if (!values || !values.isFile || !TEMP_FILE_RE.test(rulesValue)) {
+    if (!values || !values.isFile) {
       return self.saveValue(cb);
     }
-    dataCenter.createTempFile(JSON.stringify({
-      clientId: dataCenter.getPageId(),
-      value: values.value,
-      base64: values.base64
-    }), function (result, xhr) {
-      if (result && result.ec === 0) {
-        cb(result.filepath);
-      } else {
-        util.showSystemError(xhr);
-      }
+    var hasError;
+    var createFile = function(base64, value, init) {
+      dataCenter.createTempFile(JSON.stringify({
+        clientId: dataCenter.getPageId(),
+        value: value,
+        base64: base64
+      }), function (result, xhr) {
+        if (result && result.ec === 0) {
+          init && cb(TEMP_FILE_RE.test(rulesValue) ? result.filepath : null);
+        } else if (!hasError) {
+          hasError = true;
+          util.showSystemError(xhr);
+        }
+      });
+    };
+    createFile(values.base64, values.value, true);
+    var list = values.list;
+    list = Array.isArray(list) ? list.slice(0, 10) : [];
+    list.forEach(function(base64) {
+      createFile(base64);
     });
   },
   saveValue: function(cb) {

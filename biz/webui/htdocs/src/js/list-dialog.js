@@ -8,6 +8,9 @@ var Tabs = require('./tabs');
 var RuleList = require('./rule-list');
 var $ = require('jquery');
 var parseRules = require('./parse-rules');
+var dataCenter = require('./data-center');
+
+var TEMP_LINK_RE_G = /(?:^|\s)(?:[\w-]+:\/\/)?temp\/([\da-z]{64})(?:\.[\w-]+)?$/mg;
 
 var ListDialog = React.createClass({
   getInitialState: function () {
@@ -75,18 +78,41 @@ var ListDialog = React.createClass({
       return allList.indexOf(line) !== -1;
     }).join('\n');
     var values = [];
+    var files = [];
     rules.replace(/\{([^\s}]+)\}/g, function (_, key) {
       var val = allValues[key];
       if (values.indexOf(val) === -1) {
         values.push(val);
+      }
+    }).replace(TEMP_LINK_RE_G, function (_, filename) {
+      if (files.indexOf(filename) === -1 && files.length < 11) {
+        files.push(filename);
       }
     });
     values = values.join('\n');
     if (values) {
       rules += '\n\n' + values;
     }
+    var newVals;
     var filename = ReactDOM.findDOMNode(this.refs.filename).value.trim() || 'rules_' + util.formatDate() + '.txt';
-    util.download([rules, {}], filename);
+    var dl = function() {
+      util.download([rules, newVals || {}], filename);
+    };
+    if (files.length) {
+      dataCenter.getTempFile({ files: files.join() }, function (result) {
+        var list = result && result.list;
+        if (list && list.length) {
+          newVals = {
+            isFile: true,
+            base64: list.shift(),
+            list: list
+          };
+        }
+        dl();
+      });
+    } else {
+      dl();
+    }
   },
   onConfirm: function (e) {
     if (e.target.disabled) {

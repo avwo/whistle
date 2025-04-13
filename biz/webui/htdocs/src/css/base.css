@@ -439,6 +439,10 @@ a {
   width: 960px;
 }
 
+.w-editor-dialog .modal-body {
+  background: #fafafa;
+}
+
 .w-editor-dialog textarea {
   width: 940px;
   height: 520px;
