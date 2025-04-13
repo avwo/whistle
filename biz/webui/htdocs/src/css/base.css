@@ -476,3 +476,11 @@ a {
   color: #777;
   margin-left: 5px;
 }
+
+.w-tabs > li > a {
+  padding: 5px 10px;
+}
+
+.w-tabs > li > a > span {
+  margin-right: 5px;
+}

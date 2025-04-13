@@ -360,7 +360,7 @@ proto.removeGroup = function (name) {
     list.splice(list.indexOf(file), 1);
     delete data[file];
   });
-  return hasActive && this.getSibling(name); 
+  return hasActive && this.getSibling(name);
 };
 
 proto.rename = function (name, newName) {

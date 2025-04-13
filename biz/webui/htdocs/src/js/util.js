@@ -169,6 +169,19 @@ function getSelectedText(x, y) {
 
 exports.getSelectedText = getSelectedText;
 
+exports.download = function(data, filename) {
+  var a = document.createElement('a');
+  document.body.appendChild(a);
+  a.style = 'display: none';
+  var blob = new Blob([JSON.stringify(data)], {type: 'octet/stream'});
+  var url = window.URL.createObjectURL(blob);
+  a.href = url;
+  a.download = filename || 'data_' + formatDate() + '.txt';
+  a.click();
+  window.URL.revokeObjectURL(url);
+  document.body.removeChild(a);
+};
+
 var PROPS_MENUS = [
   {
     name: 'Copy'
@@ -1043,7 +1056,7 @@ function getMockData(data) {
     return;
   }
   return {
-    rules: data[0].substring(0, 3000),
+    rules: data[0].substring(0, 16000),
     values: getMockValues(data[1])
   };
 }

@@ -4,13 +4,35 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var util = require('./util');
 var Dialog = require('./dialog');
+var Tabs = require('./tabs');
+var RuleList = require('./rule-list');
+var $ = require('jquery');
+var parseRules = require('./parse-rules');
 
 var ListDialog = React.createClass({
   getInitialState: function () {
     return {
       checkedItems: {},
-      selectedCount: 0
+      checkedRuleList: [],
+      ruleListLen: 0,
+      tabs: [
+        {
+          icon: 'file',
+          name: 'File List',
+          active: true
+        },
+        {
+          icon: 'list',
+          name: 'Rule List'
+        }
+      ]
     };
+  },
+  componentDidMount: function () {
+    this.dialogElem = $(ReactDOM.findDOMNode(this.refs.dialog));
+  },
+  shouldComponentUpdate: function () {
+    return this.dialogElem.has('.in');
   },
   onChange: function (e) {
     var target = e.target;
@@ -21,21 +43,62 @@ var ListDialog = React.createClass({
     } else {
       delete checkedItems[name];
     }
-    this.setState({ selectedCount: Object.keys(checkedItems).length });
+    this.setState({ checkedItems: checkedItems });
+  },
+  donwload: function(data) {
+    var input = ReactDOM.findDOMNode(this.refs.filename);
+    var form = ReactDOM.findDOMNode(this.refs.exportData);
+    ReactDOM.findDOMNode(this.refs.exportName).value = input.value.trim();
+    ReactDOM.findDOMNode(this.refs.data).value = JSON.stringify(data);
+    form.submit();
+    input.value = '';
+  },
+  exportRuleList: function () {
+    var rulesModal = this.state.rulesModal;
+    var allValues = {};
+    var checkedList = this.state.checkedRuleList;
+    var allList = [];
+    rulesModal.list.forEach(function(item, i) {
+      if (i && item.checked) {
+        allValues = $.extend({}, item.rawValues, allValues);
+      }
+      item.rules.forEach(function(rule) {
+        allList.push(rule.join(' '));
+      });
+    });
+    var defaultItem = rulesModal.list[0];
+    if (defaultItem && defaultItem.checked) {
+      allValues = $.extend({}, defaultItem.rawValues, allValues);
+    }
+
+    var rules = checkedList.filter(function(line) {
+      return allList.indexOf(line) !== -1;
+    }).join('\n');
+    var values = [];
+    rules.replace(/\{([^\s}]+)\}/g, function (_, key) {
+      var val = allValues[key];
+      if (values.indexOf(val) === -1) {
+        values.push(val);
+      }
+    });
+    values = values.join('\n');
+    if (values) {
+      rules += '\n\n' + values;
+    }
+    var filename = ReactDOM.findDOMNode(this.refs.filename).value.trim() || 'rules_' + util.formatDate() + '.txt';
+    util.download([rules, {}], filename);
   },
   onConfirm: function (e) {
     if (e.target.disabled) {
       return;
     }
     this.refs.dialog.hide();
-    var input = ReactDOM.findDOMNode(this.refs.filename);
-    var form = ReactDOM.findDOMNode(this.refs.exportData);
+    if (this.state.tabs[1].active) {
+      return this.exportRuleList();
+    }
     var exportAll = e.target.className.indexOf('btn-warning') !== -1;
     var items = exportAll ? this.getAllItems() : this.state.checkedItems;
-    ReactDOM.findDOMNode(this.refs.exportName).value = input.value.trim();
-    ReactDOM.findDOMNode(this.refs.data).value = JSON.stringify(items);
-    form.submit();
-    input.value = '';
+    this.donwload(items);
   },
   getAllItems: function () {
     var list = this.props.list || [];
@@ -47,6 +110,10 @@ var ListDialog = React.createClass({
   },
   show: function (selectedList) {
     var self = this;
+    var props = self.props;
+    var list = props.list || [];
+    var rulesModal = self.getRulesModal();
+
     self.refs.dialog.show();
     if (selectedList) {
       if (selectedList && typeof selectedList === 'string') {
@@ -54,7 +121,6 @@ var ListDialog = React.createClass({
       }
       var checkedItems = {};
       if (Array.isArray(selectedList)) {
-        var list = self.props.list || [];
         selectedList.forEach(function(name) {
           if (list.indexOf(name) !== -1) {
             checkedItems[name] = 1;
@@ -66,6 +132,29 @@ var ListDialog = React.createClass({
     !this.props.onConfirm && setTimeout(function () {
       ReactDOM.findDOMNode(self.refs.filename).focus();
     }, 500);
+
+    if (rulesModal) {
+      var ruleListLen = 0;
+      var map = {};
+      var modal = self.state.rulesModal;
+      list = rulesModal.list.map(function(name) {
+        var item = rulesModal.get(name);
+        var data = parseRules(item.value) || { rules: [], values: {}, rawValues: {} };
+        var oldData = modal && modal.map[name];
+        data.name = name;
+        data.checked = oldData && oldData.checked;
+        map[name] = data;
+        ruleListLen += data.rules.length;
+        return data;
+      });
+      this.setState({
+        rulesModal: {
+          list: list,
+          map: map
+        },
+        ruleListLen: ruleListLen
+      });
+    }
   },
   hide: function() {
     this.refs.dialog.hide();
@@ -73,72 +162,89 @@ var ListDialog = React.createClass({
   preventDefault: function (e) {
     e.preventDefault();
   },
+  onTabChange: function (tab) {
+    var self = this;
+    var tabs = self.state.tabs;
+    tabs.forEach(function (t) {
+      t.active = false;
+    });
+    tab.active = true;
+    self.setState({ tabs: tabs });
+  },
+  getRulesModal: function() {
+    var props = this.props;
+    return props.name === 'rules' && props.modal;
+  },
+  onCheckedRuleChange: function (list) {
+    this.setState({checkedRuleList: list});
+  },
   render: function () {
     var self = this;
     var state = self.state;
     var props = self.props;
+    var tabs = state.tabs;
+    var ruleListLen = state.ruleListLen;
+    var rulesModal = state.rulesModal;
     var list = props.list || [];
     var checkedItems = state.checkedItems;
-    var selectedCount = state.selectedCount;
-    var pageName = props.name;
     var checkedNames = Object.keys(checkedItems);
-    var hasChecked = checkedNames.length;
-    var tips = hasChecked ? props.tips : null;
+    var selectedCount = rulesModal && tabs[1].active ? state.checkedRuleList.length : checkedNames.length;
+    var pageName = props.name;
+    var tips = selectedCount ? props.tips : null;
     var onConfirm = props.onConfirm;
     var isRules = props.isRules;
 
     return (
-      <Dialog ref="dialog" wclassName=" w-list-dialog">
+      <Dialog ref="dialog" wclassName="w-list-dialog">
         <div className="modal-body">
           <button type="button" className="close" data-dismiss="modal">
             <span aria-hidden="true">&times;</span>
           </button>
-          <div className="w-list-wrapper">
-            {list.map(function (name, i) {
-              if (!i && isRules) {
-                return;
-              }
-              return (
-                <label title={name} key={name}>
-                  <input
-                    onChange={self.onChange}
-                    type="checkbox"
-                    checked={!!checkedItems[name]}
-                  />
-                  {util.isGroup(name) ? <span className="glyphicon glyphicon-triangle-right w-list-group-icon" /> : null}
-                  {name}
-                </label>
-              );
-            })}
-          </div>
-          {tips ? <h5 className="w-list-tips-title">{tips}</h5> : null}
-          {tips ? <div className="w-list-tips">
-            {
-              checkedNames.map(function(name) {
+          {rulesModal ? <Tabs tabs={tabs} onChange={self.onTabChange} /> : null}
+          <div className={tabs[0].active ? '' : ' hide'} style={{marginTop: 10}}>
+            <div className="w-list-wrapper">
+              {list.map(function (name, i) {
+                if (!i && isRules) {
+                  return;
+                }
                 return (
-                  <span key={name}>
+                  <label title={name} key={name}>
+                    <input
+                      onChange={self.onChange}
+                      type="checkbox"
+                      checked={!!checkedItems[name]}
+                    />
                     {util.isGroup(name) ? <span className="glyphicon glyphicon-triangle-right w-list-group-icon" /> : null}
                     {name}
-                  </span>
+                  </label>
                 );
-              })
-            }
-          </div> : (onConfirm ? null : <p style={{marginTop: 10, whiteSpace: 'nowrap'}}>
-              Filename:
-              <input
-                ref="filename"
-                style={{ width: 812, display: 'inline-block', marginLeft: 5 }}
-                className="form-control"
-                placeholder="Input the filename"
-              />
-            </p>)}
+              })}
+            </div>
+            {tips ? <h5 className="w-list-tips-title">{tips}</h5> : null}
+          </div>
+          {rulesModal ? <RuleList modal={rulesModal} hide={!tabs[1].active} onChange={self.onCheckedRuleChange} /> : null}
+          {tips ? <div className="w-list-tips">
+              {
+                checkedNames.map(function(name) {
+                  return (
+                    <span key={name}>
+                      {util.isGroup(name) ? <span className="glyphicon glyphicon-triangle-right w-list-group-icon" /> : null}
+                      {name}
+                    </span>
+                  );
+                })
+              }
+            </div> : (onConfirm && !rulesModal ? null : <p style={{marginTop: 10, whiteSpace: 'nowrap'}}>
+                Filename:
+                <input
+                  ref="filename"
+                  style={{ width: 812, display: 'inline-block', marginLeft: 5 }}
+                  className="form-control"
+                  placeholder="Input the filename"
+                />
+              </p>)}
         </div>
         <div className="modal-footer">
-          {
-            onConfirm ? null : <div className="w-list-counter">
-              Selected: {selectedCount} / {list.length}
-            </div>
-          }
           <button
             type="button"
             className="btn btn-default"
@@ -148,7 +254,7 @@ var ListDialog = React.createClass({
           </button>
           {onConfirm ? null : <button
             type="button"
-            className="btn btn-warning"
+            className={'btn btn-warning' + (tabs[1].active ? ' hide' : '')}
             onMouseDown={this.preventDefault}
             onClick={this.onConfirm}
           >
@@ -157,13 +263,13 @@ var ListDialog = React.createClass({
           <button
             type="button"
             className="btn btn-primary"
-            disabled={!hasChecked}
+            disabled={!selectedCount}
             onMouseDown={this.preventDefault}
             onClick={onConfirm ? function() {
               onConfirm(checkedNames);
             } : this.onConfirm}
           >
-            {onConfirm ? 'Confirm' : 'Export Selected'}
+            {onConfirm ? 'Confirm' : 'Export Selected' + (onConfirm ? '' : ' (' + selectedCount + ' / ' + (tabs[1].active ?  ruleListLen : list.length) + ')')}
           </button>
         </div>
         <form

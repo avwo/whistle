@@ -7,6 +7,7 @@ var util = require('./util');
 var modal = require('./modal');
 var events = require('./events');
 var mockWin = require('./win');
+var parseRules = require('./parse-rules');
 
 var dataModal = dataCenter.networkModal;
 
@@ -99,6 +100,7 @@ function getBridge(win) {
     createRequest: function (options) {
       return createCgi(compatAjax(options));
     },
+    parseRules: parseRules,
     showModal: modal.show,
     getServerInfo: function () {
       var serverInfo = dataCenter.getServerInfo();
