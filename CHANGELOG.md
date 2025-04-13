@@ -1,3 +1,6 @@
+# v2.9.96
+1. feat: 支持导出指定规则项
+
 # v2.9.95
 1. feat: JSON Viewer 的右键菜单支持 Copy 选中的文本
 2. feat: Composer 历史列表添加右键菜单
