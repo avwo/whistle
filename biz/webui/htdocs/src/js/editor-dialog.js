@@ -6,14 +6,15 @@ var events = require('./events');
 var dataCenter = require('./data-center');
 var util = require('./util');
 var message = require('./message');
+var win = require('./win');
 
 var MAX_LEN = 1024 * 1024 * 11;
 var fakeIframe = 'javascript:"<style>html,body{padding:0;margin:0}</style><textarea></textarea>"';
 var iframeStyle = {
   padding: 0,
   border: 'none',
-  width: 1040,
-  height: 600,
+  width: 980,
+  height: 550,
   margin: 0,
   verticalAlign: 'top'
 };
@@ -69,6 +70,9 @@ var EditorDialog = React.createClass({
     if (!self.props.textEditor) {
       return;
     }
+    events.on('uploadTempFile', function(_, file) {
+      self.readFile(file);
+    });
     var iframe = ReactDOM.findDOMNode(self.refs.iframe);
     var initTextArea = function() {
       var textarea = iframe.contentWindow.document.querySelector('textarea');
@@ -112,6 +116,7 @@ var EditorDialog = React.createClass({
           self._tempFile = tempFile;
           self._fileElem = elem;
           self._rulesItem = rulesItem;
+          tempFile = tempFile || 'blank';
           var isBlank = tempFile === 'blank';
           getTempFile(tempFile, function(value) {
             self.show({
@@ -134,10 +139,11 @@ var EditorDialog = React.createClass({
       this.hide();
     }
   },
-  onSave: function() {
+  onSave: function(base64) {
     var self = this;
-    var value = self.getValue();
-    if (!self.state.isTempFile) {
+    var isBase64 = typeof base64 === 'string';
+    var value = isBase64 ? base64 : self.getValue();
+    if (!isBase64 && !self.state.isTempFile) {
       dataCenter.values.add({
         name: self._keyName,
         value: value
@@ -155,10 +161,9 @@ var EditorDialog = React.createClass({
       });
       return;
     }
-    dataCenter.createTempFile(JSON.stringify({
-      clientId: dataCenter.getPageId(),
-      value: value
-    }), function (result, xhr) {
+    var params = {  clientId: dataCenter.getPageId() };
+    params[isBase64 ? 'base64' : 'value'] = value;
+    dataCenter.createTempFile(JSON.stringify(params), function (result, xhr) {
       if (!result || result.ec !== 0) {
         return util.showSystemError(xhr);
       }
@@ -173,7 +178,12 @@ var EditorDialog = React.createClass({
         }
       }
       var text = elem.text();
-      var newText = text.replace('temp/' + self._tempFile, result.filepath);
+      var newText;
+      if (self._tempFile) {
+        newText = text.replace('temp/' + self._tempFile, result.filepath);
+      } else {
+        newText = text.replace(/temp(\.[\w-]+)?$/, result.filepath + '$1');
+      }
       var rulesText = self._rulesItem.value.split(/\r\n|\r|\n/).map(function(l, i) {
         if (i === index) {
           l = l.trim().split(/\s+/).map(function(part) {
@@ -221,15 +231,39 @@ var EditorDialog = React.createClass({
   clearValue: function() {
     this._textarea.value = '';
   },
+  onUpload: function () {
+    if (!this.reading) {
+      ReactDOM.findDOMNode(this.refs.readLocalFile).click();
+    }
+  },
+  readFile: function(file) {
+    var self = this;
+    self.reading = true;
+    util.readFile(file, function (data) {
+      self.reading = false;
+      self.onSave(util.bytesToBase64(data));
+    });
+  },
+  readLocalFile: function () {
+    var form = new FormData(ReactDOM.findDOMNode(this.refs.readLocalFileForm));
+    var file = form.get('localFile');
+    if (file.size > MAX_LEN) {
+      return win.alert('The size of all files cannot exceed 10m.');
+    }
+    this.readFile(file);
+    ReactDOM.findDOMNode(this.refs.readLocalFile).value = '';
+  },
   render: function () {
     var state = this.state;
     var props = this.props;
     var value = state.value;
     var title = props.title || state.title;
     var textEditor = this.props.textEditor;
+    var showUpload = textEditor && !props.onConfirm;
 
     return (
-      <Dialog ref="editorDialog" wstyle={'w-editor-dialog' + (textEditor ? ' w-big-editor-dialog' : '')}>
+      <Dialog ref="editorDialog" wstyle={'w-editor-dialog' + (textEditor ? ' w-big-editor-dialog' : '') +
+      (showUpload ? ' w-show-upload-temp-file' : '')}>
         <div className="modal-header">
           {title || 'Edit the copied text'}
           <button type="button" className="close" data-dismiss="modal">
@@ -256,6 +290,13 @@ var EditorDialog = React.createClass({
           >
             Cancel
           </button>
+          {props.onConfirm ? null : <button
+            type="button"
+            className="btn btn-warning"
+            onClick={this.onUpload}
+          >
+            Upload
+          </button>}
           <button
             type="button"
             className="btn btn-primary"
@@ -281,6 +322,18 @@ var EditorDialog = React.createClass({
             Copy
           </button>
         </div>}
+        <form
+          ref="readLocalFileForm"
+          encType="multipart/form-data"
+          style={{ display: 'none' }}
+        >
+          <input
+            ref="readLocalFile"
+            onChange={this.readLocalFile}
+            type="file"
+            name="localFile"
+          />
+        </form>
       </Dialog>
     );
   }

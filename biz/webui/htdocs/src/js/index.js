@@ -35,7 +35,7 @@ var MockDialog = require('./mock-dialog');
 var IframeDialog = require('./iframe-dialog');
 var win = require('./win');
 
-var TEMP_LINK_RE = /^(?:[\w-]+:\/\/)?temp\/([\da-z]{64}|blank)(?:\.[\w-]+)?$/;
+var TEMP_LINK_RE = /^(?:[\w-]+:\/\/)?temp(?:\/([\da-z]{64}|blank))?(?:\.[\w-]+)?$/;
 var H2_RE = /http\/2\.0/i;
 var JSON_RE = /^\s*(?:[\{｛][\w\W]+[\}｝]|\[[\w\W]+\])\s*$/;
 var DEFAULT = 'Default';
@@ -1221,6 +1221,9 @@ var Index = React.createClass({
         }
         if ($('.w-files-dialog.in').length) {
           return events.trigger('uploadFile', file);
+        }
+        if ($('.w-show-upload-temp-file.in').length) {
+          return events.trigger('uploadTempFile', file);
         }
         var data;
         var name = self.state.name;
