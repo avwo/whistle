@@ -639,6 +639,7 @@ exports.getInitialData = function (callback) {
         updateCertStatus(data);
         exports.enablePluginMgr = data.epm;
         exports.supportH2 = data.supportH2;
+        exports.isWin = server && server.isWin;
         exports.backRulesFirst = data.rules.backRulesFirst;
         exports.custom1 = data.custom1;
         exports.custom2 = data.custom2;
@@ -935,6 +936,7 @@ function startLoadData() {
       updateCertStatus(data);
       exports.enablePluginMgr = data.epm;
       exports.supportH2 = data.supportH2;
+      exports.isWin = server && server.isWin;
       exports.backRulesFirst = data.backRulesFirst;
       exports.custom1 = data.custom1;
       exports.custom2 = data.custom2;

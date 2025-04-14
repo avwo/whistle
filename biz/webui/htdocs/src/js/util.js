@@ -1912,8 +1912,7 @@ exports.getText = function(text) {
 exports.parseImportData = function (data, modal, isValues) {
   var list = [];
   var hasConflict;
-  Object.keys(data).forEach(function (name) {
-    var value = data[name];
+  var handleItem = function(name, value) {
     if (value == null) {
       return;
     }
@@ -1942,7 +1941,20 @@ exports.parseImportData = function (data, modal, isValues) {
       value: value,
       isConflict: isConflict
     });
-  });
+  };
+  if (Array.isArray(data)) {
+    data.forEach(function (item) {
+      var name = item && item.name;
+      if (name && typeof name === 'string') {
+        var value = name[0] === '\r' ? '' : (item.value == null ? item.content : item.value);
+        handleItem(name, value);
+      }
+    });
+  } else {
+    Object.keys(data).forEach(function (name) {
+      name && handleItem(name, data[name]);
+    });
+  }
   list.hasConflict = hasConflict;
   return list;
 };

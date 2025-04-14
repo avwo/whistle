@@ -117,7 +117,7 @@ var EditorDialog = React.createClass({
           self._fileElem = elem;
           self._rulesItem = rulesItem;
           tempFile = tempFile || 'blank';
-          var isBlank = tempFile === 'blank';
+          var isBlank = tempFile === 'blank' || /[\\/]/.test(tempFile);
           getTempFile(tempFile, function(value) {
             self.show({
               value: value,
@@ -179,8 +179,18 @@ var EditorDialog = React.createClass({
       }
       var text = elem.text();
       var newText;
-      if (self._tempFile) {
-        newText = text.replace('temp/' + self._tempFile, result.filepath);
+      var tempFile = self._tempFile;
+      if (tempFile) {
+        var suffix = tempFile.lastIndexOf('.');
+        if (suffix === -1) {
+          newText = text.replace('temp/' + tempFile, result.filepath);
+        } else {
+          newText = text.replace(tempFile.substring(0, suffix), result.filepath);
+          if (newText.indexOf('://') === -1) {
+            newText = 'file://' + newText;
+          }
+        }
+
       } else {
         newText = text.replace(/temp(\.[\w-]+)?$/, result.filepath + '$1');
       }

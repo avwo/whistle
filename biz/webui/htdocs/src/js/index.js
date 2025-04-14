@@ -36,6 +36,7 @@ var IframeDialog = require('./iframe-dialog');
 var win = require('./win');
 
 var TEMP_LINK_RE = /^(?:[\w-]+:\/\/)?temp(?:\/([\da-z]{64}|blank))?(?:\.[\w-]+)?$/;
+var FILE_PATH_RE = /^(?:[\w-]+:\/\/)?((?:[a-z]:[\\/]|\/).+)$/i;
 var H2_RE = /http\/2\.0/i;
 var JSON_RE = /^\s*(?:[\{｛][\w\W]+[\}｝]|\[[\w\W]+\])\s*$/;
 var DEFAULT = 'Default';
@@ -60,9 +61,18 @@ var hideMenus = !!(query.hideMenus || query.hideMenu);
 var hideLeftMenu;
 var showTreeView;
 var dataUrl;
+var TEXT_SUFFIX_RE = /[\w-]\.(?:txt|csv|tsv|json|xml|yaml|yml|ini|conf|log|html|htm|css|js|py|java|c|cpp|h|sh|php|sql|md|markdown|rtf|tex|bib|vcf)$/i;
 
 function isUrl(url) {
   return /^https?:\/\/[^/]/i.test(url);
+}
+
+function isTextFile(url) {
+  if (!TEXT_SUFFIX_RE.test(url)) {
+    return false;
+  }
+  var PATH_RE = dataCenter.isWin ? /^(?:[\w-]+:\/\/)?[a-z]:[\\/]/i : /^(?:[\w-]+:\/\/)?\//i;
+  return PATH_RE.test(url);
 }
 
 window.setWhistleDataUrl = function(url) {
@@ -437,7 +447,6 @@ var Index = React.createClass({
       pluginsMode: !!server.pluginsMode,
       rulesOnlyMode: !!server.rulesOnlyMode,
       multiEnv: server.multiEnv,
-      isWin: server.isWin,
       ndr: server.ndr,
       ndp: server.ndp,
       drb: server.drb,
@@ -1402,6 +1411,7 @@ var Index = React.createClass({
           elem.hasClass('cm-string') ||
           elem.hasClass('cm-js-at') ||
           TEMP_LINK_RE.test(text = elem.text()) ||
+          isTextFile(text) ||
           getKey(text)
         ) {
           elem.addClass('w-is-link');
@@ -1435,7 +1445,7 @@ var Index = React.createClass({
           window.open(text);
           return;
         }
-        if (TEMP_LINK_RE.test(text)) {
+        if (TEMP_LINK_RE.test(text) || (isTextFile(text) && FILE_PATH_RE.test(text))) {
           var tempFile = RegExp.$1;
           return events.trigger('showEditorDialog', [{
             ruleName: self.getActiveRuleName(),

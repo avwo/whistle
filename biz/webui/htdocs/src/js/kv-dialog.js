@@ -134,15 +134,16 @@ var KVDialog = React.createClass({
                 </tr>
               ) : (
                 list.map(function (item, i) {
+                  var isGroup = util.isGroup(item.name);
                   return (
                     <tr
                       className={item.isConflict ? 'w-kv-conflict' : undefined}
                     >
                       <th title={item.name} className="w-kv-name">
-                        {item.name}
+                        {isGroup ? <span className="glyphicon glyphicon-triangle-right w-list-group-icon" /> : null}{item.name}
                       </th>
                       <td className="w-kv-operation">
-                        <a title={item.value} onClick={self.viewContent}>
+                        <a title={item.value} onClick={self.viewContent} style={{visibility: isGroup ? 'hidden' : 'visible'}}>
                           Content
                         </a>
                         <a

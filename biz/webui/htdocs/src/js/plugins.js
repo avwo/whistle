@@ -140,7 +140,7 @@ var Home = React.createClass({
     events.on('installPlugins', self.showInstall);
     events.on('updateAllPlugins', function (_, byInstall) {
       byInstall = byInstall === 'reinstallAllPlugins';
-      if (byInstall && (dataCenter.enableAllPlugins || (self.installUrls && self.installUrls.length))) {
+      if (byInstall && (dataCenter.enablePluginMgr || (self.installUrls && self.installUrls.length))) {
         return self.showInstall();
       }
       var data = self.props.data || {};
@@ -416,10 +416,10 @@ var Home = React.createClass({
           }
           return line;
         }).filter(util.noop).join('\n');
+        cmdMsg += cmdMsg ? '  ' : '';
       } else {
-        cmdMsg = getCmd() + getArgvs(dataCenter.account, dataCenter.whistleName) + ' ' + (regCmd ?  regCmd : '');
+        cmdMsg = getCmd() + getArgvs(dataCenter.account, dataCenter.whistleName) + ' ' + (regCmd ? regCmd : '');
       }
-
       state.cmdMsg = cmdMsg;
       state.installMsg = cmdMsg;
     }
