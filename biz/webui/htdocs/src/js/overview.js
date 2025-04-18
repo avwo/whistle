@@ -11,8 +11,8 @@ var dataCenter = require('./data-center');
 var getHelpUrl = require('./protocols').getHelpUrl;
 
 var OVERVIEW = [
-  'Url',
-  'Final Url',
+  'URL',
+  'Final URL',
   'Method',
   'Http Version',
   'Status Code',
@@ -204,14 +204,14 @@ var Overview = React.createClass({
             value = util.getStatusMessage(modal.res);
           }
           var loc = isFinalUrl && util.getProperty(modal, 'res.headers.location');
+          overviewModal[name] = value;
           if (loc) {
             var statusCode = util.getProperty(modal, 'res.statusCode');
             if (loc && (statusCode == 301 || statusCode == 302  || statusCode == 303 ||
               statusCode == 307 || statusCode == 308)) {
-              overviewModal['Redirect Url'] = loc;
+              overviewModal['Redirect URL'] = loc;
             }
           }
-          overviewModal[name] = value;
         } else {
           var lastIndex = OVERVIEW.length - 1;
           var time;
@@ -350,18 +350,18 @@ var Overview = React.createClass({
             if (name === 'host') {
               var result = [];
               if (ruleStr) {
-                result.push(ruleStr + (realUrl ? ' (Url: ' + realUrl + ')' : '') + getPluginName(rule));
+                result.push(ruleStr + (realUrl ? ' (URL: ' + realUrl + ')' : '') + getPluginName(rule));
               }
               if (rules.proxy && rules.proxy.host) {
                 result.push(
-                  getRuleStr(rules.proxy.host) + ' (Url: ' + rules.proxy.matcher + ')' + getPluginName(rule)
+                  getRuleStr(rules.proxy.host) + ' (URL: ' + rules.proxy.matcher + ')' + getPluginName(rule)
                 );
               }
               rulesModal[name] = result.join('\n');
             } else {
               if (name === 'proxy') {
                 if (realUrl && ruleStr) {
-                  rulesModal[name] += ' (Url: ' + realUrl + ')';
+                  rulesModal[name] += ' (URL: ' + realUrl + ')';
                 }
               }
               if (rulesModal[name]) {
@@ -383,7 +383,7 @@ var Overview = React.createClass({
       >
         <Properties
           modal={overviewModal}
-          rawName="Original Url"
+          rawName="Original URL"
           rawValue={rawUrl}
           showEnableBtn={true}
         />

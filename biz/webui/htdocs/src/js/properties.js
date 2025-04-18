@@ -22,7 +22,7 @@ var Properties = React.createClass({
   },
   renderKey: function(name, value) {
     var onHelp = this.props.onHelp;
-    var showEnableBtn = this.props.showEnableBtn && name === 'Url' && TUNNEL_RE.test(value);
+    var showEnableBtn = this.props.showEnableBtn && name === 'URL' && TUNNEL_RE.test(value);
     var index = this.props.richKey ? name.indexOf('\r\u0000(') : -1;
     return (<th>
       {onHelp ? (
