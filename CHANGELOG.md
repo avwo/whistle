@@ -1,3 +1,8 @@
+# v2.9.97
+1. feat: 导入 Rules 和 Values 的交互调整，允许用户手动选择需要导入的内容
+2. feat: 安装插件功能优化
+3. feat: 支持通过 `lineProps://internal` 将规则作用于 Whistle 内部请求（只支持 host、proxy 等部分规则）
+
 # v2.9.96
 1. feat: 支持导出指定规则项
 
