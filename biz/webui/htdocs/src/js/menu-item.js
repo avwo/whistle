@@ -2,6 +2,7 @@ require('./base-css.js');
 require('../css/menu-item.css');
 var React = require('react');
 var util = require('./util');
+var GitHubIcon = require('./github-icon');
 
 var MenuItem = React.createClass({
   preventBlur: function (e) {
@@ -69,6 +70,7 @@ var MenuItem = React.createClass({
                       checked={!checkedOptions[option.name]}
                     />
                   ) : option.icon === false ? undefined : (
+                    option.icon === 'github' ? <GitHubIcon /> :
                     <span
                       className={
                         'glyphicon glyphicon-' + (option.icon || 'asterisk')

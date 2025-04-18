@@ -668,22 +668,17 @@ var Index = React.createClass({
       {
         name: 'GitHub',
         href: 'https://github.com/avwo/whistle',
-        icon: false
-      },
-      {
-        name: 'Docs',
-        href: 'https://avwo.github.io/whistle/',
-        icon: false
+        icon: 'github'
       },
       {
         name: 'Update',
         href: 'https://avwo.github.io/whistle/update.html',
-        icon: false
+        icon: 'refresh'
       },
       {
         name: 'Issue',
         href: 'https://github.com/avwo/whistle/issues/new',
-        icon: false
+        icon: 'pencil'
       }
     ];
     protocols.setPlugins(state);
