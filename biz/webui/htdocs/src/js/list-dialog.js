@@ -10,7 +10,7 @@ var $ = require('jquery');
 var parseRules = require('./parse-rules');
 var dataCenter = require('./data-center');
 
-var TEMP_LINK_RE_G = /(?:^|\s)(?:[\w-]+:\/\/)?temp\/([\da-z]{64})(?:\.[\w-]+)?$/mg;
+var TEMP_LINK_RE_G = /(?:^|\s)(?:[\w-]+:\/\/)?temp\/([\da-z]{64})(?:\.[\w-]+)?(?:$|\s)/mg;
 
 var ListDialog = React.createClass({
   getInitialState: function () {

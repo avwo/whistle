@@ -1,14 +1,41 @@
 .w-kv-dialog .modal-dialog {
-  width: 666px;
+  width: 720px;
 }
 .w-kv-name {
-  width: 400px;
+  width: 330px;
+  white-space: normal;
+  word-wrap: break-word;
+  word-break: break-all;
 }
-.w-kv-operation a:nth-child(2) {
-  color: #f66;
-  margin: 0 20px;
+.w-kv-dialog .w-kv-box {
+  width: 36px;
 }
-.w-kv-conflict th,
-.w-kv-operation strong {
+
+.w-kv-operation pre {
+  max-height: 70px;
+}
+.w-kv-operation a {
+  display: block;
+  width: 50px;
+  margin-top: 3px;
+}
+.w-kv-name strong {
   color: #f66;
+  margin-left: 5px;
+  cursor: pointer;
+}
+
+.w-kv-dialog thead th, .w-kv-dialog thead td {
+  padding: 8px;
+}
+
+.w-kv-check-all {
+  float: left;
+  margin: 0 0 0 9px;
+  display: flex;
+  align-items: center;
+}
+
+.w-kv-check-all input {
+  margin-right: 8px;
 }

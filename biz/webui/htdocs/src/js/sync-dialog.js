@@ -74,6 +74,9 @@ var SyncDialog = React.createClass({
     });
     self.setState({});
   },
+  showKVDialog: function (data, rulesModal, valuesModal, isValues) {
+    this.refs.kvDialog.show(data, rulesModal, valuesModal, isValues);
+  },
   syncRules: function () {
     this._syncRules(this.plugin.selectedRulesHistory);
   },
@@ -138,6 +141,9 @@ var SyncDialogWrap = React.createClass({
   },
   syncValues: function() {
     this.refs.syncDialog.syncValues();
+  },
+  showKVDialog: function (data, rulesModal, valuesModal, isValues) {
+    this.refs.syncDialog.showKVDialog(data, rulesModal, valuesModal, isValues);
   },
   render: function () {
     return <SyncDialog ref="syncDialog" />;

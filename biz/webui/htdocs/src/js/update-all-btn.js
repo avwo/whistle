@@ -23,7 +23,7 @@ var UpdateAllBtn = React.createClass({
         draggable="false"
       >
         <span className="glyphicon glyphicon-refresh" />
-        UpdateAll
+        Update
       </a>
     );
   }

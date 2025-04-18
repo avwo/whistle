@@ -276,7 +276,7 @@ var RulesDialog = React.createClass({
             Select Rules File:
             <select className="form-control" onChange={this.onRulesChange} value={state.rulesName}>
               {list.map(function(name) {
-                return <option value={name}>{name}</option>;
+                return <option key={name} value={name}>{name}</option>;
               })}
               <option value="">+Create</option>
             </select>

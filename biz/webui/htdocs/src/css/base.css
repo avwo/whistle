@@ -488,3 +488,8 @@ a {
 .w-tabs > li > a > span {
   margin-right: 5px;
 }
+
+.modal.in {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
