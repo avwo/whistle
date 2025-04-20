@@ -1943,10 +1943,12 @@ exports.parseImportData = function (data, modal, isValues) {
     });
   };
   if (Array.isArray(data)) {
+    var map = {};
     data.forEach(function (item) {
       var name = item && item.name;
-      if (name && typeof name === 'string') {
-        var value = name[0] === '\r' ? '' : (item.value == null ? item.content : item.value);
+      if (name && typeof name === 'string' && !map[name]) {
+        var value = isGroup(name) ? '' : (item.value == null ? item.content : item.value);
+        map[name] = 1;
         handleItem(name, value);
       }
     });
@@ -2623,9 +2625,11 @@ exports.getRawUrl = function (item) {
   return item.fwdHost && item.url.replace(PROTO_RE, '$1' + item.fwdHost);
 };
 
-exports.isGroup = function(name) {
+function isGroup(name) {
   return name && name[0] === '\r';
-};
+}
+
+exports.isGroup = isGroup;
 
 function filterJson(obj, keyword, filterType) {
   if (obj == null) {

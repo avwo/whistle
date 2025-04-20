@@ -10,7 +10,7 @@ var Tabs = React.createClass({
       <ul className="nav nav-tabs w-tabs">
         {
           tabs.map(function(tab, index) {
-            const handleClick = function() {
+            var handleClick = function() {
               if (!tab.active && onChange) {
                 onChange(tab);
               }

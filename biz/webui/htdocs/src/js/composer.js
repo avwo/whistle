@@ -1213,6 +1213,7 @@ var Composer = React.createClass({
       elem = this.hintElem.find('.w-active');
       var value = elem.attr('title');
       value && this.setUrl(value);
+      this.execute();
     } else {
       var curUrl = e.target.value;
       this.onKeyDown(e);
@@ -1641,13 +1642,14 @@ var Composer = React.createClass({
                   name="Request"
                   className={showRequest ? 'w-tab-btn w-active' : 'w-tab-btn'}
                 >
-                  <span className="glyphicon glyphicon-arrow-right" />
+                  <span className="glyphicon glyphicon-edit" />
                   Request
                 </button>
                 <button
                   title={result.url}
                   onClick={this.onTabChange}
                   name="Response"
+                  style={{fontWeight: 'normal'}}
                   className={showResponse ? 'w-tab-btn w-active' : 'w-tab-btn'}
                 >
                   <span className="glyphicon glyphicon-arrow-left" />
