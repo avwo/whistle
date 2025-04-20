@@ -268,7 +268,7 @@
   }
 
   function getPageInfo() {
-    return '\r\nPage Url: ' + location.href + '\r\nUser Agent: ' + navigator.userAgent;
+    return '\r\nPage URL: ' + location.href + '\r\nUser Agent: ' + navigator.userAgent;
   }
 
   function getErrorStack(error, message) {
