@@ -28,12 +28,14 @@ var KVDialog = React.createClass({
       }
       data = data.data;
     }
+    var modal = isValues ? valuesModal : rulesModal;
     this.setState({
-      selectedHistory: selectedHistory,
+      selectedHistory: history.indexOf(selectedHistory) === -1 ? '' : selectedHistory,
       history: history,
+      modal: modal,
       list: util.parseImportData(
         data || '',
-        isValues ? valuesModal : rulesModal,
+        modal,
         isValues
       )
     });
@@ -57,34 +59,41 @@ var KVDialog = React.createClass({
     var hasConflict;
     var self = this;
     self.state.list.forEach(function (item) {
-      hasConflict = hasConflict || item.isConflict;
-      data[item.name] = item.value;
+      if (item.checked) {
+        hasConflict = hasConflict || item.isConflict;
+        data[item.name] = item.value;
+      }
     });
+    var save = function() {
+      self.hide();
+      return events.trigger(self.isValues ? 'uploadValues' : 'uploadRules', data);
+    };
     if (!hasConflict) {
-      return events.trigger(
-        self.isValues ? 'uploadValues' : 'uploadRules',
-        data
-      );
+      return save();
     }
     win.confirm(
-      'Conflict with existing content, whether to continue to overwrite them?',
+      'Conflict with current content, whether to overwrite?',
       function (sure) {
-        sure &&
-          events.trigger(self.isValues ? 'uploadValues' : 'uploadRules', data);
+        if (sure) {
+          save();
+        }
       }
     );
   },
-  remove: function (item) {
-    var self = this;
-    win.confirm('Are you sure to delete \'' + item.name + '\'.', function (sure) {
-      if (sure) {
-        var index = self.state.list.indexOf(item);
-        if (index !== -1) {
-          self.state.list.splice(index, 1);
-          self.setState({});
-        }
-      }
+  checkAll: function (e) {
+    var list = this.state.list;
+    if (!list || !list.length) {
+      return;
+    }
+    var checked = e.target.checked;
+    list.forEach(function (item) {
+      item.checked = checked;
     });
+    this.setState({ list: list });
+  },
+  checkItem: function(e, item) {
+    item.checked = e.target.checked;
+    this.setState({});
   },
   render: function () {
     var self = this;
@@ -92,7 +101,13 @@ var KVDialog = React.createClass({
     var list = state.list || [];
     var history = state.history;
     var selectedHistory = state.selectedHistory || '';
-    var noData = !list.length;
+    var len = list.length;
+    var noData = !len;
+    var checkedCount = 0;
+    var modal = state.modal;
+    var checkedAll = !noData && list.every(function (item) {
+      return item.checked;
+    });
     return (
       <Dialog ref="kvDialog" wstyle="w-kv-dialog">
         <div className="modal-body">
@@ -110,9 +125,9 @@ var KVDialog = React.createClass({
                 Select history
               </option>
               {
-                history.map(function(item) {
+                history.map(function(item, i) {
                   return (
-                    <option value={item}>
+                    <option key={i} value={item}>
                       {item}
                     </option>
                   );
@@ -122,39 +137,58 @@ var KVDialog = React.createClass({
           </label> : undefined}
           <table className="table">
             <thead>
-              <th className="w-kv-name">Name</th>
-              <th className="w-kv-operation">Operation</th>
+              <th className="w-kv-box"><input type="checkbox" checked={checkedAll} onChange={self.checkAll} disabled={noData} /></th>
+              <th className="w-kv-name">
+                Name
+              </th>
+              <th className="w-kv-operation">Content</th>
             </thead>
             <tbody>
               {noData ? (
                 <tr>
-                  <td colSpan="2" className="w-empty">
+                  <td colSpan="3" className="w-empty">
                     Empty
                   </td>
                 </tr>
               ) : (
                 list.map(function (item, i) {
                   var isGroup = util.isGroup(item.name);
+                  var value = typeof item.value === 'string' ? item.value : '';
+                  var exceed = value.length > 128;
+                  if (item.checked) {
+                    ++checkedCount;
+                  }
+                  var curValue;
+                  var showConflict = item.isConflict && !isGroup;
+                  if (showConflict) {
+                    var oldItem = modal && modal.get(item.name);
+                    curValue = oldItem && oldItem.value;
+                    if (curValue) {
+                      curValue = '<<<<<<<<<< <<<<<<<<<< <<<<<<<<<< OLD <<<<<<<<<< <<<<<<<<<< <<<<<<<<<<\n\n' +
+                      curValue + '\n\n========== ========== ========== BOUNDARY ========== ========== ==========\n\n' +
+                      value + '\n\n>>>>>>>>>> >>>>>>>>>> >>>>>>>>>> NEW >>>>>>>>>> >>>>>>>>>> >>>>>>>>>>';
+                    }
+                  }
+
                   return (
                     <tr
+                      key={i}
                       className={item.isConflict ? 'w-kv-conflict' : undefined}
                     >
-                      <th title={item.name} className="w-kv-name">
+                      <th className="w-kv-box"><input type="checkbox" checked={item.checked} onChange={function(e) {
+                        self.checkItem(e, item);
+                      }} /></th>
+                      <td title={item.name} className="w-kv-name">
                         {isGroup ? <span className="glyphicon glyphicon-triangle-right w-list-group-icon" /> : null}{item.name}
-                      </th>
+                        {showConflict ? <strong onClick={self.viewContent} title={curValue}>[Conflict]</strong> : null}
+                      </td>
                       <td className="w-kv-operation">
-                        <a title={item.value} onClick={self.viewContent} style={{visibility: isGroup ? 'hidden' : 'visible'}}>
-                          Content
-                        </a>
-                        <a
-                          data-name={item.name}
-                          onClick={function () {
-                            self.remove(item);
-                          }}
-                        >
-                          Delete
-                        </a>
-                        <strong>{item.isConflict ? '[Conflict]' : ''}</strong>
+                        <pre>
+                          {exceed ? value.substring(0, 100) + '...' : value}
+                        </pre>
+                        {exceed ? <a title={value} onClick={self.viewContent}>
+                            View all
+                          </a> : null }
                       </td>
                     </tr>
                   );
@@ -164,6 +198,10 @@ var KVDialog = React.createClass({
           </table>
         </div>
         <div className="modal-footer">
+          <label className="w-kv-check-all">
+            <input type="checkbox" checked={checkedAll} onChange={self.checkAll} disabled={noData} />
+            Select all
+          </label>
           <button
             type="button"
             className="btn btn-default"
@@ -174,11 +212,10 @@ var KVDialog = React.createClass({
           <button
             type="button"
             className="btn btn-primary"
-            disabled={noData}
+            disabled={!checkedCount}
             onClick={this.confirm}
-            data-dismiss="modal"
           >
-            Add to {this.isValues ? 'Values' : 'Rules'}
+            Add to {this.isValues ? 'Values' : 'Rules'} {len ? ' (' + checkedCount + ' / ' + len + ')' : null}
           </button>
         </div>
       </Dialog>

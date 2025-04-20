@@ -11,7 +11,8 @@ var createCgi = createCgiObj.createCgi;
 var MAX_INCLUDE_LEN = 5120;
 var MAX_EXCLUDE_LEN = 5120;
 var MAX_FRAMES_LENGTH = (exports.MAX_FRAMES_LENGTH = 256);
-var TIMEOUT = 30000;
+var TIMEOUT = 1000 * 36;
+var LONG_TIMEOUT = TIMEOUT + 1000 * 10;
 var dataCallbacks = [];
 var serverInfoCallbacks = [];
 var framesUpdateCallbacks = [];
@@ -678,7 +679,7 @@ exports.getInitialData = function (callback) {
             {
               contentType: false,
               processData: false,
-              timeout: 36000
+              timeout: LONG_TIMEOUT
             }
           )
         );

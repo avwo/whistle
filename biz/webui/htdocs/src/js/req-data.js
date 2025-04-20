@@ -108,7 +108,13 @@ var contextMenuList = [
     ]
   },
   { name: 'Mock' },
-  { name: 'Import' },
+  {
+    name: 'Import',
+    list: [
+      { name: 'Local' },
+      { name: 'Remote' }
+    ]
+  },
   { name: 'Export' },
   {
     name: 'Others',
@@ -852,8 +858,11 @@ var ReqData = React.createClass({
     case 'Abort':
       events.trigger('abortRequest', item);
       break;
-    case 'Import':
-      events.trigger('importSessions', e);
+    case 'Local':
+      events.trigger('importSessions');
+      break;
+    case 'Remote':
+      events.trigger('importSessions', {shiftKey: true});
       break;
     case 'Edit Settings':
       events.trigger('filterSessions', e);

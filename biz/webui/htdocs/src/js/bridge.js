@@ -107,48 +107,10 @@ function getBridge(win) {
       return serverInfo && $.extend(true, {}, serverInfo);
     },
     importRules: function (data) {
-      if (!data) {
-        return;
-      }
-      var list = util.parseImportData(data, dataCenter.rulesModal);
-      var handleImport = function (sure) {
-        if (sure) {
-          data = {};
-          list.forEach(function (item) {
-            data[item.name] = item.value;
-          });
-          events.trigger('uploadRules', data);
-        }
-      };
-      if (!list.hasConflict) {
-        return handleImport(true);
-      }
-      mockWin.confirm(
-        'Conflict with existing content, whether to continue to overwrite them?',
-        handleImport
-      );
+      events.trigger('handleImportRules', data);
     },
     importValues: function (data) {
-      if (!data) {
-        return;
-      }
-      var list = util.parseImportData(data, dataCenter.valuesModal, true);
-      var handleImport = function (sure) {
-        if (sure) {
-          data = {};
-          list.forEach(function (item) {
-            data[item.name] = item.value;
-          });
-          events.trigger('uploadValues', data);
-        }
-      };
-      if (!list.hasConflict) {
-        return handleImport(true);
-      }
-      mockWin.confirm(
-        'Conflict with existing content, whether to continue to overwrite them?',
-        handleImport
-      );
+      events.trigger('handleImportValues', data);
     }
   };
 }

@@ -36,7 +36,8 @@
 }
 
 .w-detail-inspectors-url.w-properties th {
-  width: 50px;
+  width: 60px;
+  white-space: nowrap;
 }
 
 .w-detail-inspectors-url.w-properties td {

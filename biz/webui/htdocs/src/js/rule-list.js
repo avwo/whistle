@@ -82,8 +82,8 @@ var RuleList = React.createClass({
                   self.onChange(e, line, rule, activeItem.rawValues);
                 }} /></span>
                 <div>
-                  {rule.map(function (r) {
-                    return <span>{r}</span>;
+                  {rule.map(function (r, i) {
+                    return <span key={i}>{r}</span>;
                   })}
                 </div>
               </label>
