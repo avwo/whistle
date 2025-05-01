@@ -34,12 +34,12 @@ function showStartupInfo(err, options, debugMode, restart) {
   if (/listen EADDRINUSE/.test(err)) {
     options = util.formatOptions(options);
     var port = options.port || config.port;
-    error('[!] Failed to bind proxy port ' + (options.host ? util.joinIpPort(options.host, port) : port) + ': The port is already in use');
-    info('[i] Please check if ' + config.name + ' is already running, you can ' + (debugMode ? 'stop whistle with `w2 stop` first' : 'restart whistle with `w2 restart`'));
-    info('    or if another application is using the port, you can change the port with ' + (debugMode ? '`w2 run -p newPort`\n' : '`w2 start -p newPort`\n'));
+    error('[!] Failed to bind proxy port ' + (options.host ? util.joinIpPort(options.host, port) : port) + ': Port already in use');
+    info('[i] ' + config.name + ' may already be running. Try: ' + (debugMode ? 'w2 stop' : 'w2 restart') + ' to ' + (debugMode ? 'stop' : 'restart') + ' the ' + config.name);
+    info('    or use a different port with: ' + (debugMode ? '`w2 run -p newPort`\n' : '`w2 start -p newPort`\n'));
   } else if (err.code == 'EACCES' || err.code == 'EPERM') {
-    error('[!] Cannot start ' + config.name + ' owned by root');
-    info('[i] Try to run command with `sudo`\n');
+    error('[!] Permission denied: Cannot start ' + config.name + ' as root');
+    info('[i] Try running with sudo\n');
   }
 
   error(err.stack ? 'Date: ' + new Date().toLocaleString() + '\n' + err.stack : err);
@@ -55,9 +55,9 @@ program.setConfig({
   main: function(options) {
     var cmd = process.argv[2];
     if ((cmd === 'start' || cmd === 'restart') && (options.inspect || options.inspectBrk)) {
-      error('[!] Only support running command `w2 run` to activate inspector on whistle.');
+      error('[!] Inspector mode only supported with `w2 run` command.');
       var argv = Array.prototype.slice.call(process.argv, 3);
-      info('[i] Try to run command `w2 run' + (argv.length ? ' ' + argv.join(' ') : '') + '` instead of.');
+      info('[i] Usage: w2 run' + (argv.length ? ' ' + argv.join(' ') : ''));
       return process.exit(1);
     }
     var hash = options && options.storage && encodeURIComponent(options.storage);
@@ -94,58 +94,58 @@ program.setConfig({
 
 program
   .command('status')
-  .description('Show the running status');
+  .description('Display running status');
 program
   .command('add')
-  .description('Add rules from local js file (.whistle.js by default)');
+  .description('Add rules from local JS file (.whistle.js by default)');
 program.command('proxy')
-  .description('Set global proxy');
+  .description('Configure system proxy settings');
 program.command('ca')
-  .description('Install root CA');
+  .description('Manage Root CA certificates');
 program.command('install')
-  .description('Install whistle plugin');
+  .description('Install Whistle plugin');
 program.command('uninstall')
-  .description('Uninstall whistle plugin');
+  .description('Uninstall Whistle plugin');
 program.command('exec')
-  .description('Exec whistle plugin cmd');
+  .description('Execute plugin command');
 
 program
-  .option('-D, --baseDir [baseDir]', 'set the configured storage root path', String, undefined)
-  .option('-z, --certDir [directory]', 'set custom certificate store directory', String, undefined)
-  .option('-l, --localUIHost [hostname]', 'set the domain for the web ui (' + config.localUIHost + ' by default)', String, undefined)
-  .option('-L, --pluginHost [hostname]', 'set the domain for the web ui of plugin  (as: "script=a.b.com&vase=x.y.com")', String, undefined)
-  .option('-n, --username [username]', 'set the username to access the web ui', String, undefined)
-  .option('-w, --password [password]', 'set the password to access the web ui', String, undefined)
-  .option('-N, --guestName [username]', 'set the the guest name to access the web ui (can only view the data)', String, undefined)
-  .option('-W, --guestPassword [password]', 'set the guest password to access the web ui (can only view the data)', String, undefined)
-  .option('-s, --sockets [number]', 'set the max number of cached connections on each domain (' + config.sockets + ' by default)', parseInt, undefined)
-  .option('-S, --storage [newStorageDir]', 'set the configured storage directory', String, undefined)
-  .option('-C, --copy [storageDir]', 'copy the configuration of the specified directory to a new directory', String, undefined)
-  .option('-c, --dnsCache [time]', 'set the cache time of DNS (60000ms by default)', String, undefined)
-  .option('-H, --host [boundHost]', 'set the bound host (INADDR_ANY by default)', String, undefined)
-  .option('-p, --port [proxyPort]', 'set the proxy port (' + config.port + ' by default)', String, undefined)
-  .option('-P, --uiport [uiport]', 'set the webui port', String, undefined)
-  .option('-m, --middlewares [script path or module name]', 'set the express middlewares loaded at startup (as: xx,yy/zz.js)', String, undefined)
-  .option('-M, --mode [mode]', 'set the starting mode (as: pureProxy|debug|multiEnv|capture|disableH2|network|rules|plugins|prod)', String, undefined)
-  .option('-t, --timeout [ms]', 'set the request timeout (' + config.timeout + 'ms by default)', parseInt, undefined)
-  .option('-e, --extra [extraData]', 'set the extra parameters for plugin', String, undefined)
-  .option('-f, --secureFilter [secureFilter]', 'set the path of secure filter', String, undefined)
-  .option('-r, --shadowRules [shadowRules]', 'set the shadow (default) rules', String, undefined)
-  .option('-R, --reqCacheSize [reqCacheSize]', 'set the cache size of request data (600 by default)', String, undefined)
-  .option('-F, --frameCacheSize [frameCacheSize]', 'set the cache size of webSocket and socket\'s frames (512 by default)', String, undefined)
+  .option('-D, --baseDir [baseDir]', 'set storage root path', String, undefined)
+  .option('-z, --certDir [directory]', 'set custom certificate directory', String, undefined)
+  .option('-l, --localUIHost [hostname]', 'set web UI domain (' + config.localUIHost + ' by default)', String, undefined)
+  .option('-L, --pluginHost [hostname]', 'set plugin UI domains  (as: "script=a.b.com&vase=x.y.com")', String, undefined)
+  .option('-n, --username [username]', 'set web UI username', String, undefined)
+  .option('-w, --password [password]', 'set web UI password', String, undefined)
+  .option('-N, --guestName [username]', 'set web UI guest username (read-only)', String, undefined)
+  .option('-W, --guestPassword [password]', 'set web UI guest password (read-only)', String, undefined)
+  .option('-s, --sockets [number]', 'set max cached connections per domain (' + config.sockets + ' by default)', parseInt, undefined)
+  .option('-S, --storage [newStorageDir]', 'set configuration storage directory', String, undefined)
+  .option('-C, --copy [storageDir]', 'copy configuration from specified directory', String, undefined)
+  .option('-c, --dnsCache [time]', 'set DNS cache time (default: 60000ms)', String, undefined)
+  .option('-H, --host [boundHost]', 'set bound host (default: INADDR_ANY)', String, undefined)
+  .option('-p, --port [proxyPort]', 'set proxy port (default: ' + config.port + ' by default)', String, undefined)
+  .option('-P, --uiport [uiport]', 'set web UI port', String, undefined)
+  .option('-m, --middlewares [script path or module name]', 'set startup middlewares (format: xx,yy/zz.js)', String, undefined)
+  .option('-M, --mode [mode]', 'set startup mode (options: pureProxy|debug|multiEnv|capture|disableH2|network|rules|plugins|prod)', String, undefined)
+  .option('-t, --timeout [ms]', 'set request timeout (default: ' + config.timeout, parseInt, undefined)
+  .option('-e, --extra [extraData]', 'set plugin extra parameters', String, undefined)
+  .option('-f, --secureFilter [secureFilter]', 'set secure filter path', String, undefined)
+  .option('-r, --shadowRules [shadowRules]', 'set default shadow rules', String, undefined)
+  .option('-R, --reqCacheSize [reqCacheSize]', 'set request data cache size (default: 600)', String, undefined)
+  .option('-F, --frameCacheSize [frameCacheSize]', 'set WebSocket frame cache size (default: 512)', String, undefined)
   .option('-A, --addon [pluginPaths]', 'add custom plugin paths', String, undefined)
-  .option('--init [bypass]', 'auto set global proxy (and bypass) and install root CA')
-  .option('--cluster [workers]', 'start the cluster server and set worker number (os.cpus().length by default)', String, undefined)
-  .option('--config [config]', 'load the startup config from a local file', String, undefined)
-  .option('--dnsServer [dnsServer]', 'set custom dns servers', String, undefined)
-  .option('--socksPort [socksPort]', 'set the socksv5 server port', String, undefined)
-  .option('--httpPort [httpPort]', 'set the http server port', String, undefined)
-  .option('--httpsPort [httpsPort]', 'set the https server port', String, undefined)
-  .option('--allowOrigin [originList]', 'list of cross origin allowed to access webui (as: a.b.c,x.y.z or *)', String, undefined)
-  .option('--no-global-plugins', 'do not load any globally installed plugins')
-  .option('--no-prev-options', 'do not reuse the previous options when restarting')
-  .option('--inspect [[host:]port]', 'activate inspector on host:port (127.0.0.1:9229 by default)')
-  .option('--inspectBrk [[host:]port]', 'activate inspector on host:port and break at start of user script (127.0.0.1:9229 by default)');
+  .option('--init [bypass]', 'auto configure proxy and install Root CA')
+  .option('--cluster [workers]', 'start cluster with worker count (default: CPU cores)', String, undefined)
+  .option('--config [config]', 'load startup config from file', String, undefined)
+  .option('--dnsServer [dnsServer]', 'set custom DNS servers', String, undefined)
+  .option('--socksPort [socksPort]', 'set SOCKSv5 server port', String, undefined)
+  .option('--httpPort [httpPort]', 'set HTTP server port', String, undefined)
+  .option('--httpsPort [httpsPort]', 'set HTTPS server port', String, undefined)
+  .option('--allowOrigin [originList]', 'set allowed CORS origins (format: a.b.c,x.y.z or *)', String, undefined)
+  .option('--no-global-plugins', 'disable global plugins')
+  .option('--no-prev-options', 'ignore previous options on restart')
+  .option('--inspect [[host:]port]', 'enable inspector (default: 127.0.0.1:9229)')
+  .option('--inspectBrk [[host:]port]', 'enable inspector with breakpoint (default: 127.0.0.1:9229)');
 
 var argv = process.argv;
 var cmd = argv[2];

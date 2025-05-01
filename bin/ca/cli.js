@@ -16,9 +16,9 @@ var MAX_LEN = 1024 * 1024;
 function installCert(certFile, url) {
   try {
     installRootCA(fileMgr.convertSlash(certFile));
-    util.info('Install root CA (' + (url || certFile) + ') successful.');
+    util.info('Successfully installed Root CA from (' + (url || certFile) + ').');
   } catch (e) {
-    util.error(e.message);
+    util.error('Certificate installation failed: ' + e.message);
   }
 }
 
@@ -39,7 +39,7 @@ function install(addr) {
       return util.error('Bad response (' + res.statusCode + ').');
     }
     if (!body || !body.length) {
-      return util.error('No content.');
+      return util.error('Empty certificate content.');
     }
     var tempFile = path.join(commonUtil.getWhistlePath(), Date.now() + '-' + util.getHash(addr.url) + '.crt');
     fs.writeFileSync(tempFile, body);

@@ -22,9 +22,9 @@ function showAll(byStop) {
     });
     var len = confList.length;
     if (!len) {
-      warn('[!] No running whistle.');
+      warn('[!] No running Whistle instances.');
     } else {
-      var tips = ['[i] All running whistle:'];
+      var tips = ['[i] All running Whistle instances:'];
       confList.forEach(function(conf, i) {
         ++i;
         var options = conf.options;
@@ -34,7 +34,7 @@ function showAll(byStop) {
           + (options.storage ? ', Storage: ' + options.storage : '')
           + (byStop ? colors.red(' (Stop cmd: ' + (options.storage ? 'w2 stop -S ' + options.storage : 'w2 stop') + ')') : ''));
       });
-      byStop && warn('[!] This whistle is not running.');
+      byStop && warn('[!] This Whistle instance is not running.');
       info(tips.join('\n'));
     }
   });

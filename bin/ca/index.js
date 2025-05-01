@@ -39,5 +39,5 @@ module.exports = function(certFile) {
   if (platform === 'win32') {
     return installWin(certFile);
   }
-  throw new Error('Platform ' + platform + ' is unsupported to install root CA for now.');
+  throw new Error('Platform ' + platform + ' is currently unsupported for Root CA installation.');
 };
