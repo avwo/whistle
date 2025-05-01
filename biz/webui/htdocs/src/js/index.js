@@ -2432,11 +2432,7 @@ var Index = React.createClass({
     var plugin = name && this.state.plugins[name + ':'];
     if (plugin) {
       if (tabs.length >= MAX_PLUGINS_TABS) {
-        win.alert(
-          'At most ' +
-            MAX_PLUGINS_TABS +
-            ' tabs can be opened at the same time.'
-        );
+        win.alert('Maximum ' + MAX_PLUGINS_TABS + ' tabs allowed.');
         return this.showPlugins();
       }
       active = name;

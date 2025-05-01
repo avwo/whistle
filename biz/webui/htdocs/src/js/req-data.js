@@ -1330,9 +1330,7 @@ var ReqData = React.createClass({
       <tr
         key={leaf ? leaf.id : item.path}
         style={style}
-        className={`w-req-data-item tree-node ${
-          leaf ? 'tree-leaf' : ''
-        } ${className}`}
+        className={'w-req-data-item tree-node' + (leaf ? ' tree-leaf' : '') + (className ? ' ' + className : '')}
         data-id={leaf && leaf.id}
         data-tree={item.path}
         draggable={leaf && draggable}
@@ -1344,9 +1342,7 @@ var ReqData = React.createClass({
           getIcon(leaf, className)
         ) : (
           <span
-            className={`icon-fold glyphicon glyphicon-triangle-${
-              item.expand ? 'bottom' : 'right'
-            }`}
+            className={'icon-fold glyphicon glyphicon-triangle-' + (item.expand ? 'bottom' : 'right')}
           ></span>
         )}
         {value.length > 320 ? value.substring(0, 320) + '...' : value}

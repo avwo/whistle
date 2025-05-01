@@ -215,10 +215,10 @@ var ResDetail = React.createClass({
       ) {
         tips = { url: modal.url };
         if (res.size < 5120) {
-          tips.message = 'No response body data';
+          tips.message = 'Empty response body';
         } else {
-          raw += '(Response data too large to show)';
-          tips.message = 'Response data too large to show';
+          raw += '(Response body exceeds display limit)';
+          tips.message = 'Response body exceeds display limit';
         }
       }
       if (trailerStr) {

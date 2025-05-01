@@ -546,7 +546,7 @@ var MockDialog = React.createClass({
       if (force === true) {
         var item = dataCenter.getValuesModal().getItem(keyName);
         if (item && item.value !== self._textarea.value) {
-          return win.confirm('The name `' + keyName + '` is already in use. Overwrite?', next);
+          return win.confirm('The name \'' + keyName + '\' is already in use. Overwrite?', next);
         }
       }
     }
