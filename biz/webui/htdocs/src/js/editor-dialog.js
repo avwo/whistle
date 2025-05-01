@@ -86,7 +86,7 @@ var EditorDialog = React.createClass({
         style.border = '1px solid #ccc';
         style.borderRadius = '3px';
         textarea.maxLength = MAX_LEN;
-        textarea.placeholder = self.props.placeholder || 'Input the text';
+        textarea.placeholder = self.props.placeholder || 'Enter text';
         textarea.onkeydown = function(e) {
           if ((e.ctrlKey || e.metaKey) && e.keyCode === 83) {
             e.preventDefault();
@@ -106,7 +106,7 @@ var EditorDialog = React.createClass({
         self._keyName = data.name;
         self.show({
           value: value,
-          title: (item ? 'Modify the key value' : 'Create a new key') + ' in Values (key: ' + data.name + ')',
+          title: item ? 'Update value for key \'' + data.name + '\' in Values' : 'Create a new key \'' + data.name + '\' to Values',
           isTempFile: false
         });
       } else {
@@ -121,7 +121,7 @@ var EditorDialog = React.createClass({
           getTempFile(tempFile, function(value) {
             self.show({
               value: value,
-              title: (isBlank ? 'Create a' : 'Modify the') + ' temp file' + (isBlank ? '' : ' (temp/' + tempFile + ')'),
+              title: (isBlank ? 'Create' : 'Modify') + ' temp file' + (isBlank ? '' : ' (temp/' + tempFile + ')'),
               isTempFile: true
             });
           });
@@ -258,7 +258,7 @@ var EditorDialog = React.createClass({
     var form = new FormData(ReactDOM.findDOMNode(this.refs.readLocalFileForm));
     var file = form.get('localFile');
     if (file.size > MAX_LEN) {
-      return win.alert('The size of all files cannot exceed 10m.');
+      return win.alert('Total file size must not exceed 10MB.');
     }
     this.readFile(file);
     ReactDOM.findDOMNode(this.refs.readLocalFile).value = '';
@@ -275,7 +275,7 @@ var EditorDialog = React.createClass({
       <Dialog ref="editorDialog" wstyle={'w-editor-dialog' + (textEditor ? ' w-big-editor-dialog' : '') +
       (showUpload ? ' w-show-upload-temp-file' : '')}>
         <div className="modal-header">
-          {title || 'Edit the copied text'}
+          <h4>{title || 'Edit copied text'}</h4>
           <button type="button" className="close" data-dismiss="modal">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -288,7 +288,7 @@ var EditorDialog = React.createClass({
             </div> : null
           }
           {
-            textEditor ? <iframe ref="iframe" src={fakeIframe} style={iframeStyle}/> :
+            textEditor ? <div className="w-fake-iframe w-fix-drag"><iframe ref="iframe" src={fakeIframe} style={iframeStyle}/></div> :
               <textarea onChange={this.onChange} value={value} />
           }
         </div>

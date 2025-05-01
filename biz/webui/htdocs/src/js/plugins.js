@@ -16,6 +16,7 @@ var iframes = require('./iframes');
 
 var CMD_RE = /^([\w]{1,12})(\s+-g)?$/;
 var WHISTLE_PLUGIN_RE = /(?:^|[\s,;|])(?:@[\w-]+\/)?whistle\.[a-z\d_-]+(?:\@[\w.^~*-]*)?(?:$|[\s,;|])/;
+var PLUGIN_NAME_RE = /^((?:@[\w-]+\/)?whistle\.[a-z\d_-]+)(?:\@([\w.^~*-]*))?$/;
 var SPACE_RE = /\s+$/;
 var pendingEnable;
 var registryCache;
@@ -70,7 +71,12 @@ function enableAllPlugins(e) {
   events.trigger('disableAllPlugins', e);
 }
 
-function getCmd(uninstall) {
+function getArgvs(account, dir) {
+  var params = account ? ' --account=' + account : '';
+  return params + (dir ? ' --dir=' + dir : '');
+}
+
+function getCmd(addArgv) {
   var cmdName = dataCenter.getServerInfo().cmdName;
   var g = '';
   if (cmdName && CMD_RE.test(cmdName)) {
@@ -79,18 +85,13 @@ function getCmd(uninstall) {
   } else {
     cmdName = 'w2 ';
   }
-  return cmdName + (uninstall ? 'uninstall' : 'install') + g + ' ';
+  return cmdName + 'install' + g + ' ' + (addArgv ? getArgvs(dataCenter.account, dataCenter.whistleName) : '');
 }
 
 window.getWhistleProxyServerInfo = function () {
   var serverInfo = dataCenter.getServerInfo();
   return serverInfo && $.extend(true, {}, serverInfo);
 };
-
-function getArgvs(account, dir) {
-  var params = account ? ' --account=' + account : '';
-  return params + (dir ? ' --dir=' + dir : '');
-}
 
 function getParams(plugin) {
   return getArgvs(plugin.account, plugin.dir);
@@ -110,6 +111,31 @@ function isOpenExternal(plugin) {
 
 function getHomePage(plugin) {
   return plugin.pluginHomepage || 'plugin.' + util.getSimplePluginName(plugin) + '/';
+}
+
+function getRegistry(url) {
+  return /^https?:\/\/[^/?]/.test(url) && url.length <= 1024 ? url : '';
+}
+
+function parsePluginName(list, registry) {
+  if (util.isString(list)) {
+    list = list.split(/[\s,;|]+/);
+  } else if (!Array.isArray(list)) {
+    return;
+  }
+  var plugins = [];
+  list.forEach(function (name) {
+    if (util.isString(name)) {
+      name = name.trim();
+      if (PLUGIN_NAME_RE.test(name)) {
+        plugins.push(name);
+      }
+    }
+  });
+  return plugins.length && {
+    plugins: plugins.join(' '),
+    registry: getRegistry(registry)
+  };
 }
 
 var Home = React.createClass({
@@ -138,7 +164,15 @@ var Home = React.createClass({
     events.on('showPluginRules', function(_, plugin) {
       self.onShowRules(util.getSimplePluginName(plugin));
     });
-    events.on('installPlugins', self.showInstall);
+    events.on('installPlugins', function() {
+      self.showInstall();
+    });
+    events.on('showInstallPlugins', function(_, list, registry) {
+      self.showInstall(list, registry);
+    });
+    events.on('showUpdatePlugins', function(_, list, registry) {
+      self.showInstall(list, registry, true);
+    });
     events.on('updateAllPlugins', function () {
       var data = self.props.data || {};
       var plugins = data.plugins || {};
@@ -330,15 +364,25 @@ var Home = React.createClass({
       );
     });
   },
-  showInstall: function() {
+  showInstall: function(list, registry, isUpdate) {
     var self = this;
     self.getRegistryList(function(result, r) {
-      self.setState({
-        install: true,
+      var state = {
+        install: !isUpdate,
         registryList: result,
         registry: r || '',
         registryChanged: true
-      }, self.showMsgDialog);
+      };
+      var options = parsePluginName(list, registry);
+      if (options) {
+        var cmdMsg = getCmd(true) + ' ' + options.plugins;
+        state.cmdMsg = cmdMsg;
+        state.installMsg = cmdMsg;
+        if (options.registry) {
+          state.registry = options.registry;
+        }
+      }
+      self.setState(state, self.showMsgDialog);
     });
   },
   onShowUninstall: function(e) {
@@ -348,14 +392,14 @@ var Home = React.createClass({
   },
   showUninstall: function (plugin) {
     var name = plugin.moduleName;
-    win.confirm('Are you sure to uninstall plugin \'' + name + '\'.', function(ok) {
+    win.confirm('Do you confirm uninstalling the plugin \'' + name + '\'.', function(ok) {
       if (ok) {
         dataCenter.plugins.uninstallPlugins({ name: util.getSimplePluginName(plugin) }, function(data, xhr) {
           if (!data) {
             return util.showSystemError(xhr);
           }
           if (data.ec) {
-            return win.alert((data.em || 'Error') + ', ' + 'try again or delete the directory manually:\n' + plugin.path,
+            return win.alert((data.em || 'Error') + ', ' + 'try again or manually delete the directory:\n' + plugin.path,
             plugin.path
           , 'Copy Directory Path');
           }
@@ -419,7 +463,7 @@ var Home = React.createClass({
           cmdMsg += spaces;
         }
       } else {
-        cmdMsg = getCmd() + getArgvs(dataCenter.account, dataCenter.whistleName) + ' ' + (regCmd ? regCmd : '');
+        cmdMsg = getCmd(true) + ' ' + (regCmd ? regCmd : '');
       }
       state.cmdMsg = cmdMsg;
       state.installMsg = cmdMsg;
@@ -673,13 +717,13 @@ var Home = React.createClass({
                 className="w-copy-text-with-tips"
                 data-clipboard-text={cmdMsg}
               >
-                Copy the following command
+                Copy
               </a>{' '}
-              and execute it in the CLI:
+              and run this command in your terminal:
             </h5>)}
             {
-              install ? (hasInstaller ? <h5>Input the package name of plugins (separated by spaces) and click Install:</h5> :
-              <h5>Input the package name of plugins (separated by spaces) and execute it in the CLI:</h5> ) : null
+              install ? (hasInstaller ? <h5>Enter plugin package names (space-separated) and click Install:</h5> :
+              <h5>Enter plugin package names (space-separated) and run in your terminal:</h5> ) : null
             }
             <textarea
               ref="textarea"
@@ -735,7 +779,7 @@ var Home = React.createClass({
               className="btn btn-default"
               data-dismiss="modal"
             >
-              Close
+              Cancel
             </button>
             {showCopyBtn ? (
               <button
@@ -920,7 +964,7 @@ var Tabs = React.createClass({
       >
         {disabled ? (
           <div className="w-record-status" style={{ marginBottom: 5 }}>
-            All plugins is disabled
+            All plugins are currently disabled
             <button className="btn btn-primary" onClick={enableAllPlugins}>
               Enable
             </button>
@@ -967,7 +1011,7 @@ var Tabs = React.createClass({
             );
           })}
         </ul>
-        <div className="fill orient-vertical-box w-nav-tab-panel">
+        <div className="fill orient-vertical-box w-nav-tab-panel w-fix-drag">
           <div ref="tabPanel" className="fill orient-vertical-box">
             <Home
               data={self.props}

@@ -105,9 +105,11 @@ function isBool(b) {
 exports.isBool = isBool;
 
 exports.parseLogs = function (str) {
-  try {
-    str = JSON.parse(str);
-  } catch (e) {}
+  if (typeof str === 'string') {
+    try {
+      str = JSON.parse(str);
+    } catch (e) {}
+  }
   if (!Array.isArray(str)) {
     return;
   }
@@ -143,13 +145,22 @@ exports.copyText = function(text, tips) {
   btn.trigger('click');
 };
 
-exports.preventDefault = function preventDefault(e) {
+exports.preventDefault = function(e) {
   e.keyCode == 8 && e.preventDefault();
 };
 
-exports.preventBlur = function preventDefault(e) {
+exports.preventBlur = function(e) {
   e.preventDefault();
 };
+
+exports.showService = function(name) {
+  events.trigger('showService', name);
+};
+
+exports.hideService = function(name) {
+  events.trigger('hideService', name);
+};
+
 
 function getSelectedText(x, y) {
   try {
@@ -248,20 +259,8 @@ exports.getBase64FromHexText = function (str) {
 
 function stopDrag() {
   dragCallback = dragTarget = dragOffset = null;
-  hideIFrameMask();
 }
 
-function showIFrameMask(hideByHover) {
-  var mask = $('.w-iframe-mask').show();
-  hideByHover && mask.parent().attr('allow-dragover', 1);
-}
-
-function hideIFrameMask() {
-  $('.w-iframe-mask').hide().parent().removeAttr('allow-dragover');
-}
-
-exports.showIFrameMask = showIFrameMask;
-exports.hideIFrameMask = hideIFrameMask;
 
 $(document)
   .on('mousedown', function (e) {
@@ -280,7 +279,6 @@ $(document)
       return;
     }
     dragOffset = e;
-    showIFrameMask();
     e.preventDefault();
   })
   .on('mousemove', function (e) {
@@ -657,8 +655,8 @@ function parseQueryString(str, delimiter, seperator, decode, donotAllowRepeat) {
 exports.parseQueryString = parseQueryString;
 
 function objectToString(obj, rawNames, noEncoding) {
-  if (!obj) {
-    return '';
+  if (!obj || typeof obj === 'string') {
+    return obj || '';
   }
   var keys = Object.keys(obj);
   var index = noEncoding ? keys.indexOf('content-encoding') : -1;
@@ -1070,6 +1068,14 @@ exports.handleImportData = function(data) {
   if (data) {
     if (data.type === 'setNetworkSettings') {
       events.trigger('setNetworkSettings', data);
+      return true;
+    }
+    if (data.type === 'setRulesSettings') {
+      events.trigger('setRulesSettings', data);
+      return true;
+    }
+    if (data.type === 'setValuesSettings') {
+      events.trigger('setValuesSettings', data);
       return true;
     }
     if (data.type === 'setComposerData') {
@@ -1656,7 +1662,7 @@ function parseRawJson(str, quite) {
     if (json && typeof json === 'object') {
       return json;
     }
-    !quite && message.error('Error: not a json object.');
+    !quite && message.error('Error: invalid JSON format.');
   } catch (e) {
     !quite && message.error('Error: ' + e.message);
   }
@@ -2807,6 +2813,34 @@ exports.showHandlePluginInfo = function(data, xhr) {
     showSystemError(xhr);
     return false;
   }
-  message.success('Request successful, the plugin list will be auto updated.');
+  message.success('Request successful - plugin list updating...');
   return true;
+};
+
+exports.getDialogTitle = function(name, action) {
+  action = action || 'Import';
+  switch (name) {
+  case 'network':
+    return action + ' Network Sessions';
+  case 'networkSettings':
+    return action + ' Network Settings';
+  case 'composer':
+    return action + ' Composer Data';
+  case 'console':
+    return action + ' Console Logs';
+  case 'server':
+    return action + ' Server Logs';
+  case 'rules':
+    return action + ' Rules';
+  case 'rulesSettings':
+    return action + ' Rules Settings';
+  case 'values':
+    return action + ' Values';
+  case 'valuesSettings':
+    return action + ' Values Settings';
+  case 'mock':
+    return action + ' Mock Data';
+  default:
+    return '';
+  }
 };

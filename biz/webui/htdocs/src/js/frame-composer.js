@@ -85,7 +85,7 @@ var FrameComposer = React.createClass({
   uploadForm: function (form) {
     var file = form.get('uploadData');
     if (file.size > MAX_FILE_SIZE) {
-      return win.alert('The file size cannot exceed 1m.');
+      return win.alert('Maximum file size: 1m.');
     }
     var self = this;
     var params = {
@@ -110,7 +110,7 @@ var FrameComposer = React.createClass({
         return util.showSystemError(xhr);
       }
       if (data.ec !== 0) {
-        return message.error('Server busy, try again later.');
+        return message.error('Server temporarily unavailable. Please try again shortly.');
       }
       cb && cb();
     });
@@ -329,7 +329,7 @@ var FrameComposer = React.createClass({
           value={text}
           onKeyDown={this.onForamt}
           onChange={this.onTextareaChange}
-          placeholder={'Input the ' + (isHexText ? 'hex ' : '') + 'text'}
+          placeholder={'Enter ' + (isHexText ? 'hex ' : '') + 'text'}
           className="fill"
         />
         <form

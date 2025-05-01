@@ -29,14 +29,8 @@ var rulesCtxMenuList = [
   },
   { name: 'Rename' },
   { name: 'Delete' },
+  { name: 'Import' },
   { name: 'Export' },
-  {
-    name: 'Import',
-    list: [
-      { name: 'Local' },
-      { name: 'Remote' }
-    ]
-  },
   { name: 'Trash' },
   {
     name: 'Others',
@@ -65,14 +59,8 @@ var valuesCtxMenuList = [
       { name: 'Inspect' }
     ]
   },
+  { name: 'Import' },
   { name: 'Export' },
-  {
-    name: 'Import',
-    list: [
-      { name: 'Local' },
-      { name: 'Remote' }
-    ]
-  },
   { name: 'Trash' },
   {
     name: 'Others',
@@ -489,13 +477,10 @@ var List = React.createClass({
       events.trigger('createValues', [self.getCurGroup(), self.currentFocusItem]);
       break;
     case 'Export':
-      events.trigger('export' + name);
+      events.trigger('exportData');
       break;
-    case 'Local':
-      events.trigger('import' + name);
-      break;
-    case 'Remote':
-      events.trigger('import' + name, {shiftKey: true});
+    case 'Import':
+      events.trigger('showImportDialog');
       break;
     case 'Trash':
       self.showRecycleBin(name);
@@ -506,17 +491,15 @@ var List = React.createClass({
         if (JSON_RE.test(item.value)) {
           try {
             JSON.parse(item.value);
-            message.success('Good JSON Object.');
+            message.success('Valid JSON object.');
           } catch (e) {
             message.error(
-                'Warning: the value of ' +
-                  item.name +
-                  ' can`t be parsed into json. ' +
-                  e.message
+                'Warning: Invalid JSON format in the value of \'' +
+                item.name + '\'. ' +  e.message
               );
           }
         } else {
-          message.error('Bad JSON Object.');
+          message.error('Invalid JSON format.');
         }
       }
       break;
@@ -741,7 +724,7 @@ var List = React.createClass({
         (props.hide ? ' hide' : '')}>
         {props.disabled ? (
           <div className="w-record-status">
-            All rules is disabled
+            All rules are currently disabled
             <button className="btn btn-primary" onClick={self.enableAllRules}>
               Enable
             </button>

@@ -33,6 +33,8 @@
 .network-settings-filter legend {
   margin: 0;
   padding: 0;
+  display: flex;
+  align-items: center;
 }
 .network-settings-filter legend label {
   margin-right: 5px;
@@ -84,12 +86,12 @@
 .w-network-settings-dialog .w-help-menu:hover,
 .w-https-dialog .w-help-menu:hover,
 .w-certs-info-dialog .w-help-menu:hover,
-.w-files-dialog .w-help-menu:hover {
+.w-token-dialog .w-help-menu:hover {
   color: #337ab7;
 }
 .w-https-dialog .w-help-menu,
-.w-files-dialog .w-help-menu,
-.w-certs-info-dialog .w-help-menu {
+.w-certs-info-dialog .w-help-menu,
+.w-token-dialog .w-help-menu {
   margin-right: 5px;
   color: #000;
   font-size: 14px;
@@ -150,7 +152,14 @@
   font-weight: normal;
 }
 .w-certs-info-title {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
+  font-size: 16px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.w-token-dialog .w-certs-info-title {
+  margin: 0;
 }
 
 .w-query-select {

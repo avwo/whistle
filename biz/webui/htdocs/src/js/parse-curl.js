@@ -127,6 +127,9 @@ module.exports = function(s) {
     case 'headers':
       var index = arg.indexOf(': ');
       if (index !== -1) {
+        arg = arg.replace(/(^|.)\\"/mg, function(_, ch) {
+          return ch === '\\' ? '\\"' : (ch || '') + '"';
+        });
         var name = arg.substring(0, index).trim().toLowerCase();
         headers[name] = arg.substring(index + 2).trim();
       }

@@ -250,7 +250,9 @@
 .w-mock-dialog .modal-dialog select {
   background-color: #f6f6f6;
 }
-
+.w-rules-dialog {
+  z-index: 1100;
+}
 .w-rules-dialog .modal-dialog {
   width: 1020px;
 }

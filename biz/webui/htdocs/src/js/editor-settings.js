@@ -61,7 +61,7 @@ var EditorSettings = React.createClass({
           </label>
         </p>
         <p className="w-editor-settings-box">
-          <label>
+          <label className="w-align-items">
             <input
               checked={this.props.lineNumbers}
               onChange={this.props.onLineNumberChange}
@@ -71,7 +71,7 @@ var EditorSettings = React.createClass({
           </label>
         </p>
         <p className="w-editor-settings-box">
-          <label>
+          <label className="w-align-items">
             <input
               checked={this.props.lineWrapping}
               onChange={this.props.onLineWrappingChange}

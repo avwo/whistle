@@ -39,7 +39,7 @@ var Tips = React.createClass({
         <p>{data.message}</p>
         {data.url ? (
           <a href={data.url} target="_blank">
-            Open the URL in a new window
+            Open the URL in new window
           </a>
         ) : undefined}
       </div>

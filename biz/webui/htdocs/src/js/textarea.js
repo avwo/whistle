@@ -93,12 +93,12 @@ var Textarea = React.createClass({
       return;
     }
     if (!name) {
-      message.error('The key cannot be empty.');
+      message.error('The key is required.');
       return;
     }
 
     if (/\s/.test(name)) {
-      message.error('The key cannot have spaces.');
+      message.error('Spaces are not allowed in the key.');
       return;
     }
     var handleSubmit = function (sure) {
@@ -120,7 +120,7 @@ var Textarea = React.createClass({
       return handleSubmit(true);
     }
     win.confirm(
-      'The key \'' + name + '\' already exists.\nDo you want to override it.',
+      'The key \'' + name + '\' is already in use. Overwrite?',
       handleSubmit
     );
   },
@@ -142,7 +142,7 @@ var Textarea = React.createClass({
       value = value.substring(0, MAX_LENGTH) +
         '...\r\n\r\n(' +
         exceed +
-        ' characters left, you can click on the ViewAll button in the upper right corner to view all)\r\n';
+        ' characters remaining (click View All in top-right corner)\r\n';
     }
     var isHexView = props.isHexView;
     this.state.value = value;
@@ -186,8 +186,8 @@ var Textarea = React.createClass({
               maxLength="64"
               placeholder={
                 this.state.showDownloadInput
-                  ? 'Input the filename'
-                  : 'Input the key'
+                  ? 'Enter filename'
+                  : 'Enter key name'
               }
             />
             <button

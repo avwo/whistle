@@ -108,20 +108,17 @@ var HistoryData = React.createClass({
         return true;
       }).join('\r\n');
     }
-    events.trigger('download', {
-      name: 'composer_' + Date.now() + '.txt',
-      value: JSON.stringify({
-        type: 'setComposerData',
-        useH2: item.useH2,
-        rules: rules.join('\n'),
-        url: item.url,
-        method: item.method,
-        headers: headers,
-        body: item.body,
-        base64: item.base64,
-        isHexText: item.isHexText
-      }, null, '  ')
-    });
+    events.trigger('showExportDialog', ['composer', {
+      type: 'setComposerData',
+      useH2: item.useH2,
+      rules: rules.join('\n'),
+      url: item.url,
+      method: item.method,
+      headers: headers,
+      body: item.body,
+      base64: item.base64,
+      isHexText: item.isHexText
+    }]);
   },
   export: function() {
     var groupList = this.props.data && this.props.data._groupList;

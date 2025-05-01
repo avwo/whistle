@@ -114,6 +114,13 @@ var ServerLog = React.createClass({
         }, 2000);
       }
     });
+
+    events.on('serverImportFile', function (_, file) {
+      self.importFile(file);
+    });
+    events.on('serverImportData', function (_, data) {
+      self.importData(data);
+    });
   },
   clearLogs: function () {
     dataCenter.clearedSvrLogs = true;
@@ -168,73 +175,24 @@ var ServerLog = React.createClass({
       self.setState({});
     }, 500);
   },
-  showNameInput: function (e) {
-    var self = this;
-    self.setState(
-      {
-        showNameInput: true
-      },
-      function () {
-        ReactDOM.findDOMNode(self.refs.nameInput).focus();
-      }
-    );
-  },
-  download: function () {
-    var target = ReactDOM.findDOMNode(this.refs.nameInput);
-    var name = target.value.trim();
-    var logs = [];
-    this.state.logs.forEach(function (log) {
-      if (!log.hide) {
-        logs.push({
-          id: log.id,
-          text: log.text,
-          level: log.level,
-          date: log.date
-        });
-      }
-    });
-    target.value = '';
-    ReactDOM.findDOMNode(this.refs.filename).value = name;
-    ReactDOM.findDOMNode(this.refs.content).value = JSON.stringify(
-      logs,
-      null,
-      '  '
-    );
-    ReactDOM.findDOMNode(this.refs.downloadForm).submit();
-    this.hideNameInput();
-  },
-  submit: function (e) {
-    if (e.keyCode !== 13 && e.type != 'click') {
-      return;
-    }
-    this.download();
-  },
   selectFile: function () {
-    ReactDOM.findDOMNode(this.refs.importData).click();
+    events.trigger('showImportDialog', 'server');
   },
   changeLevel: function (option) {
     this.setState({ level: option.value });
   },
-  importData: function () {
-    var form = new FormData(ReactDOM.findDOMNode(this.refs.importDataForm));
-    var file = form.get('importData');
+  importFile: function (file) {
     if (!file || !/\.log$/i.test(file.name)) {
-      return win.alert('Only supports .log file.');
+      return win.alert('Only .log files are supported.');
     }
     if (file.size > MAX_FILE_SIZE) {
-      return win.alert('The file size cannot exceed 2m.');
+      return win.alert('Maximum file size: 2m.');
     }
-    util.readFileAsText(file, function (logs) {
-      logs = util.parseLogs(logs);
-      logs && events.trigger('uploadLogs', { logs: logs });
-    });
-    ReactDOM.findDOMNode(this.refs.importData).value = '';
+    util.readFileAsText(file, this.importData);
   },
-  preventBlur: function (e) {
-    e.target.nodeName != 'INPUT' && e.preventDefault();
-  },
-  hideNameInput: function () {
-    this.setState({ showNameInput: false });
+  importData: function (logs) {
+    logs = util.parseLogs(logs);
+    logs && events.trigger('uploadLogs', { logs: logs });
   },
   handleAction: function (type) {
     if (type === 'top') {
@@ -252,6 +210,20 @@ var ServerLog = React.createClass({
     if (refresh) {
       return this.autoRefresh();
     }
+  },
+  export: function () {
+    var logs = [];
+    this.state.logs.forEach(function (log) {
+      if (!log.hide) {
+        logs.push({
+          id: log.id,
+          text: log.text,
+          level: log.level,
+          date: log.date
+        });
+      }
+    });
+    events.trigger('showExportDialog', ['server', logs]);
   },
   render: function () {
     var state = this.state;
@@ -276,8 +248,7 @@ var ServerLog = React.createClass({
             </a>
             <a
               className={'w-download' + (disabled ? ' w-disabled' : '')}
-              onDoubleClick={disabled ? undefined : this.download}
-              onClick={disabled ? undefined : this.showNameInput}
+              onClick={disabled ? undefined : this.export}
               draggable="false"
             >
               Export
@@ -289,53 +260,8 @@ var ServerLog = React.createClass({
             >
               Clear
             </a>
-            <div
-              onMouseDown={this.preventBlur}
-              style={{ display: this.state.showNameInput ? 'block' : 'none' }}
-              className="shadow w-textarea-input"
-            >
-              <input
-                ref="nameInput"
-                onKeyDown={this.submit}
-                onBlur={this.hideNameInput}
-                type="text"
-                maxLength="64"
-                placeholder="Input the filename"
-              />
-              <button
-                type="button"
-                onClick={this.submit}
-                className="btn btn-primary"
-              >
-                OK
-              </button>
-            </div>
-            <form
-              ref="downloadForm"
-              action="cgi-bin/download"
-              style={{ display: 'none' }}
-              method="post"
-              target="downloadTargetFrame"
-            >
-              <input ref="type" name="type" value="log" type="hidden" />
-              <input ref="filename" name="filename" type="hidden" />
-              <input ref="content" name="content" type="hidden" />
-            </form>
           </div>
         </div>
-        <form
-          ref="importDataForm"
-          encType="multipart/form-data"
-          style={{ display: 'none' }}
-        >
-          <input
-            ref="importData"
-            onChange={this.importData}
-            type="file"
-            name="importData"
-            accept=".log"
-          />
-        </form>
         <div ref="svrContainer" className="fill w-detail-log-content">
           <ul ref="svrContent">
             {logs.map(function (log) {

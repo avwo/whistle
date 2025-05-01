@@ -1,3 +1,7 @@
+.w-plugins-mgr-dialog {
+  z-index: 1060;
+}
+
 .w-plugins-mgr-dialog .modal-content {
   width: 380px;
 }

@@ -116,7 +116,7 @@ body,
   }
 }
 #container {
-  min-width: 1075px; /* 兼容竖屏 */
+  min-width: 1078px; /* 兼容竖屏 */
   min-height: 560px;
 }
 ::-webkit-scrollbar {
@@ -460,6 +460,10 @@ a {
   height: 550px;
 }
 
+.w-win-dialog {
+  z-index: 100000;
+}
+
 .w-win-dialog .modal-dialog {
   width: 480px;
 }
@@ -492,4 +496,55 @@ a {
 .modal.in {
   overflow-x: hidden;
   overflow-y: auto;
+}
+
+.glyphicon-cloud {
+  vertical-align: text-bottom;
+  padding-bottom: 1px;
+  margin-right: 3px;
+}
+
+.glyphicon-folder-open {
+  margin-right: 6px;
+}
+
+.w-fake-iframe {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.w-fix-drag {
+  position: relative;
+}
+
+.w-fix-drag::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.w-fix-drag:hover::after {
+  display: none;
+}
+
+.modal-header h4 {
+  font-size: 15px;
+  font-weight: 500;
+  display: inline;
+}
+
+.w-align-items {
+  display: flex;
+  align-items: center;
+}
+
+.w-align-items input {
+  margin-right: 5px;
+}
+
+.w-fmt-btn .glyphicon {
+  margin-right: 5px;
 }

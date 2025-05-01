@@ -39,6 +39,7 @@
   border-right: 1px solid #ccc;
   cursor: text;
 }
+
 .w-list-data .w-changed:before {
   content: '*';
   color: red;

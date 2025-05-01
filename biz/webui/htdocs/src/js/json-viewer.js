@@ -125,12 +125,12 @@ var JsonViewer = React.createClass({
       return;
     }
     if (!name) {
-      message.error('The key cannot be empty.');
+      message.error('The key is required.');
       return;
     }
 
     if (/\s/.test(name)) {
-      message.error('The key cannot have spaces.');
+      message.error('Spaces are not allowed in the key.');
       return;
     }
     var handleSubmit = function (sure) {
@@ -152,7 +152,7 @@ var JsonViewer = React.createClass({
       return handleSubmit(true);
     }
     win.confirm(
-      'The key \'' + name + '\' already exists.\nDo you want to override it.',
+      'The key \'' + name + '\' is already in use. Overwrite?',
       handleSubmit
     );
   },
@@ -287,7 +287,7 @@ var JsonViewer = React.createClass({
               type="text"
               maxLength="64"
               placeholder={
-                state.showDownloadInput ? 'Input the filename' : 'Input the key'
+                state.showDownloadInput ? 'Enter filename' : 'Enter key name'
               }
             />
             <button

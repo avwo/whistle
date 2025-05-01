@@ -318,8 +318,7 @@ var MockDialog = React.createClass({
     if (values) {
       data.push(values);
     }
-    ReactDOM.findDOMNode(this.refs.content).value = JSON.stringify(data);
-    ReactDOM.findDOMNode(this.refs.downloadForm).submit();
+    events.trigger('showExportDialog', ['mock', data]);
   },
   isValuesKey: function(dataSrc) {
     return (dataSrc || this.state.dataSrc)[0] === '{';
@@ -384,7 +383,7 @@ var MockDialog = React.createClass({
     if (!self.state.hasChanged) {
       return updateValue();
     }
-    win.confirm('Switching values will cause the changed content to be lost, continue?', function(sure) {
+    win.confirm('Unsaved changes will be lost. Continue?', function(sure) {
       if (sure) {
         updateValue();
         self.setState({ hasChanged: false });
@@ -407,7 +406,7 @@ var MockDialog = React.createClass({
         style.border = '1px solid #ccc';
         style.borderRadius = '3px';
         textarea.maxLength = 1024 * 1024 * 3;
-        textarea.placeholder='Input the value';
+        textarea.placeholder='Enter value';
         textarea.addEventListener('input', function() {
           self.setState({ hasChanged: true });
         });
@@ -461,7 +460,7 @@ var MockDialog = React.createClass({
   },
   removeRules: function() {
     var self = this;
-    win.confirm('Are you sure to delete the rules?', function(sure) {
+    win.confirm('Do you confirm the deletion of the rules?', function(sure) {
       if (sure) {
         self.setState({ pattern: '' }, self.updateRules);
         ReactDOM.findDOMNode(self.refs.url).focus();
@@ -495,7 +494,7 @@ var MockDialog = React.createClass({
   },
   clearQuery: function() {
     var self = this;
-    win.confirm('Are you sure to delete all params?', function(sure) {
+    win.confirm('Do you confirm the deletion of all params?', function(sure) {
       if (sure) {
         self.refs.paramsEditor.clear();
         self.hideParams();
@@ -542,12 +541,12 @@ var MockDialog = React.createClass({
     if (showKeyValue) {
       if (!keyName) {
         ReactDOM.findDOMNode(self.refs.keyName).focus();
-        return message.error('Input the key name.');
+        return message.error('The key name is required.');
       }
       if (force === true) {
         var item = dataCenter.getValuesModal().getItem(keyName);
         if (item && item.value !== self._textarea.value) {
-          return win.confirm('The name `' + keyName + '`  already exists, whether to overwrite it?', next);
+          return win.confirm('The name `' + keyName + '` is already in use. Overwrite?', next);
         }
       }
     }
@@ -643,7 +642,7 @@ var MockDialog = React.createClass({
                 <a className="glyphicon glyphicon-question-sign" href="https://avwo.github.io/whistle/webui/mock.html" target="_blank" />
                 URL Pattern:
               </span>
-              <input ref="url" onChange={this.onPatternChange} onFocus={this.selectAllText} placeholder="Input the url pattern"
+              <input ref="url" onChange={this.onPatternChange} onFocus={this.selectAllText} placeholder="Enter url pattern"
                 value={state.pattern} className="form-control w-url-pattern" maxLength="1200" />
                 <button
                   className="btn btn-default w-composer-params"
@@ -701,20 +700,20 @@ var MockDialog = React.createClass({
               # Comment:
               <input
                 className="form-control"
-                placeholder="Input the comment of rules"
+                placeholder="Enter rule comment"
                 value={state.comment}
                 onChange={this.onComment}
                 maxLength={32}
               />
             </label>
-            <textarea onChange={this.onInlineValueChange} className="w-mock-inline" placeholder="Input the rule value"
+            <textarea onChange={this.onInlineValueChange} className="w-mock-inline" placeholder="Enter value"
               style={{display: showKeyValue ? 'none' : null}} maxLength="1200" value={inlineValue} />
             <div style={{display: showKeyValue || !inlineValue ? 'none' : null}} className="w-mock-inline-action">
               <a onClick={this.asValue} style={/\s/.test(inlineValue) || isValue(inlineValue) ? HIDE_STYLE : null}>AsValue</a>
               <a onClick={this.trimInline} style={/^\s|\s$/.test(inlineValue) ? null : HIDE_STYLE}>Trim</a>
               <a onClick={this.clearInline}>Clear</a>
             </div>
-            <input ref="keyName" onChange={this.onKeyNameChange} placeholder="Input the key name"
+            <input ref="keyName" onChange={this.onKeyNameChange} placeholder="Enter key name"
               value={this.isValuesKey() ? dataSrc.slice(1, -1) : state.keyName}
               readOnly={this.isValuesKey()} onFocus={this.selectAllText} className="form-control w-mock-key-name"
               style={showKeyValue && !isFile ? null : HIDE_STYLE} maxLength={MAX_LEN} />
@@ -723,7 +722,7 @@ var MockDialog = React.createClass({
             <span>
               Value:
             </span>
-            <iframe ref="iframe" src={fakeIframe} style={iframeStyle}/>
+            <div className="w-fake-iframe w-fix-drag"><iframe ref="iframe" src={fakeIframe} style={iframeStyle}/></div>
             <div style={{display: showKeyValue ? null : 'none'}} className="w-mock-inline-action">
               <a onClick={this.formatValue}>Format</a>
               <a onClick={this.clearValue}>Clear</a>
@@ -806,16 +805,6 @@ var MockDialog = React.createClass({
               onChange={this.onParamsChange}
             />
           </div>
-          <form
-            ref="downloadForm"
-            action="cgi-bin/download"
-            style={{ display: 'none' }}
-            method="post"
-            target="downloadTargetFrame"
-          >
-            <input ref="type" name="type" value="mock" type="hidden" />
-            <input ref="content" name="content" type="hidden" />
-          </form>
       </Dialog>
     );
   }

@@ -1,0 +1,68 @@
+.w-large-dialog .modal-dialog {
+  width: calc(100% - 120px);
+  height: calc(100% - 100px);
+  min-width: 960px;
+  min-height: 520px;
+  margin: 50px 60px;
+}
+
+.w-large-dialog {
+  overflow: auto!important;
+}
+
+.w-editor-win {
+  z-index: 99999;
+}
+
+.w-large-dialog button.close, .w-custom-dialog button.close {
+  font-size: 20px;
+  line-height: 6px;
+  padding: 4px 3px 8px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  background: #fff;
+  position: absolute;
+  top: -9px;
+  right: -9px;
+  opacity: 1;
+  color: #999;
+  z-index: 1;
+}
+
+.w-large-dialog .w-open-win-btn {
+  position: absolute;
+  top: -23px;
+  right: 15px;
+  z-index: 1;
+  font-size: 12px;
+  padding: 3px 10px;
+  display: inline-block;
+  background: #eee;
+  color: #747474;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  text-decoration: none;
+}
+
+.w-large-dialog .w-open-win-btn:hover {
+  color: #333373;
+}
+
+.w-large-dialog .modal-content, .w-custom-dialog .modal-content {
+  border-radius: 5px;
+  height: 100%;
+  padding: 0;
+}
+
+.w-large-dialog iframe, .w-custom-dialog iframe {
+  border-radius: 5px;
+}
+
+.w-large-dialog .modal-body, .w-custom-dialog .modal-body {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  padding: 0;
+}

@@ -33,7 +33,7 @@ var Settings = React.createClass({
   },
   resetColumns: function () {
     var self = this;
-    win.confirm('Are you sure to reset the columns of network table?', function(sure) {
+    win.confirm('Do you confirm resetting the network table\'s columns?', function(sure) {
       if (sure) {
         self.setState({ urlType: '' });
         storage.set('urlType', '');
@@ -51,7 +51,7 @@ var Settings = React.createClass({
       if (!settings) {
         return;
       }
-      win.confirm('Are you sure to modify network settings?', function(sure) {
+      win.confirm('Do you confirm the changes to the network settings?', function(sure) {
         if (sure) {
           self.setSettings(settings);
         }
@@ -289,7 +289,7 @@ var Settings = React.createClass({
     });
   },
   import: function(e) {
-    events.trigger('importSessions', e);
+    events.trigger('showImportDialog', 'networkSettings');
   },
   export: function() {
     var state = this.state;
@@ -316,10 +316,7 @@ var Settings = React.createClass({
       treeView: storage.get('isTreeView') === '1',
       disabledHNR: storage.get('disabledHNR') === '1'
     };
-    events.trigger('download', {
-      name: 'network_settings_' + Date.now() + '.txt',
-      value: JSON.stringify(settings, null, '  ')
-    });
+    events.trigger('showExportDialog', ['networkSettings', settings]);
   },
   onUrlType: function(e) {
     var urlType = e.target.value;
@@ -491,13 +488,13 @@ var Settings = React.createClass({
               className="w-va-mdl"
             />
             <span className="w-va-mdl">
-              Only view the requests of own computer (IP: {dataCenter.clientIp})
+              Viewing only your computer's network requests (IP: {dataCenter.clientIp})
             </span>
           </label>
           <label className="w-network-settings-own">
             <input checked={viewAllInNewWindow} data-name="viewAllInNewWindow" type="checkbox" className="w-va-mdl" />
             <span className="w-va-mdl">
-            ViewAll in a new window
+            ViewAll in new window
             </span>
           </label>
           <label className="w-network-settings-own">
@@ -565,7 +562,7 @@ var Settings = React.createClass({
                 value={state.value}
                 className="form-control"
                 maxLength="16"
-                placeholder="Input the custom column name"
+                placeholder="Enter custom column name"
               />
             </label>
             <label>
@@ -575,7 +572,7 @@ var Settings = React.createClass({
                 value={state.key}
                 className="form-control"
                 maxLength="72"
-                placeholder="Input the key of data (as: res.headers.x-server ...)"
+                placeholder="Enter data key (as: res.headers.x-server ...)"
               />
             </label>
           </div>

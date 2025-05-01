@@ -1,4 +1,4 @@
-require('../css/account.css');
+require('../css/large-dialog.css');
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Dialog = require('./dialog');
@@ -22,16 +22,20 @@ var AccountDialog = React.createClass({
   },
   render: function() {
     var className = this.props.className;
+    var hideButton = this.props.hideButton;
+
     return (
-      <Dialog ref="dialog" wstyle={'w-account-dialog' + (className ? ' ' + className : '')}>
-        <a className="w-open-win-btn" onClick={this.openInNewWin}>Open In New Window</a>
+      <Dialog ref="dialog" wstyle={'w-large-dialog' + (className ? ' ' + className : '')}>
+        {hideButton ? null : <a className="w-open-win-btn" onClick={this.openInNewWin}>Open In New Window</a>}
         <button
           type="button"
           className="close"
           data-dismiss="modal"
           aria-label="Close"
         >&times;</button>
-        <iframe ref="iframe" className="modal-body" />
+        <div className="modal-body w-fix-drag">
+          <iframe ref="iframe" className="modal-body" />
+        </div>
       </Dialog>
     );
   }

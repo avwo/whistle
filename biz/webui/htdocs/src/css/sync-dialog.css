@@ -16,7 +16,8 @@
 
 .w-history-record-list {
   margin: 20px 0 15px 10px;
-  width: 550px;
+  width: 635px;
   display: inline-block;
   font-weight: normal;
+  white-space: nowrap;
 }

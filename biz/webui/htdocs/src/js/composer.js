@@ -15,10 +15,8 @@ var message = require('./message');
 var ContextMenu = require('./context-menu');
 var CookiesDialog = require('./cookies-dialog');
 var Dialog = require('./dialog');
-var EditorDialog = require('./editor-dialog');
 var win = require('./win');
 var HistoryData = require('./history-data');
-var parseCurl = require('./parse-curl');
 
 var METHODS = [
   'GET',
@@ -172,15 +170,6 @@ function replaceCRLF(body) {
   return body && body.replace(/\r\n|\r|\n/g, '\r\n');
 }
 
-function parseJson(text) {
-  if (text[0] !== '{' && text[0] !== '[') {
-    return;
-  }
-  try {
-    return JSON.parse(text);
-  } catch(e) {}
-}
-
 var Composer = React.createClass({
   getInitialState: function () {
     var rules = storage.get('composerRules');
@@ -191,9 +180,7 @@ var Composer = React.createClass({
     var method = data.method;
     var body = getString(data.body);
     if (body && body !== data.body) {
-      message.warn(
-        'The length of the body cannot exceed 256k, and the excess will be truncated.'
-      );
+      message.warn('Body content limited to 256KB (excess will be truncated).');
     }
     var headers = util.parseHeaders(data.headers);
     var type = getType(headers);
@@ -239,14 +226,10 @@ var Composer = React.createClass({
     this.refs.uploadBody.update(this.uploadBodyData);
     this.hintElem = $(ReactDOM.findDOMNode(this.refs.hints));
     events.on('_setComposerData', function(_, data) {
-      if (!data) {
-        return;
+      if (data) {
+        events.trigger('showComposerTab');
+        self.onCompose(data);
       }
-      win.confirm('Are you sure to modify the data of composer?', function(sure) {
-        if (sure) {
-          self.onCompose(data);
-        }
-      });
     });
     events.on('setComposer', function () {
       if (self.state.pending || self.props.disabled) {
@@ -291,7 +274,7 @@ var Composer = React.createClass({
       };
       if (body.length > MAX_BODY_SIZE) {
         win.confirm(
-          'The request body is too long and will be truncated, continue?',
+          'Request body exceeds limit and will be truncated. Continue?',
           function (allow) {
             if (allow) {
               updateComposer();
@@ -794,7 +777,7 @@ var Composer = React.createClass({
     var self = this;
     if (!dataCenter.supportH2) {
       win.confirm(
-        'The current version of Node.js cannot support HTTP/2.\nPlease upgrade to the latest LTS version.',
+        'HTTP/2 requires Node.js LTS version v16+. Please upgrade.',
         function (sure) {
           sure && window.open('https://nodejs.org/');
           self.setState({});
@@ -1101,7 +1084,7 @@ var Composer = React.createClass({
     var url = ReactDOM.findDOMNode(self.refs.url).value;
     var host = util.getHostname(url).toLowerCase();
     if (!/^[a-z.\d_-]+$/.test(host)) {
-      return message.warn('No cookies');
+      return message.warn('Cookies not found.');
     }
     if (self._pending) {
       return;
@@ -1130,7 +1113,7 @@ var Composer = React.createClass({
         }
       }
       if (!result.length) {
-        return message.warn('No cookies');
+        return message.warn('Cookies not found.');
       }
       if (result.length < maxCount) {
         var cookies = self._cacheCookies;
@@ -1287,7 +1270,7 @@ var Composer = React.createClass({
   },
   clearQuery: function() {
     var self = this;
-    win.confirm('Are you sure to delete all params?', function(sure) {
+    win.confirm('Do you confirm the deletion of all params?', function(sure) {
       if (sure) {
         self.refs.paramsEditor.clear();
         self.hideParams();
@@ -1323,7 +1306,7 @@ var Composer = React.createClass({
     var form = new FormData(ReactDOM.findDOMNode(this.refs.readLocalFileForm));
     var file = form.get('localFile');
     if (file.size > MAX_FILE_SIZE) {
-      return win.alert('The size of file cannot exceed 20m.');
+      return win.alert('Maximum file size: 20m.');
     }
     var self = this;
     self.reading = true;
@@ -1335,33 +1318,7 @@ var Composer = React.createClass({
     ReactDOM.findDOMNode(this.refs.readLocalFile).value = '';
   },
   import: function(e) {
-    events.trigger('importSessions', e);
-    this.hoverOutImport();
-  },
-  showImportCURL: function() {
-    this.hoverOutImport();
-    this.refs.editorDialog.show();
-  },
-  importCURL: function(text) {
-    text = text.trim();
-    if (!text) {
-      message.error('The text cannot be empty.');
-      return false;
-    }
-    try {
-      var result = parseJson(text) || parseCurl(text);
-      if (!result || !result.url) {
-        message.error('Not CURL text.');
-        return false;
-      }
-      result.isHexText = false;
-      result.headers = util.objectToString(result.headers);
-      this.onCompose(result);
-    } catch (e) {
-      message.error(e.message);
-      return false;
-    }
-
+    events.trigger('showImportDialog', 'composer');
   },
   copyAsCURL: function() {
     var state = this.state;
@@ -1392,10 +1349,7 @@ var Composer = React.createClass({
     data.isCRLF = state.isCRLF;
     data.type = 'setComposerData';
     data.enableProxyRules = state.enableProxyRules;
-    events.trigger('download', {
-      name: 'composer_' + Date.now() + '.txt',
-      value: JSON.stringify(data, null, '  ')
-    });
+    events.trigger('showExportDialog', ['composer', data]);
   },
   onBodyStateChange: function (e) {
     var disableBody = !e.target.checked;
@@ -1411,18 +1365,6 @@ var Composer = React.createClass({
   },
   _hoverOutImport: function() {
 
-  },
-  hoverInImport: function() {
-    clearTimeout(this._hoverOutTimer);
-    this._hoverOutTimer = null;
-    this.setState({ overImport: true });
-  },
-  hoverOutImport: function() {
-    var self = this;
-    self._hoverOutTimer = self._hoverOutTimer || setTimeout(function() {
-      self._hoverOutTimer = null;
-      self.setState({ overImport: false });
-    }, 80);
   },
   render: function () {
     var self = this;
@@ -1494,7 +1436,7 @@ var Composer = React.createClass({
               ref="url"
               type="text"
               maxLength="8192"
-              placeholder="Input the url"
+              placeholder="Enter URL"
               className="fill w-composer-input"
             />
             <button
@@ -1607,16 +1549,9 @@ var Composer = React.createClass({
                   HTTP/2
                 </label>
                 <div className="w-composer-btns">
-                  <a draggable="false" onClick={self.import}
-                    onMouseEnter={self.hoverInImport} onMouseLeave={self.hoverOutImport}>Import</a>
+                  <a draggable="false" onClick={self.import}>Import</a>
                   <a draggable="false" onClick={self.export}>Export</a>
                   <a draggable="false" onClick={self.copyAsCURL}>CopyAsCURL</a>
-                  <ul className="shadow w-composer-import"
-                    onMouseEnter={self.hoverInImport} onMouseLeave={self.hoverOutImport}
-                    style={{display: state.overImport ? 'block' : 'none'}}>
-                    <li onClick={self.showImportCURL}>Import CURL</li>
-                    <li onClick={self.import}>Import File</li>
-                  </ul>
                 </div>
               </div>
               <textarea
@@ -1632,7 +1567,7 @@ var Composer = React.createClass({
                 }}
                 maxLength="8192"
                 className="fill orient-vertical-box w-composer-rules"
-                placeholder="Input the rules (Priority over Whistle Rules)"
+                placeholder="Enter custom rules (Higher priority than Whistle Rules)"
               />
             </div>
             <div className="orient-vertical-box fill">
@@ -1744,7 +1679,7 @@ var Composer = React.createClass({
                     maxLength={MAX_HEADERS_SIZE}
                     onKeyDown={this.formatHeaders}
                     ref="headers"
-                    placeholder="Input the headers"
+                    placeholder="Enter headers"
                     name="headers"
                     className={
                       'fill orient-vertical-box' + (showPretty ? ' hide' : '')
@@ -1854,7 +1789,7 @@ var Composer = React.createClass({
                     }}
                     onKeyDown={this.onFormat}
                     ref="body"
-                    placeholder={'Input the ' + (isHexText ? 'hex text' : 'body')}
+                    placeholder={'Enter ' + (isHexText ? 'hex text' : 'body')}
                     className={
                       'fill orient-vertical-box' +
                       (showPrettyBody  || showUpload
@@ -1962,8 +1897,6 @@ var Composer = React.createClass({
             name="localFile"
           />
         </form>
-        <EditorDialog ref="editorDialog" title="Import CURL" hideFormat="1" placeholder="Input the CURL text"
-          textEditor onConfirm={this.importCURL} />
       </div>
     );
   }

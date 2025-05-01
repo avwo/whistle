@@ -168,7 +168,9 @@
   right: 10px;
   top: 16px;
 }
-
+.w-plugin-update-dialog {
+  z-index: 1060;
+}
 .w-plugin-update-dialog .modal-dialog {
   width: 600px;
 }
@@ -195,7 +197,7 @@
   white-space: nowrap;
 }
 .w-registry-list {
-  margin-right: 25px;
+  margin-right: 15px;
 }
 .w-registry-list select {
   border-radius: 0;

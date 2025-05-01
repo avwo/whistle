@@ -75,16 +75,16 @@ var contextMenuList = [
       { name: 'Selected' },
       { name: 'Unselected' },
       { name: 'Unmarked' },
-      { name: 'All Such Host', action: 'removeAllSuchHost' },
-      { name: 'All Such URL', action: 'removeAllSuchURL' }
+      { name: 'All Matching Hosts', action: 'removeAllSuchHost' },
+      { name: 'All Matching URLs', action: 'removeAllSuchURL' }
     ]
   },
   {
     name: 'Filter',
     list: [
       { name: 'Edit Settings' },
-      { name: 'Exclude All Such Host', action: 'excludeHost' },
-      { name: 'Exclude All Such URL', action: 'excludeUrl' }
+      { name: 'Exclude All Matching Hosts', action: 'excludeHost' },
+      { name: 'Exclude All Matching URLs', action: 'excludeUrl' }
     ]
   },
   {
@@ -108,13 +108,7 @@ var contextMenuList = [
     ]
   },
   { name: 'Mock' },
-  {
-    name: 'Import',
-    list: [
-      { name: 'Local' },
-      { name: 'Remote' }
-    ]
-  },
+  { name: 'Import' },
   { name: 'Export' },
   {
     name: 'Others',
@@ -655,7 +649,6 @@ var ReqData = React.createClass({
     var target = $(e.target).closest('.w-req-data-item');
     var dataId = target.attr('data-id');
     if (dataId) {
-      util.showIFrameMask(true);
       e.dataTransfer.setData('reqDataId', dataId);
     }
   },
@@ -858,11 +851,8 @@ var ReqData = React.createClass({
     case 'Abort':
       events.trigger('abortRequest', item);
       break;
-    case 'Local':
-      events.trigger('importSessions');
-      break;
-    case 'Remote':
-      events.trigger('importSessions', {shiftKey: true});
+    case 'Import':
+      events.trigger('showImportDialog');
       break;
     case 'Edit Settings':
       events.trigger('filterSessions', e);
@@ -952,10 +942,30 @@ var ReqData = React.createClass({
     var target = $(e.target);
     var nodeName =  target.prop('nodeName');
     var el = target.closest('.w-req-data-item');
+    e.preventDefault();
     if (!el.length) {
       el = target.closest('.w-req-table');
     }
     var dataId = el.attr('data-id');
+    clearTimeout(this._delayCtxTimer);
+    if (!dataId) {
+      var con = this.container.find('.ReactVirtualized__Grid:first');
+      if (con.length && document.elementFromPoint && con[0].offsetHeight < con[0].scrollHeight) {
+        var self = this;
+        var pageX = e.pageX;
+        var pageY = e.pageY;
+        this._delayCtxTimer = setTimeout(function () {
+          target = $(document.elementFromPoint(pageX, pageY)).closest('.w-req-data-item')[0];
+          target && self.onContextMenu({
+            target: target,
+            pageX: pageX,
+            pageY: pageY,
+            preventDefault: util.noop
+          });
+        }, 300);
+        return;
+      }
+    }
     var treeId = el.attr('data-tree');
     var modal = this.props.modal;
     var item = modal.getItem(dataId);
@@ -963,7 +973,6 @@ var ReqData = React.createClass({
     var cellText = item && (nodeName === 'TD' || nodeName === 'TH') && (target.text() || '').trim();
     var treeNodeData = modal.isTreeView && modal.getTreeNode(treeId);
     this.treeTarget = null;
-    e.preventDefault();
     this.currentFocusItem = item;
     var clickBlank = disabled && !treeNodeData;
     var list0 = contextMenuList[0].list;

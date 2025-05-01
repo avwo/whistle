@@ -7,6 +7,9 @@
   border-radius: 2px;
   outline: none;
 }
+.w-menu-item .glyphicon-cloud {
+  vertical-align: text-bottom;
+}
 .w-menu-item a {
   display: block;
   max-width: 160px;

@@ -48,7 +48,7 @@ var RulesDialog = React.createClass({
       if (!this._hasChanged) {
         return self.setValue(name, true);
       }
-      win.confirm('Switching rules will cause the changed content to be lost, continue?', function(sure) {
+      win.confirm('Unsaved changes will be lost. Continue?', function(sure) {
         if (sure) {
           self._hasChanged = false;
           self.setValue(name, true);
@@ -152,7 +152,7 @@ var RulesDialog = React.createClass({
     };
     var item = dataCenter.getValuesModal().getItem(name);
     if (item && item.value !== value) {
-      return win.confirm('The name `' + name + '`  already exists, whether to overwrite it?', next);
+      return win.confirm('The name `' + name + '` is already in use. Overwrite?', next);
     }
     next(true);
   },
@@ -313,7 +313,7 @@ var RulesDialog = React.createClass({
           <div className="modal-body">
             New Rules Name:
             <input ref="rulesName" style={{marginTop: 6}} className="form-control"
-              maxLength="64" onChange={this.onNewNameChange} value={newRulesName} placeholder="Input the name" />
+              maxLength="64" onChange={this.onNewNameChange} value={newRulesName} placeholder="Enter name" />
           </div>
           <div className="modal-footer">
             <button

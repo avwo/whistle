@@ -585,8 +585,8 @@ var Editor = React.createClass({
       <div
         tabIndex="0"
         ref="editor"
-        className="fill orient-vertical-box w-list-content"
-      ></div>
+        className="fill orient-vertical-box w-list-content w-fix-drag"
+      />
     );
   }
 });

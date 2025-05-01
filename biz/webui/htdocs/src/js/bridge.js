@@ -63,7 +63,7 @@ function getBridge(win) {
       return util.handleImportData(data);
     },
     download: function(data) {
-      events.trigger('download', data);
+      events.trigger('download', [data]);
     },
     showOption: function() {
       events.trigger('showPluginOption', plugin);
@@ -77,11 +77,24 @@ function getBridge(win) {
     setComposerData: function(data) {
       events.trigger('setComposerData', data);
     },
+    readFileAsText: util.readFileAsText,
+    readFileAsBase64: util.readFileAsBase64,
     showHttpsSettings: function() {
       events.trigger('showHttpsSettingsDialog');
     },
     showCustomCerts: function() {
       events.trigger('showCustomCerts');
+    },
+    showService: util.showService,
+    hideService: util.hideService,
+    showInstallPlugins: function(list, registry) {
+      events.trigger('showInstallPlugins', [list, registry]);
+    },
+    showUpdatePlugins: function(list, registry) {
+      events.trigger('showUpdatePlugins', [list, registry]);
+    },
+    getVersion: function() {
+      return dataCenter.version;
     },
     copyText: util.copyText,
     syncData: function(cb) {

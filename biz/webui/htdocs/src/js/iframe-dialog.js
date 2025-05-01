@@ -35,10 +35,11 @@ var IframeDialog = React.createClass({
     var homepage = state.homepage;
 
     window.onWhistlePluginOptionModalReady = onWhistlePluginOptionModalReady;
-  
+
     return (
       <Dialog ref="iframeDialog" wstyle="w-iframe-dialog" width={state.width || 'max(calc(100% - 240px), 720px)'}>
         <div className="modal-header">
+          <h4>
           {
             homepage ? <a
               className={disabled ? 'w-plugin-tab-disabled' : null}
@@ -52,11 +53,12 @@ var IframeDialog = React.createClass({
             {name || 'Untitled'}
           </span>
           }
+          </h4>
           <button type="button" className="close" data-dismiss="modal">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div className="modal-body" style={{height: state.height || 'max(calc(100vh - 120px), 600px)'}}>
+        <div className="modal-body w-fix-drag" style={{height: state.height || 'max(calc(100vh - 120px), 600px)'}}>
          <iframe src={url} />
         </div>
       </Dialog>

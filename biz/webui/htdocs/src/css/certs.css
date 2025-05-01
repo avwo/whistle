@@ -1,3 +1,7 @@
+.w-certs-info-dialog {
+  z-index: 1100;
+}
+
 .w-certs-info-dialog .modal-dialog {
   width: 1024px;
 }

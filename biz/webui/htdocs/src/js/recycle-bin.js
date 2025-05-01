@@ -89,7 +89,7 @@ var RecycleBinDialog = React.createClass({
           return;
         }
         if (!data.data) {
-          return message.warn('No content.');
+          return message.warn('Empty content.');
         }
         util.openEditor(data.data);
       }
@@ -113,7 +113,7 @@ var RecycleBinDialog = React.createClass({
     var origName = decode(name.substring(name.indexOf('.') + 1));
     var self = this;
     win.confirm(
-      'Are you sure to delete \'' + origName + '\' completely.',
+      'Do you confirm the deletion of \'' + origName + '\' completely.',
       function (sure) {
         if (sure) {
           dataCenter[self.state.name.toLowerCase()].recycleRemove(
@@ -139,11 +139,13 @@ var RecycleBinDialog = React.createClass({
     var list = state.list || [];
     return (
       <Dialog ref="recycleBinDialog" wstyle="w-files-dialog">
-        <div className="modal-body" ref="recycleBinBody">
+        <div className="modal-header">
+          <h4>{state.name} Trash</h4>
           <button type="button" className="close" data-dismiss="modal">
             <span aria-hidden="true">&times;</span>
           </button>
-          <h4>{state.name} Trash</h4>
+        </div>
+        <div className="modal-body" ref="recycleBinBody">
           <table className="table">
             <thead>
               <th className="w-files-order">#</th>

@@ -1,3 +1,7 @@
+.w-kv-dialog {
+  z-index: 1100;
+}
+
 .w-kv-dialog .modal-dialog {
   width: 720px;
 }

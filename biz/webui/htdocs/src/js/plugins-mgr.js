@@ -76,7 +76,7 @@ var PluginsMgr = React.createClass({
     return (
       <Dialog ref="pluginsMgr" wstyle="w-plugins-mgr-dialog">
         <div className="modal-header">
-          Select {isUpdate ? 'Updater' : 'Installer'}
+          <h4>Select {isUpdate ? 'Updater' : 'Installer'}</h4>
           <button type="button" className="close" data-dismiss="modal">
             <span aria-hidden="true">&times;</span>
           </button>

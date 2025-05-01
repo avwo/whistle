@@ -194,14 +194,14 @@
 }
 
 .w-choose-filte-type .modal-dialog {
-  width: 456px;
+  width: 435px;
 }
 .w-choose-filte-type-label {
   white-space: nowrap;
 }
 .w-choose-filte-type-label .form-control {
   margin-left: 10px;
-  width: 200px;
+  width: 260px;
   display: inline-block;
   font-weight: normal;
 }
@@ -467,4 +467,10 @@
 .w-json-history-bar .glyphicon:hover {
   border-radius: 30px;
   background: #f2f2f2;
+}
+
+.w-import-remote-dialog .glyphicon-cloud {
+  vertical-align: middle;
+  padding-bottom: 1px;
+  margin-right: 5px;
 }

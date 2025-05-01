@@ -9,6 +9,7 @@ var RuleList = require('./rule-list');
 var $ = require('jquery');
 var parseRules = require('./parse-rules');
 var dataCenter = require('./data-center');
+var ShareViaURLBtn = require('./share-via-url-btn');
 
 var TEMP_LINK_RE_G = /(?:^|\s)(?:[\w-]+:\/\/)?temp\/([\da-z]{64})(?:\.[\w-]+)?(?:$|\s)/mg;
 
@@ -94,7 +95,7 @@ var ListDialog = React.createClass({
       rules += '\n\n' + values;
     }
     var newVals;
-    var filename = ReactDOM.findDOMNode(this.refs.filename).value.trim() || 'rules_' + util.formatDate() + '.txt';
+    var filename = ReactDOM.findDOMNode(this.refs.filename).value.trim() || 'mock_' + util.formatDate() + '.txt';
     var dl = function() {
       util.download([rules, newVals || {}], filename);
     };
@@ -122,8 +123,7 @@ var ListDialog = React.createClass({
     if (this.state.tabs[1].active) {
       return this.exportRuleList();
     }
-    var exportAll = e.target.className.indexOf('btn-warning') !== -1;
-    var items = exportAll ? this.getAllItems() : this.state.checkedItems;
+    var items = this.state.checkedItems;
     this.donwload(items);
   },
   getAllItems: function () {
@@ -204,6 +204,26 @@ var ListDialog = React.createClass({
   onCheckedRuleChange: function (list) {
     this.setState({checkedRuleList: list});
   },
+  checkAll: function (e) {
+    var list = this.props.list;
+    if (!list || !list.length) {
+      return;
+    }
+    var checkedItems = {};
+    if (e.target.checked) {
+      list.forEach(function (name) {
+        checkedItems[name] = 1;
+      });
+    }
+    this.setState({ checkedItems: checkedItems });
+  },
+  checkItem: function(e, item) {
+    item.checked = e.target.checked;
+    this.setState({});
+  },
+  onShare: function() {
+    this.refs.dialog.hide();
+  },
   render: function () {
     var self = this;
     var state = self.state;
@@ -212,6 +232,7 @@ var ListDialog = React.createClass({
     var ruleListLen = state.ruleListLen;
     var rulesModal = state.rulesModal;
     var list = props.list || [];
+    var listLen = list.length;
     var checkedItems = state.checkedItems;
     var checkedNames = Object.keys(checkedItems);
     var selectedCount = rulesModal && tabs[1].active ? state.checkedRuleList.length : checkedNames.length;
@@ -219,6 +240,9 @@ var ListDialog = React.createClass({
     var tips = selectedCount ? props.tips : null;
     var onConfirm = props.onConfirm;
     var isRules = props.isRules;
+    var checkedAll = listLen && list.every(function (name) {
+      return checkedNames.indexOf(name) !== -1;
+    });
 
     return (
       <Dialog ref="dialog" wclassName="w-list-dialog">
@@ -266,11 +290,15 @@ var ListDialog = React.createClass({
                   ref="filename"
                   style={{ width: 812, display: 'inline-block', marginLeft: 5 }}
                   className="form-control"
-                  placeholder="Input the filename"
+                  placeholder="Enter filename"
                 />
               </p>)}
         </div>
         <div className="modal-footer">
+        {onConfirm ? null : <label className={'w-kv-check-all' + (tabs[1].active ? ' hide' : '')}>
+          <input type="checkbox" checked={checkedAll} onChange={this.checkAll} disabled={!listLen} />
+          Select all
+        </label>}
           <button
             type="button"
             className="btn btn-default"
@@ -278,14 +306,7 @@ var ListDialog = React.createClass({
           >
             Cancel
           </button>
-          {onConfirm ? null : <button
-            type="button"
-            className={'btn btn-warning' + (tabs[1].active ? ' hide' : '')}
-            onMouseDown={this.preventDefault}
-            onClick={this.onConfirm}
-          >
-            Export All
-          </button>}
+          {onConfirm ? null : <ShareViaURLBtn onComplete={this.onShare} />}
           <button
             type="button"
             className="btn btn-primary"
@@ -295,7 +316,7 @@ var ListDialog = React.createClass({
               onConfirm(checkedNames);
             } : this.onConfirm}
           >
-            {onConfirm ? 'Confirm' : 'Export Selected' + (onConfirm ? '' : ' (' + selectedCount + ' / ' + (tabs[1].active ?  ruleListLen : list.length) + ')')}
+            {onConfirm ? 'Confirm' : 'Export' + ' (' + selectedCount + ' / ' + (tabs[1].active ?  ruleListLen : listLen) + ')'}
           </button>
         </div>
         <form

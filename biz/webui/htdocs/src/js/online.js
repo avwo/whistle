@@ -10,6 +10,7 @@ var dataCenter = require('./data-center');
 var util = require('./util');
 var DNSDialog = require('./dns-servers-dialog');
 var storage = require('./storage');
+var TokenDialog = require('./token-dialog');
 
 var dialog;
 var disabledDarkMode = storage.get('disabledDarkMode') !== '';
@@ -55,7 +56,7 @@ function getDnsOrder(verbatim) {
   return result.join('');
 }
 
-function createDialog() {
+function createDialog(hasToken) {
   if (!dialog) {
     var proxyInfoList = [
       '<h5><strong>Uptime:</strong> <span id="whistleUptime">-</span></h5>',
@@ -83,6 +84,8 @@ function createDialog() {
         '</div>' +
         '<div class="modal-footer">' +
         '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>' +
+        // '<button type="button" class="btn btn-primary w-token-btn" data-action="' +
+        // (hasToken ? 'reset' : 'set') + '"><span class="glyphicon glyphicon-certificate"></span>\nAccess Token</button>' +
         '</div>' +
         '</div>' +
         '</div>' +
@@ -206,7 +209,8 @@ var Online = React.createClass({
     if (!server) {
       return;
     }
-    this.state.server = server;
+    var self = this;
+    self.state.server = server;
     var info = [];
     var username = util.escape(server.username);
     if (username) {
@@ -254,11 +258,11 @@ var Online = React.createClass({
       info.push('<h5><strong>IPv6:</strong></h5>');
       info.push('<p>' + server.ipv6.join('<br/>') + '</p>');
     }
-    createDialog(server.verbatim);
+    createDialog();
     var ctn = dialog.find('.w-online-dialog-ctn').html(info.join(''));
     if (server.dnsOrder) {
-      if (this.verbatim !== server.verbatim) {
-        this.verbatim = server.verbatim;
+      if (self.verbatim !== server.verbatim) {
+        self.verbatim = server.verbatim;
         var dnsOptHtml = getDnsOrder(server.verbatim);
         if (dnsOptHtml) {
           dialog.find('.w-dns-options').html(dnsOptHtml);
@@ -269,13 +273,16 @@ var Online = React.createClass({
       dialog.find('.w-dns-options').html('');
     }
     ctn.find('h5:first').attr('title', server.host);
-    if (!this._initProxyInfo) {
-      this._initProxyInfo = true;
+    dialog.find('.w-token-btn').on('click', function (e) {
+      var action = $(e.target).closest('button').attr('data-action');
+      self.refs.tokenDialog.show(action);
+    });
+    if (!self._initProxyInfo) {
+      self._initProxyInfo = true;
       var curServerInfo;
       var isHide = true;
       var dnsElem = dialog.find('.w-online-view-dns');
       var hideDns = true;
-      var self = this;
 
       dnsElem.on('click', function () {
         self.refs.dnsDialog.show(dataCenter.getServerInfo());
@@ -608,6 +615,7 @@ var Online = React.createClass({
           </div>
         </Dialog>
         <DNSDialog ref="dnsDialog" />
+        <TokenDialog ref="tokenDialog" />
       </a>
     );
   }

@@ -72,7 +72,7 @@ var KVDialog = React.createClass({
       return save();
     }
     win.confirm(
-      'Conflict with current content, whether to overwrite?',
+      'Content conflict detected. Overwrite existing content?',
       function (sure) {
         if (sure) {
           save();
@@ -108,14 +108,19 @@ var KVDialog = React.createClass({
     var checkedAll = !noData && list.every(function (item) {
       return item.checked;
     });
+    var title = self.isValues ? 'Values' : 'Rules';
+
     return (
       <Dialog ref="kvDialog" wstyle="w-kv-dialog">
-        <div className="modal-body">
+        <div className="modal-header">
+          <h4>Select {title}</h4>
           <button type="button" className="close" onClick={self.hide}>
             <span aria-hidden="true">&times;</span>
           </button>
+        </div>
+        <div className="modal-body">
           {history.length ? <label>
-            {this.isValues ? 'Values' : 'Rules'} History:
+            History:
             <select
               value={selectedHistory}
               onChange={this.selectHistory}
@@ -164,9 +169,9 @@ var KVDialog = React.createClass({
                     var oldItem = modal && modal.get(item.name);
                     curValue = oldItem && oldItem.value;
                     if (curValue) {
-                      curValue = '<<<<<<<<<< <<<<<<<<<< <<<<<<<<<< OLD <<<<<<<<<< <<<<<<<<<< <<<<<<<<<<\n\n' +
-                      curValue + '\n\n========== ========== ========== BOUNDARY ========== ========== ==========\n\n' +
-                      value + '\n\n>>>>>>>>>> >>>>>>>>>> >>>>>>>>>> NEW >>>>>>>>>> >>>>>>>>>> >>>>>>>>>>';
+                      curValue = '<<<<<<<<<<< <<<<<<<<<<< <<<<<<<<<<< OLD <<<<<<<<<<< <<<<<<<<<<< <<<<<<<<<<<\n\n' +
+                      curValue + '\n\n=========== ========== ========== BOUNDARY ========== ========== ==========\n\n' +
+                      value + '\n\n>>>>>>>>>>> >>>>>>>>>>> >>>>>>>>>>> NEW >>>>>>>>>>> >>>>>>>>>>> >>>>>>>>>>>';
                     }
                   }
 
@@ -207,7 +212,7 @@ var KVDialog = React.createClass({
             className="btn btn-default"
             data-dismiss="modal"
           >
-            Close
+            Cancel
           </button>
           <button
             type="button"
@@ -215,7 +220,7 @@ var KVDialog = React.createClass({
             disabled={!checkedCount}
             onClick={this.confirm}
           >
-            Add to {this.isValues ? 'Values' : 'Rules'} {len ? ' (' + checkedCount + ' / ' + len + ')' : null}
+            Add To {title} {len ? ' (' + checkedCount + ' / ' + len + ')' : null}
           </button>
         </div>
       </Dialog>

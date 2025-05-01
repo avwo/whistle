@@ -11,7 +11,6 @@ var ComposerList = require('./composer-list');
 var Tools = require('./tools');
 var dataCenter = require('./data-center');
 var IFrame = require('./iframe');
-var util = require('./util');
 
 var ReqData = React.createClass({
   getInitialState: function () {
@@ -134,7 +133,6 @@ var ReqData = React.createClass({
     var modal = this.props.modal;
     var id = e.dataTransfer.getData('reqDataId');
     var list = modal && modal.list;
-    util.hideIFrameMask();
     if (!id || !list) {
       return;
     }

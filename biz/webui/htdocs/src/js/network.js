@@ -7,6 +7,7 @@ var storage = require('./storage');
 var Divider = require('./divider');
 var ReqData = require('./req-data');
 var Detail = require('./detail');
+var events = require('./events');
 
 var getWidth = function (vertical) {
   var docElem = document.documentElement;
@@ -60,6 +61,7 @@ var Network = React.createClass({
           e.preventDefault();
         }
       });
+    events.trigger('networkDidMount');
   },
   shouldComponentUpdate: function (nextProps) {
     var hide = util.getBoolean(this.props.hide);

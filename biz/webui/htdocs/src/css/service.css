@@ -1,0 +1,16 @@
+.w-service-btn {
+  font-weight: bold;
+}
+
+@media screen and (max-width: 1135px) {
+  .w-has-token.w-show-rules .w-help-name {
+      display: none;
+  }
+}
+
+@media screen and (max-width: 1110px) {
+  .w-has-token.w-show-rules .w-https-name {
+      display: none;
+  }
+}
+

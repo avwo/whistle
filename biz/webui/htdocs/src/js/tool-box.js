@@ -130,7 +130,7 @@ var ToolBox = React.createClass({
       'image'
     );
     if (!(image.size <= MAX_IMAGE_SIZE)) {
-      return win.alert('The file size cannot exceed 1m.');
+      return win.alert('Maximum file size: 1m.');
     }
     var type = 'data:' + image.type + ';base64,';
     util.readFileAsBase64(image, function (base64) {
@@ -192,7 +192,7 @@ var ToolBox = React.createClass({
           value={qrcodeValue}
           className="w-tool-box-ctn"
           maxLength={MAX_QRCODE_LEN}
-          placeholder="Input the URL or text"
+          placeholder="Enter URL or text"
         />
         <div className="w-detail-inspectors-title">
           <span className="glyphicon glyphicon-pencil"></span>JSONView
@@ -217,7 +217,7 @@ var ToolBox = React.createClass({
           value={jsonValue}
           className="w-tool-box-ctn"
           maxLength={MAX_JSON_LEN}
-          placeholder="Input the JSON text"
+          placeholder="Enter JSON text"
           onKeyDown={this.onForamt}
         />
         <div className="w-detail-inspectors-title" style={{ height: 20 }}>
@@ -259,7 +259,7 @@ var ToolBox = React.createClass({
           value={codecText}
           className="w-tool-box-ctn"
           maxLength={MAX_TEXT_LEN}
-          placeholder="Input the text"
+          placeholder="Enter text"
         />
         <div className="w-detail-inspectors-title">
           <span className="glyphicon glyphicon-picture"></span>Base64
@@ -281,7 +281,7 @@ var ToolBox = React.createClass({
           <input
             className="fill"
             maxLength="256"
-            placeholder="Input the domain name of the certificate"
+            placeholder="Enter certificate domain name"
             value={domainValue}
             onChange={this.onDomainChange}
           />

@@ -112,7 +112,7 @@ var HistoryData = React.createClass({
   removeCert: function (item) {
     var self = this;
     win.confirm(
-      'Are you sure to delete \'' + getCertName(item) + '\'.',
+      'Do you confirm the deletion of \'' + getCertName(item) + '\'.',
       function (sure) {
         if (!sure) {
           return;
@@ -129,20 +129,18 @@ var HistoryData = React.createClass({
     for (var i = 0, len = fileList.length; i < len; i++) {
       var cert = fileList[i];
       if (cert.size > MAX_CERT_SIZE || !(cert.size > 0)) {
-        message.error('The uploaded certificate size cannot exceed 128K.');
+        message.error('Maximum file size: 128KB.');
         return;
       }
       var { name } = cert;
       if (!/\.(crt|cer|pem|key)/.test(name)) {
-        message.error('Only files with .key, .crt, .cer, .pem suffixes are supported.');
+        message.error('Supported file formats: .key, .crt, .cer, .pem.');
         return;
       }
       var suffix = RegExp.$1;
       name = name.slice(0, -4);
       if (!name || name.length > 128) {
-        message.error(
-          'The file name cannot be empty and the length cannot exceed 128.'
-        );
+        message.error('Filename must be between 1-128 characters.');
         return;
       }
       certs = certs || {};
@@ -176,10 +174,7 @@ var HistoryData = React.createClass({
     }
     if (files.root) {
       var dir = self._certsDir || '~/.WhistleAppData/custom_certs';
-      win.alert(
-        'Root CA cannot be uploaded by UI.\nYou must manually upload to follow directory and restart Whistle:\n' +
-          dir
-      );
+      win.alert('Root CA must be manually copied to the following directory and Whistle restarted:\n' + dir);
       delete files.root;
     }
     var handleCallback = function () {

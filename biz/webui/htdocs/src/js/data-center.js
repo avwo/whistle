@@ -5,6 +5,7 @@ var NetworkModal = require('./network-modal');
 var storage = require('./storage');
 var events = require('./events');
 var workers = require('./workers');
+var message = require('./message');
 
 var updateWorkers = workers.updateWorkers;
 var createCgi = createCgiObj.createCgi;
@@ -638,9 +639,11 @@ exports.getInitialData = function (callback) {
         port = server && server.port;
         account = server && server.account;
         updateCertStatus(data);
+        exports.version = server && server.version;
         exports.enablePluginMgr = data.epm;
         exports.supportH2 = data.supportH2;
         exports.isWin = server && server.isWin;
+        exports.hasToken = server && server.hasToken;
         exports.backRulesFirst = data.rules.backRulesFirst;
         exports.custom1 = data.custom1;
         exports.custom2 = data.custom2;
@@ -937,7 +940,9 @@ function startLoadData() {
       updateCertStatus(data);
       exports.enablePluginMgr = data.epm;
       exports.supportH2 = data.supportH2;
+      exports.version = server && server.version;
       exports.isWin = server && server.isWin;
+      exports.hasToken = server && server.hasToken;
       exports.backRulesFirst = data.backRulesFirst;
       exports.custom1 = data.custom1;
       exports.custom2 = data.custom2;
@@ -1727,6 +1732,28 @@ exports.getDataKeys = function() {
     result.push('custom2');
   }
   return result.concat(dataKeys);
+};
+
+exports.getRemoteData = function (url, callback) {
+  var opts = {  url: url };
+  exports.importRemote(opts,  function (data, xhr) {
+    if (!data) {
+      util.showSystemError(xhr);
+      return callback(true);
+    }
+    if (data.ec !== 0) {
+      message.error(data.em || 'Error');
+      return callback(true);
+    }
+    try {
+      var value = data.body || data.value;
+      data = value && JSON.parse(value);
+      return callback(false, data || {});
+    } catch (e) {
+      message.error(e.message);
+    }
+    callback(true);
+  });
 };
 
 setDataCenter(exports);
