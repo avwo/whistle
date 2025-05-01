@@ -1,0 +1,20 @@
+.w-ie-dialog .modal-dialog {
+  width: 600px;
+}
+
+.w-ie-dialog .modal-body {
+  background-color: #fafafa;
+  padding: 20px 10px;
+}
+
+.w-ie-dialog input {
+  width: 578px;
+  height: 36px;
+  line-height: 36px;
+  padding: 5px;
+  border: 1px solid #ddd;
+}
+
+.w-ie-dialog .modal-footer {
+  white-space: nowrap;
+}
