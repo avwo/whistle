@@ -22,12 +22,12 @@ var FbBtn = React.createClass({
       <div className="w-json-history-bar">
         <span
           className={'glyphicon glyphicon-menu-left' + (disabledBack ? ' w-disabled' : '')}
-          title={disabledBack ? '' : 'Click to go back'}
+          title={disabledBack ? '' : 'Back'}
           onClick={this.onBack}
         />
         <span
           className={'glyphicon glyphicon-menu-right' + (disabledForward ? ' w-disabled' : '')}
-          title={disabledForward ? '' : 'Click to go back'}
+          title={disabledForward ? '' : 'Back'}
           onClick={this.onForward}
         />
       </div>

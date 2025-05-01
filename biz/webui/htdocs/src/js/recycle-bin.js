@@ -64,7 +64,7 @@ var RecycleBinDialog = React.createClass({
     }
     if (data.ec === 3) {
       var self = this;
-      message.error('The file does not exist.');
+      message.error('File not found.');
       dataCenter[this.state.name.toLowerCase()].recycleList(function (
         result,
         xhr

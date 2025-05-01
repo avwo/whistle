@@ -926,7 +926,7 @@ var Index = React.createClass({
       if (!data || self.state.rulesMode) {
         return;
       }
-      win.confirm('Do you confirm the changes to the composer\`s data?', function(sure) {
+      win.confirm('Do you confirm the changes to the composer\'s data?', function(sure) {
         if (sure) {
           if (composerDidMount) {
             events.trigger('_setComposerData', data);
@@ -1112,7 +1112,7 @@ var Index = React.createClass({
         return handleRecover(true);
       }
       win.confirm(
-        'The name `' + filename + '` is already in use. Overwrite?',
+        'The name \'' + filename + '\' is already in use. Overwrite?',
         handleRecover
       );
     });
@@ -1147,7 +1147,7 @@ var Index = React.createClass({
         return handleRecover(true);
       }
       win.confirm(
-        'The name `' + filename + '` is already in use. Overwrite?',
+        'The name \'' + filename + '\' is already in use. Overwrite?',
         handleRecover
       );
     });
@@ -4046,7 +4046,7 @@ var Index = React.createClass({
                 'w-network-menu' + (isNetwork ? ' w-menu-selected' : '')
               }
               title={
-                'Double click to show' +
+                'Double-click to open' +
                 (isTreeView ? ' List View' : ' Tree View')
               }
               draggable="false"
@@ -4856,7 +4856,7 @@ var Index = React.createClass({
                     <label
                       title={
                         multiEnv
-                          ? 'Use `pattern enable://capture` in rules to replace global configuration'
+                          ? 'Use \'pattern enable://capture\' in rules to enable HTTPS'
                           : undefined
                       }
                     >
@@ -5001,11 +5001,11 @@ var Index = React.createClass({
                   <span aria-hidden="true">&times;</span>
                 </button>
                 <p className="w-show-update-tips">
-                  whistle has important updates, it is recommended that you
-                  update to the latest version.
+                Whistle has critical updates available.
+                Update to the latest version immediately.
                 </p>
                 <p>Current version: {state.version}</p>
-                <p>The latest stable version: {state.latestVersion}</p>
+                <p>Latest version: {state.latestVersion}</p>
                 <p>
                   View change:{' '}
                   <a
@@ -5024,7 +5024,7 @@ var Index = React.createClass({
                   onClick={this.donotShowAgain}
                   data-dismiss="modal"
                 >
-                  Don't show again
+                  Don't Show Again
                 </button>
                 <a
                   type="button"

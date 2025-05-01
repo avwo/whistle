@@ -39,14 +39,13 @@ var DNSDialog = React.createClass({
     var state = this.state;
     var title;
     if (state.doh) {
-      title = 'Resolve IP address from follow URL:';
+      title = 'Resolve IP address from follow URL';
     } else {
       title =
         'Resolve ' +
         (state.ipv6 ? 'IPv6' : 'IPv4') +
         ' address from follow DNS servers' +
-        (state.useDefault ? ' first' : '') +
-        ':';
+        (state.useDefault ? ' first' : '');
     }
     return (
       <Dialog ref="dnsServersDialog" wstyle="w-dns-servers-dialog">
