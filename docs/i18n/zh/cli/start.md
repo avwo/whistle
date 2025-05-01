@@ -76,7 +76,7 @@ Usage: w2 <command> [options]
     status      Show the running status
     add         Add rules from local js file (.whistle.js by default)
     proxy       Set global proxy
-    ca          Install root CA
+    ca          Install Root CA
     install     Install whistle plugin
     uninstall   Uninstall whistle plugin
     exec        Exec whistle plugin cmd
@@ -113,7 +113,7 @@ Usage: w2 <command> [options]
     -R, --reqCacheSize [reqCacheSize]               set the cache size of request data (600 by default)
     -F, --frameCacheSize [frameCacheSize]           set the cache size of webSocket and socket's frames (512 by default)
     -A, --addon [pluginPaths]                       add custom plugin paths
-    --init [bypass]                                 auto set global proxy (and bypass) and install root CA
+    --init [bypass]                                 auto set global proxy (and bypass) and install Root CA
     --config [workers]                              start the cluster server and set worker number (os.cpus().length by default)
     --cluster [config]                              load the startup config from a local file
     --dnsServer [dnsServer]                         set custom dns servers
