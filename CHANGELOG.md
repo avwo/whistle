@@ -1,3 +1,8 @@
+# v2.9.98
+1. feat: 优化界面提示文案
+2. feat: 优化界面操作
+3. fix: Composer 禁用 Whistle Rules 导致自定义的 host 规则无效问题
+
 # v2.9.97
 1. feat: 导入 Rules 和 Values 的交互调整，允许用户手动选择需要导入的内容
 2. feat: 安装插件功能优化
