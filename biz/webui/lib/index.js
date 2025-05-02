@@ -329,7 +329,7 @@ function checkAllowOrigin(req) {
   if (config.allowAllOrigin) {
     return true;
   }
-  if (req.path === '/cgi-bin/rootca') {
+  if (req.path === '/cgi-bin/rootca' || req.path === '/cgi-bin/status') {
     return true;
   }
   if (!config.allowOrigin) {
