@@ -48,6 +48,7 @@ var Properties = React.createClass({
     var viewSource = self.state.viewSource;
     var rawName = props.rawName;
     var showJsonView = props.showJsonView;
+    var cssMap = props.cssMap;
     var rawValue = props.rawValue;
     var modal = props.modal || {};
     var title = props.title || {};
@@ -157,6 +158,9 @@ var Properties = React.createClass({
               }
               value = util.toString(value);
               var json = showJsonView && util.likeJson(value) && util.parseJSON(value);
+              var css = cssMap && cssMap[name];
+              var style = css && css.style;
+              var className = css && css.className;
               return (
                 <tr
                   key={name}
@@ -166,7 +170,8 @@ var Properties = React.createClass({
                 >
                   {self.renderKey(name, value)}
                   <td
-                    className={json ? 'w-properties-json' : 'w-user-select-none'}
+                    className={(json ? 'w-properties-json ' : 'w-user-select-none ') + (className || '')}
+                    style={style}
                     onContextMenu={json ? util.stopPropagation : null}
                   >
                     {

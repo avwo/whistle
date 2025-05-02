@@ -26,3 +26,24 @@
 .w-detail-overview-title a:hover {
   color: #337ab7;
 }
+
+.w-overview-timeline {
+  position: relative;
+}
+
+.w-overview-timeline > pre {
+  z-index: 1;
+  position: relative;
+}
+
+.w-overview-timeline::before {
+  position: absolute;
+  content: '';
+  display: block;
+  background: var(--overview-bg, none);
+  width: var(--overview-width, 0);
+  left: var(--overview-left, 0);
+  top: 0;
+  height: 100%;
+}
+

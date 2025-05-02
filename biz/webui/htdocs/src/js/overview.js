@@ -49,6 +49,38 @@ var OVERVIEW_PROPS = [
   'res.size',
   'contentEncoding'
 ];
+var CSS_MAP = {
+  'TTFB': {
+    className: 'w-overview-timeline',
+    style: {
+      '--overview-bg': '#ddd'
+    }
+  },
+  'DNS Lookup': {
+    className: 'w-overview-timeline',
+    style: {
+      '--overview-bg': '#8cd2c6'
+    }
+  },
+  'Request Sent': {
+    className: 'w-overview-timeline',
+    style: {
+      '--overview-bg': '#fdfdb2'
+    }
+  },
+  'Response Headers': {
+    className: 'w-overview-timeline',
+    style: {
+      '--overview-bg': '#fbb361'
+    }
+  },
+  'Content Loaded': {
+    className: 'w-overview-timeline',
+    style: {
+      '--overview-bg': '#7eabe1'
+    }
+  }
+};
 /**
  * statusCode://, redirect://[statusCode:]url, [req, res]speed://,
  * [req, res]delay://, method://, [req, res][content]Type://自动lookup,
@@ -167,6 +199,34 @@ var Overview = React.createClass({
       return;
     }
     window.open(name === 'rule' ? helpUrl + 'rule/' : helpUrl);
+  },
+  updateCssMap: function () {
+    Object.keys(CSS_MAP).forEach(function (name) {
+      CSS_MAP[name].style['--overview-width'] = 0;
+    });
+    var modal = this.props.modal;
+    if (!modal || !modal.url) {
+      return;
+    }
+    var total = modal.endTime - modal.startTime;
+    if (!(total > 0)) {
+      return;
+    }
+    CSS_MAP['TTFB'].style['--overview-width'] = modal.ttfb * 100 / total + '%';
+    var width = (modal.dnsTime - modal.startTime) * 100 / total + '%';
+    CSS_MAP['DNS Lookup'].style['--overview-width'] = width;
+
+    var reqStyle = CSS_MAP['Request Sent'].style;
+    reqStyle['--overview-left'] = width;
+    reqStyle['--overview-width'] = (modal.requestTime - modal.dnsTime) * 100 / total + '%';
+
+    reqStyle = CSS_MAP['Response Headers'].style;
+    reqStyle['--overview-left'] = (modal.requestTime - modal.startTime) * 100 / total + '%';
+    reqStyle['--overview-width'] = (modal.responseTime - modal.requestTime) * 100 / total + '%';
+
+    reqStyle = CSS_MAP['Content Loaded'].style;
+    reqStyle['--overview-left'] = (modal.responseTime - modal.startTime) * 100 / total + '%';
+    reqStyle['--overview-width'] = (modal.endTime - modal.responseTime) * 100 / total + '%';
   },
   render: function () {
     var overviewModal = DEFAULT_OVERVIEW_MODAL;
@@ -376,7 +436,7 @@ var Overview = React.createClass({
         });
       }
     }
-
+    this.updateCssMap();
     return (
       <div
         ref="container"
@@ -390,6 +450,7 @@ var Overview = React.createClass({
           rawName="Original URL"
           rawValue={rawUrl}
           showEnableBtn={true}
+          cssMap={CSS_MAP}
         />
         <p
           className="w-detail-overview-title"
