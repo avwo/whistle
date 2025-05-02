@@ -3536,6 +3536,7 @@ var Index = React.createClass({
       var session = {
         useH2: useH2,
         startTime: startTime,
+        ttfb: entry.ttfb,
         frames: entry.frames,
         url: rawReq.url,
         realUrl: entry.whistleRealUrl,

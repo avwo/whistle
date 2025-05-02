@@ -26,6 +26,7 @@ var OVERVIEW = [
   'Response Body',
   'Content Encoding',
   'Start Date',
+  'TTFB',
   'DNS Lookup',
   'Request Sent',
   'Response Headers',
@@ -216,8 +217,11 @@ var Overview = React.createClass({
           var lastIndex = OVERVIEW.length - 1;
           var time;
           switch (name) {
-          case OVERVIEW[lastIndex - 5]:
+          case OVERVIEW[lastIndex - 6]:
             time = util.toLocaleString(new Date(modal.startTime));
+            break;
+          case OVERVIEW[lastIndex - 5]:
+            time = modal.ttfb >= 0 ? modal.ttfb + 'ms' : '';
             break;
           case OVERVIEW[lastIndex - 4]:
             time = getTime(modal.dns);

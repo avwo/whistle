@@ -44,6 +44,8 @@ var Timeline = React.createClass({
           {list.map(function (item) {
             var stalled = item.startTime - startTime;
             var stalledRate,
+              ttfb,
+              ttfbRate,
               dns,
               dnsRate,
               request,
@@ -59,6 +61,12 @@ var Timeline = React.createClass({
             } else {
               stalled = '-';
               stalledRate = 0;
+            }
+
+            if (item.ttfb >= 0) {
+              ttfb = item.ttfb;
+              ttfbRate = (ttfb * TOTAL_RATE) / maxTotal + '%';
+              ttfb += 'ms';
             }
 
             if (item.dnsTime) {
@@ -137,6 +145,16 @@ var Timeline = React.createClass({
                         title={item.url}
                       >
                         {item.url}
+                      </span>
+                    </li>
+                    <li>
+                      <span className="w-detail-timeline-url">TTFB:</span>
+                      <span
+                        style={{ width: ttfbRate }}
+                        className="w-detail-timeline-ttfb"
+                      ></span>
+                      <span title={title} className="w-detail-timeline-time">
+                        {ttfb}
                       </span>
                     </li>
                     <li>

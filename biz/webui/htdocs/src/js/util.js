@@ -2573,6 +2573,7 @@ exports.toHar = function (item) {
   }
   return {
     startedDateTime: new Date(item.startTime).toISOString(),
+    ttfb: item.ttfb,
     time: time,
     whistleCustomData: item.customData,
     whistleRules: item.rules,

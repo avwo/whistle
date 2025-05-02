@@ -32,6 +32,9 @@
 .w-detail-timeline-stalled {
   background: #aaa;
 }
+.w-detail-timeline-ttfb {
+  background: #ddd;
+}
 .w-detail-timeline-dns {
   background: #8cd2c6;
 }
