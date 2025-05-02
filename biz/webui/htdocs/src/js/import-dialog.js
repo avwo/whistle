@@ -5,10 +5,9 @@ var Dialog = require('./dialog');
 var dataCenter = require('./data-center');
 var util = require('./util');
 var events = require('./events');
-var $ = require('jquery');
 var message = require('./message');
 var EditorDialog = require('./editor-dialog');
-const parseCurl = require('./parse-curl');
+var parseCurl = require('./parse-curl');
 
 function getAccept(name) {
   if (name === 'network') {
@@ -89,13 +88,12 @@ var ImportDialog = React.createClass({
   },
   componentDidMount: function () {
     var self = this;
-    self.dialogElem = $(ReactDOM.findDOMNode(self.refs.importDialog));
     events.on('importFile', function (_, file) {
       self.handleFile(file);
     });
   },
   shouldComponentUpdate: function () {
-    return this.dialogElem.has('.in');
+    return this.refs.importDialog.isVisible();
   },
   uploadFile: function() {
     var fileInput = ReactDOM.findDOMNode(this.refs.importFile);

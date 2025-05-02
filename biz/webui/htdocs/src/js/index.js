@@ -37,6 +37,7 @@ var ServiceBtn = require('./service-btn');
 var SaveToServiceBtn = require('./share-via-url-btn');
 var ImportDialog = require('./import-dialog');
 var ExportDialog = require('./export-dialog');
+var QRCodeImg = require('./qrcode');
 
 var TEMP_LINK_RE = /^(?:[\w-]+:\/\/)?temp(?:\/([\da-z]{64}|blank))?(?:\.[\w-]+)?$/;
 var FILE_PATH_RE = /^(?:[\w-]+:\/\/)?((?:[a-z]:[\\/]|\/).+)$/i;
@@ -379,6 +380,7 @@ var Index = React.createClass({
       replayCount: 1,
       tabs: [],
       caType: getCAType(storage.get('caType')),
+      caHash: util.getCAHash(server),
       allowMultipleChoice: modal.rules.allowMultipleChoice,
       backRulesFirst: modal.rules.backRulesFirst,
       networkMode: !!server.networkMode,
@@ -1486,6 +1488,11 @@ var Index = React.createClass({
       var hasChanged = state.hasToken !== server.hasToken;
       if (hasChanged) {
         state.hasToken = server.hasToken;
+      }
+      var caHash = util.getCAHash(server);
+      if (caHash !== state.caHash) {
+        state.caHash = caHash;
+        hasChanged = true;
       }
       if (
         state.interceptHttpsConnects !== data.interceptHttpsConnects ||
@@ -3987,7 +3994,7 @@ var Index = React.createClass({
     LEFT_BAR_MENUS[4].hide = rulesOnlyMode;
 
     var caType = state.caType || 'crt';
-    var qrCode = 'img/qrcode-' + caType + '.png';
+    var caHash = state.caHash;
     var caUrl = 'cgi-bin/rootca';
     var caShortUrl = 'http://rootca.pro/';
 
@@ -4821,7 +4828,7 @@ var Index = React.createClass({
                 >
                   <span aria-hidden="true">&times;</span>
                 </button>
-                <div>
+                <div style={{marginBottom: 10}}>
                   <a
                     className="w-help-menu"
                     title="Click here to learn how to install root ca"
@@ -4849,7 +4856,7 @@ var Index = React.createClass({
                   href={caUrl}
                   target="downloadTargetFrame"
                 >
-                  <img src={qrCode} width="300" style={{margin: 10}} />
+                  <QRCodeImg url={caShortUrl + caHash} />
                 </a>
                 <div className="w-https-settings">
                   <p>
@@ -4918,7 +4925,7 @@ var Index = React.createClass({
                   <input
                     ref="sessionsName"
                     onKeyDown={this.exportBySave}
-                    placeholder="Enter filename"
+                    placeholder="Enter filename (optional)"
                     className="form-control"
                     maxLength="64"
                   />

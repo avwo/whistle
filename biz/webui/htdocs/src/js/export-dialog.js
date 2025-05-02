@@ -79,6 +79,9 @@ var ExportDialog = React.createClass({
   onShare: function() {
     this.hide();
   },
+  shouldComponentUpdate: function () {
+    return this.refs.exportDialog.isVisible();
+  },
   render: function () {
     var state = this.state;
     var showOptions = state.showOptions;

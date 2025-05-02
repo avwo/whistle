@@ -329,6 +329,9 @@ function checkAllowOrigin(req) {
   if (config.allowAllOrigin) {
     return true;
   }
+  if (req.path === '/cgi-bin/rootca') {
+    return true;
+  }
   if (!config.allowOrigin) {
     return false;
   }

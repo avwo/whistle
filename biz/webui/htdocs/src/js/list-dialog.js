@@ -32,11 +32,8 @@ var ListDialog = React.createClass({
       ]
     };
   },
-  componentDidMount: function () {
-    this.dialogElem = $(ReactDOM.findDOMNode(this.refs.dialog));
-  },
   shouldComponentUpdate: function () {
-    return this.dialogElem.has('.in');
+    return this.refs.dialog.isVisible();
   },
   onChange: function (e) {
     var target = e.target;
@@ -290,7 +287,7 @@ var ListDialog = React.createClass({
                   ref="filename"
                   style={{ width: 812, display: 'inline-block', marginLeft: 5 }}
                   className="form-control"
-                  placeholder="Enter filename"
+                  placeholder="Enter filename (optional)"
                 />
               </p>)}
         </div>

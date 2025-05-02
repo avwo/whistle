@@ -1,50 +1,32 @@
 var React = require('react');
-var ReactDOM = require('react-dom');
 var Dialog = require('./dialog');
-var QRCode = require('qrcode');
-var win = require('./win');
+var QRCodeImg = require('./qrcode');
 
 var QRCodeDialog = React.createClass({
+  getInitialState: function () {
+    return {};
+  },
   shouldComponentUpdate: function () {
-    return false;
+    return this.refs.qrcodeDialog.isVisible();
   },
   show: function (url) {
-    if (!url) {
-      return;
-    }
-    var self = this;
-    QRCode.toDataURL(
-      url,
-      {
-        width: 320,
-        height: 320,
-        margin: 0
-      },
-      function (err, result) {
-        if (err) {
-          return win.alert(err.message);
-        }
-        var img = ReactDOM.findDOMNode(self.refs.qrcodeImg);
-        img.title = url;
-        img.src = result;
-        ReactDOM.findDOMNode(self.refs.qrcodeUrl).value = url;
-        self.refs.qrcodeDialog.show();
-        self.result = result.substring(result.indexOf(',') + 1);
-      }
-    );
+    this.refs.qrcodeDialog.show();
+    this.setState({ url: url });
   },
   render: function () {
+    var url = this.state.url;
+
     return (
       <Dialog ref="qrcodeDialog" wstyle="w-qrcode-dialog">
         <div className="modal-body">
           <button type="button" className="close" data-dismiss="modal">
             <span aria-hidden="true">&times;</span>
           </button>
-          <input readOnly ref="qrcodeUrl" />
-          <img
-            ref="qrcodeImg"
-            style={{ width: 320, height: 320 }}
-          />
+          <div className="w-qrcode-url-wrap">
+            <input readOnly value={url} />
+            <span className="glyphicon glyphicon-copy w-copy-text-with-tips" data-clipboard-text={url} />
+          </div>
+          <QRCodeImg url={this.state.url} />
         </div>
         <div className="modal-footer">
           <button

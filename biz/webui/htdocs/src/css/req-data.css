@@ -194,6 +194,23 @@
   height: 320px;
 }
 
+.w-qrcode-url-wrap {
+  display: flex;
+  align-items: center;
+  width: 320px;
+}
+
+.w-qrcode-url-wrap input {
+  flex: 1;
+}
+
+.w-qrcode-url-wrap span {
+  font-size: 18px;
+  cursor: pointer;
+  margin-left: 10px;
+  color: #555;
+}
+
 .w-qrcode-dialog input {
   border: 1px solid #ddd;
   padding: 3px;

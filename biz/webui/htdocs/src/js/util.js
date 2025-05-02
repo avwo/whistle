@@ -180,6 +180,38 @@ function getSelectedText(x, y) {
 
 exports.getSelectedText = getSelectedText;
 
+var LOCAL_UI_HOST_LIST = [
+  'local.whistlejs.com',
+  'local.wproxy.org',
+  'rootca.pro'
+];
+
+exports.getCAHash = function(server) {
+  var ipv4 = server && server.ipv4;
+  var port = (server && server.port) || 8899;
+  var result = [port];
+  var len = 0;
+  if (Array.isArray(ipv4)) {
+    ipv4.forEach(function(ip) {
+      if (ip && typeof ip === 'string') {
+        result.push(ip);
+        len += ip.length + 1;
+      }
+    });
+  }
+  if (LOCAL_UI_HOST_LIST.indexOf(location.hostname) === -1) {
+    var url = location.href.replace(/[?#].*$/, '').replace();
+    var index = url.lastIndexOf('/');
+    if (index) {
+      url = url.substring(0, index);
+    }
+    url = encodeURIComponent(url);
+    len += url.length + 1;
+    result.push(url);
+  }
+  return len && len <= 120 ? '#p=' + result.join() : '';
+};
+
 exports.download = function(data, filename) {
   var a = document.createElement('a');
   document.body.appendChild(a);
