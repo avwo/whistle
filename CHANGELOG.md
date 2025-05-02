@@ -1,6 +1,6 @@
 # v2.9.98
-1. feat: 优化界面提示文案
-2. feat: 优化界面操作
+1. feat: 优化界面操作及提示文案
+2. feat: 支持显示 TTFB
 3. fix: Composer 禁用 Whistle Rules 导致自定义的 host 规则无效问题
 
 # v2.9.97
