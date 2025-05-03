@@ -186,15 +186,17 @@ var LOCAL_UI_HOST_LIST = [
   'rootca.pro'
 ];
 
-exports.getCAHash = function(server) {
+exports.getCAHash = function(server, urlList) {
   var ipv4 = server && server.ipv4;
   var port = (server && server.port) || 8899;
   var result = [port];
   var len = 0;
+
   if (Array.isArray(ipv4)) {
     ipv4.forEach(function(ip) {
       if (ip && typeof ip === 'string') {
         result.push(ip);
+        urlList && urlList.push(ip);
         len += ip.length + 1;
       }
     });
@@ -205,6 +207,7 @@ exports.getCAHash = function(server) {
     if (index) {
       url = url.substring(0, index);
     }
+    urlList && urlList.push(url);
     url = encodeURIComponent(url);
     len += url.length + 1;
     result.push(url);

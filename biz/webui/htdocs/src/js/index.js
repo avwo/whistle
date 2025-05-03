@@ -376,11 +376,14 @@ var Index = React.createClass({
     var values = modal.values;
     var server = modal.server;
     var multiEnv = !!server.multiEnv;
+    var caUrlList = [];
+    var caHash = util.getCAHash(server, caUrlList);
     var state = {
       replayCount: 1,
       tabs: [],
       caType: getCAType(storage.get('caType')),
-      caHash: util.getCAHash(server),
+      caHash: caHash,
+      caUrlList: caUrlList,
       allowMultipleChoice: modal.rules.allowMultipleChoice,
       backRulesFirst: modal.rules.backRulesFirst,
       networkMode: !!server.networkMode,
@@ -392,6 +395,7 @@ var Index = React.createClass({
       ndp: server.ndp,
       drb: server.drb,
       drm: server.drm,
+      port: server.port,
       hasToken: server.hasToken,
       version: modal.version
     };
@@ -1489,9 +1493,11 @@ var Index = React.createClass({
       if (hasChanged) {
         state.hasToken = server.hasToken;
       }
-      var caHash = util.getCAHash(server);
+      var caUrlList = [];
+      var caHash = util.getCAHash(server, caUrlList);
       if (caHash !== state.caHash) {
         state.caHash = caHash;
+        state.caUrlList = caUrlList;
         hasChanged = true;
       }
       if (
@@ -1505,7 +1511,8 @@ var Index = React.createClass({
         state.ndp != server.ndp ||
         state.ndr != server.ndr ||
         state.drb != server.drb ||
-        state.drm != server.drm
+        state.drm != server.drm ||
+        state.port != server.port
       ) {
         state.interceptHttpsConnects = data.interceptHttpsConnects;
         state.enableHttp2 = data.enableHttp2;
@@ -1518,6 +1525,7 @@ var Index = React.createClass({
         state.ndr = server.ndr;
         state.drb = server.drb;
         state.drm = server.drm;
+        state.port = server.port;
         protocols.setPlugins(state);
         var list = LEFT_BAR_MENUS;
         list[3].checked = !state.disabledAllRules;
@@ -3806,6 +3814,9 @@ var Index = React.createClass({
     this.setState({ caType: caType });
     storage.set('caType', caType);
   },
+  selectCAUrl: function(e) {
+    this.setState({ caFullUrl: e.target.value });
+  },
   forceHideLeftMenu: function () {
     var self = this;
     clearTimeout(self.hideTimer);
@@ -3903,6 +3914,7 @@ var Index = React.createClass({
     var autoValuesLineWrapping = state.autoValuesLineWrapping;
     var rulesOptions = state.rulesOptions;
     var pluginsOptions = state.pluginsOptions;
+    var caFullUrl = state.caFullUrl;
     var uncheckedRules = {};
     var showNetworkOptions = state.showNetworkOptions;
     var showRulesOptions = state.showRulesOptions;
@@ -4852,12 +4864,22 @@ var Index = React.createClass({
                     <option value="pem">rootCA.pem</option>
                   </select>
                 </div>
+                <div className="w-root-ca-url-wrap">
+                  <select className="w-root-ca-url" value={caFullUrl} onChange={this.selectCAUrl}>
+                    <option value="">{caShortUrl}</option>
+                    {state.caUrlList.map(function (url) {
+                      url = url[0] === 'h' ? url : 'http://' + url + ':' + state.port;
+                      url += '/cgi-bin/rootca' + (caType === 'cer' ? '' : '?type=' + caType);
+                      return <option value={url}>{url}</option>;
+                    })}
+                  </select>
+                  <span title="Copy Root CA URL" className="glyphicon glyphicon-copy w-copy-text-with-tips" data-clipboard-text={caFullUrl || caShortUrl} />
+                </div>
                 <a
-                  title={caShortUrl}
                   href={caUrl}
                   target="downloadTargetFrame"
                 >
-                  <QRCodeImg url={caShortUrl + caHash} />
+                  <QRCodeImg url={caFullUrl || caShortUrl + caHash} />
                 </a>
                 <div className="w-https-settings">
                   <p>

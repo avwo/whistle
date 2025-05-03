@@ -204,7 +204,7 @@
   flex: 1;
 }
 
-.w-qrcode-url-wrap span {
+.w-qrcode-url-wrap span, .w-root-ca-url-wrap span {
   font-size: 18px;
   cursor: pointer;
   margin-left: 10px;
