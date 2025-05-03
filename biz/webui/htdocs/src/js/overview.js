@@ -27,11 +27,11 @@ var OVERVIEW = [
   'Content Encoding',
   'Start Date',
   'TTFB',
-  'DNS Lookup',
-  'Request Sent',
-  'Response Headers',
-  'Content Loaded',
-  'Total'
+  'DNS',
+  'Request',
+  'Response',
+  'Download',
+  'Total Duration'
 ];
 var OVERVIEW_PROPS = [
   'url',
@@ -56,25 +56,25 @@ var CSS_MAP = {
       '--overview-bg': '#ddd'
     }
   },
-  'DNS Lookup': {
+  'DNS': {
     className: 'w-overview-timeline',
     style: {
       '--overview-bg': '#8cd2c6'
     }
   },
-  'Request Sent': {
+  'Request': {
     className: 'w-overview-timeline',
     style: {
       '--overview-bg': '#fdfdb2'
     }
   },
-  'Response Headers': {
+  'Response': {
     className: 'w-overview-timeline',
     style: {
       '--overview-bg': '#fbb361'
     }
   },
-  'Content Loaded': {
+  'Download': {
     className: 'w-overview-timeline',
     style: {
       '--overview-bg': '#7eabe1'
@@ -214,17 +214,17 @@ var Overview = React.createClass({
     }
     CSS_MAP['TTFB'].style['--overview-width'] = modal.ttfb * 100 / total + '%';
     var width = (modal.dnsTime - modal.startTime) * 100 / total + '%';
-    CSS_MAP['DNS Lookup'].style['--overview-width'] = width;
+    CSS_MAP['DNS'].style['--overview-width'] = width;
 
-    var reqStyle = CSS_MAP['Request Sent'].style;
+    var reqStyle = CSS_MAP['Request'].style;
     reqStyle['--overview-left'] = width;
     reqStyle['--overview-width'] = (modal.requestTime - modal.dnsTime) * 100 / total + '%';
 
-    reqStyle = CSS_MAP['Response Headers'].style;
+    reqStyle = CSS_MAP['Response'].style;
     reqStyle['--overview-left'] = (modal.requestTime - modal.startTime) * 100 / total + '%';
     reqStyle['--overview-width'] = (modal.responseTime - modal.requestTime) * 100 / total + '%';
 
-    reqStyle = CSS_MAP['Content Loaded'].style;
+    reqStyle = CSS_MAP['Download'].style;
     reqStyle['--overview-left'] = (modal.responseTime - modal.startTime) * 100 / total + '%';
     reqStyle['--overview-width'] = (modal.endTime - modal.responseTime) * 100 / total + '%';
   },

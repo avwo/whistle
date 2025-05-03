@@ -25,7 +25,7 @@
 }
 .w-detail-timeline-url {
   padding-right: 5px;
-  width: 22%;
+  width: 18%;
   max-width: 200px;
   text-align: right;
 }
@@ -62,8 +62,8 @@
   font-weight: bold;
 }
 .w-detail-timeline-one .w-detail-timeline-time {
-  left: 22% !important;
+  left: 18% !important;
 }
 .w-detail-timeline-full-url {
-  width: 78%;
+  width: 82%;
 }

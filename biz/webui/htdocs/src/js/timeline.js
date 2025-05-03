@@ -2,7 +2,7 @@ require('./base-css.js');
 require('../css/timeline.css');
 var React = require('react');
 var util = require('./util');
-var TOTAL_RATE = 78;
+var TOTAL_RATE = 82;
 
 var Timeline = React.createClass({
   shouldComponentUpdate: function (nextProps) {
@@ -158,7 +158,7 @@ var Timeline = React.createClass({
                       </span>
                     </li>
                     <li>
-                      <span className="w-detail-timeline-url">DNS Lookup:</span>
+                      <span className="w-detail-timeline-url">DNS:</span>
                       <span
                         style={{ width: dnsRate }}
                         className="w-detail-timeline-dns"
@@ -169,7 +169,7 @@ var Timeline = React.createClass({
                     </li>
                     <li>
                       <span className="w-detail-timeline-url">
-                        Request Sent:
+                        Request:
                       </span>
                       <span style={{ width: dnsRate }}></span>
                       <span
@@ -184,7 +184,7 @@ var Timeline = React.createClass({
                     </li>
                     <li>
                       <span className="w-detail-timeline-url">
-                        Response Headers:
+                        Response:
                       </span>
                       <span style={{ width: dnsRate }}></span>
                       {isStream ? null : (
@@ -200,7 +200,7 @@ var Timeline = React.createClass({
                     </li>
                     <li>
                       <span className="w-detail-timeline-url">
-                        Content Loaded:
+                        Download:
                       </span>
                       <span style={{ width: dnsRate }}></span>
                       {isStream ? null : (
@@ -216,7 +216,7 @@ var Timeline = React.createClass({
                       </span>
                     </li>
                     <li>
-                      <span className="w-detail-timeline-url">Total:</span>
+                      <span className="w-detail-timeline-url">Total Duration:</span>
                       <span title={title} className="w-detail-timeline-time">
                         {total}
                       </span>
@@ -230,13 +230,13 @@ var Timeline = React.createClass({
               item.url +
               '\nStalled: ' +
               stalled +
-              '\nDNS Lookup: ' +
+              '\nDNS: ' +
               dns +
-              '\nRequest Sent: ' +
+              '\nRequest: ' +
               request +
               '\nResponse: ' +
               response +
-              '\nContent Load: ' +
+              '\nContent: ' +
               load +
               '\nTotal: ' +
               total;

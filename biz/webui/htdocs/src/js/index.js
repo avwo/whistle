@@ -4866,7 +4866,7 @@ var Index = React.createClass({
                 </div>
                 <div className="w-root-ca-url-wrap">
                   <select className="w-root-ca-url" value={caFullUrl} onChange={this.selectCAUrl}>
-                    <option value="">{caShortUrl}</option>
+                    <option value="">{caShortUrl} (PROXY REQUIRED)</option>
                     {state.caUrlList.map(function (url) {
                       url = url[0] === 'h' ? url : 'http://' + url + ':' + state.port;
                       url += '/cgi-bin/rootca' + (caType === 'cer' ? '' : '?type=' + caType);
