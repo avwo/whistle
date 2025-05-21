@@ -22,8 +22,8 @@
 
 pattern参见[匹配方式](../pattern.html)，更多模式请参考[配置方式](../mode.html)；style可以设置：
 
-1. color: 字体颜色，跟css的color属性一致，但由于 `#` 为whistle但注释符号，这里可以用 `@` 代替
-2. fontStyle: 字体样式，可以设置为 `normal`、`italic`、`oblique` 等 
+1. color: 字体颜色，跟css的color属性一致，但由于Hex颜色值里的 `#` 是whistle的注释符号，这里需要用 `@` 代替。如 `#fff` 需要写成 `@fff`
+2. fontStyle: 字体样式，可以设置为 `normal`、`italic`、`oblique` 等
 3. bgColor: 对应列表行的背景颜色，具体设置同 `color`
 
 例子：
