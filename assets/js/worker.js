@@ -29,7 +29,7 @@ var module = { exports: exports };
       return JSON.parse(str);
     } catch (e) {}
   };
-  
+
   var defineProps = function (obj) {
     if (Object.defineProperties) {
       var body, json;
@@ -60,7 +60,7 @@ var module = { exports: exports };
   if (typeof handle !== 'function') {
     handle = null;
   }
-  
+
   self.onmessage = function(e) {
     var data = handle && e.data;
     var id = data && data.id;
@@ -74,6 +74,7 @@ var module = { exports: exports };
     handle(data, function(result) {
       result && self.postMessage({
         id: id,
+        plugin: '$PLUGIN_NAME',
         data: result
       });
     });
