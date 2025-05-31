@@ -1,3 +1,11 @@
+# v2.9.99
+1. feat: 优化 Rules 里面的 `includeFilter://`、`excludeFilter://` 自动补全功能
+2. feat: Network 添加 `APP` 列显示请求来源 APP 的名称
+3. feat: 如果本地有 npm 命令，则支持通过 Plugins / Install 安装插件
+4. feat: 自定义 Tab 支持设置 icon
+5. feat: 字段 Network 列支持设置 icon
+6. feat: 插件 Option 页面支持设置 favicon
+
 # v2.9.98
 1. feat: 优化界面操作及提示文案
 2. feat: 支持显示 TTFB

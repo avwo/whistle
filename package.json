@@ -1,7 +1,7 @@
 {
   "name": "whistle",
   "description": "HTTP, HTTP2, HTTPS, Websocket debugging proxy",
-  "version": "2.9.98",
+  "version": "2.9.99",
   "dataDirname": ".whistle",
   "localUIHost": "local.whistlejs.com",
   "port": 8899,
@@ -73,7 +73,7 @@
     "docs:dev": "vuepress dev docs"
   },
   "engines": {
-    "node": ">= 8"
+    "node": ">= 8.8"
   },
   "devDependencies": {
     "babel-core": "^6.7.6",
