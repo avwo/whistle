@@ -8,23 +8,17 @@
 先了解下如何安装使用插件：
 
 #### 安装插件
-whistle的插件就是一个Node模块，名字必须为 `whistle.your-plugin-name` 或 `@org/whistle.your-plugin-name`，其中 `your-plugin-name` 为插件名称，只能包含 `小写字母(a-z)`、`数字(0-9)`、`_`、`-` 四种字符，安装插件直接全局npm安装即可：
-> 如果插件名称包含 `_` ，则不能配置 `your-plugin-name://`
+Whistle 插件就是一个名为 `whistle.your-plugin-name` 或 `@org/whistle.your-plugin-name` 的 npm 包，其中 `your-plugin-name` 为插件名称，只能包含 `小写字母(a-z)`、`数字(0-9)`、`_`、`-` 四种字符（不建议使用下划线 `_`），并通过 `w2 i` 命令行命令安装（客户端版本可以直接通过界面安装详见[客户端文档](https://github.com/avwo/whistle-client)）：
 
 ```
-npm i -g whistle.your-plugin-name
+w2 i whistle.your-plugin-name
 # 或
-npm i -g @org/whistle.your-plugin-name
+w2 i @org/whistle.your-plugin-name
 ```
-> Mac或Linux安装时如果报权限错误，则需要加上sudo，如：sudo npm i -g whistle.your-plugin-name
-> 国内可以用[cnpm](https://github.com/cnpm/cnpm)或公司内部自己的镜像安装
-
-全局安装后，可以在whistle的界面上看到所有已安装的插件列表(whistle定时搜索npm的全局目录，并自动加载或卸载插件，无需重启whistle)。
-
-> 要更新插件的时候，重新安装即可
+> 支持设置 registry:`w2 i whistle.your-plugin-name --registry=https://registry.npmmirror.com`
 
 安装成功后可以在whistle的插件列表看到新安装的插件：
-![插件列表](img/plugin-list.png)
+<img width="1000" alt="插件列表" src="https://github.com/user-attachments/assets/482e85b3-6fee-413e-b5ec-b76437c7b625" />
 
 #### 使用插件
 插件安装后，whistle会新增两个协议，分别为 `whistle.your-plugin-name` 和 `your-pluign-name`，用户通过配置：
@@ -33,6 +27,8 @@ pattern whistle.your-plugin-name://xxx
 # 或
 pattern your-plugin-name://xxx
 ```
+> 如果插件名称包含 `_` ，则无法配置 `your_plugin_name://`
+
 匹配到上述规则的请求会自动请求插件相应的server，上述两种配置有些差异，后面再详细说下，下面我们先了解下插件基本原理，并快速开发一个whistle插件的项目。
 
 # 实现原理
@@ -66,7 +62,7 @@ pattern your-plugin-name://xxx
 只要匹配pattern的请求才会转到插件的各个server，上述两种配置的区别是：
 
 1. `pattern whistle.your-plugin-name://xxx`：请求默认不会走到插件里面的 `server` 服务
-![whistle.xxx规则](img/plugin3.png)
+   ![whistle.xxx规则](img/plugin3.png)
     > 可以通过在`rulesServer`里面重新设置 `pattern your-plugin-name://xxx` 把请求转发到 `server` 里面
 2. `pattern your-plugin-name://xxx`：默认会经历所有server
 
@@ -148,9 +144,9 @@ whistle v1.13.0版本开始支持通过插件自定义长连接数据的解析�
       server.on('request', (req, res) => {
         const oReq = req.originalReq;
         const oRes = req.originalRes;
-
+    
         req.clientIp: 请求的客户端IP，注意：挂在req里面
-
+    
         oReq.id: 请求的ID，每个请求对应一个唯一的ID
         oReq.headers: 请求的原始headers，而req.headers包含了一些插件自定义字段
         oReq.ruleValue: 配置的规则值， 如：whistle.xxx://ruleValue
@@ -161,10 +157,10 @@ whistle v1.13.0版本开始支持通过插件自定义长连接数据的解析�
         oReq.globalValue: pattern @globalValue
         oReq.proxyValue: 配置的代理规则，一般为空
         oReq.pacValue: 配置的pac规则，一般为空
-
+    
         oRes.serverIp: 服务端IP，只有在server或resServer、resStatsServer才能获取到
         oRes.statusCode: 响应状态码，同 oRes.serverIp
-
+    
         // 获取抓包数据，不需要等待响应完成
         req.getReqSession((s) => {
           // 如果设置了 enable://hide 会获取到空数据
@@ -200,9 +196,9 @@ whistle v1.13.0版本开始支持通过插件自定义长连接数据的解析�
       server.on('request', (req, res) => {
         const oReq = req.originalReq;
         const oRes = req.originalRes;
-
+    
         req.clientIp: 请求的客户端IP，注意：挂在req里面
-
+    
         oReq.id: 请求的ID，每个请求对应一个唯一的ID
         oReq.headers: 请求的原始headers，而req.headers包含了一些插件自定义字段
         oReq.ruleValue: 配置的规则值， 如：whistle.xxx://ruleValue
@@ -213,10 +209,10 @@ whistle v1.13.0版本开始支持通过插件自定义长连接数据的解析�
         oReq.globalValue: pattern @globalValue
         oReq.proxyValue: 配置的代理规则，一般为空
         oReq.pacValue: 配置的pac规则，一般为空
-
+    
         oRes.serverIp: 服务端IP，只有在server或resServer、resStatsServer才能获取到
         oRes.statusCode: 响应状态码，同 oRes.serverIp
-
+    
         // 获取抓包数据，不需要等待响应完成
         req.getReqSession((s) => {
           // 如果设置了 enable://hide 会获取到空数据
@@ -252,9 +248,9 @@ whistle v1.13.0版本开始支持通过插件自定义长连接数据的解析�
       server.on('request', (req, res) => {
         const oReq = req.originalReq;
         const oRes = req.originalRes;
-
+    
         req.clientIp: 请求的客户端IP，注意：挂在req里面
-
+    
         oReq.id: 请求的ID，每个请求对应一个唯一的ID
         oReq.headers: 请求的原始headers，而req.headers包含了一些插件自定义字段
         oReq.ruleValue: 配置的规则值， 如：whistle.xxx://ruleValue
@@ -265,10 +261,10 @@ whistle v1.13.0版本开始支持通过插件自定义长连接数据的解析�
         oReq.globalValue: pattern @globalValue
         oReq.proxyValue: 配置的代理规则，一般为空
         oReq.pacValue: 配置的pac规则，一般为空
-
+    
         oRes.serverIp: 服务端IP，只有在server或resServer、resStatsServer才能获取到
         oRes.statusCode: 响应状态码，同 oRes.serverIp
-
+    
         // 获取抓包数据，不需要等待响应完成
         // 这里unsafe主要是提醒不要在回调里面返回规则
         // 如果这样不会触发响应
@@ -310,9 +306,9 @@ whistle v1.13.0版本开始支持通过插件自定义长连接数据的解析�
       server.on('request', (req, res) => {
         const oReq = req.originalReq;
         const oRes = req.originalRes;
-
+    
         req.clientIp: 请求的客户端IP，注意：挂在req里面
-
+    
         oReq.id: 请求的ID，每个请求对应一个唯一的ID
         oReq.headers: 请求的原始headers，而req.headers包含了一些插件自定义字段
         oReq.ruleValue: 配置的规则值， 如：whistle.xxx://ruleValue
@@ -323,10 +319,10 @@ whistle v1.13.0版本开始支持通过插件自定义长连接数据的解析�
         oReq.globalValue: pattern @globalValue
         oReq.proxyValue: 配置的代理规则，一般为空
         oReq.pacValue: 配置的pac规则，一般为空
-
+    
         oRes.serverIp: 服务端IP，只有在server或resServer、resStatsServer才能获取到
         oRes.statusCode: 响应状态码，同 oRes.serverIp
-
+    
         // 获取抓包数据，不需要等待响应完成
         req.getReqSession((s) => {
           // 如果设置了 enable://hide 会获取到空数据
@@ -366,9 +362,9 @@ whistle v1.13.0版本开始支持通过插件自定义长连接数据的解析�
       server.on('request', (req, res) => {
         const oReq = req.originalReq;
         const oRes = req.originalRes;
-
+    
         req.clientIp: 请求的客户端IP，注意：挂在req里面
-
+    
         oReq.id: 请求的ID，每个请求对应一个唯一的ID
         oReq.headers: 请求的原始headers，而req.headers包含了一些插件自定义字段
         oReq.ruleValue: 配置的规则值， 如：whistle.xxx://ruleValue
@@ -379,10 +375,10 @@ whistle v1.13.0版本开始支持通过插件自定义长连接数据的解析�
         oReq.globalValue: pattern @globalValue
         oReq.proxyValue: 配置的代理规则，一般为空
         oReq.pacValue: 配置的pac规则，一般为空
-
+    
         oRes.serverIp: 服务端IP，只有在server或resServer、resStatsServer才能获取到
         oRes.statusCode: 响应状态码，同 oRes.serverIp
-
+    
         // 获取抓包数据，不需要等待响应完成
         // 这里unsafe主要是提醒不要在回调里面返回规则
         // 如果这样不会触发响应
@@ -424,9 +420,9 @@ whistle v1.13.0版本开始支持通过插件自定义长连接数据的解析�
       server.on('request', (req, res) => {
         const oReq = req.originalReq;
         const oRes = req.originalRes;
-
+    
         req.clientIp: 请求的客户端IP，注意：挂在req里面
-
+    
         oReq.id: 请求的ID，每个请求对应一个唯一的ID
         oReq.headers: 请求的原始headers，而req.headers包含了一些插件自定义字段
         oReq.ruleValue: 配置的规则值， 如：whistle.xxx://ruleValue
@@ -437,10 +433,10 @@ whistle v1.13.0版本开始支持通过插件自定义长连接数据的解析�
         oReq.globalValue: pattern @globalValue
         oReq.proxyValue: 配置的代理规则，一般为空
         oReq.pacValue: 配置的pac规则，一般为空
-
+    
         oRes.serverIp: 服务端IP，只有在server或resServer、resStatsServer才能获取到
         oRes.statusCode: 响应状态码，同 oRes.serverIp
-
+    
         // 获取抓包数据，不需要等待响应完成
         req.getReqSession((s) => {
           // 如果设置了 enable://hide 会获取到空数据
@@ -448,7 +444,7 @@ whistle v1.13.0版本开始支持通过插件自定义长连接数据的解析�
             return;
           }
           // do sth
-        }):
+        });
         // 获取完整的抓包数据，要等待响应完成
         // 这里unsafe主要是提醒不要在回调里面返回规则
         // 如果这样不会触发响应
@@ -458,7 +454,7 @@ whistle v1.13.0版本开始支持通过插件自定义长连接数据的解析�
             return;
           }
           // do sth
-        }):
+        });
         // 获取WebSocket或Socket请求的帧数据列表
         // 返回 1~16 个帧数据
         // 这里unsafe主要是提醒不要在回调里面返回规则
@@ -469,7 +465,120 @@ whistle v1.13.0版本开始支持通过插件自定义长连接数据的解析�
             return;
           }
           // do sth
-        }):
+        });
+
+        // 请求和响应的拦截器都是可选的
+        // 获取请求体和响应体的原始内容（可能是已压缩的内容）
+        req.passThrough((rawReqBody, next) => {
+          // rawReqBody 为请求体的 Buffer，如果没有请求体，则为 null
+          next({
+            url: '修改请求地址',
+            headers: {},
+            body: '新内容 string or buffer',
+          });
+          // rawReqBody 可能是 gzip 后的内容，可以通过下面方法确保获取未压缩的内容
+          req.getBuffer((err, buffer) => {
+            if (err) {
+              // 如果解压失败，继续请求
+              return next();
+            }
+            // buffer 为未压缩的内容
+            next({
+              url: '修改请求地址',
+              rules: '请求规则',
+              body: '新内容 string or buffer',
+            });
+            // next() 表示保留请求内容继续请求
+            // next(null) 表示去除请求内容继续请求
+            // 通过修改 req.headers 修改请求头
+            // 通过修改 req.method 修改请求方法
+          });
+
+          req.getText((err, text) => {
+            if (err) {
+              // 如果解压失败，继续请求
+              return next();
+            }
+            // text 为未压缩的文本内容
+            next({
+              url: '修改请求地址',
+              rules: '请求规则',
+              body: '新内容 string or buffer',
+            });
+            // next() 表示保留请求内容继续请求
+            // next(null) 表示去除请求内容继续请求
+            // 通过修改 req.headers 修改请求头
+            // 通过修改 req.method 修改请求方法
+          });
+
+          req.getJson((err, json) => {
+            if (err) {
+              // 如果解压失败，继续请求
+              return next();
+            }
+            // json 为请求表单或 JSON 对象
+            next({
+              url: '修改请求地址',
+              rules: '请求规则',
+              body: '新内容 string or buffer',
+            });
+            // next() 表示保留请求内容继续请求
+            // next(null) 表示去除请求内容继续请求
+            // 通过修改 req.headers 修改请求头
+            // 通过修改 req.method 修改请求方法
+          });
+
+        }, (rawResBody, next, _res) => {
+          // rawResBody 为响应体的 Buffer，如果没有响应体，则为 null
+          // rawResBody 可能是 gzip 后的内容，可以通过下面方法确保获取未压缩的内容
+          _res.getBuffer((err, buffer) => {
+            if (err) {
+              // 如果解压失败，继续请求
+              return next();
+            }
+            // buffer 为未压缩的内容
+            next({
+              rules: '响应规则，如：* replaceStatus://200',
+              body: '新内容 string or buffer',
+            });
+            // next() 表示保留响应内容继续请求
+            // next(null) 表示去除响应内容继续请求
+            // 通过修改 _res.headers 修改响应头
+            // 通过修改 _res.statusCode 修改响应状态码
+          });
+
+          _res.getText((err, text) => {
+            if (err) {
+              // 如果解压失败，继续请求
+              return next();
+            }
+            // text 为未压缩的文本内容
+            next({
+              rules: '响应规则',
+              body: '新内容 string or buffer',
+            });
+            // next() 表示保留响应内容继续请求
+            // next(null) 表示去除响应内容继续请求
+            // 通过修改 _res.headers 修改响应头
+            // 通过修改 _res.statusCode 修改响应状态码
+          });
+
+          _res.getJson((err, json) => {
+            if (err) {
+              // 如果解压失败，继续请求
+              return next();
+            }
+            // json 为响应的 JSON 对象
+            next({
+              rules: '响应规则',
+              body: '新内容 string or buffer',
+            });
+            // next() 表示保留响应内容继续请求
+            // next(null) 表示去除响应内容继续请求
+            // 通过修改 _res.headers 修改响应头
+            // 通过修改 _res.statusCode 修改响应状态码
+          });
+        });
       });
     };
     ```
