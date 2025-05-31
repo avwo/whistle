@@ -434,7 +434,7 @@ var List = React.createClass({
         return;
       }
       if (!data.list.length) {
-        return message.info('Trash is empty.');
+        return message.info('Trash is empty');
       }
       self.refs.recycleBinDialog.show({ name: name, list: data.list });
     });
@@ -491,7 +491,7 @@ var List = React.createClass({
         if (JSON_RE.test(item.value)) {
           try {
             JSON.parse(item.value);
-            message.success('Valid JSON object.');
+            message.success('Valid JSON object');
           } catch (e) {
             message.error(
                 'Warning: Invalid JSON format in the value of \'' +
@@ -499,7 +499,7 @@ var List = React.createClass({
               );
           }
         } else {
-          message.error('Invalid JSON format.');
+          message.error('Invalid JSON format');
         }
       }
       break;

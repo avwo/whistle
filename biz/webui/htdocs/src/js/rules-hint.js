@@ -28,6 +28,16 @@ var curHintProto,
   curHintOffset;
 var hintUrl, hintCgi, waitingRemoteHints;
 var extraKeys = { 'Alt-/': 'autocomplete' };
+var FILTERS = [
+  '<keyword or regexp of url>',
+  'm:<keyword or regexp of request method>',
+  'b:<keyword or regexp of request body>',
+  's:<keyword or regexp of response status code>',
+  'reqH.key-name=<keyword or regexp of request header key value>',
+  'resH.key-name=<keyword or regexp of response header key value>',
+  'clientIp:<keyword or regexp of client ip>',
+  'serverIp:<keyword or regexp of server ip>'
+];
 var CHARS = [
   '-',
   '"_"',
@@ -79,8 +89,6 @@ $(window).on('hashchange', function () {
 
 var curKeys;
 var curRules;
-var MULTI_LINE_VALUE_RE =
-  /^[^\n\r\S]*(```+)[^\n\r\S]*(\S+)[^\n\r\S]*[\r\n]([\s\S]*?)[\r\n][^\n\r\S]*\1\s*$/gm;
 
 function getInlineKeys() {
   var rulesModal = dataCenter.rulesModal;
@@ -101,14 +109,12 @@ function getInlineKeys() {
   }
   if (curRules !== value) {
     curRules = value;
-    curKeys = null;
-    value.replace(MULTI_LINE_VALUE_RE, function (_, __, key) {
-      curKeys = curKeys || [];
-      if (curKeys.indexOf(key) === -1) {
-        curKeys.push(key);
-      }
-      return '';
-    });
+    var values = {};
+    util.resolveInlineValues(curRules, values);
+    curKeys = Object.keys(values);
+    if (!curKeys.length) {
+      curKeys = null;
+    }
   }
   return curKeys;
 }
@@ -162,14 +168,50 @@ function getHints(keyword) {
     list.push('xproxy://');
   } else if ('extend'.indexOf(keyword) !== -1) {
     list.push('reqMerge://', 'resMerge://');
-  } else if (keyword.length > 2) {
-    if (!'redirect://'.indexOf(keyword)) {
-      list.push('locationHref://');
-    } else if (!'locationHref://'.indexOf(keyword)) {
-      list.push('redirect://');
+  }
+  var index1 = list.indexOf('redirect://');
+  var index2 = list.indexOf('locationHref://');
+  if (index1 !== -1) {
+    if (index2 !== -1) {
+      if (index1 > index2) {
+        list.splice(index1, 1);
+        list.splice(index2 + 1, 0, 'redirect://');
+      } else {
+        list.splice(index2, 1);
+        list.splice(index1 + 1, 0, 'locationHref://');
+      }
+    } else {
+      list.splice(index1 + 1, 0, 'locationHref://');
     }
+  } else if (index2 !== -1) {
+    list.splice(index2 + 1, 0, 'redirect://');
   }
   return list;
+}
+
+function getFilterHint(filter) {
+  return {
+    text: filter.substring(0, filter.indexOf('<')),
+    displayText: filter
+  };
+}
+
+function getFilterHints(keyword, filter1, filter2) {
+  keyword = keyword.toLowerCase();
+  if (/[:=]/.test(keyword)) {
+    return [];
+  }
+  var filters1 = [];
+  var filters2 = [];
+  FILTERS.forEach(function(filter, i) {
+    if (!keyword || (i && filter.toLowerCase().indexOf(keyword) !== -1)) {
+      filters1.push(getFilterHint(filter1 + filter));
+      if (filter2) {
+        filters2.push(getFilterHint(filter2 + filter));
+      }
+    }
+  });
+  return filters1.concat(filters2);
 }
 
 function getAtValueList(keyword) {
@@ -328,9 +370,18 @@ function handleRemoteHints(data, editor, plugin, protoName, value, cgi, isVar) {
   }
 }
 
+function isFilterProtocol(name) {
+  return name === 'includeFilter://' || name === 'excludeFilter://';
+}
+
+function isRedirectProtocol(name) {
+  return name === 'redirect://' || name === 'locationHref://';
+}
+
 var WORD = /\S+/;
 var showAtHint;
 var showVarHint;
+var showFilterHint;
 var toValKey = function(key, tpl) {
   return tpl + '{' + key + '}' + tpl;
 };
@@ -339,6 +390,8 @@ CodeMirror.registerHelper('hint', 'rulesHint', function (editor, options) {
   showVarHint = false;
   waitingRemoteHints = false;
   curFocusProto = null;
+  var hasShownFilterHint = showFilterHint;
+  showFilterHint = false;
   var byDelete = editor._byDelete || editor._byPlugin;
   var byEnter = editor._byEnter;
   editor._byDelete = editor._byPlugin = editor._byEnter = false;
@@ -590,20 +643,32 @@ CodeMirror.registerHelper('hint', 'rulesHint', function (editor, options) {
         }, HINT_TIMEOUT);
       }
     }
-    if (
-      value ||
-      curWord.indexOf('//') !== -1 ||
-      !NON_SPECAIL_RE.test(curWord)
-    ) {
+    var isFilter = curWord.indexOf('includeFilter://') === 0 || curWord.indexOf('excludeFilter://') === 0;
+    if (value || (isFilter ? (byEnter && hasShownFilterHint) : curWord.indexOf('//') !== -1) || !NON_SPECAIL_RE.test(curWord)) {
       return;
     }
   } else if (byDelete) {
     return;
   }
-  list = getHints(curWord);
-  if (!list.length) {
+  var filterName;
+  if (isFilter) {
+    var slashIdx = curWord.indexOf('://') + 3;
+    value = curWord.substring(slashIdx);
+    filterName = curWord.substring(0, slashIdx);
+  } else {
+    value = '';
+  }
+  list = getHints(filterName || curWord);
+  var len = list.length;
+  isFilter = (len === 2 && (isFilterProtocol(list[0]) || isFilterProtocol(list[1]))) || (len === 1 && isFilterProtocol(list[0]));
+  if (isFilter) {
+    list = getFilterHints(value, list[0], list[1]);
+    len = list.length;
+  }
+  if (!len) {
     return;
   }
+  showFilterHint = isFilter;
   var index = curLine.indexOf('://', start);
   var protocol;
   if (index !== -1) {
@@ -612,17 +677,17 @@ CodeMirror.registerHelper('hint', 'rulesHint', function (editor, options) {
     // redirect://http://
     if (
       !/\s/.test(protocol) &&
-      (curWord.indexOf('red') !== 0 ||
+      (len === 2 && isRedirectProtocol(list[0]) ||
         (protocol !== curWord + 'http://' && protocol !== curWord + 'https://'))
     ) {
-      end = index;
+      end = isFilter ? Math.max(index, end) : index;
     }
   } else {
     index = curLine.indexOf(':', start);
     if (index !== -1) {
       ++index;
       protocol = curLine.substring(start, index) + '//';
-      if (list.indexOf(protocol) !== -1) {
+      if (isFilter ? isFilterProtocol(protocol) : list.indexOf(protocol) !== -1) {
         end = index;
         var curChar = curLine[end];
         if (curChar === '/') {

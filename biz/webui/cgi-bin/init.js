@@ -35,7 +35,6 @@ module.exports = function(req, res) {
     mvaluesTime: config.mvaluesTime,
     latestVersion: properties.getLatestVersion('latestVersion'),
     server: util.getServerInfo(req),
-    hasARules: rulesUtil.hasAccountRules ? 1 : undefined,
     rules: getRules(),
     values: getValues(),
     interceptHttpsConnects: properties.isEnableCapture(),

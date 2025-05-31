@@ -19,30 +19,12 @@ var CUSTOM_INTERNAL_APP = new RegExp('^/[\\w.-]*\\.whistle-path\\.5b6af7b9884e11
 var CUSTOM_PLUGIN_RE = new RegExp('^/[\\w.-]*\\.whistle-path\\.5b6af7b9884e1165[\\w.-]*/+whistle\\.([a-z\\d_-]+)/');
 var REAL_WEBUI_HOST_PARAM = /_whistleInternalHost_=(__([a-z\d.-]+)(?:__(\d{1,5}))?__)/;
 var OUTER_PLUGIN_RE = /^(?:\/whistle)?\/((?:whistle|plugin)\.[a-z\\d_-]+)::(\d{1,5})\//;
-var SERVICE_HOST = 'admin.wiso.pro';
-
 
 function transformUI(req, res) {
   if (config.customUIHost && !config.keepProxyUI) {
     return res.status(404).end();
   }
   return handleUIReq(req, res);
-}
-
-function setServiceUrl(req) {
-  var isService = req.path.indexOf('/whistle/service/') === 0;
-  if (isService || req.path.indexOf('/service/') === 0) {
-    if (isService) {
-      req.url = req.url.replace('/whistle/', '/');
-    }
-    req.headers.host = SERVICE_HOST;
-    req.headers[config.REAL_HOST_HEADER] = SERVICE_HOST;
-    req.isHttps = true;
-    req.isPluginReq = true;
-    req._isInternalReq = true;
-    req._isPureInternalReq = true;
-    return true;
-  }
 }
 
 module.exports = function(req, res, next) {
@@ -123,7 +105,11 @@ module.exports = function(req, res, next) {
     } else if (util.isProxyPort(port) && net.isIP(host)) {
       localIpCache.set(host, 1);
     }
-    if (isWebUI) {
+    if (PREVIEW_PATH_RE.test(req.url)) {
+      req.headers[config.INTERNAL_ID_HEADER] = config.INTERNAL_ID;
+      req.url = '/preview.html?charset=' + RegExp.$1;
+      isWebUI = true;
+    } else if (isWebUI) {
       if (req.path.indexOf('/_/') === 0) {
         bypass = '/_/';
       } else if (req.path.indexOf('/-/') === 0) {
@@ -133,13 +119,8 @@ module.exports = function(req, res, next) {
         req.url = req.url.replace(bypass, '/');
       }
       delete req.headers[config.INTERNAL_ID_HEADER];
-    } else if (PREVIEW_PATH_RE.test(req.url)) {
-      req.headers[config.INTERNAL_ID_HEADER] = config.INTERNAL_ID;
-      req.url = '/preview.html?charset=' + RegExp.$1;
-      isWebUI = true;
     }
   }
-  isWebUI = isWebUI && !setServiceUrl(req);
   // 后续有用到
   fullUrl = req.fullUrl = util.getFullUrl(req);
   if (bypass) {

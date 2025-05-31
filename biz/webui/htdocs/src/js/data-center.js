@@ -410,7 +410,7 @@ function toLowerCase(str) {
     .toLowerCase();
 }
 
-exports.certs = createCgiObj(
+var certs = createCgiObj(
   {
     remove: 'cgi-bin/certs/remove',
     upload: {
@@ -424,6 +424,24 @@ exports.certs = createCgiObj(
   },
   POST_CONF
 );
+
+exports.certs = certs;
+
+exports.uploadCerts = function (data, cb) {
+  if (typeof data !== 'string') {
+    data = JSON.stringify(data);
+  }
+  return certs.upload(data, function (data, xhr) {
+    if (!data) {
+      return util.showSystemError(xhr);
+    }
+    if (typeof cb === 'function') {
+      cb(data);
+    } else {
+      events.trigger('showCustomCerts');
+    }
+  });
+};
 
 exports.values = createCgiObj(
   {
@@ -466,7 +484,6 @@ exports.plugins = createCgiObj(
 exports.rules = createCgiObj(
   {
     disableAllRules: 'cgi-bin/rules/disable-all-rules',
-    accountRules: 'cgi-bin/rules/account',
     recycleList: {
       type: 'get',
       url: 'cgi-bin/rules/recycle/list'
@@ -554,7 +571,11 @@ $.extend(
         url: 'cgi-bin/sessions/create-temp-file',
         contentType: 'application/json'
       },
-      setDnsOrder: 'cgi-bin/set-dns-order'
+      setDnsOrder: 'cgi-bin/set-dns-order',
+      save: {
+        url: 'cgi-bin/service/save',
+        contentType: 'application/json'
+      }
     },
     POST_CONF
   )
@@ -567,7 +588,7 @@ $.extend(
       checkUpdate: 'cgi-bin/check-update',
       importRemote: 'cgi-bin/import-remote',
       getHistory: 'cgi-bin/history',
-      getCookies: 'cgi-bin/sessions/cookies',
+      getCookies: 'cgi-bin/cookies',
       getTempFile: 'cgi-bin/sessions/get-temp-file'
     },
     GET_CONF
@@ -638,18 +659,16 @@ exports.getInitialData = function (callback) {
         var server = data.server;
         port = server && server.port;
         account = server && server.account;
-        updateCertStatus(data);
         exports.version = server && server.version;
         exports.enablePluginMgr = data.epm;
         exports.supportH2 = data.supportH2;
         exports.isWin = server && server.isWin;
-        exports.hasToken = server && server.hasToken;
+        exports.tokenId = server && server.tokenId;
         exports.backRulesFirst = data.rules.backRulesFirst;
         exports.custom1 = data.custom1;
         exports.custom2 = data.custom2;
         exports.custom1Key = data.custom1Key;
         exports.custom2Key = data.custom2Key;
-        exports.hasAccountRules = data.hasARules;
         initialData = data;
         pageId = data.clientId;
         DEFAULT_CONF.data.clientId = pageId;
@@ -690,6 +709,7 @@ exports.getInitialData = function (callback) {
         if (data.clientIp) {
           exports.clientIp = data.clientIp;
         }
+        updateCertStatus(data);
       });
     };
     load();
@@ -746,7 +766,8 @@ function hasPluginColsChange(curCols, oldClos) {
   for (var i = 0; i < len; i++) {
     var cur = curCols[i];
     var old = oldClos[i];
-    if (cur.title !== old.title || cur.key !== old.key || cur.width !== old.width) {
+    if (cur.title !== old.title || cur.key !== old.key ||
+      cur.iconKey !== old.iconKey || cur.width !== old.width) {
       return true;
     }
   }
@@ -937,27 +958,23 @@ function startLoadData() {
       exports.whistleName = data.wName;
       exports.account = data.account;
       exports.disableInstaller = data.disableInstaller;
-      updateCertStatus(data);
       exports.enablePluginMgr = data.epm;
       exports.supportH2 = data.supportH2;
       exports.version = server && server.version;
       exports.isWin = server && server.isWin;
-      exports.hasToken = server && server.hasToken;
+      exports.tokenId = server && server.tokenId;
       exports.backRulesFirst = data.backRulesFirst;
       exports.custom1 = data.custom1;
       exports.custom2 = data.custom2;
       exports.custom1Key = data.custom1Key;
       exports.custom2Key = data.custom2Key;
-      if (exports.hasAccountRules !== data.hasARules) {
-        exports.hasAccountRules = data.hasARules;
-        events.trigger('accountRulesChanged');
-      }
       if (options.dumpCount > 0) {
         dumpCount = 0;
       }
       if (data.clientIp) {
         exports.clientIp = data.clientIp;
       }
+      updateCertStatus(data);
       emitRulesChanged(data);
       emitValuesChanged(data);
       directCallbacks.forEach(function (cb) {
@@ -1333,6 +1350,99 @@ function setStyle(item) {
   }
 }
 
+var APPS = 'alipay,baidu,brave,chrome,mac,android,ipad,iphone,windows,crmo,crios,cicc,edge,electron,firefox,huawei,opera,jd,pdd,qq,safari,uc,wework,wechat,dingtalk,weibo'.split(',');
+var APP_RE = /w[ex]work\/|Alipay|Brave\/|%e6%b7%98%e5%ae%9d\/|opera|%e6%94%af%e4%bb%98%e5%ae%9d\/|%e5%a4%a9%e7%8c%ab\/|uc%e6%b5%8f%e8%a7%88%e5%99%a8\/|pinduoduo|%e9%92%89%e9%92%89\/|UCBrowser\/|dingtalk|jd(?:4|mall)|weibo|tmall|qq\/|Firefox\/|FxiOS\/|ciccwm\/|WhistleClient\/|edg(?:e|ios|a)?\/|zztapp|baidu/i;
+var COMMON_APP_RE = /MicroMessenger|taobao|amap_sdk|Electron\/|CFNetwork\/|cronet/i;
+
+function getAppName(ua) {
+  var result = ua && (APP_RE.exec(ua) || COMMON_APP_RE.exec(ua));
+  if (!result) {
+    if (ua) {
+      if (/\b(?:chrome|crmo|crios)\//i.test(ua)) {
+        return 'chrome';
+      }
+      if (/Version\//.test(ua) && /Safari\//.test(ua)) {
+        return 'safari';
+      }
+      if (/Windows NT|Microsoft NCSI|Win64|Win32|Windows 10|Windows 11/i.test(ua)) {
+        return 'windows';
+      }
+      if (/android/i.test(ua)) {
+        return 'android';
+      }
+      if (/HarmonyOS|HMSCore|huawei/i.test(ua)) {
+        return 'huawei';
+      }
+      if (/iPad/i.test(ua) || (/Macintosh/i.test(ua) && /Mobile/i.test(ua))) {
+        return 'ipad';
+      }
+      if (/iPhone|iPod/i.test(ua)) {
+        return 'iphone';
+      }
+      if (/Macintosh/i.test(ua)) {
+        return 'mac';
+      }
+    }
+    return 'browser';
+  }
+  result = result[0].toLowerCase();
+  switch (result) {
+  case 'micromessenger':
+    return 'wechat';
+  case 'brave/':
+    return 'brave';
+  case 'qq/':
+    return 'qq';
+  case 'firefox/':
+  case 'fxios/':
+    return 'firefox';
+  case 'cfnetwork/':
+    return 'cfnetwork';
+  case 'ciccwm/':
+  case 'zztapp':
+    return 'cicc';
+  case 'wework/':
+  case 'wxwork/':
+    return 'wework';
+  case 'amap_sdk':
+    return 'amap';
+  case '%e6%94%af%e4%bb%98%e5%ae%9d/':
+    return 'alipay';
+  case 'electron/':
+    return 'electron';
+  case 'whistleclient/':
+    return 'whistle';
+  case '%e6%b7%98%e5%ae%9d/':
+    return 'taobao';
+  case '%e5%a4%a9%e7%8c%ab/':
+    return 'tmall';
+  case '%e9%92%89%e9%92%89/':
+    return 'dingtalk';
+  case 'ucbrowser/':
+  case 'uc%e6%b5%8f%e8%a7%88%e5%99%a8/':
+    return 'uc';
+  case 'pinduoduo':
+    return 'pdd';
+  case 'jd4':
+  case 'jdmall':
+    return 'jd';
+  case 'edg/':
+  case 'edge/':
+  case 'edga/':
+  case 'edgios/':
+    return 'edge';
+  default:
+    return result;
+  }
+}
+
+function setAppName(item) {
+  var appName = item.appName;
+  if (!appName || !APPS.indexOf(appName) !== -1) {
+    item.appName = getAppName(item.req.headers['user-agent']);
+  }
+}
+
 function setReqData(item) {
   var url = item.url;
   var req = item.req;
@@ -1341,6 +1451,7 @@ function setReqData(item) {
   var end = item.endTime;
   var defaultValue = end ? '' : '-';
   var resHeaders = res.headers || '';
+  setAppName(item);
   item.hostIp = res.ip || defaultValue;
   item.clientIp = req.ip || '127.0.0.1';
   item.date = item.date || util.toLocaleString(new Date(item.startTime));
@@ -1639,11 +1750,28 @@ exports.stopServerLogRecord = function (stop) {
   exports.stopServerLogRefresh = stop;
 };
 
+function isDisabledPlugin(name) {
+  return disabledAllPlugins || disabledPlugins[name.slice(0, -1)];
+}
+
 exports.getPlugin = function (name) {
-  if (disabledAllPlugins || disabledPlugins[name.slice(0, -1)]) {
-    return;
-  }
-  return pluginsMap[name];
+  return isDisabledPlugin(name) ? null : pluginsMap[name];
+};
+
+exports.getInstalledPlugins = function () {
+  return Object.keys(pluginsMap).sort(util.getPluginComparator(pluginsMap))
+  .map(function (name) {
+    var plugin = pluginsMap[name];
+    var disabled = !!isDisabledPlugin(name);
+    name = name.slice(0, -1);
+    return {
+      active: !disabledPlugins[name],
+      disabled: disabled,
+      name: name,
+      moduleName: plugin.moduleName,
+      version: plugin.version
+    };
+  });
 };
 
 exports.setDisabledPlugins = function(plugins) {
@@ -1754,6 +1882,17 @@ exports.getRemoteData = function (url, callback) {
     }
     callback(true);
   });
+};
+
+function toString(options) {
+  return typeof options === 'string' ? options : JSON.stringify(options);
+}
+
+exports.saveToService = function(options, callback) {
+  if (!exports.tokenId) {
+    return;
+  }
+  exports.save(toString(options), callback);
 };
 
 setDataCenter(exports);

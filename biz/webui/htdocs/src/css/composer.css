@@ -358,7 +358,7 @@ textarea.w-composer-rules {
   color: #337ab7;
 }
 .w-composer-cookies-dialog table th {
-  padding-left: 8px;
+  padding: 5px 0 5px 8px;
 }
 .w-composer-cookie-order {
   width: 50px;
@@ -669,4 +669,8 @@ textarea.w-composer-rules {
 
 .w-composer-btns a:hover {
   color: #337ab7;
+}
+
+.w-composer-disable-body .w-props-editor {
+  opacity: .7;
 }

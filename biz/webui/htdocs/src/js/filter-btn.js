@@ -18,16 +18,12 @@ var FilterBtn = React.createClass({
         });
       }
     });
-    events.on('accountRulesChanged', function() {
-      self.setState({});
-    });
   },
   render: function () {
     var props = this.props;
     var hide = props.hide;
     var isNetwork = props.isNetwork;
-    var className = props.backRulesFirst ||
-      (isNetwork ? this.state.hasFilterText : dataCenter.hasAccountRules) ? ' w-menu-enable' : '';
+    var className = props.backRulesFirst || (isNetwork && this.state.hasFilterText ? ' w-menu-enable' : '');
     return (
       <a
         onClick={props.onClick}

@@ -93,12 +93,12 @@ var Textarea = React.createClass({
       return;
     }
     if (!name) {
-      message.error('The key is required.');
+      message.error('The key is required');
       return;
     }
 
     if (/\s/.test(name)) {
-      message.error('Spaces are not allowed in the key.');
+      message.error('Spaces are not allowed in the key');
       return;
     }
     var handleSubmit = function (sure) {

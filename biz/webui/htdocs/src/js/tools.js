@@ -100,15 +100,17 @@ var Tools = React.createClass({
         {
           tabs.map(function(tab) {
             var pluginName = tab.plugin;
+            var icon = util.getTabIcon(tab);
             return (
               <button
                 key={'_' + pluginName}
                 onClick={function () {
                   self.showCustomTab(tab);
                 }}
-                className={self.getStyle(pluginName)}
+                className={'w-custom-tab-btn ' + self.getStyle(pluginName)}
                 title={pluginName}
               >
+              {icon ? <img className="w-tab-icon" src={icon} /> : null}
               {tab.name}
               </button>
             );

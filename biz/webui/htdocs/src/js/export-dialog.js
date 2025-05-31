@@ -76,8 +76,8 @@ var ExportDialog = React.createClass({
     this.hide();
     util.download(data, this.getFilename());
   },
-  onShare: function() {
-    this.hide();
+  onShare: function(err) {
+    !err && this.hide();
   },
   shouldComponentUpdate: function () {
     return this.refs.exportDialog.isVisible();
@@ -111,14 +111,13 @@ var ExportDialog = React.createClass({
           >
             Cancel
           </button>
-          <ShareViaUrlBtn data={state.data} onComplete={this.onShare} />
+          <ShareViaUrlBtn type={state.name} data={state.data} onComplete={this.onShare} />
           <button
             type="button"
             className="btn btn-primary w-fmt-btn"
              data-dismiss="modal"
              onClick={this.export}
           >
-            <span className="glyphicon glyphicon-export" />
             Export
           </button>
         </div>

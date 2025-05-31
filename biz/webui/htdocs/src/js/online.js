@@ -56,7 +56,7 @@ function getDnsOrder(verbatim) {
   return result.join('');
 }
 
-function createDialog(hasToken) {
+function createDialog(tokenId) {
   if (!dialog) {
     var proxyInfoList = [
       '<h5><strong>Uptime:</strong> <span id="whistleUptime">-</span></h5>',
@@ -85,7 +85,7 @@ function createDialog(hasToken) {
         '<div class="modal-footer">' +
         '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>' +
         // '<button type="button" class="btn btn-primary w-token-btn" data-action="' +
-        // (hasToken ? 'reset' : 'set') + '"><span class="glyphicon glyphicon-certificate"></span>\nAccess Token</button>' +
+        // (tokenId ? 'reset' : 'set') + '"><span class="glyphicon glyphicon-certificate"></span>\nAccess Token</button>' +
         '</div>' +
         '</div>' +
         '</div>' +
@@ -595,7 +595,7 @@ var Online = React.createClass({
             </button>
             The proxy has been modified.
             <br />
-            Do you want to reload this page.
+            Do you want to reload this page?
           </div>
           <div className="modal-footer">
             <button

@@ -19,15 +19,6 @@ function getAccept(name) {
   return '.txt,.json';
 }
 
-function checkUrl(url) {
-  url = url.trim();
-  if (!url) {
-    message.error('The url or file path is required.');
-    return;
-  }
-  return url;
-}
-
 function parseJson(text) {
   if (text[0] !== '{' && text[0] !== '[') {
     return;
@@ -61,7 +52,7 @@ var ImportDialog = React.createClass({
     this.refs.importDialog.hide();
   },
   showService: function () {
-    util.showService(this.state.name + 'Data');
+    util.showService(this.state.name + '/history');
   },
   importRemoteUrl: function (e) {
     if (e && e.type !== 'click' && e.keyCode !== 13) {
@@ -69,8 +60,11 @@ var ImportDialog = React.createClass({
     }
     var self = this;
     var input = ReactDOM.findDOMNode(self.refs.input);
-    var url = checkUrl(input.value);
+    var url = input.value.trim();
     if (!url) {
+      message.error('The url or file path is required');
+      input.value = '';
+      input.focus();
       return;
     }
     dataCenter.getRemoteData(url, function (_, data) {
@@ -106,13 +100,13 @@ var ImportDialog = React.createClass({
   importCURL: function(text) {
     text = text.trim();
     if (!text) {
-      message.error('The text is required.');
+      message.error('The text is required');
       return false;
     }
     try {
       var result = parseJson(text) || parseCurl(text);
       if (!result || !result.url) {
-        message.error('Not CURL text.');
+        message.error('Not CURL text');
         return false;
       }
       result.isHexText = false;
@@ -165,14 +159,14 @@ var ImportDialog = React.createClass({
             Import CURL
           </button> : null
           }
-          {dataCenter.hasToken ? <button
+          {dataCenter.tokenId ? <button
             type="button"
             className="btn btn-warning"
             data-dismiss="modal"
             onClick={this.showService}
           >
             <span className="glyphicon glyphicon-cloud" />
-            Select Service Data
+            Import From Service
           </button> : null}
           <button
             type="button"
@@ -180,7 +174,7 @@ var ImportDialog = React.createClass({
             onClick={this.selectFile}
           >
             <span className="glyphicon glyphicon-folder-open" />
-            Select File
+            Upload
           </button>
           <button
             type="button"
@@ -188,7 +182,6 @@ var ImportDialog = React.createClass({
             onMouseDown={util.preventBlur}
             onClick={this.importRemoteUrl}
           >
-            <span className="glyphicon glyphicon-import" />
             Import
           </button>
         </div>

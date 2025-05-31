@@ -258,7 +258,7 @@ var EditorDialog = React.createClass({
     var form = new FormData(ReactDOM.findDOMNode(this.refs.readLocalFileForm));
     var file = form.get('localFile');
     if (file.size > MAX_LEN) {
-      return win.alert('Total file size must not exceed 10MB.');
+      return win.alert('Total file size must not exceed 10MB');
     }
     this.readFile(file);
     ReactDOM.findDOMNode(this.refs.readLocalFile).value = '';
@@ -302,9 +302,10 @@ var EditorDialog = React.createClass({
           </button>
           {props.onConfirm ? null : <button
             type="button"
-            className="btn btn-warning"
+            className="btn btn-info"
             onClick={this.onUpload}
           >
+            <span className="glyphicon glyphicon-folder-open" />
             Upload
           </button>}
           <button

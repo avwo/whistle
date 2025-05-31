@@ -46,7 +46,6 @@ module.exports = function(req, res) {
     mvaluesClientId: config.mvaluesClientId,
     mvaluesTime: config.mvaluesTime,
     server: util.getServerInfo(req),
-    hasARules: rulesUtil.hasAccountRules ? 1 : undefined,
     curLogId: stopRecordConsole ? undefined : curLogId,
     curSvrLogId: stopRecordSvrLog ? undefined : curSvrLogId,
     lastLogId: stopRecordConsole ? curLogId : undefined,

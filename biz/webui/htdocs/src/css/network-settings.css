@@ -78,6 +78,7 @@
   overflow: auto;
   margin: 0;
   padding: 5px 10px;
+  border-radius: 5px;
 }
 .w-network-settings-dialog .w-help-menu {
   color: #000;

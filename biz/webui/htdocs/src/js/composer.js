@@ -59,7 +59,7 @@ var METHODS = [
   'UNSUBSCRIBE'
 ];
 var SEND_CTX_MENU = [
-  { name: 'Send File', action: 'file' },
+  { name: 'Send Body Via File', action: 'file' },
   { name: 'Repeat Times' },
   { name: 'Show History', action: 'history' }
 ];
@@ -180,7 +180,7 @@ var Composer = React.createClass({
     var method = data.method;
     var body = getString(data.body);
     if (body && body !== data.body) {
-      message.warn('Body content limited to 256KB (excess will be truncated).');
+      message.warn('Body content limited to 256KB (excess will be truncated)');
     }
     var headers = util.parseHeaders(data.headers);
     var type = getType(headers);
@@ -777,7 +777,7 @@ var Composer = React.createClass({
     var self = this;
     if (!dataCenter.supportH2) {
       win.confirm(
-        'HTTP/2 requires Node.js LTS version v16+. Please upgrade.',
+        'HTTP/2 requires Node.js LTS version v16+. Please upgrade',
         function (sure) {
           sure && window.open('https://nodejs.org/');
           self.setState({});
@@ -996,7 +996,7 @@ var Composer = React.createClass({
             em = status;
             util.showSystemError(xhr);
           } else if (!em || typeof em !== 'string' || em === 'error') {
-            em = 'Please check the proxy settings or whether whistle has been started.';
+            em = 'Please check the proxy settings or whether whistle has been started';
           }
           state.result = { url: params.url, req: '', res: { statusCode: em } };
         } else {
@@ -1084,7 +1084,7 @@ var Composer = React.createClass({
     var url = ReactDOM.findDOMNode(self.refs.url).value;
     var host = util.getHostname(url).toLowerCase();
     if (!/^[a-z.\d_-]+$/.test(host)) {
-      return message.warn('Cookies not found.');
+      return message.warn('Cookies not found');
     }
     if (self._pending) {
       return;
@@ -1113,7 +1113,7 @@ var Composer = React.createClass({
         }
       }
       if (!result.length) {
-        return message.warn('Cookies not found.');
+        return message.warn('Cookies not found');
       }
       if (result.length < maxCount) {
         var cookies = self._cacheCookies;
@@ -1215,7 +1215,7 @@ var Composer = React.createClass({
   },
   onContextMenu: function(e) {
     e.preventDefault();
-    var data = util.getMenuPosition(e, 125);
+    var data = util.getMenuPosition(e, 150);
     data.list = SEND_CTX_MENU;
     SEND_CTX_MENU[2].name = this.state.showHistory ? 'Hide History' : 'Show History';
     this.refs.contextMenu.show(data);
@@ -1306,7 +1306,7 @@ var Composer = React.createClass({
     var form = new FormData(ReactDOM.findDOMNode(this.refs.readLocalFileForm));
     var file = form.get('localFile');
     if (file.size > MAX_FILE_SIZE) {
-      return win.alert('Maximum file size: 20m.');
+      return win.alert('Maximum file size: 20MB');
     }
     var self = this;
     self.reading = true;
@@ -1355,9 +1355,6 @@ var Composer = React.createClass({
     var disableBody = !e.target.checked;
     this.setState({ disableBody: disableBody });
     storage.set('disableComposerBody', disableBody ? 1 : '');
-    if (!disableBody) {
-      this.setState({ tabName: 'Request' });
-    }
   },
   focusEnableBody: function () {
     this.setState({ disableBody: false });
@@ -1449,7 +1446,8 @@ var Composer = React.createClass({
               disabled={pending}
               onClick={this.execute}
               onContextMenu={self.onContextMenu}
-              className="btn btn-primary w-composer-execute"
+              title={enableProxyRules ? null : 'Whistle Rules IGNORED'}
+              className={'btn w-composer-execute btn-' + (enableProxyRules ? 'primary' : 'info')}
             >
               <span className="glyphicon glyphicon-send" />
             </button>
@@ -1694,7 +1692,7 @@ var Composer = React.createClass({
                     callback={this.execute}
                   />
                 </div>
-                <div className="fill orient-vertical-box w-composer-body">
+                <div className={'fill orient-vertical-box w-composer-body' + (disableBody ? ' w-composer-disable-body' : '')}>
                   <div className="w-composer-bar">
                     <label className="w-composer-label">
                       <input

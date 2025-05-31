@@ -11,11 +11,20 @@ var ServiceBtn = React.createClass({
     events.on('showService', this.showService);
     events.on('hideService', this.hideService);
   },
-  showService: function (_, name) {
-    this.refs.serviceDialog.show('service/index.html');
+  showService: function (_, path) {
+    if (!path) {
+      path = '/';
+    } else if (path[0] !== '/') {
+      path = '/' + path;
+    }
+    this.refs.serviceDialog.show('service/index.html#' + path);
   },
   hideService: function () {
     this.refs.serviceDialog.hide();
+  },
+  componentWillUnmount: function () {
+    events.off('showService');
+    events.off('hideService');
   },
   render: function () {
     return (

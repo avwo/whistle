@@ -26,7 +26,7 @@ var TokenDialog = React.createClass({
   save: function() {
     var token = ReactDOM.findDOMNode(this.refs.textarea).value.trim();
     if (!token) {
-      message.error('The token is required.');
+      message.error('The token is required');
     }
   },
   render: function () {

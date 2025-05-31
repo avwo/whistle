@@ -14,6 +14,8 @@
   min-width: 60px;
   min-height: 30px;
   position: relative;
+  display: flex;
+  align-items: center;
 }
 .w-nav-tabs > .nav > li > a > .w-close-icon {
   display: block;
@@ -34,6 +36,18 @@
   margin-right: 3px;
   color: #ccc !important;
 }
+
+.w-custom-tab-btn {
+  display: inline-flex;
+  align-items: center;
+}
+
+.w-plugins-tab img, .w-custom-tab-btn img {
+  width: 13px;
+  max-height: 13px;
+  margin: 0 3px 0 0;
+}
+
 .w-nav-tabs iframe {
   border: none;
   display: block;
@@ -105,7 +119,7 @@
   width: 160px;
 }
 .w-plugins-version {
-  width: 140px;
+  width: 150px;
 }
 .w-plugins-list .w-has-new-version .w-plugins-version .w-new-version,
 .w-plugins-list .w-has-new-version .w-plugin-update-btn,

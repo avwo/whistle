@@ -168,10 +168,10 @@ var Console = React.createClass({
   },
   importFile: function (file) {
     if (!file || !/\.log$/i.test(file.name)) {
-      return win.alert('Only .log files are supported.');
+      return win.alert('Only .log files are supported');
     }
     if (file.size > MAX_FILE_SIZE) {
-      return win.alert('Maximum file size: 2MB.');
+      return win.alert('Maximum file size: 2MB');
     }
     util.readFileAsText(file, this.importData);
   },

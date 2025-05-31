@@ -73,6 +73,7 @@ var FilterInput = React.createClass({
     if (!keyword) {
       return addonHints.concat(this.allHintList.slice(-count));
     }
+    addonHints = addonHints.slice(1);
     count += addonHints.length;
     var allHintList = addonHints.concat(this.allHintList);
     var list = [];

@@ -23,6 +23,7 @@ exports.getServerInfo = function(req) {
     baseDir = config.baseDirHash;
   }
   var info = {
+    tokenId: config.tokenId,
     pid: PID,
     pInfo: proc,
     verbatim: config.verbatim,
@@ -84,7 +85,7 @@ exports.getReqData = function(req, callback) {
     result = result ? Buffer.concat([result, chunk]) : chunk;
     if (result.length > MAX_OBJECT_SIZE) {
       req.removeAllListeners('data');
-      callback(new Error('The file size can not exceed 6m.'));
+      callback(new Error('The file size can not exceed 6MB'));
     }
   });
   req.on('error', callback);

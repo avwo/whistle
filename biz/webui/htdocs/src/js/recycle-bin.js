@@ -64,7 +64,7 @@ var RecycleBinDialog = React.createClass({
     }
     if (data.ec === 3) {
       var self = this;
-      message.error('File not found.');
+      message.error('File not found');
       dataCenter[this.state.name.toLowerCase()].recycleList(function (
         result,
         xhr
@@ -89,7 +89,7 @@ var RecycleBinDialog = React.createClass({
           return;
         }
         if (!data.data) {
-          return message.warn('Empty content.');
+          return message.warn('Empty content');
         }
         util.openEditor(data.data);
       }
@@ -113,7 +113,7 @@ var RecycleBinDialog = React.createClass({
     var origName = decode(name.substring(name.indexOf('.') + 1));
     var self = this;
     win.confirm(
-      'Do you confirm the deletion of \'' + origName + '\' completely.',
+      'Do you confirm the deletion of \'' + origName + '\' completely?',
       function (sure) {
         if (sure) {
           dataCenter[self.state.name.toLowerCase()].recycleRemove(

@@ -541,7 +541,7 @@ var MockDialog = React.createClass({
     if (showKeyValue) {
       if (!keyName) {
         ReactDOM.findDOMNode(self.refs.keyName).focus();
-        return message.error('The key name is required.');
+        return message.error('The key name is required');
       }
       if (force === true) {
         var item = dataCenter.getValuesModal().getItem(keyName);

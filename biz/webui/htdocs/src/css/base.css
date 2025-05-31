@@ -428,11 +428,11 @@ a {
 }
 
 .w-delete {
-  color: #f66;
+  color: #f66!important;
 }
 
 .w-delete:hover {
-  color: red;
+  color: red!important;
 }
 
 .w-editor-dialog .modal-dialog {
@@ -547,4 +547,15 @@ a {
 
 .w-fmt-btn .glyphicon {
   margin-right: 5px;
+}
+
+.w-cell-img {
+  max-height: 17px;
+  max-width: 20px;
+  margin: -3px 6px 0 0;
+}
+
+.inline-align-items {
+  display: inline-flex;
+  align-items: center;
 }

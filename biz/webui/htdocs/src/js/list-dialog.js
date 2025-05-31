@@ -54,7 +54,7 @@ var ListDialog = React.createClass({
     form.submit();
     input.value = '';
   },
-  exportRuleList: function () {
+  getRuleList: function (cb) {
     var rulesModal = this.state.rulesModal;
     var allValues = {};
     var checkedList = this.state.checkedRuleList;
@@ -93,8 +93,8 @@ var ListDialog = React.createClass({
     }
     var newVals;
     var filename = ReactDOM.findDOMNode(this.refs.filename).value.trim() || 'mock_' + util.formatDate() + '.txt';
-    var dl = function() {
-      util.download([rules, newVals || {}], filename);
+    var execCb = function() {
+      cb([rules, newVals || {}], filename);
     };
     if (files.length) {
       dataCenter.getTempFile({ files: files.join() }, function (result) {
@@ -106,22 +106,36 @@ var ListDialog = React.createClass({
             list: list
           };
         }
-        dl();
+        execCb();
       });
     } else {
-      dl();
+      execCb();
     }
+  },
+  exportRuleList: function () {
+    this.getRuleList(function (data, filename) {
+      util.download(data, filename);
+    });
+  },
+  isRuleList: function () {
+    return this.state.tabs[1].active;
   },
   onConfirm: function (e) {
     if (e.target.disabled) {
       return;
     }
     this.refs.dialog.hide();
-    if (this.state.tabs[1].active) {
+    if (this.isRuleList()) {
       return this.exportRuleList();
     }
     var items = this.state.checkedItems;
     this.donwload(items);
+  },
+  getExportData: function(cb) {
+    if (this.isRuleList()) {
+      return this.getRuleList(cb);
+    }
+    cb(this.state.checkedItems);
   },
   getAllItems: function () {
     var list = this.props.list || [];
@@ -243,10 +257,16 @@ var ListDialog = React.createClass({
 
     return (
       <Dialog ref="dialog" wclassName="w-list-dialog">
+        { props.title ? <div className="modal-header">
+                <h4>{props.title}</h4>
+                <button type="button" className="close" data-dismiss="modal">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div> : null }
         <div className="modal-body">
-          <button type="button" className="close" data-dismiss="modal">
+          {props.title ? null : <button type="button" className="close" data-dismiss="modal">
             <span aria-hidden="true">&times;</span>
-          </button>
+          </button>}
           {rulesModal ? <Tabs tabs={tabs} onChange={self.onTabChange} /> : null}
           <div className={tabs[0].active ? '' : ' hide'} style={{marginTop: 10}}>
             <div className="w-list-wrapper">
@@ -303,7 +323,9 @@ var ListDialog = React.createClass({
           >
             Cancel
           </button>
-          {onConfirm ? null : <ShareViaURLBtn onComplete={this.onShare} />}
+          {onConfirm ? null : <ShareViaURLBtn disabled={!selectedCount}
+            type={this.isRuleList() ? 'mock' : props.name}
+            getData={this.getExportData} onComplete={this.onShare} />}
           <button
             type="button"
             className="btn btn-primary"

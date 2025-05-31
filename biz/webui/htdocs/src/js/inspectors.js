@@ -78,15 +78,17 @@ var Inspectors = React.createClass({
           <div className="fill w-custom-tabs">
             {tabs.map(function (tab) {
               var pluginName = tab.plugin;
+              var icon = util.getTabIcon(tab);
               return (
                 <button
                   key={pluginName}
                   onClick={function () {
                     self.showTab(pluginName);
                   }}
-                  className={self.getStyle(pluginName)}
+                  className={'w-custom-tab-btn ' + self.getStyle(pluginName)}
                   title={pluginName}
                 >
+                  {icon ? <img className="w-tab-icon" src={icon} /> : null}
                   {tab.name}
                 </button>
               );

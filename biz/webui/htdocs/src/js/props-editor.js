@@ -73,7 +73,7 @@ var PropsEditor = React.createClass({
       return;
     }
     if (Object.keys(this.state.modal || '').length >= MAX_COUNT) {
-      return message.error('Maximum allowed value: ' + MAX_COUNT + '.');
+      return message.error('Maximum allowed value: ' + MAX_COUNT);
     }
     this.setState({ data: '' });
     this.showDialog();
@@ -103,7 +103,7 @@ var PropsEditor = React.createClass({
     var name = nameInput.value.trim();
     if (!name) {
       nameInput.focus();
-      return message.error('The name is required.');
+      return message.error('The name is required');
     }
     var valueInput = ReactDOM.findDOMNode(this.refs.valueInput);
     var value = valueInput.value.trim();
@@ -135,7 +135,7 @@ var PropsEditor = React.createClass({
     var name = nameInput.value.trim();
     if (!name) {
       nameInput.focus();
-      return message.error('The name is required.');
+      return message.error('The name is required');
     }
     var valueInput = ReactDOM.findDOMNode(this.refs.valueInput);
     var value = valueInput.value.trim();
@@ -201,7 +201,7 @@ var PropsEditor = React.createClass({
     var opName = self.props.isHeader ? 'header' : 'param';
     var item = self.state.modal[name];
     win.confirm(
-      'Do you confirm the deletion of this ' + opName + ' \'' + item.name + '\'.',
+      'Do you confirm the deletion of this ' + opName + ' \'' + item.name + '\'?',
       function (sure) {
         if (sure) {
           delete self.state.modal[name];
@@ -248,7 +248,7 @@ var PropsEditor = React.createClass({
     var form = new FormData(ReactDOM.findDOMNode(this.refs.readLocalFileForm));
     var file = form.get('localFile');
     if (file.size > MAX_FILE_SIZE) {
-      return win.alert('Total file size must not exceed 20MB.');
+      return win.alert('Total file size must not exceed 20MB');
     }
     var modal = this.state.modal || '';
     var size = file.size;
@@ -256,7 +256,7 @@ var PropsEditor = React.createClass({
       size += modal[key].size;
     });
     if (size > MAX_FILE_SIZE) {
-      return win.alert('Total file size must not exceed 20MB.');
+      return win.alert('Total file size must not exceed 20MB');
     }
     var self = this;
     self.reading = true;
@@ -419,7 +419,8 @@ var PropsEditor = React.createClass({
                   onClick={this.onUpload}
                   className={'btn btn-primary' + (filename ? ' hide' : '')}
                 >
-                  Upload file
+                  <span className="glyphicon glyphicon-folder-open" />
+                  Upload
                 </button>
               </div>
             </div>

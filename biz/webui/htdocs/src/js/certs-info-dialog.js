@@ -112,7 +112,7 @@ var HistoryData = React.createClass({
   removeCert: function (item) {
     var self = this;
     win.confirm(
-      'Do you confirm the deletion of \'' + getCertName(item) + '\'.',
+      'Do you confirm the deletion of \'' + getCertName(item) + '\'?',
       function (sure) {
         if (!sure) {
           return;
@@ -129,18 +129,18 @@ var HistoryData = React.createClass({
     for (var i = 0, len = fileList.length; i < len; i++) {
       var cert = fileList[i];
       if (cert.size > MAX_CERT_SIZE || !(cert.size > 0)) {
-        message.error('Maximum file size: 128KB.');
+        message.error('Maximum file size: 128KB');
         return;
       }
       var { name } = cert;
       if (!/\.(crt|cer|pem|key)/.test(name)) {
-        message.error('Supported file formats: .key, .crt, .cer, .pem.');
+        message.error('Supported file formats: .key, .crt, .cer, .pem');
         return;
       }
       var suffix = RegExp.$1;
       name = name.slice(0, -4);
       if (!name || name.length > 128) {
-        message.error('Filename must be between 1-128 characters.');
+        message.error('Filename must be between 1-128 characters');
         return;
       }
       certs = certs || {};
@@ -178,7 +178,7 @@ var HistoryData = React.createClass({
       delete files.root;
     }
     var handleCallback = function () {
-      dataCenter.certs.upload(JSON.stringify(files), self.handleCgi);
+      dataCenter.uploadCerts(files, self.handleCgi);
     };
     var keys = Object.keys(files);
     var len = keys.length * 2;
@@ -201,6 +201,9 @@ var HistoryData = React.createClass({
   showUpload: function () {
     ReactDOM.findDOMNode(this.refs.uploadCerts).click();
   },
+  showService: function () {
+    util.showService('certs/history');
+  },
   render: function () {
     var self = this;
     var list = self.state.list || [];
@@ -219,7 +222,7 @@ var HistoryData = React.createClass({
             >
               <span className="glyphicon glyphicon-question-sign"></span>
             </a>
-            Custom Certificates
+            Custom Certs
           </h4>
           <table className="table">
             <thead>
@@ -285,6 +288,22 @@ var HistoryData = React.createClass({
           </table>
         </div>
         <div className="modal-footer">
+          <button
+            type="button"
+            className="btn btn-default"
+            data-dismiss="modal"
+          >
+            Close
+          </button>
+          {dataCenter.tokenId ? <button
+            type="button"
+            className="btn btn-warning"
+            data-dismiss="modal"
+            onClick={this.showService}
+          >
+            <span className="glyphicon glyphicon-cloud" />
+            Import From Service
+          </button> : null}
           <input
             ref="uploadCerts"
             style={{ display: 'none' }}
@@ -295,19 +314,14 @@ var HistoryData = React.createClass({
           />
           <button
             type="button"
-            className="btn btn-default"
-            data-dismiss="modal"
-          >
-            Close
-          </button>
-          <button
-            type="button"
             style={{
-              display: dataCenter.isDiableCustomCerts() ? 'none' : undefined
+              display: dataCenter.isDiableCustomCerts() ? 'none' : undefined,
+              marginLeft: 5
             }}
             className="btn btn-primary"
             onClick={self.showUpload}
           >
+            <span className="glyphicon glyphicon-folder-open" />
             Upload
           </button>
         </div>

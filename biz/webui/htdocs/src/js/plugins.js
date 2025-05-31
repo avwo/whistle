@@ -36,24 +36,14 @@ var CTX_MENU_LIST = [
   { name: 'Help', sep: true }
 ];
 
-function getPluginComparator(plugins) {
-  return function (a, b) {
-    var p1 = plugins[a];
-    var p2 = plugins[b];
-    p1._key = a;
-    p2._key = b;
-    return util.comparePlugin(p1, p2);
-  };
-}
-
-function getPluginList(plugins, installUrls, disabledPlugins) {
+function getPluginList(plugins, installUrls, disabledPlugins, disabledAllPlugins) {
   if (!plugins) {
     return [];
   }
-  return Object.keys(plugins).sort(getPluginComparator(plugins))
+  return Object.keys(plugins).sort(util.getPluginComparator(plugins))
         .map(function (name) {
           var plugin = plugins[name];
-          if (!dataCenter.disableInstaller && plugin && installUrls && disabledPlugins
+          if (!disabledAllPlugins && !dataCenter.disableInstaller && plugin && installUrls && disabledPlugins
             && plugin.installUrl && !disabledPlugins[name.slice(0, -1)]) {
             installUrls.push(plugin);
           }
@@ -392,7 +382,7 @@ var Home = React.createClass({
   },
   showUninstall: function (plugin) {
     var name = plugin.moduleName;
-    win.confirm('Do you confirm uninstalling the plugin \'' + name + '\'.', function(ok) {
+    win.confirm('Do you confirm uninstalling the plugin \'' + name + '\'?', function(ok) {
       if (ok) {
         dataCenter.plugins.uninstallPlugins({ name: util.getSimplePluginName(plugin) }, function(data, xhr) {
           if (!data) {
@@ -421,14 +411,17 @@ var Home = React.createClass({
   setUpdateAllBtnState: function () {
     events.trigger('setUpdateAllBtnState', this.hasNewPlugin);
   },
+  showService: function () {
+    util.showService('/plugins/store');
+  },
   render: function () {
     var self = this;
+    var state = self.state || {};
     var data = self.props.data || {};
     var plugins = data.plugins || {};
     var installUrls = [];
     var disabledPlugins = data.disabledPlugins || {};
-    var list = getPluginList(plugins, installUrls, disabledPlugins);
-    var state = self.state || {};
+    var list = getPluginList(plugins, installUrls, disabledPlugins, data.disabledAllPlugins);
     var plugin = state.plugin || {};
     var install = state.install;
     var epm = dataCenter.enablePluginMgr;
@@ -438,8 +431,8 @@ var Home = React.createClass({
     var registry = state.registry || '';
     var disabled = data.disabledAllPlugins;
     var ndp = data.ndp;
-    var showCopyBtn = !epm &&  hasInstaller;
-    var selectStyle = showCopyBtn ? {width: 225} : undefined;
+    var showCopyBtn = !dataCenter.disableInstaller &&  hasInstaller;
+    var selectStyle = showCopyBtn ? {width: 245 - (dataCenter.tokenId ? 80 : 0)} : undefined;
     self.hasNewPlugin = false;
     self.installUrls = installUrls;
 
@@ -507,7 +500,7 @@ var Home = React.createClass({
                     plugin.version
                   );
                   if (hasNew) {
-                    hasNew = '(New: ' + plugin.latest + ')';
+                    hasNew = ' (NEW: ' + plugin.latest + ')';
                     self.hasNewPlugin = true;
                   }
                   return (
@@ -554,6 +547,7 @@ var Home = React.createClass({
                           href={openInModal ? null : url}
                           target="_blank"
                           data-name={name}
+                          title={'Show ' + plugin.moduleName + ' Option'}
                           onClick={openExternal ? null : self.onOpen}
                         >
                           {name}
@@ -561,7 +555,7 @@ var Home = React.createClass({
                       </td>
                       <td className="w-plugins-version">
                         {homepage ? (
-                          <a href={homepage} target="_blank">
+                          <a href={homepage} target="_blank" title={'Show ' + plugin.moduleName + ' Help'}>
                             {plugin.version}
                           </a>
                         ) : (
@@ -573,6 +567,7 @@ var Home = React.createClass({
                               className="w-new-version"
                               href={homepage}
                               target="_blank"
+                              title={'Show ' + plugin.moduleName + ' Help'}
                             >
                               {hasNew}
                             </a>
@@ -781,6 +776,15 @@ var Home = React.createClass({
             >
               Cancel
             </button>
+            {dataCenter.tokenId ? <button
+              type="button"
+              className="btn btn-warning"
+              data-dismiss="modal"
+              onClick={this.showService}
+            >
+              <span className="glyphicon glyphicon-cloud" />
+              Plugins
+            </button> : null}
             {showCopyBtn ? (
               <button
               type="button"
@@ -789,7 +793,7 @@ var Home = React.createClass({
                 data-clipboard-text={cmdMsg}
                 disabled={disabledBtn}
               >
-                Copy Command
+                Copy CMD
               </button>
             ) : null}
             <button
@@ -885,7 +889,7 @@ var Tabs = React.createClass({
     CTX_MENU_LIST[0].disabled = !copyText;
     CTX_MENU_LIST[0].copyText = copyText;
     CTX_MENU_LIST[1].name = name && disabledPlugins[name] ? 'Enable' : 'Disable';
-    CTX_MENU_LIST[1].disabled = disabled || props.ndp;
+    CTX_MENU_LIST[1].disabled = disabled || props.ndp || props.disabledAllPlugins;
     CTX_MENU_LIST[2].disabled = disabled || plugin.noOpt || active;
     CTX_MENU_LIST[3].disabled = disabled || !hasRules(plugin);
     CTX_MENU_LIST[4].disabled = disabled || plugin.isProj;
@@ -984,7 +988,13 @@ var Tabs = React.createClass({
             </a>
           </li>
           {tabs.map(function (tab) {
-            var disd = util.pluginIsDisabled(props, tab.name);
+            var disd;
+            var favicon;
+            if (util.pluginIsDisabled(props, tab.name)) {
+              disd = true;
+            } else {
+              favicon = util.getPluginIcon(dataCenter.getPlugin(tab.name + ':'));
+            }
             return (
               <li key={tab.name} className={activeName == tab.name ? ' active' : ''}>
                 <a
@@ -996,7 +1006,7 @@ var Tabs = React.createClass({
                 >
                   {disd ? (
                     <span data-name={tab.name} className="glyphicon glyphicon-ban-circle" />
-                  ) : undefined}
+                  ) : (favicon ? <img src={favicon} /> : undefined)}
                   {tab.name}
                   <span
                     data-name={tab.name}

@@ -53,6 +53,18 @@ function getBridge(win) {
     decodeBase64: util.decodeBase64,
     alert: mockWin.alert,
     confirm: mockWin.confirm,
+    showNetwork: function () {
+      events.trigger('showNetwork');
+    },
+    showRules: function () {
+      events.trigger('showRules');
+    },
+    showValues: function () {
+      events.trigger('showValues');
+    },
+    showPlugins: function () {
+      events.trigger('showPlugins');
+    },
     getActiveSession: function () {
       return dataModal.getActive();
     },
@@ -74,6 +86,12 @@ function getBridge(win) {
     setNetworkSettings: function(data) {
       events.trigger('setNetworkSettings', data);
     },
+    setRulesSettings: function(data) {
+      events.trigger('setRulesSettings', data);
+    },
+    setValuesSettings: function(data) {
+      events.trigger('setValuesSettings', data);
+    },
     setComposerData: function(data) {
       events.trigger('setComposerData', data);
     },
@@ -85,8 +103,14 @@ function getBridge(win) {
     showCustomCerts: function() {
       events.trigger('showCustomCerts');
     },
+    uploadCustomCerts: function(data, cb) {
+      return dataCenter.uploadCerts(data, cb);
+    },
     showService: util.showService,
     hideService: util.hideService,
+    getInstalledPlugins: function() {
+      return dataCenter.getInstalledPlugins();
+    },
     showInstallPlugins: function(list, registry) {
       events.trigger('showInstallPlugins', [list, registry]);
     },

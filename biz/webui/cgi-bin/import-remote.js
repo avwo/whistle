@@ -12,7 +12,7 @@ module.exports = function(req, res) {
       maxLength: MAX_LEN
     }, function(err, body, r) {
       if (err) {
-        var msg = err.code === 'EEXCEED'  ? 'The size of response body exceeds 6m' : err.message;
+        var msg = err.code === 'EEXCEED'  ? 'The size of response body exceeds 6MB' : err.message;
         return res.json({ec: 2, em: msg});
       }
       var status = r.statusCode;

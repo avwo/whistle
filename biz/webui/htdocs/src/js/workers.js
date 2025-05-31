@@ -1,4 +1,5 @@
 var events = require('./events');
+var util = require('./util');
 
 var workers = {};
 var modal;
@@ -24,7 +25,7 @@ function getString(str) {
   return str;
 }
 
-function setCustomData(item, newData) {
+function setCustomData(item, newData, name) {
   var data = item.customData || {};
   item.customData = data;
   assign(data, newData);
@@ -40,6 +41,9 @@ function setCustomData(item, newData) {
       style.fontStyle = style.fontStyle || fontStyle;
       style.backgroundColor = style.backgroundColor || backgroundColor;
     }
+  }
+  if (util.notEStr(data.appName)) {
+    item.appName = util.getPluginCgiUrl(name, data.appName);
   }
 }
 
@@ -75,7 +79,7 @@ function setWorker(id) {
     if (data && data.id && data.data) {
       var item = modal.getItem(data.id);
       if (item) {
-        setCustomData(item, data.data);
+        setCustomData(item, data.data, data.plugin);
         events.trigger('updateUIThrottle');
       }
     }

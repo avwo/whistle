@@ -49,7 +49,7 @@ var QRCodeImg = React.createClass({
     }
     return (
       <div className="w-qrcode-error">
-        {error.message || 'Error occurred.'}
+        {error.message || 'Error occurred'}
       </div>
     );
   },

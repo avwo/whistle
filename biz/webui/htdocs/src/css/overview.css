@@ -18,6 +18,8 @@
 .w-detail-overview-title label {
   float: right;
   font-weight: normal;
+  display: flex;
+  align-items: center;
 }
 .w-detail-overview-title label input {
   margin-right: 5px;

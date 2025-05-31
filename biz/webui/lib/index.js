@@ -51,6 +51,16 @@ var UP_PATH_REGEXP = /(?:^|[\\/])\.\.(?:[\\/]|$)/;
 var KEY_RE_G = /\${[^{}\s]+}|{\S+}/g;
 var COMMENT_RE = /#[^\r\n]*$/mg;
 
+function sendToService(req, res) {
+  proxyEvent.loadService(function(err, options) {
+    if (err) {
+      res.type('text').status(500).send(err.stack || err);
+    } else {
+      util.transformReq(req, res, options.port);
+    }
+  });
+}
+
 function doNotCheckLogin(req) {
   var path = req.path;
   return STATIC_SRC_RE.test(path) || DONT_CHECK_PATHS.indexOf(path) !== -1;
@@ -108,7 +118,7 @@ function requireLogin(req, res, msg) {
   }
   res.setHeader('WWW-Authenticate', ' Basic realm=User Login');
   res.setHeader('Content-Type', 'text/html; charset=utf8');
-  res.status(401).end(msg || 'Access denied, please <a href="javascript:;" onclick="location.reload()">try again</a>.');
+  res.status(401).end(msg || 'Access denied, please <a href="javascript:;" onclick="location.reload()">try again</a>');
 }
 
 function equalAuth(auth, src) {
@@ -376,8 +386,9 @@ function cgiHandler(req, res) {
     handleResponse();
   });
 }
-
-app.all('/cgi-bin/sessions/*', cgiHandler);
+app.all('/service/*', sendToService);
+app.all('/cgi-bin/service/*', sendToService);
+app.all('/cgi-bin/sessions/*', sendToService);
 app.all('/favicon.ico', function(req, res) {
   res.sendFile(htdocs.getImgFile('favicon.ico'));
 });
@@ -634,7 +645,7 @@ function init(proxy) {
   setProxy(proxy);
 }
 
-app.use(express.static(path.join(__dirname, '../htdocs'), {maxAge: 300000}));
+app.use(express.static(path.join(__dirname, '../htdocs'), {maxAge: 600000}));
 
 exports.init = init;
 exports.setupServer = function(server) {

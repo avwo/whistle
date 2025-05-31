@@ -1,4 +1,5 @@
 var $ = require('jquery');
+var React = require('react');
 var dataCenter = require('./data-center');
 var events = require('./events');
 var storage = require('./storage');
@@ -7,11 +8,29 @@ var util = require('./util');
 var settings = dataCenter.getNetworkColumns();
 var sortedCols = Array.isArray(settings.columns) ? settings.columns : [];
 var pluginColList = dataCenter.getPluginColumns();
-
 var pluginColsMap = {};
 
 function getDefaultColumns() {
   return [
+    {
+      title: 'APP',
+      name: 'app',
+      className: 'app',
+      selected: true,
+      width: 50,
+      getIcon: function getIcon(item) {
+        var appName = item.appName || 'browser';
+        var img;
+        if (/\//.test(appName)) {
+          img = appName;
+        } else if (appName === 'whistle') {
+          img = 'img/whistle.png';
+        } else {
+          img = 'img/app/' + (appName === 'ipad' ? 'iphone' : appName) + '.png';
+        }
+        return <img src={img} title={appName} className="w-cell-img" />;
+      }
+    },
     {
       title: 'Date',
       name: 'date',
@@ -213,6 +232,7 @@ function reset(init) {
 
 function sortColumns(init) {
   var columns = [];
+  var preColumns = [];
   sortedCols.forEach(function(col) {
     var name = col && col.name;
     var curCol = name && columnsMap[name];
@@ -225,10 +245,14 @@ function sortColumns(init) {
   });
   curColumns.forEach(function(col) {
     if (columns.indexOf(col) === -1) {
-      columns.push(col);
+      if (pluginColList.indexOf(col) === -1) {
+        preColumns.push(col);
+      } else {
+        columns.push(col);
+      }
     }
   });
-  curColumns = columns;
+  curColumns = preColumns.concat(columns);
   settings = { columns: curColumns };
 }
 
@@ -386,6 +410,7 @@ events.on('pluginColumnsChange', function() {
     if (oldCol) {
       oldCol.title = col.title;
       oldCol.key = col.key;
+      oldCol.iconKey = col.iconKey;
       oldCol.width = col.width;
       return oldCol;
     }

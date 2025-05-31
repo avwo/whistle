@@ -67,6 +67,8 @@ var Timeline = React.createClass({
               ttfb = item.ttfb;
               ttfbRate = (ttfb * TOTAL_RATE) / maxTotal + '%';
               ttfb += 'ms';
+            } else {
+              ttfb = '-';
             }
 
             if (item.dnsTime) {
@@ -230,6 +232,8 @@ var Timeline = React.createClass({
               item.url +
               '\nStalled: ' +
               stalled +
+              '\nTFFB: ' +
+              ttfb +
               '\nDNS: ' +
               dns +
               '\nRequest: ' +

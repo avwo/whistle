@@ -42,6 +42,9 @@ var Settings = React.createClass({
       }
     });
   },
+  shouldComponentUpdate: function () {
+    return this.refs.networkSettingsDialog.isVisible();
+  },
   componentDidMount: function () {
     var self = this;
     events.on('toggleTreeView', function () {
@@ -57,6 +60,10 @@ var Settings = React.createClass({
         }
       });
     });
+  },
+  componentWillUnmount: function () {
+    events.off('toggleTreeView');
+    events.off('setNetworkSettings');
   },
   onNetworkSettingsChange: function (e) {
     var target = e.target;
@@ -291,7 +298,7 @@ var Settings = React.createClass({
   import: function(e) {
     events.trigger('showImportDialog', 'networkSettings');
   },
-  export: function() {
+  getSettings: function() {
     var state = this.state;
     var columns = [];
     state.columns.forEach(function(col) {
@@ -299,7 +306,7 @@ var Settings = React.createClass({
         columns.push(col.name);
       }
     });
-    var settings = {
+    return {
       type: 'setNetworkSettings',
       disabledExcludeText: state.disabledExcludeText,
       excludeText: state.excludeText,
@@ -316,7 +323,9 @@ var Settings = React.createClass({
       treeView: storage.get('isTreeView') === '1',
       disabledHNR: storage.get('disabledHNR') === '1'
     };
-    events.trigger('showExportDialog', ['networkSettings', settings]);
+  },
+  export: function() {
+    events.trigger('showExportDialog', ['networkSettings', this.getSettings()]);
   },
   onUrlType: function(e) {
     var urlType = e.target.value;
@@ -466,7 +475,7 @@ var Settings = React.createClass({
           </fieldset>
 
           <label className="w-network-settings-own">
-            Max Rows Number:
+            Maximum Rows:
             <select
               className="form-control"
               onChange={self.onRowsChange}

@@ -77,8 +77,19 @@ function comparePlugin(p1, p2) {
   );
 }
 
+function getPluginComparator(plugins) {
+  return function (a, b) {
+    var p1 = plugins[a];
+    var p2 = plugins[b];
+    p1._key = a;
+    p2._key = b;
+    return comparePlugin(p1, p2);
+  };
+}
+
 exports.compare = compare;
 exports.comparePlugin = comparePlugin;
+exports.getPluginComparator = getPluginComparator;
 
 function isString(str) {
   return typeof str === 'string';
@@ -153,12 +164,12 @@ exports.preventBlur = function(e) {
   e.preventDefault();
 };
 
-exports.showService = function(name) {
-  events.trigger('showService', name);
+exports.showService = function(path) {
+  events.trigger('showService', path);
 };
 
-exports.hideService = function(name) {
-  events.trigger('hideService', name);
+exports.hideService = function() {
+  events.trigger('hideService');
 };
 
 
@@ -439,8 +450,8 @@ function getServerIp(modal) {
   return modal.serverIp || ip;
 }
 
-function getCellValue(item, col) {
-  var name = col.name;
+function getCellValue(item, col, name) {
+  name = name || col.name;
   if (name === 'hostIp') {
     return getServerIp(item);
   }
@@ -469,15 +480,15 @@ function showSystemError(xhr, useToast) {
   var showTips = useToast ? message.error : win.alert;
   if (!status) {
     if (xhr.errMsg === 'timeout') {
-      return showTips('Request timeout.');
+      return showTips('Request timeout');
     }
-    return showTips('Please check whether the proxy and server are available.');
+    return showTips('Please check whether the proxy and server are available');
   }
   var msg = xhr.responseText || STATUS_CODES[status];
   if (msg) {
-    return showTips('[' + status + '] ' + String(msg).substring(0, 1024) + '.');
+    return showTips('[' + status + '] ' + String(msg).substring(0, 1024));
   }
-  showTips('[' + status + '] Unknown error, try again later.');
+  showTips('[' + status + '] Unknown error, try again later');
 }
 
 exports.showSystemError = showSystemError;
@@ -1697,7 +1708,7 @@ function parseRawJson(str, quite) {
     if (json && typeof json === 'object') {
       return json;
     }
-    !quite && message.error('Error: invalid JSON format.');
+    !quite && message.error('Error: invalid JSON format');
   } catch (e) {
     !quite && message.error('Error: ' + e.message);
   }
@@ -2796,6 +2807,16 @@ exports.formatSize = function(size, unzipSize) {
   return value;
 };
 
+
+exports.getTabIcon = function (tab) {
+  return tab.icon && getPluginCgiUrl(tab.plugin, tab.icon);
+};
+
+exports.getPluginIcon = function (plugin, name) {
+  var icon = plugin && plugin[name || 'favicon'];
+  return icon && getPluginCgiUrl(plugin.moduleName, icon);
+};
+
 var IMPORT_URL_RE = /[?&#]data(?:_url|Url)=([^&#]+)(?:&|#|$)/;
 exports.getDataUrl = function() {
   var result = IMPORT_URL_RE.exec(location.href);
@@ -2836,13 +2857,19 @@ exports.handleTab = function(e) {
   target.selectionStart = target.selectionEnd = start + 2;
 };
 
-exports.getPluginCgiUrl = function(moduleName, url) {
-  var pluginName = 'plugin.' + getSimplePluginName(moduleName);
-  if (url.indexOf(moduleName) === 0 || url.indexOf(pluginName) === 0) {
+function getPluginCgiUrl(moduleName, url) {
+  if (/^(?:https?:\/\/|data:image\/)/.test(url)) {
+    return url;
+  }
+  moduleName = getSimplePluginName(moduleName);
+  var pluginName = 'plugin.' + moduleName;
+  if (url.indexOf('whistle.' + moduleName) === 0 || url.indexOf(pluginName) === 0) {
     return url;
   }
   return pluginName + '/' + url;
-};
+}
+
+exports.getPluginCgiUrl = getPluginCgiUrl;
 
 exports.showHandlePluginInfo = function(data, xhr) {
   if (!data) {
@@ -2879,4 +2906,25 @@ exports.getDialogTitle = function(name, action) {
   default:
     return '';
   }
+};
+
+var CONTROL_RE =
+  /[\u001e\u001f\u200e\u200f\u200d\u200c\u202a\u202d\u202e\u202c\u206e\u206f\u206b\u206a\u206d\u206c]+/g;
+var MULTI_LINE_VALUE_RE =
+  /^[^\n\r\S]*(```+)[^\n\r\S]*(\S+)[^\n\r\S]*[\r\n](?:([\s\S]*?)[\r\n])??[^\n\r\S]*\1\s*$/gm;
+
+exports.resolveInlineValues = function(str, values, rawValues) {
+  str = str && str.replace(CONTROL_RE, '').trim();
+  if (!str || str.indexOf('```') === -1) {
+    return str;
+  }
+  return str.replace(MULTI_LINE_VALUE_RE, function (all, _, key, value) {
+    if (values[key] == null) {
+      values[key] = value || '';
+      if (rawValues) {
+        rawValues[key] = all.trim();
+      }
+    }
+    return '';
+  });
 };

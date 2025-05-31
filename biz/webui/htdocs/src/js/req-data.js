@@ -34,8 +34,9 @@ var NOT_BOLD_RULES = {
   G: 1,
   ignore: 1
 };
-var HINTS = ['d:<domain keyword or regexp>', 'm:<method keyword or regexp>',
-  's:<status code keyword or regexp>', 'h:<headers keyword or regexp>', 'b:<body keyword or regexp>'];
+var HINTS = ['<keyword or regexp of url>', 'd:<keyword or regexp of url domain>',
+  'm:<keyword or regexp of request method>', 's:<keyword or regexp of response status code>',
+  'h:<keyword or regexp of request or response headers>', 'b:<keyword or regexp of reqeust or response body>'];
 var contextMenuList = [
   {
     name: 'Open',
@@ -70,7 +71,7 @@ var contextMenuList = [
     name: 'Remove',
     list: [
       { name: 'All' },
-      { name: 'This' },
+      { name: 'One' },
       { name: 'Others' },
       { name: 'Selected' },
       { name: 'Unselected' },
@@ -347,6 +348,9 @@ var Row = React.createClass({
                 }
               }
               var colStyle = getColStyle(col, style);
+              var icon = col.iconKey && util.getProperty(item, col.iconKey);
+              var iconElem = typeof col.getIcon === 'function' ? col.getIcon(item) : undefined;
+
               return (
                 <td
                   key={name}
@@ -354,6 +358,8 @@ var Row = React.createClass({
                   style={colStyle}
                   title={col.showTitle ? (url || value) : undefined}
                 >
+                  {iconElem}
+                  {icon ? <img className="w-cell-img" src={icon} /> : null}
                   {value}
                 </td>
               );
@@ -869,7 +875,7 @@ var ReqData = React.createClass({
     case 'excludeUrl':
       curUrl && self.removeAllSuchURL(item || curUrl);
       break;
-    case 'This':
+    case 'One':
       if (treeId) {
         self.removeTreeNode(treeId);
       } else {

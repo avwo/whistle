@@ -25,7 +25,6 @@ var FilterBtn = require('./filter-btn');
 var message = require('./message');
 var UpdateAllBtn = require('./update-all-btn');
 var ContextMenu = require('./context-menu');
-var CertsInfoDialog = require('./certs-info-dialog');
 var RulesDialog = require('./rules-dialog');
 var SyncDialog = require('./sync-dialog');
 var LargeDialog = require('./large-dialog');
@@ -37,7 +36,7 @@ var ServiceBtn = require('./service-btn');
 var SaveToServiceBtn = require('./share-via-url-btn');
 var ImportDialog = require('./import-dialog');
 var ExportDialog = require('./export-dialog');
-var QRCodeImg = require('./qrcode');
+var HttpsSettings = require('./https-settings');
 
 var TEMP_LINK_RE = /^(?:[\w-]+:\/\/)?temp(?:\/([\da-z]{64}|blank))?(?:\.[\w-]+)?$/;
 var FILE_PATH_RE = /^(?:[\w-]+:\/\/)?((?:[a-z]:[\\/]|\/).+)$/i;
@@ -212,18 +211,18 @@ function getJsonForm(data, name) {
 function readFileJson(file, cb) {
   if (util.isString(file)) {
     if (file.length > MAX_OBJECT_SIZE) {
-      win.alert('File exceeds maximum size limit.');
+      win.alert('File exceeds maximum size limit');
       return cb();
     }
     return cb(parseJSON(file));
   }
   if (!file || !/\.(txt|json)$/i.test(file.name)) {
-    win.alert('Supported file formats: .txt, .json.');
+    win.alert('Supported file formats: .txt, .json');
     return cb();
   }
 
   if (file.size > MAX_OBJECT_SIZE) {
-    win.alert('File exceeds maximum size limit.');
+    win.alert('File exceeds maximum size limit');
     return cb();
   }
   util.readFileAsText(file, function(text) {
@@ -396,7 +395,7 @@ var Index = React.createClass({
       drb: server.drb,
       drm: server.drm,
       port: server.port,
-      hasToken: server.hasToken,
+      tokenId: server.tokenId,
       version: modal.version
     };
     if (hideLeftMenu !== false) {
@@ -818,7 +817,7 @@ var Index = React.createClass({
       this.rulesChanged = false;
       var hasChanged = this.state.rules.hasChanged();
       this.showReloadDialog(
-        'The rules has been modified.<br/>Do you want to reload it.',
+        'Rules changed. Reload now?',
         hasChanged,
         force
       );
@@ -829,7 +828,7 @@ var Index = React.createClass({
       this.valuesChanged = false;
       var hasChanged = this.state.values.hasChanged();
       this.showReloadDialog(
-        'The values has been modified.<br/>Do you want to reload it.',
+        'Values changed. Reload now?',
         hasChanged,
         force
       );
@@ -851,7 +850,7 @@ var Index = React.createClass({
     dialog.show();
     if (existsUnsaved) {
       msg +=
-        '<p class="w-confim-reload-note">Note: There are unsaved changes.</p>';
+        '<p class="w-confim-reload-note">Warning: Unsaved changes will be lost.</p>';
     }
     tips.html(msg);
   },
@@ -872,14 +871,14 @@ var Index = React.createClass({
     var self = this;
     var clipboard = new Clipboard('.w-copy-text');
     clipboard.on('error', function (e) {
-      win.alert('Copy failed.');
+      win.alert('Copy failed');
     });
     clipboard = new Clipboard('.w-copy-text-with-tips');
     clipboard.on('error', function (e) {
-      message.error('Copy failed.');
+      message.error('Copy failed');
     });
     clipboard.on('success', function (e) {
-      message.success('Copied clipboard.');
+      message.success('Copied clipboard');
     });
     var preventDefault = function (e) {
       e.preventDefault();
@@ -926,8 +925,6 @@ var Index = React.createClass({
       self.setPluginState(util.getSimplePluginName(plugin), disabled);
     });
 
-    events.on('showCustomCerts', self.showCustomCertsInfo);
-
     events.on('setComposerData', function(_, data) {
       if (!data || self.state.rulesMode) {
         return;
@@ -957,6 +954,7 @@ var Index = React.createClass({
         url += '?openInModal=5b6af7b9884e1165';
       }
       self.refs.iframeDialog.show({
+        favicon: util.getPluginIcon(plugin),
         name: name,
         url: url,
         homepage: plugin.homepage,
@@ -1269,7 +1267,7 @@ var Index = React.createClass({
           }
           if (/\.log$/i.test(filename)) {
             if (file.size > MAX_LOG_SIZE) {
-              return win.alert('Maximum file size: 2m.');
+              return win.alert('Maximum file size: 2MB');
             }
             util.readFileAsText(file, function (logs) {
               logs = util.parseLogs(logs);
@@ -1489,9 +1487,9 @@ var Index = React.createClass({
     dataCenter.on('settings', function (data) {
       var state = self.state;
       var server = data.server;
-      var hasChanged = state.hasToken !== server.hasToken;
+      var hasChanged = state.tokenId !== server.tokenId;
       if (hasChanged) {
-        state.hasToken = server.hasToken;
+        state.tokenId = server.tokenId;
       }
       var caUrlList = [];
       var caHash = util.getCAHash(server, caUrlList);
@@ -1689,7 +1687,7 @@ var Index = React.createClass({
           util.showSystemError(xhr);
         } else if (data.ec === 0) {
           self.reloadRules(data);
-          message.success('Rules imported successfully.');
+          message.success('Rules imported successfully');
         } else {
           win.alert(data.em);
         }
@@ -1704,7 +1702,7 @@ var Index = React.createClass({
         }
         if (data.ec === 0) {
           self.reloadValues(data);
-          message.success('Values imported successfully.');
+          message.success('Values imported successfully');
         } else {
           win.alert(data.em);
         }
@@ -1839,6 +1837,50 @@ var Index = React.createClass({
     self.handleDataUrl(dataUrl || util.getDataUrl());
     dataCenter.handleDataUrl = self.handleDataUrl;
     dataUrl = null;
+
+    var INTERVAL = 6000;
+    var curNetworkSettings;
+    var curRulesSettings;
+    var curValuesSettings;
+    var curTokenId;
+    var saveSettings = function () {
+      if (!dataCenter.tokenId) {
+        curNetworkSettings = curRulesSettings = curValuesSettings = null;
+        return setTimeout(saveSettings, INTERVAL);
+      }
+      if (curTokenId !== dataCenter.tokenId) {
+        curNetworkSettings = curRulesSettings = curValuesSettings = null;
+        curTokenId = dataCenter.tokenId;
+      }
+      var networkSettings = JSON.stringify(self.refs.networkSettings.getSettings());
+      var rulesSettings = JSON.stringify(self.getRulesSettings());
+      var valuesSettings = JSON.stringify(self.getValuesSettings());
+      var data;
+      if (curNetworkSettings !== networkSettings) {
+        data = { networkSettings: networkSettings };
+      }
+      if (curRulesSettings !== rulesSettings) {
+        data = data || {};
+        data.rulesSettings = rulesSettings;
+      }
+      if (curValuesSettings !== valuesSettings) {
+        data = data || {};
+        data.valuesSettings = valuesSettings;
+      }
+      if (!data) {
+        return setTimeout(saveSettings, INTERVAL);
+      }
+      data.type = 'settings';
+      dataCenter.saveToService(data, function (result) {
+        setTimeout(saveSettings, INTERVAL);
+        if (result && result.ec === 0) {
+          curValuesSettings = valuesSettings;
+          curRulesSettings = rulesSettings;
+          curNetworkSettings = networkSettings;
+        }
+      });
+    };
+    setTimeout(saveSettings, INTERVAL);
   },
   shouldComponentUpdate: function (_, nextSate) {
     var name = this.state.name;
@@ -2193,7 +2235,7 @@ var Index = React.createClass({
           ReactDOM.findDOMNode(self.refs.sessionsName).focus();
         }, 500);
       } else {
-        message.info('Please select one or more sessions first.');
+        message.info('Please select one or more sessions first');
       }
       break;
     case 'rules':
@@ -2447,7 +2489,7 @@ var Index = React.createClass({
     var plugin = name && this.state.plugins[name + ':'];
     if (plugin) {
       if (tabs.length >= MAX_PLUGINS_TABS) {
-        win.alert('Maximum ' + MAX_PLUGINS_TABS + ' tabs allowed.');
+        win.alert('Maximum ' + MAX_PLUGINS_TABS + ' tabs allowed');
         return this.showPlugins();
       }
       active = name;
@@ -2583,7 +2625,7 @@ var Index = React.createClass({
     );
   },
   showHttpsSettingsDialog: function () {
-    $(ReactDOM.findDOMNode(this.refs.rootCADialog)).modal('show');
+    this.refs.httpsSettings.show();
   },
   interceptHttpsConnects: function (e) {
     var self = this;
@@ -2607,7 +2649,7 @@ var Index = React.createClass({
     var self = this;
     if (!dataCenter.supportH2) {
       win.confirm(
-        'HTTP/2 requires Node.js LTS version v16+. Please upgrade.',
+        'HTTP/2 requires Node.js LTS version v16+. Please upgrade',
         function (sure) {
           sure && window.open('https://nodejs.org/');
           self.setState({});
@@ -2636,7 +2678,7 @@ var Index = React.createClass({
     var target = ReactDOM.findDOMNode(self.refs.createRulesInput);
     var name = target.value.trim();
     if (!name) {
-      message.error('The name is required.');
+      message.error('The name is required');
       return;
     }
     var modal = self.state.rules;
@@ -2647,7 +2689,7 @@ var Index = React.createClass({
       name = '\r' + name;
     }
     if (modal.exists(name)) {
-      message.error('The name \'' + name + '\' is already in use.');
+      message.error('The name \'' + name + '\' is already in use');
       return;
     }
     var addToTop = type === 'top' ? 1 : '';
@@ -2702,17 +2744,17 @@ var Index = React.createClass({
     var target = ReactDOM.findDOMNode(self.refs.createValuesInput);
     var name = target.value.trim();
     if (!name) {
-      message.error('The name is required.');
+      message.error('The name is required');
       return;
     }
 
     if (/\s/.test(name)) {
-      message.error('Spaces are not allowed in the name.');
+      message.error('Spaces are not allowed in the name');
       return;
     }
 
     if (/#/.test(name)) {
-      message.error('Special character \'#\' is not allowed in the name.');
+      message.error('Special character \'#\' is not allowed in the name');
       return;
     }
 
@@ -2724,7 +2766,7 @@ var Index = React.createClass({
       name = '\r' + name;
     }
     if (modal.exists(name)) {
-      message.error('The name \'' + name + '\' is already in use.');
+      message.error('The name \'' + name + '\' is already in use');
       return;
     }
     var groupItem = self._curFocusValuesGroup;
@@ -2823,12 +2865,12 @@ var Index = React.createClass({
     var isGroup = util.isGroup(activeItem.name);
     var name = (isGroup ? '\r' : '') + target.value.trim();
     if (!name) {
-      message.error('The name is required.');
+      message.error('The name is required');
       return;
     }
 
     if (modal.exists(name)) {
-      message.error('The name \'' + name + '\' is already in use.');
+      message.error('The name \'' + name + '\' is already in use');
       return;
     }
     var curName = activeItem.name;
@@ -2863,12 +2905,12 @@ var Index = React.createClass({
     var isGroup = util.isGroup(activeItem.name);
     var name = (isGroup ? '\r' : '') + target.value.trim();
     if (!name) {
-      message.error('The name is required.');
+      message.error('The name is required');
       return;
     }
 
     if (modal.exists(name)) {
-      message.error('The name \'' + name + '\' is already in use.');
+      message.error('The name \'' + name + '\' is already in use');
       return;
     }
     var curName = activeItem.name;
@@ -3166,15 +3208,7 @@ var Index = React.createClass({
     modal.setActive(name);
   },
   showRulesSettings: function () {
-    var self = this;
-    $(ReactDOM.findDOMNode(self.refs.rulesSettingsDialog)).modal('show');
-    dataCenter.rules.accountRules(function (data, xhr) {
-      if (data && data.ec === 0) {
-        self.setState({ accountRules: data.rules });
-      } else {
-        util.showSystemError(xhr);
-      }
-    });
+    $(ReactDOM.findDOMNode(this.refs.rulesSettingsDialog)).modal('show');
   },
   showValuesSettings: function () {
     $(ReactDOM.findDOMNode(this.refs.valuesSettingsDialog)).modal('show');
@@ -3319,7 +3353,7 @@ var Index = React.createClass({
     if (state.disabledAllRules) {
       self.disableAllRules();
     } else {
-      win.confirm('Do you confirm disabling all rules', function (sure) {
+      win.confirm('Do you confirm disabling all rules?', function (sure) {
         sure && self.disableAllRules();
       });
     }
@@ -3331,7 +3365,7 @@ var Index = React.createClass({
     if (state.disabledAllPlugins) {
       self.disableAllPlugins();
     } else {
-      win.confirm('Do you confirm disabling all plugins', function (sure) {
+      win.confirm('Do you confirm disabling all plugins?', function (sure) {
         sure && self.disableAllPlugins();
       });
     }
@@ -3381,7 +3415,7 @@ var Index = React.createClass({
   setPluginState: function(name, disabled) {
     var self = this;
     if (self.state.ndp) {
-      return message.warn('Plugin disabling is restricted.');
+      return message.warn('Plugin disabling is restricted');
     }
     dataCenter.plugins.disablePlugin(
       {
@@ -3598,11 +3632,11 @@ var Index = React.createClass({
     }
     var file = data.get('importSessions');
     if (!file || !/\.(txt|json|saz|har)$/i.test(file.name)) {
-      return win.alert('Supported file formats: .txt, .json, .saz, .har.');
+      return win.alert('Supported file formats: .txt, .json, .saz, .har');
     }
 
     if (file.size > MAX_FILE_SIZE) {
-      return win.alert('Maximum file size: 64MB.');
+      return win.alert('Maximum file size: 64MB');
     }
     var isText = /\.(?:txt|json)$/i.test(file.name);
     if (isText || /\.har$/i.test(file.name)) {
@@ -3616,7 +3650,7 @@ var Index = React.createClass({
             self.importHarSessions(result);
           }
         } catch (e) {
-          win.alert('Invalid JSON format.');
+          win.alert('Invalid JSON format');
         }
       });
       return;
@@ -3693,21 +3727,6 @@ var Index = React.createClass({
     if ($(e.target).closest('.w-menu-enable').length) {
       this.refs.aboutDialog.showAboutInfo();
     }
-  },
-  showCustomCertsInfo: function () {
-    var self = this;
-    if (self.loadingCerts) {
-      return;
-    }
-    self.loadingCerts = true;
-    dataCenter.certs.all(function (data, xhr) {
-      self.loadingCerts = false;
-      if (!data) {
-        util.showSystemError(xhr);
-        return;
-      }
-      self.refs.certsInfoDialog.show(data.certs, data.dir);
-    });
   },
   onTopContextMenu: function(e) {
     if (this.getTabName() !== 'network') {
@@ -3809,14 +3828,6 @@ var Index = React.createClass({
       self.setState({ forceShowLeftMenu: true });
     }, 200);
   },
-  selectCAType: function(e) {
-    var caType = getCAType(e.target.value);
-    this.setState({ caType: caType });
-    storage.set('caType', caType);
-  },
-  selectCAUrl: function(e) {
-    this.setState({ caFullUrl: e.target.value });
-  },
   forceHideLeftMenu: function () {
     var self = this;
     clearTimeout(self.hideTimer);
@@ -3890,7 +3901,7 @@ var Index = React.createClass({
     var rulesMode = state.rulesMode;
     var rulesOnlyMode = state.rulesOnlyMode;
     var pluginsMode = state.pluginsMode;
-    var hasToken = state.hasToken;
+    var tokenId = state.tokenId;
     var multiEnv = state.multiEnv;
     var name = this.getTabName();
     var isAccount = name == 'account';
@@ -3914,7 +3925,6 @@ var Index = React.createClass({
     var autoValuesLineWrapping = state.autoValuesLineWrapping;
     var rulesOptions = state.rulesOptions;
     var pluginsOptions = state.pluginsOptions;
-    var caFullUrl = state.caFullUrl;
     var uncheckedRules = {};
     var showNetworkOptions = state.showNetworkOptions;
     var showRulesOptions = state.showRulesOptions;
@@ -3990,7 +4000,6 @@ var Index = React.createClass({
         }
       });
     }
-    var accountRules = state.accountRules;
     var mustHideLeftMenu = hideLeftMenu && !state.forceShowLeftMenu;
     var pluginsOnlyMode = pluginsMode && rulesMode;
     var showLeftMenu = (networkMode  || state.showLeftMenu) && !pluginsOnlyMode;
@@ -4024,7 +4033,7 @@ var Index = React.createClass({
       <div
         className={
           'main orient-vertical-box' + (showLeftMenu ? ' w-show-left-menu' : '')
-          + (hasToken ? ' w-has-token' : '')
+          + (tokenId ? ' w-has-token' : '')
           + (isEditor && !rulesOnlyMode ? ' w-show-editor' : '') + (isRules ? ' w-show-rules' : '')
           + (rulesOnlyMode || rulesMode ? ' w-show-rules-mode' : '')
         }
@@ -4356,7 +4365,7 @@ var Index = React.createClass({
             isNetwork={isNetwork}
             hide={isPlugins}
           />
-         {hasToken ? <ServiceBtn /> : null}
+         {tokenId ? <ServiceBtn name={name} /> : null}
           <div
             onMouseEnter={this.showWeinreOptions}
             onMouseLeave={this.hideWeinreOptions}
@@ -4732,13 +4741,6 @@ var Index = React.createClass({
                     </label>
                   </p>
                 )}
-                {accountRules && accountRules.trim() ? <fieldset className="w-fieldset">
-                  <legend>
-                    Account Rules
-                    <span className="glyphicon glyphicon-edit" />
-                  </legend>
-                  <pre>{accountRules}</pre>
-                </fieldset> : null }
               </div>
               <div className="modal-footer">
                 <button
@@ -4829,116 +4831,17 @@ var Index = React.createClass({
           </div>
         </div>
         {rulesMode ? null : <NetworkSettings ref="networkSettings" />}
-        <div ref="rootCADialog" className="modal fade w-https-dialog">
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-body">
-                <button
-                  type="button"
-                  className="close"
-                  data-dismiss="modal"
-                  aria-label="Close"
-                >
-                  <span aria-hidden="true">&times;</span>
-                </button>
-                <div style={{marginBottom: 10}}>
-                  <a
-                    className="w-help-menu"
-                    title="Click here to learn how to install root ca"
-                    href="https://avwo.github.io/whistle/webui/https.html"
-                    target="_blank"
-                  >
-                    <span className="glyphicon glyphicon-question-sign"></span>
-                  </a>
-                  <a
-                    className="w-download-rootca"
-                    title={caShortUrl}
-                    href={caUrl}
-                    target="downloadTargetFrame"
-                  >
-                    Download RootCA
-                  </a>
-                  <select className="w-root-ca-type" value={caType} onChange={this.selectCAType}>
-                    <option value="crt">rootCA.crt</option>
-                    <option value="cer">rootCA.cer</option>
-                    <option value="pem">rootCA.pem</option>
-                  </select>
-                </div>
-                <div className="w-root-ca-url-wrap">
-                  <select className="w-root-ca-url" value={caFullUrl} onChange={this.selectCAUrl}>
-                    <option value="">{caShortUrl} (PROXY REQUIRED)</option>
-                    {state.caUrlList.map(function (url) {
-                      url = url[0] === 'h' ? url : 'http://' + url + ':' + state.port;
-                      url += '/cgi-bin/rootca' + (caType === 'cer' ? '' : '?type=' + caType);
-                      return <option value={url}>{url}</option>;
-                    })}
-                  </select>
-                  <span title="Copy Root CA URL" className="glyphicon glyphicon-copy w-copy-text-with-tips" data-clipboard-text={caFullUrl || caShortUrl} />
-                </div>
-                <a
-                  href={caUrl}
-                  target="downloadTargetFrame"
-                >
-                  <QRCodeImg url={caFullUrl || caShortUrl + caHash} />
-                </a>
-                <div className="w-https-settings">
-                  <p>
-                    <label
-                      title={
-                        multiEnv
-                          ? 'Use \'pattern enable://capture\' in rules to enable HTTPS'
-                          : undefined
-                      }
-                    >
-                      <input
-                        disabled={multiEnv}
-                        checked={state.interceptHttpsConnects}
-                        onChange={this.interceptHttpsConnects}
-                        type="checkbox"
-                         className="w-va-mdl"
-                      />
-                      <span className="w-va-mdl w-mrl-5">
-                        Enable HTTPS (Capture Tunnel Connects)
-                      </span>
-                    </label>
-                  </p>
-                  <p>
-                    <label>
-                      <input
-                        checked={dataCenter.supportH2 && state.enableHttp2}
-                        onChange={this.enableHttp2}
-                        type="checkbox"
-                        className="w-va-mdl"
-                      />
-                    <span className="w-va-mdl w-mrl-5">
-                      Enable HTTP/2
-                    </span>
-                    </label>
-                  </p>
-                  <a
-                    draggable="false"
-                    style={{
-                      color: dataCenter.hasInvalidCerts ? 'red' : undefined
-                    }}
-                    onClick={this.showCustomCertsInfo}
-                  >
-                    View all custom certificates
-                  </a>
-                  <CertsInfoDialog ref="certsInfoDialog" />
-                </div>
-              </div>
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn btn-default"
-                  data-dismiss="modal"
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <HttpsSettings
+          ref="httpsSettings"
+          caHash={caHash}
+          port={state.port}
+          caUrlList={state.caUrlList}
+          multiEnv={multiEnv}
+          interceptHttpsConnects={state.interceptHttpsConnects}
+          enableHttp2={state.enableHttp2}
+          onEnableHttps={this.interceptHttpsConnects}
+          onEnableHttp2={this.enableHttp2}
+        />
         <div ref="chooseFileType" className="modal fade w-choose-filte-type">
           <div className="modal-dialog">
             <div className="modal-content">
@@ -4972,7 +4875,7 @@ var Index = React.createClass({
                 >
                   Cancel
                 </button>
-                <SaveToServiceBtn onComplete={this.hideChooseFileTypeDialog} data={this.getExportSessions} />
+                <SaveToServiceBtn type="network" onComplete={this.hideChooseFileTypeDialog} data={this.getExportSessions} />
                 <button
                   type="button"
                   onKeyDown={this.exportBySave}
@@ -5096,7 +4999,8 @@ var Index = React.createClass({
         </Dialog>
         <ListDialog
           ref="deleteRulesDialog"
-          tips="Do you confirm the deletion of all follow rules or group？"
+          title="Delete Rules"
+          tips="Do you confirm the deletion of all follow rules or group?"
           onConfirm={this.removeRulesBatch}
           name="rules"
           isRules="1"
@@ -5104,19 +5008,22 @@ var Index = React.createClass({
         />
         <ListDialog
           ref="deleteValuesDialog"
-          tips="Do you confirm the deletion of all follow values or group？"
+          title="Delete Values"
+          tips="Do you confirm the deletion of all follow values or group?"
           onConfirm={this.removeValuesBatch}
           name="values"
           list={state.values.list}
         />
         <ListDialog
           ref="selectRulesDialog"
+          title="Export Rules"
           name="rules"
           modal={state.rules}
           list={state.rules.list}
         />
         <ListDialog
           ref="selectValuesDialog"
+          title="Export Values"
           name="values"
           list={state.values.list}
         />

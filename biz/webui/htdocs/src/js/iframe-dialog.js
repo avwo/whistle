@@ -32,7 +32,8 @@ var IframeDialog = React.createClass({
     var disabled = state.disabled;
     var name = state.name;
     var url = state.url;
-    var homepage = state.homepage;
+    var favicon = state.favicon ? <img src={state.favicon} /> : null;
+    var className = 'w-plugins-tab inline-align-items' + (disabled ? ' w-plugin-tab-disabled' : '');
 
     window.onWhistlePluginOptionModalReady = onWhistlePluginOptionModalReady;
 
@@ -40,19 +41,10 @@ var IframeDialog = React.createClass({
       <Dialog ref="iframeDialog" wstyle="w-iframe-dialog" width={state.width || 'max(calc(100% - 240px), 720px)'}>
         <div className="modal-header">
           <h4>
-          {
-            homepage ? <a
-              className={disabled ? 'w-plugin-tab-disabled' : null}
-              href={homepage}
-              target='_blank'
-            >
-              {disabled ? <span data-name={name} className="glyphicon glyphicon-ban-circle" /> : undefined}
+            <span className={className}>
+              {disabled ? <span data-name={name} className="glyphicon glyphicon-ban-circle" /> : favicon}
               {name || 'Untitled'}
-            </a> : <span className={disabled ? 'w-plugin-tab-disabled' : null}>
-            {disabled ? <span data-name={name} className="glyphicon glyphicon-ban-circle" /> : undefined}
-            {name || 'Untitled'}
-          </span>
-          }
+            </span>
           </h4>
           <button type="button" className="close" data-dismiss="modal">
             <span aria-hidden="true">&times;</span>

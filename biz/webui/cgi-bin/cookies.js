@@ -1,5 +1,5 @@
-var sendGzip = require('../util').sendGzip;
-var proxy = require('../../lib/proxy');
+var sendGzip = require('./util').sendGzip;
+var proxy = require('../lib/proxy');
 
 module.exports = function(req, res) {
   sendGzip(req, res, {

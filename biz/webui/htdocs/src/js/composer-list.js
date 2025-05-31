@@ -47,15 +47,17 @@ var ComposerList = React.createClass({
         activeTab = true;
         hasActive = true;
       }
+      var icon = util.getTabIcon(tab);
       return (
         <button
           key={pluginName}
           onClick={function () {
             self.showTab(pluginName);
           }}
-          className={'btn btn-default' + (activeTab ? ' active' : '')}
+          className={'w-custom-tab-btn btn btn-default' + (activeTab ? ' active' : '')}
           title={pluginName}
         >
+          {icon ? <img className="w-tab-icon" src={icon} /> : null}
           {tab.name}
         </button>
       );

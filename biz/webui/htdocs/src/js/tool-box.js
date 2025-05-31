@@ -130,7 +130,7 @@ var ToolBox = React.createClass({
       'image'
     );
     if (!(image.size <= MAX_IMAGE_SIZE)) {
-      return win.alert('Maximum file size: 1m.');
+      return win.alert('Maximum file size: 1MB');
     }
     var type = 'data:' + image.type + ';base64,';
     util.readFileAsBase64(image, function (base64) {
@@ -272,7 +272,7 @@ var ToolBox = React.createClass({
           onClick={this.uploadImg}
         >
           <span className="glyphicon glyphicon-arrow-up"></span>
-          Click here to upload image (size &lt;= 1m)
+          Click here to upload image (size &lt;= 1MB)
         </button>
         <div className="w-detail-inspectors-title">
           <span className="glyphicon glyphicon-certificate"></span>Certificate
