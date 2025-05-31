@@ -24,9 +24,9 @@ function enableProxy(options) {
   try {
     var host = util.joinIpPort(options.host, options.port);
     if (proxy.enableProxy(options)) {
-      showInfo('Successfully set system proxy (' + host + ').');
+      showInfo('Successfully set system proxy (' + host + ')');
     } else {
-      showError('Failed to set system proxy (' + host + ').');
+      showError('Failed to set system proxy (' + host + ')');
     }
   } catch (e) {
     showError(e.message);
@@ -36,9 +36,9 @@ function enableProxy(options) {
 function disableProxy(sudo) {
   try {
     if (proxy.disableProxy(sudo)) {
-      showInfo('Successfully disabled system proxy.');
+      showInfo('Successfully disabled system proxy');
     } else {
-      showError('Failed to disable system proxy.');
+      showError('Failed to disable system proxy');
     }
   } catch (e) {
     showError(e.message);

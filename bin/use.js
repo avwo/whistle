@@ -21,7 +21,7 @@ function showStartWhistleTips(storage, isClient) {
   if (isClient) {
     error('No running Whistle client. Please install and start the latest Whistle client: https://github.com/avwo/whistle-client');
   } else {
-    error('No running Whistle instances. Execute `w2 start' + (storage ? ' -S ' + storage : '') + '` to start Whistle on the cli.');
+    error('No running Whistle instances. Execute `w2 start' + (storage ? ' -S ' + storage : '') + '` to start Whistle on the cli');
   }
 }
 
@@ -172,17 +172,17 @@ module.exports = function(filepath, storage, force, isClient) {
       }
       handleRules(filepath, function(result) {
         if (!result) {
-          error('The name and rules are required.');
+          error('The name and rules are required');
           return;
         }
         var name = getString(result.name);
         if (!name || name.length > 64) {
-          error('The name must be 1-64 characters.');
+          error('The name must be 1-64 characters');
           return;
         }
         var rules = getString(result.rules);
         if (rules.length > MAX_RULES_LEN) {
-          error('Maximum rules size: 256KB.');
+          error('Maximum rules size: 256KB');
           return;
         }
         var groupName = getString(result.groupName) || getString(result.group);
@@ -193,7 +193,7 @@ module.exports = function(filepath, storage, force, isClient) {
             'groupName=' + encodeURIComponent(groupName.trim())
           ].join('&');
           request(body, function() {
-            info('Successfully configured rules for Whistle' + (isClient ? ' client' : '') + ' (' + util.joinIpPort(options.host || '127.0.0.1', port) + ').');
+            info('Successfully configured rules for Whistle' + (isClient ? ' client' : '') + ' (' + util.joinIpPort(options.host || '127.0.0.1', port) + ')');
           });
         };
         if (force) {
@@ -201,8 +201,8 @@ module.exports = function(filepath, storage, force, isClient) {
         }
         request('name=' + encodeURIComponent(name) + '&enable=1&top=1', function(data) {
           if (data.rules) {
-            info('Successfully enabled.');
-            warn('Warning: Rule already exists. Use \'--force\' to override.');
+            info('Successfully enabled');
+            warn('Warning: Rule already exists. Use \'--force\' to override');
             return;
           }
           setRules();

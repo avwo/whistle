@@ -27,7 +27,7 @@ function installWin(certFile) {
   var result = spawnSync('certutil', ['-addstore', '-user', 'Root', certFile]);
   checkSuccess(result);
   if (/ERROR_CANCELLED/i.test(result.stdout + '')) {
-    throw new Error('The authorization was canceled by the user.');
+    throw new Error('The authorization was canceled by the user');
   }
 }
 
@@ -39,5 +39,5 @@ module.exports = function(certFile) {
   if (platform === 'win32') {
     return installWin(certFile);
   }
-  throw new Error('Platform ' + platform + ' is currently unsupported for Root CA installation.');
+  throw new Error('Platform ' + platform + ' is currently unsupported for Root CA installation');
 };

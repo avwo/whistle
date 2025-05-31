@@ -55,7 +55,7 @@ program.setConfig({
   main: function(options) {
     var cmd = process.argv[2];
     if ((cmd === 'start' || cmd === 'restart') && (options.inspect || options.inspectBrk)) {
-      error('[!] Inspector mode only supported with `w2 run` command.');
+      error('[!] Inspector mode only supported with `w2 run` command');
       var argv = Array.prototype.slice.call(process.argv, 3);
       info('[i] Usage: w2 run' + (argv.length ? ' ' + argv.join(' ') : ''));
       return process.exit(1);
@@ -79,7 +79,7 @@ program.setConfig({
   },
   stopCallback: function(err) {
     if (err === true) {
-      info('[i] ' + config.name + ' killed.');
+      info('[i] ' + config.name + ' killed');
     } else if (err) {
       if (err.code === 'EPERM') {
         util.showKillError();

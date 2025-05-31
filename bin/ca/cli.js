@@ -16,7 +16,7 @@ var MAX_LEN = 1024 * 1024;
 function installCert(certFile, url) {
   try {
     installRootCA(fileMgr.convertSlash(certFile));
-    util.info('Successfully installed Root CA from (' + (url || certFile) + ').');
+    util.info('Successfully installed Root CA from (' + (url || certFile) + ')');
   } catch (e) {
     util.error('Certificate installation failed: ' + e.message);
   }
@@ -36,10 +36,10 @@ function install(addr) {
       return util.error(err.message);
     }
     if (res.statusCode != 200) {
-      return util.error('Bad response (' + res.statusCode + ').');
+      return util.error('Bad response (' + res.statusCode + ')');
     }
     if (!body || !body.length) {
-      return util.error('Empty certificate content.');
+      return util.error('Empty certificate content');
     }
     var tempFile = path.join(commonUtil.getWhistlePath(), Date.now() + '-' + util.getHash(addr.url) + '.crt');
     fs.writeFileSync(tempFile, body);
@@ -50,7 +50,6 @@ function install(addr) {
 
 module.exports = function(argv) {
   var options = {};
-  var enableHttps;
   argv.forEach(function(arg) {
     if (NUM_RE.test(arg)) {
       delete options.addr;
@@ -58,8 +57,6 @@ module.exports = function(argv) {
     } else if (net.isIP(arg)) {
       delete options.addr;
       options.host = arg || options.host;
-    } else if (arg === '--capture' || arg === '--enable-https') {
-      enableHttps = true;
     } else if (HOST_SUFFIX_RE.test(arg)) {
       delete options.port;
       delete options.addr;
@@ -93,7 +90,7 @@ module.exports = function(argv) {
     var port = options.port || util.getDefaultPort();
     options.addr = { url: 'http://' + util.joinIpPort(host, + port) + '/cgi-bin/rootca' };
   }
-  var url = enableHttps && options.addr && options.addr.url;
+  var url = options.addr && options.addr.url;
   if (url) {
     options.addr.url = url.replace(/#.*$/, '') + (url.indexOf('?') === -1 ? '?' : '&') + 'enableHttps=1';
   }

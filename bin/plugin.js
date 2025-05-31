@@ -10,7 +10,7 @@ var REMOTE_URL_RE = commonUtil.REMOTE_URL_RE;
 var WHISTLE_PLUGIN_RE = commonUtil.WHISTLE_PLUGIN_RE;
 var getPlugins = commonUtil.getPlugins;
 var CMD_SUFFIX = process.platform === 'win32' ? '.cmd' : '';
-var CUSTOM_PLUGIN_PATH = path.join(getWhistlePath(), 'custom_plugins');
+var CUSTOM_PLUGIN_PATH = process.env.WHISTLE_CUSTOM_PLUGINS_PATH || path.join(getWhistlePath(), 'custom_plugins');
 var DEFAULT_PATH = commonUtil.getDefaultWhistlePath();
 var REGISTRY_LIST = path.join(DEFAULT_PATH, '.registry.list');
 var PACKAGE_JSON = '{"repository":"https://github.com/avwo/whistle","license":"MIT"}';
@@ -41,9 +41,12 @@ function getTempName(name) {
 function formatCmdOpions(options) {
   if (CMD_SUFFIX) {
     options.shell = true;
+    options.windowsHide = true;
   }
   return options;
 }
+
+exports.formatCmdOpions = formatCmdOpions;
 
 function getValue(str) {
   if (str[0] !== '"') {
