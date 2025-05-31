@@ -15,7 +15,7 @@
 
 中文 · [English](./README-en_US.md)
 
-Whistle 是一个基于 Node.js 开发的功能强大、操作简单的跨平台抓包调试工具。它支持多种代理模式（如 HTTP、HTTPS、Socks、反向代理等），可用于抓包分析或通过配置规则修改 HTTP、HTTPS、HTTP/2、WebSocket、TCP 请求。Whistle 还内置了 Weinre、Log、Composer 等工具，支持查看远程页面的 DOM 结构、调试 console 输出、重放或编辑请求等。此外，Whistle 支持插件扩展，也可作为 NPM 包被其他项目引用。
+Whistle 是一个基于 Node.js 开发的功能强大、操作简单的跨平台抓包调试工具，支持多种代理模式（如 HTTP 代理、HTTPS 代理、Socks 代理、反向代理等），可用于抓包分析或通过配置规则修改 HTTP、HTTPS、HTTP/2、WebSocket、TCP 等请求。Whistle 还内置了 Weinre、Log、Composer 等工具，支持查看远程页面的 DOM 结构、查看页面 console 输出、重放编辑请求等。此外，Whistle 支持插件扩展，也可单独作为 NPM 包被其他项目引用。
 
 # 安装
 
@@ -61,7 +61,7 @@ w2 start
 启动 Whistle 后可以通过下面的命令安装根证书：
 
 ``` sh
-w2 ca --enable-https
+w2 ca
 ```
 
 <details>

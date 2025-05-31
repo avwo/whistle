@@ -60,7 +60,7 @@ For complete command line functions, please refer to the full document: https://
 After starting Whistle, you can install the root certificate with the following command:
 
 ``` sh
-w2 ca --enable-https
+w2 ca
 ```
 
 <details>
