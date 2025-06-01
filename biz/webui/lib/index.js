@@ -5,7 +5,6 @@ var http = require('http');
 var https = require('https');
 var parseReqUrl = require('parseurl');
 var bodyParser = require('body-parser');
-var crypto = require('crypto');
 var fs = require('fs');
 var zlib = require('zlib');
 var extend = require('extend');
@@ -16,11 +15,13 @@ var rulesUtil = require('../../../lib/rules/util');
 var getRootCAFile = require('../../../lib/https/ca').getRootCAFile;
 var config = require('../../../lib/config');
 var sendError = require('../cgi-bin/util').sendError;
-var parseAuth = require('../../../lib/util/common').parseAuth;
+var common = require('../../../lib/util/common');
 var getWorker = require('../../../lib/plugins/util').getWorker;
 var loadAuthPlugins = require('../../../lib/plugins').loadAuthPlugins;
 var parseUrl = require('../../../lib/util/parse-url-safe');
 
+var parseAuth = common.parseAuth;
+var createHash = common.createHash;
 var PARSE_CONF = { extended: true, limit: '3mb'};
 var UPLOAD_PARSE_CONF = { extended: true, limit: '30mb'};
 var urlencodedParser = bodyParser.urlencoded(PARSE_CONF);
@@ -74,12 +75,6 @@ function getPassword() {
   return config.password || '';
 }
 
-function shasum(str) {
-  var shasum = crypto.createHash('sha1');
-  shasum.update(str || '');
-  return shasum.digest('hex');
-}
-
 function parseCookie(str) {
   var result = {};
   str && str.split(';').forEach(function(pair) {
@@ -104,9 +99,9 @@ function getLoginKey (req, res, auth) {
   var ip = util.getClientIp(req);
   var password = auth.password;
   if (config.encrypted) {
-    password = shasum(password);
+    password = createHash(password);
   }
-  return shasum([auth.username, password, ip].join('\n'));
+  return createHash([auth.username, password, ip].join('\n'));
 }
 
 function requireLogin(req, res, msg) {
@@ -152,8 +147,8 @@ function verifyLogin(req, res, auth) {
   var headerAuth = parseAuth(req.headers.authorization);
   var queryAuth = parseAuth(req.query.authorization);
   if (!isGuest && config.encrypted) {
-    headerAuth.pass = headerAuth.pass && shasum(headerAuth.pass);
-    queryAuth.pass = queryAuth.pass && shasum(queryAuth.pass);
+    headerAuth.pass = headerAuth.pass && createHash(headerAuth.pass);
+    queryAuth.pass = queryAuth.pass && createHash(queryAuth.pass);
   }
   if (equalAuth(headerAuth, auth) || equalAuth(queryAuth, auth)) {
     res.setHeader('Set-Cookie', [
@@ -577,7 +572,7 @@ function concat(a, b, c) {
 if (!config.debugMode) {
   var indexHtml = concat(htmlPrepend, fs.readFileSync(htdocs.getHtmlFile('index.html')), htmlAppend);
   var indexJs = concat(jsPrepend, fs.readFileSync(htdocs.getJsFile('index.js')), jsAppend);
-  var jsETag = shasum(indexJs);
+  var jsETag = createHash(indexJs);
   var gzipIndexJs = zlib.gzipSync(indexJs);
   app.use('/js/index.js', function(req, res) {
     if (req.headers['if-none-match'] === jsETag) {
