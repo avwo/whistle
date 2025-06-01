@@ -18,7 +18,7 @@ Whistle is a powerful and easy-to-use cross-platform packet capture and debuggin
 
 # Installation
 
-**Windows PC or Mac PC recommended client: [https://github.com/avwo/whistle-client](https://github.com/avwo/whistle-client).**
+**Windows、Mac、Ubuntu、Fedora recommended PC client: [https://github.com/avwo/whistle-client](https://github.com/avwo/whistle-client).**
 
 > If you use Whistle client, you can skip this installation step
 

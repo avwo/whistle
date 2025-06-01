@@ -19,7 +19,7 @@ Whistle 是一个基于 Node.js 开发的功能强大、操作简单的跨平台
 
 # 安装
 
-**Windows PC 或 Mac PC 推荐使用客户端：[https://github.com/avwo/whistle-client](https://github.com/avwo/whistle-client)。**
+**Windows、Mac、Ubuntu、Fedora 推荐使用 PC 客户端：[https://github.com/avwo/whistle-client](https://github.com/avwo/whistle-client)。**
 
 >  如果采用 Whistle 客户端可以跳过该安装步骤
 
