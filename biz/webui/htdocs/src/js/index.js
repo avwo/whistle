@@ -5016,7 +5016,6 @@ var Index = React.createClass({
         />
         <ListDialog
           ref="selectRulesDialog"
-          title="Export Rules"
           name="rules"
           modal={state.rules}
           list={state.rules.list}

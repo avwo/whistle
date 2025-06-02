@@ -22,12 +22,12 @@ var ListDialog = React.createClass({
       tabs: [
         {
           icon: 'file',
-          name: 'File List',
+          name: 'Rules Files',
           active: true
         },
         {
           icon: 'list',
-          name: 'Rule List'
+          name: 'Rules Items'
         }
       ]
     };
