@@ -16,6 +16,7 @@ var iframes = require('./iframes');
 var storage = require('./storage');
 var RecycleBinDialog = require('./recycle-bin');
 
+var hideEnableHTTPSTips = window.location.href.indexOf('hideEnableHTTPSTips=1') !== -1;
 var disabledEditor = window.location.href.indexOf('disabledEditor=1') !== -1;
 var rulesCtxMenuList = [
   {
@@ -210,6 +211,9 @@ var List = React.createClass({
     events.on('expand' + comName + 'Group', function(_, groupName) {
       var group = self.getGroupByName(groupName);
       group && self.expandGroup(group.name);
+    });
+    events.on('reqTabsChange', function() {
+      self.setState({});
     });
     var scrollToBottom = function() {
       ReactDOM.findDOMNode(self.refs.list).scrollTop = 1000000000;
@@ -638,6 +642,9 @@ var List = React.createClass({
     $('.w-enable-rules-menu').trigger('click');
     events.trigger('disableAllRules');
   },
+  showHttpsSettingsDialog: function() {
+    events.trigger('showHttpsSettingsDialog');
+  },
   parseList: function() {
     var isRules = this.isRules();
     var modal = this.props.modal;
@@ -701,6 +708,8 @@ var List = React.createClass({
     var list = modal.list;
     var data = modal.data;
     var props = self.props;
+    var disabled = props.disabled;
+    var filterText = self.state.filterText;
     var activeItem = modal.getActive(true) || '';
     var isSub, isHide;
     var isRules = self.isRules();
@@ -720,13 +729,14 @@ var List = React.createClass({
     return (
       <div className={'orient-vertical-box fill' +
         (selected && isRules ? ' w-has-selected-rules' : '') +
-        (props.disabled ? ' w-has-selected-disabled' : '') +
+        (disabled ? ' w-has-selected-disabled' : '') +
         (props.hide ? ' hide' : '')}>
-        {props.disabled ? (
+        {disabled || (dataCenter.needEnableHttps() && !hideEnableHTTPSTips && !dataCenter.isPureProxy()) ? (
           <div className="w-record-status">
-            All rules are currently disabled
-            <button className="btn btn-primary" onClick={self.enableAllRules}>
-              Enable
+            {disabled ? 'All rules are currently disabled' :
+            'Full functionality of the rules requires activation of the \'Enable HTTPS (Capture Tunnel Traffic)\' option'}
+            <button className="btn btn-primary" onClick={disabled ? self.enableAllRules : self.showHttpsSettingsDialog}>
+              {disabled ? 'Enable' : 'Settings'}
             </button>
           </div>
         ) : null}
@@ -740,7 +750,7 @@ var List = React.createClass({
               className={
                 'fill orient-vertical-box w-list-data ' +
                 (props.className || '') +
-                (props.disabled ? ' w-disabled' : '')
+                (disabled ? ' w-disabled' : '')
               }
             >
               {list.map(function (name, i) {
@@ -750,7 +760,7 @@ var List = React.createClass({
                 var title = isGroup ? name.substring(1) : name;
                 isSub = isSub || isGroup;
                 if (isGroup) {
-                  isHide = self.collapseGroups.indexOf(name) !== -1;
+                  isHide = !filterText && self.collapseGroups.indexOf(name) !== -1;
                 }
                 return (
                   <a

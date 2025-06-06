@@ -1675,7 +1675,15 @@ exports.isDiableCustomCerts = function () {
 };
 
 exports.isMultiEnv = function () {
-  return curServerInfo && curServerInfo.multiEnv;
+  return curServerInfo && (curServerInfo.multiEnv || curServerInfo.notHTTPS);
+};
+
+exports.isPureProxy = function () {
+  return curServerInfo && curServerInfo.pureProxy;
+};
+
+exports.needEnableHttps = function () {
+  return !exports.isMultiEnv() &&  !exports.isCapture;
 };
 
 exports.isStrictMode = function () {
