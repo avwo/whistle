@@ -2,6 +2,7 @@ require('./base-css.js');
 require('../css/overview.css');
 var React = require('react');
 var ReactDOM = require('react-dom');
+var $ = require('jquery');
 var columns = require('./columns');
 var events = require('./events');
 var util = require('./util');
@@ -108,8 +109,14 @@ function filterImportant(item) {
 }
 
 function getPluginName(rule) {
-  var root = rule && rule.root;
-  return root && /[\\/]whistle\.([a-z\d_\-]+)$/.test(root) ? ' (From: ' + RegExp.$1 + ')' : '';
+  if (!rule) {
+    return '';
+  }
+  var root = rule.root;
+  if (root) {
+    return /[\\/]whistle\.([a-z\d_\-]+)$/.test(root) ? ' (From plugin: ' + RegExp.$1 + ')' : '';
+  }
+  return rule.file ? ' (From file: ' + rule.file + ')' : '';
 }
 
 function getRawProps(rule, all) {
@@ -184,6 +191,39 @@ var Overview = React.createClass({
         container.scrollTop = 0;
       }
     });
+    $(ReactDOM.findDOMNode(self.refs.rulesOverview)).on('mouseenter', 'td pre', function (e) {
+      if (!e.ctrlKey && !e.metaKey) {
+        return;
+      }
+      var target = e.target;
+      var text = target.innerText;
+      var index = text && text.indexOf(' (From ');
+      if (index > 0) {
+        target.setAttribute('data-rule-source', '1');
+      }
+    }).on('mouseleave', 'td pre', function (e) {
+      e.target.removeAttribute('data-rule-source');
+    }).on('click', 'td pre', function (e) {
+      if (!e.ctrlKey && !e.metaKey) {
+        return;
+      }
+      var text = e.target.innerText;
+      var index = text && text.indexOf(' (From ');
+      if (index > 0) {
+        text = text.substring(index + 7, text.length - 1);
+        index = text.indexOf(':');
+        var type = text.substring(0, index);
+        var name = text.substring(index + 1).trim();
+        if (!type || !name) {
+          return;
+        }
+        if (type === 'file') {
+          events.trigger('showRules', name);
+        } else if (type === 'plugin') {
+          events.trigger('showPlugins', name);
+        }
+      }
+    });
   },
   showOnlyMatchRules: function (e) {
     var showOnlyMatchRules = e.target.checked;
@@ -227,6 +267,23 @@ var Overview = React.createClass({
     reqStyle = CSS_MAP['Download'].style;
     reqStyle['--overview-left'] = (modal.responseTime - modal.startTime) * 100 / total + '%';
     reqStyle['--overview-width'] = (modal.endTime - modal.responseTime) * 100 / total + '%';
+  },
+  setRulesFile: function (rules) {
+    var rulesModal = this.props.rulesModal;
+    if (!rulesModal) {
+      return;
+    }
+    var keys = Object.keys(rules);
+    if (!keys.length) {
+      return;
+    }
+    var map = rulesModal.getFormattedMap();
+    if (!map) {
+      return;
+    }
+    keys.forEach(function (name) {
+      rules[name].file = map[rules[name].raw];
+    });
   },
   render: function () {
     var overviewModal = DEFAULT_OVERVIEW_MODAL;
@@ -345,6 +402,7 @@ var Overview = React.createClass({
         var clientCert = rules.clientCert;
         var atCtn;
         var atTitle;
+        this.setRulesFile(rules);
         if (atRule) {
           atCtn = [getAtRule(atRule)];
           atTitle = [atRule.raw];
@@ -470,8 +528,9 @@ var Overview = React.createClass({
           </label>
         </p>
         <Properties
+          ref="rulesOverview"
           onHelp={this.onHelp}
-          className={showOnlyMatchRules ? 'w-hide-no-value' : undefined}
+          className={showOnlyMatchRules ? 'w-hide-no-value w-rules-overview' : 'w-rules-overview'}
           modal={rulesModal}
           title={titleModal}
           enableCopyValue
