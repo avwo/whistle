@@ -374,7 +374,6 @@ var Index = React.createClass({
     var rules = modal.rules;
     var values = modal.values;
     var server = modal.server;
-    var multiEnv = !!server.multiEnv;
     var caUrlList = [];
     var caHash = util.getCAHash(server, caUrlList);
     var state = {
@@ -389,7 +388,6 @@ var Index = React.createClass({
       rulesMode: !!server.rulesMode,
       pluginsMode: !!server.pluginsMode,
       rulesOnlyMode: !!server.rulesOnlyMode,
-      multiEnv: server.multiEnv,
       ndr: server.ndr,
       ndp: server.ndp,
       drb: server.drb,
@@ -527,7 +525,7 @@ var Index = React.createClass({
     state.disabledPlugins = modal.disabledPlugins;
     state.disabledAllRules = modal.disabledAllRules;
     state.disabledAllPlugins = modal.disabledAllPlugins;
-    state.interceptHttpsConnects = !multiEnv && modal.interceptHttpsConnects;
+    state.interceptHttpsConnects = modal.interceptHttpsConnects;
     state.enableHttp2 = modal.enableHttp2;
     state.rules = rulesModal;
     state.network = networkModal;
@@ -998,13 +996,23 @@ var Index = React.createClass({
     events.on('showNetwork', function () {
       self.showNetwork();
     });
-    events.on('showRules', function () {
+    events.on('showRules', function (_, name) {
       self.showRules();
+      if (name && self.state.rules.exists(name)) {
+        events.trigger('expandRulesGroup', name);
+        this.setRulesActive(name);
+      }
     });
     events.on('showValues', function () {
       self.showValues();
     });
-    events.on('showPlugins', function () {
+    events.on('showPlugins', function (_, name) {
+      if (name && typeof name === 'string') {
+        self.setState({ active: 'Home' });
+        setTimeout(function() {
+          events.trigger('highlightPlugin', name);
+        }, 600);
+      }
       self.showPlugins();
     });
     events.on('disableAllPlugins', self.disableAllPlugins);
@@ -1505,7 +1513,6 @@ var Index = React.createClass({
         state.allowMultipleChoice !== data.allowMultipleChoice ||
         state.disabledAllPlugins !== data.disabledAllPlugins ||
         state.backRulesFirst !== data.backRulesFirst ||
-        state.multiEnv != server.multiEnv ||
         state.ndp != server.ndp ||
         state.ndr != server.ndr ||
         state.drb != server.drb ||
@@ -1518,7 +1525,6 @@ var Index = React.createClass({
         state.allowMultipleChoice = data.allowMultipleChoice;
         state.backRulesFirst = data.backRulesFirst;
         state.disabledAllPlugins = data.disabledAllPlugins;
-        state.multiEnv = server.multiEnv;
         state.ndp = server.ndp;
         state.ndr = server.ndr;
         state.drb = server.drb;
@@ -3902,7 +3908,7 @@ var Index = React.createClass({
     var rulesOnlyMode = state.rulesOnlyMode;
     var pluginsMode = state.pluginsMode;
     var tokenId = state.tokenId;
-    var multiEnv = state.multiEnv;
+    var multiEnv = dataCenter.isMultiEnv();
     var name = this.getTabName();
     var isAccount = name == 'account';
     var isNetwork = name == 'network';
@@ -3937,7 +3943,7 @@ var Index = React.createClass({
     var networkType = (isTreeView ? 'tree-conifer' : 'globe') + (state.record ? ' w-disabled' : '');
     if (rulesOptions[0].name === DEFAULT) {
       rulesOptions.forEach(function (item, i) {
-        item.icon = !i || !state.multiEnv ? 'checkbox' : 'edit';
+        item.icon = !i || !multiEnv ? 'checkbox' : 'edit';
         if (!item.selected) {
           uncheckedRules[item.name] = 1;
         }
@@ -4677,6 +4683,7 @@ var Index = React.createClass({
               ref="network"
               hide={!isNetwork}
               modal={modal}
+              rulesModal={state.rules}
             />
           ) : undefined}
           {state.hasPlugins ? (

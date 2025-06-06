@@ -56,8 +56,8 @@ function getBridge(win) {
     showNetwork: function () {
       events.trigger('showNetwork');
     },
-    showRules: function () {
-      events.trigger('showRules');
+    showRules: function (name) {
+      events.trigger('showRules', name);
     },
     showValues: function () {
       events.trigger('showValues');

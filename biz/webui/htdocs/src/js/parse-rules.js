@@ -1,8 +1,5 @@
 var util = require('./util');
 
-var LINE_END_RE = /\n|\r\n|\r/g;
-var COMMENT_RE = /#[^\r\n]*/g;
-var MULTI_TO_ONE_RE = /^\s*line`\s*[\r\n]([\s\S]*?)[\r\n]\s*`\s*?$/gm;
 var SPACE_RE = /\s+/g;
 var IP_PORT_RE = /^(?:\[([:\da-f.]+)\]|(?:\d{1,3}\.){3}\d{1,3})(?::(\d+))?$/i;
 var SCHEMA_RE = /^\/\//;
@@ -13,16 +10,6 @@ var URL_RE = /^[^@%\\/\{\}\(\)<>]*[^@%\\/\{\}\(\)<>:](?:\/|$)/;
 var OLD_FILTER_RE = /^filter:\/\/\w+:.+$/;
 var FILTER_RE = /^(lineProps|excludeFilter|includeFilter):\/\/.*$/;
 
-function removeComment(str) {
-  return str.replace(COMMENT_RE, '').trim();
-}
-
-
-function mergeLines(str) {
-  return str.replace(MULTI_TO_ONE_RE, function(_, line) {
-    return line.replace(SPACE_RE, ' ');
-  });
-}
 
 function isPattern(item) {
   return (
@@ -81,10 +68,7 @@ module.exports = function (str) {
       rules.push(rule);
     }
   };
-  str = util.resolveInlineValues(str, values, rawValues);
-  str = removeComment(str);
-  str = mergeLines(str);
-  str.split(LINE_END_RE).forEach(function (line) {
+  util.formatRules(str, values, rawValues).forEach(function (line) {
     line = line.trim();
     if (!line) {
       return;

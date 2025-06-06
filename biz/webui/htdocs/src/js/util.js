@@ -12,6 +12,7 @@ var message = require('./message');
 var win = require('./win');
 
 var CRLF_RE = /\r\n|\r|\n/g;
+var COMMENT_RE = /#[^\r\n]*/g;
 var BIG_NUM_RE = /[:\[][\s\n\r]*-?[\d.]{16,}[\s\n\r]*[,\}\]]/;
 var dragCallbacks = {};
 var dragTarget, dragOffset, dragCallback;
@@ -1299,7 +1300,7 @@ function checkKey(raw, text, key) {
   if (key.test) {
     return !key.test(raw);
   }
-  return text.indexOf(key) === -1;
+  return text.toLowerCase().indexOf(key) === -1;
 }
 
 exports.checkKey = checkKey;
@@ -1309,7 +1310,6 @@ function checkLogText(text, keyword) {
     return '';
   }
   var raw = text;
-  text = text.toLowerCase();
   if (checkKey(raw, text, keyword.key1)) {
     return ' hide';
   }
@@ -2913,13 +2913,13 @@ var CONTROL_RE =
 var MULTI_LINE_VALUE_RE =
   /^[^\n\r\S]*(```+)[^\n\r\S]*(\S+)[^\n\r\S]*[\r\n](?:([\s\S]*?)[\r\n])??[^\n\r\S]*\1\s*$/gm;
 
-exports.resolveInlineValues = function(str, values, rawValues) {
+function resolveInlineValues(str, values, rawValues) {
   str = str && str.replace(CONTROL_RE, '').trim();
   if (!str || str.indexOf('```') === -1) {
     return str;
   }
   return str.replace(MULTI_LINE_VALUE_RE, function (all, _, key, value) {
-    if (values[key] == null) {
+    if (values && values[key] == null) {
       values[key] = value || '';
       if (rawValues) {
         rawValues[key] = all.trim();
@@ -2927,4 +2927,26 @@ exports.resolveInlineValues = function(str, values, rawValues) {
     }
     return '';
   });
+}
+
+exports.resolveInlineValues = resolveInlineValues;
+
+var MULTI_TO_ONE_RE = /^\s*line`\s*[\r\n]([\s\S]*?)[\r\n]\s*`\s*?$/gm;
+var LINE_END_RE = /\s*[\r\n]+\s*/;
+
+function removeRulesComments(str) {
+  return !str || str.indexOf('#') === -1 ? str : str.replace(COMMENT_RE, '');
+}
+
+function mergeLines(str) {
+  return str.replace(MULTI_TO_ONE_RE, function(_, line) {
+    return line.replace(SPACE_RE, ' ');
+  });
+}
+
+exports.formatRules = function (str, values, rawValues) {
+  str = resolveInlineValues(str, values, rawValues);
+  str = removeRulesComments(str);
+  str = mergeLines(str);
+  return str.trim().split(LINE_END_RE);
 };

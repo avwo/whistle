@@ -96,6 +96,7 @@ var Network = React.createClass({
           dockToBottom={dockToBottom}
           onDockChange={this.onDockChange}
           modal={modal}
+          rulesModal={this.props.rulesModal}
         />
       </Divider>
     );

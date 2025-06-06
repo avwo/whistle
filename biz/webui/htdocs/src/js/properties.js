@@ -36,8 +36,18 @@ var Properties = React.createClass({
       {index === -1 ? null : <span className="w-gray">{name.substring(index + 2)}</span>}
     </th>);
   },
+  renderInfo: function (name, value) {
+    var showEnableBtn = this.props.showEnableBtn && name === 'Status Code' && value === 'captureError';
+    return showEnableBtn ? <a
+      className="glyphicon glyphicon-info-sign w-prop-icon"
+      href="https://wproxy.org/whistle/questions.html#type=captureError"
+      target="_blank" /> : null;
+  },
   onContextMenu: function(e) {
     util.handlePropsContextMenu(e, this.refs.contextMenu);
+  },
+  getElemRef: function() {
+    return this.refs.properties;
   },
   render: function () {
     var self = this;
@@ -85,6 +95,7 @@ var Properties = React.createClass({
 
     return (
       <div
+        ref="properties"
         className={
           'w-properties-wrap ' +
           (viewSource
@@ -177,7 +188,7 @@ var Properties = React.createClass({
                     {
                       json ? <JSONTree data={json} onSearch={function() {
                         util.showJSONDialog(json);
-                      }} /> : <pre>{self.renderValue(value)}</pre>
+                      }} /> : <pre>{self.renderInfo(name, value)}{self.renderValue(value)}</pre>
                     }
                   </td>
                 </tr>

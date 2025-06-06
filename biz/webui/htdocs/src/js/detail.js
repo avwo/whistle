@@ -269,7 +269,7 @@ var ReqData = React.createClass({
           tabs={tabs}
         />
         {state.initedOverview ? (
-          <Overview modal={overview} hide={name != tabs[0].name} />
+          <Overview modal={overview} rulesModal={this.props.rulesModal} hide={name != tabs[0].name} />
         ) : null}
         {state.initedInspectors ? (
           <Inspectors

@@ -96,3 +96,13 @@
   background: #fff!important;
   margin: 0!important;
 }
+
+.w-prop-icon {
+  cursor: pointer!important;
+  text-decoration: none;
+  color: #000;;
+}
+
+.w-prop-icon:hover {
+  text-decoration: none;
+}

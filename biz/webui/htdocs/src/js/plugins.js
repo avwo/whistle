@@ -131,6 +131,7 @@ function parsePluginName(list, registry) {
 var Home = React.createClass({
   componentDidMount: function () {
     var self = this;
+    var pluginsElem = $(ReactDOM.findDOMNode(self.refs.plugins));
     self.setUpdateAllBtnState();
     events.on('openPluginOption', function(_, plugin) {
       if (!plugin) {
@@ -162,6 +163,18 @@ var Home = React.createClass({
     });
     events.on('showUpdatePlugins', function(_, list, registry) {
       self.showInstall(list, registry, true);
+    });
+    events.on('highlightPlugin', function(_, name) {
+      if (!name) {
+        return;
+      }
+      var elem = pluginsElem.find('.w-plugins-item[data-name="' + name + '"]');
+      if (elem.length) {
+        elem.addClass('highlight');
+        setTimeout(function () {
+          elem.removeClass('highlight');
+        }, 1000);
+      }
     });
     events.on('updateAllPlugins', function () {
       var data = self.props.data || {};
@@ -485,7 +498,7 @@ var Home = React.createClass({
           </table>
         </div>
         <div className="fill w-plugins-list">
-          <table className="table table-hover">
+          <table ref="plugins" className="table table-hover">
             <tbody>
               {list.length ? (
                 list.map(function (plugin, i) {

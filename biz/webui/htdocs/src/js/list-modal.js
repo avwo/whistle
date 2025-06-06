@@ -5,6 +5,7 @@ function ListModal(list, data) {
   this.reset(list, data, true);
 }
 
+var formattedMap = {};
 var proto = ListModal.prototype;
 
 proto.reset = function (list, data, init) {
@@ -412,7 +413,7 @@ proto.getSibling = function (name) {
  */
 proto.search = function (keyword, disabledType) {
   keyword = typeof keyword === 'string' ? keyword.trim() : '';
-  if (keyword &&(disabledType ? /^(b|v):(.*)$/ : /^(selected|s|active|a|b|v):(.*)$/).test(keyword)) {
+  if (keyword &&(disabledType ? /^(b|v|n|k|s):(.*)$/ : /^(selected|s|active|a|b|v|k|s):(.*)$/).test(keyword)) {
     this._type = RegExp.$1;
     keyword = RegExp.$2.trim();
   } else {
@@ -427,7 +428,8 @@ proto.filter = function () {
   var keyword = this._keyword;
   var list = this.list;
   var filterBody = this._type === 'b' || this._type === 'v';
-  var filterSelected = !!this._type && !filterBody;
+  var filterKey = this._type === 'n' | this._type === 'k';
+  var filterSelected = !!this._type && !filterBody && !filterKey;
   var data = this.data;
 
   list.forEach(function (name) {
@@ -438,9 +440,12 @@ proto.filter = function () {
       return;
     }
     if (filterBody) {
-      item.hide = !item.value || util.checkKey(item.value, item.value.toLowerCase(), keyword);
+      item.hide = !item.value || util.checkKey(item.value, item.value, keyword);
     } else {
-      item.hide = !name || util.checkKey(name, name.toLowerCase(), keyword);
+      item.hide = !name || util.checkKey(name, name, keyword);
+      if (item.hide && !filterKey) {
+        item.hide = !item.value || util.checkKey(item.value, item.value, keyword);
+      }
     }
   });
   return list;
@@ -540,6 +545,43 @@ proto.next = function () {
       return item;
     }
   }
+};
+
+proto.getFormattedMap = function () {
+  var list = this.list;
+  if (!list.length) {
+    return;
+  }
+  var data = this.data;
+  var map = {};
+  var selectedList = [];
+  var unselectedList = [];
+  var result;
+  list.forEach(function (name) {
+    var item = data[name];
+    if (item) {
+      if (item.selected && item.name !== 'Default') {
+        selectedList.push(item);
+      } else {
+        unselectedList.push(item);
+      }
+    }
+  });
+  selectedList.concat(unselectedList).forEach(function (item) {
+    var value = (item.value || '').trim();
+    var list = value && (formattedMap[value] || util.formatRules(value));
+    if (list && list.length) {
+      map[value] = list;
+      list.forEach(function (rule) {
+        result = result || {};
+        if (!result[rule]) {
+          result[rule] = item.name;
+        }
+      });
+    }
+  });
+  formattedMap = map;
+  return result;
 };
 
 module.exports = ListModal;

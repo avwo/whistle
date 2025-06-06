@@ -48,6 +48,8 @@ exports.getServerInfo = function(req) {
     rulesMode: config.rulesMode,
     strictMode: config.strict,
     multiEnv: config.multiEnv,
+    pureProxy: config.pureProxy,
+    notHTTPS: config.notAllowedEnableHTTPS,
     baseDir: baseDir,
     username: config.whistleName && config.username ? config.username + ' (' + config.whistleName + ')' : (config.username || config.whistleName),
     nodeVersion: process.version,

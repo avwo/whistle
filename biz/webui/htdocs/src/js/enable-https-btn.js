@@ -7,10 +7,7 @@ var EnableHttpsBtn = React.createClass({
     events.trigger('showHttpsSettingsDialog');
   },
   render: function () {
-    if (dataCenter.isMultiEnv() || dataCenter.isCapture) {
-      return null;
-    }
-    return <span className="glyphicon glyphicon-lock w-enable-https-btn" onClick={this.showHttpsSettingsDialog} />;
+    return dataCenter.needEnableHttps() ? <span className="glyphicon glyphicon-lock w-enable-https-btn" onClick={this.showHttpsSettingsDialog} /> : null;
   }
 });
 
