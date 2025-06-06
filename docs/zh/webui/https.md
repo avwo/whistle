@@ -1,13 +1,19 @@
-# Https
+# HTTPS
 
-下载根证书，开启捕获HTTPS请求：
+## 【推荐】快速安装根证书
+可以通过在命令行执行以下命令快速安装根证书：
+``` sh
+w2 ca
+```
 
-![Https](https://github.com/avwo/whistle/assets/11450939/4a2730b3-59a8-4961-a83a-7fc7a0510885)
+## 手动安装根证书
+> 如果命令行安装不成功，也可以按下面的方法手动安装根证书。
 
-## 安装根证书
-> 证书按下面步骤安装后，如果还出现安全提醒，这个主要原因是之前你访问过该页面，导致长连接已建立，可以等段时间再访问、或重新打开浏览器，或重启下whistle： `w2 restart`
+先开启捕获HTTPS请求，并点击 `Download RootCA` 下载根证书：
 
-如上图下载完根证书后点击rootCA.crt文件，弹出根证书安装对话框。
+![HTTPS](https://github.com/user-attachments/assets/dd6f5bd2-122f-4247-bc23-cdc213c8c2f5)
+
+下载完根证书后点击rootCA.crt文件，弹出根证书安装对话框。
 
 1. Windows:
 
@@ -79,7 +85,7 @@
 
     小米等支持 Magisk 模块的手机还可以尝试链接中的方式绕开 `ssl pinning`：https://blog.csdn.net/chiehfeng/article/details/134033846 
 
-## 开启拦截HTTPS
+## 开启拦截 HTTPS
 
 图中的打开的对话框有个checkbox：
 
@@ -101,9 +107,7 @@
   # 不支持通过路径的方式设置
   ```
 
-  ### 自定义请求证书或根证书
-  whistle会自动生成根证书，并根据根证书对每个请求动态生成https证书，如果需要用自定义的证书，甚至根证书，可以有两种方式(只支持 `.crt` 格式的证书)：
+### 自定义请求证书或根证书
+![HTTPS](https://github.com/user-attachments/assets/dd6f5bd2-122f-4247-bc23-cdc213c8c2f5)
 
-  1. 把普通证书对 (如：`test.crt` 和 `test.key`、`test2.crt` 和 `test2.key` 等等) 或根证书 (名字必须为 `root.crt` 和 `root.key`)，放在系统的某个目录，如 `/data/ssl`，并在启动时添加启动参数 `w2 start -z /data/ssl` ，whistle会自动加里面的证书
-  2. (v1.14.8及以上版本支持) 把上述证书或根证书放在固定目录 `~/.WhistleAppData/custom_certs/`里面，whistle会自动加里面的证书
-    > 优先级 `-z dir` > `~/.WhistleAppData/` > 内置证书
+点击上图的 `View Custom Certs` 按钮，即可查看或上传自定义的证书。
