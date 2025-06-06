@@ -1,3 +1,7 @@
+# v2.9.100
+1. feat: https://github.com/avwo/whistle/issues/1221
+2. feat: https://github.com/avwo/whistle/issues/1222
+
 # v2.9.99
 1. feat: 优化 Rules 里面的 `includeFilter://`、`excludeFilter://` 自动补全功能
 2. feat: Network 添加 `APP` 列显示请求来源 APP 的名称
