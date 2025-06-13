@@ -104,13 +104,17 @@
   width: auto !important;
   margin: 10px 0 0;
   white-space: nowrap;
-  display: block!important;
+  display: flex!important;
   text-align: left!important;
+  align-items: center;
 }
 .w-network-settings-own select {
   margin-left: 20px;
   width: 160px;
   display: inline-block;
+}
+.w-network-settings-own .glyphicon-tree-conifer {
+  margin: -3px 2px 0 0;
 }
 .w-network-custom-col {
   display: inline-block;

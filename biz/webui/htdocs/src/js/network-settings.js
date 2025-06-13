@@ -494,27 +494,17 @@ var Settings = React.createClass({
               checked={dataCenter.isOnlyViewOwnData()}
               data-name="viewOwn"
               type="checkbox"
-              className="w-va-mdl"
             />
-            <span className="w-va-mdl">
-              Viewing only your computer's network requests (IP: {dataCenter.clientIp})
-            </span>
+            Viewing only your computer's network requests (IP: {dataCenter.clientIp})
           </label>
           <label className="w-network-settings-own">
-            <input checked={viewAllInNewWindow} data-name="viewAllInNewWindow" type="checkbox" className="w-va-mdl" />
-            <span className="w-va-mdl">
+            <input checked={viewAllInNewWindow} data-name="viewAllInNewWindow" type="checkbox" />
             ViewAll in new window
-            </span>
           </label>
           <label className="w-network-settings-own">
-            <input checked={isTreeView} data-name="treeView" type="checkbox"className="w-va-mdl" />
-            <span
-              className="glyphicon glyphicon-tree-conifer w-va-mdl"
-              style={{ marginRight: 2 }}
-            ></span>
-            <span className="w-va-mdl">
+            <input checked={isTreeView} data-name="treeView" type="checkbox" />
+            <span className="glyphicon glyphicon-tree-conifer" />
             Show Tree View (Ctrl[Command] + B)
-            </span>
           </label>
           {isTreeView ? (
             <label style={{textIndent: 20}} className="w-network-settings-own">
@@ -522,11 +512,8 @@ var Settings = React.createClass({
                 checked={storage.get('disabledHNR') !== '1'}
                 data-name="disabledHNR"
                 type="checkbox"
-                className="w-va-mdl"
               />
-              <span className="w-va-mdl">
-              Highlight new requests
-              </span>
+               Highlight new requests
             </label>
           ) : null}
         </div>

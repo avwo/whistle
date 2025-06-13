@@ -537,7 +537,7 @@ a {
 }
 
 .w-align-items {
-  display: flex;
+  display: flex!important;
   align-items: center;
 }
 

@@ -36,13 +36,6 @@ var Properties = React.createClass({
       {index === -1 ? null : <span className="w-gray">{name.substring(index + 2)}</span>}
     </th>);
   },
-  renderInfo: function (name, value) {
-    var showEnableBtn = this.props.showEnableBtn && name === 'Status Code' && value === 'captureError';
-    return showEnableBtn ? <a
-      className="glyphicon glyphicon-info-sign w-prop-icon"
-      href="https://wproxy.org/whistle/questions.html#type=captureError"
-      target="_blank" /> : null;
-  },
   onContextMenu: function(e) {
     util.handlePropsContextMenu(e, this.refs.contextMenu);
   },
@@ -52,6 +45,7 @@ var Properties = React.createClass({
   render: function () {
     var self = this;
     var props = self.props;
+    var showEnableBtn = props.showEnableBtn;
     var sourceText = props.enableViewSource;
     var copyValue = props.enableCopyValue;
     var hasPluginRule = props.hasPluginRule;
@@ -172,6 +166,8 @@ var Properties = React.createClass({
               var css = cssMap && cssMap[name];
               var style = css && css.style;
               var className = css && css.className;
+              var showInfo = !json && showEnableBtn && name === 'Status Code' && value === 'captureError';
+
               return (
                 <tr
                   key={name}
@@ -188,7 +184,10 @@ var Properties = React.createClass({
                     {
                       json ? <JSONTree data={json} onSearch={function() {
                         util.showJSONDialog(json);
-                      }} /> : <pre>{self.renderInfo(name, value)}{self.renderValue(value)}</pre>
+                      }} /> : <pre className={showInfo ? 'w-align-items' : null}>{showInfo ? <a
+                              className="glyphicon glyphicon-info-sign w-prop-icon"
+                              href="https://wproxy.org/whistle/questions.html#type=captureError"
+                              target="_blank" /> : null}{self.renderValue(value)}</pre>
                     }
                   </td>
                 </tr>
