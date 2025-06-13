@@ -12,7 +12,7 @@
 [![NPM count](https://img.shields.io/npm/dt/whistle.svg?style=flat-square)](https://www.npmjs.com/package/whistle)
 [![License](https://img.shields.io/aur/license/whistle?style=flat-square)](https://www.npmjs.com/package/whistle)
 
-[中文](./README-zh_CN.md) · English
+[中文](./README.md) · English
 
 Whistle is a powerful and easy-to-use cross-platform packet capture and debugging tool developed based on Node.js. It supports multiple proxy modes (such as HTTP, HTTPS, Socks, reverse proxy, etc.), which can be used for packet capture analysis or modifying HTTP, HTTPS, HTTP/2, WebSocket, TCP requests through configuration rules. Whistle also has built-in tools such as Weinre, Log, Composer, etc., which support viewing the DOM structure of remote pages, debugging console output, replaying or editing requests, etc. In addition, Whistle supports plug-in extensions and can also be referenced by other projects as NPM packages.
 
@@ -95,6 +95,7 @@ For how to install the root certificate on other terminals such as mobile phones
 w2 proxy
 ```
 
+> macOS may prompt for your login password during initial proxy configuration.
 > You can also specify the IP (default `127.0.0.1`) and port: `w2 proxy "10.x.x.x:8888"`, and use `w2 proxy 0` to turn off the system proxy setting
 
 3. Set the proxy directly on the client, such as FireFox, WeChat developer tools, etc., which have built-in proxy setting functions

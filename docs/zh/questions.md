@@ -1,6 +1,7 @@
 # 常见问题
 
 > 有问题可以提[issue](https://github.com/avwo/whistle/issues/new)
+
 1. 请求出现 `captureError` 主要有以下原因？
    - 未安装根证书，请先[安装根证书](webui/https.html)
    - `ssl pinning` 问题，这种可以针对该域名禁用解析 HTTPS：`域名 disable://capture` 或只针对指定客户端的请求 `域名 disable://capture includeFilter://reqH.user-agent=/xiaomi/i`，或者寻找其它规避措施 https://blog.csdn.net/chiehfeng/article/details/134033846
