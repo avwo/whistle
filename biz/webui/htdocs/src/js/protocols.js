@@ -124,11 +124,11 @@ var groupRules = [
     'resCharset://', 'resCookies://', 'resCors://', 'resType://', 'resBody://', 'resMerge://', 'resPrepend://', 'resAppend://', 'resReplace://',
     'htmlPrepend://', 'htmlBody://', 'htmlAppend://', 'cssPrepend://', 'cssBody://', 'cssAppend://', 'jsPrepend://', 'jsBody://',
     'jsAppend://', 'resWrite://', 'resWriteRaw://']],
-  ['Common', ['pipe://', 'delete://', 'headerReplace://', 'reqScript://', 'resScript://', 'reqRules://', 'resRules://']],
   ['Throttle', ['reqDelay://', 'resDelay://', 'reqSpeed://', 'resSpeed://']],
   ['Tools', ['weinre://', 'log://']],
   ['Settings', ['style://', 'lineProps://', 'enable://', 'disable://']],
   ['Filters', ['ignore://', 'skip://', 'excludeFilter://', 'includeFilter://']],
+  ['Others', ['pipe://', 'delete://', 'headerReplace://', 'reqScript://', 'resScript://', 'reqRules://', 'resRules://']],
   ['Plugins', []]
 ];
 

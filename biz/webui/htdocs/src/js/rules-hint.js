@@ -33,8 +33,8 @@ var FILTERS = [
   'm:<keyword or regexp of request method>',
   'b:<keyword or regexp of request body>',
   's:<keyword or regexp of response status code>',
-  'reqH.key-name=<keyword or regexp of request header key value>',
-  'resH.key-name=<keyword or regexp of response header key value>',
+  'reqH.keyName=<keyword or regexp of request header key value>',
+  'resH.keyName=<keyword or regexp of response header key value>',
   'clientIp:<keyword or regexp of client ip>',
   'serverIp:<keyword or regexp of server ip>'
 ];
