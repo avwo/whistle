@@ -8,14 +8,13 @@
 
 [![NPM version](https://img.shields.io/npm/v/whistle.svg?style=flat-square)](https://npmjs.org/package/whistle)
 [![node version](https://img.shields.io/badge/node.js->=_8-green.svg?style=flat-square)](http://nodejs.org/download/)
-[![Test coverage](https://codecov.io/gh/avwo/whistle/branch/master/graph/badge.svg?style=flat-square)](https://codecov.io/gh/avwo/whistle)
 [![npm download](https://img.shields.io/npm/dm/whistle.svg?style=flat-square)](https://npmjs.org/package/whistle)
 [![NPM count](https://img.shields.io/npm/dt/whistle.svg?style=flat-square)](https://www.npmjs.com/package/whistle)
 [![License](https://img.shields.io/aur/license/whistle?style=flat-square)](https://www.npmjs.com/package/whistle)
 
 中文 · [English](./README-en_US.md)
 
-Whistle 是一款基于 Node.js 实现的跨平台网络抓包调试工具，具有：
+Whistle (发音为 /ˈwisəl/)是一款基于 Node.js 实现的跨平台网络抓包调试工具，具有：
 1. **功能强大**
    - 支持 HTTP 代理、HTTPS 代理、Socks 代理、反向代理多种代理模式
    - 支持查看和修改 HTTP、HTTPS、HTTP/2、WebSocket、TCP 请求/响应
@@ -24,11 +23,11 @@ Whistle 是一款基于 Node.js 实现的跨平台网络抓包调试工具，具
      - Log：查看远程页面的 console 日志、
      - Composer：重放及编辑请求
 2. **操作简单**
-   - 支持通过配置简单的文本规则修改请求/响应
-   - 提供一站式 GUI 界面查看抓包、配置规则、管理插件、操作 Weinre/Log/Composer 等
+   - 支持通过配置规则修改请求/响应
+   - 提供一站式界面，可查看抓包、配置规则、管理插件、操作 Weinre/Log/Composer 等
 3. **可扩展**
-   - 支持通过插件扩展规则及界面的功能
-   - 支持作为 NPM 包被项目引用
+   - 支持通过插件扩展规则及界面功能
+   - 支持作为 NPM 模块被项目引用
 4. **跨平台**
    - 支持 macOS、Windows、Linux（Ubuntu/Fedora）等桌面系统
    - 支持无界面 Linux 服务器
@@ -37,7 +36,7 @@ Whistle 是一款基于 Node.js 实现的跨平台网络抓包调试工具，具
 
 **macOS、Windows、Linux（Ubuntu/Fedora）等桌面系统推荐使用 Whistle 客户端：[https://github.com/avwo/whistle-client](https://github.com/avwo/whistle-client)**
 
->  使用 Whistle 客户端可以跳过该安装步骤
+>  使用 Whistle 客户端可以跳过**安装**步骤
 
 无界面 Linux 服务器等环境，请按以下 4 个步骤操作：
 
@@ -79,18 +78,18 @@ Whistle 是一款基于 Node.js 实现的跨平台网络抓包调试工具，具
    >
    >    <details>
    >      <summary>FireFox 设置代理示例图</summary>
-   >        <img width="1100" alt="image" src="https://github.com/user-attachments/assets/98c1ec5d-4955-4e23-a49a-c1015b128d9d" /> 
+   >        <img width="1000" alt="image" src="https://github.com/user-attachments/assets/98c1ec5d-4955-4e23-a49a-c1015b128d9d" /> 
    >    </details>
    >
    > 3. 通过 Proxifier 设置代理（针对无法设置代理且不使用系统代理的客户端）：https://www.proxifier.com/docs/win-v4/http-proxy.html
    >
 
 
-# 使用
+# 用法
 
 安装完成后，打开[客户端](https://github.com/avwo/whistle-client)或通过浏览器上打开链接 http://local.whistlejs.com ，即可看到 Whistle 的操作界面：
 
-<img width="1200" alt="network" src="https://github.com/user-attachments/assets/3186e76a-486a-4e61-98a1-2d4b4f91fad0" />
+<img width="1000" alt="network" src="https://github.com/user-attachments/assets/3186e76a-486a-4e61-98a1-2d4b4f91fad0" />
 
 其中：
 
@@ -101,27 +100,23 @@ Whistle 是一款基于 Node.js 实现的跨平台网络抓包调试工具，具
 
 ## 界面功能
 
-<details>
-  <summary>重放请求</summary>
-  <img width="800" alt="image" src="https://github.com/user-attachments/assets/9f8276ac-e089-427b-97f4-becac250ae5e" />
-</details>
-
-<details>
-  <summary>编辑或构造请求</summary>
-  <img width="1200" alt="image" src="https://github.com/user-attachments/assets/f2a5b088-72b6-4098-8ba6-3e42f15f3ad8" />
-</details>
-
-其它界面功能参见完整文档：https://wproxy.org/whistle/webui/
+1. 重放请求
+   
+   <img width="720" alt="image" src="https://github.com/user-attachments/assets/9f8276ac-e089-427b-97f4-becac250ae5e" />
+2. 编辑或构造请求
+   
+   <img width="1000" alt="image" src="https://github.com/user-attachments/assets/f2a5b088-72b6-4098-8ba6-3e42f15f3ad8" />
+3. 其它界面功能参见完整文档：https://wproxy.org/whistle/webui/
 
 ## 配置规则
 
 规则结构：
 
 ``` txt
-pattern operation [includeFilter://pattern1 excludeFilter://pattern2 ...]
+pattern operation [includeFilter://pattern1 ... excludeFilter://pattern2 ...]
 ```
 
-1. pattern：URL匹配模式（支持域名、路径、正则、通配符多种格式）
+1. pattern：URL 匹配模式（支持域名、路径、正则、通配符多种格式）
 2. operation：执行的操作，如修改请求头
 3. includeFilter/excludeFilter：可选过滤条件，可设置多个，支持匹配请求 URL、请求方法、请求内容、响应状态吗、响应头
 
@@ -136,8 +131,6 @@ pattern operation [includeFilter://pattern1 excludeFilter://pattern2 ...]
    # CNAME 功能（端口可选）
    www.test.com host://www.example.com:8181
    ```
-   > 与系统 hosts 规则不同的是 Whistle 规则默认采用**从左到右的映射方式**，**从上到下的优先级**
-
 2. 路径匹配
 
    ``` txt
@@ -229,14 +222,9 @@ w2 install --registry=https://registry.npmmirror.com whistle.script whistle.insp
 
 安装后即可在管理界面的 Plugins 看到这两个插件：
 
-<details>
-  <summary>插件列表示例图</summary>
-  <img width="1000" alt="image" src="https://github.com/user-attachments/assets/ec018691-c7a9-415e-9809-bf079694c024" />
-</details>
+<img width="1000" alt="image" src="https://github.com/user-attachments/assets/ec018691-c7a9-415e-9809-bf079694c024" />
 
 除了扩展规则，插件还可以扩展界面功能，详见：https://wproxy.org/whistle/plugins.html
-
-# 移动设备抓包配置
 
 # License
 
