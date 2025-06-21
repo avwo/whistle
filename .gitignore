@@ -66,3 +66,5 @@ dist
 /.history
 /test/temp_files
 /test/all_whistles
+/docs/.vitepress/dist
+/docs/.vitepress/cache
