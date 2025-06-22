@@ -65,7 +65,9 @@ Options:
 ## w2 start
 1. `w2 start`：启动 Whistle，并使用默认存储目录
 2. `w2 start -p 8100`：启动指定端口的 Whistle（默认为 `8899`）
-3. `w2 start -S storageName`：启动指定存储目录的 Whistle（大写 `S`）
+3. `w2 start --httpsPort 8001`：启动 Whistle，并开启 HTTPS 代理端口
+4. `w2 start --socksPort 1080`：启动 Whistle，并开启 SOCKSv5 代理端口
+5. `w2 start -S storageName`：启动指定存储目录的 Whistle（大写 `S`）
 > `storageName` 应为纯目录名（非完整路径），多实例运行时需满足：
 > - 每个实例使用独立目录
 > - 配置不同监听端口
@@ -80,7 +82,9 @@ Options:
    - 如果对应的端口和存储目录有运行的 Whistle 实例，会先关闭该实例再启动
 2. `w2 restart --no-prev-options`：等价于 `w2 stop && w2 start`
 3. `w2 restart -p 8100`：重启并修改端口
-4. `w2 restart -S storageName`：重启指定存储目录的 Whistle 实例
+4. `w2 starrestartt --httpsPort 8001`：重启并开启 HTTPS 代理端口
+4. `w2 restart --socksPort 1080`：重启并开启 SOCKSv5 代理端口
+5. `w2 restart -S storageName`：重启指定存储目录的 Whistle 实例
 
 ## w2 stop
 1. `w2 stop`：停止默认存储目录下的 Whistle
@@ -161,32 +165,62 @@ Whistle 会检查是否存在同名规则：
 ## w2 proxy
 1. `w2 proxy`：设置系统代理
    - IP：`127.0.0.1`
-   - PORT：Whistle 运行的端口，如果没有运行的 Whistle，用默认端口 `8899`
+   - 端口：Whistle 运行的端口，如果没有运行的 Whistle，用默认端口 `8899`
 2. `w2 proxy 0`：关闭系统代理
 3. `w2 proxy 8100`：设置系统代理
    - IP：`127.0.0.1`
-   - PORT：`8100`
-4. `w2 proxy 8100 1.1.1.1`：设置系统代理
-   - IP：`1.1.1.1`
-   - PORT：`8100`
-5. `w2 proxy www.test.com:8100`：设置系统代理
-   - IP：`www.test.com`
-   - PORT：`8100`
+   - 端口：`8100`
+4. `w2 proxy www.test.com:8100`：设置系统代理
+   - IP 或域名：`www.test.com`
+   - 端口：`8100`
 
 ## w2 ca
-
+1. `w2 ca`：安装本地 Whistle 的根证书（安装本地 Whistle 根证书一般用这个命令即可）
+2. `w2 ca 8080`：从指定端口（IP：`127.0.0.1`）下载 Whistle 根证书并安装
+4. `w2 ca www.test.com:8080`：安装指定端口及 IP（或域名）的 Whistle 证书（可用于安装远程的 Whistle 根证书）
+5. `w2 ca certUrl`：下载指定 URL 的证书并安装
+6. `w2 ca localCertPath`：安装本地指定路径的证书
 
 ## w2 install
+1. `w2 install whistle.script`：安装插件
+2. `w2 install whistle.script --registry=https://npm-registry`：安装插件，并指定 npm registry
 
+推荐使用界面安装：[使用插件](/zh-hans/extensions/usage)
 
 ## w2 uninstall
+`w2 uninstall whistle.script`：卸载指定插件
 
-
+推荐使用界面卸载：[使用插件](/zh-hans/extensions/usage)
 ## w2 exec
-
+`w2 exec xxx`：执行插件在 package.json 中配置的 bin 命令（即插件提供的可执行脚本）
+> 适用于插件开发者或需要调用插件 CLI 功能的场景
 
 ## w2 run
-
+`w2 run`：以开发调试模式启动 Whistle，实时输出插件和系统的日志信息到控制台，支持所有 `w2 start` 的参数配置
 
 ## 其它参数
+1. `-D, --baseDir [baseDir]`：自定义 Whistle 存储根目录（默认为 `$WWHISTLE_PATH/.whistle`）
+   > 示例：`w2 start -D ~/my_whistle_data`
+2. `-n, --username [username]`：设置管理界面登录用户名
+3. `-w, --password [password]`：设置管理界面登录密码
+   > 示例：`w2 start -n abc -w 123`
+4. `-N, --guestName [username]`：设置只读权限的游客账号（游客仅可查看配置和抓包，不可修改）
+5. `-W, --guestPassword [password]`：设置游客账号密码（游客仅可查看配置和抓包，不可修改）
+   > 示例：`w2 start -N test -W 123`
+6. `-P, --uiport [uiport]`：单独设置管理界面端口（默认与代理端口相同）
+   > 示例：`w2 start -P 8889`
+7. `-e, --extra [extraData]`：启动时向指定插件传递数据（`如：{inspect: data}`）
+   > 示例：`w2 start -e '{"debug":true}'`
+8. `--allowOrigin [originList]`：允许跨域请求管理界面接口的域名
+   > 示例：`w2 start --allowOrigin *`
+9.  `--no-global-plugins`：启动时不加载 `npm i -g whistle.xxx` 安装的插件
+    > 示例：`w2 start --no-global-plugins`
+10. `--inspect [[host:]port]`：启用Node.js调试（默认9229端口），配合Chrome DevTools使用
+    > 示例：`w2 start --inspect`
+11. `--inspectBrk [[host:]port]`：启用调试并在首行断点
+    > 示例：`w2 start --inspectBrk`
+12. `--config [config]`：通过配置文件加载参数
+    > 示例：`w2 start --config /data/xxx.json`
 
+给请求设置用户密码需要用到插件（或自己开发插件）：[whistle.proxyauth](https://github.com/whistle-plugins/whistle.proxyauth)
+    

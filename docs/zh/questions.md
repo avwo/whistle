@@ -8,7 +8,7 @@
 2. 为什么[http://local.whistlejs.com](http://local.whistlejs.com/)无法访问？
  没有启动whistle或者配置代理，具体操作请参考[安装启动](install.html)
 
-1. 为什么**Network**上看不到请求？
+1. 为什么 **Network** 上看不到请求？
  没有用Chrome浏览器访问[http://local.whistlejs.com](http://local.whistlejs.com/)，或者是请求没有代理到指定的whistle，如何配置代理请参考[安装启动](install.html)
 1. 手机或平板如何抓包请求？
   需要配置代理，且可能要关闭防火墙或者设置运行远程访问本地指定端口，具体参考[安装启动](install.html)
