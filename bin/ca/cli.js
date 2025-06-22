@@ -22,7 +22,7 @@ function installCert(certFile, url) {
   }
 }
 
-function install(addr) {
+function install(addr, useDefault) {
   if (addr.file) {
     return installCert(addr.file);
   }
@@ -33,6 +33,9 @@ function install(addr) {
   };
   httpMgr.request(addr, function(err, body, res) {
     if (err) {
+      if (useDefault && err.code === 'ECONNREFUSED') {
+        return installCert(path.join(commonUtil.getWhistlePath(), '.whistle/certs/root.crt'));
+      }
       return util.error(err.message);
     }
     if (res.statusCode != 200) {
@@ -94,5 +97,5 @@ module.exports = function(argv) {
   if (url) {
     options.addr.url = url.replace(/#.*$/, '') + (url.indexOf('?') === -1 ? '?' : '&') + 'enableHttps=1';
   }
-  install(options.addr);
+  install(options.addr, !options.host && !options.port);
 };
