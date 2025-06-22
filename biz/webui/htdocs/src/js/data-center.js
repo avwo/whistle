@@ -1358,7 +1358,7 @@ function getAppName(ua) {
   var result = ua && (APP_RE.exec(ua) || COMMON_APP_RE.exec(ua));
   if (!result) {
     if (ua) {
-      if (/\b(?:chrome|crmo|crios)\//i.test(ua)) {
+      if (/\b(?:chrome|crmo|crios)\//i.test(ua) || /^Chrome\s/.test(ua)) {
         return 'chrome';
       }
       if (/Version\//.test(ua) && /Safari\//.test(ua)) {
