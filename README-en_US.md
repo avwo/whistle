@@ -19,11 +19,11 @@ Whistle is a cross-platform network packet capture and debugging tool based on N
    - Supports viewing and modifying HTTP, HTTPS, HTTP/2, WebSocket, and TCP requests/responses
    - Built-in multiple common debugging tools:
      - Weinre: View the DOM structure of the remote page,
-     - Log: View the console log of the remote page,
+     - Console: View the console log of the remote page,
      - Composer: Replay and edit requests
 2. **Simple operation**
    - Supports modifying requests/responses by configuring rules
-   - Provides a one-stop GUI interface for viewing packet capture, configuring rules, managing plug-ins, and operating Weinre/Log/Composer, etc.
+   - Provides a one-stop GUI interface for viewing packet capture, configuring rules, managing plug-ins, and operating Weinre/Console/Composer, etc.
 3. **Extensible**
    - Supports extending rules and interface functions through plug-ins
    - Supports being referenced by projects as NPM packages

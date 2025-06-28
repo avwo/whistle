@@ -20,11 +20,11 @@ Whistle (发音为 /ˈwisəl/)是一款基于 Node.js 实现的跨平台网络�
    - 支持查看和修改 HTTP、HTTPS、HTTP/2、WebSocket、TCP 请求/响应
    - 内置多种常用调试工具：
      - Weinre：查看远程页面的 DOM 结构、
-     - Log：查看远程页面的 console 日志、
+     - Console：查看 console 日志、
      - Composer：重放及编辑请求
 2. **操作简单**
    - 支持通过配置规则修改请求/响应
-   - 提供一站式界面，可查看抓包、配置规则、管理插件、操作 Weinre/Log/Composer 等
+   - 提供一站式界面，可查看抓包、配置规则、管理插件、操作 Weinre/Console/Composer 等
 3. **可扩展**
    - 支持通过插件扩展规则及界面功能
    - 支持作为 NPM 模块被项目引用
@@ -72,7 +72,7 @@ Whistle (发音为 /ˈwisəl/)是一款基于 Node.js 实现的跨平台网络�
    >
    > 其它设置代理的方式：
    >
-   > 1. **【推荐】** 通过安装 Chrome 插件 SwitchyOmega 设置代理：https://chromewebstore.google.com/detail/proxy-switchyomega/padekgcemlokbadohgkifijomclgjgif （无法访问可手动安装：https://proxy-switchyomega.com/download/）
+   > 1. **（推荐）** 通过安装 Chrome 插件 SwitchyOmega 设置代理：https://chromewebstore.google.com/detail/proxy-switchyomega/padekgcemlokbadohgkifijomclgjgif （无法访问可手动安装：https://proxy-switchyomega.com/download/）
    >
    > 2. 直接在客户端上设置代理，如 FireFox、微信开发者工具等内置了设置代理功能
    >
