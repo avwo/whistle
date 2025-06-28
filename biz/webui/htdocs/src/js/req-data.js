@@ -81,7 +81,7 @@ var contextMenuList = [
     ]
   },
   {
-    name: 'Filter',
+    name: 'Settings',
     list: [
       { name: 'Edit Settings' },
       { name: 'Exclude All Matching Hosts', action: 'excludeHost' },

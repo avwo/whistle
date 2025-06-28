@@ -119,16 +119,16 @@ var groupRules = [
   ['Rewrite Request', ['urlParams://', 'pathReplace://','sniCallback://', 'method://', 'cipher://', 'reqHeaders://', 'forwardedFor://',
     'ua://', 'auth://', 'cache://', 'referer://', 'attachment://', 'reqCharset://', 'reqCookies://',
     'reqCors://', 'reqType://', 'reqBody://', 'reqMerge://', 'reqPrepend://', 'reqAppend://', 'reqReplace://', 'reqWrite://',
-    'reqWriteRaw://', 'trailers://']],
+    'reqWriteRaw://', 'reqRules://', 'reqScript://']],
   ['Rewrite Response', ['statusCode://', 'replaceStatus://', 'redirect://', 'locationHref://', 'resHeaders://', 'responseFor://',
     'resCharset://', 'resCookies://', 'resCors://', 'resType://', 'resBody://', 'resMerge://', 'resPrepend://', 'resAppend://', 'resReplace://',
     'htmlPrepend://', 'htmlBody://', 'htmlAppend://', 'cssPrepend://', 'cssBody://', 'cssAppend://', 'jsPrepend://', 'jsBody://',
-    'jsAppend://', 'resWrite://', 'resWriteRaw://']],
+    'jsAppend://', 'trailers://', 'resWrite://', 'resWriteRaw://', 'resRules://', 'resScript://']],
+  ['General', ['pipe://', 'delete://', 'headerReplace://']],
   ['Throttle', ['reqDelay://', 'resDelay://', 'reqSpeed://', 'resSpeed://']],
   ['Tools', ['weinre://', 'log://']],
   ['Settings', ['style://', 'lineProps://', 'enable://', 'disable://']],
   ['Filters', ['ignore://', 'skip://', 'excludeFilter://', 'includeFilter://']],
-  ['Others', ['pipe://', 'delete://', 'headerReplace://', 'reqScript://', 'resScript://', 'reqRules://', 'resRules://']],
   ['Plugins', []]
 ];
 

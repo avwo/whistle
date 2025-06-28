@@ -1350,7 +1350,9 @@ var Index = React.createClass({
           }
           return;
         }
-        if (e.keyCode === 77) {
+        if (e.keyCode === 82) {
+          e.preventDefault();
+        } else if (e.keyCode === 77) {
           self.toggleLeftMenu();
           e.preventDefault();
         } else if (e.keyCode === 66) {

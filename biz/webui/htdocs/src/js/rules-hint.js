@@ -14,7 +14,6 @@ var MAX_VAR_LEN = 100;
 var AT_RE = /^@/;
 var P_RE = /^%/;
 var P_VAR_RE = /^%([a-z\d_-]+)([=.])/;
-var PLUGIN_SPEC_RE = /^(pipe|sniCallback):/;
 var VAL_RE = /^([a-z\d_.-]+:\/\/)?(`)?\{([^\s]*?)(?:\}\1?)?$/i;
 var PROTOCOL_RE = /^([^\s:]+):\/\//;
 var HINT_TIMEOUT = 120;
@@ -33,10 +32,30 @@ var FILTERS = [
   'm:<keyword or regexp of request method>',
   'b:<keyword or regexp of request body>',
   's:<keyword or regexp of response status code>',
-  'reqH.keyName=<keyword or regexp of request header key value>',
-  'resH.keyName=<keyword or regexp of response header key value>',
+  'reqH.headerKey=<keyword or regexp of request header key value>',
+  'resH.headerKey=<keyword or regexp of response header key value>',
   'clientIp:<keyword or regexp of client ip>',
   'serverIp:<keyword or regexp of server ip>'
+];
+var HEADERS = [
+  'reqH.headerKey:keywordOrRegExp=<replacement value>',
+  'resH.headerKey:keywordOrRegExp=<replacement value>',
+  'trailer.headerKey:keywordOrRegExp=<replacement value>'
+];
+var DEL_HINTS = [
+  'urlParams.<url param key>',
+  'reqHeaders.<request header key>',
+  'resHeaders.<response header key>',
+  'reqCookies.<request cookie key>',
+  'resCookies.<response cookie key>',
+  'reqBody.<object key path: k1.k2.k3>',
+  'resBody.<object key path: k1.k2.k3>',
+  'reqType',
+  'resType',
+  'reqCharset',
+  'resCharset',
+  'reqBody',
+  'resBody'
 ];
 var CHARS = [
   '-',
@@ -214,6 +233,28 @@ function getFilterHints(keyword, filter1, filter2) {
   return filters1.concat(filters2);
 }
 
+function getSpecHints(keyword, protocol) {
+  var getHint = function(hint) {
+    hint = (protocol || 'headerReplace://') + hint;
+    return {
+      text: hint.substring(0, hint.indexOf('<')),
+      displayText: hint
+    };
+  };
+  var hints = protocol ? DEL_HINTS : HEADERS;
+  if (!keyword) {
+    return hints.map(getHint);
+  }
+  var result = [];
+  keyword = keyword.toLowerCase();
+  hints.forEach(function (hint) {
+    if (hint.toLowerCase().indexOf(keyword) !== -1) {
+      result.push(getHint(hint));
+    }
+  });
+  return result;
+}
+
 function getAtValueList(keyword) {
   keyword = keyword.substring(1);
   try {
@@ -378,10 +419,40 @@ function isRedirectProtocol(name) {
   return name === 'redirect://' || name === 'locationHref://';
 }
 
+function getSpecProto(keyword) {
+  if (!keyword) {
+    return;
+  }
+  if (!keyword.indexOf('pipe://')) {
+    return 'pipe';
+  }
+  if (!keyword.indexOf('sniCallback://')) {
+    return 'sniCallback';
+  }
+  if (keyword.indexOf('://') !== -1) {
+    return;
+  }
+  keyword = keyword.toLowerCase();
+  var isPipe = 'pipe://'.indexOf(keyword) !== -1;
+  if (!isPipe && 'snicallback://'.indexOf(keyword) === -1) {
+    return;
+  }
+  var allRules = protocols.getAllRules();
+  var curProto = isPipe ? 'pipe://' : 'sniCallback://';
+  for (var i = 0, len = allRules.length; i < len; i++) {
+    var rule = allRules[i];
+    if (rule !== curProto && rule.toLowerCase().indexOf(keyword) !== -1) {
+      return;
+    }
+  }
+
+  return isPipe ? 'pipe' : 'sniCallback';
+}
+
 var WORD = /\S+/;
 var showAtHint;
 var showVarHint;
-var showFilterHint;
+var canShowHint;
 var toValKey = function(key, tpl) {
   return tpl + '{' + key + '}' + tpl;
 };
@@ -390,8 +461,8 @@ CodeMirror.registerHelper('hint', 'rulesHint', function (editor, options) {
   showVarHint = false;
   waitingRemoteHints = false;
   curFocusProto = null;
-  var hasShownFilterHint = showFilterHint;
-  showFilterHint = false;
+  var hasShownHint = canShowHint;
+  canShowHint = false;
   var byDelete = editor._byDelete || editor._byPlugin;
   var byEnter = editor._byEnter;
   editor._byDelete = editor._byPlugin = editor._byEnter = false;
@@ -414,7 +485,7 @@ CodeMirror.registerHelper('hint', 'rulesHint', function (editor, options) {
   var value;
   var pluginVars;
   var sep;
-  var specProto = PLUGIN_SPEC_RE.test(curWord) && RegExp.$1;
+  var specProto = getSpecProto(curWord);
   var isPluginVar = P_RE.test(curWord);
   if (isPluginVar && P_VAR_RE.test(curWord)) {
     pluginName = RegExp.$1;
@@ -427,6 +498,7 @@ CodeMirror.registerHelper('hint', 'rulesHint', function (editor, options) {
     value = curWord.substring(pluginName.length + 2);
     isPluginVar = false;
   }
+
   if (isAt || specProto || isPluginVar) {
     if (!byEnter || /^(?:pipe|sniCallback):\/\/$/.test(curWord)) {
       list = isAt
@@ -643,15 +715,16 @@ CodeMirror.registerHelper('hint', 'rulesHint', function (editor, options) {
         }, HINT_TIMEOUT);
       }
     }
-    var isFilter = curWord.indexOf('includeFilter://') === 0 || curWord.indexOf('excludeFilter://') === 0;
-    if (value || (isFilter ? (byEnter && hasShownFilterHint) : curWord.indexOf('//') !== -1) || !NON_SPECAIL_RE.test(curWord)) {
+    var isSpecHint = curWord.indexOf('headerReplace://') === 0 || curWord.indexOf('includeFilter://') === 0 ||
+      curWord.indexOf('excludeFilter://') === 0 || curWord.indexOf('delete://') === 0;
+    if (value || (isSpecHint ? (byEnter && hasShownHint) : curWord.indexOf('//') !== -1) || !NON_SPECAIL_RE.test(curWord)) {
       return;
     }
   } else if (byDelete) {
     return;
   }
   var filterName;
-  if (isFilter) {
+  if (isSpecHint) {
     var slashIdx = curWord.indexOf('://') + 3;
     value = curWord.substring(slashIdx);
     filterName = curWord.substring(0, slashIdx);
@@ -660,15 +733,18 @@ CodeMirror.registerHelper('hint', 'rulesHint', function (editor, options) {
   }
   list = getHints(filterName || curWord);
   var len = list.length;
-  isFilter = (len === 2 && (isFilterProtocol(list[0]) || isFilterProtocol(list[1]))) || (len === 1 && isFilterProtocol(list[0]));
-  if (isFilter) {
-    list = getFilterHints(value, list[0], list[1]);
+  var isHeader = len === 1 && list[0].indexOf('headerReplace://') === 0;
+  var isDelete = len === 1 && list[0].indexOf('delete://') === 0;
+  var isFilter = (len === 2 && (isFilterProtocol(list[0]) || isFilterProtocol(list[1]))) || (len === 1 && isFilterProtocol(list[0]));
+  isSpecHint = isHeader  || isDelete || isFilter;
+  if (isSpecHint) {
+    list = (isDelete || isHeader ) ? getSpecHints(value, isDelete && 'delete://') : getFilterHints(value, list[0], list[1]);
     len = list.length;
   }
   if (!len) {
     return;
   }
-  showFilterHint = isFilter;
+  canShowHint = isSpecHint;
   var index = curLine.indexOf('://', start);
   var protocol;
   if (index !== -1) {
@@ -680,14 +756,14 @@ CodeMirror.registerHelper('hint', 'rulesHint', function (editor, options) {
       (len === 2 && isRedirectProtocol(list[0]) ||
         (protocol !== curWord + 'http://' && protocol !== curWord + 'https://'))
     ) {
-      end = isFilter ? Math.max(index, end) : index;
+      end = isSpecHint ? Math.max(index, end) : index;
     }
   } else {
     index = curLine.indexOf(':', start);
     if (index !== -1) {
       ++index;
       protocol = curLine.substring(start, index) + '//';
-      if (isFilter ? isFilterProtocol(protocol) : list.indexOf(protocol) !== -1) {
+      if (isSpecHint ? (isHeader || isFilterProtocol(protocol)) : list.indexOf(protocol) !== -1) {
         end = index;
         var curChar = curLine[end];
         if (curChar === '/') {
