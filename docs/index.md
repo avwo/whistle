@@ -21,7 +21,7 @@ features:
   - title: 操作简单
     details: 通过配置规则修改请求/响应，提供包含查看抓包、配置规则、管理插件及调试工具的一站式界面
   - title: 可扩展
-    details: 可通过插件扩展规则及界面功能，或可作为标准 NPM 模块依赖集成
+    details: 可通过插件扩展规则及界面功能，或作为标准 NPM 模块依赖集成
   - title: 跨平台
-    details: 支持 macOS/Windows/Linux 桌面系统、无界面服务器系统及Docker等容器化平台
+    details: 支持 macOS/Windows/Linux 桌面系统、无界面服务器系统及 Docker 等容器化平台
 ---
