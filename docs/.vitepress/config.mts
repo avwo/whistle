@@ -52,6 +52,7 @@ export default defineConfig({
           { text: 'Weinre', link: '/docs/gui/weinre' },
           { text: 'Values', link: '/docs/gui/values' },
           { text: 'Plugins', link: '/docs/gui/plugins' },
+          { text: '快捷键', link: '/docs/gui/shortcut' },
         ]
       },
       {

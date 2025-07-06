@@ -1,5 +1,5 @@
 # Values 界面
 
-水电费水电费水电费
+操作内容快捷配置界面
 
 <img src="/img/values.png" alt="Values 界面" width="1000" />
