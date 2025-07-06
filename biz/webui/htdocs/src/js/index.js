@@ -1414,6 +1414,10 @@ var Index = React.createClass({
           e.preventDefault();
           return  self.exportData();
         }
+        if (e.keyCode === 190) {
+          self.showSettings();
+          return e.preventDefault();
+        }
         var isService = e.keyCode === 74;
         if (isService || e.keyCode === 73) {
           if (!$('.modal.in').length) {
@@ -3294,7 +3298,7 @@ var Index = React.createClass({
       self.saveRulesOrValues();
     }
   },
-  showSettings: function (e) {
+  showSettings: function () {
     var pageName = this.state.name;
     if (pageName === 'rules') {
       this.showRulesSettings();
@@ -3304,7 +3308,9 @@ var Index = React.createClass({
       this.showValuesSettings();
       return;
     }
-    this.refs.networkSettings.showDialog();
+    if (pageName === 'network') {
+      this.refs.networkSettings.showDialog();
+    }
   },
   activeRules: function (item) {
     storage.set('activeRules', item.name);
