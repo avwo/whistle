@@ -1,8 +1,17 @@
 require('./base-css.js');
 require('../css/editor-settings.css');
 var React = require('react');
+var ReactDOM = require('react-dom');
+var $ = require('jquery');
+var events = require('./events');
 
 var EditorSettings = React.createClass({
+  componentDidMount: function () {
+    var self = this;
+    events.on('toggle' + (this.props.name === 'rules' ? 'Rules' : 'Values') + 'LineNumbers', function () {
+      $(ReactDOM.findDOMNode(self.refs.showLineNumbers)).trigger('click');
+    });
+  },
   render: function () {
     return (
       <div className="w-editor-settings">
@@ -63,6 +72,7 @@ var EditorSettings = React.createClass({
         <p className="w-editor-settings-box">
           <label className="w-align-items">
             <input
+              ref="showLineNumbers"
               checked={this.props.lineNumbers}
               onChange={this.props.onLineNumberChange}
               type="checkbox"

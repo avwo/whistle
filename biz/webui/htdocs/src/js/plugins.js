@@ -320,6 +320,10 @@ var Home = React.createClass({
       this.setState({ cmdMsg: msg }, cb);
     }
   },
+  setRegistry: function(registry) {
+    this.setState({ registry: registry, registryChanged: true });
+    storage.set('pluginsRegistry', registry);
+  },
   onRegistry: function(e) {
     var registry = e.target.value;
     if (registry === '+Add') {
@@ -342,8 +346,7 @@ var Home = React.createClass({
       });
       return;
     }
-    this.setState({ registry: registry, registryChanged: true });
-    storage.set('pluginsRegistry', registry);
+    this.setRegistry(registry);
   },
   onShowUpdate: function(e) {
     var name = $(e.target).attr('data-name');

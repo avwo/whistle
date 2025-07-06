@@ -78,7 +78,7 @@ function mockAlert(msg, copyText, btnText) {
   }
 }
 
-function mockConfirm(msg, cb, removeAllBtn) {
+function mockConfirm(msg, cb, removeAllBtn, flag) {
   createConfirm();
   if (confirmDialog.is(':visible')) {
     return;
@@ -87,6 +87,11 @@ function mockConfirm(msg, cb, removeAllBtn) {
   handleConfirm = cb;
   confirmDialog.find('pre').text(msg);
   confirmDialog.modal('show');
+  if (flag) {
+    confirmDialog.attr('data-confirm-flag', flag);
+  } else {
+    confirmDialog.removeAttr('data-confirm-flag');
+  }
 }
 
 exports.alert = mockAlert;

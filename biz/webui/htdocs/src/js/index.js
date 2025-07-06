@@ -1304,7 +1304,7 @@ var Index = React.createClass({
       })
       .on('keyup', function (e) {
         if ((e.metaKey || e.ctrlKey) && e.keyCode === 82) {
-          e.preventDefault();
+          !isClient && e.preventDefault();
         } else if (self.state.name == 'network' &&  e.keyCode === 191) {
           var nodeName = document.activeElement && document.activeElement.nodeName;
           if (nodeName !== 'INPUT' && nodeName !== 'TEXTAREA' && !$('.modal.in').length) {
@@ -1350,8 +1350,24 @@ var Index = React.createClass({
           }
           return;
         }
-        if (e.keyCode === 82) {
+        if (e.keyCode === 79 || e.keyCode === 48) {
           e.preventDefault();
+          if (name === 'network') {
+            events.trigger('toggleNetworkState');
+          } else if (name === 'rules') {
+            self.confirmDisableAllRules();
+          } else if (name === 'plugins') {
+            self.confirmDisableAllPlugins();
+          }
+        } else if (e.keyCode === 76) {
+          e.preventDefault();
+          if (name === 'rules') {
+            events.trigger('toggleRulesLineNumbers');
+          } else if (name === 'values') {
+            events.trigger('toggleValuesLineNumbers');
+          }
+        } else if (e.keyCode === 82) {
+          !isClient && e.preventDefault();
         } else if (e.keyCode === 77) {
           self.toggleLeftMenu();
           e.preventDefault();
@@ -1371,7 +1387,7 @@ var Index = React.createClass({
         }
         e.keyCode == 68 && removeItem(e);
         var modal = self.state.network;
-        if (isNetwork && e.keyCode === 83) {
+        if (isNetwork && (e.keyCode === 83 || e.keyCode === 69)) {
           e.preventDefault();
           if ($('.modal.in').length) {
             if (
@@ -1393,6 +1409,10 @@ var Index = React.createClass({
             }, 500);
           }
           return;
+        }
+        if (e.keyCode === 69) {
+          e.preventDefault();
+          return  self.exportData();
         }
         var isService = e.keyCode === 74;
         if (isService || e.keyCode === 73) {
@@ -3358,24 +3378,28 @@ var Index = React.createClass({
   confirmDisableAllRules: function (e) {
     var self = this;
     var state = self.state;
-    if (state.disabledAllRules) {
+    var dialog;
+    if (state.disabledAllRules || (!e && (dialog = $('.w-win-dialog[data-confirm-flag=rules]')).is(':visible'))) {
       self.disableAllRules();
+      dialog && dialog.modal('hide');
     } else {
       win.confirm('Do you confirm disabling all rules?', function (sure) {
         sure && self.disableAllRules();
-      });
+      }, false, 'rules');
     }
     e && e.preventDefault();
   },
   confirmDisableAllPlugins: function (e) {
     var self = this;
     var state = self.state;
-    if (state.disabledAllPlugins) {
+    var dialog;
+    if (state.disabledAllPlugins || (!e && (dialog = $('.w-win-dialog[data-confirm-flag=plugins]')).is(':visible'))) {
       self.disableAllPlugins();
+      dialog && dialog.modal('hide');
     } else {
       win.confirm('Do you confirm disabling all plugins?', function (sure) {
         sure && self.disableAllPlugins();
-      });
+      }, false, 'plugins');
     }
     e && e.preventDefault();
   },
@@ -4716,6 +4740,7 @@ var Index = React.createClass({
                   <span aria-hidden="true">&times;</span>
                 </button>
                 <EditorSettings
+                  name="rules"
                   theme={rulesTheme}
                   fontSize={rulesFontSize}
                   lineNumbers={showRulesLineNumbers}

@@ -573,10 +573,18 @@ var ReqData = React.createClass({
         var item;
         if (e.keyCode == 38) {
           //up
-          item = modal.prev();
+          if (e.ctrlKey || e.metaKey) {
+            item = modal.start();
+          } else {
+            item = modal.prev();
+          }
         } else if (e.keyCode == 40) {
           //down
-          item = modal.next();
+          if (e.ctrlKey || e.metaKey) {
+            item = modal.end();
+          } else {
+            item = modal.next();
+          }
         }
 
         if (item) {
@@ -953,8 +961,9 @@ var ReqData = React.createClass({
       el = target.closest('.w-req-table');
     }
     var dataId = el.attr('data-id');
+    var treeId = el.attr('data-tree');
     clearTimeout(this._delayCtxTimer);
-    if (!dataId) {
+    if (!treeId && !dataId) {
       var con = this.container.find('.ReactVirtualized__Grid:first');
       if (con.length && document.elementFromPoint && con[0].offsetHeight < con[0].scrollHeight) {
         var self = this;
@@ -972,7 +981,6 @@ var ReqData = React.createClass({
         return;
       }
     }
-    var treeId = el.attr('data-tree');
     var modal = this.props.modal;
     var item = modal.getItem(dataId);
     var disabled = !item;
@@ -1231,12 +1239,12 @@ var ReqData = React.createClass({
     if (!e.metaKey && !e.ctrlKey) {
       return;
     }
-    if (e.keyCode === 82) {
+    if (e.keyCode === 13) {
       events.trigger('replaySessions', [null, e.shiftKey]);
     } else if (e.keyCode === 65) {
       e.preventDefault();
       events.trigger('abortRequest');
-    } else if (e.keyCode === 69) {
+    } else if (e.keyCode === 39) {
       e.preventDefault();
       events.trigger('composer');
     }

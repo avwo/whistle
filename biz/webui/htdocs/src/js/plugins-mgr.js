@@ -4,6 +4,7 @@ var React = require('react');
 var Dialog = require('./dialog');
 var dataCenter = require('./data-center');
 var util = require('./util');
+var storage = require('./storage');
 
 var REGISTRY_RE = /^--registry=https?:\/\/[^/?]/;
 var SEP_RE = /\s*[|,;\s]+\s*/;
@@ -29,7 +30,11 @@ var PluginsMgr = React.createClass({
     if (util.showHandlePluginInfo(data, xhr)) {
       var registry = getRegistry(this._cmd);
       if (registry) {
-        dataCenter.plugins.addRegistry({ registry: registry });
+        dataCenter.plugins.addRegistry({ registry: registry }, function (data) {
+          if (data && data.ec === 0) {
+            storage.set('pluginsRegistry', registry);
+          }
+        });
       }
     }
   },

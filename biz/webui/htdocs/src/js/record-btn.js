@@ -1,3 +1,5 @@
+var events = require('./events');
+
 var React = require('react');
 var MenuItem = require('./menu-item');
 require('../css/record-btn.css');
@@ -36,6 +38,9 @@ var RecordBtn = React.createClass({
     ACTION_OPTIONS[0] = PAUSE_OPTION;
     this.props.onClick(stop ? 'stop' : 'refresh');
     this.setState({});
+  },
+  componentDidMount: function () {
+    events.on('toggleNetworkState', this.onClick);
   },
   enable: function (flag) {
     var state = this.state;

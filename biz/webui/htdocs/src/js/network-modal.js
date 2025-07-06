@@ -598,6 +598,26 @@ proto.next = function () {
   }
 };
 
+proto.start = function () {
+  var list = this.getList();
+  for (var i = 0, len = list.length; i < len; i++) {
+    var item = list[i];
+    if (!item.hide) {
+      return item;
+    }
+  }
+};
+
+proto.end = function () {
+  var list = this.getList();
+  for (var i = list.length - 1; i >= 0; i++) {
+    var item = list[i];
+    if (!item.hide) {
+      return item;
+    }
+  }
+};
+
 function updateList(list, len, hasKeyword) {
   if (!(len > 0)) {
     return;

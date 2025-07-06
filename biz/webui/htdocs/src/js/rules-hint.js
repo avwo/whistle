@@ -16,6 +16,7 @@ var P_RE = /^%/;
 var P_VAR_RE = /^%([a-z\d_-]+)([=.])/;
 var VAL_RE = /^([a-z\d_.-]+:\/\/)?(`)?\{([^\s]*?)(?:\}\1?)?$/i;
 var PROTOCOL_RE = /^([^\s:]+):\/\//;
+var VALUE_RE = /^\s*```/;
 var HINT_TIMEOUT = 120;
 var curHintMap = {};
 var curHintProto,
@@ -468,6 +469,9 @@ CodeMirror.registerHelper('hint', 'rulesHint', function (editor, options) {
   editor._byDelete = editor._byPlugin = editor._byEnter = false;
   var cur = editor.getCursor();
   var curLine = editor.getLine(cur.line);
+  if (VALUE_RE.test(curLine)) {
+    return;
+  }
   var end = cur.ch,
     start = end,
     list;
