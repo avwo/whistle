@@ -62,6 +62,7 @@ var Network = React.createClass({
         }
       });
     events.trigger('networkDidMount');
+    events.on('toggleNetworkDock', self.onDockChange);
   },
   shouldComponentUpdate: function (nextProps) {
     var hide = util.getBoolean(this.props.hide);

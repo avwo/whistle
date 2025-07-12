@@ -90,6 +90,10 @@ window.setWhistleDataUrl = function(url) {
   return false;
 };
 
+window.showWhistleMessage = function(options) {
+  message[options.level || options.type || 'info'](options.text || options.msg || options.message);
+};
+
 if (/[&#?]showTreeView=(0|false|1|true)(?:&|$|#)/.test(search)) {
   showTreeView = RegExp.$1 === '1' || RegExp.$1 === 'true';
 }
@@ -1338,19 +1342,20 @@ var Index = React.createClass({
       })
       .on('keydown', function (e) {
         var name = self.state.name;
-        e.keyCode == 46 && removeItem(e);
+        var code = e.keyCode;
+        code == 46 && removeItem(e);
         if (!e.ctrlKey && !e.metaKey) {
-          if (e.keyCode === 112) {
+          if (code === 112) {
             e.preventDefault();
             window.open(
               'https://avwo.github.io/whistle/webui/' + name + '.html'
             );
-          } else if (e.keyCode === 116) {
+          } else if (code === 116) {
             e.preventDefault();
           }
           return;
         }
-        if (e.keyCode === 79 || e.keyCode === 48) {
+        if (code === 79 || code === 48) {
           e.preventDefault();
           if (name === 'network') {
             events.trigger('toggleNetworkState');
@@ -1359,25 +1364,27 @@ var Index = React.createClass({
           } else if (name === 'plugins') {
             self.confirmDisableAllPlugins();
           }
-        } else if (e.keyCode === 76) {
+        } else if (code === 76) {
           e.preventDefault();
-          if (name === 'rules') {
+          if (name === 'network') {
+            events.trigger('toggleNetworkDock');
+          } else if (name === 'rules') {
             events.trigger('toggleRulesLineNumbers');
           } else if (name === 'values') {
             events.trigger('toggleValuesLineNumbers');
           }
-        } else if (e.keyCode === 82) {
+        } else if (code === 82) {
           !isClient && e.preventDefault();
-        } else if (e.keyCode === 77) {
+        } else if (code === 77) {
           self.toggleLeftMenu();
           e.preventDefault();
-        } else if (e.keyCode === 66) {
+        } else if (code === 66) {
           self.toggleTreeView();
           e.preventDefault();
           events.trigger('toggleTreeViewByAccessKey');
         }
         var isNetwork = name === 'network';
-        if (isNetwork && e.keyCode == 88) {
+        if (isNetwork && code == 88) {
           if (
             !util.isFocusEditor() &&
             !$(e.target).closest('.w-frames-list').length
@@ -1385,9 +1392,9 @@ var Index = React.createClass({
             self.clear();
           }
         }
-        e.keyCode == 68 && removeItem(e);
+        code == 68 && removeItem(e);
         var modal = self.state.network;
-        if (isNetwork && (e.keyCode === 83 || e.keyCode === 69)) {
+        if (isNetwork && (code === 83 || code === 69)) {
           e.preventDefault();
           if ($('.modal.in').length) {
             if (
@@ -1410,16 +1417,16 @@ var Index = React.createClass({
           }
           return;
         }
-        if (e.keyCode === 69) {
+        if (code === 69) {
           e.preventDefault();
           return  self.exportData();
         }
-        if (e.keyCode === 190) {
+        if (code === 190) {
           self.showSettings();
           return e.preventDefault();
         }
-        var isService = e.keyCode === 74;
-        if (isService || e.keyCode === 73) {
+        var isService = code === 74;
+        if (isService || code === 73) {
           if (!$('.modal.in').length) {
             if (isService) {
               self.showService();

@@ -960,10 +960,10 @@ var ReqData = React.createClass({
     if (!el.length) {
       el = target.closest('.w-req-table');
     }
+    var modal = this.props.modal;
     var dataId = el.attr('data-id');
-    var treeId = el.attr('data-tree');
     clearTimeout(this._delayCtxTimer);
-    if (!treeId && !dataId) {
+    if (!modal.isTreeView && !dataId) {
       var con = this.container.find('.ReactVirtualized__Grid:first');
       if (con.length && document.elementFromPoint && con[0].offsetHeight < con[0].scrollHeight) {
         var self = this;
@@ -981,7 +981,7 @@ var ReqData = React.createClass({
         return;
       }
     }
-    var modal = this.props.modal;
+    var treeId = el.attr('data-tree');
     var item = modal.getItem(dataId);
     var disabled = !item;
     var cellText = item && (nodeName === 'TD' || nodeName === 'TH') && (target.text() || '').trim();
