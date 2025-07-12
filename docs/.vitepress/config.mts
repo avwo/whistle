@@ -61,7 +61,10 @@ export default defineConfig({
         items: [
           { text: '匹配模式（pattern）', link: '/docs/rules/pattern' },
           { text: '操作指令（operation）', link: '/docs/rules/operation' },
+          { text: '过滤器（filters）', link: '/docs/rules/filters' },
+          { text: '协议列表', link: '/docs/rules/protocols' },
           { text: '@', link: '/docs/rules/@' },
+          { text: '%', link: '/docs/rules/plugin-var' },
           {
             text: 'Map Local',
             collapsed: true,

@@ -1,16 +1,32 @@
 # 开发插件
-
-通过查阅[插件使用文档](/docs/extensions/usage)，您已经了解插件可实现的各种功能，接下来我们看下如何实现这些功能，为了方便讲解每个核心功能均以独立插件形式演示，实际开发中开发者可以按需自由组合。
+您已了解插件的各项功能特性（参考[使用文档](/usage)），现在我们将通过模块化方式演示具体实现。
+> 每个核心功能作为独立插件实现，保持单一职责原则，实际开发中可自由拼装这些功能模块。
 
 ## 准备工作
-
+1. 创建一个空目录，如：`dev-examples`
+2. 安装脚手架 [lack](https://github.com/avwo/lack)：
+   ``` txt
+    npm i -g lack
+   ```
 ## rules.txt
+插件的默认规则文件：
+- 插件安装后会自动加载生效
+- 优先级低于界面 Rules 规则
+- 插件被禁用立即失效
 
+创建包含 `rules.txt` 规则文件的插件：
+1. 
 
 ## reqRules.txt
 
 
 ## resRules.txt
+
+
+## auth
+
+
+## sniCallback
 
 
 ## reqRulesServer
@@ -22,12 +38,23 @@
 ## reqStatsServer
 
 
+## resStatsServer
+
+
+
 ## server
 
 
 ## pipe
 
+
 ## 插件操作界面
+
+
+## 插件变量配置
+
+
+## 插件变量配置
 
 
 ## Network 右侧一级 Tab

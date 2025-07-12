@@ -5,93 +5,90 @@
 <img src="/img/network.png" alt="Network 界面" width="1000" />
 
 
-## 顶部菜单{#top-menus}
-1. Record：是否开启、停止或暂停抓包功能
-   - 红色图标：表示开启（默认开启）
-   - 方形灰色图标：表示停止
-   - 圆形灰色图标：表示暂停
-2. Import：导入抓包数据，支持导入 HAR、SAZ 及 Whistle（`.txt`）自定义的抓包数据格式
-3. Export：导出抓包数据，支持导出 HAR、SAZ 及 Whistle（`.txt`）自定义的抓包数据格式
-4. Clear：清空当前会话的抓包列表
-5. Replay：重新发送选中的请求（支持多选）
-6. Edit：将选中请求填充到 Composer（编辑面板）
-7. Settings：Network 设置对话框
-   - Exclude Filter：排除抓包数据
-   - Include Filter：
-   - Network Columns：
-   - Maximum Rows：
-   - Viewing only your computer's network requests：
-   - ViewAll in new window：
-   - Show Tree View：抓包列表以树状显示
-8. Weinre：[Weinre 菜单](/docs/gui/https)
-9. HTTPS：[HTTPS 对话框](/docs/gui/https)
+## 底部搜索框{#filter}
 
-## 右键菜单{#context-menus}
+搜索框支持多种高级过滤方式，可通过前缀快速定位特定类型的请求：
 
-1. Open：
-   - New Tab：在新页面打开当前请求 URL
-   - QR Code：显示当前请求 URL 的二维码
-   - Overview：打开请求的 Overview 面板
-   - Inspectors：打开请求的 Inspectors 面板
-   - Timeline：打开请求的 Timeline 面板
-   - Composer：打开请求的 Overview 面板
-   - Preview：预览当前响应内容
-   - Source：打开当前请求的原始抓包数据
-   - Tree View / List View：以树状 / 列表的方式显示抓包数据
-2. Copy：
-   - Cell Text：复制当前右键点击的单元格文本内容
-   - Host：复制当前右键点击的抓包请求 Host 列内容
-   - Path：复制当前右键点击的抓包请求的域名 Host 列内容
-   - URL：
-   - Full URL：
-   - As CURL：
-   - Client IP：
-   - Server IP：
-   - Cookie：
-3. Remove：
-   - All：
-   - One：
-   - Others：
-   - Selected：
-   - Unselected：
-   - Unmarked：
-   - All Matching Hosts：
-   - All Matching URLs：
-4. Settings：
-   - Edit Settings：
-   - Exclude All Matching Hosts：
-   - Exclude All Matching URLs：
-5. Actions：
-   - Abort：
-   - Replay：
-   - Replay Times：
-   - Edit Request：
-   - Mark：
-   - Unmark：
-6. Tree：
-   - Expand：
-   - Collapse：
-   - Expand All：
-   - Collapse All：
-7. Mock
-8. Import：
-9. Export：
-10. Others：
+| 前缀            | 过滤目标                            | 示例                              |
+| --------------- | ----------------------------------- | --------------------------------- |
+| `无前缀`        | 请求 URL                            | `example.com/api` `/abc=123/i`    |
+| `m:pattern`     | 请求方法                            | `m:pos` `m:/get\|post/i`  |
+| `h:pattern`     | 请求 / 响应头原始文本               | `h:image/` `h:/cookie:\s*test=123/i` |
+| `H:pattern`     | 请求头 Host 字段                    | `H:example.com` `H:/test/i`       |
+| `b:pattern`     | 请求 / 响应体原始内容               | `b:"error":true` `b:/\d{3}/`     |
+| `i:pattern`     | 客户端 IP 或服务的 IP               | `i:11.2`  `i:/^11\.2/`         |
+| `s:pattern`     | 响应状态码                          | `s:404`  `s:/5\d{2}/`             |
+| `t:pattern`     | 响应头 Content-Type 内容              | `t:json` `t:/html\|xml/i` |
+| `mark:pattern`  | 右键菜单手动 Mark 的请求 URL        | `mark:example.com` `mark:/\d{5}/` |
+| `app:pattern`   | 按 APP 名称过滤                     | `app:wechat` `app:chrome`         |
+| `fc:pattern`    | Composer发出的请求 URL              | `fc:/test/` `fc:www.test.com`     |
+| `e:pattern`     | 出错的请求 URL                      | `e:timeout`   `e:/abort/i`                  |
+| `style:pattern` | [style](/docs/rules/style) 操作内容 | `style:italic` `style:/ita/i`       |
 
-## 底部过滤搜索框{#filter-input}
+`pattern` 为**关键字**或**正则表达式**，多条件 "与" 搜索：
+``` txt
+b:/"success":false/ m:POST s:200 H:api.example.com
+```
 
-搜索框支持以下搜索方式：
-1. `xxx`：默认根据请求 URL 进行过滤
-2. `m:xxx`：
-3. ：
-4. ：
-5. ：
-6. ：
-7. ：
+## Settings
+**Exclude Filter**（排除过滤器） 和 **Include Filte**（包含过滤器） 允许对未在 Network 显示过的抓包数据进行精细化筛选，支持多条件组合过滤：
+
+| **过滤类型**       | **作用**                                 |      |
+| ------------------ | ---------------------------------------- | ---- |
+| **Include Filter** | **只保留**满足条件的请求（相当于白名单） |      |
+| **Exclude Filter** | **排除**满足条件的请求（相当于黑名单）   |      |
+
+1. 单个输入框内的条件
+   - 分隔方式：用 空格 或 换行符 分隔多个条件
+   - 逻辑关系：条件间是 "或"（OR） 关系
+    > 示例：`example.com api.test.com` → 匹配 example.com 或 api.test.com 的请求
+2. 多个输入框之间的条件
+   - 逻辑关系：不同输入框之间是 "与"（AND） 关系
+   - 示例：
+      - Include Filter 输入：`m:GET`
+      - Exclude Filter 输入：`h:/cookie:[^\r\n]*test=123/`
+      - 最终效果：只保留 GET 请求，且排除请求头 cookie 里面包含 `test=123`的请求
+
+**支持的过滤条件**：
+
+| **语法**    | **作用**                        | **示例**                                     |
+| ----------- | ------------------------------- | -------------------------------------------- |
+| `无前缀`    | 匹配请求 URL 包含该关键字的请求 | `.example.com`                               |
+| `m:pattern` | 匹配请求方法                    | `m:POST`（匹配 POST 请求）                   |
+| `h:pattern` | 匹配原始请求头                  | `h:/cookie:[^\r\n]*test=123/`（匹配 cookie） |
+| `H:pattern` | 匹配请求头 Host 字段            | `H:example.com` `H:/test/i`                  |
+| `i:pattern` | 匹配客户端 IP                   | `i:11.2`  `i:/^11\.2/`                       |
+
+与 Network 列表底部搜索框不同：
+
+| **功能**         | **Network 底部搜索框**     | **Settings 中的 Filter**             |
+| ---------------- | -------------------------- | ------------------------------------ |
+| **匹配范围**     | 请求 + 响应阶段的所有数据  | **仅匹配请求阶段**（不包含响应数据） |
+| **生效时机**     | 实时过滤已显示和未来的请求 | **仅对未来新请求生效**               |
+| **历史数据影响** | 可过滤已存在的抓包记录     | **不影响已显示的请求**               |
+
+**其它选项：**
+
+| 项名称                                    | 功能说明                                                 |
+| ----------------------------------------- | -------------------------------------------------------- |
+| **Network Columns**                       | 自定义抓包列表显示的列（如状态码、方法、大小等）         |
+| **Maximum Rows**                          | 设置同时显示的最大抓包数量（防止内存溢出）               |
+| **Viewing only your computer's requests** | 只显示本机发出的请求（过滤其他设备/远程请求）            |
+| **ViewAll in new window**                 | 点击"View All"时在新窗口打开完整内容（适合大响应体查看） |
+| **Show Tree View**                        | 以树状结构展示请求（按域名/路径分组）                    |
 
 ## 详情面板{#detail}
-1. Overview：
-2. Inspectors：
-3. Timeline：
-4. Composer：[Componser 界面](/docs/gui/https)
-5. Tools：
+
+1. Overview：匹配的规则及请求的一些基本信息
+2. Inspectors：请求/响应头及内容的详细信息
+3. Timeline：请求的性能信息
+4. Composer：[Componser 界面](./https)
+5. Tools：一些工具
+   - Console：显示远程界面 console 日志的平台，详见：[Console](./console)
+   - Server：Whistle 运行过程发生的一些异常
+   - Toolbox：一些常用的工具方法
+
+## 其它菜单
+1. Replay：重新请求选中的抓包数据
+2. Edit：将抓包数据填充到右侧的 Composer
+3. 右上角箭头按钮：切换到上下面板的模式，适合竖屏显示器
