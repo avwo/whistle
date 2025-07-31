@@ -65,3 +65,7 @@ _book
 dist
 /.history
 /test/temp_files
+
+# ide
+/.idea/
+/.vscode/

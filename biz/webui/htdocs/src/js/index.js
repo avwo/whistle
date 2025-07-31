@@ -581,6 +581,11 @@ var Index = React.createClass({
         icon: false
       },
       {
+        name: 'ChangeLog',
+        href: 'https://github.com/avwo/whistle/blob/master/CHANGELOG.md',
+        icon: false
+      },
+      {
         name: 'Issue',
         href: 'https://github.com/avwo/whistle/issues/new',
         icon: false
@@ -866,7 +871,7 @@ var Index = React.createClass({
         composerData = data;
       }
     });
-   
+
     events.on('showPluginOption', function(_, plugin) {
       if (!plugin) {
         return;
@@ -892,7 +897,7 @@ var Index = React.createClass({
     events.on('hidePluginOption', function() {
       self.refs.iframeDialog.hide();
     });
-  
+
     events.on('download', function(_, data) {
       self.download(data);
     });

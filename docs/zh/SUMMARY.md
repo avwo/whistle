@@ -1,6 +1,7 @@
 # Summary
 
 * [关于whistle](README.md)
+* [更新日志](CHANGELOG.md)
 * [安装启动](install.md)
 * [代理与证书](proxy.md)
 * [命令行参数](options.md)
