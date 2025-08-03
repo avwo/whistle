@@ -38,7 +38,7 @@ var module = { exports: exports };
           body = getText(obj);
         }
         return body;
-      }
+      };
       Object.defineProperties(obj, {
         body: {  get: getBody  },
         json: {

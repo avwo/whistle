@@ -147,9 +147,17 @@ module.exports = function (options, callback) {
     callback = options;
     options = null;
   }
+  options = options || {};
   var startWhistle = function () {
     var server = options.server;
     if (server) {
+      if (typeof server.address === 'function') {
+        var info = server.address();
+        if (info && info.port) {
+          options.port = info.port;
+          options.host = info.address;
+        }
+      }
       assert(options.port > 0, 'options.port of the custom server is required');
       if (!options.storage && options.storage !== false) {
         options.storage = '__custom_server_5b6af7b9884e1165__' + options.port;
