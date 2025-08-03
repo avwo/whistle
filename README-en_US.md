@@ -66,7 +66,7 @@ For environments such as Linux servers without interfaces, please follow the 4 s
     >
     > Other ways to set proxy:
     >
-    > 1. **[Recommended]** Install Chrome plug-in SwitchyOmega Set up a proxy: https://chromewebstore.google.com/detail/proxy-switchyomega/padekgcemlokbadohgkifijomclgjgif (If you cannot access it, you can install it manually: https://proxy-switchyomega.com/download/)
+    > 1. **[Recommended]** Install Chrome plug-in ZeroOmega Set up a proxy: https://chromewebstore.google.com/detail/proxy-switchyomega-3-zero/pfnededegaaopdmhkdmcofjmoldfiped (If you cannot access it, you can install it manually: https://chrome.zzzmh.cn/info/pfnededegaaopdmhkdmcofjmoldfiped)
     >
     > 2. Set up a proxy directly on the client, such as FireFox, WeChat developer tools, etc., which have built-in proxy settings
     >

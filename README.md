@@ -72,7 +72,7 @@ Whistle (发音为 /ˈwisəl/)是一款基于 Node.js 实现的跨平台网络�
    >
    > 其它设置代理的方式：
    >
-   > 1. **（推荐）** 通过安装 Chrome 插件 SwitchyOmega 设置代理：https://chromewebstore.google.com/detail/proxy-switchyomega/padekgcemlokbadohgkifijomclgjgif （无法访问可手动安装：https://proxy-switchyomega.com/download/）
+   > 1. **（推荐）** 通过安装 Chrome 插件 ZeroOmega 设置代理：https://chromewebstore.google.com/detail/proxy-switchyomega-3-zero/pfnededegaaopdmhkdmcofjmoldfiped （无法访问可手动安装：https://chrome.zzzmh.cn/info/pfnededegaaopdmhkdmcofjmoldfiped）
    >
    > 2. 直接在客户端上设置代理，如 FireFox、微信开发者工具等内置了设置代理功能
    >
