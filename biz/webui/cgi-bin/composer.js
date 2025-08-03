@@ -74,20 +74,18 @@ function handleConnect(options, cb, count) {
       if (err) {
         return execCb && execCb(err);
       }
-      if (!err) {
-        if (TLS_PROTOS.indexOf(options.protocol) !== -1) {
-          socket = tls.connect({
-            rejectUnauthorized: config.rejectUnauthorized,
-            socket: socket,
-            servername: options.hostname
-          });
-        }
-        drain(socket);
-        var data = options.body;
-        if (data && data.length) {
-          socket.write(data);
-          options.body = data = null;
-        }
+      if (TLS_PROTOS.indexOf(options.protocol) !== -1) {
+        socket = tls.connect({
+          rejectUnauthorized: config.rejectUnauthorized,
+          socket: socket,
+          servername: options.hostname
+        });
+      }
+      drain(socket);
+      var data = options.body;
+      if (data && data.length) {
+        socket.write(data);
+        options.body = data = null;
       }
       execCb && execCb(null, {
         statusCode: svrRes.statusCode,
@@ -100,8 +98,11 @@ function handleConnect(options, cb, count) {
 function getReqRaw(options) {
   var headers = options.headers;
   var statusLine = options.method +' ' + (options.path || '/') +' ' + 'HTTP/1.1';
-  var raw = [statusLine, getRawHeaders(headers)];
-  return raw.join('\r\n') + '\r\n\r\n';
+  var raw = statusLine;
+  if (headers = getRawHeaders(headers)) {
+    raw += '\r\n' + headers;
+  }
+  return raw + '\r\n\r\n';
 }
 
 function handleWebSocket(options, cb, count) {

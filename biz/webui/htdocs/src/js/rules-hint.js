@@ -107,6 +107,11 @@ $(window).on('hashchange', function () {
   }
 });
 
+function isExactMatch(curWord, list) {
+  var item = list && list.length === 1 && list[0];
+  return item && (item.text || item) === curWord;
+}
+
 var curKeys;
 var curRules;
 
@@ -296,7 +301,15 @@ function getAtValueList(keyword) {
   } catch (e) {}
 }
 
+function getSpecHint(name, specProto) {
+  return {
+    text: name,
+    displayText: name + '(' + (specProto === 'pipe' ? 'pipe' : 'sni') + 'Value)'
+  };
+}
+
 function getPluginVarHints(keyword, specProto) {
+  var originalKeyword = keyword;
   var list;
   if (specProto) {
     keyword = keyword.substring(specProto.length + 3);
@@ -308,11 +321,20 @@ function getPluginVarHints(keyword, specProto) {
     list = protocols.getPluginVarList();
   }
   if (!keyword) {
-    return list;
+    return specProto ? list.map(function(name) {
+      return getSpecHint(name, specProto);
+    }) : list;
   }
   keyword = keyword.toLowerCase();
   if (specProto) {
     keyword = specProto + '://' + keyword;
+    var result = [];
+    list.filter(function (name) {
+      if (name.indexOf(keyword) !== -1) {
+        result.push(getSpecHint(name, specProto));
+      }
+    });
+    return result.length === 1 && result[0].text === originalKeyword ? [] : result;
   }
   return list.filter(function (name) {
     return name.indexOf(keyword) !== -1;
@@ -348,7 +370,7 @@ function getHintText(protoName, text, isVar, isKey) {
   return protoName + (isKey ? '.' : '=') + text;
 }
 
-function handleRemoteHints(data, editor, plugin, protoName, value, cgi, isVar) {
+function handleRemoteHints(data, editor, plugin, protoName, value, cgi, isVar, curWord) {
   curHintList = [];
   curHintMap = {};
   curHintPos = null;
@@ -382,15 +404,12 @@ function handleRemoteHints(data, editor, plugin, protoName, value, cgi, isVar) {
         curHintMap[item] = getRuleHelp(plugin);
       }
     } else if (item) {
-      var label, curVal;
-      if (typeof item.label === 'string') {
-        label = item.label.trim();
-      }
-      if (!label && typeof item.display === 'string') {
-        label = item.display.trim();
-      }
-      if (typeof item.value === 'string') {
-        curVal = getHintText(protoName, item.value.trim(), isVar, item.isKey);
+      var label = item.label || item.displayText || item.display;
+      var curVal = item.value || item.text;
+      label = typeof label === 'string' ? label.trim() : '';
+      curVal = typeof curVal === 'string' ? curVal.trim() : '';
+      if (curVal) {
+        curVal = getHintText(protoName, curVal, isVar, item.isKey);
       }
       if (curVal && curVal.length < maxLen && !curHintMap[label || curVal]) {
         ++len;
@@ -406,6 +425,10 @@ function handleRemoteHints(data, editor, plugin, protoName, value, cgi, isVar) {
       }
     }
   });
+  if (isExactMatch(curWord, curHintList)) {
+    curHintList = [];
+    len = 0;
+  }
   if (waitingRemoteHints && len) {
     editor._byPlugin = true;
     editor.execCommand('autocomplete');
@@ -457,7 +480,7 @@ var canShowHint;
 var toValKey = function(key, tpl) {
   return tpl + '{' + key + '}' + tpl;
 };
-CodeMirror.registerHelper('hint', 'rulesHint', function (editor, options) {
+CodeMirror.registerHelper('hint', 'rulesHint', function (editor) {
   showAtHint = false;
   showVarHint = false;
   waitingRemoteHints = false;
@@ -491,6 +514,7 @@ CodeMirror.registerHelper('hint', 'rulesHint', function (editor, options) {
   var sep;
   var specProto = getSpecProto(curWord);
   var isPluginVar = P_RE.test(curWord);
+  var isPluginKey;
   if (isPluginVar && P_VAR_RE.test(curWord)) {
     pluginName = RegExp.$1;
     sep = RegExp.$2;
@@ -500,16 +524,24 @@ CodeMirror.registerHelper('hint', 'rulesHint', function (editor, options) {
       return;
     }
     value = curWord.substring(pluginName.length + 2);
-    isPluginVar = false;
+    isPluginVar = sep === '.';
+    isPluginKey = isPluginVar;
   }
 
   if (isAt || specProto || isPluginVar) {
-    if (!byEnter || /^(?:pipe|sniCallback):\/\/$/.test(curWord)) {
+    if (!byEnter || isPluginKey || /^(?:pipe|sniCallback):\/\/$/.test(curWord)) {
       list = isAt
         ? getAtValueList(curWord)
         : getPluginVarHints(curWord, specProto);
     }
-    if (!list || !list.length) {
+    var varLen = list && list.length;
+    var onlyOne = isExactMatch(curWord, list);
+    var noHint = !varLen || onlyOne;
+    if (isPluginKey) {
+      if (onlyOne && /=./.test(value)) {
+        return;
+      }
+    } else if (noHint) {
       return;
     }
     if (isAt) {
@@ -517,11 +549,16 @@ CodeMirror.registerHelper('hint', 'rulesHint', function (editor, options) {
     } else if (isPluginVar) {
       showVarHint = true;
     }
-    return {
-      list: list,
-      from: CodeMirror.Pos(cur.line, start),
-      to: CodeMirror.Pos(cur.line, end)
-    };
+    if (!noHint) {
+      return {
+        list: list,
+        from: CodeMirror.Pos(cur.line, start),
+        to: CodeMirror.Pos(cur.line, end)
+      };
+    }
+    if (onlyOne) {
+      byEnter = false;
+    }
   }
   if (curWord) {
     if (VAL_RE.test(curWord)) {
@@ -560,7 +597,7 @@ CodeMirror.registerHelper('hint', 'rulesHint', function (editor, options) {
         }
         var valLen = list && list.length;
         if (valLen) {
-          if (valLen === 1 && list[0] === curWord.substring(protoLen)) {
+          if (isExactMatch(curWord.substring(protoLen), list)) {
             return;
           }
           curLine = curLine.substring(start).split(/\s/, 1)[0] || '';
@@ -623,11 +660,11 @@ CodeMirror.registerHelper('hint', 'rulesHint', function (editor, options) {
             } else {
               text = getHintText(protoName, item.text, pluginVars, item.isKey);
               if (item.displayText) {
-                text = item.displayText;
                 hint = {
                   text: text,
                   displayText: item.displayText
                 };
+                text = item.displayText;
               }
             }
             curHintMap[text] = getRuleHelp(plugin, item.help);
@@ -712,7 +749,8 @@ CodeMirror.registerHelper('hint', 'rulesHint', function (editor, options) {
                 protoName,
                 value,
                 getRemoteHints,
-                pluginVars
+                pluginVars,
+                curWord
               );
             }
           );

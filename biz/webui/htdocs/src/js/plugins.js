@@ -739,7 +739,7 @@ var Home = React.createClass({
             <textarea
               ref="textarea"
               value={cmdMsg || ''}
-              placeholder={install ? 'SUCH AS: whistle.inspect whistle.abc@1.0.0 @org/whistle.xyz' : undefined}
+              placeholder={install ? 'SUCH AS: whistle.inspect whistle.abc@1.0.0 @scope/whistle.xyz' : undefined}
               className={'w-plugin-update-cmd' + (install ? ' w-plugin-install' : '')}
               maxLength={install ? 360 : undefined}
               onChange={this.onCmdChange}

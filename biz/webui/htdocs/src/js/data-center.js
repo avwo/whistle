@@ -1437,6 +1437,10 @@ function getAppName(ua) {
 }
 
 function setAppName(item) {
+  if (item.fc) {
+    item.appName = 'whistle';
+    return;
+  }
   var appName = item.appName;
   if (!appName || !APPS.indexOf(appName) !== -1) {
     item.appName = getAppName(item.req.headers['user-agent']);
