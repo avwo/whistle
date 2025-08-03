@@ -1181,7 +1181,7 @@
 
 # v1.16.3
 1. fix: https://github.com/avwo/whistle/issues/316
-2. fix: 通过 `w2 i @org/whistle.xxx` 安装的插件无法执行 `w2 run xxx` 的问题
+2. fix: 通过 `w2 i @scope/whistle.xxx` 安装的插件无法执行 `w2 run xxx` 的问题
 3. fix: 安装插件可能导致whistle crash问题
 
 # v1.16.2
@@ -1250,7 +1250,7 @@
 # v1.15.7
 1. perf: 优化监听连接的关闭事件，减少内存占用
 2. refactor: 使用Values设置rawfile时，自动删除 `content-encoding` 响应头
-3. fix: 安装插件 `w2 i @org/whistle.xxx` 出现报错问题
+3. fix: 安装插件 `w2 i @scope/whistle.xxx` 出现报错问题
 
 # v1.15.6
 1. perf: 优化搜索框的性能
