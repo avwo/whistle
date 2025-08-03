@@ -82,19 +82,19 @@ function showUsage(isRunning, options, restart) {
   }
   var port = /^\d+$/.test(options.port) && options.port > 0 ?  options.port : config.port;
   var list = options.host && typeof options.host === 'string' ? [options.host] : getIpList();
-  info('[i] 1. use your device to visit the following URL list, gets the ' + colors.bold('IP') + ' of the URL you can access:');
-  info(list.map(function(ip) {
-    return '       http://' + colors.bold(joinIpPort(ip, port != 80 && port)) + '/';
-  }).join('\n'));
-
-  warn('       Note: If all URLs are inaccessible, check firewall settings');
-  warn('             For help see ' + colors.bold('https://github.com/avwo/whistle'));
-  info('[i] 2. set the HTTP proxy on your device with ' + colors.bold((list.length === 1 ? 'IP(' + list[0] + ')' : 'the above IP') + ' & PORT(' + port + ')'));
-  info('[i] 3. use ' + colors.bold('Chrome') + ' to visit ' + colors.bold('http://' + (options.localUIHost || config.localUIHost) + '/') + ' to get started');
-
-  if (parseInt(process.version.slice(1), 10) < 6) {
-    warn(colors.bold('\nWarning: Node version too low. Update at https://nodejs.org to capture HTTPS connections\n'));
+  var oneIp = list.length === 1;
+  var index = 0;
+  if (!oneIp) {
+    info('[i] ' + (++index) + '. Use your device to visit these URLs and note which one works:');
+    info(list.map(function(ip) {
+      return '       http://' + colors.bold(joinIpPort(ip, port != 80 && port)) + '/';
+    }).join('\n'));
+    warn('       Note: If none are accessible, check your firewall settings');
+    warn('             For help, see ' + colors.bold('https://github.com/avwo/whistle'));
   }
+  info('[i] ' + (++index) + '. set your device\'s HTTP PROXY to ' + colors.bold((oneIp ? 'IP(' + list[0] + ')' : 'the working IP') + ' & PORT(' + port + ')'));
+  info('[i] ' + (++index) + '. open ' + colors.bold('Chrome') + ' and visit ' + colors.bold('http://' + (options.localUIHost || config.localUIHost) + '/') + ' to begin');
+
   var bypass = program.init;
   if (bypass == null) {
     return;
