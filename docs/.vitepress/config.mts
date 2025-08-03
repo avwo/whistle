@@ -4,7 +4,18 @@ import { defineConfig } from 'vitepress';
 export default defineConfig({
   title: "Whistle",
   description: "HTTP, HTTP2, HTTPS, Websocket debugging proxy",
-  head: [['link', { rel: 'icon', href: '/img/favicon.ico' }]],
+  head: [
+    ['link', { rel: 'icon', href: '/img/favicon.ico' }],
+    ['style', {}, `
+      .VPFooter {
+        padding-bottom: 20px;
+        text-align: center;
+      }
+      .VPFooter a {
+        color: var(--vp-c-text-2);
+        font-size: 12px;
+      }
+    `]],
   locales: {
     root: {
       label: '简体中文',
@@ -64,7 +75,7 @@ export default defineConfig({
           { text: '过滤器（filters）', link: '/docs/rules/filters' },
           { text: '协议列表', link: '/docs/rules/protocols' },
           { text: '@', link: '/docs/rules/@' },
-          { text: '%', link: '/docs/rules/plugin-var' },
+          { text: '%', link: '/docs/rules/plugin-vars' },
           {
             text: 'Map Local',
             collapsed: true,
@@ -94,10 +105,8 @@ export default defineConfig({
             items: [
               { text: 'host', link: '/docs/rules/host' },
               { text: 'xhost', link: '/docs/rules/xhost' },
-              { text: 'proxy', link: '/docs/rules/proxy' },
-              { text: 'xproxy', link: '/docs/rules/xproxy' },
-              { text: 'http-proxy', link: '/docs/rules/http-proxy' },
-              { text: 'xhttp-proxy', link: '/docs/rules/xhttp-proxy' },
+              { text: 'proxy (http-proxy)', link: '/docs/rules/proxy' },
+              { text: 'xproxy (xhttp-proxy)', link: '/docs/rules/xproxy' },
               { text: 'https-proxy', link: '/docs/rules/https-proxy' },
               { text: 'xhttps-proxy', link: '/docs/rules/xhttps-proxy' },
               { text: 'socks', link: '/docs/rules/socks' },
@@ -235,6 +244,10 @@ export default defineConfig({
 
     socialLinks: [
       { icon: 'github', link: 'https://github.com/avwo/whistle' },
-    ]
+    ],
+    footer: {
+      message: '<a href="https://beian.miit.gov.cn/" target="_blank">浙ICP备15019507号-2</a>',
+      copyright: 'Copyright © 2015-present Aven Wu'
+    }
   }
 });

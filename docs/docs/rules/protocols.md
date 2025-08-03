@@ -2,7 +2,7 @@
 
 ## 特殊规则
 1. [@（引入远程规则或设置客户端证书）](./@)
-2. [%（设置插件的变量值）](./plugin-var)
+2. [%（设置插件的变量值）](./plugin-vars)
 
 ## Map Local（用本地文件替换响应内容）
 1. [file](/docs/rules/file)
@@ -22,15 +22,13 @@
 ## DNS Spoofing（修改请求 IP 地址）
 1. [host](/docs/rules/host)
 2. [xhost](/docs/rules/xhost)
-3. [proxy](/docs/rules/proxy)
-4. [xproxy](/docs/rules/xproxy)
-5. [http-proxy](/docs/rules/http-proxy)
-6. [xhttp-proxy](/docs/rules/xhttp-proxy)
-7. [https-proxy](/docs/rules/https-proxy)
-8. [xhttps-proxy](/docs/rules/xhttps-proxy)
-9. [socks](/docs/rules/socks)
-10. [xsocks](/docs/rules/xsocks)
-11. [pac](/docs/rules/pac)
+3. [proxy (http-proxy)](/docs/rules/proxy)
+4. [xproxy (xhttp-proxy)](/docs/rules/xproxy)
+5. [https-proxy](/docs/rules/https-proxy)
+6. [xhttps-proxy](/docs/rules/xhttps-proxy)
+7. [socks](/docs/rules/socks)
+8.  [xsocks](/docs/rules/xsocks)
+9.  [pac](/docs/rules/pac)
 
 ## Rewrite Request（修改请求数据）
 1. [urlParams](/docs/rules/urlParams)

@@ -8,12 +8,12 @@
 先了解下如何安装使用插件：
 
 #### 安装插件
-Whistle 插件就是一个名为 `whistle.your-plugin-name` 或 `@org/whistle.your-plugin-name` 的 npm 包，其中 `your-plugin-name` 为插件名称，只能包含 `小写字母(a-z)`、`数字(0-9)`、`_`、`-` 四种字符（不建议使用下划线 `_`），并通过 `w2 i` 命令行命令安装（客户端版本可以直接通过界面安装详见[客户端文档](https://github.com/avwo/whistle-client)）：
+Whistle 插件就是一个名为 `whistle.your-plugin-name` 或 `@scope/whistle.your-plugin-name` 的 npm 包，其中 `your-plugin-name` 为插件名称，只能包含 `小写字母(a-z)`、`数字(0-9)`、`_`、`-` 四种字符（不建议使用下划线 `_`），并通过 `w2 i` 命令行命令安装（客户端版本可以直接通过界面安装详见[客户端文档](https://github.com/avwo/whistle-client)）：
 
 ```
 w2 i whistle.your-plugin-name
 # 或
-w2 i @org/whistle.your-plugin-name
+w2 i @scope/whistle.your-plugin-name
 ```
 > 支持设置 registry:`w2 i whistle.your-plugin-name --registry=https://registry.npmmirror.com`
 

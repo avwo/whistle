@@ -155,7 +155,7 @@ $ w2 run
 
 2. 浏览器代理 (**推荐**)：安装浏览器代理插件
 
-	* 安装Chrome代理插件：推荐安装[SwitchyOmega](https://chrome.google.com/webstore/detail/padekgcemlokbadohgkifijomclgjgif)
+	* 安装Chrome代理插件：推荐安装[ZeroOmega](https://chromewebstore.google.com/detail/proxy-switchyomega-3-zero/pfnededegaaopdmhkdmcofjmoldfiped)
 
     <div><img src='./img/switchyomega.jpg' /></div>
 	* Firefox: 地址栏输入访问 `about:preferences`，找到 `Network Proxy`，选择 `手动代理配置(Manual proxy configuration)`，输入代理服务器地址、端口，保存
