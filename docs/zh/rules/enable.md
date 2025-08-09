@@ -1,14 +1,14 @@
 # enable
 通过配置开启指定的设置(https拦截、隐藏请求)，配置方式：
 
-```javascript
+``` txt
 	pattern enable://https|intercept|hide|abort|gzip|proxyHost|proxyTunnel|h2|safeHtml|strictHtml|clientIp|bigData|useLocalHost|useSafePort|forceReqWrite|forceResWrite|authCapture
 ```
 
 其中，`pattern`参见[匹配方式](../pattern.html)，`https`或`intercept`(或 `capture`)表示拦截pattern匹配的tunnel请求(如果是https或wss请求需要安装whistle的根证书：[点击这里](../webui/https.html)，拦截后可以查看https请求的具体内容)；`hide`表示隐藏pattern匹配的所有请求，将不显示在[Network](../webui/network.html)上；通过`|`可以同时设置多个操作。
 
 例子：
-```javascript
+``` txt
 # 拦截url里面有baidu的https请求
 /baidu/ enable://intercept
 
@@ -30,7 +30,7 @@ ke.qq.com proxy://10.1.1.1:8080 10.10.10.20:8080 enable://proxyHost|proxyTunnel
 # 局部开启 `http2`
 ke.qq.com enable://h2
 
-# 在使用 htmlXxx, jsXxx, cssXxx` 注入内容到html页面时，会先判断是否第一个非空白字符不是 `{{` 才会注入 （用于统一给某个域名的页面注入脚本等时，防止一些非标准等接口响应类型设置为 `html` ，导致误注入的问题）
+# 在使用 htmlXxx, jsXxx, cssXxx` 注入内容到html页面时，会先判断是否第一个非空白字符不是 `{` 才会注入 （用于统一给某个域名的页面注入脚本等时，防止一些非标准等接口响应类型设置为 `html` ，导致误注入的问题）
 ke.qq.com enable://safeHtml
 
 # 在使用 `htmlXxx, jsXxx, cssXxx` 注入内容到 `html` 页面时，会先判断是否第一个非空白字符是 `<` 才会注入
@@ -64,7 +64,7 @@ ke.qq.com enable://authCapture
 
 例子：
 
-```javascript
+``` txt
 # 下面表示匹配pattern的同时不能为post请求且请求头里面的cookie字段必须包含test(忽略大小写)、url里面必须包含 cgi-bin 的请求
 # 即：过滤掉匹配filter里面的请求
 pattern operator1 operator2 excludeFilter://m:post includeFilter://h:cookie=test includeFilter:///cgi-bin/i

@@ -47,7 +47,9 @@ pattern reqHeaders://{headers.json}
 ``` txt
 pattern reqHeaders:///User/xxx/filepath             # 从本地文件加载操作内容
 pattern resHeadrs://https://example.com/config.json # 从远处加载 JSON 对象
+pattern resHeaders://temp/blank.json                # 通过边境临时文件
 ```
+> ⚠️ 注意：http/https/ws/wss/tunnel/host/enable/cache... 等协议禁止通过文件路径或远程 URL 获取内容，详见各协议文档。
 
 ## 小括号用途
 在 Whistle 规则中，protocol://value 的 value 部分可能有三种间接引用类型：
@@ -201,6 +203,50 @@ resCookies.test:
 statusCode: 
 env.USER: av
 ```
+
+## 数据对象
+操作内容除了文本或二进制内容，还有可能是 JSON 对象，Whistle 支持以下 3 种数据对象格式：
+
+#### JSON 格式
+``` js
+{
+  "key1": value1,
+  "key2": value2,
+  "keyN": valueN
+}
+```
+
+#### 行格式
+``` txt
+key1: value1
+key2:value2
+keyN: valueN
+```
+> 以 `冒号+空格` 分隔，如果没有 `冒号+空格` ，则以第一个冒号分隔，如果没有冒号，则 `value` 为空字符串
+
+**多级嵌套：**
+``` txt
+a.b.c: 123
+c\.d\.e: abc
+```
+等价于：
+``` json
+{
+  "a": {
+    "b": {
+      "c": 123
+    }
+  },
+  "c.d.e": "abc"
+}
+```
+
+#### 内联格式（请求参数格式）
+
+``` txt
+key1=value1&key2=value2&keyN=valueN
+```
+> `key` 和 `value` 最好都 `encodeURIComponent`
 
 ## 操作协议
 每个协议（`protocol`）对应一种特定的操作类型，用于对匹配的请求进行相应处理，协议决定了操作的类型以及操作内容的格式要求，具体用法参考：[协议列表](./protocols)

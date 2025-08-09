@@ -8,7 +8,7 @@ pattern参见[匹配方式](../pattern.html)，更多模式请参考[配置方�
 	urlencoded: application/x-www-form-urlencoded
 	form: application/x-www-form-urlencoded
 	json: application/json
-	xml: text/xml
+	xml: application/xml
 	text: text/plain
 	upload: multipart/form-data
 	multipart: multipart/form-data

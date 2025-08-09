@@ -17,7 +17,7 @@ hero:
 
 features:
   - title: Powerful
-    details: Supports HTTP/HTTPS/SOCKS/reverse proxy, can intercept and modify mainstream network protocol traffic, built-in debugging tools such as Weinre
+    details: Supports HTTP/HTTPS/SOCKS/Reverse proxy, can intercept and modify mainstream network protocol traffic, built-in debugging tools such as Weinre
   - title: Simple operation
     details: Modify requests/responses by configuring rules, and provide a one-stop interface including viewing packet capture, configuring rules, managing plug-ins and debugging tools
   - title: Extensible

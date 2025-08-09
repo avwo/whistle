@@ -11,7 +11,7 @@
     > 示例：`tunnel://www.test.com:443`
 2. **WebSocket：** `ws[s]://domain[:port]/[path/to[?query]]`
     > 示例：`wss://www.test.com/path?a=1&b=2`
-3. **普通 HTTP：** `http[s]://domain[:port]/[path/to[?query]]`
+3. **普通 HTTP/HTTPS：** `http[s]://domain[:port]/[path/to[?query]]`
     > 示例：`https://www.test.com/path?a=1&b=2`
 
 ## 域名匹配

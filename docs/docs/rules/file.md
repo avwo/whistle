@@ -96,6 +96,6 @@ www.example.com/path file:///path1|/path2|/path3
 2. 找到第一个存在的文件立即返回
 3. 全部未找到返回 `404`
 
-## 特殊说明
+## 关联协议
 1. 需要允许未匹配文件的请求继续正常访问用：[xfile](./xfile)
 2. 需要用其它远程 URL 的内容替换用：[https](./https) 或 [http](./http) 或配 [host](./host) （不建议用：<del>`file://https://xxx`</del>）

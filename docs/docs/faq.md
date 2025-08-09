@@ -2,9 +2,9 @@
 
 遇到问题或建议请提 [issue](https://github.com/avwo/whistle/issues/new)
 
-## Q：抓包列表中出现 `captureError` 的原因？
+## Q：抓包列表中出现 `captureError` 的原因？{#capture-error}
 1. 发出请求的客户端没有安装根证书，安装方法参考：
-   - PC 端：[安装根证书](/docs/installation)
+   - PC 端：[安装根证书](/docs/)
    - 移动端：[安装根证书](/docs/mobile)
 2. `ssl pinning` 问题
    - 对该域名的 HTTPS 请求不解密：`域名 disable://capture` 或只针对指定客户端的请求 `域名 disable://capture includeFilter://reqH.user-agent=/xiaomi/i`
@@ -75,7 +75,7 @@ Whistle 默认会将所有发往代理端口（如 127.0.0.1:8899）的请求视
 1. Whistle 内部请求认证：`w2 start -n 用户名 -w 密码` 或自己[开发插件](/docs/extensions/dev)，防止未授权操作规则和配置
 2. 代理请求的权限控制：需要借助插件 [whistle.proxyauth](https://github.com/whistle-plugins/whistle.proxyauth) 或自己[开发插件](/docs/extensions/dev)
 
-## Q：如何添加自定义证书？
+## Q：如何添加自定义证书？{#custom-certs}
 
 进入证书管理页面
 1. 点击顶部菜单栏 HTTPS > View Custom Certs > Upload
@@ -92,7 +92,7 @@ Whistle 默认会将所有发往代理端口（如 127.0.0.1:8899）的请求视
      > 
      > `root.crt` ↔ `root.key`
 
-## Q：版本更新问题
+## Q：版本更新问题{#update}
 > 客户端版本只需重新下载最新版本并安装即可：https://github.com/avwo/whistle-client
 
 **命令行版本更新：**
@@ -140,4 +140,6 @@ Whistle 文档源文件地址：https://github.com/avwo/whistle/tree/master/docs
 ``` sh
 npm run docs:dev
 ```
+## Q：如何反馈问题？
 
+New issue：https://github.com/avwo/whistle/issues

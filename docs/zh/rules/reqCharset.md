@@ -1,5 +1,5 @@
 # reqCharset
-修改请求头`content-type`的charset，配置方式：
+修改请求头 `content-type` 的 `charset`，配置方式：
 
 	pattern reqCharset://charset
 

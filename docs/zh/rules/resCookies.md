@@ -33,13 +33,13 @@ test-resCookies.json:
 		"key1": "value1",
 		"key2": "value2",
 		"keyN": {
-            "value": "value1",
-            "maxAge": 60,
-            "httpOnly": true,
-            "path": "/",
-            "secure": true,
-            "domain": ".example.com"
-        }
+      "value": "value1",
+      "maxAge": 60,
+      "httpOnly": true,
+      "path": "/",
+      "secure": true,
+      "domain": ".example.com"
+    }
 	}
 
 #### 过滤规则

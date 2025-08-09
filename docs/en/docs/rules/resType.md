@@ -1,0 +1,44 @@
+# resType
+修改响应头 `content-type` 的 `media-type` 和 `charset` 部分。
+> `content-type` 结构：
+> ``` txt
+> <media-type>; charset=<encoding>
+> ```
+
+## 规则语法
+``` txt
+pattern resType://type[;charset] [filters...]
+```
+
+| 参数    | 描述                                                         | 详细文档                  |
+| ------- | ------------------------------------------------------------ | ------------------------- |
+| pattern | 匹配请求 URL 的表达式                                        | [匹配模式文档](./pattern) |
+| type[;charset] | `type` 响应类型，`charset` 编码 <br/>• 内联/内嵌/Values内容<br/>⚠️ 不支持从文件/远程 URL 加载数据 | |
+| filters | 可选过滤器，支持匹配：<br/>• 请求URL/方法/头部/内容<br/>• 响应状态码/头部 | [过滤器文档](./filters) |
+
+`resType` 主要用来修改响应类型的 `media-type` 部分 ，`charset` 部分可选，如果没有设置 `charset` 部分则会保留响应头原始的 `charset` 部分（如果存在）。
+
+## 配置示例
+
+#### 快捷命令（不包含 `/` 的字符串）
+> 根据 [mime](https://github.com/broofa/mime).lookup(type) 自动转换
+``` txt
+# 不带编码响应头的 `content-type` 变成 `text/html`
+www.example.com/path resType://html
+
+# 带编码响应头的 `content-type` 变成 `application/json;charset=utf8`
+www.example.com/path resType://json;charset=utf8
+```
+
+#### 完整类型
+``` txt
+# 响应头的 `content-type` 变成 `text/plain`
+www.example.com/path resType://text/plain
+
+# 响应头的 `content-type` 变成 `text/plain;charset=utf8`
+www.example.com/path resType://text/plain;charset=utf8
+```
+
+## 关联协议
+1. 直接修改响应头：[resHeaders://content-type=xxx](./reqHeaders)
+2. 修改响应内容编码：[resCharset://encoding](./reqCharset)

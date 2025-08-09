@@ -6,7 +6,7 @@ xrawfile 是 [rawfile](./rawfile) 规则的穿透版本，主要区别在于文�
 
 ## 规则语法
 ``` txt
-pattern rawfile://value [filters...]
+pattern xrawfile://value [filters...]
 ```
 
 详细用法参考：[rawfile](./rawfile)

@@ -519,6 +519,14 @@ tunnelRulesServer 是专门用于处理 TUNNEL 请求的动态规则生成机制
 
 ## pipe
 如果请求/响应内容被加密，或者需要转成特定格式显示在抓包界面，可以用 pipe 将请求/响应内容交给插件处理。
+> 在抓包界面中：
+> 
+> 请求数据中无法看到 `reqWrite` 修改后的内容
+> 
+> 响应数据中无法看到 `resWrite` 修改后的内容（这是预期行为）
+> 
+> 所有 `xxxRexWrite` 操作的实际修改内容都不会显示在抓包界面
+> 
 
 #### HTTP/HTTPS 协议实现
 1. 创建 pipe http 插件:
@@ -640,7 +648,8 @@ tunnelRulesServer 是专门用于处理 TUNNEL 请求的动态规则生成机制
 ### 2. 对话框模式
 **特性**  
 - 支持通过弹窗形式打开管理界面  
-- 弹窗页面可以调用 `window.whistleBridge`：[插件界面 API]([插件界面 API](https://github.com/avwo/whistle/blob/master/biz/webui/htdocs/src/js/bridge.js))
+- 弹窗页面可调用的 API：https://github.com/avwo/whistle/blob/master/assets/modal.html
+- `window.whistleBridge` API：https://github.com/avwo/whistle/blob/master/biz/webui/htdocs/src/js/bridge.js
 
 **配置示例**  
 ```js
@@ -939,7 +948,8 @@ Whistle 插件系统支持扩展以下界面功能模块：
 }
 ```
 
-Tab 页面可以调用 `window.whistleBridge`：[插件界面 API](https://github.com/avwo/whistle/blob/master/biz/webui/htdocs/src/js/bridge.js)
+- Tab 页面可调用的 API：https://github.com/avwo/whistle/blob/master/assets/tab.html
+- `window.whistleBridge` API：https://github.com/avwo/whistle/blob/master/biz/webui/htdocs/src/js/bridge.js
 
 #### 3. Network 上下文菜单功能
 ``` js
@@ -968,8 +978,8 @@ Tab 页面可以调用 `window.whistleBridge`：[插件界面 API](https://githu
   ...
 }
 ```
-- 上下文菜单的 `action` 页面可以调用 `window.whistleBridge`：[插件界面 API](https://github.com/avwo/whistle/blob/master/biz/webui/htdocs/src/js/bridge.js)
-- 具体实现参考：https://github.com/nohosts/whistle.nohost-imweb/blob/master/menu.html
+- 上下文菜单的 `action` 页面可以调用的 API：https://github.com/avwo/whistle/blob/master/assets/menu.html
+- `window.whistleBridge` API：https://github.com/avwo/whistle/blob/master/biz/webui/htdocs/src/js/bridge.js
 
 #### 3. Rules 上下文菜单功能
 ``` js
@@ -998,8 +1008,8 @@ Tab 页面可以调用 `window.whistleBridge`：[插件界面 API](https://githu
   ...
 }
 ```
-- 上下文菜单的 `action` 页面可以调用 `window.whistleBridge`：[插件界面 API](https://github.com/avwo/whistle/blob/master/biz/webui/htdocs/src/js/bridge.js)
-- 具体实现参考：https://github.com/nohosts/whistle.nohost-imweb/blob/master/menu.html
+- 上下文菜单的 `action` 页面可以调用的 API：https://github.com/avwo/whistle/blob/master/assets/menu.html
+- `window.whistleBridge` API：https://github.com/avwo/whistle/blob/master/biz/webui/htdocs/src/js/bridge.js
 
 #### 4. Values 上下文菜单功能
 ``` js
@@ -1028,8 +1038,8 @@ Tab 页面可以调用 `window.whistleBridge`：[插件界面 API](https://githu
   ...
 }
 ```
-- 上下文菜单的 `action` 页面可以调用 `window.whistleBridge`：[插件界面 API](https://github.com/avwo/whistle/blob/master/biz/webui/htdocs/src/js/bridge.js)
-- 具体实现参考：https://github.com/nohosts/whistle.nohost-imweb/blob/master/menu.html
+- 上下文菜单的 `action` 页面可以调用的 API：https://github.com/avwo/whistle/blob/master/assets/menu.html
+- `window.whistleBridge` API：https://github.com/avwo/whistle/blob/master/biz/webui/htdocs/src/js/bridge.js
 
 #### 5. Plugins 上下文菜单功能
 ``` js
@@ -1058,8 +1068,8 @@ Tab 页面可以调用 `window.whistleBridge`：[插件界面 API](https://githu
   ...
 }
 ```
-- 上下文菜单的 `action` 页面可以调用 `window.whistleBridge`：[插件界面 API](https://github.com/avwo/whistle/blob/master/biz/webui/htdocs/src/js/bridge.js)
-- 具体实现参考：https://github.com/nohosts/whistle.nohost-imweb/blob/master/menu.html
+- 上下文菜单的 `action` 页面可以调用的 API：https://github.com/avwo/whistle/blob/master/assets/menu.html
+- `window.whistleBridge` API：https://github.com/avwo/whistle/blob/master/biz/webui/htdocs/src/js/bridge.js
 
 ## 特殊路径
 
@@ -1108,6 +1118,63 @@ path/to
   ...
 }
 ```
+
+## 插件页面内部路径规范
+插件页面的 URL 通常为以下格式：
+- `/plugin.xxx/path/yyy.html`
+- `/whistle.xxx/path/yyy.html`
+
+**根目录**为 `/plugin.xxx/` 或 `/whistle.xxx/`，因此：
+
+✅ 推荐使用相对路径，避免使用绝对路径（如 /path/to）。
+
+---
+
+#### **相对路径使用示例**  
+
+**场景 1：页面位于插件根目录**  
+**页面地址**：`/plugin.xxx/yyy.html`  
+**正确写法**：  
+- `./path/to`  
+- `path/to`  
+
+**错误写法**：  
+- ❌ `/path/to`（绝对路径，可能访问错误）  
+
+---
+
+**场景 2：页面位于子目录**  
+**页面地址**：`/plugin.xxx/a/b/c/yyy.html`  
+**正确写法**：  
+- `../../../path/to`（返回 3 级目录再进入目标路径）  
+
+**错误写法**：  
+- ❌ `/path/to`（绝对路径，可能访问错误）  
+- ❌ `path/to`（会基于当前目录 `a/b/c/` 查找，导致路径错误）  
+
+---
+
+**最佳实践**  
+1. **推荐使用 `./` 开头**，明确表示相对当前目录（如 `./assets/style.css`）。  
+2. **避免硬编码 `/` 开头的路径**，防止不同部署环境下路径失效。  
+3. **测试路径引用**：在本地和线上环境均验证资源加载是否正常。  
+
+---
+
+**常见问题**  
+❓ **Q：为什么不能用绝对路径？**  
+📌 **A**：插件可能部署在不同环境（如测试/生产/内嵌到其它项目中），绝对路径可能导致资源加载失败。  
+
+❓ **Q：有些构建工具，如 Vite 默认会将资源路径基于 base 设置进行解析。如果 base 设为 `/`，可能会将 `../` 优化为 `/`，如何处理？**  
+📌 **A**：尝试将 base 改成 `./`：
+  ``` js
+  // vite.config.js
+  export default defineConfig({
+    base: './', // 强制使用相对路径
+  });
+  ```
+  > 建议与后台路由配置同步优化
+
 
 ## 发布插件
 Whistle 插件的发布方式与常规 NPM 包完全一致，只需遵循标准 NPM 发布流程：

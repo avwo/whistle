@@ -6,7 +6,7 @@ xtpl 是 [tpl](./tpl) 规则的穿透版本，主要区别在于文件不存在�
 
 ## 规则语法
 ``` txt
-pattern tpl://value [filters...]
+pattern xtpl://value [filters...]
 ```
 
 详细用法参考：[tpl](./tpl)

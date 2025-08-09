@@ -47,7 +47,7 @@ pattern operation [includeFilter://pattern1 ... excludeFilter://patternN ...]
     > Whistle 有三种 URL 类型：
     > 1. **隧道代理：**`tunnel://domain[:port]`
     > 2. **WebSocket：**`ws[s]://domain[:port]/path/to`
-    > 3. **普通 HTTP：**`http[s]://domain[:port]/path/to`
+    > 3. **普通 HTTP/HTTPS：**`http[s]://domain[:port]/path/to`
     >
 2. **操作指令** (`operation`)，格式：`protocol://value`
    - `protocol`：操作类型，如：

@@ -6,7 +6,7 @@ xfile 是 [file](./file) 规则的穿透版本，主要区别在于文件不存�
 
 ## 规则语法
 ``` txt
-pattern file://value [filters...]
+pattern xfile://value [filters...]
 ```
 
 详细用法参考：[file](./file)
