@@ -2,6 +2,8 @@
 1. feat: https://github.com/avwo/whistle/issues/1221
 2. feat: https://github.com/avwo/whistle/issues/1222
 3. feat: 默认启用 `localhostCompatible` 模式，`localhost` 在为配置 host 的前提下同时兼容 `127.0.0.1` 和 `::1` 两个 IP，防止出现：https://github.com/avwo/whistle/issues/1200
+4. feat: 支持 `req.passThrough({transformReq, transformRes, ...})`
+5. fix: 修复了一些隐藏 bug
 
 # v2.9.99
 1. feat: 优化 Rules 里面的 `includeFilter://`、`excludeFilter://` 自动补全功能
