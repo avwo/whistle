@@ -104,8 +104,8 @@ var About = React.createClass({
                   Latest version:{' '}
                   <a
                     className="w-about-github"
-                    title="How to update whistle"
-                    href="https://avwo.github.io/whistle/update.html"
+                    title="How to Update Whistle"
+                    href={util.getDocsBaseUrl('faq.html#update')}
                     target="_blank"
                   >
                     {latest}
@@ -118,10 +118,10 @@ var About = React.createClass({
               Visit{' '}
               <a
                 className="w-about-url"
-                href={'http://wproxy.org/?type=' + clientName + '&version=' + version}
+                href={util.getDocsBaseUrl() + '?type=' + clientName + '&version=' + version}
                 target="_blank"
               >
-                http://wproxy.org
+                https://wproxy.org
               </a>
             </span>
           </div>

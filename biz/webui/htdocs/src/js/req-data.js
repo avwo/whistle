@@ -910,7 +910,7 @@ var ReqData = React.createClass({
       events.trigger('removeUnmarked');
       break;
     case 'Help':
-      window.open('https://avwo.github.io/whistle/webui/network.html');
+      window.open(util.getDocsBaseUrl('gui/network.html'));
       break;
     case 'Plugins':
       iframes.fork(action, {

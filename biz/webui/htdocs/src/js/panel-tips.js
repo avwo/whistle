@@ -1,6 +1,7 @@
 var React = require('react');
 var events = require('./events');
 var EnableHttpsBtn = require('./enable-https-btn');
+var util = require('./util');
 
 
 function showFrames() {
@@ -26,7 +27,7 @@ var Tips = React.createClass({
             Tunnel
           </p>
           <a
-            href="https://avwo.github.io/whistle/webui/https.html"
+            href={util.getDocsBaseUrl('gui/https.html')}
             target="_blank"
           >
             Click here for more information

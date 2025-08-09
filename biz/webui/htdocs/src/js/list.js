@@ -238,6 +238,9 @@ var List = React.createClass({
         storage.set(self.getCollapseKey(), JSON.stringify(self.collapseGroups));
       }
     });
+    events.on('focus' + (self.isRules() ? 'Rules' : 'Values') + 'FilterInput', function() {
+      self.refs.filterInput.focus();
+    });
     this.ensureVisible(true);
   },
   expandGroup: function(groupName) {
@@ -516,11 +519,7 @@ var List = React.createClass({
       }
       break;
     case 'Help':
-      window.open(
-          'https://avwo.github.io/whistle/webui/' +
-            (self.props.name || 'values') +
-            '.html'
-        );
+      window.open(util.getDocsBaseUrl('gui/' + (self.props.name || 'values') + '.html'));
       break;
     case 'Plugins':
       var modal = self.props.modal;
@@ -804,7 +803,7 @@ var List = React.createClass({
                 );
               })}
             </div>
-            <FilterInput onChange={this.onFilterChange} />
+            <FilterInput ref="filterInput" onChange={this.onFilterChange} />
             <ContextMenu onClick={this.onClickContextMenu} ref="contextMenu" />
             <RecycleBinDialog ref="recycleBinDialog" />
           </div>

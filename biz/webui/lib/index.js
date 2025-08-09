@@ -8,6 +8,7 @@ var bodyParser = require('body-parser');
 var fs = require('fs');
 var zlib = require('zlib');
 var extend = require('extend');
+var LRU = require('lru-cache');
 var htdocs = require('../htdocs');
 var handleWeinreReq = require('../../weinre');
 var setProxy = require('./proxy');
@@ -24,6 +25,7 @@ var parseAuth = common.parseAuth;
 var createHash = common.createHash;
 var PARSE_CONF = { extended: true, limit: '3mb'};
 var UPLOAD_PARSE_CONF = { extended: true, limit: '30mb'};
+var PLUGIN_NAMES = new LRU({ max: 360 });
 var urlencodedParser = bodyParser.urlencoded(PARSE_CONF);
 var jsonParser = bodyParser.json(PARSE_CONF);
 var uploadUrlencodedParser = bodyParser.urlencoded(UPLOAD_PARSE_CONF);
@@ -275,17 +277,23 @@ app.use(function(req, res, next) {
     }
   } else {
     pluginName = config.getPluginNameByHost(req.headers.host);
-    if (!pluginName && referer) {
-      var refOpts = parseUrl(referer);
-      var pathname = refOpts.pathname;
-      if (PLUGIN_PATH_RE.test(pathname) && RegExp.$3) {
-        req.url = '/' + RegExp.$1 + '.' + RegExp.$2 + path;
+    if (!pluginName) {
+      if (referer) {
+        var refOpts = parseUrl(referer);
+        var pathname = refOpts.pathname;
+        if (PLUGIN_PATH_RE.test(pathname) && RegExp.$3) {
+          var name = RegExp.$2;
+          req.url = '/' + RegExp.$1 + '.' + name + path;
+          PLUGIN_NAMES.set(path, name);
+        } else {
+          pluginName = config.getPluginNameByHost(refOpts.hostname);
+        }
       } else {
-        pluginName = config.getPluginNameByHost(refOpts.hostname);
+        pluginName = PLUGIN_NAMES.get(path);
       }
     }
     if (pluginName) {
-      req.url = '/whistle.' + pluginName + path;
+      req.url = '/plugin.' + pluginName + path;
     }
   }
 

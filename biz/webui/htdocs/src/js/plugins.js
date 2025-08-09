@@ -942,7 +942,7 @@ var Tabs = React.createClass({
       return events.trigger('showUninstallPlugin', plugin);
     case 'Help':
       var homepage = plugin && plugin.homepage;
-      return window.open(homepage || 'https://wproxy.org/whistle/plugins.html');
+      return window.open(homepage || util.getDocsBaseUrl('extensions/usage.html'));
     case 'Plugins':
       iframes.fork(action, {
         port: dataCenter.getPort(),

@@ -305,7 +305,7 @@ var Console = React.createClass({
         <div className="w-log-action-bar">
           <DropDown
             onBeforeShow={this.onBeforeShow}
-            help="https://avwo.github.io/whistle/webui/log.html"
+            help={util.getDocsBaseUrl('gui/console.html')}
             onChange={this.changeLogId}
             options={logIdList}
           />

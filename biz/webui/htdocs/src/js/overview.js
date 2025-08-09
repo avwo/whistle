@@ -514,7 +514,7 @@ var Overview = React.createClass({
           className="w-detail-overview-title"
           style={{ background: showOnlyMatchRules ? 'lightyellow' : undefined }}
         >
-          <a href="https://avwo.github.io/whistle/rules/" target="_blank">
+          <a href={util.getDocsBaseUrl('rules/protocols.html')} target="_blank">
             <span className="glyphicon glyphicon-question-sign"></span>
           </a>
           All Rules:

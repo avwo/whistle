@@ -364,7 +364,7 @@ var Settings = React.createClass({
               <a
                 className="w-help-menu"
                 title="Click here to learn how to use the filter"
-                href="https://avwo.github.io/whistle/webui/filter.html"
+                href={util.getDocsBaseUrl('gui/network.html#settings')}
                 target="_blank"
               >
                 <span className="glyphicon glyphicon-question-sign"></span>
@@ -394,7 +394,7 @@ var Settings = React.createClass({
               <a
                 className="w-help-menu"
                 title="Click here to learn how to use the filter"
-                href="https://avwo.github.io/whistle/webui/filter.html"
+                href={util.getDocsBaseUrl('gui/network.html#settings')}
                 target="_blank"
               >
                 <span className="glyphicon glyphicon-question-sign"></span>

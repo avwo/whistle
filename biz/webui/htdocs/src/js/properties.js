@@ -186,7 +186,7 @@ var Properties = React.createClass({
                         util.showJSONDialog(json);
                       }} /> : <pre className={showInfo ? 'w-align-items' : null}>{showInfo ? <a
                               className="glyphicon glyphicon-info-sign w-prop-icon"
-                              href="https://wproxy.org/whistle/questions.html#type=captureError"
+                              href={util.getDocsBaseUrl('faq.html#capture-error')}
                               target="_blank" /> : null}{self.renderValue(value)}</pre>
                     }
                   </td>

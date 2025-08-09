@@ -40,7 +40,7 @@ var TokenDialog = React.createClass({
             <a
               className="w-help-menu"
               title="Click here to see help"
-              href="https://avwo.github.io/whistle/custom-certs.html"
+              href={util.getDocsBaseUrl('faq.html#custom-certs')}
               target="_blank"
             >
               <span className="glyphicon glyphicon-question-sign"></span>

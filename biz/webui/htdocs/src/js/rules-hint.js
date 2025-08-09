@@ -351,7 +351,7 @@ function getAtHelpUrl(name, options) {
       }
     }
   } catch (e) {}
-  return 'https://avwo.github.io/whistle/rules/@.html';
+  return util.getDocsBaseUrl('rules/@.html');
 }
 
 function getRuleHelp(plugin, helpUrl) {
@@ -359,7 +359,7 @@ function getRuleHelp(plugin, helpUrl) {
     helpUrl = '';
   }
   return (
-    helpUrl || plugin.homepage || 'https://avwo.github.io/whistle/plugins.html'
+    helpUrl || plugin.homepage || util.getDocsBaseUrl('extensions/usage.html')
   );
 }
 
@@ -920,7 +920,7 @@ exports.getHelpUrl = function (editor, options) {
     var plugin = name && protocols.getPlugin(name);
     plugin = plugin && plugin.homepage;
     return (
-      plugin || 'https://avwo.github.io/whistle/plugins.html?plugin=' + name
+      plugin || util.getDocsBaseUrl('extensions/usage.html')
     );
   }
   return protocols.getHelpUrl(name);

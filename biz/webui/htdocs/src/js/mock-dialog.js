@@ -639,7 +639,7 @@ var MockDialog = React.createClass({
           </button>
           <div className="w-mock-row">
               <span>
-                <a className="glyphicon glyphicon-question-sign" href="https://avwo.github.io/whistle/webui/mock.html" target="_blank" />
+                <a className="glyphicon glyphicon-question-sign" href={util.getDocsBaseUrl('rules/pattern.html')} target="_blank" />
                 URL Pattern:
               </span>
               <input ref="url" onChange={this.onPatternChange} onFocus={this.selectAllText} placeholder="Enter url pattern"

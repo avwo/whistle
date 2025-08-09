@@ -591,7 +591,7 @@ var Index = React.createClass({
     state.helpOptions = [
       {
         name: 'Website',
-        href: 'https://avwo.github.io/whistle/',
+        href: util.getDocsBaseUrl(),
         icon: 'link'
       },
       {
@@ -601,7 +601,7 @@ var Index = React.createClass({
       },
       {
         name: 'Update',
-        href: 'https://avwo.github.io/whistle/update.html',
+        href: util.getDocsBaseUrl('faq.html#update'),
         icon: 'refresh'
       },
       {
@@ -1309,10 +1309,17 @@ var Index = React.createClass({
       .on('keyup', function (e) {
         if ((e.metaKey || e.ctrlKey) && e.keyCode === 82) {
           !isClient && e.preventDefault();
-        } else if (self.state.name == 'network' &&  e.keyCode === 191) {
+        } else if (e.keyCode === 191) {
+          var name = self.state.name;
           var nodeName = document.activeElement && document.activeElement.nodeName;
           if (nodeName !== 'INPUT' && nodeName !== 'TEXTAREA' && !$('.modal.in').length) {
-            events.trigger('focusNetworkFilterInput');
+            if (name === 'network') {
+              events.trigger('focusNetworkFilterInput');
+            } else if (name === 'rules') {
+              events.trigger('focusRulesFilterInput');
+            } else if (name === 'values') {
+              events.trigger('focusValuesFilterInput');
+            }
           }
         }
       })
@@ -1347,9 +1354,7 @@ var Index = React.createClass({
         if (!e.ctrlKey && !e.metaKey) {
           if (code === 112) {
             e.preventDefault();
-            window.open(
-              'https://avwo.github.io/whistle/webui/' + name + '.html'
-            );
+            window.open(util.getDocsBaseUrl('gui/' + name + '.html'));
           } else if (code === 116) {
             e.preventDefault();
           }
@@ -5010,7 +5015,7 @@ var Index = React.createClass({
                   type="button"
                   className="btn btn-primary"
                   onClick={this.hideUpdateTipsDialog}
-                  href="https://avwo.github.io/whistle/update.html"
+                  href={util.getDocsBaseUrl('faq.html#update')}
                   target="_blank"
                 >
                   View Update Guide

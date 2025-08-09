@@ -2950,3 +2950,8 @@ exports.formatRules = function (str, values, rawValues) {
   str = mergeLines(str);
   return str.trim().split(LINE_END_RE);
 };
+
+exports.getDocsBaseUrl = function (url) {
+  var path = /^zh-/i.test(navigator.language || navigator.userLanguage) ? '/' : '/en/';
+  return 'https://wproxy.org' + path + (url ? 'docs/' : '') + (url || '');
+};
