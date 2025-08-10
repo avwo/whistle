@@ -21,7 +21,7 @@ pattern resWrite://fileOrDirPath [filters...]
 
 #### Basic Configuration
 ```txt
-wproxy.org/docs resWrite:///User/xxx/test
+wproxy.org/docs resWrite:///User/xxx/test/
 ```
 ##### Path Resolution Rules:
 1. **When Accessing a Specific File**
@@ -30,42 +30,40 @@ wproxy.org/docs resWrite:///User/xxx/test
 
     → Save to: `/User/xxx/test/test.html`
 
-1. **When Accessing a Directory Path**
+2. **When Accessing a Directory Path**
 
     `https://wproxy.org/docs/`
 
-    → Automatically Recognizes as a Directory (Based on the Trailing `/` or `\`)
-    
-    → Saves to: `/User/xxx/test/index.html`
+    → Save to: `/User/xxx/test/index.html` (The target path is `/User/xxx/test/`, and a trailing `/` or `\` automatically appends `index.html`)
 
 #### Explicit Directory Configuration
 ```txt
-wproxy.org/docs/ resWrite:///User/xxx/test
+wproxy.org/docs/ resWrite:///User/xxx/test/
 ```
-##### Differences in Path Resolution:
-1. **When accessing a sub-directory**
+##### Path Resolution Differences:
+1. **When Accessing a Sub-Path**
 
     `https://wproxy.org/docs/test.html`
 
-    → Still saved to: `/User/xxx/test/test.html`
+    → Still Saved to: `/User/xxx/test/test.html`
 
-1. **When accessing a configuration directory**
+2. **When Accessing a Configuration Directory**
 
     `https://wproxy.org/docs/`
 
-    → Saved directly to: `/User/xxx/test` (as a whole file)
+    → Saved Directly to: `/User/xxx/test/` (as a Whole File)
 
 > 💡 Key Differences:
-> - Whether the rule path ends with `/` or `\` determines how directory requests are saved.
-> - Non-directory paths (without a trailing `/` or `\`) are automatically completed to `index.html`
-> - Directory paths (with a trailing `/` or `\`) are saved directly to the specified file.
+> - Whether the rule path ends with `/` or `\` determines how directory requests are saved
+> - Non-directory paths (without a trailing `/` or `\`) are saved directly to the specified file
+> - Directory paths (with a trailing `/` or `\`) are automatically completed to `index.html`
 
-#### Specifying a File
+#### Specified Files
 ``` txt
 /^https://wproxy\.org/docs/(\?.*)?$ resWrite:///User/xxx/test/index.html
 ```
-> Limiting the request URL using regular expression matching
+> Limit the request URL using regular expression matching
 
 ## Associated Protocols
-1. Enable forced writes: [enable://forceReqWrite](./enable)
+1. Enable force write: [enable://forceReqWrite](./enable)
 2. Write all response content: [resWriteRaw](./resWriteRaw)

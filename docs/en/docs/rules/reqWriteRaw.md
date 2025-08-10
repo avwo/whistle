@@ -17,24 +17,24 @@ pattern reqWriteRaw://fileOrDirPath [filters...]
 | fileOrDirPath | Directory or file path to store data | |
 | filters | Optional filters, supporting matching: • Request URL/Method/Headers/Content • Response Status Code/Headers | [Filters Documentation](./filters) |
 
+## Configuration Example
+
 #### Basic Configuration
 ```txt
-wproxy.org/docs reqWriteRaw:///User/xxx/test
+wproxy.org/docs reqWriteRaw:///User/xxx/test/
 ```
 ##### Path Resolution Rules:
 1. **When accessing a specific file**
 
     `https://wproxy.org/docs/test.html`
-    
+
     → Save to: `/User/xxx/test/test.html`
 
 2. **When accessing a directory path**
 
     `https://wproxy.org/docs/`
 
-    → Automatically identifies it as a directory (based on the trailing `/` or `\`)
-
-    → Save to: `/User/xxx/test/index.html`
+    → Save to: `/User/xxx/test/index.html` (The target path is `/User/xxx/test/`, and a trailing `/` or `\` automatically appends `index.html`)
 
 #### Explicit Directory Configuration
 ```txt
@@ -51,14 +51,14 @@ wproxy.org/docs/ reqWriteRaw:///User/xxx/test
 
     `https://wproxy.org/docs/`
 
-    → Saved Directly to: `/User/xxx/test` (as a Whole File)
+    → Saved Directly to: `/User/xxx/test/` (as a Whole File)
 
 > 💡 Key Differences:
-> - Whether the rule path ends with `/` or `\` determines how directory requests are saved.
-> - Non-directory paths (without a trailing `/` or `\`) are automatically completed to `index.html`
-> - Directory paths (with a trailing `/` or `\`) are saved directly to the specified file.
+> - Whether the rule path ends with `/` or `\` determines how directory requests are saved
+> - Non-directory paths (without a trailing `/` or `\`) are saved directly to the specified file
+> - Directory paths (with a trailing `/` or `\`) are automatically completed to `index.html`
 
-#### Specifying a File
+#### Specified Files
 ``` txt
 /^https://wproxy\.org/docs/(\?.*)?$ reqWriteRaw:///User/xxx/test/index.html
 ```
