@@ -51,7 +51,7 @@ export default defineConfig({
             ]
           },
           {
-            text: 'Rule Config',
+            text: 'Rule Configuration',
             collapsed: false,
             items: [
               { text: 'Pattern', link: '/en/docs/rules/pattern' },
@@ -114,7 +114,6 @@ export default defineConfig({
                   { text: 'auth', link: '/en/docs/rules/auth' },
                   { text: 'cache', link: '/en/docs/rules/cache' },
                   { text: 'referer', link: '/en/docs/rules/referer' },
-                  { text: 'attachment', link: '/en/docs/rules/attachment' },
                   { text: 'reqType', link: '/en/docs/rules/reqType' },
                   { text: 'reqCharset', link: '/en/docs/rules/reqCharset' },
                   { text: 'reqCookies', link: '/en/docs/rules/reqCookies' },
@@ -144,6 +143,7 @@ export default defineConfig({
                   { text: 'resCharset', link: '/en/docs/rules/resCharset' },
                   { text: 'resCookies', link: '/en/docs/rules/resCookies' },
                   { text: 'resCors', link: '/en/docs/rules/resCors' },
+                  { text: 'attachment', link: '/en/docs/rules/attachment' },
                   { text: 'resBody', link: '/en/docs/rules/resBody' },
                   { text: 'resMerge', link: '/en/docs/rules/resMerge' },
                   { text: 'resPrepend', link: '/en/docs/rules/resPrepend' },
@@ -311,7 +311,6 @@ export default defineConfig({
               { text: 'auth', link: '/docs/rules/auth' },
               { text: 'cache', link: '/docs/rules/cache' },
               { text: 'referer', link: '/docs/rules/referer' },
-              { text: 'attachment', link: '/docs/rules/attachment' },
               { text: 'reqType', link: '/docs/rules/reqType' },
               { text: 'reqCharset', link: '/docs/rules/reqCharset' },
               { text: 'reqCookies', link: '/docs/rules/reqCookies' },
@@ -340,6 +339,7 @@ export default defineConfig({
               { text: 'resType', link: '/docs/rules/resType' },
               { text: 'resCharset', link: '/docs/rules/resCharset' },
               { text: 'resCookies', link: '/docs/rules/resCookies' },
+              { text: 'attachment', link: '/docs/rules/attachment' },
               { text: 'resCors', link: '/docs/rules/resCors' },
               { text: 'resBody', link: '/docs/rules/resBody' },
               { text: 'resMerge', link: '/docs/rules/resMerge' },

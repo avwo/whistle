@@ -1,24 +1,25 @@
 # attachment
-设置响应头 `content-disposition` 字段，可以让请求直接变下载。
-> 类似 Koa 的 `attachment` 方法：https://koajs.com/
+Setting the `content-disposition` response header field allows the request to be directly converted to a download.
+Similar to Koa's `attachment` method: https://koajs.com/
 
-## 规则语法
+## Rule Syntax
 ``` txt
 pattern attachment://filename [filters...]
 ```
 
-| 参数    | 描述                                                         | 详细文档                  |
+| Parameters | Description | Detailed Documentation |
 | ------- | ------------------------------------------------------------ | ------------------------- |
-| pattern | 匹配请求 URL 的表达式                                        | [匹配模式文档](./pattern) |
-| filename   | 下载后显示的文件名称，如 `test.txt` <br/>• 内联/内嵌/Values内容<br/>⚠️ 不支持从文件/远程 URL 加载数据 | |
-| filters | 可选过滤器，支持匹配：<br/>• 请求URL/方法/头部/内容<br/>• 响应状态码/头部 | [过滤器文档](./filters) |
+| pattern | Expression to match against the request URL | [Match Pattern Documentation](./pattern) |
+| filename | The name of the file to be displayed after downloading, such as `test.txt` <br/>• Inline/Embedded/Values content<br/>⚠️ Loading data from files/remote URLs is not supported | |
+| filters | Optional filters, supporting matching:<br/>• Request URL/Method/Header/Content<br/>• Response Status Code/Header | [Filter Documentation](./filters) |
 
-## 配置示例
+## Configuration Example
 ``` txt
 https://www.example.com/ attachment://example.html
 ```
 
-浏览器访问 `https://www.example.com/` 自动下载 `example.html` 文件。
+Browser Access `https://www.example.com/` automatically downloads the `example.html` file.
 
-## 关联协议
-1. 直接修改请求头：[resHeaders://content-disposition=attachment;filename="example.html"](./resHeaders)
+## Associated Protocols
+1. Directly modify the request header: [resHeaders://content-disposition=attachment;filename="example.html"](./resHeaders)
+

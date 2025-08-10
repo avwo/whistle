@@ -1,50 +1,49 @@
 # file
-使用本地文件响应请求，适用于：
-- 搭建本地开发环境
-- 调试本地前端页面
-- 接口 Mock 场景
+Use a local file to respond to requests. Suitable for:
+- Setting up a local development environment
+- Debugging local front-end pages
+- Interface mock scenarios
 
-## 规则语法
+## Rule Syntax
 ``` txt
 pattern file://value [filters...]
 ```
 
-| 参数    | 描述                                                         | 详细文档                  |
+| Parameters | Description | Detailed Documentation |
 | ------- | ------------------------------------------------------------ | ------------------------- |
-| pattern | 匹配请求 URL 的表达式                                        | [匹配模式文档](./pattern) |
-| value   | 操作内容，支持以下类型：<br/>• 目录/文件路径<br/>• 远程 URL<br/>• 内联/内嵌/Values内容 | [操作指令文档](./operation)   |
-| filters | 可选过滤器，支持匹配：<br/>• 请求URL/方法/头部/内容<br/>• 响应状态码/头部 | [过滤器文档](./filters) |
+| pattern | Expression to match the request URL | [Match Pattern Documentation](./pattern) |
+| value | Operation content. Supports the following types:<br/>• Directory/File Path<br/>• Remote URL<br/>• Inline/Embedded/Values Content | [Operation Instruction Documentation](./operation) |
+| filters | Optional filters. Supports matching:<br/>• Request URL/Method/Header/Content<br/>• Response Status Code/Header | [Filter Documentation](./filters) |
 
-
-## 替换本地文件
+## Replace a Local File
 ``` txt
-# 基础用法
+# Basic Usage
 www.example.com/path file:///User/xxx/test
 
-# Windows 路径
-www.example.com/path file://D:\test 
+# Windows path
+www.example.com/path file://D:\test
 
-# 排除特定接口
+# Exclude specific interfaces
 www.example.com/path file:///User/xxx/test excludeFilter://*/path/cgi
 
-# 根据请求内容匹配
+# Match based on request content
 www.example.com/path file:///User/xxx/test includeFilter://b:/"cmdname":\s*"test"/i
 ```
-**特性说明：**
-- 自动路径拼接：访问 `https://www.example.com/path/x/y/z` 会映射到 `/User/xxx/test/x/y/z`
-- 禁用路径拼接：使用 `< >` 包裹路径
+**Feature Description:**
+- Automatic path concatenation: Accessing `https://www.example.com/path/x/y/z` will map to `/User/xxx/test/x/y/z`
+- Disable path concatenation: Use `< >` to wrap the path
   ``` txt
   www.example.com/path file://</User/xxx/test>
   ```
-  > 访问 `https://www.example.com/path/x/y/z`  只会自动加载 `/User/xxx/test` 对应的文件
+  > Accessing `https://www.example.com/path/x/y/z` will only automatically load the file corresponding to `/User/xxx/test`
 
-## 快速替换
-如果不方便操作本地文件，也可以用 Whistle 提供的内联/内嵌/Values功能，通过界面设置响应内容：
+## Quick Replacement
+If working with local files is inconvenient, you can also use Whistle's Inline/Embedded/Values functionality to set the response content through the interface:
 ```` txt
-# 内联值不能有空格
+# Inline values cannot contain spaces
 www.example.com/path file://({"ec":0})
 
-# 内嵌值（可以带空格和换行符）
+# Embedded values (spaces and line breaks are allowed)
 ``` test.json
 {
   "ec": 2,
@@ -53,49 +52,49 @@ www.example.com/path file://({"ec":0})
 ```
 www.example.com/path file://{test.json}
 ````
-> `test.json` 如果内容比较多可以放在 Values 里面
+> `test.json` If the content is large, place it in Values.
 
-## 替换临时文件
-如果内容比较大，且又不方便操作本地文件，可以用 Whistle 提供的临时文件功能：
+## Replacing a Temporary File
+If the content is large and working with local files is inconvenient, you can use Whistle's temporary file functionality:
 ``` txt
 www.example.com/path file://temp/blank.html
 ```
-**操作步骤：**
-1. 按住 `Command(Mac)`/`Ctrl(Win)`
-2. 点击规则中的 `file://temp/blank.html`
-3. 在弹出编辑器中输入响应内容
+**Steps:**
+1. Hold down `Command (Mac)`/`Ctrl (Win)`
+2. Click in the rule `file://temp/blank.html`
+3. Enter the response content in the pop-up editor.
 
 ## Mock JSONP
 ```` txt
-www.example.com/path file://`(${query.callback}({"ec":0}))` # 内联值不能有空格
+www.example.com/path file://`(${query.callback}({"ec":0}))` # Inline values cannot contain spaces
 
-# 内嵌值（可以带空格和换行符）
+# Inline values (spaces and newlines are allowed)
 ``` test.json
 ${query.callback}({
-  "ec": 2,
-  "em": "error"
+"ec": 2,
+"em": "error"
 })
 ```
 www.example.com/path file://`{test.json}`
 ````
 
-模板字符串在以下场景中无法直接生效：
-- 引用本地文件路径时
-- 引用远程 URL 地址时
+Template strings do not work directly in the following scenarios:
+- When referencing a local file path
+- When referencing a remote URL
 
-当遇到上述限制时，您可以使用 [tpl](./tpl) 功能作为替代方案。
+When encountering the above limitations, you can use the [tpl](./tpl) function as an alternative.
 
-## 高级用法
-**多目录搜索：**
+## Advanced Usage
+**Multi-Directory Search:**
 ``` txt
 www.example.com/path file:///path1|/path2|/path3
 ```
 
-**查找逻辑：**
-1. 按顺序检查 /path1/x/y/z → /path2/x/y/z → /path3/x/y/z
-2. 找到第一个存在的文件立即返回
-3. 全部未找到返回 `404`
+**Search Logic:**
+1. Check in order: /path1/x/y/z → /path2/x/y/z → /path3/x/y/z
+2. Return immediately if the first existing file is found
+3. Return `404` if all files are not found
 
-## 关联协议
-1. 需要允许未匹配文件的请求继续正常访问用：[xfile](./xfile)
-2. 需要用其它远程 URL 的内容替换用：[https](./https) 或 [http](./http) 或配 [host](./host) （不建议用：<del>`file://https://xxx`</del>）
+## Associated Protocols
+1. To allow requests for unmatched files to continue normally, use: [xfile](./xfile)
+2. To replace the remote URL with another one, use: [https](./https) or [http](./http) or [host](./host) (<del>`file://https://xxx`</del> is not recommended)

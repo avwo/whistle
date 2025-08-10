@@ -1,21 +1,21 @@
 # referer
-修改请求头的 `referer` 字段，有些服务器会校验请求头的 `referer` 字段，这个协议可以用来绕过这个检测或者测试后台的功能。
+Modify the `referer` field in the request header. Some servers validate the `referer` field in the request header. This protocol can be used to bypass this detection or test backend functionality.
 
-## 规则语法
+## Rule Syntax
 ``` txt
 pattern referer://value [filters...]
 ```
 
-| 参数    | 描述                                                         | 详细文档                  |
+| Parameters | Description | Detailed Documentation |
 | ------- | ------------------------------------------------------------ | ------------------------- |
-| pattern | 匹配请求 URL 的表达式                                        | [匹配模式文档](./pattern) |
-| value   | 完整 URL 链接<br/>• 内联/内嵌/Values内容<br/>⚠️ 不支持从文件/远程 URL 加载数据 | |
-| filters | 可选过滤器，支持匹配：<br/>• 请求URL/方法/头部/内容<br/>• 响应状态码/头部 | [过滤器文档](./filters) |
+| pattern | Expression to match against the request URL | [Match Pattern Documentation](./pattern) |
+| value | Full URL link<br/>• Inline/Embedded/Values content<br/>⚠️ Loading data from files/remote URLs is not supported | |
+| filters | Optional filters, supporting matching:<br/>• Request URL/Method/Header/Content<br/>• Response Status Code/Header | [Filter Documentation](./filters) |
 
-## 配置示例
+## Configuration Example
 ``` txt
 www.example.com/path referer://https://www.test.com/x/y/z?xxx
 ```
 
-## 关联协议
-1. 等价于：[reqHeaders://referer=https://xxx](./reqHeaders)
+## Associated Protocols
+1. Equivalent to: [reqHeaders://referer=https://xxx](./reqHeaders)

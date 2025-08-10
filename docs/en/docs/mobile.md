@@ -1,84 +1,81 @@
-# 移动端抓包
+# Mobile Packet Capture
+Mobile packet capture debugging requires the following configuration:
+1. Install the root certificate (required for HTTPS packet capture)
+2. Set up the system proxy
 
-移动端（含手机/平板）抓包调试需完成以下配置：
-1. 安装根证书（HTTPS 抓包必需）
-2. 设置系统代理
+## Install the root certificate (required for HTTPS packet capture)
 
-## 安装根证书（HTTPS 抓包必需）
+#### Downloading the root certificate:
 
-#### 下载根证书：
+1. Click the HTTPS button at the top of the Whistle interface. The HTTPS Settings dialog box will pop up.
 
-1. 点击 Whistle 界面顶部点击 HTTPS 按钮，弹出 HTTPS 设置对话框
-   
-   <img width="320" alt="HTTPS Settings" src="/img/https-settings.png" />
-2. 使用手机相机扫描对话框中的二维码 → 点击弹出的链接（下载失败尝试切换其它二维码，直到扫描下载成功为止）
-   
-   <img width="320" alt="Scan qrcode" src="/img/https-qrcode.png" />
+    <img width="320" alt="HTTPS Settings" src="/img/https-settings.png" />
+2. Use your phone's camera to scan the QR code in the dialog box → Click the link that pops up. (If the download fails, try another QR code until the scan succeeds.)
 
-   > 如果 Android 自带浏览器无法下载，可尝试使用 Chrome 浏览器动下载地址：http://[电脑IP]:[Whistle端口]/cgi-bin/rootca，或通过 PC 下载后传输到手机
-   > 
-   > 如果所有二维码都无法下载：
-   > - 检查设备与 Whistle 主机是否在同一局域网
-   > - 确认防火墙未拦截代理端口
-3. 下载成功后记录二维码地址的 IP 和端口供下面设置系统代理用，并按下面的方法安装和信任根证书
+    <img width="320" alt="Scan qrcode" src="/img/https-qrcode.png" />
 
-#### 安装根信任证书：
+    > If the native Android browser fails to download, try using Chrome to download the certificate: http://[Computer IP]:[Whistle port]/cgi-bin/rootca, or download the certificate from a PC and transfer it to your phone.
+    > 
+    > If all QR codes fail to download:
+    > - Check that your device and Whistle host are on the same local area network.
+    > - Verify that your firewall isn't blocking the proxy port.
+3. After the download is successful, record the IP and port number of the QR code address for use in setting up the system proxy. Then, install and trust the root certificate as follows.
+
+#### Installing the Root Trust Certificate:
 
 **iOS**
 
-1. 安装描述文件
-   - 前往：设置 → 通用 → VPN与设备管理
-   - 找到"已下载的描述文件"并安装
-2. 启用完全信任（此步骤必不可少）
-   - 前往：设置 → 通用 → 关于本机 → 证书信任设置
-   - 开启对 Whistle 根证书的完全信任
+1. Install the profile
+   - Go to: Settings → General → VPN & Device Management
+   - Find the "Downloaded Profile" and install it.
+2. Enable Full Trust (this step is essential).
+   - Go to: Settings → General → About → Certificate Trust Settings
+   - Enable Full Trust for the Whistle root certificate.
 
-    <img width="320" alt="证书信任设置" src="/img/https-trust.png" />
+   <img width="320" alt="Certificate Trust Settings" src="/img/https-trust.png" />
 
 **Android**
 
-1. 前往：设置 → 安全 → 加密与凭据 → 安装证书 → CA证书
-2. 选择下载的证书文件
-3. 输入锁屏密码确认
-4. 为证书命名（如 "Whistle"）
+1. Go to: Settings → Security → Encryption & Credentials → Install Certificates → CA Certificates
+2. Select the downloaded certificate file.
+3. Enter your lock screen passcode to confirm.
+4. Name the certificate (e.g., "Whistle").
 
-> **版本差异说明：**
-> 
-> Android 12+：需在「更多安全设置」中操作
-> 
-> 华为EMUI：需先关闭"纯净模式"
-> 
-> 其他品牌：路径可能略有不同
-> 
+> **Version Differences:**
+>
+> Android 12+: Requires "More Security Settings"
+>
+> Huawei EMUI: Requires "Clean Mode" to be disabled first
+>
+> Other brands: The path may vary slightly
+>
 
-## 设置系统代理
+## Set up the system proxy
+1. Access Wi-Fi settings
+   - Go to: Settings → Wi-Fi
+   - Tap the icon next to the currently connected network (Android may require long-pressing the Wi-Fi name).
+2. Configure a manual proxy
+   - Select "Manual" for the proxy type.
+   - Server: Enter the IP address from which the certificate QR code was successfully downloaded.
+   - Port: Enter the port from which the certificate QR code was successfully downloaded (Whistle defaults to port 8899).
+   - Save settings
 
-1. 进入WiFi设置
-   - 前往：设置 → Wi-Fi（无线局域网）
-   - 点击当前连接网络旁的图标（Android 可能需要长按 Wi-Fi 名称）
-2. 配置手动代理
-   - 代理类型选择"手动"
-   - 服务器：填写上面成功下载证书二维码的 IP
-   - 端口：填写面成功下载证书二维码的端口（Whistle 默认端口为 `8899`）
-   - 保存设置
+  <img width="320" alt="Set Proxy" src="/img/proxy-settings.jpg" />
 
-<img width="320" alt="设置代理" src="/img/proxy-settings.jpg" />
+## Successful root certificate installation and proxy setup indicator
 
+1. Accessing the web works fine on my phone.
+2. Whistle can capture HTTPS requests.
+3. No security warnings appear.
 
-## 安装根证书和设置代理成功标志
+## FAQ
 
-1. 手机访问网页正常
-2. Whistle 能捕获 HTTPS 请求
-3. 无安全警告提示
-
-## 常见问题
-
-1. 证书不受信任
-   - 检查是否完成"完全信任"设置（iOS）
-   - 确认证书安装位置正确（Android）
-2. 代理不生效
-   - 打开看 Whistle 界面右上角 Online 对话框查看 IP 和端口是否有变更
-   - 不确定哪个 IP 可用，可以一个个试看看
-3. 特定App无法抓包
-   - 检查App是否使用自定义证书
-   - 尝试在AndroidManifest.xml中添加网络配置，详见：[https://developer.android.com/training/articles/security-config#base-config](https://developer.android.com/training/articles/security-config#base-config)
+1. Certificate is untrusted.
+   - Check that "Full Trust" is set up (iOS).
+   - Confirm that the certificate is installed in the correct location (Android).
+2. Proxy is not working.
+   - Check the "Online" dialog box in the upper right corner of the Whistle interface to see if the IP and port have changed.
+   - If you're not sure which IP address is available, try each one.
+3. Packet capture fails for a specific app.
+   - Check that the app uses a custom certificate.
+   - Try adding network configuration to the AndroidManifest.xml file. For details, see: [https://developer.android.com/training/articles/security-config#base-config](https://developer.android.com/training/articles/security-config#base-config)

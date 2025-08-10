@@ -146,4 +146,4 @@ req.originalReq.pluginVars; // 精细化配置的变量，如 ['abc', 'enableAut
 
 <img src="/img/plugin-vars-hint-url2.png" width="260" />
 
-`/cgi-bin/plugin-vars` 的实现参考：[插件开发文档](/docs/extensions/dev#rules-hint)
+`/cgi-bin/plugin-vars` 的实现参考：[插件开发文档](../extensions/dev#rules-hint)

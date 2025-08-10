@@ -1,24 +1,24 @@
-# Values 界面
+# Values Interface
 
-操作内容快捷配置界面
+Action Content Quick Configuration Interface
 
-<img src="/img/values.png" alt="Values 界面" width="1000" />
+<img src="/img/values.png" alt="Values Interface" width="1000" />
 
-## 界面基本功能
+## Basic Interface Functions
 
-| 控件         | 功能                                           |
+| Controls | Function |
 | ------------ | ---------------------------------------------- |
-| **Import**   | 导入 Values                                       |
-| **Export**   | 导出 Rules                                      |
-| **Create**   | 新建操作内容/分组                                  |
-| **Delete**   | 删除操作内容/分组                                  |
-| **Rename**   | 重命名操作内容/分组                                |
-| **Settings** | 设置编辑样式                                   |
-| **右键菜单** | 除了集成上面的菜单功能，还支持插件扩展菜单功能 |
+| **Import** | Import Values |
+| **Export** | Export Rules |
+| **Create** | Create New Action Content/Group |
+| **Delete** | Delete Action Content/Group |
+| **Rename** | Rename Action Content/Group |
+| **Settings** | Set Editing Style |
+| **Right-Click Menu** | In addition to integrating the above menu functions, plugins are also supported for extended menu functions. |
 
-## 底部搜索框
-| 前缀            | 过滤目标                            | 示例                              |
+## Bottom Search Box
+| Prefix | Filter Target | Example |
 | --------------- | ----------------------------------- | --------------------------------- |
-| `无前缀`        | 规则名称和内容 | `test` `/test\d/i`|
-| `k:pattern`    | 规则名称      | `k:test` `k:/test\d/i` |
-| `v:pattern`    | 规则内容         | `v:test` `v:/test\d/i` |
+| `No Prefix` | Rule Name and Content | `test` `/test\d/i` |
+| `k:pattern` | Rule name | `k:test` `k:/test\d/i` |
+| `v:pattern` | Rule content | `v:test` `v:/test\d/i` |

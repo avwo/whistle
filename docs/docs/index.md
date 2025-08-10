@@ -1,6 +1,6 @@
 # 安装
 
-请根据您的操作系统，参考对应 GitHub 仓库的 README 文档完成安装：
+请根据您的操作系统，参考对应 GitHub 仓库的 README 文档完成安装。
 
 ## 🖥️ 桌面系统安装
 1. 适用系统：macOS / Windows / Linux (Ubuntu / Fedora 等带图形界面系统)

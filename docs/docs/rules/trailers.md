@@ -16,10 +16,8 @@ pattern trailers://value [filters...]
 ## 配置示例
 #### 基础配置
 ``` txt
+# 设置请求头 `x-proxy: Whistle`
 www.example.com/path trailers://x-proxy=Whistle
-```
-``` txt
-x-proxy: Whistle
 ```
 
 #### 设置多个请求头

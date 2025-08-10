@@ -1,18 +1,18 @@
-# resCookies
-修改响应 `Cookie`。
+#resCookies
+Modify response `Cookies`.
 
-## 规则语法
+## Rule Syntax
 ``` txt
 pattern resCookies://value [filters...]
 ```
 
-| 参数    | 描述                                                         | 详细文档                  |
+| Parameters | Description | Detailed Documentation |
 | ------- | ------------------------------------------------------------ | ------------------------- |
-| pattern | 匹配请求 URL 的表达式                                        | [匹配模式文档](./pattern) |
-| value   | Cookie 对象，支持从以下渠道获取：<br/>• 目录/文件路径<br/>• 远程 URL<br/>• 内联/内嵌/Values内容  | [操作指令文档](./operation) |
-| filters | 可选过滤器，支持匹配：<br/>• 请求URL/方法/头部/内容<br/>• 响应状态码/头部 | [过滤器文档](./filters) |
+| pattern | Expression to match request URLs | [Match Pattern Documentation](./pattern) |
+| value | Cookie object, supported from the following channels:<br/>• Directory/File Path<br/>• Remote URL<br/>• Inline/Embedded/Values Content | [Operation Instruction Documentation](./operation) |
+| filters | Optional filters, supported for matching:<br/>• Request URL/Method/Header/Content<br/>• Response Status Code/Header | [Filter Documentation](./filters) |
 
-Cookie 对象结构
+Cookie Object Structure
 ``` js
 {
   "key1": "value1",
@@ -29,43 +29,41 @@ Cookie 对象结构
       }
 }
 ```
-> 默认 `path=/`
+> Default `path=/`
 
-## 配置示例
-#### 内联方式
+## Configuration Example
+#### Inline Mode
 ```` txt
 www.example.com/path resCookies://k1=v1&k2=v2
 ````
-响应头新增两个响应 cookie：`k1: v1`/`k2: v2`
+Add two response cookies to the response header: `k1: v1`/`k2: v2`
 
-### 内嵌模式
+### Inline Mode
 ```` txt
 ``` cookies.json
 key1: value1
 key2: value2
 ```
-# 或
+# Or
 ``` cookies.json
 {
-  key1: 'value1',
-  key2: 'value2'
+key1: 'value1',
+key2: 'value2'
 }
 ```
 www.example.com/path resCookies://{cookies.json}
 ````
-响应头新增两个响应 cookie：`key1: value1`/`key2: value2`
+Add two response cookies to the response header: `key1: value1` / `key2: value2`
 
-#### 本地/远程资源
+#### Local/Remote Resources
 
 ```` txt
 www.example.com/path1 resCookies:///User/xxx/test.json
 www.example.com/path2 resCookies://https://www.xxx.com/xxx/params.json
-# 通过编辑临时文件
+# Editing a temporary file
 www.example.com/path3 resCookies://temp/blank.json
 ````
 
-## 关联协议
-1. 删除响应 cookie：[delete://resCookies.xxx](./delete)
-2. 删除所有响应头 cookie：[delete://resHeaders.set-cookie](./delete)
-
-
+## Associated Protocols
+1. Delete the response cookie: [delete://resCookies.xxx](./delete)
+2. Delete all response header cookies: [delete://resHeaders.set-cookie](./delete)

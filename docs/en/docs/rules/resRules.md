@@ -1,18 +1,18 @@
 # resRules
-为匹配的请求在响应阶段批量设置多个规则，实现复杂场景下的请求处理需求。
+Batch set multiple rules for matching requests during the response phase to meet request processing requirements in complex scenarios.
 
-## 规则语法
+## Rule Syntax
 ``` txt
 pattern resRules://value [filters...]
 ```
 
-| 参数    | 描述                                                         | 详细文档                  |
+| Parameters | Description | Detailed Documentation |
 | ------- | ------------------------------------------------------------ | ------------------------- |
-| pattern | 匹配请求 URL 的表达式                                        | [匹配模式文档](./pattern) |
-| value   | 规则内容，支持以下类型：<br/>• 目录/文件路径<br/>• 远程 URL<br/>• 内联/内嵌/Values内容 | [操作指令文档](./operation)   |
-| filters | 可选过滤器，支持匹配：<br/>• 请求URL/方法/头部/内容<br/>• 响应状态码/头部 | [过滤器文档](./filters) |
+| pattern | Expression to match request URLs | [Match Pattern Documentation](./pattern) |
+| value | Rule content, supports the following types:<br/>• Directory/File Path<br/>• Remote URL<br/>• Inline/Embedded/Values Content | [Operation Instruction Documentation](./operation) |
+| filters | Optional filters, supports matching:<br/>• Request URL/Method/Header/Content<br/>• Response Status Code/Header | [Filter Documentation](./filters) |
 
-## 配置示例
+## Configuration Example
 ```` txt
 ``` test.txt
 * file://(<div>hello<div>)
@@ -25,10 +25,10 @@ pattern resRules://value [filters...]
 
 www.example.com/path resRules://{test.txt} resRules://{test2.txt}
 ````
-访问 `https://www.example.com/path/to` 不执行 `* file://(<div>hello<div>)`（因为是在响应阶段执行 resRules 里面的规则）。
+Accessing `https://www.example.com/path/to` does not execute `* file://(<div>hello<div>)` (because the rules in resRules are executed during the response phase).
 
-## 关联协议
-1. 请求阶段脚本规则：[reqScript](./reqScript)
-2. 响应阶段批量规则：[reqRules](./resRules)
-3. 响应阶段脚本规则：[resScript](./resScript)
-4. 更复杂的定制需求：[插件开发](../extensions/dev)
+## Related Protocols
+1. Request-Phone Script Rules: [reqScript](./reqScript)
+2. Response-Phone Batch Rules: [reqRules](./resRules)
+3. Response-Phone Script Rules: [resScript](./resScript)
+4. More Complex Customization Requirements: [Plugin Development](../extensions/dev)

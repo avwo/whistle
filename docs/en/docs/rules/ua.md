@@ -1,34 +1,34 @@
 # ua
-修改请求头的 `Uer-Agent` 字段的快捷协议，可用于模拟各种机器访问。
+A shortcut protocol for modifying the `User-Agent` field in the request header. This can be used to simulate access from various machines.
 
-## 规则语法
+## Rule Syntax
 ``` txt
 pattern ua://value [filters...]
 ```
 
-| 参数    | 描述                                                         | 详细文档                  |
+| Parameters | Description | Detailed Documentation |
 | ------- | ------------------------------------------------------------ | ------------------------- |
-| pattern | 匹配请求 URL 的表达式                                        | [匹配模式文档](./pattern) |
-| value   | 自定义请求的 `User-Agent` 字符串<br/>• 内联/内嵌/Values内容<br/>⚠️ 不支持从文件/远程 URL 加载数据 | |
-| filters | 可选过滤器，支持匹配：<br/>• 请求URL/方法/头部/内容<br/>• 响应状态码/头部 | [过滤器文档](./filters) |
+| pattern | Expression to match request URLs | [Match Pattern Documentation](./pattern) |
+| value | Custom request `User-Agent` string<br/>• Inline/Embedded/Values content<br/>⚠️ Loading data from files/remote URLs is not supported | |
+| filters | Optional filters, supports matching:<br/>• Request URL/Method/Headers/Content<br/>• Response Status Code/Headers | [Filter Documentation](./filters) |
 
-## 配置示例
+## Configuration Example
 ```` txt
-# 将原来的 user-agent 改成 `Whistle/2.9.100`
+# Change the original user-agent to `Whistle/2.9.100`
 www.example.com/path ua://Whistle/2.9.100
 
-# 存在空格的 UA
+# Spaces UA
 ``` ua.txt
-Test Whistle/2.9.100 
+Test Whistle/2.9.100
 ```
 www.example.com/path ua://{ua.txt}
 
-# 使用 reqHeaders
+# Using reqHeaders
 ``` ua.json
-user-agent: Test Whistle/2.9.100 
+user-agent: Test Whistle/2.9.100
 ```
 www.example.com/path reqHeaders://{ua.json}
 ````
 
-## 关联协议
-1. 直接修改请求头：[reqHeaders://User-Agent=value](./reqHeaders)
+## Associated Protocols
+1. Directly modify the request header: [reqHeaders://User-Agent=value](./reqHeaders)

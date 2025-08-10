@@ -4,8 +4,8 @@
 
 ## Q：抓包列表中出现 `captureError` 的原因？{#capture-error}
 1. 发出请求的客户端没有安装根证书，安装方法参考：
-   - PC 端：[安装根证书](/docs/)
-   - 移动端：[安装根证书](/docs/mobile)
+   - PC 端：[安装根证书](./)
+   - 移动端：[安装根证书](./mobile)
 2. `ssl pinning` 问题
    - 对该域名的 HTTPS 请求不解密：`域名 disable://capture` 或只针对指定客户端的请求 `域名 disable://capture includeFilter://reqH.user-agent=/xiaomi/i`
    - 使用可以规避 `ssl pinning` 的系统或模拟器运行客户端
@@ -27,7 +27,7 @@
 
 ## Q：如何配置双向认证（mTLS）的 HTTPS 请求？
 
-客户端证书设置参考：[@clientCert://](/docs/rules/@)
+客户端证书设置参考：[@clientCert://](./rules/@)
 
 ## Q：如何查看 Whistle 运行过程中的日志？
 1. 界面 Network > Tools > Server 查看错误日志
@@ -57,8 +57,8 @@ Whistle 默认会将所有发往代理端口（如 127.0.0.1:8899）的请求视
 ## Q：如何根据请求内容匹配规则？
 
 利用过滤器：
-- [includeFilter](/docs/rules/includeFilter)
-- [excludeFilter](/docs/rules/excludeFilter)
+- [includeFilter](./rules/includeFilter)
+- [excludeFilter](./rules/excludeFilter)
 
 ## Q：iOS 安装完根证书还是无法打开 HTTPS 页面的可能原因？
 
@@ -72,8 +72,8 @@ Whistle 默认会将所有发往代理端口（如 127.0.0.1:8899）的请求视
 2. 如果是自己公司的 APP，可以参考[Android 开发文档](https://developer.android.com/training/articles/security-config#base-config) 开启信任用户自定义根证书
 
 ## Q：如何对 Whistle 转发的请求设置用户名和密码？
-1. Whistle 内部请求认证：`w2 start -n 用户名 -w 密码` 或自己[开发插件](/docs/extensions/dev)，防止未授权操作规则和配置
-2. 代理请求的权限控制：需要借助插件 [whistle.proxyauth](https://github.com/whistle-plugins/whistle.proxyauth) 或自己[开发插件](/docs/extensions/dev)
+1. Whistle 内部请求认证：`w2 start -n 用户名 -w 密码` 或自己[开发插件](./extensions/dev)，防止未授权操作规则和配置
+2. 代理请求的权限控制：需要借助插件 [whistle.proxyauth](https://github.com/whistle-plugins/whistle.proxyauth) 或自己[开发插件](./extensions/dev)
 
 ## Q：如何添加自定义证书？{#custom-certs}
 

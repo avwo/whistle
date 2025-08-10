@@ -1,62 +1,69 @@
 # reqWriteRaw
-将请求的完整内容（包括请求方法、路径、协议、请求头、内容）保存到指定目录或文件中，适用于需要记录请求数据的场景：
-- 自动根据请求URL生成文件路径
-- 采用安全写入策略（可以采用 [enable://forceReqWrite](./enable) 强制覆盖）
-- 仅对包含内容体的请求有效（POST/PUT/PATCH等）
-- GET/HEAD 等无内容体请求会自动跳过
-- 保存失败时自动跳过
+Saves the complete request content (including request method, path, protocol, headers, and content) to a specified directory or file. This method is suitable for scenarios where request data needs to be recorded:
+- Automatically generates a file path based on the request URL
+- Uses a safe write policy (can be forced to overwrite using [enable://forceReqWrite](./enable))
+- Only valid for requests with a body (POST/PUT/PATCH, etc.)
+- Automatically skips requests without a body, such as GET/HEAD
+- Automatically skips if saving fails
 
-## 规则语法
+## Rule Syntax
 ``` txt
 pattern reqWriteRaw://fileOrDirPath [filters...]
 ```
 
-| 参数    | 描述                                                         | 详细文档                  |
+| Parameters | Description | Detailed Documentation |
 | ------- | ------------------------------------------------------------ | ------------------------- |
-| pattern | 匹配请求 URL 的表达式                                        | [匹配模式文档](./pattern) |
-| fileOrDirPath   | 存储数据的目录或文件路径 | |
-| filters | 可选过滤器，支持匹配：<br/>• 请求URL/方法/头部/内容<br/>• 响应状态码/头部 | [过滤器文档](./filters) |
+| pattern | Expression to match the request URL | [Match Pattern Documentation](./pattern) |
+| fileOrDirPath | Directory or file path to store data | |
+| filters | Optional filters, supporting matching: • Request URL/Method/Headers/Content • Response Status Code/Headers | [Filters Documentation](./filters) |
 
-## 配置示例
-
-#### 基础配置
+#### Basic Configuration
 ```txt
 wproxy.org/docs reqWriteRaw:///User/xxx/test
 ```
-##### 路径解析规则：
-1. **当访问具体文件时**  
-   `https://wproxy.org/docs/test.html`  
-   → 保存到：`/User/xxx/test/test.html`
+##### Path Resolution Rules:
+1. **When accessing a specific file**
 
-2. **当访问目录路径时**  
-   `https://wproxy.org/docs/`  
-   → 自动识别为目录（根据结尾的 `/` 或 `\`）  
-   → 保存到：`/User/xxx/test/index.html`
+    `https://wproxy.org/docs/test.html`
+    
+    → Save to: `/User/xxx/test/test.html`
 
-#### 目录显式配置
+2. **When accessing a directory path**
+
+    `https://wproxy.org/docs/`
+
+    → Automatically identifies it as a directory (based on the trailing `/` or `\`)
+
+    → Save to: `/User/xxx/test/index.html`
+
+#### Explicit Directory Configuration
 ```txt
 wproxy.org/docs/ reqWriteRaw:///User/xxx/test
 ```
-##### 路径解析差异：
-1. **访问子路径时**  
-   `https://wproxy.org/docs/test.html`  
-   → 仍保存到：`/User/xxx/test/test.html`
+##### Path Resolution Differences:
+1. **When Accessing a Sub-Path**
 
-2. **访问配置目录时**  
-   `https://wproxy.org/docs/`  
-   → 直接保存到：`/User/xxx/test`（作为整体文件）
+    `https://wproxy.org/docs/test.html`
 
-> 💡 关键区别：  
-> - 规则路径是否以 `/` 或 `\`结尾，决定了目录请求的保存方式  
-> - 非目录路径（无结尾 `/` 或 `\`）会自动补全`index.html`  
-> - 目录路径（有结尾 `/` 或 `\``）会直接保存为指定文件
+    → Still Saved to: `/User/xxx/test/test.html`
 
-#### 指定文件
+2. **When Accessing a Configuration Directory**
+
+    `https://wproxy.org/docs/`
+
+    → Saved Directly to: `/User/xxx/test` (as a Whole File)
+
+> 💡 Key Differences:
+> - Whether the rule path ends with `/` or `\` determines how directory requests are saved.
+> - Non-directory paths (without a trailing `/` or `\`) are automatically completed to `index.html`
+> - Directory paths (with a trailing `/` or `\`) are saved directly to the specified file.
+
+#### Specifying a File
 ``` txt
 /^https://wproxy\.org/docs/(\?.*)?$ reqWriteRaw:///User/xxx/test/index.html
 ```
-> 通过正则匹配限定请求 URL
+> Limit the request URL using regular expression matching
 
-## 关联协议
-1. 启用强制写入：[enable://forceReqWrite](./enable)
-2. 只写入请求 Body：[reqWrite](./reqWrite)
+## Associated Protocols
+1. Enable force write: [enable://forceReqWrite](./enable)
+2. Write only the request body: [reqWrite](./reqWrite)

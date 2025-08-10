@@ -1,32 +1,32 @@
 # auth
-修改请求头的 `authorization` 字段的快捷协议，设置鉴权信息。
+Modify the shortcut protocol for the `authorization` field in the request header and set authentication information.
 
-## 规则语法
+## Rule Syntax
 ``` txt
 pattern auth://value [filters...]
 ```
 
-| 参数    | 描述                                                         | 详细文档                  |
+| Parameters | Description | Detailed Documentation |
 | ------- | ------------------------------------------------------------ | ------------------------- |
-| pattern | 匹配请求 URL 的表达式                                        | [匹配模式文档](./pattern) |
-| value   | `username:password` 或包含 `username` 和 `password` 的对象，支持以下类型：<br/>• 目录/文件路径<br/>• 远程 URL<br/>• 内联/内嵌/Values内容 | [操作指令文档](./operation)   |
-| filters | 可选过滤器，支持匹配：<br/>• 请求URL/方法/头部/内容<br/>• 响应状态码/头部 | [过滤器文档](./filters) |
+| pattern | An expression to match the request URL | [Match Pattern Documentation](./pattern) |
+| value | `username:password` or an object containing `username` and `password`. Supports the following types:<br/>• Directory/File Path<br/>• Remote URL<br/>• Inline/Embedded/Values Content | [Operation Instruction Documentation](./operation) |
+| filters | Optional filters. Supports matching:<br/>• Request URL/Method/Header/Content<br/>• Response Status Code/Header | [Filter Documentation](./filters) |
 
-## 配置示例
+## Configuration Example
 ```` txt
-# 内联方式
+# Inline Mode
 www.example.com/path auth://test:123
 
-# 或
+# Or
 www.example.com/path auth://username=test&password=123
 
-# 内嵌/Values
+# Inline/Values
 ``` auth.json
 username: test
 password: 123
 ```
 
-# 或
+# Or
 ``` auth.json
 {
   username: test,
@@ -38,14 +38,13 @@ www.example.com/path auth://{auth.json}
 
 ````
 
-**本地/远程资源**
+#### Local/Remote Resources
 
 ```` txt
 www.example.com/path1 auth:///User/xxx/auth.json
 www.example.com/path2 auth://https://www.xxx.com/xxx/auth.json
-# 通过编辑临时文件
+# By editing a temporary file
 www.example.com/path3 auth://temp/blank.json
 ````
-## 关联协议
-1. 直接修改请求头：[reqHeaders://authorization=value](./reqHeaders)
-
+## Associated Protocols
+1. Modify the request header directly: [reqHeaders://authorization=value](./reqHeaders)

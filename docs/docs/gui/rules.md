@@ -36,7 +36,7 @@ Rules 界面是 Whistle 的核心配置区域，用于管理所有代理规则�
 3. 在弹出编辑器修改内容
 4. 保存后自动关联到规则
 
-<img src="../../img/temp.png" width="600" />
+<img src="/img//temp.png" width="600" />
 
 
 ## 底部搜索框

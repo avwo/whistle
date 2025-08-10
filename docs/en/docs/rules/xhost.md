@@ -1,12 +1,12 @@
 # xhost
 
-xhost 是 [host](./host) 规则的穿透版本，主要区别在于请求失败时的处理方式：
-- ✅ 请求正常时：与 [host](./host) 规则行为一致
-- ❌ 请求出错时：忽略该匹配规则，继续正常网络请求（而 [host](./host) 中断请求）
+xhost is a pass-through version of the [host](./host) rule. The main difference lies in how it handles request failures:
+- ✅ Request normal: Behaves the same as the [host](./host) rule
+- ❌ Request error: Ignore the matching rule and continue the normal network request (while [host](./host) aborts the request).
 
-## 规则语法
+## Rule Syntax
 ``` txt
 pattern xhost://value [filters...]
 ```
 
-详细用法参考：[host](./host)
+For detailed usage, see: [host](./host)

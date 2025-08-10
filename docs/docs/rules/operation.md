@@ -41,7 +41,7 @@ pattern reqHeaders://{headers.json}
 1. 在 Values 里面创建一个名为 `result.json` 的 key 后，填入操作内容
 2. 在规则里面即可通过 `{result.json}` 的方式引用，如：`www.test.com/cgi-bin/test file://{result.json}`
 
-<img src="../../img/values-demo1.png" width="420" />
+<img src="/img//values-demo1.png" width="420" />
 
 ## 文件/远程资源
 ``` txt

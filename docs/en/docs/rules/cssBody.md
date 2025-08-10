@@ -1,29 +1,29 @@
 # cssBody
-将现有响应内容体t替换成指定内容（（仅对响应类型 `content-type` 包含 `css`，且包含响应内容体的状态码（如 `200`/`500` 等）有才效）
-> ⚠️ 注意：204、304 等无响应内容体的请求不受影响
+Replaces the existing response body with the specified content. (This only works for responses with `content-type` containing `css` and a status code containing a body (e.g., `200`/`500`).)
+> ⚠️ Note: Requests without a body, such as 204 and 304 responses, are not affected.
 
-## 规则语法
+## Rule Syntax
 ``` txt
 pattern cssBody://value [filters...]
 ```
-| 参数    | 描述                                                         | 详细文档                  |
+| Parameters | Description | Detailed Documentation |
 | ------- | ------------------------------------------------------------ | ------------------------- |
-| pattern | 匹配请求 URL 的表达式                                        | [匹配模式文档](./pattern) |
-| value   | 文本或二进制内容，支持以下类型：<br/>• 目录/文件路径<br/>• 远程 URL<br/>• 内联/内嵌/Values内容 | [操作指令文档](./operation)   |
-| filters | 可选过滤器，支持匹配：<br/>• 请求URL/方法/头部/内容<br/>• 响应状态码/头部 | [过滤器文档](./filters) |
+| pattern | An expression to match the request URL | [Match Pattern Documentation](./pattern) |
+| value | Text or binary content. The following types are supported: <br/>• Directory/File Path<br/>• Remote URL<br/>• Inline/Embedded/Values Content | [Operation Instruction Documentation](./operation) |
+| filters | Optional filters, supporting matching:<br/>• Request URL/Method/Header/Content<br/>• Response Status Code/Header | [Filter Documentation](./filters) |
 
-## 配置示例
-#### 内联方式
+## Configuration Example
+#### Inline Method
 ``` txt
 www.example.com/path1 cssBody://(Hello) file://(-test-)
 www.example.com/path2 cssBody://(Hello) file://(-test-) resType://js
 www.example.com/path3 cssBody://(Hello) file://(-test-) resType://css
 ```
-- 请求 `https://www.example.com/path1/to` 响应内容变成 `<style>Hello</style>`
-- 请求 `https://www.example.com/path2/to` 响应内容变成 `-test-`
-- 请求 `https://www.example.com/path3/to` 响应内容变成 `Hello`
+- Requesting `https://www.example.com/path1/to` results in a response of `<style>Hello</style>`
+- Requesting `https://www.example.com/path2/to` results in a response of `-test-`
+- Requesting `https://www.example.com/path3/to` results in a response of `https://www.example.com/path3/to` `Hello`
 
-#### 内嵌/Values方式
+#### Inline/Values Method
 ```` txt
 ``` body.txt
 Hello world.
@@ -32,20 +32,19 @@ www.example.com/path1 cssBody://{body.txt} file://(-test-)
 www.example.com/path2 cssBody://{body.txt} file://(-test-) resType://js
 www.example.com/path3 cssBody://{body.txt} file://(-test-) resType://css
 ````
-- 请求 `https://www.example.com/path1/to` 响应内容变成 `<style>Hello world.</style>`
-- 请求 `https://www.example.com/path2/to` 响应内容变成 `-test-`
-- 请求 `https://www.example.com/path3/to` 响应内容变成 `Hello world.`
+- Requesting `https://www.example.com/path1/to` results in `<style>Hello world.</style>`
+- Requesting `https://www.example.com/path2/to` results in `-test-`
+- Requesting `https://www.example.com/path3/to` results in `Hello world.`
 
-#### 本地/远程资源
+#### Local/Remote Resources
 
 ```` txt
 www.example.com/path1 cssBody:///User/xxx/test.css
 www.example.com/path2 cssBody://https://www.xxx.com/xxx/params.css
-# 通过编辑临时文件
+# Editing a temporary file
 www.example.com/path3 cssBody://temp/blank.css
-``
-
-## 关联协议
-1. 替换响应内容：[resBody](./resBody)
-2. 在 CSS 类型的响应内容前面注入内容：[cssPrepend](./cssPrepend)
-3. 在 CSS 类型的响应内容后面注入内容：[cssAppend](./cssAppend)
+````
+## Associated Protocols
+1. Replace the response content: [resBody](./resBody)
+2. Inject content before the CSS response content: [cssPrepend](./cssPrepend)
+3. Inject content after the CSS response content: [cssAppend](./cssAppend)

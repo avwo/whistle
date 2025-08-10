@@ -1,28 +1,28 @@
 # statusCode
-立即中断请求并返回指定的 HTTP 状态码，不会将请求转发到后端服务器。
+Immediately terminates the request and returns the specified HTTP status code without forwarding the request to the backend server.
 
-## 规则语法
+## Rule Syntax
 ``` txt
 pattern statusCode://value [filters...]
 ```
 
-| 参数    | 描述                                                         | 详细文档                  |
+| Parameters | Description | Detailed Documentation |
 | ------- | ------------------------------------------------------------ | ------------------------- |
-| pattern | 匹配请求 URL 的表达式                                        | [匹配模式文档](./pattern) |
-| value   | 响应状态码，如 `200`/`302`/`404` 等 |    |
-| filters | 可选过滤器，支持匹配：<br/>• 请求URL/方法/头部/内容<br/>• 响应状态码/头部 | [过滤器文档](./filters) |
+| pattern | Expression to match request URLs | [Match Pattern Documentation](./pattern) |
+| value | Response status code, such as `200`/`302`/`404`, etc. | |
+| filters | Optional filters, supporting matching:<br/>• Request URL/Method/Headers/Content<br/>• Response status code/Headers | [Filter Documentation](./filters) |
 
-## 配置示例
+## Configuration Example
 ``` txt
-# 访问 `https://www.example.com/path/to` 浏览器提醒输入用户名和密码
+# Visit `https://www.example.com/path/to` and the browser prompts for username and password.
 www.example.com/path statusCode://401
 
-# 可以通过 disable / lineProps 禁用弹登录框
+# You can disable the login pop-up using disable / lineProps
 www.example.com/path statusCode://401 disable://userLogin
 ```
-> 设置 `statusCode` 的请求，响应内容为空，可以通过 [resBody](./resBody) 自定义响应内容
+> Set the `statusCode` request. The response content is empty. You can customize the response content using [resBody](./resBody)
 
-## 关联协议
-1. 替换响应状态码：[replaceStatus](./replaceStatus)
-2. 禁止弹登录框：[enable](./enable) 或 [lineProps](./lineProps)
-3. 设置响应内容：[resBody](./resBody)
+## Related Protocols
+1. Replace the response status code: [replaceStatus](./replaceStatus)
+2. Disable the login dialog: [enable](./enable) or [lineProps](./lineProps)
+3. Set the response content: [resBody](./resBody)

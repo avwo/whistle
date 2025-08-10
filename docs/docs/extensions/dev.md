@@ -718,7 +718,7 @@ tunnelRulesServer 是专门用于处理 TUNNEL 请求的动态规则生成机制
 参考：https://github.com/avwo/lack/blob/master/assets/ts/src/types/global.d.ts
 
 ## 插件变量配置{#pluginvars}
-支持通过 `%` 符号在规则里面配置，详见：[`%` 符号用途](/docs/rules/plugin-vars)
+支持通过 `%` 符号在规则里面配置，详见：[`%` 符号用途](../rules/plugin-vars)
 
 ## 自定义规则补全功能{#rules-hint}
 综上所述，每个插件可以扩展以下规则：

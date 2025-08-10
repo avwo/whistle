@@ -32,7 +32,7 @@ www.example.com/path2 urlParams://{test.json}
 
 <img src="/img/url-params2.png" width="360" />
 
-**本地/远程资源**
+#### 本地/远程资源
 
 ```` txt
 www.example.com/path1 urlParams:///User/xxx/test.json

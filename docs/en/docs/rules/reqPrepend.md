@@ -1,44 +1,43 @@
 # reqPrepend
-在现有请求内容体开头插入指定内容（仅对包含内容体的请求有效，如 `POST`、`PUT` 等）
-> ⚠️ 注意：GET、HEAD 等无内容体的请求不受影响
+Inserts the specified content at the beginning of the existing request body (only valid for requests with a body, such as `POST` and `PUT`).
+> ⚠️ Note: GET, HEAD, and other requests without a body are not affected.
 
-## 规则语法
+## Rule Syntax
 ``` txt
 pattern reqPrepend://value [filters...]
 ```
-| 参数    | 描述                                                         | 详细文档                  |
+| Parameters | Description | Detailed Documentation |
 | ------- | ------------------------------------------------------------ | ------------------------- |
-| pattern | 匹配请求 URL 的表达式                                        | [匹配模式文档](./pattern) |
-| value   | 文本或二进制内容，支持以下类型：<br/>• 目录/文件路径<br/>• 远程 URL<br/>• 内联/内嵌/Values内容 | [操作指令文档](./operation)   |
-| filters | 可选过滤器，支持匹配：<br/>• 请求URL/方法/头部/内容<br/>• 响应状态码/头部 | [过滤器文档](./filters) |
+| pattern | An expression to match against the request URL | [Match Pattern Documentation](./pattern) |
+| value | Text or binary content. Supports the following types:<br/>• Directory/File Path<br/>• Remote URL<br/>• Inline/Embedded/Values Content | [Operation Instruction Documentation](./operation) |
+| filters | Optional filters. Supports matching:<br/>• Request URL/Method/Header/Content<br/>• Response Status Code/Header | [Filter Documentation](./filters) |
 
-## 配置示例
-#### 内联方式
+## Configuration Example
+#### Inline Method
 ``` txt
 www.example.com/path reqPrepend://(Hello) reqBody://(-test-) method://post
 ```
-请求 `https://www.example.com/path/to` 请求内容变成 `Hello-test-`。 
+Requesting `https://www.example.com/path/to` will result in the request body becoming `Hello-test-`.
 
-#### 内嵌/Values方式
+#### Inline/Values Method
 ```` txt
 ``` body.txt
 Hello world.
 ```
 www.example.com/path reqPrepend://{body.txt} reqBody://(-test-) method://post
 ````
-请求 `https://www.example.com/path/to` 请求内容变成 `Hello world.-test-`。 
+Requesting `https://www.example.com/path/to` will result in the request body becoming `Hello world.-test-`.
 
-#### 本地/远程资源
+#### Local/Remote Resources
 
 ```` txt
 www.example.com/path1 reqPrepend:///User/xxx/test.txt
 www.example.com/path2 reqPrepend://https://www.xxx.com/xxx/params.txt
-# 通过编辑临时文件
+# Editing a Temporary File
 www.example.com/path3 reqPrepend://temp/blank.txt
 ````
 
-## 关联协议
-1. 在请求内容前面注入内容：[reqBody](./reqBody)
-2. 在请求内容后面追加内容：[reqAppend](./reqAppend)
-3. 在响应内容前面注入内容：[resPrepend](./resPrepend)
-
+## Associated Protocols
+1. Inject content before the request body: [reqBody](./reqBody)
+2. Append content after the request body: [reqAppend](./reqAppend)
+3. Inject content before the response body: [resPrepend](./resPrepend)

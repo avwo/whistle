@@ -1,16 +1,15 @@
 # weinre
-在页面中注入 Weinre（Web Inspector Remote）网页远程调试工具，允许开发者在电脑上直接调试移动设备上的网页。
+Injects the Weinre (Web Inspector Remote) web debugging tool into the page, allowing developers to debug web pages on mobile devices directly from their computers.
 
-## 规则语法
+## Rule Syntax
 ``` txt
 pattern weinre://id [filters...]
 ```
 
-| 参数    | 描述                                                         | 详细文档                  |
+| Parameters | Description | Detailed Documentation |
 | ------- | ------------------------------------------------------------ | ------------------------- |
-| pattern | 匹配请求 URL 的表达式                                        | [匹配模式文档](./pattern) |
-| id   | Weinre ID，普通字符串，用于分组过滤                   |                    |
-| filters | 可选过滤器，支持匹配：<br/>• 请求URL/方法/头部/内容<br/>• 响应状态码/头部 | [过滤器文档](./filters) |
+| pattern | An expression to match the request URL | [Match Pattern Documentation](./pattern) |
+| id | Weinre ID, a plain string, used for group filtering | |
+| filters | Optional filters, supporting matching: • Request URL/Method/Header/Content • Response Status Code/Header | [Filter Documentation](./filters) |
 
-
-详细用法参考：[界面菜单 Weinre 用法](../gui/weinre)
+For detailed usage, refer to [UI Menu Weinre Usage](../gui/weinre)

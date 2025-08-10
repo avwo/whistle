@@ -38,7 +38,7 @@ www.example.com/path auth://{auth.json}
 
 ````
 
-**本地/远程资源**
+#### 本地/远程资源
 
 ```` txt
 www.example.com/path1 auth:///User/xxx/auth.json

@@ -1,5 +1,5 @@
-# 命令行操作
-Whistle 命令行版本支持以下命令行操作，查看完整命令行功能执行命令：`w2 -h`
+# Command Line Operations
+Whistle supports the following command line operations. To view the full command line functionality, execute the command: `w2 -h`:
 
 ``` sh
 Usage: w2 <command> [options]
@@ -63,164 +63,163 @@ Options:
 ```
 
 ## w2 start
-1. `w2 start`：启动 Whistle，并使用默认存储目录
-2. `w2 start -p 8100`：启动指定端口的 Whistle（默认为 `8899`）
-3. `w2 start --httpsPort 8001`：启动 Whistle，并开启 HTTPS 代理端口
-4. `w2 start --socksPort 1080`：启动 Whistle，并开启 SOCKSv5 代理端口
-5. `w2 start -S storageName`：启动指定存储目录的 Whistle（大写 `S`）
-> `storageName` 应为纯目录名（非完整路径），多实例运行时需满足：
-> - 每个实例使用独立目录
-> - 配置不同监听端口
+1. `w2 start`: Starts Whistle and uses the default storage directory.
+2. `w2 start -p 8100`: Starts Whistle on the specified port (default is `8899`).
+3. `w2 start --httpsPort 8001`: Starts Whistle and enables the HTTPS proxy port.
+4. `w2 start --socksPort 1080`: Starts Whistle and enables the SOCKSv5 proxy port.
+5. `w2 start -S storageName`: Starts Whistle on the specified storage directory (uppercase `S`).
+> `storageName` should be a plain directory name (not a full path). For multiple instances, the following requirements must be met:
+> - Use a separate directory for each instance.
+> - Configure different listening ports.
 > ``` sh
 > w2 start
 > w2 start -p 8100 -S storageName2
 > ```
 
 ## w2 restart
-1. `w2 restart`：重启 Whistle
-   - 如果对应的端口和存储目录未有运行的 Whistle 实例，则会启动该 Whistle
-   - 如果对应的端口和存储目录有运行的 Whistle 实例，会先关闭该实例再启动
-2. `w2 restart --no-prev-options`：等价于 `w2 stop && w2 start`
-3. `w2 restart -p 8100`：重启并修改端口
-4. `w2 starrestartt --httpsPort 8001`：重启并开启 HTTPS 代理端口
-4. `w2 restart --socksPort 1080`：重启并开启 SOCKSv5 代理端口
-5. `w2 restart -S storageName`：重启指定存储目录的 Whistle 实例
+1. `w2 restart`: Restarts Whistle.
+- If there's no Whistle instance running for the corresponding port and storage directory, it will be started.
+- If there's a Whistle instance running for the corresponding port and storage directory, it will be shut down before starting.
+2. `w2 restart --no-prev-options`: Equivalent to `w2 stop && w2 start`
+3. `w2 restart -p 8100`: Restarts and changes the port number.
+4. `w2 startrestartt --httpsPort 8001`: Restarts and enables the HTTPS proxy port.
+4. `w2 restart --socksPort 1080`: Restarts and enables the SOCKSv5 proxy port.
+5. `w2 restart -S storageName`: Restarts the Whistle instance for the specified storage directory.
 
 ## w2 stop
-1. `w2 stop`：停止默认存储目录下的 Whistle
-2. `w2 stop -S storageName`：停止指定存储目录的 Whistle
+1. `w2 stop`: Stops Whistle for the default storage directory.
+2. `w2 stop -S storageName`: Stops Whistle for the specified storage directory.
 
-> 可通过下面 `w2 status --all` 查看当前命令行后台运行的 Whistle 实例
+> You can use `w2 status --all` to view the Whistle instances currently running in the background. Example
 
-##  w2 status
+## w2 status
 
-1. 输出所有当前命令行后台运行的 Whistle 实例：`w2 status --all`
-    ``` sh
-    [i] All running Whistle instances:
-      1. PID: 51512, Port: 8899
-      2. PID: 53951, Port: 8080, Storage: 8080
-    ```
-2. 输出命令行后台运行的默认实例：`w2 status`
-    ``` sh
-    [!] whistle@version is running
-    [i] 1. use your device to visit the following URL list, gets the IP of the URL you can access:
-          http://127.0.0.1:8899/
-          http://192.168.10.153:8899/
-          http://10.211.55.2:8899/
-          http://10.37.129.2:8899/
-          Note: If all URLs are inaccessible, check firewall settings
-                For help see https://github.com/avwo/whistle
-    [i] 2. set the HTTP proxy on your device with the above IP & PORT(8899)
-    [i] 3. use Chrome to visit http://local.whistlejs.com/ to get started
-    ```
+1. Output all Whistle instances currently running in the command line background: `w2 status --all`
+``` sh
+[i] All running Whistle instances:
+1. PID: 51512, Port: 8899
+2. PID: 53951, Port: 8080, Storage: 8080
+```
+2. Output the default instance running in the command line background: `w2 status`
+``` sh
+[!] whistle@version is running
+[i] 1. Use your device to visit the following URL list and obtain the IP address of the URL you can access:
+http://127.0.0.1:8899/
+http://192.168.10.153:8899/
+http://10.211.55.2:8899/
+http://10.37.129.2:8899/
+Note: If all URLs are inaccessible, check firewall settings.
+For help, see https://github.com/avwo/whistle
+[i] 2. Set the HTTP proxy on your device with the above IP & PORT (8899)
+[i] 3. Use Chrome to visit http://local.whistlejs.com/ to get started.
 
 ## w2 add
-1. `w2 add`：执行当前目录下的 `.whistle.js`（或 `.whistle.mjs`）并将 export 出来的 `name`、`rules`、或 `groupName`（可选） 设置到界面的 Rules 里面
-2. `w2 add filepath`：自定义执行的文件
+1. `w2 add`: Execute `.whistle.js` (or `.whistle.mjs`) in the current directory and set the exported `name`, `rules`, or `groupName` (optional) to the Rules interface.
+2. `w2 add filepath`: Customize the executed file.
 
-`.whistle.js` 文件内容：
+`.whistle.js` file contents:
 ``` js
 const pkg = require('./package.json');
 
-exports.groupName = '项目开发环境'; // 可选，设置分组， 要求 Whistle 版本 >= v2.9.21
-exports.name = `[${pkg.name}]本地环境配置`;
+exports.groupName = 'Project Development Environment'; // Optional, set the group. Requires Whistle version >= v2.9.21
+exports.name = `[${pkg.name}] Local Environment Configuration`;
 exports.rules = `
 test.example.com http://127.0.0.1:5566
-# cgi走现网
+# cgi live network
 test.example.com/cgi-bin ignore://http
 ```
 
-或异步获取规则：
+Or asynchronously obtain rules:
 ``` js
-const assert = require('assert);
+const assert = require('assert');
 const path = require('path');
 const pkg = require('./package.json');
 
 module.exports = (cb, util) => {
-  // 如果依赖插件，可以检查插件
-  assert(util.existsPlugin('@tnpm/whistle.tianma')
-    || util.existsPlugin('whistle.combo'), '请先安装插件npm i -g whisltle.combo');
-  // 也可以远程获取规则
+  // If you depend on a plugin, you can check for it.
+  assert(util.existsPlugin('@scope/whistle.combo')
+    || util.existsPlugin('whistle.combo'), 'Please install the plugin first: w2 i whistle.combo');
+  // You can also obtain rules remotely.
   // do sth
   cb({
-    name: `[${pkg.name}]本地环境配置`,
-    rules:  `
+    name: `[${pkg.name}] Local Environment Configuration`,
+    rules: `
       test.example.com/combo whisle.combo://${path.join(__dirname, 'dev')}
       test.example.com http://127.0.0.1:5566
-      # 接口走现网
+      # Interface goes to the live network
       test.example.com/cgi-bin ignore://http
       `
   });
 };
 ```
 
-Whistle 会检查是否存在同名规则：
-- 规则不存在或为空：自动创建新规则并启用
-- 规则已存在且非空：提示用户确认，避免意外覆盖
-- 若需强制覆盖已有规则，请显式添加 `--force` 参数：
-  ``` sh
-  w2 add --force
-  ```
+Whistle will check if a rule with the same name exists:
+- If the rule does not exist or is empty: a new rule will be automatically created and enabled.
+- If the rule already exists and is not empty: the user will be prompted for confirmation to prevent accidental overwriting.
+- To force overwriting of existing rules, explicitly add the `--force` parameter:
+``` sh
+w2 add --force
+```
 
 ## w2 proxy
-1. `w2 proxy`：设置系统代理
-   - IP：`127.0.0.1`
-   - 端口：Whistle 运行的端口，如果没有运行的 Whistle，用默认端口 `8899`
-2. `w2 proxy 0`：关闭系统代理
-3. `w2 proxy 8100`：设置系统代理
-   - IP：`127.0.0.1`
-   - 端口：`8100`
-4. `w2 proxy www.test.com:8100`：设置系统代理
-   - IP 或域名：`www.test.com`
-   - 端口：`8100`
+1. `w2 proxy`: Set the system proxy.
+   - IP: `127.0.0.1`
+   - Port: Whistle Running port. If Whistle is not running, use the default port 8899.
+2. `w2 proxy 0`: Disable the system proxy.
+3. `w2 proxy 8100`: Set the system proxy.
+   - IP: `127.0.0.1`
+   - Port: `8100`
+4. `w2 proxy www.test.com:8100`: Set the system proxy.
+   - IP or domain: `www.test.com`
+   - Port: `8100`
 
 ## w2 ca
-1. `w2 ca`：安装本地 Whistle 的根证书（安装本地 Whistle 根证书一般用这个命令即可）
-2. `w2 ca 8080`：从指定端口（IP：`127.0.0.1`）下载 Whistle 根证书并安装
-4. `w2 ca www.test.com:8080`：安装指定端口及 IP（或域名）的 Whistle 证书（可用于安装远程的 Whistle 根证书）
-5. `w2 ca certUrl`：下载指定 URL 的证书并安装
-6. `w2 ca localCertPath`：安装本地指定路径的证书
+1. `w2 ca`: Install the local Whistle root certificate (this command is generally used to install the local Whistle root certificate).
+2. `w2 ca 8080`: Download and install the Whistle root certificate from the specified port (IP: `127.0.0.1`).
+4. `w2 ca www.test.com:8080`: Install Whistle for the specified port and IP (or domain). Certificate (can be used to install a remote Whistle root certificate)
+5. `w2 ca certUrl`: Downloads and installs the certificate from the specified URL
+6. `w2 ca localCertPath`: Installs the certificate from the specified local path
 
 ## w2 install
-1. `w2 install whistle.script`：安装插件
-2. `w2 install whistle.script --registry=https://npm-registry`：安装插件，并指定 npm registry
+1. `w2 install whistle.script`: Installs the plugin
+2. `w2 install whistle.script --registry=https://npm-registry`: Installs the plugin and specifies the npm registry
 
-推荐使用界面安装：[使用插件](/docs/extensions/usage)
+Recommended UI installation: [Use plugin](./extensions/usage)
 
 ## w2 uninstall
-`w2 uninstall whistle.script`：卸载指定插件
+`w2 uninstall whistle.script`: Uninstalls the specified plugin
 
-推荐使用界面卸载：[使用插件](/docs/extensions/usage)
+Recommended UI uninstall: [Use plugin](./extensions/usage)
 ## w2 exec
-`w2 exec xxx`：执行插件在 package.json 中配置的 bin 命令（即插件提供的可执行脚本）
-> 适用于插件开发者或需要调用插件 CLI 功能的场景
+`w2 exec xxx`: Executes the `bin` command configured in the plugin's package.json file (i.e., the executable script provided by the plugin).
+> Suitable for plugin developers or when calling the plugin's CLI functionality.
 
 ## w2 run
-`w2 run`：以开发调试模式启动 Whistle，实时输出插件和系统的日志信息到控制台，修改界面代码刷新自动生效等，并支持所有 `w2 start` 的参数配置
+`w2 run`: Starts Whistle in development and debugging mode, outputting plugin and system log information to the console in real time, automatically refreshing UI code changes, and supports all `w2 start` configuration options.
 
-## 其它参数
-1. `-D, --baseDir [baseDir]`：自定义 Whistle 存储根目录（默认为 `$WWHISTLE_PATH/.whistle`）
-   > 示例：`w2 start -D ~/my_whistle_data`
-2. `-n, --username [username]`：设置管理界面登录用户名
-3. `-w, --password [password]`：设置管理界面登录密码
-   > 示例：`w2 start -n abc -w 123`
-4. `-N, --guestName [username]`：设置只读权限的游客账号（游客仅可查看配置和抓包，不可修改）
-5. `-W, --guestPassword [password]`：设置游客账号密码（游客仅可查看配置和抓包，不可修改）
-   > 示例：`w2 start -N test -W 123`
-6. `-P, --uiport [uiport]`：单独设置管理界面端口（默认与代理端口相同）
-   > 示例：`w2 start -P 8889`
-7. `-e, --extra [extraData]`：启动时向指定插件传递数据（`如：{inspect: data}`）
-   > 示例：`w2 start -e '{"debug":true}'`
-8. `--allowOrigin [originList]`：允许跨域请求管理界面接口的域名
-   > 示例：`w2 start --allowOrigin *`
-9.  `--no-global-plugins`：启动时不加载 `npm i -g whistle.xxx` 安装的插件
-    > 示例：`w2 start --no-global-plugins`
-10. `--inspect [[host:]port]`：启用Node.js调试（默认9229端口），配合Chrome DevTools使用
-    > 示例：`w2 start --inspect`
-11. `--inspectBrk [[host:]port]`：启用调试并在首行断点
-    > 示例：`w2 start --inspectBrk`
-12. `--config [config]`：通过配置文件加载参数
-    > 示例：`w2 start --config /data/xxx.json`
+## Other Options
+1. `-D, --baseDir` `[baseDir]`: Customize the Whistle storage root directory (defaults to `$WWHISTLE_PATH/.whistle`)
+  > Example: `w2 start -D ~/my_whistle_data`
+2. `-n, --username [username]`: Set the management interface login username
+3. `-w, --password [password]`: Set the management interface login password
+  > Example: `w2 start -n abc -w 123`
+4. `-N, --guestName [username]`: Set a read-only guest account (guests can only view configuration and capture packets, but cannot modify them)
+5. `-W, --guestPassword [password]`: Set the guest account password (guests can only view configuration and capture packets, but cannot modify them)
+  > Example: `w2 start -N test -W 123`
+6. `-P, --uiport [uiport]`: Set a separate management interface port (defaults to the same as the proxy port)
+  > Example: `w2 start -P 8889
+7. `-e, --extra [extraData]`: Passes data to the specified plugin at startup (e.g., {inspect: data}`).
+  > Example: `w2 start -e '{"debug":true}'`
+8. `--allowOrigin [originList]`: Allows cross-origin requests to the domain name of the management interface.
+  > Example: `w2 start --allowOrigin *`
+9. `--no-global-plugins`: Does not load plugins installed with `npm i -g whistle.xxx` at startup.
+  > Example: `w2 start --no-global-plugins`
+10. `--inspect [[host:]port]`: Enables Node.js debugging (default port 9229), for use with Chrome DevTools.
+  > Example: `w2 start --inspect`
+11. `--inspectBrk [[host:]port]`: Enables debugging and sets a breakpoint on the first line.
+  > Example: `w2 `start --inspectBrk`
+12. `--config [config]`: Load parameters from a configuration file
+  > Example: `w2 start --config /data/xxx.json`
 
-给请求设置用户密码需要用到插件（或自己开发插件）：[whistle.proxyauth](https://github.com/whistle-plugins/whistle.proxyauth)
+To set a user password for requests, you need a plugin (or develop your own): [whistle.proxyauth](https://github.com/whistle-plugins/whistle.proxyauth)
     

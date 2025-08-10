@@ -26,7 +26,7 @@
    <img width="1000" alt="edit request" src="/img/edit-req.png" />
 
 
-完整功能参见：[界面功能](/docs/gui/network)
+完整功能参见：[界面功能](./gui/network)
 
 ## 规则配置示例
 
@@ -102,7 +102,7 @@ pattern operation [includeFilter://pattern1 ... excludeFilter://patternN ...]
    ^https://**.test.com/*/path/to 127.0.0.1:8080
    ```
 
-   >  `*`、`**`、`***` 匹配的范围不同，参见文档：[pattern](/docs/rules/pattern)
+   >  `*`、`**`、`***` 匹配的范围不同，参见文档：[pattern](./rules/pattern)
 
 4. 正则匹配
 
@@ -160,7 +160,8 @@ pattern resCors://enable
     ...
     excludeFilter://patternN 
     ...]
+    `
     ```
     > Whistle 会自动将代码块里面的换行符自动替换成空格
 
-    完整功能参见：[规则配置](/docs/rules/pattern)
+    完整功能参见：[规则配置](./rules/pattern)

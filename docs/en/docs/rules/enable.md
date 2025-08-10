@@ -1,101 +1,99 @@
 # enable
-通过规则启用 HTTPS、隐藏请求、终止请求等功能。
+Enable HTTPS, hide requests, terminate requests, and other features through rules.
 
-## 规则语法
+## Rule Syntax
 ``` txt
 pattern enable://action1|action2|... [filters...]
 
-# 等效于：
+# Equivalent to:
 pattern enable://action1 enable://action2 ... [filters...]
 ```
 
-| 参数    | 描述                                                         | 详细文档                  |
+| Parameters | Description | Detailed Documentation |
 | ------- | ------------------------------------------------------------ | ------------------------- |
-| pattern | 匹配请求 URL 的表达式                                        | [匹配模式文档](./pattern) |
-| action  | 具体动作，详见下面的说明 | |
-| filters | 可选过滤器，支持匹配：<br/>• 请求URL/方法/头部/内容<br/>• 响应状态码/头部 | [过滤器文档](./filters) |
+| pattern | Expression to match request URLs | [Match Pattern Documentation](./pattern) |
+| action | Specific action, see the description below | |
+| filters | Optional filters, supporting matching:<br/>• Request URL/Method/Headers/Content<br/>• Response Status Code/Headers | [Filter Documentation](./filters) |
 
-- `capture` 或 `https`：Enable HTTPS（同 [HTTPS菜单功能](../gui/https.html)）
-- `authCapture`：强制在转成 HTTPS 之前执行 [auth hook](../extensions/dev#auth)（默认是转成 HTTPS 请求后再执行插件的 auth hook）
-- `abort`：请求或响应阶段中断请求（根据匹配阶段）
-- `abortReq`：请求阶段中断请求
-- `abortRes`：响应阶段中断请求
-- `br`：启用 BR 压缩响应内容
-- `gzip`：启用 GZIP 压缩响应内容
-- `deflate`：启用 Deflate 压缩响应内容<
-- `proxyHost`：[proxy](./proxy) 和 [host](./host) 同时生效
-- `proxyTunnel`：跟 `proxyHost` 一同使用，让上游代理再次通过隧道代理到上上游的 HTTP 代理，详见下面的示例
-- `proxyFirst`：优先使用 [proxy](./proxy) 规则
-- `http2`：浏览器 -> Whistle 代理 -> 服务器全部启用 HTTP2
-- `h2`：Whistle 代理 -> 服务器启用 HTTP2
-- `httpH2`：Whistle 代理 -> 服务器的 HTTP 请求启用 HTTP2
-- `safeHtml`：是一种安全防护机制，当使用 `htmlXxx`/`jsXxx`/`cssXxx` 向 HTML 页面注入内容时，会先检查响应内容的第一个非空白字符是否为 `{` 和 `[`（JSON 对象开头字符），如果不是才会执行注入操作。这可以有效防止对非标准 HTML 响应（如 JSON 接口）的误注入
-- `strictHtml`：是一种安全防护机制，当使用 `htmlXxx`/`jsXxx`/`cssXxx` 向 HTML 页面注入内容时，会先检查响应内容的第一个非空白字符是否为 `<`，如果不是才会执行注入操作。这可以有效防止对非标准 HTML 响应（如 JSON 接口）的误注入
-- `clientIp`：为匹配的非本地请求设置 x-forwarded-for 请求头，将客户端的真实IP地址透传给上游服务
-- `bigData`：扩大抓包数据显示限制(2M→16M)
-- `forceReqWrite`：使用 [reqWrite](./reqWrite)、[reqWriteRaw](./reqWriteRaw) 将请求数据写入本地文件时，如果对应的文件已存在，默认跳过写入操作以保护现有文件，可以通过 `enable://forceReqWrite` 强制覆盖
-- `forceResWrite`： 使用 [resWrite](./resWrite)、[reqWriteRaw](./reqWriteRaw) 将响应数据写入本地文件时，如果对应的文件已存在，默认跳过写入操作以保护现有文件，可以通过 `enable://forceResWrite` 强制覆盖
-- `auto2http`：开启 HTTPS 请求报 TLS 错误自动转成 HTTP 请求，默认情况下如果 serverIP 是本地 IP 会自动启用
-- `customParser`：自定义抓包界面显示内容，用法参考插件：https://github.com/whistle-plugins/whistle.custom-parser
-- `hide`：在界面上隐藏抓包数据
-- `inspect`：使的在 Inspectors / Frames 看到 TUNNEL 请求的内容
-- `keepCSP`：通过 `htmlXxx`/`jsXxx`/`cssXxx` 注入内容时会自动删除响应头大 `csp` 字段，如果想保留这些字段可以用 `enable://keepCSP`
-- `keepAllCSP`：通过 `htmlXxx`/`jsXxx`/`cssXxx`/`weinre`/`log` 注入内容时会自动删除响应头的 `csp` 字段，如果想保留这些字段可以用 `enable://keepCSP`
-- `keepCache`：通过 `htmlXxx`/`jsXxx`/`cssXxx`/`weinre`/`log` 注入内容时会自动删除响应头的缓存字段，如果想保留自定义的缓存头可以用 `enable://keepCache`
-- `useLocalHost`：修改 `log` 和 `weinre` 请求 `URL` 的域名，使用内置域名
-- `useSafePort`：修改 `log` 和 `weinre` 请求 `URL` 的端口，使用内置端口
-- `userLogin`：设置 [statusCode://401](./statusCode) 是否显示登录框（默认显示）
+- `capture` or `https`: Enable HTTPS (same as the [HTTPS menu function](../gui/https.html))
+- `authCapture`: Force execution of the [auth] before converting to HTTPS hook](../extensions/dev#auth) (By default, the plugin's auth hook is executed after converting the request to HTTPS)
+- `abort`: Aborts the request at the request or response stage (depending on the matching stage)
+- `abortReq`: Aborts the request at the request stage
+- `abortRes`: Aborts the response at the response stage
+- `br`: Enables BR compression of the response content
+- `gzip`: Enables GZIP compression of the response content
+- `deflate`: Enables Deflate compression of the response content
+- `proxyHost`: Both [proxy](./proxy) and [host](./host) take effect simultaneously
+- `proxyTunnel`: Used with `proxyHost`, it allows the upstream proxy to tunnel to the upstream HTTP proxy. See the example below for details.
+- `proxyFirst`: Prioritizes the [proxy](./proxy) rule
+- `http2`: Enables HTTP2 for all browsers, Whistle proxy, and servers
+- `h2`: Whistle Proxy -> Enable HTTP2 for the server
+- `httpH2`: Whistle Proxy -> Enable HTTP2 for HTTP requests to the server
+- `safeHtml`: This is a security feature. When injecting content into an HTML page using `htmlXxx`/`jsXxx`/`cssXxx`, the response is first checked to see if the first non-whitespace character is `{` or `[` (the opening characters of a JSON object). Injection is performed only if these characters are not. This effectively prevents accidental injection into non-standard HTML responses (such as JSON endpoints).
+- `strictHtml`: This is a security feature. When injecting content into an HTML page using `htmlXxx`/`jsXxx`/`cssXxx`, the response is first checked to see if the first non-whitespace character is `<`. Injection is performed only if these characters are not. This effectively prevents accidental injection into non-standard HTML responses (such as JSON interfaces).
+- `clientIp`: Sets the x-forwarded-for request header for matching non-local requests, transparently transmitting the client's real IP address to the upstream service.
+- `bigData`: Increases the packet capture data display limit (2MB → 16MB).
+- `forceReqWrite`: When writing request data to a local file using `reqWrite` (./reqWrite) or `reqWriteRaw` (./reqWriteRaw), if the corresponding file already exists, the write operation will be skipped by default to protect the existing file. You can force an overwrite with `enable://forceReqWrite`.
+- `forceResWrite`: When writing response data to a local file using `resWrite` (./resWrite) or `reqWriteRaw` (./reqWriteRaw), if the corresponding file already exists, the write operation will be skipped by default to protect the existing file. You can force an overwrite with `enable://forceResWrite`.
+- `auto2http`: Enables HTTPS request reporting. Automatically convert TLS errors to HTTP requests. This feature is enabled by default if the server IP is a local IP address.
+- `customParser`: Customizes the packet capture interface display. For usage, refer to the plugin: https://github.com/whistle-plugins/whistle.custom-parser
+- `hide`: Hides the packet capture data on the interface.
+- `inspect`: Enables viewing of Tunnel request content in the Inspectors/Frames.
+- `keepCSP`: Automatically removes the `csp` response header field when injecting content via `htmlXxx`/`jsXxx`/`cssXxx`. To retain this field, use `enable://keepCSP`.
+- `keepAllCSP`: Automatically removes the `csp` response header field when injecting content via `htmlXxx`/`jsXxx`/`cssXxx`/`weinre`/`log`. To retain this field, use `enable://keepCSP`.
+- `keepCache`: Automatically removes the `csp` response header field when injecting content via `htmlXxx`/`jsXxx`/`cssXxx`/`weinre`/`log`. `htmlXxx`/`jsXxx`/`cssXxx`/`weinre`/`log` automatically removes cached response headers when injecting content. If you want to retain custom cache headers, use `enable://keepCache`.
+- `useLocalHost`: Modifies the domain name of `log` and `weinre` request URLs to the built-in domain name.
+- `useSafePort`: Modifies the port number of `log` and `weinre` request URLs to the built-in port.
+- `userLogin`: Sets whether to display the login dialog box for [statusCode://401](./statusCode) (displayed by default).
 
-
-## 配置示例
+## Configuration Example
 ``` txt
 # Enable HTTPS
 www.example.com enale://https
 
-# 延迟 3000毫秒终止请求
+# Abort the request with a 3000ms delay
 www.example.com/path reqDelay://3000 enable://abortReq
 
-# 延迟 5000毫米终止响应
+# Abort the response with a 5000ms delay
 www.example.com/path resDelay://5000 enable://abortRes
 
-# 本地替换的内容开启 GZIP
+# Enable GZIP for local replacement content
 www.example.com/path file:///User/xxx/test enable://gzip
 
-# 给上游代理设置 hosts (10.10.10.20:8888)
+# Set hosts for the upstream proxy (10.10.10.20:8888)
 www.example.com/path proxy://10.1.1.1:8080 10.10.10.20:8888 enable://proxyHost
 
-# 通过上游 HTTP 代理 (10.1.1.1:8080) 将请求通过隧道代理到指定的 HTTP 代理(10.10.10.20:8080)
+# Tunnel requests through the upstream HTTP proxy (10.1.1.1:8080) to the specified HTTP proxy (10.10.10.20:8080)
 www.example.com proxy://10.1.1.1:8080 10.10.10.20:8080 enable://proxyHost|proxyTunnel
 
-# 启用浏览器 -> Whistle 代理 -> 服务器整个链路的 HTTP2 功能
+# Enable HTTP2 for the entire connection from browser to Whistle proxy to server Functionality
 www.example.com enable://http2
 
-# 启用 Whistle 代理 -> 服务器的 HTTP2 功能
+# Enable HTTP2 functionality for Whistle proxy -> server
 www.example.com enable://h2
 
-# 强制 Whistle 代理 -> 服务器的 HTTP 请求使用 HTTP2 传输
+# Force HTTP requests from Whistle proxy -> server to use HTTP2 transport
 www.example.com enable://httpH2
 
-# 安全注入模式：当使用 htmlXxx/jsXxx/cssXxx 注入指令时，检测响应首字符不是 `{` 才注入
+# Safe injection mode: When using the htmlXxx/jsXxx/cssXxx injection directives, inject only if the first character of the response is not `{`
 www.example.com/path enable://safeHtml
 
-# 严格HTML注入模式：当使用 htmlXxx/jsXxx/cssXxx 注入指令时，检测响应首字符不是 `<` 才注入
+# Strict HTML injection mode: When using the htmlXxx/jsXxx/cssXxx injection directives, inject only if the first character of the response is not `<`
 www.example.com/path enable://strictHtml
 
-# 自动添加 x-forwarded-for 请求头传递客户端真实 IP
+# Automatically add the x-forwarded-for request header to convey the client's real IP address
 www.example.com enable://clientIp
 
-# 扩大抓包数据显示限制(2M→16M)
+# Expand the packet capture data display limit (2MB → 16MB)
 www.example.com/path enable://bigData
 
-# 修改 log/weinre 请求 `URL` 的域名或端口
-www.example.com/path enable://useLocalHost|useSafePort
+# Modify the domain name or port of the log/weinre request URL.
+www.example.com/path enable://useLocalHost | useSafePort
 
-# 强制 reqWrite/reqWriteRaw/resWrite/resWriteRaw 覆盖已有的文件
-www.example.com/path enable://forceReqWrite|forceResWrite
+# Force reqWrite/reqWriteRaw/resWrite/resWriteRaw to overwrite existing files.
+www.example.com/path enable://forceReqWrite | forceResWrite
 
-# 强制 HTTPS 请求被解析前也走 `auth hook`（默认是转成 HTTPS 请求后再执行插件的 auth hook）
+# Force HTTPS requests to execute the auth hook before parsing (the default is to execute the plugin's auth hook after converting them to HTTPS).
 www.example.com enable://authCapture
-```
 
-关联操作：[disable](./disable)
+Associated Action: [disable](./disable)

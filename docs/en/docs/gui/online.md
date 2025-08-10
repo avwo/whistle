@@ -1,30 +1,29 @@
-# Online 对话框
+# Online Dialog Box
 
-Online 对话框提供 Whistle 代理服务的实时运行状态仪表盘，帮助您全面掌握代理服务健康状况。
+The Online dialog box provides a real-time dashboard of the Whistle proxy service, helping you fully understand the health of the proxy service.
 
-<img src="/img/online.png" alt="Online 对话框" width="1000" />
+<img src="/img/online.png" alt="Online Dialog Box" width="1000" />
 
-## 服务状态概览
+## Service Status Overview
 
-| 指标           | 说明                                                |
+| Metrics | Description |
 | -------------- | --------------------------------------------------- |
-| **运行时间**   | Whistle 服务的持续运行时长（格式：天:时:分:秒）     |
-| **内存占用**   | 当前进程内存使用情况（包含堆内存/外部内存详细数据） |
-| **CPU 使用率** | 进程 CPU 占用百分比（实时刷新）                     |
+| **Uptime** | Duration of the Whistle service (format: days:hours:minutes:seconds) |
+| **Memory Usage** | Current process memory usage (including detailed heap and external memory data) |
+| **CPU Usage** | Process CPU usage percentage (refreshed in real time) |
 
-## 流量统计
+## Traffic Statistics
 
-| 指标           | 说明                                        |
+| Metrics | Description |
 | -------------- | ------------------------------------------- |
-| **请求总数**   | 代理服务累计处理的请求数量                  |
-| **实时吞吐量** | 当前每秒处理的请求数（QPS）                 |
+| **Total Requests** | Cumulative number of requests processed by the proxy service |
+| **Real-time Throughput** | Current number of requests processed per second (QPS) |
 
+## Options
 
-## 功能选项
-
-| 选项  | 说明 | 技术细节 |
+| Options | Description | Technical Details |
 | ---- | ---- | -------- |
-| **Disable dark mode** | 关闭暗黑主题，使用浅色界面 | 默认开启暗黑模式 |
-| **IPv6-only network** | 强制返回 IPv6 地址（AAAA记录） | 需要网络支持 IPv6，失败时不会回退 IPv4 |
-| **Verbatim network** | 严格按 DNS 配置顺序返回 IP | 勾选：保持原始 DNS 响应顺序，勾选：智能排序（IPv4优先） |
-| **IPv4-first network** | 优先返回 IPv4 地址（A记录） | 兼容性优先模式，IPv6 作为备选 |
+| **Disable dark mode** | Disable the dark theme and use a light interface Dark mode is enabled by default.
+|**IPv6-only network** | Forces IPv6 addresses to be returned (AAAA record). Requires network support for IPv6; does not fall back to IPv4 if failed.
+|**Verbatim network** | Strictly returns IP addresses in the order configured by DNS. Check: Maintain original DNS response order, check: Smart sorting (IPv4 first).
+|**IPv4-first network** | Prefers returning IPv4 addresses (A record). Compatibility-first mode, with IPv6 as a fallback.

@@ -22,7 +22,7 @@ wwww.example.com sniCallback://test-sni(abc)
 在插件中通过以下属性访问 SNI 信息：
 ``` js
 exports.auth = (req) => {
-  const { sniValue, servername } = req.originalReq // 获取配置参数及 servername
+  const { sniValue, servername } = req.originalReq; // 获取配置参数及 servername
 
   return {
     cert: /* 证书内容 */,

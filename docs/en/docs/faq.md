@@ -1,145 +1,146 @@
-# 常见问题
+# FAQ
 
-遇到问题或建议请提 [issue](https://github.com/avwo/whistle/issues/new)
+Please file an [issue](https://github.com/avwo/whistle/issues/new) if you encounter any issues or suggestions.
 
-## Q：抓包列表中出现 `captureError` 的原因？{#capture-error}
-1. 发出请求的客户端没有安装根证书，安装方法参考：
-   - PC 端：[安装根证书](/docs/)
-   - 移动端：[安装根证书](/docs/mobile)
-2. `ssl pinning` 问题
-   - 对该域名的 HTTPS 请求不解密：`域名 disable://capture` 或只针对指定客户端的请求 `域名 disable://capture includeFilter://reqH.user-agent=/xiaomi/i`
-   - 使用可以规避 `ssl pinning` 的系统或模拟器运行客户端
-   - 寻找其它规避措施 https://blog.csdn.net/chiehfeng/article/details/134033846
-3. 系统信任的根证书默认对 Firefox 无效，需要单独为 Firefox 配置证书
-  > **方案1：为 Firefox 单独安装证书**
-  >
-  > 在 Firefox 设置中：
-  > - 进入 选项 > 隐私与安全 > 证书
-  > - 点击 "查看证书" → "证书机构"
-  > - 导入下载的 .cer 文件
-  > - 勾选 "信任此CA" 所有选项
-  >
-  > **方案2：强制 Firefox 使用系统证书（推荐）**
-  >
-  > - 搜索首选项：security.enterprise_roots.enabled
-  > - 将值改为 true
-  > - 重启浏览器生效
+## Q: Why does `captureError` appear in the packet capture list? {#capture-error}
+1. The client making the request does not have the root certificate installed. To install it, refer to the following:
+   - PC: [Install the root certificate](./)
+   - Mobile: [Install the root certificate](./mobile)
+2. SSL pinning issue
+   - HTTPS requests to the domain are not decrypted: `domain-name disable://capture` or only for requests from a specific client: `domain-name disable://capture includeFilter://reqH.user-agent=/xiaomi/i`
+   - Run the client on a system or emulator that can circumvent SSL pinning
+   - Find other workarounds: https://blog.csdn.net/chiehfeng/article/details/134033846
+3. The system-trusted root certificate is not available to Firefox by default; you need to configure a certificate for Firefox separately.
+    > **Solution 1: Install a certificate separately for Firefox**
+    >
+    > In Firefox settings:
+    > - Go to Options > Privacy & Security > Certificates
+    > - Click "View Certificate" → "Certificate Authority"
+    > - Import the downloaded .cer file
+    > - Check all "Trust this CA" options
+    >
+    > **Solution 2: Force Firefox to use the system certificate (Recommended)**
+    >
+    > - Search for preferences: security.enterprise_roots.enabled
+    > - Change the value to true
+    > - Restart the browser for the changes to take effect
 
-## Q：如何配置双向认证（mTLS）的 HTTPS 请求？
+## Q: How do I configure HTTPS requests with mutual authentication (mTLS)?
 
-客户端证书设置参考：[@clientCert://](/docs/rules/@)
+Client certificate settings reference: [@clientCert://](./rules/@)
 
-## Q：如何查看 Whistle 运行过程中的日志？
-1. 界面 Network > Tools > Server 查看错误日志
-2. 导致进程 Crash 的异常日志文件：`~/.WhistleAppData/whistle.log`
- 
-## Q：如何同时启多个 Whistle 实例？
-多实例运行时需满足：
-- 每个实例使用独立目录
-- 配置不同监听端口
+## Q: How do I view Whistle runtime logs?
+1. View the error log in Network > Tools > Server.
+2. The log file for exceptions that caused the process to crash is: `~/.WhistleAppData/whistle.log`
+
+## Q: How do I start multiple Whistle instances simultaneously?
+Running multiple instances requires the following:
+- Use a separate directory for each instance
+- Configure different listening ports
 ``` sh
 w2 start
 2 start -p 8100 -S storageName2
 ```
 
-## Q：普通请求如何不通过代理直接访问 Whistle 不被当成内部请求？
-Whistle 默认会将所有发往代理端口（如 127.0.0.1:8899）的请求视为内部管理请求，可以使用 `/-/` 路径前缀绕过内部请求识别，如：
-1. `http://127.0.0.1:8899/-/xxx`：Whistle 自动转成普通请求 `http://127.0.0.1:8899/xxx`
-2. 通过配置规则将该请求转发到目标 URL：
-    ``` txt
-    http://127.0.0.1:8899/xxx https://www.test.com/xxx
-    ```
+## Q: How can I access Whistle directly without going through a proxy and preventing it from being treated as an internal request?
+By default, Whistle treats all requests sent to the proxy port (e.g., 127.0.0.1:8899) as internal management requests. You can use the `/-/` path prefix to bypass internal request detection. For example:
+1. `http://127.0.0.1:8899/-/xxx`: Whistle automatically converts the request to a normal request `http://127.0.0.1:8899/xxx`
+2. Configure a rule to forward the request to the target URL:
 
-## Q：Rules 如何支持多选？
+``` txt
+http://127.0.0.1:8899/xxx https://www.test.com/xxx
+```
 
-在 Rules 界面中打开 Settings 对话框，勾选 `Use multiple rules` 即可
+## Q: How do Rules support multiple selections?
 
-## Q：如何根据请求内容匹配规则？
+Open the Settings dialog box in the Rules interface and check `Use multiple rules`.
 
-利用过滤器：
-- [includeFilter](/docs/rules/includeFilter)
-- [excludeFilter](/docs/rules/excludeFilter)
+## Q: How do I match rules based on request content?
 
-## Q：iOS 安装完根证书还是无法打开 HTTPS 页面的可能原因？
+Use filters:
+- [includeFilter](./rules/includeFilter)
+- [excludeFilter](./rules/excludeFilter)
 
-检查是否完成"完全信任"设置：设置 → 通用 → 关于本机 → 证书信任设置
+## Q: Why can't I open HTTPS pages on iOS even after installing the root certificate?
 
-## Q：Android 安装完根证书还是无法打开 HTTPS 页面的可能原因？
-1. `ssl pinning` 问题
-   - 对该域名的 HTTPS 请求不解密：`域名 disable://capture` 或只针对指定客户端的请求 `域名 disable://capture includeFilter://reqH.user-agent=/xiaomi/i`
-   - 使用可以规避 `ssl pinning` 的系统或模拟器运行客户端
-   - 寻找其它规避措施 https://blog.csdn.net/chiehfeng/article/details/134033846
-2. 如果是自己公司的 APP，可以参考[Android 开发文档](https://developer.android.com/training/articles/security-config#base-config) 开启信任用户自定义根证书
+Check whether "Full Trust" is set: Settings → General → About This Device → Certificate Trust Settings
 
-## Q：如何对 Whistle 转发的请求设置用户名和密码？
-1. Whistle 内部请求认证：`w2 start -n 用户名 -w 密码` 或自己[开发插件](/docs/extensions/dev)，防止未授权操作规则和配置
-2. 代理请求的权限控制：需要借助插件 [whistle.proxyauth](https://github.com/whistle-plugins/whistle.proxyauth) 或自己[开发插件](/docs/extensions/dev)
+## Q: Why can't I open HTTPS pages on Android even after installing the root certificate?
+1. SSL Pinning Issue
+   - Do not decrypt HTTPS requests for this domain: `domain disable://capture` or only for requests from a specific client: `domain disable://capture includeFilter://reqH.user-agent=/xiaomi/i`
+   - Run the client on a system or emulator that can circumvent SSL Pinning
+   - Find other circumvention measures: https://blog.csdn.net/chiehfeng/article/details/134033846
+2. If this is your company's app, refer to the [Android Development Documentation](https://developer.android.com/training/articles/security-config#base-config) to enable trust for user-defined root certificates.
 
-## Q：如何添加自定义证书？{#custom-certs}
+## Q: How do I set a username and password for requests forwarded by Whistle? 1. Whistle internal request authentication: `w2 start -n username -w password` or develop your own plugin (./extensions/dev) to prevent unauthorized access to rules and configurations.
+2. Proxy request permission control: Requires the plugin [whistle.proxyauth](https://github.com/whistle-plugins/whistle.proxyauth) or develop your own plugin (./extensions/dev).
 
-进入证书管理页面
-1. 点击顶部菜单栏 HTTPS > View Custom Certs > Upload
-2. 上传证书文件
-     - 证书文件：必须使用 `.crt` 后缀
-     - 私钥文件：必须使用 `.key` 后缀
-     > 文件名要求：
-     >
-     > 普通域名证书
-     >
-     > `example.com.crt` ↔ `example.com.key`
-     > 
-     > 根证书（必须严格命名）
-     > 
-     > `root.crt` ↔ `root.key`
+## Q: How do I add a custom certificate? {#custom-certs}
 
-## Q：版本更新问题{#update}
-> 客户端版本只需重新下载最新版本并安装即可：https://github.com/avwo/whistle-client
+Go to the certificate management page
+1. Click HTTPS > View Custom Certs > Upload in the top menu bar
+2. Upload the certificate file
+   - Certificate file: Must use the `.crt` suffix
+   - Private key file: Must use the `.key` suffix
+   > File name requirements:
+   >
+   > Standard domain name certificate
+   >
+   > `example.com.crt` ↔ `example.com.key`
+   >
+   > Root certificate (must be named precisely)
+   >
+   > `root.crt` ↔ `root.key`
 
-**命令行版本更新：**
+## Q: Version update issue {#update}
+> For the client version, simply download and install the latest version: https://github.com/avwo/whistle-client
+
+**Command line version update:**
 ``` sh
 npm i -g whistle && w2 restart
 ```
-> 遇到安装慢或安装失败的问题可以尝试改镜像：`npm i -g whistle --registry=https://registry.npmmirror.com && w2 restart`
+> If you encounter slow installation or installation failures, try changing the mirror: `npm i -g whistle --registry=https://registry.npmmirror.com && w2 restart`
 >
-> 遇到权限问题可以加 `sudo`：
+> If you encounter permission issues, add `sudo`:
 >
 > ``` sh
 > sudo npm i -g whistle
 > w2 restart
 > ```
 
-重启后命令行显示的 Whistle 版本与当前安装版本不符，可能是 Node.js 版本更新导致 PATH 路径变更。
+After restarting, the Whistle version displayed in the command line may not match the currently installed version. This may be due to a Node.js version update that changed your PATH.
 
-**解决方法：**
-1. 确认版本是否有问题：
-    ``` sh
-    w2 -V
-    ```
-2. 找命令路径（所有系统通用）
-    ``` sh
-    which w2  # Linux/Mac
-    where w2  # Windows
-    ```
-3. 清理冲突
-    ``` sh
-    # 删除旧版本（根据上一步找到的路径）
-    rm -f /usr/local/bin/w2  # 示例路径
+**Solution:**
+1. Verify the version:
+  ``` sh
+  w2 -V
+  ```
+2. Find the command path (common to all systems)
+  ``` sh
+  which w2 # Linux/Mac
+  where w2 # Windows
+  ```
+3. Clear conflicts
+  ``` sh
+  # Delete the old version (based on the path found in the previous step)
 
-    # Windows示例（需管理员权限）
-    del "C:\Program Files\nodejs\w2.cmd"
-    ```
-4. 恢复运行，操作完成后执行 `w2 -V` 查看版本是否更新：
-   - 如果输出的版本还有问题重复上述操作
-   - 如果命令 `w2` 找不到，请手动配置 PATH
+  rm -f /usr/local/bin/w2 # Example path
 
-## Q：如何修改 Whistle 文档？
+  # Windows example (requires administrator privileges)
+  del "C:\Program Files\nodejs\w2.cmd"
+  ```
+4. Resume the operation and, after completion, execute `w2 -V` to check if the version is updated:
+   - If the output version still has issues, repeat the above steps.
+   - If the `w2` command cannot be found, manually configure the PATH.
 
-Whistle 文档源文件地址：https://github.com/avwo/whistle/tree/master/docs
+## Q: How do I modify Whistle documentation?
 
-本地启动文档服务：
+Whistle documentation source file address: https://github.com/avwo/whistle/tree/master/docs
+
+Start the documentation server locally:
 ``` sh
 npm run docs:dev
 ```
-## Q：如何反馈问题？
+## Q: How can I report an issue?
 
-New issue：https://github.com/avwo/whistle/issues
+New issue: https://github.com/avwo/whistle/issues

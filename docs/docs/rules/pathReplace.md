@@ -26,7 +26,7 @@ www.example.com/path pathReplace://123=abc
 ```
 访问 `https://www.example.com/path/123?test=123&value=123` 服务器收到的 URL：`https://www.example.com/path/abc?test=abc&value=abc`
 
-**替换多个**
+#### 替换多个
 
 ```` txt
 ``` test.json
@@ -37,7 +37,7 @@ www.example.com/path2 pathReplace://{test.json}
 ````
 访问 `https://www.example.com/path2/123?test=123&value=123` 服务器收到的 URL：`https://www.example.com/path2/abc?name=abc&value=abc`
 
-**本地/远程资源**
+#### 本地/远程资源
 
 ```` txt
 www.example.com/path1 pathReplace:///User/xxx/test.json

@@ -1,24 +1,23 @@
-# Composer 界面
+Composer Interface
 
-Composer 是 Whistle 提供的 HTTP 请求构造工具，可用于快速创建、修改和发送自定义请求，支持高级调试功能。
+Composer is an HTTP request construction tool provided by Whistle. It can be used to quickly create, modify, and send customized requests, and supports advanced debugging features.
 
-<img src="/img/composer.png" alt="Composer 界面" width="360" />
+<img src="/img/composer.png" alt="Composer interface" width="360" />
 
-| 组件                     | 功能 |
+| Component | Function |
 | ------------------------ | ---- |
-| **历史记录按钮**         | 显示或隐藏历史记录 |
-| **选择方法**       |   选择请求方法，支持 GET/POST/PUT 等多种种方法   |
-| **URL 输入框**           | 编辑或输入请求 URL径 |
-| **Params**               | 添加、修改、删除请求参数 |
-| **发送按钮**             | 执行当前请求 |
-| **Rules + Whistle 选项** | Rules：是否启用输入框里面的规则，Whistle：否启用 Whistle 里面配置的规则|
-| **Pretty** |   格式化显示内容   |
-| **Body** |   是否包含请求体（GET/HEAD/OPTIONS 等方法会自动忽略请求体）   |
-| **HTTP/2** | 是否使用 HTTP/2 协议 |
-| **Import**  | 导入请求数据 |
-| **Export**  | 导出请求数据 |
-| **CopyAsCURL** | 生成可执行的 cURL 命令 |
-| **规则输入框** |   自定义规则，只对当前构造的请求生效   |
-| **请求头** |   自定义请求头   |
-| **请求内容** |  自定义请求内容    |
-
+| **History button** | Show or hide history |
+| **Select method** | Select the request method, supporting GET/POST/PUT, etc. |
+| **URL input box** | Edit or enter the request URL |
+| **Params** | Add, modify, or delete request parameters |
+| **Send button** | Execute the current request |
+| **Rules + Whistle options** | Rules: Whether to enable the rules in the input box; Whistle: No: Enable the rules configured in Whistle |
+| **Pretty** | Format the displayed content |
+| **Body** | Whether to include the request body (methods such as GET/HEAD/OPTIONS automatically ignore the request body) |
+| **HTTP/2** | Whether to use the HTTP/2 protocol |
+| **Import** | Import request data |
+| **Export** | Export request data |
+| **CopyAsCURL** | Generate an executable cURL command |
+| **Rule Input Box** | Customize rules, only valid for the currently constructed request |
+| **Request Headers** | Customize request headers |
+| **Request Content** | Customize request content |

@@ -1,19 +1,19 @@
 # pipe
-将 HTTP/HTTPS/WebSocket/TUNNEL 请求/响应数据流交给插件处理。
+Transfers HTTP/HTTPS/WebSocket/TUNNEL request/response data streams to the plugin for processing.
 
-## 规则语法
+## Rule Syntax
 ``` txt
 pattern pipe://plugin-name(pipeValue) [filters...]
 ```
-> `(pipeValue)` 可选，在插件 Hook 可以通过 `req.originalReq.pipeValue` 获取
+> `(pipeValue)` is optional and can be obtained via `req.originalReq.pipeValue` in the plugin hook.
 
-| 参数    | 描述                                                         | 详细文档                  |
+| Parameters | Description | Detailed Documentation |
 | ------- | ------------------------------------------------------------ | ------------------------- |
-| pattern | 匹配请求 URL 的表达式                                        | [匹配模式文档](./pattern) |
-| plugin-name(pipeValue)   | 插件名称 + 可选参数 |    |
-| filters | 可选过滤器，支持匹配：<br/>• 请求URL/方法/头部/内容<br/>• 响应状态码/头部 | [过滤器文档](./filters) |
+| pattern | An expression that matches the request URL | [Matching Pattern Documentation](./pattern) |
+| plugin-name(pipeValue) | Plugin name + optional parameters | |
+| filters | Optional filters, supporting matching:<br/>• Request URL/Method/Headers/Content<br/>• Response Status Code/Headers | [Filters Documentation](./filters) |
 
-## 配置示例
+## Configuration Example
 ``` txt
 tunnel://wwww.example.com pipe://test
 tunnel://test-tunnel.example.com pipe://test-pipe-tunnel(abc)
@@ -24,4 +24,4 @@ https://www.example.com/path pipe://test-pipe-http(123)
 
 ```
 
-具体用法参考：[插件开发文档](../extensions/dev.md#pipe)
+For specific usage, refer to [Plugin Development Documentation](../extensions/dev.md#pipe)

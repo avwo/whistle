@@ -1,12 +1,12 @@
 # xfile
 
-xfile 是 [file](./file) 规则的穿透版本，主要区别在于文件不存在时的处理方式：
-- ✅ 文件存在时：返回本地文件内容（与 [file](./file) 规则行为一致）
-- ❌ 文件不存在时：继续正常网络请求（而 [file](./file) 规则会返回 `404`）
+xfile is a pass-through version of the [file](./file) rule, differing primarily in how it handles file non-existence:
+- ✅ If the file exists: Returns the local file contents (same behavior as the [file](./file) rule)
+- ❌ If the file does not exist: Continues with the normal network request (whereas the [file](./file) rule returns a `404` error).
 
-## 规则语法
+## Rule Syntax
 ``` txt
 pattern xfile://value [filters...]
 ```
 
-详细用法参考：[file](./file)
+For detailed usage, see: [file](./file)

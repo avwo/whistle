@@ -1,19 +1,19 @@
 # skip
-跳过指定 `pattern` 或 `operation` 的规则，继续匹配后面的规则。
+Skip the specified `pattern` or `operation` rule and continue matching the following rules.
 
-## 语法规则
+## Syntax Rules
 ``` txt
 pattern skip://pattern=patternString skip://operation=operationString [filters...]
 ```
-> 可同时配置多个 `skip`
+> Multiple `skip` options can be configured simultaneously.
 
-| 参数    | 描述                                                         | 详细文档                  |
+| Parameter | Description | Detailed Documentation |
 | ------- | ------------------------------------------------------------ | ------------------------- |
-| pattern | 匹配请求 URL 的表达式                                        | [匹配模式文档](./pattern) |
-| value   | 需要忽略的规则表达式：<br/>• pattern=patternString<br/>• operation=operationString<br/>⚠️ 不支持从文件/远程 URL 加载数据 | [操作指令文档](./operation)   |
-| filters | 可选过滤器，支持匹配：<br/>• 请求URL/方法/头部/内容<br/>• 响应状态码/头部 | [过滤器文档](./filters) |
+| pattern | Expression to match the request URL | [Match Pattern Documentation](./pattern) |
+| value | Regular expressions to ignore: <br/>• pattern=patternString<br/>• operation=operationString<br/> ⚠️ Loading data from files/remote URLs is not supported | [Operation Instruction Documentation](./operation) |
+| filters | Optional filters, supporting matching: <br/>• Request URL/Method/Header/Content<br/>• Response Status Code/Header | [Filter Documentation](./filters) |
 
-## 配置示例
+## Configuration Example
 ``` txt
 www.example.com/path file:///User/xxx/index1.html
 www.example.com/path file:///User/xxx/index2.html
@@ -25,9 +25,9 @@ www.example.com/path skip://operation=file:///User/xxx/index1.html
 www.example.com/path2/test skip://pattern=www.example.com/path2/test
 ```
 
-- 访问 `https://www.example.com/path` 返回 `/User/xxx/index2.html` 的内容
-    > 没有 `www.example.com/path skip://operation=file:///User/xxx/index1.html` 规则将返回 `/User/xxx/index1.html` 的内容
-- 访问 `https://www.example.com/path2/test` 返回 `/User/xxx/test2.html` 的内容
-    > 没有 `www.example.com/path2/test skip://pattern=www.example.com/path2/test` 规则将返回 `/User/xxx/test1.html` 的内容
+- Accessing `https://www.example.com/path` returns the content of `/User/xxx/index2.html`
+    > Without the `www.example.com/path skip://operation=file:///User/xxx/index1.html` rule, the content of `/User/xxx/index1.html` would be returned.
+- Accessing `https://www.example.com/path2/test` returns the content of `/User/xxx/test2.html`
+    > Without The `www.example.com/path2/test skip://pattern=www.example.com/path2/test` rule will return the content of `/User/xxx/test1.html`.
 
-类似协议：[ignore](./ignore)
+Similar protocol: [ignore](./ignore)

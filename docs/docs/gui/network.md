@@ -23,7 +23,7 @@
 | `app:pattern`   | 按 APP 名称过滤                     | `app:wechat` `app:chrome`         |
 | `fc:pattern`    | Composer发出的请求 URL              | `fc:/test/` `fc:www.test.com`     |
 | `e:pattern`     | 出错的请求 URL                      | `e:timeout`   `e:/abort/i`                  |
-| `style:pattern` | [style](/docs/rules/style) 操作内容 | `style:italic` `style:/ita/i`       |
+| `style:pattern` | [style](../rules/style) 操作内容 | `style:italic` `style:/ita/i`       |
 
 `pattern` 为**关键字**或**正则表达式**，多条件 "与" 搜索：
 ``` txt

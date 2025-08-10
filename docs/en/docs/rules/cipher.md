@@ -1,19 +1,19 @@
 # cipher
-当 TLS 版本与加密算法不匹配导致 Node.js 请求异常时，自动启用自定义的兜底加密算法套件，确保 HTTPS 连接正常建立。
+When a Node.js request fails due to a mismatch between the TLS version and the encryption algorithm, a custom fallback encryption algorithm suite is automatically enabled to ensure the HTTPS connection is established properly.
 
-## 规则语法
+## Rule Syntax
 ``` txt
 pattern cipher://value [filters...]
 ```
-| 参数    | 描述                                                         | 详细文档                  |
+| Parameters | Description | Detailed Documentation |
 | ------- | ------------------------------------------------------------ | ------------------------- |
-| pattern | 匹配请求 URL 的表达式                                        | [匹配模式文档](./pattern) |
-| value   | 加密算法（见下方列表）<br/>⚠️ 不支持从文件/远程 URL 加载数据 | [操作指令文档](./operation)   |
-| filters | 可选过滤器，支持匹配：<br/>• 请求URL/方法/头部/内容<br/>• 响应状态码/头部 | [过滤器文档](./filters) |
+| pattern | Expression to match request URLs | [Match Pattern Documentation](./pattern) |
+| value | Encryption algorithm (see list below)<br/>⚠️ Loading data from files/remote URLs is not supported | [Operation Instruction Documentation](./operation) |
+| filters | Optional filters, supporting matching:<br/>• Request URL/Method/Header/Content<br/>• Response Status Code/Header | [Filter Documentation](./filters) |
 
-**部分可选加密算法列表**
+**Partial List of Optional Encryption Algorithms**
 - `ECDHE-ECDSA-AES256-GCM-SHA384`
-- `NULL-SHA256`, `AES128-SHA256`, 
+- `NULL-SHA256`, `AES128-SHA256`,
 - `AES256-SHA256`
 - `AES128-GCM-SHA256`
 - `AES256-GCM-SHA384`
@@ -58,9 +58,9 @@ pattern cipher://value [filters...]
 - `ECDHE-ECDSA-AES128-CCM8`
 - `ECDHE-ECDSA-AES256-CCM8`
 
-## 配置示例
+## Configuration Example
 ``` txt
 www.example.com cipher://DH-RSA-AES256-GCM-SHA384
 ```
 
-用途参考：https://github.com/avwo/whistle/issues/963
+Reference: https://github.com/avwo/whistle/issues/963

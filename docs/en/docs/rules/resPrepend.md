@@ -1,44 +1,51 @@
 # resPrepend
-在现有响应内容体开头插入指定内容（仅对包含响应内容体的状态码有效，如 `200`/`500` 等）
-> ⚠️ 注意：204、304 等无响应内容体的请求不受影响
+Inserts the specified content at the beginning of the existing response body (only valid for status codes with a response body, such as `200`/`500`).
+> ⚠️ Note: 204, 304, and other requests without a response body are not affected.
 
-## 规则语法
+## Rule Syntax
 ``` txt
 pattern resPrepend://value [filters...]
 ```
-| 参数    | 描述                                                         | 详细文档                  |
+| Parameters | Description | Detailed Documentation |
 | ------- | ------------------------------------------------------------ | ------------------------- |
-| pattern | 匹配请求 URL 的表达式                                        | [匹配模式文档](./pattern) |
-| value   | 文本或二进制内容，支持以下类型：<br/>• 目录/文件路径<br/>• 远程 URL<br/>• 内联/内嵌/Values内容 | [操作指令文档](./operation)   |
-| filters | 可选过滤器，支持匹配：<br/>• 请求URL/方法/头部/内容<br/>• 响应状态码/头部 | [过滤器文档](./filters) |
+| pattern | An expression to match the request URL | [Match Pattern Documentation](./pattern) |
+| value | Text or binary content. The following types are supported: <br/>• Directory/File Path<br/>• Remote URL<br/>• Inline/Embedded/Values Content | [Operation Instruction Documentation](./operation) |
+| filters | Optional filters. Supports matching: <br/>• Request URL/Method/Header/Content<br/>• Response Status Code/Header | [Filter Documentation](./filters) |
 
-## 配置示例
-#### 内联方式
+## Configuration Example
+#### Inline Method
 ``` txt
 www.example.com/path resPrepend://(Hello) file://(-test-)
 ```
-请求 `https://www.example.com/path/to` 响应内容变成 `Hello-test-`。 
+Requesting `https://www.example.com/path/to` will result in a response with
+``` txt
+<!DOCTYPE html>
+Hello-test-
+```
 
-#### 内嵌/Values方式
+#### Inline/Values Method
 ```` txt
 ``` body.txt
 Hello world.
 ```
 www.example.com/path resPrepend://{body.txt} file://(-test-)
 ````
-请求 `https://www.example.com/path/to` 响应内容变成 `Hello world.-test-`。 
+Requesting `https://www.example.com/path/to` will result in a response with
+``` txt
+<!DOCTYPE html>
+Hello world.-test-
+```
 
-#### 本地/远程资源
+#### Local/Remote Resources
 
 ```` txt
 www.example.com/path1 resPrepend:///User/xxx/test.txt
 www.example.com/path2 resPrepend://https://www.xxx.com/xxx/params.txt
-# 通过编辑临时文件
+# Editing a Temporary File
 www.example.com/path3 resPrepend://temp/blank.txt
 ````
 
-## 关联协议
-1. 在响应内容前面注入内容：[reqBody](./reqBody)
-2. 在响应内容后面追加内容：[reqAppend](./reqAppend)
-3. 在请求内容前面注入内容：[reqPrepend](./reqPrepend)
-
+## Associated Protocols
+1. Inject content before the response: [reqBody](./reqBody)
+2. Append content after the response: [reqAppend](./reqAppend)
+3. Inject content before the request: [reqPrepend](./reqPrepend)

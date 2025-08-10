@@ -1,23 +1,22 @@
-# resDelay
-设置服务器处理完成后延迟响应的时间(单位：毫秒)。
+#resDelay
+Sets the delay time (in milliseconds) after the server completes processing.
 
-## 规则语法
+## Rule Syntax
 ``` txt
 pattern resDelay://value [filters...]
 ```
 
-| 参数    | 描述                                                         | 详细文档                  |
+| Parameters | Description | Detailed Documentation |
 | ------- | ------------------------------------------------------------ | ------------------------- |
-| pattern | 匹配请求 URL 的表达式                                        | [匹配模式文档](./pattern) |
-| value   | 时间数值（单位：毫秒）<br/>⚠️ 不支持从文件/远程 URL 加载数据 | [操作指令文档](./operation)   |
-| filters | 可选过滤器，支持匹配：<br/>• 请求URL/方法/头部/内容<br/>• 响应状态码/头部 | [过滤器文档](./filters) |
+| pattern | Expression to match request URLs | [Match Pattern Documentation](./pattern) |
+| value | Time value (unit: milliseconds)<br/>⚠️ Loading data from files/remote URLs is not supported | [Operation Instruction Documentation](./operation) |
+| filters | Optional filters, supporting matching:<br/>• Request URL/Method/Headers/Content<br/>• Response Status Code/Headers | [Filter Documentation](./filters) |
 
-
-## 配置示例
+## Configuration Example
 ``` txt
-# 后台返回后延迟 3000 毫秒（即 3 秒）响应到客户端
+# Delay 3000 milliseconds (i.e., 3 seconds) before responding to the client after the backend returns
 www.example.com/path resDelay://3000
 
-# 后台返回后延迟 5000 秒（即 5 秒）后 abort 请求
+# Delay 5000 seconds (i.e., 5 seconds) after the backend returns Abort the request after 5 seconds.
 www.example.com/path2 resDelay://5000 enable://abortRes
 ```

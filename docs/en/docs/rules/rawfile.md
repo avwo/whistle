@@ -1,22 +1,22 @@
 # rawfile
-rawfile 是 [file](./file) 的增强版本，除了支持 [file](./file) 的所有功能外，还允许在文件中定义完整的 HTTP 响应，包括：
-- 响应状态码
-- 响应头部
-- 响应内容
+rawfile is an enhanced version of [file](./file). In addition to supporting all the features of [file](./file), it also allows you to define a complete HTTP response in a file, including:
+- Response status code
+- Response headers
+- Response content
 
-## 规则语法
+## Rule Syntax
 ``` txt
 pattern rawfile://value [filters...]
 ```
 
-| 参数    | 描述                                                         | 详细文档                  |
+| Parameters | Description | Detailed Documentation |
 | ------- | ------------------------------------------------------------ | ------------------------- |
-| pattern | 匹配请求 URL 的表达式                                        | [匹配模式文档](./pattern) |
-| value   | 操作内容，支持以下类型：<br/>• 目录/文件路径<br/>• 远程 URL<br/>• 内联/内嵌/Values内容 | [操作指令文档](./operation)   |
-| filters | 可选过滤器，支持匹配：<br/>• 请求URL/方法/头部/内容<br/>• 响应状态码/头部 | [过滤器文档](./filters) |
+| pattern | Expression to match against the request URL | [Match Pattern Documentation](./pattern) |
+| value | Operation content. Supports the following types:<br/>• Directory/File Path<br/>• Remote URL<br/>• Inline/Embedded/Values Content | [Operation Instruction Documentation](./operation) |
+| filters | Optional filters. Supports matching against:<br/>• Request URL/Method/Headers/Content<br/>• Response Status Code/Headers | [Filter Documentation](./filters) |
 
-## Mock 接口
-1. 本地文件 `/User/xxx/raw.txt`
+## Mock Interface
+1. Local File `/User/xxx/raw.txt`
     ``` js
     HTTP/1.1 500 OK
     Content-Type: application/json
@@ -26,18 +26,17 @@ pattern rawfile://value [filters...]
       "status": "success",
       "data": "your content here"
     }
-    ```
-2. 配置规则
+2. Configure Rules
     ``` txt
     https://www.example.com/test/rawfile tpl:///User/xxx/raw.txt
 
-    # 等价于
-    #  https://www.example.com/test/rawfile file:///User/xxx/test.json replaceStatus://500 resType://json resHeaders://x-custom-header=value
-    
-    # 支持远程 URL
+    # Equivalent to
+    # https://www.example.com/test/rawfile file:///User/xxx/test.json replaceStatus://500 resType://json resHeaders://x-custom-header=value
+
+    # Supports remote URLs
     # pattern rawfile://https://example.com/raw.json
     ```
-3. 请求 `https://www.example.com/test/rawfile` 返回结果：
+3. Request `https://www.example.com/test/rawfile` Returns:
     ``` txt
     // 状态码
     500
@@ -54,4 +53,4 @@ pattern rawfile://value [filters...]
     }
     ```
 
-其它功能参考：[file](./file)
+For other functions, see: [file](./file)

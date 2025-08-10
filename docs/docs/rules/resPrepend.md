@@ -17,7 +17,11 @@ pattern resPrepend://value [filters...]
 ``` txt
 www.example.com/path resPrepend://(Hello) file://(-test-)
 ```
-请求 `https://www.example.com/path/to` 响应内容变成 `Hello-test-`。 
+请求 `https://www.example.com/path/to` 响应内容变成
+``` txt
+<!DOCTYPE html>
+Hello-test-
+```
 
 #### 内嵌/Values方式
 ```` txt
@@ -26,7 +30,11 @@ Hello world.
 ```
 www.example.com/path resPrepend://{body.txt} file://(-test-)
 ````
-请求 `https://www.example.com/path/to` 响应内容变成 `Hello world.-test-`。 
+请求 `https://www.example.com/path/to` 响应内容变成
+``` txt
+<!DOCTYPE html>
+Hello world.-test-
+```
 
 #### 本地/远程资源
 

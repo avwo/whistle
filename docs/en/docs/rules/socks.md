@@ -1,43 +1,43 @@
 # socks
-`socks` 指令用于将匹配的请求通过指定的 SOCKS5 代理服务器转发。
+The `socks` directive is used to forward matching requests through a specified SOCKS5 proxy server.
 
-## 规则语法
+## Rule Syntax
 ``` txt
 pattern socks://ipOrDomain[:port] [filters...]
 ```
-> `port` 可选，不填则使用默认端口 `443`
+> `port` is optional. If left blank, the default port `443` will be used.
 
-| 参数    | 描述                                                         | 详细文档                  |
+| Parameters | Description | Detailed Documentation |
 | ------- | ------------------------------------------------------------ | ------------------------- |
-| pattern | 匹配请求 URL 的表达式                                        | [匹配模式文档](./pattern) |
-| value   | IP + 可选端口 或域名 + 可选端口<br/>⚠️ 不支持从文件/远程 URL 加载数据 | [操作指令文档](./operation)   |
-| filters | 可选过滤器，支持匹配：<br/>• 请求URL/方法/头部/内容<br/>• 响应状态码/头部 | [过滤器文档](./filters) |
+| pattern | An expression to match the request URL | [Match Pattern Documentation](./pattern) |
+| value | IP + optional port or domain name + optional port<br/>⚠️ Loading data from files/remote URLs is not supported | [Operation Instruction Documentation](./operation) |
+| filters | Optional filters. Supports matching:<br/>• Request URL/Method/Headers/Content<br/>• Response Status Code/Headers | [Filters Documentation](./filters) |
 
-## 配置示例
+## Configuration Example
 ``` txt
-# 将请求代理到 SOCKS5 代理: `127.0.0.1:443`
-www.example.com/path socks://127.0.0.1 # 默认端口 443
+# Proxy requests to a SOCKS5 proxy: `127.0.0.1:443`
+www.example.com/path socks://127.0.0.1 # Default port 443
 
-# 将当前域名的所有请求代理到 SOCKS5 代理: `127.0.0.1:8080`
+# Proxy all requests for the current domain to the SOCKS5 proxy: `127.0.0.1:8080`
 www.example.com socks://127.0.0.1:8080
 
-# 也可以用域名
-www.example.com/path socks://test.proxy.com # 默认端口 443
+# You can also use a domain name.
+www.example.com/path socks://test.proxy.com # Default port 443
 www.example.com socks://test.proxy.com:8080
 ```
 
-## 高级用法
-默认情况下，上游代理会自行解析请求的域名。但某些场景下，你可能希望强制代理直接访问指定的目标 IP（跳过 DNS 解析），例如：
-- 绕过 DNS 污染
-- 直接访问特定后端 IP
-- 测试不同环境的服务
+## Advanced Usage
+By default, the upstream proxy resolves the requested domain name. However, in some scenarios, you may want to force the proxy to access a specific target IP directly (skipping DNS resolution), for example:
+- Bypassing DNS poisoning
+- Directly accessing a specific backend IP
+- Testing services in different environments
 ``` txt
-# 通过查询参数
+# Using query parameters
 www.example.com socks://127.0.0.1:8080?host=1.1.1.1
 www.example.com socks://127.0.0.1:8080?host=1.1.1.1:8080
 
-# 通过指令启用
+# Enabling via directives
 www.example.com socks://127.0.0.1:8080 1.1.1.1 enable://proxyHost
 www.example.com socks://127.0.0.1:8080 1.1.1.1:8080 enable://proxyHost
 ````
-> `1.1.1.1` 等价于 `host://1.1.1.1`
+> `1.1.1.1` is equivalent to `host://1.1.1.1`

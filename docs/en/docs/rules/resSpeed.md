@@ -1,21 +1,20 @@
 # resSpeed
-设置响应 Body 的传输速度(单位：kb/s，千比特/每秒).
+Sets the response body transmission speed (unit: kb/s, kilobits per second).
 
-## 规则语法
+## Rule Syntax
 ``` txt
 pattern resSpeed://value [filters...]
 ```
 
-| 参数    | 描述                                                         | 详细文档                  |
+| Parameters | Description | Detailed Documentation |
 | ------- | ------------------------------------------------------------ | ------------------------- |
-| pattern | 匹配请求 URL 的表达式                                        | [匹配模式文档](./pattern) |
-| value   | 传输速度（单位：kb/s，千比特/每秒）<br/>⚠️ 不支持从文件/远程 URL 加载数据 | [操作指令文档](./operation)   |
-| filters | 可选过滤器，支持匹配：<br/>• 请求URL/方法/头部/内容<br/>• 响应状态码/头部 | [过滤器文档](./filters) |
+| pattern | Expression to match request URLs | [Match Pattern Documentation](./pattern) |
+| value | Transmission speed (unit: kb/s, kilobits per second)<br/>⚠️ Loading data from files/remote URLs is not supported | [Operation Instruction Documentation](./operation) |
+| filters | Optional filters, supports matching:<br/>• Request URL/Method/Headers/Content<br/>• Response Status Code/Headers | [Filter Documentation](./filters) |
 
-
-## 配置示例
+## Configuration Example
 ``` txt
-# 限制响应内容的传输速度：3kb/s
+# Limit the response content transmission speed to 3kb/s
 www.example.com/path resSpeed://3
 ```
-该规则对请求方法为 `GET`、`HEAD`、`CONNECT`（TUNNEL 请求）、`UPGRADE`（WebSocket 请求）等无请求 Body 的请求无效
+This rule is ineffective for requests without a request body, such as those with methods like `GET`, `HEAD`, `CONNECT` (TUNNEL request), and `UPGRADE` (WebSocket request).

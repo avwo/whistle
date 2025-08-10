@@ -1,40 +1,39 @@
 # ws
-将 WebSocket 请求转换为新的 ws 请求（服务端将收到转换后的 WebSocket URL）。
-> 只支持 WebSocket 请求 `ws[s]://domain[:port]/[path][?query]`，不支持转换隧道代理和普通 HTTP/HTTPS
+Converts a WebSocket request into a new ws request (the server will receive the converted WebSocket URL).
+> Only supports WebSocket requests `ws[s]://domain[:port]/[path][?query]`. Transformation tunneling and plain HTTP/HTTPS are not supported.
 
-## 规则语法
+## Rule Syntax
 ``` txt
 pattern ws://value [filters...]
 ```
 
-| 参数    | 描述                                                         | 详细文档                  |
+| Parameters | Description | Detailed Documentation |
 | ------- | ------------------------------------------------------------ | ------------------------- |
-| pattern | 匹配 WebSocket 请求 URL 的表达式                                        | [匹配模式文档](./pattern) |
-| value   | 目标 URL 格式：`domain[:port]/[path][?query]`<br/>⚠️ 不支持从文件/远程 URL 加载数据 | [操作指令文档](./operation)   |
-| filters | 可选过滤器，支持匹配：<br/>• 请求URL/方法/头部/内容<br/>• 响应状态码/头部 | [过滤器文档](./filters) |
+| pattern | Expression to match WebSocket request URLs | [Match Pattern Documentation](./pattern) |
+| value | Target URL format: `domain[:port]/[path][?query]`<br/>⚠️ Loading data from files/remote URLs is not supported | [Operation Instruction Documentation](./operation) |
+| filters | Optional filters, supporting matching:<br/>• Request URL/Method/Headers/Content<br/>• Response Status Code/Headers | [Filters Documentation](./filters) |
 
-## WebSocket 转换
+## WebSocket Transformation
 ``` txt
 ws://www.example.com/path1 ws://www.test.com/path/xxx
 wss://www.example.com/path2 ws://www.abc.com/path3/yyy
 ```
-1. 自动路径拼接：
-    | 原始请求                                  | 转换结果（服务端收到的 URL）              |
+1. Automatic path concatenation:
+    | Original request | Conversion result (URL received by the server) |
     | ----------------------------------------- | ----------------------------------------- |
-    | `ws://www.example.com/path1`              | `ws://www.test.com/path/xxx`             |
-    | `ws://www.example.com/path1/a/b/c?query`  | `ws://www.test.com/path/xxx/a/b/c?query` |
-    | `wss://www.example.com/path2`            | `ws://www.abc.com/path3/yyy`             |
+    | `ws://www.example.com/path1` | `ws://www.test.com/path/xxx` |
+    | `ws://www.example.com/path1/a/b/c?query` | `ws://www.test.com/path/xxx/a/b/c?query` |
+    | `wss://www.example.com/path2` | `ws://www.abc.com/path3/yyy` |
     | `wss://www.example.com/path2/a/b/c?query` | `ws://www.abc.com/path3/yyy/a/b/c?query` |
-2. 禁用路径拼接：使用 `< >` 或 `( )` 包裹路径
+2. Disable path concatenation: Use `< >` or `()` to wrap the path.
     ``` txt
     www.example.com/path1 ws://<www.test.com/path/xxx>
     # www.example.com/path1 ws://(www.test.com/path/xxx)
     ```
-    | 原始请求                                  | 转换结果（服务端收到的 URL）              |
+    | Original Request | Conversion Result (URL Received by the Server) |
     | ----------------------------------------- | ----------------------------------------- |
     | `[wss/ws]://www.example.com/path/x/y/z` | `ws://www.test.com/path/xxx` |
 
-只支持转发 WebSocket 请求，其它请求匹配 `ws` 协议结果：
-- **隧道代理**：忽略匹配
-- **普通 HTTP/HTTPS 请求**：返回 `502`
-
+Only supports forwarding WebSocket requests; other requests match the `ws` protocol. Result:
+- **Tunnel Proxy**: Ignore matches
+- **Normal HTTP/HTTPS Request**: Returns `502`

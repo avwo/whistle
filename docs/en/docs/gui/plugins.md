@@ -1,33 +1,30 @@
-# Plugins 界面
+# Plugins Screen
 
-Plugins 界面是 Whistle 的插件管理中枢，支持插件的全生命周期管理，包括安装、配置、更新和卸载等操作。
+The Plugins screen is Whistle's plugin management hub, supporting the full lifecycle of plugins, including installation, configuration, updates, and uninstallation.
 
-<img src="/img/plugins.png" alt="Plugins 界面" width="1000" />
+<img src="/img/plugins.png" alt="Plugins Interface" width="1000" />
 
+## Basic Interface Functions
 
-## 界面基本功能
-
-
-
-| 控件         | 功能 |
+| Controls | Functions |
 | ------------ | ---- |
-| **ON**       | 关闭或打开所有插件，红色：开启中，灰色：关闭中 |
-| **Install**  |  安装插件，详见下文    |
-| **Checkbox** | 是否启用该插件  |
-| **插件名称** |  点击打开插件管理界面 |
-| **版本号**       |  点击打开插件帮助文档  |
-| **Option**       |   点击打开插件管理界面   |
-| **Rules**       |  打开插件自带的静态规则（`rules.txt`、`reqRules.txt`、`resRules.txt` 文件规则）  |
-| **Update**       |  更新插件  |
-| **Uninstall**       |  卸载插件   |
-| **Help**       |  点击打开插件帮助文档   |
-| **Sync**       |  同步插件里面的 Rules 和 Values  |
+| **ON** | Turn all plugins on or off. Red: On, Gray: Off |
+| **Install** | Install a plugin. See below for details. |
+| **Checkbox** | Whether to enable this plugin |
+| **Plugin Name** | Click to open the plugin management interface |
+| **Version Number** | Click to open the plugin help documentation |
+| **Option** | Click to open the plugin management interface |
+| **Rules** | Open the plugin's static rules (rules.txt, reqRules.txt, and resRules.txt files) |
+| **Update** | Update a plugin |
+| **Uninstall** | Uninstall a plugin |
+| **Help** | Click to open the plugin help documentation |
+| **Sync** | Synchronize the plugin's Rules and Values |
 
-
-## 安装流程
-1. 点击顶部 `Install` 按钮
-2. 输入插件名称（如 `whistle.inspect`）
-3. 选择 `npm registry`（默认 `--registry=https://registry.npmjs.org`）
-4. 点击 `Install` 开始安装
+## Installation Process
+1. Click the `Install` button at the top
+2. Enter the plugin name (e.g., `whistle.inspect`)
+3. Select `npm registry` (default `--registry=https://registry.npmjs.org`)
+4. Click `Install` to begin installation
 
 <img width="1000" alt="install plugins" src="/img/install-plugins.png" />
+

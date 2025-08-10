@@ -1,4 +1,4 @@
-# 自动
+# 协议继承
 [http](./http)/[https](./https)/[ws](./ws)/[wss](./wss)/[tunnel](./tunnel) 都限制了目标 URL 的协议，Whistle 也支持根据请求 URL 的协议自动补全。
 ## 规则语法
 ``` txt

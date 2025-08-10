@@ -1,12 +1,12 @@
 # xsocks
 
-xsocks 是 [socks](./socks) 规则的穿透版本，主要区别在于跟目标代理建立连接失败时的处理方式：
-- ✅ 建立连接成功时：与 [socks](./socks) 规则行为一致
-- ❌ 建立连接失败时：忽略该匹配规则，继续正常网络请求（而 [socks](./socks) 中断请求）
+xsocks is a pass-through version of the [socks](./socks) rule. The main difference lies in how it handles connection failures to the target proxy:
+- ✅ When the connection is established successfully: Behaves the same as the [socks](./socks) rule
+- ❌ When the connection fails: Ignore the matching rule and continue the normal network request (while [socks](./socks) aborts the request).
 
-## 规则语法
+## Rule Syntax
 ``` txt
 pattern xsocks://value [filters...]
 ```
 
-详细用法参考：[socks](./socks)
+For detailed usage, see [socks](./socks)

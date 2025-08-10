@@ -1,5 +1,5 @@
 # 命令行操作
-Whistle 命令行版本支持以下命令行操作，查看完整命令行功能执行命令：`w2 -h`
+Whistle 命令行版本支持以下命令行操作，查看完整命令行功能执行命令：`w2 -h`：
 
 ``` sh
 Usage: w2 <command> [options]
@@ -138,8 +138,8 @@ const pkg = require('./package.json');
 
 module.exports = (cb, util) => {
   // 如果依赖插件，可以检查插件
-  assert(util.existsPlugin('@tnpm/whistle.tianma')
-    || util.existsPlugin('whistle.combo'), '请先安装插件npm i -g whisltle.combo');
+  assert(util.existsPlugin('@scope/whistle.combo')
+    || util.existsPlugin('whistle.combo'), '请先安装插件: w2 i whisltle.combo');
   // 也可以远程获取规则
   // do sth
   cb({
@@ -185,12 +185,12 @@ Whistle 会检查是否存在同名规则：
 1. `w2 install whistle.script`：安装插件
 2. `w2 install whistle.script --registry=https://npm-registry`：安装插件，并指定 npm registry
 
-推荐使用界面安装：[使用插件](/docs/extensions/usage)
+推荐使用界面安装：[使用插件](./extensions/usage)
 
 ## w2 uninstall
 `w2 uninstall whistle.script`：卸载指定插件
 
-推荐使用界面卸载：[使用插件](/docs/extensions/usage)
+推荐使用界面卸载：[使用插件](./extensions/usage)
 ## w2 exec
 `w2 exec xxx`：执行插件在 package.json 中配置的 bin 命令（即插件提供的可执行脚本）
 > 适用于插件开发者或需要调用插件 CLI 功能的场景
