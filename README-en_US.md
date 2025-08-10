@@ -78,7 +78,7 @@ For environments such as Linux servers without interfaces, please follow the 4 s
     > 3. Through Proxifier Setting up a proxy (for clients that cannot set up a proxy and do not use a system proxy): https://www.proxifier.com/docs/win-v4/http-proxy.html
     >
 
-# Usage
+# Getting Started
 For detailed usage instructions, please refer to: https://wproxy.org/en/docs/getting-started.html
 
 # License

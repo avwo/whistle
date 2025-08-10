@@ -85,7 +85,7 @@ Whistle (发音为 /ˈwisəl/)是一款基于 Node.js 实现的跨平台网络�
    >
 
 
-# 用法
+# 快速上手
 详细使用指南请参考：https://wproxy.org/docs/getting-started.html
 
 # License
