@@ -22,7 +22,8 @@ pattern opertaion includeFilter://pattern1 ... excludeFilter://patternx ...
 | ------------------- | --------------------- | ----------------------------- |
 | `b:pattern`         | 匹配请求体内容        | `includeFilter://b:keyword` `excludeFilter://b:/regexp/[i]` |
 | `m:pattern`         | 匹配 HTTP 方法        | `includeFilter://m:keyword` `excludeFilter://m:/regexp/[i]` |
-| `i:pattern`        | 匹配客户端或服务端 IP | `includeFilter://i:keyword` `excludeFilter://i:/regexp/[i]` |
+| `i:pattern`         | 匹配客户端或服务端 IP | `includeFilter://i:keyword` `excludeFilter://i:/regexp/[i]` |
+| `chance:probability`| `Math.random() < probability` | `includeFilter://chance:0.5` `excludeFilter://chance:0.3` |
 | `clientIp:pattern`  | 仅匹配客户端 IP       | `includeFilter://clientIp:/regexp/[i]`  `excludeFilter://clientIp:keyword` |
 | `serverIp:pattern`  | 仅匹配服务端 IP       | `includeFilter://serverIp:/regexp/[i]`  `excludeFilter://serverIp:keyword` |
 | `s:pattern`         | 匹配响应状态码        | `includeFilter://s:/^20/`  `excludeFilter://s:30` |

@@ -35,7 +35,7 @@
 2. [pathReplace](./pathReplace)
 3. [sniCallback](./sniCallback)
 4. [method](./method)
-5. [cipher](./cipher)
+5. [tlsOptions](./cipher)
 6. [reqHeaders](./reqHeaders)
 7. [forwardedFor](./forwardedFor)
 8. [ua](./ua)

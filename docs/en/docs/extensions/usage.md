@@ -1,147 +1,145 @@
-# 使用插件
+# Using Plugins
 
-## 安装插件
+## Installing Plugins
 
-1. 点击左侧导航栏的 Plugins 标签页
-2. 点击顶部的 Install 按钮
-3. 在弹出窗口中输入插件名称（支持同时安装多个插件）：
-   - 多个插件用空格或换行符分隔
-   - 可指定自定义 npm 镜像源：
-     - 直接在插件名后添加 --registry=镜像地址
-     - 或从下拉列表选择历史使用过的镜像源
+1. Click the Plugins tab in the left navigation bar.
+2. Click the Install button at the top.
+3. Enter the plugin name in the pop-up window (multiple plugins can be installed simultaneously):
+   - Separate multiple plugins with spaces or line breaks.
+   - You can specify a custom npm mirror:
+   - Simply add `--registry=mirror_url` after the plugin name.
+   - Or select a previously used mirror from the drop-down list.
 
 <img width="1000" alt="install plugins" src="/img/install-plugins.png" />
 
-> 文本框中的冗余文本不会影响结果，Whistle 会自动过滤文本框中的冗余文本，仅提取插件名称及 registry 安装信息
+> Redundant text in the text box will not affect the results. Whistle will automatically filter out redundant text and extract only the plugin name and registry installation information.
 
-安装成功后，稍等片刻即可在插件列表中查看新安装的插件：
+After successful installation, wait a moment for the newly installed plugin to appear in the plugin list:
 
 <img width="1000" alt="plugins" src="/img/plugin-list.png" />
 
-## 自定义协议
+## Custom Protocols
 
-每个插件可注册两种协议类型，配置方式跟普通协议一样：
+Each plugin can register two protocol types, configured the same way as regular protocols:
 ``` txt
-# 长协议
+# Long Protocol
 pattern whistle.plugin-name://value [inludeFilter://pattern1 ... excludeFilter://pattern2 ...]
-# 短协议
+# Short Protocol
 pattern plugin-name://value [inludeFilter://pattern1 ... excludeFilter://pattern2 ...]
 ```
 
-## Hooks 功能
+## Hooks
 
-Whistle 将匹配插件规则的请求与插件对应 Hook 进行交互，可实现以下功能：
-> 插件协议的具体功能看各个插件的帮助文档，插件也可以选择隐藏这些协议
-1. 自动生成并下发 HTTPS 证书
-2. 对代理请求的认证控制，要求用户提供凭证才能访
-3. 实时获取请求头、响应状态码等元数据
-4. 对请求动态设置规则
-5. 将请求转发给插件，由插件完全控制请求处理流程（需要匹配短协议才能实现）
+Whistle connects requests matching plugin rules with the corresponding plugin hooks, enabling the following functionality:
+> For specific functionality of plugin protocols, refer to the help documentation for each plugin. Plugins can also choose to hide these protocols.
+1. Automatically generate and issue HTTPS certificates
+2. Authenticate proxy requests, requiring users to provide credentials for access
+3. Real-time access to metadata such as request headers and response status codes
+4. Dynamically set rules for requests
+5. Forward requests to plugins, giving them full control over the request processing flow (requires matching the short protocol for this to work)
 
+## Pipe Functionality
+Some request/response content may be encrypted or Protobuf serialization prevents you from viewing the plaintext. You can view and modify the content in the following two ways:
+1. **Plugin Full Control**
+   - Directly forwards the request to the plugin
+   - The plugin has complete control over the processing flow
+   - Notes:
+   - Whistle's built-in rules will be ineffective
+   - The plugin must implement all processing logic on its own
+   - To display decrypted content in the packet capture interface, the plugin must call the Whistle API to return the data
+2. **Pipeline Streaming (Recommended)**
+   - Establish a processing pipeline using the pipe protocol
+   - Request/Response Flow:
+   - Upon entering Whistle: Plugin decrypts
+   - Upon leaving Whistle: Plugin encrypts
+   - Advantages:
+   - Maintains plaintext request characteristics
+   - Full support for Whistle's built-in rules
+   - Plaintext can be viewed directly in the packet capture interface
 
-## pipe 功能
-有些请求/响应内容可能被加密或 protobuf 序列化无法看到明文，可通过以下两种方式实现内容查看与修改：
-1. **插件全权处理**
-   - 将请求直接转发至插件
-   - 插件完全控制处理流程
-   - 注意事项：
-     - Whistle 内置规则将失效
-     - 需插件自行实现所有处理逻辑
-     - 如需在抓包界面显示解密内容，插件必须调用 Whistle API 回传数据
-2. **管道流式处理（推荐）**
-   - 通过 pipe 协议建立处理管道
-   - 请求/响应流程：
-     - 进入 Whistle 时：插件解密
-     - 离开 Whistle 时：插件加密
-   - 优势：
-     - 保持明文请求特性
-     - 完整支持 Whistle 内置规则
-     - 抓包界面可直接查看明文
+**Technical Notes:**
+- The pipe streaming feature is optional. Please refer to the documentation for each plugin for support.
+- Requests processed in Option 2 are identical to normal plaintext requests
 
-**技术说明：**
-- pipe 流功能为可选实现，各插件支持情况请查阅具体文档
-- 方案二处理后的请求完全等同于普通明文请求
+## User Interface
 
-## 操作界面
+#### Accessing the Plugin User Interface
+In Whistle In the plugin management panel, you can access plugin functionality in any of the following ways:
+1. Click the `Options` button to the right of a plugin entry
+2. Click the plugin name directly in the plugin list
 
-#### 访问插件操作界面
-在 Whistle 插件管理面板中，您可以通过以下任一方式访问插件功能：
-1. 点击插件条目右侧的 `Option` 按钮
-2. 在插件列表直接单击插件名称
+#### Interface Features
+**Display Format:** Modal Dialog Box or Standalone Tab
 
-#### 界面特性
-**呈现形式：** 模态对话框或独立标签页
+**Core Capabilities:**
+1. Provides visual configuration and management capabilities
+2. Supports real-time interaction with the Whistle core
+3. Displays plugin status, request statistics, log information, etc.
 
-**核心能力：**
-1. 提供可视化配置和管理功能
-2. 支持与 Whistle 核心的实时交互
-3. 显示插件运行状态、请求统计数据、日志信息等
+#### Technical Description
+1. A plugin is essentially an HTTP server that interacts directly with Whistle
+2. Each plugin implements its own user interface functionality
+3. A plugin may choose not to provide a user interface (providing only backend services or command-line operations)
 
-#### 技术说明
-1. 插件本质上是与 Whistle 直接交互的 HTTP Server
-2. 操作界面的具体功能由各插件自行实现
-3. 插件可选择不提供操作界面（仅提供后台服务或[命令行操作](../cli#w2-exec)）
+### Extending the Whistle Interface
 
-## 扩展 Whistle 界面
+Plugins can enhance the Whistle user interface in the following ways:
 
-插件可通过以下方式增强 Whistle 的用户界面功能：
+#### Network Extensions
+1. Capture List Context Menu
+    > Add custom actions to the right-click menu of a capture list item
+2. Main View Tabs
+    > Create a first-level function tab in the main panel on the right.
+2. Inspectors Analysis Tool Extension
+    > Add the following to the Inspectors panel:
+    > - Second-level function tab
+    > - Third-level detail view tab
+3. Composer Request Builder Extension
+    > Add a second-level function tab to the Composer tool area
+4. Tools Toolset Extension
+    > Add a second-level function tab to the Tools ribbon
 
-#### Network 扩展
-1. 抓包列表上下文菜单
-    > 在抓包列表项右键菜单中添加自定义操作
-2. 主视图标签页
-    > 在右侧主面板区创建一级功能标签页
-2. Inspectors 分析工具扩展
-    > 在 Inspectors 面板下添加：
-    >   - 二级功能标签页
-    >   - 三级详细视图标签页
-3. Composer 请求构造器扩展
-    > 在 Composer 工具区添加二级功能标签页
-4. Tools 工具集扩展
-    > 在 Tools 功能区添加二级功能标签页
+#### Rules Extension
+Left-side List Context Menu
+> Add a function item to the right-click menu of the rule file list on the left.
 
-#### Rules 扩展
-左侧列表上下文菜单
-> 在左侧规则文件列表的右键菜单中添加功能项
+#### Values Extension
+Left-side List Context Menu
+> Add a function item to the right-click menu of the variable file list on the left.
 
-#### Values 扩展
-左侧列表上下文菜单
-> 在左侧变量文件列表的右键菜单中添加功能项
+**Implementation Notes:**
+- Each plugin can select the appropriate extension location based on its functional requirements.
+- For specific extension functions and implementation methods, please refer to the development documentation of each plugin.
+- Unused extension points will not affect the plugin's basic functionality.
 
-**实现说明：**
-- 各插件可根据功能需求选择适当的扩展位置
-- 具体扩展功能和实现方式请参阅各插件的开发文档
-- 未使用的扩展点不会影响插件基础功能
+## Plugin Built-in Rules
 
-## 插件内置规则
+Plugins support extending system functionality through the following rule files:
 
-插件支持通过以下规则文件扩展系统功能：
+1. **Global Rules (rules.txt)**
+   - Automatically loaded when: During plugin initialization
+   - Scope: Global requests
+   - Priority: Lower than rules configured in the Rules interface
+   - Typical use: Plugin default rule configuration
+2. **Private Rules (_rules.txt)**
+   - Triggering Condition: Requests matching the plugin's custom protocol
+   - Effective Phase: Request processing flow
+   - Execution Order: Applied after global rules
+   - Typical use: Request pre-processing/rewriting
+3. **Response Phase Rules (resRules.txt)**
+   - Triggering Condition: Requests matching the plugin's custom protocol
+   - Effective Phase: Response processing flow
+   - Execution Order: Applied after global rules
+   - Typical use: Response post-processing/rewriting
 
-1. **全局规则 (rules.txt)**
-   - 自动加载时机： 插件初始化时
-   - 作用范围： 全局请求
-   - 优先级： 低于 Rules 界面配置的规则
-   - 典型用途： 插件默认规则配置
-2. **私有规则 (_rules.txt)**
-   - 触发条件： 匹配插件自定义协议的请求
-   - 生效阶段： 请求处理流程
-   - 执行顺序： 在全局规则之后应用
-   - 典型用途： 请求预处理/改写
-3. **响应阶段规则 (resRules.txt)**
-   - 触发条件： 匹配插件自定义协议的请求
-   - 生效阶段： 响应处理流程
-   - 执行顺序： 在全局规则之后应用
-   - 典型用途： 响应后处理/改写
+The plugin supports a flexible built-in rule configuration mechanism:
+- **Optionality:** All built-in rules are optional
+- **On-demand Configuration:** Plugins only need to declare necessary rules
+- **Viewing Rules:** All rules configured in the plugin can be viewed through the Rules button in the plugin management interface
+> Note: Plugins without configured rules can still function normally.
 
+## Updating and Uninstalling Plugins
 
-插件支持灵活的内置规则配置机制：
-- **可选性：** 所有内置规则均为可选配置
-- **按需设置：** 插件只需声明必要的规则
-- **规则查看：** 通过插件管理界面的 Rules 按钮可查看当前插件配置的所有规则
-> 注意：未配置规则的插件仍可正常使用其他功能
-
-## 更新卸载插件
-
-**在 Whistle 插件管理界面中：**
-- **更新插件：** 点击插件条目右侧的 `Update` 按钮
-- **卸载插件：** 点击插件条目右侧的 `Uninstall` 按钮
+**In Whistle In the plugin management interface:** 
+- **Update a plugin:** Click the `Update` button to the right of the plugin entry
+- **Uninstall a plugin:** Click the `Uninstall` button to the right of the plugin entry

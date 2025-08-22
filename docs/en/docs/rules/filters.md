@@ -21,6 +21,7 @@ pattern operator includeFilter://pattern1 ... excludeFilter://patternx ...
 | `b:pattern` | Match request body content | `includeFilter://b:keyword` `excludeFilter://b:/regexp/[i]` |
 | `m:pattern` | Match HTTP method | `includeFilter://m:keyword` `excludeFilter://m:/regexp/[i]` |
 | `i:pattern` | Match client or server IP | `includeFilter://i:keyword` `excludeFilter://i:/regexp/[i]` |
+| `chance:probability`| `Math.random() < probability` | `includeFilter://chance:0.5` `excludeFilter://chance:0.3` |
 | `clientIp:pattern` | Match only client IP | `includeFilter://clientIp:/regexp/[i]` `excludeFilter://clientIp:keyword` |
 | `serverIp:pattern` | Match only server IP | `includeFilter://serverIp:/regexp/[i]` `excludeFilter://serverIp:keyword` |
 | `s:pattern` | Match response status code | `includeFilter://s:/^20/` `excludeFilter://s:30` |

@@ -7,7 +7,7 @@
 3. 在弹出窗口中输入插件名称（支持同时安装多个插件）：
    - 多个插件用空格或换行符分隔
    - 可指定自定义 npm 镜像源：
-     - 直接在插件名后添加 --registry=镜像地址
+     - 直接在插件名后添加 `--registry=镜像地址`
      - 或从下拉列表选择历史使用过的镜像源
 
 <img width="1000" alt="install plugins" src="/img/install-plugins.png" />

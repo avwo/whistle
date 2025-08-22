@@ -1,4 +1,4 @@
-# 开发插件
+# 插件开发
 您已了解插件的各项功能特性（参考[使用文档](./usage)），现在我们将通过模块化方式演示具体实现。
 > 每个核心功能作为独立插件实现，保持单一职责原则，实际开发中可自由拼装这些功能模块。
 
@@ -456,7 +456,7 @@ tunnelRulesServer 是专门用于处理 TUNNEL 请求的动态规则生成机制
     ```
 5.  效果：
    - 访问 `https://www.example.com/res/stats` 控制台输出：
-      ``` sh
+      ``` txt
       Value: testResStats
       URL: https://www.example.com/res/stats
       Method: GET
@@ -1073,7 +1073,7 @@ Whistle 插件系统支持扩展以下界面功能模块：
 
 ## 特殊路径
 
-Whistle 提供专用路径格式，用于在格类型页面下直接请求插件接口。
+Whistle 提供专用路径格式，用于在各类型页面下直接请求插件接口，以及只在 Whistle 环境下可以正常访问的路径。
 
 #### 1. Whistle 界面直接访问
 在 Whistle 界面或插件管理界面中，可直接使用以下格式访问插件接口：
@@ -1092,6 +1092,15 @@ path/to
 
 - 请求到达插件时会被标准化为：`/whistle.xxx/path/to`
 - 前缀 `/.whistle-path.5b6af7b9884e1165./` 是 Whistle 的专用标识符，用于标记内部请求路由
+
+#### 3. 环境自适应路径转换
+实现经过或不经过 Whistle 代理时使用不同路径，但确保后台服务接收到统一路径：
+``` txt
+/_WHISTLE_5b6af7b9884e1165_/
+```
+
+- 原始请求：`https://www.example.com/.../_WHISTLE_5b6af7b9884e1165_/path/to?query`
+- 经过 Whistle 后转换为：`https://www.example.com/.../path/to?query`
 
 #### 说明：
 - `xxx` 为您的插件名称

@@ -55,7 +55,7 @@
     > 
     > 示例：`test.abc123.com`、`test.abc123.x.com`、`test.abc.a.b.com`
 4. **协议通配符**：`http*://test.abc**.com[:port][/path][?query]`
-    > 协议中的 `*` 匹配任意字母或冒号（正则：/[a-z:]*/）
+    > 协议中的 `*` 匹配任意字母或冒号（正则：`/[a-z:]*/`）
     > 
     > 示例：`https://...`、`http://...`
 5. **特殊规则**：`***.example.com[:port][/path][?query]`

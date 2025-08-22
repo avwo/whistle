@@ -22,6 +22,10 @@ www.example.com/path statusCode://401 disable://userLogin
 ```
 > 设置 `statusCode` 的请求，响应内容为空，可以通过 [resBody](./resBody) 自定义响应内容
 
+## 注意事项
+
+`statusCode://value` 仅在请求阶段生效。匹配的请求将不会被转发至后端服务器。如需替换后端响应的 `statusCode`，请使用 [replaceStatus](./replaceStatus) 协议。
+
 ## 关联协议
 1. 替换响应状态码：[replaceStatus](./replaceStatus)
 2. 禁止弹登录框：[enable](./enable) 或 [lineProps](./lineProps)

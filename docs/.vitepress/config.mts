@@ -107,7 +107,7 @@ export default defineConfig({
                   { text: 'pathReplace', link: '/en/docs/rules/pathReplace' },
                   { text: 'sniCallback', link: '/en/docs/rules/sniCallback' },
                   { text: 'method', link: '/en/docs/rules/method' },
-                  { text: 'cipher', link: '/en/docs/rules/cipher' },
+                  { text: 'tlsOptions', link: '/en/docs/rules/cipher' },
                   { text: 'reqHeaders', link: '/en/docs/rules/reqHeaders' },
                   { text: 'forwardedFor', link: '/en/docs/rules/forwardedFor' },
                   { text: 'ua', link: '/en/docs/rules/ua' },
@@ -214,6 +214,15 @@ export default defineConfig({
               },
             ],
           },
+          {
+            text: 'Extensions',
+            collapsed: false,
+            items: [
+              { text: 'Plugin Usage', link: '/en/docs/extensions/usage' },
+              { text: 'Plugin Development', link: '/en/docs/extensions/dev' },
+              { text: 'NPM Modules', link: '/en/docs/extensions/npm' }
+            ]
+          },
           { text: 'CLI', link: '/en/docs/cli' },
           { text: 'FAQ', link: '/en/docs/faq' },
         ],
@@ -304,7 +313,7 @@ export default defineConfig({
               { text: 'pathReplace', link: '/docs/rules/pathReplace' },
               { text: 'sniCallback', link: '/docs/rules/sniCallback' },
               { text: 'method', link: '/docs/rules/method' },
-              { text: 'cipher', link: '/docs/rules/cipher' },
+              { text: 'tlsOptions', link: '/docs/rules/cipher' },
               { text: 'reqHeaders', link: '/docs/rules/reqHeaders' },
               { text: 'forwardedFor', link: '/docs/rules/forwardedFor' },
               { text: 'ua', link: '/docs/rules/ua' },

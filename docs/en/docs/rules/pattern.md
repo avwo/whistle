@@ -54,7 +54,7 @@ There are three types of request URLs:
     >
     > Examples: `test.abc123.com`, `test.abc123.x.com`, `test.abc.a.b.com`
 4. **Protocol wildcard**: `http*://test.abc**.com[:port][/path][?query]`
-    > `*` in the protocol matches any letter or colon (regular pattern: /[a-z:]*/)
+    > `*` in the protocol matches any letter or colon (regular pattern: `/[a-z:]*/`)
     >
     > Examples: `https://...`, `http://...`
 5. **Special rule**: `***.example.com[:port][/path][?query]`

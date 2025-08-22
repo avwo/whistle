@@ -22,6 +22,10 @@ www.example.com/path statusCode://401 disable://userLogin
 ```
 > Set the `statusCode` request. The response content is empty. You can customize the response content using [resBody](./resBody)
 
+## Notes
+
+`statusCode://value` only takes effect during the request phase. Matching requests will not be forwarded to the backend server. To replace the `statusCode` in the backend response, use the [replaceStatus](./replaceStatus) protocol.
+
 ## Related Protocols
 1. Replace the response status code: [replaceStatus](./replaceStatus)
 2. Disable the login dialog: [enable](./enable) or [lineProps](./lineProps)
