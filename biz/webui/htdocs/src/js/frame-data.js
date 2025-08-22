@@ -4,16 +4,8 @@ var JSONViewer = require('./json-viewer');
 var Textarea = require('./textarea');
 var FrameComposer = require('./frame-composer');
 var util = require('./util');
-var events = require('./events');
 var Properties = require('./properties');
 
-var BTNS = [
-  { name: 'Overview' },
-  { name: 'TextView' },
-  { name: 'JSONView' },
-  { name: 'HexView' },
-  { name: 'Composer' }
-];
 
 function findActive(btn) {
   return btn.active;
@@ -21,35 +13,46 @@ function findActive(btn) {
 
 var FrameClient = React.createClass({
   getInitialState: function () {
-    return {};
+    return {
+      btns: [
+        { name: 'Overview' },
+        { name: 'TextView' },
+        { name: 'JSONView' },
+        { name: 'HexView' },
+        { name: 'Composer', icon: 'send' }
+      ]
+    };
   },
   showTab: function (i) {
-    BTNS.forEach(function (btn) {
+    var btns = this.state.btns;
+    btns.forEach(function (btn) {
       btn.active = false;
     });
-    this.selectBtn(BTNS[i]);
+    this.selectBtn(btns[i]);
     this.setState({});
   },
   componentDidMount: function () {
     var self = this;
-    events.on('composeFrame', function (e, frame) {
+    var btns = self.state.btns;
+    var framesCtx = self.props.framesCtx;
+    framesCtx.on('composeFrame', function (e, frame) {
       if (frame) {
         self.showTab(4);
       }
     });
-    events.on('toggleFramesInspectors', function () {
+    framesCtx.on('toggleFramesInspectors', function () {
       var btn = self.state.btn;
-      BTNS.forEach(function (b) {
+      btns.forEach(function (b) {
         b.active = false;
       });
-      if (!btn || btn === BTNS[0]) {
-        self.onClickBtn(BTNS[1]);
-      } else if (btn === BTNS[1]) {
-        self.onClickBtn(BTNS[2]);
-      } else if (btn === BTNS[2]) {
-        self.onClickBtn(BTNS[3]);
+      if (!btn || btn === btns[0]) {
+        self.onClickBtn(btns[1]);
+      } else if (btn === btns[1]) {
+        self.onClickBtn(btns[2]);
+      } else if (btn === btns[2]) {
+        self.onClickBtn(btns[3]);
       } else {
-        self.onClickBtn(BTNS[0]);
+        self.onClickBtn(btns[0]);
       }
     });
   },
@@ -61,7 +64,7 @@ var FrameClient = React.createClass({
   },
   onDrop: function (e) {
     var id = e.dataTransfer.getData('frameDataId');
-    id && events.trigger('composeFrameId', id);
+    id && this.props.framesCtx.trigger('composeFrameId', id);
   },
   onClickBtn: function (btn) {
     this.selectBtn(btn);
@@ -73,9 +76,10 @@ var FrameClient = React.createClass({
   },
   render: function () {
     var state = this.state;
+    var btns = this.state.btns;
     var btn = state.btn;
-    if (BTNS.indexOf(btn) === -1) {
-      btn = util.findArray(BTNS, findActive) || BTNS[0];
+    if (btns.indexOf(btn) === -1) {
+      btn = util.findArray(btns, findActive) || btns[0];
       this.selectBtn(btn);
     }
     var frame = this.props.frame;
@@ -112,7 +116,7 @@ var FrameClient = React.createClass({
         onDragEnter={this.onDragEnter}
         onDrop={this.onDrop}
       >
-        <BtnGroup onClick={this.onClickBtn} btns={BTNS} />
+        <BtnGroup onClick={this.onClickBtn} btns={state.btns} />
         <Properties modal={overview} hide={btn.name !== 'Overview'} />
         <Textarea
           className="fill"
@@ -128,7 +132,7 @@ var FrameClient = React.createClass({
           value={bin}
           hide={btn.name !== 'HexView'}
         />
-        <FrameComposer data={this.props.data} hide={btn.name !== 'Composer'} />
+        <FrameComposer framesCtx={this.props.framesCtx} data={this.props.data} hide={btn.name !== 'Composer'} />
       </div>
     );
   }

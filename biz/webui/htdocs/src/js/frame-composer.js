@@ -2,7 +2,6 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var dataCenter = require('./data-center');
 var util = require('./util');
-var events = require('./events');
 var message = require('./message');
 var storage = require('./storage');
 var win = require('./win');
@@ -19,9 +18,10 @@ var FrameComposer = React.createClass({
   },
   componentDidMount: function () {
     var self = this;
+    var framesCtx = this.props.framesCtx;
     self.dataField = ReactDOM.findDOMNode(self.refs.uploadData);
     self.dataForm = ReactDOM.findDOMNode(self.refs.uploadDataForm);
-    events.on('composeFrame', function (e, frame) {
+    framesCtx.on('composeFrame', function (e, frame) {
       if (frame) {
         var body;
         if (self.state.isHexText) {
@@ -35,11 +35,11 @@ var FrameComposer = React.createClass({
         }, 60);
       }
     });
-    events.on('replayFrame', function (e, frame) {
+    framesCtx.on('replayFrame', function (e, frame) {
       if (!frame) {
         return;
       }
-      events.trigger('enableRecordFrame');
+      framesCtx.trigger('enableRecordFrame');
       self.send(
         {
           target: frame.isClient ? 'server' : 'client',
@@ -47,7 +47,7 @@ var FrameComposer = React.createClass({
           base64: frame.base64
         },
         function () {
-          events.trigger('autoRefreshFrames');
+          framesCtx.trigger('autoRefreshFrames');
         }
       );
     });
@@ -104,7 +104,7 @@ var FrameComposer = React.createClass({
       return;
     }
     params.reqId = data.id;
-    events.trigger('enableRecordFrame');
+    this.props.framesCtx.trigger('enableRecordFrame');
     dataCenter.socket.send(params, function (data, xhr) {
       if (!data) {
         return util.showSystemError(xhr);
@@ -143,7 +143,7 @@ var FrameComposer = React.createClass({
     self.send(params, function () {
       clearTimeout(self.sendTimer);
       self.sendTimer = null;
-      events.trigger('autoRefreshFrames');
+      self.props.framesCtx.trigger('autoRefreshFrames');
       self.setState({});
     });
   },

@@ -131,7 +131,7 @@ CodeMirror.defineMode('rules', function () {
   }
 
   function isCipher(str) {
-    return /^cipher:\/\//.test(str);
+    return /^(?:cipher|tlsOptions):\/\//.test(str);
   }
 
   function isIgnore(str) {
@@ -253,7 +253,7 @@ CodeMirror.defineMode('rules', function () {
           } else if (isDisable(str)) {
             type = 'negative js-disable js-type';
           } else if (isCipher(str)) {
-            type = 'atom js-cipher js-type';
+            type = 'atom js-cipher js-tls-options js-type';
           } else if (isDelete(str)) {
             type = 'negative js-delete js-type';
           } else if (isProxy(str)) {

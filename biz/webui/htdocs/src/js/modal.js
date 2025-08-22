@@ -52,7 +52,7 @@ function createModal(options, callback, gVarName) {
         </button>
       ) : (
         <div className="modal-header">
-          <h4></h4>
+          <h4 />
           <button type="button" className="close" data-dismiss="modal">
             <span aria-hidden="true">&times;</span>
           </button>

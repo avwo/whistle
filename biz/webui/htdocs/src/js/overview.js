@@ -434,6 +434,8 @@ var Overview = React.createClass({
             key = 'rulesFile';
           } else if (name === 'reqMerge') {
             key = 'params';
+          } else if (name === 'tlsOptions') {
+            key = 'cipher';
           } else if (name === 'pathReplace') {
             key = 'urlReplace';
           }

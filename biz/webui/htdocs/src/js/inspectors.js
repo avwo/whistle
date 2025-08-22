@@ -64,7 +64,7 @@ var Inspectors = React.createClass({
             }}
             className={self.getStyle('Request')}
           >
-            <span className="glyphicon glyphicon-arrow-right"></span>Request
+            <span className="glyphicon glyphicon-arrow-right" />Request
           </button>
           <button
             type="button"
@@ -73,7 +73,7 @@ var Inspectors = React.createClass({
             }}
             className={self.getStyle('Frames')}
           >
-            <span className="glyphicon glyphicon-menu-hamburger"></span>Frames
+            <span className="glyphicon glyphicon-menu-hamburger" />Frames
           </button>
           <div className="fill w-custom-tabs">
             {tabs.map(function (tab) {

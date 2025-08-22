@@ -1863,6 +1863,7 @@ var Index = React.createClass({
           url: location.href,
           pageId: dataCenter.getPageId(),
           compose: dataCenter.compose,
+          createComposeInterrupt: dataCenter.createComposeInterrupt,
           importSessions: self.importAnySessions,
           importHarSessions: self.importHarSessions,
           clearSessions: self.clear,
@@ -1947,6 +1948,11 @@ var Index = React.createClass({
   },
   importAnySessions: function (data) {
     if (data && !util.handleImportData(data)) {
+      var isArr = Array.isArray(data);
+      if (!isArr && !Array.isArray(data.log && data.log.entries)) {
+        isArr = true;
+        data = [data];
+      }
       if (Array.isArray(data)) {
         dataCenter.addNetworkList(data);
       } else {
@@ -3121,7 +3127,7 @@ var Index = React.createClass({
     this.enableRecord();
     var replayReq = function (item, repeatCount) {
       var req = item.req;
-      dataCenter.compose2({
+      dataCenter.compose({
         repeatCount: repeatCount,
         useH2: item.useH2 ? 1 : '',
         url: item.url,

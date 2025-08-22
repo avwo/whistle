@@ -202,7 +202,7 @@ var ResDetail = React.createClass({
         data = modal;
       }
       if (modal.frames) {
-        tips = { isFrames: true };
+        tips = { isFrames: true, inComposer: modal.inComposer };
       } else if (modal.isHttps) {
         tips = !body && { isHttps: true };
       } else if (

@@ -154,7 +154,7 @@ var Timeline = React.createClass({
                       <span
                         style={{ width: ttfbRate }}
                         className="w-detail-timeline-ttfb"
-                      ></span>
+                      />
                       <span title={title} className="w-detail-timeline-time">
                         {ttfb}
                       </span>
@@ -164,7 +164,7 @@ var Timeline = React.createClass({
                       <span
                         style={{ width: dnsRate }}
                         className="w-detail-timeline-dns"
-                      ></span>
+                      />
                       <span title={title} className="w-detail-timeline-time">
                         {dns}
                       </span>
@@ -173,7 +173,7 @@ var Timeline = React.createClass({
                       <span className="w-detail-timeline-url">
                         Request:
                       </span>
-                      <span style={{ width: dnsRate }}></span>
+                      <span style={{ width: dnsRate }} />
                       <span
                         style={{ width: requestRate }}
                         className="w-detail-timeline-request"
@@ -188,14 +188,14 @@ var Timeline = React.createClass({
                       <span className="w-detail-timeline-url">
                         Response:
                       </span>
-                      <span style={{ width: dnsRate }}></span>
+                      <span style={{ width: dnsRate }} />
                       {isStream ? null : (
                         <span style={{ width: requestRate }} />
                       )}
                       <span
                         style={{ width: responseRate }}
                         className="w-detail-timeline-response"
-                      ></span>
+                      />
                       <span title={title} className="w-detail-timeline-time">
                         {response}
                       </span>
@@ -204,7 +204,7 @@ var Timeline = React.createClass({
                       <span className="w-detail-timeline-url">
                         Download:
                       </span>
-                      <span style={{ width: dnsRate }}></span>
+                      <span style={{ width: dnsRate }} />
                       {isStream ? null : (
                         <span style={{ width: requestRate }} />
                       )}
@@ -212,7 +212,7 @@ var Timeline = React.createClass({
                       <span
                         style={{ width: loadRate }}
                         className="w-detail-timeline-load"
-                      ></span>
+                      />
                       <span title={title} className="w-detail-timeline-time">
                         {load}
                       </span>
@@ -257,18 +257,18 @@ var Timeline = React.createClass({
                 <span
                   style={{ width: stalledRate }}
                   className="w-detail-timeline-stalled"
-                ></span>
+                />
                 <span
                   style={{ width: dnsRate }}
                   className="w-detail-timeline-dns"
-                ></span>
+                />
                 <span
                   style={{
                     width: requestRate,
                     marginBottom: isStream && responseRate ? '5px' : undefined
                   }}
                   className="w-detail-timeline-request"
-                ></span>
+                />
                 <span
                   style={{
                     width: responseRate,
@@ -278,7 +278,7 @@ var Timeline = React.createClass({
                     height: isStream && requestRate ? '15px' : undefined
                   }}
                   className="w-detail-timeline-response"
-                ></span>
+                />
                 <span
                   style={{
                     width: loadRate,
@@ -288,7 +288,7 @@ var Timeline = React.createClass({
                     height: isStream && requestRate ? '15px' : undefined
                   }}
                   className="w-detail-timeline-load"
-                ></span>
+                />
                 <span title={title} className="w-detail-timeline-time">
                   {total}
                 </span>

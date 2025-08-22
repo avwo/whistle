@@ -195,7 +195,12 @@
         whistleBridge.copyText = options.copyText;
         whistleBridge.pageId = options.pageId;
         whistleBridge.compose = options.compose;
+        whistleBridge.composeInterrupt = options.createComposeInterrupt();
         whistleBridge.decodeBase64 = options.decodeBase64;
+        whistleBridge.joinBase64 = options.joinBase64;
+        whistleBridge.getReqId = options.getReqId;
+        whistleBridge.onComposeData = options.onComposeData;
+        whistleBridge.offComposeData = options.offComposeData;
         whistleBridge.importSessions = options.importSessions;
         whistleBridge.exportSessions = options.exportSessions;
         whistleBridge.importMockData = options.importMockData;

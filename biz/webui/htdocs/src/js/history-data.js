@@ -202,8 +202,8 @@ var HistoryData = React.createClass({
                   title={item.url} onClick={() => self.handleClick(item)} data-index={i}>
                   {item.path}
                   <p>
+                    <i className={'w-req-method-tag w-req-method-tag-' + item.method}>{item.method}</i>
                     <i className="w-req-protocol-tag">{item.protocol}</i>
-                    <i className="w-req-method-tag">{item.method}</i>
                     {item.body ? <i className="w-req-type-tag">Body</i> : null}
                   </p>
                 </div>

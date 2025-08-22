@@ -5,7 +5,6 @@ var util = require('./util');
 var FilterInput = require('./filter-input');
 var DropDown = require('./dropdown');
 var dataCenter = require('./data-center');
-var events = require('./events');
 var RecordBtn = require('./record-btn');
 var ContextMenu = require('./context-menu');
 
@@ -75,25 +74,26 @@ var FrameList = React.createClass({
   },
   componentDidMount: function () {
     var self = this;
-    events.on('autoRefreshFrames', self.autoRefresh);
-    events.on('composeFrameId', function (e, id) {
+    var framesCtx = this.props.framesCtx;
+    framesCtx.on('autoRefreshFrames', self.autoRefresh);
+    framesCtx.on('composeFrameId', function (e, id) {
       var modal = id && self.props.modal;
       var list = modal && modal.list;
       if (list) {
         for (var i = 0, len = list.length; i < len; i++) {
           var frame = list[i];
           if (frame && frame.frameId === id) {
-            return events.trigger('composeFrame', frame);
+            return framesCtx.trigger('composeFrame', frame);
           }
         }
       }
     });
-    events.on('enableRecordFrame', function () {
+    framesCtx.on('enableRecordFrame', function () {
       self.refs.recordBtn.enable();
     });
   },
   onDoubleClick: function () {
-    events.trigger('toggleFramesInspectors');
+    this.props.framesCtx.trigger('toggleFramesInspectors');
   },
   componentWillUpdate: function () {
     this.atBottom = this.shouldScrollToBottom();
@@ -119,7 +119,7 @@ var FrameList = React.createClass({
       this.autoRefresh();
       return;
     }
-    events.trigger('replayFrame', this.props.modal.getActive());
+    this.props.framesCtx.trigger('replayFrame', this.props.modal.getActive());
   },
   stopRefresh: function () {
     this.container.scrollTop = this.container.scrollTop - 10;
@@ -135,7 +135,7 @@ var FrameList = React.createClass({
     }
   },
   compose: function () {
-    events.trigger('composeFrame', this.props.modal.getActive());
+    this.props.framesCtx.trigger('composeFrame', this.props.modal.getActive());
   },
   checkActive: function () {
     var reqData = this.props.reqData;
@@ -278,13 +278,14 @@ var FrameList = React.createClass({
   },
   onClickContextMenu: function (action) {
     var item = this.currentFocusItem;
+    var framesCtx = this.props.framesCtx;
     this.currentFocusItem = null;
     switch (action) {
     case 'Replay':
-      item &&  events.trigger('replayFrame', item);
+      item &&  framesCtx.trigger('replayFrame', item);
       break;
     case 'Edit':
-      item && events.trigger('composeFrame', item);
+      item && framesCtx.trigger('composeFrame', item);
       break;
     case 'Abort':
       this.abort();

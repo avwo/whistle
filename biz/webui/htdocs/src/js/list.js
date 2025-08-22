@@ -798,7 +798,7 @@ var List = React.createClass({
                     {isGroup ? <span className={util.getClasses({
                       'w-group-child-num': true,
                       'w-exists-selected': item.selectedCount > 0
-                    })}>({item.selectedCount > 0 ? item.selectedCount + '/' : ''}{item.childCount})</span> : <span className="glyphicon glyphicon-ok"></span>}
+                    })}>({item.selectedCount > 0 ? item.selectedCount + '/' : ''}{item.childCount})</span> : <span className="glyphicon glyphicon-ok" />}
                   </a>
                 );
               })}

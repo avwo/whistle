@@ -77,7 +77,7 @@ var PROTOCOLS = [
   'reqWriteRaw',
   'resWriteRaw',
   'trailers',
-  'cipher'
+  'tlsOptions'
 ];
 
 var innerRules = [
@@ -117,7 +117,7 @@ var groupRules = [
   ['Map Remote', ['https://', 'http://', 'wss://', 'ws://', 'tunnel://']],
   ['DNS Spoofing', ['host://', 'xhost://', 'proxy://', 'xproxy://', 'http-proxy://', 'xhttp-proxy://',
     'https-proxy://', 'xhttps-proxy://', 'socks://', 'xsocks://', 'pac://']],
-  ['Rewrite Request', ['urlParams://', 'pathReplace://','sniCallback://', 'method://', 'cipher://', 'reqHeaders://', 'forwardedFor://',
+  ['Rewrite Request', ['urlParams://', 'pathReplace://','sniCallback://', 'method://', 'tlsOptions://', 'reqHeaders://', 'forwardedFor://',
     'ua://', 'auth://', 'cache://', 'referer://', 'reqType://', 'reqCharset://', 'reqCookies://',
     'reqCors://', 'reqBody://', 'reqMerge://', 'reqPrepend://', 'reqAppend://', 'reqReplace://', 'reqWrite://',
     'reqWriteRaw://', 'reqRules://', 'reqScript://']],
@@ -251,6 +251,8 @@ exports.getHelpUrl = function (rule) {
       rule = 'proxy';
     } else if (rule === 'xhttp-proxy') {
       rule = 'xproxy';
+    } else if (rule === 'tlsOptions') {
+      rule = 'cipher';
     }
     return util.getDocsBaseUrl('rules/' + rule + '.html');
   }

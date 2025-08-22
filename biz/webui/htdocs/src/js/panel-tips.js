@@ -4,17 +4,17 @@ var EnableHttpsBtn = require('./enable-https-btn');
 var util = require('./util');
 
 
-function showFrames() {
-  events.trigger('showFrames');
-}
-
 var Tips = React.createClass({
+  showFrames: function() {
+    var data = this.props.data || {};
+    events.trigger('showFrames' + (data.inComposer ? 'InComposer' : ''));
+  },
   render: function () {
     var data = this.props.data || { hide: true };
     var className = 'w-textview-tips' + (data.hide ? ' hide' : '');
     if (data.isFrames) {
       return (
-        <a className={className} onClick={showFrames}>
+        <a className={className} onClick={this.showFrames}>
           View Frames
         </a>
       );

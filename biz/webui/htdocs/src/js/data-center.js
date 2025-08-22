@@ -40,7 +40,7 @@ var clearNetwork;
 var inited;
 var logId;
 var port;
-var pageId;
+var clientId;
 var account;
 var dataKeys = [];
 var dumpCount = 0;
@@ -58,6 +58,8 @@ var toolTabList = [];
 var comTabList = [];
 var pluginColumns = [];
 var webWorkerList = [];
+var reqIndex = 0;
+var composeDataMap = {};
 var DEFAULT_CONF = {
   timeout: TIMEOUT,
   xhrFields: {
@@ -65,6 +67,12 @@ var DEFAULT_CONF = {
   },
   data: {}
 };
+var composerItem;
+
+exports.setComposerItem = function(item) {
+  composerItem = item;
+};
+
 exports.clientIp = '127.0.0.1';
 exports.MAX_INCLUDE_LEN = MAX_INCLUDE_LEN;
 exports.MAX_EXCLUDE_LEN = MAX_EXCLUDE_LEN;
@@ -528,36 +536,56 @@ exports.log = createCgiObj(
   POST_CONF
 );
 
-var compose = createCgiObj(
-  { compose: 'cgi-bin/composer' },
-  $.extend(
-    {
-      type: 'post',
-      contentType: 'application/json',
-      processData: false
-    },
+var COMPOSE_CONF = $.extend(
+  {
+    type: 'post',
+    contentType: 'application/json',
+    processData: false
+  },
     DEFAULT_CONF
-  )
-).compose;
+  );
 
-exports.compose = function (data, cb, options) {
+function createCompose(cancel) {
+  return createCgiObj( {
+    _: {
+      url: 'cgi-bin/composer',
+      mode: cancel ? 'cancel' : null
+    }
+  }, COMPOSE_CONF)._;
+}
+
+exports.createCompose = createCompose;
+
+var composeParallel = createCompose();
+var composeInner = createCompose(true);
+
+function handleCompose(data, cb, options, handler) {
   if (typeof data !== 'string') {
     data = JSON.stringify(data);
   }
-  return compose(data, cb, options);
+  return handler(data, cb, options);
+}
+
+exports.composeInner = function (data, cb, options) {
+  data.reqId = getReqId();
+  return handleCompose(data, cb, options, composeInner);
 };
 
-window.compose = exports.compose;
+exports.createComposeInterrupt = function () {
+  var composeInterrupt = createCompose(true);
+  return function (data, cb, options) {
+    return handleCompose(data, cb, options, composeInterrupt);
+  };
+};
+
+exports.compose = function (data, cb, options) {
+  return handleCompose(data, cb, options, composeParallel);
+};
 
 $.extend(
   exports,
   createCgiObj(
     {
-      composer: {
-        url: 'cgi-bin/composer',
-        mode: 'cancel'
-      },
-      compose2: 'cgi-bin/composer',
       interceptHttpsConnects: 'cgi-bin/intercept-https-connects',
       enableHttp2: 'cgi-bin/enable-http2',
       abort: 'cgi-bin/abort',
@@ -589,7 +617,8 @@ $.extend(
       importRemote: 'cgi-bin/import-remote',
       getHistory: 'cgi-bin/history',
       getCookies: 'cgi-bin/cookies',
-      getTempFile: 'cgi-bin/sessions/get-temp-file'
+      getTempFile: 'cgi-bin/sessions/get-temp-file',
+      getComposeData: 'cgi-bin/compose-data'
     },
     GET_CONF
   )
@@ -646,6 +675,52 @@ exports.getAccount = function() {
   return account;
 };
 
+function filterComposeData(key) {
+  return composeDataMap[key];
+}
+
+function getComposeData(keys, cb) {
+  return exports.getComposeData({ ids: keys.join() }, cb);
+}
+
+var INTERVAL = 1500;
+
+function loadComposeData(keys) {
+  var len = keys && keys.length;
+  if (len) {
+    keys = keys.filter(filterComposeData);
+    len = keys.length;
+  } else {
+    keys = Object.keys(composeDataMap);
+    len = keys.length;
+  }
+  if (!len) {
+    return setTimeout(loadComposeData, INTERVAL);
+  }
+  var curKeys = keys.slice(0, 5);
+  keys = keys.slice(5);
+  getComposeData(curKeys, function (data) {
+    if (data) {
+      curKeys.forEach(function(key) {
+        var base64 = data[key];
+        if (base64 === '') {
+          return;
+        }
+        var list = composeDataMap[key];
+        if (base64 == null) {
+          delete composeDataMap[key];
+        }
+        list && list.forEach(function(cb) {
+          cb(base64 || '');
+        });
+      });
+    }
+    setTimeout(function() {
+      loadComposeData(keys);
+    }, INTERVAL);
+  });
+}
+
 exports.getInitialData = function (callback) {
   if (!initialDataPromise) {
     initialDataPromise = $.Deferred();
@@ -655,6 +730,7 @@ exports.getInitialData = function (callback) {
         if (!data) {
           return setTimeout(load, 1000);
         }
+        loadComposeData();
         exports.isCapture = !!data.interceptHttpsConnects;
         var server = data.server;
         port = server && server.port;
@@ -670,8 +746,8 @@ exports.getInitialData = function (callback) {
         exports.custom1Key = data.custom1Key;
         exports.custom2Key = data.custom2Key;
         initialData = data;
-        pageId = data.clientId;
-        DEFAULT_CONF.data.clientId = pageId;
+        clientId = data.clientId;
+        DEFAULT_CONF.data.clientId = clientId;
         if (data.lastLogId) {
           lastPageLogTime = data.lastLogId;
         }
@@ -689,9 +765,9 @@ exports.getInitialData = function (callback) {
         exports.disableInstaller = data.disableInstaller;
         exports.upload = createCgiObj(
           {
-            importSessions: 'cgi-bin/sessions/import?clientId=' + pageId,
-            importRules: 'cgi-bin/rules/import?clientId=' + pageId,
-            importValues: 'cgi-bin/values/import?clientId=' + pageId
+            importSessions: 'cgi-bin/sessions/import?clientId=' + clientId,
+            importRules: 'cgi-bin/rules/import?clientId=' + clientId,
+            importValues: 'cgi-bin/values/import?clientId=' + clientId
           },
           $.extend(
             {
@@ -850,6 +926,11 @@ function getStatus(item) {
   return result.join('-');
 }
 
+function getComposerItem() {
+  var elem = document.querySelector('#whistleComposerFrames');
+  return elem && elem.offsetWidth ? composerItem : null;
+}
+
 var hiddenTime = Date.now();
 function startLoadData() {
   if (startedLoad) {
@@ -899,7 +980,7 @@ function startLoadData() {
       startSvrLogTime =  (clearedSvrLogs && curSvrLogId) || lastSvrLogTime;
     }
 
-    var curActiveItem = networkModal.getActive();
+    var curActiveItem = getComposerItem() || networkModal.getActive();
     var curFrames = curActiveItem && curActiveItem.frames;
     var lastFrameId, curReqId;
     if (curFrames && !curActiveItem.pauseRecordFrames) {
@@ -1220,8 +1301,45 @@ function getRawHeaders(headers, rawHeaderNames) {
 
 exports.getRawHeaders = getRawHeaders;
 
-window.getWhistlePageId = function () {
-  return pageId;
+window.getWhistlePageId = window.getWhistleClientId = function () {
+  return clientId;
+};
+
+function getReqId() {
+  return clientId + '/' + (reqIndex++);
+}
+
+exports.getReqId = getReqId;
+
+exports.onComposeData = function(reqId, cb) {
+  var index = util.isString(reqId) && typeof cb === 'function' ? reqId.indexOf(clientId + '/') : -1;
+  if (index) {
+    return;
+  }
+  index = reqId.substring(clientId.length + 1);
+  if (/[^\d]/.test(index) || !(index >= 0 && index < reqIndex)) {
+    return;
+  }
+  var list = composeDataMap[reqId] || [];
+  if (list.indexOf(cb) === -1) {
+    list.push(cb);
+  }
+  composeDataMap[reqId] = list;
+  return true;
+};
+
+exports.offComposeData = function(reqId, cb) {
+  var list = composeDataMap[reqId];
+  if (list) {
+    if (cb) {
+      var index = list.indexOf(cb);
+      if (index !== -1) {
+        list.splice(index, 1);
+      }
+    } else {
+      delete composeDataMap[reqId];
+    }
+  }
 };
 
 function getIframe(win) {
@@ -1252,7 +1370,7 @@ window.enableWhistleDarkModeIframe = function(win) {
 };
 
 exports.getPageId = function () {
-  return pageId;
+  return clientId;
 };
 
 function isFrames(item) {

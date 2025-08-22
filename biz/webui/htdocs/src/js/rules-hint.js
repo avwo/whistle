@@ -36,7 +36,8 @@ var FILTERS = [
   'reqH.headerKey=<keyword or regexp of request header key value>',
   'resH.headerKey=<keyword or regexp of response header key value>',
   'clientIp:<keyword or regexp of client ip>',
-  'serverIp:<keyword or regexp of server ip>'
+  'serverIp:<keyword or regexp of server ip>',
+  'chance:<probability [0, 1]>'
 ];
 var HEADERS = [
   'reqH.headerKey:keywordOrRegExp=<replacement value>',
@@ -175,7 +176,7 @@ function getHints(keyword) {
       return true;
     }
     name = name.toLowerCase();
-    return name.indexOf(keyword) !== -1;
+    return name.indexOf(keyword) !== -1 || (name === 'tlsoptions://' && 'cipher://'.indexOf(keyword) !== -1);
   });
   list.sort(function (cur, next) {
     var curIndex = cur.toLowerCase().indexOf(keyword);

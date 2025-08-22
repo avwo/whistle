@@ -1,6 +1,5 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
-var $ = require('jquery');
 var util = require('./util');
 var QRCodeDialog = require('./qrcode-dialog');
 var TextDialog = require('./text-dialog');
@@ -91,7 +90,7 @@ var ToolBox = React.createClass({
   },
   encode: function () {
     try {
-      var value = encodeURIComponent(this.state.codecText);
+      var value = util.toBase64(this.state.codecText);
       this.refs.textDialog.show(value);
     } catch (e) {
       win.alert(e.message);
@@ -107,16 +106,8 @@ var ToolBox = React.createClass({
   },
   decode: function () {
     try {
-      var value = decodeURIComponent(this.state.codecText);
+      var value = util.decodeBase64(this.state.codecText).text;
       this.refs.textDialog.show(value);
-    } catch (e) {
-      win.alert(e.message);
-    }
-  },
-  toQuery: function () {
-    try {
-      var value = util.parseJSON2(this.state.codecText) || '';
-      this.refs.textDialog.show(value && $.param(value, true));
     } catch (e) {
       win.alert(e.message);
     }
@@ -168,6 +159,7 @@ var ToolBox = React.createClass({
     var domainValue = state.domainValue;
     var codecText = state.codecText;
     var emptyJson = !NOT_EMPTY_RE.test(jsonValue);
+    var emptyCodec = !NOT_EMPTY_RE.test(codecText);
 
     return (
       <div
@@ -224,30 +216,22 @@ var ToolBox = React.createClass({
           <button
             className="btn btn-default"
             style={{ float: 'left' }}
-            disabled={!NOT_EMPTY_RE.test(codecText)}
+            disabled={emptyCodec}
             onClick={this.encode}
           >
-            EncodeURIComponent
+            EncodeBase64
           </button>
           <button
             className="btn btn-default"
             style={{ float: 'left', marginLeft: 10 }}
-            disabled={!NOT_EMPTY_RE.test(codecText)}
+            disabled={emptyCodec}
             onClick={this.decode}
           >
-            DecodeURIComponent
-          </button>
-          <button
-            className="btn btn-default"
-            style={{ float: 'left', marginLeft: 10 }}
-            disabled={!NOT_EMPTY_RE.test(codecText)}
-            onClick={this.toQuery}
-          >
-            Query
+            DecodeBase64
           </button>
           <button
             className="btn btn-primary"
-            disabled={!NOT_EMPTY_RE.test(codecText)}
+            disabled={emptyCodec}
             onClick={this.showShadowRules}
           >
             ShadowRules

@@ -17,6 +17,8 @@ var CookiesDialog = require('./cookies-dialog');
 var Dialog = require('./dialog');
 var win = require('./win');
 var HistoryData = require('./history-data');
+var LazyInit = require('./lazy-init');
+var Frames = require('./frames');
 
 var METHODS = [
   'GET',
@@ -64,6 +66,7 @@ var SEND_CTX_MENU = [
   { name: 'Show History', action: 'history' }
 ];
 var MAX_FILE_SIZE = 1024 * 1024 * 20;
+var MAX_RES_SIZE = 1024 * 1024 * 3;
 
 var TYPES = {
   form: 'application/x-www-form-urlencoded',
@@ -239,6 +242,8 @@ var Composer = React.createClass({
       if (!activeItem) {
         return;
       }
+      self.setState({ reqData: activeItem });
+      activeItem.frames && dataCenter.setComposerItem(activeItem);
       var body = util.getBody(activeItem.req);
       var updateComposer = function () {
         var headers = activeItem.req.headers;
@@ -284,6 +289,9 @@ var Composer = React.createClass({
       } else {
         updateComposer();
       }
+    });
+    events.on('showFramesInComposer', function() {
+      self.setState({ tabName: 'Frames' });
     });
     events.on('updateStrictMode', function () {
       self.setState({});
@@ -571,6 +579,7 @@ var Composer = React.createClass({
       rules.push(item.rules);
     }
     var req = { headers: {}, base64: item.base64 };
+    this.handleFrames();
     if (util.notEStr(headers)) {
       headers = headers.trim().split(/[\r\n]+/).filter(function(line) {
         line = line.trim();
@@ -974,6 +983,54 @@ var Composer = React.createClass({
       enableProxyRules: this.state.enableProxyRules
     });
   },
+  handleBody: function(res) {
+    var self = this;
+    var reqId = res && res.reqId;
+    var preReqId = self._curReqId;
+    preReqId && dataCenter.offComposeData(preReqId);
+    self._curReqId = reqId;
+    if (!reqId) {
+      return;
+    }
+    var body;
+    dataCenter.onComposeData(reqId, function(base64) {
+      if (!base64) {
+        return;
+      }
+      var result = self.state.result;
+      var res = result && result.res;
+      if (res) {
+        body = util.joinBase64(body, base64);
+        var data = {};
+        Object.keys(res).forEach(function(key) {
+          data[key] = res[key];
+        });
+        data.base64 = body;
+        result.res = data;
+        self.setState({});
+      }
+      if (body.length > MAX_RES_SIZE) {
+        dataCenter.offComposeData(reqId);
+      }
+    });
+  },
+  handleFrames: function(res) {
+    var headers = res && res.headers;
+    var id = headers && headers['x-whistle-req-id'];
+    var isFrames = headers && headers['x-whistle-frames-mode'] === '1';
+    if (!id || !isFrames) {
+      dataCenter.setComposerItem();
+      this.setState({ reqData: null });
+      return;
+    }
+    var reqData = {
+      id: id,
+      frames: []
+    };
+    dataCenter.setComposerItem(reqData);
+    this.setState({ reqData: reqData });
+    return true;
+  },
   sendRequest: function(params) {
     var self = this;
     clearTimeout(self.comTimer);
@@ -981,54 +1038,55 @@ var Composer = React.createClass({
       self.setState({ pending: false });
     }, 3000);
     events.trigger('enableRecord');
-    dataCenter.composer(
-      JSON.stringify(params),
-      function (data, xhr, em) {
-        clearTimeout(self.comTimer);
-        var state = {
-          pending: false,
-          tabName: 'Response',
-          initedResponse: true
-        };
-        if (!data || data.ec !== 0) {
-          var status = xhr && xhr.status;
-          if (status) {
-            em = status;
-            util.showSystemError(xhr);
-          } else if (!em || typeof em !== 'string' || em === 'error') {
-            em = 'Please check the proxy settings or whether whistle has been started';
-          }
-          state.result = { url: params.url, req: '', res: { statusCode: em } };
-        } else {
-          var res = data.res;
-          if (res) {
-            res.rawHeaders = dataCenter.getRawHeaders(
+    self.handleFrames();
+    dataCenter.composeInner(params, function (data, xhr, em) {
+      clearTimeout(self.comTimer);
+      if (!params.needResponse) {
+        return;
+      }
+      var state = {
+        pending: false,
+        tabName: 'Response'
+      };
+      var res = data && data.res;
+      if (self.handleFrames(res)) {
+        data.frames = [];
+        data.inComposer = true;
+      }
+      self.handleBody(res);
+      if (!data || data.ec !== 0) {
+        var status = xhr && xhr.status;
+        if (status) {
+          em = status;
+          util.showSystemError(xhr);
+        } else if (!em || typeof em !== 'string' || em === 'error') {
+          em = 'Please check the proxy settings or whether whistle has been started';
+        }
+        state.result = { url: params.url, req: '', res: { statusCode: em } };
+      } else {
+        if (res) {
+          res.rawHeaders = dataCenter.getRawHeaders(
               res.headers,
               res.rawHeaderNames
             );
-            res.rawTrailers = dataCenter.getRawHeaders(
+          res.rawTrailers = dataCenter.getRawHeaders(
               res.trailers,
               res.rawTrailerNames
             );
-          } else {
-            data.res = { statusCode: 200 };
-          }
-          data.url = params.url;
-          data.req = '';
-          state.result = data;
+        } else {
+          data.res = { statusCode: 200 };
         }
-        self.setState(state);
-      },
-      {
-        contentType: 'application/json',
-        processData: false
+        data.url = params.url;
+        data.req = '';
+        state.result = data;
       }
-    );
+      self.setState(state);
+    });
     params.date = Date.now();
     params.body = params.body || '';
     this.addHistory(params);
     events.trigger('executeComposer');
-    self.setState({ result: '', pending: true });
+    self.setState({ result: '', pending: params.needResponse });
   },
   selectAll: function (e) {
     e.target.select();
@@ -1092,10 +1150,7 @@ var Composer = React.createClass({
     self._pending = true;
     dataCenter.getCookies({ domain: host }, function (result, xhr) {
       self._pending = false;
-      if (!result) {
-        return util.showSystemError(xhr);
-      }
-      result = result.cookies || [];
+      result = (result && result.cookies) || [];
       var maxCount = 30;
       if (result.length < maxCount) {
         var list = dataCenter.networkModal.getList();
@@ -1211,7 +1266,7 @@ var Composer = React.createClass({
     if (tabName === this.state.tabName) {
       return;
     }
-    this.setState({ tabName: tabName, initedResponse: true });
+    this.setState({ tabName: tabName });
   },
   onContextMenu: function(e) {
     e.preventDefault();
@@ -1360,9 +1415,6 @@ var Composer = React.createClass({
     this.setState({ disableBody: false });
     storage.set('disableComposerBody', '');
   },
-  _hoverOutImport: function() {
-
-  },
   render: function () {
     var self = this;
     var state = self.state;
@@ -1376,6 +1428,7 @@ var Composer = React.createClass({
     var showParams = state.showParams;
     var showRequest = tabName === 'Request';
     var showResponse = tabName === 'Response';
+    var showFrames = tabName === 'Frames';
     var statusCode = result ? result.res && result.res.statusCode : '';
     var isForm = type === 'form';
     var method = state.method;
@@ -1392,6 +1445,7 @@ var Composer = React.createClass({
     var urlHints = state.urlHints;
     var hasQuery = state.hasQuery;
     var enableProxyRules = state.enableProxyRules;
+    var reqData = state.reqData;
     var tips = hasBody ? null : method + ' method is not allowed to have a request body';
     self.hasBody = hasBody;
 
@@ -1549,7 +1603,7 @@ var Composer = React.createClass({
                 <div className="w-composer-btns">
                   <a draggable="false" onClick={self.import}>Import</a>
                   <a draggable="false" onClick={self.export}>Export</a>
-                  <a draggable="false" onClick={self.copyAsCURL}>CopyAsCURL</a>
+                  <a draggable="false" onClick={self.copyAsCURL}>AsCURL</a>
                 </div>
               </div>
               <textarea
@@ -1587,6 +1641,17 @@ var Composer = React.createClass({
                 >
                   <span className="glyphicon glyphicon-arrow-left" />
                   Response
+                </button>
+                <button
+                  title={result.url}
+                  id="whistleComposerFrames"
+                  onClick={this.onTabChange}
+                  name="Frames"
+                  style={{fontWeight: 'normal'}}
+                  className={showFrames ? 'w-tab-btn w-active' : 'w-tab-btn'}
+                >
+                  <span className="glyphicon glyphicon-menu-hamburger" />
+                  Frames
                 </button>
               </div>
               <Divider hide={!showRequest} vertical="true">
@@ -1815,7 +1880,7 @@ var Composer = React.createClass({
                   />
                 </div>
               </Divider>
-              {state.initedResponse ? (
+              <LazyInit inited={showResponse}>
                 <div
                   style={{ display: showResponse ? undefined : 'none' }}
                   className={'w-composer-res w-composer-res-' + getStatus(statusCode)}
@@ -1835,14 +1900,17 @@ var Composer = React.createClass({
                     }}
                   />
                 </div>
-              ) : undefined}
-              {state.initedResponse ? (
+              </LazyInit>
+              <LazyInit inited={showResponse}>
                 <ResDetail
                   inComposer="1"
                   modal={result}
                   hide={!showResponse}
                 />
-              ) : undefined}
+              </LazyInit>
+              <LazyInit inited={showFrames}>
+                <Frames hide={!showFrames} data={reqData} frames={reqData && reqData.frames} />
+               </LazyInit>
             </div>
           </Divider>
         </div>

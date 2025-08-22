@@ -8,6 +8,11 @@
   color: #fff;
   line-height: 16px;
   display: none;
+  opacity: 0.8;
+}
+
+.w-filter-con .close:hover {
+  opacity: 1;
 }
 
 .w-filter-hint, .w-layer {

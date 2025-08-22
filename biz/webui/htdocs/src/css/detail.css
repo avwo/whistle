@@ -108,7 +108,7 @@ div.w-detail-inspectors-tabs {
   font-weight: bold;
 }
 
-.w-detail-inspectors-tabs .glyphicon-menu-hamburger {
+.w-detail-inspectors-tabs .glyphicon-menu-hamburger, .w-composer-tabs .glyphicon-menu-hamburger {
   color: #ff8000;
 }
 

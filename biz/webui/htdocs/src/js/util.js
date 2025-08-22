@@ -1,16 +1,17 @@
 var $ = require('jquery');
-var toByteArray = require('base64-js').toByteArray;
-var fromByteArray = require('base64-js').fromByteArray;
+var base64JS = require('base64-js');
 var jsBase64 = require('js-base64').Base64;
-var base64Decode = jsBase64.decode;
-var base64Encode = jsBase64.encode;
-var toBase64 = jsBase64.toBase64;
 var json2 = require('./components/json');
 var events = require('./events');
 var isUtf8 = require('./is-utf8');
 var message = require('./message');
 var win = require('./win');
 
+var toByteArray = base64JS.toByteArray;
+var fromByteArray = base64JS.fromByteArray;
+var base64Decode = jsBase64.decode;
+var base64Encode = jsBase64.encode;
+var toBase64 = jsBase64.toBase64;
 var CRLF_RE = /\r\n|\r|\n/g;
 var COMMENT_RE = /#[^\r\n]*/g;
 var BIG_NUM_RE = /[:\[][\s\n\r]*-?[\d.]{16,}[\s\n\r]*[,\}\]]/;
@@ -1546,6 +1547,16 @@ function decodeBase64(base64) {
 }
 
 exports.decodeBase64 = decodeBase64;
+
+exports.joinBase64 = function(b1, b2) {
+  if (!b1 || !b2) {
+    return b1 || b2;
+  }
+  b1 = toByteArray(b1);
+  b2 = toByteArray(b2);
+  b1 = concatByteArray(b1, b2);
+  return fromByteArray(b1);
+};
 
 function getMediaType(res) {
   var type = getRawType(res.headers);

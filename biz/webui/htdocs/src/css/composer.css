@@ -548,7 +548,47 @@ textarea.w-composer-rules {
   font-size: 9px;
   border-radius: 3px;
   font-weight: normal;
-  line-height: 14px;
+  line-height: 12px;
+}
+
+.w-history-item i.w-req-method-tag-GET {
+  background: #5cb85c;
+  color: #fff;
+}
+
+.w-history-item i.w-req-method-tag-POST {
+  background: #4f91cf;
+  color: #fff;
+}
+
+.w-history-item i.w-req-method-tag-DELETE {
+  background: #ce5442;
+  color: #fff;
+}
+
+.w-history-item i.w-req-method-tag-HEAD {
+  background: #55b499;
+  color: #fff;
+}
+
+.w-history-item i.w-req-method-tag-OPTIONS {
+  background: #f0ad4e;
+  color: #fff;
+}
+
+.w-history-item i.w-req-method-tag-TRACE {
+  background: #5bc0de;
+  color: #fff;
+}
+
+.w-history-item i.w-req-method-tag-PATCH {
+  background: #8f58af;
+  color: #fff;
+}
+
+.w-history-item i.w-req-method-tag-PUT {
+  background: #e49b3b;
+  color: #fff;
 }
 
 .w-history-item i:last-child {
@@ -576,12 +616,11 @@ textarea.w-composer-rules {
 
 .w-composer-history-data {
   position: absolute;
-  top: 30px;
+  top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   z-index: 9;
-  border-top: 1px solid #ddd;
 }
 
 .w-composer-history-data .w-close {
@@ -609,7 +648,7 @@ textarea.w-composer-rules {
   padding: 0 5px;
   overflow: auto;
   white-space: pre;
-  background-color: #efefef;
+  background-color: #f5f5f5;
 }
 
 .w-composer-history-footer {

@@ -7,17 +7,17 @@ var extend = require('extend');
 var common = require('../../../lib/util/common');
 var config = require('../../../lib/config');
 var util = require('../../../lib/util');
-var zlib = require('../../../lib/util/zlib');
 var properties = require('../../../lib/rules/util').properties;
 var getSender = require('ws-parser').getSender;
 var hparser = require('hparser');
+var composeData = require('./compose-data');
 var sendGzip = require('./util').sendGzip;
 
 var formatHeaders = hparser.formatHeaders;
 var getRawHeaders = hparser.getRawHeaders;
 var getRawHeaderNames = hparser.getRawHeaderNames;
 var parseReq = hparser.parse;
-var MAX_LENGTH = 1024 * 512;
+var MAX_LENGTH = 1024 * 2048;
 var MAX_REQ_COUNT = 100;
 var TLS_PROTOS = 'https:,wss:,tls:'.split(',');
 var PROXY_OPTS = {
@@ -155,8 +155,7 @@ function handleWebSocket(options, cb, count) {
           }
           execCb && execCb(null, {
             statusCode: statusCode,
-            headers: socket.headers || {},
-            body: socket.body || ''
+            headers: socket.headers || {}
           });
         }, true);
       }
@@ -164,7 +163,7 @@ function handleWebSocket(options, cb, count) {
   }
 }
 
-function handleHttp(options, cb, count) {
+function handleHttp(options, cb, count, reqId) {
   count = getReqCount(count);
   if (options.protocol === 'https:') {
     options.headers[config.HTTPS_FIELD] = 1;
@@ -182,42 +181,77 @@ function handleHttp(options, cb, count) {
     } else {
       options = extend({}, origOpts);
     }
-    var client = http.request(options, function(res) {
-      if (execCb) {
-        res.on('error', execCb);
-        var buffer;
-        res.on('data', function(data) {
-          if (buffer !== null) {
-            buffer = buffer ? Buffer.concat([buffer, data]) : data;
-            if (buffer.length > MAX_LENGTH) {
-              buffer = null;
-            }
+    var client = http.request(options, function(svrRes) {
+      if (!execCb) {
+        return drain(svrRes);
+      }
+      svrRes.on('error', execCb);
+      var buffer;
+      var enableStream;
+      var unzipStream = util.getUnzipStream(svrRes.headers);
+      var timer = reqId && setTimeout(function() {
+        composeData.setData(reqId, buffer, true);
+        enableStream = true;
+        timer = buffer = undefined;
+        handleResponse();
+        util.onResEnd(svrRes, function() {
+          var buf = composeData.getData(reqId);
+          if (buf) {
+            buf._hasW2End = true;
+          } else {
+            composeData.removeData(reqId);
           }
         });
-        res.on('end', function() {
-          zlib.unzip(res.headers['content-encoding'], buffer, function(err, body) {
-            var headers = res.headers;
-            if (typeof headers.trailer === 'string' && headers.trailer.indexOf(',') !== -1) {
-              headers.trailer = headers.trailer.split(',');
-            }
-            var result = {
-              statusCode: res.statusCode,
-              headers: headers,
-              trailers: res.trailers,
-              rawHeaderNames: getRawHeaderNames(res.rawHeaders),
-              rawTrailerNames: getRawHeaderNames(res.rawTrailers)
-            };
-            if (err) {
-              result.body = err.stack;
-            } else if (body) {
-              result.base64 = body.toString('base64');
-            }
-            execCb(null, result);
-          });
+      }, 3000);
+      var handleResponse = function() {
+        if (buffer === null) {
+          return;
+        }
+        timer && clearTimeout(timer);
+        var headers = svrRes.headers;
+        if (typeof headers.trailer === 'string' && headers.trailer.indexOf(',') !== -1) {
+          headers.trailer = headers.trailer.split(',');
+        }
+        var result = {
+          statusCode: svrRes.statusCode,
+          headers: headers,
+          trailers: svrRes.trailers,
+          rawHeaderNames: getRawHeaderNames(svrRes.rawHeaders),
+          rawTrailerNames: getRawHeaderNames(svrRes.rawTrailers),
+          reqId: timer ? undefined : reqId
+        };
+        result.base64 = buffer && buffer.toString('base64');
+        execCb(null, result);
+        buffer = null;
+      };
+      if (unzipStream) {
+        unzipStream.on('error', function(err) {
+          drain(svrRes);
+          execCb(err);
         });
+        svrRes.pipe(unzipStream);
       } else {
-        drain(res);
+        unzipStream = svrRes;
       }
+      unzipStream.on('data', function(data) {
+        if (enableStream) {
+          if (!composeData.setData(reqId, data)) {
+            enableStream = false;
+            drain(svrRes);
+            svrRes.unpipe(unzipStream);
+          }
+        } else if (buffer !== null) {
+          buffer = buffer ? Buffer.concat([buffer, data]) : data;
+          if (buffer.length > MAX_LENGTH) {
+            handleResponse();
+            if (unzipStream !== svrRes) {
+              drain(svrRes);
+              svrRes.unpipe(unzipStream);
+            }
+          }
+        }
+      });
+      unzipStream.on('end', handleResponse);
     });
     client.on('error', execCb || util.noop);
     client.end(options.body);
@@ -356,7 +390,7 @@ module.exports = function(req, res) {
     } else if (isConn) {
       handleConnect(options, handleResponse, count);
     } else  {
-      handleHttp(options, handleResponse, count);
+      handleHttp(options, handleResponse, count, req.body.reqId);
     }
     if (!handleResponse) {
       res.json({ec: 0, em: 'success'});
