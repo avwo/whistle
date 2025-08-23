@@ -200,7 +200,7 @@ var HistoryData = React.createClass({
               return (
                 <div className={'w-history-item' + (item.selected ? ' w-selected' : '')}
                   title={item.url} onClick={() => self.handleClick(item)} data-index={i}>
-                  {item.path}
+                  <div>{item.path}</div>
                   <p>
                     <i className={'w-req-method-tag w-req-method-tag-' + item.method}>{item.method}</i>
                     <i className="w-req-protocol-tag">{item.protocol}</i>

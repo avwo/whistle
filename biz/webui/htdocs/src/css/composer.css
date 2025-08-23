@@ -517,9 +517,10 @@ textarea.w-composer-rules {
   overflow: hidden;
   position: sticky;
   top: 0;
-  font-weight: 600;
+  font-weight: 500;
   white-space: nowrap;
   text-overflow: ellipsis;
+  color: #000;
 }
 
 .w-history-item, .w-history-title {
@@ -530,13 +531,24 @@ textarea.w-composer-rules {
   padding: 6px 5px 8px 10px;
   overflow: hidden;
   cursor: default;
-  white-space: nowrap;
-  background-color: #fff;
+  background-color: #fcfcfc;
+}
+
+.w-history-item div {
+  overflow : hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  max-height: 50px;
+  word-wrap: break-word;
+  word-break: break-all;
 }
 
 .w-history-item p {
   margin: 0;
   padding: 2px 0 0;
+    white-space: nowrap;
 }
 
 .w-history-item i {
@@ -549,6 +561,7 @@ textarea.w-composer-rules {
   border-radius: 3px;
   font-weight: normal;
   line-height: 12px;
+  font-weight: 500;
 }
 
 .w-history-item i.w-req-method-tag-GET {
