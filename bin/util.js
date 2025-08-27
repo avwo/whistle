@@ -75,7 +75,7 @@ exports.showKillError = showKillError;
  * @param {string} packageName 包名
  * @returns {Promise<string>} 返回最新版本号
  */
-function getLatestVersion(packageName, timeout=1000) {
+function getLatestVersion(packageName, timeout=2000) {
   return new Promise((resolve, reject) => {
     var options = {
       hostname: 'registry.npmjs.org',
