@@ -4,6 +4,7 @@ var util = require('util');
 var os = require('os');
 var fs = require('fs');
 var fse = require('fs-extra2');
+var https = require('https');
 var config = require('../lib/config');
 var common = require('../lib/util/common');
 var colors = require('colors/safe');
@@ -68,6 +69,83 @@ function showKillError() {
 }
 
 exports.showKillError = showKillError;
+
+/**
+ * 从 npm 获取最新的版本号
+ * @param {string} packageName 包名
+ * @returns {Promise<string>} 返回最新版本号
+ */
+function getLatestVersion(packageName, timeout=1000) {
+  return new Promise((resolve, reject) => {
+    var options = {
+      hostname: 'registry.npmjs.org',
+      port: 443,
+      path: `/${packageName}/latest`,
+      method: 'GET'
+    };
+
+    var req = https.request(options, (res) => {
+      let data = '';
+
+      res.on('data', (chunk) => {
+        data += chunk;
+      });
+
+      res.on('end', () => {
+        try {
+          var packageInfo = JSON.parse(data);
+          if (packageInfo.version) {
+            resolve(packageInfo.version);
+          } else {
+            reject(new Error('无法获取版本信息'));
+          }
+        } catch (error) {
+          reject(new Error('解析响应数据失败: ' + error.message));
+        }
+      });
+    });
+
+    req.on('error', (error) => {
+      reject(new Error('请求失败: ' + error.message));
+    });
+
+    req.setTimeout(timeout, () => {
+      req.destroy();
+      reject(new Error('请求超时'));
+    });
+
+    req.end();
+  });
+}
+
+/**
+ * 判断当前版本是否过期
+ * @param {*} currentVersion
+ * @param {*} latestVersion
+ * @returns {boolean} 是否过期
+ */
+function isVersionOutdated(currentVersion, latestVersion) {
+  if (!currentVersion || !latestVersion) {
+    return false;
+  }
+
+  var currentVersionArr = currentVersion.split('.').slice(0, 3);
+  var latestVersionArr = latestVersion.split('.').slice(0, 3);
+  var i = 0;
+
+  for (i; i < currentVersionArr.length; i++) {
+    var currentVersionNum = parseInt(currentVersionArr[i].split('-')[0]); // 避免带-的版本号
+    var latestVersionNum = parseInt(latestVersionArr[i].split('-')[0]);
+    if (currentVersionNum < latestVersionNum) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+exports.getLatestVersion = getLatestVersion;
+exports.isVersionOutdated = isVersionOutdated;
 
 function showUsage(isRunning, options, restart) {
   options = formatOptions(options);

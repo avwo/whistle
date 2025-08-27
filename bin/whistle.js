@@ -9,9 +9,15 @@ var util = require('./util');
 var plugin = require('./plugin');
 var setProxy = require('./proxy');
 var installCA = require('./ca/cli');
+var colors = require('colors');
 
 var error = util.error;
 var info = util.info;
+var warn = util.warn;
+
+util.getLatestVersion(config.name).then((latestVersion) => {
+  config.latestVersion = latestVersion;
+}).catch(err => {});
 
 function handleEnd(err, options, restart) {
   options = util.showUsage(err, options, restart);
@@ -29,6 +35,11 @@ function handleEnd(err, options, restart) {
 
 function showStartupInfo(err, options, debugMode, restart) {
   if (!err || err === true) {
+    util.getLatestVersion(config.name).then((latestVersion) => {
+      if (util.isVersionOutdated(config.version, latestVersion)) {
+        warn(colors.yellow(`[!] Please update to the latest version ${colors.bold(latestVersion)} ` + colors.magenta(`(npm install -g ${config.name}@latest)`)));
+      }
+    }).catch(err => {});
     return handleEnd(err, options, restart);
   }
   if (/listen EADDRINUSE/.test(err)) {
