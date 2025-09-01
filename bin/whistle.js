@@ -15,10 +15,6 @@ var error = util.error;
 var info = util.info;
 var warn = util.warn;
 
-util.getLatestVersion(config.name).then((latestVersion) => {
-  config.latestVersion = latestVersion;
-}).catch(err => {});
-
 function handleEnd(err, options, restart) {
   options = util.showUsage(err, options, restart);
   if (!options) {
