@@ -29,7 +29,7 @@ function install(addr, useDefault) {
   addr.needRawData = true;
   addr.maxLength = MAX_LEN;
   addr.headers = {
-    'user-agent': 'whistle/' + config.name
+    'user-agent': config.appName + '/' + config.version
   };
   httpMgr.request(addr, function(err, body, res) {
     if (err) {

@@ -2,6 +2,7 @@
 /*eslint no-console: "off"*/
 var program = require('starting');
 var path = require('path');
+var http = require('http');
 var config = require('../lib/config');
 var useRules = require('./use');
 var showStatus = require('./status');
@@ -9,19 +10,51 @@ var util = require('./util');
 var plugin = require('./plugin');
 var setProxy = require('./proxy');
 var installCA = require('./ca/cli');
+var colors = require('colors');
 
 var error = util.error;
 var info = util.info;
+var OPTIONS = util.DEFAULT_OPTIONS;
 
-function handleEnd(err, options, restart) {
-  options = util.showUsage(err, options, restart);
-  if (!options) {
+function getLatestVersion(options, cb, index) {
+  var done;
+  var handleCb = function(err, data) {
+    if (done) {
+      return;
+    }
+    index = index || 0;
+    if (index < 5 && (err || !data)) {
+      return setTimeout(function() {
+        getLatestVersion(options, cb, index + 1);
+      }, 300);
+    }
+    done = true;
+    cb(data && data.hasNewVersion ? data.latestVersion : '');
+  };
+  options = options || OPTIONS;
+  var req = http.get('http://' + util.joinIpPort(options.host || OPTIONS.host, options.port || OPTIONS.port) + '/cgi-bin/check-update', function(res) {
+    res.on('error', handleCb);
+    util.getBody(res, handleCb);
+  });
+  req.on('error', handleCb);
+  req.end();
+}
+
+function handleEnd(err, options, restart, run) {
+  var result = util.showUsage(err, options, restart);
+  getLatestVersion(options, function(latestVersion) {
+    if (latestVersion) {
+      error('[!] A new version is available (v' + latestVersion + '). Run \'' + colors.bold('npm i -g ' + config.name) + '\' to update');
+    }
+    run && console.log('Press [Ctrl+C] to stop ' + config.appName + '...');
+  });
+  if (!result) {
     return;
   }
-  var host = util.joinIpPort(options.host, options.port);
+  var host = util.joinIpPort(result.host, result.port);
   var argv = [host];
-  if (options.bypass) {
-    argv.push('-x', options.bypass);
+  if (result.bypass) {
+    argv.push('-x', result.bypass);
   }
   setProxy(argv);
   installCA([host]);
@@ -35,10 +68,10 @@ function showStartupInfo(err, options, debugMode, restart) {
     options = util.formatOptions(options);
     var port = options.port || config.port;
     error('[!] Failed to bind proxy port ' + (options.host ? util.joinIpPort(options.host, port) : port) + ': Port already in use');
-    info('[i] ' + config.name + ' may already be running. Try: ' + (debugMode ? 'w2 stop' : 'w2 restart') + ' to ' + (debugMode ? 'stop' : 'restart') + ' the ' + config.name);
+    info('[i] ' + config.appName + ' may already be running. Try: ' + (debugMode ? 'w2 stop' : 'w2 restart') + ' to ' + (debugMode ? 'stop' : 'restart') + ' ' + config.appName);
     info('    or use a different port with: ' + (debugMode ? '`w2 run -p newPort`\n' : '`w2 start -p newPort`\n'));
   } else if (err.code == 'EACCES' || err.code == 'EPERM') {
-    error('[!] Permission denied: Cannot start ' + config.name + ' as root');
+    error('[!] Permission denied: Cannot start ' + config.appName + ' as root');
     info('[i] Try running with sudo\n');
   }
 
@@ -70,8 +103,7 @@ program.setConfig({
       showStartupInfo(err, options, true);
       return;
     }
-    handleEnd(false, options);
-    console.log('Press [Ctrl+C] to stop ' + config.name + '...');
+    handleEnd(false, options, false, true);
   },
   startCallback: showStartupInfo,
   restartCallback: function(err, options) {
@@ -79,7 +111,7 @@ program.setConfig({
   },
   stopCallback: function(err) {
     if (err === true) {
-      info('[i] ' + config.name + ' killed');
+      info('[i] ' + config.appName + ' killed');
     } else if (err) {
       if (err.code === 'EPERM') {
         util.showKillError();

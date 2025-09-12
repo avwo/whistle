@@ -11,8 +11,10 @@ var path = require('path');
 var createHmac = require('crypto').createHmac;
 
 var joinIpPort = common.joinIpPort;
+var DEFAULT_OPTIONS = { host: '127.0.0.1', port: 8899 };
 
 exports.joinIpPort = joinIpPort;
+exports.DEFAULT_OPTIONS = DEFAULT_OPTIONS;
 /*eslint no-console: "off"*/
 var CHECK_RUNNING_CMD = process.platform === 'win32' ?
   'tasklist /fi "PID eq %s" | findstr /i "node.exe"'
@@ -63,7 +65,7 @@ exports.warn = warn;
 exports.info = info;
 
 function showKillError() {
-  error('[!] Cannot kill ' + config.name + ' owned by root');
+  error('[!] Cannot kill ' + config.appName + ' owned by root');
   info('[i] Try to run command ' + (isWin ? 'as an administrator' : 'with sudo'));
 }
 
@@ -75,10 +77,10 @@ function showUsage(isRunning, options, restart) {
     if (restart) {
       showKillError();
     } else {
-      warn('[!] ' + config.name + '@' + config.version + ' is running');
+      warn('[!] ' + config.appName + '@' + config.version + ' is running');
     }
   } else {
-    info('[i] ' + config.name + '@' + config.version + (restart ? ' restarted' : ' started'));
+    info('[i] ' + config.appName + '@' + config.version + (restart ? ' restarted' : ' started'));
   }
   var port = /^\d+$/.test(options.port) && options.port > 0 ?  options.port : config.port;
   var list = options.host && typeof options.host === 'string' ? [options.host] : getIpList();
@@ -92,8 +94,8 @@ function showUsage(isRunning, options, restart) {
     warn('       Note: If none are accessible, check your firewall settings');
     warn('             For help, see ' + colors.bold('https://github.com/avwo/whistle'));
   }
-  info('[i] ' + (++index) + '. set your device\'s HTTP PROXY to ' + colors.bold((oneIp ? 'IP(' + list[0] + ')' : 'the working IP') + ' & PORT(' + port + ')'));
-  info('[i] ' + (++index) + '. open ' + colors.bold('Chrome') + ' and visit ' + colors.bold('http://' + (options.localUIHost || config.localUIHost) + '/') + ' to begin');
+  info('[i] ' + (++index) + '. Set your device\'s HTTP PROXY to ' + colors.bold((oneIp ? 'IP(' + list[0] + ')' : 'the working IP') + ' & PORT(' + port + ')'));
+  info('[i] ' + (++index) + '. Open ' + colors.bold('Chrome') + ' and visit ' + colors.bold('http://' + (options.localUIHost || config.localUIHost) + '/') + ' to begin');
 
   var bypass = program.init;
   if (bypass == null) {
@@ -171,3 +173,19 @@ exports.getDefaultPort = function () {
   var port = conf && conf.port;
   return port > 0 ? port : 8899;
 };
+
+function getBody(res, callback) {
+  var resBody;
+  res.on('data', function(data) {
+    resBody = resBody ? Buffer.concat([resBody, data]) : data;
+  });
+  res.on('end', function() {
+    if (res.statusCode != 200) {
+      callback(resBody || 'response ' + res.statusCode + ' error');
+    } else {
+      callback(null, JSON.parse(resBody + ''));
+    }
+  });
+}
+
+exports.getBody = getBody;
