@@ -999,7 +999,7 @@ var Tabs = React.createClass({
             onClick={self.props.onActive}
           >
             <a draggable="false" data-name="Plugins" className="w-plugins-tab">
-              <span className="glyphicon glyphicon-list-alt" />
+              <span className="glyphicon glyphicon-th-large" />
               Plugins
             </a>
           </li>

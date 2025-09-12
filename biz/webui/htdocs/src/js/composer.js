@@ -1033,17 +1033,21 @@ var Composer = React.createClass({
   },
   sendRequest: function(params) {
     var self = this;
-    clearTimeout(self.comTimer);
-    self.comTimer = setTimeout(function () {
-      self.setState({ pending: false });
-    }, 3000);
+    var index = (self._reqIndex || 0) + 1;
+    self._reqIndex = index;
+    if (params.needResponse) {
+      clearTimeout(self.comTimer);
+      self.comTimer = setTimeout(function () {
+        self.setState({ pending: false });
+      }, 3000);
+    }
     events.trigger('enableRecord');
     self.handleFrames();
     dataCenter.composeInner(params, function (data, xhr, em) {
-      clearTimeout(self.comTimer);
-      if (!params.needResponse) {
+      if (!params.needResponse || self._reqIndex !== index) {
         return;
       }
+      clearTimeout(self.comTimer);
       var state = {
         pending: false,
         tabName: 'Response'

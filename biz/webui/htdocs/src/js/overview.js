@@ -11,6 +11,7 @@ var Properties = require('./properties');
 var dataCenter = require('./data-center');
 var getHelpUrl = require('./protocols').getHelpUrl;
 
+var RULES_SRC_TITLE = '     # (From ';
 var OVERVIEW = [
   'URL',
   'Final URL',
@@ -114,9 +115,9 @@ function getPluginName(rule) {
   }
   var root = rule.root;
   if (root) {
-    return /[\\/]whistle\.([a-z\d_\-]+)$/.test(root) ? ' (From plugin: ' + RegExp.$1 + ')' : '';
+    return /[\\/]whistle\.([a-z\d_\-]+)$/.test(root) ? RULES_SRC_TITLE + 'plugin: ' + RegExp.$1 + ')' : '';
   }
-  return rule.file ? ' (From file: ' + rule.file + ')' : '';
+  return rule.file ? RULES_SRC_TITLE + 'file: ' + rule.file + ')' : '';
 }
 
 function getRawProps(rule, all) {
@@ -197,7 +198,7 @@ var Overview = React.createClass({
       }
       var target = e.target;
       var text = target.innerText;
-      var index = text && text.indexOf(' (From ');
+      var index = text && text.indexOf(RULES_SRC_TITLE);
       if (index > 0) {
         target.setAttribute('data-rule-source', '1');
       }
@@ -208,9 +209,9 @@ var Overview = React.createClass({
         return;
       }
       var text = e.target.innerText;
-      var index = text && text.indexOf(' (From ');
+      var index = text && text.indexOf(RULES_SRC_TITLE);
       if (index > 0) {
-        text = text.substring(index + 7, text.length - 1);
+        text = text.substring(index + 13, text.length - 1);
         index = text.indexOf(':');
         var type = text.substring(0, index);
         var name = text.substring(index + 1).trim();
@@ -282,7 +283,15 @@ var Overview = React.createClass({
       return;
     }
     keys.forEach(function (name) {
-      rules[name].file = map[rules[name].raw];
+      var rule = rules[name];
+      if (rule) {
+        rule.file = map[rule.raw];
+        if (Array.isArray(rule.list)) {
+          rule.list.forEach(function (item) {
+            item.file = map[item.raw];
+          });
+        }
+      }
     });
   },
   render: function () {
@@ -447,15 +456,14 @@ var Overview = React.createClass({
               pluginRule.rawPattern + ' ' + pluginRule.matcher + getRawProps(pluginRule) + getPluginName(pluginRule)
             ];
             var titleList = [pluginRule.raw];
-            rule &&
-              rule.list &&
+            rule && Array.isArray(rule.list) &&
               rule.list.forEach(function (item) {
                 ruleList.push(item.rawPattern + ' ' + item.matcher + getRawProps(item) + getPluginName(item));
                 titleList.push(item.raw);
               });
             rulesModal[name] = ruleList.join('\n');
             titleModal[name] = titleList.join('\n');
-          } else if (rule && rule.list) {
+          } else if (rule && Array.isArray(rule.list)) {
             var prop = getInjectProps(rule);
             rulesModal[name] = rule.list
               .map(function (rule) {

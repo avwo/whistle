@@ -1762,9 +1762,16 @@ function updateServerInfo(data) {
   if (exports.setServerInfo) {
     exports.setServerInfo(data);
   }
-  if (curServerInfo && curServerInfo.strictMode != data.strictMode) {
-    curServerInfo.strictMode = data.strictMode;
-    events.trigger('updateStrictMode');
+  if (curServerInfo) {
+    if (curServerInfo.strictMode != data.strictMode) {
+      curServerInfo.strictMode = data.strictMode;
+      events.trigger('updateStrictMode');
+    }
+    if (curServerInfo.version !== data.version || curServerInfo.latestVersion !== data.latestVersion) {
+      curServerInfo.version = data.version;
+      curServerInfo.latestVersion = data.latestVersion;
+      events.trigger('updateVersion', data);
+    }
   }
   if (
     curServerInfo &&

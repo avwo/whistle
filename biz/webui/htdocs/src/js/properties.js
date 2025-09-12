@@ -76,7 +76,12 @@ var Properties = React.createClass({
         );
       });
       sourceText = sourceText && result.join('\n');
-      copyValue = copyValue && result.filter(util.noop).join('\n').trim();
+      if (copyValue) {
+        copyValue = result.filter(util.noop).join('\n').trim();
+        if (props.name === 'Rules') {
+          copyValue = util.removeRulesComments(copyValue);
+        }
+      }
     }
     if (self.textStr !== sourceText) {
       self.textStr = sourceText;

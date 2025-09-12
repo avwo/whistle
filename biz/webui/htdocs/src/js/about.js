@@ -1,3 +1,5 @@
+var events = require('./events');
+
 require('./base-css.js');
 require('../css/about.css');
 /* eslint-disable no-unused-vars */
@@ -22,12 +24,16 @@ function hasNewVersion(data) {
 var About = React.createClass({
   componentDidMount: function () {
     var self = this;
-    dataCenter.getInitialData(function (data) {
+    var updateVersion = function(data) {
       self.setState({
         version: data.version,
         latestVersion: data.latestVersion,
         hasUpdate: self.checkUpdate(hasNewVersion(data))
       });
+    };
+    dataCenter.getInitialData(updateVersion);
+    events.on('updateVersion', function(_, data) {
+      updateVersion(data);
     });
   },
   checkUpdate: function (hasUpdate) {
@@ -39,7 +45,7 @@ var About = React.createClass({
     }
     return hasUpdate;
   },
-  showAboutInfo: function (showTips) {
+  showAboutInfo: function () {
     var self = this;
     self.showDialog();
     var onClick = self.props.onClick;
