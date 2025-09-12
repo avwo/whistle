@@ -12,11 +12,12 @@
 
 <img width="1000" alt="install plugins" src="/img/install-plugins.png" />
 
-> 文本框中的冗余文本不会影响结果，Whistle 会自动过滤文本框中的冗余文本，仅提取插件名称及 registry 安装信息
+> 文本框中的冗余内容不会影响操作结果，Whistle 会自动过滤并仅提取插件名称及 registry 安装信息。若对话框未显示 Install 按钮，请重新安装全局 Node.js：https://nodejs.org/
 
 安装成功后，稍等片刻即可在插件列表中查看新安装的插件：
 
 <img width="1000" alt="plugins" src="/img/plugin-list.png" />
+
 
 ## 自定义协议
 

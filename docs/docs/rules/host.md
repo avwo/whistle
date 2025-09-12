@@ -51,6 +51,26 @@ www.example.com/test4 host://`${query.target}$:8080` includeFilter:///[?&]target
 - 需要特殊代理逻辑时才使用 `proxyFirst`
 - 需要双重匹配时使用 `proxyHost`
 
+## 注意事项
+`host` 协议仅对经过规则替换后生成的 `Final URL`（可在 Overview 面板中查看）生效。若 `Final URL` 为空，则会作用于原始请求的 URL。
+
+例如以下规则：
+
+``` txt
+www.example.com/api www.example.com 127.0.0.1:1234
+```
+
+当请求 `https://www.example.com/api/path` 时，Whistle 会先将其转换为 `https://www.example.com/path`（该结果即为 `Final URL`）。此时希望将该请求指向 `127.0.0.1:1234`，但由于 `host` 规则仅匹配替换前的原始域名 `www.example.com/api`，而转换后的 `Final URL` 已经是 `www.example.com/path`，因此无法命中这条 `host` 规则。
+
+若需要对替换后的请求也生效，可拆解为两条规则：
+
+``` txt
+www.example.com/api www.example.com
+www.example.com 127.0.0.1:1234
+```
+
+这样，原始请求先被第一条规则重写，生成新的 `Final URL`，然后再被第二条 `host` 规则匹配，最终指向 `127.0.0.1:1234`。
+
 
 ## 常见问题
 1. 与 URL 转换的区别：

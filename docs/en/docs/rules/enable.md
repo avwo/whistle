@@ -26,7 +26,7 @@ pattern enable://action1 enable://action2 ... [filters...]
 - `proxyHost`: Both [proxy](./proxy) and [host](./host) take effect simultaneously
 - `proxyTunnel`: Used with `proxyHost`, it allows the upstream proxy to tunnel to the upstream HTTP proxy. See the example below for details.
 - `proxyFirst`: Prioritizes the [proxy](./proxy) rule
-- `http2`: Enables HTTP2 for all browsers, Whistle proxy, and servers
+- `http2`: Browser -> Whistle Proxy -> Enable HTTP2 for all servers
 - `h2`: Whistle Proxy -> Enable HTTP2 for the server
 - `httpH2`: Whistle Proxy -> Enable HTTP2 for HTTP requests to the server
 - `safeHtml`: This is a security feature. When injecting content into an HTML page using `htmlXxx`/`jsXxx`/`cssXxx`, the response is first checked to see if the first non-whitespace character is `{` or `[` (the opening characters of a JSON object). Injection is performed only if these characters are not. This effectively prevents accidental injection into non-standard HTML responses (such as JSON endpoints).

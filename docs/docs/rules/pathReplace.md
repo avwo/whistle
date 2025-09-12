@@ -4,10 +4,12 @@
 > URL 结构：
 > ``` txt
 >   https://www.example.com:8080/path/to/resource?query=string
->   \___/   \_____________/\___/\____________________________/
+>   \___/   \_____________/\____/\____________________________/
 >     |           |         |                 |             
 >   协议(scheme)  主机(host) 端口(path)       路径(path) 
 > ```
+>
+> **路径部分**指 `path/to/resource?query=string` 即不包含开头的  `/`
 
 ## 规则语法
 ``` txt
@@ -46,7 +48,32 @@ www.example.com/path2 pathReplace://https://www.xxx.com/xxx/params.json
 www.example.com/path3 pathReplace://temp/blank.json
 ````
 
+## 注意事项
+以下配置旨在删除指定路径片段：
+```txt
+www.example.com/api/ pathReplace://(/api/=/)
+```
+
+**期望效果：**  
+将 `https://www.example.com/api/xxx` 中的 `/api/` 替换为 `/`，得到 `https://www.example.com/xxx`
+
+**实际问题：**  
+Whistle 会将 `/api/` 识别为正则表达式而非普通字符串，导致替换后产生多余斜杠：  
+`https://www.example.com///xxx`
+
+> 即使将 `/api/` 视为字符串，它也无法匹配 `api/xxx/...`，pathReplace 匹配的路径不包含开头的  `/`
+
+**解决方案：**  
+
+``` txt
+www.example.com pathReplace://(/^api//=)
+```
+> Whistle 规则里面的正则不需要对 `/` 进行转义
+>
+> 新版 Whistle 也可以用 `delete://pathname.0` 删除上面 URL 的 `api/` 路径片段，详见 [delete://pathname.xxx](./delete)
+
 ## 关联协议
 1. 修改请求参数：[urlParams](./urlParams)
-2. 删除请求参数：[delete://urlParams.xxx](./delete)
+2. 删除路径：[delete://pathname.xxx](./delete)
+3. 删除请求参数：[delete://urlParams.xxx](./delete)
 

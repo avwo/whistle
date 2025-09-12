@@ -27,6 +27,7 @@ pattern operation lineProps://action1 lineProps://action2 ... [filters...]
 - `proxyHost`: Both `proxy`(./proxy)` and `host`(./host)` take effect simultaneously
 - `proxyTunnel`: Used with `proxyHost`, allows the upstream proxy to tunnel to the upstream HTTP proxy. See the example below for details
 - `proxyFirst`: Prioritizes `proxy`(./proxy)` rules
+- `internal`：Apply `proxy`, `socks`, and `host` protocol drop rules to Whistle internal requests
 - `safeHtml`: A security protection mechanism that is used when `htmlXxx`/`jsXxx`/`cssXxx` are used to add HTML When injecting content into a page, the response is checked to see if the first non-whitespace character is `{` or `[` (the opening characters of a JSON object). Injection is performed only if it is not. This effectively prevents accidental injection of non-standard HTML responses (such as JSON endpoints).
 - `strictHtml`: This is a security mechanism. When injecting content into an HTML page using `htmlXxx`/`jsXxx`/`cssXxx`, the response is checked to see if the first non-whitespace character is `<`. Injection is performed only if it is not. This effectively prevents accidental injection of non-standard HTML responses (such as JSON interfaces).
 - `enableUserLogin`: Sets whether to display the login dialog when a [statusCode://401](./statusCode) is displayed (disabled by default).

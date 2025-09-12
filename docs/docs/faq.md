@@ -132,6 +132,14 @@ npm i -g whistle && w2 restart
    - 如果输出的版本还有问题重复上述操作
    - 如果命令 `w2` 找不到，请手动配置 PATH
 
+## Q：如何过滤抓包界面中的频繁轮询请求？
+
+频繁的轮询请求（如心跳检测、状态上报）会刷屏并干扰主要请求的分析。您可以通过以下步骤快速隐藏它们：
+
+在抓包列表中找到任意一个轮询请求，右键菜单选择合适的过滤规则：
+- `Settings / Exclude All Matching Hosts`：隐藏所有来自对应域名的请求（只对当前浏览器生效）
+- `Settings / Exclude All Matching URLs`：隐藏与当前 URL 匹配的所有请求（不包含请求参数，且只对当前浏览器生效）
+
 ## Q：如何修改 Whistle 文档？
 
 Whistle 文档源文件地址：https://github.com/avwo/whistle/tree/master/docs
@@ -140,6 +148,7 @@ Whistle 文档源文件地址：https://github.com/avwo/whistle/tree/master/docs
 ``` sh
 npm run docs:dev
 ```
+
 ## Q：如何反馈问题？
 
 New issue：https://github.com/avwo/whistle/issues

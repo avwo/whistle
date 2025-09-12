@@ -50,6 +50,22 @@ When a request matches both `host` and `proxy` When configuring rules:
 - Use `proxyFirst` only when special proxy logic is required
 - Use `proxyHost` when dual matching is required
 
+## Notes
+
+The `host` protocol only applies to the substituted URL (i.e., the `Final URL` shown in the Overview). If the `Final URL` is empty, it will take effect on the original request URL.  
+
+For example, with the rule:  
+```  
+www.example.com/api www.example.com 127.0.0.1:1234  
+```  
+A request to `https://www.example.com/api/path` will be processed by Whistle, and the `Final URL` becomes `https://www.example.com/path`. As a result, it will not match `127.0.0.1:1234`.  
+
+If you want to match the substituted request, you can modify the rules as follows:  
+```  
+www.example.com/api www.example.com  
+www.example.com 127.0.0.1:1234  
+```
+
 ## FAQ
 1. Differences from URL conversion:
     ``` txt

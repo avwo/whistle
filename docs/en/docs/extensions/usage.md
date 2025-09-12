@@ -12,7 +12,7 @@
 
 <img width="1000" alt="install plugins" src="/img/install-plugins.png" />
 
-> Redundant text in the text box will not affect the results. Whistle will automatically filter out redundant text and extract only the plugin name and registry installation information.
+> Redundant content in the text box will not affect the operation result. Whistle will automatically filter and extract only the plugin name and registry installation information. If the dialog box does not show an Install button, please reinstall the global Node.js: https://nodejs.org/
 
 After successful installation, wait a moment for the newly installed plugin to appear in the plugin list:
 

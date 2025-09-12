@@ -23,10 +23,13 @@ pattern disable://action1 disable://action2 ... [filters...]
 - `gzip`: Disables response content compression
 - `proxyHost`: Disables the proxyHost feature. For details, see: [enable](./enable)
 - `proxyTunnel`: Disables the proxyTunnel feature. For details, see: [enable](./enable)
-- - `proxyFirst`: Disables the use of the proxy rule first
+- `proxyFirst`: Disables the use of the proxy rule first
 - `http2`: Disables the http2 feature. For details, see: [enable](./enable)
+  > Disabled: Browser -xx-> Whistle Proxy -xx-> Enable HTTP2 for all servers
 - `h2`: Disables the h2 feature. For details, see: [enable](./enable)
+  > Disabled: Whistle Proxy -xx-> Enable HTTP2 for the server
 - `httpH2`: Disables httpH2 For details, see: [enable](./enable)
+  > Disabled: Whistle Proxy -xx-> Enable HTTP2 for HTTP requests to the server
 - `safeHtml`: Disables the safeHtml feature. For details, see: [enable](./enable)
 - `strictHtml`: Disables the strictHtml feature. For details, see: [enable](./enable)
 - `clientIp`: Removes the x-forwarded-for request header

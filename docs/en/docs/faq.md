@@ -133,6 +133,15 @@ After restarting, the Whistle version displayed in the command line may not matc
    - If the output version still has issues, repeat the above steps.
    - If the `w2` command cannot be found, manually configure the PATH.
 
+
+## Q: How to filter out frequent polling requests in the packet capture interface?
+
+Frequent polling requests (such as heartbeat detection or status reporting) can flood the screen and interfere with the analysis of primary requests. You can quickly hide them by following these steps:
+
+Locate any polling request in the packet list, then right-click and select the appropriate filtering rule from the context menu:
+- `Settings / Exclude All Matching Hosts`: Hides all requests from the corresponding domain (effective only for the current browser session).
+- `Settings / Exclude All Matching URLs`: Hides all requests matching the current URL (excluding query parameters, and effective only for the current browser session).
+
 ## Q: How do I modify Whistle documentation?
 
 Whistle documentation source file address: https://github.com/avwo/whistle/tree/master/docs
