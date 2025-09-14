@@ -1,7 +1,7 @@
 {
   "name": "whistle",
   "description": "HTTP, HTTP2, HTTPS, Websocket debugging proxy",
-  "version": "2.9.101",
+  "version": "2.9.102",
   "dataDirname": ".whistle",
   "localUIHost": "local.whistlejs.com",
   "port": 8899,
@@ -13,7 +13,7 @@
   "bugs": {
     "url": "https://github.com/avwo/whistle/issues"
   },
-  "homepage": "https://github.com/avwo/whistle",
+  "homepage": "https://wproxy.org",
   "keywords": [
     "proxy",
     "fiddler",

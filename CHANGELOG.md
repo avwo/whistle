@@ -1,3 +1,10 @@
+## v2.9.102
+1. feat: 命令行启动时提醒有版本更新，https://github.com/avwo/whistle/issues/1245
+2. feat: 新增功能 `delete://pathname` 及 `delete://pathname.index`
+3. fix: https://github.com/avwo/whistle/issues/1222
+4. fix: https://github.com/avwo/whistle-client/issues/96
+5. fix: 修复了一些隐藏 bug
+
 ## v2.9.101
 1. fix: https://github.com/avwo/whistle/issues/462
 2. feat: Composer 支持显示 SSE 和 Websocket 内容
