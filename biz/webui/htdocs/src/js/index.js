@@ -63,6 +63,7 @@ var hideMenus = !!(query.hideMenus || query.hideMenu);
 var hideLeftMenu;
 var showTreeView;
 var dataUrl;
+var TABS = ['Network', 'Rules', 'Values', 'Plugins'];
 var TEXT_SUFFIX_RE = /[\w-]\.(?:txt|csv|tsv|json|xml|yaml|yml|ini|conf|log|html|htm|css|js|py|java|c|cpp|h|sh|php|sql|md|markdown|rtf|tex|bib|vcf)$/i;
 
 function getString(url) {
@@ -92,6 +93,12 @@ window.setWhistleDataUrl = function(url) {
 
 window.showWhistleMessage = function(options) {
   message[options.level || options.type || 'info'](options.text || options.msg || options.message);
+};
+
+window.showWhistleWebUI = function(name) {
+  if (TABS.indexOf(name) !== -1) {
+    events.trigger('show' + name);
+  }
 };
 
 if (/[&#?]showTreeView=(0|false|1|true)(?:&|$|#)/.test(search)) {
@@ -1004,7 +1011,7 @@ var Index = React.createClass({
       self.showRules();
       if (name && self.state.rules.exists(name)) {
         events.trigger('expandRulesGroup', name);
-        this.setRulesActive(name);
+        self.setRulesActive(name);
       }
     });
     events.on('showValues', function () {
@@ -4230,7 +4237,7 @@ var Index = React.createClass({
             >
               <span
                 className={
-                  'glyphicon glyphicon-list-alt' +
+                  'glyphicon glyphicon-th-large' +
                   (disabledAllPlugins ? ' w-disabled' : '')
                 }
               ></span>
@@ -4476,7 +4483,7 @@ var Index = React.createClass({
               onClick={this.showAboutDialog}
               title={
                 state.hasNewVersion
-                  ? 'There is a new version of whistle'
+                  ? 'A new version is available, click to see details'
                   : undefined
               }
               href={
@@ -4690,7 +4697,7 @@ var Index = React.createClass({
             >
               <span
                 className={
-                  'glyphicon glyphicon-list-alt' +
+                  'glyphicon glyphicon-th-large' +
                   (disabledAllPlugins ? ' w-disabled' : '')
                 }
               ></span>

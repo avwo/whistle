@@ -67,6 +67,7 @@
 
 .w-nav-tabs > .nav > .w-nav-home-tab > a span {
   margin-right: 5px;
+  top: 0;
 }
 
 .w-plugins th,

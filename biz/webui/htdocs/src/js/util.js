@@ -1781,43 +1781,50 @@ exports.encodeNonLatin1Char = function (str) {
     : '';
 };
 
-function formatSemer(ver) {
-  return ver
-    ? ver
-        .split('.')
-        .map(function (v) {
-          v = parseInt(v, 10) || 0;
-          return v > 9 ? v : '0' + v;
-        })
-        .join('.')
-    : '';
+var VER_LEN = 3;
+
+function compareVer(n1, n2, index) {
+  n1 = parseInt(n1, 10) || 0;
+  n2 = parseInt(n2, 10) || 0;
+  if (n1 === n2) {
+    return 0;
+  }
+  return n1 > n2 ? VER_LEN - index : index - VER_LEN;
 }
 
-function compareVersion(v1, v2) {
-  var test1 = '';
-  var test2 = '';
-  var index = v1 && v1.indexOf('-');
-  if (index > -1) {
-    test1 = v1.slice(index + 1);
-    v1 = v1.slice(0, index);
+exports.compareVersion = function(v1, v2) {
+  if (v1 === v2 || !v1 || typeof v1 !== 'string') {
+    return 0;
   }
-  index = v2 && v2.indexOf('-');
-  if (index > -1) {
-    test2 = v2.slice(index + 1);
-    v2 = v2.slice(0, index);
+  if (!v2 || typeof v2 !== 'string') {
+    return 3;
   }
-  v1 = formatSemer(v1);
-  v2 = formatSemer(v2);
-  if (v1 > v2) {
-    return true;
-  }
-  if (v2 > v1) {
-    return false;
-  }
+  v1 = v1.split('.');
+  v2 = v2.split('.');
 
-  return test1 < test2;
-}
-exports.compareVersion = compareVersion;
+  for (var i = 0; i < 3; i++) {
+    var flag = compareVer(v1[i], v2[i], i);
+    if (flag) {
+      return Math.max(flag, 0);
+    }
+  }
+  v1 = v1[2];
+  v2 = v2[2];
+  if (!v1 || !v2) {
+    return 0;
+  }
+  var i1 = v1.indexOf('-');
+  var i2 = v2.indexOf('-');
+  var test1 = i1 === -1 ? '' : v1.substring(i1);
+  var test2 = i2 === -1 ? '' : v2.substring(i2);
+  if (test1 === test2) {
+    return 0;
+  }
+  if (!test1 || !test2) {
+    return test1 ? 0 : 1;
+  }
+  return test1 > test2 ? 1 : 0;
+};
 
 function getHexLine(line) {
   var index = line.indexOf('  ') + 2;
@@ -2948,6 +2955,8 @@ var LINE_END_RE = /\s*[\r\n]+\s*/;
 function removeRulesComments(str) {
   return !str || str.indexOf('#') === -1 ? str : str.replace(COMMENT_RE, '');
 }
+
+exports.removeRulesComments = removeRulesComments;
 
 function mergeLines(str) {
   return str.replace(MULTI_TO_ONE_RE, function(_, line) {

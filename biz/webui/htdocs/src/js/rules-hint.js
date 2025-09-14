@@ -45,6 +45,7 @@ var HEADERS = [
   'trailer.headerKey:keywordOrRegExp=<replacement value>'
 ];
 var DEL_HINTS = [
+  'pathname.<index>',
   'urlParams.<url param key>',
   'reqHeaders.<request header key>',
   'resHeaders.<response header key>',
@@ -52,6 +53,8 @@ var DEL_HINTS = [
   'resCookies.<response cookie key>',
   'reqBody.<object key path: k1.k2.k3>',
   'resBody.<object key path: k1.k2.k3>',
+  'pathname',
+  'urlParams',
   'reqType',
   'resType',
   'reqCharset',
@@ -216,8 +219,9 @@ function getHints(keyword) {
 }
 
 function getFilterHint(filter) {
+  var index = filter.indexOf('<');
   return {
-    text: filter.substring(0, filter.indexOf('<')),
+    text: index === -1 ? filter : filter.substring(0, index),
     displayText: filter
   };
 }
@@ -243,8 +247,9 @@ function getFilterHints(keyword, filter1, filter2) {
 function getSpecHints(keyword, protocol) {
   var getHint = function(hint) {
     hint = (protocol || 'headerReplace://') + hint;
+    var index = hint.indexOf('<');
     return {
-      text: hint.substring(0, hint.indexOf('<')),
+      text: index === -1 ? hint : hint.substring(0, index),
       displayText: hint
     };
   };
