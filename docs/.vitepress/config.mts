@@ -62,7 +62,7 @@ export default defineConfig({
               { text: '%', link: '/en/docs/rules/plugin-vars' },
               {
                 text: 'Map Local',
-                collapsed: true,
+                collapsed: false,
                 items: [
                   { text: 'file', link: '/en/docs/rules/file' },
                   { text: 'xfile', link: '/en/docs/rules/xfile' },
@@ -74,7 +74,7 @@ export default defineConfig({
               },
               {
                 text: 'Map Remote',
-                collapsed: true,
+                collapsed: false,
                 items: [
                   { text: 'https', link: '/en/docs/rules/https' },
                   { text: 'http', link: '/en/docs/rules/http' },
@@ -86,7 +86,7 @@ export default defineConfig({
               },
               {
                 text: 'DNS Spoofing',
-                collapsed: true,
+                collapsed: false,
                 items: [
                   { text: 'host', link: '/en/docs/rules/host' },
                   { text: 'xhost', link: '/en/docs/rules/xhost' },
@@ -101,7 +101,7 @@ export default defineConfig({
               },
               {
                 text: 'Rewrite Request',
-                collapsed: true,
+                collapsed: false,
                 items: [
                   { text: 'urlParams', link: '/en/docs/rules/urlParams' },
                   { text: 'pathReplace', link: '/en/docs/rules/pathReplace' },
@@ -131,7 +131,7 @@ export default defineConfig({
               },
               {
                 text: 'Rewrite Reponse',
-                collapsed: true,
+                collapsed: false,
                 items: [
                   { text: 'statusCode', link: '/en/docs/rules/statusCode' },
                   { text: 'replaceStatus', link: '/en/docs/rules/replaceStatus' },
@@ -167,7 +167,7 @@ export default defineConfig({
               },
               {
                 text: 'General',
-                collapsed: true,
+                collapsed: false,
                 items: [
                   { text: 'pipe', link: '/en/docs/rules/pipe' },
                   { text: 'delete', link: '/en/docs/rules/delete' },
@@ -176,7 +176,7 @@ export default defineConfig({
               },
               {
                 text: 'Throttle',
-                collapsed: true,
+                collapsed: false,
                 items: [
                   { text: 'reqDelay', link: '/en/docs/rules/reqDelay' },
                   { text: 'resDelay', link: '/en/docs/rules/resDelay' },
@@ -186,7 +186,7 @@ export default defineConfig({
               },
               {
                 text: 'Tools',
-                collapsed: true,
+                collapsed: false,
                 items: [
                   { text: 'weinre', link: '/en/docs/rules/weinre' },
                   { text: 'log', link: '/en/docs/rules/log' },
@@ -194,7 +194,7 @@ export default defineConfig({
               },
               {
                 text: 'Settings',
-                collapsed: true,
+                collapsed: false,
                 items: [
                   { text: 'style', link: '/en/docs/rules/style' },
                   { text: 'enable', link: '/en/docs/rules/enable' },
@@ -204,7 +204,7 @@ export default defineConfig({
               },
               {
                 text: 'Filters',
-                collapsed: true,
+                collapsed: false,
                 items: [
                   { text: 'excludeFilter', link: '/en/docs/rules/excludeFilter' },
                   { text: 'includeFilter', link: '/en/docs/rules/includeFilter' },
@@ -268,7 +268,7 @@ export default defineConfig({
           { text: '%', link: '/docs/rules/plugin-vars' },
           {
             text: 'Map Local',
-            collapsed: true,
+            collapsed: false,
             items: [
               { text: 'file', link: '/docs/rules/file' },
               { text: 'xfile', link: '/docs/rules/xfile' },
@@ -280,7 +280,7 @@ export default defineConfig({
           },
           {
             text: 'Map Remote',
-            collapsed: true,
+            collapsed: false,
             items: [
               { text: 'https', link: '/docs/rules/https' },
               { text: 'http', link: '/docs/rules/http' },
@@ -292,7 +292,7 @@ export default defineConfig({
           },
           {
             text: 'DNS Spoofing',
-            collapsed: true,
+            collapsed: false,
             items: [
               { text: 'host', link: '/docs/rules/host' },
               { text: 'xhost', link: '/docs/rules/xhost' },
@@ -307,7 +307,7 @@ export default defineConfig({
           },
           {
             text: 'Rewrite Request',
-            collapsed: true,
+            collapsed: false,
             items: [
               { text: 'urlParams', link: '/docs/rules/urlParams' },
               { text: 'pathReplace', link: '/docs/rules/pathReplace' },
@@ -337,7 +337,7 @@ export default defineConfig({
           },
           {
             text: 'Rewrite Reponse',
-            collapsed: true,
+            collapsed: false,
             items: [
               { text: 'statusCode', link: '/docs/rules/statusCode' },
               { text: 'replaceStatus', link: '/docs/rules/replaceStatus' },
@@ -373,7 +373,7 @@ export default defineConfig({
           },
           {
             text: 'General',
-            collapsed: true,
+            collapsed: false,
             items: [
               { text: 'pipe', link: '/docs/rules/pipe' },
               { text: 'delete', link: '/docs/rules/delete' },
@@ -382,7 +382,7 @@ export default defineConfig({
           },
           {
             text: 'Throttle',
-            collapsed: true,
+            collapsed: false,
             items: [
               { text: 'reqDelay', link: '/docs/rules/reqDelay' },
               { text: 'resDelay', link: '/docs/rules/resDelay' },
@@ -392,7 +392,7 @@ export default defineConfig({
           },
           {
             text: 'Tools',
-            collapsed: true,
+            collapsed: false,
             items: [
               { text: 'weinre', link: '/docs/rules/weinre' },
               { text: 'log', link: '/docs/rules/log' },
@@ -400,7 +400,7 @@ export default defineConfig({
           },
           {
             text: 'Settings',
-            collapsed: true,
+            collapsed: false,
             items: [
               { text: 'style', link: '/docs/rules/style' },
               { text: 'enable', link: '/docs/rules/enable' },
@@ -410,7 +410,7 @@ export default defineConfig({
           },
           {
             text: 'Filters',
-            collapsed: true,
+            collapsed: false,
             items: [
               { text: 'excludeFilter', link: '/docs/rules/excludeFilter' },
               { text: 'includeFilter', link: '/docs/rules/includeFilter' },

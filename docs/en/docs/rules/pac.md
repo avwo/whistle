@@ -38,5 +38,23 @@ After proxying a request to an upstream proxy, by default the upstream proxy wil
 ``` txt
 www.example.com pac://https://xxx/path/normal.pac 1.1.1.1 enable://proxyHost
 www.example.com pac:///User/xxx/test.pac 1.1.1.1:8080 enable://proxyHost
-````
+```
 > `1.1.1.1` Equivalent to `host://1.1.1.1`
+
+
+## Notes  
+The `pac` protocol only applies to the substituted URL (i.e., the `Final URL` shown in the Overview). If the `Final URL` is empty, it will take effect on the original request URL.  
+
+For example, with the rule:  
+```  
+www.example.com/api www.example.com pac://https://xxx/path/normal.pac  
+```  
+When a request is made to `https://www.example.com/api/path`, Whistle processes it and changes the URL to `https://www.example.com/path` (this becomes the `Final URL`). Although the intention is to apply the PAC script `https://xxx/path/normal.pac` to `https://www.example.com/path`, the `pac` rule only matches the original domain `www.example.com/api` before substitution. Since the converted `Final URL` is now `www.example.com/path`, this rule will not be triggered.  
+
+To ensure the rule also applies to the substituted request, you can break it into two separate rules:  
+```  
+www.example.com/api www.example.com  
+www.example.com pac://https://xxx/path/normal.pac  
+```  
+
+This way, the original request is first rewritten by the first rule, generating a new `Final URL`. Then, the second `pac` rule matches this new URL.

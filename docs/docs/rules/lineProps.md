@@ -27,6 +27,7 @@ pattern operation lineProps://action1 lineProps://action2 ... [filters...]
 - `proxyHost`：[proxy](./proxy) 和 [host](./host) 同时生效
 - `proxyTunnel`：跟 `proxyHost` 一同使用，让上游代理再次通过隧道代理到上上游的 HTTP 代理，详见下面的示例
 - `proxyFirst`：优先使用 [proxy](./proxy) 规则
+- `internal`：将 `proxy`、`socks`、`host` 协议掉规则作用于 Whistle 内部请求
 - `safeHtml`：是一种安全防护机制，当使用 `htmlXxx`/`jsXxx`/`cssXxx` 向 HTML 页面注入内容时，会先检查响应内容的第一个非空白字符是否为 `{` 和 `[`（JSON 对象开头字符），如果不是才会执行注入操作。这可以有效防止对非标准 HTML 响应（如 JSON 接口）的误注入
 - `strictHtml`：是一种安全防护机制，当使用 `htmlXxx`/`jsXxx`/`cssXxx` 向 HTML 页面注入内容时，会先检查响应内容的第一个非空白字符是否为 `<`，如果不是才会执行注入操作。这可以有效防止对非标准 HTML 响应（如 JSON 接口）的误注入
 - `enableUserLogin`：设置 [statusCode://401](./statusCode) 是否显示登录框（默认显示）

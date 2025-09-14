@@ -4,10 +4,12 @@ Provides functionality similar to JavaScript's String.replace() method, dynamica
 > URL structure:
 > ``` txt
 > https://www.example.com:8080/path/to/resource?query=string
-> \___/ \_____________/\___/\____________________________/
+> \___/ \_____________/\____/\____________________________/
 > |                 |           |           |
 > Protocol (scheme) Host (host) Port (path) Path (path)
 > ```
+> 
+> The `path` section refers to `path/to/resource?query=string`, which excludes the leading `/`
 
 ## Rule Syntax
 ``` txt
@@ -46,6 +48,31 @@ www.example.com/path2 pathReplace://https://www.xxx.com/xxx/params.json
 www.example.com/path3 pathReplace://temp/blank.json
 ````
 
-## Associated Protocols
+## Notes  
+The following configuration is intended to remove a specific path segment:  
+```txt  
+www.example.com/api/ pathReplace://(/api/=/)  
+```  
+
+**Expected outcome:**  
+Replace `/api/` in `https://www.example.com/api/xxx` with `/`, resulting in `https://www.example.com/xxx`.  
+
+**Actual issue:**  
+Whistle interprets `/api/` as a regular expression rather than a plain string, causing extra slashes to appear after replacement:  
+`https://www.example.com///xxx`.
+
+> Even if `/api/` is treated as a string, it cannot match `api/xxx/...`. The path matched by pathReplace does not contain the leading `/`
+
+**Solution:**  
+
+```txt  
+www.example.com pathReplace://(/^api//=)
+```  
+> Regular expressions in Whistle rules do not require escaping `/`.
+>
+> New versions of Whistle can also use `delete://pathname.0` to delete the `api/` path segment in the above URL. For details, see [delete://pathname.xxx](./delete)
+
+## Related Protocols
 1. Modify request parameters: [urlParams](./urlParams)
-2. Delete request parameters: [delete://urlParams.xxx](./delete)
+2. Delete the path: [delete://pathname.xxx](./delete)
+3. Delete request parameters: [delete://urlParams.xxx](./delete)

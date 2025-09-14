@@ -41,3 +41,20 @@ www.example.com socks://127.0.0.1:8080 1.1.1.1 enable://proxyHost
 www.example.com socks://127.0.0.1:8080 1.1.1.1:8080 enable://proxyHost
 ````
 > `1.1.1.1` is equivalent to `host://1.1.1.1`
+
+## Notes  
+The `socks` protocol only applies to the substituted URL (i.e., the `Final URL` shown in the Overview). If the `Final URL` is empty, it will take effect on the original request URL.  
+
+For example, with the rule:  
+```  
+www.example.com/api www.example.com proxy://127.0.0.1:1234  
+```  
+When a request is made to `https://www.example.com/api/path`, Whistle processes it and changes the URL to `https://www.example.com/path` (this becomes the `Final URL`). Although the intention is to proxy this request to `127.0.0.1:1234`, the `proxy` rule only matches the original domain `www.example.com/api` before substitution. Since the converted `Final URL` is now `www.example.com/path`, this rule will not be triggered.  
+
+To ensure the rule also applies to the substituted request, you can break it into two separate rules:  
+```  
+www.example.com/api www.example.com  
+www.example.com proxy://127.0.0.1:1234  
+```  
+
+This way, the original request is first rewritten by the first rule, generating a new `Final URL`. Then, the second `proxy` rule matches this new URL and successfully proxies the request to `127.0.0.1:1234`.

@@ -24,10 +24,13 @@ pattern disable://action1 disable://action2 ... [filters...]
 - `gzip`：禁止压缩响应内容
 - `proxyHost`：禁用 proxyHost 功能，详见：[enable](./enable)
 - `proxyTunnel`：禁用 proxyTunnel 功能，详见：[enable](./enable)
-- - `proxyFirst`：禁用优先使用 [proxy](./proxy) 规则
+- `proxyFirst`：禁用优先使用 [proxy](./proxy) 规则
 - `http2`：禁用 http2 功能，详见：[enable](./enable)
+  > 禁用：浏览器 -xx-> Whistle 代理 -xx-> 服务器全部启用 HTTP2
 - `h2`：禁用 h2 功能，详见：[enable](./enable)
+  > 禁用：Whistle 代理 -xx-> 服务器启用 HTTP2
 - `httpH2`：禁用 httpH2 功能，详见：[enable](./enable)
+  > 禁用：Whistle 代理 -xx-> 服务器的 HTTP 请求启用 HTTP2
 - `safeHtml`：禁用 safeHtml 功能，详见：[enable](./enable)
 - `strictHtml`：禁用 strictHtml 功能，详见：[enable](./enable)
 - `clientIp`：删除请求头 x-forwarded-for
