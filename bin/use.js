@@ -14,7 +14,7 @@ var warn = util.warn;
 var info = util.info;
 var readConfig = util.readConfig;
 var MAX_RULES_LEN = 1024 * 256;
-var DEFAULT_OPTIONS = { host: '127.0.0.1', port: 8899 };
+var DEFAULT_OPTIONS = util.DEFAULT_OPTIONS;
 var options;
 
 function showStartWhistleTips(storage, isClient) {
@@ -60,21 +60,6 @@ function existsPlugin(name) {
   return false;
 }
 
-function getBody(res, callback) {
-  var resBody = '';
-  res.setEncoding('utf8');
-  res.on('data', function(data) {
-    resBody += data;
-  });
-  res.on('end', function() {
-    if (res.statusCode != 200) {
-      callback(resBody || 'response ' + res.statusCode + ' error');
-    } else {
-      callback(null, JSON.parse(resBody));
-    }
-  });
-}
-
 var reqOptions;
 function request(body, callback) {
   if (!reqOptions) {
@@ -92,7 +77,7 @@ function request(body, callback) {
     }
   }
   var req = http.request(reqOptions, function(res) {
-    getBody(res, function(err, data) {
+    util.getBody(res, function(err, data) {
       if (err) {
         throw err;
       }
@@ -116,7 +101,7 @@ function checkDefault(running, storage, isClient, callback) {
   };
   var req = http.get('http://' + DEFAULT_OPTIONS.host + ':' + DEFAULT_OPTIONS.port + '/cgi-bin/status', function(res) {
     res.on('error', execCallback);
-    getBody(res, function(err, data) {
+    util.getBody(res, function(err, data) {
       if (err || !data || data.name !== pkg.name || data.storage !== storage) {
         return execCallback(true);
       }
