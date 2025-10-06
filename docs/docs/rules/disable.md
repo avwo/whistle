@@ -16,45 +16,74 @@ pattern disable://action1 disable://action2 ... [filters...]
 | filters | 可选过滤器，支持匹配：<br/>• 请求URL/方法/头部/内容<br/>• 响应状态码/头部 | [过滤器文档](./filters) |
 
 
-- `capture` 或 `https`：禁用 `Enable HTTPS`
-- `authCapture`：禁用 `authCapture` 功能，详见：[enable](./enable)
+- `301`：禁止 `301` 跳转，`301` 强制转 `302`（也可以用 [replaceStatus](./replaceStatus)）
 - `abort`：禁用 abort 功能，详见：[enable](./enable)
 - `abortReq`：禁用 abortReq 功能，详见：[enable](./enable)
 - `abortRes`：禁用 abortRes 功能，详见：[enable](./enable)
-- `gzip`：禁止压缩响应内容
-- `proxyHost`：禁用 proxyHost 功能，详见：[enable](./enable)
-- `proxyTunnel`：禁用 proxyTunnel 功能，详见：[enable](./enable)
-- `proxyFirst`：禁用优先使用 [proxy](./proxy) 规则
-- `http2`：禁用 http2 功能，详见：[enable](./enable)
-  > 禁用：浏览器 -xx-> Whistle 代理 -xx-> 服务器全部启用 HTTP2
-- `h2`：禁用 h2 功能，详见：[enable](./enable)
-  > 禁用：Whistle 代理 -xx-> 服务器启用 HTTP2
-- `httpH2`：禁用 httpH2 功能，详见：[enable](./enable)
-  > 禁用：Whistle 代理 -xx-> 服务器的 HTTP 请求启用 HTTP2
-- `safeHtml`：禁用 safeHtml 功能，详见：[enable](./enable)
-- `strictHtml`：禁用 strictHtml 功能，详见：[enable](./enable)
-- `clientIp`：删除请求头 x-forwarded-for
-- `bigData`：禁用 bigData 功能，详见：[enable](./enable)
-- `forceReqWrite`：禁用 forceReqWrite 功能，详见：[enable](./enable)
-- `forceResWrite`： 禁用 forceResWrite 功能，详见：[enable](./enable)
+- `authCapture`：禁用 `authCapture` 功能，详见：[enable](./enable)
 - `auto2http`：禁用 auto2http 功能，详见：[enable](./enable)
-- `hide`：禁用 hide 功能，详见：[enable](./enable)
-- `useLocalHost`：禁用 useLocalHost 功能，详见：[enable](./enable)
-- `useSafePort`：禁用 useSafePort 功能，详见：[enable](./enable)
+- `autoCors`：使用 [file](./file) 协议替换请求时，如果 Whistle 检测到该请求属于跨域请求，会自动添加必要的 CORS (跨域资源共享) 头信息，可以通过 `disable://autoCors` 禁用
+- `ajax`: 删除请求头 `x-requested-with`
+- `bigData`：禁用 bigData 功能，详见：[enable](./enable)
+- `capture` 或 `https`：禁用 `Enable HTTPS`，详见：[enable](./enable)
+- `captureIp`：禁用 captureIp 功能，详见：[enable](./enable)
+- `captureStream`：禁用 captureStream 功能，详见：[enable](./enable)
+- `clientCert`：禁用 clientCert 功能，详见：[enable](./enable)
+- `clientId`：删除请求头 `x-whistle-client-id`
+- `clientIp`：删除请求头 `x-forwarded-for`
+- `customParser`：禁用 customParser 功能，详见：[enable](./enable)
+- `cache`: 禁用缓存
+- `dnsCache`: 禁止 DNS 缓存
+- `csp`: 禁用 CSP
 - `cookies`: 禁用请求和响应的 cookie
 - `reqCookies`: 禁用请求的 cookie
 - `resCookies`: 禁用响应的 cookie
-- `ua`: 禁用 `user-agent` 
+- `flushHeaders`：禁用 flushHeaders 功能，详见：[enable](./enable)
+- `forHttp`：禁用 forHttp 功能，详见：[enable](./enable)
+- `forHttps`：禁用 forHttps 功能，详见：[enable](./enable)
+- `forceReqWrite`：禁用 forceReqWrite 功能，详见：[enable](./enable)
+- `forceResWrite`： 禁用 forceResWrite 功能，详见：[enable](./enable)
+- `gzip`：禁止压缩响应内容
+- `h2`：禁用 h2 功能，详见：[enable](./enable)
+  > 禁用：Whistle 代理 -xx-> 服务器启用 HTTP2
+- `http2`：禁用 http2 功能，详见：[enable](./enable)
+  > 禁用：浏览器 -xx-> Whistle 代理 -xx-> 服务器全部启用 HTTP2
+- `httpH2`：禁用 httpH2 功能，详见：[enable](./enable)
+  > 禁用：Whistle 代理 -xx-> 服务器的 HTTP 请求启用 HTTP2
+- `hide`：禁用 hide 功能，详见：[enable](./enable)
+- `hideComposer`：禁用 hideComposer 功能，详见：[enable](./enable)
+- `hideCaptureError`：禁用 hideCaptureError 功能，详见：[enable](./enable)
+- `interceptConsole`：禁用 interceptConsole 功能，详见：[enable](./enable)
+- `internalProxy`：禁用 internalProxy 功能，详见：[enable](./enable)
+- `proxyFirst`：禁用优先使用 [proxy](./proxy) 规则
+- `proxyHost`：禁用 proxyHost 功能，详见：[enable](./enable)
+- `proxyTunnel`：禁用 proxyTunnel 功能，详见：[enable](./enable)
+- `keepCSP`：禁用 keepCSP 功能，详见：[enable](./enable)
+- `keepAllCSP`：禁用 keepAllCSP 功能，详见：[enable](./enable)
+- `keepCache`：禁用 keepCache 功能，详见：[enable](./enable)
+- `keepAllCache`：禁用 keepAllCache 功能，详见：[enable](./enable)
+- `keepAlive`：禁止缓存请求连接
+- `keepClientId`：禁用 keepClientId 功能，详见：[enable](./enable)
+- `keepH2Session`：无需每个 TUNNEL 连接对应一个 HTTP2 连接（默认 `是`，建议使用默认即可）
+- `safeHtml`：禁用 safeHtml 功能，详见：[enable](./enable)
+- `strictHtml`：禁用 strictHtml 功能，详见：[enable](./enable)
+- `proxyConnection`：通过 proxy、socks 等代理协议转发请求时设置 `proxy-connection: close`
+- `ua`: 删除请求头 `user-agent`
+- `proxyUA`：通过 proxy、socks 等代理协议转发请求时删除请求头 `user-agent`
 - `referer`: 禁用 `referer`
-- `csp`: 禁用 CSP
-- `cache`: 禁用缓存
-- `301`: 禁止 301 跳转，301 强制转 302
-- `dnsCache`: 禁止 DNS 缓存
-- `ajax`: 删除请求头 `x-requested-with`
-- `keepAlive`: 禁止缓存请求连接
+- `rejectUnauthorized`：`rejectUnauthorized` 设置为 `true`
+- `requestWithMatchedRules`：禁用 requestWithMatchedRules 功能，详见：[enable](./enable)
+- `responseWithMatchedRules`：禁用 responseWithMatchedRules 功能，详见：[enable](./enable)
+- `secureOptions`：禁用建立 HTTP2 连接的默认 `options`
 - `timeout`：禁用请求超时设置
-- `autoCors`：使用 [file](./file) 协议替换请求时，如果 Whistle 检测到该请求属于跨域请求，会自动添加必要的 CORS (跨域资源共享) 头信息，可以通过 `disable://autoCors` 禁用
+- `trailerHeader`：删除响应头 `trailer`
+- `trailers`：删除 trailers
+- `tunnelAuthHeader`：删除代理鉴权头 `proxy-authorization`
+- `tunnelHeadersFirst`：禁用 tunnelHeadersFirst 功能，详见：[enable](./enable)
+- `useLocalHost`：禁用 useLocalHost 功能，详见：[enable](./enable)
+- `useSafePort`：禁用 useSafePort 功能，详见：[enable](./enable)
 - `userLogin`：禁用设置 [statusCode://401](./statusCode) 时显示登录框
+- `weakRule`：禁用 weakRule 功能，详见：[enable](./enable)
 
 ## 配置示例
 ``` txt

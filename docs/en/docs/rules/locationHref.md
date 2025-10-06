@@ -31,5 +31,12 @@ www.example.com/path2 locationHref://../abc/123
 ```
 - Visiting `https://www.example.com/path/to?query` redirects to `https://www.example.com/to?query`
 
+##### location.replace
+To implement a page redirect without history history using `location.replace(targetUrl)`, use the following configuration format:
+``` txt
+www.example.com/path locationHref://replace:https://www.qq.com
+```
+> Redirects to the target URL. The current page will not be saved in the browser history, and users cannot return to the original page using the "Back" button.
+
 ## Related Protocols
-1. Pages whose addresses cannot be modified via `302` can use: [locationHref](./locationHref)
+1. `302` Redirect: [redirect](./redirect)

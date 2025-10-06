@@ -20,18 +20,22 @@ pattern operation lineProps://action1 lineProps://action2 ... [filters...]
 | pattern | Expression to match the request URL | [Match Pattern Documentation](./pattern) |
 | operation | Operation Instructions | [Operation Instruction Documentation](./operation) |
 | action | Specific actions, see the description below | |
-| filters | Optional filters, supporting matching: • Request URL/Method/Header/Content • Response Status Code/Header | [Filters Documentation](./filters) |
+| filters | Optional filters, supporting matching: • Request URL/Method/Header/Content • Response Status Code/Header | [Filter Documentation](./filters) |
 
 - `important`: `!important` of type css attribute, increasing rule priority
-- `disableAutoCors`: Disables automatic addition of necessary CORS (Cross-Origin Resource Sharing) headers for `file`(./file) protocol substitution requests
-- `proxyHost`: Both `proxy`(./proxy)` and `host`(./host)` take effect simultaneously
-- `proxyTunnel`: Used with `proxyHost`, allows the upstream proxy to tunnel to the upstream HTTP proxy. See the example below for details
-- `proxyFirst`: Prioritizes `proxy`(./proxy)` rules
-- `internal`：Apply `proxy`, `socks`, and `host` protocol drop rules to Whistle internal requests
-- `safeHtml`: A security protection mechanism that is used when `htmlXxx`/`jsXxx`/`cssXxx` are used to add HTML When injecting content into a page, the response is checked to see if the first non-whitespace character is `{` or `[` (the opening characters of a JSON object). Injection is performed only if it is not. This effectively prevents accidental injection of non-standard HTML responses (such as JSON endpoints).
-- `strictHtml`: This is a security mechanism. When injecting content into an HTML page using `htmlXxx`/`jsXxx`/`cssXxx`, the response is checked to see if the first non-whitespace character is `<`. Injection is performed only if it is not. This effectively prevents accidental injection of non-standard HTML responses (such as JSON interfaces).
-- `enableUserLogin`: Sets whether to display the login dialog when a [statusCode://401](./statusCode) is displayed (disabled by default).
-- `disableUserLogin`: Disables displaying the login dialog when a [statusCode://401](./statusCode) is set.
+- `safeHtml`: This is a security protection mechanism. When injecting content into an HTML page using `htmlXxx`/`jsXxx`/`cssXxx`, the first non-whitespace character in the response is checked to see if it is a `{` or a `[` (the opening character of a JSON object). Injection is performed only if it is not. This effectively prevents accidental injection of non-standard HTML responses (such as JSON endpoints).
+- `strictHtml`: This is a security protection mechanism. When injecting content into an HTML page using `htmlXxx`/`jsXxx`/`cssXxx`, the first non-whitespace character in the response is checked to see if it is a `<`. Injection is performed only if it is not. This effectively prevents accidental injection of non-standard HTML responses (such as JSON endpoints).
+- `disableAutoCors`: Disables automatic addition of necessary CORS (Cross-Origin Resource Sharing) headers for [file](./file) protocol substitution requests.
+- `disableUserLogin`: Disables displaying the login dialog when setting [statusCode://401](./statusCode).
+- `enableUserLogin`: Enables displaying the login dialog when setting [statusCode://401](./statusCode). (Shown by default, disables `disable.userLogin`).
+- `internal`: Applies `proxy`, `socks`, and `host` protocol drop rules to Whistle internal requests.
+- `internalOnly`: Applies `proxy`, `socks`, and `host` protocol drop rules to Whistle internal requests only.
+- `internalProxy`: Uses proxy protocols like `proxy` and `socks` to forward requests to another proxy server (such as another Whistle proxy server). When this feature is enabled, HTTPS requests decrypted by the first-tier proxy will be transmitted in plaintext throughout the proxy chain, allowing upstream proxies to directly access the plaintext data.
+- `proxyFirst`: give priority to the [proxy](./proxy) rule (by default, both `host` and `proxy` are matched, and only `host` takes effect)
+- `proxyHost`: Both the [proxy](./proxy) and [host](./host) rules take effect.
+- `proxyHostOnly`: Functions similarly to `proxyHost`, but if no [host](./host) matches, the [proxy](./proxy) rule will be automatically disabled.
+- `proxyTunnel`: Used with `proxyHost`, it allows the upstream proxy to tunnel to the upstream HTTP proxy. See the example below for details.
+- `weakRule`: By default, the `weakRule` rule will be disabled when protocols such as `file](./file) are configured. By setting the `weakRule` property, you can increase the priority of the `proxy` (./proxy) rule, ensuring it still works in the above scenario.
 
 ## Configuration Example
 #### Without `lineProps://important`
@@ -55,7 +59,7 @@ www.example.com/path htmlPrepend://(alert(1))
 www.example.com/path jsPrepend://(alert(1))
 www.example.com/path cssPrepend://(alert(1))
 ```
-Accessing `https://www.example.com/path` returns the response content:
+Visit `https://www.example.com/path` and return the response content:
 ``` html
 <!DOCTYPE html>
 <style>alert(1)</style>
@@ -70,23 +74,23 @@ www.example.com/path htmlPrepend://(alert(1))
 www.example.com/path jsPrepend://(alert(1)) enable://strictHtml
 www.example.com/path cssPrepend://(alert(1))
 ```
-Visiting `https://www.example.com/path` returns the response content:
+Visit `https://www.example.com/path` and return the response content:
 ``` html
 test
 ```
-> `enable://strictHtml` applies to all rules
+> `enable://strictHtml` is effective for all rules
 
-### Using `lineProps://strictHtml`
+### Use `lineProps://strictHtml`
 ``` txt
 www.example.com/path file://(test) resType://html
 www.example.com/path htmlPrepend://(alert(1))
 www.example.com/path jsPrepend://(alert(1)) lineProps://strictHtml
 www.example.com/path cssPrepend://(alert(1))
 ```
-Visiting `https://www.example.com/path` returns the following response:
+Visit `https://www.example.com/path` Return response content:
 ``` html
 <!DOCTYPE html>
 <style>alert(1)</style>
 alert(1)test
 ```
-> `lineProps://strictHtml` only applies to the rules in the current line.
+> `lineProps://strictHtml` only applies to the line where the rule is located

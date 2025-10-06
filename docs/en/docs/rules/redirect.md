@@ -28,5 +28,10 @@ www.example.com/path2 redirect://../abc/123
 ```
 - Visit `https://www.example.com/path/to?query` redirects to `https://www.example.com/to?query`
 
+#### `301` Redirect
+``` txt
+www.example.com/path/test redirect://https://www.qq.com replaceStatus://301
+```
+
 ## Associated Protocols
 1. Pages whose addresses cannot be modified via `302` can use: [locationHref](./locationHref)

@@ -15,36 +15,61 @@ pattern enable://action1 enable://action2 ... [filters...]
 | action | Specific action, see the description below | |
 | filters | Optional filters, supporting matching:<br/>• Request URL/Method/Headers/Content<br/>• Response Status Code/Headers | [Filter Documentation](./filters) |
 
+- `abort`: Interrupt the request during the request or response phase (based on the matching phase)
+- `abortReq`: Interrupt the request during the request phase
+- `abortRes`: Interrupt the request during the response phase
+- `authCapture`: Force execution of the [auth hook](../extensions/dev#auth) before converting to HTTPS (default behavior is to execute the plugin's auth hook after converting to an HTTPS request)
+- `auto2http`: Enable automatic fallback to HTTP requests when HTTPS requests encounter TLS errors. By default, this is automatically enabled if the serverIP is a local IP
+- `bigData`: Increase the data display limit for captured packets (2M → 16M)
+- `br`: Enable BR compression for response content
+- `gzip`: Enable GZIP compression for response content
+- `deflate`: Enable Deflate compression for response content
 - `capture` or `https`: Enable HTTPS (same as the [HTTPS menu function](../gui/https.html))
-- `authCapture`: Force execution of the [auth] before converting to HTTPS hook](../extensions/dev#auth) (By default, the plugin's auth hook is executed after converting the request to HTTPS)
-- `abort`: Aborts the request at the request or response stage (depending on the matching stage)
-- `abortReq`: Aborts the request at the request stage
-- `abortRes`: Aborts the response at the response stage
-- `br`: Enables BR compression of the response content
-- `gzip`: Enables GZIP compression of the response content
-- `deflate`: Enables Deflate compression of the response content
-- `proxyHost`: Both [proxy](./proxy) and [host](./host) take effect simultaneously
-- `proxyTunnel`: Used with `proxyHost`, it allows the upstream proxy to tunnel to the upstream HTTP proxy. See the example below for details.
-- `proxyFirst`: Prioritizes the [proxy](./proxy) rule
-- `http2`: Browser -> Whistle Proxy -> Enable HTTP2 for all servers
-- `h2`: Whistle Proxy -> Enable HTTP2 for the server
-- `httpH2`: Whistle Proxy -> Enable HTTP2 for HTTP requests to the server
-- `safeHtml`: This is a security feature. When injecting content into an HTML page using `htmlXxx`/`jsXxx`/`cssXxx`, the response is first checked to see if the first non-whitespace character is `{` or `[` (the opening characters of a JSON object). Injection is performed only if these characters are not. This effectively prevents accidental injection into non-standard HTML responses (such as JSON endpoints).
-- `strictHtml`: This is a security feature. When injecting content into an HTML page using `htmlXxx`/`jsXxx`/`cssXxx`, the response is first checked to see if the first non-whitespace character is `<`. Injection is performed only if these characters are not. This effectively prevents accidental injection into non-standard HTML responses (such as JSON interfaces).
-- `clientIp`: Sets the x-forwarded-for request header for matching non-local requests, transparently transmitting the client's real IP address to the upstream service.
-- `bigData`: Increases the packet capture data display limit (2MB → 16MB).
-- `forceReqWrite`: When writing request data to a local file using `reqWrite` (./reqWrite) or `reqWriteRaw` (./reqWriteRaw), if the corresponding file already exists, the write operation will be skipped by default to protect the existing file. You can force an overwrite with `enable://forceReqWrite`.
-- `forceResWrite`: When writing response data to a local file using `resWrite` (./resWrite) or `reqWriteRaw` (./reqWriteRaw), if the corresponding file already exists, the write operation will be skipped by default to protect the existing file. You can force an overwrite with `enable://forceResWrite`.
-- `auto2http`: Enables HTTPS request reporting. Automatically convert TLS errors to HTTP requests. This feature is enabled by default if the server IP is a local IP address.
-- `customParser`: Customizes the packet capture interface display. For usage, refer to the plugin: https://github.com/whistle-plugins/whistle.custom-parser
-- `hide`: Hides the packet capture data on the interface.
-- `inspect`: Enables viewing of Tunnel request content in the Inspectors/Frames.
-- `keepCSP`: Automatically removes the `csp` response header field when injecting content via `htmlXxx`/`jsXxx`/`cssXxx`. To retain this field, use `enable://keepCSP`.
-- `keepAllCSP`: Automatically removes the `csp` response header field when injecting content via `htmlXxx`/`jsXxx`/`cssXxx`/`weinre`/`log`. To retain this field, use `enable://keepCSP`.
-- `keepCache`: Automatically removes the `csp` response header field when injecting content via `htmlXxx`/`jsXxx`/`cssXxx`/`weinre`/`log`. `htmlXxx`/`jsXxx`/`cssXxx`/`weinre`/`log` automatically removes cached response headers when injecting content. If you want to retain custom cache headers, use `enable://keepCache`.
-- `useLocalHost`: Modifies the domain name of `log` and `weinre` request URLs to the built-in domain name.
-- `useSafePort`: Modifies the port number of `log` and `weinre` request URLs to the built-in port.
-- `userLogin`: Sets whether to display the login dialog box for [statusCode://401](./statusCode) (displayed by default).
+- `captureIp`: For requests where the domain is an IP, HTTPS requests are not decrypted by default. Use `enable://captureIp` to enable HTTPS request parsing
+- `captureStream`: Output captured request and response content in stream form to the capture interface in real time, with dynamic appending
+- `clientCert`: Enable mutual authentication (mTLS) between the client and server
+- `clientId`: Add the request header `x-whistle-client-id: Whistle locally generated unique ID`
+- `clientIp`: Set the `x-forwarded-for` request header for matched non-local requests to forward the client's real IP address to upstream services
+- `customParser`: Customize the display content of the capture interface. For usage, refer to the plugin: https://github.com/whistle-plugins/whistle.custom-parser
+- `flushHeaders`: Call [response.flushHeaders](https://nodejs.org/docs/latest/api/http.html#responseflushheaders) after `response.writeHead(...)` (enabled by default)
+- `forHttp`: Make the `capture` function only effective for HTTP requests
+- `forHttps`: Make the `capture` function only effective for HTTPS requests
+- `forceReqWrite`: When using [reqWrite](./reqWrite) or [reqWriteRaw](./reqWriteRaw) to write request data to a local file, if the corresponding file already exists, the write operation is skipped by default to protect the existing file. Use `enable://forceReqWrite` to force overwriting
+- `forceResWrite`: When using [resWrite](./resWrite) or [reqWriteRaw](./reqWriteRaw) to write response data to a local file, if the corresponding file already exists, the write operation is skipped by default to protect the existing file. Use `enable://forceResWrite` to force overwriting
+- `h2`: Enable HTTP2 from Whistle proxy → server
+- `http2`: Enable HTTP2 for browser → Whistle proxy → server
+- `httpH2`: Enable HTTP2 for HTTP requests from Whistle proxy → server
+- `hide`: Hide captured packet data on the interface (excluding `captureError` and requests sent by Composer)
+- `hideComposer`: Hide requests sent by Composer
+- `hideCaptureError`: Hide `captureError` requests
+- `showHost`: Set the server IP to the response header `x-host-ip`
+- `ignoreSend`: Ignore sending data frames for WebSocket and TUNNEL requests (TUNNEL requests require `inspect` to be enabled)
+- `ignoreReceive`: Ignore receiving data frames for WebSocket and TUNNEL requests (TUNNEL requests require `inspect` to be enabled)
+- `pauseSend`: Pause sending data frames for WebSocket and TUNNEL requests (TUNNEL requests require `inspect` to be enabled)
+- `pauseReceive`: Pause receiving data frames for WebSocket and TUNNEL requests (TUNNEL requests require `inspect` to be enabled)
+- `inspect`: Enable viewing of TUNNEL request content in Inspectors / Frames
+- `interceptConsole`: Intercept `console.xxx` requests and display them in the Log panel of the Whistle management interface (enabled by default)
+- `internalProxy`: Use proxy protocols like `proxy` or `socks` to forward requests to other proxy servers (e.g., another Whistle instance). After enabling this, HTTPS requests decrypted by the first-layer proxy will be transmitted in plain text within the proxy chain, allowing upstream proxies to directly access plain text data
+- `proxyFirst`: Prioritize using [proxy](./proxy) rules (by default, when both `host` and `proxy` match, only `host` takes effect)
+- `proxyHost`: Make both [proxy](./proxy) and [host](./host) take effect simultaneously
+- `proxyTunnel`: Use with `proxyHost` to allow the upstream proxy to tunnel through to an upper-layer HTTP proxy. See the example below for details
+- `keepCSP`: Automatically remove the `csp` field from response headers when injecting content via `htmlXxx`/`jsXxx`/`cssXxx`. Use `enable://keepCSP` to retain these fields
+- `keepAllCSP`: Automatically remove the `csp` field from response headers when injecting content via `htmlXxx`/`jsXxx`/`cssXxx`/`weinre`/`log`. Use `enable://keepAllCSP` to retain these fields
+- `keepCache`: Automatically remove cache fields from response headers when injecting content via `htmlXxx`/`jsXxx`/`cssXxx`. Use `enable://keepCache` to retain the original cache headers
+- `keepAllCache`: Automatically remove cache fields from response headers when injecting content via `htmlXxx`/`jsXxx`/`cssXxx`/`weinre`/`log`. Use `enable://keepAllCache` to retain the original cache headers
+- `keepClientId`: Retain the original `x-whistle-client-id` request header (by default, the incoming `x-whistle-client-id` is deleted)
+- `safeHtml`: A security mechanism that checks if the first non-whitespace character of the response content is `{` or `[` (indicating a JSON object) before injecting content via `htmlXxx`/`jsXxx`/`cssXxx` into an HTML page. If not, the injection proceeds. This prevents accidental injection into non-HTML responses (e.g., JSON interfaces)
+- `strictHtml`: A security mechanism that checks if the first non-whitespace character of the response content is `<` before injecting content via `htmlXxx`/`jsXxx`/`cssXxx` into an HTML page. If not, the injection proceeds. This prevents accidental injection into non-HTML responses (e.g., JSON interfaces)
+- `multiClient`: When Whistle acts as a public proxy with `enable://clientId` enabled, a fixed `x-whistle-client-id` header is added to all requests, preventing upstream services from distinguishing between clients. Enabling `enable://multiClient` generates and maintains a unique and consistent identifier for each client connection, ensuring upstream services can accurately identify request sources
+- `requestWithMatchedRules`: Include the currently matched rules in the request headers
+- `responseWithMatchedRules`: Include the currently matched rules in the response headers
+- `tunnelHeadersFirst`: Controls the priority of request header merging. Plugins can pass tunnel (TUNNEL) request headers to subsequent stages via [tunnelKey](../extensions/dev). The default merging rule is: if a tunnel header and a parsed regular request header have the same key, the regular request header value is retained. Enabling `enable://tunnelHeadersFirst` changes this behavior, ensuring tunnel request headers take priority and override any conflicting regular headers
+- `useLocalHost`: Modify the domain of `log` and `weinre` request URLs to use built-in domains
+- `useSafePort`: Modify the port of `log` and `weinre` request URLs to use built-in ports
+- `userLogin`: Set whether [statusCode://401](./statusCode) displays a login box (enabled by default)
+- `weakRule`: By default, when protocols like [file](./file) are configured, [proxy](./proxy) rules automatically become invalid. Setting the `weakRule` property increases the priority of [proxy](./proxy) rules, allowing them to remain effective in such scenarios
+- `socket`: After enabling HTTPS parsing (`Enable HTTPS` or `enable://https`), TUNNEL requests sent to ports `80/443` are forcibly attempted to be parsed as HTTP/HTTPS traffic. By default, if parsing fails, the connection is destroyed; requests to other ports continue as TUNNEL connections if parsing fails. Setting `enable://socket` allows requests to ports `80/443` to degrade to TUNNEL connections if parsing fails, avoiding connection destruction
+- `websocket`: Used to handle non-standard WebSocket connections. Some requests use the WebSocket protocol for transmission but have non-standard Upgrade headers (e.g., `Upgrade: websocket`). By default, Whistle treats them as ordinary TCP connections without parsing the data. Enabling `enable://websocket` forces Whistle to recognize such connections as WebSocket protocols and parse the data
 
 ## Configuration Example
 ``` txt

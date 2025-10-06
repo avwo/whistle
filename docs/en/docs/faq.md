@@ -2,6 +2,26 @@
 
 Please file an [issue](https://github.com/avwo/whistle/issues/new) if you encounter any issues or suggestions.
 
+## Q: Why does the capture list show `Tunnel to`? {#tunnel-to}
+
+This typically occurs in the following scenarios. Please identify your specific situation and follow the corresponding solution:
+
+1.  **Regular TCP connection (cannot be parsed as HTTP/HTTPS request)**
+2.  **HTTPS Capture Not Enabled (Most Common)**
+    *   **Cause**: You have not installed the root certificate or enabled the `Enable HTTPS` option. As a result, Whistle cannot decrypt HTTPS traffic and can only display it as an encrypted tunnel.
+    *   **Solution**: Please install the root certificate and enable the `Enable HTTPS` option.
+        *   **Whistle Client (GUI)**: Please follow the installation and configuration guide in the official repository: [https://github.com/avwo/whistle-client](https://github.com/avwo/whistle-client)
+        *   **Command-Line Version**: Please refer to the official repository for instructions: [https://github.com/avwo/whistle](https://github.com/avwo/whistle)
+        *   **Mobile Device Capture**: For configuration steps on mobile devices, please see: [Mobile Capture](./mobile)
+
+3.  **Capture Error (`captureError`)**
+    *   **Cause**: An error occurred during the HTTPS decryption process.
+    *   **Solution**: Please see the dedicated question below for troubleshooting steps: [Q: How to resolve `captureError`?](#capture-error)
+
+4.  **Request to an IP Address**
+    *   **Cause**: The request uses a literal IP address (e.g., `https://192.168.1.1`) instead of a domain name. Most clients do not send SNI information for such requests, preventing Whistle from automatically recognizing them as HTTPS.
+    *   **Solution**: You need to explicitly configure a rule to tell Whistle to capture HTTPS for that IP. For details, please see the question below: [Q: How to capture HTTPS requests made to an IP address?](#capture-ip)
+
 ## Q: Why does `captureError` appear in the packet capture list? {#capture-error}
 1. The client making the request does not have the root certificate installed. To install it, refer to the following:
    - PC: [Install the root certificate](./)
@@ -24,6 +44,17 @@ Please file an [issue](https://github.com/avwo/whistle/issues/new) if you encoun
     > - Search for preferences: security.enterprise_roots.enabled
     > - Change the value to true
     > - Restart the browser for the changes to take effect
+
+## Q: Why are HTTPS requests made to an IP address still not decrypted after installing the root certificate and enabling `Enable HTTPS`?{#capture-ip}
+
+This is because for HTTPS requests directly initiated using an IP address, the client typically does not send SNI (Server Name Indication) information during the handshake phase. The absence of SNI makes it difficult for Whistle to quickly determine whether it is an HTTPS request that needs decryption, and since most such requests are ordinary TCP traffic, Whistle may treat them as regular TCP traffic. You can configure rules to explicitly instruct Whistle to recognize requests to specific IPs as HTTPS and perform decryption capture:
+
+```txt
+ip[:port] enable://captureIp
+
+# Or
+ip[:port] enable://capture
+```
 
 ## Q: How do I configure HTTPS requests with mutual authentication (mTLS)?
 

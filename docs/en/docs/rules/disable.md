@@ -15,46 +15,74 @@ pattern disable://action1 disable://action2 ... [filters...]
 | action | Specific action, see the description below | |
 | filters | Optional filters, supports matching:<br/>• Request URL/Method/Headers/Content<br/>• Response Status Code/Headers | [Filter Documentation](./filters) |
 
-- `capture` or `https`: Disable `Enable HTTPS`
-- `authCapture`: Disable the `authCapture` feature, see [enable](./enable) for details
-- `abort`: Disable abort For details, see: [enable](./enable)
-- `abortReq`: Disables the abortReq feature. For details, see: [enable](./enable)
-- `abortRes`: Disables the abortRes feature. For details, see: [enable](./enable)
-- `gzip`: Disables response content compression
-- `proxyHost`: Disables the proxyHost feature. For details, see: [enable](./enable)
-- `proxyTunnel`: Disables the proxyTunnel feature. For details, see: [enable](./enable)
-- `proxyFirst`: Disables the use of the proxy rule first
-- `http2`: Disables the http2 feature. For details, see: [enable](./enable)
-  > Disabled: Browser -xx-> Whistle Proxy -xx-> Enable HTTP2 for all servers
-- `h2`: Disables the h2 feature. For details, see: [enable](./enable)
-  > Disabled: Whistle Proxy -xx-> Enable HTTP2 for the server
-- `httpH2`: Disables httpH2 For details, see: [enable](./enable)
-  > Disabled: Whistle Proxy -xx-> Enable HTTP2 for HTTP requests to the server
-- `safeHtml`: Disables the safeHtml feature. For details, see: [enable](./enable)
-- `strictHtml`: Disables the strictHtml feature. For details, see: [enable](./enable)
-- `clientIp`: Removes the x-forwarded-for request header
-- `bigData`: Disables the bigData feature. For details, see: [enable](./enable)
-- `forceReqWrite`: Disables the forceReqWrite feature. For details, see: [enable](./enable)
-- `forceResWrite`: Disables the forceResWrite feature. For details, see: [enable](./enable)
-- `auto2http`: Disables the auto2http feature. For details, see: [enable](./enable)
-- `hide`: Disables the hide feature. For details, see: [enable](./enable)
-- `useLocalHost`: Disable the `useLocalHost` feature. For details, see: [enable](./enable)
-- `useSafePort`: Disable the `useSafePort` feature. For details, see: [enable](./enable)
-- `cookies`: Disable request and response cookies
+- `301`: Disable `301` redirects, force `301` to `302` (can also use [replaceStatus](./replaceStatus))
+- `abort`: Disable the abort feature, see: [enable](./enable)
+- `abortReq`: Disable the abortReq feature, see: [enable](./enable)
+- `abortRes`: Disable the abortRes feature, see: [enable](./enable)
+- `authCapture`: Disable the `authCapture` feature, see: [enable](./enable)
+- `auto2http`: Disable the auto2http feature, see: [enable](./enable)
+- `autoCors`: When using the [file](./file) protocol to replace requests, if Whistle detects that the request is a cross-origin request, it automatically adds necessary CORS (Cross-Origin Resource Sharing) headers. This can be disabled via `disable://autoCors`
+- `ajax`: Remove the request header `x-requested-with`
+- `bigData`: Disable the bigData feature, see: [enable](./enable)
+- `capture` or `https`: Disable `Enable HTTPS`, see: [enable](./enable)
+- `captureIp`: Disable the captureIp feature, see: [enable](./enable)
+- `captureStream`: Disable the captureStream feature, see: [enable](./enable)
+- `clientCert`: Disable the clientCert feature, see: [enable](./enable)
+- `clientId`: Remove the request header `x-whistle-client-id`
+- `clientIp`: Remove the request header `x-forwarded-for`
+- `customParser`: Disable the customParser feature, see: [enable](./enable)
+- `cache`: Disable caching
+- `dnsCache`: Disable DNS caching
+- `csp`: Disable CSP
+- `cookies`: Disable cookies for requests and responses
 - `reqCookies`: Disable request cookies
 - `resCookies`: Disable response cookies
-- `ua`: Disable `user-agent`
-- `referer`: Disable `referer`
-- `csp`: Disable CSP
-- `cache`: Disable caching
-- `301`: Disable 301 redirects, force 301 redirects to 302
-- `dnsCache`: Disable DNS caching
-- `ajax`: Remove the `x-requested-with` request header
+- `flushHeaders`: Disable the flushHeaders feature, see: [enable](./enable)
+- `forHttp`: Disable the forHttp feature, see: [enable](./enable)
+- `forHttps`: Disable the forHttps feature, see: [enable](./enable)
+- `forceReqWrite`: Disable the forceReqWrite feature, see: [enable](./enable)
+- `forceResWrite`: Disable the forceResWrite feature, see: [enable](./enable)
+- `gzip`: Disable response compression
+- `h2`: Disable the h2 feature, see: [enable](./enable)
+  > Disable: Whistle proxy -xx-> server enables HTTP2
+- `http2`: Disable the http2 feature, see: [enable](./enable)
+  > Disable: Browser -xx-> Whistle proxy -xx-> server all enable HTTP2
+- `httpH2`: Disable the httpH2 feature, see: [enable](./enable)
+  > Disable: Whistle proxy -xx-> server HTTP requests enable HTTP2
+- `hide`: Disable the hide feature, see: [enable](./enable)
+- `hideComposer`: Disable the hideComposer feature, see: [enable](./enable)
+- `hideCaptureError`: Disable the hideCaptureError feature, see: [enable](./enable)
+- `interceptConsole`: Disable the interceptConsole feature, see: [enable](./enable)
+- `internalProxy`: Disable the internalProxy feature, see: [enable](./enable)
+- `proxyFirst`: Disable prioritizing the use of [proxy](./proxy) rules
+- `proxyHost`: Disable the proxyHost feature, see: [enable](./enable)
+- `proxyTunnel`: Disable the proxyTunnel feature, see: [enable](./enable)
+- `keepCSP`: Disable the keepCSP feature, see: [enable](./enable)
+- `keepAllCSP`: Disable the keepAllCSP feature, see: [enable](./enable)
+- `keepCache`: Disable the keepCache feature, see: [enable](./enable)
+- `keepAllCache`: Disable the keepAllCache feature, see: [enable](./enable)
 - `keepAlive`: Disable caching of request connections
+- `keepClientId`: Disable the keepClientId feature, see: [enable](./enable)
+- `keepH2Session`: No need for each TUNNEL connection to correspond to one HTTP2 connection (default is `yes`, recommended to use default)
+- `safeHtml`: Disable the safeHtml feature, see: [enable](./enable)
+- `strictHtml`: Disable the strictHtml feature, see: [enable](./enable)
+- `proxyConnection`: Set `proxy-connection: close` when forwarding requests via proxy, socks, or other proxy protocols
+- `ua`: Remove the request header `user-agent`
+- `proxyUA`: Remove the request header `user-agent` when forwarding requests via proxy, socks, or other proxy protocols
+- `referer`: Disable `referer`
+- `rejectUnauthorized`: Set `rejectUnauthorized` to `true`
+- `requestWithMatchedRules`: Disable the requestWithMatchedRules feature, see: [enable](./enable)
+- `responseWithMatchedRules`: Disable the responseWithMatchedRules feature, see: [enable](./enable)
+- `secureOptions`: Disable the default `options` for establishing HTTP2 connections
 - `timeout`: Disable request timeout settings
-- `autoCors`: When using the [file](./file) protocol to replace a request, if Whistle detects that the request is cross-origin, it will automatically add the necessary CORS (Cross-Origin Resource Sharing) headers. This can be disabled using `disable://autoCors`.
-
-- `userLogin`: Disables the login dialog when setting [statusCode://401](./statusCode).
+- `trailerHeader`: Remove the response header `trailer`
+- `trailers`: Remove trailers
+- `tunnelAuthHeader`: Remove the proxy authentication header `proxy-authorization`
+- `tunnelHeadersFirst`: Disable the tunnelHeadersFirst feature, see: [enable](./enable)
+- `useLocalHost`: Disable the useLocalHost feature, see: [enable](./enable)
+- `useSafePort`: Disable the useSafePort feature, see: [enable](./enable)
+- `userLogin`: Disable showing the login box when setting [statusCode://401](./statusCode)
+- `weakRule`: Disable the weakRule feature, see: [enable](./enable)
 
 ## Configuration Example
 ``` txt

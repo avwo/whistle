@@ -695,9 +695,7 @@ Use this when you need to use an external page as the plugin management interfac
 **Basic Configuration**
 ```js
 {
-  "whistleConfig": {
-    "pluginHomepage": "https://your-external-page.com" // External page URL
-  }
+  "pluginHomepage": "https://your-external-page.com" // External page URL
 }
 ```
 
@@ -708,9 +706,9 @@ To force external links to open within Whistle (Tab or dialog mode):
 ```js
 {
   ...
+  "pluginHomepage": "https://your-external-page.com",
   "whistleConfig": {
     ...
-    "pluginHomepage": "https://your-external-page.com",
     "openInModal": { // Force opening in a pop-up window
     "width": 360,
     "height": 566
@@ -724,10 +722,10 @@ To force external links to open within Whistle (Tab or dialog mode):
 **Method 2: Tab Mode**
 ```js
 {
-...
+  ...
+  "pluginHomepage": "https://your-external-page.com",
   "whistleConfig": {
     ...
-    "pluginHomepage": "https://your-external-page.com",
     "openInPlugins": true // Force opening in the plugin tab
     ...
   }
@@ -1132,14 +1130,14 @@ Implementing uses different paths when passing or not through Whistle proxy, but
 ``` js
 {
   ...,
+  "homepage": '', // Plugin help page address
+  "pluginHomepage": '', // Custom plugin operation page address, defaults to `/plugin.xxx/`
   "whistleConfig": {
     "hideLongProtocol": false, // Whether to hide the plugin's long protocol. If set to true, the plugin's protocol will be displayed as deleted when configured in the Rules interface.
     "hideShortProtocol": false, // Whether to hide the plugin's short protocol. If set to true, the plugin's protocol will be displayed as deleted when configured in the Rules interface.
     "priority": 0, // The default value is 0. Plugin priority is sorted from oldest to newest by update time (older updates have higher priority). This field can be used to adjust the priority order.
     "favicon": '', // The icon on the plugin tab. This can be the plugin's relative path `/public/xxx.png` Or an absolute path `https://xxx` or `data:image/png;base64,xxx`
     "registry": '', // Plugin's npm registry
-    "homepage": '', // Plugin help page address
-    "pluginHomepage": '', // Custom plugin operation page address, defaults to `/plugin.xxx/`
     "noOption": false, // If the operation interface does not exist, set this to true to gray out the Option button
     "enableAuthUI": false, // Whether the plugin's auth hook applies to the plugin operation interface (use with caution)
     "tunnelKey": '', // String or string array. If you need to continue to proxy the request through the tunnel to another HTTP proxy, you can specify which request headers to pass through

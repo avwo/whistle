@@ -26,6 +26,9 @@ export default defineConfig({
       lang: 'en',
       link: '/en/',
       themeConfig: {
+        search: {
+          provider: 'local',
+        },
         nav: [
           { text: 'Home', link: '/en/' },
           { text: 'Documentation', link: '/en/docs/' },
@@ -163,6 +166,7 @@ export default defineConfig({
                   { text: 'resWriteRaw', link: '/en/docs/rules/resWriteRaw' },
                   { text: 'resRules', link: '/en/docs/rules/resRules' },
                   { text: 'resScript', link: '/en/docs/rules/resScript' },
+                  { text: 'frameScript', link: '/en/docs/rules/frameScript' },
                 ]
               },
               {
@@ -231,6 +235,9 @@ export default defineConfig({
   },
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
+    search: {
+      provider: 'local',
+    },
     nav: [
       { text: '首页', link: '/' },
       { text: '帮助文档', link: '/docs/' },
@@ -369,6 +376,7 @@ export default defineConfig({
               { text: 'resWriteRaw', link: '/docs/rules/resWriteRaw' },
               { text: 'resRules', link: '/docs/rules/resRules' },
               { text: 'resScript', link: '/docs/rules/resScript' },
+              { text: 'frameScript', link: '/docs/rules/frameScript' },
             ]
           },
           {

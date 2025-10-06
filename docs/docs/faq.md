@@ -2,6 +2,26 @@
 
 遇到问题或建议请提 [issue](https://github.com/avwo/whistle/issues/new)
 
+## Q：抓包列表中为何显示 `Tunnel to`？ {#tunnel-to}
+
+通常出现该提示源于以下几种情况。请根据您的具体场景参照对应的解决方案：
+
+1.  **普通的 TCP 连接（无法解析为 HTTP/HTTPS 请求）**
+2.  **未启用 HTTPS 抓包（最常见）**
+    *   **原因**：您未安装根证书或未开启 `Enable HTTPS` 选项。因此，Whistle 无法解密 HTTPS 流量，只能将其显示为加密隧道。
+    *   **解决方案**：请安装根证书并开启 `Enable HTTPS` 选项。
+        *   **Whistle 客户端 (GUI)**：请遵循官方仓库中的安装配置指南：[https://github.com/avwo/whistle-client](https://github.com/avwo/whistle-client)
+        *   **命令行版本**：请参考官方仓库说明：[https://github.com/avwo/whistle](https://github.com/avwo/whistle)
+        *   **移动端抓包**：移动设备配置步骤，请参见：[移动端抓包](./mobile)
+
+3.  **捕获错误（`captureError`）**
+    *   **原因**：HTTPS 解密过程中发生错误。
+    *   **解决方案**：请参阅下方的专门问答进行故障排查：[Q：如何解决 `captureError`？](#capture-error)
+
+4.  **发往 IP 地址的请求**
+    *   **原因**：该请求使用了字面 IP 地址（例如 `https://192.168.1.1`）而非域名。对于此类请求，大多数客户端不会发送 SNI 信息，导致 Whistle 无法自动将其识别为 HTTPS 请求。
+    *   **解决方案**：您需要显式配置规则来告知 Whistle 对该 IP 进行 HTTPS 捕获。详情请参见下方问答：[Q：如何捕获发往 IP 地址的 HTTPS 请求？](#capture-ip)
+
 ## Q：抓包列表中出现 `captureError` 的原因？{#capture-error}
 1. 发出请求的客户端没有安装根证书，安装方法参考：
    - PC 端：[安装根证书](./)
@@ -24,6 +44,15 @@
   > - 搜索首选项：security.enterprise_roots.enabled
   > - 将值改为 true
   > - 重启浏览器生效
+
+## Q：为何安装了根证书并开启了 `Enable HTTPS`，对 IP 地址的 HTTPS 请求仍无法解密？{#capture-ip}
+这是因为对于直接使用 IP 地址发起的 HTTPS 请求，客户端通常在握手阶段不会发送 SNI 信息。缺少 SNI 使得 Whistle 无法快速判断这是一个需要解密的 HTTPS 请求，且大部分这类请求都是普通 TCP 请求，从而可能将其视为普通的 TCP 流量处理。可以通过配置规则，显式地告知Whistle将特定IP的请求识别为HTTPS并进行解密捕获：
+``` txt
+ip[:port] enable://captureIp
+
+# 或
+ip[:port] enable://capture
+```
 
 ## Q：如何配置双向认证（mTLS）的 HTTPS 请求？
 

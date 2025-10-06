@@ -674,9 +674,7 @@ tunnelRulesServer 是专门用于处理 TUNNEL 请求的动态规则生成机制
 **基础配置**  
 ```js
 {
-  "whistleConfig": {
-    "pluginHomepage": "https://your-external-page.com" // 外部页面地址
-  }
+   "pluginHomepage": "https://your-external-page.com" // 外部页面地址
 }
 ```
 
@@ -687,9 +685,9 @@ tunnelRulesServer 是专门用于处理 TUNNEL 请求的动态规则生成机制
 ```js
 {
   ...
+  "pluginHomepage": "https://your-external-page.com",
   "whistleConfig": {
     ...
-    "pluginHomepage": "https://your-external-page.com",
     "openInModal": {  // 强制以弹窗打开
       "width": 360,
       "height": 566
@@ -704,9 +702,9 @@ tunnelRulesServer 是专门用于处理 TUNNEL 请求的动态规则生成机制
 ```js
 {
   ...
+  "pluginHomepage": "https://your-external-page.com",
   "whistleConfig": {
     ...
-    "pluginHomepage": "https://your-external-page.com",
     "openInPlugins": true  // 强制在插件Tab页打开
     ...
   }
@@ -1111,14 +1109,14 @@ path/to
 ``` js
 {
   ...,
+  "homepage": '', // 插件帮助页面地址
+  "pluginHomepage": '', // 自定义插件操作页面地址，默认为 `/plugin.xxx/
   "whistleConfig": {
     "hideLongProtocol": false, // 是否隐藏插件的长协议，设置为 true 后，Rules 界面里面配置该插件协议会显示已被删除
     "hideShortProtocol": false, // 是否隐藏插件的短协议，设置为 true 后，Rules 界面里面配置该插件协议会显示已被删除
     "priority": 0, // 默认值为0，插件优先级按更新时间从旧到新排序（越早更新的优先级越高），可通过此字段调整优先级顺
     "favicon": '', // 插件 Tab 页上的 icon，可以为插件相对路径 `/public/xxx.png` 或绝对路径 `https://xxx` 或 `data:image/png;base64,xxx`
     "registry": '', // 插件的 npm registry
-    "homepage": '', // 插件帮助页面地址
-    "pluginHomepage": '', // 自定义插件操作页面地址，默认为 `/plugin.xxx/`
     "noOption": false, // 如果不存在操作界面，可以设置为 true，这样 Option 按钮会置灰
     "enableAuthUI": false, // 插件的 auth hook 是否作用于插件操作界面（慎用）
     "tunnelKey": '', // 字符串或字符串组，如果需要继续将请求通过 TUNNEL 代理到其它 HTTP Proxy 时，可以指定哪些请求头跟着过去

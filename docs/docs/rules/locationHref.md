@@ -31,6 +31,13 @@ www.example.com/path2 locationHref://../abc/123
 ```
 - 访问 `https://www.example.com/path/to?query` 重定向到 `https://www.example.com/to?query`
 
+#### location.replace
+若需通过 `location.replace(targetUrl)` 实现无历史记录的页面跳转，可按以下格式配置：
+``` txt
+www.example.com/path locationHref://replace:https://www.qq.com
+```
+> 跳转至目标 URL，且当前页面不会存入浏览器历史记录，用户无法通过“返回”按钮回到原页面
+
 ## 关联协议
-1. 无法通过 `302` 修改地址的页面可用：[locationHref](./locationHref)
+1. `302` 跳转：[redirect](./redirect)
 
