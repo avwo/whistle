@@ -1,3 +1,6 @@
+## v2.9.103
+1. feat: 新增 [frameScript](https://wproxy.org/docs/rules/frameScript.html) 用于通过 JS 修改 WebSocket 或普通 TCP 请求内容
+
 ## v2.9.102
 1. feat: 命令行启动时提醒有版本更新，https://github.com/avwo/whistle/issues/1245
 2. feat: 新增功能 `delete://pathname` 及 `delete://pathname.index`
