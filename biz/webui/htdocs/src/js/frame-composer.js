@@ -240,7 +240,7 @@ var FrameComposer = React.createClass({
               className="btn btn-default btn-sm"
             >
               <span className="glyphicon glyphicon-arrow-left"></span>
-              Send to client
+              Send To Client
             </button>
             <button
               disabled={disabled}
@@ -258,15 +258,15 @@ var FrameComposer = React.createClass({
               className={'dropdown-menu' + (closed ? ' hide' : '')}
             >
               <li style={displayStyle}>
-                <a onClick={this.onSend}>Send binary data</a>
+                <a onClick={this.onSend}>Send Binary Data</a>
               </li>
               <li>
                 <a onClick={this.uploadTextToClient}>
-                  {isHttps ? 'Upload to client' : 'Upload text data'}
+                  {isHttps ? 'Upload ' : 'Upload Text Data'}
                 </a>
               </li>
               <li style={displayStyle}>
-                <a onClick={this.uploadBinToClient}>Upload binary data</a>
+                <a onClick={this.uploadBinToClient}>Upload Binary Data</a>
               </li>
             </ul>
           </div>
@@ -281,7 +281,7 @@ var FrameComposer = React.createClass({
               className="btn btn-default btn-sm"
             >
               <span className="glyphicon glyphicon-arrow-right"></span>
-              Send to server
+              Send To Server
             </button>
             <button
               disabled={disabled}
@@ -300,16 +300,16 @@ var FrameComposer = React.createClass({
             >
               <li style={displayStyle}>
                 <a data-target="server" onClick={this.onSend}>
-                  Send binary data
+                  Send Binary Data
                 </a>
               </li>
               <li>
                 <a onClick={this.uploadTextToServer}>
-                  {isHttps ? 'Upload to server' : 'Upload text data'}
+                  {isHttps ? 'Upload ' : 'Upload Text Data'}
                 </a>
               </li>
               <li style={displayStyle}>
-                <a onClick={this.uploadBinToServer}>Upload binary data</a>
+                <a onClick={this.uploadBinToServer}>Upload Binary Data</a>
               </li>
             </ul>
           </div>

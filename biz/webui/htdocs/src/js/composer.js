@@ -63,7 +63,16 @@ var METHODS = [
 var SEND_CTX_MENU = [
   { name: 'Send Body Via File', action: 'file' },
   { name: 'Repeat Times' },
-  { name: 'Show History', action: 'history' }
+  { name: 'Show History', action: 'history' },
+  {
+    name: 'Service',
+    list: [
+      { name: 'Share Via URL', action: 'shareViaUrl' },
+      { name: 'Create API Test', action: 'createApiTest' },
+      { name: 'Copy As Script', action: 'copyAsScript' },
+      { name: 'Load Test', action: 'loadTest' }
+    ]
+  }
 ];
 var MAX_FILE_SIZE = 1024 * 1024 * 20;
 var MAX_RES_SIZE = 1024 * 1024 * 3;
@@ -1274,9 +1283,12 @@ var Composer = React.createClass({
   },
   onContextMenu: function(e) {
     e.preventDefault();
+    var hideLoadTest = !dataCenter.tokenId;
     var data = util.getMenuPosition(e, 150);
-    data.list = SEND_CTX_MENU;
     SEND_CTX_MENU[2].name = this.state.showHistory ? 'Hide History' : 'Show History';
+    SEND_CTX_MENU[3].hide = hideLoadTest;
+    data.list = SEND_CTX_MENU;
+    data.className = 'w-ctx-sub-menu-left';
     this.refs.contextMenu.show(data);
     this.hideHints();
   },

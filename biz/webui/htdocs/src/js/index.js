@@ -614,7 +614,7 @@ var Index = React.createClass({
       {
         name: 'Issue',
         href: 'https://github.com/avwo/whistle/issues/new',
-        icon: 'pencil'
+        icon: 'record'
       }
     ];
     protocols.setPlugins(state);
@@ -2611,6 +2611,7 @@ var Index = React.createClass({
       return;
     }
     $(e.target).closest('div').addClass('w-menu-wrapper-show');
+    util.shakeElem($(ReactDOM.findDOMNode(this.refs.weinreMenuItem)));
   },
   showWeinreOptions: function (e) {
     var self = this;
@@ -4464,7 +4465,7 @@ var Index = React.createClass({
             <span
               className={
                 'glyphicon glyphicon-' +
-                (state.interceptHttpsConnects ? 'ok' : 'lock')
+                (state.interceptHttpsConnects ? 'ok-circle' : 'lock')
               }
             />
             <span className="w-https-name">HTTPS</span>

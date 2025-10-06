@@ -227,7 +227,8 @@
 
 .w-context-menu li[data-menu-action='Remove'] ul,
 .w-context-menu li[data-menu-action='Actions'] ul,
-.w-context-menu li[data-menu-action='Copy'] ul {
+.w-context-menu li[data-menu-action='Copy'] ul,
+.w-context-menu.w-ctx-menu-no-plugin li[data-menu-action='Service'] ul {
   top: -31px !important;
 }
 

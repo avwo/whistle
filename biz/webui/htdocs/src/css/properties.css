@@ -62,14 +62,15 @@
 }
 .w-properties th .glyphicon-question-sign {
   display: none;
-}
-
-.w-properties th:hover .glyphicon-question-sign {
-  display: inline-block;
-  vertical-align: text-top;
   margin-right: 5px;
+  vertical-align: text-top;
   cursor: pointer;
   font-size: 13px;
+}
+
+.w-properties th .glyphicon-question-sign.w-enable-https-btn-help,
+.w-properties th:hover .glyphicon-question-sign {
+  display: inline-block;
 }
 
 .w-prop-raw-data {

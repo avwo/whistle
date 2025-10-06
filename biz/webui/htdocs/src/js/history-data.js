@@ -7,6 +7,7 @@ var Divider = require('./divider');
 var ContextMenu = require('./context-menu');
 var events = require('./events');
 var util = require('./util');
+var dataCenter = require('./data-center');
 
 var contextMenuList = [
   { name: 'Copy URL' },
@@ -14,7 +15,16 @@ var contextMenuList = [
   { name: 'Export' },
   { name: 'Replay' },
   { name: 'Repeat Times' },
-  { name: 'Edit' }
+  { name: 'Edit' },
+  {
+    name: 'Service',
+    list: [
+      { name: 'Share Via URL', action: 'shareViaUrl' },
+      { name: 'Create API Test', action: 'createApiTest' },
+      { name: 'Copy As Script', action: 'copyAsScript' },
+      { name: 'Load Test', action: 'loadTest' }
+    ]
+  }
 ];
 var RULES_KEY = /^\s*x-whistle-rule-value:/mi;
 var curItem;
@@ -149,6 +159,7 @@ var HistoryData = React.createClass({
     if (!item) {
       return;
     }
+    var hideLoadTest = !dataCenter.tokenId;
     this._focusItem = item;
     contextMenuList[0].name = isTitle ? 'Copy' : 'Copy URL';
     contextMenuList[0].copyText = elem.attr('title');
@@ -157,7 +168,8 @@ var HistoryData = React.createClass({
     contextMenuList[3].hide = isTitle;
     contextMenuList[4].hide = isTitle;
     contextMenuList[5].hide = isTitle;
-    var data = util.getMenuPosition(e, 130, 185 - (isTitle ? 150 : 0));
+    contextMenuList[6].hide = hideLoadTest || isTitle;
+    var data = util.getMenuPosition(e, 130, 185 - (isTitle ? 150 : 0) + (hideLoadTest ? 0 : 30));
     data.className = 'w-keep-history-data';
     data.list = contextMenuList;
     this.refs.contextMenu.show(data);

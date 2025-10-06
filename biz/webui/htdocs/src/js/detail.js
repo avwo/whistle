@@ -2,6 +2,7 @@ require('./base-css.js');
 require('../css/detail.css');
 var $ = require('jquery');
 var React = require('react');
+var ReactDOM = require('react-dom');
 var events = require('./events');
 var BtnGroup = require('./btn-group');
 var Overview = require('./overview');
@@ -11,6 +12,7 @@ var ComposerList = require('./composer-list');
 var Tools = require('./tools');
 var dataCenter = require('./data-center');
 var IFrame = require('./iframe');
+var util = require('./util');
 
 var ReqData = React.createClass({
   getInitialState: function () {
@@ -79,6 +81,9 @@ var ReqData = React.createClass({
       .on('composer', function (e, item) {
         var modal = self.props.modal;
         self.showComposer(item || (modal && modal.getActive()));
+        setTimeout(function() {
+          self.shakeComposerTab();
+        }, 100);
       })
       .on('showComposerTab', function() {
         self.showComposer();
@@ -169,6 +174,9 @@ var ReqData = React.createClass({
     this.state.tab = tab;
     this.state['inited' + tab.name] = true;
   },
+  shakeComposerTab: function() {
+    util.shakeElem($(ReactDOM.findDOMNode(this.refs.tabs)).find('button[data-name="Composer"]'));
+  },
   render: function () {
     var modal = this.props.modal;
     var state = this.state;
@@ -247,6 +255,7 @@ var ReqData = React.createClass({
         onDrop={this.onDrop}
       >
         <BtnGroup
+          ref="tabs"
           dockBtn={
             <button
               onClick={this.props.onDockChange}

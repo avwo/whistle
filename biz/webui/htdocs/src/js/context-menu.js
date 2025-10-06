@@ -156,6 +156,7 @@ var ContextMenu = React.createClass({
                             (subItem.disabled ? ' w-ctx-item-disabled' : '') +
                             (subItem.copyText ? ' w-copy-text' : '')
                           }
+                          style={{ display: subItem.hide ? 'none' : undefined }}
                           data-clipboard-text={subItem.copyText}
                           data-shift-to-edit={shiftToEdit}
                         >

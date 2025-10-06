@@ -1709,6 +1709,7 @@ exports.addNetworkList = function (list) {
       });
     }
     data.lost = true;
+    data.importedData = true;
     data.id = data.startTime + '-' + ++dataIndex;
     setReqData(data);
     dataList.push(data);

@@ -23,7 +23,7 @@ var Tips = React.createClass({
       return (
         <div className={className}>
           <p>
-            <EnableHttpsBtn />
+            {data.importedData ? null : <EnableHttpsBtn />}
             Tunnel
           </p>
           <a

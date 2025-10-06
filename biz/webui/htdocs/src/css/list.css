@@ -126,3 +126,7 @@
 .w-has-selected-rules.w-has-selected-disabled .CodeMirror {
   border-top-color: #ccc;
 }
+
+.w-nav-normal-tab .glyphicon-ok[data-name="enabledRules"] {
+  color: #5bbd72;
+}

@@ -62,6 +62,7 @@ var BtnGroup = React.createClass({
               onDoubleClick={self.onDoubleClick}
               key={btn.key}
               type="button"
+              data-name={btn.name}
               style={{ display: btn.hide ? 'none' : undefined }}
               title={btn.title}
               className={

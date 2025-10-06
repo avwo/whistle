@@ -1,4 +1,6 @@
 var React = require('react');
+var ReactDOM = require('react-dom');
+var $ = require('jquery');
 var BtnGroup = require('./btn-group');
 var JSONViewer = require('./json-viewer');
 var Textarea = require('./textarea');
@@ -38,6 +40,9 @@ var FrameClient = React.createClass({
     framesCtx.on('composeFrame', function (e, frame) {
       if (frame) {
         self.showTab(4);
+        setTimeout(function() {
+          util.shakeElem($(ReactDOM.findDOMNode(self.refs.tabs)).find('button[data-name="Composer"]'));
+        },100);
       }
     });
     framesCtx.on('toggleFramesInspectors', function () {
@@ -116,7 +121,7 @@ var FrameClient = React.createClass({
         onDragEnter={this.onDragEnter}
         onDrop={this.onDrop}
       >
-        <BtnGroup onClick={this.onClickBtn} btns={state.btns} />
+        <BtnGroup ref="tabs" onClick={this.onClickBtn} btns={state.btns} />
         <Properties modal={overview} hide={btn.name !== 'Overview'} />
         <Textarea
           className="fill"

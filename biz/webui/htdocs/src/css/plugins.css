@@ -1,9 +1,10 @@
 .w-nav-tabs {
-  padding-top: 5px;
   font-size: 13px;
 }
 .w-nav-tabs > .nav-tabs {
   padding-left: 2px;
+  padding-top: 5px;
+  background: #fbfbfb;
 }
 .w-nav-tabs > .nav > li > a {
   padding: 5px 20px 5px 10px;
@@ -61,13 +62,17 @@
 .w-nav-tabs .w-nav-tab-panel > div {
   overflow: hidden;
 }
-.w-nav-tabs > .nav > .w-nav-home-tab > a {
+.w-nav-tabs > .nav > .w-nav-normal-tab > a {
   padding-right: 10px !important;
 }
 
-.w-nav-tabs > .nav > .w-nav-home-tab > a span {
+.w-nav-tabs > .nav > .w-nav-normal-tab > a span {
   margin-right: 5px;
   top: 0;
+}
+
+.w-nav-tabs > .nav > .w-nav-normal-tab > a .glyphicon-cloud {
+  top: 2px;
 }
 
 .w-plugins th,

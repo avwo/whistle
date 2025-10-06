@@ -28,6 +28,7 @@ var CTX_MENU_LIST = [
   { name: 'Rules' },
   { name: 'Update' },
   { name: 'Uninstall' },
+  { name: 'Install' },
   {
     name: 'Others',
     action: 'Plugins',
@@ -170,10 +171,7 @@ var Home = React.createClass({
       }
       var elem = pluginsElem.find('.w-plugins-item[data-name="' + name + '"]');
       if (elem.length) {
-        elem.addClass('highlight');
-        setTimeout(function () {
-          elem.removeClass('highlight');
-        }, 1000);
+        util.shakeElem(elem);
       }
     });
     events.on('updateAllPlugins', function () {
@@ -798,7 +796,7 @@ var Home = React.createClass({
               data-dismiss="modal"
               onClick={this.showService}
             >
-              <span className="glyphicon glyphicon-cloud" />
+              <span className="glyphicon glyphicon-gift" />
               Plugins
             </button> : null}
             {showCopyBtn ? (
@@ -910,8 +908,8 @@ var Tabs = React.createClass({
     CTX_MENU_LIST[3].disabled = disabled || !hasRules(plugin);
     CTX_MENU_LIST[4].disabled = disabled || plugin.isProj;
     CTX_MENU_LIST[5].disabled = disabled || plugin.isProj || plugin.notUn;
-    CTX_MENU_LIST[7].disabled = plugin && !plugin.homepage;
-    var pluginItem = CTX_MENU_LIST[6];
+    CTX_MENU_LIST[8].disabled = plugin && !plugin.homepage;
+    var pluginItem = CTX_MENU_LIST[7];
     util.addPluginMenus(
       pluginItem,
       dataCenter.getPluginsMenus(),
@@ -943,6 +941,8 @@ var Tabs = React.createClass({
     case 'Help':
       var homepage = plugin && plugin.homepage;
       return window.open(homepage || util.getDocsBaseUrl('extensions/usage.html'));
+    case 'Install':
+      return events.trigger('showInstallPlugins');
     case 'Plugins':
       iframes.fork(action, {
         port: dataCenter.getPort(),
@@ -993,7 +993,7 @@ var Tabs = React.createClass({
         <ul className="nav nav-tabs">
           <li
             className={
-              'w-nav-home-tab' + (activeName == 'Home' ? ' active' : '')
+              'w-nav-normal-tab' + (activeName == 'Home' ? ' active' : '')
             }
             data-name="Home"
             onClick={self.props.onActive}

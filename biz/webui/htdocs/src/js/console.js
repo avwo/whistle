@@ -20,7 +20,7 @@ var MAX_FILE_SIZE = 1024 * 1024 * 2;
 
 var allLogs = {
   value: '',
-  text: 'All logs'
+  text: 'All Logs'
 };
 
 function parseLog(log, expandRoot) {
@@ -67,7 +67,7 @@ var Console = React.createClass({
       levels: [
         {
           value: '',
-          text: 'All levels'
+          text: 'All Levels'
         },
         {
           value: 'debug',
@@ -75,7 +75,7 @@ var Console = React.createClass({
         },
         {
           value: 'info',
-          text: 'Info/Log'
+          text: 'Info (Log)'
         },
         {
           value: 'warn',

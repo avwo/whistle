@@ -517,7 +517,7 @@ var Overview = React.createClass({
           modal={overviewModal}
           rawName="Original URL"
           rawValue={rawUrl}
-          showEnableBtn={true}
+          showEnableBtn={modal && !modal.importedData}
           cssMap={CSS_MAP}
         />
         <p

@@ -62,6 +62,22 @@ var DEL_HINTS = [
   'reqBody',
   'resBody'
 ];
+
+var LINE_PROPS_HINTS = ['important', 'safeHtml', 'strictHtml', 'disableAutoCors', 'disableUserLogin', 'enableUserLogin',
+  'internal', 'internalOnly', 'internalProxy', 'proxyFirst', 'proxyHost', 'proxyHostOnly', 'proxyTunnel', 'weakRule'];
+
+var ENABLE_HINTS = ['abort', 'abortReq', 'abortRes', 'authCapture', 'auto2http', 'bigData', 'br', 'gzip', 'deflate',
+  'capture', 'captureIp', 'captureStream', 'clientCert', 'clientId', 'clientIp', 'customParser', 'flushHeaders', 'forHttp', 'forHttps',
+  'forceReqWrite', 'forceResWrite', 'h2', 'http2', 'httpH2', 'hide', 'hideComposer', 'hideCaptureError', 'showHost', 'ignoreSend', 'ignoreReceive',
+  'pauseSend', 'pauseReceive', 'inspect', 'interceptConsole', 'internalProxy', 'proxyFirst', 'proxyHost', 'proxyTunnel', 'keepCSP', 'keepAllCSP', 'keepCache',
+  'keepAllCache', 'keepClientId', 'safeHtml', 'strictHtml', 'multiClient', 'requestWithMatchedRules', 'responseWithMatchedRules', 'tunnelHeadersFirst',
+  'useLocalHost', 'useSafePort', 'userLogin', 'weakRule', 'socket', 'websocket'];
+var DISABLE_HINTS = ['301', 'abort', 'abortReq', 'abortRes', 'authCapture', 'auto2http', 'autoCors',  'ajax', 'bigData', 'capture', 'captureIp', 'captureStream',
+  'clientCert', 'clientId', 'clientIp', 'customParser', 'cache', 'dnsCache', 'csp', 'cookies', 'reqCookies', 'resCookies', 'flushHeaders', 'forHttp', 'forHttps', 'forceReqWrite',
+  'forceResWrite', 'gzip', 'h2', 'http2', 'httpH2', 'hide', 'hideComposer', 'hideCaptureError', 'interceptConsole', 'internalProxy', 'proxyFirst',
+  'proxyHost', 'proxyTunnel', 'keepCSP', 'keepAllCSP', 'keepCache', 'keepAllCache', 'keepAlive', 'keepClientId', 'keepH2Session', 'safeHtml', 'strictHtml',
+  'multiClient', 'proxyConnection', 'ua', 'proxyUA', 'referer', 'rejectUnauthorized', 'requestWithMatchedRules', 'responseWithMatchedRules', 'secureOptions', 'servername',
+  'timeout', 'trailerHeader', 'trailers', 'tunnelAuthHeader', 'tunnelHeadersFirst', 'useLocalHost', 'useSafePort', 'userLogin', 'weakRule'];
 var CHARS = [
   '-',
   '"_"',
@@ -244,16 +260,15 @@ function getFilterHints(keyword, filter1, filter2) {
   return filters1.concat(filters2);
 }
 
-function getSpecHints(keyword, protocol) {
+function getSpecHints(keyword, protocol, hints) {
   var getHint = function(hint) {
-    hint = (protocol || 'headerReplace://') + hint;
+    hint = protocol + hint;
     var index = hint.indexOf('<');
     return {
       text: index === -1 ? hint : hint.substring(0, index),
       displayText: hint
     };
   };
-  var hints = protocol ? DEL_HINTS : HEADERS;
   if (!keyword) {
     return hints.map(getHint);
   }
@@ -479,7 +494,52 @@ function getSpecProto(keyword) {
   return isPipe ? 'pipe' : 'sniCallback';
 }
 
+function getSpecHintOptions(list) {
+  var len = list.length;
+  var rule = len === 1 ? list[0] : '';
+  if (!rule) {
+    return;
+  }
+  if (rule.indexOf('headerReplace://') === 0) {
+    return {
+      isHeader: true,
+      protocol: 'headerReplace://',
+      hints: HEADERS
+    };
+  }
+  if (rule.indexOf('delete://') === 0) {
+    return {
+      isDelete: true,
+      protocol: 'delete://',
+      hints: DEL_HINTS
+    };
+  }
+  if (rule.indexOf('lineProps://') === 0) {
+    return {
+      isLineProps: true,
+      protocol: 'lineProps://',
+      hints: LINE_PROPS_HINTS
+    };
+  }
+  if (rule.indexOf('enable://') === 0) {
+    return {
+      isEnable: true,
+      protocol: 'enable://',
+      hints: ENABLE_HINTS
+    };
+  }
+  if (rule.indexOf('disable://') === 0) {
+    return {
+      isDisable: true,
+      protocol: 'disable://',
+      hints: DISABLE_HINTS
+    };
+  }
+}
+
 var WORD = /\S+/;
+var HTTP_RE = /^https?:\/?\/?/;
+var SPEC_HINT_RE = /^(headerReplace|includeFilter|excludeFilter|delete|lineProps|enable|disable):\/\//;
 var showAtHint;
 var showVarHint;
 var canShowHint;
@@ -511,7 +571,7 @@ CodeMirror.registerHelper('hint', 'rulesHint', function (editor) {
   while (start && WORD.test(curLine.charAt(start - 1))) {
     --start;
   }
-  var curWord = start != end && curLine.substring(start, end);
+  var curWord = start == end ? '' : curLine.substring(start, end);
   var isAt = AT_RE.test(curWord);
   var plugin;
   var pluginName;
@@ -763,8 +823,7 @@ CodeMirror.registerHelper('hint', 'rulesHint', function (editor) {
         }, HINT_TIMEOUT);
       }
     }
-    var isSpecHint = curWord.indexOf('headerReplace://') === 0 || curWord.indexOf('includeFilter://') === 0 ||
-      curWord.indexOf('excludeFilter://') === 0 || curWord.indexOf('delete://') === 0;
+    var isSpecHint = SPEC_HINT_RE.test(curWord);
     if (value || (isSpecHint ? (byEnter && hasShownHint) : curWord.indexOf('//') !== -1) || !NON_SPECAIL_RE.test(curWord)) {
       return;
     }
@@ -780,44 +839,34 @@ CodeMirror.registerHelper('hint', 'rulesHint', function (editor) {
     value = '';
   }
   list = getHints(filterName || curWord);
+  var hintOpts = getSpecHintOptions(list);
   var len = list.length;
-  var isHeader = len === 1 && list[0].indexOf('headerReplace://') === 0;
-  var isDelete = len === 1 && list[0].indexOf('delete://') === 0;
   var isFilter = (len === 2 && (isFilterProtocol(list[0]) || isFilterProtocol(list[1]))) || (len === 1 && isFilterProtocol(list[0]));
-  isSpecHint = isHeader  || isDelete || isFilter;
+  isSpecHint = hintOpts || isFilter;
   if (isSpecHint) {
-    list = (isDelete || isHeader ) ? getSpecHints(value, isDelete && 'delete://') : getFilterHints(value, list[0], list[1]);
+    list = hintOpts ? getSpecHints(value, hintOpts.protocol, hintOpts.hints) : getFilterHints(value, list[0], list[1]);
     len = list.length;
   }
   if (!len) {
     return;
   }
   canShowHint = isSpecHint;
-  var index = curLine.indexOf('://', start);
-  var protocol;
-  if (index !== -1) {
-    index = index + 3;
-    protocol = curLine.substring(start, index);
-    // redirect://http://
-    if (
-      !/\s/.test(protocol) &&
-      (len === 2 && isRedirectProtocol(list[0]) ||
-        (protocol !== curWord + 'http://' && protocol !== curWord + 'https://'))
-    ) {
-      end = isSpecHint ? Math.max(index, end) : index;
-    }
+  var last = end;
+  var nextCh = curLine[last];
+  while (nextCh && WORD.test(nextCh)) {
+    nextCh = curLine[++last];
+  }
+  if (hintOpts && (hintOpts.isLineProps || hintOpts.isEnable || hintOpts.isDisable)) {
+    end = last;
   } else {
-    index = curLine.indexOf(':', start);
+    var curItem = curLine.slice(start, last);
+    var index = curItem.indexOf(':');
     if (index !== -1) {
-      ++index;
-      protocol = curLine.substring(start, index) + '//';
-      if (isSpecHint ? (isHeader || isFilterProtocol(protocol)) : list.indexOf(protocol) !== -1) {
-        end = index;
-        var curChar = curLine[end];
-        if (curChar === '/') {
+      if (len !== 2 || !isRedirectProtocol(list[0]) || !HTTP_RE.test(curItem.substring(end))) {
+        end = start + index + 1;
+        if (curLine[end] === '/') {
           end++;
-          curChar = curLine[end];
-          if (curChar === '/') {
+          if (curLine[end] === '/') {
             end++;
           }
         }

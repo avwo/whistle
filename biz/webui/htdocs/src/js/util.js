@@ -2975,3 +2975,13 @@ exports.getDocsBaseUrl = function (url) {
   var path = /^zh-/i.test(navigator.language || navigator.userLanguage) ? '/' : '/en/';
   return 'https://wproxy.org' + path + (url ? 'docs/' : '') + (url || '');
 };
+
+exports.shakeElem = function (elem) {
+  if (elem.hasClass('w-shake-horizontal')) {
+    return;
+  }
+  elem.addClass('w-shake-horizontal');
+  setTimeout(function() {
+    elem.removeClass('w-shake-horizontal');
+  }, 500);
+};

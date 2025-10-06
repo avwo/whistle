@@ -22,7 +22,7 @@ var ServerLog = React.createClass({
       levels: [
         {
           value: '',
-          text: 'All levels'
+          text: 'All Levels'
         },
         {
           value: 'debug',

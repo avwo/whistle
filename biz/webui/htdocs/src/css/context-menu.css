@@ -41,7 +41,7 @@
   display: inline-block;
   width: 20px;
   visibility: hidden;
-} 
+}
 
 body .w-ctx-menu-list .w-ctx-menu-list {
   margin-left: 3px;
@@ -104,6 +104,15 @@ body .w-ctx-menu-list .w-ctx-menu-gap {
   position: absolute;
   left: 100%;
   top: 0;
+}
+
+.w-ctx-sub-menu-left .w-ctx-sub-menu-list .w-ctx-menu-list {
+  left: -90%;
+  top: -91px;
+}
+
+.w-keep-history-data .w-ctx-sub-menu-list .w-ctx-menu-list {
+  top: -91px;
 }
 
 .w-ctx-menu-left .w-ctx-menu-item .w-ctx-menu-list {

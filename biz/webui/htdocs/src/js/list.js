@@ -15,6 +15,9 @@ var events = require('./events');
 var iframes = require('./iframes');
 var storage = require('./storage');
 var RecycleBinDialog = require('./recycle-bin');
+var IFrame = require('./iframe');
+var LazyInit = require('./lazy-init');
+var EnabledRules = require('./enabled-rules');
 
 var hideEnableHTTPSTips = window.location.href.indexOf('hideEnableHTTPSTips=1') !== -1;
 var disabledEditor = window.location.href.indexOf('disabledEditor=1') !== -1;
@@ -701,6 +704,13 @@ var List = React.createClass({
       e.preventDefault();
     }
   },
+  switchTab: function(e) {
+    var name = e.target.getAttribute('data-name');
+    if (!name || name === this.state.activeTab) {
+      return;
+    }
+    this.setState({ activeTab: name });
+  },
   render: function () {
     var self = this;
     var modal = self.props.modal;
@@ -715,6 +725,12 @@ var List = React.createClass({
     var draggable = false;
     var activeName = activeItem ? activeItem.name : '';
     var selected = activeItem.selected;
+    var tokenId = dataCenter.tokenId;
+    var activeTab = (tokenId && self.state.activeTab) || (isRules ? 'rules' : 'values');
+    var showEnableRules = tokenId && isRules && activeTab === 'enabledRules';
+    var showSharedRules = tokenId && isRules && activeTab === 'sharedRules';
+    var showFiles = tokenId && !isRules && activeTab === 'files';
+    var showSharedValues = tokenId && !isRules && activeTab === 'sharedValues';
     list = self.parseList();
     if (isRules) {
       draggable = list.length > 2;
@@ -726,7 +742,7 @@ var List = React.createClass({
 
     //不设置height为0，滚动会有问题
     return (
-      <div className={'orient-vertical-box fill' +
+      <div className={'orient-vertical-box fill w-nav-tabs' +
         (selected && isRules ? ' w-has-selected-rules' : '') +
         (disabled ? ' w-has-selected-disabled' : '') +
         (props.hide ? ' hide' : '')}>
@@ -739,7 +755,48 @@ var List = React.createClass({
             </button>
           </div>
         ) : null}
-        <Divider leftWidth="230">
+        {dataCenter.tokenId ? (
+          isRules ? <ul className="nav nav-tabs">
+            <li className={'w-nav-normal-tab ' + (activeTab === 'rules' ? 'active' : '')} onClick={this.switchTab}>
+              <a draggable="false" data-name="rules">
+                <span className="glyphicon glyphicon-list" data-name="rules" />
+                Rules
+              </a>
+            </li>
+            <li  className={'w-nav-normal-tab ' + (showEnableRules ? 'active' : '')} onClick={this.switchTab}>
+              <a draggable="false" data-name="enabledRules">
+                <span className="glyphicon glyphicon-ok" data-name="enabledRules" />
+                Enabled Rules (0)
+              </a>
+            </li>
+            <li  className={'w-nav-normal-tab ' + (showSharedRules ? 'active' : '')} onClick={this.switchTab}>
+              <a draggable="false" data-name="sharedRules">
+                <span className="glyphicon glyphicon-share" data-name="sharedRules" />
+                Shared Rules
+              </a>
+            </li>
+          </ul> : <ul className="nav nav-tabs">
+            <li className={'w-nav-normal-tab ' + (activeTab === 'values' ? 'active' : '')} onClick={this.switchTab}>
+              <a draggable="false" data-name="values">
+                <span className="glyphicon glyphicon-folder-close" data-name="values" />
+                Values
+              </a>
+            </li>
+            <li  className={'w-nav-normal-tab ' + (showFiles ? 'active' : '')} onClick={this.switchTab}>
+              <a draggable="false" data-name="files">
+                <span className="glyphicon glyphicon-hdd" data-name="files" />
+                Files
+              </a>
+            </li>
+            <li  className={'w-nav-normal-tab ' + (showSharedValues ? 'active' : '')} onClick={this.switchTab}>
+              <a draggable="false" data-name="sharedValues">
+                <span className="glyphicon glyphicon-share" data-name="sharedValues" />
+                Shared Values (Files)
+              </a>
+            </li>
+          </ul>) : null
+        }
+        <Divider leftWidth="230" hide={activeTab !== (isRules ? 'rules' : 'values')}>
           <div className="fill orient-vertical-box w-list-left">
             <div
               ref="list"
@@ -817,6 +874,18 @@ var List = React.createClass({
             onInspect={isRules ? null : this.onInspect}
           />
         </Divider>
+        <LazyInit inited={showEnableRules}>
+          <EnabledRules hide={!showEnableRules} />
+        </LazyInit>
+        <LazyInit inited={showSharedRules}>
+          <IFrame src="service/shared-rules.html" className={showSharedRules ? null : 'hide'} />
+        </LazyInit>
+        <LazyInit inited={showFiles}>
+          <IFrame src="service/files.html" className={showFiles ? null : 'hide'} />
+        </LazyInit>
+        <LazyInit inited={showSharedValues}>
+          <IFrame src="service/shared-values.html" className={showSharedValues ? null : 'hide'} />
+        </LazyInit>
       </div>
     );
   }

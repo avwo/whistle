@@ -109,6 +109,17 @@ var contextMenuList = [
     ]
   },
   { name: 'Mock' },
+  {
+    name: 'Service',
+    hide: true,
+    list: [
+      { name: 'Save Sessions',  action: 'Save' },
+      { name: 'Share Via URL', action: 'shareViaUrl' },
+      { name: 'Create API Test',  action: 'createApiTest' },
+      { name: 'Copy As Script',  action: 'copyAsScript' },
+      { name: 'Load Test', action: 'loadTest' }
+    ]
+  },
   { name: 'Import' },
   { name: 'Export' },
   {
@@ -755,6 +766,7 @@ var ReqData = React.createClass({
         }
       });
       this.updateFilter(filterList.join('\n'));
+      events.trigger('shakeSettings');
     }
     events.trigger('updateGlobal');
   },
@@ -783,6 +795,7 @@ var ReqData = React.createClass({
         }
       });
       this.updateFilter(filterList.join('\n'));
+      events.trigger('shakeSettings');
     }
     events.trigger('updateGlobal');
   },
@@ -861,6 +874,9 @@ var ReqData = React.createClass({
       } else {
         events.trigger('exportSessions', item);
       }
+      break;
+    case 'Save':
+      events.trigger('shakeSavedTab');
       break;
     case 'Abort':
       events.trigger('abortRequest', item);
@@ -1148,24 +1164,30 @@ var ReqData = React.createClass({
       treeList[3].disabled = !hasData;
     }
     var mockItem = contextMenuList[6];
+    var serviceItem = contextMenuList[7];
+    var pluginItem = contextMenuList[10];
+    serviceItem.list.forEach(function (menu) {
+      menu.disabled = disabled;
+    });
     mockItem.disabled = disabled;
     mockItem.hide = dataCenter.hideMockMenu;
-    contextMenuList[8].disabled = clickBlank && !selectedCount;
-    var pluginItem = contextMenuList[9];
+    contextMenuList[9].disabled = clickBlank && !selectedCount;
+    serviceItem.disabled = clickBlank;
+    serviceItem.hide = !dataCenter.tokenId;
     util.addPluginMenus(
       pluginItem,
       dataCenter.getNetworkMenus(),
-      treeItem.hide ? 8 : 9,
+      (treeItem.hide ? 8 : 9) + (serviceItem.hide ? 0 : 1) - (mockItem.hide ? 1 : 0),
       disabled,
       treeId,
       item && item.url
     );
-    var height = (treeItem.hide ? 310 : 340) - (pluginItem.hide ? 30 : 0) - (mockItem.hide ? 30 : 0);
+    var height = (treeItem.hide ? 340 : 370) - (serviceItem.hide ? 30 : 0) - (pluginItem.hide ? 30 : 0) - (mockItem.hide ? 30 : 0);
     pluginItem.maxHeight = height;
     var data = util.getMenuPosition(e, 110, height);
     data.list = contextMenuList;
     data.className = data.marginRight < 360 ? 'w-ctx-menu-left' : '';
-    data.className += pluginItem.hide ? '' : ' w-ctx-menu-others';
+    data.className += pluginItem.hide && serviceItem.hide ? '' : ' w-ctx-menu-others' + (pluginItem.hide ? ' w-ctx-menu-no-plugin' : '');
     this.refs.contextMenu.show(data);
   },
   updateList: function () {
@@ -1390,7 +1412,7 @@ var ReqData = React.createClass({
     self.visibleList = list;
 
     return (
-      <div className="fill w-req-data-con orient-vertical-box">
+      <div className={'fill w-req-data-con orient-vertical-box' + (self.props.hide ? ' hide' : '')}>
         <div
           className="w-req-data-content fill orient-vertical-box"
           style={colStyle}
