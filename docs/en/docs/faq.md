@@ -92,6 +92,11 @@ Use filters:
 - [includeFilter](./rules/includeFilter)
 - [excludeFilter](./rules/excludeFilter)
 
+## Q: How do I debug WebSocket/TCP requests?
+
+1. Using the UI: [Network](./gui/network)
+2. Using rules: [frameScript](./rules/frameScript)
+
 ## Q: Why can't I open HTTPS pages on iOS even after installing the root certificate?
 
 Check whether "Full Trust" is set: Settings → General → About This Device → Certificate Trust Settings

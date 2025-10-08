@@ -169,6 +169,11 @@ npm i -g whistle && w2 restart
 - `Settings / Exclude All Matching Hosts`：隐藏所有来自对应域名的请求（只对当前浏览器生效）
 - `Settings / Exclude All Matching URLs`：隐藏与当前 URL 匹配的所有请求（不包含请求参数，且只对当前浏览器生效）
 
+## Q：如何调试 WebSocket/TCP 请求？
+
+1. 通过界面操作：[Network](./gui/network)
+2. 通过规则：[frameScript](./rules/frameScript)
+
 ## Q：如何修改 Whistle 文档？
 
 Whistle 文档源文件地址：https://github.com/avwo/whistle/tree/master/docs
