@@ -169,6 +169,7 @@ program
   .option('--init [bypass]', 'auto configure proxy and install Root CA')
   .option('--cluster [workers]', 'start cluster with worker count (default: CPU cores)', String, undefined)
   .option('--config [config]', 'load startup config from file', String, undefined)
+  .option('--rcPath [rcPath]', 'load configuration from file (default: ～/.whistlerc)', String, undefined)
   .option('--dnsServer [dnsServer]', 'set custom DNS servers', String, undefined)
   .option('--socksPort [socksPort]', 'set SOCKSv5 server port', String, undefined)
   .option('--httpPort [httpPort]', 'set HTTP server port', String, undefined)

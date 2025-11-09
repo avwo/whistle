@@ -8,6 +8,7 @@ var config = require('../lib/config');
 var common = require('../lib/util/common');
 var colors = require('colors/safe');
 var path = require('path');
+var extend = require('extend');
 var createHmac = require('crypto').createHmac;
 
 var joinIpPort = common.joinIpPort;
@@ -72,7 +73,7 @@ function showKillError() {
 exports.showKillError = showKillError;
 
 function showUsage(isRunning, options, restart) {
-  options = formatOptions(options);
+  var rcConf;
   if (isRunning) {
     if (restart) {
       showKillError();
@@ -80,10 +81,20 @@ function showUsage(isRunning, options, restart) {
       warn('[!] ' + config.appName + '@' + config.version + ' is running');
     }
   } else {
+    rcConf = common.readWhistleRc(options);
+    if (rcConf) {
+      var rcStr = JSON.stringify(rcConf);
+      if (rcStr.length > 30) {
+        rcStr = rcStr.substring(0, 27) + '...';
+      }
+      info('[i] Load configuration from ~/.whistlerc: ' + rcStr);
+    }
     info('[i] ' + config.appName + '@' + config.version + (restart ? ' restarted' : ' started'));
   }
+  options = options ? extend({}, rcConf, options) : rcConf;
+  options = formatOptions(options);
   var port = /^\d+$/.test(options.port) && options.port > 0 ?  options.port : config.port;
-  var list = options.host && typeof options.host === 'string' ? [options.host] : getIpList();
+  var list = common.isString(options.host) ? [options.host] : getIpList();
   var oneIp = list.length === 1;
   var index = 0;
   if (!oneIp) {
