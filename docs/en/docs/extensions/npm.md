@@ -74,8 +74,9 @@ Starting Whistle this way is the same as starting Whistle independently or as a 
     getPort((port) => {
     // Start at a random port Whistle, after successful startup, passes startup parameters to the parent process.
     const options = {
-    port,
-    host: '127.0.0.1',
+      port,
+      host: '127.0.0.1',
+      storage: 'xxx', // It is recommended to set a new storage directory to ensure that it does not conflict with the directories of other instances
     };
     startWhistle(options, () => callback(options));
     });

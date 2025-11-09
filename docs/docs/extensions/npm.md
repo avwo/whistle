@@ -77,6 +77,7 @@ npm i --save whistle pfork
         const options = {
           port,
           host: '127.0.0.1',
+          storage: 'xxx', // 建议设置新存储目录，确保不跟其它实例的目录冲突
         };
         startWhistle(options, () => callback(options));
       });

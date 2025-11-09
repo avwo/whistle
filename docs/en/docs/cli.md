@@ -50,6 +50,7 @@ Options:
   --init [bypass]                                 auto configure proxy and install Root CA
   --cluster [workers]                             start cluster with worker count (default: CPU cores)
   --config [config]                               load startup config from file
+  --rcPath [rcPath]                               load configuration from file (default: ～/.whistlerc)
   --dnsServer [dnsServer]                         set custom DNS servers
   --socksPort [socksPort]                         set SOCKSv5 server port
   --httpPort [httpPort]                           set HTTP server port
@@ -196,6 +197,88 @@ Recommended UI uninstall: [Use plugin](./extensions/usage)
 
 ## w2 run
 `w2 run`: Starts Whistle in development and debugging mode, outputting plugin and system log information to the console in real time, automatically refreshing UI code changes, and supports all `w2 start` configuration options.
+
+## Starting Multiple Instances
+
+When running multiple instances simultaneously, each instance must be configured with **different ports** and **independent storage directories** to avoid resource conflicts.
+
+### Configuration Examples
+
+```sh
+# Instance 1 - Port 8010, Storage directory 8010
+w2 start --port 8010 --storage 8010
+
+# Instance 2 - Port 8011, Storage directory 8011  
+w2 start --port 8011 --storage 8011
+
+# Instance 3 - Port 8012, Storage directory 8012
+w2 start --port 8012 --storage 8012
+```
+
+### Configuration Description
+
+| Parameter | Purpose | Requirements |
+|-----------|---------|--------------|
+| `--port` | Service listening port | Must be unique, cannot be duplicated |
+| `--storage` | Data storage directory | Must be unique to avoid data confusion |
+
+### Configuration Recommendations
+
+**Recommended Configuration**:
+- Use the same numbering for ports and storage directories (for easier management)
+- Port number range: 8000-9000 (to avoid system port conflicts)
+
+**Configuration Examples**:
+```sh
+# ✅ Recommended: Consistent port and storage directory
+w2 start -p 8010 -S 8010
+w2 start -p 8011 -S 8011
+
+# ✅ Acceptable: Different port and storage directory (ensure uniqueness)
+w2 start -p 8020 -S instance_1
+w2 start -p 8021 -S instance_2
+
+# ❌ Error: Duplicate port or storage directory
+w2 start -p 8010 -S 8010
+w2 start -p 8010 -S 8011  # Port conflict!
+w2 start -p 8011 -S 8010  # Storage directory conflict!
+```
+
+### Important Notes
+
+1. **Port Conflicts**: Using the same port will cause instance startup failure
+2. **Data Security**: Sharing storage directories may cause data overwriting or corruption
+3. **Resource Isolation**: Each instance should have an independent runtime environment
+
+By assigning unique ports and storage directories to each instance, you can ensure stable parallel operation of multiple instances.
+
+# Startup Configuration File {#whistlerc}
+
+Whistle automatically loads the `~/.whistlerc` configuration file upon startup. You can manage configuration loading in the following ways:
+
+- **Default Path:** `~/.whistlerc`
+- **Custom Path:** Use the `--rcPath [rcPath]` parameter to specify a different configuration file
+- **Ignore Configuration:** Use the `-rcPath none` parameter to completely ignore the configuration file
+
+The `.whistlerc` file uses a key-value pair format and supports multiple configuration scopes:
+
+```txt
+# Global default configuration (applies when no storage is specified)
+username=test
+password=123
+
+# Specific storage configuration (via command line storage parameter)
+xxx.username=test-storage
+xxx.password=123-storage
+
+# Wildcard configuration (applies to all instances, lowest priority)
+*.username=test-default
+*.password=123-default
+```
+
+1. `xxx` corresponds to the value of the startup parameter `--storage` (if no storage is specified, default configuration is used)
+2. `*` applies to all instances (lowest priority)
+3. For other configuration parameters, please refer to this documentation
 
 ## Other Options
 1. `-D, --baseDir` `[baseDir]`: Customize the Whistle storage root directory (defaults to `$WWHISTLE_PATH/.whistle`)

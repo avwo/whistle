@@ -50,6 +50,7 @@ Options:
   --init [bypass]                                 auto configure proxy and install Root CA
   --cluster [workers]                             start cluster with worker count (default: CPU cores)
   --config [config]                               load startup config from file
+  --rcPath [rcPath]                               load configuration from file (default: ～/.whistlerc)
   --dnsServer [dnsServer]                         set custom DNS servers
   --socksPort [socksPort]                         set SOCKSv5 server port
   --httpPort [httpPort]                           set HTTP server port
@@ -197,6 +198,86 @@ Whistle 会检查是否存在同名规则：
 
 ## w2 run
 `w2 run`：以开发调试模式启动 Whistle，实时输出插件和系统的日志信息到控制台，修改界面代码刷新自动生效等，并支持所有 `w2 start` 的参数配置
+
+以下是优化后的帮助文档：
+
+## 启动多个实例
+
+当需要同时运行多个实例时，必须为每个实例配置**不同的端口**和**独立的存储目录**，避免资源冲突。
+
+### 配置示例
+
+```sh
+# 实例1 - 端口8010，存储目录8010
+w2 start --port 8010 --storage 8010
+
+# 实例2 - 端口8011，存储目录8011  
+w2 start --port 8011 --storage 8011
+
+# 实例3 - 端口8012，存储目录8012
+w2 start --port 8012 --storage 8012
+```
+
+### 配置说明
+
+| 参数 | 作用 | 要求 |
+|------|------|------|
+| `--port` | 服务监听端口 | 必须唯一，不能重复 |
+| `--storage` | 数据存储目录 | 必须唯一，避免数据混淆 |
+
+### 配置建议
+
+**推荐配置**：
+- 端口与存储目录使用相同编号（便于管理）
+- 端口号范围：8000-9000（避免系统端口冲突）
+
+**配置示例**：
+```sh
+# ✅ 推荐：端口与存储目录一致
+w2 start -p 8010 -S 8010
+w2 start -p 8011 -S 8011
+
+# ✅ 允许：端口与存储目录不同（需确保唯一性）
+w2 start -p 8020 -S instance_1
+w2 start -p 8021 -S instance_2
+
+# ❌ 错误：端口或存储目录重复
+w2 start -p 8010 -S 8010
+w2 start -p 8010 -S 8011  # 端口冲突！
+w2 start -p 8011 -S 8010  # 存储目录冲突！
+```
+
+### 注意事项
+
+1. **端口冲突**：相同端口会导致实例启动失败
+2. **数据安全**：共享存储目录会造成数据覆盖或损坏
+3. **资源隔离**：每个实例应有独立的运行环境
+
+通过为每个实例分配唯一的端口和存储目录，可以确保多个实例稳定并行运行。
+
+## 启动配置文件 {#whistlerc}
+Whistle 启动时会自动加载 ~/.whistlerc 配置文件。您可以通过以下方式管理配置加载：
+- **默认路径:** `~/.whistlerc`
+- **自定义路径:** 使用 `--rcPath [rcPath]` 参数指定其他配置文件
+- **忽略配置:** 使用 `-rcPath none` 参数完全忽略配置文件
+
+`.whistlerc` 文件采用键值对格式，支持多种配置作用域：
+``` txt
+# 全局默认配置（没有指定 storage）
+username=test
+password=123
+
+# 特定存储配置（通过命令行指定 storage）
+xxx.username=test-storage
+xxx.password=123-storage
+
+# 通配符配置（对所有实例生效，优先级最低）
+*.username=test-default
+*.password=123-default
+```
+1. `xxx` 为启动参数 `--storage` 对应的值（没有 storage 则使用缺省的配置）
+2. `*` 表示对所实例生效（优先级最低）
+3. 其它配置参数参考本文档
 
 ## 其它参数
 1. `-D, --baseDir [baseDir]`：自定义 Whistle 存储根目录（默认为 `$WWHISTLE_PATH/.whistle`）

@@ -92,3 +92,24 @@ b:/"success":false/ m:POST s:200 H:api.example.com
 1. Replay：重新请求选中的抓包数据
 2. Edit：将抓包数据填充到右侧的 Composer
 3. 右上角箭头按钮：切换到上下面板的模式，适合竖屏显示器
+
+## 调试 WebSocket/TCP {#websocket}
+选中 WebSocket/TCP 请求后可以通过详情面板 Inspectors/Frames 调试请求/响应数据：
+
+![Frames](/img/frames.png)
+
+支持：
+1. 通过顶部菜单按钮 `Send/Receive`、`Pause`、`Ignore` 开启、暂停、忽略 WebSocket/TCP 的数据传输
+2. 通过底部详情面板的 Composer 发送自定义数据到客户端或服务器
+
+如果需要在建立连接后就设置 `Ignore` 或 `Pause` 可以用规则：
+``` txt
+www.example.com/path enable://ignoreReceive
+www.example.com/path enable://ignoreSend
+www.example.com/path enable://pauseReceive
+www.example.com/path enable://pauseSend
+```
+
+其它调试方式：
+1. 通过规则：[frameScript](../rules/frameScript)
+2. 通过插件：[插件开发](../extensions/dev)

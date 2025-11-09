@@ -21,3 +21,15 @@ www.example.com/path reqDelay://3000
 # 延迟 5000 秒（即 5 秒）后 abort 请求
 www.example.com/path2 reqDelay://5000 enable://abort
 ```
+
+## 随机延迟
+可以利用 [reqScript](./reqScript) 实现随机延迟请求：
+```` txt
+# 随机设置 reqDelay://1000 ～ reqDelay://6000 毫秒
+``` delay.js
+rules.push(`* reqDelay://${1000 + Math.ceil(5000 * Math.random())}`);
+
+```
+
+www.example.com/path reqScript://{delay.js}
+````

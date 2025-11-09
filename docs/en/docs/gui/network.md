@@ -91,3 +91,24 @@ Different from the search box at the bottom of the Network list:
 1. Replay: Replays the selected capture data
 2. Edit: Populates the capture data in the Composer window on the right
 3. Arrow button in the upper right corner: Switches to top-down panel mode, suitable for portrait-oriented monitors
+
+## Debugging WebSocket/TCP {#websocket}
+After selecting a WebSocket/TCP request, you can use the Inspectors/Frames panel to debug the request/response data:
+
+![Frames](/img/frames.png)
+
+Supported:
+1. Use the `Send/Receive`, `Pause`, and `Ignore` buttons in the top menu to start, pause, or ignore WebSocket/TCP data transmission.
+2. Use Composer in the bottom details panel to send custom data to the client or server.
+
+If you need to ignore or pause the connection immediately after it's established, you can use the following rules:
+``` txt
+www.example.com/path enable://ignoreReceive
+www.example.com/path enable://ignoreSend
+www.example.com/path enable://pauseReceive
+www.example.com/path enable://pauseSend
+```
+
+Other debugging methods:
+1. Using rules: [frameScript](../rules/frameScript)
+2. Using plugins: [Plugin Development](../extensions/dev)

@@ -29,14 +29,13 @@ Cookie 对象结构
       }
 }
 ```
-> 默认 `path=/`
 
 ## 配置示例
 #### 内联方式
 ```` txt
-www.example.com/path resCookies://k1=v1&k2=v2
+www.example.com/path resCookies://k1=v1&k2=v2;path=/&k3=v3;path=/;secure;samesite=none
 ````
-响应头新增两个响应 cookie：`k1: v1`/`k2: v2`
+响应头新增两个响应 cookie：`k1=v1`/`k2=v2; path=/`/`k3=v3; path=/; secure; samesite=none`
 
 ### 内嵌模式
 ```` txt
@@ -48,12 +47,17 @@ key2: value2
 ``` cookies.json
 {
   key1: 'value1',
-  key2: 'value2'
+  key2: {
+    value: 'value2',
+    path: '/',
+    secure: true,
+    domain: 'example.com'
+  }
 }
 ```
 www.example.com/path resCookies://{cookies.json}
 ````
-响应头新增两个响应 cookie：`key1: value1`/`key2: value2`
+响应头新增两个响应 cookie：`key1=value1`/`key2=value2; path=/; secure; domain=example.com`
 
 #### 本地/远程资源
 
@@ -64,8 +68,17 @@ www.example.com/path2 resCookies://https://www.xxx.com/xxx/params.json
 www.example.com/path3 resCookies://temp/blank.json
 ````
 
+## 全局替换
+如果想给所有（或部分）响应 cookie 添加 `SameSite=Nonoe; Secure`，可以用 [headerReplace](./headerReplace)
+> 假设每个响应 cookie 都有 `path=/;`
+```` txt
+``` test.json
+resH.set-cookie:path=/;: SameSite=None; Secure;
+```
+www.example.com/path headerReplace://{test.json} resCookies://test=123;path=/;
+````
+
 ## 关联协议
 1. 删除响应 cookie：[delete://resCookies.xxx](./delete)
 2. 删除所有响应头 cookie：[delete://resHeaders.set-cookie](./delete)
-
-
+3. 替换响应头 cookie：[headerReplace://resH.set-cookie:pattern=replacement](./headerReplace)

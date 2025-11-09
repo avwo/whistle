@@ -21,3 +21,15 @@ www.example.com/path reqDelay://3000
 # Abort after 5000 seconds (i.e., 5 seconds) Request
 www.example.com/path2 reqDelay://5000 enable://abort
 ```
+
+## Random Delay
+You can use [reqScript](./reqScript) to implement a random delay request:
+```` txt
+# Randomly set reqDelay://1000 to reqDelay://6000 milliseconds
+``` delay.js
+rules.push(`* reqDelay://${1000 + Math.ceil(5000 * Math.random())}`);
+
+```
+
+www.example.com/path reqScript://{delay.js}
+````
