@@ -15,12 +15,14 @@ var setProxy = require('./proxy');
 var rulesUtil = require('../../../lib/rules/util');
 var getRootCAFile = require('../../../lib/https/ca').getRootCAFile;
 var config = require('../../../lib/config');
-var sendError = require('../cgi-bin/util').sendError;
+var cgiUtil = require('../cgi-bin/util');
 var common = require('../../../lib/util/common');
 var getWorker = require('../../../lib/plugins/util').getWorker;
 var loadAuthPlugins = require('../../../lib/plugins').loadAuthPlugins;
 var parseUrl = require('../../../lib/util/parse-url-safe');
 
+var sendError = cgiUtil.sendError;
+var sendGzipText = cgiUtil.sendGzipText;
 var parseAuth = common.parseAuth;
 var createHash = common.createHash;
 var PARSE_CONF = { extended: true, limit: '3mb'};
@@ -209,15 +211,14 @@ function readRemoteStream(req, res, authUrl) {
   client.end();
 }
 
-function injectFile(res, filepath, prepend, append, isJs) {
+function injectFile(req, res, filepath, prepend, append, isJs) {
   fs.readFile(filepath, function(err, ctn) {
     if (err) {
       return sendError(res, err);
     }
-    res.writeHead(200, {
+    sendGzipText(req, res, {
       'Content-Type': (isJs ? 'application/javascript' : 'text/html') + '; charset=utf-8'
-    });
-    res.end(concat(prepend, ctn, append));
+    }, concat(prepend, ctn, append));
   });
 }
 
@@ -490,11 +491,10 @@ app.use(function(req, res, next) {
   }
 });
 
-function sendText(res, text) {
-  res.writeHead(200, {
+function sendText(req, res, text) {
+  sendGzipText(req, res, {
     'Content-Type': 'text/plain; charset=utf-8'
-  });
-  res.end(typeof text === 'string' ? text : '');
+  }, typeof text === 'string' ? text : '');
 }
 
 function parseKey(key) {
@@ -506,10 +506,10 @@ app.get('/rules', function(req, res) {
   var name = query.name || query.key;
   if (name === 'Default') {
     name = rulesUtil.rules.getDefault();
-  } else if (!name) {
-    name = rulesUtil.rules.getRawRulesText();
-  } else {
+  } else if (name) {
     name = rulesUtil.rules.get(name);
+  } else {
+    name = rulesUtil.rules.getRawRulesText();
   }
   if (name && query.values !== 'false' && !(query.values <= 0)) {
     var keys = name.replace(COMMENT_RE, '').match(KEY_RE_G);
@@ -522,12 +522,12 @@ app.get('/rules', function(req, res) {
       }
     }
   }
-  sendText(res, name);
+  sendText(req, res, name);
 });
 
 app.get('/values', function(req, res) {
   var name = req.query.name || req.query.key;
-  sendText(res, rulesUtil.values.get(name));
+  sendText(req, res, rulesUtil.values.get(name));
 });
 
 app.get('/web-worker.js', urlencodedParser, function(req, res) {
@@ -535,10 +535,9 @@ app.get('/web-worker.js', urlencodedParser, function(req, res) {
   if (!body) {
     return res.status(404).end('Not Found');
   }
-  res.writeHead(200, {
+  sendGzipText(req, res, {
     'Content-Type': 'application/javascript; charset=utf-8'
-  });
-  res.end(body);
+  }, body);
 });
 
 app.all('/cgi-bin/*', function(req, res, next) {
@@ -565,6 +564,8 @@ var htmlPrepend = uiExt.htmlPrepend;
 var htmlAppend = uiExt.htmlAppend;
 var jsPrepend = uiExt.jsPrepend;
 var jsAppend = uiExt.jsAppend;
+var htmlFile = htdocs.getHtmlFile('index.html');
+var jsFile = htdocs.getJsFile('index.js');
 
 function concat(a, b, c) {
   if (!a && !c) {
@@ -578,9 +579,10 @@ function concat(a, b, c) {
 }
 
 if (!config.debugMode) {
-  var indexHtml = concat(htmlPrepend, fs.readFileSync(htdocs.getHtmlFile('index.html')), htmlAppend);
-  var indexJs = concat(jsPrepend, fs.readFileSync(htdocs.getJsFile('index.js')), jsAppend);
+  var indexHtml = concat(htmlPrepend, fs.readFileSync(htmlFile), htmlAppend);
+  var indexJs = concat(jsPrepend, fs.readFileSync(jsFile), jsAppend);
   var jsETag = createHash(indexJs);
+  var gzipIndexHtml = zlib.gzipSync(indexHtml);
   var gzipIndexJs = zlib.gzipSync(indexJs);
   app.use('/js/index.js', function(req, res) {
     if (req.headers['if-none-match'] === jsETag) {
@@ -591,43 +593,30 @@ if (!config.debugMode) {
       'Cache-Control': 'public, max-age=300',
       ETag: jsETag
     };
-    if (util.canGzip(req)) {
-      headers['Content-Encoding'] = 'gzip';
-      res.writeHead(200, headers);
-      res.end(gzipIndexJs);
-    } else {
-      res.writeHead(200, headers);
-      res.end(indexJs);
-    }
+    sendGzipText(req, res, headers, indexJs, gzipIndexJs);
   });
   var sendIndex = function(req, res) {
-    res.writeHead(200, {
+    sendGzipText(req, res, {
       'Content-Type': 'text/html; charset=utf-8'
-    });
-    res.end(indexHtml);
+    }, indexHtml, gzipIndexHtml);
   };
   app.get('/', sendIndex);
   app.get('/index.html', sendIndex);
 } else {
   if (htmlPrepend || htmlAppend) {
-    var htmlFile = htdocs.getHtmlFile('index.html');
     var injectHtml = function(req, res) {
-      injectFile(res, htmlFile, htmlPrepend, htmlAppend);
+      injectFile(req, res, htmlFile, htmlPrepend, htmlAppend);
     };
     app.get('/', injectHtml);
     app.get('/index.html', injectHtml);
   }
   if (jsPrepend || jsAppend) {
-    var jsFile = htdocs.getHtmlFile('js/index.js');
     app.get('/js/index.js', function(req, res) {
-      injectFile(res, jsFile, jsPrepend, jsAppend, true);
+      injectFile(req, res, jsFile, jsPrepend, jsAppend, true);
     });
   }
 }
 
-app.get('/', function(req, res) {
-  res.sendFile(htdocs.getHtmlFile('index.html'));
-});
 
 app.all(WEINRE_RE, function(req, res) {
   var options = parseReqUrl(req);
