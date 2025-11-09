@@ -1,14 +1,14 @@
 var get = require('./index');
-var getReqData = require('../util').getReqData;
+var util = require('../util');
 var addValues = require('../../../../lib/rules/util').addValues;
 
 module.exports = function(req, res) {
-  getReqData(req, function(err, result) {
+  util.getReqData(req, function(err, result) {
     if (err) {
       res.status(200).json({ ec: 2, em: err.message });
     } else {
       addValues(result.data, result.replace, req.query.clientId);
-      res.json(get());
+      util.sendGzip(req, res, get());
     }
   });
 };

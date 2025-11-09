@@ -1,5 +1,6 @@
 var get = require('./index');
+var util = require('../util');
 
 module.exports = function(req, res) {
-  res.json(get());
+  util.sendGzip(req, res, get());
 };

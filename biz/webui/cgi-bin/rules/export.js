@@ -26,5 +26,6 @@ module.exports = function(req, res) {
   } else {
     filename = 'rules_' + util.formatDate() + '.txt';
   }
-  res.attachment(filename).send(JSON.stringify(result, null, '  '));
+  res.attachment(filename);
+  util.sendGzipText(req, res, null, JSON.stringify(result, null, '  '));
 };

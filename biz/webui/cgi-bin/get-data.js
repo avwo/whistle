@@ -57,6 +57,7 @@ module.exports = function(req, res) {
     disabledPlugins: !config.notAllowedDisablePlugins && properties.get('disabledPlugins') || {},
     allowMultipleChoice: properties.get('allowMultipleChoice'),
     backRulesFirst: properties.get('backRulesFirst'),
+    enabledCount: rules.getEnabledRules().length,
     disabledAllPlugins: !config.notAllowedDisablePlugins && properties.get('disabledAllPlugins'),
     disabledAllRules: !config.notAllowedDisableRules && properties.get('disabledAllRules'),
     interceptHttpsConnects: properties.isEnableCapture(),

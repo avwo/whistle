@@ -2,8 +2,10 @@ var gzip = require('zlib').gzip;
 var util = require('../../../lib/util');
 var config = require('../../../lib/config');
 var proc = require('../../../lib/util/process');
-var properties = require('../../../lib/rules/util').properties;
+var rulesUtil = require('../../../lib/rules/util');
 
+var properties = rulesUtil.properties;
+var rules = rulesUtil.rules;
 var PID = process.pid;
 var MAX_OBJECT_SIZE = 1024 * 1024 * 6;
 var index = 0;
@@ -31,6 +33,7 @@ exports.getServerInfo = function(req) {
     ipv6Only: config.ipv6Only,
     dcc: config.disableCustomCerts,
     dns: dnsOverHttps || config.dnsServer,
+    rulesMFlag: rules.getMFlag(),
     doh: doh,
     bip: config.host,
     df: config.dnsOptional,
@@ -151,6 +154,19 @@ function sendError(res, err) {
 
 exports.sendError = sendError;
 
+function sendGzipData(res, headers, buffer) {
+  if (headers) {
+    headers['Content-Encoding'] = 'gzip';
+    headers['Content-Length'] = buffer.length;
+    res.writeHead(200, headers);
+    res.end(buffer);
+  } else {
+    res.setHeader('Content-Encoding', 'gzip');
+    res.setHeader('Content-Length', buffer.length);
+    res.send(buffer);
+  }
+}
+
 exports.sendGzip = function(req, res, data) {
   if (!util.canGzip(req)) {
     return res.json(data);
@@ -164,11 +180,25 @@ exports.sendGzip = function(req, res, data) {
       }
       return;
     }
-    res.writeHead(200, {
-      'Content-Type': 'application/json; charset=utf-8',
-      'Content-Encoding': 'gzip',
-      'Content-Length': result.length
-    });
-    res.end(result);
+    sendGzipData(res, {
+      'Content-Type': 'application/json; charset=utf-8'
+    }, result);
+  });
+};
+
+exports.sendGzipText = function(req, res, headers, text, gzipText) {
+  if (!text || !util.canGzip(req)) {
+    headers && res.writeHead(200, headers);
+    return headers ? res.end(text) : res.send(text);
+  }
+  if (gzipText) {
+    return sendGzipData(res, headers, gzipText);
+  }
+  gzip(text, function(err, result) {
+    if (err) {
+      headers && res.writeHead(200, headers);
+      return headers ? res.end(text) : res.send(text);
+    }
+    sendGzipData(res, headers, result);
   });
 };
