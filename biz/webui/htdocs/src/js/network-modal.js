@@ -56,7 +56,7 @@ function parseKeyword(keyword) {
   if (not) {
     keyword = keyword.substring(1);
   }
-  var type = 'url';
+  var type;
   if (KW_RE.test(keyword)) {
     type = RegExp.$1.toLowerCase();
     keyword = RegExp.$2.trim();
@@ -70,7 +70,7 @@ function parseKeyword(keyword) {
   }
   return {
     not: not,
-    type: type,
+    type: type || 'url',
     keyword: keyword.toLowerCase(),
     regexp: util.toRegExp(keyword)
   };

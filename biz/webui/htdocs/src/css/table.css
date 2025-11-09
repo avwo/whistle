@@ -1,7 +1,7 @@
 .w-table > thead > tr > th {
   background: #eee;
   font-weight: normal;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid #ddd;
   vertical-align: top;
 }
 
@@ -10,6 +10,43 @@
   font-size: 12px;
   padding: 3px 5px !important;
   border-top: none;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid #ddd;
   word-break: break-word;
+}
+
+.w-order-table table  tr > th:first-child {
+  width: 50px;
+}
+
+.w-order-table-head {
+  background: #fafafa;
+}
+
+.w-order-table .table td, .w-order-table .table th {
+  border-top: none;
+  border-bottom: 1px solid #ddd;
+}
+
+.w-order-table .w-order-table-head th {
+  padding: 4px 8px !important;
+}
+
+.w-order-table-body td, .w-order-table-body th {
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.w-table-cell-middle {
+  vertical-align: middle!important;
+}
+
+.w-order-table-operation {
+  white-space: nowrap;
+}
+
+.w-order-table-operation a {
+  margin-right: 20px;
+}
+.w-order-table-operation a:last-child {
+  margin-right: 0;
 }

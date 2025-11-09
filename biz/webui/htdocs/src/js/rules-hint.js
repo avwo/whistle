@@ -460,10 +460,6 @@ function isFilterProtocol(name) {
   return name === 'includeFilter://' || name === 'excludeFilter://';
 }
 
-function isRedirectProtocol(name) {
-  return name === 'redirect://' || name === 'locationHref://';
-}
-
 function getSpecProto(keyword) {
   if (!keyword) {
     return;
@@ -856,19 +852,17 @@ CodeMirror.registerHelper('hint', 'rulesHint', function (editor) {
   while (nextCh && WORD.test(nextCh)) {
     nextCh = curLine[++last];
   }
-  if (hintOpts && (hintOpts.isLineProps || hintOpts.isEnable || hintOpts.isDisable)) {
+  if (hintOpts && (hintOpts.isLineProps || hintOpts.isEnable || hintOpts.isDisable || hintOpts.isDelete)) {
     end = last;
   } else {
     var curItem = curLine.slice(start, last);
     var index = curItem.indexOf(':');
-    if (index !== -1) {
-      if (len !== 2 || !isRedirectProtocol(list[0]) || !HTTP_RE.test(curItem.substring(end))) {
-        end = start + index + 1;
+    if (index !== -1 && !HTTP_RE.test(curItem.substring(end))) {
+      end = start + index + 1;
+      if (curLine[end] === '/') {
+        end++;
         if (curLine[end] === '/') {
           end++;
-          if (curLine[end] === '/') {
-            end++;
-          }
         }
       }
     }

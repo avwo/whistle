@@ -28,6 +28,12 @@ var isJSONText;
 var MAX_SAFE_INTEGER = (Number.MAX_SAFE_INTEGER || '9007199254740991') + '';
 var MIN_SAFE_INTEGER = Math.abs(Number.MIN_SAFE_INTEGER || '9007199254740991') + '';
 var DIG_RE = /^([+-]?)([1-9]\d{0,15})$/;
+var SOURCE_SEP = '# (From ';
+var SOURCE_SEP_LEN = SOURCE_SEP.length;
+
+exports.SOURCE_SEP = SOURCE_SEP;
+exports.SOURCE_SEP_LEN = SOURCE_SEP_LEN;
+exports.CRLF_RE = CRLF_RE;
 
 function isSafeNumStr(str) {
   if (str == '0') {
@@ -1112,7 +1118,126 @@ exports.pluginIsDisabled = function(props, name) {
   return !props.ndp && (props.disabledAllPlugins || disabledPlugins[name]);
 };
 
-exports.handleImportData = function(data) {
+var H2_RE = /http\/2\.0/i;
+
+function harToSession(entry) {
+  if (!entry) {
+    return;
+  }
+  var times = entry.whistleTimes || '';
+  var startTime = new Date(
+          times.startTime || entry.startedDateTime
+        ).getTime();
+  if (isNaN(startTime)) {
+    return;
+  }
+
+  var rawReq = entry.request || {};
+  var rawRes = entry.response || {};
+  var reqHeaders = parseHeadersFromHar(rawReq.headers);
+  var resHeaders = parseHeadersFromHar(rawRes.headers);
+  var clientIp = entry.clientIPAddress || '127.0.0.1';
+  var serverIp = entry.serverIPAddress || '';
+  var useH2 = H2_RE.test(rawReq.httpVersion || rawRes.httpVersion);
+  var version = useH2 ? '2.0' : '1.1';
+  var postData = rawReq.postData || '';
+  var req = {
+    method: rawReq.method,
+    ip: clientIp,
+    port: rawReq.port,
+    httpVersion: version,
+    unzipSize: postData.size,
+    size: rawReq.bodySize > 0 ? rawReq.bodySize : 0,
+    headers: reqHeaders.headers,
+    rawHeaderNames: reqHeaders.rawHeaderNames,
+    body: ''
+  };
+  var reqText = postData.base64 || postData.text;
+  if (reqText) {
+    if (postData.base64) {
+      req.base64 = reqText;
+    } else {
+      req.body = reqText;
+    }
+  }
+  var content = rawRes.content;
+  var res = {
+    httpVersion: version,
+    statusCode: rawRes.statusCode || rawRes.status,
+    statusMessage: rawRes.statusText,
+    unzipSize: content.size,
+    size: rawRes.bodySize > 0 ? rawRes.bodySize : 0,
+    headers: resHeaders.headers,
+    rawHeaderNames: resHeaders.rawHeaderNames,
+    ip: serverIp,
+    port: rawRes.port,
+    body: ''
+  };
+  var resCtn = rawRes.content;
+  var text = resCtn && resCtn.text;
+  if (text) {
+    if (resCtn.base64) {
+      res.base64 = resCtn.base64;
+    } else if (
+            getContentType(resCtn.mimeType) === 'IMG' ||
+            (text.length % 4 === 0 && /^[a-z\d+/]+={0,2}$/i.test(text))
+          ) {
+      res.base64 = text;
+    } else {
+      res.body = text;
+    }
+  }
+  var session = {
+    useH2: useH2,
+    startTime: startTime,
+    ttfb: entry.ttfb,
+    frames: entry.frames,
+    url: rawReq.url,
+    realUrl: entry.whistleRealUrl,
+    req: req,
+    res: res,
+    customData: entry.whistleCustomData,
+    fwdHost: entry.whistleFwdHost,
+    sniPlugin: entry.whistleSniPlugin,
+    rules: entry.whistleRules || {},
+    captureError: entry.whistleCaptureError,
+    isHttps: entry.whistleIsHttps,
+    reqError: entry.whistleReqError,
+    resError: entry.whistleResError,
+    version: entry.whistleVersion,
+    nodeVersion: entry.whistleNodeVersion
+  };
+  if (times && times.startTime) {
+    session.dnsTime = times.dnsTime;
+    session.requestTime = times.requestTime;
+    session.responseTime = times.responseTime;
+    session.endTime = times.endTime;
+  } else {
+    var timings = entry.timings || {};
+    var endTime = Math.round(startTime + getTimeFromHar(entry.time));
+    startTime = Math.floor(startTime + getTimeFromHar(timings.dns));
+    session.dnsTime = startTime;
+    startTime = Math.floor(
+            startTime +
+              getTimeFromHar(timings.connect) +
+              getTimeFromHar(timings.ssl) +
+              getTimeFromHar(timings.send) +
+              getTimeFromHar(timings.blocked) +
+              getTimeFromHar(timings.wait)
+          );
+    session.requestTime = startTime;
+    startTime = Math.floor(
+            startTime + getTimeFromHar(timings.receive)
+          );
+    session.responseTime = startTime;
+    session.endTime = Math.max(startTime, endTime);
+  }
+  return session;
+}
+
+exports.harToSession = harToSession;
+
+exports.handleImportData = function(data, type) {
   if (data) {
     if (data.type === 'setNetworkSettings') {
       events.trigger('setNetworkSettings', data);
@@ -1134,6 +1259,16 @@ exports.handleImportData = function(data) {
   var mockData = getMockData(data);
   if (mockData) {
     events.trigger('showRulesDialog', mockData);
+  } else if (data && type === 'composerImportFile') {
+    if (Array.isArray(data)) {
+      events.trigger('composer', data[0]);
+    } else {
+      var entries = data.log && data.log.entries;
+      if (Array.isArray(entries) && entries.length) {
+        var entry = harToSession(entries[0]);
+        entry && events.trigger('composer', entry);
+      }
+    }
   }
   return mockData;
 };
@@ -1260,7 +1395,7 @@ exports.asCURL = function (item) {
   return result.join(' ').replace(/!/g, '\\!');
 };
 
-exports.parseHeadersFromHar = function (list) {
+function parseHeadersFromHar(list) {
   var headers = {};
   var rawHeaderNames = {};
   if (Array.isArray(list)) {
@@ -1275,23 +1410,46 @@ exports.parseHeadersFromHar = function (list) {
     headers: headers,
     rawHeaderNames: rawHeaderNames
   };
-};
+}
 
-exports.getTimeFromHar = function (time) {
+exports.parseHeadersFromHar = parseHeadersFromHar;
+
+function getTimeFromHar(time) {
   return time > 0 ? time : 0;
-};
+}
+
+exports.getTimeFromHar = getTimeFromHar;
 
 exports.parseKeyword = function (keyword) {
   keyword = keyword.split(/\s+/);
-  var result = {};
+  var result = '';
   var index = 0;
-  for (var i = 0; i <= 3; i++) {
+  for (var i = 0, len = keyword.length; i < len; i++) {
     var key = keyword[i];
-    if (key && key.indexOf('level:') === 0) {
-      result.level = key.substring(6).toLowerCase();
-    } else if (index < 3) {
-      ++index;
-      result['key' + index] = key && (toRegExp(key) || key.toLowerCase());
+    var not = key[0] === '!';
+    if (not) {
+      key = key.substring(1);
+    }
+    if (key) {
+      if (key.indexOf('level:') === 0) {
+        if (!result || !result.level) {
+          key = key.substring(6);
+          if (key[0] === '!') {
+            not = true;
+            key = key.substring(1);
+          }
+          if (key) {
+            result = result || {};
+            result.level = key.toLowerCase();
+            result.levelNot = not;
+          }
+        }
+      } else if (key && index < 3) {
+        ++index;
+        result = result || {};
+        result['key' + index] = toRegExp(key) || key.toLowerCase();
+        result['key' + index + 'Not'] = not;
+      }
     }
   }
   return result;
@@ -1311,13 +1469,13 @@ function checkLogText(text, keyword) {
     return '';
   }
   var raw = text;
-  if (checkKey(raw, text, keyword.key1)) {
+  if (setNot(checkKey(raw, text, keyword.key1), keyword.key1Not)) {
     return ' hide';
   }
-  if (keyword.key2 && checkKey(raw, text, keyword.key2)) {
+  if (keyword.key2 && setNot(checkKey(raw, text, keyword.key2), keyword.key2Not)) {
     return ' hide';
   }
-  if (keyword.key3 && checkKey(raw, text, keyword.key3)) {
+  if (keyword.key3 && setNot(checkKey(raw, text, keyword.key3), keyword.key3Not)) {
     return ' hide';
   }
   return '';
@@ -1371,6 +1529,10 @@ function toLocaleString(date) {
 
 exports.toLocaleString = toLocaleString;
 
+function setNot(flag, not) {
+  return not ? !flag : flag;
+}
+
 exports.filterLogList = function (list, keyword, init) {
   if (!list) {
     return list;
@@ -1397,7 +1559,7 @@ exports.filterLogList = function (list, keyword, init) {
   }
   list.forEach(function (log) {
     var level = keyword.level;
-    if (level && log.level !== level) {
+    if (level && setNot(log.level !== level, keyword.levelNot)) {
       log.hide = true;
     } else {
       var text =
@@ -1413,13 +1575,12 @@ exports.filterLogList = function (list, keyword, init) {
   return result || list;
 };
 
-exports.checkLogText = checkLogText;
-
 exports.scrollAtBottom = function (con, ctn) {
   return con.scrollTop + con.offsetHeight + 5 > ctn.offsetHeight;
 };
 
 exports.triggerListChange = function (name, data) {
+  events.trigger(name + 'Change', data);
   try {
     var onChange =
       window.parent[
@@ -2702,6 +2863,13 @@ function isGroup(name) {
 
 exports.isGroup = isGroup;
 
+function checkKeyword(obj, str) {
+  if (obj.regexp) {
+    return setNot(obj.regexp.test(str), obj.not);
+  }
+  return setNot(str.toLowerCase().indexOf(obj.keyword) !== -1, obj.not);
+}
+
 function filterJson(obj, keyword, filterType) {
   if (obj == null) {
     return false;
@@ -2710,7 +2878,7 @@ function filterJson(obj, keyword, filterType) {
   var isKey = filterType === 1;
   var isVal = filterType > 1;
   if (type === 'string' || type === 'number' || type === 'boolean') {
-    return !isKey && String(obj).toLowerCase().indexOf(keyword) !== -1;
+    return !isKey && checkKeyword(keyword, String(obj));
   }
   if (type !== 'object') {
     return false;
@@ -2718,7 +2886,7 @@ function filterJson(obj, keyword, filterType) {
   if (Array.isArray(obj)) {
     var idx = [];
     for (var i = obj.length - 1; i >=0; i--) {
-      if ((isVal || (i + '').indexOf(keyword) === -1) && !filterJson(obj[i], keyword, filterType)) {
+      if ((isVal || !checkKeyword(keyword, i + '')) && !filterJson(obj[i], keyword, filterType)) {
         obj.splice(i, 1);
       } else {
         idx.push(i);
@@ -2728,7 +2896,7 @@ function filterJson(obj, keyword, filterType) {
     return obj.length;
   }
   Object.keys(obj).forEach(function(key) {
-    var hasKey = !isVal && key.toLowerCase().indexOf(keyword) !== -1;
+    var hasKey = !isVal && checkKeyword(keyword, key);
     if (isKey && hasKey) {
       return true;
     }
@@ -2740,10 +2908,9 @@ function filterJson(obj, keyword, filterType) {
 }
 
 exports.filterJsonText = function(str, keyword, filterType) {
-  keyword = keyword.trim().toLowerCase();
   var obj;
   if (keyword) {
-    if (str.toLowerCase().indexOf(keyword) === -1) {
+    if (!keyword.not && !checkKeyword(keyword, str)) {
       return {};
     }
     obj = JSON.parse(str);
@@ -2953,7 +3120,7 @@ var MULTI_TO_ONE_RE = /^\s*line`\s*[\r\n]([\s\S]*?)[\r\n]\s*`\s*?$/gm;
 var LINE_END_RE = /\s*[\r\n]+\s*/;
 
 function removeRulesComments(str) {
-  return !str || str.indexOf('#') === -1 ? str : str.replace(COMMENT_RE, '');
+  return !str || str.indexOf('#') === -1 ? str : str.replace(COMMENT_RE, '').trim();
 }
 
 exports.removeRulesComments = removeRulesComments;
@@ -2969,6 +3136,24 @@ exports.formatRules = function (str, values, rawValues) {
   str = removeRulesComments(str);
   str = mergeLines(str);
   return str.trim().split(LINE_END_RE);
+};
+
+exports.handleClickLocate = function(text) {
+  var index = text && text.indexOf(SOURCE_SEP);
+  if (index > 0) {
+    text = text.substring(index + SOURCE_SEP_LEN, text.length - 1);
+    index = text.indexOf(':');
+    var type = text.substring(0, index);
+    var name = text.substring(index + 1).trim();
+    if (!type || !name) {
+      return;
+    }
+    if (type === 'File') {
+      events.trigger('showRules', name);
+    } else if (type === 'Plugin') {
+      events.trigger('showPlugins', name);
+    }
+  }
 };
 
 exports.getDocsBaseUrl = function (url) {

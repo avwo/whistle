@@ -10,13 +10,11 @@ var Inspectors = require('./inspectors');
 var Timeline = require('./timeline');
 var ComposerList = require('./composer-list');
 var Tools = require('./tools');
-var dataCenter = require('./data-center');
-var IFrame = require('./iframe');
+var Saved = require('./saved');
 var util = require('./util');
 
 var ReqData = React.createClass({
   getInitialState: function () {
-    var account = dataCenter.getAccount();
     return {
       tabs: [
         {
@@ -40,9 +38,8 @@ var ReqData = React.createClass({
           icon: 'heart'
         },
         {
-          name: 'Addon',
-          className: 'w-addon-btn',
-          icon: 'wrench'
+          name: 'Saved',
+          icon: 'saved'
         }
       ],
       initedOverview: false,
@@ -51,7 +48,7 @@ var ReqData = React.createClass({
       initedTimeline: false,
       initedComposer: false,
       initedTools: false,
-      addonTab: account && account.addonTab
+      initedSaved: false
     };
   },
   componentDidMount: function () {
@@ -101,24 +98,10 @@ var ReqData = React.createClass({
         } else {
           self.toggleTab(tabs[0]);
         }
-      });
-    dataCenter.on('serverInfo', function(data) {
-      if (!data) {
-        return;
-      }
-      var addonTab = data.account && data.account.addonTab;
-      var curTab = self.state.addonTab;
-      if (!addonTab || !curTab) {
-        if (addonTab !== curTab) {
-          self.setState({ addonTab: addonTab });
-        }
-        return;
-      }
-      if (addonTab.icon !== curTab.icon || addonTab.name !== curTab.name ||
-        addonTab.url !== curTab.url) {
-        self.setState({ addonTab: addonTab });
-      }
-    });
+      }).on('shakeSavedTab', self.shakeSavedTab);
+  },
+  shakeSavedTab: function() {
+    util.shakeElem($(ReactDOM.findDOMNode(this.refs.tabs)).find('button[data-name="Saved"]'));
   },
   showComposer: function (item) {
     if (item) {
@@ -128,27 +111,39 @@ var ReqData = React.createClass({
       item && events.trigger('setComposer');
     });
   },
+  isShowingSaved: function() {
+    var tab = this.state.tab;
+    return tab && tab.name === 'Saved';
+  },
   onDragEnter: function (e) {
     if (e.dataTransfer.types.indexOf('reqdataid') != -1) {
-      this.showComposer();
+      !this.isShowingSaved() && this.showComposer();
       e.preventDefault();
+    }
+  },
+  getItemById: function(id, list) {
+    for (var i = 0, len = list.length; i < len; i++) {
+      var item = list[i];
+      if (item && item.id === id) {
+        return item;
+      }
     }
   },
   onDrop: function (e) {
     var modal = this.props.modal;
     var id = e.dataTransfer.getData('reqDataId');
     var list = modal && modal.list;
-    if (!id || !list) {
+    var len = list && list.length;
+    if (!id || !len) {
       return;
     }
-    for (var i = 0, len = list.length; i < len; i++) {
-      var data = list[i];
-      if (data && data.id === id) {
-        return this.showComposer(data);
-      }
+    var item = this.getItemById(id, list);
+    if (this.isShowingSaved()) {
+      return events.trigger('saveSessions', [item]);
     }
+    item && this.showComposer(item);
   },
-  onDoubleClick: function (e) {
+  onDoubleClick: function () {
     events.trigger('ensureSelectedItemVisible');
   },
   toggleTab: function (tab, callback) {
@@ -235,20 +230,13 @@ var ReqData = React.createClass({
       this.selectTab(curTab);
     }
     var name = curTab && curTab.name;
-    var addonTab = state.addonTab || {};
-    var tabUrl = addonTab.url;
     var frames = activeItem && activeItem.frames;
     var dockToBottom = this.props.dockToBottom;
-    var lastTab = tabs[tabs.length - 1];
-    if (tabUrl) {
-      lastTab.icon = addonTab.icon || 'wrench';
-      lastTab.title = lastTab.display = addonTab.name || '';
-    }
+
     return (
       <div
         className={
           'fill orient-vertical-box w-detail' +
-          (tabUrl ? ' w-show-addon' : '') +
           (dockToBottom ? ' w-detail-bottom' : '')
         }
         onDragEnter={this.onDragEnter}
@@ -297,10 +285,7 @@ var ReqData = React.createClass({
           />
         ) : null}
         {state.initedTools ? <Tools hide={name != tabs[4].name} /> : null}
-        {state.initedAddon && tabUrl ? <IFrame
-          src={tabUrl}
-          className={name != tabs[5].name ? ' hide' : ''}
-        /> : null}
+        {state.initedSaved ? <Saved hide={name != tabs[5].name} /> : null}
       </div>
     );
   }

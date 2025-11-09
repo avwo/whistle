@@ -2,7 +2,6 @@ require('./base-css.js');
 require('../css/overview.css');
 var React = require('react');
 var ReactDOM = require('react-dom');
-var $ = require('jquery');
 var columns = require('./columns');
 var events = require('./events');
 var util = require('./util');
@@ -11,7 +10,7 @@ var Properties = require('./properties');
 var dataCenter = require('./data-center');
 var getHelpUrl = require('./protocols').getHelpUrl;
 
-var RULES_SRC_TITLE = '     # (From ';
+var SOURCE_SEP = util.SOURCE_SEP;
 var OVERVIEW = [
   'URL',
   'Final URL',
@@ -94,11 +93,11 @@ var DEFAULT_RULES_MODAL = {};
 var PROXY_PROTOCOLS = ['socks', 'http-proxy', 'https-proxy'];
 
 function getAtRule(rule) {
-  return rule.rawPattern + ' @' + rule.matcher.substring(4) + getPluginName(rule);
+  return rule.rawPattern + ' @' + getMatcher(rule).substring(4) + getPluginName(rule);
 }
 
 function getVarRule(rule) {
-  return rule.rawPattern + ' %' + rule.matcher.substring(4) + getPluginName(rule);
+  return rule.rawPattern + ' %' + getMatcher(rule).substring(4) + getPluginName(rule);
 }
 
 function getStr(str) {
@@ -115,9 +114,9 @@ function getPluginName(rule) {
   }
   var root = rule.root;
   if (root) {
-    return /[\\/]whistle\.([a-z\d_\-]+)$/.test(root) ? RULES_SRC_TITLE + 'plugin: ' + RegExp.$1 + ')' : '';
+    return /[\\/]whistle\.([a-z\d_\-]+)$/.test(root) ? SOURCE_SEP + 'Plugin: ' + RegExp.$1 + ')' : '';
   }
-  return rule.file ? RULES_SRC_TITLE + 'file: ' + rule.file + ')' : '';
+  return rule.file ? SOURCE_SEP + rule.file + ')' : '';
 }
 
 function getRawProps(rule, all) {
@@ -140,11 +139,15 @@ function getInjectProps(rule) {
   return rule.safeHtml ? ' enable://safeHtml' : '';
 }
 
+function getMatcher(rule) {
+  return rule._matcher || rule.matcher;
+}
+
 function getRuleStr(rule) {
   if (!rule) {
     return;
   }
-  var matcher = rule.matcher;
+  var matcher = getMatcher(rule);
   if (rule.port) {
     var protoIndex = matcher.indexOf(':') + 3;
     var proto = matcher.substring(0, protoIndex);
@@ -192,39 +195,6 @@ var Overview = React.createClass({
         container.scrollTop = 0;
       }
     });
-    $(ReactDOM.findDOMNode(self.refs.rulesOverview)).on('mouseenter', 'td pre', function (e) {
-      if (!e.ctrlKey && !e.metaKey) {
-        return;
-      }
-      var target = e.target;
-      var text = target.innerText;
-      var index = text && text.indexOf(RULES_SRC_TITLE);
-      if (index > 0) {
-        target.setAttribute('data-rule-source', '1');
-      }
-    }).on('mouseleave', 'td pre', function (e) {
-      e.target.removeAttribute('data-rule-source');
-    }).on('click', 'td pre', function (e) {
-      if (!e.ctrlKey && !e.metaKey) {
-        return;
-      }
-      var text = e.target.innerText;
-      var index = text && text.indexOf(RULES_SRC_TITLE);
-      if (index > 0) {
-        text = text.substring(index + 13, text.length - 1);
-        index = text.indexOf(':');
-        var type = text.substring(0, index);
-        var name = text.substring(index + 1).trim();
-        if (!type || !name) {
-          return;
-        }
-        if (type === 'file') {
-          events.trigger('showRules', name);
-        } else if (type === 'plugin') {
-          events.trigger('showPlugins', name);
-        }
-      }
-    });
   },
   showOnlyMatchRules: function (e) {
     var showOnlyMatchRules = e.target.checked;
@@ -268,31 +238,6 @@ var Overview = React.createClass({
     reqStyle = CSS_MAP['Download'].style;
     reqStyle['--overview-left'] = (modal.responseTime - modal.startTime) * 100 / total + '%';
     reqStyle['--overview-width'] = (modal.endTime - modal.responseTime) * 100 / total + '%';
-  },
-  setRulesFile: function (rules) {
-    var rulesModal = this.props.rulesModal;
-    if (!rulesModal) {
-      return;
-    }
-    var keys = Object.keys(rules);
-    if (!keys.length) {
-      return;
-    }
-    var map = rulesModal.getFormattedMap();
-    if (!map) {
-      return;
-    }
-    keys.forEach(function (name) {
-      var rule = rules[name];
-      if (rule) {
-        rule.file = map[rule.raw];
-        if (Array.isArray(rule.list)) {
-          rule.list.forEach(function (item) {
-            item.file = map[item.raw];
-          });
-        }
-      }
-    });
   },
   render: function () {
     var overviewModal = DEFAULT_OVERVIEW_MODAL;
@@ -411,7 +356,6 @@ var Overview = React.createClass({
         var clientCert = rules.clientCert;
         var atCtn;
         var atTitle;
-        this.setRulesFile(rules);
         if (atRule) {
           atCtn = [getAtRule(atRule)];
           atTitle = [atRule.raw];
@@ -453,12 +397,12 @@ var Overview = React.createClass({
           if (pluginRule) {
             hasPluginRule = true;
             var ruleList = [
-              pluginRule.rawPattern + ' ' + pluginRule.matcher + getRawProps(pluginRule) + getPluginName(pluginRule)
+              pluginRule.rawPattern + ' ' + getMatcher(pluginRule) + getRawProps(pluginRule) + getPluginName(pluginRule)
             ];
             var titleList = [pluginRule.raw];
             rule && Array.isArray(rule.list) &&
               rule.list.forEach(function (item) {
-                ruleList.push(item.rawPattern + ' ' + item.matcher + getRawProps(item) + getPluginName(item));
+                ruleList.push(item.rawPattern + ' ' + getMatcher(item) + getRawProps(item) + getPluginName(item));
                 titleList.push(item.raw);
               });
             rulesModal[name] = ruleList.join('\n');
@@ -467,7 +411,7 @@ var Overview = React.createClass({
             var prop = getInjectProps(rule);
             rulesModal[name] = rule.list
               .map(function (rule) {
-                return rule.rawPattern + ' ' + rule.matcher + getRawProps(rule, true) + prop + getPluginName(rule);
+                return rule.rawPattern + ' ' + getMatcher(rule) + getRawProps(rule, true) + prop + getPluginName(rule);
               })
               .join('\n');
             titleModal[name] = rule.list
@@ -486,7 +430,7 @@ var Overview = React.createClass({
               }
               if (rules.proxy && rules.proxy.host) {
                 result.push(
-                  getRuleStr(rules.proxy.host) + ' (URL: ' + rules.proxy.matcher + ')' + getPluginName(rule)
+                  getRuleStr(rules.proxy.host) + ' (URL: ' + getMatcher(rules.proxy) + ')' + getPluginName(rule)
                 );
               }
               rulesModal[name] = result.join('\n');
@@ -538,9 +482,9 @@ var Overview = React.createClass({
           </label>
         </p>
         <Properties
-          ref="rulesOverview"
           onHelp={this.onHelp}
           className={showOnlyMatchRules ? 'w-hide-no-value w-rules-overview' : 'w-rules-overview'}
+          onClickLocate={util.handleClickLocate}
           modal={rulesModal}
           title={titleModal}
           enableCopyValue

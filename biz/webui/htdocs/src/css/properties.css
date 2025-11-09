@@ -35,6 +35,13 @@
   padding-right: 3px;
   word-break: break-word;
 }
+.w-enabled-rules {
+  overflow-y: auto;
+}
+.w-enabled-rules .w-properties th {
+  width: 36px;
+  padding-left: 5px;
+}
 .w-properties td {
   padding-left: 5px;
   vertical-align: top;
@@ -102,4 +109,12 @@
   cursor: pointer!important;
   text-decoration: none!important;
   color: #000;;
+}
+
+.w-src-info {
+  margin-left: 30px;
+}
+
+span.w-src-info {
+  color: #999;
 }

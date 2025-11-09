@@ -5,7 +5,6 @@ function ListModal(list, data) {
   this.reset(list, data, true);
 }
 
-var formattedMap = {};
 var proto = ListModal.prototype;
 
 proto.reset = function (list, data, init) {
@@ -413,40 +412,62 @@ proto.getSibling = function (name) {
  */
 proto.search = function (keyword, disabledType) {
   keyword = typeof keyword === 'string' ? keyword.trim() : '';
-  if (keyword &&(disabledType ? /^(b|v|n|k|s):(.*)$/ : /^(selected|s|active|a|b|v|k|s):(.*)$/).test(keyword)) {
+  var not = keyword[0] === '!';
+  if (not) {
+    keyword = keyword.substring(1).trim();
+  }
+  if (keyword &&(disabledType ? /^(b|v|n|k|s):(.*)$/ : /^(selected|s|active|a|b|v|n|k|s):(.*)$/).test(keyword)) {
     this._type = RegExp.$1;
     keyword = RegExp.$2.trim();
+    if (keyword[0] === '!') {
+      not = true;
+      keyword = keyword.substring(1).trim();
+    }
   } else {
     this._type = ''; // reset
   }
   this._keyword = keyword && (util.toRegExp(keyword) || keyword.toLowerCase());
+  this._not = not;
   this.filter();
   return !keyword;
 };
 
+function setNot(flag, not) {
+  return not ? !flag : flag;
+}
+
 proto.filter = function () {
+  var not = this._not;
   var keyword = this._keyword;
   var list = this.list;
   var filterBody = this._type === 'b' || this._type === 'v';
-  var filterKey = this._type === 'n' | this._type === 'k';
+  var filterKey = this._type === 'n' || this._type === 'k';
   var filterSelected = !!this._type && !filterBody && !filterKey;
   var data = this.data;
 
+  var group;
+  var showGroup;
   list.forEach(function (name) {
     var item = data[name];
     var hideSelected = filterSelected && !item.selected;
+    if (util.isGroup(name)) {
+      if (group && showGroup) {
+        group.hide = false;
+      }
+      group = item;
+      showGroup = false;
+    }
     if (!keyword || hideSelected) {
       item.hide = hideSelected;
-      return;
-    }
-    if (filterBody) {
-      item.hide = !item.value || util.checkKey(item.value, item.value, keyword);
+    } else if (filterBody) {
+      item.hide = !item.value || setNot(util.checkKey(item.value, item.value, keyword), not);
     } else {
-      item.hide = !name || util.checkKey(name, name, keyword);
+      item.hide = !name || setNot(util.checkKey(name, name, keyword), not);
       if (item.hide && !filterKey) {
-        item.hide = !item.value || util.checkKey(item.value, item.value, keyword);
+        item.hide = !item.value || setNot(util.checkKey(item.value, item.value, keyword), not);
       }
     }
+    showGroup = showGroup || !item.hide;
   });
   return list;
 };
@@ -545,43 +566,6 @@ proto.next = function () {
       return item;
     }
   }
-};
-
-proto.getFormattedMap = function () {
-  var list = this.list;
-  if (!list.length) {
-    return;
-  }
-  var data = this.data;
-  var map = {};
-  var selectedList = [];
-  var unselectedList = [];
-  var result;
-  list.forEach(function (name) {
-    var item = data[name];
-    if (item) {
-      if (item.selected && item.name !== 'Default') {
-        selectedList.push(item);
-      } else {
-        unselectedList.push(item);
-      }
-    }
-  });
-  selectedList.concat(unselectedList).forEach(function (item) {
-    var value = (item.value || '').trim();
-    var list = value && (formattedMap[value] || util.formatRules(value));
-    if (list && list.length) {
-      map[value] = list;
-      list.forEach(function (rule) {
-        result = result || {};
-        if (!result[rule]) {
-          result[rule] = item.name;
-        }
-      });
-    }
-  });
-  formattedMap = map;
-  return result;
 };
 
 module.exports = ListModal;

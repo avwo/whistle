@@ -225,20 +225,6 @@
   padding: 10px 15px;
 }
 
-.w-context-menu li[data-menu-action='Remove'] ul,
-.w-context-menu li[data-menu-action='Actions'] ul,
-.w-context-menu li[data-menu-action='Copy'] ul,
-.w-context-menu.w-ctx-menu-no-plugin li[data-menu-action='Service'] ul {
-  top: -31px !important;
-}
-
-.w-context-menu.w-contenxt-menu-list li[data-menu-action='Copy'] ul,
-.w-context-menu.w-ctx-menu-others li[data-menu-action='Remove'] ul,
-.w-context-menu.w-ctx-menu-others li[data-menu-action='Actions'] ul,
-.w-context-menu.w-ctx-menu-others li[data-menu-action='Copy'] ul {
-  top: 0 !important;
-}
-
 .w-context-menu li[data-menu-action='Plugins'] ul {
   overflow-x: hidden;
   overflow-y: auto;
@@ -389,4 +375,8 @@
 }
 .w-back-to-the-bottom:hover {
   opacity: 1;
+}
+
+.w-save-sessions-label .form-control {
+  width: 350px!important;
 }

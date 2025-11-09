@@ -15,9 +15,7 @@ var events = require('./events');
 var iframes = require('./iframes');
 var storage = require('./storage');
 var RecycleBinDialog = require('./recycle-bin');
-var IFrame = require('./iframe');
-var LazyInit = require('./lazy-init');
-var EnabledRules = require('./enabled-rules');
+var EnabledRulesDialog = require('./enabled-rules');
 
 var hideEnableHTTPSTips = window.location.href.indexOf('hideEnableHTTPSTips=1') !== -1;
 var disabledEditor = window.location.href.indexOf('disabledEditor=1') !== -1;
@@ -208,6 +206,13 @@ var List = React.createClass({
         events.trigger('save' + comName, activeItem);
       }
     });
+    if (self.isRules()) {
+      events.on('enabledRulesCountChange', function() {
+        self.setState({});
+      });
+    }
+
+
     events.on('reload' + comName + 'RecycleBin', function () {
       self.reloadRecycleBin(comName);
     });
@@ -244,7 +249,7 @@ var List = React.createClass({
     events.on('focus' + (self.isRules() ? 'Rules' : 'Values') + 'FilterInput', function() {
       self.refs.filterInput.focus();
     });
-    this.ensureVisible(true);
+    self.ensureVisible(true);
   },
   expandGroup: function(groupName) {
     var index = this.collapseGroups.indexOf(groupName);
@@ -288,8 +293,10 @@ var List = React.createClass({
       typeof self.props.onActive != 'function' ||
       self.props.onActive(item) !== false
     ) {
-      self.props.modal.setActive(item.name);
+      var modal = self.props.modal;
+      modal.setActive(item.name);
       self.setState({ activeItem: item });
+      self.expandGroup(modal.getGroupName(item.name));
     }
   },
   toggleGroup: function (item) {
@@ -711,6 +718,21 @@ var List = React.createClass({
     }
     this.setState({ activeTab: name });
   },
+  showEnabledRules: function() {
+    var self = this;
+    dataCenter.rules.getEnabledRules(function (data, xhr) {
+      if (!data) {
+        util.showSystemError(xhr);
+        return;
+      }
+      var enabledRules = [];
+      data.list.forEach(function(line) {
+        var file = line[1] ? util.SOURCE_SEP + line[1] + ')' : '';
+        enabledRules.push(line[0] + file);
+      });
+      self.refs.enabledRulesDialog.show(enabledRules);
+    });
+  },
   render: function () {
     var self = this;
     var modal = self.props.modal;
@@ -725,12 +747,7 @@ var List = React.createClass({
     var draggable = false;
     var activeName = activeItem ? activeItem.name : '';
     var selected = activeItem.selected;
-    var tokenId = dataCenter.tokenId;
-    var activeTab = (tokenId && self.state.activeTab) || (isRules ? 'rules' : 'values');
-    var showEnableRules = tokenId && isRules && activeTab === 'enabledRules';
-    var showSharedRules = tokenId && isRules && activeTab === 'sharedRules';
-    var showFiles = tokenId && !isRules && activeTab === 'files';
-    var showSharedValues = tokenId && !isRules && activeTab === 'sharedValues';
+    var enabledRulesCount = dataCenter.enabledRulesCount || 0;
     list = self.parseList();
     if (isRules) {
       draggable = list.length > 2;
@@ -755,49 +772,12 @@ var List = React.createClass({
             </button>
           </div>
         ) : null}
-        {dataCenter.tokenId ? (
-          isRules ? <ul className="nav nav-tabs">
-            <li className={'w-nav-normal-tab ' + (activeTab === 'rules' ? 'active' : '')} onClick={this.switchTab}>
-              <a draggable="false" data-name="rules">
-                <span className="glyphicon glyphicon-list" data-name="rules" />
-                Rules
-              </a>
-            </li>
-            <li  className={'w-nav-normal-tab ' + (showEnableRules ? 'active' : '')} onClick={this.switchTab}>
-              <a draggable="false" data-name="enabledRules">
-                <span className="glyphicon glyphicon-ok" data-name="enabledRules" />
-                Enabled Rules (0)
-              </a>
-            </li>
-            <li  className={'w-nav-normal-tab ' + (showSharedRules ? 'active' : '')} onClick={this.switchTab}>
-              <a draggable="false" data-name="sharedRules">
-                <span className="glyphicon glyphicon-share" data-name="sharedRules" />
-                Shared Rules
-              </a>
-            </li>
-          </ul> : <ul className="nav nav-tabs">
-            <li className={'w-nav-normal-tab ' + (activeTab === 'values' ? 'active' : '')} onClick={this.switchTab}>
-              <a draggable="false" data-name="values">
-                <span className="glyphicon glyphicon-folder-close" data-name="values" />
-                Values
-              </a>
-            </li>
-            <li  className={'w-nav-normal-tab ' + (showFiles ? 'active' : '')} onClick={this.switchTab}>
-              <a draggable="false" data-name="files">
-                <span className="glyphicon glyphicon-hdd" data-name="files" />
-                Files
-              </a>
-            </li>
-            <li  className={'w-nav-normal-tab ' + (showSharedValues ? 'active' : '')} onClick={this.switchTab}>
-              <a draggable="false" data-name="sharedValues">
-                <span className="glyphicon glyphicon-share" data-name="sharedValues" />
-                Shared Values (Files)
-              </a>
-            </li>
-          </ul>) : null
-        }
-        <Divider leftWidth="230" hide={activeTab !== (isRules ? 'rules' : 'values')}>
+        <Divider leftWidth="230">
           <div className="fill orient-vertical-box w-list-left">
+            {isRules ? <div className={'w-enabled-rules-btn' + (enabledRulesCount ? '' : ' w-disabled')} onClick={enabledRulesCount ? self.showEnabledRules : null}>
+              <span className="glyphicon glyphicon-ok" data-name="enabledRules" />
+              Enabled Rules ({enabledRulesCount})
+            </div> : null}
             <div
               ref="list"
               tabIndex="0"
@@ -863,6 +843,7 @@ var List = React.createClass({
             <FilterInput ref="filterInput" onChange={this.onFilterChange} />
             <ContextMenu onClick={this.onClickContextMenu} ref="contextMenu" />
             <RecycleBinDialog ref="recycleBinDialog" />
+            <EnabledRulesDialog ref="enabledRulesDialog" />
           </div>
           <Editor
             {...self.props}
@@ -874,18 +855,6 @@ var List = React.createClass({
             onInspect={isRules ? null : this.onInspect}
           />
         </Divider>
-        <LazyInit inited={showEnableRules}>
-          <EnabledRules hide={!showEnableRules} />
-        </LazyInit>
-        <LazyInit inited={showSharedRules}>
-          <IFrame src="service/shared-rules.html" className={showSharedRules ? null : 'hide'} />
-        </LazyInit>
-        <LazyInit inited={showFiles}>
-          <IFrame src="service/files.html" className={showFiles ? null : 'hide'} />
-        </LazyInit>
-        <LazyInit inited={showSharedValues}>
-          <IFrame src="service/shared-values.html" className={showSharedValues ? null : 'hide'} />
-        </LazyInit>
       </div>
     );
   }

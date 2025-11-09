@@ -480,6 +480,7 @@ var Home = React.createClass({
 
     return (
       <div
+        ref="plugins"
         className="fill orient-vertical-box w-plugins"
         style={{ display: self.props.hide ? 'none' : '' }}
       >
@@ -499,7 +500,7 @@ var Home = React.createClass({
           </table>
         </div>
         <div className="fill w-plugins-list">
-          <table ref="plugins" className="table table-hover">
+          <table className="table table-hover">
             <tbody>
               {list.length ? (
                 list.map(function (plugin, i) {

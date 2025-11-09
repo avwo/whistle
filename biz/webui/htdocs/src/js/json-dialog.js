@@ -15,13 +15,30 @@ var JSONDialog = React.createClass({
     keyword = keyword.trim();
     var self = this;
     self._type = 0;
+    var not = keyword[0] === '!';
+    if (not) {
+      keyword = keyword.substring(1).trim();
+    }
     if (KV_RE.test(keyword)) {
       self._type = RegExp.$1 === 'k' ? 1 : 2;
       keyword = keyword.substring(2);
     }
     clearTimeout(self.filterTimer);
-    if (self._keyword !== keyword) {
+    if (self._keyword !== keyword || self._not !== not) {
       self._keyword = keyword;
+      self._not = not;
+      if (self._type && keyword[0] === '!') {
+        not = true;
+        keyword = keyword.substring(1).trim();
+      }
+      if (keyword) {
+        keyword = {
+          not: not,
+          keyword: keyword.toLowerCase(),
+          regexp: util.toRegExp(keyword)
+        };
+      }
+      self._keywordObj = keyword;
       if (!keyword) {
         return self.setState({ curData: null });
       }
@@ -32,10 +49,10 @@ var JSONDialog = React.createClass({
     }, 600);
   },
   filterJson: function(data) {
-    if (!this._keyword) {
+    if (!this._keywordObj) {
       return;
     }
-    var json = util.filterJsonText(data.str, this._keyword, this._type);
+    var json = util.filterJsonText(data.str, this._keywordObj, this._type);
     if (!json) {
       return;
     }
@@ -143,7 +160,7 @@ var JSONDialog = React.createClass({
           </button>
           <div
             className="orient-vertical-box"
-            style={{ width: 880, height: 560, marginTop: 22, background: this._keyword ? 'lightyellow' : undefined }}
+            style={{ width: 880, height: 560, marginTop: 22, background: this._keywordObj ? 'lightyellow' : undefined }}
           >
             <JSONView keyPath={state.keyPath} dialog data={state.curData || state.data} viewSource={true} />
           </div>

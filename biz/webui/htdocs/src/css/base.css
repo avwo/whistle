@@ -248,6 +248,8 @@ textarea {
   text-align: center;
   font-style: italic;
   color: #ccc;
+  border-bottom: none !important;
+  padding: 20px 0 !important;
 }
 .w-empty-data {
   position: absolute;

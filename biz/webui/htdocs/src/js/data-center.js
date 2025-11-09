@@ -60,6 +60,7 @@ var pluginColumns = [];
 var webWorkerList = [];
 var reqIndex = 0;
 var composeDataMap = {};
+var rulesMFlag = '';
 var DEFAULT_CONF = {
   timeout: TIMEOUT,
   xhrFields: {
@@ -69,6 +70,7 @@ var DEFAULT_CONF = {
 };
 var composerItem;
 
+exports.enabledRulesCount = 0;
 exports.setComposerItem = function(item) {
   composerItem = item;
 };
@@ -119,6 +121,15 @@ exports.filterIsEnabled = function () {
   var text = !settings.disabledFilterText && settings.filterText.trim();
   return text || (!settings.disabledExcludeText && settings.excludeText.trim());
 };
+
+function updateRulesInfo(data) {
+  var enabledCount = data.enabledCount || 0;
+  exports.backRulesFirst = data.backRulesFirst;
+  if (exports.enabledRulesCount !== enabledCount) {
+    exports.enabledRulesCount = enabledCount;
+    events.trigger('enabledRulesCountChange', enabledCount);
+  }
+}
 
 function compareFilter(filter) {
   if (filter !== hashFilterObj) {
@@ -505,6 +516,10 @@ exports.rules = createCgiObj(
       mode: 'chain',
       url: 'cgi-bin/rules/move-to'
     },
+    getEnabledRules: {
+      url: 'cgi-bin/rules/enabled',
+      mode: 'cancel'
+    },
     list: {
       type: 'get',
       url: 'cgi-bin/rules/list'
@@ -528,6 +543,7 @@ exports.rules = createCgiObj(
   },
   POST_CONF
 );
+
 
 exports.log = createCgiObj(
   {
@@ -597,6 +613,10 @@ $.extend(
       setIPv6Only: 'cgi-bin/set-ipv6-only',
       createTempFile: {
         url: 'cgi-bin/sessions/create-temp-file',
+        contentType: 'application/json'
+      },
+      saveSessions: {
+        url: 'cgi-bin/sessions/save',
         contentType: 'application/json'
       },
       setDnsOrder: 'cgi-bin/set-dns-order',
@@ -735,12 +755,12 @@ exports.getInitialData = function (callback) {
         var server = data.server;
         port = server && server.port;
         account = server && server.account;
+        updateTokenId(server);
         exports.version = server && server.version;
         exports.enablePluginMgr = data.epm;
         exports.supportH2 = data.supportH2;
         exports.isWin = server && server.isWin;
-        exports.tokenId = server && server.tokenId;
-        exports.backRulesFirst = data.rules.backRulesFirst;
+        updateRulesInfo(data.rules);
         exports.custom1 = data.custom1;
         exports.custom2 = data.custom2;
         exports.custom1Key = data.custom1Key;
@@ -1035,6 +1055,7 @@ function startLoadData() {
       var server = data.server;
       port = server && server.port;
       account = server && server.account;
+      updateTokenId(server);
       exports.pluginsRoot = data.pluginsRoot;
       exports.whistleName = data.wName;
       exports.account = data.account;
@@ -1043,8 +1064,7 @@ function startLoadData() {
       exports.supportH2 = data.supportH2;
       exports.version = server && server.version;
       exports.isWin = server && server.isWin;
-      exports.tokenId = server && server.tokenId;
-      exports.backRulesFirst = data.backRulesFirst;
+      updateRulesInfo(data);
       exports.custom1 = data.custom1;
       exports.custom2 = data.custom2;
       exports.custom1Key = data.custom1Key;
@@ -2025,6 +2045,22 @@ exports.getRemoteData = function (url, callback) {
 function toString(options) {
   return typeof options === 'string' ? options : JSON.stringify(options);
 }
+
+function updateTokenId(server) {
+  var tokenId = server && server.tokenId;
+  if (tokenId !== exports.tokenId) {
+    exports.tokenId = tokenId;
+    events.trigger('tokenIdChanged', tokenId);
+  }
+  if (tokenId && rulesMFlag !== server.rulesMFlag) {
+    rulesMFlag = server.rulesMFlag;
+    events.trigger('rulesMFlagChanged', rulesMFlag);
+  }
+}
+
+exports.getRulesMFlag = function() {
+  return rulesMFlag || '';
+};
 
 exports.saveToService = function(options, callback) {
   if (!exports.tokenId) {

@@ -16,6 +16,9 @@ function getAccept(name) {
   if (name === 'console' || name === 'server') {
     return '.log';
   }
+  if (name === 'composer') {
+    return '.txt,.json,.har';
+  }
   return '.txt,.json';
 }
 

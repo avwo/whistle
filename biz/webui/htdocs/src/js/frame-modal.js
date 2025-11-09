@@ -1,18 +1,6 @@
 var util = require('./util');
 var MAX_FRAMES_LENGTH = require('./data-center').MAX_FRAMES_LENGTH;
 
-var lowerBody;
-
-var filterItem = function (keyword, item) {
-  if (!keyword) {
-    return true;
-  }
-  if (lowerBody == null) {
-    lowerBody = util.getBody(item, true).toLowerCase();
-  }
-  return lowerBody.indexOf(keyword) !== -1;
-};
-
 function FramesModal() {
   this.list = [];
 }
@@ -30,24 +18,37 @@ proto.getItem = function(frameId) {
   }
 };
 
+var KW_RE = /^(c|s):(\S*)$/i;
 proto.search = function (keyword) {
-  keyword = typeof keyword !== 'string' ? '' : keyword.trim().toLowerCase();
-  if (keyword) {
-    var k = (this._keyword = {});
-    var i = 0;
-    keyword
-      .split(/\s+/g)
-      .slice(0, 3)
-      .forEach(function (key) {
-        if (/^(c|s):(\S*)$/i.test(key)) {
-          k[RegExp.$1.toLowerCase()] = RegExp.$2;
-        } else {
-          k['k' + i++] = key;
-        }
-      });
-  } else {
+  keyword = typeof keyword !== 'string' ? '' : keyword.trim();
+  if (!keyword) {
     this._keyword = '';
+    return;
   }
+  var k = (this._keyword = {});
+  keyword.split(/\s+/).forEach(function (key) {
+    var type = '';
+    var not = key[0] === '!';
+    if (not) {
+      key = key.substring(1).trim();
+    }
+    if (KW_RE.test(key)) {
+      type = RegExp.$1.toLowerCase();
+      key = RegExp.$2;
+      if (key[0] === '!') {
+        not = true;
+        key = key.substring(1);
+      }
+    }
+    var list = k[type] || (k[type] = []);
+    if (key && list.length < 3) {
+      list.push({
+        not: not,
+        keyword: key.toLowerCase(),
+        regexp: util.toRegExp(key)
+      });
+    }
+  });
 };
 
 proto.filter = function () {
@@ -59,32 +60,39 @@ proto.filter = function () {
     });
     return;
   }
-
+  var lowerBody;
+  var isHide = function (item, type) {
+    var list = keyword[type || ''];
+    if (!list) {
+      return false;
+    }
+    if (type === 's') {
+      if (item.isClient) {
+        return true;
+      }
+    } else if (type === 'c') {
+      if (!item.isClient) {
+        return true;
+      }
+    }
+    if (list.length === 0) {
+      return false;
+    }
+    for (var i = 0, len = list.length; i < len; i++) {
+      var key = list[i];
+      if (lowerBody == null) {
+        lowerBody = util.getBody(item, true).toLowerCase();
+      }
+      var flag = key.regexp ? key.regexp.test(lowerBody) : lowerBody.indexOf(key.keyword) !== -1;
+      if (key.not ? !flag : flag) {
+        return false;
+      }
+    }
+    return true;
+  };
   list.forEach(function (item) {
-    item.hide = false;
     lowerBody = null;
-    if (
-      !filterItem(keyword.k0, item) ||
-      !filterItem(keyword.k1, item) ||
-      !filterItem(keyword.k2, item)
-    ) {
-      item.hide = true;
-      return;
-    }
-    var hasClientKeyword = 'c' in keyword;
-    var hasServerKeyword = 's' in keyword;
-    if (!hasClientKeyword && !hasServerKeyword) {
-      return;
-    }
-    if (hasClientKeyword && hasServerKeyword) {
-      item.hide = !filterItem(keyword[item.isClient ? 'c' : 's'], item);
-      return;
-    }
-    if (hasClientKeyword) {
-      item.hide = !item.isClient || !filterItem(keyword.c, item);
-      return;
-    }
-    item.hide = item.isClient || !filterItem(keyword.s, item);
+    item.hide = isHide(item) || isHide(item, 's') || isHide(item, 'c');
   });
 };
 

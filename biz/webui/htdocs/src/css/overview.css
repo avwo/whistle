@@ -49,7 +49,7 @@
   height: 100%;
 }
 
-.w-rules-overview td pre[data-rule-source]:hover {
+.w-properties-wrap td pre[data-rule-source]:hover {
   cursor: pointer;
   color: #337ab7;
 }

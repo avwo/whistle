@@ -1,22 +1,47 @@
 var React = require('react');
 var util = require('./util');
+var Properties = require('./properties');
+var Empty = require('./empty');
+var Dialog = require('./dialog');
 
-var EnabledRules = React.createClass({
+var EnabledRulesDialog = React.createClass({
   getInitialState: function () {
-    return {};
+    return { list: [] };
   },
-  shouldComponentUpdate: function (nextProps) {
-    var hide = util.getBoolean(this.props.hide);
-    return hide != util.getBoolean(nextProps.hide) || !hide;
+  shouldComponentUpdate: function () {
+    return this.refs.enabledRules.isVisible();
+  },
+  handleClickLocate: function (rule) {
+    this.hide();
+    util.handleClickLocate(rule);
+  },
+  show: function (list) {
+    this.refs.enabledRules.show();
+    this.setState({ list: list });
+  },
+  hide: function () {
+    this.refs.enabledRules.hide();
   },
   render: function () {
+    var list = this.state.list || [];
 
     return (
-      <div className={this.props.hide ? 'hide' : null}>
-        Enabled Rules
-      </div>
+      <Dialog ref="enabledRules" wstyle="w-enabled-rules-dialog">
+          <div className="modal-header">
+            <h4>Enabled Rules</h4>
+            <button type="button" className="close" data-dismiss="modal">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          {list.length ? <Properties
+            name="Rules"
+            wrapClass="box fill w-enabled-rules"
+            onClickLocate={this.handleClickLocate}
+            modal={list}
+          /> : <Empty />}
+      </Dialog>
     );
   }
 });
 
-module.exports = EnabledRules;
+module.exports = EnabledRulesDialog;

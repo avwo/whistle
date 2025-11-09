@@ -40,7 +40,6 @@ var HttpsSettings = require('./https-settings');
 
 var TEMP_LINK_RE = /^(?:[\w-]+:\/\/)?temp(?:\/([\da-z]{64}|blank))?(?:\.[\w-]+)?$/;
 var FILE_PATH_RE = /^(?:[\w-]+:\/\/)?((?:[a-z]:[\\/]|\/).+)$/i;
-var H2_RE = /http\/2\.0/i;
 var JSON_RE = /^\s*(?:[\{｛][\w\W]+[\}｝]|\[[\w\W]+\])\s*$/;
 var DEFAULT = 'Default';
 var MAX_PLUGINS_TABS = 7;
@@ -227,8 +226,8 @@ function readFileJson(file, cb) {
     }
     return cb(parseJSON(file));
   }
-  if (!file || !/\.(txt|json)$/i.test(file.name)) {
-    win.alert('Supported file formats: .txt, .json');
+  if (!file || !/\.(txt|json|har)$/i.test(file.name)) {
+    win.alert('Supported file formats: .txt, .json, .har');
     return cb();
   }
 
@@ -241,9 +240,9 @@ function readFileJson(file, cb) {
   });
 }
 
-function handleImportData(file, cb) {
+function handleImportData(file, cb, type) {
   readFileJson(file, function(data) {
-    if (!data || util.handleImportData(data)) {
+    if (!data || util.handleImportData(data, type)) {
       return cb();
     }
     cb(data);
@@ -1192,8 +1191,8 @@ var Index = React.createClass({
     events.on('valuesImportData', function (_, data) {
       self.handleImportValues(data);
     });
-    events.on('networkSettingsImportFile composerImportFile rulesSettingsImportFile valuesSettingsImportFile', function (_, file) {
-      handleImportData(file, util.noop);
+    events.on('networkSettingsImportFile composerImportFile rulesSettingsImportFile valuesSettingsImportFile', function (e, file) {
+      handleImportData(file, util.noop, e.type);
     });
     events.on('networkSettingsImportData composerImportData rulesSettingsImportFile valuesSettingsImportFile', function (_, data) {
       util.handleImportData(data);
@@ -2289,7 +2288,9 @@ var Index = React.createClass({
         $(ReactDOM.findDOMNode(this.refs.chooseFileType)).modal('show');
         var self = this;
         setTimeout(function () {
-          ReactDOM.findDOMNode(self.refs.sessionsName).focus();
+          var input = ReactDOM.findDOMNode(self.refs.sessionsName);
+          input.focus();
+          input.select();
         }, 500);
       } else {
         message.info('Please select one or more sessions first');
@@ -3064,6 +3065,7 @@ var Index = React.createClass({
       function (data, xhr) {
         if (data && data.ec === 0) {
           self.reselectRules(data);
+          self.triggerRulesChange('unselect');
           self.setState({});
         } else {
           util.showSystemError(xhr);
@@ -3573,118 +3575,8 @@ var Index = React.createClass({
     var entries = result.log.entries;
     var sessions = [];
     entries.forEach(function (entry) {
-      if (!entry) {
-        return;
-      }
-      var times = entry.whistleTimes || '';
-      var startTime = new Date(
-        times.startTime || entry.startedDateTime
-      ).getTime();
-      if (isNaN(startTime)) {
-        return;
-      }
-
-      var rawReq = entry.request || {};
-      var rawRes = entry.response || {};
-      var reqHeaders = util.parseHeadersFromHar(rawReq.headers);
-      var resHeaders = util.parseHeadersFromHar(rawRes.headers);
-      var clientIp = entry.clientIPAddress || '127.0.0.1';
-      var serverIp = entry.serverIPAddress || '';
-      var useH2 = H2_RE.test(rawReq.httpVersion || rawRes.httpVersion);
-      var version = useH2 ? '2.0' : '1.1';
-      var postData = rawReq.postData || '';
-      var req = {
-        method: rawReq.method,
-        ip: clientIp,
-        port: rawReq.port,
-        httpVersion: version,
-        unzipSize: postData.size,
-        size: rawReq.bodySize > 0 ? rawReq.bodySize : 0,
-        headers: reqHeaders.headers,
-        rawHeaderNames: reqHeaders.rawHeaderNames,
-        body: ''
-      };
-      var reqText = postData.base64 || postData.text;
-      if (reqText) {
-        if (postData.base64) {
-          req.base64 = reqText;
-        } else {
-          req.body = reqText;
-        }
-      }
-      var content = rawRes.content;
-      var res = {
-        httpVersion: version,
-        statusCode: rawRes.statusCode || rawRes.status,
-        statusMessage: rawRes.statusText,
-        unzipSize: content.size,
-        size: rawRes.bodySize > 0 ? rawRes.bodySize : 0,
-        headers: resHeaders.headers,
-        rawHeaderNames: resHeaders.rawHeaderNames,
-        ip: serverIp,
-        port: rawRes.port,
-        body: ''
-      };
-      var resCtn = rawRes.content;
-      var text = resCtn && resCtn.text;
-      if (text) {
-        if (resCtn.base64) {
-          res.base64 = resCtn.base64;
-        } else if (
-          util.getContentType(resCtn.mimeType) === 'IMG' ||
-          (text.length % 4 === 0 && /^[a-z\d+/]+={0,2}$/i.test(text))
-        ) {
-          res.base64 = text;
-        } else {
-          res.body = text;
-        }
-      }
-      var session = {
-        useH2: useH2,
-        startTime: startTime,
-        ttfb: entry.ttfb,
-        frames: entry.frames,
-        url: rawReq.url,
-        realUrl: entry.whistleRealUrl,
-        req: req,
-        res: res,
-        customData: entry.whistleCustomData,
-        fwdHost: entry.whistleFwdHost,
-        sniPlugin: entry.whistleSniPlugin,
-        rules: entry.whistleRules || {},
-        captureError: entry.whistleCaptureError,
-        isHttps: entry.whistleIsHttps,
-        reqError: entry.whistleReqError,
-        resError: entry.whistleResError,
-        version: entry.whistleVersion,
-        nodeVersion: entry.whistleNodeVersion
-      };
-      if (times && times.startTime) {
-        session.dnsTime = times.dnsTime;
-        session.requestTime = times.requestTime;
-        session.responseTime = times.responseTime;
-        session.endTime = times.endTime;
-      } else {
-        var timings = entry.timings || {};
-        var endTime = Math.round(startTime + util.getTimeFromHar(entry.time));
-        startTime = Math.floor(startTime + util.getTimeFromHar(timings.dns));
-        session.dnsTime = startTime;
-        startTime = Math.floor(
-          startTime +
-            util.getTimeFromHar(timings.connect) +
-            util.getTimeFromHar(timings.ssl) +
-            util.getTimeFromHar(timings.send) +
-            util.getTimeFromHar(timings.blocked) +
-            util.getTimeFromHar(timings.wait)
-        );
-        session.requestTime = startTime;
-        startTime = Math.floor(
-          startTime + util.getTimeFromHar(timings.receive)
-        );
-        session.responseTime = startTime;
-        session.endTime = Math.max(startTime, endTime);
-      }
-      sessions.push(session);
+      entry = util.harToSession(entry);
+      entry && sessions.push(entry);
     });
     dataCenter.addNetworkList(sessions);
   },

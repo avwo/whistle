@@ -15,6 +15,7 @@ var events = require('./events');
 var iframes = require('./iframes');
 var dataCenter = require('./data-center');
 var storage = require('./storage');
+var message = require('./message');
 
 var TREE_ROW_HEIGHT = 24;
 var ROW_STYLE = { outline: 'none' };
@@ -22,6 +23,9 @@ var columnState = {};
 var columnKeys = {};
 var CMD_RE = /^:dump\s+(\d{1,15})\s*$/;
 var BODY_FILTER = /(^\s*|\s+)(content|c|b|body):/i;
+var INVALID_NAME_RE = /[\u001e\u001f\u200e\u200f\u200d\u200c\u202a\u202d\u202e\u202c\u206e\u206f\u206b\u206a\u206d\u206c'<>:"/|?*]+/g;
+var SPACE_RE = /\s+/g;
+var MAX_LEN = 64;
 var NOT_BOLD_RULES = {
   plugin: 1,
   pac: 1,
@@ -113,13 +117,13 @@ var contextMenuList = [
     name: 'Service',
     hide: true,
     list: [
-      { name: 'Save Sessions',  action: 'Save' },
       { name: 'Share Via URL', action: 'shareViaUrl' },
       { name: 'Create API Test',  action: 'createApiTest' },
       { name: 'Copy As Script',  action: 'copyAsScript' },
       { name: 'Load Test', action: 'loadTest' }
     ]
   },
+  { name: 'Save' },
   { name: 'Import' },
   { name: 'Export' },
   {
@@ -389,7 +393,8 @@ var ReqData = React.createClass({
     return {
       draggable: true,
       columns: settings.getSelectedColumns(),
-      dragger: dragger
+      dragger: dragger,
+      sessionsName: ''
     };
   },
   componentDidUpdate: function () {
@@ -509,6 +514,10 @@ var ReqData = React.createClass({
       }, 800);
     }
   },
+  getActivedList: function (item) {
+    var modal = this.props.modal;
+    return getFocusItemList(item) || (modal && modal.getSelectedList());
+  },
   componentDidMount: function () {
     var self = this;
     var timer;
@@ -531,6 +540,20 @@ var ReqData = React.createClass({
     });
     events.on('focusNetworkFilterInput', function() {
       self.refs.filterInput.focus();
+    });
+    events.on('saveSessions', function (_, item) {
+      var list = self.getActivedList(item);
+      var len = list && list.length;
+      if (!len) {
+        return;
+      }
+      self._sessionsList = list;
+      $(ReactDOM.findDOMNode(self.refs.saveSessions)).modal('show');
+      setTimeout(function () {
+        var input = ReactDOM.findDOMNode(self.refs.sessionsName);
+        input.focus();
+        input.select();
+      }, 500);
     });
     events.on('replayTreeView', function (_, dataId, count) {
       var item = self.props.modal.getTreeNode(dataId);
@@ -851,7 +874,7 @@ var ReqData = React.createClass({
       break;
     case 'Mark':
     case 'Unmark':
-      var list = getFocusItemList(item) || (modal && modal.getSelectedList());
+      var list = this.getActivedList(item);
       if (list) {
         var isMark = action === 'Mark';
         list.forEach(function (item) {
@@ -876,7 +899,7 @@ var ReqData = React.createClass({
       }
       break;
     case 'Save':
-      events.trigger('shakeSavedTab');
+      events.trigger('saveSessions', [item]);
       break;
     case 'Abort':
       events.trigger('abortRequest', item);
@@ -1165,29 +1188,29 @@ var ReqData = React.createClass({
     }
     var mockItem = contextMenuList[6];
     var serviceItem = contextMenuList[7];
-    var pluginItem = contextMenuList[10];
+    var pluginItem = contextMenuList[11];
     serviceItem.list.forEach(function (menu) {
       menu.disabled = disabled;
     });
     mockItem.disabled = disabled;
     mockItem.hide = dataCenter.hideMockMenu;
-    contextMenuList[9].disabled = clickBlank && !selectedCount;
+    contextMenuList[10].disabled = clickBlank && !selectedCount;
+    contextMenuList[8].disabled = clickBlank && !selectedCount;
     serviceItem.disabled = clickBlank;
     serviceItem.hide = !dataCenter.tokenId;
     util.addPluginMenus(
       pluginItem,
       dataCenter.getNetworkMenus(),
-      (treeItem.hide ? 8 : 9) + (serviceItem.hide ? 0 : 1) - (mockItem.hide ? 1 : 0),
+      (treeItem.hide ? 9 : 10) + (serviceItem.hide ? 0 : 1) - (mockItem.hide ? 1 : 0),
       disabled,
       treeId,
       item && item.url
     );
-    var height = (treeItem.hide ? 340 : 370) - (serviceItem.hide ? 30 : 0) - (pluginItem.hide ? 30 : 0) - (mockItem.hide ? 30 : 0);
+    var height = (treeItem.hide ? 370 : 400) - (serviceItem.hide ? 30 : 0) - (pluginItem.hide ? 30 : 0) - (mockItem.hide ? 30 : 0);
     pluginItem.maxHeight = height;
     var data = util.getMenuPosition(e, 110, height);
     data.list = contextMenuList;
     data.className = data.marginRight < 360 ? 'w-ctx-menu-left' : '';
-    data.className += pluginItem.hide && serviceItem.hide ? '' : ' w-ctx-menu-others' + (pluginItem.hide ? ' w-ctx-menu-no-plugin' : '');
     this.refs.contextMenu.show(data);
   },
   updateList: function () {
@@ -1355,6 +1378,32 @@ var ReqData = React.createClass({
       this.setState({});
     }
   },
+  saveSessions: function (e) {
+    if (e && e.type !== 'click' && e.keyCode !== 13) {
+      return;
+    }
+    var self = this;
+    var list = self._sessionsList;
+    self._sessionsList = null;
+    dataCenter.saveSessions(JSON.stringify({
+      filename: self.state.sessionsName.trim(),
+      sessions: list
+    }), function (data, xhr) {
+      if (!data) {
+        return util.showSystemError(xhr);
+      }
+      if (data.em) {
+        return message.error(data.em);
+      }
+      $(ReactDOM.findDOMNode(self.refs.saveSessions)).modal('hide');
+      self.setState({ sessionsName: '' });
+      events.trigger('shakeSavedTab');
+      message.success('Sessions saved successfully');
+    });
+  },
+  preventBlur: function (e) {
+    e.target.nodeName != 'INPUT' && e.preventDefault();
+  },
   renderTreeNode: function (item, options) {
     var draggable = this.state.draggable;
     var style = options.style;
@@ -1393,6 +1442,9 @@ var ReqData = React.createClass({
     return modal.isTreeView
       ? modal.getTree().list.filter(isVisibleInTree)
       : modal.getList().filter(isVisible);
+  },
+  filterSessionsName: function (e) {
+    this.setState({ sessionsName: e.target.value.replace(INVALID_NAME_RE, '').replace(SPACE_RE, ' ') });
   },
   render: function () {
     var self = this;
@@ -1504,6 +1556,45 @@ var ReqData = React.createClass({
         <ContextMenu onClick={this.onClickContextMenu} ref="contextMenu" />
         <ContextMenu onClick={this.onClickHeadMenu} ref="headContextMenu" />
         <QRCodeDialog ref="qrcodeDialog" />
+        <div ref="saveSessions" className="modal fade w-choose-filte-type">
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-body">
+                <label className="w-choose-filte-type-label w-save-sessions-label">
+                  Save as:
+                  <input
+                    ref="sessionsName"
+                    onChange={this.filterSessionsName}
+                    onKeyDown={this.saveSessions}
+                    placeholder="Enter filename (optional)"
+                    className="form-control"
+                    maxLength={MAX_LEN}
+                    value={state.sessionsName || ''}
+                  />
+                </label>
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-default"
+                  data-dismiss="modal"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onKeyDown={this.saveSessions}
+                  tabIndex="0"
+                  onMouseDown={this.preventBlur}
+                  className="btn btn-primary"
+                  onClick={this.saveSessions}
+                >
+                  Save
+                </button>
+                </div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
