@@ -95,7 +95,8 @@ pattern protocol://`(...${now}...)`
 | --------------------- | ------------------------------------------------------------ |
 | `${now}` | Date.now() |
 | `${random}` | Math.random() |
-| `${randomUUID}` | crypto.randomUUID ? crypto.randomUUID() |
+| `${randomUUID}` | crypto.randomUUID() |
+| `${randomInt(n)}` or `${randomInt(n1-n2)}` | Selects a random positive integer from [0, n] or [n1, n2] (Added in: v2.9.104) |
 | `${reqId}` | The ID assigned by Whistle to each request |
 | `${url.protocol}` | url.parse(fullUrl).protocol |
 | `${url.hostname}` | url.parse(fullUrl).hostname |

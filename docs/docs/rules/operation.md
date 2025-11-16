@@ -95,7 +95,8 @@ pattern protocol://`(...${now}...)`
 | --------------------- | ------------------------------------------------------------ |
 | `${now}`                 | Date.now()                                                   |
 | `${random}`              | Math.random()                                                |
-| `${randomUUID}`          | crypto.randomUUID ? crypto.randomUUID()                      |
+| `${randomUUID}`          | crypto.randomUUID()                      |
+| `${randomInt(n)}` 或 `${randomInt(n1-n2)}` | 从 [0, n] 或 [n1, n2] 取一个随机正整数 (Added in: v2.9.104)|
 | `${reqId}`               | Whistle 给每个请求分配的 ID                                  |
 | `${url.protocol}`        | url.parse(fullUrl).protocol                                  |
 | `${url.hostname}`        | url.parse(fullUrl).hostname                                  |

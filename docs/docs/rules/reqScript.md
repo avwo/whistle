@@ -19,7 +19,7 @@ if (method === 'GET') {
     rules.push('* resType://text');
     rules.push('* file://(<div>GET-Request</div>)');
 } else {
-    rules.push('* resStatus://403');
+    rules.push('* statusCode://403');
 }
 ```
 www.example.com/path reqScript://{test.js}
