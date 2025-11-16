@@ -1,12 +1,15 @@
 ## v2.9.104
-1. fix: frameScript 与界面操作冲突问题
-2. feat: 支持通过 `~/.whistlerc` 加载默认配置，详见：[命令行操作](https://wproxy.org/docs/cli.html#whistlerc)
+1. feat: 支持通过 `~/.whistlerc` 加载默认配置，详见：[命令行操作](https://wproxy.org/docs/cli.html#whistlerc)
    ``` txt
    username=xxx
    password=yyy
    [storage.]username=xxx
    [storage.]password=yyy
    ```
+2. feat: Network 支持手动 Save 抓包数据
+3. feat: Rules 支持查看 `Enabled Rules`
+4. fix: frameScript 与界面操作冲突问题
+5. fix: 修复了一些隐藏 bug
 
 ## v2.9.103
 1. feat: 新增 [frameScript](https://wproxy.org/docs/rules/frameScript.html) 用于通过 JS 修改 WebSocket 或普通 TCP 请求内容
