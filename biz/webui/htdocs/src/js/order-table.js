@@ -1,6 +1,10 @@
 var React = require('react');
+var ReactDOM = require('react-dom');
 
 var OrderTable = React.createClass({
+  scrollToTop: function() {
+    ReactDOM.findDOMNode(this.refs.body).scrollTop = 0;
+  },
   render: function() {
     var props = this.props;
     var rowKey = props.rowKey || 'key';
@@ -20,7 +24,7 @@ var OrderTable = React.createClass({
             </tr>
           </thead>
         </table>
-        <div className="w-order-table-body fill">
+        <div ref="body" className="w-order-table-body fill">
            <table className="table">
             <tbody>
               {rows.length ? rows.map(function(row, i) {
@@ -34,7 +38,7 @@ var OrderTable = React.createClass({
                   </tr>
                 );
               }) : <tr><td colSpan={cols.length + 1} className="w-empty">
-                  {emptyUrl ? <a href={emptyUrl} target="_blank">Empty</a> : 'Empty'}
+                  {props.loading ? 'Loading...' : (emptyUrl ? <a href={emptyUrl} target="_blank">Empty</a> : 'Empty')}
                 </td></tr>}
             </tbody>
           </table>

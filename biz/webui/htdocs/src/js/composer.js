@@ -1098,7 +1098,7 @@ var Composer = React.createClass({
     params.date = Date.now();
     params.body = params.body || '';
     this.addHistory(params);
-    events.trigger('executeComposer');
+    events.trigger('autoRefreshNetwork');
     self.setState({ result: '', pending: params.needResponse });
   },
   selectAll: function (e) {

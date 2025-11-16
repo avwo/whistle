@@ -152,5 +152,11 @@
 }
 
 .w-enabled-rules-dialog .modal-dialog {
-  width: 860px;
+  width: 80%;
+  min-width: 860px;
+}
+
+.w-enabled-rules-dialog .w-properties pre {
+  font-size: 13px;
+  line-height: 1.5;
 }

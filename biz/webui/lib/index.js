@@ -491,6 +491,8 @@ app.use(function(req, res, next) {
   }
 });
 
+app.all('/cgi-bin/saved/*', sendToService);
+app.all('/cgi-bin/temp/*', sendToService);
 function sendText(req, res, text) {
   sendGzipText(req, res, {
     'Content-Type': 'text/plain; charset=utf-8'

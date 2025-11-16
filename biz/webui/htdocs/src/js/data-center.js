@@ -612,11 +612,15 @@ $.extend(
       },
       setIPv6Only: 'cgi-bin/set-ipv6-only',
       createTempFile: {
-        url: 'cgi-bin/sessions/create-temp-file',
+        url: 'cgi-bin/temp/create',
         contentType: 'application/json'
       },
       saveSessions: {
-        url: 'cgi-bin/sessions/save',
+        url: 'cgi-bin/saved/save',
+        contentType: 'application/json'
+      },
+      removeSavedSessions: {
+        url: 'cgi-bin/saved/remove',
         contentType: 'application/json'
       },
       setDnsOrder: 'cgi-bin/set-dns-order',
@@ -637,12 +641,38 @@ $.extend(
       importRemote: 'cgi-bin/import-remote',
       getHistory: 'cgi-bin/history',
       getCookies: 'cgi-bin/cookies',
-      getTempFile: 'cgi-bin/sessions/get-temp-file',
-      getComposeData: 'cgi-bin/compose-data'
+      getTempFile: 'cgi-bin/temp/get',
+      getComposeData: 'cgi-bin/compose-data',
+      getSavedList: 'cgi-bin/saved/list',
+      getSavedSessions: 'cgi-bin/saved/sessions'
     },
     GET_CONF
   )
 );
+
+var getSavedList = exports.getSavedList;
+var savedListIndex = 0;
+var loadedSavedListIndex = -1;
+var saveDataTimer;
+function getSavedListSafe (cb) {
+  var index = ++savedListIndex;
+  clearTimeout(saveDataTimer);
+  saveDataTimer = null;
+  return getSavedList(function (data) {
+    ++loadedSavedListIndex;
+    if (index < loadedSavedListIndex) {
+      return;
+    }
+    if (index < savedListIndex || (data && !data.ec)) {
+      return data && !data.ec && cb(data.list);
+    }
+    saveDataTimer = saveDataTimer || setTimeout(function() {
+      getSavedListSafe(cb);
+    }, 160);
+  });
+}
+
+exports.getSavedListSafe = getSavedListSafe;
 
 exports.socket = $.extend(
   createCgiObj(
@@ -1695,6 +1725,7 @@ exports.addNetworkList = function (list) {
   }
   var hasData;
   var curNewIdList = [];
+  var curNewList = [];
   list.forEach(function (data) {
     if (
       !data ||
@@ -1730,14 +1761,22 @@ exports.addNetworkList = function (list) {
     }
     data.lost = true;
     data.importedData = true;
+    data.highlight = true;
     data.id = data.startTime + '-' + ++dataIndex;
     setReqData(data);
     dataList.push(data);
     curNewIdList.push(data.id);
+    curNewList.push(data);
     hasData = true;
     workers.postMessage(data);
   });
   if (hasData) {
+    events.trigger('autoRefreshNetwork');
+    setTimeout(function() {
+      curNewList.forEach(function(item) {
+        delete item.highlight;
+      });
+    }, 800);
     exports.curNewIdList = curNewIdList;
     dataCallbacks.forEach(function (cb) {
       cb(networkModal);

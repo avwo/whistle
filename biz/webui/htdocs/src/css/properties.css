@@ -41,6 +41,7 @@
 .w-enabled-rules .w-properties th {
   width: 36px;
   padding-left: 5px;
+  vertical-align: middle;
 }
 .w-properties td {
   padding-left: 5px;

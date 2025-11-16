@@ -25,10 +25,16 @@
 .w-order-table .table td, .w-order-table .table th {
   border-top: none;
   border-bottom: 1px solid #ddd;
+  vertical-align: middle;
 }
 
 .w-order-table .w-order-table-head th {
   padding: 4px 8px !important;
+}
+
+.w-order-table-body {
+  max-height: calc(100% - 28px);
+  overflow-y: auto;
 }
 
 .w-order-table-body td, .w-order-table-body th {

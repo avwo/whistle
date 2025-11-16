@@ -23,8 +23,9 @@ var columnState = {};
 var columnKeys = {};
 var CMD_RE = /^:dump\s+(\d{1,15})\s*$/;
 var BODY_FILTER = /(^\s*|\s+)(content|c|b|body):/i;
-var INVALID_NAME_RE = /[\u001e\u001f\u200e\u200f\u200d\u200c\u202a\u202d\u202e\u202c\u206e\u206f\u206b\u206a\u206d\u206c'<>:"/|?*]+/g;
+var INVALID_NAME_RE = /[\u001e\u001f\u200e\u200f\u200d\u200c\u202a\u202d\u202e\u202c\u206e\u206f\u206b\u206a\u206d\u206c'<>:"\\/|?*]+/g;
 var SPACE_RE = /\s+/g;
+var START_SPACE_RE = /^\s+/;
 var MAX_LEN = 64;
 var NOT_BOLD_RULES = {
   plugin: 1,
@@ -330,12 +331,13 @@ var Row = React.createClass({
             tabIndex="-1"
             draggable={draggable}
             data-id={item.id}
-            className={getClassName(item)}
+            className={getClassName(item) + (item.highlight ? ' w-highlight' : '')}
             style={ROW_STYLE}
           >
             <th className="order" scope="row" style={style}>
               {order}
-              {item.fc ? <span className="glyphicon glyphicon-send" /> : null}
+              {item.importedData ? <span className="glyphicon glyphicon-import" /> : null}
+              {item.fc && !item.importedData ? <span className="glyphicon glyphicon-send" /> : null}
             </th>
             {columnList.map(function (col) {
               var name = col.name;
@@ -548,6 +550,7 @@ var ReqData = React.createClass({
         return;
       }
       self._sessionsList = list;
+      self._pendingSave = false;
       $(ReactDOM.findDOMNode(self.refs.saveSessions)).modal('show');
       setTimeout(function () {
         var input = ReactDOM.findDOMNode(self.refs.sessionsName);
@@ -1379,16 +1382,17 @@ var ReqData = React.createClass({
     }
   },
   saveSessions: function (e) {
-    if (e && e.type !== 'click' && e.keyCode !== 13) {
+    var self = this;
+    if (self._pendingSave || (e && e.type !== 'click' && e.keyCode !== 13)) {
       return;
     }
-    var self = this;
     var list = self._sessionsList;
-    self._sessionsList = null;
+    self._pendingSave = true;
     dataCenter.saveSessions(JSON.stringify({
       filename: self.state.sessionsName.trim(),
       sessions: list
     }), function (data, xhr) {
+      self._pendingSave = false;
       if (!data) {
         return util.showSystemError(xhr);
       }
@@ -1396,8 +1400,10 @@ var ReqData = React.createClass({
         return message.error(data.em);
       }
       $(ReactDOM.findDOMNode(self.refs.saveSessions)).modal('hide');
+      self._sessionsList = null;
       self.setState({ sessionsName: '' });
       events.trigger('shakeSavedTab');
+      events.trigger('savedSessionsChanged');
       message.success('Sessions saved successfully');
     });
   },
@@ -1444,7 +1450,7 @@ var ReqData = React.createClass({
       : modal.getList().filter(isVisible);
   },
   filterSessionsName: function (e) {
-    this.setState({ sessionsName: e.target.value.replace(INVALID_NAME_RE, '').replace(SPACE_RE, ' ') });
+    this.setState({ sessionsName: e.target.value.replace(INVALID_NAME_RE, '').replace(START_SPACE_RE, '').replace(SPACE_RE, ' ') });
   },
   render: function () {
     var self = this;

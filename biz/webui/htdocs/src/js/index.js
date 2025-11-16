@@ -1605,8 +1605,8 @@ var Index = React.createClass({
       self.serverInfo = data;
     });
 
-    events.on('executeComposer', function () {
-      self.autoRefresh && self.autoRefresh();
+    events.on('autoRefreshNetwork', function () {
+      !self.state.network.isTreeView && self.autoRefresh && self.autoRefresh();
     });
 
     var getFocusItemList = function (curItem) {
@@ -1640,8 +1640,8 @@ var Index = React.createClass({
       self.replay(e, list);
     });
     events.on('filterSessions', self.showSettings);
-    events.on('exportSessions', function (e, curItem) {
-      self.exportData(e, getFocusItemList(curItem));
+    events.on('exportSessions', function (e, curItem, filename) {
+      self.exportData(e, getFocusItemList(curItem), filename);
     });
     events.on('abortRequest', function (e, curItem) {
       self.abort(getFocusItemList(curItem));
@@ -2278,7 +2278,7 @@ var Index = React.createClass({
   exportValuesSettings: function() {
     this.refs.exportDialog.show('valuesSettings', this.getValuesSettings());
   },
-  exportData: function (e, curItem) {
+  exportData: function (e, curItem, filename) {
     switch (this.state.name) {
     case 'network':
       var modal = this.state.network;
@@ -2286,9 +2286,11 @@ var Index = React.createClass({
       this.currentFoucsItem = curItem;
       if (hasSelected) {
         $(ReactDOM.findDOMNode(this.refs.chooseFileType)).modal('show');
-        var self = this;
+        var input = ReactDOM.findDOMNode(this.refs.sessionsName);
+        if (filename && typeof filename === 'string') {
+          input.value = filename;
+        }
         setTimeout(function () {
-          var input = ReactDOM.findDOMNode(self.refs.sessionsName);
           input.focus();
           input.select();
         }, 500);

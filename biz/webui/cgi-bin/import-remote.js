@@ -27,7 +27,7 @@ module.exports = function(req, res) {
       if (err) {
         res.type('text').status(500).send(err.stack || err);
       } else {
-        req.url = '/cgi-bin/sessions/get-temp-file?filename=' + encodeURIComponent(url);
+        req.url = '/cgi-bin/temp/get?filename=' + encodeURIComponent(url);
         util.transformReq(req, res, options.port);
       }
     });

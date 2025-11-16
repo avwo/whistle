@@ -25,6 +25,7 @@ var ServiceBtn = React.createClass({
   componentWillUnmount: function () {
     events.off('showService');
     events.off('hideService');
+    this.hideService();
   },
   render: function () {
     return (

@@ -10,11 +10,12 @@
   width: 50px;
   position: relative;
 }
-.w-req-data-content .order .glyphicon-send {
+.w-req-data-content .order .glyphicon {
   font-size: 6px;
   position: absolute;
   top: 2px;
   left: 1px;
+  font-weight: normal !important;
 }
 .w-req-data-content .date {
   width: 150px;
@@ -287,7 +288,7 @@
   color: #fff;
 }
 
-.highlight {
+.highlight, .w-highlight td, .w-highlight th {
   animation-name: blink;
   animation-iteration-count: 1;
   animation-duration: 1s;
