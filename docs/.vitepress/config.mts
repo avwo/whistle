@@ -57,6 +57,7 @@ export default defineConfig({
             text: 'Rule Configuration',
             collapsed: false,
             items: [
+              { text: 'Rule Syntax', link: '/en/docs/rules/rule' },
               { text: 'Pattern', link: '/en/docs/rules/pattern' },
               { text: 'Operation', link: '/en/docs/rules/operation' },
               { text: 'Filters', link: '/en/docs/rules/filters' },
@@ -267,6 +268,7 @@ export default defineConfig({
         text: '规则配置',
         collapsed: false,
         items: [
+          { text: '规则语法', link: '/docs/rules/rule' },
           { text: '匹配模式（pattern）', link: '/docs/rules/pattern' },
           { text: '操作指令（operation）', link: '/docs/rules/operation' },
           { text: '过滤器（filters）', link: '/docs/rules/filters' },
