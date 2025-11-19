@@ -1,3 +1,6 @@
+## v2.9.105
+1. fix: https://github.com/avwo/whistle/issues/1271
+
 ## v2.9.104
 1. feat: 支持通过 `~/.whistlerc` 加载默认配置，详见：[命令行操作](https://wproxy.org/docs/cli.html#whistlerc)
    ``` txt
