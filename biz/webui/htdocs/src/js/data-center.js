@@ -606,6 +606,7 @@ $.extend(
       enableHttp2: 'cgi-bin/enable-http2',
       abort: 'cgi-bin/abort',
       setCustomColumn: 'cgi-bin/set-custom-column',
+      setMaxReqMergeSize: 'cgi-bin/set-max-req-merge-size',
       addRulesAndValues: {
         url: 'cgi-bin/add-rules-values',
         contentType: 'application/json'
@@ -795,6 +796,7 @@ exports.getInitialData = function (callback) {
         exports.custom2 = data.custom2;
         exports.custom1Key = data.custom1Key;
         exports.custom2Key = data.custom2Key;
+        exports.maxReqMergeSize = data.maxReqMergeSize;
         initialData = data;
         clientId = data.clientId;
         DEFAULT_CONF.data.clientId = clientId;

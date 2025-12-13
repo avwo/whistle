@@ -73,6 +73,7 @@ b:/"success":false/ m:POST s:200 H:api.example.com
 | ----------------------------------------- | -------------------------------------------------------- |
 | **Network Columns**                       | 自定义抓包列表显示的列（如状态码、方法、大小等）         |
 | **Maximum Rows**                          | 设置同时显示的最大抓包数量（防止内存溢出）               |
+| **Max ReqMerge Size**                     | 设置 [reqMerge](../rules/reqMerge) 规则处理请求体的最大大小（默认 1MB，可选 256KB ~ 16MB），超过该大小的请求体将不会被合并处理 |
 | **Viewing only your computer's requests** | 只显示本机发出的请求（过滤其他设备/远程请求）            |
 | **ViewAll in new window**                 | 点击"View All"时在新窗口打开完整内容（适合大响应体查看） |
 | **Show Tree View**                        | 以树状结构展示请求（按域名/路径分组）                    |

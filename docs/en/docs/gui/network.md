@@ -72,6 +72,7 @@ Different from the search box at the bottom of the Network list:
 | ----------------------------------------- | -------------------------------------------------------- |
 | **Network Columns** | Customize the columns displayed in the packet capture list (such as status code, method, size, etc.) |
 | **Maximum Rows** | Set the maximum number of packets displayed simultaneously (to prevent memory overflow) |
+| **Max ReqMerge Size** | Set the maximum request body size for [reqMerge](../rules/reqMerge) rule processing (default 1MB, range 256KB ~ 16MB). Request bodies exceeding this size will not be merged |
 | **Viewing only your computer's requests** | Displays only requests sent by the local computer (filters requests from other devices/remote requests) |
 | **View All in new window** | Click "View All" to open the full content in a new window (suitable for viewing large response bodies) |
 | **Show Tree View** | Displays requests in a tree structure (grouped by domain name/path) |
