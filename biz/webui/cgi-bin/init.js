@@ -22,6 +22,7 @@ module.exports = function(req, res) {
     epm: config.epm,
     custom1: properties.get('Custom1'),
     custom2: properties.get('Custom2'),
+    maxReqMergeSize: properties.get('maxReqMergeSize') || 1024 * 1024,
     hasInvalidCerts: ca.hasInvalidCerts,
     supportH2: config.enableH2,
     lastLogId: lastLog && lastLog.id,

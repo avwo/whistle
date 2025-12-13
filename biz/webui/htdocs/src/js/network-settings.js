@@ -20,7 +20,11 @@ var Settings = React.createClass({
     var dragger = columns.getDragger();
     var urlType = storage.get('urlType');
     dragger.onDrop = dragger.onDrop.bind(this);
-    return $.extend(this.getNetworkSettings(), { dragger: dragger, urlType: urlType === '-' ? '-' : '' });
+    return $.extend(this.getNetworkSettings(), {
+      dragger: dragger,
+      urlType: urlType === '-' ? '-' : '',
+      maxReqMergeSize: dataCenter.maxReqMergeSize || 1048576
+    });
   },
   getNetworkSettings: function () {
     return $.extend(dataCenter.getFilterText(), {
@@ -132,6 +136,16 @@ var Settings = React.createClass({
   },
   onRowsChange: function (e) {
     NetworkModal.setMaxRows(e.target.value);
+  },
+  onMaxReqMergeSizeChange: function (e) {
+    var self = this;
+    var size = parseInt(e.target.value, 10);
+    dataCenter.setMaxReqMergeSize({ size: size }, function (data) {
+      if (data && data.ec === 0) {
+        dataCenter.maxReqMergeSize = data.size;
+        self.setState({ maxReqMergeSize: data.size });
+      }
+    });
   },
   showDialog: function () {
     var settings = this.getNetworkSettings();
@@ -487,6 +501,22 @@ var Settings = React.createClass({
               <option value="2000">2000</option>
               <option value="2500">2500</option>
               <option value="3000">3000</option>
+            </select>
+          </label>
+          <label className="w-network-settings-own">
+            Max ReqMerge Size:
+            <select
+              className="form-control"
+              onChange={self.onMaxReqMergeSizeChange}
+              value={state.maxReqMergeSize || 1048576}
+            >
+              <option value="262144">256KB</option>
+              <option value="524288">512KB</option>
+              <option value="1048576">1MB</option>
+              <option value="2097152">2MB</option>
+              <option value="4194304">4MB</option>
+              <option value="8388608">8MB</option>
+              <option value="16777216">16MB</option>
             </select>
           </label>
           <label className="w-network-settings-own">

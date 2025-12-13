@@ -47,6 +47,11 @@ www.example.com/path2 reqMerge://https://www.xxx.com/xxx/params.json
 www.example.com/path3 reqMerge://temp/blank.json
 ````
 
+## Request Body Size Limit
+The `reqMerge` rule only processes request bodies up to **1MB** by default. If the request body exceeds this limit, it will not be merged and will be sent as-is.
+
+You can adjust this limit in [Network Settings](../gui/network#settings) via the **Max ReqMerge Size** option, with a supported range of 256KB ~ 16MB.
+
 ## Associated Protocols
 1. Replace with a keyword or regular expression: [reqReplace](./reqReplace)
 2. Modify the response content object: [resMerge](./resMerge)

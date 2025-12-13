@@ -47,6 +47,11 @@ www.example.com/path2 reqMerge://https://www.xxx.com/xxx/params.json
 www.example.com/path3 reqMerge://temp/blank.json
 ````
 
+## 请求体大小限制
+`reqMerge` 规则默认只处理请求体大小不超过 **1MB** 的请求。如果请求体超过该限制，将不会进行合并处理，请求体将原样发送。
+
+可以在 [Network Settings](../gui/network#settings) 中通过 **Max ReqMerge Size** 选项调整该限制，支持的范围为 256KB ~ 16MB。
+
 ## 关联协议
 1. 通过关键字或正则替换：[reqReplace](./reqReplace)
 2. 修改响应内容对象：[resMerge](./resMerge)
