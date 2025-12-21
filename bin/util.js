@@ -3,7 +3,6 @@ var program = require('starting');
 var util = require('util');
 var os = require('os');
 var fs = require('fs');
-var fse = require('fs-extra2');
 var config = require('../lib/config');
 var common = require('../lib/util/common');
 var colors = require('colors/safe');
@@ -140,14 +139,9 @@ exports.formatOptions = formatOptions;
 function readConfig(storage) {
   var dataDir = getDataDir();
   var configFile = path.join(dataDir, encodeURIComponent('#' + (storage ? storage + '#' : '')));
-  if (!fs.existsSync(configFile)) {
-    return;
-  }
-  try {
-    var conf = fse.readJsonSync(configFile);
-    conf && formatOptions(conf.options);
-    return conf;
-  } catch(e) {}
+  var conf = common.readJsonSync(configFile);
+  conf && formatOptions(conf.options);
+  return conf;
 }
 
 function readConfigList() {

@@ -40,14 +40,13 @@ var UBUNTU_CA_DIR = '/usr/local/share/ca-certificates/';
 var FEDORA_CA_DIR = '/etc/pki/ca-trust/source/anchors/';
 
 function getCAConfig() {
-  try {
-    if (fs.statSync(UBUNTU_CA_DIR).isDirectory()) {
-      return {
-        dir: UBUNTU_CA_DIR,
-        cmd: 'update-ca-certificates'
-      };
-    }
-  } catch (e) {}
+  var stats = common.getStatSync(UBUNTU_CA_DIR);
+  if (stats && stats.isDirectory()) {
+    return {
+      dir: UBUNTU_CA_DIR,
+      cmd: 'update-ca-certificates'
+    };
+  }
   return {
     dir: FEDORA_CA_DIR,
     cmd: 'update-ca-trust'

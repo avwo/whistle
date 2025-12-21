@@ -2,11 +2,10 @@ var path = require('path');
 var fs = require('fs');
 var http = require('http');
 var url = require('url');
-var Buffer = require('safe-buffer').Buffer;
 var util = require('./util');
 var importModule = require('./import');
 var pkg = require('../package.json');
-var getHomedir = require('../lib/util/common').getHomedir;
+var common = require('../lib/util/common');
 
 var isRunning = util.isRunning;
 var error = util.error;
@@ -51,11 +50,10 @@ function existsPlugin(name) {
   }
   var pluginPaths = require('../lib/plugins/module-paths').getPaths();
   for (var i = 0, len = pluginPaths.length; i < len; i++) {
-    try {
-      if (fs.statSync(path.join(pluginPaths[i], name)).isDirectory()) {
-        return true;
-      }
-    } catch(e) {}
+    var stats = common.getStatSync(path.join(pluginPaths[i], name));
+    if (stats && stats.isDirectory()) {
+      return true;
+    }
   }
   return false;
 }
@@ -113,7 +111,7 @@ function checkDefault(running, storage, isClient, callback) {
 }
 
 function readClientConfig() {
-  var procPath = path.join(getHomedir(), '.whistle_client.pid');
+  var procPath = path.join(common.getHomedir(), '.whistle_client.pid');
   try {
     var info = fs.readFileSync(procPath, { encoding: 'utf-8' }).split(',');
     if (info.length === 4) {
