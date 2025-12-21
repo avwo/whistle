@@ -109,7 +109,7 @@ var ImportDialog = React.createClass({
     try {
       var result = parseJson(text) || parseCurl(text);
       if (!result || !result.url) {
-        message.error('Not CURL text');
+        message.error('Not cURL text');
         return false;
       }
       result.isHexText = false;
@@ -159,10 +159,10 @@ var ImportDialog = React.createClass({
             onClick={this.showImportCURL}
           >
             <span className="glyphicon glyphicon-file" />
-            Import CURL
+            Import cURL
           </button> : null
           }
-          {dataCenter.tokenId ? <button
+          {dataCenter.whistleId ? <button
             type="button"
             className="btn btn-warning"
             data-dismiss="modal"
@@ -201,7 +201,7 @@ var ImportDialog = React.createClass({
             accept={state.accept}
           />
         </form>
-        <EditorDialog ref="editorDialog" title="Import CURL" hideFormat="1" placeholder="Enter CURL text"
+        <EditorDialog ref="editorDialog" title="Import cURL" hideFormat="1" placeholder="Enter cURL text"
           textEditor onConfirm={this.importCURL} />
       </Dialog>
     );

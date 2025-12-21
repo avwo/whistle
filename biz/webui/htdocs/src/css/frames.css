@@ -73,6 +73,23 @@
   border-bottom: 1px solid #ccc;
   background: #fff;
 }
+.w-frames-list li[class=""]:hover {
+  background: #f5f5f5;
+}
+
+.w-frames-list .w-frames-send:hover {
+  background: #cee7c0;
+}
+
+.w-frames-list .w-connection-error:hover {
+  background: #dab9b9;
+}
+
+.w-frames-list .w-connection-closed:hover {
+  background: #b3b3b3;
+}
+
+
 .w-frames-action .w-refresh-menu-list .w-menu-item {
   left: 10px;
 }

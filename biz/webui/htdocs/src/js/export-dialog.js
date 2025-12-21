@@ -7,7 +7,7 @@ var util = require('./util');
 
 var ExportDialog = React.createClass({
   getInitialState: function () {
-    return {};
+    return { filename: '' };
   },
   show: function (name, data) {
     var self = this;
@@ -25,10 +25,13 @@ var ExportDialog = React.createClass({
       data: data
     });
   },
+  getInputValue: function() {
+    return util.formatFilename(ReactDOM.findDOMNode(this.refs.input).value.trim());
+  },
   getFilename: function () {
     var name = this.state.name;
     var suffix = name === 'console' || name === 'server' ? '.log' : '.txt';
-    var filename = ReactDOM.findDOMNode(this.refs.input).value.trim();
+    var filename = this.getInputValue();
     if (filename) {
       if (!/\.(txt|json)/i.test(filename)) {
         filename += suffix;
@@ -75,9 +78,16 @@ var ExportDialog = React.createClass({
     }
     this.hide();
     util.download(data, this.getFilename());
+    ReactDOM.findDOMNode(this.refs.input).value = '';
+  },
+  filterFilename: function (e) {
+    this.setState({ filename: util.formatFilename(e.target.value) });
   },
   onShare: function(err) {
-    !err && this.hide();
+    if (!err) {
+      this.hide();
+      ReactDOM.findDOMNode(this.refs.input).value = '';
+    }
   },
   shouldComponentUpdate: function () {
     return this.refs.exportDialog.isVisible();
@@ -97,6 +107,8 @@ var ExportDialog = React.createClass({
         <div className="modal-body">
           <input
             ref="input"
+            value={state.filename}
+            onChange={this.filterFilename}
             onKeyDown={this.export}
             placeholder="Enter filename (optional)"
             className="form-control"
@@ -111,7 +123,7 @@ var ExportDialog = React.createClass({
           >
             Cancel
           </button>
-          <ShareViaUrlBtn type={state.name} data={state.data} onComplete={this.onShare} />
+          <ShareViaUrlBtn type={state.name} data={state.data} getFilename={this.getInputValue} onComplete={this.onShare} />
           <button
             type="button"
             className="btn btn-primary w-fmt-btn"

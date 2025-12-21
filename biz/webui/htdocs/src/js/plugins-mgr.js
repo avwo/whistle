@@ -54,9 +54,6 @@ var PluginsMgr = React.createClass({
     if (!len) {
       return self.installPlugin();
     }
-    if (!dataCenter.enablePluginMgr && len === 1) {
-      return self.installPluginExt(list[0]);
-    }
     self.setState({
       isUpdate: isUpdate,
       list: list
@@ -87,12 +84,9 @@ var PluginsMgr = React.createClass({
           </button>
         </div>
         <div className="modal-body">
-          {
-            dataCenter.enablePluginMgr ?
-            <div className="btn btn-primary plugin-mgr-btn" data-dismiss="modal" onClick={self.installPlugin}>
-              {actionText} <span>(Use Default)</span>
-            </div> : null
-          }
+          <div className="btn btn-primary plugin-mgr-btn" data-dismiss="modal" onClick={self.installPlugin}>
+            {actionText} <span>(Use Default)</span>
+          </div>
           {
             list.map(function (item) {
               return (

@@ -70,7 +70,7 @@ var Saved = React.createClass({
         filename: item.filename,
         time: item.time,
         count: item.count
-      }), (data, xhr) => {
+      }), function (data, xhr) {
         if (!data) {
           return util.showSystemError(xhr);
         }
@@ -92,7 +92,7 @@ var Saved = React.createClass({
       filename: item.filename,
       time: item.time,
       count: item.count
-    }, (data, xhr) => {
+    }, function (data, xhr) {
       if (!data) {
         return util.showSystemError(xhr);
       }

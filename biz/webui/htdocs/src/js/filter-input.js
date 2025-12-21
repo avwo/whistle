@@ -8,6 +8,24 @@ var storage = require('./storage');
 var win = require('./win');
 
 var MAX_LEN = 128;
+var TYPES = ['Fetch/XHR', 'HTML', 'CSS', 'JS', 'JSON', 'Font', 'Img', 'Media', 'WS', 'Tunnel', 'Wasm', 'Other', 'Import', 'Composer'];
+var TITLES = {
+  'Fetch/XHR': 'Fetch and XHR',
+  HTML: 'HTML',
+  CSS: 'CSS',
+  JS: 'JavaScript',
+  JSON: 'JSON',
+  Font: 'Font',
+  Img: 'Image',
+  Media: 'Media',
+  WS: 'WebSocket',
+  Tunnel: 'Tunnel',
+  Wasm: 'WebAssembly',
+  Other: 'Other',
+  Import: 'Show import sessions',
+  Composer: 'Show composer requests'
+};
+
 var FilterInput = React.createClass({
   getInitialState: function () {
     var hintKey = this.props.hintKey;
@@ -32,7 +50,7 @@ var FilterInput = React.createClass({
         }
       } catch (e) {}
     }
-    return { hintList: [] };
+    return { hintList: [], filterType: '' };
   },
   componentDidMount: function () {
     var self = this;
@@ -42,6 +60,10 @@ var FilterInput = React.createClass({
         self.hideHints();
       }
     });
+    var onFilterTypeChange = this.props.onFilterTypeChange;
+    if (typeof onFilterTypeChange === 'function') {
+      onFilterTypeChange(self.state.filterType);
+    }
   },
   focus: function() {
     var input = ReactDOM.findDOMNode(this.refs.input);
@@ -67,7 +89,7 @@ var FilterInput = React.createClass({
     }
   },
   filterHints: function (keyword) {
-    keyword = keyword && keyword.trim();
+    keyword = keyword ? keyword.trim() : '';
     var count = 10;
     var addonHints = this.props.addonHints || [];
     if (!keyword) {
@@ -114,8 +136,11 @@ var FilterInput = React.createClass({
     this.setState({ hintList: null });
     this.addHint();
   },
-  showHints: function () {
-    this.setState({ hintList: this.filterHints(this.state.filterText) });
+  showHints: function (e) {
+    var self = this;
+    self.setState({ hintList: this.filterHints(this.state.filterText) }, e && function() {
+      self.hintElem.scrollTop(1000000000);
+    });
   },
   onFilterKeyDown: function (e) {
     var elem;
@@ -204,15 +229,45 @@ var FilterInput = React.createClass({
       }
     });
   },
+  handleFilterType: function (e) {
+    var target = e.target;
+    if (target.nodeName !== 'SPAN') {
+      return;
+    }
+    var type = target.textContent;
+    var filterType = type === 'All' ? '' : type;
+    if (filterType === this.state.filterType) {
+      return;
+    }
+    this.setState({ filterType: filterType });
+    this.props.onFilterTypeChange(filterType);
+  },
+  renderTypes: function () {
+    var filterType = this.state.filterType;
+    if (!TITLES[filterType]) {
+      filterType = '';
+    }
+    return (
+      <div className="w-filter-type-bar" onClick={this.handleFilterType} onMouseDown={util.preventBlur}
+        style={{background: filterType ? '#fafafa' : undefined}}>
+        <span className={filterType ? undefined : 'w-active'}>All</span>
+        {TYPES.map(function (type) {
+          return <span key={type} title={TITLES[type]} className={filterType === type ? 'w-active' : undefined}>{type}</span>;
+        })}
+      </div>
+    );
+  },
   render: function () {
     var self = this;
+    var props = self.props;
     var filterText = self.state.filterText || '';
-    var hintKey = self.props.hintKey;
+    var hintKey = props.hintKey;
     var hintList = self.state.hintList;
-    var addonHints = this.props.addonHints || [];
+    var addonHints = props.addonHints || [];
+    var showTypes = typeof props.onFilterTypeChange === 'function';
 
     return (
-      <div className="w-filter-con" style={self.props.wStyle}>
+      <div className={'w-filter-con' + (showTypes ? ' w-filter-show-types' : '')} style={props.wStyle}>
         {hintKey ? (
           <div
             className="w-filter-hint"
@@ -244,6 +299,7 @@ var FilterInput = React.createClass({
             </ul>
           </div>
         ) : undefined}
+        {showTypes ? self.renderTypes() : undefined}
         <input
           type="text"
           ref="input"
@@ -256,7 +312,7 @@ var FilterInput = React.createClass({
           style={{ background: filterText.trim() ? '#000' : undefined }}
           className="w-filter-input"
           maxLength={MAX_LEN}
-          placeholder={'Type filter text' + (this.props.placeholder || '')}
+          placeholder={'Type filter text' + (props.placeholder || '')}
         />
         <button
           onMouseDown={util.preventBlur}

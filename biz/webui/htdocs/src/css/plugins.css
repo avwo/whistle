@@ -203,6 +203,7 @@
   display: block;
   width: 578px;
   height: 220px;
+  border-radius: 3px;
 }
 .w-plugin-install {
   padding: 5px;
@@ -227,4 +228,28 @@
   height: 30px;
   padding: 0 5px;
   width: 350px;
+}
+
+.w-plugin-copy-cmd {
+  display: inline-block;
+  position: absolute;
+  z-index: 1;
+  text-decoration: none!important;
+  color: #666;
+  padding: 0 6px;
+  background: #eee;
+  font-size: 12px;
+  top: 28px;
+  right: 10px;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+}
+
+.w-copied-text {
+  color: #888 !important;
+  cursor: not-allowed;
+}
+
+.w-plugin-copy-cmd:hover {
+  color: #000;
 }

@@ -75,21 +75,87 @@
   vertical-align: middle;
 }
 
-.w-token-dialog, .w-api-dialog  {
-  z-index: 1100;
+.w-login-dialog {
+  z-index: 99999990;
+  --w-login-dialog-width: 560px;
+  --w-login-dialog-height: 600px;
 }
 
-.w-token-dialog .modal-dialog {
-  width: 520px;
+.w-login-dialog .modal-dialog {
+  width: var(--w-login-dialog-width);
+  height: var(--w-login-dialog-height);
 }
 
-.w-token-dialog .modal-body {
+.w-login-dialog .w-iframe {
+  min-width: var(--w-login-dialog-width);
+  min-height: var(--w-login-dialog-height);
+}
+
+.w-login-dialog .modal-body {
   background: #fafafa;
+  border-radius: 5px;
+  padding: 0;
 }
 
-.w-token-dialog textarea {
+.w-login-dialog textarea {
   width: 100%;
   height: 120px;
   border: 1px solid #ddd;
   padding: 5px;
+}
+
+.w-appearance-option, .w-dns-order-option {
+  display: flex;
+  align-items: center;
+}
+
+.w-appearance-option strong, .w-dns-order-option strong {
+  width: 85px;
+}
+
+.w-appearance-option select, .w-dns-order-option select {
+  margin-left: 5px;
+  width: 160px;
+}
+
+.w-login-btn span {
+  margin-right: 6px;
+}
+
+.w-whistle-id-option {
+  font-size: 16px;
+}
+
+
+.w-shortcuts {
+   z-index: 1100;
+}
+
+.w-shortcuts .modal-dialog {
+  width: 660px;
+}
+
+.w-shortcuts h5 {
+  font-size: 16px;
+  margin-top: 20px;
+}
+
+.w-shortcuts h5:first-child {
+  margin-top: 10px;
+}
+
+.w-shortcuts label {
+  display: flex;
+  margin: 15px;
+  align-items: center;
+  font-weight: normal;
+}
+
+.w-shortcuts label:hover {
+  color: #000;
+}
+
+.w-shortcuts label input,
+.w-shortcuts label strong {
+  margin-right: 5px;
 }

@@ -1,4 +1,3 @@
-var Buffer = require('safe-buffer').Buffer;
 var util = require('./util');
 
 module.exports = function(req, res) {

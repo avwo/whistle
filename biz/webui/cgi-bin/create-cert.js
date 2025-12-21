@@ -1,5 +1,4 @@
 var Zip = require('adm-zip');
-var Buffer = require('safe-buffer').Buffer;
 var qs = require('querystring');
 var ca = require('../../../lib/https/ca');
 var sendError = require('./util').sendError;

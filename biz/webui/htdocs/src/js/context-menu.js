@@ -73,7 +73,7 @@ var ContextMenu = React.createClass({
       });
     }
     if (data.radio) {
-      data.list.forEach(item => {
+      data.list.forEach(function (item) {
         item.selected = item.action == action;
       });
       this.setState({});

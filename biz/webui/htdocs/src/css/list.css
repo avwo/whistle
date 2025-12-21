@@ -48,8 +48,12 @@
 .w-list-data a:hover {
   color: #337ab7;
 }
+
+.w-list-data a:hover:not(.w-list-group) {
+  background: #f5f5f5;
+}
 .w-list-data .w-active {
-  background: #337ab7;
+  background: #337ab7 !important;
   color: #fff !important;
 }
 .w-list-data .w-selected {

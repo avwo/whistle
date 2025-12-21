@@ -15,9 +15,12 @@ var iframes = require('./iframes');
 
 
 var CMD_RE = /^([\w]{1,12})(\s+-g)?$/;
-var WHISTLE_PLUGIN_RE = /(?:^|[\s,;|])(?:@[\w-]+\/)?whistle\.[a-z\d_-]+(?:\@[\w.^~*-]*)?(?:$|[\s,;|])/;
-var PLUGIN_NAME_RE = /^((?:@[\w-]+\/)?whistle\.[a-z\d_-]+)(?:\@([\w.^~*-]*))?$/;
+var WHISTLE_PLUGIN_RE = /(?:^|[\s,;|])(?:@[\w.~-]+\/)?whistle\.[a-z\d_-]+(?:\@[\w.^~*-]*)?(?:$|[\s,;|])/;
+var PLUGIN_NAME_RE = /^((?:@[\w.~-]+\/)?whistle\.[a-z\d_-]+)(?:\@([\w.^~*-]*))?$/;
 var SPACE_RE = /\s+$/;
+var REGISTRY_RE = /^--registry=https?:\/\/[^/?]/;
+var SEP_RE = /\s*[|,;\s]+\s*/;
+var SELECT_STYLE = {width: 270};
 var pendingEnable;
 var registryCache;
 
@@ -50,6 +53,20 @@ function getPluginList(plugins, installUrls, disabledPlugins, disabledAllPlugins
           }
           return plugin;
         });
+}
+
+function parseRegistry(cmd) {
+  if (!cmd) {
+    return '';
+  }
+  cmd = cmd.split(SEP_RE);
+  for (var i = 0, len = cmd.length; i < len; i++) {
+    var name = cmd[i];
+    if (REGISTRY_RE.test(name)) {
+      return name.substring(11, 1035);
+    }
+  }
+  return '';
 }
 
 function enableAllPlugins(e) {
@@ -244,7 +261,7 @@ var Home = React.createClass({
       if (!registryCache) {
         return;
       }
-      if (registryCache.indexOf(registry) === -1) {
+      if (!REGISTRY_RE.test('--registry=' + registry)) {
         registry = '';
       }
       cb(registryCache, registry);
@@ -260,9 +277,9 @@ var Home = React.createClass({
     if (!cmd) {
       return;
     }
-    if (state.registryList && state.registry) {
-      cmd += ' --registry=' + state.registry;
-    }
+    // if (state.registryList && state.registry) {
+    //   cmd += ' --registry=' + state.registry;
+    // }
     this.refs.pluginsMgrDialog.show(cmd, this.installUrls, !install);
   },
   onOpen: function (e) {
@@ -300,7 +317,13 @@ var Home = React.createClass({
     this.onShowRules(name);
   },
   onCmdChange: function (e) {
-    this.updateCmdMsg(e.target.value);
+    var self = this;
+    var cmd = e.target.value;
+    self.updateCmdMsg(cmd);
+    self.updateCmdTimer = self.updateCmdTimer || setTimeout(function() {
+      self.updateCmdTimer = null;
+      self.setRegistry(parseRegistry(cmd), false);
+    }, 1000);
   },
   showMsgDialog: function () {
     var self = this;
@@ -318,8 +341,8 @@ var Home = React.createClass({
       this.setState({ cmdMsg: msg }, cb);
     }
   },
-  setRegistry: function(registry) {
-    this.setState({ registry: registry, registryChanged: true });
+  setRegistry: function(registry, changed) {
+    this.setState({ registry: registry, registryChanged: changed !== false });
     storage.set('pluginsRegistry', registry);
   },
   onRegistry: function(e) {
@@ -347,9 +370,15 @@ var Home = React.createClass({
     this.setRegistry(registry);
   },
   onShowUpdate: function(e) {
+    var self = this;
     var name = $(e.target).attr('data-name');
-    var plugin = this.props.data.plugins[name + ':'];
-    this.showUpdate(plugin);
+    var plugin = self.props.data.plugins[name + ':'];
+    dataCenter.checkPluginUpdates(plugin, function(showService) {
+      if (showService) {
+        return util.showService('/plugins/store?plugin=' + encodeURIComponent(name));
+      }
+      self.showUpdate(plugin);
+    });
   },
   showUpdate: function (plugin) {
     var self = this;
@@ -428,6 +457,12 @@ var Home = React.createClass({
   showService: function () {
     util.showService('/plugins/store');
   },
+  handleLeave: function () {
+    this.setState({ copied: false });
+  },
+  handleCopy: function () {
+    this.setState({ copied: true });
+  },
   render: function () {
     var self = this;
     var state = self.state || {};
@@ -438,15 +473,11 @@ var Home = React.createClass({
     var list = getPluginList(plugins, installUrls, disabledPlugins, data.disabledAllPlugins);
     var plugin = state.plugin || {};
     var install = state.install;
-    var epm = dataCenter.enablePluginMgr;
-    var hasInstaller = epm || installUrls.length;
     var cmdMsg = (install ? state.installMsg : state.cmdMsg) || '';
     var registryList = state.registryList || [];
     var registry = state.registry || '';
     var disabled = data.disabledAllPlugins;
     var ndp = data.ndp;
-    var showCopyBtn = !dataCenter.disableInstaller &&  hasInstaller;
-    var selectStyle = showCopyBtn ? {width: 245 - (dataCenter.tokenId ? 80 : 0)} : undefined;
     self.hasNewPlugin = false;
     self.installUrls = installUrls;
 
@@ -468,6 +499,8 @@ var Home = React.createClass({
         }).filter(util.noop).join('\n');
         if (spaces && !registry) {
           cmdMsg += spaces;
+        } else if (cmdMsg === 'w2 install') {
+          cmdMsg += ' ';
         }
       } else {
         cmdMsg = getCmd(true) + ' ' + (regCmd ? regCmd : '');
@@ -477,6 +510,7 @@ var Home = React.createClass({
     }
 
     var disabledBtn = !WHISTLE_PLUGIN_RE.test(cmdMsg);
+    var selectStyle = dataCenter.whistleId ? SELECT_STYLE : undefined;
 
     return (
       <div
@@ -721,29 +755,24 @@ var Home = React.createClass({
         </Dialog>
         <Dialog ref="operatePluginDialog" wstyle="w-plugin-update-dialog">
           <div className="modal-body">
-            {hasInstaller || install ? null : (<h5>
-              <a
-                data-dismiss="modal"
-                className="w-copy-text-with-tips"
-                data-clipboard-text={cmdMsg}
-              >
-                Copy
-              </a>{' '}
-              and run this command in your terminal:
-            </h5>)}
-            {
-              install ? (hasInstaller ? <h5>Enter plugin package names (space-separated) and click Install:</h5> :
-              <h5>Enter plugin package names (space-separated) and run in your terminal:</h5> ) : null
-            }
+            <h5>{
+              install ? 'Enter plugin name(s) (space-separated) and click Install:' : 'Update the following plugin(s):'
+            }</h5>
             <textarea
               ref="textarea"
               value={cmdMsg || ''}
               placeholder={install ? 'SUCH AS: whistle.inspect whistle.abc@1.0.0 @scope/whistle.xyz' : undefined}
               className={'w-plugin-update-cmd' + (install ? ' w-plugin-install' : '')}
-              maxLength={install ? 360 : undefined}
+              maxLength="600"
               onChange={this.onCmdChange}
               onKeyDown={util.handleTab}
             />
+            <a
+              onMouseLeave={this.handleLeave}
+              onClick={this.handleCopy}
+              className={'w-copy-text-with-tips w-plugin-copy-cmd' + (state.copied ? ' w-copied-text' : '')}
+              data-clipboard-text={state.copied ? null : cmdMsg}
+            >{state.copied ? 'Copied' : 'Copy'}</a>
             <div
               style={{
                 margin: '8px 0 0',
@@ -764,7 +793,7 @@ var Home = React.createClass({
             </div>
           </div>
           <div className="modal-footer">
-            {registryList.length ? <label className="w-registry-list">
+            {(registryList.length || registry) ? <label className="w-registry-list">
               <strong>--registry=</strong>
               <select className="form-control" value={registry} onChange={this.onRegistry} style={selectStyle}>
                 <option value="">None</option>
@@ -775,15 +804,16 @@ var Home = React.createClass({
                     );
                   })
                 }
-                {hasInstaller ? <option value="+Add">+Add</option> : null}
+                {registry && registryList.indexOf(registry) === -1 ? <option key={registry} value={registry}>{registry}</option> : null}
+                <option value="+Add">+Add</option>
               </select>
-            </label> : (hasInstaller ? <label className="w-registry-list">
+            </label> : <label className="w-registry-list">
               <strong>--registry=</strong>
               <select className="form-control" value={registry} onChange={this.onRegistry} style={selectStyle}>
                 <option value="">None</option>
                 <option value="+Add">+Add</option>
               </select>
-            </label> : null)}
+            </label>}
             <button
               type="button"
               className="btn btn-default"
@@ -791,7 +821,7 @@ var Home = React.createClass({
             >
               Cancel
             </button>
-            {dataCenter.tokenId ? <button
+            {dataCenter.whistleId ? <button
               type="button"
               className="btn btn-warning"
               data-dismiss="modal"
@@ -800,26 +830,14 @@ var Home = React.createClass({
               <span className="glyphicon glyphicon-gift" />
               Plugins
             </button> : null}
-            {showCopyBtn ? (
-              <button
-              type="button"
-                data-dismiss="modal"
-                className="btn btn-info w-copy-text-with-tips"
-                data-clipboard-text={cmdMsg}
-                disabled={disabledBtn}
-              >
-                Copy CMD
-              </button>
-            ) : null}
             <button
               type="button"
               className="btn btn-primary w-copy-text-with-tips"
               data-dismiss="modal"
-              data-clipboard-text={hasInstaller ? undefined : cmdMsg}
-              onClick={hasInstaller ? self.execCmd : null}
+              onClick={self.execCmd}
               disabled={disabledBtn}
             >
-              {hasInstaller ? (install ? 'Install' : 'Update') : 'Copy'}
+              {install ? 'Install' : 'Update'}
             </button>
           </div>
         </Dialog>
@@ -951,7 +969,6 @@ var Tabs = React.createClass({
         name: name,
         plugin: plugin,
         plugins: getPluginList(props.plugins),
-        pluginsRoot: dataCenter.pluginsRoot,
         getRegistryList: this.getRegistryList
       });
       return;

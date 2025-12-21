@@ -2,6 +2,7 @@ require('../css/service.css');
 var React = require('react');
 var dataCenter = require('./data-center');
 var message = require('./message');
+var util = require('./util');
 
 var ServiceBtn = React.createClass({
   save: function() {
@@ -19,20 +20,27 @@ var ServiceBtn = React.createClass({
   handleData: function(data) {
     var props = this.props;
     var onComplete = props.onComplete;
+    var type = props.type + 'Share';
     dataCenter.saveToService({
-      type: props.type,
+      type: type,
+      filename: typeof props.getFilename === 'function' ? props.getFilename() : props.filename,
       data: data,
       isShare: true
     }, function(data) {
       var hasError = !data || data.ec !== 0;
-      hasError && message.error(data.em || 'Share failed');
       if (typeof onComplete === 'function') {
         onComplete(hasError, data);
+      }
+      if (hasError) {
+        message.error((data && data.em) || 'Sharing failed');
+      } else {
+        message.success('Shared successfully');
+        util.showService(type, true);
       }
     });
   },
   render: function () {
-    if (!dataCenter.tokenId) {
+    if (!dataCenter.whistleId) {
       return null;
     }
     return (

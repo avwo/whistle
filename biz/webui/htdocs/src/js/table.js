@@ -19,7 +19,7 @@ var Table = React.createClass({
         ) : (
           ''
         )}
-        <tbody>
+        <tbody className="w-hover-table-body">
           {modal.map(function (list, i) {
             return (
               <tr key={i}>

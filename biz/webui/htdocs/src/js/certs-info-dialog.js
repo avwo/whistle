@@ -25,7 +25,7 @@ function readFile(file, callback) {
   };
 }
 
-var HistoryData = React.createClass({
+var CertsInfoDialog = React.createClass({
   getInitialState: function () {
     return { list: [] };
   },
@@ -182,7 +182,7 @@ var HistoryData = React.createClass({
     };
     var keys = Object.keys(files);
     var len = keys.length * 2;
-    keys.map((name) => {
+    keys.map(function (name) {
       var file = files[name];
       readFile(file.key, function (text) {
         file.key = text;
@@ -224,7 +224,7 @@ var HistoryData = React.createClass({
             </a>
             Custom Certs
           </h4>
-          <table className="table">
+          <table className="table w-hover-table-body">
             <thead>
               <th className="w-certs-info-order">#</th>
               <th className="w-certs-info-filename">Filename</th>
@@ -295,7 +295,7 @@ var HistoryData = React.createClass({
           >
             Close
           </button>
-          {dataCenter.tokenId ? <button
+          {dataCenter.whistleId ? <button
             type="button"
             className="btn btn-warning"
             data-dismiss="modal"
@@ -331,4 +331,4 @@ var HistoryData = React.createClass({
   }
 });
 
-module.exports = HistoryData;
+module.exports = CertsInfoDialog;

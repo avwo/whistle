@@ -376,7 +376,7 @@ function cgiHandler(req, res) {
   if (require.cache[filepath]) {
     return handleResponse();
   }
-  fs.stat(filepath, function(err, stat) {
+  common.getStat(filepath, function(err, stat) {
     if (err || !stat.isFile()) {
       var notFound = err ? err.code === 'ENOENT' : !stat.isFile();
       var msg;
@@ -393,6 +393,7 @@ function cgiHandler(req, res) {
 app.all('/service/*', sendToService);
 app.all('/cgi-bin/service/*', sendToService);
 app.all('/cgi-bin/sessions/*', sendToService);
+app.post('/cgi-bin/plugins/install', sendToService);
 app.all('/favicon.ico', function(req, res) {
   res.sendFile(htdocs.getImgFile('favicon.ico'));
 });
@@ -491,8 +492,15 @@ app.use(function(req, res, next) {
   }
 });
 
+app.post('/cgi-bin/composer', function(req, res) {
+  req.headers[config.CLIENT_IP_HEAD] = util.getClientIp(req);
+  req.headers[config.CLIENT_PORT_HEAD] = util.getClientPort(req);
+  sendToService(req, res);
+});
+app.get('/cgi-bin/compose-data', sendToService);
 app.all('/cgi-bin/saved/*', sendToService);
 app.all('/cgi-bin/temp/*', sendToService);
+app.get('/cgi-bin/history', sendToService);
 function sendText(req, res, text) {
   sendGzipText(req, res, {
     'Content-Type': 'text/plain; charset=utf-8'

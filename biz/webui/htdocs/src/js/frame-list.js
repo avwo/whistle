@@ -206,9 +206,17 @@ var FrameList = React.createClass({
   },
   onClear: function (e) {
     if (e.ctrlKey || e.metaKey) {
+      e.stopPropagation();
       if (e.keyCode === 88) {
+        if (!util.hasShortcut('clearNetworkFrames')) {
+          return;
+        }
         this.clear();
-      } else if (e.keyCode === 82) {
+      } else if (e.keyCode === 13) {
+        e.stopPropagation();
+        if (!util.hasShortcut('replaySelectedFrame')) {
+          return;
+        }
         this.replay();
       }
     }

@@ -36,6 +36,10 @@
   font-size: 14px;
 }
 
+.w-filter-show-types .w-filter-hint {
+  bottom: 60px;
+}
+
 .w-filter-hint ul,
 .w-filter-hint li {
   list-style: none;
@@ -81,4 +85,38 @@
 .w-filter-hint li:hover,
 .w-filter-hint .w-active {
   background-color: #f5f5f5 !important;
+}
+
+.w-filter-type-bar {
+  display: flex;
+  height: 26px;
+  align-items: center;
+  white-space: nowrap;
+  overflow-x: auto;
+  background: #fafafa;
+}
+
+.w-filter-type-bar span {
+  margin-left: 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  padding: 0 6px;
+  height: 18px;
+  font-size: 12px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+}
+
+.w-filter-type-bar span:hover {
+  border-color: #f0f0f0;
+  background: #f0f0f0;
+}
+
+.w-filter-type-bar span:active, .w-filter-type-bar span.w-active {
+  border-color: #d6e2fb;
+  background: #d6e2fb;
+  color: #000;
 }

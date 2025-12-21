@@ -14,6 +14,9 @@ var AccountDialog = React.createClass({
   hide: function() {
     this.refs.dialog.hide();
   },
+  getWindow: function() {
+    return ReactDOM.findDOMNode(this.refs.iframe).contentWindow;
+  },
   shouldComponentUpdate: function() {
     return false;
   },

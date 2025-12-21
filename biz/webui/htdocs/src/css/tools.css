@@ -152,8 +152,8 @@
   margin-right: 20px;
   width: 67px;
 }
-.w-textarea-bar .w-disabled {
-  cursor: not-allowed;
+.w-textarea-bar .w-disabled, .w-composer-enable-body.w-disabled {
+  cursor: default;
   color: #aaa !important;
 }
 .w-textarea-bar .w-refresh-menu-list {

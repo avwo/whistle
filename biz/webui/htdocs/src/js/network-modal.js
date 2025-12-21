@@ -12,6 +12,10 @@ var WIN_NAME_PRE =
 var KW_RE =
   /^(e|error|style|url|host|h|domain|d|u|composer|fc|content|c|b|body|headers|h|ip|i|status|a|app|result|s|r|method|m|mark|type|t):(.*)$/i;
 var KW_LIST_RE = /([^\s]+)(?:\s+([^\s]+)(?:\s+([\S\s]+))?)?/;
+var WS_RE = /^wss?:\/\//;
+var FONT_RE = /font\//i;
+var MEDIA_RE = /audio\/|video\/|application\/vnd.apple.mpegurl|application\/dash+xml/i;
+var WASM_RE = /application\/wasm/i;
 
 function NetworkModal(list) {
   this.list = updateOrder(list);
@@ -105,6 +109,12 @@ proto.search = function (keyword) {
   this._keyword = parseKeywordList(keyword);
   this.filter();
   return keyword;
+};
+
+proto.setFilterType = function (type) {
+  this._filterType = type;
+  this.filter();
+  return type;
 };
 
 function checkKeywork(str, opts) {
@@ -263,14 +273,135 @@ function toStr(val) {
   return val + '';
 }
 
+var FETCH_RE = /^sec-fetch-/mi;
+var ACCEPT_RE = /application\/json/;
+function isFetchXhr(item) {
+  var h = item.req.headers;
+  if (!h) {
+    return false;
+  }
+  var type = h['x-requested-with'];
+  type = typeof type === 'string' ? type.trim().toLowerCase() : '';
+  if (type === 'xmlhttprequest' || type === 'fetch') {
+    return true;
+  }
+  return FETCH_RE.test(Object.keys(h).join('\n')) && (h.accept === '*/*' || ACCEPT_RE.test(h.accept));
+}
+
+function checkFilterType(item, filterType) {
+  if (!filterType) {
+    return true;
+  }
+  var isOther = filterType === 'Other';
+  if (isOther || filterType === 'Fetch/XHR') {
+    if (isFetchXhr(item)) {
+      return !isOther;
+    }
+    if (!isOther) {
+      return false;
+    }
+  }
+  if (isOther || filterType === 'WS') {
+    if (WS_RE.test(item.url)) {
+      return !isOther;
+    }
+    if (!isOther) {
+      return false;
+    }
+  }
+  if (isOther || filterType === 'Tunnel') {
+    if (item.isHttps) {
+      return !isOther;
+    }
+    if (!isOther) {
+      return false;
+    }
+  }
+  var rawType = util.getRawType(item.res.headers);
+  if (isOther || filterType === 'Font') {
+    if (FONT_RE.test(rawType)) {
+      return !isOther;
+    }
+    if (!isOther) {
+      return false;
+    }
+  }
+  if (isOther || filterType === 'Img') {
+    if (curType === 'IMG') {
+      return !isOther;
+    }
+    if (!isOther) {
+      return false;
+    }
+  }
+  if (isOther || filterType === 'Media') {
+    if (MEDIA_RE.test(rawType)) {
+      return !isOther;
+    }
+    if (!isOther) {
+      return false;
+    }
+  }
+  if (isOther || filterType === 'Wasm') {
+    if (WASM_RE.test(rawType)) {
+      return !isOther;
+    }
+    if (!isOther) {
+      return false;
+    }
+  }
+  var curType = util.getContentType(rawType);
+  if (isOther || filterType === 'HTML') {
+    if (curType === 'HTML') {
+      return !isOther;
+    }
+    if (!isOther) {
+      return false;
+    }
+  }
+  if (isOther || filterType === 'CSS') {
+    if (curType === 'CSS') {
+      return !isOther;
+    }
+    if (!isOther) {
+      return false;
+    }
+  }
+  if (isOther || filterType === 'JS') {
+    if (curType === 'JS') {
+      return !isOther;
+    }
+    if (!isOther) {
+      return false;
+    }
+  }
+  if (isOther || filterType === 'JSON') {
+    if (curType === 'JSON') {
+      return !isOther;
+    }
+    if (!isOther) {
+      return false;
+    }
+  }
+  if (filterType === 'Import') {
+    return item.importedData;
+  }
+  if (filterType === 'Composer') {
+    return item.fc;
+  }
+  return true;
+}
+
 proto.filter = function () {
   var self = this;
   var list = self.list;
   var keyword = self._keyword;
+  var filterType = self._filterType;
   list.forEach(function (item) {
-    if (keyword) {
-      item.hide =
-        checkItem(item, keyword[0]) ||
+    if (!checkFilterType(item, filterType)) {
+      item.hide = true;
+    } else if (keyword) {
+      item.hide = checkItem(item, keyword[0]) ||
         (keyword[1] && checkItem(item, keyword[1])) ||
         (keyword[2] && checkItem(item, keyword[2]));
     } else {
@@ -360,7 +491,7 @@ function inObject(obj, opts) {
       return true;
     }
     var value = obj[i];
-    if (typeof value == 'string' && checkKeywork(value, opts)) {
+    if (checkKeywork(value == null ? '' : String(value), opts)) {
       return true;
     }
   }

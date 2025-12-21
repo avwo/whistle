@@ -36,13 +36,19 @@ function getPlugin(win) {
   } catch (e) {}
 }
 
-function getBridge(win) {
+function getBridge(win, api) {
   var plugin = getPlugin(win);
-  return {
+  var result = {
     updateUI: function() {
       events.trigger('updateUIThrottle');
     },
     pageId: dataCenter.getPageId(),
+    getWhistleId: function() {
+      return dataCenter.whistleId;
+    },
+    hasWhistleToken: function() {
+      return dataCenter.hasWhistleToken;
+    },
     escapeHtml: util.escape,
     compose: dataCenter.compose,
     createComposeInterrupt: dataCenter.createComposeInterrupt,
@@ -155,6 +161,12 @@ function getBridge(win) {
       events.trigger('handleImportValues', data);
     }
   };
+  if (api) {
+    Object.keys(api).forEach(function (key) {
+      result[key] = api[key];
+    });
+  }
+  return result;
 }
 
 module.exports = getBridge;

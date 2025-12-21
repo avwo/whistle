@@ -40,7 +40,7 @@ var CookiesDialog = React.createClass({
               <th className="w-composer-cookie-value">Cookie</th>
               <th className="w-composer-cookie-operation">Operation</th>
             </thead>
-            <tbody>
+            <tbody className="w-hover-table-body">
               {cookies.map(function (cookie, i) {
                 return (
                   <tr>

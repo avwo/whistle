@@ -9,6 +9,7 @@ var ExpandCollapse = require('./expand-collapse');
 var ContextMenu = require('./context-menu');
 var JSONTree = require('./components/react-json-tree')['default'];
 var EnableHttpsBtn = require('./enable-https-btn');
+var dataCenter = require('./data-center');
 
 var TUNNEL_RE = /^tunnel:\/\//;
 
@@ -244,11 +245,12 @@ var Properties = React.createClass({
                         util.showJSONDialog(json);
                       }} /> : (list ? list.map(function(val) {
                         var info = getSrcInfo(val, itemSep);
-                        var noLocate = info.btnText.indexOf(':') === -1;
+                        var btnText = info.btnText;
+                        var noLocate = btnText.indexOf(':') === -1 && (!dataCenter.whistleId || (btnText !== '# (From Mock Rules)' && btnText !== '# (From Service Rules)'));
                         return (
                           <pre>
                             {self.renderValue(info.value)}
-                            {noLocate ? <span className="w-src-info">{info.btnText}</span> : <a className="w-src-info" onClick={self.handleClick} data-text={val}>{info.btnText}</a> }
+                            {noLocate ? <span className="w-src-info">{btnText}</span> : <a className="w-src-info" onClick={self.handleClick} data-text={val}>{btnText}</a> }
                           </pre>
                         );
                       }) : <pre className={showInfo ? 'w-align-items' : null}>{showInfo ? <a

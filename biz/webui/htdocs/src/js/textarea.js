@@ -155,6 +155,10 @@ var Textarea = React.createClass({
       >
         <Tips data={props.tips} />
         <div className={'w-textarea-bar' + (value ? '' : ' hide')}>
+          {props.reqType === 'reqRaw' ? <a onClick={props.onEdit}>
+             <span className="glyphicon glyphicon-send" />
+             Edit
+          </a> : undefined}
           <CopyBtn value={props.value} />
           {isHexView ? (
             <CopyBtn name="AsHex" value={util.getHexText(props.value)} />

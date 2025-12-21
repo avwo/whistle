@@ -158,7 +158,7 @@ var List = React.createClass({
       .keydown(function (e) {
         if (visible && (e.ctrlKey || e.metaKey)) {
           var modal = self.props.modal;
-          if (e.keyCode === 83) {
+          if (e.keyCode === 83 && util.hasShortcut('save' + (self.isRules() ? 'Rules' : 'Values') + 'Changes')) {
             modal.getChangedList().forEach(trigger);
             return false;
           }

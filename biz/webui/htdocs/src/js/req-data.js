@@ -23,9 +23,6 @@ var columnState = {};
 var columnKeys = {};
 var CMD_RE = /^:dump\s+(\d{1,15})\s*$/;
 var BODY_FILTER = /(^\s*|\s+)(content|c|b|body):/i;
-var INVALID_NAME_RE = /[\u001e\u001f\u200e\u200f\u200d\u200c\u202a\u202d\u202e\u202c\u206e\u206f\u206b\u206a\u206d\u206c'<>:"\\/|?*]+/g;
-var SPACE_RE = /\s+/g;
-var START_SPACE_RE = /^\s+/;
 var MAX_LEN = 64;
 var NOT_BOLD_RULES = {
   plugin: 1,
@@ -66,7 +63,7 @@ var contextMenuList = [
       { name: 'Path' },
       { name: 'URL' },
       { name: 'Full URL' },
-      { name: 'As CURL' },
+      { name: 'As cURL' },
       { name: 'Client IP' },
       { name: 'Server IP' },
       { name: 'Cookie' }
@@ -110,7 +107,8 @@ var contextMenuList = [
       { name: 'Expand' },
       { name: 'Collapse' },
       { name: 'Expand All' },
-      { name: 'Collapse All' }
+      { name: 'Collapse All' },
+      { name: 'List View', action: 'toggleView' }
     ]
   },
   { name: 'Mock' },
@@ -118,10 +116,9 @@ var contextMenuList = [
     name: 'Service',
     hide: true,
     list: [
-      { name: 'Share Via URL', action: 'shareViaUrl' },
       { name: 'Create API Test',  action: 'createApiTest' },
       { name: 'Copy As Script',  action: 'copyAsScript' },
-      { name: 'Load Test', action: 'loadTest' }
+      { name: 'Share Via URL', action: 'Export' }
     ]
   },
   { name: 'Save' },
@@ -326,7 +323,7 @@ var Row = React.createClass({
 
     return (
       <table className="table w-req-table" key={p.key} style={p.style} data-id={item.id}>
-        <tbody>
+        <tbody className="w-hover-table-body">
           <tr
             tabIndex="-1"
             draggable={draggable}
@@ -901,6 +898,10 @@ var ReqData = React.createClass({
         events.trigger('exportSessions', item);
       }
       break;
+    case 'createApiTest':
+      return util.showService('createApiTest');
+    case 'copyAsScript':
+      return util.showService('copyAsScript');
     case 'Save':
       events.trigger('saveSessions', [item]);
       break;
@@ -1082,7 +1083,7 @@ var ReqData = React.createClass({
         menu.copyText = util.getUrl((item && item.url) || treeUrl);
         menu.disabled = isTreeNode;
         break;
-      case 'As CURL':
+      case 'As cURL':
         menu.copyText = util.asCURL(item);
         break;
       case 'Client IP':
@@ -1192,15 +1193,15 @@ var ReqData = React.createClass({
     var mockItem = contextMenuList[6];
     var serviceItem = contextMenuList[7];
     var pluginItem = contextMenuList[11];
-    serviceItem.list.forEach(function (menu) {
-      menu.disabled = disabled;
+    serviceItem.list.forEach(function (menu, i) {
+      menu.disabled = disabled && (i < serviceItem.list.length - 1 || !treeNodeData);
     });
     mockItem.disabled = disabled;
     mockItem.hide = dataCenter.hideMockMenu;
     contextMenuList[10].disabled = clickBlank && !selectedCount;
     contextMenuList[8].disabled = clickBlank && !selectedCount;
     serviceItem.disabled = clickBlank;
-    serviceItem.hide = !dataCenter.tokenId;
+    serviceItem.hide = !dataCenter.whistleId;
     util.addPluginMenus(
       pluginItem,
       dataCenter.getNetworkMenus(),
@@ -1229,6 +1230,10 @@ var ReqData = React.createClass({
       self.setState({ filterText: keyword }, self.updateList);
       events.trigger('networkStateChange');
     }, 600);
+  },
+  onFilterTypeChange: function (type) {
+    this.props.modal.setFilterType(type);
+    this.setState({ filterType: type }, this.updateList);
   },
   onFilterKeyDown: function (e) {
     if (e.keyCode !== 13 || !CMD_RE.test(e.target.value)) {
@@ -1288,13 +1293,16 @@ var ReqData = React.createClass({
       return;
     }
     if (e.keyCode === 13) {
+      if (!util.hasShortcut( e.shiftKey ? 'replaySelectedRequestsTimes' : 'replaySelectedRequests')) {
+        return;
+      }
       events.trigger('replaySessions', [null, e.shiftKey]);
     } else if (e.keyCode === 65) {
+      if (!util.hasShortcut('abortRequest')) {
+        return;
+      }
       e.preventDefault();
       events.trigger('abortRequest');
-    } else if (e.keyCode === 39) {
-      e.preventDefault();
-      events.trigger('composer');
     }
   },
   renderColumn: function (col) {
@@ -1450,7 +1458,7 @@ var ReqData = React.createClass({
       : modal.getList().filter(isVisible);
   },
   filterSessionsName: function (e) {
-    this.setState({ sessionsName: e.target.value.replace(INVALID_NAME_RE, '').replace(START_SPACE_RE, '').replace(SPACE_RE, ' ') });
+    this.setState({ sessionsName: util.formatFilename(e.target.value) });
   },
   render: function () {
     var self = this;
@@ -1500,7 +1508,7 @@ var ReqData = React.createClass({
             onKeyDown={self.onReplay}
             style={{
               background:
-                dataCenter.hashFilterObj || filterText
+                dataCenter.hashFilterObj || filterText || state.filterType
                   ? 'lightyellow'
                   : undefined
             }}
@@ -1557,6 +1565,7 @@ var ReqData = React.createClass({
           onChange={this.onFilterChange}
           wStyle={colStyle}
           addonHints={HINTS}
+          onFilterTypeChange={this.onFilterTypeChange}
           hintKey="networkHintList"
         />
         <ContextMenu onClick={this.onClickContextMenu} ref="contextMenu" />

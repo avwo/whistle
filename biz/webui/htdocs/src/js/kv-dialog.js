@@ -148,7 +148,7 @@ var KVDialog = React.createClass({
               </th>
               <th className="w-kv-operation">Content</th>
             </thead>
-            <tbody>
+            <tbody className="w-hover-table-body">
               {noData ? (
                 <tr>
                   <td colSpan="3" className="w-empty">

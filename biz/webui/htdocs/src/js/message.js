@@ -12,9 +12,9 @@ function showMessage(msg, level) {
   var elem = cache[level];
   if (!elem) {
     elem = $('<div class="alert alert-' + level + ' w-message"></div>');
-    elem.appendTo(document.body);
     cache[level] = elem;
   }
+  elem.appendTo(document.body);
   elem.text(msg);
   elem.stop(true, true).show();
   elem.css('marginLeft', -elem[0].offsetWidth / 2);

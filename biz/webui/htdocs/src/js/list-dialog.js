@@ -19,6 +19,7 @@ var ListDialog = React.createClass({
       checkedItems: {},
       checkedRuleList: [],
       ruleListLen: 0,
+      filename: '',
       tabs: [
         {
           icon: 'file',
@@ -53,6 +54,12 @@ var ListDialog = React.createClass({
     ReactDOM.findDOMNode(this.refs.data).value = JSON.stringify(data);
     form.submit();
     input.value = '';
+  },
+  filterFilename: function (e) {
+    this.setState({ filename: util.formatFilename(e.target.value) });
+  },
+  getInputValue: function () {
+    return util.formatFilename(ReactDOM.findDOMNode(this.refs.filename).value.trim());
   },
   getRuleList: function (cb) {
     var rulesModal = this.state.rulesModal;
@@ -92,7 +99,7 @@ var ListDialog = React.createClass({
       rules += '\n\n' + values;
     }
     var newVals;
-    var filename = ReactDOM.findDOMNode(this.refs.filename).value.trim() || 'mock_' + util.formatDate() + '.txt';
+    var filename = this.getInputValue() || 'mock_' + util.formatDate() + '.txt';
     var execCb = function() {
       cb([rules, newVals || {}], filename);
     };
@@ -167,7 +174,9 @@ var ListDialog = React.createClass({
       self.setState({ checkedItems: checkedItems });
     }
     !this.props.onConfirm && setTimeout(function () {
-      ReactDOM.findDOMNode(self.refs.filename).focus();
+      var input = ReactDOM.findDOMNode(self.refs.filename);
+      input.focus();
+      input.select();
     }, 500);
 
     if (rulesModal) {
@@ -232,8 +241,11 @@ var ListDialog = React.createClass({
     item.checked = e.target.checked;
     this.setState({});
   },
-  onShare: function() {
-    this.refs.dialog.hide();
+  onShare: function(err) {
+    if (!err) {
+      this.refs.dialog.hide();
+      ReactDOM.findDOMNode(this.refs.filename).value = '';
+    }
   },
   render: function () {
     var self = this;
@@ -305,6 +317,8 @@ var ListDialog = React.createClass({
                 Filename:
                 <input
                   ref="filename"
+                  value={state.filename}
+                  onChange={self.filterFilename}
                   style={{ width: 812, display: 'inline-block', marginLeft: 5 }}
                   className="form-control"
                   placeholder="Enter filename (optional)"
@@ -323,7 +337,7 @@ var ListDialog = React.createClass({
           >
             Cancel
           </button>
-          {onConfirm ? null : <ShareViaURLBtn disabled={!selectedCount}
+          {onConfirm ? null : <ShareViaURLBtn getFilename={this.getInputValue} disabled={!selectedCount}
             type={this.isRuleList() ? 'mock' : props.name}
             getData={this.getExportData} onComplete={this.onShare} />}
           <button

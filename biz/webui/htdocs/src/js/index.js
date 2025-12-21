@@ -1,4 +1,5 @@
 require('../css/index.css');
+require('../css/appearance.css');
 var $ = require('jquery');
 var React = require('react');
 var ReactDOM = require('react-dom');
@@ -40,7 +41,6 @@ var HttpsSettings = require('./https-settings');
 
 var TEMP_LINK_RE = /^(?:[\w-]+:\/\/)?temp(?:\/([\da-z]{64}|blank))?(?:\.[\w-]+)?$/;
 var FILE_PATH_RE = /^(?:[\w-]+:\/\/)?((?:[a-z]:[\\/]|\/).+)$/i;
-var JSON_RE = /^\s*(?:[\{｛][\w\W]+[\}｝]|\[[\w\W]+\])\s*$/;
 var DEFAULT = 'Default';
 var MAX_PLUGINS_TABS = 7;
 var MAX_FILE_SIZE = 1024 * 1024 * 128;
@@ -198,19 +198,6 @@ var ABORT_OPTIONS = [
   }
 ];
 
-function checkJson(item) {
-  if (/\.json$/i.test(item.name) && JSON_RE.test(item.value)) {
-    try {
-      JSON.parse(item.value);
-    } catch (e) {
-      message.warn(
-        'Warning: Invalid JSON format in the value of \'' +
-          item.name + '\'. ' +  e.message
-      );
-    }
-  }
-}
-
 function getJsonForm(data, name) {
   var form = new FormData();
   var file = new File([JSON.stringify(data)], 'data.json', { type: 'application/json' });
@@ -273,7 +260,8 @@ function getPageName(options) {
     return hash !== 'plugins' ? 'network' : hash;
   }
   if (isClient && !hash) {
-    return storage.get('pageName') || 'network';
+    hash = storage.get('pageName');
+    return TABS.indexOf(hash) !== -1 ? hash : 'network';
   }
   return hash;
 }
@@ -387,6 +375,7 @@ var Index = React.createClass({
     var caUrlList = [];
     var caHash = util.getCAHash(server, caUrlList);
     var state = {
+      filename: '',
       replayCount: 1,
       tabs: [],
       caType: getCAType(storage.get('caType')),
@@ -403,7 +392,7 @@ var Index = React.createClass({
       drb: server.drb,
       drm: server.drm,
       port: server.port,
-      tokenId: server.tokenId,
+      whistleId: server.whistleId,
       version: modal.version
     };
     if (hideLeftMenu !== false) {
@@ -875,6 +864,50 @@ var Index = React.createClass({
     }
     storage.set('pageName', pageName || '');
   },
+  switchTab: function(isBack) {
+    var self = this;
+    var name = self.state.name;
+    var tabs = [];
+    if (!self.hideNetwork) {
+      tabs.push('network');
+    }
+    if (!self.hideRules) {
+      tabs.push('rules');
+    }
+    if (!self.hideValues) {
+      tabs.push('values');
+    }
+    if (!self.hidePlugins) {
+      tabs.push('plugins');
+    }
+    var index = tabs.indexOf(name);
+    var len = tabs.length;
+    if (isBack) {
+      index = index - 1;
+      if (index < 0) {
+        index = len - 1;
+      }
+    } else {
+      index = index + 1;
+      if (index >= len) {
+        index = 0;
+      }
+    }
+    switch (tabs[index]) {
+    case 'network':
+      self.showNetwork();
+      break;
+    case 'rules':
+      self.showRules();
+      break;
+    case 'values':
+      self.showValues();
+      break;
+    case 'plugins':
+      self.showPlugins();
+      break;
+    }
+  },
   componentDidMount: function () {
     var self = this;
     var clipboard = new Clipboard('.w-copy-text');
@@ -1320,10 +1353,19 @@ var Index = React.createClass({
           var nodeName = document.activeElement && document.activeElement.nodeName;
           if (nodeName !== 'INPUT' && nodeName !== 'TEXTAREA' && !$('.modal.in').length) {
             if (name === 'network') {
+              if (!util.hasShortcut('focusNetworkSearchBox')) {
+                return;
+              }
               events.trigger('focusNetworkFilterInput');
             } else if (name === 'rules') {
+              if (!util.hasShortcut('focusRulesSearchBox')) {
+                return;
+              }
               events.trigger('focusRulesFilterInput');
             } else if (name === 'values') {
+              if (!util.hasShortcut('focusValuesSearchBox')) {
+                return;
+              }
               events.trigger('focusValuesFilterInput');
             }
           }
@@ -1366,48 +1408,93 @@ var Index = React.createClass({
           }
           return;
         }
-        if (code === 79 || code === 48) {
-          e.preventDefault();
+        var isBack = code === 37;
+        if (isBack || code === 39) {
+          if (!util.hasShortcut(isBack ? 'switchTabReverse' : 'switchTab')) {
+            return;
+          }
+          self.switchTab(isBack);
+          return e.preventDefault();
+        }
+        if (code === 79) {
           if (name === 'network') {
+            if (!util.hasShortcut('toggleNetworkState')) {
+              return;
+            }
             events.trigger('toggleNetworkState');
           } else if (name === 'rules') {
+            if (!util.hasShortcut('toggleRules')) {
+              return;
+            }
             self.confirmDisableAllRules();
           } else if (name === 'plugins') {
+            if (!util.hasShortcut('togglePlugins')) {
+              return;
+            }
             self.confirmDisableAllPlugins();
           }
-        } else if (code === 76) {
           e.preventDefault();
+        } else if (code === 76) {
           if (name === 'network') {
+            if (!util.hasShortcut('toggleNetworkPanelLayout')) {
+              return;
+            }
             events.trigger('toggleNetworkDock');
           } else if (name === 'rules') {
+            if (!util.hasShortcut('toggleRulesNum')) {
+              return;
+            }
             events.trigger('toggleRulesLineNumbers');
           } else if (name === 'values') {
+            if (!util.hasShortcut('toggleValuesNum')) {
+              return;
+            }
             events.trigger('toggleValuesLineNumbers');
           }
+          e.preventDefault();
         } else if (code === 82) {
           !isClient && e.preventDefault();
         } else if (code === 77) {
           self.toggleLeftMenu();
           e.preventDefault();
         } else if (code === 66) {
+          if (!util.hasShortcut('switchNetworkView')) {
+            return;
+          }
           self.toggleTreeView();
           e.preventDefault();
           events.trigger('toggleTreeViewByAccessKey');
+          return;
         }
         var isNetwork = name === 'network';
         if (isNetwork && code == 88) {
           if (
             !util.isFocusEditor() &&
-            !$(e.target).closest('.w-frames-list').length
+            !$(e.target).closest('.w-frames-list').length &&
+            util.hasShortcut('clearNetworkSessions')
           ) {
             self.clear();
           }
+          return;
         }
-        code == 68 && removeItem(e);
+        if (code == 68) {
+          if (!util.hasShortcut(isNetwork ? 'removeNetworkSessions' : name === 'rules' ? 'removeRules' : 'removeValues')) {
+            return;
+          }
+          return removeItem(e);
+        }
         var modal = self.state.network;
         if (isNetwork && (code === 83 || code === 69)) {
+          if (code === 83) {
+            if (!util.hasShortcut('saveNetwork')) {
+              return;
+            }
+            e.preventDefault();
+            util.noModal() && events.trigger('saveSessions');
+            return;
+          }
           e.preventDefault();
-          if ($('.modal.in').length) {
+          if (!util.noModal()) {
             if (
               $(ReactDOM.findDOMNode(self.refs.chooseFileType)).is(':visible')
             ) {
@@ -1423,27 +1510,44 @@ var Index = React.createClass({
           if (hasSelected) {
             $(ReactDOM.findDOMNode(self.refs.chooseFileType)).modal('show');
             setTimeout(function () {
-              ReactDOM.findDOMNode(self.refs.sessionsName).focus();
+              var input = ReactDOM.findDOMNode(self.refs.sessionsName);
+              input.focus();
+              input.select();
             }, 500);
           }
           return;
         }
         if (code === 69) {
+          if (!util.hasShortcut(isNetwork ? 'exportNetwork' : name === 'rules' ? 'exportRules' : 'exportValues')) {
+            return;
+          }
           e.preventDefault();
-          return  self.exportData();
+          return util.noModal() && self.exportData();
         }
         if (code === 190) {
+          if (!util.hasShortcut(isNetwork ? 'openNetworkSettings' : name === 'rules' ? 'openRulesSettings' : 'openValuesSettings')) {
+            return;
+          }
           self.showSettings();
           return e.preventDefault();
         }
         var isService = code === 74;
         if (isService || code === 73) {
-          if (!$('.modal.in').length) {
+          if (util.noModal()) {
             if (isService) {
+              if (!util.hasShortcut('openService')) {
+                return;
+              }
               self.showService();
             } else if (isNetwork || name === 'rules' || name === 'values') {
+              if (!util.hasShortcut(isNetwork ? 'importNetwork' : name === 'rules' ? 'importRules' : 'importValues')) {
+                return;
+              }
               self.importData();
             } else if (name === 'plugins') {
+              if (!util.hasShortcut('openInstallPlugins')) {
+                return;
+              }
               events.trigger('installPlugins');
             }
           }
@@ -1539,9 +1643,9 @@ var Index = React.createClass({
     dataCenter.on('settings', function (data) {
       var state = self.state;
       var server = data.server;
-      var hasChanged = state.tokenId !== server.tokenId;
+      var hasChanged = state.whistleId !== server.whistleId;
       if (hasChanged) {
-        state.tokenId = server.tokenId;
+        state.whistleId = server.whistleId;
       }
       var caUrlList = [];
       var caHash = util.getCAHash(server, caUrlList);
@@ -1893,15 +1997,15 @@ var Index = React.createClass({
     var curNetworkSettings;
     var curRulesSettings;
     var curValuesSettings;
-    var curTokenId;
+    var curWhistleId;
     var saveSettings = function () {
-      if (!dataCenter.tokenId) {
+      if (!dataCenter.whistleId) {
         curNetworkSettings = curRulesSettings = curValuesSettings = null;
         return setTimeout(saveSettings, INTERVAL);
       }
-      if (curTokenId !== dataCenter.tokenId) {
+      if (curWhistleId !== dataCenter.whistleId) {
         curNetworkSettings = curRulesSettings = curValuesSettings = null;
-        curTokenId = dataCenter.tokenId;
+        curWhistleId = dataCenter.whistleId;
       }
       var networkSettings = JSON.stringify(self.refs.networkSettings.getSettings());
       var rulesSettings = JSON.stringify(self.getRulesSettings());
@@ -2277,6 +2381,12 @@ var Index = React.createClass({
   },
   exportValuesSettings: function() {
     this.refs.exportDialog.show('valuesSettings', this.getValuesSettings());
+  },
+  getInputValue: function () {
+    return util.formatFilename(ReactDOM.findDOMNode(this.refs.sessionsName).value.trim());
+  },
+  filterFilename: function (e) {
+    this.setState({ filename: util.formatFilename(e.target.value) });
   },
   exportData: function (e, curItem, filename) {
     switch (this.state.name) {
@@ -2986,7 +3096,6 @@ var Index = React.createClass({
           events.trigger('valuesNameChanged', [curName, name]);
           self.setState({ activeValues: modal.getActive() });
           self.triggerValuesChange('rename');
-          checkJson(activeItem);
         } else {
           util.showSystemError(xhr);
         }
@@ -3098,7 +3207,6 @@ var Index = React.createClass({
       if (data && data.ec === 0) {
         self.setSelected(self.state.values, item.name);
         self.triggerValuesChange('save');
-        checkJson(item);
       } else {
         util.showSystemError(xhr);
       }
@@ -3661,6 +3769,7 @@ var Index = React.createClass({
   hideChooseFileTypeDialog: function(failed) {
     if (!failed) {
       $(ReactDOM.findDOMNode(this.refs.chooseFileType)).modal('hide');
+      ReactDOM.findDOMNode(this.refs.sessionsName).value = '';
     }
   },
   exportBySave: function (e) {
@@ -3859,7 +3968,7 @@ var Index = React.createClass({
     var rulesMode = state.rulesMode;
     var rulesOnlyMode = state.rulesOnlyMode;
     var pluginsMode = state.pluginsMode;
-    var tokenId = state.tokenId;
+    var whistleId = state.whistleId;
     var multiEnv = dataCenter.isMultiEnv();
     var name = this.getTabName();
     var isAccount = name == 'account';
@@ -3986,12 +4095,15 @@ var Index = React.createClass({
     var hideEditorStyle = hideEditor ? HIDE_STYLE : null;
     var hideStyle = hideMenus ? ' hide' : '';
     dataCenter.hideMockMenu = hideEditor;
+    this.hideNetwork = rulesMode;
+    this.hideRules = this.hideValues = hideEditor;
+    this.hidePlugins = pluginsStyle;
 
     return (
       <div
         className={
           'main orient-vertical-box' + (showLeftMenu ? ' w-show-left-menu' : '')
-          + (tokenId ? ' w-has-token' : '')
+          + (whistleId ? ' w-has-token' : '')
           + (isEditor && !rulesOnlyMode ? ' w-show-editor' : '') + (isRules ? ' w-show-rules' : '')
           + (rulesOnlyMode || rulesMode ? ' w-show-rules-mode' : '')
         }
@@ -4323,7 +4435,7 @@ var Index = React.createClass({
             isNetwork={isNetwork}
             hide={isPlugins}
           />
-         {tokenId ? <ServiceBtn name={name} /> : null}
+         {whistleId ? <ServiceBtn name={name} /> : null}
           <div
             onMouseEnter={this.showWeinreOptions}
             onMouseLeave={this.hideWeinreOptions}
@@ -4810,6 +4922,8 @@ var Index = React.createClass({
                   Save as:
                   <input
                     ref="sessionsName"
+                    value={state.filename}
+                    onChange={this.filterFilename}
                     onKeyDown={this.exportBySave}
                     placeholder="Enter filename (optional)"
                     className="form-control"
@@ -4835,7 +4949,7 @@ var Index = React.createClass({
                 >
                   Cancel
                 </button>
-                <SaveToServiceBtn type="network" onComplete={this.hideChooseFileTypeDialog} data={this.getExportSessions} />
+                <SaveToServiceBtn type="network" onComplete={this.hideChooseFileTypeDialog} getFilename={this.getInputValue} data={this.getExportSessions} />
                 <button
                   type="button"
                   onKeyDown={this.exportBySave}

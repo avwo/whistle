@@ -54,6 +54,9 @@ var ReqDetail = React.createClass({
     this.state.btn = btn;
     this.state['inited' + btn.name] = true;
   },
+  onEdit: function () {
+    events.trigger('setComposerData', this.props.modal);
+  },
   render: function () {
     var state = this.state;
     var btn = state.btn;
@@ -265,6 +268,7 @@ var ReqDetail = React.createClass({
         {state.initedRaw ? (
           <Textarea
             reqData={modal}
+            onEdit={this.onEdit}
             reqType="reqRaw"
             defaultName={defaultName}
             value={raw}

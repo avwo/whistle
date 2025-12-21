@@ -6,6 +6,7 @@ var events = require('./events');
 var isUtf8 = require('./is-utf8');
 var message = require('./message');
 var win = require('./win');
+var storage = require('./storage');
 
 var toByteArray = base64JS.toByteArray;
 var fromByteArray = base64JS.fromByteArray;
@@ -172,9 +173,16 @@ exports.preventBlur = function(e) {
   e.preventDefault();
 };
 
-exports.showService = function(path) {
-  events.trigger('showService', path);
-};
+function showService(path, delay) {
+  if (delay) {
+    setTimeout(function() {
+      events.trigger('showService', path);
+    }, 100);
+  } else {
+    events.trigger('showService', path);
+  }
+}
+exports.showService = showService;
 
 exports.hideService = function() {
   events.trigger('hideService');
@@ -1290,7 +1298,7 @@ function escapeFn(matched) {
 }
 
 exports.escape = function (str) {
-  if (str == null) {
+  if (!str) {
     return str;
   }
   str = (str + '').replace(rentity, escapeFn);
@@ -3061,6 +3069,9 @@ exports.showHandlePluginInfo = function(data, xhr) {
     showSystemError(xhr);
     return false;
   }
+  if (data.ec) {
+    return message.error(data.em || 'Request error, please try again!');
+  }
   message.success('Request successful - plugin list updating...');
   return true;
 };
@@ -3146,6 +3157,11 @@ exports.handleClickLocate = function(text) {
     var type = text.substring(0, index);
     var name = text.substring(index + 1).trim();
     if (!type || !name) {
+      if (text === 'Service Rules') {
+        showService('serviceRules', true);
+      } else if (text === 'Mock Rules') {
+        showService('mockRules', true);
+      }
       return;
     }
     if (type === 'File') {
@@ -3169,4 +3185,32 @@ exports.shakeElem = function (elem) {
   setTimeout(function() {
     elem.removeClass('w-shake-horizontal');
   }, 500);
+};
+
+var INVALID_NAME_RE = /[\u001e\u001f\u200e\u200f\u200d\u200c\u202a\u202d\u202e\u202c\u206e\u206f\u206b\u206a\u206d\u206c'<>:"\\/|?*]+/g;
+var BLANK_RE = /\s+/g;
+var START_SPACE_RE = /^\s+/;
+
+exports.formatFilename = function(name) {
+  return name.replace(INVALID_NAME_RE, '').replace(START_SPACE_RE, '').replace(BLANK_RE, ' ');
+};
+
+var shortcutsSettings;
+try {
+  shortcutsSettings = $.extend({}, JSON.parse(storage.get('shortcutsSettings')) || {});
+} catch (e) {}
+
+shortcutsSettings = shortcutsSettings || {};
+exports.shortcutsSettings = shortcutsSettings;
+
+exports.saveShortcutsSettings = function() {
+  storage.set('shortcutsSettings', JSON.stringify(shortcutsSettings));
+};
+
+exports.hasShortcut = function(name) {
+  return shortcutsSettings[name] !== false;
+};
+
+exports.noModal = function() {
+  return !$('.modal.in').length;
 };

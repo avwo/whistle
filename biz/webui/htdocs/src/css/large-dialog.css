@@ -10,6 +10,10 @@
   overflow: auto!important;
 }
 
+.w-service-dialog {
+  z-index: 1051;
+}
+
 .w-editor-win {
   z-index: 99999;
 }

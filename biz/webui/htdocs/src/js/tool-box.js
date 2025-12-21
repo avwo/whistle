@@ -13,7 +13,7 @@ var MAX_QRCODE_LEN = 2048;
 var MAX_JSON_LEN = 32768;
 var MAX_SAVE_LEN = 5120;
 var MAX_TEXT_LEN = 5120;
-var MAX_IMAGE_SIZE = 1024 * 1024;
+var MAX_IMAGE_SIZE = 1024 * 1024 * 3;
 
 var ToolBox = React.createClass({
   getInitialState: function () {
@@ -96,14 +96,6 @@ var ToolBox = React.createClass({
       win.alert(e.message);
     }
   },
-  showShadowRules: function () {
-    try {
-      var value = encodeURIComponent(this.state.codecText);
-      this.refs.textDialog.show('"' + value + '"');
-    } catch (e) {
-      win.alert(e.message);
-    }
-  },
   decode: function () {
     try {
       var value = util.decodeBase64(this.state.codecText).text;
@@ -112,21 +104,19 @@ var ToolBox = React.createClass({
       win.alert(e.message);
     }
   },
-  uploadImg: function () {
-    ReactDOM.findDOMNode(this.refs.uploadImg).click();
+  uploadFile: function () {
+    ReactDOM.findDOMNode(this.refs.uploadFile).click();
   },
-  readImg: function () {
+  readFile: function () {
     var self = this;
-    var image = new FormData(ReactDOM.findDOMNode(this.refs.uploadImgForm)).get(
-      'image'
-    );
-    if (!(image.size <= MAX_IMAGE_SIZE)) {
-      return win.alert('Maximum file size: 1MB');
+    var file = new FormData(ReactDOM.findDOMNode(this.refs.uploadFileForm)).get('file');
+    if (!(file.size <= MAX_IMAGE_SIZE)) {
+      return win.alert('Maximum file size: 3MB');
     }
-    var type = 'data:' + image.type + ';base64,';
-    util.readFileAsBase64(image, function (base64) {
-      ReactDOM.findDOMNode(self.refs.uploadImg).value = '';
-      self.refs.textDialog.show(type + base64, base64, image.name);
+    var type = 'data:' + file.type + ';base64,';
+    util.readFileAsBase64(file, function (base64) {
+      ReactDOM.findDOMNode(self.refs.uploadFile).value = '';
+      self.refs.textDialog.show(type + base64, base64, file.name);
     });
   },
   onQRCodeChange: function (e) {
@@ -213,28 +203,28 @@ var ToolBox = React.createClass({
           onKeyDown={this.onForamt}
         />
         <div className="w-detail-inspectors-title" style={{ height: 20 }}>
+          <span className="glyphicon glyphicon-eye-close"></span>Base64
+          <button
+            className="btn btn-primary"
+            style={{marginLeft: 10}}
+            onClick={this.uploadFile}
+          >
+            Upload
+          </button>
           <button
             className="btn btn-default"
-            style={{ float: 'left' }}
+            style={{marginLeft: 10}}
             disabled={emptyCodec}
             onClick={this.encode}
           >
-            EncodeBase64
+            Encode
           </button>
           <button
             className="btn btn-default"
-            style={{ float: 'left', marginLeft: 10 }}
             disabled={emptyCodec}
             onClick={this.decode}
           >
-            DecodeBase64
-          </button>
-          <button
-            className="btn btn-primary"
-            disabled={emptyCodec}
-            onClick={this.showShadowRules}
-          >
-            ShadowRules
+            Decode
           </button>
         </div>
         <textarea
@@ -245,19 +235,6 @@ var ToolBox = React.createClass({
           maxLength={MAX_TEXT_LEN}
           placeholder="Enter text"
         />
-        <div className="w-detail-inspectors-title">
-          <span className="glyphicon glyphicon-picture"></span>Base64
-          <button className="btn btn-primary" onClick={this.uploadImg}>
-            Upload
-          </button>
-        </div>
-        <button
-          className="w-tool-box-ctn w-tool-box-base64"
-          onClick={this.uploadImg}
-        >
-          <span className="glyphicon glyphicon-arrow-up"></span>
-          Click here to upload image (size &lt;= 1MB)
-        </button>
         <div className="w-detail-inspectors-title">
           <span className="glyphicon glyphicon-certificate"></span>Certificate
         </div>
@@ -280,16 +257,15 @@ var ToolBox = React.createClass({
         <QRCodeDialog ref="qrcodeDialog" />
         <TextDialog ref="textDialog" />
         <form
-          ref="uploadImgForm"
+          ref="uploadFileForm"
           encType="multipart/form-data"
           style={{ display: 'none' }}
         >
           <input
-            ref="uploadImg"
-            onChange={this.readImg}
-            name="image"
+            ref="uploadFile"
+            onChange={this.readFile}
+            name="file"
             type="file"
-            accept="image/*"
           />
         </form>
       </div>

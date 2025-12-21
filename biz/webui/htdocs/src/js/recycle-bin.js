@@ -153,7 +153,7 @@ var RecycleBinDialog = React.createClass({
               <th className="w-files-path">Filename</th>
               <th className="w-files-operation">Operation</th>
             </thead>
-            <tbody>
+            <tbody className="w-hover-table-body">
               {list.length ? (
                 list.map(function (item, i) {
                   return (

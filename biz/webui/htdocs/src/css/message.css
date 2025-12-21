@@ -4,5 +4,6 @@
   left: 50%;
   z-index: 999999999;
   padding: 8px 20px !important;
-  max-width: 410px;
+  max-width: 420px;
+  white-space: pre-wrap;
 }

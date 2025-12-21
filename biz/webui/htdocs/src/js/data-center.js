@@ -69,10 +69,19 @@ var DEFAULT_CONF = {
   data: {}
 };
 var composerItem;
+var manualLogout; // 手动登出
 
 exports.enabledRulesCount = 0;
 exports.setComposerItem = function(item) {
   composerItem = item;
+};
+
+exports.checkPluginUpdates = function (plugin, callback) {
+  if (!exports.whistleId) {
+    return callback();
+  }
+  // TODO: 从服务端检查插件更新
+  callback(true);
 };
 
 exports.clientIp = '127.0.0.1';
@@ -500,6 +509,23 @@ exports.plugins = createCgiObj(
   POST_CONF
 );
 
+exports.installPluginsFromService = function (plugins, registry) {
+  if (!plugins || !exports.whistleId) {
+    return;
+  }
+  plugins = util.isString(plugins) ? plugins.trim().split(/\s*,\s*/) : (Array.isArray(plugins) ? plugins : []);
+  plugins = plugins.map(function(p) {
+    return p.indexOf('/') === -1 ? exports.whistleId + '/' + p : p;
+  }).join();
+  if (!plugins) {
+    return;
+  }
+  exports.plugins.installPlugins({
+    registry: /^https?:\/\/[^/]/.test(registry) ? registry : '',
+    plugins: plugins
+  }, util.showHandlePluginInfo);
+};
+
 exports.rules = createCgiObj(
   {
     disableAllRules: 'cgi-bin/rules/disable-all-rules',
@@ -610,7 +636,6 @@ $.extend(
         url: 'cgi-bin/add-rules-values',
         contentType: 'application/json'
       },
-      setIPv6Only: 'cgi-bin/set-ipv6-only',
       createTempFile: {
         url: 'cgi-bin/temp/create',
         contentType: 'application/json'
@@ -627,7 +652,9 @@ $.extend(
       save: {
         url: 'cgi-bin/service/save',
         contentType: 'application/json'
-      }
+      },
+      login: 'cgi-bin/service/login',
+      logout: 'cgi-bin/service/logout'
     },
     POST_CONF
   )
@@ -785,9 +812,8 @@ exports.getInitialData = function (callback) {
         var server = data.server;
         port = server && server.port;
         account = server && server.account;
-        updateTokenId(server);
+        updateWhistleId(server);
         exports.version = server && server.version;
-        exports.enablePluginMgr = data.epm;
         exports.supportH2 = data.supportH2;
         exports.isWin = server && server.isWin;
         updateRulesInfo(data.rules);
@@ -809,7 +835,6 @@ exports.getInitialData = function (callback) {
         if (data.lastDataId) {
           lastRowId = data.lastDataId;
         }
-        exports.pluginsRoot = data.pluginsRoot;
         exports.whistleName = data.wName;
         exports.account = data.account;
         exports.disableInstaller = data.disableInstaller;
@@ -1043,6 +1068,7 @@ function startLoadData() {
       }
     }
     var count = inited ? 20 : networkModal.getDisplayCount();
+    var composerReqId = exports.curComposerReqId;
     var options = {
       startLogTime: exports.stopConsoleRefresh ? -3 : startLogTime,
       startSvrLogTime: exports.stopServerLogRefresh ? -3 : startSvrLogTime,
@@ -1055,7 +1081,8 @@ function startLoadData() {
       lastFrameId: lastFrameId,
       logId: logId || '',
       count: count || 20,
-      tunnelIds: tunnelIds
+      tunnelIds: tunnelIds,
+      composerReqId: composerReqId
     };
     inited = true;
     $.extend(options, hashFilterObj);
@@ -1068,6 +1095,9 @@ function startLoadData() {
       updateServerInfo(data);
       if (!data || data.ec !== 0) {
         return;
+      }
+      if (Array.isArray(data.installErrors) && data.installErrors.length) {
+        message.error(data.installErrors.join('\n'));
       }
       var preCapture = exports.isCapture;
       if (preCapture === 0) {
@@ -1085,12 +1115,10 @@ function startLoadData() {
       var server = data.server;
       port = server && server.port;
       account = server && server.account;
-      updateTokenId(server);
-      exports.pluginsRoot = data.pluginsRoot;
+      updateWhistleId(server);
       exports.whistleName = data.wName;
       exports.account = data.account;
       exports.disableInstaller = data.disableInstaller;
-      exports.enablePluginMgr = data.epm;
       exports.supportH2 = data.supportH2;
       exports.version = server && server.version;
       exports.isWin = server && server.isWin;
@@ -1229,6 +1257,14 @@ function startLoadData() {
       data = data.data;
       var hasChanged;
       var framesLen = data.frames && data.frames.length;
+      var time = data.composerTime;
+
+      if (time && composerReqId === exports.curComposerReqId && exports.onComposerTimeChange) {
+        if (time.endTime) {
+          exports.curComposerReqId = undefined;
+        }
+        exports.onComposerTimeChange(time);
+      }
 
       if (framesLen) {
         curActiveItem.lastFrameId = data.frames[framesLen - 1].frameId;
@@ -1288,6 +1324,7 @@ function startLoadData() {
         return;
       }
       var ids = data.newIds;
+      var curHLList = [];
       data = data.data;
       dataList.forEach(function (item) {
         var newItem = data[item.id];
@@ -1319,6 +1356,10 @@ function startLoadData() {
           var item = data[id];
           if (item) {
             workers.postMessage(item);
+            if (item.fc) {
+              curHLList.push(item);
+              item.highlight = true;
+            }
             if (
               (!excludeFilter || !checkFilter(item, excludeFilter)) &&
               (!includeFilter || checkFilter(item, includeFilter))
@@ -1329,6 +1370,13 @@ function startLoadData() {
             }
           }
         });
+        if (curHLList.length) {
+          setTimeout(function() {
+            curHLList.forEach(function(item) {
+              delete item.highlight;
+            });
+          }, 800);
+        }
       }
       dataCallbacks.forEach(function (cb) {
         cb(networkModal);
@@ -1847,6 +1895,8 @@ function updateServerInfo(data) {
     curServerInfo.port == data.port &&
     curServerInfo.host == data.host &&
     curServerInfo.pid == data.pid &&
+    curServerInfo.whistleId == data.whistleId &&
+    curServerInfo.ipv6Only == data.ipv6Only &&
     curServerInfo.ipv4.sort().join() == data.ipv4.sort().join() &&
     curServerInfo.ipv6.sort().join() == data.ipv6.sort().join()
   ) {
@@ -2085,13 +2135,50 @@ function toString(options) {
   return typeof options === 'string' ? options : JSON.stringify(options);
 }
 
-function updateTokenId(server) {
-  var tokenId = server && server.tokenId;
-  if (tokenId !== exports.tokenId) {
-    exports.tokenId = tokenId;
-    events.trigger('tokenIdChanged', tokenId);
+exports.getServiceBridge = function() {
+  return {
+    login: function(data, cb) {
+      if (typeof data !== 'string') {
+        data = JSON.stringify(data);
+      }
+      exports.login(data, cb);
+    },
+    logout: function(cb) {
+      exports.logout(cb);
+    }
+  };
+};
+
+function triggerWhistleIdChanged(server, byServer) {
+  var whistleId = server && server.whistleId;
+  var hasWhistleToken = server && server.hasWhistleToken;
+  if (!hasWhistleToken !== !exports.hasWhistleToken) {
+    exports.hasWhistleToken = hasWhistleToken;
+    events.trigger('hasWhistleTokenChanged', hasWhistleToken);
   }
-  if (tokenId && rulesMFlag !== server.rulesMFlag) {
+  if (whistleId !== exports.whistleId) {
+    if (byServer) {
+      if (manualLogout) {
+        if (server) {
+          server.whistleId = undefined;
+        }
+        manualLogout = false;
+        return;
+      }
+    } else {
+      manualLogout = true;
+    }
+    exports.whistleId = whistleId;
+    events.trigger('whistleIdChanged', whistleId);
+  }
+}
+
+exports.triggerWhistleIdChanged = triggerWhistleIdChanged;
+
+function updateWhistleId(server) {
+  var whistleId = server && server.whistleId;
+  triggerWhistleIdChanged(server, true);
+  if (whistleId && rulesMFlag !== server.rulesMFlag) {
     rulesMFlag = server.rulesMFlag;
     events.trigger('rulesMFlagChanged', rulesMFlag);
   }
@@ -2102,7 +2189,7 @@ exports.getRulesMFlag = function() {
 };
 
 exports.saveToService = function(options, callback) {
-  if (!exports.tokenId) {
+  if (!exports.whistleId) {
     return;
   }
   exports.save(toString(options), callback);
