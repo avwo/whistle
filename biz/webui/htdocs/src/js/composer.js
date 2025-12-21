@@ -62,15 +62,14 @@ var METHODS = [
 ];
 var SEND_CTX_MENU = [
   { name: 'Send Body Via File', action: 'file' },
-  { name: 'Repeat Times' },
+  { name: 'Replay Times' },
   { name: 'Show History', action: 'history' },
   {
     name: 'Service',
     list: [
-      { name: 'Share Via URL', action: 'shareViaUrl' },
       { name: 'Create API Test', action: 'createApiTest' },
       { name: 'Copy As Script', action: 'copyAsScript' },
-      { name: 'Load Test', action: 'loadTest' }
+      { name: 'Share Via URL', action: 'Export' }
     ]
   }
 ];
@@ -99,6 +98,10 @@ var RULES_HEADER = 'x-whistle-rule-value';
 Object.keys(TYPES).forEach(function (name) {
   REV_TYPES[TYPES[name]] = name;
 });
+
+var getTabClass = function (active) {
+  return active ? 'w-tab-btn w-active' : 'w-tab-btn';
+};
 
 function getString(str, len) {
   if (typeof str !== 'string') {
@@ -182,6 +185,14 @@ function replaceCRLF(body) {
   return body && body.replace(/\r\n|\r|\n/g, '\r\n');
 }
 
+function getComposerTime(composerTime) {
+  if (!composerTime || !composerTime.endTime) {
+    return;
+  }
+  var time = composerTime.endTime - composerTime.startTime;
+  return time >= 1000 ? (time / 1000) + 's' : time + 'ms';
+}
+
 var Composer = React.createClass({
   getInitialState: function () {
     var rules = storage.get('composerRules');
@@ -237,6 +248,9 @@ var Composer = React.createClass({
     self.update(self.props.modal);
     this.refs.uploadBody.update(this.uploadBodyData);
     this.hintElem = $(ReactDOM.findDOMNode(this.refs.hints));
+    dataCenter.onComposerTimeChange = function(time) {
+      self.setState({ composerTime: time });
+    };
     events.on('_setComposerData', function(_, data) {
       if (data) {
         events.trigger('showComposerTab');
@@ -319,7 +333,9 @@ var Composer = React.createClass({
         target.closest('.w-keep-history-data').length ||
         target.closest('.w-replay-count-dialog').length ||
         target.closest('.w-composer-history-btn').length ||
-        target.closest('.w-copy-text-with-tips').length)) {
+        target.closest('.w-copy-text-with-tips').length ||
+        target.closest('.w-ie-dialog').length ||
+        target.closest('.w-service-dialog').length)) {
         self.hideHistory();
       }
     });
@@ -660,7 +676,7 @@ var Composer = React.createClass({
   },
   onReplay: function (times) {
     if (this._selectedItem) {
-      this.sendRequest($.extend({}, this._selectedItem, { repeatCount: times || 1 }));
+      this.sendRequest($.extend({}, this._selectedItem, { repeatCount: times || 1, needResponse: false }));
     }
   },
   handleUrlKeyUp: function(e) {
@@ -1027,6 +1043,7 @@ var Composer = React.createClass({
     var headers = res && res.headers;
     var id = headers && headers['x-whistle-req-id'];
     var isFrames = headers && headers['x-whistle-frames-mode'] === '1';
+    dataCenter.curComposerReqId = id;
     if (!id || !isFrames) {
       dataCenter.setComposerItem();
       this.setState({ reqData: null });
@@ -1048,7 +1065,7 @@ var Composer = React.createClass({
       clearTimeout(self.comTimer);
       self.comTimer = setTimeout(function () {
         self.setState({ pending: false });
-      }, 3000);
+      }, 5000);
     }
     events.trigger('enableRecord');
     self.handleFrames();
@@ -1097,9 +1114,9 @@ var Composer = React.createClass({
     });
     params.date = Date.now();
     params.body = params.body || '';
-    this.addHistory(params);
+    params.needResponse && this.addHistory(params);
     events.trigger('autoRefreshNetwork');
-    self.setState({ result: '', pending: params.needResponse });
+    self.setState({ result: '', pending: params.needResponse, composerTime: null });
   },
   selectAll: function (e) {
     e.target.select();
@@ -1283,7 +1300,7 @@ var Composer = React.createClass({
   },
   onContextMenu: function(e) {
     e.preventDefault();
-    var hideLoadTest = !dataCenter.tokenId;
+    var hideLoadTest = !dataCenter.whistleId;
     var data = util.getMenuPosition(e, 150);
     SEND_CTX_MENU[2].name = this.state.showHistory ? 'Hide History' : 'Show History';
     SEND_CTX_MENU[3].hide = hideLoadTest;
@@ -1360,12 +1377,18 @@ var Composer = React.createClass({
   },
   onClickContextMenu: function (action) {
     switch (action) {
-    case 'Repeat Times':
+    case 'Replay Times':
       return this.showRepeatTimes();
     case 'history':
       return this.toggleHistory();
     case 'file':
-      this.uploadFile();
+      return this.uploadFile();
+    case 'Export':
+      return this.export();
+    case 'createApiTest':
+      return util.showService('createApiTest');
+    case 'copyAsScript':
+      return util.showService('copyAsScript');
     }
   },
   uploadFile: function() {
@@ -1431,6 +1454,11 @@ var Composer = React.createClass({
     this.setState({ disableBody: false });
     storage.set('disableComposerBody', '');
   },
+  shakeMethod: function() {
+    if (!this.state.hasBody) {
+      util.shakeElem($(ReactDOM.findDOMNode(this.refs.method)));
+    }
+  },
   render: function () {
     var self = this;
     var state = self.state;
@@ -1463,6 +1491,12 @@ var Composer = React.createClass({
     var enableProxyRules = state.enableProxyRules;
     var reqData = state.reqData;
     var tips = hasBody ? null : method + ' method is not allowed to have a request body';
+    var composerTime = state.composerTime;
+    var resProps = {
+      'Status Code': statusCode == null ? 'aborted' : statusCode,
+      'Take Time': getComposerTime(composerTime)
+    };
+
     self.hasBody = hasBody;
 
     return (
@@ -1475,7 +1509,7 @@ var Composer = React.createClass({
       >
         <div className="fill orient-vertical-box">
           <div className="w-composer-url box">
-            <span className={'glyphicon glyphicon-time w-status-' +
+            <span className={'glyphicon glyphicon-dashboard w-status-' +
               (showHistory ? 'show' : 'hide') + ' w-composer-history-btn'}
               title={(showHistory ? 'Hide' : 'Show') + ' history list'}
               onClick={this.toggleHistory}
@@ -1580,7 +1614,6 @@ var Composer = React.createClass({
                   />
                   Rules
                 </label>
-                +
                 <label className="w-composer-proxy-rules" title="Whether to use the Rules in Whistle?">
                   <input
                     disabled={pending}
@@ -1590,23 +1623,6 @@ var Composer = React.createClass({
                   />
                   Whistle Rules
                 </label>
-                <label className="w-composer-pretty">
-                  <input
-                    onChange={this.onShowPretty}
-                    type="checkbox"
-                    checked={showPretty}
-                  />
-                  Pretty
-                </label>
-                <label className="w-composer-enable-body">
-                  <input
-                    disabled={pending || !hasBody}
-                    checked={!disableBody && hasBody}
-                    type="checkbox"
-                    onChange={this.onBodyStateChange}
-                  />
-                  Body
-                </label>
                 <label className="w-composer-use-h2">
                   <input
                     disabled={pending}
@@ -1615,6 +1631,15 @@ var Composer = React.createClass({
                     checked={dataCenter.supportH2 && useH2}
                   />
                   HTTP/2
+                </label>
+                <label className={'w-composer-enable-body' + (hasBody ? '' : ' w-disabled')} title={tips} onClick={self.shakeMethod}>
+                  <input
+                    disabled={pending || !hasBody}
+                    checked={!disableBody && hasBody}
+                    type="checkbox"
+                    onChange={this.onBodyStateChange}
+                  />
+                  Body
                 </label>
                 <div className="w-composer-btns">
                   <a draggable="false" onClick={self.import}>Import</a>
@@ -1635,7 +1660,7 @@ var Composer = React.createClass({
                 }}
                 maxLength="8192"
                 className="fill orient-vertical-box w-composer-rules"
-                placeholder="Enter custom rules (Higher priority than Whistle Rules)"
+                placeholder="Enter rules (Higher priority than Whistle Rules)"
               />
             </div>
             <div className="orient-vertical-box fill">
@@ -1643,7 +1668,7 @@ var Composer = React.createClass({
                 <button
                   onClick={this.onTabChange}
                   name="Request"
-                  className={showRequest ? 'w-tab-btn w-active' : 'w-tab-btn'}
+                  className={getTabClass(showRequest)}
                 >
                   <span className="glyphicon glyphicon-edit" />
                   Request
@@ -1653,7 +1678,7 @@ var Composer = React.createClass({
                   onClick={this.onTabChange}
                   name="Response"
                   style={{fontWeight: 'normal'}}
-                  className={showResponse ? 'w-tab-btn w-active' : 'w-tab-btn'}
+                  className={getTabClass(showResponse)}
                 >
                   <span className="glyphicon glyphicon-arrow-left" />
                   Response
@@ -1664,7 +1689,7 @@ var Composer = React.createClass({
                   onClick={this.onTabChange}
                   name="Frames"
                   style={{fontWeight: 'normal'}}
-                  className={showFrames ? 'w-tab-btn w-active' : 'w-tab-btn'}
+                  className={getTabClass(showFrames)}
                 >
                   <span className="glyphicon glyphicon-menu-hamburger" />
                   Frames
@@ -1775,7 +1800,7 @@ var Composer = React.createClass({
                 </div>
                 <div className={'fill orient-vertical-box w-composer-body' + (disableBody ? ' w-composer-disable-body' : '')}>
                   <div className="w-composer-bar">
-                    <label className="w-composer-label">
+                    <label className="w-composer-label" onClick={self.shakeMethod}>
                       <input
                         disabled={pending || !hasBody}
                         checked={!disableBody && hasBody}
@@ -1817,18 +1842,7 @@ var Composer = React.createClass({
                       \r\n
                     </label>
                     <button
-                      className={
-                        'btn btn-default' +
-                        (showPrettyBody || isHexText || showUpload
-                          ? ' hide'
-                          : '')
-                      }
-                      onClick={this.inspectJSON}
-                    >
-                      Inspect
-                    </button>
-                    <button
-                      disabled={lockBody}
+                      disabled={pending}
                       className={
                         'btn btn-default' +
                         (showPrettyBody || isHexText || showUpload
@@ -1838,6 +1852,17 @@ var Composer = React.createClass({
                       onClick={this.formatJSON}
                     >
                       Format
+                    </button>
+                    <button
+                      className={
+                        'btn btn-default' +
+                        (showPrettyBody || isHexText || showUpload
+                          ? ' hide'
+                          : '')
+                      }
+                      onClick={this.inspectJSON}
+                    >
+                      Inspect
                     </button>
                     <button
                       disabled={lockBody}
@@ -1854,13 +1879,14 @@ var Composer = React.createClass({
                       +Param
                     </button>
                   </div>
-                  {tips && <div className="w-record-status">{tips}</div>}
+                  {tips && <div className="w-record-status" onClick={self.shakeMethod}>{tips}</div>}
                   <textarea
                     readOnly={lockBody}
                     defaultValue={state.body}
                     onChange={this.onComposerChange}
                     maxLength={MAX_BODY_SIZE}
                     onDoubleClick={this.focusEnableBody}
+                    onClick={self.shakeMethod}
                     style={{
                       background:
                         hasBody && !disableBody ? 'lightyellow' : undefined,
@@ -1910,10 +1936,7 @@ var Composer = React.createClass({
                     <span className="glyphicon glyphicon-menu-left"></span>
                   </button>
                   <Properties
-                    modal={{
-                      'Status Code':
-                        statusCode == null ? 'aborted' : statusCode
-                    }}
+                    modal={resProps}
                   />
                 </div>
               </LazyInit>

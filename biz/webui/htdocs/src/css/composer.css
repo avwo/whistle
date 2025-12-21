@@ -55,9 +55,11 @@
   height: 24px;
   width: 24px;
   text-align: center;
-  margin-left: 3px;
+  margin: 0 1px 0 2px!important;
   line-height: 24px;
   cursor: pointer;
+  font-size: 15px;
+  color: #555;
 }
 .w-status-show {
   background: #f0f0f0;
@@ -122,13 +124,13 @@
 }
 
 .w-composer-rules-label {
-  padding-right: 6px;
+  padding-right: 12px;
+  border-right: 1px solid #ccc;
 }
 
 .w-composer-proxy-rules {
-  padding-left: 6px;
-  padding-right: 10px;
-  border-right: 1px solid #ddd;
+  padding-left: 15px;
+  font-weight: 400;
 }
 
 .w-composer-params-editor .w-filter-bar {
@@ -153,10 +155,14 @@
   line-height: 16px;
   padding: 0 10px !important;
 }
+.w-composer-tabs button:hover {
+  background: #e6e6e6;
+}
 .w-composer-tabs .w-tab-btn {
   outline: none;
   border: none;
   background: transparent;
+  height: 100%;
 }
 .w-composer-tabs .w-tab-btn:hover {
   color: #337ab7;
@@ -167,9 +173,6 @@
 .w-composer-tabs .w-tab-btn:disabled {
   color: #aaa !important;
   cursor: not-allowed;
-}
-.w-detail-composer .w-properties pre {
-  max-height: 90px;
 }
 
 .w-composer-res {
@@ -248,13 +251,13 @@
 }
 textarea.w-composer-rules {
   margin-bottom: 2px;
-  background-color: #f9f9f9;
+  background-color: #fcfcfc;
 }
 .w-composer-bar label:first-child {
   font-weight: bold;
 }
 .w-composer-bar label:hover {
-  color: #337ab7;
+  color: #000;
 }
 .w-composer-bar .w-composer-label {
   font-weight: bold;
@@ -270,7 +273,7 @@ textarea.w-composer-rules {
   left: 60px;
 }
 .w-composer-body > .w-composer-bar > .w-composer-label {
-  padding: 0 15px 0 10px !important;
+  padding: 0 10px !important;
   position: absolute;
   left: 0;
   top: 1px;
@@ -278,13 +281,17 @@ textarea.w-composer-rules {
   border: none;
   padding: 0;
   margin: 0;
-  border-right: 1px solid #ddd;
+  border-right: 1px solid #ccc;
 }
 .w-composer-rules .w-detail-inspectors-title {
   padding-left: 10px !important;
 }
 .w-composer-rules .w-detail-inspectors-title label {
   margin: 0;
+}
+
+.w-composer-rules .w-detail-inspectors-title label:hover {
+  color: #000;
 }
 
 .w-custom-type {
@@ -318,18 +325,6 @@ textarea.w-composer-rules {
   position: relative;
   overflow: hidden;
   font-size: 12px;
-}
-
-.w-history-bar {
-  line-height: 30px;
-  padding-left: 10px;
-  border-bottom: 1px solid #ccc;
-  background-color: #f1f3f4;
-  padding: 0 !important;
-}
-
-.w-history-bar > a:first-child {
-  margin-right: 15px;
 }
 
 .w-history-list p {
@@ -513,7 +508,7 @@ textarea.w-composer-rules {
 
 .w-history-title {
   background: #eee;
-  padding: 8px 5px;
+  padding: 3px 5px;
   overflow: hidden;
   position: sticky;
   top: 0;
@@ -531,16 +526,16 @@ textarea.w-composer-rules {
   padding: 6px 5px 8px 10px;
   overflow: hidden;
   cursor: default;
-  background-color: #fcfcfc;
+  background-color: #fafafa;
 }
 
 .w-history-item div {
   overflow : hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 5;
   -webkit-box-orient: vertical;
-  max-height: 50px;
+  max-height: 86px;
   word-wrap: break-word;
   word-break: break-all;
 }
@@ -567,41 +562,49 @@ textarea.w-composer-rules {
 .w-history-item i.w-req-method-tag-GET {
   background: #5cb85c;
   color: #fff;
+  border-color: #5cb85c;
 }
 
 .w-history-item i.w-req-method-tag-POST {
   background: #4f91cf;
   color: #fff;
+  border-color: #4f91cf;
 }
 
 .w-history-item i.w-req-method-tag-DELETE {
   background: #ce5442;
   color: #fff;
+  border-color: #ce5442;
 }
 
 .w-history-item i.w-req-method-tag-HEAD {
   background: #55b499;
   color: #fff;
+  border-color: #55b499;
 }
 
 .w-history-item i.w-req-method-tag-OPTIONS {
   background: #f0ad4e;
   color: #fff;
+  border-color: #f0ad4e;
 }
 
 .w-history-item i.w-req-method-tag-TRACE {
   background: #5bc0de;
   color: #fff;
+  border-color: #5bc0de;
 }
 
 .w-history-item i.w-req-method-tag-PATCH {
   background: #8f58af;
   color: #fff;
+  border-color: #8f58af;
 }
 
 .w-history-item i.w-req-method-tag-PUT {
   background: #e49b3b;
   color: #fff;
+  border-color: #e49b3b;
 }
 
 .w-history-item i:last-child {
@@ -610,9 +613,11 @@ textarea.w-composer-rules {
 
 .w-history-item:hover {
   background: rgba(0,0,0,.03);
+  color: #000;
 }
 .w-history-item.w-selected {
   background: rgba(0,0,0,.1);
+  color: #000;
 }
 
 .w-req-protocol-tag {
@@ -634,6 +639,14 @@ textarea.w-composer-rules {
   right: 0;
   bottom: 0;
   z-index: 9;
+  opacity: 0;
+  transition: ease 0.6s;
+  visibility: hidden;
+}
+
+.w-composer-history-data.w-show {
+  opacity: 1;
+  visibility: visible;
 }
 
 .w-composer-history-data .w-close {
@@ -646,7 +659,7 @@ textarea.w-composer-rules {
 }
 
 .w-composer-history-list {
-  border-right: 1px solid #ddd;
+  border-right: 1px solid #ccc;
   overflow-x: hidden;
   overflow-y: auto;
   height: 100%;
@@ -662,6 +675,30 @@ textarea.w-composer-rules {
   overflow: auto;
   white-space: pre;
   background-color: #f5f5f5;
+  position: relative;
+}
+
+.w-composer-history-ctn pre .w-load-tips {
+  position: absolute;
+  z-index: 1;
+  background: rgba(0, 0, 0, .3);
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  color: #fff;
+  font-size: 14px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.w-composer-history-ctn pre.w-show-loading {
+  overflow: hidden;
+}
+
+.w-composer-history-ctn pre.w-show-loading .w-load-tips {
+  display: flex;
 }
 
 .w-composer-history-footer {
