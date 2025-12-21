@@ -1,3 +1,11 @@
+## v2.9.106
+1. feat: 优化 Composer
+2. feat: Network 底部搜索框支持类似 Chrome 开发者工具一样通过类型快速过滤
+3. feat: 同一目录出现同名插件（不包含 `@scope/` 部分）以最新的 mtime 为准
+4. feat: 优化界面体验
+5. feat: 支持通过 Online / Shortcuts Settings 查看及开关快捷键
+6. fix: 修复了一些隐藏 bug
+
 ## v2.9.105
 1. fix: https://github.com/avwo/whistle/issues/1271
 
