@@ -47,6 +47,18 @@ www.example.com/path2 reqMerge://https://www.xxx.com/xxx/params.json
 www.example.com/path3 reqMerge://temp/blank.json
 ````
 
+## Note: Request Size Limit
+
+To ensure processing performance, `reqMerge` enforces a default size limit for request content.
+
+*   **Limit Specification**: The automatic merge processing is only applied to requests with a body size **less than 2MB**. Requests exceeding this size will be skipped.
+*   **How to Override**: If you need to handle larger requests, you can explicitly enable this capability by adding the following directive to your matching rule:
+
+``` txt
+pattern enable://reqMergeBigData
+```
+Once enabled, `reqMerge` will attempt to process larger request volumes. Please note that this may increase memory consumption and processing time.
+
 ## Associated Protocols
 1. Replace with a keyword or regular expression: [reqReplace](./reqReplace)
 2. Modify the response content object: [resMerge](./resMerge)

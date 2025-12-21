@@ -1,42 +1,58 @@
 # Shortcut Keys
 
 ## Network
-1. `Ctrl[Command] + I`: Import captured data
-2. `Ctrl[Command] + E` or `Ctrl[Command] + S`: Export captured data
-3. `Ctrl[Command] + O`: Turn captured data on or off
-4. `Ctrl[Command] + Enter`: Re-request the selected captured data
-5. `Ctrl[Command] + Shift + Enter`: Set the number of replays
-6. `Ctrl[Command] + X`: Clear captured data
-7. `Ctrl[Command] + D`: Clear the currently focused input box
-8. `Ctrl[Command] + Left Arrow`: Set the selected captured data to Composer
-9. `Ctrl[Command] + .`: Open Settings
-10. `Ctrl[Command] + B`: Switch between tree and list view of captured data
-11. `Ctrl[Command] + L`: Toggle Network Panel layout: Left-right or top-bottom
-12. `/`: Focuses the search box at the bottom
+1. `Ctrl[Command] + I`: Import network sessions
+2. `Ctrl[Command] + E`: Export network sessions
+3. `Ctrl[Command] + S`: Save network sessions
+4. `Ctrl[Command] + O`: Turn captured requests ON or OFF
+5. `Ctrl[Command] + L`: Toggle Network Panel layout: Left-right or top-bottom
+6. `Ctrl[Command] + .`: Open network settings
+7. `Ctrl[Command] + D`: Remove selected network sessions
+8. `Ctrl[Command] + B`: Switch between tree and list view of network sessions
+9. `Ctrl[Command] + Enter`: Replay selected requests
+10. `Ctrl[Command] + Shift + Enter`: Set the number of times to replay the selected requests
+11. `Ctrl[Command] + A`: Abort requests
+12. `Ctrl[Command] + X`: Clear network sessions
+13. `/ `: Focus the network search box at the bottom
+
+
+## Frames
+1. `Ctrl[Command] + Enter`: Replay selected frame
+2. `Ctrl[Command] + X`: Import rules
+
 
 ## Rules
-1. `Ctrl[Command] + I`: Imports Rules
-2. `Ctrl[Command] + E`: Exports Rules
-3. `Ctrl[Command] + O`: Closes or opens Rules
-4. `Ctrl[Command] + S`: Saves Rules
-5. `Ctrl[Command] + L`: Toggles the number of rows being edited
-6. `Ctrl[Command] + .`: Opens Settings
-7. `/`: Focuses the search box at the bottom
+1. `Ctrl[Command] + I`: Import rules
+2. `Ctrl[Command] + E`: Export rules
+3. `Ctrl[Command] + S`: Save rules changes
+4. `Ctrl[Command] + O`: Turn rules ON or OFF
+5. `Ctrl[Command] + L`: Toggle line numbers
+6. `Ctrl[Command] + .`: Open rules settings
+7. `Ctrl[Command] + D`: Remove selected rules
+8. `/ `: Focus the rules search box at the bottom
+
 
 ## Values
-1. `Ctrl[Command] + I`: Imports Values
-2. `Ctrl[Command] + O`: Closes or opens Values
-3. `Ctrl[Command] + S`: Saves Values
-4. `Ctrl[Command] + L`: Toggles the number of rows being edited
-5. `Ctrl[Command] + .`: Opens Settings
-6. `/`: Focuses the search box at the bottom
+1. `Ctrl[Command] + I`: Import values
+2. `Ctrl[Command] + E`: Export values
+3. `Ctrl[Command] + S`: Save values changes
+4. `Ctrl[Command] + L`: Toggle line numbers
+5. `Ctrl[Command] + .`: Open: values settings
+6. `Ctrl[Command] + D`: Remove selected values
+7. `/ `: Focus the values search box at the bottom
+
 
 ## Plugins
-1. `Ctrl[Command] + I`: Opens the plugin installation dialog box
-2. `Ctrl[Command] + O`: Closes or opens all plugins
+1. `Ctrl[Command] + I`: Open the plugin installation dialog box
+2. `Ctrl[Command] + O`: Turn all plugins ON or OFF
+
+## Global
+1. `Ctrl[Command] + <--`: Toggle Network, Rules, Values, and Plugins in reverse order
+2. `Ctrl[Command] + -->`: Toggle Network, Rules, Values, and Plugins
+<!-- 3. `Ctrl[Command] + J`: Open service dialog（Need login） -->
 
 ## Client
-1. `Ctrl[Command] + R`: Opens or closes the system proxy
+1. `Ctrl[Command] + R`: Open or closes the system proxy
 2. `Ctrl[Command] + Shift + R`: Restarts the client
 3. `Ctrl[Command] + Q`: Exits the client
-4. `Ctrl[Command] + ,`: Opens Proxy Settings
+4. `Ctrl[Command] + ,`: Open Proxy Settings

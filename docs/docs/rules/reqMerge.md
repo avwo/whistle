@@ -47,6 +47,16 @@ www.example.com/path2 reqMerge://https://www.xxx.com/xxx/params.json
 www.example.com/path3 reqMerge://temp/blank.json
 ````
 
+## 注意事项：请求内容大小限制
+为了保障处理性能，`reqMerge` 默认对请求内容大小有限制。
+- **限制说明**：自动合并处理仅适用于请求体小于 2MB 的请求。超过此大小的响应将被跳过。
+- **如何覆盖**：如果您确认需要处理更大的请求内容，可以通过在匹配的规则中添加以下指令来显式启用：
+
+``` txt
+pattern enable://reqMergeBigData
+```
+启用后，reqMerge 将尝试处理更大体积的请求，请注意这可能增加内存消耗和处理时间。
+
 ## 关联协议
 1. 通过关键字或正则替换：[reqReplace](./reqReplace)
 2. 修改响应内容对象：[resMerge](./resMerge)

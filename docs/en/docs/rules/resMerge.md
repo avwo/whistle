@@ -46,6 +46,18 @@ www.example.com/path2 resMerge://https://www.xxx.com/xxx/params.json
 www.example.com/path3 resMerge://temp/blank.json
 ````
 
+## Note: Response Size Limit
+
+To ensure processing performance, `resMerge` enforces a default size limit for response content.
+
+*   **Limit Specification**: The automatic merge processing is only applied to responses with a body size **less than 2MB**. Responses exceeding this size will be skipped.
+*   **How to Override**: If you need to handle larger responses (e.g., for downloading files or processing large data interfaces), you can explicitly enable this capability by adding the following directive to your matching rule:
+
+``` txt
+pattern enable://resMergeBigData
+```
+Once enabled, `resMerge` will attempt to process larger response volumes. Please note that this may increase memory consumption and processing time.
+
 ## Association Protocol
 1. Replace with a keyword or regular expression: [resReplace](./reqReplace)
 2. Modify the request content object: [reqMerge](./resMerge)
