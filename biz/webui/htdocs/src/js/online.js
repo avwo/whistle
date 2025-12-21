@@ -1,7 +1,6 @@
 require('./base-css.js');
 require('../css/online.css');
-var $ = (window.jQuery = require('jquery')); //for bootstrap
-require('bootstrap/dist/js/bootstrap.js');
+var $ = require('jquery'); //for bootstrap
 var React = require('react');
 var ReactDOM = require('react-dom');
 
@@ -10,53 +9,74 @@ var dataCenter = require('./data-center');
 var util = require('./util');
 var DNSDialog = require('./dns-servers-dialog');
 var storage = require('./storage');
-var TokenDialog = require('./token-dialog');
+var LoginDialog = require('./login-dialog');
+var win = require('./win');
+var events = require('./events');
+var message = require('./message');
+var ShortcutsSettings = require('./shortcuts-settings');
 
+var IPV6_ONLY_VAL = 4;
 var dialog;
-var disabledDarkMode = storage.get('disabledDarkMode') !== '';
+var curOrder;
+var curVerbatim = -1;
 
-function setDiableDarkMode(flag) {
-  disabledDarkMode = flag;
+var appearanceMode = storage.get('appearanceMode');
+if (storage.get('disabledDarkMode') == '1') {
+  appearanceMode = 'light';
+} else if (['auto', 'dark', 'light'].indexOf(appearanceMode) === -1) {
+  appearanceMode = 'auto';
+}
+
+function setAppearanceMode(mode) {
+  appearanceMode = mode;
+  var className = mode === 'light' ? '' : 'w-allow-dark-mode';
+  if (mode === 'dark') {
+    className += ' w-force-dark-mode';
+  }
   try {
-    document.documentElement.className = flag ? '' : 'w-allow-dark-mode';
+    document.documentElement.className = className;
   } catch (e) {}
 }
-setDiableDarkMode(disabledDarkMode);
-
-var curOrder;
-var dnsTimer;
+setAppearanceMode(appearanceMode);
 
 function selectDnsOption(order) {
-  if (dnsTimer) {
-    clearTimeout(dnsTimer);
-    dnsTimer = null;
+  order = +order;
+  if (curVerbatim === 2) {
+    if (order < 1 || order > IPV6_ONLY_VAL) {
+      order = 1;
+    }
+  } else if (curVerbatim === 1) {
+    if (order !== 2 && order !== IPV6_ONLY_VAL) {
+      order = 1;
+    }
+  } else if (order !== IPV6_ONLY_VAL) {
+    order = 0;
   }
-  if (!dialog) {
+  if (!dialog || curOrder === order) {
     return;
   }
-  var list = dialog.find('.w-dns-options').find('input');
-  order = order || curOrder;
-  if (list.filter(':checked').val() != order) {
-    list.prop('checked', false)
-      .eq(order - 1).prop('checked', true);
-  }
+  curOrder = order;
+  dialog.find('.w-dns-order-option select').val(curOrder);
 }
 
 function getDnsOrder(verbatim) {
-  if (!verbatim) {
-    return '';
+  var result = [];
+  if (verbatim) {
+    result.push(
+      '<option value="1">Verbatim</option>',
+      '<option value="2">IPv4-first</option>'
+    );
+    if (verbatim === 2) {
+      result.push('<option value="3">IPv6-first</option>');
+    }
+  } else {
+    result.push('<option value="0">Default</option>');
   }
-  var result = [
-    '<label class="w-online-option w-dns-verbatim"><input type="radio" value="1" name="dnsOrder" /> <span>Verbatim network</span></label>',
-    '<label class="w-online-option w-dns-ipv4first"><input type="radio" value="2" name="dnsOrder" /> <span>IPv4-first network</span></label>'
-  ];
-  if (verbatim === 2) {
-    result.push('<label class="w-online-option w-dns-ipv6first"><input type="radio" value="3" name="dnsOrder" /> <span>IPv6-first network</span></label>');
-  }
+  result.push('<option value="' + IPV6_ONLY_VAL + '">IPv6-only</option>');
   return result.join('');
 }
 
-function createDialog(tokenId) {
+function createDialog() {
   if (!dialog) {
     var proxyInfoList = [
       '<h5><strong>Uptime:</strong> <span id="whistleUptime">-</span></h5>',
@@ -69,46 +89,45 @@ function createDialog(tokenId) {
     ];
     dialog = $(
       '<div class="modal fade w-online-dialog">' +
-        '<div class="modal-dialog">' +
-        '<div class="modal-content">' +
-        '<div class="modal-body">' +
-        '<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
-        '<div class="w-online-dialog-ctn"></div>' +
-        '<div class="w-online-dialog-info">' +
-        proxyInfoList.join('') +
-        '</div>' +
-        '<label class="w-online-option w-dark-mode-option"><input type="checkbox" /> <span>Disable dark mode</span></label>' +
-        '<label class="w-online-option w-ipv6-option"><input type="checkbox" /> <span>IPv6-only network</span></label>' +
-        '<div class="w-dns-options"></div>' +
-        '<a class="w-online-view-dns">View custom DNS servers</a>' +
-        '</div>' +
-        '<div class="modal-footer">' +
-        '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>' +
-        // '<button type="button" class="btn btn-primary w-token-btn" data-action="' +
-        // (tokenId ? 'reset' : 'set') + '"><span class="glyphicon glyphicon-certificate"></span>\nAccess Token</button>' +
-        '</div>' +
-        '</div>' +
-        '</div>' +
-        '</div>'
+      '<div class="modal-dialog">' +
+      '<div class="modal-content">' +
+      '<div class="modal-body">' +
+      '<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
+      '<div class="w-online-dialog-ctn"></div>' +
+      '<div class="w-online-dialog-info">' +  proxyInfoList.join('') + '</div>' +
+      '<h5 class="w-appearance-option"><strong>Appearance:</strong><select class="form-control"><option value="auto">Auto</option>' +
+      '<option value="dark">Dark</option><option value="light">Light</option></select></h5>'+
+      '<h5 class="w-dns-order-option"><strong>DNS Order:</strong><select class="form-control"></select></h5>' +
+      '<p><a class="w-online-view-dns">View Custom DNS Servers</a></p>' +
+      '<a class="w-online-shortcuts-settings">Shortcuts Settings</a>' +
+      '</div>' +
+      '<div class="modal-footer">' +
+      '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>' +
+      // '<button type="button" class="btn btn-primary w-login-btn" data-action="login">' +
+      // '<span class="glyphicon glyphicon-log-in"></span><span class="w-login-label">Login</span></button>' +
+      '</div></div></div></div>'
     ).appendTo(document.body);
-    var box = dialog.find('.w-dark-mode-option input');
-    box.on('change', function(e) {
-      var checked = e.target.checked;
-      setDiableDarkMode(checked);
-      storage.set('disabledDarkMode', checked ? 1 : '');
+    var appearanceSelect = dialog.find('.w-appearance-option select');
+    appearanceSelect.on('change', function(e) {
+      var val = e.target.value;
+      storage.remove('disabledDarkMode');
+      storage.set('appearanceMode', val);
+      setAppearanceMode(val);
     });
-    box.prop('checked', disabledDarkMode);
-    dialog.find('.w-dns-options').on('change', function(e) {
+    appearanceSelect.val(appearanceMode);
+    dialog.find('.w-dns-order-option select').on('change', function(e) {
       var target = e.target;
-      if (target.nodeName !== 'INPUT') {
-        return;
-      }
-      dataCenter.setDnsOrder({ order: +target.value }, function (data, xhr) {
+      var order = +target.value;
+      self._pendingDnsOrder = true;
+      dataCenter.setDnsOrder({ order: order }, function (data, xhr) {
+        setTimeout(function() {
+          self._pendingDnsOrder = false;
+        }, 300);
         if (!data) {
           util.showSystemError(xhr);
           return;
         }
-        selectDnsOption(data.order);
+        selectDnsOption(order);
       });
     });
   }
@@ -148,10 +167,11 @@ var Online = React.createClass({
   componentDidMount: function() {
     var self = this;
     dataCenter.setServerInfo = function(info) {
-      curOrder = info.dnsOrder;
-      dnsTimer = dnsTimer || setTimeout(selectDnsOption, 300);
-      self.setIPv6Only(info.ipv6Only);
+      !self._pendingDnsOrder && selectDnsOption(info.ipv6Only ? IPV6_ONLY_VAL : info.dnsOrder);
     };
+    events.on('showLoginDialog', function(_, cb) {
+      self.refs.loginDialog.show(cb);
+    });
   },
   checkServerChanged: function (data) {
     data.mac = data.mac || '';
@@ -185,26 +205,6 @@ var Online = React.createClass({
       dialog.modal('show');
     }
   },
-  setIPv6Only: function(ipv6Only, imd) {
-    if ((!imd && this._pendingIPv6Only) || !dialog) {
-      return;
-    }
-    ipv6Only = !!ipv6Only;
-    this.ipv6Only = !!this.ipv6Only;
-    if (this.ipv6Only !== ipv6Only) {
-      this.ipv6Only = ipv6Only;
-      dialog.find('.w-ipv6-option input').prop('checked', ipv6Only);
-      this.setState({});
-      if (dialog) {
-        var opts = dialog.find('.w-dns-options');
-        if (ipv6Only) {
-          opts.hide();
-        } else {
-          opts.show();
-        }
-      }
-    }
-  },
   updateServerInfo: function (server) {
     if (!server) {
       return;
@@ -212,11 +212,15 @@ var Online = React.createClass({
     var self = this;
     self.state.server = server;
     var info = [];
+    var whistleId = util.escape(server.whistleId);
     var username = util.escape(server.username);
-    if (username) {
-      info.push('<h5><strong>Username:</strong> ' + username + '</h5>');
-    }
     var host = util.escape(server.host);
+    if (whistleId) {
+      info.push('<h5 class="w-whistle-id-option" title="' + whistleId + '"><strong>Whistle ID:</strong> ' + whistleId + '</h5>');
+    }
+    if (username) {
+      info.push('<h5 class="w-system-host"><strong>Username:</strong> ' + username + '</h5>');
+    }
     if (host) {
       info.push('<h5><strong>Host:</strong> ' + host + '</h5>');
     }
@@ -260,32 +264,54 @@ var Online = React.createClass({
     }
     createDialog();
     var ctn = dialog.find('.w-online-dialog-ctn').html(info.join(''));
-    if (server.dnsOrder) {
-      if (self.verbatim !== server.verbatim) {
-        self.verbatim = server.verbatim;
-        var dnsOptHtml = getDnsOrder(server.verbatim);
-        if (dnsOptHtml) {
-          dialog.find('.w-dns-options').html(dnsOptHtml);
-        }
-      }
-      selectDnsOption(server.dnsOrder);
-    } else {
-      dialog.find('.w-dns-options').html('');
+    var loginBtn = dialog.find('.w-login-btn');
+    var loginElem = loginBtn[0];
+    if (loginElem) {
+      loginElem.className = 'btn w-login-btn  btn-' + (whistleId ? 'danger' : 'primary');
+      loginBtn.attr('data-action', whistleId ? 'logout' : 'login');
+      loginBtn.find('.w-login-label').text(whistleId ? 'Logout' : 'Login');
+      loginBtn.find('.glyphicon')[0].className = 'glyphicon glyphicon-log-' + (whistleId ? 'out' : 'in');
     }
-    ctn.find('h5:first').attr('title', server.host);
-    dialog.find('.w-token-btn').on('click', function (e) {
+    if (curVerbatim !== server.verbatim) {
+      curVerbatim = server.verbatim;
+      dialog.find('.w-dns-order-option select').html(getDnsOrder(server.verbatim));
+    }
+    !self._pendingDnsOrder && selectDnsOption(server.dnsOrder);
+    ctn.find('h5.w-system-host').attr('title', server.host);
+    loginBtn.on('click', function (e) {
       var action = $(e.target).closest('button').attr('data-action');
-      self.refs.tokenDialog.show(action);
+      if (action === 'logout') {
+        return win.confirm('Are you sure you want to log out?', function (sure) {
+          if (!sure) {
+            return;
+          }
+          dataCenter.logout(function (data, xhr) {
+            if (!data) {
+              return util.showSystemError(xhr);
+            }
+            if (data.ec !== 0) {
+              return message.error(data.em || 'Logout failed');
+            }
+            message.success('Logged out successfully');
+            dataCenter.triggerWhistleIdChanged();
+          });
+        });
+      }
+      self.refs.loginDialog.show(action);
     });
     if (!self._initProxyInfo) {
       self._initProxyInfo = true;
       var curServerInfo;
       var isHide = true;
       var dnsElem = dialog.find('.w-online-view-dns');
+      var shortcutsElem = dialog.find('.w-online-shortcuts-settings');
       var hideDns = true;
 
       dnsElem.on('click', function () {
         self.refs.dnsDialog.show(dataCenter.getServerInfo());
+      });
+      shortcutsElem.on('click', function () {
+        self.refs.shortcutsSettings.show();
       });
       var toggleDns = function (svrInfo) {
         if (svrInfo && svrInfo.dns) {
@@ -475,24 +501,6 @@ var Online = React.createClass({
         }
         curServerInfo = info;
       }, 1000);
-      dialog.find('.w-ipv6-option input').on('change', function(e) {
-        if (self._pendingIPv6Only) {
-          return;
-        }
-        self._pendingIPv6Only = true;
-        var checked = e.target.checked;
-        e.target.checked = !checked;
-        dataCenter.setIPv6Only({ checked: checked ? 1 : '' }, function(data, xhr) {
-          setTimeout(function() {
-            self._pendingIPv6Only = false;
-          }, 300);
-          if (!data) {
-            util.showSystemError(xhr);
-            return;
-          }
-          self.setIPv6Only(data.ipv6Only, true);
-        });
-      });
     }
   },
   reload: function () {
@@ -503,6 +511,12 @@ var Online = React.createClass({
       return;
     }
     var info = [];
+    if (server.whistleId) {
+      info.push('Whistle ID: ' + server.whistleId);
+    }
+    if (server.username) {
+      info.push('Username: ' + server.username);
+    }
     if (server.host) {
       info.push('Host: ' + server.host);
     }
@@ -584,7 +598,7 @@ var Online = React.createClass({
         {server ? 'Online' : 'Offline'}
         {server.dns ? (
           <span>{server.doh ? '(DoH)' : server.r6 ? '(IPv6)' : '(IPv4)'}</span>
-        ) : (this.ipv6Only ? '(IPv6)' : null)}
+        ) : (server.ipv6Only ? '(IPv6)' : null)}
         <Dialog
           ref="confirmReload"
           wstyle="w-confirm-reload-dialog w-confirm-reload-global"
@@ -615,7 +629,8 @@ var Online = React.createClass({
           </div>
         </Dialog>
         <DNSDialog ref="dnsDialog" />
-        <TokenDialog ref="tokenDialog" />
+        <LoginDialog ref="loginDialog" />
+        <ShortcutsSettings ref="shortcutsSettings" />
       </a>
     );
   }
