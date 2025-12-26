@@ -36,6 +36,7 @@ pattern operation lineProps://action1 lineProps://action2 ... [filters...]
 - `proxyHostOnly`：功能同 `proxyHost`，但如果没有匹配 [host](./host) 则 [proxy](./proxy) 自动失效
 - `proxyTunnel`：跟 `proxyHost` 一同使用，让上游代理再次通过隧道代理到上上游的 HTTP 代理，详见下面的示例
 - `weakRule`：`weakRule`：默认情况下，当配置了 [file](./file) 等协议时，[proxy](./proxy) 规则会自动失效。通过设置 `weakRule` 属性，可以提升 [proxy](./proxy) 规则的优先级，使其在上述场景中仍然生效
+- `enableBigData`：支持 [reqMerge](./reqMerge) 或 [resMerge](./resMerge) 匹配大的请求/响应内容
 
 ## 配置示例
 #### 未使用 `lineProps://important`

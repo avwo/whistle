@@ -55,6 +55,9 @@ To ensure processing performance, `resMerge` enforces a default size limit for r
 
 ``` txt
 pattern enable://resMergeBigData
+
+# or
+www.example.com/path1 resMerge:///User/xxx/test.json lineProps://enableBigData
 ```
 Once enabled, `resMerge` will attempt to process larger response volumes. Please note that this may increase memory consumption and processing time.
 

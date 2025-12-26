@@ -54,6 +54,9 @@ www.example.com/path3 resMerge://temp/blank.json
 
 ``` txt
 pattern enable://resMergeBigData
+
+# 或
+www.example.com/path1 resMerge:///User/xxx/test.json lineProps://enableBigData
 ```
 启用后，reqMerge 将尝试处理更大体积的响应，请注意这可能增加内存消耗和处理时间。
 

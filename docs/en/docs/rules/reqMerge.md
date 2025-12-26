@@ -56,6 +56,9 @@ To ensure processing performance, `reqMerge` enforces a default size limit for r
 
 ``` txt
 pattern enable://reqMergeBigData
+
+# or
+www.example.com/path1 reqMerge:///User/xxx/test.json lineProps://enableBigData
 ```
 Once enabled, `reqMerge` will attempt to process larger request volumes. Please note that this may increase memory consumption and processing time.
 
