@@ -1,5 +1,4 @@
 var path = require('path');
-var fs = require('fs');
 var http = require('http');
 var url = require('url');
 var util = require('./util');
@@ -112,19 +111,17 @@ function checkDefault(running, storage, isClient, callback) {
 
 function readClientConfig() {
   var procPath = path.join(common.getHomedir(), '.whistle_client.pid');
-  try {
-    var info = fs.readFileSync(procPath, { encoding: 'utf-8' }).split(',');
-    if (info.length === 4) {
-      return {
-        pid: info[0],
-        options: {
-          host: info[1],
-          port: info[2],
-          specialAuth: info[3]
-        }
-      };
-    }
-  } catch (e) {}
+  var info = (common.readFileTextSync(procPath) || '').split(',');
+  if (info && info.length === 4) {
+    return {
+      pid: info[0],
+      options: {
+        host: info[1],
+        port: info[2],
+        specialAuth: info[3]
+      }
+    };
+  }
 }
 
 module.exports = function(filepath, storage, force, isClient) {
