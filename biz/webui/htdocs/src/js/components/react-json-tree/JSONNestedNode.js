@@ -32,10 +32,6 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = require('prop-types');
-
-var _propTypes2 = _interopRequireDefault(_propTypes);
-
 var _JSONArrow = require('./JSONArrow');
 
 var _JSONArrow2 = _interopRequireDefault(_JSONArrow);
@@ -282,31 +278,6 @@ var JSONNestedNode = (function (_React$Component) {
   return JSONNestedNode;
 })(_react2['default'].Component);
 
-JSONNestedNode.propTypes = {
-  getItemString: _propTypes2['default'].func.isRequired,
-  nodeTypeIndicator: _propTypes2['default'].any,
-  nodeType: _propTypes2['default'].string.isRequired,
-  data: _propTypes2['default'].any,
-  hideRoot: _propTypes2['default'].bool.isRequired,
-  createItemString: _propTypes2['default'].func.isRequired,
-  styling: _propTypes2['default'].func.isRequired,
-  collectionLimit: _propTypes2['default'].number,
-  keyPath: _propTypes2['default'].arrayOf(
-    _propTypes2['default'].oneOfType([
-      _propTypes2['default'].string,
-      _propTypes2['default'].number
-    ])
-  ).isRequired,
-  labelRenderer: _propTypes2['default'].func.isRequired,
-  shouldExpandNode: _propTypes2['default'].func,
-  level: _propTypes2['default'].number.isRequired,
-  sortObjectKeys: _propTypes2['default'].oneOfType([
-    _propTypes2['default'].func,
-    _propTypes2['default'].bool
-  ]),
-  isCircular: _propTypes2['default'].bool,
-  expandable: _propTypes2['default'].bool
-};
 JSONNestedNode.defaultProps = {
   data: [],
   circularCache: [],

@@ -1,4 +1,3 @@
-require('./base-css.js');
 require('../css/detail.css');
 var $ = require('jquery');
 var React = require('react');

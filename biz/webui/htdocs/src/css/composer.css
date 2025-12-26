@@ -148,9 +148,7 @@
   font-size: 13px;
   line-height: 14px;
 }
-.w-composer-add-header {
-  right: 66px!important;
-}
+
 .w-composer-tabs button {
   line-height: 16px;
   padding: 0 10px !important;
@@ -197,34 +195,20 @@
   position: relative;
 }
 
-.w-composer-bar .btn, .w-copy-as-curl {
+.w-composer-bar .btn {
   line-height: 13px;
   height: 15px;
   padding: 0 5px;
   font-weight: normal;
   font-size: 11px;
-  border-radius: 3px;
+  border-radius: 2px;
   outline: none;
-}
-
-.w-copy-as-curl {
-  margin-left: 15px;
-  margin-top: -3px;
-}
-
-.w-composer-bar .btn {
-  position: absolute;
-  top: 1px;
-  right: 5px;
+  margin-right: 5px;
+  margin-bottom: 1px;
   overflow: hidden;
 }
 .w-composer-body .w-record-status {
   font-size: 13px;
-}
-.w-composer-body .w-composer-bar .btn {
-  position: static;
-  margin-right: 5px;
-  margin-bottom: 1px;
 }
 .w-composer-body .w-composer-bar {
   text-align: right;
@@ -238,7 +222,9 @@
 .w-composer-bar label {
   margin-left: 10px;
   cursor: pointer;
-  vertical-align: middle;
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 0;
 }
 .w-composer-bar input,
 .w-composer-rules .w-detail-inspectors-title input {
@@ -261,7 +247,8 @@ textarea.w-composer-rules {
 }
 .w-composer-bar .w-composer-label {
   font-weight: bold;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   padding: 0 0 0 15px;
   border-left: 1px solid #ddd;
   cursor: default;
@@ -288,6 +275,8 @@ textarea.w-composer-rules {
 }
 .w-composer-rules .w-detail-inspectors-title label {
   margin: 0;
+  display: inline-flex;
+  align-items: center;
 }
 
 .w-composer-rules .w-detail-inspectors-title label:hover {
@@ -299,11 +288,13 @@ textarea.w-composer-rules {
   color: #333 !important;
 }
 
-.w-composer-headers textarea:read-only,
+.w-composer-headers .w-composer-bar {
+  display: flex;
+  align-items: center;
+}
+
 .w-composer-headers textarea[readonly],
-.w-composer-body textarea:read-only,
 .w-composer-body textarea[readonly],
-.w-detail-composer input:read-only,
 .w-detail-composer input[readonly],
 .w-composer-rules textarea:disabled,
 .w-composer-rules textarea[readonly],
@@ -670,7 +661,6 @@ textarea.w-composer-rules {
 
 .w-composer-history-ctn pre {
   display: block;
-  height: calc(100% - 47px);
   padding: 0 5px;
   overflow: auto;
   white-space: pre;

@@ -1,4 +1,3 @@
-require('./base-css.js');
 require('../css/context-menu.css');
 var $ = require('jquery');
 var React = require('react');

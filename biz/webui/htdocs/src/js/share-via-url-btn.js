@@ -1,10 +1,9 @@
-require('../css/service.css');
 var React = require('react');
 var dataCenter = require('./data-center');
 var message = require('./message');
 var util = require('./util');
 
-var ServiceBtn = React.createClass({
+var ShareBtn = React.createClass({
   save: function() {
     var props = this.props;
     var getData = props.getData;
@@ -57,4 +56,4 @@ var ServiceBtn = React.createClass({
   }
 });
 
-module.exports = ServiceBtn;
+module.exports = ShareBtn;

@@ -1,4 +1,3 @@
-require('./base-css.js');
 require('../css/menu-item.css');
 var React = require('react');
 var util = require('./util');
@@ -89,7 +88,7 @@ var MenuItem = React.createClass({
         {name ? (
           typeof name === 'string' ? (
             <a onClick={onClick} className="w-menu-open" draggable="false">
-              <span className="glyphicon glyphicon-folder-open"></span>
+              <span className={'glyphicon glyphicon-' + (self.props.icon || 'folder-open')}></span>
               {name}
             </a>
           ) : (

@@ -1,5 +1,5 @@
-.w-detail-timeline ul,
-.w-detail-timeline li {
+.w-timeline ul,
+.w-timeline li {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -8,13 +8,13 @@
   width: 100%;
   display: block;
 }
-.w-detail-timeline li {
+.w-timeline li {
   padding: 2px 0 2px;
   position: relative;
   white-space: nowrap;
   margin-bottom: 12px;
 }
-.w-detail-timeline span {
+.w-timeline span {
   display: inline-block;
   font-size: 12px;
   height: 20px;
@@ -23,47 +23,47 @@
   text-overflow: ellipsis;
   cursor: default;
 }
-.w-detail-timeline-url {
+.w-timeline-url {
   padding-right: 5px;
   width: 18%;
   max-width: 200px;
   text-align: right;
 }
-.w-detail-timeline-stalled {
+.w-timeline-stalled {
   background: #aaa;
 }
-.w-detail-timeline-ttfb {
+.w-timeline-ttfb {
   background: #ddd;
 }
-.w-detail-timeline-dns {
+.w-timeline-dns {
   background: #8cd2c6;
 }
-.w-detail-timeline-request {
+.w-timeline-request {
   background: #fdfdb2;
 }
-.w-detail-timeline-response {
+.w-timeline-response {
   background: #fbb361;
 }
-.w-detail-timeline-load {
+.w-timeline-load {
   background: #7eabe1;
 }
-.w-detail-timeline-multi:hover .w-detail-timeline-url {
+.w-timeline-multi:hover .w-timeline-url {
   color: #337ab7;
 }
-.w-detail-timeline-time {
+.w-timeline-time {
   position: absolute;
   top: 2px;
   right: 0;
   padding-right: 5px;
 }
-.w-detail-timeline-one .w-detail-timeline-url {
+.w-timeline-one .w-timeline-url {
   text-align: right;
   padding-right: 10px;
   font-weight: bold;
 }
-.w-detail-timeline-one .w-detail-timeline-time {
+.w-timeline-one .w-timeline-time {
   left: 18% !important;
 }
-.w-detail-timeline-full-url {
+.w-timeline-full-url {
   width: 82%;
 }

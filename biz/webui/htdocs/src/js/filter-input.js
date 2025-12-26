@@ -1,4 +1,3 @@
-require('./base-css.js');
 require('../css/filter-input.css');
 var util = require('./util');
 var React = require('react');
@@ -8,9 +7,8 @@ var storage = require('./storage');
 var win = require('./win');
 
 var MAX_LEN = 128;
-var TYPES = ['Fetch/XHR', 'HTML', 'CSS', 'JS', 'JSON', 'Font', 'Img', 'Media', 'WS', 'Tunnel', 'Wasm', 'Other', 'Import', 'Composer'];
+var TYPES = ['JSON', 'HTML', 'CSS', 'JS', 'Font', 'Img', 'Media', 'WS', 'Tunnel', 'Wasm', 'Mock', 'Import', 'Composer', 'Error', 'Other'];
 var TITLES = {
-  'Fetch/XHR': 'Fetch and XHR',
   HTML: 'HTML',
   CSS: 'CSS',
   JS: 'JavaScript',
@@ -21,9 +19,11 @@ var TITLES = {
   WS: 'WebSocket',
   Tunnel: 'Tunnel',
   Wasm: 'WebAssembly',
-  Other: 'Other',
+  Mock: 'Show mock requests',
+  Error: 'Show error requests',
   Import: 'Show import sessions',
-  Composer: 'Show composer requests'
+  Composer: 'Show composer requests',
+  Other: 'Other'
 };
 
 var FilterInput = React.createClass({

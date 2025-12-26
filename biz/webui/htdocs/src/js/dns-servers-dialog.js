@@ -1,4 +1,3 @@
-require('./base-css.js');
 var React = require('react');
 var Dialog = require('./dialog');
 

@@ -1,5 +1,3 @@
-require('./base-css.js');
-require('../css/composer.css');
 var React = require('react');
 var ReactDOM = require('react-dom');
 var $ = require('jquery');
@@ -242,7 +240,7 @@ var HistoryData = React.createClass({
               );
             })}
           </div>
-          <div className="fill w-composer-history-ctn">
+          <div className="fill orient-vertical-box w-composer-history-ctn">
             {selectedItem ? <div className="w-composer-history-footer">
                 <button
                   type="button"
@@ -287,7 +285,7 @@ var HistoryData = React.createClass({
                 </button>
                 <span onClick={props.onClose} aria-hidden="true" className="w-close">&times;</span>
               </div> : null}
-              {selectedItem ? <pre className={disabled ? 'w-show-loading' : ''}>
+              {selectedItem ? <pre className={disabled ? 'w-show-loading fill' : 'fill'}>
                 {getRaw(selectedItem, disabled)}
                 <div className="w-load-tips">Loading...</div>
               </pre> : null}

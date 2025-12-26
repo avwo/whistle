@@ -1,4 +1,3 @@
-require('./base-css.js');
 require('../css/network-settings.css');
 var $ = require('jquery');
 var React = require('react');

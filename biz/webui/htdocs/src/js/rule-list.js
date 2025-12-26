@@ -1,4 +1,3 @@
-require('../css/list-dialog.css');
 var React = require('react');
 var Divider = require('./divider');
 var util = require('./util');

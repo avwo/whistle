@@ -1,4 +1,3 @@
-require('./base-css.js');
 require('../css/table.css');
 var React = require('react');
 

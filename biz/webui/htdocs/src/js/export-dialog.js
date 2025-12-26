@@ -1,4 +1,3 @@
-require('../css/import-dialog.css');
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Dialog = require('./dialog');

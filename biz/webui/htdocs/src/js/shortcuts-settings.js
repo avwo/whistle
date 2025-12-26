@@ -146,7 +146,7 @@ var ShortcutsSettings = React.createClass({
               <input type="checkbox" data-name="togglePlugins" checked={settings.togglePlugins !== false} /> <strong>Ctrl[Command] + O :</strong> Turn all plugins ON or OFF
             </label>
 
-            <h5>Global</h5>
+            <h5>Others</h5>
             <label>
               <input type="checkbox" data-name="switchTabReverse" checked={settings.switchTabReverse !== false} /> <strong>Ctrl[Command] + &lt;-- :</strong> Toggle Network, Rules, Values, and Plugins in reverse order
             </label>

@@ -1,15 +1,10 @@
-var events = require('./events');
-
-require('./base-css.js');
 require('../css/about.css');
-/* eslint-disable no-unused-vars */
-var $ = (window.jQuery = require('jquery')); //for bootstrap
-require('bootstrap/dist/js/bootstrap.js');
 var React = require('react');
 var Dialog = require('./dialog');
 var dataCenter = require('./data-center');
 var storage = require('./storage');
 var util = require('./util');
+var events = require('./events');
 
 var isElectron = /Electron\//i.test(window.navigator.userAgent);
 var clientName = isElectron ? 'electron' : 'nodejs';

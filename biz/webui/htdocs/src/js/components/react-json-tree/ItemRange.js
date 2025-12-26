@@ -24,10 +24,6 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = require('prop-types');
-
-var _propTypes2 = _interopRequireDefault(_propTypes);
-
 var _JSONArrow = require('./JSONArrow');
 
 var _JSONArrow2 = _interopRequireDefault(_JSONArrow);
@@ -94,11 +90,4 @@ var ItemRange = (function (_React$Component) {
   return ItemRange;
 })(_react2['default'].Component);
 
-ItemRange.propTypes = {
-  styling: _propTypes2['default'].func.isRequired,
-  from: _propTypes2['default'].number.isRequired,
-  to: _propTypes2['default'].number.isRequired,
-  renderChildNodes: _propTypes2['default'].func.isRequired,
-  nodeType: _propTypes2['default'].string.isRequired
-};
 exports['default'] = ItemRange;

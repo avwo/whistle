@@ -1,4 +1,3 @@
-require('./base-css.js');
 require('../css/online.css');
 var $ = require('jquery'); //for bootstrap
 var React = require('react');
@@ -9,9 +8,7 @@ var dataCenter = require('./data-center');
 var util = require('./util');
 var DNSDialog = require('./dns-servers-dialog');
 var storage = require('./storage');
-var LoginDialog = require('./login-dialog');
 var win = require('./win');
-var events = require('./events');
 var message = require('./message');
 var ShortcutsSettings = require('./shortcuts-settings');
 
@@ -29,9 +26,9 @@ if (storage.get('disabledDarkMode') == '1') {
 
 function setAppearanceMode(mode) {
   appearanceMode = mode;
-  var className = mode === 'light' ? '' : 'w-allow-dark-mode';
+  var className = mode === 'light' ? '' : 'w-auto';
   if (mode === 'dark') {
-    className += ' w-force-dark-mode';
+    className += ' w-dark';
   }
   try {
     document.documentElement.className = className;
@@ -169,9 +166,6 @@ var Online = React.createClass({
     dataCenter.setServerInfo = function(info) {
       !self._pendingDnsOrder && selectDnsOption(info.ipv6Only ? IPV6_ONLY_VAL : info.dnsOrder);
     };
-    events.on('showLoginDialog', function(_, cb) {
-      self.refs.loginDialog.show(cb);
-    });
   },
   checkServerChanged: function (data) {
     data.mac = data.mac || '';
@@ -267,10 +261,11 @@ var Online = React.createClass({
     var loginBtn = dialog.find('.w-login-btn');
     var loginElem = loginBtn[0];
     if (loginElem) {
-      loginElem.className = 'btn w-login-btn  btn-' + (whistleId ? 'danger' : 'primary');
-      loginBtn.attr('data-action', whistleId ? 'logout' : 'login');
-      loginBtn.find('.w-login-label').text(whistleId ? 'Logout' : 'Login');
-      loginBtn.find('.glyphicon')[0].className = 'glyphicon glyphicon-log-' + (whistleId ? 'out' : 'in');
+      var hasToken = dataCenter.hasWhistleToken;
+      loginElem.className = 'btn w-login-btn  btn-' + (hasToken ? 'danger' : 'primary');
+      loginBtn.attr('data-action', hasToken ? 'logout' : 'login');
+      loginBtn.find('.w-login-label').text(hasToken ? 'Logout' : 'Login');
+      loginBtn.find('.glyphicon')[0].className = 'glyphicon glyphicon-log-' + (hasToken ? 'out' : 'in');
     }
     if (curVerbatim !== server.verbatim) {
       curVerbatim = server.verbatim;
@@ -297,7 +292,7 @@ var Online = React.createClass({
           });
         });
       }
-      self.refs.loginDialog.show(action);
+      util.showService('login');
     });
     if (!self._initProxyInfo) {
       self._initProxyInfo = true;
@@ -629,7 +624,6 @@ var Online = React.createClass({
           </div>
         </Dialog>
         <DNSDialog ref="dnsDialog" />
-        <LoginDialog ref="loginDialog" />
         <ShortcutsSettings ref="shortcutsSettings" />
       </a>
     );

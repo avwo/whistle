@@ -1,4 +1,3 @@
-require('./base-css.js');
 require('../css/list.css');
 require('../css/files-dialog.css');
 var $ = require('jquery');

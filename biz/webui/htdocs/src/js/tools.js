@@ -1,4 +1,3 @@
-require('./base-css.js');
 require('../css/tools.css');
 var React = require('react');
 var Console = require('./console');

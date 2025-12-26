@@ -20,7 +20,6 @@ require('codemirror/addon/dialog/dialog.css');
 require('codemirror/addon/search/matchesonscrollbar.css');
 require('codemirror/addon/fold/foldgutter.css');
 
-require('../css/list.css');
 require('../css/editor.css');
 
 var $ = require('jquery');

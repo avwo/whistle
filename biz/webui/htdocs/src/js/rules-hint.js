@@ -64,19 +64,19 @@ var DEL_HINTS = [
 ];
 
 var LINE_PROPS_HINTS = ['important', 'safeHtml', 'strictHtml', 'disableAutoCors', 'disableUserLogin', 'enableUserLogin',
-  'internal', 'internalOnly', 'internalProxy', 'proxyFirst', 'proxyHost', 'proxyHostOnly', 'proxyTunnel', 'weakRule'];
+  'internal', 'internalOnly', 'internalProxy', 'proxyFirst', 'proxyHost', 'proxyHostOnly', 'proxyTunnel', 'weakRule', 'enableBigData'];
 
 var ENABLE_HINTS = ['abort', 'abortReq', 'abortRes', 'authCapture', 'auto2http', 'bigData', 'br', 'gzip', 'deflate',
   'capture', 'captureIp', 'captureStream', 'clientCert', 'clientId', 'clientIp', 'customParser', 'flushHeaders', 'forHttp', 'forHttps',
   'forceReqWrite', 'forceResWrite', 'h2', 'http2', 'httpH2', 'hide', 'hideComposer', 'hideCaptureError', 'showHost', 'ignoreSend', 'ignoreReceive',
   'pauseSend', 'pauseReceive', 'inspect', 'interceptConsole', 'internalProxy', 'proxyFirst', 'proxyHost', 'proxyTunnel', 'keepCSP', 'keepAllCSP', 'keepCache',
-  'keepAllCache', 'keepClientId', 'safeHtml', 'strictHtml', 'multiClient', 'requestWithMatchedRules', 'responseWithMatchedRules', 'tunnelHeadersFirst',
+  'keepAllCache', 'keepClientId', 'safeHtml', 'strictHtml', 'multiClient', 'reqMergeBigData', 'resMergeBigData', 'requestWithMatchedRules', 'responseWithMatchedRules', 'tunnelHeadersFirst',
   'useLocalHost', 'useSafePort', 'userLogin', 'weakRule', 'socket', 'websocket'];
 var DISABLE_HINTS = ['301', 'abort', 'abortReq', 'abortRes', 'authCapture', 'auto2http', 'autoCors',  'ajax', 'bigData', 'capture', 'captureIp', 'captureStream',
   'clientCert', 'clientId', 'clientIp', 'customParser', 'cache', 'dnsCache', 'csp', 'cookies', 'reqCookies', 'resCookies', 'flushHeaders', 'forHttp', 'forHttps', 'forceReqWrite',
   'forceResWrite', 'gzip', 'h2', 'http2', 'httpH2', 'hide', 'hideComposer', 'hideCaptureError', 'interceptConsole', 'internalProxy', 'proxyFirst',
   'proxyHost', 'proxyTunnel', 'keepCSP', 'keepAllCSP', 'keepCache', 'keepAllCache', 'keepAlive', 'keepClientId', 'keepH2Session', 'safeHtml', 'strictHtml',
-  'multiClient', 'proxyConnection', 'ua', 'proxyUA', 'referer', 'rejectUnauthorized', 'requestWithMatchedRules', 'responseWithMatchedRules', 'secureOptions', 'servername',
+  'multiClient', 'proxyConnection', 'ua', 'proxyUA', 'referer', 'rejectUnauthorized', 'reqMergeBigData', 'resMergeBigData', 'requestWithMatchedRules', 'responseWithMatchedRules', 'secureOptions', 'servername',
   'timeout', 'trailerHeader', 'trailers', 'tunnelAuthHeader', 'tunnelHeadersFirst', 'useLocalHost', 'useSafePort', 'userLogin', 'weakRule'];
 var CHARS = [
   '-',
@@ -648,7 +648,10 @@ CodeMirror.registerHelper('hint', 'rulesHint', function (editor) {
           list = [];
           var lowerKey = valKeyword.toLowerCase();
           valuesKeys.forEach(function(key) {
-            if (key.toLowerCase().indexOf(lowerKey) !== -1) {
+            var lk = key.toLowerCase();
+            if (lk === lowerKey) {
+              list.unshift(toValKey(key, tplStart));
+            } else if (lk.indexOf(lowerKey) !== -1) {
               list.push(toValKey(key, tplStart));
             }
           });

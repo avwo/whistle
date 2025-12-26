@@ -1,4 +1,3 @@
-require('./base-css.js');
 require('../css/overview.css');
 var React = require('react');
 var ReactDOM = require('react-dom');

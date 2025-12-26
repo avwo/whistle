@@ -442,6 +442,10 @@ a {
   align-items: center;
 }
 
+.flex-1 {
+  flex: 1;
+}
+
 .w-align-items input {
   margin-right: 5px;
 }

@@ -7,15 +7,18 @@ var events = require('./events');
 var AccountDialog = React.createClass({
   show: function(url) {
     if (url) {
-      ReactDOM.findDOMNode(this.refs.iframe).src = url;
+      this.getIframe().src = url;
     }
     this.refs.dialog.show();
   },
   hide: function() {
     this.refs.dialog.hide();
   },
+  getIframe: function() {
+    return ReactDOM.findDOMNode(this.refs.iframe);
+  },
   getWindow: function() {
-    return ReactDOM.findDOMNode(this.refs.iframe).contentWindow;
+    return this.getIframe().contentWindow;
   },
   shouldComponentUpdate: function() {
     return false;

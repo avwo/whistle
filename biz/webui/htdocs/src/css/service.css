@@ -2,6 +2,13 @@
   font-weight: bold;
 }
 
+.w-large-dialog.w-service-login-dialog .modal-dialog {
+  width: 560px;
+  height: 600px;
+  min-width: 560px;
+  min-height: 600px;
+}
+
 @media screen and (max-width: 1135px) {
   .w-has-token.w-show-rules .w-help-name {
       display: none;

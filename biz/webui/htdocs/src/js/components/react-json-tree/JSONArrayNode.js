@@ -16,10 +16,6 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = require('prop-types');
-
-var _propTypes2 = _interopRequireDefault(_propTypes);
-
 var _JSONNestedNode = require('./JSONNestedNode');
 
 var _JSONNestedNode2 = _interopRequireDefault(_JSONNestedNode);
@@ -48,10 +44,6 @@ var JSONArrayNode = function JSONArrayNode(_ref) {
       expandable: data.length > 0
     })
   );
-};
-
-JSONArrayNode.propTypes = {
-  data: _propTypes2['default'].array
 };
 
 exports['default'] = JSONArrayNode;

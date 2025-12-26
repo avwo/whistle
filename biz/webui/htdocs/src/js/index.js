@@ -1,3 +1,4 @@
+require('./base-css.js');
 require('../css/index.css');
 require('../css/appearance.css');
 var $ = require('jquery');
@@ -38,6 +39,7 @@ var SaveToServiceBtn = require('./share-via-url-btn');
 var ImportDialog = require('./import-dialog');
 var ExportDialog = require('./export-dialog');
 var HttpsSettings = require('./https-settings');
+var ServiceDialog = require('./service-dialog');
 
 var TEMP_LINK_RE = /^(?:[\w-]+:\/\/)?temp(?:\/([\da-z]{64}|blank))?(?:\.[\w-]+)?$/;
 var FILE_PATH_RE = /^(?:[\w-]+:\/\/)?((?:[a-z]:[\\/]|\/).+)$/i;
@@ -175,21 +177,6 @@ var VALUES_ACTIONS = [
   }
 ];
 
-var REMOVE_OPTIONS = [
-  {
-    name: 'Remove Selected',
-    icon: 'remove',
-    id: 'removeSelected',
-    disabled: true,
-    title: 'Ctrl[Command] + D'
-  },
-  {
-    name: 'Remove Unselected',
-    id: 'removeUnselected',
-    disabled: true,
-    title: 'Ctrl[Command] + Shift + D'
-  }
-];
 var ABORT_OPTIONS = [
   {
     name: 'Abort',
@@ -2255,9 +2242,7 @@ var Index = React.createClass({
     function atBottom(force) {
       var body = baseDom.find('.ReactVirtualized__Grid__innerScrollContainer')[0];
       if (!body) {
-        if (force) {
-          events.trigger('toggleBackToBottomBtn', false);
-        }
+        force && events.trigger('toggleBackToBottomBtn', false);
         return true;
       }
       var height = con.offsetHeight + 5;
@@ -2525,14 +2510,8 @@ var Index = React.createClass({
   },
   hideNetworkOptions: function () {
     this.setState({
-      showRemoveOptions: false,
       showAbortOptions: false,
       showNetworkOptions: false
-    });
-  },
-  showRemoveOptions: function () {
-    this.setState({
-      showRemoveOptions: true
     });
   },
   showAbortOptions: function () {
@@ -2551,11 +2530,6 @@ var Index = React.createClass({
   hideCreateOptions: function () {
     this.setState({
       showCreateOptions: false
-    });
-  },
-  hideRemoveOptions: function () {
-    this.setState({
-      showRemoveOptions: false
     });
   },
   hideAbortOptions: function () {
@@ -3301,8 +3275,7 @@ var Index = React.createClass({
   clear: function () {
     var modal = this.state.network;
     this.setState({
-      network: modal.clear(),
-      showRemoveOptions: false
+      network: modal.clear()
     });
   },
   removeRulesBatch: function(list) {
@@ -4044,12 +4017,6 @@ var Index = React.createClass({
           option.disabled = !hasUnselected;
         }
       });
-      REMOVE_OPTIONS.forEach(function (option) {
-        option.disabled = false;
-        if (option.id === 'removeUnselected') {
-          option.disabled = !hasUnselected;
-        }
-      });
     } else {
       networkOptions.forEach(function (option) {
         if (OPTIONS_WITH_SELECTED.indexOf(option.id) !== -1) {
@@ -4059,13 +4026,6 @@ var Index = React.createClass({
         }
       });
       networkOptions[0].disabled = !hasUnselected;
-      REMOVE_OPTIONS.forEach(function (option) {
-        if (OPTIONS_WITH_SELECTED.indexOf(option.id) !== -1) {
-          option.disabled = true;
-        } else if (option.id === 'removeUnselected') {
-          option.disabled = !hasUnselected;
-        }
-      });
     }
     var mustHideLeftMenu = hideLeftMenu && !state.forceShowLeftMenu;
     var pluginsOnlyMode = pluginsMode && rulesMode;
@@ -4332,29 +4292,15 @@ var Index = React.createClass({
           >
             <span className="glyphicon glyphicon-export"></span>Export
           </a>
-          <div
-            onMouseEnter={this.showRemoveOptions}
-            onMouseLeave={this.hideRemoveOptions}
+          <a
+            onClick={this.clear}
             style={{ display: isNetwork ? '' : 'none' }}
-            className={
-              'w-menu-wrapper w-remove-menu-list w-menu-auto' +
-              (state.showRemoveOptions ? ' w-menu-wrapper-show' : '')
-            }
+            className="w-remove-menu w-remove-menu-list"
+            title="Ctrl[Command] + X"
+            draggable="false"
           >
-            <a
-              onClick={this.clear}
-              className="w-remove-menu"
-              title="Ctrl[Command] + X"
-              draggable="false"
-            >
-              <span className="glyphicon glyphicon-remove"></span>Clear
-            </a>
-            <MenuItem
-              options={REMOVE_OPTIONS}
-              className="w-remove-menu-item"
-              onClickOption={this.handleNetwork}
-            />
-          </div>
+            <span className="glyphicon glyphicon-remove"></span>Clear
+          </a>
           <a
             onClick={this.onClickMenu}
             className="w-save-menu"
@@ -4435,7 +4381,7 @@ var Index = React.createClass({
             isNetwork={isNetwork}
             hide={isPlugins}
           />
-         {whistleId ? <ServiceBtn name={name} /> : null}
+          <ServiceBtn name={name} />
           <div
             onMouseEnter={this.showWeinreOptions}
             onMouseLeave={this.hideWeinreOptions}
@@ -4456,6 +4402,7 @@ var Index = React.createClass({
             <MenuItem
               ref="weinreMenuItem"
               name="anonymous"
+              icon="console"
               options={state.weinreOptions}
               className="w-weinre-menu-item"
               onClick={this.showAnonymousWeinre}
@@ -5133,6 +5080,7 @@ var Index = React.createClass({
         <ExportDialog ref="exportDialog" />
         {/* 初始化 EditorDialog 给 Rules 里面的快捷键使用 */}
         <EditorDialog textEditor standalone />
+        <ServiceDialog />
       </div>
     );
   }

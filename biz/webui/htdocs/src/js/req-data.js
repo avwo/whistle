@@ -1,4 +1,3 @@
-require('./base-css.js');
 require('../css/req-data.css');
 require('react-virtualized/styles.css');
 
@@ -1219,6 +1218,7 @@ var ReqData = React.createClass({
   },
   updateList: function () {
     this.refs.content.refs.list.forceUpdateGrid();
+    events.trigger('checkAtBottom');
   },
   onFilterChange: function (keyword) {
     var self = this;
@@ -1232,8 +1232,30 @@ var ReqData = React.createClass({
     }, 600);
   },
   onFilterTypeChange: function (type) {
-    this.props.modal.setFilterType(type);
-    this.setState({ filterType: type }, this.updateList);
+    var self = this;
+    var baseDom = self.container;
+    var atBottom;
+    if (baseDom) {
+      baseDom = baseDom.find('.ReactVirtualized__Grid:first');
+      var body = baseDom.find('.ReactVirtualized__Grid__innerScrollContainer')[0];
+      if (body) {
+        var height = baseDom[0].offsetHeight + 5;
+        var ctnHeight = body.offsetHeight;
+        atBottom = ctnHeight <= height || baseDom[0].scrollTop + height >= ctnHeight;
+      } else {
+        atBottom = true;
+      }
+    }
+    self.props.modal.setFilterType(type);
+    self.setState({ filterType: type }, function() {
+      self.updateList();
+      if (atBottom) {
+        self.autoRefresh();
+        self._scrollTimer = setTimeout(self.autoRefresh, 30);
+      } else {
+        clearTimeout(self._scrollTimer);
+      }
+    });
   },
   onFilterKeyDown: function (e) {
     if (e.keyCode !== 13 || !CMD_RE.test(e.target.value)) {
@@ -1554,7 +1576,7 @@ var ReqData = React.createClass({
               }}
             </RV.AutoSizer>
           </div>
-          <div className="w-back-to-the-bottom" ref="backBtn" onClick={this.autoRefresh}>
+          <div className={'w-back-to-the-bottom' + (isTreeView ? ' hide' : '')} ref="backBtn" onClick={this.autoRefresh}>
             <span className="glyphicon glyphicon-arrow-down" />
             Back to the bottom
           </div>

@@ -1,4 +1,3 @@
-require('./base-css.js');
 require('../css/btn-group.css');
 var React = require('react');
 var util = require('./util');

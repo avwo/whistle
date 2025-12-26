@@ -16,10 +16,6 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = require('prop-types');
-
-var _propTypes2 = _interopRequireDefault(_propTypes);
-
 var _objType = require('./objType');
 
 var _objType2 = _interopRequireDefault(_objType);
@@ -192,21 +188,6 @@ var JSONNode = function JSONNode(_ref) {
         })
       );
   }
-};
-
-JSONNode.propTypes = {
-  getItemString: _propTypes2['default'].func.isRequired,
-  keyPath: _propTypes2['default'].arrayOf(
-    _propTypes2['default'].oneOfType([
-      _propTypes2['default'].string,
-      _propTypes2['default'].number
-    ])
-  ).isRequired,
-  labelRenderer: _propTypes2['default'].func.isRequired,
-  styling: _propTypes2['default'].func.isRequired,
-  value: _propTypes2['default'].any,
-  valueRenderer: _propTypes2['default'].func.isRequired,
-  isCustomNode: _propTypes2['default'].func.isRequired
 };
 
 exports['default'] = JSONNode;

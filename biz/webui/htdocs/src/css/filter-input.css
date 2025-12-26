@@ -108,11 +108,12 @@
   align-items: center;
   justify-content: center;
   background-color: #fff;
+  min-width: 32px;
 }
 
 .w-filter-type-bar span:hover {
-  border-color: #f0f0f0;
-  background: #f0f0f0;
+  border-color: #e8e8e8;
+  background: #e8e8e8;
 }
 
 .w-filter-type-bar span:active, .w-filter-type-bar span.w-active {

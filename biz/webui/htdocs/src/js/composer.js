@@ -1,4 +1,3 @@
-require('./base-css.js');
 require('../css/composer.css');
 var React = require('react');
 var ReactDOM = require('react-dom');
@@ -1455,7 +1454,7 @@ var Composer = React.createClass({
     storage.set('disableComposerBody', '');
   },
   shakeMethod: function() {
-    if (!this.state.hasBody) {
+    if (!this.hasBody) {
       util.shakeElem($(ReactDOM.findDOMNode(this.refs.method)));
     }
   },
@@ -1759,21 +1758,22 @@ var Composer = React.createClass({
                       />
                       Raw
                     </label>
-                    <button
-                      disabled={pending}
-                      className={
-                        'w-composer-add-header btn btn-primary' + (showPretty ? '' : ' hide')
-                      }
-                      onClick={this.addHeader}
-                    >
-                      +Header
-                    </button>
+                    <div className="flex-1" />
                     <button
                       disabled={pending}
                       className="btn btn-default"
                       onClick={this.showCookiesDialog}
                     >
                       Cookies
+                    </button>
+                    <button
+                      disabled={pending}
+                      className={
+                        'btn btn-primary' + (showPretty ? '' : ' hide')
+                      }
+                      onClick={this.addHeader}
+                    >
+                      +Header
                     </button>
                   </div>
                   <textarea
@@ -1855,7 +1855,7 @@ var Composer = React.createClass({
                     </button>
                     <button
                       className={
-                        'btn btn-default' +
+                        'btn btn-primary' +
                         (showPrettyBody || isHexText || showUpload
                           ? ' hide'
                           : '')

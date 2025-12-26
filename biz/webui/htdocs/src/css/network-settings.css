@@ -86,13 +86,11 @@
 }
 .w-network-settings-dialog .w-help-menu:hover,
 .w-https-dialog .w-help-menu:hover,
-.w-certs-info-dialog .w-help-menu:hover,
-.w-login-dialog .w-help-menu:hover {
+.w-certs-info-dialog .w-help-menu:hover {
   color: #337ab7;
 }
 .w-https-dialog .w-help-menu,
-.w-certs-info-dialog .w-help-menu,
-.w-login-dialog .w-help-menu {
+.w-certs-info-dialog .w-help-menu {
   margin-right: 5px;
   color: #000;
   font-size: 14px;
@@ -161,10 +159,6 @@
   font-size: 16px;
   display: inline-flex;
   align-items: center;
-}
-
-.w-login-dialog .w-certs-info-title {
-  margin: 0;
 }
 
 .w-query-select {

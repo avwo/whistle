@@ -1,4 +1,3 @@
-require('./base-css.js');
 var React = require('react');
 var util = require('./util');
 var Inspector = require('./inspector');

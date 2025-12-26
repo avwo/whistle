@@ -16,6 +16,8 @@ var WS_RE = /^wss?:\/\//;
 var FONT_RE = /font\//i;
 var MEDIA_RE = /audio\/|video\/|application\/vnd.apple.mpegurl|application\/dash+xml/i;
 var WASM_RE = /application\/wasm/i;
+var TYPES = ['Img', 'HTML', 'CSS', 'JS', 'JSON'];
+var RAW_TYPES = ['Font', 'Media', 'Wasm'];
 
 function NetworkModal(list) {
   this.list = updateOrder(list);
@@ -167,6 +169,12 @@ function setNot(flag, not) {
   return not ? !flag : flag;
 }
 
+function hasError(item) {
+  var statusCode = item.res && item.res.statusCode;
+  return item.reqError || item.resError || (item.customData && item.customData.error) ||
+    (statusCode && (!/^\d+$/.test(statusCode) || statusCode >= 400));
+}
+
 function checkItem(item, opts) {
   switch (opts.type) {
   case 'mark':
@@ -223,10 +231,7 @@ function checkItem(item, opts) {
     return setNot(!checkKeywork(item.appName, opts), opts.not);
   case 'e':
   case 'error':
-    var statusCode = item.res && item.res.statusCode;
-    var isError = item.reqError || item.resError || (item.customData && item.customData.error) ||
-    (statusCode && (!/^\d+$/.test(statusCode) || statusCode >= 400));
-    return !isError || checkData(item, opts);
+    return !hasError(item) || checkData(item, opts);
   case 'style':
     return !item.style ||  checkData(item, opts);
   case 'fc':
@@ -273,34 +278,11 @@ function toStr(val) {
   return val + '';
 }
 
-var FETCH_RE = /^sec-fetch-/mi;
-var ACCEPT_RE = /application\/json/;
-function isFetchXhr(item) {
-  var h = item.req.headers;
-  if (!h) {
-    return false;
-  }
-  var type = h['x-requested-with'];
-  type = typeof type === 'string' ? type.trim().toLowerCase() : '';
-  if (type === 'xmlhttprequest' || type === 'fetch') {
-    return true;
-  }
-  return FETCH_RE.test(Object.keys(h).join('\n')) && (h.accept === '*/*' || ACCEPT_RE.test(h.accept));
-}
-
 function checkFilterType(item, filterType) {
   if (!filterType) {
     return true;
   }
   var isOther = filterType === 'Other';
-  if (isOther || filterType === 'Fetch/XHR') {
-    if (isFetchXhr(item)) {
-      return !isOther;
-    }
-    if (!isOther) {
-      return false;
-    }
-  }
   if (isOther || filterType === 'WS') {
     if (WS_RE.test(item.url)) {
       return !isOther;
@@ -318,76 +300,64 @@ function checkFilterType(item, filterType) {
     }
   }
   var rawType = util.getRawType(item.res.headers);
-  if (isOther || filterType === 'Font') {
-    if (FONT_RE.test(rawType)) {
-      return !isOther;
-    }
-    if (!isOther) {
-      return false;
-    }
-  }
-  if (isOther || filterType === 'Img') {
-    if (curType === 'IMG') {
-      return !isOther;
-    }
-    if (!isOther) {
-      return false;
+  var type;
+  for (var i = 0, len = RAW_TYPES.length; i < len; i++) {
+    type = RAW_TYPES[i];
+    if (isOther || filterType === type) {
+      var p = type === 'Font' ? FONT_RE : type === 'Media' ? MEDIA_RE : WASM_RE;
+      if (p.test(rawType)) {
+        return !isOther;
+      }
+      if (!isOther) {
+        return false;
+      }
     }
   }
-  if (isOther || filterType === 'Media') {
-    if (MEDIA_RE.test(rawType)) {
-      return !isOther;
-    }
-    if (!isOther) {
-      return false;
-    }
-  }
-  if (isOther || filterType === 'Wasm') {
-    if (WASM_RE.test(rawType)) {
-      return !isOther;
-    }
-    if (!isOther) {
-      return false;
-    }
-  }
+
   var curType = util.getContentType(rawType);
-  if (isOther || filterType === 'HTML') {
-    if (curType === 'HTML') {
+  for (i = 0, len = TYPES.length; i < len; i++) {
+    type = TYPES[i];
+    if (isOther || filterType === type) {
+      if (curType === (i ? type : 'IMG')) {
+        return !isOther;
+      }
+      if (!isOther) {
+        return false;
+      }
+    }
+  }
+  if (isOther || filterType === 'Error') {
+    if (hasError(item)) {
       return !isOther;
     }
     if (!isOther) {
       return false;
     }
   }
-  if (isOther || filterType === 'CSS') {
-    if (curType === 'CSS') {
+  if (isOther || filterType === 'Mock') {
+    var rules = item.rules || '';
+    if (rules.rule && rules.rule.isLoc) {
       return !isOther;
     }
     if (!isOther) {
       return false;
     }
   }
-  if (isOther || filterType === 'JS') {
-    if (curType === 'JS') {
+  if (isOther || filterType === 'Import') {
+    if (item.importedData) {
       return !isOther;
     }
     if (!isOther) {
       return false;
     }
   }
-  if (isOther || filterType === 'JSON') {
-    if (curType === 'JSON') {
+  if (isOther || filterType === 'Composer') {
+    if (item.fc) {
       return !isOther;
     }
     if (!isOther) {
       return false;
     }
-  }
-  if (filterType === 'Import') {
-    return item.importedData;
-  }
-  if (filterType === 'Composer') {
-    return item.fc;
   }
   return true;
 }
