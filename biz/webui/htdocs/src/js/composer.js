@@ -1768,9 +1768,7 @@ var Composer = React.createClass({
                     </button>
                     <button
                       disabled={pending}
-                      className={
-                        'btn btn-primary' + (showPretty ? '' : ' hide')
-                      }
+                      className="btn btn-primary"
                       onClick={this.addHeader}
                     >
                       +Header
