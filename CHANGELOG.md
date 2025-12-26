@@ -1,3 +1,7 @@
+## v2.9.107
+1. feat: 优化界面
+2. feat: 支持 reqScript 和 resScript 调用 Buffer
+
 ## v2.9.106
 1. feat: 优化 Composer
 2. feat: Network 底部搜索框支持类似 Chrome 开发者工具一样通过类型快速过滤
