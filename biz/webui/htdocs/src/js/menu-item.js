@@ -28,7 +28,7 @@ var MenuItem = React.createClass({
         onBlur={self.props.onBlur}
         tabIndex="0"
         onMouseDown={self.preventBlur}
-        style={{ display: util.getBoolean(self.props.hide) ? 'none' : 'block' }}
+        style={{ display: util.getBool(self.props.hide) ? 'none' : 'block' }}
         className={
           'w-menu-item ' +
           (self.props.className || '') +

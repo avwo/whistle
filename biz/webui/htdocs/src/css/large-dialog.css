@@ -10,11 +10,11 @@
 }
 
 .w-service-dialog {
-  z-index: 1051;
+  z-index: var(--z-modal);
 }
 
 .w-editor-win {
-  z-index: 99999;
+  z-index: var(--z-modal-max);
 }
 
 .w-large-dialog button.close, .w-custom-dialog button.close {

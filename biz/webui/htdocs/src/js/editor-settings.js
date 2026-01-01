@@ -3,6 +3,12 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var $ = require('jquery');
 var events = require('./events');
+var themes = require('./util').EDITOR_THEMES;
+
+var fontSizeOptions = [13];
+for (var i = 14; i <= 36; i += 2) {
+  fontSizeOptions.push(i);
+}
 
 var EditorSettings = React.createClass({
   componentDidMount: function () {
@@ -22,25 +28,9 @@ var EditorSettings = React.createClass({
               onChange={this.props.onThemeChange}
               className="form-control"
             >
-              <option value="default">default</option>
-              <option value="ambiance">ambiance</option>
-              <option value="blackboard">blackboard</option>
-              <option value="cobalt">cobalt</option>
-              <option value="eclipse">eclipse</option>
-              <option value="elegant">elegant</option>
-              <option value="erlang-dark">erlang-dark</option>
-              <option value="lesser-dark">lesser-dark</option>
-              <option value="midnight">midnight</option>
-              <option value="monokai">monokai</option>
-              <option value="neat">neat</option>
-              <option value="night">night</option>
-              <option value="rubyblue">rubyblue</option>
-              <option value="solarized dark">solarized dark</option>
-              <option value="solarized light">solarized light</option>
-              <option value="twilight">twilight</option>
-              <option value="vibrant-ink">vibrant-ink</option>
-              <option value="xq-dark">xq-dark</option>
-              <option value="xq-light">xq-light</option>
+              {themes.map(function(theme) {
+                return <option key={theme} value={theme}>{theme}</option>;
+              })}
             </select>
           </label>
         </p>
@@ -52,19 +42,11 @@ var EditorSettings = React.createClass({
               onChange={this.props.onFontSizeChange}
               className="form-control"
             >
-              <option value="13px">13px</option>
-              <option value="14px">14px</option>
-              <option value="16px">16px</option>
-              <option value="18px">18px</option>
-              <option value="20px">20px</option>
-              <option value="22px">22px</option>
-              <option value="24px">24px</option>
-              <option value="26px">26px</option>
-              <option value="28px">28px</option>
-              <option value="30px">30px</option>
-              <option value="32px">32px</option>
-              <option value="34px">34px</option>
-              <option value="36px">36px</option>
+              {
+                fontSizeOptions.map(function(size) {
+                  return <option key={size} value={size + 'px'}>{size + 'px'}</option>;
+                })
+              }
             </select>
           </label>
         </p>

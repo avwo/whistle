@@ -9,6 +9,7 @@ module.exports = function(req, res) {
     exportRules = null;
   }
   var result = {};
+  var list = ['Default'];
   if (!exportRules || exportRules.Default) {
     var defaultRules = rules.getDefault() || '';
     result.Default = defaultRules;
@@ -16,8 +17,10 @@ module.exports = function(req, res) {
   rules.list().forEach(function(file) {
     if (!exportRules || exportRules[file.name]) {
       result[file.name] = file.data;
+      list.push(file.name);
     }
   });
+  result[''] = list;
   var filename = req.query.filename;
   if (filename && typeof filename === 'string') {
     if (!/\.(txt|json)/i.test(filename)) {

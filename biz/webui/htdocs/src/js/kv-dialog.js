@@ -14,6 +14,7 @@ var KVDialog = React.createClass({
     this.refs.kvDialog.show();
     this._hideDialog = false;
     var history = [];
+    var hideDefaultOption = data && data.hideDefaultOption;
     if (data && Array.isArray(data.list) && typeof data.data === 'object') {
       var count = 0;
       data.list.forEach(function(name) {
@@ -29,7 +30,8 @@ var KVDialog = React.createClass({
     }
     var modal = isValues ? valuesModal : rulesModal;
     this.setState({
-      selectedHistory: history.indexOf(selectedHistory) === -1 ? '' : selectedHistory,
+      hideDefaultOption: hideDefaultOption,
+      selectedHistory: history.indexOf(selectedHistory) === -1 ? (hideDefaultOption ? history[0] : '') : selectedHistory,
       history: history,
       modal: modal,
       list: util.parseImportData(
@@ -53,16 +55,32 @@ var KVDialog = React.createClass({
   viewContent: function (e) {
     util.openEditor(e.target.title);
   },
+
+  export: function () {
+    var data = {};
+    var list = [];
+    this.state.list.forEach(function (item) {
+      if (item.checked) {
+        data[item.name] = item.value;
+        list.push(item.name);
+      }
+    });
+    data[''] = list;
+    util.download(data, (this.isValues ? 'values_' : 'rules_') + util.formatDate() + '.txt');
+  },
   confirm: function () {
     var data = {};
+    var list = [];
     var hasConflict;
     var self = this;
     self.state.list.forEach(function (item) {
       if (item.checked) {
         hasConflict = hasConflict || item.isConflict;
         data[item.name] = item.value;
+        list.push(item.name);
       }
     });
+    data[''] = list;
     var save = function() {
       self.hide();
       return events.trigger(self.isValues ? 'uploadValues' : 'uploadRules', data);
@@ -104,6 +122,7 @@ var KVDialog = React.createClass({
     var noData = !len;
     var checkedCount = 0;
     var modal = state.modal;
+    var hideDefaultOption = state.hideDefaultOption;
     var checkedAll = !noData && list.every(function (item) {
       return item.checked;
     });
@@ -125,9 +144,9 @@ var KVDialog = React.createClass({
               onChange={this.selectHistory}
               className="form-control w-history-record-list"
             >
-              <option value="">
+              {hideDefaultOption ? null : <option value="">
                 Select history
-              </option>
+              </option>}
               {
                 history.map(function(item, i) {
                   return (
@@ -212,6 +231,14 @@ var KVDialog = React.createClass({
             data-dismiss="modal"
           >
             Cancel
+          </button>
+          <button
+            type="button"
+            className="btn btn-default"
+            disabled={!checkedCount}
+            onClick={this.export}
+          >
+            Export Selected
           </button>
           <button
             type="button"

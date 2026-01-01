@@ -2,7 +2,7 @@
   position: absolute;
   background: #fff;
   border: 1px solid #ccc;
-  z-index: 1001;
+  z-index: var(--z-menu);
   top: 31px;
   border-radius: 2px;
   outline: none;

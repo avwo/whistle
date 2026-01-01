@@ -28,8 +28,8 @@ var Saved = React.createClass({
     };
   },
   shouldComponentUpdate: function (nextProps) {
-    var hide = util.getBoolean(this.props.hide);
-    if (hide != util.getBoolean(nextProps.hide)) {
+    var hide = util.getBool(this.props.hide);
+    if (hide != util.getBool(nextProps.hide)) {
       !hide && this.loadDebounce();
       return true;
     }

@@ -27,6 +27,7 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var CodeMirror = require('codemirror');
 var message = require('./message');
+var themes = require('./util').EDITOR_THEMES;
 var INIT_LENGTH = 1024 * 16;
 var GUTTER_STYLE = [
   'CodeMirror-linenumbers',
@@ -53,27 +54,6 @@ require('codemirror/addon/fold/comment-fold');
 var rulesHint = require('./rules-hint');
 var events = require('./events');
 
-var themes = [
-  'default',
-  'neat',
-  'elegant',
-  'erlang-dark',
-  'night',
-  'monokai',
-  'cobalt',
-  'eclipse',
-  'rubyblue',
-  'lesser-dark',
-  'xq-dark',
-  'xq-light',
-  'ambiance',
-  'blackboard',
-  'vibrant-ink',
-  'solarized dark',
-  'solarized light',
-  'twilight',
-  'midnight'
-];
 require('./rules-mode');
 var DEFAULT_THEME = 'cobalt';
 var DEFAULT_FONT_SIZE = '16px';

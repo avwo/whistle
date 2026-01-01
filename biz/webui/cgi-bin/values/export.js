@@ -9,11 +9,14 @@ module.exports = function(req, res) {
     exportValues = null;
   }
   var result = {};
+  var list = [];
   values.list().forEach(function(file) {
     if (!exportValues || exportValues[file.name]) {
       result[file.name] = file.data;
+      list.push(file.name);
     }
   });
+  result[''] = list;
   var filename = req.query.filename;
   if (filename && typeof filename === 'string') {
     if (!/\.(txt|json)/i.test(filename)) {

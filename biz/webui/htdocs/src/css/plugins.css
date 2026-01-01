@@ -189,7 +189,7 @@
   top: 16px;
 }
 .w-plugin-update-dialog {
-  z-index: 1060;
+  z-index: var(--z-modal-max);
 }
 .w-plugin-update-dialog .modal-dialog {
   width: 600px;

@@ -102,6 +102,7 @@ var DropDown = React.createClass({
           {help ? (
             <li style={{ padding: 0 }}>
               <a href={help} target="_blank">
+                <span className="glyphicon glyphicon-question-sign"></span>
                 Help
               </a>
             </li>

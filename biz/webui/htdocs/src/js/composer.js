@@ -446,10 +446,7 @@ var Composer = React.createClass({
     this.refs.uploadBody.update(this.parseUploadModal(req));
     return true;
   },
-  shouldComponentUpdate: function (nextProps) {
-    var hide = util.getBoolean(this.props.hide);
-    return hide != util.getBoolean(nextProps.hide) || !hide;
-  },
+  shouldComponentUpdate: util.shouldComponentUpdate,
   getComposerData: function() {
     var refs = this.refs;
     var method = this.getMethod();
@@ -1503,7 +1500,7 @@ var Composer = React.createClass({
         className={
           'fill box w-detail-content w-detail-composer' +
           (showHistory ? ' w-show-history' : '') +
-          (util.getBoolean(self.props.hide) ? ' hide' : '')
+          (util.getBool(self.props.hide) ? ' hide' : '')
         }
       >
         <div className="fill orient-vertical-box">
@@ -1768,9 +1765,7 @@ var Composer = React.createClass({
                     </button>
                     <button
                       disabled={pending}
-                      className={
-                        'btn btn-primary' + (showPretty ? '' : ' hide')
-                      }
+                      className="btn btn-primary"
                       onClick={this.addHeader}
                     >
                       +Header

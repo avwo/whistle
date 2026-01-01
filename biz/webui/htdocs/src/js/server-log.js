@@ -137,8 +137,8 @@ var ServerLog = React.createClass({
     this.container.scrollTop = 10000000;
   },
   shouldComponentUpdate: function (nextProps) {
-    var hide = util.getBoolean(this.props.hide);
-    var toggleHide = hide != util.getBoolean(nextProps.hide);
+    var hide = util.getBool(this.props.hide);
+    var toggleHide = hide != util.getBool(nextProps.hide);
     if (toggleHide || !hide) {
       if (!toggleHide && !hide) {
         this.state.scrollToBottom = util.scrollAtBottom(

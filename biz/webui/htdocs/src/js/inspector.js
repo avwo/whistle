@@ -6,8 +6,8 @@ var util = require('./util');
 
 var Inspector = React.createClass({
   shouldComponentUpdate: function (nextProps) {
-    var hide = util.getBoolean(this.props.hide);
-    if (hide != util.getBoolean(nextProps.hide)) {
+    var hide = util.getBool(this.props.hide);
+    if (hide != util.getBool(nextProps.hide)) {
       return true;
     }
     if (hide) {

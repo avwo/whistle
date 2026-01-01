@@ -13,10 +13,7 @@ var ComposerList = React.createClass({
   getInitialState: function () {
     return { activeName: storage.get('activeComposerTab') || DEFAULT_TAB };
   },
-  shouldComponentUpdate: function (nextProps) {
-    var hide = util.getBoolean(this.props.hide);
-    return hide != util.getBoolean(nextProps.hide) || !hide;
-  },
+  shouldComponentUpdate: util.shouldComponentUpdate,
   componentDidMount: function () {
     var self = this;
     events.on('comTabsChange', function () {

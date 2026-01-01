@@ -15,12 +15,15 @@ module.exports = function(req, res) {
       });
     });
   } else {
+    var list = ['Default'];
     data = {
       Default: rules.defaultRules
     };
     rules.list.forEach(function(item) {
       data[item.name] = item.data;
+      list.push(item.name);
     });
+    data[''] = list;
   }
   res.json(data);
 };

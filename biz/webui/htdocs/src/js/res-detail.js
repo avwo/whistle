@@ -56,10 +56,7 @@ var ResDetail = React.createClass({
       self.setState({});
     });
   },
-  shouldComponentUpdate: function (nextProps) {
-    var hide = util.getBoolean(this.props.hide);
-    return hide != util.getBoolean(nextProps.hide) || !hide;
-  },
+  shouldComponentUpdate: util.shouldComponentUpdate,
   onClickBtn: function (btn) {
     this.selectBtn(btn);
     this.setState({});
@@ -255,7 +252,7 @@ var ResDetail = React.createClass({
       <div
         className={
           'fill orient-vertical-box w-detail-content w-detail-response' +
-          (util.getBoolean(this.props.hide) ? ' hide' : '')
+          (util.getBool(this.props.hide) ? ' hide' : '')
         }
       >
         <BtnGroup onClick={this.onClickBtn} btns={btns} />

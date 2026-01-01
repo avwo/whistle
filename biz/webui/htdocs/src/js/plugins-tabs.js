@@ -9,10 +9,7 @@ var PluginsTabs = React.createClass({
       active: tab && tab.plugin
     };
   },
-  shouldComponentUpdate: function (nextProps) {
-    var hide = util.getBoolean(this.props.hide);
-    return hide != util.getBoolean(nextProps.hide) || !hide;
-  },
+  shouldComponentUpdate: util.shouldComponentUpdate,
   onSelect: function (tab) {
     this.setState({ active: tab.plugin });
   },

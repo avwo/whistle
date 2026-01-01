@@ -1,3 +1,12 @@
+:root {
+  --z-max: 1000000100;
+  --z-modal: 1051;
+  --z-modal-max: 1059;
+  --z-cm: 999999;
+  --z-menu: 1001;
+  --z-ctx-menu: 99999999;
+}
+
 html,
 body,
 .main {
@@ -299,7 +308,7 @@ body .cm-s-cobalt span.cm-number {
 }
 
 .CodeMirror-hints {
-  z-index: 999999 !important;
+  z-index: var(--z-cm) !important;
 }
 
 .w-mark th,
@@ -358,7 +367,7 @@ a {
 }
 
 .w-win-dialog {
-  z-index: 100000;
+  z-index: calc(var(--z-modal-max) + 1);
 }
 
 .w-win-dialog .modal-dialog {

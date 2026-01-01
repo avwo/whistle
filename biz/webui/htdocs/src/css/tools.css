@@ -233,6 +233,21 @@
   width: 905px;
 }
 
+.w-text-dialog textarea {
+  width: 879px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  padding: 5px;
+}
+
+.w-text-dialog .w-textarea {
+  width: 880px;
+}
+
+.w-text-dialog button.close {
+  margin-top: -3px;
+}
+
 .w-mock-file button.close {
   top: 3px;
   right: 5px;
@@ -251,7 +266,7 @@
   background-color: #f6f6f6;
 }
 .w-rules-dialog {
-  z-index: 1100;
+  z-index: var(--z-modal);
 }
 .w-rules-dialog .modal-dialog {
   width: 1020px;

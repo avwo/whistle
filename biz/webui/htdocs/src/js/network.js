@@ -62,10 +62,7 @@ var Network = React.createClass({
     events.trigger('networkDidMount');
     events.on('toggleNetworkDock', self.onDockChange);
   },
-  shouldComponentUpdate: function (nextProps) {
-    var hide = util.getBoolean(this.props.hide);
-    return hide != util.getBoolean(nextProps.hide) || !hide;
-  },
+  shouldComponentUpdate: util.shouldComponentUpdate,
   onDockChange: function () {
     var self = this;
     var dockToBottom = !self.state.dockToBottom;

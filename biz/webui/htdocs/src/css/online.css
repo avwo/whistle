@@ -17,10 +17,10 @@
   margin: -23px 0 5px 36px;
 }
 .w-confirm-reload-dialog {
-  z-index: 1000000000;
+  z-index: var(--z-max);
 }
 .w-confirm-reload-global {
-  z-index: 1000000001;
+  z-index: calc(var(--z-max) + 1);
 }
 .w-confirm-reload-dialog .modal-dialog {
   width: 310px;
@@ -41,7 +41,7 @@
 }
 
 .w-dns-servers-dialog {
-  z-index: 1100;
+  z-index: var(--z-modal);
 }
 
 .w-dns-servers-dialog pre {
@@ -99,7 +99,7 @@
 
 
 .w-shortcuts {
-   z-index: 1100;
+   z-index: var(--z-modal);
 }
 
 .w-shortcuts .modal-dialog {

@@ -200,8 +200,8 @@ var Console = React.createClass({
     }
   },
   shouldComponentUpdate: function (nextProps) {
-    var hide = util.getBoolean(this.props.hide);
-    var toggleHide = hide != util.getBoolean(nextProps.hide);
+    var hide = util.getBool(this.props.hide);
+    var toggleHide = hide != util.getBool(nextProps.hide);
     if (toggleHide || !hide) {
       if (!toggleHide && !hide) {
         this.state.scrollToBottom = util.scrollAtBottom(

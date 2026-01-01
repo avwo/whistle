@@ -35,6 +35,27 @@ var SOURCE_SEP_LEN = SOURCE_SEP.length;
 exports.SOURCE_SEP = SOURCE_SEP;
 exports.SOURCE_SEP_LEN = SOURCE_SEP_LEN;
 exports.CRLF_RE = CRLF_RE;
+exports.EDITOR_THEMES = [
+  'default',
+  'neat',
+  'elegant',
+  'erlang-dark',
+  'night',
+  'monokai',
+  'cobalt',
+  'eclipse',
+  'rubyblue',
+  'lesser-dark',
+  'xq-dark',
+  'xq-light',
+  'ambiance',
+  'blackboard',
+  'vibrant-ink',
+  'solarized dark',
+  'solarized light',
+  'twilight',
+  'midnight'
+];
 
 function isSafeNumStr(str) {
   if (str == '0') {
@@ -478,17 +499,20 @@ exports.getCellValue = getCellValue;
 
 exports.getServerIp = getServerIp;
 
-function getBoolean(val) {
+function getBool(val) {
   return !(!val || val === 'false');
 }
 
-exports.getBoolean = getBoolean;
+exports.getBool = getBool;
 
-function stopPropagation(e) {
+exports.shouldComponentUpdate = function (nextProps) {
+  var hide = getBool(this.props.hide);
+  return hide != getBool(nextProps.hide) || !hide;
+};
+
+exports.stopPropagation = function(e) {
   e.stopPropagation();
-}
-
-exports.stopPropagation = stopPropagation;
+};
 
 function showSystemError(xhr, useToast) {
   xhr = xhr || {};
@@ -2148,6 +2172,25 @@ exports.getText = function(text) {
   return text == null ? '' : String(text);
 };
 
+function getKeys(obj) {
+  var list = obj[''];
+  var keys = Object.keys(obj);
+  list = list && (Array.isArray(list) ? list : Array.isArray(list.list) ? list.list : null);
+  if (!list) {
+    return keys;
+  }
+  delete obj[''];
+  var result = [];
+  list = list.concat(keys);
+  for (var i = 0, len = list.length; i < len; i++) {
+    var name = list[i];
+    if (notEStr(name) && (result.indexOf(name) === -1)) {
+      result.push(name);
+    }
+  }
+  return result;
+}
+
 exports.parseImportData = function (data, modal, isValues) {
   var list = [];
   var hasConflict;
@@ -2192,7 +2235,8 @@ exports.parseImportData = function (data, modal, isValues) {
       }
     });
   } else {
-    Object.keys(data).forEach(function (name) {
+
+    getKeys(data).forEach(function (name) {
       name && handleItem(name, data[name]);
     });
   }

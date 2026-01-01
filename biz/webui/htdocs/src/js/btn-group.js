@@ -32,7 +32,7 @@ var BtnGroup = React.createClass({
     var tabs = self.props.tabs;
     var isSmall = self.props.type === 's';
     var list = tabs || self.props.btns;
-    var disabled = util.getBoolean(self.props.disabled);
+    var disabled = util.getBool(self.props.disabled);
 
     return (
       <div

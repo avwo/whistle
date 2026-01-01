@@ -54,10 +54,7 @@ var FrameComposer = React.createClass({
     var text = storage.get('composeFrameData');
     this.setTextarea(String(text || ''));
   },
-  shouldComponentUpdate: function (nextProps) {
-    var hide = util.getBoolean(this.props.hide);
-    return hide != util.getBoolean(nextProps.hide) || !hide;
-  },
+  shouldComponentUpdate: util.shouldComponentUpdate,
   uploadTextToServer: function () {
     this.target = 'server';
     this.dataType = 'text';

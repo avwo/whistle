@@ -138,10 +138,7 @@ var ToolBox = React.createClass({
       'downloadTargetFrame'
     );
   },
-  shouldComponentUpdate: function (nextProps) {
-    var hide = util.getBoolean(this.props.hide);
-    return hide != util.getBoolean(nextProps.hide) || !hide;
-  },
+  shouldComponentUpdate: util.shouldComponentUpdate,
   render: function () {
     var state = this.state;
     var qrcodeValue = state.qrcodeValue;
@@ -177,7 +174,7 @@ var ToolBox = React.createClass({
           placeholder="Enter URL or text"
         />
         <div className="w-detail-inspectors-title">
-          <span className="glyphicon glyphicon-pencil"></span>JSONView
+          <span className="glyphicon glyphicon-pencil"></span>JSON
           <button
             className="btn btn-primary"
             disabled={emptyJson}

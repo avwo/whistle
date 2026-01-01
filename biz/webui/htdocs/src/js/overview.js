@@ -182,15 +182,12 @@ var Overview = React.createClass({
       showOnlyMatchRules: storage.get('showOnlyMatchRules') == 1
     };
   },
-  shouldComponentUpdate: function (nextProps) {
-    var hide = util.getBoolean(this.props.hide);
-    return hide != util.getBoolean(nextProps.hide) || !hide;
-  },
+  shouldComponentUpdate: util.shouldComponentUpdate,
   componentDidMount: function () {
     var self = this;
     var container = ReactDOM.findDOMNode(self.refs.container);
     events.on('overviewScrollTop', function () {
-      if (!util.getBoolean(self.props.hide)) {
+      if (!util.getBool(self.props.hide)) {
         container.scrollTop = 0;
       }
     });
@@ -453,7 +450,7 @@ var Overview = React.createClass({
         ref="container"
         className={
           'fill orient-vertical-box w-detail-content w-detail-overview' +
-          (util.getBoolean(this.props.hide) ? ' hide' : '')
+          (util.getBool(this.props.hide) ? ' hide' : '')
         }
       >
         <Properties

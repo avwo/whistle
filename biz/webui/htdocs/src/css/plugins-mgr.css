@@ -1,5 +1,5 @@
 .w-plugins-mgr-dialog {
-  z-index: 1060;
+  z-index: var(--z-modal-max);
 }
 
 .w-plugins-mgr-dialog .modal-content {

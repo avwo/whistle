@@ -10,10 +10,7 @@ var TabMgr = React.createClass({
     this.initedTabs = {};
     return {};
   },
-  shouldComponentUpdate: function (nextProps) {
-    var hide = util.getBoolean(this.props.hide);
-    return hide != util.getBoolean(nextProps.hide) || !hide;
-  },
+  shouldComponentUpdate: util.shouldComponentUpdate,
   componentDidMount: function () {
     var self = this;
     events.on('setComposer', function () {

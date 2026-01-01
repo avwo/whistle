@@ -22,10 +22,7 @@ var Frames = React.createClass({
       self.setState({});
     });
   },
-  shouldComponentUpdate: function (nextProps) {
-    var hide = util.getBoolean(this.props.hide);
-    return hide != util.getBoolean(nextProps.hide) || !hide;
-  },
+  shouldComponentUpdate: util.shouldComponentUpdate,
   onClickFrame: function (frame) {
     var modal = this.state.modal;
     modal.setActive(frame);

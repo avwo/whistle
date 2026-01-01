@@ -1,7 +1,7 @@
 /* Context Menu Style by marvin1023 */
 .w-context-menu {
   position: absolute;
-  z-index: 99999999;
+  z-index: var(--z-ctx-menu);
 }
 
 .w-ctx-menu-list {
@@ -47,7 +47,7 @@ body .w-ctx-menu-list .w-ctx-menu-list {
   margin-left: 3px;
   display: none;
   top: -1px;
-  z-index: 100000001;
+  z-index: calc(var(--z-ctx-menu) + 2);
 }
 body .w-ctx-menu-list .w-ctx-menu-gap {
   position: absolute;
@@ -57,7 +57,7 @@ body .w-ctx-menu-list .w-ctx-menu-gap {
   left: 100%;
   width: 6px;
   display: none;
-  z-index: 100000000;
+  z-index: calc(var(--z-ctx-menu) + 1);
 }
 .w-ctx-menu-item:hover .w-ctx-menu-list,
 .w-ctx-menu-item:hover .w-ctx-menu-gap {

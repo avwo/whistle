@@ -4,10 +4,7 @@ var util = require('./util');
 var TOTAL_RATE = 82;
 
 var Timeline = React.createClass({
-  shouldComponentUpdate: function (nextProps) {
-    var hide = util.getBoolean(this.props.hide);
-    return hide != util.getBoolean(nextProps.hide) || !hide;
-  },
+  shouldComponentUpdate: util.shouldComponentUpdate,
   render: function () {
     var modal = this.props.modal;
     var data = this.props.data;
@@ -36,7 +33,7 @@ var Timeline = React.createClass({
       <div
         className={
           'fill orient-vertical-box w-detail-content w-timeline' +
-          (util.getBoolean(this.props.hide) ? ' hide' : '')
+          (util.getBool(this.props.hide) ? ' hide' : '')
         }
       >
         <ul>

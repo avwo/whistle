@@ -119,3 +119,7 @@
 span.w-src-info {
   color: #999;
 }
+
+.w-composer-dialog .form-control {
+  padding: 6px;
+}

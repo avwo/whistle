@@ -13,10 +13,7 @@ var Inspectors = React.createClass({
   getInitialState: function () {
     return { activeName: 'Request', urlModal: { URL: '' } };
   },
-  shouldComponentUpdate: function (nextProps) {
-    var hide = util.getBoolean(this.props.hide);
-    return hide != util.getBoolean(nextProps.hide) || !hide;
-  },
+  shouldComponentUpdate: util.shouldComponentUpdate,
   componentDidMount: function () {
     var self = this;
     events.on('tabsChange', function () {
@@ -43,7 +40,7 @@ var Inspectors = React.createClass({
     var modal = props.modal;
     var urlModal = self.state.urlModal;
     var hideFrames = !self.isActive('Frames');
-    var hide = util.getBoolean(props.hide);
+    var hide = util.getBool(props.hide);
     var tabs = dataCenter.getTabs();
     var active = this.state.activeName;
     urlModal.URL = modal && ((modal.isHttps ? 'tunnel://' : '') + modal.url);

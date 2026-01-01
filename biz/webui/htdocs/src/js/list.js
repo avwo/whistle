@@ -257,10 +257,7 @@ var List = React.createClass({
       storage.set(this.getCollapseKey(), JSON.stringify(this.collapseGroups));
     }
   },
-  shouldComponentUpdate: function (nextProps) {
-    var hide = util.getBoolean(this.props.hide);
-    return hide != util.getBoolean(nextProps.hide) || !hide;
-  },
+  shouldComponentUpdate: util.shouldComponentUpdate,
   componentDidUpdate: function () {
     var modal = this.props.modal;
     var curListLen = modal.list.length;

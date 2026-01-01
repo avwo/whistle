@@ -832,7 +832,7 @@ var Home = React.createClass({
             </button> : null}
             <button
               type="button"
-              className="btn btn-primary w-copy-text-with-tips"
+              className="btn btn-primary"
               data-dismiss="modal"
               onClick={self.execCmd}
               disabled={disabledBtn}

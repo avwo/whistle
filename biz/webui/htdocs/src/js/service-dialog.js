@@ -75,7 +75,8 @@ var ServiceDialog = React.createClass({
   },
   render: function () {
     window.onWhistleServicePageReady = onWhistleServicePageReady;
-    return <LargeDialog className={'w-service-dialog' + (dataCenter.hasWhistleToken ? '' : ' w-service-login-dialog')} ref="serviceDialog" hideButton="1" />;
+    var className = 'w-service-dialog' + (dataCenter.hasWhistleToken ? '' : ' w-service-login-dialog');
+    return <LargeDialog disableBackdrop className={className} ref="serviceDialog" hideButton="1" />;
   }
 });
 

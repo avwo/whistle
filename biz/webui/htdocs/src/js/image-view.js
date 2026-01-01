@@ -8,10 +8,7 @@ var hasWebView = function() {
 };
 
 var ImageView = React.createClass({
-  shouldComponentUpdate: function (nextProps) {
-    var hide = util.getBoolean(this.props.hide);
-    return hide != util.getBoolean(nextProps.hide) || !hide;
-  },
+  shouldComponentUpdate: util.shouldComponentUpdate,
   preview: function () {
     util.openPreview(this.props.data);
   },

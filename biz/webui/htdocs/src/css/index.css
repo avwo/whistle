@@ -5,7 +5,7 @@
   background: #f1f3f4;
   padding-right: 80px;
   position: relative;
-  z-index: 1001;
+  z-index: var(--z-menu);
   white-space: nowrap;
 }
 .w-menu a {

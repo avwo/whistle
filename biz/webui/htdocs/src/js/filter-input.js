@@ -9,21 +9,14 @@ var win = require('./win');
 var MAX_LEN = 128;
 var TYPES = ['JSON', 'HTML', 'CSS', 'JS', 'Font', 'Img', 'Media', 'WS', 'Tunnel', 'Wasm', 'Mock', 'Import', 'Composer', 'Error', 'Other'];
 var TITLES = {
-  HTML: 'HTML',
-  CSS: 'CSS',
   JS: 'JavaScript',
-  JSON: 'JSON',
-  Font: 'Font',
   Img: 'Image',
-  Media: 'Media',
   WS: 'WebSocket',
-  Tunnel: 'Tunnel',
   Wasm: 'WebAssembly',
   Mock: 'Show mock requests',
   Error: 'Show error requests',
   Import: 'Show import sessions',
-  Composer: 'Show composer requests',
-  Other: 'Other'
+  Composer: 'Show composer requests'
 };
 
 var FilterInput = React.createClass({
@@ -244,7 +237,7 @@ var FilterInput = React.createClass({
   },
   renderTypes: function () {
     var filterType = this.state.filterType;
-    if (!TITLES[filterType]) {
+    if (TYPES.indexOf(filterType) === -1) {
       filterType = '';
     }
     return (
@@ -252,7 +245,7 @@ var FilterInput = React.createClass({
         style={{background: filterType ? '#fafafa' : undefined}}>
         <span className={filterType ? undefined : 'w-active'}>All</span>
         {TYPES.map(function (type) {
-          return <span key={type} title={TITLES[type]} className={filterType === type ? 'w-active' : undefined}>{type}</span>;
+          return <span key={type} title={TITLES[type] || type} className={filterType === type ? 'w-active' : undefined}>{type}</span>;
         })}
       </div>
     );

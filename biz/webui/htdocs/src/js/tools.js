@@ -14,12 +14,12 @@ var util = require('./util');
 var BTNS = [
   {
     name: 'Console',
-    icon: 'file',
+    icon: 'console',
     active: true
   },
   {
     name: 'Server',
-    icon: 'exclamation-sign'
+    icon: 'file'
   },
   {
     name: 'Toolbox',
@@ -39,8 +39,8 @@ var Tools = React.createClass({
     });
   },
   shouldComponentUpdate: function (nextProps) {
-    var hide = util.getBoolean(this.props.hide);
-    if (hide != util.getBoolean(nextProps.hide)) {
+    var hide = util.getBool(this.props.hide);
+    if (hide != util.getBool(nextProps.hide)) {
       return true;
     }
     if (hide) {
@@ -125,7 +125,7 @@ var Tools = React.createClass({
       <div
         className={
           'fill orient-vertical-box w-detail-log' +
-          (util.getBoolean(this.props.hide) ? ' hide' : '')
+          (util.getBool(this.props.hide) ? ' hide' : '')
         }
       >
         <BtnGroup
@@ -147,7 +147,7 @@ var Tools = React.createClass({
         </LazyInit>
         <TabMgr
           active={state.plugin && state.plugin.plugin}
-          hide={util.getBoolean(this.props.hide)}
+          hide={util.getBool(this.props.hide)}
           tabs={dataCenter.getToolTabs()}
           className="w-custom-tab-panel"
         />

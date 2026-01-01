@@ -35,7 +35,7 @@ var Divider = React.createClass({
   reset: function () {
     var self = this;
     var divider = ReactDOM.findDOMNode(self.refs.divider);
-    var vertical = util.getBoolean(self.props.vertical);
+    var vertical = util.getBool(self.props.vertical);
     var prop = vertical ? 'height' : 'width';
     var con = $(divider);
     var leftElem = con.children('.w-divider-left');
@@ -66,7 +66,7 @@ var Divider = React.createClass({
     self.triggerDOMReady();
   },
   render: function () {
-    var vertical = util.getBoolean(this.props.vertical);
+    var vertical = util.getBool(this.props.vertical);
     var divider = <div className="w-divider"></div>;
     var hideLeft = this.props.hideLeft;
     var hideRight = this.props.hideRight;
@@ -85,7 +85,7 @@ var Divider = React.createClass({
           (vertical ? 'orient-vertical-box' : 'box') +
           ' fill w-divider-con ' +
           (this.props.className || '') +
-          (util.getBoolean(this.props.hide) ? ' hide' : '')
+          (util.getBool(this.props.hide) ? ' hide' : '')
         }
       >
         <div

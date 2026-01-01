@@ -18,8 +18,8 @@ var Textarea = React.createClass({
     return {};
   },
   shouldComponentUpdate: function (nextProps) {
-    var hide = util.getBoolean(this.props.hide);
-    var nextHide = util.getBoolean(nextProps.hide);
+    var hide = util.getBool(this.props.hide);
+    var nextHide = util.getBool(nextProps.hide);
     if (this._isCaptured !== dataCenter.isCapture) {
       this._isCaptured = dataCenter.isCapture;
       return true;

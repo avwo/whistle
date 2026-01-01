@@ -28,10 +28,7 @@ var TabFrame = React.createClass({
   componentWillUnmount: function () {
     events.off('selectedSessionChange', this.handlePush);
   },
-  shouldComponentUpdate: function (nextProps) {
-    var hide = util.getBoolean(this.props.hide);
-    return hide != util.getBoolean(nextProps.hide) || !hide;
-  },
+  shouldComponentUpdate: util.shouldComponentUpdate,
   compose: function (item) {
     this.handlePush(null, null, item);
   },
