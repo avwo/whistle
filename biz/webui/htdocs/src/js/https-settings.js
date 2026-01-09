@@ -88,7 +88,7 @@ var HttpsSettings = React.createClass({
                   <a
                     className="w-help-menu"
                     title="Click here to learn how to install root ca"
-                    href={util.getDocsBaseUrl('gui/https.html')}
+                    href={util.getDocUrl('gui/https.html')}
                     target="_blank"
                   >
                     <span className="glyphicon glyphicon-question-sign"></span>

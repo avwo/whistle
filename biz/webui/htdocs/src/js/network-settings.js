@@ -339,7 +339,7 @@ var Settings = React.createClass({
     var viewAllInNewWindow = storage.get('viewAllInNewWindow') === '1';
 
     return (
-      <Dialog ref="networkSettingsDialog" wstyle="w-network-settings-dialog">
+      <Dialog ref="networkSettingsDialog" wstyle="w-ns-dialog">
         <div onChange={self.onNetworkSettingsChange} className="modal-body">
           <button
             type="button"
@@ -349,7 +349,7 @@ var Settings = React.createClass({
           >
             <span aria-hidden="true">&times;</span>
           </button>
-          <fieldset className="network-settings-filter">
+          <fieldset className="w-ns-filter">
             <legend>
               <label>
                 <input
@@ -363,7 +363,7 @@ var Settings = React.createClass({
               <a
                 className="w-help-menu"
                 title="Click here to learn how to use the filter"
-                href={util.getDocsBaseUrl('gui/network.html#settings')}
+                href={util.getDocUrl('gui/network.html#settings')}
                 target="_blank"
               >
                 <span className="glyphicon glyphicon-question-sign"></span>
@@ -379,7 +379,7 @@ var Settings = React.createClass({
               maxLength={dataCenter.MAX_EXCLUDE_LEN}
             />
           </fieldset>
-          <fieldset className="network-settings-filter">
+          <fieldset className="w-ns-filter">
             <legend>
               <label>
                 <input
@@ -393,7 +393,7 @@ var Settings = React.createClass({
               <a
                 className="w-help-menu"
                 title="Click here to learn how to use the filter"
-                href={util.getDocsBaseUrl('gui/network.html#settings')}
+                href={util.getDocUrl('gui/network.html#settings')}
                 target="_blank"
               >
                 <span className="glyphicon glyphicon-question-sign"></span>
@@ -409,7 +409,7 @@ var Settings = React.createClass({
               maxLength={dataCenter.MAX_INCLUDE_LEN}
             />
           </fieldset>
-          <fieldset className="network-settings-columns">
+          <fieldset className="w-ns-columns">
             <legend>
               <label>Network Columns</label>
               <label onClick={self.resetColumns} className="btn btn-default">
@@ -473,7 +473,7 @@ var Settings = React.createClass({
             })}
           </fieldset>
 
-          <label className="w-network-settings-own">
+          <label className="w-ns-own">
             Maximum Rows:
             <select
               className="form-control"
@@ -488,7 +488,7 @@ var Settings = React.createClass({
               <option value="3000">3000</option>
             </select>
           </label>
-          <label className="w-network-settings-own">
+          <label className="w-ns-own">
             <input
               checked={dataCenter.isOnlyViewOwnData()}
               data-name="viewOwn"
@@ -496,17 +496,17 @@ var Settings = React.createClass({
             />
             Viewing only your computer's network requests (IP: {dataCenter.clientIp})
           </label>
-          <label className="w-network-settings-own">
+          <label className="w-ns-own">
             <input checked={viewAllInNewWindow} data-name="viewAllInNewWindow" type="checkbox" />
             ViewAll in new window
           </label>
-          <label className="w-network-settings-own">
+          <label className="w-ns-own">
             <input checked={isTreeView} data-name="treeView" type="checkbox" />
             <span className="glyphicon glyphicon-tree-conifer" />
             Show Tree View (Ctrl[Command] + B)
           </label>
           {isTreeView ? (
-            <label style={{textIndent: 20}} className="w-network-settings-own">
+            <label style={{textIndent: 20}} className="w-ns-own">
               <input
                 checked={storage.get('disabledHNR') !== '1'}
                 data-name="disabledHNR"
@@ -539,7 +539,7 @@ var Settings = React.createClass({
             Export
           </button>
         </div>
-        <Dialog ref="editCustomColumn" wstyle="w-network-settings-edit">
+        <Dialog ref="editCustomColumn" wstyle="w-ns-edit">
           <div onChange={self.onNetworkSettingsChange} className="modal-body">
             <button
               type="button"

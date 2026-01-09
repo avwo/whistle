@@ -16,6 +16,7 @@ var storage = require('./storage');
 var RecycleBinDialog = require('./recycle-bin');
 var EnabledRulesDialog = require('./enabled-rules');
 
+var findDOMNode = ReactDOM.findDOMNode;
 var hideEnableHTTPSTips = window.location.href.indexOf('hideEnableHTTPSTips=1') !== -1;
 var disabledEditor = window.location.href.indexOf('disabledEditor=1') !== -1;
 var rulesCtxMenuList = [
@@ -99,7 +100,7 @@ function getName(name) {
 function getDragInfo(e, list) {
   var target = getTarget(e);
   if (list && !target) {
-    target = $(ReactDOM.findDOMNode(list)).find('a:last')[0];
+    target = $(findDOMNode(list)).find('a:last')[0];
   }
   var name = target && target.getAttribute('data-name');
   if (!name) {
@@ -177,7 +178,7 @@ var List = React.createClass({
     var modal = self.props.modal;
     this.curListLen = modal.list.length;
     this.curActiveItem = modal.getActive();
-    $(ReactDOM.findDOMNode(self.refs.list))
+    $(findDOMNode(self.refs.list))
       .focus()
       .on('keydown', function (e) {
         var item;
@@ -223,10 +224,10 @@ var List = React.createClass({
       self.setState({});
     });
     var scrollToBottom = function() {
-      ReactDOM.findDOMNode(self.refs.list).scrollTop = 1000000000;
+      findDOMNode(self.refs.list).scrollTop = 1000000000;
     };
     var focusList = function() {
-      ReactDOM.findDOMNode(self.refs.list).focus();
+      findDOMNode(self.refs.list).focus();
     };
     events.on('scroll' + comName + 'Bottom', function() {
       scrollToBottom();
@@ -278,8 +279,8 @@ var List = React.createClass({
   ensureVisible: function (init, activeItem) {
     activeItem = activeItem || this.props.modal.getActive();
     if (activeItem) {
-      var elem = ReactDOM.findDOMNode(this.refs[activeItem.name]);
-      var con = ReactDOM.findDOMNode(this.refs.list);
+      var elem = findDOMNode(this.refs[activeItem.name]);
+      var con = findDOMNode(this.refs.list);
       util.ensureVisible(elem, con, init);
     }
   },
@@ -369,7 +370,7 @@ var List = React.createClass({
     var info = getDragInfo(e);
     if (info) {
       curTarget = info.target;
-      curTarget.style.background = '#ddd';
+      curTarget.style.background = 'var(--bg-active)';
     }
   },
   onDragLeave: function (e) {
@@ -525,7 +526,7 @@ var List = React.createClass({
       }
       break;
     case 'Help':
-      window.open(util.getDocsBaseUrl('gui/' + (self.props.name || 'values') + '.html'));
+      window.open(util.getDocUrl('gui/' + (self.props.name || 'values') + '.html'));
       break;
     case 'Plugins':
       var modal = self.props.modal;

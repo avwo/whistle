@@ -14,6 +14,7 @@ var MAX_JSON_LEN = 32768;
 var MAX_SAVE_LEN = 5120;
 var MAX_TEXT_LEN = 5120;
 var MAX_IMAGE_SIZE = 1024 * 1024 * 3;
+var findDOMNode = ReactDOM.findDOMNode;
 
 var ToolBox = React.createClass({
   getInitialState: function () {
@@ -105,17 +106,17 @@ var ToolBox = React.createClass({
     }
   },
   uploadFile: function () {
-    ReactDOM.findDOMNode(this.refs.uploadFile).click();
+    findDOMNode(this.refs.uploadFile).click();
   },
   readFile: function () {
     var self = this;
-    var file = new FormData(ReactDOM.findDOMNode(this.refs.uploadFileForm)).get('file');
+    var file = new FormData(findDOMNode(this.refs.uploadFileForm)).get('file');
     if (!(file.size <= MAX_IMAGE_SIZE)) {
       return win.alert('Maximum file size: 3MB');
     }
     var type = 'data:' + file.type + ';base64,';
     util.readFileAsBase64(file, function (base64) {
-      ReactDOM.findDOMNode(self.refs.uploadFile).value = '';
+      findDOMNode(self.refs.uploadFile).value = '';
       self.refs.textDialog.show(type + base64, base64, file.name);
     });
   },

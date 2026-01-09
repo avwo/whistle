@@ -12,6 +12,7 @@ var win = require('./win');
 
 var MAX_COUNT = dataCenter.MAX_LOG_LENGTH;
 var MAX_FILE_SIZE = 1024 * 1024 * 2;
+var findDOMNode = ReactDOM.findDOMNode;
 
 var ServerLog = React.createClass({
   getInitialState: function () {
@@ -47,10 +48,10 @@ var ServerLog = React.createClass({
   },
   componentDidMount: function () {
     var self = this;
-    var svrContainer = (this.container = ReactDOM.findDOMNode(
+    var svrContainer = (this.container = findDOMNode(
       self.refs.svrContainer
     ));
-    var svrContent = (this.content = ReactDOM.findDOMNode(
+    var svrContent = (this.content = findDOMNode(
       self.refs.svrContent
     ));
 

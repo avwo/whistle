@@ -12,3 +12,12 @@
   font-family: consolas, monospace;
   font-size: 14px;
 }
+
+.CodeMirror-search-label {
+  white-space: nowrap;
+  width: calc(100% - 320px);
+}
+
+.CodeMirror-search-label .CodeMirror-search-field {
+  width: calc(100% - 50px)!important;
+}

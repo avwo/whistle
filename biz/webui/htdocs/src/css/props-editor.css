@@ -9,7 +9,7 @@
 .w-props-editor th,
 .w-props-editor td {
   border: none;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid var(--c-border);
   border-top: none !important;
   padding: 0 !important;
   font-weight: normal;
@@ -27,7 +27,7 @@
   width: 75px;
   padding: 4px 0 0 8px !important;
   padding-left: 0 !important;
-  background: #fafafa;
+  background: var(--bg-bar);
 }
 .w-props-editor .w-props-ops a {
   margin-left: 15px !important;
@@ -35,7 +35,7 @@
   text-decoration: none !important;
 }
 .w-props-ops a:hover {
-  color: #337ab7;
+  color: var(--c-hover);
 }
 .w-props-editor pre {
   overflow: auto;
@@ -48,7 +48,7 @@
   color: #f5222d;
 }
 .w-props-editor .w-props-ops .glyphicon-remove:hover {
-  color: #ff0000;
+  color: red;
 }
 
 .w-add-field {
@@ -62,14 +62,14 @@
 .w-add-field.w-add-header {
   margin-left: -48px;
 }
-.w-composer-dialog .modal-content {
+.w-com-dialog .modal-content {
   width: 600px;
 }
-.w-composer-dialog label {
+.w-com-dialog label {
   display: block;
   padding: 10px 0;
 }
-.w-composer-dialog textarea {
+.w-com-dialog textarea {
   height: 120px;
   white-space: normal;
 }
@@ -89,8 +89,8 @@
 .w-props-editor-form button {
   display: none;
 }
-.w-composer-dialog label input,
-.w-composer-dialog label textarea {
+.w-com-dialog label input,
+.w-com-dialog label textarea {
   font-weight: normal;
 }
 
@@ -102,7 +102,7 @@
   line-height: 120px;
   vertical-align: middle;
   cursor: pointer;
-  border: 1px solid #ccc;
+  border: 1px solid var(--c-border);
   border-radius: 4px;
   white-space: nowrap;
   overflow: hidden;

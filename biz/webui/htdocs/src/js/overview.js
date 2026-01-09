@@ -53,7 +53,7 @@ var CSS_MAP = {
   'TTFB': {
     className: 'w-overview-timeline',
     style: {
-      '--overview-bg': '#ddd'
+      '--overview-bg': 'var(--bg-active)'
     }
   },
   'DNS': {
@@ -464,7 +464,7 @@ var Overview = React.createClass({
           className="w-detail-overview-title"
           style={{ background: showOnlyMatchRules ? 'lightyellow' : undefined }}
         >
-          <a href={util.getDocsBaseUrl('rules/protocols.html')} target="_blank">
+          <a href={util.getDocUrl('rules/protocols.html')} target="_blank">
             <span className="glyphicon glyphicon-question-sign"></span>
           </a>
           All Rules:

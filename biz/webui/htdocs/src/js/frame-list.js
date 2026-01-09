@@ -8,6 +8,7 @@ var dataCenter = require('./data-center');
 var RecordBtn = require('./record-btn');
 var ContextMenu = require('./context-menu');
 
+var findDOMNode = ReactDOM.findDOMNode;
 var SEND_PERATORS = [
   {
     value: 0,
@@ -232,10 +233,10 @@ var FrameList = React.createClass({
     return atBottom;
   },
   setContainer: function (container) {
-    this.container = ReactDOM.findDOMNode(container);
+    this.container = findDOMNode(container);
   },
   setContent: function (content) {
-    this.content = ReactDOM.findDOMNode(content);
+    this.content = findDOMNode(content);
   },
   handleAction: function (type) {
     if (type === 'top') {
@@ -378,9 +379,9 @@ var FrameList = React.createClass({
                 reqData.closed = reqData.closed || item.closed;
                 reqData.err = item.err || item.data;
                 if (item.closed) {
-                  statusClass = ' w-connection-closed';
+                  statusClass = ' w-conn-closed';
                 } else {
-                  statusClass = ' w-connection-error';
+                  statusClass = ' w-conn-error';
                 }
                 item.title =
                   item.title ||

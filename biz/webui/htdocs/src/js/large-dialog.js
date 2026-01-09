@@ -32,7 +32,7 @@ var AccountDialog = React.createClass({
     var hideButton = props.hideButton;
 
     return (
-      <Dialog disableBackdrop={props.disableBackdrop} ref="dialog" wstyle={'w-large-dialog' + (className ? ' ' + className : '')}>
+      <Dialog ref="dialog" wstyle={'w-large-dialog' + (className ? ' ' + className : '')}>
         {hideButton ? null : <a className="w-open-win-btn" onClick={this.openInNewWin}>Open In New Window</a>}
         <button
           type="button"

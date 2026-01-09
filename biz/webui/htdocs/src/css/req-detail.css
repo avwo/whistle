@@ -17,7 +17,7 @@
   background: #f1f3f4;
   font-size: 12px;
   padding: 0 10px;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid var(--c-border);
 }
 .w-detail-inspectors-title {
   padding: 0 5px !important;

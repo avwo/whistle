@@ -57,7 +57,7 @@
 
 .w-req-data-headers {
   height: 29px;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid var(--c-border);
   overflow: hidden;
 }
 .w-req-data-headers .table {
@@ -69,10 +69,10 @@
   -webkit-user-select: none;
   user-select: none;
   font-weight: normal;
-  color: #000;
+  color: var(--c-default);
   position: relative;
   cursor: pointer;
-  background-color: #fafafa;
+  background-color: var(--bg-bar);
 }
 .w-req-data-headers .table th:last-child {
   box-sizing: content-box;
@@ -87,7 +87,7 @@
 .w-req-data-list th,
 .w-req-data-list td {
   border-top: none !important;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid var(--c-border);
   font-weight: normal;
   font-size: 12px;
   padding: 3px 0 3px 6px !important;
@@ -111,7 +111,7 @@
 }
 .w-req-data-list .w-tunnel th,
 .w-req-data-list .w-tunnel td {
-  color: #808080;
+  color: var(--c-gray);
 }
 .w-req-data-list .w-has-rules th,
 .w-req-data-list .w-has-rules td,
@@ -124,7 +124,7 @@
 .w-req-data-list .w-has-local td,
 .w-req-data-list .tree-leaf.w-has-local {
   font-weight: 500;
-  color: #000;
+  color: var(--c-default);
 }
 
 .w-req-data-list .w-error-status th,
@@ -137,12 +137,12 @@
 }
 .w-req-data-list tr {
   cursor: default;
-  background-color: #fff;
+  background-color: var(--bg-default);
 }
 .w-req-data-list .w-hover-table-body tr.w-selected th,
 .w-req-data-list .w-hover-table-body tr.w-selected td {
-  background-color: #337ab7 !important;
-  color: #fff !important;
+  background-color: var(--c-hover) !important;
+  color: var(--c-active) !important;
 }
 
 .w-req-data-list .tree-leaf .glyphicon {
@@ -170,7 +170,7 @@
   color: #8a6d3b !important;
 }
 .w-req-data-list .tree-leaf.active span {
-  color: #337ab7 !important;
+  color: var(--c-hover) !important;
 }
 .w-req-data-list .tree-leaf.w-error-status,
 .w-req-data-list .tree-leaf.w-error-status span {
@@ -209,11 +209,11 @@
   font-size: 18px;
   cursor: pointer;
   margin-left: 10px;
-  color: #555;
+  color: var(--c-weak);
 }
 
 .w-qrcode-dialog input {
-  border: 1px solid #ddd;
+  border: 1px solid var(--c-border);
   padding: 3px;
   display: block;
   width: 320px;
@@ -288,7 +288,7 @@
 
 .tree-node.w-selected {
   background-color: #8fbc8f;
-  color: #fff;
+  color: var(--c-active);
 }
 
 .highlight, .w-highlight td, .w-highlight th {
@@ -343,7 +343,7 @@
   font-size: 14px;
   text-align: center;
   background-color: #fefbe7;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid var(--c-border);
   color: red;
 }
 
@@ -368,8 +368,8 @@
   font-size: 10px;
   color: #417ce8;
   padding: 5px 8px;
-  background-color: #fff;
-  border: 1px solid #ddd;
+  background-color: var(--bg-default);
+  border: 1px solid var(--c-border);
   border-radius: 20px;
   opacity: .85;
   display: none;

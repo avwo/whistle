@@ -27,26 +27,26 @@ var CookiesDialog = React.createClass({
     var self = this;
     var cookies = self.state.cookies;
     return (
-      <Dialog ref="cookiesDialog" wstyle="w-composer-cookies-dialog">
+      <Dialog ref="cookiesDialog" wstyle="w-com-cookies-dialog">
         <div className="modal-body">
           <button type="button" className="close" onClick={self.hide}>
             <span aria-hidden="true">&times;</span>
           </button>
           <table className="table">
             <thead>
-              <th className="w-composer-cookie-order">#</th>
-              <th className="w-composer-cookie-value">Cookie</th>
-              <th className="w-composer-cookie-operation">Operation</th>
+              <th className="w-com-cookie-order">#</th>
+              <th className="w-com-cookie-value">Cookie</th>
+              <th className="w-com-cookie-operation">Operation</th>
             </thead>
             <tbody className="w-hover-table-body">
               {cookies.map(function (cookie, i) {
                 return (
                   <tr>
-                    <th className="w-composer-cookie-order">{i + 1}</th>
-                    <td className="w-composer-cookie-value">
+                    <th className="w-com-cookie-order">{i + 1}</th>
+                    <td className="w-com-cookie-value">
                       {cookie}
                     </td>
-                    <td className="w-composer-cookie-operation">
+                    <td className="w-com-cookie-operation">
                       <a
                         className="w-copy-text-with-tips"
                         data-clipboard-text={cookie}

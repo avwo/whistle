@@ -511,6 +511,10 @@ function parseKey(key) {
   return key[0] === '$' ? key.slice(2, -1) : key.slice(1, -1);
 }
 
+if (config.handleUpdate) {
+  app.post('/cgi-bin/update', config.handleUpdate);
+}
+
 app.get('/rules', function(req, res) {
   var query = req.query;
   var name = query.name || query.key;

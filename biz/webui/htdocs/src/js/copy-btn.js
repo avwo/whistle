@@ -16,8 +16,7 @@ var CopyBtn = React.createClass({
       <a
         onMouseLeave={this.handleLeave}
         onClick={this.handleCopy}
-        style={copied ? { color: '#ccc', cursor: 'not-allowed' } : undefined}
-        className={'w-copy-btn' + (copied ? '' : ' w-copy-text')}
+        className={'w-copy-btn' + (copied ? ' w-copied-text' : ' w-copy-text')}
         draggable="false"
         data-clipboard-text={this.props.value || ''}
       >

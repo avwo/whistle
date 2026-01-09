@@ -9,6 +9,8 @@ var message = require('./message');
 var EditorDialog = require('./editor-dialog');
 var parseCurl = require('./parse-curl');
 
+var findDOMNode = ReactDOM.findDOMNode;
+
 function getAccept(name) {
   if (name === 'network') {
     return '.txt,.json,.saz,.har';
@@ -39,7 +41,7 @@ var ImportDialog = React.createClass({
     var self = this;
     self.refs.importDialog.show();
     setTimeout(function () {
-      var input = ReactDOM.findDOMNode(self.refs.input);
+      var input = findDOMNode(self.refs.input);
       input.focus();
       input.select();
     }, 500);
@@ -62,7 +64,7 @@ var ImportDialog = React.createClass({
       return;
     }
     var self = this;
-    var input = ReactDOM.findDOMNode(self.refs.input);
+    var input = findDOMNode(self.refs.input);
     var url = input.value.trim();
     if (!url) {
       message.error('The url or file path is required');
@@ -93,12 +95,12 @@ var ImportDialog = React.createClass({
     return this.refs.importDialog.isVisible();
   },
   uploadFile: function() {
-    var fileInput = ReactDOM.findDOMNode(this.refs.importFile);
+    var fileInput = findDOMNode(this.refs.importFile);
     this.handleFile(fileInput.files[0]);
-    ReactDOM.findDOMNode(this.refs.importFile).value = '';
+    findDOMNode(this.refs.importFile).value = '';
   },
   selectFile: function() {
-    ReactDOM.findDOMNode(this.refs.importFile).click();
+    findDOMNode(this.refs.importFile).click();
   },
   importCURL: function(text) {
     text = text.trim();

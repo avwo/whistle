@@ -23,11 +23,11 @@
 }
 
 .w-files-operation a:last-child {
-  color: #f66;
+  color: var(--c-risk);
 }
 
 .w-files-operation a:last-child:hover {
-  color: #f00;
+  color: red;
 }
 
 .w-files-dialog thead th {

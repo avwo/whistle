@@ -24,7 +24,7 @@
   margin-top: 3px;
 }
 .w-kv-name strong {
-  color: #f66;
+  color: var(--c-risk);
   margin-left: 5px;
   cursor: pointer;
 }

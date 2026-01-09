@@ -11,7 +11,7 @@ var events = require('./events');
 var Tips = require('./panel-tips');
 
 var MAX_LENGTH = 1024 * 6;
-
+var findDOMNode = ReactDOM.findDOMNode;
 
 var Textarea = React.createClass({
   getInitialState: function () {
@@ -55,7 +55,7 @@ var Textarea = React.createClass({
     self.state.showDownloadInput = /w-download/.test(e.target.className);
     self.state.showNameInput = true;
     self.forceUpdate(function () {
-      var nameInput = ReactDOM.findDOMNode(self.refs.nameInput);
+      var nameInput = findDOMNode(self.refs.nameInput);
       var defaultName = !nameInput.value && self.props.defaultName;
       if (defaultName) {
         nameInput.value = defaultName;
@@ -65,16 +65,16 @@ var Textarea = React.createClass({
     });
   },
   download: function () {
-    var target = ReactDOM.findDOMNode(this.refs.nameInput);
+    var target = findDOMNode(this.refs.nameInput);
     var name = target.value.trim();
     target.value = '';
     var base64 = this.props.base64;
-    ReactDOM.findDOMNode(this.refs.filename).value = name;
-    ReactDOM.findDOMNode(this.refs.type).value = base64 ? 'base64' : '';
-    ReactDOM.findDOMNode(this.refs.headers).value = this.props.headers || '';
-    ReactDOM.findDOMNode(this.refs.content).value =
+    findDOMNode(this.refs.filename).value = name;
+    findDOMNode(this.refs.type).value = base64 ? 'base64' : '';
+    findDOMNode(this.refs.headers).value = this.props.headers || '';
+    findDOMNode(this.refs.content).value =
       base64 != null ? base64 : this.props.value || '';
-    ReactDOM.findDOMNode(this.refs.downloadForm).submit();
+    findDOMNode(this.refs.downloadForm).submit();
     this.hideNameInput();
   },
   submit: function (e) {
@@ -85,7 +85,7 @@ var Textarea = React.createClass({
     if (!modal) {
       return;
     }
-    var target = ReactDOM.findDOMNode(this.refs.nameInput);
+    var target = findDOMNode(this.refs.nameInput);
     var name = target.value.trim();
     var self = this;
     if (self.state.showDownloadInput) {
@@ -127,7 +127,7 @@ var Textarea = React.createClass({
   hideNameInput: function () {
     this.state.showNameInput = false;
     this.forceUpdate(function () {
-      var nameInput = ReactDOM.findDOMNode(this.refs.nameInput);
+      var nameInput = findDOMNode(this.refs.nameInput);
       var defaultName = this.props.defaultName;
       if (defaultName === nameInput.value) {
         nameInput.value = '';

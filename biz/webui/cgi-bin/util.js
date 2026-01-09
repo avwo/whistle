@@ -25,6 +25,7 @@ exports.getServerInfo = function(req) {
   }
   var info = {
     whistleId: config.whistleId,
+    hasUpdater: config.hasUpdater,
     hasWhistleToken: config.hasWhistleToken,
     pid: PID,
     pInfo: proc,
@@ -57,6 +58,7 @@ exports.getServerInfo = function(req) {
     username: config.whistleName && config.username ? config.username + ' (' + config.whistleName + ')' : (config.username || config.whistleName),
     nodeVersion: process.version,
     latestVersion: properties.getLatestVersion('latestVersion'),
+    latestClientVersion: properties.getLatestVersion('latestClientVersion'),
     host: util.hostname(),
     isWin: util.isWin,
     port: config.port,

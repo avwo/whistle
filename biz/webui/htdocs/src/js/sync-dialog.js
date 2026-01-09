@@ -9,6 +9,10 @@ var showLoading = function(time) {
   return time && (Date.now() - time > 800);
 };
 
+var addHistory = function(url, history) {
+  return history ? url + (url.indexOf('?') === -1 ? '?' : '&') + 'history=' + encodeURIComponent(history) : url;
+};
+
 var SyncDialog = React.createClass({
   getInitialState: function () {
     return {};
@@ -37,9 +41,7 @@ var SyncDialog = React.createClass({
       return;
     }
     self.loadingRules = Date.now() || 1;
-    if (history) {
-      rulesUrl += (rulesUrl.indexOf('?') === -1 ? '?' : '&') + 'history=' + encodeURIComponent(history);
-    }
+    rulesUrl = addHistory(rulesUrl, history);
     var loadRules = dataCenter.createCgi(
       util.getPluginCgiUrl(self.state.moduleName, rulesUrl)
     );
@@ -61,9 +63,7 @@ var SyncDialog = React.createClass({
       return;
     }
     self.loadingValues = Date.now() || 1;
-    if (history) {
-      valuesUrl += (valuesUrl.indexOf('?') === -1 ? '?' : '&') + 'history=' + encodeURIComponent(history);
-    }
+    valuesUrl = addHistory(valuesUrl, history);
     var loadValues = dataCenter.createCgi(
       util.getPluginCgiUrl(self.state.moduleName, valuesUrl)
     );

@@ -6,6 +6,7 @@ module.exports = function(req, res) {
   var version = config.version;
   var doNotShowAgainVersion = properties.get('doNotShowAgainVersion');
   var latestVersion = properties.getLatestVersion('latestVersion');
+  var latestClientVersion = properties.getLatestVersion('latestClientVersion');
   var hasNewVersion = common.compareVersion(latestVersion, version);
 
   res.json({
@@ -13,8 +14,10 @@ module.exports = function(req, res) {
     em: 'success',
     showUpdate: !config.disableUpdateTips && hasNewVersion > 1 && common.compareVersion(latestVersion, doNotShowAgainVersion) > 1,
     hasNewVersion: hasNewVersion > 0,
+    hasUpdater: config.hasUpdater,
     version: config.version,
-    latestVersion: latestVersion
+    latestVersion: latestVersion,
+    latestClientVersion: latestClientVersion
   });
 };
 

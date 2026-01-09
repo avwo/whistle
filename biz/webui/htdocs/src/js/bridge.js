@@ -170,3 +170,20 @@ function getBridge(win, api) {
 }
 
 module.exports = getBridge;
+
+getBridge.getServiceBridge = function(closeDialog) {
+  var bridgeApi = getBridge(null, {
+    login: function(data, cb) {
+      if (typeof data !== 'string') {
+        data = JSON.stringify(data);
+      }
+      dataCenter.login(data, cb);
+    },
+    logout: function(cb) {
+      dataCenter.logout(cb);
+    }
+  });
+  bridgeApi.closeDialog = closeDialog;
+  bridgeApi.installPlugins = dataCenter.installPluginsFromService;
+  return bridgeApi;
+};

@@ -14,7 +14,7 @@ var OrderTable = React.createClass({
 
     return (
       <div className={'w-order-table fill vertical-box' + (props.hide ? ' hide' : '')}>
-         <table className="table w-order-table-head">
+        <table className="table w-order-table-head">
           <thead>
             <tr>
               <th>#</th>
@@ -25,7 +25,7 @@ var OrderTable = React.createClass({
           </thead>
         </table>
         <div ref="body" className="w-order-table-body fill">
-           <table className="table">
+          <table className="table">
             <tbody className="w-hover-table-body">
               {rows.length ? rows.map(function(row, i) {
                 return (

@@ -33,6 +33,7 @@ module.exports = function(req, res) {
     mvaluesClientId: config.mvaluesClientId,
     mvaluesTime: config.mvaluesTime,
     latestVersion: properties.getLatestVersion('latestVersion'),
+    latestClientVersion: properties.getLatestVersion('latestClientVersion'),
     server: util.getServerInfo(req),
     rules: getRules(),
     values: getValues(),

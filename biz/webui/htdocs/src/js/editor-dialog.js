@@ -7,6 +7,7 @@ var util = require('./util');
 var message = require('./message');
 var win = require('./win');
 
+var findDOMNode = ReactDOM.findDOMNode;
 var MAX_LEN = 1024 * 1024 * 11;
 var fakeIframe = 'javascript:"<style>html,body{padding:0;margin:0}</style><textarea></textarea>"';
 var iframeStyle = {
@@ -72,7 +73,7 @@ var EditorDialog = React.createClass({
     events.on('uploadTempFile', function(_, file) {
       self.readFile(file);
     });
-    var iframe = ReactDOM.findDOMNode(self.refs.iframe);
+    var iframe = findDOMNode(self.refs.iframe);
     var initTextArea = function() {
       var textarea = iframe.contentWindow.document.querySelector('textarea');
       var style = textarea && textarea.style;
@@ -242,7 +243,7 @@ var EditorDialog = React.createClass({
   },
   onUpload: function () {
     if (!this.reading) {
-      ReactDOM.findDOMNode(this.refs.readLocalFile).click();
+      findDOMNode(this.refs.readLocalFile).click();
     }
   },
   readFile: function(file) {
@@ -254,13 +255,13 @@ var EditorDialog = React.createClass({
     });
   },
   readLocalFile: function () {
-    var form = new FormData(ReactDOM.findDOMNode(this.refs.readLocalFileForm));
+    var form = new FormData(findDOMNode(this.refs.readLocalFileForm));
     var file = form.get('localFile');
     if (file.size > MAX_LEN) {
       return win.alert('Total file size must not exceed 10MB');
     }
     this.readFile(file);
-    ReactDOM.findDOMNode(this.refs.readLocalFile).value = '';
+    findDOMNode(this.refs.readLocalFile).value = '';
   },
   render: function () {
     var state = this.state;
@@ -281,7 +282,7 @@ var EditorDialog = React.createClass({
         </div>
         <div className="modal-body">
           {
-            textEditor ? <div className="w-mock-inline-action">
+            textEditor ? <div className="w-mock-action">
               {props.hideFormat ? null : <a onClick={this.formatValue}>Format</a>}
               <a onClick={this.clearValue}>Clear</a>
             </div> : null

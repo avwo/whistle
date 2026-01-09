@@ -19,7 +19,7 @@ var contextMenuList = [
     list: [
       { name: 'Create API Test', action: 'createApiTest' },
       { name: 'Copy As Script', action: 'copyAsScript' },
-       { name: 'Share Via URL', action: 'Export' }
+      { name: 'Share Via URL', action: 'Export' }
     ]
   }
 ];
@@ -214,11 +214,11 @@ var HistoryData = React.createClass({
     var selectedItem;
     var disabled;
     return (
-      <div ref="historyDialog" className={'w-layer box w-composer-history-data' + (show ? ' w-show' : '')}>
+      <div ref="historyDialog" className={'w-layer box w-com-history-data' + (show ? ' w-show' : '')}>
         {data.length ? null : <span onClick={props.onClose} aria-hidden="true" className="w-close">&times;</span>}
         {data.length ?
         <Divider leftWidth="170">
-          <div ref="list" className="w-composer-history-list" onContextMenu={self.onContextMenu}>
+          <div ref="list" className="w-com-history-list" onContextMenu={self.onContextMenu}>
             {groupList.map(function(item, i) {
               if (item.title) {
                 return <div className="w-history-title" title={item.title} data-index={i}>{item.title}</div>;
@@ -240,8 +240,8 @@ var HistoryData = React.createClass({
               );
             })}
           </div>
-          <div className="fill orient-vertical-box w-composer-history-ctn">
-            {selectedItem ? <div className="w-composer-history-footer">
+          <div className="fill orient-vertical-box w-com-history-ctn">
+            {selectedItem ? <div className="w-com-history-footer">
                 <button
                   type="button"
                   className="btn btn-default"

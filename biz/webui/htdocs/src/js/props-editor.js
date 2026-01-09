@@ -13,6 +13,7 @@ var MAX_VALUE_LEN = 64 * 1024;
 var MAX_COUNT = 160;
 var index = MAX_COUNT;
 var W2_HEADER_RE = /^x-whistle-/;
+var findDOMNode = ReactDOM.findDOMNode;
 
 var highlight = function (name) {
   return name === 'x-forwarded-for' || W2_HEADER_RE.test(name);
@@ -98,13 +99,13 @@ var PropsEditor = React.createClass({
     }
   },
   edit: function (e) {
-    var nameInput = ReactDOM.findDOMNode(this.refs.name);
+    var nameInput = findDOMNode(this.refs.name);
     var name = nameInput.value.trim();
     if (!name) {
       nameInput.focus();
       return message.error('The name is required');
     }
-    var valueInput = ReactDOM.findDOMNode(this.refs.valueInput);
+    var valueInput = findDOMNode(this.refs.valueInput);
     var value = valueInput.value.trim();
     var state = this.state;
     var data = state.data;
@@ -130,13 +131,13 @@ var PropsEditor = React.createClass({
     this.execCallback(e);
   },
   add: function (e) {
-    var nameInput = ReactDOM.findDOMNode(this.refs.name);
+    var nameInput = findDOMNode(this.refs.name);
     var name = nameInput.value.trim();
     if (!name) {
       nameInput.focus();
       return message.error('The name is required');
     }
-    var valueInput = ReactDOM.findDOMNode(this.refs.valueInput);
+    var valueInput = findDOMNode(this.refs.valueInput);
     var value = valueInput.value.trim();
     var modal = this.state.modal;
     var state = this.state;
@@ -172,7 +173,7 @@ var PropsEditor = React.createClass({
   },
   showDialog: function (data) {
     this.refs.composerDialog.show();
-    var nameInput = ReactDOM.findDOMNode(this.refs.name);
+    var nameInput = findDOMNode(this.refs.name);
     if (data) {
       nameInput.value = data.name || '';
       if (data.data) {
@@ -183,7 +184,7 @@ var PropsEditor = React.createClass({
           fileType: data.type
         });
       } else {
-        ReactDOM.findDOMNode(this.refs.valueInput).value = data.value || '';
+        findDOMNode(this.refs.valueInput).value = data.value || '';
       }
     }
     setTimeout(function () {
@@ -240,11 +241,11 @@ var PropsEditor = React.createClass({
   },
   onUpload: function () {
     if (!this.reading) {
-      ReactDOM.findDOMNode(this.refs.readLocalFile).click();
+      findDOMNode(this.refs.readLocalFile).click();
     }
   },
   readLocalFile: function () {
-    var form = new FormData(ReactDOM.findDOMNode(this.refs.readLocalFileForm));
+    var form = new FormData(findDOMNode(this.refs.readLocalFileForm));
     var file = form.get('localFile');
     if (file.size > MAX_FILE_SIZE) {
       return win.alert('Total file size must not exceed 20MB');
@@ -269,7 +270,7 @@ var PropsEditor = React.createClass({
         fileType: file.type
       });
     });
-    ReactDOM.findDOMNode(this.refs.readLocalFile).value = '';
+    findDOMNode(this.refs.readLocalFile).value = '';
   },
   removeLocalFile: function (e) {
     var self = this;
@@ -279,7 +280,7 @@ var PropsEditor = React.createClass({
         fileData: null
       },
       function () {
-        var valueInput = ReactDOM.findDOMNode(self.refs.valueInput);
+        var valueInput = findDOMNode(self.refs.valueInput);
         valueInput.select();
         valueInput.focus();
       }
@@ -367,7 +368,7 @@ var PropsEditor = React.createClass({
             {this.props.isHeader ? '+Header' : '+Param'}
           </button>
         )}
-        <Dialog ref="composerDialog" wstyle="w-composer-dialog">
+        <Dialog ref="composerDialog" wstyle="w-com-dialog">
           <div className="modal-body">
             <button type="button" className="close" data-dismiss="modal">
               <span aria-hidden="true">&times;</span>

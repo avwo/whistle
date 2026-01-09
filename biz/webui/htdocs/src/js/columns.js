@@ -370,7 +370,7 @@ exports.getDragger = function () {
       var info = getDragInfo(e);
       if (info) {
         curTarget = info.target;
-        curTarget.style.background = '#ddd';
+        curTarget.style.background = 'var(--bg-active)';
       }
     },
     onDragLeave: function (e) {

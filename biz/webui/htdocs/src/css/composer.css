@@ -9,13 +9,13 @@
   border: none;
   padding: 5px;
 }
-.w-composer-url {
+.w-com-url {
   padding: 2px 2px 2px 0;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid var(--c-border);
   position: relative;
 }
 
-.w-composer-url .w-filter-hint {
+.w-com-url .w-filter-hint {
   width: calc(100% - 218px);
   z-index: 2;
   top: 30px;
@@ -34,24 +34,24 @@
   cursor: default;
 }
 
-.w-composer-url .w-filter-hint a {
+.w-com-url .w-filter-hint a {
   text-decoration: none;
   left: 2px;
 }
 
-.w-composer-input,
-.w-composer-method,
-.w-composer-execute {
+.w-com-input,
+.w-com-method,
+.w-com-execute {
   height: 26px;
 }
-.w-composer-input {
+.w-com-input {
   padding: 0 5px;
   display: block;
-  border: 1px solid #ccc;
+  border: 1px solid var(--c-border);
   border-left: none;
   border-right: none;
 }
-.w-composer-history-btn {
+.w-com-history-btn {
   height: 24px;
   width: 24px;
   text-align: center;
@@ -59,13 +59,13 @@
   line-height: 24px;
   cursor: pointer;
   font-size: 15px;
-  color: #555;
+  color: var(--c-weak);
 }
 .w-status-show {
   background: #f0f0f0;
   border-radius: 3px;
 }
-.w-composer-method {
+.w-com-method {
   display: block;
   width: 85px;
   margin: 0 0 0 2px;
@@ -77,13 +77,13 @@
   border-bottom-left-radius: 4px;
   background-color: #f6f6f6;
 }
-.w-composer-execute, .w-composer-params {
+.w-com-execute, .w-com-params {
   padding: 0 8px;
   line-height: 24px;
   margin-left: 4px;
 }
 
-.w-composer-params {
+.w-com-params {
   border-radius: 0;
   margin-left: 0;
   border-top-right-radius: 4px;
@@ -93,7 +93,7 @@
   font-weight: bold;
 }
 
-.w-composer-params-editor {
+.w-com-params-editor {
   position: absolute;
   width: 500px;
   max-width: calc(100% - 40px);
@@ -103,45 +103,45 @@
   right: 40px;
 }
 
-.w-composer-params-editor .w-filter-bar {
-  border-bottom: 1px solid #ddd;
+.w-com-params-editor .w-filter-bar {
+  border-bottom: 1px solid var(--c-border);
 }
 
-.w-composer-params-editor .w-filter-bar a {
+.w-com-params-editor .w-filter-bar a {
   left: unset;
   right: 5px;
   top: 1px;
 }
 
-.w-composer-params-editor .w-filter-bar .w-params-clear-btn {
+.w-com-params-editor .w-filter-bar .w-params-clear-btn {
   right: 60px;
   white-space: nowrap;
   top: -1px;
 }
 
-.w-composer-params-editor .w-filter-bar .w-composer-params-clear {
+.w-com-params-editor .w-filter-bar .w-com-params-clear {
   right: 60px;
 }
 
-.w-composer-rules-label {
+.w-com-rules-label {
   padding-right: 12px;
-  border-right: 1px solid #ccc;
+  border-right: 1px solid var(--c-border);
 }
 
-.w-composer-proxy-rules {
+.w-com-proxy-rules {
   padding-left: 15px;
   font-weight: 400;
 }
 
-.w-composer-params-editor .w-filter-bar {
+.w-com-params-editor .w-filter-bar {
   text-align: left;
 }
 
-.w-composer-tabs {
+.w-com-tabs {
   position: relative;
   padding: 0 !important;
 }
-.w-composer-tabs .btn {
+.w-com-tabs .btn {
   position: absolute;
   top: 1px;
   right: 10px;
@@ -149,53 +149,53 @@
   line-height: 14px;
 }
 
-.w-composer-tabs button {
+.w-com-tabs button {
   line-height: 16px;
   padding: 0 10px !important;
 }
-.w-composer-tabs button:hover {
+.w-com-tabs button:hover {
   background: #e6e6e6;
 }
-.w-composer-tabs .w-tab-btn {
+.w-com-tabs .w-tab-btn {
   outline: none;
   border: none;
   background: transparent;
   height: 100%;
 }
-.w-composer-tabs .w-tab-btn:hover {
-  color: #337ab7;
+.w-com-tabs .w-tab-btn:hover {
+  color: var(--c-hover);
 }
-.w-composer-tabs .w-tab-btn.w-active {
-  background: #ddd;
+.w-com-tabs .w-tab-btn.w-active {
+  background: var(--bg-active);
 }
-.w-composer-tabs .w-tab-btn:disabled {
-  color: #aaa !important;
+.w-com-tabs .w-tab-btn:disabled {
+  color: var(--c-disabled) !important;
   cursor: not-allowed;
 }
 
-.w-composer-res {
+.w-com-res {
   position: relative;
 }
 
-.w-composer-res-forbidden th,
-.w-composer-res-forbidden pre {
+.w-com-res-forbidden th,
+.w-com-res-forbidden pre {
   color: #808000 !important;
 }
 
-.w-composer-res-error th,
-.w-composer-res-error pre {
+.w-com-res-error th,
+.w-com-res-error pre {
   color: #ff3a90 !important;
 }
-.w-composer-bar {
-  border-bottom: 1px solid #ddd;
+.w-com-bar {
+  border-bottom: 1px solid var(--c-border);
   line-height: 18px;
   height: 18px;
   overflow: hidden;
-  background-color: #fafafa;
+  background-color: var(--bg-bar);
   position: relative;
 }
 
-.w-composer-bar .btn {
+.w-com-bar .btn {
   line-height: 13px;
   height: 15px;
   padding: 0 5px;
@@ -207,59 +207,59 @@
   margin-bottom: 1px;
   overflow: hidden;
 }
-.w-composer-body .w-record-status {
+.w-com-body .w-record-status {
   font-size: 13px;
 }
-.w-composer-body .w-composer-bar {
+.w-com-body .w-com-bar {
   text-align: right;
   height: 19px;
 }
-.w-composer-bar,
-.w-composer-bar label {
+.w-com-bar,
+.w-com-bar label {
   font-size: 12px;
   font-weight: normal;
 }
-.w-composer-bar label {
+.w-com-bar label {
   margin-left: 10px;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   margin-bottom: 0;
 }
-.w-composer-bar input,
-.w-composer-rules .w-detail-inspectors-title input {
+.w-com-bar input,
+.w-com-rules .w-detail-inspectors-title input {
   margin: 0 5px 0 0;
   padding: 0;
 }
 
-.w-composer-res {
+.w-com-res {
   position: relative;
 }
-textarea.w-composer-rules {
+textarea.w-com-rules {
   margin-bottom: 2px;
   background-color: #fcfcfc;
 }
-.w-composer-bar label:first-child {
+.w-com-bar label:first-child {
   font-weight: bold;
 }
-.w-composer-bar label:hover {
-  color: #000;
+.w-com-bar label:hover {
+  color: var(--c-default);
 }
-.w-composer-bar .w-composer-label {
+.w-com-bar .w-com-label {
   font-weight: bold;
   display: inline-flex;
   align-items: center;
   padding: 0 0 0 15px;
-  border-left: 1px solid #ddd;
+  border-left: 1px solid var(--c-border);
   cursor: default;
-  color: #000 !important;
+  color: var(--c-default) !important;
 }
-.w-composer-body .w-composer-encoding {
+.w-com-body .w-com-encoding {
   position: absolute;
   top: 1px;
   left: 60px;
 }
-.w-composer-body > .w-composer-bar > .w-composer-label {
+.w-com-body > .w-com-bar > .w-com-label {
   padding: 0 10px !important;
   position: absolute;
   left: 0;
@@ -268,19 +268,19 @@ textarea.w-composer-rules {
   border: none;
   padding: 0;
   margin: 0;
-  border-right: 1px solid #ccc;
+  border-right: 1px solid var(--c-border);
 }
-.w-composer-rules .w-detail-inspectors-title {
+.w-com-rules .w-detail-inspectors-title {
   padding-left: 10px !important;
 }
-.w-composer-rules .w-detail-inspectors-title label {
+.w-com-rules .w-detail-inspectors-title label {
   margin: 0;
   display: inline-flex;
   align-items: center;
 }
 
-.w-composer-rules .w-detail-inspectors-title label:hover {
-  color: #000;
+.w-com-rules .w-detail-inspectors-title label:hover {
+  color: var(--c-default);
 }
 
 .w-custom-type {
@@ -288,23 +288,23 @@ textarea.w-composer-rules {
   color: #333 !important;
 }
 
-.w-composer-headers .w-composer-bar {
+.w-com-headers .w-com-bar {
   display: flex;
   align-items: center;
 }
 
-.w-composer-headers textarea[readonly],
-.w-composer-body textarea[readonly],
+.w-com-headers textarea[readonly],
+.w-com-body textarea[readonly],
 .w-detail-composer input[readonly],
-.w-composer-rules textarea:disabled,
-.w-composer-rules textarea[readonly],
+.w-com-rules textarea:disabled,
+.w-com-rules textarea[readonly],
 .w-mock-key-name[readonly] {
   background: #eee !important;
   color: #999 !important;
   cursor: default;
 }
 
-.w-composer-tips {
+.w-com-tips {
   color: red;
   font-size: 12px;
   position: absolute;
@@ -312,82 +312,51 @@ textarea.w-composer-rules {
   left: 210px;
 }
 
-.w-history-data {
-  position: relative;
-  overflow: hidden;
-  font-size: 12px;
-}
-
-.w-history-list p {
-  padding: 0 0 0 5px;
-  line-height: 22px;
-  margin: 8px 0 0;
-  color: #666;
-}
-
-.w-history-list div {
-  line-height: 22px;
-  padding: 0 5px;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  width: 100%;
-  cursor: default;
-}
-
-.w-history-list div.w-selected {
-  background-color: #337ab7 !important;
-  color: #fff !important;
-}
-
-.w-history-list div:hover {
-  color: #337ab7;
-}
-.w-composer-cookies-dialog table th {
+.w-com-cookies-dialog table th {
   padding: 5px 0 5px 8px;
 }
-.w-composer-cookie-order {
+.w-com-cookie-order {
   width: 50px;
 }
-.w-composer-cookie-value {
+.w-com-cookie-value {
   white-space: break-spaces;
   word-break: break-all;
 }
-.w-composer-cookie-operation {
+.w-com-cookie-operation {
   width: 160px;
 }
-.w-composer-history-operation .btn, .w-composer-cookie-operation a {
+.w-com-history-operation .btn, .w-com-cookie-operation a {
   padding: 2px 10px !important;
   margin-right: 10px;
   display: inline-block;
 }
-.w-composer-history-dialog .modal-dialog {
+.w-com-history-dialog .modal-dialog {
   width: 1060px;
 }
 
-.w-composer-cookies-dialog .modal-dialog {
+.w-com-cookies-dialog .modal-dialog {
   width: 720px;
 }
 
-.w-composer-bar .w-composer-hex-text {
+.w-com-bar .w-com-hex-text {
   position: absolute;
   left: 75px;
   top: 0px;
 }
 
-.w-composer-bar .w-composer-crlf {
+.w-com-bar .w-com-crlf {
   top: 0;
   left: 150px;
   position: absolute;
 }
 
-.w-composer-bar .w-composer-hex-text.w-checked,
-.w-composer-bar .w-composer-gzip.w-checked,
-.w-composer-bar .w-composer-crlf.w-checked {
+.w-com-bar .w-com-hex-text.w-checked,
+.w-com-bar .w-com-gzip.w-checked,
+.w-com-bar .w-com-crlf.w-checked {
   font-weight: bold;
 }
 
-.w-composer-back-btn {
+.w-com-back-btn {
   position: absolute;
   padding: 2px 0;
   width: 40px;
@@ -402,63 +371,45 @@ textarea.w-composer-rules {
   background-color: lightyellow;
 }
 
-.w-composer-use-h2 {
+.w-com-use-h2 {
   right: 5px;
 }
 
-.w-composer-history {
+.w-com-history {
   right: 2px;
   position: absolute;
 }
 
-.w-history-list {
-  overflow-y: auto;
-  overflow-x: hidden;
-  background-color: #fdfdfd;
-  position: relative;
-}
-
-.w-history-data .w-tips {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  margin-top: -15px;
-  text-align: center;
-  width: 100%;
-  color: #999;
-  font-size: 13px;
-}
-
-.w-composer-pretty,
-.w-composer-use-h2, .w-composer-enable-body {
+.w-com-pretty,
+.w-com-use-h2, .w-com-enable-body {
   margin-left: 13px!important;
   font-weight: normal;
 }
 
-.w-composer-tabs input {
+.w-com-tabs input {
   margin-right: 5px;
 }
 
-.w-composer-methods .modal-dialog {
+.w-com-methods .modal-dialog {
   width: 500px;
 }
 
-.w-composer-methods textarea {
+.w-com-methods textarea {
   width: 100%;
   height: 200px;
   font-size: 14px;
 }
 
-.w-composer-tab-list {
-  border-bottom: 1px solid #ccc;
+.w-com-tab-list {
+  border-bottom: 1px solid var(--c-border);
   height: 23px;
   background-color: #f1f3f4;
   min-width: 560px;
 }
 
-.w-composer-tab-list button {
+.w-com-tab-list button {
   border: none;
-  border-right: 1px solid #ccc;
+  border-right: 1px solid var(--c-border);
   height: 22px;
   line-height: 18px;
   font-size: 12px;
@@ -467,11 +418,11 @@ textarea.w-composer-rules {
   font-weight: bold;
 }
 
-.w-composer-tab-list .glyphicon-send {
+.w-com-tab-list .glyphicon-send {
   color: #cf6c40;
 }
 
-.w-composer-list {
+.w-com-list {
   position: relative;
 }
 .w-mask-iframe {
@@ -484,7 +435,7 @@ textarea.w-composer-rules {
   z-index: 1;
 }
 
-.w-composer-list .w-custom-tabs {
+.w-com-list .w-custom-tabs {
   height: 22px;
 }
 
@@ -506,18 +457,18 @@ textarea.w-composer-rules {
   font-weight: 500;
   white-space: nowrap;
   text-overflow: ellipsis;
-  color: #000;
+  color: var(--c-default);
 }
 
 .w-history-item, .w-history-title {
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid var(--c-border);
 }
 
 .w-history-item {
   padding: 6px 5px 8px 10px;
   overflow: hidden;
   cursor: default;
-  background-color: #fafafa;
+  background-color: var(--bg-bar);
 }
 
 .w-history-item div {
@@ -552,49 +503,49 @@ textarea.w-composer-rules {
 
 .w-history-item i.w-req-method-tag-GET {
   background: #5cb85c;
-  color: #fff;
+  color: var(--c-active);
   border-color: #5cb85c;
 }
 
 .w-history-item i.w-req-method-tag-POST {
   background: #4f91cf;
-  color: #fff;
+  color: var(--c-active);
   border-color: #4f91cf;
 }
 
 .w-history-item i.w-req-method-tag-DELETE {
   background: #ce5442;
-  color: #fff;
+  color: var(--c-active);
   border-color: #ce5442;
 }
 
 .w-history-item i.w-req-method-tag-HEAD {
   background: #55b499;
-  color: #fff;
+  color: var(---c-active);
   border-color: #55b499;
 }
 
 .w-history-item i.w-req-method-tag-OPTIONS {
   background: #f0ad4e;
-  color: #fff;
+  color: var(--c-active);
   border-color: #f0ad4e;
 }
 
 .w-history-item i.w-req-method-tag-TRACE {
   background: #5bc0de;
-  color: #fff;
+  color: var(--c-active);
   border-color: #5bc0de;
 }
 
 .w-history-item i.w-req-method-tag-PATCH {
   background: #8f58af;
-  color: #fff;
+  color: var(--c-active);
   border-color: #8f58af;
 }
 
 .w-history-item i.w-req-method-tag-PUT {
   background: #e49b3b;
-  color: #fff;
+  color: var(--c-active);
   border-color: #e49b3b;
 }
 
@@ -604,11 +555,11 @@ textarea.w-composer-rules {
 
 .w-history-item:hover {
   background: rgba(0,0,0,.03);
-  color: #000;
+  color: var(--c-default);
 }
 .w-history-item.w-selected {
   background: rgba(0,0,0,.1);
-  color: #000;
+  color: var(--c-default);
 }
 
 .w-req-protocol-tag {
@@ -623,7 +574,7 @@ textarea.w-composer-rules {
   border: 1px solid #eea236;
 }
 
-.w-composer-history-data {
+.w-com-history-data {
   position: absolute;
   top: 0;
   left: 0;
@@ -635,12 +586,12 @@ textarea.w-composer-rules {
   visibility: hidden;
 }
 
-.w-composer-history-data.w-show {
+.w-com-history-data.w-show {
   opacity: 1;
   visibility: visible;
 }
 
-.w-composer-history-data .w-close {
+.w-com-history-data .w-close {
   position: absolute;
   right: 10px;
   top: 0;
@@ -649,26 +600,26 @@ textarea.w-composer-rules {
   font-size: 20px;
 }
 
-.w-composer-history-list {
-  border-right: 1px solid #ccc;
+.w-com-history-list {
+  border-right: 1px solid var(--c-border);
   overflow-x: hidden;
   overflow-y: auto;
   height: 100%;
-  background: #fafafa;
+  background: var(--bg-bar);
   position: relative;
   font-size: 12px;
 }
 
-.w-composer-history-ctn pre {
+.w-com-history-ctn pre {
   display: block;
   padding: 0 5px;
   overflow: auto;
   white-space: pre;
-  background-color: #f5f5f5;
+  background-color: var(--bg-disabled);
   position: relative;
 }
 
-.w-composer-history-ctn pre .w-load-tips {
+.w-com-history-ctn pre .w-load-tips {
   position: absolute;
   z-index: 1;
   background: rgba(0, 0, 0, .3);
@@ -676,31 +627,31 @@ textarea.w-composer-rules {
   right: 0;
   top: 0;
   bottom: 0;
-  color: #fff;
+  color: var(--c-active);
   font-size: 14px;
   display: none;
   align-items: center;
   justify-content: center;
 }
 
-.w-composer-history-ctn pre.w-show-loading {
+.w-com-history-ctn pre.w-show-loading {
   overflow: hidden;
 }
 
-.w-composer-history-ctn pre.w-show-loading .w-load-tips {
+.w-com-history-ctn pre.w-show-loading .w-load-tips {
   display: flex;
 }
 
-.w-composer-history-footer {
+.w-com-history-footer {
   line-height: 33px;
   white-space: nowrap;
   overflow: hidden;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid var(--c-border);
   padding: 0 0 2px;
   position: relative;
 }
 
-.w-composer-history-footer .btn {
+.w-com-history-footer .btn {
   height: 24px;
   line-height: 22px;
   padding: 0 6px;
@@ -708,48 +659,48 @@ textarea.w-composer-rules {
   font-size: 13px;
 }
 
-.w-composer-import {
+.w-com-import {
   position: absolute;
   left: -8px;
   top: 20px;
   list-style: none;
   padding: 0;
   font-weight: normal;
-  background-color: #fff;
+  background-color: var(--bg-default);
   border-radius: 3px;
   display: none;
 }
 
-.w-composer-import li {
+.w-com-import li {
   padding: 3px 8px;
   cursor: pointer;
 }
 
-.w-composer-import li:hover {
+.w-com-import li:hover {
   color: #6294ce;
 }
 
-.w-composer-btns {
+.w-com-btns {
   position: absolute;
   top: 0;
   right: 0;
 }
 
-.w-composer-btns a {
-  color: #000;
+.w-com-btns a {
+  color: var(--c-default);
   font-weight: normal;
   margin-right: 10px;
   text-decoration: none;
 }
 
-.w-composer-btns a:last-child {
+.w-com-btns a:last-child {
   margin-right: 5px;
 }
 
-.w-composer-btns a:hover {
-  color: #337ab7;
+.w-com-btns a:hover {
+  color: var(--c-hover);
 }
 
-.w-composer-disable-body .w-props-editor {
+.w-com-disable-body .w-props-editor {
   opacity: .7;
 }

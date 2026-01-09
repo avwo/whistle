@@ -108,22 +108,27 @@
 
 .w-shortcuts h5 {
   font-size: 16px;
-  margin-top: 20px;
 }
 
-.w-shortcuts h5:first-child {
+.w-shortcuts .modal-body > div {
+  margin-top: 25px;
+  margin-left: 10px;
+}
+
+.w-shortcuts .modal-body > div:first-child {
   margin-top: 10px;
 }
 
+
 .w-shortcuts label {
   display: flex;
-  margin: 15px;
+  margin: 15px 0 15px 20px;
   align-items: center;
   font-weight: normal;
 }
 
 .w-shortcuts label:hover {
-  color: #000;
+  color: var(--c-default);
 }
 
 .w-shortcuts label input,

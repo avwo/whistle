@@ -1,6 +1,6 @@
 .w-tabs-sm {
-  border-top: 1px solid #ccc;
-  border-bottom: 1px solid #ccc;
+  border-top: 1px solid var(--c-border);
+  border-bottom: 1px solid var(--c-border);
   width: 100%;
 }
 .w-tabs-sm .btn {
@@ -16,7 +16,7 @@
 }
 
 .w-btn-group-sm {
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid var(--c-border);
   width: 100%;
 }
 .w-btn-group-sm .btn {

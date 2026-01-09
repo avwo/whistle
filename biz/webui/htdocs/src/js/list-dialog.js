@@ -10,6 +10,7 @@ var parseRules = require('./parse-rules');
 var dataCenter = require('./data-center');
 var ShareViaURLBtn = require('./share-via-url-btn');
 
+var findDOMNode = ReactDOM.findDOMNode;
 var TEMP_LINK_RE_G = /(?:^|\s)(?:[\w-]+:\/\/)?temp\/([\da-z]{64})(?:\.[\w-]+)?(?:$|\s)/mg;
 
 var ListDialog = React.createClass({
@@ -47,10 +48,10 @@ var ListDialog = React.createClass({
     this.setState({ checkedItems: checkedItems });
   },
   donwload: function(data) {
-    var input = ReactDOM.findDOMNode(this.refs.filename);
-    var form = ReactDOM.findDOMNode(this.refs.exportData);
-    ReactDOM.findDOMNode(this.refs.exportName).value = input.value.trim();
-    ReactDOM.findDOMNode(this.refs.data).value = JSON.stringify(data);
+    var input = findDOMNode(this.refs.filename);
+    var form = findDOMNode(this.refs.exportData);
+    findDOMNode(this.refs.exportName).value = input.value.trim();
+    findDOMNode(this.refs.data).value = JSON.stringify(data);
     form.submit();
     input.value = '';
   },
@@ -58,7 +59,7 @@ var ListDialog = React.createClass({
     this.setState({ filename: util.formatFilename(e.target.value) });
   },
   getInputValue: function () {
-    return util.formatFilename(ReactDOM.findDOMNode(this.refs.filename).value.trim());
+    return util.formatFilename(findDOMNode(this.refs.filename).value.trim());
   },
   getRuleList: function (cb) {
     var rulesModal = this.state.rulesModal;
@@ -173,7 +174,7 @@ var ListDialog = React.createClass({
       self.setState({ checkedItems: checkedItems });
     }
     !this.props.onConfirm && setTimeout(function () {
-      var input = ReactDOM.findDOMNode(self.refs.filename);
+      var input = findDOMNode(self.refs.filename);
       input.focus();
       input.select();
     }, 500);
@@ -243,7 +244,7 @@ var ListDialog = React.createClass({
   onShare: function(err) {
     if (!err) {
       this.refs.dialog.hide();
-      ReactDOM.findDOMNode(this.refs.filename).value = '';
+      findDOMNode(this.refs.filename).value = '';
     }
   },
   render: function () {

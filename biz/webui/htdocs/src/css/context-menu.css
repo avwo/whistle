@@ -10,9 +10,9 @@
   padding: 0;
   width: 100%;
   box-sizing: border-box;
-  border: 1px solid #ccc;
+  border: 1px solid var(--c-border);
   box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.15);
-  background: #fff;
+  background: var(--bg-default);
   min-width: 110px;
   border-radius: 4px;
 }
@@ -82,7 +82,7 @@ body .w-ctx-menu-list .w-ctx-menu-gap {
   color: #999;
 }
 .w-ctx-item-sep {
-  border-top: 1px solid #ccc;
+  border-top: 1px solid var(--c-border);
   margin-top: 5px;
 }
 
@@ -90,7 +90,7 @@ body .w-ctx-menu-list .w-ctx-menu-gap {
   color: #999;
 }
 .w-ctx-item-disabled:hover {
-  background: #fff !important;
+  background: var(--bg-default) !important;
 }
 
 .w-ctx-menu-item .w-ctx-menu-item-tt {

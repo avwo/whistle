@@ -40,6 +40,7 @@ var ImportDialog = require('./import-dialog');
 var ExportDialog = require('./export-dialog');
 var HttpsSettings = require('./https-settings');
 var ServiceDialog = require('./service-dialog');
+var Assistant = require('./assistant');
 
 var TEMP_LINK_RE = /^(?:[\w-]+:\/\/)?temp(?:\/([\da-z]{64}|blank))?(?:\.[\w-]+)?$/;
 var FILE_PATH_RE = /^(?:[\w-]+:\/\/)?((?:[a-z]:[\\/]|\/).+)$/i;
@@ -57,15 +58,22 @@ var OPTIONS_WITH_SELECTED = [
   'exportWhistleFile'
 ];
 var HIDE_STYLE = { display: 'none' };
+var VER_RE = /^(?:\d+)\.(?:\d+)\.(?:\d+)(?:-[\w-]+)?$/;
 var search = window.location.search;
 var query = util.getQuery();
 var isClient = query.mode === 'client';
+var clientVersion = isClient && util.isElectron && VER_RE.test(query.v) ? query.v : '';
 var hideMenus = !!(query.hideMenus || query.hideMenu);
 var hideLeftMenu;
 var showTreeView;
 var dataUrl;
 var TABS = ['Network', 'Rules', 'Values', 'Plugins'];
 var TEXT_SUFFIX_RE = /[\w-]\.(?:txt|csv|tsv|json|xml|yaml|yml|ini|conf|log|html|htm|css|js|py|java|c|cpp|h|sh|php|sql|md|markdown|rtf|tex|bib|vcf)$/i;
+var findDOMNode = ReactDOM.findDOMNode;
+
+function getHideStyle(hide) {
+  return hide ? HIDE_STYLE: null;
+}
 
 function getString(url) {
   return typeof url === 'string' ? url.trim() : '';
@@ -573,7 +581,7 @@ var Index = React.createClass({
     state.helpOptions = [
       {
         name: 'Website',
-        href: util.getDocsBaseUrl(),
+        href: util.getDocUrl(),
         icon: 'link'
       },
       {
@@ -583,7 +591,7 @@ var Index = React.createClass({
       },
       {
         name: 'Update',
-        href: util.getDocsBaseUrl('faq.html#update'),
+        href: util.UPDATE_URL,
         icon: 'refresh'
       },
       {
@@ -1389,7 +1397,11 @@ var Index = React.createClass({
         if (!e.ctrlKey && !e.metaKey) {
           if (code === 112) {
             e.preventDefault();
-            window.open(util.getDocsBaseUrl('gui/' + name + '.html'));
+            if (dataCenter.whistleId) {
+              util.showAssistant();
+            } else {
+              window.open(util.getDocUrl('gui/' + name + '.html'));
+            }
           } else if (code === 116) {
             e.preventDefault();
           }
@@ -1483,7 +1495,7 @@ var Index = React.createClass({
           e.preventDefault();
           if (!util.noModal()) {
             if (
-              $(ReactDOM.findDOMNode(self.refs.chooseFileType)).is(':visible')
+              $(findDOMNode(self.refs.chooseFileType)).is(':visible')
             ) {
               self.exportBySave();
             }
@@ -1495,9 +1507,9 @@ var Index = React.createClass({
           }
           var hasSelected = modal.hasSelected();
           if (hasSelected) {
-            $(ReactDOM.findDOMNode(self.refs.chooseFileType)).modal('show');
+            $(findDOMNode(self.refs.chooseFileType)).modal('show');
             setTimeout(function () {
-              var input = ReactDOM.findDOMNode(self.refs.sessionsName);
+              var input = findDOMNode(self.refs.sessionsName);
               input.focus();
               input.select();
             }, 500);
@@ -1522,7 +1534,7 @@ var Index = React.createClass({
         if (isService || code === 73) {
           if (util.noModal()) {
             if (isService) {
-              if (!util.hasShortcut('openService')) {
+              if (!dataCenter.whistleId || !util.hasShortcut('openService')) {
                 return;
               }
               self.showService();
@@ -1722,7 +1734,7 @@ var Index = React.createClass({
         self.replayList = list;
         self.refs.setReplayCount.show();
         setTimeout(function () {
-          var input = ReactDOM.findDOMNode(self.refs.replayCount);
+          var input = findDOMNode(self.refs.replayCount);
           input.select();
           input.focus();
         }, 300);
@@ -1881,7 +1893,7 @@ var Index = React.createClass({
               latestVersion: data.latestVersion
             },
             function () {
-              $(ReactDOM.findDOMNode(self.refs.showUpdateTipsDialog)).modal(
+              $(findDOMNode(self.refs.showUpdateTipsDialog)).modal(
                 'show'
               );
             }
@@ -2061,7 +2073,7 @@ var Index = React.createClass({
     dataCenter.donotShowAgain();
   },
   hideUpdateTipsDialog: function () {
-    $(ReactDOM.findDOMNode(this.refs.showUpdateTipsDialog)).modal('hide');
+    $(findDOMNode(this.refs.showUpdateTipsDialog)).modal('hide');
   },
   getAllRulesText: function () {
     var text = ' ' + this.getAllRulesValue();
@@ -2368,7 +2380,7 @@ var Index = React.createClass({
     this.refs.exportDialog.show('valuesSettings', this.getValuesSettings());
   },
   getInputValue: function () {
-    return util.formatFilename(ReactDOM.findDOMNode(this.refs.sessionsName).value.trim());
+    return util.formatFilename(findDOMNode(this.refs.sessionsName).value.trim());
   },
   filterFilename: function (e) {
     this.setState({ filename: util.formatFilename(e.target.value) });
@@ -2380,8 +2392,8 @@ var Index = React.createClass({
       var hasSelected = Array.isArray(curItem) || modal.hasSelected();
       this.currentFoucsItem = curItem;
       if (hasSelected) {
-        $(ReactDOM.findDOMNode(this.refs.chooseFileType)).modal('show');
-        var input = ReactDOM.findDOMNode(this.refs.sessionsName);
+        $(findDOMNode(this.refs.chooseFileType)).modal('show');
+        var input = findDOMNode(this.refs.sessionsName);
         if (filename && typeof filename === 'string') {
           input.value = filename;
         }
@@ -2698,7 +2710,7 @@ var Index = React.createClass({
       return;
     }
     $(e.target).closest('div').addClass('w-menu-wrapper-show');
-    util.shakeElem($(ReactDOM.findDOMNode(this.refs.weinreMenuItem)));
+    util.shakeElem($(findDOMNode(this.refs.weinreMenuItem)));
   },
   showWeinreOptions: function (e) {
     var self = this;
@@ -2744,7 +2756,7 @@ var Index = React.createClass({
     this.setState({ showEditValues: false });
   },
   showCreateRules: function (_, group, focusItem) {
-    var createRulesInput = ReactDOM.findDOMNode(this.refs.createRulesInput);
+    var createRulesInput = findDOMNode(this.refs.createRulesInput);
     this._curFocusRulesGroup = group;
     this._curFocusRulesItem = focusItem;
     this.setState(
@@ -2757,7 +2769,7 @@ var Index = React.createClass({
     );
   },
   showCreateValues: function (_, group, focusItem) {
-    var createValuesInput = ReactDOM.findDOMNode(this.refs.createValuesInput);
+    var createValuesInput = findDOMNode(this.refs.createValuesInput);
     this._curFocusValuesGroup = group;
     this._curFocusValuesItem = focusItem;
     this.setState(
@@ -2820,7 +2832,7 @@ var Index = React.createClass({
       return;
     }
     var self = this;
-    var target = ReactDOM.findDOMNode(self.refs.createRulesInput);
+    var target = findDOMNode(self.refs.createRulesInput);
     var name = target.value.trim();
     if (!name) {
       message.error('The name is required');
@@ -2886,7 +2898,7 @@ var Index = React.createClass({
       return;
     }
     var self = this;
-    var target = ReactDOM.findDOMNode(self.refs.createValuesInput);
+    var target = findDOMNode(self.refs.createValuesInput);
     var name = target.value.trim();
     if (!name) {
       message.error('The name is required');
@@ -2959,7 +2971,7 @@ var Index = React.createClass({
     if (!activeItem || activeItem.isDefault) {
       return;
     }
-    var editRulesInput = ReactDOM.findDOMNode(this.refs.editRulesInput);
+    var editRulesInput = findDOMNode(this.refs.editRulesInput);
     editRulesInput.value = activeItem.name;
     this.setState(
       {
@@ -2983,7 +2995,7 @@ var Index = React.createClass({
       return;
     }
 
-    var editValuesInput = ReactDOM.findDOMNode(this.refs.editValuesInput);
+    var editValuesInput = findDOMNode(this.refs.editValuesInput);
     editValuesInput.value = activeItem.name;
     this.setState(
       {
@@ -3006,7 +3018,7 @@ var Index = React.createClass({
     if (!activeItem) {
       return;
     }
-    var target = ReactDOM.findDOMNode(self.refs.editRulesInput);
+    var target = findDOMNode(self.refs.editRulesInput);
     var isGroup = util.isGroup(activeItem.name);
     var name = (isGroup ? '\r' : '') + target.value.trim();
     if (!name) {
@@ -3046,7 +3058,7 @@ var Index = React.createClass({
     if (!activeItem) {
       return;
     }
-    var target = ReactDOM.findDOMNode(self.refs.editValuesInput);
+    var target = findDOMNode(self.refs.editValuesInput);
     var isGroup = util.isGroup(activeItem.name);
     var name = (isGroup ? '\r' : '') + target.value.trim();
     if (!name) {
@@ -3351,10 +3363,10 @@ var Index = React.createClass({
     modal.setActive(name);
   },
   showRulesSettings: function () {
-    $(ReactDOM.findDOMNode(this.refs.rulesSettingsDialog)).modal('show');
+    $(findDOMNode(this.refs.rulesSettingsDialog)).modal('show');
   },
   showValuesSettings: function () {
-    $(ReactDOM.findDOMNode(this.refs.valuesSettingsDialog)).modal('show');
+    $(findDOMNode(this.refs.valuesSettingsDialog)).modal('show');
   },
   toggleLeftMenu: function () {
     var showLeftMenu = !this.state.showLeftMenu;
@@ -3700,7 +3712,7 @@ var Index = React.createClass({
     var modal = this.state.network;
     var sessions = this.currentFoucsItem;
     this.currentFoucsItem = null;
-    if (!sessions || !$(ReactDOM.findDOMNode(this.refs.chooseFileType)).is(':visible')) {
+    if (!sessions || !$(findDOMNode(this.refs.chooseFileType)).is(':visible')) {
       sessions = modal.getSelectedList();
     }
     return sessions;
@@ -3710,9 +3722,9 @@ var Index = React.createClass({
     if (!sessions || !sessions.length) {
       return;
     }
-    var form = ReactDOM.findDOMNode(this.refs.exportSessionsForm);
-    ReactDOM.findDOMNode(this.refs.exportFilename).value = name || '';
-    ReactDOM.findDOMNode(this.refs.exportFileType).value = type;
+    var form = findDOMNode(this.refs.exportSessionsForm);
+    findDOMNode(this.refs.exportFilename).value = name || '';
+    findDOMNode(this.refs.exportFileType).value = type;
     if (type === 'har') {
       sessions = {
         log: {
@@ -3732,7 +3744,7 @@ var Index = React.createClass({
         }
       };
     }
-    ReactDOM.findDOMNode(this.refs.sessions).value = JSON.stringify(
+    findDOMNode(this.refs.sessions).value = JSON.stringify(
       sessions,
       null,
       '  '
@@ -3741,15 +3753,15 @@ var Index = React.createClass({
   },
   hideChooseFileTypeDialog: function(failed) {
     if (!failed) {
-      $(ReactDOM.findDOMNode(this.refs.chooseFileType)).modal('hide');
-      ReactDOM.findDOMNode(this.refs.sessionsName).value = '';
+      $(findDOMNode(this.refs.chooseFileType)).modal('hide');
+      findDOMNode(this.refs.sessionsName).value = '';
     }
   },
   exportBySave: function (e) {
     if (e && e.type !== 'click' && e.keyCode !== 13) {
       return;
     }
-    var input = ReactDOM.findDOMNode(this.refs.sessionsName);
+    var input = findDOMNode(this.refs.sessionsName);
     var name = input.value.trim();
     input.value = '';
     this.exportSessions(this.state.exportFileType, name);
@@ -3909,10 +3921,10 @@ var Index = React.createClass({
       return;
     }
     var base64 = util.getString(data.base64);
-    ReactDOM.findDOMNode(this.refs.filename).value = util.getString(data.name);
-    ReactDOM.findDOMNode(this.refs.dataType).value = base64 ? 'rawBase64' : '';
-    ReactDOM.findDOMNode(this.refs.content).value = base64 || util.getString(data.value|| data.content);
-    ReactDOM.findDOMNode(this.refs.downloadForm).submit();
+    findDOMNode(this.refs.filename).value = util.getString(data.name);
+    findDOMNode(this.refs.dataType).value = base64 ? 'rawBase64' : '';
+    findDOMNode(this.refs.content).value = base64 || util.getString(data.value|| data.content);
+    findDOMNode(this.refs.downloadForm).submit();
   },
   getTabName: function () {
     var state = this.state;
@@ -3935,6 +3947,11 @@ var Index = React.createClass({
   isHideRules: function() {
     return this.state.networkMode || this.state.pluginsMode;
   },
+  onClickHelpMenu: function(option, e) {
+    if (option.name === 'Update' && dataCenter.showLatestClientVersion()) {
+      e.preventDefault();
+    }
+  },
   render: function () {
     var state = this.state;
     var networkMode = state.networkMode;
@@ -3950,9 +3967,9 @@ var Index = React.createClass({
     var isValues = name == 'values';
     var isPlugins = name == 'plugins';
     var isEditor = isRules || isValues;
-    var editMenuStyle = isEditor ? null : HIDE_STYLE;
-    var importMenuStyle = isPlugins || isAccount ? HIDE_STYLE : null;
-    var accountMenuStyle = isAccount ? null : HIDE_STYLE;
+    var editMenuStyle = getHideStyle(!isEditor);
+    var importMenuStyle = getHideStyle(isPlugins || isAccount);
+    var accountMenuStyle = getHideStyle(!isAccount);
     var disabledEditBtn = true;
     var disabledDeleteBtn = true;
     var rulesTheme = state.rulesTheme || 'cobalt';
@@ -4033,7 +4050,7 @@ var Index = React.createClass({
     var disabledAllPlugins = state.disabledAllPlugins;
     var disabledAllRules = state.disabledAllRules;
     var forceShowLeftMenu, forceHideLeftMenu;
-    var pluginsStyle = rulesOnlyMode || pluginsOnlyMode || networkMode ? HIDE_STYLE : null;
+    var pluginsStyle = getHideStyle(rulesOnlyMode || pluginsOnlyMode || networkMode);
     if (showLeftMenu && hideLeftMenu) {
       forceShowLeftMenu = this.forceShowLeftMenu;
       forceHideLeftMenu = this.forceHideLeftMenu;
@@ -4052,7 +4069,7 @@ var Index = React.createClass({
       caShortUrl += caType;
     }
     var hideEditor = this.isHideRules();
-    var hideEditorStyle = hideEditor ? HIDE_STYLE : null;
+    var hideEditorStyle = getHideStyle(hideEditor);
     var hideStyle = hideMenus ? ' hide' : '';
     dataCenter.hideMockMenu = hideEditor;
     this.hideNetwork = rulesMode;
@@ -4075,7 +4092,7 @@ var Index = React.createClass({
             className="w-show-left-menu-btn"
             onMouseEnter={forceShowLeftMenu}
             onMouseLeave={forceHideLeftMenu}
-            style={networkMode || pluginsOnlyMode ? HIDE_STYLE : null}
+            style={getHideStyle(networkMode || pluginsOnlyMode)}
             title={
               'Dock to ' +
               (showLeftMenu ? 'top' : 'left') +
@@ -4090,7 +4107,7 @@ var Index = React.createClass({
             ></span>
           </a>
           <div
-            style={{ display: rulesMode ? 'none' : undefined }}
+            style={getHideStyle(rulesMode)}
             onMouseEnter={this.showNetworkOptions}
             onMouseLeave={this.hideNetworkOptions}
             className={
@@ -4225,47 +4242,38 @@ var Index = React.createClass({
           {!state.ndr && (
             <a
               onClick={this.confirmDisableAllRules}
-              className="w-enable-rules-menu"
+              className="w-enable-rules-menu w-switch-btn"
               title={
                 disabledAllRules ? 'Enable all rules' : 'Disable all rules'
               }
-              style={{ display: isRules ? '' : 'none' }}
+              style={getHideStyle(!isRules)}
               draggable="false"
             >
-              <span
-               className="glyphicon glyphicon-stop"
-               style={{
-                 color: disabledAllRules ? '#ccc' : 'rgb(255, 102, 102)'
-               }}
-              />
+              <span className={'glyphicon glyphicon-stop' + (disabledAllRules ? ' w-pause' : '')} />
               ON
             </a>
           )}
           {!state.ndp && (
             <a
               onClick={this.confirmDisableAllPlugins}
-              className="w-enable-plugin-menu"
+              className="w-enable-plugin-menu w-switch-btn"
               title={
                 disabledAllPlugins
                   ? 'Enable all plugins'
                   : 'Disable all plugins'
               }
-              style={{ display: isPlugins ? '' : 'none' }}
+              style={getHideStyle(!isPlugins)}
               draggable="false"
             >
-              <span
-                className="glyphicon glyphicon-stop"
-                style={{
-                  color: disabledAllPlugins ? '#ccc' : 'rgb(255, 102, 102)'
-                }}
-              />
+              <span className={'glyphicon glyphicon-stop' + (disabledAllPlugins ? ' w-pause' : '')} />
               ON
             </a>
           )}
           <UpdateAllBtn hide={!isPlugins} />
           <a
             onClick={this.installPlugins}
-            className={'w-plugins-menu' + (isPlugins ? '' : ' hide')}
+            className="w-plugins-menu"
+            style={getHideStyle(!isPlugins)}
             draggable="false"
           >
             <span className="glyphicon glyphicon-download-alt" />
@@ -4294,7 +4302,7 @@ var Index = React.createClass({
           </a>
           <a
             onClick={this.clear}
-            style={{ display: isNetwork ? '' : 'none' }}
+            style={getHideStyle(!isNetwork)}
             className="w-remove-menu w-remove-menu-list"
             title="Ctrl[Command] + X"
             draggable="false"
@@ -4329,7 +4337,7 @@ var Index = React.createClass({
           <div
             onMouseEnter={this.showAbortOptions}
             onMouseLeave={this.hideAbortOptions}
-            style={{ display: isNetwork ? '' : 'none' }}
+            style={getHideStyle(!isNetwork)}
             className={
               'w-menu-wrapper w-abort-menu-list w-menu-auto' +
               (state.showAbortOptions ? ' w-menu-wrapper-show' : '')
@@ -4350,8 +4358,8 @@ var Index = React.createClass({
           </div>
           <a
             onClick={this.composer}
-            className="w-composer-menu"
-            style={{ display: isNetwork ? '' : 'none' }}
+            className="w-com-menu"
+            style={getHideStyle(!isNetwork)}
             draggable="false"
           >
             <span className="glyphicon glyphicon-send"></span>Edit
@@ -4454,9 +4462,11 @@ var Index = React.createClass({
             <MenuItem
               ref="helpMenuItem"
               options={state.helpOptions}
+              onClickOption={this.onClickHelpMenu}
               name={
                 <About
                   ref="aboutDialog"
+                  clientVersion={clientVersion}
                   onClick={this.hideHelpOptions}
                   onCheckUpdate={this.showHasNewVersion}
                 />
@@ -4464,7 +4474,7 @@ var Index = React.createClass({
               className="w-help-menu-item"
             />
           </div>
-          <Online name={name} />
+          <Online name={name} clientVersion={clientVersion} />
           <div
             onMouseDown={this.preventBlur}
             style={{ display: state.showCreateRules ? 'block' : 'none' }}
@@ -4581,7 +4591,7 @@ var Index = React.createClass({
             className={
               'w-left-menu' + (forceShowLeftMenu ? ' w-hover-left-menu' : '') + hideStyle
             }
-            style={networkMode || mustHideLeftMenu ? HIDE_STYLE : null}
+            style={getHideStyle(networkMode || mustHideLeftMenu)}
             onMouseEnter={forceShowLeftMenu}
             onMouseLeave={forceHideLeftMenu}
           >
@@ -4590,7 +4600,7 @@ var Index = React.createClass({
               className={
                 'w-network-menu' + (isNetwork ? ' w-menu-selected' : '')
               }
-              style={{ display: rulesMode ? 'none' : undefined }}
+              style={getHideStyle(rulesMode)}
               draggable="false"
             >
               <span className={'glyphicon glyphicon-' + networkType}></span>
@@ -4614,9 +4624,7 @@ var Index = React.createClass({
               <i className="w-left-menu-name">Rules</i>
               <i
                 className="w-menu-changed"
-                style={{
-                  display: state.rules.hasChanged() ? undefined : 'none'
-                }}
+                style={getHideStyle(!state.rules.hasChanged())}
               >
                 *
               </i>
@@ -4634,9 +4642,7 @@ var Index = React.createClass({
               <i className="w-left-menu-name">Values</i>
               <i
                 className="w-menu-changed"
-                style={{
-                  display: state.values.hasChanged() ? undefined : 'none'
-                }}
+                style={getHideStyle(!state.values.hasChanged())}
               >
                 *
               </i>
@@ -4984,7 +4990,7 @@ var Index = React.createClass({
                   type="button"
                   className="btn btn-primary"
                   onClick={this.hideUpdateTipsDialog}
-                  href={util.getDocsBaseUrl('faq.html#update')}
+                  href={util.UPDATE_URL}
                   target="_blank"
                 >
                   View Update Guide
@@ -5047,11 +5053,11 @@ var Index = React.createClass({
           name="values"
           list={state.values.list}
         />
-        <iframe name="downloadTargetFrame" style={{ display: 'none' }} />
+        <iframe name="downloadTargetFrame" style={HIDE_STYLE} />
         <form
           ref="exportSessionsForm"
           action="cgi-bin/sessions/export"
-          style={{ display: 'none' }}
+          style={HIDE_STYLE}
           method="post"
           target="downloadTargetFrame"
         >
@@ -5061,13 +5067,13 @@ var Index = React.createClass({
         </form>
         <SyncDialog ref="syncDialog" />
         <JSONDialog ref="jsonDialog" />
-        <div id="copyTextBtn" style={{display: 'none'}} />
+        <div id="copyTextBtn" style={HIDE_STYLE} />
         <MockDialog ref="mockDialog" />
         <RulesDialog ref="rulesDialog" />
         <form
           ref="downloadForm"
           action="cgi-bin/download"
-          style={{ display: 'none' }}
+          style={HIDE_STYLE}
           method="post"
           target="downloadTargetFrame"
         >
@@ -5081,6 +5087,7 @@ var Index = React.createClass({
         {/* 初始化 EditorDialog 给 Rules 里面的快捷键使用 */}
         <EditorDialog textEditor standalone />
         <ServiceDialog />
+        <Assistant />
       </div>
     );
   }

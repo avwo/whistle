@@ -9,6 +9,7 @@ var ContextMenu = require('./context-menu');
 var win = require('./win');
 var Tips = require('./panel-tips');
 
+var findDOMNode = ReactDOM.findDOMNode;
 var JSONTree = require('./components/react-json-tree')['default'];
 var dataCenter = require('./data-center');
 var util = require('./util');
@@ -87,7 +88,7 @@ var JsonViewer = React.createClass({
     self.state.showDownloadInput = /w-download/.test(e.target.className);
     self.state.showNameInput = true;
     self.forceUpdate(function () {
-      var nameInput = ReactDOM.findDOMNode(self.refs.nameInput);
+      var nameInput = findDOMNode(self.refs.nameInput);
       var defaultName = !nameInput.value && self.props.defaultName;
       if (defaultName) {
         nameInput.value = defaultName;
@@ -99,7 +100,7 @@ var JsonViewer = React.createClass({
   hideNameInput: function () {
     this.state.showNameInput = false;
     this.forceUpdate(function () {
-      var nameInput = ReactDOM.findDOMNode(this.refs.nameInput);
+      var nameInput = findDOMNode(this.refs.nameInput);
       var defaultName = this.props.defaultName;
       if (defaultName === nameInput.value) {
         nameInput.value = '';
@@ -114,7 +115,7 @@ var JsonViewer = React.createClass({
     if (!modal) {
       return;
     }
-    var target = ReactDOM.findDOMNode(this.refs.nameInput);
+    var target = findDOMNode(this.refs.nameInput);
     var name = target.value.trim();
     var self = this;
     if (self.state.showDownloadInput) {
@@ -154,20 +155,20 @@ var JsonViewer = React.createClass({
     );
   },
   download: function () {
-    var target = ReactDOM.findDOMNode(this.refs.nameInput);
+    var target = findDOMNode(this.refs.nameInput);
     var name = target.value.trim();
     target.value = '';
     var data = this.props.data || {};
-    ReactDOM.findDOMNode(this.refs.filename).value = name;
-    ReactDOM.findDOMNode(this.refs.content).value = data.str || '';
-    ReactDOM.findDOMNode(this.refs.downloadForm).submit();
+    findDOMNode(this.refs.filename).value = name;
+    findDOMNode(this.refs.content).value = data.str || '';
+    findDOMNode(this.refs.downloadForm).submit();
     this.hideNameInput();
   },
   toggle: function () {
     this.setState({ viewSource: !this.state.viewSource });
   },
   componentDidMount: function () {
-    var viewer = $(ReactDOM.findDOMNode(this.refs.jsonViewer));
+    var viewer = $(findDOMNode(this.refs.jsonViewer));
     viewer
       .on('mouseenter', STR_SELECTOR, function (e) {
         if (!(e.ctrlKey || e.metaKey)) {

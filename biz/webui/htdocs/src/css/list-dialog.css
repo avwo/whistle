@@ -50,7 +50,7 @@
 .w-rule-list-ctn {
   max-height: 420px;
   overflow: auto;
-  color: #000;
+  color: var(--c-default);
   background-color: #fefefe;
 }
 
@@ -61,7 +61,7 @@
   align-items: center;
   white-space: nowrap;
   margin-bottom: 0;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid var(--c-border);
 }
 
 .w-rule-list-ctn .w-rule-list-item span {
@@ -89,7 +89,7 @@
   overflow-x: auto;
   overflow-y: hidden;
   scrollbar-width: none;
-  background-color: #fff;
+  background-color: var(--bg-default);
 }
 
 .w-rule-list-ctn .w-rule-list-item > div::-webkit-scrollbar {
@@ -102,7 +102,7 @@
 }
 
 .w-rule-list-ctn .w-rule-list-item > div span:nth-child(1) {
-  color: #000;
+  color: var(--c-default);
 }
 
 .w-rule-list-ctn .w-rule-list-item > div span:nth-child(2) {

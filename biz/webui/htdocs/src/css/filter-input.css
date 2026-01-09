@@ -5,7 +5,7 @@
   position: absolute;
   right: 5px;
   top: 5px;
-  color: #fff;
+  color: var(--c-active);
   line-height: 16px;
   display: none;
   opacity: 0.8;
@@ -16,7 +16,7 @@
 }
 
 .w-filter-hint, .w-layer {
-  background-color: #fff;
+  background-color: var(--bg-default);
   border-radius: 3px;
   -webkit-box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12),
     0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
@@ -84,7 +84,7 @@
 
 .w-filter-hint li:hover,
 .w-filter-hint .w-active {
-  background-color: #f5f5f5 !important;
+  background-color: var(--bg-hover) !important;
 }
 
 .w-filter-type-bar {
@@ -93,12 +93,12 @@
   align-items: center;
   white-space: nowrap;
   overflow-x: auto;
-  background: #fafafa;
+  background: var(--bg-bar);
 }
 
 .w-filter-type-bar span {
   margin-left: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--c-border);
   border-radius: 3px;
   padding: 0 6px;
   height: 18px;
@@ -107,7 +107,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #fff;
+  background-color: var(--bg-default);
   min-width: 32px;
 }
 
@@ -119,5 +119,5 @@
 .w-filter-type-bar span:active, .w-filter-type-bar span.w-active {
   border-color: #d6e2fb;
   background: #d6e2fb;
-  color: #000;
+  color: var(--c-default);
 }

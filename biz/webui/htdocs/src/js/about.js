@@ -6,24 +6,35 @@ var storage = require('./storage');
 var util = require('./util');
 var events = require('./events');
 
-var isElectron = /Electron\//i.test(window.navigator.userAgent);
+var isElectron = util.isElectron;
 var clientName = isElectron ? 'electron' : 'nodejs';
 
-function hasNewVersion(data) {
-  return (
-    util.compareVersion(data.latestVersion, data.version) &&
-    util.compareVersion(data.latestVersion, storage.get('latestVersion'))
-  );
-}
-
 var About = React.createClass({
+  getInitialState: function () {
+    return {};
+  },
+  hasNewVersion: function (data) {
+    var clientVersion = this.props.clientVersion;
+    var state = this.state;
+    var flag = util.compareVersion(data.latestVersion, data.version);
+    state._hasNewWhistle = flag;
+    state._hasNewClient = 0;
+    flag = flag && util.compareVersion(data.latestVersion, storage.get('latestVersion'));
+    if (!flag && clientVersion && data.latestClientVersion) {
+      state._hasNewClient = util.compareVersion(data.latestClientVersion, clientVersion);
+      return state._hasNewClient &&
+      util.compareVersion(data.latestClientVersion, storage.get('latestClientVersion'));
+    }
+    return flag;
+  },
   componentDidMount: function () {
     var self = this;
     var updateVersion = function(data) {
       self.setState({
         version: data.version,
         latestVersion: data.latestVersion,
-        hasUpdate: self.checkUpdate(hasNewVersion(data))
+        latestClientVersion: data.latestClientVersion,
+        hasUpdate: self.checkUpdate(self.hasNewVersion(data))
       });
     };
     dataCenter.getInitialData(updateVersion);
@@ -31,14 +42,19 @@ var About = React.createClass({
       updateVersion(data);
     });
   },
-  checkUpdate: function (hasUpdate) {
+  checkUpdate: function (hasNew) {
     if (this.props.onCheckUpdate) {
-      if ((!this._hasUpdate && !hasUpdate) || hasUpdate !== this._hasUpdate) {
-        this._hasUpdate = hasUpdate;
-        this.props.onCheckUpdate(hasUpdate);
+      if ((!this._hasUpdate && !hasNew) || hasNew !== this._hasUpdate) {
+        this._hasUpdate = hasNew;
+        this.props.onCheckUpdate(hasNew);
       }
     }
-    return hasUpdate;
+    return hasNew;
+  },
+  checkUpdateClient: function (e) {
+    if (this.state._hasNewClient && dataCenter.showLatestClientVersion()) {
+      e.preventDefault();
+    }
   },
   showAboutInfo: function () {
     var self = this;
@@ -53,10 +69,14 @@ var About = React.createClass({
         if (data.latestVersion) {
           storage.set('latestVersion', data.latestVersion);
         }
+        if (data.latestClientVersion) {
+          storage.set('latestClientVersion', data.latestClientVersion);
+        }
         self.setState({
           version: data.version,
           latestVersion: data.latestVersion,
-          hasUpdate: self.checkUpdate(hasNewVersion(data))
+          latestClientVersion: data.latestClientVersion,
+          hasUpdate: self.checkUpdate(self.hasNewVersion(data))
         });
       }
     });
@@ -69,9 +89,13 @@ var About = React.createClass({
   },
   render: function () {
     var self = this;
-    var state = self.state || {};
+    var state = self.state;
     var version = state.version;
     var latest = state.latestVersion;
+    var latestClient = state.latestClientVersion;
+    var clientVersion = self.props.clientVersion;
+    var hasNewWhistle = state._hasNewWhistle;
+    var hasNewClient = state._hasNewClient;
 
     return (
       <a
@@ -91,7 +115,25 @@ var About = React.createClass({
               <span className="w-about-dialog-title">
                 Whistle for Web Developers.
               </span>
-              Version:{' '}
+              {clientVersion ? 'Client Version: ' : null}
+              {clientVersion ? <a
+                className="w-about-version"
+                href="https://github.com/avwo/whistle-client/blob/main/CHANGELOG.md"
+                target="_blank"
+              >
+                {clientVersion}
+              </a> : null}
+               {hasNewClient ? <a
+                className="w-new-version"
+                title="Update Whistle Client"
+                onClick={self.checkUpdateClient}
+                href={util.UPDATE_URL}
+                target="_blank"
+              >
+                (NEW: {latestClient})
+              </a> : null}
+              {clientVersion ? <br /> : null}
+              {clientVersion ? 'Whistle Version: ' : 'Version: '}
               <a
                 className="w-about-version"
                 href="https://github.com/avwo/whistle/blob/master/CHANGELOG.md"
@@ -99,27 +141,20 @@ var About = React.createClass({
               >
                 {version}
               </a>
+              {hasNewWhistle ? <a
+                className="w-new-version"
+                title={clientVersion ? 'Update Whistle Client' : 'Update Whistle'}
+                onClick={self.checkUpdateClient}
+                href={util.UPDATE_URL}
+                target="_blank"
+              >
+                (NEW: {latest})
+              </a> : null}
               <br />
-              {util.compareVersion(latest, version) ? (
-                <span className="w-about-latest-version">
-                  Latest version:{' '}
-                  <a
-                    className="w-about-github"
-                    title="How to Update Whistle"
-                    href={util.getDocsBaseUrl('faq.html#update')}
-                    target="_blank"
-                  >
-                    {latest}
-                  </a>
-                  <br />
-                </span>
-              ) : (
-                ''
-              )}
               Visit{' '}
               <a
                 className="w-about-url"
-                href={util.getDocsBaseUrl() + '?type=' + clientName + '&version=' + version}
+                href={util.getDocUrl() + '?type=' + clientName + '&version=' + version}
                 target="_blank"
               >
                 https://wproxy.org
@@ -127,6 +162,17 @@ var About = React.createClass({
             </span>
           </div>
           <div className="modal-footer">
+            {hasNewWhistle || hasNewClient ? (
+              <a
+                className="btn btn-primary"
+                title={clientVersion ? 'Update Whistle Client' : 'Update Whistle'}
+                onClick={self.checkUpdateClient}
+                href={util.UPDATE_URL}
+                target="_blank"
+              >
+                Update Now
+              </a>
+            ) : null}
             <button
               type="button"
               className="btn btn-default"

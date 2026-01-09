@@ -27,15 +27,15 @@
   cursor: pointer;
 }
 .w-nav-tabs > .nav > li > a > .w-close-icon:hover {
-  color: #000;
+  color: var(--c-default);
 }
 .w-plugin-tab-disabled {
-  color: #ccc !important;
+  color: var(--c-disabled) !important;
 }
 .w-plugin-tab-disabled .glyphicon-ban-circle {
   vertical-align: text-top;
   margin-right: 3px;
-  color: #ccc !important;
+  color: var(--c-disabled) !important;
 }
 
 .w-custom-tab-btn {
@@ -52,7 +52,7 @@
 .w-nav-tabs iframe {
   border: none;
   display: block;
-  background-color: #fff;
+  background-color: var(--bg-default);
   margin: 0;
   padding: 0;
   width: 100%;
@@ -81,14 +81,14 @@
   font-weight: normal;
 }
 .w-plugins-headers {
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid var(--c-border);
   overflow: hidden;
 }
 .w-plugins-headers .table th {
   border: none !important;
   padding: 6px;
-  color: #000;
-  background: #fafafa;
+  color: var(--c-default);
+  background: var(--bg-bar);
   font-weight: bold;
 }
 .w-plugins-list {
@@ -99,7 +99,7 @@
 .w-plugins-list th,
 .w-plugins-list td {
   border-top: none !important;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid var(--c-border);
   padding: 8px 6px !important;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -108,7 +108,7 @@
 .w-plugins-disable,
 .w-plugins-disable a,
 .w-plugins-disable td {
-  color: #aaa;
+  color: var(--c-disabled);
 }
 
 .w-plugins-order {
@@ -127,17 +127,21 @@
 .w-plugins-version {
   width: 150px;
 }
-.w-plugins-list .w-has-new-version .w-plugins-version .w-new-version,
-.w-plugins-list .w-has-new-version .w-plugin-update-btn,
-.w-plugins-menu.w-plugin-update-btn {
-  color: #f66 !important;
+.w-has-new-version .w-plugins-version .w-new-version,
+.w-has-new-version .w-plugin-update-btn,
+.w-plugins-menu.w-plugin-update-btn,
+.w-about-dialog .w-new-version {
+  color: var(--c-risk) !important;
 }
-.w-plugins-list .w-has-new-version .w-plugins-version span {
-  margin-left: 3px;
+
+.w-about-dialog .w-new-version {
+  margin-left: 5px;
 }
-.w-plugins-list .w-has-new-version .w-plugins-version span:hover,
-.w-plugins-list .w-has-new-version .w-plugin-update-btn:hover,
-.w-plugins-menu.w-plugin-update-btn:hover {
+
+.w-has-new-version .w-plugins-version .w-new-version:hover,
+.w-has-new-version .w-plugin-update-btn:hover,
+.w-plugins-menu.w-plugin-update-btn:hover,
+.w-about-dialog .w-new-version:hover {
   color: #f33 !important;
 }
 .w-plugins-date {
@@ -155,7 +159,7 @@
   margin-right: 0;
 }
 .w-plugins-operation span.disabled {
-  color: #ccc;
+  color: var(--c-disabled);
 }
 
 .w-plugin-rules-dialog .modal-dialog {
@@ -167,7 +171,7 @@
   padding: 10px;
 }
 .w-plugin-rules-dialog fieldset {
-  border: 1px solid #ddd;
+  border: 1px solid var(--c-border);
 }
 .w-plugin-rules-dialog fieldset legend {
   font-size: 13px;
@@ -196,7 +200,7 @@
 }
 .w-plugin-update-cmd {
   background: #002240;
-  color: #ddd;
+  color: var(--c-editor);
   padding: 10px;
   margin-top: 10px;
   font-size: 14px;
@@ -209,7 +213,7 @@
   padding: 5px;
 }
 .w-plugin-btn {
-  color: #337ab7 !important;
+  color: var(--c-hover) !important;
 }
 .w-plugin-btn:hover {
   color: #23527c !important;
@@ -246,10 +250,10 @@
 }
 
 .w-copied-text {
-  color: #888 !important;
+  color: var(--c-disabled) !important;
   cursor: not-allowed;
 }
 
 .w-plugin-copy-cmd:hover {
-  color: #000;
+  color: var(--c-default);
 }

@@ -12,6 +12,7 @@ var Tools = require('./tools');
 var Saved = require('./saved');
 var util = require('./util');
 
+var findDOMNode = ReactDOM.findDOMNode;
 var ReqData = React.createClass({
   getInitialState: function () {
     return {
@@ -100,7 +101,7 @@ var ReqData = React.createClass({
       }).on('shakeSavedTab', self.shakeSavedTab);
   },
   shakeSavedTab: function() {
-    util.shakeElem($(ReactDOM.findDOMNode(this.refs.tabs)).find('button[data-name="Saved"]'));
+    util.shakeElem($(findDOMNode(this.refs.tabs)).find('button[data-name="Saved"]'));
   },
   showComposer: function (item) {
     if (item) {
@@ -169,7 +170,7 @@ var ReqData = React.createClass({
     this.state['inited' + tab.name] = true;
   },
   shakeComposerTab: function() {
-    util.shakeElem($(ReactDOM.findDOMNode(this.refs.tabs)).find('button[data-name="Composer"]'));
+    util.shakeElem($(findDOMNode(this.refs.tabs)).find('button[data-name="Composer"]'));
   },
   render: function () {
     var modal = this.props.modal;

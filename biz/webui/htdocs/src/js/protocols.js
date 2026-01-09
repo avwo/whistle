@@ -230,22 +230,22 @@ function getPlugin(rule) {
 
 exports.getHelpUrl = function (rule) {
   if (!rule || rule === 'rule') {
-    return util.getDocsBaseUrl('rules/protocols.html');
+    return util.getDocUrl('rules/protocols.html');
   }
   if (rule === 'includeFilter' || rule === 'excludeFilter') {
-    return util.getDocsBaseUrl('rules/filters.html');
+    return util.getDocUrl('rules/filters.html');
   }
   if (rule === 'skip') {
-    return util.getDocsBaseUrl('rules/skip.html');
+    return util.getDocUrl('rules/skip.html');
   }
   if (rule === 'lineProps') {
-    return util.getDocsBaseUrl('rules/lineProps.html');
+    return util.getDocUrl('rules/lineProps.html');
   }
   if (rule === 'reqRules') {
-    return util.getDocsBaseUrl('rules/reqRules.html');
+    return util.getDocUrl('rules/reqRules.html');
   }
   if (rule === 'resRules') {
-    return util.getDocsBaseUrl('rules/resRules.html');
+    return util.getDocUrl('rules/resRules.html');
   }
   if (innerRules.indexOf(rule) !== -1 || webProtocols.indexOf(rule) !== -1 || PROTOCOLS.indexOf(rule) !== -1) {
     if (rule === 'http-proxy') {
@@ -255,13 +255,13 @@ exports.getHelpUrl = function (rule) {
     } else if (rule === 'tlsOptions') {
       rule = 'cipher';
     }
-    return util.getDocsBaseUrl('rules/' + rule + '.html');
+    return util.getDocUrl('rules/' + rule + '.html');
   }
   rule = getPlugin(rule);
   if (rule && rule.homepage) {
     return rule.homepage;
   }
-  return util.getDocsBaseUrl('rules/protocols.html');
+  return util.getDocUrl('rules/protocols.html');
 };
 
 exports.getPlugin = getPlugin;

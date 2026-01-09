@@ -251,7 +251,7 @@ var ResDetail = React.createClass({
     return (
       <div
         className={
-          'fill orient-vertical-box w-detail-content w-detail-response' +
+          'fill orient-vertical-box w-detail-content w-detail-res' +
           (util.getBool(this.props.hide) ? ' hide' : '')
         }
       >
@@ -259,7 +259,7 @@ var ResDetail = React.createClass({
         {state.initedHeaders ? (
           <div
             className={
-              'fill w-detail-response-headers' +
+              'fill w-detail-res-headers' +
               (name == btns[0].name ? '' : ' hide')
             }
           >
@@ -277,7 +277,7 @@ var ResDetail = React.createClass({
             tips={tips}
             base64={base64}
             value={body}
-            className="fill w-detail-response-textview"
+            className="fill w-detail-res-textview"
             hide={name != btns[2].name}
           />
         ) : undefined}
@@ -300,14 +300,14 @@ var ResDetail = React.createClass({
             base64={base64}
             tips={tips}
             value={bin}
-            className="fill n-monospace w-detail-response-hex"
+            className="fill n-monospace w-detail-res-hex"
             hide={name != btns[4].name}
           />
         ) : undefined}
         {state.initedCookies ? (
           <div
             className={
-              'fill w-detail-response-cookies' +
+              'fill w-detail-res-cookies' +
               (name == btns[5].name ? '' : ' hide')
             }
           >
@@ -319,7 +319,7 @@ var ResDetail = React.createClass({
         {state.initedTrailers ? (
           <div
             className={
-              'fill w-detail-response-headers' +
+              'fill w-detail-res-headers' +
               (name == btns[6].name ? '' : ' hide')
             }
           >
@@ -334,7 +334,7 @@ var ResDetail = React.createClass({
             value={raw}
             headers={headersStr}
             base64={base64}
-            className="fill w-detail-response-raw"
+            className="fill w-detail-res-raw"
             hide={name != btns[7].name}
           />
         ) : undefined}

@@ -8,7 +8,7 @@ var EnableHttpsBtn = React.createClass({
     events.trigger('showHttpsSettingsDialog');
   },
   showHelp: function () {
-    window.open(util.getDocsBaseUrl('faq.html#tunnel-to'));
+    window.open(util.getDocUrl('faq.html#tunnel-to'));
   },
   render: function () {
     if (dataCenter.isMultiEnv()) {

@@ -70,6 +70,7 @@ var DEFAULT_CONF = {
 };
 var composerItem;
 var manualLogout; // 手动登出
+var hasUpdater;
 
 exports.enabledRulesCount = 0;
 exports.setComposerItem = function(item) {
@@ -654,7 +655,8 @@ $.extend(
         contentType: 'application/json'
       },
       login: 'cgi-bin/service/login',
-      logout: 'cgi-bin/service/logout'
+      logout: 'cgi-bin/service/logout',
+      updateClient: 'cgi-bin/update'
     },
     POST_CONF
   )
@@ -813,6 +815,7 @@ exports.getInitialData = function (callback) {
         port = server && server.port;
         account = server && server.account;
         updateWhistleId(server);
+        hasUpdater = server && server.hasUpdater;
         exports.version = server && server.version;
         exports.supportH2 = data.supportH2;
         exports.isWin = server && server.isWin;
@@ -1115,6 +1118,7 @@ function startLoadData() {
       var server = data.server;
       port = server && server.port;
       account = server && server.account;
+      hasUpdater = server && server.hasUpdater;
       updateWhistleId(server);
       exports.whistleName = data.wName;
       exports.account = data.account;
@@ -1875,9 +1879,11 @@ function updateServerInfo(data) {
       curServerInfo.strictMode = data.strictMode;
       events.trigger('updateStrictMode');
     }
-    if (curServerInfo.version !== data.version || curServerInfo.latestVersion !== data.latestVersion) {
+    if (curServerInfo.version !== data.version || curServerInfo.latestVersion !== data.latestVersion
+      || curServerInfo.latestClientVersion !== data.latestClientVersion) {
       curServerInfo.version = data.version;
       curServerInfo.latestVersion = data.latestVersion;
+      curServerInfo.latestClientVersion = data.latestClientVersion;
       events.trigger('updateVersion', data);
     }
   }
@@ -2131,23 +2137,24 @@ exports.getRemoteData = function (url, callback) {
   });
 };
 
+exports.showLatestClientVersion = function() {
+  if (!hasUpdater) {
+    return;
+  }
+  exports.updateClient(function (result, xhr) {
+    if (!result) {
+      return util.showSystemError(xhr);
+    }
+    if (result.ec) {
+      message.error(result.em || 'Update failed');
+    }
+  });
+  return true;
+};
+
 function toString(options) {
   return typeof options === 'string' ? options : JSON.stringify(options);
 }
-
-exports.getServiceBridge = function() {
-  return {
-    login: function(data, cb) {
-      if (typeof data !== 'string') {
-        data = JSON.stringify(data);
-      }
-      exports.login(data, cb);
-    },
-    logout: function(cb) {
-      exports.logout(cb);
-    }
-  };
-};
 
 function triggerWhistleIdChanged(server, byServer) {
   var whistleId = server && server.whistleId;

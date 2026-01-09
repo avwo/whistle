@@ -27,7 +27,11 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var CodeMirror = require('codemirror');
 var message = require('./message');
-var themes = require('./util').EDITOR_THEMES;
+var util = require('./util');
+var dataCenter = require('./data-center');
+
+var findDOMNode = ReactDOM.findDOMNode;
+var themes = util.EDITOR_THEMES;
 var INIT_LENGTH = 1024 * 16;
 var GUTTER_STYLE = [
   'CodeMirror-linenumbers',
@@ -154,7 +158,7 @@ var Editor = React.createClass({
   setFontSize: function (fontSize) {
     fontSize = this._fontSize = fontSize || DEFAULT_FONT_SIZE;
     if (this._editor) {
-      ReactDOM.findDOMNode(this.refs.editor).style.fontSize = fontSize;
+      findDOMNode(this.refs.editor).style.fontSize = fontSize;
     }
   },
   showLineNumber: function (show) {
@@ -223,7 +227,7 @@ var Editor = React.createClass({
     var timeout;
     var timer;
     var self = this;
-    var elem = ReactDOM.findDOMNode(self.refs.editor);
+    var elem = findDOMNode(self.refs.editor);
     var $elem = $(elem);
     var editor = CodeMirror(elem);
     var preKeyeord;
@@ -402,7 +406,14 @@ var Editor = React.createClass({
         };
         if (!e.ctrlKey && !e.metaKey && e.keyCode === 112) {
           var helpUrl = rulesHint.getHelpUrl(self._editor, options);
-          helpUrl && window.open(helpUrl);
+          if (!helpUrl) {
+            return;
+          }
+          if (dataCenter.whistleId) {
+            util.showAssistant(helpUrl);
+          } else {
+            window.open(helpUrl);
+          }
           e.stopPropagation();
           e.preventDefault();
           return true;

@@ -31,10 +31,11 @@ var MIN_SAFE_INTEGER = Math.abs(Number.MIN_SAFE_INTEGER || '9007199254740991') +
 var DIG_RE = /^([+-]?)([1-9]\d{0,15})$/;
 var SOURCE_SEP = '# (From ';
 var SOURCE_SEP_LEN = SOURCE_SEP.length;
+var BASE_SERVICE_URL = 'service/';
 
 exports.SOURCE_SEP = SOURCE_SEP;
-exports.SOURCE_SEP_LEN = SOURCE_SEP_LEN;
 exports.CRLF_RE = CRLF_RE;
+exports.isElectron = /Electron\//i.test(window.navigator.userAgent);
 exports.EDITOR_THEMES = [
   'default',
   'neat',
@@ -81,6 +82,40 @@ function noop(_) {
 }
 
 exports.noop = noop;
+
+function formatPath(path) {
+  if (!path) {
+    return '/';
+  }
+  return path[0] === '/' ? path : '/' + path;
+}
+
+function getServiceApi(win, bridgeApi) {
+  if (!win || !bridgeApi) {
+    return;
+  }
+  try {
+    var serviceApi = win.__whistleServiceApi;
+    if (!serviceApi && typeof win.getServiceApiForWhistle === 'function') {
+      serviceApi = win.getServiceApiForWhistle(bridgeApi) || {};
+      win.__whistleServiceApi = serviceApi;
+    }
+  } catch (e) {}
+  return serviceApi;
+}
+
+exports.getServiceApi = getServiceApi;
+
+exports.getServiceUrl = function (win, path, bridgeApi) {
+  var serviceApi = getServiceApi(win, bridgeApi);
+  var complete = serviceApi;
+  if (!serviceApi) {
+    try {
+      complete = win.location.href.indexOf(BASE_SERVICE_URL) !== -1 && win.document.readyState === 'complete';
+    } catch (e) {}
+  }
+  return !path && serviceApi ? null : BASE_SERVICE_URL + (complete && !serviceApi ? '?t=' + Date.now() : '') + '#' + formatPath(path);
+};
 
 exports.getQuery = function() {
   if (typeof search === 'string') {
@@ -204,6 +239,11 @@ function showService(path, delay) {
   }
 }
 exports.showService = showService;
+
+
+exports.showAssistant = function(text) {
+  events.trigger('showAssistant', text);
+};
 
 exports.hideService = function() {
   events.trigger('hideService');
@@ -342,6 +382,7 @@ exports.getBase64FromHexText = function (str) {
 
 function stopDrag() {
   dragCallback = dragTarget = dragOffset = null;
+  events.trigger('stopDrag');
 }
 
 
@@ -3216,10 +3257,14 @@ exports.handleClickLocate = function(text) {
   }
 };
 
-exports.getDocsBaseUrl = function (url) {
+function getDocUrl(url) {
   var path = /^zh-/i.test(navigator.language || navigator.userLanguage) ? '/' : '/en/';
   return 'https://wproxy.org' + path + (url ? 'docs/' : '') + (url || '');
-};
+}
+
+exports.getDocUrl = getDocUrl;
+
+exports.UPDATE_URL = getDocUrl('faq.html#update');
 
 exports.shakeElem = function (elem) {
   if (elem.hasClass('w-shake-horizontal')) {
@@ -3251,7 +3296,16 @@ exports.saveShortcutsSettings = function() {
   storage.set('shortcutsSettings', JSON.stringify(shortcutsSettings));
 };
 
+var EDITOR_SHORTCUTS = ['switchTabReverse', 'switchTab'];
+
 exports.hasShortcut = function(name) {
+  if (EDITOR_SHORTCUTS.indexOf(name) !== -1) {
+    var active = document.activeElement;
+    var nodeName = active && active.nodeName;
+    if ((nodeName === 'INPUT' || nodeName === 'TEXTAREA' || active && active.isContentEditable)) {
+      return false;
+    }
+  }
   return shortcutsSettings[name] !== false;
 };
 

@@ -4,7 +4,7 @@ var util = require('./util');
 
 var ServiceBtn = React.createClass({
   showService: function () {
-    util.showService(dataCenter.hasWhistleToken ? null : '/login');
+    util.showService();
   },
   render: function () {
     if (!dataCenter.whistleId) {

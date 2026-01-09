@@ -1,5 +1,5 @@
 .w-detail {
-  border-left: 1px solid #ccc;
+  border-left: 1px solid var(--c-border);
   overflow-x: auto;
   overflow-y: hidden;
 }
@@ -69,7 +69,7 @@
 
 .w-plugins-tabs-list {
   width: 106px;
-  border-right: 1px solid #ddd;
+  border-right: 1px solid var(--c-border);
   overflow-x: hidden;
   overflow-y: auto;
   background-color: #f1f3f4;
@@ -78,7 +78,7 @@
 .w-plugins-tabs-list .btn {
   border-radius: 0;
   border: none;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid var(--c-border);
   white-space: normal;
   word-wrap: break-word;
   word-break: break-all;
@@ -99,7 +99,7 @@ div.w-detail-inspectors-tabs {
 
 .w-detail-inspectors-tabs button {
   border: none;
-  border-right: 1px solid #ccc;
+  border-right: 1px solid var(--c-border);
   height: 20px;
   line-height: 16px;
   font-size: 12px;
@@ -108,12 +108,12 @@ div.w-detail-inspectors-tabs {
   font-weight: bold;
 }
 
-.w-detail-inspectors-tabs .glyphicon-menu-hamburger, .w-composer-tabs .glyphicon-menu-hamburger {
+.w-detail-inspectors-tabs .glyphicon-menu-hamburger, .w-com-tabs .glyphicon-menu-hamburger {
   color: #ff8000;
 }
 
 .w-detail-inspectors-tabs button.w-spec-active {
-  background-color: #ddd;
+  background-color: var(--bg-active);
 }
 
 .w-detail-inspectors-title.w-detail-inspectors-res {

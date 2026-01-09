@@ -21,11 +21,11 @@
 }
 .w-divider-con.box > .w-divider-left > .w-divider {
   right: 0;
-  border-right: 1px solid #ccc;
+  border-right: 1px solid var(--c-border);
 }
 .w-divider-con.box > .w-divider-right > .w-divider {
   left: 0;
-  border-left: 1px solid #ccc;
+  border-left: 1px solid var(--c-border);
 }
 .w-divider-con.orient-vertical-box > div > .w-divider {
   left: 0;
@@ -35,9 +35,9 @@
 }
 .w-divider-con.orient-vertical-box > .w-divider-left > .w-divider {
   bottom: 0;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid var(--c-border);
 }
 .w-divider-con.orient-vertical-box > .w-divider-right > .w-divider {
   top: 0;
-  border-top: 1px solid #ccc;
+  border-top: 1px solid var(--c-border);
 }

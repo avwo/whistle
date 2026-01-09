@@ -2,6 +2,10 @@
   font-weight: bold;
 }
 
+.w-service-btn .w-disabled {
+  cursor: pointer!important;
+}
+
 .w-large-dialog.w-service-login-dialog .modal-dialog {
   width: 420px;
   height: 520px;

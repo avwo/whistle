@@ -16,6 +16,7 @@ var dataCenter = require('./data-center');
 var storage = require('./storage');
 var message = require('./message');
 
+var findDOMNode = ReactDOM.findDOMNode;
 var TREE_ROW_HEIGHT = 24;
 var ROW_STYLE = { outline: 'none' };
 var columnState = {};
@@ -547,9 +548,9 @@ var ReqData = React.createClass({
       }
       self._sessionsList = list;
       self._pendingSave = false;
-      $(ReactDOM.findDOMNode(self.refs.saveSessions)).modal('show');
+      $(findDOMNode(self.refs.saveSessions)).modal('show');
       setTimeout(function () {
-        var input = ReactDOM.findDOMNode(self.refs.sessionsName);
+        var input = findDOMNode(self.refs.sessionsName);
         input.focus();
         input.select();
       }, 500);
@@ -571,8 +572,8 @@ var ReqData = React.createClass({
       timer && clearTimeout(timer);
       timer = setTimeout(update, 60);
     };
-    self.container = $(ReactDOM.findDOMNode(self.refs.container));
-    self.content = ReactDOM.findDOMNode(self.refs.content);
+    self.container = $(findDOMNode(self.refs.container));
+    self.content = findDOMNode(self.refs.content);
     var clickedCount = 0;
     self.$content = $(self.content)
       .on('dblclick', 'tr', function (e) {
@@ -672,7 +673,7 @@ var ReqData = React.createClass({
     };
     importRemoteUrl();
     $(window).on('hashchange', importRemoteUrl);
-    var backBtn = $(ReactDOM.findDOMNode(self.refs.backBtn));
+    var backBtn = $(findDOMNode(self.refs.backBtn));
     var hideBackBtn = function() {
       if (self.isShownBtn) {
         self.isShownBtn = false;
@@ -952,7 +953,7 @@ var ReqData = React.createClass({
       events.trigger('removeUnmarked');
       break;
     case 'Help':
-      window.open(util.getDocsBaseUrl('gui/network.html'));
+      window.open(util.getDocUrl('gui/network.html'));
       break;
     case 'Plugins':
       iframes.fork(action, {
@@ -1429,7 +1430,7 @@ var ReqData = React.createClass({
       if (data.em) {
         return message.error(data.em);
       }
-      $(ReactDOM.findDOMNode(self.refs.saveSessions)).modal('hide');
+      $(findDOMNode(self.refs.saveSessions)).modal('hide');
       self._sessionsList = null;
       self.setState({ sessionsName: '' });
       events.trigger('shakeSavedTab');

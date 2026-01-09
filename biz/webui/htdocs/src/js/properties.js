@@ -254,7 +254,7 @@ var Properties = React.createClass({
                         );
                       }) : <pre className={showInfo ? 'w-align-items' : null}>{showInfo ? <a
                               className="glyphicon glyphicon-info-sign w-prop-icon"
-                              href={util.getDocsBaseUrl('faq.html#capture-error')}
+                              href={util.getDocUrl('faq.html#capture-error')}
                               target="_blank" /> : null}{self.renderValue(value)}</pre>)
                     }
                   </td>

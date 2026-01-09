@@ -204,6 +204,7 @@ var Online = React.createClass({
       return;
     }
     var self = this;
+    var clientVersion = self.props.clientVersion;
     self.state.server = server;
     var info = [];
     var whistleId = util.escape(server.whistleId);
@@ -223,6 +224,9 @@ var Online = React.createClass({
     }
     if (server.nodeVersion) {
       info.push('<h5><strong>Node:</strong> ' + server.nodeVersion + '</h5>');
+    }
+    if (clientVersion) {
+      info.push('<h5><strong>Client:</strong> v' + clientVersion + '</h5>');
     }
     if (server.version) {
       info.push('<h5><strong>Whistle:</strong> v' + server.version + '</h5>');
@@ -577,7 +581,7 @@ var Online = React.createClass({
   },
   setTitle: function () {
     var server = dataCenter.getServerInfo() || this.state.server;
-    ReactDOM.findDOMNode(this.refs.onlineMenu).title = this.getTitle(server);
+    ReactDOM.findDOMNode(this.refs.onlineMenu).title = this.getTitle(server) || '';
   },
   render: function () {
     var server = this.state.server || '';

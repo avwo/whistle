@@ -1,4 +1,15 @@
-.w-refresh-menu-list .glyphicon-minus-sign,
-.w-refresh-menu-list .w-menu-item .glyphicon-stop {
-  color: #ccc !important;
+.w-switch-btn .glyphicon-stop {
+  color: var(--c-risk);
 }
+
+.w-switch-btn .w-disabled .glyphicon-stop,
+.w-switch-btn .w-pause .glyphicon-stop,
+.w-switch-btn .w-pause.glyphicon-stop,
+.w-switch-btn .w-menu-item .glyphicon-stop,
+.w-switch-btn .w-disabled .glyphicon-minus-sign,
+.w-switch-btn .w-pause .glyphicon-minus-sign,
+.w-switch-btn .w-menu-item .glyphicon-minus-sign {
+  color: var(--c-disabled) !important;
+}
+
+

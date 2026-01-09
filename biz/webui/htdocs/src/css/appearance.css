@@ -13,10 +13,10 @@
     background: #e6e6e6;
   }
   .w-auto .w-list-data .w-active {
-    background: #337ab7;
+    background: var(--c-hover);
   }
   .w-auto .w-list-data .w-list-group {
-    background: #fff;
+    background: var(--bg-default);
   }
   .w-auto .w-list-data .w-list-group.w-list-group-active {
     background: #efefef;
@@ -38,10 +38,10 @@
     background: #161616 !important;
   }
 
-  .w-auto .w-composer-body textarea[readonly],
-  .w-auto .w-composer-headers textarea[readonly],
-  .w-auto .w-composer-rules textarea:disabled,
-  .w-auto .w-composer-rules textarea[readonly],
+  .w-auto .w-com-body textarea[readonly],
+  .w-auto .w-com-headers textarea[readonly],
+  .w-auto .w-com-rules textarea:disabled,
+  .w-auto .w-com-rules textarea[readonly],
   .w-auto .w-detail-composer input[readonly],
   .w-auto .w-mock-key-name[readonly] {
     background: #333!important;
@@ -75,7 +75,7 @@
     color: #6294ce;
   }
   .w-auto .w-menu-item {
-    background: #000;
+    background: var(--c-default);
     border: 1px solid #333;
   }
   .w-auto .w-menu-selected {
@@ -106,7 +106,7 @@
   }
   .w-auto .tree-node.w-selected,
   .w-auto .tree-node:hover {
-    color: #000;
+    color: var(--c-default);
   }
 }
 
@@ -125,10 +125,10 @@
   background: #e6e6e6;
 }
 .w-auto.w-dark .w-list-data .w-active {
-  background: #337ab7;
+  background: var(--c-hover);
 }
 .w-auto.w-dark .w-list-data .w-list-group {
-  background: #fff;
+  background: var(--bg-default);
 }
 .w-auto.w-dark .w-list-data .w-list-group.w-list-group-active {
   background: #efefef;
@@ -155,10 +155,10 @@
   background: #161616 !important;
 }
 
-.w-auto.w-dark .w-composer-body textarea[readonly],
-.w-auto.w-dark .w-composer-headers textarea[readonly],
-.w-auto.w-dark .w-composer-rules textarea:disabled,
-.w-auto.w-dark .w-composer-rules textarea[readonly],
+.w-auto.w-dark .w-com-body textarea[readonly],
+.w-auto.w-dark .w-com-headers textarea[readonly],
+.w-auto.w-dark .w-com-rules textarea:disabled,
+.w-auto.w-dark .w-com-rules textarea[readonly],
 .w-auto.w-dark .w-detail-composer input[readonly],
 .w-auto.w-dark .w-mock-key-name[readonly] {
   background: #333!important;
@@ -192,7 +192,7 @@
   color: #6294ce;
 }
 .w-auto.w-dark .w-menu-item {
-  background: #000;
+  background: var(--c-default);
   border: 1px solid #333;
 }
 .w-auto.w-dark .w-menu-selected {
@@ -223,5 +223,5 @@
 }
 .w-auto.w-dark .tree-node.w-selected,
 .w-auto.w-dark .tree-node:hover {
-  color: #000;
+  color: var(--c-default);
 }

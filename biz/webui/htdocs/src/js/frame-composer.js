@@ -8,6 +8,7 @@ var win = require('./win');
 
 var MAX_FILE_SIZE = 1024 * 1025;
 var MAX_LENGTH = 1024 * 64;
+var findDOMNode = ReactDOM.findDOMNode;
 
 var FrameComposer = React.createClass({
   getInitialState: function () {
@@ -19,8 +20,8 @@ var FrameComposer = React.createClass({
   componentDidMount: function () {
     var self = this;
     var framesCtx = this.props.framesCtx;
-    self.dataField = ReactDOM.findDOMNode(self.refs.uploadData);
-    self.dataForm = ReactDOM.findDOMNode(self.refs.uploadDataForm);
+    self.dataField = findDOMNode(self.refs.uploadData);
+    self.dataForm = findDOMNode(self.refs.uploadDataForm);
     framesCtx.on('composeFrame', function (e, frame) {
       if (frame) {
         var body;
@@ -31,7 +32,7 @@ var FrameComposer = React.createClass({
         }
         self.setTextarea(body);
         setTimeout(function() {
-          ReactDOM.findDOMNode(self.refs.textarea).focus();
+          findDOMNode(self.refs.textarea).focus();
         }, 60);
       }
     });

@@ -1,5 +1,5 @@
 .w-detail-overview > .w-properties-wrap:last-child {
-  border-top: 1px solid #ccc;
+  border-top: 1px solid var(--c-border);
 }
 .w-detail-overview-title {
   margin: 0;
@@ -26,7 +26,7 @@
   vertical-align: text-bottom;
 }
 .w-detail-overview-title a:hover {
-  color: #337ab7;
+  color: var(--c-hover);
 }
 
 .w-overview-timeline {
@@ -51,5 +51,5 @@
 
 .w-properties-wrap td pre[data-rule-source]:hover {
   cursor: pointer;
-  color: #337ab7;
+  color: var(--c-hover);
 }

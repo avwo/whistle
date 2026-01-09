@@ -66,11 +66,11 @@ var ComposerList = React.createClass({
     return (
       <div
         className={
-          'fill orient-vertical-box w-composer-list' + (hide ? ' hide' : '')
+          'fill orient-vertical-box w-com-list' + (hide ? ' hide' : '')
         }
       >
         {tabs.length ? (
-          <div className="box w-composer-tab-list">
+          <div className="box w-com-tab-list">
             <button
               type="button"
               onClick={function () {

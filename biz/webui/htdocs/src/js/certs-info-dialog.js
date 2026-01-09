@@ -8,7 +8,7 @@ var win = require('./win');
 var dataCenter = require('./data-center');
 var message = require('./message');
 
-var OK_STYLE = { color: '#5bbd72' };
+var findDOMNode = ReactDOM.findDOMNode;
 var MAX_CERT_SIZE = 128 * 1024;
 
 function getCertName(cert, filename) {
@@ -54,7 +54,7 @@ var CertsInfoDialog = React.createClass({
         type: cert.type,
         validity: startDate.toLocaleString() + ' ~ ' + endDate.toLocaleString(),
         status: status || (
-          <span className="glyphicon glyphicon-ok" style={OK_STYLE} />
+          <span className="glyphicon glyphicon-ok" />
         ),
         isInvalid: isInvalid
       };
@@ -165,7 +165,7 @@ var CertsInfoDialog = React.createClass({
   },
   handleChange: function (e) {
     var self = this;
-    var input = ReactDOM.findDOMNode(self.refs.uploadCerts);
+    var input = findDOMNode(self.refs.uploadCerts);
     var files = input.files && self.formatFiles(input.files);
     input.value = '';
     if (!files) {
@@ -198,7 +198,7 @@ var CertsInfoDialog = React.createClass({
     });
   },
   showUpload: function () {
-    ReactDOM.findDOMNode(this.refs.uploadCerts).click();
+    findDOMNode(this.refs.uploadCerts).click();
   },
   showService: function () {
     util.showService('certs/history');
@@ -207,16 +207,16 @@ var CertsInfoDialog = React.createClass({
     var self = this;
     var list = self.state.list || [];
     return (
-      <Dialog ref="certsInfoDialog" wstyle="w-certs-info-dialog">
+      <Dialog ref="certsInfoDialog" wstyle="w-certs-dialog">
         <div className="modal-body">
           <button type="button" className="close" onClick={self.hide}>
             <span aria-hidden="true">&times;</span>
           </button>
-          <h4 className="w-certs-info-title">
+          <h4 className="w-certs-title">
             <a
               className="w-help-menu"
               title="Click here to see help"
-              href={util.getDocsBaseUrl('faq.html#custom-certs')}
+              href={util.getDocUrl('faq.html#custom-certs')}
               target="_blank"
             >
               <span className="glyphicon glyphicon-question-sign"></span>
@@ -225,11 +225,11 @@ var CertsInfoDialog = React.createClass({
           </h4>
           <table className="table w-hover-table-body">
             <thead>
-              <th className="w-certs-info-order">#</th>
-              <th className="w-certs-info-filename">Filename</th>
-              <th className="w-certs-info-domain">DNS Name</th>
-              <th className="w-certs-info-validity">Validity</th>
-              <th className="w-certs-info-status">Status</th>
+              <th className="w-certs-order">#</th>
+              <th className="w-certs-filename">Filename</th>
+              <th className="w-certs-domain">DNS Name</th>
+              <th className="w-certs-validity">Validity</th>
+              <th className="w-certs-status">Status</th>
             </thead>
             <tbody>
               {list.length ? (
@@ -238,9 +238,9 @@ var CertsInfoDialog = React.createClass({
                     <tr
                       className={item.isInvalid ? 'w-cert-invalid' : undefined}
                     >
-                      <th className="w-certs-info-order">{i + 1}</th>
+                      <th className="w-certs-order">{i + 1}</th>
                       <td
-                        className="w-certs-info-filename"
+                        className="w-certs-filename"
                         title={item.filename}
                       >
                         {item.readOnly ? (
@@ -263,16 +263,16 @@ var CertsInfoDialog = React.createClass({
                           {item.readOnly ? 'View path' : 'Delete'}
                         </a>
                       </td>
-                      <td className="w-certs-info-domain" title={item.domain}>
+                      <td className="w-certs-domain" title={item.domain}>
                         {item.domain}
                       </td>
                       <td
-                        className="w-certs-info-validity"
+                        className="w-certs-validity"
                         title={item.validity}
                       >
                         {item.validity}
                       </td>
-                      <td className="w-certs-info-status">{item.status}</td>
+                      <td className="w-certs-status">{item.status}</td>
                     </tr>
                   );
                 })

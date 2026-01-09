@@ -372,7 +372,7 @@ function getAtHelpUrl(name, options) {
       }
     }
   } catch (e) {}
-  return util.getDocsBaseUrl('rules/@.html');
+  return util.getDocUrl('rules/@.html');
 }
 
 function getRuleHelp(plugin, helpUrl) {
@@ -380,7 +380,7 @@ function getRuleHelp(plugin, helpUrl) {
     helpUrl = '';
   }
   return (
-    helpUrl || plugin.homepage || util.getDocsBaseUrl('extensions/usage.html')
+    helpUrl || plugin.homepage || util.getDocUrl('extensions/usage.html')
   );
 }
 
@@ -972,7 +972,7 @@ exports.getHelpUrl = function (editor, options) {
     var plugin = name && protocols.getPlugin(name);
     plugin = plugin && plugin.homepage;
     return (
-      plugin || util.getDocsBaseUrl('extensions/usage.html')
+      plugin || util.getDocUrl('extensions/usage.html')
     );
   }
   return protocols.getHelpUrl(name);

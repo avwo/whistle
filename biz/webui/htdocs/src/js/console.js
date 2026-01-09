@@ -13,6 +13,7 @@ var events = require('./events');
 var storage = require('./storage');
 var win = require('./win');
 
+var findDOMNode = ReactDOM.findDOMNode;
 var MAX_COUNT = dataCenter.MAX_LOG_LENGTH;
 var MAX_FILE_SIZE = 1024 * 1024 * 2;
 
@@ -93,10 +94,10 @@ var Console = React.createClass({
   },
   componentDidMount: function () {
     var self = this;
-    var container = (this.container = ReactDOM.findDOMNode(
+    var container = (this.container = findDOMNode(
       self.refs.container
     ));
-    var content = (this.content = ReactDOM.findDOMNode(self.refs.logContent));
+    var content = (this.content = findDOMNode(self.refs.logContent));
     var updateLogs = function (logs) {
       var state = self.state;
       var curLogs = state.logs;
@@ -303,7 +304,7 @@ var Console = React.createClass({
         <div className="w-log-action-bar">
           <DropDown
             onBeforeShow={this.onBeforeShow}
-            help={util.getDocsBaseUrl('gui/console.html')}
+            help={util.getDocUrl('gui/console.html')}
             onChange={this.changeLogId}
             options={logIdList}
           />

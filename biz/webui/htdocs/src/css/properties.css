@@ -25,7 +25,7 @@
   padding-bottom: 3px !important;
 }
 .w-properties tr {
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid var(--c-border);
 }
 .w-properties th {
   width: 124px;
@@ -66,7 +66,7 @@
   cursor: pointer;
 }
 .w-properties-btn:hover {
-  color: #337ab7;
+  color: var(--c-hover);
 }
 .w-properties th .glyphicon-question-sign {
   display: none;
@@ -102,14 +102,14 @@
 }
 
 .w-properties .w-properties-json>ul {
-  background: #fff!important;
+  background: var(--bg-default)!important;
   margin: 0!important;
 }
 
 .w-prop-icon {
   cursor: pointer!important;
   text-decoration: none!important;
-  color: #000;;
+  color: var(--c-default);;
 }
 
 .w-src-info {
@@ -120,6 +120,6 @@ span.w-src-info {
   color: #999;
 }
 
-.w-composer-dialog .form-control {
+.w-com-dialog .form-control {
   padding: 6px;
 }

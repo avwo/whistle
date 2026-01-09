@@ -14,6 +14,7 @@ var ContextMenu = require('./context-menu');
 var iframes = require('./iframes');
 
 
+var findDOMNode = ReactDOM.findDOMNode;
 var CMD_RE = /^([\w]{1,12})(\s+-g)?$/;
 var WHISTLE_PLUGIN_RE = /(?:^|[\s,;|])(?:@[\w.~-]+\/)?whistle\.[a-z\d_-]+(?:\@[\w.^~*-]*)?(?:$|[\s,;|])/;
 var PLUGIN_NAME_RE = /^((?:@[\w.~-]+\/)?whistle\.[a-z\d_-]+)(?:\@([\w.^~*-]*))?$/;
@@ -149,7 +150,7 @@ function parsePluginName(list, registry) {
 var Home = React.createClass({
   componentDidMount: function () {
     var self = this;
-    var pluginsElem = $(ReactDOM.findDOMNode(self.refs.plugins));
+    var pluginsElem = $(findDOMNode(self.refs.plugins));
     self.setUpdateAllBtnState();
     events.on('openPluginOption', function(_, plugin) {
       if (!plugin) {
@@ -330,7 +331,7 @@ var Home = React.createClass({
     self.refs.operatePluginDialog.show();
     if (self.state.install) {
       setTimeout(function() {
-        ReactDOM.findDOMNode(self.refs.textarea).focus();
+        findDOMNode(self.refs.textarea).focus();
       }, 600);
     }
   },
@@ -348,7 +349,7 @@ var Home = React.createClass({
   onRegistry: function(e) {
     var registry = e.target.value;
     if (registry === '+Add') {
-      var textarea = ReactDOM.findDOMNode(this.refs.textarea);
+      var textarea = findDOMNode(this.refs.textarea);
       var pkgs = [];
       var regs = [];
       var regCmdName = '--registry=';
@@ -607,23 +608,13 @@ var Home = React.createClass({
                           <a href={homepage} target="_blank" title={'Show ' + plugin.moduleName + ' Help'}>
                             {plugin.version}
                           </a>
-                        ) : (
-                          plugin.version
-                        )}
-                        {hasNew ? (
-                          homepage ? (
-                            <a
-                              className="w-new-version"
-                              href={homepage}
-                              target="_blank"
-                              title={'Show ' + plugin.moduleName + ' Help'}
-                            >
-                              {hasNew}
-                            </a>
-                          ) : (
-                            <span className="w-new-version">{hasNew}</span>
-                          )
-                        ) : undefined}
+                        ) : plugin.version}
+                        {hasNew ? <a
+                          className="w-new-version"
+                          data-name={name}
+                          onClick={self.onShowUpdate}
+                          title={'Update ' + plugin.moduleName}
+                        >{hasNew}</a> : null}
                       </td>
                       <td className="w-plugins-operation">
                         {plugin.noOpt ? <span className="disabled">Option</span> : <a
@@ -863,7 +854,7 @@ function getPluginInfo(plugin) {
 var Tabs = React.createClass({
   componentDidMount: function () {
     var self = this;
-    var tabPanel = ReactDOM.findDOMNode(self.refs.tabPanel);
+    var tabPanel = findDOMNode(self.refs.tabPanel);
     var wrapper = tabPanel.parentNode;
     var timer;
 
@@ -959,7 +950,7 @@ var Tabs = React.createClass({
       return events.trigger('showUninstallPlugin', plugin);
     case 'Help':
       var homepage = plugin && plugin.homepage;
-      return window.open(homepage || util.getDocsBaseUrl('extensions/usage.html'));
+      return window.open(homepage || util.getDocUrl('extensions/usage.html'));
     case 'Install':
       return events.trigger('showInstallPlugins');
     case 'Plugins':

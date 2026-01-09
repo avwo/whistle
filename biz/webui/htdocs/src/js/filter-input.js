@@ -6,6 +6,7 @@ var $ = require('jquery');
 var storage = require('./storage');
 var win = require('./win');
 
+var findDOMNode = ReactDOM.findDOMNode;
 var MAX_LEN = 128;
 var TYPES = ['JSON', 'HTML', 'CSS', 'JS', 'Font', 'Img', 'Media', 'WS', 'Tunnel', 'Wasm', 'Mock', 'Import', 'Composer', 'Error', 'Other'];
 var TITLES = {
@@ -47,7 +48,7 @@ var FilterInput = React.createClass({
   },
   componentDidMount: function () {
     var self = this;
-    self.hintElem = $(ReactDOM.findDOMNode(this.refs.hints));
+    self.hintElem = $(findDOMNode(this.refs.hints));
     $(document.body).on('mousedown', function(e) {
       if (self.state.hintList !== null && !$(e.target).closest('.w-filter-con').length) {
         self.hideHints();
@@ -59,7 +60,7 @@ var FilterInput = React.createClass({
     }
   },
   focus: function() {
-    var input = ReactDOM.findDOMNode(this.refs.input);
+    var input = findDOMNode(this.refs.input);
     input.select();
     input.focus();
   },
@@ -211,7 +212,7 @@ var FilterInput = React.createClass({
   clearFilterText: function () {
     this.props.onChange && this.props.onChange('');
     var hintList = null;
-    if (document.activeElement === ReactDOM.findDOMNode(this.refs.input)) {
+    if (document.activeElement === findDOMNode(this.refs.input)) {
       hintList = this.filterHints();
     }
     var hasChanged = this.state.filterText;
@@ -241,8 +242,7 @@ var FilterInput = React.createClass({
       filterType = '';
     }
     return (
-      <div className="w-filter-type-bar" onClick={this.handleFilterType} onMouseDown={util.preventBlur}
-        style={{background: filterType ? '#fafafa' : undefined}}>
+      <div className="w-filter-type-bar" onClick={this.handleFilterType} onMouseDown={util.preventBlur}>
         <span className={filterType ? undefined : 'w-active'}>All</span>
         {TYPES.map(function (type) {
           return <span key={type} title={TITLES[type] || type} className={filterType === type ? 'w-active' : undefined}>{type}</span>;

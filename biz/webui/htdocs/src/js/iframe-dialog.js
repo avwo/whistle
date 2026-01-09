@@ -51,7 +51,7 @@ var IframeDialog = React.createClass({
           </button>
         </div>
         <div className="modal-body w-fix-drag" style={{height: state.height || 'max(calc(100vh - 120px), 600px)'}}>
-         <iframe src={url} />
+        <iframe src={url} />
         </div>
       </Dialog>
     );

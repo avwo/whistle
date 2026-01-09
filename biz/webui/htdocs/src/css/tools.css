@@ -34,10 +34,10 @@
   background: #fffbe6;
 }
 .w-detail-page-log li.w-info {
-  background: #fff;
+  background: var(--bg-default);
 }
 .w-detail-page-log li.w-debug {
-  background: #f5f5f5;
+  background: var(--bg-disabled);
 }
 .w-detail-page-log li.w-error pre {
   color: #c41a16;
@@ -61,7 +61,7 @@
   width: auto !important;
 }
 .w-detail-page-log > .w-detail-log-content > ul > li {
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid var(--c-border);
 }
 .w-detail-page-log li > pre > span {
   margin-left: 10px;
@@ -87,7 +87,7 @@
   color: cyan;
 }
 .w-detail-svr-log li.w-trace pre {
-  color: grey;
+  color: var(--c-gray);
 }
 
 .w-detail-log-bar {
@@ -104,11 +104,11 @@
 .w-detail-log-bar a {
   display: inline-block;
   text-decoration: none;
-  color: #000;
+  color: var(--c-default);
   padding: 0 5px;
 }
 .w-detail-log-bar a:hover {
-  color: #337ab7;
+  color: var(--c-hover);
 }
 
 .w-detail-page-log,
@@ -128,7 +128,7 @@
   background: #f1f3f4;
   line-height: 20px;
   height: 21px;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid var(--c-border);
   position: relative;
   padding-left: 10px;
 }
@@ -143,20 +143,20 @@
   display: none !important;
 }
 .w-log-action-bar .w-textarea-bar a {
-  color: #000;
+  color: var(--c-default);
 }
 .w-log-action-bar .w-textarea-bar a:hover {
-  color: #337ab7;
+  color: var(--c-hover);
 }
 .w-log-action-bar > .w-dropdown {
   margin-right: 20px;
   width: 67px;
 }
-.w-textarea-bar .w-disabled, .w-composer-enable-body.w-disabled {
+.w-textarea-bar .w-disabled, .w-com-enable-body.w-disabled {
   cursor: default;
-  color: #aaa !important;
+  color: var(--c-disabled) !important;
 }
-.w-textarea-bar .w-refresh-menu-list {
+.w-textarea-bar .w-switch-btn {
   display: inline-block;
 }
 
@@ -164,7 +164,7 @@
   top: 21px;
 }
 
-.w-detail-log .w-textarea-bar .w-refresh-menu-list {
+.w-detail-log .w-textarea-bar .w-switch-btn {
   padding-bottom: 2px;
 }
 
@@ -191,7 +191,7 @@
   display: block;
   width: 100%;
   height: 160px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--c-border);
   padding: 5px;
 }
 .w-tool-box {
@@ -201,7 +201,7 @@
 }
 .w-tool-box .w-detail-inspectors-title {
   border: none;
-  border-right: 1px solid #ccc;
+  border-right: 1px solid var(--c-border);
   line-height: 20px;
 }
 
@@ -218,10 +218,10 @@
   height: 100px;
   line-height: 92px;
   text-align: center;
-  border: 1px solid #ccc;
-  color: #aaa;
+  border: 1px solid var(--c-border);
+  color: var(--c-disabled);
   font-size: 16px;
-  background: #fff;
+  background: var(--bg-default);
   font-weight: 400;
 }
 
@@ -235,7 +235,7 @@
 
 .w-text-dialog textarea {
   width: 879px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--c-border);
   border-radius: 3px;
   padding: 5px;
 }
@@ -277,7 +277,7 @@
   height: 34px;
   padding: 5px;
   border-radius: 0;
-  border: 1px solid #ccc;
+  border: 1px solid var(--c-border);
   display: block;
 }
 
@@ -296,7 +296,7 @@
 
 .w-detail-log .w-custom-tabs button {
   border: none;
-  border-right: 1px solid #ccc;
+  border-right: 1px solid var(--c-border);
   height: 22px;
   line-height: 18px;
   font-size: 12px;
@@ -348,12 +348,12 @@
   text-align: right;
 }
 
-.w-mock-row a, .w-big-editor-dialog .w-mock-inline-action a {
-  color: #000;
+.w-mock-row a, .w-big-editor-dialog .w-mock-action a {
+  color: var(--c-default);
   text-decoration: none;
 }
 
-.w-mock-row a:hover, .w-big-editor-dialog .w-mock-inline-action a:hover {
+.w-mock-row a:hover, .w-big-editor-dialog .w-mock-action a:hover {
   color: #23527c;
 }
 
@@ -363,7 +363,7 @@
   border-bottom-right-radius: 0!important;
 }
 
-.w-mock-row .w-composer-params {
+.w-mock-row .w-com-params {
   line-height: 30px;
   border-left: none;
 }
@@ -398,7 +398,7 @@
 .w-mock-file .w-mock-comment {
   margin-left: 20px;
   display: inline-block;
-  color: #555;
+  color: var(--c-weak);
 }
 
 .w-mock-file .w-mock-comment input {
@@ -419,7 +419,7 @@
   vertical-align: top;
   width: 555px;
   height: 200px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--c-border);
   border-radius: 2px;
   padding: 5px;
 }
@@ -433,8 +433,8 @@
 }
 
 .w-mock-row .w-mock-rules-action a,
-.w-mock-row .w-mock-inline-action a,
-.w-big-editor-dialog .modal-body .w-mock-inline-action a {
+.w-mock-row .w-mock-action a,
+.w-big-editor-dialog .modal-body .w-mock-action a {
   padding: 0 6px;
   border-radius: 2px;
   background-color: #f0f0f0;
@@ -466,23 +466,24 @@
   font-weight: bold;
 }
 
-.w-mock-inline-action {
+.w-mock-action {
   top: 2px;
   right: 20px;
   position: absolute;
   display: none;
 }
 
-.w-big-editor-dialog .modal-body .w-mock-inline-action {
+.w-big-editor-dialog .modal-body .w-mock-action {
   top: 12px;
   right: 11px;
   font-size: 12px;
 }
 
-.w-mock-row:hover .w-mock-inline-action, .w-big-editor-dialog .modal-body:hover .w-mock-inline-action {
+.w-mock-row:hover .w-mock-action, .w-big-editor-dialog .modal-body:hover .w-mock-action {
   display: block;
   background: #f0f0f0;
   border-radius: 3px;
+  z-index: 1;
 }
 
 .w-mock-dialog, .w-mock-dialog .form-control {
@@ -499,13 +500,13 @@
   cursor: pointer;
 }
 
-.w-mock-dialog .w-composer-params-editor {
+.w-mock-dialog .w-com-params-editor {
   top: 60px;
   right: 30px;
   width: 840px;
 }
 
-.w-composer-params-editor .w-params-clear-btn .glyphicon-trash {
+.w-com-params-editor .w-params-clear-btn .glyphicon-trash {
   width: 16px;
   margin-right: 0;
 }

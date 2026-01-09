@@ -3,6 +3,206 @@ var Dialog = require('./dialog');
 var util = require('./util');
 var dataCenter = require('./data-center');
 
+
+var CMD = 'Ctrl[Command]';
+var SETTINGS = [
+  {
+    'category': 'Network',
+    'list': [
+      [
+        'importNetwork',
+        CMD + ' + I',
+        'Import network sessions'
+      ],
+      [
+        'exportNetwork',
+        CMD + ' + E',
+        'Export network sessions'
+      ],
+      [
+        'saveNetwork',
+        CMD + ' + S',
+        'Save network sessions'
+      ],
+      [
+        'toggleNetworkState',
+        CMD + ' + O',
+        'Turn captured requests ON or OFF'
+      ],
+      [
+        'toggleNetworkPanelLayout',
+        CMD + ' + L',
+        'Toggle Network Panel layout: Left-right or top-bottom'
+      ],
+      [
+        'openNetworkSettings',
+        CMD + ' + .',
+        'Open network settings'
+      ],
+      [
+        'removeNetworkSessions',
+        CMD + ' + D',
+        'Remove selected network sessions'
+      ],
+      [
+        'switchNetworkView',
+        CMD + ' + B',
+        'Switch between tree and list view of network sessions'
+      ],
+      [
+        'replaySelectedRequests',
+        CMD + ' + Enter',
+        'Replay selected requests'
+      ],
+      [
+        'replaySelectedRequestsTimes',
+        CMD + ' + Shift + Enter',
+        'Set the number of times to replay the selected requests'
+      ],
+      [
+        'abortRequest',
+        CMD + ' + A',
+        'Abort requests'
+      ],
+      [
+        'clearNetworkSessions',
+        CMD + ' + X',
+        'Clear network sessions'
+      ],
+      [
+        'focusNetworkSearchBox',
+        '/',
+        'Focus the network search box at the bottom'
+      ]
+    ]
+  },
+  {
+    'category': 'Frames',
+    'list': [
+      [
+        'replaySelectedFrame',
+        CMD + ' + Enter',
+        'Replay selected frames'
+      ],
+      [
+        'clearNetworkFrames',
+        CMD + ' + X',
+        'Clear frames'
+      ]
+    ]
+  },
+  {
+    'category': 'Rules',
+    'list': [
+      [
+        'importRules',
+        CMD + ' + I',
+        'Import rules'
+      ],
+      [
+        'exportRules',
+        CMD + ' + E',
+        'Export rules'
+      ],
+      [
+        'saveRulesChanges',
+        CMD + ' + S',
+        'Save rules changes'
+      ],
+      [
+        'toggleRules',
+        CMD + ' + O',
+        'Turn rules ON or OFF'
+      ],
+      [
+        'toggleRulesNum',
+        CMD + ' + L',
+        'Toggle line numbers'
+      ],
+      [
+        'openRulesSettings',
+        CMD + ' + .',
+        'Open rules settings'
+      ],
+      [
+        'focusRulesSearchBox',
+        '/',
+        'Focus the rules search box at the bottom'
+      ]
+    ]
+  },
+  {
+    'category': 'Values',
+    'list': [
+      [
+        'importValues',
+        CMD + ' + I',
+        'Import values'
+      ],
+      [
+        'exportValues',
+        CMD + ' + E',
+        'Export values'
+      ],
+      [
+        'saveValuesChanges',
+        CMD + ' + S',
+        'Save values changes'
+      ],
+      [
+        'toggleValuesNum',
+        CMD + ' + L',
+        'Toggle line numbers'
+      ],
+      [
+        'openValuesSettings',
+        CMD + ' + .',
+        'Open values settings'
+      ],
+      [
+        'focusValuesSearchBox',
+        '/',
+        'Focus the values search box at the bottom'
+      ]
+    ]
+  },
+  {
+    'category': 'Plugins',
+    'list': [
+      [
+        'openInstallPlugins',
+        CMD + ' + I',
+        'Open the plugin installation dialog box'
+      ],
+      [
+        'togglePlugins',
+        CMD + ' + O',
+        'Turn all plugins ON or OFF'
+      ]
+    ]
+  },
+  {
+    'category': 'Others',
+    'list': [
+      [
+        'switchTabReverse',
+        CMD + ' + <--',
+        'Toggle Network, Rules, Values, and Plugins in reverse order'
+      ],
+      [
+        'switchTab',
+        CMD + ' + -->',
+        'Toggle Network, Rules, Values, and Plugins'
+      ],
+      [
+        'openService',
+        CMD + ' + J',
+        'Open service dialog'
+      ]
+    ]
+  }
+];
+
 var ShortcutsSettings = React.createClass({
   getInitialState: function() {
     return { settings: util.shortcutsSettings };
@@ -40,123 +240,21 @@ var ShortcutsSettings = React.createClass({
             </button>
           </div>
           <div className="modal-body" onChange={this.onChange}>
-            <h5>Network</h5>
-            <label>
-              <input type="checkbox" data-name="importNetwork" checked={settings.importNetwork !== false} /> <strong>Ctrl[Command] + I :</strong> Import network sessions
-            </label>
-            <label>
-              <input type="checkbox" data-name="exportNetwork" checked={settings.exportNetwork !== false} /> <strong>Ctrl[Command] + E :</strong> Export network sessions
-            </label>
-            <label>
-              <input type="checkbox" data-name="saveNetwork" checked={settings.saveNetwork !== false} /> <strong>Ctrl[Command] + S :</strong> Save network sessions
-            </label>
-            <label>
-              <input type="checkbox" data-name="toggleNetworkState" checked={settings.toggleNetworkState !== false} /> <strong>Ctrl[Command] + O :</strong> Turn captured requests ON or OFF
-            </label>
-            <label>
-              <input type="checkbox" data-name="toggleNetworkPanelLayout" checked={settings.toggleNetworkPanelLayout !== false} /> <strong>Ctrl[Command] + L :</strong> Toggle Network Panel layout: Left-right or top-bottom
-            </label>
-            <label>
-              <input type="checkbox" data-name="openNetworkSettings" checked={settings.openNetworkSettings !== false} /> <strong>Ctrl[Command] + . :</strong> Open network settings
-            </label>
-            <label>
-              <input type="checkbox" data-name="removeNetworkSessions" checked={settings.removeNetworkSessions !== false} /> <strong>Ctrl[Command] + D :</strong> Remove selected network sessions
-            </label>
-            <label>
-              <input type="checkbox" data-name="switchNetworkView" checked={settings.switchNetworkView !== false} /> <strong>Ctrl[Command] + B :</strong> Switch between tree and list view of network sessions
-            </label>
-             <label>
-              <input type="checkbox" data-name="replaySelectedRequests" checked={settings.replaySelectedRequests !== false} /> <strong>Ctrl[Command] + Enter :</strong> Replay selected requests
-            </label>
-            <label>
-              <input type="checkbox" data-name="replaySelectedRequestsTimes" checked={settings.replaySelectedRequestsTimes !== false} /> <strong>Ctrl[Command] + Shift + Enter :</strong> Set the number of times to replay the selected requests
-            </label>
-            <label>
-              <input type="checkbox" data-name="abortRequest" checked={settings.abortRequest !== false} /> <strong>Ctrl[Command] + A :</strong> Abort requests
-            </label>
-            <label>
-              <input type="checkbox" data-name="clearNetworkSessions" checked={settings.clearNetworkSessions !== false} /> <strong>Ctrl[Command] + X :</strong> Clear network sessions
-            </label>
-            <label>
-              <input type="checkbox" data-name="focusNetworkSearchBox" checked={settings.focusNetworkSearchBox !== false} /> <strong>/ :</strong> Focus the network search box at the bottom
-            </label>
-
-            <h5>Frames</h5>
-            <label>
-              <input type="checkbox" data-name="replaySelectedFrame" checked={settings.replaySelectedFrame !== false} /> <strong>Ctrl[Command] + Enter :</strong> Replay selected frame
-            </label>
-            <label>
-              <input type="checkbox" data-name="clearNetworkFrames" checked={settings.clearNetworkFrames !== false} /> <strong>Ctrl[Command] + X :</strong> Import rules
-            </label>
-
-            <h5>Rules</h5>
-            <label>
-              <input type="checkbox" data-name="importRules" checked={settings.importRules !== false} /> <strong>Ctrl[Command] + I :</strong> Import rules
-            </label>
-            <label>
-              <input type="checkbox" data-name="exportRules" checked={settings.exportRules !== false} /> <strong>Ctrl[Command] + E :</strong> Export rules
-            </label>
-            <label>
-              <input type="checkbox" data-name="saveRulesChanges" checked={settings.saveRulesChanges !== false} /> <strong>Ctrl[Command] + S :</strong> Save rules changes
-            </label>
-            <label>
-              <input type="checkbox" data-name="toggleRules" checked={settings.toggleRules !== false} /> <strong>Ctrl[Command] + O :</strong>  Turn rules ON or OFF
-            </label>
-            <label>
-              <input type="checkbox" data-name="toggleRulesNum" checked={settings.toggleRulesNum !== false} /> <strong>Ctrl[Command] + L :</strong> Toggle line numbers
-            </label>
-            <label>
-              <input type="checkbox" data-name="openRulesSettings" checked={settings.openRulesSettings !== false} /> <strong>Ctrl[Command] + . :</strong> Open rules settings
-            </label>
-            <label>
-              <input type="checkbox" data-name="removeRules" checked={settings.removeRules !== false} /> <strong>Ctrl[Command] + D :</strong> Remove selected rules
-            </label>
-            <label>
-              <input type="checkbox" data-name="focusRulesSearchBox" checked={settings.focusRulesSearchBox !== false} /> <strong>/ :</strong> Focus the rules search box at the bottom
-            </label>
-
-            <h5>Values</h5>
-            <label>
-              <input type="checkbox" data-name="importValues" checked={settings.importValues !== false} /> <strong>Ctrl[Command] + I :</strong> Import values
-            </label>
-            <label>
-              <input type="checkbox" data-name="exportValues" checked={settings.exportValues !== false} /> <strong>Ctrl[Command] + E :</strong> Export values
-            </label>
-            <label>
-              <input type="checkbox" data-name="saveValuesChanges" checked={settings.saveValuesChanges !== false} /> <strong>Ctrl[Command] + S :</strong> Save values changes
-            </label>
-            <label>
-              <input type="checkbox" data-name="toggleValuesNum" checked={settings.toggleValuesNum !== false} /> <strong>Ctrl[Command] + L :</strong> Toggle line numbers
-            </label>
-            <label>
-              <input type="checkbox" data-name="openValuesSettings" checked={settings.openValuesSettings !== false} /> <strong>Ctrl[Command] + . :</strong> Open values settings
-            </label>
-            <label>
-              <input type="checkbox" data-name="removeValues" checked={settings.removeValues !== false} /> <strong>Ctrl[Command] + D :</strong> Remove selected values
-            </label>
-            <label>
-              <input type="checkbox" data-name="focusValuesSearchBox" checked={settings.focusValuesSearchBox !== false} /> <strong>/ :</strong> Focus the values search box at the bottom
-            </label>
-
-            <h5>Plugins</h5>
-            <label>
-              <input type="checkbox" data-name="openInstallPlugins" checked={settings.openInstallPlugins !== false} /> <strong>Ctrl[Command] + I :</strong> Open the plugin installation dialog box
-            </label>
-            <label>
-              <input type="checkbox" data-name="togglePlugins" checked={settings.togglePlugins !== false} /> <strong>Ctrl[Command] + O :</strong> Turn all plugins ON or OFF
-            </label>
-
-            <h5>Others</h5>
-            <label>
-              <input type="checkbox" data-name="switchTabReverse" checked={settings.switchTabReverse !== false} /> <strong>Ctrl[Command] + &lt;-- :</strong> Toggle Network, Rules, Values, and Plugins in reverse order
-            </label>
-            <label>
-              <input type="checkbox" data-name="switchTab" checked={settings.switchTab !== false} /> <strong>Ctrl[Command] + --&gt; :</strong> Toggle Network, Rules, Values, and Plugins
-            </label>
-            {dataCenter.whistleId ?
-            <label>
-              <input type="checkbox" data-name="openService" checked={settings.openService !== false} /> <strong>Ctrl[Command] + J :</strong> Open service dialog
-            </label> : null}
+            {SETTINGS.map(function(setting) {
+              return (
+                <div>
+                  <h5 key={setting.category}>{setting.category}</h5>
+                  {setting.list.map(function(item) {
+                    if (!dataCenter.whistleId && item[0] === 'openService') {
+                      return null;
+                    }
+                    return <label key={item[0]}>
+                      <input type="checkbox" data-name={item[0]} checked={settings[item[0]] !== false} /> <strong>{item[1]} :</strong> {item[2]}
+                    </label>;
+                  })}
+                </div>
+              );
+            })}
           </div>
       </div>
       <div className="modal-footer">

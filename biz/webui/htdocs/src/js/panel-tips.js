@@ -27,7 +27,7 @@ var Tips = React.createClass({
             Tunnel
           </p>
           <a
-            href={util.getDocsBaseUrl('gui/https.html')}
+            href={util.getDocUrl('gui/https.html')}
             target="_blank"
           >
             Click here for more information
