@@ -17,8 +17,8 @@
 
 
 ## Frames
-1. `Ctrl[Command] + Enter`: Replay selected frame
-2. `Ctrl[Command] + X`: Import rules
+1. `Ctrl[Command] + Enter`: Replay selected frames
+2. `Ctrl[Command] + X`: Clear frames
 
 
 ## Rules
