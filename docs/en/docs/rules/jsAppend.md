@@ -45,7 +45,28 @@ www.example.com/path2 jsAppend://https://www.xxx.com/xxx/params.js
 www.example.com/path3 jsAppend://temp/blank.js
 ````
 
+## Set `<script>` Tag Attributes for Injected Scripts
+
+Scripts injected into HTML pages via `jsAppend` are automatically wrapped in `<script>` tags by Whistle. To set additional attributes for these tags—such as `nomodule`, `module`, `defer`, `async`, or `crossorigin`—you can use the `lineProps` parameter for configuration.
+
+```txt
+www.example.com/path1 jsAppend://https://www.xxx.com/xxx/params.js lineProps://nomodule
+www.example.com/path2 jsAppend://https://www.xxx.com/xxx/params.js lineProps://module
+www.example.com/path3 jsAppend://https://www.xxx.com/xxx/params.js lineProps://defer
+www.example.com/path4 jsAppend://https://www.xxx.com/xxx/params.js lineProps://async
+www.example.com/path5 jsAppend://https://www.xxx.com/xxx/params.js lineProps://crossorigin
+```
+
+### Attribute Descriptions and Examples
+| Attribute | Purpose | Configuration Example |
+|-----------|---------|-----------------------|
+| `nomodule` | Executes in traditional browsers; this script will run in browsers that do not support ES modules. | `lineProps://nomodule` |
+| `module` | Declares the script as an ES module, enabling modular imports. | `lineProps://module` |
+| `defer` | Loads asynchronously and executes after the document has been parsed. | `lineProps://defer` |
+| `async` | Loads asynchronously and executes immediately after download. | `lineProps://async` |
+| `crossorigin`| Enables Cross-Origin Resource Sharing (CORS) mode. | `lineProps://crossorigin` |
+
 ## Associated Protocols
 1. Inject content before the response: [reqAppend](./reqAppend)
-2. Inject content before the JavaScript response: [jsPrepend](./jsPrepend)
+2. Inject content before the JavaScript response: [jsAppend](./jsAppend)
 3. Replace the JavaScript response: [jsBody](./jsBody)

@@ -45,7 +45,29 @@ www.example.com/path2 jsAppend://https://www.xxx.com/xxx/params.js
 www.example.com/path3 jsAppend://temp/blank.js
 ````
 
+## 为注入的脚本设置 `<script>` 标签属性
+
+通过 `jsAppend` 注入到 HTML 页面的脚本，Whistle 会自动为其包裹 `<script>` 标签。若需要为该标签设置额外的属性，如 `nomodule`、`module`、`defer`、`async`、`crossorigin` 等，可以使用 `lineProps` 参数进行配置。
+
+```txt
+www.example.com/path1 jsAppend://https://www.xxx.com/xxx/params.js lineProps://nomodule
+www.example.com/path2 jsAppend://https://www.xxx.com/xxx/params.js lineProps://module
+www.example.com/path3 jsAppend://https://www.xxx.com/xxx/params.js lineProps://defer
+www.example.com/path4 jsAppend://https://www.xxx.com/xxx/params.js lineProps://async
+www.example.com/path5 jsAppend://https://www.xxx.com/xxx/params.js lineProps://crossorigin
+```
+
+### 属性说明与示例
+| 属性 | 用途说明 | 配置示例 |
+|------|----------|----------|
+| `nomodule` | 传统浏览器中执行，不支持 ES 模块的浏览器会运行此脚本 | `lineProps://nomodule` |
+| `module` | 声明为 ES 模块，支持模块化导入 | `lineProps://module` |
+| `defer` | 异步加载，在文档解析完成后执行 | `lineProps://defer` |
+| `async` | 异步加载，下载完成后立即执行 | `lineProps://async` |
+| `crossorigin`| 启用跨域资源共享（CORS）模式 | `lineProps://crossorigin` |
+
+
 ## 关联协议
 1. 在响应内容前面注入内容：[reqAppend](./reqAppend)
-2. 在 JavaScript 类型的响应内容前面注入内容：[jsPrepend](./jsPrepend)
+2. 在 JavaScript 类型的响应内容前面注入内容：[jsAppend](./jsAppend)
 3. 替换 JavaScript 类型的响应内容：[jsBody](./jsBody)

@@ -5,6 +5,7 @@
 </p>
 
 # whistle
+
 [![NPM version](https://img.shields.io/npm/v/whistle.svg?style=flat-square)](https://npmjs.org/package/whistle)
 [![node version](https://img.shields.io/badge/node.js-%3E=_8-green.svg?style=flat-square)](http://nodejs.org/download/)
 [![npm download](https://img.shields.io/npm/dm/whistle.svg?style=flat-square)](https://npmjs.org/package/whistle)
@@ -13,74 +14,67 @@
 
 [中文](./README.md) · English
 
-Whistle is a cross-platform network packet capture and debugging tool based on Node.js, with:
+Whistle (pronounced /ˈwisəl/) is a cross-platform network debugging and proxy tool built on Node.js. It provides powerful packet capture, request/response inspection and modification, a rule-based modification engine, and extensibility through plugins.
+
+Key features:
 1. **Powerful**
-   - Supports multiple proxy modes such as HTTP proxy, HTTPS proxy, Socks proxy, and reverse proxy
-   - Supports viewing and modifying HTTP, HTTPS, HTTP/2, WebSocket, and TCP requests/responses
-   - Built-in multiple common debugging tools:
-     - Weinre: View the DOM structure of the remote page,
-     - Console: View the console log of the remote page,
-     - Composer: Replay and edit requests
-2. **Simple operation**
-   - Supports modifying requests/responses by configuring rules
-   - Provides a one-stop GUI interface for viewing packet capture, configuring rules, managing plug-ins, and operating Weinre/Console/Composer, etc.
+   - Capture and modify HTTP, HTTPS, HTTP/2, WebSocket, and TCP traffic
+   - Supports HTTP, HTTPS, Socks and reverse proxy modes
+   - Built-in tools: Weinre (remote DOM inspection), Console (console logs), Composer (request replay/editing), etc.
+2. **Easy to use**
+   - Rule-based request/response modification
+   - Unified UI for captures, rules, plugins, Weinre/Console/Composer and more
 3. **Extensible**
-   - Supports extending rules and interface functions through plug-ins
-   - Supports being referenced by projects as NPM packages
+   - SPlugin support for extending rules and UI
+   - Can be used as an NPM module in projects
 4. **Cross-platform**
-   - Supports desktop systems such as macOS, Windows, and Linux (Ubuntu/Fedora)
-   - Supports interfaceless Linux servers
+   - Supports macOS, Windows, Linux (Ubuntu/Fedora) desktop systems
+   - Supports headless Linux server environments
 
-# Installation
+# Installation (recommended)
 
-**Whistle client is recommended for desktop systems such as macOS, Windows, and Linux (Ubuntu/Fedora): [https://github.com/avwo/whistle-client](https://github.com/avwo/whistle-client)**
+Desktop users (macOS/Windows/Linux) should use the Whistle client: https://github.com/avwo/whistle-client
+> The client skips manual installation and configuration steps
 
-> You can skip the **installation** step by using Whistle client
+# Headless Linux / Server Install (CLI)
 
-For environments such as Linux servers without interfaces, please follow the 4 steps below:
+Follow these 4 steps to deploy Whistle on a headless server:
 
-1. **Install Whistle**, it is recommended to install it with NPM: `npm i -g whistle` (Node.js needs to be installed first: https://nodejs.org/)
-    > It also supports installation through brew: `brew install whistle` (brew needs to be installed first: https://brew.sh/)
-2. **Start Whistle**, execute the command line: `w2 start`
-3. **Install the root certificate**, execute the command line: `w2 ca`
-    > The root certificate installation process may require manual confirmation:
-    >
-    > <details>
-    > <summary>Windows needs to click the last "Yes (Y)" confirm</summary>
-    > <img alt="Click Yes (Y)" width="420" src="https://user-images.githubusercontent.com/11450939/168846905-384e0540-e02f-46de-81d7-e395a496f032.jpeg">
-    > </details>
-    >
-    > <details>
-    > <summary>macOS requires a power-on password or fingerprint verification</summary>
-    > <img alt="Enter power-on password" width="330" src="https://user-images.githubusercontent.com/11450939/176977027-4a7b06a0-64f6-4580-b983-312515e9cd4e.png">
-    > <img alt="Enter fingerprint" width="330" src="https://user-images.githubusercontent.com/11450939/168847123-e66845d0-6002-4f24-874f-b6943f7f376b.png">
-    > </details>
-    >
+1. Install Whistle (recommended via npm)
+   - Install Node.js first: https://nodejs.org/
+   - Install: `npm i -g whistle`
+      > Alternatively via Homebrew: `brew install whistle`
+1. Start Whistle
+   - Command: `w2 start`
+2. Install CA certificate (required for HTTPS capture)
+   - Command: `w2 ca`
+   - Manual confirmation may be required:
+     - Windows: confirm with “Yes (Y)”
+     - macOS: may require entering password or Touch ID
+3. Configure proxy
+   - Command: `w2 proxy`
+   - Specify host:port: `w2 proxy "10.x.x.x:8888"`
+   - Disable system proxy: `w2 proxy 0`
 
-4. **Set proxy**, command line execution: `w2 proxy`
-    > macOS may need to enter the lock screen password when setting up the proxy for the first time
-    >
-    > Set a specified IP or port: `w2 proxy "10.x.x.x:8888"`
-    >
-    > Turn off system proxy: `w2 proxy 0`
-    >
-    > Other ways to set proxy:
-    >
-    > 1. **[Recommended]** Install Chrome plug-in ZeroOmega Set up a proxy: https://chromewebstore.google.com/detail/proxy-switchyomega-3-zero/pfnededegaaopdmhkdmcofjmoldfiped (If you cannot access it, you can install it manually: https://chrome.zzzmh.cn/info/pfnededegaaopdmhkdmcofjmoldfiped)
-    >
-    > 2. Set up a proxy directly on the client, such as FireFox, WeChat developer tools, etc., which have built-in proxy settings
-    >
-    > <details>
-    > <summary>FireFox proxy settings example image</summary>
-    > <img width="1000" alt="image" src="https://github.com/user-attachments/assets/98c1ec5d-4955-4e23-a49a-c1015b128d9d" />
-    > </details>
-    >
-    > 3. Through Proxifier Setting up a proxy (for clients that cannot set up a proxy and do not use a system proxy): https://www.proxifier.com/docs/win-v4/http-proxy.html
-    >
+Other proxy options:
+- Recommended: use a Chrome proxy extension ZeroOmega for easy switching
+  > Chrome Web Store (or manual install if blocked): https://chromewebstore.google.com/detail/proxy-switchyomega-3-zero/pfnededegaaopdmhkdmcofjmoldfiped
+- Use browser/devtools built-in proxy settings (e.g. Firefox, WeChat DevTools)
+- For apps that can't set proxies directly, use Proxifier (Windows/macOS)
 
-# Getting Started
-For detailed usage instructions, please refer to: https://wproxy.org/en/docs/getting-started.html
+# Quick Start
+
+See the official guide for usage and examples: https://wproxy.org/docs/getting-started.html
+
+# Common Commands
+
+- Start: `w2 start`
+- Stop: `w2 stop`
+- Restart: `w2 restart`
+- Status: `w2 status`
+- Install CA: `w2 ca`
+- Set proxy: `w2 proxy [host:port]` (use `w2 proxy 0` to disable)
 
 # License
 
-[MIT](./LICENSE)
+[MIT — see the LICENSE file](./LICENSE)

@@ -25,18 +25,69 @@
    
    <img width="1000" alt="edit request" src="/img/edit-req.png" />
 
-
-完整功能参见：[界面功能](./gui/network)
-
 ## 规则配置示例
 
 <img width="1000" alt="set rules" src="/img/rules.png" />
 
-Whistle 通过简单的规则配置修改请求/响应，基本语法结构如下：
+Whistle 通过配置简洁的规则，即可高效地修改与调试网络请求和响应。其所有规则都基于一个核心语法结构：
 
 ``` txt
-pattern operation [includeFilter://pattern1 ... excludeFilter://patternN ...]
+pattern operation [lineProps...] [filters...]
 ```
+
+**规则解读**：当一个请求的 URL 与 `pattern` 匹配时，Whistle 就会对其执行 `operation` 所定义的操作。此外，您还可以：
+- 通过可选的 `lineProps` 为当前同一行的规则设置特殊属性
+- 通过可选的 `filters` 对已匹配的请求进行二次筛选
+
+| 名称      | 功能                                                         |
+| --------- | ------------------------------------------------------------ |
+| pattern   | 匹配请求 URL 的表达式：<br/>1.  <br/>2. <br/>3. <br/>4. <br/>5. |
+| operation | 定义要执行的具体操作，格式为 `操作协议://操作内容`：<br/>1.  <br/>2. <br/>3. <br/>4. <br/>5. |
+| lineProps | 仅对当前规则生效的附加配置，用于提升规则优先级、细化匹配规则功能等行为：<br/>1.  <br/>2. <br/>3. <br/>4. <br/>5. |
+| filters   | 在 pattern 匹配的基础上进行更精确的筛选（支持组合使用）：<br/>1.  <br/>2. <br/>3. <br/>4. <br/>5. |
+
+
+我们先从几个常见功能开始，直观感受 Whistle 规则的基本用法，详细解读稍后说明。
+
+这条规则表明：当一个请求的 URL 与 `pattern` 匹配时，Whistle 将对其执行 `operation` 所定义的操作；您还可以通过可选的 `lineProps` 设置规则专属属性，或通过 `filters` 对匹配的请求进行二次筛选，其中：
+1. **匹配模式** (`pattern`)：匹配请求 URL 的表达式
+   
+   > 例如 `www.test.com:8080`（带端口域名）、`**.test.com`（带通配符域名）、`https://www.test.com/path`（路径）、`/api/i`（正则表达式）、`^https://**.test.com/path/index.*.js`（通配符）
+2. **操作指令** (`operation`)：定义要执行的具体操作，格式为 `操作协议://操作内容`
+   
+   > 例如 `reqHeaders://x-proxy=whistle`（设置请求头）、`file:///User/xxx`（映射到本地文件）
+3. **特殊属性** (可选，`lineProps`)：仅对当前规则生效的附加配置，用于提升规则优先级、细化匹配规则功能等行为
+   
+   > 例如 `lineProps://important`（提升当行规则优先级）、`lineProps://safeHtml`（确保响应内容不是 JSON 对象）、`lineProps://proxyHost`（让 `proxy` 和 `host` 协议同时生效） 等
+4. **过滤条件** (可选，`filters`)：在 pattern 匹配的基础上进行更精确的筛选，支持组合使用
+   
+   > 例如 `includeFilter://b:cmdname=xxx`（保留请求体中含 `cmdname=xxx` 的请求，不区分大小写）、`excludeFilter://reqH.user-agent=/android/i`（排除 User-Agent 包含 android 的请求，不区分大小写）
+
+下面我们首先通过几个典型示例来快速上手，帮助大家直观理解规则的实际应用，后续再对语法细节进行深入展开。
+
+## 本地替换
+在开发或定位问题时，经常需要将页面及其静态资源、接口等请求转发到本地或指定测试环境，对应的 Whistle 规则：
+``` txt
+# 将请求转发到本地服务
+www.example.com/pages http://location:5173
+
+# 将请求映射到本地文件
+www.example.com/static file:///User/xxx/statics
+
+# 将接口转发到指定测试环境
+www.example.com/api 10.1.0.1:8080
+
+```
+
+## 修改请求/响应
+
+
+## 查看页面 DOM 结构
+
+
+## 查看页面脚本错误/日志
+
+
 
 **规则由三个核心组件构成：**
 1. **匹配模式** (`pattern`)，匹配请求 URL 的表达式，支持多种格式：
@@ -164,4 +215,6 @@ pattern resCors://enable
     ```
     > Whistle 会自动将代码块里面的换行符自动替换成空格
 
-    完整功能参见：[规则配置](./rules/pattern)
+## 完整功能
+1. [界面功能](./gui/network)
+2. [规则配置](./rules/rule)

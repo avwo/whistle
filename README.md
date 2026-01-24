@@ -14,81 +14,65 @@
 
 中文 · [English](./README-en_US.md)
 
-Whistle (发音为 /ˈwisəl/)是一款基于 Node.js 实现的跨平台网络抓包调试工具，具有：
+Whistle（发音 /ˈwisəl/）是基于 Node.js 的跨平台网络抓包与调试工具，特点如下：
 1. **功能强大**
-   - 支持 HTTP 代理、HTTPS 代理、Socks 代理、反向代理多种代理模式
-   - 支持查看和修改 HTTP、HTTPS、HTTP/2、WebSocket、TCP 请求/响应
-   - 内置多种常用调试工具：
-     - Weinre：查看远程页面的 DOM 结构、
-     - Console：查看 console 日志、
-     - Composer：重放及编辑请求
+   - 支持 HTTP、HTTPS、HTTP/2、WebSocket、TCP 的抓包与修改请求/响应
+   - 支持 HTTP、HTTPS、Socks、反向代理等多种代理模式
+   - 内置常用调试工具：Weinre（远程 DOM 检查）、Console（查看 console 日志）、Composer（请求重放与编辑）等
 2. **操作简单**
-   - 支持通过配置规则修改请求/响应
-   - 提供一站式界面，可查看抓包、配置规则、管理插件、操作 Weinre/Console/Composer 等
+   - 通过规则配置即可修改请求/响应
+   - 提供一站式管理界面：抓包、规则、插件、Weinre/Console/Composer 等集中管理
 3. **可扩展**
-   - 支持通过插件扩展规则及界面功能
-   - 支持作为 NPM 模块被项目引用
+   - 支持插件扩展规则与界面功能
+   - 可作为 NPM 模块在项目中引用
 4. **跨平台**
-   - 支持 macOS、Windows、Linux（Ubuntu/Fedora）等桌面系统
-   - 支持无界面 Linux 服务器
+   - 支持 macOS、Windows、Linux（Ubuntu / Fedora）等桌面系统
+   - 支持无界面 Linux 服务器环境
 
-# 安装
+# 安装（推荐）
 
-**macOS、Windows、Linux（Ubuntu/Fedora）等桌面系统推荐使用 Whistle 客户端：[https://github.com/avwo/whistle-client](https://github.com/avwo/whistle-client)**
+桌面用户（macOS/Windows/Linux）推荐使用 Whistle 客户端：https://github.com/avwo/whistle-client
 
->  使用 Whistle 客户端可以跳过**安装**步骤
+> 客户端可以免去大部分手动安装与配置步骤
 
-无界面 Linux 服务器等环境，请按以下 4 个步骤操作：
+# 无界面 Linux / 服务器 安装（命令行）
 
-1. **安装 Whistle**，推荐用 NPM 安装：`npm i -g whistle`（需要先安装 Node.js：https://nodejs.org/ ）
+按以下 4 步在无界面服务器上快速部署：
+1. 安装 Whistle（推荐使用 npm）
+   - 需要先安装 Node.js：https://nodejs.org/
+   - 安装命令：`npm i -g whistle`
+      > 也支持 Homebrew：`brew install whistle`
+1. 启动 Whistle
+   - 命令：`w2 start`
+2. 安装根证书（用于 HTTPS 抓包）
+   - 命令：`w2 ca`
+   - 安装过程中可能需手动确认：
+      - Windows：最后选择 “是 (Y)” 确认
+      - macOS：可能需要输入开机密码或 Touch ID 验证
+3. 设置代理
+   - 命令：`w2 proxy`
+   - 设置指定 IP: `w2 proxy "10.x.x.x:8888"`
+   - 关闭系统代理： `w2 proxy 0`
 
-   > 也支持通过 brew 安装：`brew install whistle`（需要先安装 brew：https://brew.sh/ ）
-
-2. **启动 Whistle**，命令行执行：`w2 start`
-
-3. **安装根证书**，命令行执行：`w2 ca`
-
-   > 根证书安装过程可能需要手动确认：
-   >
-   > <details>
-   >   <summary>Windows 需要最后点击 “是(Y)” 确认</summary>
-   >   <img alt="点击 是(Y)" width="420" src="https://user-images.githubusercontent.com/11450939/168846905-384e0540-e02f-46de-81d7-e395a496f032.jpeg">
-   > </details>
-   >
-   > <details>
-   >   <summary>macOS 需要输入开机密码或指纹验证</summary>
-   >   <img alt="输入开机密码" width="330" src="https://user-images.githubusercontent.com/11450939/176977027-4a7b06a0-64f6-4580-b983-312515e9cd4e.png">
-   >   <img alt="输入指纹" width="330" src="https://user-images.githubusercontent.com/11450939/168847123-e66845d0-6002-4f24-874f-b6943f7f376b.png">
-   > </details>
-   >
-
-4. **设置代理**，命令行执行：`w2 proxy`
-
-   > macOS 首次设置代理可能需要输入锁屏密码
-   >
-   > 设置指定 IP 或端口：`w2 proxy "10.x.x.x:8888"`
-   >
-   > 关闭系统代理：`w2 proxy 0`
-   >
-   > 其它设置代理的方式：
-   >
-   > 1. **（推荐）** 通过安装 Chrome 插件 ZeroOmega 设置代理：https://chromewebstore.google.com/detail/proxy-switchyomega-3-zero/pfnededegaaopdmhkdmcofjmoldfiped （无法访问可手动安装：https://chrome.zzzmh.cn/info/pfnededegaaopdmhkdmcofjmoldfiped）
-   >
-   > 2. 直接在客户端上设置代理，如 FireFox、微信开发者工具等内置了设置代理功能
-   >
-   >    <details>
-   >      <summary>FireFox 设置代理示例图</summary>
-   >        <img width="1000" alt="image" src="https://github.com/user-attachments/assets/98c1ec5d-4955-4e23-a49a-c1015b128d9d" /> 
-   >    </details>
-   >
-   > 3. 通过 Proxifier 设置代理（针对无法设置代理且不使用系统代理的客户端）：https://www.proxifier.com/docs/win-v4/http-proxy.html
-   >
-
+其它代理方式：
+- 推荐：使用 Chrome 插件 ZeroOmega（便于在浏览器间切换代理）
+  > Chrome 商店地址（若无法访问可手动安装）：https://chromewebstore.google.com/detail/proxy-switchyomega-3-zero/pfnededegaaopdmhkdmcofjmoldfiped
+- 浏览器或开发者工具自带代理设置（例如 Firefox、微信开发者工具）
+- 对于无法直接设置代理的应用，可使用 Proxifier（Windows / macOS）
 
 # 快速上手
-详细使用指南请参考：https://wproxy.org/docs/getting-started.html
+
+详细使用指南与示例请查看官方文档：https://wproxy.org/docs/getting-started.html
+
+# 常见命令速查
+- 启动：`w2 start`
+- 停止：`w2 stop`
+- 重启：`w2 restart`
+- 查看状态：`w2 status`
+- 安装证书：`w2 ca`
+- 设置代理：`w2 proxy [host:port]`（`w2 proxy 0` 关闭）
 
 # License
 
-[MIT](./LICENSE)
+[MIT（详见 LICENSE 文件）](./LICENSE)
 
