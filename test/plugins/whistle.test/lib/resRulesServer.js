@@ -86,7 +86,7 @@ module.exports = function(server, options) {
 
     if (/values2.test.com/.test(fullUrl)) {
       rules.push(JSON.stringify({
-        rules: '/./ resHeaders://{resHeaders}',
+        rules: '* resHeaders://{resHeaders}',
         values: {
           resHeaders: {
             'x-res-test2': 'res'

@@ -1,0 +1,8 @@
+service.test.w2.org/path/to file://{test.txt}
+
+@$__dirname$/assets/files/service-remote-key.txt
+service.script-key.test.w2.org/test/script reqScript://$__dirname$/assets/files/service-script-key.txt
+
+``` test.txt
+service
+```

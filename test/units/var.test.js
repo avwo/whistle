@@ -5,5 +5,7 @@ module.exports = function() {
     data.should.have.property('json1', 1);
     data.should.have.property('json2', 2);
     data.should.have.property('json3', 3);
+    data.should.have.property('json4', 4);
+    data.should.have.property('json5', 5);
   });
 };

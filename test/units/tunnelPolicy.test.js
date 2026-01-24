@@ -1,7 +1,7 @@
 var util = require('../util.test');
 
 module.exports = function() {
-  util.request('https://tp.w2.org/index.html', function(res, data, err) {
+  util.request('https://tp.w2.org/index.html', function(res, data) {
     data.ruleValue.should.be.equal('global');
     res.headers['content-type'].should.be.equal('text/html');
   });
@@ -10,7 +10,7 @@ module.exports = function() {
     method: 'post',
     url: 'https://tp.w2.org/index.html',
     isTunnel: true
-  }, function(res, data, err) {
+  }, function(res, data) {
     data.body.should.be.equal('test');
     (res.headers['content-type'] | '').should.not.be.equal('text/html');
   });

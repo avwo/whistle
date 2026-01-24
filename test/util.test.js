@@ -249,3 +249,11 @@ function getValues() {
 }
 
 exports.getValues = getValues;
+
+exports.readText = function(file) {
+  return fs.readFileSync(path.join(__dirname, file), {encoding: 'utf8'});
+};
+
+exports.setPath = function(str) {
+  return str.split('$__dirname$').join(__dirname);
+};

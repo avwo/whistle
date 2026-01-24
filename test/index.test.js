@@ -15,7 +15,7 @@ var config = require('./config.test');
 var events = require('./events');
 var values = util.getValues();
 var testList = fs.readdirSync(path.join(__dirname, './units'));
-var defaultRules = fs.readFileSync(path.join(__dirname, 'rules.txt'), {encoding: 'utf8'});
+var defaultRules = util.readText('rules.txt');
 var options = {
   key: fs.readFileSync(path.join(__dirname, 'assets/certs/root.key')),
   cert: fs.readFileSync(path.join(__dirname, 'assets/certs/_root.crt'))
@@ -26,6 +26,10 @@ var WebSocketServer = require('ws').Server;
 var wss = new WebSocketServer({ port: config.wsPort });
 var WHISTLE_PATH = process.env.WHISTLE_PATH = __dirname;
 var PLUGINS_PATH = path.join(WHISTLE_PATH, '.whistle/node_modules');
+var mockRules = util.setPath(util.readText('assets/rules/mock.txt'));
+var serviceRules = util.setPath(util.readText('assets/rules/service.txt'));
+var shadowRules = util.setPath(util.readText('assets/rules/shadow.txt'));
+
 //Node7及以下使用非SNI Server
 if (process.versions.modules <= 51) {
   require('hagent').serverAgent.existsServer = function() {
@@ -84,7 +88,6 @@ values['options.html'] = {
 var proxy = startWhistle({
   port: config.port,
   storage: 'test_',
-  mode: 'strict',
   httpPort: config.httpServerPort,
   httpsPort: config.httpsServerPort,
   certDir: path.join(__dirname, 'assets/certs'),
@@ -96,7 +99,8 @@ var proxy = startWhistle({
     test: {
       rules: 'test.options.com file://{options.html}\n@'
         + path.join(__dirname, 'assets/files/rules.txt')
-        + '\n@https://127.0.0.1:' + config.httpsPort + '/test-remote.rules',
+        + '\n@https://127.0.0.1:' + config.httpsPort + '/test-remote.rules'
+        + '\ntest.key.test.w2.org/test file://{test.txt}\n``` test.txt\ntest\n```',
       enable: true
     },
     abc: '123'
@@ -221,6 +225,10 @@ function startTest() {
   if (--count > 0) {
     return;
   }
+
+  proxy.rulesUtil.setMockRules(mockRules);
+  proxy.rulesUtil.setServiceRules(serviceRules);
+  proxy.setShadowRules(shadowRules);
 
   var done;
   function testAll() {

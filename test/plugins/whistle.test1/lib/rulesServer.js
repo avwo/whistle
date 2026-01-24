@@ -3,7 +3,7 @@ module.exports = function(server, options) {
   server.on('request', function(req, res) {
     if (req.headers.host === 'var1.wproxy.org') {
       return res.end(JSON.stringify({
-        rules: '/./ file://(${json0}${json1},${json2},${json3}${jsonN})',
+        rules: '* file://(${json0}${json1},${json2},${json3},${test.txt},${json5.txt}${jsonN})\n``` test.txt\n"json4": 4\n```',
         values: {
           json0: '{',
           json1: '"json1": 1',

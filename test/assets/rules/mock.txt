@@ -1,0 +1,7 @@
+mock.test.w2.org/path/to file://{test.txt}
+@$__dirname$/assets/files/mock-remote-key.txt
+mock.script-key.test.w2.org/test/script reqScript://$__dirname$/assets/files/mock-script-key.txt
+
+``` test.txt
+mock
+```

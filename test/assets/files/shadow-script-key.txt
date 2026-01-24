@@ -1,0 +1,8 @@
+
+
+rules.push('* file://{test.txt} excludeFilter://*/test/script/api excludeFilter://*/test/script/proxy');
+rules.push(`*/test/script/api host://{customIp}`);
+rules.push(`*/test/script/proxy proxy://{customIp}`);
+
+values['test.txt'] = url + 'shadow';
+values.customIp = '127.0.0.1:8080';

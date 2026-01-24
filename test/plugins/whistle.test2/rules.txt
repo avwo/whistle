@@ -1,4 +1,4 @@
-/./ whistle.test2://test2
+* whistle.test2://test2
 enable1.w2.org enable://intercept test://test proxy://test:123@127.0.0.1:7788
 enable2.w2.org enable://intercept test://test proxy://test:123@127.0.0.1:7788
 enable2.w2.org ignore://test

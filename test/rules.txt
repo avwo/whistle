@@ -41,7 +41,7 @@ filter.com/index.html file://({"ec":0}) excludeFilter://m:post excludeFilter://m
 filter.com/index.html file://({"ec":1}) includeFilter://m:delete includeFilter://b:test
 filter.com/index.html file://({"ec":2}) includeFilter://b:555 excludeFilter://reqH:x-test=/\d+/
 filter.com/index.html file://({"ec":3}) excludeFilter://h:x-test=/\d+/
-filter.com/index.html file://({"ec":4}) 
+filter.com/index.html file://({"ec":4})
 
 filter2.com/test.html file://({"ec":123}) includeFilter:///abc/
 filter2.com/test.html file://({"ec":321}) excludeFilter:///cba/
@@ -83,3 +83,10 @@ list[40].a: "123"
 .test.wildcard5.com resMerge://{w1.json}
 
 /testx.whistlejs.com/ enable://capture
+
+``` test.txt
+Default
+```
+
+default.key.test.w2.org/test file://{test.txt}
+

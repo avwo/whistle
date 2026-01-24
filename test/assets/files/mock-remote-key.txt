@@ -1,0 +1,12 @@
+mock.remote-key.test.w2.org/test file://`{test.txt}`
+mock.remote-key2.test.w2.org/test file://`{test2.txt}`
+mock.remote-key3.test.w2.org/test host://{test-custom-ip}
+mock.remote-key4.test.w2.org/test proxy://{test-custom-ip}
+
+``` test-custom-ip
+127.0.0.1:8080
+```
+
+``` test2.txt
+${url}mock123
+```

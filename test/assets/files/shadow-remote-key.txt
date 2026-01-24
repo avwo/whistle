@@ -1,0 +1,12 @@
+shadow.remote-key.test.w2.org/test file://`{test.txt}`
+shadow.remote-key2.test.w2.org/test file://`{test2.txt}`
+shadow.remote-key3.test.w2.org/test host://{test-custom-ip2}
+shadow.remote-key4.test.w2.org/test proxy://{test-custom-ip2}
+
+``` test-custom-ip2
+127.0.0.1:8080
+```
+
+``` test2.txt
+${url}shadow123
+```
