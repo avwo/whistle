@@ -1,3 +1,10 @@
+## v2.9.108
+1. feat: 根据 Dark 模式规范重新优化界面的 Dark 模式
+2. feat: 支持查看客户端版本号
+3. feat: 内嵌值添加作用域（Rules、插件、Header Rules 之间的内嵌值相互独立）
+4. fix: 文本编辑器 Format 按钮消失问题
+5. fix: 修复了一些隐藏 bug
+
 ## v2.9.107
 1. feat: 优化界面
 2. feat: 支持 reqScript 和 resScript 调用 Buffer
