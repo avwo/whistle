@@ -33,22 +33,22 @@
   background: var(--c-disabled);
 }
 .w-timeline-ttfb {
-  background: var(--bg-active);
+  background: var(--b-active);
 }
 .w-timeline-dns {
-  background: #8cd2c6;
+  background: var(--b-tl-dns);
 }
 .w-timeline-request {
-  background: #fdfdb2;
+  background: var(--b-tl-req);
 }
 .w-timeline-response {
-  background: #fbb361;
+  background: var(--b-tl-res);
 }
 .w-timeline-load {
-  background: #7eabe1;
+  background: var(--b-tl-load);
 }
 .w-timeline-multi:hover .w-timeline-url {
-  color: var(--c-hover);
+  color: var(--c-link);
 }
 .w-timeline-time {
   position: absolute;

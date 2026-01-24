@@ -6,7 +6,7 @@
   position: relative;
 }
 .w-image-bg {
-  background: #0e0e0e;
+  background: var(--b-img);
   display: flex;
   align-items: center;
   justify-content: center;

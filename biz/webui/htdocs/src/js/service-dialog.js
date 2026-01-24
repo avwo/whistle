@@ -25,7 +25,7 @@ var ServiceDialog = React.createClass({
       if (onHasWhistleTokenChange) {
         var hasToken = dataCenter.hasWhistleToken;
         var dialogElem = $('.w-service-dialog');
-        if (hasToken && dialogElem.hasClass('w-service-login-dialog')) {
+        if (hasToken && dialogElem.hasClass('w-login-dialog')) {
           self.showService();
         }
         onHasWhistleTokenChange(hasToken);
@@ -49,12 +49,12 @@ var ServiceDialog = React.createClass({
       var showLoginDialog = self.getServiceFunc('showLoginDialog');
       if (showLoginDialog) {
         showLoginDialog();
-        dialogElem.removeClass('w-service-login-dialog');
+        dialogElem.removeClass('w-login-dialog');
         return dialog.show();
       }
-      dialogElem.addClass('w-service-login-dialog');
+      dialogElem.addClass('w-login-dialog');
     } else {
-      dialogElem.removeClass('w-service-login-dialog');
+      dialogElem.removeClass('w-login-dialog');
     }
     bridgeApi = bridgeApi || getServiceBridge(self.hideService);
     dialog.show(util.getServiceUrl(dialog.getWindow(), path, bridgeApi));
@@ -63,7 +63,7 @@ var ServiceDialog = React.createClass({
     this.refs.serviceDialog.hide();
   },
   render: function () {
-    var className = 'w-service-dialog' + (dataCenter.hasWhistleToken ? '' : ' w-service-login-dialog');
+    var className = 'w-service-dialog' + (dataCenter.hasWhistleToken ? '' : ' w-login-dialog');
     return <LargeDialog className={className} ref="serviceDialog" hideButton="1" />;
   }
 });

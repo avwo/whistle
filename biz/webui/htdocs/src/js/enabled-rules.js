@@ -3,6 +3,7 @@ var util = require('./util');
 var Properties = require('./properties');
 var Empty = require('./empty');
 var Dialog = require('./dialog');
+var CloseBtn = require('./close-btn');
 
 var EnabledRulesDialog = React.createClass({
   getInitialState: function () {
@@ -29,9 +30,7 @@ var EnabledRulesDialog = React.createClass({
       <Dialog ref="enabledRules" wstyle="w-enabled-rules-dialog">
           <div className="modal-header">
             <h4>Enabled Rules</h4>
-            <button type="button" className="close" data-dismiss="modal">
-              <span aria-hidden="true">&times;</span>
-            </button>
+            <CloseBtn />
           </div>
           {list.length ? <Properties
             name="Rules"

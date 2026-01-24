@@ -76,7 +76,7 @@ var TabMgr = React.createClass({
     return (
       <div
         className={
-          'fill orient-vertical-box ' +
+          'fill v-box ' +
           (props.className || '') +
           (hideAll ? ' hide' : '')
         }

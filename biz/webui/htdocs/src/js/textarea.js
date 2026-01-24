@@ -9,6 +9,7 @@ var message = require('./message');
 var win = require('./win');
 var events = require('./events');
 var Tips = require('./panel-tips');
+var Icon = require('./icon');
 
 var MAX_LENGTH = 1024 * 6;
 var findDOMNode = ReactDOM.findDOMNode;
@@ -149,22 +150,21 @@ var Textarea = React.createClass({
     return (
       <div
         className={
-          'fill orient-vertical-box w-textarea' +
+          'fill v-box w-textarea' +
           (props.hide ? ' hide' : '')
         }
       >
         <Tips data={props.tips} />
         <div className={'w-textarea-bar' + (value ? '' : ' hide')}>
           {props.reqType === 'reqRaw' ? <a onClick={props.onEdit}>
-             <span className="glyphicon glyphicon-send" />
-             Edit
+            <Icon name="send" />
+            Edit
           </a> : undefined}
           <CopyBtn value={props.value} />
           {isHexView ? (
             <CopyBtn name="AsHex" value={util.getHexText(props.value)} />
           ) : undefined}
           <a
-            className="w-download"
             onDoubleClick={this.download}
             onClick={this.showNameInput}
             draggable="false"
@@ -174,13 +174,13 @@ var Textarea = React.createClass({
           <a style={{display: dataCenter.hideMockMenu ? 'none' : null}} className="w-add" onClick={this.showMockDialog} draggable="false">
             { props.reqData ? 'Mock' : '+Key' }
           </a>
-          <a className="w-edit" onClick={this.edit} draggable="false">
+          <a onClick={this.edit} draggable="false">
             ViewAll
           </a>
           <div
             onMouseDown={this.preventBlur}
             style={{ display: this.state.showNameInput ? 'block' : 'none' }}
-            className="shadow w-textarea-input"
+            className="w-shadow w-textarea-input"
           >
             <input
               ref="nameInput"

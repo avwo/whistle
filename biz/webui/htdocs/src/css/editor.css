@@ -21,3 +21,7 @@
 .CodeMirror-search-label .CodeMirror-search-field {
   width: calc(100% - 50px)!important;
 }
+
+.cm-s-cobalt.CodeMirror {
+  color: var(--c-cobalt);
+}

@@ -6,4 +6,5 @@
   padding: 8px 20px !important;
   max-width: 460px;
   white-space: pre-wrap;
+  cursor: default;
 }

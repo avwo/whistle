@@ -18,6 +18,8 @@ var win = require('./win');
 var HistoryData = require('./history-data');
 var LazyInit = require('./lazy-init');
 var Frames = require('./frames');
+var Icon = require('./icon');
+var CloseBtn = require('./close-btn');
 
 var METHODS = [
   'GET',
@@ -326,7 +328,7 @@ var Composer = React.createClass({
         target.closest('.w-com-params-editor').length ||
         target.closest('.w-com-dialog').length ||
         target.closest('.w-win-dialog').length ||
-        target.closest('.w-context-menu').length)) {
+        target.closest('.w-ctx-menu').length)) {
         self.hideParams();
       }
       if (!(target.closest('.w-com-history-data').length ||
@@ -1169,7 +1171,7 @@ var Composer = React.createClass({
     var url = findDOMNode(self.refs.url).value;
     var host = util.getHostname(url).toLowerCase();
     if (!/^[a-z.\d_-]+$/.test(host)) {
-      return message.warn('Cookies not found');
+      return message.info('Cookies not found');
     }
     if (self._pending) {
       return;
@@ -1195,7 +1197,7 @@ var Composer = React.createClass({
         }
       }
       if (!result.length) {
-        return message.warn('Cookies not found');
+        return message.info('Cookies not found');
       }
       if (result.length < maxCount) {
         var cookies = self._cacheCookies;
@@ -1499,15 +1501,14 @@ var Composer = React.createClass({
     return (
       <div
         className={
-          'fill box w-detail-content w-detail-composer' +
+          'fill box w-detail-ctn w-detail-com' +
           (showHistory ? ' w-show-history' : '') +
           (util.getBool(self.props.hide) ? ' hide' : '')
         }
       >
-        <div className="fill orient-vertical-box">
+        <div className="fill v-box">
           <div className="w-com-url box">
-            <span className={'glyphicon glyphicon-dashboard w-status-' +
-              (showHistory ? 'show' : 'hide') + ' w-com-history-btn'}
+            <Icon name="dashboard" className="w-com-history-btn"
               title={(showHistory ? 'Hide' : 'Show') + ' history list'}
               onClick={this.toggleHistory}
             />
@@ -1550,7 +1551,7 @@ var Composer = React.createClass({
               title={enableProxyRules ? null : 'Whistle Rules IGNORED'}
               className={'btn w-com-execute btn-' + (enableProxyRules ? 'primary' : 'info')}
             >
-              <span className="glyphicon glyphicon-send" />
+              <Icon name="send" />
             </button>
             <div
               className="w-filter-hint"
@@ -1559,11 +1560,9 @@ var Composer = React.createClass({
             >
               <div className="w-filter-bar">
                 <a onClick={this.toggleHistory}>
-                  {showHistory ? 'Hide' : 'Show'} history
+                  <Icon name="dashboard" />{showHistory ? 'Hide' : 'Show'} history
                 </a>
-                <span onClick={self.hideHints} aria-hidden="true">
-                  &times;
-                </span>
+                <CloseBtn onClick={self.hideHints} className="w-clear-hints" />
               </div>
               <ul ref="hints" onClick={this.clickHints}>
                 {
@@ -1575,14 +1574,12 @@ var Composer = React.createClass({
             </div>
           </div>
           <div
-            className={'w-layer w-com-params-editor orient-vertical-box' + (showParams ? '' : ' hide')}
+            className={'w-layer w-com-params-editor v-box' + (showParams ? '' : ' hide')}
           >
             <div className="w-filter-bar">
-              <span onClick={self.hideParams} aria-hidden="true">
-                &times;
-              </span>
+              <CloseBtn onClick={self.hideParams} className="w-close-params" />
               <a style={{display: hasQuery ? null : 'none'}} className="w-params-clear-btn" onClick={this.clearQuery}>
-                <span className="glyphicon glyphicon-trash" />Clear
+                <Icon name="trash" />Clear
               </a>
               <a onClick={this.addQueryParam}>
                 +Param
@@ -1599,7 +1596,7 @@ var Composer = React.createClass({
               ref="rulesCon"
               onDoubleClick={this.enableRules}
               title={isStrictMode ? TIPS : undefined}
-              className="orient-vertical-box fill w-com-rules"
+              className="v-box fill w-com-rules"
             >
               <div className="w-detail-inspectors-title">
                 <label className="w-com-rules-label">
@@ -1653,21 +1650,21 @@ var Composer = React.createClass({
                 onDoubleClick={this.enableRules}
                 style={{
                   background:
-                    !disableComposerRules && rules ? 'lightyellow' : undefined
+                    !disableComposerRules && rules ? 'var(--b-filtered)' : undefined
                 }}
                 maxLength="8192"
-                className="fill orient-vertical-box w-com-rules"
+                className="fill v-box w-com-rules"
                 placeholder="Enter rules (Higher priority than Whistle Rules)"
               />
             </div>
-            <div className="orient-vertical-box fill">
+            <div className="v-box fill">
               <div className="w-detail-inspectors-title w-com-tabs">
                 <button
                   onClick={this.onTabChange}
                   name="Request"
                   className={getTabClass(showRequest)}
                 >
-                  <span className="glyphicon glyphicon-edit" />
+                  <Icon name="edit" />
                   Request
                 </button>
                 <button
@@ -1677,7 +1674,7 @@ var Composer = React.createClass({
                   style={{fontWeight: 'normal'}}
                   className={getTabClass(showResponse)}
                 >
-                  <span className="glyphicon glyphicon-arrow-left" />
+                  <Icon name="arrow-left" />
                   Response
                 </button>
                 <button
@@ -1688,12 +1685,12 @@ var Composer = React.createClass({
                   style={{fontWeight: 'normal'}}
                   className={getTabClass(showFrames)}
                 >
-                  <span className="glyphicon glyphicon-menu-hamburger" />
+                  <Icon name="menu-hamburger" />
                   Frames
                 </button>
               </div>
               <Divider hide={!showRequest} vertical="true">
-                <div className="fill orient-vertical-box w-com-headers">
+                <div className="fill v-box w-com-headers">
                   <div
                     className="w-com-bar"
                     onChange={this.onTypeChange}
@@ -1782,7 +1779,7 @@ var Composer = React.createClass({
                     placeholder="Enter headers"
                     name="headers"
                     className={
-                      'fill orient-vertical-box' + (showPretty ? ' hide' : '')
+                      'fill v-box' + (showPretty ? ' hide' : '')
                     }
                   />
                   <PropsEditor
@@ -1794,7 +1791,7 @@ var Composer = React.createClass({
                     callback={this.execute}
                   />
                 </div>
-                <div className={'fill orient-vertical-box w-com-body' + (disableBody ? ' w-com-disable-body' : '')}>
+                <div className={'fill v-box w-com-body' + (disableBody ? ' w-com-disable-body' : '')}>
                   <div className="w-com-bar">
                     <label className="w-com-label" onClick={self.shakeMethod}>
                       <input
@@ -1814,7 +1811,7 @@ var Composer = React.createClass({
                       onDoubleClick={this.focusEnableBody}
                     >
                       <input
-                        disabled={lockBody}
+                        disabled={pending}
                         checked={isHexText}
                         type="checkbox"
                         onChange={this.onHexTextChange}
@@ -1830,7 +1827,7 @@ var Composer = React.createClass({
                       onDoubleClick={this.focusEnableBody}
                     >
                       <input
-                        disabled={lockBody}
+                        disabled={pending}
                         checked={isCRLF}
                         onChangeCapture={this.onCRLFChange}
                         type="checkbox"
@@ -1883,16 +1880,12 @@ var Composer = React.createClass({
                     maxLength={MAX_BODY_SIZE}
                     onDoubleClick={this.focusEnableBody}
                     onClick={self.shakeMethod}
-                    style={{
-                      background:
-                        hasBody && !disableBody ? 'lightyellow' : undefined,
-                      fontFamily: isHexText ? 'monospace' : undefined
-                    }}
+                    style={{ fontFamily: isHexText ? 'monospace' : undefined }}
                     onKeyDown={this.onFormat}
                     ref="body"
                     placeholder={'Enter ' + (isHexText ? 'hex text' : 'body')}
                     className={
-                      'fill orient-vertical-box' +
+                      'fill v-box' +
                       (showPrettyBody  || showUpload
                         ? ' hide'
                         : '')
@@ -1929,7 +1922,7 @@ var Composer = React.createClass({
                     className="btn btn-default w-com-back-btn"
                     title="Back to Request"
                   >
-                    <span className="glyphicon glyphicon-menu-left"></span>
+                    <Icon name="menu-left" />
                   </button>
                   <Properties
                     modal={resProps}
@@ -1945,7 +1938,7 @@ var Composer = React.createClass({
               </LazyInit>
               <LazyInit inited={showFrames}>
                 <Frames hide={!showFrames} data={reqData} frames={reqData && reqData.frames} />
-               </LazyInit>
+              </LazyInit>
             </div>
           </Divider>
         </div>

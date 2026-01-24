@@ -150,7 +150,7 @@ exports.formatDate = formatDate;
 exports.getClientIp = util.getClientIp;
 
 function sendError(res, err) {
-  res.status(500).send(config.debugMode ?
+  util.sendRes(res, 500, config.debugMode ?
     '<pre>' + util.encodeHtml(util.getErrorStack(err)) + '</pre>' : 'Internal Server Error');
 }
 

@@ -1,8 +1,9 @@
 .w-table > thead > tr > th {
-  background: #eee;
-  font-weight: normal;
-  border-bottom: 1px solid var(--c-border);
-  vertical-align: top;
+  white-space: nowrap;
+  background: var(--b-bar);
+  border-bottom: 1px;
+  font-weight: 500;
+  color: var(--c-default);
 }
 
 .w-table th,
@@ -19,7 +20,7 @@
 }
 
 .w-order-table-head {
-  background: var(--bg-bar);
+  background: var(--b-bar);
 }
 
 .w-order-table .table td, .w-order-table .table th {

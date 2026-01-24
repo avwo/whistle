@@ -15,6 +15,7 @@ var iframes = require('./iframes');
 var storage = require('./storage');
 var RecycleBinDialog = require('./recycle-bin');
 var EnabledRulesDialog = require('./enabled-rules');
+var Icon = require('./icon');
 
 var findDOMNode = ReactDOM.findDOMNode;
 var hideEnableHTTPSTips = window.location.href.indexOf('hideEnableHTTPSTips=1') !== -1;
@@ -370,7 +371,7 @@ var List = React.createClass({
     var info = getDragInfo(e);
     if (info) {
       curTarget = info.target;
-      curTarget.style.background = 'var(--bg-active)';
+      curTarget.style.background = 'var(--b-active)';
     }
   },
   onDragLeave: function (e) {
@@ -756,7 +757,7 @@ var List = React.createClass({
 
     //不设置height为0，滚动会有问题
     return (
-      <div className={'orient-vertical-box fill w-nav-tabs' +
+      <div className={'v-box fill' +
         (selected && isRules ? ' w-has-selected-rules' : '') +
         (disabled ? ' w-has-selected-disabled' : '') +
         (props.hide ? ' hide' : '')}>
@@ -770,9 +771,9 @@ var List = React.createClass({
           </div>
         ) : null}
         <Divider leftWidth="230">
-          <div className="fill orient-vertical-box w-list-left">
+          <div className="fill v-box w-list-left">
             {isRules ? <div className={'w-enabled-rules-btn' + (enabledRulesCount ? '' : ' w-disabled')} onClick={enabledRulesCount ? self.showEnabledRules : null}>
-              <span className="glyphicon glyphicon-ok" data-name="enabledRules" />
+              <Icon name="ok" data-name="enabledRules" />
               Enabled Rules ({enabledRulesCount})
             </div> : null}
             <div
@@ -781,10 +782,11 @@ var List = React.createClass({
               onContextMenu={this.onContextMenu}
               onDrop={self.onDrop}
               className={
-                'fill orient-vertical-box w-list-data ' +
+                'fill v-box w-list-data ' +
                 (props.className || '') +
                 (disabled ? ' w-disabled' : '')
               }
+              style={{ background: filterText ? 'var(--b-filtered)' : undefined }}
             >
               {list.map(function (name, i) {
                 var item = data[name];
@@ -827,12 +829,12 @@ var List = React.createClass({
                       'w-group-empty': isGroup && !item.childCount
                     })}
                   >
-                    {isGroup ? <span className={'glyphicon glyphicon-triangle-' + (isHide ? 'right' : 'bottom')} /> : null}
+                    {isGroup ? <Icon name={'triangle-' + (isHide ? 'right' : 'bottom')} /> : null}
                     {title}
                     {isGroup ? <span className={util.getClasses({
                       'w-group-child-num': true,
                       'w-exists-selected': item.selectedCount > 0
-                    })}>({item.selectedCount > 0 ? item.selectedCount + '/' : ''}{item.childCount})</span> : <span className="glyphicon glyphicon-ok" />}
+                    })}>({item.selectedCount > 0 ? item.selectedCount + '/' : ''}{item.childCount})</span> : <Icon name="ok" />}
                   </a>
                 );
               })}

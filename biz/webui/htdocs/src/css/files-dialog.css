@@ -27,7 +27,7 @@
 }
 
 .w-files-operation a:last-child:hover {
-  color: red;
+  color: var(--c-error);
 }
 
 .w-files-dialog thead th {

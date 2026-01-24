@@ -48,7 +48,7 @@ var Frames = React.createClass({
     return (
       <div
         className={
-          'fill orient-vertical-box w-frames' + (props.hide ? ' hide' : '')
+          'fill v-box w-frames' + (props.hide ? ' hide' : '')
         }
       >
         <LazyInit inited={!hide}>

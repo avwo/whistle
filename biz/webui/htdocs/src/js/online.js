@@ -11,30 +11,104 @@ var storage = require('./storage');
 var win = require('./win');
 var message = require('./message');
 var ShortcutsSettings = require('./shortcuts-settings');
+var Icon = require('./icon');
+var CloseBtn = require('./close-btn');
 
 var IPV6_ONLY_VAL = 4;
 var dialog;
 var curOrder;
 var curVerbatim = -1;
+var theme = 'light';
+var mediaMatches = false;
+var borderColor;
+var setTheme = function() {
+  var newTheme = isDarkMode() ? 'dark' : 'light';
+  if (theme === newTheme) {
+    return;
+  }
+  theme = newTheme;
+  try {
+    var doc = document.documentElement;
+    if (doc.getAttribute('data-theme') !== theme) {
+      doc.setAttribute('data-theme', theme);
+    }
+    var style = getComputedStyle(doc);
+    borderColor = style.getPropertyValue('--c-border').trim();
+  } catch (e) {}
+};
+var handleThemeChange = setTheme;
 
 var appearanceMode = storage.get('appearanceMode');
-if (storage.get('disabledDarkMode') == '1') {
-  appearanceMode = 'light';
-} else if (['auto', 'dark', 'light'].indexOf(appearanceMode) === -1) {
+if (['auto', 'dark', 'light'].indexOf(appearanceMode) === -1) {
   appearanceMode = 'auto';
+}
+
+function isDarkMode() {
+  return (mediaMatches && appearanceMode === 'auto') || appearanceMode === 'dark';
 }
 
 function setAppearanceMode(mode) {
   appearanceMode = mode;
-  var className = mode === 'light' ? '' : 'w-auto';
-  if (mode === 'dark') {
-    className += ' w-dark';
-  }
+  handleThemeChange();
+}
+
+function onDarkModeChange(cb) {
+  var media;
   try {
-    document.documentElement.className = className;
+    media = window.matchMedia('(prefers-color-scheme: dark)');
+    mediaMatches = media.matches;
+  } catch (e) {
+    return;
+  }
+  if (media) {
+    cb();
+    if (typeof media.addEventListener === 'function') {
+      media.addEventListener('change', cb);
+    } else if (typeof media.addListener === 'function') {
+      media.addListener(cb);
+    }
+  }
+}
+
+setAppearanceMode(appearanceMode);
+onDarkModeChange(function(e) {
+  mediaMatches = e ? e.matches : mediaMatches;
+  handleThemeChange();
+});
+
+function updateFakeIframe(iframe) {
+  try {
+    var style = iframe.contentDocument.documentElement.style;
+    if (style.colorScheme !== theme) {
+      style.colorScheme = theme;
+      style.setProperty('--c-border', borderColor);
+    }
   } catch (e) {}
 }
-setAppearanceMode(appearanceMode);
+
+function updateIframeTheme(iframe) {
+  if (iframe.getAttribute('data-type') === 'fake') {
+    return updateFakeIframe(iframe);
+  }
+  try {
+    var win = iframe.contentWindow;
+    var doc = win && win.document.documentElement;
+    if (!doc) {
+      return;
+    }
+    var curTheme = doc.getAttribute('data-theme');
+    if (theme !== curTheme) {
+      doc.setAttribute('data-theme', theme);
+      if (typeof win.onWhistleThemeChange === 'function') {
+        win.onWhistleThemeChange(theme);
+      }
+    }
+  } catch (e) {}
+}
+
+dataCenter.handleIframeLoad = function(e) {
+  updateIframeTheme(e.target);
+};
 
 function selectDnsOption(order) {
   order = +order;
@@ -89,13 +163,13 @@ function createDialog() {
       '<div class="modal-dialog">' +
       '<div class="modal-content">' +
       '<div class="modal-body">' +
-      '<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
-      '<div class="w-online-dialog-ctn"></div>' +
-      '<div class="w-online-dialog-info">' +  proxyInfoList.join('') + '</div>' +
-      '<h5 class="w-appearance-option"><strong>Appearance:</strong><select class="form-control"><option value="auto">Auto</option>' +
+      '<button type="button" class="close" data-dismiss="modal">&times;</button>' +
+      '<div class="w-online-ctn"></div>' +
+      '<div class="w-online-info">' +  proxyInfoList.join('') + '</div>' +
+      '<h5 class="w-theme-option"><strong>Theme:</strong><select class="form-control"><option value="auto">Auto</option>' +
       '<option value="dark">Dark</option><option value="light">Light</option></select></h5>'+
       '<h5 class="w-dns-order-option"><strong>DNS Order:</strong><select class="form-control"></select></h5>' +
-      '<p><a class="w-online-view-dns">View Custom DNS Servers</a></p>' +
+      '<p><a class="w-online-dns">View Custom DNS Servers</a></p>' +
       '<a class="w-online-shortcuts-settings">Shortcuts Settings</a>' +
       '</div>' +
       '<div class="modal-footer">' +
@@ -104,10 +178,9 @@ function createDialog() {
       // '<span class="glyphicon glyphicon-log-in"></span><span class="w-login-label">Login</span></button>' +
       '</div></div></div></div>'
     ).appendTo(document.body);
-    var appearanceSelect = dialog.find('.w-appearance-option select');
+    var appearanceSelect = dialog.find('.w-theme-option select');
     appearanceSelect.on('change', function(e) {
       var val = e.target.value;
-      storage.remove('disabledDarkMode');
       storage.set('appearanceMode', val);
       setAppearanceMode(val);
     });
@@ -166,6 +239,16 @@ var Online = React.createClass({
     dataCenter.setServerInfo = function(info) {
       !self._pendingDnsOrder && selectDnsOption(info.ipv6Only ? IPV6_ONLY_VAL : info.dnsOrder);
     };
+    handleThemeChange = function() {
+      setTheme();
+      var iframes = document.querySelectorAll('iframe');
+      for (var i = 0; i < iframes.length; i++) {
+        updateIframeTheme(iframes[i]);
+      }
+    };
+
+    handleThemeChange();
+    setInterval(handleThemeChange, 1600);
   },
   checkServerChanged: function (data) {
     data.mac = data.mac || '';
@@ -261,7 +344,7 @@ var Online = React.createClass({
       info.push('<p>' + server.ipv6.join('<br/>') + '</p>');
     }
     createDialog();
-    var ctn = dialog.find('.w-online-dialog-ctn').html(info.join(''));
+    var ctn = dialog.find('.w-online-ctn').html(info.join(''));
     var loginBtn = dialog.find('.w-login-btn');
     var loginElem = loginBtn[0];
     if (loginElem) {
@@ -302,7 +385,7 @@ var Online = React.createClass({
       self._initProxyInfo = true;
       var curServerInfo;
       var isHide = true;
-      var dnsElem = dialog.find('.w-online-view-dns');
+      var dnsElem = dialog.find('.w-online-dns');
       var shortcutsElem = dialog.find('.w-online-shortcuts-settings');
       var hideDns = true;
 
@@ -333,13 +416,13 @@ var Online = React.createClass({
         if (!pInfo) {
           if (isHide) {
             isHide = true;
-            dialog.find('.w-online-dialog-info').hide();
+            dialog.find('.w-online-info').hide();
           }
           return;
         }
         if (isHide) {
           isHide = false;
-          dialog.find('.w-online-dialog-info').show();
+          dialog.find('.w-online-info').show();
         }
         var reqElem = dialog.find('#whistleRequests');
         var uiReqElem = dialog.find('#whistleAllRequests');
@@ -593,7 +676,7 @@ var Online = React.createClass({
         className={'w-online-menu w-online' + (server ? '' : ' w-offline')}
         onClick={this.showServerInfo}
       >
-        <span className="glyphicon glyphicon-stats"></span>
+        <Icon name="stats" />
         {server ? 'Online' : 'Offline'}
         {server.dns ? (
           <span>{server.doh ? '(DoH)' : server.r6 ? '(IPv6)' : '(IPv4)'}</span>
@@ -603,9 +686,7 @@ var Online = React.createClass({
           wstyle="w-confirm-reload-dialog w-confirm-reload-global"
         >
           <div className="modal-body w-confirm-reload">
-            <button type="button" className="close" data-dismiss="modal">
-              <span aria-hidden="true">&times;</span>
-            </button>
+            <CloseBtn />
             The proxy has been modified.
             <br />
             Do you want to reload this page?

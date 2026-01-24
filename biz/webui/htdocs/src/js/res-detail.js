@@ -1,5 +1,4 @@
 require('../css/res-detail.css');
-var $ = require('jquery');
 var React = require('react');
 var Table = require('./table');
 var Properties = require('./properties');
@@ -105,7 +104,7 @@ var ResDetail = React.createClass({
       json = util.getJson(res);
       if (headers && headers['set-cookie']) {
         cookies = headers['set-cookie'];
-        if (!$.isArray(cookies)) {
+        if (!Array.isArray(cookies)) {
           cookies = typeof cookies == 'string' ? [cookies] : [];
         }
         cookies = cookies.map(function (cookie) {
@@ -251,7 +250,7 @@ var ResDetail = React.createClass({
     return (
       <div
         className={
-          'fill orient-vertical-box w-detail-content w-detail-res' +
+          'fill v-box w-detail-ctn w-detail-res' +
           (util.getBool(this.props.hide) ? ' hide' : '')
         }
       >

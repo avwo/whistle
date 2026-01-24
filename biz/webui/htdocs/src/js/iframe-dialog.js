@@ -2,6 +2,9 @@ require('../css/iframe-dialog.css');
 var React = require('react');
 var Dialog = require('./dialog');
 var getBridge = require('./bridge');
+var dataCenter = require('./data-center');
+var Icon = require('./icon');
+var CloseBtn = require('./close-btn');
 
 function onWhistlePluginOptionModalReady(init, win) {
   if (typeof init === 'function') {
@@ -42,16 +45,14 @@ var IframeDialog = React.createClass({
         <div className="modal-header">
           <h4>
             <span className={className}>
-              {disabled ? <span data-name={name} className="glyphicon glyphicon-ban-circle" /> : favicon}
+              {disabled ? <Icon data-name={name} name="ban-circle" /> : favicon}
               {name || 'Untitled'}
             </span>
           </h4>
-          <button type="button" className="close" data-dismiss="modal">
-            <span aria-hidden="true">&times;</span>
-          </button>
+          <CloseBtn />
         </div>
         <div className="modal-body w-fix-drag" style={{height: state.height || 'max(calc(100vh - 120px), 600px)'}}>
-        <iframe src={url} />
+        <iframe src={url} onLoad={dataCenter.handleIframeLoad} />
         </div>
       </Dialog>
     );

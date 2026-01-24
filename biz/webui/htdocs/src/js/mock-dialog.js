@@ -10,6 +10,9 @@ var win = require('./win');
 var message = require('./message');
 var events = require('./events');
 var PropsEditor = require('./props-editor');
+var Icon = require('./icon');
+var HelpIcon = require('./help-icon');
+var CloseBtn = require('./close-btn');
 
 var findDOMNode = ReactDOM.findDOMNode;
 var MAX_LEN = 64;
@@ -174,7 +177,7 @@ var MockDialog = React.createClass({
     var value = e.target.value;
     var protocol = this.state.protocol;
     value = INLINE_PROTOCOLS.indexOf(protocol) === -1 ? value : 'inline';
-    if (value === 'key') {
+    if (value === 'key' && !this.isValuesKey()) {
       util.shakeElem($(findDOMNode(this.refs.keyName)));
     }
     this.setState({
@@ -412,7 +415,7 @@ var MockDialog = React.createClass({
         style.width = iframeStyle.width + 'px';
         style.height = iframeStyle.height + 'px';
         style.padding = '5px';
-        style.border = '1px solid #ccc';
+        style.border = '1px solid var(--c-border, #ccc)';
         style.borderRadius = '3px';
         textarea.maxLength = 1024 * 1024 * 3;
         textarea.placeholder='Enter value';
@@ -470,10 +473,7 @@ var MockDialog = React.createClass({
   removeRules: function() {
     var self = this;
     win.confirm('Do you confirm the deletion of the rules?', function(sure) {
-      if (sure) {
-        self.setState({ pattern: '' }, self.updateRules);
-        findDOMNode(self.refs.url).focus();
-      }
+      sure && self.setState({ pattern: '' }, self.updateRules);
     });
   },
   showParams: function() {
@@ -569,9 +569,9 @@ var MockDialog = React.createClass({
     return state.keyName;
   },
   saveValueOnly: function() {
-    if (this.getValueType() !== 'key') {
+    if (this.getValueType() !== 'key' && !this.isValuesKey()) {
       util.shakeElem($(findDOMNode(this.refs.valueType)));
-      return message.warn('Switch to \'Key Value\' mode, and set the corresponding key name');
+      return message.info('Switch to \'Key Value\' mode, and set the corresponding key name');
     }
     this.save(true);
   },
@@ -647,12 +647,10 @@ var MockDialog = React.createClass({
     return (
       <Dialog ref="mockDialog" wstyle="w-mock-dialog">
         <div className={'modal-body' + (isFile ? ' w-mock-file' : '')}>
-          <button type="button" className="close" data-dismiss="modal">
-            <span aria-hidden="true">&times;</span>
-          </button>
+          <CloseBtn />
           <div className="w-mock-row">
               <span>
-                <a className="glyphicon glyphicon-question-sign" href={util.getDocUrl('rules/pattern.html')} target="_blank" />
+                <HelpIcon docsUrl="rules/pattern.html" />
                 URL Pattern:
               </span>
               <input ref="url" onChange={this.onPatternChange} onFocus={this.selectAllText} placeholder="Enter url pattern"
@@ -735,7 +733,8 @@ var MockDialog = React.createClass({
             <span>
               Value:
             </span>
-            <div className="w-fake-iframe w-fix-drag"><iframe ref="iframe" src={fakeIframe} style={iframeStyle}/></div>
+            <div className="w-fake-iframe w-fix-drag"><iframe ref="iframe" data-type="fake" onLoad={dataCenter.handleIframeLoad}
+              src={fakeIframe} style={iframeStyle}/></div>
             <div style={getStyle(showKeyValue)} className="w-mock-action">
               <a onClick={this.formatValue}>Format</a>
               <a onClick={this.clearValue}>Clear</a>
@@ -748,7 +747,7 @@ var MockDialog = React.createClass({
               <pre className="w-mock-preview">
                 {rules}
               </pre>
-              <span className="glyphicon glyphicon-trash" onClick={this.removeRules} />
+              <Icon name="trash" onClick={this.removeRules} />
               <div className="w-mock-rules-action">
                 <CopyBtn value={rules} />
               </div>
@@ -786,6 +785,7 @@ var MockDialog = React.createClass({
               className="btn btn-primary"
               onClick={this.save}
               disabled={!rules}
+              title={rules ? '' : 'Please enter URL Pattern first'}
             >
               Save As Rules
             </button> : <button
@@ -799,14 +799,12 @@ var MockDialog = React.createClass({
           }
         </div>
         <div
-            className={'w-layer w-com-params-editor orient-vertical-box' + (showParams ? '' : ' hide')}
+            className={'w-layer w-com-params-editor v-box' + (showParams ? '' : ' hide')}
           >
             <div className="w-filter-bar">
-              <span onClick={this.hideParams} aria-hidden="true">
-                &times;
-              </span>
+              <CloseBtn onClick={this.hideParams} className="w-close-params" />
               <a style={{display: hasQuery ? null : 'none'}} className="w-params-clear-btn" onClick={this.clearQuery}>
-                <span className="glyphicon glyphicon-trash" />Clear
+                <Icon name="trash" />Clear
               </a>
               <a onClick={this.addQueryParam}>
                 +Param

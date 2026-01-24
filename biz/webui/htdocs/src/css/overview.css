@@ -1,4 +1,4 @@
-.w-detail-overview > .w-properties-wrap:last-child {
+.w-detail-overview > .w-props-wrap:last-child {
   border-top: 1px solid var(--c-border);
 }
 .w-detail-overview-title {
@@ -10,11 +10,6 @@
   display: block;
   clear: both;
 }
-.w-detail-overview-title a {
-  text-decoration: none !important;
-  color: #333;
-  float: left;
-}
 .w-detail-overview-title label {
   float: right;
   font-weight: normal;
@@ -24,9 +19,6 @@
 .w-detail-overview-title label input {
   margin-right: 5px;
   vertical-align: text-bottom;
-}
-.w-detail-overview-title a:hover {
-  color: var(--c-hover);
 }
 
 .w-overview-timeline {
@@ -49,7 +41,7 @@
   height: 100%;
 }
 
-.w-properties-wrap td pre[data-rule-source]:hover {
+.w-props-wrap td pre[data-rule-source]:hover {
   cursor: pointer;
-  color: var(--c-hover);
+  color: var(--c-link);
 }

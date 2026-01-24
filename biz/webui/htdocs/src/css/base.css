@@ -8,22 +8,143 @@
 
   --c-default: #000;
   --c-active: #fff;
-  --c-editor: #ddd;
+  --c-btn: #fff;
+  --c-heavy: #333;
+  --c-editor: #eee;
+  --c-forbidden: #808000;
   --c-disabled: #aaa;
-  --c-hover: #337ab7;
+  --c-link: #337ab7;
+  --c-link-hover: #23527c;
   --c-border: #ccc;
   --c-error: red;
   --c-risk: #f66;
+  --c-danger: #ff3a90;
   --c-gray: #808080;
-  --c-weak: #555;
+  --c-thin: #555;
+  --c-ok: #5bbd72;
+  --c-has: #000093;
+  --c-warn: #5c3b00;
+  --c-warn-active: yellow;
+  --c-cobalt: #fff;
 
-  --bg-default: #fff;
-  --bg-error: #f2dede;
-  --bg-active: #ddd;
-  --bg-hover: #f5f5f5;
-  --bg-disabled: #f5f5f5;
-  --bg-bar: #fafafa;
-  --bg-mark: #3b88fd;
+  --c-post: #4f91cf;
+  --c-del: #ce5442;
+  --c-head: #55b499;
+  --c-options: #f0ad4e;
+  --c-trace: #5bc0de;
+  --c-patch: #8f58af;
+  --c-put: #e49b3b;
+  --c-tag: #46b8da;
+  --c-tagx: #eea236;
+  --c-rule-filter: #845dc4;
+  --c-rule-props: #ff9e59;
+  --c-req: #0d8f0d;
+  --c-res: #e75b0f;
+
+  --c-tree-success: #3c763d;
+  --c-tree-info: #31708f;
+  --c-tree-warning: #8a6d3b;
+  --c-tree-danger: #a94442;
+  --c-tree-forbidden: #aa6708;
+  --c-tree-mark: #3b88fd;
+
+  --c-j0: #002b36;
+  --c-j1: #073642;
+  --c-j2: #586e75;
+  --c-j3: #657b83;
+  --c-j4: #839496;
+  --c-j5: #93a1a1;
+  --c-j6: #eee8d5;
+  --c-j7: #fdf6e3;
+  --c-j8: #dc322f;
+  --c-j9: #cb4b16;
+  --c-ja: #b58900;
+  --c-jb: #859900;
+  --c-jc: #2aa198;
+  --c-jd: #268bd2;
+  --c-je: #6c71c4;
+  --c-jf: #d33682;
+
+  /* 文字颜色 */
+  --c-success: #3c763d;
+  --c-primary: #2e6da4;
+  --c-primary-hover: #23527c;
+  --c-primary-active: #1d4566;
+  --c-danger-hover: #ac2925;
+  --c-danger-active: #761c19;
+  --c-warning: #eea236;
+  --c-warning-hover: #d58512;
+  --c-warning-active: #985f0d;
+  --c-info: #46b8da;
+  --c-info-hover: #269abc;
+  --c-info-active: #1b6d85;
+
+  /* 背景颜色 */
+  --b-success: #dff0d8;
+  --b-success-hover: #d0e9c6;
+  --b-warning: #f0ad4e;
+  --b-warning-hover: #ec971f;
+  --b-warning-active: #d58512;
+  --b-info: #5bc0de;
+  --b-info-hover: #31b0d5;
+  --b-info-active: #269abc;
+  --b-primary: #337ab7;
+  --b-primary-hover: #286090;
+  --b-primary-active: #204d74;
+  --b-danger: #d9534f;
+  --b-danger-hover: #c9302c;
+  --b-danger-active: #ac2925;
+
+  --b-alert-info: #d9edf7;
+  --b-default: #fff;
+  --b-error: #f2dede;
+  --b-error-hover: #dab9b9;
+  --b-active: #ddd;
+  --b-gray: #ccc;
+  --b-btn-hover: #e6e6e6;
+  --b-btn-active: #d6e2fb;
+  --b-hover: #f5f5f5;
+  --b-heavy: #eee;
+  --b-heavy-active: #e0e0e0;
+  --b-disabled: #f5f5f5;
+  --b-bar: #fafafa;
+  --b-mark: #3b88fd;
+  --b-title: #f1f3f4;
+  --b-img: #0e0e0e;
+  --b-frames: #ff8000;
+  --b-prop: #e1e3e6;
+  --b-ok: #5bbd72;
+  --b-editor: #002240;
+  --b-filtered: #ffffe0;
+  --b-warn: #fffbe6;
+  --b-req: #e2f7da;
+  --b-req-hover: #cee7c0;
+  --b-blink: #ffeb3b;
+  --b-tree-active: #8fbc8f;
+
+  --b-tl-dns: #8cd2c6;
+  --b-tl-req: #fdfdb2;
+  --b-tl-res: #fbb361;
+  --b-tl-load: #7eabe1;
+
+  --b-list-hover: #e8e8e8;
+  --b-list-warn: #f8efcf;
+  --b-list-info: #c5e2f2;
+  --b-list-danger-hover: #e8c9c9;
+  --b-list-mark: #2978f0;
+  --b-modal: rgba(0, 0, 0, 0.5);
+
+  --s-rgba5: rgba(0, 0, 0, 0.05);
+  --s-rgba8: rgba(0, 0, 0, 0.08);
+  --s-rgba12: rgba(0, 0, 0, 0.12);
+  --s-rgba15: rgba(0, 0, 0, 0.15);
+  --s-rgba20: rgba(0, 0, 0, 0.2);
+  --s-fc: rgba(102, 175, 233, .6);
+
+  --b-rgba50: rgba(0, 0, 0, 0.5);
+  --b-rgba70: rgba(0, 0, 0, 0.7);
+  --b-rgba15: rgba(0, 0, 0, 0.15);
+  --b-rgba30: rgba(0, 0, 0, 0.3);
 }
 
 html,
@@ -33,6 +154,8 @@ body,
   padding: 0;
   width: 100%;
   height: 100%;
+  background: var(--b-default);
+  color: var(--c-heavy);
 }
 
 #container {
@@ -49,13 +172,13 @@ body,
 }
 ::-webkit-scrollbar-thumb {
   background-clip: padding-box;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: var(--b-rgba50);
   border-radius: 8px;
   min-height: 30px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background-clip: padding-box;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: var(--b-rgba70);
   border-radius: 8px;
 }
 ::-webkit-scrollbar-track,
@@ -65,7 +188,7 @@ body,
 }
 ::-webkit-scrollbar-track:hover {
   background-clip: padding-box;
-  background-color: rgba(0, 0, 0, 0.15);
+  background-color: var(--s-rgba15);
 }
 
 body::-webkit-scrollbar {
@@ -108,18 +231,19 @@ input[type='radio'] {
 
 .w-filter-input {
   width: 100%;
-  background: rgba(0, 0, 0, 0.8);
+  background: var(--b-img);
   height: 30px;
-  color: var(--c-active);
+  color: var(--c-cobalt);
   padding: 2px 5px;
   border: none;
   border-top: 1px solid var(--c-border);
   border-bottom: 1px solid var(--c-border);
 }
-.shadow {
-  border: 1px solid rgba(0, 0, 0, 0.15) !important;
-  -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175) !important;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175) !important;
+.w-shadow {
+  border: 1px solid var(--c-border) !important;
+  -webkit-box-shadow: 0 6px 12px var(--s-rgba20) !important;
+  box-shadow: 0 6px 12px var(--s-rgba20) !important;
+  border-radius: 1px !important;
 }
 textarea[readonly] {
   outline: none;
@@ -132,8 +256,12 @@ textarea {
 .hide {
   display: none !important;
 }
+
 .visible {
   visibility: visible!important;
+}
+.w-hidden {
+  visibility: hidden!important;
 }
 
 .box {
@@ -141,7 +269,7 @@ textarea {
   display: -moz-box;
   display: box;
 }
-.orient-vertical-box {
+.v-box {
   -moz-box-orient: vertical;
   -webkit-box-orient: vertical;
   box-orient: vertical;
@@ -157,7 +285,7 @@ textarea {
 .box > .fill {
   width: 0;
 }
-.orient-vertical-box > .fill {
+.v-box > .fill {
   height: 0;
 } /**不加这个滚动会有问题**/
 .table {
@@ -186,52 +314,6 @@ textarea {
   line-height: 14px;
   font-size: 12px;
   color: var(--c-default);
-}
-.w-arrow,
-.w-arrow::after {
-  position: absolute;
-  display: block;
-  width: 0;
-  height: 0;
-  border-color: transparent;
-  border-style: solid;
-}
-.w-arrow {
-  border-width: 7px;
-}
-.w-arrow::after {
-  content: '';
-  border-width: 6px;
-}
-
-.w-arrow-left {
-  top: 50%;
-  left: -7px;
-  margin-top: -7px;
-  border-right-color: var(--c-border);
-  border-right-color: rgba(0, 0, 0, 0.25);
-  border-left-width: 0;
-}
-.w-arrow-left::after {
-  bottom: -6px;
-  left: 1px;
-  border-right-color: #f1f3f4;
-  border-left-width: 0;
-}
-
-.w-arrow-right {
-  top: 50%;
-  right: -7px;
-  margin-top: -7px;
-  border-left-color: var(--c-border);
-  border-left-color: rgba(0, 0, 0, 0.25);
-  border-right-width: 0;
-}
-.w-arrow-right::after {
-  bottom: -6px;
-  right: 1px;
-  border-left-color: lightyellow;
-  border-right-width: 0;
 }
 
 .modal-dialog .modal-body,
@@ -318,7 +400,7 @@ body .cm-s-cobalt span.cm-number {
   margin: 0 !important;
 }
 .w-detail .w-dock-btn:hover {
-  background: var(--bg-hover);
+  background: var(--b-hover);
 }
 
 .btn.active,
@@ -332,7 +414,7 @@ body .cm-s-cobalt span.cm-number {
 
 .w-mark th,
 .w-mark td {
-  background-color: var(--bg-mark) !important;
+  background-color: var(--b-mark) !important;
   color: var(--c-active) !important;
 }
 
@@ -357,7 +439,7 @@ a {
 }
 
 .w-delete:hover {
-  color: red!important;
+  color: var(--c-error)!important;
 }
 
 .w-editor-dialog .modal-dialog {
@@ -365,7 +447,7 @@ a {
 }
 
 .w-editor-dialog .modal-body {
-  background: var(--bg-bar);
+  background: var(--b-bar);
 }
 
 .w-editor-dialog textarea {
@@ -509,4 +591,14 @@ select.form-control {
 
 .w-bold {
   font-weight: bold !important;
+}
+
+.w-help-icon {
+  color: var(--c-heavy);
+  font-size: 14px;
+  margin-right: 5px;
+}
+.w-help-icon:hover {
+  color: var(--c-link);
+  text-decoration: none;
 }

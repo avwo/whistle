@@ -6,22 +6,9 @@
   cursor: pointer!important;
 }
 
-.w-large-dialog.w-service-login-dialog .modal-dialog {
+.w-large-dialog.w-login-dialog .modal-dialog {
   width: 420px;
   height: 520px;
   min-width: 420px;
   min-height: 520px;
 }
-
-@media screen and (max-width: 1135px) {
-  .w-has-token.w-show-rules .w-help-name {
-      display: none;
-  }
-}
-
-@media screen and (max-width: 1110px) {
-  .w-has-token.w-show-rules .w-https-name {
-      display: none;
-  }
-}
-

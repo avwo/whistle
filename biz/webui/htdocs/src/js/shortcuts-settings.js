@@ -2,6 +2,7 @@ var React = require('react');
 var Dialog = require('./dialog');
 var util = require('./util');
 var dataCenter = require('./data-center');
+var CloseBtn = require('./close-btn');
 
 
 var CMD = 'Ctrl[Command]';
@@ -235,9 +236,7 @@ var ShortcutsSettings = React.createClass({
             <h4>
               Shortcuts Settings
             </h4>
-            <button type="button" className="close" data-dismiss="modal">
-              <span aria-hidden="true">&times;</span>
-            </button>
+            <CloseBtn />
           </div>
           <div className="modal-body" onChange={this.onChange}>
             {SETTINGS.map(function(setting) {

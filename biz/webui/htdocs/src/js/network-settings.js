@@ -10,8 +10,11 @@ var events = require('./events');
 var util = require('./util');
 var win = require('./win');
 var storage = require('./storage');
+var Icon = require('./icon');
+var HelpIcon = require('./help-icon');
+var CloseBtn = require('./close-btn');
 
-var NOT_EMPTY_STYLE = { backgroundColor: 'lightyellow' };
+var NOT_EMPTY_STYLE = { backgroundColor: 'var(--b-filtered)' };
 var NOT_EMPTY_RE = /[^\s]/;
 
 var Settings = React.createClass({
@@ -341,14 +344,7 @@ var Settings = React.createClass({
     return (
       <Dialog ref="networkSettingsDialog" wstyle="w-ns-dialog">
         <div onChange={self.onNetworkSettingsChange} className="modal-body">
-          <button
-            type="button"
-            className="close"
-            data-dismiss="modal"
-            aria-label="Close"
-          >
-            <span aria-hidden="true">&times;</span>
-          </button>
+          <CloseBtn />
           <fieldset className="w-ns-filter">
             <legend>
               <label>
@@ -360,14 +356,7 @@ var Settings = React.createClass({
                 />
                 <span className="w-va-mdl">Exclude Filter</span>
               </label>
-              <a
-                className="w-help-menu"
-                title="Click here to learn how to use the filter"
-                href={util.getDocUrl('gui/network.html#settings')}
-                target="_blank"
-              >
-                <span className="glyphicon glyphicon-question-sign"></span>
-              </a>
+              <HelpIcon docsUrl="gui/network.html#settings" />
             </legend>
             <textarea
               disabled={state.disabledExcludeText}
@@ -390,14 +379,7 @@ var Settings = React.createClass({
                 />
                 <span className="w-va-mdl">Include Filter</span>
               </label>
-              <a
-                className="w-help-menu"
-                title="Click here to learn how to use the filter"
-                href={util.getDocUrl('gui/network.html#settings')}
-                target="_blank"
-              >
-                <span className="glyphicon glyphicon-question-sign"></span>
-              </a>
+              <HelpIcon docsUrl="gui/network.html#settings" />
             </legend>
             <textarea
               disabled={state.disabledFilterText}
@@ -461,11 +443,11 @@ var Settings = React.createClass({
                     </select> : null
                   }
                   {canEdit ? (
-                    <span
+                    <Icon
+                      name="edit"
                       onClick={self.editCustomCol}
                       data-name={col.title}
                       title={'Edit ' + col.title}
-                      className="glyphicon glyphicon-edit"
                     />
                   ) : undefined}
                 </label>
@@ -502,17 +484,17 @@ var Settings = React.createClass({
           </label>
           <label className="w-ns-own">
             <input checked={isTreeView} data-name="treeView" type="checkbox" />
-            <span className="glyphicon glyphicon-tree-conifer" />
+            <Icon name="tree-conifer" />
             Show Tree View (Ctrl[Command] + B)
           </label>
           {isTreeView ? (
-            <label style={{textIndent: 20}} className="w-ns-own">
+            <label style={{marginLeft: 20}} className="w-ns-own">
               <input
                 checked={storage.get('disabledHNR') !== '1'}
                 data-name="disabledHNR"
                 type="checkbox"
               />
-               Highlight new requests
+              Highlight new requests
             </label>
           ) : null}
         </div>
@@ -541,14 +523,7 @@ var Settings = React.createClass({
         </div>
         <Dialog ref="editCustomColumn" wstyle="w-ns-edit">
           <div onChange={self.onNetworkSettingsChange} className="modal-body">
-            <button
-              type="button"
-              className="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
+            <CloseBtn />
             <label>
               <span>Column Name:</span>
               <input

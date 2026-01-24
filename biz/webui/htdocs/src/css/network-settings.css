@@ -33,14 +33,13 @@
 .w-ns-filter legend {
   margin: 0;
   padding: 0;
-  display: flex;
-  align-items: center;
 }
 .w-ns-filter legend label {
   margin-right: 5px;
+  vertical-align: middle;
 }
 .w-ns-filter textarea[disabled] {
-  background: var(--bg-disabled);
+  background: var(--b-disabled);
 }
 .w-ns-columns label {
   white-space: nowrap;
@@ -54,12 +53,12 @@
   cursor: pointer;
 }
 .w-ns-columns label .glyphicon-edit:hover {
-  color: var(--c-hover);
+  color: var(--c-link);
 }
 .w-ns-columns .btn {
   margin-right: 0;
   text-align: center;
-  color: #666;
+  color: var(--c-thin);
   width: 72px;
 }
 .w-ns-columns legend label {
@@ -79,21 +78,6 @@
   margin: 0;
   padding: 5px 10px;
   border-radius: 5px;
-}
-.w-ns-dialog .w-help-menu {
-  color: var(--c-default);
-  font-size: 14px;
-}
-.w-ns-dialog .w-help-menu:hover,
-.w-https-dialog .w-help-menu:hover,
-.w-certs-dialog .w-help-menu:hover {
-  color: var(--c-hover);
-}
-.w-https-dialog .w-help-menu,
-.w-certs-dialog .w-help-menu {
-  margin-right: 5px;
-  color: var(--c-default);
-  font-size: 14px;
 }
 .w-ns-dialog div input[type='text'] {
   width: 436px;
@@ -166,7 +150,7 @@
   width: 64px;
   text-align: center;
   height: 20px;
-  color: var(--c-weak);
+  color: var(--c-thin);
   margin-left: 5px;
   border: 1px solid var(--c-border);
   border-radius: 3px;

@@ -12,7 +12,7 @@ module.exports = function(req, res) {
   fork(options,
     function(err, options) {
       if (err) {
-        res.type('text').status(500).send(err.stack || err);
+        util.sendRes(res, 500, err.stack || err);
       } else {
         util.transformReq(req, res, options.port);
       }

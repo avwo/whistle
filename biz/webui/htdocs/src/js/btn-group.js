@@ -1,6 +1,7 @@
 require('../css/btn-group.css');
 var React = require('react');
 var util = require('./util');
+var Icon = require('./icon');
 
 var BtnGroup = React.createClass({
   handleClick: function (btn) {
@@ -45,11 +46,7 @@ var BtnGroup = React.createClass({
       >
         {list.map(function (btn) {
           btn.disabled = disabled;
-          var icon = btn.icon ? (
-            <span className={'glyphicon glyphicon-' + btn.icon}></span>
-          ) : (
-            ''
-          );
+          var icon = btn.icon ? <Icon name={btn.icon} /> : '';
           var clazz = btn.className ? ' ' + btn.className : '';
           btn.key = btn.key || util.getKey();
 

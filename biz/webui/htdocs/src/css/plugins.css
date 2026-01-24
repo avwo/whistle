@@ -4,7 +4,7 @@
 .w-nav-tabs > .nav-tabs {
   padding-left: 2px;
   padding-top: 5px;
-  background: #fbfbfb;
+  background: var(--b-bar);
 }
 .w-nav-tabs > .nav > li > a {
   padding: 5px 20px 5px 10px;
@@ -23,7 +23,7 @@
   position: absolute;
   top: 5px;
   right: 5px;
-  color: #999;
+  color: var(--c-gray);
   cursor: pointer;
 }
 .w-nav-tabs > .nav > li > a > .w-close-icon:hover {
@@ -52,7 +52,7 @@
 .w-nav-tabs iframe {
   border: none;
   display: block;
-  background-color: var(--bg-default);
+  background-color: var(--b-default);
   margin: 0;
   padding: 0;
   width: 100%;
@@ -88,7 +88,7 @@
   border: none !important;
   padding: 6px;
   color: var(--c-default);
-  background: var(--bg-bar);
+  background: var(--b-bar);
   font-weight: bold;
 }
 .w-plugins-list {
@@ -142,7 +142,7 @@
 .w-has-new-version .w-plugin-update-btn:hover,
 .w-plugins-menu.w-plugin-update-btn:hover,
 .w-about-dialog .w-new-version:hover {
-  color: #f33 !important;
+  color: var(--c-risk) !important;
 }
 .w-plugins-date {
   width: 190px;
@@ -163,10 +163,10 @@
 }
 
 .w-plugin-rules-dialog .modal-dialog {
-  width: 640px;
+  width: 680px;
 }
 .w-plugin-rules-dialog .modal-dialog pre {
-  max-height: 220px;
+  max-height: 230px;
   overflow: auto;
   padding: 10px;
 }
@@ -199,7 +199,7 @@
   width: 600px;
 }
 .w-plugin-update-cmd {
-  background: #002240;
+  background: var(--b-editor);
   color: var(--c-editor);
   padding: 10px;
   margin-top: 10px;
@@ -213,10 +213,10 @@
   padding: 5px;
 }
 .w-plugin-btn {
-  color: var(--c-hover) !important;
+  color: var(--c-link) !important;
 }
 .w-plugin-btn:hover {
-  color: #23527c !important;
+  color: var(--c-link-hover) !important;
 }
 .w-plugin-update-dialog .modal-footer {
   white-space: nowrap;
@@ -239,9 +239,9 @@
   position: absolute;
   z-index: 1;
   text-decoration: none!important;
-  color: #666;
+  color: var(--c-heavy);
   padding: 0 6px;
-  background: #eee;
+  background: var(--b-heavy);
   font-size: 12px;
   top: 28px;
   right: 10px;

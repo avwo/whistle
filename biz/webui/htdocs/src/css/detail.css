@@ -3,7 +3,7 @@
   overflow-x: auto;
   overflow-y: hidden;
 }
-.w-detail-content {
+.w-detail-ctn {
   position: relative;
   overflow: auto;
 }
@@ -15,32 +15,15 @@
   height: 100%;
   cursor: ew-resize;
 }
-.w-detail-content,
-.w-detail > .w-tabs-sm {
+.w-detail-ctn,
+.w-detail > .w-tabs-sm,
+.w-detail > .w-order-table {
   min-width: 560px;
   border-top: none;
 }
 
-.w-show-history .w-detail-content {
+.w-show-history .w-detail-ctn {
   min-width: auto;
-}
-
-.w-detail-dialog .modal-dialog,
-.w-detail-dialog .modal-content {
-  width: 900px;
-}
-.w-detail-dialog .modal-body {
-  padding: 0 !important;
-  position: relative;
-}
-.w-detail-dialog .close {
-  position: absolute;
-  right: 10px;
-  top: 4px;
-  z-index: 1;
-}
-.w-detail-dialog .w-detail {
-  border-radius: 6px;
 }
 
 .w-inspectors-ctx-menu .w-ctx-menu-list {
@@ -72,7 +55,7 @@
   border-right: 1px solid var(--c-border);
   overflow-x: hidden;
   overflow-y: auto;
-  background-color: #f1f3f4;
+  background-color: var(--b-title);
 }
 
 .w-plugins-tabs-list .btn {
@@ -108,12 +91,12 @@ div.w-detail-inspectors-tabs {
   font-weight: bold;
 }
 
-.w-detail-inspectors-tabs .glyphicon-menu-hamburger, .w-com-tabs .glyphicon-menu-hamburger {
-  color: #ff8000;
+.w-detail .glyphicon-menu-hamburger {
+  color: var(--b-frames);
 }
 
 .w-detail-inspectors-tabs button.w-spec-active {
-  background-color: var(--bg-active);
+  background-color: var(--b-active);
 }
 
 .w-detail-inspectors-title.w-detail-inspectors-res {
@@ -141,5 +124,5 @@ div.w-detail-inspectors-tabs {
   font-size: 14px;
   margin: -10px 0 0 -50px;
   text-align: center;
-  color: #999;
+  color: var(--c-gray);
 }

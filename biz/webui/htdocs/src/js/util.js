@@ -430,7 +430,7 @@ function addDragEvent(selector, callback) {
     !selector ||
     typeof callback != 'function' ||
     typeof selector != 'string' ||
-    !(selector = $.trim(selector))
+    !(selector = selector.trim())
   ) {
     return;
   }
@@ -1158,11 +1158,16 @@ function openEditor(value) {
 
 exports.openEditor = openEditor;
 
+function getTheme() {
+  return document.documentElement.getAttribute('data-theme') || 'light';
+}
+
 exports.openInNewWin = function(value) {
   var win = window.open('editor.html');
   win.getValue = function () {
     return value;
   };
+  win.getWhistleTheme = getTheme;
   if (win.setValue) {
     win.setValue(value);
   }

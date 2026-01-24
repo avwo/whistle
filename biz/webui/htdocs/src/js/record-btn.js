@@ -2,7 +2,10 @@ var events = require('./events');
 
 var React = require('react');
 var MenuItem = require('./menu-item');
+var Icon = require('./icon');
 require('../css/record-btn.css');
+
+
 var PAUSE_OPTION = {
   name: 'Pause Record',
   icon: 'minus-sign',
@@ -110,7 +113,7 @@ var RecordBtn = React.createClass({
           className={'w-scroll-menu' + (disabled ? ' w-pause' : '') + (this.props.disabledRecord ? ' w-disabled' : '')}
           title={title}
         >
-          <span className={'glyphicon glyphicon-' + (pause ? 'minus-sign' : 'stop')} />
+          <Icon name={pause ? 'minus-sign' : 'stop'} />
           Record
         </a>
         <MenuItem

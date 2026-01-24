@@ -7,6 +7,9 @@ var TipsDialog = require('./tips-dialog');
 var win = require('./win');
 var dataCenter = require('./data-center');
 var message = require('./message');
+var Icon = require('./icon');
+var HelpIcon = require('./help-icon');
+var CloseBtn = require('./close-btn');
 
 var findDOMNode = ReactDOM.findDOMNode;
 var MAX_CERT_SIZE = 128 * 1024;
@@ -53,15 +56,14 @@ var CertsInfoDialog = React.createClass({
         mtime: cert.mtime,
         type: cert.type,
         validity: startDate.toLocaleString() + ' ~ ' + endDate.toLocaleString(),
-        status: status || (
-          <span className="glyphicon glyphicon-ok" />
-        ),
+        status: status || <Icon name="ok" />,
         isInvalid: isInvalid
       };
       if (filename === 'root') {
         item.displayName = 'root (Root CA)';
         rootCA = item;
         item.readOnly = true;
+        item.isRoot = true;
       } else {
         if (filename[0] === 'z' && filename[1] === '/') {
           filename = filename.substring(2);
@@ -154,13 +156,29 @@ var CertsInfoDialog = React.createClass({
       return;
     }
     var result;
+    var missKeys = [];
+    var missCerts = [];
     Object.keys(certs).forEach(function (key) {
       var cert = certs[key];
       if (cert.key && cert.cert) {
         result = result || {};
         result[key] = cert;
+      } else if (cert.key) {
+        missCerts.push(key + '.[crt/cer/pem]');
+      } else {
+        missKeys.push(key + '.key');
       }
     });
+    if (missKeys.length || missCerts.length) {
+      var msg = '';
+      if (missKeys.length) {
+        msg += 'Missing key files: ' + missKeys.join(', ');
+      }
+      if (missCerts.length) {
+        msg += (msg ? '\n' : '') + 'Missing cert files: ' + missCerts.join(', ');
+      }
+      win.alert(msg);
+    }
     return result;
   },
   handleChange: function (e) {
@@ -209,21 +227,12 @@ var CertsInfoDialog = React.createClass({
     return (
       <Dialog ref="certsInfoDialog" wstyle="w-certs-dialog">
         <div className="modal-body">
-          <button type="button" className="close" onClick={self.hide}>
-            <span aria-hidden="true">&times;</span>
-          </button>
+          <CloseBtn onClick={self.hide} />
           <h4 className="w-certs-title">
-            <a
-              className="w-help-menu"
-              title="Click here to see help"
-              href={util.getDocUrl('faq.html#custom-certs')}
-              target="_blank"
-            >
-              <span className="glyphicon glyphicon-question-sign"></span>
-            </a>
-            Custom Certs
+            <HelpIcon docsUrl="gui/https.html#custom-certs" />
+            Custom Certs Settings
           </h4>
-          <table className="table w-hover-table-body">
+          <table className="table w-hover-body">
             <thead>
               <th className="w-certs-order">#</th>
               <th className="w-certs-filename">Filename</th>
@@ -243,28 +252,21 @@ var CertsInfoDialog = React.createClass({
                         className="w-certs-filename"
                         title={item.filename}
                       >
-                        {item.readOnly ? (
-                          <span className="glyphicon glyphicon-lock" />
-                        ) : undefined}
                         {item.displayName || item.filename}
                         <br />
                         <a
-                          className="w-delete"
+                          className={item.readOnly ? null : 'w-delete'}
                           onClick={function () {
                             item.readOnly
                               ? self.showRemoveTips(item)
-                              : self.removeCert(item);
-                          }}
-                          title=""
-                          style={{
-                            color: item.readOnly ? '#337ab7' : undefined
+                              : self.showRemoveTips(item);
                           }}
                         >
                           {item.readOnly ? 'View path' : 'Delete'}
                         </a>
                       </td>
                       <td className="w-certs-domain" title={item.domain}>
-                        {item.domain}
+                        {item.isRoot ? null : item.domain}
                       </td>
                       <td
                         className="w-certs-validity"
@@ -300,7 +302,7 @@ var CertsInfoDialog = React.createClass({
             data-dismiss="modal"
             onClick={this.showService}
           >
-            <span className="glyphicon glyphicon-cloud" />
+            <Icon name="cloud" />
             Import From Service
           </button> : null}
           <input
@@ -320,7 +322,7 @@ var CertsInfoDialog = React.createClass({
             className="btn btn-primary"
             onClick={self.showUpload}
           >
-            <span className="glyphicon glyphicon-folder-open" />
+            <Icon name="folder-open" />
             Upload
           </button>
         </div>

@@ -5,6 +5,7 @@ var util = require('./util');
 var message = require('./message');
 var storage = require('./storage');
 var win = require('./win');
+var Icon = require('./icon');
 
 var MAX_FILE_SIZE = 1024 * 1025;
 var MAX_LENGTH = 1024 * 64;
@@ -197,11 +198,11 @@ var FrameComposer = React.createClass({
       <div
         onDrop={this.onDrop}
         className={
-          'fill orient-vertical-box w-frames-composer' +
+          'fill v-box w-frames-com' +
           (this.props.hide ? ' hide' : '')
         }
       >
-        <div className="w-frames-composer-action">
+        <div className="w-frames-com-action">
           <label
             className={
               'w-frames-hex-data' + (isHexText ? ' w-frames-checked' : '')
@@ -237,7 +238,7 @@ var FrameComposer = React.createClass({
               type="button"
               className="btn btn-default btn-sm"
             >
-              <span className="glyphicon glyphicon-arrow-left"></span>
+              <Icon name="arrow-left" />
               Send To Client
             </button>
             <button
@@ -278,7 +279,7 @@ var FrameComposer = React.createClass({
               type="button"
               className="btn btn-default btn-sm"
             >
-              <span className="glyphicon glyphicon-arrow-right"></span>
+              <Icon name="arrow-right" />
               Send To Server
             </button>
             <button

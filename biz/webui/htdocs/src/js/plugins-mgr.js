@@ -4,6 +4,7 @@ var Dialog = require('./dialog');
 var dataCenter = require('./data-center');
 var util = require('./util');
 var storage = require('./storage');
+var CloseBtn = require('./close-btn');
 
 var REGISTRY_RE = /^--registry=https?:\/\/[^/?]/;
 var SEP_RE = /\s*[|,;\s]+\s*/;
@@ -78,9 +79,7 @@ var PluginsMgr = React.createClass({
       <Dialog ref="pluginsMgr" wstyle="w-plugins-mgr-dialog">
         <div className="modal-header">
           <h4>Select {isUpdate ? 'Updater' : 'Installer'}</h4>
-          <button type="button" className="close" data-dismiss="modal">
-            <span aria-hidden="true">&times;</span>
-          </button>
+          <CloseBtn />
         </div>
         <div className="modal-body">
           <div className="btn btn-primary plugin-mgr-btn" data-dismiss="modal" onClick={self.installPlugin}>

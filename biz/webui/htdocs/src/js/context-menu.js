@@ -4,6 +4,7 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var util = require('./util');
 var EditorDialog = require('./editor-dialog');
+var Icon = require('./icon');
 
 var ContextMenu = React.createClass({
   getInitialState: function () {
@@ -16,7 +17,7 @@ var ContextMenu = React.createClass({
     self.componentDidUpdate();
     $(document)
       .on('mousedown click', function (e) {
-        if ($(e.target).closest('.w-context-menu').length) {
+        if ($(e.target).closest('.w-ctx-menu').length) {
           if (e.target.nodeName !== 'INPUT') {
             e.preventDefault();
           }
@@ -86,7 +87,7 @@ var ContextMenu = React.createClass({
     return (
       <div
         onClick={self.onClick}
-        className={'w-context-menu ' + (data.className || '')}
+        className={'w-ctx-menu ' + (data.className || '')}
         onContextMenu={self.onClick}
         style={{
           left: data.left,
@@ -116,19 +117,14 @@ var ContextMenu = React.createClass({
               >
                 <label className={'w-ctx-item-tt' + (item.selected ? ' w-ctx-selected' : '')}>
                   {radio ? <span className={'w-ctx-checked' + (item.selected ? ' visible' : '')}>✔️</span> : undefined}
-                  {item.icon ? (
-                    <span
-                      style={{ marginRight: '5px' }}
-                      className={'glyphicon glyphicon-' + item.icon}
-                    />
-                  ) : null}
+                  {item.icon ? <Icon name={item.icon} /> : null}
                   {multiple ? (
                     <input type="checkbox" checked={item.checked} />
                   ) : null}
                   {item.name}
                 </label>
                 {subList ? (
-                  <span className="glyphicon glyphicon-play" />
+                  <Icon name="play" />
                 ) : undefined}
                 {subList ? <div className="w-ctx-menu-gap"></div> : undefined}
                 {subList ? (

@@ -115,7 +115,7 @@ var FrameClient = React.createClass({
     return (
       <div
         className={
-          'fill orient-vertical-box w-frames-data' +
+          'fill v-box w-frames-data' +
           (this.props.hide ? ' hide' : '')
         }
         onDragEnter={this.onDragEnter}

@@ -1,5 +1,6 @@
 var React = require('react');
 var Dialog = require('./dialog');
+var CloseBtn = require('./close-btn');
 
 var DNSDialog = React.createClass({
   getInitialState: function () {
@@ -50,9 +51,7 @@ var DNSDialog = React.createClass({
       <Dialog ref="dnsServersDialog" wstyle="w-dns-servers-dialog">
         <div className="modal-header">
           {title}
-          <button type="button" className="close" data-dismiss="modal">
-            <span aria-hidden="true">&times;</span>
-          </button>
+          <CloseBtn />
         </div>
         <pre className="modal-body">{state.servers}</pre>
         <div className="modal-footer">

@@ -1,5 +1,6 @@
 var React = require('react');
 var Dialog = require('./dialog');
+var CloseBtn = require('./close-btn');
 
 var CookiesDialog = React.createClass({
   getInitialState: function() {
@@ -29,16 +30,14 @@ var CookiesDialog = React.createClass({
     return (
       <Dialog ref="cookiesDialog" wstyle="w-com-cookies-dialog">
         <div className="modal-body">
-          <button type="button" className="close" onClick={self.hide}>
-            <span aria-hidden="true">&times;</span>
-          </button>
+          <CloseBtn onClick={self.hide} />
           <table className="table">
             <thead>
               <th className="w-com-cookie-order">#</th>
               <th className="w-com-cookie-value">Cookie</th>
               <th className="w-com-cookie-operation">Operation</th>
             </thead>
-            <tbody className="w-hover-table-body">
+            <tbody className="w-hover-body">
               {cookies.map(function (cookie, i) {
                 return (
                   <tr>

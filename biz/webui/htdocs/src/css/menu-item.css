@@ -1,6 +1,6 @@
 .w-menu-item {
   position: absolute;
-  background: var(--bg-default);
+  background: var(--b-default);
   border: 1px solid var(--c-border);
   z-index: var(--z-menu);
   top: 31px;
@@ -40,7 +40,7 @@
 }
 .w-menu-item a .glyphicon-ok,
 .w-menu-item a .glyphicon-plus {
-  color: #5bbd72;
+  color: var(--c-ok);
 }
 .w-create-menu-item a .glyphicon-plus {
   color: var(--c-default);

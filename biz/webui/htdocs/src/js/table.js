@@ -11,14 +11,16 @@ var Table = React.createClass({
       <table className="table w-table">
         {hasHead ? (
           <thead>
-            {head.map(function (head) {
-              return <th key={head}>{head}</th>;
-            })}
+            <tr>
+              {head.map(function (head) {
+                return <th key={head}>{head}</th>;
+              })}
+            </tr>
           </thead>
         ) : (
           ''
         )}
-        <tbody className="w-hover-table-body">
+        <tbody className="w-hover-body">
           {modal.map(function (list, i) {
             return (
               <tr key={i}>

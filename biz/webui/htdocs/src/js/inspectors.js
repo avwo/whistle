@@ -8,6 +8,7 @@ var events = require('./events');
 var TabMgr = require('./tab-mgr');
 var ContextMenu = require('./context-menu');
 var Properties = require('./properties');
+var Icon = require('./icon');
 
 var Inspectors = React.createClass({
   getInitialState: function () {
@@ -48,7 +49,7 @@ var Inspectors = React.createClass({
     return (
       <div
         className={
-          'fill orient-vertical-box w-detail-inspectors' + (hide ? ' hide' : '')
+          'fill v-box w-detail-inspectors' + (hide ? ' hide' : '')
         }
       >
         <Properties className="w-detail-inspectors-url" modal={urlModal}  showEnableBtn={true} />
@@ -60,7 +61,7 @@ var Inspectors = React.createClass({
             }}
             className={self.getStyle('Request')}
           >
-            <span className="glyphicon glyphicon-arrow-right" />Request
+            <Icon name="arrow-right" />Request
           </button>
           <button
             type="button"
@@ -69,7 +70,7 @@ var Inspectors = React.createClass({
             }}
             className={self.getStyle('Frames')}
           >
-            <span className="glyphicon glyphicon-menu-hamburger" />Frames
+            <Icon name="menu-hamburger" />Frames
           </button>
           <div className="fill w-custom-tabs">
             {tabs.map(function (tab) {

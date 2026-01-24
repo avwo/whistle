@@ -3,6 +3,7 @@ var ReactDOM = require('react-dom');
 var Dialog = require('./dialog');
 var ShareViaUrlBtn = require('./share-via-url-btn');
 var util = require('./util');
+var CloseBtn = require('./close-btn');
 
 var findDOMNode = ReactDOM.findDOMNode;
 
@@ -101,9 +102,7 @@ var ExportDialog = React.createClass({
       <Dialog ref="exportDialog" wstyle={'w-ie-dialog' + (showOptions ? ' w-export-network' : '')}>
         <div className="modal-header">
           <h4>{state.title}</h4>
-          <button type="button" className="close" data-dismiss="modal">
-            <span aria-hidden="true">&times;</span>
-          </button>
+          <CloseBtn />
         </div>
         <div className="modal-body">
           <input
@@ -128,8 +127,8 @@ var ExportDialog = React.createClass({
           <button
             type="button"
             className="btn btn-primary w-fmt-btn"
-             data-dismiss="modal"
-             onClick={this.export}
+            data-dismiss="modal"
+            onClick={this.export}
           >
             Export
           </button>

@@ -14,7 +14,7 @@
 .w-detail-inspectors-title,
 .w-detail-webforms-title {
   line-height: 18px;
-  background: #f1f3f4;
+  background: var(--b-title);
   font-size: 12px;
   padding: 0 10px;
   border-bottom: 1px solid var(--c-border);
@@ -28,19 +28,19 @@
 .w-detail-webforms-title {
   line-height: 16px !important;
 }
-.w-detail-inspectors-url.w-properties td pre {
+.w-detail-inspectors-url.w-props td pre {
   overflow-x: hidden;
   overflow-y: auto;
   max-height: 35px;
   padding-right: 8px;
 }
 
-.w-detail-inspectors-url.w-properties th {
+.w-detail-inspectors-url.w-props th {
   width: 60px;
   white-space: nowrap;
 }
 
-.w-detail-inspectors-url.w-properties td {
+.w-detail-inspectors-url.w-props td {
   padding-right: 0;
 }
 

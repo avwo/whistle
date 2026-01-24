@@ -4,6 +4,7 @@ var Dialog = require('./dialog');
 var util = require('./util');
 var dataCenter = require('./data-center');
 var KVDialog = require('./kv-dialog');
+var Icon = require('./icon');
 
 var showLoading = function(time) {
   return time && (Date.now() - time > 800);
@@ -107,7 +108,7 @@ var SyncDialog = React.createClass({
             type="button"
             className="btn btn-primary"
           >
-            <span className="glyphicon glyphicon-list" />{' '}
+            <Icon name="list" />{' '}
             {showLoading(loadingRules) ? 'Loading' : 'Sync'} Rules
           </button>
           <button
@@ -116,7 +117,7 @@ var SyncDialog = React.createClass({
             type="button"
             className="btn btn-default"
           >
-            <span className="glyphicon glyphicon-folder-close" />{' '}
+            <Icon name="folder-close" />{' '}
             {showLoading(loadingValues) ? 'Loading' : 'Sync'} Values
           </button>
         </div>

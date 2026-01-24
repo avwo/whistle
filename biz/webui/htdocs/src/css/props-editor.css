@@ -19,7 +19,7 @@
 .w-props-editor th {
   width: 125px;
   line-height: 22px !important;
-  background: #e1e3e6;
+  background: var(--b-prop);
   text-align: right;
   padding: 0 8px !important;
 }
@@ -27,28 +27,31 @@
   width: 75px;
   padding: 4px 0 0 8px !important;
   padding-left: 0 !important;
-  background: var(--bg-bar);
+  background: var(--b-bar);
 }
-.w-props-editor .w-props-ops a {
+.w-props-ops span {
   margin-left: 15px !important;
-  color: #333;
   text-decoration: none !important;
+  cursor: pointer;
 }
-.w-props-ops a:hover {
-  color: var(--c-hover);
+.w-edit-btn {
+  color: var(--c-heavy);
 }
+.w-edit-btn:hover {
+  color: var(--c-link);
+}
+.w-del-btn {
+  color: var(--c-risk);
+}
+.w-del-btn:hover {
+  color: var(--c-error);
+}
+
 .w-props-editor pre {
   overflow: auto;
   line-height: 22px !important;
   max-height: 350px;
   padding: 0 8px !important;
-}
-
-.w-props-editor .w-props-ops .glyphicon-remove {
-  color: #f5222d;
-}
-.w-props-editor .w-props-ops .glyphicon-remove:hover {
-  color: red;
 }
 
 .w-add-field {
@@ -116,5 +119,5 @@
   position: absolute;
   line-height: 20px;
   top: 0;
-  right: 0;
+  right: 3px;
 }

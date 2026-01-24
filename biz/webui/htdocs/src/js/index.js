@@ -1,6 +1,6 @@
 require('./base-css.js');
 require('../css/index.css');
-require('../css/appearance.css');
+require('../css/theme.css');
 var $ = require('jquery');
 var React = require('react');
 var ReactDOM = require('react-dom');
@@ -41,6 +41,8 @@ var ExportDialog = require('./export-dialog');
 var HttpsSettings = require('./https-settings');
 var ServiceDialog = require('./service-dialog');
 var Assistant = require('./assistant');
+var Icon = require('./icon');
+var CloseBtn = require('./close-btn');
 
 var TEMP_LINK_RE = /^(?:[\w-]+:\/\/)?temp(?:\/([\da-z]{64}|blank))?(?:\.[\w-]+)?$/;
 var FILE_PATH_RE = /^(?:[\w-]+:\/\/)?((?:[a-z]:[\\/]|\/).+)$/i;
@@ -842,7 +844,7 @@ var Index = React.createClass({
     dialog.show();
     if (existsUnsaved) {
       msg +=
-        '<p class="w-confim-reload-note">Warning: Unsaved changes will be lost.</p>';
+        '<p class="w-confim-reload-note">Warning: Unsaved changes will be lost</p>';
     }
     tips.html(msg);
   },
@@ -1308,7 +1310,7 @@ var Index = React.createClass({
         var name = self.state.name;
         var filename = file.name;
         if (name === 'network') {
-          if (target.closest('.w-frames-composer').length) {
+          if (target.closest('.w-frames-com').length) {
             return;
           }
           if (/\.log$/i.test(filename)) {
@@ -1379,6 +1381,7 @@ var Index = React.createClass({
       }
       e.preventDefault();
     };
+
     $(window)
       .on('hashchange', self.showTab)
       .on('keyup', function (e) {
@@ -3576,7 +3579,7 @@ var Index = React.createClass({
   setPluginState: function(name, disabled) {
     var self = this;
     if (self.state.ndp) {
-      return message.warn('Plugin disabling is restricted');
+      return message.info('Plugin disabling is restricted');
     }
     dataCenter.plugins.disablePlugin(
       {
@@ -3776,12 +3779,13 @@ var Index = React.createClass({
     events.trigger('focusNetworkList');
   },
   showAboutDialog: function (e) {
-    if ($(e.target).closest('.w-menu-enable').length) {
+    if (this.state.hasNewVersion) {
       this.refs.aboutDialog.showAboutInfo();
+      e.preventDefault();
     }
   },
   onTopContextMenu: function(e) {
-    if (this.getTabName() !== 'network') {
+    if (this.getTabName() !== 'network' || $(e.target).closest('.w-menu-item').length) {
       return;
     }
     e.preventDefault();
@@ -3958,7 +3962,6 @@ var Index = React.createClass({
     var rulesMode = state.rulesMode;
     var rulesOnlyMode = state.rulesOnlyMode;
     var pluginsMode = state.pluginsMode;
-    var whistleId = state.whistleId;
     var multiEnv = dataCenter.isMultiEnv();
     var name = this.getTabName();
     var isAccount = name == 'account';
@@ -3969,7 +3972,6 @@ var Index = React.createClass({
     var isEditor = isRules || isValues;
     var editMenuStyle = getHideStyle(!isEditor);
     var importMenuStyle = getHideStyle(isPlugins || isAccount);
-    var accountMenuStyle = getHideStyle(!isAccount);
     var disabledEditBtn = true;
     var disabledDeleteBtn = true;
     var rulesTheme = state.rulesTheme || 'cobalt';
@@ -4046,7 +4048,7 @@ var Index = React.createClass({
     }
     var mustHideLeftMenu = hideLeftMenu && !state.forceShowLeftMenu;
     var pluginsOnlyMode = pluginsMode && rulesMode;
-    var showLeftMenu = (networkMode  || state.showLeftMenu) && !pluginsOnlyMode;
+    var showLeftMenu = (networkMode || state.showLeftMenu) && !pluginsOnlyMode;
     var disabledAllPlugins = state.disabledAllPlugins;
     var disabledAllRules = state.disabledAllRules;
     var forceShowLeftMenu, forceHideLeftMenu;
@@ -4079,32 +4081,27 @@ var Index = React.createClass({
     return (
       <div
         className={
-          'main orient-vertical-box' + (showLeftMenu ? ' w-show-left-menu' : '')
-          + (whistleId ? ' w-has-token' : '')
+          'main v-box' + (showLeftMenu ? ' w-show-left-menu' : '')
           + (isEditor && !rulesOnlyMode ? ' w-show-editor' : '') + (isRules ? ' w-show-rules' : '')
           + (rulesOnlyMode || rulesMode ? ' w-show-rules-mode' : '')
         }
       >
-        <div className={'w-menu w-' + name + '-menu-list' + hideStyle} onContextMenu={this.onTopContextMenu}>
+        <div className={'w-menu w-' + name + '-menu-list' + hideStyle + (showLeftMenu ? '' : ' w-top')} onContextMenu={this.onTopContextMenu}>
           <a
             onClick={this.toggleLeftMenu}
             draggable="false"
-            className="w-show-left-menu-btn"
+            className="w-switch-layout"
             onMouseEnter={forceShowLeftMenu}
             onMouseLeave={forceHideLeftMenu}
             style={getHideStyle(networkMode || pluginsOnlyMode)}
-            title={
-              'Dock to ' +
-              (showLeftMenu ? 'top' : 'left') +
-              ' (Ctrl[Command] + M)'
-            }
+            title="Ctrl[Command] + M"
           >
-            <span
-              className={
-                'glyphicon glyphicon-chevron-' +
+            <Icon
+              name={
+                'chevron-' +
                 (showLeftMenu ? (mustHideLeftMenu ? 'down' : 'up') : 'left')
               }
-            ></span>
+            />
           </a>
           <div
             style={getHideStyle(rulesMode)}
@@ -4127,7 +4124,7 @@ var Index = React.createClass({
               }
               draggable="false"
             >
-              <span className={'glyphicon glyphicon-' + networkType}></span>
+              <Icon name={networkType} />
               Network
             </a>
             <MenuItem
@@ -4154,12 +4151,7 @@ var Index = React.createClass({
               }
               draggable="false"
             >
-              <span
-                className={
-                  'glyphicon glyphicon-list' +
-                  (disabledAllRules ? ' w-disabled' : '')
-                }
-              ></span>
+              <Icon name="list" className={disabledAllRules ? 'w-disabled' : ''} />
               Rules
             </a>
             <MenuItem
@@ -4191,7 +4183,7 @@ var Index = React.createClass({
               }
               draggable="false"
             >
-              <span className="glyphicon glyphicon-folder-close"></span>Values
+              <Icon name="folder-close" />Values
             </a>
             <MenuItem
               ref="valuesMenuItem"
@@ -4219,12 +4211,7 @@ var Index = React.createClass({
               }
               draggable="false"
             >
-              <span
-                className={
-                  'glyphicon glyphicon-th-large' +
-                  (disabledAllPlugins ? ' w-disabled' : '')
-                }
-              ></span>
+              <Icon name="th-large" className={disabledAllPlugins ? 'w-disabled' : ''} />
               Plugins
             </a>
             <MenuItem
@@ -4249,7 +4236,7 @@ var Index = React.createClass({
               style={getHideStyle(!isRules)}
               draggable="false"
             >
-              <span className={'glyphicon glyphicon-stop' + (disabledAllRules ? ' w-pause' : '')} />
+              <Icon name="stop" className={disabledAllRules ? 'w-pause' : ''} />
               ON
             </a>
           )}
@@ -4265,7 +4252,7 @@ var Index = React.createClass({
               style={getHideStyle(!isPlugins)}
               draggable="false"
             >
-              <span className={'glyphicon glyphicon-stop' + (disabledAllPlugins ? ' w-pause' : '')} />
+              <Icon name="stop" className={disabledAllPlugins ? 'w-pause' : ''} />
               ON
             </a>
           )}
@@ -4276,7 +4263,7 @@ var Index = React.createClass({
             style={getHideStyle(!isPlugins)}
             draggable="false"
           >
-            <span className="glyphicon glyphicon-download-alt" />
+            <Icon name="download-alt" />
             Install
           </a>
           <RecordBtn
@@ -4290,7 +4277,7 @@ var Index = React.createClass({
             className="w-import-menu"
             draggable="false"
           >
-            <span className="glyphicon glyphicon-import"></span>Import
+            <Icon name="import" />Import
           </a>
           <a
             onClick={this.exportData}
@@ -4298,7 +4285,7 @@ var Index = React.createClass({
             style={importMenuStyle}
             draggable="false"
           >
-            <span className="glyphicon glyphicon-export"></span>Export
+            <Icon name="export" />Export
           </a>
           <a
             onClick={this.clear}
@@ -4307,7 +4294,7 @@ var Index = React.createClass({
             title="Ctrl[Command] + X"
             draggable="false"
           >
-            <span className="glyphicon glyphicon-remove"></span>Clear
+            <Icon name="remove" />Clear
           </a>
           <a
             onClick={this.onClickMenu}
@@ -4316,7 +4303,7 @@ var Index = React.createClass({
             draggable="false"
             title="Ctrl[Command] + S"
           >
-            <span className="glyphicon glyphicon-save-file"></span>Save
+            <Icon name="save-file" />Save
           </a>
           <a
             className="w-create-menu"
@@ -4324,7 +4311,7 @@ var Index = React.createClass({
             draggable="false"
             onClick={this.handleCreate}
           >
-            <span className="glyphicon glyphicon-plus"></span>Create
+            <Icon name="plus" />Create
           </a>
           <a
             onClick={this.onClickMenu}
@@ -4332,7 +4319,7 @@ var Index = React.createClass({
             style={editMenuStyle}
             draggable="false"
           >
-            <span className="glyphicon glyphicon-transfer"></span>Rename
+            <Icon name="transfer" />Rename
           </a>
           <div
             onMouseEnter={this.showAbortOptions}
@@ -4348,7 +4335,7 @@ var Index = React.createClass({
               className="w-replay-menu"
               draggable="false"
             >
-              <span className="glyphicon glyphicon-repeat"></span>Replay
+              <Icon name="repeat" />Replay
             </a>
             <MenuItem
               options={ABORT_OPTIONS}
@@ -4362,7 +4349,7 @@ var Index = React.createClass({
             style={getHideStyle(!isNetwork)}
             draggable="false"
           >
-            <span className="glyphicon glyphicon-send"></span>Edit
+            <Icon name="send" />Edit
           </a>
           <a
             onClick={this.onClickMenu}
@@ -4372,15 +4359,7 @@ var Index = React.createClass({
             style={editMenuStyle}
             draggable="false"
           >
-            <span className="glyphicon glyphicon-trash"></span>Delete
-          </a>
-          <a
-            onClick={this.addWidget}
-            className="w-add-widget"
-            style={accountMenuStyle}
-            draggable="false"
-          >
-            <span className="glyphicon glyphicon-plus"></span>Widget
+            <Icon name="trash" />Delete
           </a>
           <FilterBtn
             onClick={this.showSettings}
@@ -4404,7 +4383,7 @@ var Index = React.createClass({
               className="w-weinre-menu"
               draggable="false"
             >
-              <span className="glyphicon glyphicon-console" />
+              <Icon name="console" />
               <span className="w-weinre-name">Weinre</span>
             </a>
             <MenuItem
@@ -4421,14 +4400,9 @@ var Index = React.createClass({
             onClick={this.showHttpsSettingsDialog}
             className="w-https-menu"
             draggable="false"
-            style={{ color: dataCenter.hasInvalidCerts ? 'red' : undefined }}
+            style={{ color: dataCenter.hasInvalidCerts ? 'var(--c-error)' : undefined }}
           >
-            <span
-              className={
-                'glyphicon glyphicon-' +
-                (state.interceptHttpsConnects ? 'ok-circle' : 'lock')
-              }
-            />
+            <Icon name={state.interceptHttpsConnects ? 'ok-circle' : 'lock'} />
             <span className="w-https-name">HTTPS</span>
           </a>
           <div
@@ -4439,24 +4413,17 @@ var Index = React.createClass({
             }
           >
             <a
-              className={
-                'w-help-menu' + (state.hasNewVersion ? ' w-menu-enable' : '')
-              }
               onClick={this.showAboutDialog}
               title={
                 state.hasNewVersion
                   ? 'A new version is available, click to see details'
                   : undefined
               }
-              href={
-                state.hasNewVersion
-                  ? undefined
-                  : 'https://github.com/avwo/whistle#whistle'
-              }
-              target={state.hasNewVersion ? undefined : '_blank'}
+              href="https://github.com/avwo/whistle#whistle"
+              target="_blank"
             >
               {state.hasNewVersion ? <i className="w-new-version-icon" /> : null}
-              <span className="glyphicon glyphicon-question-sign" />
+              <Icon name="question-sign" />
               <span className="w-help-name">Help</span>
             </a>
             <MenuItem
@@ -4478,7 +4445,7 @@ var Index = React.createClass({
           <div
             onMouseDown={this.preventBlur}
             style={{ display: state.showCreateRules ? 'block' : 'none' }}
-            className="shadow w-input-menu-item w-create-rules-input"
+            className="w-shadow w-input-menu-item w-create-rules-input"
           >
             <input
               ref="createRulesInput"
@@ -4515,7 +4482,7 @@ var Index = React.createClass({
           <div
             onMouseDown={this.preventBlur}
             style={{ display: state.showCreateValues ? 'block' : 'none' }}
-            className="shadow w-input-menu-item w-create-values-input"
+            className="w-shadow w-input-menu-item w-create-values-input"
           >
             <input
               ref="createValuesInput"
@@ -4544,7 +4511,7 @@ var Index = React.createClass({
           <div
             onMouseDown={this.preventBlur}
             style={{ display: state.showEditRules ? 'block' : 'none' }}
-            className="shadow w-input-menu-item w-edit-rules-input"
+            className="w-shadow w-input-menu-item w-edit-rules-input"
           >
             <input
               ref="editRulesInput"
@@ -4564,7 +4531,7 @@ var Index = React.createClass({
           <div
             onMouseDown={this.preventBlur}
             style={{ display: state.showEditValues ? 'block' : 'none' }}
-            className="shadow w-input-menu-item w-edit-values-input"
+            className="w-shadow w-input-menu-item w-edit-values-input"
           >
             <input
               ref="editValuesInput"
@@ -4603,7 +4570,7 @@ var Index = React.createClass({
               style={getHideStyle(rulesMode)}
               draggable="false"
             >
-              <span className={'glyphicon glyphicon-' + networkType}></span>
+              <Icon name={networkType} />
               <i className="w-left-menu-name">Network</i>
             </a>
             <a
@@ -4615,12 +4582,7 @@ var Index = React.createClass({
               style={hideEditorStyle}
               draggable="false"
             >
-              <span
-                className={
-                  'glyphicon glyphicon-list' +
-                  (disabledAllRules ? ' w-disabled' : '')
-                }
-              ></span>
+              <Icon name="list" className={disabledAllRules ? 'w-disabled' : ''} />
               <i className="w-left-menu-name">Rules</i>
               <i
                 className="w-menu-changed"
@@ -4638,7 +4600,7 @@ var Index = React.createClass({
               style={hideEditorStyle}
               draggable="false"
             >
-              <span className="glyphicon glyphicon-folder-close"></span>
+              <Icon name="folder-close" />
               <i className="w-left-menu-name">Values</i>
               <i
                 className="w-menu-changed"
@@ -4655,12 +4617,7 @@ var Index = React.createClass({
               style={pluginsStyle}
               draggable="false"
             >
-              <span
-                className={
-                  'glyphicon glyphicon-th-large' +
-                  (disabledAllPlugins ? ' w-disabled' : '')
-                }
-              ></span>
+              <Icon name="th-large" className={disabledAllPlugins ? 'w-disabled' : ''} />
               <i className="w-left-menu-name">Plugins</i>
             </a>
           </div>
@@ -4722,14 +4679,7 @@ var Index = React.createClass({
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-body">
-                <button
-                  type="button"
-                  className="close"
-                  data-dismiss="modal"
-                  aria-label="Close"
-                >
-                  <span aria-hidden="true">&times;</span>
-                </button>
+                <CloseBtn />
                 <EditorSettings
                   name="rules"
                   theme={rulesTheme}
@@ -4743,7 +4693,7 @@ var Index = React.createClass({
                 />
                 {!state.drm && (
                   <p className="w-editor-settings-box">
-                    <label className="w-align-items" style={{ color: multiEnv ? '#aaa' : undefined }}>
+                    <label className="w-align-items" style={{ color: multiEnv ? 'var(--c-disabled)' : undefined }}>
                       <input
                         type="checkbox"
                         disabled={multiEnv}
@@ -4800,14 +4750,7 @@ var Index = React.createClass({
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-body">
-                <button
-                  type="button"
-                  className="close"
-                  data-dismiss="modal"
-                  aria-label="Close"
-                >
-                  <span aria-hidden="true">&times;</span>
-                </button>
+                <CloseBtn />
                 <EditorSettings
                   theme={valuesTheme}
                   fontSize={valuesFontSize}
@@ -4952,14 +4895,7 @@ var Index = React.createClass({
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-body">
-                <button
-                  type="button"
-                  className="close"
-                  data-dismiss="modal"
-                  aria-label="Close"
-                >
-                  <span aria-hidden="true">&times;</span>
-                </button>
+                <CloseBtn />
                 <p className="w-show-update-tips">
                 Whistle has critical updates available.
                 Update to the latest version immediately.
@@ -5001,9 +4937,7 @@ var Index = React.createClass({
         </div>
         <Dialog ref="confirmReload" wstyle="w-confirm-reload-dialog">
           <div className="modal-body w-confirm-reload">
-            <button type="button" className="close" data-dismiss="modal">
-              <span aria-hidden="true">&times;</span>
-            </button>
+            <CloseBtn />
             <div className="w-reload-data-tips"></div>
           </div>
           <div className="modal-footer">

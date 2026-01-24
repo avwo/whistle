@@ -1,87 +1,63 @@
-.w-properties-wrap {
+.w-props-wrap {
   position: relative;
 }
-.w-properties-wrap:hover .w-properties-btn {
-  display: inline-block;
-}
-.w-properties-source {
+.w-props-source {
   padding: 5px 10px;
 }
-.w-properties-view-source .w-properties-parsed {
+.w-props-view-source .w-props-parsed {
   display: none;
 }
-.w-properties-view-parsed .w-properties-source {
+.w-props-view-parsed .w-props-source {
   display: none;
 }
-.w-properties-view-source .w-textarea-bar,
-.w-properties-view-parsed .w-textarea-bar {
+.w-props-view-source .w-textarea-bar,
+.w-props-view-parsed .w-textarea-bar {
   right: 5px !important;
 }
-.w-properties th,
-.w-properties td {
+.w-props th,
+.w-props td {
   border: none !important;
   font-size: 12px;
   padding-top: 3px !important;
   padding-bottom: 3px !important;
 }
-.w-properties tr {
+.w-props tr {
   border-bottom: 1px solid var(--c-border);
 }
-.w-properties th {
+.w-props th {
   width: 124px;
   text-align: right;
   font-weight: normal;
-  background: #e1e3e6;
+  background: var(--b-prop);
   padding-right: 3px;
   word-break: break-word;
 }
 .w-enabled-rules {
   overflow-y: auto;
 }
-.w-enabled-rules .w-properties th {
+.w-enabled-rules .w-props th {
   width: 36px;
   padding-left: 5px;
   vertical-align: middle;
 }
-.w-properties td {
+.w-props td {
   padding-left: 5px;
   vertical-align: top;
   overflow: hidden;
   word-break: break-word;
 }
 
-.w-properties-btn {
+.w-props th .glyphicon-question-sign {
   display: none;
-  position: absolute;
-  text-decoration: none !important;
-  color: #747474;
-  padding: 0 5px;
-  z-index: 1;
-  border-radius: 2px;
-  top: 2px;
-  right: 5px;
-  font-size: 12px;
-  line-height: 1.5;
-  background: #eee;
-  cursor: pointer;
-}
-.w-properties-btn:hover {
-  color: var(--c-hover);
-}
-.w-properties th .glyphicon-question-sign {
-  display: none;
-  margin-right: 5px;
-  vertical-align: text-top;
-  cursor: pointer;
-  font-size: 13px;
 }
 
-.w-properties th .glyphicon-question-sign.w-enable-https-btn-help,
-.w-properties th:hover .glyphicon-question-sign {
+.w-props th:hover .w-help-icon,
+.w-props th .w-enable-https-help {
   display: inline-block;
+  vertical-align: top;
 }
 
-.w-prop-raw-data {
+.w-props-raw-data {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -96,17 +72,17 @@
   display: block;
 }
 
-.w-properties .w-properties-json {
+.w-props .w-props-json {
   padding-top: 0!important;
   padding-bottom: 5px!important;
 }
 
-.w-properties .w-properties-json>ul {
-  background: var(--bg-default)!important;
+.w-props .w-props-json>ul {
+  background: var(--b-default)!important;
   margin: 0!important;
 }
 
-.w-prop-icon {
+.w-props-icon {
   cursor: pointer!important;
   text-decoration: none!important;
   color: var(--c-default);;
@@ -117,7 +93,7 @@
 }
 
 span.w-src-info {
-  color: #999;
+  color: var(--c-gray);
 }
 
 .w-com-dialog .form-control {

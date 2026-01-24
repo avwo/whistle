@@ -171,7 +171,7 @@ var ReqDetail = React.createClass({
     return (
       <div
         className={
-          'fill orient-vertical-box w-detail-content w-detail-request' +
+          'fill v-box w-detail-ctn w-detail-request' +
           (util.getBool(this.props.hide) ? ' hide' : '')
         }
       >
@@ -199,15 +199,15 @@ var ReqDetail = React.createClass({
               (name == BTNS[1].name ? '' : ' hide')
             }
           >
-            <div className="fill orient-vertical-box">
+            <div className="fill v-box">
               <div className="w-detail-webforms-title">Query</div>
-              <div className="fill orient-vertical-box w-detail-request-query">
+              <div className="fill v-box w-detail-request-query">
                 <Properties modal={query} enableViewSource="1" showJsonView="1" />
               </div>
             </div>
-            <div className="fill orient-vertical-box">
+            <div className="fill v-box">
               <div className="w-detail-webforms-title">Body</div>
-              <div className="fill orient-vertical-box w-detail-request-form">
+              <div className="fill v-box w-detail-request-form">
                 {!json || !json.isJSONText ? <Properties modal={form} richKey="1" enableViewSource="1" showJsonView="1" /> :
                 <JSONViewer reqData={modal} data={json} />}
               </div>

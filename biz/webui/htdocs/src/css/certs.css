@@ -2,6 +2,11 @@
   z-index: var(--z-modal);
 }
 
+.w-certs-dialog .w-help-icon {
+  font-size: 15px;
+  margin-top: -2px;
+}
+
 .w-certs-dialog .modal-dialog {
   width: 1024px;
 }
@@ -17,11 +22,11 @@
 }
 
 .w-certs-status .glyphicon-ok {
-  color: #5bbd72;
+  color: var(--c-ok);
 }
 .w-cert-invalid th,
 .w-cert-invalid td {
-  color: red;
+  color: var(--c-error);
 }
 
 .w-certs-filename a {

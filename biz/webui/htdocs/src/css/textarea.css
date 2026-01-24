@@ -11,7 +11,7 @@
   font-size: 12px;
   white-space: nowrap;
   line-height: 1.5;
-  background: #eee;
+  background: var(--b-heavy);
 }
 .w-textarea:hover .w-textarea-bar {
   display: block;
@@ -19,21 +19,17 @@
 .w-textarea-bar a {
   display: inline-block;
   text-decoration: none;
-  color: #747474;
+  color: var(--c-thin);
   padding: 0 5px;
 }
 .w-textarea-bar a:hover {
-  color: #333373;
-}
-.w-textarea-bar .w-add,
-.w-textarea-bar .w-download {
-  display: inline-block;
+  color: var(--c-default);
 }
 
 .w-textarea-input {
   display: block;
   position: absolute;
-  background: var(--bg-default);
+  background: var(--b-default);
   border: 1px solid var(--c-border);
   border-radius: 2px;
   z-index: 101;
@@ -88,7 +84,7 @@
   text-decoration: none;
 }
 a.w-textview-tips {
-  color: var(--c-hover);
+  color: var(--c-link);
 }
 .w-textview-tips a:hover,
 a.w-textview-tips:hover {

@@ -38,7 +38,7 @@ function parseLog(log, expandRoot) {
       if (!data || typeof data !== 'object') {
         return (
           <ExpandCollapse
-            wStyle={{ color: 'rgb(203, 75, 22)' }}
+            wStyle={{ color: 'var(--c-has)' }}
             text={data + ''}
           />
         );
@@ -56,6 +56,14 @@ function parseLog(log, expandRoot) {
     return log.view;
   } catch (e) {}
   return <ExpandCollapse text={log.text} />;
+}
+
+function getLogInfo(log) {
+  var result = ['Level: ' + log.level.toUpperCase()];
+  if (log.logId) {
+    result.unshift('LogID: ' + log.logId);
+  }
+  return ' (' + result.join(', ') + ')';
 }
 
 var Console = React.createClass({
@@ -297,7 +305,7 @@ var Console = React.createClass({
     return (
       <div
         className={
-          'fill orient-vertical-box w-textarea w-detail-page-log' +
+          'fill v-box w-textarea w-log' +
           (this.props.hide ? ' hide' : '')
         }
       >
@@ -319,11 +327,11 @@ var Console = React.createClass({
           </label>
           <div className="w-textarea-bar">
             <RecordBtn onClick={this.handleAction} />
-            <a className="w-import" onClick={this.selectFile} draggable="false">
+            <a onClick={this.selectFile} draggable="false">
               Import
             </a>
             <a
-              className={'w-download' + (disabled ? ' w-disabled' : '')}
+              className={disabled ? 'w-disabled' : ''}
               onClick={disabled ? null : this.export}
               draggable="false"
             >
@@ -338,16 +346,13 @@ var Console = React.createClass({
             </a>
           </div>
         </div>
-        <div ref="container" className="fill w-detail-log-content">
+        <div ref="container" className="fill w-log-ctn">
           <ul ref="logContent">
             {logs.map(function (log, i) {
-              var logId = log.logId;
-              logId = logId ? ' (LogID: ' + logId + ')' : '';
               var date =
                 'Date: ' +
                 util.toLocaleString(new Date(log.date)) +
-                logId +
-                '\r\n';
+                getLogInfo(log) + '\r\n';
               var hide =
                 log.hide || (level && !hide && log.level !== level)
                   ? ' hide'

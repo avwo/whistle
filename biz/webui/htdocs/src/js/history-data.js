@@ -6,6 +6,8 @@ var ContextMenu = require('./context-menu');
 var events = require('./events');
 var util = require('./util');
 var dataCenter = require('./data-center');
+var Icon = require('./icon');
+var CloseBtn = require('./close-btn');
 
 var contextMenuList = [
   { name: 'Copy URL' },
@@ -215,7 +217,7 @@ var HistoryData = React.createClass({
     var disabled;
     return (
       <div ref="historyDialog" className={'w-layer box w-com-history-data' + (show ? ' w-show' : '')}>
-        {data.length ? null : <span onClick={props.onClose} aria-hidden="true" className="w-close">&times;</span>}
+        {data.length ? null : <CloseBtn onClick={props.onClose} />}
         {data.length ?
         <Divider leftWidth="170">
           <div ref="list" className="w-com-history-list" onContextMenu={self.onContextMenu}>
@@ -240,7 +242,7 @@ var HistoryData = React.createClass({
               );
             })}
           </div>
-          <div className="fill orient-vertical-box w-com-history-ctn">
+          <div className="fill v-box w-com-history-ctn">
             {selectedItem ? <div className="w-com-history-footer">
                 <button
                   type="button"
@@ -280,10 +282,10 @@ var HistoryData = React.createClass({
                   disabled={disabled}
                   onClick={this.onEdit}
                 >
-                  <span className="glyphicon glyphicon-send" />
+                  <Icon name="send" />
                   Edit
                 </button>
-                <span onClick={props.onClose} aria-hidden="true" className="w-close">&times;</span>
+                <CloseBtn onClick={props.onClose} />
               </div> : null}
               {selectedItem ? <pre className={disabled ? 'w-show-loading fill' : 'fill'}>
                 {getRaw(selectedItem, disabled)}

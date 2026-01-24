@@ -32,7 +32,7 @@ var Timeline = React.createClass({
     return (
       <div
         className={
-          'fill orient-vertical-box w-detail-content w-timeline' +
+          'fill v-box w-detail-ctn w-timeline' +
           (util.getBool(this.props.hide) ? ' hide' : '')
         }
       >

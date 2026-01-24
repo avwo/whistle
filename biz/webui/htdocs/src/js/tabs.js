@@ -1,4 +1,5 @@
 var React = require('react');
+var Icon = require('./icon');
 
 var Tabs = React.createClass({
   render: function() {
@@ -17,9 +18,7 @@ var Tabs = React.createClass({
             return (
               <li key={index} className={tab.active ? 'active' : ''}>
                 <a draggable="false" onClick={handleClick}>
-                {
-                  tab.icon ? <span className={'glyphicon glyphicon-' + tab.icon} /> : null
-                }
+                  {tab.icon ? <Icon name={tab.icon} /> : null}
                   {tab.name}
                 </a>
               </li>

@@ -8,8 +8,8 @@ var win = require('./win');
 
 var COLS = [
   { name: 'date', title: 'Date', width: 200 },
-  { name: 'displayName', title: 'Filename' },
-  { name: 'operation', title: 'Operation', width: 180 }
+  { name: 'displayName', title: 'Filename (Count)' },
+  { name: 'operation', title: 'Operation', width: 170 }
 ];
 
 var descSorter = function(a, b) {

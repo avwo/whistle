@@ -1,27 +1,22 @@
 .w-filter-con {
   position: relative;
 }
-.w-filter-con .close {
+.w-filter-con .w-clear-input {
   position: absolute;
   right: 5px;
-  top: 5px;
-  color: var(--c-active);
+  bottom: 10px;
   line-height: 16px;
   display: none;
-  opacity: 0.8;
 }
 
-.w-filter-con .close:hover {
-  opacity: 1;
-}
 
 .w-filter-hint, .w-layer {
-  background-color: var(--bg-default);
+  background-color: var(--b-default);
   border-radius: 3px;
-  -webkit-box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12),
-    0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
-  box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12),
-    0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
+  -webkit-box-shadow: 0 3px 6px -4px var(--s-rgba12),
+    0 6px 16px 0 var(--s-rgba8), 0 9px 28px 8px var(--s-rgba5);
+  box-shadow: 0 3px 6px -4px var(--s-rgba12),
+    0 6px 16px 0 var(--s-rgba8), 0 9px 28px 8px var(--s-rgba5);
 }
 
 .w-filter-hint {
@@ -29,7 +24,7 @@
   bottom: 35px;
   width: 99%;
   padding-bottom: 3px;
-  color: rgba(0, 0, 0, 0.65);
+  color: var(--c-thin);
   line-height: 1.5;
   position: absolute;
   overflow: hidden;
@@ -63,28 +58,39 @@
   position: relative;
 }
 
-.w-filter-bar span {
-  line-height: 18px;
-  width: 28px;
+.w-filter-bar .close {
   text-align: center;
-  display: inline-block;
-  font-size: 16px;
-  cursor: pointer;
+  top: 0;
+  right: 5px;
+  position: absolute;
 }
+
+.w-filter-bar .w-close-params {
+  right: unset;
+  top: -4px;
+  left: 5px;
+}
+
+.w-filter-bar .w-clear-hints {
+  top: -3px;
+}
+
 .w-filter-bar a {
-  left: -5px;
-  transform: scale(0.9);
+  left: 3px;
   position: absolute;
   font-size: 12px;
 }
 .w-filter-bar a span {
-  font-size: 12px;
-  width: 22px;
+  width: 18px;
+  line-height: 18px;
+  text-align: center;
+  display: inline-block;
+  cursor: pointer;
 }
 
 .w-filter-hint li:hover,
 .w-filter-hint .w-active {
-  background-color: var(--bg-hover) !important;
+  background-color: var(--b-hover) !important;
 }
 
 .w-filter-type-bar {
@@ -93,7 +99,7 @@
   align-items: center;
   white-space: nowrap;
   overflow-x: auto;
-  background: var(--bg-bar);
+  background: var(--b-bar);
 }
 
 .w-filter-type-bar span {
@@ -107,17 +113,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--bg-default);
+  background-color: var(--b-default);
   min-width: 32px;
 }
 
 .w-filter-type-bar span:hover {
-  border-color: #e8e8e8;
-  background: #e8e8e8;
+  border-color: var(--b-btn-hover);
+  background: var(--b-btn-hover);
 }
 
 .w-filter-type-bar span:active, .w-filter-type-bar span.w-active {
-  border-color: #d6e2fb;
-  background: #d6e2fb;
+  border-color: var(--b-btn-active);
+  background: var(--b-btn-active);
   color: var(--c-default);
 }

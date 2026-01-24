@@ -6,6 +6,7 @@ var dataCenter = require('./data-center');
 var events = require('./events');
 var TabMgr = require('./tab-mgr');
 var storage = require('./storage');
+var Icon = require('./icon');
 
 var DEFAULT_TAB = ' ';
 
@@ -66,7 +67,7 @@ var ComposerList = React.createClass({
     return (
       <div
         className={
-          'fill orient-vertical-box w-com-list' + (hide ? ' hide' : '')
+          'fill v-box w-com-list' + (hide ? ' hide' : '')
         }
       >
         {tabs.length ? (
@@ -78,7 +79,7 @@ var ComposerList = React.createClass({
               }}
               className={'btn btn-default' + (activeDefalut ? ' active' : '')}
             >
-              <span className="glyphicon glyphicon-send"></span>Default
+              <Icon name="send" />Default
             </button>
             <div className="fill w-custom-tabs">{elem}</div>
           </div>

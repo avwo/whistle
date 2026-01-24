@@ -29,14 +29,15 @@ var ExpandCollapse = React.createClass({
   render: function () {
     var text = this.props.text;
     var len = (text && text.length) || 0;
+    var style = this.props.wStyle;
     if (len < 2100) {
-      return <span style={this.wStyle}>{text}</span>;
+      return <span style={style}>{text}</span>;
     }
     var expandLength = this.state.expandLength;
     var isCollapse = expandLength >= len;
     var viewAll = !isCollapse && expandLength > MAX_LENGTH;
     return (
-      <span style={this.wStyle}>
+      <span style={style}>
         {isCollapse ? text : text.substring(0, expandLength) + '...'}
         {viewAll ? (
           <button onClick={this.viewAll} className="w-expand-collapse">

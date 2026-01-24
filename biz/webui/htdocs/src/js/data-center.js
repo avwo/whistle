@@ -1444,33 +1444,6 @@ exports.offComposeData = function(reqId, cb) {
   }
 };
 
-function getIframe(win) {
-  if (win.parent !== window) {
-    return;
-  }
-  var list = document.querySelectorAll('iframe');
-  for (var i = 0, len = list.length; i < len; i++) {
-    var iframe = list[i];
-    if (iframe.contentWindow === win) {
-      return iframe;
-    }
-  }
-}
-
-window.disableWhistleDarkModeIframe = function(win) {
-  var iframe = getIframe(win);
-  if (iframe) {
-    iframe.setAttribute('disabledDarkMode', '1');
-  }
-};
-
-window.enableWhistleDarkModeIframe = function(win) {
-  var iframe = getIframe(win);
-  if (iframe) {
-    iframe.removeAttribute('disabledDarkMode');
-  }
-};
-
 exports.getPageId = function () {
   return clientId;
 };

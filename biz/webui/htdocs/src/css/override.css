@@ -1,0 +1,275 @@
+.table-hover>tbody>tr:hover {
+  background-color: var(--b-hover);
+}
+
+.nav-tabs {
+  border-bottom: 1px solid var(--c-border);
+}
+
+.nav-tabs>li>a:hover {
+  background-color: var(--b-heavy);
+  border-color: var(--c-border);
+}
+
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover {
+  color: var(--c-thin);
+  background: var(--b-default);
+  border: 1px solid var(--c-border);
+  border-bottom-color: transparent;
+}
+
+.modal-header {
+  border-bottom: 1px solid var(--c-border);
+}
+
+.modal-content {
+  position: relative;
+  background-color: var(--b-default);
+  border: 1px solid var(--c-border);
+}
+
+.modal-footer {
+  border-top: 1px solid var(--c-border);
+}
+
+.form-control {
+  background-color: var(--b-default);
+  border: 1px solid var(--c-border);
+  color: var(--c-thin)
+}
+
+.alert-danger {
+  color: var(--c-danger);
+  background-color: var(--b-error);
+  border: none;
+}
+
+.alert-warning {
+  color: var(--c-tree-warning);
+  background-color: var(--b-warn);
+  border: none;
+}
+
+.alert-info {
+  color: var(--c-tree-info);
+  background-color: var(--b-alert-info);
+  border: none;
+}
+
+.alert-success {
+  color: var(--c-success);
+  background-color: var(--b-success);
+  border: none;
+}
+
+.table>tbody>tr>td, .table>tbody>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+    border-top: 1px solid var(--c-border);
+}
+
+.table>thead>tr>th {
+  border-bottom: 1px solid var(--c-border);
+}
+
+legend, pre {
+  color: var(--c-heavy)
+}
+
+a {
+  color: var(--c-link);
+}
+
+a:focus, a:hover {
+  color: var(--c-link-hover);
+}
+
+.close {
+  color: var(--c-gray);
+  text-shadow: none;
+  filter: alpha(opacity=100);
+  opacity: 1;
+}
+
+.close:focus, .close:hover {
+  color: var(--c-default);
+  filter: alpha(opacity=100);
+  opacity: 1;
+}
+
+.btn-default {
+  color: var(--c-heavy);
+  background-color: var(--b-default);
+  border-color: var(--c-border);
+}
+
+.dropdown-menu {
+  background-color: var(--c-default);
+  border: 1px solid var(--c-border);
+  box-shadow: 0 6px 9pt var(--s-rgba15);
+}
+
+.btn-default.active, .btn-default:hover, .btn-default:focus, .btn-default:active,
+.w-tabs-sm .btn-default.active:focus, .w-tabs-sm .btn-default.active:hover,
+.w-tabs-sm .btn-default:active:focus, .w-tabs-sm .btn-default:active:hover {
+  color: var(--c-heavy);
+  background-color: var(--b-btn-hover);
+  border-color: var(--c-border);
+}
+
+.btn-default.active:focus, .btn-default.active:hover,
+.btn-default:active:focus, .btn-default:active:hover,
+.open>.dropdown-toggle.btn-default,
+.open>.dropdown-toggle.btn-default:focus,
+.open>.dropdown-toggle.btn-default:hover {
+  color: var(--c-heavy);
+  background-color: var(--b-btn-active);
+  border-color: var(--c-border);
+}
+
+.btn-default[disabled], .btn-default[disabled].active, .btn-default[disabled].focus,
+.btn-default[disabled]:active, .btn-default[disabled]:focus,
+.btn-default[disabled]:hover {
+  background-color: var(--b-default);
+  border-color: var(--c-border);
+}
+
+.btn-primary {
+  color: var(--c-btn);
+  background-color: var(--b-primary);
+  border-color: var(--c-primary);
+}
+
+.btn-primary.active, .btn-primary:hover, .btn-primary:focus, .btn-primary:active {
+  color: var(--c-btn);
+  background-color: var(--b-primary-hover);
+  border-color: var(--c-primary);
+}
+
+.btn-primary.active:focus, .btn-primary.active:hover,
+.btn-primary:active:focus, .btn-primary:active:hover {
+  color: var(--c-btn);
+  background-color: var(--b-primary-active);
+  border-color: var(--c-primary);
+}
+
+.btn-danger {
+  color: var(--c-btn);
+  background-color: var(--b-danger);
+  border-color: var(--c-danger);
+}
+
+.btn-danger.active, .btn-danger:hover, .btn-danger:focus, .btn-danger:active {
+  color: var(--c-btn);
+  background-color: var(--b-danger-hover);
+  border-color: var(--c-danger-hover);
+}
+
+.btn-danger.active:focus, .btn-danger.active:hover,
+.btn-danger:active:focus, .btn-danger:active:hover {
+  color: var(--c-btn);
+  background-color: var(--b-danger-active);
+  border-color: var(--c-danger-active);
+}
+
+.btn-warning {
+  color: var(--c-btn);
+  background-color: var(--b-warning);
+  border-color: var(--c-warning);
+}
+
+.btn-warning.active, .btn-warning:hover, .btn-warning:focus, .btn-warning:active {
+  color: var(--c-btn);
+  background-color: var(--b-warning-hover);
+  border-color: var(--c-warning-hover);
+}
+
+.btn-warning.active:focus, .btn-warning.active:hover,
+.btn-warning:active:focus, .btn-warning:active:hover {
+  color: var(--c-btn);
+  background-color: var(--b-warning-active);
+  border-color: var(--c-warning-active);
+}
+
+.btn-info {
+  color: var(--c-btn);
+  background-color: var(--b-info);
+  border-color: var(--c-info);
+}
+
+.btn-info.active, .btn-info:hover, .btn-info:focus, .btn-info:active {
+  color: var(--c-btn);
+  background-color: var(--b-info-hover);
+  border-color: var(--c-info-hover);
+}
+
+.btn-info.active:focus, .btn-info.active:hover,
+.btn-info:active:focus, .btn-info:active:hover {
+  color: var(--c-btn);
+  background-color: var(--b-info-active);
+  border-color: var(--c-info-active);
+}
+
+.table>tbody>tr.success>td, .table>tbody>tr.success>th {
+  background-color: var(--b-success);
+}
+
+.table>tbody>tr.active>td, .table>tbody>tr.active>th {
+  background-color: var(--b-hover);
+}
+
+.table>tbody>tr.danger>td, .table>tbody>tr.danger>th {
+  background-color: var(--b-error);
+}
+.table>tbody>tr.warning>td, .table>tbody>tr.warning>th {
+  background-color: var(--b-warn);
+}
+.table>tbody>tr.info>td, .table>tbody>tr.info>th  {
+  background: var(--b-alert-info);
+}
+
+.dropdown-menu {
+  background-color: var(--b-bar);
+}
+
+.dropdown-menu .divider {
+  background: var(--c-border);
+}
+
+.dropdown-menu>li>a {
+    color: var(--c-heavy);
+}
+
+.dropdown-menu>li>a:focus, .dropdown-menu>li>a:hover {
+  color: var(--c-heavy);
+  text-decoration: none;
+  background-color: var(--b-hover);
+}
+
+.modal-content {
+  border: 1px solid var(--c-border);
+  box-shadow: 0 5px 15px var(--s-rgba50);
+}
+
+@media (min-width: 768px) {
+  .modal-content {
+    -webkit-box-shadow: 0 5px 15px var(--s-rgba50);
+    box-shadow: 0 5px 15px var(--s-rgba50);
+  }
+}
+
+.modal-backdrop.in {
+  filter: alpha(opacity=100);
+  opacity: 1;
+  background: var(--b-modal);
+}
+
+select.form-control[disabled] {
+  background: var(--b-disabled);
+}
+
+.form-control {
+  background: field;
+}
+
+.w-json-tree label {
+  font-weight: normal;
+}

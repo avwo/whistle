@@ -26,7 +26,7 @@ var OrderTable = React.createClass({
         </table>
         <div ref="body" className="w-order-table-body fill">
           <table className="table">
-            <tbody className="w-hover-table-body">
+            <tbody className="w-hover-body">
               {rows.length ? rows.map(function(row, i) {
                 return (
                   <tr key={row[rowKey] || i}>

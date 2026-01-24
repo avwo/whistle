@@ -74,6 +74,16 @@ var Network = React.createClass({
       },
       function () {
         self.refs.divider.reset();
+        var elems = document.querySelectorAll('.w-detail .w-divider');
+        elems.forEach(function (elem) {
+          if (window.MouseEvent) {
+            elem.dispatchEvent(new MouseEvent('dblclick', {
+              bubbles: true,
+              cancelable: true,
+              view: window
+            }));
+          }
+        });
       }
     );
   },
@@ -81,7 +91,7 @@ var Network = React.createClass({
     var modal = this.props.modal;
     var dockToBottom = this.state.dockToBottom;
     return (
-      <div className={'orient-vertical-box fill w-nav-tabs' + (this.props.hide ? ' hide' : '')}>
+      <div className={'v-box fill' + (this.props.hide ? ' hide' : '')}>
         <Divider
           ref="divider"
           vertical={dockToBottom}

@@ -1,6 +1,7 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Dialog = require('./dialog');
+var CloseBtn = require('./close-btn');
 require('../css/modal.css');
 
 var GLOBAL_VAR =
@@ -47,15 +48,11 @@ function createModal(options, callback, gVarName) {
       onShow={options.onShow}
     >
       {options.fullCustom ? (
-        <button type="button" className="close" data-dismiss="modal">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <CloseBtn />
       ) : (
         <div className="modal-header">
           <h4 />
-          <button type="button" className="close" data-dismiss="modal">
-            <span aria-hidden="true">&times;</span>
-          </button>
+          <CloseBtn />
         </div>
       )}
       <div className="modal-body"></div>

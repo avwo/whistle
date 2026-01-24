@@ -6,6 +6,8 @@ var dataCenter = require('./data-center');
 var util = require('./util');
 var message = require('./message');
 var win = require('./win');
+var Icon = require('./icon');
+var CloseBtn = require('./close-btn');
 
 var findDOMNode = ReactDOM.findDOMNode;
 var MAX_LEN = 1024 * 1024 * 11;
@@ -83,7 +85,7 @@ var EditorDialog = React.createClass({
         style.width = iframeStyle.width + 'px';
         style.height = iframeStyle.height + 'px';
         style.padding = '5px';
-        style.border = '1px solid #ccc';
+        style.border = '1px solid var(--c-border, #ccc)';
         style.borderRadius = '3px';
         textarea.maxLength = MAX_LEN;
         textarea.placeholder = self.props.placeholder || 'Enter text';
@@ -276,9 +278,7 @@ var EditorDialog = React.createClass({
       (showUpload ? ' w-show-upload-temp-file' : '')}>
         <div className="modal-header">
           <h4>{title || 'Edit copied text'}</h4>
-          <button type="button" className="close" data-dismiss="modal">
-            <span aria-hidden="true">&times;</span>
-          </button>
+          <CloseBtn />
         </div>
         <div className="modal-body">
           {
@@ -288,7 +288,8 @@ var EditorDialog = React.createClass({
             </div> : null
           }
           {
-            textEditor ? <div className="w-fake-iframe w-fix-drag"><iframe ref="iframe" src={fakeIframe} style={iframeStyle}/></div> :
+            textEditor ? <div className="w-fake-iframe w-fix-drag"><iframe ref="iframe" data-type="fake"
+              src={fakeIframe} onLoad={dataCenter.handleIframeLoad} style={iframeStyle}/></div> :
               <textarea onChange={this.onChange} value={value} />
           }
         </div>
@@ -305,7 +306,7 @@ var EditorDialog = React.createClass({
             className="btn btn-info"
             onClick={this.onUpload}
           >
-            <span className="glyphicon glyphicon-folder-open" />
+            <Icon name="folder-open" />
             Upload
           </button>}
           <button

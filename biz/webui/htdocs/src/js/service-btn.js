@@ -1,6 +1,7 @@
 var React = require('react');
 var dataCenter = require('./data-center');
 var util = require('./util');
+var Icon = require('./icon');
 
 var ServiceBtn = React.createClass({
   showService: function () {
@@ -18,7 +19,7 @@ var ServiceBtn = React.createClass({
         draggable="false"
         title={hasToken ? 'Whistle Service' : 'Whistle Service (not logged in)'}
       >
-        <span className={'glyphicon glyphicon-cloud' + (hasToken ? '' : ' w-disabled')} />
+        <Icon name="cloud" className={hasToken ? '' : 'w-disabled'} />
         Service
       </a>
     );

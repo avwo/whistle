@@ -4,6 +4,7 @@ var JSONView = require('./json-viewer');
 var FilterInput = require('./filter-input');
 var util = require('./util');
 var FbBtn = require('./forward-back-btn');
+var CloseBtn = require('./close-btn');
 
 var KV_RE = /^(k|v):/;
 
@@ -155,12 +156,10 @@ var JSONDialog = React.createClass({
             onBack={this.onBack}
             onForward={this.onForward}
           />
-          <button type="button" className="close" data-dismiss="modal">
-            <span aria-hidden="true">&times;</span>
-          </button>
+          <CloseBtn />
           <div
-            className="orient-vertical-box"
-            style={{ width: 880, height: 560, marginTop: 22, background: this._keywordObj ? 'lightyellow' : undefined }}
+            className="v-box"
+            style={{ width: 880, height: 560, marginTop: 22, background: this._keywordObj ? 'var(--b-filtered)' : undefined }}
           >
             <JSONView keyPath={state.keyPath} dialog data={state.curData || state.data} viewSource={true} />
           </div>

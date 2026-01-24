@@ -4,8 +4,8 @@
   width: 26px;
   height: 26px;
   border-radius: 50%;
-  background: url(../../img/assistant.svg) var(--bg-default) no-repeat center center / 100% 100%;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, .2);
+  background: url(../../img/assistant.svg) var(--b-default) no-repeat center center / 100% 100%;
+  box-shadow: 0 4px 10px var(--s-rgba20);
   cursor: default;
   z-index: calc(var(--z-max) + 10);
   position: fixed;
@@ -20,7 +20,7 @@
 }
 
 .w-assistant:hover {
-  background-color: var(--bg-active);
+  background-color: var(--b-active);
 }
 
 .w-assistant-dialog {
@@ -32,8 +32,8 @@
   min-width: 560px;
   max-width: 760px;
   width: 36%;
-  background: var(--bg-default);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, .2);
+  background: var(--b-default);
+  box-shadow: 0 4px 10px var(--s-rgba20);
   border: 1px solid var(--c-border);
   border-radius: 5px;
   bottom: 20px;

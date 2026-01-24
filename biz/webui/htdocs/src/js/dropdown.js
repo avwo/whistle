@@ -1,6 +1,7 @@
 require('../css/dropdown.css');
 var React = require('react');
 var util = require('./util');
+var Icon = require('./icon');
 
 var DropDown = React.createClass({
   getInitialState: function () {
@@ -57,7 +58,7 @@ var DropDown = React.createClass({
             color:
               selectedOption === firstOption
                 ? undefined
-                : selectedOption.color || 'red'
+                : selectedOption.color || 'var(--c-error)'
           }}
           title={selectedOption.text}
           className={
@@ -65,7 +66,7 @@ var DropDown = React.createClass({
           }
         >
           {selectedOption.icon ? (
-            <span className={'glyphicon glyphicon-' + selectedOption.icon} />
+            <Icon name={selectedOption.icon} />
           ) : undefined}
           {selectedOption.text}
           <span className="caret"></span>
@@ -91,9 +92,7 @@ var DropDown = React.createClass({
                   self.onChange(option);
                 }}
               >
-                {option.icon ? (
-                  <span className={'glyphicon glyphicon-' + option.icon} />
-                ) : undefined}
+                {option.icon ? <Icon name={option.icon} /> : undefined}
                 {option.text}
               </li>
             );
@@ -102,7 +101,7 @@ var DropDown = React.createClass({
           {help ? (
             <li style={{ padding: 0 }}>
               <a href={help} target="_blank">
-                <span className="glyphicon glyphicon-question-sign"></span>
+                <Icon name="question-sign" />
                 Help
               </a>
             </li>

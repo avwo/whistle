@@ -6,6 +6,7 @@ var TextDialog = require('./text-dialog');
 var storage = require('./storage');
 var win = require('./win');
 var events = require('./events');
+var Icon = require('./icon');
 
 var URL_RE = /^(?:(?:[\w.-]+:)?\/\/)?([\w.-]+)/i;
 var NOT_EMPTY_RE = /[^\s]/;
@@ -152,12 +153,12 @@ var ToolBox = React.createClass({
     return (
       <div
         className={
-          'fill orient-vertical-box w-tool-box ' +
+          'fill v-box w-tool-box ' +
           (this.props.hide ? 'hide' : '')
         }
       >
         <div className="w-detail-inspectors-title">
-          <span className="glyphicon glyphicon-qrcode"></span>QRCode
+          <Icon name="qrcode" />QRCode
           <button
             className="btn btn-primary"
             disabled={!NOT_EMPTY_RE.test(qrcodeValue)}
@@ -175,7 +176,7 @@ var ToolBox = React.createClass({
           placeholder="Enter URL or text"
         />
         <div className="w-detail-inspectors-title">
-          <span className="glyphicon glyphicon-pencil"></span>JSON
+          <Icon name="pencil" />JSON
           <button
             className="btn btn-primary"
             disabled={emptyJson}
@@ -201,7 +202,7 @@ var ToolBox = React.createClass({
           onKeyDown={this.onForamt}
         />
         <div className="w-detail-inspectors-title" style={{ height: 20 }}>
-          <span className="glyphicon glyphicon-eye-close"></span>Base64
+          <Icon name="eye-close" />Base64
           <button
             className="btn btn-primary"
             style={{marginLeft: 10}}
@@ -234,7 +235,7 @@ var ToolBox = React.createClass({
           placeholder="Enter text"
         />
         <div className="w-detail-inspectors-title">
-          <span className="glyphicon glyphicon-certificate"></span>Certificate
+          <Icon name="certificate" />Certificate
         </div>
         <div className="box w-generate-cert">
           <input

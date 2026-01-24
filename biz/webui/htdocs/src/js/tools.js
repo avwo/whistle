@@ -124,7 +124,7 @@ var Tools = React.createClass({
     return (
       <div
         className={
-          'fill orient-vertical-box w-detail-log' +
+          'fill v-box w-tools' +
           (util.getBool(this.props.hide) ? ' hide' : '')
         }
       >

@@ -8,8 +8,8 @@ var storage = require('./storage');
 var Properties = require('./properties');
 var dataCenter = require('./data-center');
 var getHelpUrl = require('./protocols').getHelpUrl;
+var HelpIcon = require('./help-icon');
 
-var SOURCE_SEP = util.SOURCE_SEP;
 var OVERVIEW = [
   'URL',
   'Final URL',
@@ -53,31 +53,31 @@ var CSS_MAP = {
   'TTFB': {
     className: 'w-overview-timeline',
     style: {
-      '--overview-bg': 'var(--bg-active)'
+      '--overview-bg': 'var(--b-active)'
     }
   },
   'DNS': {
     className: 'w-overview-timeline',
     style: {
-      '--overview-bg': '#8cd2c6'
+      '--overview-bg': 'var(--b-tl-dns)'
     }
   },
   'Request': {
     className: 'w-overview-timeline',
     style: {
-      '--overview-bg': '#fdfdb2'
+      '--overview-bg': 'var(--b-tl-req)'
     }
   },
   'Response': {
     className: 'w-overview-timeline',
     style: {
-      '--overview-bg': '#fbb361'
+      '--overview-bg': 'var(--b-tl-res)'
     }
   },
   'Download': {
     className: 'w-overview-timeline',
     style: {
-      '--overview-bg': '#7eabe1'
+      '--overview-bg': 'var(--b-tl-load)'
     }
   }
 };
@@ -108,14 +108,7 @@ function filterImportant(item) {
 }
 
 function getPluginName(rule) {
-  if (!rule) {
-    return '';
-  }
-  var root = rule.root;
-  if (root) {
-    return /[\\/]whistle\.([a-z\d_\-]+)$/.test(root) ? SOURCE_SEP + 'Plugin: ' + RegExp.$1 + ')' : '';
-  }
-  return rule.file ? SOURCE_SEP + rule.file + ')' : '';
+  return rule && rule.file ? util.SOURCE_SEP + rule.file + ')' : '';
 }
 
 function getRawProps(rule, all) {
@@ -449,7 +442,7 @@ var Overview = React.createClass({
       <div
         ref="container"
         className={
-          'fill orient-vertical-box w-detail-content w-detail-overview' +
+          'fill v-box w-detail-ctn w-detail-overview' +
           (util.getBool(this.props.hide) ? ' hide' : '')
         }
       >
@@ -462,11 +455,9 @@ var Overview = React.createClass({
         />
         <p
           className="w-detail-overview-title"
-          style={{ background: showOnlyMatchRules ? 'lightyellow' : undefined }}
+          style={{ background: showOnlyMatchRules ? 'var(--b-filtered)' : undefined }}
         >
-          <a href={util.getDocUrl('rules/protocols.html')} target="_blank">
-            <span className="glyphicon glyphicon-question-sign"></span>
-          </a>
+          <HelpIcon docsUrl="rules/protocols.html" />
           All Rules:
           <label>
             <input

@@ -2,6 +2,7 @@ require('../css/menu-item.css');
 var React = require('react');
 var util = require('./util');
 var GitHubIcon = require('./github-icon');
+var Icon = require('./icon');
 
 var MenuItem = React.createClass({
   preventBlur: function (e) {
@@ -70,12 +71,10 @@ var MenuItem = React.createClass({
                     />
                   ) : option.icon === false ? undefined : (
                     option.icon === 'github' ? <GitHubIcon /> :
-                    <span
-                      className={
-                        'glyphicon glyphicon-' + (option.icon || 'asterisk')
-                      }
-                      style={{ visibility: option.icon ? '' : 'hidden' }}
-                    ></span>
+                    <Icon
+                      name={option.icon || 'asterisk'}
+                      className={option.icon ? '' : 'w-hidden'}
+                    />
                   )}
                   {option.name}
                 </a>
@@ -88,7 +87,7 @@ var MenuItem = React.createClass({
         {name ? (
           typeof name === 'string' ? (
             <a onClick={onClick} className="w-menu-open" draggable="false">
-              <span className={'glyphicon glyphicon-' + (self.props.icon || 'folder-open')}></span>
+              <Icon name={self.props.icon || 'folder-open'} />
               {name}
             </a>
           ) : (

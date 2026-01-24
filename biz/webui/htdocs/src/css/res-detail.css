@@ -9,10 +9,7 @@
 .w-detail-res-cookies table {
   table-layout: auto;
 }
-.w-detail-res-cookies thead > th {
-  white-space: nowrap;
-  background: var(--bg-bar);
-}
+
 .w-detail-res-cookies tbody > tr > td:nth-child(7),
 .w-detail-res-cookies tbody > tr > td:nth-child(8),
   .w-detail-res-cookies tbody > tr > td:nth-child(10) {

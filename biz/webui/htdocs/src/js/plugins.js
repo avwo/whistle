@@ -12,6 +12,8 @@ var storage = require('./storage');
 var PluginsMgr = require('./plugins-mgr');
 var ContextMenu = require('./context-menu');
 var iframes = require('./iframes');
+var Icon = require('./icon');
+var CloseBtn = require('./close-btn');
 
 
 var findDOMNode = ReactDOM.findDOMNode;
@@ -216,7 +218,6 @@ var Home = React.createClass({
       cmdMsg && self.getRegistryList(function(result, r) {
         self.setState({
           cmdMsg: cmdMsg,
-          uninstall: false,
           install: false,
           registry: r || registry || '',
           registryChanged: true,
@@ -388,7 +389,6 @@ var Home = React.createClass({
         {
           cmdMsg: getCmd() + getUpdateUrl(plugin) + getParams(plugin),
           isSys: plugin.isSys,
-          uninstall: false,
           install: false,
           registry: r || plugin.registry || '',
           registryChanged: true,
@@ -516,7 +516,7 @@ var Home = React.createClass({
     return (
       <div
         ref="plugins"
-        className="fill orient-vertical-box w-plugins"
+        className="fill v-box w-plugins"
         style={{ display: self.props.hide ? 'none' : '' }}
       >
         <div className="w-plugins-headers">
@@ -708,9 +708,7 @@ var Home = React.createClass({
         <Dialog ref="pluginRulesDialog" wstyle="w-plugin-rules-dialog">
           <div className="modal-header">
             <h4>{plugin.name}</h4>
-            <button type="button" className="close" data-dismiss="modal">
-              <span aria-hidden="true">&times;</span>
-            </button>
+            <CloseBtn />
           </div>
           <div className="modal-body">
             <div className="w-plugin-rules">
@@ -764,24 +762,6 @@ var Home = React.createClass({
               className={'w-copy-text-with-tips w-plugin-copy-cmd' + (state.copied ? ' w-copied-text' : '')}
               data-clipboard-text={state.copied ? null : cmdMsg}
             >{state.copied ? 'Copied' : 'Copy'}</a>
-            <div
-              style={{
-                margin: '8px 0 0',
-                color: 'red',
-                'word-break': 'break-all',
-                display: !state.isSys && state.uninstall ? '' : 'none'
-              }}
-            >
-              If uninstall failed, delete the following directory instead:
-              <a
-                className="w-copy-text-with-tips"
-                data-dismiss="modal"
-                data-clipboard-text={state.pluginPath}
-                style={{ marginLeft: 5, cursor: 'pointer' }}
-              >
-                {state.pluginPath}
-              </a>
-            </div>
           </div>
           <div className="modal-footer">
             {(registryList.length || registry) ? <label className="w-registry-list">
@@ -818,7 +798,7 @@ var Home = React.createClass({
               data-dismiss="modal"
               onClick={this.showService}
             >
-              <span className="glyphicon glyphicon-gift" />
+              <Icon name="gift" />
               Plugins
             </button> : null}
             <button
@@ -984,7 +964,7 @@ var Tabs = React.createClass({
 
     return (
       <div
-        className="w-nav-tabs fill orient-vertical-box"
+        className="w-nav-tabs fill v-box"
         style={{
           display: self.props.hide ? 'none' : '',
           paddingTop: disabled ? 0 : undefined
@@ -1008,7 +988,7 @@ var Tabs = React.createClass({
             onClick={self.props.onActive}
           >
             <a draggable="false" data-name="Plugins" className="w-plugins-tab">
-              <span className="glyphicon glyphicon-th-large" />
+              <Icon name="th-large" />
               Plugins
             </a>
           </li>
@@ -1030,12 +1010,11 @@ var Tabs = React.createClass({
                   className={'w-plugins-tab' + (disd ? ' w-plugin-tab-disabled' : '')}
                 >
                   {disd ? (
-                    <span data-name={tab.name} className="glyphicon glyphicon-ban-circle" />
+                    <Icon data-name={tab.name} name="ban-circle" />
                   ) : (favicon ? <img src={favicon} /> : undefined)}
                   {tab.name}
                   <span
                     data-name={tab.name}
-                    title="Close"
                     className="w-close-icon"
                     onClick={self.onClose}
                   >
@@ -1046,8 +1025,8 @@ var Tabs = React.createClass({
             );
           })}
         </ul>
-        <div className="fill orient-vertical-box w-nav-tab-panel w-fix-drag">
-          <div ref="tabPanel" className="fill orient-vertical-box">
+        <div className="fill v-box w-nav-tab-panel w-fix-drag">
+          <div ref="tabPanel" className="fill v-box">
             <Home
               data={self.props}
               hide={activeName != 'Home'}
@@ -1060,6 +1039,7 @@ var Tabs = React.createClass({
                   <iframe
                     style={{ display: activeName == tab.name ? '' : 'none' }}
                     src={tab.url}
+                    onLoad={dataCenter.handleIframeLoad}
                   />
                 </LazyInit>
               );

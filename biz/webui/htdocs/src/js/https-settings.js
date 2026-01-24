@@ -7,6 +7,9 @@ var util = require('./util');
 var ReactDOM = require('react-dom');
 var $ = require('jquery');
 var events = require('./events');
+var Icon = require('./icon');
+var HelpIcon = require('./help-icon');
+var CloseBtn = require('./close-btn');
 
 function getCAType(type) {
   if (type === 'crt' || type === 'pem') {
@@ -76,23 +79,9 @@ var HttpsSettings = React.createClass({
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-body">
-                <button
-                  type="button"
-                  className="close"
-                  data-dismiss="modal"
-                  aria-label="Close"
-                >
-                  <span aria-hidden="true">&times;</span>
-                </button>
+                <CloseBtn />
                 <div style={{marginBottom: 10}}>
-                  <a
-                    className="w-help-menu"
-                    title="Click here to learn how to install root ca"
-                    href={util.getDocUrl('gui/https.html')}
-                    target="_blank"
-                  >
-                    <span className="glyphicon glyphicon-question-sign"></span>
-                  </a>
+                  <HelpIcon docsUrl="gui/https.html" />
                   <a
                     className="w-download-rootca"
                     title={caShortUrl}
@@ -116,7 +105,7 @@ var HttpsSettings = React.createClass({
                       return <option value={url}>{url}</option>;
                     })}
                   </select>
-                  <span title="Copy Root CA URL" className="glyphicon glyphicon-copy w-copy-text-with-tips" data-clipboard-text={caFullUrl || caShortUrl} />
+                  <Icon title="Copy Root CA URL" name="copy" className="w-copy-text-with-tips" data-clipboard-text={caFullUrl || caShortUrl} />
                 </div>
                 <a
                   href={caUrl}
@@ -161,11 +150,11 @@ var HttpsSettings = React.createClass({
                   <a
                     draggable="false"
                     style={{
-                      color: dataCenter.hasInvalidCerts ? 'red' : undefined
+                      color: dataCenter.hasInvalidCerts ? 'var(--c-error)' : undefined
                     }}
                     onClick={this.showCustomCertsInfo}
                   >
-                    View Custom Certs
+                    Custom Certs Settings
                   </a>
                   <CertsInfoDialog ref="certsInfoDialog" />
                 </div>

@@ -1,23 +1,21 @@
 var React = require('react');
 var dataCenter = require('./data-center');
 var events = require('./events');
-var util = require('./util');
+var Icon = require('./icon');
+var HelpIcon = require('./help-icon');
 
 var EnableHttpsBtn = React.createClass({
   showHttpsSettingsDialog: function () {
     events.trigger('showHttpsSettingsDialog');
-  },
-  showHelp: function () {
-    window.open(util.getDocUrl('faq.html#tunnel-to'));
   },
   render: function () {
     if (dataCenter.isMultiEnv()) {
       return null;
     }
     if (!dataCenter.isCapture) {
-      return <span className="glyphicon glyphicon-lock w-enable-https-btn" onClick={this.showHttpsSettingsDialog} />;
+      return <Icon name="lock" className="w-enable-https-btn" onClick={this.showHttpsSettingsDialog} />;
     }
-    return <span className="glyphicon glyphicon-question-sign w-enable-https-btn-help" title="Show help" onClick={this.showHelp} />;
+    return <HelpIcon className="w-enable-https-help" docsUrl="faq.html#tunnel-to" />;
   }
 });
 

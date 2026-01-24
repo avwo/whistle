@@ -3,6 +3,10 @@ require('../css/message.css');
 
 var cache = {};
 
+$(document).on('click', '.w-message', function () {
+  $(this).stop(true, true).hide();
+});
+
 function showMessage(msg, level) {
   if (level === 'warn') {
     level = 'warning';

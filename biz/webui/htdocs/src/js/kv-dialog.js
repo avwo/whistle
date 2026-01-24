@@ -4,6 +4,8 @@ var Dialog = require('./dialog');
 var util = require('./util');
 var events = require('./events');
 var win = require('./win');
+var Icon = require('./icon');
+var CloseBtn = require('./close-btn');
 
 var KVDialog = React.createClass({
   getInitialState: function () {
@@ -132,9 +134,7 @@ var KVDialog = React.createClass({
       <Dialog ref="kvDialog" wstyle="w-kv-dialog">
         <div className="modal-header">
           <h4>Select {title}</h4>
-          <button type="button" className="close" onClick={self.hide}>
-            <span aria-hidden="true">&times;</span>
-          </button>
+          <CloseBtn onClick={self.hide} />
         </div>
         <div className="modal-body">
           {history.length ? <label>
@@ -166,7 +166,7 @@ var KVDialog = React.createClass({
               </th>
               <th className="w-kv-operation">Content</th>
             </thead>
-            <tbody className="w-hover-table-body">
+            <tbody className="w-hover-body">
               {noData ? (
                 <tr>
                   <td colSpan="3" className="w-empty">
@@ -202,7 +202,7 @@ var KVDialog = React.createClass({
                         self.checkItem(e, item);
                       }} /></th>
                       <td title={item.name} className="w-kv-name">
-                        {isGroup ? <span className="glyphicon glyphicon-triangle-right w-list-group-icon" /> : null}{item.name}
+                        {isGroup ? <Icon name="triangle-right" className="w-list-group-icon" /> : null}{item.name}
                         {showConflict ? <strong onClick={self.viewContent} title={curValue}>[Conflict]</strong> : null}
                       </td>
                       <td className="w-kv-operation">

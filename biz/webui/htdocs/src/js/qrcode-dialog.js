@@ -1,6 +1,8 @@
 var React = require('react');
 var Dialog = require('./dialog');
 var QRCodeImg = require('./qrcode');
+var Icon = require('./icon');
+var CloseBtn = require('./close-btn');
 
 var QRCodeDialog = React.createClass({
   getInitialState: function () {
@@ -19,12 +21,11 @@ var QRCodeDialog = React.createClass({
     return (
       <Dialog ref="qrcodeDialog" wstyle="w-qrcode-dialog">
         <div className="modal-body">
-          <button type="button" className="close" data-dismiss="modal">
-            <span aria-hidden="true">&times;</span>
-          </button>
+          <h4>QR Code</h4>
+          <CloseBtn />
           <div className="w-qrcode-url-wrap">
             <input readOnly value={url} />
-            <span className="glyphicon glyphicon-copy w-copy-text-with-tips" data-clipboard-text={url} />
+            <Icon name="copy" className="w-copy-text-with-tips" data-clipboard-text={url} />
           </div>
           <QRCodeImg url={this.state.url} />
         </div>

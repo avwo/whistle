@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="google" value="notranslate">
 <link rel="shortcut icon" href="img/favicon.ico?v=2016" />
 <title>Whistle Editor</title>
 <style>
+[data-theme="dark"]:root { color-scheme: dark; }
 html, body, .main {padding: 0; margin: 0; height: 100%; overflow: hidden;}
 ::-webkit-scrollbar{ width:10px; height:10px; }
 ::-webkit-scrollbar-button{ width:10px;height:1px; }
@@ -22,32 +23,55 @@ textarea {resize: none; display: block; padding: 6px; font-size: 12px; width: 10
 </div>
 <script>
 	var editor = document.getElementById('editor');
+  var theme = 'light';
 	var getInitCallback = function() {
 		try {
-			var cb = window.parent._initWhistleTextEditor_;
-			if (typeof cb === 'function') {
-				return cb;
-			}
+      var cb = window.parent._initWhistleTextEditor_;
+      if (typeof cb === 'function') {
+        return cb;
+      }
 		} catch (e) {}
 	};
 	var init = getInitCallback();
 	if (!init && window.getValue) {
-	  var value = getValue();
-	  if (value) {
-	    editor.value = window.name = value;
+    var value = getValue();
+    if (value) {
+      editor.value = window.name = value;
     } else {
       editor.value = window.name;
     }
 	} else {
-	  editor.value = window.name;
-		window.setValue = function(value) {
-			editor.value = value;
-		};
-		init && init(window);
+    editor.value = window.name;
+    window.setValue = function(value) {
+      editor.value = value;
+    };
+    init && init(window);
 	}
 	window.getEditorValue = function() {
 		return editor.value;
 	};
+
+  var setTheme = function() {
+    if (init) {
+      return;
+    }
+    var curTheme;
+    if (typeof window.getWhistleTheme === 'function') {
+      curTheme = window.getWhistleTheme();
+      setTimeout(setTheme, 1600);
+    } else {
+      curTheme = location.hash.slice(1);
+    }
+    if (curTheme === theme || (curTheme !== 'dark' && curTheme !== 'light')) {
+      return;
+    }
+    theme = curTheme;
+    document.documentElement.setAttribute('data-theme', theme);
+    if (location.hash.slice(1) || theme === 'dark') {
+      location.hash = theme;
+    }
+  };
+  setTheme();
 </script>
 </body>
 </html>

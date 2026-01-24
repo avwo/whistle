@@ -59,7 +59,7 @@ var COMMENT_RE = /#[^\r\n]*$/mg;
 function sendToService(req, res) {
   proxyEvent.loadService(function(err, options) {
     if (err) {
-      res.type('text').status(500).send(err.stack || err);
+      common.sendRes(res, 500, err.stack || err);
     } else {
       util.transformReq(req, res, options.port);
     }
@@ -381,11 +381,11 @@ function cgiHandler(req, res) {
       var notFound = err ? err.code === 'ENOENT' : !stat.isFile();
       var msg;
       if (config.debugMode) {
-        msg =  '<pre>' + (err ? util.encodeHtml(util.getErrorStack(err)) : 'Not File') + '</pre>';
+        msg = util.THEME_STYLE + '<pre>' + (err ? util.encodeHtml(util.getErrorStack(err)) : 'No such File') + '</pre>';
       } else {
         msg = notFound ? 'Not Found' : 'Internal Server Error';
       }
-      return res.status(notFound ? 404 : 500).send(msg);
+      return common.sendRes(res, notFound ? 404 : 500, msg);
     }
     handleResponse();
   });
@@ -446,12 +446,7 @@ app.all(PLUGIN_PATH_RE, function(req, res) {
   }
   pluginMgr.loadPlugin(plugin, function(err, ports) {
     if (err || !ports.uiPort) {
-      if (err) {
-        res.status(500).send('<pre>' + util.encodeHtml(err) + '</pre>');
-      } else {
-        res.status(404).send('Not Found');
-      }
-      return;
+      return common.sendRes(res, err ? 500 : 404, err ? '<pre>' + util.encodeHtml(err) + '</pre>' : 'Not Found');
     }
     var options = parseReqUrl(req);
     var headers = req.headers;

@@ -8,6 +8,8 @@ var events = require('./events');
 var message = require('./message');
 var EditorDialog = require('./editor-dialog');
 var parseCurl = require('./parse-curl');
+var Icon = require('./icon');
+var CloseBtn = require('./close-btn');
 
 var findDOMNode = ReactDOM.findDOMNode;
 
@@ -133,9 +135,7 @@ var ImportDialog = React.createClass({
       <Dialog ref="importDialog" wstyle="w-ie-dialog w-import-dialog">
         <div className="modal-header">
           <h4>{state.title}</h4>
-          <button type="button" className="close" data-dismiss="modal">
-            <span aria-hidden="true">&times;</span>
-          </button>
+          <CloseBtn />
         </div>
         <div className="modal-body">
           <input
@@ -160,7 +160,7 @@ var ImportDialog = React.createClass({
             data-dismiss="modal"
             onClick={this.showImportCURL}
           >
-            <span className="glyphicon glyphicon-file" />
+            <Icon name="file" />
             Import cURL
           </button> : null
           }
@@ -170,7 +170,7 @@ var ImportDialog = React.createClass({
             data-dismiss="modal"
             onClick={this.showService}
           >
-            <span className="glyphicon glyphicon-cloud" />
+            <Icon name="cloud" />
             Import From Service
           </button> : null}
           <button
@@ -178,7 +178,7 @@ var ImportDialog = React.createClass({
             className="btn btn-info"
             onClick={this.selectFile}
           >
-            <span className="glyphicon glyphicon-folder-open" />
+            <Icon name="folder-open" />
             Upload
           </button>
           <button

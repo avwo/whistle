@@ -234,7 +234,7 @@ var ServerLog = React.createClass({
     return (
       <div
         className={
-          'fill orient-vertical-box w-textarea w-detail-svr-log' +
+          'fill v-box w-textarea w-server-log' +
           (this.props.hide ? ' hide' : '')
         }
       >
@@ -242,11 +242,11 @@ var ServerLog = React.createClass({
           <DropDown onChange={this.changeLevel} options={state.levels} />
           <div className="w-textarea-bar">
             <RecordBtn onClick={this.handleAction} />
-            <a className="w-import" onClick={this.selectFile} draggable="false">
+            <a onClick={this.selectFile} draggable="false">
               Import
             </a>
             <a
-              className={'w-download' + (disabled ? ' w-disabled' : '')}
+              className={disabled ? ' w-disabled' : ''}
               onClick={disabled ? undefined : this.export}
               draggable="false"
             >
@@ -261,12 +261,13 @@ var ServerLog = React.createClass({
             </a>
           </div>
         </div>
-        <div ref="svrContainer" className="fill w-detail-log-content">
+        <div ref="svrContainer" className="fill w-log-ctn">
           <ul ref="svrContent">
             {logs.map(function (log) {
+              var upper = log.level.toUpperCase();
               var text =
                 'Date: ' +
-                util.toLocaleString(new Date(log.date)) +
+                util.toLocaleString(new Date(log.date)) + ' (Level: ' + upper + ')' +
                 '\r\n' +
                 log.text;
               var hide =
@@ -279,7 +280,7 @@ var ServerLog = React.createClass({
               return (
                 <li
                   key={log.id}
-                  title={log.level.toUpperCase()}
+                  title={upper}
                   className={'w-' + log.level + hide}
                 >
                   <pre>

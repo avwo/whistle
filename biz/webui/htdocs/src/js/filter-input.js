@@ -5,6 +5,8 @@ var ReactDOM = require('react-dom');
 var $ = require('jquery');
 var storage = require('./storage');
 var win = require('./win');
+var Icon = require('./icon');
+var CloseBtn = require('./close-btn');
 
 var findDOMNode = ReactDOM.findDOMNode;
 var MAX_LEN = 128;
@@ -132,9 +134,14 @@ var FilterInput = React.createClass({
   },
   showHints: function (e) {
     var self = this;
+    if (!self.props.hintKey) {
+      return;
+    }
     self.setState({ hintList: this.filterHints(this.state.filterText) }, e && function() {
       self.hintElem.scrollTop(1000000000);
     });
+    var top = findDOMNode(self.refs.input).getBoundingClientRect().y - 130;
+    findDOMNode(self.refs.hints).style.setProperty('--h-hints', Math.max(Math.min(top, 360), 200) + 'px');
   },
   onFilterKeyDown: function (e) {
     var elem;
@@ -269,12 +276,10 @@ var FilterInput = React.createClass({
           >
             <div className="w-filter-bar">
               <a onClick={this.clear}>
-                <span className="glyphicon glyphicon-trash"></span>
+                <Icon name="trash" />
                 Clear history
               </a>
-              <span onClick={self.hideHints} aria-hidden="true">
-                &times;
-              </span>
+              <CloseBtn onClick={self.hideHints} />
             </div>
             <ul ref="hints">
               {hintList &&
@@ -302,7 +307,6 @@ var FilterInput = React.createClass({
           onFocus={self.showHints}
           onDoubleClick={self.showHints}
           onBlur={self.hideHints}
-          style={{ background: filterText.trim() ? '#000' : undefined }}
           className="w-filter-input"
           maxLength={MAX_LEN}
           placeholder={'Type filter text' + (props.placeholder || '')}
@@ -312,11 +316,9 @@ var FilterInput = React.createClass({
           onClick={self.clearFilterText}
           style={{ display: self.state.filterText ? 'block' : 'none' }}
           type="button"
-          className="close"
+          className="close w-clear-input"
           title="Ctrl[Command]+D"
-        >
-          <span aria-hidden="true">&times;</span>
-        </button>
+        >&times;</button>
       </div>
     );
   }

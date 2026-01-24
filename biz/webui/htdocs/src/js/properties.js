@@ -9,6 +9,7 @@ var ContextMenu = require('./context-menu');
 var JSONTree = require('./components/react-json-tree')['default'];
 var EnableHttpsBtn = require('./enable-https-btn');
 var dataCenter = require('./data-center');
+var HelpIcon = require('./help-icon');
 
 var TUNNEL_RE = /^tunnel:\/\//;
 
@@ -67,12 +68,7 @@ var Properties = React.createClass({
     var showEnableBtn = this.props.showEnableBtn && name === 'URL' && TUNNEL_RE.test(value);
     var index = this.props.richKey ? name.indexOf('\r\u0000(') : -1;
     return (<th>
-      {onHelp ? (
-        <span
-          data-name={name}
-          onClick={onHelp}
-          className="glyphicon glyphicon-question-sign" />
-      ) : undefined}
+      {onHelp ? <HelpIcon data-name={name} onClick={onHelp} /> : undefined}
       {showEnableBtn ? <EnableHttpsBtn /> : null}
       {this.renderValue(index === -1 ? name : name.substring(0, index))}
       {index === -1 ? null : <span className="w-gray">{name.substring(index + 2)}</span>}
@@ -145,10 +141,10 @@ var Properties = React.createClass({
       <div
         ref="properties"
         className={
-          'w-properties-wrap ' +
+          'w-props-wrap ' +
           (viewSource
-            ? 'w-properties-view-source '
-            : 'w-properties-view-parsed ') +
+            ? 'w-props-view-source '
+            : 'w-props-view-parsed ') +
           (props.hide ? 'hide' : '') +
           (clazz ? ' ' + clazz : '')
         }
@@ -168,13 +164,13 @@ var Properties = React.createClass({
           </div>
         ) : undefined}
         {sourceText ? (
-          <pre className="w-properties-source">
+          <pre className="w-props-source">
             {self.renderValue(sourceText)}
           </pre>
         ) : undefined}
         <table
           className={
-            'table w-properties w-properties-parsed ' + (props.className || '')
+            'table w-props w-props-parsed ' + (props.className || '')
           }
           onContextMenu={self.onContextMenu}
         >
@@ -183,7 +179,7 @@ var Properties = React.createClass({
               <tr key="raw" className={rawValue ? undefined : 'w-no-value'}
                 data-name={rawName}  data-value={rawValue}>
                 <th>{rawName}</th>
-                <td className="w-prop-raw-data w-user-select-none" title={rawValue}>
+                <td className="w-props-raw-data w-user-select-none" title={rawValue}>
                   <pre>
                     {self.renderValue(rawValue)}
                   </pre>
@@ -201,7 +197,7 @@ var Properties = React.createClass({
                     data-name={name}  data-value={val}>
                       {self.renderKey(name, val)}
                       <td
-                        className={json ? 'w-properties-json' : 'w-user-select-none'}
+                        className={json ? 'w-props-json' : 'w-user-select-none'}
                         onContextMenu={json ? util.stopPropagation : null}
                       >
                         {
@@ -235,7 +231,7 @@ var Properties = React.createClass({
                 >
                   {self.renderKey(isArr ? i + 1 + '' : name, value)}
                   <td
-                    className={(json ? 'w-properties-json ' : 'w-user-select-none ') + (className || '')}
+                    className={(json ? 'w-props-json ' : 'w-user-select-none ') + (className || '')}
                     style={style}
                     onContextMenu={json ? util.stopPropagation : null}
                   >
@@ -252,10 +248,9 @@ var Properties = React.createClass({
                             {noLocate ? <span className="w-src-info">{btnText}</span> : <a className="w-src-info" onClick={self.handleClick} data-text={val}>{btnText}</a> }
                           </pre>
                         );
-                      }) : <pre className={showInfo ? 'w-align-items' : null}>{showInfo ? <a
-                              className="glyphicon glyphicon-info-sign w-prop-icon"
-                              href={util.getDocUrl('faq.html#capture-error')}
-                              target="_blank" /> : null}{self.renderValue(value)}</pre>)
+                      }) : <pre className={showInfo ? 'w-align-items' : null}>{
+                        showInfo ? <HelpIcon className="w-props-icon" docsUrl="faq.html#capture-error" /> : null}{self.renderValue(value)
+                      }</pre>)
                     }
                   </td>
                 </tr>

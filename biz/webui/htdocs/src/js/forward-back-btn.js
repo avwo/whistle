@@ -1,4 +1,5 @@
 var React = require('react');
+var Icon = require('./icon');
 
 var FbBtn = React.createClass({
   onForward: function() {
@@ -19,15 +20,17 @@ var FbBtn = React.createClass({
     var disabledBack = props.disabledBack;
 
     return (
-      <div className="w-json-history-bar">
-        <span
-          className={'glyphicon glyphicon-menu-left' + (disabledBack ? ' w-disabled' : '')}
+      <div className="w-json-bar">
+        <Icon
+          name="menu-left"
+          className={disabledBack ? 'w-disabled' : ''}
           title={disabledBack ? '' : 'Back'}
           onClick={this.onBack}
         />
-        <span
-          className={'glyphicon glyphicon-menu-right' + (disabledForward ? ' w-disabled' : '')}
-          title={disabledForward ? '' : 'Back'}
+        <Icon
+          name="menu-right"
+          className={disabledForward ? 'w-disabled' : ''}
+          title={disabledForward ? '' : 'Forward'}
           onClick={this.onForward}
         />
       </div>

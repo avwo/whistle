@@ -25,7 +25,7 @@ module.exports = function(req, res) {
   } else if (util.isString(url)) {
     loadService(function(err, options) {
       if (err) {
-        res.type('text').status(500).send(err.stack || err);
+        util.sendRes(res, 500, err.stack || err);
       } else {
         req.url = '/cgi-bin/temp/get?filename=' + encodeURIComponent(url);
         util.transformReq(req, res, options.port);

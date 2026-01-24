@@ -350,7 +350,8 @@ var JSONTree = (function (_React$Component) {
     return _react2['default'].createElement(
       'ul',
       (0, _extends3['default'])({}, styling('tree'), {
-        onContextMenu: this.onContextMenu
+        onContextMenu: this.onContextMenu,
+        className: 'w-json-tree'
       }),
       _react2['default'].createElement(
         _JSONNode2['default'],

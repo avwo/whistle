@@ -1,5 +1,6 @@
 var React = require('react');
 var Dialog = require('./dialog');
+var CloseBtn = require('./close-btn');
 
 var TipsDialog = React.createClass({
   getInitialState: function () {
@@ -23,9 +24,7 @@ var TipsDialog = React.createClass({
       <Dialog ref="tipsDialog" wstyle="w-dns-servers-dialog w-tips-dialog">
         <div className="modal-header">
         <h4>{state.title}</h4>
-          <button type="button" className="close" data-dismiss="modal">
-            <span aria-hidden="true">&times;</span>
-          </button>
+          <CloseBtn />
         </div>
         <pre className="modal-body">{state.tips}</pre>
         <div className="modal-footer">

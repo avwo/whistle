@@ -6,6 +6,7 @@ var events = require('./events');
 var Teleport = require('./teleport');
 var dataCenter = require('./data-center');
 var getServiceBridge = require('./bridge').getServiceBridge;
+var CloseBtn = require('./close-btn');
 
 var SIZE = 26;
 var POS = 30;
@@ -67,15 +68,9 @@ var Assistant = React.createClass({
       <div className={'w-assistant' + (dataCenter.whistleId ? '' : ' hide')} title="Whistle Assistant" onClick={this.show}>
         <Teleport ref="dialog" className="w-assistant-dialog">
           <div>
-            <button
-              type="button"
-              className="close"
-              data-dismiss="modal"
-              aria-label="Close"
-              onClick={this.hide}
-            >&times;</button>
+            <CloseBtn onClick={this.hide} />
             <div className="w-fix-drag">
-              <iframe ref="iframe" />
+              <iframe ref="iframe" onLoad={dataCenter.handleIframeLoad} />
             </div>
           </div>
         </Teleport>

@@ -4,6 +4,7 @@ var $ = require('jquery');
 var dataCenter = require('./data-center');
 var events = require('./events');
 var util = require('./util');
+var Icon = require('./icon');
 
 var FilterBtn = React.createClass({
   getInitialState: function () {
@@ -40,7 +41,7 @@ var FilterBtn = React.createClass({
         style={{ display: hide ? 'none' : '' }}
         draggable="false"
       >
-        <span className="glyphicon glyphicon-cog" />
+        <Icon name="cog" />
         Settings
       </a>
     );

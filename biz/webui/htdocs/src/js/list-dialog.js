@@ -9,6 +9,8 @@ var $ = require('jquery');
 var parseRules = require('./parse-rules');
 var dataCenter = require('./data-center');
 var ShareViaURLBtn = require('./share-via-url-btn');
+var Icon = require('./icon');
+var CloseBtn = require('./close-btn');
 
 var findDOMNode = ReactDOM.findDOMNode;
 var TEMP_LINK_RE_G = /(?:^|\s)(?:[\w-]+:\/\/)?temp\/([\da-z]{64})(?:\.[\w-]+)?(?:$|\s)/mg;
@@ -271,14 +273,10 @@ var ListDialog = React.createClass({
       <Dialog ref="dialog" wclassName="w-list-dialog">
         { props.title ? <div className="modal-header">
                 <h4>{props.title}</h4>
-                <button type="button" className="close" data-dismiss="modal">
-                  <span aria-hidden="true">&times;</span>
-                </button>
+                <CloseBtn />
               </div> : null }
         <div className="modal-body">
-          {props.title ? null : <button type="button" className="close" data-dismiss="modal">
-            <span aria-hidden="true">&times;</span>
-          </button>}
+          {props.title ? null : <CloseBtn />}
           {rulesModal ? <Tabs tabs={tabs} onChange={self.onTabChange} /> : null}
           <div className={tabs[0].active ? '' : ' hide'} style={{marginTop: 10}}>
             <div className="w-list-wrapper">
@@ -293,7 +291,7 @@ var ListDialog = React.createClass({
                       type="checkbox"
                       checked={!!checkedItems[name]}
                     />
-                    {util.isGroup(name) ? <span className="glyphicon glyphicon-triangle-right w-list-group-icon" /> : null}
+                    {util.isGroup(name) ? <Icon name="triangle-right" className="w-list-group-icon" /> : null}
                     {name}
                   </label>
                 );
@@ -307,7 +305,7 @@ var ListDialog = React.createClass({
                 checkedNames.map(function(name) {
                   return (
                     <span key={name}>
-                      {util.isGroup(name) ? <span className="glyphicon glyphicon-triangle-right w-list-group-icon" /> : null}
+                      {util.isGroup(name) ? <Icon name="triangle-right" className="w-list-group-icon" /> : null}
                       {name}
                     </span>
                   );

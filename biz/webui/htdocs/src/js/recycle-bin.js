@@ -7,6 +7,8 @@ var util = require('./util');
 var message = require('./message');
 var events = require('./events');
 var win = require('./win');
+var Icon = require('./icon');
+var CloseBtn = require('./close-btn');
 
 var TIMESTAMP_RE = /^(\d+)\.([\s\S]+)$/;
 
@@ -89,7 +91,7 @@ var RecycleBinDialog = React.createClass({
           return;
         }
         if (!data.data) {
-          return message.warn('Empty content');
+          return message.info('Empty content');
         }
         util.openEditor(data.data);
       }
@@ -141,9 +143,7 @@ var RecycleBinDialog = React.createClass({
       <Dialog ref="recycleBinDialog" wstyle="w-files-dialog">
         <div className="modal-header">
           <h4>{state.name} Trash</h4>
-          <button type="button" className="close" data-dismiss="modal">
-            <span aria-hidden="true">&times;</span>
-          </button>
+          <CloseBtn />
         </div>
         <div className="modal-body" ref="recycleBinBody">
           <table className="table">
@@ -153,7 +153,7 @@ var RecycleBinDialog = React.createClass({
               <th className="w-files-path">Filename</th>
               <th className="w-files-operation">Operation</th>
             </thead>
-            <tbody className="w-hover-table-body">
+            <tbody className="w-hover-body">
               {list.length ? (
                 list.map(function (item, i) {
                   return (
@@ -161,7 +161,7 @@ var RecycleBinDialog = React.createClass({
                       <th className="w-files-order">{i + 1}</th>
                       <td className="w-files-date">{item.date}</td>
                       <td className="w-files-path" title={item.filename}>
-                        {util.isGroup(item.filename) ? <span className="glyphicon glyphicon-triangle-right w-list-group-icon" /> : null}
+                        {util.isGroup(item.filename) ? <Icon name="triangle-right" className="w-list-group-icon" /> : null}
                         {item.filename}
                       </td>
                       <td className="w-files-operation">

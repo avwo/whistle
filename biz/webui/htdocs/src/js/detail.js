@@ -11,6 +11,7 @@ var ComposerList = require('./composer-list');
 var Tools = require('./tools');
 var Saved = require('./saved');
 var util = require('./util');
+var Icon = require('./icon');
 
 var findDOMNode = ReactDOM.findDOMNode;
 var ReqData = React.createClass({
@@ -236,7 +237,7 @@ var ReqData = React.createClass({
     return (
       <div
         className={
-          'fill orient-vertical-box w-detail' +
+          'fill v-box w-detail' +
           (dockToBottom ? ' w-detail-bottom' : '')
         }
         onDragEnter={this.onDragEnter}
@@ -252,13 +253,7 @@ var ReqData = React.createClass({
                 'Dock to ' + (dockToBottom ? 'right' : 'bottom') + ' (F12)'
               }
             >
-              <span
-                className={
-                  'glyphicon glyphicon-menu-' +
-                  (dockToBottom ? 'right' : 'down') +
-                  (data ? ' hide' : '')
-                }
-              ></span>
+              <Icon name={'menu-' + (dockToBottom ? 'right' : 'down')} className={data ? 'hide' : ''} />
             </button>
           }
           onDoubleClick={this.onDoubleClick}
@@ -275,7 +270,7 @@ var ReqData = React.createClass({
             hide={name != tabs[1].name}
           />
         ) : null}
-         {state.initedTimeline ? (
+        {state.initedTimeline ? (
           <Timeline data={data} modal={modal} hide={name != tabs[2].name} />
         ) : null}
         {state.initedComposer ? (

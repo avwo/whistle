@@ -32,7 +32,7 @@
   white-space: nowrap;
 }
 .w-dropdown .dropdown-menu li:hover {
-  background: var(--bg-hover);
+  background: var(--b-hover);
 }
 .w-dropdown .dropdown-menu a {
   padding: 0 10px;

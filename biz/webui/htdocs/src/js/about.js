@@ -5,6 +5,8 @@ var dataCenter = require('./data-center');
 var storage = require('./storage');
 var util = require('./util');
 var events = require('./events');
+var Icon = require('./icon');
+var CloseBtn = require('./close-btn');
 
 var isElectron = util.isElectron;
 var clientName = isElectron ? 'electron' : 'nodejs';
@@ -104,16 +106,14 @@ var About = React.createClass({
         className="w-about-menu"
       >
         {state.hasUpdate ? <i className="w-new-version-icon" /> : null}
-        <span className="glyphicon glyphicon-info-sign"></span>About
+        <Icon name="info-sign" />About
         <Dialog ref="aboutDialog" wstyle="w-about-dialog">
           <div className="modal-body w-about-has-plugins">
-            <button type="button" className="close" data-dismiss="modal">
-              <span aria-hidden="true">&times;</span>
-            </button>
+            <CloseBtn />
             <img alt="logo" src="img/whistle.png?v=2016" />
             <span className="w-about-dialog-ctn">
               <span className="w-about-dialog-title">
-                Whistle for Web Developers.
+                Whistle for Web Developers
               </span>
               {clientVersion ? 'Client Version: ' : null}
               {clientVersion ? <a
@@ -123,7 +123,7 @@ var About = React.createClass({
               >
                 {clientVersion}
               </a> : null}
-               {hasNewClient ? <a
+              {hasNewClient ? <a
                 className="w-new-version"
                 title="Update Whistle Client"
                 onClick={self.checkUpdateClient}

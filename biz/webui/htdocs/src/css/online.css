@@ -1,11 +1,11 @@
 .w-online-dialog .modal-dialog {
   width: 320px;
 }
-.w-online-dialog-info,
-.w-online-view-dns {
+.w-online-info,
+.w-online-dns {
   display: none;
 }
-.w-online-dialog-ctn h5 {
+.w-online-ctn h5 {
   padding: 5px 0;
   margin: 0;
   text-overflow: ellipsis;
@@ -13,7 +13,7 @@
   white-space: nowrap;
   overflow: hidden;
 }
-.w-online-dialog-ctn p {
+.w-online-ctn p {
   margin: -23px 0 5px 36px;
 }
 .w-confirm-reload-dialog {
@@ -29,10 +29,6 @@
   font-weight: bold;
   line-height: 1.8;
   padding: 10px 20px;
-}
-.w-confim-reload-note {
-  color: red;
-  margin: 0;
 }
 
 .w-online-menu > span {
@@ -75,16 +71,16 @@
   vertical-align: middle;
 }
 
-.w-appearance-option, .w-dns-order-option {
+.w-theme-option, .w-dns-order-option {
   display: flex;
   align-items: center;
 }
 
-.w-appearance-option strong, .w-dns-order-option strong {
+.w-theme-option strong, .w-dns-order-option strong {
   width: 85px;
 }
 
-.w-appearance-option select, .w-dns-order-option select {
+.w-theme-option select, .w-dns-order-option select {
   margin-left: 5px;
   width: 160px;
 }

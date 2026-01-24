@@ -15,7 +15,7 @@ var dataCenter = require('./data-center');
 var util = require('./util');
 var events = require('./events');
 var MAX_LENGTH = 1024 * 16;
-var STR_SELECTOR = 'span[style="color: rgb(133, 153, 0);"]';
+var STR_SELECTOR = 'span[style="color: var(--c-jb);"]';
 var LINK_RE = /^"(https?:)?(\/\/[^/]\S+)"$/i;
 var contextMenuList = [
   { name: 'Copy Object' },
@@ -224,7 +224,7 @@ var JsonViewer = React.createClass({
     var props = this.props;
     var data = props.data;
     var tips = props.tips;
-    var className = 'fill orient-vertical-box w-properties-wrap w-json-viewer';
+    var className = 'fill v-box w-props-wrap w-json-viewer';
     var noData = !data;
     if (noData) {
       data = state.lastData || {};
@@ -253,7 +253,6 @@ var JsonViewer = React.createClass({
         <div className="w-textarea-bar">
           <CopyBtn value={data.str} />
           <a
-            className="w-download"
             onDoubleClick={this.download}
             onClick={this.showNameInput}
             draggable="false"
@@ -264,19 +263,19 @@ var JsonViewer = React.createClass({
             { props.reqData ? 'Mock' : '+Key' }
           </a>
           {viewSource ? (
-            <a className="w-edit" onClick={this.edit} draggable="false">
+            <a onClick={this.edit} draggable="false">
               ViewAll
             </a>
-          ) : (props.dialog ? undefined : <a className="w-edit" onClick={this.search} draggable="false">
+          ) : (props.dialog ? undefined : <a onClick={this.search} draggable="false">
                 Search
               </a>)}
-          <a onClick={this.toggle} className="w-properties-btn">
+          <a onClick={this.toggle}>
             {viewSource ? 'JSON' : 'Text'}
           </a>
           <div
             onMouseDown={this.preventBlur}
             style={{ display: state.showNameInput ? 'block' : 'none' }}
-            className="shadow w-textarea-input"
+            className="w-shadow w-textarea-input"
           >
             <input
               ref="nameInput"

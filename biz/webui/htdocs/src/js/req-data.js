@@ -15,6 +15,7 @@ var iframes = require('./iframes');
 var dataCenter = require('./data-center');
 var storage = require('./storage');
 var message = require('./message');
+var Icon = require('./icon');
 
 var findDOMNode = ReactDOM.findDOMNode;
 var TREE_ROW_HEIGHT = 24;
@@ -146,20 +147,11 @@ var Spinner = React.createClass({
     if (!desc && order != 'asc') {
       order = null;
     }
+    order = order ? ' spinner-' + order : '';
     return (
       <div className="w-spinner">
-        <span
-          className={
-            'glyphicon glyphicon-triangle-top' +
-            (order ? ' spinner-' + order : '')
-          }
-        ></span>
-        <span
-          className={
-            'glyphicon glyphicon-triangle-bottom' +
-            (order ? ' spinner-' + order : '')
-          }
-        ></span>
+        <Icon name="triangle-top" className={order} />
+        <Icon name="triangle-bottom" className={order} />
       </div>
     );
   }
@@ -285,26 +277,20 @@ function getType(className) {
 
 function getIcon(data, className) {
   if (className.indexOf('danger') !== -1) {
-    return <span className="icon-leaf glyphicon glyphicon-remove-circle" />;
+    return <Icon name="remove-circle" className="icon-leaf" />;
   }
   if (className.indexOf('w-forbidden') !== -1) {
-    return <span className="icon-leaf glyphicon glyphicon-ban-circle" />;
+    return <Icon name="ban-circle" className="icon-leaf" />;
   }
   if (data && !data.endTime && !data.lost) {
-    return <span className="icon-leaf glyphicon glyphicon-hourglass" />;
+    return <Icon name="hourglass" className="icon-leaf" />;
   }
   var type = getType(className);
   var status = data.res && data.res.statusCode;
   if (type !== 'ERROR' && status != 101) {
     status = null;
   }
-  return (
-    <span
-      className={status || type ? 'w-type-icon' : 'glyphicon glyphicon-file'}
-    >
-      {status || type || null}
-    </span>
-  );
+  return status || type ? <span className="w-type-icon">{status || type }</span> : <Icon name="file" />;
 }
 
 function removeHighlight(elem) {
@@ -323,7 +309,7 @@ var Row = React.createClass({
 
     return (
       <table className="table w-req-table" key={p.key} style={p.style} data-id={item.id}>
-        <tbody className="w-hover-table-body">
+        <tbody className="w-hover-body">
           <tr
             tabIndex="-1"
             draggable={draggable}
@@ -333,8 +319,8 @@ var Row = React.createClass({
           >
             <th className="order" scope="row" style={style}>
               {order}
-              {item.importedData ? <span className="glyphicon glyphicon-import" /> : null}
-              {item.fc && !item.importedData ? <span className="glyphicon glyphicon-send" /> : null}
+              {item.importedData ? <Icon name="import" /> : null}
+              {item.fc && !item.importedData ? <Icon name="send" /> : null}
             </th>
             {columnList.map(function (col) {
               var name = col.name;
@@ -1332,7 +1318,7 @@ var ReqData = React.createClass({
     var name = col.name;
     var style = getColStyle(col);
     if (columnState[name]) {
-      style.color = '#337ab7';
+      style.color = 'var(--c-link)';
     }
     var title;
     if (name === 'custom1' || name === 'custom2') {
@@ -1462,11 +1448,7 @@ var ReqData = React.createClass({
       >
         {leaf ? (
           getIcon(leaf, className)
-        ) : (
-          <span
-            className={'icon-fold glyphicon glyphicon-triangle-' + (item.expand ? 'bottom' : 'right')}
-          ></span>
-        )}
+        ) : <Icon name={'triangle-' + (item.expand ? 'bottom' : 'right')} className="icon-fold" />}
         {value.length > 320 ? value.substring(0, 320) + '...' : value}
       </tr>
     );
@@ -1501,9 +1483,9 @@ var ReqData = React.createClass({
     self.visibleList = list;
 
     return (
-      <div className={'fill w-req-data-con orient-vertical-box' + (self.props.hide ? ' hide' : '')}>
+      <div className={'fill w-req-data-con v-box' + (self.props.hide ? ' hide' : '')}>
         <div
-          className="w-req-data-content fill orient-vertical-box"
+          className="w-req-data-ctn fill v-box"
           style={colStyle}
         >
           {record ? (
@@ -1532,7 +1514,7 @@ var ReqData = React.createClass({
             style={{
               background:
                 dataCenter.hashFilterObj || filterText || state.filterType
-                  ? 'lightyellow'
+                  ? 'var(--b-filtered)'
                   : undefined
             }}
             className={
@@ -1578,7 +1560,7 @@ var ReqData = React.createClass({
             </RV.AutoSizer>
           </div>
           <div className={'w-back-to-the-bottom' + (isTreeView ? ' hide' : '')} ref="backBtn" onClick={this.autoRefresh}>
-            <span className="glyphicon glyphicon-arrow-down" />
+            <Icon name="arrow-down" />
             Back to the bottom
           </div>
         </div>

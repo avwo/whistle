@@ -1,0 +1,153 @@
+
+[data-theme="dark"]:root {
+  color-scheme: dark;
+  /* 颜色变量 */
+  --c-default: #f0f0f0;
+  --c-btn: #eee;
+  --c-active: #1a1a1a;
+  --c-heavy: #ddd;
+  --c-editor: #ccc;
+  --c-forbidden: #c0c060;
+  --c-disabled: #666666;
+  --c-link: #4a9fe3;
+  --c-link-hover: #7bb8f0;
+  --c-border: #444;
+  --c-error: #ff6b6b;
+  --c-risk: #ff8a8a;
+  --c-danger: #ff6da9;
+  --c-gray: #aaa;
+  --c-thin: #ccc;
+  --c-ok: #70d485;
+  --c-has: #7a7aff;
+  --c-warn: #ffcc44;
+  --c-warn-active: #ffe066;
+  --c-post: #6da9df;
+  --c-del: #e57c6d;
+  --c-head: #6dc8b2;
+  --c-options: #ffc266;
+  --c-trace: #6cd3ec;
+  --c-patch: #b080d0;
+  --c-put: #f0b55a;
+  --c-tag: #6cd3ec;
+  --c-tagx: #f0c066;
+  --c-rule-filter: #a580e8;
+  --c-rule-props: #ffb366;
+  --c-req: #44cc44;
+  --c-res: #ff8c42;
+
+  /* 树状结构颜色 */
+  --c-tree-success: #6dc291;
+  --c-tree-info: #6db0d0;
+  --c-tree-warning: #d4b06d;
+  --c-tree-danger: #e57c6d;
+  --c-tree-forbidden: #e5a844;
+  --c-tree-mark: #5a9cf5;
+
+  /* 代码高亮颜色 */
+  --c-j0: #0a0f14;
+  --c-j1: #101a20;
+  --c-j2: #2d3b42;
+  --c-j3: #3a4a52;
+  --c-j4: #5a6a70;
+  --c-j5: #7a8a8a;
+  --c-j6: #e8dbb5;
+  --c-j7: #f6e9c3;
+  --c-j8: #ff6b6b;
+  --c-j9: #ff8c42;
+  --c-ja: #ffcc44;
+  --c-jb: #99cc66;
+  --c-jc: #44cccc;
+  --c-jd: #5a9cf5;
+  --c-je: #9d8ef0;
+  --c-jf: #f06da3;
+
+  /* 文字颜色 */
+  --c-success: #5cb85c;
+  --c-primary: #6da8ff;
+  --c-primary-hover: #8bbdff;
+  --c-primary-active: #a9d1ff;
+  --c-danger-hover: #ff8a8a;
+  --c-danger-active: #ff4d4d;
+  --c-warning: #ffcc44;
+  --c-warning-hover: #ffd966;
+  --c-warning-active: #ffe599;
+  --c-info: #6cd3ec;
+  --c-info-hover: #8bddf2;
+  --c-info-active: #a9e7f7;
+  --c-cobalt: #e6e6e6;
+
+  /* 背景颜色 */
+  --b-success: #1e3c21;
+  --b-success-hover: #3a4a38;
+  --b-warning: #5c3b00;
+  --b-warning-hover: #7a4d00;
+  --b-warning-active: #996000;
+  --b-info: #0d2b3d;
+  --b-info-hover: #124a8a;
+  --b-info-active: #1659a8;
+  --b-primary: #0d3a6b;
+  --b-primary-hover: #124a8a;
+  --b-primary-active: #1659a8;
+  --b-danger: #5c1a1a;
+  --b-danger-hover: #7a2222;
+  --b-danger-active: #4d0a0a;
+
+  --b-alert-info: #0d2b3d;
+  /* 背景颜色 */
+  --b-default: #1a1a1a;
+  --b-error: #3a2222;
+  --b-error-hover: #4a2a2a;
+  --b-active: #3f3f3f;
+  --b-gray: #333;
+  --b-btn-hover: #333;
+  --b-btn-active: #1e2c4a;
+  --b-hover: #333;
+  --b-heavy: #333;
+  --b-heavy-active: #2d2d2d;
+  --b-disabled: #333;
+  --b-bar: #212121;
+  --b-mark: #1a3a7a;
+  --b-title: #222427;
+  --b-img: #1a1a1a;
+  --b-frames: #cc6600;
+  --b-prop: #2a2d30;
+  --b-ok: #2a4a2a;
+  --b-editor: #001a33;
+  --b-filtered: #333322;
+  --b-warn: #332e22;
+  --b-req: #223322;
+  --b-req-hover: #2d402d;
+  --b-blink: #665c00;
+  --b-tree-active: #4a6a4a;
+
+  /* 时间线背景 */
+  --b-tl-dns: #2a4a45;
+  --b-tl-req: #333322;
+  --b-tl-res: #332a22;
+  --b-tl-load: #2a3a4a;
+
+  /* 列表背景 */
+  --b-list-hover: #444;
+  --b-list-warn: #40392a;
+  --b-list-info: #22333a;
+  --b-list-mark: #1a3a7a;
+  --b-list-danger-hover: #6a2323;
+  --b-modal: rgba(0, 0, 0, 0.7);
+
+  --s-rgba5: rgba(255, 255, 255, 0.08);
+  --s-rgba8: rgba(255, 255, 255, 0.12);
+  --s-rgba12: rgba(255, 255, 255, 0.18);
+  --s-rgba15: rgba(255, 255, 255, 0.24);
+  --s-rgba20: rgba(255, 255, 255, 0.32);
+  --s-fc: rgba(77, 140, 190, 0.65);
+
+  --b-rgba50: rgba(255, 255, 255, 0.12);
+  --b-rgba70: rgba(255, 255, 255, 0.15);
+  --b-rgba15: rgba(255, 255, 255, 0.06);
+  --b-rgba30: rgba(255, 255, 255, 0.08);
+}
+
+html[data-theme="dark"] .w-filter-input {
+  background: field;
+  color: var(--c-thin);
+}

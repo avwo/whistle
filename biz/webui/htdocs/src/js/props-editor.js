@@ -6,6 +6,8 @@ var util = require('./util');
 var message = require('./message');
 var win = require('./win');
 var ContextMenu = require('./context-menu');
+var Icon = require('./icon');
+var CloseBtn = require('./close-btn');
 
 var MAX_FILE_SIZE = 1024 * 1024 * 20;
 var MAX_NAME_LEN = 128;
@@ -306,7 +308,7 @@ var PropsEditor = React.createClass({
     return (
       <div
         className={
-          'fill orient-vertical-box w-props-editor' +
+          'fill v-box w-props-editor' +
           (this.props.hide ? ' hide' : '')
         }
         title={this.props.title}
@@ -328,9 +330,7 @@ var PropsEditor = React.createClass({
                     </th>
                     <td>
                       <pre>
-                        {item.data ? (
-                          <span className="glyphicon glyphicon-file"></span>
-                        ) : undefined}
+                        {item.data ? <Icon name="file" /> : undefined}
                         {item.data
                           ? ' [' + util.getSize(item.size) + '] '
                           : undefined}
@@ -338,18 +338,20 @@ var PropsEditor = React.createClass({
                       </pre>
                     </td>
                     <td className="w-props-ops">
-                      <a
+                      <Icon
+                        name="edit"
+                        className="w-edit-btn"
                         data-name={name}
                         onClick={self.onEdit}
-                        className="glyphicon glyphicon-edit"
                         title="Edit"
-                      ></a>
-                      <a
+                      />
+                      <Icon
+                        name="remove"
+                        className="w-del-btn"
                         data-name={name}
                         onClick={self.onRemove}
-                        className="glyphicon glyphicon-remove"
                         title="Delete"
-                      ></a>
+                      />
                     </td>
                   </tr>
                 );
@@ -370,9 +372,7 @@ var PropsEditor = React.createClass({
         )}
         <Dialog ref="composerDialog" wstyle="w-com-dialog">
           <div className="modal-body">
-            <button type="button" className="close" data-dismiss="modal">
-              <span aria-hidden="true">&times;</span>
-            </button>
+            <CloseBtn />
             <label>
               Name:
               <input
@@ -396,15 +396,8 @@ var PropsEditor = React.createClass({
                   className={'w-props-editor-file' + (filename ? '' : ' hide')}
                   title={filename}
                 >
-                  <button
-                    onClick={this.removeLocalFile}
-                    type="button"
-                    className="close"
-                    title="Remove file"
-                  >
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                  <span className="glyphicon glyphicon-file"></span>
+                  <CloseBtn className="w-del-btn" onClick={this.removeLocalFile} />
+                  <Icon name="file" />
                   {' [' + util.getSize(fileSize) + '] '}
                   {filename}
                 </div>
@@ -419,7 +412,7 @@ var PropsEditor = React.createClass({
                   onClick={this.onUpload}
                   className={'btn btn-primary' + (filename ? ' hide' : '')}
                 >
-                  <span className="glyphicon glyphicon-folder-open" />
+                  <Icon name="folder-open" />
                   Upload
                 </button>
               </div>

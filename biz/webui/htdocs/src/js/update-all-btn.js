@@ -1,5 +1,6 @@
 var React = require('react');
 var events = require('./events');
+var Icon = require('./icon');
 
 var UpdateAllBtn = React.createClass({
   getInitialState: function () {
@@ -22,7 +23,7 @@ var UpdateAllBtn = React.createClass({
         className={'w-plugins-menu w-plugin-update-btn' + (hide ? ' hide' : '')}
         draggable="false"
       >
-        <span className="glyphicon glyphicon-refresh" />
+        <Icon name="refresh" />
         Update
       </a>
     );

@@ -7,6 +7,7 @@ var storage = require('./storage');
 var events = require('./events');
 var util = require('./util');
 var win = require('./win');
+var CloseBtn = require('./close-btn');
 
 var TEMP_FILE_RE = /\btemp\/current_file_hash_placeholder\b/;
 var TEMP_FILE_RE_G = /\btemp\/current_file_hash_placeholder\b/g;
@@ -269,9 +270,7 @@ var RulesDialog = React.createClass({
     return (
       <Dialog ref="rulesDialog" wstyle="w-rules-dialog">
         <div className="modal-body">
-          <button type="button" className="close" data-dismiss="modal">
-            <span aria-hidden="true">&times;</span>
-          </button>
+          <CloseBtn />
           <div className="modal-title">
             Select Rules File:
             <select className="form-control" onChange={this.onRulesChange} value={state.rulesName}>
@@ -311,7 +310,7 @@ var RulesDialog = React.createClass({
         </div>
         <Dialog ref="createRules" wstyle="w-create-rules-dialog">
           <div className="modal-body">
-            New Rules Name:
+            New Rules Filename:
             <input ref="rulesName" style={{marginTop: 6}} className="form-control"
               maxLength="64" onChange={this.onNewNameChange} value={newRulesName} placeholder="Enter name" />
           </div>

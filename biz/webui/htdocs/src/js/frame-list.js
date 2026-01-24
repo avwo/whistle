@@ -7,6 +7,7 @@ var DropDown = require('./dropdown');
 var dataCenter = require('./data-center');
 var RecordBtn = require('./record-btn');
 var ContextMenu = require('./context-menu');
+var Icon = require('./icon');
 
 var findDOMNode = ReactDOM.findDOMNode;
 var SEND_PERATORS = [
@@ -316,7 +317,7 @@ var FrameList = React.createClass({
     var list = modal.getList();
     util.socketIsClosed(reqData);
     return (
-      <div className="fill orient-vertical-box w-frames-list">
+      <div className="fill v-box w-frames-list">
         <div className="w-frames-action" onMouseDown={util.preventBlur}>
           <RecordBtn
             ref="recordBtn"
@@ -324,7 +325,7 @@ var FrameList = React.createClass({
             disabledRecord={reqData.closed}
           />
           <a onClick={self.clear} className="w-remove-menu" draggable="false">
-            <span className="glyphicon glyphicon-remove"></span>Clear
+            <Icon name="remove" />Clear
           </a>
           <a
             onClick={self.replay}
@@ -334,21 +335,21 @@ var FrameList = React.createClass({
             }
             draggable="false"
           >
-            <span className="glyphicon glyphicon-repeat"></span>Replay
+            <Icon name="repeat" />Replay
           </a>
           <a
             onClick={self.compose}
             className={'w-remove-menu' + (activeItem ? '' : ' w-disabled')}
             draggable="false"
           >
-            <span className="glyphicon glyphicon-send"></span>Edit
+            <Icon name="send" />Edit
           </a>
           <a
             onClick={self.abort}
             className={'w-remove-menu' + (isClosed(reqData) ? ' w-disabled' : '')}
             draggable="false"
           >
-            <span className="glyphicon glyphicon-ban-circle"></span>Abort
+            <Icon name="ban-circle" />Abort
           </a>
           <DropDown
             disabled={reqData.closed}
@@ -366,7 +367,7 @@ var FrameList = React.createClass({
         <div
           tabIndex="0"
           onKeyDown={this.onClear}
-          style={{ background: keyword ? '#ffffe0' : undefined }}
+          style={{ background: keyword ? 'var(--b-filtered)' : undefined }}
           onScroll={self.shouldScrollToBottom}
           ref={self.setContainer}
           className="fill w-frames-list"
@@ -443,7 +444,7 @@ var FrameList = React.createClass({
                     statusClass
                   }
                 >
-                  <span className={'glyphicon glyphicon-' + icon}></span>
+                  <Icon name={icon} />
                   {notDec ? <em>[Not decompressed]</em> : null}
                   {item.data}
                 </li>

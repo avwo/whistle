@@ -24,13 +24,13 @@
 }
 .w-list-tips > span {
   display: inline-block;
-  background: #eee;
+  background: var(--b-heavy);
   padding: 3px 6px;
   border-radius: 3px;
   margin: 0 0 10px 10px;
 }
 .w-list-tips-title {
-  color: red;
+  color: var(--c-error);
 }
 .w-list-dialog .modal-footer {
   position: relative;
@@ -51,7 +51,6 @@
   max-height: 420px;
   overflow: auto;
   color: var(--c-default);
-  background-color: #fefefe;
 }
 
 .w-rule-list-ctn .w-rule-list-item {
@@ -75,7 +74,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f6f6f6;
+  background: var(--b-title);
   flex-shrink: 0;
 }
 
@@ -89,7 +88,7 @@
   overflow-x: auto;
   overflow-y: hidden;
   scrollbar-width: none;
-  background-color: var(--bg-default);
+  background-color: var(--b-default);
 }
 
 .w-rule-list-ctn .w-rule-list-item > div::-webkit-scrollbar {
@@ -98,7 +97,7 @@
 
 .w-rule-list-ctn .w-rule-list-item > div span {
   margin-right: 10px;
-  color: #845dc4;
+  color: var(--c-rule-filter);
 }
 
 .w-rule-list-ctn .w-rule-list-item > div span:nth-child(1) {
@@ -106,7 +105,7 @@
 }
 
 .w-rule-list-ctn .w-rule-list-item > div span:nth-child(2) {
-  color: #ff9e59;
+  color: var(--c-rule-props);
 }
 
 .w-rule-list-ctn .w-rule-list-item > div span:last-child {

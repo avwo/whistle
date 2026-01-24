@@ -1,6 +1,7 @@
 var React = require('react');
 var Dialog = require('./dialog');
 var Textarea = require('./textarea');
+var CloseBtn = require('./close-btn');
 
 var TextDialog = React.createClass({
   getInitialState: function () {
@@ -20,11 +21,9 @@ var TextDialog = React.createClass({
     return (
       <Dialog ref="textDialog" wstyle="w-text-dialog">
         <div className="modal-body">
-          <button type="button" className="close" data-dismiss="modal">
-            <span aria-hidden="true">&times;</span>
-          </button>
+          <CloseBtn />
           <div
-            className="orient-vertical-box"
+            className="v-box"
             style={{ width: 860, height: 560, marginTop: 22 }}
           >
             <Textarea

@@ -2,6 +2,7 @@ var React = require('react');
 var dataCenter = require('./data-center');
 var message = require('./message');
 var util = require('./util');
+var Icon = require('./icon');
 
 var ShareBtn = React.createClass({
   save: function() {
@@ -49,7 +50,7 @@ var ShareBtn = React.createClass({
         draggable="false"
         disabled={this.props.disabled}
       >
-        <span className="glyphicon glyphicon-cloud" />
+        <Icon name="cloud" />
         Share Via URL
       </button>
     );
