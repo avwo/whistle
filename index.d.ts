@@ -184,22 +184,22 @@ export interface WhistleRuntimeInfo {
 export type WhistleLogFn = (msg: Object, ...restMsg: Object[]) => void;
 
 export interface WhistleResult {
- logger: {
-   log: (msg: Object, level?: string) => void;
-   fatal: WhistleLogFn;
-   error: WhistleLogFn;
-   warn: WhistleLogFn;
-   info: WhistleLogFn;
-   debug: WhistleLogFn;
- };
- getWhistlePath(): string;
- setAuth(auth: WhistleAuth): void;
- setUIHost(host: string | string[]): void;
- setPluginUIHost(pluginName: string, host: string | string[]): void;
- getRuntimeInfo(): WhistleRuntimeInfo;
- getShadowRules(): string;
- setShadowRules(shadowRules: string): void;
- [propName: string]: any;
+  logger: {
+    log: (msg: Object, level?: string) => void;
+    fatal: WhistleLogFn;
+    error: WhistleLogFn;
+    warn: WhistleLogFn;
+    info: WhistleLogFn;
+    debug: WhistleLogFn;
+  };
+  getWhistlePath(): string;
+  setAuth(auth: WhistleAuth): void;
+  setUIHost(host: string | string[]): void;
+  setPluginUIHost(pluginName: string, host: string | string[]): void;
+  getRuntimeInfo(): WhistleRuntimeInfo;
+  getShadowRules(): string;
+  setShadowRules(shadowRules: string): void;
+  [propName: string]: any;
 }
 
 export type WhistleCallback = (result?: WhistleResult) => void;
