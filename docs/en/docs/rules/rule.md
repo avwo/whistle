@@ -41,6 +41,33 @@ Each rule consists of three core components:
      - Request: URL, method (GET/POST, etc.), header fields, content, client IP
      - Response: Status code, header fields, content, server IP
 
+## Advanced Rule Configuration
+
+1. Combined Configuration
+    ``` txt
+    pattern operation1 operation2 ... [includeFilter://pattern1 ... excludeFilter://patternN ...]
+    ```
+2. Reversing Positions (`pattern1` and `operation` must not both be URLs or domain names)
+    > This means they must not both be URLs or domain names like `https://test.com/path`, `//test.com/path`, `test.com/path`, or `test.com`.
+    ``` txt
+    operation pattern1 pattern2 ... [includeFilter://pattern1 ... excludeFilter://patternN ...]
+    ```
+3. Line Break Configuration
+    ``` txt
+    line`
+    operation
+    pattern1
+    pattern2
+    ...
+    [includeFilter://pattern1
+    ...
+    excludeFilter://patternN
+    ...]
+    `
+    ```
+    > Whistle will automatically replace line breaks within code blocks with spaces.
+
+
 ## Learn More
 1. Match Pattern (expressions for matching request URLs) details: [Pattern](./pattern)
 2. Operation details: [Operation](./operation)

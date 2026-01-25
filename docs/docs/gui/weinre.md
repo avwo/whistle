@@ -21,5 +21,5 @@ Weinre（Web Inspector Remote）是 Whistle 集成的网页远程调试工具，
     tablet.example.com weinre://tablet-debug
     ```
 
-<img src="/img/weinre-menu.png" width="300" />
+<img src="/img/weinre-menu.png" width="360" />
 

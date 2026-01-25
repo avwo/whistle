@@ -39,6 +39,33 @@ pattern operation [includeFilter://pattern1 ... excludeFilter://patternN ...]
      - 请求：URL、方法（GET/POST等）、头部字段、内容、客户端 IP
      - 响应：状态码、头部字段、内容、服务端 IP
 
+## 规则高级配置
+
+1. 组合配置
+    ``` txt
+    pattern operation1 operation2 ... [includeFilter://pattern1 ... excludeFilter://patternN ...]
+    ```
+2. 位置调换（`pattern1` 和 `operation` 不同时为 URL 或域名）
+   > 即不同时为形如 `https://test.com/path`、`//test.com/path`、`test.com/path`、`test.com` 的 URL 或域名
+    ``` txt
+    operation pattern1 pattern2 ... [includeFilter://pattern1 ... excludeFilter://patternN ...]
+    ```
+3. 换行配置
+    ``` txt
+    line`
+    operation
+    pattern1
+    pattern2
+    ...
+    [includeFilter://pattern1
+    ...
+    excludeFilter://patternN 
+    ...]
+    `
+    ```
+    > Whistle 会自动将代码块里面的换行符自动替换成空格
+
+
 ## 详细内容
 1. 匹配模式（匹配请求 URL 的表达式）详解：[Pattern](./pattern)
 2. 操作指令详解：[Operation](./operation)
