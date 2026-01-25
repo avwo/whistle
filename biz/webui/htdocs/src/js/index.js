@@ -1632,8 +1632,17 @@ var Index = React.createClass({
         } else {
           var name = getKey(text);
           if (name) {
-            return events.trigger('showEditorDialog', {
-              name: name
+            var activeRule = self.state.rules.getActive();
+            var rulesText = activeRule && activeRule.value;
+            var values = {};
+            util.resolveInlineValues(rulesText, values);
+            if (values[name] == null) {
+              return events.trigger('showEditorDialog', { name: name });
+            }
+            return win.confirm('The value of \'' + name + '\' is stored in this rule file and cannot be synced if edited via the Values\'s editor. Continue?', function (sure) {
+              if (sure) {
+                events.trigger('showEditorDialog', { name: name });
+              }
             });
           }
         }

@@ -200,6 +200,8 @@
 
 .w-qrcode-dialog h4 {
   margin: 5px 0 0;
+  font-size: 15px;
+  font-weight: normal;
 }
 
 .w-qrcode-dialog canvas {
