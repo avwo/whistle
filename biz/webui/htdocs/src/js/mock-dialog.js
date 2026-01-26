@@ -349,7 +349,7 @@ var MockDialog = React.createClass({
     var valueType = this.getValueType();
     var suffixType = state.suffixType;
     if (valueType === 'file') {
-      rules += 'temp/current_temp_file_placeholder' + (suffixType || '');
+      rules += 'temp/current_file_hash_placeholder' + (suffixType || '');
     } else if (valueType === 'key') {
       rules += this.isValuesKey() ? state.dataSrc : (state.keyName ? '{' + state.keyName + '}' : '');
     } else {
