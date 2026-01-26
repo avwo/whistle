@@ -1,3 +1,6 @@
+## v2.9.109
+1. fix: https://github.com/avwo/whistle/issues/1291
+
 ## v2.9.108
 1. feat: 根据 Dark 模式规范重新优化界面的 Dark 模式
 2. feat: 支持查看客户端版本号
