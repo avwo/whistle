@@ -142,8 +142,8 @@ Selecting `%test-plugin-vars=` will automatically display the contents of `hintL
 ```
 > `hintList` and `hintUrl` They are mutually exclusive; only one can be used at a time. `hintSuffix` is optional.
 
-<img src="/img/plugin-vars-hint-url1.png" width="260" />
+<img src="/img/plugin-vars-hint-url1.png" width="360" />
 
-<img src="/img/plugin-vars-hint-url2.png" width="260" />
+<img src="/img/plugin-vars-hint-url2.png" width="360" />
 
 For the implementation of `/cgi-bin/plugin-vars`, refer to the [Plugin Development Documentation](../extensions/dev#rules-hint)

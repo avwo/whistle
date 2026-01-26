@@ -3,7 +3,7 @@
 Whistle 通过简单的规则配置修改请求/响应，基本语法结构如下：
 
 ``` txt
-pattern operation [includeFilter://pattern1 ... excludeFilter://patternN ...]
+pattern operation [lineProps...] [filters...]
 ```
 
 ## 规则组成
@@ -33,7 +33,8 @@ pattern operation [includeFilter://pattern1 ... excludeFilter://patternN ...]
     > - `ip` 或 `ip:port`：等价于 `host://ip` 或 `host://ip:port`
     > - `D:\path\to`、`/path/to` 或 `{key}`：等价于 `file://D:\path\to`、`file:///path/to` 或 `file://{key}`
     >
-3. **过滤条件（可选）** (`includeFilter/excludeFilter`)
+3. **附加配置（可选）**（`lineProps`）：仅对当前规则生效的附加配置，用于提升规则优先级、细化匹配规则功能等行为（支持组合使用），详见 [lineProps](./lineProps)
+4. **过滤条件（可选）** (`includeFilter/excludeFilter`)
    - 逻辑关系：多条件间为「或」匹配，只要匹配其中一个过滤条件就成立
    - 匹配范围：
      - 请求：URL、方法（GET/POST等）、头部字段、内容、客户端 IP

@@ -1,42 +1,44 @@
 # Rule Syntax
 
-Whistle modifies requests and responses through simple rule configurations. The basic syntax structure is as follows:
+Whistle modifies requests/responses through simple rule configurations. The basic syntax structure is as follows:
 
 ``` txt
-pattern operation [includeFilter://pattern1 ... excludeFilter://patternN ...]
+pattern operation [lineProps...] [filters...]
 ```
 
-## Rule Composition
+## Rule Components
 
 Each rule consists of three core components:
 
-1. **Match Pattern** (`pattern`): An expression to match request URLs, supporting various formats:
-   - Domain matching: `www.test.com` (matches all requests to this domain, including ports)
+1. **Matching Pattern** (`pattern`): An expression that matches request URLs, supporting multiple formats:
+   - Domain matching: `www.test.com` (matches all requests for this domain, including ports)
    - Path matching: `www.test.com/path`
    - Regular expression: `/^https?://test\.com//i`
    - Wildcards: `*.test.com`, `**.test.com/path`
 
-    > Whistle supports three URL types:
-    > 1. **Tunnel Proxy:** `tunnel://domain[:port]`
-    > 2. **WebSocket:** `ws[s]://domain[:port]/path/to`
-    > 3. **Regular HTTP/HTTPS:** `http[s]://domain[:port]/path/to`
+   > Whistle supports three URL types:
+   > 1. **Tunnel Proxy:** `tunnel://domain[:port]`
+   > 2. **WebSocket:** `ws[s]://domain[:port]/path/to`
+   > 3. **Regular HTTP/HTTPS:** `http[s]://domain[:port]/path/to`
 
-2. **Operation** (`operation`), formatted as: `protocol://value`
-   - `protocol`: Operation type, such as:
+2. **Operation Directive** (`operation`), format: `protocol://value`
+   - `protocol`: The operation type, such as:
      - `reqHeaders`: Modify request headers
      - `resHeaders`: Modify response headers
-   - `value`: Operation content, supporting multiple data sources:
+   - `value`: The operation content, supporting multiple data sources:
      - Inline value: `reqHeaders://x-proxy-by=whistle` (directly adds a request header)
      - Local file: `file://path/to/file`
      - Remote resource: `https://example.com/data.json`
-     - Preset variable: `{key}` (read from embedded values in Rules or Values)
+     - Preset variable: `{key}` (read from embedded values in Rules or from Values)
 
-    > The `protocol://` in **operation** can be omitted in the following two scenarios:
-    > - `ip` or `ip:port`: Equivalent to `host://ip` or `host://ip:port`
-    > - `D:\path\to`, `/path/to`, or `{key}`: Equivalent to `file://D:\path\to`, `file:///path/to`, or `file://{key}`
+   > The `protocol://` part in **operation** can be omitted in the following two scenarios:
+   > - `ip` or `ip:port`: equivalent to `host://ip` or `host://ip:port`
+   > - `D:\path\to`, `/path/to`, or `{key}`: equivalent to `file://D:\path\to`, `file:///path/to`, or `file://{key}`
 
-3. **Filter Conditions (Optional)** (`includeFilter/excludeFilter`)
-   - Logical relationship: Multiple conditions use "OR" matching; matching any one condition makes it effective
+3. **Additional Configuration (Optional)** (`lineProps`): Additional settings that apply only to the current rule, used to increase rule priority, refine matching functions, and other behaviors (supports combination). For details, see [lineProps](./lineProps).
+
+4. **Filter Conditions (Optional)** (`includeFilter/excludeFilter`):
+   - Logical relationship: Multiple conditions follow an "OR" matching logic; the filter is satisfied if any one condition matches.
    - Matching scope:
      - Request: URL, method (GET/POST, etc.), header fields, content, client IP
      - Response: Status code, header fields, content, server IP

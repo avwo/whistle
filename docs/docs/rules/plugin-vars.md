@@ -142,8 +142,8 @@ req.originalReq.pluginVars; // 精细化配置的变量，如 ['abc', 'enableAut
 ```
 > `hintList` 和 `hintUrl` 是互斥的，同时只能使用其中一个，`hintSuffix` 可选
 
-<img src="/img/plugin-vars-hint-url1.png" width="260" />
+<img src="/img/plugin-vars-hint-url1.png" width="360" />
 
-<img src="/img/plugin-vars-hint-url2.png" width="260" />
+<img src="/img/plugin-vars-hint-url2.png" width="360" />
 
 `/cgi-bin/plugin-vars` 的实现参考：[插件开发文档](../extensions/dev#rules-hint)
