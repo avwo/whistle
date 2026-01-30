@@ -112,4 +112,18 @@ module.exports = function() {
   }, function(res, data) {
     data.should.equal('test-header');
   });
+
+  util.request('http://wilcardx.wd.w2.org/test/script/proxy', function(_, data) {
+    data.ec.should.equal('x');
+  });
+
+  util.request('http://wilcardy.wd.w2.org/test/script/proxy', function(_, data) {
+    data.ec.should.equal('y');
+  });
+  util.request('https://wilcardz.wd.w2.org/test/script/proxy', function(_, data) {
+    data.ec.should.equal('z');
+  });
+  util.request('http://sep.path.test.w2.org/.././../index.html', function(_, data) {
+    data.ec.should.equal('sep');
+  });
 };

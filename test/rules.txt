@@ -89,4 +89,9 @@ Default
 ```
 
 default.key.test.w2.org/test file://{test.txt}
+htt*://wilcardx.wd* file://({"ec":"x"})
+h*t*p://wilcardy.wd*.w2.org file://({"ec":"y"})
+enable://capture ***.wilcardz.wd*.w2.org
+h*t*p*://***.wilcardz.wd*.w2.org file://({"ec":"z"})
 
+http://sep.path.test.w2.org/.././../index.html file://({"ec":"sep"})
