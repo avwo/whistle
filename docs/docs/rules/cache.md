@@ -79,18 +79,18 @@ pattern cache://{key-of-values} [lineProps...] [filters...]
 ### 基础示例
 ```txt
 # 静态资源缓存1小时
-https://example.com/static/* cache://3600
+https://example.com/static cache://3600
 
 # API接口禁用缓存
-https://example.com/api/* cache://no-cache
+https://example.com/api cache://no-cache
 
 # 敏感数据禁止缓存
-https://example.com/account/* cache://no-store
+https://example.com/account cache://no-store
 ```
 
 ### 使用内嵌值
 ````txt
-https://example.com/reports/* cache://{report-cache-policy}
+https://example.com/reports cache://{report-cache-policy}
 
 ``` report-cache-policy
 no-cache
@@ -100,13 +100,13 @@ no-cache
 ### 配合过滤器使用
 仅对特定响应状态码设置缓存：
 ```txt
-https://example.com/api/* cache://300 includeFilter://s:200
+https://example.com/api  cache://300 includeFilter://s:200
 ```
 
 ### 引用 Values 中的配置
 假设在 Values 中已有 `static-cache` 配置：
 ```txt
-https://example.com/assets/* cache://{static-cache}
+https://example.com/assets cache://{static-cache}
 ```
 
 

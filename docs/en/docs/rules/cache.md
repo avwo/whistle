@@ -78,18 +78,18 @@ pattern cache://{key-of-values} [lineProps...] [filters...]
 ### Basic Examples
 ```txt
 # Cache static resources for 1 hour
-https://example.com/static/* cache://3600
+https://example.com/static cache://3600
 
 # Disable caching for API endpoints
-https://example.com/api/* cache://no-cache
+https://example.com/api cache://no-cache
 
 # Prohibit caching for sensitive data
-https://example.com/account/* cache://no-store
+https://example.com/account cache://no-store
 ```
 
 ### Using Embedded Values
 ````txt
-https://example.com/reports/* cache://{report-cache-policy}
+https://example.com/reports cache://{report-cache-policy}
 
 ``` report-cache-policy
 no-cache
@@ -99,13 +99,13 @@ no-cache
 ### Using with Filters
 Set caching only for specific response status codes:
 ```txt
-https://example.com/api/* cache://300 includeFilter://s:200
+https://example.com/api cache://300 includeFilter://s:200
 ```
 
 ### Referencing Configuration from Values
 Assuming the `static-cache` configuration already exists in Values:
 ```txt
-https://example.com/assets/* cache://{static-cache}
+https://example.com/assets cache://{static-cache}
 ```
 
 ## How It Works & Related Protocols

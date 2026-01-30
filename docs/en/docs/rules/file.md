@@ -217,6 +217,32 @@ www.example.com file:///Users/username/static-files cache://3600
 www.example.com xfile:///Users/username/static-files
 ```
 
+## Differences from resBody
+
+The main distinctions between the `file` protocol and the [`resBody`](./resBody) protocol lie in the request processing flow and response mechanism:
+
+**`file` Protocol:**
+- **Request Flow**: Requests matching the `file` protocol are **not sent to the backend server**.
+- **Response Mechanism**: Directly returns the content of the specified file with a 200 status code.
+- **Network Overhead**: Zero network latency; entirely processed locally.
+
+**Diagram:**
+```
+Client Request → Whistle (matches file rule) → Reads Local File → Returns Response (200)
+                        ↓
+                  (Not sent to server)
+```
+
+**`resBody` Protocol:**
+- **Request Flow**: The request **is first sent to the backend server** to obtain the original response.
+- **Response Mechanism**: After receiving the server's response, **replaces** the original response body with the specified content.
+- **Network Overhead**: Includes a complete request-response network round trip.
+
+**Diagram:**
+```
+Client Request → Whistle → Sends to Server → Receives Original Response → Replaces Response Body → Returns Modified Response
+```
+
 ## Related Protocols
 
 1. **Allow unmatched files to continue access**: [xfile](./xfile)

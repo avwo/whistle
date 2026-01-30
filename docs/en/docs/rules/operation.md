@@ -1,82 +1,95 @@
 # operation
 
-In Whistle, each rule consists of a matching pattern (`pattern`) and an operation (`operation`). The general syntax of `operation` is:
+In Whistle, each rule consists of two parts: **Pattern** (`pattern`) and **Operation** (`operation`). The general syntax for `operation` is:
 
-``` txt
+```txt
 protocol://[value]
 ```
-- **protocol**: Specifies the operation type (e.g., `file`, `proxy`, `resReplace`, etc.)
-- **value**: The operation content (supports multiple formats, see below)
+- **protocol**: Specifies the operation type (such as `file`, `proxy`, `resReplace`, etc.)
+- **value**: Operation content (supports multiple formats, see below)
 
-## Inline Value
-``` txt
-pattern reqHeaders://x-proxy=Whistle # Set request headers
-pattern statusCode://404 # Modify the status code
-pattern file://({"ec":0}) # Respond to the request with inline content (the value enclosed in parentheses: `{"ec":0}`)
+## Inline Values
+```txt
+pattern reqHeaders://x-proxy=Whistle   # Set request headers
+pattern statusCode://404               # Modify status code
+pattern file://({"ec":0})              # Respond with inline content (value inside parentheses: `{"ec":0}`)
 ```
 
-When the operation content (value) contains spaces, newlines, or special characters, the inline method cannot be used directly. Instead, use the following method:
+When the operation content (Value) contains spaces, line breaks, or special characters, inline method cannot be used directly. Use the following alternative methods instead:
 
-## embedded value
+## Embedded Values
 
-```` txt
-```ua.txt
+````txt
+``` ua.txt
 Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1
 ```
 pattern ua://{ua.txt}
 ````
 
-Equivalent to
+Equivalent to:
 
-```` txt
+````txt
 ``` headers.json
 user-agent: Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1
 ```
 pattern reqHeaders://{headers.json}
 ````
 
-## Values Reference
+## Values References
 
-When an operation value needs to be shared by multiple rules, embedding it directly in the rules will prevent reuse. You can now store these values in the Values module of the Whistle interface and reference them using keys:
-1. Create a key named `result.json` in the Values module and fill in the action content.
-2. Reference them in the rule using `{result.json}`, for example: `www.test.com/cgi-bin/test file://{result.json}`
+When operation values (Value) need to be shared by multiple rules, embedding them directly in rules makes them non-reusable. In such cases, these values can be stored in the Values module of the Whistle interface and referenced by key name:
+
+1. Create a key named `result.json` in Values and fill in the operation content
+2. In rules, reference it via `{result.json}`, e.g.: `www.test.com/cgi-bin/test file://{result.json}`
 
 <img src="/img//values-demo1.png" width="420" />
 
-## Files/Remote Resources
-``` txt
-pattern reqHeaders:///User/xxx/filepath # Load action content from a local file
-pattern resHeadrs://https://example.com/config.json # Load a JSON object remotely
-pattern resHeaders://temp/blank.json # Use a temporary file on the border
+## File/Remote Resources
+```txt
+pattern reqHeaders:///User/xxx/filepath             # Load operation content from local file
+pattern resHeadrs://https://example.com/config.json # Load JSON object from remote URL
+pattern resHeaders://temp/blank.json                # Through editing temporary files
 ```
-> ⚠️ Note: http/https/ws/wss/tunnel/host/enable/cache... Protocols such as HTTPS and HTTPS prohibit accessing content via file paths or remote URLs. For details, see the documentation for each protocol.
+> ⚠️ Note: Protocols like http/https/ws/wss/tunnel/host/enable/cache... prohibit obtaining content via file paths or remote URLs. See each protocol's documentation for details.
 
-## Parentheses Used
-In Whistle rules, the value portion of protocol://value can contain three types of indirect references:
-1. `{key}` - References an embedded value
-2. `remote-url` - References a remote resource address
-3. `localfilepath` - References a local file path
+## Temporary Files
+When frequent content editing is needed, you can use Whistle's temporary file functionality.
 
-When you need to directly reference the above content (rather than the content indirectly referenced) as the action content, you can enclose it in parentheses:
-``` txt
+```txt
+pattern protocol://temp.json
+```
+
+**Operation Steps**:
+1. In the Rules editor, hold `Command` (Mac) / `Ctrl` (Windows)
+2. Click with mouse on `protocol://temp.json`
+3. Enter the response content in the pop-up editing dialog
+4. Click `Save` to save
+
+## Parentheses Usage
+In Whistle rules, the value part of `protocol://value` can have three types of indirect references:
+1. `{key}` - Reference embedded values
+2. `remote-url` - Remote resource address
+3. `localfilepath` - Local file path
+
+When you need to directly reference the above content itself (rather than what they indirectly reference) as operation content, you can wrap it with parentheses:
+```txt
 protocol://(value)
 ```
 
-Example:
-1. `reqHeaders:///User/xxx/yyy.txt` - Loads the action content from the local file `/User/xxx/yyy.txt`
-2. `reqHeaders://(/User/xxx/yyy.txt)` - Uses `/User/xxx/yyy.txt` directly as the action content
+Examples:
+1. `reqHeaders:///User/xxx/yyy.txt` - Load operation content from local file `/User/xxx/yyy.txt`
+2. `reqHeaders://(/User/xxx/yyy.txt)` - Treat `/User/xxx/yyy.txt` directly as operation content
 
 ## Template Strings
-Whistle provides a template string feature similar to ES6, allowing you to dynamically reference request information and apply it to rule configuration. The following template strings are supported:
+Whistle provides template string functionality similar to ES6, allowing you to dynamically reference request information and apply it to rule configurations. Supports the following template string types:
 
-##### General inline values
-``` txt
+##### General Inline Values
+```txt
 pattern protocol://`...${version}...`
 ```
 
-##### Inline values or Values references
-```` txt
-
+##### Embedded Values or Values References
+````txt
 ``` test.key
 ...${reqId}...
 ...${version}...
@@ -84,20 +97,20 @@ pattern protocol://`...${version}...`
 pattern protocol://`{test.key}`
 ````
 
-##### Parenthesized content
-```` txt
+##### Parenthesized Content
+````txt
 pattern protocol://`(...${now}...)`
 ````
 
-##### String variables
+##### String Variables
 
-| Variable name | Value |
+| Variable Name | Value |
 | --------------------- | ------------------------------------------------------------ |
 | `${now}` | Date.now() |
 | `${random}` | Math.random() |
 | `${randomUUID}` | crypto.randomUUID() |
-| `${randomInt(n)}` or `${randomInt(n1-n2)}` | Selects a random positive integer from [0, n] or [n1, n2] (Added in: v2.9.104) |
-| `${reqId}` | The ID assigned by Whistle to each request |
+| `${randomInt(n)}` or `${randomInt(n1-n2)}` | Get a random positive integer from [0, n] or [n1, n2] (Added in: v2.9.104) |
+| `${reqId}` | ID assigned by Whistle to each request |
 | `${url.protocol}` | url.parse(fullUrl).protocol |
 | `${url.hostname}` | url.parse(fullUrl).hostname |
 | `${url.host}` | url.parse(fullUrl).host |
@@ -106,7 +119,7 @@ pattern protocol://`(...${now}...)`
 | `${url.pathname}` | url.parse(fullUrl).pathname |
 | `${url.search}` | url.parse(fullUrl).search |
 | `${query.xxx}` | Value of request parameter `xxx` |
-| `${url}` | Full request URL |
+| `${url}` | Complete request URL |
 | `${querystring}` | url.parse(fullUrl).search \|\| '?' (not empty) |
 | `${searchstring}` | url.parse(fullUrl).search \|\| '?' (not empty) |
 | `${method}` | Request method |
@@ -114,20 +127,20 @@ pattern protocol://`(...${now}...)`
 | `${resHeaders.xxx}` | Value of response header field `xxx` |
 | `${version}` | Whistle version number |
 | `${port}` | Whistle port number |
-| `${host}` | The network interface IP address Whistle listens on when it starts (blank by default) |
-| `${realPort}` | The port displayed in the Online dialog box of the Whistle interface (usually the Whistle port number) |
-| `${realHost}` | The host displayed in the Online dialog box of the Whistle interface (usually the network interface IP address Whistle listens on) |
-| `${clientIp}` | Client IP address |
-| `${clientPort}` | Client port address |
-| `${serverIp}` | Server IP address |
-| `${serverPort}` | Server port address |
-| `${reqCookies.xxx}` | The value of the request cookie `xxx` |
-| `${resCookies.xxx}` | The value of the response cookie `xxx` |
-| `${statusCode}` | The response status code |
+| `${host}` | Network interface IP that Whistle listens on (empty by default) |
+| `${realPort}` | port displayed in Whistle interface's Online dialog (usually Whistle port number) |
+| `${realHost}` | host displayed in Whistle interface's Online dialog (usually the network interface IP that Whistle listens on) |
+| `${clientIp}` | Client IP |
+| `${clientPort}` | Client port |
+| `${serverIp}` | Server IP |
+| `${serverPort}` | Server port |
+| `${reqCookies.xxx}` | Value of request cookie `xxx` |
+| `${resCookies.xxx}` | Value of response cookie `xxx` |
+| `${statusCode}` | Response status code |
 | `${env.xxx}` | process.env.xxx |
 | `${whistle.plugin-name}` | `value` of `whistle.plugin-name://value` or `plugin-name://value` |
 
-> `${whistle.plugin-name}` can only have a value in plugin rules.
+> `${whistle.plugin-name}` may only have values in internal rules of plugins
 
 ##### Example
 
@@ -169,9 +182,9 @@ env.USER: ${env.USER}
 www.test.com/index.html file://`{test.txt}`
 ````
 
-Visit `https://www.test.com/index.html?name=avenwu` and the response content is:
+Accessing `https://www.test.com/index.html?name=avenwu` returns response content:
 
-``` txt
+```txt
 now: 1752301623295
 random: 0.6819241513880432
 randomUUID: e917b9fc-e2ef-4255-9209-11eb417235c5
@@ -204,11 +217,12 @@ resCookies.test:
 statusCode: 
 env.USER: av
 ```
+
 ## Data Objects
-In addition to text or binary content, the operation content may also be a JSON object. Whistle supports the following three data object formats:
+Operation content can be not only text or binary content but also JSON objects. Whistle supports the following 3 data object formats:
 
 #### JSON Format
-``` js
+```js
 {
   "key1": value1,
   "key2": value2,
@@ -217,36 +231,36 @@ In addition to text or binary content, the operation content may also be a JSON 
 ```
 
 #### Line Format
-``` txt
+```txt
 key1: value1
-key2: value2
+key2:value2
 keyN: valueN
 ```
-> Separated by `colon+space`. If there is no `colon+space`, the first colon is used as the separator. If there is no colon, `value` is an empty string.
+> Separated by `colon + space`. If there's no `colon + space`, then separated by the first colon. If there's no colon, then `value` is an empty string
 
 **Multi-level nesting:**
-``` txt
+```txt
 a.b.c: 123
 c\.d\.e: abc
 ```
 Equivalent to:
-``` json
+```json
 {
   "a": {
-  "b": {
-    "c": 123
-  }
-},
-"c.d.e": "abc"
+    "b": {
+      "c": 123
+    }
+  },
+  "c.d.e": "abc"
 }
 ```
 
 #### Inline Format (Request Parameter Format)
 
-``` txt
+```txt
 key1=value1&key2=value2&keyN=valueN
 ```
-> It's best to encodeURIComponent both `key` and `value`.
+> Both `key` and `value` should ideally be `encodeURIComponent`
 
 ## Operation Protocols
-Each protocol (`protocol`) corresponds to a specific operation type and is used to handle matching requests. The protocol determines the operation type and the format requirements for the operation content. For detailed usage, see [Protocol List](./protocols).
+Each protocol (`protocol`) corresponds to a specific operation type, used to perform corresponding processing on matched requests. The protocol determines the operation type and the format requirements for operation content. For specific usage, refer to: [Protocol List](./protocols)

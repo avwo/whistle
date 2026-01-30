@@ -51,6 +51,19 @@ pattern resHeaders://temp/blank.json                # 通过边境临时文件
 ```
 > ⚠️ 注意：http/https/ws/wss/tunnel/host/enable/cache... 等协议禁止通过文件路径或远程 URL 获取内容，详见各协议文档。
 
+## 临时文件
+当需要频繁编辑内容时，可以使用 Whistle 提供的临时文件功能。
+
+```txt
+pattern protocol://temp.json
+```
+
+**操作步骤**：
+1. 在 Rules 编辑器中，按住 `Command`（Mac）/ `Ctrl`（Windows）
+2. 鼠标点击 `protocol://temp.json`
+3. 在弹出的编辑对话框中输入响应内容
+4. 点击 `Save` 保存
+
 ## 小括号用途
 在 Whistle 规则中，protocol://value 的 value 部分可能有三种间接引用类型：
 1. `{key}` - 引用内嵌值

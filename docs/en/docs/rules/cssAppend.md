@@ -3,7 +3,9 @@
 The `cssAppend` protocol is used to insert specified content at the end of an existing CSS-type response body.
 
 > **Effective Condition**: Only takes effect on responses with a `content-type` header containing `html` or `css`, and a status code that includes a response body (e.g., `200`/`500`, etc.).
+> 
 > ⚠️ Note: Requests without a response body, such as `204`, `304`, are not affected.
+> 
 > HTML pages will automatically be wrapped in `<style>...</style>`.
 
 With the `cssAppend` protocol, you can:

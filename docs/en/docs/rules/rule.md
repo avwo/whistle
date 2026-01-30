@@ -1,76 +1,118 @@
 # Rule Syntax
 
-Whistle modifies requests/responses through simple rule configurations. The basic syntax structure is as follows:
+Whistle modifies requests and responses through concise rule configurations, with each rule following the same basic syntax structure.
 
-``` txt
+## Syntax Structure
+
+```txt
 pattern operation [lineProps...] [filters...]
 ```
 
-## Rule Components
+Each rule consists of the following four components:
 
-Each rule consists of three core components:
-
-1. **Matching Pattern** (`pattern`): An expression that matches request URLs, supporting multiple formats:
-   - Domain matching: `www.test.com` (matches all requests for this domain, including ports)
-   - Path matching: `www.test.com/path`
-   - Regular expression: `/^https?://test\.com//i`
-   - Wildcards: `*.test.com`, `**.test.com/path`
-
-   > Whistle supports three URL types:
-   > 1. **Tunnel Proxy:** `tunnel://domain[:port]`
-   > 2. **WebSocket:** `ws[s]://domain[:port]/path/to`
-   > 3. **Regular HTTP/HTTPS:** `http[s]://domain[:port]/path/to`
-
-2. **Operation Directive** (`operation`), format: `protocol://value`
-   - `protocol`: The operation type, such as:
-     - `reqHeaders`: Modify request headers
-     - `resHeaders`: Modify response headers
-   - `value`: The operation content, supporting multiple data sources:
-     - Inline value: `reqHeaders://x-proxy-by=whistle` (directly adds a request header)
-     - Local file: `file://path/to/file`
-     - Remote resource: `https://example.com/data.json`
-     - Preset variable: `{key}` (read from embedded values in Rules or from Values)
-
-   > The `protocol://` part in **operation** can be omitted in the following two scenarios:
-   > - `ip` or `ip:port`: equivalent to `host://ip` or `host://ip:port`
-   > - `D:\path\to`, `/path/to`, or `{key}`: equivalent to `file://D:\path\to`, `file:///path/to`, or `file://{key}`
-
-3. **Additional Configuration (Optional)** (`lineProps`): Additional settings that apply only to the current rule, used to increase rule priority, refine matching functions, and other behaviors (supports combination). For details, see [lineProps](./lineProps).
-
-4. **Filter Conditions (Optional)** (`includeFilter/excludeFilter`):
-   - Logical relationship: Multiple conditions follow an "OR" matching logic; the filter is satisfied if any one condition matches.
-   - Matching scope:
-     - Request: URL, method (GET/POST, etc.), header fields, content, client IP
-     - Response: Status code, header fields, content, server IP
+| Component | Required | Description |
+| :--- | :--- | :--- |
+| **pattern** | Yes | Expression for matching request URLs. Detailed documentation: [pattern](./pattern) |
+| **operation** | Yes | Operation command, formatted as `protocol://value`. Detailed documentation: [operation](./operation) |
+| **lineProps** | No | Additional configurations that apply only to the current rule. Detailed documentation: [lineProps](./lineProps) |
+| **filters** | No | Filter conditions for precise control over when the rule takes effect. Detailed documentation: [filters](./filters) |
 
 ## Advanced Rule Configuration
 
-1. Combined Configuration
-    ``` txt
-    pattern operation1 operation2 ... [includeFilter://pattern1 ... excludeFilter://patternN ...]
-    ```
-2. Reversing Positions (`pattern1` and `operation` must not both be URLs or domain names)
-    > This means they must not both be URLs or domain names like `https://test.com/path`, `//test.com/path`, `test.com/path`, or `test.com`.
-    ``` txt
-    operation pattern1 pattern2 ... [includeFilter://pattern1 ... excludeFilter://patternN ...]
-    ```
-3. Line Break Configuration
-    ``` txt
-    line`
-    operation
-    pattern1
-    pattern2
-    ...
-    [includeFilter://pattern1
-    ...
-    excludeFilter://patternN
-    ...]
-    `
-    ```
-    > Whistle will automatically replace line breaks within code blocks with spaces.
+### 1. Combined Configuration
+A single rule can contain multiple operation commands, enabling complex functional combinations.
 
+**Syntax**:
+```txt
+pattern operation1 operation2 ... [includeFilter://pattern1 ... excludeFilter://patternN ...]
+```
 
-## Learn More
-1. Match Pattern (expressions for matching request URLs) details: [Pattern](./pattern)
-2. Operation details: [Operation](./operation)
-3. Filter details: [Filters](./filters)
+**Example**:
+```txt
+www.example.com/* file:///static-files cache://3600 resCors://*
+```
+
+**Explanation**:
+- Multiple operation commands are executed in order.
+- Supports combining any number of operation commands.
+- Filter conditions apply to the entire rule.
+
+### 2. Position Swapping
+When `operation` and the first `pattern` are not both in URL or domain format, their positions can be swapped.
+
+**Syntax**:
+```txt
+operation pattern1 pattern2 ... [includeFilter://pattern1 ... excludeFilter://patternN ...]
+```
+
+**Example**:
+```txt
+# Standard writing
+www.example.com proxy://127.0.0.1:8080
+
+# Position-swapped writing
+proxy://127.0.0.1:8080 www.example.com api.example.com
+```
+
+> **Limitations**: `operation` and the first `pattern` cannot simultaneously be in the following formats:
+> - `https://test.com/path`
+> - `//test.com/path`
+> - `test.com/path`
+> - `test.com`
+
+**Applicable Scenarios**:
+- More concise when applying the same operation to multiple domains.
+- Batch configuration of proxy, redirect, and other rules.
+
+### 3. Multi-line Configuration
+Use code blocks to achieve multi-line configurations, improving readability of complex rules.
+
+**Syntax**:
+````txt
+line`
+operation
+pattern1
+pattern2
+...
+[includeFilter://pattern1
+...
+excludeFilter://patternN 
+...]
+`
+````
+
+**Example**:
+````txt
+line`
+proxy://127.0.0.1:8080
+www.example.com
+api.example.com
+static.example.com
+includeFilter://m:GET
+excludeFilter:///admin/
+`
+````
+
+**Features**:
+- Whistle automatically replaces line breaks within the code block with spaces.
+- Maintains clean code formatting for easy reading and maintenance.
+- Suitable for scenarios involving multiple matching patterns and complex filter conditions.
+
+**Equivalent Conversion**:
+The above multi-line configuration is equivalent to:
+```txt
+proxy://127.0.0.1:8080 www.example.com api.example.com static.example.com includeFilter://m:GET excludeFilter:///admin/
+```
+
+## Notes
+
+### 1. Rule Priority
+- Rules are executed in top-to-bottom order.
+- Later rules may override the effects of earlier rules.
+- Use `lineProps://important` to increase the priority of important rules.
+
+### 2. Debugging Tips
+1. **Step-by-step verification**: Start with simple rules and gradually add complex conditions.
+2. **Log viewing**: Use the Overview panel in the Whistle Network interface to check rule matching.
+3. **Browser debugging**: Use browser developer tools to inspect actual effects.
+4. **Temporary disabling**: Use `#` to comment out rules temporarily for testing.

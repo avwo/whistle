@@ -220,7 +220,7 @@ www.example.com/path3 tlsOptions://temp/blank.json
 api.example.com tlsOptions://key=/certs/client.key&cert=/certs/client.crt
 
 # 第三层：为特定路径进一步限制加密套件
-api.example.com/secure/* tlsOptions://ciphers=ECDHE-RSA-AES256-GCM-SHA384
+api.example.com/secure tlsOptions://ciphers=ECDHE-RSA-AES256-GCM-SHA384
 ```
 
 ---

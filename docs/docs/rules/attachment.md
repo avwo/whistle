@@ -34,7 +34,7 @@ pattern attachment://{key-of-values} [lineProps...] [filters...]
 **前提：** 在 `Values` 中存在一个名为 `key-of-values` 的键，其值为目标文件名。
 
 ### 4. 文件/远程 URL 加载
-**当前不支持** 从本地文件或远程 URL 动态加载文件名内容。
+**当前不支持** 从本地文件或远程 URL 动态加载文件名。
 
 ## 参数详解
 

@@ -220,7 +220,7 @@ Utilize rule merging feature to gradually refine configuration:
 api.example.com tlsOptions://key=/certs/client.key&cert=/certs/client.crt
 
 # Third layer: Further restrict cipher suite for specific paths
-api.example.com/secure/* tlsOptions://ciphers=ECDHE-RSA-AES256-GCM-SHA384
+api.example.com/secure  tlsOptions://ciphers=ECDHE-RSA-AES256-GCM-SHA384
 ```
 
 ---
