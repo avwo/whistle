@@ -37,6 +37,7 @@ var ResDetail = React.createClass({
       initedRaw: false,
       initPlugins: false,
       btns: [
+        { name: 'Raw' },
         { name: 'Headers' },
         { name: 'Preview' },
         { name: 'TextView', display: 'Body' },
@@ -44,7 +45,6 @@ var ResDetail = React.createClass({
         { name: 'HexView' },
         { name: 'Cookies' },
         { name: 'Trailers' },
-        { name: 'Raw' },
         { name: 'Plugins', hide: true }
       ]
     };
@@ -156,7 +156,7 @@ var ResDetail = React.createClass({
       var imgSrc, data, isJson;
       var isText = true;
       var status = res.statusCode;
-      var showImg = name === btns[1].name;
+      var showImg = name === btns[2].name;
       if (status != null) {
         headersStr = util.objectToString(headers, res.rawHeaderNames);
         trailerStr = trailers
@@ -255,11 +255,23 @@ var ResDetail = React.createClass({
         }
       >
         <BtnGroup onClick={this.onClickBtn} btns={btns} />
+        {state.initedRaw ? (
+          <Textarea
+            reqData={modal}
+            reqType="resRaw"
+            defaultName={defaultName}
+            value={raw}
+            headers={headersStr}
+            base64={base64}
+            className="fill w-detail-res-raw"
+            hide={name != btns[0].name}
+          />
+        ) : undefined}
         {state.initedHeaders ? (
           <div
             className={
               'fill w-detail-res-headers' +
-              (name == btns[0].name ? '' : ' hide')
+              (name == btns[1].name ? '' : ' hide')
             }
           >
             <Properties modal={rawHeaders || headers} enableViewSource="1" />
@@ -277,7 +289,7 @@ var ResDetail = React.createClass({
             base64={base64}
             value={body}
             className="fill w-detail-res-textview"
-            hide={name != btns[2].name}
+            hide={name != btns[3].name}
           />
         ) : undefined}
         {state.initedJSONView ? (
@@ -287,7 +299,7 @@ var ResDetail = React.createClass({
             defaultName={defaultName}
             data={json}
             tips={tips}
-            hide={name != btns[3].name}
+            hide={name != btns[4].name}
           />
         ) : undefined}
         {state.initedHexView ? (
@@ -300,14 +312,14 @@ var ResDetail = React.createClass({
             tips={tips}
             value={bin}
             className="fill n-monospace w-detail-res-hex"
-            hide={name != btns[4].name}
+            hide={name != btns[5].name}
           />
         ) : undefined}
         {state.initedCookies ? (
           <div
             className={
               'fill w-detail-res-cookies' +
-              (name == btns[5].name ? '' : ' hide')
+              (name == btns[6].name ? '' : ' hide')
             }
           >
             {cookies && cookies.length ? (
@@ -319,23 +331,11 @@ var ResDetail = React.createClass({
           <div
             className={
               'fill w-detail-res-headers' +
-              (name == btns[6].name ? '' : ' hide')
+              (name == btns[7].name ? '' : ' hide')
             }
           >
             <Properties modal={rawTrailers || trailers} enableViewSource="1" />
           </div>
-        ) : undefined}
-        {state.initedRaw ? (
-          <Textarea
-            reqData={modal}
-            reqType="resRaw"
-            defaultName={defaultName}
-            value={raw}
-            headers={headersStr}
-            base64={base64}
-            className="fill w-detail-res-raw"
-            hide={name != btns[7].name}
-          />
         ) : undefined}
         {state.initedPlugins ? (
           <PluginsTabs

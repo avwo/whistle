@@ -11,13 +11,13 @@ var PluginsTabs = require('./plugins-tabs');
 var events = require('./events');
 
 var BTNS = [
+  { name: 'Raw' },
   { name: 'Headers' },
   { name: 'WebForms' },
   { name: 'TextView', display: 'Body' },
   { name: 'JSONView' },
   { name: 'HexView' },
   { name: 'Cookies' },
-  { name: 'Raw' },
   { name: 'Plugins', hide: true }
 ];
 
@@ -176,11 +176,24 @@ var ReqDetail = React.createClass({
         }
       >
         <BtnGroup onClick={this.onClickBtn} btns={BTNS} />
+        {state.initedRaw ? (
+          <Textarea
+            reqData={modal}
+            onEdit={this.onEdit}
+            reqType="reqRaw"
+            defaultName={defaultName}
+            value={raw}
+            headers={headersStr}
+            base64={base64}
+            className="fill w-detail-request-raw"
+            hide={name != BTNS[0].name}
+          />
+        ) : undefined}
         {state.initedHeaders ? (
           <div
             className={
               'fill w-detail-request-headers' +
-              (name == BTNS[0].name ? '' : ' hide')
+              (name == BTNS[1].name ? '' : ' hide')
             }
           >
             <Properties modal={rawHeaders || headers} enableViewSource="1" />
@@ -196,7 +209,7 @@ var ReqDetail = React.createClass({
             splitRatio={0.6}
             className={
               'w-detail-request-webforms' +
-              (name == BTNS[1].name ? '' : ' hide')
+              (name == BTNS[2].name ? '' : ' hide')
             }
           >
             <div className="fill v-box">
@@ -225,7 +238,7 @@ var ReqDetail = React.createClass({
             base64={base64}
             value={body}
             className="fill w-detail-request-textview"
-            hide={name != BTNS[2].name}
+            hide={name != BTNS[3].name}
           />
         ) : undefined}
         {state.initedJSONView ? (
@@ -235,7 +248,7 @@ var ReqDetail = React.createClass({
             defaultName={defaultName}
             data={json}
             tips={tips}
-            hide={name != BTNS[3].name}
+            hide={name != BTNS[4].name}
           />
         ) : undefined}
         {state.initedHexView ? (
@@ -248,31 +261,18 @@ var ReqDetail = React.createClass({
             base64={base64}
             value={bin}
             className="fill n-monospace w-detail-request-hex"
-            hide={name != BTNS[4].name}
+            hide={name != BTNS[5].name}
           />
         ) : undefined}
         {state.initedCookies ? (
           <div
             className={
               'fill w-detail-request-cookies' +
-              (name == BTNS[5].name ? '' : ' hide')
+              (name == BTNS[6].name ? '' : ' hide')
             }
           >
             <Properties modal={cookies} enableViewSource="1" />
           </div>
-        ) : undefined}
-        {state.initedRaw ? (
-          <Textarea
-            reqData={modal}
-            onEdit={this.onEdit}
-            reqType="reqRaw"
-            defaultName={defaultName}
-            value={raw}
-            headers={headersStr}
-            base64={base64}
-            className="fill w-detail-request-raw"
-            hide={name != BTNS[6].name}
-          />
         ) : undefined}
         {state.initedPlugins ? (
           <PluginsTabs
