@@ -8,7 +8,6 @@ var ssi2 = fs.readFileSync(path.join(__dirname, '../assets/files/ssi2.html'), {e
 var ssi3 = fs.readFileSync(path.join(__dirname, '../assets/files/ssi3.html'), {encoding: 'utf8'});
 
 module.exports = function(server, options) {
-  util.init(options);
   server.on('request', app);
   app.use(function(req, res, next) {
     req.on('error', next);
@@ -154,11 +153,6 @@ module.exports = function(server, options) {
           }
         }
       }));
-    }
-
-    var nextRule = util.getNextRule(req);
-    if (nextRule) {
-      rules.push(nextRule);
     }
 
     res.end(rules.join('\n'));

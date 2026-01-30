@@ -434,9 +434,8 @@ app.all(PLUGIN_PATH_RE, function(req, res) {
   if (req.url.indexOf(INSPECTOR_URL) !== -1) {
     return readPluginPage(req, res, plugin, INSPECTOR_HTML, plugin[util.PLUGIN_INSPECTOR_CONFIG]);
   }
-  var internalId = req.headers['x-whistle-internal-id'];
-  if (internalId === util.INTERNAL_ID) {
-    delete req.headers['x-whistle-internal-id'];
+  if (req.headers[util.INTERNAL_ID_HEADER] === util.INTERNAL_ID) {
+    delete req.headers[util.INTERNAL_ID_HEADER];
   } else if (plugin.inheritAuth && !checkAuth(req, res)) {
     return;
   }
@@ -487,8 +486,8 @@ app.use(function(req, res, next) {
 });
 
 app.post('/cgi-bin/composer', function(req, res) {
-  req.headers[config.CLIENT_IP_HEAD] = util.getClientIp(req);
-  req.headers[config.CLIENT_PORT_HEAD] = util.getClientPort(req);
+  req.headers[config.CLIENT_IP_HEADER] = util.getClientIp(req);
+  req.headers[config.CLIENT_PORT_HEADER] = util.getClientPort(req);
   sendToService(req, res);
 });
 app.get('/cgi-bin/compose-data', sendToService);
@@ -556,7 +555,7 @@ app.all('/cgi-bin/*', function(req, res, next) {
 }, cgiHandler);
 
 app.use('/preview.html', function(req, res, next) {
-  if (req.headers[config.INTERNAL_ID_HEADER] !== config.INTERNAL_ID) {
+  if (req.headers[util.INTERNAL_ID_HEADER] !== util.INTERNAL_ID) {
     return res.status(404).end('Not Found');
   }
   next();

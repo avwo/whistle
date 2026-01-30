@@ -1,9 +1,7 @@
 var express = require('express');
 var app = express();
-var util = require('./util');
 
 module.exports = function(server, options) {
-  util.init(options);
   server.on('request', app);
   app.use(function(req, res, next) {
     req.on('error', next);

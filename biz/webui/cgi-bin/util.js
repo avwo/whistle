@@ -2,6 +2,7 @@ var util = require('../../../lib/util');
 var config = require('../../../lib/config');
 var proc = require('../../../lib/util/process');
 var rulesUtil = require('../../../lib/rules/util');
+var padLeft = require('../../../lib/util/common').padLeft;
 
 var properties = rulesUtil.properties;
 var rules = rulesUtil.rules;
@@ -118,30 +119,16 @@ exports.getReqData = function(req, callback) {
   });
 };
 
-function padding(num) {
-  return num < 10 ? '0' + num : num;
-}
-
-function paddingMS(ms) {
-  if (ms > 99) {
-    return ms;
-  }
-  if (ms > 9) {
-    return '0' + ms;
-  }
-  return '00' + ms;
-}
-
 function formatDate() {
   var date = new Date();
   var result = [];
   result.push(date.getFullYear());
-  result.push(padding(date.getMonth() + 1));
-  result.push(padding(date.getDate()));
-  result.push(padding(date.getHours()));
-  result.push(padding(date.getMinutes()));
-  result.push(padding(date.getSeconds()));
-  result.push(paddingMS(date.getMilliseconds()));
+  result.push(padLeft(date.getMonth() + 1));
+  result.push(padLeft(date.getDate()));
+  result.push(padLeft(date.getHours()));
+  result.push(padLeft(date.getMinutes()));
+  result.push(padLeft(date.getSeconds()));
+  result.push(padLeft(date.getMilliseconds(), 3));
   return result.join('');
 }
 

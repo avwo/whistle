@@ -8,7 +8,7 @@ function close() {
 module.exports = function(server, options) {
   server.on('connect', function(req, socket) {
     socket.on('error', close);
-    if (req.headers[options.RULE_VALUE_HEADER] != 'none') {
+    if (req.originalReq.ruleValue != 'none') {
       throw new Error('wrong rule value');
     }
     var resSocket = net.connect({

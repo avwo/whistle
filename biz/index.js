@@ -31,7 +31,8 @@ module.exports = function(req, res, next) {
   var config = this.config;
   var pluginMgr = this.pluginMgr;
   var fullUrl = req.fullUrl = util.getFullUrl(req); // format request
-  var host = util.parseHost(req.headers.host);
+  var headers = req.headers;
+  var host = util.parseHost(headers.host);
   var port = host[1] || (req.isHttps ? 443 : 80);
   var bypass;
   host = host[0];
@@ -59,12 +60,12 @@ module.exports = function(req, res, next) {
         var realPath = RegExp.$1;
         var realPort = RegExp.$3;
         realHost = RegExp.$2 + (realPort ? ':' + realPort : '');
-        req.headers[config.REAL_HOST_HEADER] = realHost;
+        headers[util.REAL_HOST_HEADER] = realHost;
         req.url = req.url.replace(realPath, '');
       } else {
         req.curUrl = fullUrl;
         if (realHost = rules.resolveInternalHost(req)) {
-          req.headers[config.REAL_HOST_HEADER] = realHost;
+          headers[util.REAL_HOST_HEADER] = realHost;
         }
       }
       if (internalAppRe.test(req.path)) {
@@ -79,7 +80,7 @@ module.exports = function(req, res, next) {
         isProxyReq = isProxyReq || isOld;
       } else if (pluginRe.test(req.path)) {
         isProxyReq = !pluginMgr.getPlugin(RegExp.$1 + ':');
-      } else if (!req.headers[config.WEBUI_HEAD]) {
+      } else if (!headers[config.WEBUI_HEAD]) {
         isWebUI = false;
       }
       if (!config.proxyServer && isProxyReq && !config.isLocalUIUrl(host)) {
@@ -90,11 +91,11 @@ module.exports = function(req, res, next) {
       if (isWebUI) {
         req.fromInternalPath = true;
         var hostname = (req._fwdHost && util.parseHost(req._fwdHost)[0]) || host;
-        req.headers['x-whistle-origin-host'] = hostname || '*';
+        headers['x-whistle-origin-host'] = hostname || '*';
       }
     }
   } else {
-    isWebUI = req.headers[config.WEBUI_HEAD];
+    isWebUI = headers[config.WEBUI_HEAD];
     if (!isWebUI) {
       if (!(isWebUI = localIpCache.get(host))) {
         isWebUI = config.isLocalUIUrl(host);
@@ -106,7 +107,7 @@ module.exports = function(req, res, next) {
       localIpCache.set(host, 1);
     }
     if (PREVIEW_PATH_RE.test(req.url)) {
-      req.headers[config.INTERNAL_ID_HEADER] = config.INTERNAL_ID;
+      headers[util.INTERNAL_ID_HEADER] = util.INTERNAL_ID;
       req.url = '/preview.html?charset=' + RegExp.$1;
       isWebUI = true;
     } else if (isWebUI) {
@@ -118,7 +119,7 @@ module.exports = function(req, res, next) {
       if (bypass) {
         req.url = req.url.replace(bypass, '/');
       }
-      delete req.headers[config.INTERNAL_ID_HEADER];
+      delete headers[util.INTERNAL_ID_HEADER];
     }
   }
   // 后续有用到
@@ -137,7 +138,7 @@ module.exports = function(req, res, next) {
         var outerPort = RegExp.$2;
         req.url = req.url.replace(RegExp['$&'], '/' + RegExp.$1 + '/');
         if (outerPort > 0 && outerPort < 65536 && outerPort != config.port) {
-          req.headers.host = '127.0.0.1:' + outerPort;
+          headers.host = '127.0.0.1:' + outerPort;
           return util.transformReq(req, res, outerPort);
         }
       }
@@ -151,7 +152,7 @@ module.exports = function(req, res, next) {
   } else if (localRule = rules.resolveLocalRule(req)) {
     req.url = localRule.url;
     if (localRule.realPort) {
-      req.headers.host = '127.0.0.1:' + localRule.realPort;
+      headers.host = '127.0.0.1:' + localRule.realPort;
       util.transformReq(req, res, localRule.realPort);
     } else {
       transformUI(req, res);

@@ -12,7 +12,7 @@ function startHttpServer(app) {
     res.on('error', next);
 
     var body = '';
-    var decoder = new StringDecoder('utf8'); 
+    var decoder = new StringDecoder('utf8');
     req.on('data', function(data) {
       body += decoder.write(data);
     });
@@ -28,7 +28,6 @@ function startHttpServer(app) {
           headers: req.headers,
           ruleValue: util.getRuleValue(req),
           host: util.getHost(req),
-          port: util.getPort(req),
           body: body
         }, null, '\t'));
       }
@@ -50,7 +49,6 @@ function startWebsocketServer(ws) {
         headers: req.headers,
         ruleValue: util.getRuleValue(req),
         host: util.getHost(req),
-        port: util.getPort(req),
         body: msg
       }, null, '\t'));
     });
@@ -58,7 +56,6 @@ function startWebsocketServer(ws) {
 }
 
 module.exports = function(server, options) {
-  util.init(options);
   server.on('request', app);
   startHttpServer(app);
   startWebsocketServer(new WebSocketServer({ server: server }));

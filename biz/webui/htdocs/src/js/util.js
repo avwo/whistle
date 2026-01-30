@@ -1592,12 +1592,7 @@ function toLocaleString(date) {
   }
   var time = RegExp['$&'];
   var ms = date.getTime() % 1000;
-  if (ms < 10) {
-    ms = '00' + ms;
-  } else if (ms < 100) {
-    ms = '0' + ms;
-  }
-  return str.replace(time, time + '.' + ms);
+  return str.replace(time, time + '.' + paddingMS(ms));
 }
 
 exports.toLocaleString = toLocaleString;
@@ -2633,8 +2628,6 @@ exports.getMultiBody = function (fields) {
 function padding(num) {
   return num < 10 ? '0' + num : num;
 }
-
-exports.padding = padding;
 
 function paddingMS(ms) {
   if (ms > 99) {
