@@ -1263,11 +1263,11 @@ function startLoadData() {
       var framesLen = data.frames && data.frames.length;
       var time = data.composerTime;
 
-      if (time && composerReqId === exports.curComposerReqId && exports.onComposerTimeChange) {
+      if (time && composerReqId === exports.curComposerReqId && exports.onTakeTimeChange) {
         if (time.endTime) {
           exports.curComposerReqId = undefined;
         }
-        exports.onComposerTimeChange(time);
+        exports.onTakeTimeChange(time);
       }
 
       if (framesLen) {

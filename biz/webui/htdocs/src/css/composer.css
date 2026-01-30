@@ -668,3 +668,16 @@ textarea.w-com-rules {
 .w-com-disable-body .w-props-editor {
   opacity: .7;
 }
+
+.w-view-inspectors-btn {
+  position: absolute;
+  top: 27px;
+  right: 5px;
+  z-index: 1;
+  display: block;
+  padding: 0 5px;
+  background: var(--b-bar);
+  border-radius: 3px;
+  font-size: 12px;
+  text-decoration: none!important;
+}

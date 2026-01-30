@@ -33,11 +33,11 @@ var FILTERS = [
   'm:<keyword or regexp of request method>',
   'b:<keyword or regexp of request body>',
   's:<keyword or regexp of response status code>',
-  'reqH.headerKey=<keyword or regexp of request header key value>',
-  'resH.headerKey=<keyword or regexp of response header key value>',
   'clientIp:<keyword or regexp of client ip>',
   'serverIp:<keyword or regexp of server ip>',
-  'chance:<probability [0, 1]>'
+  'chance:<probability [0, 1]>',
+  'reqH.headerKey=<keyword or regexp of request header key value>',
+  'resH.headerKey=<keyword or regexp of response header key value>'
 ];
 var HEADERS = [
   'reqH.headerKey:keywordOrRegExp=<replacement value>',
@@ -855,10 +855,13 @@ CodeMirror.registerHelper('hint', 'rulesHint', function (editor) {
   while (nextCh && WORD.test(nextCh)) {
     nextCh = curLine[++last];
   }
-  if (hintOpts && (hintOpts.isLineProps || hintOpts.isEnable || hintOpts.isDisable || hintOpts.isDelete)) {
+  var curItem = curLine.substring(start, last);
+  if (isSpecHint) {
     end = last;
+    if (len === 1 && isExactMatch(curItem, list)) {
+      return;
+    }
   } else {
-    var curItem = curLine.slice(start, last);
     var index = curItem.indexOf(':');
     if (index !== -1 && !HTTP_RE.test(curItem.substring(end))) {
       end = start + index + 1;

@@ -52,7 +52,6 @@ var INSPECTOR_HTML = fs.readFileSync(path.join(__dirname, '../../../assets/tab.h
 var MODAL_HTML = fs.readFileSync(path.join(__dirname, '../../../assets/modal.html'));
 var MENU_URL = '???_WHISTLE_PLUGIN_EXT_CONTEXT_MENU_' + config.port + '???';
 var INSPECTOR_URL = '???_WHISTLE_PLUGIN_INSPECTOR_TAB_' + config.port + '???';
-var UP_PATH_REGEXP = /(?:^|[\\/])\.\.(?:[\\/]|$)/;
 var KEY_RE_G = /\${[^{}\s]+}|{\S+}/g;
 var COMMENT_RE = /#[^\r\n]*$/mg;
 
@@ -358,7 +357,7 @@ function checkAllowOrigin(req) {
 }
 
 function cgiHandler(req, res) {
-  if (UP_PATH_REGEXP.test(req.path) || !checkInternalPath(req)) {
+  if (common.existsUpPath(req.path) || !checkInternalPath(req)) {
     return res.status(403).end('Forbidden');
   }
   if (checkAllowOrigin(req)) {

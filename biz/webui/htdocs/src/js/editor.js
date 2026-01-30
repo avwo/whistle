@@ -28,7 +28,6 @@ var ReactDOM = require('react-dom');
 var CodeMirror = require('codemirror');
 var message = require('./message');
 var util = require('./util');
-var dataCenter = require('./data-center');
 
 var findDOMNode = ReactDOM.findDOMNode;
 var themes = util.EDITOR_THEMES;
@@ -60,7 +59,7 @@ var events = require('./events');
 
 require('./rules-mode');
 var DEFAULT_THEME = 'cobalt';
-var DEFAULT_FONT_SIZE = '16px';
+var DEFAULT_FONT_SIZE = '14px';
 var RULES_COMMENT_RE = /^(\s*)#\s*/;
 var JS_COMMENT_RE = /^(\s*)\/\/+\s?/;
 var NO_SPACE_RE = /\S/;
@@ -324,9 +323,10 @@ var Editor = React.createClass({
     self._init(true);
     $(elem).find('.CodeMirror').addClass('fill');
     setTimeout(resize, 10);
-    $(window).on('resize', resetDebounce);
-    events.on('editorResize', resetDebounce);
+    $(window).on('resize', resetThrottle);
+    events.on('editorResize', resetThrottle);
     function resize() {
+      timeout = null;
       var height = elem.offsetHeight || 0;
       var width = elem.offsetWidth || 0;
       if (height < 10 || width < 10) {
@@ -336,10 +336,8 @@ var Editor = React.createClass({
         editor.setSize(width, height);
       }
     }
-    function resetDebounce() {
-      timeout && clearTimeout(timeout);
-      timeout = null;
-      timeout = setTimeout(resize, 30);
+    function resetThrottle() {
+      timeout = timeout || setTimeout(resize, 30);
     }
     var getCh = function (ch, dis) {
       return Math.max(0, ch + dis);
@@ -409,11 +407,7 @@ var Editor = React.createClass({
           if (!helpUrl) {
             return;
           }
-          if (dataCenter.whistleId) {
-            util.showAssistant(helpUrl);
-          } else {
-            window.open(helpUrl);
-          }
+          window.open(helpUrl);
           e.stopPropagation();
           e.preventDefault();
           return true;

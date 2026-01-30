@@ -40,7 +40,6 @@ var ImportDialog = require('./import-dialog');
 var ExportDialog = require('./export-dialog');
 var HttpsSettings = require('./https-settings');
 var ServiceDialog = require('./service-dialog');
-var Assistant = require('./assistant');
 var Icon = require('./icon');
 var CloseBtn = require('./close-btn');
 
@@ -1400,11 +1399,7 @@ var Index = React.createClass({
         if (!e.ctrlKey && !e.metaKey) {
           if (code === 112) {
             e.preventDefault();
-            if (dataCenter.whistleId) {
-              util.showAssistant();
-            } else {
-              window.open(util.getDocUrl('gui/' + name + '.html'));
-            }
+            window.open(util.getDocUrl('gui/' + name + '.html'));
           } else if (code === 116) {
             e.preventDefault();
           }
@@ -5030,7 +5025,6 @@ var Index = React.createClass({
         {/* 初始化 EditorDialog 给 Rules 里面的快捷键使用 */}
         <EditorDialog textEditor standalone />
         <ServiceDialog />
-        <Assistant />
       </div>
     );
   }

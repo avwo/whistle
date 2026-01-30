@@ -678,6 +678,14 @@ var ReqData = React.createClass({
         hideBackBtn();
       }
     });
+    events.on('checkViewInspectors', function(_, reqId) {
+      self._curComposerReqId = reqId && { reqId: reqId };
+      reqId && self.props.modal.getItem(reqId) && self.showViewInspectorsBtn(true);
+    });
+    events.on('setActiveSession', function(_, reqId) {
+      var item = self.props.modal.getItem(reqId);
+      item && self.triggerActiveItem(item);
+    });
   },
   onDragStart: function (e) {
     var target = $(e.target).closest('.w-req-data-item');
@@ -1465,6 +1473,13 @@ var ReqData = React.createClass({
   filterSessionsName: function (e) {
     this.setState({ sessionsName: util.formatFilename(e.target.value) });
   },
+  showViewInspectorsBtn: function(visible) {
+    var composerReqId = this._curComposerReqId;
+    if (composerReqId && composerReqId.visible !== visible) {
+      events.trigger('showViewInspectorsBtn', visible);
+      composerReqId.visible = visible;
+    }
+  },
   render: function () {
     var self = this;
     var state = this.state;
@@ -1478,9 +1493,13 @@ var ReqData = React.createClass({
     var filterText = (state.filterText || '').trim();
     var record = state.record;
     var notQuery = storage.get('urlType') === '-';
+    var composerReqId = self._curComposerReqId;
+    var len = list.length;
+    var hasChanged = !len;
     self.startIndex = null;
     self.endIndex = null;
     self.visibleList = list;
+    hasChanged && self.showViewInspectorsBtn(false);
 
     return (
       <div className={'fill w-req-data-con v-box' + (self.props.hide ? ' hide' : '')}>
@@ -1530,10 +1549,14 @@ var ReqData = React.createClass({
                     rowHeight={isTreeView ? TREE_ROW_HEIGHT : 28}
                     width={size.width}
                     height={size.height}
-                    rowCount={list.length}
+                    rowCount={len}
                     rowRenderer={function (options) {
                       var index = options.index;
                       var item = list[index];
+                      if (composerReqId && item.id === composerReqId.reqId) {
+                        hasChanged = true;
+                        self.showViewInspectorsBtn(true);
+                      }
                       if (isTreeView) {
                         if (self.startIndex == null) {
                           self.startIndex = index;
@@ -1542,6 +1565,7 @@ var ReqData = React.createClass({
                         return self.renderTreeNode(item, options);
                       }
                       var order = hasKeyword ? index + 1 : item.order;
+                      !hasChanged && index === len - 1 && self.showViewInspectorsBtn(false);
                       return (
                         <Row
                           style={options.style}

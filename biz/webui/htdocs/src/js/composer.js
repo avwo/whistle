@@ -20,6 +20,7 @@ var LazyInit = require('./lazy-init');
 var Frames = require('./frames');
 var Icon = require('./icon');
 var CloseBtn = require('./close-btn');
+var ViewInspector = require('./view-inspector');
 
 var METHODS = [
   'GET',
@@ -250,7 +251,7 @@ var Composer = React.createClass({
     self.update(self.props.modal);
     this.refs.uploadBody.update(this.uploadBodyData);
     this.hintElem = $(findDOMNode(this.refs.hints));
-    dataCenter.onComposerTimeChange = function(time) {
+    dataCenter.onTakeTimeChange = function(time) {
       self.setState({ composerTime: time });
     };
     events.on('_setComposerData', function(_, data) {
@@ -1010,9 +1011,9 @@ var Composer = React.createClass({
   handleBody: function(res) {
     var self = this;
     var reqId = res && res.reqId;
-    var preReqId = self._curReqId;
+    var preReqId = self._curDataId;
     preReqId && dataCenter.offComposeData(preReqId);
-    self._curReqId = reqId;
+    self._curDataId = reqId;
     if (!reqId) {
       return;
     }
@@ -1082,6 +1083,7 @@ var Composer = React.createClass({
         data.frames = [];
         data.inComposer = true;
       }
+      var reqId;
       self.handleBody(res);
       if (!data || data.ec !== 0) {
         var status = xhr && xhr.status;
@@ -1094,6 +1096,7 @@ var Composer = React.createClass({
         state.result = { url: params.url, req: '', res: { statusCode: em } };
       } else {
         if (res) {
+          reqId = res.headers && res.headers['x-whistle-req-id'];
           res.rawHeaders = dataCenter.getRawHeaders(
               res.headers,
               res.rawHeaderNames
@@ -1109,6 +1112,7 @@ var Composer = React.createClass({
         data.req = '';
         state.result = data;
       }
+      state.reqId = reqId;
       self.setState(state);
     });
     params.date = Date.now();
@@ -1927,6 +1931,7 @@ var Composer = React.createClass({
                   <Properties
                     modal={resProps}
                   />
+                  <ViewInspector reqId={state.reqId} />
                 </div>
               </LazyInit>
               <LazyInit inited={showResponse}>

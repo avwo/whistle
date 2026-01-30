@@ -17,7 +17,7 @@
   z-index: var(--z-modal-max);
 }
 
-.w-large-dialog button.close, .w-custom-dialog button.close, .w-assistant-dialog button.close {
+.w-large-dialog button.close, .w-custom-dialog button.close {
   font-size: 20px;
   line-height: 6px;
   padding: 4px 3px 8px;
@@ -30,7 +30,7 @@
   z-index: 1;
 }
 
-.w-large-dialog button.close:hover, .w-custom-dialog button.close:hover, .w-assistant-dialog button.close:hover {
+.w-large-dialog button.close:hover, .w-custom-dialog button.close:hover {
   color: var(--c-heavy);
 }
 

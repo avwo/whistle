@@ -240,11 +240,6 @@ function showService(path, delay) {
 }
 exports.showService = showService;
 
-
-exports.showAssistant = function(text) {
-  events.trigger('showAssistant', text);
-};
-
 exports.hideService = function() {
   events.trigger('hideService');
 };
