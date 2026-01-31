@@ -259,7 +259,7 @@ var CertsInfoDialog = React.createClass({
                           onClick={function () {
                             item.readOnly
                               ? self.showRemoveTips(item)
-                              : self.showRemoveTips(item);
+                              : self.removeCert(item);
                           }}
                         >
                           {item.readOnly ? 'View path' : 'Delete'}
