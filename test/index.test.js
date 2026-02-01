@@ -94,6 +94,7 @@ var proxy = startWhistle({
   debugMode: true,
   localUIHost: 'local.whistle.com|local2.whistle.com&localn.whistle.com',
   pluginHost: 'test=test.local.whistle.com|b.test.local.whistle.com&test3.local.whistle.com,',
+  mode: 'enableRequestHeaderRules', // 允许通过请求头带规则，主要用于第三方扩张
   rules: {
     Default: defaultRules,
     test: {
