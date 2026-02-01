@@ -442,6 +442,10 @@ function toLowerCase(str) {
 var certs = createCgiObj(
   {
     remove: 'cgi-bin/certs/remove',
+    active: {
+      url:'cgi-bin/certs/active',
+      contentType: 'application/json'
+    },
     upload: {
       url: 'cgi-bin/certs/upload',
       contentType: 'application/json'

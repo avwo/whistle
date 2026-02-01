@@ -53,6 +53,7 @@ var CertsInfoDialog = React.createClass({
         dir: cert.dir,
         filename: filename,
         domain: cert.dnsName,
+        disabled: cert.disabled,
         mtime: cert.mtime,
         type: cert.type,
         validity: startDate.toLocaleString() + ' ~ ' + endDate.toLocaleString(),
@@ -215,6 +216,13 @@ var CertsInfoDialog = React.createClass({
       });
     });
   },
+  handleActive: function (e) {
+    var target = e.target;
+    var checked = target.checked;
+    var filename = target.getAttribute('data-filename');
+    var data = JSON.stringify({ filename: filename, disabled: !checked });
+    dataCenter.certs.active(data, this.handleCgi);
+  },
   showUpload: function () {
     findDOMNode(this.refs.uploadCerts).click();
   },
@@ -235,6 +243,7 @@ var CertsInfoDialog = React.createClass({
           <table className="table w-hover-body">
             <thead>
               <th className="w-certs-order">#</th>
+              <th className="w-certs-active">Active</th>
               <th className="w-certs-filename">Filename</th>
               <th className="w-certs-domain">DNS Name</th>
               <th className="w-certs-validity">Validity</th>
@@ -245,9 +254,13 @@ var CertsInfoDialog = React.createClass({
                 list.map(function (item, i) {
                   return (
                     <tr
-                      className={item.isInvalid ? 'w-cert-invalid' : undefined}
+                      className={(item.isInvalid ? 'w-cert-invalid' : '') + (item.disabled ? ' w-certs-disabled' : '')}
                     >
                       <th className="w-certs-order">{i + 1}</th>
+                      <td className="w-certs-active">
+                        {item.isRoot ? null :  <input type="checkbox" data-filename={item.filename}
+                        onChange={self.handleActive} checked={!item.disabled} />}
+                      </td>
                       <td
                         className="w-certs-filename"
                         title={item.filename}
