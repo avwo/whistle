@@ -121,7 +121,7 @@ function showUsage(isRunning, options, restart) {
 exports.showUsage = showUsage;
 
 function getDataDir() {
-  return path.resolve(config.getHomedir(), '.startingAppData');
+  return path.resolve(common.getHomedir(), '.startingAppData');
 }
 
 function formatOptions(options) {
