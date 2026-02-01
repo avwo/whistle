@@ -158,18 +158,8 @@ var ResDetail = React.createClass({
       var status = res.statusCode;
       var showImg = name === btns[2].name;
       if (status != null) {
-        headersStr = util.objectToString(headers, res.rawHeaderNames);
-        trailerStr = trailers
-          ? util.objectToString(trailers, res.rawTrailerNames)
-          : '';
-        headersStr =
-          [
-            'HTTP/' + (modal.req.httpVersion || '1.1'),
-            status,
-            util.getStatusMessage(res)
-          ].join(' ') +
-          '\r\n' +
-          headersStr;
+        headersStr = util.getResRawHeaders(modal);
+        trailerStr = trailers ? util.objectToString(trailers, res.rawTrailerNames) : '';
         raw = headersStr + '\r\n\r\n' + body;
         var rawType = !modal.resError && util.getRawType(headers);
         var type = util.getContentType(rawType);

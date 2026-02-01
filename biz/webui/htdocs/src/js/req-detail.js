@@ -93,11 +93,7 @@ var ReqDetail = React.createClass({
         null,
         decodeURIComponent
       );
-      var url = modal.url;
-      var realUrl = modal.realUrl;
-      if (!realUrl || !/^(?:http|wss)s?:\/\//.test(realUrl)) {
-        realUrl = url;
-      }
+      var realUrl = util.getRealUrl(modal);
       var index = realUrl.indexOf('?');
       query = index == -1 ? '' : realUrl.substring(index + 1);
       query = query && util.parseQueryString(
@@ -121,15 +117,7 @@ var ReqDetail = React.createClass({
       } else if (json && json.isJSONText) {
         form = json;
       }
-      headersStr = util.objectToString(headers, req.rawHeaderNames);
-      headersStr =
-        [
-          req.method,
-          req.method == 'CONNECT' ? headers.host : util.getPath(realUrl),
-          'HTTP/' + (req.httpVersion || '1.1')
-        ].join(' ') +
-        '\r\n' +
-        headersStr;
+      headersStr = util.getReqRawHeaders(modal);
       raw = headersStr + '\r\n\r\n' + body;
       if (modal.frames) {
         tips = { isFrames: true };

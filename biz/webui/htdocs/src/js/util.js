@@ -801,6 +801,29 @@ function objectToString(obj, rawNames, noEncoding) {
 
 exports.objectToString = objectToString;
 
+function getRealUrl(modal) {
+  var realUrl = modal.realUrl;
+  return /^(?:http|wss)s?:\/\//.test(realUrl) ? realUrl : modal.url;
+}
+
+exports.getRealUrl = getRealUrl;
+
+exports.getReqRawHeaders = function(modal) {
+  var req = modal.req;
+  var realUrl = getRealUrl(modal);
+  var headers = objectToString(req.headers, req.rawHeaderNames);
+  return [ req.method, req.method == 'CONNECT' ? headers.host : getPath(realUrl),
+    'HTTP/' + (req.httpVersion || '1.1') ].join(' ') + '\r\n' +  headers;
+};
+
+exports.getResRawHeaders = function(modal) {
+  var res = modal.res || '';
+  var headers = objectToString(res.headers, res.rawHeaderNames);
+  var status = res.statusCode;
+  var msg = getStatusMessage(res);
+  return ['HTTP/' + (modal.req.httpVersion || '1.1'), status, msg].join(' ') + '\r\n' + headers;
+};
+
 function toLowerCase(str) {
   return typeof str == 'string' ? str.trim().toLowerCase() : str;
 }
@@ -834,14 +857,16 @@ function removeProtocol(url) {
 
 exports.removeProtocol = removeProtocol;
 
-exports.getPath = function (url) {
-  if (!url) {
+function getPath(url) {
+  if (!notEStr(url)) {
     return '';
   }
   url = removeProtocol(url);
   var index = url.indexOf('/');
   return index == -1 ? '/' : url.substring(index);
-};
+}
+
+exports.getPath = getPath;
 
 var parseJ = function (str, resolve) {
   var result;

@@ -112,9 +112,9 @@ function getValue(item, key) {
   case 'resJson':
     return util.getJsonStr(res);
   case 'reqRaw':
-    return util.objectToString(req.headers, req.rawHeaderNames) + '\r\n\r\n' + util.getBody(req, true);
+    return util.getReqRawHeaders(item) + '\r\n\r\n' + util.getBody(req, true);
   case 'resRaw':
-    return util.objectToString(res.headers, res.rawHeaderNames) + '\r\n\r\n' + util.getBody(res);
+    return util.getResRawHeaders(item) + '\r\n\r\n' + util.getBody(res);
   case 'statusCode':
     return res.statusCode;
   }
