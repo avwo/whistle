@@ -29,30 +29,30 @@ var curHintProto,
 var hintUrl, hintCgi, waitingRemoteHints;
 var extraKeys = { 'Alt-/': 'autocomplete' };
 var FILTERS = [
-  '<keyword or regexp of url>',
-  'm:<keyword or regexp of request method>',
-  'b:<keyword or regexp of request body>',
-  's:<keyword or regexp of response status code>',
-  'clientIp:<keyword or regexp of client ip>',
-  'serverIp:<keyword or regexp of server ip>',
-  'chance:<probability [0, 1]>',
-  'reqH.headerKey=<keyword or regexp of request header key value>',
-  'resH.headerKey=<keyword or regexp of response header key value>'
+  '<keyword or regex for URL>',
+  'm:<keyword or regex for HTTP method>',
+  'b:<keyword or regex for request body>',
+  's:<keyword or regex for response status code>',
+  'clientIp:<keyword or regex for client IP address>',
+  'serverIp:<keyword or regex for server IP address>',
+  'chance:<probability between 0 and 1>',
+  'reqH.header-key:<keyword or regex for request header value>',
+  'resH.header-key:<keyword or regex for response header value>'
 ];
 var HEADERS = [
-  'reqH.headerKey:keywordOrRegExp=<replacement value>',
-  'resH.headerKey:keywordOrRegExp=<replacement value>',
-  'trailer.headerKey:keywordOrRegExp=<replacement value>'
+  'reqH.header-key:(keyword|regex)=<replacement>',
+  'resH.header-key:(keyword|regex)=<replacement>',
+  'trailer.header-key:(keyword|regex)=<replacement>'
 ];
 var DEL_HINTS = [
   'pathname.<index>',
-  'urlParams.<url param key>',
-  'reqHeaders.<request header key>',
-  'resHeaders.<response header key>',
-  'reqCookies.<request cookie key>',
-  'resCookies.<response cookie key>',
-  'reqBody.<object key path: k1.k2.k3>',
-  'resBody.<object key path: k1.k2.k3>',
+  'urlParams.<param-key>',
+  'reqHeaders.<header-key>',
+  'resHeaders.<header-key>',
+  'reqCookies.<cookie-key>',
+  'resCookies.<cookie-key>',
+  'reqBody.<key.path>',
+  'resBody.<key.path>',
   'pathname',
   'urlParams',
   'reqType',
@@ -236,8 +236,9 @@ function getHints(keyword) {
 
 function getFilterHint(filter) {
   var index = filter.indexOf('<');
+  var text = index === -1 ? filter : filter.substring(0, index);
   return {
-    text: index === -1 ? filter : filter.substring(0, index),
+    text: text.replace('.header-key', '._headerKey_').replace('(keyword|regex)=', '_keywordOrRegEx_='),
     displayText: filter
   };
 }
@@ -262,12 +263,7 @@ function getFilterHints(keyword, filter1, filter2) {
 
 function getSpecHints(keyword, protocol, hints) {
   var getHint = function(hint) {
-    hint = protocol + hint;
-    var index = hint.indexOf('<');
-    return {
-      text: index === -1 ? hint : hint.substring(0, index),
-      displayText: hint
-    };
+    return getFilterHint(protocol + hint);
   };
   if (!keyword) {
     return hints.map(getHint);

@@ -93,7 +93,6 @@ var innerRules = [
   'statusCode'
 ];
 var pluginRules = [];
-var pluginNameList = [];
 var pluginVarList = [];
 var allPluginNameList = [];
 var forwardRules = innerRules.slice();
@@ -140,7 +139,6 @@ exports.setPlugins = function (pluginsState) {
   var disabledPlugins = pluginsState.disabledPlugins;
   pluginsOptions = pluginsState.pluginsOptions;
   pluginRules = [];
-  pluginNameList = [];
   pluginVarList = [];
   allPluginNameList = [];
   forwardRules = innerRules.slice();
@@ -157,7 +155,6 @@ exports.setPlugins = function (pluginsState) {
       if (!disabledPlugins[name]) {
         var vars = plugin.pluginVars;
         if (vars) {
-          pluginNameList.push(name);
           var hintSuffix = vars.hintSuffix;
           if (hintSuffix) {
             hintSuffix.forEach(function(suffix) {
@@ -199,11 +196,6 @@ exports.getForwardRules = function () {
 
 exports.getPluginRules = function () {
   return pluginRules;
-};
-
-
-exports.getPluginNameList = function () {
-  return pluginNameList;
 };
 
 exports.getPluginVarList = function() {

@@ -4,6 +4,7 @@ var util = require('../lib/util');
 var handleUIReq = require('./webui/lib').handleRequest;
 var handleWeinreReq = require('./weinre');
 var config = require('../lib/config');
+var common = require('../lib/util/common');
 
 var localIpCache = util.localIpCache;
 var WEBUI_PATH = config.WEBUI_PATH;
@@ -91,7 +92,7 @@ module.exports = function(req, res, next) {
       if (isWebUI) {
         req.fromInternalPath = true;
         var hostname = (req._fwdHost && util.parseHost(req._fwdHost)[0]) || host;
-        headers['x-whistle-origin-host'] = hostname || '*';
+        headers[common.ORIGIN_HOST_HEADER] = hostname || '*';
       }
     }
   } else {

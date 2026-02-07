@@ -40,6 +40,7 @@ var DONT_CHECK_PATHS = ['/cgi-bin/server-info', '/cgi-bin/plugins/is-enable', '/
   '/preview.html', '/cgi-bin/rootca', '/cgi-bin/check-update', '/cgi-bin/log/set', '/cgi-bin/status'];
 var GUEST_PATHS = ['/cgi-bin/composer', '/cgi-bin/socket/data', '/cgi-bin/abort', '/cgi-bin/socket/abort',
   '/cgi-bin/socket/change-status', '/cgi-bin/sessions/export'];
+var CORS_PATHS = ['/cgi-bin/status',  '/cgi-bin/rootca'];
 var PLUGIN_PATH_RE = /^\/(whistle|plugin)\.([^/?#]+)(\/)?/;
 var STATIC_SRC_RE = /\.(?:ico|js|css|png)$/i;
 var UPLOAD_URLS = ['/cgi-bin/values/upload', '/cgi-bin/composer', '/cgi-bin/download'];
@@ -147,7 +148,7 @@ function verifyLogin(req, res, auth) {
   if (correctKey === lkey) {
     return true;
   }
-  var headerAuth = parseAuth(req.headers.authorization);
+  var headerAuth = parseAuth(req.headers.authorization || req.headers['proxy-authorization']);
   var queryAuth = parseAuth(req.query.authorization);
   if (!isGuest && config.encrypted) {
     headerAuth.pass = headerAuth.pass && createHash(headerAuth.pass);
@@ -329,7 +330,7 @@ function checkInternalPath(req) {
   if (config.allowAllOrigin || ALLOW_CROSS_URLS.indexOf(req.path) !== -1) {
     return true;
   }
-  var host = req.headers['x-whistle-origin-host'];
+  var host = req.headers[common.ORIGIN_HOST_HEADER];
   return !host || isAllowHost(host);
 }
 
@@ -342,7 +343,7 @@ function checkAllowOrigin(req) {
   if (config.allowAllOrigin) {
     return true;
   }
-  if (req.path === '/cgi-bin/rootca' || req.path === '/cgi-bin/status') {
+  if (CORS_PATHS.indexOf(req.path) !== -1) {
     return true;
   }
   if (!config.allowOrigin) {
@@ -449,8 +450,6 @@ app.all(PLUGIN_PATH_RE, function(req, res) {
     var options = parseReqUrl(req);
     var headers = req.headers;
     headers[config.PLUGIN_HOOK_NAME_HEADER] = config.PLUGIN_HOOKS.UI;
-    headers['x-whistle-remote-address'] = req._remoteAddr || util.getRemoteAddr(req);
-    headers['x-whistle-remote-port'] = req._remotePort || util.getRemotePort(req);
     req.url = options.path.replace(result[0].slice(0, -1), '');
     var openInModal = req.url.indexOf('?openInModal=5b6af7b9884e1165') !== -1;
     util.transformReq(req, res, ports.uiPort, null, openInModal ? MODAL_HTML : null);

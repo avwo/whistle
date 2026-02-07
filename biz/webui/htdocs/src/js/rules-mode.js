@@ -3,7 +3,6 @@ var events = require('./events');
 var protocols = require('./protocols');
 var forwardRules = protocols.getForwardRules();
 var pluginRules = protocols.getPluginRules();
-var pluginNameList = protocols.getPluginNameList();
 var DOT_PATTERN_RE = /^\.[\w-]+(?:[?$]|$)/;
 var DOT_DOMAIN_RE = /^\.[^./?]+\.[^/?]/;
 var IPV4_PORT_RE =
@@ -11,12 +10,11 @@ var IPV4_PORT_RE =
 var FULL_IPV6_RE = /^[\da-f]{1,4}(?::[\da-f]{1,4}){7}$/;
 var SHORT_IPV6_RE = /^[\da-f]{1,4}(?::[\da-f]{1,4}){0,6}$/;
 var IP_WITH_PORT_RE = /^\[([:\da-f.]+)\](?::(\d+))?$/i;
-var PLUGIN_VAR_RE = /^%([a-z\d_\-]+)[=.]/;
+var PLUGIN_VAR_RE = /^%[a-z\d_\-]+[=.]/;
 
 events.on('updatePlugins', function () {
   forwardRules = protocols.getForwardRules();
   pluginRules = protocols.getPluginRules();
-  pluginNameList = protocols.getPluginNameList();
 });
 
 function notPort(port) {
@@ -185,7 +183,7 @@ CodeMirror.defineMode('rules', function () {
   }
 
   function isPluginVar(str) {
-    return PLUGIN_VAR_RE.test(str) && RegExp.$1;
+    return PLUGIN_VAR_RE.test(str);
   }
 
   function isRegUrl(url) {
@@ -287,14 +285,10 @@ CodeMirror.defineMode('rules', function () {
         if (isRegExp(str) || isRegUrl(str) || isPortPattern(str)) {
           return 'attribute js-attribute';
         }
-        var pluginName;
         if (/^@/.test(str)) {
           type = 'atom js-at js-type';
-        } else if ((pluginName = isPluginVar(str))) {
+        } else if (isPluginVar(str)) {
           type = 'variable-2 js-plugin-var js-type';
-          if (pluginNameList.indexOf(pluginName) === -1) {
-            type += ' error-rule';
-          }
         } else if (isWildcard(str)) {
           type = 'attribute js-attribute';
         } else if (isIP(str)) {

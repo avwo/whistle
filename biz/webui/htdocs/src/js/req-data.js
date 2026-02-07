@@ -37,9 +37,14 @@ var NOT_BOLD_RULES = {
   G: 1,
   ignore: 1
 };
-var HINTS = ['<keyword or regexp of url>', 'd:<keyword or regexp of url domain>',
-  'm:<keyword or regexp of request method>', 's:<keyword or regexp of response status code>',
-  'h:<keyword or regexp of request or response headers>', 'b:<keyword or regexp of request or response body>'];
+var HINTS = [
+  '<keyword or regex for URL>',
+  'd:<keyword or regex for domain>',
+  'm:<keyword or regex for HTTP method>',
+  's:<keyword or regex for HTTP status code>',
+  'h:<keyword or regex for request or response headers>',
+  'b:<keyword or regex for request or response body>'
+];
 var contextMenuList = [
   {
     name: 'Open',
