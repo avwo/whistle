@@ -64,9 +64,9 @@ assets/launcher
 /biz/webui/htdocs/src
 /docs
 /.history
-CHANGELOG.md
+CHANGELOG*
 Dockerfile
-/README-zh_CN.md
+/README-en_US.md
 /biz/webui/htdocs/js/decode.js
 
 
