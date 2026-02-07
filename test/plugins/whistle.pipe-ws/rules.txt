@@ -1,1 +1,2 @@
-ws://* pipe://pipe-ws
+ws://* pipe://pipe-ws(test-ws&[optional]) %pipe-ws.private=ws
+%pipe-ws.global=ws

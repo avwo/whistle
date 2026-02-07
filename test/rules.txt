@@ -31,6 +31,10 @@ test.internal.path.com proxy://127.0.0.1:8080
 %test32=test1
 %test32=test2
 
+http://test1.pass.through.com/index.html pass://passThrough 127.0.0.1:8080 includeFilter://clientIp:3.3.5.5
+http://test2.pass.through.com/index.html pass://passThrough 127.0.0.1:8080 includeFilter://reqH.x-whistle-client-id:avenwu-test-id
+http://test3.pass.through.com/index.html pass://passThrough 127.0.0.1:8080 includeFilter://remoteAddress:6.6.6.6
+http://test-*.pass.through.com/index.html pass://passThrough 127.0.0.1:8080
 
 params.test.whistlejs.com/index.html resMerge://(resMerge=test) resType://js
 weinre1.test2.whistlejs.com:1234 weinre://xxx file://(hello) log://test resType://html enable://capture ignore://plugin

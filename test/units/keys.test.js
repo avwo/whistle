@@ -98,7 +98,7 @@ module.exports = function() {
     url: 'http://header.test.weso.org/test/script/proxy?doNotParseJson',
     headers: {
       test: 'abc',
-      'x-whistle-rule-value': encodeURIComponent('* file://{test.txt}')
+      'x-whistle-rule-value': encodeURIComponent('* file://{test.txt} %pipe-http=doNotParseJson\n%pipe-http=header')
     }
   }, function(res, data) {
     data.trim().should.equal('assets/values');

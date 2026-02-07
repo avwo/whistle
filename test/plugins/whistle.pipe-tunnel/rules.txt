@@ -1,1 +1,2 @@
-tunnel://* pipe://pipe-tunnel
+tunnel://* pipe://pipe-tunnel(test-tunnel*[optional]) %pipe-tunnel.private=123
+%pipe-tunnel.global=321

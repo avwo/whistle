@@ -2,6 +2,7 @@
   "name": "whistle.pipe-http",
   "version": "1.0.0",
   "whistleConfig": {
+    "pluginVars": true,
     "hintList": [
       {
         "value": "123456",

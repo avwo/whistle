@@ -182,6 +182,7 @@ function connect(host, port, callback) {
       'user-agent': 'test/whistle',
       'proxy-connection': 'keep-alive',
       'x-whistle-policy': 'tunnel',
+      'x-forwarded-for': '3.3.3.3',
       host: host + (port ? ':' + port : '')
     }
   });

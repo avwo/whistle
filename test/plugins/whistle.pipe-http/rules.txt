@@ -1,1 +1,2 @@
-http://* pipe://pipe-http
+http://* pipe://pipe-http(test-http+[optional]) %pipe-http.private=http @test
+%pipe-http.global=http

@@ -1,7 +1,6 @@
 
 function getRuleValue(req) {
-  var ruleValue = req.originalReq.ruleValue;
-  return ruleValue ? decodeURIComponent(ruleValue) : '';
+  return req.originalReq.ruleValue;
 }
 
 exports.getRuleValue = getRuleValue;
