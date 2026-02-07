@@ -31,6 +31,21 @@ req.originalReq.pluginVars; // 精细化配置的变量，如 ['abc', 'enableAut
 ## 开启规则自动提示
 如果通过插件变量的配置项是固定的，可以通过插件的 `package.json` 里面的 `whistleConfig` 字段配置可选项，这样在规则中可以自动提醒：
 
+#### 简单提示
+``` js
+{
+  "name": "@scope/whistle.test-plugin-vars",
+  ...
+  "whistleConfig": {
+    "pluginVars": true,
+  ...
+}
+```
+完成上述配置后，在 Whistle 的 Rules 编辑器中输入 % 字符时，将自动提示以下格式的插件变量：
+``` txt
+%test-plugin-vars=
+```
+
 #### 匿名 Key 值提示
 ``` js
 {

@@ -31,6 +31,21 @@ req.originalReq.pluginVars; // Variables for fine-grained configuration, such as
 ## Enable automatic rule prompts
 If the configuration items via plugin variables are fixed, you can configure optional options in the `whistleConfig` field in the plugin's `package.json`, so that automatic prompts can be added to the rules:
 
+#### Simple Prompt
+``` json
+{
+  "name": "@scope/whistle.test-plugin-vars",
+  ...
+  "whistleConfig": {
+    "pluginVars": true,
+  ...
+}
+```
+After completing the above configuration, when you type the `%` character in the Whistle Rules editor, a plugin variable in the following format will be automatically suggested:
+``` txt
+%test-plugin-vars=
+```
+
 #### Anonymous Key Value Hints
 ``` js
 {
