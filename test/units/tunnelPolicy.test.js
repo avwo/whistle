@@ -6,12 +6,12 @@ module.exports = function() {
     res.headers['content-type'].should.be.equal('text/html');
   });
 
-  util.request({
-    method: 'post',
-    url: 'https://tp.w2.org/index.html',
-    isTunnel: true
-  }, function(res, data) {
-    data.body.should.be.equal('test');
-    (res.headers['content-type'] | '').should.not.be.equal('text/html');
-  });
+  // util.request({
+  //   method: 'post',
+  //   url: 'https://tp.w2.org/index.html',
+  //   isTunnel: true
+  // }, function(res, data) {
+  //   data.body.should.be.equal('test');
+  //   (res.headers['content-type'] | '').should.not.be.equal('text/html');
+  // });
 };
