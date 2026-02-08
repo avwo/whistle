@@ -150,4 +150,17 @@ module.exports = function() {
   }, function(res, data) {
     data.type.a.b.c.should.be.equal('readJson');
   });
+
+  util.request({
+    url: 'http://test-res.pass.through.com/index.html',
+    method: 'POST',
+    body: JSON.stringify({ a: { b: { c: 'test3' } } }),
+    headers: {
+      'x-forwarded-for': '3.3.5.5',
+      'x-test-cmd': 'reqJson+resJson'
+    }
+  }, function(res, data) {
+    data.type.a.b.c.should.be.equal('resJson');
+    JSON.parse(data.body).a.b.c.should.be.equal('reqJson');
+  });
 };

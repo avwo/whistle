@@ -90,6 +90,29 @@ exports.server = function(server, options) {
         }
       });
       return;
+    case 'reqJson+resJson':
+      req.passThrough({
+        transformReq: function(req, next) {
+          // getBuffer, getText, getJson 都可以用来获取请求体，参数和回调函数的用法也完全一样
+          req.getJson(function(err, data) {
+            if (err) {
+              return next();
+            }
+            data.a.b.c = 'reqJson';
+            next(JSON.stringify(data));
+          });
+        },
+        transformRes: function(svrRes, next) {
+          svrRes.getJson(function(err, data) {
+            if (err) {
+              return next();
+            }
+            data.type = {a: {b: {c: 'resJson'}}};
+            next(JSON.stringify(data));
+          });
+        }
+      });
+      return;
     default:
       req.passThrough();
     }
