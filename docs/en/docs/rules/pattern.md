@@ -282,6 +282,6 @@ www.example.com/api file://({"status":"created"}) includeFilter://m:POST
 
 ## Extended Reading
 
-- [Rule Syntax Documentation](./rules): Understand the complete rule syntax structure
+- [Rule Syntax Documentation](./rule): Understand the complete rule syntax structure
 - [Operation Instructions Documentation](./operation): Learn how to configure operation instructions
 - [Filters Documentation](./filters): Understand how to precisely control rule activation conditions

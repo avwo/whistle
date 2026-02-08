@@ -285,6 +285,6 @@ www.example.com/api file://({"status":"created"}) includeFilter://m:POST
 
 ## 扩展阅读
 
-- [规则语法文档](./rules)：了解完整的规则语法结构
+- [规则语法文档](./rule)：了解完整的规则语法结构
 - [操作指令文档](./operation)：学习如何配置操作指令
 - [过滤器文档](./filters)：了解如何精确控制规则生效条件
