@@ -25,18 +25,6 @@ var columnKeys = {};
 var CMD_RE = /^:dump\s+(\d{1,15})\s*$/;
 var BODY_FILTER = /(^\s*|\s+)(content|c|b|body):/i;
 var MAX_LEN = 64;
-var NOT_BOLD_RULES = {
-  plugin: 1,
-  pac: 1,
-  reqWrite: 1,
-  resWrite: 1,
-  reqWriteRaw: 1,
-  resWriteRaw: 1,
-  responseFor: 1,
-  style: 1,
-  G: 1,
-  ignore: 1
-};
 var HINTS = [
   '<keyword or regex for URL>',
   'd:<keyword or regex for domain>',
@@ -177,7 +165,7 @@ function getRuleStyle(data) {
   if (rule && (rule.isLoc || rule.isSpec)) {
     return ' w-has-local';
   }
-  return hasRules(rules) ? ' w-has-rules' : '';
+  return data[dataCenter.HAS_RULES_KEY] ? ' w-has-rules' : '';
 }
 
 function getClassName(data) {
@@ -198,21 +186,6 @@ function isVisible(item) {
 function isVisibleInTree(item) {
   var parent = item.parent;
   return !parent || (parent.expand && parent.pExpand);
-}
-
-function hasRules(rules) {
-  var keys = Object.keys(rules);
-  if (keys && keys.length) {
-    for (var i = 0, len = keys.length; i < len; i++) {
-      var rule = rules[keys[i]];
-      var enable = rule && rule.list && rule.list.length === 1 && rule.list[0].matcher;
-      if (rule && !NOT_BOLD_RULES[keys[i]] && enable !== 'enable://capture' &&  enable !== 'enable://intercept') {
-        return true;
-      }
-    }
-  }
-
-  return false;
 }
 
 function getStatusClass(data) {

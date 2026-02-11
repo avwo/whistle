@@ -299,6 +299,14 @@ function checkFilterType(item, filterType) {
       return false;
     }
   }
+  if (isOther || filterType === 'Rules') {
+    if (item[dataCenter.HAS_RULES_KEY]) {
+      return !isOther;
+    }
+    if (!isOther) {
+      return false;
+    }
+  }
   var rawType = util.getRawType(item.res.headers);
   var type;
   for (var i = 0, len = RAW_TYPES.length; i < len; i++) {

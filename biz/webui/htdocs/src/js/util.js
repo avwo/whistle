@@ -820,7 +820,7 @@ exports.getResRawHeaders = function(modal) {
   var res = modal.res || '';
   var headers = objectToString(res.headers, res.rawHeaderNames);
   var status = res.statusCode;
-  var msg = getStatusMessage(res);
+  var msg = status === 'captureError' ? '(Most likely caused by SSL pinning)' : getStatusMessage(res);
   return ['HTTP/' + (modal.req.httpVersion || '1.1'), status, msg].join(' ') + '\r\n' + headers;
 };
 

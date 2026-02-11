@@ -164,7 +164,7 @@ var MockDialog = React.createClass({
       valueType: 'file',
       keyName: keyName.substring(0, MAX_LEN),
       inlineKey: 'mock_' + util.getTempName() + type,
-      protocol: 'file://'
+      protocol:dataSrc === 'resRaw' ? 'rawfile://' : 'file://'
     }, this.updateRules);
     var url = findDOMNode(this.refs.url);
     setTimeout(function() {

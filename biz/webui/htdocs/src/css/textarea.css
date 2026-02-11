@@ -90,3 +90,7 @@ a.w-textview-tips {
 a.w-textview-tips:hover {
   text-decoration: underline;
 }
+
+.w-textview-tips a.glyphicon-question-sign {
+  text-decoration: none!important;
+}

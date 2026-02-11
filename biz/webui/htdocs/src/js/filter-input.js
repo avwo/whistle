@@ -10,7 +10,7 @@ var CloseBtn = require('./close-btn');
 
 var findDOMNode = ReactDOM.findDOMNode;
 var MAX_LEN = 128;
-var TYPES = ['JSON', 'HTML', 'CSS', 'JS', 'Font', 'Img', 'Media', 'WS', 'Tunnel', 'Wasm', 'Mock', 'Import', 'Composer', 'Error', 'Other'];
+var TYPES = ['JSON', 'HTML', 'CSS', 'JS', 'Font', 'Img', 'Media', 'WS', 'Tunnel', 'Wasm', 'Mock', 'Rules', 'Import', 'Composer', 'Error', 'Other'];
 var TITLES = {
   JS: 'JavaScript',
   Img: 'Image',
@@ -19,7 +19,8 @@ var TITLES = {
   Mock: 'Show mock requests',
   Error: 'Show error requests',
   Import: 'Show import sessions',
-  Composer: 'Show composer requests'
+  Composer: 'Show composer requests',
+  Rules: 'Show requests matched rules'
 };
 
 var FilterInput = React.createClass({

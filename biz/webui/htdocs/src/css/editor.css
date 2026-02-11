@@ -24,4 +24,9 @@
 
 .cm-s-cobalt.CodeMirror {
   color: var(--c-cobalt);
+  background: var(--b-cobalt);
+}
+
+.cm-s-cobalt .CodeMirror-gutters {
+  background: var(--b-cobalt);
 }

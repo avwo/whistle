@@ -71,7 +71,9 @@ var DEFAULT_CONF = {
 var composerItem;
 var manualLogout; // 手动登出
 var hasUpdater;
+var HAS_RULES_KEY = window.Symbol ? window.Symbol('hasRules') : '__hasRules';
 
+exports.HAS_RULES_KEY = HAS_RULES_KEY;
 exports.enabledRulesCount = 0;
 exports.setComposerItem = function(item) {
   composerItem = item;
@@ -1644,6 +1646,34 @@ function setAppName(item) {
   }
 }
 
+var NOT_BOLD_RULES = {
+  plugin: 1,
+  pac: 1,
+  reqWrite: 1,
+  resWrite: 1,
+  reqWriteRaw: 1,
+  resWriteRaw: 1,
+  responseFor: 1,
+  style: 1,
+  G: 1,
+  ignore: 1
+};
+
+function hasRules(rules) {
+  var keys = rules && Object.keys(rules);
+  if (keys && keys.length) {
+    for (var i = 0, len = keys.length; i < len; i++) {
+      var rule = rules[keys[i]];
+      var enable = rule && rule.list && rule.list.length === 1 && rule.list[0].matcher;
+      if (rule && !NOT_BOLD_RULES[keys[i]] && enable !== 'enable://capture' &&  enable !== 'enable://intercept') {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
 function setReqData(item) {
   var url = item.url;
   var req = item.req;
@@ -1654,6 +1684,7 @@ function setReqData(item) {
   var resHeaders = res.headers || '';
   setAppName(item);
   item.hostIp = res.ip || defaultValue;
+  item[HAS_RULES_KEY] = item[HAS_RULES_KEY] || hasRules(item.rules);
   item.clientIp = req.ip || '127.0.0.1';
   item.date = item.date || util.toLocaleString(new Date(item.startTime));
   item.clientPort = req.port;

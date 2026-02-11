@@ -240,12 +240,14 @@ var Timeline = React.createClass({
               load +
               '\nTotal: ' +
               total;
+            var reqStream = isStream && requestRate;
+            var resStream = isStream && responseRate;
 
             return (
               <li
                 key={item.id}
                 title={title}
-                className="w-timeline-multi"
+                className={'w-timeline-multi' + (resStream ? ' w-timeline-stream' : '')}
               >
                 <span title={item.url} className="w-timeline-url">
                   {util.getFilename(item)}
@@ -261,7 +263,7 @@ var Timeline = React.createClass({
                 <span
                   style={{
                     width: requestRate,
-                    marginBottom: isStream && responseRate ? '5px' : undefined
+                    marginBottom: resStream ? '5px' : undefined
                   }}
                   className="w-timeline-request"
                 />
@@ -269,9 +271,9 @@ var Timeline = React.createClass({
                   style={{
                     width: responseRate,
                     marginLeft:
-                      isStream && requestRate ? '-' + requestRate : undefined,
-                    marginBottom: isStream && requestRate ? '-5px' : undefined,
-                    height: isStream && requestRate ? '15px' : undefined
+                      reqStream ? '-' + requestRate : undefined,
+                    marginBottom: reqStream ? '-5px' : undefined,
+                    height: reqStream ? '15px' : undefined
                   }}
                   className="w-timeline-response"
                 />
@@ -279,9 +281,9 @@ var Timeline = React.createClass({
                   style={{
                     width: loadRate,
                     marginLeft:
-                      isStream && responseRate ? '-' + responseRate : undefined,
-                    marginBottom: isStream && requestRate ? '-5px' : undefined,
-                    height: isStream && requestRate ? '15px' : undefined
+                      resStream ? '-' + responseRate : undefined,
+                    marginBottom: reqStream ? '-5px' : undefined,
+                    height: reqStream ? '15px' : undefined
                   }}
                   className="w-timeline-load"
                 />

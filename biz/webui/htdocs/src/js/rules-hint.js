@@ -191,7 +191,7 @@ function getHints(keyword) {
   }
   keyword = keyword.toLowerCase();
   var list = allRules.filter(function (name) {
-    if (name === 'socks://' && 'proxy'.indexOf(keyword) !== -1) {
+    if ((name === 'socks://' || name === 'xsocks://') && 'proxy'.indexOf(keyword) !== -1) {
       return true;
     }
     name = name.toLowerCase();

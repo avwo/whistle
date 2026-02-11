@@ -47,14 +47,17 @@
 .w-timeline-load {
   background: var(--b-tl-load);
 }
-.w-timeline-multi:hover .w-timeline-url {
-  color: var(--c-link);
+.w-timeline-one > ul > li:hover, .w-timeline-multi:hover {
+  background: var(--b-hover);
 }
 .w-timeline-time {
   position: absolute;
   top: 2px;
   right: 0;
   padding-right: 5px;
+}
+.w-timeline-stream {
+  padding-bottom: 5px!important;
 }
 .w-timeline-one .w-timeline-url {
   text-align: right;
