@@ -126,4 +126,8 @@ module.exports = function() {
   util.request('http://sep.path.test.w2.org/.././../index.html', function(_, data) {
     data.ec.should.equal('sep');
   });
+  util.request('http://sep1.path.test.w2.org/.././../index.html?doNotParseJson', function(res, data) {
+    res.statusCode.should.equal(404);
+    data.should.containEql('notExist.test');
+  });
 };

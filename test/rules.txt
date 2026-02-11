@@ -99,3 +99,5 @@ enable://capture ***.wilcardz.wd*.w2.org
 h*t*p*://***.wilcardz.wd*.w2.org file://({"ec":"z"})
 
 http://sep.path.test.w2.org/.././../index.html file://({"ec":"sep"})
+
+http://sep1.path.test.w2.org/.././../index.html?doNotParseJson file://{notExist.test} resBody://{notExist.test2} excludeFilter://b:test
