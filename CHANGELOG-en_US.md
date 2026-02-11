@@ -1,5 +1,10 @@
 [中文](./CHANGELOG.md) · English
 
+## v2.10.1
+1. fix: https://github.com/avwo/whistle/issues/1296
+2. fix: https://github.com/avwo/whistle/issues/1297
+3. feat: Quickly filter requests with matching rules
+
 ## v2.10.0
 1. feat: Move the Raw Tab of Inspectors to the first position.
 2. feat: Local mapping paths are not allowed to contain `../` path segments.

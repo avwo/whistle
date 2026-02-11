@@ -1,5 +1,10 @@
 中文 · [English](./CHANGELOG-en_US.md)
 
+## v2.10.1
+1. fix: https://github.com/avwo/whistle/issues/1296
+2. fix: https://github.com/avwo/whistle/issues/1297
+2. feat: 支持快速筛选出匹配规则的请求
+
 ## v2.10.0
 1. feat: Inspectors 的 Raw Tab 放到第一个位置
 2. feat: 映射到本地的路径不允许包含 `../` 路径片段
