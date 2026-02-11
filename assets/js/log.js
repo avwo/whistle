@@ -328,6 +328,9 @@
       var pending;
       var wFn = wConsole[level] = function() {
         var result = slice.call(arguments);
+        if (!result.length) {
+          result = [undefined];
+        }
         if (typeof window.onBeforeWhistleLogSend === 'function') {
           pending = true;
           try {
@@ -338,11 +341,12 @@
             pending = false;
           }
         }
-        for (var i = 0, len = result.length; i < len; i++) {
-          result[i] = stringify(result[i]);
+        var len = result.length;
+        if (!len) {
+          return;
         }
-        if (!result.length) {
-          result = ['undefined'];
+        for (var i = 0; i < len; i++) {
+          result[i] = stringify(result[i]);
         }
         result = stringifyObj(result);
         result && addLog(level, result);
