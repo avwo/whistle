@@ -262,5 +262,319 @@ key1=value1&key2=value2&keyN=valueN
 ```
 > `key` 和 `value` 最好都 `encodeURIComponent`
 
-## 操作协议
-每个协议（`protocol`）对应一种特定的操作类型，用于对匹配的请求进行相应处理，协议决定了操作的类型以及操作内容的格式要求，具体用法参考：[协议列表](./protocols)
+
+## 常见操作指令速查手册 {operation-manual}
+- [修改请求内容](#request)
+  - [修改请求方法](#method)
+  - [修改请求 URL](#url)
+  - [修改 HTTP 版本](#http-version)
+  - [修改请求头](#req-headers)
+  - [修改请求体](#req-body)
+- [修改响应内容](#response)
+  - [修改状态码](#status-code)
+  - [修改响应头](#res-headers)
+  - [修改响应体](#res-body)
+  - [修改尾部响应头](#trailers)
+- [修改连接过程](#connect)
+  - [修改 DNS](#dns)
+  - [设置代理](#proxy)
+  - [代理和 DNS 同时生效](#proxy-host)
+- [页面调试工具](#tools)
+  - [查看页面 DOM 结构](#weinre)
+  - [查看页面日志及错误信息](#log)
+
+---
+
+## 一、修改请求内容 {#request}
+
+### 1.1 修改请求方法 {#method}
+```txt
+# 基础语法
+pattern method://新方法
+
+# 示例
+www.example.com/path method://post
+```
+
+**数据来源支持：**
+- 直接指定：`method://get`
+- 内嵌值：`method://{keyOfEmbedded}`
+- Values配置：`method://{keyOfValues}`
+
+**注意事项：**
+- 方法名不区分大小写
+- 不支持从本地文件或远程URL获取
+
+**实用示例：**
+```txt
+# 示例1：将所有请求方法改为POST
+www.example.com/path method://post
+
+# 示例2：仅将PUT请求改为POST
+www.example.com/path method://post includeFilter://m:put
+
+# 示例3：根据请求体内容修改方法
+www.example.com/api method://put includeFilter://b:cmdname=test
+```
+
+### 1.2 修改请求 URL {#url}
+#### URL映射
+```txt
+www.example.com/path/to www.test.com/test
+```
+**映射效果：**
+- `https://www.example.com/path/to?query=abc` → `https://www.test.com/test?query=abc`
+- `https://www.example.com/path/to/subpage` → `https://www.test.com/test/subpage`
+- `wss://www.example.com/path/to/api` → `wss://www.test.com/test/api`
+
+#### 修改请求参数
+```txt
+# 新增/替换参数
+pattern urlParams://({"key":"value"})
+
+# 删除参数
+pattern delete://urlParams.paramName
+
+# 示例：修改参数并删除指定参数
+www.example.com/api urlParams://({"cmdname":"Test"}) delete://urlParams.oldParam
+```
+
+#### 修改Path路径
+```txt
+# 正则替换
+pattern pathReplace://({"/old/ig":"new"})
+
+# 关键字替换
+pattern pathReplace://({"old":"new"})
+```
+
+**数据来源支持：**
+- 内联JSON
+- 内嵌值
+- Values配置
+- 本地文件
+- 远程URL
+
+### 1.3 修改 HTTP 版本 {#http-version}
+```txt
+# 强制使用普通HTTPS（禁用HTTP/2）
+pattern disable://h2
+```
+> 默认会尝试使用HTTP/2建立连接，不支持时自动降级为HTTPS
+
+### 1.4 修改请求头 {#req-headers}
+```txt
+# 新增/替换请求头
+pattern reqHeaders://({"Header-Name":"value"})
+
+# 删除请求头
+pattern delete://reqHeaders.headerName
+
+# 示例
+www.example.com reqHeaders://({"X-Custom-Header":"test"})
+```
+
+### 1.5 修改请求体 {#req-body}
+#### 合并修改（JSON/表单）
+```txt
+pattern reqMerge://({"newField":"value"})
+```
+
+#### 文本替换
+```txt
+# 正则替换
+pattern reqReplace://({"/search/ig":"replace"})
+
+# 关键字替换
+pattern reqReplace://({"search":"replace"})
+```
+
+#### 完全替换
+```txt
+pattern reqBody://(新内容)
+```
+
+#### 删除操作
+```txt
+# 删除特定字段
+pattern delete://reqBody.fieldName
+
+# 删除整个请求体
+pattern delete://reqBody
+```
+
+**数据来源支持：**
+- 内联值
+- 内嵌值
+- Values配置
+- 本地文件
+- 远程URL
+
+---
+
+## 二、修改响应内容 {#response}
+
+### 2.1 修改状态码 {#status-code}
+```txt
+# 替换现有响应状态码（请求会到达服务器）
+pattern replaceStatus://500
+
+# 直接响应状态码（请求不发送到服务器）
+pattern statusCode://500
+```
+
+### 2.2 修改响应头 {#res-headers}
+```txt
+# 新增/替换响应头
+pattern resHeaders://({"Header-Name":"value"})
+
+# 删除响应头
+pattern delete://resHeaders.headerName
+```
+
+### 2.3 修改响应体 {#res-body}
+#### 合并修改（JSON/JSONP）
+```txt
+pattern resMerge://({"newData":"value"})
+```
+
+#### 文本替换
+```txt
+pattern resReplace://({"/old/ig":"new"})
+```
+
+#### 替换响应体
+```txt
+# 替换服务器返回的内容
+pattern resBody://(新内容)
+```
+
+#### 直接响应内容
+```txt
+# 请求不发送到服务器
+pattern file://(直接返回的内容) resType://html
+```
+
+#### 删除操作
+```txt
+# 删除响应体字段
+pattern delete://resBody.fieldName
+
+# 清空响应体
+pattern delete://resBody
+```
+
+### 2.4 修改尾部响应头 {#trailers}
+> Trailers是在分块传输响应后发送的额外头部字段
+
+```txt
+# 新增/替换Trailers
+pattern trailers://({"Trailer-Name":"value"})
+
+# 删除Trailers
+pattern delete://trailers.trailerName
+```
+
+---
+
+## 三、修改连接过程 {#connect}
+
+### 3.1 修改 DNS {#dns}
+```txt
+# 设置IP地址
+pattern 127.0.0.1
+
+# 设置IP和端口
+pattern 127.0.0.1:8080
+
+# CNAME效果（指向其他主机）
+pattern host://www.target.com:8080
+```
+
+### 3.2 设置代理 {#proxy}
+```txt
+# HTTP代理
+pattern proxy://127.0.0.1:8080
+
+# SOCKS5代理
+pattern socks://127.0.0.1:1080
+
+# 支持域名
+pattern proxy://proxy.example.com:8080
+```
+
+### 3.3 代理和 DNS 同时生效 {#proxy-host}
+**优先级说明：**
+- 默认：host配置优先于proxy
+- 可调整：通过`lineProps://proxyHost`让两者同时生效
+
+```txt
+# 示例1：只生效host配置
+pattern 127.0.0.1:8080 socks://10.1.1.1:1080
+
+# 示例2：只生效proxy配置
+pattern 127.0.0.1:8080 socks://10.1.1.1:1080 ignore://host
+
+# 示例3：host和proxy同时生效
+pattern 127.0.0.1:8080 socks://10.1.1.1:1080 lineProps://proxyHost
+```
+
+---
+
+## 四、页面调试工具 {#tools}
+
+### 4.1 查看页面 DOM 结构 {#weinre}
+```txt
+pattern weinre://调试会话名称
+```
+> 详细用法参考：[weinre文档](./weinre)
+
+### 4.2 查看页面日志及错误信息 {#log}
+```txt
+pattern log://日志会话名称
+```
+> 详细用法参考：[log文档](./log)
+
+---
+
+## 数据来源速查表
+
+| 操作类型 | 直接内联 | 内嵌值 | Values | 本地文件 | 远程URL |
+|---------|---------|--------|--------|----------|---------|
+| 请求方法 | ✓ | ✓ | ✓ | ✗ | ✗ |
+| URL参数 | ✓ | ✓ | ✓ | ✓ | ✓ |
+| 请求头 | ✓ | ✓ | ✓ | ✓ | ✓ |
+| 请求体 | ✓ | ✓ | ✓ | ✓ | ✓ |
+| 响应头 | ✓ | ✓ | ✓ | ✓ | ✓ |
+| 响应体 | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Trailers | ✓ | ✓ | ✓ | ✓ | ✓ |
+
+**语法示例：**
+```txt
+# 直接内联
+protocol://({"key":"value"})
+
+# 内嵌值
+protocol://{embeddedKey}
+
+# Values配置
+protocol://{valuesKey}
+
+# 本地文件
+protocol:///path/to/file.json
+
+# 远程URL
+protocol://https://example.com/data.json
+```
+
+---
+
+## 常用过滤条件
+
+| 过滤器 | 说明 | 示例 |
+|--------|------|------|
+| `includeFilter://m:方法` | 按请求方法过滤 | `includeFilter://m:put` |
+| `includeFilter://b:内容` | 按请求体内容过滤 | `includeFilter://b:cmdname=test` |
+| 正则表达式 | 区分大小写匹配 | `/Test/` |
+
+> **提示：** 更多协议和高级用法请参考[完整协议列表](./protocols)

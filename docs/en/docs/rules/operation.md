@@ -262,5 +262,318 @@ key1=value1&key2=value2&keyN=valueN
 ```
 > Both `key` and `value` should ideally be `encodeURIComponent`
 
-## Operation Protocols
-Each protocol (`protocol`) corresponds to a specific operation type, used to perform corresponding processing on matched requests. The protocol determines the operation type and the format requirements for operation content. For specific usage, refer to: [Protocol List](./protocols)
+## Quick Reference Manual for Common Operation Commands {#operation-manual}
+- [Modifying Request Content](#request)
+  - [Modifying Request Method](#method)
+  - [Modifying Request URL](#url)
+  - [Modifying HTTP Version](#http-version)
+  - [Modifying Request Headers](#req-headers)
+  - [Modifying Request Body](#req-body)
+- [Modifying Response Content](#response)
+  - [Modifying Status Code](#status-code)
+  - [Modifying Response Headers](#res-headers)
+  - [Modifying Response Body](#res-body)
+  - [Modifying Trailers](#trailers)
+- [Modifying Connection Process](#connect)
+  - [Modifying DNS](#dns)
+  - [Setting Proxy](#proxy)
+  - [Proxy and DNS Taking Effect Simultaneously](#proxy-host)
+- [Page Debugging Tools](#tools)
+  - [Viewing Page DOM Structure](#weinre)
+  - [Viewing Page Logs and Error Information](#log)
+
+---
+
+## 1. Modifying Request Content {#request}
+
+### 1.1 Modifying Request Method {#method}
+```txt
+# Basic Syntax
+pattern method://NewMethod
+
+# Example
+www.example.com/path method://post
+```
+
+**Supported Data Sources:**
+- Direct specification: `method://get`
+- Embedded value: `method://{keyOfEmbedded}`
+- Values configuration: `method://{keyOfValues}`
+
+**Notes:**
+- Method names are case-insensitive.
+- Not supported from local files or remote URLs.
+
+**Practical Examples:**
+```txt
+# Example 1: Change all request methods to POST
+www.example.com/path method://post
+
+# Example 2: Change only PUT requests to POST
+www.example.com/path method://post includeFilter://m:put
+
+# Example 3: Modify method based on request body content
+www.example.com/api method://put includeFilter://b:cmdname=test
+```
+
+### 1.2 Modifying Request URL {#url}
+#### URL Mapping
+```txt
+www.example.com/path/to www.test.com/test
+```
+**Mapping Effect:**
+- `https://www.example.com/path/to?query=abc` → `https://www.test.com/test?query=abc`
+- `https://www.example.com/path/to/subpage` → `https://www.test.com/test/subpage`
+- `wss://www.example.com/path/to/api` → `wss://www.test.com/test/api`
+
+#### Modifying Request Parameters
+```txt
+# Add/Replace parameters
+pattern urlParams://({"key":"value"})
+
+# Delete parameter
+pattern delete://urlParams.paramName
+
+# Example: Modify parameters and delete a specific parameter
+www.example.com/api urlParams://({"cmdname":"Test"}) delete://urlParams.oldParam
+```
+
+#### Modifying Path
+```txt
+# Regular expression replacement
+pattern pathReplace://({"/old/ig":"new"})
+
+# Keyword replacement
+pattern pathReplace://({"old":"new"})
+```
+
+**Supported Data Sources:**
+- Inline JSON
+- Embedded value
+- Values configuration
+- Local file
+- Remote URL
+
+### 1.3 Modifying HTTP Version {#http-version}
+```txt
+# Force using standard HTTPS (disable HTTP/2)
+pattern disable://h2
+```
+> By default, attempts to establish a connection using HTTP/2; automatically downgrades to HTTPS if not supported.
+
+### 1.4 Modifying Request Headers {#req-headers}
+```txt
+# Add/Replace request header
+pattern reqHeaders://({"Header-Name":"value"})
+
+# Delete request header
+pattern delete://reqHeaders.headerName
+
+# Example
+www.example.com reqHeaders://({"X-Custom-Header":"test"})
+```
+
+### 1.5 Modifying Request Body {#req-body}
+#### Merge Modification (JSON/Form)
+```txt
+pattern reqMerge://({"newField":"value"})
+```
+
+#### Text Replacement
+```txt
+# Regular expression replacement
+pattern reqReplace://({"/search/ig":"replace"})
+
+# Keyword replacement
+pattern reqReplace://({"search":"replace"})
+```
+
+#### Complete Replacement
+```txt
+pattern reqBody://(NewContent)
+```
+
+#### Deletion Operations
+```txt
+# Delete specific field
+pattern delete://reqBody.fieldName
+
+# Delete entire request body
+pattern delete://reqBody
+```
+
+**Supported Data Sources:**
+- Inline value
+- Embedded value
+- Values configuration
+- Local file
+- Remote URL
+
+---
+
+## 2. Modifying Response Content {#response}
+
+### 2.1 Modifying Status Code {#status-code}
+```txt
+# Replace existing response status code (request reaches server)
+pattern replaceStatus://500
+
+# Respond directly with status code (request not sent to server)
+pattern statusCode://500
+```
+
+### 2.2 Modifying Response Headers {#res-headers}
+```txt
+# Add/Replace response header
+pattern resHeaders://({"Header-Name":"value"})
+
+# Delete response header
+pattern delete://resHeaders.headerName
+```
+
+### 2.3 Modifying Response Body {#res-body}
+#### Merge Modification (JSON/JSONP)
+```txt
+pattern resMerge://({"newData":"value"})
+```
+
+#### Text Replacement
+```txt
+pattern resReplace://({"/old/ig":"new"})
+```
+
+#### Replace Response Body
+```txt
+# Replace content returned by server
+pattern resBody://(NewContent)
+```
+
+#### Respond Directly with Content
+```txt
+# Request not sent to server
+pattern file://(Content to return directly) resType://html
+```
+
+#### Deletion Operations
+```txt
+# Delete response body field
+pattern delete://resBody.fieldName
+
+# Clear response body
+pattern delete://resBody
+```
+
+### 2.4 Modifying Trailers {#trailers}
+> Trailers are additional header fields sent after the chunked transfer response.
+
+```txt
+# Add/Replace Trailers
+pattern trailers://({"Trailer-Name":"value"})
+
+# Delete Trailers
+pattern delete://trailers.trailerName
+```
+
+---
+
+## 3. Modifying Connection Process {#connect}
+
+### 3.1 Modifying DNS {#dns}
+```txt
+# Set IP address
+pattern 127.0.0.1
+
+# Set IP and port
+pattern 127.0.0.1:8080
+
+# CNAME effect (pointing to another host)
+pattern host://www.target.com:8080
+```
+
+### 3.2 Setting Proxy {#proxy}
+```txt
+# HTTP proxy
+pattern proxy://127.0.0.1:8080
+
+# SOCKS5 proxy
+pattern socks://127.0.0.1:1080
+
+# Supports domain name
+pattern proxy://proxy.example.com:8080
+```
+
+### 3.3 Proxy and DNS Taking Effect Simultaneously {#proxy-host}
+**Priority Description:**
+- Default: Host configuration takes precedence over proxy.
+- Adjustable: Use `lineProps://proxyHost` to make both take effect simultaneously.
+
+```txt
+# Example 1: Only host configuration takes effect
+pattern 127.0.0.1:8080 socks://10.1.1.1:1080
+
+# Example 2: Only proxy configuration takes effect
+pattern 127.0.0.1:8080 socks://10.1.1.1:1080 ignore://host
+
+# Example 3: Both host and proxy take effect
+pattern 127.0.0.1:8080 socks://10.1.1.1:1080 lineProps://proxyHost
+```
+
+---
+
+## 4. Page Debugging Tools {#tools}
+
+### 4.1 Viewing Page DOM Structure {#weinre}
+```txt
+pattern weinre://DebugSessionName
+```
+> Detailed usage reference: [weinre documentation](./weinre)
+
+### 4.2 Viewing Page Logs and Error Information {#log}
+```txt
+pattern log://LogSessionName
+```
+> Detailed usage reference: [log documentation](./log)
+
+---
+
+## Data Source Quick Reference Table
+
+| Operation Type | Direct Inline | Embedded Value | Values | Local File | Remote URL |
+|---------------|---------------|----------------|--------|------------|------------|
+| Request Method | ✓ | ✓ | ✓ | ✗ | ✗ |
+| URL Parameters | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Request Headers | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Request Body | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Response Headers | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Response Body | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Trailers | ✓ | ✓ | ✓ | ✓ | ✓ |
+
+**Syntax Examples:**
+```txt
+# Direct inline
+protocol://({"key":"value"})
+
+# Embedded value
+protocol://{embeddedKey}
+
+# Values configuration
+protocol://{valuesKey}
+
+# Local file
+protocol:///path/to/file.json
+
+# Remote URL
+protocol://https://example.com/data.json
+```
+
+---
+
+## Common Filter Conditions
+
+| Filter | Description | Example |
+|--------|-------------|---------|
+| `includeFilter://m:Method` | Filter by request method | `includeFilter://m:put` |
+| `includeFilter://b:Content` | Filter by request body content | `includeFilter://b:cmdname=test` |
+| Regular Expression | Case-sensitive matching | `/Test/` |
+
+> **Tip:** For more protocols and advanced usage, refer to the [Complete Protocol List](./protocols).

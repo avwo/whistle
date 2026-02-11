@@ -255,7 +255,7 @@ export default defineConfig({
           { text: 'Network', link: '/docs/gui/network' },
           { text: 'HTTPS', link: '/docs/gui/https' },
           { text: 'Weinre', link: '/docs/gui/weinre' },
-          { text: 'Console/Log', link: '/docs/gui/console' },
+          { text: 'Console', link: '/docs/gui/console' },
           { text: 'Online', link: '/docs/gui/online' },
           { text: 'Composer', link: '/docs/gui/composer' },
           { text: 'Rules', link: '/docs/gui/rules' },

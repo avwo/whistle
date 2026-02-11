@@ -1,8 +1,8 @@
 # reqMerge
-Intelligently merges the specified data object into the request content, supporting multiple request formats:
-- Regular form (`application/x-www-form-urlencoded`)
+Intelligently merges specified data objects into the request body, suitable for modifying partial parameters without affecting the remaining content. Supports multiple request formats:
+- Regular form data (`application/x-www-form-urlencoded`)
 - File upload form (`multipart/form-data`)
-- JSON request (`application/json`)
+- JSON requests (`application/json`)
 
 ## Rule Syntax
 ``` txt

@@ -1,5 +1,5 @@
 # resMerge
-将指定数据对象智能合并到响应内容中，支持以下响应类型：
+将指定数据对象智能合并到响应体中，适合修改部分参数而不影响其余内容，支持以下响应类型：
 - JSON（响应 `content-type` 包含 `json` 关键字）
 - JSONP（响应 `content-type`为空或包含 `html`/`javascript` 关键字）
 

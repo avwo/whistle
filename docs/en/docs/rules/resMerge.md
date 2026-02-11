@@ -1,7 +1,7 @@
 # resMerge
-Intelligently merges the specified data object into the response content. Supports the following response types:
-- JSON (response `content-type` contains the `json` keyword)
-- JSONP (response `content-type` is empty or contains the `html`/`javascript` keywords)
+Intelligently merges specified data objects into the response body, suitable for modifying partial parameters without affecting the remaining content. Supports the following response types:
+- JSON (response `content-type` contains the keyword `json`)
+- JSONP (response `content-type` is null or contains the keywords `html`/`javascript`)
 
 ## Rule Syntax
 ``` txt

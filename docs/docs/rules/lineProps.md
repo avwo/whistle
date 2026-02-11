@@ -22,7 +22,7 @@ pattern operation lineProps://action1 lineProps://action2 ... [filters...]
 | action  | 具体动作，详见下面的说明 | |
 | filters | 可选过滤器，支持匹配：<br/>• 请求URL/方法/头部/内容<br/>• 响应状态码/头部 | [过滤器文档](./filters) |
 
-- `important`：类型 css 属性的 `!important`，提升规则优先级
+- `important`：类似于 CSS 的 !important，用于提升规则优先级，且仅对同类协议的操作生效
 - `safeHtml`：是一种安全防护机制，当使用 `htmlXxx`/`jsXxx`/`cssXxx` 向 HTML 页面注入内容时，会先检查响应内容的第一个非空白字符是否为 `{` 和 `[`（JSON 对象开头字符），如果不是才会执行注入操作。这可以有效防止对非标准 HTML 响应（如 JSON 接口）的误注入
 - `strictHtml`：是一种安全防护机制，当使用 `htmlXxx`/`jsXxx`/`cssXxx` 向 HTML 页面注入内容时，会先检查响应内容的第一个非空白字符是否为 `<`，如果不是才会执行注入操作。这可以有效防止对非标准 HTML 响应（如 JSON 接口）的误注入
 - `disableAutoCors`：禁用 [file](./file) 协议替换请求时自动添加必要的 CORS (跨域资源共享) 头信息
@@ -35,7 +35,7 @@ pattern operation lineProps://action1 lineProps://action2 ... [filters...]
 - `proxyHost`：[proxy](./proxy) 和 [host](./host) 同时生效
 - `proxyHostOnly`：功能同 `proxyHost`，但如果没有匹配 [host](./host) 则 [proxy](./proxy) 自动失效
 - `proxyTunnel`：跟 `proxyHost` 一同使用，让上游代理再次通过隧道代理到上上游的 HTTP 代理，详见下面的示例
-- `weakRule`：`weakRule`：默认情况下，当配置了 [file](./file) 等协议时，[proxy](./proxy) 规则会自动失效。通过设置 `weakRule` 属性，可以提升 [proxy](./proxy) 规则的优先级，使其在上述场景中仍然生效
+- `weakRule`：默认情况下，当配置了 [file](./file) 等协议时，[proxy](./proxy) 规则会自动失效。通过设置 `weakRule` 属性，可以提升 [proxy](./proxy) 规则的优先级，使其在上述场景中仍然生效
 - `enableBigData`：支持 [reqMerge](./reqMerge) 或 [resMerge](./resMerge) 匹配大的请求/响应内容
 
 ## 配置示例

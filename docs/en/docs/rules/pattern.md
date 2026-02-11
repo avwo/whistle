@@ -86,27 +86,67 @@ URL Path Structure:
 - `ws*://*.example.com/path/to`
 - `http*[s]*://www.example*.com:8*/path/to`
 
-### Matching Mechanism
-Path matching can be divided into two steps: **First domain matching** → **Then path matching**
+## Detailed Explanation of Matching Mechanisms
 
-#### Domain Matching
-Rules are the same as above.
+#### Basic Path Matching  
+Matches specified hosts and paths along with all their subpaths, supporting multiple protocols:
 
-#### Path Matching
-**1. Path without `query` parameter (matches itself and its subpaths)**
+**Supported Protocols**:  
+- `http://` / `https://` (HTTP/HTTPS)  
+- `tunnel://` (Tunnel Proxy)  
+- `ws://` / `wss://` (WebSocket connections)  
+
+**Path Matching Rules**:  
+Matches `www.example.com/path` and all its subpaths:  
+- ✅ `www.example.com/path`  
+- ✅ `www.example.com/path/`  
+- ✅ `www.example.com/path/subfolder`  
+- ✅ `www.example.com/path/file.html`  
+- ✅ `www.example.com/path/subfolder/file?query=1`  
+- ❌ `www.example.com/path-other` (does not start with `/path`)  
+- ❌ `www.example.com/path123` (not an exact prefix of `/path`)  
+
+#### Wildcard Matching Example  
+Rule:  
 ```txt
 www.example*.com/path/to www.test.com/test
 ```
-- Request `https://www.example123.com/path/to?query` will be mapped to `https://www.test.com/test?query`
-- Request `https://www.example123.com/path/to/xxx?query` will be mapped to `https://www.test.com/test/xxx?query`
-- Request `https://www.example123.com/path/to123` cannot match the rule
 
-**2. Path with `query` parameter (matches itself and parameters starting with `query`, case-sensitive)**
+**Matching Scenarios**:  
+- `https://www.example123.com/path/to?query=abc`  
+  → mapped to `https://www.test.com/test?query=abc`  
+- `https://www.example123.com/path/to/subpage`  
+  → mapped to `https://www.test.com/test/subpage`  
+- `wss://www.example456.com/path/to/api`  
+  → mapped to `wss://www.test.com/test/api`  
+
+**Non-matching Scenarios**:  
+- `https://www.example123.com/path/to123` (path does not end with `/to`)  
+- `https://example123.com/path/to` (missing www prefix)  
+- `https://www.example123.com/path` (incomplete path)  
+
+#### **Exact Matching with Query Parameters**  
+
+Rule:  
 ```txt
 www.demo*.com/path/to?name= www.test.com/test
 ```
-- Request `https://www.demo.com/path/to?name=xxx&abc` will be mapped to `https://www.test.com/test?xxx&abc`
-- Request `https://www.demo.com/path/to/xxx?name=xxx&abcy` cannot match the rule
+
+**Rule Explanation**:  
+- Path must exactly match `/path/to`  
+- Must include the `name=` query parameter (case-sensitive)  
+- After matching, the `name=` parameter is removed while other parameters are retained  
+
+**Matching Scenarios**:  
+- `https://www.demo.com/path/to?name=john&age=20`  
+  → mapped to `https://www.test.com/test?age=20`  
+- `https://www.demo.com/path/to?name=&sort=asc`  
+  → mapped to `https://www.test.com/test?sort=asc`  
+
+**Non-matching Scenarios**:  
+- `https://www.demo.com/path/to/extra?name=john` (path not exact)  
+- `https://www.demo.com/path/to?Name=john` (parameter name case mismatch)  
+- `https://www.demo.com/path/to?user=john` (missing name parameter)
 
 ## Path Wildcard Matching
 

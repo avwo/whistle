@@ -1,5 +1,5 @@
 # reqMerge
-将指定数据对象智能合并到请求内容中，支持多种请求格式：
+将指定数据对象智能合并到请求体中，适合修改部分参数而不影响其余内容，支持多种请求格式：
 - 常规表单 (`application/x-www-form-urlencoded`)
 - 文件上传表单 (`multipart/form-data`)
 - JSON 请求 (`application/json`)

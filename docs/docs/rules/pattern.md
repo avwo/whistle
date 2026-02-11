@@ -87,27 +87,67 @@ URL 路径结构：
 - `ws*://*.example.com/path/to`
 - `http*[s]*://www.example*.com:8*/path/to`
 
-### 匹配机制
-路径匹配方式可以分为两个步骤：**先域名匹配** → **再路径匹配**
+## 匹配机制详解
 
-#### 域名匹配
-规则同上。
+#### 基础路径匹配
+匹配指定主机和路径及其所有子路径，支持多种协议：
 
-#### 路径匹配
-**1. 不带 `query` 参数的路径（匹配自身及其子路径）**
+**协议支持**：
+- `http://` / `https://`（HTTP/HTTPS）
+- `tunnel://`（隧道代理）
+- `ws://` / `wss://`（WebSocket连接）
+
+**路径匹配规则**：
+匹配 `www.example.com/path` 及其所有子路径：
+- ✅ `www.example.com/path`
+- ✅ `www.example.com/path/`
+- ✅ `www.example.com/path/subfolder`
+- ✅ `www.example.com/path/file.html`
+- ✅ `www.example.com/path/subfolder/file?query=1`
+- ❌ `www.example.com/path-other`（不以 `/path` 开头）
+- ❌ `www.example.com/path123`（不是 `/path` 的精确前缀）
+
+#### 通配符匹配示例
+规则：
 ```txt
 www.example*.com/path/to www.test.com/test
 ```
-- 请求 `https://www.example123.com/path/to?query` 会被映射为 `https://www.test.com/test?query`
-- 请求 `https://www.example123.com/path/to/xxx?query` 会被映射为 `https://www.test.com/test/xxx?query`
-- 请求 `https://www.example123.com/path/to123` 不能匹配规则
 
-**2. 带 `query` 参数的路径（匹配自身及以 `query` 开头的参数且区分大小写）**
+**匹配场景**：
+- `https://www.example123.com/path/to?query=abc`
+  → 映射为 `https://www.test.com/test?query=abc`
+- `https://www.example123.com/path/to/subpage`
+  → 映射为 `https://www.test.com/test/subpage`
+- `wss://www.example456.com/path/to/api`
+  → 映射为 `wss://www.test.com/test/api`
+
+**不匹配场景**：
+- `https://www.example123.com/path/to123`（路径不以 `/to` 结尾）
+- `https://example123.com/path/to`（缺少 www 前缀）
+- `https://www.example123.com/path`（路径不完整）
+
+#### **带查询参数的精确匹配**
+
+规则：
 ```txt
 www.demo*.com/path/to?name= www.test.com/test
 ```
-- 请求 `https://www.demo.com/path/to?name=xxx&abc` 会被映射为 `https://www.test.com/test?xxx&abc`
-- 请求 `https://www.demo.com/path/to/xxx?name=xxx&abcy` 不能匹配规则
+
+**规则说明**：
+- 路径必须精确匹配 `/path/to`
+- 必须包含 `name=` 查询参数（区分大小写）
+- 匹配后移除 `name=` 参数，保留其他参数
+
+**匹配场景**：
+- `https://www.demo.com/path/to?name=john&age=20`
+  → 映射为 `https://www.test.com/test?age=20`
+- `https://www.demo.com/path/to?name=&sort=asc`
+  → 映射为 `https://www.test.com/test?sort=asc`
+
+**不匹配场景**：
+- `https://www.demo.com/path/to/extra?name=john`（路径不精确）
+- `https://www.demo.com/path/to?Name=john`（参数名大小写不匹配）
+- `https://www.demo.com/path/to?user=john`（缺少 name 参数）
 
 ## 路径通配符匹配
 

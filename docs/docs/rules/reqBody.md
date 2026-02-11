@@ -32,6 +32,8 @@ www.example.com/path reqBody://{body.txt} method://post
 
 ```` txt
 www.example.com/path1 reqBody:///User/xxx/test.txt
+# 在 Windows 中，路径分隔符通常为 `\`，但同时它也接受 `/`
+www.example.com/path1 reqBody://D:\test.txt
 www.example.com/path2 reqBody://https://www.xxx.com/xxx/params.txt
 # 通过编辑临时文件
 www.example.com/path3 reqBody://temp/blank.txt
