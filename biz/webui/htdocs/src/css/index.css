@@ -19,7 +19,8 @@
   overflow: hidden;
 }
 .w-menu .glyphicon,
-.w-detail .glyphicon {
+.w-detail .glyphicon,
+.w-console-dialog .glyphicon {
   margin-right: 3px;
 }
 .w-menu .glyphicon-folder-open,

@@ -1,3 +1,7 @@
+.w-ie-dialog {
+  z-index: var(--z-modal);
+}
+
 .w-ie-dialog .modal-dialog {
   width: 600px;
 }

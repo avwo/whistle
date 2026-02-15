@@ -497,3 +497,13 @@
   width: 16px;
   margin-right: 0;
 }
+
+.w-console-dialog .modal-body {
+  height: calc(100vh - 120px);
+  min-height: 360px;
+  padding: 0;
+}
+
+.w-console-dialog.modal-dialog {
+  width: 960px;
+}

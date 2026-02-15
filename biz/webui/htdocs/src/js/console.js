@@ -82,7 +82,7 @@ var Console = React.createClass({
         },
         {
           value: 'info',
-          text: 'Info (Log)'
+          text: 'Info'
         },
         {
           value: 'warn',
@@ -301,11 +301,12 @@ var Console = React.createClass({
     var expandRoot = state.expandRoot;
     var disabled = !util.hasVisibleLog(logs);
     var index = 0;
+    var className = this.props.className;
 
     return (
       <div
         className={
-          'fill v-box w-textarea w-log' +
+          'fill v-box w-textarea w-log' + (className ? ' ' + className : '') +
           (this.props.hide ? ' hide' : '')
         }
       >
