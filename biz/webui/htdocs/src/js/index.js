@@ -42,6 +42,7 @@ var HttpsSettings = require('./https-settings');
 var ServiceDialog = require('./service-dialog');
 var Icon = require('./icon');
 var CloseBtn = require('./close-btn');
+var ConsoleDialog = require('./console-dialog');
 
 var TEMP_LINK_RE = /^(?:[\w-]+:\/\/)?temp(?:\/([\da-z]{64}|blank))?(?:\.[\w-]+)?$/;
 var FILE_PATH_RE = /^(?:[\w-]+:\/\/)?((?:[a-z]:[\\/]|\/).+)$/i;
@@ -51,7 +52,7 @@ var MAX_FILE_SIZE = 1024 * 1024 * 128;
 var MAX_OBJECT_SIZE = 1024 * 1024 * 36;
 var MAX_LOG_SIZE = 1024 * 1024 * 2;
 var MAX_REPLAY_COUNT = 100;
-var LINK_SELECTOR = '.cm-js-type, .cm-js-http-url, .cm-string, .cm-js-at';
+var LINK_SELECTOR = '.cm-js-type, .cm-js-http-url, .cm-string, .cm-js-at, .cm-js-weinre, .cm-js-log';
 var LINK_RE = /^"(https?:)?(\/\/[^/]\S+)"$/i;
 var AT_LINK_RE = /^@(https?:)?(\/\/[^/]\S+)$/i;
 var OPTIONS_WITH_SELECTED = [
@@ -1583,6 +1584,8 @@ var Index = React.createClass({
           elem.hasClass('cm-js-http-url') ||
           elem.hasClass('cm-string') ||
           elem.hasClass('cm-js-at') ||
+          elem.hasClass('cm-js-weinre') ||
+          elem.hasClass('cm-js-log') ||
           TEMP_LINK_RE.test(text = elem.text()) ||
           isTextFile(text) ||
           getKey(text)
@@ -1610,6 +1613,12 @@ var Index = React.createClass({
             window.open((RegExp.$1 || 'http:') + RegExp.$2);
           }
           return;
+        }
+        if (elem.hasClass('cm-js-weinre')) {
+          return self.openWeinre(util.removeProtocol(text));
+        }
+        if (elem.hasClass('cm-js-log')) {
+          return self.openLog(util.removeProtocol(text));
         }
         if (elem.hasClass('cm-js-http-url')) {
           if (!/^https?:\/\//i.test(text)) {
@@ -3111,6 +3120,9 @@ var Index = React.createClass({
     this.setState({
       showWeinreOptions: false
     });
+  },
+  openLog: function(id) {
+    this.refs.consoleDialog.show();
   },
   onClickRulesOption: function (item) {
     item.selected ? this.unselectRules(item) : this.selectRules(item);
@@ -4908,11 +4920,7 @@ var Index = React.createClass({
                 <p>Latest version: {state.latestVersion}</p>
                 <p>
                   View change:{' '}
-                  <a
-                    title="Change log"
-                    href="https://github.com/avwo/whistle/blob/master/CHANGELOG.md"
-                    target="_blank"
-                  >
+                  <a onClick={util.openChangeLog}>
                     CHANGELOG.md
                   </a>
                 </p>
@@ -5025,6 +5033,7 @@ var Index = React.createClass({
         {/* 初始化 EditorDialog 给 Rules 里面的快捷键使用 */}
         <EditorDialog textEditor standalone />
         <ServiceDialog />
+        <ConsoleDialog ref="consoleDialog" />
       </div>
     );
   }
