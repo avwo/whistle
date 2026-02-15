@@ -3275,12 +3275,22 @@ exports.handleClickLocate = function(text) {
   }
 };
 
+function isZh() {
+  return /^zh-/i.test(navigator.language || navigator.userLanguage);
+}
+
 function getDocUrl(url) {
-  var path = /^zh-/i.test(navigator.language || navigator.userLanguage) ? '/' : '/en/';
+  var path = isZh() ? '/' : '/en/';
   return 'https://wproxy.org' + path + (url ? 'docs/' : '') + (url || '');
 }
 
 exports.getDocUrl = getDocUrl;
+
+exports.openChangeLog = function() {
+  var lang = isZh() ? '' : '-en_US';
+  var url = 'https://github.com/avwo/whistle/blob/master/CHANGELOG' + lang + '.md';
+  window.open(url);
+};
 
 exports.UPDATE_URL = getDocUrl('faq.html#update');
 
