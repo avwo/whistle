@@ -7,6 +7,7 @@ var PROTOCOLS = [
   'plugin',
   'sniCallback',
   'host',
+  'dns',
   'xhost',
   'proxy',
   'xproxy',
@@ -115,7 +116,7 @@ var allRules = allInnerRules;
 var groupRules = [
   ['Map Local', ['file://', 'xfile://', 'tpl://', 'xtpl://', 'rawfile://', 'xrawfile://']],
   ['Map Remote', ['https://', 'http://', 'wss://', 'ws://', 'tunnel://']],
-  ['DNS Spoofing', ['host://', 'xhost://', 'proxy://', 'xproxy://', 'http-proxy://', 'xhttp-proxy://',
+  ['DNS Spoofing', ['host://', 'dns://', 'xhost://', 'proxy://', 'xproxy://', 'http-proxy://', 'xhttp-proxy://',
     'https-proxy://', 'xhttps-proxy://', 'socks://', 'xsocks://', 'pac://']],
   ['Rewrite Request', ['urlParams://', 'pathReplace://','sniCallback://', 'method://', 'tlsOptions://', 'reqHeaders://', 'forwardedFor://',
     'ua://', 'auth://', 'cache://', 'referer://', 'reqType://', 'reqCharset://', 'reqCookies://',

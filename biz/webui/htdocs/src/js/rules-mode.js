@@ -48,6 +48,9 @@ CodeMirror.defineMode('rules', function () {
   function isHost(str) {
     return /^x?hosts?:\/\//.test(str);
   }
+  function isDns(str) {
+    return /^dns:\/\//.test(str);
+  }
   function isHead(str) {
     return /^head:\/\//.test(str);
   }
@@ -219,6 +222,8 @@ CodeMirror.defineMode('rules', function () {
         str += ch;
         if (!type && ch == '/' && pre == '/') {
           if (isHost(str)) {
+            type = 'number js-number js-type';
+          } else if (isDns(str)) {
             type = 'number js-number js-type';
           } else if (isHead(str)) {
             type = 'header js-head js-type';
