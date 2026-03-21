@@ -134,11 +134,16 @@ function formatOptions(options) {
   return options;
 }
 
+function getConfigFile(storage) {
+  var dataDir = getDataDir();
+  return path.join(dataDir, encodeURIComponent('#' + (storage ? storage + '#' : '')));
+}
+
+exports.getConfigFile = getConfigFile;
 exports.formatOptions = formatOptions;
 
 function readConfig(storage) {
-  var dataDir = getDataDir();
-  var configFile = path.join(dataDir, encodeURIComponent('#' + (storage ? storage + '#' : '')));
+  var configFile = getConfigFile(storage);
   var conf = common.readJsonSync(configFile);
   conf && formatOptions(conf.options);
   return conf;
@@ -179,18 +184,16 @@ exports.getDefaultPort = function () {
   return port > 0 ? port : 8899;
 };
 
-function getBody(res, callback) {
+exports.getBody = function (res, callback) {
   var resBody;
   res.on('data', function(data) {
     resBody = resBody ? Buffer.concat([resBody, data]) : data;
   });
   res.on('end', function() {
     if (res.statusCode != 200) {
-      callback(resBody || 'response ' + res.statusCode + ' error');
+      callback('Bad response (' + res.statusCode + ')');
     } else {
       callback(null, JSON.parse(resBody + ''));
     }
   });
-}
-
-exports.getBody = getBody;
+};
