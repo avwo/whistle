@@ -8,41 +8,41 @@ var util = require('./util');
 var dataCenter = require('./data-center');
 var FilterInput = require('./filter-input');
 var DropDown = require('./dropdown');
-var RecordBtn = require('./record-btn');
 var events = require('./events');
 var storage = require('./storage');
-var win = require('./win');
+var BackToBottomBtn = require('./back-to-bottom-btn');
+var LogMixin = require('./log-mixin');
 
 var findDOMNode = ReactDOM.findDOMNode;
-var MAX_COUNT = dataCenter.MAX_LOG_LENGTH;
-var MAX_FILE_SIZE = 1024 * 1024 * 2;
-
-var allLogs = {
-  value: '',
-  text: 'All Logs'
-};
+var VIEW_KEY =  window.Symbol ? window.Symbol('view') : 'view';
 
 function parseLog(log, expandRoot) {
-  if (log.view) {
-    return log.view;
+  if (log[VIEW_KEY]) {
+    return log[VIEW_KEY];
   }
   try {
+    var logText = [];
     var data = JSON.parse(log.text);
     var hasNonStr = data.some(function (obj) {
       return typeof obj !== 'string' || obj === 'undefined';
     });
-    log.view = data.map(function (data) {
+    log[VIEW_KEY] = data.map(function (data) {
       if (typeof data === 'string' && data !== 'undefined') {
-        return <ExpandCollapse text={hasNonStr ? '"' + data + '"' : data} />;
+        data = hasNonStr ? '"' + data + '"' : data;
+        logText.push(data);
+        return <ExpandCollapse text={data} />;
       }
       if (!data || typeof data !== 'object') {
+        data = String(data);
+        logText.push(data);
         return (
           <ExpandCollapse
             wStyle={{ color: 'var(--c-has)' }}
-            text={data + ''}
+            text={data}
           />
         );
       }
+      logText.push(JSON.stringify(data, null, 2));
       return (
         <JSONTree
           data={data}
@@ -53,13 +53,14 @@ function parseLog(log, expandRoot) {
         />
       );
     });
-    return log.view;
+    log[LogMixin.LOG_TEXT_KEY] = logText.join(' ');
+    return log[VIEW_KEY];
   } catch (e) {}
   return <ExpandCollapse text={log.text} />;
 }
 
-function getLogInfo(log) {
-  var result = ['Level: ' + log.level.toUpperCase()];
+function getLogInfo(log, level) {
+  var result = ['Level: ' + level];
   if (log.logId) {
     result.unshift('LogID: ' + log.logId);
   }
@@ -67,10 +68,16 @@ function getLogInfo(log) {
 }
 
 var Console = React.createClass({
+  name: 'console',
+  mixins: [LogMixin],
   getInitialState: function () {
     return {
       scrollToBottom: true,
-      logIdList: [allLogs],
+      logIdList: [{
+        value: '',
+        text: 'All Logs'
+      }],
+      logId: '',
       levels: [
         {
           value: '',
@@ -105,45 +112,10 @@ var Console = React.createClass({
     var container = (this.container = findDOMNode(
       self.refs.container
     ));
-    var content = (this.content = findDOMNode(self.refs.logContent));
-    var updateLogs = function (logs) {
-      var state = self.state;
-      var curLogs = state.logs;
-      if (curLogs !== logs && Array.isArray(curLogs)) {
-        logs.push.apply(logs, curLogs);
-      }
-      state.logs = util.filterLogList(logs, self.keyword, true);
-      if (self.props.hide) {
-        return;
-      }
-      var atBottom = util.scrollAtBottom(container, content);
-      if (atBottom) {
-        var len = logs.length - MAX_COUNT;
-        len > 9 && util.trimLogList(logs, len, self.keyword);
-      }
-      self.setState({});
-    };
+    this.content = findDOMNode(self.refs.logContent);
 
-    if (dataCenter.uploadLogs) {
-      updateLogs(dataCenter.uploadLogs);
-      dataCenter.uploadLogs = null;
-    }
-    events.on('uploadLogs', function (_, result) {
-      if (self.props.hide) {
-        return;
-      }
-      var logs = result.logs;
-      var curLogs = self.state.logs;
-      if (curLogs) {
-        curLogs.push.apply(curLogs, logs);
-        var overflow = curLogs.length - MAX_COUNT;
-        overflow > 19 && util.trimLogList(curLogs, overflow, self.keyword);
-      } else {
-        curLogs = logs;
-      }
-      updateLogs(curLogs);
-    });
-    dataCenter.on('log', updateLogs);
+    events.on('uploadLogs', self.handleImport);
+    dataCenter.on('log', self.updateLogs);
 
     events.on('consoleImportFile', function (_, file) {
       self.importFile(file);
@@ -152,99 +124,14 @@ var Console = React.createClass({
       self.importData(data);
     });
 
-    $(container).on('scroll', function () {
-      var data = self.state.logs;
-      clearTimeout(self.scrollTimer);
-      if (
-        data &&
-        (self.state.scrollToBottom = util.scrollAtBottom(container, content))
-      ) {
-        self.scrollTimer = setTimeout(function () {
-          var len = data.length - MAX_COUNT;
-          self.scrollTimer = null;
-          if (len > 9) {
-            util.trimLogList(data, len, self.keyword);
-            self.setState({ logs: data });
-          }
-        }, 2000);
-      }
-    });
-  },
-  selectFile: function () {
-    events.trigger('showImportDialog', 'console');
-  },
-  importFile: function (file) {
-    if (!file || !/\.log$/i.test(file.name)) {
-      return win.alert('Only .log files are supported');
-    }
-    if (file.size > MAX_FILE_SIZE) {
-      return win.alert('Maximum file size: 2MB');
-    }
-    util.readFileAsText(file, this.importData);
-  },
-  importData: function (logs) {
-    logs = util.parseLogs(logs);
-    logs && events.trigger('uploadLogs', { logs: logs });
+    $(container).on('scroll', self.handleScroll);
   },
   changeLogId: function (option) {
-    dataCenter.changeLogId(option.value);
-  },
-  changeLevel: function (option) {
-    this.setState({ level: option.value });
+    this.showLogId(option.value);
   },
   clearLogs: function () {
-    dataCenter.clearedLogs = true;
     dataCenter.clearLogList();
     this.setState({ logs: [] });
-  },
-  scrollTop: function () {
-    this.container.scrollTop = 0;
-  },
-  autoRefresh: function () {
-    this.container.scrollTop = 10000000;
-  },
-  stopAutoRefresh: function () {
-    if (util.scrollAtBottom(this.container, this.content)) {
-      this.container.scrollTop = this.container.scrollTop - 10;
-    }
-  },
-  shouldComponentUpdate: function (nextProps) {
-    var hide = util.getBool(this.props.hide);
-    var toggleHide = hide != util.getBool(nextProps.hide);
-    if (toggleHide || !hide) {
-      if (!toggleHide && !hide) {
-        this.state.scrollToBottom = util.scrollAtBottom(
-          this.container,
-          this.content
-        );
-      }
-      clearTimeout(this.filterTimer);
-      clearTimeout(this.scrollTimer);
-      return true;
-    }
-    return false;
-  },
-  componentDidUpdate: function () {
-    if (!this.props.hide && this.state.scrollToBottom) {
-      this.container.scrollTop = 10000000;
-    }
-  },
-  onConsoleFilterChange: function (keyword) {
-    var self = this;
-    keyword = keyword.trim();
-    var logs = self.state.logs;
-    var consoleKeyword = util.parseKeyword(keyword);
-    self.keyword = keyword && consoleKeyword;
-    util.filterLogList(logs, consoleKeyword);
-    if (!keyword) {
-      var len = logs && logs.length - MAX_COUNT;
-      len > 9 && logs.splice(0, len);
-    }
-    clearTimeout(self.filterTimer);
-    self.filterTimer = setTimeout(function () {
-      self.filterTimer = null;
-      self.setState({});
-    }, 500);
   },
   handleAction: function (type) {
     if (type === 'top') {
@@ -264,109 +151,71 @@ var Console = React.createClass({
     }
   },
   onBeforeShow: function () {
-    var list = dataCenter.getLogIdList() || [];
-    list = list.map(function (id) {
-      return {
-        value: id,
-        text: id
-      };
-    });
-    list.unshift(allLogs);
-    this.setState({
-      logIdList: list
-    });
+    this.showLogId(this.state.logId);
+  },
+  showLogId: function (id) {
+    var options = dataCenter.getLogIdOptions(id);
+    dataCenter.changeLogId(options.logId);
+    this.setState(options);
   },
   changeExpandRoot: function (e) {
     this.state.expandRoot = e.target.checked;
   },
-  export: function () {
-    var logs = [];
-    this.state.logs.forEach(function (log) {
-      if (!log.hide) {
-        logs.push({
-          id: log.id,
-          text: log.text,
-          level: log.level,
-          date: log.date
-        });
-      }
-    });
-    events.trigger('showExportDialog', ['console', logs]);
-  },
   render: function () {
-    var state = this.state;
+    var self = this;
+    var state = self.state;
     var logs = state.logs || [];
     var logIdList = state.logIdList;
     var level = state.level;
     var expandRoot = state.expandRoot;
-    var disabled = !util.hasVisibleLog(logs);
     var index = 0;
-    var className = this.props.className;
+    var className = self.props.className;
 
     return (
       <div
         className={
           'fill v-box w-textarea w-log' + (className ? ' ' + className : '') +
-          (this.props.hide ? ' hide' : '')
+          (self.props.hide ? ' hide' : '')
         }
       >
         <div className="w-log-action-bar">
           <DropDown
-            onBeforeShow={this.onBeforeShow}
+            onBeforeShow={self.onBeforeShow}
+            value={state.logId}
             help={util.getDocUrl('gui/console.html')}
-            onChange={this.changeLogId}
+            onChange={self.changeLogId}
             options={logIdList}
           />
-          <DropDown onChange={this.changeLevel} options={state.levels} />
+          <DropDown onChange={self.changeLevel} options={state.levels} />
           <label className="w-log-expand-root">
             <input
               type="checkbox"
               defaultChecked={expandRoot}
-              onChange={this.changeExpandRoot}
+              onChange={self.changeExpandRoot}
             />
             Expand JSON Root
           </label>
-          <div className="w-textarea-bar">
-            <RecordBtn onClick={this.handleAction} />
-            <a onClick={this.selectFile} draggable="false">
-              Import
-            </a>
-            <a
-              className={disabled ? 'w-disabled' : ''}
-              onClick={disabled ? null : this.export}
-              draggable="false"
-            >
-              Export
-            </a>
-            <a
-              className={'w-clear' + (disabled ? ' w-disabled' : '')}
-              onClick={disabled ? undefined : this.clearLogs}
-              draggable="false"
-            >
-              Clear
-            </a>
-          </div>
+          {this.renderActionBar(!util.hasVisibleLog(logs))}
         </div>
         <div ref="container" className="fill w-log-ctn">
           <ul ref="logContent">
-            {logs.map(function (log, i) {
+            {logs.map(function (log) {
+              var upper = log.level.toUpperCase();
               var date =
                 'Date: ' +
                 util.toLocaleString(new Date(log.date)) +
-                getLogInfo(log) + '\r\n';
-              var hide =
-                log.hide || (level && !hide && log.level !== level)
-                  ? ' hide'
-                  : '';
+                getLogInfo(log, upper) + '\r\n';
+              var hide = log.hide || (level && log.level !== level) ? ' hide' : '';
               if (!hide) {
                 ++index;
               }
               return (
                 <li
                   key={log.id}
-                  title={log.level.toUpperCase()}
-                  className={'w-' + log.level + hide}
+                  title={upper}
+                  className={'w-log-item w-' + log.level + hide}
                 >
+                  {self.renderCopy(date, log)}
                   <pre>
                     <strong>#{index}</strong>
                     {date}
@@ -377,7 +226,8 @@ var Console = React.createClass({
             })}
           </ul>
         </div>
-        <FilterInput onChange={this.onConsoleFilterChange} />
+        <BackToBottomBtn ref="backBtn" onClick={self.autoRefresh} />
+        <FilterInput onChange={self.handleFilterChange} />
       </div>
     );
   }

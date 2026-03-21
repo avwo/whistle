@@ -8,6 +8,7 @@ var dataCenter = require('./data-center');
 var RecordBtn = require('./record-btn');
 var ContextMenu = require('./context-menu');
 var Icon = require('./icon');
+var BackToBottomBtn = require('./back-to-bottom-btn');
 
 var findDOMNode = ReactDOM.findDOMNode;
 var SEND_PERATORS = [
@@ -230,6 +231,9 @@ var FrameList = React.createClass({
     var atBottom = con.scrollTop + con.offsetHeight + 5 > ctn.offsetHeight;
     if (atBottom) {
       modal.update();
+      this.refs.backBtn.hide();
+    } else {
+      this.refs.backBtn.show();
     }
     return atBottom;
   },
@@ -452,6 +456,7 @@ var FrameList = React.createClass({
             })}
           </ul>
         </div>
+        <BackToBottomBtn ref="backBtn" onClick={this.autoRefresh} />
         <FilterInput onChange={self.onFilterChange} />
         <ContextMenu onClick={this.onClickContextMenu} ref="contextMenu" />
       </div>

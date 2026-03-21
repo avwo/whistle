@@ -9,6 +9,19 @@ var settings = dataCenter.getNetworkColumns();
 var sortedCols = Array.isArray(settings.columns) ? settings.columns : [];
 var pluginColList = dataCenter.getPluginColumns();
 var pluginColsMap = {};
+var appNameMap = {};
+
+function getAppName(appName) {
+  if (!appName || typeof appName !== 'string') {
+    return appName;
+  }
+  var result = appNameMap[appName];
+  if (!result) {
+    result = appName[0].toUpperCase() + appName.substring(1);
+    appNameMap[appName] = result;
+  }
+  return result;
+}
 
 function getDefaultColumns() {
   return [
@@ -28,7 +41,7 @@ function getDefaultColumns() {
         } else {
           img = 'img/app/' + (appName === 'ipad' ? 'iphone' : appName) + '.png';
         }
-        return <img src={img} title={appName} className="w-cell-img" />;
+        return <img src={img} title={getAppName(appName)} className="w-cell-img" />;
       }
     },
     {

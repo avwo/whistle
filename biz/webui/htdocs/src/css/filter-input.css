@@ -1,5 +1,6 @@
 .w-filter-con {
   position: relative;
+  padding: 1px;
 }
 .w-filter-con .w-clear-input {
   position: absolute;

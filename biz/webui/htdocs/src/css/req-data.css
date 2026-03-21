@@ -377,22 +377,28 @@
 
 .w-back-to-the-bottom {
   position: absolute;
-  bottom: 5px;
+  align-items: center;
+  justify-content: center;
+  bottom: 70px;
   right: 13px;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--c-link);
-  padding: 5px 8px;
   background-color: var(--b-default);
   border: 1px solid var(--c-border);
   border-radius: 20px;
-  opacity: .85;
+  width: 26px;
+  height: 26px;
+  opacity: .8;
   display: none;
-}
-.w-back-to-the-bottom span {
-  margin-right: 3px;
+  cursor: pointer;
+  z-index: 1;
 }
 .w-back-to-the-bottom:hover {
   opacity: 1;
+}
+
+.w-back-to-the-bottom .glyphicon {
+  margin: 0!important;
 }
 
 .w-save-sessions-label .form-control {

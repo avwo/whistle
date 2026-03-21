@@ -16,6 +16,7 @@ var dataCenter = require('./data-center');
 var storage = require('./storage');
 var message = require('./message');
 var Icon = require('./icon');
+var BackToBottomBtn = require('./back-to-bottom-btn');
 
 var findDOMNode = ReactDOM.findDOMNode;
 var TREE_ROW_HEIGHT = 24;
@@ -125,6 +126,10 @@ var contextMenuList = [
   },
   { name: 'Help', sep: true }
 ];
+
+var getCellText = function (target) {
+  return ((target.attr('data-custom') ? target.attr('title') : target.text()) || '').trim();
+};
 
 var getFocusItemList = function (curItem) {
   if (!curItem || curItem.selected) {
@@ -253,6 +258,49 @@ function getType(className) {
   return '';
 }
 
+var END_RE = /:\/(.+)\/([miud]{0,4})$/;
+
+function getValue(item, key) {
+  var index = key.indexOf(':/');
+  var hasRegex;
+  var regex;
+  var decode;
+  if (index !== -1 && END_RE.test(key)) {
+    var pattern = RegExp.$1;
+    var flags = RegExp.$2 || '';
+    hasRegex = true;
+    if (flags.indexOf('d') !== -1) {
+      decode = true;
+      flags = flags.split('d').join('');
+    }
+    try {
+      regex = new RegExp(pattern, flags);
+    } catch (e) {}
+    key = key.substring(0, index);
+  }
+  var value;
+  if (key === 'req.body') {
+    value = util.isText(item.req.headers) ? util.getBody(item.req, true) : '';
+  } else if (key === 'res.body') {
+    value = util.isText(item.res.headers) ? util.getBody(item.res) : '';
+  } else {
+    value = util.getValue(item, key);
+  }
+  if (!value || !hasRegex) {
+    return value;
+  }
+  if (!regex || !regex.test(value)) {
+    return '';
+  }
+  value = RegExp.$1;
+  if (value && decode) {
+    try {
+      value = decodeURIComponent(value);
+    } catch (e) {}
+  }
+  return value;
+}
+
 function getIcon(data, className) {
   if (className.indexOf('danger') !== -1) {
     return <Icon name="remove-circle" className="icon-leaf" />;
@@ -304,15 +352,18 @@ var Row = React.createClass({
               var name = col.name;
               var value;
               var url;
+              var isCustom;
               if (name === 'custom1') {
                 var key1 = dataCenter.custom1Key;
                 if (util.notEStr(key1)) {
-                  item.custom1 = util.getValue(item, key1);
+                  isCustom = true;
+                  item.custom1 = getValue(item, key1);
                 }
               } else if (name === 'custom2') {
                 var key2 = dataCenter.custom2Key;
                 if (util.notEStr(key2)) {
-                  item.custom2 = util.getValue(item, key2);
+                  isCustom = true;
+                  item.custom2 = getValue(item, key2);
                 }
               } else if (name === 'path') {
                 value = item.shortPath;
@@ -334,11 +385,12 @@ var Row = React.createClass({
                   key={name}
                   className={col.className}
                   style={colStyle}
+                  data-custom={isCustom ? 1 : null}
                   title={col.showTitle ? (url || value) : undefined}
                 >
                   {iconElem}
                   {icon ? <img className="w-cell-img" src={icon} /> : null}
-                  {value}
+                  {isCustom && value && value.length > 1690 ? value.substring(0, 1680) + '...' : value}
                 </td>
               );
             })}
@@ -637,11 +689,10 @@ var ReqData = React.createClass({
     };
     importRemoteUrl();
     $(window).on('hashchange', importRemoteUrl);
-    var backBtn = $(findDOMNode(self.refs.backBtn));
     var hideBackBtn = function() {
       if (self.isShownBtn) {
         self.isShownBtn = false;
-        backBtn.hide();
+        self.refs.backBtn.hide();
       }
     };
     self.hideBackBtn = hideBackBtn;
@@ -650,7 +701,7 @@ var ReqData = React.createClass({
       if (show) {
         if (!self.isShownBtn) {
           self.isShownBtn = true;
-          backBtn.show();
+          self.refs.backBtn.show();
         }
       } else {
         hideBackBtn();
@@ -999,7 +1050,7 @@ var ReqData = React.createClass({
     var treeId = el.attr('data-tree');
     var item = modal.getItem(dataId);
     var disabled = !item;
-    var cellText = item && (nodeName === 'TD' || nodeName === 'TH') && (target.text() || '').trim();
+    var cellText = item && (nodeName === 'TD' || nodeName === 'TH') && getCellText(target);
     var treeNodeData = modal.isTreeView && modal.getTreeNode(treeId);
     this.treeTarget = null;
     this.currentFocusItem = item;
@@ -1561,11 +1612,8 @@ var ReqData = React.createClass({
               }}
             </RV.AutoSizer>
           </div>
-          <div className={'w-back-to-the-bottom' + (isTreeView ? ' hide' : '')} ref="backBtn" onClick={this.autoRefresh}>
-            <Icon name="arrow-down" />
-            Back to the bottom
-          </div>
         </div>
+        <BackToBottomBtn ref="backBtn" hide={isTreeView} onClick={this.autoRefresh} />
         <FilterInput
           ref="filterInput"
           onKeyDown={this.onFilterKeyDown}

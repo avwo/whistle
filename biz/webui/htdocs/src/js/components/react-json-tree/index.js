@@ -186,6 +186,7 @@ var JSONTree = (function (_React$Component) {
       { name: 'Copy Key' },
       { name: 'Copy Value' },
       { name: 'Copy Object' },
+      { name: 'Copy Key Path' },
       { name: 'Collapse Parent' }
     ];
     var expandMenu;
@@ -244,7 +245,7 @@ var JSONTree = (function (_React$Component) {
         }
       }
 
-      var height = isRoot ? 90 : 120;
+      var height = isRoot ? 90 : 150;
       if (props.onSearch && !searchMenu) {
         searchMenu = expandMenu;
         expandMenu = null;
@@ -284,10 +285,12 @@ var JSONTree = (function (_React$Component) {
         } catch (e) {} // eslint-disable-line
       }
       contextMenuList[2].copyText = data + '';
-      contextMenuList[4].onClick = function () {
+      contextMenuList[4].copyText = _contextMenu.util.getKeyPath(keyPath.reverse().slice(1));
+      contextMenuList[4].hide = isRoot;
+      contextMenuList[5].onClick = function () {
         label.closest('li').parent().closest('li').find('div:first').click();
       };
-      contextMenuList[4].hide = isRoot;
+      contextMenuList[5].hide = isRoot;
       var menus = contextMenuList;
       if (!target.closest('label').length) {
         menus = menus.map(_contextMenu.util.noop);

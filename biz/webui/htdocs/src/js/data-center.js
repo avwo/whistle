@@ -72,6 +72,8 @@ var composerItem;
 var manualLogout; // 手动登出
 var hasUpdater;
 var HAS_RULES_KEY = window.Symbol ? window.Symbol('hasRules') : '__hasRules';
+var clearedLogs;
+var clearedSvrLogs;
 
 exports.HAS_RULES_KEY = HAS_RULES_KEY;
 exports.enabledRulesCount = 0;
@@ -104,10 +106,12 @@ exports.setDumpCount = function (count) {
 };
 
 exports.clearLogList = function() {
+  clearedLogs = true;
   logList = [];
 };
 
 exports.clearSvgLogList = function() {
+  clearedSvrLogs = true;
   svrLogList = [];
 };
 
@@ -119,19 +123,22 @@ exports.isOnlyViewOwnData = function () {
   return onlyViewOwnData;
 };
 
+function removeFilterComments(text) {
+  return text.replace(COMMENT_RE_G, ' ').trim();
+}
+
 exports.filterIsEnabled = function () {
   if (onlyViewOwnData) {
     return true;
   }
   var settings = getFilterText();
-  if (
-    !settings ||
-    (settings.disabledFilterText && settings.disabledExcludeText)
-  ) {
+  if (!settings) {
     return;
   }
-  var text = !settings.disabledFilterText && settings.filterText.trim();
-  return text || (!settings.disabledExcludeText && settings.excludeText.trim());
+  if (!settings.disabledFilterText && removeFilterComments(settings.filterText)) {
+    return true;
+  }
+  return !settings.disabledExcludeText && removeFilterComments(settings.excludeText);
 };
 
 function updateRulesInfo(data) {
@@ -266,6 +273,7 @@ function getNetworkColumns() {
 exports.getNetworkColumns = getNetworkColumns;
 
 var FILTER_TYPES_RE = /^(m|i|h|b|c|d|H):/;
+var COMMENT_RE_G = /(?:^\s*#[^\r\n]*|\s#[^\s]*)/mg;
 var FILTER_TYPES = {
   m: 'method',
   i: 'ip',
@@ -304,7 +312,7 @@ function resolveFilterText(text) {
     return result;
   }
   var pattern;
-  text.split(/\s+/).forEach(function (line) {
+  removeFilterComments(text).split(/\s+/).forEach(function (line) {
     if (FILTER_TYPES_RE.test(line)) {
       var type = FILTER_TYPES[RegExp.$1];
       var not = line[2] === '!';
@@ -573,14 +581,6 @@ exports.rules = createCgiObj(
       url: 'cgi-bin/rules/enable-back-rules-first'
     },
     setSysHosts: 'cgi-bin/rules/set-sys-hosts'
-  },
-  POST_CONF
-);
-
-
-exports.log = createCgiObj(
-  {
-    set: 'cgi-bin/log/set'
   },
   POST_CONF
 );
@@ -1053,9 +1053,6 @@ function startLoadData() {
         tunnelIds.push(item.id);
       }
     });
-    var clearedLogs = exports.clearedLogs;
-    var clearedSvrLogs = exports.clearedSvrLogs;
-    exports.clearedLogs = exports.clearedSvrLogs = false;
     if (!exports.pauseConsoleRefresh && len < MAX_LOG_LENGTH) {
       startLogTime = (clearedLogs && curLogId) || lastPageLogTime;
     }
@@ -1063,6 +1060,7 @@ function startLoadData() {
     if (!exports.pauseServerLogRefresh && svrLen < MAX_LOG_LENGTH) {
       startSvrLogTime =  (clearedSvrLogs && curSvrLogId) || lastSvrLogTime;
     }
+    clearedLogs = clearedSvrLogs = false;
 
     var curActiveItem = getComposerItem() || networkModal.getActive();
     var curFrames = curActiveItem && curActiveItem.frames;

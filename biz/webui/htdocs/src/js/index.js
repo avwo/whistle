@@ -42,7 +42,6 @@ var HttpsSettings = require('./https-settings');
 var ServiceDialog = require('./service-dialog');
 var Icon = require('./icon');
 var CloseBtn = require('./close-btn');
-var ConsoleDialog = require('./console-dialog');
 
 var TEMP_LINK_RE = /^(?:[\w-]+:\/\/)?temp(?:\/([\da-z]{64}|blank))?(?:\.[\w-]+)?$/;
 var FILE_PATH_RE = /^(?:[\w-]+:\/\/)?((?:[a-z]:[\\/]|\/).+)$/i;
@@ -1319,14 +1318,7 @@ var Index = React.createClass({
             }
             util.readFileAsText(file, function (logs) {
               logs = util.parseLogs(logs);
-              if (!logs) {
-                return;
-              }
-              if (dataCenter.uploadLogs !== null) {
-                dataCenter.uploadLogs = logs;
-              }
-              events.trigger('showLog');
-              events.trigger('uploadLogs', { logs: logs });
+              logs && events.trigger('showLog', { logs: logs });
             });
             return;
           }
@@ -1585,7 +1577,7 @@ var Index = React.createClass({
           elem.hasClass('cm-string') ||
           elem.hasClass('cm-js-at') ||
           elem.hasClass('cm-js-weinre') ||
-          elem.hasClass('cm-js-log') ||
+          (!self.hideNetwork && elem.hasClass('cm-js-log')) ||
           TEMP_LINK_RE.test(text = elem.text()) ||
           isTextFile(text) ||
           getKey(text)
@@ -1918,7 +1910,25 @@ var Index = React.createClass({
       });
     }, 10000);
 
-    dataCenter.getLogIdList = this.getLogIdListFromRules;
+    dataCenter.getLogIdOptions = function(id) {
+      var list = self.getLogIdListFromRules() || [];
+      var map = {};
+      list = list.map(function (id) {
+        map[id] = true;
+        return {
+          value: id,
+          text: id
+        };
+      });
+      list.unshift({
+        value: '',
+        text: 'All Logs'
+      });
+      return {
+        logIdList: list,
+        logId: !id || !map[id] ? '' : id
+      };
+    };
     dataCenter.importAnySessions = self.importAnySessions;
     dataCenter.on('plugins', function (data) {
       var pluginsOptions = self.createPluginsOptions(data.plugins);
@@ -2318,7 +2328,7 @@ var Index = React.createClass({
       return this.autoRefresh();
     }
   },
-  showNetwork: function (e) {
+  showNetwork: function (e, cb) {
     var self = this;
     if (self.state.name == 'network') {
       e && !self.state.showLeftMenu && self.showNetworkOptions();
@@ -2335,6 +2345,9 @@ var Index = React.createClass({
         if (self._isAtBottom) {
           self._isAtBottom = false;
           self.autoRefresh && self.autoRefresh();
+        }
+        if (typeof cb === 'function') {
+          cb();
         }
       }
     );
@@ -3122,7 +3135,11 @@ var Index = React.createClass({
     });
   },
   openLog: function(id) {
-    this.refs.consoleDialog.show();
+    if (!this.hideNetwork) {
+      this.showNetwork(null, function() {
+        events.trigger('showLog', id);
+      });
+    }
   },
   onClickRulesOption: function (item) {
     item.selected ? this.unselectRules(item) : this.selectRules(item);
@@ -5033,7 +5050,6 @@ var Index = React.createClass({
         {/* 初始化 EditorDialog 给 Rules 里面的快捷键使用 */}
         <EditorDialog textEditor standalone />
         <ServiceDialog />
-        <ConsoleDialog ref="consoleDialog" />
       </div>
     );
   }

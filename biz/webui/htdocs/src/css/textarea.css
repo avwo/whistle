@@ -1,7 +1,7 @@
 .w-textarea {
   position: relative;
 }
-.w-textarea-bar {
+.w-textarea-bar, .w-log-item > a {
   display: none;
   position: absolute;
   z-index: 1;

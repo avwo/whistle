@@ -1,5 +1,7 @@
 require('../css/tools.css');
 var React = require('react');
+var ReactDOM = require('react-dom');
+var $ = require('jquery');
 var Console = require('./console');
 var ServerLog = require('./server-log');
 var ToolBox = require('./tool-box');
@@ -53,6 +55,16 @@ var Tools = React.createClass({
   toggleTabs: function (btn) {
     this.changeTab = true;
     this.setState({ name: btn.name, plugin: null });
+  },
+  showTab: function(index, id) {
+    this.refs.tabs.handleClick(BTNS[index]);
+    if (typeof id === 'string') {
+      this.refs.console.showLogId(id);
+      this.shakeTab();
+    }
+  },
+  shakeTab: function() {
+    util.shakeElem($(ReactDOM.findDOMNode(this.refs.tabs)).find('button.active'));
   },
   clearLogs: function () {
     if (BTNS[0].active) {

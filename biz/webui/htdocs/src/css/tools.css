@@ -60,7 +60,7 @@
 .w-log li > pre li {
   width: auto !important;
 }
-.w-log > .w-log-ctn > ul > li {
+.w-log-ctn > ul > li {
   border-bottom: 1px solid var(--c-border);
 }
 .w-log li > pre > span {
@@ -498,12 +498,10 @@
   margin-right: 0;
 }
 
-.w-console-dialog .modal-body {
-  height: calc(100vh - 120px);
-  min-height: 360px;
-  padding: 0;
-}
-
-.w-console-dialog.modal-dialog {
-  width: 960px;
+.w-log-item:hover > a {
+  display: inline-block;
+  text-decoration: none;
+  color: var(--c-thin);
+  padding: 0 5px;
+  right: 5px;
 }

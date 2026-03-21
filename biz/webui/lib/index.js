@@ -56,7 +56,24 @@ var INSPECTOR_URL = '???_WHISTLE_PLUGIN_INSPECTOR_TAB_' + config.port + '???';
 var KEY_RE_G = /\${[^{}\s]+}|{\S+}/g;
 var COMMENT_RE = /#[^\r\n]*$/mg;
 
+function hasLogin() {
+  return config.username && config.password;
+}
+
+function isTempFile(query) {
+  var files = query.files;
+  if (files && typeof files === 'string') {
+    return false;
+  }
+  return common.isTempFile(query.filename);
+}
+
 function sendToService(req, res) {
+  if (!hasLogin() && req.path === '/cgi-bin/temp/get' && !isTempFile(req.query)) {
+    res.setHeader('Content-Type', 'application/json; charset=utf-8');
+    res.end('{"ec":0,"value":"","forbidden":true}');
+    return;
+  }
   proxyEvent.loadService(function(err, options) {
     if (err) {
       common.sendRes(res, 500, err.stack || err);

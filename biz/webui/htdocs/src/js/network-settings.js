@@ -16,6 +16,7 @@ var CloseBtn = require('./close-btn');
 
 var NOT_EMPTY_STYLE = { backgroundColor: 'var(--b-filtered)' };
 var NOT_EMPTY_RE = /[^\s]/;
+var DATA_KEY_TIPS = 'e.g.: res.body or res.body:/"msgno":"(\w+)"/ ...';
 
 var Settings = React.createClass({
   getInitialState: function () {
@@ -542,7 +543,7 @@ var Settings = React.createClass({
                 value={state.key}
                 className="form-control"
                 maxLength="72"
-                placeholder="Enter data key (as: res.headers.x-server ...)"
+                placeholder={DATA_KEY_TIPS}
               />
             </label>
           </div>

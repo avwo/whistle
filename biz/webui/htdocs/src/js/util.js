@@ -812,8 +812,9 @@ exports.getReqRawHeaders = function(modal) {
   var req = modal.req;
   var realUrl = getRealUrl(modal);
   var headers = objectToString(req.headers, req.rawHeaderNames);
-  return [ req.method, req.method == 'CONNECT' ? headers.host : getPath(realUrl),
-    'HTTP/' + (req.httpVersion || '1.1') ].join(' ') + '\r\n' +  headers;
+  req = [req.method, req.method == 'CONNECT' ? headers.host : getPath(realUrl),
+    'HTTP/' + (req.httpVersion || '1.1')].join(' ');
+  return headers ? req  + '\r\n' +  headers : req;
 };
 
 exports.getResRawHeaders = function(modal) {
@@ -821,7 +822,8 @@ exports.getResRawHeaders = function(modal) {
   var headers = objectToString(res.headers, res.rawHeaderNames);
   var status = res.statusCode;
   var msg = status === 'captureError' ? '(Most likely caused by SSL pinning)' : getStatusMessage(res);
-  return ['HTTP/' + (modal.req.httpVersion || '1.1'), status, msg].join(' ') + '\r\n' + headers;
+  res = ['HTTP/' + (modal.req.httpVersion || '1.1'), status, msg].join(' ');
+  return headers ? res + '\r\n' + headers : res;
 };
 
 function toLowerCase(str) {
@@ -1161,8 +1163,7 @@ exports.getValue = function(item, key) {
   if (value == null) {
     return '';
   }
-  value = String(value);
-  return value.length > 1690 ? value.substring(0, 1680) + '...' : value;
+  return String(value);
 };
 
 function openEditor(value) {
@@ -1581,14 +1582,14 @@ function checkLogText(text, keyword) {
 
 exports.hasVisibleLog = function (list) {
   var len = list.length;
-  if (!len) {
-    return false;
-  }
-  for (var i = 0; i < len; i++) {
-    if (!list[i].hide) {
-      return true;
+  if (len) {
+    for (var i = 0; i < len; i++) {
+      if (!list[i].hide) {
+        return true;
+      }
     }
   }
+  return false;
 };
 exports.trimLogList = function (list, overflow, hasKeyword) {
   var len = list.length;
@@ -3339,4 +3340,36 @@ exports.hasShortcut = function(name) {
 
 exports.noModal = function() {
   return !$('.modal.in').length;
+};
+
+var BACK_SLASH_RE = /\\+$/;
+var ESCAPE_CHARS_RE = /(\\*)([.|&\s])|(\\+)([stnrfv])/g;
+var SPACE_MAP = {
+  ' ': '\\s',
+  '\t': '\\t',
+  '\n': '\\n',
+  '\r': '\\r',
+  '\f': '\\f',
+  '\v': '\\v',
+  '|': '\\|',
+  '&': '\\&',
+  '.': '\\.'
+};
+
+exports.getKeyPath = function (keys) {
+  var last = keys.length - 1;
+  return keys
+        .map(function(key, i) {
+          key = String(key).replace(ESCAPE_CHARS_RE, function(_, s1, c1, s2, c2) {
+            if (c1) {
+              return s1 + s1 + (SPACE_MAP[c1] || c1);
+            }
+            return s2 + s2 + c2;
+          });
+          if (i < last && BACK_SLASH_RE.test(key)) {
+            key += RegExp['$&'];
+          }
+          return key;
+        })
+        .join('.');
 };

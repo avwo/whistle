@@ -73,8 +73,15 @@ var ReqData = React.createClass({
       .on('showTimeline', function () {
         self.toggleTab(tabs[2]);
       })
-      .on('showLog', function () {
-        self.toggleTab(tabs[4]);
+      .on('showLog', function (_, data) {
+        self.toggleTab(tabs[4], function() {
+          if (typeof data === 'string') {
+            self.refs.tools.showTab(0, data);
+          } else if (data) {
+            events.trigger('uploadLogs', data);
+            self.refs.tools.shakeTab();
+          }
+        });
       })
       .on('composer', function (e, item) {
         var modal = self.props.modal;
@@ -279,7 +286,7 @@ var ReqData = React.createClass({
             hide={name != tabs[3].name}
           />
         ) : null}
-        {state.initedTools ? <Tools hide={name != tabs[4].name} /> : null}
+        {state.initedTools ? <Tools ref="tools" hide={name != tabs[4].name} /> : null}
         {state.initedSaved ? <Saved hide={name != tabs[5].name} /> : null}
       </div>
     );

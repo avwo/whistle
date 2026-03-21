@@ -1497,7 +1497,7 @@ var Composer = React.createClass({
     var composerTime = state.composerTime;
     var resProps = {
       'Status Code': statusCode == null ? 'aborted' : statusCode,
-      'Take Time': getComposerTime(composerTime)
+      'Total Duration': getComposerTime(composerTime)
     };
 
     self.hasBody = hasBody;

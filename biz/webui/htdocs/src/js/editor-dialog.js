@@ -38,6 +38,9 @@ function getTempFile(tempFile, cb) {
       }
     }
     cb(result.value || '');
+    if (result.forbidden) {
+      message.warn('Without a username and password for Whistle, local non-temporary files cannot be accessed');
+    }
   });
 }
 

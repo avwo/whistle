@@ -22,7 +22,7 @@ function showMessage(msg, level) {
   elem.text(msg);
   elem.stop(true, true).show();
   elem.css('marginLeft', -elem[0].offsetWidth / 2);
-  elem.delay(2000).fadeOut(1600);
+  elem.delay(2000).fadeOut(2000);
   return elem;
 }
 

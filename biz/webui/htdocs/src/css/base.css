@@ -158,6 +158,7 @@ body,
   height: 100%;
   background: var(--b-default);
   color: var(--c-heavy);
+  overscroll-behavior-x: none;
 }
 
 #container {
