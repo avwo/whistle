@@ -32,6 +32,7 @@ export default defineConfig({
         nav: [
           { text: 'Home', link: '/en/' },
           { text: 'Documentation', link: '/en/docs/' },
+          { text: 'CHANGELOG', link: 'https://github.com/avwo/whistle/blob/master/CHANGELOG-en_US.md' },
         ],
         sidebar: [
           { text: 'Installation', link: '/en/docs/' },
@@ -242,6 +243,7 @@ export default defineConfig({
     nav: [
       { text: '首页', link: '/' },
       { text: '帮助文档', link: '/docs/' },
+      { text: '更新日志', link: 'https://github.com/avwo/whistle/blob/master/CHANGELOG.md' },
     ],
 
     sidebar: [

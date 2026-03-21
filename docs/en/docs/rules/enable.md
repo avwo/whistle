@@ -9,6 +9,8 @@ pattern enable://action1|action2|... [filters...]
 pattern enable://action1 enable://action2 ... [filters...]
 ```
 
+> The separator is either `|` or `&`
+
 | Parameters | Description | Detailed Documentation |
 | ------- | ------------------------------------------------------------ | ------------------------- |
 | pattern | Expression to match request URLs | [Match Pattern Documentation](./pattern) |

@@ -8,6 +8,8 @@ pattern ignore://p1|p2|... [filters...]
 pattern ignore://p1 ignore://p2 ... [filters...]
 ```
 
+> The separator is either `|` or `&`
+
 | Parameters | Description | Detailed Documentation |
 | ------- | ------------------------------------------------------------ | ------------------------- |
 | pattern | Expression to match against the request URL | [Match Pattern Documentation](./pattern) |

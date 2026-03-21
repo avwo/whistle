@@ -25,7 +25,6 @@ pattern operator includeFilter://pattern1 ... excludeFilter://patternx ...
 | `clientIp:pattern` | Match only client IP | `includeFilter://clientIp:/regexp/[i]` `excludeFilter://clientIp:keyword` |
 | `serverIp:pattern` | Match only server IP | `includeFilter://serverIp:/regexp/[i]` `excludeFilter://serverIp:keyword` |
 | `s:pattern` | Match response status code | `includeFilter://s:/^20/` `excludeFilter://s:30` |
-| `h:name=pattern` | Match request/response headers | `includeFilter://h:content-type=json` `excludeFilter://h:content-type=/regexp/i` |
-| `reqH:name=pattern` | Match request headers only | `includeFilter://reqH:content-type=json` `excludeFilter://reqH:content-type=/regexp/i` |
-| `resH:name=pattern` | Match response headers only | `includeFilter://resH:content-type=json` `excludeFilter://resH:content-type=/regexp/i` |
+| `reqH.header-key:pattern` | Match request headers only | `includeFilter://reqH.content-type:json`  `excludeFilter://reqH.content-type:/regexp/i` |
+| `resH.header-key:pattern` | Match response headers only | `includeFilter://resH.content-type:json`  `excludeFilter://resH.content-type:/regexp/i` |
 | Other `xxxxxx` | Match request URLs (same as [pattern](./pattern)) | `includeFilter://*/cgi-*` `excludeFilter://www.test.com` `includeFilter://https://www.test.com/path` |

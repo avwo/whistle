@@ -9,6 +9,8 @@ pattern delete://prop1|prop2|... [filters...]
 pattern delete://prop1 delete://prop2 ... [filters...]
 ```
 
+> The separator is either `|` or `&`
+
 | Parameters | Description | Detailed Documentation |
 | ------- | ------------------------------------------------------------ | ------------------------- |
 | pattern | Expression to match the request URL | [Match Pattern Documentation](./pattern) |
@@ -72,3 +74,51 @@ www.example.com/api/path/to delete://pathname.0 delete://pathname.1 delete://pat
 ```
 - Request: `https://www.example.com/api/path/to/xxx?query`
 - Result: `https://www.example.com/to/?query` (preserves the trailing slash)
+
+## Special Characters
+
+If an object key contains the following characters, it must be escaped with a backslash `\` in the path expression:
+
+- Delimiters: `|` and `&`
+- Space: ` ` (a single space)
+- Dot: `.`
+- Control characters: tab `\t`, newline `\n`, carriage return `\r`, form feed `\f`, vertical tab `\v`
+
+### Escape Rules
+
+| Original Character | Escaped Form |
+|----------|----------|
+| `|`      | `\|`     |
+| `&`      | `\&`     |
+| Space    | `\ `     |
+| `.`      | `\.`     |
+| Tab      | `\t`     |
+| Newline  | `\n`     |
+| Carriage Return | `\r`     |
+| Form Feed | `\f`     |
+| Vertical Tab | `\v`   |
+
+> Note: The backslash `\` itself is an escape character. To represent a literal backslash, it must be written as `\\`.
+
+### Example
+
+Suppose you need to delete two keys from the request body:
+- key1 is `\n .p` (contains a newline, space, dot, and the letter p)
+- key2 is `test|&test` (contains a vertical bar and an ampersand)
+
+The corresponding path expression should be written as:
+```
+reqBody.\n\ \.p.test\|\&test
+```
+Where:
+- `\n` represents the newline character
+- `\ ` represents a space
+- `\.` represents a dot
+- `\|` represents a vertical bar
+- `\&` represents an ampersand
+
+Complete request example:
+```
+# Delete key1 and key2 from the request body
+https://www.example.com/path delete://reqBody.\n\ \.p.test\|\&test
+```

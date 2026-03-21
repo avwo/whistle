@@ -27,9 +27,8 @@ pattern opertaion includeFilter://pattern1 ... excludeFilter://patternx ...
 | `clientIp:pattern`  | 仅匹配客户端 IP       | `includeFilter://clientIp:/regexp/[i]`  `excludeFilter://clientIp:keyword` |
 | `serverIp:pattern`  | 仅匹配服务端 IP       | `includeFilter://serverIp:/regexp/[i]`  `excludeFilter://serverIp:keyword` |
 | `s:pattern`         | 匹配响应状态码        | `includeFilter://s:/^20/`  `excludeFilter://s:30` |
-| `h:name=pattern`    | 匹配请求/响应头       | `includeFilter://h:content-type=json`  `excludeFilter://h:content-type=/regexp/i` |
-| `reqH:name=pattern` | 仅匹配请求头          | `includeFilter://reqH:content-type=json`  `excludeFilter://reqH:content-type=/regexp/i` |
-| `resH:name=pattern` | 仅匹配响应头          | `includeFilter://resH:content-type=json`  `excludeFilter://resH:content-type=/regexp/i` |
+| `reqH.header-key:pattern` | 仅匹配请求头          | `includeFilter://reqH.content-type:json`  `excludeFilter://reqH.content-type:/regexp/i` |
+| `resH:header-key:pattern` | 仅匹配响应头          | `includeFilter://resH.content-type:json`  `excludeFilter://resH.content-type:/regexp/i` |
 |  其它 `xxxxxx`     | 匹配请求 URL（同 [pattern](./pattern)） | `includeFilter://*/cgi-*` `excludeFilter://www.test.com` `includeFilter://https://www.test.com/path` |
 
 

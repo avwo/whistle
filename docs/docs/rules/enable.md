@@ -9,6 +9,8 @@ pattern enable://action1|action2|... [filters...]
 pattern enable://action1 enable://action2 ... [filters...]
 ```
 
+> 分隔符为 `|` 或 `&`
+
 | 参数    | 描述                                                         | 详细文档                  |
 | ------- | ------------------------------------------------------------ | ------------------------- |
 | pattern | 匹配请求 URL 的表达式                                        | [匹配模式文档](./pattern) |
