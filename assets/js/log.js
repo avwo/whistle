@@ -237,34 +237,31 @@
     return prefixPath;
   }
 
-  var index = 0;
-  var MAX_LEN = 1024 * 56;
+  var MAX_SIZE = 1024 * 512;
+  var MAX_VAL_SIZE = 1024 * 64;
+  var LOG_ID = '$LOG_ID';
+  var cacheList = [];
+  var origin = (location.origin || (location.protocol + '//' + location.host)) + '/';
+
+  function setLog() {
+    if (!cacheList.length) {
+      return;
+    }
+    var list = cacheList.splice(0, 10);
+    var xhr = new XMLHttpRequest();
+    var url = '$BASE_URL' + getPathPrefix() + '$LOG_CGI';
+    xhr.open('POST', url);
+    xhr.setRequestHeader('Content-Type', url.indexOf(origin) ? 'text/plain' : 'application/json');
+    xhr.onload = function() {};
+    xhr.send(JSON.stringify({ list: list }));
+  }
+
   function addLog(level, text) {
-    var img = new Image();
-    var timer;
-    if (index > 9999) {
-      index = 0;
-    }
-    var logStr = encodeURIComponent(text && (text + ''));
-    if (logStr.length > MAX_LEN) {
-      logStr = logStr.substring(0, MAX_LEN);
-      var percIndex = logStr.indexOf('%', MAX_LEN - 3);
-      if (percIndex !== -1) {
-        logStr = logStr.substring(0, percIndex);
-      }
-    }
-    var baseUrl = '$BASE_URL' + getPathPrefix();
-    img.src = baseUrl + '$LOG_CGI?id=$LOG_ID&level=' + level + '&text=' + logStr
-      + '&t=' + new Date().getTime() + '&' + ++index;
-    var preventGC = function() {
-      img.onload = img.onerror = null;
-      clearTimeout(timer);
-    };
-    img.onload = img.onerror = preventGC;
-    timer = setTimeout(preventGC, 3000);
+    cacheList.push([new Date().getTime(), level, LOG_ID, text].join('\r'));
     if (typeof window.onWhistleLogSend === 'function') {
       window.onWhistleLogSend(level, text);
     }
+    setTimeout(setLog, 60);
   }
 
   function getPageInfo() {
@@ -295,18 +292,37 @@
     return -1;
   }
 
+  function fomatText(str, size) {
+    var len = str.length;
+    if (len <= size + 9) {
+      return str;
+    }
+    return str.substring(0, size) + '...(' + (len - size) + ')';
+  }
+
   function stringifyObj(obj) {
     if (typeof obj === 'string') {
       return obj;
     }
+    var str;
     try {
-      return JSON.stringify(obj);
+      str = JSON.stringify(obj);
+      if (str.length <= MAX_SIZE) {
+        return str;
+      }
     } catch(e) {}
     try {
       var keyList = [];
       var valList = [];
-      return JSON.stringify(obj, function(key, value) {
-        if (value && typeof value === 'object') {
+      str = JSON.stringify(obj, function(key, value) {
+        if (!value) {
+          return value;
+        }
+        var type = typeof value;
+        if (type === 'string' && value.length > MAX_VAL_SIZE) {
+          return fomatText(value, MAX_VAL_SIZE);
+        }
+        if (type === 'object') {
           var index = arrayIndexOf(valList, value);
           valList.push(value);
           keyList.push(key);
@@ -316,6 +332,7 @@
         }
         return value;
       });
+      return fomatText(str, MAX_SIZE);
     } catch(e) {}
   }
 

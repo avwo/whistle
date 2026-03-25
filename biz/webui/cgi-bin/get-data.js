@@ -22,10 +22,8 @@ module.exports = function(req, res) {
     data.ids = null;
   }
   var clientIp = util.getClientIp(req);
-  var stopRecordConsole = data.startLogTime == -3;
   var stopRecordSvrLog = data.startSvrLogTime == -3;
   var h = req.headers;
-  var curLogId = proxy.getLatestId();
   var curSvrLogId = logger.getLatestId();
   util.sendGzip(req, res, {
     ec: 0,
@@ -46,11 +44,8 @@ module.exports = function(req, res) {
     mvaluesClientId: config.mvaluesClientId,
     mvaluesTime: config.mvaluesTime,
     server: util.getServerInfo(req),
-    curLogId: stopRecordConsole ? undefined : curLogId,
     curSvrLogId: stopRecordSvrLog ? undefined : curSvrLogId,
-    lastLogId: stopRecordConsole ? curLogId : undefined,
     lastSvrLogId: stopRecordSvrLog ? curSvrLogId : undefined,
-    log: stopRecordConsole ? [] : proxy.getLogs(data.startLogTime, data.count, data.logId),
     svrLog: stopRecordSvrLog ? [] : logger.getLogs(data.startSvrLogTime, data.count),
     plugins: pluginMgr.getPlugins(),
     disabledPlugins: !config.notAllowedDisablePlugins && properties.get('disabledPlugins') || {},

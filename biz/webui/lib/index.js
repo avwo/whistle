@@ -410,10 +410,8 @@ function cgiHandler(req, res) {
 app.all('/service/*', sendToService);
 app.all('/cgi-bin/service/*', sendToService);
 app.all('/cgi-bin/sessions/*', sendToService);
+app.all('/cgi-bin/log/*', sendToService);
 app.post('/cgi-bin/plugins/install', sendToService);
-app.all('/favicon.ico', function(req, res) {
-  res.sendFile(htdocs.getImgFile('favicon.ico'));
-});
 
 function readPluginPage(req, res, plugin, html, config) {
   res.type('html');

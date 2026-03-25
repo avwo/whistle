@@ -1,19 +1,20 @@
 var React = require('react');
+var ReactDOM = require('react-dom');
 var util = require('./util');
 var events = require('./events');
 var win = require('./win');
 var CopyBtn = require('./copy-btn');
-var dataCenter = require('./data-center');
 var RecordBtn = require('./record-btn');
 
-var MAX_COUNT = dataCenter.MAX_LOG_LENGTH;
+var MAX_COUNT = 360;
+var PAGE_SIZE = 30;
 var MAX_FILE_SIZE = 1024 * 1024 * 2;
 var LOG_TEXT_KEY = window.Symbol ? window.Symbol('logText') : 'logText';
 
 module.exports = {
   LOG_TEXT_KEY: LOG_TEXT_KEY,
   componentDidUpdate: function () {
-    if (!this.props.hide && this.state.scrollToBottom) {
+    if (!this.isHide() && this.state.scrollToBottom) {
       this.container.scrollTop = 10000000;
     }
   },
@@ -52,21 +53,11 @@ module.exports = {
   },
   handleScroll: function () {
     var self = this;
-    var data = self.state.logs;
+    var logs = self.state.logs;
     var atBottom = util.scrollAtBottom(self.container, self.content);
     clearTimeout(self.scrollTimer);
-    if (
-        data &&
-        (self.state.scrollToBottom = atBottom)
-      ) {
-      self.scrollTimer = setTimeout(function () {
-        var len = data.length - MAX_COUNT;
-        self.scrollTimer = null;
-        if (len > 9) {
-          util.trimLogList(data, len, self.keyword);
-          self.setState({ logs: data });
-        }
-      }, 2000);
+    if (logs && (self.state.scrollToBottom = atBottom)) {
+      self.scrollTimer = setTimeout(self.trimLogs, 2000);
     }
     if (atBottom) {
       self.refs.backBtn.hide();
@@ -93,11 +84,9 @@ module.exports = {
     var keys = util.parseKeyword(keyword);
     var logs = self.state.logs;
     self.keyword = keyword && keys;
-    util.filterLogList(logs, keys);
-    if (!keyword) {
-      var len = logs && logs.length - MAX_COUNT;
-      len > 9 && logs.splice(0, len);
-    }
+    logs = util.filterLogList(logs, keys);
+    self.state.logs = logs;
+    self.trimLogs();
     clearTimeout(self.filterTimer);
     self.filterTimer = setTimeout(function () {
       self.filterTimer = null;
@@ -122,37 +111,43 @@ module.exports = {
     log = log && (log[LOG_TEXT_KEY] || log.text);
     return log ? text + '\n' + log : text;
   },
-  updateLogs: function(logs) {
-    var state = this.state;
-    var curLogs = state.logs;
-    if (curLogs !== logs && Array.isArray(curLogs)) {
-      logs.push.apply(logs, curLogs);
-    }
-    state.logs = util.filterLogList(logs, this.keyword, true);
+  trimLogs: function () {
+    var logs = this.state.logs;
+    var len = logs.length - MAX_COUNT;
+    len > 9 && util.trimLogList(logs, len, this.keyword);
+  },
+  isHide: function () {
     if (this.props.hide) {
+      return true;
+    }
+    var btn = this._importBtn;
+    if (!btn) {
+      btn = ReactDOM.findDOMNode(this.refs.importBtn);
+      this._importBtn = btn;
+    }
+    return !btn || !btn.offsetWidth;
+  },
+  updateLogs: function(newLogs) {
+    var state = this.state;
+    var logs = state.logs;
+    var len = logs.length;
+    if (!newLogs.length || this.isHide() || len > MAX_COUNT) {
       return;
     }
+    var pageSize = Math.max(PAGE_SIZE, Math.floor((MAX_COUNT - len) * 2 / 3));
+    newLogs = newLogs.splice(0, pageSize);
+    state.logs = util.filterLogList(logs.concat(newLogs), this.keyword, true);
     var atBottom = util.scrollAtBottom(this.container, this.content);
-    if (atBottom) {
-      var len = logs.length - MAX_COUNT;
-      len > 9 && util.trimLogList(logs, len, this.keyword);
-    }
+    atBottom && this.trimLogs();
     this.setState({});
   },
   handleImport: function (_, result) {
-    if (this.props.hide) {
+    if (this.isHide()) {
       return;
     }
-    var logs = result.logs;
-    var curLogs = this.state.logs;
-    if (curLogs) {
-      curLogs.push.apply(curLogs, logs);
-      var overflow = curLogs.length - MAX_COUNT;
-      overflow > 19 && util.trimLogList(curLogs, overflow, this.keyword);
-    } else {
-      curLogs = logs;
-    }
-    this.updateLogs(curLogs);
+    this.state.logs = this.state.logs.concat(result.logs);
+    this.trimLogs();
+    this.setState({});
   },
   renderCopy: function (text, log) {
     var self = this;
@@ -163,7 +158,7 @@ module.exports = {
   renderActionBar: function(disabled) {
     return (<div className="w-textarea-bar">
       <RecordBtn onClick={this.handleAction} />
-      <a onClick={this.selectFile} draggable="false">
+      <a ref="importBtn" onClick={this.selectFile} draggable="false">
         Import
       </a>
       <a

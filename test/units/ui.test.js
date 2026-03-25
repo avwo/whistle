@@ -119,14 +119,6 @@ module.exports = function() {
     method: 'post'
   });
   util.request({
-    url: 'http://local.whistlejs.com/cgi-bin/log/set',
-    method: 'get',
-    form: {
-      level: 'error',
-      text: 'teset error log'
-    }
-  });
-  util.request({
     url: 'http://local.whistlejs.com/cgi-bin/composer',
     method: 'post',
     form: {
@@ -257,14 +249,6 @@ module.exports = function() {
   util.request({
     url: 'http://local.wproxy.org:1234/cgi-bin/rules/allow-multiple-choice',
     method: 'post'
-  });
-  util.request({
-    url: 'http://local.wproxy.org:1234/cgi-bin/log/set',
-    method: 'get',
-    form: {
-      level: 'warn',
-      text: 'teset warn log'
-    }
   });
   util.request({
     url: 'http://local.wproxy.org:1234/cgi-bin/composer',
@@ -398,10 +382,6 @@ module.exports = function() {
   });
   util.request({
     url: 'http://local.whistle.com/cgi-bin/rules/allow-multiple-choice',
-    method: 'post'
-  });
-  util.request({
-    url: 'http://local.whistle.com/cgi-bin/log/set',
     method: 'post'
   });
   util.request({

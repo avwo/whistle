@@ -26,13 +26,13 @@ var setDataCenter = NetworkModal.setDataCenter;
 var networkModal = new NetworkModal(dataList);
 var curServerInfo;
 var initialDataPromise, initialData, startedLoad;
-var lastPageLogTime = -2;
+var lastPageLogTime = -4;
 var lastSvrLogTime = -2;
 var curLogId;
 var curSvrLogId;
 var dataIndex = 1000000;
-var MAX_PATH_LENGTH = 1024;
-var MAX_LOG_LENGTH = 360;
+var MAX_PATH_LEN = 1024;
+var MAX_LOG_LEN = 120;
 var lastRowId;
 var endId;
 var hashFilterObj;
@@ -92,7 +92,6 @@ exports.checkPluginUpdates = function (plugin, callback) {
 exports.clientIp = '127.0.0.1';
 exports.MAX_INCLUDE_LEN = MAX_INCLUDE_LEN;
 exports.MAX_EXCLUDE_LEN = MAX_EXCLUDE_LEN;
-exports.MAX_LOG_LENGTH = MAX_LOG_LENGTH - 20;
 exports.changeLogId = function (id) {
   logId = id;
 };
@@ -428,6 +427,7 @@ var GET_CONF = $.extend(
 var cgi = createCgiObj(
   {
     getData: 'cgi-bin/get-data',
+    getLogs: 'cgi-bin/log/get',
     getInitial: 'cgi-bin/init'
   },
   GET_CONF
@@ -806,6 +806,11 @@ function loadComposeData(keys) {
   });
 }
 
+function resetLogInfo(data, hasClearedSvrLogs) {
+  curSvrLogId = data.curSvrLogId;
+  lastSvrLogTime = hasClearedSvrLogs ? curSvrLogId : (data.lastSvrLogId || lastSvrLogTime);
+}
+
 exports.getInitialData = function (callback) {
   if (!initialDataPromise) {
     initialDataPromise = $.Deferred();
@@ -833,14 +838,7 @@ exports.getInitialData = function (callback) {
         initialData = data;
         clientId = data.clientId;
         DEFAULT_CONF.data.clientId = clientId;
-        if (data.lastLogId) {
-          lastPageLogTime = data.lastLogId;
-        }
-        if (data.lastSvrLogId) {
-          lastSvrLogTime = data.lastSvrLogId;
-        }
-        curLogId = data.curLogId;
-        curSvrLogId = data.curSvrLogId;
+        resetLogInfo(data);
         if (data.lastDataId) {
           lastRowId = data.lastDataId;
         }
@@ -1015,6 +1013,20 @@ function getComposerItem() {
   return elem && elem.offsetWidth ? composerItem : null;
 }
 
+function getStartLogTime() {
+  if (!exports.pauseConsoleRefresh && logList.length < MAX_LOG_LEN) {
+    return (clearedLogs && curLogId) || lastPageLogTime;
+  }
+  return -1;
+}
+
+function getStartSvrLogTime() {
+  if (!exports.pauseServerLogRefresh && svrLogList.length < MAX_LOG_LEN) {
+    return (clearedSvrLogs && curSvrLogId) || lastSvrLogTime;
+  }
+  return -1;
+}
+
 var hiddenTime = Date.now();
 function startLoadData() {
   if (startedLoad) {
@@ -1036,13 +1048,13 @@ function startLoadData() {
     }
 
     var startTime = getStartTime();
-    var len = logList.length;
-    var svrLen = svrLogList.length;
-    var startLogTime = -1;
-    var startSvrLogTime = -1;
+    var gettingLogs;
     var pendingIds = [];
     var statusIds = [];
     var tunnelIds = [];
+    var hasClearedLogs = clearedLogs;
+    var hasClearedSvrLogs = clearedSvrLogs;
+
     dataList.forEach(function (item) {
       if (!item.endTime && !item.lost) {
         pendingIds.push(item.id);
@@ -1053,14 +1065,6 @@ function startLoadData() {
         tunnelIds.push(item.id);
       }
     });
-    if (!exports.pauseConsoleRefresh && len < MAX_LOG_LENGTH) {
-      startLogTime = (clearedLogs && curLogId) || lastPageLogTime;
-    }
-
-    if (!exports.pauseServerLogRefresh && svrLen < MAX_LOG_LENGTH) {
-      startSvrLogTime =  (clearedSvrLogs && curSvrLogId) || lastSvrLogTime;
-    }
-    clearedLogs = clearedSvrLogs = false;
 
     var curActiveItem = getComposerItem() || networkModal.getActive();
     var curFrames = curActiveItem && curActiveItem.frames;
@@ -1076,9 +1080,13 @@ function startLoadData() {
     }
     var count = inited ? 20 : networkModal.getDisplayCount();
     var composerReqId = exports.curComposerReqId;
+    var logOpts = {
+      startLogTime: exports.stopConsoleRefresh ? -3 : getStartLogTime(),
+      logId: logId || '',
+      count: count || 20
+    };
     var options = {
-      startLogTime: exports.stopConsoleRefresh ? -3 : startLogTime,
-      startSvrLogTime: exports.stopServerLogRefresh ? -3 : startSvrLogTime,
+      startSvrLogTime: exports.stopServerLogRefresh ? -3 : getStartSvrLogTime(),
       ids: pendingIds.join(),
       status: statusIds.join(),
       startTime: startTime,
@@ -1086,7 +1094,6 @@ function startLoadData() {
       lastRowId: inited || !count ? lastRowId : undefined,
       curReqId: curReqId,
       lastFrameId: lastFrameId,
-      logId: logId || '',
       count: count || 20,
       tunnelIds: tunnelIds,
       composerReqId: composerReqId
@@ -1095,6 +1102,33 @@ function startLoadData() {
     $.extend(options, hashFilterObj);
     if (onlyViewOwnData) {
       options.ip = 'self';
+    }
+    if (!gettingLogs) {
+      cgi.getLogs(logOpts, function (data) {
+        gettingLogs = false;
+        if (!data) {
+          return;
+        }
+        var logLen = data.log.length;
+        if (clearedLogs) {
+          if (hasClearedLogs) {
+            clearedLogs = false;
+          } else {
+            logLen = 0;
+          }
+        }
+        if (logLen) {
+          logList.push.apply(logList, data.log);
+          lastPageLogTime = data.log[logLen - 1].id;
+        }
+        if (logList.length) {
+          logCallbacks.forEach(function (cb) {
+            cb(logList, svrLogList);
+          });
+        }
+        curLogId = data.curLogId;
+        lastPageLogTime = hasClearedLogs ? curLogId : (data.lastLogId || lastPageLogTime);
+      });
     }
     cgi.getData(options, function (data) {
       var hasNewData = data && data.data && data.data.hasNew;
@@ -1147,7 +1181,6 @@ function startLoadData() {
       directCallbacks.forEach(function (cb) {
         cb(data);
       });
-      var len = data.log.length;
       var svrLen = data.svrLog.length;
       var _reqTabList = reqTabList;
       var _resTabList = resTabList;
@@ -1241,27 +1274,24 @@ function startLoadData() {
         updateWorkers(webWorkerList);
       }
       disabledAllPlugins = data.disabledAllPlugins;
-      if (len || svrLen) {
-        if (len) {
-          logList.push.apply(logList, data.log);
-          lastPageLogTime = data.log[len - 1].id;
+      if (clearedSvrLogs) {
+        if (hasClearedSvrLogs) {
+          clearedSvrLogs = false;
+        } else {
+          svrLen = 0;
         }
+      }
+      if (svrLen) {
+        svrLogList.push.apply(svrLogList, data.svrLog);
+        lastSvrLogTime = data.svrLog[svrLen - 1].id;
+      }
 
-        if (svrLen) {
-          svrLogList.push.apply(svrLogList, data.svrLog);
-          lastSvrLogTime = data.svrLog[svrLen - 1].id;
-        }
-
+      if (svrLogList.length) {
         logCallbacks.forEach(function (cb) {
           cb(logList, svrLogList);
         });
       }
-      if (data.lastLogId) {
-        lastPageLogTime = data.lastLogId;
-      }
-      if (data.lastSvrLogId) {
-        lastSvrLogTime = data.lastSvrLogId;
-      }
+      resetLogInfo(data, hasClearedSvrLogs);
       data = data.data;
       var hasChanged;
       var framesLen = data.frames && data.frames.length;
@@ -1748,8 +1778,8 @@ function setReqData(item) {
     } else {
       item.path = url;
     }
-    if (item.path.length > MAX_PATH_LENGTH) {
-      item.shortPath = item.path.substring(0, MAX_PATH_LENGTH) + '...';
+    if (item.path.length > MAX_PATH_LEN) {
+      item.shortPath = item.path.substring(0, MAX_PATH_LEN) + '...';
     }
   } else if (item.useH2) {
     item.protocol = 'H2';

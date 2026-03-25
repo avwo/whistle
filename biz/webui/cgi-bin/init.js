@@ -11,7 +11,6 @@ var logger = proxy.logger;
 var pluginMgr = proxy.pluginMgr;
 
 module.exports = function(req, res) {
-  var lastLog = proxy.getLogs(0, 1)[0];
   var lastSvrLog = logger.getLogs(0, 1)[0];
 
   util.sendGzip(req, res, {
@@ -23,7 +22,6 @@ module.exports = function(req, res) {
     custom2: properties.get('Custom2'),
     hasInvalidCerts: ca.hasInvalidCerts,
     supportH2: config.enableH2,
-    lastLogId: lastLog && lastLog.id,
     lastSvrLogId: lastSvrLog && lastSvrLog.id,
     lastDataId: proxy.getLastDataId(),
     clientId: util.getClientId(),

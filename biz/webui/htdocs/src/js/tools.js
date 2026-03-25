@@ -2,7 +2,7 @@ require('../css/tools.css');
 var React = require('react');
 var ReactDOM = require('react-dom');
 var $ = require('jquery');
-var Console = require('./console');
+var Console = require('./console-log');
 var ServerLog = require('./server-log');
 var ToolBox = require('./tool-box');
 var events = require('./events');

@@ -77,6 +77,7 @@ var Console = React.createClass({
         value: '',
         text: 'All Logs'
       }],
+      logs: [],
       logId: '',
       levels: [
         {
@@ -164,7 +165,7 @@ var Console = React.createClass({
   render: function () {
     var self = this;
     var state = self.state;
-    var logs = state.logs || [];
+    var logs = state.logs;
     var logIdList = state.logIdList;
     var level = state.level;
     var expandRoot = state.expandRoot;

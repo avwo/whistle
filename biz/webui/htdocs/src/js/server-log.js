@@ -18,6 +18,7 @@ var ServerLog = React.createClass({
   getInitialState: function () {
     return {
       scrollToBottom: true,
+      logs: [],
       levels: [
         {
           value: '',
@@ -91,7 +92,7 @@ var ServerLog = React.createClass({
   render: function () {
     var self = this;
     var state = self.state;
-    var logs = state.logs || [];
+    var logs = state.logs;
     var level = state.level;
     var index = 0;
 
