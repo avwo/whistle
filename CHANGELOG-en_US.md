@@ -1,5 +1,23 @@
 [中文](./CHANGELOG.md) · English
 
+## v2.10.2
+1. feat: Network Settings now supports two comment formats:
+   - Inline comments: `#xxx` (no space between the config and `#`)
+   - Whole-line comments: `# x xx xx x`
+2. feat: Added support for setting rules programmatically
+   ```js
+   const useRules = require('whistle/bin/use');
+
+   useRules({
+     name: 'Test',
+     rules: '******',
+   }, (err, alreadyExists) => {
+     if (err) return console.log(alreadyExists);
+   });
+   ```
+3. feat: Improved Tools / Console interaction experience
+
+
 ## v2.10.1
 1. fix: https://github.com/avwo/whistle/issues/1296
 2. fix: https://github.com/avwo/whistle/issues/1297

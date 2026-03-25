@@ -1,23 +1,21 @@
 中文 · [English](./CHANGELOG-en_US.md)
 
 ## v2.10.2
-1. feat: Network Settings 里面支持注释 `#xxx`（不能有空格） 或单独一行 `# x xx xx x`
-2. feat: 支持通过代码设置规则
-    ``` js
-    cosnt useRules = require('whistle/bin/use');
+1. feat: Network Settings 支持两种注释格式：
+   - 行内注释：`#xxx`（与配置之间不能有空格）
+   - 整行注释：`# x xx xx x`
+2. feat: 支持通过代码动态设置规则
+   ```js
+   const useRules = require('whistle/bin/use');
 
-    useRules({
-      // group: 'Option',
-      // storage: 'xxx',
-      name: 'Test',
-      rules: '******',
-    }, (err, alreadyExists) => {
-      if (err) {
-        return console.log(alreadyExists);
-      }
-    });
-    ```
-3. 
+   useRules({
+     name: 'Test',
+     rules: '******',
+   }, (err, alreadyExists) => {
+     if (err) return console.log(alreadyExists);
+   });
+   ```
+3. feat: 优化 Tools / Console 交互体验
 
 ## v2.10.1
 1. fix: https://github.com/avwo/whistle/issues/1296
