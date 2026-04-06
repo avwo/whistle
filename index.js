@@ -86,6 +86,17 @@ function loadConfig(options) {
   }
 }
 
+function checkPortAvailable(port, host, cb) {
+  var server = net.createServer();
+  server.unref();
+  server.on('error', function (err) {
+    cb(err);
+  });
+  server.listen(port, host || '0.0.0.0', function () {
+    server.close(cb);
+  });
+}
+
 function likePromise(p) {
   return p && typeof p.then === 'function' && typeof p.catch === 'function';
 }
@@ -176,26 +187,37 @@ module.exports = function (options, callback) {
     if (!conf.cluster) {
       return require('./lib')(callback, server);
     }
-    var timer;
-    var activeTimeout = function () {
-      clearTimeout(timer);
-      timer = setTimeout(function () {
-        process.exit(1);
-      }, TIMEOUT);
-    };
-    process.once('SIGTERM', function () {
-      process.exit(0);
-    });
+    var startCluster = function () {
+      var timer;
+      var activeTimeout = function () {
+        clearTimeout(timer);
+        timer = setTimeout(function () {
+          process.exit(1);
+        }, TIMEOUT);
+      };
+      process.once('SIGTERM', function () {
+        process.exit(0);
+      });
 
-    require('./lib')(function () {
-      activeTimeout();
-      process.on('message', activeTimeout);
-      process.send('1', noop);
-      setInterval(() => {
-        try {
-          process.send('1', noop);
-        } catch (e) {}
-      }, INTERVAL);
+      require('./lib')(function () {
+        activeTimeout();
+        process.on('message', activeTimeout);
+        process.send('1', noop);
+        setInterval(() => {
+          try {
+            process.send('1', noop);
+          } catch (e) {}
+        }, INTERVAL);
+      });
+    };
+    if (server) {
+      return startCluster();
+    }
+    checkPortAvailable(conf.port, conf.host, function (err) {
+      if (err) {
+        throw err;
+      }
+      startCluster();
     });
   };
   if (options) {
