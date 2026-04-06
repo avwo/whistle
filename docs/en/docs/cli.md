@@ -183,7 +183,7 @@ w2 add --force
 
 ### Manually Installing Root Certificate on Linux {#linux-ca}
 
-`w2 ca` can automatically install the root certificate on macOS and Windows, but on Linux you need to install it manually. First download the `rootCA.crt` file from the Whistle web UI, then run the appropriate commands for your distribution:
+`w2 ca` can automatically install the root certificate on macOS and Windows, but on Linux you need to install it manually. First download the `rootCA.crt` file from the Whistle web UI (HTTPS menu → Download RootCA) to the current directory, then run the appropriate commands for your distribution:
 
 #### Ubuntu / Debian
 ``` sh
@@ -199,16 +199,16 @@ sudo update-ca-trust
 
 #### Alpine Linux
 ``` sh
-apk add ca-certificates
-cp rootCA.crt /usr/local/share/ca-certificates/
-update-ca-certificates
+sudo apk add ca-certificates
+sudo cp rootCA.crt /usr/local/share/ca-certificates/
+sudo update-ca-certificates
 ```
 
 > After installation, you can verify the certificate is working with the following command:
 > ``` sh
 > # Set proxy and test HTTPS request
 > export https_proxy=http://127.0.0.1:8899
-> curl https://www.baidu.com
+> curl https://example.com
 > ```
 
 ## w2 install

@@ -184,7 +184,7 @@ Whistle 会检查是否存在同名规则：
 
 ### Linux 命令行手动安装根证书 {#linux-ca}
 
-`w2 ca` 在 macOS 和 Windows 上可自动安装根证书，但在 Linux 上需要手动安装。请先通过 Whistle 界面下载根证书文件 `rootCA.crt`，然后根据发行版执行以下命令：
+`w2 ca` 在 macOS 和 Windows 上可自动安装根证书，但在 Linux 上需要手动安装。请先通过 Whistle 界面（HTTPS 菜单 → Download RootCA）下载根证书文件 `rootCA.crt` 到当前目录，然后根据发行版执行以下命令：
 
 #### Ubuntu / Debian
 ``` sh
@@ -200,9 +200,9 @@ sudo update-ca-trust
 
 #### Alpine Linux
 ``` sh
-apk add ca-certificates
-cp rootCA.crt /usr/local/share/ca-certificates/
-update-ca-certificates
+sudo apk add ca-certificates
+sudo cp rootCA.crt /usr/local/share/ca-certificates/
+sudo update-ca-certificates
 ```
 
 > 安装完成后，可通过以下命令验证证书是否生效：
