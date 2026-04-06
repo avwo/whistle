@@ -130,11 +130,11 @@ var socksServer = socks.createServer(function(info, accept, deny) {
     }
     return;
   }
-  if (info.dstPort === 8081) {
+  if (info.dstPort === 18081) {
     if (socket = accept(true)) {
       client = net.connect({
         host: '127.0.0.1',
-        port: 8081
+        port: 18081
       }, function() {
         socket.pipe(client).pipe(socket);
       });
