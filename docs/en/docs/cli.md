@@ -181,6 +181,36 @@ w2 add --force
 5. `w2 ca certUrl`: Downloads and installs the certificate from the specified URL
 6. `w2 ca localCertPath`: Installs the certificate from the specified local path
 
+### Manually Installing Root Certificate on Linux {#linux-ca}
+
+`w2 ca` can automatically install the root certificate on macOS and Windows, but on Linux you need to install it manually. First download the `rootCA.crt` file from the Whistle web UI, then run the appropriate commands for your distribution:
+
+#### Ubuntu / Debian
+``` sh
+sudo cp rootCA.crt /usr/local/share/ca-certificates/
+sudo update-ca-certificates
+```
+
+#### CentOS / RHEL / Fedora
+``` sh
+sudo cp rootCA.crt /etc/pki/ca-trust/source/anchors/
+sudo update-ca-trust
+```
+
+#### Alpine Linux
+``` sh
+apk add ca-certificates
+cp rootCA.crt /usr/local/share/ca-certificates/
+update-ca-certificates
+```
+
+> After installation, you can verify the certificate is working with the following command:
+> ``` sh
+> # Set proxy and test HTTPS request
+> export https_proxy=http://127.0.0.1:8899
+> curl https://www.baidu.com
+> ```
+
 ## w2 install
 1. `w2 install whistle.script`: Installs the plugin
 2. `w2 install whistle.script --registry=https://npm-registry`: Installs the plugin and specifies the npm registry

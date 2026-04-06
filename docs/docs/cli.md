@@ -182,6 +182,36 @@ Whistle 会检查是否存在同名规则：
 5. `w2 ca certUrl`：下载指定 URL 的证书并安装
 6. `w2 ca localCertPath`：安装本地指定路径的证书
 
+### Linux 命令行手动安装根证书 {#linux-ca}
+
+`w2 ca` 在 macOS 和 Windows 上可自动安装根证书，但在 Linux 上需要手动安装。请先通过 Whistle 界面下载根证书文件 `rootCA.crt`，然后根据发行版执行以下命令：
+
+#### Ubuntu / Debian
+``` sh
+sudo cp rootCA.crt /usr/local/share/ca-certificates/
+sudo update-ca-certificates
+```
+
+#### CentOS / RHEL / Fedora
+``` sh
+sudo cp rootCA.crt /etc/pki/ca-trust/source/anchors/
+sudo update-ca-trust
+```
+
+#### Alpine Linux
+``` sh
+apk add ca-certificates
+cp rootCA.crt /usr/local/share/ca-certificates/
+update-ca-certificates
+```
+
+> 安装完成后，可通过以下命令验证证书是否生效：
+> ``` sh
+> # 设置代理并测试 HTTPS 请求
+> export https_proxy=http://127.0.0.1:8899
+> curl https://www.baidu.com
+> ```
+
 ## w2 install
 1. `w2 install whistle.script`：安装插件
 2. `w2 install whistle.script --registry=https://npm-registry`：安装插件，并指定 npm registry
