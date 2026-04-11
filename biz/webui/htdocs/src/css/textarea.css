@@ -25,6 +25,12 @@
 .w-textarea-bar a:hover {
   color: var(--c-default);
 }
+.w-textarea-bar .w-open-with-settings {
+  padding: 0 2px;
+}
+.w-textarea-bar .w-open-with-settings .glyphicon {
+  margin-right: 0;
+}
 
 .w-textarea-input {
   display: block;

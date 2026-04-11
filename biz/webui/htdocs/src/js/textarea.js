@@ -4,6 +4,7 @@ var ReactDOM = require('react-dom');
 var TextView = require('./textview');
 var CopyBtn = require('./copy-btn');
 var util = require('./util');
+var storage = require('./storage');
 var dataCenter = require('./data-center');
 var message = require('./message');
 var win = require('./win');
@@ -12,6 +13,7 @@ var Tips = require('./panel-tips');
 var Icon = require('./icon');
 
 var MAX_LENGTH = 1024 * 6;
+var OPEN_WITH_KEY = 'openWithTemplate';
 var findDOMNode = ReactDOM.findDOMNode;
 
 var Textarea = React.createClass({
@@ -38,6 +40,53 @@ var Textarea = React.createClass({
   },
   edit: function () {
     util.openEditor(this.props.value);
+  },
+  getOpenWithTemplate: function () {
+    return (storage.get(OPEN_WITH_KEY) || '').trim();
+  },
+  hasOpenWithTemplate: function () {
+    return !!this.getOpenWithTemplate();
+  },
+  getOpenWithUrl: function () {
+    var text = this.props.value || '';
+    var template = this.getOpenWithTemplate();
+    var encoded = encodeURIComponent(text);
+    var url = template.indexOf('${data}') === -1
+      ? template + encoded
+      : template.split('${data}').join(encoded);
+    return url;
+  },
+  openWith: function () {
+    if (!this.hasOpenWithTemplate()) {
+      this.editOpenWithTemplate(true);
+      return;
+    }
+    var url = this.getOpenWithUrl();
+    window.open(url, '_blank');
+  },
+  editOpenWithTemplate: function (fromOpenWith) {
+    var current = this.getOpenWithTemplate();
+    var input = window.prompt(
+      'Set Open With URL.\nExample: https://xx.com/?data=${data}\nIf ${data} is not included, encoded body will be appended to URL.\nLeave blank to clear this setting.',
+      current
+    );
+    if (input == null) {
+      return;
+    }
+    input = input.trim();
+    if (!input) {
+      storage.set(OPEN_WITH_KEY, '');
+      message.success('Open With template cleared');
+      this.forceUpdate();
+      return;
+    }
+    storage.set(OPEN_WITH_KEY, input);
+    message.success(
+      fromOpenWith
+        ? 'Open With template saved, click Open With again to open'
+        : 'Open With template updated'
+    );
+    this.forceUpdate();
   },
   showMockDialog: function(e) {
     var self = this;
@@ -177,6 +226,26 @@ var Textarea = React.createClass({
           <a onClick={this.edit} draggable="false">
             ViewAll
           </a>
+          <a
+            onClick={this.openWith}
+            draggable="false"
+            title={
+              this.getOpenWithTemplate() ||
+              'Open With template is not set, click to configure'
+            }
+          >
+            Open With
+          </a>
+          {this.hasOpenWithTemplate() ? (
+            <a
+              className="w-open-with-settings"
+              onClick={this.editOpenWithTemplate}
+              draggable="false"
+              title="Edit Open With template"
+            >
+              <Icon name="cog" />
+            </a>
+          ) : null}
           <div
             onMouseDown={this.preventBlur}
             style={{ display: this.state.showNameInput ? 'block' : 'none' }}
