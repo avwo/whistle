@@ -61,6 +61,31 @@
   border-bottom-right-radius: 2px;
   margin-left: 1px;
 }
+.w-open-with-input input {
+  width: 300px;
+  height: 28px;
+  border-radius: 2px;
+  font-size: 12px;
+}
+.w-open-with-input .btn {
+  height: 28px;
+  padding: 0 10px;
+  line-height: 26px;
+  font-size: 12px;
+  border-radius: 2px;
+  margin-left: 4px;
+}
+.w-open-with-input .btn:focus,
+.w-open-with-input .btn:active:focus,
+.w-open-with-input .btn.active:focus {
+  outline: none;
+  box-shadow: none;
+}
+.w-open-with-input {
+  top: 24px;
+  right: 0;
+  padding: 4px;
+}
 
 .w-textview-tips {
   color: var(--c-disabled);

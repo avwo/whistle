@@ -15,6 +15,16 @@ var Icon = require('./icon');
 var MAX_LENGTH = 1024 * 6;
 var OPEN_WITH_KEY = 'openWithTemplate';
 var findDOMNode = ReactDOM.findDOMNode;
+var electronShell;
+var childProcess;
+if (util.isElectron) {
+  try {
+    electronShell = window.require('electron').shell;
+  } catch (e) {}
+  try {
+    childProcess = window.require('child_process');
+  } catch (e) {}
+}
 
 var Textarea = React.createClass({
   getInitialState: function () {
@@ -58,35 +68,72 @@ var Textarea = React.createClass({
   },
   openWith: function () {
     if (!this.hasOpenWithTemplate()) {
-      this.editOpenWithTemplate(true);
+      this.showOpenWithInput();
       return;
     }
     var url = this.getOpenWithUrl();
-    window.open(url, '_blank');
-  },
-  editOpenWithTemplate: function (fromOpenWith) {
-    var current = this.getOpenWithTemplate();
-    var input = window.prompt(
-      'Set Open With URL.\nExample: https://xx.com/?data=${data}\nIf ${data} is not included, encoded body will be appended to URL.\nLeave blank to clear this setting.',
-      current
-    );
-    if (input == null) {
+    if (
+      util.isElectron &&
+      window.process &&
+      window.process.platform === 'darwin' &&
+      childProcess &&
+      typeof childProcess.execFile === 'function'
+    ) {
+      childProcess.execFile('open', ['-a', 'Safari', url], function (err) {
+        if (err && electronShell && typeof electronShell.openExternal === 'function') {
+          electronShell.openExternal(url);
+        }
+      });
       return;
     }
-    input = input.trim();
+    if (electronShell && typeof electronShell.openExternal === 'function') {
+      electronShell.openExternal(url);
+    } else {
+      window.open(url, '_blank');
+    }
+  },
+  showOpenWithInput: function () {
+    var self = this;
+    self.state.showNameInput = false;
+    self.state.showOpenWithInput = true;
+    self.forceUpdate(function () {
+      var input = findDOMNode(self.refs.openWithInput);
+      if (!input) {
+        return;
+      }
+      input.value = self.getOpenWithTemplate();
+      input.select();
+      input.focus();
+    });
+  },
+  hideOpenWithInput: function () {
+    this.state.showOpenWithInput = false;
+    this.forceUpdate();
+  },
+  clearOpenWithTemplate: function () {
+    storage.set(OPEN_WITH_KEY, '');
+    message.success('Open With template cleared');
+    this.hideOpenWithInput();
+  },
+  editOpenWithTemplate: function () {
+    this.showOpenWithInput();
+  },
+  submitOpenWithTemplate: function (e) {
+    if (e.keyCode != 13 && e.type != 'click') {
+      return;
+    }
+    var target = findDOMNode(this.refs.openWithInput);
+    if (!target) {
+      return;
+    }
+    var input = target.value.trim();
     if (!input) {
-      storage.set(OPEN_WITH_KEY, '');
-      message.success('Open With template cleared');
-      this.forceUpdate();
+      this.clearOpenWithTemplate();
       return;
     }
     storage.set(OPEN_WITH_KEY, input);
-    message.success(
-      fromOpenWith
-        ? 'Open With template saved, click Open With again to open'
-        : 'Open With template updated'
-    );
-    this.forceUpdate();
+    message.success('Open With template updated');
+    this.hideOpenWithInput();
   },
   showMockDialog: function(e) {
     var self = this;
@@ -102,6 +149,7 @@ var Textarea = React.createClass({
   },
   showNameInput: function (e) {
     var self = this;
+    self.state.showOpenWithInput = false;
     self.state.showDownloadInput = /w-download/.test(e.target.className);
     self.state.showNameInput = true;
     self.forceUpdate(function () {
@@ -246,6 +294,34 @@ var Textarea = React.createClass({
               <Icon name="cog" />
             </a>
           ) : null}
+          <div
+            onMouseDown={this.preventBlur}
+            style={{ display: this.state.showOpenWithInput ? 'block' : 'none' }}
+            className="w-shadow w-textarea-input w-open-with-input"
+          >
+            <input
+              ref="openWithInput"
+              onKeyDown={this.submitOpenWithTemplate}
+              onBlur={this.hideOpenWithInput}
+              type="text"
+              maxLength="2048"
+              placeholder="https://xx.com/?data=${data}"
+            />
+            <button
+              type="button"
+              onClick={this.submitOpenWithTemplate}
+              className="btn btn-primary"
+            >
+              Save
+            </button>
+            <button
+              type="button"
+              onClick={this.clearOpenWithTemplate}
+              className="btn btn-default"
+            >
+              Clear
+            </button>
+          </div>
           <div
             onMouseDown={this.preventBlur}
             style={{ display: this.state.showNameInput ? 'block' : 'none' }}
