@@ -57,7 +57,7 @@
 24. [reqRules](./reqRules)
 25. [reqScript](./reqScript)
 
-## Rewrite Reponse（修改响应数据）
+## Rewrite Response（修改响应数据）
 1. [statusCode](./statusCode)
 2. [replaceStatus](./replaceStatus)
 3. [redirect](./redirect)
