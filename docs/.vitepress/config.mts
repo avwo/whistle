@@ -135,7 +135,7 @@ export default defineConfig({
                 ]
               },
               {
-                text: 'Rewrite Reponse',
+                text: 'Rewrite Response',
                 collapsed: false,
                 items: [
                   { text: 'statusCode', link: '/en/docs/rules/statusCode' },
@@ -347,7 +347,7 @@ export default defineConfig({
             ]
           },
           {
-            text: 'Rewrite Reponse',
+            text: 'Rewrite Response',
             collapsed: false,
             items: [
               { text: 'statusCode', link: '/docs/rules/statusCode' },
