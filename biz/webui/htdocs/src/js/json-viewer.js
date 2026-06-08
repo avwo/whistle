@@ -253,6 +253,7 @@ var JsonViewer = React.createClass({
         <div className="w-textarea-bar">
           <CopyBtn value={data.str} />
           <a
+            className="w-download"
             onDoubleClick={this.download}
             onClick={this.showNameInput}
             draggable="false"
