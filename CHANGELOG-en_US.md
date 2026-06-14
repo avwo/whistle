@@ -1,5 +1,11 @@
 [中文](./CHANGELOG.md) · English
 
+## v2.10.3
+1. feat: Support creating `Mapping` / `Network` / `Request` / `Response` / `Debug`  rules via form 
+2. feat: Added `Clear DNS Cache` button in Online to manually clear Whistle's DNS cache
+3. feat: Added a settings button in Network/Settings/"ViewAll in new window" to support custom URL for opening content, see: https://github.com/avwo/set-global-proxy/pull/12
+4. fix: Fixed multiple issues and enhanced system stability
+
 ## v2.10.2
 1. feat: Network Settings now supports two comment formats:
    - Inline comments: `#xxx` (no space between the config and `#`)
@@ -520,7 +526,7 @@
 
 ## v2.0.0
 1. feat: **Support for HTTP2 Functionality**
-	> Please ensure the Node version is [the latest LTS (>= 10.16.0) or Stable (>= 12.12.0) version](https://nodejs.org/en/), otherwise anomalies may occur, such as: [#24037](https://github.com/nodejs/node/issues/24037), [#24470](https://github.com/nodejs/node/issues/24470)
+	> Please ensure the Node version is [the latest LTS (>= 10.16.0) or Stable (>= 12.12.0) version](https://nodejs.org/en/), otherwise anomalies may occur, such as [#24037](https://github.com/nodejs/node/issues/24037), [#24470](https://github.com/nodejs/node/issues/24470)
 2. feat: `**/path/to` If `path/to` contains `*`, e.g., `*/cgi-*`, it is equivalent to `^*/cgi-*`.
 
 ## v1.17

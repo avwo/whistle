@@ -68,3 +68,4 @@ dist
 /test/all_whistles
 /docs/.vitepress/dist
 /docs/.vitepress/cache
+/biz/webui/htdocs/js

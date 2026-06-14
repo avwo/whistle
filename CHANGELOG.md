@@ -1,5 +1,11 @@
 中文 · [English](./CHANGELOG-en_US.md)
 
+## v2.10.3
+1. feat: 支持通过表单创建 `Mapping` / `Network` / `Debug` / `Request` / `Response` 规则
+2. feat: Online 新增 `Clear DNS Cache` 按钮用于手动清空 Whistle 的 DNS 缓存
+3. feat: 在 Network/Settings/"ViewAll" in new window 新增设置按钮，支持填入自定义打开内容的 URL，参考：https://github.com/avwo/set-global-proxy/pull/12
+4. fix: 修复多项问题，增强系统稳定性
+
 ## v2.10.2
 1. feat: Network Settings 支持两种注释格式：
    - 行内注释：`#xxx`（与配置之间不能有空格）
