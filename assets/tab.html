@@ -5,7 +5,6 @@
     var activeList = [];
     var stateList = [1];
     var getActiveSession;
-    var getSelectedSessionList;
     var listenersList = [];
     var frameChangeListeners = [];
     var composeListeners = [];
@@ -282,7 +281,9 @@
           toast[name] = options.msgBox[name];
         });
         getActiveSession = options.getActiveSession;
-        getSelectedSessionList = options.getSelectedSessionList;
+        whistleBridge.getSelectedSessionList = options.getSelectedSessionList;
+        whistleBridge.getRawRequest = options.getRawRequest;
+        whistleBridge.getRawResponse = options.getRawResponse;
         whistleBridge.showOption = options.showOption;
         whistleBridge.hideOption = options.hideOption;
         whistleBridge.updateUI = options.updateUI;
@@ -324,7 +325,6 @@
         whistleBridge.createRequest = options.createRequest;
         whistleBridge.parseRules = options.parseRules;
         whistleBridge.showModal = options.showModal;
-        whistleBridge.getSelectedSessionList = getSelectedSessionList;
         whistleBridge.getActiveSession = whistleBridge.getSession = whistleBridge.getSelectedSession = getActiveSession;
         whistleBridge.importRules = options.importRules;
         whistleBridge.importValues = options.importValues;
