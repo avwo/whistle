@@ -42,7 +42,7 @@ Accessing `https://www.example.com/path/to` returns:
 | `parseUrl` | Same as `url.parse` in Node.js |
 | `parseQuery` | Same as `querystring.parse` in Node.js |
 
-## Related Protocols
+## Associated Protocols
 1. Request-phase script rules: [reqScript](./reqScript)
 2. Request-phase batch rules: [reqRules](./reqScript)
 3. Response-phase batch rules: [resRules](./resRules)

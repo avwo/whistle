@@ -41,6 +41,7 @@ www.example.com/path2 urlParams://https://www.xxx.com/xxx/params.json
 www.example.com/path3 urlParams://temp/blank.json
 ````
 
-## Related Protocols
-1. More flexible way to modify request parameters: [pathReplace](./pathReplace)
-2. Deleting request parameters: [delete://urlParams.xxx](./delete)
+## Associated Protocols {#related}
+1. Set Request Parameters (`Set Param`): [urlParams://(key=value)](./urlParams)  
+2. Delete Request Parameter (`Delete Param`): [delete://urlParams.xxx](./delete)  
+3. More flexible way to modify request parameters (`Modify Path (path/to?query)`): [pathReplace](./pathReplace)

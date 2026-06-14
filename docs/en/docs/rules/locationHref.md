@@ -38,5 +38,8 @@ www.example.com/path locationHref://replace:https://www.qq.com
 ```
 > Redirects to the target URL. The current page will not be saved in the browser history, and users cannot return to the original page using the "Back" button.
 
-## Related Protocols
-1. `302` Redirect: [redirect](./redirect)
+## Associated Protocols
+
+1. Return status code directly (request is not sent to the server): [statusCode](./statusCode)  
+2. Replace the status code returned by the server: [replaceStatus](./replaceStatus)  
+3. Client-side page redirect: [locationHref](./locationHref)

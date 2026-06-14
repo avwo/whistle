@@ -81,6 +81,15 @@ username: admin
 password: secret
 ```
 
+## Set `Proxy-Authorization`
+```json
+{
+  "proxy": true,
+  "username": "admin",
+  "password": "secret"
+}
+```
+
 ## Parameter Details
 
 | Parameter | Required | Description & Examples |
@@ -127,7 +136,7 @@ Assuming the `api-auth` configuration already exists in Values:
 https://example.com/api/ auth://{api-auth}
 ```
 
-## How It Works & Related Protocols
+## How It Works & Associated Protocols
 
 1. **Core Principle**: The `auth` protocol automatically calculates the Base64 encoding of the username and password and sets the `Authorization` request header.
 
@@ -147,3 +156,11 @@ https://example.com/api/ auth://{api-auth}
 - The `auth` protocol only supports HTTP Basic Authentication
 - For more complex authentication methods (such as Bearer Token, OAuth, etc.), please use the [`reqHeaders`](./reqHeaders) protocol to directly set the corresponding `Authorization` header
 - When loading from a remote URL, ensure the target URL is secure and reliable
+
+## Associated Protocols {#related}
+
+1. Delete request header field (`Delete Request Header`): [delete://reqHeaders.xxx](./delete)  
+2. Delete request cookie (`Delete Request Cookie`): [delete://reqCookies.xxx](./delete)  
+3. Set request cookie: [reqCookies](./reqCookies)  
+4. Set request authorization header: [auth](./auth)  
+5. More flexible way to modify request headers: [headerReplace](./headerReplace)

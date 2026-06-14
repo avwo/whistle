@@ -132,17 +132,20 @@ www.example.com/print.css cssAppend://{test3.css}
 ```
 ````
 
-## Related Protocols
+## Associated Protocols {#related}
 
-1. **Inject Content Before the Response Body**: [reqAppend](./reqAppend)
-   - Inserts content before the body of all types of responses.
-
-2. **Inject Content Before CSS Response Body**: [cssPrepend](./cssPrepend)
-   - Inserts content before the CSS response body (opposite of `cssAppend`).
-
-3. **Replace CSS Response Content**: [cssBody](./cssBody)
-   - Completely replaces the CSS response content (rather than appending).
-
-4. **Other Content Type Operations**:
-   - [jsAppend](./jsAppend): Appends content after JavaScript response bodies.
-   - [htmlAppend](./htmlAppend): Appends content after HTML response bodies.
+1. Inject content before the response content (`Prepend To Body`): [resPrepend](./resPrepend)  
+2. Inject HTML content before the response content (`Prepend HTML To Body`, response type must be `text/html`): [htmlPrepend](./htmlPrepend)  
+3. Inject CSS content before the response content (`Prepend CSS To Body`, response type must be `text/html` or `text/css`): [cssPrepend](./cssPrepend)  
+4. Inject JS content before the response content (`Prepend JS To Body`, response type must be `text/html`, `text/css`, or `application/javascript`): [jsPrepend](./jsPrepend)  
+5. Replace the response content (`Replace Body`): [resBody](./resBody)  
+6. Replace the response content with HTML content (`Replace Body`, response type must be `text/html`): [htmlBody](./htmlBody)  
+7. Replace the response content with CSS content (`Replace Body`, response type must be `text/html` or `text/css`): [cssBody](./cssBody)  
+8. Replace the response content with JS content (`Replace Body`, response type must be `text/html`, `text/css`, or `application/javascript`): [jsBody](./jsBody)  
+9. Append content after the response content (`Append To Body`): [resAppend](./resAppend)  
+10. Append HTML content after the response content (`Append HTML To Body`, response type must be `text/html`): [htmlAppend](./htmlAppend)  
+11. Append CSS content after the response content (`Append CSS To Body`, response type must be `text/html` or `text/css`): [cssAppend](./cssAppend)  
+12. Append JS content after the response content (`Append JS To Body`, response type must be `text/html`, `text/css`, or `application/javascript`): [jsAppend](./jsAppend)  
+13. Replace the response content using keywords or regular expressions (`Modify Body Text`): [resReplace](./resReplace)  
+14. Override JSON/Form objects in the response content (`Modify Form/JSON`): [resMerge](./resMerge)  
+15. Delete a property from a JSON/Form object in the response content (`Delete Form/JSON`): [delete://resBody.xxx](./delete)

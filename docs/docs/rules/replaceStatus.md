@@ -256,3 +256,8 @@ www.example.com/api replaceStatus://400 includeFilter://s:403
 - [HTTP 状态码 MDN 文档](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Status)：了解所有 HTTP 状态码的含义
 - [匹配模式文档](./pattern)：详细了解 URL 匹配规则
 - [过滤器文档](./filters)：了解更多过滤器功能
+
+## 关联协议
+1. 直接返回状态码（请求不发往服务器）：[statusCode](./statusCode)  
+2. 替换服务器返回的状态码：[replaceStatus](./replaceStatus)  
+3. 客户端页面跳转：[locationHref](./locationHref)

@@ -29,7 +29,7 @@ Visiting `https://www.example.com/path/to` returns:
 ``` txt
 <div>hello<div>test
 ```
-## Related Protocols
+## Associated Protocols
 1. Request Phase Script Rules: [reqScript](./reqScript)
 2. Response Phase Batch Rules: [resRules](./resRules)
 3. Response Phase Script Rules: [resScript](./resScript)

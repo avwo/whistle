@@ -72,8 +72,9 @@ www.example.com pathReplace://(/^api//=)
 >
 > 新版 Whistle 也可以用 `delete://pathname.0` 删除上面 URL 的 `api/` 路径片段，详见 [delete://pathname.xxx](./delete)
 
-## 关联协议
-1. 修改请求参数：[urlParams](./urlParams)
-2. 删除路径：[delete://pathname.xxx](./delete)
-3. 删除请求参数：[delete://urlParams.xxx](./delete)
+## 关联协议 {#related}
+1. 设置请求参数（`Set Param`）：[urlParams://(key=value)](./urlParams)
+2. 删除请求参数（`Delete Param`）：[delete://urlParams.xxx](./delete)
+3. 更灵活的修改请求参数的方式（`Modify Path (path/to?query)`）：[pathReplace](./pathReplace)
+4. 删除路径：[delete://pathname.xxx](./delete)
 

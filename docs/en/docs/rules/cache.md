@@ -108,7 +108,7 @@ Assuming the `static-cache` configuration already exists in Values:
 https://example.com/assets cache://{static-cache}
 ```
 
-## How It Works & Related Protocols
+## How It Works & Associated Protocols
 
 1. **Core Principle**: The `cache` protocol automatically sets the corresponding cache control headers:
 
@@ -130,7 +130,7 @@ https://example.com/assets cache://{static-cache}
      Pragma: no-cache
      ```
 
-2. **Related Protocols**:
+2. **Associated Protocols**:
    - **Disable Caching**: A more thorough cache disabling solution that also removes cache-related headers from both requests and responses. See: [disable://cache](./disable)
    - **Manual Header Setting**: For more complex cache control, you can use the [`resHeaders`](./resHeaders) protocol to manually set cache headers.
 
@@ -139,3 +139,12 @@ https://example.com/assets cache://{static-cache}
 - Setting `no-cache` does not mean "do not cache" but rather "must validate before use".
 - For scenarios requiring complete cache disabling, it is recommended to also use the [`disable://cache`](./disable) protocol.
 - Actual caching behavior is also influenced by server configuration and browser implementation.
+
+## Associated Protocols {#related}
+
+1. Modify response headers: [resHeaders](./resHeaders)  
+2. Delete request header field (`Delete Response Header`): [delete://resHeaders.xxx](./delete)  
+3. Delete request cookie (`Delete Response Cookie`): [delete://resCookies.xxx](./delete)  
+4. Set request cookie: [resCookies](./resCookies)  
+5. Set cache: [cache](./cache)  
+6. More flexible way to modify request headers: [headerReplace](./headerReplace)

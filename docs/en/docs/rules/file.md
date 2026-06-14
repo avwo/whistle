@@ -243,7 +243,7 @@ Client Request → Whistle (matches file rule) → Reads Local File → Returns 
 Client Request → Whistle → Sends to Server → Receives Original Response → Replaces Response Body → Returns Modified Response
 ```
 
-## Related Protocols
+## Associated Protocols
 
 1. **Allow unmatched files to continue access**: [xfile](./xfile)
    - When a local file does not exist, allow the request to continue to the original server.

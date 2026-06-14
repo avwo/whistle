@@ -141,3 +141,11 @@ https://example.com/assets cache://{static-cache}
 - 设置 `no-cache` 不代表"不缓存"，而是"使用前必须验证"
 - 对于需要完全禁用缓存的场景，建议同时使用 [`disable://cache`](./disable) 协议
 - 实际缓存行为还受服务器配置和浏览器实现的影响
+
+## 关联协议 {#related}
+1. 修改响应头：[resHeaders](./resHeaders)
+2. 删除请求头字段（`Delete Response Header`）：[delete://resHeaders.xxx](./delete)
+3. 删除请求 Cookie（`Delete Response Cookie`）：[delete://resCookies.xxx](./delete)
+4. 设置请求 Cookie：[resCookies](./resCookies)
+5. 设置缓存：[cache](./cache)
+6. 更灵活的修改请求头的方式：[headerReplace](./headerReplace)

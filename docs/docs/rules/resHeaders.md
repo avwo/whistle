@@ -51,7 +51,11 @@ www.example.com/path2 resHeaders://https://www.xxx.com/xxx/params.json
 www.example.com/path3 resHeaders://temp/blank.json
 ````
 
-## 关联协议
-1. 更灵活的修改响应头的方式：[headerReplace](./headerReplace)
-2. 删除响应头字段：[delete://resHeaders.xxx](./delete)
+## 关联协议 {#related}
+1. 修改响应头：[resHeaders](./resHeaders)
+2. 删除请求头字段（`Delete Response Header`）：[delete://resHeaders.xxx](./delete)
+3. 删除请求 Cookie（`Delete Response Cookie`）：[delete://resCookies.xxx](./delete)
+4. 设置请求 Cookie：[resCookies](./resCookies)
+5. 设置缓存：[cache](./cache)
+6. 更灵活的修改请求头的方式：[headerReplace](./headerReplace)
 

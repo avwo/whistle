@@ -89,9 +89,12 @@ www.example.com/path headerReplace://{test.json} resCookies://test=123;path=/;
 
 ````
 
-## Association Protocol
+## Associated Protocols {#related}
 
-1. Delete response cookie: [delete://resCookies.xxx](./delete)
-2. Delete all response header cookies: [delete://resHeaders.set-cookie](./delete)
-3. Replace response header cookies: [headerReplace://resH.set-cookie:pattern=replacement](./headerReplace)
+1. Modify response headers: [resHeaders](./resHeaders)  
+2. Delete request header field (`Delete Response Header`): [delete://resHeaders.xxx](./delete)  
+3. Delete request cookie (`Delete Response Cookie`): [delete://resCookies.xxx](./delete)  
+4. Set request cookie: [resCookies](./resCookies)  
+5. Set cache: [cache](./cache)  
+6. More flexible way to modify request headers: [headerReplace](./headerReplace)
 

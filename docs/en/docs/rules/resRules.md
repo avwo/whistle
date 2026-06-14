@@ -27,7 +27,7 @@ www.example.com/path resRules://{test.txt} resRules://{test2.txt}
 ````
 Accessing `https://www.example.com/path/to` does not execute `* file://(<div>hello<div>)` (because the rules in resRules are executed during the response phase).
 
-## Related Protocols
+## Associated Protocols
 1. Request-Phone Script Rules: [reqScript](./reqScript)
 2. Response-Phone Batch Rules: [reqRules](./resRules)
 3. Response-Phone Script Rules: [resScript](./resScript)

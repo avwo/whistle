@@ -39,5 +39,6 @@ www.example.com/path locationHref://replace:https://www.qq.com
 > 跳转至目标 URL，且当前页面不会存入浏览器历史记录，用户无法通过“返回”按钮回到原页面
 
 ## 关联协议
-1. `302` 跳转：[redirect](./redirect)
-
+1. 直接返回状态码（请求不发往服务器）：[statusCode](./statusCode)  
+2. 替换服务器返回的状态码：[replaceStatus](./replaceStatus)  
+3. 客户端页面跳转：[locationHref](./locationHref)

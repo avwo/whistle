@@ -75,8 +75,22 @@ www.example.com/path5 jsPrepend://https://www.xxx.com/xxx/params.js lineProps://
 | `crossorigin`| 启用跨域资源共享（CORS）模式 | `lineProps://crossorigin` |
 
 
-## 关联协议
-1. 在响应内容前面注入内容：[reqPrepend](./reqPrepend)
-2. 替换 JavaScript 类型的响应内容：[jsBody](./jsBody)
-3. 在 JavaScript 类型的响应内容后面注入内容：[jsPrepend](./jsPrepend)
+## 关联协议 {#related}
+
+1. 在响应内容前注入内容（`Prepend To Body`）：[resPrepend](./resPrepend)
+2. 在响应内容前注入 HTML 内容（`Prepend HTML To Body`，响应类型必须为 `text/html`）：[htmlPrepend](./htmlPrepend)
+3. 在响应内容前注入 CSS 内容（`Prepend CSS To Body`，响应类型必须为 `text/html` 或 `text/css`）：[cssPrepend](./cssPrepend)
+4. 在响应内容前注入 JS 内容（`Prepend JS To Body`，响应类型必须为 `text/html`、`text/css` 或 `application/javascript`）：[jsPrepend](./jsPrepend)
+5. 替换响应内容（`Replace Body`）：[resBody](./resBody)
+6. 用 HTML 内容替换响应内容（`Replace Body`，响应类型必须为 `text/html`）：[htmlBody](./htmlBody)
+7. 用 CSS 内容替换响应内容（`Replace Body`，响应类型必须为 `text/html` 或 `text/css`）：[cssBody](./cssBody)
+8. 用 JS 内容替换响应内容（`Replace Body`，响应类型必须为 `text/html`、`text/css` 或 `application/javascript`）：[jsBody](./jsBody)
+9. 在响应内容后追加内容（`Append To Body`）：[resAppend](./resAppend)
+10. 在响应内容后追加 HTML 内容（`Append HTML To Body`，响应类型必须为 `text/html`）：[htmlAppend](./htmlAppend)
+11. 在响应内容后追加 CSS 内容（`Append CSS To Body`，响应类型必须为 `text/html` 或 `text/css`）：[cssAppend](./cssAppend)
+12. 在响应内容后追加 JS 内容（`Append JS To Body`，响应类型必须为 `text/html`、`text/css` 或 `application/javascript`）：[jsAppend](./jsAppend)
+13. 使用关键字或正则表达式替换响应内容（`Modify Body Text`）：[resReplace](./resReplace)
+14. 覆盖响应内容中的 JSON/Form 对象（`Modify Form/JSON`）：[resMerge](./resMerge)
+15. 删除响应内容中的 JSON/Form 对象属性（`Delete Form/JSON`）：[delete://resBody.xxx](./delete)
+
 

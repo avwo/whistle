@@ -34,4 +34,7 @@ www.example.com/path/test redirect://https://www.qq.com replaceStatus://301
 ```
 
 ## Associated Protocols
-1. Pages whose addresses cannot be modified via `302` can use: [locationHref](./locationHref)
+
+1. Return status code directly (request is not sent to the server): [statusCode](./statusCode)  
+2. Replace the status code returned by the server: [replaceStatus](./replaceStatus)  
+3. Client-side page redirect: [locationHref](./locationHref)

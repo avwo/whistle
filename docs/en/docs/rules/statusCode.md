@@ -204,7 +204,7 @@ www.example.com/api/unstable statusCode://200 includeFilter://chance:0.2
 2. Whether the redirect address format is correct.
 3. Whether the browser follows the redirect rules.
 
-## Related Protocols
+## Associated Protocols
 
 1. **Replace response status code**: [replaceStatus](./replaceStatus)
    - The request first reaches the server, then replaces the returned status code.

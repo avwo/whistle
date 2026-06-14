@@ -18,5 +18,5 @@ www.example.com/path responseFor://1.1.1.1,2.2.2.2
 ```
 <img src="/img/response-for.png" width="800" />
 
-## Related Protocols
+## Associated Protocols
 1. Custom Response Headers: [resHeaders://x-whistle-response-for=xxx](./resHeaders)

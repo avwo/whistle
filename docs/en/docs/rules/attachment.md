@@ -93,7 +93,7 @@ Store the complete configuration file containing `attachment` rules on a remote 
     ```
    This way, the `attachment` rules in the remote file will be loaded and take effect.
 
-## How It Works & Related Protocols
+## How It Works & Associated Protocols
 
 1.  **Core Principle**: The `attachment` protocol essentially sets response headers automatically.
     The example above is completely equivalent to manually setting headers using the [`resHeaders`](./resHeaders) protocol:

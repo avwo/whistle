@@ -1,327 +1,408 @@
-`pattern` is the first part of Whistle rules, used to match request URLs. It supports various matching methods including domains, paths, wildcards, and regular expressions.
+## pattern
 
-Through `pattern`, you can:
-- Precisely match specific domains or paths
-- Use wildcards to match a group of related requests
-- Use regular expressions to implement complex matching logic
-- Support three different types of URL matching
+`pattern` is the expression used in Whistle rules to match request URLs. It supports multiple matching methods, including URL fragment/domain, wildcards, and regular expressions.
 
 ## Request URL Types
 
 Whistle supports three types of request URLs:
 
-| Type | Format | Examples |
+| Type | Format | Example |
 | :--- | :--- | :--- |
-| **Tunnel Proxy** | `tunnel://domain[:port]` | `tunnel://www.test.com:443` |
+| **Tunnel proxy** | `tunnel://domain:port` | `tunnel://www.test.com:443` |
 | **WebSocket** | `ws[s]://domain[:port]/[path/to[?query]]` | `wss://www.test.com/path?a=1&b=2`<br>`ws://www.example.com:8080/path` |
-| **Regular HTTP/HTTPS** | `http[s]://domain[:port]/[path/to][?query]` | `https://www.test.com/path`<br>`http://www.example.com/path?a=1&b=2` |
+| **HTTP/HTTPS** | `http[s]://domain[:port]/[path/to][?query]` | `https://www.test.com/path`<br>`http://www.example.com/path?a=1&b=2` |
 
-## Domain Matching
+> The hash part of a URL (i.e., `#` and everything after it) is not sent to the server. Hashes only work on the client side (e.g., browsers) and cannot be directly obtained by the server.
 
-### Domain Structure
+## URL Fragment {#url}
+
+The URL fragment is used to match request URLs with flexible patterns. The matching rules are categorized as follows.
+
+### 1. Domain Matching
+
+- **Plain domain**: `example.com`  
+  Matches all requests under this domain, regardless of port and protocol (http/https).  
+  ✅ `https://example.com/path/to?query`  
+  ✅ `https://example.com:9090/path/to?query`
+
+- **Domain with port**: `example.com:8080`  
+  Matches only requests for the specified port (8080).  
+  ✅ `https://example.com:8080/path/to?query`  
+  ❌ `https://example.com:9090/path/to?query`
+  ❌ `https://example.com/path/to?query`
+
+### 2. Protocol Matching
+
+- **With protocol**: `https://example.com/path/to`  
+  Matches only requests using the same protocol.
+
+- **Without protocol**: `example.com/path/to` or `//example.com/path/to`  
+  Matches any protocol (http, https, etc.). Path matching follows the same rules as with protocol (see below).
+
+### 3. Path & Query Parameter Matching
+
+#### 3.1 Without Query Parameters
+
+Pattern: `https://example.com/path/to`  
+Rule: **Path prefix matching** (using `/` as boundary).  
+- ✅ `https://example.com/path/to`  
+- ✅ `https://example.com/path/to/xxx?query`  
+- ❌ `https://example.com/path/toxxx` (missing `/` boundary after `to`)
+
+#### 3.2 With Query Parameters
+
+Pattern: `https://example.com/path/to?xxx`  
+Rule: **Exact path** and query string **prefix** matching.  
+- ✅ `https://example.com/path/to?xxx`  
+- ✅ `https://example.com/path/to?xxxyyy&zzzzz`  
+- ❌ `https://example.com/path/to/yyy?xxx` (path differs)
+
+### 4. Exact Matching
+
+Use the `$` prefix for stricter matching.
+
+- `$https://example.com/path/to`  
+  Matches **exact path** (with `/` boundary), any query parameters.  
+  ✅ `https://example.com/path/to`  
+  ✅ `https://example.com/path/to?query`  
+  ❌ `https://example.com/path/to/xxx`
+
+- `$https://example.com/path/to?query`  
+  Matches **exact path and exact query string**.  
+  ✅ `https://example.com/path/to?query`  
+  ❌ `https://example.com/path/to?query=1`  
+  ❌ `https://example.com/path/to`
+
+- Exact match without protocol: `$example.com/path/to` (same behavior, any protocol)
+
+### 5. Domain Wildcard {#domain-wildcard}
+
+Use `*` or `**` in the `domain:port` part for fuzzy matching.
+
+- `*` : Matches zero or more non-`.` characters (equivalent to regex `/[^/?.]*/`).  
+  Example: `https://*.example.com/path/to`  
+  ✅ `https://www.example.com/path/to`  
+  ✅ `https://abc.example.com/path/to/xxx?query`
+  ❌ `https://a.b.example.com/path/to`
+
+- `**` : Matches zero or more arbitrary characters except `/` and `?` (equivalent to regex `/[^/?]*/`).  
+  Example: `https://**.example.com:8*/path/to`  
+  ✅ `https://foo-bar.example.com:8080/path/to`
+  ✅ `https://a.b.example.com:8888/path/to`
+
+- `***` and more: not recommended.
+
+> Note: `*` is also a legal character in URL paths. If you need to use wildcards in the path part, see [Wildcard Matching](#wildcard).
+
+### Summary
+
+| Pattern | Protocol | Port | Path Matching | Query Matching |
+|---------|----------|------|---------------|----------------|
+| `example.com` | Any | Any | - | - |
+| `example.com:8080` | Any | 8080 | - | - |
+| `https://example.com/path/to` | https | Any | Prefix (`/` boundary) | Any |
+| `https://example.com/path/to?xxx` | https | Any | Exact | Prefix |
+| `$https://example.com/path/to` | https | Any | Exact | Any |
+| `$https://example.com/path/to?xxx` | https | Any | Exact | Exact |
+| `example.com/path/to` <br/> or `//example.com/path/to` | Any | Any | Prefix (`/` boundary) | Any |
+
+## Wildcard Matching {#wildcard}
+
+In [URL Fragment Matching](#url), because `*` is a legal character in URL paths, wildcards cannot be used directly in the path or query part.  
+If you need to use wildcards in the **path** or **query parameters**, prefix the URL with `^`. Then `*`, `**`, `***` are interpreted as wildcards.
+
+### 1. Domain Wildcard
+
+The syntax is exactly the same as the [Domain Wildcard in URL Fragment](#domain-wildcard):
+
+- `*`: Matches zero or more non-`.` characters (regex `/[^/?.]*/`)
+- `**`: Matches zero or more arbitrary characters except `/` and `?` (regex `/[^/?]*/`)
+
+**Example**: `^wss://*.example.com/path/to`
+
+✅ Matches:
+- `wss://a.example.com/path/to`
+- `wss://b.example.com/path/to/xxx?query`
+
+❌ Does not match:
+- `wss://a.example.com/path/toxxx` (missing `/` boundary)
+- `wss://a.b.example.com/path/to` (`*` does not match dot)
+
+### 2. Path Wildcard
+
+Applies to the **path part** of the URL (after domain, before `?`). Three levels are supported:
+
+| Wildcard | Matching Rule (regex) | Description |
+|----------|----------------------|-------------|
+| `*`      | `/[^?/]*/`            | Matches any characters within the current path segment (excluding `/` and `?`) |
+| `**`     | `/[^?]*/`             | Matches any characters (excluding `?`), can span multiple path segments |
+| `***`    | `/.*/`                | Matches all remaining characters (including `/` and `?`), typically used at the end of the path |
+
+**Example 1: `*`**  
+Pattern: `^https://example.com/path/to/a*b`  
+✅ Matches: `https://example.com/path/to/axxxb/...?query`  
+❌ Does not match: `https://example.com/path/to/a/b` (`*` cannot match `/`)
+
+**Example 2: `**`**  
+Pattern: `^https://example.com/path/to/a**b`  
+✅ Matches:
+- `https://example.com/path/to/axxxb/...?query`
+- `https://example.com/path/to/a/b`  
+❌ Does not match: `https://example.com/path/to/a/xxxx?query=b` (after `?` is not part of path)
+
+**Example 3: `***`**  
+Pattern: `^https://www.example*.com:8*/path/to/a***b`  
+✅ Matches:
+- `https://example.com/path/to/axxxb/...?query`
+- `https://example.com/path/to/a/b`
+- `https://example.com/path/to/a/xxxx?query=b` (`***` matches `?` and beyond)
+
+> `***` consumes all remaining characters including `?`. It is recommended only at the end of the path.
+
+### 3. Query Parameter Wildcard
+
+Applies to the **query string** (after `?`). Two levels are supported:
+
+| Wildcard | Matching Rule (regex) | Description |
+|----------|----------------------|-------------|
+| `*`      | `/[^&]*/`             | Matches any characters within a single parameter value (excluding `&`) |
+| `**`     | `/.*/`                | Matches all remaining characters (including `&`), i.e., from current position to end |
+
+**Example 1: `*`**  
+Pattern: `^https://example.com/path/to?query=a*b`  
+✅ Matches: `https://example.com/path/to?query=ab&q2=xxx`  
+❌ Does not match: `https://example.com/path/to?query=a&q2=b` (no extra characters before `b`)
+
+**Example 2: `**`**  
+Pattern: `^https://example.com/path/to?query=a**b`  
+✅ Matches:
+- `https://example.com/path/to?query=axxxb&q2=xxx`
+- `https://example.com/path/to?query=a&q2=b` (`**` matches `&q2=`)
+
+### 4. Exact Match Without Protocol
+
+Write the domain and path directly after `^`, any protocol is allowed.
+
+**Example**: `^example*.com/path*/to`  
+Same effect as with protocol, but matches any protocol (http, https, wss, etc.).
+
+### 5. Exact Matching (Boundary Control)
+
+Use `$` at the end of the pattern to indicate that matching must end there (no extra characters afterwards).
+
+**Example**: `^https://*.example.com/path/*/to$`  
+✅ Matches: `https://a.example.com/path/xxx/to`  
+❌ Does not match: `https://b.example.com/path/xxx/to?query` (`$` disallows `?query`)
+
+> Without `$`, the pattern allows additional `/`, `?`, etc., after the path.
+
+### Usage Summary
+
+| Scenario | Prefix | Wildcard Type | Supported Wildcards | Example |
+|----------|--------|---------------|---------------------|---------|
+| Normal URL match (no wildcards) | None | — | — | `https://example.com/path` |
+| Path/query with wildcards | `^` | domain, path, query | `*` `**` `***` | `^https://*.example.com/path/*?a**b` |
+| Exact match (trailing boundary) | `^` + `$` | same as above | same as above | `^https://example.com/path/*/to$` |
+
+> **Note**: Once you use `^`, the `*` in the URL is no longer a literal character but a wildcard. To match a literal `*`, do not use `^`.
+
+## Regex Matching {#regexp}
+
+In addition to the URL fragment and wildcard matching described above, Whistle provides full regular expression support.  
+The regex syntax is fully compatible with JavaScript regular expressions:
+
 ```txt
-[[schema]://]domain[:port]
+/pattern/[i]
 ```
 
-**Parameter Description**:
-- `domain`: Domain name or IP address, supports wildcards
-- `port`: Port number (optional), supports wildcards
-- `schema`: Protocol type (optional, such as `http`, `https`, `ws`, `wss`, `tunnel`), supports wildcards
-- `//`: Represents using the current request's protocol (automatically adapts to HTTP/HTTPS)
+### Parameters
 
-### Matching Formats
+- **`pattern`**: The regular expression body
+- **`i`** (optional): Case-insensitive matching
 
-| Type | Format | Examples |
-| :--- | :--- | :--- |
-| **Normal Domain** (supports wildcards) | `domain`<br>`IP`<br>`//domain`<br>`//IP` | `www.example.com`<br>`1.2.3.4`<br>`*.example.com`<br>`//www.example.com`<br>`//1.2.3.4` |
-| **Domain with Port** (port supports wildcards) | `domain:port`<br>`//domain:port` | `www.example.com:8080`<br>`//www.ex*le.com:8*` |
-| **Domain with Protocol** (protocol supports wildcards) | `schema://domain[:port]` | `tunnel://www.*amp*.com`<br>`ws*://**.example.com:443`<br>`http*://www.example.com:8*8` |
-
-### Wildcard Explanation for Domains
-
-#### Domain Wildcards
-- `*`: Equivalent to regex `/[^/?.]*/` (i.e., 0 or any number of non-`.` characters in the domain)
-- `**`: Equivalent to regex `/[^/?]*/` (i.e., 0 or any number of characters in the domain)
-- `***` (and above): Not recommended
-
-**Examples**:
-- `www.example*.com`: Can match `www.example.com`, `www.examplexxx.com:8080`, etc., but cannot match `www.example.x.com`
-- `*.example.com`: Can match `www.example.com`, `www.example.com:8080`, but cannot match `x.www.example.com`
-- `**.example.com`: Can match `x.y.z.www.example.com`, `x.y.www.example.com:8080`, etc., but cannot match `example.com`
-
-#### Port Wildcards
-- `*` (and above): Equivalent to regex `/\d*/` (i.e., 0 or any number of digits)
-
-**Examples**:
-- `http://www.example.com:8*8`: Matches `http://www.example.com:88`, `http://www.example.com:8888`, etc., but cannot match `http://www.example.com:8080`
-
-#### Protocol Wildcards
-- `*` (and above): Equivalent to regex `/[a-z]*/` (i.e., 0 or any number of characters in the protocol)
-
-**Examples**:
-- `http*://www.example.com`: Matches `http://www.example.com` and `https://www.example.com:8080`
-
-## Path Matching
-
-URL Path Structure:
-```txt
-[[schema:]//]domain[:port]/path?query
-```
-
-**Example**: `https://www.example.com/data/test/result?q=123`
-
-### Matching Formats
-
-#### 1. Path Without Protocol (can match any protocol)
-- `www.example.com[:port]/[path/to[?query]]`
-- `//www.example.com[:port]/[path/to[?query]]`
-
-#### 2. Path With Protocol (matches requests with specified protocol)
-- `ws[s]://www.example.com[:port]/[path/to[?query]]`
-- `http[s]://www.example.com[:port]/[path/to[?query]]`
-
-> **Note**: TUNNEL requests do not have paths.
-
-#### 3. With Wildcards
-- `ws*://*.example.com/path/to`
-- `http*[s]*://www.example*.com:8*/path/to`
-
-## Detailed Explanation of Matching Mechanisms
-
-#### Basic Path Matching  
-Matches specified hosts and paths along with all their subpaths, supporting multiple protocols:
-
-**Supported Protocols**:  
-- `http://` / `https://` (HTTP/HTTPS)  
-- `tunnel://` (Tunnel Proxy)  
-- `ws://` / `wss://` (WebSocket connections)  
-
-**Path Matching Rules**:  
-Matches `www.example.com/path` and all its subpaths:  
-- ✅ `www.example.com/path`  
-- ✅ `www.example.com/path/`  
-- ✅ `www.example.com/path/subfolder`  
-- ✅ `www.example.com/path/file.html`  
-- ✅ `www.example.com/path/subfolder/file?query=1`  
-- ❌ `www.example.com/path-other` (does not start with `/path`)  
-- ❌ `www.example.com/path123` (not an exact prefix of `/path`)  
-
-#### Wildcard Matching Example  
-Rule:  
-```txt
-www.example*.com/path/to www.test.com/test
-```
-
-**Matching Scenarios**:  
-- `https://www.example123.com/path/to?query=abc`  
-  → mapped to `https://www.test.com/test?query=abc`  
-- `https://www.example123.com/path/to/subpage`  
-  → mapped to `https://www.test.com/test/subpage`  
-- `wss://www.example456.com/path/to/api`  
-  → mapped to `wss://www.test.com/test/api`  
-
-**Non-matching Scenarios**:  
-- `https://www.example123.com/path/to123` (path does not end with `/to`)  
-- `https://example123.com/path/to` (missing www prefix)  
-- `https://www.example123.com/path` (incomplete path)  
-
-#### **Exact Matching with Query Parameters**  
-
-Rule:  
-```txt
-www.demo*.com/path/to?name= www.test.com/test
-```
-
-**Rule Explanation**:  
-- Path must exactly match `/path/to`  
-- Must include the `name=` query parameter (case-sensitive)  
-- After matching, the `name=` parameter is removed while other parameters are retained  
-
-**Matching Scenarios**:  
-- `https://www.demo.com/path/to?name=john&age=20`  
-  → mapped to `https://www.test.com/test?age=20`  
-- `https://www.demo.com/path/to?name=&sort=asc`  
-  → mapped to `https://www.test.com/test?sort=asc`  
-
-**Non-matching Scenarios**:  
-- `https://www.demo.com/path/to/extra?name=john` (path not exact)  
-- `https://www.demo.com/path/to?Name=john` (parameter name case mismatch)  
-- `https://www.demo.com/path/to?user=john` (missing name parameter)
-
-## Path Wildcard Matching
-
-Since `*` is a valid URL path character, when it needs to be used as a wildcard, add `^` before the expression to explicitly declare:
+### Examples
 
 ```txt
-^[[schema:]//]domain[:port]/pa**th?qu*ery
+/\.test\./              # Matches ".test."
+/key=value/i            # Case-insensitive match for "key=value" or "KEY=VALUE"
 ```
 
-**Example**: `^http*://**.example.com/data/*/result?q=*23`
+## Sub-match Value Passing
 
-Whistle internally converts wildcard paths into corresponding regular expressions with the following conversion rules:
-
-### 1. Protocol, Domain, Port Wildcard Rules
-Same as domain matching above.
-
-### 2. Path Part Wildcard Rules
-
-| Wildcard | Regex Equivalent | Matching Scope | Example |
-| :--- | :--- | :--- | :--- |
-| `*` | `/[^?/]*/` | Single-level path (excluding `/` and `?`) | `^.../*/*.js` → `.../a/b.js` |
-| `**` | `/[^?]*/` | Multi-level path (excluding `?`) | `^.../**file` → `.../a/b/c/test-file` |
-| `***` | `/.*/` | Any character (including `/` and `?`) | `^.../data/***file` → `.../a/b/c?test=file` |
-
-### 3. Query Parameter Wildcard Rules
-
-| Wildcard | Regex Equivalent | Matching Scope | Example |
-| :--- | :--- | :--- | :--- |
-| `*` | `/[^&]*/` | Single parameter value (excluding `&`) | `^...?q=*123` → `...?q=abc123` |
-| `**` | `/.*/` | Any character (including `&`) | `^...?q=**123` → `...?q=abc&test=123` |
-
-> **Memory Tip**: Mainly remember the matching scope of the three wildcards `*`, `**`, `***`.
-
-## Regular Expression Matching
-
-In addition to simple matching rules, Whistle provides complete regular expression support, with syntax fully compatible with JavaScript regular expressions:
+In Whistle rules, you can reference sub-match contents captured by wildcards or regular expressions using `$0`, `$1` … `$9`, and pass them to target operation values.
 
 ```txt
-/pattern/[flags]
+pattern protocol://$0_$1_$2_..._$9
 ```
 
-**Parameter Description**:
-- `pattern`: Regular expression body
-- `flags`: Matching mode modifiers (optional), supports:
-  - `i`: Case-insensitive, e.g., `/abc/i` matches "AbC"
-  - `u`: Enable Unicode support, e.g., `/\p{Emoji}/u` matches "😀"
+**Capture variable description**:
 
-**Examples**:
-```txt
-/\.test\./          # Matches ".test."
-/key=value/i        # Case-insensitive match for "key=value"
-/\/statics\//ui     # Unicode mode match for "/statics/"
-```
-
-## Submatch Value Passing
-
-In Whistle rule configuration, you can reference submatch content from wildcard or regular expression matches through `$0`, `$1` to `$9`, and pass them to operation values:
-
-```txt
-pattern protocol://$0_$1_$2_..._$1
-```
-
-**Parameter Description**:
-- **$0**: Complete match result
-- **$1 - $9**: Content of corresponding capture groups
+| Variable | Meaning |
+|----------|---------|
+| `$0` | The entire matched content |
+| `$1` ~ `$9` | Content captured by the 1st to 9th capturing group |
 
 ### Wildcard Matching Value Passing
+
+Wildcard patterns prefixed with `^` (using `*`, `**`, etc.) automatically capture matched segments in order, assigning them to `$1`, `$2`, and so on.
+
+**Example**:
 ```txt
 ^http://*.example.com/v0/users/** file:///User/xxx/$1/$2
 ```
 
-**Matching Example**:
 - Request URL: `http://www.example.com/v2/users/alice/test.html?q=1`
-- Value Passing Result:
-  - `$1` = `www`
-  - `$2` = `users/alice`
-- Final Replacement: Local file `/User/xxx/www/alice/test.html` content
+- Matching process:
+  - `$1` = `www` (matches the first `*`)
+  - `$2` = `users/alice` (matches the path segment captured by `**`)
+- Result: Returns content of local file `/User/xxx/www/alice/test.html`
 
-### Regular Expression Matching Value Passing
+> Wildcard capture rules:
+> - `*` captures a single path segment (no `/`)
+> - `**` captures the remaining path (may contain `/`)
+> - They correspond to `$1`, `$2`, … from left to right.
+
+### Regex Matching Value Passing
+
+When using a regex pattern `/pattern/flags`, the content inside capturing groups `( )` is assigned to `$1`, `$2`, … in order.
+
+**Example**:
 ```txt
 /regexp\/(user|admin)\/(\d+)/ reqHeaders://X-Type=$1&X-ID=$2
 ```
 
-**Matching Example**:
 - Request URL: `.../regexp/admin/123`
-- Value Passing Result:
+- Capture results:
   - `$1` = `admin`
   - `$2` = `123`
-- Final Effect: Add request headers `X-Type: admin` and `X-ID: 123`
+- Result: Adds request headers `X-Type: admin` and `X-ID: 123`
 
-## Special Notes
+---
 
-Domain matching and path matching automatically concatenate paths when mapping to local file/directory paths or new remote URLs, i.e.:
+## Path Auto-splicing Rule
 
+When using **domain matching** or **path matching** to map to a local file/directory or remote URL, Whistle automatically appends the remaining path from the original request.
+
+**Rule**:
 ```txt
 https://*.example.com/path/to https://www.test.com/test
-
 www.example.com file:///Usr/test
 ```
 
-**Examples**:
-- Accessing `https://abc.example.com/path/to/x/y/z?query` will automatically be replaced with new URL: `https://www.test.com/test/x/y/z?query`
-- Accessing `https://wwww.example.com/path/to/index.html?query` will automatically be replaced with local file: `https://www.test.com/path/to/index.html` (automatically removes `query`)
+**Effect**:
+
+| Request URL | Mapped Target |
+|-------------|----------------|
+| `https://abc.example.com/path/to/x/y/z?query` | `https://www.test.com/test/x/y/z?query` |
+| `https://www.example.com/path/to/index.html?query` | Local file `/Usr/test/path/to/index.html` (query removed) |
+
+> Note: Query parameters `?query` are automatically ignored when mapping to local files (file system paths do not support them), but are retained when mapping to a remote URL.
+
+---
 
 ## Configuration Examples
 
 ### Basic Matching
+
 ```txt
-# Exact domain matching
+# Exact domain match
 api.example.com proxy://127.0.0.1:3000
 
-# Port-specific matching
+# Domain match with specific port
 www.example.com:8080 file:///local/dev
 
-# Path matching
+# Path match (map to local JSON data)
 www.example.com/api/users file://{user-data}
 ```
 
 ### Wildcard Matching
+
 ```txt
 # Match all subdomains
 **.example.com proxy://127.0.0.1:8080
 
-# Match subdomains with specific prefix
+# Match subdomains with a specific prefix
 dev-**.example.com file:///(dev-mock)
-
-# Match all HTTP/HTTPS requests
-http*://www.example.com  cache://3600
 ```
 
-### Regular Expression Matching
+### Regex Matching
+
 ```txt
-# Match user pages with numeric IDs
+# Match user pages with numeric ID
 /^https?://www\.example\.com/user/(\d+)/ file://(user-$1)
 
-# Case-insensitive match for specific path
+# Case-insensitive match for a specific path
 /\/api\/v1\/data/i resBody://({"version":"v1"})
 
-# Match static resource files
+# Match static assets and set cache
 /\.(jpg|png|gif|css|js)$/i cache://86400
 ```
 
 ### Complex Matching
+
 ```txt
-# Combine wildcards and paths
+# Wildcard + path capture value passing
 ^https://**.example.com/api/*/v*/users reqHeaders://x-api-version=$3
 
-# Multi-condition matching
+# Handle by request method
 www.example.com/api file://({"status":"ok"}) includeFilter://m:GET
 www.example.com/api file://({"status":"created"}) includeFilter://m:POST
 ```
 
+---
+
 ## Troubleshooting
 
-### Q: Rules Not Matching Requests
-**A:** Check:
-1. Whether the URL format is correct
-2. Whether it contains the correct protocol and port
-3. Whether wildcards or regular expressions are correct
-4. Whether there are higher-priority rules overriding
+### Q: The rule does not match the request
 
-### Q: Regular Expressions Not Working
-**A:** Check:
-1. Whether the regular expression syntax is correct
-2. Whether special characters need to be escaped
-3. Whether matching mode flags are set correctly
+**Possible causes and solutions**:
 
-### Q: Submatch Value Passing Error
-**A:** Check:
-1. Whether capture group numbers are correct
-2. Whether wildcard matching correctly captures expected content
-3. Whether regular expression capture groups work as expected
+1. **Incorrect URL format**  
+   → Ensure the protocol (http/https/ws/wss) in the rule matches the request, or use a protocol-less pattern (`example.com/path`).
 
-## Extended Reading
+2. **Port mismatch**  
+   → If the request uses a non-standard port, specify the port explicitly in the rule (e.g., `example.com:8080`).
 
-- [Rule Syntax Documentation](./rule): Understand the complete rule syntax structure
-- [Operation Instructions Documentation](./operation): Learn how to configure operation instructions
-- [Filters Documentation](./filters): Understand how to precisely control rule activation conditions
+3. **Wildcard or regex error**  
+   → Use [Whistle online debugging tools](https://github.com/avwo/whistle) or local logs to verify matching.
+
+4. **Rule priority issues**  
+   → Place more specific rules earlier, or use `$` exact matching to increase priority.
+
+### Q: Regex does not work
+
+**Checklist**:
+
+- [ ] Does the regex start and end with `/`, e.g., `/pattern/`?
+- [ ] Are special characters escaped (e.g., `.` -> `\.`, `/` -> `\/`)?
+- [ ] Are flags (e.g., `i`) correctly added?
+- [ ] Does the regex match the full URL? Test in console with `new RegExp('pattern', 'flags').test(url)`.
+
+### Q: Sub-match value passing is incorrect
+
+**Common issues**:
+
+1. **Wrong capture group number**  
+   → `$1` corresponds to the first `( )`, `$2` to the second, and so on. Pay attention to nested capture groups.
+
+2. **Wildcard capture does not behave as expected**  
+   → `*` does not match dot (`.`) or slash (`/`); `**` matches any character except `?`.  
+   → Example: `*.example.com` cannot match `a.b.example.com`; use `**.example.com` instead.
+
+3. **Regex capture groups not working as expected**  
+   → Use `(?:)` for non-capturing groups to avoid interfering with numbering.  
+   → Test with online regex tools (e.g., regex101.com) to verify captured content.
+
+### Q: Wrong path when mapping to local file
+
+- When using the `file://` protocol, ensure the path is absolute (e.g., `file:///User/xxx`).
+- Path splicing follows the auto-splicing rule: the remaining path of the request is appended to the target path.
+- Query parameters are automatically ignored and do not affect file reading.
+
+---
+
+## Further Reading
+
+- [Rule Syntax Documentation](./rule): Learn the complete rule syntax structure
+- [Operation Directive Documentation](./operation): Learn how to configure operation directives
+- [Filter Documentation](./filters): Understand how to precisely control rule activation conditions

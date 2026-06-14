@@ -34,4 +34,6 @@ www.example.com/path/test redirect://https://www.qq.com replaceStatus://301
 ```
 
 ## 关联协议
-1. 无法通过 `302` 修改地址的页面可用：[locationHref](./locationHref)
+1. 直接返回状态码（请求不发往服务器）：[statusCode](./statusCode)  
+2. 替换服务器返回的状态码：[replaceStatus](./replaceStatus)  
+3. 客户端页面跳转：[locationHref](./locationHref)

@@ -41,6 +41,7 @@ www.example.com/path2 urlParams://https://www.xxx.com/xxx/params.json
 www.example.com/path3 urlParams://temp/blank.json
 ````
 
-## 关联协议
-1. 更灵活的修改请求参数的方式：[pathReplace](./pathReplace)
-2. 删除请求参数：[delete://urlParams.xxx](./delete)
+## 关联协议 {#related}
+1. 设置请求参数（`Set Param`）：[urlParams://(key=value)](./urlParams)
+2. 删除请求参数（`Delete Param`）：[delete://urlParams.xxx](./delete)
+3. 更灵活的修改请求参数的方式（`Modify Path (path/to?query)`）：[pathReplace](./pathReplace)

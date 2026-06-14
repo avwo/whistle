@@ -47,7 +47,10 @@ www.example.com/path2 reqCookies://https://www.xxx.com/xxx/params.json
 www.example.com/path3 reqCookies://temp/blank.json
 ````
 
-## 关联协议
-1. 删除请求 cookie：[delete://reqCookies.xxx](./delete)
-2. 删除所有请求 cookie：[delete://reqHeaders.cookie](./delete)
+## 关联协议 {#related}
+1. 删除请求头字段（`Delete Request Header`）：[delete://reqHeaders.xxx](./delete)
+2. 删除请求 Cookie（`Delete Request Cookie`）：[delete://reqCookies.xxx](./delete)
+3. 设置请求 Cookie：[reqCookies](./reqCookies)
+4. 设置请求鉴权头：[auth](./auth)
+5. 更灵活的修改请求头的方式：[headerReplace](./headerReplace)
 

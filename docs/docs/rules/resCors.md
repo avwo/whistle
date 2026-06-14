@@ -32,6 +32,42 @@ access-control-max-age: 300000
 ```
 > 请求方法为 `OPTIONS` 时，`access-control-allow-headers` -> `access-control-expose-headers`
 
+## CORS 快捷设置方法
+
+### 方法一：允许任意来源跨域访问
+
+**匹配模式：**
+```txt
+pattern resCors://*
+```
+
+**对应的响应头：**
+```txt
+access-control-allow-origin: *
+```
+
+> **说明**：此设置将 `Access-Control-Allow-Origin` 设为 `*`，允许任意域名跨域请求资源。适用于公开 API 或无需携带凭证的场景。
+
+---
+
+### 方法二：允许携带凭证的跨域访问
+
+**匹配模式：**
+```txt
+pattern resCors://use-credentials
+```
+
+**对应的响应头：**
+```txt
+access-control-allow-credentials: true
+access-control-allow-origin: http://request-host
+```
+
+> **说明**：此设置同时添加两个响应头：
+> - `Access-Control-Allow-Credentials: true` 表示允许跨域请求携带 Cookie、Authorization 等凭证。
+> - `Access-Control-Allow-Origin` 精确设置为当前请求的源（`http://request-host`），而非通配符 `*`。  
+> 这符合规范要求：当启用凭证时，不得使用 `*` 作为允许的源。
+
 ## 配置示例
 #### 快捷模式
 1. 设置响应头 `access-control-allow-origin: *`（不支持带 cookie）
@@ -57,7 +93,7 @@ maxAge: 300000
 www.example.com/path resCors://{cors.json}
 
 # 对 OPTIONS 请求不处理
-www.example.com/path2 resCors://{cors.json} excludeFilter://options
+www.example.com/path2 resCors://{cors.json} excludeFilter://m:options
 ````
 设置响应头：
 ``` txt
@@ -79,4 +115,4 @@ www.example.com/path3 resCors://temp/blank.json
 
 ## 关联协议
 1. 删除响应头字段：[delete://resHeaders.orogin](./delete)
-2. 设置请求 CROS：[resCors](./resCors)
+2. 设置请求 CROS：[reqCors](./reqCors)

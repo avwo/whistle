@@ -72,7 +72,8 @@ www.example.com pathReplace://(/^api//=)
 >
 > New versions of Whistle can also use `delete://pathname.0` to delete the `api/` path segment in the above URL. For details, see [delete://pathname.xxx](./delete)
 
-## Related Protocols
-1. Modify request parameters: [urlParams](./urlParams)
-2. Delete the path: [delete://pathname.xxx](./delete)
-3. Delete request parameters: [delete://urlParams.xxx](./delete)
+## Associated Protocols {#related}
+1. Set Request Parameters (`Set Param`): [urlParams://(key=value)](./urlParams)  
+2. Delete Request Parameter (`Delete Param`): [delete://urlParams.xxx](./delete)  
+3. More flexible way to modify request parameters (`Modify Path (path/to?query)`): [pathReplace](./pathReplace)
+4. Delete the path: [delete://pathname.xxx](./delete)

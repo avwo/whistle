@@ -32,6 +32,42 @@ access-control-max-age: 300000
 ```
 > When the request method is `OPTIONS`, `access-control-allow-headers` -> `access-control-expose-headers`
 
+## Quick CORS Setup Methods
+
+### Method 1: Allow cross-origin access from any source
+
+**Pattern:**
+```txt
+pattern resCors://*
+```
+
+**Corresponding response headers:**
+```txt
+access-control-allow-origin: *
+```
+
+> **Note:** This sets `Access-Control-Allow-Origin` to `*`, allowing cross-origin requests from any domain. Suitable for public APIs or scenarios that do not require credentials.
+
+---
+
+### Method 2: Allow cross-origin access with credentials
+
+**Pattern:**
+```txt
+pattern resCors://use-credentials
+```
+
+**Corresponding response headers:**
+```txt
+access-control-allow-credentials: true
+access-control-allow-origin: http://request-host
+```
+
+> **Note:** This adds two response headers:
+> - `Access-Control-Allow-Credentials: true` – allows cross-origin requests to carry credentials such as cookies or Authorization headers.
+> - `Access-Control-Allow-Origin` – set exactly to the origin of the current request (`http://request-host`), not a wildcard `*`.  
+> This complies with the CORS specification: when credentials are enabled, the wildcard `*` cannot be used as the allowed origin.
+
 ## Configuration Example
 #### Quick Mode
 1. Set the response header `access-control-allow-origin: *` (does not support cookies)
@@ -57,7 +93,7 @@ maxAge: 300000
 www.example.com/path resCors://{cors.json}
 
 # Do not process OPTIONS requests
-www.example.com/path2 resCors://{cors.json} excludeFilter://options
+www.example.com/path2 resCors://{cors.json} excludeFilter://m:options
 ````
 Set response headers:
 ``` txt
