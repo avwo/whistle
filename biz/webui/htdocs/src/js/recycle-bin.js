@@ -1,5 +1,5 @@
 var React = require('react');
-var ReactDOM = require('react-dom');
+var findDOMNode = require('react-dom').findDOMNode;
 var $ = require('jquery');
 var Dialog = require('./dialog');
 var dataCenter = require('./data-center');
@@ -10,6 +10,7 @@ var win = require('./win');
 var Icon = require('./icon');
 var CloseBtn = require('./close-btn');
 
+var showSysErr = util.showSysErr;
 var TIMESTAMP_RE = /^(\d+)\.([\s\S]+)$/;
 
 function decode(name) {
@@ -61,7 +62,7 @@ var RecycleBinDialog = React.createClass({
   },
   checkFile: function (data, xhr) {
     if (!data) {
-      util.showSystemError(xhr);
+      showSysErr(xhr);
       return;
     }
     if (data.ec === 3) {
@@ -72,7 +73,7 @@ var RecycleBinDialog = React.createClass({
         xhr
       ) {
         if (!result) {
-          util.showSystemError(xhr);
+          showSysErr(xhr);
           return;
         }
         self.show(result);
@@ -122,7 +123,7 @@ var RecycleBinDialog = React.createClass({
             { name: name },
             function (data, xhr) {
               if (!data) {
-                util.showSystemError(xhr);
+                showSysErr(xhr);
                 return;
               }
               self.show(data);
@@ -133,7 +134,7 @@ var RecycleBinDialog = React.createClass({
     );
   },
   isVisible: function () {
-    return $(ReactDOM.findDOMNode(this.refs.recycleBinBody)).is(':visible');
+    return $(findDOMNode(this.refs.recycleBinBody)).is(':visible');
   },
   render: function () {
     var self = this;

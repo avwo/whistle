@@ -24,10 +24,12 @@
   padding: 0 8px !important;
 }
 .w-props-editor .w-props-ops {
-  width: 75px;
-  padding: 4px 0 0 8px !important;
+  width: 70px;
+  padding: 0 0 0 8px !important;
   padding-left: 0 !important;
   background: var(--b-bar);
+  white-space: nowrap;
+  vertical-align: middle;
 }
 .w-props-ops span {
   margin-left: 15px !important;

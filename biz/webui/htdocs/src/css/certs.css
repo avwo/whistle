@@ -2,6 +2,10 @@
   z-index: var(--z-modal);
 }
 
+.w-certs-dialog thead th {
+  padding: 5px 0 10px;
+}
+
 .w-certs-dialog .w-help-icon {
   font-size: 15px;
   margin-top: -2px;

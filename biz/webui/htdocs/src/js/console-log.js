@@ -1,7 +1,6 @@
 var $ = require('jquery');
 var React = require('react');
-var ReactDOM = require('react-dom');
-
+var findDOMNode = require('react-dom').findDOMNode;
 var JSONTree = require('./components/react-json-tree')['default'];
 var ExpandCollapse = require('./expand-collapse');
 var util = require('./util');
@@ -13,7 +12,6 @@ var storage = require('./storage');
 var BackToBottomBtn = require('./back-to-bottom-btn');
 var LogMixin = require('./log-mixin');
 
-var findDOMNode = ReactDOM.findDOMNode;
 var VIEW_KEY =  window.Symbol ? window.Symbol('view') : 'view';
 
 function parseLog(log, expandRoot) {

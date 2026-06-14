@@ -1,6 +1,6 @@
 require('../css/overview.css');
 var React = require('react');
-var ReactDOM = require('react-dom');
+var findDOMNode = require('react-dom').findDOMNode;
 var columns = require('./columns');
 var events = require('./events');
 var util = require('./util');
@@ -178,7 +178,7 @@ var Overview = React.createClass({
   shouldComponentUpdate: util.shouldComponentUpdate,
   componentDidMount: function () {
     var self = this;
-    var container = ReactDOM.findDOMNode(self.refs.container);
+    var container = findDOMNode(self.refs.container);
     events.on('overviewScrollTop', function () {
       if (!util.getBool(self.props.hide)) {
         container.scrollTop = 0;
@@ -198,7 +198,7 @@ var Overview = React.createClass({
     if (!helpUrl) {
       return;
     }
-    window.open(name === 'rule' ? helpUrl + 'rule/' : helpUrl);
+    events.trigger('openUrl', name === 'rule' ? helpUrl + 'rule/' : helpUrl);
   },
   updateCssMap: function () {
     Object.keys(CSS_MAP).forEach(function (name) {
@@ -465,7 +465,7 @@ var Overview = React.createClass({
               onChange={this.showOnlyMatchRules}
               type="checkbox"
             />
-            Only show matching rules
+            Show matching rules only
           </label>
         </p>
         <Properties

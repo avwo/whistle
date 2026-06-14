@@ -1,6 +1,6 @@
 require('../css/properties.css');
 var React = require('react');
-var ReactDOM = require('react-dom');
+var findDOMNode = require('react-dom').findDOMNode;
 var $ = require('jquery');
 var util = require('./util');
 var CopyBtn = require('./copy-btn');
@@ -34,7 +34,7 @@ var Properties = React.createClass({
   componentDidMount: function() {
     var self = this;
     if (this.props.name === 'Rules') {
-      $(ReactDOM.findDOMNode(self.refs.properties)).on('mouseenter', 'td pre', function (e) {
+      $(findDOMNode(self.refs.properties)).on('mouseenter', 'td pre', function (e) {
         if (!e.ctrlKey && !e.metaKey) {
           return;
         }
@@ -248,7 +248,7 @@ var Properties = React.createClass({
                             {noLocate ? <span className="w-src-info">{btnText}</span> : <a className="w-src-info" onClick={self.handleClick} data-text={val}>{btnText}</a> }
                           </pre>
                         );
-                      }) : <pre className={showInfo ? 'w-align-items' : null}>{
+                      }) : <pre className={showInfo ? 'w-middle' : null}>{
                         showInfo ? <HelpIcon className="w-props-icon" docsUrl="faq.html#capture-error" /> : null}{self.renderValue(value)
                       }</pre>)
                     }

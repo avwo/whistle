@@ -1,6 +1,6 @@
 require('../css/certs.css');
 var React = require('react');
-var ReactDOM = require('react-dom');
+var findDOMNode = require('react-dom').findDOMNode;
 var util = require('./util');
 var Dialog = require('./dialog');
 var TipsDialog = require('./tips-dialog');
@@ -11,7 +11,6 @@ var Icon = require('./icon');
 var HelpIcon = require('./help-icon');
 var CloseBtn = require('./close-btn');
 
-var findDOMNode = ReactDOM.findDOMNode;
 var MAX_CERT_SIZE = 128 * 1024;
 
 function getCertName(cert, filename) {
@@ -107,7 +106,7 @@ var CertsInfoDialog = React.createClass({
   },
   handleCgi: function (data, xhr) {
     if (!data) {
-      return util.showSystemError(xhr);
+      return util.showSysErr(xhr);
     }
     this.show(data);
   },
@@ -320,7 +319,7 @@ var CertsInfoDialog = React.createClass({
           </button> : null}
           <input
             ref="uploadCerts"
-            style={{ display: 'none' }}
+            style={util.HIDE_STYLE}
             type="file"
             accept=".crt,.cer,.pem,.key"
             multiple="multiple"

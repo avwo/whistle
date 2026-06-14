@@ -23,7 +23,7 @@ var TipsDialog = React.createClass({
     return (
       <Dialog ref="tipsDialog" wstyle="w-dns-servers-dialog w-tips-dialog">
         <div className="modal-header">
-        <h4>{state.title}</h4>
+          <h4>{state.title}</h4>
           <CloseBtn />
         </div>
         <pre className="modal-body">{state.tips}</pre>

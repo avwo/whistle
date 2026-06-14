@@ -3,8 +3,8 @@ var $ = require('jquery');
 var React = require('react');
 var ReactDOM = require('react-dom');
 var util = require('./util');
-var EditorDialog = require('./editor-dialog');
 var Icon = require('./icon');
+var events = require('./events');
 
 var ContextMenu = React.createClass({
   getInitialState: function () {
@@ -68,9 +68,7 @@ var ContextMenu = React.createClass({
       );
     }
     if ((e.shiftKey || e.ctrlKey || e.metaKey) && target.attr('data-shift-to-edit')) {
-      this.refs.editorDialog.show({
-        value: target.attr('data-clipboard-text')
-      });
+      events.trigger('showCopyEditor', target.attr('data-clipboard-text'));
     }
     if (data.radio) {
       data.list.forEach(function (item) {
@@ -187,7 +185,7 @@ var ContextMenu = React.createClass({
     this.state.visible && this.setState({});
   },
   render: function () {
-    return <EditorDialog ref="editorDialog" />;
+    return null;
   }
 });
 

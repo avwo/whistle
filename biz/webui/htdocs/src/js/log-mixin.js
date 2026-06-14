@@ -1,5 +1,5 @@
 var React = require('react');
-var ReactDOM = require('react-dom');
+var findDOMNode = require('react-dom').findDOMNode;
 var util = require('./util');
 var events = require('./events');
 var win = require('./win');
@@ -122,7 +122,7 @@ module.exports = {
     }
     var btn = this._importBtn;
     if (!btn) {
-      btn = ReactDOM.findDOMNode(this.refs.importBtn);
+      btn = findDOMNode(this.refs.importBtn);
       this._importBtn = btn;
     }
     return !btn || !btn.offsetWidth;

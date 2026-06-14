@@ -1,15 +1,25 @@
 var React = require('react');
-var ReactDOM = require('react-dom');
+var findDOMNode = require('react-dom').findDOMNode;
+
+
+var ACTIVE_COL = { width: 55 };
 
 var OrderTable = React.createClass({
   scrollToTop: function() {
-    ReactDOM.findDOMNode(this.refs.body).scrollTop = 0;
+    findDOMNode(this.refs.body).scrollTop = 0;
+  },
+  onChange: function(e) {
+    var index = e.target.getAttribute('data-index');
+    var row = this.props.rows[index];
+    this.props.onActive(e.target.checked, row);
   },
   render: function() {
-    var props = this.props;
+    var self = this;
+    var props = self.props;
     var rowKey = props.rowKey || 'key';
     var cols = props.cols || [];
     var rows = props.rows || [];
+    var onActive = props.onActive;
     var emptyUrl = props.emptyUrl;
 
     return (
@@ -18,6 +28,7 @@ var OrderTable = React.createClass({
           <thead>
             <tr>
               <th>#</th>
+              {onActive ? <th style={ACTIVE_COL}>Active</th> : null}
               {cols.map(function(col) {
                 return <th key={col.name} style={{ width: col.width }}>{col.title || col.name}</th>;
               })}
@@ -29,8 +40,9 @@ var OrderTable = React.createClass({
             <tbody className="w-hover-body">
               {rows.length ? rows.map(function(row, i) {
                 return (
-                  <tr key={row[rowKey] || i}>
+                  <tr key={row[rowKey] || i} className={(row.className || '') + (' w-tr-' + (row.checked ? 'checked' : 'unchecked'))}>
                     <th>{i + 1}</th>
+                    {onActive ? <td style={ACTIVE_COL} className="w-center"><input type="checkbox" checked={row.checked} data-index={i} onChange={self.onChange} /></td> : null}
                     {cols.map(function(col) {
                       var name = col.name;
                       return <td key={name} style={{ width: col.width }} className={col.className}>{row[name]}</td>;

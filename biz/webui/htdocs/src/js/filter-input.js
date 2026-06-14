@@ -1,14 +1,13 @@
 require('../css/filter-input.css');
 var util = require('./util');
 var React = require('react');
-var ReactDOM = require('react-dom');
+var findDOMNode = require('react-dom').findDOMNode;
 var $ = require('jquery');
 var storage = require('./storage');
 var win = require('./win');
 var Icon = require('./icon');
 var CloseBtn = require('./close-btn');
 
-var findDOMNode = ReactDOM.findDOMNode;
 var MAX_LEN = 128;
 var TYPES = ['JSON', 'HTML', 'CSS', 'JS', 'Font', 'Img', 'Media', 'WS', 'Tunnel', 'Wasm', 'Mock', 'Rules', 'Import', 'Composer', 'Error', 'Other'];
 var TITLES = {
@@ -277,7 +276,7 @@ var FilterInput = React.createClass({
           >
             <div className="w-filter-bar">
               <a onClick={this.clear}>
-                <Icon name="trash" />
+                <Icon name="remove" />
                 Clear history
               </a>
               <CloseBtn onClick={self.hideHints} />

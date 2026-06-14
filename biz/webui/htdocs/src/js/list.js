@@ -3,7 +3,7 @@ require('../css/files-dialog.css');
 var $ = require('jquery');
 var util = require('./util');
 var React = require('react');
-var ReactDOM = require('react-dom');
+var findDOMNode = require('react-dom').findDOMNode;
 var message = require('./message');
 var Divider = require('./divider');
 var Editor = require('./editor');
@@ -17,13 +17,18 @@ var RecycleBinDialog = require('./recycle-bin');
 var EnabledRulesDialog = require('./enabled-rules');
 var Icon = require('./icon');
 
-var findDOMNode = ReactDOM.findDOMNode;
+var showSysErr = util.showSysErr;
 var hideEnableHTTPSTips = window.location.href.indexOf('hideEnableHTTPSTips=1') !== -1;
 var disabledEditor = window.location.href.indexOf('disabledEditor=1') !== -1;
 var rulesCtxMenuList = [
   {
-    name: 'Copy',
-    list: [{ name: 'Name' }, { name: 'Rules' }]
+    name: 'Actions',
+    list: [
+      { name: 'Copy Name', action: 'Name' },
+      { name: 'Copy Rule Text', action: 'Rules' },
+      { name: 'Create Rule', action: 'CreateRule' },
+      { name: 'Create File', action: 'TempFile' }
+    ]
   },
   { name: 'Enable', action: 'Save' },
   {
@@ -44,8 +49,14 @@ var rulesCtxMenuList = [
 ];
 var valuesCtxMenuList = [
   {
-    name: 'Copy',
-    list: [{ name: 'Key', action: 'CopyKey' }, { name: 'Value' }]
+    name: 'Actions',
+    list: [
+      { name: 'Copy Key', action: 'CopyKey' },
+      { name: 'Copy Value', action: 'Value' },
+      { name: 'Validate JSON', action: 'Validate' },
+      { name: 'Format JSON', action: 'Format' },
+      { name: 'Inspect JSON', action: 'Inspect' }
+    ]
   },
   { name: 'Save' },
   {
@@ -54,14 +65,6 @@ var valuesCtxMenuList = [
   },
   { name: 'Rename' },
   { name: 'Delete' },
-  {
-    name: 'JSON',
-    list: [
-      { name: 'Validate' },
-      { name: 'Format' },
-      { name: 'Inspect' }
-    ]
-  },
   { name: 'Import' },
   { name: 'Export' },
   { name: 'Trash' },
@@ -179,7 +182,7 @@ var List = React.createClass({
     var modal = self.props.modal;
     this.curListLen = modal.list.length;
     this.curActiveItem = modal.getActive();
-    $(findDOMNode(self.refs.list))
+    $(findDOMNode(self.refs.container))
       .focus()
       .on('keydown', function (e) {
         var item;
@@ -264,7 +267,7 @@ var List = React.createClass({
     var modal = this.props.modal;
     var curListLen = modal.list.length;
     var obj = modal.getActiveObj();
-    var curActiveItem = obj.curActiveItem;
+    var curActiveItem = obj.activeItem;
     var groupItem = obj.groupItem;
     if (groupItem) {
       this.ensureVisible(false, groupItem);
@@ -292,9 +295,13 @@ var List = React.createClass({
       self.props.onActive(item) !== false
     ) {
       var modal = self.props.modal;
-      modal.setActive(item.name);
       self.setState({ activeItem: item });
-      self.expandGroup(modal.getGroupName(item.name));
+      if (item.rules) {
+        modal.clearAllActive();
+      } else {
+        modal.setActive(item.name);
+        self.expandGroup(modal.getGroupName(item.name));
+      }
     }
   },
   toggleGroup: function (item) {
@@ -403,7 +410,7 @@ var List = React.createClass({
         var name = this.props.name === 'rules' ? 'rules' : 'values';
         dataCenter[name].moveTo(params, function (data, xhr) {
           if (!data) {
-            util.showSystemError(xhr);
+            showSysErr(xhr);
             return;
           }
           if (data.ec === 2) {
@@ -445,7 +452,7 @@ var List = React.createClass({
     dataCenter[name.toLowerCase()].recycleList(function (data, xhr) {
       self._pendingRecycle = false;
       if (!data) {
-        util.showSystemError(xhr);
+        showSysErr(xhr);
         return;
       }
       if (!data.list.length) {
@@ -476,6 +483,12 @@ var List = React.createClass({
     var self = this;
     var name = self.props.name === 'rules' ? 'Rules' : 'Values';
     switch (parentAction || action) {
+    case 'CreateRule':
+      events.trigger('showAddRulesDialog', [null, self.currentFocusItem]);
+      break;
+    case 'TempFile':
+      events.trigger('showEditorDialog');
+      break;
     case 'Save':
       events.trigger('save' + name, self.currentFocusItem);
       break;
@@ -573,7 +586,13 @@ var List = React.createClass({
     return this.isRules() ? 'collapseRulesGroups' : 'collapseValuesGroups';
   },
   onContextMenu: function (e) {
-    var name = $(e.target).closest('a').attr('data-name');
+    e.preventDefault();
+    var target = $(e.target).closest('a');
+    if (!target.length) {
+      return;
+    }
+    var isRules = this.isRules();
+    var name = target.attr('data-name');
     var modal = this.props.modal;
     name = name && getName(name);
     var item = modal.get(name);
@@ -583,22 +602,20 @@ var List = React.createClass({
     this.currentFocusItem = item;
     var disabled = !name;
     var isDefault;
-    var isRules = this.isRules();
-    var pluginItem = isRules ? rulesCtxMenuList[8] : valuesCtxMenuList[9];
+    var list = isRules ? rulesCtxMenuList : valuesCtxMenuList;
+    var pluginItem = list[8];
+    var height = 310 - (pluginItem.hide ? 30 : 0);
+    var data = util.getMenuPosition(e, 110, height);
+
+    data.list = list;
+    pluginItem.maxHeight = height;
     util.addPluginMenus(
       pluginItem,
       dataCenter[isRules ? 'getRulesMenus' : 'getValuesMenus'](),
-      isRules ? 7 : 8
+      8
     );
-    if (!isRules) {
-      valuesCtxMenuList[0].list[0].name = name && util.isGroup(name) ? 'Name' : 'Key';
-    }
-    var height = (isRules ? 280 : 315) - (pluginItem.hide ? 30 : 0);
-    pluginItem.maxHeight = height + 30;
-    var data = util.getMenuPosition(e, 110, height);
     data.className = 'w-contenxt-menu-list';
     if (isRules) {
-      data.list = rulesCtxMenuList;
       data.list[1].disabled = disabled;
       data.list[1].name = 'Save';
       if (item && !item.changed) {
@@ -611,12 +628,9 @@ var List = React.createClass({
       if (item && item.isDefault) {
         isDefault = true;
       }
-      data.list[5].disabled = !modal.list.length;
     } else {
-      data.list = valuesCtxMenuList;
+      data.list[0].list[0].name = name && util.isGroup(name) ? 'Copy Name' : 'Copy Key';
       data.list[1].disabled = !item || !item.changed;
-      data.list[5].disabled = disabled;
-      data.list[6].disabled = !modal.list.length;
     }
     var copyItem = data.list[0];
     copyItem.disabled = disabled;
@@ -632,7 +646,6 @@ var List = React.createClass({
     data.list[3].disabled = isDefault || disabled;
     data.list[4].disabled = isDefault || disabled;
     this.refs.contextMenu.show(data);
-    e.preventDefault();
   },
   onAddRule: function (name) {
     this.props.modal.setActive(name);
@@ -720,7 +733,7 @@ var List = React.createClass({
     var self = this;
     dataCenter.rules.getEnabledRules(function (data, xhr) {
       if (!data) {
-        util.showSystemError(xhr);
+        showSysErr(xhr);
         return;
       }
       var enabledRules = [];
@@ -739,12 +752,11 @@ var List = React.createClass({
     var props = self.props;
     var disabled = props.disabled;
     var filterText = self.state.filterText;
+    var isRules = self.isRules();
     var activeItem = modal.getActive(true) || '';
     var isSub, isHide;
-    var isRules = self.isRules();
     var draggable = false;
     var activeName = activeItem ? activeItem.name : '';
-    var selected = activeItem.selected;
     var enabledRulesCount = dataCenter.enabledRulesCount || 0;
     list = self.parseList();
     if (isRules) {
@@ -758,7 +770,7 @@ var List = React.createClass({
     //不设置height为0，滚动会有问题
     return (
       <div className={'v-box fill' +
-        (selected && isRules ? ' w-has-selected-rules' : '') +
+        (activeItem.selected && isRules ? ' w-has-selected-rules' : '') +
         (disabled ? ' w-has-selected-disabled' : '') +
         (props.hide ? ' hide' : '')}>
         {disabled || (dataCenter.needEnableHttps() && !hideEnableHTTPSTips && !dataCenter.isPureProxy()) ? (
@@ -771,7 +783,7 @@ var List = React.createClass({
           </div>
         ) : null}
         <Divider leftWidth="230">
-          <div className="fill v-box w-list-left">
+          <div ref="container" className="fill v-box w-list-left" onContextMenu={this.onContextMenu}>
             {isRules ? <div className={'w-enabled-rules-btn' + (enabledRulesCount ? '' : ' w-disabled')} onClick={enabledRulesCount ? self.showEnabledRules : null}>
               <Icon name="ok" data-name="enabledRules" />
               Enabled Rules ({enabledRulesCount})
@@ -779,7 +791,6 @@ var List = React.createClass({
             <div
               ref="list"
               tabIndex="0"
-              onContextMenu={this.onContextMenu}
               onDrop={self.onDrop}
               className={
                 'fill v-box w-list-data ' +

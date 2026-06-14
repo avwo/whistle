@@ -1,5 +1,5 @@
 var React = require('react');
-var ReactDOM = require('react-dom');
+var findDOMNode = require('react-dom').findDOMNode;
 var Dialog = require('./dialog');
 var events = require('./events');
 var dataCenter = require('./data-center');
@@ -9,7 +9,7 @@ var win = require('./win');
 var Icon = require('./icon');
 var CloseBtn = require('./close-btn');
 
-var findDOMNode = ReactDOM.findDOMNode;
+var showSysErr = util.showSysErr;
 var MAX_LEN = 1024 * 1024 * 11;
 var fakeIframe = 'javascript:"<style>html,body{padding:0;margin:0}</style><textarea></textarea>"';
 var iframeStyle = {
@@ -29,7 +29,7 @@ function getTempFile(tempFile, cb) {
     filename: tempFile
   }, function (result, xhr) {
     if (!result) {
-      return util.showSystemError(xhr);
+      return showSysErr(xhr);
     }
     if (result.em) {
       message.error(result.em);
@@ -38,10 +38,40 @@ function getTempFile(tempFile, cb) {
       }
     }
     cb(result.value || '');
-    if (result.forbidden) {
-      message.warn('Without a username and password for Whistle, local non-temporary files cannot be accessed');
-    }
+    util.showForbidden(result);
   });
+}
+
+function getText(item, key) {
+  var req = item.req;
+  var res = item.res || '';
+  switch(key) {
+  case 'blank':
+    return '';
+  case 'url':
+    return item.url;
+  case 'method':
+    return req.method;
+  case 'reqHeaders':
+    return JSON.stringify(req.headers, null, '  ');
+  case 'resHeaders':
+    return item.res.headers ? JSON.stringify(res.headers, null, '  ') : '';
+  case 'reqBody':
+    return util.getBody(req, true);
+  case 'resBody':
+    return util.getBody(res);
+  case 'reqJson':
+    return util.getJsonStr(req, true, decodeURIComponent);
+  case 'resJson':
+    return util.getJsonStr(res);
+  case 'rawReq':
+    return util.getRawReq(item);
+  case 'rawRes':
+    return util.getRawRes(item);
+  case 'statusCode':
+    return res.statusCode;
+  }
+  return '';
 }
 
 var EditorDialog = React.createClass({
@@ -53,7 +83,10 @@ var EditorDialog = React.createClass({
     this.setState(data);
     var textarea = this._textarea;
     if (this.props.textEditor && textarea) {
-      textarea.value = (data && data.value) || '';
+      var value = data && data.value;
+      if (typeof value === 'string') {
+        textarea.value = value;
+      }
       setTimeout(function() {
         textarea.focus();
       }, 600);
@@ -92,6 +125,9 @@ var EditorDialog = React.createClass({
         style.borderRadius = '3px';
         textarea.maxLength = MAX_LEN;
         textarea.placeholder = self.props.placeholder || 'Enter text';
+        textarea.addEventListener('input', function() {
+          self.setState({ hasChanged: true });
+        });
         textarea.onkeydown = function(e) {
           if ((e.ctrlKey || e.metaKey) && e.keyCode === 83) {
             e.preventDefault();
@@ -105,7 +141,24 @@ var EditorDialog = React.createClass({
     iframe.onload = initTextArea;
     initTextArea();
     this.props.standalone && events.on('showEditorDialog', function(_, data, elem) {
-      if (data.name) {
+      self.onClose();
+      self.state.textSrc = '';
+      self.state.callback = null;
+      var text = data && (data.text || data.value) || '';
+      if (!data || text || data.session !== undefined) {
+        var filename = data && data.filename;
+        self._session = data && data.session;
+        self.state.callback = data && data.callback;
+        self.show({
+          hasChanged: !!(text || self._textarea.value.trim()),
+          value: text,
+          title: 'Create Temp File',
+          isTempFile: true
+        });
+        filename && getTempFile(filename, function(value) {
+          self._textarea.value = value;
+        });
+      } else if (data.name) {
         var item = dataCenter.valuesModal.get(data.name);
         var value = item && item.value || '';
         self._keyName = data.name;
@@ -126,7 +179,7 @@ var EditorDialog = React.createClass({
           getTempFile(tempFile, function(value) {
             self.show({
               value: value,
-              title: (isBlank ? 'Create' : 'Modify') + ' temp file' + (isBlank ? '' : ' (temp/' + tempFile + ')'),
+              title: (isBlank ? 'Create' : 'Edit') + ' Temp File' + (isBlank ? '' : ' (temp/' + tempFile + ')'),
               isTempFile: true
             });
           });
@@ -161,7 +214,7 @@ var EditorDialog = React.createClass({
           });
           self.hide();
         } else {
-          util.showSystemError(xhr);
+          showSysErr(xhr);
         }
       });
       return;
@@ -170,9 +223,17 @@ var EditorDialog = React.createClass({
     params[isBase64 ? 'base64' : 'value'] = value;
     dataCenter.createTempFile(JSON.stringify(params), function (result, xhr) {
       if (!result || result.ec !== 0) {
-        return util.showSystemError(xhr);
+        return showSysErr(xhr);
       }
       var elem = self._fileElem;
+      if (!elem) {
+        if (self.state.callback) {
+          self.state.callback(result.filepath);
+        } else {
+          win.alert('Temp file created:\n' + result.filepath, result.filepath, 'Copy Temp File Path', 'alert-info');
+        }
+        return self.hide();
+      }
       var line = elem.closest('.CodeMirror-line')[0];
       var list = elem.closest('.CodeMirror-code').find('.CodeMirror-line');
       var index = 0;
@@ -195,7 +256,6 @@ var EditorDialog = React.createClass({
             newText = 'file://' + newText;
           }
         }
-
       } else {
         newText = text.replace(/temp(\.[\w-]+)?$/, result.filepath + '$1');
       }
@@ -223,7 +283,7 @@ var EditorDialog = React.createClass({
             });
             self.hide();
           } else {
-            util.showSystemError(xhr);
+            showSysErr(xhr);
           }
         }
       );
@@ -268,21 +328,89 @@ var EditorDialog = React.createClass({
     this.readFile(file);
     findDOMNode(this.refs.readLocalFile).value = '';
   },
+  onTextChange: function(e) {
+    var self = this;
+    var textSrc = e.target.value;
+    var updateValue = function() {
+      self.setState({ textSrc: textSrc, hasChanged: false }, self.updateRules);
+      if (textSrc[0] === '{') {
+        var valuesModal = dataCenter.valuesModal;
+        var item = valuesModal.getItem(textSrc.slice(1, -1));
+        self._textarea.value = item && item.value || '';
+      } else if (self._session) {
+        self._textarea.value = getText(self._session, textSrc);
+      }
+    };
+    if (!self.state.hasChanged || !self._textarea.value.trim()) {
+      return updateValue();
+    }
+    win.confirm('Unsaved changes will be lost. Continue?', function(sure) {
+      sure && updateValue();
+    });
+  },
+  onClose: function () {
+    this._keyName = null;
+    this._tempFile = null;
+    this._fileElem = null;
+    this._rulesItem = null;
+    this._session = null;
+  },
+  renderHeader: function() {
+    var state = this.state;
+    var props = this.props;
+    var title = props.title || state.title || '';
+    var textSrc = state.textSrc || '';
+    var list = title[0] !== 'E' && dataCenter.getValuesModal().getNotEmptyList();
+    var session = this._session;
+
+    return (
+      <div className="modal-header">
+        <h4>
+          {title || 'Edit Copied Text'}
+          {session || list.length ? <span className="ml-10">
+            (Import from:
+            <select className="form-control w-session-text-select" value={textSrc} onChange={this.onTextChange}>
+              <option value="">Blank</option>
+              {session ? [
+                <optgroup label="Request Session">
+                  <option value="url">URL</option>
+                  <option value="method">Method</option>
+                  <option value="statusCode">Status Code</option>
+                  <option value="reqHeaders">Request Headers</option>
+                  <option value="resHeaders">Response Headers</option>
+                  <option value="reqBody">Request Body</option>
+                  <option value="resBody">Response Body</option>
+                  <option value="reqJson">Request JSON</option>
+                  <option value="resJson">Response JSON</option>
+                  <option value="rawReq">Raw Request</option>
+                  <option value="rawRes">Raw Response</option>
+                </optgroup>
+              ] : null}
+              { list.length ? <optgroup label="Values">{
+                  list.map(function(key) {
+                    key = '{' + key + '}';
+                    return <option value={key}>{key}</option>;
+                  })
+                }</optgroup> : null
+              }
+            </select> )
+          </span> : null}
+        </h4>
+        <CloseBtn />
+      </div>
+    );
+  },
   render: function () {
     var state = this.state;
     var props = this.props;
     var value = state.value;
-    var title = props.title || state.title;
     var textEditor = this.props.textEditor;
     var showUpload = textEditor && !props.onConfirm;
 
     return (
       <Dialog ref="editorDialog" wstyle={'w-editor-dialog' + (textEditor ? ' w-big-editor-dialog' : '') +
-      (showUpload ? ' w-show-upload-temp-file' : '')}>
-        <div className="modal-header">
-          <h4>{title || 'Edit copied text'}</h4>
-          <CloseBtn />
-        </div>
+      (showUpload ? ' w-show-upload-temp-file' : '')} onClose={this.onClose}>
+        {this.renderHeader()}
         <div className="modal-body">
           {
             textEditor ? <div className="w-mock-action">
@@ -340,7 +468,7 @@ var EditorDialog = React.createClass({
         <form
           ref="readLocalFileForm"
           encType="multipart/form-data"
-          style={{ display: 'none' }}
+          style={util.HIDE_STYLE}
         >
           <input
             ref="readLocalFile"

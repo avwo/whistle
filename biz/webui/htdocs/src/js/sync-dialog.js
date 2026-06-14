@@ -50,7 +50,7 @@ var SyncDialog = React.createClass({
       self.loadingRules = false;
       self.setState({});
       if (!data) {
-        return util.showSystemError(xhr);
+        return util.showSysErr(xhr);
       }
       self.plugin.selectedRulesHistory = history;
       self.refs.kvDialog.show(data, self.rulesModal, self.valuesModal, false, history);
@@ -72,7 +72,7 @@ var SyncDialog = React.createClass({
       self.loadingValues = false;
       self.setState({});
       if (!data) {
-        return util.showSystemError(xhr);
+        return util.showSysErr(xhr);
       }
       self.plugin.selectedValuesHistory = history;
       self.refs.kvDialog.show(data, self.rulesModal, self.valuesModal, true, history);

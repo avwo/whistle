@@ -1,12 +1,12 @@
 require('../css/large-dialog.css');
 var React = require('react');
-var ReactDOM = require('react-dom');
+var findDOMNode = require('react-dom').findDOMNode;
 var Dialog = require('./dialog');
-var events = require('./events');
 var dataCenter = require('./data-center');
 var CloseBtn = require('./close-btn');
+var Icon = require('./icon');
 
-var AccountDialog = React.createClass({
+var LargeDialog = React.createClass({
   show: function(url) {
     if (url) {
       var iframe = this.getIframe();
@@ -22,7 +22,7 @@ var AccountDialog = React.createClass({
     this.refs.dialog.hide();
   },
   getIframe: function() {
-    return ReactDOM.findDOMNode(this.refs.iframe);
+    return findDOMNode(this.refs.iframe);
   },
   getWindow: function() {
     return this.getIframe().contentWindow;
@@ -31,7 +31,12 @@ var AccountDialog = React.createClass({
     return false;
   },
   openInNewWin: function() {
-    events.trigger('openInNewWin');
+    var openInNewWin = this.props.openInNewWin;
+    if (openInNewWin) {
+      openInNewWin(this.getWindow());
+    } else {
+      window.open(this.getIframe().src);
+    }
   },
   render: function() {
     var props = this.props;
@@ -40,7 +45,7 @@ var AccountDialog = React.createClass({
 
     return (
       <Dialog ref="dialog" wstyle={'w-large-dialog' + (className ? ' ' + className : '')}>
-        {hideButton ? null : <a className="w-open-win-btn" onClick={this.openInNewWin}>Open In New Window</a>}
+        {hideButton ? null : <Icon className="w-open-win-btn" onClick={this.openInNewWin} name="new-window" title="Open in new window" />}
         <CloseBtn />
         <div className="modal-body w-fix-drag">
           <iframe ref="iframe" className="modal-body" />
@@ -50,4 +55,4 @@ var AccountDialog = React.createClass({
   }
 });
 
-module.exports = AccountDialog;
+module.exports = LargeDialog;

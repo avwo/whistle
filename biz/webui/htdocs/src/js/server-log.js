@@ -1,6 +1,6 @@
 var $ = require('jquery');
 var React = require('react');
-var ReactDOM = require('react-dom');
+var findDOMNode = require('react-dom').findDOMNode;
 var ExpandCollapse = require('./expand-collapse');
 var util = require('./util');
 var dataCenter = require('./data-center');
@@ -9,8 +9,6 @@ var events = require('./events');
 var DropDown = require('./dropdown');
 var BackToBottomBtn = require('./back-to-bottom-btn');
 var LogMixin = require('./log-mixin');
-
-var findDOMNode = ReactDOM.findDOMNode;
 
 var ServerLog = React.createClass({
   name: 'server',

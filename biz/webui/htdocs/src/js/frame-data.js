@@ -1,5 +1,5 @@
 var React = require('react');
-var ReactDOM = require('react-dom');
+var findDOMNode = require('react-dom').findDOMNode;
 var $ = require('jquery');
 var BtnGroup = require('./btn-group');
 var JSONViewer = require('./json-viewer');
@@ -41,7 +41,7 @@ var FrameClient = React.createClass({
       if (frame) {
         self.showTab(4);
         setTimeout(function() {
-          util.shakeElem($(ReactDOM.findDOMNode(self.refs.tabs)).find('button[data-name="Composer"]'));
+          util.shakeElem($(findDOMNode(self.refs.tabs)).find('button[data-name="Composer"]'));
         },100);
       }
     });
@@ -81,13 +81,15 @@ var FrameClient = React.createClass({
   },
   render: function () {
     var state = this.state;
+    var props = this.props;
     var btns = this.state.btns;
     var btn = state.btn;
     if (btns.indexOf(btn) === -1) {
       btn = util.findArray(btns, findActive) || btns[0];
       this.selectBtn(btn);
     }
-    var frame = this.props.frame;
+    var frame = props.frame;
+    var session = props.data;
     var text, json, bin, base64, overview;
     if (frame) {
       if (!frame.closed) {
@@ -124,20 +126,22 @@ var FrameClient = React.createClass({
         <BtnGroup ref="tabs" onClick={this.onClickBtn} btns={state.btns} />
         <Properties modal={overview} hide={btn.name !== 'Overview'} />
         <Textarea
+          session={session}
           className="fill"
           base64={base64}
           value={text}
           hide={btn.name !== 'TextView'}
         />
-        <JSONViewer data={json} hide={btn.name !== 'JSONView'} />
+        <JSONViewer session={session} data={json} hide={btn.name !== 'JSONView'} />
         <Textarea
+          session={session}
           className="fill n-monospace"
           isHexView="1"
           base64={base64}
           value={bin}
           hide={btn.name !== 'HexView'}
         />
-        <FrameComposer framesCtx={this.props.framesCtx} data={this.props.data} hide={btn.name !== 'Composer'} />
+        <FrameComposer framesCtx={props.framesCtx} data={session} hide={btn.name !== 'Composer'} />
       </div>
     );
   }

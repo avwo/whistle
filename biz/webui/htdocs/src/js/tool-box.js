@@ -1,5 +1,5 @@
 var React = require('react');
-var ReactDOM = require('react-dom');
+var findDOMNode = require('react-dom').findDOMNode;
 var util = require('./util');
 var QRCodeDialog = require('./qrcode-dialog');
 var TextDialog = require('./text-dialog');
@@ -15,7 +15,6 @@ var MAX_JSON_LEN = 32768;
 var MAX_SAVE_LEN = 5120;
 var MAX_TEXT_LEN = 5120;
 var MAX_IMAGE_SIZE = 1024 * 1024 * 3;
-var findDOMNode = ReactDOM.findDOMNode;
 
 var ToolBox = React.createClass({
   getInitialState: function () {
@@ -173,7 +172,7 @@ var ToolBox = React.createClass({
           value={qrcodeValue}
           className="w-tool-box-ctn"
           maxLength={MAX_QRCODE_LEN}
-          placeholder="Enter URL or text"
+          placeholder="Enter request URL or any plain text"
         />
         <div className="w-detail-inspectors-title">
           <Icon name="pencil" />JSON
@@ -258,7 +257,7 @@ var ToolBox = React.createClass({
         <form
           ref="uploadFileForm"
           encType="multipart/form-data"
-          style={{ display: 'none' }}
+          style={util.HIDE_STYLE}
         >
           <input
             ref="uploadFile"

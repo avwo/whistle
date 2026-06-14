@@ -72,7 +72,7 @@ var Saved = React.createClass({
         count: item.count
       }), function (data, xhr) {
         if (!data) {
-          return util.showSystemError(xhr);
+          return util.showSysErr(xhr);
         }
         if (data.ec) {
           return message.error(data.em || 'Error occurred when removing saved sessions');
@@ -94,7 +94,7 @@ var Saved = React.createClass({
       count: item.count
     }, function (data, xhr) {
       if (!data) {
-        return util.showSystemError(xhr);
+        return util.showSysErr(xhr);
       }
       if (!Array.isArray(data)) {
         return message.error('Error occurred when loading saved sessions');

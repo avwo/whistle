@@ -1,11 +1,10 @@
 var React = require('react');
-var ReactDOM = require('react-dom');
+var findDOMNode = require('react-dom').findDOMNode;
 var Dialog = require('./dialog');
 var ShareViaUrlBtn = require('./share-via-url-btn');
 var util = require('./util');
 var CloseBtn = require('./close-btn');
 
-var findDOMNode = ReactDOM.findDOMNode;
 
 var ExportDialog = React.createClass({
   getInitialState: function () {
@@ -60,7 +59,7 @@ var ExportDialog = React.createClass({
       filename = 'values_settings_';
       break;
     case 'mock':
-      filename = 'mock_';
+      filename = 'rules_items_';
       break;
     default:
       filename = 'network_';

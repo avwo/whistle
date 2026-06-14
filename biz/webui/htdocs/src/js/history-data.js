@@ -1,5 +1,5 @@
 var React = require('react');
-var ReactDOM = require('react-dom');
+var findDOMNode = require('react-dom').findDOMNode;
 var $ = require('jquery');
 var Divider = require('./divider');
 var ContextMenu = require('./context-menu');
@@ -70,7 +70,7 @@ var HistoryData = React.createClass({
     }
   },
   scrollToTop: function() {
-    ReactDOM.findDOMNode(this.refs.list).scrollTop = 0;
+    findDOMNode(this.refs.list).scrollTop = 0;
   },
   copyAsCURL: function(_, item) {
     item = item || this.getItem();

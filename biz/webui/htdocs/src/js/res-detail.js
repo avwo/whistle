@@ -247,12 +247,11 @@ var ResDetail = React.createClass({
         <BtnGroup onClick={this.onClickBtn} btns={btns} />
         {state.initedRaw ? (
           <Textarea
-            reqData={modal}
-            reqType="resRaw"
             defaultName={defaultName}
             value={raw}
             headers={headersStr}
             base64={base64}
+            session={modal}
             className="fill w-detail-res-raw"
             hide={name != btns[0].name}
           />
@@ -272,35 +271,32 @@ var ResDetail = React.createClass({
         ) : undefined}
         {state.initedTextView ? (
           <Textarea
-            reqData={modal}
-            reqType="resBody"
             defaultName={defaultName}
             tips={tips}
             base64={base64}
             value={body}
+            session={modal}
             className="fill w-detail-res-textview"
             hide={name != btns[3].name}
           />
         ) : undefined}
         {state.initedJSONView ? (
           <JSONViewer
-            reqData={modal}
-            reqType="resJson"
             defaultName={defaultName}
             data={json}
             tips={tips}
+            session={modal}
             hide={name != btns[4].name}
           />
         ) : undefined}
         {state.initedHexView ? (
           <Textarea
-            reqData={modal}
-            reqType="resBody"
             defaultName={defaultName}
             isHexView="1"
             base64={base64}
             tips={tips}
             value={bin}
+            session={modal}
             className="fill n-monospace w-detail-res-hex"
             hide={name != btns[5].name}
           />

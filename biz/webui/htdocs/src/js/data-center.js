@@ -7,6 +7,7 @@ var events = require('./events');
 var workers = require('./workers');
 var message = require('./message');
 
+var showSysErr = util.showSysErr;
 var updateWorkers = workers.updateWorkers;
 var createCgi = createCgiObj.createCgi;
 var MAX_INCLUDE_LEN = 5120;
@@ -476,7 +477,7 @@ exports.uploadCerts = function (data, cb) {
   }
   return certs.upload(data, function (data, xhr) {
     if (!data) {
-      return util.showSystemError(xhr);
+      return showSysErr(xhr);
     }
     if (typeof cb === 'function') {
       cb(data);
@@ -544,6 +545,7 @@ exports.installPluginsFromService = function (plugins, registry) {
 exports.rules = createCgiObj(
   {
     disableAllRules: 'cgi-bin/rules/disable-all-rules',
+    clearDnsCache: 'cgi-bin/rules/clear-dns-cache',
     recycleList: {
       type: 'get',
       url: 'cgi-bin/rules/recycle/list'
@@ -1486,7 +1488,7 @@ function isFrames(item) {
   if (!item) {
     return false;
   }
-  if (item.useFrames) {
+  if (item.useFrames || item.isCse || item.isSse) {
     return true;
   }
   if (item.reqError || item.resError) {
@@ -1501,8 +1503,13 @@ function isFrames(item) {
 
 exports.isFrames = isFrames;
 
-function getStyleValue(style) {
-  var index = style.indexOf('&');
+function getStyleValue(style, name) {
+  var index = style.indexOf('&' + name + '=');
+  if (index === -1) {
+    return;
+  }
+  style = style.substring(index + name.length + 2);
+  index = style.indexOf('&');
   if (index !== -1) {
     style = style.substring(0, index);
   }
@@ -1547,19 +1554,9 @@ function setStyle(item) {
         return rule.substring(rule.indexOf('://') + 3);
       })
       .join('&');
-  var color, fontStyle, bgColor;
-  var colorIndex = style.lastIndexOf('&color=');
-  if (colorIndex !== -1) {
-    color = getStyleValue(style.substring(colorIndex + 7));
-  }
-  var styleIndex = style.lastIndexOf('&fontStyle=');
-  if (styleIndex !== -1) {
-    fontStyle = getStyleValue(style.substring(styleIndex + 11));
-  }
-  var bgIndex = style.lastIndexOf('&bgColor=');
-  if (bgIndex !== -1) {
-    bgColor = getStyleValue(style.substring(bgIndex + 9));
-  }
+  var color = getStyleValue(style, 'color');
+  var fontStyle = getStyleValue(style, 'fontStyle');
+  var bgColor = getStyleValue(style, 'bgColor');
   if (color || fontStyle || bgColor) {
     item.style = {
       color: color,
@@ -2152,14 +2149,17 @@ exports.getDataKeys = function() {
 };
 
 exports.getRemoteData = function (url, callback) {
-  var opts = {  url: url };
+  var opts = { url: url };
   exports.importRemote(opts,  function (data, xhr) {
     if (!data) {
-      util.showSystemError(xhr);
+      showSysErr(xhr);
       return callback(true);
     }
     if (data.ec !== 0) {
       message.error(data.em || 'Error');
+      return callback(true);
+    }
+    if (util.showForbidden(data)) {
       return callback(true);
     }
     try {
@@ -2179,7 +2179,7 @@ exports.showLatestClientVersion = function() {
   }
   exports.updateClient(function (result, xhr) {
     if (!result) {
-      return util.showSystemError(xhr);
+      return showSysErr(xhr);
     }
     if (result.ec) {
       message.error(result.em || 'Update failed');

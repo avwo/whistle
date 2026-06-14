@@ -225,33 +225,19 @@
   margin-top: -3px;
 }
 
-.w-mock-file button.close {
-  top: 3px;
-  right: 5px;
-  height: 22px;
-  line-height: 1;
-  padding: 0;
-  position: absolute;
-  width: 22px;
-}
-
-.w-mock-dialog .modal-dialog {
-  width: 1000px;
-}
-
 .w-rules-dialog {
   z-index: var(--z-modal);
 }
-.w-create-rules-dialog {
-  z-index: calc(var(--z-modal) + 1);
+.w-prompt {
+  z-index: calc(var(--z-max));
 }
 .w-rules-dialog .modal-dialog {
   width: 1020px;
 }
 
 .w-generate-cert input {
-  line-height: 34px;
-  height: 34px;
+  line-height: var(--h-field);
+  height: var(--h-field);
   padding: 5px;
   border-radius: 0;
   border: 1px solid var(--c-border);
@@ -281,152 +267,21 @@
   border-radius: 0;
 }
 
-.w-mock-preview {
-  line-height: 16px;
-  min-height: 36px;
-  max-height: 120px;
-  padding: 10px;
-  overflow: auto;
-  background-color: var(--b-disabled);
-  display: inline-block;
-  width: 820px;
-  vertical-align: top;
-  white-space: pre;
-  position: relative;
-  font-size: 13px;
+.w-big-editor-dialog {
+  z-index: calc(var(--z-modal) + 1);
 }
 
-.w-mock-dialog .form-control {
-  height: 32px;
-  border-radius: 2px;
-  box-shadow: none;
-  display: inline-block;
-  vertical-align: middle;
-}
-
-.w-mock-dialog  .glyphicon-question-sign {
-  margin-right: 5px;
-}
-
-.w-mock-row {
-  white-space: nowrap;
-  font-size: 12px;
-  font-weight: normal;
-  margin-top: 15px;
-  position: relative;
-}
-
-.w-mock-row span {
-  display: inline-block;
-  width: 120px;
-  padding-right: 10px;
-  font-weight: 600;
-  font-size: 14px;
-  text-align: right;
-}
-
-.w-mock-row a, .w-big-editor-dialog .w-mock-action a {
-  color: var(--c-default);
-  text-decoration: none;
-}
-
-.w-mock-row a:hover, .w-big-editor-dialog .w-mock-action a:hover {
-  color: var(--c-link-hover);
-}
-
-.w-url-pattern {
-  width: 778px;
-  border-top-right-radius: 0!important;
-  border-bottom-right-radius: 0!important;
-}
-
-.w-mock-row .w-com-params {
-  line-height: 30px;
-  border-left: none;
-}
-
-.w-mock-protocol {
-  width: 160px;
-  padding-right: 0;
-}
-
-.w-mock-value-options {
-  width: 105px;
-  padding-right: 0;
-  margin: 0 10px;
-}
-
-.w-mock-key-name {
-  width: 375px;
-  margin: 0 10px 0 0;
-  margin-left: 10px;
-  font-weight: bold;
-}
-
-.w-mock-value-type {
-  width: 170px;
-  padding-right: 10px;
-}
-
-.w-mock-comment {
-  display: none;
-}
-
-.w-mock-file .w-mock-comment {
-  margin-left: 20px;
-  display: inline-block;
-  color: var(--c-thin);
-}
-
-.w-mock-file .w-mock-comment input {
-  margin-left: 5px;
-  width: 291px;
-  font-weight: normal;
-  font-size: 12px;
- }
-
-.w-mock-dialog .modal-footer select {
-  width: 220px;
-  vertical-align: middle;
-  margin-right: 20px;
-}
-
-.w-mock-inline {
-  display: inline-block;
-  vertical-align: top;
-  width: 555px;
-  height: 200px;
-  border: 1px solid var(--c-border);
-  border-radius: 2px;
-  padding: 5px;
-}
-
-.w-mock-row .w-mock-rules-action {
-  display: none;
-  position: absolute;
-  top: 0;
-  right: 40px;
-  z-index: 1;
-}
-
-.w-mock-row .w-mock-rules-action a,
-.w-mock-row .w-mock-action a,
-.w-big-editor-dialog .modal-body .w-mock-action a {
+.w-big-editor-dialog .modal-body .w-mock-action a, .w-json-editor .w-mock-action  a {
   padding: 0 6px;
   border-radius: 2px;
   background: var(--b-title);
   display: inline-block;
   color: var(--c-thin);
+  text-decoration: none;
 }
 
-.w-mock-row .w-mock-rules-action a:hover,
-.w-mock-row .w-mock-action a:hover,
-.w-big-editor-dialog .modal-body .w-mock-action a:hover {
+.w-big-editor-dialog .modal-body .w-mock-action a:hover, .w-json-editor .w-mock-action a:hover {
   color: var(--c-default);
-}
-
-.w-mock-row:hover .w-mock-rules-action {
-  display: inline-block;
 }
 
 .w-rules-dialog select {
@@ -456,46 +311,41 @@
   display: none;
 }
 
-.w-big-editor-dialog .modal-body .w-mock-action {
+.w-json-editor {
+  flex: 1;
+  position: relative;
+}
+
+.w-json-editor textarea {
+  height: 145px!important;
+  line-height: 1.5!important;
+}
+
+.w-big-editor-dialog .modal-dialog {
+  width: 1000px;
+}
+
+.w-big-editor-dialog textarea {
+  width: 980px;
+  height: 550px;
+}
+
+.w-big-editor-dialog .modal-body .w-mock-action, .w-json-editor .w-mock-action  {
   top: 12px;
   right: 11px;
   font-size: 12px;
 }
 
-.w-mock-row:hover .w-mock-action, .w-big-editor-dialog .modal-body:hover .w-mock-action {
+.w-json-editor .w-mock-action {
+  top: 1px;
+  right: 5px;
+}
+
+.w-big-editor-dialog .modal-body:hover .w-mock-action, .w-json-editor:hover .w-mock-action {
   display: block;
   background: var(--b-title);
   border-radius: 3px;
   z-index: 1;
-}
-
-.w-mock-dialog, .w-mock-dialog .form-control {
-  font-size: 13px;
-}
-
-.w-mock-dialog .w-mock-row .glyphicon-trash {
-  position: absolute;
-  display: inline-block;
-  width: 16px;
-  top: 12px;
-  right: 15px;
-  color: var(--c-thin);
-  cursor: pointer;
-}
-
-.w-mock-dialog .w-mock-row .glyphicon-trash:hover {
-  color: var(--c-default);
-}
-
-.w-mock-dialog .w-com-params-editor {
-  top: 60px;
-  right: 30px;
-  width: 840px;
-}
-
-.w-com-params-editor .w-params-clear-btn .glyphicon-trash {
-  width: 16px;
-  margin-right: 0;
 }
 
 .w-log-item:hover > a {
@@ -504,4 +354,88 @@
   color: var(--c-thin);
   padding: 0 5px;
   right: 5px;
+}
+
+.w-params-editor .w-params-btns .glyphicon {
+  width: 16px;
+  margin-right: 0;
+  font-size: 10px;
+}
+
+.w-params-editor, .w-url-hints {
+  position: absolute;
+  width: 100%;
+  height: 240px;
+  z-index: 10;
+  top: calc(var(--h-field) + 4px);
+  right: 0;
+}
+
+.w-url-hints {
+  height: fit-content;
+  max-height: 260px;
+}
+
+.w-params-editor .w-filter-bar {
+  border-bottom: 1px solid var(--c-border);
+}
+
+.w-params-editor .w-params-btns a {
+  position: relative;
+  text-align: left;
+  margin-right: 6px;
+  white-space: nowrap;
+}
+
+.w-params-editor .w-filter-bar .w-close-params {
+  right: unset;
+  top: -4px;
+  right: 5px;
+}
+
+.w-url-input {
+  display: flex;
+  align-items: center;
+  position: relative;
+  flex: 1;
+}
+
+.w-url-input input {
+  border-radius: 0;
+  border-left-width: 0.5px;
+  border-right-width: 0.5px;
+  padding: 0 6px;
+}
+
+.w-url-input .form-control, .w-create-rule .form-control {
+  height: var(--h-field);
+  line-height: var(--h-field);
+  font-size: 13px;
+}
+
+.w-url-input .w-url-protocol {
+  width: 76px;
+  padding: 0 3px;
+  border-radius: 4px 0 0 4px;
+  border-right-width: 0.5px;
+  margin-right: 0;
+}
+
+.w-url-input .w-url-params {
+  border-radius: 0;
+  margin-left: 0;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+  background-color: var(--b-bar);
+  font-size: 12px;
+  height: var(--h-field);
+  padding: 0 10px;
+  border-left-width: 0.5px;
+}
+
+.w-url-input .w-file-input {
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
 }

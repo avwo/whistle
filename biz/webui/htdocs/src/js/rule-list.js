@@ -2,9 +2,12 @@ var React = require('react');
 var Divider = require('./divider');
 var util = require('./util');
 
+var FILTER_RE = /^(?:filter|excludeFilter|includeFilter):\/\/.*$/;
+var PROPS_RE = /^lineProps:\/\/.*$/;
+
 var RuleList = React.createClass({
   getInitialState: function () {
-    return { active: 'Default', checkedList: [] };
+    return { active: '', checkedList: [] };
   },
   shouldComponentUpdate: util.shouldComponentUpdate,
   onClick: function (e) {
@@ -42,7 +45,7 @@ var RuleList = React.createClass({
 
     return (
       <Divider leftWidth="220" className={props.hide ? ' hide' : ''}>
-        <div className="w-list-data w-rule-list-name">
+        <div className="w-list-left w-list-data w-rule-list-name">
         {list.map(function (item) {
           if (util.isGroup(item.name)) {
             return null;
@@ -79,7 +82,7 @@ var RuleList = React.createClass({
                 }} /></span>
                 <div>
                   {rule.map(function (r, i) {
-                    return <span key={i}>{r}</span>;
+                    return <span key={i} className={FILTER_RE.test(r) ? 'w-rule-filter' : PROPS_RE.test(r) ? 'w-rule-props' : ''}>{r}</span>;
                   })}
                 </div>
               </label>

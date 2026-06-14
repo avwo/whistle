@@ -1,11 +1,10 @@
 require('../css/divider.css');
 var $ = require('jquery');
 var React = require('react');
-var ReactDOM = require('react-dom');
-
+var findDOMNode = require('react-dom').findDOMNode;
 var util = require('./util');
 
-var HIDE = { display: 'none' };
+var getHideStyle = util.getHideStyle;
 
 util.addDragEvent('.w-divider', function (target, x, y) {
   target = target.parent();
@@ -37,7 +36,7 @@ var Divider = React.createClass({
   },
   reset: function () {
     var self = this;
-    var divider = ReactDOM.findDOMNode(self.refs.divider);
+    var divider = findDOMNode(self.refs.divider);
     if (!divider.offsetHeight) {
       self._needReset = true;
       return;
@@ -94,7 +93,7 @@ var Divider = React.createClass({
         }
       >
         <div
-          style={hideLeft ? HIDE : undefined}
+          style={getHideStyle(hideLeft)}
           className={
             (leftWidth ? '' : 'fill ') +
             'w-divider-left v-box ' +
@@ -105,7 +104,7 @@ var Divider = React.createClass({
           {this.props.children[0]}
         </div>
         <div
-          style={hideRight ? HIDE : undefined}
+          style={getHideStyle(hideRight)}
           className={
             (noLeft ? 'fill ' : '') +
             'w-divider-right v-box ' +

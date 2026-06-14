@@ -18,22 +18,15 @@ function assign(o1, o2) {
   }
 }
 
-function getString(str) {
-  if (!str || typeof str !== 'string') {
-    return;
-  }
-  return str;
-}
-
 function setCustomData(item, newData, name) {
   var data = item.customData || {};
   item.customData = data;
   assign(data, newData);
   var style = data.style;
   if (style) {
-    var color = getString(style.color);
-    var fontStyle = getString(style.fontStyle);
-    var backgroundColor = getString(style.backgroundColor || style.bgColor);
+    var color = util.getString(style.color);
+    var fontStyle = util.getString(style.fontStyle);
+    var backgroundColor = util.getString(style.backgroundColor || style.bgColor);
     if (color || fontStyle || backgroundColor) {
       style = item.style || {};
       item.style = style;

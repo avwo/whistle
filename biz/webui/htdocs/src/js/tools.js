@@ -1,6 +1,6 @@
 require('../css/tools.css');
 var React = require('react');
-var ReactDOM = require('react-dom');
+var findDOMNode = require('react-dom').findDOMNode;
 var $ = require('jquery');
 var Console = require('./console-log');
 var ServerLog = require('./server-log');
@@ -64,7 +64,7 @@ var Tools = React.createClass({
     }
   },
   shakeTab: function() {
-    util.shakeElem($(ReactDOM.findDOMNode(this.refs.tabs)).find('button.active'));
+    util.shakeElem($(findDOMNode(this.refs.tabs)).find('button.active'));
   },
   clearLogs: function () {
     if (BTNS[0].active) {

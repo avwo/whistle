@@ -1,11 +1,11 @@
 require('../css/iframe.css');
 var React = require('react');
-var ReactDOM = require('react-dom');
+var findDOMNode = require('react-dom').findDOMNode;
 var dataCenter = require('./data-center');
 
 var IFrame = React.createClass({
   getWindow: function() {
-    return ReactDOM.findDOMNode(this.refs.iframe).contentWindow;
+    return findDOMNode(this.refs.iframe).contentWindow;
   },
   onload: function(e) {
     var onLoad = this.props.onLoad;

@@ -59,7 +59,7 @@ var BtnGroup = React.createClass({
               key={btn.key}
               type="button"
               data-name={btn.name}
-              style={{ display: btn.hide ? 'none' : undefined }}
+              style={util.getHideStyle(btn.hide)}
               title={btn.title}
               className={
                 'btn btn-default' +

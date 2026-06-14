@@ -82,6 +82,8 @@ function getBridge(win, api) {
     getSelectedSessionList: function () {
       return dataModal.getSelectedList();
     },
+    getRawRequest: util.getRawReq,
+    getRawResponse: util.getRawRes,
     importMockData: function(data) {
       return util.handleImportData(data);
     },

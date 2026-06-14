@@ -97,15 +97,19 @@
 
 .w-rule-list-ctn .w-rule-list-item > div span {
   margin-right: 10px;
-  color: var(--c-rule-filter);
+  color: var(--c-rule-op);
 }
 
 .w-rule-list-ctn .w-rule-list-item > div span:nth-child(1) {
   color: var(--c-default);
 }
 
-.w-rule-list-ctn .w-rule-list-item > div span:nth-child(2) {
+.w-rule-list-ctn .w-rule-list-item > div span.w-rule-props {
   color: var(--c-rule-props);
+}
+
+.w-rule-list-ctn .w-rule-list-item > div span.w-rule-filter {
+  color: var(--c-rule-filter);
 }
 
 .w-rule-list-ctn .w-rule-list-item > div span:last-child {

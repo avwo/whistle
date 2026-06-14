@@ -786,6 +786,15 @@ proto.hasUnselected = function () {
   return false;
 };
 
+proto.hasVisibleSession = function () {
+  var list = this.list;
+  for (var i = 0, len = list.length; i < len; i++) {
+    if (!list[i].hide) {
+      return true;
+    }
+  }
+};
+
 proto.getSelected = function () {
   return this.getActive();
 };

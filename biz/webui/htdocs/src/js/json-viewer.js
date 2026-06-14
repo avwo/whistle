@@ -1,17 +1,14 @@
 require('../css/json-viewer.css');
 var React = require('react');
 var $ = require('jquery');
-var ReactDOM = require('react-dom');
+var findDOMNode = require('react-dom').findDOMNode;
 var TextView = require('./textview');
 var CopyBtn = require('./copy-btn');
-var message = require('./message');
 var ContextMenu = require('./context-menu');
-var win = require('./win');
 var Tips = require('./panel-tips');
+var textareaMixin = require('./textarea-mixin');
 
-var findDOMNode = ReactDOM.findDOMNode;
 var JSONTree = require('./components/react-json-tree')['default'];
-var dataCenter = require('./data-center');
 var util = require('./util');
 var events = require('./events');
 var MAX_LENGTH = 1024 * 16;
@@ -30,13 +27,11 @@ function compare(a, b) {
 }
 
 var JsonViewer = React.createClass({
+  mixins: [textareaMixin],
   getInitialState: function () {
     return { lastData: {} };
   },
   shouldComponentUpdate: util.shouldComponentUpdate,
-  preventBlur: function (e) {
-    e.target.nodeName != 'INPUT' && e.preventDefault();
-  },
   getCurStr: function() {
     var data = this.props.data;
     return data && data.str;
@@ -68,100 +63,18 @@ var JsonViewer = React.createClass({
   search: function() {
     var str = this.getCurStr();
     if (str) {
-      events.trigger('showJsonViewDialog', str);
+      events.trigger('showJsonViewDialog', [str, null, this.props.session]);
     }
   },
-  showMockDialog: function(e) {
-    var self = this;
-    var props = self.props;
-    var reqData = props.reqData;
-    if (reqData) {
-      return events.trigger('showMockDialog', {
-        type: props.reqType,
-        item: reqData
-      });
-    }
-    self.showNameInput(e);
-  },
-  showNameInput: function (e) {
-    var self = this;
-    self.state.showDownloadInput = /w-download/.test(e.target.className);
-    self.state.showNameInput = true;
-    self.forceUpdate(function () {
-      var nameInput = findDOMNode(self.refs.nameInput);
-      var defaultName = !nameInput.value && self.props.defaultName;
-      if (defaultName) {
-        nameInput.value = defaultName;
-      }
-      nameInput.select();
-      nameInput.focus();
-    });
-  },
-  hideNameInput: function () {
-    this.state.showNameInput = false;
-    this.forceUpdate(function () {
-      var nameInput = findDOMNode(this.refs.nameInput);
-      var defaultName = this.props.defaultName;
-      if (defaultName === nameInput.value) {
-        nameInput.value = '';
-      }
-    });
-  },
-  submit: function (e) {
-    if (e.keyCode != 13 && e.type != 'click') {
-      return;
-    }
-    var modal = dataCenter.valuesModal;
-    if (!modal) {
-      return;
-    }
-    var target = findDOMNode(this.refs.nameInput);
-    var name = target.value.trim();
-    var self = this;
-    if (self.state.showDownloadInput) {
-      self.download();
-      return;
-    }
-    if (!name) {
-      message.error('The key is required');
-      return;
-    }
-
-    if (/\s/.test(name)) {
-      message.error('Spaces are not allowed in the key');
-      return;
-    }
-    var handleSubmit = function (sure) {
-      if (!sure) {
-        return;
-      }
-      var value = (self.state.lastData.str || '').replace(/\r\n|\r/g, '\n');
-      dataCenter.values.add({ name: name, value: value }, function (data, xhr) {
-        if (data && data.ec === 0) {
-          modal.add(name, value);
-          target.value = '';
-          target.blur();
-        } else {
-          util.showSystemError(xhr);
-        }
-      });
-    };
-    if (!modal.exists(name)) {
-      return handleSubmit(true);
-    }
-    win.confirm(
-      'The key \'' + name + '\' is already in use. Overwrite?',
-      handleSubmit
-    );
+  getText: function() {
+    return (this.state.lastData.str || '').replace(/\r\n|\r/g, '\n');
   },
   download: function () {
     var target = findDOMNode(this.refs.nameInput);
-    var name = target.value.trim();
-    target.value = '';
+    var name = target.value.trim() || 'json_' + util.formatDate() + '.txt';
     var data = this.props.data || {};
-    findDOMNode(this.refs.filename).value = name;
-    findDOMNode(this.refs.content).value = data.str || '';
-    findDOMNode(this.refs.downloadForm).submit();
+    target.value = '';
+    util.download(data.str || '', name);
     this.hideNameInput();
   },
   toggle: function () {
@@ -255,13 +168,12 @@ var JsonViewer = React.createClass({
           <a
             onDoubleClick={this.download}
             onClick={this.showNameInput}
+            className="w-download"
             draggable="false"
           >
             Download
           </a>
-          <a style={{display: dataCenter.hideMockMenu ? 'none' : null}} className="w-add" onClick={this.showMockDialog} draggable="false">
-            { props.reqData ? 'Mock' : '+Key' }
-          </a>
+          {this.renderAddBtn()}
           {viewSource ? (
             <a onClick={this.edit} draggable="false">
               ViewAll
@@ -272,39 +184,7 @@ var JsonViewer = React.createClass({
           <a onClick={this.toggle}>
             {viewSource ? 'JSON' : 'Text'}
           </a>
-          <div
-            onMouseDown={this.preventBlur}
-            style={{ display: state.showNameInput ? 'block' : 'none' }}
-            className="w-shadow w-textarea-input"
-          >
-            <input
-              ref="nameInput"
-              onKeyDown={this.submit}
-              onBlur={this.hideNameInput}
-              type="text"
-              maxLength="64"
-              placeholder={
-                state.showDownloadInput ? 'Enter filename' : 'Enter key name'
-              }
-            />
-            <button
-              type="button"
-              onClick={this.submit}
-              className="btn btn-primary"
-            >
-              {state.showDownloadInput ? 'OK' : '+Key'}
-            </button>
-          </div>
-          <form
-            ref="downloadForm"
-            action="cgi-bin/download"
-            style={{ display: 'none' }}
-            method="post"
-            target="downloadTargetFrame"
-          >
-            <input ref="filename" name="filename" type="hidden" />
-            <input ref="content" name="content" type="hidden" />
-          </form>
+          {this.renderInput()}
         </div>
         <TextView
           className={'fill w-json-viewer-str' + (viewSource ? '' : ' hide')}

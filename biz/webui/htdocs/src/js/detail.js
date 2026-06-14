@@ -1,7 +1,7 @@
 require('../css/detail.css');
 var $ = require('jquery');
 var React = require('react');
-var ReactDOM = require('react-dom');
+var findDOMNode = require('react-dom').findDOMNode;
 var events = require('./events');
 var BtnGroup = require('./btn-group');
 var Overview = require('./overview');
@@ -13,7 +13,6 @@ var Saved = require('./saved');
 var util = require('./util');
 var Icon = require('./icon');
 
-var findDOMNode = ReactDOM.findDOMNode;
 var ReqData = React.createClass({
   getInitialState: function () {
     return {

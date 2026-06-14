@@ -1,6 +1,6 @@
 require('../css/props-editor.css');
 var React = require('react');
-var ReactDOM = require('react-dom');
+var findDOMNode = require('react-dom').findDOMNode;
 var Dialog = require('./dialog');
 var util = require('./util');
 var message = require('./message');
@@ -15,7 +15,6 @@ var MAX_VALUE_LEN = 64 * 1024;
 var MAX_COUNT = 160;
 var index = MAX_COUNT;
 var W2_HEADER_RE = /^x-whistle-/;
-var findDOMNode = ReactDOM.findDOMNode;
 
 var highlight = function (name) {
   return name === 'x-forwarded-for' || W2_HEADER_RE.test(name);
@@ -377,8 +376,8 @@ var PropsEditor = React.createClass({
               Name:
               <input
                 ref="name"
-                placeholder="Enter name"
-                className="form-control"
+                placeholder="Enter key name"
+                className="form-control mt-5"
                 maxLength="128"
               />
             </label>
@@ -387,8 +386,8 @@ var PropsEditor = React.createClass({
               <div
                 className={
                   allowUploadFile
-                    ? 'w-props-editor-upload'
-                    : 'w-props-editor-form'
+                    ? 'w-props-editor-upload mt-5'
+                    : 'w-props-editor-form mt-5'
                 }
               >
                 <div
@@ -404,7 +403,7 @@ var PropsEditor = React.createClass({
                 <textarea
                   ref="valueInput"
                   maxLength={MAX_VALUE_LEN}
-                  placeholder="Enter value"
+                  placeholder="Enter key value"
                   className={'form-control' + (filename ? ' hide' : '')}
                   onKeyDown={util.handleTab}
                 />
@@ -449,7 +448,7 @@ var PropsEditor = React.createClass({
         <form
           ref="readLocalFileForm"
           encType="multipart/form-data"
-          style={{ display: 'none' }}
+          style={util.HIDE_STYLE}
         >
           <input
             ref="readLocalFile"

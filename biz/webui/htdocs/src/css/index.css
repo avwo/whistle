@@ -52,7 +52,7 @@
 .w-left-menu .w-disabled {
   color: var(--c-disabled);
 }
-.w-menu .w-menu-enable .glyphicon-cog {
+.w-menu .w-menu-enable .glyphicon-cog, .w-enabled {
   color: var(--c-risk) !important;
 }
 .w-menu .w-new-version-icon {
@@ -105,7 +105,7 @@
   border-color: var(--c-border);
 }
 
-.w-create-rules-input {
+.w-create-rule-file-input {
   left: 310px;
 }
 .w-create-values-input {
@@ -118,7 +118,7 @@
   left: 372px;
 }
 
-.w-show-left-menu .w-create-rules-input {
+.w-show-left-menu .w-create-rule-file-input {
   left: 210px;
 }
 .w-show-left-menu .w-create-values-input {
@@ -191,14 +191,14 @@
 }
 
 .w-choose-filte-type .modal-dialog {
-  width: 435px;
+  width: 500px;
 }
-.w-choose-filte-type-label {
+.w-choose-filte-type .modal-footer, .w-choose-filte-type-label {
   white-space: nowrap;
 }
 .w-choose-filte-type-label .form-control {
   margin-left: 10px;
-  width: 260px;
+  width: 325px;
   display: inline-block;
   font-weight: normal;
 }

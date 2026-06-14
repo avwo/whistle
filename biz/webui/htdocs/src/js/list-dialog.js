@@ -1,6 +1,6 @@
 require('../css/list-dialog.css');
 var React = require('react');
-var ReactDOM = require('react-dom');
+var findDOMNode = require('react-dom').findDOMNode;
 var util = require('./util');
 var Dialog = require('./dialog');
 var Tabs = require('./tabs');
@@ -12,8 +12,7 @@ var ShareViaURLBtn = require('./share-via-url-btn');
 var Icon = require('./icon');
 var CloseBtn = require('./close-btn');
 
-var findDOMNode = ReactDOM.findDOMNode;
-var TEMP_LINK_RE_G = /(?:^|\s)(?:[\w-]+:\/\/)?temp\/([\da-z]{64})(?:\.[\w-]+)?(?:$|\s)/mg;
+var TEMP_LINK_RE_G = /(?:^|\s)(?:[\w-]+:\/\/)?<?temp\/([\da-z]{64})(?:\.[\w-]+)?(?:$|\s)>?/mg;
 
 var ListDialog = React.createClass({
   getInitialState: function () {
@@ -25,12 +24,12 @@ var ListDialog = React.createClass({
       tabs: [
         {
           icon: 'file',
-          name: 'Rules Files',
+          name: 'Rule Files',
           active: true
         },
         {
           icon: 'list',
-          name: 'Rules Items'
+          name: 'Rule Items'
         }
       ]
     };
@@ -101,7 +100,7 @@ var ListDialog = React.createClass({
       rules += '\n\n' + values;
     }
     var newVals;
-    var filename = this.getInputValue() || 'mock_' + util.formatDate() + '.txt';
+    var filename = this.getInputValue() || 'rules_items_' + util.formatDate() + '.txt';
     var execCb = function() {
       cb([rules, newVals || {}], filename);
     };
@@ -311,8 +310,8 @@ var ListDialog = React.createClass({
                   );
                 })
               }
-            </div> : (onConfirm && !rulesModal ? null : <p style={{marginTop: 10, whiteSpace: 'nowrap'}}>
-                Filename:
+            </div> : (onConfirm && !rulesModal ? null : <p style={{marginTop: 10, marginBottom: 5, whiteSpace: 'nowrap'}}>
+                Save As
                 <input
                   ref="filename"
                   value={state.filename}
@@ -353,7 +352,7 @@ var ListDialog = React.createClass({
         <form
           action={'cgi-bin/' + pageName + '/export'}
           ref="exportData"
-          style={{ display: 'none' }}
+          style={util.HIDE_STYLE}
           target="downloadTargetFrame"
         >
           <input ref="exportName" type="hidden" name="filename" />

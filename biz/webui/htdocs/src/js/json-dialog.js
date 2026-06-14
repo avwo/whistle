@@ -62,7 +62,7 @@ var JSONDialog = React.createClass({
       str: JSON.stringify(json, null, '  ')
     };
   },
-  show: function(text, keyPath) {
+  show: function(text, keyPath, session) {
     if (!text) {
       return;
     }
@@ -86,12 +86,12 @@ var JSONDialog = React.createClass({
       }
     }
     this.state.historyIndex = historyIndex;
-    this._show(text, keyPath);
+    this._show(text, keyPath, session);
   },
-  _show: function (text, keyPath) {
+  _show: function (text, keyPath, session) {
     var self = this;
     var data = this.state.data;
-    this.setState({ keyPath: Array.isArray(keyPath) ? keyPath : null });
+    this.setState({ session: session, keyPath: Array.isArray(keyPath) ? keyPath : null });
     if (data && data.text === text) {
       self.focus();
       return self.refs.jsonDialog.show();
@@ -161,9 +161,9 @@ var JSONDialog = React.createClass({
             className="v-box"
             style={{ width: 880, height: 560, marginTop: 22, background: this._keywordObj ? 'var(--b-filtered)' : undefined }}
           >
-            <JSONView keyPath={state.keyPath} dialog data={state.curData || state.data} viewSource={true} />
+            <JSONView keyPath={state.keyPath} dialog data={state.curData || state.data} viewSource={true} session={state.session} />
           </div>
-          <FilterInput ref="filterInput" onChange={this.onFilter} placeholder=" (as: xxx, k:xxx or v:xxx)" />
+          <FilterInput ref="filterInput" onChange={this.onFilter} placeholder=" (e.g. xxx or k:xxx or v:xxx)" />
         </div>
         <div className="modal-footer">
           <button
@@ -183,8 +183,8 @@ var JSONDialogWrap = React.createClass({
   shouldComponentUpdate: function () {
     return false;
   },
-  show: function (text, keyPath) {
-    this.refs.jsonDialog.show(text, keyPath);
+  show: function (text, keyPath, session) {
+    this.refs.jsonDialog.show(text, keyPath, session);
   },
   render: function () {
     return <JSONDialog ref="jsonDialog" />;

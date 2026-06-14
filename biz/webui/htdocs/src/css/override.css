@@ -35,7 +35,8 @@
 .form-control {
   background-color: var(--b-default);
   border: 1px solid var(--c-border);
-  color: var(--c-thin)
+  color: var(--c-thin);
+  padding: 0 6px;
 }
 
 .alert-danger {

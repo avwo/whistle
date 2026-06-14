@@ -1,6 +1,5 @@
 var util = require('./util');
 
-var SPACE_RE = /\s+/g;
 var IP_PORT_RE = /^(?:\[([:\da-f.]+)\]|(?:\d{1,3}\.){3}\d{1,3})(?::(\d+))?$/i;
 var SCHEMA_RE = /^\/\//;
 var REG_EXP_RE = /^\/(.+)\/(i?u?|ui)$/;
@@ -73,7 +72,7 @@ module.exports = function (str) {
     if (!line) {
       return;
     }
-    var list = line.split(SPACE_RE);
+    var list = line.split(/\s+/);
     if (list.length < 2) {
       if (line[0] === '@' || line[0] === '%') {
         addRules([line]);

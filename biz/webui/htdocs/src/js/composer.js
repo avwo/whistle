@@ -1,6 +1,6 @@
 require('../css/composer.css');
 var React = require('react');
-var ReactDOM = require('react-dom');
+var findDOMNode = require('react-dom').findDOMNode;
 var $ = require('jquery');
 var dataCenter = require('./data-center');
 var util = require('./util');
@@ -19,49 +19,10 @@ var HistoryData = require('./history-data');
 var LazyInit = require('./lazy-init');
 var Frames = require('./frames');
 var Icon = require('./icon');
-var CloseBtn = require('./close-btn');
 var ViewInspector = require('./view-inspector');
+var UrlInput = require('./url-input');
 
-var METHODS = [
-  'GET',
-  'POST',
-  'PUT',
-  'HEAD',
-  'TRACE',
-  'DELETE',
-  'SEARCH',
-  'QUERY',
-  'CONNECT',
-  'UPGRADE',
-  'WEBSOCKET',
-  'PROPFIND',
-  'PROPPATCH',
-  'MKCOL',
-  'COPY',
-  'MOVE',
-  'LOCK',
-  'UNLOCK',
-  'OPTIONS',
-  'PURGE',
-  'ACL',
-  'BIND',
-  'CHECKOUT',
-  'LINK',
-  'M-SEARCH',
-  'MERGE',
-  'MKACTIVITY',
-  'MKCALENDAR',
-  'NOTIFY',
-  'PATCH',
-  'PRI',
-  'REBIND',
-  'REPORT',
-  'SOURCE',
-  'SUBSCRIBE',
-  'UNBIND',
-  'UNLINK',
-  'UNSUBSCRIBE'
-];
+var METHODS = util.METHODS;
 var SEND_CTX_MENU = [
   { name: 'Send Body Via File', action: 'file' },
   { name: 'Replay Times' },
@@ -75,7 +36,6 @@ var SEND_CTX_MENU = [
     ]
   }
 ];
-var findDOMNode = ReactDOM.findDOMNode;
 var MAX_FILE_SIZE = 1024 * 1024 * 20;
 var MAX_RES_SIZE = 1024 * 1024 * 3;
 
@@ -226,13 +186,14 @@ var Composer = React.createClass({
         this.uploadBodyData = uploadBodyData;
       }
     }
+    this._url = typeof data.url === 'string' ? data.url.trim() : '';
+
     return {
       loading: true,
       repeatTimes: 1,
       historyData: [],
       disableBody: !!storage.get('disableComposerBody'),
       enableProxyRules: storage.get('composerProxyRules') !== '',
-      url: data.url,
       method: METHODS.indexOf(method) === -1 ? 'GET' : method,
       headers: getString(data.headers, MAX_HEADERS_SIZE),
       body: body,
@@ -248,6 +209,7 @@ var Composer = React.createClass({
   },
   componentDidMount: function () {
     var self = this;
+    self.setUrl(self._url);
     self.update(self.props.modal);
     this.refs.uploadBody.update(this.uploadBodyData);
     this.hintElem = $(findDOMNode(this.refs.hints));
@@ -282,7 +244,6 @@ var Composer = React.createClass({
         }
         var state = {
           useH2: activeItem.useH2,
-          url: activeItem.url,
           headers: headers,
           result: activeItem,
           type: getType(headers),
@@ -299,7 +260,6 @@ var Composer = React.createClass({
         storage.set('useCRLBody', state.isCRLF ? 1 : '');
         self.setState(state, function () {
           self.update(activeItem);
-          self.onComposerChange();
         });
         storage.set('useH2InComposer', activeItem.useH2 ? 1 : '');
       };
@@ -325,13 +285,6 @@ var Composer = React.createClass({
     self.updatePrettyData();
     $(document).on('click mousedown', function(e) {
       var target = $(e.target);
-      if (!(target.closest('.w-com-params').length ||
-        target.closest('.w-com-params-editor').length ||
-        target.closest('.w-com-dialog').length ||
-        target.closest('.w-win-dialog').length ||
-        target.closest('.w-ctx-menu').length)) {
-        self.hideParams();
-      }
       if (!(target.closest('.w-com-history-data').length ||
         target.closest('.w-keep-history-data').length ||
         target.closest('.w-replay-count-dialog').length ||
@@ -412,7 +365,7 @@ var Composer = React.createClass({
     }
     var refs = this.refs;
     var req = item.req;
-    findDOMNode(refs.url).value = item.url;
+    this.setUrl(item.isHttps ? 'tunnel://' +item.url : item.url);
     findDOMNode(refs.method).value = req.method;
     findDOMNode(refs.headers).value = util.getOriginalReqHeaders(item, rulesHeaders);
     var bodyElem = findDOMNode(refs.body);
@@ -454,11 +407,10 @@ var Composer = React.createClass({
   getComposerData: function() {
     var refs = this.refs;
     var method = this.getMethod();
-    var url = findDOMNode(this.refs.url).value.trim();
     var headers = findDOMNode(this.refs.headers).value;
 
     return {
-      url: url,
+      url: this._url,
       headers: headers,
       method: method,
       useH2: this.state.useH2 ? 1 : '',
@@ -467,7 +419,6 @@ var Composer = React.createClass({
   },
   saveComposer: function () {
     var data = this.getComposerData();
-    this.state.url = data.url;
     this.state.headers = data.headers;
     storage.set('composerData', JSON.stringify(data));
     if (this.hasBody != hasReqBody(data.method, data.url, data.headers)) {
@@ -545,9 +496,7 @@ var Composer = React.createClass({
       return list;
     }, []);
     this._histroyUrls = histroyUrls;
-    if (this.state.showHints) {
-      this.showHints();
-    }
+    this.filterHints();
     return result;
   },
   onHexTextChange: function (e) {
@@ -628,10 +577,7 @@ var Composer = React.createClass({
     if (rules.length) {
       this.updateRules(rules.join('\n'));
     }
-    if (util.isString(item.url)) {
-      findDOMNode(refs.url).value = item.url;
-      this.state.url = item.url;
-    }
+    this.setUrl(item.url);
     if (util.isString(item.method)) {
       findDOMNode(refs.method).value = item.method;
       this.state.method = item.method;
@@ -679,21 +625,17 @@ var Composer = React.createClass({
       this.sendRequest($.extend({}, this._selectedItem, { repeatCount: times || 1, needResponse: false }));
     }
   },
-  handleUrlKeyUp: function(e) {
-    if (e.keyCode === 27) {
-      this.hideHints();
-    }
-  },
-  onUrlChange: function(e) {
-    this.onComposerChange(e);
+  onUrlChange: function(url) {
+    this._url = url;
+    this.onComposerChange();
     clearTimeout(this._urlTimer);
-    this._urlTimer = setTimeout(this.showHints, 300);
+    this._urlTimer = setTimeout(this.filterHints, 300);
   },
   onComposerChange: function (e) {
     var self = this;
     clearTimeout(self.composerTimer);
     self.composerTimer = setTimeout(self.saveComposer, 1000);
-    var target = e === true ? e : e && e.target;
+    var target = !e || e === true ? e : e && e.target;
     if (target) {
       if (target === true || target.nodeName === 'SELECT') {
         var method = findDOMNode(self.refs.method).value;
@@ -832,7 +774,6 @@ var Composer = React.createClass({
     var showHistory = !this.state.showHistory;
     this.setState({ showHistory: showHistory });
     showHistory && this.loadHistory();
-    this.hideHints();
   },
   setRulesDisable: function (disableComposerRules) {
     storage.set('disableComposerRules', disableComposerRules ? 1 : 0);
@@ -877,16 +818,21 @@ var Composer = React.createClass({
     if (e && e.shiftKey) {
       return this.showRepeatTimes();
     }
-    var refs = this.refs;
-    var url = findDOMNode(refs.url).value.trim();
-    if (!url || this.state.pending) {
+    if (this.state.pending) {
       return;
     }
+    var url = this._url;
+    if (!url || /^(?:https?|ws?|tunnel):\/\/$/.test(url)) {
+      this.refs.urlInput.shake();
+      return message.error('Request URL cannot be empty');
+    }
+
     this.onComposerChange();
     this.setState({ tabName: 'Request' });
     var disableComposerRules =
       dataCenter.isStrictMode() || this.state.disableComposerRules;
     var rules = disableComposerRules ? null : this.state.rules;
+    var refs = this.refs;
     var headersStr = findDOMNode(refs.headers).value;
     var headers = headersStr;
     if (typeof rules === 'string' && (rules = rules.trim())) {
@@ -946,7 +892,7 @@ var Composer = React.createClass({
       self.localFileBase64 = null;
     } else if (!self.state.disableBody && hasReqBody(method, url, headersStr)) {
       if (self.state.type === 'upload') {
-        var uploadData = util.getMultiBody(this.refs.uploadBody.getFields());
+        var uploadData = util.getMultiBody(refs.uploadBody.getFields());
         var boundary = uploadData.boundary;
         var ctnLen = uploadData.length;
         base64 = uploadData.base64;
@@ -1086,10 +1032,15 @@ var Composer = React.createClass({
       var reqId;
       self.handleBody(res);
       if (!data || data.ec !== 0) {
+        if (data && data.ec === 2) {
+          message.error(data.em || 'Unknown error');
+          self.refs.urlInput.shake();
+          return self.setState({ pending: false });
+        }
         var status = xhr && xhr.status;
         if (status) {
           em = status;
-          util.showSystemError(xhr);
+          util.showSysErr(xhr);
         } else if (!em || typeof em !== 'string' || em === 'error') {
           em = 'Please check the proxy settings or whether whistle has been started';
         }
@@ -1121,10 +1072,6 @@ var Composer = React.createClass({
     events.trigger('autoRefreshNetwork');
     self.setState({ result: '', pending: params.needResponse, composerTime: null });
   },
-  selectAll: function (e) {
-    e.target.select();
-    this.showHints();
-  },
   saveRules: function () {
     var rules = findDOMNode(this.refs.composerRules).value;
     this.state.rules = rules;
@@ -1150,30 +1097,18 @@ var Composer = React.createClass({
     clearTimeout(this.rulesTimer);
     this.rulesTimer = setTimeout(this.saveRules, 600);
   },
-  onKeyDown: function (e) {
-    if (e.ctrlKey || e.metaKey) {
-      if (e.keyCode == 68) {
-        e.target.value = '';
-        e.preventDefault();
-        e.stopPropagation();
-      } else if (e.keyCode == 88) {
-        e.stopPropagation();
-      }
-    }
-  },
   formatHeaders: function(e) {
     util.handleTab(e);
-    this.onKeyDown(e);
+    util.handleEditorKeydown(e);
   },
   onFormat: function(e) {
     util.handleFormat(e, this.formatJSON);
     util.handleTab(e);
-    this.onKeyDown(e);
+    util.handleEditorKeydown(e);
   },
   showCookiesDialog: function() {
     var self = this;
-    var url = findDOMNode(self.refs.url).value;
-    var host = util.getHostname(url).toLowerCase();
+    var host = util.getHostname(self._url).toLowerCase();
     if (!/^[a-z.\d_-]+$/.test(host)) {
       return message.info('Cookies not found');
     }
@@ -1236,63 +1171,11 @@ var Composer = React.createClass({
     this.saveComposer();
   },
   setUrl: function(value) {
-    findDOMNode(this.refs.url).value = value || '';
-    this.hideHints();
-    this.onComposerChange();
+    this.refs.urlInput.setUrl(value);
   },
   clickHints: function(e) {
     var value = e.target.title;
     value && this.setUrl(value);
-  },
-  onUrlKeyDown: function(e) {
-    var elem;
-    if (e.keyCode === 38) {
-      // up
-      elem = this.hintElem.find('.w-active');
-      if (!this.state.showHints) {
-        this.showHints();
-      }
-      if (elem.length) {
-        elem.removeClass('w-active');
-        elem = elem.prev('li').addClass('w-active');
-      }
-
-      if (!elem.length) {
-        elem = this.hintElem.find('li:last');
-        elem.addClass('w-active');
-      }
-      util.ensureVisible(elem, this.hintElem);
-      e.preventDefault();
-    } else if (e.keyCode === 40) {
-      // down
-      elem = this.hintElem.find('.w-active');
-      if (!this.state.showHints) {
-        this.showHints();
-      }
-      if (elem.length) {
-        elem.removeClass('w-active');
-        elem = elem.next('li').addClass('w-active');
-      }
-
-      if (!elem.length) {
-        elem = this.hintElem.find('li:first');
-        elem.addClass('w-active');
-      }
-      util.ensureVisible(elem, this.hintElem);
-      e.preventDefault();
-    } else if (e.keyCode === 13) {
-      elem = this.hintElem.find('.w-active');
-      var value = elem.attr('title');
-      value && this.setUrl(value);
-      this.execute();
-    } else {
-      var curUrl = e.target.value;
-      this.onKeyDown(e);
-      if (curUrl && !e.target.value) {
-        this.showHints();
-        this.setUrl();
-      }
-    }
   },
   onTabChange: function (e) {
     var tabName = e.target.name || 'Request';
@@ -1310,73 +1193,20 @@ var Composer = React.createClass({
     data.list = SEND_CTX_MENU;
     data.className = 'w-ctx-sub-menu-left';
     this.refs.contextMenu.show(data);
-    this.hideHints();
   },
-  showHints: function() {
+  filterHints: function() {
     var list = this._histroyUrls;
     if (!list || !list.length) {
-      this.state.showHints = true;
       return this.loadHistory();
     }
-    var curUrl = findDOMNode(this.refs.url).value.trim();
-    var keyword = curUrl.toLowerCase();
+    var keyword = this._url.toLowerCase();
     var urlHints = keyword ? list.filter(function(url) {
       return url.toLowerCase().indexOf(keyword) !== -1;
     }) : list;
-    if (urlHints.length === 1 && curUrl === urlHints[0]) {
+    if (urlHints.length === 1 && this._url === urlHints[0]) {
       urlHints = null;
     }
-    this.setState({ showHints: true, urlHints: urlHints });
-  },
-  hideHints: function() {
-    if (this.state.showHints) {
-      $(this.refs.hints).find('.w-active').removeClass('w-active');
-    }
-    this.setState({ showHints: false });
-  },
-  showParams: function() {
-    var url = findDOMNode(this.refs.url).value.replace(/#.*$/, '');
-    var index = url.indexOf('?');
-    var hasQuery = index !== -1;
-    var query = hasQuery ? url.substring(index + 1) : '';
-    var params = util.parseQueryString(query, null, null, decodeURIComponent);
-    this.refs.paramsEditor.update(params);
-    if (this.state.showParams) {
-      this.setState({ hasQuery: hasQuery });
-    } else {
-      this.setState({ showParams: true, hasQuery: hasQuery });
-    }
-  },
-  hideParams: function() {
-    if (this.state.showParams) {
-      this.setState({ showParams: false });
-    }
-  },
-  toggleParams: function() {
-    if (this.state.showParams) {
-      this.hideParams();
-    } else {
-      this.showParams();
-    }
-  },
-  clearQuery: function() {
-    var self = this;
-    win.confirm('Do you confirm the deletion of all params?', function(sure) {
-      if (sure) {
-        self.refs.paramsEditor.clear();
-        self.hideParams();
-      }
-    });
-  },
-  addQueryParam: function() {
-    this.refs.paramsEditor.onAdd();
-  },
-  onParamsChange: function () {
-    var query = this.refs.paramsEditor.toString();
-    var elem = findDOMNode(this.refs.url);
-    elem.value = util.replacQuery(elem.value, query);
-    this.saveComposer();
-    this.setState({ hasQuery: !!query });
+    this.setState({ urlHints: urlHints });
   },
   onClickContextMenu: function (action) {
     switch (action) {
@@ -1426,7 +1256,7 @@ var Composer = React.createClass({
       body = '';
     }
     var text = util.asCURL({
-      url: state.url || '',
+      url: this._url || '',
       req: {
         method: state.method,
         headers: util.parseHeaders(state.headers),
@@ -1472,14 +1302,13 @@ var Composer = React.createClass({
     var pending = state.pending;
     var result = state.result || '';
     var tabName = state.tabName;
-    var showParams = state.showParams;
     var showRequest = tabName === 'Request';
     var showResponse = tabName === 'Response';
     var showFrames = tabName === 'Frames';
     var statusCode = result ? result.res && result.res.statusCode : '';
     var isForm = type === 'form';
     var method = state.method;
-    var hasBody = hasReqBody(method, state.url, state.headers);
+    var hasBody = hasReqBody(method, this._url, state.headers);
     var showPrettyBody = showPretty && isForm && hasBody;
     var showUpload = type === 'upload' && hasBody;
     var isStrictMode = dataCenter.isStrictMode();
@@ -1490,7 +1319,6 @@ var Composer = React.createClass({
     var lockBody = pending || disableBody || !hasBody;
     var showHistory = state.showHistory;
     var urlHints = state.urlHints;
-    var hasQuery = state.hasQuery;
     var enableProxyRules = state.enableProxyRules;
     var reqData = state.reqData;
     var tips = hasBody ? null : method + ' method is not allowed to have a request body';
@@ -1527,27 +1355,7 @@ var Composer = React.createClass({
                 return <option value={m}>{m}</option>;
               })}
             </select>
-            <input
-              readOnly={pending}
-              defaultValue={state.url}
-              onChange={this.onUrlChange}
-              onKeyUp={this.handleUrlKeyUp}
-              onKeyDown={this.onUrlKeyDown}
-              onFocus={this.selectAll}
-              onDoubleClick={this.showHints}
-              onBlur={this.hideHints}
-              ref="url"
-              type="text"
-              maxLength="8192"
-              placeholder="Enter URL"
-              className="fill w-com-input"
-            />
-            <button
-              className="btn btn-default w-com-params"
-              onClick={self.toggleParams}
-            >
-              Params
-            </button>
+            <UrlInput ref="urlInput" hints={urlHints} disabled={pending} onChange={this.onUrlChange} />
             <button
               disabled={pending}
               onClick={this.execute}
@@ -1557,43 +1365,6 @@ var Composer = React.createClass({
             >
               <Icon name="send" />
             </button>
-            <div
-              className="w-filter-hint"
-              style={{ display: state.showHints && urlHints && urlHints.length ? '' : 'none' }}
-              onMouseDown={util.preventBlur}
-            >
-              <div className="w-filter-bar">
-                <a onClick={this.toggleHistory}>
-                  <Icon name="dashboard" />{showHistory ? 'Hide' : 'Show'} history
-                </a>
-                <CloseBtn onClick={self.hideHints} className="w-clear-hints" />
-              </div>
-              <ul ref="hints" onClick={this.clickHints}>
-                {
-                  urlHints ? urlHints.map(function(item) {
-                    return <li title={item}>{item}</li>;
-                  }) : null
-                }
-              </ul>
-            </div>
-          </div>
-          <div
-            className={'w-layer w-com-params-editor v-box' + (showParams ? '' : ' hide')}
-          >
-            <div className="w-filter-bar">
-              <CloseBtn onClick={self.hideParams} className="w-close-params" />
-              <a style={{display: hasQuery ? null : 'none'}} className="w-params-clear-btn" onClick={this.clearQuery}>
-                <Icon name="trash" />Clear
-              </a>
-              <a onClick={this.addQueryParam}>
-                +Param
-              </a>
-            </div>
-            <PropsEditor
-              ref="paramsEditor"
-              onChange={this.onParamsChange}
-              callback={this.execute}
-            />
           </div>
           <Divider vertical="true" leftWidth="72">
             <div
@@ -1917,7 +1688,7 @@ var Composer = React.createClass({
               </Divider>
               <LazyInit inited={showResponse}>
                 <div
-                  style={{ display: showResponse ? undefined : 'none' }}
+                  style={util.getHideStyle(!showResponse)}
                   className={'w-com-res w-com-res-' + getStatus(statusCode)}
                 >
                   <button
@@ -1987,7 +1758,7 @@ var Composer = React.createClass({
         <form
           ref="readLocalFileForm"
           encType="multipart/form-data"
-          style={{ display: 'none' }}
+          style={util.HIDE_STYLE}
         >
           <input
             ref="readLocalFile"

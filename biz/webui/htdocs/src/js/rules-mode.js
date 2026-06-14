@@ -1,16 +1,17 @@
 var CodeMirror = require('codemirror');
 var events = require('./events');
 var protocols = require('./protocols');
+var util = require('./util');
+
 var forwardRules = protocols.getForwardRules();
 var pluginRules = protocols.getPluginRules();
-var DOT_PATTERN_RE = /^\.[\w-]+(?:[?$]|$)/;
-var DOT_DOMAIN_RE = /^\.[^./?]+\.[^/?]/;
 var IPV4_PORT_RE =
   /^(?:::(?:ffff:)?)?(?:(?:25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)\.){3}(?:25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)(?:\:(\d+))?$/;
 var FULL_IPV6_RE = /^[\da-f]{1,4}(?::[\da-f]{1,4}){7}$/;
 var SHORT_IPV6_RE = /^[\da-f]{1,4}(?::[\da-f]{1,4}){0,6}$/;
 var IP_WITH_PORT_RE = /^\[([:\da-f.]+)\](?::(\d+))?$/i;
 var PLUGIN_VAR_RE = /^%[a-z\d_\-]+[=.]/;
+var isWildcard = util.isWildcard;
 
 events.on('updatePlugins', function () {
   forwardRules = protocols.getForwardRules();
@@ -84,10 +85,6 @@ CodeMirror.defineMode('rules', function () {
   function notExistPlugin(str) {
     str = str.substring(0, str.indexOf(':'));
     return pluginRules.indexOf(str) == -1;
-  }
-
-  function isRegExp(str) {
-    return /^\/[^/](.*)\/i?$/.test(str) || /^\$/.test(str);
   }
 
   function isParams(str) {
@@ -166,28 +163,8 @@ CodeMirror.defineMode('rules', function () {
     return /^[a-z]:(?:\\|\/(?!\/))/i.test(str) || /^\/[^/]/.test(str);
   }
 
-  function isPortPattern(str) {
-    return /^:\d{1,5}$/.test(str);
-  }
-
-  function isWildcard(str) {
-    if (!/^(?:\$?(?:https?:|wss?:|tunnel:)?\/\/)?([^/?]+)/.test(str)) {
-      return false;
-    }
-    var domain = RegExp.$1;
-    return (
-      domain.indexOf('*') !== -1 ||
-      domain.indexOf('~') !== -1 ||
-      DOT_DOMAIN_RE.test(domain)
-    );
-  }
-
   function isPluginVar(str) {
     return PLUGIN_VAR_RE.test(str);
-  }
-
-  function isRegUrl(url) {
-    return /^\^/.test(url) || DOT_PATTERN_RE.test(url);
   }
 
   return {
@@ -282,7 +259,7 @@ CodeMirror.defineMode('rules', function () {
         return;
       }
       if (!type) {
-        if (isRegExp(str) || isRegUrl(str) || isPortPattern(str)) {
+        if (util.isSpecPattern(str)) {
           return 'attribute js-attribute';
         }
         if (/^@/.test(str)) {

@@ -338,6 +338,18 @@ proto.remove = function (name) {
   }
 };
 
+proto.getNotEmptyList = function() {
+  var list = [];
+  var data = this.data;
+  this.list.forEach(function (name) {
+    var item = data[name];
+    if (item && item.value) {
+      list.push(name);
+    }
+  });
+  return list;
+};
+
 proto.removeGroup = function (name) {
   var list = this.list;
   var index = list.indexOf(name) + 1;
@@ -525,7 +537,7 @@ proto.prev = function () {
     return;
   }
   var activeItem = this.getActive();
-  var index = activeItem ? list.indexOf(activeItem.name) : len - 1;
+  var index = activeItem ? list.indexOf(activeItem.name) : len;
   var data = this.data;
   var i, item;
   for (i = index - 1; i >= 0; i--) {
@@ -550,7 +562,7 @@ proto.next = function () {
     return;
   }
   var activeItem = this.getActive();
-  var index = activeItem ? list.indexOf(activeItem.name) : 0;
+  var index = activeItem ? list.indexOf(activeItem.name) : -1;
   var data = this.data;
   var i, item;
   for (i = index + 1; i < len; i++) {

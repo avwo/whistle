@@ -24,12 +24,11 @@ require('../css/editor.css');
 
 var $ = require('jquery');
 var React = require('react');
-var ReactDOM = require('react-dom');
+var findDOMNode = require('react-dom').findDOMNode;
 var CodeMirror = require('codemirror');
 var message = require('./message');
 var util = require('./util');
 
-var findDOMNode = ReactDOM.findDOMNode;
 var themes = util.EDITOR_THEMES;
 var INIT_LENGTH = 1024 * 16;
 var GUTTER_STYLE = [
@@ -42,7 +41,6 @@ require('codemirror/mode/javascript/javascript');
 require('codemirror/mode/css/css');
 require('codemirror/mode/xml/xml');
 require('codemirror/mode/htmlmixed/htmlmixed');
-require('codemirror/mode/markdown/markdown');
 require('codemirror/addon/dialog/dialog');
 require('codemirror/addon/search/searchcursor');
 require('codemirror/addon/search/search');
@@ -77,14 +75,12 @@ var Editor = React.createClass({
     return themes;
   },
   setMode: function (mode) {
-    if (/^(javascript|css|xml|rules|markdown)$/i.test(mode)) {
+    if (/^(javascript|css|xml|rules)$/i.test(mode)) {
       mode = RegExp.$1.toLowerCase();
     } else if (/^(js|pac|jsx|json)$/i.test(mode)) {
       mode = 'javascript';
     } else if (/^(html|wtpl)$/i.test(mode)) {
       mode = 'htmlmixed';
-    } else if (/^md$/i.test(mode)) {
-      mode = 'markdown';
     }
     if (this._mode !== mode) {
       this._mode = mode;
@@ -145,7 +141,7 @@ var Editor = React.createClass({
     }
   },
   getValue: function () {
-    return this._editor ? '' : this._editor.getValue();
+    return this._editor ? this._editor.getValue() : '';
   },
   setTheme: function (theme) {
     theme = this._theme = theme || DEFAULT_THEME;
@@ -236,7 +232,7 @@ var Editor = React.createClass({
         return;
       }
       var cursor = start ? null : editor.getCursor();
-      var value  =editor.getValue();
+      var value = editor.getValue();
       if (keyword !== preKeyeord) {
         if (cursor && preCursor && preKeyeord && cursor.ch === preCursor.ch && cursor.line === preCursor.line) {
           cursor.ch = Math.max(cursor.ch + (prev ? preKeyeord.length : -preKeyeord.length), 0);
@@ -407,7 +403,7 @@ var Editor = React.createClass({
           if (!helpUrl) {
             return;
           }
-          window.open(helpUrl);
+          events.trigger('openUrl', helpUrl);
           e.stopPropagation();
           e.preventDefault();
           return true;

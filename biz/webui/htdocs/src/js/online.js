@@ -1,7 +1,7 @@
 require('../css/online.css');
 var $ = require('jquery'); //for bootstrap
 var React = require('react');
-var ReactDOM = require('react-dom');
+var findDOMNode = require('react-dom').findDOMNode;
 
 var Dialog = require('./dialog');
 var dataCenter = require('./data-center');
@@ -14,6 +14,7 @@ var ShortcutsSettings = require('./shortcuts-settings');
 var Icon = require('./icon');
 var CloseBtn = require('./close-btn');
 
+var showSysErr = util.showSysErr;
 var IPV6_ONLY_VAL = 4;
 var dialog;
 var curOrder;
@@ -169,6 +170,7 @@ function createDialog() {
       '<h5 class="w-theme-option"><strong>Theme:</strong><select class="form-control"><option value="auto">Auto</option>' +
       '<option value="dark">Dark</option><option value="light">Light</option></select></h5>'+
       '<h5 class="w-dns-order-option"><strong>DNS Order:</strong><select class="form-control"></select></h5>' +
+      '<p><a class="w-online-clear-dns">Clear DNS Cache</a></p>' +
       '<p><a class="w-online-dns">View Custom DNS Servers</a></p>' +
       '<a class="w-online-shortcuts-settings">Shortcuts Settings</a>' +
       '</div>' +
@@ -194,7 +196,7 @@ function createDialog() {
           self._pendingDnsOrder = false;
         }, 300);
         if (!data) {
-          util.showSystemError(xhr);
+          showSysErr(xhr);
           return;
         }
         selectDnsOption(order);
@@ -369,7 +371,7 @@ var Online = React.createClass({
           }
           dataCenter.logout(function (data, xhr) {
             if (!data) {
-              return util.showSystemError(xhr);
+              return showSysErr(xhr);
             }
             if (data.ec !== 0) {
               return message.error(data.em || 'Logout failed');
@@ -391,6 +393,19 @@ var Online = React.createClass({
 
       dnsElem.on('click', function () {
         self.refs.dnsDialog.show(dataCenter.getServerInfo());
+      });
+      dialog.find('.w-online-clear-dns').on('click', function() {
+        win.confirm('Do you confirm clearing the DNS cache?', function(sure) {
+          if (sure) {
+            dataCenter.rules.clearDnsCache(function (data, xhr) {
+              if (!data) {
+                showSysErr(xhr);
+                return;
+              }
+              message.success('DNS cache cleared successfully');
+            });
+          }
+        });
       });
       shortcutsElem.on('click', function () {
         self.refs.shortcutsSettings.show();
@@ -664,7 +679,7 @@ var Online = React.createClass({
   },
   setTitle: function () {
     var server = dataCenter.getServerInfo() || this.state.server;
-    ReactDOM.findDOMNode(this.refs.onlineMenu).title = this.getTitle(server) || '';
+    findDOMNode(this.refs.onlineMenu).title = this.getTitle(server) || '';
   },
   render: function () {
     var server = this.state.server || '';

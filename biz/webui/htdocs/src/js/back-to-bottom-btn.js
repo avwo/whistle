@@ -1,10 +1,10 @@
 var React = require('react');
-var ReactDOM = require('react-dom');
+var findDOMNode = require('react-dom').findDOMNode;
 var Icon = require('./icon');
 
 var BackToBottomBtn = React.createClass({
   componentDidMount: function() {
-    this.btn = ReactDOM.findDOMNode(this.refs.backBtn);
+    this.btn = findDOMNode(this.refs.backBtn);
   },
   show: function() {
     this.btn.style.display = 'flex';

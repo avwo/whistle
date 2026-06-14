@@ -1,6 +1,6 @@
 require('../css/import-dialog.css');
 var React = require('react');
-var ReactDOM = require('react-dom');
+var findDOMNode = require('react-dom').findDOMNode;
 var Dialog = require('./dialog');
 var dataCenter = require('./data-center');
 var util = require('./util');
@@ -10,8 +10,6 @@ var EditorDialog = require('./editor-dialog');
 var parseCurl = require('./parse-curl');
 var Icon = require('./icon');
 var CloseBtn = require('./close-btn');
-
-var findDOMNode = ReactDOM.findDOMNode;
 
 function getAccept(name) {
   if (name === 'network') {
@@ -142,7 +140,7 @@ var ImportDialog = React.createClass({
             ref="input"
             maxLength="2048"
             onKeyDown={this.importRemoteUrl}
-            placeholder="Enter url or file path"
+            placeholder="Enter request URL or file path"
           />
         </div>
         <div className="modal-footer">
@@ -193,7 +191,7 @@ var ImportDialog = React.createClass({
         <form
           ref="importFileForm"
           encType="multipart/form-data"
-          style={{ display: 'none' }}
+          style={util.HIDE_STYLE}
         >
           <input
             ref="importFile"

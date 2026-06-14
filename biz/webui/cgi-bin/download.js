@@ -17,7 +17,7 @@ module.exports = function(req, res) {
   }
 
   if (!filename || typeof filename !== 'string') {
-    filename = (type === 'mock' ? 'mock_' : 'text_') + util.formatDate() + suffix;
+    filename = (type === 'mock' ? 'rules_items_' : 'text_') + util.formatDate() + suffix;
   } else if (!/\.\w+$/.test(filename)) {
     filename += suffix;
   }

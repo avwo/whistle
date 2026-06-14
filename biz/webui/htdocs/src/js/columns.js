@@ -116,7 +116,7 @@ function getDefaultColumns() {
       selected: true,
       showTitle: true,
       locked: true,
-      minWidth: 60
+      minWidth: 90
     },
     {
       title: 'Type',

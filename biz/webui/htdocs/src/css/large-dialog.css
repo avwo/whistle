@@ -17,6 +17,10 @@
   z-index: var(--z-modal-max);
 }
 
+.w-inner-win {
+  z-index: var(--z-max);
+}
+
 .w-large-dialog button.close, .w-custom-dialog button.close {
   font-size: 20px;
   line-height: 6px;
@@ -37,10 +41,11 @@
 .w-large-dialog .w-open-win-btn {
   position: absolute;
   top: -23px;
-  right: 15px;
-  z-index: 1;
-  font-size: 12px;
-  padding: 3px 10px;
+  right: 30px;
+  z-index: -1;
+  cursor: pointer;
+  padding: 5px 8px;
+  font-size: 14px;
   display: inline-block;
   background: var(--b-title);
   color: var(--c-heavy);

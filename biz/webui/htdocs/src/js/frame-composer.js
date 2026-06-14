@@ -1,5 +1,5 @@
 var React = require('react');
-var ReactDOM = require('react-dom');
+var findDOMNode = require('react-dom').findDOMNode;
 var dataCenter = require('./data-center');
 var util = require('./util');
 var message = require('./message');
@@ -9,7 +9,6 @@ var Icon = require('./icon');
 
 var MAX_FILE_SIZE = 1024 * 1025;
 var MAX_LENGTH = 1024 * 64;
-var findDOMNode = ReactDOM.findDOMNode;
 
 var FrameComposer = React.createClass({
   getInitialState: function () {
@@ -106,7 +105,7 @@ var FrameComposer = React.createClass({
     this.props.framesCtx.trigger('enableRecordFrame');
     dataCenter.socket.send(params, function (data, xhr) {
       if (!data) {
-        return util.showSystemError(xhr);
+        return util.showSysErr(xhr);
       }
       if (data.ec !== 0) {
         return message.error('Server temporarily unavailable. Please try again shortly');
@@ -191,7 +190,7 @@ var FrameComposer = React.createClass({
     var closed = data.closed;
     var isHttps = data.isHttps;
     var leftStyle = isHttps ? { left: 0 } : undefined;
-    var displayStyle = isHttps ? { display: 'none' } : undefined;
+    var displayStyle = util.getHideStyle(isHttps);
     var tips = closed ? 'The connection is closed' : undefined;
     var disabled = closed || this.sendTimer;
     return (
@@ -335,7 +334,7 @@ var FrameComposer = React.createClass({
           ref="uploadDataForm"
           method="post"
           encType="multipart/form-data"
-          style={{ display: 'none' }}
+          style={util.HIDE_STYLE}
         >
           <input
             ref="uploadData"

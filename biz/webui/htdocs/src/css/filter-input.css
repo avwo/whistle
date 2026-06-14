@@ -46,11 +46,18 @@
   white-space: nowrap;
 }
 
+.w-filter-hint > ul {
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-height: var(--h-hints, 360px);
+}
+
 .w-filter-hint li {
   line-height: 24px;
   font-size: 12px;
   border-radius: 3px;
   padding: 0 5px;
+  cursor: default;
 }
 
 .w-filter-bar {
@@ -64,12 +71,6 @@
   top: 0;
   right: 5px;
   position: absolute;
-}
-
-.w-filter-bar .w-close-params {
-  right: unset;
-  top: -4px;
-  left: 5px;
 }
 
 .w-filter-bar .w-clear-hints {

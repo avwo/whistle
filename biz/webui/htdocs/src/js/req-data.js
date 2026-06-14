@@ -3,7 +3,7 @@ require('react-virtualized/styles.css');
 
 var RV = require('react-virtualized/dist/umd/react-virtualized');
 var React = require('react');
-var ReactDOM = require('react-dom');
+var findDOMNode = require('react-dom').findDOMNode;
 var $ = require('jquery');
 var QRCodeDialog = require('./qrcode-dialog');
 var util = require('./util');
@@ -18,7 +18,6 @@ var message = require('./message');
 var Icon = require('./icon');
 var BackToBottomBtn = require('./back-to-bottom-btn');
 
-var findDOMNode = ReactDOM.findDOMNode;
 var TREE_ROW_HEIGHT = 24;
 var ROW_STYLE = { outline: 'none' };
 var columnState = {};
@@ -54,14 +53,14 @@ var contextMenuList = [
     shiftToEdit: true,
     list: [
       { name: 'Cell Text' },
-      { name: 'Host' },
-      { name: 'Path' },
-      { name: 'URL' },
+      { name: 'URL (No Query)' },
       { name: 'Full URL' },
       { name: 'As cURL' },
       { name: 'Client IP' },
       { name: 'Server IP' },
-      { name: 'Cookie' }
+      { name: 'Cookie' },
+      { name: 'Raw Request' },
+      { name: 'Raw Response' }
     ]
   },
   {
@@ -106,7 +105,16 @@ var contextMenuList = [
       { name: 'List View', action: 'toggleView' }
     ]
   },
-  { name: 'Mock' },
+  {
+    name: '+Rule',
+    list: [
+      { name: 'Mapping' },
+      { name: 'Network' },
+      { name: 'Request' },
+      { name: 'Response' },
+      { name: 'Debug' }
+    ]
+  },
   {
     name: 'Service',
     hide: true,
@@ -259,24 +267,34 @@ function getType(className) {
 }
 
 var END_RE = /:\/(.+)\/([miud]{0,4})$/;
+var cacheKeys = {};
 
-function getValue(item, key) {
-  var index = key.indexOf(':/');
-  var hasRegex;
+function getValue(item, key, name) {
   var regex;
   var decode;
-  if (index !== -1 && END_RE.test(key)) {
-    var pattern = RegExp.$1;
-    var flags = RegExp.$2 || '';
-    hasRegex = true;
-    if (flags.indexOf('d') !== -1) {
-      decode = true;
-      flags = flags.split('d').join('');
+  var index = key.indexOf(':/');
+  var hasRegex = index !== -1 && END_RE.test(key);
+  if (hasRegex) {
+    var cache = cacheKeys[key];
+    if (cache && cache.rawKey === key) {
+      key = cache.key;
+      regex = cache.regex;
+      decode = cache.decode;
+    } else {
+      var pattern = RegExp.$1;
+      var flags = RegExp.$2 || '';
+      if (flags.indexOf('d') !== -1) {
+        decode = true;
+        flags = flags.split('d').join('');
+      }
+      try {
+        regex = new RegExp(pattern, flags);
+      } catch (e) {}
+      cache = { rawKey: key, regex: regex, decode: decode };
+      key = key.substring(0, index);
+      cache.key = key;
+      cacheKeys[key] = cache;
     }
-    try {
-      regex = new RegExp(pattern, flags);
-    } catch (e) {}
-    key = key.substring(0, index);
   }
   var value;
   if (key === 'req.body') {
@@ -357,13 +375,13 @@ var Row = React.createClass({
                 var key1 = dataCenter.custom1Key;
                 if (util.notEStr(key1)) {
                   isCustom = true;
-                  item.custom1 = getValue(item, key1);
+                  item.custom1 = getValue(item, key1, name);
                 }
               } else if (name === 'custom2') {
                 var key2 = dataCenter.custom2Key;
                 if (util.notEStr(key2)) {
                   isCustom = true;
-                  item.custom2 = getValue(item, key2);
+                  item.custom2 = getValue(item, key2, name);
                 }
               } else if (name === 'path') {
                 value = item.shortPath;
@@ -778,7 +796,7 @@ var ReqData = React.createClass({
     if (settings.disabledExcludeText) {
       return [];
     }
-    return settings.excludeText.trim().split(/\s+/g);
+    return settings.excludeText.trim().split(/\s+/);
   },
   updateFilter: function (str) {
     var settings = dataCenter.getFilterText();
@@ -976,7 +994,7 @@ var ReqData = React.createClass({
       events.trigger('removeUnmarked');
       break;
     case 'Help':
-      window.open(util.getDocUrl('gui/network.html'));
+      events.trigger('openUrl', util.getDocUrl('gui/network.html'));
       break;
     case 'Plugins':
       iframes.fork(action, {
@@ -998,8 +1016,12 @@ var ReqData = React.createClass({
     case 'Collapse All':
       self.collapseAll(treeId);
       break;
-    case 'Mock':
-      events.trigger('showMockDialog', {item: item});
+    case 'Network':
+    case 'Mapping':
+    case 'Request':
+    case 'Response':
+    case 'Debug':
+      events.trigger('showAddRulesDialog', {session: item, type: action});
       break;
     }
   },
@@ -1086,20 +1108,10 @@ var ReqData = React.createClass({
         menu.copyText = cellText;
         menu.disabled = disabled || !cellText;
         break;
-      case 'URL':
+      case 'URL (No Query)':
         menu.copyText = util.getUrl(
             (item && item.url.replace(/[?#].*$/, '')) || treeUrl
           );
-        menu.disabled = isTreeNode;
-        break;
-      case 'Host':
-        menu.copyText =
-            (item && (item.isHttps ? item.path : item.hostname)) ||
-            util.getHost(treeUrl);
-        menu.disabled = isTreeNode;
-        break;
-      case 'Path':
-        menu.copyText = (item && item.path) || util.getPath(treeUrl);
         menu.disabled = isTreeNode;
         break;
       case 'Full URL':
@@ -1121,6 +1133,16 @@ var ReqData = React.createClass({
         var cookie = item && item.req.headers.cookie;
         menu.disabled = !cookie;
         menu.copyText = cookie;
+        break;
+      case 'Raw Request':
+        var rawRequest = util.getRawReq(item);
+        menu.disabled = !rawRequest;
+        menu.copyText = rawRequest;
+        break;
+      case 'Raw Response':
+        var rawResponse = util.getRawRes(item);
+        menu.disabled = !rawResponse;
+        menu.copyText = rawResponse;
         break;
       }
     });
@@ -1213,14 +1235,13 @@ var ReqData = React.createClass({
       treeList[2].disabled = !hasData;
       treeList[3].disabled = !hasData;
     }
-    var mockItem = contextMenuList[6];
+    var rulesItem = contextMenuList[6];
     var serviceItem = contextMenuList[7];
     var pluginItem = contextMenuList[11];
     serviceItem.list.forEach(function (menu, i) {
       menu.disabled = disabled && (i < serviceItem.list.length - 1 || !treeNodeData);
     });
-    mockItem.disabled = disabled;
-    mockItem.hide = dataCenter.hideMockMenu;
+    rulesItem.hide = dataCenter.hideRulesEditor;
     contextMenuList[10].disabled = clickBlank && !selectedCount;
     contextMenuList[8].disabled = clickBlank && !selectedCount;
     serviceItem.disabled = clickBlank;
@@ -1228,12 +1249,12 @@ var ReqData = React.createClass({
     util.addPluginMenus(
       pluginItem,
       dataCenter.getNetworkMenus(),
-      (treeItem.hide ? 9 : 10) + (serviceItem.hide ? 0 : 1) - (mockItem.hide ? 1 : 0),
+      (treeItem.hide ? 9 : 10) + (serviceItem.hide ? 0 : 1) - (rulesItem.hide ? 1 : 0),
       disabled,
       treeId,
       item && item.url
     );
-    var height = (treeItem.hide ? 370 : 400) - (serviceItem.hide ? 30 : 0) - (pluginItem.hide ? 30 : 0) - (mockItem.hide ? 30 : 0);
+    var height = (treeItem.hide ? 370 : 400) - (serviceItem.hide ? 30 : 0) - (pluginItem.hide ? 30 : 0) - (rulesItem.hide ? 30 : 0);
     pluginItem.maxHeight = height;
     var data = util.getMenuPosition(e, 110, height);
     data.list = contextMenuList;
@@ -1448,7 +1469,7 @@ var ReqData = React.createClass({
     }), function (data, xhr) {
       self._pendingSave = false;
       if (!data) {
-        return util.showSystemError(xhr);
+        return util.showSysErr(xhr);
       }
       if (data.em) {
         return message.error(data.em);
@@ -1631,7 +1652,7 @@ var ReqData = React.createClass({
             <div className="modal-content">
               <div className="modal-body">
                 <label className="w-choose-filte-type-label w-save-sessions-label">
-                  Save as:
+                  Save as
                   <input
                     ref="sessionsName"
                     onChange={this.filterSessionsName}

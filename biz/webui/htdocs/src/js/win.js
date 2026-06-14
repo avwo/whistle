@@ -65,9 +65,10 @@ function createConfirm() {
   return confirmDialog;
 }
 
-function mockAlert(msg, copyText, btnText) {
+function mockAlert(msg, copyText, btnText, className) {
   createAlert();
-  alertDialog.find('pre').text(msg);
+  var pre = alertDialog.find('pre').text(msg)[0];
+  pre.className = 'alert ' + (className || 'alert-danger');
   alertDialog.modal('show');
   var btn = alertDialog.find('.w-copy-text-with-tips');
   if (copyText && typeof copyText === 'string') {

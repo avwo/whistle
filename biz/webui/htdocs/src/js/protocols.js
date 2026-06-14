@@ -1,4 +1,4 @@
-var util = require('./util');
+var getDocUrl = require('./util').getDocUrl;
 var events = require('./events');
 var PROTOCOLS = [
   'rule',
@@ -222,22 +222,22 @@ function getPlugin(rule) {
 
 exports.getHelpUrl = function (rule) {
   if (!rule || rule === 'rule') {
-    return util.getDocUrl('rules/protocols.html');
+    return getDocUrl('rules/protocols.html');
   }
   if (rule === 'includeFilter' || rule === 'excludeFilter') {
-    return util.getDocUrl('rules/filters.html');
+    return getDocUrl('rules/filters.html');
   }
   if (rule === 'skip') {
-    return util.getDocUrl('rules/skip.html');
+    return getDocUrl('rules/skip.html');
   }
   if (rule === 'lineProps') {
-    return util.getDocUrl('rules/lineProps.html');
+    return getDocUrl('rules/lineProps.html');
   }
   if (rule === 'reqRules') {
-    return util.getDocUrl('rules/reqRules.html');
+    return getDocUrl('rules/reqRules.html');
   }
   if (rule === 'resRules') {
-    return util.getDocUrl('rules/resRules.html');
+    return getDocUrl('rules/resRules.html');
   }
   if (innerRules.indexOf(rule) !== -1 || webProtocols.indexOf(rule) !== -1 || PROTOCOLS.indexOf(rule) !== -1) {
     if (rule === 'http-proxy') {
@@ -247,13 +247,13 @@ exports.getHelpUrl = function (rule) {
     } else if (rule === 'tlsOptions') {
       rule = 'cipher';
     }
-    return util.getDocUrl('rules/' + rule + '.html');
+    return getDocUrl('rules/' + rule + '.html');
   }
   rule = getPlugin(rule);
   if (rule && rule.homepage) {
     return rule.homepage;
   }
-  return util.getDocUrl('rules/protocols.html');
+  return getDocUrl('rules/protocols.html');
 };
 
 exports.getPlugin = getPlugin;

@@ -31,7 +31,8 @@
   --c-tag: #6cd3ec;
   --c-tagx: #f0c066;
   --c-rule-filter: #a580e8;
-  --c-rule-props: #ffb366;
+  --c-rule-op: #ffb366;
+  --c-rule-props: #f88;
   --c-req: #44cc44;
   --c-res: #ff8c42;
 
@@ -75,6 +76,7 @@
   --c-info-hover: #8bddf2;
   --c-info-active: #a9e7f7;
   --c-cobalt: #e6e6e6;
+  --c-star: #FFCD38;
 
   /* 背景颜色 */
   --b-success: #1e3c21;

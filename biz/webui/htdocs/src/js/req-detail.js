@@ -119,7 +119,7 @@ var ReqDetail = React.createClass({
       }
       headersStr = util.getReqRawHeaders(modal);
       raw = headersStr + '\r\n\r\n' + body;
-      if (modal.frames) {
+      if (modal.frames && (!modal.isSse || modal.isCse)) {
         tips = { isFrames: true };
       } else if (modal.isHttps) {
         tips = { isHttps: true };
@@ -166,7 +166,7 @@ var ReqDetail = React.createClass({
         <BtnGroup onClick={this.onClickBtn} btns={BTNS} />
         {state.initedRaw ? (
           <Textarea
-            reqData={modal}
+            session={modal}
             onEdit={this.onEdit}
             reqType="reqRaw"
             defaultName={defaultName}
@@ -210,7 +210,7 @@ var ReqDetail = React.createClass({
               <div className="w-detail-webforms-title">Body</div>
               <div className="fill v-box w-detail-request-form">
                 {!json || !json.isJSONText ? <Properties modal={form} richKey="1" enableViewSource="1" showJsonView="1" /> :
-                <JSONViewer reqData={modal} data={json} />}
+                <JSONViewer data={json} session={modal} />}
               </div>
             </div>
           </Divider>
@@ -219,35 +219,32 @@ var ReqDetail = React.createClass({
         )}
         {state.initedTextView ? (
           <Textarea
-            reqData={modal}
-            reqType="reqBody"
             defaultName={defaultName}
             tips={tips}
             base64={base64}
             value={body}
+            session={modal}
             className="fill w-detail-request-textview"
             hide={name != BTNS[3].name}
           />
         ) : undefined}
         {state.initedJSONView ? (
           <JSONViewer
-            reqData={modal}
-            reqType="reqRaw"
             defaultName={defaultName}
             data={json}
             tips={tips}
+            session={modal}
             hide={name != BTNS[4].name}
           />
         ) : undefined}
         {state.initedHexView ? (
           <Textarea
-            reqData={modal}
-            reqType="reqBody"
             defaultName={defaultName}
             tips={tips}
             isHexView="1"
             base64={base64}
             value={bin}
+            session={modal}
             className="fill n-monospace w-detail-request-hex"
             hide={name != BTNS[5].name}
           />

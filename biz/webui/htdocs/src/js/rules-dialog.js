@@ -1,5 +1,4 @@
 var React = require('react');
-var ReactDOM = require('react-dom');
 var Dialog = require('./dialog');
 var dataCenter = require('./data-center');
 var Editor = require('./editor');
@@ -8,13 +7,19 @@ var events = require('./events');
 var util = require('./util');
 var win = require('./win');
 var CloseBtn = require('./close-btn');
+var Prompt = require('./prompt');
+var message = require('./message');
 
+var showSysErr = util.showSysErr;
 var TEMP_FILE_RE = /\btemp\/current_file_hash_placeholder\b/;
 var TEMP_FILE_RE_G = /\btemp\/current_file_hash_placeholder\b/g;
 var LINE__RE = /^(?:[^\n\r\S]*(```+)[^\n\r\S]*(\S+)[^\n\r\S]*[\r\n]([\s\S]+?)[\r\n][^\n\r\S]*\1\s*|[^\r\n]*)$/gm;
 
 function getName(name) {
   name = name || storage.get('previewRulesName');
+  if (util.isGroup(name)) {
+    return 'Default';
+  }
   var rulesModal = dataCenter.getRulesModal();
   if (name) {
     if (rulesModal.getItem(name)) {
@@ -33,14 +38,16 @@ function getName(name) {
 
 var RulesDialog = React.createClass({
   getInitialState: function () {
-    return { rulesName: getName(), newRulesName: ''  };
+    return { rulesName: getName() };
   },
-  show: function (rules, values) {
+  show: function (rules, values, filename) {
     this._rules = rules;
     this._values = values;
     this._hasChanged = false;
     this.setValue();
     this.refs.rulesDialog.show();
+    filename = getName(filename);
+    filename && this.setState({ rulesName: filename });
   },
   onRulesChange: function(e) {
     var name = e.target.value;
@@ -60,40 +67,33 @@ var RulesDialog = React.createClass({
     self.showCreateRules();
   },
   showCreateRules: function() {
-    this.refs.createRules.show();
-    var input = ReactDOM.findDOMNode(this.refs.rulesName);
-    setTimeout(function() {
-      input.select();
-      input.focus();
-    }, 300);
+    var self = this;
+    self.refs.prompt.show(function(name) {
+      var rulesModal = dataCenter.getRulesModal();
+      if (rulesModal.list.indexOf(name) !== -1) {
+        message.error('The name \'' + name + '\' is already exists');
+        return false;
+      }
+      dataCenter.rules.add({
+        name: name,
+        value: ''
+      }, function (result, xhr) {
+        if (result && result.ec === 0) {
+          events.trigger('addNewRulesFile', {
+            filename: name,
+            data: ''
+          });
+          self.setState({ rulesName: name });
+          self.setValue(name, true);
+        } else {
+          showSysErr(xhr);
+        }
+      });
+    });
   },
   onRulesValueChange: function(e) {
     this._hasChanged = true;
     this.setState({rulesValue: e.getValue()});
-  },
-  onNewNameChange: function(e) {
-    var name = e.target.value.replace(/\s+/g, '');
-    this.setState({newRulesName: name});
-  },
-  createRules: function() {
-    var self = this;
-    var filename = self.state.newRulesName;
-    dataCenter.rules.add({
-      name: filename,
-      value: ''
-    }, function (result, xhr) {
-      if (result && result.ec === 0) {
-        events.trigger('addNewRulesFile', {
-          filename: filename,
-          data: ''
-        });
-        self.refs.createRules.hide();
-        self.setState({ newRulesName: '', rulesName: filename });
-        self.setValue(filename, true);
-      } else {
-        util.showSystemError(xhr);
-      }
-    });
   },
   createTempFile: function(cb) {
     var self = this;
@@ -114,7 +114,7 @@ var RulesDialog = React.createClass({
           init && cb(TEMP_FILE_RE.test(rulesValue) ? result.filepath : null);
         } else if (!hasError) {
           hasError = true;
-          util.showSystemError(xhr);
+          showSysErr(xhr);
         }
       });
     };
@@ -146,7 +146,7 @@ var RulesDialog = React.createClass({
             });
             cb();
           } else {
-            util.showSystemError(xhr);
+            showSysErr(xhr);
           }
         });
       }
@@ -212,9 +212,9 @@ var RulesDialog = React.createClass({
             });
           }
           self.refs.rulesDialog.hide();
-          events.trigger('hideMockDialog');
+          events.trigger('hideRulesDialog');
         } else {
-          util.showSystemError(xhr);
+          showSysErr(xhr);
         }
       });
     });
@@ -262,21 +262,40 @@ var RulesDialog = React.createClass({
     }
     self.setState({ rulesName: getName(name) });
   },
-  render: function () {
+  getSelectList: function() {
     var rulesModal = dataCenter.getRulesModal();
-    var state = this.state;
-    var newRulesName = state.newRulesName;
     var list = rulesModal.list;
+    var selectList = [];
+    for (var i = 0, len = list.length; i < len; i++) {
+      var name = list[i];
+      if (util.isGroup(name)) {
+        var items = [];
+        for (++i; i < len; i++) {
+          var itemName = list[i];
+          if (util.isGroup(itemName)) {
+            i--;
+            break;
+          }
+          items.push(<option key={itemName} value={itemName}>{itemName}</option>);
+        }
+        selectList.push(<optgroup key={name} label={name}>{items}</optgroup>);
+      } else {
+        selectList.push(<option key={name} value={name}>{name}</option>);
+      }
+    }
+    return selectList;
+  },
+  render: function () {
+    var state = this.state;
+
     return (
       <Dialog ref="rulesDialog" wstyle="w-rules-dialog">
         <div className="modal-body">
           <CloseBtn />
           <div className="modal-title">
-            Select Rules File:
+            Select Rule File:
             <select className="form-control" onChange={this.onRulesChange} value={state.rulesName}>
-              {list.map(function(name) {
-                return <option key={name} value={name}>{name}</option>;
-              })}
+              {this.getSelectList()}
               <option value="">+Create</option>
             </select>
             <button className="btn btn-default" onClick={this.showCreateRules}>+Create</button>
@@ -286,10 +305,7 @@ var RulesDialog = React.createClass({
             onChange={this.onRulesValueChange}
             ref="editor"
             mode="rules"
-            theme={storage.get('rulesTheme') || 'cobalt'}
-            fontSize={storage.get('rulesFontSize') || '14px'}
-            lineNumbers={storage.get('showRulesLineNumbers') === 'true'}
-            lineWrapping={!!storage.get('autoRulesLineWrapping')}
+            {...util.getRulesTheme()}
           />
         </div>
         <div className="modal-footer">
@@ -308,30 +324,7 @@ var RulesDialog = React.createClass({
             Save
           </button>
         </div>
-        <Dialog ref="createRules" wstyle="w-create-rules-dialog">
-          <div className="modal-body">
-            New Rules Filename:
-            <input ref="rulesName" style={{marginTop: 6}} className="form-control"
-              maxLength="64" onChange={this.onNewNameChange} value={newRulesName} placeholder="Enter name" />
-          </div>
-          <div className="modal-footer">
-            <button
-              type="button"
-              className="btn btn-default"
-              data-dismiss="modal"
-            >
-              Cancel
-            </button>
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={this.createRules}
-              disabled={!newRulesName || list.indexOf(newRulesName) !== -1}
-            >
-              Confirm
-            </button>
-          </div>
-        </Dialog>
+        <Prompt ref="prompt" title="Create Rule File" placeholder="Enter rule file name" />
       </Dialog>
     );
   }
@@ -341,8 +334,8 @@ var MockDialogWrap = React.createClass({
   shouldComponentUpdate: function () {
     return false;
   },
-  show: function (text, values) {
-    this.refs.rulesDialog.show(text, values);
+  show: function (text, values, filename) {
+    this.refs.rulesDialog.show(text, values, filename);
   },
   render: function () {
     return <RulesDialog ref="rulesDialog" />;

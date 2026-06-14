@@ -20,6 +20,7 @@ var common = require('../../../lib/util/common');
 var getWorker = require('../../../lib/plugins/util').getWorker;
 var loadAuthPlugins = require('../../../lib/plugins').loadAuthPlugins;
 var parseUrl = require('../../../lib/util/parse-url-safe');
+var loadService = require('../../../lib/service');
 
 var sendError = cgiUtil.sendError;
 var sendGzipText = cgiUtil.sendGzipText;
@@ -55,6 +56,8 @@ var MENU_URL = '???_WHISTLE_PLUGIN_EXT_CONTEXT_MENU_' + config.port + '???';
 var INSPECTOR_URL = '???_WHISTLE_PLUGIN_INSPECTOR_TAB_' + config.port + '???';
 var KEY_RE_G = /\${[^{}\s]+}|{\S+}/g;
 var COMMENT_RE = /#[^\r\n]*$/mg;
+var MAX_LEN = 1024 * 1024 * 6;
+var HTTP_RE = /https?:\/\/\S/i;
 
 function hasLogin() {
   return config.username && config.password;
@@ -65,7 +68,7 @@ function isTempFile(query) {
   if (files && typeof files === 'string') {
     return false;
   }
-  return common.isTempFile(query.filename);
+  return common.getTempFile(query.filename);
 }
 
 function sendToService(req, res) {
@@ -74,10 +77,11 @@ function sendToService(req, res) {
     res.end('{"ec":0,"value":"","forbidden":true}');
     return;
   }
-  proxyEvent.loadService(function(err, options) {
+  loadService(function(err, options) {
     if (err) {
       common.sendRes(res, 500, err.stack || err);
     } else {
+      req.headers[common.WHISTLE_UID_HEADER] = config.uid;
       util.transformReq(req, res, options.port);
     }
   });
@@ -407,6 +411,32 @@ function cgiHandler(req, res) {
     handleResponse();
   });
 }
+app.get('/cgi-bin/import-remote', function(req, res) {
+  var url = req.query.url;
+  if (HTTP_RE.test(url)) {
+    util.request({
+      url: url,
+      maxLength: MAX_LEN
+    }, function(err, body, r) {
+      if (err) {
+        var msg = err.code === 'EEXCEED'  ? 'The size of response body exceeds 6MB' : err.message;
+        return res.json({ec: 2, em: msg});
+      }
+      var status = r.statusCode;
+      if (status !== 200) {
+        var em = status > 200 && status < 400 ? 'No data' : 'Request failed';
+        return res.json({ec: 2, em: em + ' (statusCode: ' + status + ')'});
+      }
+      return res.json({ec: 0, body: body});
+    });
+  } else if (util.isString(url)) {
+    req.url = '/cgi-bin/temp/get?filename=' + encodeURIComponent(url);
+    req.query.filename = url;
+    sendToService(req, res);
+  } else {
+    res.json({ec: 400, em: 'Bad url'});
+  }
+});
 app.all('/service/*', sendToService);
 app.all('/cgi-bin/service/*', sendToService);
 app.all('/cgi-bin/sessions/*', sendToService);

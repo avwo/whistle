@@ -1,0 +1,271 @@
+.w-create-rule .modal-dialog {
+  width: 900px;
+}
+
+.w-create-rule .modal-header {
+  padding: 8px 10px;
+}
+
+.w-create-rule select {
+  padding: 3px;
+}
+
+.w-create-rule .modal-header select {
+  width: 150px;
+  display: inline-block;
+}
+
+.w-form-item {
+  margin-bottom: 20px;
+}
+
+.w-filter-header-value {
+  width: auto;
+  flex: 1;
+}
+
+.w-form-item > label {
+  display: inline-flex;
+  align-items: center;
+  font-weight: bold;
+  min-height: 26px;
+}
+
+.w-form-value > label {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  margin-bottom: 0px;
+}
+
+.w-form-item label {
+  font-weight: normal;
+  margin-bottom: 0;
+}
+
+.w-form-item select {
+  width: 125px;
+  flex: none;
+  margin-right: 10px;
+}
+
+.w-copy-rules {
+  padding: 0 8px;
+  margin-left: 10px;
+  font-size: 12px;
+  line-height: 20px;
+}
+
+.w-regexp-symbol {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.w-form-value {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+  padding: 0 20px;
+}
+
+.w-form-item > .w-form-value:first-child {
+  padding: 0;
+}
+
+.w-host-input {
+  display: flex;
+  flex: 1;
+  align-items: center;
+}
+
+.w-form-item-desc {
+  display: inline-flex;
+  font-size: 12px;
+  color: var(--c-gray);
+  margin-left: 7px;
+  font-weight: normal;
+  white-space: nowrap;
+  align-items: center;
+}
+
+.w-form-item-desc .form-control {
+  height: 26px;
+  margin-left: 7px;
+}
+
+.w-host-input-name {
+  width: 520px;
+  margin-right: 5px;
+}
+
+.w-host-input-port {
+  width: 120px;
+  margin-left: 5px;
+}
+
+.w-wildcard-symbol {
+  display: inline-block;
+  color: var(--c-default);
+  font-weight: bold;
+  margin-top: -18px;
+  margin-right: 3px;
+}
+
+.w-session-text-select {
+  width: 220px;
+  display: inline-block;
+  margin-left: 5px;
+}
+
+.w-form-item .w-proxy-options {
+  width: 118px;
+  padding: 0 0 0 5px;
+  height: 22px;
+}
+
+.w-create-rule .form-control:disabled,
+.w-url-input .form-control:disabled {
+  background-color: var(--b-heavy);
+}
+
+.w-create-rule label .glyphicon {
+  margin-right: 8px;
+}
+
+.w-75 {
+  width: 75px;
+}
+
+.w-80 {
+  width: 80px;
+  flex-shrink: 0;
+}
+
+.w-175 {
+  width: 175px!important;
+}
+
+.w-weinre-id, .w-log-id {
+  width: 300px;
+}
+
+.w-190 {
+  width: 190px!important;
+  padding-right: 0;
+  flex-shrink: 0;
+}
+
+.w-200 {
+  width: 200px!important;
+}
+
+.w-300 {
+  width: 300px!important;
+}
+
+.w-rules-form {
+  padding: 10px 10px 15px;
+  border: 1px solid var(--c-border);
+  border-radius: 5px;
+  background: var(--b-bar);
+  margin-bottom: 10px;
+}
+
+.w-add-file span {
+  margin-right: 3px;
+  font-size: 12px;
+}
+
+.w-rules-form > .w-form-item:last-child {
+  margin-bottom: 0;
+}
+
+.w-preview-rules {
+  margin-top: 10px;
+  border: 1px solid var(--c-border);
+  border-radius: 5px;
+  background: var(--b-cobalt);
+  padding: 10px;
+  white-space: pre-wrap;
+  max-height: 160px;
+  min-height: 42px;
+  font-size: 14px;
+  overflow: auto;
+}
+
+.w-preview-rules span {
+  margin-right: 10px;
+  line-height: 1.5;
+  color: var(--c-cobalt);
+}
+
+.w-preview-rules span:last-child {
+  margin-right: 0;
+}
+
+.w-preview-rules-multi span {
+  margin-right: 0;
+  display: block;
+}
+
+.w-preview-rules .w-pr-REGEXP {
+  color: #ff80e1;
+}
+
+.w-preview-rules .w-pr-line {
+  color: #ffee80;
+  display: inline;
+}
+
+.w-preview-rules .w-pr-FILE, .w-preview-rules .w-pr-TPL, .w-preview-rules .w-pr-STATUSCODE,
+.w-preview-rules .w-pr-REDIRECT, .w-preview-rules .w-pr-LOCATIONHREF {
+  color: #ff9e59;
+}
+
+.w-preview-rules .w-pr-REQMERGE, .w-preview-rules .w-pr-PATHREPLACE, .w-preview-rules .w-pr-URLPARAMS {
+  color: #ff9d00;
+}
+
+.w-preview-rules .w-pr-INCLUDEFILTER {
+  color: #845dc4;
+}
+
+.w-preview-rules .w-pr-EXCLUDEFILTER, .w-preview-rules .w-pr-LINEPROPS, .w-preview-rules .w-pr-DISABLE,
+.w-preview-rules .w-pr-DELETE {
+  color: #d44;
+}
+
+.w-preview-rules .w-pr-WEINRE, .w-preview-rules .w-pr-LOG, .w-preview-rules .w-pr-ENABLE  {
+  color: #845dc4;
+}
+
+.w-preview-rules .w-pr-REQDELAY, .w-preview-rules .w-pr-REQSPEED, .w-preview-rules .w-pr-METHOD,
+.w-preview-rules .w-pr-REQHEADERS,.w-preview-rules .w-pr-REQBODY,.w-preview-rules .w-pr-HEADERREPLACE,
+.w-preview-rules .w-pr-REQCORS, .w-preview-rules .w-pr-REQPREPEND, .w-preview-rules .w-pr-REQBODY,
+.w-preview-rules .w-pr-REQAPPEND, .w-preview-rules .w-pr-REQREPLACE, .w-preview-rules .w-pr-AUTH,
+.w-preview-rules .w-pr-REQCOOKIES {
+  color: #9effff;
+}
+
+.w-preview-rules .w-pr-RESDELAY, .w-preview-rules .w-pr-RESSPEED, .w-preview-rules .w-pr-RESTYPE,
+.w-preview-rules .w-pr-PROXY, .w-preview-rules .w-pr-HTTPS-PROXY, .w-preview-rules .w-pr-SOCKS,
+.w-preview-rules .w-pr-RESHEADERS, .w-preview-rules .w-pr-RESPBODY, .w-preview-rules .w-pr-REPLACESTATUS,
+.w-preview-rules .w-pr-RESCORS, .w-preview-rules .w-pr-RESPREPEND, .w-preview-rules .w-pr-RESBODY, .w-preview-rules .w-pr-RESAPPEND,
+.w-preview-rules .w-pr-RESREPLACE, .w-preview-rules .w-pr-RESMERGE, .w-preview-rules .w-pr-HTMLPREPEND, .w-preview-rules .w-pr-HTMLBODY,
+.w-preview-rules .w-pr-HTMLAPPEND, .w-preview-rules .w-pr-CSSPREPEND, .w-preview-rules .w-pr-CSSBODY, .w-preview-rules .w-pr-CSSAPPEND,
+.w-preview-rules .w-pr-JSPREPEND, .w-preview-rules .w-pr-JSBODY, .w-preview-rules .w-pr-JSAPPEND, .w-preview-rules .w-pr-RESCOOKIES {
+  color: #292;
+}
+
+.w-preview-rules .w-pr-HOST {
+  color: #ff1605;
+}
+
+.w-create-cookie-dialog .w-form-value {
+  padding: 0;
+}
+
+.w-cookie-attrs label input {
+  margin-right: 5px;
+}
+

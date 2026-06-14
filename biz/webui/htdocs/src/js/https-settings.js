@@ -4,7 +4,7 @@ var QRCodeImg = require('./qrcode');
 var dataCenter = require('./data-center');
 var storage = require('./storage');
 var util = require('./util');
-var ReactDOM = require('react-dom');
+var findDOMNode = require('react-dom').findDOMNode;
 var $ = require('jquery');
 var events = require('./events');
 var Icon = require('./icon');
@@ -33,7 +33,7 @@ var HttpsSettings = React.createClass({
     this.setState({ caFullUrl: e.target.value });
   },
   show: function() {
-    $(ReactDOM.findDOMNode(this.refs.rootCADialog)).modal('show');
+    $(findDOMNode(this.refs.rootCADialog)).modal('show');
   },
   showCustomCertsInfo: function () {
     var self = this;
@@ -44,7 +44,7 @@ var HttpsSettings = React.createClass({
     dataCenter.certs.all(function (data, xhr) {
       self.loadingCerts = false;
       if (!data) {
-        util.showSystemError(xhr);
+        util.showSysErr(xhr);
         return;
       }
       self.refs.certsInfoDialog.show(data.certs, data.dir);
