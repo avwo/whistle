@@ -15,6 +15,10 @@ var TEMP_FILE_RE = /\btemp\/current_file_hash_placeholder\b/;
 var TEMP_FILE_RE_G = /\btemp\/current_file_hash_placeholder\b/g;
 var LINE__RE = /^(?:[^\n\r\S]*(```+)[^\n\r\S]*(\S+)[^\n\r\S]*[\r\n]([\s\S]+?)[\r\n][^\n\r\S]*\1\s*|[^\r\n]*)$/gm;
 
+function getEnabledIcon(item) {
+  return item && item.selected ? ' (✓)' : '';
+}
+
 function getName(name) {
   name = name || storage.get('previewRulesName');
   if (util.isGroup(name)) {
@@ -266,6 +270,7 @@ var RulesDialog = React.createClass({
     var rulesModal = dataCenter.getRulesModal();
     var list = rulesModal.list;
     var selectList = [];
+    var data = rulesModal.data;
     for (var i = 0, len = list.length; i < len; i++) {
       var name = list[i];
       if (util.isGroup(name)) {
@@ -276,11 +281,11 @@ var RulesDialog = React.createClass({
             i--;
             break;
           }
-          items.push(<option key={itemName} value={itemName}>{itemName}</option>);
+          items.push(<option key={itemName} value={itemName}>{itemName + getEnabledIcon(data[itemName])}</option>);
         }
         selectList.push(<optgroup key={name} label={name}>{items}</optgroup>);
       } else {
-        selectList.push(<option key={name} value={name}>{name}</option>);
+        selectList.push(<option key={name} value={name}>{name + getEnabledIcon(data[name])}</option>);
       }
     }
     return selectList;
