@@ -187,6 +187,32 @@ Start the documentation server locally:
 ``` sh
 npm run docs:dev
 ```
+
+## Q: How to display the Request/Response body content in chunks within the Frames panel?
+
+**Default Behavior**  
+- For SSE (Server-Sent Events) requests that are **not gzipped** and have the response header `Content-Type: text/event-stream`, the response content is automatically displayed in chunks within the Frames panel.  
+- This default behavior can be disabled using `disable://captureStream`.
+
+**Ordinary HTTP/HTTPS Requests**  
+If you want the body of an ordinary HTTP/HTTPS request or response to be displayed in chunks within the Frames panel (similar to SSE), you need to manually configure whistle rules to force stream capture and specify a custom frame separator.
+
+### Example Configuration
+
+```txt
+# Set the separator to newline \n (%A0 is the URL-encoded form of \n; SSE uses \n\n by default)
+pattern disable://gzip enable://captureStream reqHeaders://(x-whistle-custom-frame-separator=%A0) resHeaders://(x-whistle-custom-frame-separator=%A0)
+```
+
+**Rule Explanation**  
+- `disable://gzip`: Disables compression to ensure streaming is not interrupted.  
+- `enable://captureStream`: Forces stream capture.  
+- `reqHeaders://(...)` / `resHeaders://(...)`: Adds a custom header `x-whistle-custom-frame-separator=%A0` to the request or response, where `%A0` represents the newline character `\n`.
+
+> **Regarding Separator Visibility**  
+> By default, the separator is not displayed in the Frames panel. If you need the separator to be visible, prefix the separator value with `/`. For example:  
+> `x-whistle-custom-frame-separator=/%A0`
+
 ## Q: How can I report an issue?
 
 New issue: https://github.com/avwo/whistle/issues

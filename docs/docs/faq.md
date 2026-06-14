@@ -184,6 +184,32 @@ Whistle 文档源文件地址：https://github.com/avwo/whistle/tree/master/docs
 npm run docs:dev
 ```
 
+## Q：如何将 Request / Response 的 Body 内容分块显示在 Frames 中？
+
+**默认行为**  
+- 对于 SSE（Server-Sent Events）请求，若满足**未启用 gzip** 且响应头 `Content-Type: text/event-stream`，其响应内容会自动按块（chunk）显示在 Frames 面板中。  
+- 可以通过 `disable://captureStream` 禁用该默认行为。
+
+**普通 HTTP/HTTPS 请求**  
+如果希望普通请求的 Request Body 或 Response Body 也像 SSE 一样分块显示在 Frames 中，需要手动配置 whistle 规则，强制启用流式捕获并指定自定义的分隔符。
+
+### 配置示例
+
+``` txt
+# 将分隔符设置为换行符 \n（%A0 为 \n 的 URL 编码形式，SSE 默认使用 \n\n）
+pattern disable://gzip enable://captureStream reqHeaders://(x-whistle-custom-frame-separator=%A0) resHeaders://(x-whistle-custom-frame-separator=%A0)
+```
+
+**规则说明**  
+- `disable://gzip`：禁止压缩，确保流式传输不被破坏  
+- `enable://captureStream`：强制开启流式捕获  
+- `reqHeaders://(...)` / `resHeaders://(...)`：为请求或响应头添加自定义字段 `x-whistle-custom-frame-separator=%A0`，其中 `%A0` 表示分隔符 `\n`
+
+> **关于分隔符的显示**  
+> 默认情况下，Frames 中不会显示分隔符本身。如果你需要让分隔符可见，可以在分隔符值前加 `/`，例如：  
+> `x-whistle-custom-frame-separator=/%A0`
+
+
 ## Q：如何反馈问题？
 
 New issue：https://github.com/avwo/whistle/issues
