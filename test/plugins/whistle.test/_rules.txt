@@ -9,7 +9,7 @@ resAppend://assets/files/append.txt /resappend/ resappend.test.whistlejs.com
 /reqreplace/ reqReplace://assets/values/replace.json reqType://text
 /resreplace/ resReplace://assets/values/replace.json resType://html
 
-/dispatch/ dispatch://assets/dispatch.js host://127.0.0.1:8080
+/dispatch/ dispatch://assets/dispatch.js host://127.0.0.1:18080
 
 /reqcors/ reqCors://assets/values/reqCors.json
 /rescors/ resCors://assets/values/resCors.json
@@ -26,7 +26,7 @@ log://assets/files/log.js /log2/ /log3/
 /weinre1/ resType://html weinre://xxx
 /weinre2/ resType://js weinre://xxx
 /weinre3/ resType://css weinre://xxx
-/weinre4/ weinre://xxx 
+/weinre4/ weinre://xxx
 
 /tpl/ tpl://<assets/files/tpl.js>
 /raw/  rawfile://assets/files/rawfile.html
@@ -34,7 +34,7 @@ log://assets/files/log.js /log2/ /log3/
 
 /req\./ req://assets/values/req.json reqType://text
 
-/upload/ params://assets/values/upload.json host://127.0.0.1:8080
+/upload/ params://assets/values/upload.json host://127.0.0.1:18080
 
 /params2/ filter://rule
 
@@ -48,5 +48,5 @@ http://rule4.test.whistlejs.com/abc?abc=1 host.test.whistlejs.com?test2
 /bodybin/ reqBody://assets/files/bin/body.txt resBody://assets/files/bin/body.txt
 /appendbin/ reqAppend://assets/files/bin/bottom.txt resAppend://assets/files/bin/bottom.txt
 
-/plugin.whistlejs.com/ host://127.0.0.1:8080
+/plugin.whistlejs.com/ host://127.0.0.1:18080
 $http://ssi-include.whistlejs.com/index.html?doNotParseJson file://assets/files/ssi-include.html

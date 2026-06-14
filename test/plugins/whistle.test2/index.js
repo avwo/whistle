@@ -22,6 +22,6 @@ exports.auth = function(req) {
     req.setHtml('test-plugin-auth-hook');
     return false;
   }
-  req.setUrl('http://127.0.0.1:8080');
+  req.setUrl('http://127.0.0.1:18080');
   return false;
 };

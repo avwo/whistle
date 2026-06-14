@@ -100,7 +100,7 @@ module.exports = function(server, options) {
     }
 
     if (/mp1.w2.org/.test(fullUrl)) {
-      rules.push('* host://127.0.0.1:8080');
+      rules.push('* host://127.0.0.1:18080');
     }
 
     if (/values1.avenwu.com/.test(fullUrl)) {

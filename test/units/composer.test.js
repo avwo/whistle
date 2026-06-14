@@ -5,7 +5,7 @@ module.exports = function () {
     url: 'http://local.whistlejs.com/cgi-bin/composer',
     method: 'post',
     json: {
-      url: 'http://127.0.0.1:8080',
+      url: 'http://127.0.0.1:18080',
       headers: 'test: 123',
       method: 'POST',
       body: 'test'
@@ -15,7 +15,7 @@ module.exports = function () {
     url: 'http://local.whistlejs.com/cgi-bin/composer',
     method: 'post',
     json: {
-      url: 'http://127.0.0.1:8080',
+      url: 'http://127.0.0.1:18080',
       headers: 'test: 123',
       method: 'POST',
       body: 'test'
@@ -25,7 +25,7 @@ module.exports = function () {
     url: 'http://local.whistlejs.com/cgi-bin/composer',
     method: 'post',
     json: {
-      url: 'http://127.0.0.1:8080',
+      url: 'http://127.0.0.1:18080',
       headers: 'test: 123',
       method: 'POST',
       body: 'test'
@@ -35,7 +35,7 @@ module.exports = function () {
     url: 'http://local.whistlejs.com/cgi-bin/composer',
     method: 'post',
     json: {
-      url: 'http://127.0.0.1:8080',
+      url: 'http://127.0.0.1:18080',
       headers: 'test: 123',
       method: 'POST',
       body: 'test'
@@ -45,7 +45,7 @@ module.exports = function () {
     url: 'http://local.whistlejs.com/cgi-bin/composer',
     method: 'post',
     json: {
-      url: 'http://127.0.0.1:8080',
+      url: 'http://127.0.0.1:18080',
       headers: 'test: 123',
       method: 'POST',
       body: 'test'
@@ -55,7 +55,7 @@ module.exports = function () {
     url: 'http://local.whistlejs.com/cgi-bin/composer',
     method: 'post',
     json: {
-      url: 'http://127.0.0.1:8080',
+      url: 'http://127.0.0.1:18080',
       headers: 'test: 123',
       method: 'POST',
       body: 'test'

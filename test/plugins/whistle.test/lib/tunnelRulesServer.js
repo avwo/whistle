@@ -11,9 +11,9 @@ module.exports = function(server, options) {
     if (/^(\d+)\.tnl[56]\.whistlejs\.com/.test(host)) {
       rules.push('* host://127.0.0.1:' + RegExp.$1);
     } else if (host == 'tnl2.whistlejs.com') {
-      rules.push('tunnel://tnl2.whistlejs.com host://127.0.0.1:8080');
+      rules.push('tunnel://tnl2.whistlejs.com host://127.0.0.1:18080');
     } else if (host == 'tnl3.whistlejs.com') {
-      rules.push('tnl3.whistlejs.com host://127.0.0.1:8080');
+      rules.push('tnl3.whistlejs.com host://127.0.0.1:18080');
     } else if (host == 'break.whistlejs.com') {
       rules.push('tunnel://break.whistlejs.com disable://tunnel');
     }

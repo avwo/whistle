@@ -3,7 +3,7 @@ var config = require('../config.test');
 var w2Conf = require('../../lib/config');
 
 module.exports = function() {
-  util.request('http://127.0.0.1:8080/auto2http.html', function(res, data) {
+  util.request('http://127.0.0.1:18080/auto2http.html', function(res, data) {
     data.url.should.be.equal('/auto2http.html');
   });
   util.request('https://https.w2.org/index.html', function(res, data) {

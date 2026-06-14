@@ -12,7 +12,7 @@ module.exports = function(server, options) {
       throw new Error('wrong rule value');
     }
     var resSocket = net.connect({
-      port: 8080,
+      port: 18080,
       host: '127.0.0.1'
     }, function() {
       socket.write('HTTP/1.1 200 Connection Established\r\nProxy-Agent: ' + config.name + '\r\n\r\n');

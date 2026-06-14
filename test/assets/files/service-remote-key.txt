@@ -4,7 +4,7 @@ service.remote-key3.test.w2.org/test host://{test-custom-ip1}
 service.remote-key4.test.w2.org/test proxy://{test-custom-ip1}
 
 ``` test-custom-ip1
-127.0.0.1:8080
+127.0.0.1:18080
 ```
 
 ``` test2.txt

@@ -1,7 +1,7 @@
 
 module.exports = {
   port: 6666,
-  serverPort: 8080,
+  serverPort: 18080,
   wsPort: 18081,
   httpsPort: 5566,
   socksPort: 1080,
