@@ -129,7 +129,7 @@ program
   .description('Display running status');
 program
   .command('add')
-  .description('Add rules from local JS file (.whistle.js by default)');
+  .description('Add rules from local JS file (default: .whistle.js in current directory)');
 program.command('proxy')
   .description('Configure system proxy settings');
 program.command('ca')
@@ -144,18 +144,18 @@ program.command('exec')
 program
   .option('-D, --baseDir [baseDir]', 'set storage root path', String, undefined)
   .option('-z, --certDir [directory]', 'set custom certificate directory', String, undefined)
-  .option('-l, --localUIHost [hostname]', 'set web UI domain (' + config.localUIHost + ' by default)', String, undefined)
-  .option('-L, --pluginHost [hostname]', 'set plugin UI domains  (as: "script=a.b.com&vase=x.y.com")', String, undefined)
+  .option('-l, --localUIHost [hostname]', 'set web UI domain (default: ' + config.localUIHost + ')', String, undefined)
+  .option('-L, --pluginHost [hostname]', 'set plugin UI domains  (e.g., "script=a.b.com&vase=x.y.com")', String, undefined)
   .option('-n, --username [username]', 'set web UI username', String, undefined)
   .option('-w, --password [password]', 'set web UI password', String, undefined)
   .option('-N, --guestName [username]', 'set web UI guest username (read-only)', String, undefined)
   .option('-W, --guestPassword [password]', 'set web UI guest password (read-only)', String, undefined)
-  .option('-s, --sockets [number]', 'set max cached connections per domain (' + config.sockets + ' by default)', parseInt, undefined)
+  .option('-s, --sockets [number]', 'set max cached connections per domain (default: ' + config.sockets + ')', parseInt, undefined)
   .option('-S, --storage [newStorageDir]', 'set configuration storage directory', String, undefined)
   .option('-C, --copy [storageDir]', 'copy configuration from specified directory', String, undefined)
   .option('-c, --dnsCache [time]', 'set DNS cache time (default: 60000ms)', String, undefined)
   .option('-H, --host [boundHost]', 'set bound host (default: INADDR_ANY)', String, undefined)
-  .option('-p, --port [proxyPort]', 'set proxy port (default: ' + config.port + ' by default)', String, undefined)
+  .option('-p, --port [proxyPort]', 'set proxy port (default: ' + config.port + ')', String, undefined)
   .option('-P, --uiport [uiport]', 'set web UI port', String, undefined)
   .option('-m, --middlewares [script path or module name]', 'set startup middlewares (format: xx,yy/zz.js)', String, undefined)
   .option('-M, --mode [mode]', 'set startup mode (options: pureProxy|debug|multiEnv|capture|disableH2|network|rules|plugins|prod)', String, undefined)
