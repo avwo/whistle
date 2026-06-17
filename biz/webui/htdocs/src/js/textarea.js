@@ -91,6 +91,7 @@ var Textarea = React.createClass({
             <CopyBtn name="AsHex" value={util.getHexText(props.value)} />
           ) : undefined}
           <a
+            className="w-download"
             onDoubleClick={this.download}
             onClick={this.showNameInput}
             className="w-download"
