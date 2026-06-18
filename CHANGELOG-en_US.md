@@ -1,5 +1,9 @@
 [中文](./CHANGELOG.md) · English
 
+## v2.10.4
+1. feat: https://wproxy.org/docs/gui/test-rules.html
+2. fix: https://github.com/avwo/whistle/issues/1335
+
 ## v2.10.3
 1. feat: Support creating `Mapping` / `Network` / `Request` / `Response` / `Debug`  rules via form 
 2. feat: Added `Clear DNS Cache` button in Online to manually clear Whistle's DNS cache
