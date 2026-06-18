@@ -10,15 +10,17 @@ var Prompt = React.createClass({
     return { value: '' };
   },
   onChange: function(e) {
-    var isNum = this.props.isNum;
-    var isHeader = this.props.isHeader;
-    this.setState({value: e.target.value.replace(isNum ? NUM_RE : isHeader ? HEADER_RE : DEF_RE, '')});
+    var self = this;
+    var isNum = self.props.isNum;
+    var isHeader = self.props.isHeader;
+    self.setState({value: e.target.value.replace(isNum ? NUM_RE : isHeader ? HEADER_RE : DEF_RE, '')});
   },
   show: function(callback, value) {
-    this.setState({ value: value || '' });
-    this._callback = callback;
-    this.refs.prompt.show();
-    setTimeout(this.focus, 300);
+    var self = this;
+    self.setState({ value: value || '' });
+    self._callback = callback;
+    self.refs.prompt.show();
+    setTimeout(self.focus, 300);
   },
   focus: function() {
     var input = this.refs.value;
@@ -26,15 +28,17 @@ var Prompt = React.createClass({
     input.select();
   },
   onConfirm: function() {
-    var cb = this._callback;
-    if (cb && cb(this.state.value) === false) {
-      return this.focus();
+    var self = this;
+    var cb = self._callback;
+    if (cb && cb(self.state.value) === false) {
+      return self.focus();
     }
-    this.refs.prompt.hide();
+    self.refs.prompt.hide();
   },
   render: function() {
-    var props = this.props;
-    var state = this.state;
+    var self = this;
+    var props = self.props;
+    var state = self.state;
     var title = props.title;
     var value = state.value;
 
@@ -45,7 +49,7 @@ var Prompt = React.createClass({
       </div> : null}
       <div className="modal-body">
         <input ref="value" className="form-control" maxLength={props.maxLength || 64}
-          onChange={this.onChange} value={value} placeholder={props.placeholder || 'Enter new option'} />
+          onChange={self.onChange} value={value} placeholder={props.placeholder || 'Enter new option'} />
       </div>
       <div className="modal-footer">
         <button
@@ -58,7 +62,7 @@ var Prompt = React.createClass({
         <button
           type="button"
           className="btn btn-primary"
-          onClick={this.onConfirm}
+          onClick={self.onConfirm}
           disabled={!value && !props.allowEmpty}
         >
           Confirm

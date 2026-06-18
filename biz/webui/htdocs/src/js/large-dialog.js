@@ -31,11 +31,12 @@ var LargeDialog = React.createClass({
     return false;
   },
   openInNewWin: function() {
-    var openInNewWin = this.props.openInNewWin;
+    var self = this;
+    var openInNewWin = self.props.openInNewWin;
     if (openInNewWin) {
-      openInNewWin(this.getWindow());
+      openInNewWin(self.getWindow());
     } else {
-      window.open(this.getIframe().src);
+      window.open(self.getIframe().src);
     }
   },
   render: function() {

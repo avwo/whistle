@@ -177,11 +177,12 @@ module.exports = {
     return { rules: rules, values: values.join('\n\n') };
   },
   onAdd: function(e) {
-    var data = this.getData(e);
+    var self = this;
+    var data = self.getData(e);
     var index = data.index;
     var type = data.list[index].type;
-    data.list.splice(index + 1, 0, this.createAction(type));
-    this.setState({});
+    data.list.splice(index + 1, 0, self.createAction(type));
+    self.setState({});
   },
   onRemove: function(e) {
     var self = this;
@@ -207,18 +208,21 @@ module.exports = {
   },
   onDisableCheckChange: function(e) {
     var name = e.target.getAttribute('data-name');
-    this.state[name] = !e.target.checked;
-    this.setState({}, this.handleChange);
+    var self = this;
+    self.state[name] = !e.target.checked;
+    self.setState({}, self.handleChange);
   },
   onEnableCheckChange: function(e) {
     var name = e.target.getAttribute('data-name');
-    this.state[name] = e.target.checked;
-    this.setState({}, this.handleChange);
+    var self = this;
+    self.state[name] = e.target.checked;
+    self.setState({}, self.handleChange);
   },
   onDataChange: function(e, key) {
-    var data = this.getData(e);
+    var self = this;
+    var data = self.getData(e);
     data.list[data.index][key || data.key] = getElemValue(e);
-    this.setState({}, this.handleChange);
+    self.setState({}, self.handleChange);
   },
   onKeyChange: function(e) {
     this.onDataChange(e);
@@ -273,32 +277,34 @@ module.exports = {
     });
   },
   saveCookie: function() {
-    this._cookieAction.key = JSON.stringify(this.state.cookie);
-    this.setState({}, this.handleChange);
+    var self = this;
+    self._cookieAction.key = JSON.stringify(self.state.cookie);
+    self.setState({}, self.handleChange);
   },
   renderHeaderAction: function(action, disabled, isReq) {
     var allActions = isReq ? HeaderSelect.REQ_HEADERS : HeaderSelect.RES_HEADERS;
     var name = isReq ? 'request' : 'response';
     var type = action.type;
+    var self = this;
     if (type === allActions[1]) {
-      return this.renderAllHeaders(action, disabled, 'flex-1 mr-0', 'Select ' + name + ' header name to delete');
+      return self.renderAllHeaders(action, disabled, 'flex-1 mr-0', 'Select ' + name + ' header name to delete');
     }
     if (/^content-type$/i.test(type)) {
-      return <TypeSelect isReq={isReq} disabled={disabled} value={action.key} className="flex-1 mr-0" onChange={this.onKeyChange} />;
+      return <TypeSelect isReq={isReq} disabled={disabled} value={action.key} className="flex-1 mr-0" onChange={self.onKeyChange} />;
     }
     if (isReq) {
       var isAuth = /^(proxy-)?authorization$/i.test(type);
       if (isAuth || /^cookie$/i.test(type)) {
         var keyPlaceholder = isAuth ? 'Enter username' : 'Enter request cookie name';
         var valuePlaceholder = isAuth ? 'Enter password' : 'Enter request cookie value';
-        return this.renderKV(action, keyPlaceholder, valuePlaceholder, disabled, true, true);
+        return self.renderKV(action, keyPlaceholder, valuePlaceholder, disabled, true, true);
       }
     } else if (/^set-cookie$/i.test(type)) {
-      return this.renderKey(action.key, 'Enter response cookie', disabled, true, this.showCookieDialog, 'w-input-ext');
+      return self.renderKey(action.key, 'Enter response cookie', disabled, true, self.showCookieDialog, 'w-input-ext');
     }
     var delCookie = type === allActions[2];
     var placeholder = 'Enter ' + name + (delCookie ? ' cookie name to delete' : ' header value');
-    return this.renderKey(action.key, placeholder, disabled, !delCookie);
+    return self.renderKey(action.key, placeholder, disabled, !delCookie);
   },
   renderHeaders: function(action, disabled, isReq, className) {
     var name = isReq ? 'requestHeaders' : 'responseHeaders';
@@ -314,11 +320,12 @@ module.exports = {
       onClick={onClick} placeholder={placeholder} disabled={disabled} onChange={this.onKeyChange} data-keep-space={keepSpace || undefined} />;
   },
   renderKV: function(data, keyPlaceholder, valuePlaceholder, disabled, keepKeySpace, keepValueSpace) {
+    var self = this;
     return [
       <input type="text" value={getValue(data.key, keepKeySpace)} className="form-control w-190 mr-10" maxLength="2560"
-        placeholder={keyPlaceholder} disabled={disabled} onChange={this.onKeyChange} data-keep-space={keepKeySpace || undefined} />,
+        placeholder={keyPlaceholder} disabled={disabled} onChange={self.onKeyChange} data-keep-space={keepKeySpace || undefined} />,
       <input type="text" value={getValue(data.value, keepValueSpace)} className="form-control" maxLength="2560"
-        placeholder={valuePlaceholder} disabled={disabled} onChange={this.onValueChange} data-keep-space={keepValueSpace || undefined} />
+        placeholder={valuePlaceholder} disabled={disabled} onChange={self.onValueChange} data-keep-space={keepValueSpace || undefined} />
     ];
   },
   renderFileInput: function(value, disabled) {
@@ -330,19 +337,21 @@ module.exports = {
   renderBodyAction: function(action, disabled, actions) {
     var type = action.type;
     var len = actions.length;
+    var self = this;
     if (type === actions[len - 1]) {
-      return this.renderKey(action.key, 'Enter key path, e.g. a\\.b.c.d', disabled, true);
+      return self.renderKey(action.key, 'Enter key path, e.g. a\\.b.c.d', disabled, true);
     }
     if (type === actions[len - 2]) {
-      return this.renderJSONEditor(action.value, disabled);
+      return self.renderJSONEditor(action.value, disabled);
     }
     if (type === actions[len - 3]) {
-      return this.renderKV(action, 'Enter keyword or regexp', 'Enter replacement value', disabled, true, true);
+      return self.renderKV(action, 'Enter keyword or regexp', 'Enter replacement value', disabled, true, true);
     }
-    return this.renderFileInput(action.value, disabled);
+    return self.renderFileInput(action.value, disabled);
   },
   renderCookieDialog: function() {
-    var cookie = this.state.cookie || {};
+    var self = this;
+    var cookie = self.state.cookie || {};
 
     return (
       <Dialog ref="cookieDialog" wstyle="w-create-cookie-dialog">
@@ -350,7 +359,7 @@ module.exports = {
           Create Response Cookie
           <CloseBtn />
         </div>
-        <div className="modal-body" onChange={this.onCookieChange}>
+        <div className="modal-body" onChange={self.onCookieChange}>
           {
             COOKIE_OPTIONS.map(function(option) {
               var label = option.label;
@@ -394,7 +403,7 @@ module.exports = {
             data-dismiss="modal"
             className="btn btn-primary"
             disabled={!cookie || (!cookie.Name && !cookie.Value)}
-            onClick={this.saveCookie}
+            onClick={self.saveCookie}
           >
             Confirm
           </button>

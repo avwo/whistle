@@ -45,10 +45,11 @@ var About = React.createClass({
     });
   },
   checkUpdate: function (hasNew) {
-    if (this.props.onCheckUpdate) {
-      if ((!this._hasUpdate && !hasNew) || hasNew !== this._hasUpdate) {
-        this._hasUpdate = hasNew;
-        this.props.onCheckUpdate(hasNew);
+    var self = this;
+    if (self.props.onCheckUpdate) {
+      if ((!self._hasUpdate && !hasNew) || hasNew !== self._hasUpdate) {
+        self._hasUpdate = hasNew;
+        self.props.onCheckUpdate(hasNew);
       }
     }
     return hasNew;

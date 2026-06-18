@@ -35,12 +35,13 @@ var RecordBtn = React.createClass({
     return { stop: false };
   },
   onClick: function () {
-    var stop = !this.state.stop;
-    this.state.pause = false;
-    this.state.stop = stop;
+    var self = this;
+    var stop = !self.state.stop;
+    self.state.pause = false;
+    self.state.stop = stop;
     ACTION_OPTIONS[0] = PAUSE_OPTION;
-    this.props.onClick(stop ? 'stop' : 'refresh');
-    this.setState({});
+    self.props.onClick(stop ? 'stop' : 'refresh');
+    self.setState({});
   },
   componentDidMount: function () {
     events.on('toggleNetworkState', this.onClick);
@@ -77,21 +78,23 @@ var RecordBtn = React.createClass({
     });
   },
   onClickOption: function (option) {
+    var self = this;
     if (option.id === 'pause') {
       ACTION_OPTIONS[0] = STOP_OPTION;
-      this.state.pause = true;
-      this.state.stop = true;
+      self.state.pause = true;
+      self.state.stop = true;
     } else if (option.id === 'stop') {
       ACTION_OPTIONS[0] = PAUSE_OPTION;
-      this.state.pause = false;
-      this.state.stop = true;
+      self.state.pause = false;
+      self.state.stop = true;
     }
-    this.props.onClick(option.id);
-    this.hideActionOptions();
+    self.props.onClick(option.id);
+    self.hideActionOptions();
   },
   render: function () {
-    var state = this.state;
-    var hide = this.props.hide;
+    var self = this;
+    var state = self.state;
+    var hide = self.props.hide;
     var pause = state.pause;
     var stop = state.stop;
     var disabled = stop || pause;
@@ -99,8 +102,8 @@ var RecordBtn = React.createClass({
 
     return (
       <div
-        onMouseEnter={this.showActionOptions}
-        onMouseLeave={this.hideActionOptions}
+        onMouseEnter={self.showActionOptions}
+        onMouseLeave={self.hideActionOptions}
         className={
           'w-menu-wrapper w-switch-btn w-menu-auto' +
           (state.showActionOptions ? ' w-menu-wrapper-show' : '') +
@@ -108,9 +111,9 @@ var RecordBtn = React.createClass({
         }
       >
         <a
-          onClick={this.onClick}
+          onClick={self.onClick}
           draggable="false"
-          className={'w-scroll-menu' + (disabled ? ' w-pause' : '') + (this.props.disabledRecord ? ' w-disabled' : '')}
+          className={'w-scroll-menu' + (disabled ? ' w-pause' : '') + (self.props.disabledRecord ? ' w-disabled' : '')}
           title={title}
         >
           <Icon name={pause ? 'minus-sign' : 'stop'} />
@@ -119,7 +122,7 @@ var RecordBtn = React.createClass({
         <MenuItem
           options={ACTION_OPTIONS}
           className="w-remove-menu-item"
-          onClickOption={this.onClickOption}
+          onClickOption={self.onClickOption}
         />
       </div>
     );

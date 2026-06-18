@@ -161,8 +161,9 @@ proto.hasKeyword = function () {
 };
 
 proto.setSortColumns = function (columns) {
-  this._columns = columns;
-  this.filter(false);
+  var self = this;
+  self._columns = columns;
+  self.filter(false);
 };
 
 function setNot(flag, not) {
@@ -419,8 +420,8 @@ proto.filter = function () {
   } else {
     self._list = null;
   }
-  this.updateTree();
-  this.updateDisplayCount();
+  self.updateTree();
+  self.updateDisplayCount();
   return list;
 };
 
@@ -492,28 +493,30 @@ proto.getDisplayCount = function () {
 };
 
 proto.clear = function () {
-  var len = this.list.length;
-  this.clearNetwork = true;
-  this.list.splice(0, len);
-  this._list = null;
-  this.updateTree();
-  this.updateDisplayCount();
+  var self = this;
+  var len = self.list.length;
+  self.clearNetwork = true;
+  self.list.splice(0, len);
+  self._list = null;
+  self.updateTree();
+  self.updateDisplayCount();
   if (len) {
     events.trigger('selectedSessionChange');
   }
-  return this;
+  return self;
 };
 
 proto.removeByHostList = function (hostList) {
-  var list = this.list;
+  var self = this;
+  var list = self.list;
   for (var i = list.length - 1; i >= 0; --i) {
     var item = list[i];
     if (hostList.indexOf(item.isHttps ? item.path : item.hostname) !== -1) {
       list.splice(i, 1);
     }
   }
-  this.update();
-  this.updateDisplayCount();
+  self.update();
+  self.updateDisplayCount();
 };
 
 function getNodeIdMap(node, map) {
@@ -529,24 +532,26 @@ function getNodeIdMap(node, map) {
 }
 
 proto.removeTreeNode = function (path, others) {
-  var node = this.getTreeNode(path);
+  var self = this;
+  var node = self.getTreeNode(path);
   if (!node) {
     return;
   }
   var map = getNodeIdMap(node, {});
-  var list = this.list;
+  var list = self.list;
   for (var i = list.length - 1; i >= 0; --i) {
     if (others ? !map[list[i].id] : map[list[i].id]) {
       list.splice(i, 1);
     }
   }
-  this.update();
-  this.updateDisplayCount();
+  self.update();
+  self.updateDisplayCount();
   return true;
 };
 
 proto.removeByUrlList = function (urlList) {
-  var list = this.list;
+  var self = this;
+  var list = self.list;
   for (var i = list.length - 1; i >= 0; --i) {
     if (
       urlList.indexOf(list[i].url.replace(/\?.*$/, '').substring(0, 1024)) !==
@@ -555,14 +560,15 @@ proto.removeByUrlList = function (urlList) {
       list.splice(i, 1);
     }
   }
-  this.update();
-  this.updateDisplayCount();
+  self.update();
+  self.updateDisplayCount();
 };
 
 proto.removeSelectedItems = function () {
+  var self = this;
   var hasSelectedItem;
   var endIndex = -1;
-  var list = this.list;
+  var list = self.list;
 
   for (var i = list.length - 1; i >= 0; i--) {
     var item = list[i];
@@ -581,36 +587,39 @@ proto.removeSelectedItems = function () {
   }
 
   if (hasSelectedItem) {
-    this.update(false, true);
+    self.update(false, true);
     return true;
   }
 };
 
 proto.remove = function (item) {
-  var list = this.list;
+  var self = this;
+  var list = self.list;
   var index = list.indexOf(item);
   if (index !== -1) {
     list.splice(index, 1);
-    this.update(false, true);
+    self.update(false, true);
   }
 };
 
 proto.removeOthers = function (item) {
-  var list = this.list;
+  var self = this;
+  var list = self.list;
   var index = list.indexOf(item);
   if (index !== -1) {
     list.splice(index + 1, list.length - index);
     if (index !== 0) {
       list.splice(0, index);
     }
-    this.update(false, true);
+    self.update(false, true);
   }
 };
 
 proto.removeUnselectedItems = function () {
+  var self = this;
   var hasUnselectedItem;
   var endIndex = -1;
-  var list = this.list;
+  var list = self.list;
 
   for (var i = list.length - 1; i >= 0; i--) {
     var item = list[i];
@@ -629,15 +638,16 @@ proto.removeUnselectedItems = function () {
   }
 
   if (hasUnselectedItem) {
-    this.update(false, true);
+    self.update(false, true);
     return true;
   }
 };
 
 proto.removeUnmarkedItems = function () {
+  var self = this;
   var hasUnmarkedItem;
   var endIndex = -1;
-  var list = this.list;
+  var list = self.list;
 
   for (var i = list.length - 1; i >= 0; i--) {
     var item = list[i];
@@ -656,7 +666,7 @@ proto.removeUnmarkedItems = function () {
   }
 
   if (hasUnmarkedItem) {
-    this.update(false, true);
+    self.update(false, true);
     return true;
   }
 };
@@ -755,13 +765,14 @@ function updateList(list, len, hasKeyword) {
 }
 
 proto.update = function (scrollAtBottom, force) {
-  updateOrder(this.list, force);
-  if (scrollAtBottom && !this.isTreeView) {
-    var exceed = Math.min(this.list.length - MAX_LENGTH, 100);
-    updateList(this.list, exceed, this.hasKeyword());
+  var self = this;
+  updateOrder(self.list, force);
+  if (scrollAtBottom && !self.isTreeView) {
+    var exceed = Math.min(self.list.length - MAX_LENGTH, 100);
+    updateList(self.list, exceed, self.hasKeyword());
   }
-  this.filter();
-  return !this.isTreeView && this.list.length > MAX_LENGTH;
+  self.filter();
+  return !self.isTreeView && self.list.length > MAX_LENGTH;
 };
 
 proto.hasSelected = function () {
@@ -859,11 +870,12 @@ function getNextSelected(start, list) {
 }
 
 proto.setSelectedList = function (start, end, selectElem) {
-  var list = this.getList();
-  if (this.isTreeView) {
-    list = this.root.list;
-    start = this.getTreeNode(start.id);
-    end = this.getTreeNode(end.id);
+  var self = this;
+  var list = self.getList();
+  if (self.isTreeView) {
+    list = self.root.list;
+    start = self.getTreeNode(start.id);
+    end = self.getTreeNode(end.id);
   }
   start = list.indexOf(start);
   end = list.indexOf(end);
@@ -976,18 +988,19 @@ proto.getListByPath = function (path) {
 };
 
 proto.updateTree = function () {
-  if (!this.isTreeView) {
-    this._updateOnTreeView = true; // 非树状展示模式，不更新 tree 数据，等切换 view 时更新
-    return this.root;
+  var self = this;
+  if (!self.isTreeView) {
+    self._updateOnTreeView = true; // 非树状展示模式，不更新 tree 数据，等切换 view 时更新
+    return self.root;
   }
-  this._updateOnTreeView = false;
-  var allData = this.list;
+  self._updateOnTreeView = false;
+  var allData = self.list;
   var len = allData.length;
   if (!len) {
-    return this.clearRoot();
+    return self.clearRoot();
   }
-  var oldRoot = this.root;
-  var root = this.clearRoot();
+  var oldRoot = self.root;
+  var root = self.clearRoot();
   for (var i = 0; i < len; i++) {
     var item = allData[i];
     var paths = parsePaths(item.url);
@@ -1040,11 +1053,12 @@ proto.updateTree = function () {
 };
 
 proto.setTreeView = function (isTreeView, quiet) {
+  var self = this;
   isTreeView = isTreeView !== false;
-  if (this.isTreeView !== isTreeView) {
-    this.isTreeView = isTreeView;
+  if (self.isTreeView !== isTreeView) {
+    self.isTreeView = isTreeView;
     !quiet && storage.set('isTreeView', isTreeView ? '1' : '');
-    isTreeView && this._updateOnTreeView && this.updateTree();
+    isTreeView && self._updateOnTreeView && self.updateTree();
   }
 };
 

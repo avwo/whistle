@@ -16,7 +16,8 @@ var RuleList = React.createClass({
     });
   },
   onChange: function (e, line) {
-    var checkedList = this.state.checkedList;
+    var self = this;
+    var checkedList = self.state.checkedList;
     var index = checkedList.indexOf(line);
 
     if (e.target.checked) {
@@ -26,8 +27,8 @@ var RuleList = React.createClass({
     } else if (index !== -1) {
       checkedList.splice(index, 1);
     }
-    this.setState({ checkedList: checkedList });
-    this.props.onChange(checkedList);
+    self.setState({ checkedList: checkedList });
+    self.props.onChange(checkedList);
   },
   render: function () {
     var self = this;

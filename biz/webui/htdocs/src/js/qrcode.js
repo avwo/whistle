@@ -54,15 +54,16 @@ var QRCodeImg = React.createClass({
     );
   },
   render: function () {
-    this.renderQRCode();
-    var state = this.state;
-    var props = this.props;
+    var self = this;
+    self.renderQRCode();
+    var state = self.state;
+    var props = self.props;
     var dataURL = state.dataURL;
     var size = { width: getSize(props.width), height: getSize(props.width) };
 
     return (
       <div className="w-qrcode-wrap" style={size}>
-        {dataURL ? <img src={dataURL} /> : this.renderError()}
+        {dataURL ? <img src={dataURL} /> : self.renderError()}
       </div>
     );
   }

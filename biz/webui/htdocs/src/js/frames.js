@@ -35,9 +35,10 @@ var Frames = React.createClass({
     this.refs.frameList.autoRefresh();
   },
   render: function () {
-    var props = this.props;
-    var modal = this.state.modal;
-    var framesCtx = this.state.framesCtx;
+    var self = this;
+    var props = self.props;
+    var modal = self.state.modal;
+    var framesCtx = self.state.framesCtx;
     var frames = modal.reset(props.frames);
     var reqData = props.data || '';
     var curFrame = modal.getActive();
@@ -56,15 +57,15 @@ var Frames = React.createClass({
             hide={hide}
             vertical="true"
             rightWidth="250"
-            onDOMReady={this.onDOMReady}
+            onDOMReady={self.onDOMReady}
           >
             <FrameList
               ref="frameList"
               framesCtx={framesCtx}
               reqData={reqData}
               modal={modal}
-              onUpdate={this.onUpdate}
-              onClickFrame={this.onClickFrame}
+              onUpdate={self.onUpdate}
+              onClickFrame={self.onClickFrame}
             />
             <FrameData framesCtx={framesCtx} data={reqData} frame={curFrame} />
           </Divider>

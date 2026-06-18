@@ -24,14 +24,15 @@ var TITLES = {
 
 var FilterInput = React.createClass({
   getInitialState: function () {
-    var hintKey = this.props.hintKey;
-    this.allHintList = [];
+    var self = this;
+    var hintKey = self.props.hintKey;
+    self.allHintList = [];
     if (hintKey) {
       try {
         var hintList = JSON.parse(storage.get(hintKey));
         if (Array.isArray(hintList)) {
           var map = {};
-          this.allHintList = hintList
+          self.allHintList = hintList
             .map(function (key) {
               return typeof key === 'string' ? key.substring(0, MAX_LEN) : null;
             })
@@ -50,13 +51,13 @@ var FilterInput = React.createClass({
   },
   componentDidMount: function () {
     var self = this;
-    self.hintElem = $(findDOMNode(this.refs.hints));
+    self.hintElem = $(findDOMNode(self.refs.hints));
     $(document.body).on('mousedown', function(e) {
       if (self.state.hintList !== null && !$(e.target).closest('.w-filter-con').length) {
         self.hideHints();
       }
     });
-    var onFilterTypeChange = this.props.onFilterTypeChange;
+    var onFilterTypeChange = self.props.onFilterTypeChange;
     if (typeof onFilterTypeChange === 'function') {
       onFilterTypeChange(self.state.filterType);
     }
@@ -67,10 +68,11 @@ var FilterInput = React.createClass({
     input.focus();
   },
   addHint: function () {
-    var value = this.state.filterText;
+    var self = this;
+    var value = self.state.filterText;
     value = value && value.trim();
     if (value) {
-      var list = this.allHintList;
+      var list = self.allHintList;
       var index = list.indexOf(value);
       if (index !== -1) {
         list.splice(index, 1);
@@ -80,20 +82,21 @@ var FilterInput = React.createClass({
       }
       list.push(value);
       try {
-        storage.set(this.props.hintKey, JSON.stringify(list));
+        storage.set(self.props.hintKey, JSON.stringify(list));
       } catch (e) {}
     }
   },
   filterHints: function (keyword) {
     keyword = keyword ? keyword.trim() : '';
     var count = 10;
-    var addonHints = this.props.addonHints || [];
+    var self = this;
+    var addonHints = self.props.addonHints || [];
     if (!keyword) {
-      return addonHints.concat(this.allHintList.slice(-count));
+      return addonHints.concat(self.allHintList.slice(-count));
     }
     addonHints = addonHints.slice(1);
     count += addonHints.length;
-    var allHintList = addonHints.concat(this.allHintList);
+    var allHintList = addonHints.concat(self.allHintList);
     var list = [];
     var lk = keyword.toLowerCase();
     var notColon = keyword.indexOf(':') === -1;
@@ -117,10 +120,10 @@ var FilterInput = React.createClass({
     self.props.onChange && self.props.onChange(value);
     var hintKey = self.props.hintKey;
     hintKey && clearTimeout(self.timer);
-    this.state.filterText = value;
-    self.setState({ hintList: this.filterHints(value) }, function () {
+    self.state.filterText = value;
+    self.setState({ hintList: self.filterHints(value) }, function () {
       if (hintKey) {
-        self.timer = setTimeout(this.addHint, 10000);
+        self.timer = setTimeout(self.addHint, 10000);
       }
     });
   },
@@ -137,7 +140,7 @@ var FilterInput = React.createClass({
     if (!self.props.hintKey) {
       return;
     }
-    self.setState({ hintList: this.filterHints(this.state.filterText) }, e && function() {
+    self.setState({ hintList: self.filterHints(self.state.filterText) }, e && function() {
       self.hintElem.scrollTop(1000000000);
     });
     var top = findDOMNode(self.refs.input).getBoundingClientRect().y - 130;
@@ -145,18 +148,19 @@ var FilterInput = React.createClass({
   },
   onFilterKeyDown: function (e) {
     var elem;
+    var self = this;
     if (e.keyCode === 27) {
-      var hintList = this.state.hintList;
+      var hintList = self.state.hintList;
       if (hintList === null) {
-        this.showHints();
+        self.showHints();
       } else {
-        this.hideHints();
+        self.hideHints();
       }
     } else if (e.keyCode === 38) {
       // up
-      elem = this.hintElem.find('.w-active');
-      if (this.state.hintList === null) {
-        this.showHints();
+      elem = self.hintElem.find('.w-active');
+      if (self.state.hintList === null) {
+        self.showHints();
       }
       if (elem.length) {
         elem.removeClass('w-active');
@@ -164,16 +168,16 @@ var FilterInput = React.createClass({
       }
 
       if (!elem.length) {
-        elem = this.hintElem.find('li:last');
+        elem = self.hintElem.find('li:last');
         elem.addClass('w-active');
       }
-      util.ensureVisible(elem, this.hintElem);
+      util.ensureVisible(elem, self.hintElem);
       e.preventDefault();
     } else if (e.keyCode === 40) {
       // down
-      elem = this.hintElem.find('.w-active');
-      if (this.state.hintList === null) {
-        this.showHints();
+      elem = self.hintElem.find('.w-active');
+      if (self.state.hintList === null) {
+        self.showHints();
       }
       if (elem.length) {
         elem.removeClass('w-active');
@@ -181,29 +185,29 @@ var FilterInput = React.createClass({
       }
 
       if (!elem.length) {
-        elem = this.hintElem.find('li:first');
+        elem = self.hintElem.find('li:first');
         elem.addClass('w-active');
       }
-      util.ensureVisible(elem, this.hintElem);
+      util.ensureVisible(elem, self.hintElem);
       e.preventDefault();
     } else if (e.keyCode === 13) {
-      elem = this.hintElem.find('.w-active');
+      elem = self.hintElem.find('.w-active');
       var value = elem.attr('title');
       if (value) {
-        this.changeInput(value);
-        this.hideHints();
+        self.changeInput(value);
+        self.hideHints();
       }
     } else if (e.ctrlKey || e.metaKey) {
       if (e.keyCode == 68) {
-        this.clearFilterText();
+        self.clearFilterText();
         e.preventDefault();
         e.stopPropagation();
       } else if (e.keyCode == 88) {
         e.stopPropagation();
       }
     }
-    if (typeof this.props.onKeyDown === 'function') {
-      this.props.onKeyDown(e);
+    if (typeof self.props.onKeyDown === 'function') {
+      self.props.onKeyDown(e);
     }
   },
   clear: function () {
@@ -217,14 +221,14 @@ var FilterInput = React.createClass({
     });
   },
   clearFilterText: function () {
-    this.props.onChange && this.props.onChange('');
-    var hintList = null;
-    if (document.activeElement === findDOMNode(this.refs.input)) {
-      hintList = this.filterHints();
-    }
-    var hasChanged = this.state.filterText;
     var self = this;
-    this.setState({ filterText: '', hintList: hintList }, function() {
+    self.props.onChange && self.props.onChange('');
+    var hintList = null;
+    if (document.activeElement === findDOMNode(self.refs.input)) {
+      hintList = self.filterHints();
+    }
+    var hasChanged = self.state.filterText;
+    self.setState({ filterText: '', hintList: hintList }, function() {
       if (hasChanged) {
         self.onFilterChange();
       }
@@ -236,12 +240,13 @@ var FilterInput = React.createClass({
       return;
     }
     var type = target.textContent;
+    var self = this;
     var filterType = type === 'All' ? '' : type;
-    if (filterType === this.state.filterType) {
+    if (filterType === self.state.filterType) {
       return;
     }
-    this.setState({ filterType: filterType });
-    this.props.onFilterTypeChange(filterType);
+    self.setState({ filterType: filterType });
+    self.props.onFilterTypeChange(filterType);
   },
   renderTypes: function () {
     var filterType = this.state.filterType;
@@ -275,7 +280,7 @@ var FilterInput = React.createClass({
             onMouseDown={util.preventBlur}
           >
             <div className="w-filter-bar">
-              <a onClick={this.clear}>
+              <a onClick={self.clear}>
                 <Icon name="remove" />
                 Clear history
               </a>

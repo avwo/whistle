@@ -82,59 +82,62 @@ var Editor = React.createClass({
     } else if (/^(html|wtpl)$/i.test(mode)) {
       mode = 'htmlmixed';
     }
-    if (this._mode !== mode) {
-      this._mode = mode;
-      if (this._editor) {
-        this._editor.setOption('mode', mode);
+    var self = this;
+    if (self._mode !== mode) {
+      self._mode = mode;
+      if (self._editor) {
+        self._editor.setOption('mode', mode);
       }
-      if (this._foldGutter) {
-        this._editor.setOption('foldGutter', false);
-        this._editor.setOption('foldGutter', true);
+      if (self._foldGutter) {
+        self._editor.setOption('foldGutter', false);
+        self._editor.setOption('foldGutter', true);
       }
-      this.setFoldGutter(this.props.foldGutter);
+      self.setFoldGutter(self.props.foldGutter);
     }
   },
   setValue: function (value) {
-    value = this._value = value == null ? '' : value + '';
-    if (!this._editor || this._editor.getValue() == value) {
+    var self = this;
+    value = self._value = value == null ? '' : value + '';
+    if (!self._editor || self._editor.getValue() == value) {
       return;
     }
-    this._editor.setValue(value);
+    self._editor.setValue(value);
   },
   setHistory: function(init, history) {
-    var modal = this.props.modal;
+    var self = this;
+    var modal = self.props.modal;
     if (!modal) {
       return;
     }
     var activeItem = modal.getActive();
     var list = modal.list;
     var len = list.length;
-    var map = this._editorHistoryMap || {};
+    var map = self._editorHistoryMap || {};
     if (!len) {
-      this._editorHistoryMap = {};
-    } else if (len !== this._listLen) {
+      self._editorHistoryMap = {};
+    } else if (len !== self._listLen) {
       Object.keys(map).forEach(function(key) {
         if (list.indexOf(key) === -1) {
           delete map[key];
         }
       });
     }
-    this._listLen = len;
+    self._listLen = len;
     if(!activeItem) {
       return;
     }
     var name = activeItem.name;
-    this._editorHistoryMap = map;
+    self._editorHistoryMap = map;
     if(init) {
-      this._editorCurrentHistoryKey = name;
-      this._editor.clearHistory();
+      self._editorCurrentHistoryKey = name;
+      self._editor.clearHistory();
     } else {
-      if(this._editorCurrentHistoryKey !== name) {
-        map[this._editorCurrentHistoryKey] = history;
-        this._editorCurrentHistoryKey = name;
-        this._editor.clearHistory();
+      if(self._editorCurrentHistoryKey !== name) {
+        map[self._editorCurrentHistoryKey] = history;
+        self._editorCurrentHistoryKey = name;
+        self._editor.clearHistory();
         if(map[name]) {
-          this._editor.setHistory(map[name]);
+          self._editor.setHistory(map[name]);
           delete map[name];
         }
       }
@@ -144,43 +147,49 @@ var Editor = React.createClass({
     return this._editor ? this._editor.getValue() : '';
   },
   setTheme: function (theme) {
-    theme = this._theme = theme || DEFAULT_THEME;
-    if (!this._editor) {
+    var self = this;
+    theme = self._theme = theme || DEFAULT_THEME;
+    if (!self._editor) {
       return;
     }
-    this._editor.setOption('theme', theme);
+    self._editor.setOption('theme', theme);
   },
   setFontSize: function (fontSize) {
-    fontSize = this._fontSize = fontSize || DEFAULT_FONT_SIZE;
-    if (this._editor) {
-      findDOMNode(this.refs.editor).style.fontSize = fontSize;
+    var self = this;
+    fontSize = self._fontSize = fontSize || DEFAULT_FONT_SIZE;
+    if (self._editor) {
+      findDOMNode(self.refs.editor).style.fontSize = fontSize;
     }
   },
   showLineNumber: function (show) {
-    show = this._showLineNumber = show === false ? false : true;
-    if (this._editor) {
-      this._editor.setOption('lineNumbers', show);
+    var self = this;
+    show = self._showLineNumber = show === false ? false : true;
+    if (self._editor) {
+      self._editor.setOption('lineNumbers', show);
     }
   },
   showLineWrapping: function (show) {
-    show = this._showLineNumber = show === false ? false : true;
-    if (this._editor) {
-      this._editor.setOption('lineWrapping', show);
+    var self = this;
+    show = self._showLineWrapping = show === false ? false : true;
+    if (self._editor) {
+      self._editor.setOption('lineWrapping', show);
     }
   },
   setReadOnly: function (readOnly) {
-    readOnly = this._readOnly =
+    var self = this;
+    readOnly = self._readOnly =
       readOnly === false || readOnly === 'false' ? false : true;
-    if (this._editor) {
-      this._editor.setOption('readOnly', readOnly);
+    if (self._editor) {
+      self._editor.setOption('readOnly', readOnly);
     }
   },
   handleKeyUp: function(_, e) {
-    clearTimeout(this._timer);
+    var self = this;
+    clearTimeout(self._timer);
     var _byDelete = e.keyCode === 8;
     if (_byDelete || e.keyCode === 13) {
-      var editor = this._editor;
-      this._timer = setTimeout(function () {
+      var editor = self._editor;
+      self._timer = setTimeout(function () {
         if (!hasSelector('.CodeMirror-hints')) {
           editor._byDelete = true;
           editor._byEnter = !_byDelete;
@@ -190,33 +199,36 @@ var Editor = React.createClass({
     }
   },
   setAutoComplete: function () {
-    var isRules = this.isRulesEditor();
-    var option = isRules && !this.props.readOnly ? rulesHint.getExtraKeys() : {};
+    var self = this;
+    var isRules = self.isRulesEditor();
+    var option = isRules && !self.props.readOnly ? rulesHint.getExtraKeys() : {};
     if (!/\(Macintosh;/i.test(window.navigator.userAgent)) {
       option['Ctrl-F'] = 'findPersistent';
     }
     option['Cmd-F'] = 'findPersistent';
-    var editor = this._editor;
+    var editor = self._editor;
     editor.setOption('extraKeys', option);
-    editor.off('keyup', this.handleKeyUp);
-    isRules && editor.on('keyup', this.handleKeyUp);
+    editor.off('keyup', self.handleKeyUp);
+    isRules && editor.on('keyup', self.handleKeyUp);
   },
 
   // 设置代码折叠
   setFoldGutter: function (foldGutter) {
-    if (this.props.mode === 'rules') {
+    var self = this;
+    if (self.props.mode === 'rules') {
       return;
     }
-    foldGutter = foldGutter !== false && FOLD_MODE.indexOf(this._mode) !== -1;
-    if (this._foldGutter !== foldGutter && this._editor) {
-      this._foldGutter = foldGutter;
-      this._editor.setOption('foldGutter', foldGutter);
-      this._editor.setOption('gutters', foldGutter ? GUTTER_STYLE : []);
+    foldGutter = foldGutter !== false && FOLD_MODE.indexOf(self._mode) !== -1;
+    if (self._foldGutter !== foldGutter && self._editor) {
+      self._foldGutter = foldGutter;
+      self._editor.setOption('foldGutter', foldGutter);
+      self._editor.setOption('gutters', foldGutter ? GUTTER_STYLE : []);
     }
   },
 
   isRulesEditor: function () {
-    return this.props.mode === 'rules' || this._mode === 'rules';
+    var self = this;
+    return self.props.mode === 'rules' || self._mode === 'rules';
   },
   componentDidMount: function () {
     var timeout;

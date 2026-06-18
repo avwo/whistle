@@ -45,13 +45,19 @@ var RulesDialog = React.createClass({
     return { rulesName: getName() };
   },
   show: function (rules, values, filename) {
-    this._rules = rules;
-    this._values = values;
-    this._hasChanged = false;
-    this.setValue();
-    this.refs.rulesDialog.show();
+    var self = this;
+    self._rules = rules;
+    self._values = values;
+    self._hasChanged = false;
+    self.refs.rulesDialog.show();
+    if (self.props.onSave) {
+      return setTimeout(function() {
+        self.setState({ rulesValue: rules });
+      }, 360);
+    }
+    self.setValue();
     filename = getName(filename);
-    filename && this.setState({ rulesName: filename });
+    filename && self.setState({ rulesName: filename });
   },
   onRulesChange: function(e) {
     var name = e.target.value;
@@ -164,6 +170,11 @@ var RulesDialog = React.createClass({
   save: function() {
     var self = this;
     var state = self.state;
+    var onSave = self.props.onSave;
+    if (onSave) {
+      onSave(self.state.rulesValue);
+      return self.refs.rulesDialog.hide();
+    }
     var rulesValue = state.rulesValue;
     var filename = state.rulesName;
     self.createTempFile(function(filepath) {
@@ -291,28 +302,30 @@ var RulesDialog = React.createClass({
     return selectList;
   },
   render: function () {
-    var state = this.state;
+    var self = this;
+    var state = self.state;
 
     return (
       <Dialog ref="rulesDialog" wstyle="w-rules-dialog">
-        <div className="modal-body">
+        {self.props.onSave ? <div className="modal-header">
+          <h4>Rules Editor</h4>
           <CloseBtn />
-          <div className="modal-title">
-            Select Rule File:
-            <select className="form-control" onChange={this.onRulesChange} value={state.rulesName}>
-              {this.getSelectList()}
-              <option value="">+Create</option>
-            </select>
-            <button className="btn btn-default" onClick={this.showCreateRules}>+Create</button>
-          </div>
-          <Editor
-            value={state.rulesValue}
-            onChange={this.onRulesValueChange}
-            ref="editor"
-            mode="rules"
-            {...util.getRulesTheme()}
-          />
-        </div>
+        </div> : <div className="modal-title">
+          Select Rule File:
+          <select className="form-control" onChange={self.onRulesChange} value={state.rulesName}>
+            {self.getSelectList()}
+            <option value="">+Create</option>
+          </select>
+          <button className="btn btn-default" onClick={self.showCreateRules}>+Create</button>
+          <CloseBtn />
+        </div>}
+        <Editor
+          value={state.rulesValue}
+          onChange={self.onRulesValueChange}
+          ref="editor"
+          mode="rules"
+          {...util.getRulesTheme()}
+        />
         <div className="modal-footer">
           <button
             type="button"
@@ -324,7 +337,7 @@ var RulesDialog = React.createClass({
           <button
             type="button"
             className="btn btn-primary"
-            onClick={this.save}
+            onClick={self.save}
           >
             Save
           </button>
@@ -343,7 +356,7 @@ var MockDialogWrap = React.createClass({
     this.refs.rulesDialog.show(text, values, filename);
   },
   render: function () {
-    return <RulesDialog ref="rulesDialog" />;
+    return <RulesDialog ref="rulesDialog" onSave={this.props.onSave} />;
   }
 });
 

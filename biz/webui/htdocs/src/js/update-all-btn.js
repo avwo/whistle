@@ -16,10 +16,11 @@ var UpdateAllBtn = React.createClass({
     !this.state.disabled && events.trigger('updateAllPlugins');
   },
   render: function () {
-    var hide = this.state.disabled || this.props.hide;
+    var self = this;
+    var hide = self.state.disabled || self.props.hide;
     return (
       <a
-        onClick={this.updateAllPlugins}
+        onClick={self.updateAllPlugins}
         className={'w-plugins-menu w-plugin-update-btn' + (hide ? ' hide' : '')}
         draggable="false"
       >

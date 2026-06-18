@@ -54,7 +54,8 @@ var HttpsSettings = React.createClass({
     events.on('showCustomCerts', this.showCustomCertsInfo);
   },
   render: function() {
-    var props = this.props;
+    var self = this;
+    var props = self.props;
     var caHash = props.caHash;
     var port = props.port;
     var caUrlList = props.caUrlList;
@@ -63,7 +64,7 @@ var HttpsSettings = React.createClass({
     var enableHttp2 = props.enableHttp2;
     var onEnableHttps = props.onEnableHttps;
     var onEnableHttp2 = props.onEnableHttp2;
-    var state = this.state;
+    var state = self.state;
     var caType = state.caType;
     var caFullUrl = state.caFullUrl;
     var caUrl = 'cgi-bin/rootca';
@@ -90,14 +91,14 @@ var HttpsSettings = React.createClass({
                   >
                     Download RootCA
                   </a>
-                  <select className="w-root-ca-type" value={caType} onChange={this.selectCAType}>
+                  <select className="w-root-ca-type" value={caType} onChange={self.selectCAType}>
                     <option value="crt">rootCA.crt</option>
                     <option value="cer">rootCA.cer</option>
                     <option value="pem">rootCA.pem</option>
                   </select>
                 </div>
                 <div className="w-root-ca-url-wrap">
-                  <select className="w-root-ca-url" value={caFullUrl} onChange={this.selectCAUrl}>
+                  <select className="w-root-ca-url" value={caFullUrl} onChange={self.selectCAUrl}>
                     <option value="">{caShortUrl} (PROXY REQUIRED)</option>
                     {caUrlList.map(function (url) {
                       url = url[0] === 'h' ? url : 'http://' + url + ':' + port;
@@ -127,9 +128,9 @@ var HttpsSettings = React.createClass({
                         checked={interceptHttpsConnects}
                         onChange={onEnableHttps}
                         type="checkbox"
-                         className="w-va-mdl"
+                        className="w-vm"
                       />
-                      <span className="w-va-mdl w-mrl-5">
+                      <span className="w-vm w-mrl-5">
                         Enable HTTPS (Capture Tunnel Traffic)
                       </span>
                     </label>
@@ -140,9 +141,9 @@ var HttpsSettings = React.createClass({
                         checked={dataCenter.supportH2 && enableHttp2}
                         onChange={onEnableHttp2}
                         type="checkbox"
-                        className="w-va-mdl"
+                        className="w-vm"
                       />
-                    <span className="w-va-mdl w-mrl-5">
+                    <span className="w-vm w-mrl-5">
                       Enable HTTP/2
                     </span>
                     </label>
@@ -152,7 +153,7 @@ var HttpsSettings = React.createClass({
                     style={{
                       color: dataCenter.hasInvalidCerts ? 'var(--c-error)' : undefined
                     }}
-                    onClick={this.showCustomCertsInfo}
+                    onClick={self.showCustomCertsInfo}
                   >
                     Custom Certs Settings
                   </a>

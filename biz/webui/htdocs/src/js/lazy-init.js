@@ -2,11 +2,12 @@ var React = require('react');
 
 var LazyInit = React.createClass({
   render: function () {
-    if (!this.props.inited && !this._inited) {
+    var self = this;
+    if (!self.props.inited && !self._inited) {
       return null;
     }
-    this._inited = true;
-    return this.props.children;
+    self._inited = true;
+    return self.props.children;
   }
 });
 

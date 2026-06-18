@@ -18,8 +18,9 @@ var Textarea = React.createClass({
     return {};
   },
   componentDidMount: function () {
-    var bar = $(findDOMNode(this.refs.bar));
-    $(findDOMNode(this.refs.textarea))
+    var self = this;
+    var bar = $(findDOMNode(self.refs.bar));
+    $(findDOMNode(self.refs.textarea))
     .on('mousedown', function() {
       bar.css('visibility', 'hidden');
     })
@@ -28,41 +29,44 @@ var Textarea = React.createClass({
     });
   },
   shouldComponentUpdate: function (nextProps) {
-    var hide = util.getBool(this.props.hide);
+    var self = this;
+    var hide = util.getBool(self.props.hide);
     var nextHide = util.getBool(nextProps.hide);
-    if (this._isCaptured !== dataCenter.isCapture) {
-      this._isCaptured = dataCenter.isCapture;
+    if (self._isCaptured !== dataCenter.isCapture) {
+      self._isCaptured = dataCenter.isCapture;
       return true;
     }
-    if (hide !== nextHide || !this.props.value) {
+    if (hide !== nextHide || !self.props.value) {
       return true;
     }
     if (hide) {
       return false;
     }
-    return this.props.value !== nextProps.value;
+    return self.props.value !== nextProps.value;
   },
   edit: function () {
     util.openEditor(this.props.value);
   },
   download: function () {
-    var target = findDOMNode(this.refs.nameInput);
+    var self = this;
+    var target = findDOMNode(self.refs.nameInput);
     var name = target.value.trim();
     target.value = '';
-    var base64 = this.props.base64;
-    findDOMNode(this.refs.filename).value = name;
-    findDOMNode(this.refs.type).value = base64 ? 'base64' : '';
-    findDOMNode(this.refs.headers).value = this.props.headers || '';
-    findDOMNode(this.refs.content).value =
-      base64 != null ? base64 : this.props.value || '';
-    findDOMNode(this.refs.downloadForm).submit();
-    this.hideNameInput();
+    var base64 = self.props.base64;
+    findDOMNode(self.refs.filename).value = name;
+    findDOMNode(self.refs.type).value = base64 ? 'base64' : '';
+    findDOMNode(self.refs.headers).value = self.props.headers || '';
+    findDOMNode(self.refs.content).value =
+      base64 != null ? base64 : self.props.value || '';
+    findDOMNode(self.refs.downloadForm).submit();
+    self.hideNameInput();
   },
   getText: function() {
     return (this.props.value || '').replace(/\r\n|\r/g, '\n');
   },
   render: function () {
-    var props = this.props;
+    var self = this;
+    var props = self.props;
     var value = props.value || '';
     var exceed = value.length - MAX_LENGTH;
     if (exceed > 512) {
@@ -72,7 +76,7 @@ var Textarea = React.createClass({
         ' characters remaining, click "ViewAll" in top-right corner)\r\n';
     }
     var isHexView = props.isHexView;
-    this.state.value = value;
+    self.state.value = value;
     return (
       <div
         className={
@@ -91,18 +95,18 @@ var Textarea = React.createClass({
             <CopyBtn name="AsHex" value={util.getHexText(props.value)} />
           ) : undefined}
           <a
-            onDoubleClick={this.download}
-            onClick={this.showNameInput}
+            onDoubleClick={self.download}
+            onClick={self.showNameInput}
             className="w-download"
             draggable="false"
           >
             Download
           </a>
-          {this.renderAddBtn()}
-          <a onClick={this.edit} draggable="false">
+          {self.renderAddBtn()}
+          <a onClick={self.edit} draggable="false">
             ViewAll
           </a>
-          {this.renderInput()}
+          {self.renderInput()}
         </div>
         <TextView ref="textarea" className={props.className || ''} value={value} />
         <form

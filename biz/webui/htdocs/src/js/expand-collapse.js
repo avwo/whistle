@@ -10,11 +10,12 @@ var ExpandCollapse = React.createClass({
     return { expandLength: MIN_LENGTH };
   },
   componentWillReceiveProps: function (nextProps) {
+    var self = this;
     if (
-      nextProps.text !== this.props.text ||
-      this.props.wStyle !== nextProps.wStyle
+      nextProps.text !== self.props.text ||
+      self.props.wStyle !== nextProps.wStyle
     ) {
-      this.state.expandLength = MIN_LENGTH;
+      self.state.expandLength = MIN_LENGTH;
     }
   },
   onCollapse: function () {
@@ -27,29 +28,30 @@ var ExpandCollapse = React.createClass({
     util.openEditor(this.props.text);
   },
   render: function () {
-    var text = this.props.text;
+    var self = this;
+    var text = self.props.text;
     var len = (text && text.length) || 0;
-    var style = this.props.wStyle;
+    var style = self.props.wStyle;
     if (len < 2100) {
       return <span style={style}>{text}</span>;
     }
-    var expandLength = this.state.expandLength;
+    var expandLength = self.state.expandLength;
     var isCollapse = expandLength >= len;
     var viewAll = !isCollapse && expandLength > MAX_LENGTH;
     return (
       <span style={style}>
         {isCollapse ? text : text.substring(0, expandLength) + '...'}
         {viewAll ? (
-          <button onClick={this.viewAll} className="w-expand-collapse">
+          <button onClick={self.viewAll} className="w-expand-collapse">
             ViewAll
           </button>
         ) : isCollapse ? undefined : (
-          <button onClick={this.onExpand} className="w-expand-collapse">
+          <button onClick={self.onExpand} className="w-expand-collapse">
             Expand
           </button>
         )}
         {expandLength > MIN_LENGTH ? (
-          <button onClick={this.onCollapse} className="w-expand-collapse">
+          <button onClick={self.onCollapse} className="w-expand-collapse">
             Collapse
           </button>
         ) : undefined}

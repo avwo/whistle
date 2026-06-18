@@ -53,7 +53,7 @@ var Inspectors = React.createClass({
         }
       >
         <Properties className="w-detail-inspectors-url" modal={urlModal}  showEnableBtn={true} />
-        <div className="box w-detail-inspectors-title w-detail-inspectors-tabs">
+        <div className="box w-inspectors-title w-detail-inspectors-tabs">
           <button
             type="button"
             onClick={function () {

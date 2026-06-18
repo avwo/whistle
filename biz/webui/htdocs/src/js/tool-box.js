@@ -34,8 +34,9 @@ var ToolBox = React.createClass({
     storage.set('qrcodeValue', this.state.qrcodeValue);
   },
   saveQRCodeValue: function () {
-    clearTimeout(this.qrcodeTimer);
-    this.qrcodeTimer = setTimeout(this._saveQRCodeValue, 1000);
+    var self = this;
+    clearTimeout(self.qrcodeTimer);
+    self.qrcodeTimer = setTimeout(self._saveQRCodeValue, 1000);
   },
   _saveJSONValue: function () {
     var value = this.state.jsonValue;
@@ -50,8 +51,9 @@ var ToolBox = React.createClass({
     }
   },
   saveCodecText: function () {
-    clearTimeout(this.codecTimer);
-    this.codecTimer = setTimeout(this._saveCodecText, 1000);
+    var self = this;
+    clearTimeout(self.codecTimer);
+    self.codecTimer = setTimeout(self._saveCodecText, 1000);
   },
   onJSONChange: function (e) {
     this.setState(
@@ -80,27 +82,30 @@ var ToolBox = React.createClass({
     events.trigger('showJsonViewDialog', this.state.jsonValue);
   },
   formatJSON: function() {
-    var value = this.state.jsonValue;
+    var self = this;
+    var value = self.state.jsonValue;
     value = value && util.parseRawJson(value);
     if (!value) {
       return;
     }
-    this.setState({
+    self.setState({
       jsonValue: JSON.stringify(value, null, '  ')
-    }, this._saveJSONValue);
+    }, self._saveJSONValue);
   },
   encode: function () {
+    var self = this;
     try {
-      var value = util.toBase64(this.state.codecText);
-      this.refs.textDialog.show(value);
+      var value = util.toBase64(self.state.codecText);
+      self.refs.textDialog.show(value);
     } catch (e) {
       win.alert(e.message);
     }
   },
   decode: function () {
+    var self = this;
     try {
-      var value = util.decodeBase64(this.state.codecText).text;
-      this.refs.textDialog.show(value);
+      var value = util.decodeBase64(self.state.codecText).text;
+      self.refs.textDialog.show(value);
     } catch (e) {
       win.alert(e.message);
     }
@@ -141,7 +146,8 @@ var ToolBox = React.createClass({
   },
   shouldComponentUpdate: util.shouldComponentUpdate,
   render: function () {
-    var state = this.state;
+    var self = this;
+    var state = self.state;
     var qrcodeValue = state.qrcodeValue;
     var jsonValue = state.jsonValue;
     var domainValue = state.domainValue;
@@ -153,33 +159,33 @@ var ToolBox = React.createClass({
       <div
         className={
           'fill v-box w-tool-box ' +
-          (this.props.hide ? 'hide' : '')
+          (self.props.hide ? 'hide' : '')
         }
       >
-        <div className="w-detail-inspectors-title">
+        <div className="w-inspectors-title">
           <Icon name="qrcode" />QRCode
           <button
             className="btn btn-primary"
             disabled={!NOT_EMPTY_RE.test(qrcodeValue)}
-            onClick={this.generageQRCode}
+            onClick={self.generageQRCode}
           >
             Show
           </button>
         </div>
         <textarea
-          onChange={this.onQRCodeChange}
+          onChange={self.onQRCodeChange}
           onKeyDown={util.handleTab}
           value={qrcodeValue}
           className="w-tool-box-ctn"
           maxLength={MAX_QRCODE_LEN}
           placeholder="Enter request URL or any plain text"
         />
-        <div className="w-detail-inspectors-title">
+        <div className="w-inspectors-title">
           <Icon name="pencil" />JSON
           <button
             className="btn btn-primary"
             disabled={emptyJson}
-            onClick={this.parseJSON}
+            onClick={self.parseJSON}
             style={{marginLeft: 10}}
           >
             Inspect
@@ -187,25 +193,25 @@ var ToolBox = React.createClass({
           <button
             className="btn btn-default"
             disabled={emptyJson}
-            onClick={this.formatJSON}
+            onClick={self.formatJSON}
           >
             Format
           </button>
         </div>
         <textarea
-          onChange={this.onJSONChange}
+          onChange={self.onJSONChange}
           value={jsonValue}
           className="w-tool-box-ctn"
           maxLength={MAX_JSON_LEN}
           placeholder="Enter JSON text"
-          onKeyDown={this.onForamt}
+          onKeyDown={self.onForamt}
         />
-        <div className="w-detail-inspectors-title" style={{ height: 20 }}>
+        <div className="w-inspectors-title" style={{ height: 20 }}>
           <Icon name="eye-close" />Base64
           <button
             className="btn btn-primary"
             style={{marginLeft: 10}}
-            onClick={this.uploadFile}
+            onClick={self.uploadFile}
           >
             Upload
           </button>
@@ -213,27 +219,27 @@ var ToolBox = React.createClass({
             className="btn btn-default"
             style={{marginLeft: 10}}
             disabled={emptyCodec}
-            onClick={this.encode}
+            onClick={self.encode}
           >
             Encode
           </button>
           <button
             className="btn btn-default"
             disabled={emptyCodec}
-            onClick={this.decode}
+            onClick={self.decode}
           >
             Decode
           </button>
         </div>
         <textarea
-          onChange={this.onCodecChange}
+          onChange={self.onCodecChange}
           onKeyDown={util.handleTab}
           value={codecText}
           className="w-tool-box-ctn"
           maxLength={MAX_TEXT_LEN}
           placeholder="Enter text"
         />
-        <div className="w-detail-inspectors-title">
+        <div className="w-inspectors-title">
           <Icon name="certificate" />Certificate
         </div>
         <div className="box w-generate-cert">
@@ -242,12 +248,12 @@ var ToolBox = React.createClass({
             maxLength="256"
             placeholder="Enter certificate domain name"
             value={domainValue}
-            onChange={this.onDomainChange}
+            onChange={self.onDomainChange}
           />
           <button
             className="btn btn-primary"
             disabled={!domainValue || !URL_RE.test(domainValue)}
-            onClick={this.generateCert}
+            onClick={self.generateCert}
           >
             Download
           </button>
@@ -261,7 +267,7 @@ var ToolBox = React.createClass({
         >
           <input
             ref="uploadFile"
-            onChange={this.readFile}
+            onChange={self.readFile}
             name="file"
             type="file"
           />

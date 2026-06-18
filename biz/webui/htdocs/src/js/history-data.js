@@ -140,7 +140,8 @@ var HistoryData = React.createClass({
     }]);
   },
   export: function() {
-    var groupList = this.props.data && this.props.data._groupList;
+    var self = this;
+    var groupList = self.props.data && self.props.data._groupList;
     if (!groupList) {
       return;
     }
@@ -148,11 +149,12 @@ var HistoryData = React.createClass({
     for (var i = 0; i < len; i++) {
       var item = groupList[i];
       if (item && item.selected) {
-        this.exportItem(item);
+        self.exportItem(item);
       }
     }
   },
   onContextMenu: function(e) {
+    var self = this;
     var isTitle;
     var elem = $(e.target).closest('div.w-history-item');
     if (!elem.length) {
@@ -163,14 +165,14 @@ var HistoryData = React.createClass({
     if (!elem.length) {
       return;
     }
-    var groupList = this.props.data && this.props.data._groupList;
+    var groupList = self.props.data && self.props.data._groupList;
     var item = groupList && groupList[elem.attr('data-index')];
     if (!item) {
       return;
     }
     var noService = !dataCenter.whistleId;
     var disabled = noData(item);
-    this._focusItem = item;
+    self._focusItem = item;
     contextMenuList[0].name = isTitle ? 'Copy' : 'Copy URL';
     contextMenuList[0].copyText = elem.attr('title');
 
@@ -185,22 +187,23 @@ var HistoryData = React.createClass({
     var data = util.getMenuPosition(e, 130, 185 - (isTitle ? 150 : 0) + (noService ? 0 : 30));
     data.className = 'w-keep-history-data';
     data.list = contextMenuList;
-    this.refs.contextMenu.show(data);
+    self.refs.contextMenu.show(data);
   },
   onClickContextMenu: function (action) {
+    var self = this;
     switch (action) {
     case 'Copy As cURL':
-      return this.copyAsCURL(null, this._focusItem);
+      return self.copyAsCURL(null, self._focusItem);
     case 'Export':
-      return this.exportItem(this._focusItem);
+      return self.exportItem(self._focusItem);
     case 'Replay':
-      this.props.onReplay(this._focusItem);
-      return this.scrollToTop();
+      self.props.onReplay(self._focusItem);
+      return self.scrollToTop();
     case 'Replay Times':
-      this.props.onReplay(this._focusItem, true);
-      return this.scrollToTop();
+      self.props.onReplay(self._focusItem, true);
+      return self.scrollToTop();
     case 'Edit':
-      return this.props.onEdit(this._focusItem);
+      return self.props.onEdit(self._focusItem);
     case 'createApiTest':
       return util.showService('createApiTest');
     case 'copyAsScript':
@@ -248,7 +251,7 @@ var HistoryData = React.createClass({
                   type="button"
                   className="btn btn-default"
                   disabled={disabled}
-                  onClick={this.copyAsCURL}
+                  onClick={self.copyAsCURL}
                 >
                   As cURL
                 </button>
@@ -256,7 +259,7 @@ var HistoryData = React.createClass({
                   type="button"
                   className="btn btn-default"
                   disabled={disabled}
-                  onClick={this.onReplay}
+                  onClick={self.onReplay}
                 >
                   Replay
                 </button>
@@ -264,7 +267,7 @@ var HistoryData = React.createClass({
                   type="button"
                   className="btn btn-default"
                   disabled={disabled}
-                  onClick={this.onReplayTimes}
+                  onClick={self.onReplayTimes}
                 >
                   Replay Times
                 </button>
@@ -272,7 +275,7 @@ var HistoryData = React.createClass({
                   type="button"
                   className="btn btn-info"
                   disabled={disabled}
-                  onClick={this.export}
+                  onClick={self.export}
                 >
                   Export
                 </button>
@@ -280,7 +283,7 @@ var HistoryData = React.createClass({
                   type="button"
                   className="btn btn-primary"
                   disabled={disabled}
-                  onClick={this.onEdit}
+                  onClick={self.onEdit}
                 >
                   <Icon name="send" />
                   Edit
@@ -293,7 +296,7 @@ var HistoryData = React.createClass({
               </pre> : null}
           </div>
         </Divider> : <div className="w-empty-data">Empty</div>}
-        <ContextMenu onClick={this.onClickContextMenu} ref="contextMenu" />
+        <ContextMenu onClick={self.onClickContextMenu} ref="contextMenu" />
       </div>
     );
   }

@@ -8,10 +8,11 @@ var BtnGroup = React.createClass({
     if (btn.active || btn.disabled) {
       return;
     }
-    this.clearSelection();
+    var self = this;
+    self.clearSelection();
     btn.active = true;
-    if (!this.props.onClick || this.props.onClick(btn)) {
-      this.setState({
+    if (!self.props.onClick || self.props.onClick(btn)) {
+      self.setState({
         curBtn: btn
       });
     }

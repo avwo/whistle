@@ -272,7 +272,8 @@ var Home = React.createClass({
     this.setUpdateAllBtnState();
   },
   execCmd: function() {
-    var state = this.state;
+    var self = this;
+    var state = self.state;
     var install = state.install;
     var cmd = install ? state.installMsg : state.cmdMsg;
     if (!cmd) {
@@ -281,16 +282,17 @@ var Home = React.createClass({
     // if (state.registryList && state.registry) {
     //   cmd += ' --registry=' + state.registry;
     // }
-    this.refs.pluginsMgrDialog.show(cmd, this.installUrls, !install);
+    self.refs.pluginsMgrDialog.show(cmd, self.installUrls, !install);
   },
   onOpen: function (e) {
     var name = e.target.getAttribute('data-name');
-    var data = this.props.data;
+    var self = this;
+    var data = self.props.data;
     var plugin = data && data.plugins && data.plugins[name + ':'] || {};
     if (plugin.openInModal) {
       events.trigger('showPluginOption', plugin);
     } else {
-      this.props.onOpen && this.props.onOpen(e);
+      self.props.onOpen && self.props.onOpen(e);
     }
     e.preventDefault();
   },
@@ -304,13 +306,14 @@ var Home = React.createClass({
     this.refs.pluginRulesDialog.hide();
   },
   onShowRules: function(name) {
-    var plugin = this.props.data.plugins[name + ':'];
+    var self = this;
+    var plugin = self.props.data.plugins[name + ':'];
     plugin.name = name;
-    this.setState(
+    self.setState(
       {
         plugin: plugin
       },
-      this.showDialog
+      self.showDialog
     );
   },
   showRules: function (e) {
@@ -336,10 +339,11 @@ var Home = React.createClass({
     }
   },
   updateCmdMsg: function(msg, cb) {
-    if (this.state.install) {
-      this.setState({ installMsg: msg }, cb);
+    var self = this;
+    if (self.state.install) {
+      self.setState({ installMsg: msg }, cb);
     } else {
-      this.setState({ cmdMsg: msg }, cb);
+      self.setState({ cmdMsg: msg }, cb);
     }
   },
   setRegistry: function(registry, changed) {
@@ -348,8 +352,9 @@ var Home = React.createClass({
   },
   onRegistry: function(e) {
     var registry = e.target.value;
+    var self = this;
     if (registry === '+Add') {
-      var textarea = findDOMNode(this.refs.textarea);
+      var textarea = findDOMNode(self.refs.textarea);
       var pkgs = [];
       var regs = [];
       var regCmdName = '--registry=';
@@ -363,12 +368,12 @@ var Home = React.createClass({
       if (!regs.length) {
         regs.push(regCmdName);
       }
-      this.updateCmdMsg(pkgs.concat(regs).join(' '), function() {
+      self.updateCmdMsg(pkgs.concat(regs).join(' '), function() {
         textarea.focus();
       });
       return;
     }
-    this.setRegistry(registry);
+    self.setRegistry(registry);
   },
   onShowUpdate: function(e) {
     var self = this;
@@ -752,12 +757,12 @@ var Home = React.createClass({
               placeholder={install ? 'Enter npm package names (version optional), space‑separated, e.g. whistle.inspect whistle.abc@1.0.0 @scope/whistle.xyz' : undefined}
               className={'w-plugin-update-cmd' + (install ? ' w-plugin-install' : '')}
               maxLength="600"
-              onChange={this.onCmdChange}
+              onChange={self.onCmdChange}
               onKeyDown={util.handleTab}
             />
             <a
-              onMouseLeave={this.handleLeave}
-              onClick={this.handleCopy}
+              onMouseLeave={self.handleLeave}
+              onClick={self.handleCopy}
               className={'w-copy-text-with-tips w-plugin-copy-cmd' + (state.copied ? ' w-copied-text' : '')}
               data-clipboard-text={state.copied ? null : cmdMsg}
             >{state.copied ? 'Copied' : 'Copy'}</a>
@@ -765,7 +770,7 @@ var Home = React.createClass({
           <div className="modal-footer">
             {(registryList.length || registry) ? <label className="w-registry-list">
               <strong>--registry=</strong>
-              <select className="form-control" value={registry} onChange={this.onRegistry} style={selectStyle}>
+              <select className="form-control" value={registry} onChange={self.onRegistry} style={selectStyle}>
                 <option value="">None</option>
                 {
                   registryList.map(function(url) {
@@ -779,7 +784,7 @@ var Home = React.createClass({
               </select>
             </label> : <label className="w-registry-list">
               <strong>--registry=</strong>
-              <select className="form-control" value={registry} onChange={this.onRegistry} style={selectStyle}>
+              <select className="form-control" value={registry} onChange={self.onRegistry} style={selectStyle}>
                 <option value="">None</option>
                 <option value="+Add">+Add</option>
               </select>
@@ -795,7 +800,7 @@ var Home = React.createClass({
               type="button"
               className="btn btn-warning"
               data-dismiss="modal"
-              onClick={this.showService}
+              onClick={self.showService}
             >
               <Icon name="gift" />
               Plugins

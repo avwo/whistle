@@ -33,7 +33,8 @@ var CertsInfoDialog = React.createClass({
   show: function (data, dir) {
     var list = [];
     var rootCA;
-    this._certsDir = this._certsDir || dir;
+    var self = this;
+    self._certsDir = self._certsDir || dir;
     Object.keys(data).forEach(function (filename) {
       var cert = data[filename];
       var startDate = new Date(cert.notBefore);
@@ -85,9 +86,9 @@ var CertsInfoDialog = React.createClass({
     if (rootCA) {
       list.unshift(rootCA);
     }
-    this.refs.certsInfoDialog.show();
-    this._hideDialog = false;
-    this.setState({ list: list });
+    self.refs.certsInfoDialog.show();
+    self._hideDialog = false;
+    self.setState({ list: list });
   },
   hide: function () {
     this.refs.certsInfoDialog.hide();

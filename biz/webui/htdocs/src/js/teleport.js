@@ -14,27 +14,29 @@ var Portal = React.createClass({
     this.componentDidUpdate();
   },
   componentDidUpdate: function () {
+    var self = this;
     ReactDOM.unstable_renderSubtreeIntoContainer(
-      this,
-      this.props.children,
-      this.container[0]
+      self,
+      self.props.children,
+      self.container[0]
     );
-    var className = this.props.className;
-    if (this._className !== className) {
-      this._className = className;
-      this.container.removeClass();
-      className && this.container.addClass(className);
+    var className = self.props.className;
+    if (self._className !== className) {
+      self._className = className;
+      self.container.removeClass();
+      className && self.container.addClass(className);
     }
   },
   componentWillUnmount: function () {
-    ReactDOM.unmountComponentAtNode(this.container[0]);
-    document.body.removeChild(this.container[0]);
+    var self = this;
+    ReactDOM.unmountComponentAtNode(self.container[0]);
+    document.body.removeChild(self.container[0]);
   },
   show: function () {
-    if (this.isVisible()) {
-      return;
+    var self = this;
+    if (!self.isVisible()) {
+      self.container.show('fast');
     }
-    this.container.show('fast');
   },
   isVisible: function () {
     return this.container.is(':visible');
@@ -43,8 +45,9 @@ var Portal = React.createClass({
     this.container.hide('fast');
   },
   destroy: function () {
-    this.hide();
-    this.container && this.componentWillUnmount();
+    var self = this;
+    self.hide();
+    self.container && self.componentWillUnmount();
   },
   render: function () {
     return null;

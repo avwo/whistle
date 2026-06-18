@@ -44,17 +44,21 @@ var CreateRuleDialog = React.createClass({
     };
   },
   show: function (data, filename) {
-    this._hideDialog = false;
-    this.refs.addRules.show();
+    var self = this;
+    self._hideDialog = false;
+    self.refs.addRules.show();
     var session = data && data.session;
-    if (session) {
-      this.state.patternType = 'url';
-      this.refs.urlInput.setUrl(session.url);
+    var treeNode = data && data.treeNode;
+    var onSave = data && data.onSave;
+    if (session || treeNode) {
+      self.state.patternType = 'url';
+      self.refs.urlInput.setUrl(session ? session.url : treeNode.path);
     }
-    this.setState({
-      type: (data && data.type) || this.state.type,
+    self.setState({
+      type: (data && data.type) || self.state.type,
       filename: filename,
-      session: session
+      session: session,
+      onSave: onSave
     });
   },
   showEditor: function() {
@@ -75,13 +79,21 @@ var CreateRuleDialog = React.createClass({
   componentDidMount: function() {
     events.on('hideRulesDialog', this.hide);
   },
-  saveRules: function() {
-    var state = this.state;
+  getFormatedRules: function() {
     var rules = this.getRules();
     var values = rules._values || '';
+    return this.formatRules(rules) + values;
+  },
+  saveRules: function() {
+    var state = this.state;
+    var rules = this.getFormatedRules();
+    if (state.onSave) {
+      this.hide();
+      return state.onSave(rules);
+    }
     events.trigger('showRulesDialog', {
       filename: state.filename,
-      rules: this.formatRules(rules) + values
+      rules: rules
     });
   },
   formatRules: function(rules) {
@@ -201,6 +213,9 @@ var CreateRuleDialog = React.createClass({
   onFiltersChange: function(filters) {
     this.setState({ filters: filters });
   },
+  showTestRule: function() {
+    events.trigger('showTestRuleDialog', {ruleText: this.getFormatedRules(), session: this.state.session});
+  },
   renderHeader: function() {
     var state = this.state;
 
@@ -215,7 +230,8 @@ var CreateRuleDialog = React.createClass({
     );
   },
   renderPattern: function() {
-    var state = this.state;
+    var self = this;
+    var state = self.state;
     var patternType = state.patternType;
     var session = state.session;
     var placeholder = PATTERN_TIPS[patternType];
@@ -232,18 +248,18 @@ var CreateRuleDialog = React.createClass({
           <HelpIcon className="ml-10" docsUrl={'rules/pattern.html#' + patternType} />
         </label>
         <div className="w-form-value">
-          <Select className="w-200" value={patternType} onChange={this.onPatternTypeChange} options={PATTERN_OPTIONS} />
+          <Select className="w-200" value={patternType} onChange={self.onPatternTypeChange} options={PATTERN_OPTIONS} />
           <span className="w-wildcard-symbol" style={wildcardStyle}>^</span>
-          <UrlInput ref="urlInput" style={urlInputStyle} placeholder={placeholder} session={session} onChange={this.onPatternUrlChange} />
+          <UrlInput ref="urlInput" style={urlInputStyle} placeholder={placeholder} session={session} onChange={self.onPatternUrlChange} />
           <span className="w-regexp-symbol" style={regExpStyle}>/</span>
           <input className="form-control mx-2" type="text" placeholder={placeholder} maxLength="1024"
-            value={state.regexp} onChange={this.onRegExpChange} style={regExpStyle} />
+            value={state.regexp} onChange={self.onRegExpChange} style={regExpStyle} />
           <span className="w-regexp-symbol" style={regExpStyle}>/{state.ignoreCase ? 'i' : null}</span>
           <label className="ml-10" style={regExpStyle}>
-            <input type="checkbox" className="mr-5" checked={state.ignoreCase} onChange={this.onIgnoreCaseChange} /> Case-insensitive
+            <input type="checkbox" className="mr-5" checked={state.ignoreCase} onChange={self.onIgnoreCaseChange} /> Case-insensitive
           </label>
           <label className="ml-10" style={urlInputStyle}>
-            <input type="checkbox" className="mr-5" checked={state.fullMatch} onChange={this.onFullMatchChange} /> Full-match
+            <input type="checkbox" className="mr-5" checked={state.fullMatch} onChange={self.onFullMatchChange} /> Full-match
           </label>
         </div>
       </div>
@@ -271,6 +287,7 @@ var CreateRuleDialog = React.createClass({
           <Icon name="eye-open" />
           Preview Rules
           {text ? <CopyBtn value={text} className="btn btn-default w-copy-rules" /> : null}
+          {text ? <button className="btn btn-default w-copy-rules" onClick={this.showTestRule}>Test</button> : null}
         </label>
         <pre className={'w-preview-rules ' + (isMulti ? ' w-preview-rules-multi' : '')}>
           {rules}
@@ -280,22 +297,23 @@ var CreateRuleDialog = React.createClass({
     );
   },
   render: function() {
-    var state = this.state;
+    var self = this;
+    var state = self.state;
     var type = state.type;
-    var rules = this.getRules();
+    var rules = self.getRules();
 
     return (
       <Dialog ref="addRules" wstyle="w-create-rule">
-        {this.renderHeader()}
+        {self.renderHeader()}
         <div className="modal-body">
-          {this.renderPattern()}
-          <MappingRule hide={type !== 'Mapping'} onChange={this.onMappingChange} session={state.session} />
-          <NetworkRule hide={type !== 'Network'} onChange={this.onNetworkChange} session={state.session} />
-          <RequestRule hide={type !== 'Request'} onChange={this.onRequestChange} session={state.session} />
-          <ResponseRule hide={type !== 'Response'} onChange={this.onResponseChange} session={state.session} />
-          <DebugRule hide={type !== 'Debug'} onChange={this.onDebugChange} session={state.session} />
-          <FiltersRule onChange={this.onFiltersChange} session={state.session} />
-          {this.renderRules(rules)}
+          {self.renderPattern()}
+          <MappingRule hide={type !== 'Mapping'} onChange={self.onMappingChange} session={state.session} />
+          <NetworkRule hide={type !== 'Network'} onChange={self.onNetworkChange} session={state.session} />
+          <RequestRule hide={type !== 'Request'} onChange={self.onRequestChange} session={state.session} />
+          <ResponseRule hide={type !== 'Response'} onChange={self.onResponseChange} session={state.session} />
+          <DebugRule hide={type !== 'Debug'} onChange={self.onDebugChange} session={state.session} />
+          <FiltersRule onChange={self.onFiltersChange} session={state.session} />
+          {self.renderRules(rules)}
         </div>
         <div className="modal-footer">
           <button
@@ -309,9 +327,9 @@ var CreateRuleDialog = React.createClass({
             disabled={!rules}
             type="button"
             className="btn btn-primary"
-            onClick={this.saveRules}
+            onClick={self.saveRules}
           >
-            Save As Rules
+            Save{state.onSave ? null : ' As Rules'}
           </button>
         </div>
       </Dialog>

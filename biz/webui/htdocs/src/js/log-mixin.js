@@ -14,22 +14,24 @@ var LOG_TEXT_KEY = window.Symbol ? window.Symbol('logText') : 'logText';
 module.exports = {
   LOG_TEXT_KEY: LOG_TEXT_KEY,
   componentDidUpdate: function () {
-    if (!this.isHide() && this.state.scrollToBottom) {
-      this.container.scrollTop = 10000000;
+    var self = this;
+    if (!self.isHide() && self.state.scrollToBottom) {
+      self.container.scrollTop = 10000000;
     }
   },
   shouldComponentUpdate: function (nextProps) {
-    var hide = util.getBool(this.props.hide);
+    var self = this;
+    var hide = util.getBool(self.props.hide);
     var toggleHide = hide != util.getBool(nextProps.hide);
     if (toggleHide || !hide) {
       if (!toggleHide && !hide) {
-        this.state.scrollToBottom = util.scrollAtBottom(
-          this.container,
-          this.content
+        self.state.scrollToBottom = util.scrollAtBottom(
+          self.container,
+          self.content
         );
       }
-      clearTimeout(this.filterTimer);
-      clearTimeout(this.scrollTimer);
+      clearTimeout(self.filterTimer);
+      clearTimeout(self.scrollTimer);
       return true;
     }
     return false;
@@ -117,37 +119,40 @@ module.exports = {
     len > 9 && util.trimLogList(logs, len, this.keyword);
   },
   isHide: function () {
-    if (this.props.hide) {
+    var self = this;
+    if (self.props.hide) {
       return true;
     }
-    var btn = this._importBtn;
+    var btn = self._importBtn;
     if (!btn) {
-      btn = findDOMNode(this.refs.importBtn);
-      this._importBtn = btn;
+      btn = findDOMNode(self.refs.importBtn);
+      self._importBtn = btn;
     }
     return !btn || !btn.offsetWidth;
   },
   updateLogs: function(newLogs) {
-    var state = this.state;
+    var self = this;
+    var state = self.state;
     var logs = state.logs;
     var len = logs.length;
-    if (!newLogs.length || this.isHide() || len > MAX_COUNT) {
+    if (!newLogs.length || self.isHide() || len > MAX_COUNT) {
       return;
     }
     var pageSize = Math.max(PAGE_SIZE, Math.floor((MAX_COUNT - len) * 2 / 3));
     newLogs = newLogs.splice(0, pageSize);
-    state.logs = util.filterLogList(logs.concat(newLogs), this.keyword, true);
-    var atBottom = util.scrollAtBottom(this.container, this.content);
-    atBottom && this.trimLogs();
-    this.setState({});
+    state.logs = util.filterLogList(logs.concat(newLogs), self.keyword, true);
+    var atBottom = util.scrollAtBottom(self.container, self.content);
+    atBottom && self.trimLogs();
+    self.setState({});
   },
   handleImport: function (_, result) {
-    if (this.isHide()) {
+    var self = this;
+    if (self.isHide()) {
       return;
     }
-    this.state.logs = this.state.logs.concat(result.logs);
-    this.trimLogs();
-    this.setState({});
+    self.state.logs = self.state.logs.concat(result.logs);
+    self.trimLogs();
+    self.setState({});
   },
   renderCopy: function (text, log) {
     var self = this;
@@ -156,21 +161,22 @@ module.exports = {
     }} />;
   },
   renderActionBar: function(disabled) {
+    var self = this;
     return (<div className="w-textarea-bar">
-      <RecordBtn onClick={this.handleAction} />
-      <a ref="importBtn" onClick={this.selectFile} draggable="false">
+      <RecordBtn onClick={self.handleAction} />
+      <a ref="importBtn" onClick={self.selectFile} draggable="false">
         Import
       </a>
       <a
         className={disabled ? 'w-disabled' : ''}
-        onClick={disabled ? undefined : this.export}
+        onClick={disabled ? undefined : self.export}
         draggable="false"
       >
         Export
       </a>
       <a
         className={'w-clear' + (disabled ? ' w-disabled' : '')}
-        onClick={disabled ? undefined : this.clearLogs}
+        onClick={disabled ? undefined : self.clearLogs}
         draggable="false"
       >
         Clear

@@ -56,11 +56,12 @@ var ContextMenu = React.createClass({
     ) {
       return;
     }
-    var data = this.state;
-    !target.hasClass('w-ctx-item-multi') && !data.radio && this.hide();
+    var self = this;
+    var data = self.state;
+    !target.hasClass('w-ctx-item-multi') && !data.radio && self.hide();
     var action = target.attr('data-menu-action');
-    if (this.props.onClick) {
-      this.props.onClick(
+    if (self.props.onClick) {
+      self.props.onClick(
         action,
         e,
         target.attr('data-parent-action'),
@@ -74,7 +75,7 @@ var ContextMenu = React.createClass({
       data.list.forEach(function (item) {
         item.selected = item.action == action;
       });
-      this.setState({});
+      self.setState({});
     }
   },
   getDialogElement: function () {

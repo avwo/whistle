@@ -54,7 +54,8 @@ var ResponseRule = React.createClass({
   handleChange: function() {
     var rules = [];
     var values = [];
-    var state = this.state;
+    var self = this;
+    var state = self.state;
     if (!state.disabledStatusCode) {
       var action = state.statusCodeAction;
       var isLoc = action[0] === 'C';
@@ -83,12 +84,12 @@ var ResponseRule = React.createClass({
         }
       }
     };
-    addRules(this.getHeaderRules());
-    addRules(this.getBodyRules());
+    addRules(self.getHeaderRules());
+    addRules(self.getBodyRules());
     rules = rules.join(' ');
-    if (this._curRules !== rules) {
-      this._curRules = rules;
-      this.props.onChange(rules, values.join('\n\n'));
+    if (self._curRules !== rules) {
+      self._curRules = rules;
+      self.props.onChange(rules, values.join('\n\n'));
     }
   },
   shouldComponentUpdate: util.shouldComponentUpdate,
@@ -244,8 +245,8 @@ var ResponseRule = React.createClass({
             <Select value={statusCodeAction} disabled={disabledStatusCode} className="w-175" options={STATUS_CODE_ACTIONS}
               onChange={self.onStatusCodeActionChange} />
             <StatusSelect value={state.statusCode} className={isRedirect ? 'w-hide' : null} disabled={disabledStatusCode} onChange={self.onStatusCodeChange} />
-            <UrlInput isRedirect className={'mr-10' + (isRedirect ? '' : ' w-hide')} disabled={disabledStatusCode} onChange={this.onUrlChange} />
-            <HelpIcon docsUrl={'rules/' + this.getStatusProtocol(statusCodeAction) + '.html'} />
+            <UrlInput isRedirect className={'mr-10' + (isRedirect ? '' : ' w-hide')} disabled={disabledStatusCode} onChange={self.onUrlChange} />
+            <HelpIcon docsUrl={'rules/' + self.getStatusProtocol(statusCodeAction) + '.html'} />
           </div>
         </div>
         <div className="w-form-item">

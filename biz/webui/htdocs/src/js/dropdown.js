@@ -8,12 +8,13 @@ var DropDown = React.createClass({
     return {};
   },
   onChange: function (option) {
-    var onChange = this.props.onChange;
+    var self = this;
+    var onChange = self.props.onChange;
     if (onChange) {
       onChange(option);
     }
-    if (this.props.value == null) {
-      this.setState({
+    if (self.props.value == null) {
+      self.setState({
         selectedOption: option
       });
     }

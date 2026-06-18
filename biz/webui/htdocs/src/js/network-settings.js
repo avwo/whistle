@@ -81,13 +81,14 @@ var Settings = React.createClass({
   },
   onNetworkSettingsChange: function (e) {
     var target = e.target;
+    var self = this;
     var name = target.getAttribute('data-name');
     if (!name || name === 'path') {
       return;
     }
     if (name === 'viewOwn') {
       dataCenter.setOnlyViewOwnData(target.checked);
-      this.setState({});
+      self.setState({});
       events.trigger('filterChanged');
       return;
     }
@@ -97,13 +98,13 @@ var Settings = React.createClass({
     }
     if (name === 'viewAllInNewWindow') {
       storage.set('viewAllInNewWindow', target.checked ? '1' : '');
-      return this.setState({});
+      return self.setState({});
     }
     if (name === 'disabledHNR') {
       storage.set('disabledHNR', target.checked ? '' : '1');
-      return this.setState({});
+      return self.setState({});
     }
-    var settings = this.state;
+    var settings = self.state;
     var filterTextChanged;
     var columnsChanged;
     switch (name) {
@@ -136,7 +137,7 @@ var Settings = React.createClass({
     } else if (columnsChanged) {
       events.trigger('onColumnsChanged');
     }
-    this.setState(settings);
+    self.setState(settings);
   },
   showViewAllSettings: function(e) {
     e.preventDefault();
@@ -163,9 +164,10 @@ var Settings = React.createClass({
     NetworkModal.setMaxRows(e.target.value);
   },
   showDialog: function () {
-    var settings = this.getNetworkSettings();
-    this.setState(settings);
-    this.refs.networkSettingsDialog.show();
+    var self = this;
+    var settings = self.getNetworkSettings();
+    self.setState(settings);
+    self.refs.networkSettingsDialog.show();
   },
   hideDialog: function () {
     this.refs.networkSettingsDialog.hide();
@@ -307,7 +309,7 @@ var Settings = React.createClass({
     } else if (columnsChanged) {
       events.trigger('onColumnsChanged');
     }
-    this.setState({});
+    self.setState({});
 
     ['Custom1', 'Custom2'].forEach(function(name) {
       var lname = name.toLowerCase();
@@ -378,9 +380,9 @@ var Settings = React.createClass({
                   checked={!state.disabledExcludeText}
                   data-name="excludeFilter"
                   type="checkbox"
-                  className="w-va-mdl"
+                  className="w-vm"
                 />
-                <span className="w-va-mdl">Exclude Filter</span>
+                <span className="w-vm">Exclude Filter</span>
               </label>
               <HelpIcon docsUrl="gui/network.html#settings" />
             </legend>
@@ -401,9 +403,9 @@ var Settings = React.createClass({
                   checked={!state.disabledFilterText}
                   data-name="filter"
                   type="checkbox"
-                  className="w-va-mdl"
+                  className="w-vm"
                 />
-                <span className="w-va-mdl">Include Filter</span>
+                <span className="w-vm">Include Filter</span>
               </label>
               <HelpIcon docsUrl="gui/network.html#settings" />
             </legend>
@@ -507,7 +509,7 @@ var Settings = React.createClass({
           <label className="w-ns-own">
             <input checked={viewAllInNewWindow} data-name="viewAllInNewWindow" type="checkbox" />
             "ViewAll" in new window
-            <Icon onClick={this.showViewAllSettings} name="cog" title="Custom URL opening"
+            <Icon onClick={self.showViewAllSettings} name="cog" title="Custom URL opening"
               className={'ml-10' + (viewAllInNewWindow ? (state.openUrl ? ' w-enabled' : '') + ' w-help-icon' : ' w-not-allowed')} />
           </label>
           <label className="w-ns-own">
@@ -555,7 +557,7 @@ var Settings = React.createClass({
             <label>
               <span>Column Name:</span>
               <input
-                onChange={this.onNameChange}
+                onChange={self.onNameChange}
                 ref="newColumnName"
                 value={state.value}
                 className="form-control"
@@ -566,7 +568,7 @@ var Settings = React.createClass({
             <label>
             <span>Data Key:</span>
               <input
-                onChange={this.onKeyChange}
+                onChange={self.onKeyChange}
                 value={state.key}
                 className="form-control"
                 maxLength="72"

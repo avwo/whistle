@@ -96,14 +96,15 @@ var SyncDialog = React.createClass({
     }
   },
   render: function () {
-    var state = this.state;
-    var loadingRules = this.loadingRules;
-    var loadingValues = this.loadingValues;
+    var self = this;
+    var state = self.state;
+    var loadingRules = self.loadingRules;
+    var loadingValues = self.loadingValues;
     return (
       <Dialog ref="syncDialog" wstyle="w-sync-dialog">
         <div className="modal-body">
           <button
-            onClick={this.syncRules}
+            onClick={self.syncRules}
             disabled={loadingRules || !util.isString(state.rulesUrl)}
             type="button"
             className="btn btn-primary"
@@ -112,7 +113,7 @@ var SyncDialog = React.createClass({
             {showLoading(loadingRules) ? 'Loading' : 'Sync'} Rules
           </button>
           <button
-            onClick={this.syncValues}
+            onClick={self.syncValues}
             disabled={loadingValues || !util.isString(state.valuesUrl)}
             type="button"
             className="btn btn-default"
@@ -130,7 +131,7 @@ var SyncDialog = React.createClass({
             Close
           </button>
         </div>
-        <KVDialog onHistoryChange={this.onHistoryChange} ref="kvDialog" />
+        <KVDialog onHistoryChange={self.onHistoryChange} ref="kvDialog" />
       </Dialog>
     );
   }

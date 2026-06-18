@@ -47,10 +47,10 @@ var ServerLog = React.createClass({
   },
   componentDidMount: function () {
     var self = this;
-    var container = (this.container = findDOMNode(
+    var container = (self.container = findDOMNode(
       self.refs.svrContainer
     ));
-    this.content = findDOMNode(self.refs.svrContent);
+    self.content = findDOMNode(self.refs.svrContent);
 
     events.on('uploadLogs', self.handleImport);
     dataCenter.on('log', function(_, logs) {
@@ -103,7 +103,7 @@ var ServerLog = React.createClass({
       >
         <div className="w-log-action-bar">
           <DropDown onChange={self.changeLevel} options={state.levels} />
-          {this.renderActionBar(!util.hasVisibleLog(logs))}
+          {self.renderActionBar(!util.hasVisibleLog(logs))}
         </div>
         <div ref="svrContainer" className="fill w-log-ctn">
           <ul ref="svrContent">

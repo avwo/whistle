@@ -92,7 +92,8 @@ var contextMenuList = [
       { name: 'Replay Times', action: 'replayTimes' },
       { name: 'Edit Request' },
       { name: 'Mark' },
-      { name: 'Unmark' }
+      { name: 'Unmark' },
+      { name: 'Test Rules' }
     ]
   },
   {
@@ -364,7 +365,7 @@ var Row = React.createClass({
             <th className="order" scope="row" style={style}>
               {order}
               {item.importedData ? <Icon name="import" /> : null}
-              {item.fc && !item.importedData ? <Icon name="send" /> : null}
+              {item.fc && !item.importedData ? <Icon name={item.isTest ? 'text-size' : 'send'} /> : null}
             </th>
             {columnList.map(function (col) {
               var name = col.name;
@@ -431,12 +432,13 @@ var ReqData = React.createClass({
     };
   },
   componentDidUpdate: function () {
-    this.isShownBtn && events.trigger('checkAtBottom');
+    var self = this;
+    self.isShownBtn && events.trigger('checkAtBottom');
     if (storage.get('disabledHNR') === '1') {
       return;
     }
-    var modal = this.props.modal;
-    if (!modal.isTreeView || !this.visibleList || this.startIndex == null) {
+    var modal = self.props.modal;
+    if (!modal.isTreeView || !self.visibleList || self.startIndex == null) {
       return;
     }
     var curNewIdList = dataCenter.curNewIdList;
@@ -446,11 +448,11 @@ var ReqData = React.createClass({
     dataCenter.curNewIdList = null;
     var leafMap = {};
     var visibleMap = {};
-    var list = this.visibleList;
+    var list = self.visibleList;
     var lightList = [];
     var visibleLeafMap = {};
     var item;
-    for (var i = this.startIndex; i <= this.endIndex; i++) {
+    for (var i = self.startIndex; i <= self.endIndex; i++) {
       item = list[i];
       if (item) {
         if (!item.parent) {
@@ -813,23 +815,24 @@ var ReqData = React.createClass({
   },
   removeAllSuchHost: function (item, justRemove) {
     var hostList = [];
-    var list = this.getActiveList(item);
+    var self = this;
+    var list = self.getActiveList(item);
     list.forEach(function (item) {
       var host = item.isHttps ? item.path : item.hostname;
       if (hostList.indexOf(host) === -1) {
         hostList.push(host);
       }
     });
-    this.props.modal.removeByHostList(hostList);
+    self.props.modal.removeByHostList(hostList);
     if (!justRemove) {
-      var filterList = this.getFilterList();
+      var filterList = self.getFilterList();
       hostList.forEach(function (host) {
         host = 'H:' + host;
         if (filterList.indexOf(host) === -1) {
           filterList.unshift(host);
         }
       });
-      this.updateFilter(filterList.join('\n'));
+      self.updateFilter(filterList.join('\n'));
       events.trigger('shakeSettings');
     }
     events.trigger('updateGlobal');
@@ -841,7 +844,8 @@ var ReqData = React.createClass({
   },
   removeAllSuchURL: function (item, justRemove) {
     var urlList = [];
-    var list = this.getActiveList(item);
+    var self = this;
+    var list = self.getActiveList(item);
     list.forEach(function (item) {
       var url = item.isHttps
         ? item.path
@@ -850,15 +854,15 @@ var ReqData = React.createClass({
         urlList.push(url);
       }
     });
-    this.props.modal.removeByUrlList(urlList);
+    self.props.modal.removeByUrlList(urlList);
     if (!justRemove) {
-      var filterList = this.getFilterList();
+      var filterList = self.getFilterList();
       urlList.forEach(function (url) {
         if (filterList.indexOf(url) === -1) {
           filterList.unshift(url);
         }
       });
-      this.updateFilter(filterList.join('\n'));
+      self.updateFilter(filterList.join('\n'));
       events.trigger('shakeSettings');
     }
     events.trigger('updateGlobal');
@@ -931,13 +935,16 @@ var ReqData = React.createClass({
       events.trigger('replaySessions', [item, true]);
       break;
     case 'Export':
-      if (self.treeTarget && !self.isTreeLeafNode) {
+      if (treeId && !self.isTreeLeafNode) {
         events.trigger('exportSessions', [
-          modal.getListByPath(self.treeTarget)
+          modal.getListByPath(treeId)
         ]);
       } else {
         events.trigger('exportSessions', item);
       }
+      break;
+    case 'Test Rules':
+      events.trigger('showTestRuleDialog', {session: item, treeNode: treeId && modal.getTreeNode(treeId)});
       break;
     case 'createApiTest':
       return util.showService('createApiTest');
@@ -1021,7 +1028,7 @@ var ReqData = React.createClass({
     case 'Request':
     case 'Response':
     case 'Debug':
-      events.trigger('showAddRulesDialog', {session: item, type: action});
+      events.trigger('showAddRulesDialog', {session: item, treeNode: treeId && modal.getTreeNode(treeId), type: action});
       break;
     }
   },
@@ -1048,16 +1055,16 @@ var ReqData = React.createClass({
     if (!el.length) {
       el = target.closest('.w-req-table');
     }
-    var modal = this.props.modal;
+    var self = this;
+    var modal = self.props.modal;
     var dataId = el.attr('data-id');
-    clearTimeout(this._delayCtxTimer);
+    clearTimeout(self._delayCtxTimer);
     if (!modal.isTreeView && !dataId) {
-      var con = this.container.find('.ReactVirtualized__Grid:first');
+      var con = self.container.find('.ReactVirtualized__Grid:first');
       if (con.length && document.elementFromPoint && con[0].offsetHeight < con[0].scrollHeight) {
-        var self = this;
         var pageX = e.pageX;
         var pageY = e.pageY;
-        this._delayCtxTimer = setTimeout(function () {
+        self._delayCtxTimer = setTimeout(function () {
           target = $(document.elementFromPoint(pageX, pageY)).closest('.w-req-data-item')[0];
           target && self.onContextMenu({
             target: target,
@@ -1074,8 +1081,8 @@ var ReqData = React.createClass({
     var disabled = !item;
     var cellText = item && (nodeName === 'TD' || nodeName === 'TH') && getCellText(target);
     var treeNodeData = modal.isTreeView && modal.getTreeNode(treeId);
-    this.treeTarget = null;
-    this.currentFocusItem = item;
+    self.treeTarget = null;
+    self.currentFocusItem = item;
     var clickBlank = disabled && !treeNodeData;
     var list0 = contextMenuList[0].list;
     list0[4].disabled = clickBlank || !/^https?:\/\//.test(treeId || item.url);
@@ -1221,8 +1228,8 @@ var ReqData = React.createClass({
       var isLeaf = treeNodeData.data;
       var expand = treeNodeData.expand;
 
-      this.treeTarget = treeId;
-      this.isTreeLeafNode = isLeaf;
+      self.treeTarget = treeId;
+      self.isTreeLeafNode = isLeaf;
       treeList[0].disabled = expand || isLeaf;
       treeList[1].disabled = !expand || isLeaf;
       treeList[2].disabled = isLeaf;
@@ -1259,7 +1266,7 @@ var ReqData = React.createClass({
     var data = util.getMenuPosition(e, 110, height);
     data.list = contextMenuList;
     data.className = data.marginRight < 360 ? 'w-ctx-menu-left' : '';
-    this.refs.contextMenu.show(data);
+    self.refs.contextMenu.show(data);
   },
   updateList: function () {
     this.refs.content.refs.list.forceUpdateGrid();
@@ -1445,15 +1452,16 @@ var ReqData = React.createClass({
     }
   },
   collapseAll: function (e) {
+    var self = this;
     if (!e) {
-      var root = this.props.modal.getTree();
+      var root = self.props.modal.getTree();
       root.children.forEach(util.collapseAll);
-      return this.setState({});
+      return self.setState({});
     }
-    var node = this.getTreeNode(e);
+    var node = self.getTreeNode(e);
     if (node) {
       util.collapseAll(node);
-      this.setState({});
+      self.setState({});
     }
   },
   saveSessions: function (e) {
@@ -1532,10 +1540,10 @@ var ReqData = React.createClass({
   },
   render: function () {
     var self = this;
-    var state = this.state;
+    var state = self.state;
     var modal = self.props.modal;
     var isTreeView = modal.isTreeView;
-    var list = this.getVisibleList();
+    var list = self.getVisibleList();
     var hasKeyword = modal.hasKeyword();
     var draggable = state.draggable;
     var columnList = state.columns.list;
@@ -1634,18 +1642,18 @@ var ReqData = React.createClass({
             </RV.AutoSizer>
           </div>
         </div>
-        <BackToBottomBtn ref="backBtn" hide={isTreeView} onClick={this.autoRefresh} />
+        <BackToBottomBtn ref="backBtn" hide={isTreeView} onClick={self.autoRefresh} />
         <FilterInput
           ref="filterInput"
-          onKeyDown={this.onFilterKeyDown}
-          onChange={this.onFilterChange}
+          onKeyDown={self.onFilterKeyDown}
+          onChange={self.onFilterChange}
           wStyle={colStyle}
           addonHints={HINTS}
-          onFilterTypeChange={this.onFilterTypeChange}
+          onFilterTypeChange={self.onFilterTypeChange}
           hintKey="networkHintList"
         />
-        <ContextMenu onClick={this.onClickContextMenu} ref="contextMenu" />
-        <ContextMenu onClick={this.onClickHeadMenu} ref="headContextMenu" />
+        <ContextMenu onClick={self.onClickContextMenu} ref="contextMenu" />
+        <ContextMenu onClick={self.onClickHeadMenu} ref="headContextMenu" />
         <QRCodeDialog ref="qrcodeDialog" />
         <div ref="saveSessions" className="modal fade w-choose-filte-type">
           <div className="modal-dialog">
@@ -1655,8 +1663,8 @@ var ReqData = React.createClass({
                   Save as
                   <input
                     ref="sessionsName"
-                    onChange={this.filterSessionsName}
-                    onKeyDown={this.saveSessions}
+                    onChange={self.filterSessionsName}
+                    onKeyDown={self.saveSessions}
                     placeholder="Enter filename (optional)"
                     className="form-control"
                     maxLength={MAX_LEN}
@@ -1674,11 +1682,11 @@ var ReqData = React.createClass({
                 </button>
                 <button
                   type="button"
-                  onKeyDown={this.saveSessions}
+                  onKeyDown={self.saveSessions}
                   tabIndex="0"
-                  onMouseDown={this.preventBlur}
+                  onMouseDown={self.preventBlur}
                   className="btn btn-primary"
-                  onClick={this.saveSessions}
+                  onClick={self.saveSessions}
                 >
                   Save
                 </button>

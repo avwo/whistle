@@ -25,10 +25,11 @@ module.exports = {
     });
   },
   hideNameInput: function () {
-    this.state.showNameInput = false;
-    this.forceUpdate(function () {
-      var nameInput = findDOMNode(this.refs.nameInput);
-      var defaultName = this.props.defaultName;
+    var self = this;
+    self.state.showNameInput = false;
+    self.forceUpdate(function () {
+      var nameInput = findDOMNode(self.refs.nameInput);
+      var defaultName = self.props.defaultName;
       if (defaultName === nameInput.value) {
         nameInput.value = '';
       }
@@ -42,9 +43,9 @@ module.exports = {
     if (!modal) {
       return;
     }
-    var target = findDOMNode(this.refs.nameInput);
-    var name = target.value.trim();
     var self = this;
+    var target = findDOMNode(self.refs.nameInput);
+    var name = target.value.trim();
     if (self.state.showDownloadInput) {
       self.download();
       return;
@@ -91,19 +92,20 @@ module.exports = {
     events.trigger('showAddRulesDialog', { session: this.props.session });
   },
   renderInput: function () {
-    var state = this.state;
+    var self = this;
+    var state = self.state;
     var showInput = state.showDownloadInput;
 
     return (
       <div
-        onMouseDown={this.preventBlur}
+        onMouseDown={self.preventBlur}
         style={{ display: state.showNameInput ? 'block' : 'none' }}
         className="w-shadow w-textarea-input"
       >
         <input
           ref="nameInput"
-          onKeyDown={this.submit}
-          onBlur={this.hideNameInput}
+          onKeyDown={self.submit}
+          onBlur={self.hideNameInput}
           type="text"
           maxLength="64"
           placeholder={
@@ -114,19 +116,19 @@ module.exports = {
         />
         <button
           type="button"
-          onClick={this.submit}
+          onClick={self.submit}
           className="btn btn-primary"
         >
           {showInput ? 'OK' : '+Key'}
         </button>
         {showInput ? null : <button
           type="button"
-          onClick={this.createTempFile}
+          onClick={self.createTempFile}
           className="btn btn-default"
         >+File</button>}
         {showInput ? null : <button
           type="button"
-          onClick={this.createRule}
+          onClick={self.createRule}
           className="btn btn-default"
         >+Rule</button>}
       </div>

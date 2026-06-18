@@ -18,12 +18,12 @@ var PluginsTabs = React.createClass({
     var props = self.props;
     var tabs = props.tabs;
     var hide = props.hide;
-    var active = this.state.active;
+    var active = self.state.active;
     var single = tabs.length < 2;
     if (single) {
       active = tabs[0] && tabs[0].plugin;
       if (active) {
-        this.state.active = active;
+        self.state.active = active;
       }
     }
     return (

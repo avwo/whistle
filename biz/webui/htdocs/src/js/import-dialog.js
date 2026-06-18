@@ -95,9 +95,10 @@ var ImportDialog = React.createClass({
     return this.refs.importDialog.isVisible();
   },
   uploadFile: function() {
-    var fileInput = findDOMNode(this.refs.importFile);
-    this.handleFile(fileInput.files[0]);
-    findDOMNode(this.refs.importFile).value = '';
+    var self = this;
+    var fileInput = findDOMNode(self.refs.importFile);
+    self.handleFile(fileInput.files[0]);
+    findDOMNode(self.refs.importFile).value = '';
   },
   selectFile: function() {
     findDOMNode(this.refs.importFile).click();
@@ -127,7 +128,8 @@ var ImportDialog = React.createClass({
     this.refs.editorDialog.show();
   },
   render: function () {
-    var state = this.state;
+    var self = this;
+    var state = self.state;
 
     return (
       <Dialog ref="importDialog" wstyle="w-ie-dialog w-import-dialog">
@@ -139,7 +141,7 @@ var ImportDialog = React.createClass({
           <input
             ref="input"
             maxLength="2048"
-            onKeyDown={this.importRemoteUrl}
+            onKeyDown={self.importRemoteUrl}
             placeholder="Enter request URL or file path"
           />
         </div>
@@ -156,7 +158,7 @@ var ImportDialog = React.createClass({
             type="button"
             className="btn btn-default"
             data-dismiss="modal"
-            onClick={this.showImportCURL}
+            onClick={self.showImportCURL}
           >
             <Icon name="file" />
             Import cURL
@@ -166,7 +168,7 @@ var ImportDialog = React.createClass({
             type="button"
             className="btn btn-warning"
             data-dismiss="modal"
-            onClick={this.showService}
+            onClick={self.showService}
           >
             <Icon name="cloud" />
             Import From Service
@@ -174,7 +176,7 @@ var ImportDialog = React.createClass({
           <button
             type="button"
             className="btn btn-info"
-            onClick={this.selectFile}
+            onClick={self.selectFile}
           >
             <Icon name="folder-open" />
             Upload
@@ -183,7 +185,7 @@ var ImportDialog = React.createClass({
             type="button"
             className="btn btn-primary w-fmt-btn"
             onMouseDown={util.preventBlur}
-            onClick={this.importRemoteUrl}
+            onClick={self.importRemoteUrl}
           >
             Import
           </button>
@@ -195,14 +197,14 @@ var ImportDialog = React.createClass({
         >
           <input
             ref="importFile"
-            onChange={this.uploadFile}
+            onChange={self.uploadFile}
             name="fileInput"
             type="file"
             accept={state.accept}
           />
         </form>
         <EditorDialog ref="editorDialog" title="Import cURL" hideFormat="1" placeholder="Enter cURL text"
-          textEditor onConfirm={this.importCURL} />
+          textEditor onConfirm={self.importCURL} />
       </Dialog>
     );
   }

@@ -7,8 +7,8 @@ var util = require('./util');
 var storage = require('./storage');
 var Properties = require('./properties');
 var dataCenter = require('./data-center');
-var getHelpUrl = require('./protocols').getHelpUrl;
 var HelpIcon = require('./help-icon');
+var MatchedRule = require('./matched-rule');
 
 var OVERVIEW = [
   'URL',
@@ -81,92 +81,15 @@ var CSS_MAP = {
     }
   }
 };
-/**
- * statusCode://, redirect://[statusCode:]url, [req, res]speed://,
- * [req, res]delay://, method://, [req, res][content]Type://自动lookup,
- * cache://xxxs[no], params://json|string(放在url)
- */
-var PROTOCOLS = require('./protocols').PROTOCOLS;
 var DEFAULT_OVERVIEW_MODAL = {};
-var DEFAULT_RULES_MODAL = {};
-var PROXY_PROTOCOLS = ['socks', 'http-proxy', 'https-proxy'];
 
-function getAtRule(rule) {
-  return rule.rawPattern + ' @' + getMatcher(rule).substring(4) + getPluginName(rule);
-}
-
-function getVarRule(rule) {
-  return rule.rawPattern + ' %' + getMatcher(rule).substring(4) + getPluginName(rule);
-}
-
-function getStr(str) {
-  return str ? ' ' + str : '';
-}
-
-function filterImportant(item) {
-  return item.indexOf('important') !== -1;
-}
-
-function getPluginName(rule) {
-  return rule && rule.file ? util.SOURCE_SEP + rule.file + ')' : '';
-}
-
-function getRawProps(rule, all) {
-  var filter = getStr(rule.filter);
-  rule = rule.rawProps;
-  if (!rule) {
-    return filter;
-  }
-  if (!all) {
-    rule = rule.filter(filterImportant);
-  }
-  return getStr(rule.join(' ')) + filter;
-}
-
-function getInjectProps(rule) {
-  if (rule.strictHtml) {
-    return ' enable://strictHtml';
-  }
-
-  return rule.safeHtml ? ' enable://safeHtml' : '';
-}
-
-function getMatcher(rule) {
-  return rule._matcher || rule.matcher;
-}
-
-function getRuleStr(rule) {
-  if (!rule) {
-    return;
-  }
-  var matcher = getMatcher(rule);
-  if (rule.port) {
-    var protoIndex = matcher.indexOf(':') + 3;
-    var proto = matcher.substring(0, protoIndex);
-    if (matcher.indexOf(':', protoIndex) !== -1) {
-      matcher = proto + '[' + matcher.substring(protoIndex) + ']';
-    }
-    matcher = matcher + ':' + rule.port;
-  }
-  return rule.rawPattern + ' ' + matcher + getRawProps(rule, true);
-}
 
 function getTime(time) {
   return time === '-' ? '' : time;
 }
 
-function ignoreProtocol(name) {
-  return PROXY_PROTOCOLS.indexOf(name) !== -1 || name === 'skip' || /^x/.test(name);
-}
-
 OVERVIEW.forEach(function (name) {
   DEFAULT_OVERVIEW_MODAL[name] = '';
-});
-PROTOCOLS.forEach(function (name) {
-  if (ignoreProtocol(name)) {
-    return;
-  }
-  DEFAULT_RULES_MODAL[name] = '';
 });
 
 var Overview = React.createClass({
@@ -191,14 +114,6 @@ var Overview = React.createClass({
     this.setState({
       showOnlyMatchRules: showOnlyMatchRules
     });
-  },
-  onHelp: function (e) {
-    var name = e.target.getAttribute('data-name');
-    var helpUrl = getHelpUrl(name);
-    if (!helpUrl) {
-      return;
-    }
-    events.trigger('openUrl', name === 'rule' ? helpUrl + 'rule/' : helpUrl);
   },
   updateCssMap: function () {
     Object.keys(CSS_MAP).forEach(function (name) {
@@ -230,10 +145,9 @@ var Overview = React.createClass({
   },
   render: function () {
     var overviewModal = DEFAULT_OVERVIEW_MODAL;
-    var rulesModal = DEFAULT_RULES_MODAL;
-    var modal = this.props.modal;
-    var showOnlyMatchRules = this.state.showOnlyMatchRules;
-    var realUrl, hasPluginRule;
+    var self = this;
+    var modal = self.props.modal;
+    var showOnlyMatchRules = self.state.showOnlyMatchRules;
 
     if (modal) {
       overviewModal = {};
@@ -257,7 +171,6 @@ var Overview = React.createClass({
               } else if (modal.isHttps) {
                 value = 'tunnel://' + value;
               }
-              realUrl = value;
             } else if (modal.isHttps && prop === 'url') {
               value = 'tunnel://' + value;
             }
@@ -336,114 +249,15 @@ var Overview = React.createClass({
       if (custom2.selected) {
         overviewModal[(dataCenter.custom2 || 'Custom2') + '  '] = modal.custom2;
       }
-
-      var rules = modal.rules;
-      var titleModal = {};
-      if (rules) {
-        rulesModal = {};
-        var atRule = rules.G;
-        var clientCert = rules.clientCert;
-        var atCtn;
-        var atTitle;
-        if (atRule) {
-          atCtn = [getAtRule(atRule)];
-          atTitle = [atRule.raw];
-        }
-        var pList = rules.P;
-        if (pList) {
-          pList.forEach(function (item) {
-            atCtn = atCtn || [];
-            atCtn.push(getVarRule(item));
-            atTitle = [item.raw];
-          });
-        }
-        if (clientCert) {
-          atCtn = atCtn || [];
-          atTitle = atTitle || [];
-          atCtn.push(getAtRule(clientCert));
-          atTitle.push(clientCert.raw);
-        }
-        if (atCtn) {
-          rulesModal['@'] = atCtn.join('\n');
-          titleModal['@'] = atTitle.join('\n');
-        }
-        PROTOCOLS.forEach(function (name) {
-          if (ignoreProtocol(name)) {
-            return;
-          }
-          var key = name;
-          if (name === 'reqScript') {
-            key = 'rulesFile';
-          } else if (name === 'reqMerge') {
-            key = 'params';
-          } else if (name === 'tlsOptions') {
-            key = 'cipher';
-          } else if (name === 'pathReplace') {
-            key = 'urlReplace';
-          }
-          var rule = rules[key];
-          var pluginRule = name === 'plugin' && rules._pluginRule;
-          if (pluginRule) {
-            hasPluginRule = true;
-            var ruleList = [
-              pluginRule.rawPattern + ' ' + getMatcher(pluginRule) + getRawProps(pluginRule) + getPluginName(pluginRule)
-            ];
-            var titleList = [pluginRule.raw];
-            rule && Array.isArray(rule.list) &&
-              rule.list.forEach(function (item) {
-                ruleList.push(item.rawPattern + ' ' + getMatcher(item) + getRawProps(item) + getPluginName(item));
-                titleList.push(item.raw);
-              });
-            rulesModal[name] = ruleList.join('\n');
-            titleModal[name] = titleList.join('\n');
-          } else if (rule && Array.isArray(rule.list)) {
-            var prop = getInjectProps(rule);
-            rulesModal[name] = rule.list
-              .map(function (rule) {
-                return rule.rawPattern + ' ' + getMatcher(rule) + getRawProps(rule, true) + prop + getPluginName(rule);
-              })
-              .join('\n');
-            titleModal[name] = rule.list
-              .map(function (rule) {
-                return rule.raw;
-              })
-              .join('\n');
-          } else {
-            var ruleStr = getRuleStr(rule);
-            rulesModal[name] = ruleStr;
-            titleModal[name] = rule ? rule.raw : undefined;
-            if (name === 'host') {
-              var result = [];
-              if (ruleStr) {
-                result.push(ruleStr + (realUrl ? ' (URL: ' + realUrl + ')' : '') + getPluginName(rule));
-              }
-              if (rules.proxy && rules.proxy.host) {
-                result.push(
-                  getRuleStr(rules.proxy.host) + ' (URL: ' + getMatcher(rules.proxy) + ')' + getPluginName(rule)
-                );
-              }
-              rulesModal[name] = result.join('\n');
-            } else {
-              if (name === 'proxy') {
-                if (realUrl && ruleStr) {
-                  rulesModal[name] += ' (URL: ' + realUrl + ')';
-                }
-              }
-              if (rulesModal[name]) {
-                rulesModal[name] += getPluginName(rule);
-              }
-            }
-          }
-        });
-      }
     }
-    this.updateCssMap();
+    self.updateCssMap();
+
     return (
       <div
         ref="container"
         className={
           'fill v-box w-detail-ctn w-detail-overview' +
-          (util.getBool(this.props.hide) ? ' hide' : '')
+          (util.getBool(self.props.hide) ? ' hide' : '')
         }
       >
         <Properties
@@ -462,21 +276,15 @@ var Overview = React.createClass({
           <label>
             <input
               checked={showOnlyMatchRules}
-              onChange={this.showOnlyMatchRules}
+              onChange={self.showOnlyMatchRules}
               type="checkbox"
             />
             Show matching rules only
           </label>
         </p>
-        <Properties
-          onHelp={this.onHelp}
-          className={showOnlyMatchRules ? 'w-hide-no-value w-rules-overview' : 'w-rules-overview'}
-          onClickLocate={util.handleClickLocate}
-          modal={rulesModal}
-          title={titleModal}
-          enableCopyValue
-          name="Rules"
-          hasPluginRule={hasPluginRule}
+        <MatchedRule
+          showOnlyMatchRules={showOnlyMatchRules}
+          modal={modal}
         />
       </div>
     );

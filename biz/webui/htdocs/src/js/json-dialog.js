@@ -50,10 +50,11 @@ var JSONDialog = React.createClass({
     }, 600);
   },
   filterJson: function(data) {
-    if (!this._keywordObj) {
+    var self = this;
+    if (!self._keywordObj) {
       return;
     }
-    var json = util.filterJsonText(data.str, this._keywordObj, this._type);
+    var json = util.filterJsonText(data.str, self._keywordObj, self._type);
     if (!json) {
       return;
     }
@@ -66,8 +67,9 @@ var JSONDialog = React.createClass({
     if (!text) {
       return;
     }
-    var history = this.state.history;
-    var historyIndex = this.state.historyIndex;
+    var self = this;
+    var history = self.state.history;
+    var historyIndex = self.state.historyIndex;
     var len = history.length;
     if (historyIndex == null) {
       historyIndex = len - 1;
@@ -85,13 +87,13 @@ var JSONDialog = React.createClass({
         history.splice(0, overLen);
       }
     }
-    this.state.historyIndex = historyIndex;
-    this._show(text, keyPath, session);
+    self.state.historyIndex = historyIndex;
+    self._show(text, keyPath, session);
   },
   _show: function (text, keyPath, session) {
     var self = this;
-    var data = this.state.data;
-    this.setState({ session: session, keyPath: Array.isArray(keyPath) ? keyPath : null });
+    var data = self.state.data;
+    self.setState({ session: session, keyPath: Array.isArray(keyPath) ? keyPath : null });
     if (data && data.text === text) {
       self.focus();
       return self.refs.jsonDialog.show();
@@ -113,27 +115,30 @@ var JSONDialog = React.createClass({
     } else {
       return util.parseRawJson(text);
     }
-    this.setState({ curData: this.filterJson(data), data: data }, function () {
+    self.setState({ curData: self.filterJson(data), data: data }, function () {
       self.refs.jsonDialog.show();
       self.focus();
     });
   },
   showHistory: function(index) {
-    this.state.historyIndex = index;
-    var item = this.state.history[index];
-    this._show(item[0], item[1] == null ? null : [item[1]]);
+    var self = this;
+    self.state.historyIndex = index;
+    var item = self.state.history[index];
+    self._show(item[0], item[1] == null ? null : [item[1]]);
   },
   onBack: function() {
-    var historyIndex = this.state.historyIndex;
+    var self = this;
+    var historyIndex = self.state.historyIndex;
     if (historyIndex > 0) {
-      this.showHistory(historyIndex - 1);
+      self.showHistory(historyIndex - 1);
     }
   },
   onForward: function() {
-    var history = this.state.history;
-    var historyIndex = this.state.historyIndex + 1;
+    var self = this;
+    var history = self.state.history;
+    var historyIndex = self.state.historyIndex + 1;
     if (historyIndex < history.length) {
-      this.showHistory(historyIndex);
+      self.showHistory(historyIndex);
     }
   },
   focus: function() {
@@ -143,7 +148,8 @@ var JSONDialog = React.createClass({
     }, 600);
   },
   render: function () {
-    var state = this.state;
+    var self = this;
+    var state = self.state;
     var history = state.history;
     var historyIndex = state.historyIndex;
 
@@ -153,17 +159,17 @@ var JSONDialog = React.createClass({
           <FbBtn
             disabledBack={historyIndex <= 0}
             disabledForward={historyIndex >= history.length - 1}
-            onBack={this.onBack}
-            onForward={this.onForward}
+            onBack={self.onBack}
+            onForward={self.onForward}
           />
           <CloseBtn />
           <div
             className="v-box"
-            style={{ width: 880, height: 560, marginTop: 22, background: this._keywordObj ? 'var(--b-filtered)' : undefined }}
+            style={{ width: 880, height: 560, marginTop: 22, background: self._keywordObj ? 'var(--b-filtered)' : undefined }}
           >
             <JSONView keyPath={state.keyPath} dialog data={state.curData || state.data} viewSource={true} session={state.session} />
           </div>
-          <FilterInput ref="filterInput" onChange={this.onFilter} placeholder=" (e.g. xxx or k:xxx or v:xxx)" />
+          <FilterInput ref="filterInput" onChange={self.onFilter} placeholder=" (e.g. xxx or k:xxx or v:xxx)" />
         </div>
         <div className="modal-footer">
           <button

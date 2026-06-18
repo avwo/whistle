@@ -10,10 +10,12 @@ var TextView = React.createClass({
     this.updateValue();
   },
   shouldComponentUpdate: function (nextProps) {
-    if (this.props.value !== nextProps.value) {
-      this.updateValue(nextProps.value);
+    var self = this;
+    if (self.props.value !== nextProps.value) {
+      self.updateValue(nextProps.value);
+      return true;
     }
-    return this.props.className !== nextProps.className;
+    return self.props.className !== nextProps.className;
   },
   updateValue: function (value) {
     var self = this;

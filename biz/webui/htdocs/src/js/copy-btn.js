@@ -18,15 +18,16 @@ var CopyBtn = React.createClass({
     }
   },
   render: function () {
-    var props = this.props;
-    var copied = this.state.copied;
+    var self = this;
+    var props = self.props;
+    var copied = self.state.copied;
 
     return (
       <a
         ref="btn"
-        onMouseLeave={this.handleLeave}
-        onMouseEnter={this.handleText}
-        onClick={this.handleCopy}
+        onMouseLeave={self.handleLeave}
+        onMouseEnter={self.handleText}
+        onClick={self.handleCopy}
         className={(copied ? 'w-copied-text ' : 'w-copy-text ') + (props.className || '')}
         draggable="false"
         title={props.title}

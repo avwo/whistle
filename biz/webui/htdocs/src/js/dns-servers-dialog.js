@@ -10,7 +10,8 @@ var DNSDialog = React.createClass({
     if (!data || !data.dns) {
       return;
     }
-    this._hideDialog = false;
+    var self = this;
+    self._hideDialog = false;
     var servers = data.dns;
     if (!data.doh) {
       servers = data.dns
@@ -20,13 +21,13 @@ var DNSDialog = React.createClass({
         })
         .join('\n');
     }
-    this.setState({
+    self.setState({
       ipv6: data.r6,
       useDefault: data.df,
       servers: servers,
       doh: data.doh
     });
-    this.refs.dnsServersDialog.show();
+    self.refs.dnsServersDialog.show();
   },
   hide: function () {
     this.refs.dnsServersDialog.hide();

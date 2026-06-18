@@ -108,10 +108,10 @@ var Console = React.createClass({
   },
   componentDidMount: function () {
     var self = this;
-    var container = (this.container = findDOMNode(
+    var container = (self.container = findDOMNode(
       self.refs.container
     ));
-    this.content = findDOMNode(self.refs.logContent);
+    self.content = findDOMNode(self.refs.logContent);
 
     events.on('uploadLogs', self.handleImport);
     dataCenter.on('log', self.updateLogs);
@@ -194,7 +194,7 @@ var Console = React.createClass({
             />
             Expand JSON Root
           </label>
-          {this.renderActionBar(!util.hasVisibleLog(logs))}
+          {self.renderActionBar(!util.hasVisibleLog(logs))}
         </div>
         <div ref="container" className="fill w-log-ctn">
           <ul ref="logContent">

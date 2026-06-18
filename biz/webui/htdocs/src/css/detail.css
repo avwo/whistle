@@ -99,7 +99,7 @@ div.w-detail-inspectors-tabs {
   background-color: var(--b-active);
 }
 
-.w-detail-inspectors-title.w-detail-inspectors-res {
+.w-inspectors-title.w-detail-inspectors-res {
   padding-left: 12px !important;
 }
 

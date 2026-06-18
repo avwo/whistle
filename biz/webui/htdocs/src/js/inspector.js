@@ -7,19 +7,20 @@ var Icon = require('./icon');
 
 var Inspector = React.createClass({
   shouldComponentUpdate: function (nextProps) {
-    var hide = util.getBool(this.props.hide);
+    var self = this;
+    var hide = util.getBool(self.props.hide);
     if (hide != util.getBool(nextProps.hide)) {
       return true;
     }
     if (hide) {
       return false;
     }
-    var modal = this.props.modal;
+    var modal = self.props.modal;
     var newModal = nextProps.modal;
     if (!modal || modal !== newModal) {
       return true;
     }
-    return !this.endTime || this.refs.divider._needReset;
+    return !self.endTime || self.refs.divider._needReset;
   },
   render: function () {
     var props = this.props;
@@ -31,7 +32,7 @@ var Inspector = React.createClass({
           <ReqDetail modal={modal} />
         </div>
         <div className="fill v-box">
-          <div className="w-detail-inspectors-title w-detail-inspectors-res">
+          <div className="w-inspectors-title w-detail-inspectors-res">
             <Icon name="arrow-left" />Response
           </div>
           <ResDetail modal={modal} />

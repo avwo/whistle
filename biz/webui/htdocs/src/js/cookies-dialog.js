@@ -19,10 +19,11 @@ var CookiesDialog = React.createClass({
     return this._hideDialog === false;
   },
   insert: function (e) {
+    var self = this;
     var i = e.target.getAttribute('data-index');
-    var cookie = this.state.cookies[i];
-    cookie && this.props.onInsert(cookie, true);
-    this.hide();
+    var cookie = self.state.cookies[i];
+    cookie && self.props.onInsert(cookie, true);
+    self.hide();
   },
   render: function () {
     var self = this;

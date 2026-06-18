@@ -73,13 +73,14 @@ var ExportDialog = React.createClass({
     if (e && e.type !== 'click' && e.keyCode !== 13) {
       return;
     }
-    var data = this.state.data;
+    var self = this;
+    var data = self.state.data;
     if (typeof data === 'function') {
       data = data();
     }
-    this.hide();
-    util.download(data, this.getFilename());
-    findDOMNode(this.refs.input).value = '';
+    self.hide();
+    util.download(data, self.getFilename());
+    findDOMNode(self.refs.input).value = '';
   },
   filterFilename: function (e) {
     this.setState({ filename: util.formatFilename(e.target.value) });
@@ -94,7 +95,8 @@ var ExportDialog = React.createClass({
     return this.refs.exportDialog.isVisible();
   },
   render: function () {
-    var state = this.state;
+    var self = this;
+    var state = self.state;
     var showOptions = state.showOptions;
 
     return (
@@ -107,8 +109,8 @@ var ExportDialog = React.createClass({
           <input
             ref="input"
             value={state.filename}
-            onChange={this.filterFilename}
-            onKeyDown={this.export}
+            onChange={self.filterFilename}
+            onKeyDown={self.export}
             placeholder="Enter filename (optional)"
             className="form-control"
             maxLength="64"
@@ -122,12 +124,12 @@ var ExportDialog = React.createClass({
           >
             Cancel
           </button>
-          <ShareViaUrlBtn type={state.name} data={state.data} getFilename={this.getInputValue} onComplete={this.onShare} />
+          <ShareViaUrlBtn type={state.name} data={state.data} getFilename={self.getInputValue} onComplete={self.onShare} />
           <button
             type="button"
             className="btn btn-primary w-fmt-btn"
             data-dismiss="modal"
-            onClick={this.export}
+            onClick={self.export}
           >
             Export
           </button>

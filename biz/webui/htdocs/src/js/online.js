@@ -254,28 +254,29 @@ var Online = React.createClass({
   },
   checkServerChanged: function (data) {
     data.mac = data.mac || '';
-    if (this.macAddr === undefined) {
-      this.macAddr = data.mac;
-      this.serverPort = data.port;
-      this.version = data.version;
-      this.baseDir = data.baseDir;
-      this.networkMode = data.networkMode;
-      this.pluginsMode = data.pluginsMode;
-      this.rulesMode = data.rulesMode;
-      this.multiEnv = data.multiEnv;
-      this.rulesOnlyMode = data.rulesOnlyMode;
+    var self = this;
+    if (self.macAddr === undefined) {
+      self.macAddr = data.mac;
+      self.serverPort = data.port;
+      self.version = data.version;
+      self.baseDir = data.baseDir;
+      self.networkMode = data.networkMode;
+      self.pluginsMode = data.pluginsMode;
+      self.rulesMode = data.rulesMode;
+      self.multiEnv = data.multiEnv;
+      self.rulesOnlyMode = data.rulesOnlyMode;
     } else if (
-      this.version !== data.version ||
-      this.baseDir !== data.baseDir ||
-      this.rulesOnlyMode !== data.rulesOnlyMode ||
-      this.networkMode !== data.networkMode ||
-      this.pluginsMode !== data.pluginsMode ||
-      this.rulesMode !== data.rulesMode ||
-      this.multiEnv !== data.multiEnv
+      self.version !== data.version ||
+      self.baseDir !== data.baseDir ||
+      self.rulesOnlyMode !== data.rulesOnlyMode ||
+      self.networkMode !== data.networkMode ||
+      self.pluginsMode !== data.pluginsMode ||
+      self.rulesMode !== data.rulesMode ||
+      self.multiEnv !== data.multiEnv
     ) {
-      this.refs.confirmReload.show();
+      self.refs.confirmReload.show();
     } else {
-      this.refs.confirmReload.hide();
+      self.refs.confirmReload.hide();
     }
   },
   showServerInfo: function () {
@@ -678,18 +679,20 @@ var Online = React.createClass({
     return info.join('\n');
   },
   setTitle: function () {
-    var server = dataCenter.getServerInfo() || this.state.server;
-    findDOMNode(this.refs.onlineMenu).title = this.getTitle(server) || '';
+    var self = this;
+    var server = dataCenter.getServerInfo() || self.state.server;
+    findDOMNode(self.refs.onlineMenu).title = self.getTitle(server) || '';
   },
   render: function () {
-    var server = this.state.server || '';
+    var self = this;
+    var server = self.state.server || '';
     return (
       <a
         ref="onlineMenu"
         draggable="false"
-        onMouseEnter={this.setTitle}
+        onMouseEnter={self.setTitle}
         className={'w-online-menu w-online' + (server ? '' : ' w-offline')}
-        onClick={this.showServerInfo}
+        onClick={self.showServerInfo}
       >
         <Icon name="stats" />
         {server ? 'Online' : 'Offline'}
@@ -717,7 +720,7 @@ var Online = React.createClass({
             <button
               type="button"
               className="btn btn-primary"
-              onClick={this.reload}
+              onClick={self.reload}
             >
               Reload
             </button>

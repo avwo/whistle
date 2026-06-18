@@ -54,14 +54,15 @@ var ReqDetail = React.createClass({
     events.trigger('setComposerData', this.props.modal);
   },
   render: function () {
-    var state = this.state;
+    var self = this;
+    var state = self.state;
     var btn = state.btn;
     if (!btn) {
       btn = BTNS[0];
-      this.selectBtn(btn);
+      self.selectBtn(btn);
     }
     var name = btn && btn.name;
-    var modal = this.props.modal;
+    var modal = self.props.modal;
     var req,
       headers,
       headersStr,
@@ -160,14 +161,14 @@ var ReqDetail = React.createClass({
       <div
         className={
           'fill v-box w-detail-ctn w-detail-request' +
-          (util.getBool(this.props.hide) ? ' hide' : '')
+          (util.getBool(self.props.hide) ? ' hide' : '')
         }
       >
-        <BtnGroup onClick={this.onClickBtn} btns={BTNS} />
+        <BtnGroup onClick={self.onClickBtn} btns={BTNS} />
         {state.initedRaw ? (
           <Textarea
             session={modal}
-            onEdit={this.onEdit}
+            onEdit={self.onEdit}
             reqType="reqRaw"
             defaultName={defaultName}
             value={raw}

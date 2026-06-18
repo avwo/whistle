@@ -28,11 +28,12 @@ var Divider = React.createClass({
     this._needReset && this.reset();
   },
   triggerDOMReady: function () {
-    if (this.__inited) {
+    var self = this;
+    if (self.__inited) {
       return;
     }
-    this.__inited = true;
-    this.props.onDOMReady && this.props.onDOMReady();
+    self.__inited = true;
+    self.props.onDOMReady && self.props.onDOMReady();
   },
   reset: function () {
     var self = this;
@@ -70,13 +71,14 @@ var Divider = React.createClass({
     self.triggerDOMReady();
   },
   render: function () {
-    var vertical = util.getBool(this.props.vertical);
-    var divider = <div className="w-divider" onDoubleClick={this.reset} />;
-    var hideLeft = this.props.hideLeft;
-    var hideRight = this.props.hideRight;
-    var leftWidth = parseInt(this.props.leftWidth, 10);
+    var self = this;
+    var vertical = util.getBool(self.props.vertical);
+    var divider = <div className="w-divider" onDoubleClick={self.reset} />;
+    var hideLeft = self.props.hideLeft;
+    var hideRight = self.props.hideRight;
+    var leftWidth = parseInt(self.props.leftWidth, 10);
     if (leftWidth > 0) {
-      this._leftWidth = leftWidth;
+      self._leftWidth = leftWidth;
     } else {
       leftWidth = 0;
     }
@@ -88,8 +90,8 @@ var Divider = React.createClass({
         className={
           (vertical ? 'v-box' : 'box') +
           ' fill w-divider-con ' +
-          (this.props.className || '') +
-          (util.getBool(this.props.hide) ? ' hide' : '')
+          (self.props.className || '') +
+          (util.getBool(self.props.hide) ? ' hide' : '')
         }
       >
         <div
@@ -97,22 +99,22 @@ var Divider = React.createClass({
           className={
             (leftWidth ? '' : 'fill ') +
             'w-divider-left v-box ' +
-            (this.props.leftClassName || '')
+            (self.props.leftClassName || '')
           }
         >
           {leftWidth && !hideRight ? divider : null}
-          {this.props.children[0]}
+          {self.props.children[0]}
         </div>
         <div
           style={getHideStyle(hideRight)}
           className={
             (noLeft ? 'fill ' : '') +
             'w-divider-right v-box ' +
-            (this.props.rightClassName || '')
+            (self.props.rightClassName || '')
           }
         >
           {noLeft ? null : divider}
-          {this.props.children[1]}
+          {self.props.children[1]}
         </div>
       </div>
     );

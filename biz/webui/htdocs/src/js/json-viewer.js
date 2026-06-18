@@ -43,42 +43,47 @@ var JsonViewer = React.createClass({
     }
   },
   onContextMenu: function(e) {
-    var isDialog = this.props.dialog;
-    var data = this.props.data || {};
+    var self = this;
+    var isDialog = self.props.dialog;
+    var data = self.props.data || {};
     var ctxMenu = util.getMenuPosition(e, 110, isDialog ? 90 : 120);
     contextMenuList[0].copyText = data.str || '';
     ctxMenu.list = isDialog ? contextMenuList : contextMenuList.concat(SEARCH_MENU);
-    this.refs.contextMenu.show(ctxMenu);
+    self.refs.contextMenu.show(ctxMenu);
     e.preventDefault();
   },
   onClickContextMenu: function(action) {
+    var self = this;
     if (action === 'Expand All') {
-      this.expandAll();
+      self.expandAll();
     } else if (action === 'Collapse All') {
-      this.collapseAll();
+      self.collapseAll();
     } else if (action === 'Search Object') {
-      this.search();
+      self.search();
     }
   },
   search: function() {
-    var str = this.getCurStr();
+    var self = this;
+    var str = self.getCurStr();
     if (str) {
-      events.trigger('showJsonViewDialog', [str, null, this.props.session]);
+      events.trigger('showJsonViewDialog', [str, null, self.props.session]);
     }
   },
   getText: function() {
     return (this.state.lastData.str || '').replace(/\r\n|\r/g, '\n');
   },
   download: function () {
-    var target = findDOMNode(this.refs.nameInput);
+    var self = this;
+    var target = findDOMNode(self.refs.nameInput);
     var name = target.value.trim() || 'json_' + util.formatDate() + '.txt';
-    var data = this.props.data || {};
+    var data = self.props.data || {};
     target.value = '';
     util.download(data.str || '', name);
-    this.hideNameInput();
+    self.hideNameInput();
   },
   toggle: function () {
-    this.setState({ viewSource: !this.state.viewSource });
+    var self = this;
+    self.setState({ viewSource: !self.state.viewSource });
   },
   componentDidMount: function () {
     var viewer = $(findDOMNode(this.refs.jsonViewer));
@@ -132,9 +137,10 @@ var JsonViewer = React.createClass({
     });
   },
   render: function () {
-    var state = this.state;
+    var self = this;
+    var state = self.state;
     var viewSource = state.viewSource;
-    var props = this.props;
+    var props = self.props;
     var data = props.data;
     var tips = props.tips;
     var className = 'fill v-box w-props-wrap w-json-viewer';
@@ -166,25 +172,25 @@ var JsonViewer = React.createClass({
         <div className="w-textarea-bar">
           <CopyBtn value={data.str} />
           <a
-            onDoubleClick={this.download}
-            onClick={this.showNameInput}
+            onDoubleClick={self.download}
+            onClick={self.showNameInput}
             className="w-download"
             draggable="false"
           >
             Download
           </a>
-          {this.renderAddBtn()}
+          {self.renderAddBtn()}
           {viewSource ? (
-            <a onClick={this.edit} draggable="false">
+            <a onClick={self.edit} draggable="false">
               ViewAll
             </a>
-          ) : (props.dialog ? undefined : <a onClick={this.search} draggable="false">
+          ) : (props.dialog ? undefined : <a onClick={self.search} draggable="false">
                 Search
               </a>)}
-          <a onClick={this.toggle}>
+          <a onClick={self.toggle}>
             {viewSource ? 'JSON' : 'Text'}
           </a>
-          {this.renderInput()}
+          {self.renderInput()}
         </div>
         <TextView
           className={'fill w-json-viewer-str' + (viewSource ? '' : ' hide')}
@@ -192,13 +198,13 @@ var JsonViewer = React.createClass({
         />
         <div
           ref="jsonViewer"
-          onContextMenu={this.onContextMenu}
+          onContextMenu={self.onContextMenu}
           className={'fill w-json-viewer-tree' + (viewSource ? ' hide' : '')}
         >
           <JSONTree keyPath={props.keyPath || KEY_PATH} data={data.json} sortObjectKeys={compare} shouldExpandNode={state.shouldExpandNode}
-            expandAll={this.expandAll} collapseAll={this.collapseAll} onSearch={props.dialog ? null : this.search} />
+            expandAll={self.expandAll} collapseAll={self.collapseAll} onSearch={props.dialog ? null : self.search} />
         </div>
-        <ContextMenu onClick={this.onClickContextMenu} ref="contextMenu" />
+        <ContextMenu onClick={self.onClickContextMenu} ref="contextMenu" />
       </div>
     );
   }

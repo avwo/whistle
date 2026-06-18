@@ -15,7 +15,9 @@ var UrlInput = React.createClass({
   getInitialState: function() {
     var props = this.props;
     var protocols = ['', 'http://', 'https://', 'ws://', 'wss://', 'tunnel://'];
-    if (props.enableLocalFile) {
+    if (props.hideCustom) {
+      protocols = protocols.slice(1);
+    } else if (props.enableLocalFile) {
       protocols = ['file://', 'http://', 'https://'];
     } else if (props.isRedirect) {
       protocols = ['', 'http://', 'https://'];
@@ -35,13 +37,14 @@ var UrlInput = React.createClass({
     return (result && result[1]) || '';
   },
   handleCallback: function(filepath) {
-    var state = this.state;
+    var self = this;
+    var state = self.state;
     if (state.protocol !== 'tpl://') {
       state.protocol = 'file://';
     }
-    state.url = filepath + this.getSuffix();
-    this.setState({});
-    this.handleChange();
+    state.url = filepath + self.getSuffix();
+    self.setState({});
+    self.handleChange();
   },
   getProtocol: function() {
     return this.state.protocol.replace(/:\/\//, '');
@@ -65,26 +68,28 @@ var UrlInput = React.createClass({
     };
   },
   handleChange: function() {
-    var onChange = this.props.onChange;
+    var self = this;
+    var onChange = self.props.onChange;
     if (onChange) {
-      var state = this.state;
+      var state = self.state;
       var url = state.url;
       url = url ? state.protocol + state.url : '';
-      if (url !== this._curUrl) {
-        this._curUrl = url;
-        onChange(url, this.refs.checkbox);
+      if (url !== self._curUrl) {
+        self._curUrl = url;
+        onChange(url, self.refs.checkbox);
       }
     }
   },
   onProtocolChange: function(e) {
-    var state = this.state;
+    var self = this;
+    var state = self.state;
     var protocol = e.target.value;
     state.protocol = protocol;
     if (protocol) {
       state.url = state.url.replace(PROTOCOL_RE, '');
     }
-    this.setState({});
-    this.handleChange();
+    self.setState({});
+    self.handleChange();
   },
   shake: function() {
     var con = $(this.refs.urlInput).find('input');
@@ -92,44 +97,48 @@ var UrlInput = React.createClass({
     con.select().focus();
   },
   showParams: function() {
-    var url = this.state.url.replace(/#.*$/, '');
+    var self = this;
+    var url = self.state.url.replace(/#.*$/, '');
     var index = url.indexOf('?');
     var paramsText = index === -1 ? '' : url.substring(index + 1);
     var params = util.parseQueryString(paramsText, null, null, decodeURIComponent);
-    this.refs.paramsEditor.update(params);
-    this.setState({ showParams: true, paramsText: paramsText, hasPath: this.getPathIndex() !== -1 });
+    self.refs.paramsEditor.update(params);
+    self.setState({ showParams: true, paramsText: paramsText, hasPath: self.getPathIndex() !== -1 });
   },
   hideParams: function() {
     this.setState({ showParams: false });
   },
   toggleParams: function() {
-    if (this.state.showParams) {
-      this.hideParams();
+    var self = this;
+    if (self.state.showParams) {
+      self.hideParams();
     } else {
-      this.showParams();
+      self.showParams();
     }
   },
   addParam: function() {
     this.refs.paramsEditor.onAdd();
   },
   onParamsChange: function () {
-    var paramsText = this.refs.paramsEditor.toString();
-    var state = this.state;
+    var self = this;
+    var paramsText = self.refs.paramsEditor.toString();
+    var state = self.state;
     state.url = util.replacQuery(state.url, paramsText);
-    this.setState({ paramsText: paramsText });
-    this.handleChange();
+    self.setState({ paramsText: paramsText });
+    self.handleChange();
   },
   onUrlChange: function(e) {
-    var result = this.parseUrl(e.target.value);
-    var state = this.state;
+    var self = this;
+    var result = self.parseUrl(e.target.value);
+    var state = self.state;
     if (result.protocol) {
       state.protocol = result.protocol;
     } else if (PROTOCOL_RE.test(result.url)) {
       state.protocol = '';
     }
     state.url = result.url;
-    this.setState({});
-    this.handleChange();
+    self.setState({});
+    self.handleChange();
   },
   componentDidMount: function() {
     var self = this;
@@ -145,13 +154,14 @@ var UrlInput = React.createClass({
       }
     };
     $(document).on('click mousedown', self.handleHideParams);
-    this.componentDidUpdate();
+    self.componentDidUpdate();
   },
   componentDidUpdate: function() {
-    var value = this.props.value;
-    if (value !== this._curValue) {
-      this._curValue = value;
-      this.setUrl(value);
+    var self = this;
+    var value = self.props.value;
+    if (value !== self._curValue) {
+      self._curValue = value;
+      self.setUrl(value);
     }
   },
   showHints: function() {
@@ -166,21 +176,23 @@ var UrlInput = React.createClass({
     value && this.setUrl(value);
   },
   handleUrlKeyUp: function(e) {
+    var self = this;
     if (e.keyCode === 27) {
-      if (this.state.showHints) {
-        this.hideHints();
+      if (self.state.showHints) {
+        self.hideHints();
       } else {
-        this.showHints();
+        self.showHints();
       }
     }
   },
   onUrlKeyDown: function(e) {
+    var self = this;
     var elem;
     if (e.keyCode === 38) {
         // up
-      elem = this.hintElem.find('.w-active');
-      if (!this.state.showHints) {
-        this.showHints();
+      elem = self.hintElem.find('.w-active');
+      if (!self.state.showHints) {
+        self.showHints();
       }
       if (elem.length) {
         elem.removeClass('w-active');
@@ -188,16 +200,16 @@ var UrlInput = React.createClass({
       }
 
       if (!elem.length) {
-        elem = this.hintElem.find('li:last');
+        elem = self.hintElem.find('li:last');
         elem.addClass('w-active');
       }
-      util.ensureVisible(elem, this.hintElem);
+      util.ensureVisible(elem, self.hintElem);
       e.preventDefault();
     } else if (e.keyCode === 40) {
         // down
-      elem = this.hintElem.find('.w-active');
-      if (!this.state.showHints) {
-        this.showHints();
+      elem = self.hintElem.find('.w-active');
+      if (!self.state.showHints) {
+        self.showHints();
       }
       if (elem.length) {
         elem.removeClass('w-active');
@@ -205,37 +217,38 @@ var UrlInput = React.createClass({
       }
 
       if (!elem.length) {
-        elem = this.hintElem.find('li:first');
+        elem = self.hintElem.find('li:first');
         elem.addClass('w-active');
       }
-      util.ensureVisible(elem, this.hintElem);
+      util.ensureVisible(elem, self.hintElem);
       e.preventDefault();
     } else if (e.keyCode === 13) {
-      elem = this.hintElem.find('.w-active');
+      elem = self.hintElem.find('.w-active');
       var value = elem.attr('title');
-      value && this.setUrl(value);
+      value && self.setUrl(value);
     } else {
       var curUrl = e.target.value;
       util.handleEditorKeydown(e);
       if (curUrl && !e.target.value) {
-        this.showHints();
-        this.setUrl();
+        self.showHints();
+        self.setUrl();
       }
     }
   },
   setUrl: function(url) {
-    if (url === this._curUrl) {
+    var self = this;
+    if (url === self._curUrl) {
       return;
     }
-    var result = this.parseUrl(url);
-    var state = this.state;
+    var result = self.parseUrl(url);
+    var state = self.state;
     if (result.protocol === state.protocol && result.url === state.url) {
       return;
     }
     state.protocol = result.protocol;
     state.url = result.url;
-    this.hideHints();
-    this.handleChange();
+    self.hideHints();
+    self.handleChange();
   },
   clearUrl: function() {
     var self = this;
@@ -279,38 +292,40 @@ var UrlInput = React.createClass({
     $(document).off('click mousedown', this.handleHideParams);
   },
   renderParamsEditor: function() {
-    var state = this.state;
+    var self = this;
+    var state = self.state;
     var showParams = state.showParams;
 
     return (
         <div className={'w-layer w-params-editor v-box' + (showParams ? '' : ' hide')}>
           <div className="w-filter-bar w-middle">
             <div className="w-params-btns w-middle flex-1">
-              <a onClick={this.addParam}>
+              <a onClick={self.addParam}>
                 <Icon name="plus" />Param
               </a>
-              <a style={getHideStyle(!state.url)} onClick={this.clearUrl}>
+              <a style={getHideStyle(!state.url)} onClick={self.clearUrl}>
                 <Icon name="remove" />URL
               </a>
-              <a style={getHideStyle(!state.hasPath)} onClick={this.clearPath}>
+              <a style={getHideStyle(!state.hasPath)} onClick={self.clearPath}>
                 <Icon name="remove" />Path
               </a>
-              <a style={getHideStyle(!state.paramsText)} onClick={this.clearParams}>
+              <a style={getHideStyle(!state.paramsText)} onClick={self.clearParams}>
                 <Icon name="remove" />Params
               </a>
             </div>
-            <CloseBtn onClick={this.hideParams} className="w-close-params" />
+            <CloseBtn onClick={self.hideParams} className="w-close-params" />
           </div>
           <PropsEditor
             ref="paramsEditor"
-            onChange={this.onParamsChange}
-            callback={this.execute}
+            onChange={self.onParamsChange}
+            callback={self.execute}
           />
         </div>
     );
   },
   renderHints: function() {
-    var hints = this.props.hints;
+    var self = this;
+    var hints = self.props.hints;
     if (!hints || !hints.length) {
       return null;
     }
@@ -318,13 +333,13 @@ var UrlInput = React.createClass({
     return (
       <div
         className="w-layer w-filter-hint w-url-hints"
-        style={getHideStyle(!this.state.showHints)}
+        style={getHideStyle(!self.state.showHints)}
         onMouseDown={util.preventBlur}
       >
         <div className="w-filter-bar">
-          <CloseBtn onClick={this.hideHints} className="w-clear-hints" />
+          <CloseBtn onClick={self.hideHints} className="w-clear-hints" />
         </div>
-        <ul ref="hints" onClick={this.clickHints}>
+        <ul ref="hints" onClick={self.clickHints}>
           {
             hints.map(function(hint) {
               return <li key={hint} title={hint}>{hint}</li>;
@@ -335,15 +350,17 @@ var UrlInput = React.createClass({
     );
   },
   showEditor: function () {
+    var self = this;
     events.trigger('showEditorDialog', {
-      filename: this.state.url.replace(/\?.*$/, ''),
-      session: this.props.session || null,
-      callback: this.handleCallback
+      filename: self.state.url.replace(/\?.*$/, ''),
+      session: self.props.session || null,
+      callback: self.handleCallback
     });
   },
   render: function() {
-    var state = this.state;
-    var props = this.props;
+    var self = this;
+    var state = self.state;
+    var props = self.props;
     var protocol = state.protocol;
     var disabled = props.disabled;
     var enableLocalFile = props.enableLocalFile;
@@ -354,7 +371,7 @@ var UrlInput = React.createClass({
         <select
           disabled={disabled}
           value={protocol}
-          onChange={this.onProtocolChange}
+          onChange={self.onProtocolChange}
           className="form-control w-url-protocol"
         >
           {state.protocols.map(function (p) {
@@ -365,12 +382,12 @@ var UrlInput = React.createClass({
           ref="checkbox"
           disabled={disabled}
           value={state.url}
-          onChange={this.onUrlChange}
-          onKeyUp={this.handleUrlKeyUp}
-          onKeyDown={this.onUrlKeyDown}
-          onFocus={this.showHints}
-          onDoubleClick={this.showHints}
-          onBlur={this.hideHints}
+          onChange={self.onUrlChange}
+          onKeyUp={self.handleUrlKeyUp}
+          onKeyDown={self.onUrlKeyDown}
+          onFocus={self.showHints}
+          onDoubleClick={self.showHints}
+          onBlur={self.hideHints}
           type="text"
           maxLength="8192"
           placeholder={props.placeholder || 'Enter ' + (isFile ?  'file or directory path or (value)' : 'request URL')}
@@ -379,16 +396,16 @@ var UrlInput = React.createClass({
         <button
           disabled={disabled}
           className={'btn btn-default w-url-params' + (isFile ? ' w-hide' : '')}
-          onClick={this.toggleParams}
+          onClick={self.toggleParams}
         >
           Params
         </button>
-        {enableLocalFile ? <button disabled={disabled} className="btn btn-primary h-32 ml-10 w-add-file" onClick={this.showEditor}>
+        {enableLocalFile ? <button disabled={disabled} className="btn btn-primary h-32 ml-10 w-add-file" onClick={self.showEditor}>
           <Icon name="plus" />
           File
         </button> : null}
-        {this.renderParamsEditor()}
-        {this.renderHints()}
+        {self.renderParamsEditor()}
+        {self.renderHints()}
       </div>
     );
   }

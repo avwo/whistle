@@ -76,7 +76,7 @@ var FrameList = React.createClass({
   },
   componentDidMount: function () {
     var self = this;
-    var framesCtx = this.props.framesCtx;
+    var framesCtx = self.props.framesCtx;
     framesCtx.on('autoRefreshFrames', self.autoRefresh);
     framesCtx.on('composeFrameId', function (e, id) {
       var modal = id && self.props.modal;
@@ -101,27 +101,29 @@ var FrameList = React.createClass({
     this.atBottom = this.shouldScrollToBottom();
   },
   componentDidUpdate: function () {
-    if (this.atBottom) {
-      this.autoRefresh();
+    var self = this;
+    if (self.atBottom) {
+      self.autoRefresh();
     }
-    var reqData = this.props.reqData;
+    var reqData = self.props.reqData;
     if (reqData) {
       if (reqData.pauseRecordFrames) {
-        this.refs.recordBtn.enable('pause');
+        self.refs.recordBtn.enable('pause');
       } else if (reqData.stopRecordFrames) {
-        this.refs.recordBtn.enable('stop');
+        self.refs.recordBtn.enable('stop');
       } else {
-        this.refs.recordBtn.enable();
+        self.refs.recordBtn.enable();
       }
     }
   },
   replay: function () {
-    var reqData = this.props.reqData;
+    var self = this;
+    var reqData = self.props.reqData;
     if (!reqData || reqData.closed || reqData.err) {
-      this.autoRefresh();
+      self.autoRefresh();
       return;
     }
-    this.props.framesCtx.trigger('replayFrame', this.props.modal.getActive());
+    self.props.framesCtx.trigger('replayFrame', self.props.modal.getActive());
   },
   stopRefresh: function () {
     this.container.scrollTop = this.container.scrollTop - 10;
@@ -130,19 +132,21 @@ var FrameList = React.createClass({
     this.container.scrollTop = 100000000;
   },
   clear: function () {
-    this.props.modal.clear();
-    this.setState({});
-    if (this.props.onUpdate) {
-      this.props.onUpdate();
+    var self = this;
+    self.props.modal.clear();
+    self.setState({});
+    if (self.props.onUpdate) {
+      self.props.onUpdate();
     }
   },
   compose: function () {
     this.props.framesCtx.trigger('composeFrame', this.props.modal.getActive());
   },
   checkActive: function () {
-    var reqData = this.props.reqData;
+    var self = this;
+    var reqData = self.props.reqData;
     if (!reqData || reqData.closed || reqData.err) {
-      this.autoRefresh();
+      self.autoRefresh();
       return;
     }
     return reqData;
@@ -223,15 +227,16 @@ var FrameList = React.createClass({
     }
   },
   shouldScrollToBottom: function () {
-    var con = this.container;
-    var ctn = this.content;
-    var modal = this.props.modal;
+    var self = this;
+    var con = self.container;
+    var ctn = self.content;
+    var modal = self.props.modal;
     var atBottom = con.scrollTop + con.offsetHeight + 5 > ctn.offsetHeight;
     if (atBottom) {
       modal.update();
-      this.refs.backBtn.hide();
+      self.refs.backBtn.hide();
     } else {
-      this.refs.backBtn.show();
+      self.refs.backBtn.show();
     }
     return atBottom;
   },
@@ -242,15 +247,16 @@ var FrameList = React.createClass({
     this.content = findDOMNode(content);
   },
   handleAction: function (type) {
+    var self = this;
     if (type === 'top') {
-      this.container.scrollTop = 0;
+      self.container.scrollTop = 0;
       return;
     }
     if (type === 'bottom') {
-      return this.autoRefresh();
+      return self.autoRefresh();
     }
     var refresh = type === 'refresh';
-    var reqData = this.props.reqData;
+    var reqData = self.props.reqData;
     if (reqData) {
       if (type === 'pause') {
         reqData.stopRecordFrames = true;
@@ -261,7 +267,7 @@ var FrameList = React.createClass({
       reqData.stopRecordFrames = !refresh;
     }
     if (refresh) {
-      return this.autoRefresh();
+      return self.autoRefresh();
     }
   },
   onDragStart: function (e) {
@@ -274,10 +280,11 @@ var FrameList = React.createClass({
   onContextMenu: function (e) {
     e.preventDefault();
     var frameId = $(e.target).closest('li').attr('data-id');
-    var modal = this.props.modal;
+    var self = this;
+    var modal = self.props.modal;
     var item = modal.getItem(frameId);
-    var hasClosed = !!isClosed(this.props.reqData);
-    this.currentFocusItem = item;
+    var hasClosed = !!isClosed(self.props.reqData);
+    self.currentFocusItem = item;
     contextMenuList[0].disabled = !item;
     contextMenuList[0].copyText = (item && item.data) || '';
     contextMenuList[1].disabled = (!item || hasClosed);
@@ -286,12 +293,13 @@ var FrameList = React.createClass({
     contextMenuList[4].disabled = !modal.list.length;
     var data = util.getMenuPosition(e, 130, 130);
     data.list = contextMenuList;
-    this.refs.contextMenu.show(data);
+    self.refs.contextMenu.show(data);
   },
   onClickContextMenu: function (action) {
-    var item = this.currentFocusItem;
-    var framesCtx = this.props.framesCtx;
-    this.currentFocusItem = null;
+    var self = this;
+    var item = self.currentFocusItem;
+    var framesCtx = self.props.framesCtx;
+    self.currentFocusItem = null;
     switch (action) {
     case 'Replay':
       item &&  framesCtx.trigger('replayFrame', item);
@@ -300,17 +308,17 @@ var FrameList = React.createClass({
       item && framesCtx.trigger('composeFrame', item);
       break;
     case 'Abort':
-      this.abort();
+      self.abort();
       break;
     case 'Clear':
-      this.clear();
+      self.clear();
       break;
     }
   },
   render: function () {
     var self = this;
     var props = self.props;
-    var state = this.state;
+    var state = self.state;
     var reqData = props.reqData || {};
     var onClickFrame = props.onClickFrame;
     var modal = self.props.modal;
@@ -323,7 +331,7 @@ var FrameList = React.createClass({
         <div className="w-frames-action" onMouseDown={util.preventBlur}>
           <RecordBtn
             ref="recordBtn"
-            onClick={this.handleAction}
+            onClick={self.handleAction}
             disabledRecord={reqData.closed}
           />
           <a onClick={self.clear} className="w-remove-menu" draggable="false">
@@ -368,12 +376,12 @@ var FrameList = React.createClass({
         </div>
         <div
           tabIndex="0"
-          onKeyDown={this.onClear}
+          onKeyDown={self.onClear}
           style={{ background: keyword ? 'var(--b-filtered)' : undefined }}
           onScroll={self.shouldScrollToBottom}
           ref={self.setContainer}
           className="fill w-frames-list"
-          onContextMenu={this.onContextMenu}
+          onContextMenu={self.onContextMenu}
         >
           <ul ref={self.setContent} onDragStart={self.onDragStart}>
             {list.map(function (item) {
@@ -454,9 +462,9 @@ var FrameList = React.createClass({
             })}
           </ul>
         </div>
-        <BackToBottomBtn ref="backBtn" onClick={this.autoRefresh} />
+        <BackToBottomBtn ref="backBtn" onClick={self.autoRefresh} />
         <FilterInput onChange={self.onFilterChange} />
-        <ContextMenu onClick={this.onClickContextMenu} ref="contextMenu" />
+        <ContextMenu onClick={self.onClickContextMenu} ref="contextMenu" />
       </div>
     );
   }

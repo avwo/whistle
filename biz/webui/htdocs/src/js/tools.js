@@ -41,15 +41,16 @@ var Tools = React.createClass({
     });
   },
   shouldComponentUpdate: function (nextProps) {
-    var hide = util.getBool(this.props.hide);
+    var self = this;
+    var hide = util.getBool(self.props.hide);
     if (hide != util.getBool(nextProps.hide)) {
       return true;
     }
     if (hide) {
       return false;
     }
-    var changeTab = this.changeTab;
-    this.changeTab = false;
+    var changeTab = self.changeTab;
+    self.changeTab = false;
     return changeTab === true;
   },
   toggleTabs: function (btn) {
@@ -57,34 +58,37 @@ var Tools = React.createClass({
     this.setState({ name: btn.name, plugin: null });
   },
   showTab: function(index, id) {
-    this.refs.tabs.handleClick(BTNS[index]);
+    var self = this;
+    self.refs.tabs.handleClick(BTNS[index]);
     if (typeof id === 'string') {
-      this.refs.console.showLogId(id);
-      this.shakeTab();
+      self.refs.console.showLogId(id);
+      self.shakeTab();
     }
   },
   shakeTab: function() {
     util.shakeElem($(findDOMNode(this.refs.tabs)).find('button.active'));
   },
   clearLogs: function () {
+    var self = this;
     if (BTNS[0].active) {
-      this.refs.console.clearLogs();
+      self.refs.console.clearLogs();
     } else if (BTNS[1].active) {
-      this.refs.serverLog.clearLogs();
+      self.refs.serverLog.clearLogs();
     }
   },
   onDoubleClickBar: function () {
+    var self = this;
     if (BTNS[0].active) {
-      if (this.refs.console.container.scrollTop < 5) {
-        this.refs.console.autoRefresh();
+      if (self.refs.console.container.scrollTop < 5) {
+        self.refs.console.autoRefresh();
       } else {
-        this.refs.console.scrollTop();
+        self.refs.console.scrollTop();
       }
     } else if (BTNS[1].active) {
-      if (this.refs.serverLog.container.scrollTop < 5) {
-        this.refs.serverLog.autoRefresh();
+      if (self.refs.serverLog.container.scrollTop < 5) {
+        self.refs.serverLog.autoRefresh();
       } else {
-        this.refs.serverLog.scrollTop();
+        self.refs.serverLog.scrollTop();
       }
     }
   },
@@ -131,22 +135,23 @@ var Tools = React.createClass({
     );
   },
   render: function () {
-    var state = this.state;
+    var self = this;
+    var state = self.state;
     var name = state.name;
     return (
       <div
         className={
           'fill v-box w-tools' +
-          (util.getBool(this.props.hide) ? ' hide' : '')
+          (util.getBool(self.props.hide) ? ' hide' : '')
         }
       >
         <BtnGroup
           ref="tabs"
-          onDoubleClickBar={this.onDoubleClickBar}
-          onClick={this.toggleTabs}
-          onDoubleClick={this.clearLogs}
+          onDoubleClickBar={self.onDoubleClickBar}
+          onClick={self.toggleTabs}
+          onDoubleClick={self.clearLogs}
           btns={BTNS}
-          appendTabs={this.createCustomTabs()}
+          appendTabs={self.createCustomTabs()}
         />
         <LazyInit inited={name === BTNS[0].name}>
           <Console ref="console" hide={!BTNS[0].active} />
@@ -159,7 +164,7 @@ var Tools = React.createClass({
         </LazyInit>
         <TabMgr
           active={state.plugin && state.plugin.plugin}
-          hide={util.getBool(this.props.hide)}
+          hide={util.getBool(self.props.hide)}
           tabs={dataCenter.getToolTabs()}
           className="w-custom-tab-panel"
         />

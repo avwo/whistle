@@ -65,7 +65,8 @@ var NetworkRule = React.createClass({
     this.setState({ url: url }, this.handleChange);
   },
   handleChange: function() {
-    var state = this.state;
+    var self = this;
+    var state = self.state;
     var url = state.disabled ? '' : state.url;
     var resType = state.disabledType ? '' : state.type;
     var method = state.disabledMethod ? '' : state.method;
@@ -91,17 +92,18 @@ var NetworkRule = React.createClass({
       rules.push('resCors://' + resCors);
     }
     rules = rules.join(' ');
-    if (this._curRules !== rules) {
-      this._curRules = rules;
-      this.props.onChange(rules);
+    if (self._curRules !== rules) {
+      self._curRules = rules;
+      self.props.onChange(rules);
     }
   },
   getDocsUrl: function() {
     return 'rules/' + this.refs.url.getProtocol() + '.html';
   },
   render: function() {
-    var props = this.props;
-    var state = this.state;
+    var self = this;
+    var props = self.props;
+    var state = self.state;
     var hide = props.hide;
     var disabled = state.disabled;
     var disabledType = state.disabledType;
@@ -114,18 +116,18 @@ var NetworkRule = React.createClass({
       <div className={'w-rules-form' + (hide ? ' w-hide' : '')}>
         <div className="w-form-item">
           <label>
-            <input type="checkbox" className="mr-10" checked={!disabled} data-name="disabled" onChange={this.onDisableCheckChange} />
+            <input type="checkbox" className="mr-10" checked={!disabled} data-name="disabled" onChange={self.onDisableCheckChange} />
             Mapping File/URL/(Value)
-            <HelpIcon className="ml-10" docsUrl={this.getDocsUrl} />
+            <HelpIcon className="ml-10" docsUrl={self.getDocsUrl} />
           </label>
           <div className="w-form-value">
-            <UrlInput ref="url" enableLocalFile enableTplFile onChange={this.onChange} disabled={disabled} session={props.session} />
+            <UrlInput ref="url" enableLocalFile enableTplFile onChange={self.onChange} disabled={disabled} session={props.session} />
           </div>
         </div>
         <div className="w-form-item">
           <div className="w-form-value">
             <label>
-              <input type="checkbox" className="mr-10" checked={state.disabledCache} onChange={this.onDisableCache} />
+              <input type="checkbox" className="mr-10" checked={state.disabledCache} onChange={self.onDisableCache} />
               Disable Cache
               <HelpIcon docsUrl="rules/disable.html" className="ml-10" />
             </label>
@@ -134,40 +136,40 @@ var NetworkRule = React.createClass({
         <div className="w-form-item">
           <div className="w-form-value">
             <label className="w-175">
-              <input type="checkbox" className="mr-10" checked={!disabledMethod} data-name="disabledMethod" onChange={this.onDisableCheckChange} />
+              <input type="checkbox" className="mr-10" checked={!disabledMethod} data-name="disabledMethod" onChange={self.onDisableCheckChange} />
               Modify Request Method
             </label>
-            <MethodSelect disabled={disabledMethod} value={state.method}  onChange={this.onMethodChange} />
+            <MethodSelect disabled={disabledMethod} value={state.method}  onChange={self.onMethodChange} />
             <HelpIcon docsUrl="rules/method.html" />
           </div>
         </div>
         <div className="w-form-item">
           <div className="w-form-value">
             <label className="w-175">
-              <input type="checkbox" className="mr-10" checked={!disabledStatusCode} data-name="disabledStatusCode" onChange={this.onDisableCheckChange} />
+              <input type="checkbox" className="mr-10" checked={!disabledStatusCode} data-name="disabledStatusCode" onChange={self.onDisableCheckChange} />
               Set Status Code
             </label>
-            <StatusSelect ref="statusCode" disabled={disabledStatusCode} value={state.statusCode} className="ml-10 w-300" onChange={this.onStatusCodeChange} />
+            <StatusSelect ref="statusCode" disabled={disabledStatusCode} value={state.statusCode} className="ml-10 w-300" onChange={self.onStatusCodeChange} />
             <HelpIcon docsUrl={'rules/' + (url ? 'replaceStatus' : 'statusCode') + '.html'} />
           </div>
         </div>
         <div className="w-form-item">
           <div className="w-form-value">
             <label className="w-175">
-              <input type="checkbox" className="mr-10" checked={!disabledType} data-name="disabledType" onChange={this.onDisableCheckChange} />
+              <input type="checkbox" className="mr-10" checked={!disabledType} data-name="disabledType" onChange={self.onDisableCheckChange} />
               Set Response Type
             </label>
-            <TypeSelect ref="responseType" disabled={disabledType} value={state.type} className="ml-10 w-300" onChange={this.onTypeChange} hidePlaceholder />
+            <TypeSelect ref="responseType" disabled={disabledType} value={state.type} className="ml-10 w-300" onChange={self.onTypeChange} hidePlaceholder />
             <HelpIcon docsUrl="rules/resType.html" />
           </div>
         </div>
         <div className="w-form-item">
           <div className="w-form-value">
             <label className="w-175">
-              <input type="checkbox" className="mr-10" checked={!disabledResCors} data-name="disabledResCors" onChange={this.onDisableCheckChange} />
+              <input type="checkbox" className="mr-10" checked={!disabledResCors} data-name="disabledResCors" onChange={self.onDisableCheckChange} />
               Set Response CORS
             </label>
-            <Select disabled={disabledResCors} value={state.resCors} className="ml-10 w-300" onChange={this.onResCorsChange} options={RES_CORS_OPTIONS} />
+            <Select disabled={disabledResCors} value={state.resCors} className="ml-10 w-300" onChange={self.onResCorsChange} options={RES_CORS_OPTIONS} />
             <HelpIcon docsUrl="rules/resCors.html" />
           </div>
         </div>

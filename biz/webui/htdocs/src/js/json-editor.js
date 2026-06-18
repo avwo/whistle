@@ -19,13 +19,14 @@ var JSONEditor = React.createClass({
     this.props.onChange(this.getEvent());
   },
   render: function() {
-    var props = this.props;
+    var self = this;
+    var props = self.props;
     var value = props.value;
     return (
       <div className="w-json-editor">
         {value ? <div className="w-mock-action">
-          <a onClick={this.onFormat}>Format</a>
-          <a onClick={this.onClear}>Clear</a>
+          <a onClick={self.onFormat}>Format</a>
+          <a onClick={self.onClear}>Clear</a>
         </div> : null}
         <textarea ref="target" className="form-control" value={value} maxLength="256000" disabled={props.disabled}
           onChange={props.onChange} placeholder={PLACEHOLDER} data-keep-space="1" />

@@ -49,10 +49,11 @@ var ListDialog = React.createClass({
     this.setState({ checkedItems: checkedItems });
   },
   donwload: function(data) {
-    var input = findDOMNode(this.refs.filename);
-    var form = findDOMNode(this.refs.exportData);
-    findDOMNode(this.refs.exportName).value = input.value.trim();
-    findDOMNode(this.refs.data).value = JSON.stringify(data);
+    var self = this;
+    var input = findDOMNode(self.refs.filename);
+    var form = findDOMNode(self.refs.exportData);
+    findDOMNode(self.refs.exportName).value = input.value.trim();
+    findDOMNode(self.refs.data).value = JSON.stringify(data);
     form.submit();
     input.value = '';
   },
@@ -63,9 +64,10 @@ var ListDialog = React.createClass({
     return util.formatFilename(findDOMNode(this.refs.filename).value.trim());
   },
   getRuleList: function (cb) {
-    var rulesModal = this.state.rulesModal;
+    var self = this;
+    var rulesModal = self.state.rulesModal;
     var allValues = {};
-    var checkedList = this.state.checkedRuleList;
+    var checkedList = self.state.checkedRuleList;
     var allList = [];
     rulesModal.list.forEach(function(item, i) {
       if (i && item.checked) {
@@ -100,7 +102,7 @@ var ListDialog = React.createClass({
       rules += '\n\n' + values;
     }
     var newVals;
-    var filename = this.getInputValue() || 'rules_items_' + util.formatDate() + '.txt';
+    var filename = self.getInputValue() || 'rules_items_' + util.formatDate() + '.txt';
     var execCb = function() {
       cb([rules, newVals || {}], filename);
     };
@@ -132,18 +134,20 @@ var ListDialog = React.createClass({
     if (e.target.disabled) {
       return;
     }
-    this.refs.dialog.hide();
-    if (this.isRuleList()) {
-      return this.exportRuleList();
+    var self = this;
+    self.refs.dialog.hide();
+    if (self.isRuleList()) {
+      return self.exportRuleList();
     }
-    var items = this.state.checkedItems;
-    this.donwload(items);
+    var items = self.state.checkedItems;
+    self.donwload(items);
   },
   getExportData: function(cb) {
-    if (this.isRuleList()) {
-      return this.getRuleList(cb);
+    var self = this;
+    if (self.isRuleList()) {
+      return self.getRuleList(cb);
     }
-    cb(this.state.checkedItems);
+    cb(self.state.checkedItems);
   },
   getAllItems: function () {
     var list = this.props.list || [];
@@ -174,7 +178,7 @@ var ListDialog = React.createClass({
       }
       self.setState({ checkedItems: checkedItems });
     }
-    !this.props.onConfirm && setTimeout(function () {
+    !self.props.onConfirm && setTimeout(function () {
       var input = findDOMNode(self.refs.filename);
       input.focus();
       input.select();
@@ -194,7 +198,7 @@ var ListDialog = React.createClass({
         ruleListLen += data.rules.length;
         return data;
       });
-      this.setState({
+      self.setState({
         rulesModal: {
           list: list,
           map: map
@@ -210,13 +214,12 @@ var ListDialog = React.createClass({
     e.preventDefault();
   },
   onTabChange: function (tab) {
-    var self = this;
-    var tabs = self.state.tabs;
+    var tabs = this.state.tabs;
     tabs.forEach(function (t) {
       t.active = false;
     });
     tab.active = true;
-    self.setState({ tabs: tabs });
+    this.setState({ tabs: tabs });
   },
   getRulesModal: function() {
     var props = this.props;
@@ -324,7 +327,7 @@ var ListDialog = React.createClass({
         </div>
         <div className="modal-footer">
         {onConfirm ? null : <label className={'w-kv-check-all' + (tabs[1].active ? ' hide' : '')}>
-          <input type="checkbox" checked={checkedAll} onChange={this.checkAll} disabled={!listLen} />
+          <input type="checkbox" checked={checkedAll} onChange={self.checkAll} disabled={!listLen} />
           Select all
         </label>}
           <button
@@ -334,17 +337,17 @@ var ListDialog = React.createClass({
           >
             Cancel
           </button>
-          {onConfirm ? null : <ShareViaURLBtn getFilename={this.getInputValue} disabled={!selectedCount}
-            type={this.isRuleList() ? 'mock' : props.name}
-            getData={this.getExportData} onComplete={this.onShare} />}
+          {onConfirm ? null : <ShareViaURLBtn getFilename={self.getInputValue} disabled={!selectedCount}
+            type={self.isRuleList() ? 'mock' : props.name}
+            getData={self.getExportData} onComplete={self.onShare} />}
           <button
             type="button"
             className="btn btn-primary"
             disabled={!selectedCount}
-            onMouseDown={this.preventDefault}
+            onMouseDown={self.preventDefault}
             onClick={onConfirm ? function() {
               onConfirm(checkedNames);
-            } : this.onConfirm}
+            } : self.onConfirm}
           >
             {onConfirm ? 'Confirm' : 'Export' + ' (' + selectedCount + ' / ' + (tabs[1].active ?  ruleListLen : listLen) + ')'}
           </button>

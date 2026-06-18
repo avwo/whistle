@@ -429,10 +429,13 @@ var cgi = createCgiObj(
   {
     getData: 'cgi-bin/get-data',
     getLogs: 'cgi-bin/log/get',
-    getInitial: 'cgi-bin/init'
+    getInitial: 'cgi-bin/init',
+    getMatchedRules: 'cgi-bin/get-matched-rules'
   },
   GET_CONF
 );
+
+exports.getMatchedRules = cgi.getMatchedRules;
 
 exports.createCgi = function (url, cancel, post) {
   return createCgi(

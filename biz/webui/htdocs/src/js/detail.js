@@ -111,10 +111,11 @@ var ReqData = React.createClass({
     util.shakeElem($(findDOMNode(this.refs.tabs)).find('button[data-name="Saved"]'));
   },
   showComposer: function (item) {
+    var self = this;
     if (item) {
-      this.state.activeItem = item;
+      self.state.activeItem = item;
     }
-    this.toggleTab(this.state.tabs[3], function () {
+    self.toggleTab(self.state.tabs[3], function () {
       item && events.trigger('setComposer');
     });
   },
@@ -137,24 +138,26 @@ var ReqData = React.createClass({
     }
   },
   onDrop: function (e) {
-    var modal = this.props.modal;
+    var self = this;
+    var modal = self.props.modal;
     var id = e.dataTransfer.getData('reqDataId');
     var list = modal && modal.list;
     var len = list && list.length;
     if (!id || !len) {
       return;
     }
-    var item = this.getItemById(id, list);
-    if (this.isShowingSaved()) {
+    var item = self.getItemById(id, list);
+    if (self.isShowingSaved()) {
       return events.trigger('saveSessions', [item]);
     }
-    item && this.showComposer(item);
+    item && self.showComposer(item);
   },
   onDoubleClick: function () {
     events.trigger('ensureSelectedItemVisible');
   },
   toggleTab: function (tab, callback) {
-    if (tab.name === 'Inspectors' && this.state.initedInspectors) {
+    var self = this;
+    if (tab.name === 'Inspectors' && self.state.initedInspectors) {
       var inspectors = $('.w-detail-inspectors');
       if (inspectors.length) {
         var detail = $('.w-detail');
@@ -165,24 +168,26 @@ var ReqData = React.createClass({
         btnGroup.eq(1).addClass('active');
       }
     }
-    this.selectTab(tab);
-    this.setState({ tab: tab }, callback);
+    self.selectTab(tab);
+    self.setState({ tab: tab }, callback);
   },
   selectTab: function (tab) {
-    this.state.tabs.forEach(function (tab) {
+    var self = this;
+    self.state.tabs.forEach(function (tab) {
       tab.active = false;
     });
     tab.active = true;
-    this.state.tab = tab;
-    this.state['inited' + tab.name] = true;
+    self.state.tab = tab;
+    self.state['inited' + tab.name] = true;
   },
   shakeComposerTab: function() {
     util.shakeElem($(findDOMNode(this.refs.tabs)).find('button[data-name="Composer"]'));
   },
   render: function () {
-    var modal = this.props.modal;
-    var state = this.state;
-    var data = this.props.data;
+    var self = this;
+    var modal = self.props.modal;
+    var state = self.state;
+    var data = self.props.data;
     var tabs = state.tabs;
     var selectedList = !data && modal && modal.getSelectedList();
     var activeItem;
@@ -234,11 +239,11 @@ var ReqData = React.createClass({
       tabs.forEach(function (tab) {
         tab.active = false;
       });
-      this.selectTab(curTab);
+      self.selectTab(curTab);
     }
     var name = curTab && curTab.name;
     var frames = activeItem && activeItem.frames;
-    var dockToBottom = this.props.dockToBottom;
+    var dockToBottom = self.props.dockToBottom;
 
     return (
       <div
@@ -246,14 +251,14 @@ var ReqData = React.createClass({
           'fill v-box w-detail' +
           (dockToBottom ? ' w-detail-bottom' : '')
         }
-        onDragEnter={this.onDragEnter}
-        onDrop={this.onDrop}
+        onDragEnter={self.onDragEnter}
+        onDrop={self.onDrop}
       >
         <BtnGroup
           ref="tabs"
           dockBtn={
             <button
-              onClick={this.props.onDockChange}
+              onClick={self.props.onDockChange}
               className="w-dock-btn"
               title={
                 'Dock to ' + (dockToBottom ? 'right' : 'bottom') + ' (F12)'
@@ -262,12 +267,12 @@ var ReqData = React.createClass({
               <Icon name={'menu-' + (dockToBottom ? 'right' : 'down')} className={data ? 'hide' : ''} />
             </button>
           }
-          onDoubleClick={this.onDoubleClick}
-          onClick={this.toggleTab}
+          onDoubleClick={self.onDoubleClick}
+          onClick={self.toggleTab}
           tabs={tabs}
         />
         {state.initedOverview ? (
-          <Overview modal={overview} rulesModal={this.props.rulesModal} hide={name != tabs[0].name} />
+          <Overview modal={overview} rulesModal={self.props.rulesModal} hide={name != tabs[0].name} />
         ) : null}
         {state.initedInspectors ? (
           <Inspectors

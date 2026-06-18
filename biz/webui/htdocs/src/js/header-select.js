@@ -139,7 +139,8 @@ var HeaderSelect = React.createClass({
     return { options: this.getOptions() };
   },
   getOptions: function() {
-    var props = this.props;
+    var self = this;
+    var props = self.props;
     var session = props.session;
     var isReq = props.isReq;
     var isRes = props.isRes;
@@ -154,14 +155,14 @@ var HeaderSelect = React.createClass({
     var hasChanged;
     if (session) {
       var headers = session.req.headers;
-      if (!isRes && this._reqHeaders !== headers) {
-        this._reqHeaders = headers;
+      if (!isRes && self._reqHeaders !== headers) {
+        self._reqHeaders = headers;
         hasChanged = true;
         Object.keys(headers).forEach(addOption);
       }
       headers = session.res.headers;
-      if (!isReq && this._resHeaders !== headers) {
-        this._resHeaders = headers;
+      if (!isReq && self._resHeaders !== headers) {
+        self._resHeaders = headers;
         hasChanged = true;
         headers && Object.keys(headers).forEach(addOption);
       }
@@ -170,18 +171,20 @@ var HeaderSelect = React.createClass({
     return options;
   },
   updateOptions: function() {
-    var options = this.getOptions();
-    if (options.hasChanged || !this.state.options.length) {
-      this.setState({ options: options });
+    var self = this;
+    var options = self.getOptions();
+    if (options.hasChanged || !self.state.options.length) {
+      self.setState({ options: options });
     }
   },
   render: function() {
-    var props = this.props;
+    var self = this;
+    var props = self.props;
     var keepCase = props.isReq || props.isRes;
 
     return (
-      <Select name={props.name} isHeader disabled={props.disabled} options={this.state.options} toLowerCase={!keepCase}
-        onChange={props.onChange} value={props.value} className={props.className} onClick={this.updateOptions}
+      <Select name={props.name} isHeader disabled={props.disabled} options={self.state.options} toLowerCase={!keepCase}
+        onChange={props.onChange} value={props.value} className={props.className} onClick={self.updateOptions}
         selectPlaceholder={props.placeholder} placeholder={'Enter new header name' + (keepCase ? '' : ' (case-insensitive)')}
         data={props.data} />
     );

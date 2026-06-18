@@ -88,21 +88,22 @@ var Network = React.createClass({
     );
   },
   render: function () {
-    var modal = this.props.modal;
-    var dockToBottom = this.state.dockToBottom;
+    var self = this;
+    var modal = self.props.modal;
+    var dockToBottom = self.state.dockToBottom;
     return (
-      <div className={'v-box fill' + (this.props.hide ? ' hide' : '')}>
+      <div className={'v-box fill' + (self.props.hide ? ' hide' : '')}>
         <Divider
           ref="divider"
           vertical={dockToBottom}
-          rightWidth={this.state.rightWidth}
+          rightWidth={self.state.rightWidth}
         >
           <ReqData modal={modal} />
           <Detail
             dockToBottom={dockToBottom}
-            onDockChange={this.onDockChange}
+            onDockChange={self.onDockChange}
             modal={modal}
-            rulesModal={this.props.rulesModal}
+            rulesModal={self.props.rulesModal}
           />
         </Divider>
       </div>

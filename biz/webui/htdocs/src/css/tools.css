@@ -176,13 +176,13 @@
   overflow-y: auto;
   padding-bottom: 20px;
 }
-.w-tool-box .w-detail-inspectors-title {
+.w-tool-box .w-inspectors-title {
   border: none;
   border-right: 1px solid var(--c-border);
   line-height: 20px;
 }
 
-.w-tool-box .w-detail-inspectors-title button {
+.w-tool-box .w-inspectors-title button {
   height: 18px;
   line-height: 16px;
   font-size: 12px;
@@ -292,7 +292,8 @@
 }
 
 .w-rules-dialog .w-list-content {
-  height: 500px;
+  min-height: 500px;
+  height: calc(100vh - 260px);
 }
 
 .w-rules-dialog .CodeMirror {
@@ -300,7 +301,7 @@
 }
 
 .w-rules-dialog .modal-title {
-  padding: 10px 0;
+  padding: 10px;
   font-weight: bold;
 }
 

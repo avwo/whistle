@@ -48,8 +48,8 @@ var PropsEditor = React.createClass({
   update: function (data) {
     var modal = {};
     var overflow;
+    var self = this;
     if (data) {
-      var self = this;
       var keys = Object.keys(data);
       overflow = keys.length >= MAX_COUNT;
       if (overflow) {
@@ -66,33 +66,36 @@ var PropsEditor = React.createClass({
         });
       });
     }
-    this.setState({ modal: modal }, this.props.onUpdate);
+    self.setState({ modal: modal }, self.props.onUpdate);
     return overflow;
   },
   onAdd: function () {
-    if (this.props.disabled) {
+    var self = this;
+    if (self.props.disabled) {
       return;
     }
-    if (Object.keys(this.state.modal || '').length >= MAX_COUNT) {
+    if (Object.keys(self.state.modal || '').length >= MAX_COUNT) {
       return message.error('Maximum allowed value: ' + MAX_COUNT);
     }
-    this.setState({ data: '' });
-    this.showDialog();
+    self.setState({ data: '' });
+    self.showDialog();
   },
   clear: function() {
-    if (!Object.keys(this.state.modal || '').length) {
+    var self = this;
+    if (!Object.keys(self.state.modal || '').length) {
       return;
     }
-    this.setState({ modal: {} }, this.props.onChange);
+    self.setState({ modal: {} }, self.props.onChange);
   },
   onEdit: function (e) {
-    if (this.props.disabled) {
+    var self = this;
+    if (self.props.disabled) {
       return;
     }
     var name = e.target.getAttribute('data-name');
-    var data = this.state.modal[name];
-    this.setState({ data: data });
-    this.showDialog(data);
+    var data = self.state.modal[name];
+    self.setState({ data: data });
+    self.showDialog(data);
   },
   execCallback: function(e) {
     if (e.target.getAttribute('data-action') === 'callback') {
@@ -100,15 +103,16 @@ var PropsEditor = React.createClass({
     }
   },
   edit: function (e) {
-    var nameInput = findDOMNode(this.refs.name);
+    var self = this;
+    var nameInput = findDOMNode(self.refs.name);
     var name = nameInput.value.trim();
     if (!name) {
       nameInput.focus();
       return message.error('The name is required');
     }
-    var valueInput = findDOMNode(this.refs.valueInput);
+    var valueInput = findDOMNode(self.refs.valueInput);
     var value = valueInput.value.trim();
-    var state = this.state;
+    var state = self.state;
     var data = state.data;
     var origName = data.name;
     data.name = name;
@@ -120,28 +124,29 @@ var PropsEditor = React.createClass({
     } else {
       data.value = value;
     }
-    this.props.onChange(origName, name);
-    this.setState({
+    self.props.onChange(origName, name);
+    self.setState({
       fileData: null,
       fileSize: null,
       filename: null,
       fileType: null
     });
-    this.hideDialog();
+    self.hideDialog();
     nameInput.value = valueInput.value = '';
-    this.execCallback(e);
+    self.execCallback(e);
   },
   add: function (e) {
-    var nameInput = findDOMNode(this.refs.name);
+    var self = this;
+    var nameInput = findDOMNode(self.refs.name);
     var name = nameInput.value.trim();
     if (!name) {
       nameInput.focus();
       return message.error('The name is required');
     }
-    var valueInput = findDOMNode(this.refs.valueInput);
+    var valueInput = findDOMNode(self.refs.valueInput);
     var value = valueInput.value.trim();
-    var modal = this.state.modal;
-    var state = this.state;
+    var modal = self.state.modal;
+    var state = self.state;
     if (!modal) {
       modal = {};
       state.modal = modal;
@@ -158,34 +163,35 @@ var PropsEditor = React.createClass({
         name: name,
         value: value
       };
-    this.props.onChange(name);
-    this.setState({
+    self.props.onChange(name);
+    self.setState({
       fileData: null,
       fileSize: null,
       filename: null,
       fileType: null
     });
-    this.hideDialog();
+    self.hideDialog();
     nameInput.value = valueInput.value = '';
-    this.execCallback(e);
+    self.execCallback(e);
   },
   hideDialog: function () {
     this.refs.composerDialog.hide();
   },
   showDialog: function (data) {
     this.refs.composerDialog.show();
-    var nameInput = findDOMNode(this.refs.name);
+    var self = this;
+    var nameInput = findDOMNode(self.refs.name);
     if (data) {
       nameInput.value = data.name || '';
       if (data.data) {
-        this.setState({
+        self.setState({
           filename: data.value,
           fileSize: data.size,
           fileData: data.data,
           fileType: data.type
         });
       } else {
-        findDOMNode(this.refs.valueInput).value = data.value || '';
+        findDOMNode(self.refs.valueInput).value = data.value || '';
       }
     }
     setTimeout(function () {
@@ -246,12 +252,13 @@ var PropsEditor = React.createClass({
     }
   },
   readLocalFile: function () {
-    var form = new FormData(findDOMNode(this.refs.readLocalFileForm));
+    var self = this;
+    var form = new FormData(findDOMNode(self.refs.readLocalFileForm));
     var file = form.get('localFile');
     if (file.size > MAX_FILE_SIZE) {
       return win.alert('Total file size must not exceed 20MB');
     }
-    var modal = this.state.modal || '';
+    var modal = self.state.modal || '';
     var size = file.size;
     Object.keys(modal).forEach(function (key) {
       size += modal[key].size;
@@ -259,7 +266,6 @@ var PropsEditor = React.createClass({
     if (size > MAX_FILE_SIZE) {
       return win.alert('Total file size must not exceed 20MB');
     }
-    var self = this;
     self.reading = true;
     util.readFile(file, function (data) {
       self.reading = false;
@@ -271,7 +277,7 @@ var PropsEditor = React.createClass({
         fileType: file.type
       });
     });
-    findDOMNode(this.refs.readLocalFile).value = '';
+    findDOMNode(self.refs.readLocalFile).value = '';
   },
   removeLocalFile: function (e) {
     var self = this;
@@ -293,29 +299,29 @@ var PropsEditor = React.createClass({
   },
   render: function () {
     var self = this;
-    var modal = this.state.modal || '';
-    var filename = this.state.filename;
-    var fileSize = this.state.fileSize;
+    var modal = self.state.modal || '';
+    var filename = self.state.filename;
+    var fileSize = self.state.fileSize;
     var keys = Object.keys(modal);
-    var isHeader = this.props.isHeader;
-    var allowUploadFile = this.props.allowUploadFile;
-    var data = this.state.data || '';
+    var isHeader = self.props.isHeader;
+    var allowUploadFile = self.props.allowUploadFile;
+    var data = self.state.data || '';
     var text = data ? 'Modify' : 'Add';
     var btnText = text + (isHeader ? ' Header' : ' Param');
-    var cbBtnText = this.props.callback ? text + ' & Send' : null;
+    var cbBtnText = self.props.callback ? text + ' & Send' : null;
 
     return (
       <div
         className={
           'fill v-box w-props-editor' +
-          (this.props.hide ? ' hide' : '')
+          (self.props.hide ? ' hide' : '')
         }
-        title={this.props.title}
-        onDoubleClick={this.props.onDoubleClick}
+        title={self.props.title}
+        onDoubleClick={self.props.onDoubleClick}
       >
         {keys.length ? (
           <table className="table">
-            <tbody onContextMenu={this.onContextMenu}>
+            <tbody onContextMenu={self.onContextMenu}>
               {keys.map(function (name) {
                 var item = modal[name];
                 return (
@@ -359,14 +365,14 @@ var PropsEditor = React.createClass({
           </table>
         ) : (
           <button
-            onClick={this.onAdd}
-            disabled={this.props.disabled}
+            onClick={self.onAdd}
+            disabled={self.props.disabled}
             className={
               'btn btn-primary btn-sm w-add-field' +
-              (this.props.isHeader ? ' w-add-header' : '')
+              (self.props.isHeader ? ' w-add-header' : '')
             }
           >
-            {this.props.isHeader ? '+Header' : '+Param'}
+            {self.props.isHeader ? '+Header' : '+Param'}
           </button>
         )}
         <Dialog ref="composerDialog" wstyle="w-com-dialog">
@@ -391,11 +397,11 @@ var PropsEditor = React.createClass({
                 }
               >
                 <div
-                  onClick={this.onUpload}
+                  onClick={self.onUpload}
                   className={'w-props-editor-file' + (filename ? '' : ' hide')}
                   title={filename}
                 >
-                  <CloseBtn className="w-del-btn" onClick={this.removeLocalFile} />
+                  <CloseBtn className="w-del-btn" onClick={self.removeLocalFile} />
                   <Icon name="file" />
                   {' [' + util.getSize(fileSize) + '] '}
                   {filename}
@@ -408,7 +414,7 @@ var PropsEditor = React.createClass({
                   onKeyDown={util.handleTab}
                 />
                 <button
-                  onClick={this.onUpload}
+                  onClick={self.onUpload}
                   className={'btn btn-primary' + (filename ? ' hide' : '')}
                 >
                   <Icon name="folder-open" />
@@ -452,7 +458,7 @@ var PropsEditor = React.createClass({
         >
           <input
             ref="readLocalFile"
-            onChange={this.readLocalFile}
+            onChange={self.readLocalFile}
             type="file"
             name="localFile"
           />

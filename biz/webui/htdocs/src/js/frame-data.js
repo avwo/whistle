@@ -26,12 +26,13 @@ var FrameClient = React.createClass({
     };
   },
   showTab: function (i) {
-    var btns = this.state.btns;
+    var self = this;
+    var btns = self.state.btns;
     btns.forEach(function (btn) {
       btn.active = false;
     });
-    this.selectBtn(btns[i]);
-    this.setState({});
+    self.selectBtn(btns[i]);
+    self.setState({});
   },
   componentDidMount: function () {
     var self = this;
@@ -80,13 +81,14 @@ var FrameClient = React.createClass({
     this.state.btn = btn;
   },
   render: function () {
-    var state = this.state;
-    var props = this.props;
-    var btns = this.state.btns;
+    var self = this;
+    var state = self.state;
+    var props = self.props;
+    var btns = state.btns;
     var btn = state.btn;
     if (btns.indexOf(btn) === -1) {
       btn = util.findArray(btns, findActive) || btns[0];
-      this.selectBtn(btn);
+      self.selectBtn(btn);
     }
     var frame = props.frame;
     var session = props.data;
@@ -118,12 +120,12 @@ var FrameClient = React.createClass({
       <div
         className={
           'fill v-box w-frames-data' +
-          (this.props.hide ? ' hide' : '')
+          (self.props.hide ? ' hide' : '')
         }
-        onDragEnter={this.onDragEnter}
-        onDrop={this.onDrop}
+        onDragEnter={self.onDragEnter}
+        onDrop={self.onDrop}
       >
-        <BtnGroup ref="tabs" onClick={this.onClickBtn} btns={state.btns} />
+        <BtnGroup ref="tabs" onClick={self.onClickBtn} btns={state.btns} />
         <Properties modal={overview} hide={btn.name !== 'Overview'} />
         <Textarea
           session={session}

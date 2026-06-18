@@ -11,7 +11,7 @@
   overflow: auto;
 }
 
-.w-detail-inspectors-title,
+.w-inspectors-title,
 .w-detail-webforms-title {
   line-height: 18px;
   background: var(--b-title);
@@ -19,10 +19,10 @@
   padding: 0 10px;
   border-bottom: 1px solid var(--c-border);
 }
-.w-detail-inspectors-title {
+.w-inspectors-title {
   padding: 0 5px !important;
 }
-.w-detail-inspectors-title {
+.w-inspectors-title {
   font-weight: bold;
 }
 .w-detail-webforms-title {

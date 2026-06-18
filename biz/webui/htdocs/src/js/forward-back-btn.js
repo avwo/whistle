@@ -15,7 +15,8 @@ var FbBtn = React.createClass({
     }
   },
   render: function() {
-    var props = this.props;
+    var self = this;
+    var props = self.props;
     var disabledForward = props.disabledForward;
     var disabledBack = props.disabledBack;
 
@@ -25,13 +26,13 @@ var FbBtn = React.createClass({
           name="menu-left"
           className={disabledBack ? 'w-disabled' : ''}
           title={disabledBack ? '' : 'Back'}
-          onClick={this.onBack}
+          onClick={self.onBack}
         />
         <Icon
           name="menu-right"
           className={disabledForward ? 'w-disabled' : ''}
           title={disabledForward ? '' : 'Forward'}
-          onClick={this.onForward}
+          onClick={self.onForward}
         />
       </div>
     );

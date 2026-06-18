@@ -10,8 +10,9 @@ var Tips = React.createClass({
     events.trigger('showFrames' + (data.inComposer ? 'InComposer' : ''));
   },
   render: function () {
+    var className = this.props.className || '';
     var data = this.props.data || { hide: true };
-    var className = 'w-textview-tips' + (data.hide ? ' hide' : '');
+    className = 'w-textview-tips' + (data.hide ? ' hide' : '') + ' ' + className;
     if (data.isFrames) {
       return (
         <a className={className} onClick={this.showFrames}>

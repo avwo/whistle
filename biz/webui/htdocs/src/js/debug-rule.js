@@ -33,7 +33,8 @@ var DebugRule = React.createClass({
     };
   },
   handleChange: function() {
-    var state = this.state;
+    var self = this;
+    var state = self.state;
     var rules = [];
     if (!state.disabledWeinre) {
       rules.push('weinre://' + state.weinreId);
@@ -60,9 +61,9 @@ var DebugRule = React.createClass({
       rules.push('enable://abortRes');
     }
     rules = rules.join(' ');
-    if (this._curRules !== rules) {
-      this._curRules = rules;
-      this.props.onChange(rules);
+    if (self._curRules !== rules) {
+      self._curRules = rules;
+      self.props.onChange(rules);
     }
   },
   onNumChange: function(e, key) {
@@ -105,8 +106,9 @@ var DebugRule = React.createClass({
     this.onNumChange(e, 'resSpeed');
   },
   render: function() {
-    var hide = this.props.hide;
-    var state = this.state;
+    var self = this;
+    var hide = self.props.hide;
+    var state = self.state;
     var disabledWeinre = state.disabledWeinre;
     var disabledLog = state.disabledLog;
     var disabledReqDelay = state.disabledReqDelay;
@@ -119,33 +121,33 @@ var DebugRule = React.createClass({
         <div className="w-form-item">
           <div className="w-form-value">
             <label className="w-75">
-              <input type="checkbox" className="mr-10" checked={!disabledWeinre} data-name="disabledWeinre" onChange={this.onDisableCheckChange} />
+              <input type="checkbox" className="mr-10" checked={!disabledWeinre} data-name="disabledWeinre" onChange={self.onDisableCheckChange} />
               Weinre
             </label>
             <input ref="weinreId" disabled={disabledWeinre} value={state.weinreId} type="text"
-              className="form-control w-weinre-id" maxLength="32" placeholder="Enter weinre id (optional)" onChange={this.onWeinreIdChange} />
+              className="form-control w-weinre-id" maxLength="32" placeholder="Enter weinre id (optional)" onChange={self.onWeinreIdChange} />
             <HelpIcon title="View the DOM structure of web pages" docsUrl="rules/weinre.html" className="ml-10" />
           </div>
         </div>
         <div className="w-form-item">
           <div className="w-form-value">
             <label className="w-75">
-              <input type="checkbox" className="mr-10" checked={!disabledLog} data-name="disabledLog" onChange={this.onDisableCheckChange} />
+              <input type="checkbox" className="mr-10" checked={!disabledLog} data-name="disabledLog" onChange={self.onDisableCheckChange} />
               Log
             </label>
             <input ref="logId" disabled={disabledLog} value={state.logId} type="text"
-              className="form-control w-log-id" maxLength="32" placeholder="Enter log id (optional)" onChange={this.onLogIdChange} />
+              className="form-control w-log-id" maxLength="32" placeholder="Enter log id (optional)" onChange={self.onLogIdChange} />
             <HelpIcon title="View the console output of web pages" docsUrl="rules/log.html" className="ml-10" />
           </div>
         </div>
         <div className="w-form-item">
           <div className="w-form-value">
             <label className="w-175">
-              <input type="checkbox" className="mr-10" checked={!disabledReqDelay} data-name="disabledReqDelay" onChange={this.onDisableCheckChange} />
+              <input type="checkbox" className="mr-10" checked={!disabledReqDelay} data-name="disabledReqDelay" onChange={self.onDisableCheckChange} />
               Delay Request
             </label>
             <input ref="reqDelay" disabled={disabledReqDelay} value={state.reqDelay} type="text"
-              className="form-control w-200" maxLength="7" placeholder="Enter request delay (ms)" onChange={this.onReqDelayChange} />
+              className="form-control w-200" maxLength="7" placeholder="Enter request delay (ms)" onChange={self.onReqDelayChange} />
             <span className="ml-5">ms</span>
             <HelpIcon docsUrl="rules/reqDelay.html" className="ml-10" />
           </div>
@@ -153,11 +155,11 @@ var DebugRule = React.createClass({
         <div className="w-form-item">
           <div className="w-form-value">
             <label className="w-175">
-              <input type="checkbox" className="mr-10" checked={!disabledResDelay} data-name="disabledResDelay" onChange={this.onDisableCheckChange} />
+              <input type="checkbox" className="mr-10" checked={!disabledResDelay} data-name="disabledResDelay" onChange={self.onDisableCheckChange} />
               Delay Response
             </label>
             <input ref="resDelay" disabled={disabledResDelay} value={state.resDelay} type="text"
-              className="form-control w-200" maxLength="7" placeholder="Enter response delay (ms)" onChange={this.onResDelayChange} />
+              className="form-control w-200" maxLength="7" placeholder="Enter response delay (ms)" onChange={self.onResDelayChange} />
             <span className="ml-5">ms</span>
             <HelpIcon docsUrl="rules/resDelay.html" className="ml-10" />
           </div>
@@ -165,11 +167,11 @@ var DebugRule = React.createClass({
         <div className="w-form-item">
           <div className="w-form-value">
             <label className="w-175">
-              <input type="checkbox" className="mr-10" checked={!disabledReqSpeed} data-name="disabledReqSpeed" onChange={this.onDisableCheckChange} />
+              <input type="checkbox" className="mr-10" checked={!disabledReqSpeed} data-name="disabledReqSpeed" onChange={self.onDisableCheckChange} />
               Limit Request Speed
             </label>
             <input ref="reqSpeed" disabled={disabledReqSpeed} value={state.reqSpeed} type="text"
-              className="form-control w-200" maxLength="7" placeholder="Enter request speed (kb/s)" onChange={this.onReqSpeedChange} />
+              className="form-control w-200" maxLength="7" placeholder="Enter request speed (kb/s)" onChange={self.onReqSpeedChange} />
             <span className="ml-5">kb/s</span>
             <HelpIcon docsUrl="rules/reqSpeed.html" className="ml-10" />
           </div>
@@ -177,11 +179,11 @@ var DebugRule = React.createClass({
         <div className="w-form-item">
           <div className="w-form-value">
             <label className="w-175">
-              <input type="checkbox" className="mr-10" checked={!disabledResSpeed} data-name="disabledResSpeed" onChange={this.onDisableCheckChange} />
+              <input type="checkbox" className="mr-10" checked={!disabledResSpeed} data-name="disabledResSpeed" onChange={self.onDisableCheckChange} />
               Limit Response Speed
             </label>
             <input ref="resSpeed" disabled={disabledResSpeed} value={state.resSpeed} type="text"
-              className="form-control w-200" maxLength="7" placeholder="Enter response speed (kb/s)" onChange={this.onResSpeedChange} />
+              className="form-control w-200" maxLength="7" placeholder="Enter response speed (kb/s)" onChange={self.onResSpeedChange} />
             <span className="ml-5">kb/s</span>
             <HelpIcon docsUrl="rules/resSpeed.html" className="ml-10" />
           </div>
@@ -189,7 +191,7 @@ var DebugRule = React.createClass({
         <div className="w-form-item">
           <div className="w-form-value">
             <label>
-              <input type="checkbox" className="mr-10" checked={state.abortReq} data-name="abortReq" onChange={this.onEnableCheckChange} />
+              <input type="checkbox" className="mr-10" checked={state.abortReq} data-name="abortReq" onChange={self.onEnableCheckChange} />
               Abort Request
               <HelpIcon docsUrl="rules/enable.html" className="ml-10" />
             </label>
@@ -198,7 +200,7 @@ var DebugRule = React.createClass({
         <div className="w-form-item">
           <div className="w-form-value">
             <label>
-              <input type="checkbox" className="mr-10" checked={state.abortRes} data-name="abortRes" onChange={this.onEnableCheckChange} />
+              <input type="checkbox" className="mr-10" checked={state.abortRes} data-name="abortRes" onChange={self.onEnableCheckChange} />
               Abort Response
               <HelpIcon docsUrl="rules/enable.html" className="ml-10" />
             </label>

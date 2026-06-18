@@ -35,7 +35,8 @@ var FiltersRule = React.createClass({
     };
   },
   handleChange: function() {
-    var state = this.state;
+    var self = this;
+    var state = self.state;
     var result = [];
     if (!state.disabled) {
       var includeFilters = [];
@@ -60,9 +61,9 @@ var FiltersRule = React.createClass({
       result.push(includeFilters.concat(excludeFilters).join(' '));
     }
     result = result.join(' ');
-    if (this._curResult !== result) {
-      this._curResult = result;
-      this.props.onChange(result);
+    if (self._curResult !== result) {
+      self._curResult = result;
+      self.props.onChange(result);
     }
   },
   componentDidMount: function() {
@@ -72,11 +73,12 @@ var FiltersRule = React.createClass({
     this.setState({ disabled: !e.target.checked }, this.handleChange);
   },
   onChange: function(e) {
+    var self = this;
     var name = e.target.getAttribute('data-name');
-    var data = this.getData(e);
+    var data = self.getData(e);
     var filter = data.list[data.index];
     filter[name] = util.removeSpaces(e.target.value);
-    this.setState({}, this.handleChange);
+    self.setState({}, self.handleChange);
   },
   getFilterOptions: function(type) {
     return FILTER_OPTIONS.map(function(option) {

@@ -104,8 +104,8 @@ var Saved = React.createClass({
   },
   loadDebounce: function() {
     var self = this;
-    clearTimeout(this.loadTimer);
-    this.loadTimer = setTimeout(function() {
+    clearTimeout(self.loadTimer);
+    self.loadTimer = setTimeout(function() {
       self.loadData(true);
     }, 600);
   },
@@ -129,8 +129,9 @@ var Saved = React.createClass({
     });
   },
   render: function () {
-    var props = this.props;
-    return <OrderTable ref="orderTable" cols={COLS} rows={this.state.rows} hide={props.hide} loading={this.state.loading} />;
+    var self = this;
+    var props = self.props;
+    return <OrderTable ref="orderTable" cols={COLS} rows={self.state.rows} hide={props.hide} loading={self.state.loading} />;
   }
 });
 

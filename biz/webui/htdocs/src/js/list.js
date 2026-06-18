@@ -27,7 +27,8 @@ var rulesCtxMenuList = [
       { name: 'Copy Name', action: 'Name' },
       { name: 'Copy Rule Text', action: 'Rules' },
       { name: 'Create Rule', action: 'CreateRule' },
-      { name: 'Create File', action: 'TempFile' }
+      { name: 'Create File', action: 'TempFile' },
+      { name: 'Test Rules', action: 'TestRules' }
     ]
   },
   { name: 'Enable', action: 'Save' },
@@ -256,35 +257,38 @@ var List = React.createClass({
     self.ensureVisible(true);
   },
   expandGroup: function(groupName) {
-    var index = this.collapseGroups.indexOf(groupName);
+    var self = this;
+    var index = self.collapseGroups.indexOf(groupName);
     if (index !== -1) {
-      this.collapseGroups.splice(index, 1);
-      storage.set(this.getCollapseKey(), JSON.stringify(this.collapseGroups));
+      self.collapseGroups.splice(index, 1);
+      storage.set(self.getCollapseKey(), JSON.stringify(self.collapseGroups));
     }
   },
   shouldComponentUpdate: util.shouldComponentUpdate,
   componentDidUpdate: function () {
-    var modal = this.props.modal;
+    var self = this;
+    var modal = self.props.modal;
     var curListLen = modal.list.length;
     var obj = modal.getActiveObj();
     var curActiveItem = obj.activeItem;
     var groupItem = obj.groupItem;
     if (groupItem) {
-      this.ensureVisible(false, groupItem);
-    } else if (curListLen > this.curListLen || curActiveItem !== this.curActiveItem) {
-      this.ensureVisible();
+      self.ensureVisible(false, groupItem);
+    } else if (curListLen > self.curListLen || curActiveItem !== self.curActiveItem) {
+      self.ensureVisible();
     }
-    this.curListLen = curListLen;
-    this.curActiveItem = curActiveItem;
-    if (this.props.hide) {
-      this.refs.recycleBinDialog.hide();
+    self.curListLen = curListLen;
+    self.curActiveItem = curActiveItem;
+    if (self.props.hide) {
+      self.refs.recycleBinDialog.hide();
     }
   },
   ensureVisible: function (init, activeItem) {
-    activeItem = activeItem || this.props.modal.getActive();
+    var self = this;
+    activeItem = activeItem || self.props.modal.getActive();
     if (activeItem) {
-      var elem = findDOMNode(this.refs[activeItem.name]);
-      var con = findDOMNode(this.refs.list);
+      var elem = findDOMNode(self.refs[activeItem.name]);
+      var con = findDOMNode(self.refs.list);
       util.ensureVisible(elem, con, init);
     }
   },
@@ -305,14 +309,15 @@ var List = React.createClass({
     }
   },
   toggleGroup: function (item) {
-    var index = this.collapseGroups.indexOf(item.name);
+    var self = this;
+    var index = self.collapseGroups.indexOf(item.name);
     if (index === -1) {
-      this.collapseGroups.push(item.name);
+      self.collapseGroups.push(item.name);
     } else {
-      this.collapseGroups.splice(index, 1);
+      self.collapseGroups.splice(index, 1);
     }
-    storage.set(this.getCollapseKey(), JSON.stringify(this.collapseGroups));
-    this.setState({});
+    storage.set(self.getCollapseKey(), JSON.stringify(self.collapseGroups));
+    self.setState({});
   },
   onClickGroup: function (e) {
     var name = e.target.getAttribute('data-group');
@@ -325,10 +330,11 @@ var List = React.createClass({
     this.setState({});
   },
   onDoubleClick: function (item, okIcon) {
+    var self = this;
     (item.selected && !item.changed) || okIcon
-      ? this.onUnselect(item)
-      : this.onSelect(item);
-    var onDoubleClick = this.props.onDoubleClick;
+      ? self.onUnselect(item)
+      : self.onSelect(item);
+    var onDoubleClick = self.props.onDoubleClick;
     typeof onDoubleClick == 'function' && onDoubleClick(item);
   },
   onSelect: function (data) {
@@ -360,8 +366,9 @@ var List = React.createClass({
     }
   },
   onFilterChange: function (keyword) {
-    this.props.modal.search(keyword, this.props.name != 'rules');
-    this.setState({ filterText: keyword });
+    var self = this;
+    self.props.modal.search(keyword, self.props.name != 'rules');
+    self.setState({ filterText: keyword });
   },
   getItemByKey: function (key) {
     return this.props.modal.getByKey(key);
@@ -388,11 +395,12 @@ var List = React.createClass({
     }
   },
   onDrop: function (e) {
-    var info = getDragInfo(e, this.refs.list);
+    var self = this;
+    var info = getDragInfo(e, self.refs.list);
     e.stopPropagation();
     if (info) {
       var fromName = getName(e.dataTransfer.getData('-' + NAME_PREFIX));
-      var group = this.collapseGroups.indexOf(fromName) !== -1;
+      var group = self.collapseGroups.indexOf(fromName) !== -1;
       var toName = info.toName;
       var params = {
         from: fromName,
@@ -400,14 +408,14 @@ var List = React.createClass({
         group: group
       };
       info.target.style.background = '';
-      var toTop = this.isRules() && toName === 'Default';
+      var toTop = self.isRules() && toName === 'Default';
       if (toTop) {
-        toName = this.props.modal.list[1];
+        toName = self.props.modal.list[1];
         params.to = toName;
         params.toTop = true;
       }
-      if (this.props.modal.moveTo(fromName, toName, group, toTop)) {
-        var name = this.props.name === 'rules' ? 'rules' : 'values';
+      if (self.props.modal.moveTo(fromName, toName, group, toTop)) {
+        var name = self.props.name === 'rules' ? 'rules' : 'values';
         dataCenter[name].moveTo(params, function (data, xhr) {
           if (!data) {
             showSysErr(xhr);
@@ -418,8 +426,8 @@ var List = React.createClass({
           }
         }
         );
-        this.setState({});
-        this.triggerChange('move');
+        self.setState({});
+        self.triggerChange('move');
       }
     }
   },
@@ -438,9 +446,10 @@ var List = React.createClass({
     }
   },
   reloadRecycleBin: function (name) {
-    if (this.refs.recycleBinDialog.isVisible()) {
-      this._pendingRecycle = false;
-      this.showRecycleBin(name);
+    var self = this;
+    if (self.refs.recycleBinDialog.isVisible()) {
+      self._pendingRecycle = false;
+      self.showRecycleBin(name);
     }
   },
   showRecycleBin: function (name) {
@@ -488,6 +497,9 @@ var List = React.createClass({
       break;
     case 'TempFile':
       events.trigger('showEditorDialog');
+      break;
+    case 'TestRules':
+      events.trigger('showTestRuleDialog', {ruleItem: self.currentFocusItem});
       break;
     case 'Save':
       events.trigger('save' + name, self.currentFocusItem);
@@ -565,15 +577,16 @@ var List = React.createClass({
     }
   },
   triggerChange: function (type) {
-    var data = this.props.modal.data;
-    var list = this.props.modal.list.map(function (name) {
+    var self = this;
+    var data = self.props.modal.data;
+    var list = self.props.modal.list.map(function (name) {
       var item = data[name];
       return {
         name: name,
         value: (item && item.value) || ''
       };
     });
-    util.triggerListChange(this.props.name || 'values', {
+    util.triggerListChange(self.props.name || 'values', {
       type: type,
       url: location.href,
       list: list
@@ -591,15 +604,16 @@ var List = React.createClass({
     if (!target.length) {
       return;
     }
-    var isRules = this.isRules();
+    var self = this;
+    var isRules = self.isRules();
     var name = target.attr('data-name');
-    var modal = this.props.modal;
+    var modal = self.props.modal;
     name = name && getName(name);
     var item = modal.get(name);
     if (!item) {
       name = undefined;
     }
-    this.currentFocusItem = item;
+    self.currentFocusItem = item;
     var disabled = !name;
     var isDefault;
     var list = isRules ? rulesCtxMenuList : valuesCtxMenuList;
@@ -645,7 +659,7 @@ var List = React.createClass({
     }
     data.list[3].disabled = isDefault || disabled;
     data.list[4].disabled = isDefault || disabled;
-    this.refs.contextMenu.show(data);
+    self.refs.contextMenu.show(data);
   },
   onAddRule: function (name) {
     this.props.modal.setActive(name);
@@ -783,7 +797,7 @@ var List = React.createClass({
           </div>
         ) : null}
         <Divider leftWidth="230">
-          <div ref="container" className="fill v-box w-list-left" onContextMenu={this.onContextMenu}>
+          <div ref="container" className="fill v-box w-list-left" onContextMenu={self.onContextMenu}>
             {isRules ? <div className={'w-enabled-rules-btn' + (enabledRulesCount ? '' : ' w-disabled')} onClick={enabledRulesCount ? self.showEnabledRules : null}>
               <Icon name="ok" data-name="enabledRules" />
               Enabled Rules ({enabledRulesCount})
@@ -850,8 +864,8 @@ var List = React.createClass({
                 );
               })}
             </div>
-            <FilterInput ref="filterInput" onChange={this.onFilterChange} />
-            <ContextMenu onClick={this.onClickContextMenu} ref="contextMenu" />
+            <FilterInput ref="filterInput" onChange={self.onFilterChange} />
+            <ContextMenu onClick={self.onClickContextMenu} ref="contextMenu" />
             <RecycleBinDialog ref="recycleBinDialog" />
             <EnabledRulesDialog ref="enabledRulesDialog" />
           </div>
@@ -861,8 +875,8 @@ var List = React.createClass({
             readOnly={!activeItem || activeItem.hide || disabledEditor}
             value={activeItem.hide ? '' : activeItem.value}
             mode={isRules ? 'rules' : getSuffix(activeItem.name)}
-            onFormat={isRules ? null : this.onFormat}
-            onInspect={isRules ? null : this.onInspect}
+            onFormat={isRules ? null : self.onFormat}
+            onInspect={isRules ? null : self.onInspect}
           />
         </Divider>
       </div>

@@ -33,7 +33,7 @@ var Properties = React.createClass({
   },
   componentDidMount: function() {
     var self = this;
-    if (this.props.name === 'Rules') {
+    if (self.props.name === 'Rules') {
       $(findDOMNode(self.refs.properties)).on('mouseenter', 'td pre', function (e) {
         if (!e.ctrlKey && !e.metaKey) {
           return;
@@ -61,16 +61,17 @@ var Properties = React.createClass({
     return val && val.length >= 2100 ? <ExpandCollapse text={val} /> : val;
   },
   renderKey: function(name, value) {
-    if (this.props.hideKeys) {
+    var self = this;
+    if (self.props.hideKeys) {
       return null;
     }
-    var onHelp = this.props.onHelp;
-    var showEnableBtn = this.props.showEnableBtn && name === 'URL' && TUNNEL_RE.test(value);
-    var index = this.props.richKey ? name.indexOf('\r\u0000(') : -1;
+    var onHelp = self.props.onHelp;
+    var showEnableBtn = self.props.showEnableBtn && name === 'URL' && TUNNEL_RE.test(value);
+    var index = self.props.richKey ? name.indexOf('\r\u0000(') : -1;
     return (<th>
       {onHelp ? <HelpIcon data-name={name} onClick={onHelp} /> : undefined}
       {showEnableBtn ? <EnableHttpsBtn /> : null}
-      {this.renderValue(index === -1 ? name : name.substring(0, index))}
+      {self.renderValue(index === -1 ? name : name.substring(0, index))}
       {index === -1 ? null : <span className="w-gray">{name.substring(index + 2)}</span>}
     </th>);
   },
@@ -86,6 +87,7 @@ var Properties = React.createClass({
   render: function () {
     var self = this;
     var props = self.props;
+    var noSource = props.noSource;
     var isRules = props.name === 'Rules';
     var showEnableBtn = props.showEnableBtn;
     var sourceText = props.enableViewSource;
@@ -240,6 +242,9 @@ var Properties = React.createClass({
                         util.showJSONDialog(json);
                       }} /> : (list ? list.map(function(val) {
                         var info = getSrcInfo(val, itemSep);
+                        if (noSource) {
+                          return <pre>{self.renderValue(info.value)}</pre>;
+                        }
                         var btnText = info.btnText;
                         var noLocate = btnText.indexOf(':') === -1 && (!dataCenter.whistleId || (btnText !== '# (From Mock Rules)' && btnText !== '# (From Service Rules)'));
                         return (

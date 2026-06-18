@@ -18,21 +18,22 @@ var Select = React.createClass({
   },
   updateOptions: function(options) {
     var valueList = [];
-    options = (options || this.props.options).slice().map(function(option) {
+    var self = this;
+    options = (options || self.props.options).slice().map(function(option) {
       option = util.isString(option) ? { value: option, label: option } : option;
       valueList.push(option.value);
       return option;
     });
     var innerLen = options.length;
-    var props = this.props;
+    var props = self.props;
     var name = props.name;
-    var key = this.getKey(name);
+    var key = self.getKey(name);
     var customOptions;
     if (key) {
       var str;
       if (name === 'allHeaders') {
-        customOptions = storage.get(this.getKey('requestHeaders'));
-        str = storage.get(this.getKey('responseHeaders'));
+        customOptions = storage.get(self.getKey('requestHeaders'));
+        str = storage.get(self.getKey('responseHeaders'));
         if (str && customOptions) {
           customOptions = customOptions + ' ' + str;
         } else {
@@ -45,7 +46,7 @@ var Select = React.createClass({
       }
     }
     if (util.notEStr(customOptions)) {
-      this._customOptions = customOptions;
+      self._customOptions = customOptions;
       if (props.toLowerCase) {
         customOptions = customOptions.toLowerCase();
       } else if (props.toUpperCase) {
@@ -65,19 +66,21 @@ var Select = React.createClass({
     };
   },
   componentDidMount: function() {
-    var props = this.props;
-    var options = this.state.options;
+    var self = this;
+    var props = self.props;
+    var options = self.state.options;
     if (!props.selectPlaceholder && !props.value && options.length) {
-      this.handleChange(options[0]);
+      self.handleChange(options[0]);
     }
   },
   shouldComponentUpdate: function(nextProps) {
+    var self = this;
     var nextOptions = nextProps.options;
-    var customOptions = this._customOptions;
-    if (this.props.options !== nextOptions || (customOptions && customOptions !== storage.get(this.getKey()))) {
-      var result = this.updateOptions(nextOptions);
-      this.state.options = result.options;
-      this.state.innerLen = result.innerLen;
+    var customOptions = self._customOptions;
+    if (self.props.options !== nextOptions || (customOptions && customOptions !== storage.get(self.getKey()))) {
+      var result = self.updateOptions(nextOptions);
+      self.state.options = result.options;
+      self.state.innerLen = result.innerLen;
     }
     return true;
   },
@@ -90,22 +93,23 @@ var Select = React.createClass({
     }
   },
   createOption: function(value) {
-    var props = this.props;
+    var self = this;
+    var props = self.props;
     if (props.toLowerCase) {
       value = value.toLowerCase();
     } else if (props.toUpperCase) {
       value = value.toUpperCase();
     }
-    var option = this.getOption(value);
+    var option = self.getOption(value);
     if (option) {
-      this.handleChange(option);
+      self.handleChange(option);
       return;
     }
-    var state = this.state;
+    var state = self.state;
     option = { value: value, label: value };
     state.options.push(option);
-    this.handleChange(option);
-    var key = this.getKey();
+    self.handleChange(option);
+    var key = self.getKey();
     if (!key) {
       return;
     }
@@ -133,16 +137,17 @@ var Select = React.createClass({
     }
   },
   onChange: function(e) {
+    var self = this;
     var value = e.target.value;
-    var option = this.getOption(value);
+    var option = self.getOption(value);
     if (value === ' ') {
-      var onCustom = this.props.onCustom;
+      var onCustom = self.props.onCustom;
       if (onCustom) {
-        return onCustom(this.createOption);
+        return onCustom(self.createOption);
       }
-      return this.refs.prompt.show(this.createOption);
+      return self.refs.prompt.show(self.createOption);
     }
-    this.handleChange(option);
+    self.handleChange(option);
   },
   renderOptions: function(options) {
     var result = [];
@@ -169,19 +174,20 @@ var Select = React.createClass({
     return result;
   },
   render: function() {
-    var props = this.props;
+    var self = this;
+    var props = self.props;
     var name = props.name;
-    var options = this.state.options;
+    var options = self.state.options;
     var selectPlaceholder = props.selectPlaceholder;
     var value = props.value || '';
-    if (value && !this.getOption(value)) {
+    if (value && !self.getOption(value)) {
       options.push({ value: value, label: value });
     }
     return (
       <select ref="select" disabled={props.disabled} className={'form-control ' + (props.className || '')} value={value}
-        onChange={this.onChange} onClick={props.onClick}>
+        onChange={self.onChange} onClick={props.onClick}>
         {selectPlaceholder ? <option value="">{selectPlaceholder}</option> : null}
-        {this.renderOptions(options)}
+        {self.renderOptions(options)}
         {name ? <option value=" ">+Custom</option> : null}
         {name ? <Prompt ref="prompt" placeholder={props.placeholder} isNum={props.isNum} isHeader={props.isHeader} maxLength={props.maxLength} /> : null}
       </select>

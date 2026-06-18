@@ -22,10 +22,11 @@ var TabMgr = React.createClass({
     });
   },
   isInited: function (tab) {
-    var cache = this.initedTabs;
+    var self = this;
+    var cache = self.initedTabs;
     var action = tab.action;
     var exists = cache[action] != null;
-    if (this.props.active !== tab.plugin) {
+    if (self.props.active !== tab.plugin) {
       return exists;
     }
     if (exists) {
@@ -47,7 +48,7 @@ var TabMgr = React.createClass({
         delete cache[destroyKey];
       }
     }
-    this.initedTabs[action] = Date.now();
+    self.initedTabs[action] = Date.now();
     return true;
   },
   render: function () {

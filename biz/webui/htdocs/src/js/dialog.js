@@ -8,38 +8,39 @@ var Dialog = React.createClass({
   },
   componentDidMount: function () {
     var self = this;
-    this.container = $(document.createElement('div'));
-    var clazz = this.props.fullCustom ? ' w-custom-dialog' : '';
-    this.container.addClass(
-      'modal fade' + clazz + (this.props.wstyle ? ' ' + this.props.wstyle : '')
+    self.container = $(document.createElement('div'));
+    var clazz = self.props.fullCustom ? ' w-custom-dialog' : '';
+    self.container.addClass(
+      'modal fade' + clazz + (self.props.wstyle ? ' ' + self.props.wstyle : '')
     );
-    document.body.appendChild(this.container[0]);
-    this.componentDidUpdate();
-    if (typeof this.props.customRef === 'function') {
-      this.props.customRef(this);
+    document.body.appendChild(self.container[0]);
+    self.componentDidUpdate();
+    if (typeof self.props.customRef === 'function') {
+      self.props.customRef(self);
     }
-    if (typeof this.props.onClose === 'function') {
-      this.container.on('hidden.bs.modal', this.props.onClose);
+    if (typeof self.props.onClose === 'function') {
+      self.container.on('hidden.bs.modal', self.props.onClose);
     }
-    this.container.on('hide.bs.modal', function() {
+    self.container.on('hide.bs.modal', function() {
       self._isVisible = false;
       self.onVisibleChange();
     });
-    this.container.on('show.bs.modal', function() {
+    self.container.on('show.bs.modal', function() {
       self._isVisible = true;
       self.onVisibleChange();
     });
     if (typeof self.props.onShow === 'function') {
-      this.container.on('shown.bs.modal', function() {
+      self.container.on('shown.bs.modal', function() {
         self.props.onShow(self);
       });
     }
   },
   componentDidUpdate: function () {
+    var self = this;
     ReactDOM.unstable_renderSubtreeIntoContainer(
-      this,
-      this.getDialogElement(),
-      this.container[0]
+      self,
+      self.getDialogElement(),
+      self.container[0]
     );
   },
   getDialogElement: function () {
@@ -68,13 +69,14 @@ var Dialog = React.createClass({
     document.body.removeChild(this.container[0]);
   },
   show: function () {
-    if (this.container.hasClass('in')) {
+    var self = this;
+    if (self.container.hasClass('in')) {
       return;
     }
-    this._isVisible = true;
-    this.onVisibleChange();
-    this.container.modal(
-      this.props.disableBackdrop
+    self._isVisible = true;
+    self.onVisibleChange();
+    self.container.modal(
+      self.props.disableBackdrop
         ? {
           show: true,
           backdrop: false

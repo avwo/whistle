@@ -42,6 +42,7 @@ var ServiceDialog = require('./service-dialog');
 var Icon = require('./icon');
 var CloseBtn = require('./close-btn');
 var CreateRuleDialog = require('./create-rule');
+var TestRuleDialog = require('./test-rule');
 
 var TEMP_LINK_RE = /^(?:[\w-]+:\/\/)?<?temp(?:\/([\da-z]{64}|blank))?(?:\.[\w-]+)?>?$/;
 var FILE_PATH_RE = /^(?:[\w-]+:\/\/)?<?((?:[a-z]:[\\/]|\/).+)>?$/i;
@@ -688,7 +689,8 @@ var Index = React.createClass({
   },
   showKVDialog: function(data, isValues) {
     if (data) {
-      this.refs.syncDialog.showKVDialog(data, this.state.rules, this.state.values, isValues);
+      var self = this;
+      self.refs.syncDialog.showKVDialog(data, self.state.rules, self.state.values, isValues);
     }
   },
   createPluginsOptions: function (plugins) {
@@ -808,10 +810,11 @@ var Index = React.createClass({
     }
   },
   showReloadRules: function (force) {
-    if (this.rulesChanged && this.state.name === 'rules') {
-      this.rulesChanged = false;
-      var hasChanged = this.state.rules.hasChanged();
-      this.showReloadDialog(
+    var self = this;
+    if (self.rulesChanged && self.state.name === 'rules') {
+      self.rulesChanged = false;
+      var hasChanged = self.state.rules.hasChanged();
+      self.showReloadDialog(
         'Rules changed. Reload now?',
         hasChanged,
         force
@@ -819,10 +822,11 @@ var Index = React.createClass({
     }
   },
   showReloadValues: function (force) {
-    if (this.valuesChanged && this.state.name === 'values') {
-      this.valuesChanged = false;
-      var hasChanged = this.state.values.hasChanged();
-      this.showReloadDialog(
+    var self = this;
+    if (self.valuesChanged && self.state.name === 'values') {
+      self.valuesChanged = false;
+      var hasChanged = self.state.values.hasChanged();
+      self.showReloadDialog(
         'Values changed. Reload now?',
         hasChanged,
         force
@@ -834,12 +838,13 @@ var Index = React.createClass({
     this.showReloadValues();
   },
   showReloadDialog: function (msg, existsUnsaved, force) {
-    var dialog = this.refs.confirmReload;
-    clearTimeout(this.reloadTimer);
+    var self = this;
+    var dialog = self.refs.confirmReload;
+    clearTimeout(self.reloadTimer);
     var tips = $('.w-reload-data-tips');
-    tips.attr('data-name', this.state.name);
+    tips.attr('data-name', self.state.name);
     if (!force && !dialog.isVisible()) {
-      this.reloadTimer = setTimeout(this.reloadDataQuite, 1000);
+      self.reloadTimer = setTimeout(self.reloadDataQuite, 1000);
       return;
     }
     dialog.show();
@@ -850,15 +855,16 @@ var Index = React.createClass({
     tips.html(msg);
   },
   showTab: function() {
-    var pageName = getPageName(this.state);
+    var self = this;
+    var pageName = getPageName(self.state);
     if (!pageName || pageName.indexOf('rules') != -1) {
-      this.showRules();
+      self.showRules();
     } else if (pageName.indexOf('values') != -1) {
-      this.showValues();
+      self.showValues();
     } else if (pageName.indexOf('plugins') != -1) {
-      this.showPlugins();
+      self.showPlugins();
     } else {
-      this.showNetwork();
+      self.showNetwork();
     }
     storage.set('pageName', pageName || '');
   },
@@ -936,6 +942,9 @@ var Index = React.createClass({
     });
     events.on('showAddRulesDialog', function(_, data, item) {
       self.refs.addRulesDialog.show(data, item && item.name);
+    });
+    events.on('showTestRuleDialog', function(_, data) {
+      self.refs.testRuleDialog.show(data);
     });
     events.on('changeRecordState', function (_, type) {
       self.setState({ record: type }, self.updateList);
@@ -2069,9 +2078,10 @@ var Index = React.createClass({
     setTimeout(saveSettings, INTERVAL);
   },
   shouldComponentUpdate: function (_, nextSate) {
-    var name = this.state.name;
+    var self = this;
+    var name = self.state.name;
     if (name === 'network' && nextSate.name !== name) {
-      this._isAtBottom = this.scrollerAtBottom && this.scrollerAtBottom();
+      self._isAtBottom = self.scrollerAtBottom && self.scrollerAtBottom();
     }
     return true;
   },
@@ -2244,7 +2254,7 @@ var Index = React.createClass({
 
     var timeout;
     var con = baseDom[0];
-    this.container = baseDom;
+    self.container = baseDom;
     dataCenter.on('data', update);
 
     function update(modal, _atBottom) {
@@ -2302,25 +2312,27 @@ var Index = React.createClass({
     events.on('checkAtBottom', atBottom);
   },
   showPlugins: function (e) {
-    if (this.state.name != 'plugins') {
-      this.setMenuOptionsState();
-      this.hidePluginsOptions();
-    } else if (e && !this.state.showLeftMenu) {
-      this.showPluginsOptions();
+    var self = this;
+    if (self.state.name != 'plugins') {
+      self.setMenuOptionsState();
+      self.hidePluginsOptions();
+    } else if (e && !self.state.showLeftMenu) {
+      self.showPluginsOptions();
     }
-    this.setState({
+    self.setState({
       hasPlugins: true,
       name: 'plugins'
     });
     util.changePageName('plugins');
   },
   handleAction: function (type) {
+    var self = this;
     if (type === 'top') {
-      this.container[0].scrollTop = 0;
+      self.container[0].scrollTop = 0;
       return;
     }
     if (type === 'bottom') {
-      return this.autoRefresh(true);
+      return self.autoRefresh(true);
     }
     if (type === 'pause') {
       events.trigger('changeRecordState', type);
@@ -2334,7 +2346,7 @@ var Index = React.createClass({
     }
     dataCenter.stopNetworkRecord(!refresh);
     if (refresh) {
-      return this.autoRefresh();
+      return self.autoRefresh();
     }
   },
   showNetwork: function (e, cb) {
@@ -2363,21 +2375,22 @@ var Index = React.createClass({
     util.changePageName('network');
   },
   handleNetwork: function (item, e) {
-    var modal = this.state.network;
+    var self = this;
+    var modal = self.state.network;
     if (item.id == 'removeAll') {
-      this.clear();
+      self.clear();
     } else if (item.id == 'removeSelected') {
       modal.removeSelectedItems();
     } else if (item.id == 'removeUnselected') {
       modal.removeUnselectedItems();
     } else if (item.id == 'exportWhistleFile') {
-      this.exportData();
+      self.exportData();
     } else if (item.id === 'toggleView') {
-      this.toggleTreeView();
+      self.toggleTreeView();
     } else if (item.id === 'importSessions') {
-      this.importData();
+      self.importData();
     }
-    this.hideNetworkOptions();
+    self.hideNetworkOptions();
   },
   importData: function () {
     this.refs.importDialog.show(this.state.name);
@@ -2424,21 +2437,22 @@ var Index = React.createClass({
     this.setState({ filename: util.formatFilename(e.target.value) });
   },
   exportData: function (_, curItem, filename) {
-    switch (this.state.name) {
+    var self = this;
+    switch (self.state.name) {
     case 'network':
-      var modal = this.state.network;
-      this.currentFoucsItem = curItem;
+      var modal = self.state.network;
+      self.currentFoucsItem = curItem;
       if (modal.hasVisibleSession()) {
-        this.showChooseFileType(filename);
+        self.showChooseFileType(filename);
       } else {
         message.info('No sessions to export');
       }
       break;
     case 'rules':
-      this.showAndActiveRules({ id: 'exportRules' });
+      self.showAndActiveRules({ id: 'exportRules' });
       break;
     case 'values':
-      this.showAndActiveValues({ id: 'exportValues' });
+      self.showAndActiveValues({ id: 'exportValues' });
       break;
     }
   },
@@ -2464,29 +2478,31 @@ var Index = React.createClass({
     }
   },
   showAndActiveRules: function (item, e) {
-    if (this.state.name === 'rules') {
+    var self = this;
+    if (self.state.name === 'rules') {
       switch (item.id) {
       case 'exportRules':
-        this.refs.selectRulesDialog.show();
+        self.refs.selectRulesDialog.show();
         break;
       case 'importRules':
-        this.importData();
+        self.importData();
         break;
       }
     } else {
-      this.setRulesActive(item.name);
-      this.showRules();
+      self.setRulesActive(item.name);
+      self.showRules();
     }
-    this.hideRulesOptions();
+    self.hideRulesOptions();
   },
   showRules: function (e) {
-    if (this.state.name != 'rules') {
-      this.setMenuOptionsState();
-      this.hideRulesOptions();
-    } else if (e && !this.state.showLeftMenu) {
-      this.showRulesOptions(e);
+    var self = this;
+    if (self.state.name != 'rules') {
+      self.setMenuOptionsState();
+      self.hideRulesOptions();
+    } else if (e && !self.state.showLeftMenu) {
+      self.showRulesOptions(e);
     }
-    this.setState({
+    self.setState({
       hasRules: true,
       name: 'rules'
     });
@@ -2500,7 +2516,7 @@ var Index = React.createClass({
         self.refs.selectValuesDialog.show();
         break;
       case 'importValues':
-        this.importData();
+        self.importData();
         break;
       }
     } else {
@@ -2524,19 +2540,20 @@ var Index = React.createClass({
         self.setValuesActive(name);
       }
 
-      this.showValues();
+      self.showValues();
     }
     self.hideValuesOptions();
   },
   addValue: function () {},
   showValues: function (e) {
-    if (this.state.name != 'values') {
-      this.setMenuOptionsState();
-      this.hideValuesOptions();
-    } else if (e && !this.state.showLeftMenu) {
-      this.showValuesOptions(e);
+    var self = this;
+    if (self.state.name != 'values') {
+      self.setMenuOptionsState();
+      self.hideValuesOptions();
+    } else if (e && !self.state.showLeftMenu) {
+      self.showValuesOptions(e);
     }
-    this.setState({
+    self.setState({
       hasValues: true,
       name: 'values'
     });
@@ -2623,7 +2640,7 @@ var Index = React.createClass({
   showValuesOptions: function (e) {
     var self = this;
     var valuesOptions;
-    var valuesList = this.state.values.list;
+    var valuesList = self.state.values.list;
     if (self.state.name === 'values') {
       var len = valuesList.length;
       VALUES_ACTIONS[0].disabled = len < 2;
@@ -2655,13 +2672,15 @@ var Index = React.createClass({
     });
   },
   showAndActivePlugins: function (option) {
-    this.hidePluginsOptions();
-    this.showPlugins();
-    this.showPluginTab(option.name);
+    var self = this;
+    self.hidePluginsOptions();
+    self.showPlugins();
+    self.showPluginTab(option.name);
   },
   showPluginTab: function (name) {
+    var self = this;
     var active = 'Home';
-    var tabs = this.state.tabs || [];
+    var tabs = self.state.tabs || [];
     if (name && name != active) {
       for (var i = 0, len = tabs.length; i < len; i++) {
         if (tabs[i].name == name) {
@@ -2671,11 +2690,11 @@ var Index = React.createClass({
         }
       }
     }
-    var plugin = name && this.state.plugins[name + ':'];
+    var plugin = name && self.state.plugins[name + ':'];
     if (plugin) {
       if (tabs.length >= MAX_PLUGINS_TABS) {
         win.alert('Maximum ' + MAX_PLUGINS_TABS + ' tabs allowed');
-        return this.showPlugins();
+        return self.showPlugins();
       }
       active = name;
       if (plugin.pluginHomepage && !plugin.openInPlugins) {
@@ -2687,11 +2706,11 @@ var Index = React.createClass({
       });
     }
 
-    this.setState({
+    self.setState({
       active: active,
       tabs: tabs
     });
-    this.updatePluginTabInfo(tabs, active);
+    self.updatePluginTabInfo(tabs, active);
   },
   updatePluginTabInfo: function(tabs, active) {
     tabs = tabs.map(function(tab) {
@@ -2705,19 +2724,20 @@ var Index = React.createClass({
   },
   closePluginTab: function (e) {
     var name = $(e.target).attr('data-name');
-    var tabs = this.state.tabs || [];
+    var self = this;
+    var tabs = self.state.tabs || [];
     for (var i = 0, len = tabs.length; i < len; i++) {
       if (tabs[i].name == name) {
         tabs.splice(i, 1);
-        var active = this.state.active;
+        var active = self.state.active;
         if (active == name) {
           var plugin = tabs[i] || tabs[i - 1];
-          this.state.active = plugin ? plugin.name : null;
+          self.state.active = plugin ? plugin.name : null;
         }
-        this.setState({
+        self.setState({
           tabs: tabs
         });
-        this.updatePluginTabInfo(tabs);
+        self.updatePluginTabInfo(tabs);
         return;
       }
     }
@@ -2733,13 +2753,14 @@ var Index = React.createClass({
     });
   },
   showWeinreOptionsQuick: function (e) {
-    var list = this.getWeinreFromRules();
+    var self = this;
+    var list = self.getWeinreFromRules();
     if (!list || !list.length) {
-      this.showAnonymousWeinre();
+      self.showAnonymousWeinre();
       return;
     }
     $(e.target).closest('div').addClass('w-menu-wrapper-show');
-    util.shakeElem($(findDOMNode(this.refs.weinreMenuItem)));
+    util.shakeElem($(findDOMNode(self.refs.weinreMenuItem)));
   },
   showWeinreOptions: function (e) {
     var self = this;
@@ -2785,10 +2806,11 @@ var Index = React.createClass({
     this.setState({ showEditValues: false });
   },
   showCreateRules: function (_, group, focusItem) {
-    var createRulesInput = findDOMNode(this.refs.createRulesInput);
-    this._curFocusRulesGroup = group;
-    this._curFocusRulesItem = focusItem;
-    this.setState(
+    var self = this;
+    var createRulesInput = findDOMNode(self.refs.createRulesInput);
+    self._curFocusRulesGroup = group;
+    self._curFocusRulesItem = focusItem;
+    self.setState(
       {
         showCreateRules: true
       },
@@ -2798,10 +2820,11 @@ var Index = React.createClass({
     );
   },
   showCreateValues: function (_, group, focusItem) {
-    var createValuesInput = findDOMNode(this.refs.createValuesInput);
-    this._curFocusValuesGroup = group;
-    this._curFocusValuesItem = focusItem;
-    this.setState(
+    var self = this;
+    var createValuesInput = findDOMNode(self.refs.createValuesInput);
+    self._curFocusValuesGroup = group;
+    self._curFocusValuesItem = focusItem;
+    self.setState(
       {
         showCreateValues: true
       },
@@ -2994,15 +3017,16 @@ var Index = React.createClass({
     });
   },
   showEditRules: function (item) {
-    this.currentFocusRules = item;
-    var modal = this.state.rules;
+    var self = this;
+    self.currentFocusRules = item;
+    var modal = self.state.rules;
     var activeItem = item || modal.getActive();
     if (!activeItem || activeItem.isDefault) {
       return;
     }
-    var editRulesInput = findDOMNode(this.refs.editRulesInput);
+    var editRulesInput = findDOMNode(self.refs.editRulesInput);
     editRulesInput.value = activeItem.name;
-    this.setState(
+    self.setState(
       {
         showEditRules: true,
         selectedRule: activeItem
@@ -3017,16 +3041,17 @@ var Index = React.createClass({
     !item.changed && this.showEditValues();
   },
   showEditValues: function (item) {
-    this.currentFocusValues = item;
-    var modal = this.state.values;
+    var self = this;
+    self.currentFocusValues = item;
+    var modal = self.state.values;
     var activeItem = item || modal.getActive();
     if (!activeItem || activeItem.isDefault) {
       return;
     }
 
-    var editValuesInput = findDOMNode(this.refs.editValuesInput);
+    var editValuesInput = findDOMNode(self.refs.editValuesInput);
     editValuesInput.value = activeItem.name;
-    this.setState(
+    self.setState(
       {
         showEditValues: true,
         selectedValue: activeItem
@@ -3043,7 +3068,7 @@ var Index = React.createClass({
     }
     var self = this;
     var modal = self.state.rules;
-    var activeItem = this.currentFocusRules || modal.getActive();
+    var activeItem = self.currentFocusRules || modal.getActive();
     if (!activeItem) {
       return;
     }
@@ -3083,7 +3108,7 @@ var Index = React.createClass({
     }
     var self = this;
     var modal = self.state.values;
-    var activeItem = this.currentFocusValues || modal.getActive();
+    var activeItem = self.currentFocusValues || modal.getActive();
     if (!activeItem) {
       return;
     }
@@ -3413,9 +3438,10 @@ var Index = React.createClass({
     events.trigger('editorResize');
   },
   handleCreate: function () {
-    this.state.name == 'rules'
-      ? this.showCreateRules()
-      : this.showCreateValues();
+    var self = this;
+    self.state.name == 'rules'
+      ? self.showCreateRules()
+      : self.showCreateValues();
   },
   saveRulesOrValues: function () {
     var self = this;
@@ -3458,17 +3484,18 @@ var Index = React.createClass({
     }
   },
   showSettings: function () {
-    var pageName = this.state.name;
+    var self = this;
+    var pageName = self.state.name;
     if (pageName === 'rules') {
-      this.showRulesSettings();
+      self.showRulesSettings();
       return;
     }
     if (pageName === 'values') {
-      this.showValuesSettings();
+      self.showValuesSettings();
       return;
     }
     if (pageName === 'network') {
-      this.refs.networkSettings.showDialog();
+      self.refs.networkSettings.showDialog();
     }
   },
   activeRules: function (item) {
@@ -3757,13 +3784,15 @@ var Index = React.createClass({
     dataCenter.upload.importSessions(data, dataCenter.addNetworkList);
   },
   getExportSessions: function() {
-    var modal = this.state.network;
-    var sessions = this.currentFoucsItem;
-    this.currentFoucsItem = null;
+    var self = this;
+    var modal = self.state.network;
+    var sessions = self.currentFoucsItem;
+    self.currentFoucsItem = null;
     return sessions || modal.getSelectedList();
   },
   exportSessions: function (type, name, sessions) {
-    sessions = sessions || this.getExportSessions();
+    var self = this;
+    sessions = sessions || self.getExportSessions();
     if (!sessions || !sessions.length) {
       return;
     }
@@ -3774,12 +3803,12 @@ var Index = React.createClass({
           version: '1.2',
           creator: {
             name: 'Whistle',
-            version: this.state.version,
+            version: self.state.version,
             comment: ''
           },
           browser: {
             name: 'Whistle',
-            version: this.state.version
+            version: self.state.version
           },
           pages: [],
           entries: sessions.map(util.toHar),
@@ -3790,10 +3819,10 @@ var Index = React.createClass({
     if (type !== 'Fiddler') {
       return util.download(sessions, name || 'network_' + util.formatDate() + (isHar ? '.har' : '.txt'));
     }
-    findDOMNode(this.refs.exportFilename).value = name || '';
-    findDOMNode(this.refs.exportFileType).value = type;
-    findDOMNode(this.refs.sessions).value = JSON.stringify(sessions, null, 2);
-    findDOMNode(this.refs.exportSessionsForm).submit();
+    findDOMNode(self.refs.exportFilename).value = name || '';
+    findDOMNode(self.refs.exportFileType).value = type;
+    findDOMNode(self.refs.sessions).value = JSON.stringify(sessions, null, 2);
+    findDOMNode(self.refs.exportSessionsForm).submit();
   },
   hideChooseFileTypeDialog: function(failed) {
     if (!failed) {
@@ -3805,24 +3834,27 @@ var Index = React.createClass({
     if (e && e.type !== 'click' && e.keyCode !== 13) {
       return;
     }
-    var input = findDOMNode(this.refs.sessionsName);
+    var self = this;
+    var input = findDOMNode(self.refs.sessionsName);
     var name = input.value.trim();
     input.value = '';
-    this.exportSessions(this.state.exportFileType, name, this.state.selectedSessions);
-    this.hideChooseFileTypeDialog();
+    self.exportSessions(self.state.exportFileType, name, self.state.selectedSessions);
+    self.hideChooseFileTypeDialog();
   },
   exportAll: function () {
-    var sessions = this.state.network.getList().filter(function (item) {
+    var self = this;
+    var sessions = self.state.network.getList().filter(function (item) {
       return !item.hide;
     });
-    this.setState({ selectedSessions: sessions }, this.exportBySave);
+    self.setState({ selectedSessions: sessions }, self.exportBySave);
   },
   replayRepeat: function (e) {
     if (e && e.type !== 'click' && e.keyCode !== 13) {
       return;
     }
-    this.refs.setReplayCount.hide();
-    this.replay('', this.replayList, this.state.replayCount);
+    var self = this;
+    self.refs.setReplayCount.hide();
+    self.replay('', self.replayList, self.state.replayCount);
     events.trigger('focusNetworkList');
   },
   showAboutDialog: function (e) {
@@ -3877,18 +3909,19 @@ var Index = React.createClass({
     e.preventDefault();
   },
   onClickTopMenu: function(action) {
+    var self = this;
     switch(action) {
     case 'top':
-      if (this.container) {
-        this.container[0].scrollTop = 0;
+      if (self.container) {
+        self.container[0].scrollTop = 0;
       }
       break;
     case 'selected':
       events.trigger('ensureSelectedItemVisible');
       break;
     case 'bottom':
-      if (this.container) {
-        this.container[0].scrollTop = 10000000;
+      if (self.container) {
+        self.container[0].scrollTop = 10000000;
       }
       break;
     }
@@ -3972,10 +4005,11 @@ var Index = React.createClass({
       return;
     }
     var base64 = util.getString(data.base64);
-    findDOMNode(this.refs.filename).value = util.getString(data.name);
-    findDOMNode(this.refs.dataType).value = base64 ? 'rawBase64' : '';
-    findDOMNode(this.refs.content).value = base64 || util.getString(data.value|| data.content);
-    findDOMNode(this.refs.downloadForm).submit();
+    var self = this;
+    findDOMNode(self.refs.filename).value = util.getString(data.name);
+    findDOMNode(self.refs.dataType).value = base64 ? 'rawBase64' : '';
+    findDOMNode(self.refs.content).value = base64 || util.getString(data.value|| data.content);
+    findDOMNode(self.refs.downloadForm).submit();
   },
   getTabName: function () {
     var state = this.state;
@@ -4004,13 +4038,14 @@ var Index = React.createClass({
     }
   },
   render: function () {
-    var state = this.state;
+    var self = this;
+    var state = self.state;
     var networkMode = state.networkMode;
     var rulesMode = state.rulesMode;
     var rulesOnlyMode = state.rulesOnlyMode;
     var pluginsMode = state.pluginsMode;
     var multiEnv = dataCenter.isMultiEnv();
-    var name = this.getTabName();
+    var name = self.getTabName();
     var isAccount = name == 'account';
     var isNetwork = name == 'network';
     var isRules = name == 'rules';
@@ -4104,8 +4139,8 @@ var Index = React.createClass({
     var forceShowLeftMenu, forceHideLeftMenu;
     var pluginsStyle = getHideStyle(rulesOnlyMode || pluginsOnlyMode || networkMode);
     if (showLeftMenu && hideLeftMenu) {
-      forceShowLeftMenu = this.forceShowLeftMenu;
-      forceHideLeftMenu = this.forceHideLeftMenu;
+      forceShowLeftMenu = self.forceShowLeftMenu;
+      forceHideLeftMenu = self.forceHideLeftMenu;
     }
     LEFT_BAR_MENUS[2].hide = rulesMode;
     LEFT_BAR_MENUS[3].hide = pluginsMode;
@@ -4120,13 +4155,13 @@ var Index = React.createClass({
       caUrl += '?type=' + caType;
       caShortUrl += caType;
     }
-    var hideEditor = this.isHideRules();
+    var hideEditor = self.isHideRules();
     var hideEditorStyle = getHideStyle(hideEditor);
     var hideStyle = hideMenus ? ' hide' : '';
     dataCenter.hideRulesEditor = hideEditor;
-    this.hideNetwork = rulesMode;
-    this.hideRules = this.hideValues = hideEditor;
-    this.hidePlugins = pluginsStyle;
+    self.hideNetwork = rulesMode;
+    self.hideRules = self.hideValues = hideEditor;
+    self.hidePlugins = pluginsStyle;
 
     return (
       <div
@@ -4136,9 +4171,9 @@ var Index = React.createClass({
           + (rulesOnlyMode || rulesMode ? ' w-show-rules-mode' : '')
         }
       >
-        <div className={'w-menu w-' + name + '-menu-list' + hideStyle + (showLeftMenu ? '' : ' w-top')} onContextMenu={this.onTopContextMenu}>
+        <div className={'w-menu w-' + name + '-menu-list' + hideStyle + (showLeftMenu ? '' : ' w-top')} onContextMenu={self.onTopContextMenu}>
           <a
-            onClick={this.toggleLeftMenu}
+            onClick={self.toggleLeftMenu}
             draggable="false"
             className="w-switch-layout"
             onMouseEnter={forceShowLeftMenu}
@@ -4155,16 +4190,16 @@ var Index = React.createClass({
           </a>
           <div
             style={getHideStyle(rulesMode)}
-            onMouseEnter={this.showNetworkOptions}
-            onMouseLeave={this.hideNetworkOptions}
+            onMouseEnter={self.showNetworkOptions}
+            onMouseLeave={self.hideNetworkOptions}
             className={
               'w-nav-menu w-menu-wrapper' +
               (showNetworkOptions ? ' w-menu-wrapper-show' : '')
             }
           >
             <a
-              onClick={this.showNetwork}
-              onDoubleClick={this.toggleTreeView}
+              onClick={self.showNetwork}
+              onDoubleClick={self.toggleTreeView}
               className={
                 'w-network-menu' + (isNetwork ? ' w-menu-selected' : '')
               }
@@ -4181,13 +4216,13 @@ var Index = React.createClass({
               ref="networkMenuItem"
               options={state.networkOptions}
               className="w-network-menu-item"
-              onClickOption={this.handleNetwork}
+              onClickOption={self.handleNetwork}
             />
           </div>
           <div
             style={hideEditorStyle}
-            onMouseEnter={this.showRulesOptions}
-            onMouseLeave={this.hideRulesOptions}
+            onMouseEnter={self.showRulesOptions}
+            onMouseLeave={self.hideRulesOptions}
             className={
               'w-nav-menu w-menu-wrapper' +
               (showRulesOptions ? ' w-menu-wrapper-show' : '') +
@@ -4195,7 +4230,7 @@ var Index = React.createClass({
             }
           >
             <a
-              onClick={this.showRules}
+              onClick={self.showRules}
               className={
                 'w-rules-menu' + (isRules ? ' w-menu-selected' : '')
               }
@@ -4211,15 +4246,15 @@ var Index = React.createClass({
               checkedOptions={uncheckedRules}
               disabled={disabledAllRules}
               className="w-rules-menu-item"
-              onClick={this.showRules}
-              onClickOption={this.showAndActiveRules}
-              onChange={this.selectRulesByOptions}
+              onClick={self.showRules}
+              onClickOption={self.showAndActiveRules}
+              onChange={self.selectRulesByOptions}
             />
           </div>
           <div
             style={hideEditorStyle}
-            onMouseEnter={this.showValuesOptions}
-            onMouseLeave={this.hideValuesOptions}
+            onMouseEnter={self.showValuesOptions}
+            onMouseLeave={self.hideValuesOptions}
             className={
               'w-nav-menu w-menu-wrapper' +
               (showValuesOptions ? ' w-menu-wrapper-show' : '') +
@@ -4227,7 +4262,7 @@ var Index = React.createClass({
             }
           >
             <a
-              onClick={this.showValues}
+              onClick={self.showValues}
               className={
                 'w-values-menu' + (isValues ? ' w-menu-selected' : '')
               }
@@ -4240,22 +4275,22 @@ var Index = React.createClass({
               name={isValues ? null : 'Open'}
               options={state.valuesOptions}
               className="w-values-menu-item"
-              onClick={this.showValues}
-              onClickOption={this.showAndActiveValues}
+              onClick={self.showValues}
+              onClickOption={self.showAndActiveValues}
             />
           </div>
           <div
             style={pluginsStyle}
             ref="pluginsMenu"
-            onMouseEnter={this.showPluginsOptions}
-            onMouseLeave={this.hidePluginsOptions}
+            onMouseEnter={self.showPluginsOptions}
+            onMouseLeave={self.hidePluginsOptions}
             className={
               'w-nav-menu w-menu-wrapper' +
               (showPluginsOptions ? ' w-menu-wrapper-show' : '')
             }
           >
             <a
-              onClick={this.showPlugins}
+              onClick={self.showPlugins}
               className={
                 'w-plugins-menu' + (isPlugins ? ' w-menu-selected' : '')
               }
@@ -4271,14 +4306,14 @@ var Index = React.createClass({
               checkedOptions={state.disabledPlugins}
               disabled={disabledAllPlugins}
               className="w-plugins-menu-item"
-              onClick={this.showPlugins}
-              onChange={this.disablePlugin}
-              onClickOption={this.showAndActivePlugins}
+              onClick={self.showPlugins}
+              onChange={self.disablePlugin}
+              onClickOption={self.showAndActivePlugins}
             />
           </div>
           {!state.ndr && (
             <a
-              onClick={this.confirmDisableAllRules}
+              onClick={self.confirmDisableAllRules}
               className="w-enable-rules-menu w-switch-btn"
               title={
                 disabledAllRules ? 'Enable all rules' : 'Disable all rules'
@@ -4292,7 +4327,7 @@ var Index = React.createClass({
           )}
           {!state.ndp && (
             <a
-              onClick={this.confirmDisableAllPlugins}
+              onClick={self.confirmDisableAllPlugins}
               className="w-enable-plugin-menu w-switch-btn"
               title={
                 disabledAllPlugins
@@ -4308,7 +4343,7 @@ var Index = React.createClass({
           )}
           <UpdateAllBtn hide={!isPlugins} />
           <a
-            onClick={this.installPlugins}
+            onClick={self.installPlugins}
             className="w-plugins-menu"
             style={getHideStyle(!isPlugins)}
             draggable="false"
@@ -4319,10 +4354,10 @@ var Index = React.createClass({
           <RecordBtn
             ref="recordBtn"
             hide={!isNetwork}
-            onClick={this.handleAction}
+            onClick={self.handleAction}
           />
           <a
-            onClick={this.importData}
+            onClick={self.importData}
             style={importMenuStyle}
             className="w-import-menu"
             draggable="false"
@@ -4330,7 +4365,7 @@ var Index = React.createClass({
             <Icon name="import" />Import
           </a>
           <a
-            onClick={this.exportData}
+            onClick={self.exportData}
             className="w-export-menu"
             style={importMenuStyle}
             draggable="false"
@@ -4338,7 +4373,7 @@ var Index = React.createClass({
             <Icon name="export" />Export
           </a>
           <a
-            onClick={this.clear}
+            onClick={self.clear}
             style={getHideStyle(!isNetwork)}
             className="w-remove-menu w-remove-menu-list"
             title="Ctrl[Command] + X"
@@ -4347,7 +4382,7 @@ var Index = React.createClass({
             <Icon name="remove" />Clear
           </a>
           <a
-            onClick={this.onClickMenu}
+            onClick={self.onClickMenu}
             className="w-save-menu"
             style={editMenuStyle}
             draggable="false"
@@ -4359,12 +4394,12 @@ var Index = React.createClass({
             className="w-create-menu"
             style={editMenuStyle}
             draggable="false"
-            onClick={this.handleCreate}
+            onClick={self.handleCreate}
           >
             <Icon name="plus" />Create
           </a>
           <a
-            onClick={this.onClickMenu}
+            onClick={self.onClickMenu}
             className={'w-edit-menu' + (disabledEditBtn ? ' w-disabled' : '')}
             style={editMenuStyle}
             draggable="false"
@@ -4372,8 +4407,8 @@ var Index = React.createClass({
             <Icon name="transfer" />Rename
           </a>
           <div
-            onMouseEnter={this.showAbortOptions}
-            onMouseLeave={this.hideAbortOptions}
+            onMouseEnter={self.showAbortOptions}
+            onMouseLeave={self.hideAbortOptions}
             style={getHideStyle(!isNetwork)}
             className={
               'w-menu-wrapper w-abort-menu-list w-menu-auto' +
@@ -4381,7 +4416,7 @@ var Index = React.createClass({
             }
           >
             <a
-              onClick={this.clickReplay}
+              onClick={self.clickReplay}
               className="w-replay-menu"
               draggable="false"
             >
@@ -4390,11 +4425,11 @@ var Index = React.createClass({
             <MenuItem
               options={ABORT_OPTIONS}
               className="w-remove-menu-item"
-              onClickOption={this.abort}
+              onClickOption={self.abort}
             />
           </div>
           <a
-            onClick={this.composer}
+            onClick={self.composer}
             className="w-com-menu"
             style={getHideStyle(!isNetwork)}
             draggable="false"
@@ -4402,7 +4437,7 @@ var Index = React.createClass({
             <Icon name="send" />Edit
           </a>
           <a
-            onClick={this.onClickMenu}
+            onClick={self.onClickMenu}
             className={
               'w-delete-menu' + (disabledDeleteBtn ? ' w-disabled' : '')
             }
@@ -4412,7 +4447,7 @@ var Index = React.createClass({
             <Icon name="trash" />Delete
           </a>
           <FilterBtn
-            onClick={this.showSettings}
+            onClick={self.showSettings}
             disabledRules={isRules && disabledAllRules}
             backRulesFirst={isRules && state.backRulesFirst}
             isNetwork={isNetwork}
@@ -4420,16 +4455,16 @@ var Index = React.createClass({
           />
           <ServiceBtn name={name} />
           <div
-            onMouseEnter={this.showWeinreOptions}
-            onMouseLeave={this.hideWeinreOptions}
+            onMouseEnter={self.showWeinreOptions}
+            onMouseLeave={self.hideWeinreOptions}
             className={
               'w-menu-wrapper' +
               (showWeinreOptions ? ' w-menu-wrapper-show' : '')
             }
           >
             <a
-              onClick={this.showWeinreOptionsQuick}
-              onDoubleClick={this.showAnonymousWeinre}
+              onClick={self.showWeinreOptionsQuick}
+              onDoubleClick={self.showAnonymousWeinre}
               className="w-weinre-menu"
               draggable="false"
             >
@@ -4442,12 +4477,12 @@ var Index = React.createClass({
               icon="console"
               options={state.weinreOptions}
               className="w-weinre-menu-item"
-              onClick={this.showAnonymousWeinre}
-              onClickOption={this.showWeinre}
+              onClick={self.showAnonymousWeinre}
+              onClickOption={self.showWeinre}
             />
           </div>
           <a
-            onClick={this.showHttpsSettingsDialog}
+            onClick={self.showHttpsSettingsDialog}
             className="w-https-menu"
             draggable="false"
             style={{ color: dataCenter.hasInvalidCerts ? 'var(--c-error)' : undefined }}
@@ -4456,14 +4491,14 @@ var Index = React.createClass({
             <span className="w-https-name">HTTPS</span>
           </a>
           <div
-            onMouseEnter={this.showHelpOptions}
-            onMouseLeave={this.hideHelpOptions}
+            onMouseEnter={self.showHelpOptions}
+            onMouseLeave={self.hideHelpOptions}
             className={
               'w-menu-wrapper' + (showHelpOptions ? ' w-menu-wrapper-show' : '')
             }
           >
             <a
-              onClick={this.showAboutDialog}
+              onClick={self.showAboutDialog}
               title={
                 state.hasNewVersion
                   ? 'A new version is available, click to see details'
@@ -4479,13 +4514,13 @@ var Index = React.createClass({
             <MenuItem
               ref="helpMenuItem"
               options={state.helpOptions}
-              onClickOption={this.onClickHelpMenu}
+              onClickOption={self.onClickHelpMenu}
               name={
                 <About
                   ref="aboutDialog"
                   clientVersion={clientVersion}
-                  onClick={this.hideHelpOptions}
-                  onCheckUpdate={this.showHasNewVersion}
+                  onClick={self.hideHelpOptions}
+                  onCheckUpdate={self.showHasNewVersion}
                 />
               }
               className="w-help-menu-item"
@@ -4493,28 +4528,28 @@ var Index = React.createClass({
           </div>
           <Online name={name} clientVersion={clientVersion} />
           <div
-            onMouseDown={this.preventBlur}
+            onMouseDown={self.preventBlur}
             style={{ display: state.showCreateRules ? 'block' : 'none' }}
             className="w-shadow w-input-menu-item w-create-rule-file-input"
           >
             <input
               ref="createRulesInput"
-              onKeyDown={this.createRules}
-              onBlur={this.hideRulesInput}
+              onKeyDown={self.createRules}
+              onBlur={self.hideRulesInput}
               type="text"
               maxLength="64"
               placeholder="Enter name"
             />
             <button
               type="button"
-              onClick={this.createRules}
+              onClick={self.createRules}
               className="btn btn-primary"
             >
               +Rules
             </button>
             <button
               type="button"
-              onClick={this.createRules}
+              onClick={self.createRules}
               data-type="top"
               className="btn btn-default"
             >
@@ -4522,7 +4557,7 @@ var Index = React.createClass({
             </button>
             <button
               type="button"
-              onClick={this.createRules}
+              onClick={self.createRules}
               data-type="group"
               className="btn btn-default"
             >
@@ -4530,28 +4565,28 @@ var Index = React.createClass({
             </button>
           </div>
           <div
-            onMouseDown={this.preventBlur}
+            onMouseDown={self.preventBlur}
             style={{ display: state.showCreateValues ? 'block' : 'none' }}
             className="w-shadow w-input-menu-item w-create-values-input"
           >
             <input
               ref="createValuesInput"
-              onKeyDown={this.createValues}
-              onBlur={this.hideValuesInput}
+              onKeyDown={self.createValues}
+              onBlur={self.hideValuesInput}
               type="text"
               maxLength="64"
               placeholder="Enter name"
             />
             <button
               type="button"
-              onClick={this.createValues}
+              onClick={self.createValues}
               className="btn btn-primary"
             >
               +Key
             </button>
             <button
               type="button"
-              onClick={this.createValues}
+              onClick={self.createValues}
               data-type="group"
               className="btn btn-default"
             >
@@ -4559,40 +4594,40 @@ var Index = React.createClass({
             </button>
           </div>
           <div
-            onMouseDown={this.preventBlur}
+            onMouseDown={self.preventBlur}
             style={{ display: state.showEditRules ? 'block' : 'none' }}
             className="w-shadow w-input-menu-item w-edit-rules-input"
           >
             <input
               ref="editRulesInput"
-              onKeyDown={this.editRules}
-              onBlur={this.hideRenameRuleInput}
+              onKeyDown={self.editRules}
+              onBlur={self.hideRenameRuleInput}
               type="text"
               maxLength="64"
             />
             <button
               type="button"
-              onClick={this.editRules}
+              onClick={self.editRules}
               className="btn btn-primary"
             >
               OK
             </button>
           </div>
           <div
-            onMouseDown={this.preventBlur}
+            onMouseDown={self.preventBlur}
             style={{ display: state.showEditValues ? 'block' : 'none' }}
             className="w-shadow w-input-menu-item w-edit-values-input"
           >
             <input
               ref="editValuesInput"
-              onKeyDown={this.editValues}
-              onBlur={this.hideRenameValueInput}
+              onKeyDown={self.editValues}
+              onBlur={self.hideRenameValueInput}
               type="text"
               maxLength="64"
             />
             <button
               type="button"
-              onClick={this.editValues}
+              onClick={self.editValues}
               className="btn btn-primary"
             >
               OK
@@ -4600,11 +4635,11 @@ var Index = React.createClass({
           </div>
         </div>
         <div className="w-container box fill">
-          <ContextMenu onClick={this.onClickContextMenu} ref="contextMenu" />
-          <ContextMenu onClick={this.onClickTopMenu} ref="topContextMenu" />
+          <ContextMenu onClick={self.onClickContextMenu} ref="contextMenu" />
+          <ContextMenu onClick={self.onClickTopMenu} ref="topContextMenu" />
           <div
-            onContextMenu={this.onContextMenu}
-            onDoubleClick={this.onContextMenu}
+            onContextMenu={self.onContextMenu}
+            onDoubleClick={self.onContextMenu}
             className={
               'w-left-menu' + (forceShowLeftMenu ? ' w-hover-left-menu' : '') + hideStyle
             }
@@ -4613,7 +4648,7 @@ var Index = React.createClass({
             onMouseLeave={forceHideLeftMenu}
           >
             <a
-              onClick={this.showNetwork}
+              onClick={self.showNetwork}
               className={
                 'w-network-menu' + (isNetwork ? ' w-menu-selected' : '')
               }
@@ -4624,7 +4659,7 @@ var Index = React.createClass({
               <i className="w-left-menu-name">Network</i>
             </a>
             <a
-              onClick={this.showRules}
+              onClick={self.showRules}
               className={
                 'w-save-menu w-rules-menu' +
                 (isRules ? ' w-menu-selected' : '')
@@ -4642,7 +4677,7 @@ var Index = React.createClass({
               </i>
             </a>
             <a
-              onClick={this.showValues}
+              onClick={self.showValues}
               className={
                 'w-save-menu w-values-menu' +
                 (isValues ? ' w-menu-selected' : '')
@@ -4660,7 +4695,7 @@ var Index = React.createClass({
               </i>
             </a>
             <a
-              onClick={this.showPlugins}
+              onClick={self.showPlugins}
               className={
                 'w-plugins-menu' + (isPlugins ? ' w-menu-selected' : '')
               }
@@ -4679,9 +4714,9 @@ var Index = React.createClass({
               lineWrapping={autoRulesLineWrapping}
               fontSize={rulesFontSize}
               lineNumbers={showRulesLineNumbers}
-              onSelect={this.selectRules}
-              onUnselect={this.unselectRules}
-              onActive={this.activeRules}
+              onSelect={self.selectRules}
+              onUnselect={self.unselectRules}
+              onActive={self.activeRules}
               modal={state.rules}
               hide={!isRules}
               name="rules"
@@ -4690,12 +4725,12 @@ var Index = React.createClass({
           {state.hasValues ? (
             <List
               theme={valuesTheme}
-              onDoubleClick={this.showEditValuesByDBClick}
+              onDoubleClick={self.showEditValuesByDBClick}
               fontSize={valuesFontSize}
               lineWrapping={autoValuesLineWrapping}
               lineNumbers={showValuesLineNumbers}
-              onSelect={this.saveValues}
-              onActive={this.activeValues}
+              onSelect={self.saveValues}
+              onActive={self.activeValues}
               modal={state.values}
               hide={!isValues}
               className="w-values-list"
@@ -4713,10 +4748,10 @@ var Index = React.createClass({
           {state.hasPlugins ? (
             <Plugins
               {...state}
-              onOpen={this.activePluginTab}
-              onClose={this.closePluginTab}
-              onActive={this.activePluginTab}
-              onChange={this.disablePlugin}
+              onOpen={self.activePluginTab}
+              onClose={self.closePluginTab}
+              onActive={self.activePluginTab}
+              onChange={self.disablePlugin}
               ref="plugins"
               hide={!isPlugins}
             />
@@ -4736,10 +4771,10 @@ var Index = React.createClass({
                   fontSize={rulesFontSize}
                   lineNumbers={showRulesLineNumbers}
                   lineWrapping={autoRulesLineWrapping}
-                  onLineWrappingChange={this.onRulesLineWrappingChange}
-                  onThemeChange={this.onRulesThemeChange}
-                  onFontSizeChange={this.onRulesFontSizeChange}
-                  onLineNumberChange={this.onRulesLineNumberChange}
+                  onLineWrappingChange={self.onRulesLineWrappingChange}
+                  onThemeChange={self.onRulesThemeChange}
+                  onFontSizeChange={self.onRulesFontSizeChange}
+                  onLineNumberChange={self.onRulesLineNumberChange}
                 />
                 {!state.drm && (
                   <p className="w-editor-settings-box">
@@ -4748,7 +4783,7 @@ var Index = React.createClass({
                         type="checkbox"
                         disabled={multiEnv}
                         checked={!multiEnv && state.allowMultipleChoice}
-                        onChange={this.allowMultipleChoice}
+                        onChange={self.allowMultipleChoice}
                       />{' '}
                       Use multiple rules
                     </label>
@@ -4760,9 +4795,9 @@ var Index = React.createClass({
                       <input
                         type="checkbox"
                         checked={state.backRulesFirst}
-                        onChange={this.enableBackRulesFirst}
+                        onChange={self.enableBackRulesFirst}
                       />{' '}
-                     The later rules first
+                    The later rules first
                     </label>
                   </p>
                 )}
@@ -4778,14 +4813,14 @@ var Index = React.createClass({
                 <button
                   type="button"
                   className="btn btn-primary"
-                  onClick={this.importRulesSettings}
+                  onClick={self.importRulesSettings}
                 >
                   Import
                 </button>
                 <button
                   type="button"
                   className="btn btn-info"
-                  onClick={this.exportRulesSettings}
+                  onClick={self.exportRulesSettings}
                 >
                   Export
                 </button>
@@ -4806,17 +4841,17 @@ var Index = React.createClass({
                   fontSize={valuesFontSize}
                   lineNumbers={showValuesLineNumbers}
                   lineWrapping={autoValuesLineWrapping}
-                  onLineWrappingChange={this.onValuesLineWrappingChange}
-                  onThemeChange={this.onValuesThemeChange}
-                  onFontSizeChange={this.onValuesFontSizeChange}
-                  onLineNumberChange={this.onValuesLineNumberChange}
+                  onLineWrappingChange={self.onValuesLineWrappingChange}
+                  onThemeChange={self.onValuesThemeChange}
+                  onFontSizeChange={self.onValuesFontSizeChange}
+                  onLineNumberChange={self.onValuesLineNumberChange}
                 />
                 <p className="w-editor-settings-box">
                   <label className="w-middle">
                     <input
                       type="checkbox"
                       checked={state.foldGutter}
-                      onChange={this.showFoldGutter}
+                      onChange={self.showFoldGutter}
                     />{' '}
                     Show fold gutter
                   </label>
@@ -4833,14 +4868,14 @@ var Index = React.createClass({
                 <button
                   type="button"
                   className="btn btn-primary"
-                  onClick={this.importValuesSettings}
+                  onClick={self.importValuesSettings}
                 >
                   Import
                 </button>
                 <button
                   type="button"
                   className="btn btn-info"
-                  onClick={this.exportValuesSettings}
+                  onClick={self.exportValuesSettings}
                 >
                   Export
                 </button>
@@ -4857,8 +4892,8 @@ var Index = React.createClass({
           multiEnv={multiEnv}
           interceptHttpsConnects={state.interceptHttpsConnects}
           enableHttp2={state.enableHttp2}
-          onEnableHttps={this.interceptHttpsConnects}
-          onEnableHttp2={this.enableHttp2}
+          onEnableHttps={self.interceptHttpsConnects}
+          onEnableHttp2={self.enableHttp2}
         />
         <div ref="chooseFileType" className="modal fade w-choose-filte-type">
           <div className="modal-dialog">
@@ -4869,8 +4904,8 @@ var Index = React.createClass({
                   <input
                     ref="sessionsName"
                     value={state.filename}
-                    onChange={this.filterFilename}
-                    onKeyDown={this.exportBySave}
+                    onChange={self.filterFilename}
+                    onKeyDown={self.exportBySave}
                     placeholder="Enter filename (optional)"
                     className="form-control"
                     maxLength="64"
@@ -4879,7 +4914,7 @@ var Index = React.createClass({
                     ref="fileType"
                     className="form-control"
                     value={state.exportFileType}
-                    onChange={this.chooseFileType}
+                    onChange={self.chooseFileType}
                   >
                     <option value="whistle">*.txt</option>
                     <option value="har">*.har</option>
@@ -4898,9 +4933,9 @@ var Index = React.createClass({
                 <button
                   type="button"
                   tabIndex="0"
-                  onMouseDown={this.preventBlur}
+                  onMouseDown={self.preventBlur}
                   className="btn btn-default"
-                  onClick={this.exportAll}
+                  onClick={self.exportAll}
                   disabled={!hasSession}
                 >
                   Export All
@@ -4908,16 +4943,16 @@ var Index = React.createClass({
                 <SaveToServiceBtn
                   type="network"
                   disabled={!selectedCount}
-                  onComplete={this.hideChooseFileTypeDialog}
-                  getFilename={this.getInputValue} data={this.getExportSessions}
+                  onComplete={self.hideChooseFileTypeDialog}
+                  getFilename={self.getInputValue} data={self.getExportSessions}
                 />
                 <button
                   type="button"
-                  onKeyDown={this.exportBySave}
+                  onKeyDown={self.exportBySave}
                   tabIndex="0"
-                  onMouseDown={this.preventBlur}
+                  onMouseDown={self.preventBlur}
                   className="btn btn-primary"
-                  onClick={this.exportBySave}
+                  onClick={self.exportBySave}
                   disabled={!selectedCount}
                 >
                   Export Selected ({selectedCount})
@@ -4926,7 +4961,7 @@ var Index = React.createClass({
             </div>
           </div>
         </div>
-        <LargeDialog ref="editorWin" className="w-editor-win" openInNewWin={this.openEditorInNewWin} />
+        <LargeDialog ref="editorWin" className="w-editor-win" openInNewWin={self.openEditorInNewWin} />
         <LargeDialog ref="innerWin" className="w-inner-win" />
         <Dialog ref="setReplayCount" wstyle="w-replay-count-dialog">
           <div className="modal-body">
@@ -4935,8 +4970,8 @@ var Index = React.createClass({
               <input
                 ref="replayCount"
                 placeholder={'<= ' + MAX_REPLAY_COUNT}
-                onKeyDown={this.replayRepeat}
-                onChange={this.replayCountChange}
+                onKeyDown={self.replayRepeat}
+                onChange={self.replayCountChange}
                 value={state.replayCount}
                 className="form-control"
                 maxLength="3"
@@ -4944,12 +4979,12 @@ var Index = React.createClass({
             </label>
             <button
               type="button"
-              onKeyDown={this.replayRepeat}
+              onKeyDown={self.replayRepeat}
               tabIndex="0"
-              onMouseDown={this.preventBlur}
+              onMouseDown={self.preventBlur}
               className="btn btn-primary"
               disabled={!state.replayCount}
-              onClick={this.replayRepeat}
+              onClick={self.replayRepeat}
             >
               Replay
             </button>
@@ -4980,7 +5015,7 @@ var Index = React.createClass({
                 <button
                   type="button"
                   className="btn btn-default"
-                  onClick={this.donotShowAgain}
+                  onClick={self.donotShowAgain}
                   data-dismiss="modal"
                 >
                   Don't Show Again
@@ -4988,7 +5023,7 @@ var Index = React.createClass({
                 <a
                   type="button"
                   className="btn btn-primary"
-                  onClick={this.hideUpdateTipsDialog}
+                  onClick={self.hideUpdateTipsDialog}
                   href={util.UPDATE_URL}
                   target="_blank"
                 >
@@ -5014,7 +5049,7 @@ var Index = React.createClass({
             <button
               type="button"
               className="btn btn-primary"
-              onClick={this.reloadData}
+              onClick={self.reloadData}
               data-dismiss="modal"
             >
               Yes
@@ -5025,7 +5060,7 @@ var Index = React.createClass({
           ref="deleteRulesDialog"
           title="Delete Rules"
           tips="Do you confirm the deletion of all follow rules or group?"
-          onConfirm={this.removeRulesBatch}
+          onConfirm={self.removeRulesBatch}
           name="rules"
           isRules="1"
           list={state.rules.list}
@@ -5034,7 +5069,7 @@ var Index = React.createClass({
           ref="deleteValuesDialog"
           title="Delete Values"
           tips="Do you confirm the deletion of all follow values or group?"
-          onConfirm={this.removeValuesBatch}
+          onConfirm={self.removeValuesBatch}
           name="values"
           list={state.values.list}
         />
@@ -5085,6 +5120,7 @@ var Index = React.createClass({
         <EditorDialog ref="editorDialog" />
         <ServiceDialog />
         <CreateRuleDialog ref="addRulesDialog" />
+        <TestRuleDialog ref="testRuleDialog" />
       </div>
     );
   }

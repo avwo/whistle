@@ -3,9 +3,10 @@ var React = require('react');
 
 var Table = React.createClass({
   render: function () {
-    var head = this.props.head;
+    var self = this;
+    var head = self.props.head;
     var hasHead = Array.isArray(head) && head.length;
-    var modal = this.props.modal || [];
+    var modal = self.props.modal || [];
 
     return (
       <table className="table w-table">

@@ -12,9 +12,10 @@ var KVDialog = React.createClass({
     return { list: [], history: [] };
   },
   show: function (data, rulesModal, valuesModal, isValues, selectedHistory) {
-    this.isValues = isValues;
-    this.refs.kvDialog.show();
-    this._hideDialog = false;
+    var self = this;
+    self.isValues = isValues;
+    self.refs.kvDialog.show();
+    self._hideDialog = false;
     var history = [];
     var hideDefaultOption = data && data.hideDefaultOption;
     if (data && Array.isArray(data.list) && typeof data.data === 'object') {
@@ -31,7 +32,7 @@ var KVDialog = React.createClass({
       data = data.data;
     }
     var modal = isValues ? valuesModal : rulesModal;
-    this.setState({
+    self.setState({
       hideDefaultOption: hideDefaultOption,
       selectedHistory: history.indexOf(selectedHistory) === -1 ? (hideDefaultOption ? history[0] : '') : selectedHistory,
       history: history,
@@ -44,8 +45,9 @@ var KVDialog = React.createClass({
     });
   },
   hide: function () {
-    this.refs.kvDialog.hide();
-    this._hideDialog = true;
+    var self = this;
+    self.refs.kvDialog.hide();
+    self._hideDialog = true;
   },
   shouldComponentUpdate: function () {
     return this._hideDialog === false;
@@ -236,7 +238,7 @@ var KVDialog = React.createClass({
             type="button"
             className="btn btn-default"
             disabled={!checkedCount}
-            onClick={this.export}
+            onClick={self.export}
           >
             Export Selected
           </button>
@@ -244,7 +246,7 @@ var KVDialog = React.createClass({
             type="button"
             className="btn btn-primary"
             disabled={!checkedCount}
-            onClick={this.confirm}
+            onClick={self.confirm}
           >
             Add To {title} {len ? ' (' + checkedCount + ' / ' + len + ')' : null}
           </button>

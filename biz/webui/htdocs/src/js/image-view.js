@@ -13,15 +13,16 @@ var ImageView = React.createClass({
     util.openPreview(this.props.data);
   },
   getPreviewUrl: function() {
-    var data = !this.props.imgSrc && hasWebView() && this.props.data;
+    var self = this;
+    var data = !self.props.imgSrc && hasWebView() && self.props.data;
     if (!data || !data.res.base64) {
       return;
     }
-    if (this._curData !== data) {
-      this._curData = data;
-      this._previewUrl = util.getPreviewUrl(data);
+    if (self._curData !== data) {
+      self._curData = data;
+      self._previewUrl = util.getPreviewUrl(data);
     }
-    return this._previewUrl;
+    return self._previewUrl;
   },
   getPreviewElem: function(previewUrl) {
     if (previewUrl) {
@@ -36,8 +37,9 @@ var ImageView = React.createClass({
     }
   },
   render: function () {
-    var props = this.props;
-    var previewUrl = this.getPreviewUrl(props.data);
+    var self = this;
+    var props = self.props;
+    var previewUrl = self.getPreviewUrl(props.data);
     var isImg = props.imgSrc && !previewUrl;
 
     return (
@@ -46,9 +48,9 @@ var ImageView = React.createClass({
           (props.hide ? ' hide' : '') + (isImg ? ' w-image-bg' : '')}
       >
         {previewUrl || props.imgSrc ? <div className="w-textarea-bar">
-          <a onClick={this.preview}>Open in new window</a>
+          <a onClick={self.preview}>Open in new window</a>
         </div> : undefined}
-        {this.getPreviewElem(previewUrl)}
+        {self.getPreviewElem(previewUrl)}
       </div>
     );
   }

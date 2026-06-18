@@ -66,15 +66,16 @@ var ResDetail = React.createClass({
     this.state['inited' + btn.name] = true;
   },
   render: function () {
-    var state = this.state;
+    var self = this;
+    var state = self.state;
     var btns = state.btns;
     var btn = state.btn;
     if (!btn) {
       btn = btns[0];
-      this.selectBtn(btn);
+      self.selectBtn(btn);
     }
     var name = btn && btn.name;
-    var modal = this.props.modal;
+    var modal = self.props.modal;
     var res,
       rawHeaders,
       rawTrailers,
@@ -227,7 +228,7 @@ var ResDetail = React.createClass({
 
     var pluginsTab = btns[8];
     var tabs = dataCenter.getResTabs();
-    var len = this.props.inComposer ? 0 : tabs.length;
+    var len = self.props.inComposer ? 0 : tabs.length;
     pluginsTab.hide = !len;
     if (len && len === 1) {
       pluginsTab.display = pluginsTab.title = tabs[0].name;
@@ -241,10 +242,10 @@ var ResDetail = React.createClass({
       <div
         className={
           'fill v-box w-detail-ctn w-detail-res' +
-          (util.getBool(this.props.hide) ? ' hide' : '')
+          (util.getBool(self.props.hide) ? ' hide' : '')
         }
       >
-        <BtnGroup onClick={this.onClickBtn} btns={btns} />
+        <BtnGroup onClick={self.onClickBtn} btns={btns} />
         {state.initedRaw ? (
           <Textarea
             defaultName={defaultName}

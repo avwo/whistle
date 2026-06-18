@@ -159,11 +159,12 @@ proto.clear = function () {
 };
 
 proto.reset = function (list) {
-  if (!list || this.list === list) {
+  var self = this;
+  if (!list || self.list === list) {
     return list;
   }
-  this.list = list;
-  this.filter();
+  self.list = list;
+  self.filter();
   return list;
 };
 

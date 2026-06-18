@@ -124,6 +124,7 @@
 }
 
 .w-create-rule .form-control:disabled,
+.w-test-rule-dialog .form-control:disabled,
 .w-url-input .form-control:disabled {
   background-color: var(--b-heavy);
 }

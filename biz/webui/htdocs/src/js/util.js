@@ -645,7 +645,7 @@ function showSysErr(xhr, useToast) {
   if (msg) {
     return showTips('[' + status + '] ' + String(msg).substring(0, 1024));
   }
-  showTips('[' + status + '] Unknown error, try again later');
+  showTips('[' + status + '] Error, please retry');
 }
 
 exports.showSysErr = showSysErr;

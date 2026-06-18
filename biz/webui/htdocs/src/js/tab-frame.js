@@ -57,20 +57,22 @@ var TabFrame = React.createClass({
     this.handlePush();
   },
   onLoad: function () {
-    if (this.composeItem) {
-      this.handlePush(null, null, this.composeItem);
-      this.composeItem = null;
+    var self = this;
+    if (self.composeItem) {
+      self.handlePush(null, null, self.composeItem);
+      self.composeItem = null;
     }
   },
   render: function () {
-    var display = this.props.hide ? 'none' : undefined;
+    var self = this;
+    var display = self.props.hide ? 'none' : undefined;
     // 防止被改
     window.onWhistleInspectorCustomTabReady = onWhistleInspectorCustomTabReady;
     return (
       <IFrame
-        onLoad={this.onLoad}
+        onLoad={self.onLoad}
         ref="iframe"
-        src={this.state.url}
+        src={self.state.url}
         style={{ display: display }}
       />
     );

@@ -19,6 +19,7 @@ var getFilepath = util.getFilepath;
 var RequestRule = React.createClass({
   mixins: [ruleMixin],
   getInitialState: function() {
+    var self = this;
     return {
       disabledMethod: true,
       disabledVersion: true,
@@ -27,13 +28,14 @@ var RequestRule = React.createClass({
       disabledBody: true,
       method: util.METHODS[0],
       version: HTTP_VERSION_OPTIONS[0],
-      urlActions: [this.createAction(URL_ACTIONS[0])],
-      headerActions: [this.createAction(HEADER_ACTIONS[1])],
-      bodyActions: [this.createAction(BODY_ACTIONS[0])]
+      urlActions: [self.createAction(URL_ACTIONS[0])],
+      headerActions: [self.createAction(HEADER_ACTIONS[1])],
+      bodyActions: [self.createAction(BODY_ACTIONS[0])]
     };
   },
   handleChange: function() {
-    var state = this.state;
+    var self = this;
+    var state = self.state;
     var rules = [];
     var values = [];
     if (!state.disabledMethod) {
@@ -54,13 +56,13 @@ var RequestRule = React.createClass({
         }
       }
     };
-    addRules(this.getUrlRules());
-    addRules(this.getHeaderRules(true));
-    addRules(this.getBodyRules());
+    addRules(self.getUrlRules());
+    addRules(self.getHeaderRules(true));
+    addRules(self.getBodyRules());
     rules = rules.join(' ');
-    if (this._curRules !== rules) {
-      this._curRules = rules;
-      this.props.onChange(rules, values.join('\n\n'));
+    if (self._curRules !== rules) {
+      self._curRules = rules;
+      self.props.onChange(rules, values.join('\n\n'));
     }
   },
   shouldComponentUpdate: util.shouldComponentUpdate,

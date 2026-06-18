@@ -13,19 +13,20 @@ for (var i = 14; i <= 36; i += 2) {
 var EditorSettings = React.createClass({
   componentDidMount: function () {
     var self = this;
-    events.on('toggle' + (this.props.name === 'rules' ? 'Rules' : 'Values') + 'LineNumbers', function () {
+    events.on('toggle' + (self.props.name === 'rules' ? 'Rules' : 'Values') + 'LineNumbers', function () {
       $(findDOMNode(self.refs.showLineNumbers)).trigger('click');
     });
   },
   render: function () {
+    var self = this;
     return (
       <div className="w-editor-settings">
         <p>
           <label>
             <span className="w-label">Theme:</span>
             <select
-              value={this.props.theme}
-              onChange={this.props.onThemeChange}
+              value={self.props.theme}
+              onChange={self.props.onThemeChange}
               className="form-control"
             >
               {themes.map(function(theme) {
@@ -38,8 +39,8 @@ var EditorSettings = React.createClass({
           <label>
             <span className="w-label">Font Size:</span>
             <select
-              value={this.props.fontSize}
-              onChange={this.props.onFontSizeChange}
+              value={self.props.fontSize}
+              onChange={self.props.onFontSizeChange}
               className="form-control"
             >
               {
@@ -54,8 +55,8 @@ var EditorSettings = React.createClass({
           <label className="w-middle">
             <input
               ref="showLineNumbers"
-              checked={this.props.lineNumbers}
-              onChange={this.props.onLineNumberChange}
+              checked={self.props.lineNumbers}
+              onChange={self.props.onLineNumberChange}
               type="checkbox"
             />{' '}
             Show line number
@@ -64,8 +65,8 @@ var EditorSettings = React.createClass({
         <p className="w-editor-settings-box">
           <label className="w-middle">
             <input
-              checked={this.props.lineWrapping}
-              onChange={this.props.onLineWrappingChange}
+              checked={self.props.lineWrapping}
+              onChange={self.props.onLineWrappingChange}
               type="checkbox"
             />{' '}
             Auto line wrapping

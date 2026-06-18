@@ -106,23 +106,24 @@ function add(name, value, isPre) {
   if (!name) {
     return false;
   }
-  var data = this.get(name);
+  var self = this;
+  var data = self.get(name);
   value = value || '';
   if (data) {
     data.value = value;
     return;
   }
   if (isPre) {
-    this.list.splice(1, 0, name);
+    self.list.splice(1, 0, name);
   } else {
-    push(this.list, name);
+    push(self.list, name);
   }
-  var item = (this.data[name] = {
+  var item = (self.data[name] = {
     key: util.getKey(),
     name: name,
     value: value
   });
-  this.filter();
+  self.filter();
   return item;
 }
 
@@ -165,12 +166,13 @@ proto.setSelected = function (name, selected) {
 };
 
 proto.moveTo = function (fromName, toName, group, toTop) {
-  var list = this.list;
+  var self = this;
+  var list = self.list;
   var fromIndex = list.indexOf(fromName);
   var toIndex = list.indexOf(toName);
   if (fromIndex !== -1 && toIndex !== -1 && fromIndex !== toIndex) {
     if (group && util.isGroup(fromName)) {
-      var data = this.data;
+      var data = self.data;
       var children = [fromName];
       for (var i = fromIndex + 1, len = list.length; i < len; i++) {
         var name = data[list[i]].name;
@@ -193,7 +195,7 @@ proto.moveTo = function (fromName, toName, group, toTop) {
       list.splice(fromIndex, len);
       children.unshift(toIndex, 0);
       list.splice.apply(list, children);
-    } else if (toTop || util.isGroup(fromName) || !util.isGroup(toName) || this.getGroupName(fromName) === toName) {
+    } else if (toTop || util.isGroup(fromName) || !util.isGroup(toName) || self.getGroupName(fromName) === toName) {
       list.splice(fromIndex, 1);
       list.splice(toIndex, 0, fromName);
     } else {
@@ -330,10 +332,11 @@ proto.getActive = function (ensure) {
 };
 
 proto.remove = function (name) {
-  var index = this.getIndex(name);
+  var self = this;
+  var index = self.getIndex(name);
   if (index != -1) {
-    this.list.splice(index, 1);
-    delete this.data[name];
+    self.list.splice(index, 1);
+    delete self.data[name];
     return true;
   }
 };
@@ -351,13 +354,14 @@ proto.getNotEmptyList = function() {
 };
 
 proto.removeGroup = function (name) {
-  var list = this.list;
+  var self = this;
+  var list = self.list;
   var index = list.indexOf(name) + 1;
   if (!index) {
     return;
   }
   var result = [name];
-  var data = this.data;
+  var data = self.data;
   var hasActive;
   for (var len = list.length; index < len; index++) {
     name = list[index];
@@ -372,22 +376,22 @@ proto.removeGroup = function (name) {
     list.splice(list.indexOf(file), 1);
     delete data[file];
   });
-  return hasActive && this.getSibling(name);
+  return hasActive && self.getSibling(name);
 };
 
 proto.rename = function (name, newName) {
   if (!name || !newName || name == newName) {
     return;
   }
-
-  var index = this.getIndex(name);
+  var self = this;
+  var index = self.getIndex(name);
   if (index != -1) {
-    this.list[index] = newName;
-    var item = this.data[name];
-    delete this.data[name];
-    this.data[newName] = item;
+    self.list[index] = newName;
+    var item = self.data[name];
+    delete self.data[name];
+    self.data[newName] = item;
     item.name = newName;
-    this.filter();
+    self.filter();
     return true;
   }
 };
@@ -397,23 +401,24 @@ proto.getIndex = function (name) {
 };
 
 proto.getSibling = function (name) {
-  var index = this.getIndex(name);
-  var list = this.list;
+  var self = this;
+  var index = self.getIndex(name);
+  var list = self.list;
   name = list[index + 1];
   name = util.isGroup(name) && list[index - 1];
   if (name && !util.isGroup(name)) {
-    return this.data[name];
+    return self.data[name];
   }
   for (var i = index + 1, len = list.length; i < len; i++) {
     name = list[i];
     if (!util.isGroup(name)) {
-      return this.data[name];
+      return self.data[name];
     }
   }
   for (i = index - 1; i >= 0; i--) {
     name = list[i];
     if (!util.isGroup(name)) {
-      return this.data[name];
+      return self.data[name];
     }
   }
 };
@@ -428,19 +433,20 @@ proto.search = function (keyword, disabledType) {
   if (not) {
     keyword = keyword.substring(1).trim();
   }
+  var self = this;
   if (keyword &&(disabledType ? /^(b|v|n|k|s):(.*)$/ : /^(selected|s|active|a|b|v|n|k|s):(.*)$/).test(keyword)) {
-    this._type = RegExp.$1;
+    self._type = RegExp.$1;
     keyword = RegExp.$2.trim();
     if (keyword[0] === '!') {
       not = true;
       keyword = keyword.substring(1).trim();
     }
   } else {
-    this._type = ''; // reset
+    self._type = ''; // reset
   }
-  this._keyword = keyword && (util.toRegExp(keyword) || keyword.toLowerCase());
-  this._not = not;
-  this.filter();
+  self._keyword = keyword && (util.toRegExp(keyword) || keyword.toLowerCase());
+  self._not = not;
+  self.filter();
   return !keyword;
 };
 
@@ -449,13 +455,14 @@ function setNot(flag, not) {
 }
 
 proto.filter = function () {
-  var not = this._not;
-  var keyword = this._keyword;
-  var list = this.list;
-  var filterBody = this._type === 'b' || this._type === 'v';
-  var filterKey = this._type === 'n' || this._type === 'k';
-  var filterSelected = !!this._type && !filterBody && !filterKey;
-  var data = this.data;
+  var self = this;
+  var not = self._not;
+  var keyword = self._keyword;
+  var list = self.list;
+  var filterBody = self._type === 'b' || self._type === 'v';
+  var filterKey = self._type === 'n' || self._type === 'k';
+  var filterSelected = !!self._type && !filterBody && !filterKey;
+  var data = self.data;
 
   var group;
   var showGroup;
@@ -485,18 +492,19 @@ proto.filter = function () {
 };
 
 proto.up = function () {
-  var list = this.list;
+  var self = this;
+  var list = self.list;
   var len = list.length;
   if (!len) {
     return;
   }
-  var activeItem = this.getActive();
+  var activeItem = self.getActive();
   if (activeItem.fixed) {
     return;
   }
 
   var index = activeItem ? list.indexOf(activeItem.name) : len - 1;
-  if (!index || this.data[list[index - 1]].fixed) {
+  if (!index || self.data[list[index - 1]].fixed) {
     return;
   }
 
@@ -506,18 +514,19 @@ proto.up = function () {
 };
 
 proto.down = function () {
-  var list = this.list;
+  var self = this;
+  var list = self.list;
   var len = list.length;
   if (!len) {
     return;
   }
-  var activeItem = this.getActive();
+  var activeItem = self.getActive();
   if (activeItem.fixed) {
     return;
   }
 
   var index = activeItem ? list.indexOf(activeItem.name) : len - 1;
-  if (index >= len - 1 || this.data[list[index + 1]].fixed) {
+  if (index >= len - 1 || self.data[list[index + 1]].fixed) {
     return;
   }
 
@@ -531,14 +540,15 @@ function isVisibleItem(item) {
 }
 
 proto.prev = function () {
-  var list = this.list;
+  var self = this;
+  var list = self.list;
   var len = list.length;
   if (!len) {
     return;
   }
-  var activeItem = this.getActive();
+  var activeItem = self.getActive();
   var index = activeItem ? list.indexOf(activeItem.name) : len;
-  var data = this.data;
+  var data = self.data;
   var i, item;
   for (i = index - 1; i >= 0; i--) {
     item = data[list[i]];
@@ -556,14 +566,15 @@ proto.prev = function () {
 };
 
 proto.next = function () {
-  var list = this.list;
+  var self = this;
+  var list = self.list;
   var len = list.length;
   if (!len) {
     return;
   }
-  var activeItem = this.getActive();
+  var activeItem = self.getActive();
   var index = activeItem ? list.indexOf(activeItem.name) : -1;
-  var data = this.data;
+  var data = self.data;
   var i, item;
   for (i = index + 1; i < len; i++) {
     item = data[list[i]];

@@ -140,13 +140,12 @@
 }
 .w-com-bar label {
   margin-left: 10px;
-  cursor: pointer;
   display: inline-flex;
   align-items: center;
   margin-bottom: 0;
 }
 .w-com-bar input,
-.w-com-rules .w-detail-inspectors-title input {
+.w-com-rules .w-inspectors-title input {
   margin: 0 5px 0 0;
   padding: 0;
 }
@@ -154,9 +153,7 @@
 .w-com-res {
   position: relative;
 }
-textarea.w-com-rules {
-  margin-bottom: 2px;
-}
+
 .w-com-bar label:first-child {
   font-weight: bold;
 }
@@ -188,17 +185,21 @@ textarea.w-com-rules {
   margin: 0;
   border-right: 1px solid var(--c-border);
 }
-.w-com-rules .w-detail-inspectors-title {
+.w-com-rules .w-inspectors-title {
   padding-left: 10px !important;
 }
-.w-com-rules .w-detail-inspectors-title label {
+.w-com-rules .w-inspectors-title label {
   margin: 0;
   display: inline-flex;
   align-items: center;
 }
 
-.w-com-rules .w-detail-inspectors-title label:hover {
+.w-com-rules .w-inspectors-title label:hover {
   color: var(--c-default);
+}
+
+.w-com-rules textarea {
+  margin-bottom: 2px;
 }
 
 .w-com-headers .w-com-bar {
@@ -206,11 +207,25 @@ textarea.w-com-rules {
   align-items: center;
 }
 
+.w-rules-mini-editor {
+  position: relative;
+}
+
+.w-rules-mini-editor span {
+  position: absolute;
+  top: unset;
+  right: 3px;
+  bottom: 5px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
 .w-com-headers textarea[readonly],
 .w-com-body textarea[readonly],
 .w-detail-com input[readonly],
 .w-com-rules textarea:disabled,
 .w-com-rules textarea[readonly],
+.w-rules-mini-editor textarea[readonly],
 .w-create-rule input[readonly] {
   background: var(--b-disabled) !important;
   color: var(--c-disabled) !important;

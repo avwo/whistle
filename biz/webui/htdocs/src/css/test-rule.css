@@ -1,0 +1,54 @@
+.w-test-rule-dialog .modal-dialog {
+  width: 900px;
+}
+
+.w-test-rule-dialog .modal-content {
+  min-height: 200px;
+}
+
+.w-test-rule-dialog textarea {
+  height: 160px;
+  padding: 5px!important;
+  font-size: 13px;
+}
+
+.w-test-rule-dialog .w-com-url {
+  border: none;
+  margin-top: 5px;
+}
+
+.w-test-rule-dialog .w-com-method {
+  padding: 5px 0;
+  width: 120px;
+}
+
+.w-test-rule-dialog .w-rules-mini-editor {
+  height: 80px;
+  margin-top: 5px;
+}
+
+.w-test-rule {
+  padding-top: 10px;
+}
+
+.w-test-rule-empty-tips {
+  position: static;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 120px;
+  width: auto;
+  margin: 0;
+}
+
+.w-test-rule .w-rules-form  > label{
+  display: inline-flex;
+  align-items: center;
+}
+
+.w-test-rule-type label {
+  margin: 5px 10px 0 0;
+  display: inline-flex;
+  align-items: center;
+  font-weight: normal;
+}
